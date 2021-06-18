@@ -2,85 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4407E3AD0E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D743AD0E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236021AbhFRRGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 13:06:13 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:34876 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233581AbhFRRGL (ORCPT
+        id S236023AbhFRRHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 13:07:04 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:53628 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233454AbhFRRHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 13:06:11 -0400
+        Fri, 18 Jun 2021 13:07:02 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 8F91D21B30;
-        Fri, 18 Jun 2021 17:04:00 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTP id CAFF21FDAE;
+        Fri, 18 Jun 2021 17:04:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624035840; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1624035891; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=LHiaEznjsNUF4rAZuGixsJoeW9b4ApvWTouIw4rKRH4=;
-        b=tgHGhNEKrHZIfPRywKhTgPlChh7xLffPyPR5uJQIyb2HBLC33ASKcSFidv7iUXQuxGLrdO
-        QdOiHPnVfrHBtcaU5QDujIs7RYUaN384TX7ibRbgCaNtSFWkCsF/3uDa9b3b5Fcwl+Y/mS
-        XOpL0ncJouDsLGkucN3EQci1LHh56bs=
+        bh=RRj7fgDRtAehPcgrufisp/9Ya/S7fBGeH0Q99DKFBUg=;
+        b=D8rrZRYDsoVVhrdfz7W0QCUuphU0nV+ZkITBeWFLnMVGmIdAmqnZmTMjI/Uf6/ALA7pWxk
+        QMamWOBwp2urL3ZtNaTOJUXk/1aDFrH8FdTwN6Kx7ShotJM4yvfOg7JlBmWhA/UtGSjmTZ
+        9xuvppuraIZt2cTxhVYd1VbmVqvTvK4=
 Received: from suse.cz (unknown [10.100.201.86])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 4EB9CA3BCE;
-        Fri, 18 Jun 2021 17:04:00 +0000 (UTC)
-Date:   Fri, 18 Jun 2021 19:03:59 +0200
+        by relay2.suse.de (Postfix) with ESMTPS id 884E3A3BCA;
+        Fri, 18 Jun 2021 17:04:51 +0000 (UTC)
+Date:   Fri, 18 Jun 2021 19:04:51 +0200
 From:   Michal Hocko <mhocko@suse.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Chris Down <chris@chrisdown.name>,
-        Cgroups <cgroups@vger.kernel.org>
-Subject: Re: [PATCH v1] proc: Implement /proc/self/meminfo
-Message-ID: <YMzR/0QyP9BR7DtN@dhcp22.suse.cz>
-References: <ac070cd90c0d45b7a554366f235262fa5c566435.1622716926.git.legion@kernel.org>
- <20210615113222.edzkaqfvrris4nth@wittgenstein>
- <20210615124715.nzd5we5tl7xc2n2p@example.org>
- <CALvZod7po_fK9JpcUNVrN6PyyP9k=hdcyRfZmHjSVE5r_8Laqw@mail.gmail.com>
- <87zgvpg4wt.fsf@disp2133>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Denis Efremov <efremov@linux.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, joe@perches.com,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] KVM: Use vmemdup_user()
+Message-ID: <YMzSM2WAmxpXIHhJ@dhcp22.suse.cz>
+References: <0c00d96c46d34d69f5f459baebf3c89a507730fc.camel@perches.com>
+ <20200603101131.2107303-1-efremov@linux.com>
+ <CALMp9eSFkRrWLjegJ5OC7kZ4oWtZypKRDjXFQD5=tFX4YLpUgw@mail.gmail.com>
+ <YMw2YeWHFsn+AFmN@dhcp22.suse.cz>
+ <CALMp9eR9n6N5EB-nUEJPM=e2YtE3_tQBDHj0uP3T2dcGsutSCQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87zgvpg4wt.fsf@disp2133>
+In-Reply-To: <CALMp9eR9n6N5EB-nUEJPM=e2YtE3_tQBDHj0uP3T2dcGsutSCQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 16-06-21 11:17:38, Eric W. Biederman wrote:
-[...]
-> MemAvailable seems to have a good definition.  Roughly the amount of
-> memory that can be allocated without triggering swapping.  Updated
-> to include not trigger memory cgroup based swapping and I sounds good.
+On Fri 18-06-21 09:53:53, Jim Mattson wrote:
+> On Thu, Jun 17, 2021 at 11:00 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Thu 17-06-21 17:25:04, Jim Mattson wrote:
+> > > On Wed, Jun 3, 2020 at 3:10 AM Denis Efremov <efremov@linux.com> wrote:
+> > > >
+> > > > Replace opencoded alloc and copy with vmemdup_user().
+> > > >
+> > > > Signed-off-by: Denis Efremov <efremov@linux.com>
+> > > > ---
+> > > > Looks like these are the only places in KVM that are suitable for
+> > > > vmemdup_user().
+> > > >
+> > > >  arch/x86/kvm/cpuid.c | 17 +++++++----------
+> > > >  virt/kvm/kvm_main.c  | 19 ++++++++-----------
+> > > >  2 files changed, 15 insertions(+), 21 deletions(-)
+> > > >
+> > > > diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> > > > index 901cd1fdecd9..27438a2bdb62 100644
+> > > > --- a/arch/x86/kvm/cpuid.c
+> > > > +++ b/arch/x86/kvm/cpuid.c
+> > > > @@ -182,17 +182,14 @@ int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
+> > > >         r = -E2BIG;
+> > > >         if (cpuid->nent > KVM_MAX_CPUID_ENTRIES)
+> > > >                 goto out;
+> > > > -       r = -ENOMEM;
+> > > >         if (cpuid->nent) {
+> > > > -               cpuid_entries =
+> > > > -                       vmalloc(array_size(sizeof(struct kvm_cpuid_entry),
+> > > > -                                          cpuid->nent));
+> > > > -               if (!cpuid_entries)
+> > > > -                       goto out;
+> > > > -               r = -EFAULT;
+> > > > -               if (copy_from_user(cpuid_entries, entries,
+> > > > -                                  cpuid->nent * sizeof(struct kvm_cpuid_entry)))
+> > > > +               cpuid_entries = vmemdup_user(entries,
+> > > > +                                            array_size(sizeof(struct kvm_cpuid_entry),
+> > > > +                                                       cpuid->nent));
+> > >
+> > > Does this break memcg accounting? I ask, because I'm really not sure.
+> >
+> > What do you mean by that? The original code uses plain vmalloc so the
+> > allocation is not memcg accounted (please note that __GFP_ACCOUNT needs
+> > to be specified explicitly). vmemdup_user is the same in that regards.
+> 
+> I asked, because I wasn't sure if plain vmalloc was accounted or not.
+> 
+> In any case, these allocations *should* be accounted, shouldn't they?
 
-yes this definition is at least understandable but how do you want to
-define it in the memcg scope? There are two different source of memory
-pressure when dealing with memcgs. Internal one when a limit is hit and
-and external when the source of the reclaim comes from higher the
-hierarchy (including the global memory pressure). The former one would
-be quite easy to mimic with the global semantic but the later will get
-much more complex very quickly - a) you would need a snapshot of the
-whole cgroup tree and evaluate it against the global memory state b) you
-would have to consider memory reclaim protection c) the external memory
-pressure is distributed proportionaly to the size most of the time which
-is yet another complication. And more other challenges that have been
-already discussed.
+This is more of a question to maintainers. Are these objects easy to
+request by userspace without any bounds?
 
-That being said, this might be possible to implement but I am not really
-sure this is viable and I strongly suspect that it will get unreliable
-in many situations in context of "how much you can allocate without
-swapping".
 -- 
 Michal Hocko
 SUSE Labs
