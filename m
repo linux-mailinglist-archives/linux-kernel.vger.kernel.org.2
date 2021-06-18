@@ -2,77 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1E5B3ACB7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2225C3ACB82
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233501AbhFRM6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 08:58:17 -0400
-Received: from mga14.intel.com ([192.55.52.115]:60458 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233006AbhFRM6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 08:58:15 -0400
-IronPort-SDR: 3MqafRiEyoXZYhdvQRByKK6N52EN57zHNwiStFky0QNst0GVQ2HHtPqElZw6ZKjs/VhbSjfII5
- 1KC7pcBfJxiA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="206366657"
-X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
-   d="scan'208";a="206366657"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 05:56:06 -0700
-IronPort-SDR: 4P7byXJYLPX3xGe792LQTHviKnXOIiuP/3ACKbdB1fNDmNHQIDgBFE9AdgeL6WJF5NQz1G0S0S
- 79pUnwbKl55Q==
-X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
-   d="scan'208";a="555568962"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 05:56:04 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1luE2T-003b6p-Ck; Fri, 18 Jun 2021 15:56:01 +0300
-Date:   Fri, 18 Jun 2021 15:56:01 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Mark Gross <mgross@linux.intel.com>
-Subject: Re: [PATCH v1 2/4] platform/x86: intel_skl_int3472: Fix dependencies
- (drop CLKDEV_LOOKUP)
-Message-ID: <YMyX4dxscWirfsBj@smile.fi.intel.com>
-References: <20210617183031.70685-1-andriy.shevchenko@linux.intel.com>
- <20210617183031.70685-2-andriy.shevchenko@linux.intel.com>
- <c3aec3b4-1ba1-6442-fbed-57a16febde68@gmail.com>
+        id S233624AbhFRM7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 08:59:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52610 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233430AbhFRM7k (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 08:59:40 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D229BC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:57:30 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id a21so8935105ljj.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:57:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jF9pURhxENYTan5Ye25myNYhrCwRUkpmo9Dhc1bSoEw=;
+        b=Fn1HoqFQ7nmte0xZq2YGQaecysC995DoLNw0dPEbpUb29LBrXndNbXR8166YRlUJVB
+         Hy5Q6qC6HbdEUIG416kJGF77qu0h+b36HZ0i8dYKtv2L/V+Q5PVcBGj9hfKxJDmyn7++
+         IDk/xnxQMETjdsM23PqVYNggB6Ab1iaWEp4L30wxFtLNm98sN3mPcE4vMhrMfBWsMVJ8
+         CJEzNUprRnBYhC5CUduiA79pcyarIlvhq+Jbuafl6nJAZcD08KzAKZy3mXhd1+vhAJw7
+         As65MkJlZnyuBGf524rGROXZwOJDYoQ8jJp6cO5tXS8Z+7ruRhDdb+oFnAtvMgDbPJDn
+         MGiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jF9pURhxENYTan5Ye25myNYhrCwRUkpmo9Dhc1bSoEw=;
+        b=VVYJbyFErrDfPeCpDwwVxXBapreZg3uUCKfrnp9y7Mjyc48x2yzb+WPEMDY0BK4rHo
+         ZPklKlanYLLqajw5Q7IHO0fzPWiWT33JjqOrJa54SokVgeQdBWJBTDlKO+U1b5luKXKq
+         3Qb1YIV5R2gYufygIyuA/FZzGVKUPUvp3T8z+o8Ca2vzIYrwxVeR9WHQ66MKwrLw6Q65
+         5CjSn4Uycc1Vry9HAmjLEQ7Td6HhAY55RAldqO3HoxSN4V3A75qh1uU1DvszGIOLIXm5
+         2v5FXzQKjQOZw8OLUTOxtMswDfA+Vn+OANfhf6JKeCengNyx9M9WRtUSJR2RhKm7RRc8
+         cvzw==
+X-Gm-Message-State: AOAM530DkHCT9ZDPd777h0mheTnF8yFWqtBZTV+7uB2XoYRa8OW3yfuM
+        rwPSXL/doe5U0UVExU8gt0Whphr/91zWN0vNndljGQ==
+X-Google-Smtp-Source: ABdhPJyh4rUqU+FLUB8CGIiTuIm71e/bqTQUmglrgI5HwwqBSedgi9V+DbUL9LCrHJeLKACwerPho5HhQJ7qZLptpDw=
+X-Received: by 2002:a05:651c:1501:: with SMTP id e1mr9644806ljf.74.1624021049247;
+ Fri, 18 Jun 2021 05:57:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c3aec3b4-1ba1-6442-fbed-57a16febde68@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210617144629.2557693-1-fabien.dessenne@foss.st.com>
+In-Reply-To: <20210617144629.2557693-1-fabien.dessenne@foss.st.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 18 Jun 2021 14:57:18 +0200
+Message-ID: <CACRpkdYmE6qU=UXp-K0AXbAhmS7Drk44FT9nYz4ibswHoD5r-g@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: stm32: fix the reported number of GPIO lines per bank
+To:     Fabien Dessenne <fabien.dessenne@foss.st.com>
+Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 11:50:36PM +0100, Daniel Scally wrote:
-> Hi Andy
-> 
-> On 17/06/2021 19:30, Andy Shevchenko wrote:
-> > Besides the fact that COMMON_CLK selects CLKDEV_LOOKUP
-> 
-> 
-> So it does - thanks
-> 
-> > , the latter
-> > is going to be removed from clock framework.
-> >
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> 
-> Reviewed-by: Daniel Scally <djrscally@gmail.com>
+On Thu, Jun 17, 2021 at 4:46 PM Fabien Dessenne
+<fabien.dessenne@foss.st.com> wrote:
 
-Thanks!
-I have sent v2 with more patches added (twice bigger than this).
-Would you be able to test them?
+> Each GPIO bank supports a variable number of lines which is usually 16, but
+> is less in some cases : this is specified by the last argument of the
+> "gpio-ranges" bank node property.
+> Report to the framework, the actual number of lines, so the libgpiod
+> gpioinfo command lists the actually existing GPIO lines.
+>
+> Fixes: 1dc9d289154b ("pinctrl: stm32: add possibility to use gpio-ranges to declare bank range")
+> Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
 
--- 
-With Best Regards,
-Andy Shevchenko
+Patch applied for fixes.
 
-
+Yours,
+Linus Walleij
