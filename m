@@ -2,90 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 197FD3AC697
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 724EE3AC699
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232439AbhFRI5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 04:57:15 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:5399 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231722AbhFRI5N (ORCPT
+        id S232127AbhFRI53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 04:57:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231286AbhFRI5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 04:57:13 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G5t2b4Sf1z713v;
-        Fri, 18 Jun 2021 16:51:51 +0800 (CST)
-Received: from dggema761-chm.china.huawei.com (10.1.198.203) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 18 Jun 2021 16:55:02 +0800
-Received: from [10.174.178.46] (10.174.178.46) by
- dggema761-chm.china.huawei.com (10.1.198.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 18 Jun 2021 16:55:02 +0800
-Subject: Re: [PATCH v2] mtd: mtd_blkdevs: Initialize
- rq.limits.discard_granularity
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-CC:     <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <yukuai3@huawei.com>, Christoph Hellwig <hch@lst.de>
-References: <20210615093905.3473709-1-chengzhihao1@huawei.com>
- <20210618095207.0bec4fde@xps13>
-From:   Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <258a2366-0042-dc2b-0589-fe3a99851ded@huawei.com>
-Date:   Fri, 18 Jun 2021 16:55:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Fri, 18 Jun 2021 04:57:25 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B879C061574;
+        Fri, 18 Jun 2021 01:55:16 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id f30so15448603lfj.1;
+        Fri, 18 Jun 2021 01:55:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TR3LSe08B0VZmXwtt0SjL4NzG7xNJ6GN5RaZ0JtqwcA=;
+        b=HAeUlIUKPOtNKpZMhU+cRl5gKW5NrNADPv6br7SCGp7hz7tIt7fa0r3jOF+92iAHsX
+         tT2g4lOYfaZupd6EnW3q9Q9JwajYFcgJzRWfFFishNDzAqF5OXG1CZkJv+drbnmXnKvX
+         ht7crdYDjLNlRy2U7QwqB+y9rmivDWUgZyiMovoGWgi9eVIIeBn0BSMExk1Ec0TXawWu
+         TAqGy1jIje+MIxJW3uv+v1JCm3WhWqcEnEU2vblkBolUtx6cUGAixNvx9m/touRA9vH8
+         p9oLy7jMxqpY3D3/UvoAy0QF05ek3g5XzwzQ75eO8LDmuJPfL9QsxFBZjIEclb20Y/5M
+         6fig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TR3LSe08B0VZmXwtt0SjL4NzG7xNJ6GN5RaZ0JtqwcA=;
+        b=Pnl3WIApn56iO6MokONP9XzqW1LLX73apnLx/0SXbTW72vYDY8EZcIRO3RjHLKE0Mj
+         IfoZrtx5BqieOZT98yWoeGzAVHrpx77TVyMspwLUpHNWuziW4XYoSnk5u3bEk+/Jzv8R
+         74SksBSDEZuWUxVl5xhwKKC56kFeknmF0TMrd8/ajk3k4YUB4KEruWrQYV8Es4n1NLem
+         AoiF2BRWaMkCfjhJEQeYEs3mHtrjpttS6jt9vDBNjnQ9+iLE6LPfkdfI9F6BRPawD8AK
+         tBOQ5ZW4DU8JDVfwLjwEHU/n62d0cU2v6+0e8a0mm8fh5RFdxecI/WiBG9Su3XXz4d92
+         +BHg==
+X-Gm-Message-State: AOAM533yTEd2+DvdsiibRSl1LN1cvWwVbK1AbsGXp+RuiIGRlMed0voI
+        uju/2SiJIy22dpNOE7OdZcnbkrT8Y0w=
+X-Google-Smtp-Source: ABdhPJz8rtgCFRtt+wfhGtROJ0K3MkUy11ftbc2yESqeulQRkqFGxj6GrcOLdsGbFjr+3q0xsyINbg==
+X-Received: by 2002:a05:6512:310d:: with SMTP id n13mr2367542lfb.165.1624006514654;
+        Fri, 18 Jun 2021 01:55:14 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
+        by smtp.googlemail.com with ESMTPSA id q7sm726736ljm.139.2021.06.18.01.55.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jun 2021 01:55:14 -0700 (PDT)
+Subject: Re: [PATCH v1] hwmon: (lm90) Use edge-triggered interrupt
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+References: <20210616190708.1220-1-digetx@gmail.com>
+ <20210617001243.GA3211292@roeck-us.net>
+ <3c6cbaf3-187b-1682-69b8-a2b34f23b928@gmail.com>
+ <20210617131205.GA59767@roeck-us.net>
+ <de7682c2-ae34-c594-d237-330ea33cbc78@gmail.com>
+ <20210617141300.GA1366442@roeck-us.net>
+ <bc3e3595-fe10-c7ae-9560-0c7676facba2@gmail.com>
+ <20210617151236.GB2676642@roeck-us.net>
+ <b97e3a75-f1aa-95a4-187d-97dc95e57e2b@gmail.com>
+ <20210617214257.GD2244035@roeck-us.net>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <4ae32e69-1d2f-f75b-ad86-10eac15606df@gmail.com>
+Date:   Fri, 18 Jun 2021 11:55:13 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210618095207.0bec4fde@xps13>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20210617214257.GD2244035@roeck-us.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.46]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggema761-chm.china.huawei.com (10.1.198.203)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2021/6/18 15:52, Miquel Raynal 写道:
-> Hi Zhihao,
-> 
-> Zhihao Cheng <chengzhihao1@huawei.com> wrote on Tue, 15 Jun 2021
-> 17:39:05 +0800:
-> 
->> Since commit b35fd7422c2f8("block: check queue's limits.discard_granularity
->> in __blkdev_issue_discard()") checks rq.limits.discard_granularity in
->> __blkdev_issue_discard(), we may get following warnings on formatted ftl:
+18.06.2021 00:42, Guenter Roeck пишет:
+> On Thu, Jun 17, 2021 at 06:27:50PM +0300, Dmitry Osipenko wrote:
+>> 17.06.2021 18:12, Guenter Roeck пишет:
+>>>> For now I see that the rising edge isn't needed, the TEMP_ALERT goes
+>>>> HIGH by itself when temperature backs to normal. But I will try to
+>>>> double check.
+>>>>
+>>> The point is that a sysfs event should be sent to userspace on both
+>>> edges, not only when an alarm is raised. But, you are correct,
+>>> IRQ_TYPE_EDGE_RISING is currently not needed since sysfs events
+>>> are not generated.
 >>
->>    WARNING: CPU: 2 PID: 7313 at block/blk-lib.c:51
->>    __blkdev_issue_discard+0x2a7/0x390
+>> Ok, thank you for the clarification.
 >>
->> Reproducer:
->>    1. ftl_format /dev/mtd0
->>    2. modprobe ftl
->>    3. mkfs.vfat /dev/ftla
->>    4. mount -odiscard /dev/ftla temp
->>    5. dd if=/dev/zero of=temp/tst bs=1M count=10 oflag=direct
->>    6. dd if=/dev/zero of=temp/tst bs=1M count=10 oflag=direct
+>>>>> Anyway, the tegra30 dts files in the upstream kernel either use
+>>>>> IRQ_TYPE_LEVEL_LOW or no interrupts for nct1008. The Nexus 7 dts file
+>>>>> in the upstream kernel has no interrupt configured (and coincidentally
+>>>>> it was you who added that entry). Where do you see IRQ_TYPE_LEVEL_HIGH ?
+>>>> I have a patch that will add the interrupt property, it's stashed
+>>>> locally for the next kernel release.
+>>>>
+>>>> IIUC, it's not only the Tegra30 dts, but all the TegraXXX boards that
+>>>> use IRQ_TYPE_LEVEL_LOW are in the same position.
+>>> I still don't see a IRQ_TYPE_LEVEL_HIGH, though.
 >>
->> Fix it by initializing rq.limits.discard_granularity if device supports
->> discard operation.
+>> Could you please clarify why you're looking for HIGH and not for LOW?
+>> The TEMP_ALERT is active-low.
 > 
-> Can you please verify that this is still needed after Christoph's
-> additional fix:
-> https://patchwork.kernel.org/project/xen-devel/patch/20210602065345.355274-10-hch@lst.de/
+> Because you stated earlier:
 > 
-Hi, Miquel,
-I can still reproduce the problem after [1] applied.
-I look through this series patches and I didn't find out 
-'rq.limits.discard_granularity' has been initialized somewhere. The 
-patchset is aming at reconstructing to avoid boilerplate code in drivers?
-So 'rq.limits.discard_granularity' still need to be initialized in 
-mtdblock driver.
+> "... cargo-culted and wrong because they use IRQ_TYPE_LEVEL_HIGH ..."
+>                                              ^^^^^^^^^^^^^^^^^^^
 
-[1] 
-https://patchwork.kernel.org/project/xen-devel/patch/20210602065345.355274-10-hch@lst.de/
-
-> 
-
+That was a typo, my bad.
