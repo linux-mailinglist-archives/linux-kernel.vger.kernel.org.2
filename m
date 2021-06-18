@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64CA43AC72E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A52E3AC745
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233081AbhFRJQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 05:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232009AbhFRJQU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 05:16:20 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9084EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:14:10 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id b37so13032390ljr.13
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:14:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fk/g4Uf4e6ndK9NTLJ4fya67I6nyHsWdWmINzLkYxxQ=;
-        b=Ej/kae+4z4muiWg6EWVSQJZ0hKf207pahpJvxNxI5rzvReNLTOakQyMu0hPKFKQapC
-         KdfIPU1/IY5qQj8piocGrYiAvwhAsKgD6Aac0EfK5OBIgHBnb0t9I5fWbElLuPl9j7uG
-         f8EsIa72iX68DlTtcVZ2ZytW6itc2zcRTL2NmByb6VBTT/40OIdIokHxEx3crUwnaeej
-         do28bIC90BwWHOqkQQANMqlKuQAUvGklT9o4LJ+nOW/mFuWiHSGCUkSA0RXj+USUl5Zu
-         gL+aEhP1YsJsUvXvI7EYMZVd4VlDwDMgbNhmdQLYBjLy9adLLvADaViX2g39cl3yZ8oY
-         AMCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fk/g4Uf4e6ndK9NTLJ4fya67I6nyHsWdWmINzLkYxxQ=;
-        b=koREirlYylikC6RzluxudQAKSAjj7RZNXZtGCLbxBBlxn4H6j31ZPp2w9wnZbRYHkt
-         o0VUGsAvaJ3PCoJOFg2neUT5VqjKYDIZ0cJa86rI/TCjdUXTup3dkI7+Ov30y30SXdeT
-         eVqvxYCnPkhb1RIto33bNkXS0j2ve3sySyO8ONpEd4a1vvx23kOeChcqOC29d9SRq0HN
-         KlExKt5r/KtltXR0EfhQtghC+g/v0KgO+2ZDEyL+rAtPIoJuzhy/tRkkOahAWpJvIu1r
-         4/ij/yEd+ws6l+jR8NX4Go0mpQm9MgnjMPg0KUsUkJI6ISEJswGLxlDf5ugmymfBRp5k
-         bmgQ==
-X-Gm-Message-State: AOAM531ZkaZYoEf/1Cz9zELX8sgbb12JiFsE6giibPQPGqvig7n/MirM
-        kQIMh4YxZEMNV9QcDvBEqKCbpxZyCQF/AtypjA8omQ==
-X-Google-Smtp-Source: ABdhPJxO5angft3VVWPEspBXdSa1jj492/Lqu/sjYy6Szkm5Bb7VcFbM7lZNp02NJxKP3yiLMp83/cpYtRf0ZvPmzDg=
-X-Received: by 2002:a2e:95d8:: with SMTP id y24mr2468745ljh.368.1624007648913;
- Fri, 18 Jun 2021 02:14:08 -0700 (PDT)
+        id S231565AbhFRJVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 05:21:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53080 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230175AbhFRJVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 05:21:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 41658613BA;
+        Fri, 18 Jun 2021 09:19:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624007943;
+        bh=d6L8De6SYFaetstLiE1nJCBZWihJ29jUVk5AQi+slLM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ii3BvH+zyZ2xJDaPeqND8gbRYSFndrh2PVsgtJDBc2/i8pDJOdR/0zMDyxiMX2LOI
+         RdgUVyreprCstrRPerKKjUrDMVC68Nu8vQG4rOBnLoV0U91DjdkajAwTotrMjA16JX
+         d+uv1e0KVbK77iNH1snIewQGkVuzOeCpH3vmtxCw=
+Date:   Fri, 18 Jun 2021 11:19:00 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     'Krzysztof Kozlowski' <krzysztof.kozlowski@canonical.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Christoph Hellwig <hch@lst.de>, Jessica Yu <jeyu@kernel.org>
+Subject: Re: [PATCH 5.4 031/184] modules: inherit TAINT_PROPRIETARY_MODULE
+Message-ID: <YMxlBCzztbWGvi/l@kroah.com>
+References: <20210510101950.200777181@linuxfoundation.org>
+ <20210510101951.249384110@linuxfoundation.org>
+ <8edc6f45-6c42-19c7-6f40-6f1a49cc685b@canonical.com>
+ <5ac70bdf2c5b440c83f12e75ca42a107@AcuMS.aculab.com>
 MIME-Version: 1.0
-References: <cover.1623326176.git.viresh.kumar@linaro.org> <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
- <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
- <YMlwTiN4Y9bK3M4Q@yoga> <8d58da79-8e54-048b-db89-8c1caaa0320f@metux.net>
-In-Reply-To: <8d58da79-8e54-048b-db89-8c1caaa0320f@metux.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 18 Jun 2021 11:13:57 +0200
-Message-ID: <CACRpkda9g5JJyroTWi4C=2+YCABhKTyxvwvo3C4zGa=+xGWWfg@mail.gmail.com>
-Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        "Alex Benn?e" <alex.bennee@linaro.org>,
-        stratos-dev@op-lists.linaro.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
-        Alistair Strachan <astrachan@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5ac70bdf2c5b440c83f12e75ca42a107@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 5:52 PM Enrico Weigelt, metux IT consult
-<lkml@metux.net> wrote:
-> On 16.06.21 05:30, Bjorn Andersson wrote:
->
-> > Combined with the virtio-i2c effort this could provide an alternative by
-> > simply tunneling the busses and GPIOs into Linux and use standard iio
-> > drivers, for cases where this suits your product requirements better.
->
-> So, you wanna use virtio as logical interface between the two CPUs ?
-> Interesting idea. Usually folks use rpmsg for those things.
+On Fri, Jun 18, 2021 at 09:07:53AM +0000, David Laight wrote:
+> From: Krzysztof Kozlowski
+> > Sent: 18 June 2021 09:57
+> > 
+> > On 10/05/2021 12:18, Greg Kroah-Hartman wrote:
+> > > From: Christoph Hellwig <hch@lst.de>
+> > >
+> > > commit 262e6ae7081df304fc625cf368d5c2cbba2bb991 upstream.
+> > >
+> > > If a TAINT_PROPRIETARY_MODULE exports symbol, inherit the taint flag
+> > > for all modules importing these symbols, and don't allow loading
+> > > symbols from TAINT_PROPRIETARY_MODULE modules if the module previously
+> > > imported gplonly symbols.  Add a anti-circumvention devices so people
+> > > don't accidentally get themselves into trouble this way.
+> > >
+> > > Comment from Greg:
+> > >   "Ah, the proven-to-be-illegal "GPL Condom" defense :)"
+> > 
+> > Patch got in to stable, so my comments are quite late, but can someone
+> > explain me - how this is a stable material? What specific, real bug that
+> > bothers people, is being fixed here? Or maybe it fixes serious issue
+> > reported by a user of distribution kernel? IOW, how does this match
+> > stable kernel rules at all?
+> > 
+> > For sure it breaks some out-of-tree modules already present and used by
+> > customers of downstream stable kernels. Therefore I wonder what is the
+> > bug fixed here, so the breakage and annoyance of stable users is justified.
+> 
+> It also doesn't stop non-gpl out-of-tree modules doing anything.
+> They just have to be reorganized with a 'base' GPL module that
+> includes wrappers for all the gplonly symbols and then all
+> the rest of the modules can be non-gpl.
 
-rpmsg is using shared memory as transport mechanism and virtio
-is providing this. rpmsg is conceptually a child of virtio: when the
-subsystem was proposed by TI Arnd noted that virtio has large
-similarities in shared memory transport and as the potential reuse
-for buffer handling etc was excellent virtio was used as
-a base for rpmsg/remoteproc work.
+Ah, the "gpl condom defense".  Love it that you somehow think that is
+acceptable (hint, it is not.)
 
-Yours,
-Linus Walleij
+That's what this patch series is supposed to be addressing and fixing,
+but someone has shown me a way around this.   I'll work on fixing that
+up in a future patch series next week.
+
+thanks,
+
+greg k-h
