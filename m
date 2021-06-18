@@ -2,100 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 813613AD133
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB583AD13E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236123AbhFRRel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 13:34:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39495 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234369AbhFRReg (ORCPT
+        id S236118AbhFRRhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 13:37:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234328AbhFRRhn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 13:34:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624037546;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=5O7zgLDKRYY6G6eiJkRemhZqC/jfLI1t6/bNmPfwOko=;
-        b=XE/OXn+xDyRNiGWdKrqx8+5iyHrPRpVgzmH1KxhOITd4GdwdsrcYZoln4hafbN6PEQdJTs
-        KglgYrgt4T/0Um5umTipQY4njk8Mfgr7kY+d4+vJrJgNDCksLVxcoSAdGuY4nEhH15aQTb
-        VXbksM5oR9TgRl6HFqIZk3n79dNi+CA=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-526-K5aJNxIoPKOuDeDHyGP4rw-1; Fri, 18 Jun 2021 13:32:24 -0400
-X-MC-Unique: K5aJNxIoPKOuDeDHyGP4rw-1
-Received: by mail-wr1-f72.google.com with SMTP id h104-20020adf90710000b029010de8455a3aso4650383wrh.12
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:32:24 -0700 (PDT)
+        Fri, 18 Jun 2021 13:37:43 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906D8C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:35:33 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so10489831otl.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:35:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fx3kAbwEvEOTX6FliobkUrTxK4zPxQiLCSVz1xbbXBA=;
+        b=Pb5TiMEuuzfemaRgrnrGCMVQCYbjCK2XpiaE5hhj4CVKa0JMMskLn8os7NeqZZ0ftd
+         Zh9/YcAO9yBKWWiocMnz93u9oap1TY4IeTuIS4edU2Br/UA8EXYdi6yhV7gD9wq4xmXv
+         q38QpDzadeA5l9yEY3+PB6QjEJAByTLL5jA8aDJ09bl48/0c60fX9g/ZElGXxRQsF8Xe
+         DFlsql9jSXzQgTr0+Oc3/O2siOlU0OvIL3eTos8D+DoUyVTVUolsozvVLFRHFsiRqqtD
+         Fwlw/CSTsW4gDFJUNpEoGPxvja7bao2xDph9g0y8hNbQs89lm009PXl8oZ9mJGJUGKtO
+         Wgug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5O7zgLDKRYY6G6eiJkRemhZqC/jfLI1t6/bNmPfwOko=;
-        b=sJmAkeZDcHIjGpIFp0+JXPHBk1qGnLWLzWKsLTT4JMZKHQn97lk4JREsKghLxhNjVZ
-         rC+8QtVI+0kQIt1FESsVtoGNL70nAr39HodXtRvS56b0Ff5PBU6QyjZToS95m8fRckYQ
-         lTyVl2F+DJpKdPi84Yfd9mxM3RggrN6o2hIAZm6p/WIjQU9P5H2qF1IoEYaen/9SBSDj
-         c6eTtQ1DgcQdowI63eicGezz4sIQT0oNEPu0StSQsQ+V+E5zMBmmkQRuxa0fADDTCmua
-         DSAuS2Fga1nIvNnmwYrx7f6R2LAmoO/6HKsdjSYPJ9hh4DGv5hnKr7nh/jnmvz8gDnb6
-         LL+w==
-X-Gm-Message-State: AOAM531sTh3QbAuz4xW45NU4MMME2fCZZNnrdGJfMI82dsJ4mVBp78yQ
-        fCj/a0TwszwBQBN5WaADymzvLwq4D/rBl0l4K6kBAbsjo9cz3MdVoLVHlfWeXFLHqlJS54tqiyV
-        0TXAuqR8/bEXU9q1x6a0zarQIZgSi5C8BUXP1BOvNE941nm5TnKWLjKWjFt5t/J1/enhbkKncHm
-        Np
-X-Received: by 2002:a05:600c:4f0c:: with SMTP id l12mr12803771wmq.123.1624037543339;
-        Fri, 18 Jun 2021 10:32:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwRIvrPVBn+hxiSRBo4hRV62VWIMYo9rMLym4XKajEoBKkDfwNAGl6mfrU8ff+PBKKWImgFeA==
-X-Received: by 2002:a05:600c:4f0c:: with SMTP id l12mr12803745wmq.123.1624037543095;
-        Fri, 18 Jun 2021 10:32:23 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id g17sm12060743wrh.72.2021.06.18.10.32.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 10:32:22 -0700 (PDT)
-To:     Michal Hocko <mhocko@suse.com>, Jim Mattson <jmattson@google.com>
-Cc:     Denis Efremov <efremov@linux.com>, joe@perches.com,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <0c00d96c46d34d69f5f459baebf3c89a507730fc.camel@perches.com>
- <20200603101131.2107303-1-efremov@linux.com>
- <CALMp9eSFkRrWLjegJ5OC7kZ4oWtZypKRDjXFQD5=tFX4YLpUgw@mail.gmail.com>
- <YMw2YeWHFsn+AFmN@dhcp22.suse.cz>
- <CALMp9eR9n6N5EB-nUEJPM=e2YtE3_tQBDHj0uP3T2dcGsutSCQ@mail.gmail.com>
- <YMzSM2WAmxpXIHhJ@dhcp22.suse.cz>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH] KVM: Use vmemdup_user()
-Message-ID: <e5db7325-90ee-aee2-413f-9c21f48b50e5@redhat.com>
-Date:   Fri, 18 Jun 2021 19:32:21 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fx3kAbwEvEOTX6FliobkUrTxK4zPxQiLCSVz1xbbXBA=;
+        b=KcYeZ1rdGIQabWBpg/zOtsfAMu3jJ3lHNYLiRexe0JuYjmcif9iKzTyajiABayayVV
+         FnlDny0Ynwx2HPeweygm8ciTmejSO2zuQ1pUcJWTZyUJCRVMdtZxt8/FodLO7PmBE7eT
+         vSNUAQJiNFCUAzYWIjYwebMtM6sjc/JJzaHyOk3GFSqGP3LAJ7uyubxr15eSf9Rqxif7
+         xpfvwDcGuIeU9sJdqzsIPzELzBn8Xc5/aDRoPPDF7WsIHNoYtGFsGPhi+fKz9BFzrWFZ
+         CISs+2lvjUILczyzB/XXbZ1HWh4eiPa5nuNeSRsX/EhywboMtYq93WfO4M2mTzTGFWT7
+         ZKww==
+X-Gm-Message-State: AOAM531WXEihUFCkjfzUm6moq6uSl1qN9RgNwhaU/AjdcKpK/fBEUpP0
+        zg4994G1Rm0YG7+YhyAo+zAJMQ==
+X-Google-Smtp-Source: ABdhPJyxsUeYYfrTVK0RT0tpr+P5j2eQ+cw+8IBJplE8eigPihuQAn8EKA/fwLFOFULo7Z7Rb1BjEg==
+X-Received: by 2002:a9d:1ad:: with SMTP id e42mr10401359ote.115.1624037732809;
+        Fri, 18 Jun 2021 10:35:32 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id v20sm1884581ooe.47.2021.06.18.10.35.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 10:35:32 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 12:35:30 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        linux-arm-msm@vger.kernel.org, bhupesh.linux@gmail.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org, agross@kernel.org,
+        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH v3 4/5] arm64: dts: qcom: pmm8155au_2: Add base dts file
+Message-ID: <YMzZYqb5UL8DIk8a@builder.lan>
+References: <20210617054548.353293-1-bhupesh.sharma@linaro.org>
+ <20210617054548.353293-5-bhupesh.sharma@linaro.org>
+ <6011130d-8ce8-420b-6e55-5d168fef0347@somainline.org>
 MIME-Version: 1.0
-In-Reply-To: <YMzSM2WAmxpXIHhJ@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6011130d-8ce8-420b-6e55-5d168fef0347@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/06/21 19:04, Michal Hocko wrote:
-> On Fri 18-06-21 09:53:53, Jim Mattson wrote:
->> In any case, these allocations *should* be accounted, shouldn't they?
+On Thu 17 Jun 17:32 CDT 2021, Konrad Dybcio wrote:
+
 > 
-> This is more of a question to maintainers. Are these objects easy to
-> request by userspace without any bounds?
+> > Add base DTS file for pmm8155au_2 along with GPIOs, power-on, rtc and vadc
+> > nodes.
+> >
+> > Cc: Mark Brown <broonie@kernel.org>
+> > Cc: Vinod Koul <vkoul@kernel.org>
+> > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> > ---
+> >  arch/arm64/boot/dts/qcom/pmm8155au_2.dtsi | 107 ++++++++++++++++++++++
+> >  1 file changed, 107 insertions(+)
+> >  create mode 100644 arch/arm64/boot/dts/qcom/pmm8155au_2.dtsi
+> >
+> > diff --git a/arch/arm64/boot/dts/qcom/pmm8155au_2.dtsi b/arch/arm64/boot/dts/qcom/pmm8155au_2.dtsi
+> > new file mode 100644
+> > index 000000000000..0c7d7a66c0b5
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/qcom/pmm8155au_2.dtsi
+> > @@ -0,0 +1,107 @@
+> > +// SPDX-License-Identifier: BSD-3-Clause
+> > +/*
+> > + * Copyright (c) 2021, Linaro Limited
+> > + */
+> > +
+> > +#include <dt-bindings/input/input.h>
+> > +#include <dt-bindings/interrupt-controller/irq.h>
+> > +#include <dt-bindings/spmi/spmi.h>
+> > +
+> > +/ {
+> > +	thermal-zones {
+> > +		pmm8155au-2-thermal {
+> > +			polling-delay-passive = <100>;
+> > +			polling-delay = <0>;
+> > +
+> > +			thermal-sensors = <&pmm8155au_2_temp>;
+> > +
+> > +			trips {
+> > +				trip0 {
+> > +					temperature = <95000>;
+> > +					hysteresis = <0>;
+> > +					type = "passive";
+> > +				};
+> > +
+> > +				trip1 {
+> > +					temperature = <115000>;
+> > +					hysteresis = <0>;
+> > +					type = "hot";
+> > +				};
+> > +
+> > +				trip2 {
+> > +					temperature = <145000>;
+> > +					hysteresis = <0>;
+> > +					type = "critical";
+> > +				};
+> > +			};
+> > +		};
+> > +	};
+> > +};
+> > +
+> > +&spmi_bus {
+> > +	pmic@4 {
+> > +		compatible = "qcom,pmm8155au", "qcom,spmi-pmic";
+> > +		reg = <0x4 SPMI_USID>;
+> > +		#address-cells = <1>;
+> > +		#size-cells = <0>;
+> > +
+> > +		power-on@800 {
+> > +			compatible = "qcom,pm8916-pon";
+> > +			reg = <0x0800>;
+> 
+> No common debounce, interrupts, bias- property or pwrkey key code?
+> 
+> Besides, (as a question to Bjorn and others) do we pad reg to 4 digits in PMIC DTs now?
+> 
 
-This particular one need not be accounted because the allocation only 
-lasts for the duration of the ioctl. The allocation below in 
-kvm_vcpu_ioctl_set_cpuid
+We want the regs to be padded to the address width to make it easier for
+humans to sort the nodes. At least for me it's easy to compare a 3-digit
+address with a 4-digit one, so I haven't felt the need to enforce it
+here.
 
-      e2 = kvmalloc_array(cpuid->nent, sizeof(*e2), GFP_KERNEL_ACCOUNT);
+But I certainly don't mind.
 
-is long term and is already accounted for.
+> 
+> 
+> > +
+> > +			status = "disabled";
+> > +		};
+> > +
+> > +		pmm8155au_2_temp: temp-alarm@2400 {
+> > +			compatible = "qcom,spmi-temp-alarm";
+> > +			reg = <0x2400>;
+> > +			interrupts = <0x4 0x24 0x0 IRQ_TYPE_EDGE_BOTH>;
+> > +			io-channels = <&pmm8155au_2_adc ADC5_DIE_TEMP>;
+> > +			io-channel-names = "thermal";
+> > +			#thermal-sensor-cells = <0>;
+> > +		};
+> > +
+> > +		pmm8155au_2_adc: adc@3100 {
+> > +			compatible = "qcom,spmi-adc5";
+> > +			reg = <0x3100>;
+> > +			#address-cells = <1>;
+> > +			#size-cells = <0>;
+> > +			#io-channel-cells = <1>;
+> > +			interrupts = <0x4 0x31 0x0 IRQ_TYPE_EDGE_RISING>;
+> > +
+> > +			ref-gnd@0 {
+> > +				reg = <ADC5_REF_GND>;
+> > +				qcom,pre-scaling = <1 1>;
+> > +				label = "ref_gnd";
+> > +			};
+> > +
+> > +			vref-1p25@1 {
+> > +				reg = <ADC5_1P25VREF>;
+> > +				qcom,pre-scaling = <1 1>;
+> > +				label = "vref_1p25";
+> > +			};
+> > +
+> > +			die-temp@6 {
+> > +				reg = <ADC5_DIE_TEMP>;
+> > +				qcom,pre-scaling = <1 1>;
+> > +				label = "die_temp";
+> > +			};
+> > +		};
+> > +
+> > +		pmm8155au_2_gpios: gpio@c000 {
+> > +			compatible = "qcom,pmm8155au-gpio";
+> > +			reg = <0xc000>;
+> > +			gpio-controller;
+> > +			#gpio-cells = <2>;
+> > +			interrupt-controller;
+> > +			#interrupt-cells = <2>;
+> > +		};
+> 
+> Don't we do gpio-ranges anymore?
+> 
 
-kvm_vcpu_ioctl_set_cpuid2 should also use kvmalloc_array and 
-GFP_KERNEL_ACCOUNT.  However, it wasn't doing so before this patch went 
-in, either.
+Yes, that is required by the binding.
 
-Paolo
+I added that and picked up the 3 patches. Thanks for reviewing Konrad,
+and thanks for the patches Bhupesh.
 
+Regards,
+Bjorn
+
+> 
+> 
+> > +	};
+> > +
+> > +	pmic@5 {
+> > +		compatible = "qcom,pmm8155au", "qcom,spmi-pmic";
+> > +		reg = <0x5 SPMI_USID>;
+> > +		#address-cells = <1>;
+> > +		#size-cells = <0>;
+> > +	};
+> > +};
+> 
+> 
+> Konrad
+> 
