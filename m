@@ -2,142 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10F583AC762
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6193AC764
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:26:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232666AbhFRJ1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 05:27:34 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:46847 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232503AbhFRJ1b (ORCPT
+        id S232634AbhFRJ2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 05:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229466AbhFRJ2f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 05:27:31 -0400
-Received: by mail-il1-f199.google.com with SMTP id y6-20020a92d0c60000b02901e82edc2af9so5594628ila.13
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:25:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=L57I4D4osym4aQVEfPJQEtSx6Z1M0n8qs6P2zclR75A=;
-        b=Ham2G3ovx/MK3OUOTVOL6B4ck569t55qzcvHkk+6RUXby54wOm3wC6AyHMInjAo/l1
-         tqyCCSCW/zBqUjGYwQboHcPkHpc/MS+VClMHwZVvRYsrx9RnUBJfwF1lvPYpXwlANxCa
-         WJTGfwM/1S02PVpO5cxVw3qgnFjz6G4Ds12TMOnF7nzaTclQCMPxAu0+2ngFMezUbSqw
-         xd/pyec815a1EE5CobQotMEblu8r84vppl9ioI+XIkFXHTDuPs4x3xXpiRVTMkwZ2WWF
-         NRpSmLkj+WpN/AexKE3rDzo4d27RF/fjCsR5/rKt9jgHQCUdZvpfY422+FaaVN+XV7b7
-         S9Kw==
-X-Gm-Message-State: AOAM533h4UxX/Whw3V8ZQWOH7aZusQZlW4Den/nSIP0yFSY4VmnQj9zp
-        km/LfLFA9S72CDqKRn6vxgReXrzxxzyUoxVVomNxMAZWc2rq
-X-Google-Smtp-Source: ABdhPJz373WPx00/kXm9ePGjCN740hlomJOmUrOytAjZHAcEPFiXF0RbvtlG5R+2PMnZTHiq51nk7GjUiTHZCZz9+Zr6kmHTGRmm
+        Fri, 18 Jun 2021 05:28:35 -0400
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C99C061574;
+        Fri, 18 Jun 2021 02:26:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=AbzJQJozHuAksHIPY0uP5ZO0V+J/doA1h3rwXkHX+i0=; b=hYZwDy0YLI3WDq4Yl6NjgUQEPq
+        5cSLM1czhhkycniPBq6r21mJ2/1Cqt2ZOSC3/Bukq43CmWvxiTpnJoeGAyi08TmxGjSAn2wuXoftT
+        bQWbN6mcPFNGgrdjwZzmkMEq5WtYnc+7qmrr6S2tRqqQ0SmJZ3VAzJv/pWW7oSouX6Yi6jHQjO74Z
+        KenuC6aTmREHmyCr/+5vpWQuDC6dQMNjW3G/LApa4erFQgi1+MEXywjM91DwnTE2RKKsmicMEnCLB
+        OFyRVscmFbxd1wAL+nW1Z2EF69O+yyUldL3jI32wwp95bGK4ctbUBKWMRH0CmmrAv/PMwXA2H/2CM
+        GhRQAN1w==;
+Received: from dsl-hkibng22-54f986-236.dhcp.inet.fi ([84.249.134.236] helo=[192.168.1.10])
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <cyndis@kapsi.fi>)
+        id 1luAla-0007Xq-L2; Fri, 18 Jun 2021 12:26:22 +0300
+Subject: Re: [PATCH] misc: sram: Only map reserved areas in Tegra SYSRAM
+To:     Mian Yousaf Kaukab <ykaukab@suse.de>,
+        Mikko Perttunen <mperttunen@nvidia.com>
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210617094804.667716-1-mperttunen@nvidia.com>
+ <20210618081811.GA81946@suse.de>
+From:   Mikko Perttunen <cyndis@kapsi.fi>
+Message-ID: <e3882a80-1bab-8216-3f9a-7f938d426d2c@kapsi.fi>
+Date:   Fri, 18 Jun 2021 12:26:21 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:8e03:: with SMTP id c3mr7006416ild.167.1624008322335;
- Fri, 18 Jun 2021 02:25:22 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 02:25:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002a48dd05c506e7cc@google.com>
-Subject: [syzbot] divide error in ath9k_htc_swba
-From:   syzbot <syzbot+90d241d7661ca2493f0b@syzkaller.appspotmail.com>
-To:     ath9k-devel@qca.qualcomm.com, davem@davemloft.net, kuba@kernel.org,
-        kvalo@codeaurora.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210618081811.GA81946@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 84.249.134.236
+X-SA-Exim-Mail-From: cyndis@kapsi.fi
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 6/18/21 11:18 AM, Mian Yousaf Kaukab wrote:
+> On Thu, Jun 17, 2021 at 12:48:04PM +0300, Mikko Perttunen wrote:
+>> On Tegra186 and later, a portion of the SYSRAM may be reserved for use
+>> by TZ. Non-TZ memory accesses to this portion, including speculative
+>> accesses, trigger SErrors that bring down the system. This does also
+>> happen in practice occasionally (due to speculative accesses).
+>>
+>> To fix the issue, add a flag to the SRAM driver to only map the
+>> device tree-specified reserved areas depending on a flag set
+>> based on the compatibility string. This would not affect non-Tegra
+>> systems that rely on the entire thing being memory mapped.
+>>
+>> Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
+>> ---
+>>   drivers/misc/sram.c | 108 +++++++++++++++++++++++++++++++-------------
+>>   drivers/misc/sram.h |   9 ++++
+>>   2 files changed, 86 insertions(+), 31 deletions(-)
+>>
+>> diff --git a/drivers/misc/sram.c b/drivers/misc/sram.c
+>> index 93638ae2753a..a27ffb3dbea8 100644
+>> --- a/drivers/misc/sram.c
+>> +++ b/drivers/misc/sram.c
+>> @@ -97,7 +97,24 @@ static int sram_add_partition(struct sram_dev *sram, struct sram_reserve *block,
+>>   	struct sram_partition *part = &sram->partition[sram->partitions];
+>>   
+>>   	mutex_init(&part->lock);
+>> -	part->base = sram->virt_base + block->start;
+>> +
+>> +	if (sram->config->map_only_reserved) {
+>> +		void *virt_base;
+>> +
+>> +		if (sram->no_memory_wc)
+>> +			virt_base = devm_ioremap_resource(sram->dev, &block->res);
+>> +		else
+>> +			virt_base = devm_ioremap_resource_wc(sram->dev, &block->res);
+>> +
+>> +		if (IS_ERR(virt_base)) {
+>> +			dev_err(sram->dev, "could not map SRAM at %pr\n", &block->res);
+>> +			return PTR_ERR(virt_base);
+>> +		}
+>> +
+>> +		part->base = virt_base;
+>> +	} else {
+>> +		part->base = sram->virt_base + block->start;
+>> +	}
+>>   
+>>   	if (block->pool) {
+>>   		ret = sram_add_pool(sram, block, start, part);
+>> @@ -198,6 +215,7 @@ static int sram_reserve_regions(struct sram_dev *sram, struct resource *res)
+>>   
+>>   		block->start = child_res.start - res->start;
+>>   		block->size = resource_size(&child_res);
+>> +		block->res = child_res;
+>>   		list_add_tail(&block->list, &reserve_list);
+>>   
+>>   		if (of_find_property(child, "export", NULL))
+>> @@ -295,15 +313,17 @@ static int sram_reserve_regions(struct sram_dev *sram, struct resource *res)
+>>   		 */
+>>   		cur_size = block->start - cur_start;
+>>   
+>> -		dev_dbg(sram->dev, "adding chunk 0x%lx-0x%lx\n",
+>> -			cur_start, cur_start + cur_size);
+>> +		if (sram->pool) {
+>> +			dev_dbg(sram->dev, "adding chunk 0x%lx-0x%lx\n",
+>> +				cur_start, cur_start + cur_size);
+>>   
+>> -		ret = gen_pool_add_virt(sram->pool,
+>> -				(unsigned long)sram->virt_base + cur_start,
+>> -				res->start + cur_start, cur_size, -1);
+>> -		if (ret < 0) {
+>> -			sram_free_partitions(sram);
+>> -			goto err_chunks;
+>> +			ret = gen_pool_add_virt(sram->pool,
+>> +					(unsigned long)sram->virt_base + cur_start,
+>> +					res->start + cur_start, cur_size, -1);
+>> +			if (ret < 0) {
+>> +				sram_free_partitions(sram);
+>> +				goto err_chunks;
+>> +			}
+>>   		}
+>>   
+>>   		/* next allocation after this reserved block */
+>> @@ -331,40 +351,66 @@ static int atmel_securam_wait(void)
+>>   					10000, 500000);
+>>   }
+>>   
+>> +static const struct sram_config default_config = {
+>> +};
+>> +
+>> +static const struct sram_config atmel_securam_config = {
+>> +	.init = atmel_securam_wait
+>> +};
+>> +
+>> +/*
+>> + * SYSRAM contains areas that are not accessible by the
+>> + * kernel, such as the first 256K that is reserved for TZ.
+>> + * Accesses to those areas (including speculative accesses)
+>> + * trigger SErrors. As such we must map only the areas of
+>> + * SYSRAM specified in the device tree.
+>> + */
+>> +static const struct sram_config tegra_sysram_config = {
+>> +	.map_only_reserved = true,
+> 
+> In case of Tegra sram base is 64K aligned and the reserved partitions
+> are 4K aligned. How this flag will work if the kernel is using 64K
+> page size?
 
-syzbot found the following issue on:
+Good point - perhaps we need to consider another approach that just 
+excludes any inaccessible areas, though I think it'll be somewhat more 
+complicated and more Tegra-specific.
 
-HEAD commit:    37fdb7c9 Merge tag 'v5.13-rc6' into usb-next
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-console output: https://syzkaller.appspot.com/x/log.txt?x=1702bbebd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e3b6ba4f6e6c6ddf
-dashboard link: https://syzkaller.appspot.com/bug?extid=90d241d7661ca2493f0b
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=113b98b8300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=134650f7d00000
+I'm going on vacation starting this evening so I'll look into this 
+afterwards.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+90d241d7661ca2493f0b@syzkaller.appspotmail.com
+Thanks,
+Mikko
 
-divide error: 0000 [#1] SMP KASAN
-CPU: 1 PID: 32 Comm: kworker/1:1 Not tainted 5.13.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: events request_firmware_work_func
-RIP: 0010:ath9k_htc_choose_bslot drivers/net/wireless/ath/ath9k/htc_drv_beacon.c:277 [inline]
-RIP: 0010:ath9k_htc_swba+0x1b2/0xc70 drivers/net/wireless/ath/ath9k/htc_drv_beacon.c:310
-Code: c0 40 84 c6 0f 85 db 09 00 00 48 8b 55 00 0f b7 c9 bd 01 00 00 00 48 0f ca 48 89 d0 c1 ea 0a 48 c1 e8 20 c1 e0 16 09 d0 31 d2 <f7> f1 8d 04 12 31 d2 f7 f1 29 c5 48 8d 83 b0 03 00 00 48 89 c7 48
-RSP: 0018:ffffc90000148dc8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff88811a0d31e0 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff8304a44a R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: ffff88810efedc0c R15: ffff88811a63c1f0
-FS:  0000000000000000(0000) GS:ffff8881f6900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020001038 CR3: 00000001081c0000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- ath9k_wmi_event_tasklet+0x2e7/0x3f0 drivers/net/wireless/ath/ath9k/wmi.c:165
- tasklet_action_common.constprop.0+0x201/0x2e0 kernel/softirq.c:784
- __do_softirq+0x1b0/0x944 kernel/softirq.c:559
- invoke_softirq kernel/softirq.c:433 [inline]
- __irq_exit_rcu kernel/softirq.c:637 [inline]
- irq_exit_rcu+0x119/0x1a0 kernel/softirq.c:649
- sysvec_apic_timer_interrupt+0x6a/0x90 arch/x86/kernel/apic/apic.c:1100
- </IRQ>
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:647
-RIP: 0010:preempt_count arch/x86/include/asm/preempt.h:27 [inline]
-RIP: 0010:check_kcov_mode kernel/kcov.c:163 [inline]
-RIP: 0010:__sanitizer_cov_trace_pc+0x0/0x60 kernel/kcov.c:197
-Code: 89 03 e9 04 fd ff ff b9 ff ff ff ff ba 08 00 00 00 4d 8b 03 48 0f bd ca 49 8b 45 00 48 63 c9 e9 64 ff ff ff 66 0f 1f 44 00 00 <65> 8b 05 b9 d5 c0 7e 89 c1 48 8b 34 24 81 e1 00 01 00 00 65 48 8b
-RSP: 0018:ffffc90000197540 EFLAGS: 00000293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff888107ff0000 RSI: ffffffff812a3455 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000000 R09: ffffffff8a8f0727
-R10: ffffffff812a344b R11: 0000000000000000 R12: ffffffff82d1e760
-R13: 0000000000000200 R14: dffffc0000000000 R15: ffffc900001975a0
- console_unlock+0x7cb/0xc20 kernel/printk/printk.c:2653
- vprintk_emit+0x20a/0x580 kernel/printk/printk.c:2174
- dev_vprintk_emit+0x36e/0x3b2 drivers/base/core.c:4553
- dev_printk_emit+0xba/0xf1 drivers/base/core.c:4564
- __dev_printk+0xcf/0xf5 drivers/base/core.c:4576
- _dev_err+0xd7/0x109 drivers/base/core.c:4619
- ath9k_init_htc_services.constprop.0.cold+0x32/0x11a drivers/net/wireless/ath/ath9k/htc_drv_init.c:220
- ath9k_htc_probe_device+0x25f/0x1e50 drivers/net/wireless/ath/ath9k/htc_drv_init.c:960
- ath9k_htc_hw_init+0x31/0x60 drivers/net/wireless/ath/ath9k/htc_hst.c:503
- ath9k_hif_usb_firmware_cb+0x274/0x530 drivers/net/wireless/ath/ath9k/hif_usb.c:1239
- request_firmware_work_func+0x12c/0x230 drivers/base/firmware_loader/main.c:1081
- process_one_work+0x98d/0x1580 kernel/workqueue.c:2276
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2422
- kthread+0x38c/0x460 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-Modules linked in:
----[ end trace 3235ce4c0fe1a3c7 ]---
-RIP: 0010:ath9k_htc_choose_bslot drivers/net/wireless/ath/ath9k/htc_drv_beacon.c:277 [inline]
-RIP: 0010:ath9k_htc_swba+0x1b2/0xc70 drivers/net/wireless/ath/ath9k/htc_drv_beacon.c:310
-Code: c0 40 84 c6 0f 85 db 09 00 00 48 8b 55 00 0f b7 c9 bd 01 00 00 00 48 0f ca 48 89 d0 c1 ea 0a 48 c1 e8 20 c1 e0 16 09 d0 31 d2 <f7> f1 8d 04 12 31 d2 f7 f1 29 c5 48 8d 83 b0 03 00 00 48 89 c7 48
-RSP: 0018:ffffc90000148dc8 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: ffff88811a0d31e0 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff8304a44a R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000000 R14: ffff88810efedc0c R15: ffff88811a63c1f0
-FS:  0000000000000000(0000) GS:ffff8881f6900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020001038 CR3: 00000001081c0000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+> 
+>> +};
+>> +
+>>   static const struct of_device_id sram_dt_ids[] = {
+>> -	{ .compatible = "mmio-sram" },
+>> -	{ .compatible = "atmel,sama5d2-securam", .data = atmel_securam_wait },
+>> +	{ .compatible = "mmio-sram", .data = &default_config },
+>> +	{ .compatible = "atmel,sama5d2-securam", .data = &atmel_securam_config },
+>> +	{ .compatible = "nvidia,tegra186-sysram", .data = &tegra_sysram_config },
+>> +	{ .compatible = "nvidia,tegra194-sysram", .data = &tegra_sysram_config },
+>>   	{}
+>>   };
+>>   
+>>   static int sram_probe(struct platform_device *pdev)
+>>   {
+>> +	const struct sram_config *config;
+>>   	struct sram_dev *sram;
+>>   	int ret;
+>>   	struct resource *res;
+>> -	int (*init_func)(void);
+>> +
+>> +	config = of_device_get_match_data(&pdev->dev);
+>>   
+>>   	sram = devm_kzalloc(&pdev->dev, sizeof(*sram), GFP_KERNEL);
+>>   	if (!sram)
+>>   		return -ENOMEM;
+>>   
+>>   	sram->dev = &pdev->dev;
+>> +	sram->no_memory_wc = of_property_read_bool(pdev->dev.of_node, "no-memory-wc");
+>> +	sram->config = config;
+>> +
+>> +	if (!config->map_only_reserved) {
+>> +		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +		if (sram->no_memory_wc)
+>> +			sram->virt_base = devm_ioremap_resource(&pdev->dev, res);
+>> +		else
+>> +			sram->virt_base = devm_ioremap_resource_wc(&pdev->dev, res);
+>> +		if (IS_ERR(sram->virt_base)) {
+>> +			dev_err(&pdev->dev, "could not map SRAM registers\n");
+>> +			return PTR_ERR(sram->virt_base);
+>> +		}
+>>   
+>> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> -	if (of_property_read_bool(pdev->dev.of_node, "no-memory-wc"))
+>> -		sram->virt_base = devm_ioremap_resource(&pdev->dev, res);
+>> -	else
+>> -		sram->virt_base = devm_ioremap_resource_wc(&pdev->dev, res);
+>> -	if (IS_ERR(sram->virt_base)) {
+>> -		dev_err(&pdev->dev, "could not map SRAM registers\n");
+>> -		return PTR_ERR(sram->virt_base);
+>> +		sram->pool = devm_gen_pool_create(sram->dev, ilog2(SRAM_GRANULARITY),
+>> +						  NUMA_NO_NODE, NULL);
+>> +		if (IS_ERR(sram->pool))
+>> +			return PTR_ERR(sram->pool);
+>>   	}
+>>   
+>> -	sram->pool = devm_gen_pool_create(sram->dev, ilog2(SRAM_GRANULARITY),
+>> -					  NUMA_NO_NODE, NULL);
+>> -	if (IS_ERR(sram->pool))
+>> -		return PTR_ERR(sram->pool);
+>> -
+>>   	sram->clk = devm_clk_get(sram->dev, NULL);
+>>   	if (IS_ERR(sram->clk))
+>>   		sram->clk = NULL;
+>> @@ -378,15 +424,15 @@ static int sram_probe(struct platform_device *pdev)
+>>   
+>>   	platform_set_drvdata(pdev, sram);
+>>   
+>> -	init_func = of_device_get_match_data(&pdev->dev);
+>> -	if (init_func) {
+>> -		ret = init_func();
+>> +	if (config->init) {
+>> +		ret = config->init();
+>>   		if (ret)
+>>   			goto err_free_partitions;
+>>   	}
+>>   
+>> -	dev_dbg(sram->dev, "SRAM pool: %zu KiB @ 0x%p\n",
+>> -		gen_pool_size(sram->pool) / 1024, sram->virt_base);
+>> +	if (sram->pool)
+>> +		dev_dbg(sram->dev, "SRAM pool: %zu KiB @ 0x%p\n",
+>> +			gen_pool_size(sram->pool) / 1024, sram->virt_base);
+>>   
+>>   	return 0;
+>>   
+>> @@ -405,7 +451,7 @@ static int sram_remove(struct platform_device *pdev)
+>>   
+>>   	sram_free_partitions(sram);
+>>   
+>> -	if (gen_pool_avail(sram->pool) < gen_pool_size(sram->pool))
+>> +	if (sram->pool && gen_pool_avail(sram->pool) < gen_pool_size(sram->pool))
+>>   		dev_err(sram->dev, "removed while SRAM allocated\n");
+>>   
+>>   	if (sram->clk)
+>> diff --git a/drivers/misc/sram.h b/drivers/misc/sram.h
+>> index 9c1d21ff7347..d2058d8c8f1d 100644
+>> --- a/drivers/misc/sram.h
+>> +++ b/drivers/misc/sram.h
+>> @@ -5,6 +5,11 @@
+>>   #ifndef __SRAM_H
+>>   #define __SRAM_H
+>>   
+>> +struct sram_config {
+>> +	int (*init)(void);
+>> +	bool map_only_reserved;
+>> +};
+>> +
+>>   struct sram_partition {
+>>   	void __iomem *base;
+>>   
+>> @@ -15,8 +20,11 @@ struct sram_partition {
+>>   };
+>>   
+>>   struct sram_dev {
+>> +	const struct sram_config *config;
+>> +
+>>   	struct device *dev;
+>>   	void __iomem *virt_base;
+>> +	bool no_memory_wc;
+>>   
+>>   	struct gen_pool *pool;
+>>   	struct clk *clk;
+>> @@ -29,6 +37,7 @@ struct sram_reserve {
+>>   	struct list_head list;
+>>   	u32 start;
+>>   	u32 size;
+>> +	struct resource res;
+>>   	bool export;
+>>   	bool pool;
+>>   	bool protect_exec;
+>> -- 
+>> 2.30.1
+> 
+> BR,
+> Yousaf
+> 
