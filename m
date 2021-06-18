@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1174E3AC3AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9923AC3A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233819AbhFRGVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 02:21:10 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:46746 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233141AbhFRGR5 (ORCPT
+        id S233543AbhFRGUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 02:20:23 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:58982 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233119AbhFRGRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 02:17:57 -0400
+        Fri, 18 Jun 2021 02:17:55 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id D60BD1FE06;
-        Fri, 18 Jun 2021 06:15:28 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 14BBE21B71;
+        Fri, 18 Jun 2021 06:15:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623996928; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1623996929; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=gSEl8JeZsPc4N7k8UmKtUhJ1wPYAFzh/UljyKTXN5ng=;
-        b=dnE3rGQgusC6UzsIbk0sBJVuuhepWX5CEILww3uB23yLVdmxrmWmlmcjuPXk95ZSVkl22k
-        ItetLvkgb5NfMv3oFefWGvuNF8YUOcQECJJgZNqJSIdpCoWJho8rz+jFmEdSlzFzX7+j+p
-        /7RdaPS440OKEBuH9eqMVF0ewYieA8c=
+        bh=+K4baIdwzbGwVzO2UC58euL9O9XT1UtzNqp38qQmGWE=;
+        b=f8PcGgXu/M1QtU56SE9vDXjiJKfKOdHf4rIzDX/xKE74lh2HGVPZ2eSd2EmSN3d9lFKvHp
+        9LOPMJRgPV5E6dVCzWJmeGB0TC1w10pU42EtbMN71XIxlGOQA/JPCWQTFkIgxWj6M4TWvt
+        MOKwXqkhTx3DCcYn3jK5LhaeEFoWPTI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623996928;
+        s=susede2_ed25519; t=1623996929;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=gSEl8JeZsPc4N7k8UmKtUhJ1wPYAFzh/UljyKTXN5ng=;
-        b=uVi0OmdSjNNCmH8xQRg+OFFsXDd2sISEuWQ5IFKrYL9qoT1LjUfe8Jr0SaTUyx4PPoRdzv
-        DRcUe9qsvJ5dXfBA==
+        bh=+K4baIdwzbGwVzO2UC58euL9O9XT1UtzNqp38qQmGWE=;
+        b=Khp9RyvMi6nLpmTORDCGRQ53KR15fkjPYKOcvMhmjf+rVZWhxaw7bC51BIHH9YNINaasFs
+        T6Tk6nAnWxgELTBw==
 Received: from localhost.localdomain (unknown [10.100.208.98])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id ABD5BA3BA6;
+        by relay2.suse.de (Postfix) with ESMTPS id E36F5A3B9F;
         Fri, 18 Jun 2021 06:15:28 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 55/70] mxser: cleanup mxser_rs_break
-Date:   Fri, 18 Jun 2021 08:15:01 +0200
-Message-Id: <20210618061516.662-56-jslaby@suse.cz>
+Subject: [PATCH 56/70] mxser: cleanup mxser_dtr_rts
+Date:   Fri, 18 Jun 2021 08:15:02 +0200
+Message-Id: <20210618061516.662-57-jslaby@suse.cz>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210618061516.662-1-jslaby@suse.cz>
 References: <20210618061516.662-1-jslaby@suse.cz>
@@ -54,39 +54,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mxser_rs_break now does all inb, outb, & or | in a single statement. The
+mxser_dtr_rts now does all inb, outb, & or | in a single statement.  The
 code is hard to follow, so make it more readable by doing one-line =
 one-statement.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/mxser.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/tty/mxser.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/tty/mxser.c b/drivers/tty/mxser.c
-index e5f8d08de8fd..5789c4343f10 100644
+index 5789c4343f10..daf820c086f4 100644
 --- a/drivers/tty/mxser.c
 +++ b/drivers/tty/mxser.c
-@@ -1553,15 +1553,17 @@ static int mxser_rs_break(struct tty_struct *tty, int break_state)
+@@ -428,14 +428,15 @@ static void mxser_dtr_rts(struct tty_port *port, int on)
  {
- 	struct mxser_port *info = tty->driver_data;
+ 	struct mxser_port *mp = container_of(port, struct mxser_port, port);
  	unsigned long flags;
-+	u8 lcr;
++	u8 mcr;
  
- 	spin_lock_irqsave(&info->slock, flags);
-+	lcr = inb(info->ioaddr + UART_LCR);
- 	if (break_state == -1)
--		outb(inb(info->ioaddr + UART_LCR) | UART_LCR_SBC,
--			info->ioaddr + UART_LCR);
-+		lcr |= UART_LCR_SBC;
+ 	spin_lock_irqsave(&mp->slock, flags);
++	mcr = inb(mp->ioaddr + UART_MCR);
+ 	if (on)
+-		outb(inb(mp->ioaddr + UART_MCR) |
+-			UART_MCR_DTR | UART_MCR_RTS, mp->ioaddr + UART_MCR);
++		mcr |= UART_MCR_DTR | UART_MCR_RTS;
  	else
--		outb(inb(info->ioaddr + UART_LCR) & ~UART_LCR_SBC,
--			info->ioaddr + UART_LCR);
-+		lcr &= ~UART_LCR_SBC;
-+	outb(lcr, info->ioaddr + UART_LCR);
- 	spin_unlock_irqrestore(&info->slock, flags);
-+
- 	return 0;
+-		outb(inb(mp->ioaddr + UART_MCR)&~(UART_MCR_DTR | UART_MCR_RTS),
+-			mp->ioaddr + UART_MCR);
++		mcr &= ~(UART_MCR_DTR | UART_MCR_RTS);
++	outb(mcr, mp->ioaddr + UART_MCR);
+ 	spin_unlock_irqrestore(&mp->slock, flags);
  }
  
 -- 
