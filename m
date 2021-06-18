@@ -2,122 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44D8E3ACC85
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D970B3ACC92
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:44:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233963AbhFRNpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:45:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36777 "EHLO
+        id S233904AbhFRNqs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:46:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44637 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233904AbhFRNp2 (ORCPT
+        by vger.kernel.org with ESMTP id S233893AbhFRNqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:45:28 -0400
+        Fri, 18 Jun 2021 09:46:40 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624023798;
+        s=mimecast20190719; t=1624023871;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/gNZOYxvHRh8WAbiF0tOQgle1Sg6oiAk/FOL9PrzSRM=;
-        b=Gl1W5TEbPphPbjyDl1Yp/1vjpdOXpZXiR9aV2SLgW3dGuZ++D4GYq4+2uMoK17xjjZoGIg
-        nPhTwv5PuZDEPMLkLseCAn34FRWgdV/gr1FVM7FQgvAmdxmFP1zleb7n1q7d3LzLy3Ugwf
-        qJ+54Y9CrPxbtZ4fFEQ3ylhMXWB43ko=
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
- [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-179-WE6if4M7N0KJfopdqQ42qw-1; Fri, 18 Jun 2021 09:43:17 -0400
-X-MC-Unique: WE6if4M7N0KJfopdqQ42qw-1
-Received: by mail-oi1-f197.google.com with SMTP id l123-20020acad4810000b02901f1fb44dca7so4859087oig.15
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:43:17 -0700 (PDT)
+        bh=TeeOPx856RlPCCZLEcV71KwWexsoQ+3mbRzQGTsGO84=;
+        b=Dk85mKqzUt1Uq7PV+32/LtUr5kqanoPDbILxtmBkbHwsyRqbfoOLOf2Y4kENbEHFfGMsdm
+        i5T+eW0tZ/qB9E6CLztmnJE9cOJy3SnZMysMPKexAJDpKwWVi13iso4D6Y+SPVoVSvUy7x
+        5nk95FrETVZWdUCGDQtc7wuqqSo82AE=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-34-ChLHSrNiNeSUjo1IXijYWg-1; Fri, 18 Jun 2021 09:44:30 -0400
+X-MC-Unique: ChLHSrNiNeSUjo1IXijYWg-1
+Received: by mail-ed1-f70.google.com with SMTP id v8-20020a0564023488b0290393873961f6so3643733edc.17
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:44:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=/gNZOYxvHRh8WAbiF0tOQgle1Sg6oiAk/FOL9PrzSRM=;
-        b=JyFdJbPpm/QLGwQ6N80CtVZ+3Zq1Urb2nUu53nH364UDYfGaLFkMwjWfSSOic2d1iw
-         RFJFm0o56DVwcMnc9quWLmAxopRrnxa9sy88ZJjR5DFOB1wDDf6uyGJ0W8Ygql9BfTW8
-         ucswi3zZ+ZoTuAGv/TsG2+mB8U3hL+ig0YHH3S/7t5W8e/hrd9eKOyrLqALRfbHudcR5
-         vZ7GI8D8PDscGs5FnQiWAhlW3zAnmHaHe++YfJaeOe6r8ilghMIhxDORZUo+Lh+TCN38
-         lbA5JlSAiaL4CjZx/hNbBfk/KIavJ1nkacIbRGV1NvrmuIgabMqgvstV4FYIx69dFzWy
-         OcNw==
-X-Gm-Message-State: AOAM532ssFJ4dNUZCFUUG+Fhasc73VcHdYfuzzVBZ5N4DOcCFWnOGgWi
-        eB1CYNLs+u/LHApjHpwkQTD/uZZvOdZvE/r7TfcA7M6JEXxnKhaQCipNL6aB6h409ReWxWkbC4b
-        q0Cq0zjc4xGQYzvjPFoJ9wDo34gRJxHcciFBymcvM9/6ABXLevVSFRuezvaPEJErsh+rVZ+A=
-X-Received: by 2002:aca:ac02:: with SMTP id v2mr15154530oie.154.1624023796493;
-        Fri, 18 Jun 2021 06:43:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJziRuflZC5sU6xUXnHTciiKmLsXNlfJiyZE+R44W4RRLT5GaeC5ScAnNM3vfwinOxZJbgTjdA==
-X-Received: by 2002:aca:ac02:: with SMTP id v2mr15154517oie.154.1624023796250;
-        Fri, 18 Jun 2021 06:43:16 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id w11sm1786875oov.19.2021.06.18.06.43.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 06:43:15 -0700 (PDT)
-Subject: Re: [PATCH 1/1] bug: mark generic BUG() as unreachable
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210617214328.3501174-1-trix@redhat.com>
- <20210617214328.3501174-3-trix@redhat.com>
- <CAK8P3a14uKvDZ4OevR5z2+AJervkepDcPjGWwstTo5antbQyXA@mail.gmail.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <312e5b85-bfa5-e7f1-c1f7-a13a5d2583b8@redhat.com>
-Date:   Fri, 18 Jun 2021 06:43:13 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=TeeOPx856RlPCCZLEcV71KwWexsoQ+3mbRzQGTsGO84=;
+        b=H2Pk2b//CYtCXvQIprl9CyZTw9TQ14U5PVB1CnCxFMupRPkvCEv3tYXL2Sw3dRinO7
+         gLzU9KCSsc6LSYt0QUV2Wx7SaPsUxCDU2OvPdVBiUWsZiGxn7bGKu2VeDE6qm9JarsLo
+         6lePHXNu/TJeEEStwnJhtMnpNIGvzDI4tivROLwsh1oK/a79m6YpmiaSCJZZh51QHDLk
+         ZWz+KEMdmaN+klKmpMDSIvN1/LSD0oaeJ/2ilOD5O5HfEPA9xHLRlnuySTahsEAoKSb4
+         qkj3Klr75KzkXBHg1jKJRpEXwVeybEsrZEq/fAc37UG3xEh3clX0hEuSL9TzNXUlLrA5
+         9kRA==
+X-Gm-Message-State: AOAM532mFvfyeih+8RX8S3WLhF4TmYdjZ5gidCBITQt215cZJgiQ9kEG
+        1WvyFQMbjyt/F97pfb+ABys8aGHeS02D7KXhCJc/GfChPwpcQTVVDccwp71zsFZLkiFWQufwvcq
+        SGnTjiKtSvg9ox/NTSc7KgCoM
+X-Received: by 2002:a50:f9ca:: with SMTP id a10mr4968350edq.97.1624023869087;
+        Fri, 18 Jun 2021 06:44:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxed23QNl/805EiXhmOAG6oexUgIRvZQQb5iyy1GRaDuHzCwPRNJIeHvrbdksWmSIWzP5h7iQ==
+X-Received: by 2002:a50:f9ca:: with SMTP id a10mr4968330edq.97.1624023868927;
+        Fri, 18 Jun 2021 06:44:28 -0700 (PDT)
+Received: from steredhat.lan ([5.170.130.11])
+        by smtp.gmail.com with ESMTPSA id da28sm1414842edb.0.2021.06.18.06.44.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 06:44:28 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 15:44:23 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        oxffffaa@gmail.com
+Subject: Re: [PATCH v11 11/18] virtio/vsock: dequeue callback for
+ SOCK_SEQPACKET
+Message-ID: <20210618134423.mksgnbmchmow4sgh@steredhat.lan>
+References: <20210611110744.3650456-1-arseny.krasnov@kaspersky.com>
+ <20210611111241.3652274-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a14uKvDZ4OevR5z2+AJervkepDcPjGWwstTo5antbQyXA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210611111241.3652274-1-arseny.krasnov@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Arseny,
+the series looks great, I have just a question below about 
+seqpacket_dequeue.
 
-On 6/18/21 1:20 AM, Arnd Bergmann wrote:
-> On Thu, Jun 17, 2021 at 11:44 PM <trix@redhat.com> wrote:
->> From: Tom Rix <trix@redhat.com>
->>
->> This spurious error is reported for powerpc64, CONFIG_BUG=n
->>
->> diff --git a/include/asm-generic/bug.h b/include/asm-generic/bug.h
->> index f152b9bb916fc..b250e06d7de26 100644
->> --- a/include/asm-generic/bug.h
->> +++ b/include/asm-generic/bug.h
->> @@ -177,7 +177,10 @@ void __warn(const char *file, int line, void *caller, unsigned taint,
->>
->>   #else /* !CONFIG_BUG */
->>   #ifndef HAVE_ARCH_BUG
->> -#define BUG() do {} while (1)
->> +#define BUG() do {                                             \
->> +               do {} while (1);                                \
->> +               unreachable();                                  \
->> +       } while (0)
->>   #endif
-> Please let's not go back to this version, we had good reasons to use
-> the infinite loop,
-> mostly to avoid undefined behavior that would lead to the compiler producing
-> completely random output in code paths that lead to a BUG() statement. Those
-> do cause other kinds of warnings from objtool and from other compilers.
+I also sent a couple a simple fixes, it would be great if you can review 
+them: 
+https://lore.kernel.org/netdev/20210618133526.300347-1-sgarzare@redhat.com/
+
+
+On Fri, Jun 11, 2021 at 02:12:38PM +0300, Arseny Krasnov wrote:
+>Callback fetches RW packets from rx queue of socket until whole record
+>is copied(if user's buffer is full, user is not woken up). This is done
+>to not stall sender, because if we wake up user and it leaves syscall,
+>nobody will send credit update for rest of record, and sender will wait
+>for next enter of read syscall at receiver's side. So if user buffer is
+>full, we just send credit update and drop data.
 >
-> The obvious workaround here would be to add a return statement locally, but
-> it may also help to figure out what exactly triggers the warning, as I don't see
-> it in my randconfig builds and it may be that there is a bug elsewhere.
+>Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>---
+> v10 -> v11:
+> 1) 'msg_count' field added to count current number of EORs.
+> 2) 'msg_ready' argument removed from callback.
+> 3) If 'memcpy_to_msg()' failed during copy loop, there will be
+>    no next attempts to copy data, rest of record will be freed.
 >
-> I've tried a simple reproducer on https://godbolt.org/z/341P949bG that did not
-> show this warning in any of the compilers I tried. Can you try to narrow down
-> the exact compiler versions and commmand line options that produce the
-> warning? https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin/ has
-> most of the supported gcc versions in case you need those.
-
-Please follow the link in the cover letter to the original issue 
-reported for fs/afs/dir + gcc ppc64 9.x / 10.3.1
-
-Adding the return was the first, rejected solution.
-
-Tom
-
+> include/linux/virtio_vsock.h            |  5 ++
+> net/vmw_vsock/virtio_transport_common.c | 84 +++++++++++++++++++++++++
+> 2 files changed, 89 insertions(+)
 >
->        Arnd
+>diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+>index dc636b727179..1d9a302cb91d 100644
+>--- a/include/linux/virtio_vsock.h
+>+++ b/include/linux/virtio_vsock.h
+>@@ -36,6 +36,7 @@ struct virtio_vsock_sock {
+> 	u32 rx_bytes;
+> 	u32 buf_alloc;
+> 	struct list_head rx_queue;
+>+	u32 msg_count;
+> };
+>
+> struct virtio_vsock_pkt {
+>@@ -80,6 +81,10 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
+> 			       struct msghdr *msg,
+> 			       size_t len, int flags);
+>
+>+ssize_t
+>+virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
+>+				   struct msghdr *msg,
+>+				   int flags);
+> s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
+> s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
+>
+>diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>index ad0d34d41444..1e1df19ec164 100644
+>--- a/net/vmw_vsock/virtio_transport_common.c
+>+++ b/net/vmw_vsock/virtio_transport_common.c
+>@@ -393,6 +393,78 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+> 	return err;
+> }
+>
+>+static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
+>+						 struct msghdr *msg,
+>+						 int flags)
+>+{
+>+	struct virtio_vsock_sock *vvs = vsk->trans;
+>+	struct virtio_vsock_pkt *pkt;
+>+	int dequeued_len = 0;
+>+	size_t user_buf_len = msg_data_left(msg);
+>+	bool copy_failed = false;
+>+	bool msg_ready = false;
+>+
+>+	spin_lock_bh(&vvs->rx_lock);
+>+
+>+	if (vvs->msg_count == 0) {
+>+		spin_unlock_bh(&vvs->rx_lock);
+>+		return 0;
+>+	}
+>+
+>+	while (!msg_ready) {
+>+		pkt = list_first_entry(&vvs->rx_queue, struct virtio_vsock_pkt, list);
+>+
+>+		if (!copy_failed) {
+>+			size_t pkt_len;
+>+			size_t bytes_to_copy;
+>+
+>+			pkt_len = (size_t)le32_to_cpu(pkt->hdr.len);
+>+			bytes_to_copy = min(user_buf_len, pkt_len);
+>+
+>+			if (bytes_to_copy) {
+>+				int err;
+>+
+>+				/* sk_lock is held by caller so no one else can dequeue.
+>+				 * Unlock rx_lock since memcpy_to_msg() may sleep.
+>+				 */
+>+				spin_unlock_bh(&vvs->rx_lock);
+>+
+>+				err = memcpy_to_msg(msg, pkt->buf, bytes_to_copy);
+>+				if (err) {
+>+					/* Copy of message failed, set flag to skip
+>+					 * copy path for rest of fragments. Rest of
+>+					 * fragments will be freed without copy.
+>+					 */
+>+					copy_failed = true;
+>+					dequeued_len = err;
+
+If we fail to copy the message we will discard the entire packet.
+Is it acceptable for the user point of view, or we should leave the 
+packet in the queue and the user can retry, maybe with a different 
+buffer?
+
+Then we can remove the packets only when we successfully copied all the 
+fragments.
+
+I'm not sure make sense, maybe better to check also other 
+implementations :-)
+
+Thanks,
+Stefano
+
+>+				} else {
+>+					user_buf_len -= bytes_to_copy;
+>+				}
+>+
+>+				spin_lock_bh(&vvs->rx_lock);
+>+			}
+>+
+>+			if (dequeued_len >= 0)
+>+				dequeued_len += pkt_len;
+>+		}
+>+
+>+		if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOR) {
+>+			msg_ready = true;
+>+			vvs->msg_count--;
+>+		}
+>+
+>+		virtio_transport_dec_rx_pkt(vvs, pkt);
+>+		list_del(&pkt->list);
+>+		virtio_transport_free_pkt(pkt);
+>+	}
+>+
+>+	spin_unlock_bh(&vvs->rx_lock);
+>+
+>+	virtio_transport_send_credit_update(vsk);
+>+
+>+	return dequeued_len;
+>+}
+>+
+> ssize_t
+> virtio_transport_stream_dequeue(struct vsock_sock *vsk,
+> 				struct msghdr *msg,
+>@@ -405,6 +477,18 @@ virtio_transport_stream_dequeue(struct vsock_sock *vsk,
+> }
+> EXPORT_SYMBOL_GPL(virtio_transport_stream_dequeue);
+>
+>+ssize_t
+>+virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
+>+				   struct msghdr *msg,
+>+				   int flags)
+>+{
+>+	if (flags & MSG_PEEK)
+>+		return -EOPNOTSUPP;
+>+
+>+	return virtio_transport_seqpacket_do_dequeue(vsk, msg, flags);
+>+}
+>+EXPORT_SYMBOL_GPL(virtio_transport_seqpacket_dequeue);
+>+
+> int
+> virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
+> 			       struct msghdr *msg,
+>-- 
+>2.25.1
 >
 
