@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3048D3AD5E9
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:30:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 111FD3AD5EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234491AbhFRXcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 19:32:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54762 "EHLO
+        id S234631AbhFRXc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 19:32:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbhFRXcw (ORCPT
+        with ESMTP id S234516AbhFRXc5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 19:32:52 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46212C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:30:41 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id r190-20020a375dc70000b02903acea04c19fso7036785qkb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:30:41 -0700 (PDT)
+        Fri, 18 Jun 2021 19:32:57 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F548C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:30:46 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id o14-20020a05620a0d4eb02903a5eee61155so4804344qkl.9
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:30:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=y0FcYdQ4+KG5bqQnhMUoT4g521uUABU2kMM30IGFQqQ=;
-        b=SW5N62h7cVgnLw8sn5w9vwqcWBRPPNOtrLPwVXkkwehU/P/KI1k0v+xryMYEmvNcy7
-         eMw36xbc1aj2sSJeMQHGZgrxcQ9RYBm3u20AqmA+6uDSt32RQAQnYcU+d6U3nC0czuC9
-         YwbGbPjwt2FMq7fZNR0qZpKdkJVRW2bEIShhP5a6AxPQJNkMvIGn+po4SorZQM+vy2No
-         syGYIVbxQfS+wI7cQsfflImJKZ36CzEYr2mghd13+LUS6F6K4zje94pul+gQYkXk8/xY
-         XFLOEXPtaaiVCbbx2hX49XPYKtCPOVkU0HlmTFk7nsKts6eSL5g6qUXyR8j+NOdYhpny
-         ToNQ==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=GT5JptlSj0sw8R+tCH0fy57H3f0kVdV+hvtI1tBUIUc=;
+        b=wVvV0Fa27Lb8Z2PV4NyLQF0JST7GyFqtwIfj5zFP8Eu3Xd2dSDFul/J5JcatnGCqBp
+         WHzYKm7IJw9gZZ7RTvDfwn0Yh/hGoUEzSwjmzc1rPHCQoRrVcLOgABGbYfk5aZvmSLqd
+         nG+DOtRKevSmvJQ3bhBaNDfnFORd+r4y7b9HyNathMtcpwzOUFgidNCS4w3ATAFXgbKU
+         gZDXVkpQd8ENg99w2pJF6BpddYfpwMuwKQHAL512uKb8pUDS6IFhlddSTCYcNKf+TZl5
+         T2q8gF1TV3Ceac2665HCszeNI48gex0VE0aHX97LJYAkY3YBmJH0eVtarlXN4h2hAzG2
+         6vPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=y0FcYdQ4+KG5bqQnhMUoT4g521uUABU2kMM30IGFQqQ=;
-        b=JHeFrY2JXRnRdULKNddQrVsthlrrg7wYjxirXqolMXzCvqSFaw/h3YE3xFBZLgjUeB
-         Fj8igRAZQB5MeqTMNJIIL3z3huAXAoRXImLMpVOPk5VXHANKCO8qyGzAWjrQzaBJZ75E
-         g7CoS5u1FcTApEuG05vOeuA4hAZZEWvkwvRS7RqeCBHeEq3N/rOA0wyt9LfpZZ5s1XGL
-         FRohJ3R1UcqYaS7cap3Ecr9IPVAVk7OI8I89vVQrgKOtu40GsukL7KQYu8p/oFmM0Cyp
-         XmLWJ1FufmBPZe5W+bUEus88ygWU8Q3DRZUxqrVhw5l1gDDhVogjfYu0jEvb/RibbrJA
-         QB3A==
-X-Gm-Message-State: AOAM533s3l7yfN2xiODCNTtfmdfyiP5WKjvK8uGK/abWQSWNYWakG8YN
-        qEq/o7rvhyPD0AaoMiN9HTdFYxFkQ7cZsWX70LM=
-X-Google-Smtp-Source: ABdhPJwUcNJUliDdacWIjJcGJ4s/bKZDYhicKYKFrpo1l2tFI+YXdpDCrUpbHwLtvy9f8tnHVJilKWWWlhkTRWPiYrw=
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=GT5JptlSj0sw8R+tCH0fy57H3f0kVdV+hvtI1tBUIUc=;
+        b=Vi2xJf5mTAzAFaJe0mjHZolZWlGi7gkPEDD8OdYusMBLxmQr6aNk0KeuCynnI+54Fo
+         MnSFqkmIDbIT3FOzZFyGVWegFIDxOgcJr7tekuufdINhfc8fqZkJl1QQ3cdw3uYIEiAn
+         khr+7vZHsNBUU9Kic0Gi77+qgy6/omO5RDxBoV0tzfaNPhjOh/iVaGaBQuhOlXATqVNu
+         pKaZdbHwk3x3/HTX/DnxX3R4bT3spfe0yKYjxJWbvL/tDoY6GNtJoub+fx2GSD/8YGp0
+         VnoSqhS8jT+AAjS9ho6v2PeIEhSDiReZD835cy9Qyt30YGIGS/b+qV7knot+94mETLev
+         EEXQ==
+X-Gm-Message-State: AOAM530cV1rQbJsafeal/3w663ghut6R7GesSzk4dXJoRNKCRPlK87Wv
+        xo5muygC5u51B3Uh2Slhv8sLaoNQhI2sRltQ0Vo=
+X-Google-Smtp-Source: ABdhPJzxlJWcj8oyBsJfqxL8nOlQwZvVqBAOvLuh7YDYpvbPPeYy1z90tcGn2hRA4kY1Kr+cbeWpGFgv0DeVM1hOqr0=
 X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:7c41:e84c:8fcb:6664])
- (user=ndesaulniers job=sendgmr) by 2002:a05:6214:f0d:: with SMTP id
- gw13mr8354593qvb.34.1624059040385; Fri, 18 Jun 2021 16:30:40 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 16:30:21 -0700
-Message-Id: <20210618233023.1360185-1-ndesaulniers@google.com>
+ (user=ndesaulniers job=sendgmr) by 2002:a25:bb08:: with SMTP id
+ z8mr17100019ybg.188.1624059045337; Fri, 18 Jun 2021 16:30:45 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 16:30:22 -0700
+In-Reply-To: <20210618233023.1360185-1-ndesaulniers@google.com>
+Message-Id: <20210618233023.1360185-2-ndesaulniers@google.com>
 Mime-Version: 1.0
+References: <20210618233023.1360185-1-ndesaulniers@google.com>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH 0/2] no_profile fn attr and Kconfig for GCOV+PGO
+Subject: [PATCH 1/2] compiler_attributes.h: define __no_profile, add to noinstr
 From:   Nick Desaulniers <ndesaulniers@google.com>
 To:     Kees Cook <keescook@chromium.org>
 Cc:     Peter Zijlstra <peterz@infradead.org>,
@@ -75,27 +79,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we say noinstr, we mean noinstr.  GCOV and PGO can both instrument
-functions. Add a new function annotation __no_profile that expands to
-__attribute__((__no_profile__)) and Kconfig value
-CC_HAS_NO_PROFILE_FN_ATTR.
+noinstr implies that we would like the compiler to avoid instrumenting a
+function.  Add support for the compiler attribute no_profile to
+compiler_attributes.h, then add __no_profile to the definition of
+noinstr.
 
-Base is
-https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/log/?h=for-next/clang/pgo.
-
-Nick Desaulniers (2):
-  compiler_attributes.h: define __no_profile, add to noinstr
-  Kconfig: CC_HAS_NO_PROFILE_FN_ATTR, depend on for GCOV and PGO
-
+Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Link: https://lore.kernel.org/lkml/20210614162018.GD68749@worktop.programming.kicks-ass.net/
+Link: https://reviews.llvm.org/D104475
+Link: https://reviews.llvm.org/D104257
+Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80223
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+---
  include/linux/compiler_attributes.h | 12 ++++++++++++
  include/linux/compiler_types.h      |  2 +-
- init/Kconfig                        |  3 +++
- kernel/gcov/Kconfig                 |  1 +
- kernel/pgo/Kconfig                  |  3 ++-
- 5 files changed, 19 insertions(+), 2 deletions(-)
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
-
-base-commit: 4356bc4c0425c81e204f561acf4dd0095544a6cb
+diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
+index c043b8d2b17b..cf584a1908b3 100644
+--- a/include/linux/compiler_attributes.h
++++ b/include/linux/compiler_attributes.h
+@@ -33,6 +33,7 @@
+ # define __GCC4_has_attribute___externally_visible__  1
+ # define __GCC4_has_attribute___no_caller_saved_registers__ 0
+ # define __GCC4_has_attribute___noclone__             1
++# define __GCC4_has_attribute___no_profile            0
+ # define __GCC4_has_attribute___nonstring__           0
+ # define __GCC4_has_attribute___no_sanitize_address__ (__GNUC_MINOR__ >= 8)
+ # define __GCC4_has_attribute___no_sanitize_undefined__ (__GNUC_MINOR__ >= 9)
+@@ -237,6 +238,17 @@
+ # define __nonstring
+ #endif
+ 
++/*
++ * Optional: only supported since clang >= 13
++ *      gcc: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80223
++ *    clang: https://clang.llvm.org/docs/AttributeReference.html#no_profile
++ */
++#if __has_attribute(__no_profile__)
++# define __no_profile                  __attribute__((__no_profile__))
++#else
++# define __no_profile
++#endif
++
+ /*
+  *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-noreturn-function-attribute
+  * clang: https://clang.llvm.org/docs/AttributeReference.html#noreturn
+diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+index d29bda7f6ebd..d509169860f1 100644
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -210,7 +210,7 @@ struct ftrace_likely_data {
+ /* Section for code which can't be instrumented at all */
+ #define noinstr								\
+ 	noinline notrace __attribute((__section__(".noinstr.text")))	\
+-	__no_kcsan __no_sanitize_address
++	__no_kcsan __no_sanitize_address __no_profile
+ 
+ #endif /* __KERNEL__ */
+ 
 -- 
 2.32.0.288.g62a8d224e6-goog
 
