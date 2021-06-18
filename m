@@ -2,121 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DDC73AC6CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6EF3AC6CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233005AbhFRJJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 05:09:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50230 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230338AbhFRJJo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 05:09:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19915613C2;
-        Fri, 18 Jun 2021 09:07:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624007255;
-        bh=r167WIyDtqUGkAc4r3jGYGFCA/c0iepusDavo3Z9pq0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ldEFx8N+sT/96BqwumHyamri1jZOPXlBiTuhHhUqRUcWq0RFpmtO55sHHYW0v+s5d
-         6peS+yiGRPr52BwbAipV9h5SyfQzPjn+Pa1u7fEFxI1gn9TleP9LskF/ifaEFIyeKl
-         MB4VnxQHuqPfQayekaAA1p+8X35S5orLpyeGc2smf0QU49BcKrqXrgksEKbhic7yC9
-         7D5yA8vvBsCHdvdUApTDfX1pOZJgTwGHdDhL3+z5NaGvS+fk9E9ZeZiqXKGJsw0cti
-         Xviz2Hb7YRDAMelpf3ap3vXmDScqflqDahnLxumWQj5Fvqi0oKnSIGxRZV5v4tHtrG
-         PxtywsDPJ8mjA==
-Date:   Fri, 18 Jun 2021 12:07:32 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
-        linux-sgx@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8 5/5] selftests/sgx: Refine the test enclave to have
- storage
-Message-ID: <20210618090732.szt3bh5s7yfemewe@kernel.org>
-References: <20210610083021.392269-1-jarkko@kernel.org>
- <20210610083021.392269-5-jarkko@kernel.org>
- <b1bf69f5-e203-d69e-d15d-3fb5e98b63dd@linuxfoundation.org>
- <20210615131359.zrfvi36sjdpxghzl@kernel.org>
- <20210615131553.5y3jssldqc3sv2ge@kernel.org>
- <adcc7797-db49-4dbc-ef87-5c12ad1d6a44@linuxfoundation.org>
+        id S233114AbhFRJKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 05:10:09 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:48425 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233080AbhFRJKG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 05:10:06 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-231-kCri9fpRP8m35SUQHdVvyg-1; Fri, 18 Jun 2021 10:07:54 +0100
+X-MC-Unique: kCri9fpRP8m35SUQHdVvyg-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 18 Jun
+ 2021 10:07:53 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Fri, 18 Jun 2021 10:07:53 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Krzysztof Kozlowski' <krzysztof.kozlowski@canonical.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Christoph Hellwig <hch@lst.de>, Jessica Yu <jeyu@kernel.org>
+Subject: RE: [PATCH 5.4 031/184] modules: inherit TAINT_PROPRIETARY_MODULE
+Thread-Topic: [PATCH 5.4 031/184] modules: inherit TAINT_PROPRIETARY_MODULE
+Thread-Index: AQHXZB/50QaIqTZSLEykqrpaWct/h6sZeMHQ
+Date:   Fri, 18 Jun 2021 09:07:53 +0000
+Message-ID: <5ac70bdf2c5b440c83f12e75ca42a107@AcuMS.aculab.com>
+References: <20210510101950.200777181@linuxfoundation.org>
+ <20210510101951.249384110@linuxfoundation.org>
+ <8edc6f45-6c42-19c7-6f40-6f1a49cc685b@canonical.com>
+In-Reply-To: <8edc6f45-6c42-19c7-6f40-6f1a49cc685b@canonical.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <adcc7797-db49-4dbc-ef87-5c12ad1d6a44@linuxfoundation.org>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 03:55:25PM -0600, Shuah Khan wrote:
-> On 6/15/21 7:15 AM, Jarkko Sakkinen wrote:
-> > On Tue, Jun 15, 2021 at 04:14:02PM +0300, Jarkko Sakkinen wrote:
-> > > On Mon, Jun 14, 2021 at 02:16:15PM -0600, Shuah Khan wrote:
-> > > > On 6/10/21 2:30 AM, Jarkko Sakkinen wrote:
-> > > > > Extend the enclave to have two operations: ENCL_OP_PUT and ENCL_OP_GET.
-> > > > > ENCL_OP_PUT stores value inside the enclave address space and
-> > > > > ENCL_OP_GET reads it. The internal buffer can be later extended to be
-> > > > > variable size, and allow reclaimer tests.
-> > > > > 
-> > > > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > > > > ---
-> > > > >    tools/testing/selftests/sgx/defines.h     | 10 ++++
-> > > > >    tools/testing/selftests/sgx/main.c        | 57 ++++++++++++++++++-----
-> > > > >    tools/testing/selftests/sgx/test_encl.c   | 19 +++++++-
-> > > > >    tools/testing/selftests/sgx/test_encl.lds |  3 +-
-> > > > >    4 files changed, 74 insertions(+), 15 deletions(-)
-> > > > > 
-> > > > 
-> > > > Test output before applying the series:
-> > > > 
-> > > > TAP version 13
-> > > > 1..1
-> > > > # selftests: sgx: test_sgx
-> > > > # Unable to open /dev/sgx_enclave: No such file or directory
-> > > > # 1..0 # SKIP cannot load enclaves
-> > > > ok 1 selftests: sgx: test_sgx # SKIP
-> > > > 
-> > > > Test output after applying second patch
-> > > > 
-> > > > selftests/sgx: Migrate to kselftest harness
-> > > > 
-> > > > Output changes to the following. It doesn't look like the second
-> > > > patch adds any new tests. What is the point in running the tests
-> > > > that fail if /dev/sgx_enclave is missing.
-> > > > 
-> > > > Unfortunately this series doesn't have a cover letter that explains
-> > > > what this series is doing. I don't like the fact that the test
-> > > > output and behavior changes when migrating the test to kselftest
-> > > > harness. Shouldn't the output stay the same as in skip the tests
-> > > > if /dev/sgx_enclave fails.
-> > > 
-> > > I get what you are saying but actually I do not know how with
-> > > fixtures I can skip "the rest" when FIXTURE_SETUP() fails.
-> > > 
-> > > The reason for the output below is that with fixtures for all
-> > > tests enclave is initialized for each test case. And it kind of
-> > > makes sense because all tests start from the clean expected
-> > > state.
-> > > 
-> > > I don't how to do that with zero change in the output.
-> > > 
-> 
-> Yeah. I took a look at the FIXTURE. Doesn't look like it is possible.
-> 
-> > > The reason to do this change is to make it easy to add more tests,
-> > > and return correct status codes to the framework.
-> > 
-> > To add: everything I did I based purely to the existing kernel
-> > documentation, following the examples on how to use fixture.
-> > 
-> 
-> I will pick these up and will add a note to the last commit that
-> output changes, so test rings that run kselftest are aware of the
-> change.
-> 
-> thanks,
-> -- Shuah
+RnJvbTogS3J6eXN6dG9mIEtvemxvd3NraQ0KPiBTZW50OiAxOCBKdW5lIDIwMjEgMDk6NTcNCj4g
+DQo+IE9uIDEwLzA1LzIwMjEgMTI6MTgsIEdyZWcgS3JvYWgtSGFydG1hbiB3cm90ZToNCj4gPiBG
+cm9tOiBDaHJpc3RvcGggSGVsbHdpZyA8aGNoQGxzdC5kZT4NCj4gPg0KPiA+IGNvbW1pdCAyNjJl
+NmFlNzA4MWRmMzA0ZmM2MjVjZjM2OGQ1YzJjYmJhMmJiOTkxIHVwc3RyZWFtLg0KPiA+DQo+ID4g
+SWYgYSBUQUlOVF9QUk9QUklFVEFSWV9NT0RVTEUgZXhwb3J0cyBzeW1ib2wsIGluaGVyaXQgdGhl
+IHRhaW50IGZsYWcNCj4gPiBmb3IgYWxsIG1vZHVsZXMgaW1wb3J0aW5nIHRoZXNlIHN5bWJvbHMs
+IGFuZCBkb24ndCBhbGxvdyBsb2FkaW5nDQo+ID4gc3ltYm9scyBmcm9tIFRBSU5UX1BST1BSSUVU
+QVJZX01PRFVMRSBtb2R1bGVzIGlmIHRoZSBtb2R1bGUgcHJldmlvdXNseQ0KPiA+IGltcG9ydGVk
+IGdwbG9ubHkgc3ltYm9scy4gIEFkZCBhIGFudGktY2lyY3VtdmVudGlvbiBkZXZpY2VzIHNvIHBl
+b3BsZQ0KPiA+IGRvbid0IGFjY2lkZW50YWxseSBnZXQgdGhlbXNlbHZlcyBpbnRvIHRyb3VibGUg
+dGhpcyB3YXkuDQo+ID4NCj4gPiBDb21tZW50IGZyb20gR3JlZzoNCj4gPiAgICJBaCwgdGhlIHBy
+b3Zlbi10by1iZS1pbGxlZ2FsICJHUEwgQ29uZG9tIiBkZWZlbnNlIDopIg0KPiANCj4gUGF0Y2gg
+Z290IGluIHRvIHN0YWJsZSwgc28gbXkgY29tbWVudHMgYXJlIHF1aXRlIGxhdGUsIGJ1dCBjYW4g
+c29tZW9uZQ0KPiBleHBsYWluIG1lIC0gaG93IHRoaXMgaXMgYSBzdGFibGUgbWF0ZXJpYWw/IFdo
+YXQgc3BlY2lmaWMsIHJlYWwgYnVnIHRoYXQNCj4gYm90aGVycyBwZW9wbGUsIGlzIGJlaW5nIGZp
+eGVkIGhlcmU/IE9yIG1heWJlIGl0IGZpeGVzIHNlcmlvdXMgaXNzdWUNCj4gcmVwb3J0ZWQgYnkg
+YSB1c2VyIG9mIGRpc3RyaWJ1dGlvbiBrZXJuZWw/IElPVywgaG93IGRvZXMgdGhpcyBtYXRjaA0K
+PiBzdGFibGUga2VybmVsIHJ1bGVzIGF0IGFsbD8NCj4gDQo+IEZvciBzdXJlIGl0IGJyZWFrcyBz
+b21lIG91dC1vZi10cmVlIG1vZHVsZXMgYWxyZWFkeSBwcmVzZW50IGFuZCB1c2VkIGJ5DQo+IGN1
+c3RvbWVycyBvZiBkb3duc3RyZWFtIHN0YWJsZSBrZXJuZWxzLiBUaGVyZWZvcmUgSSB3b25kZXIg
+d2hhdCBpcyB0aGUNCj4gYnVnIGZpeGVkIGhlcmUsIHNvIHRoZSBicmVha2FnZSBhbmQgYW5ub3lh
+bmNlIG9mIHN0YWJsZSB1c2VycyBpcyBqdXN0aWZpZWQuDQoNCkl0IGFsc28gZG9lc24ndCBzdG9w
+IG5vbi1ncGwgb3V0LW9mLXRyZWUgbW9kdWxlcyBkb2luZyBhbnl0aGluZy4NClRoZXkganVzdCBo
+YXZlIHRvIGJlIHJlb3JnYW5pemVkIHdpdGggYSAnYmFzZScgR1BMIG1vZHVsZSB0aGF0DQppbmNs
+dWRlcyB3cmFwcGVycyBmb3IgYWxsIHRoZSBncGxvbmx5IHN5bWJvbHMgYW5kIHRoZW4gYWxsDQp0
+aGUgcmVzdCBvZiB0aGUgbW9kdWxlcyBjYW4gYmUgbm9uLWdwbC4NCg0KVGhpcyBtZWFucyB0aGF0
+IGRyaXZlcnMgdGhhdCB3ZXJlIG1hcmtlZCBncGwgbm8gbG9uZ2VyIG5lZWQgdG8NCmJlIGJlY2F1
+c2UgdGhleSBub3cgdXNlIHRoZSB3cmFwcGVycy4NCg0KU28gaXQgaXMganVzdCBhbiBhbm5veWFu
+Y2UuDQoNCkZvcnR1bmF0ZWx5IG91ciBtYWluIG91dC1vZi10cmVlIGRyaXZlcnMgZG9uJ3QgdXNl
+IGFueSBHUEwgYml0cw0KYXQgYWxsIC0gc28gdGhpcyBjaGFuZ2UgZG9lc24ndCBhZmZlY3Qgb3Vy
+IGN1c3RvbWVyIHJlbGVhc2VzLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExh
+a2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQs
+IFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-OK, great, thank you!
-
-/Jarkko
