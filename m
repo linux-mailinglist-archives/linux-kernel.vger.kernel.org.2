@@ -2,203 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5E23AC724
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09FA83AC728
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233218AbhFRJPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 05:15:02 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:57989 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234074AbhFRJOo (ORCPT
+        id S231923AbhFRJPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 05:15:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233092AbhFRJPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 05:14:44 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R351e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UcohVPl_1624007547;
-Received: from e18g09479.et15sqa.tbsite.net(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0UcohVPl_1624007547)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 18 Jun 2021 17:12:34 +0800
-From:   Gao Xiang <hsiangkao@linux.alibaba.com>
-To:     linux-nfs@vger.kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Gao Xiang <hsiangkao@linux.alibaba.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>
-Subject: [RFC PATCH 2/1] nfs: NFSv3: fix SGID bit dropped when inheriting ACLs
-Date:   Fri, 18 Jun 2021 17:12:25 +0800
-Message-Id: <1624007545-142045-1-git-send-email-hsiangkao@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1623990055-222609-1-git-send-email-hsiangkao@linux.alibaba.com>
-References: <1623990055-222609-1-git-send-email-hsiangkao@linux.alibaba.com>
+        Fri, 18 Jun 2021 05:15:19 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8262C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:13:08 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id k10-20020a056830168ab029044d922f6a45so672322otr.7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:13:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=naLHEsuCCs4Fcb1r5mYO3/AVmqvBmoebiHpV20smRWA=;
+        b=GHd7IR2qJU3StSL8QB47NRhFSsRGnHy4mieFnZDwqtAklNf7YBRKDvm/IGy9KBjnS1
+         eWpMhv4Sg51xeG4ZfRuiPbZXWh2KWgD/LetEgJ0ZwB8NBngmTRHyiGkntSfaHEZAMRwe
+         sqzEQ6yR0Zn4RU38m44TBbeJhAdr2ERNYV3BI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=naLHEsuCCs4Fcb1r5mYO3/AVmqvBmoebiHpV20smRWA=;
+        b=ekHrWUqCHjEueYAWHkeVMZ0deF9kpwAuHN1W+rSz9HCDpF8VPpkIG8jkWfmp8NwEaU
+         Mr7oujmR1t/ierUEd4Ks8VrVUacEETK/Yo4so2dLs1JORPSQPy3+mbIaA5LHT/T1/swi
+         BloDl1eB0lp8Oq9D9sTXgWLRSKG/CLW422U769paH5eYqMxMREp1HZSmhEUXRuHVK1Ek
+         OdtpEUMewlR5njKdHm1M7qzS0m4otJLW3ItS61uKMK+3nt0Hv/2zl/NAKu/wT/M9Rk+D
+         V4jBqy7PCn3Zn5c/Wkbns3yNTvVPdZySYzKcs63Cy0hw5uaC437JDjxZ4GVTkcUVJ91S
+         U1ow==
+X-Gm-Message-State: AOAM5335+eOrz7AN6MH4lXE/rVsXZzAIp5YTv1vZ+VgCnqphnRSA92vN
+        cQC5rqyHkos4VMXfTWbTG3HO7qMy7GVAZdlQcgYzzQ==
+X-Google-Smtp-Source: ABdhPJxgpitxyVtOLxsFHGCQMUCu/rZqASW5/KbUvmThXsKPZTwp9fwtH9L3/bRNWE5tLQeLoP0eBWfvljngPPaBFEo=
+X-Received: by 2002:a9d:27a4:: with SMTP id c33mr8438414otb.281.1624007588286;
+ Fri, 18 Jun 2021 02:13:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210615023645.6535-1-desmondcheongzx@gmail.com>
+ <20210615023645.6535-3-desmondcheongzx@gmail.com> <YMuCYqLafn5sGcFo@phenom.ffwll.local>
+ <c384d835-d910-5b04-e88c-a7878ce6d37d@gmail.com>
+In-Reply-To: <c384d835-d910-5b04-e88c-a7878ce6d37d@gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Fri, 18 Jun 2021 11:12:57 +0200
+Message-ID: <CAKMK7uE-3S_vOm7DsqFyvHngSTwoc5ibzt46-9FcC550Qd9+jw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] drm: Protect drm_master pointers in drm_lease.c
+To:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Dave Airlie <airlied@linux.ie>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Emil Velikov <emil.l.velikov@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-generic/444 fails with NFSv3 as shown above, "
-     QA output created by 444
-     drwxrwsr-x
-    -drwxrwsr-x
-    +drwxrwxr-x
-", which tests "SGID inheritance with default ACLs" fs regression
-and looks after the following commits:
+On Fri, Jun 18, 2021 at 5:05 AM Desmond Cheong Zhi Xi
+<desmondcheongzx@gmail.com> wrote:
+> On 18/6/21 1:12 am, Daniel Vetter wrote:
+> > On Tue, Jun 15, 2021 at 10:36:45AM +0800, Desmond Cheong Zhi Xi wrote:
+> >> This patch ensures that the device's master mutex is acquired before
+> >> accessing pointers to struct drm_master that are subsequently
+> >> dereferenced. Without the mutex, the struct drm_master may be freed
+> >> concurrently by another process calling drm_setmaster_ioctl(). This
+> >> could then lead to use-after-free errors.
+> >>
+> >> Reported-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+> >> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+> >> Reviewed-by: Emil Velikov <emil.l.velikov@gmail.com>
+> >> ---
+> >>   drivers/gpu/drm/drm_lease.c | 58 +++++++++++++++++++++++++++----------
+> >>   1 file changed, 43 insertions(+), 15 deletions(-)
+> >>
+> >> diff --git a/drivers/gpu/drm/drm_lease.c b/drivers/gpu/drm/drm_lease.c
+> >> index da4f085fc09e..3e6f689236e5 100644
+> >> --- a/drivers/gpu/drm/drm_lease.c
+> >> +++ b/drivers/gpu/drm/drm_lease.c
+> >> @@ -107,10 +107,16 @@ static bool _drm_has_leased(struct drm_master *master, int id)
+> >>    */
+> >>   bool _drm_lease_held(struct drm_file *file_priv, int id)
+> >>   {
+> >> +    bool ret;
+> >> +
+> >>      if (!file_priv || !file_priv->master)
+> >>              return true;
+> >>
+> >> -    return _drm_lease_held_master(file_priv->master, id);
+> >> +    mutex_lock(&file_priv->master->dev->master_mutex);
+> >
+> > So maybe we have a bug somewhere, and the kerneldoc isn't 100% clear, but
+> > I thought file_priv->master is invariant over the lifetime of file_priv.
+> > So we don't need a lock to check anything here.
+> >
+> > It's the drm_device->master derefence that gets us into trouble. Well also
+> > file_priv->is_owner is protected by dev->master_mutex.
+> >
+> > So I think with your previous patch all the access here in drm_lease.c is
+> > ok and already protected? Or am I missing something?
+> >
+> > Thanks, Daniel
+> >
+>
+> My thinking was that file_priv->master is invariant only if it is the
+> creator of master. If file_priv->is_master is false, then a call to
+> drm_setmaster_ioctl will invoke drm_new_set_master, which then allocates
+> a new master for file_priv, and puts the old master.
+>
+> This could be an issue in _drm_lease_held_master, because we dereference
+> master to get master->dev, master->lessor, and master->leases.
+>
+> With the same reasoning, in other parts of drm_lease.c, if there's an
+> access to drm_file->master that's subsequently dereferenced, I added a
+> lock around them.
+>
+> I could definitely be mistaken on this, so apologies if this scenario
+> doesn't arise.
 
-a3bb2d558752 ("ext4: Don't clear SGID when inheriting ACLs")
-073931017b49 ("posix_acl: Clear SGID bit when setting file permissions")
+You're right, I totally missed that setmaster can create a new master
+instance. And the kerneldoc for drm_file->master doesn't explain this
+and mention that we must hold drm_device.master_mutex while looking at
+that pointer. Can you pls do a patch which improves the documentation
+for that?
 
-commit 055ffbea0596 ("[PATCH] NFS: Fix handling of the umask when
-an NFSv3 default acl is present.") sets acls explicitly when
-when files are created in a directory that has a default ACL.
-However, after commit a3bb2d558752 and 073931017b49, SGID can be
-dropped if user is not member of the owning group with
-set_posix_acl() called.
+Now for the patch itself I'm not entirely sure what we should do.
+Leaking the dev->master_mutex into drm_lease.c just because of the
+setmaster ioctl is kinda unsightly. And we don't really care about the
+fpriv->master changing under us, we only need to make sure it doesn't
+get freed. And drm_master is refcounted already.
 
-Since underlayfs will handle ACL inheritance when creating
-files in a directory that has the default ACL and the umask is
-supposed to be ignored for such case. Therefore, I think no need
-to set acls explicitly (to avoid SGID bit cleared) but only apply
-client umask if the default ACL of the parent directory doesn't
-exist.
+So alternative solution: We add a drm_file_get_master() function which
+calls drm_master_get under the lock, and we use that instead of
+directly derefencing drm_file->master? Ofc then needs drm_master_put
+instead of mutex_unlock. Kerneldoc should then also point at this new
+function as the correct way to look at drm_file->master state.
 
-With this patch, generic/444 can pass now.
+This way it's 100% clear we're dealing with a lifetime issue and not a
+consistency issues.
 
-Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
-Cc: Anna Schumaker <anna.schumaker@netapp.com>
-Cc: Joseph Qi <joseph.qi@linux.alibaba.com>
-Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
----
+What do you think?
+-Daniel
 
-I didn't find the original discussion with Buck Huppmann <buchk@pobox.com>
-about this topic mentioned in
-https://lore.kernel.org/r/20050122203620.108564000@blunzn.suse.de/
 
-and it's just a rough thought about this issue...
+>
+> Best wishes,
+> Desmond
+>
+>
+>
 
- fs/nfs/nfs3proc.c | 43 ++++++++++++++++---------------------------
- 1 file changed, 16 insertions(+), 27 deletions(-)
 
-diff --git a/fs/nfs/nfs3proc.c b/fs/nfs/nfs3proc.c
-index 2299446b3b89..a5676be676be 100644
---- a/fs/nfs/nfs3proc.c
-+++ b/fs/nfs/nfs3proc.c
-@@ -339,7 +339,7 @@ static void nfs3_free_createdata(struct nfs3_createdata *data)
- nfs3_proc_create(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
- 		 int flags)
- {
--	struct posix_acl *default_acl, *acl;
-+	struct posix_acl *pacl;
- 	struct nfs3_createdata *data;
- 	struct dentry *d_alias;
- 	int status = -ENOMEM;
-@@ -350,6 +350,10 @@ static void nfs3_free_createdata(struct nfs3_createdata *data)
- 	if (data == NULL)
- 		goto out;
- 
-+	pacl = get_acl(dir, ACL_TYPE_DEFAULT);
-+	if (!pacl || pacl == ERR_PTR(-EOPNOTSUPP))
-+		sattr->ia_mode &= ~current_umask();
-+
- 	data->msg.rpc_proc = &nfs3_procedures[NFS3PROC_CREATE];
- 	data->arg.create.fh = NFS_FH(dir);
- 	data->arg.create.name = dentry->d_name.name;
-@@ -363,10 +367,6 @@ static void nfs3_free_createdata(struct nfs3_createdata *data)
- 		data->arg.create.verifier[1] = cpu_to_be32(current->pid);
- 	}
- 
--	status = posix_acl_create(dir, &sattr->ia_mode, &default_acl, &acl);
--	if (status)
--		goto out;
--
- 	for (;;) {
- 		d_alias = nfs3_do_create(dir, dentry, data);
- 		status = PTR_ERR_OR_ZERO(d_alias);
-@@ -416,14 +416,10 @@ static void nfs3_free_createdata(struct nfs3_createdata *data)
- 		if (status != 0)
- 			goto out_dput;
- 	}
--
--	status = nfs3_proc_setacls(d_inode(dentry), acl, default_acl);
--
- out_dput:
- 	dput(d_alias);
- out_release_acls:
--	posix_acl_release(acl);
--	posix_acl_release(default_acl);
-+	posix_acl_release(pacl);
- out:
- 	nfs3_free_createdata(data);
- 	dprintk("NFS reply create: %d\n", status);
-@@ -582,7 +578,7 @@ static void nfs3_proc_rename_rpc_prepare(struct rpc_task *task, struct nfs_renam
- static int
- nfs3_proc_mkdir(struct inode *dir, struct dentry *dentry, struct iattr *sattr)
- {
--	struct posix_acl *default_acl, *acl;
-+	struct posix_acl *pacl;
- 	struct nfs3_createdata *data;
- 	struct dentry *d_alias;
- 	int status = -ENOMEM;
-@@ -593,10 +589,9 @@ static void nfs3_proc_rename_rpc_prepare(struct rpc_task *task, struct nfs_renam
- 	if (data == NULL)
- 		goto out;
- 
--	status = posix_acl_create(dir, &sattr->ia_mode, &default_acl, &acl);
--	if (status)
--		goto out;
--
-+	pacl = get_acl(dir, ACL_TYPE_DEFAULT);
-+	if (!pacl || pacl == ERR_PTR(-EOPNOTSUPP))
-+		sattr->ia_mode &= ~current_umask();
- 	data->msg.rpc_proc = &nfs3_procedures[NFS3PROC_MKDIR];
- 	data->arg.mkdir.fh = NFS_FH(dir);
- 	data->arg.mkdir.name = dentry->d_name.name;
-@@ -612,12 +607,9 @@ static void nfs3_proc_rename_rpc_prepare(struct rpc_task *task, struct nfs_renam
- 	if (d_alias)
- 		dentry = d_alias;
- 
--	status = nfs3_proc_setacls(d_inode(dentry), acl, default_acl);
--
- 	dput(d_alias);
- out_release_acls:
--	posix_acl_release(acl);
--	posix_acl_release(default_acl);
-+	posix_acl_release(pacl);
- out:
- 	nfs3_free_createdata(data);
- 	dprintk("NFS reply mkdir: %d\n", status);
-@@ -713,7 +705,7 @@ static int nfs3_proc_readdir(struct nfs_readdir_arg *nr_arg,
- nfs3_proc_mknod(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
- 		dev_t rdev)
- {
--	struct posix_acl *default_acl, *acl;
-+	struct posix_acl *pacl;
- 	struct nfs3_createdata *data;
- 	struct dentry *d_alias;
- 	int status = -ENOMEM;
-@@ -725,9 +717,9 @@ static int nfs3_proc_readdir(struct nfs_readdir_arg *nr_arg,
- 	if (data == NULL)
- 		goto out;
- 
--	status = posix_acl_create(dir, &sattr->ia_mode, &default_acl, &acl);
--	if (status)
--		goto out;
-+	pacl = get_acl(dir, ACL_TYPE_DEFAULT);
-+	if (!pacl || pacl == ERR_PTR(-EOPNOTSUPP))
-+		sattr->ia_mode &= ~current_umask();
- 
- 	data->msg.rpc_proc = &nfs3_procedures[NFS3PROC_MKNOD];
- 	data->arg.mknod.fh = NFS_FH(dir);
-@@ -762,12 +754,9 @@ static int nfs3_proc_readdir(struct nfs_readdir_arg *nr_arg,
- 	if (d_alias)
- 		dentry = d_alias;
- 
--	status = nfs3_proc_setacls(d_inode(dentry), acl, default_acl);
--
- 	dput(d_alias);
- out_release_acls:
--	posix_acl_release(acl);
--	posix_acl_release(default_acl);
-+	posix_acl_release(pacl);
- out:
- 	nfs3_free_createdata(data);
- 	dprintk("NFS reply mknod: %d\n", status);
 -- 
-1.8.3.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
