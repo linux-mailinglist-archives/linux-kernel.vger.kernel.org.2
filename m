@@ -2,59 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792E83ABFEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 02:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B224E3ABFF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 02:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232479AbhFRAHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 20:07:10 -0400
-Received: from mga05.intel.com ([192.55.52.43]:33072 "EHLO mga05.intel.com"
+        id S233090AbhFRAIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 20:08:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229848AbhFRAHJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 20:07:09 -0400
-IronPort-SDR: Rpr08j2/ol9jx/CD0Ao1oC+O01rGTlFytqp5/Uy5+dbUg+bmbOd9L+jueSGBM97nAZ7iUrQOh5
- 6bKEhtEFXkVA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="292100794"
-X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
-   d="scan'208";a="292100794"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 17:05:00 -0700
-IronPort-SDR: FQN3PIfmCZoxvzc1kdisBfp0lxADEtXxdM3KXpZgU6Vw/Ai6SiIPg3t27pQxpsgii8ImCLt2xc
- A0AmcLOUs/YA==
-X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
-   d="scan'208";a="422039738"
-Received: from doglesby-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.209.38.109])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 17:04:57 -0700
-Message-ID: <88eb26df062c473a6bffe5a0e1299f75e6a3cb78.camel@intel.com>
-Subject: Re: [PATCH] x86/sgx: Add missing xa_destroy() when virtual EPC is
- destroyed
-From:   Kai Huang <kai.huang@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org, seanjc@google.com,
-        dave.hansen@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        Yang Zhong <yang.zhong@intel.com>
-Date:   Fri, 18 Jun 2021 12:04:55 +1200
-In-Reply-To: <YMtdWduyALHxggoP@zn.tnic>
-References: <20210615101639.291929-1-kai.huang@intel.com>
-         <20210615132001.kd6cuktq37dvoq3l@kernel.org>
-         <618b42d66a4f2087ef4c54cc50fd56d01233eab1.camel@intel.com>
-         <YMtdWduyALHxggoP@zn.tnic>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
+        id S229848AbhFRAIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 20:08:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 340EE61369;
+        Fri, 18 Jun 2021 00:06:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623974763;
+        bh=jLmwqbg1nf5vjziJwAdKMPZsBWmEUxARXi45U7jKl2w=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=OoN2DxDZHlw2Vn533AGJ/KJZmC0SXvgBWu++dM+4iIsaFCLkwjVRFRbxLOA/kysw8
+         MwZba+zARl1RnL/fZ+byxqL4SIV7PIx4OYeUzdk01K+ou7rg3tLD1x1hizXV1rqNcp
+         JrCUC8D/XkDYmlpEcjd1V/PZRJ94VnUuBfnGgfmO3E+G3wa7bIzPWiYtOhS9/taZbs
+         SBuRaHK5mpFAtB2M42WwXi8gIctLq+JegQhd2e7UCFKrcTokR4KennZSW397UTXGQc
+         MXsITysuFarlEYON3Nfqx5eegnkb3d0nZqlHcq/uXkytHXjm+JkG5ViQGYqr5dVEfu
+         liH9e7RSsefWQ==
+Subject: Re: [PATCH 4/8] membarrier: Make the post-switch-mm barrier explicit
+To:     paulmck@kernel.org
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mm@kvack.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        the arch/x86 maintainers <x86@kernel.org>
+References: <cover.1623813516.git.luto@kernel.org>
+ <f184d013a255a523116b692db4996c5db2569e86.1623813516.git.luto@kernel.org>
+ <1623816595.myt8wbkcar.astroid@bobo.none>
+ <YMmpxP+ANG5nIUcm@hirez.programming.kicks-ass.net>
+ <617cb897-58b1-8266-ecec-ef210832e927@kernel.org>
+ <1623893358.bbty474jyy.astroid@bobo.none>
+ <58b949fb-663e-4675-8592-25933a3e361c@www.fastmail.com>
+ <c3c7a1cf-1c87-42cc-b2d6-cc2df55e5b57@www.fastmail.com>
+ <20210617150214.GX4397@paulmck-ThinkPad-P17-Gen-1>
+From:   Andy Lutomirski <luto@kernel.org>
+Message-ID: <a2df9a2c-520c-55aa-dd48-a4e8fa861bde@kernel.org>
+Date:   Thu, 17 Jun 2021 17:06:02 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210617150214.GX4397@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-06-17 at 16:34 +0200, Borislav Petkov wrote:
-> On Wed, Jun 16, 2021 at 12:30:04PM +1200, Kai Huang wrote:
-> > Thanks Jarkko. I literally need to find some way to avoid such error in future :)
+On 6/17/21 8:02 AM, Paul E. McKenney wrote:
+> On Wed, Jun 16, 2021 at 10:32:15PM -0700, Andy Lutomirski wrote:
+>> I would appreciate everyone's thoughts as to whether this scheme is sane.
+>>
+>> Paul, I'm adding you for two reasons.  First, you seem to enjoy bizarre locking schemes.  Secondly, because maybe RCU could actually work here.  The basic idea is that we want to keep an mm_struct from being freed at an inopportune time.  The problem with naively using RCU is that each CPU can use one single mm_struct while in an idle extended quiescent state (but not a user extended quiescent state).  So rcu_read_lock() is right out.  If RCU could understand this concept, then maybe it could help us, but this seems a bit out of scope for RCU.
 > 
-> That way is called "integrate checkpatch.pl into your patch creation
-> workflow".
+> OK, I should look at your patch, but that will be after morning meetings.
 > 
+> On RCU and idle, much of the idle code now allows rcu_read_lock() to be
+> directly, thanks to Peter's recent work.  Any sort of interrupt or NMI
+> from idle can also use rcu_read_lock(), including the IPIs that are now
+> done directly from idle.  RCU_NONIDLE() makes RCU pay attention to the
+> code supplied as its sole argument.
+> 
+> Or is your patch really having the CPU expect a mm_struct to stick around
+> across the full idle sojourn, and without the assistance of mmgrab()
+> and mmdrop()?
 
-Thanks for suggestion. Yes I actually did the checkpatch.pl, but it didn't report typo in
-commit message.  A little bit strange.
+I really do expect it to stick around across the full idle sojourn.
+Unless RCU is more magical than I think it is, this means I can't use RCU.
 
+--Andy
