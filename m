@@ -2,124 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144943AC191
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 05:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D33483AC194
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 05:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232347AbhFRDrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 23:47:24 -0400
-Received: from mga06.intel.com ([134.134.136.31]:1077 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232110AbhFRDrW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 23:47:22 -0400
-IronPort-SDR: xeB9BVVqP7L8w1iilhdHea5kZt8NF4+oqmxT0Sj+UUx3wO/r6Db44mS/VOZgGl2TEfaMvVSYXH
- zAEjFKt8p6XA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="267636061"
-X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
-   d="scan'208";a="267636061"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 20:45:13 -0700
-IronPort-SDR: qR9+iaQdWzCsE35BjVpypOOMQpvzzJ5mIsIVy9inIGEKYhQQxoiL1om0lw6daoTJlmSyuYX5fL
- 6H74Bza6j9Ug==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
-   d="scan'208";a="485539914"
-Received: from shbuild999.sh.intel.com ([10.239.147.94])
-  by orsmga001.jf.intel.com with ESMTP; 17 Jun 2021 20:45:09 -0700
-From:   Feng Tang <feng.tang@intel.com>
-To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com,
-        Feng Tang <feng.tang@intel.com>
-Subject: [PATCH v5 -mm 6/6] mm/mempolicy: unify the create() func for bind/interleave/prefer-many policies
-Date:   Fri, 18 Jun 2021 11:44:44 +0800
-Message-Id: <1623987884-43576-7-git-send-email-feng.tang@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1623987884-43576-1-git-send-email-feng.tang@intel.com>
-References: <1623987884-43576-1-git-send-email-feng.tang@intel.com>
+        id S231217AbhFRDsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 23:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231455AbhFRDsC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 23:48:02 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24290C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:45:52 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id y4so245799pfi.9
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:45:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=D3gfKDAObxcZS4gWY0UN6lYsR+wBujiRgEXvE08JM/k=;
+        b=w6pQpx38ffbNxQxqffZYOJWP8IocJze1Hw2LnlGTADR4yQYBGEzpWlUGLmvUOvD6EP
+         0VoWFrZy2++m9UH4rvkPtJpiqjgK7c60fxkUZqV3sqAM7+Zhg+hiHARBg2nKjLpeC0gv
+         9eaE3iRMAelIHjBkpit1Alu11R2dFsPm4oo95+IlxlpDVqXQiNIvgCoBNJJItqWwX8FP
+         bkanzCt9M6TGtWH3+QyU1iF2zyU5QmhwASREQXXK2NGMmlQw2NBUc3vnp+J2bis7QUJ7
+         yPViUaI1Xj+Wdqy/oeVSH4nLrtSA5FlgN6iQq6wRDK0nlh8I14FADTCVUirtdbQx7c5L
+         I5Vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=D3gfKDAObxcZS4gWY0UN6lYsR+wBujiRgEXvE08JM/k=;
+        b=ZaF0ATqi/LGgDFzng90yBj+DY10zSK+6HRkuvfQH9PIdlm6Z44YVewGljRO/zBWfhY
+         vhPO2sDst11exp632hnZawJoyCwD3ZqSGoGh3ByMZdYObdcAqIEKEuyevMa9h0gcFguT
+         Z+JVWuJhq/PMC4wDkCf/byzOZrc3CP7fMHhWy/JySThG433ke/GVXD4Om1qjJ2XeP1IW
+         Y1Kupfa7yNli/W2Erk3G5Jk0kNN3q8hE8f7x/LjgXr7dgE9TWDzOg2a78jXlHkYp3U4F
+         sjKJeoN8CAPl6BfxE8NMAIaRdKwxS+9wexERvbFpvVTSv6w9+7YUAdHQLymLZnmrRyNF
+         qPgg==
+X-Gm-Message-State: AOAM533ea2RnfE/T16uQv3LaOv5fkcgsvRY5olqnEXElVGje8CBhnhdX
+        501V5avFq+zCVcScifANS+r4Mw==
+X-Google-Smtp-Source: ABdhPJzRWmiQooLbv5uZ+44+FIxqwu3Clpnkep9PA7KGuWsZ6OfDbHJ1VpuW0h4g20cCCqSwuWuWGA==
+X-Received: by 2002:a65:5206:: with SMTP id o6mr8038475pgp.129.1623987951683;
+        Thu, 17 Jun 2021 20:45:51 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id u73sm6652292pfc.169.2021.06.17.20.45.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 20:45:50 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 09:15:49 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ionela Voinescu <ionela.voinescu@arm.com>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-pm@vger.kernel.org, Qian Cai <quic_qiancai@quicinc.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 3/3] cpufreq: CPPC: Add support for frequency
+ invariance
+Message-ID: <20210618034549.wfz24gx4zr2jyfec@vireshk-i7>
+References: <cover.1623825725.git.viresh.kumar@linaro.org>
+ <e7e653ede3ef54acc906d2bde47a3b9a41533404.1623825725.git.viresh.kumar@linaro.org>
+ <20210616124806.GA6495@arm.com>
+ <20210617032416.r2gfp25xxvhc5t4x@vireshk-i7>
+ <20210617103415.GA29877@arm.com>
+ <20210617111936.cfjzoh6g5zvolaf5@vireshk-i7>
+ <YMs+hOKafJMu7Sfu@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMs+hOKafJMu7Sfu@hirez.programming.kicks-ass.net>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As they all do the same thing: sanity check and save nodemask info, create
-one mpol_new_nodemask() to reduce redundancy.
+On 17-06-21, 14:22, Peter Zijlstra wrote:
+> On Thu, Jun 17, 2021 at 04:49:36PM +0530, Viresh Kumar wrote:
+> > Peter: Can you help here on this ? Lemme try to explain a bit here:
+> > 
+> > We are starting an irq-work (in cppc cpufreq driver) from
+> > scheduler_tick()->arch_scale_freq_tick(). What will happen if the driver doesn't
+> > take care of CPU hotplug explicitly and make sure this work isn't queued again
+> > from the next tick.
+> > 
+> > Is it important for user to make sure it gets rid of the irq-work during hotplug
+> > here ?
+> 
+> irq-work is flushed on hotplug, see smpcfd_dying_cpu().
 
-Signed-off-by: Feng Tang <feng.tang@intel.com>
----
- mm/mempolicy.c | 24 ++++--------------------
- 1 file changed, 4 insertions(+), 20 deletions(-)
+Thanks Peter.
 
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index d90247d6a71b..e5ce5a7e8d92 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -192,7 +192,7 @@ static void mpol_relative_nodemask(nodemask_t *ret, const nodemask_t *orig,
- 	nodes_onto(*ret, tmp, *rel);
- }
- 
--static int mpol_new_interleave(struct mempolicy *pol, const nodemask_t *nodes)
-+static int mpol_new_nodemask(struct mempolicy *pol, const nodemask_t *nodes)
- {
- 	if (nodes_empty(*nodes))
- 		return -EINVAL;
-@@ -210,22 +210,6 @@ static int mpol_new_preferred(struct mempolicy *pol, const nodemask_t *nodes)
- 	return 0;
- }
- 
--static int mpol_new_preferred_many(struct mempolicy *pol, const nodemask_t *nodes)
--{
--	if (nodes_empty(*nodes))
--		return -EINVAL;
--	pol->nodes = *nodes;
--	return 0;
--}
--
--static int mpol_new_bind(struct mempolicy *pol, const nodemask_t *nodes)
--{
--	if (nodes_empty(*nodes))
--		return -EINVAL;
--	pol->nodes = *nodes;
--	return 0;
--}
--
- /*
-  * mpol_set_nodemask is called after mpol_new() to set up the nodemask, if
-  * any, for the new policy.  mpol_new() has already validated the nodes
-@@ -405,7 +389,7 @@ static const struct mempolicy_operations mpol_ops[MPOL_MAX] = {
- 		.rebind = mpol_rebind_default,
- 	},
- 	[MPOL_INTERLEAVE] = {
--		.create = mpol_new_interleave,
-+		.create = mpol_new_nodemask,
- 		.rebind = mpol_rebind_nodemask,
- 	},
- 	[MPOL_PREFERRED] = {
-@@ -413,14 +397,14 @@ static const struct mempolicy_operations mpol_ops[MPOL_MAX] = {
- 		.rebind = mpol_rebind_preferred,
- 	},
- 	[MPOL_BIND] = {
--		.create = mpol_new_bind,
-+		.create = mpol_new_nodemask,
- 		.rebind = mpol_rebind_nodemask,
- 	},
- 	[MPOL_LOCAL] = {
- 		.rebind = mpol_rebind_default,
- 	},
- 	[MPOL_PREFERRED_MANY] = {
--		.create = mpol_new_preferred_many,
-+		.create = mpol_new_nodemask,
- 		.rebind = mpol_rebind_preferred,
- 	},
- };
 -- 
-2.7.4
-
+viresh
