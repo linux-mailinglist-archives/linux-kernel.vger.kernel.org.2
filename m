@@ -2,180 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E103AC308
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 175533AC30C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232425AbhFRGEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 02:04:15 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:46965 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232250AbhFRGEN (ORCPT
+        id S232716AbhFRGFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 02:05:30 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:41697 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232250AbhFRGF2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 02:04:13 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623996125; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=diQVGTKWxVl8pROsUPH7uMBRC5qSN2k/dc63nuVFOtY=; b=tiokWvHcvuJOOUP0eCLbxaLoRPE2URQFZA1gdXKK5m5HaDtAWl0u0I4fIv/No4MWYWEy1SFF
- l7E+gJjgDBAq/pmTQpGNJgAo5eJncUshZMZih4finQH9+f/LS6ti5WkyZhvr09K7tZgIMWMk
- rV6M1NMSETI69YFF3E6FL6o14QM=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 60cc36dced59bf69cc4629ad (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Jun 2021 06:02:04
- GMT
-Sender: rnayak=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 64608C43460; Fri, 18 Jun 2021 06:02:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.50.13.151] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rnayak)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BBBFFC433F1;
-        Fri, 18 Jun 2021 06:02:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BBBFFC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
-Subject: Re: [PATCH v2 1/3] dt-bindings: power: Introduce
- 'assigned-performance-states' property
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Roja Rani Yarubandi <rojay@codeaurora.org>
-References: <1622095949-2014-1-git-send-email-rnayak@codeaurora.org>
- <1622095949-2014-2-git-send-email-rnayak@codeaurora.org>
- <CAPDyKFpc2Kh8y-=2F6kBmw74wReVP5QcYOfu1y9AguOvzTQtPg@mail.gmail.com>
-From:   Rajendra Nayak <rnayak@codeaurora.org>
-Message-ID: <4245f8c0-bafb-3c80-ff4b-8db4855f1432@codeaurora.org>
-Date:   Fri, 18 Jun 2021 11:31:58 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Fri, 18 Jun 2021 02:05:28 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 3F2BB5C0138;
+        Fri, 18 Jun 2021 02:03:19 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Fri, 18 Jun 2021 02:03:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
+        :to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=rFN1Isa+gtwR+R9fDmDDjGykid
+        10VpuGsivirIWLYTc=; b=gHnChd0AppeS/zLSfPThfZJ8XJ3JOHpVGyw76G9LgZ
+        zX7DQiFiFVR+iRxruvwLMNIu7BcaBai1LwdSz2v9JD5GQAIJ2iK+dPGKcdo+sb/D
+        7cNRZPRIRFuKFsTwtk8bLNvL+9/2EvprhyTS81vQL2CwRV9PfkOu6Q8Whd/tH4A3
+        ivf70XYcK+QD2EryLoeHIqnaPhzxCKeJBsEYCtqK5Jy59ubt4SfBSmtVV/aiWrZV
+        qF9806UiM1yINbvT5xTJ6x6ZJR1uD9Lsf0ZQcUhTb9FnGvyxERA3CrBmhnLsDxLw
+        FH4IDBBjcgvMPVqGNNz5r7Y1eM5YYb5s2L2kLfcjfxCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=rFN1Isa+gtwR+R9fD
+        mDDjGykid10VpuGsivirIWLYTc=; b=JtppSal1I0GnycNhJdo/PhzOn8h6ZFFBD
+        nLhZjKw1UqWNdhA5idN4L/11bOsJ0+2PiU0NQ74XISYwoSC0cJblfxK85O+C7xSc
+        ABryj8L28vRjI7Ytx2dKqdtUzikxn9/nJ1+Pg4L377oKx7Pr8wE1FVG+a7G0VaST
+        JdqIK6y3eJsWCcKxSlh+52aem+MPDcQ1wlExAQQHs9yQrGPetLjv/4zW4InATC4W
+        AfzBpAWuuUBoRatFo6EHf7JSgXSoYxZu6/EP3aUV5kC5SWvvAIDW0hqTSt2TLCus
+        hTzmpljlXHMjTNPwN4Wp/NMC+iEIaKmJe9z6tFGWYSgKhuWXOo5BQ==
+X-ME-Sender: <xms:JjfMYIp4o58s19lHc2EQRVdNN2OdW6XKqdJZUQkjjlcP8Ca89bekPg>
+    <xme:JjfMYOpqFOo8AvIwK9pTSZEQbE9ZN8aN1ki8r4zA5H0Spoc3IvT9k4dcQKfdXvHIx
+    yU9ibDyAZ6b9nk1SA>
+X-ME-Received: <xmr:JjfMYNMZ2HUbGkVUb5lYmyKKGbUxWBkxLYBlRahSMkkLElo-UiTXhR6wu4rxxMgMIKvCZpVEFJMJS_UHqLibAeOB9_CE1hYbPDXrtsnMtKvtwgaTw5h_3_CR>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeefvddgleelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomheptehnughrvgifucflvghffhgvrhihuceorghnughrvgifsegrjhdr
+    ihgurdgruheqnecuggftrfgrthhtvghrnhepkefhieffjeevfeevhedtieeihfefvdejle
+    dvvddthefftedujeethfeuueelfedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
+    rghmpehmrghilhhfrhhomheprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:JjfMYP78nWFeeCR1CwsUxcE5UeRLRdVpgaUP-Yof5kYo5mTZQOaB2g>
+    <xmx:JjfMYH6w_DtttQp7toWUqC4FzzbN323B46-uCLPDMu792YREYNy9Lg>
+    <xmx:JjfMYPj1NgpwO5wx15u8FZv4DbpUxAPZe4iR7oEifJ6WLbY3kAQrvg>
+    <xmx:JzfMYK3Qgsnsdc5-eSNAQo24c5QBg4DOZnDzq_Zk__c_ywESKiybuw>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 18 Jun 2021 02:03:15 -0400 (EDT)
+From:   Andrew Jeffery <andrew@aj.id.au>
+To:     joel@jms.id.au
+Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: rainier: Enable KCS channels 2 and 3
+Date:   Fri, 18 Jun 2021 15:33:05 +0930
+Message-Id: <20210618060305.4031224-1-andrew@aj.id.au>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <CAPDyKFpc2Kh8y-=2F6kBmw74wReVP5QcYOfu1y9AguOvzTQtPg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+KCS 2 and 3 are used as out-of-band signalling channels between the host
+and the BMC on the Rainier platform.
 
-On 6/15/2021 8:35 PM, Ulf Hansson wrote:
-> On Thu, 27 May 2021 at 08:13, Rajendra Nayak <rnayak@codeaurora.org> wrote:
->>
->> While most devices within power-domains which support performance states,
->> scale the performance state dynamically, some devices might want to
->> set a static/default performance state while the device is active.
->> These devices typically would also run off a fixed clock and not support
->> dynamically scaling the device's performance, also known as DVFS techniques.
->> Add a property 'assigned-performance-states' which client devices can
->> use to set this default performance state on their power-domains.
->>
->> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
-> 
-> Rajendra, I think this is ready to be re-spinned on top of the latest
-> changes for genpd that Rafael recently queued [1].
+Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+---
+ arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-Thanks Ulf, yes, I plan to re-spin these based on the recent discussions,
-re-using the existing required-opps bindings soon.
-  
-> If you would prefer me to do it, then please let me know. Otherwise I
-> will be awaiting a new version from you.
-> 
-> Kind regards
-> Uffe
-> 
-> [1]
-> https://lore.kernel.org/linux-pm/CAJZ5v0i0FD-F7tN=AJNEY5HVVTCNuciLT4hCqdoS5bgF5WdmaA@mail.gmail.com/
-> 
->> ---
->>   .../devicetree/bindings/power/power-domain.yaml    | 50 ++++++++++++++++++++++
->>   1 file changed, 50 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/power/power-domain.yaml b/Documentation/devicetree/bindings/power/power-domain.yaml
->> index aed51e9..88cebf2 100644
->> --- a/Documentation/devicetree/bindings/power/power-domain.yaml
->> +++ b/Documentation/devicetree/bindings/power/power-domain.yaml
->> @@ -66,6 +66,19 @@ properties:
->>         by the given provider should be subdomains of the domain specified
->>         by this binding.
->>
->> +  assigned-performance-states:
->> +    $ref: /schemas/types.yaml#/definitions/uint32-array
->> +    description:
->> +       Some devices might need to configure their power domains in a default
->> +       performance state while the device is active. These devices typically
->> +       would also run off a fixed clock and not support dynamically scaling the
->> +       device's performance, also known as DVFS techniques. The list of performance
->> +       state values should correspond to the list of power domains specified as part
->> +       of the power-domains property. Each cell corresponds to one power-domain.
->> +       A value of 0 can be used for power-domains with no performance state
->> +       requirement. In case the power-domains have OPP tables associated, the values
->> +       here would typically match with one of the entries in the OPP table.
->> +
->>   required:
->>     - "#power-domain-cells"
->>
->> @@ -131,3 +144,40 @@ examples:
->>               min-residency-us = <7000>;
->>           };
->>       };
->> +
->> +  - |
->> +    parent4: power-controller@12340000 {
->> +        compatible = "foo,power-controller";
->> +        reg = <0x12340000 0x1000>;
->> +        #power-domain-cells = <0>;
->> +    };
->> +
->> +    parent5: power-controller@43210000 {
->> +        compatible = "foo,power-controller";
->> +        reg = <0x43210000 0x1000>;
->> +        #power-domain-cells = <0>;
->> +        operating-points-v2 = <&power_opp_table>;
->> +
->> +        power_opp_table: opp-table {
->> +            compatible = "operating-points-v2";
->> +
->> +            power_opp_low: opp1 {
->> +                opp-level = <16>;
->> +            };
->> +
->> +            rpmpd_opp_ret: opp2 {
->> +                opp-level = <64>;
->> +            };
->> +
->> +            rpmpd_opp_svs: opp3 {
->> +                opp-level = <256>;
->> +            };
->> +        };
->> +    };
->> +
->> +    child4: consumer@12341000 {
->> +        compatible = "foo,consumer";
->> +        reg = <0x12341000 0x1000>;
->> +        power-domains = <&parent4>, <&parent5>;
->> +        assigned-performance-states = <0>, <256>;
->> +    };
->> --
->> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
->> of Code Aurora Forum, hosted by The Linux Foundation
->>
-
+diff --git a/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts b/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
+index 941c0489479a..38aad878d482 100644
+--- a/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
++++ b/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
+@@ -1780,3 +1780,14 @@ &xdma {
+ 	status = "okay";
+ 	memory-region = <&vga_memory>;
+ };
++
++&kcs2 {
++	status = "okay";
++	aspeed,lpc-io-reg = <0xca8 0xcac>;
++};
++
++&kcs3 {
++	status = "okay";
++	aspeed,lpc-io-reg = <0xca2>;
++	aspeed,lpc-interrupts = <11 IRQ_TYPE_LEVEL_LOW>;
++};
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.30.2
+
