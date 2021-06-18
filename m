@@ -2,142 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFFA83AC1C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 06:05:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D04B3AC1C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 06:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230070AbhFREHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 00:07:41 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:54915 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229816AbhFREHj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 00:07:39 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623989130; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=k4HKuaL//VdF5gQIL9VhYemVHmDBvisX1u+MgvW5TN4=; b=OaiAm464chI6fiUWd+BoMSTtK/ENZsTEPsl3nNvv0p+T3We7SZUK3ViTv12e5yen5gSmr5w+
- iWUtHMg4LuBl+pxq0KuAvwxgs5KQs4SAAqw6QAla4iQgRyvrCFFyGgOK3uvrVanAJFq6DMVR
- uX/BZ6dq3d29QY56dOCfkMgnxcE=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60cc1b6fb6ccaab753fad1d7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Jun 2021 04:05:03
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9B415C43217; Fri, 18 Jun 2021 04:05:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D7F05C433D3;
-        Fri, 18 Jun 2021 04:04:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D7F05C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     saiprakash.ranjan@codeaurora.org, vdumpa@nvidia.com
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robin.murphy@arm.com, treding@nvidia.com, will@kernel.org
-Subject: Re: [PATCH] iommu/io-pgtable-arm: Optimize partial walk flush for large scatter-gather list
-Date:   Fri, 18 Jun 2021 09:34:44 +0530
-Message-Id: <20210618040444.17270-1-saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <5eb5146ab51a8fe0b558680d479a26cd@codeaurora.org>
-References: <5eb5146ab51a8fe0b558680d479a26cd@codeaurora.org>
+        id S230197AbhFREI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 00:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229475AbhFREI4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 00:08:56 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F89C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 21:06:47 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id q16so7698842qkm.9
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 21:06:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=duXtN+rEIFsT66oIEjyKPQAJGMrxuzB/7Mw9bfLGaW8=;
+        b=lcpCNT3yBGtzwQ2knMYNuJz1k3crt5BscLfc2V9SBnPHJEK+djuDlT3kx2+VAsM1Xg
+         WPRzZt8j7UWN6gQufFqJePMxGGKX6BKIHYw8RfD1NcpEIF8q8ePQso6CFyJQIUUy4gSn
+         vZOpzF5QvO4IpAA4I0fHrvlXL+yAp8pCcsabA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=duXtN+rEIFsT66oIEjyKPQAJGMrxuzB/7Mw9bfLGaW8=;
+        b=GL+rLzyfrKoYL1o6pYbFPMGU/RFKO4p8uYx0gMGMbtrfxRXlh+lIfiZMUx2+vYJjvf
+         eZUYj15fdSAQSCiUr+rNDITDCR4/HgRPXbC5PxN3/zByZR10/tczmtGy2YzNnf6NCBmV
+         UdtdU40xqPCWbXxCVKWKC6owa1etmW38oaZEwBW1URy6hCGn8KSvn1ZkrIFtRglE75cB
+         sZ1B3VZCx+BuHbraunNEnZLaV3GBgcnMjNAU8ZmV82kr0AyD/ryXlr64yWrKLg6zJoX2
+         RL4gLqammXzeskMi5+4RqggkkzQ/NEnJF/M6LqCLTS8rhUXIQe19wHQPcz7S9TErbx7z
+         3OoQ==
+X-Gm-Message-State: AOAM5319ELF6NHKkH81r3931pMccxKlhduhlmHhEu/PL+cicJtufwSQE
+        AdoU6FKQfuDUaPZw2MTvuuCnUqdIEk2DZA==
+X-Google-Smtp-Source: ABdhPJwpv7BHyRhaWuLf6s+RAmzwuW22RQxF7vD9nUTDVsaan2eyBi0B69EoIB3PZ4fhonrAZqM/cA==
+X-Received: by 2002:a05:620a:12c3:: with SMTP id e3mr844155qkl.163.1623989206103;
+        Thu, 17 Jun 2021 21:06:46 -0700 (PDT)
+Received: from joelaf.cam.corp.google.com ([2620:15c:6:411:ba57:e854:3bf7:f7af])
+        by smtp.gmail.com with ESMTPSA id 85sm3236689qko.14.2021.06.17.21.06.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 21:06:45 -0700 (PDT)
+From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>, Josh Don <joshdon@google.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>, rostedt@goodmis.org
+Subject: [RFC] schedutil: Fix iowait boost issues for slow I/O devices
+Date:   Fri, 18 Jun 2021 00:06:39 -0400
+Message-Id: <20210618040639.3113489-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-15 17:21, Sai Prakash Ranjan wrote:
-> Hi Krishna,
-> 
-> On 2021-06-14 23:18, Krishna Reddy wrote:
->>> Right but we won't know until we profile the specific usecases or try them in
->>> generic workload to see if they affect the performance. Sure, over invalidation is
->>> a concern where multiple buffers can be mapped to same context and the cache
->>> is not usable at the time for lookup and such but we don't do it for small buffers
->>> and only for large buffers which means thousands of TLB entry mappings in
->>> which case TLBIASID is preferred (note: I mentioned the HW team
->>> recommendation to use it for anything greater than 128 TLB entries) in my
->>> earlier reply. And also note that we do this only for partial walk flush, we are not
->>> arbitrarily changing all the TLBIs to ASID based.
->>
->> Most of the heavy bw use cases does involve processing larger buffers.
->> When the physical memory is allocated dis-contiguously at page_size
->> (let's use 4KB here)
->> granularity, each aligned 2MB chunks IOVA unmap would involve
->> performing a TLBIASID
->> as 2MB is not a leaf. Essentially, It happens all the time during
->> large buffer unmaps and
->> potentially impact active traffic on other large buffers. Depending on how much
->> latency HW engines can absorb, the overflow/underflow issues for ISO
->> engines can be
->> sporadic and vendor specific.
->> Performing TLBIASID as default for all SoCs is not a safe operation.
->>
-> 
-> Ok so from what I gather from this is that its not easy to test for the
-> negative impact and you don't have data on such yet and the behaviour is
-> very vendor specific. To add on qcom impl, we have several performance
-> improvements for TLB cache invalidations in HW like wait-for-safe(for realtime
-> clients such as camera and display) and few others to allow for cache
-> lookups/updates when TLBI is in progress for the same context bank, so atleast
-> we are good here.
-> 
->>
->>> I am no camera expert but from what the camera team mentioned is that there
->>> is a thread which frees memory(large unused memory buffers) periodically which
->>> ends up taking around 100+ms and causing some camera test failures with
->>> frame drops. Parallel efforts are already being made to optimize this usage of
->>> thread but as I mentioned previously, this is *not a camera specific*, lets say
->>> someone else invokes such large unmaps, it's going to face the same issue.
->>
->> From the above, It doesn't look like the root cause of frame drops is
->> fully understood.
->> Why is 100+ms delay causing camera frame drop?  Is the same thread
->> submitting the buffers
->> to camera after unmap is complete? If not, how is the unmap latency
->> causing issue here?
->>
-> 
-> Ok since you are interested in camera usecase, I have requested for more details
-> from the camera team and will give it once they comeback. However I don't think
-> its good to have unmap latency at all and that is being addressed by this patch.
-> 
+The iowait boost code is currently broken. Following are the issues and
+possible solitions:
 
-As promised, here are some more details shared by camera team:
+Issue #1: If a CPU requests iowait boost in a cluster, another CPU can
+go ahead and decay it very quickly if it thinks there's no new request
+for the iowait boosting CPU in the meanwhile. To fix this, track when
+the iowait boost was last applied to a policy.  This happens when
+should_update_freq() returns true. I have made the code wait for at
+least 10 ticks between 2 different iowait_boost_apply() for any decay to
+happen, and made it configurable via sysctl.
 
-Mapping of a framework buffer happens at the time of process request and unmapping
-of a framework buffer happens once the buffer is available from hardware and result
-will be notified to camera framework.
- * When there is a delay in unmapping of a buffer, result notification to framework
-   will be delayed and based on pipeline delay depth, new requests from framework
-   will be delayed.
- * Camera stack uses internal buffer managers for internal and framework buffers.
-   While mapping and unmapping these managers will be accessed, so uses common lock
-   and hence is a blocking call. So unmapping delay will cause the delay for mapping
-   of a new request and leads to framedrop.
+Issue #2: If the iowait is longer than a tick, then successive iowait
+boost doubling does not happen. So I/O waiting tasks for slow devices
+never gets a boost. This is much worse if the tick rate is high since we
+use ticks to measure if no new I/O completion happened. To workaround
+this, be liberal about how many ticks should elapse before resetting the
+boost. I have chosen a conservative number of 20, and made it
+configurable via sysctl.
 
-Map and unmap happens in the camera service process context. There is no separate perf
-path to perform unmapping.
+Tested on a 6+2 ARM64 device, running dd:
+dd if=zeros of=/dev/null bs=1M count=64 iflag=direct
+Throughput improves from 180MB/s to 200MB/s (~5 percent).
 
-In Camera stack along with map/unmap delay, additional delays are due to HW. So HW should
-be able to get the requests in time from SW to avoid frame drops.
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-Thanks,
-Sai
+---
+NOTE: This RFC patch is for discussion of the issues and I am posting for
+comments. Beata and Vince are also working on an alternate solution.
+
+ include/linux/sched/sysctl.h     |  3 +++
+ kernel/sched/core.c              |  3 +++
+ kernel/sched/cpufreq_schedutil.c | 22 +++++++++++++++++++---
+ kernel/sched/sched.h             |  3 +++
+ kernel/sysctl.c                  | 14 ++++++++++++++
+ 5 files changed, 42 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
+index db2c0f34aaaf..03ac66b45406 100644
+--- a/include/linux/sched/sysctl.h
++++ b/include/linux/sched/sysctl.h
+@@ -53,6 +53,9 @@ extern int sysctl_resched_latency_warn_ms;
+ extern int sysctl_resched_latency_warn_once;
+ #endif
+ 
++extern unsigned int sysctl_iowait_reset_ticks;
++extern unsigned int sysctl_iowait_apply_ticks;
++
+ /*
+  *  control realtime throttling:
+  *
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index adea0b1e8036..e44985fb6a93 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -76,6 +76,9 @@ __read_mostly int sysctl_resched_latency_warn_once = 1;
+  */
+ const_debug unsigned int sysctl_sched_nr_migrate = 32;
+ 
++unsigned int sysctl_iowait_reset_ticks = 20;
++unsigned int sysctl_iowait_apply_ticks = 10;
++
+ /*
+  * period over which we measure -rt task CPU usage in us.
+  * default: 1s
+diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+index 4f09afd2f321..4e4e1b0aec6c 100644
+--- a/kernel/sched/cpufreq_schedutil.c
++++ b/kernel/sched/cpufreq_schedutil.c
+@@ -27,6 +27,7 @@ struct sugov_policy {
+ 	struct list_head	tunables_hook;
+ 
+ 	raw_spinlock_t		update_lock;
++	u64			last_update;
+ 	u64			last_freq_update_time;
+ 	s64			freq_update_delay_ns;
+ 	unsigned int		next_freq;
+@@ -186,9 +187,13 @@ static bool sugov_iowait_reset(struct sugov_cpu *sg_cpu, u64 time,
+ 			       bool set_iowait_boost)
+ {
+ 	s64 delta_ns = time - sg_cpu->last_update;
++	unsigned int ticks = TICK_NSEC;
++
++	if (sysctl_iowait_reset_ticks)
++		ticks = sysctl_iowait_reset_ticks * TICK_NSEC;
+ 
+-	/* Reset boost only if a tick has elapsed since last request */
+-	if (delta_ns <= TICK_NSEC)
++	/* Reset boost only if enough ticks has elapsed since last request. */
++	if (delta_ns <= ticks)
+ 		return false;
+ 
+ 	sg_cpu->iowait_boost = set_iowait_boost ? IOWAIT_BOOST_MIN : 0;
+@@ -260,6 +265,7 @@ static void sugov_iowait_boost(struct sugov_cpu *sg_cpu, u64 time,
+  */
+ static void sugov_iowait_apply(struct sugov_cpu *sg_cpu, u64 time)
+ {
++	struct sugov_policy *sg_policy = sg_cpu->sg_policy;
+ 	unsigned long boost;
+ 
+ 	/* No boost currently required */
+@@ -270,7 +276,9 @@ static void sugov_iowait_apply(struct sugov_cpu *sg_cpu, u64 time)
+ 	if (sugov_iowait_reset(sg_cpu, time, false))
+ 		return;
+ 
+-	if (!sg_cpu->iowait_boost_pending) {
++	if (!sg_cpu->iowait_boost_pending &&
++	    (!sysctl_iowait_apply_ticks ||
++	     (time - sg_policy->last_update > (sysctl_iowait_apply_ticks * TICK_NSEC)))) {
+ 		/*
+ 		 * No boost pending; reduce the boost value.
+ 		 */
+@@ -449,6 +457,14 @@ sugov_update_shared(struct update_util_data *hook, u64 time, unsigned int flags)
+ 		if (!sugov_update_next_freq(sg_policy, time, next_f))
+ 			goto unlock;
+ 
++		/*
++		 * Required for ensuring iowait decay does not happen too
++		 * quickly.  This can happen, for example, if a neighboring CPU
++		 * does a cpufreq update immediately after a CPU that just
++		 * completed I/O.
++		 */
++		sg_policy->last_update = time;
++
+ 		if (sg_policy->policy->fast_switch_enabled)
+ 			cpufreq_driver_fast_switch(sg_policy->policy, next_f);
+ 		else
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index 8f0194cee0ba..2b9c6d5091f7 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2381,6 +2381,9 @@ extern void check_preempt_curr(struct rq *rq, struct task_struct *p, int flags);
+ extern const_debug unsigned int sysctl_sched_nr_migrate;
+ extern const_debug unsigned int sysctl_sched_migration_cost;
+ 
++extern unsigned int sysctl_iowait_reset_ticks;
++extern unsigned int sysctl_iowait_apply_ticks;
++
+ #ifdef CONFIG_SCHED_HRTICK
+ 
+ /*
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 0afbfc83157a..83f9c5223ba4 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -1717,6 +1717,20 @@ static struct ctl_table kern_table[] = {
+ 		.mode		= 0644,
+ 		.proc_handler	= proc_dointvec,
+ 	},
++	{
++		.procname	= "iowait_reset_ticks",
++		.data		= &sysctl_iowait_reset_ticks,
++		.maxlen		= sizeof(unsigned int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++	},
++	{
++		.procname	= "iowait_apply_ticks",
++		.data		= &sysctl_iowait_apply_ticks,
++		.maxlen		= sizeof(unsigned int),
++		.mode		= 0644,
++		.proc_handler	= proc_dointvec,
++	},
+ #ifdef CONFIG_SCHEDSTATS
+ 	{
+ 		.procname	= "sched_schedstats",
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.32.0.288.g62a8d224e6-goog
+
