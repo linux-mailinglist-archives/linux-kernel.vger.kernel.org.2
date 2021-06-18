@@ -2,130 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D57513AD4CA
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 00:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 569853AD4D5
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 00:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234827AbhFRWH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 18:07:29 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:52906 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234821AbhFRWH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 18:07:28 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624053918; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=TASDdCAuTLzpjOUv0B88DHj8D0grvdgek7WAhCsp5F0=; b=s9uD26X3GK2nVJNQmjMmqnQ737Q2uVp6HxEs/SamDFws+Zb9eh9ap6B5aIjX9LRyun2izBf4
- dFEACJ34x8LMa684LXM/O7UTrJCYiXNuXgvBV93BWDwswMficsKj5D1Cd1zFrc8laP5diLTJ
- N0766EiiN3EHyTu+o1b0xoNlC1U=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 60cd189dea2aacd7290e0ed9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Jun 2021 22:05:17
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BD216C43460; Fri, 18 Jun 2021 22:05:17 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D7899C433F1;
-        Fri, 18 Jun 2021 22:05:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D7899C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH v2] bus: mhi: core: Add support for processing priority of event ring
-Date:   Fri, 18 Jun 2021 15:05:03 -0700
-Message-Id: <1624053903-24653-2-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1624053903-24653-1-git-send-email-bbhatt@codeaurora.org>
-References: <1624053903-24653-1-git-send-email-bbhatt@codeaurora.org>
+        id S234833AbhFRWMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 18:12:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36848 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234752AbhFRWMM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 18:12:12 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B268C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 15:10:02 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id o20so8691743qtr.8
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 15:10:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w4YiW4egPKdJECyPLrd6+VyczjYedyk/bEQ3LwbFh40=;
+        b=kmgSmV1OQ5ftiq3+FvkzWjJQjPfeXPWXuZKSvT4MZJG4eugkNddA22USVB2l1Oscfa
+         +w0Icj+IBTHRwhBa4kuvqXd97RFLazXj0fzsDSxeymKntKOlLCU+ClW68Gx8OVE4K4TR
+         qLvxc2MGZKOKgfdqWSVacIeOAPQn4TwoKY/V0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w4YiW4egPKdJECyPLrd6+VyczjYedyk/bEQ3LwbFh40=;
+        b=GeKCdpVm4rzAhC/sETQYGzZcQdiX5NiQ4uKomA4Der7gRTnBqwVxtGRlnezwijVULh
+         JCfNzDcMyRGf11emYCA/TYN1+ay41B/hxdHC5lm/K1/QGaN9IikN6Ia/jWeTQL0H+XVj
+         7G19qIf+BMwDtdxhYHZh/cfVdnNQ55dJHJAj68eGaLiyjVj7O3zcuYHZ+d3FQQIPkH3+
+         DpMM7e5VkFXpXABx4RDRjvmUhmbh/wCLzsYg22VrrBTcxpALt786b6Dn3P7Owq8biH8S
+         XPNM9w5tY1arjAyQaSDBRbiG7UJ43SPYOHrEUP8L6LvtbgKnCoNyiE4XoA23/uU4XyGq
+         vYVA==
+X-Gm-Message-State: AOAM531bw+L8DLuMKFlD84z+luV0ikdKldq+Duge9ZE7cADKXILmcL/q
+        kwVab4aPAQppa5rQxgsga3okkzrwZUqcEw==
+X-Google-Smtp-Source: ABdhPJyhRimtRN+lyOYWLDcaMaN06DzdfBdcGVXho0nHlGFk/Dui/QgNGgAi/N73suq3Te5DWuh0cg==
+X-Received: by 2002:ac8:5c12:: with SMTP id i18mr12410703qti.40.1624054201392;
+        Fri, 18 Jun 2021 15:10:01 -0700 (PDT)
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com. [209.85.222.169])
+        by smtp.gmail.com with ESMTPSA id h12sm4789598qkj.52.2021.06.18.15.10.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jun 2021 15:10:00 -0700 (PDT)
+Received: by mail-qk1-f169.google.com with SMTP id c138so14578067qkg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 15:10:00 -0700 (PDT)
+X-Received: by 2002:a25:bcb:: with SMTP id 194mr17381339ybl.32.1624054200300;
+ Fri, 18 Jun 2021 15:10:00 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1623981933.git.saiprakash.ranjan@codeaurora.org> <150fc7ab1c7f9b70a95dae1f4bc3b9018c0f9e04.1623981933.git.saiprakash.ranjan@codeaurora.org>
+In-Reply-To: <150fc7ab1c7f9b70a95dae1f4bc3b9018c0f9e04.1623981933.git.saiprakash.ranjan@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 18 Jun 2021 15:09:48 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WA_mBnxv-D3YOYUkDAAcYgktFgnw2zeTkMneqFxBg=yg@mail.gmail.com>
+Message-ID: <CAD=FV=WA_mBnxv-D3YOYUkDAAcYgktFgnw2zeTkMneqFxBg=yg@mail.gmail.com>
+Subject: Re: [PATCHv2 2/3] iommu/io-pgtable: Optimize partial walk flush for
+ large scatter-gather list
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Robin Murphy <robin.murphy@arm.com>
+Cc:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Tomasz Figa <tfiga@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hemant Kumar <hemantk@codeaurora.org>
+Hi,
 
-Event ring priorities are currently set to 1 and are unused.
-Default processing priority for event rings is set to regular
-tasklet. Controllers can choose to use high priority tasklet
-scheduling for certain event rings critical for processing such
-as ones transporting control information if they wish to avoid
-system scheduling delays for those packets. In order to support
-these use cases, allow controllers to set event ring priority to
-high.
+On Thu, Jun 17, 2021 at 7:51 PM Sai Prakash Ranjan
+<saiprakash.ranjan@codeaurora.org> wrote:
+>
+> Currently for iommu_unmap() of large scatter-gather list with page size
+> elements, the majority of time is spent in flushing of partial walks in
+> __arm_lpae_unmap() which is a VA based TLB invalidation invalidating
+> page-by-page on iommus like arm-smmu-v2 (TLBIVA) which do not support
+> range based invalidations like on arm-smmu-v3.2.
+>
+> For example: to unmap a 32MB scatter-gather list with page size elements
+> (8192 entries), there are 16->2MB buffer unmaps based on the pgsize (2MB
+> for 4K granule) and each of 2MB will further result in 512 TLBIVAs (2MB/4K)
+> resulting in a total of 8192 TLBIVAs (512*16) for 16->2MB causing a huge
+> overhead.
+>
+> So instead use tlb_flush_all() callback (TLBIALL/TLBIASID) to invalidate
+> the entire context for partial walk flush on select few platforms where
+> cost of over-invalidation is less than unmap latency
 
-Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
----
- drivers/bus/mhi/core/init.c | 3 +--
- drivers/bus/mhi/core/main.c | 9 +++++++--
- include/linux/mhi.h         | 2 +-
- 3 files changed, 9 insertions(+), 5 deletions(-)
+It would probably be worth punching this description up a little bit.
+Elsewhere you said in more detail why this over-invalidation is less
+of a big deal for the Qualcomm SMMU. It's probably worth saying
+something like that here, too. Like this bit paraphrased from your
+other email:
 
-diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-index c81b377..4446760 100644
---- a/drivers/bus/mhi/core/init.c
-+++ b/drivers/bus/mhi/core/init.c
-@@ -673,8 +673,7 @@ static int parse_ev_cfg(struct mhi_controller *mhi_cntrl,
- 				&mhi_cntrl->mhi_chan[mhi_event->chan];
- 		}
- 
--		/* Priority is fixed to 1 for now */
--		mhi_event->priority = 1;
-+		mhi_event->priority = event_cfg->priority;
- 
- 		mhi_event->db_cfg.brstmode = event_cfg->mode;
- 		if (MHI_INVALID_BRSTMODE(mhi_event->db_cfg.brstmode))
-diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-index 8ac73f9..3775c77 100644
---- a/drivers/bus/mhi/core/main.c
-+++ b/drivers/bus/mhi/core/main.c
-@@ -454,10 +454,15 @@ irqreturn_t mhi_irq_handler(int irq_number, void *dev)
- 
- 		if (mhi_dev)
- 			mhi_notify(mhi_dev, MHI_CB_PENDING_DATA);
--	} else {
--		tasklet_schedule(&mhi_event->task);
-+
-+		return IRQ_HANDLED;
- 	}
- 
-+	if (!mhi_event->priority)
-+		tasklet_hi_schedule(&mhi_event->task);
-+	else
-+		tasklet_schedule(&mhi_event->task);
-+
- 	return IRQ_HANDLED;
- }
- 
-diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-index 86cea52..bf23c21 100644
---- a/include/linux/mhi.h
-+++ b/include/linux/mhi.h
-@@ -250,7 +250,7 @@ struct mhi_channel_config {
-  * @irq_moderation_ms: Delay irq for additional events to be aggregated
-  * @irq: IRQ associated with this ring
-  * @channel: Dedicated channel number. U32_MAX indicates a non-dedicated ring
-- * @priority: Priority of this ring. Use 1 for now
-+ * @priority: Processing priority of this ring. 0 is high and 1 is regular
-  * @mode: Doorbell mode
-  * @data_type: Type of data this ring will process
-  * @hardware_event: This ring is associated with hardware channels
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+On qcom impl, we have several performance improvements for TLB cache
+invalidations in HW like wait-for-safe (for realtime clients such as
+camera and display) and few others to allow for cache lookups/updates
+when TLBI is in progress for the same context bank.
 
+
+> using the newly
+> introduced quirk IO_PGTABLE_QUIRK_TLB_INV_ALL. We also do this for
+> non-strict mode given its all about over-invalidation saving time on
+> individual unmaps and non-deterministic generally.
+
+As per usual I'm mostly clueless, but I don't quite understand why you
+want this new behavior for non-strict mode. To me it almost seems like
+the opposite? Specifically, non-strict mode is already outside the
+critical path today and so there's no need to optimize it. I'm
+probably not explaining myself clearly, but I guess i'm thinking:
+
+a) today for strict, unmap is in the critical path and it's important
+to get it out of there. Getting it out of the critical path is so
+important that we're willing to over-invalidate to speed up the
+critical path.
+
+b) today for non-strict, unmap is not in the critical path.
+
+So I would almost expect your patch to _disable_ your new feature for
+non-strict mappings, not auto-enable your new feature for non-strict
+mappings.
+
+If I'm babbling, feel free to ignore. ;-) Looking back, I guess Robin
+was the one that suggested the behavior you're implementing, so it's
+more likely he's right than I am. ;-)
+
+
+-Doug
