@@ -2,80 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2225C3ACB82
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9543B3ACB8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233624AbhFRM7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 08:59:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233430AbhFRM7k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 08:59:40 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D229BC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:57:30 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id a21so8935105ljj.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:57:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jF9pURhxENYTan5Ye25myNYhrCwRUkpmo9Dhc1bSoEw=;
-        b=Fn1HoqFQ7nmte0xZq2YGQaecysC995DoLNw0dPEbpUb29LBrXndNbXR8166YRlUJVB
-         Hy5Q6qC6HbdEUIG416kJGF77qu0h+b36HZ0i8dYKtv2L/V+Q5PVcBGj9hfKxJDmyn7++
-         IDk/xnxQMETjdsM23PqVYNggB6Ab1iaWEp4L30wxFtLNm98sN3mPcE4vMhrMfBWsMVJ8
-         CJEzNUprRnBYhC5CUduiA79pcyarIlvhq+Jbuafl6nJAZcD08KzAKZy3mXhd1+vhAJw7
-         As65MkJlZnyuBGf524rGROXZwOJDYoQ8jJp6cO5tXS8Z+7ruRhDdb+oFnAtvMgDbPJDn
-         MGiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jF9pURhxENYTan5Ye25myNYhrCwRUkpmo9Dhc1bSoEw=;
-        b=VVYJbyFErrDfPeCpDwwVxXBapreZg3uUCKfrnp9y7Mjyc48x2yzb+WPEMDY0BK4rHo
-         ZPklKlanYLLqajw5Q7IHO0fzPWiWT33JjqOrJa54SokVgeQdBWJBTDlKO+U1b5luKXKq
-         3Qb1YIV5R2gYufygIyuA/FZzGVKUPUvp3T8z+o8Ca2vzIYrwxVeR9WHQ66MKwrLw6Q65
-         5CjSn4Uycc1Vry9HAmjLEQ7Td6HhAY55RAldqO3HoxSN4V3A75qh1uU1DvszGIOLIXm5
-         2v5FXzQKjQOZw8OLUTOxtMswDfA+Vn+OANfhf6JKeCengNyx9M9WRtUSJR2RhKm7RRc8
-         cvzw==
-X-Gm-Message-State: AOAM530DkHCT9ZDPd777h0mheTnF8yFWqtBZTV+7uB2XoYRa8OW3yfuM
-        rwPSXL/doe5U0UVExU8gt0Whphr/91zWN0vNndljGQ==
-X-Google-Smtp-Source: ABdhPJyh4rUqU+FLUB8CGIiTuIm71e/bqTQUmglrgI5HwwqBSedgi9V+DbUL9LCrHJeLKACwerPho5HhQJ7qZLptpDw=
-X-Received: by 2002:a05:651c:1501:: with SMTP id e1mr9644806ljf.74.1624021049247;
- Fri, 18 Jun 2021 05:57:29 -0700 (PDT)
+        id S232238AbhFRNCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:02:30 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:61486 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231445AbhFRNC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 09:02:28 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624021219; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=tD4U/RzNqFGWpjdS5wnIrcWZDQlWRWp1xuR2I5dn0+o=;
+ b=H1ipM5afLMXpzcmBZHOiC8B5UKVh/CkWNFHjBFCPdUYi0LDdJU8PjcpoJFj0UlUihE+z0Z2L
+ IYGNg0KaDG03gG9oiF4Bgy2ZkJbjaEsy7vIuDNX+Ya164eCv8iMYPzQz0j64OeT0hyEsb8g6
+ XAxgzYp+JfwYCyWuwMF5g/gWz4c=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60cc98d3e27c0cc77f72ae59 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Jun 2021 13:00:03
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A2BF0C43217; Fri, 18 Jun 2021 13:00:02 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F3DDDC4338A;
+        Fri, 18 Jun 2021 13:00:01 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210617144629.2557693-1-fabien.dessenne@foss.st.com>
-In-Reply-To: <20210617144629.2557693-1-fabien.dessenne@foss.st.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 18 Jun 2021 14:57:18 +0200
-Message-ID: <CACRpkdYmE6qU=UXp-K0AXbAhmS7Drk44FT9nYz4ibswHoD5r-g@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: stm32: fix the reported number of GPIO lines per bank
-To:     Fabien Dessenne <fabien.dessenne@foss.st.com>
-Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 18 Jun 2021 18:30:01 +0530
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     agross@kernel.org, bhelgaas@google.com, bjorn.andersson@linaro.org,
+        lorenzo.pieralisi@arm.com, robh+dt@kernel.org,
+        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mgautam@codeaurora.org,
+        dianders@chromium.org, mka@chromium.org, sanm@codeaurora.org
+Subject: Re: [PATCH v2 3/4] PCIe: qcom: Add support to control pipe clk mux
+In-Reply-To: <CAE-0n50WxF_S7Zo4MhFqppjSELTFo7nOEtmCXJ4DoqvhF7kMQw@mail.gmail.com>
+References: <1622904059-21244-1-git-send-email-pmaliset@codeaurora.org>
+ <1622904059-21244-4-git-send-email-pmaliset@codeaurora.org>
+ <CAE-0n50WxF_S7Zo4MhFqppjSELTFo7nOEtmCXJ4DoqvhF7kMQw@mail.gmail.com>
+Message-ID: <915d51888c2577cc3266370bfda603e8@codeaurora.org>
+X-Sender: pmaliset@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 4:46 PM Fabien Dessenne
-<fabien.dessenne@foss.st.com> wrote:
+On 2021-06-06 02:56, Stephen Boyd wrote:
+> Quoting Prasad Malisetty (2021-06-05 07:40:58)
+>> In PCIe driver pipe-clk mux needs to switch between pipe_clk
+>> and XO for GDSC enable. This is done by setting pipe_clk mux
+>> as parent of pipe_clk after phy init.
+> 
+> Just to confirm, we can't set this parent via assigned-clock-parents
+> property in DT?
+> 
+>> 
+This clock setting need be done after phy init.
 
-> Each GPIO bank supports a variable number of lines which is usually 16, but
-> is less in some cases : this is specified by the last argument of the
-> "gpio-ranges" bank node property.
-> Report to the framework, the actual number of lines, so the libgpiod
-> gpioinfo command lists the actually existing GPIO lines.
->
-> Fixes: 1dc9d289154b ("pinctrl: stm32: add possibility to use gpio-ranges to declare bank range")
-> Signed-off-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
+>> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
+>> ---
+>>  drivers/pci/controller/dwc/pcie-qcom.c | 22 ++++++++++++++++++++++
+>>  1 file changed, 22 insertions(+)
+>> 
+>> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c 
+>> b/drivers/pci/controller/dwc/pcie-qcom.c
+>> index 8a7a300..5cbbea4 100644
+>> --- a/drivers/pci/controller/dwc/pcie-qcom.c
+>> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+>> @@ -166,6 +166,9 @@ struct qcom_pcie_resources_2_7_0 {
+>>         struct regulator_bulk_data supplies[2];
+>>         struct reset_control *pci_reset;
+>>         struct clk *pipe_clk;
+>> +       struct clk *pipe_clk_mux;
+>> +       struct clk *pipe_ext_src;
+>> +       struct clk *ref_clk_src;
+>>  };
+>> 
+>>  union qcom_pcie_resources {
+>> @@ -1167,6 +1170,20 @@ static int qcom_pcie_get_resources_2_7_0(struct 
+>> qcom_pcie *pcie)
+>>         if (ret < 0)
+>>                 return ret;
+>> 
+>> +       if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) 
+>> {
+>> +               res->pipe_clk_mux = devm_clk_get(dev, "pipe_src");
+>> +               if (IS_ERR(res->pipe_clk_mux))
+>> +                       return PTR_ERR(res->pipe_clk_mux);
+>> +
+>> +               res->pipe_ext_src = devm_clk_get(dev, "pipe_ext");
+>> +               if (IS_ERR(res->pipe_ext_src))
+>> +                       return PTR_ERR(res->pipe_ext_src);
+>> +
+>> +               res->ref_clk_src = devm_clk_get(dev, "ref");
+> 
+> Is this going to be used by any code?
+> 
+Yes, ref clock will be used in system suspend case. currently system 
+suspend changes are in under validation.
 
-Patch applied for fixes.
-
-Yours,
-Linus Walleij
+>> +               if (IS_ERR(res->ref_clk_src))
+>> +                       return PTR_ERR(res->ref_clk_src);
+>> +       }
+>> +
+>>         res->pipe_clk = devm_clk_get(dev, "pipe");
+>>         return PTR_ERR_OR_ZERO(res->pipe_clk);
+>>  }
+>> @@ -1255,6 +1272,11 @@ static void qcom_pcie_deinit_2_7_0(struct 
+>> qcom_pcie *pcie)
+>>  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
+>>  {
+>>         struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
+>> +       struct dw_pcie *pci = pcie->pci;
+>> +       struct device *dev = pci->dev;
+>> +
+>> +       if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280"))
+>> +               clk_set_parent(res->pipe_clk_mux, res->pipe_ext_src);
+>> 
+>>         return clk_prepare_enable(res->pipe_clk);
+>>  }
+>> --
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
+>> 
