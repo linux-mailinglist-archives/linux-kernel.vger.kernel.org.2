@@ -2,77 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FBAA3AC325
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:13:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC0A3AC32E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:15:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232819AbhFRGPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 02:15:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33258 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232270AbhFRGPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 02:15:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9E1961154;
-        Fri, 18 Jun 2021 06:12:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623996777;
-        bh=jNED0w5AnR+TFf49A2R1gRokQJ3wgVwVy2+mDUkr3gc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G9pPYFEPtDRQmWCFF0nSnHfpRsa59lBlcHTyK7kG30efaFgiWHWkOTJk3CbpORdwT
-         ZHp0QvWIP/8BVRod+BK69AMGxhCIcmwL6TJaPR8wX2qar2RiBzKPxgpfkhifb1DbK5
-         5xlFiD5iJDXzQKwT8jT9Xo9bjMi54gaB22urkSNxoWupTgQ4/+7lNgRYUKhZKcJf5c
-         dJO4DN67LkxS4vSmfK4OfGa+DEzZJdbzkbP+OrU+xb3sTFhy3qHHiwolYuwbN2XSv4
-         zlQCuJbbqRHcSqPMi9zwVzSZoYplz/ki/s7K+9ElrC837CrdZZ20A3HuNwv7znU3dk
-         KvPoaHph29Ybw==
-Date:   Fri, 18 Jun 2021 11:42:51 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Paul Davey <paul.davey@alliedtelesis.co.nz>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] bus: mhi: Fix pm_state conversion to string
-Message-ID: <20210618054731.GJ3682@workstation>
-References: <20210618033132.24839-1-paul.davey@alliedtelesis.co.nz>
- <20210618033132.24839-2-paul.davey@alliedtelesis.co.nz>
+        id S232880AbhFRGR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 02:17:28 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:58836 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232270AbhFRGR0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 02:17:26 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 27A7221B4D;
+        Fri, 18 Jun 2021 06:15:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1623996917; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=iTlXNLY1hVeCTSB8MQPOYJ/EWyrK25cvEopPUb2EKbc=;
+        b=Tc17wV5rDas2tTR+8UYJyMZ6kBdLgZMyNrcYIVughNTSIaEx2/HrEdjVxHfDq3UMq/5bVd
+        +QjecrinpFtsO0BfzbkKT/W0T8Ds9283uD3RLtCk2osacEOOkhMB33NyeTAjndq44W8fH4
+        f6PA7n1CmPjbr+HJ2OIRN0e1J+u8g20=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1623996917;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=iTlXNLY1hVeCTSB8MQPOYJ/EWyrK25cvEopPUb2EKbc=;
+        b=gBEaaBOT5/CZ4F2MmMM5ebYfZBxIQjkeEj0X+Bab6xfL3Mi880pzelLSjnwQUQED2tDTem
+        9HNidL+mpHpHvzBw==
+Received: from localhost.localdomain (unknown [10.100.208.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id EE06AA3BBC;
+        Fri, 18 Jun 2021 06:15:16 +0000 (UTC)
+From:   Jiri Slaby <jslaby@suse.cz>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jiri Slaby <jslaby@suse.cz>
+Subject: [PATCH 00/69] mxser: cleanup
+Date:   Fri, 18 Jun 2021 08:14:06 +0200
+Message-Id: <20210618061516.662-1-jslaby@suse.cz>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210618033132.24839-2-paul.davey@alliedtelesis.co.nz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 03:31:31PM +1200, Paul Davey wrote:
-> On big endian architectures the mhi debugfs files which report pm state
-> give "Invalid State" for all states.
-> 
-> Fix to_mhi_pm_state_str by using a local unsigned long as an intemediate
-> to pass the state to find_last_bit to avoid endianness issues with cast
-> from enum mhi_pm_state * to unsigned long *.
-> 
-> Signed-off-by: Paul Davey <paul.davey@alliedtelesis.co.nz>
+I was given a few cards from MOXA (thanks a lot). So I cleaned up the
+driver and can continue maintaining it.
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+A long term goal is to convert the driver to serial_core.
 
-Thanks,
-Mani
+Jiri Slaby (70):
+  mxser: drop ISA support
+  mxser: renumber mxser_cards
+  mxser: remove info printout from init
+  mxser: integrate mxser.h into .c
+  mxser: cleanup Gpci_uart_info struct
+  mxser: rename CheckIsMoxaMust to mxser_get_must_hwid
+  mxser: rename mxser_board::chip_flag to must_hwid
+  mxser: introduce enum mxser_must_hwid
+  mxser: drop constant board::uart_type
+  mxser: move max_baud from port to board
+  mxser: remove nonsense from ISR
+  mxser: cleanup LSR handling in mxser_receive_chars
+  mxser: extract port ISR
+  mxser: simplify mxser_interrupt and drop mxser_board::vector_mask
+  mxser: extract mxser_receive_chars_new
+  mxser: extract mxser_receive_chars_old
+  mxser: remove else from LSR bits checks
+  mxser: correct types for uart variables
+  mxser: make xmit ring buffer variables unsigned
+  mxser: drop UART_MCR_AFE and UART_LSR_SPECIAL defines
+  mxser: drop unused MOXA_DIAGNOSE macro
+  mxser: remove MOXA_GET_MAJOR deprecated ioctl
+  mxser: remove MOXA_SET_BAUD_METHOD ioctl
+  mxser: remove MOXA_ASPP_MON and friends
+  mxser: remove MOXA_ASPP_LSTATUS ioctl
+  mxser: remove MOXA_CHKPORTENABLE ioctl
+  mxser: remove MOXA_GETDATACOUNT ioctl
+  mxser: remove MOXA_GETMSTATUS ioctl
+  mxser: remove MOXA_ASPP_OQUEUE ioctl
+  mxser: remove MOXA_HighSpeedOn ioctl
+  mxser: remove cnt from mxser_receive_chars
+  mxser: don't allocate MXSER_PORTS + 1
+  mxser: drop unused mxser_port::normal_termios
+  mxser: remove unused mxser_port::stop_rx
+  mxser: drop mxser_port::baud_base
+  mxser: drop mxser_port::custom_divisor
+  mxser: cleanup mxser_change_speed
+  mxser: extract mxser_ioctl_op_mode
+  mxser: simplify mxser_ioctl_op_mode
+  mxser: dedup mxser_must_set_enhance_mode
+  mxser: introduce mxser_must_select_bank and use it
+  mxser: clean up the rest of MUST helpers
+  mxser: move board init into mxser_initbrd
+  mxser: inline mxser_board_remove into mxser_remove
+  mxser: pci, switch to managed resources
+  mxser: move request irq to probe and switch to managed
+  mxser: remove info message from probe
+  mxser: remove mxser_cardinfo
+  mxser: cleanup mxser_process_txrx_fifo
+  mxser: rework and simplify mxser_open
+  mxser: make mxser_board::idx really an index
+  mxser: alloc struct mxser_board dynamically
+  mxser: alloc only needed # of ports
+  mxser: remove pointless ioaddr checks
+  mxser: cleanup mxser_rs_break
+  mxser: cleanup mxser_dtr_rts
+  mxser: don't start TX from tty_operations::put_char
+  mxser: extract and dedup CTS handling
+  mxser: introduce and use start/stop_tx helpers
+  mxser: remove xmit_cnt < 0 tests
+  mxser: decrypt FCR values
+  mxser: fix typos around enhanced mode
+  mxser: access info->MCR under info->slock
+  mxser: use port variable in mxser_set_serial_info
+  mxser: rename flags to old_speed in mxser_set_serial_info
+  mxser: introduce mxser_16550A_or_MUST helper
+  mxser: Documentation, remove traces of callout device
+  mxser: Documentation, make the docs up-to-date
+  mxser: Documentation, fix typos
+  MAINTAINERS: add me back as mxser maintainer
 
-> ---
->  drivers/bus/mhi/core/init.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> index c81b377fca8f..87cc0c449078 100644
-> --- a/drivers/bus/mhi/core/init.c
-> +++ b/drivers/bus/mhi/core/init.c
-> @@ -79,7 +79,8 @@ static const char * const mhi_pm_state_str[] = {
->  
->  const char *to_mhi_pm_state_str(enum mhi_pm_state state)
->  {
-> -	int index = find_last_bit((unsigned long *)&state, 32);
-> +	unsigned long tmp = state;
-> +	int index = find_last_bit((unsigned long *)&tmp, 32);
->  
->  	if (index >= ARRAY_SIZE(mhi_pm_state_str))
->  		return "Invalid State";
-> -- 
-> 2.32.0
-> 
+ .../driver-api/serial/moxa-smartio.rst        |  496 +----
+ MAINTAINERS                                   |    3 +-
+ drivers/tty/Kconfig                           |    2 +-
+ drivers/tty/mxser.c                           | 1950 +++++------------
+ drivers/tty/mxser.h                           |  151 --
+ 5 files changed, 622 insertions(+), 1980 deletions(-)
+ delete mode 100644 drivers/tty/mxser.h
+
+-- 
+2.32.0
+
