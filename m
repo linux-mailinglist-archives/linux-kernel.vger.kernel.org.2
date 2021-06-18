@@ -2,111 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 429563AD1F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:18:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C1383AD203
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236240AbhFRSUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 14:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40810 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235050AbhFRSUW (ORCPT
+        id S236265AbhFRSWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 14:22:14 -0400
+Received: from mail-io1-f54.google.com ([209.85.166.54]:42513 "EHLO
+        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229475AbhFRSWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 14:20:22 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57BBC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 11:18:11 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id n12so8394208pgs.13
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 11:18:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DoEdXh/VaJ+mbzDRuncceAoCRUlb0lvwPS0zh9/WG+I=;
-        b=rm2SiL72/vhadlYZz1wnHDoZbZbCMgU/Gry+VpWLCPiFNvsIUcjKcBBqY/ojvhCCHz
-         sZACEvqbm+arlZrxNyFsySDYOObUU9gTFPMq++Z0wOKR0OH6/gXxPfVlgQIyprJmlwIN
-         pmMeDrLfHt/biZ0uCf5Wi0mYaRbiYR0I+nQnmrBdNNeTTewruhJTyXJylM83R1bn4tVQ
-         Qh+cYaZQh0V/i6ZqItGa/1A+c6uRE870zu0ETARSMBDVPI7+oSMnSv44yLGXyWkH0Bxf
-         xM2z0ANFrWbghlp12ss/eAubl9kTv6Oj2QSg/p4F4/C1fxEti/cHX59gyCo22ECkk23y
-         YITg==
+        Fri, 18 Jun 2021 14:22:12 -0400
+Received: by mail-io1-f54.google.com with SMTP id v3so2228180ioq.9
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 11:20:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=DoEdXh/VaJ+mbzDRuncceAoCRUlb0lvwPS0zh9/WG+I=;
-        b=bTVzQ+E4Gu/dcE7cYVJXl/tfNCVUL+CT17206chbcGBs6F71kaqQIcYvhgII6opHve
-         7rGoVu4Fqv7FScnIEvihrj8Eyj/cA4YRX+AS//ffjoAqLFxE6JHoaLFTfTnn+I4Cjxrn
-         7d6E08WXIwMRNdhReyvuw5YEDcTWCdoOahRcJ3fwNKgkn5zYWOXzMX1d+bFkEkNREnZK
-         CxlqYp+WiWLYv2PHJWBDupa/sVnEouuTqYkZslInmSERLRv7wglArWgaBuEMUsl7P7H0
-         RSPWSmWSZWAeinBd1pxzjh70mj3i+qrkcYGrPFasj8kJxD7IWhDIUlw7uoW//ni6Umym
-         TCVw==
-X-Gm-Message-State: AOAM531qtO9lWolXREGJEkgqUHurr84zOVbEXew5zqZ1vfHha9wtRXRN
-        TDOzNrNZhUGCxsxeaN9JxAbQNaEXrzAv1Q==
-X-Google-Smtp-Source: ABdhPJxxLzRZKmYzjmg30+asLiYN9SPrEQ4JMEgRRucb6cPGRBHBqhr5QKYIm3jJLR5lzV2iaMzS9w==
-X-Received: by 2002:a63:d053:: with SMTP id s19mr11271566pgi.326.1624040291117;
-        Fri, 18 Jun 2021 11:18:11 -0700 (PDT)
-Received: from jm.lan (1-171-85-235.dynamic-ip.hinet.net. [1.171.85.235])
-        by smtp.gmail.com with ESMTPSA id t193sm984195pfc.166.2021.06.18.11.18.08
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xjOKNXx7mcvWVB9xbLB4nqglFfMMl1pNP/S9NAh2kJ4=;
+        b=nH+FblCoFrtlskj3POK0Mz30dgNifz2kIsrUu1DvG4GT/qxyAnNFuHrBVawlnjQdz+
+         OyDdNocn0/b+A0aS+RUmB/nW8TFDi7fqSDZTgHS8XDgI4s4ag3X5x6GdMQtBBHVSKmlW
+         dSZYHWn8soE9nzUBuTdtKOIb+jVTswvSwzMmgw6gKkKoEYkop5uf24ii4n3qR2zkMikp
+         aGoXC9nh+XiNlaUNrFAdNlaYkSh3CSJDwt8A6cwkAbNQIBbVDsp0ec/uWlIW1teJubj6
+         xC7dGW38GGCwNYAOJco3LCx0Dopawu0f++XzwY25bvLUTAMeBNLMU6ztSxSJQ/Mm+T43
+         7pgg==
+X-Gm-Message-State: AOAM532v2RZQVgsi/strc42vZgmKBtmmwGXy5rbJ9JusojzeDz+JKp7F
+        TCxtLyoIT/GQOQTHxWS0CzBFn/Sx4Z8=
+X-Google-Smtp-Source: ABdhPJydgA71BB/n2LEtmsw0Da6q0F7D6SyzH0sA53awOujaw5hdeV6E1TWu3uz7IHTdPsjjra3x3A==
+X-Received: by 2002:a6b:e018:: with SMTP id z24mr3292117iog.206.1624040403042;
+        Fri, 18 Jun 2021 11:20:03 -0700 (PDT)
+Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id y27sm4849431iox.17.2021.06.18.11.20.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 11:18:10 -0700 (PDT)
-From:   Jhih-Ming Huang <fbihjmeric@gmail.com>
-To:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
-        ross.schm.dev@gmail.com, maqianga@uniontech.com,
-        marcocesati@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     Jhih-Ming Huang <fbihjmeric@gmail.com>
-Subject: [PATCH v3] rtw_security: fix cast to restricted __le32
-Date:   Sat, 19 Jun 2021 02:17:51 +0800
-Message-Id: <20210618181751.95967-1-fbihjmeric@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <YMeL7PjstV601pbN@zeniv-ca.linux.org.uk>
-References: <YMeL7PjstV601pbN@zeniv-ca.linux.org.uk>
+        Fri, 18 Jun 2021 11:20:02 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 18:20:01 +0000
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kael_w@yeah.net
+Subject: Re: [PATCH] mm/percpu: Fix gfp flag in pcpu_balance_populated
+Message-ID: <YMzj0V8CVte/Pynx@google.com>
+References: <20210618151436.38217-1-wanjiabing@vivo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210618151436.38217-1-wanjiabing@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the sparse warning of fix cast to restricted __le32.
+Hello,
 
-There was a change for replacing private CRC-32 routines with in kernel
-ones.
-However, the author used le32_to_cpu to convert crc32_le(), and we
-should cpu_to_le32.
+On Fri, Jun 18, 2021 at 11:14:36PM +0800, Wan Jiabing wrote:
+> Fix coccicheck warning:
+> 
+> ./mm/percpu.c:2045:19-29: ERROR: function pcpu_balance_populated
+> called on line 2232 inside lock on line 2228 but uses GFP_KERNEL
+> 
+> When pcpu_balance_populated() is called in pcpu_balance_workfn(),
+> it helds spin_lock but use GFP_KERNEL to alloc mem, which is unsafe.
+> 
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> ---
+>  mm/percpu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/percpu.c b/mm/percpu.c
+> index b4cebeca4c0c..4031f32e6975 100644
+> --- a/mm/percpu.c
+> +++ b/mm/percpu.c
+> @@ -2042,7 +2042,7 @@ static void pcpu_balance_free(bool empty_only)
+>  static void pcpu_balance_populated(void)
+>  {
+>  	/* gfp flags passed to underlying allocators */
+> -	const gfp_t gfp = GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN;
+> +	const gfp_t gfp = GFP_ATOMIC | __GFP_NORETRY | __GFP_NOWARN;
+>  	struct pcpu_chunk *chunk;
+>  	int slot, nr_to_pop, ret;
+>  
+> -- 
+> 2.30.2
+> 
 
-Ths commit also fixes the payload checking by memcmp instead of checking element
-by element.
+In both places gfp flags are passed, the pcpu_lock is dropped. So I
+think this is an issue with coccicheck. Regardless, the fix wouldn't be
+to switch to GFP_ATOMIC but to make the locking correct.
 
-Signed-off-by: Jhih-Ming Huang <fbihjmeric@gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_security.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
-index a99f439328f1..97a7485f8f58 100644
---- a/drivers/staging/rtl8723bs/core/rtw_security.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_security.c
-@@ -121,7 +121,7 @@ void rtw_wep_decrypt(struct adapter  *padapter, u8 *precvframe)
- 		arc4_crypt(ctx, payload, payload,  length);
- 
- 		/* calculate icv and compare the icv */
--		*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
-+		*crc = cpu_to_le32(~crc32_le(~0, payload, length - 4));
- 
- 	}
- }
-@@ -618,10 +618,9 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
- 			arc4_setkey(ctx, rc4key, 16);
- 			arc4_crypt(ctx, payload, payload, length);
- 
--			*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
-+			*crc = cpu_to_le32(~crc32_le(~0, payload, length - 4));
- 
--			if (crc[3] != payload[length - 1] || crc[2] != payload[length - 2] ||
--			    crc[1] != payload[length - 3] || crc[0] != payload[length - 4])
-+			if (memcmp(&crc, payload + length - 4, 4) != 0)
- 				res = _FAIL;
- 		} else {
- 			res = _FAIL;
--- 
-2.32.0.288
-
+Thanks,
+Dennis
