@@ -2,261 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 215B63ACC1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:25:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE1BA3ACC1F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233146AbhFRN1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:27:32 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:11071 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbhFRN13 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:27:29 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G602h714XzZgHR;
-        Fri, 18 Jun 2021 21:22:20 +0800 (CST)
-Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 18 Jun 2021 21:25:18 +0800
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm500001.china.huawei.com (7.185.36.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 18 Jun 2021 21:25:17 +0800
-Subject: Re: [BUG] Crash after module unload if it use DO_ONCE mechanism
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Hannes Frederic Sowa <hannes@stressinduktion.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        "Eric Dumazet" <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "Linux Kernel Network Developers" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-References: <eaa6c371-465e-57eb-6be9-f4b16b9d7cbf@huawei.com>
-CC:     <wangkefeng.wang@huawei.com>
-Message-ID: <5ba30137-bf50-759a-48fd-9ab03be0ff81@huawei.com>
-Date:   Fri, 18 Jun 2021 21:25:17 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S233549AbhFRN2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:28:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33950 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229877AbhFRN2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 09:28:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EF24613EB;
+        Fri, 18 Jun 2021 13:25:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624022752;
+        bh=Y1EXxYzR8V40448QkyPRUDs0dTVxn9wLZsNU8QqYQA4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=J6EUeCDDd5HoynS1rgyePkpn7anNR+xHc/kDkt7GuMlDcLa100JA1wSs26B00vCmn
+         GEAQEFxrOvCSX+W12KXDY049EkCrG4vcwFHvwdnk/EXKe+M6aqOqOKxyyf2eELwr9R
+         gw2q1EoWwulw/EPABdsss9RDbqn7wSSsTIwnV2mGEN8w7nR/ykZ3XK4AK0RfA7tEM7
+         gIG8JuLUsG5Wjs4qhE+O58fj7CoQN/VbXnTtfBU5m0MtY21ewyX6IcdAdmOjZ/nm6f
+         ofPbMqzKJzR1FghDlb6M0BBA800WeUqzIG6aKDmMekxLSBsldpUvnk6Chr0ns/kOu0
+         28L5/iSsKO1Xw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id D6AF740B1A; Fri, 18 Jun 2021 10:25:49 -0300 (-03)
+Date:   Fri, 18 Jun 2021 10:25:49 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Riccardo Mancini <rickyman7@gmail.com>
+Cc:     Ian Rogers <irogers@google.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Tommi Rantala <tommi.t.rantala@nokia.com>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] perf ksymbol: fix memory leak: decrease refcount of map
+ and dso
+Message-ID: <YMye3UVZWRh30L2a@kernel.org>
+References: <20210602231052.317048-1-rickyman7@gmail.com>
+ <CAP-5=fVxHUnwGoRypMjCsPSh_yo5PB8Hzbkx5ArA5b0=7S-67g@mail.gmail.com>
+ <YLopMBgLWysdJbkm@kernel.org>
+ <3b8c7c2c5de492c7fbf86df73c43cdb0fbb453df.camel@gmail.com>
+ <YLpxDf6+YOxYI5z3@kernel.org>
+ <da5b052d2c94db91c0bf8cb794c5cad299f19e57.camel@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <eaa6c371-465e-57eb-6be9-f4b16b9d7cbf@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm500001.china.huawei.com (7.185.36.107)
-X-CFilter-Loop: Reflected
+In-Reply-To: <da5b052d2c94db91c0bf8cb794c5cad299f19e57.camel@gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/6/17 15:51, Kefeng Wang wrote:
-> Hi all,
+Em Fri, Jun 18, 2021 at 12:01:28PM +0200, Riccardo Mancini escreveu:
+> Hi, 
 > 
-> We met a crash[3] after module unload if it uses DO_ONCE mechanism,
-> also we could reproduce by the demo module[1] and the hack patch[2].
+> On Fri, 2021-06-04 at 15:29 -0300, Arnaldo Carvalho de Melo wrote:
+> <SNIP>�
+> > > > But looking at this code now I realize that maps__find() should grab a
+> > > > refcount for the map it returns, because in this
+> > > > machine__process_ksymbol_register() function we use reference that 'map'
+> > > > after the if block, i.e. we use it if it came from maps__find() or if we
+> > > > created it machine__process_ksymbol_register, so there is a possible
+> > > > race where other thread removes it from the list and map__put()s it
+> > > > ending up in map__delete() while we still use it in
+> > > > machine__process_ksymbol_register(), right?
+> > > 
+> > > Agree. It should be placed before up_read to avoid races, right?
+> > 
+> > Yes, we have to grab a refcount while we are sure its not going away,
+> > then return that as the lookup result, whoever receives that refcounted
+> > entry should use it and then drop the refcount.
+> > 
+> > > Then we would need to see where it's called and add the appropriate
+> > > map__put.
+> > 
+> > yes
 > 
-> The DO_ONCE mechanism could be use directly(eg, testmgr.c), and there 
-> are some macro which is used by lots of net drivers,
-> "prandom_init_once"
-> "get_random_once/get_random_once_wait"
-> "net_get_random_once/net_get_random_once_wait"
+> This function has quite a number of callers (direct and indirect) so the the
+> patch is becoming huge. 
 > 
-> The analysis of crash is as follows,
+> One of these callers is thread__find_map, which returns an addr_location
+> (actually it's an output argument). This addr_location holds references to map,
+> maps and thread without getting any refcnt (actually in one function it gets it
+> on the thread and a comment tells to put it once done). If I'm not wrong, this
+> addr_location is never malloced (always a local variable) and, is should be
+> present in parts of the code where there should be a refcnt on the thread.
+> Therefore, maybe it does not get the refcnts since it assumes that thread (upon
+> which depends maps and as a consequence map) is always refcnted in its context.
+> However, I think that it should get all refcnts anyways for clarity and to
+> prevent possible misuses (if I understood correctly, Ian is of the same
+> opinion).
+
+agreed, but this will incur extra costs, we should perhaos use perf to
+measure how much it costs. :-)
+
+> My solution would be to add the refcnt grabbing for map, maps and thread in
+> thread__find_map, releasing them in addr_location__put, and then making sure all
+> callers call it when no longer in use.
+
+Ok
+ 
+> Following the same reasoning, I added refcnt grabbing also to mem_info,
+> branch_info (map was already refcnted, I added it also to maps for coherency),
+> map_symbol (as in branch_info, I added it to maps), and in other places in which
+> I saw a pointer was passed without refcounting.
 > 
-> init_module
->   get_random_once
->    DO_ONCE
->    DEFINE_STATIC_KEY_TRUE(___once_key);
->    __do_once_done
->      once_disable_jump(once_key);
->        INIT_WORK(&w->work, once_deferred);
->        struct once_work *w;
->        w->key = key;
->        schedule_work(&w->work);                    cleanup_module
->                                                     *the key is destroy*
-> process_one_work
->   once_deferred
->     BUG_ON(!static_key_enabled(work->key));
->        static_key_count((struct static_key *)x)   //*access key, crash*
-> 
-> I can't find a good way to fix the issue, any suggestion?
+> Most changes are quite trivial, however, the changelog is huge:
+> 48 files changed, 472 insertions(+), 157 deletions(-)
+> Most of them are just returns converted to goto for calling the __put functions.
 
-Here is one solution to avoid the issue, but maybe this is too hack to 
-add module into once, is there any better solution, thanks.
+So you could first do a prep patch converting functions to have gotos,
+which would be a no-logic change, and then do the rest?
+ 
+> Doing so, I managed to remove memory leaks caused by refcounting also in perf-
+> report (I wanted to try also perf top but I encountered another memory-related
+> issue). However, the changelog is huge and testing all of it is challenging
 
-diff --git a/include/linux/once.h b/include/linux/once.h
-index 9225ee6d96c7..052af082e369 100644
---- a/include/linux/once.h
-+++ b/include/linux/once.h
-@@ -4,10 +4,11 @@
+So we should break it in as many small steps as possible, knowing that
+each step is fixing just one of the problems, i.e. aSAN will continue
+reporting problems, but less problems as you go on adding more fixes.
 
-  #include <linux/types.h>
-  #include <linux/jump_label.h>
-+#include <linux/export.h>
+> (especially since I can test missing puts only with ASan's LeakSanitizer and its
+> reports are usually full of leaks, which I am trying to fix along the way, I
+> will send some patches in the following days). How would you go about it? Do you
+> have any suggestions?
 
-  bool __do_once_start(bool *done, unsigned long *flags);
-  void __do_once_done(bool *done, struct static_key_true *once_key,
--		    unsigned long *flags);
-+		    unsigned long *flags, struct module *mod);
+See above, thanks for working on this!
 
-  /* Call a function exactly once. The idea of DO_ONCE() is to perform
-   * a function call such as initialization of random seeds, etc, only
-@@ -46,7 +47,7 @@ void __do_once_done(bool *done, struct static_key_true 
-*once_key,
-  			if (unlikely(___ret)) {				     \
-  				func(__VA_ARGS__);			     \
-  				__do_once_done(&___done, &___once_key,	     \
--					       &___flags);		     \
-+					       &___flags, THIS_MODULE);		\
-  			}						     \
-  		}							     \
-  		___ret;							     \
-diff --git a/lib/once.c b/lib/once.c
-index 8b7d6235217e..57c6fcf9f694 100644
---- a/lib/once.c
-+++ b/lib/once.c
-@@ -3,10 +3,12 @@
-  #include <linux/spinlock.h>
-  #include <linux/once.h>
-  #include <linux/random.h>
-+#include <linux/module.h>
-
-  struct once_work {
-  	struct work_struct work;
-  	struct static_key_true *key;
-+	struct module *module;
-  };
-
-  static void once_deferred(struct work_struct *w)
-@@ -16,19 +18,25 @@ static void once_deferred(struct work_struct *w)
-  	work = container_of(w, struct once_work, work);
-  	BUG_ON(!static_key_enabled(work->key));
-  	static_branch_disable(work->key);
-+	module_put(work->module);
-  	kfree(work);
-  }
-
--static void once_disable_jump(struct static_key_true *key)
-+static void once_disable_jump(struct static_key_true *key, struct 
-module *mod)
-  {
-  	struct once_work *w;
-
-+	__module_get(mod);
-+
-  	w = kmalloc(sizeof(*w), GFP_ATOMIC);
--	if (!w)
-+	if (!w) {
-+		module_put(mod);
-  		return;
-+	}
-
-  	INIT_WORK(&w->work, once_deferred);
-  	w->key = key;
-+	w->module = mod;
-  	schedule_work(&w->work);
-  }
-
-@@ -53,11 +61,11 @@ bool __do_once_start(bool *done, unsigned long *flags)
-  EXPORT_SYMBOL(__do_once_start);
-
-  void __do_once_done(bool *done, struct static_key_true *once_key,
--		    unsigned long *flags)
-+		    unsigned long *flags, struct module *mod)
-  	__releases(once_lock)
-  {
-  	*done = true;
-  	spin_unlock_irqrestore(&once_lock, *flags);
--	once_disable_jump(once_key);
-+	once_disable_jump(once_key, mod);
-  }
-  EXPORT_SYMBOL(__do_once_done);
-
-
-
-> 
-> Thanks.
-> 
-> 
-> 
-> [1] test module
-> static int test;
-> int init_module(void) {
->      pr_info("Hello\n");
->      get_random_once(&test, sizeof(int));
->      return 0;
-> }
-> void cleanup_module(void) {
->      pr_info("Bye %x!\n", test);
-> }
-> [2] hack to add some delay
-> diff --git a/lib/once.c b/lib/once.c
-> index 8b7d6235217e..b56b8ced4bab 100644
-> --- a/lib/once.c
-> +++ b/lib/once.c
-> @@ -14,6 +14,7 @@ static void once_deferred(struct work_struct *w)
->          struct once_work *work;
-> 
->          work = container_of(w, struct once_work, work);
-> +       msleep(8000);
->          BUG_ON(!static_key_enabled(work->key));
->          static_branch_disable(work->key);
->          kfree(work);
-> 
-> [3] crash log
-> [  253.560859] Hello
-> [  253.562851] Bye 92bbb335!
-> [  261.585813] Unable to handle kernel paging request at virtual address 
-> ffff000001293018
-> [  261.585815] Mem abort info:
-> [  261.585816]   ESR = 0x96000007
-> [  261.585817]   Exception class = DABT (current EL), IL = 32 bits
-> [  261.585818]   SET = 0, FnV = 0
-> [  261.585818]   EA = 0, S1PTW = 0
-> [  261.585819] Data abort info:
-> [  261.585820]   ISV = 0, ISS = 0x00000007
-> [  261.585821]   CM = 0, WnR = 0
-> [  261.585822] swapper pgtable: 4k pages, 48-bit VAs, pgdp = 
-> 00000000e45c016c
-> [  261.585823] [ffff000001293018] pgd=000000023fffe003, 
-> pud=000000023354b003, pmd=00000001d4099003, pte=0000000000000000
-> [  261.585827] Internal error: Oops: 96000007 [#1] SMP
-> [  261.586458] Process kworker/25:1 (pid: 291, stack limit = 
-> 0xffff0000841b0000)
-> [  261.586880] CPU: 25 PID: 291 Comm: kworker/25:1 Kdump: loaded 
-> Tainted: P        W  OE     4.19.90+ #14
-> [  261.587415] Hardware name: QEMU KVM Virtual Machine, BIOS 0.0.0 
-> 02/06/2015
-> [  261.587819] Workqueue: events once_deferred
-> [  261.588062] pstate: 60c00005 (nZCv daif +PAN +UAO)
-> [  261.588341] pc : static_key_count+0x18/0x30
-> [  261.588584] lr : once_deferred+0x30/0x80
-> [  261.588810] sp : ffff0000841b3d70
-> [  261.589000] x29: ffff0000841b3d70 x28: 0000000000000000
-> [  261.589308] x27: 0000000000000000 x26: ffff00008131f330
-> [  261.589615] x25: 0000000000000000 x24: ffff8001defd1c08
-> [  261.590025] x23: 0000000000000000 x22: ffff8001ff4d3000
-> [  261.590414] x21: ffff8001ff4cee80 x20: ffff8001f3bbd100
-> [  261.590868] x19: ffff000001293018 x18: ffffffffffffffff
-> [  261.591254] x17: 0000000000000000 x16: 0000000000000000
-> [  261.591638] x15: ffff0000812fa748 x14: ffff0000814f1d50
-> [  261.592026] x13: ffff0000814f1996 x12: ffffffffffffffac
-> [  261.592409] x11: 0000000000000000 x10: 0000000000000b80
-> [  261.592794] x9 : ffff0000841b3bf0 x8 : 3535303030303030
-> [  261.593179] x7 : 303078302079656b x6 : ffff0000814f0f80
-> [  261.593564] x5 : 00ffffffffffffff x4 : 0000000000000000
-> [  261.593978] x3 : 0000000000000000 x2 : 173087582665d800
-> [  261.594362] x1 : 0000000000000000 x0 : ffff00008055a888
-> [  261.594748] Call trace:
-> [  261.594928]  static_key_count+0x18/0x30
-> [  261.595207]  once_deferred+0x30/0x80
-> [  261.595469]  process_one_work+0x1b8/0x458
-> [  261.595762]  worker_thread+0x158/0x498
-> [  261.596034]  kthread+0x134/0x138
-> [  261.596271]  ret_from_fork+0x10/0x18
-> [  261.596531] Code: f9000bf3 aa0003f3 aa1e03e0 d503201f (b9400260)
-> 
+- Arnaldo
