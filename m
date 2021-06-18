@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C98A13AC34E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B27073AC358
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbhFRGSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 02:18:05 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:58982 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232871AbhFRGR2 (ORCPT
+        id S233259AbhFRGSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 02:18:18 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:46196 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232876AbhFRGR3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 02:17:28 -0400
+        Fri, 18 Jun 2021 02:17:29 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 2330C21B52;
+        by smtp-out2.suse.de (Postfix) with ESMTP id 59B221FDF6;
         Fri, 18 Jun 2021 06:15:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1623996919; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=LxosIp5dp9pyQOqp1juxUY2HNSyClmwSRVJeLU3fHhE=;
-        b=QbxTDRwajfAt03H9pg6X5iYRGk3kBZygAVycKrw1A+x0XLWzmc6bUad4iCvG2cekfzGo96
-        uD9VMVyBvTzPCMoWUa1T4pVnkF/V0xksOKy0s4D6J/XSbzA910GNGHwD/4tKIknE8hhlhd
-        JksQwLHZs4txLRHThfDy3WBfVH89OOY=
+        bh=IQ2mcSDmaW4gVGU3JtmSCsP7pBY+lolL3WjN/NhU3ag=;
+        b=Wl25uRgWqB4205P+UO3IdyWaa56YCd+00dy/FKyoY3DnISnEeSZSHzdihZp0OUm8FiH7Um
+        S7RDKgetsBTYaUAjRngE0P132aK6zrYl+wLlMpIzjjCKb2eciurq9t1+khNimMEPq3moi1
+        /VhMEViee36FYZYKm1qr6eyfD56npu0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1623996919;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=LxosIp5dp9pyQOqp1juxUY2HNSyClmwSRVJeLU3fHhE=;
-        b=O8AuCyrn7RKguj5bZC0erzy94tQjbTKMUnRUrzxXwbF3iGG0kF/idzj6Pg1PUhYw96WArw
-        Zl579dLJYpqyjbBA==
+        bh=IQ2mcSDmaW4gVGU3JtmSCsP7pBY+lolL3WjN/NhU3ag=;
+        b=NsleWod2HFFeKbucegV1fij0lDJFhuI03cafHh/yl9cCTvIJ0NFo+JppFHNGmdfNT5ORDP
+        ntxdLUOHNfpCEjBw==
 Received: from localhost.localdomain (unknown [10.100.208.98])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id F2516A3B99;
-        Fri, 18 Jun 2021 06:15:18 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTPS id 335A0A3B99;
+        Fri, 18 Jun 2021 06:15:19 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 09/70] mxser: drop constant board::uart_type
-Date:   Fri, 18 Jun 2021 08:14:15 +0200
-Message-Id: <20210618061516.662-10-jslaby@suse.cz>
+Subject: [PATCH 10/70] mxser: move max_baud from port to board
+Date:   Fri, 18 Jun 2021 08:14:16 +0200
+Message-Id: <20210618061516.662-11-jslaby@suse.cz>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210618061516.662-1-jslaby@suse.cz>
 References: <20210618061516.662-1-jslaby@suse.cz>
@@ -54,43 +54,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-board::uart_type is always set to PORT_16550A. So, use this constant in
-the code instead. And drop the mxser_board member.
+mxser_port::max_baud is actually a board property, not port's. So move
+it to mxser_board.
+
+While at it, drop the printk informing about max baud rate during probe.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/mxser.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/tty/mxser.c | 26 ++++++++++----------------
+ 1 file changed, 10 insertions(+), 16 deletions(-)
 
 diff --git a/drivers/tty/mxser.c b/drivers/tty/mxser.c
-index 558bd4140ee1..a6121fea7a55 100644
+index a6121fea7a55..db594a64ff00 100644
 --- a/drivers/tty/mxser.c
 +++ b/drivers/tty/mxser.c
-@@ -372,7 +372,6 @@ struct mxser_board {
+@@ -329,7 +329,6 @@ struct mxser_port {
+ 
+ 	unsigned long ioaddr;
+ 	unsigned long opmode_ioaddr;
+-	speed_t max_baud;
+ 
+ 	u8 rx_high_water;
+ 	u8 rx_low_water;
+@@ -372,6 +371,7 @@ struct mxser_board {
  	unsigned long vector_mask;
  
  	enum mxser_must_hwid must_hwid;
--	int uart_type;
++	speed_t max_baud;
  
  	struct mxser_port ports[MXSER_PORTS_PER_BOARD];
  };
-@@ -2361,7 +2360,7 @@ static int mxser_initbrd(struct mxser_board *brd)
- 		if (brd->must_hwid != MOXA_OTHER_UART)
- 			mxser_enable_must_enchance_mode(info->ioaddr);
+@@ -671,7 +671,7 @@ static int mxser_set_baud(struct tty_struct *tty, speed_t newspd)
+ 	if (!info->ioaddr)
+ 		return -1;
  
--		info->type = brd->uart_type;
-+		info->type = PORT_16550A;
+-	if (newspd > info->max_baud)
++	if (newspd > info->board->max_baud)
+ 		return -1;
  
- 		process_txrx_fifo(info);
+ 	if (newspd == 134) {
+@@ -2345,9 +2345,6 @@ static int mxser_initbrd(struct mxser_board *brd)
+ 	unsigned int i;
+ 	int retval;
  
-@@ -2454,7 +2453,6 @@ static int mxser_probe(struct pci_dev *pdev,
- 	brd->irq = pdev->irq;
- 
+-	printk(KERN_INFO "mxser: max. baud rate = %d bps\n",
+-			brd->ports[0].max_baud);
+-
+ 	for (i = 0; i < brd->info->nports; i++) {
+ 		info = &brd->ports[i];
+ 		tty_port_init(&info->port);
+@@ -2455,17 +2452,14 @@ static int mxser_probe(struct pci_dev *pdev,
  	brd->must_hwid = mxser_must_get_hwid(brd->ports[0].ioaddr);
--	brd->uart_type = PORT_16550A;
  	brd->vector_mask = 0;
  
- 	for (i = 0; i < brd->info->nports; i++) {
+-	for (i = 0; i < brd->info->nports; i++) {
+-		for (j = 0; j < UART_INFO_NUM; j++) {
+-			if (Gpci_uart_info[j].type == brd->must_hwid) {
+-				brd->ports[i].max_baud =
+-					Gpci_uart_info[j].max_baud;
+-
+-				/* exception....CP-102 */
+-				if (brd->info->flags & MXSER_HIGHBAUD)
+-					brd->ports[i].max_baud = 921600;
+-				break;
+-			}
++	for (j = 0; j < UART_INFO_NUM; j++) {
++		if (Gpci_uart_info[j].type == brd->must_hwid) {
++			brd->max_baud = Gpci_uart_info[j].max_baud;
++
++			/* exception....CP-102 */
++			if (brd->info->flags & MXSER_HIGHBAUD)
++				brd->max_baud = 921600;
++			break;
+ 		}
+ 	}
+ 
 -- 
 2.32.0
 
