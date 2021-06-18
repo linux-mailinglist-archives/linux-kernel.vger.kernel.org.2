@@ -2,88 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF53A3AD1AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D94A63AD1B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:02:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234380AbhFRSEY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 14:04:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37078 "EHLO
+        id S234534AbhFRSEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 14:04:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233789AbhFRSEX (ORCPT
+        with ESMTP id S234391AbhFRSEd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 14:04:23 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B0ACC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 11:02:13 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id 102-20020a9d0eef0000b02903fccc5b733fso10507506otj.4
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 11:02:13 -0700 (PDT)
+        Fri, 18 Jun 2021 14:04:33 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB72C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 11:02:21 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id d27-20020a4a3c1b0000b029024983ef66dbso2659139ooa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 11:02:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gm6MYYB9NnNxdkRuQyLBTfy2a1l9+kymVbo6dLCaxp8=;
-        b=IX/TeFICHe0M9eY2FgHiWrn+tdb/q5XFgD8uXsgjTWA8ccYLhwkhmj5LVksZqDuyP/
-         WO98d4+EqUEGVeNVRkwGXvDR2KFUUsjHgWYsSZNspeMbY0pyo5tCDjX5g3a0S5zJVn5J
-         VVQVThsNKNWwgywn+UIOieUM+TDA8ZHnfFAZ0UJx9g4jXc4QSs4THTGKFETKMbtCQOhC
-         oohAmV/ouLnwljoWkk30lA1Ew7AeSHyL7YWAUXHRppPW6exwVxxl6v4oWTx8GoKtepVU
-         0FuNut9qWjAnX/+VsjdAfRTl/lf12Qwyt/IudALVfQNQswOIeBJ2fnVR25hgKkqCacht
-         +gLQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SU00HSVcuXHe68fMVNKSsQJqKFrTKLn9kQ7yRw4yRh4=;
+        b=EBl4uG1I6rT3sLwVlbWwd/TBZWAp53Rl6zcPEoKxvQqVPCwduiMLKQxTHpCUAVkzTj
+         f1UPPxmWyWp97dntGKGW1lZYDAZ3+7Rj5oQw0pRYJeSeAKfA9UruibmvZMsWx4kTWRWF
+         20BlPZ2/WxJ1rOMqTIc7tzkQq7vRAMA22VEo1CdUQAx+4BcUy9i8v4eDzh8x7GFlVbKn
+         Qvb+b2iWhsblJ8q0HqsiW/kSx5DTshEJlgV6BFOw/1J6jfSJvHWC6rebf3zT86N/NCMZ
+         GGmwnC4j0nH4X0lTdaRk4LCbYruZD1CllvUYiNzg95Ve1MFiAN+fzc7xChN5+0X17EH9
+         Bcew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gm6MYYB9NnNxdkRuQyLBTfy2a1l9+kymVbo6dLCaxp8=;
-        b=Zk8jzMepR7NH6uSY6y+qZqdwEd398z47Ii/lRNRm8hjPyhaMmXaJR2CrgiIzIsYq/4
-         h6+wct+ktmDQFawhC8bM8bsPPjMSFGjma+YSdbr+Ryv8VL+2Vi10BGhjVgjYNiWIqhF7
-         hHe1/xx8hCIUx6IiB5P9zGDKzMkqtYb6enCS4roJB6tysZYRC9mmjYr92eF2T+njx+HZ
-         1G8snjpNLr6QCbApowiFqEfehubDp28QcbGl7mRvXToxT6RWXsO72GzUL0+2KMWkoRdd
-         f4Ao6CbtwnhY8yTZH3/mEZbycanFcxxHeZAKMgB76YGZFc+qQm9LkIc+0dclKClKnG64
-         GR8w==
-X-Gm-Message-State: AOAM5306BZYEas6BHnTeKr51itY1E5LRgpaZyqNITNOUOuBouft/OXMv
-        Uh5OPpA9ccy97yrtF1OWDx1FsO1jaA+HObX2skGFIQ==
-X-Google-Smtp-Source: ABdhPJzDjg2IGcepCwb5aVYpL0iyoVlRw7VwKmnVSWke5phSkT/PVMVrc8WMy+XMkfj6Q5UajD7a40VUOZZuPPBY+Tc=
-X-Received: by 2002:a9d:1b41:: with SMTP id l59mr10406630otl.8.1624039332635;
- Fri, 18 Jun 2021 11:02:12 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SU00HSVcuXHe68fMVNKSsQJqKFrTKLn9kQ7yRw4yRh4=;
+        b=grh1v5BWMjcGggo2EuOdam+YnsRwLHGVE5Se69CkhbE4b2gEqqB+++/hqxh8e3t7tC
+         VP6l7AF8PhBx2che3cnDeirzfrkh0vO0T+Pbdepp7EYSo6XGlMlA9QV17k4ZJQYw5OqL
+         5kPQaxnwEFlKmdQQKyx1/bOvKBu28YfnpOzrZQBVrLbkxA5njWwZWX6NpbQnlLS4aoHP
+         2niFHRuzqxhyMNLAyQCypMoxif/HM8z/iMGOV8LglHxBymkktXP+s1Ig8VqDlGEyQ0xn
+         IvzZMHxCN3DeU77E5wj0Qe/Il39h4zbecYR5/5m1XFOjWFPjiDqXmMPgxH3dZDwpVe8v
+         utew==
+X-Gm-Message-State: AOAM531AiM2ekdyhb5td3QCbgRYzHEGmgC1zI36Xmp3YjymyLYBMxSuN
+        Ap5C8SYhh66jdS2fbgaczV5UrQ==
+X-Google-Smtp-Source: ABdhPJxMORdk7V3phB/Tc6olkI6aTofet55nfR/InWrD/Zf0FYVDcRjyRshlmChw1rdw8pruy9k4/w==
+X-Received: by 2002:a4a:9251:: with SMTP id g17mr10224564ooh.52.1624039340898;
+        Fri, 18 Jun 2021 11:02:20 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id p5sm1914066oip.35.2021.06.18.11.02.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 11:02:20 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 13:02:18 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, bhupesh.linux@gmail.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, lgirdwood@gmail.com,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v3 3/4] pinctrl: qcom/pinctrl-spmi-gpio: Arrange
+ compatibles alphabetically
+Message-ID: <YMzfqm+xKno7YDzw@builder.lan>
+References: <20210617053432.350486-1-bhupesh.sharma@linaro.org>
+ <20210617053432.350486-4-bhupesh.sharma@linaro.org>
 MIME-Version: 1.0
-References: <YDkbCHHBUOmfI59K@Konrads-MacBook-Pro.local> <YL7XXNOnbaDgmTB9@atmark-techno.com>
- <2e899de2-4b69-c4b6-33a6-09fb8949d2fd@nxp.com> <20210611062153.GA30906@lst.de>
- <YMM8Ua0HMmErLIQg@0xbeefdead.lan> <CAMGD6P1v2JoJoxSuAYL8UjdtCaLCc4K_7xzVkumspeb0qn=LBQ@mail.gmail.com>
- <YMqW+/gQvM+uWUTw@fedora> <YMqZswFnSNKk4Z7B@atmark-techno.com>
- <20210617051232.GB27192@lst.de> <YMrfWBLsJxCRhX5U@atmark-techno.com>
-In-Reply-To: <YMrfWBLsJxCRhX5U@atmark-techno.com>
-From:   Jianxiong Gao <jxgao@google.com>
-Date:   Fri, 18 Jun 2021 11:01:59 -0700
-Message-ID: <CAMGD6P0=9RE1-q1WHkwR1jymK5jyvN6QgypQ2KgdvBQn0CUTHw@mail.gmail.com>
-Subject: Re: swiotlb/caamjr regression (Was: [GIT PULL] (swiotlb) stable/for-linus-5.12)
-To:     Dominique MARTINET <dominique.martinet@atmark-techno.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Konrad Rzeszutek Wilk <konrad@darnok.org>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?Q?Horia_Geant=C4=83?= <horia.geanta@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lukas Hartmann <lukas@mntmn.com>,
-        Aymen Sghaier <aymen.sghaier@nxp.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Marc Orr <marcorr@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Peter Gonda <pgonda@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210617053432.350486-4-bhupesh.sharma@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Jianxiong Gao, before spending more time on this, could you also try
-> Chanho Park's patch?
-> https://lore.kernel.org/linux-iommu/20210510091816.GA2084@lst.de/T/#m0d0df6490350a08dcc24c9086c8edc165b402d6f
->
-I have tested Chanho Parks's patch and it works for us.
-The NVMe driver performs correctly with the patch.
+On Thu 17 Jun 00:34 CDT 2021, Bhupesh Sharma wrote:
 
-I have teste the patch on 06af8679449d
+> Arrange the compatibles inside qcom pinctrl-spmi gpio driver
+> alphabetically.
+> 
 
--- 
-Jianxiong Gao
+Nice, thanks Bhupesh.
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> ---
+>  drivers/pinctrl/qcom/pinctrl-spmi-gpio.c | 32 ++++++++++++------------
+>  1 file changed, 16 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
+> index 00870da0c94e..89f6147efe58 100644
+> --- a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
+> +++ b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
+> @@ -1104,23 +1104,14 @@ static int pmic_gpio_remove(struct platform_device *pdev)
+>  }
+>  
+>  static const struct of_device_id pmic_gpio_of_match[] = {
+> -	{ .compatible = "qcom,pm8005-gpio", .data = (void *) 4 },
+> -	{ .compatible = "qcom,pm8916-gpio", .data = (void *) 4 },
+> -	{ .compatible = "qcom,pm8941-gpio", .data = (void *) 36 },
+> -	/* pm8950 has 8 GPIOs with holes on 3 */
+> -	{ .compatible = "qcom,pm8950-gpio", .data = (void *) 8 },
+> -	{ .compatible = "qcom,pmi8950-gpio", .data = (void *) 2 },
+> -	{ .compatible = "qcom,pm8994-gpio", .data = (void *) 22 },
+> -	{ .compatible = "qcom,pmi8994-gpio", .data = (void *) 10 },
+> -	{ .compatible = "qcom,pm8998-gpio", .data = (void *) 26 },
+> -	{ .compatible = "qcom,pmi8998-gpio", .data = (void *) 14 },
+> -	{ .compatible = "qcom,pma8084-gpio", .data = (void *) 22 },
+> -	/* pms405 has 12 GPIOs with holes on 1, 9, and 10 */
+> -	{ .compatible = "qcom,pms405-gpio", .data = (void *) 12 },
+>  	/* pm660 has 13 GPIOs with holes on 1, 5, 6, 7, 8 and 10 */
+>  	{ .compatible = "qcom,pm660-gpio", .data = (void *) 13 },
+>  	/* pm660l has 12 GPIOs with holes on 1, 2, 10, 11 and 12 */
+>  	{ .compatible = "qcom,pm660l-gpio", .data = (void *) 12 },
+> +	{ .compatible = "qcom,pm6150-gpio", .data = (void *) 10 },
+> +	{ .compatible = "qcom,pm6150l-gpio", .data = (void *) 12 },
+> +	{ .compatible = "qcom,pm8005-gpio", .data = (void *) 4 },
+> +	{ .compatible = "qcom,pm8008-gpio", .data = (void *) 2 },
+>  	/* pm8150 has 10 GPIOs with holes on 2, 5, 7 and 8 */
+>  	{ .compatible = "qcom,pm8150-gpio", .data = (void *) 10 },
+>  	/* pm8150b has 12 GPIOs with holes on 3, r and 7 */
+> @@ -1130,12 +1121,21 @@ static const struct of_device_id pmic_gpio_of_match[] = {
+>  	{ .compatible = "qcom,pm8350-gpio", .data = (void *) 10 },
+>  	{ .compatible = "qcom,pm8350b-gpio", .data = (void *) 8 },
+>  	{ .compatible = "qcom,pm8350c-gpio", .data = (void *) 9 },
+> +	{ .compatible = "qcom,pm8916-gpio", .data = (void *) 4 },
+> +	{ .compatible = "qcom,pm8941-gpio", .data = (void *) 36 },
+> +	/* pm8950 has 8 GPIOs with holes on 3 */
+> +	{ .compatible = "qcom,pm8950-gpio", .data = (void *) 8 },
+> +	{ .compatible = "qcom,pm8994-gpio", .data = (void *) 22 },
+> +	{ .compatible = "qcom,pm8998-gpio", .data = (void *) 26 },
+> +	{ .compatible = "qcom,pma8084-gpio", .data = (void *) 22 },
+> +	{ .compatible = "qcom,pmi8950-gpio", .data = (void *) 2 },
+> +	{ .compatible = "qcom,pmi8994-gpio", .data = (void *) 10 },
+> +	{ .compatible = "qcom,pmi8998-gpio", .data = (void *) 14 },
+>  	{ .compatible = "qcom,pmk8350-gpio", .data = (void *) 4 },
+>  	{ .compatible = "qcom,pmr735a-gpio", .data = (void *) 4 },
+>  	{ .compatible = "qcom,pmr735b-gpio", .data = (void *) 4 },
+> -	{ .compatible = "qcom,pm6150-gpio", .data = (void *) 10 },
+> -	{ .compatible = "qcom,pm6150l-gpio", .data = (void *) 12 },
+> -	{ .compatible = "qcom,pm8008-gpio", .data = (void *) 2 },
+> +	/* pms405 has 12 GPIOs with holes on 1, 9, and 10 */
+> +	{ .compatible = "qcom,pms405-gpio", .data = (void *) 12 },
+>  	/* pmx55 has 11 GPIOs with holes on 3, 7, 10, 11 */
+>  	{ .compatible = "qcom,pmx55-gpio", .data = (void *) 11 },
+>  	{ },
+> -- 
+> 2.31.1
+> 
