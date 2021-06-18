@@ -2,239 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48AAC3ACAB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 621DD3ACAC0
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234103AbhFRMXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 08:23:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44324 "EHLO
+        id S234177AbhFRM0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 08:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234065AbhFRMX3 (ORCPT
+        with ESMTP id S232426AbhFRM0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 08:23:29 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7F7FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:21:20 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624018879;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VTXuxeMcAKylm7zWtq7p5HJ2ZgaTzTo7cufFUtK22Ko=;
-        b=hCBLlV8fTeYr52cs8fLmMQN7d2W60/OlTNNVE0A3ic1JJnANQpwGhUcOAdhsBNKSvtXE52
-        Zj85Q5xEzxhwhzoArfMXQvDqVxmsET1NePUf6XH+5jA1NzPv+zRhCIGXc8SbkhOQA1cvy2
-        h7P/jX+5T/SJevKfWio6lP+APaALEhGR4GDXivsQcKON+CqdJa6qDMvwmnYuuYrhWgJhyr
-        L0ZhbLAny4LEtxU2OMjc99V1QdzQo+HtF9hy+JM8gdhKuORJyN+RmNpPeo6ZaGrExf/IjF
-        //81hUxy0nFrsncRAC4tpwqi8s8JvEePkIMFCXmdm5/XzzHoIC5286bhWMnANQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624018879;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VTXuxeMcAKylm7zWtq7p5HJ2ZgaTzTo7cufFUtK22Ko=;
-        b=7ZnpfEpwxsfGXe/8aU7bDe/eyX7WouKX6LBPxy8oFmqKAOus54FK41XBTiq/3odUIPc4oo
-        uaXmybYUXHCf0pBg==
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V2 34/52] x86/fpu: Differentiate "copy" versus "move" of fpregs
-In-Reply-To: <20210614155357.167589571@linutronix.de>
-References: <20210614154408.673478623@linutronix.de> <20210614155357.167589571@linutronix.de>
-Date:   Fri, 18 Jun 2021 14:21:18 +0200
-Message-ID: <87h7hvfjnl.ffs@nanos.tec.linutronix.de>
+        Fri, 18 Jun 2021 08:26:39 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B881C061767
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:24:29 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id t140so10408847oih.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:24:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=aleksander-es.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zGMiRyRq//Dmyu1IU2B9k28pLofo2fcJNcRGLdmdXBI=;
+        b=QuJaZ1Jp0HJIGh8YZnu6ydU2L5dX6HOhfRdu9kDddNub/w55cjtKHA13sJUmZgiofz
+         GpLkWMkct9iFtf0ZUNsbaS3dqiRXl27SsCj6K69SitBlTCMauEaCPk+ZmuZCQVv202UG
+         nB2a/wI0WstcN/b2dvdjxoW1Uclz5jLN7LcARfwhywqO9uUu98j46bV11Yu6ZKIZNl+8
+         yGEtMKbXk+lAUBO4JS0deDefM02fwy6DiWyKOtqxePzwuIkV+8pPeEi9n8reQesDZvoj
+         N/igwfDpz1gGQcPfnXAmjc03cI5dAysuScVpPljRqMTo8j7Glq2cedV+19tAjZWkubyU
+         9ymw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zGMiRyRq//Dmyu1IU2B9k28pLofo2fcJNcRGLdmdXBI=;
+        b=sdiZebuYQhDvUWgQLh5A+zaM9t9HHgpr7S3QETFblp6W1BipkadFWk/hnSfWhxXYUK
+         dbvtNW+iPNSTMLwUt+tZqj5o8xrzmkWeRhVQnqwOw0ym0Tbi0smjcT76SEiKezroma3c
+         7CvbOM2ACOSCFJ+iZODqjVLD1XQysy/2kqQHvu3k5tj+xp6GM7QR8LeWCINplWLX2I7x
+         EBP7vwaCgr6O1/jL188Hy6K2xbHnpzh1LxjMAF6QrZjV/1o3fmy7Pi8VfoZoPLGt62Sm
+         Xcrf2pxtTCWUW5MZt2+J9AJodeCOlY6cCNXhEuwPv0k507quy/hs/KZj8JHnV1g0bSeL
+         DGdg==
+X-Gm-Message-State: AOAM533u0zR2UKmPAuT3wvgiA4ZokaIJc/teNL2uQBlD2KHk2m1UEuCI
+        Pyy2FzaLYS9LJ0Zb7d575+RH6UdtlMM70wTOoXpSPw==
+X-Google-Smtp-Source: ABdhPJzbrSc8Z7nx9BQg7dqAKn++bJoithUarzQuKATTzxcv+74R8gd6Gfk/gduBg7VKKUuI1FMPDLFKHnZaFG3O5i0=
+X-Received: by 2002:a05:6808:13d5:: with SMTP id d21mr14723893oiw.114.1624019068209;
+ Fri, 18 Jun 2021 05:24:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210618075243.42046-1-stephan@gerhold.net> <20210618075243.42046-3-stephan@gerhold.net>
+ <CAAP7ucKHXv_Wu7dpSmPpy1utMZV5iXGOjGg87AbcR4j+Xcz=WA@mail.gmail.com> <YMxx0XimZAEHmeUx@gerhold.net>
+In-Reply-To: <YMxx0XimZAEHmeUx@gerhold.net>
+From:   Aleksander Morgado <aleksander@aleksander.es>
+Date:   Fri, 18 Jun 2021 14:24:17 +0200
+Message-ID: <CAAP7uc+ckHLdMis0WQpuJSCJ0Ln7zBddEa-w3itRGykXsUiF2Q@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 2/3] net: wwan: Add RPMSG WWAN CTRL driver
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        M Chetan Kumar <m.chetan.kumar@intel.com>,
+        linuxwwan@intel.com, Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        phone-devel@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        ~postmarketos/upstreaming@lists.sr.ht
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dave,
+Hey,
 
-On Mon, Jun 14 2021 at 17:44, Thomas Gleixner wrote:
-> It would be simpler to just remove this FNSAVE optimization: Always save
-> and restore in the FNSAVE case.  This may incur the cost of the restore
-> even in cases where the restored state is never used.  But, it would only
-> hurt painfully ancient (>20 years old) processors.
+> > So, does this mean we're limiting the amount of channels exported to
+> > only one QMI control port and one AT control port?
+>
+> Yep, but I think:
+>   - It's easy to extend this with additional ports later
+>     if someone has a real use case for that.
+>   - It's still possible to export via rpmsgexport.
+>
 
-after staring more at that, I think it's the right thing to do.
+Ah, that's good then, if we can have the rpmsgexport fallback, there
+shouldn't be any issue.
 
-Thanks,
+> > Not saying that's wrong, but maybe it makes sense to add a comment
+> > somewhere specifying that explicitly.
+>
+> Given that these channels were only found through reverse engineering,
+> saying that DATA*_CNTL/DATA* are fully equivalent QMI/AT ports is just
+> a theory, I have no proof for this. Generally these channels had some
+> fixed use case on the original Android system, for example DATA1 (AT)
+> seems to have been often used for Bluetooth Dial-Up Networking (DUN)
+> while DATA4 was often more general purpose.
+>
+> Perhaps DATA* are all fully equivalent, independent AT channels at the
+> end, or perhaps DATA1/DATA4 behave slightly differently because there
+> were some special requirements for Bluetooth DUN. I have no way to tell.
+> And it can vary from device to device since we're stuck with
+> device-specific (and usually signed) firmware.
+>
+> Another example: I have seen DATA11 on some devices, but it does not
+> seem to work as AT port for some reason, there is no reply at all
+> from the modem on that channel. Perhaps it needs to be activated
+> somehow, perhaps it's not an AT channel at all, I have no way to tell.
+>
+> My point is: Here I'm only enabling what is proven to work on all
+> devices (used in postmarketOS for more than a year). I have insufficient
+> data to vouch for the reliability of any other channel. I cannot say if
+> the channels are really independent, or influence each other somehow.
+>
 
-        tglx
----
-Subject: x86/fpu: Get rid of the FNSAVE optimization
-From: Thomas Gleixner <tglx@linutronix.de>
-Date: Fri, 18 Jun 2021 13:48:18 +0200
+Fair enough; I think your approach is the correct one, just enable
+what's known to work.
 
-The FNSAVE support requires conditionals in quite some call paths because
-FNSAVE reinitialized the FPU hardware. If the save has to preserve the FPU
-register state then the caller has to conditionally restore it from memory
-when FNSAVE is in use.
+> As far as I understand, we currently do not have any use case for having
+> multiple QMI/AT ports exposed for ModemManager, right? And if someone
+> does have a use case, perhaps exposing them through the WWAN subsystem
+> is not even what they want, perhaps they want to forward them through
+> USB or something.
+>
 
-This also requires a conditional in context switch because the restore
-avoidance optimization cannot work with FNSAVE. As this only affects 20+
-years old CPUs there is really no reason to keep this optimization
-effective for FNSAVE. It's about time to not optimize for antiques anymore.
+There is no such usecase in MM; having one single QMI port in MM is
+more than enough, and having the extra AT port gives some
+functionalities that we don't yet support in QMI (e.g. voice call
+management). We don't gain anything extra by having more QMI or more
+AT ports at this moment.
 
-Just unconditionally FRSTOR the save content to the registers and clean up
-the conditionals all over the place.
+> > Also, would it make sense to have some way to trigger the export of
+> > additional channels somehow via userspace? e.g. something like
+> > rpmsgexport but using the wwan subsystem. I'm not sure if that's a
+> > true need anywhere or just over-engineering the solution, truth be
+> > told.
+>
+> So personally I think we should keep this simple and limited to existing
+> use cases. If someone shows up with different requirements we can
+> investigate this further.
+>
 
-Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
-V3: New patch
----
- arch/x86/include/asm/fpu/internal.h |   17 +++++++----
- arch/x86/kernel/fpu/core.c          |   54 +++++++++++++++---------------------
- 2 files changed, 34 insertions(+), 37 deletions(-)
+Yes, I think I'm on that same boat.
 
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -375,7 +375,7 @@ static inline int os_xrstor_safe(struct
- 	return err;
- }
- 
--extern int save_fpregs_to_fpstate(struct fpu *fpu);
-+extern void save_fpregs_to_fpstate(struct fpu *fpu);
- 
- static inline void __copy_kernel_to_fpregs(union fpregs_state *fpstate, u64 mask)
- {
-@@ -507,12 +507,17 @@ static inline void __fpregs_load_activat
- static inline void switch_fpu_prepare(struct fpu *old_fpu, int cpu)
- {
- 	if (static_cpu_has(X86_FEATURE_FPU) && !(current->flags & PF_KTHREAD)) {
--		if (!save_fpregs_to_fpstate(old_fpu))
--			old_fpu->last_cpu = -1;
--		else
--			old_fpu->last_cpu = cpu;
-+		save_fpregs_to_fpstate(old_fpu);
-+		/*
-+		 * The save operation preserved register state, so the
-+		 * fpu_fpregs_owner_ctx is still @old_fpu. Store the
-+		 * current CPU number in @old_fpu, so the next return
-+		 * to user space can avoid the FPU register restore
-+		 * when is returns on the same CPU and still owns the
-+		 * context.
-+		 */
-+		old_fpu->last_cpu = cpu;
- 
--		/* But leave fpu_fpregs_owner_ctx! */
- 		trace_x86_fpu_regs_deactivated(old_fpu);
- 	}
- }
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -83,16 +83,20 @@ bool irq_fpu_usable(void)
- EXPORT_SYMBOL(irq_fpu_usable);
- 
- /*
-- * These must be called with preempt disabled. Returns
-- * 'true' if the FPU state is still intact and we can
-- * keep registers active.
-+ * Save the FPU register state in fpu->state. The register state is
-+ * preserved.
-  *
-- * The legacy FNSAVE instruction cleared all FPU state
-- * unconditionally, so registers are essentially destroyed.
-- * Modern FPU state can be kept in registers, if there are
-- * no pending FP exceptions.
-+ * Must be called with fpregs_lock() held.
-+ *
-+ * The legacy FNSAVE instruction clears all FPU state unconditionally, so
-+ * register state has to be reloaded. That might be a pointless exercise
-+ * when the FPU is going to be used by another task right after that. But
-+ * this only affect 20+ years old 32bit systems and avoids conditionals all
-+ * over the place.
-+ *
-+ * FXSAVE and all XSAVE variants preserve the FPU register state.
-  */
--int save_fpregs_to_fpstate(struct fpu *fpu)
-+void save_fpregs_to_fpstate(struct fpu *fpu)
- {
- 	if (likely(use_xsave())) {
- 		os_xsave(&fpu->state.xsave);
-@@ -103,21 +107,20 @@ int save_fpregs_to_fpstate(struct fpu *f
- 		 */
- 		if (fpu->state.xsave.header.xfeatures & XFEATURE_MASK_AVX512)
- 			fpu->avx512_timestamp = jiffies;
--		return 1;
-+		return;
- 	}
- 
- 	if (likely(use_fxsr())) {
- 		fxsave(&fpu->state.fxsave);
--		return 1;
-+		return;
- 	}
- 
- 	/*
- 	 * Legacy FPU register saving, FNSAVE always clears FPU registers,
--	 * so we have to mark them inactive:
-+	 * so we have to reload them from the memory state.
- 	 */
- 	asm volatile("fnsave %[fp]; fwait" : [fp] "=m" (fpu->state.fsave));
--
--	return 0;
-+	frstor(&fpu->state.fsave);
- }
- EXPORT_SYMBOL(save_fpregs_to_fpstate);
- 
-@@ -133,10 +136,6 @@ void kernel_fpu_begin_mask(unsigned int
- 	if (!(current->flags & PF_KTHREAD) &&
- 	    !test_thread_flag(TIF_NEED_FPU_LOAD)) {
- 		set_thread_flag(TIF_NEED_FPU_LOAD);
--		/*
--		 * Ignore return value -- we don't care if reg state
--		 * is clobbered.
--		 */
- 		save_fpregs_to_fpstate(&current->thread.fpu);
- 	}
- 	__cpu_invalidate_fpregs_state();
-@@ -171,11 +170,8 @@ void fpu__save(struct fpu *fpu)
- 	fpregs_lock();
- 	trace_x86_fpu_before_save(fpu);
- 
--	if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
--		if (!save_fpregs_to_fpstate(fpu)) {
--			copy_kernel_to_fpregs(&fpu->state);
--		}
--	}
-+	if (!test_thread_flag(TIF_NEED_FPU_LOAD))
-+		save_fpregs_to_fpstate(fpu);
- 
- 	trace_x86_fpu_after_save(fpu);
- 	fpregs_unlock();
-@@ -244,20 +240,16 @@ int fpu__copy(struct task_struct *dst, s
- 	memset(&dst_fpu->state.xsave, 0, fpu_kernel_xstate_size);
- 
- 	/*
--	 * If the FPU registers are not current just memcpy() the state.
--	 * Otherwise save current FPU registers directly into the child's FPU
--	 * context, without any memory-to-memory copying.
--	 *
--	 * ( The function 'fails' in the FNSAVE case, which destroys
--	 *   register contents so we have to load them back. )
-+	 * If the FPU registers are not owned by current just memcpy() the
-+	 * state.  Otherwise save the FPU registers directly into the
-+	 * child's FPU context, without any memory-to-memory copying.
- 	 */
- 	fpregs_lock();
- 	if (test_thread_flag(TIF_NEED_FPU_LOAD))
- 		memcpy(&dst_fpu->state, &src_fpu->state, fpu_kernel_xstate_size);
- 
--	else if (!save_fpregs_to_fpstate(dst_fpu))
--		copy_kernel_to_fpregs(&dst_fpu->state);
--
-+	else
-+		save_fpregs_to_fpstate(dst_fpu);
- 	fpregs_unlock();
- 
- 	set_tsk_thread_flag(dst, TIF_NEED_FPU_LOAD);
+> If I send a v3 I will check if I can clarify this in the commit
+> message somewhat. I actually had something related in there but removed
+> it shortly before submitting the patch because I thought it's mostly
+> just speculation and the message was already quite long. Oh well :)
+>
+
+Heh :) Thanks!
+
+-- 
+Aleksander
+https://aleksander.es
