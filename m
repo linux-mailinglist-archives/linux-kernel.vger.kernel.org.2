@@ -2,137 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 518B23ACA12
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 13:39:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC95F3AC9F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 13:36:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234147AbhFRLl3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 07:41:29 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3275 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234139AbhFRLl0 (ORCPT
+        id S233484AbhFRLiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 07:38:12 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:50562 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231598AbhFRLiJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 07:41:26 -0400
-Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G5xSV3myTz6G9nt;
-        Fri, 18 Jun 2021 19:26:02 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 18 Jun 2021 13:39:15 +0200
-Received: from localhost.localdomain (10.69.192.58) by
- lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 18 Jun 2021 12:39:11 +0100
-From:   John Garry <john.garry@huawei.com>
-To:     <joro@8bytes.org>, <will@kernel.org>, <dwmw2@infradead.org>,
-        <baolu.lu@linux.intel.com>, <robin.murphy@arm.com>,
-        <corbet@lwn.net>
-CC:     <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
-        <linuxarm@huawei.com>, <thunder.leizhen@huawei.com>,
-        <chenxiang66@hisilicon.com>, <linux-doc@vger.kernel.org>,
-        John Garry <john.garry@huawei.com>
-Subject: [PATCH v14 6/6] iommu: Remove mode argument from iommu_set_dma_strict()
-Date:   Fri, 18 Jun 2021 19:34:18 +0800
-Message-ID: <1624016058-189713-7-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1624016058-189713-1-git-send-email-john.garry@huawei.com>
-References: <1624016058-189713-1-git-send-email-john.garry@huawei.com>
+        Fri, 18 Jun 2021 07:38:09 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15IBWkku030518;
+        Fri, 18 Jun 2021 13:35:45 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=PpcAaJrSaZTHGuAzUixTxfiO8Bz+TZX1wKmwkjUgJ8s=;
+ b=wOG+8h0hRjCQlzupRqd33iw2H3KBxT1FGyZf/xwMuzCZ6iPdezLEmBSPtBwP8YdaWwtg
+ HSBd338QwHcX0I1DY7PfNOYync+/4ic9pHrjoe14nYiEpGQRURfM8PjdRh1+ubPewoe+
+ WiclP4bwWhUnyMJI7mYsftH+jwt01Ctyjqj4GvQsl+iOrwcfThC0R9mEmMPcJNm0djA7
+ cTkwfJn9m/MyPyF2Oq5DAVb3NoDmuWnuL/WR1SJc71S12mKqnx4HwKJ37FHdl+mHk2GE
+ 5JsajgUdKnqghKuO7VuU2w/0mZCo57FRfaF8tC/xbAt1tgEAEBakcjU/qX4nk7ffl2G1 NA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 398hn3ayww-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Jun 2021 13:35:45 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C48FB10002A;
+        Fri, 18 Jun 2021 13:35:44 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A83D4225EBE;
+        Fri, 18 Jun 2021 13:35:44 +0200 (CEST)
+Received: from lmecxl0889.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 18 Jun
+ 2021 13:35:44 +0200
+Subject: Re: [PATCH 3/4] rpmsg: char: Introduce the "rpmsg-raw" channel
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>, <julien.massot@iot.bzh>
+References: <20210607173032.30133-1-arnaud.pouliquen@foss.st.com>
+ <20210607173032.30133-4-arnaud.pouliquen@foss.st.com>
+ <20210615200102.GE604521@p14s>
+ <b55cd4e5-fb9d-a0ab-03a9-3a771898db04@foss.st.com>
+ <20210617213154.GA790564@p14s>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Message-ID: <d8e81ecd-c77d-9d16-7e43-218bd54a9f83@foss.st.com>
+Date:   Fri, 18 Jun 2021 13:35:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210617213154.GA790564@p14s>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-18_07:2021-06-18,2021-06-18 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We only ever now set strict mode enabled in iommu_set_dma_strict(), so
-just remove the argument.
+Hi Mathieu,
 
-Signed-off-by: John Garry <john.garry@huawei.com>
-Reviewed-by: Robin Murphy <robin.murphy@arm.com>
----
- drivers/iommu/amd/init.c    | 2 +-
- drivers/iommu/intel/iommu.c | 6 +++---
- drivers/iommu/iommu.c       | 5 ++---
- include/linux/iommu.h       | 2 +-
- 4 files changed, 7 insertions(+), 8 deletions(-)
+On 6/17/21 11:31 PM, Mathieu Poirier wrote:
+> On Wed, Jun 16, 2021 at 02:38:26PM +0200, Arnaud POULIQUEN wrote:
+>> Hi Mathieu,
+>>
+>> On 6/15/21 10:01 PM, Mathieu Poirier wrote:
+>>> On Mon, Jun 07, 2021 at 07:30:31PM +0200, Arnaud Pouliquen wrote:
+>>>> Allows to probe the endpoint device on a remote name service announcement,
+>>>> by registering a rpmsg_driverfor the "rpmsg-raw" channel.
+>>>>
+>>>> With this patch the /dev/rpmsgX interface can be instantiated by the remote
+>>>> firmware.
+>>>>
+>>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+>>>> ---
+>>>>  drivers/rpmsg/rpmsg_char.c | 54 ++++++++++++++++++++++++++++++++++++--
+>>>>  1 file changed, 52 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+>>>> index 4199ac1bee10..3b850b218eb0 100644
+>>>> --- a/drivers/rpmsg/rpmsg_char.c
+>>>> +++ b/drivers/rpmsg/rpmsg_char.c
+>>>> @@ -25,6 +25,8 @@
+>>>>  
+>>>>  #include "rpmsg_char.h"
+>>>>  
+>>>> +#define RPMSG_CHAR_DEVNAME "rpmsg-raw"
+>>>> +
+>>>>  static dev_t rpmsg_major;
+>>>>  static struct class *rpmsg_class;
+>>>>  
+>>>> @@ -416,6 +418,40 @@ int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent
+>>>>  }
+>>>>  EXPORT_SYMBOL(rpmsg_chrdev_eptdev_create);
+>>>>  
+>>>> +static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
+>>>> +{
+>>>> +	struct rpmsg_channel_info chinfo;
+>>>> +
+>>>> +	memcpy(chinfo.name, RPMSG_CHAR_DEVNAME, sizeof(RPMSG_CHAR_DEVNAME));
+>>>> +	chinfo.src = rpdev->src;
+>>>> +	chinfo.dst = rpdev->dst;
+>>>> +
+>>>> +	return __rpmsg_chrdev_eptdev_create(rpdev, &rpdev->dev, chinfo, true);
+>>>
+>>> I am a little puzzled here as to why we need different modes... Why can't we
+>>> simply call rpmsg_chrdev_eptdev_create() and let the endpoint be created on
+>>> open() and destroyed on release() as per the current implementation?
+>>
+>> The main reason is the support of the NS announcement
+>> a NS announcement is received from the remote processor:
+>> channel name: "rpmsg-raw"
+>> remote address (dst address): 0x400
+>> local address (scr address) : RPMSG_ADDR_ANY
+>> => no default endpoint, and not local address.
+>>
+>> case 1) if we use legacy implementation ( no default endpoint)
+>> => create/destroy endpoint on open/stop
+>> - on first open: created endpoint is bound to scr address 0x406
+>> - a first message is sent to the remote side, the address 0x406 is stored as
+>> default channel dst address on remote side.
+>> - on close: endpoint is closed and associated address 0x406 is free.
+>> - another driver create an enpoint the address 0x406 is reserved for this new
+>> endpoint.
+>> - on new open:  scr address is set to next value 0x407
+>> => how to inform remote processor that the address has changed?
+>> => no reservation mechanism that ensure that you can reuse the same address
+>>
+>> case 2) relying on use_default_ept
+>> => Ensure that both side have always the same addresses to communicate.
+> 
+> I see the problem and your solution is adequate - I think the code simply needs
+> to be moved around a little.  Here is what I suggest:
+> 
+> 1) Create the endpoint in rpmsg_chrdev_probe(), just before calling
+> rpmsg_chrdev_eptdev_create().  That way changes to rpmsg_eptdev_open() can be
+> kept to a minimum.  I don't think we'll be needing
+> __rpmsg_chrdev_eptdev_create() anymore.
 
-diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-index 1e641cb6dddc..6e12a615117b 100644
---- a/drivers/iommu/amd/init.c
-+++ b/drivers/iommu/amd/init.c
-@@ -3099,7 +3099,7 @@ static int __init parse_amd_iommu_options(char *str)
- 	for (; *str; ++str) {
- 		if (strncmp(str, "fullflush", 9) == 0) {
- 			pr_warn("amd_iommu=fullflush deprecated; use iommu.strict=1 instead\n");
--			iommu_set_dma_strict(true);
-+			iommu_set_dma_strict();
- 		}
- 		if (strncmp(str, "force_enable", 12) == 0)
- 			amd_iommu_force_enable = true;
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 06666f9d8116..77d0834fb0df 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -454,7 +454,7 @@ static int __init intel_iommu_setup(char *str)
- 			iommu_dma_forcedac = true;
- 		} else if (!strncmp(str, "strict", 6)) {
- 			pr_warn("intel_iommu=strict deprecated; use iommu.strict=1 instead\n");
--			iommu_set_dma_strict(true);
-+			iommu_set_dma_strict();
- 		} else if (!strncmp(str, "sp_off", 6)) {
- 			pr_info("Disable supported super page\n");
- 			intel_iommu_superpage = 0;
-@@ -4382,7 +4382,7 @@ int __init intel_iommu_init(void)
- 		 */
- 		if (cap_caching_mode(iommu->cap)) {
- 			pr_info_once("IOMMU batching disallowed due to virtualization\n");
--			iommu_set_dma_strict(true);
-+			iommu_set_dma_strict();
- 		}
- 		iommu_device_sysfs_add(&iommu->iommu, NULL,
- 				       intel_iommu_groups,
-@@ -5699,7 +5699,7 @@ static void quirk_calpella_no_shadow_gtt(struct pci_dev *dev)
- 	} else if (dmar_map_gfx) {
- 		/* we have to ensure the gfx device is idle before we flush */
- 		pci_info(dev, "Disabling batched IOTLB flush on Ironlake\n");
--		iommu_set_dma_strict(true);
-+		iommu_set_dma_strict();
- 	}
- }
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x0040, quirk_calpella_no_shadow_gtt);
-diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-index 60b1ec42e73b..ff221d3ddcbc 100644
---- a/drivers/iommu/iommu.c
-+++ b/drivers/iommu/iommu.c
-@@ -349,10 +349,9 @@ static int __init iommu_dma_setup(char *str)
- }
- early_param("iommu.strict", iommu_dma_setup);
- 
--void iommu_set_dma_strict(bool strict)
-+void iommu_set_dma_strict(void)
- {
--	if (strict || !(iommu_cmd_line & IOMMU_CMD_LINE_STRICT))
--		iommu_dma_strict = strict;
-+	iommu_dma_strict = true;
- }
- 
- bool iommu_get_dma_strict(struct iommu_domain *domain)
-diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-index 32d448050bf7..754f67d6dd90 100644
---- a/include/linux/iommu.h
-+++ b/include/linux/iommu.h
-@@ -476,7 +476,7 @@ int iommu_enable_nesting(struct iommu_domain *domain);
- int iommu_set_pgtable_quirks(struct iommu_domain *domain,
- 		unsigned long quirks);
- 
--void iommu_set_dma_strict(bool val);
-+void iommu_set_dma_strict(void);
- bool iommu_get_dma_strict(struct iommu_domain *domain);
- 
- extern int report_iommu_fault(struct iommu_domain *domain, struct device *dev,
--- 
-2.26.2
+Yes i could, but this will break a concept of the rpmsg_char that creates the
+endpoint on open, meaning that application is ready to communicate.
 
+I would rather preserve this behavior.
+
+> 
+> 2) We can get rid of use_default_ept by taking advantage of the fact that the
+> rpmsg_char driver does not use rpmsg_device::ept.  If we create the endpoint in
+> rpmsg_chrdev_probe() we know that if rpdev->ept exists, we must not create
+> or destroy the endpoint in rpmsg_eptdev_open() and rpmsg_eptdev_release().
+>
+> 3) Function rpmsg_eptdev_open() doesn't change much.  If rpdev->ept is NULL
+> than
+> an endpoint is created as the current implementation.  Otherwise we simply do:
+>
+>         eptdev->ept = rpdev->ept;
+>
+
+In qcom_glink_create_chrdev, a rpmsg_ctrl rpdev with a default endpoint is
+created and used as parameter of the  pmsg_ctrldev_register_device [1]
+=> rpdev->ept is not NULL.
+
+So the rpmsg_char has to differentiate 2 cases on rpmsg_eptdev_open:
+- A enpdoint has to be created as requested by RPMSG_CREATE_EPT_IOCTL
+(regardless of the rpdev->ept value)
+- for a rpmsg device created by an NS announcement: A default endpoint has to be
+reused (or created if rpdev->ept is null).
+
+so the rpdev->ept test is not relevant for decision, the use_default_ept ( or
+another flag) is mandatory.
+
+
+> 4) Make sure the teardown path works as well.  From what I can see, it should.
+> 
+> 5) Add a __lot__ of comments.
+> 
+> If the above all works this entire patchset should become really small.
+
+Thanks,
+Arnaud
+
+> 
+>>
+>>>
+>>> I'd rather keep things simple for the refactoring and introduce new features
+>>> later if need be.
+>>
+>> Yes I agree with you, but here it could become a nightmare for the remote
+>> processor if the Linux endpoint address is not stable.
+>>
+>> Anyway we can consider this as a workaround waiting the extension of the NS
+>> announcement to have a better management of the address exchange on channel
+>> initialization.
+>>
+>> Thanks
+>> Arnaud
+>>
+>>>
+>>> As I said, it may be that I don't understand the usecase.
+>>>
+>>> Thanks,
+>>> Mathieu
+>>>
+>>>> +}
+>>>> +
+>>>> +static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
+>>>> +{
+>>>> +	int ret;
+>>>> +
+>>>> +	ret = device_for_each_child(&rpdev->dev, NULL, rpmsg_chrdev_eptdev_destroy);
+>>>> +	if (ret)
+>>>> +		dev_warn(&rpdev->dev, "failed to destroy endpoints: %d\n", ret);
+>>>> +}
+>>>> +
+>>>> +static struct rpmsg_device_id rpmsg_chrdev_id_table[] = {
+>>>> +	{ .name	= RPMSG_CHAR_DEVNAME },
+>>>> +	{ },
+>>>> +};
+>>>> +
+>>>> +static struct rpmsg_driver rpmsg_chrdev_driver = {
+>>>> +	.probe = rpmsg_chrdev_probe,
+>>>> +	.remove = rpmsg_chrdev_remove,
+>>>> +	.id_table = rpmsg_chrdev_id_table,
+>>>> +	.drv = {
+>>>> +		.name = "rpmsg_chrdev",
+>>>> +	},
+>>>> +};
+>>>> +
+>>>>  static int rpmsg_chrdev_init(void)
+>>>>  {
+>>>>  	int ret;
+>>>> @@ -429,16 +465,30 @@ static int rpmsg_chrdev_init(void)
+>>>>  	rpmsg_class = class_create(THIS_MODULE, "rpmsg");
+>>>>  	if (IS_ERR(rpmsg_class)) {
+>>>>  		pr_err("failed to create rpmsg class\n");
+>>>> -		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+>>>> -		return PTR_ERR(rpmsg_class);
+>>>> +		ret = PTR_ERR(rpmsg_class);
+>>>> +		goto free_region;
+>>>> +	}
+>>>> +
+>>>> +	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
+>>>> +	if (ret < 0) {
+>>>> +		pr_err("rpmsg: failed to register rpmsg raw driver\n");
+>>>> +		goto free_class;
+>>>>  	}
+>>>>  
+>>>>  	return 0;
+>>>> +
+>>>> +free_class:
+>>>> +	class_destroy(rpmsg_class);
+>>>> +free_region:
+>>>> +	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+>>>> +
+>>>> +	return ret;
+>>>>  }
+>>>>  postcore_initcall(rpmsg_chrdev_init);
+>>>>  
+>>>>  static void rpmsg_chrdev_exit(void)
+>>>>  {
+>>>> +	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
+>>>>  	class_destroy(rpmsg_class);
+>>>>  	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+>>>>  }
+>>>> -- 
+>>>> 2.17.1
+>>>>
