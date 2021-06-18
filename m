@@ -2,167 +2,545 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B8523AC311
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2A0A3AC312
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232746AbhFRGHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 02:07:14 -0400
-Received: from mail-dm6nam12on2087.outbound.protection.outlook.com ([40.107.243.87]:17696
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232250AbhFRGHL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 02:07:11 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RldX2oLBw+Ls11LySRNF66Iz8ocZH1pzWdfdz7zTW5/T5L5YGTy6HKHRej1KM1VxoVaKUjh7sp4/Q89lwYw4rpYb8psd/tvE+LqdXU5ijz5IERwkb7DUdcHL9QsjaKbAzo+L+x3s2BJEkF7PUkpVvuGE+MIlnQgT8pukA9YuBetiAN9bkKPDaFICOdZnvEOq4o8sW6O+umFRyQgCQRWMDEHqn/SG1L2F5CHPZo5kPU+OlqY8HDde/yfrvOP/cI2NkYF/UguwwgyjA+DvYeie0sv0UKxuuXVOcTiKgxFdiPyWlGbBVn7uOcm8BZTWiOsns7O7iTQih4cdyLlskKEEFg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m8vRcoqGTzGNRzbAI3bgcHDVggQrU0yQKccQvm9Y0dw=;
- b=Hv65vD9nCvKjlEq3hE+/MAI45wo4oawBZavA6YjGkdZxxDAux+Fdfgo35Ii2sLMKlbKBOsUSYkUf6Nfzx0RSD46E5UTOFop+SQBkv/6yA4WE4qEcWKyBGkdPH9s798JXRkof53Ih2psnjQ3siH0sBPlWa77Sppa/aNNQ7YRWooC9wCkA6ygId+ixwk/i0P9l6VQ7cHdvfzqqdKhzBMlBM2O6ttSW6yRvi+kaD0T867ULHwQu+WxN88vZKYBz1Bhsrb5kfc5lAlRMpb2efxFzCfwKVUfSDx6g3kiDOi7Eqk50pg4XtLRLt3SWRhz8XSnqQHy3siJrGY3NkiuFeRyGNA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=m8vRcoqGTzGNRzbAI3bgcHDVggQrU0yQKccQvm9Y0dw=;
- b=YZvIS/uVUHNtkN4jbO7wDfmX8Tmy4JKUgtNVj4ZiZq6I5KVxdsScSUASD4E5JQw1Dq/IJ+u+xHmzVlTyaloQFbvpUwPJAS3ShpRPt3ahG9Hxnh+FDCovySM7eHzzyBD5bdv46NkNfex7ieMt2G7KBLYOWXiU1xYA2XxKgxRzshc=
-Received: from MW4PR04CA0364.namprd04.prod.outlook.com (2603:10b6:303:81::9)
- by BL0PR12MB2449.namprd12.prod.outlook.com (2603:10b6:207:40::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Fri, 18 Jun
- 2021 06:05:00 +0000
-Received: from CO1NAM11FT033.eop-nam11.prod.protection.outlook.com
- (2603:10b6:303:81:cafe::30) by MW4PR04CA0364.outlook.office365.com
- (2603:10b6:303:81::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21 via Frontend
- Transport; Fri, 18 Jun 2021 06:05:00 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1NAM11FT033.mail.protection.outlook.com (10.13.174.247) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4242.16 via Frontend Transport; Fri, 18 Jun 2021 06:04:59 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 18 Jun
- 2021 01:04:59 -0500
-Received: from SATLEXMB04.amd.com (10.181.40.145) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 18 Jun
- 2021 01:04:59 -0500
-Received: from weisheng-Pro-E800-G4-WS950T.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server id 15.1.2242.4
- via Frontend Transport; Fri, 18 Jun 2021 01:04:56 -0500
-From:   Wesley Sheng <wesley.sheng@amd.com>
-To:     <linasvepstas@gmail.com>, <ruscur@russell.cc>, <oohall@gmail.com>,
-        <bhelgaas@google.com>, <corbet@lwn.net>,
-        <linux-pci@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <wesleyshenggit@sina.com>, Wesley Sheng <wesley.sheng@amd.com>
-Subject: [PATCH] Documentation: PCI: pci-error-recovery: rearrange the general sequence
-Date:   Fri, 18 Jun 2021 14:04:46 +0800
-Message-ID: <20210618060446.7969-1-wesley.sheng@amd.com>
-X-Mailer: git-send-email 2.25.1
+        id S232755AbhFRGHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 02:07:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232250AbhFRGHj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 02:07:39 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E24F0C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 23:05:29 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id q15so6881982pgg.12
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 23:05:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=855aARPuGXyvW3OteHlTY9JfuR5sJqhxx5CXtV4GkyE=;
+        b=LD1n8eeQvY5v5b2WorNs+qP0wWE8ZKA4YFJhDa7O2R6TueC203l0AOTBwjDZO16CQe
+         hK2IWGI5yyC1Y3YJ/e7uwGFV7QCN0XY1F1OGRe/B3gnXoYP5Zi0ROsLlAW8SHRk87khZ
+         sPIvTCJN3bUh2tuYe6ungRTjvl851vOBspsur8RculnpS7PooVPRixAYSEOr3SMjpL5T
+         Rw1n8Zin4zfynEzjy/ms8Y68i6CQfesL6xP/9NumIe1y5JN9PCi3h2fd4C7kJL3tJbl2
+         tTQ53l+wSMBFJ9zyvLRWeADMGu66y8TKeDVxpcg+j+t8k6Hkn5HK76U/lqVIipGH1b6W
+         S1sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=855aARPuGXyvW3OteHlTY9JfuR5sJqhxx5CXtV4GkyE=;
+        b=a25C9D3G6rUVWtgS1wtJnIxhIf2DGSiyt8fMPno/OAV3koibC4G+ccpy4V7f2ClaQ3
+         sN5+jxlZVDoRKSGhXKZq3p5BnZlh+PZ2agNDC0NTy48Hv+wqWSgPXCzhoU8HRiSjiuX2
+         roAxs9IcTi9a31ZNQqadWq6VmLLhWamS7wUgqlsIgm0aWnpWLNt03QOqQYF0XkcRxzax
+         SLfNqDyN8Zsc6sjyfPLu52Q/MFsQvi2IsLFbd4/EFVJH9pjRcVCXMyJXENkw/BmTGeVg
+         lKY2P/66Eu5Qn0awqGCFAnatLT+OzuJwyqZw/V8hDEVRz2azDa0+sRxs28ZKHqm2HCzO
+         D4cg==
+X-Gm-Message-State: AOAM533fHIA+3U8R7qbeoSplvJqbiVOptDOjBZsv4a0lNB9xuL10areR
+        FKKsB9qwrPD/t1jTF2Q+9w==
+X-Google-Smtp-Source: ABdhPJx/hgGxStivHc0lYFuE7t12vqrW4OUmC7gfDSnZFztnOMvmB/tk7zjIdump14mxgMybEKyWdA==
+X-Received: by 2002:a62:b40c:0:b029:2de:4a1e:a753 with SMTP id h12-20020a62b40c0000b02902de4a1ea753mr3488580pfn.64.1623996329445;
+        Thu, 17 Jun 2021 23:05:29 -0700 (PDT)
+Received: from INTERNET-129.allwinnertech.com ([223.197.233.48])
+        by smtp.gmail.com with ESMTPSA id v15sm7880102pgf.26.2021.06.17.23.05.26
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 17 Jun 2021 23:05:29 -0700 (PDT)
+From:   Ban Tao <fengzheng923@gmail.com>
+To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, mripard@kernel.org, wens@csie.org,
+        jernej.skrabec@gmail.com, fengzheng923@gmail.com,
+        p.zabel@pengutronix.de, samuel@sholland.org, krzk@kernel.org
+Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
+Subject: [PATCH v3 1/2] ASoC: sunxi: Add Allwinner H6 Digital MIC driver
+Date:   Fri, 18 Jun 2021 14:05:19 +0800
+Message-Id: <20210618060520.2778-1-fengzheng923@gmail.com>
+X-Mailer: git-send-email 2.22.0.windows.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c335bac5-537b-40b4-567d-08d9321f018c
-X-MS-TrafficTypeDiagnostic: BL0PR12MB2449:
-X-Microsoft-Antispam-PRVS: <BL0PR12MB24496B894077FCD6D378CB55950D9@BL0PR12MB2449.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Hdb3PO/yundkY2G3PysnZ7VtPs6KEzhwwbarZaSqmfsVtrXUbLgkaF+UbO2BK1TuUWzR0h0ZBWSnGSXs1Nf00xHWPdBMZW6NtzceY/W4qZC2bF7unyAchFg9zs/brqGsm16jX51ikNpQv1ex218Zjrq362ihnk87h3/XGK36iR60TGsSEEn/mX1Ty3lGFUt3fQusyYVcc8bMC1bau/v0zmdIYbgAPPMa/DINK7512yexzqp0J1PKLcOHOGL2T3iD5vBCZpm+VyoDhrA68IW5DtaKiYAxCUdO8R6VNbVuOYt19LelhVl24mvKfVHjK7b3ICY/HN2pz+/cyulKtRGoeNLkOhd2nn8f2k6wGsbUSFC7a0CaxL/qPPgsdJdNrbmzGQclHN0+mh9JIDMxoul9MG6sPHiiuD9z27Gk7/7dtoCvOZkpEOMRo+ImHj/Jl55vrKrCMSK8zzosuHS0e4KF/xD7bq6MjD3HtQH//bQbSMt4s0d1HryYyAqJUYEb67GL18sP3yns5MkDAonLSdDhWdrE8s1RL8uxPF3WSqtnXDlce3ApiRPguoW+gCNCOkTLe/6Q47/b4wUXQ8/nd5IdSTi8sMBm4y5w5frN5Ftv373rXRntR4etdayqKOqF2kP18Jl5ppUI3U4fSLooTRfYwDdffOYnV/bsQFKIBcr7ohJMlym7LmxlU93QF05syK9MmENMGSZMJPC0/sy0fam97A==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(39860400002)(376002)(46966006)(36840700001)(7696005)(2906002)(83380400001)(82310400003)(54906003)(316002)(36756003)(8936002)(44832011)(36860700001)(426003)(8676002)(7416002)(70206006)(110136005)(6666004)(70586007)(26005)(47076005)(186003)(86362001)(2616005)(478600001)(81166007)(356005)(4326008)(5660300002)(1076003)(82740400003)(336012)(36900700001)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2021 06:04:59.9396
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: c335bac5-537b-40b4-567d-08d9321f018c
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT033.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2449
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reset_link() callback function was called before mmio_enabled() in
-pcie_do_recovery() function actually, so rearrange the general
-sequence betwen step 2 and step 3 accordingly.
+The Allwinner H6 and later SoCs have an DMIC block
+which is capable of capture.
 
-Signed-off-by: Wesley Sheng <wesley.sheng@amd.com>
+Signed-off-by: Ban Tao <fengzheng923@gmail.com>
+
 ---
- Documentation/PCI/pci-error-recovery.rst | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+v1->v2:
+1.Fix some compilation errors.
+2.Modify some code styles.
+---
+v2->v3:
+None.
+---
+ MAINTAINERS                   |   7 +
+ sound/soc/sunxi/Kconfig       |   8 +
+ sound/soc/sunxi/Makefile      |   1 +
+ sound/soc/sunxi/sun50i-dmic.c | 404 ++++++++++++++++++++++++++++++++++
+ 4 files changed, 420 insertions(+)
+ create mode 100644 sound/soc/sunxi/sun50i-dmic.c
 
-diff --git a/Documentation/PCI/pci-error-recovery.rst b/Documentation/PCI/pci-error-recovery.rst
-index 187f43a03200..ac6a8729ef28 100644
---- a/Documentation/PCI/pci-error-recovery.rst
-+++ b/Documentation/PCI/pci-error-recovery.rst
-@@ -184,7 +184,14 @@ is STEP 6 (Permanent Failure).
-    and prints an error to syslog.  A reboot is then required to
-    get the device working again.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b4094f07214e..1b87225c39b0 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -760,6 +760,13 @@ L:	linux-media@vger.kernel.org
+ S:	Maintained
+ F:	drivers/staging/media/sunxi/cedrus/
  
--STEP 2: MMIO Enabled
-+STEP 2: Link Reset
-+------------------
-+The platform resets the link.  This is a PCI-Express specific step
-+and is done whenever a fatal error has been detected that can be
-+"solved" by resetting the link.
++ALLWINNER DMIC DRIVERS
++M:	Ban Tao <fengzheng923@gmail.com>
++L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
++S:	Maintained
++F:	Documentation/devicetree/bindings/sound/allwinner,sun50i-h6-dmic.yaml
++F:	sound/soc/sunxi/sun50i-dmic.c
++
+ ALPHA PORT
+ M:	Richard Henderson <rth@twiddle.net>
+ M:	Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
+index ddcaaa98d3cb..2a3bf7722e11 100644
+--- a/sound/soc/sunxi/Kconfig
++++ b/sound/soc/sunxi/Kconfig
+@@ -56,6 +56,14 @@ config SND_SUN4I_SPDIF
+ 	  Say Y or M to add support for the S/PDIF audio block in the Allwinner
+ 	  A10 and affiliated SoCs.
+ 
++config SND_SUN50I_DMIC
++	tristate "Allwinner H6 DMIC Support"
++	depends on (OF && ARCH_SUNXI) || COMPILE_TEST
++	select SND_SOC_GENERIC_DMAENGINE_PCM
++	help
++	  Say Y or M to add support for the DMIC audio block in the Allwinner
++	  H6 and affiliated SoCs.
++
+ config SND_SUN8I_ADDA_PR_REGMAP
+ 	tristate
+ 	select REGMAP
+diff --git a/sound/soc/sunxi/Makefile b/sound/soc/sunxi/Makefile
+index a86be340a076..4483fe9c94ef 100644
+--- a/sound/soc/sunxi/Makefile
++++ b/sound/soc/sunxi/Makefile
+@@ -6,3 +6,4 @@ obj-$(CONFIG_SND_SUN8I_CODEC_ANALOG) += sun8i-codec-analog.o
+ obj-$(CONFIG_SND_SUN50I_CODEC_ANALOG) += sun50i-codec-analog.o
+ obj-$(CONFIG_SND_SUN8I_CODEC) += sun8i-codec.o
+ obj-$(CONFIG_SND_SUN8I_ADDA_PR_REGMAP) += sun8i-adda-pr-regmap.o
++obj-$(CONFIG_SND_SUN50I_DMIC) += sun50i-dmic.o
+diff --git a/sound/soc/sunxi/sun50i-dmic.c b/sound/soc/sunxi/sun50i-dmic.c
+new file mode 100644
+index 000000000000..d0b576528552
+--- /dev/null
++++ b/sound/soc/sunxi/sun50i-dmic.c
+@@ -0,0 +1,404 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++//
++// This driver supports the DMIC in Allwinner's H6 SoCs.
++//
++// Copyright 2021 Ban Tao <fengzheng923@gmail.com>
++
++#include <linux/clk.h>
++#include <linux/device.h>
++#include <linux/of_device.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
++#include <linux/reset.h>
++#include <sound/dmaengine_pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++
++#define SUN50I_DMIC_EN_CTL		(0x00)
++	#define SUN50I_DMIC_EN_CTL_GLOBE			BIT(8)
++	#define SUN50I_DMIC_EN_CTL_CHAN(v)		((v) << 0)
++	#define SUN50I_DMIC_EN_CTL_CHAN_MASK		GENMASK(7, 0)
++#define SUN50I_DMIC_SR			(0x04)
++	#define SUN50I_DMIC_SR_SAMOLE_RATE(v)		((v) << 0)
++	#define SUN50I_DMIC_SR_SAMOLE_RATE_MASK		GENMASK(2, 0)
++#define SUN50I_DMIC_CTL			(0x08)
++	#define SUN50I_DMIC_CTL_OVERSAMPLE_RATE		BIT(0)
++#define SUN50I_DMIC_DATA			(0x10)
++#define SUN50I_DMIC_INTC			(0x14)
++	#define SUN50I_DMIC_FIFO_DRQ_EN			BIT(2)
++#define SUN50I_DMIC_INT_STA		(0x18)
++	#define SUN50I_DMIC_INT_STA_OVERRUN_IRQ_PENDING	BIT(1)
++	#define SUN50I_DMIC_INT_STA_DATA_IRQ_PENDING	BIT(0)
++#define SUN50I_DMIC_RXFIFO_CTL		(0x1c)
++	#define SUN50I_DMIC_RXFIFO_CTL_FLUSH		BIT(31)
++	#define SUN50I_DMIC_RXFIFO_CTL_MODE		BIT(9)
++	#define SUN50I_DMIC_RXFIFO_CTL_RESOLUTION	BIT(8)
++#define SUN50I_DMIC_CH_NUM		(0x24)
++	#define SUN50I_DMIC_CH_NUM_N(v)			((v) << 0)
++	#define SUN50I_DMIC_CH_NUM_N_MASK		GENMASK(2, 0)
++#define SUN50I_DMIC_CNT			(0x2c)
++	#define SUN50I_DMIC_CNT_N			BIT(0)
++#define SUN50I_DMIC_HPF_CTRL		(0x38)
++#define SUN50I_DMIC_VERSION		(0x50)
 +
 +
-+STEP 3: MMIO Enabled
- --------------------
- The platform re-enables MMIO to the device (but typically not the
- DMA), and then calls the mmio_enabled() callback on all affected
-@@ -197,8 +204,8 @@ information, if any, and eventually do things like trigger a device local
- reset or some such, but not restart operations. This callback is made if
- all drivers on a segment agree that they can try to recover and if no automatic
- link reset was performed by the HW. If the platform can't just re-enable IOs
--without a slot reset or a link reset, it will not call this callback, and
--instead will have gone directly to STEP 3 (Link Reset) or STEP 4 (Slot Reset)
-+without a slot reset, it will not call this callback, and
-+instead will have gone directly or STEP 4 (Slot Reset)
- 
- .. note::
- 
-@@ -210,7 +217,7 @@ instead will have gone directly to STEP 3 (Link Reset) or STEP 4 (Slot Reset)
-    such an error might cause IOs to be re-blocked for the whole
-    segment, and thus invalidate the recovery that other devices
-    on the same segment might have done, forcing the whole segment
--   into one of the next states, that is, link reset or slot reset.
-+   into next states, that is, slot reset.
- 
- The driver should return one of the following result codes:
-   - PCI_ERS_RESULT_RECOVERED
-@@ -233,17 +240,11 @@ The driver should return one of the following result codes:
- 
- The next step taken depends on the results returned by the drivers.
- If all drivers returned PCI_ERS_RESULT_RECOVERED, then the platform
--proceeds to either STEP3 (Link Reset) or to STEP 5 (Resume Operations).
-+proceeds to STEP 5 (Resume Operations).
- 
- If any driver returned PCI_ERS_RESULT_NEED_RESET, then the platform
- proceeds to STEP 4 (Slot Reset)
- 
--STEP 3: Link Reset
--------------------
--The platform resets the link.  This is a PCI-Express specific step
--and is done whenever a fatal error has been detected that can be
--"solved" by resetting the link.
--
- STEP 4: Slot Reset
- ------------------
- 
++struct sun50i_dmic_dev {
++	struct clk *dmic_clk;
++	struct clk *bus_clk;
++	struct reset_control *rst;
++	struct regmap *regmap;
++	struct snd_dmaengine_dai_dma_data dma_params_rx;
++	unsigned int chan_en;
++};
++
++struct dmic_rate {
++	unsigned int samplerate;
++	unsigned int rate_bit;
++};
++
++static int sun50i_dmic_startup(struct snd_pcm_substream *substream,
++			       struct snd_soc_dai *cpu_dai)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(asoc_rtd_to_cpu(rtd, 0));
++
++	/* only support capture */
++	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
++		return -EINVAL;
++
++	regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
++			   SUN50I_DMIC_RXFIFO_CTL_FLUSH,
++			   SUN50I_DMIC_RXFIFO_CTL_FLUSH);
++	regmap_write(host->regmap, SUN50I_DMIC_CNT, SUN50I_DMIC_CNT_N);
++
++	return 0;
++}
++
++static int sun50i_dmic_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *params,
++				 struct snd_soc_dai *cpu_dai)
++{
++	int i = 0;
++	unsigned long rate = params_rate(params);
++	unsigned int mclk = 0;
++	unsigned int channels = params_channels(params);
++	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(cpu_dai);
++	struct dmic_rate dmic_rate_s[] = {
++		{44100, 0x0},
++		{48000, 0x0},
++		{22050, 0x2},
++		{24000, 0x2},
++		{11025, 0x4},
++		{12000, 0x4},
++		{32000, 0x1},
++		{16000, 0x3},
++		{8000,  0x5},
++	};
++
++	/* DMIC num is N+1 */
++	regmap_update_bits(host->regmap, SUN50I_DMIC_CH_NUM,
++			   SUN50I_DMIC_CH_NUM_N_MASK,
++			   SUN50I_DMIC_CH_NUM_N(channels - 1));
++	host->chan_en = (1 << channels) - 1;
++	regmap_write(host->regmap, SUN50I_DMIC_HPF_CTRL, host->chan_en);
++
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
++				   SUN50I_DMIC_RXFIFO_CTL_MODE,
++				   SUN50I_DMIC_RXFIFO_CTL_MODE);
++		regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
++				   SUN50I_DMIC_RXFIFO_CTL_RESOLUTION, 0);
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
++				   SUN50I_DMIC_RXFIFO_CTL_MODE, 0);
++		regmap_update_bits(host->regmap, SUN50I_DMIC_RXFIFO_CTL,
++				   SUN50I_DMIC_RXFIFO_CTL_RESOLUTION,
++				   SUN50I_DMIC_RXFIFO_CTL_RESOLUTION);
++		break;
++	default:
++		dev_err(cpu_dai->dev, "Invalid format!\n");
++		return -EINVAL;
++	}
++
++	switch (rate) {
++	case 11025:
++	case 22050:
++	case 44100:
++		mclk = 22579200;
++		break;
++	case 8000:
++	case 12000:
++	case 16000:
++	case 24000:
++	case 32000:
++	case 48000:
++		mclk = 24576000;
++		break;
++	default:
++		dev_err(cpu_dai->dev, "Invalid rate!\n");
++		return -EINVAL;
++	}
++
++	if (clk_set_rate(host->dmic_clk, mclk)) {
++		dev_err(cpu_dai->dev, "mclk : %u not support\n", mclk);
++		return -EINVAL;
++	}
++
++	for (i = 0; i < ARRAY_SIZE(dmic_rate_s); i++) {
++		if (dmic_rate_s[i].samplerate == rate) {
++			regmap_update_bits(host->regmap, SUN50I_DMIC_SR,
++					   SUN50I_DMIC_SR_SAMOLE_RATE_MASK,
++					   SUN50I_DMIC_SR_SAMOLE_RATE(dmic_rate_s[i].rate_bit));
++			break;
++		}
++	}
++
++	switch (params_physical_width(params)) {
++	case 16:
++		host->dma_params_rx.addr_width = DMA_SLAVE_BUSWIDTH_2_BYTES;
++		break;
++	case 32:
++		host->dma_params_rx.addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
++		break;
++	default:
++		dev_err(cpu_dai->dev, "Unsupported physical sample width: %d\n",
++			params_physical_width(params));
++		return -EINVAL;
++	}
++
++	/* oversamplerate adjust */
++	if (params_rate(params) >= 24000)
++		regmap_update_bits(host->regmap, SUN50I_DMIC_CTL,
++				   SUN50I_DMIC_CTL_OVERSAMPLE_RATE,
++				   SUN50I_DMIC_CTL_OVERSAMPLE_RATE);
++	else
++		regmap_update_bits(host->regmap, SUN50I_DMIC_CTL,
++				   SUN50I_DMIC_CTL_OVERSAMPLE_RATE, 0);
++
++	return 0;
++}
++
++static int sun50i_dmic_trigger(struct snd_pcm_substream *substream, int cmd,
++			       struct snd_soc_dai *dai)
++{
++	int ret = 0;
++	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(dai);
++
++	if (substream->stream != SNDRV_PCM_STREAM_CAPTURE)
++		return -EINVAL;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		/* DRQ ENABLE */
++		regmap_update_bits(host->regmap, SUN50I_DMIC_INTC,
++				   SUN50I_DMIC_FIFO_DRQ_EN,
++				   SUN50I_DMIC_FIFO_DRQ_EN);
++		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
++				   SUN50I_DMIC_EN_CTL_CHAN_MASK,
++				   SUN50I_DMIC_EN_CTL_CHAN(host->chan_en));
++		/* Global enable */
++		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
++				   SUN50I_DMIC_EN_CTL_GLOBE,
++				   SUN50I_DMIC_EN_CTL_GLOBE);
++		break;
++
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		/* DRQ DISABLE */
++		regmap_update_bits(host->regmap, SUN50I_DMIC_INTC,
++				   SUN50I_DMIC_FIFO_DRQ_EN, 0);
++		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
++				   SUN50I_DMIC_EN_CTL_CHAN_MASK,
++				   SUN50I_DMIC_EN_CTL_CHAN(0));
++		/* Global disable */
++		regmap_update_bits(host->regmap, SUN50I_DMIC_EN_CTL,
++				   SUN50I_DMIC_EN_CTL_GLOBE, 0);
++		break;
++
++	default:
++		ret = -EINVAL;
++		break;
++	}
++	return ret;
++}
++
++static int sun50i_dmic_soc_dai_probe(struct snd_soc_dai *dai)
++{
++	struct sun50i_dmic_dev *host = snd_soc_dai_get_drvdata(dai);
++
++	snd_soc_dai_init_dma_data(dai, NULL, &host->dma_params_rx);
++
++	return 0;
++}
++
++static const struct snd_soc_dai_ops sun50i_dmic_dai_ops = {
++	.startup	= sun50i_dmic_startup,
++	.trigger	= sun50i_dmic_trigger,
++	.hw_params	= sun50i_dmic_hw_params,
++};
++
++static const struct regmap_config sun50i_dmic_regmap_config = {
++	.reg_bits = 32,
++	.reg_stride = 4,
++	.val_bits = 32,
++	.max_register = SUN50I_DMIC_VERSION,
++	.cache_type = REGCACHE_NONE,
++};
++
++#define	SUN50I_DMIC_RATES (SNDRV_PCM_RATE_8000_48000)
++#define SUN50I_FORMATS	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE)
++
++static struct snd_soc_dai_driver sun50i_dmic_dai = {
++	.capture = {
++		.channels_min = 1,
++		.channels_max = 8,
++		.rates = SUN50I_DMIC_RATES,
++		.formats = SUN50I_FORMATS,
++	},
++	.probe = sun50i_dmic_soc_dai_probe,
++	.ops = &sun50i_dmic_dai_ops,
++	.name = "dmic",
++};
++
++static const struct of_device_id sun50i_dmic_of_match[] = {
++	{
++		.compatible = "allwinner,sun50i-h6-dmic",
++	},
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, sun50i_dmic_of_match);
++
++static const struct snd_soc_component_driver sun50i_dmic_component = {
++	.name		= "sun50i-dmic",
++};
++
++static int sun50i_dmic_runtime_suspend(struct device *dev)
++{
++	struct sun50i_dmic_dev *host  = dev_get_drvdata(dev);
++
++	clk_disable_unprepare(host->dmic_clk);
++	clk_disable_unprepare(host->bus_clk);
++
++	return 0;
++}
++
++static int sun50i_dmic_runtime_resume(struct device *dev)
++{
++	struct sun50i_dmic_dev *host  = dev_get_drvdata(dev);
++	int ret;
++
++	ret = clk_prepare_enable(host->dmic_clk);
++	if (ret)
++		return ret;
++	ret = clk_prepare_enable(host->bus_clk);
++	if (ret)
++		clk_disable_unprepare(host->dmic_clk);
++
++	return ret;
++}
++
++static int sun50i_dmic_probe(struct platform_device *pdev)
++{
++	struct sun50i_dmic_dev *host;
++	struct resource *res;
++	int ret;
++	void __iomem *base;
++
++	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
++	if (!host)
++		return -ENOMEM;
++
++	/* Get the addresses */
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	base = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(base))
++		return dev_err_probe(&pdev->dev, PTR_ERR(base),
++				     "get resource failed.\n");
++
++	host->regmap = devm_regmap_init_mmio(&pdev->dev, base,
++						&sun50i_dmic_regmap_config);
++
++	/* Clocks */
++	host->bus_clk = devm_clk_get(&pdev->dev, "bus");
++	if (IS_ERR(host->bus_clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(host->bus_clk),
++				     "failed to get bus clock.\n");
++
++	host->dmic_clk = devm_clk_get(&pdev->dev, "mod");
++	if (IS_ERR(host->dmic_clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(host->dmic_clk),
++				     "failed to get dmic clock.\n");
++
++	host->dma_params_rx.addr = res->start + SUN50I_DMIC_DATA;
++	host->dma_params_rx.maxburst = 8;
++
++	platform_set_drvdata(pdev, host);
++
++	host->rst = devm_reset_control_get_optional_exclusive(&pdev->dev, NULL);
++	if (IS_ERR(host->rst))
++		return dev_err_probe(&pdev->dev, PTR_ERR(host->rst),
++				     "Failed to get reset.\n");
++	reset_control_deassert(host->rst);
++
++	ret = devm_snd_soc_register_component(&pdev->dev,
++				&sun50i_dmic_component, &sun50i_dmic_dai, 1);
++	if (ret)
++		return dev_err_probe(&pdev->dev, ret,
++				     "failed to register component.\n");
++
++	pm_runtime_enable(&pdev->dev);
++	if (!pm_runtime_enabled(&pdev->dev)) {
++		ret = sun50i_dmic_runtime_resume(&pdev->dev);
++		if (ret)
++			goto err_unregister;
++	}
++
++	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
++	if (ret)
++		goto err_suspend;
++
++	return 0;
++err_suspend:
++	if (!pm_runtime_status_suspended(&pdev->dev))
++		sun50i_dmic_runtime_suspend(&pdev->dev);
++err_unregister:
++	pm_runtime_disable(&pdev->dev);
++	return ret;
++}
++
++static int sun50i_dmic_remove(struct platform_device *pdev)
++{
++	pm_runtime_disable(&pdev->dev);
++	if (!pm_runtime_status_suspended(&pdev->dev))
++		sun50i_dmic_runtime_suspend(&pdev->dev);
++
++	return 0;
++}
++
++static const struct dev_pm_ops sun50i_dmic_pm = {
++	SET_RUNTIME_PM_OPS(sun50i_dmic_runtime_suspend,
++			   sun50i_dmic_runtime_resume, NULL)
++};
++
++static struct platform_driver sun50i_dmic_driver = {
++	.driver		= {
++		.name	= "sun50i-dmic",
++		.of_match_table = of_match_ptr(sun50i_dmic_of_match),
++		.pm	= &sun50i_dmic_pm,
++	},
++	.probe		= sun50i_dmic_probe,
++	.remove		= sun50i_dmic_remove,
++};
++
++module_platform_driver(sun50i_dmic_driver);
++
++MODULE_DESCRIPTION("Allwinner sun50i DMIC SoC Interface");
++MODULE_AUTHOR("Ban Tao <fengzheng923@gmail.com>");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:sun50i-dmic");
 -- 
-2.25.1
+2.29.0
 
