@@ -2,150 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3663AD0FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24AF83AD0FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233886AbhFRRMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 13:12:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232598AbhFRRMu (ORCPT
+        id S235683AbhFRRPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 13:15:12 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63358 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232598AbhFRRPK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 13:12:50 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB41DC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:10:39 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id t40so11262211oiw.8
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:10:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=k3dCTAx8gsxYWttzI5w/2kvcBcr5PpHulEpa3/adkDQ=;
-        b=hnQvz5GcAocFRPbIJujGLDG4eBFw0HqJKa5nLawSj00bb7ilY+CXgSEpOVsDaedRSP
-         nvqR+bpdtepuJfc2w8FgKsknrZSuXM+qS60qhfJ8zPrNj/R6r9vV+OMzMONiBmKoCffY
-         Jfmxz/foT3Mz3YVSRyWptX1dxDavjGBpZxQnzIYO113u71JFlidz2qeIBF9Bhvv99PSL
-         lGXab/Wrk6sqw6ClhXyHnzhq4EJo6Dh+hLdSuor8FSTq49vpWerXomxVpX6iWVS8J4Bq
-         bQs+ejtuVOb9iMoGvlNSNuzrhuva7/cqiwDewUXOO50nviHqTfx+P7hd98w+IhXnlDkc
-         78Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=k3dCTAx8gsxYWttzI5w/2kvcBcr5PpHulEpa3/adkDQ=;
-        b=Fy7VmPa7Aq0YrJ5MH2lKJzt54j+XMsVGCqSLerBV+IdXcoin2oCf26AWqQFHNUG75M
-         gVhX4oF58Cok99aBq/LSRjTZByTvdu1Wcs/jYQDkB8st44ayn/vDuUzMEaPNVZbn1njl
-         LQwS/WYDJUExsnUsx/SpdcaCBvGjaiJP/eRx1pMiMV85lTOucrcyP4q6rjsDMx6+azC+
-         dActJKWlyapTTIy/pRz8Bg535r4JXAhI3idSdWFcWlX3spzInnLC6rkUJEpEbr2So7SZ
-         XPma5GDyUM3UDHzOb9pYZTtttRkij4hgLa/urYqnaP/mV8dQNWRnqooU/LvWWdWetGo+
-         /l1g==
-X-Gm-Message-State: AOAM533+G59zbniU7tqJkrGfugMv41SkUk3p4kdl3cboIix9GIgURCNQ
-        HV+mY0ssau50Axa4k/ED+76e+g==
-X-Google-Smtp-Source: ABdhPJz2JqjVInbgOzS0fbJn/rC7XmTTYrZWwJ7ACJfaK4TzHnn0J4ERNDokznMNi1r4F8DruMQclw==
-X-Received: by 2002:aca:53ca:: with SMTP id h193mr15030468oib.69.1624036239039;
-        Fri, 18 Jun 2021 10:10:39 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id x29sm2066218ott.68.2021.06.18.10.10.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 10:10:38 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 12:10:36 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] soc: qcom: geni: move struct geni_wrapper to
- header
-Message-ID: <YMzTjMNNCR9bsvfu@yoga>
-References: <20210618141839.3777270-1-vkoul@kernel.org>
- <20210618141839.3777270-3-vkoul@kernel.org>
+        Fri, 18 Jun 2021 13:15:10 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15IH3frh031546;
+        Fri, 18 Jun 2021 13:12:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=UyYdy8cqxOzHqUrJb0iTgtqQLsdzwr2B/pQPf/HGKrA=;
+ b=fK46gyf/7x9j6o1Eou1TmeCjcsZ9/l81z/f7FoQfRYteXSoM7ypDeO+Bpz6xhCZ0g0z7
+ FuZbS7VWm+2Rtichie7uXE/NV9YD1USIDcwqoiG1cAo4fHRlyzyi+6slLfOFWDhy1r++
+ ZvkGkA9Hc9TB4iWCsZDoGevRBA7NkXzRmT12NuYDD5OAtQHbm9VR1Da9PL961N/eQtrr
+ r9HIx4zRCKA9VjxtsVXsp7uR2O6OWpaCSTya9QgwnO3nzPW6q9nvjTCAAILOVN2nff8j
+ W2dFdk2oxd6FCsbtqPn3f1sxw+prRsyveMM7GFSkXcy3c8jIWo98nAYim7jZXnyc4o93 Dg== 
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 398y4e11u6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Jun 2021 13:12:58 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15IH3VP5010383;
+        Fri, 18 Jun 2021 17:12:57 GMT
+Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
+        by ppma05wdc.us.ibm.com with ESMTP id 3954gkxc1d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Jun 2021 17:12:57 +0000
+Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
+        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15IHCuam21561724
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 18 Jun 2021 17:12:56 GMT
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 60FFD6E050;
+        Fri, 18 Jun 2021 17:12:56 +0000 (GMT)
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B8A896E04E;
+        Fri, 18 Jun 2021 17:12:55 +0000 (GMT)
+Received: from jason-laptop.ibmuc.com (unknown [9.85.129.236])
+        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri, 18 Jun 2021 17:12:55 +0000 (GMT)
+From:   "Jason J. Herne" <jjherne@linux.ibm.com>
+To:     linux-s390@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, pasic@linux.ibm.com,
+        akrowiak@linux.ibm.com, jgg@nvidia.com
+Subject: [PATCH v2] s390/vfio-ap: Fix module unload memory leak of matrix_dev
+Date:   Fri, 18 Jun 2021 13:12:55 -0400
+Message-Id: <20210618171255.2025-1-jjherne@linux.ibm.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210618141839.3777270-3-vkoul@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: bEJgEve1o4XsWk7QyHfuRkc9wVQd96GE
+X-Proofpoint-ORIG-GUID: bEJgEve1o4XsWk7QyHfuRkc9wVQd96GE
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-18_10:2021-06-18,2021-06-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 impostorscore=0 phishscore=0 mlxlogscore=999
+ spamscore=0 bulkscore=0 suspectscore=0 adultscore=0 lowpriorityscore=0
+ clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106180100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 18 Jun 09:18 CDT 2021, Vinod Koul wrote:
+vfio_ap_matrix_dev_release is shadowing the global matrix_dev with a NULL
+pointer. Driver data for the matrix device is never set and so
+dev_get_drvdata() always returns NULL. When release is called we end up
+not freeing matrix_dev. The fix is to remove the shadow variable and get
+the correct pointer from the device using container_of. We'll also NULL
+the global to prevent any future use.
 
-> SPI & I2C geni driver needs to access struct geni_wrapper, so move it to
-> header. The drivers needs this header to find the geni device and use it
-> in dma mapping.
-> 
+Signed-off-by: Jason J. Herne <jjherne@linux.ibm.com>
+---
+ drivers/s390/crypto/vfio_ap_drv.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-How does this differ from engine->dev->parent?
+diff --git a/drivers/s390/crypto/vfio_ap_drv.c b/drivers/s390/crypto/vfio_ap_drv.c
+index 7dc72cb718b0..40e66cb363d1 100644
+--- a/drivers/s390/crypto/vfio_ap_drv.c
++++ b/drivers/s390/crypto/vfio_ap_drv.c
+@@ -82,9 +82,8 @@ static void vfio_ap_queue_dev_remove(struct ap_device *apdev)
+ 
+ static void vfio_ap_matrix_dev_release(struct device *dev)
+ {
+-	struct ap_matrix_dev *matrix_dev = dev_get_drvdata(dev);
+-
+-	kfree(matrix_dev);
++	kfree(container_of(dev, struct ap_matrix_dev, device));
++	matrix_dev = NULL;
+ }
+ 
+ static int matrix_bus_match(struct device *dev, struct device_driver *drv)
+-- 
+2.21.1
 
-> Using this method works for both DT and ACPI systems
-> 
-
-I was under the impression that the wrapper and engines are describe
-completely independently in ACPI, so we don't have a link between them.
-
-If that's not the case, then I guess that answers the above question
-about ->parent.
-
-Regards,
-Bjorn
-
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> ---
->  drivers/soc/qcom/qcom-geni-se.c | 14 --------------
->  include/linux/qcom-geni-se.h    | 14 ++++++++++++++
->  2 files changed, 14 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/soc/qcom/qcom-geni-se.c b/drivers/soc/qcom/qcom-geni-se.c
-> index fe666ea0c487..08d645b90ed3 100644
-> --- a/drivers/soc/qcom/qcom-geni-se.c
-> +++ b/drivers/soc/qcom/qcom-geni-se.c
-> @@ -78,20 +78,6 @@
->   */
->  
->  #define MAX_CLK_PERF_LEVEL 32
-> -#define NUM_AHB_CLKS 2
-> -
-> -/**
-> - * struct geni_wrapper - Data structure to represent the QUP Wrapper Core
-> - * @dev:		Device pointer of the QUP wrapper core
-> - * @base:		Base address of this instance of QUP wrapper core
-> - * @ahb_clks:		Handle to the primary & secondary AHB clocks
-> - * @to_core:		Core ICC path
-> - */
-> -struct geni_wrapper {
-> -	struct device *dev;
-> -	void __iomem *base;
-> -	struct clk_bulk_data ahb_clks[NUM_AHB_CLKS];
-> -};
->  
->  static const char * const icc_path_names[] = {"qup-core", "qup-config",
->  						"qup-memory"};
-> diff --git a/include/linux/qcom-geni-se.h b/include/linux/qcom-geni-se.h
-> index 5114e2144b17..5fda675c5cfe 100644
-> --- a/include/linux/qcom-geni-se.h
-> +++ b/include/linux/qcom-geni-se.h
-> @@ -38,6 +38,20 @@ struct geni_icc_path {
->  	unsigned int avg_bw;
->  };
->  
-> +#define NUM_AHB_CLKS 2
-> +
-> +/**
-> + * @struct geni_wrapper - Data structure to represent the QUP Wrapper Core
-> + * @dev:		Device pointer of the QUP wrapper core
-> + * @base:		Base address of this instance of QUP wrapper core
-> + * @ahb_clks:		Handle to the primary & secondary AHB clocks
-> + */
-> +struct geni_wrapper {
-> +	struct device *dev;
-> +	void __iomem *base;
-> +	struct clk_bulk_data ahb_clks[NUM_AHB_CLKS];
-> +};
-> +
->  /**
->   * struct geni_se - GENI Serial Engine
->   * @base:		Base Address of the Serial Engine's register block
-> -- 
-> 2.31.1
-> 
