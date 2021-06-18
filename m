@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3334B3ACB71
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:55:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7B063ACB75
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233149AbhFRM5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 08:57:16 -0400
-Received: from mga06.intel.com ([134.134.136.31]:41863 "EHLO mga06.intel.com"
+        id S233276AbhFRM5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 08:57:22 -0400
+Received: from mga17.intel.com ([192.55.52.151]:24557 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231437AbhFRM5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 08:57:09 -0400
-IronPort-SDR: +thxC2Tc8fAVIhxNZXZtHAd1dj9IjmB+arvNyLL0Bi9MmIsCervGQ54Gyudh5l3jX2kVZspv47
- Brp98GE9Drzg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="267692210"
+        id S232837AbhFRM5K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 08:57:10 -0400
+IronPort-SDR: I4ZcWTpUu+d7bpPLWM0jIvIfJEeaO4dM41WIq02LNrMJdtHhEatNtEyRYxzVON7JF+E3aQvwKm
+ O+Re5ItW6E0w==
+X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="186926061"
 X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
-   d="scan'208";a="267692210"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 05:54:58 -0700
-IronPort-SDR: rD3VS5ul0snUG/7nJCTvtzScoLAUhkAQsSR9EuMZidCZDIQzyDTq7UEsJ10SZQmFYPVv/bnKFs
- lxxuWYxlxr0w==
+   d="scan'208";a="186926061"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 05:54:59 -0700
+IronPort-SDR: 1kbTWI+eR+KE5WgtuOOUpYKOuuU/aXLhV+DMkydjWPCfI4vWa6ynSbn9hwXXvY1ERPB/EAG4p9
+ QhmoUEBZ14Yg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
-   d="scan'208";a="404970795"
+   d="scan'208";a="640700723"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga006.jf.intel.com with ESMTP; 18 Jun 2021 05:54:56 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 18 Jun 2021 05:54:56 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 7964C50E; Fri, 18 Jun 2021 15:55:21 +0300 (EEST)
+        id 826B9431; Fri, 18 Jun 2021 15:55:21 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Hans de Goede <hdegoede@redhat.com>,
         Mario Limonciello <mario.limonciello@amd.com>,
@@ -35,50 +35,65 @@ To:     Hans de Goede <hdegoede@redhat.com>,
         Heikki Krogerus <heikki.krogerus@linux.intel.com>,
         linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
 Cc:     Mark Gross <mgross@linux.intel.com>
-Subject: [PATCH v2 1/8] platform/x86: Remove "default n" entries
-Date:   Fri, 18 Jun 2021 15:55:09 +0300
-Message-Id: <20210618125516.53510-1-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2 2/8] platform/x86: intel_skl_int3472: Free ACPI device resources after use
+Date:   Fri, 18 Jun 2021 15:55:10 +0300
+Message-Id: <20210618125516.53510-2-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210618125516.53510-1-andriy.shevchenko@linux.intel.com>
+References: <20210618125516.53510-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus already once did that for PDx86, don't repeat our mistakes.
-TL;DR: 'n' *is* the default 'default'.
+We may free ACPI device resources immediately after use.
+Refactor skl_int3472_parse_crs() accordingly.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
-v2: no changes
- drivers/platform/x86/Kconfig      | 1 -
- drivers/platform/x86/dell/Kconfig | 1 -
- 2 files changed, 2 deletions(-)
+v2: new patch
+ .../x86/intel-int3472/intel_skl_int3472_discrete.c  | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-index 4fd792f2a10a..ccb827b57f1f 100644
---- a/drivers/platform/x86/Kconfig
-+++ b/drivers/platform/x86/Kconfig
-@@ -1092,7 +1092,6 @@ config TOUCHSCREEN_DMI
+diff --git a/drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c b/drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c
+index 8c18dbff1c43..48a00a1f4fb6 100644
+--- a/drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c
++++ b/drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c
+@@ -308,8 +308,10 @@ static int skl_int3472_parse_crs(struct int3472_discrete_device *int3472)
+ 	ret = acpi_dev_get_resources(int3472->adev, &resource_list,
+ 				     skl_int3472_handle_gpio_resources,
+ 				     int3472);
+-	if (ret)
+-		goto out_free_res_list;
++	if (ret < 0)
++		return ret;
++
++	acpi_dev_free_resource_list(&resource_list);
  
- config FW_ATTR_CLASS
- 	tristate
--	default n
+ 	/*
+ 	 * If we find no clock enable GPIO pin then the privacy LED won't work.
+@@ -319,7 +321,7 @@ static int skl_int3472_parse_crs(struct int3472_discrete_device *int3472)
+ 	if (int3472->clock.ena_gpio) {
+ 		ret = skl_int3472_register_clock(int3472);
+ 		if (ret)
+-			goto out_free_res_list;
++			return ret;
+ 	} else {
+ 		if (int3472->clock.led_gpio)
+ 			dev_warn(int3472->dev,
+@@ -329,10 +331,7 @@ static int skl_int3472_parse_crs(struct int3472_discrete_device *int3472)
+ 	int3472->gpios.dev_id = int3472->sensor_name;
+ 	gpiod_add_lookup_table(&int3472->gpios);
  
- config INTEL_IMR
- 	bool "Intel Isolated Memory Region support"
-diff --git a/drivers/platform/x86/dell/Kconfig b/drivers/platform/x86/dell/Kconfig
-index 9b0a4d080f43..9e7314d90bea 100644
---- a/drivers/platform/x86/dell/Kconfig
-+++ b/drivers/platform/x86/dell/Kconfig
-@@ -5,7 +5,6 @@
+-out_free_res_list:
+-	acpi_dev_free_resource_list(&resource_list);
+-
+-	return ret;
++	return 0;
+ }
  
- menuconfig X86_PLATFORM_DRIVERS_DELL
- 	bool "Dell X86 Platform Specific Device Drivers"
--	default n
- 	depends on X86_PLATFORM_DEVICES
- 	help
- 	  Say Y here to get to see options for device drivers for various
+ int skl_int3472_discrete_probe(struct platform_device *pdev)
 -- 
 2.30.2
 
