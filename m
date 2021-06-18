@@ -2,151 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2191E3AC1A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 05:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225E43AC212
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 06:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbhFRDzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 23:55:52 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:8269 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbhFRDzu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 23:55:50 -0400
-Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G5lJh0CjNz1BN5G;
-        Fri, 18 Jun 2021 11:48:36 +0800 (CST)
-Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
- dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 18 Jun 2021 11:53:38 +0800
-Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
- (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 18 Jun
- 2021 11:53:38 +0800
-From:   Baokun Li <libaokun1@huawei.com>
-To:     <libaokun1@huawei.com>, Steve French <sfrench@samba.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-cifs@vger.kernel.org>,
-        <samba-technical@lists.samba.org>,
-        <kernel-janitors@vger.kernel.org>, "Hulk Robot" <hulkci@huawei.com>
-Subject: [PATCH -next v2] cifs: convert list_for_each to entry variant in smb2misc.c
-Date:   Fri, 18 Jun 2021 12:02:32 +0800
-Message-ID: <20210618040232.2550645-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+        id S232521AbhFRE0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 00:26:22 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:37069 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231987AbhFREZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 00:25:14 -0400
+Received: by ozlabs.org (Postfix, from userid 1034)
+        id 4G5m4S5Qndz9t0k; Fri, 18 Jun 2021 14:23:04 +1000 (AEST)
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Paul Mackerras <paulus@samba.org>, linuxppc-dev@lists.ozlabs.org,
+        stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com
+In-Reply-To: <20210528182752.1852002-1-nathan@kernel.org>
+References: <20210528182752.1852002-1-nathan@kernel.org>
+Subject: Re: [PATCH] powerpc/barrier: Avoid collision with clang's __lwsync macro
+Message-Id: <162398828610.1363949.4994127237137922755.b4-ty@ellerman.id.au>
+Date:   Fri, 18 Jun 2021 13:51:26 +1000
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpeml500020.china.huawei.com (7.185.36.88)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-convert list_for_each() to list_for_each_entry() where
-applicable.
+On Fri, 28 May 2021 11:27:52 -0700, Nathan Chancellor wrote:
+> A change in clang 13 results in the __lwsync macro being defined as
+> __builtin_ppc_lwsync, which emits 'lwsync' or 'msync' depending on what
+> the target supports. This breaks the build because of -Werror in
+> arch/powerpc, along with thousands of warnings:
+> 
+>  In file included from arch/powerpc/kernel/pmc.c:12:
+>  In file included from include/linux/bug.h:5:
+>  In file included from arch/powerpc/include/asm/bug.h:109:
+>  In file included from include/asm-generic/bug.h:20:
+>  In file included from include/linux/kernel.h:12:
+>  In file included from include/linux/bitops.h:32:
+>  In file included from arch/powerpc/include/asm/bitops.h:62:
+>  arch/powerpc/include/asm/barrier.h:49:9: error: '__lwsync' macro redefined [-Werror,-Wmacro-redefined]
+>  #define __lwsync()      __asm__ __volatile__ (stringify_in_c(LWSYNC) : : :"memory")
+>         ^
+>  <built-in>:308:9: note: previous definition is here
+>  #define __lwsync __builtin_ppc_lwsync
+>         ^
+>  1 error generated.
+> 
+> [...]
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
-V1->V2:
-	Convert the missing list_for_each to entry
+Applied to powerpc/next.
 
- fs/cifs/smb2misc.c | 33 ++++++++-------------------------
- 1 file changed, 8 insertions(+), 25 deletions(-)
+[1/1] powerpc/barrier: Avoid collision with clang's __lwsync macro
+      https://git.kernel.org/powerpc/c/015d98149b326e0f1f02e44413112ca8b4330543
 
-diff --git a/fs/cifs/smb2misc.c b/fs/cifs/smb2misc.c
-index 06d555d4da9a..aba048153f79 100644
---- a/fs/cifs/smb2misc.c
-+++ b/fs/cifs/smb2misc.c
-@@ -164,12 +164,10 @@ smb2_check_message(char *buf, unsigned int len, struct TCP_Server_Info *srvr)
- 		struct smb2_transform_hdr *thdr =
- 			(struct smb2_transform_hdr *)buf;
- 		struct cifs_ses *ses = NULL;
--		struct list_head *tmp;
- 
- 		/* decrypt frame now that it is completely read in */
- 		spin_lock(&cifs_tcp_ses_lock);
--		list_for_each(tmp, &srvr->smb_ses_list) {
--			ses = list_entry(tmp, struct cifs_ses, smb_ses_list);
-+		list_for_each_entry(ses, &srvr->smb_ses_list, smb_ses_list) {
- 			if (ses->Suid == thdr->SessionId)
- 				break;
- 
-@@ -548,7 +546,6 @@ static bool
- smb2_tcon_has_lease(struct cifs_tcon *tcon, struct smb2_lease_break *rsp)
- {
- 	__u8 lease_state;
--	struct list_head *tmp;
- 	struct cifsFileInfo *cfile;
- 	struct cifsInodeInfo *cinode;
- 	int ack_req = le32_to_cpu(rsp->Flags &
-@@ -556,8 +553,7 @@ smb2_tcon_has_lease(struct cifs_tcon *tcon, struct smb2_lease_break *rsp)
- 
- 	lease_state = le32_to_cpu(rsp->NewLeaseState);
- 
--	list_for_each(tmp, &tcon->openFileList) {
--		cfile = list_entry(tmp, struct cifsFileInfo, tlist);
-+	list_for_each_entry(cfile, &tcon->openFileList, tlist) {
- 		cinode = CIFS_I(d_inode(cfile->dentry));
- 
- 		if (memcmp(cinode->lease_key, rsp->LeaseKey,
-@@ -618,7 +614,6 @@ static bool
- smb2_is_valid_lease_break(char *buffer)
- {
- 	struct smb2_lease_break *rsp = (struct smb2_lease_break *)buffer;
--	struct list_head *tmp, *tmp1, *tmp2;
- 	struct TCP_Server_Info *server;
- 	struct cifs_ses *ses;
- 	struct cifs_tcon *tcon;
-@@ -628,15 +623,9 @@ smb2_is_valid_lease_break(char *buffer)
- 
- 	/* look up tcon based on tid & uid */
- 	spin_lock(&cifs_tcp_ses_lock);
--	list_for_each(tmp, &cifs_tcp_ses_list) {
--		server = list_entry(tmp, struct TCP_Server_Info, tcp_ses_list);
--
--		list_for_each(tmp1, &server->smb_ses_list) {
--			ses = list_entry(tmp1, struct cifs_ses, smb_ses_list);
--
--			list_for_each(tmp2, &ses->tcon_list) {
--				tcon = list_entry(tmp2, struct cifs_tcon,
--						  tcon_list);
-+	list_for_each_entry(server, &cifs_tcp_ses_list, tcp_ses_list) {
-+		list_for_each_entry(ses, &server->smb_ses_list, smb_ses_list) {
-+			list_for_each_entry(tcon, &ses->tcon_list, tcon_list) {
- 				spin_lock(&tcon->open_file_lock);
- 				cifs_stats_inc(
- 				    &tcon->stats.cifs_stats.num_oplock_brks);
-@@ -687,7 +676,6 @@ bool
- smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
- {
- 	struct smb2_oplock_break *rsp = (struct smb2_oplock_break *)buffer;
--	struct list_head *tmp, *tmp1, *tmp2;
- 	struct cifs_ses *ses;
- 	struct cifs_tcon *tcon;
- 	struct cifsInodeInfo *cinode;
-@@ -710,16 +698,11 @@ smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
- 
- 	/* look up tcon based on tid & uid */
- 	spin_lock(&cifs_tcp_ses_lock);
--	list_for_each(tmp, &server->smb_ses_list) {
--		ses = list_entry(tmp, struct cifs_ses, smb_ses_list);
--
--		list_for_each(tmp1, &ses->tcon_list) {
--			tcon = list_entry(tmp1, struct cifs_tcon, tcon_list);
-+	list_for_each_entry(ses, &server->smb_ses_list, smb_ses_list) {
-+		list_for_each_entry(tcon, &ses->tcon_list, tcon_list) {
- 
- 			spin_lock(&tcon->open_file_lock);
--			list_for_each(tmp2, &tcon->openFileList) {
--				cfile = list_entry(tmp2, struct cifsFileInfo,
--						     tlist);
-+			list_for_each_entry(cfile, &tcon->openFileList, tlist) {
- 				if (rsp->PersistentFid !=
- 				    cfile->fid.persistent_fid ||
- 				    rsp->VolatileFid !=
--- 
-2.31.1
-
+cheers
