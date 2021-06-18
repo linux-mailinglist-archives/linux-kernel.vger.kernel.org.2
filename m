@@ -2,120 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71F8C3ACE0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB26E3ACE13
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234786AbhFRO5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:57:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51438 "EHLO
+        id S234809AbhFRO6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 10:58:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234711AbhFRO5t (ORCPT
+        with ESMTP id S234793AbhFRO6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:57:49 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1CF9C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 07:55:39 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624028137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KR3HX4/+i4plryORjpOnMONKZ2mk+i6c6onI71WK80U=;
-        b=PRGmnkHnPP1/zA40j0r6L+AGKbLadfTH8rV3Zz6Ud848H/nCC85yY/+OU33U/srJpqC+P+
-        WgW/Nyx6B7CQlorMgoj4lERY9LrwkhpLuDOpp5RD+z54yKDcSTcA/C+0erJeMe/ACIaGiL
-        D+hwBezFmHuxlN+X75vFY9cnXozaUnzZ5pW/ywwGh6rAnv9nbMWnMAJLlLFxvzZYN/vnjU
-        o7JRj4fsYgBTynZtBjt2JQC8I6SjLyIqbR8G/w1+wASvVoj4obDmJjx+YhLJ05GGeShXmC
-        9XSiDcvc3FeSk1j5EkkzDTeJhYKuvLPINJ1Qf4uR4KFeLOFbNh7zA1VqrD17rQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624028137;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KR3HX4/+i4plryORjpOnMONKZ2mk+i6c6onI71WK80U=;
-        b=7pkzzXuwBcVWMjgsrjUhAn0Eor6xQFrQ4z0P5KZnLbGZhv/seOWQdLtR8U1tbFueCKmjuZ
-        a2S5XjcMMfqlOtAA==
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Alexander Potapenko <glider@google.com>
-Subject: Re: [PATCH next v4 1/2] lib/dump_stack: move cpu lock to printk.c
-In-Reply-To: <20210617093243.795b4853@gandalf.local.home>
-References: <20210617095051.4808-1-john.ogness@linutronix.de> <20210617095051.4808-2-john.ogness@linutronix.de> <20210617093243.795b4853@gandalf.local.home>
-Date:   Fri, 18 Jun 2021 17:01:37 +0206
-Message-ID: <877dirb4t2.fsf@jogness.linutronix.de>
+        Fri, 18 Jun 2021 10:58:09 -0400
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F60C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 07:56:00 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id l12so10812179oig.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 07:56:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JLF02LgQK8wiSw1wo+3dCwHHQeIAoXtWaSMsg8jus4M=;
+        b=0T8U2hE3laago06p8eqY1PBTXXpPU90AWIP9uTyNLgxlce08gZ6OUYfVhSC+7ai75H
+         JxULDmu6wT5mkkzetizEnwxbtWE2O/5cQXskjcqPXW7HyfeggFPn0UXaNtJUnKXtoT+E
+         OrwWX3ydHEvY5A1H+pYLC4bvyNFq3cL8+fTxdJ4DH2oI0aQenMAM0XD6BrtOmwP6zrPB
+         aNw5NnGhMrUqOyBJxcpONK1R0p6+11Hb9Ov+BDZuNVur4Wvx5bQMEc5vjLLLJ+C022D0
+         YXXjEl2uaus0jBs8THda/7+hpjz5fNfVoQQ1n/juhVyjn55FLtYyNn2OdclYppLVaVGw
+         eTcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JLF02LgQK8wiSw1wo+3dCwHHQeIAoXtWaSMsg8jus4M=;
+        b=rTzkw7PWeq7N35bfVQZqMO/jHOFBvisWRiHG5ZYjVlxSwOtGE8hzawQpNHj3AJA2R/
+         ZAxMsLhC5TXG9RspxrG5ESpmjOtMVE0nFegtBp9dPYV+9Oafw60OizLLJMb839O68t7L
+         Iar14Cp4o3YmUK3bAcws3HFYUHNCDEn0Svz++McBi+UksGk+vC9HsCR/jJZs4qfKrRT+
+         9/CkpArjtTK7x3YUkfgvshHIGkIr1VBQivCM/EhOHyNrC6G88EzsM1Smyr6+QkKtM2bS
+         z/ORQroem8fLDp5ISObdh3Q2bdqQLVrZ+qcdnaqSwH90aiZkZA1sT8yYIG61Gm8DWx+S
+         u5cg==
+X-Gm-Message-State: AOAM530+qf7cCkUYU23FCQvxSz7+vRIsGaLTRRZB/8PQKj3vClQlrb7/
+        mrxRE4K7Lhytoo7tAtG3l4RJ9g==
+X-Google-Smtp-Source: ABdhPJzzOHCKW5+hrZcdc08fWO9pKFUGFzMiEe5W/qliE+SY1zJsRusKi41H5oJF+YPkMM5UA41iyg==
+X-Received: by 2002:aca:a983:: with SMTP id s125mr15370432oie.13.1624028159838;
+        Fri, 18 Jun 2021 07:55:59 -0700 (PDT)
+Received: from [192.168.1.134] ([198.8.77.61])
+        by smtp.gmail.com with ESMTPSA id w2sm429092oon.18.2021.06.18.07.55.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jun 2021 07:55:59 -0700 (PDT)
+Subject: Re: [Bug] fio hang when running multiple job io_uring/hipri over nvme
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
+References: <CAFj5m9+ckHjfMVW_O20NBAPvnauPdABa8edPy--dSEf=XdhYRA@mail.gmail.com>
+ <6691cf72-3a26-a1bb-228d-ddec8391620f@kernel.dk>
+ <1b56a4f7-ce56-ee32-67d5-0fcd5dc6c0cb@kernel.dk> <YMvPL/WhRsFfMIfi@T590>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <9596bf6f-cf34-c074-136e-5496d1a7b2fc@kernel.dk>
+Date:   Fri, 18 Jun 2021 08:56:01 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YMvPL/WhRsFfMIfi@T590>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-17, Steven Rostedt <rostedt@goodmis.org> wrote:
-> Can we add this lock to early_printk() ?
->
-> This would make early_printk() so much more readable.
->
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index 421c35571797..2b749c745c1f 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -2259,6 +2259,7 @@ struct console *early_console;
->  
->  asmlinkage __visible void early_printk(const char *fmt, ...)
->  {
-> +	unsigned long flags;
->  	va_list ap;
->  	char buf[512];
->  	int n;
-> @@ -2270,7 +2271,9 @@ asmlinkage __visible void early_printk(const char *fmt, ...)
->  	n = vscnprintf(buf, sizeof(buf), fmt, ap);
->  	va_end(ap);
->  
-> +	printk_cpu_lock_irqsave(flags);
->  	early_console->write(early_console, buf, n);
-> +	printk_cpu_unlock_irqrestore(flags);
->  }
->  #endif
+On 6/17/21 4:39 PM, Ming Lei wrote:
+> On Thu, Jun 17, 2021 at 10:56:53AM -0600, Jens Axboe wrote:
+>> On 6/17/21 10:48 AM, Jens Axboe wrote:
+>>> On 6/17/21 5:17 AM, Ming Lei wrote:
+>>>> Hello,
+>>>>
+>>>> fio hangs when running the test[1], and doesn't observe this issue
+>>>> when running a
+>>>> such single job test.
+>>>>
+>>>> v5.12 is good, both v5.13-rc3 and the latest v5.13-rc6 are bad.
+>>>>
+>>>>
+>>>> [1] fio test script and log
+>>>> + fio --bs=4k --ioengine=io_uring --fixedbufs --registerfiles --hipri
+>>>> --iodepth=64 --iodepth_batch_submit=16
+>>>> --iodepth_batch_complete_min=16 --filename=/dev/nvme0n1 --direct=1
+>>>> --runtime=20 --numjobs=4 --rw=randread
+>>>> --name=test --group_reporting
+>>>>
+>>>> test: (g=0): rw=randread, bs=(R) 4096B-4096B, (W) 4096B-4096B, (T)
+>>>> 4096B-4096B, ioengine=io_uring, iodepth=64
+>>>> ...
+>>>> fio-3.25
+>>>> Starting 4 processes
+>>>> fio: filehash.c:64: __lookup_file_hash: Assertion `f->fd != -1' failed.
+>>>> fio: pid=1122, got signal=6
+>>>> ^Cbs: 3 (f=0): [f(1),r(1),K(1),r(1)][63.6%][eta 00m:20s]
+>>>
+>>> Funky, would it be possible to bisect this? I'll see if I can reproduce.
+>>
+>> Actually, this looks like a fio bug, that assert is a bit too trigger
+>> happy. Current -git should work, please test and see if things work.
+>> I believe it's just kernel timing that causes this, not a kernel issue.
+> 
+> Yeah, current -git does work, thanks the fix!
 
-Since the cpu lock is also taken in NMI context (for example, via
-nmi_cpu_backtrace()/dump_stack()), the main concerns are:
+Thanks for checking!
 
-1. locks that are taken by a CPU that is holding the cpu lock
+-- 
+Jens Axboe
 
-2. NMI contexts that take any type of lock
-
-(Actually, #2 is just a special case of #1 where an NMI interrupted a
-task that was holding the cpu lock.)
-
-For early_printk() the early USB devices look to be a
-problem. early_xdbc_write() will take a spinlock. Assuming the
-early_console was also registered as a normal console (via "keep") we
-could end up in the following deadlock between the normal console and
-early_printk() writes:
-
-    CPU0                          CPU1
-    ----                          ----
-    early_printk()                console->write()
-      cpu_lock()                    spinlock()
-      early_console->write()      *NMI*
-        spinlock()                cpu_lock()
-
-The upcoming atomic console work addresses this by implementing a new
-write_atomic() callback that is lockless (and SMP-safe) or aware of the
-cpu lock to avoid dead locks such as above.
-
-AFAICT, the USB devices (CONFIG_EARLY_PRINTK_USB) are the only
-early_printk() candidates that use locking. So for all other
-early_printk() implementations I think your suggestion would work fine.
-
-Although, in general, early_printk() is not SMP-safe. So I'm not sure
-how much safety we need to include at this point.
-
-John Ogness
