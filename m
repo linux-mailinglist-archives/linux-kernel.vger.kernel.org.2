@@ -2,77 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0DE3AD2F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7F23AD2FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234064AbhFRTkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 15:40:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58928 "EHLO
+        id S234180AbhFRTkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 15:40:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbhFRTkN (ORCPT
+        with ESMTP id S229816AbhFRTkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 15:40:13 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5343CC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 12:38:03 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id e33so8622645pgm.3
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 12:38:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=efZiryzTZwErGPG9eUAqI8R5gBkZ9//XEzY7JmzlBZo=;
-        b=meopqwHKty7urd9b/j/Syk7Hqvgj8LIJzopjpDceO3tXr+t/JjTvgpVzEIt8uur/bp
-         O4eAQOwv1Q1O2tSsR1bL2LjV+gvhBtFhSw3AcI/BiX8JKjzOU3GC1ZuWT4jwQyqJVK4f
-         YHl1xy78/znRIqh0soZANGYuQ6uuJDY5SBAjjNaDr76WhQ5Llt3HHGsI4xMurqsfEGAY
-         Pl/UZYWtI5Wg54bCsMDFmO2P9hlwL39PbVIGynY/hkpfDDOsf9ngxppFwvwtu+VIa8Q/
-         0Ey4CO7ebVOxUsJbDvwfIujUfnkmlELjGteOiDT/o4jZc+oSba1qBzqXmfOTQvjESqDP
-         YNdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=efZiryzTZwErGPG9eUAqI8R5gBkZ9//XEzY7JmzlBZo=;
-        b=tv9wtcheJFSbcrUrfxwQ4OAiwMyYJukAOASZh9UySPHBxwYXAtKAgbP25EJrVv+PKn
-         6WrQ87oLszq5FXQFgFo+pg1EVSfgEPBK2vVsK9NHCcu74mkW0+BRxFb519W814+BozHi
-         TOVcL9C6Swhz5XSol6RMgc/In2o69FmggJzhZL+ibRG9amEPpZZLcS7pZQvQAnJwvUIm
-         hcXEEh6xGJTRz1wGbbTAKZvzsbMvh2+jUyyUb+Re+YeoujhJOWynX/KQLgm6QLtXbPCP
-         sjXiwTtTFA/OH965NH1/GLETWZgHbt0gEwZQnI1twRbopGw5RRyEncB203RDUBe/nOME
-         qhuw==
-X-Gm-Message-State: AOAM533SKPNIdJShq8Vxnhuquw4HA/CSf4615+Lay7dIKvC/qexLbUcy
-        57IfD0m10HzdVU1RqUcxIPejiQ==
-X-Google-Smtp-Source: ABdhPJyb+EHmf/mckTtVARAc0EwTJ/lWhcRvsPrRgfIRUTgj05qgMsJnlWiTPYcj59BEIaCMEFQgLw==
-X-Received: by 2002:a62:be03:0:b029:2e9:fe8c:effe with SMTP id l3-20020a62be030000b02902e9fe8ceffemr6563096pff.34.1624045082626;
-        Fri, 18 Jun 2021 12:38:02 -0700 (PDT)
-Received: from [2620:15c:17:3:3a6:a5d0:1984:a150] ([2620:15c:17:3:3a6:a5d0:1984:a150])
-        by smtp.gmail.com with ESMTPSA id y2sm8510157pfa.195.2021.06.18.12.38.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 12:38:01 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 12:38:01 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-To:     Georgi Djakov <quic_c_gdjako@quicinc.com>
-cc:     vbabka@suse.cz, akpm@linux-foundation.org, iamjoonsoo.kim@lge.com,
-        penberg@kernel.org, cl@linux.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, djakov@kernel.org
-Subject: Re: [PATCH] mm/slub: Add taint after the errors are printed
-In-Reply-To: <1623860738-146761-1-git-send-email-quic_c_gdjako@quicinc.com>
-Message-ID: <413080c2-bfd7-f386-709c-43718242ae87@google.com>
-References: <1623860738-146761-1-git-send-email-quic_c_gdjako@quicinc.com>
+        Fri, 18 Jun 2021 15:40:39 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27F1CC061574;
+        Fri, 18 Jun 2021 12:38:30 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id 5F2001F44CE8
+Message-ID: <fbf31c292fde2f7dafb1441fc85a1ead34fdf96d.camel@collabora.com>
+Subject: Re: [PATCH v3 4/8] media: Add P010 video format
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        hverkuil@xs4all.nl, p.zabel@pengutronix.de, mchehab@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
+        andrzej.p@collabora.com, jc@kynesim.co.uk,
+        jernej.skrabec@gmail.com, nicolas@ndufresne.ca
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Fri, 18 Jun 2021 16:38:17 -0300
+In-Reply-To: <20210618131526.566762-5-benjamin.gaignard@collabora.com>
+References: <20210618131526.566762-1-benjamin.gaignard@collabora.com>
+         <20210618131526.566762-5-benjamin.gaignard@collabora.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021, Georgi Djakov wrote:
+Hi Benjamin,
 
-> When running the kernel with panic_on_taint, the usual slub debug error
-> messages are not being printed when object corruption happens. That's
-> because we panic in add_taint(), which is called before printing the
-> additional information. This is a bit unfortunate as the error messages
-> are actually very useful, especially before a panic. Let's fix this by
-> moving add_taint() after the errors are printed on the console.
+On Fri, 2021-06-18 at 15:15 +0200, Benjamin Gaignard wrote:
+> P010 is a YUV format with 10-bits per pixel with interleaved UV.
 > 
-> Signed-off-by: Georgi Djakov <quic_c_gdjako@quicinc.com>
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+> version 2:
+>  - Add documentation about P010 padding
+>  - Fix the number of bits per component (16)
+> 
+>  .../media/v4l/pixfmt-yuv-planar.rst           | 78 ++++++++++++++++++-
+>  drivers/media/v4l2-core/v4l2-common.c         |  1 +
+>  drivers/media/v4l2-core/v4l2-ioctl.c          |  1 +
+>  include/uapi/linux/videodev2.h                |  1 +
+>  4 files changed, 79 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
+> index 090c091affd2..af400d37c8fd 100644
+> --- a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
+> +++ b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
+> @@ -100,8 +100,13 @@ All components are stored with the same number of bits per component.
+>        - Cb, Cr
+>        - No
+>        - 64x32 macroblocks
+> -
+> -        Horizontal Z order
+> +    * - V4L2_PIX_FMT_P010
 
-Acked-by: David Rientjes <rientjes@google.com>
+Do we have support in GStreamer (or elsewhere) for this?
+
+Thanks,
+Ezequiel
+
