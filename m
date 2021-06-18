@@ -2,121 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E47F53AC4C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:17:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAFFA3AC486
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233130AbhFRHTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 03:19:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233081AbhFRHTh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 03:19:37 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F91BC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 00:17:28 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lu8km-0003gp-5p; Fri, 18 Jun 2021 09:17:24 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:e7d0:b47e:7728:2b24])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id A8CA463EA3C;
-        Fri, 18 Jun 2021 07:04:52 +0000 (UTC)
-Date:   Fri, 18 Jun 2021 09:04:52 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     wg@grandegger.com, davem@davemloft.net, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH] net: can: fix use-after-free in ems_usb_disconnect
-Message-ID: <20210618070452.cjt7f5hzlfikztwz@pengutronix.de>
-References: <20210617185130.5834-1-paskripkin@gmail.com>
+        id S232427AbhFRHHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 03:07:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229580AbhFRHHe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 03:07:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BB90D6100A;
+        Fri, 18 Jun 2021 07:05:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623999925;
+        bh=V+te0YsjqY4RP3vJbTeLlJ3qSIHi0766SO5TpEU4fQM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=k7HMcBwe7B9fwrFJqotIpl5p6t7QZvh/K8vXkb80Gv0BUAu3UKZN8SjK2QAqlyy1H
+         qxh7v4FI2z7kNXNesS9aky+KAY8AZI6i21ayKwqcGamzfno3CxgVxCT7+ajwuIVCpC
+         TMojDNy+08QwIAY4WBy6c1ST+krD7qMnfRJUPXQdGg9C6p1teYwNF9XmSclcaQjSB2
+         BcZkTms8LKX7U1yNrauJB7ajSYdLnajhdsA5MXnBDQ/ew3HBvzrVfCWgoWg0oSWN0A
+         +Tp+ezQ/ZYRagQWkUMppYnM74uKoYp8KoXMR6zlcVmA1soXXgHZxXktnxPcE9MXvr0
+         gXI9dYoC3BkYw==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: [PATCH -tip v8 00/13] kprobes: Fix stacktrace with kretprobes on x86
+Date:   Fri, 18 Jun 2021 16:05:22 +0900
+Message-Id: <162399992186.506599.8457763707951687195.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="6tq7svrpdp6b2uth"
-Content-Disposition: inline
-In-Reply-To: <20210617185130.5834-1-paskripkin@gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
---6tq7svrpdp6b2uth
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Here is the 8th version of the series to fix the stacktrace with kretprobe on x86.
 
-On 17.06.2021 21:51:30, Pavel Skripkin wrote:
-> In ems_usb_disconnect() dev pointer, which is
-> netdev private data, is used after free_candev() call:
->=20
-> 	if (dev) {
-> 		unregister_netdev(dev->netdev);
-> 		free_candev(dev->netdev);
->=20
-> 		unlink_all_urbs(dev);
->=20
-> 		usb_free_urb(dev->intr_urb);
->=20
-> 		kfree(dev->intr_in_buffer);
-> 		kfree(dev->tx_msg_buffer);
-> 	}
->=20
-> Fix it by simply moving free_candev() at the end of
-> the block.
->=20
-> Fail log:
->  BUG: KASAN: use-after-free in ems_usb_disconnect
->  Read of size 8 at addr ffff88804e041008 by task kworker/1:2/2895
->=20
->  CPU: 1 PID: 2895 Comm: kworker/1:2 Not tainted 5.13.0-rc5+ #164
->  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0=
--g155821a-rebuilt.opensuse.4
->  Workqueue: usb_hub_wq hub_event
->  Call Trace:
->      dump_stack (lib/dump_stack.c:122)
->      print_address_description.constprop.0.cold (mm/kasan/report.c:234)
->      kasan_report.cold (mm/kasan/report.c:420 mm/kasan/report.c:436)
->      ems_usb_disconnect (drivers/net/can/usb/ems_usb.c:683 drivers/net/ca=
-n/usb/ems_usb.c:1058)
->=20
-> Fixes: 702171adeed3 ("ems_usb: Added support for EMS CPC-USB/ARM7 CAN/USB=
- interface")
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+The previous version is;
 
-Applied to linux-can/testing and added stable on Cc.
+ https://lore.kernel.org/bpf/162209754288.436794.3904335049560916855.stgit@devnote2/
 
-Thanks,
-Marc
+This version fixes to call appropriate function and drop some unneeded
+patches.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
---6tq7svrpdp6b2uth
-Content-Type: application/pgp-signature; name="signature.asc"
+Changes from v7:
+[03/13]: Call dereference_kernel_function_descriptor() for getting the
+  address of kretprobe_trampoline.
+[09/13]: Update the title and description to explain why it is needed.
+[10/13][11/13]: Add Josh's Acked-by.
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmDMRZEACgkQqclaivrt
-76mnqgf/aSKQviylfEMXNmblnBD4eGq3CMjiugvH+K4jof1OJ72ztvdUzP2DAfd/
-9CA0EE0UWEVpqhcUteGMMgM7F0+AqJF4PvgqiR5YT2qqnWg40xDcC2+NtdRYNBqt
-fQt+mzbXNj5J39v8l8FJGPo5Ip7E561khpGG9jA5BFgIT70jegTdNPho+uUV+CKV
-1co2LUuDCPtnN/GZHOI3bLflWqr2p1V60RimGZK9QbOLYuf5ZynHkB4+GrwVO+MV
-Sryao3eO/JR06Ty6vo4RVh0SqWOFx549SGsl+O9pn7W5U4Sw+5eklu5UVW6OyL52
-pWNIVhvfae9qHdITE3ZftnG0OPd1gQ==
-=n50B
------END PGP SIGNATURE-----
 
---6tq7svrpdp6b2uth--
+With this series, unwinder can unwind stack correctly from ftrace as below;
+
+  # cd /sys/kernel/debug/tracing
+  # echo > trace
+  # echo 1 > options/sym-offset
+  # echo r vfs_read >> kprobe_events
+  # echo r full_proxy_read >> kprobe_events
+  # echo traceoff:1 > events/kprobes/r_vfs_read_0/trigger
+  # echo stacktrace:1 > events/kprobes/r_full_proxy_read_0/trigger
+  # echo 1 > events/kprobes/enable
+  # cat /sys/kernel/debug/kprobes/list
+ffffffff8133b740  r  full_proxy_read+0x0    [FTRACE]
+ffffffff812560b0  r  vfs_read+0x0    [FTRACE]
+  # echo 0 > events/kprobes/enable
+  # cat trace
+# tracer: nop
+#
+# entries-in-buffer/entries-written: 3/3   #P:8
+#
+#                                _-----=> irqs-off
+#                               / _----=> need-resched
+#                              | / _---=> hardirq/softirq
+#                              || / _--=> preempt-depth
+#                              ||| /     delay
+#           TASK-PID     CPU#  ||||   TIMESTAMP  FUNCTION
+#              | |         |   ||||      |         |
+           <...>-134     [007] ...1    16.185877: r_full_proxy_read_0: (vfs_read+0x98/0x180 <- full_proxy_read)
+           <...>-134     [007] ...1    16.185901: <stack trace>
+ => kretprobe_trace_func+0x209/0x300
+ => kretprobe_dispatcher+0x4a/0x70
+ => __kretprobe_trampoline_handler+0xd4/0x170
+ => trampoline_handler+0x43/0x60
+ => kretprobe_trampoline+0x2a/0x50
+ => vfs_read+0x98/0x180
+ => ksys_read+0x5f/0xe0
+ => do_syscall_64+0x37/0x90
+ => entry_SYSCALL_64_after_hwframe+0x44/0xae
+           <...>-134     [007] ...1    16.185902: r_vfs_read_0: (ksys_read+0x5f/0xe0 <- vfs_read)
+
+This shows the double return probes (vfs_read and full_proxy_read) on the stack
+correctly unwinded. (vfs_read will return to ksys_read+0x5f and full_proxy_read
+will return to vfs_read+0x98)
+
+This actually changes the kretprobe behavisor a bit, now the instraction pointer in
+the pt_regs passed to kretprobe user handler is correctly set the real return
+address. So user handlers can get it via instruction_pointer() API, and can use
+stack_trace_save_regs().
+
+You can also get this series from 
+ git://git.kernel.org/pub/scm/linux/kernel/git/mhiramat/linux.git kprobes/kretprobe-stackfix-v8
+
+
+Thank you,
+
+---
+
+Josh Poimboeuf (1):
+      x86/kprobes: Add UNWIND_HINT_FUNC on kretprobe_trampoline code
+
+Masami Hiramatsu (12):
+      ia64: kprobes: Fix to pass correct trampoline address to the handler
+      kprobes: treewide: Replace arch_deref_entry_point() with dereference_symbol_descriptor()
+      kprobes: treewide: Remove trampoline_address from kretprobe_trampoline_handler()
+      kprobes: Add kretprobe_find_ret_addr() for searching return address
+      ARC: Add instruction_pointer_set() API
+      ia64: Add instruction_pointer_set() API
+      arm: kprobes: Make a space for regs->ARM_pc at kretprobe_trampoline
+      kprobes: Enable stacktrace from pt_regs in kretprobe handler
+      x86/kprobes: Push a fake return address at kretprobe_trampoline
+      x86/unwind: Recover kretprobe trampoline entry
+      tracing: Show kretprobe unknown indicator only for kretprobe_trampoline
+      x86/kprobes: Fixup return address in generic trampoline handler
+
+
+ arch/arc/include/asm/ptrace.h       |    5 ++
+ arch/arc/kernel/kprobes.c           |    2 -
+ arch/arm/probes/kprobes/core.c      |    5 +-
+ arch/arm64/kernel/probes/kprobes.c  |    3 -
+ arch/csky/kernel/probes/kprobes.c   |    2 -
+ arch/ia64/include/asm/ptrace.h      |    5 ++
+ arch/ia64/kernel/kprobes.c          |   15 ++---
+ arch/mips/kernel/kprobes.c          |    3 -
+ arch/parisc/kernel/kprobes.c        |    4 +
+ arch/powerpc/kernel/kprobes.c       |   13 ----
+ arch/riscv/kernel/probes/kprobes.c  |    2 -
+ arch/s390/kernel/kprobes.c          |    2 -
+ arch/sh/kernel/kprobes.c            |    2 -
+ arch/sparc/kernel/kprobes.c         |    2 -
+ arch/x86/include/asm/kprobes.h      |    1 
+ arch/x86/include/asm/unwind.h       |   23 +++++++
+ arch/x86/include/asm/unwind_hints.h |    5 ++
+ arch/x86/kernel/kprobes/core.c      |   53 +++++++++++++++--
+ arch/x86/kernel/unwind_frame.c      |    3 -
+ arch/x86/kernel/unwind_guess.c      |    3 -
+ arch/x86/kernel/unwind_orc.c        |   18 +++++-
+ include/linux/kprobes.h             |   44 ++++++++++++--
+ kernel/kprobes.c                    |  108 +++++++++++++++++++++++++----------
+ kernel/trace/trace_output.c         |   17 +-----
+ lib/error-inject.c                  |    3 +
+ 25 files changed, 238 insertions(+), 105 deletions(-)
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
