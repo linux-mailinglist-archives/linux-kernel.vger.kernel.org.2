@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094083AC3B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 214643AC3B0
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233341AbhFRGVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 02:21:23 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59716 "EHLO
+        id S233834AbhFRGVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 02:21:16 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59712 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233146AbhFRGR6 (ORCPT
+        with ESMTP id S233148AbhFRGR6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Jun 2021 02:17:58 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 2202D21B6D;
+        by smtp-out1.suse.de (Postfix) with ESMTP id 5AEB721B69;
         Fri, 18 Jun 2021 06:15:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1623996930; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=X6dbF/oprEWZa6shDksahK+hYcvu3XoBqYTwdnzgUz8=;
-        b=Y5Gtm6Uiz+4FybSTaiqsr2uP+vX8LUdj6CCapOkDN7VASp7YjF0WEndLI0MBMzkHV0Gf4K
-        SMUBZEKH7xIUwwfdYfY5dmTaA7bIlGM7gsD/7dyWlBNfdhGWop+qN27sAXfi1wm9Eka/X/
-        eJSQ4gHWvNtkFzaPONfDb1DZVVKwZpM=
+        bh=CK9asDX+0HN+MlTN5oiFj4ZLf6QXVNvLkxkc/oS6vnE=;
+        b=fTBrdwVKJqnnsxn9np4b6XWwjX582JTHvkRxWZBDQOTmWScCXarOp1AZhmTx0rU0AqPCD8
+        fEBx0zOXCa/gJQKIV2xOT+Dzgstpd21tLrNTPWLjFX5cI17sEI/Dc+Aq7nJnhSZzzBpGo8
+        f0RROkapSjrSSMIBheua9fMJOqU6I2Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1623996930;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=X6dbF/oprEWZa6shDksahK+hYcvu3XoBqYTwdnzgUz8=;
-        b=e8pRHiVLR9Iikgz5AbvSPoW1BLODkbPT7LMmQBhxzH1X+8ZbpdFFx22YrPoXuDg4IyUXbh
-        8E3Pet89Sq9BFkDA==
+        bh=CK9asDX+0HN+MlTN5oiFj4ZLf6QXVNvLkxkc/oS6vnE=;
+        b=DQnBimBg4nvgrOXRiAzfDD++xUOUweHVw2rFHeR824vXbPkDCyLHLY42PH/ry/N6jAjZHd
+        20R4pDPoiL7FVEBA==
 Received: from localhost.localdomain (unknown [10.100.208.98])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id F1229A3B9F;
-        Fri, 18 Jun 2021 06:15:29 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTPS id 33D9AA3B9F;
+        Fri, 18 Jun 2021 06:15:30 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 61/70] mxser: decrypt FCR values
-Date:   Fri, 18 Jun 2021 08:15:07 +0200
-Message-Id: <20210618061516.662-62-jslaby@suse.cz>
+Subject: [PATCH 62/70] mxser: fix typos around enhanced mode
+Date:   Fri, 18 Jun 2021 08:15:08 +0200
+Message-Id: <20210618061516.662-63-jslaby@suse.cz>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210618061516.662-1-jslaby@suse.cz>
 References: <20210618061516.662-1-jslaby@suse.cz>
@@ -54,43 +54,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, some of the values written to FCR are magic constants. But
-they are composed of well-defined bits. Use these named macros in place
-of the constants.
+Fix spelling of "enhanced" in macros and comments around them.
 
-No changes in objdump -d.
+While "enchance" comes from the original Moxa's driver, I don't think it
+was meant to be that. From the context, they obviously mean "enhanced".
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/mxser.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/tty/mxser.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/tty/mxser.c b/drivers/tty/mxser.c
-index 1a8698e58b1c..c8ba062d8824 100644
+index c8ba062d8824..54b9a9c7c9e9 100644
 --- a/drivers/tty/mxser.c
 +++ b/drivers/tty/mxser.c
-@@ -1580,7 +1580,9 @@ static u8 mxser_receive_chars_old(struct tty_struct *tty,
+@@ -64,23 +64,23 @@
+ /*
+  * Follow just what Moxa Must chip defines.
+  *
+- * When LCR register (offset 0x03) writes the following value, the Must chip
+- * will enter enchance mode. And write value on EFR (offset 0x02) bit 6,7 to
++ * When LCR register (offset 0x03) is written the following value, the Must chip
++ * will enter enhanced mode. And a write to EFR (offset 0x02) bit 6,7 will
+  * change bank.
+  */
+-#define MOXA_MUST_ENTER_ENCHANCE	0xBF
++#define MOXA_MUST_ENTER_ENHANCED	0xBF
  
- 		ch = inb(port->ioaddr + UART_RX);
- 		if (hwid && (status & UART_LSR_OE))
--			outb(0x23, port->ioaddr + UART_FCR);
-+			outb(UART_FCR_ENABLE_FIFO | UART_FCR_CLEAR_RCVR |
-+					MOXA_MUST_FCR_GDA_MODE_ENABLE,
-+					port->ioaddr + UART_FCR);
- 		status &= port->read_status_mask;
- 		if (status & port->ignore_status_mask) {
- 			if (++ignored > 100)
-@@ -1693,7 +1695,9 @@ static bool mxser_port_isr(struct mxser_port *port)
- 	tty = tty_port_tty_get(&port->port);
- 	if (!tty || port->closing || !tty_port_initialized(&port->port)) {
- 		status = inb(port->ioaddr + UART_LSR);
--		outb(0x27, port->ioaddr + UART_FCR);
-+		outb(MOXA_MUST_FCR_GDA_MODE_ENABLE | UART_FCR_ENABLE_FIFO |
-+				UART_FCR_CLEAR_RCVR | UART_FCR_CLEAR_XMIT,
-+				port->ioaddr + UART_FCR);
- 		inb(port->ioaddr + UART_MSR);
+-/* when enhance mode enabled, access on general bank register */
++/* when enhanced mode is enabled, access to general bank register */
+ #define MOXA_MUST_GDL_REGISTER		0x07
+ #define MOXA_MUST_GDL_MASK		0x7F
+ #define MOXA_MUST_GDL_HAS_BAD_DATA	0x80
  
- 		error = true;
+ #define MOXA_MUST_LSR_RERR		0x80	/* error in receive FIFO */
+-/* enchance register bank select and enchance mode setting register */
+-/* when LCR register equals to 0xBF */
++/* enhanced register bank select and enhanced mode setting register */
++/* This works only when LCR register equals to 0xBF */
+ #define MOXA_MUST_EFR_REGISTER		0x02
+-#define MOXA_MUST_EFR_EFRB_ENABLE	0x10 /* enchance mode enable */
+-/* enchance register bank set 0, 1, 2 */
++#define MOXA_MUST_EFR_EFRB_ENABLE	0x10 /* enhanced mode enable */
++/* enhanced register bank set 0, 1, 2 */
+ #define MOXA_MUST_EFR_BANK0		0x00
+ #define MOXA_MUST_EFR_BANK1		0x40
+ #define MOXA_MUST_EFR_BANK2		0x80
+@@ -287,7 +287,7 @@ static u8 __mxser_must_set_EFR(unsigned long baseio, u8 clear, u8 set,
+ 	u8 oldlcr, efr;
+ 
+ 	oldlcr = inb(baseio + UART_LCR);
+-	outb(MOXA_MUST_ENTER_ENCHANCE, baseio + UART_LCR);
++	outb(MOXA_MUST_ENTER_ENHANCED, baseio + UART_LCR);
+ 
+ 	efr = inb(baseio + MOXA_MUST_EFR_REGISTER);
+ 	efr &= ~clear;
 -- 
 2.32.0
 
