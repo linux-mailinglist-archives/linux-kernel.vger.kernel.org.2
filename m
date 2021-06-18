@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0F03AC35C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 031AE3AC360
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233315AbhFRGSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 02:18:24 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59016 "EHLO
+        id S233362AbhFRGSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 02:18:30 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59036 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232882AbhFRGRa (ORCPT
+        with ESMTP id S232883AbhFRGRa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Jun 2021 02:17:30 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id E702321AB2;
-        Fri, 18 Jun 2021 06:15:19 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTP id 216AA21B51;
+        Fri, 18 Jun 2021 06:15:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623996919; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1623996920; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hf0c8AA+WJx652FcNRZ4b2mKiWtF7sdoLMBJ0Alo48k=;
-        b=vfPrh/+SIYqPT1W9SCU55eZGuuBwY1HQ+VaNtgVlRpq98rZQIVGN6NPo5P//b1j1+nFCeY
-        8eWfmBhz27/HWAP44t2An8s+eLAU872goGmkUzK5jVwPzJuP3UDVujUqw4LrIakBq0vamM
-        dehYB5FnMgBzxZiQ0bT6WXEvVkENfJ4=
+        bh=1slZ3qSkLzaics74bWzedOlvybCAvig1qgHYjIlKIGo=;
+        b=aUxqVovw+TrQNa4tDWZpC4KUwyaR8x15tBVt5o7LP7NvyuaJLvD8Irg8PWmFfYhebEeZKS
+        WmDOiPkVqVZ1tOQfWedeB1KKKayteSKlJZzxI5S2a4tpHNAH5j3+rVWkwvgHQ8k8Svl98P
+        ifaQenKaHGODPC6vTZ81IrOI1ZbjdL8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623996919;
+        s=susede2_ed25519; t=1623996920;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=hf0c8AA+WJx652FcNRZ4b2mKiWtF7sdoLMBJ0Alo48k=;
-        b=4erSWj+frJATVHr3KJqItVXsaINsB3zHTPijFc9j60AyadtFMjCIL3XuvgXXIipxfUocQL
-        DLyAoygLtBO6GDAQ==
+        bh=1slZ3qSkLzaics74bWzedOlvybCAvig1qgHYjIlKIGo=;
+        b=isrEqdEyx9AiExP6wC070BB1GdQkfNe+f0VlsT9sJAQs2g/Ez1SJ0nDLYbb+rP0ZsO9T7O
+        6Yxi5XdL9pVLesBg==
 Received: from localhost.localdomain (unknown [10.100.208.98])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id C01F2A3BCB;
+        by relay2.suse.de (Postfix) with ESMTPS id EE4E1A3BBA;
         Fri, 18 Jun 2021 06:15:19 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 13/70] mxser: extract port ISR
-Date:   Fri, 18 Jun 2021 08:14:19 +0200
-Message-Id: <20210618061516.662-14-jslaby@suse.cz>
+Subject: [PATCH 14/70] mxser: simplify mxser_interrupt and drop mxser_board::vector_mask
+Date:   Fri, 18 Jun 2021 08:14:20 +0200
+Message-Id: <20210618061516.662-15-jslaby@suse.cz>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210618061516.662-1-jslaby@suse.cz>
 References: <20210618061516.662-1-jslaby@suse.cz>
@@ -54,162 +54,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ISR is terrible mix of letters. Let's extract the proper per-port
-handling to a separate function called mxser_port_isr. This way, we can
-actually see what both mxser_interrupt and mxser_port_isr do now.
+mxser_board::vector_mask is just a bitfield with bits set for all
+available ports.  We can obtain this value simply by
+"BIT(brd->info->nports) - 1" directly in the ISR. So remove vector_mask
+and simplify the code a bit.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/mxser.c | 119 ++++++++++++++++++++++++--------------------
- 1 file changed, 64 insertions(+), 55 deletions(-)
+ drivers/tty/mxser.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/tty/mxser.c b/drivers/tty/mxser.c
-index 9ba3af4626c6..555b9b37b52f 100644
+index 555b9b37b52f..df59ca88acab 100644
 --- a/drivers/tty/mxser.c
 +++ b/drivers/tty/mxser.c
-@@ -2203,18 +2203,78 @@ static void mxser_transmit_chars(struct tty_struct *tty, struct mxser_port *port
- 	}
- }
+@@ -368,7 +368,6 @@ struct mxser_board {
+ 	int irq;
+ 	const struct mxser_cardinfo *info;
+ 	unsigned long vector;
+-	unsigned long vector_mask;
  
-+static bool mxser_port_isr(struct mxser_port *port)
-+{
-+	struct tty_struct *tty;
-+	u8 iir, msr, status;
-+	bool error = false;
-+
-+	iir = inb(port->ioaddr + UART_IIR);
-+	if (iir & UART_IIR_NO_INT)
-+		return true;
-+
-+	iir &= MOXA_MUST_IIR_MASK;
-+	tty = tty_port_tty_get(&port->port);
-+	if (!tty || port->closing || !tty_port_initialized(&port->port)) {
-+		status = inb(port->ioaddr + UART_LSR);
-+		outb(0x27, port->ioaddr + UART_FCR);
-+		inb(port->ioaddr + UART_MSR);
-+
-+		error = true;
-+		goto put_tty;
-+	}
-+
-+	status = inb(port->ioaddr + UART_LSR);
-+
-+	if (status & UART_LSR_PE)
-+		port->err_shadow |= NPPI_NOTIFY_PARITY;
-+	if (status & UART_LSR_FE)
-+		port->err_shadow |= NPPI_NOTIFY_FRAMING;
-+	if (status & UART_LSR_OE)
-+		port->err_shadow |= NPPI_NOTIFY_HW_OVERRUN;
-+	if (status & UART_LSR_BI)
-+		port->err_shadow |= NPPI_NOTIFY_BREAK;
-+
-+	if (port->board->must_hwid) {
-+		if (iir == MOXA_MUST_IIR_GDA ||
-+		    iir == MOXA_MUST_IIR_RDA ||
-+		    iir == MOXA_MUST_IIR_RTO ||
-+		    iir == MOXA_MUST_IIR_LSR)
-+			status = mxser_receive_chars(tty, port, status);
-+	} else {
-+		status &= port->read_status_mask;
-+		if (status & UART_LSR_DR)
-+			status = mxser_receive_chars(tty, port, status);
-+	}
-+
-+	msr = inb(port->ioaddr + UART_MSR);
-+	if (msr & UART_MSR_ANY_DELTA)
-+		mxser_check_modem_status(tty, port, msr);
-+
-+	if (port->board->must_hwid) {
-+		if (iir == 0x02 && (status & UART_LSR_THRE))
-+			mxser_transmit_chars(tty, port);
-+	} else {
-+		if (status & UART_LSR_THRE)
-+			mxser_transmit_chars(tty, port);
-+	}
-+
-+put_tty:
-+	tty_kref_put(tty);
-+
-+	return error;
-+}
-+
- /*
-  * This is the serial driver's generic interrupt routine
-  */
- static irqreturn_t mxser_interrupt(int irq, void *dev_id)
- {
--	int status, iir, i;
+ 	enum mxser_must_hwid must_hwid;
+ 	speed_t max_baud;
+@@ -2273,18 +2272,18 @@ static irqreturn_t mxser_interrupt(int irq, void *dev_id)
  	struct mxser_board *brd = dev_id;
  	struct mxser_port *port;
--	int max, irqbits, bits, msr;
  	unsigned int int_cnt, pass_counter = 0;
-+	int max, irqbits, bits, i;
+-	int max, irqbits, bits, i;
++	unsigned int i, max = brd->info->nports;
  	int handled = IRQ_NONE;
--	struct tty_struct *tty;
++	u8 irqbits, bits, mask = BIT(max) - 1;
  
- 	max = brd->info->nports;
+-	max = brd->info->nports;
  	while (pass_counter++ < MXSER_ISR_PASS_LIMIT) {
-@@ -2233,59 +2293,8 @@ static irqreturn_t mxser_interrupt(int irq, void *dev_id)
- 			int_cnt = 0;
- 			spin_lock(&port->slock);
- 			do {
--				iir = inb(port->ioaddr + UART_IIR);
--				if (iir & UART_IIR_NO_INT)
--					break;
--				iir &= MOXA_MUST_IIR_MASK;
--				tty = tty_port_tty_get(&port->port);
--				if (!tty || port->closing ||
--				    !tty_port_initialized(&port->port)) {
--					status = inb(port->ioaddr + UART_LSR);
--					outb(0x27, port->ioaddr + UART_FCR);
--					inb(port->ioaddr + UART_MSR);
--					tty_kref_put(tty);
-+				if (mxser_port_isr(port))
- 					break;
--				}
--
--				status = inb(port->ioaddr + UART_LSR);
--
--				if (status & UART_LSR_PE)
--					port->err_shadow |= NPPI_NOTIFY_PARITY;
--				if (status & UART_LSR_FE)
--					port->err_shadow |= NPPI_NOTIFY_FRAMING;
--				if (status & UART_LSR_OE)
--					port->err_shadow |=
--						NPPI_NOTIFY_HW_OVERRUN;
--				if (status & UART_LSR_BI)
--					port->err_shadow |= NPPI_NOTIFY_BREAK;
--
--				if (port->board->must_hwid) {
--					if (iir == MOXA_MUST_IIR_GDA ||
--					    iir == MOXA_MUST_IIR_RDA ||
--					    iir == MOXA_MUST_IIR_RTO ||
--					    iir == MOXA_MUST_IIR_LSR)
--						status = mxser_receive_chars(tty,
--								port, status);
--
--				} else {
--					status &= port->read_status_mask;
--					if (status & UART_LSR_DR)
--						status = mxser_receive_chars(tty,
--								port, status);
--				}
--				msr = inb(port->ioaddr + UART_MSR);
--				if (msr & UART_MSR_ANY_DELTA)
--					mxser_check_modem_status(tty, port, msr);
--
--				if (port->board->must_hwid) {
--					if (iir == 0x02 && (status &
--								UART_LSR_THRE))
--						mxser_transmit_chars(tty, port);
--				} else {
--					if (status & UART_LSR_THRE)
--						mxser_transmit_chars(tty, port);
--				}
--				tty_kref_put(tty);
- 			} while (int_cnt++ < MXSER_ISR_PASS_LIMIT);
- 			spin_unlock(&port->slock);
- 		}
+-		irqbits = inb(brd->vector) & brd->vector_mask;
+-		if (irqbits == brd->vector_mask)
++		irqbits = inb(brd->vector) & mask;
++		if (irqbits == mask)
+ 			break;
+ 
+ 		handled = IRQ_HANDLED;
+ 		for (i = 0, bits = 1; i < max; i++, irqbits |= bits, bits <<= 1) {
+-			if (irqbits == brd->vector_mask)
++			if (irqbits == mask)
+ 				break;
+ 			if (bits & irqbits)
+ 				continue;
+@@ -2450,7 +2449,6 @@ static int mxser_probe(struct pci_dev *pdev,
+ 	brd->irq = pdev->irq;
+ 
+ 	brd->must_hwid = mxser_must_get_hwid(brd->ports[0].ioaddr);
+-	brd->vector_mask = 0;
+ 
+ 	for (j = 0; j < UART_INFO_NUM; j++) {
+ 		if (Gpci_uart_info[j].type == brd->must_hwid) {
+@@ -2475,7 +2473,6 @@ static int mxser_probe(struct pci_dev *pdev,
+ 	}
+ 
+ 	for (i = 0; i < brd->info->nports; i++) {
+-		brd->vector_mask |= (1 << i);
+ 		brd->ports[i].baud_base = 921600;
+ 	}
+ 
 -- 
 2.32.0
 
