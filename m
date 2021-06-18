@@ -2,106 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7A03ACC67
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 037AC3ACC6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:36:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234117AbhFRNiY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:38:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60933 "EHLO
+        id S234017AbhFRNie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:38:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37407 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233934AbhFRNiJ (ORCPT
+        by vger.kernel.org with ESMTP id S234090AbhFRNiV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:38:09 -0400
+        Fri, 18 Jun 2021 09:38:21 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624023358;
+        s=mimecast20190719; t=1624023372;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KFwIb7IPOZRbP1IQ9mV70O4nT0A/GjnYdmBaTej5bMs=;
-        b=RaRIQ3UCXtS9EM0rBCx5X/A/jead77kOXkU2ocQwROOktwYZix3fLpnTIDjp4zMG1t9FeU
-        H+tU3fW5czb1MRjHgMm7whhqlUfuxfTkhrSfQ31zyxZMjIjbnsa6dhPuuCphoWei0Ay+XA
-        k++SlRSC74v4x5twNpQMJlOmDFhgufQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-283-12QN6s9jMYqyi6bKQyOXnw-1; Fri, 18 Jun 2021 09:35:55 -0400
-X-MC-Unique: 12QN6s9jMYqyi6bKQyOXnw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B98A8100C666;
-        Fri, 18 Jun 2021 13:35:53 +0000 (UTC)
-Received: from steredhat.lan (ovpn-115-127.ams2.redhat.com [10.36.115.127])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B17261000324;
-        Fri, 18 Jun 2021 13:35:47 +0000 (UTC)
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     netdev@vger.kernel.org
-Cc:     Arseny Krasnov <arseny.krasnov@kaspersky.com>, kvm@vger.kernel.org,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 3/3] vsock/virtio: remove redundant `copy_failed` variable
-Date:   Fri, 18 Jun 2021 15:35:26 +0200
-Message-Id: <20210618133526.300347-4-sgarzare@redhat.com>
-In-Reply-To: <20210618133526.300347-1-sgarzare@redhat.com>
-References: <20210618133526.300347-1-sgarzare@redhat.com>
+        bh=dwAv77AeNlMLDZyLBksUycGFC3fX4Q/aI+Elu1Kw5xU=;
+        b=b25NPsDkpKnMysoa3BpTBgzx7tJQV0Em53xtgxfjNkXwK31tdFNdyfH6mMCFnZQIzsgp13
+        +n0JFrhX8lYFxUHScQudaPRFIn9VYYK64dLkB87oWmBxDx6Pu2fcSR+0fqgD46iFPi0jnu
+        pW+Ae3GjhwxkdP1IGvx+wUF7E9Zt/XA=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-420-k5izVtFnPdywF403T4wwbw-1; Fri, 18 Jun 2021 09:36:10 -0400
+X-MC-Unique: k5izVtFnPdywF403T4wwbw-1
+Received: by mail-ej1-f70.google.com with SMTP id j26-20020a170906411ab02904774cb499f8so1599130ejk.6
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:36:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dwAv77AeNlMLDZyLBksUycGFC3fX4Q/aI+Elu1Kw5xU=;
+        b=hXPd1rHN9ty/eypt4cMsufaZWqiH32mk5KPshF0OwfpkZVFK/EiUBfOZVrWzg/RUvV
+         Yj7YPucioOglTPsn8Wh3ivO2W00Gxiih/wYIgUUy/lz9Dn1y/8d10557JTHFSjBSUK+P
+         zfT0qZyn49JWauQFw6Bm9W2Lqg+nL3AdzYRtYEFbx7OqXkOLmOVXhRc1PKpFSM/+4Kyx
+         HYpSghP/z3XvGZ5LE8ZTShRUHmhh8cz6mPqqqwDwntB7mjxDxMduUWj4sy7dv0lXHOtb
+         g9UKsr2bkBpxE7bGimzp3e1TPKxDG4GkOncrld9hCoG9q2bFIP/o3Fik6qgeCyR+rlOE
+         /etg==
+X-Gm-Message-State: AOAM531/WiDZY0lno58fyMxOX3WXn93vZr10bMqu+/Tr8PAe+CozlC/a
+        xGfk+j1OvfMg0kyna2QuL5vl/1lx8p9K2z4GKt3AS5K/mAhRamzUH/HipngmkROU53ZEv4M3SOH
+        juP7L18F+rcFFoaHhVA5Z4iH/MX9GAPTekHS6il+PCBNpWo/ugWlj2Uba8PJGRk3y3UB8KFlc46
+        qR
+X-Received: by 2002:a17:906:1704:: with SMTP id c4mr11309290eje.182.1624023369381;
+        Fri, 18 Jun 2021 06:36:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzR91c6OPYoDNV+ixeXoAS0a4lEBGMZghoM8VLy/9noopvEnzhrLCC5z06NQNHkpEdJHuzVDQ==
+X-Received: by 2002:a17:906:1704:: with SMTP id c4mr11309273eje.182.1624023369190;
+        Fri, 18 Jun 2021 06:36:09 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id e12sm1047791ejk.99.2021.06.18.06.36.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jun 2021 06:36:08 -0700 (PDT)
+Subject: Re: [PATCH] power: supply: axp288_fuel_gauge: remove redundant
+ continue statement
+To:     Colin King <colin.king@canonical.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>, linux-pm@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210618092924.99722-1-colin.king@canonical.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <9d482c54-f578-5afb-9661-dbb658471b5d@redhat.com>
+Date:   Fri, 18 Jun 2021 15:36:08 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20210618092924.99722-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When memcpy_to_msg() fails in virtio_transport_seqpacket_do_dequeue(),
-we already set `dequeued_len` with the negative error value returned
-by memcpy_to_msg().
+Hi,
 
-So we can directly check `dequeued_len` value instead of using a
-dedicated flag variable to skip the copy path for the rest of
-fragments.
+On 6/18/21 11:29 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The continue statement at the end of a for-loop has no effect,
+> invert the if expression and remove the continue.
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/power/supply/axp288_fuel_gauge.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/drivers/power/supply/axp288_fuel_gauge.c b/drivers/power/supply/axp288_fuel_gauge.c
+> index 39e16ecb7638..20e63609ab47 100644
+> --- a/drivers/power/supply/axp288_fuel_gauge.c
+> +++ b/drivers/power/supply/axp288_fuel_gauge.c
+> @@ -142,9 +142,7 @@ static int fuel_gauge_reg_readb(struct axp288_fg_info *info, int reg)
+>  
+>  	for (i = 0; i < NR_RETRY_CNT; i++) {
+>  		ret = regmap_read(info->regmap, reg, &val);
+> -		if (ret == -EBUSY)
+> -			continue;
+> -		else
+> +		if (ret != -EBUSY)
+>  			break;
+>  	}
 
-Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
----
- net/vmw_vsock/virtio_transport_common.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+Thanks, patch looks good to me:
 
-diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
-index 23704a6bc437..f014ccfdd9c2 100644
---- a/net/vmw_vsock/virtio_transport_common.c
-+++ b/net/vmw_vsock/virtio_transport_common.c
-@@ -413,7 +413,6 @@ static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
- 	struct virtio_vsock_pkt *pkt;
- 	int dequeued_len = 0;
- 	size_t user_buf_len = msg_data_left(msg);
--	bool copy_failed = false;
- 	bool msg_ready = false;
- 
- 	spin_lock_bh(&vvs->rx_lock);
-@@ -426,7 +425,7 @@ static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
- 	while (!msg_ready) {
- 		pkt = list_first_entry(&vvs->rx_queue, struct virtio_vsock_pkt, list);
- 
--		if (!copy_failed) {
-+		if (dequeued_len >= 0) {
- 			size_t pkt_len;
- 			size_t bytes_to_copy;
- 
-@@ -443,11 +442,9 @@ static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
- 
- 				err = memcpy_to_msg(msg, pkt->buf, bytes_to_copy);
- 				if (err) {
--					/* Copy of message failed, set flag to skip
--					 * copy path for rest of fragments. Rest of
-+					/* Copy of message failed. Rest of
- 					 * fragments will be freed without copy.
- 					 */
--					copy_failed = true;
- 					dequeued_len = err;
- 				} else {
- 					user_buf_len -= bytes_to_copy;
--- 
-2.31.1
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+Regards,
+
+Hans
 
