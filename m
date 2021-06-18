@@ -2,121 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 557AF3ACD85
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA793ACD87
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234501AbhFROcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:32:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33878 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232052AbhFROcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:32:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E13F861248;
-        Fri, 18 Jun 2021 14:30:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624026631;
-        bh=Z55SLbU8ZD5nUDrh8T99iwxmj76HXBy5zPcLuyKUE+k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RnrkiZpe9q8B2Cg+xjqgeayELOfe8JGeBbnl2PONMDfxp9XwIAbvo775WBxcxHj9z
-         fdtB6Mo6csKLCexqWsaHgnLkhyuP/SGlOAxUdRkGyYRWJ2KbJUEMhLgGZaxhw9Z+Tx
-         L9ReImrcqoTfHIwXsXmZgVdfVNQdrL/LCA2mqoMW0bzpP4Rt0xnFBVmFg6f9j/mQY/
-         6mS1QUzvQtJvu6fMXVhTuy1im2USzuuQUTzlGtkZy3J7k/YWt1fnLOZuvt4Ftq9GPD
-         Fk3a0nRu1MSSHckSYLkTr/rJUfLK10u6YFfHKWpXmTovY5AUOJhAPTEnBxI+qu2pXa
-         hKz9rD3josUbQ==
-Received: by mail-ed1-f52.google.com with SMTP id s15so8893834edt.13;
-        Fri, 18 Jun 2021 07:30:31 -0700 (PDT)
-X-Gm-Message-State: AOAM5337JZyqub5K3EyXOy5Ul4AJ9ixB3WYfLh0Xs5O0PMS0WgleLlSj
-        8enfgE8xWmBroTWRI0POZHgGJ8A+OxD9I7MRbw==
-X-Google-Smtp-Source: ABdhPJxL9CaQPuY06jCjKdQITDNtB6+/Tex0AkJknZjnOdcaEnznF5fo8kfUkN0Y3H/xw1kcmv3KZ4ICsSup5WIpZBM=
-X-Received: by 2002:aa7:cac9:: with SMTP id l9mr5255201edt.373.1624026630436;
- Fri, 18 Jun 2021 07:30:30 -0700 (PDT)
+        id S234520AbhFROdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 10:33:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232052AbhFROdM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 10:33:12 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01F3AC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 07:31:02 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id y7so10959078wrh.7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 07:31:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
+         :date:mime-version;
+        bh=YSr1xCzITLF/CWHeqxDLjzvl354aJ3tXZwCogE8rb8c=;
+        b=Jgi1NBFwn0O29BGpktjuEhMh7FpWKz1Q4Sy067SvtCk0yg7PmyHMl5/4VuN8azjOhX
+         1Bykr3U62EdMum+0t1GEO72SZ7zqhTGWgTHbplhglmDwm4E9UhGfqfuyMVfgEQdJ9uCb
+         M7DWIL+SCoFnw8xPYyBzp3dbqpSjKAWMNbI3MtZ4rGgnWpTE6Znr6cuVPwXdk9tFoi0q
+         v2Yq0VK40fae8TqVeN7V1dx8YHyI7dAV0JP138Xxr1chO+XjcHBkK1oEUiAhtr+yHIGo
+         zXQeywxUJ6W31/CCW59z7k5Y3ZDlAXp7uIcj6+mD1cVnFjPcy8LSABNDTROB9xv/hq0F
+         1rMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=YSr1xCzITLF/CWHeqxDLjzvl354aJ3tXZwCogE8rb8c=;
+        b=t7FT1DhQgRCnLnerQymLdcrFGcoI04C5+bjZysPQqQTSMQXEY/Q6UEExyPT5BcVOHD
+         vrsiaOdpmABTLm+Po34cdH+djdM4jhOkztEUn2oG97Tuy2WaEvvsHQpbCb19fku166ES
+         IuxyjHfCcflnbGwGBAVO6SdMR07YNBiXk2jajv/BZTwD7AN6CIsCT2N2SVkFKEfgkXiu
+         8+z3A/96wOH0IlrebsJKmSdH42/zecvROWR6qLgrPCRRDyhOoWlhorC+VxuOcfMjT/uE
+         YYEvYFVYrzldoTWMl0eQPK/H3UcULVXpCvGFWp+IlSGpeCT8iYGWqQxbheLI6Vl1qTi0
+         90wA==
+X-Gm-Message-State: AOAM530Tax70HP8PL0RUMjUEd7+Vp8QuCaKdLpleYlx4HKpjMaTOhpln
+        qmPfqGfTNuUxA5zbI8OSppbEBw==
+X-Google-Smtp-Source: ABdhPJx7b+KubVPotYb5zFb9dnK6xuStWlWjPKSZltgOK+Gz/00RhyjwEQp2L4Cr0tMdkIP713jz1g==
+X-Received: by 2002:a5d:440a:: with SMTP id z10mr2019653wrq.269.1624026660412;
+        Fri, 18 Jun 2021 07:31:00 -0700 (PDT)
+Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.gmail.com with ESMTPSA id v18sm9157091wrb.10.2021.06.18.07.30.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 07:31:00 -0700 (PDT)
+References: <20210528113403.5374-1-peng.fan@oss.nxp.com>
+ <162262192433.4130789.1017942859005253343@swboyd.mtv.corp.google.com>
+ <a5833012-3e86-5be0-71f2-de4d9b32a152@pengutronix.de>
+ <1j1r9kobln.fsf@starbuckisacylon.baylibre.com>
+User-agent: mu4e 1.4.15; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, mturquette@baylibre.com
+Cc:     Peng Fan <peng.fan@nxp.com>, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/3] clk: support regmap
+In-reply-to: <1j1r9kobln.fsf@starbuckisacylon.baylibre.com>
+Message-ID: <1jzgvnfdng.fsf@starbuckisacylon.baylibre.com>
+Date:   Fri, 18 Jun 2021 16:30:59 +0200
 MIME-Version: 1.0
-References: <20210618063821.1383357-1-art@khadas.com> <CAFBinCB6bHy6Han0+oUcuGfccv1Rh_P0Gows1ezWdV4eA267tg@mail.gmail.com>
-In-Reply-To: <CAFBinCB6bHy6Han0+oUcuGfccv1Rh_P0Gows1ezWdV4eA267tg@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 18 Jun 2021 08:30:18 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqK+zjf2r_Q9gE8JwJw+Emn+JB4wOyH7eQct=kBvpUKstw@mail.gmail.com>
-Message-ID: <CAL_JsqK+zjf2r_Q9gE8JwJw+Emn+JB4wOyH7eQct=kBvpUKstw@mail.gmail.com>
-Subject: Re: [PATCH] PCI: dwc: meson add quirk
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     Artem Lapkin <email2tema@gmail.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Yue Wang <yue.wang@amlogic.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Krzysztof Wilczynski <kw@linux.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        art@khadas.com, Nick Xie <nick@khadas.com>, gouwa@khadas.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 6:12 AM Martin Blumenstingl
-<martin.blumenstingl@googlemail.com> wrote:
+
+On Wed 02 Jun 2021 at 11:32, Jerome Brunet <jbrunet@baylibre.com> wrote:
+
+> On Wed 02 Jun 2021 at 10:21, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
 >
-> Hi Artem,
+>> On 6/2/21 10:18 AM, Stephen Boyd wrote:
+>>> Quoting Peng Fan (OSS) (2021-05-28 04:34:00)
+>>>> From: Peng Fan <peng.fan@nxp.com>
+>>>>
+>>>> To i.MX8ULP, a PCC register provides clk(mux, gate, divider) and peripheral
+>>>> reset functionality, so we need make sure the access to the PCC register
+>>>> be protected to avoid concurrent access from clk and reset subsystem.
+>>>>
+>>>> So let's use regmap here.
+>>>>
+>>>> The i.MX specific code will be posted if this patchset is ok for you.
+>>> 
+>>> We have a couple regmap clk drivers in the tree. Either combine the
+>>> different regmap clk drivers or duplicate it into the imx directory. I'd
+>>> prefer we combine them but last time I couldn't agree on the approach
+>>> when Jerome wanted to do it. Maybe now is the time to combine them all
+>>> into one common piece of code.
+>>
+>> IMHO for the basic drivers, such as gate, divider, mux, mux-div, etc... it makes
+>> no sense to have them in an arch specific subdir, like meson.
 >
-> On Fri, Jun 18, 2021 at 8:38 AM Artem Lapkin <email2tema@gmail.com> wrote:
-> >
-> > Device set same 256 bytes maximum read request size equal MAX_READ_REQ_SIZE
-> > was find some issue with HDMI scrambled picture and nvme devices
-> > at intensive writing...
-> >
-> > [    4.798971] nvme 0000:01:00.0: fix MRRS from 512 to 256
-> >
-> > This quirk setup same MRRS if we try solve this problem with
-> > pci=pcie_bus_perf kernel command line param
-> thank you for investigating this issue and for providing a fix!
+> Indeed, those basic types were not meant to remain platform
+> specific. Some framework (ASoC for ex) make heavy use of regmap and
+> could welcome regmap based basic clock types.
 >
-> [...]
-> > +static void meson_pcie_quirk(struct pci_dev *dev)
-> > +{
-> > +       int mrrs;
-> > +
-> > +       /* no need quirk */
-> > +       if (pcie_bus_config != PCIE_BUS_DEFAULT)
-> > +               return;
-> > +
-> > +       /* no need for root bus */
-> > +       if (pci_is_root_bus(dev->bus))
-> > +               return;
-> > +
-> > +       mrrs = pcie_get_readrq(dev);
-> > +
-> > +       /*
-> > +        * set same 256 bytes maximum read request size equal MAX_READ_REQ_SIZE
-> > +        * was find some issue with HDMI scrambled picture and nvme devices
-> > +        * at intensive writing...
-> > +        */
-> > +
-> > +       if (mrrs != MAX_READ_REQ_SIZE) {
-> > +               dev_info(&dev->dev, "fix MRRS from %d to %d\n", mrrs, MAX_READ_REQ_SIZE);
-> > +               pcie_set_readrq(dev, MAX_READ_REQ_SIZE);
-> > +       }
-> > +}
-> > +DECLARE_PCI_FIXUP_ENABLE(PCI_ANY_ID, PCI_ANY_ID, meson_pcie_quirk);
+> At the time, Stephen (qcom) and I (meson) had slightly different
+> approaches. Before having those types spread through the kernel, I think
+> testing things out was a good thing ... this is why these are platform
+> specific ATM.
+>
+> It's been 3 years now ... and it has not been a total disaster :)
+>
+> In the end things are not so different. Let's compare:
+> a. Both have a generic "clk_regmap" type common to all regmap based
+>   types. This is very useful to easily fix the regmap pointer in static
+>   clocks (which are heavily used by both platform)
+>
+> b. Meson uses a generic pointer to store the type specific info.
+>   Qcom embeds the generic clk_regmap into the specific type one.
+>   => In the end, I don't see any advantage to the meson
+>   approach. Switching to the qcom method would be quite a big bang
+>   for meson but it is doable (nothing difficult, just a huge line count)
+>   
+> c. Qcom basic regmap type deviates a bit from the regular basic ones
+>   when it comes to the actual data. The qcom "clk_regmap" also provides
+>   the gate, mux have the qcom "parent_map". In meson, I tried to keep as
+>   close as possible to regular basic types ... at least what they were 3
+>   years ago. Only the register poking part should be different actually.
+>   => I'd be in favor of keeping close to meson here.
+>
+> A possible plan could be:
+> 1. Rework meson as explained in [b] above.
+> 2. reword types in qcom where necessary to avoid name clashes (add
+>    "_qcom" extension for ex)
+> 3. Move the clk_regmap implementation out of meson to drivers/clk
+> 4. Things are yours to play with ...
+>
+> I can take care of 1. and 3. I would welcome help for 2. especially since
+> I won't be able to test it.
+>
 
-Isn't this going to run for everyone if meson driver happens to be enabled?
+Hi Stephen,
 
-> it seems that other PCIe controllers need something similar. in
-> particular I found pci-keystone [0] and pci-loongson [1]
-> while comparing your code with the two existing implementations two
-> things came to my mind:
-> 1. your implementation slightly differs from the two existing ones as
-> it's not walking through the parent PCI busses (I think this would be
-> relevant if there's another bridge between the host bridge and the
-> actual device)
-> 2. (this is a question towards the PCI maintainers) does it make sense
-> to have this MRRS quirk re-usable somewhere?
+What do you think of the proposition above ?
+There rework is going to take some time to do. I'll start only if this
+OK with you.
 
-Yes. Ideally, the max size could just be data in the bus or bridge
-struct and perhaps some flags too, then the core can handle
-everything.
+Cheers
+Jerome
 
-Rob
+>>
+>> regards,
+>> Marc
+
