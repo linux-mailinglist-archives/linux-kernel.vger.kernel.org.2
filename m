@@ -2,156 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBBAE3AD5F5
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3048D3AD5E9
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235128AbhFRXdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 19:33:07 -0400
-Received: from mx0a-00268f01.pphosted.com ([148.163.148.236]:11444 "EHLO
-        mx0a-00268f01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234533AbhFRXdG (ORCPT
+        id S234491AbhFRXcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 19:32:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230024AbhFRXcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 19:33:06 -0400
-Received: from pps.filterd (m0165119.ppops.net [127.0.0.1])
-        by mx0a-00268f01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15INSQKJ009525;
-        Fri, 18 Jun 2021 23:30:17 GMT
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2173.outbound.protection.outlook.com [104.47.58.173])
-        by mx0a-00268f01.pphosted.com with ESMTP id 398r42afgg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Jun 2021 23:30:17 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YloG/WAsWyrsToNlqMQhUyzUzXzmBSjD8fkZjBZW1IG/BBFvfAHi3BRFLJXRETxeZHJSd6g0R4RTzU0e71bHcbNlEy9fOUNl5uHmnbjVZZWB01YYuMxK/bw1/Lihl7IC7c0o1t2ZwSsOzSFZDgOUCCJJaxstrYHRTIFiORihUHEVnoQi4+B+rJBDl/n361oTgrM/QKwPkjRnVUhLzEDHX2zIROZfYuO3qfENvML023eyVx34bLF+lI4oYSgqowAiNxtmlrDAj7zOP4Ce88+1lfWBDkW0zxNhJFv3Xf6F0pVAom4QXo1rQYpBTzRNNCOz8I36r6MTO8km8PvsNL/ycQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cU2gQs7jRrzGDYphv6ME+ticUDg332LdbKkSsiokjMA=;
- b=ayXG0cJQqRbamruicx4ZO6nFU3Ec6lajcZ7pFz/OfaPsry7pwcTdTdkgCXkwGCSeToBpCBkcxYn81Fi9VDySorElJEMmaKGBgfiax+lh8lSGhkBe9w2kk2d87RoS0wTVIYgIo5J7CqSC1s2X5Tg2nZ6GPcHcipLO0GBqMN2INOPRshY+SjcUxte123YZJczgRY2utHsA480BF+T4YJuG449N2geHY56sTiVUifpmi6bL71XH0F2cejMjDFQa33CnSaR9pj2Jc4/n0W6k6eQ6Br3R2MB219OT9E8E6ZVCpJISjAHREtpd3GhLuim4d6H4ewweeAbSo5iFZ2tDOJZZEA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=equinix.com; dmarc=pass action=none header.from=equinix.com;
- dkim=pass header.d=equinix.com; arc=none
+        Fri, 18 Jun 2021 19:32:52 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46212C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:30:41 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id r190-20020a375dc70000b02903acea04c19fso7036785qkb.8
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:30:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=equinixinc.onmicrosoft.com; s=selector2-equinixinc-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=cU2gQs7jRrzGDYphv6ME+ticUDg332LdbKkSsiokjMA=;
- b=h7vXI6Uv1gPPvwAJgpdwY/c4g3hBLtrH2xceDUTVuTukJv68+cFkxxawXzvHR3hM/LZNqy/QC1CuXKjA022/flzYZDdFRtxRyE6PBwpEFWgTWy4MLIuiDUvlJh1eyFefFrR5aURoTKKrMrJkOO5+8UdjsiPRK/OIWdpQYRFdXjQ=
-Received: from DM5PR04MB0762.namprd04.prod.outlook.com (2603:10b6:3:f3::13) by
- DM6PR04MB6732.namprd04.prod.outlook.com (2603:10b6:5:1::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4242.19; Fri, 18 Jun 2021 23:30:13 +0000
-Received: from DM5PR04MB0762.namprd04.prod.outlook.com
- ([fe80::d9ba:6e7f:b51e:6cab]) by DM5PR04MB0762.namprd04.prod.outlook.com
- ([fe80::d9ba:6e7f:b51e:6cab%2]) with mapi id 15.20.4219.027; Fri, 18 Jun 2021
- 23:30:13 +0000
-From:   Zev Weiss <zweiss@equinix.com>
-To:     Andrew Jeffery <andrew@aj.id.au>
-CC:     "openipmi-developer@lists.sourceforge.net" 
-        <openipmi-developer@lists.sourceforge.net>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "minyard@acm.org" <minyard@acm.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "tmaimon77@gmail.com" <tmaimon77@gmail.com>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "avifishman70@gmail.com" <avifishman70@gmail.com>,
-        "venture@google.com" <venture@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tali.perry1@gmail.com" <tali.perry1@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "chiawei_wang@aspeedtech.com" <chiawei_wang@aspeedtech.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "benjaminfair@google.com" <benjaminfair@google.com>,
-        "arnd@arndb.de" <arnd@arndb.de>, "joel@jms.id.au" <joel@jms.id.au>,
-        "KWLIU@nuvoton.com" <KWLIU@nuvoton.com>
-Subject: Re: [PATCH v4 11/16] ipmi: kcs_bmc: Add serio adaptor
-Thread-Topic: [PATCH v4 11/16] ipmi: kcs_bmc: Add serio adaptor
-Thread-Index: AQHXZJnjCtcI+6c1UkiVQLPff6oAew==
-Date:   Fri, 18 Jun 2021 23:30:13 +0000
-Message-ID: <20210618233012.GD9658@hatter>
-References: <20210608104757.582199-1-andrew@aj.id.au>
- <20210608104757.582199-12-andrew@aj.id.au>
-In-Reply-To: <20210608104757.582199-12-andrew@aj.id.au>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: aj.id.au; dkim=none (message not signed)
- header.d=none;aj.id.au; dmarc=none action=none header.from=equinix.com;
-x-originating-ip: [24.181.166.149]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7290dbcc-b93b-4cd7-9ffb-08d932b105bf
-x-ms-traffictypediagnostic: DM6PR04MB6732:
-x-microsoft-antispam-prvs: <DM6PR04MB6732C60559DE35CE3276E84DC30D9@DM6PR04MB6732.namprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3173;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 2eSwJUbGe8937DtjPtZGnmNRaOTkAKoctIw/1B7FhSGIXKw+nPJFVzbmVCtHlHjxveu7UvoLad8y6aV79+/3Qr7Ce6ol2VyRJNX6kBx329Q4PcLBQC0GQt8n9GR1zTuAdYVUyxshug8TQAqLyPxIUyDhKAGcQEMFZZkk/Jl3odQhWiK5o/LoLnqk9iXxFLg4ovxXokzfb+pEcP6oMaxJpSCqXmI7p9w+SAf5UX2aIhupWXx5HTOB6nKnHEhsu/Kz813a7oOfAjaFOi1yAWDfmkAK0K+t5QtenbXHZvyo3YiY1oEJ/LEIgGV+VqfmqFVwpoJGnVZa4CEJcqCWahr0CW+GQeEYSWohu5+IJVV2HiGCrUEwNintiYhnsYwDC3Bwz/9PtQbxzayKFhRFMMWNhaageFNhoPeiA3zDsZSdvZsQlQhrIk2kIBaTOCG2pz/TN0dHU3HR/Wv/P6eMXu/SSEIhdZvqYdUjUuB+qWE0Q/JzKifA7LRJ/GB+Vi/o4C7UMT2jOALuT60jFKZDXRKKbIX6nd3ZxPBO8+ZtOd1PXkhnFyWmtpVtBJx8SPouo4sjq8eRgCG1RM6tU/XLO1pqj2O6SIgMFy92AxtH4Fz96qc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR04MB0762.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(376002)(346002)(396003)(366004)(39860400002)(136003)(1076003)(54906003)(66476007)(66446008)(64756008)(66556008)(86362001)(122000001)(38100700002)(316002)(66946007)(91956017)(76116006)(33656002)(2906002)(8936002)(71200400001)(6506007)(4744005)(33716001)(5660300002)(6916009)(478600001)(26005)(186003)(4326008)(7416002)(6486002)(9686003)(6512007)(8676002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?wLlVoZTi2nmpoaqObUFJngTyLhb+DTPJnqhr4u6xQSfgwYd+TGKfrMa42Xbw?=
- =?us-ascii?Q?9oO9rMqMI4KEyIteDjTPjzzfOrXbsNJoCEWJvpGfnXPwD2PkS//qow37MAmZ?=
- =?us-ascii?Q?o+6kAR/YbHQqfEA4OT/nJ9XpkT8rQWNospWrAMtZxLioZIe5V9HLbuWmmrvg?=
- =?us-ascii?Q?mgHKGgiVoknDqdg4+cUwS5vRMrRkWMQXAbLlpuDeu31PtP9qGVjRxd191YXh?=
- =?us-ascii?Q?d29+UwxXhlzhvV1i+Q6g47qgVHhIsGuFY3alocizflPREKQ3qHA1o47lEXJp?=
- =?us-ascii?Q?ysGT/VfQt1Gi1drA4rrjRsIOnQ5b9KBILeF7nS8mi7gJfMgYU0g6ShJk+RrQ?=
- =?us-ascii?Q?Ss4bsSBlOUTJmS35/QybsaPgqeenPiNPOlLqwyco+5xtNcOoERHtZf5GRwq2?=
- =?us-ascii?Q?jSWMWZn6ZhxF4iI7/UplTJDYd6r9ErS36YUeTfBHJknp7q8GMBZM82urWTPw?=
- =?us-ascii?Q?9hD9TZVr4FF6FiVayGymIbdd6LQV78u4XR5UZYRrM0vQsD1M1aYsjnI/e+ZV?=
- =?us-ascii?Q?Dn4nRtg/Exk/cMJQkraalJ6CrJkWOcEKr0bVrzrTPXOhjsnefo6n1HzMgcYN?=
- =?us-ascii?Q?1HDs+2JR8TArqCyLfx9V1Zf+uSy6dwbYLLvD10HntKgUw7J7ijuuoRYds6jJ?=
- =?us-ascii?Q?F4s/NjJp9bluP85JNcQi1ikJpEt4LXzY2XQ9rSDrj0F01ePXxF2ul43DiSzZ?=
- =?us-ascii?Q?Q49D7VLkDxfmp/mQw3nqk/1ZZP3ZCOsV2weB6zQihKGUugYartdYwdh9sJCK?=
- =?us-ascii?Q?V7rNEUItxGq2g12e3VmiyKSofcpXYchSBZhuSvK+z2IB1LEM/JiD8f89lMH1?=
- =?us-ascii?Q?t8KxH948XO0cgWvkbkgMxeA8M+8KRaLYeI5RqJh0gB0Emq/Nfs/Chm1ixBQf?=
- =?us-ascii?Q?5pKe2xHpJjaEe/fG5fbF3+Yq9Ux0uOAWTUAJeo10J8lgDzKq9nuNsTK995UB?=
- =?us-ascii?Q?nIEegJ9/Sffs3Yy+U+TDyptc0S7krn6FCgTMTi62iEJ+CLT+If0C8CVy4XPV?=
- =?us-ascii?Q?85zmOGcCX0g8lRLB1P4Lt+plcAX5wD658bVe0cZN1YZuHztnC8PgDOiitq4j?=
- =?us-ascii?Q?YGKe5O74ZILJ0EdV1YAnkKKN7M1yBkiROVu7pmxnTCAMHDzuBr17J8dt01Zr?=
- =?us-ascii?Q?xaRnOqpooAF8w6TzuO/ZjV7XeFNhq+xBPP9RQ/quUCZcISrJOSNoOPM5WQhx?=
- =?us-ascii?Q?6zBvAk9shhDa181CbBUF2qLOyY6kLPz8myJRFAFQrffuL/1zxEAPRNmr/R6E?=
- =?us-ascii?Q?l/FLzQNAb3j7aFnih8IOhWLvxYFI7aOiJexmIcm3DwnHoHSwr39V6jDNT/3d?=
- =?us-ascii?Q?0DlXMqhTh89bEsy1Vj4JBCR4?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4C7CA56F6280F64E8D353493A56DCA13@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: equinix.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR04MB0762.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7290dbcc-b93b-4cd7-9ffb-08d932b105bf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jun 2021 23:30:13.5810
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72adb271-2fc7-4afe-a5ee-9de6a59f6bfb
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hu4g4tA65HooJ9eXtlPTnRg2qYgN0RxQqG6vJLO2nwFBUBAbCm1wfbmy6sYyXb5E9/dERBRE9uYuanm7isy0UQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6732
-X-Proofpoint-ORIG-GUID: 5yjc8PaMATy4AdprkR739qDMudB5yGED
-X-Proofpoint-GUID: 5yjc8PaMATy4AdprkR739qDMudB5yGED
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-18_12:2021-06-18,2021-06-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 mlxscore=0 suspectscore=0 phishscore=0 adultscore=0
- malwarescore=0 clxscore=1015 spamscore=0 mlxlogscore=999 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106180137
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=y0FcYdQ4+KG5bqQnhMUoT4g521uUABU2kMM30IGFQqQ=;
+        b=SW5N62h7cVgnLw8sn5w9vwqcWBRPPNOtrLPwVXkkwehU/P/KI1k0v+xryMYEmvNcy7
+         eMw36xbc1aj2sSJeMQHGZgrxcQ9RYBm3u20AqmA+6uDSt32RQAQnYcU+d6U3nC0czuC9
+         YwbGbPjwt2FMq7fZNR0qZpKdkJVRW2bEIShhP5a6AxPQJNkMvIGn+po4SorZQM+vy2No
+         syGYIVbxQfS+wI7cQsfflImJKZ36CzEYr2mghd13+LUS6F6K4zje94pul+gQYkXk8/xY
+         XFLOEXPtaaiVCbbx2hX49XPYKtCPOVkU0HlmTFk7nsKts6eSL5g6qUXyR8j+NOdYhpny
+         ToNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=y0FcYdQ4+KG5bqQnhMUoT4g521uUABU2kMM30IGFQqQ=;
+        b=JHeFrY2JXRnRdULKNddQrVsthlrrg7wYjxirXqolMXzCvqSFaw/h3YE3xFBZLgjUeB
+         Fj8igRAZQB5MeqTMNJIIL3z3huAXAoRXImLMpVOPk5VXHANKCO8qyGzAWjrQzaBJZ75E
+         g7CoS5u1FcTApEuG05vOeuA4hAZZEWvkwvRS7RqeCBHeEq3N/rOA0wyt9LfpZZ5s1XGL
+         FRohJ3R1UcqYaS7cap3Ecr9IPVAVk7OI8I89vVQrgKOtu40GsukL7KQYu8p/oFmM0Cyp
+         XmLWJ1FufmBPZe5W+bUEus88ygWU8Q3DRZUxqrVhw5l1gDDhVogjfYu0jEvb/RibbrJA
+         QB3A==
+X-Gm-Message-State: AOAM533s3l7yfN2xiODCNTtfmdfyiP5WKjvK8uGK/abWQSWNYWakG8YN
+        qEq/o7rvhyPD0AaoMiN9HTdFYxFkQ7cZsWX70LM=
+X-Google-Smtp-Source: ABdhPJwUcNJUliDdacWIjJcGJ4s/bKZDYhicKYKFrpo1l2tFI+YXdpDCrUpbHwLtvy9f8tnHVJilKWWWlhkTRWPiYrw=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:7c41:e84c:8fcb:6664])
+ (user=ndesaulniers job=sendgmr) by 2002:a05:6214:f0d:: with SMTP id
+ gw13mr8354593qvb.34.1624059040385; Fri, 18 Jun 2021 16:30:40 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 16:30:21 -0700
+Message-Id: <20210618233023.1360185-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
+Subject: [PATCH 0/2] no_profile fn attr and Kconfig for GCOV+PGO
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Bill Wendling <wcw@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
+        Martin Liska <mliska@suse.cz>, Marco Elver <elver@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Fangrui Song <maskray@google.com>, linux-doc@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        johannes.berg@intel.com, linux-toolchains@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 05:47:52AM CDT, Andrew Jeffery wrote:
->kcs_bmc_serio acts as a bridge between the KCS drivers in the IPMI
->subsystem and the existing userspace interfaces available through the
->serio subsystem. This is useful when userspace would like to make use of
->the BMC KCS devices for purposes that aren't IPMI.
->
->Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
->---
-> drivers/char/ipmi/Kconfig         |  14 +++
-> drivers/char/ipmi/Makefile        |   1 +
-> drivers/char/ipmi/kcs_bmc_serio.c | 157 ++++++++++++++++++++++++++++++
-> 3 files changed, 172 insertions(+)
-> create mode 100644 drivers/char/ipmi/kcs_bmc_serio.c
->
+When we say noinstr, we mean noinstr.  GCOV and PGO can both instrument
+functions. Add a new function annotation __no_profile that expands to
+__attribute__((__no_profile__)) and Kconfig value
+CC_HAS_NO_PROFILE_FN_ATTR.
 
-Reviewed-by: Zev Weiss <zweiss@equinix.com>
+Base is
+https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/log/?h=for-next/clang/pgo.
+
+Nick Desaulniers (2):
+  compiler_attributes.h: define __no_profile, add to noinstr
+  Kconfig: CC_HAS_NO_PROFILE_FN_ATTR, depend on for GCOV and PGO
+
+ include/linux/compiler_attributes.h | 12 ++++++++++++
+ include/linux/compiler_types.h      |  2 +-
+ init/Kconfig                        |  3 +++
+ kernel/gcov/Kconfig                 |  1 +
+ kernel/pgo/Kconfig                  |  3 ++-
+ 5 files changed, 19 insertions(+), 2 deletions(-)
+
+
+base-commit: 4356bc4c0425c81e204f561acf4dd0095544a6cb
+-- 
+2.32.0.288.g62a8d224e6-goog
+
