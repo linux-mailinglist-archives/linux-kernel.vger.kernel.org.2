@@ -2,91 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F3E3AD61A
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 727623AD622
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235238AbhFRXqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 19:46:44 -0400
-Received: from mga03.intel.com ([134.134.136.65]:27153 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235189AbhFRXql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 19:46:41 -0400
-IronPort-SDR: UBIEJrLFtxvEGsjW5AFbsoniHS1YyDJv68TjK0peirriIR80l1XNe6GapI/BbFC3SHRX+h/x8K
- d7MSrFeAXltg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="206676451"
-X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
-   d="scan'208";a="206676451"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 16:44:31 -0700
-IronPort-SDR: Dx8/KkCY67i+ow2RrMnxb8suKWFJFvo45op/9lDV6Njt+DaLVU+9ODQjP+Psli1xH6fwbdYMZ9
- m7EZAeRbtvbg==
-X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
-   d="scan'208";a="485857268"
-Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.236.226]) ([10.212.236.226])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 16:44:31 -0700
-Subject: Re: [PATCH v4] x86/resctrl: Fix kernel-doc in internal.h
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        id S235247AbhFRXvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 19:51:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234772AbhFRXvn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 19:51:43 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A68EC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:49:33 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624060172;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PtTo24AhDPIH9qt+rhf64KdODBLy4eXQI/xHF5KzK4w=;
+        b=ucngxJVeFa2algjCcMptiBxBESUirb6TfP/IT4DnCDdvqnf4TSn83Hf88RQxKmlsxSsOHe
+        UsHFGcZRSKs86toG307HG13Q7G3y2Em5wyovDkHJ9R+VAZ2DVRSUVQM+NdOQQ9g6w1GbXz
+        sW/kqODfQDacZU7mEng+RpY/2v1OwXk88c3c50coTAf0UsqJRGj6PYiQIJUUZZrdml+f7N
+        g7fQwjmsUoFWWIob6TDg6VJHYYlwuKc1b47yFnG3AwNIpsVI71YXICtpmncMB20bVWDfXp
+        Z9G6o0i0+SRg6Qer3psZ0CSV9fjorzqWn6ZIvEsZTVPXzFcqV+PaNiolovvzvw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624060172;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PtTo24AhDPIH9qt+rhf64KdODBLy4eXQI/xHF5KzK4w=;
+        b=DYuYou+1tqoB2T90IoEW/NBCXIDA+H55dZ6W6iEP1Cs5Wb+7+TURJ1SbUYxwJ3V5yMNXou
+        SheEICLnSD+uS6Bg==
+To:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
         Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-References: <20210618223206.29539-1-fmdefrancesco@gmail.com>
-From:   Reinette Chatre <reinette.chatre@intel.com>
-Message-ID: <21d58f6c-c112-ddb7-dabf-8fae378cd43f@intel.com>
-Date:   Fri, 18 Jun 2021 16:44:30 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: [patch V3 61/66] x86/fpu/signal: Sanitize the xstate check on sigframe
+In-Reply-To: <e166f71b-bd83-04b1-27d7-cea59ebe81fb@citrix.com>
+References: <20210618141823.161158090@linutronix.de> <20210618143451.325530702@linutronix.de> <e166f71b-bd83-04b1-27d7-cea59ebe81fb@citrix.com>
+Date:   Sat, 19 Jun 2021 01:49:31 +0200
+Message-ID: <87h7huensk.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210618223206.29539-1-fmdefrancesco@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabio,
+Andrew,
 
-On 6/18/2021 3:32 PM, Fabio M. De Francesco wrote:
-> Add description of undocumented parameters. Issues detected by
-> scripts/kernel-doc.
-> 
-> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> ---
+On Fri, Jun 18 2021 at 22:02, Andrew Cooper wrote:
+> On 18/06/2021 15:19, Thomas Gleixner wrote:
+>> -static struct _fpx_sw_bytes fx_sw_reserved, fx_sw_reserved_ia32;
+>> +static struct _fpx_sw_bytes fx_sw_reserved, fx_sw_reserved_ia32 __ro_after_init;
+>
+> You probably want a second __ro_after_init here.
 
-Before this patch:
-$ scripts/kernel-doc -none arch/x86/kernel/cpu/resctrl/internal.h
-arch/x86/kernel/cpu/resctrl/internal.h:78: warning: Function parameter 
-or member 'list' not described in 'mon_evt'
-arch/x86/kernel/cpu/resctrl/internal.h:93: warning: Function parameter 
-or member 'priv' not described in 'mon_data_bits'
-arch/x86/kernel/cpu/resctrl/internal.h:93: warning: Function parameter 
-or member 'u' not described in 'mon_data_bits'
-arch/x86/kernel/cpu/resctrl/internal.h:141: warning: Enum value 
-'RDT_NUM_MODES' not described in enum 'rdtgrp_mode'
-arch/x86/kernel/cpu/resctrl/internal.h:155: warning: Function parameter 
-or member 'mon_data_kn' not described in 'mongroup'
-arch/x86/kernel/cpu/resctrl/internal.h:298: warning: Function parameter 
-or member 'prev_msr' not described in 'mbm_state'
-arch/x86/kernel/cpu/resctrl/internal.h:298: warning: Function parameter 
-or member 'prev_bw' not described in 'mbm_state'
-arch/x86/kernel/cpu/resctrl/internal.h:298: warning: Function parameter 
-or member 'delta_bw' not described in 'mbm_state'
-arch/x86/kernel/cpu/resctrl/internal.h:298: warning: Function parameter 
-or member 'delta_comp' not described in 'mbm_state'
-arch/x86/kernel/cpu/resctrl/internal.h:492: warning: Function parameter 
-or member 'membw' not described in 'rdt_resource'
-arch/x86/kernel/cpu/resctrl/internal.h:492: warning: Function parameter 
-or member 'mbm_width' not described in 'rdt_resource'
-$
+Ooops.
 
-After this patch:
-$ scripts/kernel-doc -none arch/x86/kernel/cpu/resctrl/internal.h
-$
+Thanks for spotting it!
 
-Thank you very much.
+       tglx
 
-Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-
-Reinette
