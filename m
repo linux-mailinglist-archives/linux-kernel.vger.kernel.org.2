@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C77BC3ACF49
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ECF43ACF52
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235577AbhFRPjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:39:49 -0400
-Received: from mga11.intel.com ([192.55.52.93]:45828 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230334AbhFRPjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:39:47 -0400
-IronPort-SDR: tSvdvpt9fUhTWz2YmMjj8LlhZJtM4kLLDS/U4MafrojeJ2l8CeQv8TrtP1V77vxMsmJqN9M0M5
- LK0RyMu7yXUg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="203549581"
-X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
-   d="scan'208";a="203549581"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 08:37:38 -0700
-IronPort-SDR: xhESf2oMa+8VoQ5jV/dGg2MUo/FbH7/yt+V3DJLY/BhMChnHHNfE0MCQxRHVYZgqywzqx4n2m3
- RcB9xiGAa+tA==
-X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
-   d="scan'208";a="489102206"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 08:37:37 -0700
-Date:   Fri, 18 Jun 2021 08:37:35 -0700
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Jason Wang <jasowang@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shenming Lu <lushenming@huawei.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: Plan for /dev/ioasid RFC v2
-Message-ID: <20210618153735.GA37688@otc-nc-03>
-References: <20210612105711.7ac68c83.alex.williamson@redhat.com>
- <20210614140711.GI1002214@nvidia.com>
- <20210614102814.43ada8df.alex.williamson@redhat.com>
- <MWHPR11MB1886239C82D6B66A732830B88C309@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210615101215.4ba67c86.alex.williamson@redhat.com>
- <MWHPR11MB188692A6182B1292FADB3BDB8C0F9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210616133937.59050e1a.alex.williamson@redhat.com>
- <MWHPR11MB18865DF9C50F295820D038798C0E9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <YMykBzUHmATPbmdV@8bytes.org>
- <20210618151506.GG1002214@nvidia.com>
+        id S235535AbhFRPnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:43:04 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48368 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230334AbhFRPnD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 11:43:03 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15IFYdIk064313;
+        Fri, 18 Jun 2021 11:40:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=/ASVPW5tmw2fSFNpuJSYnJnc7Fa49euiEaXNw7bQ//w=;
+ b=hgd8LOO6/6WTKdj6E7b/hd1rK0Hw6VOyrCABvKb35KMcF21hMS1Vj99zW9DUeeI23Z/h
+ pzpjCsQlX8la5C3GSvs/ZwNNwc0RELT+myoP7sYb8FJnOpStnQgj7BWFoypudU8tsg+w
+ LPY9HjhxRFER+8xb32xlP0MhyDn4M9zy/5wzdvS33cjbewmjhIHayyI1oUrzhKJmduhh
+ yh3ohKISf/vkyR6FGe23ue/ay6+1WzZv7ebw5PhYH0zoTxHpU8JDqkuYouOUS7T60mLG
+ +GV9iC5e3//uvfvOLoAvqLfaAtfp7qcnqgXFjxN/zgPqFDWqwHdCSO1a5No2KwSLT1g4 6g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 398w2djs6w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Jun 2021 11:40:44 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15IFZALL070917;
+        Fri, 18 Jun 2021 11:40:43 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 398w2djs62-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Jun 2021 11:40:43 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15IFWu2w004557;
+        Fri, 18 Jun 2021 15:40:42 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma06ams.nl.ibm.com with ESMTP id 394m6huckw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Jun 2021 15:40:41 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15IFdURx29426092
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 18 Jun 2021 15:39:30 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 63FFE5205A;
+        Fri, 18 Jun 2021 15:40:39 +0000 (GMT)
+Received: from li-4a3a4a4c-28e5-11b2-a85c-a8d192c6f089.ibm.com (unknown [9.171.8.15])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 0A2765204E;
+        Fri, 18 Jun 2021 15:40:39 +0000 (GMT)
+Date:   Fri, 18 Jun 2021 17:40:31 +0200
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Alexander Gordeev <lasaine@lvk.cs.msu.su>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rodolfo Giometti <giometti@enneenne.com>
+Subject: Re: [PATCH v1 1/1] pps: generators: pps_gen_parport: Switch to use
+ module_parport_driver()
+Message-ID: <20210618154030.GA37071@li-4a3a4a4c-28e5-11b2-a85c-a8d192c6f089.ibm.com>
+References: <20210616143121.46059-1-andriy.shevchenko@linux.intel.com>
+ <YMoOVrJ1ETVhRr4F@kroah.com>
+ <CAHp75VeenUQxbaUmA8WXyJkjojnZvzF_PZUZgUPoVVR70+doQg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210618151506.GG1002214@nvidia.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <CAHp75VeenUQxbaUmA8WXyJkjojnZvzF_PZUZgUPoVVR70+doQg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 18aIQCsmFA8w_Zh-61BePH7GDZSieZkI
+X-Proofpoint-ORIG-GUID: HV5T5VTFqJ3SxCdrdJq7axu5NWHUfStH
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-18_07:2021-06-18,2021-06-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 priorityscore=1501 suspectscore=0 clxscore=1011
+ adultscore=0 malwarescore=0 impostorscore=0 mlxscore=0 phishscore=0
+ spamscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2106180091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 12:15:06PM -0300, Jason Gunthorpe wrote:
-> On Fri, Jun 18, 2021 at 03:47:51PM +0200, Joerg Roedel wrote:
-> > Hi Kevin,
-> > 
-> > On Thu, Jun 17, 2021 at 07:31:03AM +0000, Tian, Kevin wrote:
-> > > Now let's talk about the new IOMMU behavior:
-> > > 
-> > > -   A device is blocked from doing DMA to any resource outside of
-> > >     its group when it's probed by the IOMMU driver. This could be a
-> > >     special state w/o attaching to any domain, or a new special domain
-> > >     type which differentiates it from existing domain types (identity, 
-> > >     dma, or unmanged). Actually existing code already includes a
-> > >     IOMMU_DOMAIN_BLOCKED type but nobody uses it.
-> > 
-> > There is a reason for the default domain to exist: Devices which require
-> > RMRR mappings to be present. You can't just block all DMA from devices
-> > until a driver takes over, we put much effort into making sure there is
-> > not even a small window in time where RMRR regions (unity mapped regions
-> > on AMD) are not mapped.
-> 
-> Yes, I think the DMA blocking can only start around/after a VFIO type
-> driver has probed() and bound to a device in the group, not much
-> different from today.
+On Wed, Jun 16, 2021 at 05:57:47PM +0300, Andy Shevchenko wrote:
+> +Cc: Alexander (I believe he is the author of the original code, sorry if not)
 
-Does this mean when a device has a required "RMRR" that requires a unity
-mapping we block assigning those devices to guests? I remember we had some
-restriction but there was a need to go around it at some point in time.
+Hi Andy,
 
-- Either we disallow assigning devices with RMRR
-- Break that unity map when the device is probed and after which any RMRR
-  access from device will fault.
-
-Cheers,
-Ashok
+No problem, but I am not the author, unfortunately. 
+CC-ed another Alexander
+> -- 
+> With Best Regards,
+> Andy Shevchenko
