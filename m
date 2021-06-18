@@ -2,104 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18CE43AD191
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C87A3AD193
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234719AbhFRR46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 13:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233688AbhFRR45 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 13:56:57 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55480C061768
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:54:47 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id d19so11395432oic.7
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:54:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5oh/1ZLh42AYk2P4TsRS4SjWxZLplR+HO5fqto1uLzs=;
-        b=zHVb98aPddS/STxZ6A48pGMwaFX7GNVnhmQQieYPTVopIRZPwNSKg30zJzPPTiL2EY
-         X8fPZeJGbTAc3XL1M96Xvj4dj6MSAX0vKqWxSTKPOKc46euCjRORfE1do23Bl9f0VGWJ
-         4cSe6U1ayyZXa17XSNgBadGkL+QxsC0k4CZ2r829fvr4kPCRmKzwBNosGpbZfo8ubQLK
-         ffWiKdwM3751PBAtsy0YlXwHc0KQtPgT2YmJffiMgpL4uM8kI6v+9gE6TX6HrPsb/89W
-         0CkGkkjFoG0DgKvvXckIwNjcTSN50aXk1GK5Rj56DbpQP0Tv0Z/KcvFJou6eAFd4UwqG
-         DUPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5oh/1ZLh42AYk2P4TsRS4SjWxZLplR+HO5fqto1uLzs=;
-        b=g4jPvdAyJQrNWrBh88NBlsH18BkezPfqoWFjFwJ5fVCrqO96+c6FFGgRJUaFoojvAL
-         52/Au6zd8pws77nIhFp1p1umuue3ODXi3oo6XqZoa9l/YTqKiJePXL02LbdrS+8ifX8/
-         2J0lFPAQZRUr+t1SOW4apHoZ+lhOYZSaayKx8Z+oNIH3hUVBwl9r8rziW2xVNnwAFacq
-         thZbuSrleIi2Di1tP1sBXIm/ZSiR42HXTupmWHjBfEV+mvthZWaGE7xxTyy6XP3+PKQA
-         DejJGjqSOrvwC0nFs3v2s9RclMK6iD0O7bkkWJ+HbIrk1s8EHLmu1ibUXESv8UjeRNPm
-         3YiA==
-X-Gm-Message-State: AOAM533jHJVt2kwGopK86lN6sXhg0Z0mOY0/8IXJH0/0EBdsik0Yy/iN
-        v2eY2ZhhWelfN82P+Ow2e0BO0Q==
-X-Google-Smtp-Source: ABdhPJzuySRyk/ihyzd1bxyZ7kih5vVebf3rT8wObyqtHflCwKFYj5FH6LRegSCxUP5SMimmF5Odsw==
-X-Received: by 2002:aca:b682:: with SMTP id g124mr8107800oif.138.1624038886344;
-        Fri, 18 Jun 2021 10:54:46 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id z5sm2168454oth.6.2021.06.18.10.54.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 10:54:45 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 12:54:44 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     agross@kernel.org, rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        viresh.kumar@linaro.org, rjw@rjwysocki.net, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 2/5] thermal: qcom: Add support for LMh driver
-Message-ID: <YMzd5OEhG4PYYv+E@builder.lan>
-References: <20210608222926.2707768-1-thara.gopinath@linaro.org>
- <20210608222926.2707768-3-thara.gopinath@linaro.org>
- <YMfBtSap7fR3rdku@builder.lan>
- <4996de55-daa9-18a4-3c03-cf194d85500e@linaro.org>
+        id S234726AbhFRR5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 13:57:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45214 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233104AbhFRR5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 13:57:23 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B3804613ED;
+        Fri, 18 Jun 2021 17:55:12 +0000 (UTC)
+Date:   Fri, 18 Jun 2021 13:55:11 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     Phil Auld <pauld@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Kate Carcia <kcarcia@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Clark Willaims <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 10/12] trace: Add osnoise tracer
+Message-ID: <20210618135511.7c06a635@oasis.local.home>
+In-Reply-To: <c555b92d6cfef5b3d05c426696d98553c1a46c8d.1623746916.git.bristot@redhat.com>
+References: <cover.1623746916.git.bristot@redhat.com>
+        <c555b92d6cfef5b3d05c426696d98553c1a46c8d.1623746916.git.bristot@redhat.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4996de55-daa9-18a4-3c03-cf194d85500e@linaro.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 14 Jun 20:38 CDT 2021, Thara Gopinath wrote:
-> On 6/14/21 4:53 PM, Bjorn Andersson wrote:
-> > On Tue 08 Jun 17:29 CDT 2021, Thara Gopinath wrote:
-> > > diff --git a/drivers/thermal/qcom/Makefile b/drivers/thermal/qcom/Makefile
+On Tue, 15 Jun 2021 11:28:49 +0200
+Daniel Bristot de Oliveira <bristot@redhat.com> wrote:
+
+> diff --git a/arch/x86/kernel/trace.c b/arch/x86/kernel/trace.c
+> new file mode 100644
+> index 000000000000..e67d63657628
+> --- /dev/null
+> +++ b/arch/x86/kernel/trace.c
+> @@ -0,0 +1,238 @@
+> +#include <asm/trace/irq_vectors.h>
+> +
+> +#ifdef CONFIG_OSNOISE_TRACER
+> +extern void osnoise_trace_irq_entry(int id);
+> +extern void osnoise_trace_irq_exit(int id, const char *desc);
+
+Any reason to have the above outside the LOCAL_APIC def? It's not used.
+In fact, this could just be turned into:
+
+#if defined(CONFIG_OSNOISE_TRAECR) && defined(CONFIG_X86_LOCAL_APIC)
+
+-- Steve
+
+
+> +
+> +#ifdef CONFIG_X86_LOCAL_APIC
+
 [..]
-> > > +static irqreturn_t lmh_handle_irq(int hw_irq, void *data)
-> > > +{
-> > > +	struct lmh_hw_data *lmh_data = data;
-> > > +	int irq = irq_find_mapping(lmh_data->domain, 0);
-> > > +
-> > > +	/*
-> > > +	 * Disable interrupt and call the cpufreq driver to handle the interrupt
-> > > +	 * cpufreq will enable the interrupt once finished processing.
-> > > +	 */
-> > > +	disable_irq_nosync(lmh_data->irq);
-> > 
-> > The contract between this driver's disabling of the IRQ and the
-> > cpufreq-hw driver's enabling it when we're done polling does worry me.
-> > 
-> > In the case of EPSS, don't we disable the interrupt during the polling
-> > there as well? If that's the case wouldn't it be better to implement
-> > irq_chip->irq_disable and have the cpufreq-hw driver do the disable in
-> > both cases?
-> 
-> Yes. You are right. In case of EPSS, the cpufreq-hw will have to disable the
-> interrupt. I did think of the approach you suggested here. My only issue is
-> that we will dispatch the interrupt to cpufreq-hw without it disabling it
-> and hence the interrupt could fire again, right ?
-> 
 
-Does it fire again before you INTR_CLK it?
-
-Regards,
-Bjorn
+> +#endif /* CONFIG_X86_LOCAL_APIC */
+> +#endif /* CONFIG_OSNOISE_TRACER */
