@@ -2,95 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ECF43ACF52
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E59513ACF57
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235535AbhFRPnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:43:04 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48368 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230334AbhFRPnD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:43:03 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15IFYdIk064313;
-        Fri, 18 Jun 2021 11:40:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=/ASVPW5tmw2fSFNpuJSYnJnc7Fa49euiEaXNw7bQ//w=;
- b=hgd8LOO6/6WTKdj6E7b/hd1rK0Hw6VOyrCABvKb35KMcF21hMS1Vj99zW9DUeeI23Z/h
- pzpjCsQlX8la5C3GSvs/ZwNNwc0RELT+myoP7sYb8FJnOpStnQgj7BWFoypudU8tsg+w
- LPY9HjhxRFER+8xb32xlP0MhyDn4M9zy/5wzdvS33cjbewmjhIHayyI1oUrzhKJmduhh
- yh3ohKISf/vkyR6FGe23ue/ay6+1WzZv7ebw5PhYH0zoTxHpU8JDqkuYouOUS7T60mLG
- +GV9iC5e3//uvfvOLoAvqLfaAtfp7qcnqgXFjxN/zgPqFDWqwHdCSO1a5No2KwSLT1g4 6g== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 398w2djs6w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Jun 2021 11:40:44 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15IFZALL070917;
-        Fri, 18 Jun 2021 11:40:43 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 398w2djs62-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Jun 2021 11:40:43 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15IFWu2w004557;
-        Fri, 18 Jun 2021 15:40:42 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma06ams.nl.ibm.com with ESMTP id 394m6huckw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Jun 2021 15:40:41 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15IFdURx29426092
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Jun 2021 15:39:30 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 63FFE5205A;
-        Fri, 18 Jun 2021 15:40:39 +0000 (GMT)
-Received: from li-4a3a4a4c-28e5-11b2-a85c-a8d192c6f089.ibm.com (unknown [9.171.8.15])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 0A2765204E;
-        Fri, 18 Jun 2021 15:40:39 +0000 (GMT)
-Date:   Fri, 18 Jun 2021 17:40:31 +0200
-From:   Alexander Gordeev <agordeev@linux.ibm.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Alexander Gordeev <lasaine@lvk.cs.msu.su>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rodolfo Giometti <giometti@enneenne.com>
-Subject: Re: [PATCH v1 1/1] pps: generators: pps_gen_parport: Switch to use
- module_parport_driver()
-Message-ID: <20210618154030.GA37071@li-4a3a4a4c-28e5-11b2-a85c-a8d192c6f089.ibm.com>
-References: <20210616143121.46059-1-andriy.shevchenko@linux.intel.com>
- <YMoOVrJ1ETVhRr4F@kroah.com>
- <CAHp75VeenUQxbaUmA8WXyJkjojnZvzF_PZUZgUPoVVR70+doQg@mail.gmail.com>
+        id S235587AbhFRPnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:43:39 -0400
+Received: from mga01.intel.com ([192.55.52.88]:8805 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230334AbhFRPni (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 11:43:38 -0400
+IronPort-SDR: 8AzzueQucBj/AynsG4tI3u5SvnYScx1uhJf3eT9jecCG/RuuUL1aphk9eNveVqzr9I12mOBgUJ
+ 8KtkXBj/aRMw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="228101784"
+X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
+   d="scan'208";a="228101784"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 08:41:24 -0700
+IronPort-SDR: gq5tTQh+yktvAOnoe+4Fx5WopWiz9CMdXC/dPgOfFxCHFNrVaurn0BPvcDgK5m9R/G2ZSb9hmp
+ bTRDjo0V/tAw==
+X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
+   d="scan'208";a="451431532"
+Received: from mahmoo2x-mobl.amr.corp.intel.com (HELO [10.252.143.210]) ([10.252.143.210])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 08:41:23 -0700
+Subject: Re: [PATCH] x86/sgx: Suppress WARN on inability to sanitize EPC if
+ ksgxd is stopped
+To:     Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Du Cheng <ducheng2@gmail.com>
+References: <20210616004458.2192889-1-seanjc@google.com>
+ <YMt8Orz6KdF3GqZv@zn.tnic>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <3b7b7c4e-968b-530e-90f7-e13470f8b116@intel.com>
+Date:   Fri, 18 Jun 2021 08:41:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VeenUQxbaUmA8WXyJkjojnZvzF_PZUZgUPoVVR70+doQg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 18aIQCsmFA8w_Zh-61BePH7GDZSieZkI
-X-Proofpoint-ORIG-GUID: HV5T5VTFqJ3SxCdrdJq7axu5NWHUfStH
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-18_07:2021-06-18,2021-06-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 priorityscore=1501 suspectscore=0 clxscore=1011
- adultscore=0 malwarescore=0 impostorscore=0 mlxscore=0 phishscore=0
- spamscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2106180091
+In-Reply-To: <YMt8Orz6KdF3GqZv@zn.tnic>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 05:57:47PM +0300, Andy Shevchenko wrote:
-> +Cc: Alexander (I believe he is the author of the original code, sorry if not)
+On 6/17/21 9:45 AM, Borislav Petkov wrote:
+> Hmm, this looks weird. Why aren't we starting ksgxd only after
+> *everything* has initialized successfully? I.e., after both kvm and
+> native drivers' init functions have succeeded?
 
-Hi Andy,
+ksgxd has two roles.  I think that's why it looks weird.
 
-No problem, but I am not the author, unfortunately. 
-CC-ed another Alexander
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+The obvious role is its use as the kswapd equivalent for SGX.
+
+But, it's also used to speed up SGX initialization.  It "sanitizes" the
+EPC asynchronously because it can take quite a while.  That's why it
+gets launched off early.  If it gets interrupted, that's when this
+warning can trigger.
+
+I think you're suggesting that we just defer starting ksgxd until we
+*know* it won't be interrupted, basically moving
+sgx_page_reclaimer_init() down below sgx_drv_init() and sgx_vepc_init().
+
+While I can see why it's best to get it going as early as possible, I
+don't see much going on in those init functions that would justify
+needing to fork off ksgx earlier.  Am I missing anything?
