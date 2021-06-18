@@ -2,157 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A3C63AD0A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0433AD0AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234434AbhFRQrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 12:47:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49834 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231977AbhFRQrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 12:47:17 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A9ED610C7;
-        Fri, 18 Jun 2021 16:45:06 +0000 (UTC)
-Date:   Fri, 18 Jun 2021 12:45:03 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc:     Phil Auld <pauld@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Kate Carcia <kcarcia@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Clark Willaims <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4 05/12] trace/hwlat: Support hotplug operations
-Message-ID: <20210618124503.388fe4d4@oasis.local.home>
-In-Reply-To: <8899f8a8bec38bc600f7a2c61bc6ca664aa7beeb.1623746916.git.bristot@redhat.com>
-References: <cover.1623746916.git.bristot@redhat.com>
-        <8899f8a8bec38bc600f7a2c61bc6ca664aa7beeb.1623746916.git.bristot@redhat.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S235962AbhFRQrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 12:47:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235701AbhFRQrb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 12:47:31 -0400
+Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4230C061574;
+        Fri, 18 Jun 2021 09:45:21 -0700 (PDT)
+Received: by mail-qt1-x833.google.com with SMTP id r20so8025815qtp.3;
+        Fri, 18 Jun 2021 09:45:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=SlRhINCkDHV1IRhp7Zp5ld96OYqv7fiIsGZ4mAFsnAA=;
+        b=gcxlnqb8U0xKOTAqGd7G9Rz8ixdZcDzVWYcqX3qmP7US/Ky3FdK0RIMJCFTTmR2Lfo
+         Kh4MMRYkjftLBLMAh/VJ3AfWRX2lV3cTyWZja3AwB3WGTXiGr35UdAXYpR1EUwSZ6clR
+         UWabVE0WCSz3KIEV/Tq/9ljt75y5YmFz+akGBUlDAVCTSpKeAk1ynm8jsc24ydi748CH
+         l9idgporYxrQhrbGBKBAI/Lzi7m1bixfGAdfaAIkO1d9pUlbmsZjnml58ElQEIkUDw2w
+         OJjfLrIV2u21ub+WM2kYkyuOaPXOZOTFYT3cNrDFX0fty8ShA42yH0LSxyoc6FdOobMW
+         Nraw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=SlRhINCkDHV1IRhp7Zp5ld96OYqv7fiIsGZ4mAFsnAA=;
+        b=iRHq32vKmg552BmBWgu9y+81qNr25UKvR6QcnKml6BZoqj6wkzQsUTNsmIm+RCnlFx
+         kPDbgSftN6UP631TC/6xMVkgA2MzcQkGuspcppC+5O68Lk0zwvEfXzX0oB98adodrzae
+         pkof2ID83yls9jRg5zlnCHy4LBP5dhcwiJH5tLZP2st0KR6muO42KgVA5CEHJw/kfkVg
+         8p8T4Ho8hTqTeYYRfDyUk21vJA/B0vqmGSpx+t5iO43LVv0raU1y2K9dLxD3v0/ZSCca
+         dxYHrR9YTuuN/PnZhCHZj+Op0kznzKNBgQTKABowIUUKfJyh8T3JgoUfu+RhRqAUn8W3
+         U9FA==
+X-Gm-Message-State: AOAM530symcb/PXI3Wog8n4Nk4c7HThzA0o1rpt4WWUxXiaVNfBaKPiy
+        OZYpTdhG+rI65aCypEVY+uk=
+X-Google-Smtp-Source: ABdhPJwUgRwMahO4Bqfyt7+kkZIqrOPpOspcilVvH7lgehZq2++ADOtal19xlVGYHkqJhzH3j/Y6wQ==
+X-Received: by 2002:ac8:7c9c:: with SMTP id y28mr11311727qtv.192.1624034720817;
+        Fri, 18 Jun 2021 09:45:20 -0700 (PDT)
+Received: from localhost.localdomain (ec2-35-169-212-159.compute-1.amazonaws.com. [35.169.212.159])
+        by smtp.gmail.com with ESMTPSA id b10sm4383878qkh.45.2021.06.18.09.45.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 09:45:20 -0700 (PDT)
+From:   SeongJae Park <sj38.park@gmail.com>
+To:     skashyap@marvell.com
+Cc:     jhasan@marvell.com, GR-QLogic-Storage-Upstream@marvell.com,
+        jejb@linux.ibm.com, martin.petersen@oracle.com,
+        himanshu.madhani@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, SeongJae Park <sjpark@amazon.de>
+Subject: [PATCH] scsi: bnx2fc: Remove meaningless 'bnx2fc_abts_cleanup()' return value assignment
+Date:   Fri, 18 Jun 2021 16:45:14 +0000
+Message-Id: <20210618164514.6299-1-sj38.park@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 11:28:44 +0200
-Daniel Bristot de Oliveira <bristot@redhat.com> wrote:
+From: SeongJae Park <sjpark@amazon.de>
 
-> Enable and disable hwlat thread during cpu hotplug online
-> and offline operations, respectivelly.
-> 
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Alexandre Chartre <alexandre.chartre@oracle.com>
-> Cc: Clark Willaims <williams@redhat.com>
-> Cc: John Kacur <jkacur@redhat.com>
-> Cc: Juri Lelli <juri.lelli@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: x86@kernel.org
-> Cc: linux-doc@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-> ---
->  kernel/trace/trace.c       |  6 ++++++
->  kernel/trace/trace_hwlat.c | 34 ++++++++++++++++++++++++++++++++++
->  2 files changed, 40 insertions(+)
-> 
-> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-> index 9299057feb56..c094865e2f71 100644
-> --- a/kernel/trace/trace.c
-> +++ b/kernel/trace/trace.c
-> @@ -5064,7 +5064,13 @@ int tracing_set_cpumask(struct trace_array *tr,
->  	arch_spin_unlock(&tr->max_lock);
->  	local_irq_enable();
->  
-> +	/*
-> +	 * tracing_cpumask is read by tracers that support CPU
-> +	 * hotplug.
-> +	 */
-> +	get_online_cpus();
->  	cpumask_copy(tr->tracing_cpumask, tracing_cpumask_new);
-> +	put_online_cpus();
->  
->  	return 0;
->  }
-> diff --git a/kernel/trace/trace_hwlat.c b/kernel/trace/trace_hwlat.c
-> index 6c6918e86087..9fcfd588c4f6 100644
-> --- a/kernel/trace/trace_hwlat.c
-> +++ b/kernel/trace/trace_hwlat.c
-> @@ -490,6 +490,35 @@ static int start_cpu_kthread(unsigned int cpu)
->  	return 0;
->  }
->  
-> +/*
-> + * hwlat_cpu_init - CPU hotplug online callback function
-> + */
-> +static int hwlat_cpu_init(unsigned int cpu)
-> +{
-> +	struct trace_array *tr = hwlat_trace;
-> +
+Commit 122c81c563b0 ("scsi: bnx2fc: Return failure if io_req is already
+in ABTS processing") made 'bnx2fc_eh_abort()' to return 'FAILED'
+when 'io_req' is alrady in ABTS processing, regardless of the return
+value of 'bnx2fc_abts_cleanup()'.  But, it left the assignment of the
+return value of 'bnx2fc_abts_cleanup()' to 'rc', which is meaningless
+now.  This commit removes it.
 
-You need to take the trace_types_lock here, between testing the
-hwlat_busy and starting the threads. Otherwise, between the two, the
-hwlat tracer could be turned off while a CPU is coming on line, and
-then you just started a per cpu thread, while the hwlat tracer is not
-enabled.
+This issue was discovered and resolved using Coverity Static Analysis
+Security Testing (SAST) by Synopsys, Inc.
 
-> +	if (!hwlat_busy)
-> +		return 0;
-> +
-> +	if (!cpumask_test_cpu(cpu, tr->tracing_cpumask))
-> +		return 0;
-> +
-> +	return start_cpu_kthread(cpu);
-> +}
-> +
-> +/*
-> + * hwlat_cpu_die - CPU hotplug offline callback function
-> + */
-> +static int hwlat_cpu_die(unsigned int cpu)
-> +{
+Fixes: 122c81c563b0 ("scsi: bnx2fc: Return failure if io_req is already in ABTS processing")
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+---
+ drivers/scsi/bnx2fc/bnx2fc_io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Same here.
-
--- Steve
-
-
-> +	if (!hwlat_busy)
-> +		return 0;
-> +
-> +	stop_cpu_kthread(cpu);
-> +
-> +	return 0;
-> +}
-> +
->  /*
->   * start_per_cpu_kthreads - Kick off the hardware latency sampling/detector kthreads
->   *
-> @@ -903,6 +932,11 @@ __init static int init_hwlat_tracer(void)
->  	if (ret)
->  		return ret;
->  
-> +	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "trace/hwlat:online",
-> +				hwlat_cpu_init, hwlat_cpu_die);
-> +	if (ret < 0)
-> +		pr_warn(BANNER "Error to init cpu hotplug support\n");
-> +
->  	init_tracefs();
->  
->  	return 0;
+diff --git a/drivers/scsi/bnx2fc/bnx2fc_io.c b/drivers/scsi/bnx2fc/bnx2fc_io.c
+index ed300a279a38..f2996a9b2f63 100644
+--- a/drivers/scsi/bnx2fc/bnx2fc_io.c
++++ b/drivers/scsi/bnx2fc/bnx2fc_io.c
+@@ -1213,7 +1213,7 @@ int bnx2fc_eh_abort(struct scsi_cmnd *sc_cmd)
+ 		 * cleanup the command and return that I/O was successfully
+ 		 * aborted.
+ 		 */
+-		rc = bnx2fc_abts_cleanup(io_req);
++		bnx2fc_abts_cleanup(io_req);
+ 		/* This only occurs when an task abort was requested while ABTS
+ 		   is in progress.  Setting the IO_CLEANUP flag will skip the
+ 		   RRQ process in the case when the fw generated SCSI_CMD cmpl
+-- 
+2.17.1
 
