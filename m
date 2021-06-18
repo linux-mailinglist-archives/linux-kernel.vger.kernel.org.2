@@ -2,98 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E79BB3ACD00
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 742FA3ACD1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233257AbhFROD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:03:57 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:29654 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230387AbhFRODz (ORCPT
+        id S234257AbhFROKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 10:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229782AbhFROKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:03:55 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15IDWpU2196043;
-        Fri, 18 Jun 2021 10:01:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=+pWbFSs9Iel7c/V4vUdVowfVW9cWcsmHw41QoLDbzW8=;
- b=YTD5/cbMFv9IuLeOoGsQWoGW0Gfxwj+FxhcdHlpa48ph50pikgjitgxUdC9aycgmJNLd
- hfsH33kp8DXwJfzA59KRNFJ2O9NSKa7G8/20VEHVw6Ju0hcLQJXAfwRcv+EUgLqkAY+P
- S9HkBwo0MUsfaQzLP50IMRpl8Bi+Ywp+9oqcdDgKVMCfiX7dKkrSYr+hBjU0oaZX/pdV
- 6niErhE4HZvtXvfj1eJ+05mFiMfgwDAIn6mvAsSH3iW92WW90I+iimLZJjBVX/iDnFO7
- +1ixS3Poz1gV2tBhGXqEjfrAqp/PAklcCdLpbg07L7oXzcVtO2KhbtCCyFAVV8wJJG4f kA== 
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 398veu10x8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Jun 2021 10:01:38 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15IDXYKo028789;
-        Fri, 18 Jun 2021 13:35:25 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma03dal.us.ibm.com with ESMTP id 394mjantaj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Jun 2021 13:35:25 +0000
-Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15IDZOmD20971892
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Jun 2021 13:35:24 GMT
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B0FD5124053;
-        Fri, 18 Jun 2021 13:35:24 +0000 (GMT)
-Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 6BE9C124055;
-        Fri, 18 Jun 2021 13:35:24 +0000 (GMT)
-Received: from jason-laptop.ibmuc.com (unknown [9.85.129.236])
-        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 18 Jun 2021 13:35:24 +0000 (GMT)
-From:   "Jason J. Herne" <jjherne@linux.ibm.com>
-To:     linux-s390@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, pasic@linux.ibm.com,
-        akrowiak@linux.ibm.com, jgg@nvidia.com
-Subject: [PATCH] s390/vfio-ap: Fix module unload memory leak of matrix_dev
-Date:   Fri, 18 Jun 2021 09:35:24 -0400
-Message-Id: <20210618133524.22386-1-jjherne@linux.ibm.com>
-X-Mailer: git-send-email 2.21.1
+        Fri, 18 Jun 2021 10:10:17 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9ECB8C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 07:08:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=6URVM7kwZFYoTQ0Jt4HvPCFsmhETjeMSlkHESOmiSxc=; b=KfvNmLF8rwEXo
+        cWOT41SqhY1jGblyAPA7iScVIy6QG+c3DgJpp86miXZcOLjCZtG3jC02pi5+qJzz
+        t1efEvqOjm2FDF/UTmfwjLTuevCQ0qrXe7f+b4oirNxMmpPcQhcMAp5bxv9IjyfN
+        f60WG9X846ZeliA1rLzYXnCi2RX5KA=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygCHj1uTqMxgX_3+AA--.51710S2;
+        Fri, 18 Jun 2021 22:07:15 +0800 (CST)
+Date:   Fri, 18 Jun 2021 22:01:36 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexandre Ghiti <alex@ghiti.fr>
+Cc:     kasan-dev@googlegroups.com, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] riscv: kasan: Fix MODULES_VADDR evaluation due to local
+ variables' name
+Message-ID: <20210618220136.21f32b98@xhacker>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: fjSSk91C9yEJ3whwbg-z7CYgn84sDl3n
-X-Proofpoint-ORIG-GUID: fjSSk91C9yEJ3whwbg-z7CYgn84sDl3n
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-18_07:2021-06-18,2021-06-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- lowpriorityscore=0 malwarescore=0 priorityscore=1501 adultscore=0
- mlxlogscore=999 spamscore=0 clxscore=1015 impostorscore=0 suspectscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106180079
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygCHj1uTqMxgX_3+AA--.51710S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFyxtr18WFW5Kw17Cw18Grg_yoW8Wry3pr
+        WDtF4rJrW5ZrsYgasrK34j9F1UJ3Z2ya4fJr1UAan8Aa98Crs0qrn8uFZ8ZryjgFWxu3WF
+        yw4Fyry7Wr12y37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkmb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
+        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
+        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAK
+        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F
+        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+        0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjxU2xR6UUUUU
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vfio_ap_matrix_dev_release is shadowing the global matrix_dev with driver
-data that never gets set. So when release is called we end up not freeing
-matrix_dev. The fix is to remove the shadow variable and just free the
-global.
+From: Jisheng Zhang <jszhang@kernel.org>
 
-Signed-off-by: Jason J. Herne <jjherne@linux.ibm.com>
+commit 2bfc6cd81bd1 ("riscv: Move kernel mapping outside of linear
+mapping") makes use of MODULES_VADDR to populate kernel, BPF, modules
+mapping. Currently, MODULES_VADDR is defined as below for RV64:
+
+| #define MODULES_VADDR   (PFN_ALIGN((unsigned long)&_end) - SZ_2G)
+
+But kasan_init() has two local variables which are also named as _start,
+_end, so MODULES_VADDR is evaluated with the local variable _end
+rather than the global "_end" as we expected. Fix this issue by
+renaming the two local variables.
+
+Fixes: 2bfc6cd81bd1 ("riscv: Move kernel mapping outside of linear mapping")
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 ---
- drivers/s390/crypto/vfio_ap_drv.c | 2 --
- 1 file changed, 2 deletions(-)
+ arch/riscv/mm/kasan_init.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/s390/crypto/vfio_ap_drv.c b/drivers/s390/crypto/vfio_ap_drv.c
-index 7dc72cb718b0..6d3eea838e18 100644
---- a/drivers/s390/crypto/vfio_ap_drv.c
-+++ b/drivers/s390/crypto/vfio_ap_drv.c
-@@ -82,8 +82,6 @@ static void vfio_ap_queue_dev_remove(struct ap_device *apdev)
+diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+index 55c113345460..d7189c8714a9 100644
+--- a/arch/riscv/mm/kasan_init.c
++++ b/arch/riscv/mm/kasan_init.c
+@@ -169,7 +169,7 @@ static void __init kasan_shallow_populate(void *start, void *end)
  
- static void vfio_ap_matrix_dev_release(struct device *dev)
+ void __init kasan_init(void)
  {
--	struct ap_matrix_dev *matrix_dev = dev_get_drvdata(dev);
--
- 	kfree(matrix_dev);
- }
+-	phys_addr_t _start, _end;
++	phys_addr_t p_start, p_end;
+ 	u64 i;
  
+ 	/*
+@@ -189,9 +189,9 @@ void __init kasan_init(void)
+ 			(void *)kasan_mem_to_shadow((void *)VMALLOC_END));
+ 
+ 	/* Populate the linear mapping */
+-	for_each_mem_range(i, &_start, &_end) {
+-		void *start = (void *)__va(_start);
+-		void *end = (void *)__va(_end);
++	for_each_mem_range(i, &p_start, &p_end) {
++		void *start = (void *)__va(p_start);
++		void *end = (void *)__va(p_end);
+ 
+ 		if (start >= end)
+ 			break;
 -- 
-2.21.1
+2.32.0
+
 
