@@ -2,168 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DEA03AD372
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 22:16:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC1FA3AD374
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 22:17:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231637AbhFRUSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 16:18:39 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:37529 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbhFRUSg (ORCPT
+        id S232083AbhFRUTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 16:19:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230136AbhFRUTN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 16:18:36 -0400
-Received: by mail-ot1-f41.google.com with SMTP id 102-20020a9d0eef0000b02903fccc5b733fso10887681otj.4;
-        Fri, 18 Jun 2021 13:16:26 -0700 (PDT)
+        Fri, 18 Jun 2021 16:19:13 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FAE7C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 13:17:03 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id dm5so5257510ejc.9
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 13:17:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YErG3nsC1wpUdGOxN53HPKj5RJIEYjjh/nGCBmnSwyU=;
+        b=Pa0lJFQeRj540tKKzMKLN5/JSaecM7l/kTaoSNkJ6lmb7Ts1euLl+WIhPYDV6PrbXK
+         SREIB1OAGs/OXCGL8WnzC4MrnJxVgyvEgMPr3HFWwx1BzWbGhAWUnnsl/Fz5lKiXhaok
+         r8F4X7Nod0tFySZYgNg9IxZEUwSG/RpEmzXdoLrKpDi8LOaoQnbCBMPBdeig+nc9ej+g
+         E5Wfgj7PHJEGuwSNS2WOFlR2lOlxAn7uN7eFEK0fR1w/K53OyYWjoUYgWeaa8HjZVacN
+         ScMNVn/nEnzi3m0Wky9Aszc0sSYfxiHkOY9tMkZ0YXFKsz7HyYYfA5R6Nag7vzDaky8N
+         PWdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lBtHIzlhVk8sJY83HR9VHHtDV8zU8qEhN6lMMc8ccAQ=;
-        b=gizWLcVjwlD36k+jLMoURodueIdTD4wcSXUVal0/kA40+BUpWw2hKqvfDJOK/DtAKX
-         46JbFeTuAPcTk6oGiH7kAqoJSF56E+SujF9jI9xFW3hD8GhBMX+dRkqk3pykJ3uqFD5j
-         +C1xtp07QtFHVH2BdlplrnRvkuer1P7Zxc/1d6NomSjPS/yxpuTgIWBhDW5bPiOT8t9a
-         ySGTKSOcAOZX6J8J7z271wjDIV9BGzAUPWWd0KFy0xihIEjqA6co/QngGEa0VZ3U9/0I
-         F3a3IhOfygnAF0YKbuqG1PmpslyP3BE58lwYgxwAsacIJktlqAICwpWbowq00K9yBofM
-         dSBA==
-X-Gm-Message-State: AOAM530H/q94RmPMdtB4FAIN/HJGK+OLbh7JyI7yLzn2g+R+Fx4UJJsy
-        QKFW1X7/tbEqNhXLFrsL8A==
-X-Google-Smtp-Source: ABdhPJyxP4UQValuX9uYfay5qm8ASFvM1GL7mD27tgWSBBiyyj2DP4FOmSEom/6h9O3OOXV6G3LOZw==
-X-Received: by 2002:a9d:4b02:: with SMTP id q2mr11111358otf.370.1624047386315;
-        Fri, 18 Jun 2021 13:16:26 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id j3sm1981852oii.46.2021.06.18.13.16.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 13:16:25 -0700 (PDT)
-Received: (nullmailer pid 2807200 invoked by uid 1000);
-        Fri, 18 Jun 2021 20:16:21 -0000
-Date:   Fri, 18 Jun 2021 14:16:21 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     bjorn.andersson@linaro.org, broonie@kernel.org,
-        plai@codeaurora.org, tiwai@suse.de, devicetree@vger.kernel.org,
-        perex@perex.cz, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
-        bgoswami@codeaurora.org
-Subject: Re: [RFC PATCH 03/13] ASoC: qcom: dt-bindings: add bindings Audio
- Processing manager
-Message-ID: <20210618201621.GA2801502@robh.at.kernel.org>
-References: <20210607152836.17154-1-srinivas.kandagatla@linaro.org>
- <20210607152836.17154-4-srinivas.kandagatla@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YErG3nsC1wpUdGOxN53HPKj5RJIEYjjh/nGCBmnSwyU=;
+        b=saFpLnQa85Cv/PX4rYKvdl4HSALdbrEMWcCMQQQDUHDrr5E8eLL7lO37zNiKDjOa2P
+         T79BoNlHoTwhlMvWUoeYUYUk9nYgRioGKtvECJybqFu9e+B1CX8gnNVGcBEr0v/rp6Ly
+         bNhbFBI9HVgGFr/N7xC8gIvkSL0uQ9zxxAe2BcFtfHi1XuRuI8rCews+3Zgnxxz/8BOA
+         kvp1flFpHShhE+7NoPN91yC17vl6xHtot/mn03XnNfSpD4ekXyGAsLzw95eE87CVe+1N
+         5zRpyzD8iODFgn2AKqo1Hxtn533NqUD7tvptk1zh+LBMTUswXCpvIv+udPyASGh5SBiQ
+         vaiQ==
+X-Gm-Message-State: AOAM531Zk/X5WJLJyvRRF7Yg42tdBGnF4bGo/FK0hDihsly/ir4EmN4C
+        GqufCplFNeElRnS9kXf74wF5NrV6gZzNcEcJ9P4=
+X-Google-Smtp-Source: ABdhPJzuvG3rFfUe4S6n0416xLdb1JkOOjogjvkHUHWHawCwHS3pxkZTCYzpCZZfCwAy34dWxUzSPVsCQ3nFJ1U8DXw=
+X-Received: by 2002:a17:907:1de6:: with SMTP id og38mr12866537ejc.471.1624047421761;
+ Fri, 18 Jun 2021 13:17:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210607152836.17154-4-srinivas.kandagatla@linaro.org>
+References: <20210617194154.2397-1-linux.amoon@gmail.com> <CAFBinCDVnBApYziHazeS8f2FXHQ-tUS55-g6B22c20OtfYD=xw@mail.gmail.com>
+ <CANAwSgQcVDdPMZjuaN4O1dpVDd-KrNCGLDq0h4vfP4YZ2vSV2Q@mail.gmail.com>
+In-Reply-To: <CANAwSgQcVDdPMZjuaN4O1dpVDd-KrNCGLDq0h4vfP4YZ2vSV2Q@mail.gmail.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Fri, 18 Jun 2021 22:16:51 +0200
+Message-ID: <CAFBinCA0-M-P5bWMKmMTq+Kgx+iEBpxirjWGxpaQqR3pfn84Fw@mail.gmail.com>
+Subject: Re: [RFCv1 0/8] Meson-8b and Meson-gxbb USB phy code re-structure
+To:     Anand Moon <linux.amoon@gmail.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-phy@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-amlogic@lists.infradead.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 04:28:26PM +0100, Srinivas Kandagatla wrote:
-> This patch adds bindings support for Qualcomm Audio Processing Manager
-> service in Audio DSP.
-> 
-> Audio Process Manager is one of the static service in DSP which is
-> responsible for Command/response handling, graph Management
-> and Control/Event management between modules.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  .../devicetree/bindings/sound/qcom,q6apm.yaml | 72 +++++++++++++++++++
->  1 file changed, 72 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6apm.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,q6apm.yaml b/Documentation/devicetree/bindings/sound/qcom,q6apm.yaml
-> new file mode 100644
-> index 000000000000..9906ef935206
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/qcom,q6apm.yaml
-> @@ -0,0 +1,72 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/sound/qcom,q6apm.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: Qualcomm Audio Process Manager binding
-> +
-> +maintainers:
-> +  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> +
-> +description: |
-> +  This binding describes the Qualcomm Audio Process Manager service in DSP
-> +
-> +properties:
-> +  compatible:
-> +    const: qcom,q6apm
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +#APM Services
-> +patternProperties:
-> +  "^.*@[0-9a-f]+$":
+Hi Anand,
 
-You can drop '^.*'.
+On Fri, Jun 18, 2021 at 3:20 PM Anand Moon <linux.amoon@gmail.com> wrote:
+[...]
+> (some email id got messed up while sending these changes.)
+it happened to me before: don't worry, it's something that can be fixed
 
-> +    type: object
-> +    description:
-> +      APM devices use subnodes for services.
-> +
-> +    properties:
-> +      compatible:
-> +        enum:
-> +          - qcom,q6apm-dai
-> +          - qcom,q6apm-bedai
-> +
-> +      iommus:
-> +        maxItems: 1
-> +
-> +      "#sound-dai-cels":
+[...]
+> > > Initially if we connect USB HDD at initial boot it get detected.
+> > > but after that usb hotplug of USB HDD is broken.
+> > > I did not observe and USB debug events messages to trace the root cause.
+> > >
+> > > Another issue I observed is increase of USB interrupts event
+> > > even if there is not much activity on USB ports.
+> > > I tried some clk changes but it did not workout for me.
+> > I suggest reporting this to the dwc2 maintainers and asking for advice
+> > on how to debug these issues.
+> >
+> Yes I have enabled the CONFIG_USB_DWC2_DEBUG
+> to help debug this issue but could not find much clue on
+> why this is happening.
+I think CONFIG_USB_DWC2_DEBUG is a good starting point.
+For myself I came to the conclusion that the dwc2 IP is too complex to
+understand without additional information
+Some additional information can be found in public datasheets of other
+SoCs which are also using a dwc2 core, see for example RK3128 [0] or
+RT3050 [1]
+That's why my suggestion is to additionally ask the dwc2 maintainers
+(which are not Cc'ed on this mail) for debugging suggestions.
 
-cells?
 
-How is this optional?
+Best regards,
+Martin
 
-> +        const: 1
-> +
-> +    required:
-> +      - compatible
-> +      - reg
-> +
-> +    additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: true
 
-This needs to be false and fix whatever is missing.
-
-> +
-> +examples:
-> +  - |
-> +    gpr {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +        gprservice@1 {
-> +          compatible = "qcom,q6apm";
-> +          reg = <1>;
-> +
-> +          q6apm-dai {
-
-This doesn't match what you have in the schema at all.
-
-> +            compatible = "qcom,q6apm-dai";
-> +            #sound-dai-cels = <1>;
-> +          };
-> +
-> +          q6apm-bedai {
-> +            compatible = "qcom,q6apm-bedai";
-> +            #sound-dai-cels = <1>;
-> +          };
-> +        };
-> +    };
-> -- 
-> 2.21.0
-> 
-> 
+[0] https://rockchip.fr/RK312X%20TRM/chapter-26-usb-otg-2-0.pdf
+[1] http://static6.arrow.com/aropdfconversion/aa9a14376a75e7c5d6daa9f6aaed8411909d2021/rt3050_5x_v2.0_081408_0902.pdf
