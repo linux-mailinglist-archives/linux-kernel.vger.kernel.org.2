@@ -2,31 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 380533AC1FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 06:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0883AC1F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 06:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232000AbhFREZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 00:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50612 "EHLO
+        id S231144AbhFREYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 00:24:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231305AbhFREY6 (ORCPT
+        with ESMTP id S229522AbhFREYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 00:24:58 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCACEC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 21:22:49 -0700 (PDT)
+        Fri, 18 Jun 2021 00:24:53 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C90C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 21:22:45 -0700 (PDT)
 Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4G5m480SDCz9shn; Fri, 18 Jun 2021 14:22:47 +1000 (AEST)
+        id 4G5m432RXBz9sT6; Fri, 18 Jun 2021 14:22:43 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Paul Mackerras <paulus@samba.org>,
+To:     linuxppc-dev@lists.ozlabs.org,
         Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-In-Reply-To: <8ab21fd93d6e0047aa71e6509e5e312f14b2991b.1620998075.git.christophe.leroy@csgroup.eu>
-References: <8ab21fd93d6e0047aa71e6509e5e312f14b2991b.1620998075.git.christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH] powerpc: Don't handle ALTIVEC/SPE in ASM in _switch(). Do it in C.
-Message-Id: <162398828971.1363949.11216180122568844562.b4-ty@ellerman.id.au>
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     kernel test robot <lkp@intel.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>
+In-Reply-To: <20210510144925.58195-1-andriy.shevchenko@linux.intel.com>
+References: <20210510144925.58195-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v1 1/1] powerpc/prom_init: Move custom isspace() to its own namespace
+Message-Id: <162398828919.1363949.14771833320193532617.b4-ty@ellerman.id.au>
 Date:   Fri, 18 Jun 2021 13:51:29 +1000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -35,18 +37,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 14 May 2021 13:14:53 +0000 (UTC), Christophe Leroy wrote:
-> _switch() saves and restores ALTIVEC and SPE status.
-> For altivec this is redundant with what __switch_to() does with
-> save_sprs() and restore_sprs() and giveup_all() before
-> calling _switch().
+On Mon, 10 May 2021 17:49:25 +0300, Andy Shevchenko wrote:
+> If by some reason any of the headers will include ctype.h
+> we will have a name collision. Avoid this by moving isspace()
+> to the dedicate namespace.
 > 
-> Add support for SPI in save_sprs() and restore_sprs() and
-> remove things from _switch().
+> First appearance of the code is in the commit cf68787b68a2
+> ("powerpc/prom_init: Evaluate mem kernel parameter for early allocation").
 
 Applied to powerpc/next.
 
-[1/1] powerpc: Don't handle ALTIVEC/SPE in ASM in _switch(). Do it in C.
-      https://git.kernel.org/powerpc/c/359c2ca74d2fede5c571fbf3f5ee16ba1ad98259
+[1/1] powerpc/prom_init: Move custom isspace() to its own namespace
+      https://git.kernel.org/powerpc/c/4cfdd9201cfb85538975f5c8fb83941c3d463ed2
 
 cheers
