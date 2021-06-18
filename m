@@ -2,103 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24AF83AD0FD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:13:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB603AD101
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235683AbhFRRPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 13:15:12 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63358 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232598AbhFRRPK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 13:15:10 -0400
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15IH3frh031546;
-        Fri, 18 Jun 2021 13:12:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=UyYdy8cqxOzHqUrJb0iTgtqQLsdzwr2B/pQPf/HGKrA=;
- b=fK46gyf/7x9j6o1Eou1TmeCjcsZ9/l81z/f7FoQfRYteXSoM7ypDeO+Bpz6xhCZ0g0z7
- FuZbS7VWm+2Rtichie7uXE/NV9YD1USIDcwqoiG1cAo4fHRlyzyi+6slLfOFWDhy1r++
- ZvkGkA9Hc9TB4iWCsZDoGevRBA7NkXzRmT12NuYDD5OAtQHbm9VR1Da9PL961N/eQtrr
- r9HIx4zRCKA9VjxtsVXsp7uR2O6OWpaCSTya9QgwnO3nzPW6q9nvjTCAAILOVN2nff8j
- W2dFdk2oxd6FCsbtqPn3f1sxw+prRsyveMM7GFSkXcy3c8jIWo98nAYim7jZXnyc4o93 Dg== 
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 398y4e11u6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Jun 2021 13:12:58 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15IH3VP5010383;
-        Fri, 18 Jun 2021 17:12:57 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma05wdc.us.ibm.com with ESMTP id 3954gkxc1d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Jun 2021 17:12:57 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15IHCuam21561724
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Jun 2021 17:12:56 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 60FFD6E050;
-        Fri, 18 Jun 2021 17:12:56 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B8A896E04E;
-        Fri, 18 Jun 2021 17:12:55 +0000 (GMT)
-Received: from jason-laptop.ibmuc.com (unknown [9.85.129.236])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 18 Jun 2021 17:12:55 +0000 (GMT)
-From:   "Jason J. Herne" <jjherne@linux.ibm.com>
-To:     linux-s390@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, pasic@linux.ibm.com,
-        akrowiak@linux.ibm.com, jgg@nvidia.com
-Subject: [PATCH v2] s390/vfio-ap: Fix module unload memory leak of matrix_dev
-Date:   Fri, 18 Jun 2021 13:12:55 -0400
-Message-Id: <20210618171255.2025-1-jjherne@linux.ibm.com>
-X-Mailer: git-send-email 2.21.1
+        id S236048AbhFRRQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 13:16:28 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:5361 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232598AbhFRRQW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 13:16:22 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4G65BC2JzFzBF8j;
+        Fri, 18 Jun 2021 19:14:11 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id vFQ9Fjr9vo63; Fri, 18 Jun 2021 19:14:11 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4G65BC1F6JzBF8S;
+        Fri, 18 Jun 2021 19:14:11 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E461E8B84F;
+        Fri, 18 Jun 2021 19:14:10 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 2wpqGmPr9Fdb; Fri, 18 Jun 2021 19:14:10 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8CB7F8B84E;
+        Fri, 18 Jun 2021 19:14:09 +0200 (CEST)
+Subject: Re: [PATCH for 4.16 v7 02/11] powerpc: membarrier: Skip memory
+ barrier in switch_mm()
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Maged Michael <maged.michael@gmail.com>,
+        Dave Watson <davejwatson@fb.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        David Sehr <sehr@google.com>,
+        Paul Mackerras <paulus@samba.org>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-arch@vger.kernel.org,
+        x86@kernel.org, Andrew Hunter <ahh@google.com>,
+        Greg Hackmann <ghackmann@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        "Paul E . McKenney" <paulmck@linux.vnet.ibm.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Avi Kivity <avi@scylladb.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org, Nicholas Piggin <npiggin@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <20180129202020.8515-1-mathieu.desnoyers@efficios.com>
+ <20180129202020.8515-3-mathieu.desnoyers@efficios.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <8b200dd5-f37b-b208-82fb-2775df7bcd49@csgroup.eu>
+Date:   Fri, 18 Jun 2021 19:13:59 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20180129202020.8515-3-mathieu.desnoyers@efficios.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: bEJgEve1o4XsWk7QyHfuRkc9wVQd96GE
-X-Proofpoint-ORIG-GUID: bEJgEve1o4XsWk7QyHfuRkc9wVQd96GE
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-18_10:2021-06-18,2021-06-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- priorityscore=1501 impostorscore=0 phishscore=0 mlxlogscore=999
- spamscore=0 bulkscore=0 suspectscore=0 adultscore=0 lowpriorityscore=0
- clxscore=1015 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106180100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vfio_ap_matrix_dev_release is shadowing the global matrix_dev with a NULL
-pointer. Driver data for the matrix device is never set and so
-dev_get_drvdata() always returns NULL. When release is called we end up
-not freeing matrix_dev. The fix is to remove the shadow variable and get
-the correct pointer from the device using container_of. We'll also NULL
-the global to prevent any future use.
 
-Signed-off-by: Jason J. Herne <jjherne@linux.ibm.com>
----
- drivers/s390/crypto/vfio_ap_drv.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/s390/crypto/vfio_ap_drv.c b/drivers/s390/crypto/vfio_ap_drv.c
-index 7dc72cb718b0..40e66cb363d1 100644
---- a/drivers/s390/crypto/vfio_ap_drv.c
-+++ b/drivers/s390/crypto/vfio_ap_drv.c
-@@ -82,9 +82,8 @@ static void vfio_ap_queue_dev_remove(struct ap_device *apdev)
- 
- static void vfio_ap_matrix_dev_release(struct device *dev)
- {
--	struct ap_matrix_dev *matrix_dev = dev_get_drvdata(dev);
--
--	kfree(matrix_dev);
-+	kfree(container_of(dev, struct ap_matrix_dev, device));
-+	matrix_dev = NULL;
- }
- 
- static int matrix_bus_match(struct device *dev, struct device_driver *drv)
--- 
-2.21.1
+Le 29/01/2018 à 21:20, Mathieu Desnoyers a écrit :
+> Allow PowerPC to skip the full memory barrier in switch_mm(), and
+> only issue the barrier when scheduling into a task belonging to a
+> process that has registered to use expedited private.
+> 
+> Threads targeting the same VM but which belong to different thread
+> groups is a tricky case. It has a few consequences:
+> 
+> It turns out that we cannot rely on get_nr_threads(p) to count the
+> number of threads using a VM. We can use
+> (atomic_read(&mm->mm_users) == 1 && get_nr_threads(p) == 1)
+> instead to skip the synchronize_sched() for cases where the VM only has
+> a single user, and that user only has a single thread.
+> 
+> It also turns out that we cannot use for_each_thread() to set
+> thread flags in all threads using a VM, as it only iterates on the
+> thread group.
+> 
+> Therefore, test the membarrier state variable directly rather than
+> relying on thread flags. This means
+> membarrier_register_private_expedited() needs to set the
+> MEMBARRIER_STATE_PRIVATE_EXPEDITED flag, issue synchronize_sched(), and
+> only then set MEMBARRIER_STATE_PRIVATE_EXPEDITED_READY which allows
+> private expedited membarrier commands to succeed.
+> membarrier_arch_switch_mm() now tests for the
+> MEMBARRIER_STATE_PRIVATE_EXPEDITED flag.
 
+Looking at switch_mm_irqs_off(), I found it more complex than expected and found that this patch is 
+the reason for that complexity.
+
+Before the patch (ie in kernel 4.14), we have:
+
+00000000 <switch_mm_irqs_off>:
+    0:	81 24 01 c8 	lwz     r9,456(r4)
+    4:	71 29 00 01 	andi.   r9,r9,1
+    8:	40 82 00 1c 	bne     24 <switch_mm_irqs_off+0x24>
+    c:	39 24 01 c8 	addi    r9,r4,456
+   10:	39 40 00 01 	li      r10,1
+   14:	7d 00 48 28 	lwarx   r8,0,r9
+   18:	7d 08 53 78 	or      r8,r8,r10
+   1c:	7d 00 49 2d 	stwcx.  r8,0,r9
+   20:	40 c2 ff f4 	bne-    14 <switch_mm_irqs_off+0x14>
+   24:	7c 04 18 40 	cmplw   r4,r3
+   28:	81 24 00 24 	lwz     r9,36(r4)
+   2c:	91 25 04 4c 	stw     r9,1100(r5)
+   30:	4d 82 00 20 	beqlr
+   34:	48 00 00 00 	b       34 <switch_mm_irqs_off+0x34>
+			34: R_PPC_REL24	switch_mmu_context
+
+
+After the patch (ie in 5.13-rc6), that now is:
+
+00000000 <switch_mm_irqs_off>:
+    0:	81 24 02 18 	lwz     r9,536(r4)
+    4:	71 29 00 01 	andi.   r9,r9,1
+    8:	41 82 00 24 	beq     2c <switch_mm_irqs_off+0x2c>
+    c:	7c 04 18 40 	cmplw   r4,r3
+   10:	81 24 00 24 	lwz     r9,36(r4)
+   14:	91 25 04 d0 	stw     r9,1232(r5)
+   18:	4d 82 00 20 	beqlr
+   1c:	81 24 00 28 	lwz     r9,40(r4)
+   20:	71 29 00 0a 	andi.   r9,r9,10
+   24:	40 82 00 34 	bne     58 <switch_mm_irqs_off+0x58>
+   28:	48 00 00 00 	b       28 <switch_mm_irqs_off+0x28>
+			28: R_PPC_REL24	switch_mmu_context
+   2c:	39 24 02 18 	addi    r9,r4,536
+   30:	39 40 00 01 	li      r10,1
+   34:	7d 00 48 28 	lwarx   r8,0,r9
+   38:	7d 08 53 78 	or      r8,r8,r10
+   3c:	7d 00 49 2d 	stwcx.  r8,0,r9
+   40:	40 a2 ff f4 	bne     34 <switch_mm_irqs_off+0x34>
+   44:	7c 04 18 40 	cmplw   r4,r3
+   48:	81 24 00 24 	lwz     r9,36(r4)
+   4c:	91 25 04 d0 	stw     r9,1232(r5)
+   50:	4d 82 00 20 	beqlr
+   54:	48 00 00 00 	b       54 <switch_mm_irqs_off+0x54>
+			54: R_PPC_REL24	switch_mmu_context
+   58:	2c 03 00 00 	cmpwi   r3,0
+   5c:	41 82 ff cc 	beq     28 <switch_mm_irqs_off+0x28>
+   60:	48 00 00 00 	b       60 <switch_mm_irqs_off+0x60>
+			60: R_PPC_REL24	switch_mmu_context
+
+
+Especially, the comparison of 'prev' to 0 is pointless as both cases end up with just branching to 
+'switch_mmu_context'
+
+I don't understand all that complexity to just replace a simple 'smp_mb__after_unlock_lock()'.
+
+#define smp_mb__after_unlock_lock()	smp_mb()
+#define smp_mb()	barrier()
+# define barrier() __asm__ __volatile__("": : :"memory")
+
+
+Am I missing some subtility ?
+
+Thanks
+Christophe
