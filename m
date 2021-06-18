@@ -2,76 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D67C3ACAB6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:19:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60AB53ACAB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:21:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233999AbhFRMVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 08:21:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232143AbhFRMVx (ORCPT
+        id S234048AbhFRMX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 08:23:26 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:50168 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232143AbhFRMX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 08:21:53 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57EDDC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:19:44 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id i94so10547630wri.4
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:19:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xdCHZhSy57YOUgKugNg4c5W4B2rkiDfydX3AjZHrH6I=;
-        b=vQ08gXej/VytlE6hy7Q3Q+l2RFvTO6G6ulYn9snmLPXb8AA8SJOVnBRK7mcHzsaYvj
-         G42t8cwV+uG8vLWDqUZV7GfpdWWndVq7qebs+VhslgUolC/lfxN2+3BbdQwtwXhKTKjA
-         2bdJKFqkM7J4RtBEwO2CApW0cO02zgnJ5Fvlw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xdCHZhSy57YOUgKugNg4c5W4B2rkiDfydX3AjZHrH6I=;
-        b=Wi98zqJyHdTjX2Zn1kLtzy5rr4LYNlHCpXtvVcmUE75eY+gd/EyQx8dmdLdGAjcwUV
-         DZ098e81pyO4pptktGfMw9NB1qGjmRoSBLtMkVejFv7KOkSNkf8k9dWd52MeeKdST5E/
-         np7SXR0NlGjVrbjXh25Epb6WIMNRAW6yC3ONVDNqlCl+MoGrRnQQ+MjJMu87nVtowtIP
-         BOeQzP021xkno5SRj1Pu8r7Swl67coy3/M2DwgD34DBQLbD1ZGZU3urTumO4/f4+bIKO
-         Og/JKxaYeaMcO5wA1OW5/Ds1B7Ns4xtEle4/SJhFFAn6LpHABHcG0tXTWFoww9VjdzYy
-         pvPA==
-X-Gm-Message-State: AOAM531zOfj6W7bJXEvswm5HkdFY8Ai2OyR42IC9WSj0dQNKoLDQdRsP
-        Enq3LfoagLkSn7ev5qOcDmUk0A==
-X-Google-Smtp-Source: ABdhPJwqGN5bJ2QEV94Y5ngg/DoWEX1VkbXUUAwCWnQRvC0z/5yIaeqQYRbVGEld4Sl5rfvPSkmISg==
-X-Received: by 2002:a5d:6d8c:: with SMTP id l12mr12368220wrs.189.1624018782790;
-        Fri, 18 Jun 2021 05:19:42 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::5:7326])
-        by smtp.gmail.com with ESMTPSA id u20sm7417052wmq.24.2021.06.18.05.19.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 05:19:42 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 13:19:41 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     kernel test robot <lkp@intel.com>
-Cc:     linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
-        Petr Mladek <pmladek@suse.com>, Jessica Yu <jeyu@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
+        Fri, 18 Jun 2021 08:23:26 -0400
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 0574E21B53;
+        Fri, 18 Jun 2021 12:21:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1624018876; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type;
+        bh=r4F0dIun8vyxV86seED4iHdQUCjoQWDB8lHysoL/yJE=;
+        b=fBI5nnMG1VchhXBQfwRGgpLwaufap1q/YpB8pfWEbD8v85pAtbX24gwqxoZvcj4RPnt2CW
+        CwV23ui34xdaPGJ+7QH8CLTeyjHp7JOnTMkVIFYVdbcGofJ1P2akc+VDkUW02cM3SIPx8s
+        eKriE1pqWM9FDrABEfggVIdOmpMWfuM=
+Received: from suse.cz (unknown [10.100.224.162])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id B2873A3BBC;
+        Fri, 18 Jun 2021 12:21:15 +0000 (UTC)
+Date:   Fri, 18 Jun 2021 14:21:15 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v7 4/5] printk: Userspace format indexing support
-Message-ID: <YMyPXXnDCZNC7Bp+@chrisdown.name>
-References: <e42070983637ac5e384f17fbdbe86d19c7b212a5.1623775748.git.chris@chrisdown.name>
- <202106181930.0rU3pZgm-lkp@intel.com>
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Punit Agrawal <punitagrawal@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] printk fixup for 5.13
+Message-ID: <YMyPuzVfVbShxdeJ@alley>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202106181930.0rU3pZgm-lkp@intel.com>
-User-Agent: Mutt/2.1 (4b100969) (2021-06-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernel test robot writes:
->>> include/linux/printk.h:219:5: error: static declaration of '_printk' follows non-static declaration
+Linus,
 
-This issue already exists before this patch and has done for a very long time, 
-just the error message changed. Let's fix it in a different series.
+please pull a printk fix from
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-5.13-fixup
+
+=========================
+
+- Fix misplaced EXPORT_SYMBOL(vsprintf).
+
+=========================
+
+It has been introduced in 5.13-rc1 and causes non-necessary churn in
+the RT tree where the printk rework is being prepared.
+
+I am sorry for the noise at this stage.
+
+----------------------------------------------------------------
+Punit Agrawal (1):
+      printk: Move EXPORT_SYMBOL() closer to vprintk definition
+
+ kernel/printk/printk_safe.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
