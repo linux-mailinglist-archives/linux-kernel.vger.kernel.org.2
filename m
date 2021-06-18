@@ -2,106 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A633AD02B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 813CD3AD024
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235826AbhFRQQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 12:16:59 -0400
-Received: from mga01.intel.com ([192.55.52.88]:11556 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235572AbhFRQQx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 12:16:53 -0400
-IronPort-SDR: G5igGP8NHH4zqzEUR4m6z+kAHV3PRbssP8k69h2lqTstNYv4O5Bdyt6FM2uqPzHLFQtMUy8hat
- GLi6kmT8GeoA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="228107989"
-X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
-   d="scan'208";a="228107989"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 09:14:09 -0700
-IronPort-SDR: grecWCbWLShL3k2D500boaEDGhZ/XvdIqKc1m8uoOBzd3fFDwJz8dyVlzGkOYCdlnc/jssRQGA
- 0ueJBctZGTqQ==
-X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
-   d="scan'208";a="640748206"
-Received: from salmansi-mobl1.amr.corp.intel.com (HELO schen9-mobl.amr.corp.intel.com) ([10.212.173.244])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 09:14:08 -0700
-Subject: Re: [PATCH] sched/fair: Rate limit calls to update_blocked_averages()
- for NOHZ
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Qais Yousef <qais.yousef@arm.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Paul McKenney <paulmck@kernel.org>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Dietmar Eggeman <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>
-References: <efad4771-c9d1-5103-de9c-0ec5fa78ee24@linux.intel.com>
- <CAKfTPtDsya_zdUB1ARmoxQs5xWS8o-XrrzyNx5R1iSNrchUXtg@mail.gmail.com>
- <fc0efe4e-0a81-03b8-08cb-029468c57782@linux.intel.com>
- <CAKfTPtCKavGWja42NdTmb+95ppG-WxYzoTJMmtgkCQcA-btfBw@mail.gmail.com>
- <4aa674d9-db49-83d5-356f-a20f9e2a7935@linux.intel.com>
- <CAKfTPtDJaTr_HR2t=9CQ-9x6keu-qzx6okci92AdW5cJG8J9zg@mail.gmail.com>
- <2d2294ce-f1d1-f827-754b-4541c1b43be8@linux.intel.com>
- <ade18978-cd67-6215-28f0-4857c66a99fb@linux.intel.com>
- <CAKfTPtA8nr-fgt4Nw6XqQyT_TEx4uL3nK-ba0xGfkONO+BPG3Q@mail.gmail.com>
- <577b0aae-0111-97aa-0c99-c2a2fcfb5e2e@linux.intel.com>
- <20210512135955.suzvxxfilvwg33y2@e107158-lin.cambridge.arm.com>
- <729718fd-bd2c-2e0e-46f5-8027281e5821@linux.intel.com>
- <CAKfTPtCYU2AW3sJ-=QJ=hE+tFHS8wUBZ9vSsZp8q2AozxeA5mQ@mail.gmail.com>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <366aa93b-ecbf-ac0f-cd9e-3376b20d4929@linux.intel.com>
-Date:   Fri, 18 Jun 2021 09:14:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S235320AbhFRQQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 12:16:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231767AbhFRQQj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 12:16:39 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A54C061574;
+        Fri, 18 Jun 2021 09:14:28 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id r5so17565136lfr.5;
+        Fri, 18 Jun 2021 09:14:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zcsXDvnwmdXXMs5g79zcf5bVX0T9W6JQcEu/YgdgQgQ=;
+        b=RgJK+1RJop5RiodRQKI4j9397y9b3QFrEN4y/Re5GPbcvT4iexwDSnBAQM6r62v3B2
+         BaV9+IbW9Xaz5G3IhoYVmEa0o4eZYQFSoLTrsyrzTXmEOf26LN/7n9EwkjPDQzft3x23
+         AxHXROqZBKqKTr0HbNljaoX5t1feCl/esnaXRRQp7q1BlP701tcx0t0TtaiH6bW+anK+
+         qkpPzaLzrDdCqANujNnj+lkuDvKjh9Eb7dv9/oDQvD9bR6Dm3H6IHDse/gJvPXo68u/T
+         oCKCZy9jVd1dLdHMtXL3d/eem9cD0YlJg4rbIG0RVs2q1IKxBJWHhsDNFtuNicU+Cq3y
+         RZwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zcsXDvnwmdXXMs5g79zcf5bVX0T9W6JQcEu/YgdgQgQ=;
+        b=TxV/vb00O/lsFTkarmOUF4/PX3gtO3KlSqsDluzKr41M3r65HsSw13STBwbtW5JYuJ
+         nyW90E4gexwsodoC9TXu4iL2NOQr/AYs2HTMT+RncBZDQxELIHr17tHQZdkwcRBCoG99
+         pgsNMQu9wOynO4w2zWIRy63dv8epZLpOfWUzVpe4/tF8ERTq36zey+q1Z+SN8VbIqCP+
+         hak9hjCSj4sUyWYLLsvRRaq/BbbBKg7I+DWA/OFtlY2+uIzITKmTI04YszqPhk3SyM/v
+         Lwcz+Xy7i8zw4R4C102oiPpopCU2nB7SK4yBY2x5by/oj4CHqks11cEcpkYLjHZKS3u/
+         d8Kw==
+X-Gm-Message-State: AOAM532/zMOrw41PP2i3qZLmNO/e5Nvsxqud/2FYmcpoHLNYmavrPLVS
+        Sxv/pXtnx7Pt119of3dZyUE=
+X-Google-Smtp-Source: ABdhPJy+0sQDG8yeqqhjzMcbZcjHHcFPz9DZ0hCmOkYs4Gn7RU4h9fnurngAzj/Ekyd1/YZG/LtdAA==
+X-Received: by 2002:a05:6512:15a1:: with SMTP id bp33mr3679512lfb.623.1624032866923;
+        Fri, 18 Jun 2021 09:14:26 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.229.24])
+        by smtp.gmail.com with ESMTPSA id w24sm947603lfa.143.2021.06.18.09.14.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 09:14:26 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
+        michael@walle.cc, abrodkin@synopsys.com, talz@ezchip.com,
+        noamc@ezchip.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH 0/3] net: ethernat: ezchip: bug fixing and code improvments
+Date:   Fri, 18 Jun 2021 19:14:23 +0300
+Message-Id: <cover.1624032669.git.paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <CAKfTPtCYU2AW3sJ-=QJ=hE+tFHS8wUBZ9vSsZp8q2AozxeA5mQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+While manual code reviewing, I found some error in ezchip driver.
+Two of them looks very dangerous:
+  1. use-after-free in nps_enet_remove
+      Accessing netdev private data after free_netdev()
 
+  2. wrong error handling of platform_get_irq()
+      It can cause passing negative irq to request_irq()
 
-On 6/18/21 3:28 AM, Vincent Guittot wrote:
+Also, in 2nd patch I removed redundant check to increase execution
+speed and make code more straightforward.
 
->>
->> The current logic is when a CPU becomes idle, next_balance occur very
->> shortly (usually in the next jiffie) as get_sd_balance_interval returns
->> the next_balance in the next jiffie if the CPU is idle.  However, in
->> reality, I saw most CPUs are 95% busy on average for my workload and
->> a task will wake up on an idle CPU shortly.  So having frequent idle
->> balancing towards shortly idle CPUs is counter productive and simply
->> increase overhead and does not improve performance.
-> 
-> Just to make sure that I understand your problem correctly:  Your problem is:
-> - that we have an ilb happening on the idle CPU and consume cycle
+Pavel Skripkin (3):
+  net: ethernet: ezchip: fix UAF in nps_enet_remove
+  net: ethernet: ezchip: remove redundant check
+  net: ethernet: ezchip: fix error handling
 
-That's right.  The cycles are consumed heavily in update_blocked_averages()
-when cgroup is enabled.
+ drivers/net/ethernet/ezchip/nps_enet.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-> - or that the ilb will pull a task on an idle CPU on which a task will
-> shortly wakeup which ends to 2 tasks competing for the same CPU.
-> 
-
-Because for the OLTP workload I'm looking at, we have tasks that sleep 
-for a short while and wake again very shortly (i.e. the CPU actually
-is ~95% busy on average), pulling tasks to such a CPU is really not
-helpful to improve overall CPU utilization in the system.  So my
-intuition is for such almost fully busy CPU, we should defer load
-balancing to it (see prototype patch 3).
-
-Tim 
-
-
-
+-- 
+2.32.0
 
