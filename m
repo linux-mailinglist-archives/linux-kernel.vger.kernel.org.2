@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4475F3AC3A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:18:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2386C3AC397
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231697AbhFRGUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 02:20:37 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:46730 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233118AbhFRGRz (ORCPT
+        id S232981AbhFRGTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 02:19:52 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59016 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233035AbhFRGRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 02:17:55 -0400
+        Fri, 18 Jun 2021 02:17:46 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 7986E1FE00;
+        by smtp-out1.suse.de (Postfix) with ESMTP id B45B121B5D;
         Fri, 18 Jun 2021 06:15:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1623996925; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rfkwiMcfVfUg3JuOVlfnbb/dw2b1Z6NVGhmaE+vMfEk=;
-        b=bx3pi6UpkFLccnGnEPE1VSut3DpBwEr6IIvNLmzyKO6bJJxjyzP+QptnG0KlHne5ebQyJ5
-        O0+d182PP9JptG9dVeYwj90CGNDwFjG9UjtyLM847q0NY5NVwDSE7uDXJOIke1qeAj72M4
-        WIr/C6bLXG/rJeHIKLKdXHfu4gsCIhw=
+        bh=OSErs93vjO9M14a4sDa8H3yI+ArnDl4hXOYzKvTJMWc=;
+        b=y1qRsJk0A+/lCFs7tPs56/BekIXIH9DsPMumRjBGwd1+kYAYNG655P7DIJhttXH1eiID/e
+        v9RFEpNBdxQc5VljkqBJweyAZmAXD82q1cSuc+tWdghhCQiKGP//mH0+AP8Tq4FECiHMHR
+        YTwJRbWXzvcYLqNsiuhaQijA6GAy1jI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1623996925;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rfkwiMcfVfUg3JuOVlfnbb/dw2b1Z6NVGhmaE+vMfEk=;
-        b=oTDMWreCzPtjO+kO3POvfCaV8qqntyPr0LiObDv84hPMUG9gzSxJtwMeRZF4n0l+DWp6Do
-        GHNx86tGTJnz1DDQ==
+        bh=OSErs93vjO9M14a4sDa8H3yI+ArnDl4hXOYzKvTJMWc=;
+        b=TQiYyY9R+6DcqkL7jYV8xESxHYAVxiLwrVIWiQGaS0JoXLtL1PJ9aK86FhMcVkdjvMv9Ul
+        SrREl7ZmGvgaisBg==
 Received: from localhost.localdomain (unknown [10.100.208.98])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 5181EA3B99;
+        by relay2.suse.de (Postfix) with ESMTPS id 8C34CA3B99;
         Fri, 18 Jun 2021 06:15:25 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 39/70] mxser: simplify mxser_ioctl_op_mode
-Date:   Fri, 18 Jun 2021 08:14:45 +0200
-Message-Id: <20210618061516.662-40-jslaby@suse.cz>
+Subject: [PATCH 40/70] mxser: dedup mxser_must_set_enhance_mode
+Date:   Fri, 18 Jun 2021 08:14:46 +0200
+Message-Id: <20210618061516.662-41-jslaby@suse.cz>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210618061516.662-1-jslaby@suse.cz>
 References: <20210618061516.662-1-jslaby@suse.cz>
@@ -54,72 +54,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* ModeMask local array is just inverted OP_MODE_MASK shifted by shiftbit.
-  Drop this array and use the value directly.
-* return from the if's true branch and drop 'else' branch by moving the
-  code completely outside the if.
+There are multiple copies of setting the EFR register. Separate it to a
+new universal function called __mxser_must_set_EFR. And use it in the
+code by introducing mxser_must_set_enhance_mode instead of
+mxser_disable_must_enchance_mode and mxser_enable_must_enchance_mode.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/mxser.c | 27 ++++++++++-----------------
- 1 file changed, 10 insertions(+), 17 deletions(-)
+ drivers/tty/mxser.c | 42 ++++++++++++++++++++++--------------------
+ 1 file changed, 22 insertions(+), 20 deletions(-)
 
 diff --git a/drivers/tty/mxser.c b/drivers/tty/mxser.c
-index 4a584db09494..e082ae055c39 100644
+index e082ae055c39..7caf369571f1 100644
 --- a/drivers/tty/mxser.c
 +++ b/drivers/tty/mxser.c
-@@ -1411,10 +1411,9 @@ static int mxser_cflags_changed(struct mxser_port *info, unsigned long arg,
- static int mxser_ioctl_op_mode(struct mxser_port *port, int index, bool set,
- 		int __user *u_opmode)
+@@ -314,34 +314,24 @@ struct mxser_board {
+ static struct mxser_board mxser_boards[MXSER_BOARDS];
+ static struct tty_driver *mxvar_sdriver;
+ 
+-static void mxser_enable_must_enchance_mode(unsigned long baseio)
++static u8 __mxser_must_set_EFR(unsigned long baseio, u8 clear, u8 set,
++		bool restore_LCR)
  {
--	static const unsigned char ModeMask[] = { 0xfc, 0xf3, 0xcf, 0x3f };
- 	int opmode, p = index % 4;
- 	int shiftbit = p * 2;
--	unsigned char val, mask;
-+	u8 val;
+-	u8 oldlcr;
+-	u8 efr;
++	u8 oldlcr, efr;
  
- 	if (port->board->must_hwid != MOXA_MUST_MU860_HWID)
- 		return -EFAULT;
-@@ -1423,30 +1422,24 @@ static int mxser_ioctl_op_mode(struct mxser_port *port, int index, bool set,
- 		if (get_user(opmode, u_opmode))
- 			return -EFAULT;
+ 	oldlcr = inb(baseio + UART_LCR);
+ 	outb(MOXA_MUST_ENTER_ENCHANCE, baseio + UART_LCR);
  
--		if (opmode != RS232_MODE && opmode != RS485_2WIRE_MODE &&
--				opmode != RS422_MODE &&
--				opmode != RS485_4WIRE_MODE)
--			return -EFAULT;
+ 	efr = inb(baseio + MOXA_MUST_EFR_REGISTER);
+-	efr |= MOXA_MUST_EFR_EFRB_ENABLE;
++	efr &= ~clear;
++	efr |= set;
+ 
+ 	outb(efr, baseio + MOXA_MUST_EFR_REGISTER);
+-	outb(oldlcr, baseio + UART_LCR);
+-}
 -
--		mask = ModeMask[p];
-+		if (opmode & ~OP_MODE_MASK)
-+			return -EINVAL;
+-static void mxser_disable_must_enchance_mode(unsigned long baseio)
+-{
+-	u8 oldlcr;
+-	u8 efr;
+-
+-	oldlcr = inb(baseio + UART_LCR);
+-	outb(MOXA_MUST_ENTER_ENCHANCE, baseio + UART_LCR);
  
- 		spin_lock_irq(&port->slock);
- 		val = inb(port->opmode_ioaddr);
--		val &= mask;
-+		val &= ~(OP_MODE_MASK << shiftbit);
- 		val |= (opmode << shiftbit);
- 		outb(val, port->opmode_ioaddr);
- 		spin_unlock_irq(&port->slock);
--	} else {
--		spin_lock_irq(&port->slock);
--		opmode = inb(port->opmode_ioaddr) >> shiftbit;
--		spin_unlock_irq(&port->slock);
+-	efr = inb(baseio + MOXA_MUST_EFR_REGISTER);
+-	efr &= ~MOXA_MUST_EFR_EFRB_ENABLE;
++	if (restore_LCR)
++		outb(oldlcr, baseio + UART_LCR);
  
--		opmode &= OP_MODE_MASK;
--		if (put_user(opmode, u_opmode))
--			return -EFAULT;
-+		return 0;
- 	}
- 
--	return 0;
-+	spin_lock_irq(&port->slock);
-+	opmode = inb(port->opmode_ioaddr) >> shiftbit;
-+	spin_unlock_irq(&port->slock);
-+
-+	return put_user(opmode & OP_MODE_MASK, u_opmode);
+-	outb(efr, baseio + MOXA_MUST_EFR_REGISTER);
+-	outb(oldlcr, baseio + UART_LCR);
++	return oldlcr;
  }
  
- static int mxser_ioctl(struct tty_struct *tty,
+ static void mxser_set_must_xon1_value(unsigned long baseio, u8 value)
+@@ -431,6 +421,18 @@ static void mxser_get_must_hardware_id(unsigned long baseio, u8 *pId)
+ 	outb(oldlcr, baseio + UART_LCR);
+ }
+ 
++static void mxser_must_set_EFR(unsigned long baseio, u8 clear, u8 set)
++{
++	__mxser_must_set_EFR(baseio, clear, set, true);
++}
++
++static void mxser_must_set_enhance_mode(unsigned long baseio, bool enable)
++{
++	mxser_must_set_EFR(baseio,
++			enable ? 0 : MOXA_MUST_EFR_EFRB_ENABLE,
++			enable ? MOXA_MUST_EFR_EFRB_ENABLE : 0);
++}
++
+ static void SET_MOXA_MUST_NO_SOFTWARE_FLOW_CONTROL(unsigned long baseio)
+ {
+ 	u8 oldlcr;
+@@ -514,7 +516,7 @@ static enum mxser_must_hwid mxser_must_get_hwid(unsigned long io)
+ 	int i;
+ 
+ 	outb(0, io + UART_LCR);
+-	mxser_disable_must_enchance_mode(io);
++	mxser_must_set_enhance_mode(io, false);
+ 	oldmcr = inb(io + UART_MCR);
+ 	outb(0, io + UART_MCR);
+ 	mxser_set_must_xon1_value(io, 0x11);
+@@ -2011,7 +2013,7 @@ static int mxser_initbrd(struct mxser_board *brd)
+ 
+ 		/* Enhance mode enabled here */
+ 		if (brd->must_hwid != MOXA_OTHER_UART)
+-			mxser_enable_must_enchance_mode(info->ioaddr);
++			mxser_must_set_enhance_mode(info->ioaddr, true);
+ 
+ 		info->type = PORT_16550A;
+ 
 -- 
 2.32.0
 
