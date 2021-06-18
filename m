@@ -2,80 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92FDD3AC749
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6870B3AC74B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbhFRJVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 05:21:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231683AbhFRJVf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 05:21:35 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBD8C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:19:26 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id f8so3719692lfu.6
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:19:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AAudbYmuixSdlEgXtjKJv0n2NcjoWuD1MrQFLPSc52g=;
-        b=i5C8dewr2f/tyRhM9g5NxNnNcLNh9mMG/vKU/sMKnAyotQrldYYYfyz0s5IkGQnoGL
-         /uRsxQlk3Ah/cVYMiYnk4kCafdM9wn+Rb3rZFs/86/mdLXkrmkSqLiQ3Jp96Rh4p4kDZ
-         38yNqvYQ5i6Bjy5RvbYFbqh5yh6RT9EwbrHe5+8U4dEgDuMawkPuE7dNxL8xxk6G5+sA
-         iiiH/FBXmF7Bx0mqoMrM4ew9OM+Ip5Np2YlDM0zKqj7vPyA02qqZyTHRw0n1VU0cB38L
-         BDYQQX1L6c7k5sXhk+nhs93TCkjMflnYm27BckfqF4Nd66P1PZSh6He+ZrezuQfrsEUM
-         6Kxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AAudbYmuixSdlEgXtjKJv0n2NcjoWuD1MrQFLPSc52g=;
-        b=NZWhXH1L0cYTkLKAz0bGeuXNYRLR3lUkBweFs8+VMHhh5+Tp45sCPoLHRArzqzH1Yx
-         mDm7vR+K5DKu4SPQafK0D8Z8AwODYIWdf7rNugjki/0PFQvr+hAAdzwWi3Z5ZynFpeFu
-         1YeZSbzfQ35qu0AcUg6S/aQ9k5CETqzbGcra8Bkd6/zWoCF7L3ahUUh3e8C6Gdr9X2Bc
-         DrS4JpyYF9c2Y0TNQBa4MVRrWDT9fyhI9UQujiW5IQNMMNfh1D7bl8Ec5QRybFxrFxfh
-         EXGpvuX1ROYAQifz/O6pLc4XUzom8/ERcSGEQXVC705wkpLkuwD9Ydz7jksvgQdzCf5D
-         5Z9Q==
-X-Gm-Message-State: AOAM531kQNgDP1bUyO6OxM1lQskv9IlHPKC8JCkjraQSODvj/1GgTZxG
-        oMw5Si0kn9StPkk80xCRg6fNxXiiNeKXnyQ/UvP4KQ==
-X-Google-Smtp-Source: ABdhPJyzppoZc/IBYS2rQQaDKbwIyHNTpyTWkBDrYq/52o4RilfCa7qvcb9XAiDEC/mZ1JHawXGnjMOHWXjJyfJW1rA=
-X-Received: by 2002:a05:6512:20c9:: with SMTP id u9mr2406202lfr.291.1624007964644;
- Fri, 18 Jun 2021 02:19:24 -0700 (PDT)
+        id S231968AbhFRJWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 05:22:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231144AbhFRJWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 05:22:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9B21613CB;
+        Fri, 18 Jun 2021 09:20:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624008002;
+        bh=cvH1HolDomQ1JrJb/PeQTtCMcu+iu/sWcsrXs8OyMpo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=er2Y+qlQGrwxer27jkokoi+hN50oAJ+Hvh7n5tD4nzNqdtaNa8rSP8XeWIlMRMu1s
+         q5clhxRsx5GIMl4jxksGCF4QTez5k3Ib3dnln7IFeNiX410fRjaXDoCHkGMOwzLuqd
+         2ARNz7b96oaNnsByZWs3lYuaoDr8ZTaiAYc8nmk0=
+Date:   Fri, 18 Jun 2021 11:19:59 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Christoph Hellwig <hch@lst.de>, Jessica Yu <jeyu@kernel.org>
+Subject: Re: [PATCH 5.4 031/184] modules: inherit TAINT_PROPRIETARY_MODULE
+Message-ID: <YMxlP2EMTaG9+2y6@kroah.com>
+References: <20210510101950.200777181@linuxfoundation.org>
+ <20210510101951.249384110@linuxfoundation.org>
+ <8edc6f45-6c42-19c7-6f40-6f1a49cc685b@canonical.com>
 MIME-Version: 1.0
-References: <20210606191940.29312-1-andy.shevchenko@gmail.com>
-In-Reply-To: <20210606191940.29312-1-andy.shevchenko@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 18 Jun 2021 11:19:13 +0200
-Message-ID: <CACRpkdYH2dCUg7xchRs-37ywDXiWmna5CxkBufgZgYUihAZCZg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] pinctrl: microchip-sgpio: Put fwnode in error case
- during ->probe()
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8edc6f45-6c42-19c7-6f40-6f1a49cc685b@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 6, 2021 at 9:21 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
+On Fri, Jun 18, 2021 at 10:57:23AM +0200, Krzysztof Kozlowski wrote:
+> On 10/05/2021 12:18, Greg Kroah-Hartman wrote:
+> > From: Christoph Hellwig <hch@lst.de>
+> > 
+> > commit 262e6ae7081df304fc625cf368d5c2cbba2bb991 upstream.
+> > 
+> > If a TAINT_PROPRIETARY_MODULE exports symbol, inherit the taint flag
+> > for all modules importing these symbols, and don't allow loading
+> > symbols from TAINT_PROPRIETARY_MODULE modules if the module previously
+> > imported gplonly symbols.  Add a anti-circumvention devices so people
+> > don't accidentally get themselves into trouble this way.
+> > 
+> > Comment from Greg:
+> >   "Ah, the proven-to-be-illegal "GPL Condom" defense :)"
+> 
+> Patch got in to stable, so my comments are quite late, but can someone
+> explain me - how this is a stable material? What specific, real bug that
+> bothers people, is being fixed here? Or maybe it fixes serious issue
+> reported by a user of distribution kernel? IOW, how does this match
+> stable kernel rules at all?
+> 
+> For sure it breaks some out-of-tree modules already present and used by
+> customers of downstream stable kernels. Therefore I wonder what is the
+> bug fixed here, so the breakage and annoyance of stable users is justified.
 
-> device_for_each_child_node() bumps a reference counting of a returned variable.
-> We have to balance it whenever we return to the caller.
->
-> Fixes: 7e5ea974e61c ("pinctrl: pinctrl-microchip-sgpio: Add pinctrl driver for Microsemi Serial GPIO")
-> Cc: Lars Povlsen <lars.povlsen@microchip.com>
-> Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+It fixes a reported bug in that somehow symbols are being exported to
+modules that should not have been.  This has been in mainline and newer
+stable releases for quite some time, it should not be a suprise that
+this was backported further as well.
 
-Patch applied for fixes, I got a bit snowed under because of
-patch-spot activity.
+thanks,
 
-Yours,
-Linus Walleij
+greg k-h
