@@ -2,83 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE723AD2A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFBC03AD2AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234346AbhFRTV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 15:21:27 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58504 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232433AbhFRTVY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 15:21:24 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624043953;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sSLxGC3VTRMA2Whz78he85SSFCN5pOWp9Ja2rRincrE=;
-        b=Nh4soZq81bzyJPDPuk6OzK7HF4t54zEr2or1xJZHbE/JpRDaIB2XoDCYU9n1UiBMxI+SpZ
-        gYAStHegI/oNOuab4hNo8UKqfktYNa6DHie9NnNhpHnOi3ZTmOnHBRS9t6Mwni1Sw0CrRv
-        2++Ypt6yi9HJswKEy/4ehOO1ygPmj9JcbMcNedlZGwJwRriy8Sdg1U6HWjRRrw9tto4BTC
-        /TfF50Bzzxe/CTixRdGbI9ln6URYNxw0lM/9SNRLk1Q9BPybWFiwTOEWlCLd3VT237g679
-        Kl5ANInl8B/rrHu6xEerRqfVGkFhf2eavm+zWxVhvBbP6DegejfN/f65ELFQeQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624043953;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sSLxGC3VTRMA2Whz78he85SSFCN5pOWp9Ja2rRincrE=;
-        b=RSZzBGebnC17LsPojYK3bBoRQRgGmd+zjyPW5m11as59RHQl5NDNcQRPMID7YkOywbpvre
-        Lg6856XaSEqMB/AA==
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ming Lei <ming.lei@redhat.com>, Christoph Hellwig <hch@lst.de>,
-        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
-        Keith Busch <keith.busch@intel.com>,
-        Marc Zyngier <marc.zyngier@arm.com>,
-        Sumit Saxena <sumit.saxena@broadcom.com>,
-        Kashyap Desai <kashyap.desai@broadcom.com>,
-        Shivasharan Srikanteshwara 
-        <shivasharan.srikanteshwara@broadcom.com>
-Subject: Re: [patch v6 3/7] genirq/affinity: Add new callback for (re)calculating interrupt sets
-In-Reply-To: <20210615195707.GA2909907@bjorn-Precision-5520>
-References: <20210615195707.GA2909907@bjorn-Precision-5520>
-Date:   Fri, 18 Jun 2021 21:19:12 +0200
-Message-ID: <878s37f0b3.ffs@nanos.tec.linutronix.de>
+        id S235372AbhFRTWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 15:22:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234386AbhFRTWO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 15:22:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 0887461264;
+        Fri, 18 Jun 2021 19:20:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624044005;
+        bh=Xqb8RBZ0ASq4yOAuloDrF09hxGXS96TfbcRI+gmXw9Y=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=XeTf4A7zIRZ74HkMH85S1qmVpDNOdMZkU0YGDM23QMbEspRqCv5ggbFNBIAv7elqx
+         PUXwT2QHqI5sy+t8tXYFIctj9xjBStvQxfqxRXC+zN1c+TA/15yQRJhpn73NPoUu3J
+         X9liQa0S1gBA++irh5sFqHIV+2xyP8nbDb8gkdyEyhpSqGLV4RSQVsteg7IjaCJCLf
+         aHLUsOKmczJNQbFYBiLDf+rN4F1A7uS1LGCcAQAscliz2HiVE8Dqw4CHy7X7Fb4gaq
+         +mnHRekmAyTZfUyT6M+X5ubUxkmmdvZUnORzT4S1HBN6Aftt+M5d92z+v021T1qC/v
+         nGaTijIMPC9pw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id EAF8F609D8;
+        Fri, 18 Jun 2021 19:20:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH 1/4] net: ll_temac: Make sure to free skb when it is
+ completely used
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162404400495.12339.18313933113853867877.git-patchwork-notify@kernel.org>
+Date:   Fri, 18 Jun 2021 19:20:04 +0000
+References: <d9200a5023973fbe372a2d51dc4e500400450ecd.1624013456.git.esben@geanix.com>
+In-Reply-To: <d9200a5023973fbe372a2d51dc4e500400450ecd.1624013456.git.esben@geanix.com>
+To:     Esben Haabendal <esben@geanix.com>
+Cc:     netdev@vger.kernel.org, stable@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org, michal.simek@xilinx.com,
+        jesse.brandeburg@intel.com, wanghai38@huawei.com, andrew@lunn.ch,
+        zhangchangzhong@huawei.com, michael@walle.cc,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15 2021 at 14:57, Bjorn Helgaas wrote:
->
->> @@ -1196,6 +1196,13 @@ int pci_alloc_irq_vectors_affinity(struc
->>  	/* use legacy irq if allowed */
->>  	if (flags & PCI_IRQ_LEGACY) {
->>  		if (min_vecs == 1 && dev->irq) {
->> +			/*
->> +			 * Invoke the affinity spreading logic to ensure that
->> +			 * the device driver can adjust queue configuration
->> +			 * for the single interrupt case.
->> +			 */
->> +			if (affd)
->> +				irq_create_affinity_masks(1, affd);
->
-> This looks like a leak because irq_create_affinity_masks() returns a
-> pointer to kcalloc()ed space, but we throw away the pointer.
->
-> Or is there something very subtle going on here, like this special
-> case doesn't allocate anything?  I do see the "Nothing to assign?"
-> case that returns NULL with no alloc, but it's not completely trivial
-> to verify that we take that case here.
+Hello:
 
-Yes, it's subtle and it's subtle crap. Sorry that I did not catch that.
+This series was applied to netdev/net.git (refs/heads/master):
 
-Thanks,
+On Fri, 18 Jun 2021 12:52:23 +0200 you wrote:
+> With the skb pointer piggy-backed on the TX BD, we have a simple and
+> efficient way to free the skb buffer when the frame has been transmitted.
+> But in order to avoid freeing the skb while there are still fragments from
+> the skb in use, we need to piggy-back on the TX BD of the skb, not the
+> first.
+> 
+> Without this, we are doing use-after-free on the DMA side, when the first
+> BD of a multi TX BD packet is seen as completed in xmit_done, and the
+> remaining BDs are still being processed.
+> 
+> [...]
 
-        tglx
+Here is the summary with links:
+  - [1/4] net: ll_temac: Make sure to free skb when it is completely used
+    https://git.kernel.org/netdev/net/c/6aa32217a9a4
+  - [2/4] net: ll_temac: Add memory-barriers for TX BD access
+    https://git.kernel.org/netdev/net/c/28d9fab458b1
+  - [3/4] net: ll_temac: Fix TX BD buffer overwrite
+    https://git.kernel.org/netdev/net/c/c364df2489b8
+  - [4/4] net: ll_temac: Avoid ndo_start_xmit returning NETDEV_TX_BUSY
+    https://git.kernel.org/netdev/net/c/f63963411942
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
