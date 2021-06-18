@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5A373AC399
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 130193AC39C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232993AbhFRGUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 02:20:01 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59974 "EHLO
+        id S233774AbhFRGUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 02:20:09 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:59054 "EHLO
         smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233054AbhFRGRr (ORCPT
+        with ESMTP id S233066AbhFRGRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 02:17:47 -0400
+        Fri, 18 Jun 2021 02:17:48 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 3C0E421B64;
+        by smtp-out1.suse.de (Postfix) with ESMTP id 6258C21B65;
         Fri, 18 Jun 2021 06:15:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1623996926; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mN4HxNMJTR2MUbn+I3zPnmQsF2Yg/Zns1X63Wa0iWdE=;
-        b=geDS57rImcbSmyNRvGAOfVTrPAcp981/kOJj5kI5sJM7Pbhef7MEdKwQ5NkjyX0jBgSUGM
-        euS2+YiPODDT15p83gzW1i1N5wgSagg5PRFC1cwf6khjpCtDHUBjV25nWMI0/RfC9evMf4
-        WH+4jZdcWpM+7d/Trssbf6mSbL3T95A=
+        bh=yA6rnJDBroYZw48I68eobmgJUVc2kvZtUvzdSgX9j4Q=;
+        b=Kmjg4V5bc87TBpFNd1/QTbVvVQoEsLIRWGF2NpD/vMr4wgW8VPWn2+huZxoUPtG3XaUOvi
+        qIEg2ANJHEi/RR+IdAkiyABPgrMjkh2C4iM6myDJbN7QlRDFwr//BkbEzRyvQF+j9yiDsh
+        LD2r6+V1onAAHsQ5qj8QdGB/lJuhvVs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1623996926;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mN4HxNMJTR2MUbn+I3zPnmQsF2Yg/Zns1X63Wa0iWdE=;
-        b=3/Bc0XPF9cP9nlsLpzT4GaK+PTvTJ5JqBpy2o/qE7VqiAupZFMKyqzjIaDcsTKOQHplRwR
-        dzfvgRbyMciGdpCQ==
+        bh=yA6rnJDBroYZw48I68eobmgJUVc2kvZtUvzdSgX9j4Q=;
+        b=aDo4TKobZ+VBmM5PZZ+HZB8i9RfQSak7K1cQgyp3VLYRO7Ffhpkq6+NBc2uxI0lmBiwBqe
+        k8uGfWw2Vxl7FPAA==
 Received: from localhost.localdomain (unknown [10.100.208.98])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 0D58DA3B9E;
+        by relay2.suse.de (Postfix) with ESMTPS id 42E77A3BB2;
         Fri, 18 Jun 2021 06:15:26 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 42/70] mxser: clean up the rest of MUST helpers
-Date:   Fri, 18 Jun 2021 08:14:48 +0200
-Message-Id: <20210618061516.662-43-jslaby@suse.cz>
+Subject: [PATCH 43/70] mxser: move board init into mxser_initbrd
+Date:   Fri, 18 Jun 2021 08:14:49 +0200
+Message-Id: <20210618061516.662-44-jslaby@suse.cz>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210618061516.662-1-jslaby@suse.cz>
 References: <20210618061516.662-1-jslaby@suse.cz>
@@ -54,151 +54,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Clean up the rest of MUST helpers. They all can use the newly added
-mxser_must_set_EFR. And passing a bool instead of having two functions
-(_enable+_disable) simplifies the code a lot too.
+What's done in ->probe for board is actually its initialization. So move
+it to mxser_initbrd where it belongs.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/mxser.c | 97 ++++++---------------------------------------
- 1 file changed, 12 insertions(+), 85 deletions(-)
+ drivers/tty/mxser.c | 53 ++++++++++++++++++++++++---------------------
+ 1 file changed, 28 insertions(+), 25 deletions(-)
 
 diff --git a/drivers/tty/mxser.c b/drivers/tty/mxser.c
-index 392aee47c803..ff85a6e15d9d 100644
+index ff85a6e15d9d..3b20eb96d788 100644
 --- a/drivers/tty/mxser.c
 +++ b/drivers/tty/mxser.c
-@@ -391,81 +391,21 @@ static void mxser_must_set_enhance_mode(unsigned long baseio, bool enable)
- 			enable ? MOXA_MUST_EFR_EFRB_ENABLE : 0);
- }
+@@ -1888,9 +1888,36 @@ static int mxser_initbrd(struct mxser_board *brd)
+ 	struct mxser_port *info;
+ 	unsigned int i;
+ 	int retval;
++	bool is_mu860;
++
++	brd->must_hwid = mxser_must_get_hwid(brd->ports[0].ioaddr);
++	is_mu860 = brd->must_hwid == MOXA_MUST_MU860_HWID;
++
++	for (i = 0; i < UART_INFO_NUM; i++) {
++		if (Gpci_uart_info[i].type == brd->must_hwid) {
++			brd->max_baud = Gpci_uart_info[i].max_baud;
++
++			/* exception....CP-102 */
++			if (brd->info->flags & MXSER_HIGHBAUD)
++				brd->max_baud = 921600;
++			break;
++		}
++	}
++
++	if (is_mu860) {
++		/* set to RS232 mode by default */
++		outb(0, brd->vector + 4);
++		outb(0, brd->vector + 0x0c);
++	}
  
--static void SET_MOXA_MUST_NO_SOFTWARE_FLOW_CONTROL(unsigned long baseio)
-+static void mxser_must_no_sw_flow_control(unsigned long baseio)
+ 	for (i = 0; i < brd->info->nports; i++) {
+ 		info = &brd->ports[i];
++		if (is_mu860) {
++			if (i < 4)
++				info->opmode_ioaddr = brd->vector + 4;
++			else
++				info->opmode_ioaddr = brd->vector + 0x0c;
++		}
+ 		tty_port_init(&info->port);
+ 		info->port.ops = &mxser_port_ops;
+ 		info->board = brd;
+@@ -1941,7 +1968,7 @@ static int mxser_probe(struct pci_dev *pdev,
+ 		const struct pci_device_id *ent)
  {
--	u8 oldlcr;
--	u8 efr;
--
--	oldlcr = inb(baseio + UART_LCR);
--	outb(MOXA_MUST_ENTER_ENCHANCE, baseio + UART_LCR);
--
--	efr = inb(baseio + MOXA_MUST_EFR_REGISTER);
--	efr &= ~MOXA_MUST_EFR_SF_MASK;
--
--	outb(efr, baseio + MOXA_MUST_EFR_REGISTER);
--	outb(oldlcr, baseio + UART_LCR);
--}
--
--static void mxser_enable_must_tx_software_flow_control(unsigned long baseio)
--{
--	u8 oldlcr;
--	u8 efr;
--
--	oldlcr = inb(baseio + UART_LCR);
--	outb(MOXA_MUST_ENTER_ENCHANCE, baseio + UART_LCR);
--
--	efr = inb(baseio + MOXA_MUST_EFR_REGISTER);
--	efr &= ~MOXA_MUST_EFR_SF_TX_MASK;
--	efr |= MOXA_MUST_EFR_SF_TX1;
--
--	outb(efr, baseio + MOXA_MUST_EFR_REGISTER);
--	outb(oldlcr, baseio + UART_LCR);
--}
--
--static void mxser_disable_must_tx_software_flow_control(unsigned long baseio)
--{
--	u8 oldlcr;
--	u8 efr;
--
--	oldlcr = inb(baseio + UART_LCR);
--	outb(MOXA_MUST_ENTER_ENCHANCE, baseio + UART_LCR);
--
--	efr = inb(baseio + MOXA_MUST_EFR_REGISTER);
--	efr &= ~MOXA_MUST_EFR_SF_TX_MASK;
--
--	outb(efr, baseio + MOXA_MUST_EFR_REGISTER);
--	outb(oldlcr, baseio + UART_LCR);
-+	mxser_must_set_EFR(baseio, MOXA_MUST_EFR_SF_MASK, 0);
- }
+ 	struct mxser_board *brd;
+-	unsigned int i, j;
++	unsigned int i;
+ 	unsigned long ioaddress;
+ 	struct device *tty_dev;
+ 	int retval = -EINVAL;
+@@ -1988,30 +2015,6 @@ static int mxser_probe(struct pci_dev *pdev,
+ 	/* irq */
+ 	brd->irq = pdev->irq;
  
--static void mxser_enable_must_rx_software_flow_control(unsigned long baseio)
-+static void mxser_must_set_tx_sw_flow_control(unsigned long baseio, bool enable)
- {
--	u8 oldlcr;
--	u8 efr;
+-	brd->must_hwid = mxser_must_get_hwid(brd->ports[0].ioaddr);
 -
--	oldlcr = inb(baseio + UART_LCR);
--	outb(MOXA_MUST_ENTER_ENCHANCE, baseio + UART_LCR);
+-	for (j = 0; j < UART_INFO_NUM; j++) {
+-		if (Gpci_uart_info[j].type == brd->must_hwid) {
+-			brd->max_baud = Gpci_uart_info[j].max_baud;
 -
--	efr = inb(baseio + MOXA_MUST_EFR_REGISTER);
--	efr &= ~MOXA_MUST_EFR_SF_RX_MASK;
--	efr |= MOXA_MUST_EFR_SF_RX1;
--
--	outb(efr, baseio + MOXA_MUST_EFR_REGISTER);
--	outb(oldlcr, baseio + UART_LCR);
-+	mxser_must_set_EFR(baseio, MOXA_MUST_EFR_SF_TX_MASK,
-+			enable ? MOXA_MUST_EFR_SF_TX1 : 0);
- }
- 
--static void mxser_disable_must_rx_software_flow_control(unsigned long baseio)
-+static void mxser_must_set_rx_sw_flow_control(unsigned long baseio, bool enable)
- {
--	u8 oldlcr;
--	u8 efr;
--
--	oldlcr = inb(baseio + UART_LCR);
--	outb(MOXA_MUST_ENTER_ENCHANCE, baseio + UART_LCR);
--
--	efr = inb(baseio + MOXA_MUST_EFR_REGISTER);
--	efr &= ~MOXA_MUST_EFR_SF_RX_MASK;
--
--	outb(efr, baseio + MOXA_MUST_EFR_REGISTER);
--	outb(oldlcr, baseio + UART_LCR);
-+	mxser_must_set_EFR(baseio, MOXA_MUST_EFR_SF_RX_MASK,
-+			enable ? MOXA_MUST_EFR_SF_RX1 : 0);
- }
- 
- static enum mxser_must_hwid mxser_must_get_hwid(unsigned long io)
-@@ -746,20 +686,8 @@ static void mxser_change_speed(struct tty_struct *tty)
- 	if (info->board->must_hwid) {
- 		mxser_set_must_xon1_value(info->ioaddr, START_CHAR(tty));
- 		mxser_set_must_xoff1_value(info->ioaddr, STOP_CHAR(tty));
--		if (I_IXON(tty)) {
--			mxser_enable_must_rx_software_flow_control(
--					info->ioaddr);
--		} else {
--			mxser_disable_must_rx_software_flow_control(
--					info->ioaddr);
+-			/* exception....CP-102 */
+-			if (brd->info->flags & MXSER_HIGHBAUD)
+-				brd->max_baud = 921600;
+-			break;
 -		}
--		if (I_IXOFF(tty)) {
--			mxser_enable_must_tx_software_flow_control(
--					info->ioaddr);
--		} else {
--			mxser_disable_must_tx_software_flow_control(
--					info->ioaddr);
+-	}
+-
+-	if (brd->must_hwid == MOXA_MUST_MU860_HWID) {
+-		for (i = 0; i < brd->info->nports; i++) {
+-			if (i < 4)
+-				brd->ports[i].opmode_ioaddr = ioaddress + 4;
+-			else
+-				brd->ports[i].opmode_ioaddr = ioaddress + 0x0c;
 -		}
-+		mxser_must_set_rx_sw_flow_control(info->ioaddr, I_IXON(tty));
-+		mxser_must_set_tx_sw_flow_control(info->ioaddr, I_IXOFF(tty));
- 	}
- 
- 
-@@ -946,7 +874,7 @@ static void mxser_shutdown_port(struct tty_port *port)
- 
- 
- 	if (info->board->must_hwid)
--		SET_MOXA_MUST_NO_SOFTWARE_FLOW_CONTROL(info->ioaddr);
-+		mxser_must_no_sw_flow_control(info->ioaddr);
- 
- 	spin_unlock_irqrestore(&info->slock, flags);
- }
-@@ -1585,8 +1513,7 @@ static void mxser_set_termios(struct tty_struct *tty, struct ktermios *old_termi
- 
- 		if (info->board->must_hwid) {
- 			spin_lock_irqsave(&info->slock, flags);
--			mxser_disable_must_rx_software_flow_control(
--					info->ioaddr);
-+			mxser_must_set_rx_sw_flow_control(info->ioaddr, false);
- 			spin_unlock_irqrestore(&info->slock, flags);
- 		}
- 
+-		outb(0, ioaddress + 4);	/* default set to RS232 mode */
+-		outb(0, ioaddress + 0x0c);	/* default set to RS232 mode */
+-	}
+-
+ 	/* mxser_initbrd will hook ISR. */
+ 	retval = mxser_initbrd(brd);
+ 	if (retval)
 -- 
 2.32.0
 
