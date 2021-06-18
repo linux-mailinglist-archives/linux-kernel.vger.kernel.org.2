@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E743ACAF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A443ACAFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234396AbhFRMc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 08:32:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46212 "EHLO
+        id S234464AbhFRMch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 08:32:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234337AbhFRMbr (ORCPT
+        with ESMTP id S234336AbhFRMbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Jun 2021 08:31:47 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED024C0611DD
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:29:36 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id ji1so9529021ejc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:29:36 -0700 (PDT)
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 696D0C061768
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:29:37 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id b11so8406885edy.4
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:29:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xDgq8nEFZavSr40ZFmbfaZmrCQlQUnKjjplzQ5QoV9A=;
-        b=VycKk0Mw7L0RujaAE8nApzCufHYWdQ0zEEvugRd91eKsmD3ddE8UoxKVnnVyr3DL0Z
-         OYGGnCRcAJQc9DOEYcZmvi9prnnNQ3/YYVeNV0REWLyalNQ8Mzgejje8oNkKJtX8bwmv
-         D/YpIoZ808v9JQRdpHdPL7FtCcSbLcIhBeevI=
+        bh=N8QaRimrQy7tbEb+2hvBEYxq49oCsNjsO4dH1qof0Xo=;
+        b=l60I2/lWfvz9n6EgmoLfdJL2wrkgtYjemHxMe2lyeRsy5JT+SHVx3QdEvvOCQwtG77
+         +R5VRpzvQV4nEtNnBEa7y/bwLM6ZmwTUlqJeUe9yhFkjvT4HXY6X33xFtGZ0XT03kxYC
+         5N47VdHXHeCK0IMAUWXfQ/x6nKlxe1rzWqy6A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xDgq8nEFZavSr40ZFmbfaZmrCQlQUnKjjplzQ5QoV9A=;
-        b=dAGvas7HiXuIZb9+LmgfLCRC5d7J4FuTBcbywdFyY3uulDJui/uKeFDSjolxdMemum
-         lrqWduQ14OGiZk8/1QJLaiMx1yRZok4ETnGSNUG6BX9x9fhxs8sMdvCgnYCFmWR6+YON
-         NpBwvmII2G8Qc+L9YNGKnyEeCYIO+iisrSggqeM8GCAhK5Sas6xmwNfN+tMJBAx01Zow
-         X1+kUMtseDiwn8AkPen1jqiDm+eRfac8iuly6RIUSX7h/f2IudykWUOdXpGuE99yi8ni
-         r8FbHk5tCSnMEmnNvhT18YajOQsazRWVx07DUGFk+K3lwwoEMt6HmJJXykrU8t/vpsaB
-         DMZA==
-X-Gm-Message-State: AOAM532C4WrzsKQ+m536y3gz5f5Rfs6YOb+SD6NSZbGkmqtecX629bmr
-        z156dLuL1iiwIWb6iZKTnvz1Vw==
-X-Google-Smtp-Source: ABdhPJxzpS09SLAqQWAQLx6CTYXXpxgclhmaWTBLgBqf7Prd35DVF41l0sP4l/dBz2pOQIhTDJS6UA==
-X-Received: by 2002:a17:906:5d14:: with SMTP id g20mr10548832ejt.243.1624019375614;
-        Fri, 18 Jun 2021 05:29:35 -0700 (PDT)
+        bh=N8QaRimrQy7tbEb+2hvBEYxq49oCsNjsO4dH1qof0Xo=;
+        b=mlEQM7LVAEsudLSzMJSTeLWPk0MuyUgH54kTjO9zVTE65tMtz+PA+6CV0Vr5/MJSTA
+         3dZ6RJa/qj80RvFQMrD0K7xdkYLupYUwJlaoCNUqnAeiTFpCSsVVAtavoxljvgnzwb2S
+         5oofsD+69FT522fUr7ZMSqqmHM477454qBG1jwnYaQumsPc3lst3HmTg+FsoDZL9HGS0
+         cAve3y+BZJ5auzVh445/ySWUM5kYPAGjExdnpRWyeeGqrY3eDqZsivVQ+nSLwu4tgRHB
+         5bf1c76R8h6Hd5tCq70ROesgMROcDAtXfKpPEK4vEkHeFf1Vhm2wU8KuDytFP33WV7dr
+         6kkg==
+X-Gm-Message-State: AOAM5330Z+L+0y3sdPj9mf57Y2TnZf44YGpeCeFa5jiNgPjENCG5u+6a
+        n754ZzAaFTC2ZaFA5pYlLMAMPQ==
+X-Google-Smtp-Source: ABdhPJw2P0R9N+9N0YHjOrbuS4klBKRdsjxekT87w49DkZj54toY+2aPweUZVzj8VkBimRQHsoF//Q==
+X-Received: by 2002:a05:6402:487:: with SMTP id k7mr4534552edv.315.1624019376086;
+        Fri, 18 Jun 2021 05:29:36 -0700 (PDT)
 Received: from alco.lan (80.71.134.83.ipv4.parknet.dk. [80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id o26sm4336403edt.62.2021.06.18.05.29.34
+        by smtp.gmail.com with ESMTPSA id o26sm4336403edt.62.2021.06.18.05.29.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 18 Jun 2021 05:29:35 -0700 (PDT)
 From:   Ricardo Ribalda <ribalda@chromium.org>
@@ -53,9 +53,9 @@ To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         tfiga@chromium.org
 Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH v10 15/21] media: uvcvideo: Set error_idx during ctrl_commit errors
-Date:   Fri, 18 Jun 2021 14:29:17 +0200
-Message-Id: <20210618122923.385938-16-ribalda@chromium.org>
+Subject: [PATCH v10 16/21] media: docs: Document the behaviour of uvcvideo driver
+Date:   Fri, 18 Jun 2021 14:29:18 +0200
+Message-Id: <20210618122923.385938-17-ribalda@chromium.org>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
 In-Reply-To: <20210618122923.385938-1-ribalda@chromium.org>
 References: <20210618122923.385938-1-ribalda@chromium.org>
@@ -65,144 +65,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we have an error setting a control, return the affected control in
-the error_idx field.
+The uvc driver relies on the camera firmware to keep the control states
+and therefore is not capable of changing an inactive control.
 
-Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Allow returning -EACCES in those cases.
+
 Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
 ---
- drivers/media/usb/uvc/uvc_ctrl.c | 42 ++++++++++++++++++++++++++------
- drivers/media/usb/uvc/uvc_v4l2.c |  2 +-
- drivers/media/usb/uvc/uvcvideo.h | 10 +++-----
- 3 files changed, 40 insertions(+), 14 deletions(-)
+ Documentation/userspace-api/media/v4l/vidioc-g-ctrl.rst      | 3 +++
+ Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst | 3 +++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-index 18c315b52ef5..dd6ebcc7344a 100644
---- a/drivers/media/usb/uvc/uvc_ctrl.c
-+++ b/drivers/media/usb/uvc/uvc_ctrl.c
-@@ -1582,7 +1582,7 @@ int uvc_ctrl_begin(struct uvc_video_chain *chain)
- }
+diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ctrl.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ctrl.rst
+index 80e8c63d530f..fd09677f64f8 100644
+--- a/Documentation/userspace-api/media/v4l/vidioc-g-ctrl.rst
++++ b/Documentation/userspace-api/media/v4l/vidioc-g-ctrl.rst
+@@ -95,3 +95,6 @@ EBUSY
  
- static int uvc_ctrl_commit_entity(struct uvc_device *dev,
--	struct uvc_entity *entity, int rollback)
-+	struct uvc_entity *entity, int rollback, struct uvc_control **err_ctrl)
- {
- 	struct uvc_control *ctrl;
- 	unsigned int i;
-@@ -1624,31 +1624,59 @@ static int uvc_ctrl_commit_entity(struct uvc_device *dev,
- 
- 		ctrl->dirty = 0;
- 
--		if (ret < 0)
-+		if (ret < 0) {
-+			if (err_ctrl)
-+				*err_ctrl = ctrl;
- 			return ret;
-+		}
- 	}
- 
- 	return 0;
- }
- 
-+static int uvc_ctrl_find_ctrl_idx(struct uvc_entity *entity,
-+				  struct v4l2_ext_controls *ctrls,
-+				  struct uvc_control *uvc_control)
-+{
-+	struct uvc_control_mapping *mapping;
-+	struct uvc_control *ctrl_found;
-+	unsigned int i;
+ EACCES
+     Attempt to set a read-only control or to get a write-only control.
 +
-+	if (!entity)
-+		return ctrls->count;
++    Or if there is an attempt to set an inactive control and the driver is
++    not capable of caching the new value until the control is active again.
+diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+index 3ba22983d21f..b42b822e9ede 100644
+--- a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
++++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
+@@ -458,3 +458,6 @@ EACCES
+ 
+     Or the ``which`` field was set to ``V4L2_CTRL_WHICH_REQUEST_VAL`` but the
+     device does not support requests.
 +
-+	for (i = 0; i < ctrls->count; i++) {
-+		__uvc_find_control(entity, ctrls->controls[i].id, &mapping,
-+				   &ctrl_found, 0);
-+		if (uvc_control == ctrl_found)
-+			return i;
-+	}
-+
-+	return ctrls->count;
-+}
-+
- int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
--		      const struct v4l2_ext_control *xctrls,
--		      unsigned int xctrls_count)
-+		      struct v4l2_ext_controls *ctrls)
- {
- 	struct uvc_video_chain *chain = handle->chain;
-+	struct uvc_control *err_ctrl;
- 	struct uvc_entity *entity;
- 	int ret = 0;
- 
- 	/* Find the control. */
- 	list_for_each_entry(entity, &chain->entities, chain) {
--		ret = uvc_ctrl_commit_entity(chain->dev, entity, rollback);
-+		ret = uvc_ctrl_commit_entity(chain->dev, entity, rollback,
-+					     &err_ctrl);
- 		if (ret < 0)
- 			goto done;
- 	}
- 
- 	if (!rollback)
--		uvc_ctrl_send_events(handle, xctrls, xctrls_count);
-+		uvc_ctrl_send_events(handle, ctrls->controls, ctrls->count);
- done:
-+	if (ret < 0 && ctrls)
-+		ctrls->error_idx = uvc_ctrl_find_ctrl_idx(entity, ctrls,
-+							  err_ctrl);
- 	mutex_unlock(&chain->ctrl_mutex);
- 	return ret;
- }
-@@ -2106,7 +2134,7 @@ int uvc_ctrl_restore_values(struct uvc_device *dev)
- 			ctrl->dirty = 1;
- 		}
- 
--		ret = uvc_ctrl_commit_entity(dev, entity, 0);
-+		ret = uvc_ctrl_commit_entity(dev, entity, 0, NULL);
- 		if (ret < 0)
- 			return ret;
- 	}
-diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-index a3ee1dc003fc..8d8b12a4db34 100644
---- a/drivers/media/usb/uvc/uvc_v4l2.c
-+++ b/drivers/media/usb/uvc/uvc_v4l2.c
-@@ -1088,7 +1088,7 @@ static int uvc_ioctl_s_try_ext_ctrls(struct uvc_fh *handle,
- 	ctrls->error_idx = 0;
- 
- 	if (ioctl == VIDIOC_S_EXT_CTRLS)
--		return uvc_ctrl_commit(handle, ctrls->controls, ctrls->count);
-+		return uvc_ctrl_commit(handle, ctrls);
- 	else
- 		return uvc_ctrl_rollback(handle);
- }
-diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-index 4aa78591d9b0..2e5366143b81 100644
---- a/drivers/media/usb/uvc/uvcvideo.h
-+++ b/drivers/media/usb/uvc/uvcvideo.h
-@@ -886,17 +886,15 @@ void uvc_ctrl_status_event(struct uvc_video_chain *chain,
- 
- int uvc_ctrl_begin(struct uvc_video_chain *chain);
- int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
--		      const struct v4l2_ext_control *xctrls,
--		      unsigned int xctrls_count);
-+		      struct v4l2_ext_controls *ctrls);
- static inline int uvc_ctrl_commit(struct uvc_fh *handle,
--				  const struct v4l2_ext_control *xctrls,
--				  unsigned int xctrls_count)
-+				  struct v4l2_ext_controls *ctrls)
- {
--	return __uvc_ctrl_commit(handle, 0, xctrls, xctrls_count);
-+	return __uvc_ctrl_commit(handle, 0, ctrls);
- }
- static inline int uvc_ctrl_rollback(struct uvc_fh *handle)
- {
--	return __uvc_ctrl_commit(handle, 1, NULL, 0);
-+	return __uvc_ctrl_commit(handle, 1, NULL);
- }
- 
- int uvc_ctrl_get(struct uvc_video_chain *chain, struct v4l2_ext_control *xctrl);
++    Or if there is an attempt to set an inactive control and the driver is
++    not capable of caching the new value until the control is active again.
 -- 
 2.32.0.288.g62a8d224e6-goog
 
