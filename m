@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA2B3AC3A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1174E3AC3AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233697AbhFRGUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 02:20:45 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:60224 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233126AbhFRGRz (ORCPT
+        id S233819AbhFRGVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 02:21:10 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:46746 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233141AbhFRGR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 02:17:55 -0400
+        Fri, 18 Jun 2021 02:17:57 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id A493721B61;
+        by smtp-out2.suse.de (Postfix) with ESMTP id D60BD1FE06;
         Fri, 18 Jun 2021 06:15:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1623996928; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vXQIKufr277A9Hb8SIwvq0VOLlbbqdJ0NwvdvrU0O/o=;
-        b=gZVrbBY5L7G9+njWUqFcvPX1FRcUisz9LmeuuMkg8I/93IcJEkh9KifoeslQdn++gZFSOC
-        ysIpuXugS4shdACVQqmwk8iHG50boO0WAY1+oKDva4gu/LnMpsWj0AY0KQuuD5dKJqGQ3M
-        2b2+bSwwT0XRVzKP0Zd5ElbxSaOAtLA=
+        bh=gSEl8JeZsPc4N7k8UmKtUhJ1wPYAFzh/UljyKTXN5ng=;
+        b=dnE3rGQgusC6UzsIbk0sBJVuuhepWX5CEILww3uB23yLVdmxrmWmlmcjuPXk95ZSVkl22k
+        ItetLvkgb5NfMv3oFefWGvuNF8YUOcQECJJgZNqJSIdpCoWJho8rz+jFmEdSlzFzX7+j+p
+        /7RdaPS440OKEBuH9eqMVF0ewYieA8c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1623996928;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vXQIKufr277A9Hb8SIwvq0VOLlbbqdJ0NwvdvrU0O/o=;
-        b=e+ofj4F7urEPjxi7PJVfI/e3sjZA0lWdR2LhlhaeMAft5HB8f/0GJV/im7CXhsa3mfjPbI
-        PZVMghUB4oYfbKBQ==
+        bh=gSEl8JeZsPc4N7k8UmKtUhJ1wPYAFzh/UljyKTXN5ng=;
+        b=uVi0OmdSjNNCmH8xQRg+OFFsXDd2sISEuWQ5IFKrYL9qoT1LjUfe8Jr0SaTUyx4PPoRdzv
+        DRcUe9qsvJ5dXfBA==
 Received: from localhost.localdomain (unknown [10.100.208.98])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 7BE2CA3B9F;
+        by relay2.suse.de (Postfix) with ESMTPS id ABD5BA3BA6;
         Fri, 18 Jun 2021 06:15:28 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 54/70] mxser: remove pointless ioaddr checks
-Date:   Fri, 18 Jun 2021 08:15:00 +0200
-Message-Id: <20210618061516.662-55-jslaby@suse.cz>
+Subject: [PATCH 55/70] mxser: cleanup mxser_rs_break
+Date:   Fri, 18 Jun 2021 08:15:01 +0200
+Message-Id: <20210618061516.662-56-jslaby@suse.cz>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210618061516.662-1-jslaby@suse.cz>
 References: <20210618061516.662-1-jslaby@suse.cz>
@@ -54,57 +54,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct mxser_port::ioaddr can never be NULL once set in ->probe. Hence
-the checks for it are pointless. Remove them.
+mxser_rs_break now does all inb, outb, & or | in a single statement. The
+code is hard to follow, so make it more readable by doing one-line =
+one-statement.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/mxser.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+ drivers/tty/mxser.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/tty/mxser.c b/drivers/tty/mxser.c
-index 81e2b72fca3f..e5f8d08de8fd 100644
+index e5f8d08de8fd..5789c4343f10 100644
 --- a/drivers/tty/mxser.c
 +++ b/drivers/tty/mxser.c
-@@ -446,9 +446,6 @@ static int mxser_set_baud(struct tty_struct *tty, speed_t newspd)
- 	unsigned char cval;
- 	u64 timeout;
- 
--	if (!info->ioaddr)
--		return -1;
--
- 	if (newspd > info->board->max_baud)
- 		return -1;
- 
-@@ -519,8 +516,6 @@ static void mxser_change_speed(struct tty_struct *tty)
- 	unsigned char status;
- 
- 	cflag = tty->termios.c_cflag;
--	if (!info->ioaddr)
--		return;
- 
- 	mxser_set_baud(tty, tty_get_baud_rate(tty));
- 
-@@ -724,7 +719,7 @@ static int mxser_activate(struct tty_port *port, struct tty_struct *tty)
+@@ -1553,15 +1553,17 @@ static int mxser_rs_break(struct tty_struct *tty, int break_state)
+ {
+ 	struct mxser_port *info = tty->driver_data;
+ 	unsigned long flags;
++	u8 lcr;
  
  	spin_lock_irqsave(&info->slock, flags);
++	lcr = inb(info->ioaddr + UART_LCR);
+ 	if (break_state == -1)
+-		outb(inb(info->ioaddr + UART_LCR) | UART_LCR_SBC,
+-			info->ioaddr + UART_LCR);
++		lcr |= UART_LCR_SBC;
+ 	else
+-		outb(inb(info->ioaddr + UART_LCR) & ~UART_LCR_SBC,
+-			info->ioaddr + UART_LCR);
++		lcr &= ~UART_LCR_SBC;
++	outb(lcr, info->ioaddr + UART_LCR);
+ 	spin_unlock_irqrestore(&info->slock, flags);
++
+ 	return 0;
+ }
  
--	if (!info->ioaddr || !info->type) {
-+	if (!info->type) {
- 		set_bit(TTY_IO_ERROR, &tty->flags);
- 		free_page(page);
- 		spin_unlock_irqrestore(&info->slock, flags);
-@@ -1097,10 +1092,6 @@ static int mxser_set_serial_info(struct tty_struct *tty,
- 		return -EIO;
- 
- 	mutex_lock(&port->mutex);
--	if (!info->ioaddr) {
--		mutex_unlock(&port->mutex);
--		return -ENODEV;
--	}
- 
- 	if (ss->irq != info->board->irq ||
- 			ss->port != info->ioaddr) {
 -- 
 2.32.0
 
