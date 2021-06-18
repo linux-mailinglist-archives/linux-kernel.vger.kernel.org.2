@@ -2,500 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A05B43ACD70
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 865D73ACD82
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234476AbhFRO0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:26:10 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:49273 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233642AbhFRO0J (ORCPT
+        id S234545AbhFROad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 10:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233642AbhFROa3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:26:09 -0400
-Received: (Authenticated sender: alex@ghiti.fr)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 115BC6000D;
-        Fri, 18 Jun 2021 14:23:55 +0000 (UTC)
-From:   Alexandre Ghiti <alex@ghiti.fr>
-To:     Vitaly Wool <vitaly.wool@konsulko.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH RFC] riscv: Remove all XIP fixups by initializing MMU in memory
-Date:   Fri, 18 Jun 2021 16:23:53 +0200
-Message-Id: <20210618142353.2114854-1-alex@ghiti.fr>
-X-Mailer: git-send-email 2.30.2
+        Fri, 18 Jun 2021 10:30:29 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E276C061767;
+        Fri, 18 Jun 2021 07:28:19 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id n12so7932310pgs.13;
+        Fri, 18 Jun 2021 07:28:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tm11RJe8XH3mdKITm6gC95oTddXOFvmbaLmxC4TGSiw=;
+        b=SLa8kVghAr94SqXyOijxmRMN7A0I60AyztWLpKL9hNi7i4MzClExVb2jrdmURI8DeC
+         7xwKnu9uJ+j9423xu73s90wi8ZDsVYVBimQyflBz3JCgAWZaIUVgQJLIc3hVfvdIypb4
+         4tuYpWv+nCElzJ6oA0R5W7RCTxv4QCmrgmtQU+G8fGfW4u34ZRIoz2kdtR04hos9LI0f
+         /Jd7XP6iSGilnHTMEWbslYUufw3u0xx1R0jYElQymvNRxqfwsX6i4Orfr+3prZwCS754
+         UaNqUb35qfiGUSeDQ1qwEM7bcOTwJeK+vW3Zh0bMzqj8CcyZVTa50wFAeZHS/7sQKk5G
+         BOxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=tm11RJe8XH3mdKITm6gC95oTddXOFvmbaLmxC4TGSiw=;
+        b=UQi382Jw6/5e/xYfYvyPreFFYoJ8abe1ZfkI1mKSkl/o9WxSnhKItztBlGLjVHLh9q
+         T+9gStmyYfEzLE+9GAtjvVUle2GWVyFjQCqFO0iVzrtpWi36Bzce8Sr48OoUxF8mTnsB
+         WsvFaCEVyGBFXY+F3A7KwYywmtemFHNkiYlG9DPURz80v2GJbOapQAEIlcR54CGi3LSn
+         JV5DN0vVnXyTaloy0yunVh4IGsR5Z6GUlaitsmXikoritFDrb7A7CBuxWeTMGFJzSOqP
+         WTcxyK8rW28+YmiSd5hJj5n/PIxsvFnx9zrdDjc44bsjfBtYbcnTd3zk93MyTai+YhT2
+         unbw==
+X-Gm-Message-State: AOAM530BCr/EdOmVL0D1loqV4LojjUIjRDKrmDvzwdswt/2pAicWZN+h
+        UOWDcJoR3R3M3XYxqwesxWpNMrD1ABAudDIq
+X-Google-Smtp-Source: ABdhPJwV07b5cexacO+EgdFjbtQ8wII+ncZYecQ78YQE8X1FZmJNS+3LBSpHUst4wQLbcTknCW43fg==
+X-Received: by 2002:a63:b645:: with SMTP id v5mr10351740pgt.15.1624026499001;
+        Fri, 18 Jun 2021 07:28:19 -0700 (PDT)
+Received: from localhost.localdomain ([122.10.161.207])
+        by smtp.gmail.com with ESMTPSA id v4sm4658167pjh.54.2021.06.18.07.28.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 18 Jun 2021 07:28:18 -0700 (PDT)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     idryomov@gmail.com, jlayton@kernel.org, davem@davemloft.net,
+        kuba@kernel.org
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yejune Deng <yejune.deng@gmail.com>
+Subject: [PATCH] net: ceph: Use CLOCK_MONOTONIC ktime_get_ts64()
+Date:   Fri, 18 Jun 2021 22:27:40 +0800
+Message-Id: <20210618142740.3345-1-yejune.deng@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For XIP kernel, the variables that are accessed when the MMU is off must be
-fixup and it is currently achieved by adding a preprocessor macro for all
-those variables. This comes with a few drawbacks:
+The Documentation/core-api/timekeeping.rst recommend that we should use
+monotonic time ktime_get_ts64(), to avoid glitches with a concurrent
+settimeofday().
 
-- it adds a lot of code, especially in mm/init.c which gets overloaded,
-- it easily breaks XIP kernels as anyone accessing a global variable before
-  the MMU is on must fixup this variable,
-- it prevents the usage of those fixup variables anywhere outside
-  mm/init.c: kernel addresses conversion macros would benefit to switch
-  to inline functions.
-
-This patch makes the data fixups unnecessary by initializing the MMU in the
-memory rather than in flash. Indeed, very soon in the boot process, the
-kernel is copied to memory and the execution continues from there until
-the kernel mapping is established where the execution jumps back in
-flash. Then the offsets from the PC are preserved and no fixup is
-necessary. And the kernel text in memory is never reserved so it is free
-to use later on.
-
-This solution has the following drawbacks:
-
-- XIP kernel boot is longer because of the copy to memory, but can be
-  improved by copying only necessary parts,
-- in the current implementation, it creates a hole at the beginning of
-  the memory which could prevent large contiguous allocation,
-- it actually just inverts what needs to be fixup: now rodata and text
-  symbols accessed during the initialization of the MMU must be fixup
-  whereas it was data before. However, I found a single fixup to be
-  necessary and it is the dtb physical address in case CONFIG_BUILTIN_DTB
-  is set.
-
-Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
 ---
- arch/riscv/include/asm/page.h    | 12 ++---
- arch/riscv/include/asm/pgtable.h | 22 +-------
- arch/riscv/kernel/head.S         | 87 +++++++++++++++++++++++---------
- arch/riscv/kernel/setup.c        |  2 +-
- arch/riscv/mm/init.c             | 59 +++-------------------
- 5 files changed, 78 insertions(+), 104 deletions(-)
+ net/ceph/messenger.c    | 2 +-
+ net/ceph/messenger_v1.c | 2 +-
+ net/ceph/messenger_v2.c | 2 +-
+ net/ceph/osd_client.c   | 4 ++--
+ 4 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-index 5d4622a44b09..97a950bbd3bf 100644
---- a/arch/riscv/include/asm/page.h
-+++ b/arch/riscv/include/asm/page.h
-@@ -105,11 +105,11 @@ extern unsigned long kernel_virt_addr;
- 	((x) >= PAGE_OFFSET && (x) < kernel_virt_addr)
+diff --git a/net/ceph/messenger.c b/net/ceph/messenger.c
+index 57d043b..2d07ab5 100644
+--- a/net/ceph/messenger.c
++++ b/net/ceph/messenger.c
+@@ -1809,7 +1809,7 @@ bool ceph_con_keepalive_expired(struct ceph_connection *con,
+ 	    (con->peer_features & CEPH_FEATURE_MSGR_KEEPALIVE2)) {
+ 		struct timespec64 now;
+ 		struct timespec64 ts;
+-		ktime_get_real_ts64(&now);
++		ktime_get_ts64(&now);
+ 		jiffies_to_timespec64(interval, &ts);
+ 		ts = timespec64_add(con->last_keepalive_ack, ts);
+ 		return timespec64_compare(&now, &ts) >= 0;
+diff --git a/net/ceph/messenger_v1.c b/net/ceph/messenger_v1.c
+index 2cb5ffd..2ec7b1d 100644
+--- a/net/ceph/messenger_v1.c
++++ b/net/ceph/messenger_v1.c
+@@ -310,7 +310,7 @@ static void prepare_write_keepalive(struct ceph_connection *con)
+ 	if (con->peer_features & CEPH_FEATURE_MSGR_KEEPALIVE2) {
+ 		struct timespec64 now;
  
- #define linear_mapping_pa_to_va(x)	((void *)((unsigned long)(x) + va_pa_offset))
--#define kernel_mapping_pa_to_va(y)	({						\
--	unsigned long _y = y;								\
--	(_y >= CONFIG_PHYS_RAM_BASE) ?							\
--		(void *)((unsigned long)(_y) + va_kernel_pa_offset + XIP_OFFSET) :	\
--		(void *)((unsigned long)(_y) + va_kernel_xip_pa_offset);		\
-+#define kernel_mapping_pa_to_va(y)	({					\
-+	unsigned long _y = y;							\
-+	(_y >= CONFIG_PHYS_RAM_BASE) ?						\
-+		(void *)((unsigned long)(_y) + va_kernel_pa_offset) :		\
-+		(void *)((unsigned long)(_y) + va_kernel_xip_pa_offset);	\
- 	})
- #define __pa_to_va_nodebug(x)		linear_mapping_pa_to_va(x)
+-		ktime_get_real_ts64(&now);
++		ktime_get_ts64(&now);
+ 		con_out_kvec_add(con, sizeof(tag_keepalive2), &tag_keepalive2);
+ 		ceph_encode_timespec64(&con->v1.out_temp_keepalive2, &now);
+ 		con_out_kvec_add(con, sizeof(con->v1.out_temp_keepalive2),
+diff --git a/net/ceph/messenger_v2.c b/net/ceph/messenger_v2.c
+index cc40ce4..2125e77 100644
+--- a/net/ceph/messenger_v2.c
++++ b/net/ceph/messenger_v2.c
+@@ -1439,7 +1439,7 @@ static int prepare_keepalive2(struct ceph_connection *con)
+ 	struct ceph_timespec *ts = CTRL_BODY(con->v2.out_buf);
+ 	struct timespec64 now;
  
-@@ -118,7 +118,7 @@ extern unsigned long kernel_virt_addr;
- 	unsigned long _y = y;							\
- 	(_y < kernel_virt_addr + XIP_OFFSET) ?					\
- 		((unsigned long)(_y) - va_kernel_xip_pa_offset) :		\
--		((unsigned long)(_y) - va_kernel_pa_offset - XIP_OFFSET);	\
-+		((unsigned long)(_y) - va_kernel_pa_offset);			\
- 	})
+-	ktime_get_real_ts64(&now);
++	ktime_get_ts64(&now);
+ 	dout("%s con %p timestamp %lld.%09ld\n", __func__, con, now.tv_sec,
+ 	     now.tv_nsec);
  
- #define __va_to_pa_nodebug(x)	({						\
-diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
-index 3ccd2dc52e85..99ec99384bf0 100644
---- a/arch/riscv/include/asm/pgtable.h
-+++ b/arch/riscv/include/asm/pgtable.h
-@@ -95,17 +95,6 @@
- #include <asm/pgtable-32.h>
- #endif /* CONFIG_64BIT */
+diff --git a/net/ceph/osd_client.c b/net/ceph/osd_client.c
+index ff8624a..5192a8a 100644
+--- a/net/ceph/osd_client.c
++++ b/net/ceph/osd_client.c
+@@ -4717,7 +4717,7 @@ ceph_osdc_watch(struct ceph_osd_client *osdc,
+ 	ceph_oid_copy(&lreq->t.base_oid, oid);
+ 	ceph_oloc_copy(&lreq->t.base_oloc, oloc);
+ 	lreq->t.flags = CEPH_OSD_FLAG_WRITE;
+-	ktime_get_real_ts64(&lreq->mtime);
++	ktime_get_ts64(&lreq->mtime);
  
--#ifdef CONFIG_XIP_KERNEL
--#define XIP_FIXUP(addr) ({							\
--	uintptr_t __a = (uintptr_t)(addr);					\
--	(__a >= CONFIG_XIP_PHYS_ADDR && __a < CONFIG_XIP_PHYS_ADDR + SZ_16M) ?	\
--		__a - CONFIG_XIP_PHYS_ADDR + CONFIG_PHYS_RAM_BASE - XIP_OFFSET :\
--		__a;								\
--	})
--#else
--#define XIP_FIXUP(addr)		(addr)
--#endif /* CONFIG_XIP_KERNEL */
--
- #ifdef CONFIG_MMU
- /* Number of entries in the page global directory */
- #define PTRS_PER_PGD    (PAGE_SIZE / sizeof(pgd_t))
-@@ -683,15 +672,8 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
- #define kern_addr_valid(addr)   (1) /* FIXME */
+ 	lreq->reg_req = alloc_watch_request(lreq, CEPH_OSD_WATCH_OP_WATCH);
+ 	if (!lreq->reg_req) {
+@@ -4767,7 +4767,7 @@ int ceph_osdc_unwatch(struct ceph_osd_client *osdc,
+ 	ceph_oid_copy(&req->r_base_oid, &lreq->t.base_oid);
+ 	ceph_oloc_copy(&req->r_base_oloc, &lreq->t.base_oloc);
+ 	req->r_flags = CEPH_OSD_FLAG_WRITE;
+-	ktime_get_real_ts64(&req->r_mtime);
++	ktime_get_ts64(&req->r_mtime);
+ 	osd_req_op_watch_init(req, 0, lreq->linger_id,
+ 			      CEPH_OSD_WATCH_OP_UNWATCH);
  
- extern char _start[];
--extern void *_dtb_early_va;
--extern uintptr_t _dtb_early_pa;
--#if defined(CONFIG_XIP_KERNEL) && defined(CONFIG_MMU)
--#define dtb_early_va	(*(void **)XIP_FIXUP(&_dtb_early_va))
--#define dtb_early_pa	(*(uintptr_t *)XIP_FIXUP(&_dtb_early_pa))
--#else
--#define dtb_early_va	_dtb_early_va
--#define dtb_early_pa	_dtb_early_pa
--#endif /* CONFIG_XIP_KERNEL */
-+extern void *dtb_early_va;
-+extern uintptr_t dtb_early_pa;
- 
- void paging_init(void);
- void misc_mem_init(void);
-diff --git a/arch/riscv/kernel/head.S b/arch/riscv/kernel/head.S
-index 89cc58ab52b4..7ac7d2bd1a53 100644
---- a/arch/riscv/kernel/head.S
-+++ b/arch/riscv/kernel/head.S
-@@ -17,14 +17,33 @@
- 
- #ifdef CONFIG_XIP_KERNEL
- .macro XIP_FIXUP_OFFSET reg
--	REG_L t0, _xip_fixup
-+	li t0, CONFIG_PHYS_RAM_BASE - CONFIG_XIP_PHYS_ADDR
- 	add \reg, \reg, t0
- .endm
--_xip_fixup: .dword CONFIG_PHYS_RAM_BASE - CONFIG_XIP_PHYS_ADDR - XIP_OFFSET
-+
-+.macro MEM_FIXUP_OFFSET reg
-+	li t0, CONFIG_XIP_PHYS_ADDR - CONFIG_PHYS_RAM_BASE
-+	add \reg, \reg, t0
-+.endm
-+
-+.macro XIP_JUMP_TO_MEM
-+	la t1, 0f
-+	XIP_FIXUP_OFFSET t1
-+	jalr ra, t1, 0
-+0:
-+	/* Reload the global pointer: we are now in memory! */
-+.option push
-+.option norelax
-+	la gp, __global_pointer$
-+.option pop
-+.endm
- #else
--.macro XIP_FIXUP_OFFSET reg
-+.macro MEM_FIXUP_OFFSET reg
-+.endm
-+
-+.macro XIP_JUMP_TO_MEM
- .endm
--#endif /* CONFIG_XIP_KERNEL */
-+#endif
- 
- __HEAD
- ENTRY(_start)
-@@ -82,7 +101,6 @@ pe_head_start:
- relocate:
- 	/* Relocate return address */
- 	la a1, kernel_virt_addr
--	XIP_FIXUP_OFFSET a1
- 	REG_L a1, 0(a1)
- 	la a2, _start
- 	sub a1, a1, a2
-@@ -105,7 +123,6 @@ relocate:
- 	 * to ensure the new translations are in use.
- 	 */
- 	la a0, trampoline_pg_dir
--	XIP_FIXUP_OFFSET a0
- 	srl a0, a0, PAGE_SHIFT
- 	or a0, a0, a1
- 	sfence.vma
-@@ -159,9 +176,7 @@ secondary_start_sbi:
- 
- 	slli a3, a0, LGREG
- 	la a4, __cpu_up_stack_pointer
--	XIP_FIXUP_OFFSET a4
- 	la a5, __cpu_up_task_pointer
--	XIP_FIXUP_OFFSET a5
- 	add a4, a3, a4
- 	add a5, a3, a5
- 	REG_L sp, (a4)
-@@ -173,7 +188,6 @@ secondary_start_common:
- #ifdef CONFIG_MMU
- 	/* Enable virtual memory and relocate to virtual address */
- 	la a0, swapper_pg_dir
--	XIP_FIXUP_OFFSET a0
- 	call relocate
- #endif
- 	call setup_trap_vector
-@@ -253,14 +267,12 @@ pmp_done:
- 	tail .Lsecondary_park
- .Lgood_cores:
- #endif
--
- #ifndef CONFIG_XIP_KERNEL
- 	/* Pick one hart to run the main boot sequence */
- 	la a3, hart_lottery
- 	li a2, 1
- 	amoadd.w a3, a2, (a3)
- 	bnez a3, .Lsecondary_start
--
- #else
- 	/* hart_lottery in flash contains a magic number */
- 	la a3, hart_lottery
-@@ -270,17 +282,43 @@ pmp_done:
- 	amoswap.w t0, t1, (a2)
- 	/* first time here if hart_lottery in RAM is not set */
- 	beq t0, t1, .Lsecondary_start
--
--	la sp, _end + THREAD_SIZE
--	XIP_FIXUP_OFFSET sp
-+	/*
-+	 * Copy the kernel text and data to memory: the virtual mapping will be
-+	 * established from there, and then we will jump back to using flash
-+	 * resident text. This avoids to fixup global symbols when the code
-+	 * is executed from flash and targets data in memory before the MMU is
-+	 * enabled.
-+	 * We must preserve a0, a1 and we have no stack yet (__memcpy does not
-+	 * spill anything).
-+	 */
- 	mv s0, a0
--	call __copy_data
-+	mv s1, a1
-+
-+	li a0, CONFIG_PHYS_RAM_BASE
-+	la a1, _xiprom
-+	la a2, _exiprom
-+	sub a2, a2, a1
-+	add a2, a2, 1
-+	call __memcpy
-+
-+	li a0, CONFIG_PHYS_RAM_BASE + XIP_OFFSET
-+	la a1, _sdata
-+	la a2, _end
-+	sub a2, a2, a1
-+	add a2, a2, 1
-+	call __memcpy
-+
-+	fence.i
- 
--	/* Restore a0 copy */
- 	mv a0, s0
--#endif
-+	mv a1, s1
- 
--#ifndef CONFIG_XIP_KERNEL
-+	/*
-+	 * From here, the code will be executed from memory and we'll jump back
-+	 * to flash once the MMU is enabled.
-+	 */
-+	XIP_JUMP_TO_MEM
-+#endif
- 	/* Clear BSS for flat non-ELF images */
- 	la a3, __bss_start
- 	la a4, __bss_stop
-@@ -290,27 +328,24 @@ clear_bss:
- 	add a3, a3, RISCV_SZPTR
- 	blt a3, a4, clear_bss
- clear_bss_done:
--#endif
- 	/* Save hart ID and DTB physical address */
- 	mv s0, a0
- 	mv s1, a1
- 
- 	la a2, boot_cpu_hartid
--	XIP_FIXUP_OFFSET a2
- 	REG_S a0, (a2)
- 
- 	/* Initialize page tables and relocate to virtual addresses */
- 	la sp, init_thread_union + THREAD_SIZE
--	XIP_FIXUP_OFFSET sp
- #ifdef CONFIG_BUILTIN_DTB
- 	la a0, __dtb_start
-+	MEM_FIXUP_OFFSET a0
- #else
- 	mv a0, s1
- #endif /* CONFIG_BUILTIN_DTB */
- 	call setup_vm
- #ifdef CONFIG_MMU
- 	la a0, early_pg_dir
--	XIP_FIXUP_OFFSET a0
- 	call relocate
- #endif /* CONFIG_MMU */
- 
-@@ -329,15 +364,19 @@ clear_bss_done:
- 
- .Lsecondary_start:
- #ifdef CONFIG_SMP
-+	/*
-+	 * From here, XIP kernel will be executed from memory and we'll jump back
-+	 * to flash once the MMU is enabled.
-+	 */
-+	XIP_JUMP_TO_MEM
-+
- 	/* Set trap vector to spin forever to help debug */
- 	la a3, .Lsecondary_park
- 	csrw CSR_TVEC, a3
- 
- 	slli a3, a0, LGREG
- 	la a1, __cpu_up_stack_pointer
--	XIP_FIXUP_OFFSET a1
- 	la a2, __cpu_up_task_pointer
--	XIP_FIXUP_OFFSET a2
- 	add a1, a3, a1
- 	add a2, a3, a2
- 
-diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-index 8b7f1c791821..8b7958b30a05 100644
---- a/arch/riscv/kernel/setup.c
-+++ b/arch/riscv/kernel/setup.c
-@@ -279,7 +279,7 @@ void __init setup_arch(char **cmdline_p)
- #if IS_ENABLED(CONFIG_BUILTIN_DTB)
- 	unflatten_and_copy_device_tree();
- #else
--	if (early_init_dt_verify(__va(XIP_FIXUP(dtb_early_pa))))
-+	if (early_init_dt_verify(__va(dtb_early_pa)))
- 		unflatten_device_tree();
- 	else
- 		pr_err("No DTB found in kernel mappings\n");
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index 3d77b04bec54..a70cdd77b2be 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -33,7 +33,6 @@
- unsigned long kernel_virt_addr = KERNEL_LINK_ADDR;
- EXPORT_SYMBOL(kernel_virt_addr);
- #ifdef CONFIG_XIP_KERNEL
--#define kernel_virt_addr       (*((unsigned long *)XIP_FIXUP(&kernel_virt_addr)))
- extern char _xiprom[], _exiprom[];
- #endif
- 
-@@ -43,8 +42,8 @@ EXPORT_SYMBOL(empty_zero_page);
- 
- extern char _start[];
- #define DTB_EARLY_BASE_VA      PGDIR_SIZE
--void *_dtb_early_va __initdata;
--uintptr_t _dtb_early_pa __initdata;
-+void *dtb_early_va __initdata;
-+uintptr_t dtb_early_pa __initdata;
- 
- struct pt_alloc_ops {
- 	pte_t *(*get_pte_virt)(phys_addr_t pa);
-@@ -203,33 +202,18 @@ static void __init setup_bootmem(void)
- }
- 
- #ifdef CONFIG_MMU
--static struct pt_alloc_ops _pt_ops __initdata;
--
--#ifdef CONFIG_XIP_KERNEL
--#define pt_ops (*(struct pt_alloc_ops *)XIP_FIXUP(&_pt_ops))
--#else
--#define pt_ops _pt_ops
--#endif
-+static struct pt_alloc_ops pt_ops __initdata;
- 
- /* Offset between linear mapping virtual address and kernel load address */
- unsigned long va_pa_offset __ro_after_init;
- EXPORT_SYMBOL(va_pa_offset);
--#ifdef CONFIG_XIP_KERNEL
--#define va_pa_offset   (*((unsigned long *)XIP_FIXUP(&va_pa_offset)))
--#endif
- /* Offset between kernel mapping virtual address and kernel load address */
- #ifdef CONFIG_64BIT
- unsigned long va_kernel_pa_offset __ro_after_init;
- EXPORT_SYMBOL(va_kernel_pa_offset);
- #endif
--#ifdef CONFIG_XIP_KERNEL
--#define va_kernel_pa_offset    (*((unsigned long *)XIP_FIXUP(&va_kernel_pa_offset)))
--#endif
- unsigned long va_kernel_xip_pa_offset __ro_after_init;
- EXPORT_SYMBOL(va_kernel_xip_pa_offset);
--#ifdef CONFIG_XIP_KERNEL
--#define va_kernel_xip_pa_offset        (*((unsigned long *)XIP_FIXUP(&va_kernel_xip_pa_offset)))
--#endif
- unsigned long pfn_base __ro_after_init;
- EXPORT_SYMBOL(pfn_base);
- 
-@@ -239,12 +223,6 @@ static pte_t fixmap_pte[PTRS_PER_PTE] __page_aligned_bss;
- 
- pgd_t early_pg_dir[PTRS_PER_PGD] __initdata __aligned(PAGE_SIZE);
- 
--#ifdef CONFIG_XIP_KERNEL
--#define trampoline_pg_dir      ((pgd_t *)XIP_FIXUP(trampoline_pg_dir))
--#define fixmap_pte             ((pte_t *)XIP_FIXUP(fixmap_pte))
--#define early_pg_dir           ((pgd_t *)XIP_FIXUP(early_pg_dir))
--#endif /* CONFIG_XIP_KERNEL */
--
- void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot)
- {
- 	unsigned long addr = __fix_to_virt(idx);
-@@ -320,12 +298,6 @@ static pmd_t fixmap_pmd[PTRS_PER_PMD] __page_aligned_bss;
- static pmd_t early_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
- static pmd_t early_dtb_pmd[PTRS_PER_PMD] __initdata __aligned(PAGE_SIZE);
- 
--#ifdef CONFIG_XIP_KERNEL
--#define trampoline_pmd ((pmd_t *)XIP_FIXUP(trampoline_pmd))
--#define fixmap_pmd     ((pmd_t *)XIP_FIXUP(fixmap_pmd))
--#define early_pmd      ((pmd_t *)XIP_FIXUP(early_pmd))
--#endif /* CONFIG_XIP_KERNEL */
--
- static pmd_t *__init get_pmd_virt_early(phys_addr_t pa)
- {
- 	/* Before MMU is enabled */
-@@ -442,19 +414,6 @@ static uintptr_t __init best_map_size(phys_addr_t base, phys_addr_t size)
- 	return PMD_SIZE;
- }
- 
--#ifdef CONFIG_XIP_KERNEL
--/* called from head.S with MMU off */
--asmlinkage void __init __copy_data(void)
--{
--	void *from = (void *)(&_sdata);
--	void *end = (void *)(&_end);
--	void *to = (void *)CONFIG_PHYS_RAM_BASE;
--	size_t sz = (size_t)(end - from + 1);
--
--	memcpy(to, from, sz);
--}
--#endif
--
- #ifdef CONFIG_STRICT_KERNEL_RWX
- static __init pgprot_t pgprot_from_va(uintptr_t va)
- {
-@@ -511,16 +470,10 @@ static __init pgprot_t pgprot_from_va(uintptr_t va)
- 
- static uintptr_t load_pa __initdata;
- uintptr_t load_sz;
--#ifdef CONFIG_XIP_KERNEL
--#define load_pa        (*((uintptr_t *)XIP_FIXUP(&load_pa)))
--#define load_sz        (*((uintptr_t *)XIP_FIXUP(&load_sz)))
--#endif
- 
- #ifdef CONFIG_XIP_KERNEL
- static uintptr_t xiprom __initdata;
- static uintptr_t xiprom_sz __initdata;
--#define xiprom_sz      (*((uintptr_t *)XIP_FIXUP(&xiprom_sz)))
--#define xiprom         (*((uintptr_t *)XIP_FIXUP(&xiprom)))
- 
- static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size,
- 					    __always_unused bool early)
-@@ -538,7 +491,7 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size,
- 	end_va = kernel_virt_addr + XIP_OFFSET + load_sz;
- 	for (va = kernel_virt_addr + XIP_OFFSET; va < end_va; va += map_size)
- 		create_pgd_mapping(pgdir, va,
--				   load_pa + (va - (kernel_virt_addr + XIP_OFFSET)),
-+				   load_pa + (va - kernel_virt_addr),
- 				   map_size, PAGE_KERNEL);
- }
- #else
-@@ -648,7 +601,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
- 	 * whereas dtb_early_va will be used before setup_vm_final installs
- 	 * the linear mapping.
- 	 */
--	dtb_early_va = kernel_mapping_pa_to_va(XIP_FIXUP(dtb_pa));
-+	dtb_early_va = kernel_mapping_pa_to_va(dtb_pa);
- #else
- 	dtb_early_va = __va(dtb_pa);
- #endif /* CONFIG_64BIT */
-@@ -664,7 +617,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
- 	dtb_early_va = (void *)DTB_EARLY_BASE_VA + (dtb_pa & (PGDIR_SIZE - 1));
- #else /* CONFIG_BUILTIN_DTB */
- #ifdef CONFIG_64BIT
--	dtb_early_va = kernel_mapping_pa_to_va(XIP_FIXUP(dtb_pa));
-+	dtb_early_va = kernel_mapping_pa_to_va(dtb_pa);
- #else
- 	dtb_early_va = __va(dtb_pa);
- #endif /* CONFIG_64BIT */
 -- 
-2.30.2
+2.7.4
 
