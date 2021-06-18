@@ -2,106 +2,378 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDEC53AC6B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8853AC6B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231234AbhFRJD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 05:03:28 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:48153 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbhFRJD0 (ORCPT
+        id S232716AbhFRJE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 05:04:57 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40270 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232103AbhFRJEz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 05:03:26 -0400
-Received: from mail-ed1-f70.google.com ([209.85.208.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1luANJ-0001MN-4o
-        for linux-kernel@vger.kernel.org; Fri, 18 Jun 2021 09:01:17 +0000
-Received: by mail-ed1-f70.google.com with SMTP id v12-20020aa7dbcc0000b029038fc8e57037so3222795edt.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:01:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4Rpo5v0so+s5bFTiYG2x3xDNdr/p1fKsU61iXsP86UQ=;
-        b=RDPJCqnYdP5XMoSw0FSZFzV7h6f4/1P4Gr+X98OaLnK0t6U2vLW052nIxbYAflFwbI
-         foHTcmAO9BBjrGwOj92Hpg2FWi1oTnIGmUaeki54fRzpsSGExnShb1L7sNd360Hd5bNB
-         MAdDvJ4/PmQ52h2PFTvhwz5qI3m8Bd6nD1gN8xhWZNXjDrn/Hdy93OrHp1zVq2YQK7Rc
-         /EjywpPIwfHlpwIRcrlDI+gJJ7zvZa7+mJd7Wwl8++NxXtQYuWr7m+CUMaqSQVS/WVlK
-         lMppTKdFB8t7GvNVm6nG9YEPH01FOwAVmN8Tw11yL0CEtnQPx6uz+JedCWBp29ziFjE8
-         HHtQ==
-X-Gm-Message-State: AOAM530B0we+hRxMw+Tj0psNPgaqMhC4zTOIVDkCU6KsWtr5SO/6iyJu
-        K3PHDLfoRRGGW341iENymQXuB2NetUM95Hn7UAxHFibZPeF+MEgPveFPxJnZ7cgPhqSf5JwdCIG
-        gjmHG5wMbeqRlmZKaxWIAcpdrpnMpaZJwTX3DBYMw6g==
-X-Received: by 2002:a17:906:2752:: with SMTP id a18mr10451913ejd.458.1624006876932;
-        Fri, 18 Jun 2021 02:01:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz2MB2+Q8e0FJ/0cH1Qq/fGA0AiH6hJVmgNkJ1FexQwOk2Rh7qUGVrnNY3ri6yOvmqlsOFFpw==
-X-Received: by 2002:a17:906:2752:: with SMTP id a18mr10451900ejd.458.1624006876745;
-        Fri, 18 Jun 2021 02:01:16 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id de6sm402336edb.77.2021.06.18.02.01.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 02:01:16 -0700 (PDT)
-Subject: Re: [PATCH v2] NFC: nxp-nci: remove unnecessary label
-To:     samirweng1979 <samirweng1979@163.com>, charles.gorand@effinnov.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-References: <20210618085226.18440-1-samirweng1979@163.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <8ff9ac28-5d83-ebf8-a6b1-53a2a7b7d912@canonical.com>
-Date:   Fri, 18 Jun 2021 11:01:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 18 Jun 2021 05:04:55 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15I8f19g019814;
+        Fri, 18 Jun 2021 05:02:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : content-transfer-encoding : in-reply-to; s=pp1;
+ bh=Pg0zM2dtclEhNemHoloIgjkrcrHg3YgthVTEdexPR3Q=;
+ b=A0NJRJ2UvBHSYvFx9rxZJNgJVhwYjsGajwzIanPS8xX4jwVsPSH9C2sVmEgxDqbvSLXx
+ ETvdxX7aWUWc4GQ9GZQII/UCLhnGI6aV0GxQjq2kAMnrOYx/DSik1bctmTnWCl2QFh6N
+ Kt02HIE01mWPstj+H94XwVBs4noVgfUVLqEwRlw/ck+tBws/XRGw4Esel6pVftaInODL
+ WTpdJzJoAAje0suLLpUbXlhSnF7LMOg5GuvT7DRY5yDPRA0KXdHDHcw5G0/ThSYO2wBW
+ caf/nG4poSpFmCZo/XeLkosEa4hAq76UuWSCsLcQnuH6Kddz9aadD1nHy6YPmmqtreKA QQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 398p4t3tkv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Jun 2021 05:02:22 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15I8fYgQ020677;
+        Fri, 18 Jun 2021 05:02:21 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 398p4t3tkc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Jun 2021 05:02:21 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15I8wDLW000742;
+        Fri, 18 Jun 2021 09:02:19 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma01dal.us.ibm.com with ESMTP id 394mjb3t2j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Jun 2021 09:02:19 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15I92IIj35127640
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 18 Jun 2021 09:02:19 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D91F7AC069;
+        Fri, 18 Jun 2021 09:02:18 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AEA66AC068;
+        Fri, 18 Jun 2021 09:02:17 +0000 (GMT)
+Received: from sofia.ibm.com (unknown [9.85.91.58])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 18 Jun 2021 09:02:17 +0000 (GMT)
+Received: by sofia.ibm.com (Postfix, from userid 1000)
+        id 6520A2E2D42; Fri, 18 Jun 2021 14:32:08 +0530 (IST)
+Date:   Fri, 18 Jun 2021 14:32:08 +0530
+From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
+To:     "Pratik R. Sampat" <psampat@linux.ibm.com>
+Cc:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pratik.r.sampat@gmail.com
+Subject: Re: [PATCH 1/1] powerpc/pseries: Interface to represent PAPR
+ firmware attributes
+Message-ID: <20210618090208.GA17177@in.ibm.com>
+Reply-To: ego@linux.vnet.ibm.com
+References: <20210616134240.62195-1-psampat@linux.ibm.com>
+ <20210616134240.62195-2-psampat@linux.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210618085226.18440-1-samirweng1979@163.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210616134240.62195-2-psampat@linux.ibm.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: OZwy5X-67dE-h8POmSsMm9x8h7FhaL6K
+X-Proofpoint-ORIG-GUID: bp2lgI44CtKvYTYD999DUF78QxHG2Ryi
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-17_17:2021-06-15,2021-06-17 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ clxscore=1011 bulkscore=0 mlxscore=0 malwarescore=0 lowpriorityscore=0
+ priorityscore=1501 mlxlogscore=999 phishscore=0 suspectscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106180048
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/06/2021 10:52, samirweng1979 wrote:
-> From: wengjianfeng <wengjianfeng@yulong.com>
+On Wed, Jun 16, 2021 at 07:12:40PM +0530, Pratik R. Sampat wrote:
+> Adds a generic interface to represent the energy and frequency related
+> PAPR attributes on the system using the new H_CALL
+> "H_GET_ENERGY_SCALE_INFO".
 > 
-> Remove unnecessary label chunk_exit and return directly.
+> H_GET_EM_PARMS H_CALL was previously responsible for exporting this
+> information in the lparcfg, however the H_GET_EM_PARMS H_CALL
+> will be deprecated P10 onwards.
 > 
-> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
-> ---
->  drivers/nfc/nxp-nci/firmware.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
+> The H_GET_ENERGY_SCALE_INFO H_CALL is of the following call format:
+> hcall(
+>   uint64 H_GET_ENERGY_SCALE_INFO,  // Get energy scale info
+>   uint64 flags,           // Per the flag request
+>   uint64 firstAttributeId,// The attribute id
+>   uint64 bufferAddress,   // Guest physical address of the output buffer
+>   uint64 bufferSize       // The size in bytes of the output buffer
+> );
+> 
+> This H_CALL can query either all the attributes at once with
+> firstAttributeId = 0, flags = 0 as well as query only one attribute
+> at a time with firstAttributeId = id
 
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+For a single attribute, the “firstAttributeId” must be set by the
+caller to the attribute id to retrieve and the “singleAttribute” field
+in “flags” must also be set to a 1.
 
-Best regards,
-Krzysztof
+If we don't set the "flags" to 1, while specifying a firstAttributeId,
+the hypervisor will populate the buffer with the details pertaining to
+all the attributes beginning with firstAttributeId.
 
-> diff --git a/drivers/nfc/nxp-nci/firmware.c b/drivers/nfc/nxp-nci/firmware.c
-> index dae0c80..119bf30 100644
-> --- a/drivers/nfc/nxp-nci/firmware.c
-> +++ b/drivers/nfc/nxp-nci/firmware.c
-> @@ -95,10 +95,8 @@ static int nxp_nci_fw_send_chunk(struct nxp_nci_info *info)
->  	int r;
->  
->  	skb = nci_skb_alloc(info->ndev, info->max_payload, GFP_KERNEL);
-> -	if (!skb) {
-> -		r = -ENOMEM;
-> -		goto chunk_exit;
-> -	}
-> +	if (!skb)
+
+
+> 
+> The output buffer consists of the following
+> 1. number of attributes              - 8 bytes
+> 2. array offset to the data location - 8 bytes
+> 3. version info                      - 1 byte
+> 4. A data array of size num attributes, which contains the following:
+>   a. attribute ID              - 8 bytes
+>   b. attribute value in number - 8 bytes
+>   c. attribute name in string  - 64 bytes
+>   d. attribute value in string - 64 bytes
+> 
+[..snip..]
+
+> +
+> +static ssize_t papr_show_value(struct kobject *kobj,
+> +				struct kobj_attribute *attr,
+> +				char *buf)
+> +{
+> +	struct papr_attr *pattr = container_of(attr, struct papr_attr, attr);
+> +	struct hv_energy_scale_buffer *t_buf;
+> +	struct energy_scale_attributes *t_ea;
+> +	int data_offset, ret = 0;
+> +
+> +	t_buf = kmalloc(sizeof(*t_buf), GFP_KERNEL);
+> +	if (t_buf == NULL)
 > +		return -ENOMEM;
->  
->  	chunk_len = info->max_payload - NXP_NCI_FW_HDR_LEN - NXP_NCI_FW_CRC_LEN;
->  	remaining_len = fw_info->frame_size - fw_info->written;
-> @@ -124,7 +122,6 @@ static int nxp_nci_fw_send_chunk(struct nxp_nci_info *info)
->  
->  	kfree_skb(skb);
->  
-> -chunk_exit:
->  	return r;
->  }
->  
+> +
+> +	ret = plpar_hcall_norets(H_GET_ENERGY_SCALE_INFO, 0,
+> +				 pattr->id, virt_to_phys(t_buf),
+> +				 sizeof(*t_buf));
+> +
+
+
+In this case, since we are interested in only one attribute, we can
+make the call
+
+	ret = plpar_hcall_norets(H_GET_ENERGY_SCALE_INFO, 1,
+				 pattr->id, virt_to_phys(t_buf),
+				 sizeof(*t_buf));
+
+setting flags=1.
+
+Same in the function papr_show_value_desc() below
+
+--
+Thanks and Regards
+gautham.
+
+
+> +	if (ret != H_SUCCESS) {
+> +		pr_warn("hcall failed: H_GET_ENERGY_SCALE_INFO");
+> +		goto out;
+> +	}
+> +
+> +	data_offset = be64_to_cpu(t_buf->array_offset) -
+> +			(sizeof(t_buf->num_attr) +
+> +			sizeof(t_buf->array_offset) +
+> +			sizeof(t_buf->data_header_version));
+> +
+> +	t_ea = (struct energy_scale_attributes *) &t_buf->data[data_offset];
+> +
+> +	ret = sprintf(buf, "%llu\n", be64_to_cpu(t_ea->attr_value));
+> +	if (ret < 0)
+> +		ret = -EIO;
+> +out:
+> +	kfree(t_buf);
+> +
+> +	return ret;
+> +}
+> +
+> +static ssize_t papr_show_value_desc(struct kobject *kobj,
+> +				     struct kobj_attribute *attr,
+> +				     char *buf)
+> +{
+> +	struct papr_attr *pattr = container_of(attr, struct papr_attr, attr);
+> +	struct hv_energy_scale_buffer *t_buf;
+> +	struct energy_scale_attributes *t_ea;
+> +	int data_offset, ret = 0;
+> +
+> +	t_buf = kmalloc(sizeof(*t_buf), GFP_KERNEL);
+> +	if (t_buf == NULL)
+> +		return -ENOMEM;
+> +
+> +	ret = plpar_hcall_norets(H_GET_ENERGY_SCALE_INFO, 0,
+> +				 pattr->id, virt_to_phys(t_buf),
+> +				 sizeof(*t_buf));
+> +
+> +	if (ret != H_SUCCESS) {
+> +		pr_warn("hcall failed: H_GET_ENERGY_SCALE_INFO");
+> +		goto out;
+> +	}
+> +
+> +	data_offset = be64_to_cpu(t_buf->array_offset) -
+> +			(sizeof(t_buf->num_attr) +
+> +			sizeof(t_buf->array_offset) +
+> +			sizeof(t_buf->data_header_version));
+> +
+> +	t_ea = (struct energy_scale_attributes *) &t_buf->data[data_offset];
+> +
+> +	ret = sprintf(buf, "%s\n", t_ea->attr_value_desc);
+> +	if (ret < 0)
+> +		ret = -EIO;
+> +out:
+> +	kfree(t_buf);
+> +
+> +	return ret;
+> +}
+> +
+> +static struct papr_ops_info {
+> +	const char *attr_name;
+> +	ssize_t (*show)(struct kobject *kobj, struct kobj_attribute *attr,
+> +			char *buf);
+> +} ops_info[] = {
+> +	{ "desc", papr_show_desc },
+> +	{ "value", papr_show_value },
+> +	{ "value_desc", papr_show_value_desc },
+> +};
+> +
+> +static void add_attr(u64 id, int index, struct papr_attr *attr)
+> +{
+> +	attr->id = id;
+> +	sysfs_attr_init(&attr->attr.attr);
+> +	attr->attr.attr.name = ops_info[index].attr_name;
+> +	attr->attr.attr.mode = 0444;
+> +	attr->attr.show = ops_info[index].show;
+> +}
+> +
+> +static int add_attr_group(u64 id, int len, struct papr_group *pg,
+> +			  bool show_val_desc)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < len; i++) {
+> +		if (!strcmp(ops_info[i].attr_name, "value_desc") &&
+> +		    !show_val_desc) {
+> +			continue;
+> +		}
+> +		add_attr(id, i, &pg->pgattrs[i]);
+> +		pg->pg.attrs[i] = &pg->pgattrs[i].attr.attr;
+> +	}
+> +
+> +	return sysfs_create_group(escale_kobj, &pg->pg);
+> +}
+> +
+> +
+> +static int __init papr_init(void)
+> +{
+> +	uint64_t num_attr;
+> +	int ret, idx, i, data_offset;
+> +
+> +	em_buf = kmalloc(sizeof(*em_buf), GFP_KERNEL);
+> +	if (em_buf == NULL)
+> +		return -ENOMEM;
+> +	/*
+> +	 * hcall(
+> +	 * uint64 H_GET_ENERGY_SCALE_INFO,  // Get energy scale info
+> +	 * uint64 flags,            // Per the flag request
+> +	 * uint64 firstAttributeId, // The attribute id
+> +	 * uint64 bufferAddress,    // Guest physical address of the output buffer
+> +	 * uint64 bufferSize);      // The size in bytes of the output buffer
+> +	 */
+> +	ret = plpar_hcall_norets(H_GET_ENERGY_SCALE_INFO, 0, 0,
+> +				 virt_to_phys(em_buf), sizeof(*em_buf));
+> +
+> +	if (!firmware_has_feature(FW_FEATURE_LPAR) || ret != H_SUCCESS ||
+> +	    em_buf->data_header_version != 0x1) {
+> +		pr_warn("hcall failed: H_GET_ENERGY_SCALE_INFO");
+> +		goto out;
+> +	}
+> +
+> +	num_attr = be64_to_cpu(em_buf->num_attr);
+> +
+> +	/*
+> +	 * Typecast the energy buffer to the attribute structure at the offset
+> +	 * specified in the buffer
+> +	 */
+> +	data_offset = be64_to_cpu(em_buf->array_offset) -
+> +			(sizeof(em_buf->num_attr) +
+> +			sizeof(em_buf->array_offset) +
+> +			sizeof(em_buf->data_header_version));
+> +
+> +	ea = (struct energy_scale_attributes *) &em_buf->data[data_offset];
+> +
+> +	pgs = kcalloc(num_attr, sizeof(*pgs), GFP_KERNEL);
+> +	if (!pgs)
+> +		goto out_pgs;
+> +
+> +	papr_kobj = kobject_create_and_add("papr", firmware_kobj);
+> +	if (!papr_kobj) {
+> +		pr_warn("kobject_create_and_add papr failed\n");
+> +		goto out_kobj;
+> +	}
+> +
+> +	escale_kobj = kobject_create_and_add("energy_scale_info", papr_kobj);
+> +	if (!escale_kobj) {
+> +		pr_warn("kobject_create_and_add energy_scale_info failed\n");
+> +		goto out_ekobj;
+> +	}
+> +
+> +	for (idx = 0; idx < num_attr; idx++) {
+> +		char buf[4];
+> +		bool show_val_desc = true;
+> +
+> +		pgs[idx].pgattrs = kcalloc(MAX_ATTRS,
+> +					   sizeof(*pgs[idx].pgattrs),
+> +					   GFP_KERNEL);
+> +		if (!pgs[idx].pgattrs)
+> +			goto out_kobj;
+> +
+> +		pgs[idx].pg.attrs = kcalloc(MAX_ATTRS + 1,
+> +					    sizeof(*pgs[idx].pg.attrs),
+> +					    GFP_KERNEL);
+> +		if (!pgs[idx].pg.attrs) {
+> +			kfree(pgs[idx].pgattrs);
+> +			goto out_kobj;
+> +		}
+> +
+> +		sprintf(buf, "%lld", be64_to_cpu(ea[idx].attr_id));
+> +		pgs[idx].pg.name = buf;
+> +
+> +		/* Do not add the value description if it does not exist */
+> +		if (strlen(ea[idx].attr_value_desc) == 0)
+> +			show_val_desc = false;
+> +
+> +		if (add_attr_group(be64_to_cpu(ea[idx].attr_id),
+> +				   MAX_ATTRS, &pgs[idx], show_val_desc)) {
+> +			pr_warn("Failed to create papr attribute group %s\n",
+> +				pgs[idx].pg.name);
+> +			goto out_pgattrs;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +
+> +out_pgattrs:
+> +	for (i = 0; i < MAX_ATTRS; i++) {
+> +		kfree(pgs[i].pgattrs);
+> +		kfree(pgs[i].pg.attrs);
+> +	}
+> +out_ekobj:
+> +	kobject_put(escale_kobj);
+> +out_kobj:
+> +	kobject_put(papr_kobj);
+> +out_pgs:
+> +	kfree(pgs);
+> +out:
+> +	kfree(em_buf);
+> +
+> +	return -ENOMEM;
+> +}
+> +
+> +machine_device_initcall(pseries, papr_init);
+> -- 
+> 2.30.2
 > 
