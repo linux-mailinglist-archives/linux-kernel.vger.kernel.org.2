@@ -2,122 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B703AD49B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 23:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC5D13AD4A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 23:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234699AbhFRVz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 17:55:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32990 "EHLO
+        id S234732AbhFRV5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 17:57:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232735AbhFRVzY (ORCPT
+        with ESMTP id S234725AbhFRV5m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 17:55:24 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC8FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 14:53:14 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id g12so8697158qtb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 14:53:14 -0700 (PDT)
+        Fri, 18 Jun 2021 17:57:42 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6911CC061574;
+        Fri, 18 Jun 2021 14:55:32 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id i13so18897053lfc.7;
+        Fri, 18 Jun 2021 14:55:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tlfC7guzHnGUhI3CYP6SsQ3L2F2bpnWxpAP26B/r4lE=;
-        b=c1PJM9IMsmEV7WTgP5glA28gcryVt11Yy9rOy4sMWcHpuAuYctnhMoRA/TnndaEXu9
-         Rbcd4FhRPcC5JhriCLMuoqQm3ez0POjKf7G/OaRDnad4p2XwpEGRFybzjb5qAh+5I9wx
-         V9zRDm2/O+uNQtirG2wWc6MwxGhSbuqdaBDhxZUayBY84NvbB1/47euOL7Jy8HDPhdrU
-         joJ/K5EijUK5LXR60pm/3S8eJNDlO93A/vTG9eNu2UIt/j+Wbt51cqiXirPWCDO08Wts
-         pJzlIn37eTLTSKfOrUKBIPiWrVe0DbvU3D0cueSAOYhR4zhKuHuIC1ulTai/nATOxii4
-         iAsQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dunyvVNRQ1R3zIAJXeBPGY4CZ8iNnLCGi0re9gaV3Dg=;
+        b=VBl9GYl9mHr5mEdIkwJQx1kGY2u/4QY9eGjoqpgB4CqiYe3ZQwlwBXHnn97LSFW+xO
+         HgSxR05ROcgdPTwHnROqU5VnD/9Ftkuhdw9KSNvOoLUdJayIFDVmnMMMX/6zVgQtmFni
+         3AObCtFAtX6Kn8V1v9cZ3U7Zgz5jTOJ3gM7nNDbKRyb/oEpfCueG73a7B3SNu/oGPuGU
+         Ywlb4ptkvxjAXlBSWdhSFwnJhV1mzsGAFZYv02IGVrh+0ZieC9bpCm+rkyBiHa9IOmZe
+         7PiZaCkhGcQEZ4tTSaIcepF6O9nlI1mFcyWOWSlAfQMYfc/ggrJUJQtnjaZKoVSQIzbJ
+         q6lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=tlfC7guzHnGUhI3CYP6SsQ3L2F2bpnWxpAP26B/r4lE=;
-        b=SltRwmnucOrBDucE2VPBGPYh6BVVFFcvuOnKP/LKvbWs+pYuc86Q0SS3c9O8+xi49d
-         ZIY4GSs4yhA64XPd9mIqESRtABTYKnTUD67H51yXggpk30oaWDXtFuEzYQLPbMbQSMRe
-         tWCmRuYkzANjZTd5C0OCGkuyClbFd8RGcOpgNKpfxSesNSLt7VlD0NnsIpCenHr0Nw64
-         51wBgxiCThQuT4MkJQuVvJYU5tL94m71i4i1Z2WjGQDuMOUVq9v53aAhUHChyVGzgnbT
-         qkVhoKFVX2rVC1QLaD0t9gxMpziknpQaZ/JWZ8WDwDEivV2AO7EaMQMP79CvBi5Gjh3d
-         VJyQ==
-X-Gm-Message-State: AOAM5305fj12C+xhVrIl46uPwUG0mPu/27F9WJHLPB1/D8KkqP6u5Fi1
-        Q1Sva+aUFnBrLo3NXkqzTMwamA==
-X-Google-Smtp-Source: ABdhPJwE91wGSAlfUJ9FU4CUkiG2NiKNvaCkaB0RyBPbh6dTpxuRmWrOGkt55gHzGx6RZk5nygbmMQ==
-X-Received: by 2002:a05:622a:40b:: with SMTP id n11mr12438838qtx.60.1624053193550;
-        Fri, 18 Jun 2021 14:53:13 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id w8sm4761888qkp.136.2021.06.18.14.53.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 14:53:12 -0700 (PDT)
-Subject: Re: [PATCH 2/5] thermal: qcom: Add support for LMh driver
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     agross@kernel.org, rui.zhang@intel.com, daniel.lezcano@linaro.org,
-        viresh.kumar@linaro.org, rjw@rjwysocki.net, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20210608222926.2707768-1-thara.gopinath@linaro.org>
- <20210608222926.2707768-3-thara.gopinath@linaro.org>
- <YMfBtSap7fR3rdku@builder.lan>
- <4996de55-daa9-18a4-3c03-cf194d85500e@linaro.org>
- <YMzd5OEhG4PYYv+E@builder.lan>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <be5f133e-5fae-9a61-3cf5-7e611a17bc77@linaro.org>
-Date:   Fri, 18 Jun 2021 17:53:11 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=dunyvVNRQ1R3zIAJXeBPGY4CZ8iNnLCGi0re9gaV3Dg=;
+        b=if+9v0Z9cL8oqGcgLtvKpD873Elcs7TmINR6OtyxbSs1UZluN59RPHPOLWN0REEttp
+         CSpUYT5VNz6lfrK7GGjDSnqqi0PY7oFFhHepiI5d1jIFHvPsSOTYxsHjDs1kiwvFGOwg
+         hrlGdGsicKIdoFjcVhJ6r82JRICUrxXjLNyBpcUHYbviszb4NPlX/ARb15LtAEse6Lay
+         lmtsq/FWC6fQ//gUsq28Pe0bKo0Iqyy1lqfGkszmNmWn1hFRHPQU82AwmJfAxPrAuLZ0
+         ECVTcViT5pTz4uGKWL2k/zQ/oxV0bzdpkcWYiG16ud2lv1QoByOqmLb6NcG11V/GeCIM
+         ZqnQ==
+X-Gm-Message-State: AOAM5319ZutPGEstMRMVoxsEjCL6xoGmdugyGbU4A3GGV/Fdo/y7vNV7
+        tPhtRZGZVkiXFyBq0z5lZWOKgXXKq4U=
+X-Google-Smtp-Source: ABdhPJwo4CxSyphA2X67NqlLW93+K2kL5drweGvuy0CTXK47vEFmu2TuQd0wxM5Q0n94A8eog1K9tQ==
+X-Received: by 2002:a19:5d53:: with SMTP id p19mr4856561lfj.581.1624053330854;
+        Fri, 18 Jun 2021 14:55:30 -0700 (PDT)
+Received: from localhost.localdomain (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
+        by smtp.gmail.com with ESMTPSA id b20sm791773ljo.138.2021.06.18.14.55.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 14:55:30 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH v3 0/4] HWMON LM90 interrupt fixes and improvements
+Date:   Sat, 19 Jun 2021 00:54:51 +0300
+Message-Id: <20210618215455.19986-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <YMzd5OEhG4PYYv+E@builder.lan>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
+This series makes interrupt usable on NVIDIA Tegra devices, it also
+switches LM90 driver to use hwmon_notify_event().
 
-On 6/18/21 1:54 PM, Bjorn Andersson wrote:
-> On Mon 14 Jun 20:38 CDT 2021, Thara Gopinath wrote:
->> On 6/14/21 4:53 PM, Bjorn Andersson wrote:
->>> On Tue 08 Jun 17:29 CDT 2021, Thara Gopinath wrote:
->>>> diff --git a/drivers/thermal/qcom/Makefile b/drivers/thermal/qcom/Makefile
-> [..]
->>>> +static irqreturn_t lmh_handle_irq(int hw_irq, void *data)
->>>> +{
->>>> +	struct lmh_hw_data *lmh_data = data;
->>>> +	int irq = irq_find_mapping(lmh_data->domain, 0);
->>>> +
->>>> +	/*
->>>> +	 * Disable interrupt and call the cpufreq driver to handle the interrupt
->>>> +	 * cpufreq will enable the interrupt once finished processing.
->>>> +	 */
->>>> +	disable_irq_nosync(lmh_data->irq);
->>>
->>> The contract between this driver's disabling of the IRQ and the
->>> cpufreq-hw driver's enabling it when we're done polling does worry me.
->>>
->>> In the case of EPSS, don't we disable the interrupt during the polling
->>> there as well? If that's the case wouldn't it be better to implement
->>> irq_chip->irq_disable and have the cpufreq-hw driver do the disable in
->>> both cases?
->>
->> Yes. You are right. In case of EPSS, the cpufreq-hw will have to disable the
->> interrupt. I did think of the approach you suggested here. My only issue is
->> that we will dispatch the interrupt to cpufreq-hw without it disabling it
->> and hence the interrupt could fire again, right ?
->>
-> 
-> Does it fire again before you INTR_CLK it?
+Changelog:
 
-You mean clear it ? I couldn't reproduce it either way. I did not try 
-the irq_chip->irq_disable either. So I will give it a try and if my 
-tests pass , I will post it.
+v3: - No code changes. Added changelog.
 
-> 
-> Regards,
-> Bjorn
-> 
+v2: - Dropped "hwmon: (lm90) Use edge-triggered interrupt" patch
+      and replaced it with "hwmon: (lm90) Don't override interrupt
+      trigger type", as was discussed during review of v1.
+
+    - Added these new patches:
+
+        hwmon: (lm90) Use hwmon_notify_event()
+        hwmon: (lm90) Unmask hardware interrupt
+        hwmon: (lm90) Disable interrupt on suspend
+
+Dmitry Osipenko (4):
+  hwmon: (lm90) Don't override interrupt trigger type
+  hwmon: (lm90) Use hwmon_notify_event()
+  hwmon: (lm90) Unmask hardware interrupt
+  hwmon: (lm90) Disable interrupt on suspend
+
+ drivers/hwmon/lm90.c | 79 ++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 66 insertions(+), 13 deletions(-)
 
 -- 
-Warm Regards
-Thara (She/Her/Hers)
+2.30.2
+
