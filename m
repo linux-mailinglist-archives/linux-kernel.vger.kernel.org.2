@@ -2,106 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5AB13AD014
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 757BE3AD018
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:10:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233521AbhFRQMc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Jun 2021 12:12:32 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3289 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231455AbhFRQM3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 12:12:29 -0400
-Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G63TD4KPRz6GBQh;
-        Fri, 18 Jun 2021 23:57:04 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 18 Jun 2021 18:10:18 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
- Fri, 18 Jun 2021 18:10:18 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>, Paul Moore <paul@paul-moore.com>
-CC:     Stefan Berger <stefanb@linux.ibm.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "stephen.smalley.work@gmail.com" <stephen.smalley.work@gmail.com>,
-        "casey@schaufler-ca.com" <casey@schaufler-ca.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
-Subject: RE: [PATCH] fs: Return raw xattr for security.* if there is size
- disagreement with LSMs
-Thread-Topic: [PATCH] fs: Return raw xattr for security.* if there is size
- disagreement with LSMs
-Thread-Index: AQHXYrKvlTGLZUZH2kigEMb4WxB9T6sWlCeAgAExqRCAAG34gIAAxn6AgADWAICAACLg0A==
-Date:   Fri, 18 Jun 2021 16:10:18 +0000
-Message-ID: <f8de8f604a4c46ea934ce0a67363b7f4@huawei.com>
-References: <ee75bde9a17f418984186caa70abd33b@huawei.com>
-         <20210616132227.999256-1-roberto.sassu@huawei.com>
-         <6e1c9807-d7e8-7c26-e0ee-975afa4b9515@linux.ibm.com>
-         <9cb676de40714d0288f85292c1f1a430@huawei.com>
-         <d822efcc0bb05178057ab2f52293575124cde1fc.camel@linux.ibm.com>
-         <CAHC9VhTv6Zn8gYaB6cG4wPzy_Ty0XjOM-QL4cZ525RnhFY4bTQ@mail.gmail.com>
- <c92d0ac71a8db8bb016a7e94b83c193956d71a26.camel@linux.ibm.com>
-In-Reply-To: <c92d0ac71a8db8bb016a7e94b83c193956d71a26.camel@linux.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S235765AbhFRQNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 12:13:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232825AbhFRQMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 12:12:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF3D361003;
+        Fri, 18 Jun 2021 16:10:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624032645;
+        bh=dbHAgGiYQE6XMZg5rLz1/IZkrUOG2C/iLRbZuuL7kFQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=TAVUyVLgyaxuX8KxNyq+OrBK5egFvOHJAbPWqz2to6IWN9SkuyUmm4k8GIaWaAs13
+         uzWArdpN5gvfepQ3QDgf4iRJgeFDNNUVXZfvB+FcROI0HaLQqnUqa4fbiGlsYcyDbY
+         Zj0NaJM1Xpvf0mJ6YJSJ6FuMoQXlxcRGhwf5Ir1RaJe2H5DNUDNSwx1wpr56qtMM04
+         mFoRXMBY6G5kivDNLP2ju1YOgKUHNsqBkbovvzw3LnWZhhJKNYiKuyrtVmZ5tt8IsU
+         J7ZcAfVWqj2gI6JO8tfosH5BQ7RSngcIHdIAyXjEMz+ha0B9/oh/B1dg98jBehHQng
+         yiQHCONfwyrvw==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org
+Subject: [PATCH 0/3] perf probe: Boot time tracing support followup
+Date:   Sat, 19 Jun 2021 01:10:42 +0900
+Message-Id: <162403264218.528888.2914545241015551186.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <YMycGkhkPuo4xTc4@kernel.org>
+References: <YMycGkhkPuo4xTc4@kernel.org>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> Sent: Friday, June 18, 2021 6:04 PM
-> On Thu, 2021-06-17 at 23:18 -0400, Paul Moore wrote:
-> > On Thu, Jun 17, 2021 at 11:28 AM Mimi Zohar <zohar@linux.ibm.com>
-> wrote:
-> > > On Thu, 2021-06-17 at 07:09 +0000, Roberto Sassu wrote:
-> >
-> > ...
-> >
-> > > > An alternative would be to do the EVM verification twice if the
-> > > > first time didn't succeed (with vfs_getxattr_alloc() and with the
-> > > > new function that behaves like vfs_getxattr()).
-> > >
-> > > Unfortunately, I don't see an alternative.
-> >
-> > ... and while unfortunate, the impact should be non-existant if you
-> > are using the right tools to label files or ensuring that you are
-> > formatting labels properly if doing it by hand.
-> >
-> > Handling a corner case is good, but I wouldn't add a lot of code
-> > complexity trying to optimize it.
-> 
-> From userspace it's really difficult to understand the EVM signature
-> verification failure is due to the missing NULL.
-> 
-> Roberto, I just pushed the "evm: output EVM digest calculation info"
-> patch to the next-integrity-testing branch, which includes some
-> debugging.   Instead of this patch, which returns the raw xattr data,
-> how about adding additional debugging info in evm_calc_hmac_or_hash()
-> indicating the size discrepancy between the raw xattr and the LSM
-> returned xattr?
+Hi Arnaldo,
 
-Good idea. Will do it.
+I found that I made 2 mistakes at the last series, typo and the return probe.
+Since bootconfig have to use %return style definition for the return
+probes, I have to update the synthesize_kprobe_trace_def() too.
 
-Roberto
+So here are the follow up patches which update the last patch in the previous
+series, and add the return probe support and documentation update.
 
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
 
-> thanks,
-> 
-> Mimi
+Thank you,
 
+---
+
+Masami Hiramatsu (3):
+      [v2] perf/probe: Add --bootconfig to output definition in bootconfig format
+      perf/probe: Show return probe correctly with --bootconfig
+      perf/probe: docs: Add --bootconfig option to perf-probe manual
+
+
+ tools/perf/Documentation/perf-probe.txt |   15 +++++-
+ tools/perf/builtin-probe.c              |   12 ++++-
+ tools/perf/util/probe-event.c           |   82 +++++++++++++++++++++++++++++--
+ tools/perf/util/probe-event.h           |    2 +
+ 4 files changed, 105 insertions(+), 6 deletions(-)
+
+--
+Masami Hiramatsu (Linaro) <mhiramat@kernel.org>
