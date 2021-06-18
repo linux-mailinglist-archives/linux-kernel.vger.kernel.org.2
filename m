@@ -2,137 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F813AC5FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43B53AC5FB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233778AbhFRI0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 04:26:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47486 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233732AbhFRI0h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233761AbhFRI0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 04:26:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233727AbhFRI0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Jun 2021 04:26:37 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C4EDC061574;
-        Fri, 18 Jun 2021 01:24:28 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G5sQw5VTsz9sRf;
-        Fri, 18 Jun 2021 18:24:24 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624004664;
-        bh=FwPCMp6jNhNLVIMSjr0Qp4GBe17sLfHc8OMJ1/7XnVc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=A3SiUVgj6a6TcdEVupKiAFBinc0FOezvWjUoIgGvDcNSSnG4OvAKDgekg8In+PFbv
-         e9z9vC4CPofzIfPPQG1lJGsGX+sHLkbKtrS43cr7TOsI9ARdrccFLiLs4j87t2JaLd
-         zgBMPRC5EikkDgLNmKM9Y2Ho81eOj8uaUd1MUS4+C+1XnC7+s78E3Zboljc7vv8ddU
-         xFO5YQsgDH7QHtOX5ij3CceLi1k6gIIinIHimlAdf0Z/C/84Rndr4ND/zLtPA3ofp0
-         oOxAsyhhvd2y4dzDxFFeZBFx1iq8sv/y5ammygLtfxYar2ymURjZSsyG7KWnkzgsGN
-         gPzW3ClRbcaGw==
-Date:   Fri, 18 Jun 2021 18:24:20 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the akpm tree
-Message-ID: <20210618182420.5832c08b@canb.auug.org.au>
-In-Reply-To: <20210616230744.34b8682f@canb.auug.org.au>
-References: <20210616230744.34b8682f@canb.auug.org.au>
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A19F0611ED;
+        Fri, 18 Jun 2021 08:24:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624004668;
+        bh=/2NKpPH2M4Y4cjdC5Xw4ZHsaVpNYeXGxCIi7xn5KGmU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=dMfCDe7XuV9xq+YSVCx5jMGOAo784we2Rnhe9DtwnENixLUPqluHEuaH6OPV5+Rof
+         2n+kDP/4VLfgGnC09yIoAuwSrRjibh9nXQ0WuEWqd3YZwR3JWHvpZo0TuYZJLbtCTM
+         ucWoYM0oysCEMs+DwAQ/DULblFsTMksmz5+LhOPA=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 5.10.45
+Date:   Fri, 18 Jun 2021 10:24:21 +0200
+Message-Id: <1624004662163218@kroah.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/dE5bM5n4PFAM=Hn6DnMQST/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/dE5bM5n4PFAM=Hn6DnMQST/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+I'm announcing the release of the 5.10.45 kernel.
 
-Hi all,
+All users of the 5.10 kernel series must upgrade.
 
-On Wed, 16 Jun 2021 23:07:44 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> After merging the akpm tree, today's linux-next build (sparc defconfig)
-> failed like this:
->=20
-> In file included from arch/sparc/include/asm/pgtable.h:7:0,
->                  from include/linux/pgtable.h:6,
->                  from include/linux/mm.h:33,
->                  from include/linux/ring_buffer.h:5,
->                  from include/linux/trace_events.h:6,
->                  from include/trace/syscall.h:7,
->                  from include/linux/syscalls.h:87,
->                  from fs/io_uring.c:45:
-> arch/sparc/include/asm/pgtable_32.h: In function 'pud_pgtable':
-> arch/sparc/include/asm/pgtable_32.h:157:10: warning: return makes pointer=
- from integer without a cast [-Wint-conversion]
->    return ~0;
->           ^
->=20
-> and many, many more like this.
->=20
-> This is an error due to (part of) the tree being built with -Werror
->=20
-> Caused by commit
->=20
->   8aef6710db27 ("mm: rename pud_page_vaddr to pud_pgtable and make it ret=
-urn pmd_t *")
->=20
-> I have applied the following hack fix for today.
->=20
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Wed, 16 Jun 2021 22:51:50 +1000
-> Subject: [PATCH] mm: rename pud_page_vaddr to pud_pgtable and make it ret=
-urn pmd_t * fix
->=20
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  arch/sparc/include/asm/pgtable_32.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/arch/sparc/include/asm/pgtable_32.h b/arch/sparc/include/asm=
-/pgtable_32.h
-> index 1e6b55425f3d..ffccfe3b22ed 100644
-> --- a/arch/sparc/include/asm/pgtable_32.h
-> +++ b/arch/sparc/include/asm/pgtable_32.h
-> @@ -154,7 +154,7 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
->  static inline pmd_t *pud_pgtable(pud_t pud)
->  {
->  	if (srmmu_device_memory(pud_val(pud))) {
-> -		return ~0;
-> +		return (pmd_t *)~0;
->  	} else {
->  		unsigned long v =3D pud_val(pud) & SRMMU_PTD_PMASK;
->  		return (pmd_t *)__nocache_va(v << 4);
-> --=20
-> 2.30.2
+The updated 5.10.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.10.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-Did this get missed in the latest mmotm update?  I still have to apply it .=
-..
+thanks,
 
---=20
-Cheers,
-Stephen Rothwell
+greg k-h
 
---Sig_/dE5bM5n4PFAM=Hn6DnMQST/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+------------
 
------BEGIN PGP SIGNATURE-----
+ Makefile                                              |    2 
+ arch/arm/mach-omap1/pm.c                              |   10 +++-
+ arch/arm/mach-omap2/board-n8x0.c                      |    2 
+ arch/riscv/Makefile                                   |    9 +++
+ drivers/bluetooth/btusb.c                             |    2 
+ drivers/gpu/drm/amd/amdgpu/amdgpu_fru_eeprom.c        |   42 +++++++++---------
+ drivers/gpu/drm/amd/amdgpu/amdgpu_psp.h               |    1 
+ drivers/gpu/drm/amd/amdgpu/psp_v11_0.c                |    3 -
+ drivers/gpu/drm/amd/amdgpu/psp_v3_1.c                 |    3 -
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c     |    4 -
+ drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c |    2 
+ drivers/gpu/drm/tegra/sor.c                           |   41 +++++++++--------
+ drivers/gpu/host1x/bus.c                              |   30 ++++++++++--
+ drivers/hid/Kconfig                                   |    4 -
+ drivers/hid/hid-a4tech.c                              |    2 
+ drivers/hid/hid-core.c                                |    3 +
+ drivers/hid/hid-debug.c                               |    1 
+ drivers/hid/hid-gt683r.c                              |    1 
+ drivers/hid/hid-ids.h                                 |    3 +
+ drivers/hid/hid-input.c                               |    3 +
+ drivers/hid/hid-multitouch.c                          |    8 +--
+ drivers/hid/hid-quirks.c                              |    3 +
+ drivers/hid/hid-sensor-hub.c                          |   13 +++--
+ drivers/hid/usbhid/hid-core.c                         |    2 
+ drivers/net/ethernet/myricom/myri10ge/myri10ge.c      |    1 
+ drivers/nvme/target/loop.c                            |   11 +++-
+ drivers/scsi/qedf/qedf_main.c                         |   20 +++-----
+ drivers/scsi/scsi_devinfo.c                           |    1 
+ drivers/target/target_core_transport.c                |    4 -
+ fs/gfs2/file.c                                        |    5 +-
+ fs/gfs2/glock.c                                       |   26 +++++++++--
+ include/linux/hid.h                                   |    3 -
+ include/linux/host1x.h                                |   30 ++++++++++--
+ include/uapi/linux/input-event-codes.h                |    1 
+ net/compat.c                                          |    2 
+ net/core/fib_rules.c                                  |    2 
+ net/core/rtnetlink.c                                  |    4 +
+ net/ieee802154/nl802154.c                             |    9 ++-
+ net/ipv4/ipconfig.c                                   |   13 +++--
+ net/x25/af_x25.c                                      |    2 
+ 40 files changed, 221 insertions(+), 107 deletions(-)
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDMWDUACgkQAVBC80lX
-0Gwn9wf/cvXgIU5kWpfxvllVs9SeKa8JrmT83u5PBg5SRJix4JAV+MQMf+NFtggF
-Ir2lDnHTX8c4ldewNe/71U2xHqJD1FgCqKJE59K3dbQ9mv9EuSH9pUHzNAvbjhH7
-N8F44I8tTNdHdlmAa7Ds2s5/mTTLSui2lkr+qkuyMMv8k8SEe2kr4YMog1TjZ7le
-QXDa1anMRpsm+ZvVIU+/W9wTaBqceXRKyWUaHLRleI2KmAuvtXI6rV+yxbCbxDHV
-RfP1VxpXtauJ/DDEnCpAoPMzmkwUNm6Iff6dk4SMwFXqTyodkOuNKqf8JuxL5Wm4
-Lm4PTGcz2HaMbyMyYb8URzwZy47nsw==
-=3cbW
------END PGP SIGNATURE-----
+Ahelenia Ziemiańska (1):
+      HID: multitouch: set Stylus suffix for Stylus-application devices, too
 
---Sig_/dE5bM5n4PFAM=Hn6DnMQST/--
+Andreas Gruenbacher (1):
+      gfs2: Prevent direct-I/O write fallback errors from getting lost
+
+Anirudh Rayabharam (1):
+      HID: usbhid: fix info leak in hid_submit_ctrl
+
+Bindu Ramamurthy (1):
+      drm/amd/display: Allow bandwidth validation for 0 streams.
+
+Bixuan Cui (1):
+      HID: gt683r: add missing MODULE_DEVICE_TABLE
+
+Bob Peterson (1):
+      gfs2: fix a deadlock on withdraw-during-mount
+
+Dan Robertson (1):
+      net: ieee802154: fix null deref in parse dev addr
+
+Daniel Wagner (1):
+      scsi: qedf: Do not put host in qedf_vport_create() unconditionally
+
+Dmitry Torokhov (1):
+      HID: hid-input: add mapping for emoji picker key
+
+Ewan D. Milne (1):
+      scsi: scsi_devinfo: Add blacklist entry for HPE OPEN-V
+
+Greg Kroah-Hartman (1):
+      Linux 5.10.45
+
+Hannes Reinecke (4):
+      nvme-loop: reset queue count to 1 in nvme_loop_destroy_io_queues()
+      nvme-loop: clear NVME_LOOP_Q_LIVE when nvme_loop_configure_admin_queue() fails
+      nvme-loop: check for NVME_LOOP_Q_LIVE in nvme_loop_destroy_admin_queue()
+      nvme-loop: do not warn for deleted controllers during reset
+
+Hillf Danton (1):
+      gfs2: Fix use-after-free in gfs2_glock_shrink_scan
+
+Jiansong Chen (1):
+      drm/amdgpu: refine amdgpu_fru_get_product_info
+
+Jiapeng Chong (2):
+      ethernet: myri10ge: Fix missing error code in myri10ge_probe()
+      rtnetlink: Fix missing error code in rtnl_bridge_notify()
+
+Josh Triplett (1):
+      net: ipconfig: Don't override command-line hostnames or domains
+
+Khem Raj (1):
+      riscv: Use -mno-relax when using lld linker
+
+Larry Finger (1):
+      Bluetooth: Add a new USB ID for RTL8822CE
+
+Maciej Falkowski (1):
+      ARM: OMAP1: Fix use of possibly uninitialized irq variable
+
+Mark Bolhuis (1):
+      HID: Add BUS_VIRTUAL to hid_connect logging
+
+Mateusz Jończyk (1):
+      HID: a4tech: use A4_2WHEEL_MOUSE_HACK_B8 for A4TECH NB-95
+
+Maurizio Lombardi (1):
+      scsi: target: core: Fix warning on realtime kernels
+
+Nirenjan Krishnan (1):
+      HID: quirks: Set INCREMENT_USAGE_ON_DUPLICATE for Saitek X65
+
+Pavel Machek (CIP) (1):
+      drm/tegra: sor: Do not leak runtime PM reference
+
+Roman Li (1):
+      drm/amd/display: Fix potential memory leak in DMUB hw_init
+
+Saeed Mirzamohammadi (1):
+      HID: quirks: Add quirk for Lenovo optical mouse
+
+Srinivas Pandruvada (1):
+      HID: hid-sensor-hub: Return error for hid_set_field() failure
+
+Thierry Reding (2):
+      gpu: host1x: Split up client initalization and registration
+      drm/tegra: sor: Fully initialize SOR before registration
+
+Victor Zhao (1):
+      drm/amd/amdgpu:save psp ring wptr to avoid attack
+
+Yongqiang Liu (1):
+      ARM: OMAP2+: Fix build warning when mmc_omap is not built
+
+Zheng Yongjun (3):
+      net/x25: Return the correct errno code
+      net: Return the correct errno code
+      fib: Return the correct errno code
+
