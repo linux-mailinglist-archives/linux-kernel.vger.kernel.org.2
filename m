@@ -2,142 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7D5B3ACBF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 609013ACBFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231809AbhFRNTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:19:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57052 "EHLO
+        id S232627AbhFRNVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:21:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230340AbhFRNTH (ORCPT
+        with ESMTP id S229877AbhFRNV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:19:07 -0400
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EAEFC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:16:57 -0700 (PDT)
-Received: by mail-qv1-xf36.google.com with SMTP id y11so1241599qvv.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:16:57 -0700 (PDT)
+        Fri, 18 Jun 2021 09:21:28 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E7AC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:19:18 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id ji1so9783436ejc.4
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:19:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=rnZyeR9vGet4GSsiHlvDTfsh5SnCOawKW/arDlMf4Cw=;
-        b=A4McDRnWLqJAjS7rCF0vSnH+aY3UBAHfPjafR+E2FSHXlF6daY3WSBSngJ2Xuzklvr
-         JNbuLJa1btDoVDTzR8Tv2W46H4Qagn2u5qgXc7Qn2eNy9L6UPyc75CDi76n02fqh+Gvf
-         DdoyqM8rDafL1mNARN+DW8PES784VUciB9NpDPE67Oi9ipUq8hJoqf2IwdangqUpmn36
-         HnK/w9RJAG7nqNghcMTMdFoqElJd+WBwA7hE7l/se3j4cBYNK5+OW+smKKXeejsRVDWa
-         nI1RAzMpD7hD56mPxxwOg45Se7nKs1E6UhTzyVGXxdvqfLTGRhK+ekrJvNLb7DlW8IA2
-         90dw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P8V4PPjDC1gz6JriGuuoHP1QKqxpavt/zsBJP5m9gcE=;
+        b=e2Cic6CbgHhdrBDz14ZdYtzulhyV+7dKvI09WXaTR0dOvZ5PLsNABW3otQIIncHt1J
+         gO1LWIfD2zc2qKiF/HubchlTc6kC2PEV7FHsWhO+5zL0y/0c8EOsIUtZTfE/4wReDKZf
+         t6czmTxN9sU1EgNvlESX6xVb/wGfM4VDXD8KMkTOnIiXJGqPaGetbyWordY1KAkyhbj6
+         pC+7CGaUmLEeS/bnJFapglFMEoG+xTPbcKz0PaZBGQEiItiXF2wtUmPlfV6jCSNx3D/j
+         LQ4ZNDBIzH1ojYb7mNzFMlGjU4sEADW7/IDd1oZ/Y2AeX8YclE0ZZjhbCcYmsDG7xFbz
+         cc7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=rnZyeR9vGet4GSsiHlvDTfsh5SnCOawKW/arDlMf4Cw=;
-        b=lFxvpCYGFims+MVrS9TwjXda2nzO11W7d3BWal3MV0P9Nh/RaNflR7YBxFsXvQNZmT
-         HjXZh5v537BCLa6N3IWkUy4a+gYhtsyLBa21JtkFVw413C0KxowM0YOfIL4ujUdRNdkX
-         fXo0V9EUK9vlDme9KVrcAb/4pIevaECOF7msMM084/lFq3DGHXw8gxhSpG7W3vnPNLGC
-         k24ICG1/3nAHD9P/QLQ2R2f6HIVsIJ7kvSgkknOleEFxnt/eu6GY7gnI97RcoWNGsolH
-         rf1PU/eVHEBJ5LfISfQSrIrNls1w2W+brD4+lSkuyd8LT7hekwREMMqNWw4L+1ZtmAtV
-         Wpmg==
-X-Gm-Message-State: AOAM530DAEVT0iN1lSMxEv7a1lh/QFOmPVMp6+nt4D8oaHKc0ZYGE/WW
-        F90FlRYIW+IAdZMfFOWBCus=
-X-Google-Smtp-Source: ABdhPJzOHzh40Gq7ZMdk9MAkP3QSLdamKYg1MQEvLj+H1OsjChGbfGlCM3O3pmHpkgWU5m4comGvsQ==
-X-Received: by 2002:a0c:ab89:: with SMTP id j9mr5660543qvb.54.1624022216401;
-        Fri, 18 Jun 2021 06:16:56 -0700 (PDT)
-Received: from ?IPv6:2804:14c:482:87bb::1001? ([2804:14c:482:87bb::1001])
-        by smtp.gmail.com with ESMTPSA id y18sm5135213qtj.53.2021.06.18.06.16.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 06:16:55 -0700 (PDT)
-Message-ID: <a5e8f78b69ba412a86819a176a44c4f2a2e78ff0.camel@gmail.com>
-Subject: Re: REGRESSION: v5.13-rc1 does not boot because of "of/pci: Add
- IORESOURCE_MEM_64 to resource flags for 64-bit memory addresses"
-From:   Leonardo =?ISO-8859-1?Q?Br=E1s?= <leobras.c@gmail.com>
-To:     Domenico Andreoli <domenico.andreoli@linux.com>
-Cc:     Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Date:   Fri, 18 Jun 2021 10:17:39 -0300
-In-Reply-To: <YMyTUv7Jsd89PGci@m4>
-References: <YMyTUv7Jsd89PGci@m4>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.2 
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P8V4PPjDC1gz6JriGuuoHP1QKqxpavt/zsBJP5m9gcE=;
+        b=fbG0XhcWA/MzCPibyJkUNPDXyoqvb3fUqUZn5LmiPNTTOPcGlHKuhAjw660PlWCgEt
+         d3dqSNhU5jdfbIQfsqMB1h60iP6y6pY/IulHEOOMRSlCpVTItpxhk/x5yEj5MQs8cCGZ
+         S1zPZX/dcnQa7HVIauFk1ZX/4A3j7BM2btMSfiZ9u8SOmG0R5lHoFXok/yKRaR7fAC/s
+         HTV+S5BpFKi2mlFGYM9dld8mohR3+yte1DKPrzInpFLhGhZGLVAlYGFvq66JSlTYVwmo
+         PUwNojCnTlq7ZolPu9xKkkp5FbjDPyVQv642cIuC8XbMZgdTSZJn/PPBRmlS7Na2ptuj
+         moJg==
+X-Gm-Message-State: AOAM533e0rm0Ry5V/0XQqu1MnqEmDJEWKSwLj0kQGnxZZ7LYKTJ98Dth
+        F+Qh/0yA4c2ic7bTuY3UGGeVXQIct1jJIvnSJQM=
+X-Google-Smtp-Source: ABdhPJwWJL6HHS3kXwwEJ2gM8GNLYhNhomtQGKiImb6LnNLsv+4EMk98BFu7/G2bgbQrIGlpl2DkoSY82MVmAMI4VVc=
+X-Received: by 2002:a17:907:7848:: with SMTP id lb8mr11322909ejc.494.1624022357121;
+ Fri, 18 Jun 2021 06:19:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210617194154.2397-1-linux.amoon@gmail.com> <20210617194154.2397-5-linux.amoon@gmail.com>
+ <CAFBinCB1rrmJ5=M0tSGS_47BarFcrs2Kz5qFzrHw8+OEYxX3DA@mail.gmail.com>
+In-Reply-To: <CAFBinCB1rrmJ5=M0tSGS_47BarFcrs2Kz5qFzrHw8+OEYxX3DA@mail.gmail.com>
+From:   Anand Moon <linux.amoon@gmail.com>
+Date:   Fri, 18 Jun 2021 18:49:05 +0530
+Message-ID: <CANAwSgQVgKUoTpfaJyfxdphqc6M=Oq6jj5zZ7An9St7PdzQHYA@mail.gmail.com>
+Subject: Re: [RFCv1 4/8] phy: amlogic: meson8b-usb2: Use phy set_mode callback function
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-phy@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-amlogic@lists.infradead.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Domenico,
+hi Martin.
 
-If I got that correctly, my patche exposes an issue with host bridge
-windows. 
+Thanks for your review comments.
 
-There is already a patch approved that should fix the issue:
-http://patchwork.ozlabs.org/project/linux-pci/patch/20210614230457.752811-1-punitagrawal@gmail.com/
+On Fri, 18 Jun 2021 at 03:46, Martin Blumenstingl
+<martin.blumenstingl@googlemail.com> wrote:
+>
+> Hi Anand,
+>
+> On Thu, Jun 17, 2021 at 9:43 PM Anand Moon <linux.amoon@gmail.com> wrote:
+> >
+> > Reorder the code for phy set_mode in .set_mode callback function.
+> > For now configure the phy in host mode.
+> as mentioned in the cover-letter: to my knowledge these register bits
+> are "static"
+> The settings for dr_mode == USB_DR_MODE_HOST mainly apply to the
+> second PHY (usb1_phy)
+>
+> [...]
+> > +static int phy_meson8b_usb2_setmode(struct phy *phy, enum phy_mode mode,
+> > +                                   int submode)
+> >  {
+> >         struct phy_meson8b_usb2_priv *priv = phy_get_drvdata(phy);
+> >         u32 reg;
+> >
+> > +       switch (mode) {
+> > +       case PHY_MODE_USB_HOST:
+> > +               if (priv->match->host_enable_aca) {
+> > +                       regmap_update_bits(priv->regmap, REG_ADP_BC,
+> > +                                          REG_ADP_BC_ACA_ENABLE,
+> > +                                          REG_ADP_BC_ACA_ENABLE);
+> > +
+> > +                       udelay(ACA_ENABLE_COMPLETE_TIME);
+> > +
+> > +                       regmap_read(priv->regmap, REG_ADP_BC, &reg);
+> > +                       if (reg & REG_ADP_BC_ACA_PIN_FLOAT) {
+> > +                               dev_warn(&phy->dev, "USB ID detect failed!\n");
+> > +                               return -EINVAL;
+> > +                       }
+> > +               }
+> > +               break;
+> > +       default:
+> > +               dev_warn(&phy->dev, "USB ID detect failed to setnode! %d\n", mode);
+> > +               return -EINVAL;
+> I have tested this driver already with PHY_MODE_USB_DEVICE (on my
+> Odroid-C1) so I don't see why we should drop support for this
+> Also if we want runtime mode switching in this driver then we would
+> need to undo the changes from "case PHY_MODE_USB_HOST" above
+>
+> I suggest dropping this patch until we know for sure if and which
+> registers need to be updated based on the DR mode.
 
-Please check if it fixes the issue for you (also, if possible give
-feedback in the patch thread). 
+Yes, I have observed this, Can you give these small changes a try?
+With the below changes, I got the  PHY_MODE_USB_DEVICE support working.
 
-Best regards,
-Leonardo Bras
+Here is the boot log of odroid c1+
+[0] https://pastebin.com/pCXLS5Vu
 
-On Fri, 2021-06-18 at 14:36 +0200, Domenico Andreoli wrote:
-> Hi Leonardo,
-> 
-> Since v5.13-rc1 my NanoPI M4 (arm64 with pcie-attached nvme) does not
-> boot any more.
-> 
-> I could bisect it down to your commit
-> 9d57e61bf72336e13e4cd3c31e93ab26266296a8, just
-> reverting it from v5.13-rc6 makes the boot happen again.
-> 
-> The .dts file I use is arch/arm64/boot/dts/rockchip/rk3399-nanopi-
-> m4v2.dts.
-> 
-> This is the output of lspci -vv:
-> 
-> 00:00.0 PCI bridge: Fuzhou Rockchip Electronics Co., Ltd RK3399 PCI
-> Express Root Port (prog-if 00 [Normal decode])
->         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-> ParErr- Stepping- SERR- FastB2B- DisINTx+
->         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-> <TAbort- <MAbort- >SERR- <PERR- INTx-
->         Latency: 0
->         Interrupt: pin A routed to IRQ 90
->         Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
->         I/O behind bridge: 00000000-00000fff [size=4K]
->         Memory behind bridge: fa000000-fa0fffff [size=1M]
->         Prefetchable memory behind bridge: 00000000-000fffff [size=1M]
->         Secondary status: 66MHz- FastB2B- ParErr- DEVSEL=fast >TAbort-
-> <TAbort- <MAbort- <SERR- <PERR-
->         BridgeCtl: Parity- SERR+ NoISA- VGA- VGA16- MAbort- >Reset-
-> FastB2B-
->                 PriDiscTmr- SecDiscTmr- DiscTmrStat- DiscTmrSERREn-
->         Capabilities: <access denied>
->         Kernel driver in use: pcieport
-> 
-> 01:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe
-> SSD Controller SM981/PM981/PM983 (prog-if 02 [NVM Express])
->         Subsystem: Samsung Electronics Co Ltd NVMe SSD Controller
-> SM981/PM981/PM983
->         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
-> ParErr- Stepping- SERR- FastB2B- DisINTx+
->         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort-
-> <TAbort- <MAbort- >SERR- <PERR- INTx-
->         Latency: 0
->         Interrupt: pin A routed to IRQ 89
->         NUMA node: 0
->         Region 0: Memory at fa000000 (64-bit, non-prefetchable)
-> [size=16K]
->         Capabilities: <access denied>
->         Kernel driver in use: nvme
->         Kernel modules: nvme
-> 
-> Is there anything I can do to help you understanding why this is
-> happening?
-> 
-> I apologize for not having bisected it earlier.
-> 
-> Kind regards,
-> Domenico
-> 
+$ lsusb -t
+/:  Bus 02.Port 1: Dev 1, Class=root_hub, Driver=dwc2/1p, 480M
+    |__ Port 1: Dev 2, If 0, Class=Hub, Driver=hub/4p, 480M
+        |__ Port 3: Dev 4, If 0, Class=Mass Storage, Driver=usb-storage, 480M
+/:  Bus 01.Port 1: Dev 1, Class=root_hub, Driver=dwc2/1p, 480M
+    |__ Port 1: Dev 2, If 0, Class=Human Interface Device, Driver=usbhid, 12M
+    |__ Port 1: Dev 2, If 1, Class=Human Interface Device, Driver=usbhid, 12M
+
+ git diff drivers/phy/amlogic/phy-meson8b-usb2.c
+diff --git a/drivers/phy/amlogic/phy-meson8b-usb2.c
+b/drivers/phy/amlogic/phy-meson8b-usb2.c
+index bd624781d914..9b79e86d7a0d 100644
+--- a/drivers/phy/amlogic/phy-meson8b-usb2.c
++++ b/drivers/phy/amlogic/phy-meson8b-usb2.c
+@@ -204,6 +204,22 @@ static int phy_meson8b_usb2_setmode(struct phy
+*phy, enum phy_mode mode,
+                        }
+                }
+                break;
++       case PHY_MODE_USB_DEVICE:
++       case PHY_MODE_USB_OTG:
++               regmap_update_bits(priv->regmap, REG_ADP_BC,
++                                  REG_ADP_BC_DCD_ENABLE,
++                                  REG_ADP_BC_DCD_ENABLE);
++
++               udelay(ACA_ENABLE_COMPLETE_TIME);
++
++               regmap_read(priv->regmap, REG_ADP_BC, &reg);
++               if (reg & REG_ADP_BC_ACA_PIN_FLOAT) {
++                       dev_warn(&phy->dev, "USB ID detect failed!\n");
++                       return -EINVAL;
++               }
++               regmap_update_bits(priv->regmap, REG_ADP_BC,
++                                  REG_ADP_BC_ID_PULLUP, REG_ADP_BC_ID_PULLUP);
++               break;
+        default:
+                dev_warn(&phy->dev, "USB ID detect failed to setnode!
+%d\n", mode);
+                return -EINVAL;
+>
+>
+> Best regards,
+> Martin
+
+Thanks
 
 
+-Anand
