@@ -2,110 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C3CF3AD2CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCC2F3AD2D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233159AbhFRTcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 15:32:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232152AbhFRTcL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 15:32:11 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C022C061574;
-        Fri, 18 Jun 2021 12:30:01 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: gtucker)
-        with ESMTPSA id E9D041F44CE8
-Subject: Re: [PATCH] selftests/lkdtm: Use /bin/sh not $SHELL
-To:     Kees Cook <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>
-Cc:     stable@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210617231027.3908585-1-keescook@chromium.org>
-From:   Guillaume Tucker <guillaume.tucker@collabora.com>
-Message-ID: <57775fe8-d9c2-4004-b8c5-0247faf33aa4@collabora.com>
-Date:   Fri, 18 Jun 2021 20:29:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S233761AbhFRTcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 15:32:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36770 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233303AbhFRTcO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 15:32:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E7C61613BD;
+        Fri, 18 Jun 2021 19:30:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624044604;
+        bh=jlL285nD40pwVx+4IEjWkPeJ3Yt4IQB4/F570aDFsEs=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=m9qC886PPVc7kHgS87Xx3K1GtNzxROwBOuRDHWR9RqgScg3WosqG5M+lc9/IL24xg
+         vOEYixUoiWmaFEwQVkEmAsXUmWNkJaX1yagzaXANnM3d56qQMsrK6Enp9GE77K4wTo
+         OZ1p3yboIcEGAKcEV0Ylh94CPHScBErVlJVbb1X9FL417hdZDQUjepI11QJwwCDBj3
+         WDpfk7mPqcsFwZzCgP3vtdmwUy3qeEgJngrccXiL1CZDGzkdcxEBRKvsrn0yhlGnXi
+         6HUrMRWMRzGvBgMFEHize6a2TgXQUZmE2hcRGjPfnUt8JUguVxJiQ0OYDvI9WuSpJ0
+         UBS/Nh1dq8/QQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E21E3609D8;
+        Fri, 18 Jun 2021 19:30:04 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210617231027.3908585-1-keescook@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] net: hns3: fix reuse conflict of the rx page
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162404460492.16989.9581963902769754045.git-patchwork-notify@kernel.org>
+Date:   Fri, 18 Jun 2021 19:30:04 +0000
+References: <1624018185-38469-1-git-send-email-huangguangbin2@huawei.com>
+In-Reply-To: <1624018185-38469-1-git-send-email-huangguangbin2@huawei.com>
+To:     Guangbin Huang <huangguangbin2@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, salil.mehta@huawei.com,
+        lipeng321@huawei.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/06/2021 00:10, Kees Cook wrote:
-> Some environments (e.g. kerneci.org) do not set $SHELL for their test
-> environment. There's no need to use $SHELL here anyway, so just replace
-> it with hard-coded /bin/sh instead. Without this, the LKDTM tests would
-> never actually run on kerneci.org.
+Hello:
 
-There's a bit more to it...  The lkdtm tests make use of the
-process substitution feature with the <() syntax which is
-specific to Bash.  The tests run by KernelCI use Debian, where
-/bin/sh points to /bin/dash by default which doesn't support this
-feature.  So one way to fix it would be:
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-  (/bin/bash -c 'cat <(echo '"$test"') >'"$TRIGGER")
-
-However, this might break others' workflows.
-
-In fact the LAVA jobs run by KernelCI do define the $SHELL
-environment variable except it's defined to be /bin/sh - and that
-means /bin/dash gets called and we're back to the issue explained
-above.
-
-I've manually run a modified test job which defines
-SHELL=/bin/bash and that works:
-
-  https://lava.collabora.co.uk/scheduler/job/4055547#L2835
-
-So to avoid hitting the same issue in other places, as it seems
-like there is an implicit dependency on Bash, we can just change
-KernelCI kselftest jobs to always export SHELL=/bin/bash.
-
-I suppose an even better fix would be to use standard shell
-features that would work with any /bin/sh implementation, but
-this is there to kill the sub-shell rather than the main script
-process so I'm not entirely sure if we can easily do that
-differently.  Maybe we can pipe the output to cat rather than the
-substitution syntax, e.g.:
-
-  (/bin/sh -c '(echo '"$test"') | cat >'"$TRIGGER") || true
-
-
-So I think the "safest" solution is to not change the kselftest
-script and export SHELL=/bin/bash in the KernelCI jobs.  If the
-pipe approach is good enough at catching signals then it could be
-done on top of this patch as it's standard and should work with
-any /bin/sh implementation.  What do you think?
-
-Thanks,
-Guillaume
-
-
-> Fixes: 46d1a0f03d66 ("selftests/lkdtm: Add tests for LKDTM targets")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  tools/testing/selftests/lkdtm/run.sh | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, 18 Jun 2021 20:09:45 +0800 you wrote:
+> From: Yunsheng Lin <linyunsheng@huawei.com>
 > 
-> diff --git a/tools/testing/selftests/lkdtm/run.sh b/tools/testing/selftests/lkdtm/run.sh
-> index bb7a1775307b..968ff3cf5667 100755
-> --- a/tools/testing/selftests/lkdtm/run.sh
-> +++ b/tools/testing/selftests/lkdtm/run.sh
-> @@ -79,7 +79,7 @@ dmesg > "$DMESG"
->  # Most shells yell about signals and we're expecting the "cat" process
->  # to usually be killed by the kernel. So we have to run it in a sub-shell
->  # and silence errors.
-> -($SHELL -c 'cat <(echo '"$test"') >'"$TRIGGER" 2>/dev/null) || true
-> +(/bin/sh -c 'cat <(echo '"$test"') >'"$TRIGGER" 2>/dev/null) || true
->  
->  # Record and dump the results
->  dmesg | comm --nocheck-order -13 "$DMESG" - > "$LOG" || true
+> In the current rx page reuse handling process, the rx page buffer may
+> have conflict between driver and stack in high-pressure scenario.
 > 
+> To fix this problem, we need to check whether the page is only owned
+> by driver at the begin and at the end of a page to make sure there is
+> no reuse conflict between driver and stack when desc_cb->page_offset
+> is rollbacked to zero or increased.
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next] net: hns3: fix reuse conflict of the rx page
+    https://git.kernel.org/netdev/net-next/c/961045004b77
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
