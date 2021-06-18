@@ -2,151 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10A683ACE4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:08:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30B803ACE4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234310AbhFRPKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:10:14 -0400
-Received: from esa.microchip.iphmx.com ([68.232.153.233]:63016 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234237AbhFRPKJ (ORCPT
+        id S234438AbhFRPLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:11:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231461AbhFRPLC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:10:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1624028880; x=1655564880;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=WpgZqaJX/+7BSkqSgUw8H/zUIGbOwzMBZkNkKWi6y/E=;
-  b=ZAXMLbljW0iA3kv8EFI5ZsGYZcaW8kLi/jCAba9+VWimYi8Rb7E3002W
-   oo1tYWWHbQifrJ3pSwbL7KVtBBYuXJS2mELFtXcxCkbZg292c6zqbsKle
-   +Way8mOAD1qoL3QPpv8BRuD/jy1khkf/ncyGsTxfiZB0SFE1Sdtt3etJz
-   nOvGtQJ10l0wzwKQ3emGSdjw6lR58Ff/VdbMJwFzfO7owZxH8qUTpqHrI
-   hKnLB86itQtsi7HQ5IbKMvr1NyH3aLkx1RbGM7vFOmXCcWZzhSsJo9LtW
-   W70quj0+r8+GREnBSbaxv1EWc/BI3aNG30KLunpQI405NIz5LIblrSy9s
-   g==;
-IronPort-SDR: EtHACUtRraKX5sxLg2ztvjKgVg9okxvvn+O/IQyua40UpAUHhr6wD/VZowF5MRGsWLOLqJb8NC
- viCI6hrwBzifgGBOsVW3nJZTw5gLV0vDZqf42fRuWXq/emYnJjmzJPjk9mbEeC8ttOjDNTGrAP
- YZPuSHcbdLqn/cHQvRPX4oB9kYb4yQ5Y1Tt6U3vGYy418lvyuKD+HqoRUlme6OIG3wgiqPfFm7
- NwT/tI8s+lem258t2CvySj0lrW7P3ZWg014mscOypO+NagjWxf1VKsJRw8M4V7Yycs8g/AL/v+
- jhY=
-X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
-   d="scan'208";a="125835094"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 18 Jun 2021 08:08:00 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 18 Jun 2021 08:08:00 -0700
-Received: from rob-ult-m19940.amer.actel.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Fri, 18 Jun 2021 08:07:57 -0700
-From:   Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-To:     <alsa-devel@alsa-project.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <broonie@kernel.org>, <perex@perex.cz>, <tiwai@suse.com>,
-        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <ludovic.desroches@microchip.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: [PATCH 2/2] ASoC: atmel-i2s: Fix usage of capture and playback at the same time
-Date:   Fri, 18 Jun 2021 18:07:41 +0300
-Message-ID: <20210618150741.401739-2-codrin.ciubotariu@microchip.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210618150741.401739-1-codrin.ciubotariu@microchip.com>
-References: <20210618150741.401739-1-codrin.ciubotariu@microchip.com>
+        Fri, 18 Jun 2021 11:11:02 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0F4C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 08:08:52 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id n35-20020a05600c3ba3b02901cdecb6bda8so8904422wms.5
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 08:08:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BB8SswcEaNjvxfv5/SYWvaIhulUyrjsY7Tim+J287Po=;
+        b=yZmbw54fJezM3UObaPBhSLvrX2gSA9+LSWtH2qYk8jxMojG6lI4YXcKvqvsvQQTWIE
+         lKA9iT6D1d2pROZ95mRBVhxjLinX2g0RwgNXx44mtfn7OyIZ+Tr3yT4TzvkeeNuMehuE
+         q+74TUg2i0XDPXq1zmBmBmtPyIHQnYUJxckq3BZpSYji7LI0HpPGRGG5GfW3cMZP3FAT
+         pSnY2lWSuurXxwZ2+2fuKJEZkaIHtSKYQaCG+GP4MMvstlaqbVqmTSvo9SFUYGVZPjaN
+         mr9bjoIs4vlySv5nbPD0ujzQtferv/pkjS1KsqRY1eNHlYcmhfiTDdUPOu7R5J4tkiqm
+         1D6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=BB8SswcEaNjvxfv5/SYWvaIhulUyrjsY7Tim+J287Po=;
+        b=gID13sW0sYh4XHW3AIrqa7RM8vFbwuZfjs0Ny4mLsnDBncf5oV2EJT3bT5rqxvfIiP
+         Qi/EoT5qEGATvzP/9O4Q0YaMrl04JpEFpaCUDYVOJCkdGVray1ew4oeglsBTCvoU5Ckv
+         sEWKmVGahuv9UNi36g2ih0j6d4NwSZ4zISoHmuciF9Un4BUd5Rn7v5nwKhKlJLDkaKCI
+         twOjPqSeS2yalG4QERzVHFHKzeLY5tdnQHZvZXfpuaPeabl5Teg6zOeqQN7LU+hHNNY8
+         tc/q+RSz04cpRVtf9oRhQe6ZM37ktZwRQOUTwGEqqhFWhdd+lTgPBjpGVOpmPFfU/ETg
+         /NTQ==
+X-Gm-Message-State: AOAM5329km/5Q01Nn6nGvHHzeli4TIi6aoo7Wna+3WHv7/0Fj4ZLG0U8
+        +bhlpS9D7FjThxhK7sJzhvHKOQ==
+X-Google-Smtp-Source: ABdhPJxDHp+81lE3UaKhD8t72YZzpU4a1NRKPGAQoLZH13xKQADxUrtdW0KvDdrw21Ae2pn6NnLEOA==
+X-Received: by 2002:a1c:7314:: with SMTP id d20mr10760262wmb.167.1624028931071;
+        Fri, 18 Jun 2021 08:08:51 -0700 (PDT)
+Received: from [10.1.3.24] (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.gmail.com with ESMTPSA id u12sm9276925wrr.40.2021.06.18.08.08.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jun 2021 08:08:50 -0700 (PDT)
+Subject: Re: [PATCH] PCI: dwc: meson add quirk
+To:     Rob Herring <robh@kernel.org>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     Artem Lapkin <email2tema@gmail.com>,
+        Yue Wang <yue.wang@amlogic.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Krzysztof Wilczynski <kw@linux.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        art@khadas.com, Nick Xie <nick@khadas.com>, gouwa@khadas.com
+References: <20210618063821.1383357-1-art@khadas.com>
+ <CAFBinCB6bHy6Han0+oUcuGfccv1Rh_P0Gows1ezWdV4eA267tg@mail.gmail.com>
+ <CAL_JsqK+zjf2r_Q9gE8JwJw+Emn+JB4wOyH7eQct=kBvpUKstw@mail.gmail.com>
+From:   Neil Armstrong <narmstrong@baylibre.com>
+Organization: Baylibre
+Message-ID: <9b27444c-ea13-0dd2-a671-cef27e03b35c@baylibre.com>
+Date:   Fri, 18 Jun 2021 17:08:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+In-Reply-To: <CAL_JsqK+zjf2r_Q9gE8JwJw+Emn+JB4wOyH7eQct=kBvpUKstw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For both capture and playback streams to work at the same time, only the
-needed values from a register need to be updated. Also, clocks should be
-enabled only when the first stream is started and stopped when there is no
-running stream.
+On 18/06/2021 16:30, Rob Herring wrote:
+> On Fri, Jun 18, 2021 at 6:12 AM Martin Blumenstingl
+> <martin.blumenstingl@googlemail.com> wrote:
+>>
+>> Hi Artem,
+>>
+>> On Fri, Jun 18, 2021 at 8:38 AM Artem Lapkin <email2tema@gmail.com> wrote:
+>>>
+>>> Device set same 256 bytes maximum read request size equal MAX_READ_REQ_SIZE
+>>> was find some issue with HDMI scrambled picture and nvme devices
+>>> at intensive writing...
+>>>
+>>> [    4.798971] nvme 0000:01:00.0: fix MRRS from 512 to 256
+>>>
+>>> This quirk setup same MRRS if we try solve this problem with
+>>> pci=pcie_bus_perf kernel command line param
+>> thank you for investigating this issue and for providing a fix!
+>>
+>> [...]
+>>> +static void meson_pcie_quirk(struct pci_dev *dev)
+>>> +{
+>>> +       int mrrs;
+>>> +
+>>> +       /* no need quirk */
+>>> +       if (pcie_bus_config != PCIE_BUS_DEFAULT)
+>>> +               return;
+>>> +
+>>> +       /* no need for root bus */
+>>> +       if (pci_is_root_bus(dev->bus))
+>>> +               return;
+>>> +
+>>> +       mrrs = pcie_get_readrq(dev);
+>>> +
+>>> +       /*
+>>> +        * set same 256 bytes maximum read request size equal MAX_READ_REQ_SIZE
+>>> +        * was find some issue with HDMI scrambled picture and nvme devices
+>>> +        * at intensive writing...
+>>> +        */
+>>> +
+>>> +       if (mrrs != MAX_READ_REQ_SIZE) {
+>>> +               dev_info(&dev->dev, "fix MRRS from %d to %d\n", mrrs, MAX_READ_REQ_SIZE);
+>>> +               pcie_set_readrq(dev, MAX_READ_REQ_SIZE);
+>>> +       }
+>>> +}
+>>> +DECLARE_PCI_FIXUP_ENABLE(PCI_ANY_ID, PCI_ANY_ID, meson_pcie_quirk);
+> 
+> Isn't this going to run for everyone if meson driver happens to be enabled?
 
-Fixes: b543e467d1a9 ("ASoC: atmel-i2s: add driver for the new Atmel I2S controller")
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
----
- sound/soc/atmel/atmel-i2s.c | 34 ++++++++++++++++++++++++++--------
- 1 file changed, 26 insertions(+), 8 deletions(-)
+It should be enabled only when the Amlogic bridge is present, thus similar filtering as keystone & loongon
+is needed, but with such filtering we could reuse ks_pcie_quirk() and loongson_mrrs_quirk() as is.
 
-diff --git a/sound/soc/atmel/atmel-i2s.c b/sound/soc/atmel/atmel-i2s.c
-index a95002b0cc8e..6b3d9c05eaf2 100644
---- a/sound/soc/atmel/atmel-i2s.c
-+++ b/sound/soc/atmel/atmel-i2s.c
-@@ -200,6 +200,7 @@ struct atmel_i2s_dev {
- 	unsigned int				fmt;
- 	const struct atmel_i2s_gck_param	*gck_param;
- 	const struct atmel_i2s_caps		*caps;
-+	int					clk_use_no;
- };
- 
- static irqreturn_t atmel_i2s_interrupt(int irq, void *dev_id)
-@@ -321,9 +322,16 @@ static int atmel_i2s_hw_params(struct snd_pcm_substream *substream,
- {
- 	struct atmel_i2s_dev *dev = snd_soc_dai_get_drvdata(dai);
- 	bool is_playback = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
--	unsigned int mr = 0;
-+	unsigned int mr = 0, mr_mask;
- 	int ret;
- 
-+	mr_mask = ATMEL_I2SC_MR_FORMAT_MASK | ATMEL_I2SC_MR_MODE_MASK |
-+		ATMEL_I2SC_MR_DATALENGTH_MASK;
-+	if (is_playback)
-+		mr_mask |= ATMEL_I2SC_MR_TXMONO;
-+	else
-+		mr_mask |= ATMEL_I2SC_MR_RXMONO;
-+
- 	switch (dev->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
- 		mr |= ATMEL_I2SC_MR_FORMAT_I2S;
-@@ -402,7 +410,7 @@ static int atmel_i2s_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
--	return regmap_write(dev->regmap, ATMEL_I2SC_MR, mr);
-+	return regmap_update_bits(dev->regmap, ATMEL_I2SC_MR, mr_mask, mr);
- }
- 
- static int atmel_i2s_switch_mck_generator(struct atmel_i2s_dev *dev,
-@@ -495,18 +503,28 @@ static int atmel_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 	is_master = (mr & ATMEL_I2SC_MR_MODE_MASK) == ATMEL_I2SC_MR_MODE_MASTER;
- 
- 	/* If master starts, enable the audio clock. */
--	if (is_master && mck_enabled)
--		err = atmel_i2s_switch_mck_generator(dev, true);
--	if (err)
--		return err;
-+	if (is_master && mck_enabled) {
-+		if (!dev->clk_use_no) {
-+			err = atmel_i2s_switch_mck_generator(dev, true);
-+			if (err)
-+				return err;
-+		}
-+		dev->clk_use_no++;
-+	}
- 
- 	err = regmap_write(dev->regmap, ATMEL_I2SC_CR, cr);
- 	if (err)
- 		return err;
- 
- 	/* If master stops, disable the audio clock. */
--	if (is_master && !mck_enabled)
--		err = atmel_i2s_switch_mck_generator(dev, false);
-+	if (is_master && !mck_enabled) {
-+		if (dev->clk_use_no == 1) {
-+			err = atmel_i2s_switch_mck_generator(dev, false);
-+			if (err)
-+				return err;
-+		}
-+		dev->clk_use_no--;
-+	}
- 
- 	return err;
- }
--- 
-2.30.2
+> 
+>> it seems that other PCIe controllers need something similar. in
+>> particular I found pci-keystone [0] and pci-loongson [1]
+>> while comparing your code with the two existing implementations two
+>> things came to my mind:
+>> 1. your implementation slightly differs from the two existing ones as
+>> it's not walking through the parent PCI busses (I think this would be
+>> relevant if there's another bridge between the host bridge and the
+>> actual device)
+>> 2. (this is a question towards the PCI maintainers) does it make sense
+>> to have this MRRS quirk re-usable somewhere?
+> 
+> Yes. Ideally, the max size could just be data in the bus or bridge
+> struct and perhaps some flags too, then the core can handle
+> everything.
+
+AFAIL Simply moving ks_pcie_quirk() and loongson_mrrs_quirk() to core with the amlogic pci IDS added would be sufficient here.
+
+Neil
+
+> 
+> Rob
+> 
 
