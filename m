@@ -2,67 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F4AC3AC029
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 02:45:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 926833AC036
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 02:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233042AbhFRAqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 20:46:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44356 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232027AbhFRAqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 20:46:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 20C266120A;
-        Fri, 18 Jun 2021 00:44:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623977062;
-        bh=BH7cSMvCFZpOajnaEX4oiTYblz1wH8Z8rmAGTo9a48w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qQQ0T7IBaWitPyRQjZYnlby+ZwKf5HcKpIHgAYIk09sqan6DvLyb45STAmdNxyOg9
-         7FZ9YqB8oN6NB5HfLkUQvDCqSeCoWlJyvz8fAy1k2IlGBbs6uwcGsWM0Xr7GUZuXlR
-         PMlRIUmKWVfYw2TOUY1E7I7mmSgG6NP4p7sah5X/z1Xb1qTAQnxWCO2STcfHw1Z024
-         /EoPSZD6eTHQOdmYZOFLTMLDlHJbV7nSZYWacNx6MhnbLE/C9kYBK/wAYdNL4ncQec
-         lH+zRBHiaulqXmbdt85IeqKBIOQdRy/YcDgeu5fATKfq9A7/+yCCy8qUW8lazzWA0/
-         NPjrTCzuc9SSg==
-Date:   Thu, 17 Jun 2021 17:44:18 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     akpm@linux-foundation.org, sjenning@redhat.com, ddstreet@ieee.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2 2/2] mm/zbud: don't export any zbud API
-Message-ID: <YMvsYm8b+yTIrqBC@archlinux-ax161>
-References: <20210608114515.206992-1-linmiaohe@huawei.com>
- <20210608114515.206992-3-linmiaohe@huawei.com>
+        id S233362AbhFRArd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 20:47:33 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7478 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233320AbhFRArc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 20:47:32 -0400
+Received: from dggeme755-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G5g9s5XV1zZhKb;
+        Fri, 18 Jun 2021 08:42:25 +0800 (CST)
+Received: from [10.67.100.138] (10.67.100.138) by
+ dggeme755-chm.china.huawei.com (10.3.19.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 18 Jun 2021 08:45:22 +0800
+Subject: Re: [PATCH net-next 5/6] net: hostess_sv11: fix the comments style
+ issue
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     <davem@davemloft.net>, <kuba@kernel.org>, <xie.he.0141@gmail.com>,
+        <ms@dev.tdt.de>, <willemb@google.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <huangguangbin2@huawei.com>
+References: <1623941615-26966-1-git-send-email-lipeng321@huawei.com>
+ <1623941615-26966-6-git-send-email-lipeng321@huawei.com>
+ <YMt4ZMuPfjeesnRK@lunn.ch>
+From:   "lipeng (Y)" <lipeng321@huawei.com>
+Message-ID: <2ea3967f-b4e4-323b-bf65-aac108c6d27f@huawei.com>
+Date:   Fri, 18 Jun 2021 08:45:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608114515.206992-3-linmiaohe@huawei.com>
+In-Reply-To: <YMt4ZMuPfjeesnRK@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.100.138]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggeme755-chm.china.huawei.com (10.3.19.101)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 07:45:15PM +0800, Miaohe Lin wrote:
-> The zbud doesn't need to export any API and it is meant to be used via
-> zpool API since the commit 12d79d64bfd3 ("mm/zpool: update zswap to use
-> zpool"). So we can remove the unneeded zbud.h and move down zpool API
-> to avoid any forward declaration.
-> 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
-This patch causes several new warnings when CONFIG_ZPOOL is disabled:
+在 2021/6/18 0:29, Andrew Lunn 写道:
+>> @@ -152,12 +146,12 @@ static int hostess_close(struct net_device *d)
+>>   static int hostess_ioctl(struct net_device *d, struct ifreq *ifr, int cmd)
+>>   {
+>>   	/* struct z8530_dev *sv11=dev_to_sv(d);
+>> -	   z8530_ioctl(d,&sv11->chanA,ifr,cmd) */
+>> +	 * z8530_ioctl(d,&sv11->chanA,ifr,cmd)
+>> +	 */
+>>   	return hdlc_ioctl(d, ifr, cmd);
+>>   }
+> That looks more like dead code than anything else. I would suggest you
+> do a git blame to see if there is anything interesting about this, and
+> if not, remove it.
+>
+>     Andrew
+> .
 
-mm/zbud.c:222:26: warning: unused function 'zbud_create_pool' [-Wunused-function]
-mm/zbud.c:246:13: warning: unused function 'zbud_destroy_pool' [-Wunused-function]
-mm/zbud.c:270:12: warning: unused function 'zbud_alloc' [-Wunused-function]
-mm/zbud.c:345:13: warning: unused function 'zbud_free' [-Wunused-function]
-mm/zbud.c:417:12: warning: unused function 'zbud_reclaim_page' [-Wunused-function]
-mm/zbud.c:499:14: warning: unused function 'zbud_map' [-Wunused-function]
-mm/zbud.c:509:13: warning: unused function 'zbud_unmap' [-Wunused-function]
-mm/zbud.c:520:12: warning: unused function 'zbud_get_pool_size' [-Wunused-function]
+Hi,  Andrew
 
-It seems to me like all of these functions should be sunk into their
-callers and eliminated entirely as part of this refactoring. I took a
-whack at it but got lost with the kernel docs so someone who is familiar
-with this should probably do it.
+It's  dead code,  will remove it.
 
-Cheers,
-Nathan
+Thanks for your advice.
+
+         Peng Li
+
+
+
