@@ -2,87 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 516913AD560
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 00:46:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C93D53AD561
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 00:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235023AbhFRWsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 18:48:38 -0400
-Received: from mail-pg1-f179.google.com ([209.85.215.179]:41749 "EHLO
-        mail-pg1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231455AbhFRWsg (ORCPT
+        id S235050AbhFRWtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 18:49:19 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:59600 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231455AbhFRWtR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 18:48:36 -0400
-Received: by mail-pg1-f179.google.com with SMTP id u190so5215583pgd.8;
-        Fri, 18 Jun 2021 15:46:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dyk0m331SzyCY0qmdzyivTVyPifLLHmM9to/9j0QGhU=;
-        b=AT0ksK1jtTKczwLGPjzuHXzoomqcfQRkSsPWYFzDw6WztJQeayi7Gky9HORFl/UFaa
-         XtLi67MjBjv7RN3Ttt6P2nm1DIHXM3dqlyqMykwrSWlh9FqD0XeShid5mBdUFqmkJT+e
-         Ip5Lp2WkwG7eI5Iy2WYeTAyD4UXJGAmA2rZQNVe3ZIS/OILl74h/XllBVfXR3NmGpZey
-         1aTeD4OI28iaSHGwyXwXmE9w39U7EOm9fJIvRZAHtrS521AoTSz3KJVchuwcGr9Pmx5K
-         n1jv8VYOk2ZlWBVLy9w5JQzdrWHLTXkoxrY8qzS+ty3WeMAuNV9iN1Z2wFc8/4Jcx4kq
-         aezg==
-X-Gm-Message-State: AOAM531tNmLYe8TjSAxJE2e5oGRAIaEsS58TwiqvtbkMHHBhJEaJdEyW
-        Y/Cz5YuXgvUrq2RSJIW+PTG747mnyCyXyg==
-X-Google-Smtp-Source: ABdhPJytVrp3HqR0qqc6CcucrfRb/siW0NQUlHepEpNsW0dWQr3cccE62AvgDE/SXW1KI3CCViVlDQ==
-X-Received: by 2002:a63:34a:: with SMTP id 71mr7801632pgd.305.1624056385206;
-        Fri, 18 Jun 2021 15:46:25 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id h20sm8964015pfq.83.2021.06.18.15.46.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 15:46:24 -0700 (PDT)
-From:   Moritz Fischer <mdf@kernel.org>
-To:     linux-fpga@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Moritz Fischer <mdf@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Tom Rix <trix@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH] fpga: machxo2-spi: Address warning about unused variable
-Date:   Fri, 18 Jun 2021 15:46:18 -0700
-Message-Id: <20210618224618.1487323-1-mdf@kernel.org>
-X-Mailer: git-send-email 2.32.0
+        Fri, 18 Jun 2021 18:49:17 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624056424;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0dH3VEH9mRkPB+iMMG13Bg8QIpRSqyXaZ7vD6FSJ6Q8=;
+        b=EvgI4ThMXq7mw55btOrbvC5XMqBy+62FBj6X7cCE+sM9qHF5Wd6m8w5uIMNyW7MJt7L482
+        NLiPaCjdEqFPc5cwtS00du/Q5HP9A1dwKB67axQ8Ig6Rs03wsiI7Z1reoTK0+ZNl/KQUze
+        JQFbkUvrS2DeMhw5h5m0wFdopfPKkmFPzsKSlYFzU6XL3m+ilRgeWxJLGmGAPaqVddCMGr
+        Tacf56+DP/cGko2g5hLQDgKxCKN2Y3/+OaQS2XCvXcv4O8otqRtrdl5qinu/QY33qLdd5u
+        8h/GV+3y4JsJKRjt+Y4bPi0sf/mUuPgZMPfm0wSkAtrqYB+gYTfLq0kod+Ghog==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624056424;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0dH3VEH9mRkPB+iMMG13Bg8QIpRSqyXaZ7vD6FSJ6Q8=;
+        b=J1eYyM5FnvUOfduY5/xCpovdMVbnQQY/6U+oOtSydNL2Txvp6Alw8UltJsFNy9miAWtZlh
+        0lZpGx+w9S7zvbAQ==
+To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
+Cc:     linux-rt-users@vger.kernel.org, frederic@kernel.org,
+        mtosatti@redhat.com, LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC 2/2] timers: Make sure irq_work is handled when no pending timers
+In-Reply-To: <20210610125945.558872-2-nsaenzju@redhat.com>
+References: <20210610125945.558872-1-nsaenzju@redhat.com> <20210610125945.558872-2-nsaenzju@redhat.com>
+Date:   Sat, 19 Jun 2021 00:47:04 +0200
+Message-ID: <87mtrmeqon.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Address warning about unused variable in case CONFIG_OF is not set.
+Nicolas,
 
-warning: unused variable 'of_match' [-Wunused-const-variable]
-    static const struct of_device_id of_match[] = {
+On Thu, Jun 10 2021 at 14:59, Nicolas Saenz Julienne wrote:
+> PREEMPT_RT systems defer most irq_work handling into the timer softirq.
+> This softirq is only triggered when a timer is expired, which adds some
+> delay to the irq_work handling. It's a price PREEMPT_RT systems are
+> willing to pay in exchange for less IRQ noise.
+>
+> This works fine for the majority of systems, but there's a catch. What
+> if no timer is ever armed after an irq_work is queued. This has been
+> observed on nohz_full CPUs while running oslat. The lack of armed timers
+> prevents a pending irq_work to run. Which in turn prevents the nohz code
+> from fully stopping the tick.
+>
+> To avoid this situation introduce new logic in run_local_timers(). The
+> timer softirq will be triggered when an irq_work is pending but no
+> timers have been armed. This situation is only possible in PREEMPT_RT
+> systems, so make the code conditional to it.
 
-Fixes: 88fb3a002330 ("fpga: lattice machxo2: Add Lattice MachXO2
-support")
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Tom Rix <trix@redhat.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Moritz Fischer <mdf@kernel.org>
+now I can see the problem you are trying to solve, but unfortunately the
+solution is fundamentally wrong.
+
+> NOTE: All in all, this is the best I could think of with my limited
+>       timers knowledge. A bigger hammer would be to unanimously trigger
+>       the softirq if irq_work_needs_cpu(). But I get the feeling this is
+>       something we want to avoid.
+
+Technical decisions based on feelings are not solving anything and they
+result in hard to analyse subtle issues:
+
+Q: Assume there is a timer armed to expire 24h from now. What's the
+   difference to no timer being armed?
+
+A: None.
+
+   Just because your use case has either no timers armed at all or has
+   timers armed with short expiry is no reason to ignore the really
+   simple and obvious technical facts.
+
+But that aside, you analyzed the problem pretty good, but then you
+stopped short of identifying the root cause and went off to cure the
+symptom.
+
+The irq_work deferring on RT to the timer softirq is the root cause of
+the problem. It's a sloppy hack and I'm well aware of that. So this
+needs to be fixed and not worked around by adding random undocumented
+workarounds into the timer code.
+
+Let's take a step back and analyze why this deferring to timer softirq
+context exists on RT.
+
+ 1) The irq_work callbacks which are deferred on RT cannot be invoked from
+    hard interrupt (IPI) context usually - due to spin_lock usage.
+
+ 2) Such irq_work has to be delegated to some suitable context and the
+    trivial and lazy way out was to just stick into the timer softirq.
+
+That hack survived for a long time and while I was aware of it, it was
+not really high on my priority list of cleanups.
+
+The real solution is to delegate this to a suitable context which is
+executed independent of any other constraints.
+
+There are two solutions:
+
+  1) Create a IRQ_WORK softirq and raise that
+
+  2) Simply delegate it to a workqueue
+
+So now you might rightfully ask why I did not do that back then:
+
+  #1 is not an option because we don't want to proliferate softirqs for
+     various reasons.
+
+  #2 was not feasible because back then queueing work from hard
+     interrupt context was not possible.
+
+So yes, I took the sloppy and easy way out and just glued it onto the
+timer softirqs. Nobody complained so far.
+
+As we since then made work queues RT aware and it's possible to queue
+work from the irq_work IPI context, the obvious solution is to delegate
+this to a work queue.
+
+If we do a proper analysis of the affected irq work callbacks then this
+probably makes a lot of sense independent of RT. There are only a few
+really urgent irq work items which need to be handled immediately in the
+IPI.
+
+RT is special, but as we have demonstrated over time it's not _that_
+special. It just needs a proper analysis and a real good argument why
+something has to be special for RT and does not fit into the common
+case. Or to demonstrate that the common case approach of 'do it right
+away' is pointless or even harmfull.
+
+Thanks,
+
+        tglx
 ---
- drivers/fpga/machxo2-spi.c | 2 ++
- 1 file changed, 2 insertions(+)
+P.S.: I'm not blaming this on you as a newcomer. There are people on
+      your team who should have known better.   
 
-diff --git a/drivers/fpga/machxo2-spi.c b/drivers/fpga/machxo2-spi.c
-index 114a64d2b7a4..1afb41aa20d7 100644
---- a/drivers/fpga/machxo2-spi.c
-+++ b/drivers/fpga/machxo2-spi.c
-@@ -374,11 +374,13 @@ static int machxo2_spi_probe(struct spi_device *spi)
- 	return devm_fpga_mgr_register(dev, mgr);
- }
  
-+#ifdef CONFIG_OF
- static const struct of_device_id of_match[] = {
- 	{ .compatible = "lattice,machxo2-slave-spi", },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, of_match);
-+#endif
- 
- static const struct spi_device_id lattice_ids[] = {
- 	{ "machxo2-slave-spi", 0 },
--- 
-2.32.0
+
 
