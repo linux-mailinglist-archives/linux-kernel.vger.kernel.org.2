@@ -2,103 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B949D3AD2C6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70713AD2C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232550AbhFRT0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 15:26:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55718 "EHLO
+        id S232895AbhFRT04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 15:26:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbhFRT0K (ORCPT
+        with ESMTP id S230433AbhFRT0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 15:26:10 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79427C061574;
-        Fri, 18 Jun 2021 12:23:59 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id h4so18351436lfu.8;
-        Fri, 18 Jun 2021 12:23:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=YJYtupphDCmu77PX56LTsXy1IMzi9xJT77pPzOxDSDM=;
-        b=gD/RYXfz0mNz+yTp5PQH4LevE+8wLfrU5oRILAKuCAoDO/hQSiDKJHv5x8zwElQo7F
-         JgwX01vNqJnh16J9lbc5OoKT+t5p2jz79OplZzyUYdchofjx3Bn/vdPeV/oCA8XoHXdu
-         FvI1v9mVHVTWEK0Dr9Yf/kguBOxkr39p1tHZHiieWHmfkScU9bxld09J/rR+fS2L7BnE
-         /PyYCSsLX/6HHM7jmbTaRq1KP3fTX3VBZIgrR7Jaw/lTY+2ieMoYBuxd4gE4897152Qb
-         hRutMZUOAEsqtadRDz4eox7i1v9/T2PirJKgiQZhoCsutOX04NcTZUBd2XObJlvdW5qn
-         ptvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YJYtupphDCmu77PX56LTsXy1IMzi9xJT77pPzOxDSDM=;
-        b=MRtZHqFLd45TWmZm+0ybWv4g1VtX0P1jORK9d61fWr28lsA9b6p++yZ91ar1vzau1I
-         rSjWMgPF8W6F56MkEUM10Q46J78Kg+JfpXGpCB77CqV4Wb9urr9mdxHhzcxm0YOKJjPB
-         mpqIg2+nFrWd3bLjnrlkBg8qwuCjJyKxIPpJ8e8UCORgcKJv9/SNItbJSycvCuz4JeiU
-         Higd46wctYZTPhctLFuQm2X316oSJwluv29T+uzoptlKWWoKZ1qqeCpw8ZQR62QzmTro
-         9eZ7QpgqwJP44z2Y7YcHDMuCTpbBK2opoTaFSpeUmWFZwL1+kd5DciHSA+s9xmzzxpdG
-         jSSQ==
-X-Gm-Message-State: AOAM533WbBsmMeRqpLW7kB0Lcz0EhOwDvo1FsmUsG5epdpt9WdHYWy8Q
-        QuXZ5twhn+GYJ/KFPlbzZDYi2pimE1o=
-X-Google-Smtp-Source: ABdhPJzRYZYz40Q70v+ank0Gb84kB/qvhhZlP+8v/vkAzsLPVi9heDctBa2FGz/EnNkaOcb/grUlwg==
-X-Received: by 2002:a05:6512:74f:: with SMTP id c15mr4276741lfs.506.1624044236195;
-        Fri, 18 Jun 2021 12:23:56 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
-        by smtp.googlemail.com with ESMTPSA id f6sm1167188ljp.49.2021.06.18.12.23.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 12:23:55 -0700 (PDT)
-Subject: Re: [PATCH 3/3] mm: require ->set_page_dirty to be explicitly wire up
-To:     Christoph Hellwig <hch@lst.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Jan Kara <jack@suse.cz>, Al Viro <viro@zeniv.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210614061512.3966143-1-hch@lst.de>
- <20210614061512.3966143-4-hch@lst.de>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <ddafcc0d-8636-46ca-44b7-54392e0d22b4@gmail.com>
-Date:   Fri, 18 Jun 2021 22:23:55 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 18 Jun 2021 15:26:55 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95168C061574;
+        Fri, 18 Jun 2021 12:24:45 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id E7E7C1F44CE8
+Message-ID: <4d41485bb1452ec6b9dfa0a23a925c5dd2af72da.camel@collabora.com>
+Subject: Re: [PATCH v3 6/8] media: hantro: enumerate scaled output formats
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        hverkuil@xs4all.nl, p.zabel@pengutronix.de, mchehab@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
+        andrzej.p@collabora.com, jc@kynesim.co.uk,
+        jernej.skrabec@gmail.com, nicolas@ndufresne.ca
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Fri, 18 Jun 2021 16:24:32 -0300
+In-Reply-To: <20210618131526.566762-7-benjamin.gaignard@collabora.com>
+References: <20210618131526.566762-1-benjamin.gaignard@collabora.com>
+         <20210618131526.566762-7-benjamin.gaignard@collabora.com>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-In-Reply-To: <20210614061512.3966143-4-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-14.06.2021 09:15, Christoph Hellwig пишет:
-> Remove the CONFIG_BLOCK default to __set_page_dirty_buffers and just
-> wire that method up for the missing instances.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/adfs/inode.c     |  1 +
->  fs/affs/file.c      |  2 ++
->  fs/bfs/file.c       |  1 +
->  fs/block_dev.c      |  1 +
->  fs/exfat/inode.c    |  1 +
->  fs/ext2/inode.c     |  2 ++
->  fs/fat/inode.c      |  1 +
->  fs/gfs2/meta_io.c   |  2 ++
->  fs/hfs/inode.c      |  2 ++
->  fs/hfsplus/inode.c  |  2 ++
->  fs/hpfs/file.c      |  1 +
->  fs/jfs/inode.c      |  1 +
->  fs/minix/inode.c    |  1 +
->  fs/nilfs2/mdt.c     |  1 +
->  fs/ocfs2/aops.c     |  1 +
->  fs/omfs/file.c      |  1 +
->  fs/sysv/itree.c     |  1 +
->  fs/udf/file.c       |  1 +
->  fs/udf/inode.c      |  1 +
->  fs/ufs/inode.c      |  1 +
->  mm/page-writeback.c | 18 ++++--------------
->  21 files changed, 29 insertions(+), 14 deletions(-)
+Hi Benjamin,
 
-The ecryptfs is now crashing with NULL deference, please fix.
+Thanks for working on this.
+
+On Fri, 2021-06-18 at 15:15 +0200, Benjamin Gaignard wrote:
+> When enumerating the output formats take care of the hardware scaling
+> capabilities.
+> For a given input size G2 hardware block is capable of down scale the
+> output by 2, 4 or 8 factor. When decoding 4K streams that to be could
+> helpful to save memory bandwidth.
+> 
+
+Looking at https://www.kernel.org/doc/html/latest/userspace-api/media/v4l/dev-stateless-decoder.html
+I see that this case should be covered by the spec.
+
+If I understand correctly, it would be:
+
+1. VIDIOC_S_FMT(OUTPUT)
+2. VIDIOC_ENUM_FMT(CAPTURE) / VIDIOC_ENUM_FRAMESIZES(CAPTURE)
+3. VIDIOC_S_FMT(CAPTURE)
+4. VIDIOC_G_FMT(CAPTURE) again to get buffer information.
+
+Does v4l2codecs support this case as-is, if changes are needed,
+I'd like to have the MR ready and reviewed by Nicolas.
+
+I know it's a staging driver, but I believe it's important
+to have users for new cases/feature to avoid bitrotting.
+
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+>  drivers/staging/media/hantro/hantro.h         |  4 ++
+>  .../staging/media/hantro/hantro_g2_hevc_dec.c | 46 ++++++++++++++++++-
+>  drivers/staging/media/hantro/hantro_g2_regs.h |  6 +++
+>  drivers/staging/media/hantro/hantro_hw.h      |  1 +
+>  drivers/staging/media/hantro/hantro_v4l2.c    | 10 ++--
+>  drivers/staging/media/hantro/imx8m_vpu_hw.c   |  1 +
+>  6 files changed, 63 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/staging/media/hantro/hantro.h b/drivers/staging/media/hantro/hantro.h
+> index 6a21d1e95b34..ca9038b0384a 100644
+> --- a/drivers/staging/media/hantro/hantro.h
+> +++ b/drivers/staging/media/hantro/hantro.h
+> @@ -71,6 +71,9 @@ struct hantro_irq {
+>   * @reg_names:                 array of register range names
+>   * @num_regs:                  number of register range names in the array
+>   * @postproc_regs:             &struct hantro_postproc_regs pointer
+> + * @scaling:                   Set possible scaled output formats.
+> + *                             Returns zero if OK, a negative value in error cases.
+> + *                             Optional.
+>   */
+>  struct hantro_variant {
+>         unsigned int enc_offset;
+> @@ -92,6 +95,7 @@ struct hantro_variant {
+>         const char * const *reg_names;
+>         int num_regs;
+>         const struct hantro_postproc_regs *postproc_regs;
+> +       int (*scaling)(struct hantro_ctx *ctx, struct v4l2_frmsizeenum *fsize);
+
+Please add some .ops field, so we can put this
+and move init and runtime_resume as well.
+ 
+>  };
+>  
+>  /**
+> diff --git a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
+> index 41dc89ec926c..3a8aa2ff109c 100644
+> --- a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
+> +++ b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
+> @@ -396,6 +396,17 @@ static void set_ref_pic_list(struct hantro_ctx *ctx)
+>         }
+>  }
+>  
+> +static int down_scale_factor(struct hantro_ctx *ctx)
+> +{
+> +       const struct hantro_hevc_dec_ctrls *ctrls = &ctx->hevc_dec.ctrls;
+> +       const struct v4l2_ctrl_hevc_sps *sps = ctrls->sps;
+> +
+> +       if (sps->pic_width_in_luma_samples == ctx->dst_fmt.width)
+> +               return 0;
+> +
+> +       return DIV_ROUND_CLOSEST(sps->pic_width_in_luma_samples, ctx->dst_fmt.width);
+> +}
+> +
+>  static int set_ref(struct hantro_ctx *ctx)
+>  {
+>         const struct hantro_hevc_dec_ctrls *ctrls = &ctx->hevc_dec.ctrls;
+> @@ -409,6 +420,7 @@ static int set_ref(struct hantro_ctx *ctx)
+>         size_t mv_offset = hantro_hevc_motion_vectors_offset(sps);
+>         size_t compress_luma_offset = hantro_hevc_luma_compress_offset(sps);
+>         size_t compress_chroma_offset = hantro_hevc_chroma_compress_offset(sps);
+> +       int down_scale = down_scale_factor(ctx);
+>         u32 max_ref_frames;
+>         u16 dpb_longterm_e;
+>         static const struct hantro_reg cur_poc[] = {
+> @@ -521,8 +533,18 @@ static int set_ref(struct hantro_ctx *ctx)
+>         hantro_write_addr(vpu, G2_REG_CHR_REF(i), chroma_addr);
+>         hantro_write_addr(vpu, G2_REG_DMV_REF(i++), mv_addr);
+>  
+> -       hantro_write_addr(vpu, G2_ADDR_DST, luma_addr);
+> -       hantro_write_addr(vpu, G2_ADDR_DST_CHR, chroma_addr);
+> +       if (down_scale) {
+> +               chroma_addr = luma_addr + (cr_offset >> down_scale);
+> +               hantro_reg_write(vpu, &g2_down_scale_e, 1);
+> +               hantro_reg_write(vpu, &g2_down_scale_y, down_scale >> 2);
+> +               hantro_reg_write(vpu, &g2_down_scale_x, down_scale >> 2);
+> +               hantro_write_addr(vpu, G2_DS_DST, luma_addr);
+> +               hantro_write_addr(vpu, G2_DS_DST_CHR, chroma_addr);
+> +       } else {
+> +               hantro_write_addr(vpu, G2_ADDR_DST, luma_addr);
+> +               hantro_write_addr(vpu, G2_ADDR_DST_CHR, chroma_addr);
+> +       }
+> +
+>         hantro_write_addr(vpu, G2_ADDR_DST_MV, mv_addr);
+>         hantro_write_addr(vpu, G2_COMP_ADDR_DST, compress_luma_addr);
+>         hantro_write_addr(vpu, G2_COMP_CHR, compress_chroma_addr);
+> @@ -603,6 +625,26 @@ static void hantro_g2_check_idle(struct hantro_dev *vpu)
+>         }
+>  }
+>  
+> +int hantro_g2_hevc_dec_scaling(struct hantro_ctx *ctx,
+> +                              struct v4l2_frmsizeenum *fsize)
+
+Maybe
+
+s/hantro_g2_hevc_dec_scaling/hantro_g2_hevc_enum_framesizes
+
+would be clear?
+
+Is this restricted to HEVC or is it something that will
+work on VP9 as well?
+
+> +{
+> +       /**
+> +        * G2 scaler can scale down by 0, 2, 4 or 8
+> +        * use fsize->index has power of 2 diviser
+> +        **/
+
+Please use
+
+/*
+ *
+ */
+
+style.
+
+> +       if (fsize->index > 3)
+> +               return -EINVAL;
+> +
+> +       if (!ctx->src_fmt.width || !ctx->src_fmt.height)
+> +               return -EINVAL;
+> +
+> +       fsize->type = V4L2_FRMSIZE_TYPE_DISCRETE;
+> +       fsize->discrete.width = ctx->src_fmt.width >> fsize->index;
+> +       fsize->discrete.height = ctx->src_fmt.height >> fsize->index;
+> +
+> +       return 0;
+> +}
+> +
+[..]
+> -       /* This only makes sense for coded formats */
+> -       if (fmt->codec_mode == HANTRO_MODE_NONE)
+> +       /* For non-coded formats check if scaling is possible */
+> +       if (fmt->codec_mode == HANTRO_MODE_NONE) {
+> +               if (ctx->dev->variant->scaling)
+> +                       return ctx->dev->variant->scaling(ctx, fsize);
+> +
+>                 return -EINVAL;
+
+I wonder why we are returning EINVAL here. Can we support
+.vidioc_enum_framesizes for coded and non-coded?
+
+Thanks,
+Ezequiel
+
