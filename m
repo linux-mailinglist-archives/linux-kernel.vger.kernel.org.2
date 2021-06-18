@@ -2,82 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 877543AD25D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:50:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5E9B3AD27A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235390AbhFRSwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 14:52:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56646 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229591AbhFRSwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 14:52:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8FC4D613E9;
-        Fri, 18 Jun 2021 18:50:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624042207;
-        bh=xwJrzaiVjJUsX2kGV3cg9XlnlhVQDpsGA6ECu0DhPZY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=GDcwcT2P6QGGesY+VU1j0QUvzWefpmnKwYUzYn0X2rDiuX5lFiInaWU6vYY/cmORQ
-         eRVYb7RCRuJ30OxQ6f1axAWi3X6U17vq/0bPvx1+4hYMbHQLVn2IAgNk/tN8RgvLSr
-         lrJJ5M9dr0cC42wodpBBfolrRUK5GBxCakh8xga8RNOk36KQ/JweG0SqZ4aHbVIh6f
-         AqpNjKvfdkHxLVbZwnwUH96cKwbO1WNIw7NBVZgajIZhDplVjkxato8RlAEmCObFAT
-         3+YxPvTrjpj+dP2w4WZ2Zu+m/K0AFl++yqnBGuXC/Nhf3TRnt6sI3bxNeGlyNQiELb
-         kAylJUkbij6bw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 838BF60C29;
-        Fri, 18 Jun 2021 18:50:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S234624AbhFRTDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 15:03:14 -0400
+Received: from guerre.jabatus.fr ([109.234.163.21]:57083 "EHLO
+        guerre.jabatus.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229848AbhFRTDN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 15:03:13 -0400
+X-Greylist: delayed 323 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Jun 2021 15:03:12 EDT
+X-Spam-Status: No
+X-MailPropre-MailScanner-From: contact@divlo.fr
+X-MailPropre-MailScanner-SpamCheck: not spam, SpamAssassin (not cached,
+        score=-1.08, required 5, autolearn=disabled, RCVD_IN_DNSWL_HI 0.01,
+        SPF_HELO_PASS -0.10, SPF_PASS -1.00, SUKB_11 0.01)
+X-MailPropre-MailScanner: Not scanned: please contact your Internet E-Mail Service Provider for details
+X-MailPropre-MailScanner-ID: 21D141004BD.AA863
+X-MailPropre-MailScanner-Information: Please contact the ISP for more information
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=divlo.fr;
+        s=default; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
+        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=AfttoLgeujcJLSBj/KgtVKZdzTRxQ/k97NhfPqRv00s=; b=hGSsUgb6imz3K3NLPzLEoP4Wr/
+        zbNc4bG5+2UXrvEbN5C/sH1g96CJTwK46jh9VYOs+LeV/cM+CxRmLMgdDgLYLEemUFsAk7tJPFOc9
+        4omdAJBLs//tI5GLMOlyFbziKYZdWMxvT0cL9hdbZuS3tirdpwVm5XXlgT+aycXs1xDgEkx3ReaOO
+        H0pdksAevYbnmBqLFlSNCvONUGR5g+leYZhe01KLr8CmizwfV4cJP1+llxiDA3X/AqVgYhCsn8PaU
+        FHiXIvJHfSFe7PluclByR7krpqQs9hWDNwZIIifRjbTyUvmU/IbAB+NMezcyBdJ1ON68f2p7k3Cps
+        CB3dnLtw==;
+From:   divlo <contact@divlo.fr>
+To:     linux-kernel@vger.kernel.org
+Cc:     divlo <contact@divlo.fr>
+Subject: [PATCH] CHECKPATCH: correct spelling error, from "reqired" to "required"
+Date:   Fri, 18 Jun 2021 20:55:12 +0200
+Message-Id: <20210618185512.73005-1-contact@divlo.fr>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH V2 net-next 0/7] net: hostess_sv11: clean up some code style
- issues
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162404220753.29148.4485679312661505691.git-patchwork-notify@kernel.org>
-Date:   Fri, 18 Jun 2021 18:50:07 +0000
-References: <1623983544-39879-1-git-send-email-lipeng321@huawei.com>
-In-Reply-To: <1623983544-39879-1-git-send-email-lipeng321@huawei.com>
-To:     Peng Li <lipeng321@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, xie.he.0141@gmail.com,
-        ms@dev.tdt.de, willemb@google.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, huangguangbin2@huawei.com
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - carlos.o2switch.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - divlo.fr
+X-Get-Message-Sender-Via: carlos.o2switch.net: authenticated_id: contact@divlo.fr
+X-Authenticated-Sender: carlos.o2switch.net: contact@divlo.fr
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Signed-off-by: divlo <contact@divlo.fr>
+---
+ arch/s390/include/uapi/asm/pkey.h | 4 ++--
+ fs/nfsd/xdr4.h                    | 6 +++---
+ scripts/spelling.txt              | 1 +
+ 3 files changed, 6 insertions(+), 5 deletions(-)
 
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Fri, 18 Jun 2021 10:32:17 +0800 you wrote:
-> This patchset clean up some code style issues.
-> 
-> ---
-> Change Log：
-> V1 -> V2:
-> 1. Add patch "[patch 5/7] net: hostess_sv11: remove dead code"
-> suggested by Andrew Lunn.
-> 
-> [...]
-
-Here is the summary with links:
-  - [V2,net-next,1/7] net: hostess_sv11: fix the code style issue about "foo* bar"
-    https://git.kernel.org/netdev/net-next/c/fefed8af5ed4
-  - [V2,net-next,2/7] net: hostess_sv11: move out assignment in if condition
-    https://git.kernel.org/netdev/net-next/c/fe9be8daef8a
-  - [V2,net-next,3/7] net: hostess_sv11: remove trailing whitespace
-    https://git.kernel.org/netdev/net-next/c/534f76d46245
-  - [V2,net-next,4/7] net: hostess_sv11: fix the code style issue about switch and case
-    https://git.kernel.org/netdev/net-next/c/9562aef3c0c3
-  - [V2,net-next,5/7] net: hostess_sv11: remove dead code
-    https://git.kernel.org/netdev/net-next/c/d25a944693c7
-  - [V2,net-next,6/7] net: hostess_sv11: fix the comments style issue
-    https://git.kernel.org/netdev/net-next/c/67c1876897da
-  - [V2,net-next,7/7] net: hostess_sv11: fix the alignment issue
-    https://git.kernel.org/netdev/net-next/c/7d40bfc1933e
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+diff --git a/arch/s390/include/uapi/asm/pkey.h b/arch/s390/include/uapi/asm/pkey.h
+index 7349e96d28a0..c04bc9e0614f 100644
+--- a/arch/s390/include/uapi/asm/pkey.h
++++ b/arch/s390/include/uapi/asm/pkey.h
+@@ -365,7 +365,7 @@ struct pkey_kblob2pkey2 {
+  * is empty (apqn_entries is 0) the apqn_entries field is updated to the number
+  * of apqn targets found and the ioctl returns with 0. If apqn_entries is > 0
+  * but the number of apqn targets does not fit into the list, the apqn_targets
+- * field is updatedd with the number of reqired entries but there are no apqn
++ * field is updatedd with the number of required entries but there are no apqn
+  * values stored in the list and the ioctl returns with ENOSPC. If no matching
+  * APQN is found, the ioctl returns with 0 but the apqn_entries value is 0.
+  */
+@@ -403,7 +403,7 @@ struct pkey_apqns4key {
+  * is empty (apqn_entries is 0) the apqn_entries field is updated to the number
+  * of apqn targets found and the ioctl returns with 0. If apqn_entries is > 0
+  * but the number of apqn targets does not fit into the list, the apqn_targets
+- * field is updatedd with the number of reqired entries but there are no apqn
++ * field is updatedd with the number of required entries but there are no apqn
+  * values stored in the list and the ioctl returns with ENOSPC. If no matching
+  * APQN is found, the ioctl returns with 0 but the apqn_entries value is 0.
+  */
+diff --git a/fs/nfsd/xdr4.h b/fs/nfsd/xdr4.h
+index a7c425254fee..6496d6a2528a 100644
+--- a/fs/nfsd/xdr4.h
++++ b/fs/nfsd/xdr4.h
+@@ -198,7 +198,7 @@ struct nfsd4_lockt {
+ 	struct nfsd4_lock_denied  	lt_denied;
+ };
+ 
+- 
++
+ struct nfsd4_locku {
+ 	u32             lu_type;
+ 	u32             lu_seqid;
+@@ -301,7 +301,7 @@ struct nfsd4_read {
+ 	u32			rd_length;          /* request */
+ 	int			rd_vlen;
+ 	struct nfsd_file	*rd_nf;
+-	
++
+ 	struct svc_rqst		*rd_rqstp;          /* response */
+ 	struct svc_fh		*rd_fhp;             /* response */
+ };
+@@ -821,7 +821,7 @@ extern void nfsd4_bump_seqid(struct nfsd4_compound_state *, __be32 nfserr);
+ enum nfsd4_op_flags {
+ 	ALLOWED_WITHOUT_FH = 1 << 0,    /* No current filehandle required */
+ 	ALLOWED_ON_ABSENT_FS = 1 << 1,  /* ops processed on absent fs */
+-	ALLOWED_AS_FIRST_OP = 1 << 2,   /* ops reqired first in compound */
++	ALLOWED_AS_FIRST_OP = 1 << 2,   /* ops required first in compound */
+ 	/* For rfc 5661 section 2.6.3.1.1: */
+ 	OP_HANDLES_WRONGSEC = 1 << 3,
+ 	OP_IS_PUTFH_LIKE = 1 << 4,
+diff --git a/scripts/spelling.txt b/scripts/spelling.txt
+index 7b6a01291598..6787c8d1db7f 100644
+--- a/scripts/spelling.txt
++++ b/scripts/spelling.txt
+@@ -1227,6 +1227,7 @@ replys||replies
+ reponse||response
+ representaion||representation
+ reqeust||request
++reqired||required
+ reqister||register
+ requestied||requested
+ requiere||require
+-- 
+2.25.1
 
