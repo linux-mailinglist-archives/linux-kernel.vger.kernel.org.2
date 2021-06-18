@@ -2,147 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AEEB3AC145
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 05:22:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E163AC14F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 05:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231955AbhFRDYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 23:24:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37484 "EHLO
+        id S232009AbhFRDbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 23:31:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230484AbhFRDYu (ORCPT
+        with ESMTP id S230484AbhFRDbD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 23:24:50 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5019FC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:22:41 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id o10-20020a17090aac0ab029016e92770073so5038316pjq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:22:41 -0700 (PDT)
+        Thu, 17 Jun 2021 23:31:03 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0940C061574;
+        Thu, 17 Jun 2021 20:28:54 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id r16so12001070ljk.9;
+        Thu, 17 Jun 2021 20:28:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MqSK1zOymUxxq/T/RdAPgHK3/+Z9VBscAJFGiuft+WE=;
-        b=jP8eVoUmuigO/jQApq8Ze876NJSFHzAqT6HwtfW8AAg9FbfPQhrfV2TZCkRyjjH5HO
-         WicCMQs4wDMQWSlcOJYGarpinR3uniubQcC2kDvhsPKihq7qtzppn6+s+1uxTZCGiQbl
-         G+ahlp5ARFwSHmojJKhhWbaV9sRfAXxmQ069tTJQ8YIMC/c7dzy5w4i0W1HUDA4YJ3Wj
-         A+ffuYVHlur3Ui8R0FAtJz60rMGB1DbnjbhhK3ZmYaMEDb8bRKrj5FM+XGpSZgIgVTI7
-         rHhx85acp5Oq2bhRacLWgBfbgMun3tBf3cvoCT+ocKOQj8CSzbLxgncrxmvPlvmwNm4q
-         9rPQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=KU0XIwJ0XXrc92jT9YLWiEwSpSoGcMOVK76Rj0AjqYE=;
+        b=p50ZkJy8Px6CQI47WEA9P7w5S12ZlUR4qZMAJ1jBHmahMP0ijF98QnO18pKdc/w/3Y
+         9A+gh/mOFAG0E1z0oq/zuCPwDZwpjjjBknFg4qWs0b6rXGDpj99bnPIrxTs/gBANuxoT
+         DsiC7qpOOqZbESsfjuIuCeWRWOb4Wt50ODKbJHQzmoMHbHF1qdzLsiN73zRHh0vpTh0S
+         qklC/oQbKwBfuV4VobOIB4PanGDU4dh1tG/sMo+jQpKaaQwjCXTGGSqNl8fqSEGDeICa
+         KqJn2Xz2P3wmkcOwlUSkwXVzJZ/0Xnjz4TNXM4V+heS+gvT6nzJcZCo1v3MQ+GWhj13F
+         pp7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MqSK1zOymUxxq/T/RdAPgHK3/+Z9VBscAJFGiuft+WE=;
-        b=OtKCMk5p2rXidDjK/tiefQRSr24ZzRqBz7hnhd5Q091aVXlJY/HyNdccqsEP9tnqYd
-         oS/xz9YVS0S5jEei2Eiw+TvdpKAdJZfe9j3zu6ZccIAMTM5eOoBpQV2pCo1cVKqJlxs/
-         TOp3/ck1iZ6T3iH8B7uYHC+BMD1t96xKCx+hXxKbSoTGisgaYc+bzLK/wNY8Gp0FwauH
-         ZQEVsbGrBy+Mci3YTolMHfnNIZeaI+pp8eOjL2DzWXuCRjVDIhfRyyHgHG1k3rhPv5Wo
-         Nioi9maF+ElWBah8k38Zc3RAogpu7OyLp7ANgtuNzD1TId+rM2cNwN0vNQDhuBa3RoAr
-         /HZA==
-X-Gm-Message-State: AOAM531pmx2UOY2XEKV+6KRINFFiCUNFqQJXgxK8ytdhfLWnqDTUaRMg
-        TN6CeCCeMxM6zUSpN/eDdX2JgQ==
-X-Google-Smtp-Source: ABdhPJxFthx1OT3wNaOe0+vA6MHe5CsoJnedW2rlLxOtLtzEfVgMYU4fUDUXA2YPPC72o9ZMNGPhJw==
-X-Received: by 2002:a17:90a:f0c2:: with SMTP id fa2mr7498294pjb.191.1623986560775;
-        Thu, 17 Jun 2021 20:22:40 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id 23sm6122897pjw.28.2021.06.17.20.22.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 20:22:40 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Rafael Wysocki <rjw@rjwysocki.net>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     linux-pm@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dirk Brandewie <dirk.brandewie@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V3 2/3] cpufreq: intel_pstate: Migrate away from ->stop_cpu() callback
-Date:   Fri, 18 Jun 2021 08:52:36 +0530
-Message-Id: <c31424b7962608eb13f946a665ba6848c4986856.1623986349.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
-In-Reply-To: <5c8da9d378dee39d9c6063713b093f51d271fa9d.1623825358.git.viresh.kumar@linaro.org>
-References: <5c8da9d378dee39d9c6063713b093f51d271fa9d.1623825358.git.viresh.kumar@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KU0XIwJ0XXrc92jT9YLWiEwSpSoGcMOVK76Rj0AjqYE=;
+        b=uKIaE2+H2oN7ZHBujdy5c1QCkcv/Y7GPW+Gt/FfdFnWzt7fPfv7ycITDEkbgYZiq8b
+         0XADp0e8OB+n+wMRRNpgTtnaSGxu39MFxHoiNeNSHaCErFCB6Mv8ibNVqCn4yV+7SUnj
+         sX0CrdVvYBu5IjiZpdQZySm7mJ3L5YoDjWfsHGpXdzYfKVwIQarFWD46nykOykMMvqVt
+         ILiloKmDjUK4oK03+M+mfGBO1UCfLgB2Zrg4OJtA90eASNjUDt/VBM3dxce3k78bl3S0
+         kA6n9WUEhZQY5MgmRVojOopcsIK1i2YYY23s5ig9vOaPO5+VJ4cTYwxI7gdWZTbdQv/z
+         T+Ig==
+X-Gm-Message-State: AOAM531T6PpS6OK/lQ8hJ1Wl6G/BVw97CnMCKaPm7s6rJPWXXB+TF8tx
+        LbViVHjAklNAG058yd/hqnUUqSeJxW8Kw4aWyhXADbOX
+X-Google-Smtp-Source: ABdhPJw9OuwMCESWUrDgrF6XLH+4Rsb+54yvZX5ftkDs5+pzB/f5YhbOu4aeL+7uEtI5hxmTOeAQPVQBsov8IFIUCCc=
+X-Received: by 2002:a2e:8542:: with SMTP id u2mr7580839ljj.141.1623986932876;
+ Thu, 17 Jun 2021 20:28:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1622616875-22740-1-git-send-email-u0084500@gmail.com>
+ <20210611201643.GA1583875@robh.at.kernel.org> <CADiBU39Prz99ZLtkYdcM9XDQsd0nKKeiEGjW3wq=u75JGjwX=g@mail.gmail.com>
+ <20210617162919.GH5067@sirena.org.uk>
+In-Reply-To: <20210617162919.GH5067@sirena.org.uk>
+From:   ChiYuan Huang <u0084500@gmail.com>
+Date:   Fri, 18 Jun 2021 11:28:41 +0800
+Message-ID: <CADiBU39-HA518TP=7_i8bYQWfhAUK_pj+Gn0O6rTKEZxq6GR1A@mail.gmail.com>
+Subject: Re: [PATCH 1/2] regulator: mt6360: Add optional mediatek.power-off-sequence
+ in bindings document
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>, lgirdwood@gmail.com,
+        matthias.bgg@gmail.com, gene_chen@richtek.com,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, cy_huang <cy_huang@richtek.com>,
+        gene.chen.richtek@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 367dc4aa932b ("cpufreq: Add stop CPU callback to cpufreq_driver
-interface") added the stop_cpu() callback to allow the drivers to do
-clean up before the CPU is completely down and its state can't be
-modified.
+Mark Brown <broonie@kernel.org> =E6=96=BC 2021=E5=B9=B46=E6=9C=8818=E6=97=
+=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=8812:29=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Mon, Jun 14, 2021 at 11:04:01PM +0800, ChiYuan Huang wrote:
+> > Rob Herring <robh@kernel.org> =E6=96=BC 2021=E5=B9=B46=E6=9C=8812=E6=97=
+=A5 =E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=884:16=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> > > > Originally, we think it must write in platform dependent code like =
+as bootloader.
+> > > > But after the evaluation, it must write only when system normal HAL=
+T or POWER_OFF.
+> > > > For the other cases, just follow HW immediate off by default.
+>
+> > > Wouldn't this be handled by PSCI implementation?
+>
+> > No, the current application default on powers buck1/buck2/ldo7/ldo6
+> > are for Dram power.
+> > It's not the soc core power. It seems not appropriate  to implement
+> > like as PSCI.
+> > MT6360 play the role for the subpmic in the SOC application reference d=
+esign.
+>
+> If this is part of the overall system power off that seems like it fits
+> well enough into what PSCI is doing - it's got operations like
+> SYSTEM_OFF which talk about the system as a whole.
 
-At that time the CPU hotplug framework used to call the cpufreq core's
-registered notifier for different events like CPU_DOWN_PREPARE and
-CPU_POST_DEAD. The stop_cpu() callback was called during the
-CPU_DOWN_PREPARE event.
-
-This is no longer the case, cpuhp_cpufreq_offline() is called only once
-by the CPU hotplug core now and we don't really need to separately
-call stop_cpu() for cpufreq drivers.
-
-Migrate to using the exit() and offline() callbacks instead of
-stop_cpu().
-
-We need to clear util hook from both the callbacks, exit() and
-offline(), since it is possible that only exit() gets called sometimes
-(specially on errors) or both get called at other times.
-intel_pstate_clear_update_util_hook() anyway have enough protection in
-place if it gets called a second time and will return early then.
-
-Cc: Dirk Brandewie <dirk.brandewie@gmail.com>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
-V2->V3:
-- Update intel_pstate_cpu_offline() as well.
-- Improved commit log.
-
- drivers/cpufreq/intel_pstate.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-index 0e69dffd5a76..8f8a2d9d7daa 100644
---- a/drivers/cpufreq/intel_pstate.c
-+++ b/drivers/cpufreq/intel_pstate.c
-@@ -2335,6 +2335,8 @@ static int intel_pstate_cpu_offline(struct cpufreq_policy *policy)
- 
- 	pr_debug("CPU %d going offline\n", cpu->cpu);
- 
-+	intel_pstate_clear_update_util_hook(policy->cpu);
-+
- 	if (cpu->suspended)
- 		return 0;
- 
-@@ -2374,17 +2376,12 @@ static int intel_pstate_cpu_online(struct cpufreq_policy *policy)
- 	return 0;
- }
- 
--static void intel_pstate_stop_cpu(struct cpufreq_policy *policy)
--{
--	pr_debug("CPU %d stopping\n", policy->cpu);
--
--	intel_pstate_clear_update_util_hook(policy->cpu);
--}
--
- static int intel_pstate_cpu_exit(struct cpufreq_policy *policy)
- {
- 	pr_debug("CPU %d exiting\n", policy->cpu);
- 
-+	intel_pstate_clear_update_util_hook(policy->cpu);
-+
- 	policy->fast_switch_possible = false;
- 
- 	return 0;
-@@ -2451,7 +2448,6 @@ static struct cpufreq_driver intel_pstate = {
- 	.resume		= intel_pstate_resume,
- 	.init		= intel_pstate_cpu_init,
- 	.exit		= intel_pstate_cpu_exit,
--	.stop_cpu	= intel_pstate_stop_cpu,
- 	.offline	= intel_pstate_cpu_offline,
- 	.online		= intel_pstate_cpu_online,
- 	.update_limits	= intel_pstate_update_limits,
--- 
-2.31.1.272.g89b43f80a514
-
+Thanks, I'll check and survey the PSCI about the SYSTEM_OFF.
+I think it may work.
