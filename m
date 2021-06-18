@@ -2,105 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3433AD4BF
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 00:02:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 464013AD4C2
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 00:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234755AbhFRWFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 18:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234681AbhFRWFB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 18:05:01 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88097C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 15:02:50 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id h16so6532272pjv.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 15:02:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=D+d95UFbto6KXdVd780meGT/TKamJEDF0mnEvN0JNDg=;
-        b=X8rlseAwjYPGPDK0H2ZNAkFuY3/RNYiE3elogj4FmPGQFys9B3d7RoCIaJJuISqm/c
-         Ke7xUdgt7PNMNbWM8/1Y2KJQyMOx+rDTKwBxWRWH2rOObj4Oj33180/D/jyLT5ywbXCT
-         jRxtPgyy0qpU/SLu6C6LMFNCChycK6rYAn1q6pw2iiMhqyqa66npEEI9bRmlHyryrFZO
-         tcG2YjPluLljoCrvuU8ehkygSeIdmQ0vto01R1utba2n4ENH3dOywFGAF4eBq0hEMITz
-         bhxODZ3aUsl+NdNY+9V2pvhqwvONx784lNs6g+2eihcJodxnj7SXjpOdnyS7CH9SSt9f
-         W6gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=D+d95UFbto6KXdVd780meGT/TKamJEDF0mnEvN0JNDg=;
-        b=rLcD2BkatWEjzACZ75HTXzLkI/vok2CzbxikeEYp+duai72924wHxI6n+R4tuLvdwd
-         axw2TT36rVlTgmE6xr7VjwM24Xt4XUD4wIG/BA5m9mEq6RxwFiAScf0xNGFEzpOQoku1
-         FGiduRguDwlLgXm3/ddwSzK23QmwEQgQx/NQeBtXHSPP5PgA1tlaGJih52nlHs2s3BZT
-         bsAtW02tvZX78vekVm7GrnMilx9HI/NfxTNsc6CDR5oUXPGfkAifXJ0W793YCZW0pUHG
-         0H+hjCFci8K+9rzdyj4SJ8nu+XLpnexMIP7WI/kdEIaAFl5xw9zp7O054coWdtiQjut4
-         uUeA==
-X-Gm-Message-State: AOAM532wQynpCcpWIkVxDuCS3ehcvACBf6xIZnYcyX32LiUCtC7kXfRi
-        Cm/v4g+qurEB4TpIpZY06UI=
-X-Google-Smtp-Source: ABdhPJzVVXF93+4vNa6tkKMZXjgyxTMobN3PBpgnbX2TrCPQ0Yp/kKxDfK7FfU4aNdZjqJO7UZ0syA==
-X-Received: by 2002:a17:90b:3b92:: with SMTP id pc18mr12952663pjb.100.1624053770099;
-        Fri, 18 Jun 2021 15:02:50 -0700 (PDT)
-Received: from google.com (c-67-188-94-199.hsd1.ca.comcast.net. [67.188.94.199])
-        by smtp.gmail.com with ESMTPSA id y8sm3644306pfe.162.2021.06.18.15.02.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 15:02:49 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Fri, 18 Jun 2021 15:02:47 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Huangzhaoyang <huangzhaoyang@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Nitin Gupta <ngupta@vflare.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: Re: [PATCH] mm: zram: amend SLAB_RECLAIM_ACCOUNT on zspage_cachep
-Message-ID: <YM0YB6p2i346Zzhz@google.com>
-References: <1623137297-29685-1-git-send-email-huangzhaoyang@gmail.com>
+        id S234791AbhFRWFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 18:05:50 -0400
+Received: from mga09.intel.com ([134.134.136.24]:21889 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234710AbhFRWFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 18:05:47 -0400
+IronPort-SDR: IoihEB5tnfNI5hVokDejl0Z++uN1iG9jyKMt3XiwnTQsvj+rFziIWtLHOI+xvfq5fzHfOXm46V
+ muJd1bN5b75g==
+X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="206576786"
+X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
+   d="scan'208";a="206576786"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 15:03:37 -0700
+IronPort-SDR: LvRG/rg32qg/cTdsZu6vZWoe62oyC1bA/ohYBhpB2Ajqin1vJr37NfEbXQif91L0kh2PtCxYwu
+ 4KgLySpaguSw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
+   d="scan'208";a="405407983"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 18 Jun 2021 15:03:36 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1luMaN-0003AK-BW; Fri, 18 Jun 2021 22:03:35 +0000
+Date:   Sat, 19 Jun 2021 06:03:07 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:sched/core] BUILD SUCCESS
+ 2f064a59a11ff9bc22e52e9678bc601404c7cb34
+Message-ID: <60cd181b.mGqAiRRUpWK5XmXf%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1623137297-29685-1-git-send-email-huangzhaoyang@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 03:28:17PM +0800, Huangzhaoyang wrote:
-> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> 
-> Zspage_cachep is found be merged with other kmem cache during test, which
-> is not good for debug things(zs_pool->zspage_cachep present to be another
-> kmem cache in memory dumpfile). It is also neccessary to do so as shrinker has
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git sched/core
+branch HEAD: 2f064a59a11ff9bc22e52e9678bc601404c7cb34  sched: Change task_struct::state
 
-It's not a only problem of zsmalloc because slab want to minimize
-fragmentation so try to merge several objects if it's allowed.
-So I don't think it's particular problem of zsmalloc.
-I guess slub has some option maybe "nomerge" if you want it.
+elapsed time: 721m
 
-> been registered for zspage. Amending this flag can help kernel to calculate
-> SLAB_RECLAIMBLE correctly.
-> 
-> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> ---
->  mm/zsmalloc.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
-> index 19b563b..0b0addd 100644
-> --- a/mm/zsmalloc.c
-> +++ b/mm/zsmalloc.c
-> @@ -328,7 +328,7 @@ static int create_cache(struct zs_pool *pool)
->  		return 1;
->  
->  	pool->zspage_cachep = kmem_cache_create("zspage", sizeof(struct zspage),
-> -					0, 0, NULL);
-> +					0, SLAB_RECLAIM_ACCOUNT, NULL);
+configs tested: 97
+configs skipped: 2
 
-How does zspage become SLAB_RECLAIM_ACCOUNT?
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-I took the flag as "cacheable" object. IOW, when the shrinker
-ask to reclaim the object, it should reclaim(e.g., discarding)
-those objects for reclaming. However, that's not the case
-in zsmalloc.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+nios2                         3c120_defconfig
+arm                           sama5_defconfig
+arm                       imx_v6_v7_defconfig
+mips                     loongson1c_defconfig
+m68k                            mac_defconfig
+powerpc                     tqm8555_defconfig
+arm                     am200epdkit_defconfig
+arm                         orion5x_defconfig
+sh                        edosk7705_defconfig
+arm                         axm55xx_defconfig
+arc                        vdk_hs38_defconfig
+m68k                        mvme16x_defconfig
+microblaze                          defconfig
+m68k                        stmark2_defconfig
+powerpc                       maple_defconfig
+powerpc                      ep88xc_defconfig
+sparc                            alldefconfig
+sh                           sh2007_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20210618
+i386                 randconfig-a006-20210618
+i386                 randconfig-a004-20210618
+i386                 randconfig-a001-20210618
+i386                 randconfig-a005-20210618
+i386                 randconfig-a003-20210618
+x86_64               randconfig-a015-20210618
+x86_64               randconfig-a011-20210618
+x86_64               randconfig-a012-20210618
+x86_64               randconfig-a014-20210618
+x86_64               randconfig-a016-20210618
+x86_64               randconfig-a013-20210618
+i386                 randconfig-a015-20210618
+i386                 randconfig-a016-20210618
+i386                 randconfig-a013-20210618
+i386                 randconfig-a014-20210618
+i386                 randconfig-a012-20210618
+i386                 randconfig-a011-20210618
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210618
+x86_64               randconfig-a002-20210618
+x86_64               randconfig-a001-20210618
+x86_64               randconfig-a004-20210618
+x86_64               randconfig-a003-20210618
+x86_64               randconfig-a006-20210618
+x86_64               randconfig-a005-20210618
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
