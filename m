@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB8E43AD339
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:57:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E306A3AD33B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233003AbhFRT7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 15:59:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35024 "EHLO
+        id S233572AbhFRT7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 15:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231630AbhFRT7t (ORCPT
+        with ESMTP id S232417AbhFRT7u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 15:59:49 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CCCCC061574;
-        Fri, 18 Jun 2021 12:57:40 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id v6so8435801qta.9;
-        Fri, 18 Jun 2021 12:57:40 -0700 (PDT)
+        Fri, 18 Jun 2021 15:59:50 -0400
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DA1EC061574;
+        Fri, 18 Jun 2021 12:57:41 -0700 (PDT)
+Received: by mail-qt1-x82a.google.com with SMTP id l2so5698856qtq.10;
+        Fri, 18 Jun 2021 12:57:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/gSHy9XX5ac0SC74X1Qc4ytfVVZa0gXuutSCszNjEEA=;
-        b=P3zKx9s1ebph/IX+4ttM6AepayvpE8rGn7SyAYCcjtXDqBYrYBWjeJ++n4MCreKnxF
-         hLl6dFC7kI4ig/EveA1eamsWjPsu5M//0GU1mROdaQELL9lQ4Qq+7gpKwRWUEn6BT7Ja
-         QNzv58Z26BLi4xcv0rZEdEhISqvsLlZL8GIho1WLINgavduXAXaf37PsHDw9Ka6kg4gc
-         HVOdw05u/k9zaPHfop4JHuueoqquej0OLWuvmxgySSvCyWfC7DLTNzyvzdVmLh0ekPP3
-         CdcrMjqjv2Net5J58Dprgso4BfvZNgiN3N//jb7aTItfO6fAWupm3+THRCQ30wEkzYQp
-         +aXQ==
+        bh=GY9x7msUmJcvaumS+lj9smAT8dHRMoBPIwcLcMKiK3A=;
+        b=JdNn1KT6TaQiFeDktSjY8UE5naaRUyEo00QMZxWZ9sw35X6hk+553w0kNL3zV410JW
+         L0Qp1o8ZkEhtOtAPbaSOKdK/GrfFzjPu8BEk9xexJEGgU/7ug2sB2vjt4b8GgBLtu4hn
+         TwQ+DN8Sq9naCNurHRsMXJHDC70tVQP4fSf8t+V72eAK9ptEBZlnrd09dbjAn7yLw+JL
+         XQHN0tLJdkWG5xcDJMXyergwK6RJX1NdaMlDDgy6pK9qFvjZedSRg1xaoBNEfGRchE6G
+         jnK8fez/fvUKesUSARApcZ3MLPratI2k5reCSwouuTQHvZZQcmNXWqDBY8jSL3+0FnGF
+         MIHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/gSHy9XX5ac0SC74X1Qc4ytfVVZa0gXuutSCszNjEEA=;
-        b=kER3W6VbkaWRdqMxuWD+DG0SYHGoBUXeEqffvSOMbQ8935TGk5J+I55mVUXcdCg5Vm
-         GV2tHKIA/CoeuJzBe6mXxdx0v6ry3PH71qlGeaSEwE6OhHS3t52M+4OVwUzG5/AaSlNG
-         MEiQyDJXwGuWT0ky5HbQcZ7Dp6ueNxHzANsKhtUEPfwog8RuGGNJQuW83c0Tenxsjxyi
-         kh4Ubt3ep/dGaLv64581Epn/S5jrNvb/yNtCT6bVTklrw2G84Dqs2Er0pg1UqyqgauN2
-         roQ/C7SieEzk19H6VOhS6bIzwivkMXY/CG+dI8+AXqVHcPwE6w8Ehdubv59xZW/8ydRH
-         Rd2A==
-X-Gm-Message-State: AOAM5324ZpomRvD7R64vnFoJDut6u8S89zKne4IQFSiy7jgx3/4dp5Wr
-        rA65bse/ye6Q1pz05PvgONo=
-X-Google-Smtp-Source: ABdhPJy0vQHcbSO0Lh+HkuZlTrl2tpjc8loroDs42HJwo2FSOVgKoongnr62EXADc6zdqh5JuTxsaw==
-X-Received: by 2002:ac8:6717:: with SMTP id e23mr11952711qtp.328.1624046259112;
-        Fri, 18 Jun 2021 12:57:39 -0700 (PDT)
+        bh=GY9x7msUmJcvaumS+lj9smAT8dHRMoBPIwcLcMKiK3A=;
+        b=gtvSpvxQP/qccRta8HSwAIPhPf2nG+iuoBJ6/fiMV+s0xH5W5bx1kib77bdxzTbXpA
+         jLhiB21SSLkutW96vlkTV9xByp56J3PT98vHveCYg/ssK5VRQa0dJZ6xARvkj7M2Lcyd
+         VMaawskFROFa4YK3ddiD98gGJp2vVHza2hB5/QDSldLlEacV+WkfnxAVGZ3ui4VgGtP9
+         B8TPwyZ1ycBahzvvb8VmfvyLtNBmhhl+5LXVvwlYd0uyo1NPOwJoOET8yyZr6TgA1hrN
+         VWsxQ7eApkJdu2w3CM3AEOX7tCFRN3cReaP38X/oGcwZcezTZBvagK5vulyJWCcASVi3
+         yWCw==
+X-Gm-Message-State: AOAM5323VBd1IFrSa6dgjTFSAA1tJY0Y24lljWKbJOvcZRpWz1eJg+DX
+        9VhkksVcu1+E7Z3KkNc+Wqs=
+X-Google-Smtp-Source: ABdhPJxMXyrerRHfnKt4Y5jcTbuNcjxScLwJjwRAfJiwC4Sjv0jNq9Ke3GcbBRz8auKFW61AAw6YEw==
+X-Received: by 2002:ac8:694b:: with SMTP id n11mr12234191qtr.97.1624046260236;
+        Fri, 18 Jun 2021 12:57:40 -0700 (PDT)
 Received: from localhost ([207.98.216.60])
-        by smtp.gmail.com with ESMTPSA id o13sm4604820qkg.33.2021.06.18.12.57.38
+        by smtp.gmail.com with ESMTPSA id o13sm23438qki.44.2021.06.18.12.57.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 12:57:38 -0700 (PDT)
+        Fri, 18 Jun 2021 12:57:39 -0700 (PDT)
 From:   Yury Norov <yury.norov@gmail.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -70,9 +70,9 @@ To:     Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org, etnaviv@lists.freedesktop.org,
         dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org
 Cc:     Yury Norov <yury.norov@gmail.com>
-Subject: [PATCH 1/3] include/linux: move for_each_bit() macros from bitops.h to find.h
-Date:   Fri, 18 Jun 2021 12:57:33 -0700
-Message-Id: <20210618195735.55933-2-yury.norov@gmail.com>
+Subject: [PATCH 2/3] find: micro-optimize for_each_{set,clear}_bit()
+Date:   Fri, 18 Jun 2021 12:57:34 -0700
+Message-Id: <20210618195735.55933-3-yury.norov@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210618195735.55933-1-yury.norov@gmail.com>
 References: <20210618195735.55933-1-yury.norov@gmail.com>
@@ -82,103 +82,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-for_each_bit() macros depend on find_bit() machinery, and so the
-proper place for them is the find.h header.
+The macros iterate thru all set/clear bits in a bitmap. They search a
+first bit using find_first_bit(), and the rest bits using find_next_bit().
+
+Since find_next_bit() is called shortly after find_first_bit(), we can
+save few lines of I-cache by not using find_first_bit().
 
 Signed-off-by: Yury Norov <yury.norov@gmail.com>
 ---
- include/linux/bitops.h | 34 ----------------------------------
- include/linux/find.h   | 34 ++++++++++++++++++++++++++++++++++
- 2 files changed, 34 insertions(+), 34 deletions(-)
+ include/linux/find.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index 26bf15e6cd35..31ae1ae1a974 100644
---- a/include/linux/bitops.h
-+++ b/include/linux/bitops.h
-@@ -31,40 +31,6 @@ extern unsigned long __sw_hweight64(__u64 w);
-  */
- #include <asm/bitops.h>
- 
--#define for_each_set_bit(bit, addr, size) \
--	for ((bit) = find_first_bit((addr), (size));		\
--	     (bit) < (size);					\
--	     (bit) = find_next_bit((addr), (size), (bit) + 1))
--
--/* same as for_each_set_bit() but use bit as value to start with */
--#define for_each_set_bit_from(bit, addr, size) \
--	for ((bit) = find_next_bit((addr), (size), (bit));	\
--	     (bit) < (size);					\
--	     (bit) = find_next_bit((addr), (size), (bit) + 1))
--
--#define for_each_clear_bit(bit, addr, size) \
--	for ((bit) = find_first_zero_bit((addr), (size));	\
--	     (bit) < (size);					\
--	     (bit) = find_next_zero_bit((addr), (size), (bit) + 1))
--
--/* same as for_each_clear_bit() but use bit as value to start with */
--#define for_each_clear_bit_from(bit, addr, size) \
--	for ((bit) = find_next_zero_bit((addr), (size), (bit));	\
--	     (bit) < (size);					\
--	     (bit) = find_next_zero_bit((addr), (size), (bit) + 1))
--
--/**
-- * for_each_set_clump8 - iterate over bitmap for each 8-bit clump with set bits
-- * @start: bit offset to start search and to store the current iteration offset
-- * @clump: location to store copy of current 8-bit clump
-- * @bits: bitmap address to base the search on
-- * @size: bitmap size in number of bits
-- */
--#define for_each_set_clump8(start, clump, bits, size) \
--	for ((start) = find_first_clump8(&(clump), (bits), (size)); \
--	     (start) < (size); \
--	     (start) = find_next_clump8(&(clump), (bits), (size), (start) + 8))
--
- static inline int get_bitmask_order(unsigned int count)
- {
- 	int order;
 diff --git a/include/linux/find.h b/include/linux/find.h
-index 6048f8c97418..4500e8ab93e2 100644
+index 4500e8ab93e2..ae9ed52b52b8 100644
 --- a/include/linux/find.h
 +++ b/include/linux/find.h
-@@ -279,4 +279,38 @@ unsigned long find_next_bit_le(const void *addr, unsigned
- #error "Please fix <asm/byteorder.h>"
+@@ -280,7 +280,7 @@ unsigned long find_next_bit_le(const void *addr, unsigned
  #endif
  
-+#define for_each_set_bit(bit, addr, size) \
-+	for ((bit) = find_first_bit((addr), (size));		\
-+	     (bit) < (size);					\
-+	     (bit) = find_next_bit((addr), (size), (bit) + 1))
-+
-+/* same as for_each_set_bit() but use bit as value to start with */
-+#define for_each_set_bit_from(bit, addr, size) \
-+	for ((bit) = find_next_bit((addr), (size), (bit));	\
-+	     (bit) < (size);					\
-+	     (bit) = find_next_bit((addr), (size), (bit) + 1))
-+
-+#define for_each_clear_bit(bit, addr, size) \
-+	for ((bit) = find_first_zero_bit((addr), (size));	\
-+	     (bit) < (size);					\
-+	     (bit) = find_next_zero_bit((addr), (size), (bit) + 1))
-+
-+/* same as for_each_clear_bit() but use bit as value to start with */
-+#define for_each_clear_bit_from(bit, addr, size) \
-+	for ((bit) = find_next_zero_bit((addr), (size), (bit));	\
-+	     (bit) < (size);					\
-+	     (bit) = find_next_zero_bit((addr), (size), (bit) + 1))
-+
-+/**
-+ * for_each_set_clump8 - iterate over bitmap for each 8-bit clump with set bits
-+ * @start: bit offset to start search and to store the current iteration offset
-+ * @clump: location to store copy of current 8-bit clump
-+ * @bits: bitmap address to base the search on
-+ * @size: bitmap size in number of bits
-+ */
-+#define for_each_set_clump8(start, clump, bits, size) \
-+	for ((start) = find_first_clump8(&(clump), (bits), (size)); \
-+	     (start) < (size); \
-+	     (start) = find_next_clump8(&(clump), (bits), (size), (start) + 8))
-+
- #endif /*__LINUX_FIND_H_ */
+ #define for_each_set_bit(bit, addr, size) \
+-	for ((bit) = find_first_bit((addr), (size));		\
++	for ((bit) = find_next_bit((addr), (size), 0);		\
+ 	     (bit) < (size);					\
+ 	     (bit) = find_next_bit((addr), (size), (bit) + 1))
+ 
+@@ -291,7 +291,7 @@ unsigned long find_next_bit_le(const void *addr, unsigned
+ 	     (bit) = find_next_bit((addr), (size), (bit) + 1))
+ 
+ #define for_each_clear_bit(bit, addr, size) \
+-	for ((bit) = find_first_zero_bit((addr), (size));	\
++	for ((bit) = find_next_zero_bit((addr), (size), 0);	\
+ 	     (bit) < (size);					\
+ 	     (bit) = find_next_zero_bit((addr), (size), (bit) + 1))
+ 
 -- 
 2.30.2
 
