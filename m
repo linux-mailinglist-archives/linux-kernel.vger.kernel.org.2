@@ -2,140 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 865D73ACD82
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:28:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 203773ACD78
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234545AbhFROad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:30:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233642AbhFROa3 (ORCPT
+        id S234502AbhFROaQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Jun 2021 10:30:16 -0400
+Received: from mail-lj1-f180.google.com ([209.85.208.180]:44641 "EHLO
+        mail-lj1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233642AbhFROaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:30:29 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E276C061767;
-        Fri, 18 Jun 2021 07:28:19 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id n12so7932310pgs.13;
-        Fri, 18 Jun 2021 07:28:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tm11RJe8XH3mdKITm6gC95oTddXOFvmbaLmxC4TGSiw=;
-        b=SLa8kVghAr94SqXyOijxmRMN7A0I60AyztWLpKL9hNi7i4MzClExVb2jrdmURI8DeC
-         7xwKnu9uJ+j9423xu73s90wi8ZDsVYVBimQyflBz3JCgAWZaIUVgQJLIc3hVfvdIypb4
-         4tuYpWv+nCElzJ6oA0R5W7RCTxv4QCmrgmtQU+G8fGfW4u34ZRIoz2kdtR04hos9LI0f
-         /Jd7XP6iSGilnHTMEWbslYUufw3u0xx1R0jYElQymvNRxqfwsX6i4Orfr+3prZwCS754
-         UaNqUb35qfiGUSeDQ1qwEM7bcOTwJeK+vW3Zh0bMzqj8CcyZVTa50wFAeZHS/7sQKk5G
-         BOxA==
+        Fri, 18 Jun 2021 10:30:14 -0400
+Received: by mail-lj1-f180.google.com with SMTP id d2so14288161ljj.11;
+        Fri, 18 Jun 2021 07:28:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tm11RJe8XH3mdKITm6gC95oTddXOFvmbaLmxC4TGSiw=;
-        b=UQi382Jw6/5e/xYfYvyPreFFYoJ8abe1ZfkI1mKSkl/o9WxSnhKItztBlGLjVHLh9q
-         T+9gStmyYfEzLE+9GAtjvVUle2GWVyFjQCqFO0iVzrtpWi36Bzce8Sr48OoUxF8mTnsB
-         WsvFaCEVyGBFXY+F3A7KwYywmtemFHNkiYlG9DPURz80v2GJbOapQAEIlcR54CGi3LSn
-         JV5DN0vVnXyTaloy0yunVh4IGsR5Z6GUlaitsmXikoritFDrb7A7CBuxWeTMGFJzSOqP
-         WTcxyK8rW28+YmiSd5hJj5n/PIxsvFnx9zrdDjc44bsjfBtYbcnTd3zk93MyTai+YhT2
-         unbw==
-X-Gm-Message-State: AOAM530BCr/EdOmVL0D1loqV4LojjUIjRDKrmDvzwdswt/2pAicWZN+h
-        UOWDcJoR3R3M3XYxqwesxWpNMrD1ABAudDIq
-X-Google-Smtp-Source: ABdhPJwV07b5cexacO+EgdFjbtQ8wII+ncZYecQ78YQE8X1FZmJNS+3LBSpHUst4wQLbcTknCW43fg==
-X-Received: by 2002:a63:b645:: with SMTP id v5mr10351740pgt.15.1624026499001;
-        Fri, 18 Jun 2021 07:28:19 -0700 (PDT)
-Received: from localhost.localdomain ([122.10.161.207])
-        by smtp.gmail.com with ESMTPSA id v4sm4658167pjh.54.2021.06.18.07.28.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 18 Jun 2021 07:28:18 -0700 (PDT)
-From:   Yejune Deng <yejune.deng@gmail.com>
-To:     idryomov@gmail.com, jlayton@kernel.org, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yejune Deng <yejune.deng@gmail.com>
-Subject: [PATCH] net: ceph: Use CLOCK_MONOTONIC ktime_get_ts64()
-Date:   Fri, 18 Jun 2021 22:27:40 +0800
-Message-Id: <20210618142740.3345-1-yejune.deng@gmail.com>
-X-Mailer: git-send-email 2.29.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UBoh1jmBuVPR6JwKtiqhFyNi/ivq1pysrv5qHXiGQLQ=;
+        b=M2WlcGE9gyLdpSSoi3B2hIDn9eGDMoJLpujGGzM61l4d6oAj9rxa3SBspsCdEwwhcc
+         P8P+S9Ds9vzyP44M8M8RvOeZ+ZoJoHriHwick8pXH69Zt5WI71YHjR7e2RBHxkFlinV1
+         TPkLtxLtMxYKK4GRsIW23K88fr837jsVuzHDW3ujIYl9AxongYTuHYzi6R8DO2WPTnUD
+         A1eLhV82nHoqTOxLB/n8vJKeRh2bUaCZ8gLf4HC2xyh812MoRVWR20fbTbSVnXFkMOCd
+         +sBgR8qilaO+xI+8j65cJX1GNSCD+rBVe9KFErFRtLRcdtIs4D1bXstXf7r6z8EkiVdu
+         Lrgg==
+X-Gm-Message-State: AOAM530b0vxM5tF5FHT99k07161PY5NMAzKY8yI3qpJJ1GFZMEL0JsUN
+        +r6enbd0VBIa0ZKPMd4+LvIN2SDNeggkO/eeQt8=
+X-Google-Smtp-Source: ABdhPJwtzLC0kznSOUto6wgZpYrSEnYo1butXso9RvSLb4S7NH7Yp8IoW54JtBsqXzVmsJoUJpJztw46iYqcfxMrSSU=
+X-Received: by 2002:a2e:9016:: with SMTP id h22mr7590517ljg.331.1624026483866;
+ Fri, 18 Jun 2021 07:28:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210603151550.140727-1-mailhol.vincent@wanadoo.fr>
+ <20210603151550.140727-3-mailhol.vincent@wanadoo.fr> <20210618093424.xohvsqaaq5qf2bjn@pengutronix.de>
+ <CAMZ6RqJn5z-9PfkcJdiS6aG+qCPnifXDwH26ZEwo8-=id=TXbw@mail.gmail.com>
+ <CAMZ6RqKrPQkPy-dAiQjAB4aKnqeaNx+L-cro8F_mc2VPgOD4Jw@mail.gmail.com> <20210618124447.47cy7hyqp53d4tjh@pengutronix.de>
+In-Reply-To: <20210618124447.47cy7hyqp53d4tjh@pengutronix.de>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Fri, 18 Jun 2021 23:27:52 +0900
+Message-ID: <CAMZ6RqJCZB6Q79JYfxD7PGboPwMndDQRKsuUEk5Q34fj2vOcYg@mail.gmail.com>
+Subject: Re: CAN-FD Transmitter Delay Compensation (TDC) on mcp2518fd
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     linux-can <linux-can@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Thomas Kopp <thomas.kopp@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Documentation/core-api/timekeeping.rst recommend that we should use
-monotonic time ktime_get_ts64(), to avoid glitches with a concurrent
-settimeofday().
+On Fri. 18 Jun 2021 at 21:44, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> On 18.06.2021 20:17:51, Vincent MAILHOL wrote:
+> > > > I just noticed in the mcp2518fd data sheet:
+> > > >
+> > > > | bit 14-8 TDCO[6:0]: Transmitter Delay Compensation Offset bits;
+> > > > | Secondary Sample Point (SSP) Two’s complement; offset can be positive,
+> > > > | zero, or negative.
+> > > > |
+> > > > | 011 1111 = 63 x TSYSCLK
+> > > > | ...
+> > > > | 000 0000 = 0 x TSYSCLK
+> > > > | ...
+> > > > | 111 1111 = –64 x TSYSCLK
+> > > >
+> > > > Have you takes this into account?
+> > >
+> > > I have not. And I fail to understand what would be the physical
+> > > meaning if TDCO is zero or negative.
+>
+> The mcp25xxfd family data sheet says:
+>
+> | SSP = TDCV + TDCO
+>
+> > > TDCV indicates the position of the bit start on the RX pin.
+>
+> If I understand correctly in automatic mode TDCV is measured by the CAN
+> controller and reflects the transceiver delay.
 
-Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
----
- net/ceph/messenger.c    | 2 +-
- net/ceph/messenger_v1.c | 2 +-
- net/ceph/messenger_v2.c | 2 +-
- net/ceph/osd_client.c   | 4 ++--
- 4 files changed, 5 insertions(+), 5 deletions(-)
+Yes. I phrased it poorly but this is what I wanted to say. It is
+the delay to propagate from the TX pin to the RX pin.
 
-diff --git a/net/ceph/messenger.c b/net/ceph/messenger.c
-index 57d043b..2d07ab5 100644
---- a/net/ceph/messenger.c
-+++ b/net/ceph/messenger.c
-@@ -1809,7 +1809,7 @@ bool ceph_con_keepalive_expired(struct ceph_connection *con,
- 	    (con->peer_features & CEPH_FEATURE_MSGR_KEEPALIVE2)) {
- 		struct timespec64 now;
- 		struct timespec64 ts;
--		ktime_get_real_ts64(&now);
-+		ktime_get_ts64(&now);
- 		jiffies_to_timespec64(interval, &ts);
- 		ts = timespec64_add(con->last_keepalive_ack, ts);
- 		return timespec64_compare(&now, &ts) >= 0;
-diff --git a/net/ceph/messenger_v1.c b/net/ceph/messenger_v1.c
-index 2cb5ffd..2ec7b1d 100644
---- a/net/ceph/messenger_v1.c
-+++ b/net/ceph/messenger_v1.c
-@@ -310,7 +310,7 @@ static void prepare_write_keepalive(struct ceph_connection *con)
- 	if (con->peer_features & CEPH_FEATURE_MSGR_KEEPALIVE2) {
- 		struct timespec64 now;
- 
--		ktime_get_real_ts64(&now);
-+		ktime_get_ts64(&now);
- 		con_out_kvec_add(con, sizeof(tag_keepalive2), &tag_keepalive2);
- 		ceph_encode_timespec64(&con->v1.out_temp_keepalive2, &now);
- 		con_out_kvec_add(con, sizeof(con->v1.out_temp_keepalive2),
-diff --git a/net/ceph/messenger_v2.c b/net/ceph/messenger_v2.c
-index cc40ce4..2125e77 100644
---- a/net/ceph/messenger_v2.c
-+++ b/net/ceph/messenger_v2.c
-@@ -1439,7 +1439,7 @@ static int prepare_keepalive2(struct ceph_connection *con)
- 	struct ceph_timespec *ts = CTRL_BODY(con->v2.out_buf);
- 	struct timespec64 now;
- 
--	ktime_get_real_ts64(&now);
-+	ktime_get_ts64(&now);
- 	dout("%s con %p timestamp %lld.%09ld\n", __func__, con, now.tv_sec,
- 	     now.tv_nsec);
- 
-diff --git a/net/ceph/osd_client.c b/net/ceph/osd_client.c
-index ff8624a..5192a8a 100644
---- a/net/ceph/osd_client.c
-+++ b/net/ceph/osd_client.c
-@@ -4717,7 +4717,7 @@ ceph_osdc_watch(struct ceph_osd_client *osdc,
- 	ceph_oid_copy(&lreq->t.base_oid, oid);
- 	ceph_oloc_copy(&lreq->t.base_oloc, oloc);
- 	lreq->t.flags = CEPH_OSD_FLAG_WRITE;
--	ktime_get_real_ts64(&lreq->mtime);
-+	ktime_get_ts64(&lreq->mtime);
- 
- 	lreq->reg_req = alloc_watch_request(lreq, CEPH_OSD_WATCH_OP_WATCH);
- 	if (!lreq->reg_req) {
-@@ -4767,7 +4767,7 @@ int ceph_osdc_unwatch(struct ceph_osd_client *osdc,
- 	ceph_oid_copy(&req->r_base_oid, &lreq->t.base_oid);
- 	ceph_oloc_copy(&req->r_base_oloc, &lreq->t.base_oloc);
- 	req->r_flags = CEPH_OSD_FLAG_WRITE;
--	ktime_get_real_ts64(&req->r_mtime);
-+	ktime_get_ts64(&req->r_mtime);
- 	osd_req_op_watch_init(req, 0, lreq->linger_id,
- 			      CEPH_OSD_WATCH_OP_UNWATCH);
- 
--- 
-2.7.4
+If TDCO = 0 then SSP = TDCV + 0 = TDCV thus the measurement
+occurs at the bit start on the RX pin.
 
+> I don't know why you want
+> to subtract a time from that....
+>
+> The rest of the relevant registers:
+>
+> | TDCMOD[1:0]: Transmitter Delay Compensation Mode bits; Secondary Sample Point (SSP)
+> | 10-11 = Auto; measure delay and add TDCO.
+> | 01 = Manual; Do not measure, use TDCV + TDCO from register
+> | 00 = TDC Disabled
+> |
+> | TDCO[6:0]: Transmitter Delay Compensation Offset bits; Secondary Sample Point (SSP)
+> | Two’s complement; offset can be positive, zero, or negative.
+> | 011 1111 = 63 x TSYSCLK
+> | ...
+> | 000 0000 = 0 x TSYSCLK
+> | ...
+> | 111 1111 = –64 x TSYSCLK
+> |
+> | TDCV[5:0]: Transmitter Delay Compensation Value bits; Secondary Sample Point (SSP)
+> | 11 1111 = 63 x TSYSCLK
+> | ...
+> | 00 0000 = 0 x TSYSCLK
+
+Aside from the negative TDCO, the rest is standard stuff. We can
+note the absence of the TDCF but that's not a blocker.
+
+> > > If TDCO is zero, the measurement occurs on the bit start when all
+> > > the ringing occurs. That is a really bad choice to do the
+> > > measurement. If it is negative, it means that you are measuring the
+> > > previous bit o_O !?
+>
+> I don't know...
+>
+> > > Maybe I am missing something but I just do not get it.
+> > >
+> > > I believe you started to implement the mcp2518fd.
+>
+> No I've just looked into the register description.
+
+OK. For your information, the ETAS ES58x FD devices do not allow
+the use of manual mode for TDCV. The microcontroller from
+Microchip supports it but ETAS firmware only exposes the
+automatic TDCV mode. So it can not be used to test what would
+occur if SSP = 0.
+
+I will prepare a patch to allow zero value for both TDCV and
+TDCO (I am a bit sad because I prefer the current design, but if
+ISO allows it, I feel like I have no choice).  However, I refuse
+to allow the negative TDCO value unless someone is able to
+explain the rationale.
+
+
+Yours sincerely,
+Vincent
