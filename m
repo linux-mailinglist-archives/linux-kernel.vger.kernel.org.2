@@ -2,111 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0C03AD3D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 22:44:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02FC13AD3D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 22:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234049AbhFRUrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 16:47:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45730 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232041AbhFRUrE (ORCPT
+        id S234046AbhFRUrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 16:47:22 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:38719 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232041AbhFRUrT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 16:47:04 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50992C061574;
-        Fri, 18 Jun 2021 13:44:53 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id d13so15638468ljg.12;
-        Fri, 18 Jun 2021 13:44:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=G7kQ9Jg07LG2cipeMCkOjvLhXj1OqGqGhs6/niYo2sE=;
-        b=rUPPbiE83cwd7tTiSehNqA8CI2sNrxBpHQFuswK+VRov1p+eg+CJ5DnUrmOArgyl6Y
-         5TcXAuUihn+CfqtvXXQieviRDakTtmGde7nj2ZhKkp4fV2PExBsceL04XleuowQGSHiH
-         ZN3w29CtIRvh9s/9DDV9p05iU+QZLNBhytEu9YHovAH03WCM7F5hrApj/E/WE07ObOdF
-         KtgrdcQzdQ0pWCydZic+JxJZJNvQ35fpGQ8JwU1Qru5485eItbzv7fJ7wTUvr6uBzWfY
-         RenlY2do9iScQmSNoqcgnZy+iznZ+nK2ARfYY1ZyIY4DrmbZy95bXmzc/26K1MDBair3
-         yNKA==
+        Fri, 18 Jun 2021 16:47:19 -0400
+Received: by mail-ot1-f41.google.com with SMTP id j11-20020a9d738b0000b02903ea3c02ded8so10959910otk.5;
+        Fri, 18 Jun 2021 13:45:09 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=G7kQ9Jg07LG2cipeMCkOjvLhXj1OqGqGhs6/niYo2sE=;
-        b=Kg5KcwplHzUSzhU1sD5aXUsYqEZ+TbNEqYE0SPCvxXOP2HL1JsntPv2KaLkrde001I
-         I/WoJ17r63TlRm+gNZnPmGu1kbW1BEmc19b1c10VbrQtcVkDGznIjPQ+jo68yWZO4nn2
-         JuRB7FmGT+XZrjNT5Wdra1LYdGz64Aw0zQvkoNECJ8xejwDsx3TZ+YYtN/l7+IgJ7XMl
-         dOCqafWBj2jgdE8OURv1pSHKWTJ7Nb1V2aECxyDrZQeW85QrbNbXG1dwo/VT3W3MedCH
-         cTPsXr0KJo976bjTIlIjEbFH8+kAKWw6WWe1ThcnqH0dkYQD11HErC8oYq1A5f65h/EP
-         zTGA==
-X-Gm-Message-State: AOAM532oJKBDkYvR/QuWlL84mhfbzluvmovtPgbdtKn7X12+DuJEyJ+j
-        qVMDlZo4ga//63h3VNf3Vbg=
-X-Google-Smtp-Source: ABdhPJwGezIn9r9dCJJ9XwZgoUH6axsl+RAoLTHwj8WdM/zJVRxrCkq3KnAu/MX33paSLKIbH3r7Ig==
-X-Received: by 2002:a2e:7a16:: with SMTP id v22mr11062453ljc.101.1624049091690;
-        Fri, 18 Jun 2021 13:44:51 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
-        by smtp.googlemail.com with ESMTPSA id z8sm1008690lfg.243.2021.06.18.13.44.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 13:44:51 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] cfg80211: Add wiphy_info_once()
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Franky Lin <franky.lin@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>
-References: <20210511211549.30571-1-digetx@gmail.com>
-Message-ID: <e7495304-d62c-fd20-fab3-3930735f2076@gmail.com>
-Date:   Fri, 18 Jun 2021 23:44:50 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GBg+2tBxlhWic7DcvvdmpLqu1gfkvjlqsdo6snxskmY=;
+        b=f1NiMc6oix/uKHuLmFM89/ceKjdMzTp3zyKH8SUzsaglq2bHev4qSME80OWtbsb1Nd
+         W26fyPmM1ivEcc+7+cAaET3U63ckr/mYqtXJ1Xd7cGN9dAnopjGxu9IYt+KduwdPqOIc
+         n8aATmzMwIW1/Ro8LqsDJOadsAXz77pS4Zo8w62dAg5kzE7BWKqoCW0K0Og/zeH5keJe
+         xrL7ne7whuiP/qNtf3zWpVx6MRrd/iKSFn41wfGjQi7IJpKPKjJ0EPPlmh4U5aX7Gcut
+         xVO7CvyfaafPS+e++eZuaLr4734yQ/tfbaDOFeFwXxloFvEe+J07pnrcIh4aiS7ejXy+
+         VIoA==
+X-Gm-Message-State: AOAM532+uhD8r8ZSubax3vWx50iymkolhGryebMGsl6xrLt2Xygwd+J8
+        EUYkLfSgLEfmQTWxQS5jbQ==
+X-Google-Smtp-Source: ABdhPJxzlfAyJn3z8Oxr35MJyBzPhmoAsKjTDdtsFputSBlYV4c2XziBbvlX1+4IIhiRIxbeYHBE+A==
+X-Received: by 2002:a05:6830:1d6f:: with SMTP id l15mr1892448oti.358.1624049109025;
+        Fri, 18 Jun 2021 13:45:09 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id p9sm2181081otl.64.2021.06.18.13.45.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 13:45:08 -0700 (PDT)
+Received: (nullmailer pid 2844812 invoked by uid 1000);
+        Fri, 18 Jun 2021 20:45:05 -0000
+Date:   Fri, 18 Jun 2021 14:45:05 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     Lokesh Vutla <lokeshvutla@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] dt-bindings: spi: omap-spi: Convert to json-schema
+Message-ID: <20210618204505.GA2835349@robh.at.kernel.org>
+References: <20210608052010.15656-1-a-govindraju@ti.com>
 MIME-Version: 1.0
-In-Reply-To: <20210511211549.30571-1-digetx@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210608052010.15656-1-a-govindraju@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-12.05.2021 00:15, Dmitry Osipenko пишет:
-> Add wiphy_info_once() helper that prints info message only once.
+On Tue, Jun 08, 2021 at 10:50:09AM +0530, Aswath Govindraju wrote:
+> Convert omap-spi dt-binding documentation from txt to yaml format.
 > 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
 > ---
 > 
-> Changelog:
+> changes since v1:
+> - split the series according to their respective trees
 > 
-> v2: - New patch added in v2.
+> link to v1:
+> https://lore.kernel.org/patchwork/project/lkml/list/?series=502255
 > 
->  include/net/cfg80211.h | 2 ++
->  1 file changed, 2 insertions(+)
+>  .../devicetree/bindings/spi/omap-spi.txt      |  48 -------
+>  .../devicetree/bindings/spi/omap-spi.yaml     | 126 ++++++++++++++++++
+>  2 files changed, 126 insertions(+), 48 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/spi/omap-spi.txt
+>  create mode 100644 Documentation/devicetree/bindings/spi/omap-spi.yaml
 > 
-> diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
-> index 5224f885a99a..3b19e03509b3 100644
-> --- a/include/net/cfg80211.h
-> +++ b/include/net/cfg80211.h
-> @@ -8154,6 +8154,8 @@ bool cfg80211_iftype_allowed(struct wiphy *wiphy, enum nl80211_iftype iftype,
->  	dev_notice(&(wiphy)->dev, format, ##args)
->  #define wiphy_info(wiphy, format, args...)			\
->  	dev_info(&(wiphy)->dev, format, ##args)
-> +#define wiphy_info_once(wiphy, format, args...)			\
-> +	dev_info_once(&(wiphy)->dev, format, ##args)
->  
->  #define wiphy_err_ratelimited(wiphy, format, args...)		\
->  	dev_err_ratelimited(&(wiphy)->dev, format, ##args)
-> 
+> diff --git a/Documentation/devicetree/bindings/spi/omap-spi.txt b/Documentation/devicetree/bindings/spi/omap-spi.txt
+> deleted file mode 100644
+> index 487208c256c0..000000000000
+> --- a/Documentation/devicetree/bindings/spi/omap-spi.txt
+> +++ /dev/null
+> @@ -1,48 +0,0 @@
+> -OMAP2+ McSPI device
+> -
+> -Required properties:
+> -- compatible :
+> -  - "ti,am654-mcspi" for AM654.
+> -  - "ti,omap2-mcspi" for OMAP2 & OMAP3.
+> -  - "ti,omap4-mcspi" for OMAP4+.
+> -- ti,spi-num-cs : Number of chipselect supported  by the instance.
+> -- ti,hwmods: Name of the hwmod associated to the McSPI
+> -- ti,pindir-d0-out-d1-in: Select the D0 pin as output and D1 as
+> -			  input. The default is D0 as input and
+> -			  D1 as output.
+> -
+> -Optional properties:
+> -- dmas: List of DMA specifiers with the controller specific format
+> -	as described in the generic DMA client binding. A tx and rx
+> -	specifier is required for each chip select.
+> -- dma-names: List of DMA request names. These strings correspond
+> -	1:1 with the DMA specifiers listed in dmas. The string naming
+> -	is to be "rxN" and "txN" for RX and TX requests,
+> -	respectively, where N equals the chip select number.
+> -
+> -Examples:
+> -
+> -[hwmod populated DMA resources]
+> -
+> -mcspi1: mcspi@1 {
+> -    #address-cells = <1>;
+> -    #size-cells = <0>;
+> -    compatible = "ti,omap4-mcspi";
+> -    ti,hwmods = "mcspi1";
+> -    ti,spi-num-cs = <4>;
+> -};
+> -
+> -[generic DMA request binding]
+> -
+> -mcspi1: mcspi@1 {
+> -    #address-cells = <1>;
+> -    #size-cells = <0>;
+> -    compatible = "ti,omap4-mcspi";
+> -    ti,hwmods = "mcspi1";
+> -    ti,spi-num-cs = <2>;
+> -    dmas = <&edma 42
+> -	    &edma 43
+> -	    &edma 44
+> -	    &edma 45>;
+> -    dma-names = "tx0", "rx0", "tx1", "rx1";
+> -};
+> diff --git a/Documentation/devicetree/bindings/spi/omap-spi.yaml b/Documentation/devicetree/bindings/spi/omap-spi.yaml
+> new file mode 100644
+> index 000000000000..cd20704f2edc
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/omap-spi.yaml
+> @@ -0,0 +1,126 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/omap-spi.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: SPI controller bindings for OMAP and K3 SoCs
+> +
+> +maintainers:
+> +  - Mark Brown <broonie@kernel.org>
 
-Ping?
+A TI person here please.
 
-Arend, is this series good to you? I assume Kalle could pick it up if
-you'll give ack. Thanks in advance.
+You need a ref to spi-controller.yaml
+
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - ti,am654-mcspi
+> +              - ti,am4372-mcspi
+> +          - const: ti,omap4-mcspi
+> +      - items:
+> +          - enum:
+> +              - ti,omap2-mcspi
+> +              - ti,omap4-mcspi
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+
+> +  '#address-cells':
+> +    const: 1
+> +
+> +  '#size-cells':
+> +    const: 0
+
+Don't need these, covered by spi-controller.yaml.
+
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  ti,spi-num-cs:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: Number of chipselect supported  by the instance.
+> +    minimum: 1
+> +    maximum: 4
+> +
+> +  ti,hwmods:
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    description:
+> +      Must be "mcspi<n>", n being the instance number (1-based).
+> +      This property is applicable only on legacy platforms mainly omap2/3
+> +      and ti81xx and should not be used on other platforms.
+> +    deprecated: true
+> +
+> +  ti,pindir-d0-out-d1-in:
+> +    description:
+> +      Select the D0 pin as output and D1 as input. The default is D0
+> +      as input and D1 as output.
+> +    type: boolean
+> +
+> +  dmas:
+> +    description:
+> +      List of DMA specifiers with the controller specific format as
+> +      described in the generic DMA client binding. A tx and rx
+> +      specifier is required for each chip select.
+> +    minItems: 1
+> +    maxItems: 8
+> +
+> +  dma-names:
+> +    description:
+> +      List of DMA request names. These strings correspond 1:1 with
+> +      the DMA sepecifiers listed in dmas. The string names is to be
+> +      "rxN" and "txN" for RX and TX requests, respectively. Where N
+> +      is the chip select number.
+> +    minItems: 1
+> +    maxItems: 8
+> +
+> +patternProperties:
+> +  "@[0-9a-f]+$":
+> +    type: object
+> +    description:
+> +      Flash devices are defined as a sub-node of the spi controller
+
+Covered by spi-controller.yaml.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +if:
+> +  properties:
+> +    compatible:
+> +      oneOf:
+> +        - const: ti,omap2-mcspi
+> +        - const: ti,omap4-mcspi
+> +
+> +then:
+> +  properties:
+> +    ti,hwmods:
+> +      items:
+> +        - pattern: "^mcspi([1-9])$"
+> +
+> +else:
+> +  properties:
+> +    ti,hwmods: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/soc/ti,sci_pm_domain.h>
+> +
+> +    main_spi0: spi@2100000 {
+
+Drop unused labels.
+
+> +      compatible = "ti,am654-mcspi","ti,omap4-mcspi";
+> +      reg = <0x2100000 0x400>;
+> +      interrupts = <GIC_SPI 184 IRQ_TYPE_LEVEL_HIGH>;
+> +      clocks = <&k3_clks 137 1>;
+> +      power-domains = <&k3_pds 137 TI_SCI_PD_EXCLUSIVE>;
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      dmas = <&main_udmap 0xc500>, <&main_udmap 0x4500>;
+> +      dma-names = "tx0", "rx0";
+> +    };
+> -- 
+> 2.17.1
+> 
+> 
