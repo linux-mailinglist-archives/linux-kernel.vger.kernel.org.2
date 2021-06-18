@@ -2,279 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02FC13AD3D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 22:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE1143AD3D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 22:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234046AbhFRUrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 16:47:22 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:38719 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232041AbhFRUrT (ORCPT
+        id S234102AbhFRUrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 16:47:37 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:41602 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232041AbhFRUrd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 16:47:19 -0400
-Received: by mail-ot1-f41.google.com with SMTP id j11-20020a9d738b0000b02903ea3c02ded8so10959910otk.5;
-        Fri, 18 Jun 2021 13:45:09 -0700 (PDT)
+        Fri, 18 Jun 2021 16:47:33 -0400
+Received: by mail-il1-f200.google.com with SMTP id m15-20020a923f0f0000b02901ee102ac952so3618339ila.8
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 13:45:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=GBg+2tBxlhWic7DcvvdmpLqu1gfkvjlqsdo6snxskmY=;
-        b=f1NiMc6oix/uKHuLmFM89/ceKjdMzTp3zyKH8SUzsaglq2bHev4qSME80OWtbsb1Nd
-         W26fyPmM1ivEcc+7+cAaET3U63ckr/mYqtXJ1Xd7cGN9dAnopjGxu9IYt+KduwdPqOIc
-         n8aATmzMwIW1/Ro8LqsDJOadsAXz77pS4Zo8w62dAg5kzE7BWKqoCW0K0Og/zeH5keJe
-         xrL7ne7whuiP/qNtf3zWpVx6MRrd/iKSFn41wfGjQi7IJpKPKjJ0EPPlmh4U5aX7Gcut
-         xVO7CvyfaafPS+e++eZuaLr4734yQ/tfbaDOFeFwXxloFvEe+J07pnrcIh4aiS7ejXy+
-         VIoA==
-X-Gm-Message-State: AOAM532+uhD8r8ZSubax3vWx50iymkolhGryebMGsl6xrLt2Xygwd+J8
-        EUYkLfSgLEfmQTWxQS5jbQ==
-X-Google-Smtp-Source: ABdhPJxzlfAyJn3z8Oxr35MJyBzPhmoAsKjTDdtsFputSBlYV4c2XziBbvlX1+4IIhiRIxbeYHBE+A==
-X-Received: by 2002:a05:6830:1d6f:: with SMTP id l15mr1892448oti.358.1624049109025;
-        Fri, 18 Jun 2021 13:45:09 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id p9sm2181081otl.64.2021.06.18.13.45.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 13:45:08 -0700 (PDT)
-Received: (nullmailer pid 2844812 invoked by uid 1000);
-        Fri, 18 Jun 2021 20:45:05 -0000
-Date:   Fri, 18 Jun 2021 14:45:05 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-Cc:     Lokesh Vutla <lokeshvutla@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: spi: omap-spi: Convert to json-schema
-Message-ID: <20210618204505.GA2835349@robh.at.kernel.org>
-References: <20210608052010.15656-1-a-govindraju@ti.com>
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=WWy358Ai3kRq2oHNuyRjq5Ya1NqTVhnP0/NxBKOX8F8=;
+        b=HpymYBgVsngbVaIfr9ciwo98z7u0/QVZxtrfrNAPluieu/Is6KZibC8xj41hYXfceA
+         RiKlSBTlU6LNAB1N+U8CM2E3O8s3zBTjYbCrdpcLKu6DJ+8yy8bSZIsYAmwwwebLMt49
+         ZJOtv6lmt4epm0g41qRYZ/cBPm+oGtWMb4UiO+2/XlL+lUtdPSoiTCZeGwT7rWfWSOnf
+         gcn7ixYABn6/8q9L1C8IKmCTQ5KGbn2umXN84wV54KvXY363R2TpngHag4si2U0Sr/BQ
+         jCZ7iT4Fl0RbTtpvN52HHLNWuh1D8i/dwp9oEZmf3/kf+l+/rrRnQB33Z6hLyna3kE1H
+         yDrQ==
+X-Gm-Message-State: AOAM532hWjw04YD3c5W4TT611G6Th464bUrU+TXlpb0b/LHOeO6idae5
+        Bs66JclDEXvRZPN+UBAoj9TqGo/vYtVR0AvJOgSznADPwyaF
+X-Google-Smtp-Source: ABdhPJx8Re1LIzYZ2B7UVB8Z4gWXT/X637J6gdoS+9MRRpNPWLdN6ZGOdDoLZTgQIKAoTCA5toghBPk9v6JwRevIjTbChfpPPDhB
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608052010.15656-1-a-govindraju@ti.com>
+X-Received: by 2002:a05:6638:191d:: with SMTP id p29mr5070003jal.75.1624049123988;
+ Fri, 18 Jun 2021 13:45:23 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 13:45:23 -0700
+In-Reply-To: <000000000000f034fc05c2da6617@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000022183205c5106739@google.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in check_all_holdout_tasks_trace
+From:   syzbot <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
+        axboe@kernel.dk, bpf@vger.kernel.org, christian@brauner.io,
+        daniel@iogearbox.net, dvyukov@google.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, john.fastabend@gmail.com,
+        josh@joshtriplett.org, kafai@fb.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+        netdev@vger.kernel.org, paulmck@kernel.org, peterz@infradead.org,
+        rcu@vger.kernel.org, rostedt@goodmis.org, shakeelb@google.com,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        yanfei.xu@windriver.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 10:50:09AM +0530, Aswath Govindraju wrote:
-> Convert omap-spi dt-binding documentation from txt to yaml format.
-> 
-> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-> ---
-> 
-> changes since v1:
-> - split the series according to their respective trees
-> 
-> link to v1:
-> https://lore.kernel.org/patchwork/project/lkml/list/?series=502255
-> 
->  .../devicetree/bindings/spi/omap-spi.txt      |  48 -------
->  .../devicetree/bindings/spi/omap-spi.yaml     | 126 ++++++++++++++++++
->  2 files changed, 126 insertions(+), 48 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/spi/omap-spi.txt
->  create mode 100644 Documentation/devicetree/bindings/spi/omap-spi.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/omap-spi.txt b/Documentation/devicetree/bindings/spi/omap-spi.txt
-> deleted file mode 100644
-> index 487208c256c0..000000000000
-> --- a/Documentation/devicetree/bindings/spi/omap-spi.txt
-> +++ /dev/null
-> @@ -1,48 +0,0 @@
-> -OMAP2+ McSPI device
-> -
-> -Required properties:
-> -- compatible :
-> -  - "ti,am654-mcspi" for AM654.
-> -  - "ti,omap2-mcspi" for OMAP2 & OMAP3.
-> -  - "ti,omap4-mcspi" for OMAP4+.
-> -- ti,spi-num-cs : Number of chipselect supported  by the instance.
-> -- ti,hwmods: Name of the hwmod associated to the McSPI
-> -- ti,pindir-d0-out-d1-in: Select the D0 pin as output and D1 as
-> -			  input. The default is D0 as input and
-> -			  D1 as output.
-> -
-> -Optional properties:
-> -- dmas: List of DMA specifiers with the controller specific format
-> -	as described in the generic DMA client binding. A tx and rx
-> -	specifier is required for each chip select.
-> -- dma-names: List of DMA request names. These strings correspond
-> -	1:1 with the DMA specifiers listed in dmas. The string naming
-> -	is to be "rxN" and "txN" for RX and TX requests,
-> -	respectively, where N equals the chip select number.
-> -
-> -Examples:
-> -
-> -[hwmod populated DMA resources]
-> -
-> -mcspi1: mcspi@1 {
-> -    #address-cells = <1>;
-> -    #size-cells = <0>;
-> -    compatible = "ti,omap4-mcspi";
-> -    ti,hwmods = "mcspi1";
-> -    ti,spi-num-cs = <4>;
-> -};
-> -
-> -[generic DMA request binding]
-> -
-> -mcspi1: mcspi@1 {
-> -    #address-cells = <1>;
-> -    #size-cells = <0>;
-> -    compatible = "ti,omap4-mcspi";
-> -    ti,hwmods = "mcspi1";
-> -    ti,spi-num-cs = <2>;
-> -    dmas = <&edma 42
-> -	    &edma 43
-> -	    &edma 44
-> -	    &edma 45>;
-> -    dma-names = "tx0", "rx0", "tx1", "rx1";
-> -};
-> diff --git a/Documentation/devicetree/bindings/spi/omap-spi.yaml b/Documentation/devicetree/bindings/spi/omap-spi.yaml
-> new file mode 100644
-> index 000000000000..cd20704f2edc
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/omap-spi.yaml
-> @@ -0,0 +1,126 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/spi/omap-spi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: SPI controller bindings for OMAP and K3 SoCs
-> +
-> +maintainers:
-> +  - Mark Brown <broonie@kernel.org>
+syzbot has found a reproducer for the following issue on:
 
-A TI person here please.
+HEAD commit:    0c38740c selftests/bpf: Fix ringbuf test fetching map FD
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=128a7e34300000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a6380da8984033f1
+dashboard link: https://syzkaller.appspot.com/bug?extid=7b2b13f4943374609532
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1264c2d7d00000
 
-You need a ref to spi-controller.yaml
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com
 
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - ti,am654-mcspi
-> +              - ti,am4372-mcspi
-> +          - const: ti,omap4-mcspi
-> +      - items:
-> +          - enum:
-> +              - ti,omap2-mcspi
-> +              - ti,omap4-mcspi
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
+==================================================================
+BUG: KASAN: use-after-free in check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
+Read of size 1 at addr ffff8880294cbc9c by task rcu_tasks_trace/12
 
-> +  '#address-cells':
-> +    const: 1
-> +
-> +  '#size-cells':
-> +    const: 0
+CPU: 0 PID: 12 Comm: rcu_tasks_trace Not tainted 5.13.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:233
+ __kasan_report mm/kasan/report.c:419 [inline]
+ kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:436
+ check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
+ rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
+ rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
+ kthread+0x3b1/0x4a0 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
-Don't need these, covered by spi-controller.yaml.
+Allocated by task 8499:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:428 [inline]
+ __kasan_slab_alloc+0x84/0xa0 mm/kasan/common.c:461
+ kasan_slab_alloc include/linux/kasan.h:236 [inline]
+ slab_post_alloc_hook mm/slab.h:524 [inline]
+ slab_alloc_node mm/slub.c:2913 [inline]
+ kmem_cache_alloc_node+0x269/0x3e0 mm/slub.c:2949
+ alloc_task_struct_node kernel/fork.c:171 [inline]
+ dup_task_struct kernel/fork.c:865 [inline]
+ copy_process+0x5c8/0x7120 kernel/fork.c:1947
+ kernel_clone+0xe7/0xab0 kernel/fork.c:2503
+ __do_sys_clone+0xc8/0x110 kernel/fork.c:2620
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  ti,spi-num-cs:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description: Number of chipselect supported  by the instance.
-> +    minimum: 1
-> +    maximum: 4
-> +
-> +  ti,hwmods:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description:
-> +      Must be "mcspi<n>", n being the instance number (1-based).
-> +      This property is applicable only on legacy platforms mainly omap2/3
-> +      and ti81xx and should not be used on other platforms.
-> +    deprecated: true
-> +
-> +  ti,pindir-d0-out-d1-in:
-> +    description:
-> +      Select the D0 pin as output and D1 as input. The default is D0
-> +      as input and D1 as output.
-> +    type: boolean
-> +
-> +  dmas:
-> +    description:
-> +      List of DMA specifiers with the controller specific format as
-> +      described in the generic DMA client binding. A tx and rx
-> +      specifier is required for each chip select.
-> +    minItems: 1
-> +    maxItems: 8
-> +
-> +  dma-names:
-> +    description:
-> +      List of DMA request names. These strings correspond 1:1 with
-> +      the DMA sepecifiers listed in dmas. The string names is to be
-> +      "rxN" and "txN" for RX and TX requests, respectively. Where N
-> +      is the chip select number.
-> +    minItems: 1
-> +    maxItems: 8
-> +
-> +patternProperties:
-> +  "@[0-9a-f]+$":
-> +    type: object
-> +    description:
-> +      Flash devices are defined as a sub-node of the spi controller
+Freed by task 12:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
+ ____kasan_slab_free mm/kasan/common.c:360 [inline]
+ ____kasan_slab_free mm/kasan/common.c:325 [inline]
+ __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:368
+ kasan_slab_free include/linux/kasan.h:212 [inline]
+ slab_free_hook mm/slub.c:1582 [inline]
+ slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1607
+ slab_free mm/slub.c:3167 [inline]
+ kmem_cache_free+0x8a/0x740 mm/slub.c:3183
+ __put_task_struct+0x26f/0x400 kernel/fork.c:747
+ trc_wait_for_one_reader kernel/rcu/tasks.h:935 [inline]
+ check_all_holdout_tasks_trace+0x179/0x420 kernel/rcu/tasks.h:1081
+ rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
+ rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
+ kthread+0x3b1/0x4a0 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
-Covered by spi-controller.yaml.
+Last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+ __call_rcu kernel/rcu/tree.c:3038 [inline]
+ call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
+ release_task+0xca1/0x1690 kernel/exit.c:226
+ wait_task_zombie kernel/exit.c:1108 [inline]
+ wait_consider_task+0x2fb5/0x3b40 kernel/exit.c:1335
+ do_wait_thread kernel/exit.c:1398 [inline]
+ do_wait+0x724/0xd40 kernel/exit.c:1515
+ kernel_wait4+0x14c/0x260 kernel/exit.c:1678
+ __do_sys_wait4+0x13f/0x150 kernel/exit.c:1706
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +additionalProperties: false
-> +
-> +if:
-> +  properties:
-> +    compatible:
-> +      oneOf:
-> +        - const: ti,omap2-mcspi
-> +        - const: ti,omap4-mcspi
-> +
-> +then:
-> +  properties:
-> +    ti,hwmods:
-> +      items:
-> +        - pattern: "^mcspi([1-9])$"
-> +
-> +else:
-> +  properties:
-> +    ti,hwmods: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/soc/ti,sci_pm_domain.h>
-> +
-> +    main_spi0: spi@2100000 {
+Second to last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+ __call_rcu kernel/rcu/tree.c:3038 [inline]
+ call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
+ put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
+ release_task+0xca1/0x1690 kernel/exit.c:226
+ wait_task_zombie kernel/exit.c:1108 [inline]
+ wait_consider_task+0x2fb5/0x3b40 kernel/exit.c:1335
+ do_wait_thread kernel/exit.c:1398 [inline]
+ do_wait+0x724/0xd40 kernel/exit.c:1515
+ kernel_wait4+0x14c/0x260 kernel/exit.c:1678
+ __do_sys_wait4+0x13f/0x150 kernel/exit.c:1706
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Drop unused labels.
+The buggy address belongs to the object at ffff8880294cb880
+ which belongs to the cache task_struct of size 6976
+The buggy address is located 1052 bytes inside of
+ 6976-byte region [ffff8880294cb880, ffff8880294cd3c0)
+The buggy address belongs to the page:
+page:ffffea0000a53200 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x294c8
+head:ffffea0000a53200 order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+raw: 00fff00000010200 ffffea00008d6400 0000000200000002 ffff888140005140
+raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 2, ts 15187628853, free_ts 0
+ prep_new_page mm/page_alloc.c:2358 [inline]
+ get_page_from_freelist+0x1034/0x2bf0 mm/page_alloc.c:3994
+ __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5200
+ alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
+ alloc_slab_page mm/slub.c:1645 [inline]
+ allocate_slab+0x32e/0x4c0 mm/slub.c:1785
+ new_slab mm/slub.c:1848 [inline]
+ new_slab_objects mm/slub.c:2594 [inline]
+ ___slab_alloc+0x4a1/0x810 mm/slub.c:2757
+ __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2797
+ slab_alloc_node mm/slub.c:2879 [inline]
+ kmem_cache_alloc_node+0x12f/0x3e0 mm/slub.c:2949
+ alloc_task_struct_node kernel/fork.c:171 [inline]
+ dup_task_struct kernel/fork.c:865 [inline]
+ copy_process+0x5c8/0x7120 kernel/fork.c:1947
+ kernel_clone+0xe7/0xab0 kernel/fork.c:2503
+ kernel_thread+0xb5/0xf0 kernel/fork.c:2555
+ create_kthread kernel/kthread.c:336 [inline]
+ kthreadd+0x52a/0x790 kernel/kthread.c:679
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+page_owner free stack trace missing
 
-> +      compatible = "ti,am654-mcspi","ti,omap4-mcspi";
-> +      reg = <0x2100000 0x400>;
-> +      interrupts = <GIC_SPI 184 IRQ_TYPE_LEVEL_HIGH>;
-> +      clocks = <&k3_clks 137 1>;
-> +      power-domains = <&k3_pds 137 TI_SCI_PD_EXCLUSIVE>;
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +      dmas = <&main_udmap 0xc500>, <&main_udmap 0x4500>;
-> +      dma-names = "tx0", "rx0";
-> +    };
-> -- 
-> 2.17.1
-> 
-> 
+Memory state around the buggy address:
+ ffff8880294cbb80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880294cbc00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff8880294cbc80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                            ^
+ ffff8880294cbd00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8880294cbd80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
