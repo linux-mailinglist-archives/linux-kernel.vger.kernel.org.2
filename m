@@ -2,137 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE1BA3ACC1F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FCB13ACC21
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233549AbhFRN2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:28:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33950 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229877AbhFRN2C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:28:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EF24613EB;
-        Fri, 18 Jun 2021 13:25:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624022752;
-        bh=Y1EXxYzR8V40448QkyPRUDs0dTVxn9wLZsNU8QqYQA4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J6EUeCDDd5HoynS1rgyePkpn7anNR+xHc/kDkt7GuMlDcLa100JA1wSs26B00vCmn
-         GEAQEFxrOvCSX+W12KXDY049EkCrG4vcwFHvwdnk/EXKe+M6aqOqOKxyyf2eELwr9R
-         gw2q1EoWwulw/EPABdsss9RDbqn7wSSsTIwnV2mGEN8w7nR/ykZ3XK4AK0RfA7tEM7
-         gIG8JuLUsG5Wjs4qhE+O58fj7CoQN/VbXnTtfBU5m0MtY21ewyX6IcdAdmOjZ/nm6f
-         ofPbMqzKJzR1FghDlb6M0BBA800WeUqzIG6aKDmMekxLSBsldpUvnk6Chr0ns/kOu0
-         28L5/iSsKO1Xw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id D6AF740B1A; Fri, 18 Jun 2021 10:25:49 -0300 (-03)
-Date:   Fri, 18 Jun 2021 10:25:49 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tommi Rantala <tommi.t.rantala@nokia.com>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] perf ksymbol: fix memory leak: decrease refcount of map
- and dso
-Message-ID: <YMye3UVZWRh30L2a@kernel.org>
-References: <20210602231052.317048-1-rickyman7@gmail.com>
- <CAP-5=fVxHUnwGoRypMjCsPSh_yo5PB8Hzbkx5ArA5b0=7S-67g@mail.gmail.com>
- <YLopMBgLWysdJbkm@kernel.org>
- <3b8c7c2c5de492c7fbf86df73c43cdb0fbb453df.camel@gmail.com>
- <YLpxDf6+YOxYI5z3@kernel.org>
- <da5b052d2c94db91c0bf8cb794c5cad299f19e57.camel@gmail.com>
+        id S229877AbhFRN2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:28:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232740AbhFRN2I (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 09:28:08 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E550C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:25:59 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id q190so8250954qkd.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:25:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0Q0pSocb902nqdu/y77JGz+XB/v2LVNcwiIldSRzK9U=;
+        b=hGa0zuDIEfU8WmXM8K16zPr/kDxBumV9k5VY1P1r2DDzA/gpsW5iz9540NpxgxSziK
+         Tpb2oMnPp0cQ3vVTW0YftNn3iNpvPHv51IxPtwc6IYJQ/W4nmUleOpw73XXUVgqnEhTa
+         Rqdp3yDnXzTNqaD9sCdaipGnFL8+5Uj+Dz+x9o+8l1NZJG+n16ahrDY6qEbIdoCj32Lw
+         4EO6ce4/FFd5LCogalj0XnZqsL/T3CxuxUtRIHfWM9OGumzHtwhTyDwdvg2NEteFwr6n
+         yQ+rkSMxhacDzlxDJ3tE8XGlJm2wZ2L7GTeEG9yVmI13j48GEYiKh5uSBTnLImdKCVfG
+         u7ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0Q0pSocb902nqdu/y77JGz+XB/v2LVNcwiIldSRzK9U=;
+        b=grubhQht5/9JAJVUWjvA2ZV/7dgaedqrtmJgZRtY0Ot7i1mdQ/ORB7EXVSUNw0IarV
+         XCoIJIhR5RcfmDu0/bfbwQIvueWxe9G2ybZVzncsL0f/SMGX0f8rfoduHzTr+SojYK4S
+         +ODTuDBfgn9NiHsHd02KXMUBkT8HAocutHoqwmN2hVx5eL6RL1Ax+LOo42Kj21v1wruC
+         E7HQx/ChyHPwoLP87lRcKR5h8Wly6uMAkVudZtVXvY+2/d3UGweH2NmcsWj+MLray/OH
+         ZUor7qUwwtaQWgwtqpB5RvZLTG0+UIwaZgnIRdZ2kizuZQerTAPWg5VwV9HnjTKVV26q
+         xSoQ==
+X-Gm-Message-State: AOAM532g3C7HQhpE/T39SkZSouviQuXR0iGEzJBn/3vfbVxkelQgSwAh
+        Ewgl22Y+i/JzqCRX4SP/XUqcSg==
+X-Google-Smtp-Source: ABdhPJy1bq0eK26G6TdGQtW2ljiO6j3VkzhRkj5gzT73oFyXrSw2pF54iZgtS7poUYBJ0o9XcnmU7Q==
+X-Received: by 2002:a37:a417:: with SMTP id n23mr9604598qke.265.1624022757616;
+        Fri, 18 Jun 2021 06:25:57 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
+        by smtp.gmail.com with ESMTPSA id x9sm5342220qtf.76.2021.06.18.06.25.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 06:25:56 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1luEVQ-008X3c-8n; Fri, 18 Jun 2021 10:25:56 -0300
+Date:   Fri, 18 Jun 2021 10:25:56 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jann Horn <jannh@google.com>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Jan Kara <jack@suse.cz>, stable <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] mm/gup: fix try_grab_compound_head() race with
+ split_huge_page()
+Message-ID: <20210618132556.GY1096940@ziepe.ca>
+References: <20210615012014.1100672-1-jannh@google.com>
+ <50d828d1-2ce6-21b4-0e27-fb15daa77561@nvidia.com>
+ <CAG48ez3Vbcvh4AisU7=ukeJeSjHGTKQVd0NOU6XOpRru7oP_ig@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <da5b052d2c94db91c0bf8cb794c5cad299f19e57.camel@gmail.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <CAG48ez3Vbcvh4AisU7=ukeJeSjHGTKQVd0NOU6XOpRru7oP_ig@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, Jun 18, 2021 at 12:01:28PM +0200, Riccardo Mancini escreveu:
-> Hi, 
+On Tue, Jun 15, 2021 at 02:09:38PM +0200, Jann Horn wrote:
+> On Tue, Jun 15, 2021 at 8:37 AM John Hubbard <jhubbard@nvidia.com> wrote:
+> > On 6/14/21 6:20 PM, Jann Horn wrote:
+> > > try_grab_compound_head() is used to grab a reference to a page from
+> > > get_user_pages_fast(), which is only protected against concurrent
+> > > freeing of page tables (via local_irq_save()), but not against
+> > > concurrent TLB flushes, freeing of data pages, or splitting of compound
+> > > pages.
+> [...]
+> > Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 > 
-> On Fri, 2021-06-04 at 15:29 -0300, Arnaldo Carvalho de Melo wrote:
-> <SNIP> 
-> > > > But looking at this code now I realize that maps__find() should grab a
-> > > > refcount for the map it returns, because in this
-> > > > machine__process_ksymbol_register() function we use reference that 'map'
-> > > > after the if block, i.e. we use it if it came from maps__find() or if we
-> > > > created it machine__process_ksymbol_register, so there is a possible
-> > > > race where other thread removes it from the list and map__put()s it
-> > > > ending up in map__delete() while we still use it in
-> > > > machine__process_ksymbol_register(), right?
-> > > 
-> > > Agree. It should be placed before up_read to avoid races, right?
-> > 
-> > Yes, we have to grab a refcount while we are sure its not going away,
-> > then return that as the lookup result, whoever receives that refcounted
-> > entry should use it and then drop the refcount.
-> > 
-> > > Then we would need to see where it's called and add the appropriate
-> > > map__put.
-> > 
-> > yes
+> Thanks!
 > 
-> This function has quite a number of callers (direct and indirect) so the the
-> patch is becoming huge. 
+> [...]
+> > > @@ -55,8 +72,23 @@ static inline struct page *try_get_compound_head(struct page *page, int refs)
+> > >       if (WARN_ON_ONCE(page_ref_count(head) < 0))
+> > >               return NULL;
+> > >       if (unlikely(!page_cache_add_speculative(head, refs)))
+> > >               return NULL;
+> > > +
+> > > +     /*
+> > > +      * At this point we have a stable reference to the head page; but it
+> > > +      * could be that between the compound_head() lookup and the refcount
+> > > +      * increment, the compound page was split, in which case we'd end up
+> > > +      * holding a reference on a page that has nothing to do with the page
+> > > +      * we were given anymore.
+> > > +      * So now that the head page is stable, recheck that the pages still
+> > > +      * belong together.
+> > > +      */
+> > > +     if (unlikely(compound_head(page) != head)) {
+> >
+> > I was just wondering about what all could happen here. Such as: page gets split,
+> > reallocated into a different-sized compound page, one that still has page pointing
+> > to head. I think that's OK, because we don't look at or change other huge page
+> > fields.
+> >
+> > But I thought I'd mention the idea in case anyone else has any clever ideas about
+> > how this simple check might be insufficient here. It seems fine to me, but I
+> > routinely lack enough imagination about concurrent operations. :)
 > 
-> One of these callers is thread__find_map, which returns an addr_location
-> (actually it's an output argument). This addr_location holds references to map,
-> maps and thread without getting any refcnt (actually in one function it gets it
-> on the thread and a comment tells to put it once done). If I'm not wrong, this
-> addr_location is never malloced (always a local variable) and, is should be
-> present in parts of the code where there should be a refcnt on the thread.
-> Therefore, maybe it does not get the refcnts since it assumes that thread (upon
-> which depends maps and as a consequence map) is always refcnted in its context.
-> However, I think that it should get all refcnts anyways for clarity and to
-> prevent possible misuses (if I understood correctly, Ian is of the same
-> opinion).
+> Hmmm... I think the scariest aspect here is probably the interaction
+> with concurrent allocation of a compound page on architectures with
+> store-store reordering (like ARM). *If* the page allocator handled
+> compound pages with lockless, non-atomic percpu freelists, I think it
+> might be possible that the zeroing of tail_page->compound_head in
+> put_page() could be reordered after the page has been freed,
+> reallocated and set to refcount 1 again?
 
-agreed, but this will incur extra costs, we should perhaos use perf to
-measure how much it costs. :-)
+Oh wow, yes, this all looks sketchy! Doing a RCU access to page->head
+is a really challenging thing :\
 
-> My solution would be to add the refcnt grabbing for map, maps and thread in
-> thread__find_map, releasing them in addr_location__put, and then making sure all
-> callers call it when no longer in use.
+On the simplified store side:
 
-Ok
- 
-> Following the same reasoning, I added refcnt grabbing also to mem_info,
-> branch_info (map was already refcnted, I added it also to maps for coherency),
-> map_symbol (as in branch_info, I added it to maps), and in other places in which
-> I saw a pointer was passed without refcounting.
-> 
-> Most changes are quite trivial, however, the changelog is huge:
-> 48 files changed, 472 insertions(+), 157 deletions(-)
-> Most of them are just returns converted to goto for calling the __put functions.
+  page->head = my_compound
+  *ptep = page
 
-So you could first do a prep patch converting functions to have gotos,
-which would be a no-logic change, and then do the rest?
- 
-> Doing so, I managed to remove memory leaks caused by refcounting also in perf-
-> report (I wanted to try also perf top but I encountered another memory-related
-> issue). However, the changelog is huge and testing all of it is challenging
+There must be some kind of release barrier between those two
+operations or this is all broken.. That definately deserves a comment.
 
-So we should break it in as many small steps as possible, knowing that
-each step is fixing just one of the problems, i.e. aSAN will continue
-reporting problems, but less problems as you go on adding more fixes.
+Ideally we'd use smp_store_release to install the *pte :\
 
-> (especially since I can test missing puts only with ASan's LeakSanitizer and its
-> reports are usually full of leaks, which I am trying to fix along the way, I
-> will send some patches in the following days). How would you go about it? Do you
-> have any suggestions?
+Assuming we cover the release barrier, I would think the algorithm
+should be broadly:
 
-See above, thanks for working on this!
+ struct page *target_page = READ_ONCE(pte)
+ struct page *target_folio = READ_ONCE(target_page->head)
 
-- Arnaldo
+ page_cache_add_speculative(target_folio, refs)
+
+ if (target_folio != READ_ONCE(target_page->head) ||
+     target_page != READ_ONCE(pte))
+    goto abort
+
+Which is what this patch does but I would like to see the
+READ_ONCE's.
+
+And there possibly should be two try_grab_compound_head()'s since we
+don't need this overhead on the fully locked path, especially the
+double atomic on page_ref_add()
+
+> I think the lockless page cache code also has to deal with somewhat
+> similar ordering concerns when it uses page_cache_get_speculative(),
+> e.g. in mapping_get_entry() - first it looks up a page pointer with
+> xas_load(), and any access to the page later on would be a _dependent
+> load_, but if the page then gets freed, reallocated, and inserted into
+> the page cache again before the refcount increment and the re-check
+> using xas_reload(), then there would be no data dependency from
+> xas_reload() to the following use of the page...
+
+xas_store() should have the smp_store_release() inside it at least..
+
+Even so it doesn't seem to do page->head, so this is not quite the
+same thing
+
+Jason
