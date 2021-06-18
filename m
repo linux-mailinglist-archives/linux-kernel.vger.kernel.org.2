@@ -2,102 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4D63ACEBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60BFE3ACE85
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234185AbhFRPY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:24:59 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:18487 "EHLO m43-7.mailgun.net"
+        id S233533AbhFRPVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:21:38 -0400
+Received: from mga02.intel.com ([134.134.136.20]:42741 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235121AbhFRPWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:22:30 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624029621; h=References: In-Reply-To: References:
- In-Reply-To: Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=ND/72u+nNISmAsgxRuyz5vLjkrP/NEQ6vHD7wkgEiKc=; b=VnssmFFZQQ3+ZZZqJWDs/WedX2lSEPUIPzQaflCXrJgP/AMlDvQuaXFLR7nZxjhfuvYcZKWw
- gw4o/ShrUjj339rm0Zx+LexpFDXncm8nRt7jTf6n9j0THNus478EcuYVcX9MmJLV+oUfmN5W
- azUsnnXcTQj6iCb27KHSiCMFLP4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 60ccb99b2eaeb98b5e44d5da (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Jun 2021 15:19:55
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3AF03C4323A; Fri, 18 Jun 2021 15:19:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hu-charante-hyd.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 39F64C43460;
-        Fri, 18 Jun 2021 15:19:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 39F64C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-From:   Charan Teja Reddy <charante@codeaurora.org>
-To:     akpm@linux-foundation.org, vbabka@suse.cz, corbet@lwn.net,
-        mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
-        osalvador@suse.de, rientjes@google.com, mchehab+huawei@kernel.org,
-        lokeshgidra@google.com, andrew.a.klychkov@gmail.com,
-        xi.fengfei@h3c.com, nigupta@nvidia.com,
-        dave.hansen@linux.intel.com, famzheng@amazon.com,
-        mateusznosek0@gmail.com, oleksandr@redhat.com, sh_def@163.com
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Charan Teja Reddy <charante@codeaurora.org>
-Subject: [PATCH V4 3/3] mm: compaction: fix wakeup logic of proactive compaction
-Date:   Fri, 18 Jun 2021 20:48:55 +0530
-Message-Id: <89e90b9c13566e7c28d70e5d6aa048ee3ec41757.1624028025.git.charante@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1624028025.git.charante@codeaurora.org>
-References: <cover.1624028025.git.charante@codeaurora.org>
-In-Reply-To: <cover.1624028025.git.charante@codeaurora.org>
-References: <cover.1624028025.git.charante@codeaurora.org>
+        id S234918AbhFRPVd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 11:21:33 -0400
+IronPort-SDR: Cq09ZNRNOgo62mgdw3OTFDyPzwNU3UXbCv6XJfIzQZYzSkgB2EeK//ssmuVfiaEdFcp/tlNp0h
+ U307eu3MF8sQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="193699868"
+X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
+   d="scan'208";a="193699868"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 08:19:23 -0700
+IronPort-SDR: mjHVUwERwSYWDTHmPPBDw0vlKQqhY+2854CGLlihvy9w6Ge/97gWvZMHn1BMteBTvKuLATzL1e
+ rXt/SzGkbhhQ==
+X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
+   d="scan'208";a="451424780"
+Received: from mahmoo2x-mobl.amr.corp.intel.com (HELO [10.252.143.210]) ([10.252.143.210])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 08:19:22 -0700
+Subject: Re: [PATCH] x86/mm: avoid truncating memblocks for SGX memory
+To:     Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, fan.du@intel.com,
+        reinette.chatre@intel.com, jarkko@kernel.org,
+        dan.j.williams@intel.com, x86@kernel.org,
+        linux-sgx@vger.kernel.org, luto@kernel.org, peterz@infradead.org
+References: <20210617194657.0A99CB22@viggo.jf.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <5a733af3-bf60-b658-3b4b-5916f9229e25@intel.com>
+Date:   Fri, 18 Jun 2021 08:19:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210617194657.0A99CB22@viggo.jf.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, proactive compaction tries to get triggered for every
-HPAGE_FRAG_CHECK_INTERVAL_MSEC(=500msec) even when proactive compaction
-is disabled with sysctl.compaction_proactiveness = 0. This results in
-kcompactd thread wakes up and goes to sleep for every 500msec with out
-the need of doing proactive compaction. Though this doesn't have any
-overhead, few cpu cycles can be saved by avoid of waking up kcompactd
-thread for proactive compaction when it is disabled.
+On 6/17/21 12:46 PM, Dave Hansen wrote:
+> Signed-off-by: Fan Du <fan.du@intel.com>
+> Reported-by: Reinette Chatre <reinette.chatre@intel.com>
+> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+> Reviewed-by: Dave Hansen <dave.hansen@intel.com>
+> Fixes: 5d30f92e7631 ("x86/NUMA: Provide a range-to-target_node lookup facility")
+> Cc: x86@kernel.org
+> Cc: linux-sgx@vger.kernel.org
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
 
-Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
----
- -- Changes in V4:
-       o No functional changes from V3.
- -- Changes in V3:
-       o Fix wake up logic in proactive compaction.
- -- Changes in V2 through V2 doesn't exist.
+Forgot to add:
 
- mm/compaction.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 7672be3..44a232a 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -2928,6 +2928,8 @@ static int kcompactd(void *p)
- 	while (!kthread_should_stop()) {
- 		unsigned long pflags;
- 
-+		if (!sysctl_compaction_proactiveness)
-+			timeout = MAX_SCHEDULE_TIMEOUT;
- 		trace_mm_compaction_kcompactd_sleep(pgdat->node_id);
- 		if (wait_event_freezable_timeout(pgdat->kcompactd_wait,
- 			kcompactd_work_requested(pgdat), timeout) &&
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
-
+Signed-off-by: Dave Hansen <dave.hansen@intel.com>
