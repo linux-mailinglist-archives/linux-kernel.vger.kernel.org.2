@@ -2,234 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3893AD075
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5343AD07F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235903AbhFRQek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 12:34:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235336AbhFRQei (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 12:34:38 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6B0DC061574;
-        Fri, 18 Jun 2021 09:32:26 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id w31so8211250pga.6;
-        Fri, 18 Jun 2021 09:32:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=A1PqtztDnmaYUFUfgBGqvyIO9ZWU5/9IhdtC/jeTJ5I=;
-        b=uxNAziOevP8WBfuLwv0XkO7m2M++JDDMUW2ZIKOZIRYqBMW2asEahVymrhZQ2okhSq
-         LPcKN0gvw7HtvXyuzTXeQnE1Nh4/nr3N5qM61z93JFgd1jyCQWgLJbQpcDCdtXyvCjBW
-         kZu14QXmvwmBvgV8I5u2hvFwZ6+6endaufSNhu2rhoBYJZb10fBDZGvxA3w/EewlUCk5
-         dSml94I6ueTjIAK+WjzSjEBuLEZVcYNlXJ70Gz794Bnes7pL5x438qiMjjmLpTPIww4B
-         aPa6WZpOHmnw0kOods+8iZ6rSKdZkOU7rvllNYrd07cZun1k+qq39YIlgaOIBPeGt0RE
-         Ne0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=A1PqtztDnmaYUFUfgBGqvyIO9ZWU5/9IhdtC/jeTJ5I=;
-        b=rrN4xYQZPAprKcOtNGujbxXR72LKeYXG6rdM9lJ6xdEwZuYyBjqFGoUFfDryPDCiIY
-         hdWydNrqmN3e4XCiaMGTSR+3cwLU8Y4PoJBH7uX644l3ZtvanRkZRX9gPpwCWtUAZZFd
-         63Hcs6nge6KQhknVh/gP3pYsL2HPjLiJtHV+iiib1UPespq+b+x3w9xWZdL1nUnj4BaS
-         EZIe1VElQ7TMw6HBk1LZ1eDwNUHu4B8HvChGANDvlT4s+Vg4aPLSTuFmut9JiJUIsOkS
-         JcchPCDFDqVPMW26n2g5lKNmtuJzHXjgZV1uEK5+1+G3P1kHtP+5hyXxFeMoZ43Oc8wp
-         ESsg==
-X-Gm-Message-State: AOAM532cJhXKLmh7Xpv+dQQ4uV7GAa2c7FBDAfb7Q+q02KhfH/osxVVh
-        2XnU2Ony8dV+M6SBeryLPng=
-X-Google-Smtp-Source: ABdhPJy44RMj2aKnG6pOxBOxTVJT7kDLfH08utfo2EilSBdMXQsJksWpzrbqj0wzewxan4UpbyL77A==
-X-Received: by 2002:aa7:9983:0:b029:2e9:e086:7917 with SMTP id k3-20020aa799830000b02902e9e0867917mr5804870pfh.57.1624033946445;
-        Fri, 18 Jun 2021 09:32:26 -0700 (PDT)
-Received: from localhost ([103.248.31.165])
-        by smtp.gmail.com with ESMTPSA id x143sm1147841pfc.6.2021.06.18.09.32.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 09:32:26 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 22:02:23 +0530
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J .Wysocki" <rjw@rjwysocki.net>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v7 1/8] PCI: Add pcie_reset_flr to follow calling
- convention of other reset methods
-Message-ID: <20210618163223.otdhrkxnyng32okp@archlinux>
-References: <20210608054857.18963-2-ameynarkhede03@gmail.com>
- <20210617215734.GA3135430@bjorn-Precision-5520>
+        id S235942AbhFRQfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 12:35:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46810 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235534AbhFRQfe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 12:35:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 110C8613D5;
+        Fri, 18 Jun 2021 16:33:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624034004;
+        bh=JO2gLgelUahEc1dNQVYz2I/ragI2iCfD3iyf0s0vVmc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gsyLR0OZOilo0EEdP29NRWHxpna2TcpNAh65/OuClP+XuPWLnj9OcMeqeYx7BXQ2X
+         pZDWq3/0VwY1KSWIQKSZ7U+YlmUMx0i8xoW7NWyjgBrNe3L/HnVZi4Ku6LZrsAF2gF
+         1DjKkgbUD46s25gdRbsthB9ZKHcwMD2Kz2hfYjvzp1KNNoJxbqMcNMmhEFO+Gr51pq
+         ecUl9tZOzzQR6w9opI5NTaWVeIYwQYtlMu4LWKFyTF1MqXBW97fMF714JB/oWyeiO5
+         rZxlsOqaJ73tSRcuGelVCZxhBg/fQvl3AVhF0At2f8PTHsdYX9KxL3Zb4UQcpmXyis
+         eLd1k4eZDHnzA==
+Date:   Fri, 18 Jun 2021 18:33:16 +0200
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        David Hildenbrand <david@redhat.com>, Greg KH <greg@kroah.com>,
+        Christoph Lameter <cl@gentwo.de>,
+        "Theodore Ts'o" <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
+        ksummit@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, netdev <netdev@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
+Message-ID: <20210618183316.33766f1e@coco.lan>
+In-Reply-To: <20210618113452.7ab0033e@oasis.local.home>
+References: <5038827c-463f-232d-4dec-da56c71089bd@metux.net>
+        <20210610182318.jrxe3avfhkqq7xqn@nitro.local>
+        <YMJcdbRaQYAgI9ER@pendragon.ideasonboard.com>
+        <20210610152633.7e4a7304@oasis.local.home>
+        <37e8d1a5-7c32-8e77-bb05-f851c87a1004@linuxfoundation.org>
+        <YMyjryXiAfKgS6BY@pendragon.ideasonboard.com>
+        <cd7ffbe516255c30faab7a3ee3ee48f32e9aa797.camel@HansenPartnership.com>
+        <CAMuHMdVcNfDvpPXHSkdL3VuLXCX5m=M_AQF-P8ZajSdXt8NdQg@mail.gmail.com>
+        <20210618103214.0df292ec@oasis.local.home>
+        <CAMuHMdWK4NPzanF68TMVuihLFdRzxhs0EkbZdaA=BUkZo-k6QQ@mail.gmail.com>
+        <YMy4UjWH565ElFtZ@casper.infradead.org>
+        <CAMuHMdWqUkfe7kdBO+eQdXHzhpygH=TivOBNqQJujyqP=wM5cw@mail.gmail.com>
+        <20210618113452.7ab0033e@oasis.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210617215734.GA3135430@bjorn-Precision-5520>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/06/17 04:57PM, Bjorn Helgaas wrote:
-> [+cc Christoph, since he added pcie_flr()]
->
-> On Tue, Jun 08, 2021 at 11:18:50AM +0530, Amey Narkhede wrote:
-> > Currently there is separate function pcie_has_flr() to probe if pcie flr is
-> > supported by the device which does not match the calling convention
-> > followed by reset methods which use second function argument to decide
-> > whether to probe or not.  Add new function pcie_reset_flr() that follows
-> > the calling convention of reset methods.
->
-> I don't like the fact that we handle FLR differently from other types
-> of reset, so I do like the fact that this makes them more consistent.
->
-> > Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
-> > Reviewed-by: Raphael Norwitz <raphael.norwitz@nutanix.com>
-> > Co-developed-by: Alex Williamson <alex.williamson@redhat.com>
-> > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
-> > ---
-> >  drivers/crypto/cavium/nitrox/nitrox_main.c |  4 +-
-> >  drivers/pci/pci.c                          | 62 ++++++++++++----------
-> >  drivers/pci/pcie/aer.c                     | 12 ++---
-> >  drivers/pci/quirks.c                       |  9 ++--
-> >  include/linux/pci.h                        |  2 +-
-> >  5 files changed, 43 insertions(+), 46 deletions(-)
-> >
-> > diff --git a/drivers/crypto/cavium/nitrox/nitrox_main.c b/drivers/crypto/cavium/nitrox/nitrox_main.c
-> > index facc8e6bc..15d6c8452 100644
-> > --- a/drivers/crypto/cavium/nitrox/nitrox_main.c
-> > +++ b/drivers/crypto/cavium/nitrox/nitrox_main.c
-> > @@ -306,9 +306,7 @@ static int nitrox_device_flr(struct pci_dev *pdev)
-> >  		return -ENOMEM;
-> >  	}
-> >
-> > -	/* check flr support */
-> > -	if (pcie_has_flr(pdev))
-> > -		pcie_flr(pdev);
-> > +	pcie_reset_flr(pdev, 0);
-> >
-> >  	pci_restore_state(pdev);
-> >
-> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> > index 452351025..3bf36924c 100644
-> > --- a/drivers/pci/pci.c
-> > +++ b/drivers/pci/pci.c
-> > @@ -4611,32 +4611,12 @@ int pci_wait_for_pending_transaction(struct pci_dev *dev)
-> >  }
-> >  EXPORT_SYMBOL(pci_wait_for_pending_transaction);
-> >
-> > -/**
-> > - * pcie_has_flr - check if a device supports function level resets
-> > - * @dev: device to check
-> > - *
-> > - * Returns true if the device advertises support for PCIe function level
-> > - * resets.
-> > - */
-> > -bool pcie_has_flr(struct pci_dev *dev)
-> > -{
-> > -	u32 cap;
-> > -
-> > -	if (dev->dev_flags & PCI_DEV_FLAGS_NO_FLR_RESET)
-> > -		return false;
-> > -
-> > -	pcie_capability_read_dword(dev, PCI_EXP_DEVCAP, &cap);
-> > -	return cap & PCI_EXP_DEVCAP_FLR;
-> > -}
-> > -EXPORT_SYMBOL_GPL(pcie_has_flr);
-> > -
-> >  /**
-> >   * pcie_flr - initiate a PCIe function level reset
-> >   * @dev: device to reset
-> >   *
-> > - * Initiate a function level reset on @dev.  The caller should ensure the
-> > - * device supports FLR before calling this function, e.g. by using the
-> > - * pcie_has_flr() helper.
-> > + * Initiate a function level reset unconditionally on @dev without
-> > + * checking any flags and DEVCAP
-> >   */
-> >  int pcie_flr(struct pci_dev *dev)
-> >  {
-> > @@ -4659,6 +4639,31 @@ int pcie_flr(struct pci_dev *dev)
-> >  }
-> >  EXPORT_SYMBOL_GPL(pcie_flr);
-> >
-> > +/**
-> > + * pcie_reset_flr - initiate a PCIe function level reset
-> > + * @dev: device to reset
-> > + * @probe: If set, only check if the device can be reset this way.
-> > + *
-> > + * Initiate a function level reset on @dev.
-> > + */
-> > +int pcie_reset_flr(struct pci_dev *dev, int probe)
-> > +{
-> > +	u32 cap;
-> > +
-> > +	if (dev->dev_flags & PCI_DEV_FLAGS_NO_FLR_RESET)
-> > +		return -ENOTTY;
-> > +
-> > +	pcie_capability_read_dword(dev, PCI_EXP_DEVCAP, &cap);
-> > +	if (!(cap & PCI_EXP_DEVCAP_FLR))
-> > +		return -ENOTTY;
-> > +
-> > +	if (probe)
-> > +		return 0;
-> > +
-> > +	return pcie_flr(dev);
->
-> Christoph added pcie_flr() with a60a2b73ba69 ("PCI: Export
-> pcie_flr()"), where the commit log says he split out the probing
-> because "non-core callers already know their hardware."
->
-> It *is* reasonable to expect that drivers know whether their device
-> supports FLR so they don't need to probe.
->
-> But we don't expose the "probe" argument outside the PCI core for any
-> other reset methods, and I would like to avoid that here.
->
-> It seems excessive to have to read PCI_EXP_DEVCAP every time.
-> PCI_EXP_DEVCAP_FLR is a read-only bit, and we should only need to look
-> at it once.
->
-> What I would really like here is a single bit in the pci_dev that we
-> could set at enumeration-time, e.g., something like this:
->
->   struct pci_dev {
->     ...
->     unsigned int has_flr:1;
->   };
->
->   void set_pcie_port_type(...)    # during enumeration
->   {
->     pci_read_config_word(dev, pos + PCI_EXP_DEVCAP, &reg16);
->     if (reg16 & PCI_EXP_DEVCAP_FLR)
->       dev->has_flr = 1;
->   }
->
->   static void quirk_no_flr(...)
->   {
->     dev->has_flr = 0;             # get rid of PCI_DEV_FLAGS_NO_FLR_RESET
->   }
->
->   int pcie_flr(...)
->   {
->     if (!dev->has_flr)
->       return -ENOTTY;
->
->     if (!pci_wait_for_pending_transaction(dev))
->       ...
->   }
->
-> I think this should be enough that we could get rid of pcie_has_flr()
-> without having to expose the "probe" argument outside drivers/pci/.
->
-> Procedural note: if we *do* have to expose the "probe" argument, can
-> you arrange it to have the correct type before touching the drivers, so
-> we only have to touch the drivers once?
->
-Thanks for the details. I'll add dev->has_flr check in pcie_reset_flr.
-[...]
+Em Fri, 18 Jun 2021 11:34:52 -0400
+Steven Rostedt <rostedt@goodmis.org> escreveu:
+
+> On Fri, 18 Jun 2021 17:29:04 +0200
+> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> 
+> > W.r.t. the other speaker in the room, isn't that similar to the normal mic,
+> > and can't that be handled at the receiving side?
+> > There will be a bit more delay involved, though.  
+> 
+> How many times have you been in a conference where the normal mic and
+> speaker caused a nasty feedback loop?
+
+I never used, but there are some devices that can work as automatic feedback 
+suppressors. They basically detect a feedback loop and add notch filter(s) to
+the frequency(ies) that are looping. Some high-end digital mixers have this
+feature embedded (but the operator may need to enable it).
+
+Yet, you may still hear the feedback loop while the algorithm is detecting 
+and correcting the issue, as it takes 100 ms to 400ms to detect and filter
+a single feedback frequency.
+
+> I'm not sure how well phone mics and room speakers will work.
+
+I guess that this depends on how the environment is setup. A good
+digital mixer can be set with a gate threshold. If the volume is below
+the threshold, the mic will be muted. 
+
+They can also be setup to have just one microphone group, where only
+one microphone will have the volume raised on a given time. So, if
+someone speaks on a mic, all the others are muted or attenuated.
+
+Yet, I guess this is not the usual "package" provided by hotels.
+Those setups may require extra devices and technical people that
+knows now to use such features.
 
 Thanks,
-Amey
+Mauro
