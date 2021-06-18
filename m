@@ -2,138 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC35C3AC12E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 05:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AA653AC131
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 05:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhFRDHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 23:07:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33712 "EHLO
+        id S231693AbhFRDI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 23:08:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbhFRDHU (ORCPT
+        with ESMTP id S231209AbhFRDI1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 23:07:20 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D10C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:05:10 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id v7so6617338pgl.2
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:05:10 -0700 (PDT)
+        Thu, 17 Jun 2021 23:08:27 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BB4C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:06:18 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id g4so4949064pjk.0
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:06:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=5Hkc1Bod9XeIHJJRLDjduZE/jHZcAso4vB+S4dzyd3A=;
-        b=Kjcy42HJCHBpM0LWBplRFsAQd1+Iv2qTJwbxsL8oRWoeFc8dRWnP4bqO/lpX1qny5F
-         sAhnvJfXBj6HJZW4FfXRvjgLnbF5zVp5xZhsr2PBm7LkEjC3KRKBfXeBRPARTIbNxPQK
-         631lLr0VPBj93bHbIJAxQXohxwtVcmRNkCm6KZXJYi0DI4A+xCpVasF/MZwj9GlqynW4
-         drbP9t1nRR2qR7C8b6lf9ltMdU2g4SeMzj+0DHhk7oe87BsTWRoHVCHrfUITNulDHbME
-         g0GrxFjSgWjNW5eDdoMJo0o5tWg/gwxRG+GFJajXe97oqrWMAHognSTMKJJRAFv/Mvv4
-         OHwA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MF+HvSh2Ph2aJcSQ8YS6FS+dV1UC86cI16zR69oJ2u8=;
+        b=jYJn0PjuLeGUOI9PsxEFTmfohuH85BJzoU5Rq7Fst9tN15oc/M1M6mieCH2th80v0h
+         +56mhuRuaWRmjRG3dECTL4xdtK9p2nica6EyBFtZYTNyrxY5oo6ArQhm4nR8Q/reji2G
+         MhbNSTEpCBm9snqP44Xr93566LvXK1Jlv52/Nii/MhWe7XSGe0efrZCezH/nA3AP0Qmf
+         dcIUHFaQbGdlcy9KzG9UybuyDDxpd21jHoMGH4Jrdafx8i+r28H9yDrcbLFn75ov5xhm
+         JvmoNp2SMIoGuSaU2ntbtrSdpOBxnEm0XhGbnXGtFZVQJMiaFg1PAF+JGmLTOK2+6oAj
+         pvUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=5Hkc1Bod9XeIHJJRLDjduZE/jHZcAso4vB+S4dzyd3A=;
-        b=Yacmgdh7fxnbJv4Cvg2/LO5F0WsuGwRsP5dSfvUyDY/sFLfBsyFGm0WS5wdminGAM/
-         z4LUFJTs5HITMIYxJtPWzsYS67nl4KlK/hEfIHiY9NDBp/oiRMdqsOCMOpNx77B5V2pC
-         AK+IVUWBttuU1nKFDI28zf5ADsNs11Mfu997C6cITpheEOE7VFuavy8CE75j/NPOfUAn
-         imzxQWfR0gOt73vLaRkFDAyfwExQ1gvXDiR7NOgWnrsmsfkuRClGhadfQnvwuVHEOIGf
-         tLI3hBp9xzjiD/lzUPk7cv4Z6UQeSTycz2llxgEiJRPsbGWZPzIZI7dx8ORqSmO9VqWA
-         Od1w==
-X-Gm-Message-State: AOAM532bDhiXgVQGsYKmVyWEjceKHzSLNGuJNF9+raWLIYooi1wWqHO4
-        CVKdGcDldF0DvPF502k4vSY=
-X-Google-Smtp-Source: ABdhPJz26NHLGsvOBOgNmuPd/Y3RYtrJrpgvkQ3rEBaVG3zDw9JBCXksBI2LY66YF6ehmRCXpKL2ew==
-X-Received: by 2002:a62:7b4c:0:b029:2e9:cec2:e252 with SMTP id w73-20020a627b4c0000b02902e9cec2e252mr2802617pfc.56.1623985509826;
-        Thu, 17 Jun 2021 20:05:09 -0700 (PDT)
-Received: from [192.168.1.237] ([118.200.190.93])
-        by smtp.gmail.com with ESMTPSA id w18sm6798863pjg.50.2021.06.17.20.05.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Jun 2021 20:05:09 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] drm: Protect drm_master pointers in drm_lease.c
-To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        emil.l.velikov@gmail.com
-References: <20210615023645.6535-1-desmondcheongzx@gmail.com>
- <20210615023645.6535-3-desmondcheongzx@gmail.com>
- <YMuCYqLafn5sGcFo@phenom.ffwll.local>
-From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
-Message-ID: <c384d835-d910-5b04-e88c-a7878ce6d37d@gmail.com>
-Date:   Fri, 18 Jun 2021 11:05:04 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MF+HvSh2Ph2aJcSQ8YS6FS+dV1UC86cI16zR69oJ2u8=;
+        b=RMZNqYh07lfX2s4K70epw4USFTrxrk465Y8nHmh4shDjTTJcMYUYEUC54ubJaLPKKA
+         VkOue9L5jcP4Y4xcEzJXL8mVoOBJmshLSwFQY2q7NDOOgFggvPzvXRfeENIBQCjIkcYr
+         2etvqipuB42GV1VxHlNIdHb4pQh0gVrJxm9oCe4+6pg6/+YCcWXmKN+X9rF9TmnAqifo
+         rKw+4d43tP5OdD1FM8XU5W/Iqa65l65UzU6rwHPoX6HHZUkTI5js3YQzx9GuX7wk+Gvd
+         c07GHHzRvDdrGbX6hNU5x+5v1Yd48Zguutke7C84NhnNFVTuB9VVl2yvv3O7aVY8e01q
+         UCAg==
+X-Gm-Message-State: AOAM532Css7tKIEA9qCfORUxPe+8nu6rAWDYV8flkxXXrK/tfgJm9tM7
+        DYSsjp1FsyOb+nImG1WmRP/xQiJxonJxP8zpa4M=
+X-Google-Smtp-Source: ABdhPJzd3QjZo222960R4VEwMcg19qhdCaLwAOfwGm2SrRnSgF82Mc4zLEOH80+DEn9D9NbzapHzspaopRQih7B/NHE=
+X-Received: by 2002:a17:90a:e98f:: with SMTP id v15mr19574185pjy.235.1623985578289;
+ Thu, 17 Jun 2021 20:06:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YMuCYqLafn5sGcFo@phenom.ffwll.local>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210617111925.162120-1-net147@gmail.com> <YMtYoaSIIRhb85fh@pendragon.ideasonboard.com>
+In-Reply-To: <YMtYoaSIIRhb85fh@pendragon.ideasonboard.com>
+From:   Jonathan Liu <net147@gmail.com>
+Date:   Fri, 18 Jun 2021 13:06:07 +1000
+Message-ID: <CANwerB0J9xKj3kjYPjzfeDvKV8JXPcDtoZaLMzkudCBz8=ZnVw@mail.gmail.com>
+Subject: Re: [PATCH] drm/bridge: ti-sn65dsi83: Fix null pointer dereference in
+ remove callback
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Marek Vasut <marex@denx.de>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/6/21 1:12 am, Daniel Vetter wrote:
-> On Tue, Jun 15, 2021 at 10:36:45AM +0800, Desmond Cheong Zhi Xi wrote:
->> This patch ensures that the device's master mutex is acquired before
->> accessing pointers to struct drm_master that are subsequently
->> dereferenced. Without the mutex, the struct drm_master may be freed
->> concurrently by another process calling drm_setmaster_ioctl(). This
->> could then lead to use-after-free errors.
->>
->> Reported-by: Daniel Vetter <daniel.vetter@ffwll.ch>
->> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
->> Reviewed-by: Emil Velikov <emil.l.velikov@gmail.com>
->> ---
->>   drivers/gpu/drm/drm_lease.c | 58 +++++++++++++++++++++++++++----------
->>   1 file changed, 43 insertions(+), 15 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/drm_lease.c b/drivers/gpu/drm/drm_lease.c
->> index da4f085fc09e..3e6f689236e5 100644
->> --- a/drivers/gpu/drm/drm_lease.c
->> +++ b/drivers/gpu/drm/drm_lease.c
->> @@ -107,10 +107,16 @@ static bool _drm_has_leased(struct drm_master *master, int id)
->>    */
->>   bool _drm_lease_held(struct drm_file *file_priv, int id)
->>   {
->> +	bool ret;
->> +
->>   	if (!file_priv || !file_priv->master)
->>   		return true;
->>   
->> -	return _drm_lease_held_master(file_priv->master, id);
->> +	mutex_lock(&file_priv->master->dev->master_mutex);
-> 
-> So maybe we have a bug somewhere, and the kerneldoc isn't 100% clear, but
-> I thought file_priv->master is invariant over the lifetime of file_priv.
-> So we don't need a lock to check anything here.
-> 
-> It's the drm_device->master derefence that gets us into trouble. Well also
-> file_priv->is_owner is protected by dev->master_mutex.
-> 
-> So I think with your previous patch all the access here in drm_lease.c is
-> ok and already protected? Or am I missing something?
-> 
-> Thanks, Daniel
-> 
+Hi Marek,
 
-My thinking was that file_priv->master is invariant only if it is the 
-creator of master. If file_priv->is_master is false, then a call to 
-drm_setmaster_ioctl will invoke drm_new_set_master, which then allocates 
-a new master for file_priv, and puts the old master.
+On Fri, 18 Jun 2021 at 00:14, Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Jonathan,
+>
+> Thank you for the patch.
+>
+> On Thu, Jun 17, 2021 at 09:19:25PM +1000, Jonathan Liu wrote:
+> > If attach has not been called, unloading the driver can result in a null
+> > pointer dereference in mipi_dsi_detach as ctx->dsi has not been assigned
+> > yet.
+>
+> Shouldn't this be done in a brige .detach() operation instead ?
+>
 
-This could be an issue in _drm_lease_held_master, because we dereference 
-master to get master->dev, master->lessor, and master->leases.
+Could you please take a look?
+I don't have a working setup to test moving the code to detach.
 
-With the same reasoning, in other parts of drm_lease.c, if there's an 
-access to drm_file->master that's subsequently dereferenced, I added a 
-lock around them.
+> > Fixes: ceb515ba29ba6b ("drm/bridge: ti-sn65dsi83: Add TI SN65DSI83 and SN65DSI84 driver")
+> > Signed-off-by: Jonathan Liu <net147@gmail.com>
+> > ---
+> >  drivers/gpu/drm/bridge/ti-sn65dsi83.c | 7 +++++--
+> >  1 file changed, 5 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi83.c b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
+> > index 750f2172ef08..8e9f45c5c7c1 100644
+> > --- a/drivers/gpu/drm/bridge/ti-sn65dsi83.c
+> > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
+> > @@ -671,8 +671,11 @@ static int sn65dsi83_remove(struct i2c_client *client)
+> >  {
+> >       struct sn65dsi83 *ctx = i2c_get_clientdata(client);
+> >
+> > -     mipi_dsi_detach(ctx->dsi);
+> > -     mipi_dsi_device_unregister(ctx->dsi);
+> > +     if (ctx->dsi) {
+> > +             mipi_dsi_detach(ctx->dsi);
+> > +             mipi_dsi_device_unregister(ctx->dsi);
+> > +     }
+> > +
+> >       drm_bridge_remove(&ctx->bridge);
+> >       of_node_put(ctx->host_node);
+> >
 
-I could definitely be mistaken on this, so apologies if this scenario 
-doesn't arise.
+Thanks.
 
-Best wishes,
-Desmond
-
-
-
+Regards,
+Jonathan
