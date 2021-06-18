@@ -2,102 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B0293ACF02
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF4283ACF16
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235537AbhFRPcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:32:09 -0400
-Received: from mail-vk1-f171.google.com ([209.85.221.171]:36787 "EHLO
-        mail-vk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235286AbhFRPb2 (ORCPT
+        id S231295AbhFRPeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:34:00 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:26050 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235563AbhFRPdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:31:28 -0400
-Received: by mail-vk1-f171.google.com with SMTP id c17so2216360vke.3;
-        Fri, 18 Jun 2021 08:29:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tbwA+IyCm/NwRqK4N5oJ3bfkUBqvAezf/1PBaQCP7JY=;
-        b=JPsaYHjtczQ2SHwZ2VHowOAXSyd6k9c04k8lSMpJxNUNI3WOxuFTqXl0qvxLZ6BKDP
-         bsjEBqOX4M7kBymcrCH7Tju5R32bSQs0VoBsYOFhC5H0P00N4OhjlDN36GajlvnA38U8
-         zvXARxCKBuBYniU6geq+xqnjWJ3wL85FwESFQHmmagYijzIA/GSQW4hqx3TJjv3WwnEs
-         7cQkCe9tpom/oid1ScqOwTj5tTwnF5IAVeIlt/yrCxiQhsOo3t35ayGwkdM3aGPELTAm
-         chpvIMfrnzSzfVYAkTi3XEldIc7GiRbMKiV1qJTTTb+hPAErnr29GC/v878cxZ+DiCKy
-         ihjQ==
-X-Gm-Message-State: AOAM5335kupY3m9Nbb8oHdZJOtX7xhfsjG8OwFvgTe9EokKiss2yTO3x
-        h9B8TNNVPMwqzXF3fyG3IEVK7GLP/X5ElLQixzI=
-X-Google-Smtp-Source: ABdhPJxEmFJfAgHdVEc+LB6mHSUHXYmYvJXtX7mWpBI0zcQ/6Lnom0KNtzfTrxWWH15izbyVI9mkUGQnhQl2V6QtMjM=
-X-Received: by 2002:a1f:1a41:: with SMTP id a62mr6774027vka.5.1624030156104;
- Fri, 18 Jun 2021 08:29:16 -0700 (PDT)
+        Fri, 18 Jun 2021 11:33:38 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624030289; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=OxgVviWKxuFMj10LPSjFh3cD0WnhN3SYM98fOdw/uao=; b=wNl4VSH4gCyOhBQrC4oFfQC6Ib3tQWR3PwzcMi4fLhYronZx/bfRx+Blwaccq7FTVkXzbZO3
+ A4ZPkY/qruXwlpCXTlvb7VMe8jK37Y0vUAOo/KhkNtyXsoWle1aKijJNWv0N/hLE8KtImciY
+ QhEZ3LyIJgdz1YRWfuUblaMiD1Q=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60ccbc35e570c056195867b9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Jun 2021 15:31:01
+ GMT
+Sender: vbadigan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2DE9BC43217; Fri, 18 Jun 2021 15:31:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.102] (unknown [49.205.245.243])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: vbadigan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 667BBC433D3;
+        Fri, 18 Jun 2021 15:30:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 667BBC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vbadigan@codeaurora.org
+Subject: Re: [PATCH V1] mmc: sdhci: Update the software timeout value for sdhc
+To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>,
+        adrian.hunter@intel.com, ulf.hansson@linaro.org
+Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
+        rampraka@codeaurora.org, sayalil@codeaurora.org,
+        sartgarg@codeaurora.org, rnayak@codeaurora.org,
+        cang@codeaurora.org, pragalla@codeaurora.org,
+        nitirawa@codeaurora.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org
+References: <1623835535-30871-1-git-send-email-sbhanu@codeaurora.org>
+From:   Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Message-ID: <585e003c-0342-4691-ab6d-8c6a930f9404@codeaurora.org>
+Date:   Fri, 18 Jun 2021 21:00:29 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <5038827c-463f-232d-4dec-da56c71089bd@metux.net>
- <20210610182318.jrxe3avfhkqq7xqn@nitro.local> <YMJcdbRaQYAgI9ER@pendragon.ideasonboard.com>
- <20210610152633.7e4a7304@oasis.local.home> <37e8d1a5-7c32-8e77-bb05-f851c87a1004@linuxfoundation.org>
- <YMyjryXiAfKgS6BY@pendragon.ideasonboard.com> <cd7ffbe516255c30faab7a3ee3ee48f32e9aa797.camel@HansenPartnership.com>
- <CAMuHMdVcNfDvpPXHSkdL3VuLXCX5m=M_AQF-P8ZajSdXt8NdQg@mail.gmail.com>
- <20210618103214.0df292ec@oasis.local.home> <CAMuHMdWK4NPzanF68TMVuihLFdRzxhs0EkbZdaA=BUkZo-k6QQ@mail.gmail.com>
- <YMy4UjWH565ElFtZ@casper.infradead.org>
-In-Reply-To: <YMy4UjWH565ElFtZ@casper.infradead.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 18 Jun 2021 17:29:04 +0200
-Message-ID: <CAMuHMdWqUkfe7kdBO+eQdXHzhpygH=TivOBNqQJujyqP=wM5cw@mail.gmail.com>
-Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        David Hildenbrand <david@redhat.com>, Greg KH <greg@kroah.com>,
-        Christoph Lameter <cl@gentwo.de>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
-        ksummit@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, netdev <netdev@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1623835535-30871-1-git-send-email-sbhanu@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 5:15 PM Matthew Wilcox <willy@infradead.org> wrote:
-> On Fri, Jun 18, 2021 at 04:58:08PM +0200, Geert Uytterhoeven wrote:
-> > On Fri, Jun 18, 2021 at 4:32 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > > On Fri, 18 Jun 2021 16:28:02 +0200
-> > > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > >
-> > > > What about letting people use the personal mic they're already
-> > > > carrying, i.e. a phone?
-> > >
-> > > Interesting idea.
-> > >
-> > > I wonder how well that would work in practice. Are all phones good
-> > > enough to prevent echo?
-> >
-> > I deliberately didn't say anything about a speaker ;-)
+
+On 6/16/2021 2:55 PM, Shaik Sajida Bhanu wrote:
+> Whenever SDHC run at clock rate 50MHZ or below, the hardware data
+> timeout value will be 21.47secs, which is approx. 22secs and we have
+> a current software timeout value as 10secs. We have to set software
+> timeout value more than the hardware data timeout value to avioid seeing
+> the below register dumps.
 >
-> There's usually a speaker in the room so everyone can hear the question
-> ...
+> [  332.953670] mmc2: Timeout waiting for hardware interrupt.
+> [  332.959608] mmc2: sdhci: ============ SDHCI REGISTER DUMP ===========
+> [  332.966450] mmc2: sdhci: Sys addr:  0x00000000 | Version:  0x00007202
+> [  332.973256] mmc2: sdhci: Blk size:  0x00000200 | Blk cnt:  0x00000001
+> [  332.980054] mmc2: sdhci: Argument:  0x00000000 | Trn mode: 0x00000027
+> [  332.986864] mmc2: sdhci: Present:   0x01f801f6 | Host ctl: 0x0000001f
+> [  332.993671] mmc2: sdhci: Power:     0x00000001 | Blk gap:  0x00000000
+> [  333.000583] mmc2: sdhci: Wake-up:   0x00000000 | Clock:    0x00000007
+> [  333.007386] mmc2: sdhci: Timeout:   0x0000000e | Int stat: 0x00000000
+> [  333.014182] mmc2: sdhci: Int enab:  0x03ff100b | Sig enab: 0x03ff100b
+> [  333.020976] mmc2: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000000
+> [  333.027771] mmc2: sdhci: Caps:      0x322dc8b2 | Caps_1:   0x0000808f
+> [  333.034561] mmc2: sdhci: Cmd:       0x0000183a | Max curr: 0x00000000
+> [  333.041359] mmc2: sdhci: Resp[0]:   0x00000900 | Resp[1]:  0x00000000
+> [  333.048157] mmc2: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
+> [  333.054945] mmc2: sdhci: Host ctl2: 0x00000000
+> [  333.059657] mmc2: sdhci: ADMA Err:  0x00000000 | ADMA Ptr:
+> 0x0000000ffffff218
+> [  333.067178] mmc2: sdhci_msm: ----------- VENDOR REGISTER DUMP
+> -----------
+> [  333.074343] mmc2: sdhci_msm: DLL sts: 0x00000000 | DLL cfg:
+> 0x6000642c | DLL cfg2: 0x0020a000
+> [  333.083417] mmc2: sdhci_msm: DLL cfg3: 0x00000000 | DLL usr ctl:
+> 0x00000000 | DDR cfg: 0x80040873
+> [  333.092850] mmc2: sdhci_msm: Vndr func: 0x00008a9c | Vndr func2 :
+> 0xf88218a8 Vndr func3: 0x02626040
+> [  333.102371] mmc2: sdhci: ============================================
+>
+> So, set software timeout value more than hardware timeout value.
+>
+> Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+> ---
+>   drivers/mmc/host/sdhci.c | 9 ++++++++-
+>   1 file changed, 8 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> index bf238ad..1386f7d 100644
+> --- a/drivers/mmc/host/sdhci.c
+> +++ b/drivers/mmc/host/sdhci.c
+> @@ -1670,7 +1670,14 @@ static bool sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
+>   	else if (!cmd->data && cmd->busy_timeout > 9000)
+>   		timeout += DIV_ROUND_UP(cmd->busy_timeout, 1000) * HZ + HZ;
+>   	else
+> -		timeout += 10 * HZ;
+> +	       /*
+> +		* In some of the conditions hardware data timeout value could be
+> +		* approx 21.5 seconds and driver is setting software data timeout
+> +		* value less than the hardware data timeout value and software data
+> +		* timeout value should be more than the hardware data timeout value.
+> +		* So, set software data timeout value more than 21.5 sec i.e. 22sec.
+> +		*/
+> +		timeout += 22 * HZ;
 
-Oh IC.  I meant that not using the speaker on the phone, there cannot
-be any feedback from the phone speaker to the phone mic.
+This timeout is qcom SDHC specific.
+I think right way is to, define your own set_timeout op and update 
+host->data_timeout
+in that as per qcom SDHC requirements.
 
-W.r.t. the other speaker in the room, isn't that similar to the normal mic,
-and can't that be handled at the receiving side?
-There will be a bit more delay involved, though.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+>   	sdhci_mod_timer(host, cmd->mrq, timeout);
+>   
+>   	if (host->use_external_dma)
