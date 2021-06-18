@@ -2,86 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 075793ACA93
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 002E33ACA9E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233235AbhFRMG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 08:06:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbhFRMG4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 08:06:56 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1824CC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:04:47 -0700 (PDT)
-Received: from mwalle01.kontron.local (unknown [213.135.10.150])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 3A9A12225B;
-        Fri, 18 Jun 2021 14:04:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1624017885;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DJD/MySWnPvXQuwIf3J/ioBbrWLOimWmN1G5D/biUJc=;
-        b=aa60WENuM6qJuScG3Nv4FJ/JuBjXhFbNZYeL5p8Qy7CMFuzBm/jSLxh9G6T3T5qdfEMIjQ
-        O0uVn3acXedToDZenD4R6g+SUegJEQzPnbiSTyiFhiFltmZU+nfJQW6rJcyQCQNVbcebaC
-        Ybf3ztjWn489PgxE1IAIKPq/hyu/g6Q=
-From:   Michael Walle <michael@walle.cc>
-To:     etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Lukas F . Hartmann" <lukas@mntre.com>,
-        Michael Walle <michael@walle.cc>
-Subject: [PATCH 2/2] drm/etnaviv: add clock gating workaround for GC7000 r6202
-Date:   Fri, 18 Jun 2021 14:04:33 +0200
-Message-Id: <20210618120433.14746-3-michael@walle.cc>
+        id S234016AbhFRMK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 08:10:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49486 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231193AbhFRMK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 08:10:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F075613D5;
+        Fri, 18 Jun 2021 12:08:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624018097;
+        bh=W1o+CtHQ3nflhXuylff+5ooBPcB3nszbMcr8gK1ECAY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=U9iObKIw/Y3iPA306gh7V3nqI+vPDwJ/Ehrti6IOl+5YqSETUEe0V1uzCG2FJC8ZO
+         iGLQanQpsvwCxcYdZFjJsF9LxwCmuSOLQLmVCQwXJz8eG0jk1Og0jqA4s2+1wX1Q8l
+         w3GlU+3fZmx9cxLccxxHTyliM4KTEZ9FV2YTTFanX6cMGAlJJuCnPgaWLhhZ3JwS9B
+         Rh7hMkK6wEhA5ZSuC6IGL1GZDx7P7RtO4aQ2vrg+Ku+r6fm0QcDfiEb0tAsI9h3XiI
+         6xuf34xU7Qn2RTYAeL4YRxVZvBIm9YUuyUmHb2fAedIECFk+ZY/NBA8jB+k6WHN602
+         d0ufjkLi0ynTA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Takashi Iwai <tiwai@suse.com>
+Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
+        Hulk Robot <hulkci@huawei.com>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] ASoC: rk817: Constify static struct snd_soc_dai_ops
+Date:   Fri, 18 Jun 2021 13:07:53 +0100
+Message-Id: <162401758813.52682.3182841658896977708.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210618120433.14746-1-michael@walle.cc>
-References: <20210618120433.14746-1-michael@walle.cc>
+In-Reply-To: <20210602113643.3037374-1-weiyongjun1@huawei.com>
+References: <20210602113643.3037374-1-weiyongjun1@huawei.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The LS1028A SoC errata sheet mentions A-050121 "GPU hangs if clock
-gating for Rasterizer, Setup Engine and Texture Engine are enabled".
-The workaround is to disable the corresponding clock gatings.
+On Wed, 2 Jun 2021 11:36:43 +0000, Wei Yongjun wrote:
+> The snd_soc_dai_ops structures is only stored in the ops field of a
+> snd_soc_dai_driver structure, so make the snd_soc_dai_ops structure
+> const to allow the compiler to put it in read-only memory.
 
-Signed-off-by: Michael Walle <michael@walle.cc>
----
-changes since RFC:
- - corrected the wording of the comment
+Applied to
 
- drivers/gpu/drm/etnaviv/etnaviv_gpu.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-index 4102bcea3341..c297fffe06eb 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-@@ -613,6 +613,12 @@ static void etnaviv_gpu_enable_mlcg(struct etnaviv_gpu *gpu)
- 	    etnaviv_is_model_rev(gpu, GC2000, 0x5108))
- 		pmc |= VIVS_PM_MODULE_CONTROLS_DISABLE_MODULE_CLOCK_GATING_TX;
- 
-+	/* Disable SE, RA and TX clock gating on affected core revisions. */
-+	if (etnaviv_is_model_rev(gpu, GC7000, 0x6202))
-+		pmc |= VIVS_PM_MODULE_CONTROLS_DISABLE_MODULE_CLOCK_GATING_SE |
-+		       VIVS_PM_MODULE_CONTROLS_DISABLE_MODULE_CLOCK_GATING_RA |
-+		       VIVS_PM_MODULE_CONTROLS_DISABLE_MODULE_CLOCK_GATING_TX;
-+
- 	pmc |= VIVS_PM_MODULE_CONTROLS_DISABLE_MODULE_CLOCK_GATING_RA_HZ;
- 	pmc |= VIVS_PM_MODULE_CONTROLS_DISABLE_MODULE_CLOCK_GATING_RA_EZ;
- 
--- 
-2.20.1
+Thanks!
 
+[1/1] ASoC: rk817: Constify static struct snd_soc_dai_ops
+      commit: 45ce213392df07b9e2443666c0910e1617882cf3
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
