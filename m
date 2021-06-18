@@ -2,71 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3FD63ACDB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21B023ACDB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234616AbhFROme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:42:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39244 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234595AbhFROm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:42:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF63061260;
-        Fri, 18 Jun 2021 14:40:15 +0000 (UTC)
-Date:   Fri, 18 Jun 2021 15:40:13 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Andrew Jones <drjones@redhat.com>
-Subject: Re: [PATCH v16 1/7] arm64: mte: Handle race when synchronising tags
-Message-ID: <20210618144013.GE16116@arm.com>
-References: <20210618132826.54670-1-steven.price@arm.com>
- <20210618132826.54670-2-steven.price@arm.com>
+        id S234626AbhFROmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 10:42:54 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:57634 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234595AbhFROmw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 10:42:52 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15IEeNZY026566;
+        Fri, 18 Jun 2021 09:40:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1624027223;
+        bh=XCiiUC6/DdJ/G9x9Zx5amlsB3d7bKlx25c8cMWep5YA=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=Rsubx4mUTip2MOEffz+AVYRfpKvcO/d4/QlIqlxalG6cE7f7jugfRgBuysUI+hxb9
+         fmo8dGq+1XkaLVs8l19fIg6xAEo7xH0BesfPuZqOjBDWM8UaO/9FmwA96uuK3vCcWQ
+         Mvxen6dR2nHIrEUfbA8iq1s9HPFH4QHXPEAs5tjY=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15IEeN89028527
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 18 Jun 2021 09:40:23 -0500
+Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 18
+ Jun 2021 09:40:23 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 18 Jun 2021 09:40:23 -0500
+Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15IEeIkS129394;
+        Fri, 18 Jun 2021 09:40:19 -0500
+From:   Vignesh Raghavendra <vigneshr@ti.com>
+To:     Michael Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Richard Weinberger <richard@nod.at>,
+        Heiko Thiery <heiko.thiery@gmail.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Alexander Williams <awill@google.com>
+Subject: Re: [PATCH v4 0/2] mtd: spi-nor: support dumping sfdp tables
+Date:   Fri, 18 Jun 2021 20:10:15 +0530
+Message-ID: <162402719645.24673.15238447229532389824.b4-ty@ti.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210503155651.30889-1-michael@walle.cc>
+References: <20210503155651.30889-1-michael@walle.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210618132826.54670-2-steven.price@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 02:28:20PM +0100, Steven Price wrote:
-> mte_sync_tags() used test_and_set_bit() to set the PG_mte_tagged flag
-> before restoring/zeroing the MTE tags. However if another thread were to
-> race and attempt to sync the tags on the same page before the first
-> thread had completed restoring/zeroing then it would see the flag is
-> already set and continue without waiting. This would potentially expose
-> the previous contents of the tags to user space, and cause any updates
-> that user space makes before the restoring/zeroing has completed to
-> potentially be lost.
+On Mon, 3 May 2021 17:56:49 +0200, Michael Walle wrote:
+> Add the possibility to dump the SFDP data of a flash device.
 > 
-> Since this code is run from atomic contexts we can't just lock the page
-> during the process. Instead implement a new (global) spinlock to protect
-> the mte_sync_page_tags() function.
+> More and more flash devices share the same flash ID and we need per device
+> fixups. Usually, these fixups differentiate flashes by looking at
+> differences in the SFDP data. Determining the difference is only possible
+> if we have the SFDP data for all the flashes which share a flash ID. This
+> will lay the foundation to dump the whole SFDP data of a flash device.
 > 
-> Fixes: 34bfeea4a9e9 ("arm64: mte: Clear the tags when a page is mapped in user-space with PROT_MTE")
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-> Signed-off-by: Steven Price <steven.price@arm.com>
+> [...]
 
-Although I reviewed this patch, I think we should drop it from this
-series and restart the discussion with the Chromium guys on what/if they
-need PROT_MTE with MAP_SHARED. It currently breaks if you have two
-PROT_MTE mappings but if they are ok with only one of the mappings being
-PROT_MTE, I'm happy to just document it.
+Applied to spi-nor/next, thanks!
+[1/2] mtd: spi-nor: sfdp: save a copy of the SFDP data
+      https://git.kernel.org/mtd/c/65b6d89d45
+[2/2] mtd: spi-nor: add initial sysfs support
+      https://git.kernel.org/mtd/c/36ac022862
 
-Not sure whether subsequent patches depend on it though.
+--
+Regards
+Vignesh
 
--- 
-Catalin
