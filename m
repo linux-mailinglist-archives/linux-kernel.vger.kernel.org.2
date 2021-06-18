@@ -2,71 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 834C03AD42A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 23:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F39B3AD436
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 23:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234438AbhFRVLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 17:11:08 -0400
-Received: from mail-oo1-f42.google.com ([209.85.161.42]:33637 "EHLO
-        mail-oo1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234199AbhFRVLH (ORCPT
+        id S234476AbhFRVOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 17:14:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232882AbhFRVOp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 17:11:07 -0400
-Received: by mail-oo1-f42.google.com with SMTP id v17-20020a4aa5110000b0290249d63900faso2798616ook.0;
-        Fri, 18 Jun 2021 14:08:56 -0700 (PDT)
+        Fri, 18 Jun 2021 17:14:45 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60EEC061574;
+        Fri, 18 Jun 2021 14:12:34 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id z22so15748581ljh.8;
+        Fri, 18 Jun 2021 14:12:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wkkXxTmlk5LYdgcFdvpXCVgx4DIMcu0v6eYY7z5C8Yw=;
+        b=tt6EC+ujkY6mnjxC+MBmyzCbJdqvW2oTHOteltYBNMziMd19qNh9hPIDgdrrJzEs4x
+         d1Tcx+Ai8T3n7AzIBtj+kfioeSW1ZGzVmm2ktP7uGDOGykPjoFJwu+ZLaXlWPijo6nKJ
+         Mnv2D7Ky/DW9XkFyyJLslXiGonRP6Kd3GgQzUQ6Ps4YCKdIRZSosigiz1OOHi3jpQYrh
+         jlearcd0waupXvvMyAfGl06fcHrvtB7l3w06OHHBySIZFccWd1Ks5jVtLXnaVal1Ae9f
+         qXyHQcRl/J6rBPW1gSwoeEiT/zLp4iWTxPv0AyMC3sGCJIrSQhksDN120mzOjDf/yj38
+         HwlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=frRBpIJZObpmwDftURD9RgvF5osDKnY9SoJHh87QQOw=;
-        b=GWiBzNa4SDC3uw5BNu737b8LGneU5wWui3UZYGCEVV63w9yBa78rAfnTaSfSrwCne4
-         YogT53XPHkLAmw/oEnpqUCEWzrmVec66nyaqefRlr/vzyqoljlH4di2M02ExBFUcpkfY
-         b1peRcOMvvQ1Ndj+CYlZUvn2KPM25ZhJ2dIHAIRqJ/oHbB+MNss+gwz4S2Eta3caTkHk
-         Jaxwnkve3unkzYhOVZuQqTC8riQ+wccaEfZZX8qiCt3u2L6BQBPzZWh0ZvyBjkXM51q1
-         cOUMxoK3sOD7AeG/i1im0uIEg2TnjSuGQQTiHBFYou35BM60MTwTATpSdvXhP4RAU9Ty
-         apvA==
-X-Gm-Message-State: AOAM532vDKesknPR7jXkd4fvRUPT5C2Pju4Rv2bAnhMgKFdModYX1YTt
-        6tI9/XIO/PkOvPJaWmb5nQ==
-X-Google-Smtp-Source: ABdhPJzJs34aVbpGHJvcdeb16PRfJefG4VEzrs4xqpD8Aaguoyrw3bHFo2RGmH5YAQAotMKwhfD7TQ==
-X-Received: by 2002:a4a:e54e:: with SMTP id s14mr10720963oot.27.1624050536344;
-        Fri, 18 Jun 2021 14:08:56 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id 16sm2246125otm.57.2021.06.18.14.08.54
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wkkXxTmlk5LYdgcFdvpXCVgx4DIMcu0v6eYY7z5C8Yw=;
+        b=crk6MYdJ0KDqHW7+Y8eSNyCyTjAB0yombbsRIKDMZe048Bva2c1REMAKqhM9aHKGlJ
+         AFVEwjhXTA78RJxP/PCd0lc4cOochf1MYjNSjlnjyR1fqXOSv4K3vZYsabBN3QBgl/Ql
+         Vw9U53Oh/24R9SThW8hVtbb8JXd/jVCNWN6rqKlcmztkcO+gG7BWVTLo2MzAJhdgRvXg
+         wRPr0Yp1nPu7tSobTQ9szsUQe0Y5s9iXj3XYlU0ZRRCTIAYTpa/TTWSiDa+BxuEhyWC7
+         1m018+EyXwPH6XlIjxvxMaN0JlnKPTvXyPO/ZPAdiwLQAM9fRgJN0JMPOrMawnPsQcLr
+         Hizw==
+X-Gm-Message-State: AOAM5313frjPwVFVd7yGP8dzkUNcdUkeLlOKJ89zJMgo8onKp1xJL/0W
+        pgoCUOpgps3LYCnEcIziJch6wNwi7Ps=
+X-Google-Smtp-Source: ABdhPJxrM/5mp0WqaTc3A1Gs8rVHlOoX6nlu+7nX3oarQWvqKAd+Nzvxf26hU3bLBGYZJZqkabU8WA==
+X-Received: by 2002:a2e:9d15:: with SMTP id t21mr11313273lji.200.1624050753254;
+        Fri, 18 Jun 2021 14:12:33 -0700 (PDT)
+Received: from localhost.localdomain (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
+        by smtp.gmail.com with ESMTPSA id a8sm1183802ljq.127.2021.06.18.14.12.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 14:08:55 -0700 (PDT)
-Received: (nullmailer pid 2877551 invoked by uid 1000);
-        Fri, 18 Jun 2021 21:08:53 -0000
-Date:   Fri, 18 Jun 2021 15:08:53 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     pali@kernel.org, tsbogend@alpha.franken.de,
-        linux-kernel@vger.kernel.org, neil@brown.name,
-        linux-mips@vger.kernel.org, linux-pci@vger.kernel.org,
-        john@phrozen.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
-        ilya.lipnitskiy@gmail.com, matthias.bgg@gmail.com,
-        linux-staging@lists.linux.dev, bhelgaas@google.com,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH v2 1/3] dt-bindings: mt7621-pci: PCIe binding
- documentation for MT7621 SoCs
-Message-ID: <20210618210853.GA2877517@robh.at.kernel.org>
-References: <20210609140159.20476-1-sergio.paracuellos@gmail.com>
- <20210609140159.20476-2-sergio.paracuellos@gmail.com>
+        Fri, 18 Jun 2021 14:12:33 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: [PATCH v2 0/4] HWMON LM90 interrupt fixes and improvements
+Date:   Sat, 19 Jun 2021 00:11:58 +0300
+Message-Id: <20210618211202.2938-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210609140159.20476-2-sergio.paracuellos@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 09 Jun 2021 16:01:57 +0200, Sergio Paracuellos wrote:
-> Add device tree binding documentation for PCIe in MT7621 SoCs.
-> 
-> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> ---
->  .../bindings/pci/mediatek,mt7621-pci.yaml     | 142 ++++++++++++++++++
->  1 file changed, 142 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
-> 
+Hi,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+This series makes interrupt usable on NVIDIA Tegra devices, it also
+switches LM90 driver to use hwmon_notify_event().
+
+Dmitry Osipenko (4):
+  hwmon: (lm90) Don't override interrupt trigger type
+  hwmon: (lm90) Use hwmon_notify_event()
+  hwmon: (lm90) Unmask hardware interrupt
+  hwmon: (lm90) Disable interrupt on suspend
+
+ drivers/hwmon/lm90.c | 79 ++++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 66 insertions(+), 13 deletions(-)
+
+-- 
+2.30.2
+
