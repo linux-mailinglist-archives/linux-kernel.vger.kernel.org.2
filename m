@@ -2,164 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE72B3AD53B
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 00:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3A03AD540
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 00:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234936AbhFRWeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 18:34:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41928 "EHLO
+        id S235023AbhFRWfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 18:35:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230268AbhFRWeW (ORCPT
+        with ESMTP id S234996AbhFRWfC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 18:34:22 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3300C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 15:32:12 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id ho18so18096349ejc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 15:32:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p2FKOWnBaMuz6OBPKnzqLMqFzmhzNRt6rC9qAPa6m8w=;
-        b=uW2EaoaUMOePMn5sgclv0HFxRXMahfmUgqHBhKFkp5IYnQbVMFhdmrjc+7BoyWTQf5
-         Nr0mE/nO13rhiJcyjE0cE4NXzZnJVDpBVSo9IltDFdUIXI45bfjcUnpRTRb6gb7ApKD/
-         z6o/24F1h9uvNeu5t+b0NiJXcMjjAor1isLlJjLLI85eIwHM8J7ey+YK4XdIERQ5Jp5d
-         SMutEKNbasUT9v6qJAQ/p+vMn8JVejMBxjCaGFgKB8GOTYlTZS8fKGrPp84wp2nRSkek
-         ELO5VyfXQuO+2itDk2aiNUMDk7v6N1/jTF4nq2VUmSoBb77hRm6+O0lKxjN0Tm40M3Mx
-         hovw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=p2FKOWnBaMuz6OBPKnzqLMqFzmhzNRt6rC9qAPa6m8w=;
-        b=MyC552jobLkrwsSsARC9Wy2SNp4wKXTFT42pd/yI7R25hItYymddFImin4CeJd2xxM
-         zQGvdN73ioOu/GVPSnqYFfl/XDhNGJDBZZ9RyHJ8UE4q8uMgQwMGtDL0A9vGlibRJbqT
-         asCab0cffmLkm9YXBi8NpjkmTcmtTSCG230EufVKpfXZ59xN1VNqQZcDQkFPbey/8RSO
-         gs8GIjf5a28enWqj33zk7UMgeXYs3Sew0kMi/FmzRt7tvKxuGYbh8f8UylEe9lLdJpS5
-         zeRsjoJKAmsJu3QRpdw5Virqvsg21JOM89TezZnrPKpPZSQ+Es/HJXxW6aDvcRXjTir8
-         0rWw==
-X-Gm-Message-State: AOAM531kX73J014ZXru4of2dCLm3QZJZApxdO5O+qNVT428vYXWj8Ilj
-        DWpwilt0umt3XFEKyoHzGRE=
-X-Google-Smtp-Source: ABdhPJzmXlFsXSKDbtvJUfftMmU/TDhRSqP5Yia+MeQMiBuATXPLT8b9SUs6NaneaLwPux2DVpiyKQ==
-X-Received: by 2002:a17:907:c87:: with SMTP id gi7mr12939090ejc.452.1624055531462;
-        Fri, 18 Jun 2021 15:32:11 -0700 (PDT)
-Received: from linux.local (host-82-59-55-132.retail.telecomitalia.it. [82.59.55.132])
-        by smtp.gmail.com with ESMTPSA id n13sm6873182edx.30.2021.06.18.15.32.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 15:32:10 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v4] x86/resctrl: Fix kernel-doc in internal.h
-Date:   Sat, 19 Jun 2021 00:32:06 +0200
-Message-Id: <20210618223206.29539-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        Fri, 18 Jun 2021 18:35:02 -0400
+Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72CA4C061760;
+        Fri, 18 Jun 2021 15:32:52 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 83FAC3F367;
+        Sat, 19 Jun 2021 00:32:50 +0200 (CEST)
+Subject: Re: [RESEND PATCH v4 1/3] cpuidle: qcom_spm: Detach state machine
+ from main SPM handling
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        daniel.lezcano@linaro.org, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com,
+        jamipkettunen@somainline.org, ~postmarketos/upstreaming@lists.sr.ht
+References: <20210618180907.258149-1-angelogioacchino.delregno@somainline.org>
+ <20210618180907.258149-2-angelogioacchino.delregno@somainline.org>
+ <YM0SCaAdYMxZQya1@gerhold.net>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <ebeb5f35-b284-222f-86df-9ca6633d73ba@somainline.org>
+Date:   Sat, 19 Jun 2021 00:32:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YM0SCaAdYMxZQya1@gerhold.net>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add description of undocumented parameters. Issues detected by
-scripts/kernel-doc.
+Il 18/06/21 23:37, Stephan Gerhold ha scritto:
+> Hi,
+> 
+> Thanks for the patch!
+> 
+> On Fri, Jun 18, 2021 at 08:09:05PM +0200, AngeloGioacchino Del Regno wrote:
+>> In commit a871be6b8eee ("cpuidle: Convert Qualcomm SPM driver to a generic
+>> CPUidle driver") the SPM driver has been converted to a
+>> generic CPUidle driver: that was mainly made to simplify the
+>> driver and that was a great accomplishment;
+>>
+> 
+> Hmm, you mention my commit but did not Cc me.
+> Only saw this patch while randomly looking through linux-arm-msm. :)
+> 
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
+Sorry, I've originally sent this series 6 months ago, things may fly
+off of my head... :))
 
-v3->v4: Make consistent use of spaces in the documentation of struct
-mon_data_bits.
-v2->v3: Fix typo. Inherit the descriptions of membw and mbm_width from
-commit
-https://lore.kernel.org/lkml/20210614200941.12383-2-james.morse@arm.com/
-to make it easier to merge both patches.
-v1->v2: According to a first review by Reinette Chartre, remove changes
-unrelated to the subject of this patch and modify the descriptions of
-two parameters.
+>> Though, it was ignored that the SPM driver is not used only
+>> on the ARM architecture.
+> 
+> This sentence is a bit misleading IMO. In mainline the SPM driver is
+> *currently* only used for CPUidle, and the old driver was as
+> CPUidle-specific as the new one. So saying that I "ignored" something
+> here is kind of wrong. :)
+> 
+> Can you re-phrase this a bit to say that the SPM hardware is also
+> used for power-collapse of the CPU caches/AVS/whatever and therefore we
+> need to refactor the driver to something more independent?
+> 
 
- arch/x86/kernel/cpu/resctrl/internal.h | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
+On SAWv4.1, the SPM is used to regulate AVS limits but *not* power
+collapse of the CPU caches "and whatever": platforms with this version
+are using different HW to accomplish that.
 
-diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
-index c4d320d02fd5..6a5f60a37219 100644
---- a/arch/x86/kernel/cpu/resctrl/internal.h
-+++ b/arch/x86/kernel/cpu/resctrl/internal.h
-@@ -70,6 +70,7 @@ DECLARE_STATIC_KEY_FALSE(rdt_mon_enable_key);
-  * struct mon_evt - Entry in the event list of a resource
-  * @evtid:		event id
-  * @name:		name of the event
-+ * @list:		entry in &rdt_resource->evt_list
-  */
- struct mon_evt {
- 	u32			evtid;
-@@ -78,10 +79,13 @@ struct mon_evt {
- };
- 
- /**
-- * struct mon_data_bits - Monitoring details for each event file
-- * @rid:               Resource id associated with the event file.
-+ * union mon_data_bits - Monitoring details for each event file
-+ * @priv:              Used to store monitoring event data in @u
-+ *                     as kernfs private data
-+ * @rid:               Resource id associated with the event file
-  * @evtid:             Event id associated with the event file
-  * @domid:             The domain to which the event file belongs
-+ * @u:                 Name of the bit fields struct
-  */
- union mon_data_bits {
- 	void *priv;
-@@ -119,6 +123,7 @@ enum rdt_group_type {
-  * @RDT_MODE_PSEUDO_LOCKSETUP: Resource group will be used for Pseudo-Locking
-  * @RDT_MODE_PSEUDO_LOCKED: No sharing of this resource group's allocations
-  *                          allowed AND the allocations are Cache Pseudo-Locked
-+ * @RDT_NUM_MODES: Total number of modes
-  *
-  * The mode of a resource group enables control over the allowed overlap
-  * between allocations associated with different resource groups (classes
-@@ -142,7 +147,7 @@ enum rdtgrp_mode {
- 
- /**
-  * struct mongroup - store mon group's data in resctrl fs.
-- * @mon_data_kn		kernlfs node for the mon_data directory
-+ * @mon_data_kn:		kernfs node for the mon_data directory
-  * @parent:			parent rdtgrp
-  * @crdtgrp_list:		child rdtgroup node list
-  * @rmid:			rmid for this rdtgroup
-@@ -282,11 +287,11 @@ struct rftype {
- /**
-  * struct mbm_state - status for each MBM counter in each domain
-  * @chunks:	Total data moved (multiply by rdt_group.mon_scale to get bytes)
-- * @prev_msr	Value of IA32_QM_CTR for this RMID last time we read it
-+ * @prev_msr:	Value of IA32_QM_CTR for this RMID last time we read it
-  * @prev_bw_msr:Value of previous IA32_QM_CTR for bandwidth counting
-- * @prev_bw	The most recent bandwidth in MBps
-- * @delta_bw	Difference between the current and previous bandwidth
-- * @delta_comp	Indicates whether to compute the delta_bw
-+ * @prev_bw:	The most recent bandwidth in MBps
-+ * @delta_bw:	Difference between the current and previous bandwidth
-+ * @delta_comp:	Indicates whether to compute the delta_bw
-  */
- struct mbm_state {
- 	u64	chunks;
-@@ -456,11 +461,13 @@ struct rdt_parse_data {
-  * @data_width:		Character width of data when displaying
-  * @domains:		All domains for this resource
-  * @cache:		Cache allocation related data
-+ * @membw:		If the component has bandwidth controls, their properties.
-  * @format_str:		Per resource format string to show domain value
-  * @parse_ctrlval:	Per resource function pointer to parse control values
-  * @evt_list:		List of monitoring events
-  * @num_rmid:		Number of RMIDs available
-  * @mon_scale:		cqm counter * mon_scale = occupancy in bytes
-+ * @mbm_width:		Monitor width, to detect and correct for overflow.
-  * @fflags:		flags to choose base and info files
-  */
- struct rdt_resource {
--- 
-2.32.0
+>> In preparation for the enablement of SPM features on AArch64/ARM64,
+>> split the cpuidle-qcom-spm driver in two: the CPUIdle related
+>> state machine (currently used only on ARM SoCs) stays there, while
+>> the SPM communication handling lands back in soc/qcom/spm.c and
+>> also making sure to not discard the simplifications that were
+>> introduced in the aforementioned commit.
+>>
+>> Since now the "two drivers" are split, the SCM dependency in the
+>> main SPM handling is gone and for this reason it was also possible
+>> to move the SPM initialization early: this will also make sure that
+>> whenever the SAW CPUIdle driver is getting initialized, the SPM
+>> driver will be ready to do the job.
+>>
+>> Please note that the anticipation of the SPM initialization was
+>> also done to optimize the boot times on platforms that have their
+>> CPU/L2 idle states managed by other means (such as PSCI), while
+>> needing SAW initialization for other purposes, like AVS control.
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> 
+> The diff is quite hard to read for me (just the nature of this change,
+> not your fault). Just mentioning this in case I miss something obvious.
+> 
+>> ---
+>>   drivers/cpuidle/Kconfig.arm        |   1 +
+>>   drivers/cpuidle/cpuidle-qcom-spm.c | 294 ++++++-----------------------
+>>   drivers/soc/qcom/Kconfig           |   9 +
+>>   drivers/soc/qcom/Makefile          |   1 +
+>>   drivers/soc/qcom/spm.c             | 198 +++++++++++++++++++
+>>   include/soc/qcom/spm.h             |  45 +++++
+>>   6 files changed, 312 insertions(+), 236 deletions(-)
+>>   create mode 100644 drivers/soc/qcom/spm.c
+>>   create mode 100644 include/soc/qcom/spm.h
+>>
+>> [...]
+>> diff --git a/drivers/cpuidle/cpuidle-qcom-spm.c b/drivers/cpuidle/cpuidle-qcom-spm.c
+>> index adf91a6e4d7d..3dd7bb10b82d 100644
+>> --- a/drivers/cpuidle/cpuidle-qcom-spm.c
+>> +++ b/drivers/cpuidle/cpuidle-qcom-spm.c
+>> [...]
+>> -static int spm_dev_probe(struct platform_device *pdev)
+>> +static int spm_cpuidle_drv_probe(struct platform_device *pdev)
+>>   {
+>>   	[...]
+>> +	for_each_possible_cpu(cpu) {
+>> +		ret = spm_cpuidle_register(cpu);
+>> +		if (ret != -ENODEV) {
+>> +			dev_err(&pdev->dev,
+>> +				"Cannot register for CPU%d: %d\n", cpu, ret);
+>> +			break;
+> 
+> Huh, why does this error for ret = 0? :S
+> 
+> [    0.736332] qcom-spm-cpuidle qcom-spm-cpuidle: Cannot register for CPU0: 0
+> 
+> A couple more lines in the UART log, then the device hangs forever.
+> For testing I changed this to: if (ret && ret != -ENODEV).
+> 
+
+I have no idea what happened here; this was indeed supposed to be what
+you just pointed out.
+
+>> [...]
+>> @@ -213,132 +80,87 @@ static const struct of_device_id qcom_idle_state_match[] = {
+>> -static int spm_cpuidle_init(struct cpuidle_driver *drv, int cpu)
+>> +static int spm_cpuidle_register(int cpu)
+>>   {
+>> +	struct platform_device *pdev = NULL;
+>> +	struct spm_driver_data *spm = NULL;
+>> +	struct device_node *cpu_node, *saw_node;
+>>   	int ret;
+>>   
+>> -	memcpy(drv, &qcom_spm_idle_driver, sizeof(*drv));
+>> -	drv->cpumask = (struct cpumask *)cpumask_of(cpu);
+> 
+> Somehow this line got lost, which means the first cpuidle_driver will
+> cover all CPUs and we will always fail to register the cpuidle_driver
+> for all other CPUs:
+> 
+> [    0.736591] failed to register cpuidle driver
+> [    0.744186] qcom-spm-cpuidle qcom-spm-cpuidle: Cannot register for CPU1: -16
+> [    0.748443] qcom-spm-cpuidle: probe of qcom-spm-cpuidle failed with error -16
+> 
+> (Then the device hangs forever.)
+> 
+
+So you have discovered a bug for which your platform dies when SPM
+does not probe, probably due to something else being dependant on this.
+In this case, I would encourage you to produce a fix for your platform
+to not unexpectedly just hang forever if *some driver* doesn't probe:
+that's definitely not right.
+
+> I added
+> spm->cpuidle_driver.cpumask = (struct cpumask *)cpumask_of(cpu);
+> below
+> 
+>> +	spm->cpuidle_driver = qcom_spm_idle_driver;
+> 
+> and this seems to make it boot again at least.
+> 
+
+I really think that I've originally messed up the patch originally:
+this doesn't seem to be the right version, even though it was marked as
+v4. I trusted my folders organization too much. Apologies.
+
+> However, it seems a bit pointless now to have a separate cpuidle_driver
+> per CPU, since they are all registered at the same time. With my
+> refactoring this was kind of convenient because the SPM platform devices
+> could happily probe independently and just register a cpuidle_driver for
+> the CPU they belong to.
+> 
+> With your patch, the cpuidle_drivers are registered at the same time for
+> all CPUs, so we might as well use a single cpuidle_driver that covers
+> all CPUs (like you already do without setting cpumask).
+> 
+> Note that if you have a single cpuidle_driver for all CPUs you need to
+> refactor spm_enter_idle_state() a bit. The container_of() will no longer
+> work to get the CPU-specific SPM. Before my changes there was a
+> DEFINE_PER_CPU for this. I guess we need to bring that back.
+> 
+>>   	[...]
+>> +	ret = dt_init_idle_driver(&spm->cpuidle_driver,
+>> +				  qcom_idle_state_match, 1);
+>> +	if (ret <= 0)
+>> +		return ret ? : -ENODEV;
+>>   
+>> -	return drv;
+>> -}
+>> +	ret = qcom_scm_set_warm_boot_addr(cpu_resume_arm, cpumask_of(cpu));
+>> +	if (ret)
+>> +		return ret;
+> 
+> And the advantage here is that we should be able to do this with a
+> single firmware call (set the warm boot addr for all CPUs at once).
+> 
+
+
+Probably staying with setting the cpumask is a better option; we don't
+
+really know if there's any platform requiring that kind of quirk: at
+least downstream, I recall that they made sure to send multiple calls.
+
+
+>> [...]
+>> diff --git a/include/soc/qcom/spm.h b/include/soc/qcom/spm.h
+>> new file mode 100644
+>> index 000000000000..604eca2c4d4a
+>> --- /dev/null
+>> +++ b/include/soc/qcom/spm.h
+>> @@ -0,0 +1,45 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +/*
+>> + * Copyright (c) 2011-2014, The Linux Foundation. All rights reserved.
+>> + * Copyright (c) 2014,2015, Linaro Ltd.
+>> + * Copyright (C) 2020, AngeloGioacchino Del Regno <kholk11@gmail.com>
+>> + */
+>> +
+>> +#ifndef __SPM_H__
+>> +#define __SPM_H__
+>> +
+>> +#include <linux/cpuidle.h>
+>> +
+>> +#define MAX_PMIC_DATA		2
+>> +#define MAX_SEQ_DATA		64
+>> +
+>> +enum pm_sleep_mode {
+>> +	PM_SLEEP_MODE_STBY,
+>> +	PM_SLEEP_MODE_RET,
+>> +	PM_SLEEP_MODE_SPC,
+>> +	PM_SLEEP_MODE_PC,
+>> +	PM_SLEEP_MODE_NR,
+>> +};
+>> +
+>> +struct spm_reg_data {
+>> +	const u16 *reg_offset;
+>> +	u32 spm_cfg;
+>> +	u32 spm_dly;
+>> +	u32 pmic_dly;
+>> +	u32 pmic_data[MAX_PMIC_DATA];
+>> +	u32 avs_ctl;
+>> +	u32 avs_limit;
+> 
+> Looks like you accidentally included changes from PATCH 2/3
+> ("soc: qcom: spm: Implement support for SAWv4.1, SDM630/660 L2 AVS")
+> here, reg_offset u8 -> u16 and adding avs_ctl and avs_limit should be in
+> a separate patch. It's really hard to see that you added those here
+> while moving the code. :/
+> 
+
+This change belongs to 2/3.
+Will send a v5 with fixes.
+
+> Thanks,
+> Stephan
+> 
 
