@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF5143ACE88
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:19:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A003ACE89
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:19:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235007AbhFRPVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:21:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234935AbhFRPVe (ORCPT
+        id S235015AbhFRPVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:21:45 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56308 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234943AbhFRPVf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:21:34 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BDBC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 08:19:25 -0700 (PDT)
-Message-Id: <20210618143444.864761905@linutronix.de>
+        Fri, 18 Jun 2021 11:21:35 -0400
+Message-Id: <20210618143445.000818593@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624029563;
+        s=2020; t=1624029564;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=zYkzV8UeqyB/dvy5j/y7BuRa/gLRdSj7ldd4sclZAZI=;
-        b=Ml0mnRrtZdRzSGQALS+5CY6Dwx5jKjOiNtvw4L8pdGGxz/IDt1BR9lRxYVE5dFFyCXR86Q
-        zVDRKQK6xp3Yf4ehgDy57AkW+Q8bgOJbSKkbLSEb++SQzAda1A6QJuaAulSLwRE+DBJVXs
-        sBvvTkYpan4cJ88CQfxiuQbvAAkUTXzGJ3eODe/klGEhfsns0n69Pb8mlQhGb1OIniRYJo
-        97n+qcSgJpvaVROr6tiPsVGn4QV7c/ohxx4cb8UC7leKvq8lUI6l3R2uvmKpf0wMk7FA7N
-        04OTck4SfITsWQpt411X42JHtHf0vvO1DXE7B7sktLp35YygZE5XHop17gbGvg==
+        bh=Le5EuhyaLZjBCrfnvxWPgdS7ImdwgTbeCcCHCdbzfWQ=;
+        b=n8ZMIgHdYoBU2JV8UzcOX0Iko7mYNYy2LQO/X16fc5+a75k3PegGS5BqiaNhGKZrH514kR
+        YFK01exno5/PkoAs7OyLk9r9g6NwsLyWEFDoUGnOkFeYfBoXGjN6S/cyuCsZZaPvJbhCiO
+        lgImJBNq0Mp8R4sYGe07AOiBx4Rz3NgAhxgFuuqX6udG06tnzI2oe4bIOlrfapb5CZGprs
+        vQk380iTCRh4VV3paVJAeus8IEl06ZgO0XHfVtjT/r6l778+ts70m1EiW20LIRV3MEdHQe
+        nNj/Ry0T/Omf0Vl/29UoNk33T/nfbnpoF7PZvOvl99lSh11KgS+4sE5uMLzclw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624029563;
+        s=2020e; t=1624029564;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=zYkzV8UeqyB/dvy5j/y7BuRa/gLRdSj7ldd4sclZAZI=;
-        b=o7dqIKXDUqy0Jl+SyXV4CO0tuBbAMVuirvkZwnYFdWf04VwOvTNapGhzQV3DO6zMkvDERU
-        VpEFKjZdlT/KmVCw==
-Date:   Fri, 18 Jun 2021 16:18:27 +0200
+        bh=Le5EuhyaLZjBCrfnvxWPgdS7ImdwgTbeCcCHCdbzfWQ=;
+        b=yNPTbJS5TSzaGowtUx+gQzFu1JJaMWt+I7hKwGTZTOomymThocgrEKn6+HIhyRUa5eo/fk
+        BbH5tUbnm1wvx5Dg==
+Date:   Fri, 18 Jun 2021 16:18:28 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -47,8 +44,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V3 04/66] x86/pkeys: Revert a5eff7259790 ("x86/pkeys: Add PKRU
- value to init_fpstate")
+Subject: [patch V3 05/66] x86/fpu: Mark various FPU states __ro_after_init
 References: <20210618141823.161158090@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,69 +53,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This cannot work and it's unclear how that ever made a difference.
-
-init_fpstate.xsave.header.xfeatures is always 0 so get_xsave_addr() will
-always return a NULL pointer, which will prevent storing the default PKRU
-value in initfp_state.
+Nothing modifies these after booting.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Andy Lutomirski <luto@kernel.org>
 ---
-V2: Fix subject
+V3: Remove xfeatures_mask_all as that needs more cleanups
 ---
- arch/x86/kernel/cpu/common.c |    5 -----
- arch/x86/mm/pkeys.c          |    6 ------
- 2 files changed, 11 deletions(-)
+ arch/x86/kernel/fpu/init.c   |    4 ++--
+ arch/x86/kernel/fpu/xstate.c |   16 ++++++++++------
+ 2 files changed, 12 insertions(+), 8 deletions(-)
 
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -466,8 +466,6 @@ static bool pku_disabled;
+--- a/arch/x86/kernel/fpu/init.c
++++ b/arch/x86/kernel/fpu/init.c
+@@ -89,7 +89,7 @@ static void fpu__init_system_early_gener
+ /*
+  * Boot time FPU feature detection code:
+  */
+-unsigned int mxcsr_feature_mask __read_mostly = 0xffffffffu;
++unsigned int mxcsr_feature_mask __ro_after_init = 0xffffffffu;
+ EXPORT_SYMBOL_GPL(mxcsr_feature_mask);
  
- static __always_inline void setup_pku(struct cpuinfo_x86 *c)
- {
--	struct pkru_state *pk;
--
- 	/* check the boot processor, plus compile options for PKU: */
- 	if (!cpu_feature_enabled(X86_FEATURE_PKU))
- 		return;
-@@ -478,9 +476,6 @@ static __always_inline void setup_pku(st
- 		return;
+ static void __init fpu__init_system_mxcsr(void)
+@@ -135,7 +135,7 @@ static void __init fpu__init_system_gene
+  * This is inherent to the XSAVE architecture which puts all state
+  * components into a single, continuous memory block:
+  */
+-unsigned int fpu_kernel_xstate_size;
++unsigned int fpu_kernel_xstate_size __ro_after_init;
+ EXPORT_SYMBOL_GPL(fpu_kernel_xstate_size);
  
- 	cr4_set_bits(X86_CR4_PKE);
--	pk = get_xsave_addr(&init_fpstate.xsave, XFEATURE_PKRU);
--	if (pk)
--		pk->pkru = init_pkru_value;
- 	/*
- 	 * Setting X86_CR4_PKE will cause the X86_FEATURE_OSPKE
- 	 * cpuid bit to be set.  We need to ensure that we
---- a/arch/x86/mm/pkeys.c
-+++ b/arch/x86/mm/pkeys.c
-@@ -10,7 +10,6 @@
+ /* Get alignment of the TYPE. */
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -59,19 +59,23 @@ static short xsave_cpuid_features[] __in
+  * This represents the full set of bits that should ever be set in a kernel
+  * XSAVE buffer, both supervisor and user xstates.
+  */
+-u64 xfeatures_mask_all __read_mostly;
++u64 xfeatures_mask_all;
  
- #include <asm/cpufeature.h>             /* boot_cpu_has, ...            */
- #include <asm/mmu_context.h>            /* vma_pkey()                   */
--#include <asm/fpu/internal.h>		/* init_fpstate			*/
+-static unsigned int xstate_offsets[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] = -1};
+-static unsigned int xstate_sizes[XFEATURE_MAX]   = { [ 0 ... XFEATURE_MAX - 1] = -1};
+-static unsigned int xstate_comp_offsets[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] = -1};
+-static unsigned int xstate_supervisor_only_offsets[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] = -1};
++static unsigned int xstate_offsets[XFEATURE_MAX] __ro_after_init =
++	{ [ 0 ... XFEATURE_MAX - 1] = -1};
++static unsigned int xstate_sizes[XFEATURE_MAX] __ro_after_init =
++	{ [ 0 ... XFEATURE_MAX - 1] = -1};
++static unsigned int xstate_comp_offsets[XFEATURE_MAX] __ro_after_init =
++	{ [ 0 ... XFEATURE_MAX - 1] = -1};
++static unsigned int xstate_supervisor_only_offsets[XFEATURE_MAX] __ro_after_init =
++	{ [ 0 ... XFEATURE_MAX - 1] = -1};
  
- int __execute_only_pkey(struct mm_struct *mm)
- {
-@@ -154,7 +153,6 @@ static ssize_t init_pkru_read_file(struc
- static ssize_t init_pkru_write_file(struct file *file,
- 		 const char __user *user_buf, size_t count, loff_t *ppos)
- {
--	struct pkru_state *pk;
- 	char buf[32];
- 	ssize_t len;
- 	u32 new_init_pkru;
-@@ -177,10 +175,6 @@ static ssize_t init_pkru_write_file(stru
- 		return -EINVAL;
+ /*
+  * The XSAVE area of kernel can be in standard or compacted format;
+  * it is always in standard format for user mode. This is the user
+  * mode standard format size used for signal and ptrace frames.
+  */
+-unsigned int fpu_user_xstate_size;
++unsigned int fpu_user_xstate_size __ro_after_init;
  
- 	WRITE_ONCE(init_pkru_value, new_init_pkru);
--	pk = get_xsave_addr(&init_fpstate.xsave, XFEATURE_PKRU);
--	if (!pk)
--		return -EINVAL;
--	pk->pkru = new_init_pkru;
- 	return count;
- }
- 
+ /*
+  * Return whether the system supports a given xfeature.
 
