@@ -2,176 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4920A3ACB48
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:45:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A33B23ACB5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbhFRMrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 08:47:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49774 "EHLO
+        id S232825AbhFRMv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 08:51:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbhFRMrG (ORCPT
+        with ESMTP id S231585AbhFRMvz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 08:47:06 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3580C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:44:56 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1luDrf-00011J-TM; Fri, 18 Jun 2021 14:44:51 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:e7d0:b47e:7728:2b24])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 21C4A63ED9C;
-        Fri, 18 Jun 2021 12:44:48 +0000 (UTC)
-Date:   Fri, 18 Jun 2021 14:44:47 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Cc:     linux-can <linux-can@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Thomas Kopp <thomas.kopp@microchip.com>
-Subject: CAN-FD Transmitter Delay Compensation (TDC) on mcp2518fd
-Message-ID: <20210618124447.47cy7hyqp53d4tjh@pengutronix.de>
-References: <20210603151550.140727-1-mailhol.vincent@wanadoo.fr>
- <20210603151550.140727-3-mailhol.vincent@wanadoo.fr>
- <20210618093424.xohvsqaaq5qf2bjn@pengutronix.de>
- <CAMZ6RqJn5z-9PfkcJdiS6aG+qCPnifXDwH26ZEwo8-=id=TXbw@mail.gmail.com>
- <CAMZ6RqKrPQkPy-dAiQjAB4aKnqeaNx+L-cro8F_mc2VPgOD4Jw@mail.gmail.com>
+        Fri, 18 Jun 2021 08:51:55 -0400
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63415C061574;
+        Fri, 18 Jun 2021 05:49:45 -0700 (PDT)
+Received: by mail-oo1-xc30.google.com with SMTP id x22-20020a4a62160000b0290245cf6b7feeso2419219ooc.13;
+        Fri, 18 Jun 2021 05:49:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gYRQQqkflstokbPMQ45EOzFFXs3cNTWmXdnRNdqXloc=;
+        b=EfWWbdEB7R4vC8/JNVZrzmPs2b0Lrk5xFdvgVOkGZNtXPLiBcnD9WGYIogCKJi8RyQ
+         ft70CvqyLzeUFrs5Eq+xMAwhu9Mai+9jh3kUOMYXm+V5rCQ8WGRh6ORbsqTpCtYch6Rg
+         GdJCgPBbFHq3lLDGLp3ejWzlHdyhzpaY7yOfkV0pRri1HqU0I59pSwcu1Pemc9RdF/PF
+         u7SyMC5//oe4mmhUVqRmX/XEeQgFrWTAD4+24xYgLf9/h/mvFhNHlUxcA4DM3vYw3JqH
+         pI24vSWnm9gbcZRoEgtSwZE+LH4KHsnMj5skC5Wg1FN8dXD4SXis/QzT3wIM8AgvuQqp
+         WFCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gYRQQqkflstokbPMQ45EOzFFXs3cNTWmXdnRNdqXloc=;
+        b=OFxxdEnRuulN0g0pU5FUuugIQZF62v6K0ZTAOasmtTT+ryQidyN3soaxR5IMn5gtjd
+         LD95ctp+Fg/SpTnUAJX1DICPJGjOoQVDAjDlthIZUJSAc+xGcciFnAeXQtbGAdsdhryB
+         dmWChIA539o+YTdmmrzK5vbMchCMQhabPqQG1jFv+qeruzLjyPm+X8SMPFN4aCYd1yqx
+         HXWG1Amepjp0q316dO1AZlNmHMMpm/HEDS/V6q7RigZ7gJ3aTtC/8KChTHuBRvbRLRXj
+         vb8u3VDdZ38NdoCwcq85DKXyOFiWZjM9ibRm/xeOHqZUDdMPKJMw0tjHmoFqPSJ1yrUF
+         yM0A==
+X-Gm-Message-State: AOAM533T+iZJkPRDHtWsN07C8/RcNkae+pEgK2xGRL8oZk2bLA2IokZq
+        xsvvUehDoepJ66yNsIcQHHkqjXNxSTn5OSqE1pU=
+X-Google-Smtp-Source: ABdhPJxsNeYFNOtY5YWE85ME1DVFAJSS5hj3Ki4PDhCvGsj1DvzdeE8fSkfp5o2vm2uyoJbf3MY6e5TjxyQis22ggOc=
+X-Received: by 2002:a4a:b1c2:: with SMTP id j2mr8926777ooo.78.1624020584775;
+ Fri, 18 Jun 2021 05:49:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="766oiknfbpl6mq2v"
-Content-Disposition: inline
-In-Reply-To: <CAMZ6RqKrPQkPy-dAiQjAB4aKnqeaNx+L-cro8F_mc2VPgOD4Jw@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210522211055.15988-1-mirela.rabulea@oss.nxp.com>
+ <20210522211055.15988-3-mirela.rabulea@oss.nxp.com> <DB9PR04MB8477D8F7DC86E67F74D5D9F780269@DB9PR04MB8477.eurprd04.prod.outlook.com>
+ <e4c174afd7c55c56c68afbe69276b41c3f574964.camel@nxp.com> <CAA+hA=TEi3iZ+nOfff=aN1FrLGb6+OHfx23aWaa1J7YfZRRgtA@mail.gmail.com>
+ <15d5728aeb7895f81f833e7f7e281861c1fcef9a.camel@collabora.com>
+In-Reply-To: <15d5728aeb7895f81f833e7f7e281861c1fcef9a.camel@collabora.com>
+From:   Dong Aisheng <dongas86@gmail.com>
+Date:   Fri, 18 Jun 2021 20:47:57 +0800
+Message-ID: <CAA+hA=RB_va3TRhjFBSofVqDEpj_LxLfUM84ead5D2LLZ3KRwA@mail.gmail.com>
+Subject: Re: [PATCH v13 2/2] arm64: dts: imx: Add jpeg encoder/decoder nodes
+To:     Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     Mirela Rabulea <mirela.rabulea@nxp.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "shawnguo@kernel.org" <shawnguo@kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        Aisheng Dong <aisheng.dong@nxp.com>,
+        "G.n. Zhou" <guoniu.zhou@nxp.com>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Laurentiu Palcu <laurentiu.palcu@nxp.com>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "paul.kocialkowski@bootlin.com" <paul.kocialkowski@bootlin.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        Robert Chiras <robert.chiras@nxp.com>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        Peng Fan <peng.fan@nxp.com>,
+        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---766oiknfbpl6mq2v
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 18.06.2021 20:17:51, Vincent MAILHOL wrote:
-> > > I just noticed in the mcp2518fd data sheet:
-> > >
-> > > | bit 14-8 TDCO[6:0]: Transmitter Delay Compensation Offset bits;
-> > > | Secondary Sample Point (SSP) Two=E2=80=99s complement; offset can b=
-e positive,
-> > > | zero, or negative.
-> > > |
-> > > | 011 1111 =3D 63 x TSYSCLK
-> > > | ...
-> > > | 000 0000 =3D 0 x TSYSCLK
-> > > | ...
-> > > | 111 1111 =3D =E2=80=9364 x TSYSCLK
-> > >
-> > > Have you takes this into account?
+On Fri, Jun 11, 2021 at 11:01 PM Ezequiel Garcia <ezequiel@collabora.com> wrote:
+>
+> On Fri, 2021-06-11 at 21:33 +0800, Dong Aisheng wrote:
+> > [...]
 > >
-> > I have not. And I fail to understand what would be the physical
-> > meaning if TDCO is zero or negative.
-
-The mcp25xxfd family data sheet says:
-
-| SSP =3D TDCV + TDCO
-
-> > TDCV indicates the position of the bit start on the RX pin.
-
-If I understand correctly in automatic mode TDCV is measured by the CAN
-controller and reflects the transceiver delay. I don't know why you want
-to subtract a time from that....
-
-The rest of the relevant registers:
-
-| TDCMOD[1:0]: Transmitter Delay Compensation Mode bits; Secondary Sample P=
-oint (SSP)
-| 10-11 =3D Auto; measure delay and add TDCO.
-| 01 =3D Manual; Do not measure, use TDCV + TDCO from register
-| 00 =3D TDC Disabled
-|=20
-| TDCO[6:0]: Transmitter Delay Compensation Offset bits; Secondary Sample P=
-oint (SSP)
-| Two=E2=80=99s complement; offset can be positive, zero, or negative.
-| 011 1111 =3D 63 x TSYSCLK
-| ...
-| 000 0000 =3D 0 x TSYSCLK
-| ...
-| 111 1111 =3D =E2=80=9364 x TSYSCLK
-|=20
-| TDCV[5:0]: Transmitter Delay Compensation Value bits; Secondary Sample Po=
-int (SSP)
-| 11 1111 =3D 63 x TSYSCLK
-| ...
-| 00 0000 =3D 0 x TSYSCLK
-
-> > If TDCO is zero, the measurement occurs on the bit start when all
-> > the ringing occurs. That is a really bad choice to do the
-> > measurement. If it is negative, it means that you are measuring the
-> > previous bit o_O !?
-
-I don't know...
-
-> > Maybe I am missing something but I just do not get it.
+> > > > > +img_subsys: bus@58000000 {
+> > > > > +   compatible = "simple-bus";
+> > > > > +   #address-cells = <1>;
+> > > > > +   #size-cells = <1>;
+> > > > > +   ranges = <0x58000000 0x0 0x58000000 0x1000000>;
+> > > > > +
+> > > > > +   img_ipg_clk: clock-img-ipg {
+> > > > > +           compatible = "fixed-clock";
+> > > > > +           #clock-cells = <0>;
+> > > > > +           clock-frequency = <200000000>;
+> > > > > +           clock-output-names = "img_ipg_clk";
+> > > > > +   };
+> > > > > +
+> > > > > +   jpegdec: jpegdec@58400000 {
+> > > >
+> > > > Node should be disabled by default.
+> > > > And enable it in board dts including LPCG.
+> > >
+> > > At version v5 of this patch, the node was disabled by default, and I
+> > > received this feedback from Ezequiel Garcia:
+> > >
+> > > "Pure memory-to-memory are typically not enabled per-board, but just
+> > > per-platform.
+> > > So you can drop the disabled status here."
+> > >
+> > > So, in v6 I made it enabled by default.
+> > >
+> > > Any strong reasons for enabled/disabled per platform?
 > >
-> > I believe you started to implement the mcp2518fd.
+> > AFAIK we usually only enable system basic features and let other
+> > user selectable features disabled by default in dts.
+> > Even for device LPCG clocks, if it's enabled by default and later
+> > enter runtime suspend if no users, it still consumes power.
+> >
+>
+> Well-written drivers shouldn't draw any power if not used.
+>
 
-No I've just looked into the register description.
+LPCG won't draw power when not used. But the power domain used by LPCG
+will still draw power when enter idle state.
 
-> > Can you force a
-> > zero and a negative value and tell me if the bus is stable?
->=20
-> Actually, ISO 11898-1 specifies that the "SSP position should be
-> at least 0 to 63 minimum time quanta". This means that we can
-> have SSP =3D TDCV + TDCO =3D 0. In my implementation, I used 0 as a
-> reserved value for TDCV and TDCO. To comply with the standard, I
-> now need to allow both TDCV and TDCO to be zero and add a new
-> field in struct tdc to manage the automatic/manual options.
->=20
-> That said, these zero values still make no sense to me. Why would
-> someone do the measurement on the bit edge?
->=20
-> Concerning the negative values, the ISO standard says nothing
-> about it.  If you are using the automatic measurement, a negative
-> TDCO is impossible to use. TDCV is measured on every bit. When
-> the measurement is done, it is too late to subtract from it (or
-> maybe the mcp2518fd has a time machine built in?).
+> And DT is about hardware-description, not about usage-description.
+> Which means, at the soc.dtsi level you disable devices that need
+> some board-level hardware thing to be enabled (e.g. a physical
+> connected, a regulator, etc.).
+> A pure memory-to-memory should be enabled by default, because
+> in practice you can't predict what the users a board will want
+> to use, nor the DT is the place for that.
 
-:)
+It makes sense to me. Thanks
 
-> If you are
-> using the manual mode for TDCV, just choose two positive values
-> so that TDCV + TDCO =3D SSF.
+Mirela,
+Please follow up with Ezequiel's suggestion.
+For LPCGS used by jpeg, you can keep it enabled by default.
 
-Marc
+Regards
+Aisheng
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---766oiknfbpl6mq2v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmDMlTwACgkQqclaivrt
-76nTuAf9G71nRRfOjnDXw0QblM4XzmXnhCDHhM3gFQAnpWaHVj3V80K2qiL3+NTW
-IHFZ24jPkqy5JZAPozQoy621oWUMlYgz5ZFPBxelB6SVEAADen3OTQ062S1gXoAW
-cPBkPcCjYvWx+tu/PJYqfl3v1eoFm9rafq/GYm4f5zlk9cF0Yqo1ap1k5AtwVmys
-bhhT20phFH4AxSsesj1XCtgIu6HzZiWN5cC6SFSnORNxNYztGEuz5FlHlbt3zmgG
-lnNTo02vBv8bW1aLHDsxktidjwYaOHfW9OPjsWHOcYmP9x/xiYdGLeDcyh/F+xtO
-tUtbS8kOrWHmP9/V4hVuJHAPs6NeMA==
-=F9xC
------END PGP SIGNATURE-----
-
---766oiknfbpl6mq2v--
+>
+> Sticking to hardware description is the best way to get DT right :-)
+>
+> Cheers,
+> Ezequiel
+>
