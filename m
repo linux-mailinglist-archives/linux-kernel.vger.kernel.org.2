@@ -2,85 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A393AD1BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DBD03AD1BD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234813AbhFRSFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 14:05:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39828 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234782AbhFRSFr (ORCPT
+        id S234837AbhFRSG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 14:06:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232000AbhFRSG4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 14:05:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624039417;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tQAGTbIKTlX+eSDKtwFxg8eJEsQ646RlIwkzsIfqLBM=;
-        b=fGma3SEpgHKfVZfS4SVztJ1RQ1hI2nbdYVJ8a8sWUTGecWpmT2K85w/TPGYoorESW3Yg52
-        y8GPNk9R4PL8wKnuLs63j/1JcI1nKJktJZu/17A2RWLtWMkIHeTK4WDfXI7gVuAQpIAjMP
-        cqJrHf18BoHHgn0He/4x5QhaqoNwrtM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-156-PJiakoOuMgyLdP39Wx6lAQ-1; Fri, 18 Jun 2021 14:03:33 -0400
-X-MC-Unique: PJiakoOuMgyLdP39Wx6lAQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7E811804145;
-        Fri, 18 Jun 2021 18:03:32 +0000 (UTC)
-Received: from localhost (ovpn-112-86.ams2.redhat.com [10.36.112.86])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CA1CA19710;
-        Fri, 18 Jun 2021 18:03:28 +0000 (UTC)
-Date:   Fri, 18 Jun 2021 19:03:27 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        virtio-fs@redhat.com, linux-kernel@vger.kernel.org,
-        Vivek Goyal <vgoyal@redhat.com>
-Subject: Re: [Virtio-fs] support booting of arbitrary non-blockdevice file
- systems
-Message-ID: <YMzf72yCJqnDTYYo@stefanha-x1.localdomain>
-References: <20210617153649.1886693-1-hch@lst.de>
+        Fri, 18 Jun 2021 14:06:56 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7641AC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 11:04:46 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id w22-20020a0568304116b02904060c6415c7so10552270ott.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 11:04:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=S75/1qiya/1BR4HVKhE/aTSWkl4eZLDvqKyT4tZSAZM=;
+        b=Ctwqh0faj1yP3tSxUVjDuuIbSrbEQlYPyCJQ91VsxMFP1CILdrmPTUPjzGe7ZfYXAz
+         pNUmwJBhNRqtvJoqiHo8CaZWn6cF6Rg3LngzQNqlWShMNE2R8whdbSuEwUFvtB1duzVn
+         MS93h+jfbeHyyE6wXdqjBWk43KHh7SFmL2x3pUDJava+0bNRyuouKtD3ojY1pV1hVNUT
+         WSz8vGU+/ncZ2weP+jPFSQg3yfHWz778a8t4PkG27m9ozO0Sp2wiObo6Yq16U/dstesW
+         Dncz2tEh8H7lYdMXtdWji6MlWhXdMVbVQll0yhEB+BxKiQLMy+Ve7eLIDq5Lr0TV+tfI
+         9Snw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=S75/1qiya/1BR4HVKhE/aTSWkl4eZLDvqKyT4tZSAZM=;
+        b=nEL1UX1YoPeXe9Kth/rVsYrD6QfLV6RhaPuDxExtVMjxStSvbeNn1FcR16IytdaXs9
+         i1jkE3KxdaKnMUGJvPaZGsd/00/H7veLdNu9B5cRBBBRcqA9j6cJEg992YyshtCJrw9k
+         /N7loYSLXtKyHZUNv5/328TqSbK1pj/OsX8qUdN29QbiZazQ9RV4kQzsgHC81KsoMQLY
+         N0Woxka96eI34hT1HrEJz2lfHzkpbSCu56yRZOlBhtqLbAOkoRJ3xPaCxTnQFgcyuRPX
+         FP2Weihaqm1Sg7GX8/15VuODUglqCK2/qpN0PliX8Y1q+OF8HQMGSdUGCK7IHWQcdTHh
+         Hfhg==
+X-Gm-Message-State: AOAM5323vQyMMHEUOsb8ay0CLjKboVlx7pvX+9y5TjANsaSJ0wLDFAaW
+        cWIkrLxqi21nLILpViK6Ikkgyw==
+X-Google-Smtp-Source: ABdhPJybQlXOwQWowdDDOIHgHEzzjY6NFupMXD+PI0xlKQhSK66+xqVQI23eb6hKKsNfyaokFgY2vw==
+X-Received: by 2002:a9d:2f65:: with SMTP id h92mr10712732otb.125.1624039485882;
+        Fri, 18 Jun 2021 11:04:45 -0700 (PDT)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id v203sm1934365oie.52.2021.06.18.11.04.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 11:04:45 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 13:04:43 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, bhupesh.linux@gmail.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, lgirdwood@gmail.com,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 1/5] dt-bindings: regulator: qcom,rpmh-regulator:
+ Arrange compatibles alphabetically
+Message-ID: <YMzgOxoBexqKSZxl@builder.lan>
+References: <20210617051712.345372-1-bhupesh.sharma@linaro.org>
+ <20210617051712.345372-2-bhupesh.sharma@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="BJ2t6DUwu2C54aee"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210617153649.1886693-1-hch@lst.de>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20210617051712.345372-2-bhupesh.sharma@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu 17 Jun 00:17 CDT 2021, Bhupesh Sharma wrote:
 
---BJ2t6DUwu2C54aee
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Arrange the compatibles inside qcom-rpmh regulator device tree
+> bindings alphabetically.
+> 
 
-On Thu, Jun 17, 2021 at 05:36:47PM +0200, Christoph Hellwig wrote:
-> this series adds support to boot off arbitrary non-blockdevice root file
-> systems, based off an earlier patch from Vivek.
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-Cool, thanks for working on generic syntax for mounting non-blockdevice
-file systems. Looks good modulo the comments Vivek had.
+Regards,
+Bjorn
 
-Stefan
-
---BJ2t6DUwu2C54aee
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmDM3+8ACgkQnKSrs4Gr
-c8iYRQf7BnTsXpltlcUc1ZB0ZEVw8116KM4IDmMLTrZI2+DB6dQUUDoVFGhDQ8Js
-8H+kO2B6gCyRK1kem+d6JF0B9YkWkGmot4c0LljqJs55aAmRRFNFqga3fuGu7/h8
-amS/Hm+QKgmCLIj+U/+nLkUqbxI/vSdmGMLOVgHC05Qw6m/3IRlJlXKjss2jOIzP
-NhaVbWL1WIaDjpgLFFZunGqNQ0jLN7o3SRUhtiJPwZ/9xXJcGem9X7/cFZQ12/Nd
-qP1ATC/vjVnwIZoHFjgn4O0wk3bv8zUMBLZqnnT9PYC5IbAW9oX8LWEine+T58X0
-yQNil38SKTfuWw2ZIRdiX2W7CfuZ3w==
-=zBxt
------END PGP SIGNATURE-----
-
---BJ2t6DUwu2C54aee--
-
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> ---
+>  .../bindings/regulator/qcom,rpmh-regulator.yaml  | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
+> index e561a5b941e4..3546c6a966a3 100644
+> --- a/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
+> +++ b/Documentation/devicetree/bindings/regulator/qcom,rpmh-regulator.yaml
+> @@ -33,6 +33,9 @@ description: |
+>  
+>      The names used for regulator nodes must match those supported by a given
+>      PMIC. Supported regulator node names are
+> +      For PM6150, smps1 - smps5, ldo1 - ldo19
+> +      For PM6150L, smps1 - smps8, ldo1 - ldo11, bob
+> +      For PM7325, smps1 - smps8, ldo1 - ldo19
+>        For PM8005, smps1 - smps4
+>        For PM8009, smps1 - smps2, ldo1 - ldo7
+>        For PM8150, smps1 - smps10, ldo1 - ldo18
+> @@ -41,15 +44,15 @@ description: |
+>        For PM8350C, smps1 - smps10, ldo1 - ldo13, bob
+>        For PM8998, smps1 - smps13, ldo1 - ldo28, lvs1 - lvs2
+>        For PMI8998, bob
+> -      For PM6150, smps1 - smps5, ldo1 - ldo19
+> -      For PM6150L, smps1 - smps8, ldo1 - ldo11, bob
+> -      For PMX55, smps1 - smps7, ldo1 - ldo16
+> -      For PM7325, smps1 - smps8, ldo1 - ldo19
+>        For PMR735A, smps1 - smps3, ldo1 - ldo7
+> +      For PMX55, smps1 - smps7, ldo1 - ldo16
+>  
+>  properties:
+>    compatible:
+>      enum:
+> +      - qcom,pm6150-rpmh-regulators
+> +      - qcom,pm6150l-rpmh-regulators
+> +      - qcom,pm7325-rpmh-regulators
+>        - qcom,pm8005-rpmh-regulators
+>        - qcom,pm8009-rpmh-regulators
+>        - qcom,pm8009-1-rpmh-regulators
+> @@ -59,11 +62,8 @@ properties:
+>        - qcom,pm8350c-rpmh-regulators
+>        - qcom,pm8998-rpmh-regulators
+>        - qcom,pmi8998-rpmh-regulators
+> -      - qcom,pm6150-rpmh-regulators
+> -      - qcom,pm6150l-rpmh-regulators
+> -      - qcom,pmx55-rpmh-regulators
+> -      - qcom,pm7325-rpmh-regulators
+>        - qcom,pmr735a-rpmh-regulators
+> +      - qcom,pmx55-rpmh-regulators
+>  
+>    qcom,pmic-id:
+>      description: |
+> -- 
+> 2.31.1
+> 
