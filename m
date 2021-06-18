@@ -2,107 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD3813AC676
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 871323AC67E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233945AbhFRIsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 04:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233913AbhFRIsS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 04:48:18 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F211C061768;
-        Fri, 18 Jun 2021 01:46:09 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 08:46:07 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624005967;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rD+Z/NtBb2ny/Mr7DacuAyqlIsTFeyyxmoKadm6e44o=;
-        b=O6CObESUUcwluMNyFXJt4T5Tf2pAU67mRUrsC291gn0bmhfSJHjN6htf3NfE06kmY27wbP
-        0ANmw9zqddCdGtwD71qdHbSGXyJMPZIH3Ybae5TUd1Aj4nc1XmN9Av45PRfN7wCzLyU9Ri
-        nhjH+51wtGU3M1EO0ITZlPep451ImbZDGrDuxv5lIsYNs2Y0arRZhGEHqwOTU9Ecp5FaW6
-        a4FddB8dMjbh4cD8FyIXy1WY+pXdSbG2dr1ZW3NNMrIhOUrRLit0bZF+JNk2iPtivAGW4e
-        Ri05DMxsETJZodTyQua6V6V0dvigBXohpRDKRNSxYE/l3yV9nruzbJg1TxctOQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624005967;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rD+Z/NtBb2ny/Mr7DacuAyqlIsTFeyyxmoKadm6e44o=;
-        b=HuMk5E4co2kHQ+MmYVQQJW3rqZGWDu1lpkWbUPqfRnX4uv/+KsZQpbNclMCwDKKP3wZa2e
-        59hfyDl1wl+a5TDw==
-From:   "tip-bot2 for Dietmar Eggemann" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/fair: Return early from update_tg_cfs_load()
- if delta == 0
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210601083616.804229-1-dietmar.eggemann@arm.com>
-References: <20210601083616.804229-1-dietmar.eggemann@arm.com>
+        id S231234AbhFRIvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 04:51:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:37218 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229591AbhFRIvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 04:51:13 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D1B913D5;
+        Fri, 18 Jun 2021 01:49:04 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 658D83F694;
+        Fri, 18 Jun 2021 01:48:56 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 09:48:47 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, will@kernel.org,
+        boqun.feng@gmail.com, peterz@infradead.org, aou@eecs.berkeley.edu,
+        arnd@arndb.de, bcain@codeaurora.org, benh@kernel.crashing.org,
+        chris@zankel.net, dalias@libc.org, davem@davemloft.net,
+        deanbo422@gmail.com, deller@gmx.de, geert@linux-m68k.org,
+        gerg@linux-m68k.org, green.hu@gmail.com, guoren@kernel.org,
+        ink@jurassic.park.msu.ru, James.Bottomley@HansenPartnership.com,
+        jcmvbkbc@gmail.com, jonas@southpole.se, ley.foon.tan@intel.com,
+        linux@armlinux.org.uk, mattst88@gmail.com, monstr@monstr.eu,
+        mpe@ellerman.id.au, nickhu@andestech.com, palmerdabbelt@google.com,
+        paulus@samba.org, paul.walmsley@sifive.com, rth@twiddle.net,
+        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
+        tsbogend@alpha.franken.de, vgupta@synopsys.com,
+        ysato@users.sourceforge.jp
+Subject: Re: [PATCH v2 00/33] locking/atomic: convert all architectures to
+ ARCH_ATOMIC
+Message-ID: <20210618084847.GA93984@C02TD0UTHF1T.local>
+References: <20210525140232.53872-1-mark.rutland@arm.com>
+ <a15122e9-700d-c909-4794-d569ed1f6c61@infradead.org>
 MIME-Version: 1.0
-Message-ID: <162400596716.19906.6497557861624006450.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a15122e9-700d-c909-4794-d569ed1f6c61@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/core branch of tip:
+On Fri, Jun 04, 2021 at 10:56:16PM -0700, Randy Dunlap wrote:
+> On 5/25/21 7:01 AM, Mark Rutland wrote:
+> > This series (based on v5.13-rc2) converts all architectures to
+> > ARCH_ATOMIC. This will allow the use of instrumented atomics on all
+> > architectures (e.g. for KASAN and similar), and simplifies the core
+> > atomic code (which should allow for easier rework of the fallbacks and
+> > other bits in future).
 
-Commit-ID:     83c5e9d573e1f0757f324d01adb6ee77b49c3f0e
-Gitweb:        https://git.kernel.org/tip/83c5e9d573e1f0757f324d01adb6ee77b49c3f0e
-Author:        Dietmar Eggemann <dietmar.eggemann@arm.com>
-AuthorDate:    Tue, 01 Jun 2021 10:36:16 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 17 Jun 2021 14:11:42 +02:00
+[...]
 
-sched/fair: Return early from update_tg_cfs_load() if delta == 0
+> Hi Mark,
+> Sorry for the late reply. 
 
-In case the _avg delta is 0 there is no need to update se's _avg
-(level n) nor cfs_rq's _avg (level n-1). These values stay the same.
+Hi Randy,
 
-Since cfs_rq's _avg isn't changed, i.e. no load is propagated down,
-cfs_rq's _sum should stay the same as well.
+Likewise, apologies in the delay in getting to this!
 
-So bail out after se's _sum has been updated.
+> I was just trying to update a patch
+> to arch/sh/include/asm/cmpxchg.h, in its xchg() macro:
+> 
+> https://lore.kernel.org/lkml/20210602231443.4670-2-rdunlap@infradead.org/
+> 
+> The patch simply converts xchg() to a GCC statement expression to
+> eliminate a build warning.
+> 
+> Arnd has done this for m68k and I have done it for sparc in the past.
+> 
+> Is there any (good) reason that all versions of arch_xchg() are not
+> statement expressions?  In this patch series, they seem to be quite
+> mixed (as they were before this patch series). I count 11 arches
+> that use a statement expression and 4 that do not (including arch/sh/).
 
-Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-Link: https://lore.kernel.org/r/20210601083616.804229-1-dietmar.eggemann@arm.com
----
- kernel/sched/fair.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Largely I tried to make the minimal change from what was there before,
+and I didn't have any specific reason to either use or avoid statement
+expressions.
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 198514d..06c8ba7 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3502,9 +3502,12 @@ update_tg_cfs_load(struct cfs_rq *cfs_rq, struct sched_entity *se, struct cfs_rq
- 	load_sum = (s64)se_weight(se) * runnable_sum;
- 	load_avg = div_s64(load_sum, divider);
- 
-+	se->avg.load_sum = runnable_sum;
-+
- 	delta = load_avg - se->avg.load_avg;
-+	if (!delta)
-+		return;
- 
--	se->avg.load_sum = runnable_sum;
- 	se->avg.load_avg = load_avg;
- 
- 	add_positive(&cfs_rq->avg.load_avg, delta);
+This series has been queued in the tip tree's locking/core branch for a
+while now, but we could spin a patch atop. Do you want to spin a patch
+to convert the remaining 4 architectures in one go?
+
+Thanks,
+Mark.
