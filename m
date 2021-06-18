@@ -2,266 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 448B83AC669
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 701A13AC66B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233888AbhFRIrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 04:47:02 -0400
-Received: from mga02.intel.com ([134.134.136.20]:15420 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231908AbhFRIq7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 04:46:59 -0400
-IronPort-SDR: EVivylnQxRdnpYpEbY6h0jKKnzUXjDZ4snQvo4NHdx25zrKpXbVimyqbWWgJ+TP45RvOTdOpsX
- Ns4zWwiRqbzw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="193650183"
-X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
-   d="scan'208";a="193650183"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 01:44:49 -0700
-IronPort-SDR: CA0SjgQpATT5304meRYT5Eozm86oR8cF2q3VQ5JQKJ32WzyboeUmyDsrU7H0HmIDd0og1cjLeA
- Zk5jrLN72kig==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
-   d="scan'208";a="451315494"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by orsmga008.jf.intel.com with ESMTP; 18 Jun 2021 01:44:49 -0700
-Received: from fmsmsx609.amr.corp.intel.com (10.18.126.89) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Fri, 18 Jun 2021 01:44:48 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx609.amr.corp.intel.com (10.18.126.89) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
- via Frontend Transport; Fri, 18 Jun 2021 01:44:48 -0700
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.100)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.4; Fri, 18 Jun 2021 01:44:48 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VarnH0BXbekmz5auDTAVHzl1wZ7DVZ7s631qM+hq22rw5Oqe80dVlcir2fvkfw6yR6QaF/eXJMUm3ZSrkjSCP7QkW4zPAYNxbilpKJaj+Da6crF9ZBzZhd6DewCgkxTzO3P07rjAzHIOrc27nUn8pZhVVBiQy1OjyJ/83UYReYTdYI7R6YGB6tuKMOB6AFwlawmuBiJeo9WxzO0r49jrt45sFqnZnFBJ9zQeCPDSvEF2aNcUCVmL51GxWl5+968hYrnOCXGBQZBSy1Uj6F1qKyFbTCUIIZ4dJRyTfharsNGzevPdqolIaSF59uM8e2qluf3fNmPVW+0pgw7T4SHQwQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YeMNYN2y5sdYmLEfkDM0Cp4pHIZkOEcARN52gJnGkFY=;
- b=KZTV0+/rJd9nGD+q4q0SVPPmgyxEvOiYmLXmOF1rVIXwbQOLfM1eCWK8H54J6n3ysz5IgVtGrBDQ4IAwZ3UNMZ8AAuy3FfIWo5mWFbdjs0/GjmqthONY2nF/H/jQT0GtCkEPhgwgr7AwbpR8IrcQDK6uJJRfjlgjweuYIJJIOJCovHkjg5y4egJdywZM56Zt/xeEq9UdXTMP6Y4Vdpl/uRbxuub+z7nq76crOgRr/AqbKBD+7IsR7+X7Lfo5PKyotQxuWp2PN8qONosLaYKD9IUDMS0KDEB0qTHNEXgrCbNsyoElJ6TBui/0LB3o2N1rZCN1znrgrIvgjHD2lvilrQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YeMNYN2y5sdYmLEfkDM0Cp4pHIZkOEcARN52gJnGkFY=;
- b=rAnfWM3Sgf+2JXWF5R0DTsUQ9+NcYIG5as375D2OXoa3tidRFZcWxClrpVJImbvsaeb4KRrotJMHMyfpuSDzHb1fbUd1LNsPb3ndCdTNeXGbruqPk2qGhOmZ4wLQIXQQ0s2s0TyOEH9n7mXaibblgaFkSmBYa3c7aSadSiuxWgA=
-Received: from DM5PR11MB1595.namprd11.prod.outlook.com (2603:10b6:4:c::14) by
- DM6PR11MB3979.namprd11.prod.outlook.com (2603:10b6:5:197::33) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4242.19; Fri, 18 Jun 2021 08:44:46 +0000
-Received: from DM5PR11MB1595.namprd11.prod.outlook.com
- ([fe80::d4a8:cf17:6151:3179]) by DM5PR11MB1595.namprd11.prod.outlook.com
- ([fe80::d4a8:cf17:6151:3179%9]) with mapi id 15.20.4219.026; Fri, 18 Jun 2021
- 08:44:46 +0000
-From:   "Du, Fan" <fan.du@intel.com>
-To:     Dave Hansen <dave.hansen@linux.intel.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Chatre, Reinette" <reinette.chatre@intel.com>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "Du, Fan" <fan.du@intel.com>
-Subject: RE: [PATCH] x86/mm: avoid truncating memblocks for SGX memory
-Thread-Topic: [PATCH] x86/mm: avoid truncating memblocks for SGX memory
-Thread-Index: AQHXY7GdfM66nbFd7Uilf/FXVgoXGqsZcjyg
-Date:   Fri, 18 Jun 2021 08:44:46 +0000
-Message-ID: <DM5PR11MB15957710871310F9CEA14EFA990D9@DM5PR11MB1595.namprd11.prod.outlook.com>
-References: <20210617194657.0A99CB22@viggo.jf.intel.com>
-In-Reply-To: <20210617194657.0A99CB22@viggo.jf.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [223.104.39.9]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 297f9ab9-af20-483a-6b20-08d932355369
-x-ms-traffictypediagnostic: DM6PR11MB3979:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR11MB397924FEE9E06EE30EC115E6990D9@DM6PR11MB3979.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: XRbjJHIuv58nYfkiFFnt7v6b37yqf9DpGEM1F81RWhDM7VANca6h+S8DRcf6cK1ChRiC2C2lq2uofCMkTuHDVbRLBoccI2me1jGKx3qYKWFnp4BOJhEa2mO258sJWvg8yf1xROYSPs44qUj1ZMfPpsLcvXTxIeCdyPwlozJmPkScPNL3JySdbEUy5d+OIad+tBce9bo9Ru9JBMhgkfRQLcN2GkVsddSuaqZBBGSOvUKDQMWU1ASZvjdFnc69qCamO+vT7u2mYtUni7EhC3quFzd36hax7zUVnONcafJqVNRUHjkmw3JvH+uWyrKYAAHGVIUV8uENtGeI/amMQRARMhEkWLEUJzM2VrSkqMM96T0wyBQgCAbYc0+VvpF0tPqLhMqvyDmkwBZ3AI4WeX+V0YLaBJLx2p87LkkUgTJfoQPJMsR0D9ATOwFTGTigSe0bR9gb6ymXHcKUDhWnWdrZNsLojezr/nO2DszIRFfbeshHbM2+uQDFiR8WhzlQwnK62twl4CK/8nnKk1CIXuddzEUZur3FUmJrS8/af+pWSSEUPPKiNLAIcfH1zWImpD/6WQ/dcOS1UrPz91McTTP2eYlB6Jd5WjFWRxyLtrBdn2VMl8sDxgvmHsoqFpkgRV7oNy4j9EAQgcjKsWPVTEMnFalXpcEga6M7CE+l9LQud+oz6ePmjoiW4V8NSKMlh1wxF7nz4Xul1RsTTIpiOSwqztngSDK99iaMFHmBdKfFKeI=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR11MB1595.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(396003)(346002)(376002)(136003)(86362001)(5660300002)(7696005)(2906002)(66946007)(66446008)(55016002)(38100700002)(6506007)(76116006)(186003)(54906003)(122000001)(316002)(71200400001)(26005)(64756008)(966005)(8676002)(478600001)(66476007)(66556008)(110136005)(4326008)(8936002)(52536014)(9686003)(33656002)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?gZa6f6407xzymSLqyQqBsMI50V1Y3rfbt8PkItE7O4wQAb6lX/UzBifTtsvG?=
- =?us-ascii?Q?Ht5pyMLCP6Eh9IGXQQVj5bSOcP4yKu4Ovc/wqaIkjcODqWufJkx03bzB7DXw?=
- =?us-ascii?Q?BusUK9mDVpqfdWaoiX7APsrRzGy9IH4g8uHSHaEgL6hV5FYo9f0fOWoL9pLy?=
- =?us-ascii?Q?B7FtQWt3mbqW70/+QerOu17t0FQKdw+G4s1STp+2n3x2NtmiKbDeS1mDCRcT?=
- =?us-ascii?Q?r+7vnyFxDF6YCCHqSZS7xfAvA1MjTsTRnZ0Ssqj2JNfAN59bs6bfVyMj25uk?=
- =?us-ascii?Q?jVvS49rYWZSApjMY6LkxjS245N7G1zA0wCo78+TuGZthcB+aWt/Oa05I3kKV?=
- =?us-ascii?Q?k9oyeDcuNXy8o2sqmfwy6GbAxtaNYoUuw5zyKsBA6xZLgUPYXGeOv3o909UW?=
- =?us-ascii?Q?zK8oHDcElg6l4xTQwu9nnI5dVDZwCh+zksu2FYZAAH8eOkj13zGDhLqSQQH5?=
- =?us-ascii?Q?9edaNeGZbQ0tzFg98jGavaqqrKFT0tQt4J7a5GBMJOmwVW7mK+uXfyUZ8PtW?=
- =?us-ascii?Q?4M4wqa8fWF/lfJEbYi/tdkw6c38OW9x68OIdpyUheCk6jWJHfnyMJV2mSNUe?=
- =?us-ascii?Q?Y/EQ1Hf4HxmDO1Aeyx1a3x5e0+q6xOvjMPiZgvzdPsQFun4PEX4rydkgWKwR?=
- =?us-ascii?Q?/Be1N1rAqLJ/SO5H6NY3CdW9fRe15bpUSRIId7yzrhG+xQQbvD1WvDQbxky9?=
- =?us-ascii?Q?gqxHO22EthjVxTeZA6kqs2ZPnBNlvc+DNT4g905MfWAvLLanJxS88Te7NmON?=
- =?us-ascii?Q?S6J6wGOixQmc8kYs5aIslZleYzTeRJAA6CXinQmLe+O/ubW5vbdVR0CpCPUY?=
- =?us-ascii?Q?O6L6MsP5W6/lrIcxc50+XCv0wP0aKHnvDwcwBy0CUE3N+OVezfDEFha2QTA8?=
- =?us-ascii?Q?YMVLIh7Yd4yYG8WQ6F9uF8nn1gJJ/c6Ibrn/bFN4z75ssf+2izi1G7tWHhvo?=
- =?us-ascii?Q?+h1IzQrS1DqYmFmPxjoYSlCMqMUKsMNjRzk76pPmwNy5/Fs2+ap5sxTV+AOH?=
- =?us-ascii?Q?/XvIBbmCGu7AOm7Q3Gs6n0JZT6CteiUhqnT624bTBsCEvqnOgzyfrmxZ8FKo?=
- =?us-ascii?Q?5HlZd+Bw1C6kmX4gpfRjpOYgHtvk9OtLtVFrYNy4wmNGAuBzNbQeGdcNtHgq?=
- =?us-ascii?Q?EOdoFcsZJs8ZaNdDUbljFR0gdwCsmNip1Vg4E0lc83/BfrNc7GuG9i6zfcp0?=
- =?us-ascii?Q?KW6IwyNA/HyiaMxV7oilv9sfxK3pvHb3SljB3IxpaN6fDk6ecTAllpsT34bY?=
- =?us-ascii?Q?IqDtxptYweLcjdi3nJhiIJ1Um23BBb4WaTrkeK263olCkuUzXeemhMgwJpHs?=
- =?us-ascii?Q?N7s=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S233896AbhFRIsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 04:48:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231908AbhFRIsO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 04:48:14 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 537EBC061574;
+        Fri, 18 Jun 2021 01:46:05 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 08:46:01 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624005962;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mrDSPmQpW9Wn5BMsqgTHWoVyAIA8VJnGX+pAy2ZsF+g=;
+        b=2DFlPzLjEwa+jvmQhMZRB0wq2X4Tx68Vf+/rjyvCgSz1XxrBdlLFp8arPFQ0+/liUAL/4H
+        MBXDdLuaheaqLYqdHTMbZlzGARc9SCZ4uf7scGZDWQlCfdlwRExk+0ChMKbHYu+Pg1kneR
+        tw0OtOFIAbkfyBp/8maS9xAI+ekTrQ0fOnjXmTN5u+7oPHD+3EIBthctQwrgmohDIKtAA6
+        8i3IbdQY7lzg4UFqpiDwrqciOqZ+qV+5dH4eeYelzz9t552JICc2rZELX8pxMvobk5/meH
+        Ne0rEHBzmdpdvB4NWdS6DQ+BYxyxy8FdvY+j3r+oEEoXTjcGx2GbsFIYLclwsQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624005962;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mrDSPmQpW9Wn5BMsqgTHWoVyAIA8VJnGX+pAy2ZsF+g=;
+        b=h+8HvS+8dYb8fYD4+AY5caTkRNXq39meVb4duXVTuDF67MI6R9luyf5AhkQkqCz4I5pabz
+        /E8UVC9JyRfU43AQ==
+From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: perf/core] perf/x86: Reset the dirty counter to prevent the
+ leak for an RDPMC task
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <1623693582-187370-1-git-send-email-kan.liang@linux.intel.com>
+References: <1623693582-187370-1-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR11MB1595.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 297f9ab9-af20-483a-6b20-08d932355369
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jun 2021 08:44:46.2349
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: TikuDp14XNB4tXvjuvh+Y0k6Lccey7x3eys/MnOpDfvUCp8CEYJXUEYvnOY1Y1FzOQi0mgzBgESfrfNRWPgZpQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3979
-X-OriginatorOrg: intel.com
+Message-ID: <162400596176.19906.9473455259701503617.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the perf/core branch of tip:
 
+Commit-ID:     5471eea5d3bf850316f1064a6f57b34c444bce67
+Gitweb:        https://git.kernel.org/tip/5471eea5d3bf850316f1064a6f57b34c444bce67
+Author:        Kan Liang <kan.liang@linux.intel.com>
+AuthorDate:    Mon, 14 Jun 2021 10:59:42 -07:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Thu, 17 Jun 2021 14:11:47 +02:00
 
->-----Original Message-----
->From: Dave Hansen <dave.hansen@linux.intel.com>
->Sent: Friday, June 18, 2021 3:47 AM
->To: linux-mm@kvack.org
->Cc: linux-kernel@vger.kernel.org; Dave Hansen
-><dave.hansen@linux.intel.com>; Du, Fan <fan.du@intel.com>; Chatre,
->Reinette <reinette.chatre@intel.com>; jarkko@kernel.org; Williams, Dan J
-><dan.j.williams@intel.com>; Hansen, Dave <dave.hansen@intel.com>;
->x86@kernel.org; linux-sgx@vger.kernel.org; luto@kernel.org;
->peterz@infradead.org
->Subject: [PATCH] x86/mm: avoid truncating memblocks for SGX memory
->
->
->From: Fan Du <fan.du@intel.com>
->
->tl;dr:
->
->Several SGX users reported seeing the following message on NUMA systems:
->
->	sgx: [Firmware Bug]: Unable to map EPC section to online node. Fallback
->to the NUMA node 0.
->
->This turned out to be the 'memblock' code mistakenly throwing away
->SGX memory.
->
->=3D=3D=3D Full Changelog =3D=3D=3D
->
->The 'max_pfn' variable represents the highest known RAM address.  It can
->be used, for instance, to quickly determine for which physical addresses
->there is mem_map[] space allocated.  The numa_meminfo code makes an
->effort to throw out ("trim") all memory blocks which are above 'max_pfn'.
->
->SGX memory is not considered RAM (it is marked as "Reserved" in the
->e820) and is not taken into account by max_pfn.  Despite this, SGX
->memory areas have NUMA affinity and are enumerated in the ACPI SRAT.
->The existing SGX code uses the numa_meminfo mechanism to look up the
->NUMA affinity for its memory areas.
->
->In cases where SGX memory was above max_pfn (usually just the one EPC
->section in the last highest NUMA node), the numa_memblock is truncated
->at 'max_pfn', which is below the SGX memory.  When the SGX code tries to
->look up the affinity of this memory, it fails and produces an error messag=
-e:
->
->	sgx: [Firmware Bug]: Unable to map EPC section to online node. Fallback
->to the NUMA node 0.
->
->and assigns the memory to NUMA node 0.
->
->Instead of silently truncating the memory block at 'max_pfn' and
->dropping the SGX memory, add the truncated portion to
->'numa_reserved_meminfo'.  This allows the SGX code to later determine
->the NUMA affinity of its 'Reserved' area.
->
->Without this patch, numa_meminfo looks like this (from 'crash'):
->
->  blk =3D { start =3D          0x0, end =3D 0x2080000000, nid =3D 0x0 }
->        { start =3D 0x2080000000, end =3D 0x4000000000, nid =3D 0x1 }
->
->numa_reserved_meminfo is empty.
->
->After the patch, numa_meminfo looks like this:
->
->  blk =3D { start =3D          0x0, end =3D 0x2080000000, nid =3D 0x0 }
->        { start =3D 0x2080000000, end =3D 0x4000000000, nid =3D 0x1 }
->
->and numa_reserved_meminfo has an entry for node 1's SGX memory:
->
->  blk =3D  { start =3D 0x4000000000, end =3D 0x4080000000, nid =3D 0x1 }
->
-> [ daveh: completely rewrote/reworked changelog ]
+perf/x86: Reset the dirty counter to prevent the leak for an RDPMC task
 
-Really what's your PROBLEM?!
-Neither did I ask you to send my patch, nor do I agree to change it.
-Who grant you the right to do this ?!
-It's disgraceful to do this w/o my notice.
+The counter value of a perf task may leak to another RDPMC task.
+For example, a perf stat task as below is running on CPU 0.
 
-If you have comments, please DO align with the other two maintainers Jarkko=
- and Dan first,
-who already reviewed the patch in this format.
+    perf stat -e 'branches,cycles' -- taskset -c 0 ./workload
 
-https://lkml.org/lkml/2021/6/17/1151
+In the meantime, an RDPMC task, which is also running on CPU 0, may read
+the GP counters periodically. (The RDPMC task creates a fixed event,
+but read four GP counters.)
 
+    $./rdpmc_read_all_counters
+    index 0x0 value 0x8001e5970f99
+    index 0x1 value 0x8005d750edb6
+    index 0x2 value 0x0
+    index 0x3 value 0x0
 
+    index 0x0 value 0x8002358e48a5
+    index 0x1 value 0x8006bd1e3bc9
+    index 0x2 value 0x0
+    index 0x3 value 0x0
 
->Signed-off-by: Fan Du <fan.du@intel.com>
->Reported-by: Reinette Chatre <reinette.chatre@intel.com>
->Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
->Reviewed-by: Dan Williams <dan.j.williams@intel.com>
->Reviewed-by: Dave Hansen <dave.hansen@intel.com>
->Fixes: 5d30f92e7631 ("x86/NUMA: Provide a range-to-target_node lookup
->facility")
->Cc: x86@kernel.org
->Cc: linux-sgx@vger.kernel.org
->Cc: Andy Lutomirski <luto@kernel.org>
->Cc: Peter Zijlstra <peterz@infradead.org>
->---
->
-> b/arch/x86/mm/numa.c |    8 +++++++-
-> 1 file changed, 7 insertions(+), 1 deletion(-)
->
->diff -puN arch/x86/mm/numa.c~sgx-srat arch/x86/mm/numa.c
->--- a/arch/x86/mm/numa.c~sgx-srat	2021-06-17 11:23:05.116159990 -0700
->+++ b/arch/x86/mm/numa.c	2021-06-17 11:55:46.117155100 -0700
->@@ -254,7 +254,13 @@ int __init numa_cleanup_meminfo(struct n
->
-> 		/* make sure all non-reserved blocks are inside the limits */
-> 		bi->start =3D max(bi->start, low);
->-		bi->end =3D min(bi->end, high);
->+
->+		/* preserve info for non-RAM areas above 'max_pfn': */
->+		if (bi->end > high) {
->+			numa_add_memblk_to(bi->nid, high, bi->end,
->+					   &numa_reserved_meminfo);
->+			bi->end =3D high;
->+		}
->
-> 		/* and there's no empty block */
-> 		if (bi->start >=3D bi->end)
->_
+It is a potential security issue. Once the attacker knows what the other
+thread is counting. The PerfMon counter can be used as a side-channel to
+attack cryptosystems.
+
+The counter value of the perf stat task leaks to the RDPMC task because
+perf never clears the counter when it's stopped.
+
+Three methods were considered to address the issue.
+
+ - Unconditionally reset the counter in x86_pmu_del(). It can bring extra
+   overhead even when there is no RDPMC task running.
+
+ - Only reset the un-assigned dirty counters when the RDPMC task is
+   scheduled in via sched_task(). It fails for the below case.
+
+	Thread A			Thread B
+
+	clone(CLONE_THREAD) --->
+	set_affine(0)
+					set_affine(1)
+					while (!event-enabled)
+						;
+	event = perf_event_open()
+	mmap(event)
+	ioctl(event, IOC_ENABLE); --->
+					RDPMC
+
+   Counters are still leaked to the thread B.
+
+ - Only reset the un-assigned dirty counters before updating the CR4.PCE
+   bit. The method is implemented here.
+
+The dirty counter is a counter, on which the assigned event has been
+deleted, but the counter is not reset. To track the dirty counters,
+add a 'dirty' variable in the struct cpu_hw_events.
+
+The security issue can only be found with an RDPMC task. To enable the
+RDMPC, the CR4.PCE bit has to be updated. Add a
+perf_clear_dirty_counters() right before updating the CR4.PCE bit to
+clear the existing dirty counters. Only the current un-assigned dirty
+counters are reset, because the RDPMC assigned dirty counters will be
+updated soon.
+
+After applying the patch,
+
+        $ ./rdpmc_read_all_counters
+        index 0x0 value 0x0
+        index 0x1 value 0x0
+        index 0x2 value 0x0
+        index 0x3 value 0x0
+
+        index 0x0 value 0x0
+        index 0x1 value 0x0
+        index 0x2 value 0x0
+        index 0x3 value 0x0
+
+Performance
+
+The performance of a context switch only be impacted when there are two
+or more perf users and one of the users must be an RDPMC user. In other
+cases, there is no performance impact.
+
+The worst-case occurs when there are two users: the RDPMC user only
+uses one counter; while the other user uses all available counters.
+When the RDPMC task is scheduled in, all the counters, other than the
+RDPMC assigned one, have to be reset.
+
+Test results for the worst-case, using a modified lat_ctx as measured
+on an Ice Lake platform, which has 8 GP and 3 FP counters (ignoring
+SLOTS).
+
+    lat_ctx -s 128K -N 1000 processes 2
+
+Without the patch:
+  The context switch time is 4.97 us
+
+With the patch:
+  The context switch time is 5.16 us
+
+There is ~4% performance drop for the context switching time in the
+worst-case.
+
+Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/1623693582-187370-1-git-send-email-kan.liang@linux.intel.com
+---
+ arch/x86/events/core.c            | 28 +++++++++++++++++++++++++++-
+ arch/x86/events/perf_event.h      |  1 +
+ arch/x86/include/asm/perf_event.h |  1 +
+ arch/x86/mm/tlb.c                 | 10 ++++++++--
+ 4 files changed, 37 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index 8e50932..c0167d5 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -1624,6 +1624,8 @@ static void x86_pmu_del(struct perf_event *event, int flags)
+ 	if (cpuc->txn_flags & PERF_PMU_TXN_ADD)
+ 		goto do_del;
+ 
++	__set_bit(event->hw.idx, cpuc->dirty);
++
+ 	/*
+ 	 * Not a TXN, therefore cleanup properly.
+ 	 */
+@@ -2472,6 +2474,31 @@ static int x86_pmu_event_init(struct perf_event *event)
+ 	return err;
+ }
+ 
++void perf_clear_dirty_counters(void)
++{
++	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
++	int i;
++
++	 /* Don't need to clear the assigned counter. */
++	for (i = 0; i < cpuc->n_events; i++)
++		__clear_bit(cpuc->assign[i], cpuc->dirty);
++
++	if (bitmap_empty(cpuc->dirty, X86_PMC_IDX_MAX))
++		return;
++
++	for_each_set_bit(i, cpuc->dirty, X86_PMC_IDX_MAX) {
++		/* Metrics and fake events don't have corresponding HW counters. */
++		if (is_metric_idx(i) || (i == INTEL_PMC_IDX_FIXED_VLBR))
++			continue;
++		else if (i >= INTEL_PMC_IDX_FIXED)
++			wrmsrl(MSR_ARCH_PERFMON_FIXED_CTR0 + (i - INTEL_PMC_IDX_FIXED), 0);
++		else
++			wrmsrl(x86_pmu_event_addr(i), 0);
++	}
++
++	bitmap_zero(cpuc->dirty, X86_PMC_IDX_MAX);
++}
++
+ static void x86_pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
+ {
+ 	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
+@@ -2495,7 +2522,6 @@ static void x86_pmu_event_mapped(struct perf_event *event, struct mm_struct *mm)
+ 
+ static void x86_pmu_event_unmapped(struct perf_event *event, struct mm_struct *mm)
+ {
+-
+ 	if (!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED))
+ 		return;
+ 
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index 27fa85e..d6003e0 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -229,6 +229,7 @@ struct cpu_hw_events {
+ 	 */
+ 	struct perf_event	*events[X86_PMC_IDX_MAX]; /* in counter order */
+ 	unsigned long		active_mask[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
++	unsigned long		dirty[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
+ 	int			enabled;
+ 
+ 	int			n_events; /* the # of events in the below arrays */
+diff --git a/arch/x86/include/asm/perf_event.h b/arch/x86/include/asm/perf_event.h
+index 544f41a..8fc1b50 100644
+--- a/arch/x86/include/asm/perf_event.h
++++ b/arch/x86/include/asm/perf_event.h
+@@ -478,6 +478,7 @@ struct x86_pmu_lbr {
+ 
+ extern void perf_get_x86_pmu_capability(struct x86_pmu_capability *cap);
+ extern void perf_check_microcode(void);
++extern void perf_clear_dirty_counters(void);
+ extern int x86_perf_rdpmc_index(struct perf_event *event);
+ #else
+ static inline void perf_get_x86_pmu_capability(struct x86_pmu_capability *cap)
+diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+index 7880468..cfe6b1e 100644
+--- a/arch/x86/mm/tlb.c
++++ b/arch/x86/mm/tlb.c
+@@ -14,6 +14,7 @@
+ #include <asm/nospec-branch.h>
+ #include <asm/cache.h>
+ #include <asm/apic.h>
++#include <asm/perf_event.h>
+ 
+ #include "mm_internal.h"
+ 
+@@ -404,9 +405,14 @@ static inline void cr4_update_pce_mm(struct mm_struct *mm)
+ {
+ 	if (static_branch_unlikely(&rdpmc_always_available_key) ||
+ 	    (!static_branch_unlikely(&rdpmc_never_available_key) &&
+-	     atomic_read(&mm->context.perf_rdpmc_allowed)))
++	     atomic_read(&mm->context.perf_rdpmc_allowed))) {
++		/*
++		 * Clear the existing dirty counters to
++		 * prevent the leak for an RDPMC task.
++		 */
++		perf_clear_dirty_counters();
+ 		cr4_set_bits_irqsoff(X86_CR4_PCE);
+-	else
++	} else
+ 		cr4_clear_bits_irqsoff(X86_CR4_PCE);
+ }
+ 
