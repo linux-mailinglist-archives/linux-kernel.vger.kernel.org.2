@@ -2,152 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F24F3ACBC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 164003ACBCA
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231919AbhFRNMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55508 "EHLO
+        id S232682AbhFRNM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbhFRNMd (ORCPT
+        with ESMTP id S232627AbhFRNM4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:12:33 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E789C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:10:24 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1luEGG-0003tf-PE; Fri, 18 Jun 2021 15:10:16 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1luEGB-000582-VG; Fri, 18 Jun 2021 15:10:11 +0200
-Date:   Fri, 18 Jun 2021 15:10:11 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v2 4/8] net: usb: asix: ax88772: add phylib
- support
-Message-ID: <20210618131011.puodgt4niemsabno@pengutronix.de>
-References: <20210607082727.26045-1-o.rempel@pengutronix.de>
- <20210607082727.26045-5-o.rempel@pengutronix.de>
- <CGME20210618083914eucas1p240f88e7064a7bf15b68370b7506d24a9@eucas1p2.samsung.com>
- <15e1bb24-7d67-9d45-54c1-c1c1a0fe444a@samsung.com>
- <20210618101317.55fr5vl5akmtgcf6@pengutronix.de>
- <460f971e-fbae-8d3d-ae8e-ed90bbebda4d@samsung.com>
- <b3b990b5-d2f6-3e93-effd-44e10c5dfb5e@samsung.com>
+        Fri, 18 Jun 2021 09:12:56 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075C1C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:10:47 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id m17so1467566plx.7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:10:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xeflnMpXCc8lQl488t2UyqqllAHiO3IjtrjGZgwxjE8=;
+        b=l4JvENXKS+0wuXa9Dd7ASyOi+R2Ra1aLIyA3k6/hFxsit72DMEgc04M2UT1qYk5Sb0
+         WspU0VkFFL2rOaKiwcWlw6iLuFtDYrkBFGTYnoWKOx0j5yPXk6liOpjHGfCyYCF/WXSb
+         uXLJ80qb0RBPXArA/ItZJI05DK9fbVDKsCbP3OrZS+F9FIA+kjubUgtL33FY+wHQvdqA
+         IlUzws0eoYgmiXbL1Aog1Fxp9UDyg8ViwDqml0U9R5abh5W+c3OtLIc3PDV145QF493k
+         5OazSdv+z0dulHEsk7iosWreirruFs8y3ZBkwSFKYQtqA7QikIbxeVkqaV7+ISh+MZWf
+         fr6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xeflnMpXCc8lQl488t2UyqqllAHiO3IjtrjGZgwxjE8=;
+        b=ErEl/w2cHnHW03Q4WRKQXO7EHysHlSlWjEUXFXrt1nK4fNboLadX8gUTG2hY/S9PMU
+         cv+NTjmxE6Yv7hiRY58zQq/2QgIQq3wQzPozTB2AXaBjYpXaM+3zuhEDVFVoxViaTFeB
+         9hsrsWXT/8xuS10kR1YQDtgVzUAMW1IInBvrQ1pz4ngnWFQrekePlLeeOmp+BnpPFeaX
+         wfAiQ4CJajcoqpJKFc2WJm5E+NEPwx5irQD0P0w9xgdS0efFROQhhqnsDIxi88LKOebI
+         3Mvd7lyZ4LdYQfneAiql8MBIVRhpHZ1ffeuQCMiprkBBmOZQIAw8KOXCFJGgHHRsnkXn
+         KA6w==
+X-Gm-Message-State: AOAM532Np2KfWPIGCEdYBhAjdUeRyMFvtUaGEOYnjIBJnN5i6uCHPJiI
+        vgs2E8pev+0AYjI8vlstJkV4dbZRvYksaMpYXbg=
+X-Google-Smtp-Source: ABdhPJzcSX6tm09hnesQWqlEKd9p2OWaX9DN17n4s3XcCvm5NLcAdCBgDPUZFvnKjiSXNhS667ToHT0D90tnVJ9s7Nk=
+X-Received: by 2002:a17:90a:880c:: with SMTP id s12mr11065571pjn.66.1624021846430;
+ Fri, 18 Jun 2021 06:10:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b3b990b5-d2f6-3e93-effd-44e10c5dfb5e@samsung.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 15:08:33 up 198 days,  3:14, 50 users,  load average: 0.07, 0.04,
- 0.00
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210203091306.140518-1-jagan@amarulasolutions.com>
+In-Reply-To: <20210203091306.140518-1-jagan@amarulasolutions.com>
+From:   Jonathan Liu <net147@gmail.com>
+Date:   Fri, 18 Jun 2021 23:10:33 +1000
+Message-ID: <CANwerB1Bev8Ljta9OyO6vAKsQqHHmaJnjV1YRGmY4bVk_J6xZA@mail.gmail.com>
+Subject: Re: [PATCH] drm/bridge: dw-mipi-dsi: Move drm_bridge_add into probe
+To:     Jagan Teki <jagan@amarulasolutions.com>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Sandy Huang <hjc@rock-chips.com>,
+        Heiko Stubner <heiko@sntech.de>,
+        Yannick Fertre <yannick.fertre@st.com>,
+        Philippe Cornu <philippe.cornu@st.com>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Vincent Abriou <vincent.abriou@st.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-amarula@amarulasolutions.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 12:57:13PM +0200, Marek Szyprowski wrote:
-> On 18.06.2021 12:45, Marek Szyprowski wrote:
-> > On 18.06.2021 12:13, Oleksij Rempel wrote:
-> >> thank you for your feedback.
-> >>
-> >> On Fri, Jun 18, 2021 at 10:39:12AM +0200, Marek Szyprowski wrote:
-> >>> On 07.06.2021 10:27, Oleksij Rempel wrote:
-> >>>> To be able to use ax88772 with external PHYs and use advantage of
-> >>>> existing PHY drivers, we need to port at least ax88772 part of asix
-> >>>> driver to the phylib framework.
-> >>>>
-> >>>> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> >>> I found one more issue with this patch. On one of my test boards
-> >>> (Samsung Exynos5250 SoC based Arndale) system fails to establish 
-> >>> network
-> >>> connection just after starting the kernel when the driver is build-in.
-> >>>
-> >>> --->8---
-> >>> # dmesg | grep asix
-> >>> [    2.761928] usbcore: registered new interface driver asix
-> >>> [    5.003110] asix 1-3.2.4:1.0 (unnamed net_device) (uninitialized):
-> >>> invalid hw address, using random
-> >>> [    6.065400] asix 1-3.2.4:1.0 eth0: register 'asix' at
-> >>> usb-12110000.usb-3.2.4, ASIX AX88772 USB 2.0 Ethernet, 
-> >>> 7a:9b:9a:f2:94:8e
-> >>> [   14.043868] asix 1-3.2.4:1.0 eth0: Link is Up - 100Mbps/Full - flow
-> >>> control off
-> >>> # ping -c2  host
-> >>> PING host (192.168.100.1) 56(84) bytes of data.
-> >>>   From 192.168.100.20 icmp_seq=1 Destination Host Unreachable
-> >>>   From 192.168.100.20 icmp_seq=2 Destination Host Unreachable
-> >>>
-> >>> --- host ping statistics ---
-> >>> 2 packets transmitted, 0 received, +2 errors, 100% packet loss, time 
-> >>> 59ms
-> >>> --->8---
-> >> Hm... it looks like different chip variant. My is registered as
-> >> "ASIX AX88772B USB", yours is "ASIX AX88772 USB 2.0" - "B" is the
-> >> difference. Can you please tell me more about this adapter and if 
-> >> possible open
-> >> tell the real part name.
-> > Well, currently I have only remote access to that board. The network 
-> > chip is soldered on board. Maybe you can read something from the photo 
-> > on the wiki page: https://en.wikipedia.org/wiki/Arndale_Board
-> >> I can imagine that this adapter may using generic PHY driver.
-> >> Can you please confirm it by dmesg | grep PHY?
-> >> In my case i'll get:
-> >> Asix Electronics AX88772C usb-001:003:10: attached PHY driver 
-> >> (mii_bus:phy_addr=usb-001:003:10, irq=POLL)
-> > # dmesg | grep PHY
-> > [    5.700274] Asix Electronics AX88772A usb-001:004:10: attached PHY 
-> > driver (mii_bus:phy_addr=usb-001:004:10, irq=POLL)
-> >> If you have a different PHY, can you please send me the PHY id:
-> >> cat /sys/bus/mdio_bus/devices/usb-001\:003\:10/phy_id
-> >>
-> >> Your usb path will probably be different.
-> >
-> > # cat /sys/bus/mdio_bus/devices/usb-001\:004\:10/phy_id
-> > 0x003b1861
-> >
-> > > ...
-> 
-> Just for the record, I also have a board with external USB Ethernet 
-> dongle based on ASIX chip, which works fine with this patch, both when 
-> driver is built-in or as a module. Here is the log:
-> 
-> # dmesg | grep -i Asix
-> [    1.718349] usbcore: registered new interface driver asix
-> [    2.608596] usb 3-1: Manufacturer: ASIX Elec. Corp.
-> [    3.876279] libphy: Asix MDIO Bus: probed
-> [    3.958105] Asix Electronics AX88772C usb-003:002:10: attached PHY 
-> driver (mii_bus:phy_addr=usb-003:002:10, irq=POLL)
-> [    3.962728] asix 3-1:1.0 eth0: register 'asix' at 
-> usb-xhci-hcd.6.auto-1, ASIX AX88772B USB 2.0 Ethernet, 00:50:b6:18:92:f0
-> [   17.488532] asix 3-1:1.0 eth0: Link is Down
-> [   19.557233] asix 3-1:1.0 eth0: Link is Up - 100Mbps/Full - flow 
-> control off
-> 
-> # cat /sys/bus/mdio_bus/devices/usb-003\:002\:10/phy_id
-> 0x003b1881
+Hi Jagan,
 
-Ok, this one is different. It is AX88772C variant.
+On Wed, 3 Feb 2021 at 09:13, Jagan Teki <jagan@amarulasolutions.com> wrote:
+> @@ -1167,6 +1151,20 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
+>         dw_mipi_dsi_debugfs_init(dsi);
+>         pm_runtime_enable(dev);
+>
+> +       ret = drm_of_find_panel_or_bridge(dev->of_node, 1, 0,
+> +                                         &panel, &bridge);
+> +       if (ret)
+> +               return ERR_PTR(ret);
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+On RK3399 if the error is EPROBE_DEFER, __dw_mipi_dsi_probe can be
+called again and result in the following errors:
+[    0.717589] debugfs: Directory 'ff960000.mipi' with parent '/'
+already present!
+[    0.717601] dw-mipi-dsi-rockchip ff960000.mipi: failed to create debugfs root
+[    0.717606] dw-mipi-dsi-rockchip ff960000.mipi: Unbalanced pm_runtime_enable!
+
+Regards,
+Jonathan
