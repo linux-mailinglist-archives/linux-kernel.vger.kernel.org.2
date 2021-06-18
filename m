@@ -2,56 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981693AC756
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CEAE3AC75A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232144AbhFRJZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 05:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60758 "EHLO
+        id S232329AbhFRJZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 05:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231906AbhFRJZC (ORCPT
+        with ESMTP id S231602AbhFRJZv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 05:25:02 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C11C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:22:53 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id k8so13024461lja.4
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:22:53 -0700 (PDT)
+        Fri, 18 Jun 2021 05:25:51 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EE0C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:23:41 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id d16so8091028lfn.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:23:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=1HcC0x5raBLiZCsopC7121WUquPXp1QqDe2+q9nm5Dw=;
-        b=wAiMS/isuPBGlbfVjD1QY6LcyZoRvTqAe29UqoSq87xxZjY7K4FRLtVOIp88Miqii4
-         JmoRMxqnzpiDpelikrQ/FOCM7P6dbfYD4/J6tupwor1PqAWKmJKDVlpcKh+uRV+uV1Fm
-         P5I/wOKupe6rH4Hc5rxFKqPArGFZImOXpp6y/kJfA3IYxW7WoyBVRjXdIenmjKvO7Y+Z
-         gq9ll7k7vlJrv6RLBUzWl5fwHLctO0NfoKv9zq49NVsY0K8sS5WcBwuCRIk3mlOiS5gr
-         JDtc48VkhHfUwIP8pN3JGvRUFLflL0IGhhK/O3WsHlZo1vTgW2FB9f/M5ethRsT2QJ1n
-         /KTQ==
+        bh=zUmaAdhvpCE8rTi8Nu21lM0leDt0J+C5lHTAMCRYdmY=;
+        b=Px4mkWvksGAe4XErN0YNWZAu3VO2QDBQBRJ6C6S+BjDtcGkiQ4MeYp2NSzWb/E01V/
+         2ogun+mOFHugk8lFwz6+BrHmax4HKlmlvXpEXfWvc/mGBAhyQM6jvP333WhMYODzsa16
+         YymPuLhJD64brpUHQbE5YMyR2KFdUtz7Fu5QXSMCf41NdZeCwRKjgL5jBnKqun55ND8Q
+         VtxHUbtufK0PAtHJ6hFJ+iQujI/6ONwIUkGf3aHwO/VCoGD/Ynqk6x7xajEz0NMxY1D5
+         qFHTBCJTawXnBxwutXyMjyduAGeyjCTyD5IJ2wpEqpO8ji9rQFuv9kk1JHXVWmZNeIDg
+         G4BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=1HcC0x5raBLiZCsopC7121WUquPXp1QqDe2+q9nm5Dw=;
-        b=W3R46G5g9bvhyHeoXCnTM/JbIpcSbes7CxIO2/GrlxWDn/3K4WZYGGeVhC/32M4kNj
-         xs4Dsk/PlfVmk0l4H7ZVWm6hVNKoApbzefIDtDL7Fpkw4Ese++9OCtZUu5h2rzX8VAPK
-         t1Y+E1UPx9ExYAOuUlVsTA8L1FDnjcqOgWv9WUnee2PlvGoS4RBjQAMMdPURF///a2vo
-         zXyB0kZ8swnQc+z2BLWpenjARh5ShjOL+wx3T0PcnsXw6u70BS0vS0w7ErS/eTtboAPy
-         ijBOn9KfpQU3zujGmZCz4yPL8aLXmyMgoo0p4AAYGdJH0voHLO4Fr5zUNbEERf9+SXiK
-         593w==
-X-Gm-Message-State: AOAM5329b8j/CiVsFOcjmhE3Y7fTEUbV82XOBgTDK0hEij9ylaW/mUks
-        wMTD6Lnej0lN4GfQO9GT6oV0wmsD42h+nLLal1V9ug==
-X-Google-Smtp-Source: ABdhPJxslJKOPj0rEtj2nqttfiHZhLBWzhyz58VAbZ7tJLvtkOtU/BG+NgnU1xP1gKFEpXV2nsh1eiPya0Qaq3v8ZTg=
-X-Received: by 2002:a2e:81d8:: with SMTP id s24mr8698429ljg.326.1624008171748;
- Fri, 18 Jun 2021 02:22:51 -0700 (PDT)
+        bh=zUmaAdhvpCE8rTi8Nu21lM0leDt0J+C5lHTAMCRYdmY=;
+        b=RO56kHtAdCKJy76K0S53gVm+hdjTC6VGkDsOhbjnwlbHnPeZkIS/it6tT2oYzLYVpQ
+         OiBlZr98w23IdgxgfrA4epYoiM09LrP1LpRWlC47qCtT/ENfcnuupytaeRmpXnbuSt68
+         cRpzX/rEVGTlNBKKDFPk68tr8XaK1f7TYZs/b83vchlsnxI9qK8UXMcraFFnvQ9VqXnD
+         xfhXyeTetMOvnAN+gu/+cgH5O7NY55bXz5uPIJ6BC+7ymJ56brIbGjPsGml5Ex0n/T8i
+         CHWFwqvyvRBzTVS95kQPwXEqtMq58C9hKVWxOD8HaFbsSdgorU+trShBBFmsCRt7OC1p
+         yJmA==
+X-Gm-Message-State: AOAM530I6kuueHrVN2CoHMB3OxwXw3OPd+YcswNxMnTpgjVZ6yoeBLzg
+        TiyskzlEP9pV8HmJTI5sgSmCRGY0F4vdgNGgz5l4SQ==
+X-Google-Smtp-Source: ABdhPJylOphVSuNKFsbcLlcxR0J/hdcDmlDJGNN2iITcAv1mAOg0RrezfzSnr1lvVBcUTFMUmgahGNc3x5RgUoVgjxc=
+X-Received: by 2002:a05:6512:2105:: with SMTP id q5mr2364148lfr.649.1624008219992;
+ Fri, 18 Jun 2021 02:23:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210614172713.558192-1-martin.botka@somainline.org>
-In-Reply-To: <20210614172713.558192-1-martin.botka@somainline.org>
+References: <20210614172713.558192-1-martin.botka@somainline.org> <20210614172713.558192-2-martin.botka@somainline.org>
+In-Reply-To: <20210614172713.558192-2-martin.botka@somainline.org>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 18 Jun 2021 11:22:40 +0200
-Message-ID: <CACRpkdayxdPnhZptR_ZozcXd3+9rtYYhQVKxG_n7vPG-RQj8ag@mail.gmail.com>
-Subject: Re: [PATCH V5 1/2] dt-bindings: pinctrl: qcom: sm6125: Document
- SM6125 pinctrl driver
+Date:   Fri, 18 Jun 2021 11:23:29 +0200
+Message-ID: <CACRpkdaYjskpgUUkJgHu9jjwDY7sy-EMcmpU6pNmJVp7mu861Q@mail.gmail.com>
+Subject: Re: [PATCH V5 2/2] drivers: qcom: pinctrl: Add pinctrl driver for sm6125
 To:     Martin Botka <martin.botka@somainline.org>
 Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS
         <devicetree@vger.kernel.org>, Hans de Goede <hdegoede@redhat.com>, Andy
@@ -77,12 +76,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Mon, Jun 14, 2021 at 7:27 PM Martin Botka
 <martin.botka@somainline.org> wrote:
 
-> Document the newly added SM6125 pinctrl driver
+> This patch adds pinctrl driver for sm6125.
 >
 > Signed-off-by: Martin Botka <martin.botka@somainline.org>
 
-Patch applied. DT folks have had plenty of time to look at the
-v1-v4 versions already.
+Patch applied.
+
+Especially happy to apply patches from somainline.org, keep up
+the good work folks!
 
 Yours,
 Linus Walleij
