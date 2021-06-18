@@ -2,60 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C1A3AC5A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0E3D3AC5A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233653AbhFRIDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 04:03:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42208 "EHLO
+        id S233725AbhFRIE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 04:04:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232651AbhFRIDF (ORCPT
+        with ESMTP id S232671AbhFRIDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 04:03:05 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62EB3C061768
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:00:50 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id e20so7184945pgg.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:00:50 -0700 (PDT)
+        Fri, 18 Jun 2021 04:03:11 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 218D5C0617AD
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:00:53 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id y15so1265058pfl.4
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:00:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=UHRUoNKTXDhWOWWn3W311+njF5lywCh5AdKKO+L8q00=;
-        b=iAsz0DdU4MEkawdRoyeBDUzcxfxX0FcKg+cjohP0ukmtUl/NtpwfLK8asbKSn89oUS
-         +hJ7ZqKrfep0JINdjbD/C1GVT8E9+TGk47da+WrIuseRoV7naxAWLHUt3EL3B+B/5iEZ
-         54xAoTfr21SYY21EYilsbqQxnMIktqM01WJiI=
+        bh=5HAONQPZe7/SR1yiilCYPmjw7Y/Yqrfapy71bu7s5Gk=;
+        b=gqBgo5FtV2BrQiAKmxq8eBZbSZ9cprcFx89DZxsGsOJD4ELAzDm7qRpr4ccqXh3jw7
+         HbDBJvC2/d5WNSDLwo6W+RmvoB6VIWXI1LZD0MQqF2fntWXhuLXOnp2V4S4BrglM7XLu
+         FX3PQo/RCBbBE3OxM5Ma/hupXfQMjDwOMsJNs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=UHRUoNKTXDhWOWWn3W311+njF5lywCh5AdKKO+L8q00=;
-        b=opYidDuH0nyCdFlZxUSWR88dgCTc33fMOtQnpt0P7Qih9yRCmmhfozVvAtb6KVr8pI
-         SayXGdw1C8rjzceFIdpE7RPJCttsAtva7NuBq5Hly0tVroCNac9rfCwTZ11PLbMrefyz
-         Ul1IirrGuHeQqATcWSCuVtCJen+kD9DfdSNLSZFrUYkWLHKw6dJPVL2/r67QQfUxqmxA
-         UdcrCjKs9EMTVITQMci9Q7dR/xTVAtWjPAVQ72tii29vOnH18u0rnQI0mV4bt01+0j/I
-         5hXKfZgk5WojTpMcu9tGlWwWlM0XOjF/08uPjln9PtecOFiraSDt6Pe/q9g2kwpU9PHL
-         7SuQ==
-X-Gm-Message-State: AOAM533eKHTTvO1H6YSsX5UHWaTF3z7+oQOmKarpHu08swWBJ53paUqT
-        WZMxUxuXa6pKFeYkKN+anWtldw==
-X-Google-Smtp-Source: ABdhPJxwDdQM44hS+Ddhw7JWdEvTNdfDf51bw41GEHCOmZ1GRxVY5nBPak5SI2QbcEJ4zbiS3mD/KA==
-X-Received: by 2002:a63:e14:: with SMTP id d20mr9056017pgl.35.1624003249994;
-        Fri, 18 Jun 2021 01:00:49 -0700 (PDT)
+        bh=5HAONQPZe7/SR1yiilCYPmjw7Y/Yqrfapy71bu7s5Gk=;
+        b=K2+o4EySXL/YGVjKfDOLdYM9kobK5mZ3eD3G0WS7BNK2Q94hJhwtmaJivRSRlUEunS
+         +anuftWU7bM+PP7cq74nouBybidRcpQOugFJqzP54AmEmYXiPR7Ogtuv0/rks4euHbm/
+         pWB6+ZJ+DCDpQd3b4qbotONdYwTAUmhNXr9JWhSKBhy11UZ67K0AkgMHSEfEiLOgqw+W
+         gs1gOu8t8wT6MBIOuV0YGTxbR99Lo7ORxd1iVGglngD/7w6UeK3zQQ1iIy/BzBQYz4R/
+         FrVdZj+CYzoEpbQPLU+Ns3uO3letr2bgHPs7zpafBwPNVtebY8q/5x52WhzfWsad7dxB
+         nYIA==
+X-Gm-Message-State: AOAM5339P4CY16f3m8bzvlzWkPRxTrXha0NuHGMzBjQsY/Bez4yeVckn
+        sEwUxYfYXutAmPG8avdSyFbqsw==
+X-Google-Smtp-Source: ABdhPJw7xUC/J4bt0UufwKr0rt03Po2lflZ68+7D2LCtbrD07yOb2doD5xUbq2bbliHgYytmbCtCNw==
+X-Received: by 2002:aa7:8bd6:0:b029:2ec:7dc9:77e3 with SMTP id s22-20020aa78bd60000b02902ec7dc977e3mr3937801pfd.62.1624003252595;
+        Fri, 18 Jun 2021 01:00:52 -0700 (PDT)
 Received: from josephsih-z840.tpe.corp.google.com ([2401:fa00:1:10:6cbb:95eb:e2ae:8479])
-        by smtp.gmail.com with ESMTPSA id v21sm7341671pfu.77.2021.06.18.01.00.48
+        by smtp.gmail.com with ESMTPSA id v21sm7341671pfu.77.2021.06.18.01.00.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 01:00:49 -0700 (PDT)
+        Fri, 18 Jun 2021 01:00:52 -0700 (PDT)
 From:   Joseph Hwang <josephsih@chromium.org>
 To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
         luiz.dentz@gmail.com, pali@kernel.org
 Cc:     josephsih@google.com, chromeos-bluetooth-upstreaming@chromium.org,
         Joseph Hwang <josephsih@chromium.org>,
         Miao-chen Chou <mcchou@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 3/4] Bluetooth: set quality report callback for Intel
-Date:   Fri, 18 Jun 2021 16:00:38 +0800
-Message-Id: <20210618160016.v4.3.I50ffa4cd0b3ab11669ff2541fc719fee00b4e244@changeid>
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH v4 4/4] Bluetooth: Support the quality report events
+Date:   Fri, 18 Jun 2021 16:00:39 +0800
+Message-Id: <20210618160016.v4.4.I20c79eef4f36c4a3802e1068e59ec4a9f4ded940@changeid>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
 In-Reply-To: <20210618160016.v4.1.I41aec59e65ffd3226d368dabeb084af13cc133c8@changeid>
 References: <20210618160016.v4.1.I41aec59e65ffd3226d368dabeb084af13cc133c8@changeid>
@@ -65,8 +67,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch sets up set_quality_report callback for Intel to
-set and reset the debug features.
+This patch allows a user space process to enable/disable the quality
+report events dynamically through the set experimental feature mgmt
+interface if CONFIG_BT_FEATURE_QUALITY_REPORT is enabled.
+
+Since the quality report feature needs to invoke the callback function
+provided by the driver, i.e., hdev->set_quality_report, a valid
+controller index is required.
 
 Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
 Signed-off-by: Joseph Hwang <josephsih@chromium.org>
@@ -74,203 +81,244 @@ Signed-off-by: Joseph Hwang <josephsih@chromium.org>
 
 (no changes since v1)
 
- drivers/bluetooth/btintel.c | 75 ++++++++++++++++++++++++++++++++++++-
- drivers/bluetooth/btintel.h | 13 +++++++
- drivers/bluetooth/btusb.c   | 16 ++++++++
- 3 files changed, 103 insertions(+), 1 deletion(-)
+ include/net/bluetooth/hci.h      |   4 ++
+ include/net/bluetooth/hci_core.h |  22 ++++--
+ net/bluetooth/Kconfig            |  11 +++
+ net/bluetooth/mgmt.c             | 118 ++++++++++++++++++++++++++++++-
+ 4 files changed, 148 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/bluetooth/btintel.c b/drivers/bluetooth/btintel.c
-index fd21ddb76928..7b32141b555f 100644
---- a/drivers/bluetooth/btintel.c
-+++ b/drivers/bluetooth/btintel.c
-@@ -1213,6 +1213,7 @@ void btintel_reset_to_bootloader(struct hci_dev *hdev)
- }
- EXPORT_SYMBOL_GPL(btintel_reset_to_bootloader);
+diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
+index b80415011dcd..2811b60e1acc 100644
+--- a/include/net/bluetooth/hci.h
++++ b/include/net/bluetooth/hci.h
+@@ -331,6 +331,10 @@ enum {
+ 	HCI_CMD_PENDING,
+ 	HCI_FORCE_NO_MITM,
  
 +#ifdef CONFIG_BT_FEATURE_QUALITY_REPORT
- int btintel_read_debug_features(struct hci_dev *hdev,
- 				struct intel_debug_features *features)
- {
-@@ -1254,8 +1255,10 @@ int btintel_set_debug_features(struct hci_dev *hdev,
- 	u8 trace_enable = 0x02;
- 	struct sk_buff *skb;
- 
--	if (!features)
-+	if (!features) {
-+		bt_dev_warn(hdev, "Debug features not read");
- 		return -EINVAL;
-+	}
- 
- 	if (!(features->page1[0] & 0x3f)) {
- 		bt_dev_info(hdev, "Telemetry exception format not supported");
-@@ -1286,10 +1289,80 @@ int btintel_set_debug_features(struct hci_dev *hdev,
- 	}
- 	kfree_skb(skb);
- 
-+	bt_dev_info(hdev, "set debug features: trace_enable 0x%02x mask 0x%02x",
-+		    trace_enable, mask[3]);
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(btintel_set_debug_features);
- 
-+int btintel_reset_debug_features(struct hci_dev *hdev,
-+				 const struct intel_debug_features *features)
-+{
-+	u8 mask[11] = { 0x0a, 0x92, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00,
-+			0x00, 0x00, 0x00 };
-+	u8 trace_enable = 0x00;
-+	struct sk_buff *skb;
-+
-+	if (!features) {
-+		bt_dev_warn(hdev, "Debug features not read");
-+		return -EINVAL;
-+	}
-+
-+	if (!(features->page1[0] & 0x3f)) {
-+		bt_dev_info(hdev, "Telemetry exception format not supported");
-+		return 0;
-+	}
-+
-+	/* Should stop the trace before writing ddc event mask. */
-+	skb = __hci_cmd_sync(hdev, 0xfca1, 1, &trace_enable, HCI_INIT_TIMEOUT);
-+	if (IS_ERR(skb)) {
-+		bt_dev_err(hdev, "Stop tracing of link statistics events failed (%ld)",
-+			   PTR_ERR(skb));
-+		return PTR_ERR(skb);
-+	}
-+	kfree_skb(skb);
-+
-+	skb = __hci_cmd_sync(hdev, 0xfc8b, 11, mask, HCI_INIT_TIMEOUT);
-+	if (IS_ERR(skb)) {
-+		bt_dev_err(hdev, "Setting Intel telemetry ddc write event mask failed (%ld)",
-+			   PTR_ERR(skb));
-+		return PTR_ERR(skb);
-+	}
-+	kfree_skb(skb);
-+
-+	bt_dev_info(hdev, "reset debug features: trace_enable 0x%02x mask 0x%02x",
-+		    trace_enable, mask[3]);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(btintel_reset_debug_features);
-+
-+int btintel_set_quality_report(struct hci_dev *hdev, bool enable)
-+{
-+	struct intel_debug_features features;
-+	int err;
-+
-+	bt_dev_dbg(hdev, "enable %d", enable);
-+
-+	/* Read the Intel supported features and if new exception formats
-+	 * supported, need to load the additional DDC config to enable.
-+	 */
-+	err = btintel_read_debug_features(hdev, &features);
-+	if (err)
-+		return err;
-+
-+	/* Set or reset the debug features. */
-+	if (enable)
-+		err = btintel_set_debug_features(hdev, &features);
-+	else
-+		err = btintel_reset_debug_features(hdev, &features);
-+
-+	return err;
-+}
-+EXPORT_SYMBOL_GPL(btintel_set_quality_report);
++	HCI_QUALITY_REPORT,
 +#endif
 +
- MODULE_AUTHOR("Marcel Holtmann <marcel@holtmann.org>");
- MODULE_DESCRIPTION("Bluetooth support for Intel devices ver " VERSION);
- MODULE_VERSION(VERSION);
-diff --git a/drivers/bluetooth/btintel.h b/drivers/bluetooth/btintel.h
-index d184064a5e7c..618d3736599f 100644
---- a/drivers/bluetooth/btintel.h
-+++ b/drivers/bluetooth/btintel.h
-@@ -171,10 +171,15 @@ int btintel_download_firmware_newgen(struct hci_dev *hdev,
- 				     u32 *boot_param, u8 hw_variant,
- 				     u8 sbe_type);
- void btintel_reset_to_bootloader(struct hci_dev *hdev);
+ 	__HCI_NUM_FLAGS,
+ };
+ 
+diff --git a/include/net/bluetooth/hci_core.h b/include/net/bluetooth/hci_core.h
+index a53e94459ecd..c25de25a7036 100644
+--- a/include/net/bluetooth/hci_core.h
++++ b/include/net/bluetooth/hci_core.h
+@@ -605,6 +605,9 @@ struct hci_dev {
+ 	int (*set_bdaddr)(struct hci_dev *hdev, const bdaddr_t *bdaddr);
+ 	void (*cmd_timeout)(struct hci_dev *hdev);
+ 	bool (*prevent_wake)(struct hci_dev *hdev);
 +#ifdef CONFIG_BT_FEATURE_QUALITY_REPORT
- int btintel_read_debug_features(struct hci_dev *hdev,
- 				struct intel_debug_features *features);
- int btintel_set_debug_features(struct hci_dev *hdev,
- 			       const struct intel_debug_features *features);
-+int btintel_reset_debug_features(struct hci_dev *hdev,
-+			       const struct intel_debug_features *features);
-+int btintel_set_quality_report(struct hci_dev *hdev, bool enable);
++	int (*set_quality_report)(struct hci_dev *hdev, bool enable);
 +#endif
- #else
+ };
  
- static inline int btintel_check_bdaddr(struct hci_dev *hdev)
-@@ -301,10 +306,18 @@ static inline int btintel_read_debug_features(struct hci_dev *hdev,
- 	return -EOPNOTSUPP;
- }
+ #define HCI_PHY_HANDLE(handle)	(handle & 0xff)
+@@ -752,12 +755,19 @@ extern struct mutex hci_cb_list_lock;
+ #define hci_dev_test_and_clear_flag(hdev, nr)  test_and_clear_bit((nr), (hdev)->dev_flags)
+ #define hci_dev_test_and_change_flag(hdev, nr) test_and_change_bit((nr), (hdev)->dev_flags)
  
+-#define hci_dev_clear_volatile_flags(hdev)			\
+-	do {							\
+-		hci_dev_clear_flag(hdev, HCI_LE_SCAN);		\
+-		hci_dev_clear_flag(hdev, HCI_LE_ADV);		\
+-		hci_dev_clear_flag(hdev, HCI_LL_RPA_RESOLUTION);\
+-		hci_dev_clear_flag(hdev, HCI_PERIODIC_INQ);	\
 +#ifdef CONFIG_BT_FEATURE_QUALITY_REPORT
- static inline int btintel_set_debug_features(struct hci_dev *hdev,
- 					     const struct intel_debug_features *features)
- {
- 	return -EOPNOTSUPP;
- }
- 
-+static inline int btintel_reset_debug_features(struct hci_dev *hdev,
-+					       const struct intel_debug_features *features)
-+{
-+	return -EOPNOTSUPP;
-+}
++#define hci_dev_clear_flag_quality_report(x) { hci_dev_clear_flag(hdev, x); }
++#else
++#define hci_dev_clear_flag_quality_report(x) {}
 +#endif
 +
++#define hci_dev_clear_volatile_flags(hdev)				\
++	do {								\
++		hci_dev_clear_flag(hdev, HCI_LE_SCAN);			\
++		hci_dev_clear_flag(hdev, HCI_LE_ADV);			\
++		hci_dev_clear_flag(hdev, HCI_LL_RPA_RESOLUTION);	\
++		hci_dev_clear_flag(hdev, HCI_PERIODIC_INQ);		\
++		hci_dev_clear_flag_quality_report(HCI_QUALITY_REPORT)	\
+ 	} while (0)
+ 
+ /* ----- HCI interface to upper protocols ----- */
+diff --git a/net/bluetooth/Kconfig b/net/bluetooth/Kconfig
+index e0ab4cd7afc3..d63c3cdf2d6f 100644
+--- a/net/bluetooth/Kconfig
++++ b/net/bluetooth/Kconfig
+@@ -148,4 +148,15 @@ config BT_FEATURE_DEBUG
+ 	  This provides an option to enable/disable debugging statements
+ 	  at runtime via the experimental features interface.
+ 
++config BT_FEATURE_QUALITY_REPORT
++	bool "Runtime option for logging controller quality report events"
++	depends on BT
++	default n
++	help
++	  This provides an option to enable/disable controller quality report
++	  events logging at runtime via the experimental features interface.
++	  The quality report events may include the categories of system
++	  exceptions, connections/disconnection, the link quality statistics,
++	  etc.
++
+ source "drivers/bluetooth/Kconfig"
+diff --git a/net/bluetooth/mgmt.c b/net/bluetooth/mgmt.c
+index d1bf5a55ff85..0de089524d74 100644
+--- a/net/bluetooth/mgmt.c
++++ b/net/bluetooth/mgmt.c
+@@ -3791,6 +3791,14 @@ static const u8 debug_uuid[16] = {
+ };
  #endif
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 4c3b26c5e507..a3d5c520b55e 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -2903,6 +2903,11 @@ static int btusb_setup_intel_new(struct hci_dev *hdev)
- 		btintel_load_ddc_config(hdev, ddcname);
+ 
++#ifdef CONFIG_BT_FEATURE_QUALITY_REPORT
++/* 330859bc-7506-492d-9370-9a6f0614037f */
++static const u8 quality_report_uuid[16] = {
++	0x7f, 0x03, 0x14, 0x06, 0x6f, 0x9a, 0x70, 0x93,
++	0x2d, 0x49, 0x06, 0x75, 0xbc, 0x59, 0x08, 0x33,
++};
++#endif
++
+ /* 671b10b5-42c0-4696-9227-eb28d1b049d6 */
+ static const u8 simult_central_periph_uuid[16] = {
+ 	0xd6, 0x49, 0xb0, 0xd1, 0x28, 0xeb, 0x27, 0x92,
+@@ -3806,7 +3814,7 @@ static const u8 rpa_resolution_uuid[16] = {
+ static int read_exp_features_info(struct sock *sk, struct hci_dev *hdev,
+ 				  void *data, u16 data_len)
+ {
+-	char buf[62];	/* Enough space for 3 features */
++	char buf[82];   /* Enough space for 4 features: 2 + 20 * 4 */
+ 	struct mgmt_rp_read_exp_features_info *rp = (void *)buf;
+ 	u16 idx = 0;
+ 	u32 flags;
+@@ -3850,6 +3858,26 @@ static int read_exp_features_info(struct sock *sk, struct hci_dev *hdev,
+ 		idx++;
  	}
  
 +#ifdef CONFIG_BT_FEATURE_QUALITY_REPORT
-+	hci_dev_clear_flag(hdev, HCI_QUALITY_REPORT);
-+	bt_dev_dbg(hdev, "HCI_QUALITY_REPORT cleared");
++	if (hdev) {
++		if (hdev->set_quality_report) {
++			/* BIT(0): indicating if set_quality_report is
++			 * supported by controller.
++			 */
++			flags = BIT(0);
++
++			/* BIT(1): indicating if the feature is enabled. */
++			if (hci_dev_test_flag(hdev, HCI_QUALITY_REPORT))
++				flags |= BIT(1);
++		} else {
++			flags = 0;
++		}
++		memcpy(rp->features[idx].uuid, quality_report_uuid, 16);
++		rp->features[idx].flags = cpu_to_le32(flags);
++		idx++;
++	}
 +#endif
 +
- 	/* Read the Intel version information after loading the FW  */
- 	err = btintel_read_version(hdev, &ver);
- 	if (err)
-@@ -2990,6 +2995,11 @@ static int btusb_setup_intel_newgen(struct hci_dev *hdev)
- 	 */
- 	btintel_load_ddc_config(hdev, ddcname);
+ 	rp->feature_count = cpu_to_le16(idx);
+ 
+ 	/* After reading the experimental features information, enable
+@@ -3892,6 +3920,23 @@ static int exp_debug_feature_changed(bool enabled, struct sock *skip)
+ }
+ #endif
  
 +#ifdef CONFIG_BT_FEATURE_QUALITY_REPORT
-+	hci_dev_clear_flag(hdev, HCI_QUALITY_REPORT);
-+	bt_dev_dbg(hdev, "HCI_QUALITY_REPORT cleared");
++static int exp_quality_report_feature_changed(bool enabled, struct sock *skip)
++{
++	struct mgmt_ev_exp_feature_changed ev;
++
++	BT_INFO("enabled %d", enabled);
++
++	memset(&ev, 0, sizeof(ev));
++	memcpy(ev.uuid, quality_report_uuid, 16);
++	ev.flags = cpu_to_le32(enabled ? BIT(0) : 0);
++
++	return mgmt_limited_event(MGMT_EV_EXP_FEATURE_CHANGED, NULL,
++				  &ev, sizeof(ev),
++				  HCI_MGMT_EXP_FEATURE_EVENTS, skip);
++}
 +#endif
 +
- 	/* Read the Intel version information after loading the FW  */
- 	err = btintel_read_version_tlv(hdev, &version);
- 	if (err)
-@@ -4637,6 +4647,9 @@ static int btusb_probe(struct usb_interface *intf,
- 		hdev->set_diag = btintel_set_diag;
- 		hdev->set_bdaddr = btintel_set_bdaddr;
- 		hdev->cmd_timeout = btusb_intel_cmd_timeout;
+ static int set_exp_feature(struct sock *sk, struct hci_dev *hdev,
+ 			   void *data, u16 data_len)
+ {
+@@ -4038,6 +4083,77 @@ static int set_exp_feature(struct sock *sk, struct hci_dev *hdev,
+ 		return err;
+ 	}
+ 
 +#ifdef CONFIG_BT_FEATURE_QUALITY_REPORT
-+		hdev->set_quality_report = btintel_set_quality_report;
++	if (!memcmp(cp->uuid, quality_report_uuid, 16)) {
++		bool val, changed;
++		int err;
++
++		/* Command requires to use a valid controller index */
++		if (!hdev)
++			return mgmt_cmd_status(sk, MGMT_INDEX_NONE,
++					       MGMT_OP_SET_EXP_FEATURE,
++					       MGMT_STATUS_INVALID_INDEX);
++
++		/* Parameters are limited to a single octet */
++		if (data_len != MGMT_SET_EXP_FEATURE_SIZE + 1)
++			return mgmt_cmd_status(sk, hdev->id,
++					       MGMT_OP_SET_EXP_FEATURE,
++					       MGMT_STATUS_INVALID_PARAMS);
++
++		/* Only boolean on/off is supported */
++		if (cp->param[0] != 0x00 && cp->param[0] != 0x01)
++			return mgmt_cmd_status(sk, hdev->id,
++					       MGMT_OP_SET_EXP_FEATURE,
++					       MGMT_STATUS_INVALID_PARAMS);
++
++		hci_req_sync_lock(hdev);
++
++		val = !!cp->param[0];
++		changed = (val != hci_dev_test_flag(hdev, HCI_QUALITY_REPORT));
++
++		if (!hdev->set_quality_report) {
++			BT_INFO("quality report not supported");
++			err = mgmt_cmd_status(sk, hdev->id,
++					      MGMT_OP_SET_EXP_FEATURE,
++					      MGMT_STATUS_NOT_SUPPORTED);
++			goto unlock_quality_report;
++		}
++
++		if (changed) {
++			err = hdev->set_quality_report(hdev, val);
++			if (err) {
++				BT_ERR("set_quality_report value %d err %d",
++				       val, err);
++				err = mgmt_cmd_status(sk, hdev->id,
++						      MGMT_OP_SET_EXP_FEATURE,
++						      MGMT_STATUS_FAILED);
++				goto unlock_quality_report;
++			}
++			if (val)
++				hci_dev_set_flag(hdev, HCI_QUALITY_REPORT);
++			else
++				hci_dev_clear_flag(hdev, HCI_QUALITY_REPORT);
++		}
++
++		BT_INFO("quality report enable %d changed %d",
++			val, changed);
++
++		memcpy(rp.uuid, quality_report_uuid, 16);
++		rp.flags = cpu_to_le32(val ? BIT(0) : 0);
++		hci_sock_set_flag(sk, HCI_MGMT_EXP_FEATURE_EVENTS);
++		err = mgmt_cmd_complete(sk, hdev->id,
++					MGMT_OP_SET_EXP_FEATURE, 0,
++					&rp, sizeof(rp));
++
++		if (changed)
++			exp_quality_report_feature_changed(val, sk);
++
++unlock_quality_report:
++		hci_req_sync_unlock(hdev);
++		return err;
++	}
 +#endif
- 		set_bit(HCI_QUIRK_STRICT_DUPLICATE_FILTER, &hdev->quirks);
- 		set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
- 		set_bit(HCI_QUIRK_NON_PERSISTENT_DIAG, &hdev->quirks);
-@@ -4651,6 +4664,9 @@ static int btusb_probe(struct usb_interface *intf,
- 		hdev->set_diag = btintel_set_diag;
- 		hdev->set_bdaddr = btintel_set_bdaddr;
- 		hdev->cmd_timeout = btusb_intel_cmd_timeout;
-+#ifdef CONFIG_BT_FEATURE_QUALITY_REPORT
-+		hdev->set_quality_report = btintel_set_quality_report;
-+#endif
- 		set_bit(HCI_QUIRK_STRICT_DUPLICATE_FILTER, &hdev->quirks);
- 		set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
- 		set_bit(HCI_QUIRK_NON_PERSISTENT_DIAG, &hdev->quirks);
++
+ 	return mgmt_cmd_status(sk, hdev ? hdev->id : MGMT_INDEX_NONE,
+ 			       MGMT_OP_SET_EXP_FEATURE,
+ 			       MGMT_STATUS_NOT_SUPPORTED);
 -- 
 2.32.0.288.g62a8d224e6-goog
 
