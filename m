@@ -2,339 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9DA3AC0E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 04:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660FD3AC0E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 04:42:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbhFRCkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 22:40:22 -0400
-Received: from mga03.intel.com ([134.134.136.65]:24192 "EHLO mga03.intel.com"
+        id S230377AbhFRCoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 22:44:16 -0400
+Received: from ozlabs.org ([203.11.71.1]:49587 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229816AbhFRCkV (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 22:40:21 -0400
-IronPort-SDR: jDwvwItnM3g9RXPyVRS+pWyvWxRnFAI4QgDYhHKCiWyjmXN0jxAbootWNAyQpFLxkK+BNjny/F
- RN2BBiOipP2A==
-X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="206523004"
-X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
-   d="scan'208";a="206523004"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 19:38:12 -0700
-IronPort-SDR: +BdwjqGqM7TePysKzbmfvrSpayLh8KUvxmBFBIlcmOIP8wiyEyi3V+MibeXlXvtbLs8QNyFImg
- saEWOxQKs+6Q==
-X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
-   d="scan'208";a="485525809"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.147]) ([10.238.4.147])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 19:38:10 -0700
-Subject: Re: [PATCH] perf tools: Enable on a list of CPUs for hybrid
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-References: <20210617070026.14475-1-yao.jin@linux.intel.com>
- <YMtcVkEyb8h/dzCb@kernel.org>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <d6b39508-04c8-85f1-c327-64d49685433a@linux.intel.com>
-Date:   Fri, 18 Jun 2021 10:38:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229683AbhFRCoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 22:44:14 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G5jqw1x60z9s5R;
+        Fri, 18 Jun 2021 12:42:04 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623984124;
+        bh=GgqDsKw0S+0cxozB49BeJV0Ozs/cAxEnN9s2flGBzEU=;
+        h=Date:From:Cc:Subject:From;
+        b=cFZbpv6CG229aIQmrx/+6uXtDR7cKmfAD1hFveRwbHkQw3mX4uD/U0x3nYL9ZPTfF
+         yy1w3i2SFTynb6AcuRtE2Ng5YwMN6X6Hg6jrFjhmdigmpst/dQ9AuYwMnfGRPzL+BY
+         WGn3Ytel9exQ0vvScPCceISSpogbLOvXTWe5lrwyeySMtIVXpodEdFL5SSGxVjDPTW
+         EFvEzX6UPwfSMQ7Meky6gd6KG4/lxbOiC0Dko7cRBpG1nEYZMq71dfwsYA59iDfKos
+         OsinimefQBkIHTz0nbp6eKRyNxLNJM65vR8M8AcPNH7cT9lC45h3g/SNLwVBs/pK1o
+         S2rRY+RCZBeCQ==
+Date:   Fri, 18 Jun 2021 12:42:03 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the drm-msm tree
+Message-ID: <20210618124203.14b57bef@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <YMtcVkEyb8h/dzCb@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/GprlEwAh4SNpIjpgvvJro/i";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
+--Sig_/GprlEwAh4SNpIjpgvvJro/i
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 6/17/2021 10:29 PM, Arnaldo Carvalho de Melo wrote:
-> Em Thu, Jun 17, 2021 at 03:00:26PM +0800, Jin Yao escreveu:
->> The perf-record and perf-stat have supported the option '-C/--cpus'
->> to count or collect only on the list of CPUs provided. This option
->> needs to be supported for hybrid as well.
->>
->> For hybrid support, it needs to check that the CPUs are available on
->> hybrid PMU. On AlderLake, for example, 'cpu_core' has CPU0-CPU15,
->> and 'cpu_atom' has CPU16-CPU23.
->>
->> Before:
->>
->>    # perf stat -e cpu_core/cycles/ -C16 true
->>
->>     Performance counter stats for 'CPU(s) 16':
->>
->>       <not supported>      cpu_core/cycles/
->>
->> The perf-stat silently returned "<not supported>" without any helpful
->> information. It should error out that CPU16 was not available on
->> 'cpu_core'.
->>
->> After:
->>
->>    # perf stat -e cpu_core/cycles/ -C16 true
->>    'cpu_core' doesn't have cpu 16
->>    failed to use cpu list 16
-> 
-> The above is sensible, as the user specified a specific CPU type
-> (cpu_core) and asked for a CPU list that is of another type (cpu_atom).
-> Perhaps the message can be improved a bit by checking if the CPU list
-> specified is valid for the other cpu type (cpu_atom) and print:
-> 
->     # perf stat -e cpu_core/cycles/ -C16 true
->     CPU 16 isn't a 'cpu_core', please use 'cpu_atom/cycles/' or use a CPU list in the 'cpu_core' range (0-15).
->     failed to use cpu list 16
->   
+Hi all,
 
-Can we just print the message such as:
+After merging the etnaviv tree, today's linux-next build (arm
+multi_v7_defconfig) failed like this:
 
-"CPU 16 isn't a 'cpu_core', please use a CPU list in the 'cpu_core' range (0-15)".
+ERROR: modpost: "__aeabi_ldivmod" [drivers/gpu/drm/msm/msm.ko] undefined!
+ERROR: modpost: "__aeabi_uldivmod" [drivers/gpu/drm/msm/msm.ko] undefined!
 
-The user specified the 'cpu_core', so he might only want to enable the event on 'cpu_core'. Maybe we 
-directly return the cpulist in 'cpu_core' range is more straightfoward.
+I don't know which commit in the drm-msm tree caused the failure, but
+it is probably in the range 558d4272b60f..7e0230fd096c.
 
->> It also supports to count only on a given CPU.
->   
->>    # perf stat -e cpu_core/cycles/ -C15 -vv true
-> 
-> Humm, what if I want to count events on some cpu_core CPUs plus on some
-> cpu_atom ones?
-> 
-> I.e. if I do:
-> 
-> 	perf stat -e cycles -C16
-> 
+I have used the drm-msm tree from next-20210617 for today.
 
-If only with this patch, it would be failed.
+--=20
+Cheers,
+Stephen Rothwell
 
-# perf stat -e cycles -C 2 -- sleep 1
-'cpu_atom' doesn't have cpu 2
-failed to use cpu list 2
+--Sig_/GprlEwAh4SNpIjpgvvJro/i
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-CPU2 is 'cpu_core', so errors out.
+-----BEGIN PGP SIGNATURE-----
 
-> probably it should map to cpu_atom/cycles/, right? And if I do:
->
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDMB/sACgkQAVBC80lX
+0Gwyfgf/aOp9GrLYmjYs6FbVNvNWEgWWFwlmIDvAH8hcT9dA1YWg9u+N7p17CdV/
+M0FjkT/X2BUtarePiBKv5yXq4cQdpNuffOMyaaxoFvlUATKWAaa9RiI5rq9v21dg
+Tzct1K00MrhUlAfAKoVg2X24dw/NpBQd9UdCqHpDcfFuM/HZ4yRmpRuJqtke3D42
+urno7SThP/+dZftzdL1OyF9EwEp5Q/bCd9ShlMIXiNH1H8Lc8NQuL+E+J9qsWCXm
+F+3B1CLWuhBTxHd+mz4KextI14VD/eK/Ckt6I2VK8dDm68jvCeF/Ph81lDCYOLcA
+dCtVvNs3yN+FqAA5k8Wvh7pPn4/nqg==
+=ryza
+-----END PGP SIGNATURE-----
 
-Yes, if we can map to cpu_atom/cycles/, that's better.
-
-> 	perf stat -e cycles -C15,16
-> 
-> This should map to cpu_core/cycles/ on CPU 15 and to cpu_atom/cycles/ on
-> CPU 16?
-> 
-
-Ditto, if we can map, that's better.
-
-> Or perhaps we should make the CPU list a evsel term? I.e.:
-> 
-> 	perf stat -e cpu_core/cycles,cpus=15/,cpu_atom/cycles,cpus=16/
->
-
-Introducing a new term 'cpus' is a more flexible solution. I like it! :)
-
-> Or perhaps both?
-> 
-
-Let me improve this patch to v2 for soltuion #1 and a follow up patch for solution #2. Is that OK?
-
-Thanks
-Jin Yao
-
-> - Arnaldo
-> 
->   
->>    ------------------------------------------------------------
->>    perf_event_attr:
->>      size                             128
->>      config                           0x400000000
->>      sample_type                      IDENTIFIER
->>      read_format                      TOTAL_TIME_ENABLED|TOTAL_TIME_RUNNING
->>      disabled                         1
->>      inherit                          1
->>      exclude_guest                    1
->>    ------------------------------------------------------------
->>    sys_perf_event_open: pid -1  cpu 15  group_fd -1  flags 0x8 = 3
->>    cycles: 0: 103287 569776 569776
->>    cycles: 103287 569776 569776
->>
->>     Performance counter stats for 'CPU(s) 15':
->>
->>               103,287      cpu_core/cycles/
->>
->>           0.000566813 seconds time elapsed
->>
->> Collect the counts of 'cycles' on CPU15 (CPU15 is in 'cpu_core').
->>
->> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
->> ---
->>   tools/perf/builtin-record.c     |  6 +++++
->>   tools/perf/builtin-stat.c       |  5 ++++
->>   tools/perf/util/evlist-hybrid.c | 43 +++++++++++++++++++++++++++++++++
->>   tools/perf/util/evlist-hybrid.h |  1 +
->>   tools/perf/util/evlist.c        |  1 +
->>   tools/perf/util/pmu.c           | 23 ++++++++++++++++++
->>   tools/perf/util/pmu.h           |  3 +++
->>   7 files changed, 82 insertions(+)
->>
->> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
->> index bc3dd379eb67..bd39d4260549 100644
->> --- a/tools/perf/builtin-record.c
->> +++ b/tools/perf/builtin-record.c
->> @@ -2877,6 +2877,12 @@ int cmd_record(int argc, const char **argv)
->>   	/* Enable ignoring missing threads when -u/-p option is defined. */
->>   	rec->opts.ignore_missing_thread = rec->opts.target.uid != UINT_MAX || rec->opts.target.pid;
->>   
->> +	if (evlist__use_cpu_list(rec->evlist, rec->opts.target.cpu_list)) {
->> +		pr_err("failed to use cpu list %s\n",
->> +		       rec->opts.target.cpu_list);
->> +		goto out;
->> +	}
->> +
->>   	err = -ENOMEM;
->>   	if (evlist__create_maps(rec->evlist, &rec->opts.target) < 0)
->>   		usage_with_options(record_usage, record_options);
->> diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
->> index f9f74a514315..9c27c90d069f 100644
->> --- a/tools/perf/builtin-stat.c
->> +++ b/tools/perf/builtin-stat.c
->> @@ -2427,6 +2427,11 @@ int cmd_stat(int argc, const char **argv)
->>   	if ((stat_config.aggr_mode == AGGR_THREAD) && (target.system_wide))
->>   		target.per_thread = true;
->>   
->> +	if (evlist__use_cpu_list(evsel_list, target.cpu_list)) {
->> +		pr_err("failed to use cpu list %s\n", target.cpu_list);
->> +		goto out;
->> +	}
->> +
->>   	if (evlist__create_maps(evsel_list, &target) < 0) {
->>   		if (target__has_task(&target)) {
->>   			pr_err("Problems finding threads of monitor\n");
->> diff --git a/tools/perf/util/evlist-hybrid.c b/tools/perf/util/evlist-hybrid.c
->> index db3f5fbdebe1..e8fdd98aed3f 100644
->> --- a/tools/perf/util/evlist-hybrid.c
->> +++ b/tools/perf/util/evlist-hybrid.c
->> @@ -86,3 +86,46 @@ bool evlist__has_hybrid(struct evlist *evlist)
->>   
->>   	return false;
->>   }
->> +
->> +int evlist__use_cpu_list(struct evlist *evlist, const char *cpu_list)
->> +{
->> +	struct perf_cpu_map *cpus;
->> +	struct evsel *evsel;
->> +	struct perf_pmu *pmu;
->> +	int ret;
->> +
->> +	if (!perf_pmu__has_hybrid() || !cpu_list)
->> +		return 0;
->> +
->> +	cpus = perf_cpu_map__new(cpu_list);
->> +	if (!cpus)
->> +		return -1;
->> +
->> +	evlist__for_each_entry(evlist, evsel) {
->> +		bool exact_match;
->> +
->> +		pmu = perf_pmu__find_hybrid_pmu(evsel->pmu_name);
->> +		if (!pmu)
->> +			continue;
->> +
->> +		if (!perf_pmu__cpus_matched(pmu, cpus, &exact_match)) {
->> +			ret = -1;
->> +			goto out;
->> +		}
->> +
->> +		if (!exact_match) {
->> +			/*
->> +			 * Use the cpus in cpu_list.
->> +			 */
->> +			perf_cpu_map__put(evsel->core.cpus);
->> +			perf_cpu_map__put(evsel->core.own_cpus);
->> +			evsel->core.cpus = perf_cpu_map__get(cpus);
->> +			evsel->core.own_cpus = perf_cpu_map__get(cpus);
->> +		}
->> +	}
->> +
->> +	ret = 0;
->> +out:
->> +	perf_cpu_map__put(cpus);
->> +	return ret;
->> +}
->> diff --git a/tools/perf/util/evlist-hybrid.h b/tools/perf/util/evlist-hybrid.h
->> index 19f74b4c340a..f33a4e8443a1 100644
->> --- a/tools/perf/util/evlist-hybrid.h
->> +++ b/tools/perf/util/evlist-hybrid.h
->> @@ -10,5 +10,6 @@
->>   int evlist__add_default_hybrid(struct evlist *evlist, bool precise);
->>   void evlist__warn_hybrid_group(struct evlist *evlist);
->>   bool evlist__has_hybrid(struct evlist *evlist);
->> +int evlist__use_cpu_list(struct evlist *evlist, const char *cpu_list);
->>   
->>   #endif /* __PERF_EVLIST_HYBRID_H */
->> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
->> index 6ba9664089bd..e8a0f95f7f47 100644
->> --- a/tools/perf/util/evlist.c
->> +++ b/tools/perf/util/evlist.c
->> @@ -27,6 +27,7 @@
->>   #include "util/perf_api_probe.h"
->>   #include "util/evsel_fprintf.h"
->>   #include "util/evlist-hybrid.h"
->> +#include "util/pmu.h"
->>   #include <signal.h>
->>   #include <unistd.h>
->>   #include <sched.h>
->> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
->> index 88c8ecdc60b0..0e3a19a6736d 100644
->> --- a/tools/perf/util/pmu.c
->> +++ b/tools/perf/util/pmu.c
->> @@ -1872,3 +1872,26 @@ bool perf_pmu__has_hybrid(void)
->>   
->>   	return !list_empty(&perf_pmu__hybrid_pmus);
->>   }
->> +
->> +bool perf_pmu__cpus_matched(struct perf_pmu *pmu, struct perf_cpu_map *cpus,
->> +			    bool *exact_match)
->> +{
->> +	struct perf_cpu_map *pmu_cpus = pmu->cpus;
->> +	int cpu;
->> +
->> +	*exact_match = false;
->> +
->> +	for (int i = 0; i < cpus->nr; i++) {
->> +		cpu = perf_cpu_map__idx(pmu_cpus, cpus->map[i]);
->> +		if (cpu == -1) {
->> +			pr_err("'%s' doesn't have cpu %d\n",
->> +			       pmu->name, cpus->map[i]);
->> +			return false;
->> +		}
->> +	}
->> +
->> +	if (cpus->nr == pmu_cpus->nr)
->> +		*exact_match = true;
->> +
->> +	return true;
->> +}
->> diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
->> index a790ef758171..1cca48e02b5d 100644
->> --- a/tools/perf/util/pmu.h
->> +++ b/tools/perf/util/pmu.h
->> @@ -11,6 +11,7 @@
->>   #include "pmu-events/pmu-events.h"
->>   
->>   struct evsel_config_term;
->> +struct perf_cpu_map;
->>   
->>   enum {
->>   	PERF_PMU_FORMAT_VALUE_CONFIG,
->> @@ -133,5 +134,7 @@ void perf_pmu__warn_invalid_config(struct perf_pmu *pmu, __u64 config,
->>   				   char *name);
->>   
->>   bool perf_pmu__has_hybrid(void);
->> +bool perf_pmu__cpus_matched(struct perf_pmu *pmu, struct perf_cpu_map *cpus,
->> +			    bool *exact_match);
->>   
->>   #endif /* __PMU_H */
->> -- 
->> 2.17.1
->>
-> 
+--Sig_/GprlEwAh4SNpIjpgvvJro/i--
