@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04EBB3ACE14
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEFB13ACE15
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234799AbhFRO6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:58:16 -0400
-Received: from pv50p00im-ztdg10021101.me.com ([17.58.6.44]:54030 "EHLO
+        id S234717AbhFRO6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 10:58:20 -0400
+Received: from pv50p00im-ztdg10021101.me.com ([17.58.6.44]:54336 "EHLO
         pv50p00im-ztdg10021101.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234808AbhFRO6N (ORCPT
+        by vger.kernel.org with ESMTP id S234805AbhFRO6R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:58:13 -0400
+        Fri, 18 Jun 2021 10:58:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1624028163; bh=yJ2wc/yTA/kKyoo3dm7VmVcGUb+nPCIAk5AwTpaqjN4=;
+        t=1624028167; bh=0O3l7oGjkhbOmiexAlPi5k5xB5f/6DpbDCfWzs5crZI=;
         h=From:To:Subject:Date:Message-Id:MIME-Version;
-        b=E1dsB+0oS6yvDKSGweQIjnkjrjcWTYsT8WpBrvni5R2X3DLsHbFVIv2BT/8sjZ8Qj
-         jTLMNwYjB6MJfYIVCGNwFctBnjh/DO8pnbmhjgYfcG1TVU0IGS9WalU106NgE2O1sv
-         pFOdhVBo9ewScmazCnYxiuXPWB3teHb62Bss7qdYmZOgyFSsQQSpu+E8G6srhiWjDq
-         fiwT1VxTH3yvGQLw7JhKhXNVUzj/NuQdFbaodFw6J4glt31wn4pkDcdgnIENMHR3j3
-         vn0WKPAW7oDn85gPQMg8PZykqp48DbZ2StOMc0qux8jQ5v5jkCZL3cQcxYH1PZIoZ/
-         RJYJb61C9N7Iw==
+        b=jaT5Thp4tLcysIuPd5D8En03QdSz2PaczKtsQkGxKOkWp/EPg5FmvuE3E9S9FMvyk
+         9pQWsNop+ZkdjdZYKgh/IK/gPwj1BOmWniIqPIKdJUMULzJz8MEXVX1dmUeSABHlhH
+         w0WY9iyoGwZaxAHp05Gk/no2alFab57I84N68O6b9gtU8RTPw6dFPa+Q9KGBK1xgwD
+         BIoQ3m9PlVsMNObcbcKe9U7RwWlPVJQj3zoHrLnXrYT9ndO5aCFEiQYHW8/8CSmHWb
+         Cka1yw0whtJbmTVcGfogI7/dLPVEDocDD9vfUK4NeUUXb9sRfyctE9b8ouNkUq+Yq+
+         tCPX8b5bt7DkA==
 Received: from xiongwei.. (unknown [120.245.2.120])
-        by pv50p00im-ztdg10021101.me.com (Postfix) with ESMTPSA id A889E1801B2;
-        Fri, 18 Jun 2021 14:56:00 +0000 (UTC)
+        by pv50p00im-ztdg10021101.me.com (Postfix) with ESMTPSA id 57F6F1803AF;
+        Fri, 18 Jun 2021 14:56:04 +0000 (UTC)
 From:   Xiongwei Song <sxwjean@me.com>
 To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
         longman@redhat.com, boqun.feng@gmail.com
 Cc:     linux-kernel@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
-Subject: [PATCH v2 2/3] locking/lockdep: Unlikely conditons about BFS_RMATCH
-Date:   Fri, 18 Jun 2021 22:55:33 +0800
-Message-Id: <20210618145534.438816-3-sxwjean@me.com>
+Subject: [PATCH v2 3/3] locking/lockdep: Print possible warning after counting deps
+Date:   Fri, 18 Jun 2021 22:55:34 +0800
+Message-Id: <20210618145534.438816-4-sxwjean@me.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210618145534.438816-1-sxwjean@me.com>
 References: <20210618145534.438816-1-sxwjean@me.com>
@@ -40,7 +40,7 @@ X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-06-18_07:2021-06-18,2021-06-18 signatures=0
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
  phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=791 adultscore=0 classifier=spam adjust=0 reason=mlx
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.0.1-2009150000 definitions=main-2106180088
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,36 +48,114 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Xiongwei Song <sxwjean@gmail.com>
 
-The probability that graph walk will return BFS_RMATCH is slim, so unlikey
-conditons about BFS_RMATCH can improve performance a little bit.
+The graph walk might hit error when counting dependencies. Once the
+return value is negative, print a warning to reminder users.
 
+However, lockdep_unlock() would be called twice if we call print_bfs_bug()
+directly in __lockdep_count_*_deps(), so as the suggestion from Boqun:
+"
+Here print_bfs_bug() will eventually call debug_locks_off_graph_unlock()
+to release the graph lock, and the caller (lockdep_count_fowards_deps())
+will also call graph_unlock() afterwards, and that means we unlock
+*twice* if a BFS error happens... although in that case, lockdep should
+stop working so messing up with the graph lock may not hurt anything,
+but still, I don't think we want to do that.
+
+So probably you can open-code __lockdep_count_forward_deps() into
+lockdep_count_forwards_deps(), and call print_bfs_bug() or
+graph_unlock() accordingly. The body of __lockdep_count_forward_deps()
+is really small, so I think it's OK to open-code it into its caller.
+"
+we put the code in __lockdep_count_*_deps() into lockdep_count_*_deps().
+
+Suggested-by: Waiman Long <longman@redhat.com>
+Suggested-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
 ---
- kernel/locking/lockdep.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/locking/lockdep.c | 45 +++++++++++++++++++---------------------
+ 1 file changed, 21 insertions(+), 24 deletions(-)
 
 diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index a8a66a2a9bc1..cb94097014d8 100644
+index cb94097014d8..c29453b1df50 100644
 --- a/kernel/locking/lockdep.c
 +++ b/kernel/locking/lockdep.c
-@@ -2750,7 +2750,7 @@ check_redundant(struct held_lock *src, struct held_lock *target)
- 	 */
- 	ret = check_path(target, &src_entry, hlock_equal, usage_skip, &target_entry);
+@@ -2024,55 +2024,52 @@ static bool noop_count(struct lock_list *entry, void *data)
+ 	return false;
+ }
  
--	if (ret == BFS_RMATCH)
-+	if (unlikely(ret == BFS_RMATCH))
- 		debug_atomic_inc(nr_redundant);
+-static unsigned long __lockdep_count_forward_deps(struct lock_list *this)
+-{
+-	unsigned long  count = 0;
+-	struct lock_list *target_entry;
+-
+-	__bfs_forwards(this, (void *)&count, noop_count, NULL, &target_entry);
+-
+-	return count;
+-}
+ unsigned long lockdep_count_forward_deps(struct lock_class *class)
+ {
+-	unsigned long ret, flags;
++	unsigned long count = 0, flags;
+ 	struct lock_list this;
++	struct lock_list *target_entry;
++	enum bfs_result result;
  
- 	return ret;
-@@ -2992,7 +2992,7 @@ check_prev_add(struct task_struct *curr, struct held_lock *prev,
- 	ret = check_redundant(prev, next);
- 	if (bfs_error(ret))
- 		return 0;
--	else if (ret == BFS_RMATCH)
-+	else if (unlikely(ret == BFS_RMATCH))
- 		return 2;
+ 	__bfs_init_root(&this, class);
  
- 	if (!*trace) {
+ 	raw_local_irq_save(flags);
+ 	lockdep_lock();
+-	ret = __lockdep_count_forward_deps(&this);
+-	lockdep_unlock();
+-	raw_local_irq_restore(flags);
+ 
+-	return ret;
+-}
++	result = __bfs_forwards(&this, (void *)&count, noop_count, NULL, &target_entry);
+ 
+-static unsigned long __lockdep_count_backward_deps(struct lock_list *this)
+-{
+-	unsigned long  count = 0;
+-	struct lock_list *target_entry;
++	if (bfs_error(result))
++		print_bfs_bug(result);
++	else
++		lockdep_unlock();
+ 
+-	__bfs_backwards(this, (void *)&count, noop_count, NULL, &target_entry);
++	raw_local_irq_restore(flags);
+ 
+ 	return count;
+ }
+ 
+ unsigned long lockdep_count_backward_deps(struct lock_class *class)
+ {
+-	unsigned long ret, flags;
++	unsigned long  count = 0, flags;
+ 	struct lock_list this;
++	struct lock_list *target_entry;
++	enum bfs_result result;
+ 
+ 	__bfs_init_root(&this, class);
+ 
+ 	raw_local_irq_save(flags);
+ 	lockdep_lock();
+-	ret = __lockdep_count_backward_deps(&this);
+-	lockdep_unlock();
++
++	result = __bfs_backwards(&this, (void *)&count, noop_count, NULL, &target_entry);
++
++	if (bfs_error(result))
++		print_bfs_bug(result);
++	else
++		lockdep_unlock();
++
+ 	raw_local_irq_restore(flags);
+ 
+-	return ret;
++	return count;
+ }
+ 
+ /*
 -- 
 2.30.2
 
