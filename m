@@ -2,240 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1A483ACBF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:16:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B79E53ACBED
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233592AbhFRNSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:18:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232897AbhFRNR6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:17:58 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D992FC0617A8;
-        Fri, 18 Jun 2021 06:15:48 -0700 (PDT)
-Received: from localhost.localdomain (unknown [IPv6:2a01:e0a:4cb:a870:141f:c87a:873e:7b6f])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7225A1F448CD;
-        Fri, 18 Jun 2021 14:15:46 +0100 (BST)
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-To:     hverkuil@xs4all.nl, ezequiel@collabora.com, p.zabel@pengutronix.de,
-        mchehab@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
-        andrzej.p@collabora.com, jc@kynesim.co.uk,
-        jernej.skrabec@gmail.com, nicolas@ndufresne.ca
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v3 8/8] media: hantro: Add scaling lists feature
-Date:   Fri, 18 Jun 2021 15:15:26 +0200
-Message-Id: <20210618131526.566762-9-benjamin.gaignard@collabora.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210618131526.566762-1-benjamin.gaignard@collabora.com>
-References: <20210618131526.566762-1-benjamin.gaignard@collabora.com>
+        id S233488AbhFRNSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:18:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55710 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233127AbhFRNRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 09:17:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37079613EC;
+        Fri, 18 Jun 2021 13:15:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624022145;
+        bh=+n+iHw/j953X5GMz1sQCPRm5FJcdR4ToT3OFSKdiL3k=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Ax+jEfjMCJEE89SyEn9HKAWDxXDEo6JUdgyVentdZCuUYjmA4ylMBNjD6qojpej53
+         T+IfkGlH3y1UMTtNb4QdnhiLYcs6U05Te6Ld3m1Z31Nw86cMFo3JDlpd+FB8UT3zed
+         4xLQIq6ykZM5+q5NFl/fNYcSA8fuZZGP7oZVIyzOVm0a3a5Lo2t6VxCDXdN0jgQ07k
+         JGV5jEy7PYojjhPs8DDG5Vj0DfIUorJm+mGqvFxYoj/O6GewcyGS0sK70Jnj7Jwxv6
+         cXN72yikaIO04ZvqIchqXvH/JGSU2QROQi9JdJFiElHO7Q8aZOdFQzzx15wk1ImjM9
+         8bW0g+n4+sdjg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id AAB0B40B1A; Fri, 18 Jun 2021 10:15:42 -0300 (-03)
+Date:   Fri, 18 Jun 2021 10:15:42 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Subject: Re: [PATCH] tools/perf probe: Print a hint if adding a probe fails
+Message-ID: <YMycflwgCrosgTcb@kernel.org>
+References: <20210610094442.1602714-1-naveen.n.rao@linux.vnet.ibm.com>
+ <20210610192926.6f7b606f1fefd285b3907cd5@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210610192926.6f7b606f1fefd285b3907cd5@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the bitstream embedded scaling lists allow the driver to use
-them for decode the frames.
-The scaling lists are expected to be in raster scan order (i.e. not up
-right diagonal scan order)
-Allocate the memory needed to store lists.
+Em Thu, Jun 10, 2021 at 07:29:26PM +0900, Masami Hiramatsu escreveu:
+> Hi Naveen,
+> 
+> On Thu, 10 Jun 2021 15:14:42 +0530
+> "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
+> 
+> > Adding a probe can fail in a few scenarios. perf already checks for the
+> > address in the kprobe blacklist. However, the address could still be a
+> > jump label, or have a BUG_ON(). In such cases, it isn't always evident
+> > why adding the probe failed. Add a hint so that the user knows how to
+> > proceed.
+> > 
+> 
+> Thanks for the report.
+> 
+> Since now there is <tracefs>/error_log, if you see any errors in registering
+> probe-events, perf probe should dump the error_log for the hint message.
+> Also, kprobes should return the correct different error code for each
+> errors.
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
----
- drivers/staging/media/hantro/hantro_drv.c     |  8 +--
- .../staging/media/hantro/hantro_g2_hevc_dec.c | 52 +++++++++++++++++++
- drivers/staging/media/hantro/hantro_hevc.c    | 21 ++++++++
- drivers/staging/media/hantro/hantro_hw.h      |  3 ++
- 4 files changed, 81 insertions(+), 3 deletions(-)
+Was there any followup on this? I think we should do as Masami suggests,
+Naveen, could you do it?
 
-diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-index b6373934734e..bf7ca028986d 100644
---- a/drivers/staging/media/hantro/hantro_drv.c
-+++ b/drivers/staging/media/hantro/hantro_drv.c
-@@ -281,9 +281,6 @@ static int hantro_try_ctrl(struct v4l2_ctrl *ctrl)
- 		    sps->bit_depth_luma_minus8 != 2)
- 			/* Only 8-bit or 10-bit is supported */
- 			return -EINVAL;
--		if (sps->flags & V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED)
--			/* No scaling support */
--			return -EINVAL;
- 		if (sps->bit_depth_luma_minus8 == 0 &&
- 		    hantro_is_10bit_dst_format(ctx)) {
- 			return -EINVAL;
-@@ -469,6 +466,11 @@ static const struct hantro_ctrl controls[] = {
- 		.cfg = {
- 			.id = V4L2_CID_MPEG_VIDEO_HEVC_DECODE_PARAMS,
- 		},
-+	}, {
-+		.codec = HANTRO_HEVC_DECODER,
-+		.cfg = {
-+			.id = V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX,
-+		},
- 	}, {
- 		.codec = HANTRO_HEVC_DECODER,
- 		.cfg = {
-diff --git a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-index 3a8aa2ff109c..9ea864ca5625 100644
---- a/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-+++ b/drivers/staging/media/hantro/hantro_g2_hevc_dec.c
-@@ -608,6 +608,56 @@ static void set_buffers(struct hantro_ctx *ctx)
- 	hantro_write_addr(vpu, G2_TILE_BSD, ctx->hevc_dec.tile_bsd.dma);
- }
+Thanks,
+
+- Arnaldo
  
-+static void prepare_scaling_list_buffer(struct hantro_ctx *ctx)
-+{
-+	struct hantro_dev *vpu = ctx->dev;
-+	const struct hantro_hevc_dec_ctrls *ctrls = &ctx->hevc_dec.ctrls;
-+	const struct v4l2_ctrl_hevc_scaling_matrix *sc = ctrls->scaling;
-+	const struct v4l2_ctrl_hevc_sps *sps = ctrls->sps;
-+	u8 *p = ((u8 *)ctx->hevc_dec.scaling_lists.cpu);
-+	unsigned int scaling_list_enabled;
-+	unsigned int i, j, k;
-+
-+	scaling_list_enabled = !!(sps->flags & V4L2_HEVC_SPS_FLAG_SCALING_LIST_ENABLED);
-+	hantro_reg_write(vpu, &g2_scaling_list_e, scaling_list_enabled);
-+
-+	if (!scaling_list_enabled)
-+		return;
-+
-+	for (i = 0; i < ARRAY_SIZE(sc->scaling_list_dc_coef_16x16); i++)
-+		*p++ = sc->scaling_list_dc_coef_16x16[i];
-+
-+	for (i = 0; i < ARRAY_SIZE(sc->scaling_list_dc_coef_32x32); i++)
-+		*p++ = sc->scaling_list_dc_coef_32x32[i];
-+
-+	/* 128-bit boundary */
-+	p += 8;
-+
-+	/* write scaling lists column by column */
-+
-+	for (i = 0; i < 6; i++)
-+		for (j = 0; j < 4; j++)
-+			for (k = 0; k < 4; k++)
-+				*p++ = sc->scaling_list_4x4[i][4 * k + j];
-+
-+	for (i = 0; i < 6; i++)
-+		for (j = 0; j < 8; j++)
-+			for (k = 0; k < 8; k++)
-+				*p++ = sc->scaling_list_8x8[i][8 * k + j];
-+
-+	for (i = 0; i < 6; i++)
-+		for (j = 0; j < 8; j++)
-+			for (k = 0; k < 8; k++)
-+				*p++ = sc->scaling_list_16x16[i][8 * k + j];
-+
-+	for (i = 0; i < 2; i++)
-+		for (j = 0; j < 8; j++)
-+			for (k = 0; k < 8; k++)
-+				*p++ = sc->scaling_list_32x32[i][8 * k + j];
-+
-+	hantro_write_addr(vpu, HEVC_SCALING_LIST, ctx->hevc_dec.scaling_lists.dma);
-+}
-+
- static void hantro_g2_check_idle(struct hantro_dev *vpu)
- {
- 	int i;
-@@ -668,6 +718,8 @@ int hantro_g2_hevc_dec_run(struct hantro_ctx *ctx)
- 	set_buffers(ctx);
- 	prepare_tile_info_buffer(ctx);
- 
-+	prepare_scaling_list_buffer(ctx);
-+
- 	hantro_end_prepare_run(ctx);
- 
- 	hantro_reg_write(vpu, &g2_mode, HEVC_DEC_MODE);
-diff --git a/drivers/staging/media/hantro/hantro_hevc.c b/drivers/staging/media/hantro/hantro_hevc.c
-index b646bd559ffe..ec1b86e03b83 100644
---- a/drivers/staging/media/hantro/hantro_hevc.c
-+++ b/drivers/staging/media/hantro/hantro_hevc.c
-@@ -20,6 +20,8 @@
- /* tile border coefficients of filter */
- #define VERT_SAO_RAM_SIZE 48 /* bytes per pixel */
- 
-+#define SCALING_LIST_SIZE (16 * 64)
-+
- #define MAX_TILE_COLS 20
- #define MAX_TILE_ROWS 22
- 
-@@ -294,6 +296,11 @@ int hantro_hevc_dec_prepare_run(struct hantro_ctx *ctx)
- 	if (WARN_ON(!ctrls->decode_params))
- 		return -EINVAL;
- 
-+	ctrls->scaling =
-+		hantro_get_ctrl(ctx, V4L2_CID_MPEG_VIDEO_HEVC_SCALING_MATRIX);
-+	if (WARN_ON(!ctrls->scaling))
-+		return -EINVAL;
-+
- 	ctrls->sps =
- 		hantro_get_ctrl(ctx, V4L2_CID_MPEG_VIDEO_HEVC_SPS);
- 	if (WARN_ON(!ctrls->sps))
-@@ -322,6 +329,12 @@ void hantro_hevc_dec_exit(struct hantro_ctx *ctx)
- 				  hevc_dec->tile_sizes.dma);
- 	hevc_dec->tile_sizes.cpu = NULL;
- 
-+	if (hevc_dec->scaling_lists.cpu)
-+		dma_free_coherent(vpu->dev, hevc_dec->scaling_lists.size,
-+				  hevc_dec->scaling_lists.cpu,
-+				  hevc_dec->scaling_lists.dma);
-+	hevc_dec->scaling_lists.cpu = NULL;
-+
- 	if (hevc_dec->tile_filter.cpu)
- 		dma_free_coherent(vpu->dev, hevc_dec->tile_filter.size,
- 				  hevc_dec->tile_filter.cpu,
-@@ -365,6 +378,14 @@ int hantro_hevc_dec_init(struct hantro_ctx *ctx)
- 
- 	hevc_dec->tile_sizes.size = size;
- 
-+	hevc_dec->scaling_lists.cpu = dma_alloc_coherent(vpu->dev, SCALING_LIST_SIZE,
-+							 &hevc_dec->scaling_lists.dma,
-+							 GFP_KERNEL);
-+	if (!hevc_dec->scaling_lists.cpu)
-+		return -ENOMEM;
-+
-+	hevc_dec->scaling_lists.size = SCALING_LIST_SIZE;
-+
- 	hantro_hevc_ref_init(ctx);
- 
- 	return 0;
-diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
-index 2edb890f10af..88add18b1bad 100644
---- a/drivers/staging/media/hantro/hantro_hw.h
-+++ b/drivers/staging/media/hantro/hantro_hw.h
-@@ -108,6 +108,7 @@ struct hantro_h264_dec_hw_ctx {
-  */
- struct hantro_hevc_dec_ctrls {
- 	const struct v4l2_ctrl_hevc_decode_params *decode_params;
-+	const struct v4l2_ctrl_hevc_scaling_matrix *scaling;
- 	const struct v4l2_ctrl_hevc_sps *sps;
- 	const struct v4l2_ctrl_hevc_pps *pps;
- 	u32 hevc_hdr_skip_length;
-@@ -120,6 +121,7 @@ struct hantro_hevc_dec_ctrls {
-  * @tile_sao:		Tile SAO buffer
-  * @tile_bsd:		Tile BSD control buffer
-  * @ref_bufs:		Internal reference buffers
-+ * @scaling_lists:	Scaling lists buffer
-  * @ref_bufs_poc:	Internal reference buffers picture order count
-  * @ref_bufs_used:	Bitfield of used reference buffers
-  * @ctrls:		V4L2 controls attached to a run
-@@ -131,6 +133,7 @@ struct hantro_hevc_dec_hw_ctx {
- 	struct hantro_aux_buf tile_sao;
- 	struct hantro_aux_buf tile_bsd;
- 	struct hantro_aux_buf ref_bufs[NUM_REF_PICTURES];
-+	struct hantro_aux_buf scaling_lists;
- 	int ref_bufs_poc[NUM_REF_PICTURES];
- 	u32 ref_bufs_used;
- 	struct hantro_hevc_dec_ctrls ctrls;
+> Thank you,
+> 
+> > Reported-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+> > Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+> > ---
+> >  tools/perf/builtin-probe.c | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/perf/builtin-probe.c b/tools/perf/builtin-probe.c
+> > index 6b150756677014..ff9f3fdce600dd 100644
+> > --- a/tools/perf/builtin-probe.c
+> > +++ b/tools/perf/builtin-probe.c
+> > @@ -352,8 +352,11 @@ static int perf_add_probe_events(struct perf_probe_event *pevs, int npevs)
+> >  	}
+> >  
+> >  	ret = apply_perf_probe_events(pevs, npevs);
+> > -	if (ret < 0)
+> > +	if (ret < 0) {
+> > +		pr_info("Hint: Check dmesg to understand reason for probe failure.\n"
+> > +			"      Consider probing at the next/previous instruction.\n");
+> >  		goto out_cleanup;
+> > +	}
+> >  
+> >  	for (i = k = 0; i < npevs; i++)
+> >  		k += pevs[i].ntevs;
+> > 
+> > base-commit: 0808b3d5b7514dc856178dbc509929329bbf301d
+> > -- 
+> > 2.31.1
+> > 
+> 
+> 
+> -- 
+> Masami Hiramatsu <mhiramat@kernel.org>
+
 -- 
-2.25.1
 
+- Arnaldo
