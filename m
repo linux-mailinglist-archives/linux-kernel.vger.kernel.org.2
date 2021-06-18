@@ -2,124 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 410103ACD31
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBADE3ACD33
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234320AbhFROMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:12:31 -0400
-Received: from mail-mw2nam10on2064.outbound.protection.outlook.com ([40.107.94.64]:10270
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229782AbhFROMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:12:30 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZiRHdBG/vKrB0ythYIaQEtRZAWvYatBK2kjc7dBi07TnNte7rSqKpZ3fo5yGEiqqf0tgOoOlxlNPTFUVDo7n/O71KgMD6YnsFfSeVPyNEZUFXkK05Cw6l1ihuDyU9BmzhWcJYmB2Yic8dHSm1Vvcstl+nMAujTPfB4fARj9kGNq/axNZ59/KgV0rBydC5vcSIKImiACTKMH4jm290UYUrmnnve0msYyBgHRRcfhpATcXLyK3qMBiTzEIQif5ctffJ/KKW3mh1xcbm9xwfk36GKgzxhP8D5L0pN2Ja1wcH+LskNGPFQvo2kMR3LqouCXzh/kD/Nmm1szggFlgr+WHPQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PaxOB6me61eaWDjPZhLB9qN8cVvY05RlgVopUeGYBXo=;
- b=I2TWYuFsLWIHL+fM12IrH0j+XQ9G3kQ1yKKnBIx2onvK5JKmdmALJMdmYzQAKbB/v1E2ukbLi8UDZOeCJpbCgKVM2Z9P1/558H9WtMWcb+pIlXgcs/bH7Gunudzv6wbu+GO1/b+MPgcF7pdJg448YOzS5a40aCu03U31J60kfT0lH63l+9PRsPnFYHmeVCDX14LxHX+N9sO+zuhG1LNnU2o2E7MSoLslIsQM4aWbtpdvbDjhQYFr2pryaHXVSUmOJd/Q/tAZp+mVbPs7o23acV5v/ZwXVdjMt/2P/2ZgEo0Qrb1ZHdhyl/PVPei9QtqOASURUrxtfUrEZzg4mKlK3w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PaxOB6me61eaWDjPZhLB9qN8cVvY05RlgVopUeGYBXo=;
- b=gPv8PJ+5TlTZOl0PH+u1rLFVH8AQ1jXJV03MO9EQlOIvCZFJAB1bNhFIrj4vFPauTXOV+tcRRnazL+Bi7DuwiJd1jSMlcVmJgKUjj8IUNW7C2eyxvBzf9w3Uemr6FczLjHxxLIAri3j7CQbZ6Kg+mmkz1aIPI3Mq+Ohsa0JhzHjLQG7thUcXyhXCc4ZzX9adsIm5QJzePTIB8jCpBWZXSXeBNgdHJYfPR9/7k+Aa55hfH5H0VvSWX8r2Ys5qj5e92Wlfn3w9Pbr8pnzaQCCWPIriuczfPrPxFVxrAASsAsQ/HHkHKE8jw+IIIuUTq85WIwfwq9+QGVCwqXqc0Y62Eg==
-Authentication-Results: linux.ibm.com; dkim=none (message not signed)
- header.d=none;linux.ibm.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5160.namprd12.prod.outlook.com (2603:10b6:208:311::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Fri, 18 Jun
- 2021 14:10:19 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4242.021; Fri, 18 Jun 2021
- 14:10:19 +0000
-Date:   Fri, 18 Jun 2021 11:10:18 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Jason J. Herne" <jjherne@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pasic@linux.ibm.com, akrowiak@linux.ibm.com
-Subject: Re: [PATCH] s390/vfio-ap: Fix module unload memory leak of matrix_dev
-Message-ID: <20210618141018.GE1002214@nvidia.com>
-References: <20210618133524.22386-1-jjherne@linux.ibm.com>
+        id S232959AbhFRONN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 10:13:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50550 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229782AbhFROND (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 10:13:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624025452;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ajv9GHZqwhwdqHmInEP3t514hzTn+CylcSgzTQPjYrk=;
+        b=iA8Hc/qLRoIjb91tING6MuUQ0X08zXjDSCwHeqMM/jczHB5WZJFW68HAHLBBrw4zGnZIUp
+        5TKQ8VddlNa0j/3Uq2K1Xcq6K2hLC6V4Yi5I3lfK2B8zV+lvITKe1zjXCrRbhfuwi6Z15B
+        oqxOARR/KNnSebUg55ZDX5clO6ElZz4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-589-ziznzbOoNd6RDq0QxqqqLA-1; Fri, 18 Jun 2021 10:10:45 -0400
+X-MC-Unique: ziznzbOoNd6RDq0QxqqqLA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C5E8E801B33;
+        Fri, 18 Jun 2021 14:10:43 +0000 (UTC)
+Received: from horse.redhat.com (ovpn-114-2.rdu2.redhat.com [10.10.114.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 93B3060BE5;
+        Fri, 18 Jun 2021 14:10:31 +0000 (UTC)
+Received: by horse.redhat.com (Postfix, from userid 10451)
+        id 2E22722054F; Fri, 18 Jun 2021 10:10:31 -0400 (EDT)
+Date:   Fri, 18 Jun 2021 10:10:31 -0400
+From:   Vivek Goyal <vgoyal@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, virtio-fs@redhat.com,
+        Dominique Martinet <asmadeus@codewreck.org>
+Subject: Re: [PATCH 2/2] init: allow mounting arbitrary non-blockdevice
+ filesystems as root
+Message-ID: <20210618141031.GC1234055@redhat.com>
+References: <20210617153649.1886693-1-hch@lst.de>
+ <20210617153649.1886693-3-hch@lst.de>
+ <20210617162610.GC1142820@redhat.com>
+ <20210618132038.GA13406@lst.de>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210618133524.22386-1-jjherne@linux.ibm.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL1PR13CA0186.namprd13.prod.outlook.com
- (2603:10b6:208:2be::11) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0186.namprd13.prod.outlook.com (2603:10b6:208:2be::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.7 via Frontend Transport; Fri, 18 Jun 2021 14:10:19 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1luFCM-008Xnc-CL; Fri, 18 Jun 2021 11:10:18 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 96d0580a-341c-43ba-f723-08d93262cdd2
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5160:
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5160D8785709469C910488BDC20D9@BL1PR12MB5160.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RhAn3KoIT6qLwtF4pwjvUjq2Fw5j5JfCeugtOrGDTgYTXDryUtin2QotpKPrEThGksJC4TbWwCwq4uFZDQNRBhIbuW2dc/VAdcsDDm6/6P/Y+DCCmyj57MjP+SxWcGd2mm3ESanooGQtLcxKKk59otlOPGnr08tXkRvJxZgOXJd6/T3Wq7tujIBwvV9Na+XkCM6k2LG6rQQF6jLLtyzDi6VxWQNE3OV+JLb9bM5pfwdVRdCEDlfRAUGNvPKoSayQnP0C99hn4aUKKloi2/8L2qeyPijnoGGtJgtQfve5ma4574kXgdoGBu58wZXjJYZGcTwzvYJqzTflqJmdZYIP8delhO0vqIzKK804+rMDJLuu1zkH5zPyRQerZ6pDUoZ7WnvVF1yJxUESUw2OpoyofEIXD8uW0O9Pp6y09zAhv+jUf0N3j3qrFwGOpD37X8qFBns4IOdUIfDnseNhFDa/djdlz53OoCF42SutF3ACsiSWT9PMmOsUYzwar/CS4eC5SS7i3iPmL2ibE4PoDmXCR27Nay5abDEVr02cx1XNFxNtPjhKn5CQjGB0orpibS6Cqxpw07C+1eCh9ZC6eXuL8xaQZ8tbKaAwhpkNbA58Vzw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(39860400002)(366004)(346002)(396003)(5660300002)(426003)(36756003)(83380400001)(478600001)(8676002)(6916009)(38100700002)(4326008)(66476007)(4744005)(9786002)(26005)(8936002)(66946007)(2906002)(1076003)(33656002)(2616005)(186003)(86362001)(316002)(9746002)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/BcPMO1j2ACIV/7gCAtWZXOM9xKOlN8xCBUUDMb/pLShkmbYSg1pxJt4hLAM?=
- =?us-ascii?Q?YHRZ0Ywu60USapU/276Hkx6BClLfJvbes3qwHlYXvhtiV0iWr+AZD24kyaA8?=
- =?us-ascii?Q?wLyXgw/bzdXKugaedMKNpJfAMejPaRNVhbe1Yl99aV4KY4r4gpUYKY6an0Sy?=
- =?us-ascii?Q?x2M5bMutbPDt5s497BFPgAxskFElFqmzRIjsfpWkTjeIY1uWj/fPttuGM9q/?=
- =?us-ascii?Q?3/aWF/Nv7eT82K51zUVT5fl1u5HFsr0EVCDE1MEX39EKrbZEt9VCNV7nYiK6?=
- =?us-ascii?Q?BBWDpL6Eqb8oT9M4MUrFTR9kNzT7BIfvO9DZcultR7npBxwCy3fG5g9pegsI?=
- =?us-ascii?Q?fzof81arXWImb5mEkUaWPND0GGknIXIseyKNhlQ6IPa6tgzc2d9+23XCMijS?=
- =?us-ascii?Q?D1hW2x8B9dyveYGXSIFy4x4Hy5qwi4ULYJ98SL7DT6GRoF/kgahw/epLCVSS?=
- =?us-ascii?Q?2Pnpd9znaTXLfwSyiVPvu3JhAEKsO7FzE2j0OlK5Khgtgg3X116sC4u+uo2Z?=
- =?us-ascii?Q?vJyBc6SBagi6VzQk/zb/Zmi3QCYZRnOk/OKEp30qRy0svcXH8GArEw8ZYrjq?=
- =?us-ascii?Q?ETXqEb6RoYJpafEmNn55H7kyzUSZLTUYtbjQrGik9C54UPLqcEwRB7k2zXCc?=
- =?us-ascii?Q?d7m60y+KSaCqaT3Oal8LAue+dl8JmRZ1b0Khha+bwhotWkGZj4Qd6It70Woz?=
- =?us-ascii?Q?7xT9pp6O6MZlZvKW9ifUrpMwZWetURD8ubibxWPs8OEeq4wMYjEUaLFC8b3c?=
- =?us-ascii?Q?scFDcZcQnSJlGunlriaFQU3Uvg6SGJxKFdhJp/mn/nrjQsnORoHZ4Xfh0+iM?=
- =?us-ascii?Q?vTfmleFaUD01GMPabilHdTWeSKL0assXgyzqScW+i4/h83+jF43ywM90MJWj?=
- =?us-ascii?Q?W6KidJvi2DD27c3Cmm/6sHhsRBqAlYaV0/I+rLwEmspwYJropFxPe/d21I88?=
- =?us-ascii?Q?kzoZbunQTKl3xZDnNDZ2d7AciWnmqLu81zroP+P0bezQwg0YdzDTABQfhKv8?=
- =?us-ascii?Q?zsNNQCMwF2+boD821FuwwwcxgF632m/8cF9dWUuYKhM+nJk/UiKzPm+/Yadt?=
- =?us-ascii?Q?C4KNx3QfGxPD9oZqA7s6XfTtMERrs1RnQFBqMjMSCL58PkQleifcOHJ1w0eL?=
- =?us-ascii?Q?7AGqeFCbMTBGPqjgNBggiKpf27+Os9QrMnHL9k8YCsABtWppJIeyvWiVRn5X?=
- =?us-ascii?Q?xYEuxD9pBL8UaAx5vguMT6AqHJb7EsC6fL0nn7W7Oh1+NljEVRCrXRek2cxv?=
- =?us-ascii?Q?4OvChTF7vL2VDgt2mNBZhdt0nFgvc/+L3rdjcXcTeLWJP2XC80Mri8meLfCh?=
- =?us-ascii?Q?LGEPlghUiZoz3U3YfkZWXs/D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 96d0580a-341c-43ba-f723-08d93262cdd2
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2021 14:10:19.2159
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: A3suRa9w7MF6HG6ltc5E0iaJ1MUQ6KuZ6pB8JIgbwMmIZypB1n1gTgnjEHvIEn8c
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5160
+In-Reply-To: <20210618132038.GA13406@lst.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 09:35:24AM -0400, Jason J. Herne wrote:
-> vfio_ap_matrix_dev_release is shadowing the global matrix_dev with driver
-> data that never gets set. So when release is called we end up not freeing
-> matrix_dev. The fix is to remove the shadow variable and just free the
-> global.
+On Fri, Jun 18, 2021 at 03:20:38PM +0200, Christoph Hellwig wrote:
+> On Thu, Jun 17, 2021 at 12:26:10PM -0400, Vivek Goyal wrote:
+> > Not sure what FS_BINARY_MOUNTDATA is why fs should not have that set. nfs
+> > seems to set it too. So that means they can't use try_mount_nodev().
+> 
+> We can't really pass actual binary mountdata using the string separation
+> scheme used by the rootfstype= option.  But given that NFS only uses
+> binary mountdata for legacy reasons and people get what they ask for
+> using the option I think we can drop the check.
+> 
+> > In case of success err == 0, but we still panic(). We will need to
+> > check for success as well.
+> 
+> Indeed.
+> 
+> > root_fs_names can be NULL and it crashes with NULL pointer dereference.
+> 
+> True.
+> 
+> What do you think of this version?
 
-I would clarify this commit message to say that the drv_data of the
-matrix_dev is never set and so dev_get_drvdata() always returns NULL
+[ Cc Dominique Martinet ]
 
-And I would suggest to use 
+Hi Christoph,
 
-  container_of(dev, struct ap_matrix_dev, dev)
+This one works well for me. Just one minor nit. root_device_name, can
+be NULL as well if user passes following.
 
-instead of the global variable, and probably NULL the global
-too..
+"rootfstype=virtiofs rw".
 
-Jason
+And currently mount_nodev_root() is assuming root_device_name is not NULL
+and we crash with null pointer dereference.
+
+May be something like this.
+
+        if (ROOT_DEV == 0 && root_device_name && root_fs_names) {
+                if (mount_nodev_root() == 0)
+                        return;
+        }
+
+Strangely people are using "rootfstype=virtiofs rw" to mount virtiofs
+as rootfs. They give their filesystem a tag named "/dev/root". And
+currently it works and they can mount virtiofs as rootfs.
+
+With above change, current hackish way will also continue to work and
+not break existing setups.
+
+Thanks
+Vivek
+
+> 
+> ---
+> From 141caa79a619b5f5d100eeb8e94ecf8b3b1c9af7 Mon Sep 17 00:00:00 2001
+> From: Christoph Hellwig <hch@lst.de>
+> Date: Fri, 18 Jun 2021 15:10:39 +0200
+> Subject: init: allow mounting arbitrary non-blockdevice filesystems as root
+> 
+> Currently the only non-blockdevice filesystems that can be used as the
+> initial root filesystem are NFS and CIFS, which use the magic
+> "root=/dev/nfs" and "root=/dev/cifs" syntax that requires the root
+> device file system details to come from filesystem specific kernel
+> command line options.
+> 
+> Add a little bit of new code that allows to just pass arbitrary
+> string mount options to any non-blockdevice filesystems so that it can
+> be mounted as the root file system.
+> 
+> For example a virtiofs root file system can be mounted using the
+> following syntax:
+> 
+> "root=myfs rootfstype=virtiofs rw"
+> 
+> Based on an earlier patch from Vivek Goyal <vgoyal@redhat.com>.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  init/do_mounts.c | 43 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 43 insertions(+)
+> 
+> diff --git a/init/do_mounts.c b/init/do_mounts.c
+> index ec32de3ad52b..66c47193e9ee 100644
+> --- a/init/do_mounts.c
+> +++ b/init/do_mounts.c
+> @@ -534,6 +534,45 @@ static int __init mount_cifs_root(void)
+>  }
+>  #endif
+>  
+> +static bool __init fs_is_nodev(char *fstype)
+> +{
+> +	struct file_system_type *fs = get_fs_type(fstype);
+> +	bool ret = false;
+> +
+> +	if (fs) {
+> +		ret = !(fs->fs_flags & FS_REQUIRES_DEV);
+> +		put_filesystem(fs);
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int __init mount_nodev_root(void)
+> +{
+> +	char *fs_names, *fstype;
+> +	int err = -EINVAL;
+> +
+> +	fs_names = (void *)__get_free_page(GFP_KERNEL);
+> +	if (!fs_names)
+> +		return -EINVAL;
+> +	split_fs_names(fs_names, root_fs_names);
+> +
+> +	for (fstype = fs_names; *fstype; fstype += strlen(fstype) + 1) {
+> +		if (!fs_is_nodev(fstype))
+> +			continue;
+> +		err = do_mount_root(root_device_name, fstype, root_mountflags,
+> +				    root_mount_data);
+> +		if (!err)
+> +			break;
+> +		if (err != -EACCES && err != -EINVAL)
+> +			panic("VFS: Unable to mount root \"%s\" (%s), err=%d\n",
+> +			      root_device_name, fstype, err);
+> +	}
+> +
+> +	free_page((unsigned long)fs_names);
+> +	return err;
+> +}
+> +
+>  void __init mount_root(void)
+>  {
+>  #ifdef CONFIG_ROOT_NFS
+> @@ -550,6 +589,10 @@ void __init mount_root(void)
+>  		return;
+>  	}
+>  #endif
+> +	if (ROOT_DEV == 0 && root_fs_names) {
+> +		if (mount_nodev_root() == 0)
+> +			return;
+> +	}
+>  #ifdef CONFIG_BLOCK
+>  	{
+>  		int err = create_dev("/dev/root", ROOT_DEV);
+> -- 
+> 2.30.2
+> 
 
