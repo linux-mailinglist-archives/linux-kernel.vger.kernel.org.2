@@ -2,103 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF603AC4BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:15:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39C033AC4C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232912AbhFRHRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 03:17:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60158 "EHLO
+        id S233149AbhFRHTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 03:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230447AbhFRHRH (ORCPT
+        with ESMTP id S233092AbhFRHTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 03:17:07 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82665C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 00:14:57 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id ji1so8124027ejc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 00:14:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=E0SoMThWmExXzF5EbvKyjPfd/YPiucGrDsQng1mFduk=;
-        b=PATDK3CAWfHyAm2itpJvl9i8Z2DKKunEb8Xc4FIYyrGMvm0t+vwrqD2Z4RchiNR+tD
-         9oLeENVltFulbQjyEKgq7OKxJE0HF+NUnwcxR+Y6qu+y528s0USIBTF/kFyU2bcs5CHs
-         68MQ4zeKM8jE23yaVv9I5qRa//WUw88e0bsQaonvvgu60PfarCvrxQy1gh8YoN3rydgS
-         2woDYZSahk57Eya9hRtf13YGVl1r+ZZ0xC++6aSz1hN/D/Gc0HTG2KFqdQSIGHoMdRWs
-         iT6FHLgyUnlBXqN29R0OXk+z0VhRkX5L8hDwr05Ju3oil+1VdFIMFuvFnp8O+sGjsUHn
-         7lqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=E0SoMThWmExXzF5EbvKyjPfd/YPiucGrDsQng1mFduk=;
-        b=cs8RZV+EXm38mBz8evWKw0L95YUj+PiHn1724XQmAPuydbL9swQur6VsXrWho9UHeD
-         HK47DzcLmo7t15mkn+h+s+9wkFVrAKJm6hQqurzLbx/owjLL8wvAm5QWGmdAfHPtFZG9
-         VilO347VIzxhcvM0BFQn9QGz8p6M0trNVPfOb19wM8VK2vv6uwc+NCGU4ZqH4pnUqBez
-         hhmFBji+Jnf5DF1PPkmnYcyKLdQ9m0j62p/sHarIAR6dYYKAzpX9mCe/9SmR1GrwX8Cz
-         CBNF0Qac4eqYU7KbkIR1+b2o71EIBR4jDapOMCmiTA7wwk/iT7Wt+kchCirFdE84XVPz
-         L7+g==
-X-Gm-Message-State: AOAM5326Zi3YrMJyxbAJw0hCDdR+OW4r6FpCM1/pfvppKcQos1sG7Zuv
-        C6dKdfwnn830SmU+o5b68xpfx5+vbqEPENP5VHFOuKKuQ/0pdg==
-X-Google-Smtp-Source: ABdhPJwRCq12s1+295PmMXlgcXctiEnAnFhf42DJxoB+LnuEkPGvIX8N4YXYitUsMPTVUZFDEebjwbBL3gV2x6Z2FOk=
-X-Received: by 2002:a17:907:3d94:: with SMTP id he20mr9781311ejc.9.1624000495889;
- Fri, 18 Jun 2021 00:14:55 -0700 (PDT)
+        Fri, 18 Jun 2021 03:19:38 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA9DC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 00:17:29 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lu8kk-0003gX-Sh; Fri, 18 Jun 2021 09:17:22 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:e7d0:b47e:7728:2b24])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id 66FB563EA4B;
+        Fri, 18 Jun 2021 07:15:33 +0000 (UTC)
+Date:   Fri, 18 Jun 2021 09:15:32 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Robin van der Gracht <robin@protonic.nl>,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        syzbot+bdf710cfc41c186fdff3@syzkaller.appspotmail.com,
+        kernel@pengutronix.de, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] can: j1939: j1939_sk_init(): set SOCK_RCU_FREE to
+ call sk_destruct() after RCU is done
+Message-ID: <20210618071532.kr7o2rnx6ia4t6n6@pengutronix.de>
+References: <20210617130623.12705-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-From:   Dave Airlie <airlied@gmail.com>
-Date:   Fri, 18 Jun 2021 17:14:45 +1000
-Message-ID: <CAPM=9txDgvo3Gu7bX_C9A4hAQJf+pGk+pMUR1bKg4EapEeqazQ@mail.gmail.com>
-Subject: [git pull] drm fixes for 5.13-rc7
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="accmuapjky6tul3y"
+Content-Disposition: inline
+In-Reply-To: <20210617130623.12705-1-o.rempel@pengutronix.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
 
-Not much happening in fixes land this week only one PR for two amdgpu
-powergating fixes was waiting for me, maybe something will show up
-over the weekend, maybe not.
+--accmuapjky6tul3y
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Dave.
+On 17.06.2021 15:06:23, Oleksij Rempel wrote:
+> Set SOCK_RCU_FREE to let RCU to call sk_destruct() on completion.
+> Without this patch, we will run in to j1939_can_recv() after priv was
+> freed by j1939_sk_release()->j1939_sk_sock_destruct()
+>=20
+> Reported-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+> Reported-by: syzbot+bdf710cfc41c186fdff3@syzkaller.appspotmail.com
+> Fixes: 25fe97cb7620 ("can: j1939: move j1939_priv_put() into sk_destruct =
+callback")
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-drm-fixes-2021-06-18:
-drm fixes for 5.13-rc7
+Applied to linux-can/testing.
 
-amdgpu:
-- GFX9 and 10 powergating fixes
-The following changes since commit 009c9aa5be652675a06d5211e1640e02bbb1c33d:
+Thanks,
+Marc
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
-  Linux 5.13-rc6 (2021-06-13 14:43:10 -0700)
+--accmuapjky6tul3y
+Content-Type: application/pgp-signature; name="signature.asc"
 
-are available in the Git repository at:
+-----BEGIN PGP SIGNATURE-----
 
-  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-06-18
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmDMSBIACgkQqclaivrt
+76l4EQf/eQFCAisRXL95N/VcHXQ0ZG5FhJztpGqR4PGTpK3XAvS2KaHwX2RpekDl
+ezrqPMDsLeDVTVXhUYsLOQWrtfEXrUO2nk4Rhv83jxIDZy5RjOrtziPt9damyMJM
+ZfIS5+bkInegRE8++p9nLYi1S2vuyzhhdMqe4jlRaQ8XRc7/naoOY9A/gUi7OCCR
+v7aLBehASTxI/hskP7ETX3g0/p0CFFSBnkCdOlVObwTwHRHWrrky5jdICRC+GWcq
+SF422Kfy61t0vdZ8yVkCIsuDDbqxhTRkOQo4rsSCbTaHRkqwGUC7HCHoSKO79Z6T
+O5ux1T8aOwG+c8o6o/oqbVNEZrG5YA==
+=ZtWx
+-----END PGP SIGNATURE-----
 
-for you to fetch changes up to c55338d34cc2434d4ff9de89498f91171bd1f120:
-
-  Merge tag 'amd-drm-fixes-5.13-2021-06-16' of
-https://gitlab.freedesktop.org/agd5f/linux into drm-fixes (2021-06-18
-11:15:04 +1000)
-
-----------------------------------------------------------------
-drm fixes for 5.13-rc7
-
-amdgpu:
-- GFX9 and 10 powergating fixes
-
-----------------------------------------------------------------
-Dave Airlie (1):
-      Merge tag 'amd-drm-fixes-5.13-2021-06-16' of
-https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
-
-Yifan Zhang (2):
-      drm/amdgpu/gfx9: fix the doorbell missing when in CGPG issue.
-      drm/amdgpu/gfx10: enlarge CP_MEC_DOORBELL_RANGE_UPPER to cover
-full doorbell.
-
- drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c | 6 +++++-
- drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c  | 6 +++++-
- 2 files changed, 10 insertions(+), 2 deletions(-)
+--accmuapjky6tul3y--
