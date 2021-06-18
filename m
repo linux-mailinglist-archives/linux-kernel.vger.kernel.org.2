@@ -2,104 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72DD43AC6A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4322E3AC6AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:59:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbhFRI7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 04:59:38 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:48063 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbhFRI7e (ORCPT
+        id S232442AbhFRJB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 05:01:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230076AbhFRJBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 04:59:34 -0400
-Received: from mail-ed1-f70.google.com ([209.85.208.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1luAJZ-00015d-3K
-        for linux-kernel@vger.kernel.org; Fri, 18 Jun 2021 08:57:25 +0000
-Received: by mail-ed1-f70.google.com with SMTP id cb4-20020a0564020b64b02903947455afa5so1377884edb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:57:25 -0700 (PDT)
+        Fri, 18 Jun 2021 05:01:55 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA5FAC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:59:45 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id k10-20020a056830168ab029044d922f6a45so641314otr.7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:59:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kxWq/w4pUVc8HOlAC++EsNgPCdWz4WRSzn6eNlOcpd8=;
+        b=bhaMQb0WGrbDqa+aKHcQIksSIM+zTHdcqFfPBr5BV5rr/Wi8UST4PtBaFBBmWA70/c
+         JeE4Hu4BbtwFqF0c80sjfACvvB1nesUeK9TieyU/oqhdgOex7UgfdkqRux0UxZ5/TcHT
+         DLHvuKVExIhZtgV1fPhYLr/Md+zpFpFjNVpAPjGlXCP+m9MsUwKdcLN7akLZFoz7RcTk
+         238s+sJ/BuekxpTMYI4dcJE/HjWwxIUM3JYIJt/VdYH2Zb8cmBY3gzekVcESfoAgP54o
+         bIIHlFX/dEToFLWW+5NXkS2fXPFEuRa4egZ9ULCaZiOK2z8px8znd93Nlh17ZN0KkdrP
+         Dwpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=90eZ7DdlkWMvodEOxckCvRjJunUc+CQAeE7AAVorkBo=;
-        b=KOJAg0P2xa23svQkr6ocFCYR9d0uPRp2sqSaWUTUhi4mljmmLq52TIVOol71t+PxMv
-         pS9n3shhBiv5hd8Ud29iuGMuj3PpxISVhcR/VkVrG5hpNYQLj8PETVrWWr3Co6QlTY2y
-         u0DlHIRqFs76QCQsXs7cNROwyWqZoTZo+a4Lx8evl0yKoqNmSWtdvz+gvnjcEXhUQd/7
-         eM/SBQlMQze8o89l3N3wSYm3ak179tGLkvI7/v5hXS5v7QOpc9dANGcMA0v6ajLtJwOB
-         8IEPwHg3cRxHgxppOqzRupkp3bpVasPW2sGEDYzdiKltdxE4Qgjao5FTJz1gV5YUghjW
-         I+OQ==
-X-Gm-Message-State: AOAM532P7J/Le7XLKbbKp87aSEuvKqmzZ21XaR3SWNXlFiP5OWop9AqA
-        P95U7lX6+sm1cQUs5IkU14kYUdxVHDAkYevTkeHWfMxSxumsr3adqpX9ZwOtMmSUTjw/SyuxG6K
-        W8+l2Q2dMH9eXat4Bzz9d6lWSey1Urtddtq31YqX0UQ==
-X-Received: by 2002:a17:906:9bef:: with SMTP id de47mr9635393ejc.78.1624006644473;
-        Fri, 18 Jun 2021 01:57:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxWHwb0R1Y7NCVvXM1ylqzUaMbxbRhFt2x1HrSz6JE9ym4XOR5P9tZt+dFWHoNsxRJp5m4ygw==
-X-Received: by 2002:a17:906:9bef:: with SMTP id de47mr9635385ejc.78.1624006644337;
-        Fri, 18 Jun 2021 01:57:24 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id g23sm753292ejh.116.2021.06.18.01.57.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 01:57:24 -0700 (PDT)
-Subject: Re: [PATCH 5.4 031/184] modules: inherit TAINT_PROPRIETARY_MODULE
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org, Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Christoph Hellwig <hch@lst.de>, Jessica Yu <jeyu@kernel.org>
-References: <20210510101950.200777181@linuxfoundation.org>
- <20210510101951.249384110@linuxfoundation.org>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <8edc6f45-6c42-19c7-6f40-6f1a49cc685b@canonical.com>
-Date:   Fri, 18 Jun 2021 10:57:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kxWq/w4pUVc8HOlAC++EsNgPCdWz4WRSzn6eNlOcpd8=;
+        b=D35BBlpfuihu30kDGLIIslTzw38n7mnMfYnbyfhwM5v9HZx3moiEvbBC4nLPiAH0iu
+         lQMZqEc8Q6/1flHzNTkP8cEv4quhPEgvKiypeEjUbrb/gijzvRU77aUqhcUVSb/neti6
+         s6ZgPNYWb91gz0V6BmYtfX+2YjKTF8JAHBjcocL/X0TMJkSIYUIjspUqmjTZgUCrZrlL
+         cMoYahTb5VOX3Zd+CGjbRcH9R4dhzMR6vcl7F4Wp8zV/gMqZ9gIeNQI69u1tJn6+9V8n
+         QL2DtYV0Zt2UQnlvlulVrs+rws8ta81AwIFxbJcokVDEg3F6zCTzCc0VNYST44Gas8Y6
+         DneA==
+X-Gm-Message-State: AOAM531pI501Q0brx8b1X74FKfWa+/8aD/OkaawLLttGMwR4HOaPfQ3G
+        4Iljb8fLp9zg5i0cQGUvSxUacq3V3LVbo8GVVakP1A==
+X-Google-Smtp-Source: ABdhPJwzc7DiWjyKPp58Q0od7P57f5+tDcapLIkUHFsPNVK62ZAuAwBi+XcIKklM8bb9dajJNv9sTtXhTaAbgYqG490=
+X-Received: by 2002:a05:6830:1598:: with SMTP id i24mr8497546otr.52.1624006785056;
+ Fri, 18 Jun 2021 01:59:45 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210510101951.249384110@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210617105824.31752-1-wangyanan55@huawei.com>
+ <20210617105824.31752-2-wangyanan55@huawei.com> <20210617123837.GA24457@willie-the-truck>
+ <87eed0d13p.wl-maz@kernel.org> <2c1b9376-3997-aa7b-d5f3-b04da985c260@huawei.com>
+In-Reply-To: <2c1b9376-3997-aa7b-d5f3-b04da985c260@huawei.com>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Fri, 18 Jun 2021 09:59:09 +0100
+Message-ID: <CA+EHjTyW+LP=UmwDP+egbPzpz2vxFpbOMgXi=dOt15j8wfLxWg@mail.gmail.com>
+Subject: Re: [PATCH v7 1/4] KVM: arm64: Introduce two cache maintenance callbacks
+To:     "wangyanan (Y)" <wangyanan55@huawei.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        kvm@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/05/2021 12:18, Greg Kroah-Hartman wrote:
-> From: Christoph Hellwig <hch@lst.de>
-> 
-> commit 262e6ae7081df304fc625cf368d5c2cbba2bb991 upstream.
-> 
-> If a TAINT_PROPRIETARY_MODULE exports symbol, inherit the taint flag
-> for all modules importing these symbols, and don't allow loading
-> symbols from TAINT_PROPRIETARY_MODULE modules if the module previously
-> imported gplonly symbols.  Add a anti-circumvention devices so people
-> don't accidentally get themselves into trouble this way.
-> 
-> Comment from Greg:
->   "Ah, the proven-to-be-illegal "GPL Condom" defense :)"
+Hi,
 
-Patch got in to stable, so my comments are quite late, but can someone
-explain me - how this is a stable material? What specific, real bug that
-bothers people, is being fixed here? Or maybe it fixes serious issue
-reported by a user of distribution kernel? IOW, how does this match
-stable kernel rules at all?
+On Fri, Jun 18, 2021 at 2:52 AM wangyanan (Y) <wangyanan55@huawei.com> wrote:
+>
+>
+>
+> On 2021/6/17 22:20, Marc Zyngier wrote:
+> > On Thu, 17 Jun 2021 13:38:37 +0100,
+> > Will Deacon <will@kernel.org> wrote:
+> >> On Thu, Jun 17, 2021 at 06:58:21PM +0800, Yanan Wang wrote:
+> >>> To prepare for performing CMOs for guest stage-2 in the fault handlers
+> >>> in pgtable.c, here introduce two cache maintenance callbacks in struct
+> >>> kvm_pgtable_mm_ops. We also adjust the comment alignment for the
+> >>> existing part but make no real content change at all.
+> >>>
+> >>> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+> >>> ---
+> >>>   arch/arm64/include/asm/kvm_pgtable.h | 42 +++++++++++++++++-----------
+> >>>   1 file changed, 25 insertions(+), 17 deletions(-)
+> >>>
+> >>> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+> >>> index c3674c47d48c..b6ce34aa44bb 100644
+> >>> --- a/arch/arm64/include/asm/kvm_pgtable.h
+> >>> +++ b/arch/arm64/include/asm/kvm_pgtable.h
+> >>> @@ -27,23 +27,29 @@ typedef u64 kvm_pte_t;
+> >>>
+> >>>   /**
+> >>>    * struct kvm_pgtable_mm_ops - Memory management callbacks.
+> >>> - * @zalloc_page:   Allocate a single zeroed memory page. The @arg parameter
+> >>> - *                 can be used by the walker to pass a memcache. The
+> >>> - *                 initial refcount of the page is 1.
+> >>> - * @zalloc_pages_exact:    Allocate an exact number of zeroed memory pages. The
+> >>> - *                 @size parameter is in bytes, and is rounded-up to the
+> >>> - *                 next page boundary. The resulting allocation is
+> >>> - *                 physically contiguous.
+> >>> - * @free_pages_exact:      Free an exact number of memory pages previously
+> >>> - *                 allocated by zalloc_pages_exact.
+> >>> - * @get_page:              Increment the refcount on a page.
+> >>> - * @put_page:              Decrement the refcount on a page. When the refcount
+> >>> - *                 reaches 0 the page is automatically freed.
+> >>> - * @page_count:            Return the refcount of a page.
+> >>> - * @phys_to_virt:  Convert a physical address into a virtual address mapped
+> >>> - *                 in the current context.
+> >>> - * @virt_to_phys:  Convert a virtual address mapped in the current context
+> >>> - *                 into a physical address.
+> >>> + * @zalloc_page:           Allocate a single zeroed memory page.
+> >>> + *                         The @arg parameter can be used by the walker
+> >>> + *                         to pass a memcache. The initial refcount of
+> >>> + *                         the page is 1.
+> >>> + * @zalloc_pages_exact:            Allocate an exact number of zeroed memory pages.
+> >>> + *                         The @size parameter is in bytes, and is rounded
+> >>> + *                         up to the next page boundary. The resulting
+> >>> + *                         allocation is physically contiguous.
+> >>> + * @free_pages_exact:              Free an exact number of memory pages previously
+> >>> + *                         allocated by zalloc_pages_exact.
+> >>> + * @get_page:                      Increment the refcount on a page.
+> >>> + * @put_page:                      Decrement the refcount on a page. When the
+> >>> + *                         refcount reaches 0 the page is automatically
+> >>> + *                         freed.
+> >>> + * @page_count:                    Return the refcount of a page.
+> >>> + * @phys_to_virt:          Convert a physical address into a virtual address
+> >>> + *                         mapped in the current context.
+> >>> + * @virt_to_phys:          Convert a virtual address mapped in the current
+> >>> + *                         context into a physical address.
+> >>> + * @clean_invalidate_dcache:       Clean and invalidate the data cache for the
+> >>> + *                         specified memory address range.
+> >> This should probably be explicit about whether this to the PoU/PoC/PoP.
+> > Indeed. I can fix that locally if there is nothing else that requires
+> > adjusting.
+> Will be grateful !
 
-For sure it breaks some out-of-tree modules already present and used by
-customers of downstream stable kernels. Therefore I wonder what is the
-bug fixed here, so the breakage and annoyance of stable users is justified.
+Sorry, I missed the v7 update. One comment here is that the naming
+used in the patch series I mentioned shortens invalidate to inval (if
+you want it to be less of a mouthful):
+https://lore.kernel.org/linux-arm-kernel/20210524083001.2586635-19-tabba@google.com/
+
+Otherwise:
+Reviewed-by: Fuad Tabba <tabba@google.com>
+
+Thanks!
+/fuad
 
 
 
-> 
-> [jeyu: pr_info -> pr_err and pr_warn as per discussion]
-> Link: http://lore.kernel.org/r/20200730162957.GA22469@lst.de
-> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Signed-off-by: Jessica Yu <jeyu@kernel.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-
-Best regards,
-Krzysztof
+>
+> Thanks,
+> Yanan
+> .
+> >
+> >       M.
+> >
+>
+> _______________________________________________
+> kvmarm mailing list
+> kvmarm@lists.cs.columbia.edu
+> https://lists.cs.columbia.edu/mailman/listinfo/kvmarm
