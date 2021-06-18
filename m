@@ -2,143 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8BB13ACBD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C5D53ACBD8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:14:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232739AbhFRNPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:15:25 -0400
-Received: from mga07.intel.com ([134.134.136.100]:15673 "EHLO mga07.intel.com"
+        id S232711AbhFRNQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:16:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54670 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230217AbhFRNPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:15:23 -0400
-IronPort-SDR: NYVyOXcK2hNQ7whDqA/pCXSCLVEkaZEcZftmuVdM8VkFpMRRk5YXX184KLdUvaVfY+e62T2pPy
- Q2xs+YDVSaWg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="270398993"
-X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
-   d="scan'208";a="270398993"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 06:13:14 -0700
-IronPort-SDR: vqt62rlt4WZpPqRivpJWzS01x8ipWt/4pOiQT41ie5yfW6m8A9HUTyU2BKUx9lH4jtLk15kN3N
- sxax4kq6/pOA==
-X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
-   d="scan'208";a="485684747"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.212.157]) ([10.254.212.157])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 06:13:10 -0700
-Cc:     baolu.lu@linux.intel.com, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linuxarm@huawei.com,
-        thunder.leizhen@huawei.com, chenxiang66@hisilicon.com,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v14 6/6] iommu: Remove mode argument from
- iommu_set_dma_strict()
-To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
-        will@kernel.org, dwmw2@infradead.org, robin.murphy@arm.com,
-        corbet@lwn.net
-References: <1624016058-189713-1-git-send-email-john.garry@huawei.com>
- <1624016058-189713-7-git-send-email-john.garry@huawei.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <23887d11-2174-6909-c9d7-36a50f070e44@linux.intel.com>
-Date:   Fri, 18 Jun 2021 21:13:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230217AbhFRNQP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 09:16:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D18CA608FC;
+        Fri, 18 Jun 2021 13:14:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624022046;
+        bh=Vhw2bavG97DxbteynC+3b57+ILuhQuvVwoJc1tc9rt0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E8Uf8+CqYxhOpbZf6WdTEqaBOQFT/7XRGP+/3P+6Kso5XuhD0deVR6eLGyZRkVkrE
+         Q29WeU6gSpWOqMjIgYBanbqeBUCYKebVRU0yqf5fAJKwzfU6N6wrvjEXYamor6vuWA
+         TJw17JuTLkzLaiuNYj2LulLxBggW+avBEDPs+grCMXnOh+u+K7WtxdFnhbUaHmbRqW
+         Gt+5SiDId9Zd0YuOIbWX8Vis1GM743e6URuiaH0XM70ZKtm+2xwlRHseFdddeOCUvd
+         KLCyJd/EZMBJcUEQz+bsb5oaaTIkkGlij4fmVgpKxoUwgdO8J92b+aFPJAkRNy5qcg
+         25NW7bCyJoA+A==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 7AEFD40B1A; Fri, 18 Jun 2021 10:14:02 -0300 (-03)
+Date:   Fri, 18 Jun 2021 10:14:02 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 3/3] perf/probe: Add --bootconfig to output definition in
+ bootconfig format
+Message-ID: <YMycGkhkPuo4xTc4@kernel.org>
+References: <162282409255.452340.4645118932261585719.stgit@devnote2>
+ <162282412351.452340.14871995440005640114.stgit@devnote2>
 MIME-Version: 1.0
-In-Reply-To: <1624016058-189713-7-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <162282412351.452340.14871995440005640114.stgit@devnote2>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/18 19:34, John Garry wrote:
-> We only ever now set strict mode enabled in iommu_set_dma_strict(), so
-> just remove the argument.
+Em Sat, Jun 05, 2021 at 01:28:43AM +0900, Masami Hiramatsu escreveu:
+> Now the boot-time tracing supports the kprobes events and that
+> must be written in bootconfig file as following format.
 > 
-> Signed-off-by: John Garry <john.garry@huawei.com>
-> Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+> ftrace.event.kprobes.<EVENT_NAME>.probes = <PROBE-DEF>
+> 
+> The perf probe already supports --definition (-D) action to
+> show the probe definitions, but the format is for the tracefs.
+
+You forgot to add the tools/perf/Documentation/perf-probe.txt entry for
+this new command line option, please sent it as a followup patch.
+
+Applied.
+
+- Arnaldo
+ 
+> [p|r][:EVENT_NAME] <PROBE-DEF>
+> 
+> This adds --bootconfig option for -D action so that it output
+> the probe definitions in bootconfig fromat. E.g.
+> 
+>  $ perf probe --bootconfig -D "path_lookupat:7 err:s32 s:string"
+>  ftrace.event.kprobes.path_lookupat_L7.probe = 'path_lookupat.isra.0+309 err_s32=%ax:s32 s_string=+0(%r13):string'
+> 
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 > ---
->   drivers/iommu/amd/init.c    | 2 +-
->   drivers/iommu/intel/iommu.c | 6 +++---
->   drivers/iommu/iommu.c       | 5 ++---
->   include/linux/iommu.h       | 2 +-
->   4 files changed, 7 insertions(+), 8 deletions(-)
+>  tools/perf/builtin-probe.c    |   12 ++++++-
+>  tools/perf/util/probe-event.c |   72 +++++++++++++++++++++++++++++++++++++++++
+>  tools/perf/util/probe-event.h |    2 +
+>  3 files changed, 85 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
-> index 1e641cb6dddc..6e12a615117b 100644
-> --- a/drivers/iommu/amd/init.c
-> +++ b/drivers/iommu/amd/init.c
-> @@ -3099,7 +3099,7 @@ static int __init parse_amd_iommu_options(char *str)
->   	for (; *str; ++str) {
->   		if (strncmp(str, "fullflush", 9) == 0) {
->   			pr_warn("amd_iommu=fullflush deprecated; use iommu.strict=1 instead\n");
-> -			iommu_set_dma_strict(true);
-> +			iommu_set_dma_strict();
->   		}
->   		if (strncmp(str, "force_enable", 12) == 0)
->   			amd_iommu_force_enable = true;
-> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> index 06666f9d8116..77d0834fb0df 100644
-> --- a/drivers/iommu/intel/iommu.c
-> +++ b/drivers/iommu/intel/iommu.c
-> @@ -454,7 +454,7 @@ static int __init intel_iommu_setup(char *str)
->   			iommu_dma_forcedac = true;
->   		} else if (!strncmp(str, "strict", 6)) {
->   			pr_warn("intel_iommu=strict deprecated; use iommu.strict=1 instead\n");
-> -			iommu_set_dma_strict(true);
-> +			iommu_set_dma_strict();
->   		} else if (!strncmp(str, "sp_off", 6)) {
->   			pr_info("Disable supported super page\n");
->   			intel_iommu_superpage = 0;
-> @@ -4382,7 +4382,7 @@ int __init intel_iommu_init(void)
->   		 */
->   		if (cap_caching_mode(iommu->cap)) {
->   			pr_info_once("IOMMU batching disallowed due to virtualization\n");
-> -			iommu_set_dma_strict(true);
-> +			iommu_set_dma_strict();
->   		}
->   		iommu_device_sysfs_add(&iommu->iommu, NULL,
->   				       intel_iommu_groups,
-> @@ -5699,7 +5699,7 @@ static void quirk_calpella_no_shadow_gtt(struct pci_dev *dev)
->   	} else if (dmar_map_gfx) {
->   		/* we have to ensure the gfx device is idle before we flush */
->   		pci_info(dev, "Disabling batched IOTLB flush on Ironlake\n");
-> -		iommu_set_dma_strict(true);
-> +		iommu_set_dma_strict();
->   	}
->   }
->   DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_INTEL, 0x0040, quirk_calpella_no_shadow_gtt);
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index 60b1ec42e73b..ff221d3ddcbc 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -349,10 +349,9 @@ static int __init iommu_dma_setup(char *str)
->   }
->   early_param("iommu.strict", iommu_dma_setup);
->   
-> -void iommu_set_dma_strict(bool strict)
-> +void iommu_set_dma_strict(void)
->   {
-> -	if (strict || !(iommu_cmd_line & IOMMU_CMD_LINE_STRICT))
-> -		iommu_dma_strict = strict;
-> +	iommu_dma_strict = true;
->   }
->   
->   bool iommu_get_dma_strict(struct iommu_domain *domain)
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index 32d448050bf7..754f67d6dd90 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -476,7 +476,7 @@ int iommu_enable_nesting(struct iommu_domain *domain);
->   int iommu_set_pgtable_quirks(struct iommu_domain *domain,
->   		unsigned long quirks);
->   
-> -void iommu_set_dma_strict(bool val);
-> +void iommu_set_dma_strict(void);
->   bool iommu_get_dma_strict(struct iommu_domain *domain);
->   
->   extern int report_iommu_fault(struct iommu_domain *domain, struct device *dev,
+> diff --git a/tools/perf/builtin-probe.c b/tools/perf/builtin-probe.c
+> index 6b1507566770..2bfd41df621c 100644
+> --- a/tools/perf/builtin-probe.c
+> +++ b/tools/perf/builtin-probe.c
+> @@ -347,7 +347,10 @@ static int perf_add_probe_events(struct perf_probe_event *pevs, int npevs)
+>  		goto out_cleanup;
+>  
+>  	if (params.command == 'D') {	/* it shows definition */
+> -		ret = show_probe_trace_events(pevs, npevs);
+> +		if (probe_conf.bootconfig)
+> +			ret = show_bootconfig_events(pevs, npevs);
+> +		else
+> +			ret = show_probe_trace_events(pevs, npevs);
+>  		goto out_cleanup;
+>  	}
+>  
+> @@ -581,6 +584,8 @@ __cmd_probe(int argc, const char **argv)
+>  		   "Look for files with symbols relative to this directory"),
+>  	OPT_CALLBACK(0, "target-ns", NULL, "pid",
+>  		     "target pid for namespace contexts", opt_set_target_ns),
+> +	OPT_BOOLEAN(0, "bootconfig", &probe_conf.bootconfig,
+> +		    "Output probe definition with bootconfig format"),
+>  	OPT_END()
+>  	};
+>  	int ret;
+> @@ -692,6 +697,11 @@ __cmd_probe(int argc, const char **argv)
+>  		}
+>  		break;
+>  	case 'D':
+> +		if (probe_conf.bootconfig && params.uprobes) {
+> +			pr_err("  Error: --bootconfig doesn't support uprobes.\n");
+> +			return -EINVAL;
+> +		}
+> +		__fallthrough;
+>  	case 'a':
+>  
+>  		/* Ensure the last given target is used */
+> diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
+> index 505c0702dbe2..f1348fa3dd1b 100644
+> --- a/tools/perf/util/probe-event.c
+> +++ b/tools/perf/util/probe-event.c
+> @@ -3564,6 +3564,78 @@ int show_probe_trace_events(struct perf_probe_event *pevs, int npevs)
+>  	return ret;
+>  }
+>  
+> +static int show_bootconfig_event(struct probe_trace_event *tev)
+> +{
+> +	struct probe_trace_point *tp = &tev->point;
+> +	struct strbuf buf;
+> +	char *ret = NULL;
+> +	int err;
+> +
+> +	if (strbuf_init(&buf, 32) < 0)
+> +		return -ENOMEM;
+> +
+> +	err = synthesize_kprobe_trace_def(tp, &buf);
+> +	if (err >= 0)
+> +		err = synthesize_probe_trace_args(tev, &buf);
+> +	if (err >= 0)
+> +		ret = strbuf_detach(&buf, NULL);
+> +	strbuf_release(&buf);
+> +
+> +	if (ret) {
+> +		printf("'%s'", ret);
+> +		free(ret);
+> +	}
+> +
+> +	return err;
+> +}
+> +
+> +int show_bootconfig_events(struct perf_probe_event *pevs, int npevs)
+> +{
+> +	struct strlist *namelist = strlist__new(NULL, NULL);
+> +	struct probe_trace_event *tev;
+> +	struct perf_probe_event *pev;
+> +	char *cur_name = NULL;
+> +	int i, j, ret = 0;
+> +
+> +	if (!namelist)
+> +		return -ENOMEM;
+> +
+> +	for (j = 0; j < npevs && !ret; j++) {
+> +		pev = &pevs[j];
+> +		if (pev->group && strcmp(pev->group, "probe"))
+> +			pr_warning("WARN: Group name %s is ignored\n", pev->group);
+> +		if (pev->uprobes) {
+> +			pr_warning("ERROR: Bootconfig doesn't support uprobes\n");
+> +			ret = -EINVAL;
+> +			break;
+> +		}
+> +		for (i = 0; i < pev->ntevs && !ret; i++) {
+> +			tev = &pev->tevs[i];
+> +			/* Skip if the symbol is out of .text or blacklisted */
+> +			if (!tev->point.symbol && !pev->uprobes)
+> +				continue;
+> +
+> +			/* Set new name for tev (and update namelist) */
+> +			ret = probe_trace_event__set_name(tev, pev,
+> +							  namelist, true);
+> +			if (ret)
+> +				break;
+> +
+> +			if (!cur_name || strcmp(cur_name, tev->event)) {
+> +				printf("%sftrace.event.kprobes.%s.probe = ",
+> +					cur_name ? "\n" : "", tev->event);
+> +				cur_name = tev->event;
+> +			} else
+> +				printf(", ");
+> +			ret = show_bootconfig_event(tev);
+> +		}
+> +	}
+> +	printf("\n");
+> +	strlist__delete(namelist);
+> +
+> +	return ret;
+> +}
+> +
+>  int apply_perf_probe_events(struct perf_probe_event *pevs, int npevs)
+>  {
+>  	int i, ret = 0;
+> diff --git a/tools/perf/util/probe-event.h b/tools/perf/util/probe-event.h
+> index 4f0eb3a20c36..65769d7949a3 100644
+> --- a/tools/perf/util/probe-event.h
+> +++ b/tools/perf/util/probe-event.h
+> @@ -15,6 +15,7 @@ struct probe_conf {
+>  	bool	force_add;
+>  	bool	no_inlines;
+>  	bool	cache;
+> +	bool	bootconfig;
+>  	int	max_probes;
+>  	unsigned long	magic_num;
+>  };
+> @@ -163,6 +164,7 @@ int add_perf_probe_events(struct perf_probe_event *pevs, int npevs);
+>  int convert_perf_probe_events(struct perf_probe_event *pevs, int npevs);
+>  int apply_perf_probe_events(struct perf_probe_event *pevs, int npevs);
+>  int show_probe_trace_events(struct perf_probe_event *pevs, int npevs);
+> +int show_bootconfig_events(struct perf_probe_event *pevs, int npevs);
+>  void cleanup_perf_probe_events(struct perf_probe_event *pevs, int npevs);
+>  
+>  struct strfilter;
 > 
 
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+-- 
 
-Best regards,
-baolu
+- Arnaldo
