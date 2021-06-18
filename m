@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C093ACEA7
+	by mail.lfdr.de (Postfix) with ESMTP id C7F183ACEA8
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234087AbhFRPXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:23:39 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56714 "EHLO
+        id S235344AbhFRPXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:23:47 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56732 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234943AbhFRPWK (ORCPT
+        with ESMTP id S235083AbhFRPWM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:22:10 -0400
-Message-Id: <20210618143448.257336139@linutronix.de>
+        Fri, 18 Jun 2021 11:22:12 -0400
+Message-Id: <20210618143448.380267423@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624029600;
+        s=2020; t=1624029601;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=VKwABAQv3KiHT3Zt1OAvnXVRYYtffaBeLUV8mIh35SE=;
-        b=ECUOD71Tg0y3EqKlSxGw3IdNYOdAEAjJdMbQZ9oRUvP3is9XTCq2eXBuEdMgCPk+WaRnqc
-        QQCgVmPpXEOWxZ+koEX6H5YhOddyON1FSTDfm2vAPmRBVZ/Vf77dQdQ3iSBrwQk4Ts0ByZ
-        ihlyl5umtfVRYguT4XoGZ3JumwLtqBZVtYLpaek2ZjMkTCNq+hDz9dnz24VOnHxSkZ/rSK
-        0jANF+sdIEj1XdXIk38tmCiIoPEDNkF0ahsMZtlHAmR3STBauKb6sqx/JYYXxhl+s1MrMV
-        dpw/iM6bu/lHSwFZJtg3dGuPVWGSiIYAzugGjaQYPk7Lvw7I5t1WCt2pn7igzw==
+        bh=4rOvx6NqMaMu8lgDnfp42/CM/SbqPdzqnxkCx+OzJNo=;
+        b=ikhVTCRY3zdCcbtT07bD9n5w2pZMcvZL41SMTRcw4VnUWMhhsZphygG3naQvUm//7Wrp+D
+        LjB7Y0q00TrZDq11EJQ5IG3OJG5YeFEUXG4UOo4Gy1aYS00rdiz1/hA44mzx8gs2QQNVme
+        CM7OZr5o4OIYuAVpf/3j6j/CkPhcbCrq+b8dwCbRLcZRjQLghD2an1IxArbRvUAaBOGYrc
+        N/GTdqsc1IEGciy123GuuhgMXW6Dq3eqL/PWaTSWdsOA42en6AiehfTWwTbgxIcVdaN+Vp
+        SEu1oiddmHMq9MtmfDORxMa4JaLJ58468ddxnWWDkIo2rliTMRQ7O5vz5g/Jlg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624029600;
+        s=2020e; t=1624029601;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=VKwABAQv3KiHT3Zt1OAvnXVRYYtffaBeLUV8mIh35SE=;
-        b=+odG5oIk/wgYX4qqCFVQK1h7nudKT8fQ84Y0EG0sNM2NAEVkbmnETWEzNKgLqtSy7zeCZO
-        ucL1lBsIhnU7HjCQ==
-Date:   Fri, 18 Jun 2021 16:18:57 +0200
+        bh=4rOvx6NqMaMu8lgDnfp42/CM/SbqPdzqnxkCx+OzJNo=;
+        b=fChdO3xRFy2NCZT4/fJjK2ietpeVbVuna0m7QmRm1SHQ3suAPSChZFKs8DobChl/8iSPIC
+        T7+UggWV/ARN8TCg==
+Date:   Fri, 18 Jun 2021 16:18:58 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -44,7 +44,8 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V3 34/66] x86/fpu: Get rid of the FNSAVE optimization
+Subject: [patch V3 35/66] x86/fpu: Rename copy_kernel_to_fpregs() to
+ restore_fpregs_from_kernel()
 References: <20210618141823.161158090@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,168 +54,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The FNSAVE support requires conditionals in quite some call paths because
-FNSAVE reinitialized the FPU hardware. If the save has to preserve the FPU
-register state then the caller has to conditionally restore it from memory
-when FNSAVE is in use.
+This is not a copy functionality. It restores the register state from the
+supplied kernel buffer.
 
-This also requires a conditional in context switch because the restore
-avoidance optimization cannot work with FNSAVE. As this only affects 20+
-years old CPUs there is really no reason to keep this optimization
-effective for FNSAVE. It's about time to not optimize for antiques anymore.
-
-Just unconditionally FRSTOR the save content to the registers and clean up
-the conditionals all over the place.
-
-Suggested-by: Dave Hansen <dave.hansen@linux.intel.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V3: New patch
----
- arch/x86/include/asm/fpu/internal.h |   17 +++++++----
- arch/x86/kernel/fpu/core.c          |   54 +++++++++++++++---------------------
- 2 files changed, 34 insertions(+), 37 deletions(-)
+ arch/x86/include/asm/fpu/internal.h |    8 ++++----
+ arch/x86/kvm/x86.c                  |    4 ++--
+ arch/x86/mm/extable.c               |    2 +-
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
 --- a/arch/x86/include/asm/fpu/internal.h
 +++ b/arch/x86/include/asm/fpu/internal.h
-@@ -375,7 +375,7 @@ static inline int os_xrstor_safe(struct
- 	return err;
- }
+@@ -377,7 +377,7 @@ static inline int os_xrstor_safe(struct
  
--extern int save_fpregs_to_fpstate(struct fpu *fpu);
-+extern void save_fpregs_to_fpstate(struct fpu *fpu);
+ extern void save_fpregs_to_fpstate(struct fpu *fpu);
  
- static inline void __copy_kernel_to_fpregs(union fpregs_state *fpstate, u64 mask)
+-static inline void __copy_kernel_to_fpregs(union fpregs_state *fpstate, u64 mask)
++static inline void __restore_fpregs_from_fpstate(union fpregs_state *fpstate, u64 mask)
  {
-@@ -507,12 +507,17 @@ static inline void __fpregs_load_activat
- static inline void switch_fpu_prepare(struct fpu *old_fpu, int cpu)
- {
- 	if (static_cpu_has(X86_FEATURE_FPU) && !(current->flags & PF_KTHREAD)) {
--		if (!save_fpregs_to_fpstate(old_fpu))
--			old_fpu->last_cpu = -1;
--		else
--			old_fpu->last_cpu = cpu;
-+		save_fpregs_to_fpstate(old_fpu);
-+		/*
-+		 * The save operation preserved register state, so the
-+		 * fpu_fpregs_owner_ctx is still @old_fpu. Store the
-+		 * current CPU number in @old_fpu, so the next return
-+		 * to user space can avoid the FPU register restore
-+		 * when is returns on the same CPU and still owns the
-+		 * context.
-+		 */
-+		old_fpu->last_cpu = cpu;
- 
--		/* But leave fpu_fpregs_owner_ctx! */
- 		trace_x86_fpu_regs_deactivated(old_fpu);
+ 	if (use_xsave()) {
+ 		os_xrstor(&fpstate->xsave, mask);
+@@ -389,7 +389,7 @@ static inline void __copy_kernel_to_fpre
  	}
  }
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -83,16 +83,20 @@ bool irq_fpu_usable(void)
- EXPORT_SYMBOL(irq_fpu_usable);
  
- /*
-- * These must be called with preempt disabled. Returns
-- * 'true' if the FPU state is still intact and we can
-- * keep registers active.
-+ * Save the FPU register state in fpu->state. The register state is
-+ * preserved.
-  *
-- * The legacy FNSAVE instruction cleared all FPU state
-- * unconditionally, so registers are essentially destroyed.
-- * Modern FPU state can be kept in registers, if there are
-- * no pending FP exceptions.
-+ * Must be called with fpregs_lock() held.
-+ *
-+ * The legacy FNSAVE instruction clears all FPU state unconditionally, so
-+ * register state has to be reloaded. That might be a pointless exercise
-+ * when the FPU is going to be used by another task right after that. But
-+ * this only affect 20+ years old 32bit systems and avoids conditionals all
-+ * over the place.
-+ *
-+ * FXSAVE and all XSAVE variants preserve the FPU register state.
-  */
--int save_fpregs_to_fpstate(struct fpu *fpu)
-+void save_fpregs_to_fpstate(struct fpu *fpu)
+-static inline void copy_kernel_to_fpregs(union fpregs_state *fpstate)
++static inline void restore_fpregs_from_fpstate(union fpregs_state *fpstate)
  {
- 	if (likely(use_xsave())) {
- 		os_xsave(&fpu->state.xsave);
-@@ -103,21 +107,20 @@ int save_fpregs_to_fpstate(struct fpu *f
- 		 */
- 		if (fpu->state.xsave.header.xfeatures & XFEATURE_MASK_AVX512)
- 			fpu->avx512_timestamp = jiffies;
--		return 1;
-+		return;
- 	}
- 
- 	if (likely(use_fxsr())) {
- 		fxsave(&fpu->state.fxsave);
--		return 1;
-+		return;
- 	}
- 
  	/*
- 	 * Legacy FPU register saving, FNSAVE always clears FPU registers,
--	 * so we have to mark them inactive:
-+	 * so we have to reload them from the memory state.
- 	 */
- 	asm volatile("fnsave %[fp]; fwait" : [fp] "=m" (fpu->state.fsave));
--
--	return 0;
-+	frstor(&fpu->state.fsave);
- }
- EXPORT_SYMBOL(save_fpregs_to_fpstate);
- 
-@@ -133,10 +136,6 @@ void kernel_fpu_begin_mask(unsigned int
- 	if (!(current->flags & PF_KTHREAD) &&
- 	    !test_thread_flag(TIF_NEED_FPU_LOAD)) {
- 		set_thread_flag(TIF_NEED_FPU_LOAD);
--		/*
--		 * Ignore return value -- we don't care if reg state
--		 * is clobbered.
--		 */
- 		save_fpregs_to_fpstate(&current->thread.fpu);
+ 	 * AMD K7/K8 CPUs don't save/restore FDP/FIP/FOP unless an exception is
+@@ -404,7 +404,7 @@ static inline void copy_kernel_to_fpregs
+ 			: : [addr] "m" (fpstate));
  	}
- 	__cpu_invalidate_fpregs_state();
-@@ -171,11 +170,8 @@ void fpu__save(struct fpu *fpu)
- 	fpregs_lock();
- 	trace_x86_fpu_before_save(fpu);
  
--	if (!test_thread_flag(TIF_NEED_FPU_LOAD)) {
--		if (!save_fpregs_to_fpstate(fpu)) {
--			copy_kernel_to_fpregs(&fpu->state);
--		}
--	}
-+	if (!test_thread_flag(TIF_NEED_FPU_LOAD))
-+		save_fpregs_to_fpstate(fpu);
+-	__copy_kernel_to_fpregs(fpstate, -1);
++	__restore_fpregs_from_fpstate(fpstate, -1);
+ }
  
- 	trace_x86_fpu_after_save(fpu);
- 	fpregs_unlock();
-@@ -244,20 +240,16 @@ int fpu__copy(struct task_struct *dst, s
- 	memset(&dst_fpu->state.xsave, 0, fpu_kernel_xstate_size);
+ extern int copy_fpstate_to_sigframe(void __user *buf, void __user *fp, int size);
+@@ -475,7 +475,7 @@ static inline void __fpregs_load_activat
+ 		return;
  
- 	/*
--	 * If the FPU registers are not current just memcpy() the state.
--	 * Otherwise save current FPU registers directly into the child's FPU
--	 * context, without any memory-to-memory copying.
--	 *
--	 * ( The function 'fails' in the FNSAVE case, which destroys
--	 *   register contents so we have to load them back. )
-+	 * If the FPU registers are not owned by current just memcpy() the
-+	 * state.  Otherwise save the FPU registers directly into the
-+	 * child's FPU context, without any memory-to-memory copying.
+ 	if (!fpregs_state_valid(fpu, cpu)) {
+-		copy_kernel_to_fpregs(&fpu->state);
++		restore_fpregs_from_fpstate(&fpu->state);
+ 		fpregs_activate(fpu);
+ 		fpu->last_cpu = cpu;
+ 	}
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -9634,7 +9634,7 @@ static void kvm_load_guest_fpu(struct kv
  	 */
- 	fpregs_lock();
- 	if (test_thread_flag(TIF_NEED_FPU_LOAD))
- 		memcpy(&dst_fpu->state, &src_fpu->state, fpu_kernel_xstate_size);
+ 	if (vcpu->arch.guest_fpu)
+ 		/* PKRU is separately restored in kvm_x86_ops.run. */
+-		__copy_kernel_to_fpregs(&vcpu->arch.guest_fpu->state,
++		__restore_fpregs_from_fpstate(&vcpu->arch.guest_fpu->state,
+ 					~XFEATURE_MASK_PKRU);
  
--	else if (!save_fpregs_to_fpstate(dst_fpu))
--		copy_kernel_to_fpregs(&dst_fpu->state);
--
-+	else
-+		save_fpregs_to_fpstate(dst_fpu);
+ 	fpregs_mark_activate();
+@@ -9655,7 +9655,7 @@ static void kvm_put_guest_fpu(struct kvm
+ 	if (vcpu->arch.guest_fpu)
+ 		kvm_save_current_fpu(vcpu->arch.guest_fpu);
+ 
+-	copy_kernel_to_fpregs(&vcpu->arch.user_fpu->state);
++	restore_fpregs_from_fpstate(&vcpu->arch.user_fpu->state);
+ 
+ 	fpregs_mark_activate();
  	fpregs_unlock();
+--- a/arch/x86/mm/extable.c
++++ b/arch/x86/mm/extable.c
+@@ -65,7 +65,7 @@ EXPORT_SYMBOL_GPL(ex_handler_fault);
+ 	WARN_ONCE(1, "Bad FPU state detected at %pB, reinitializing FPU registers.",
+ 		  (void *)instruction_pointer(regs));
  
- 	set_tsk_thread_flag(dst, TIF_NEED_FPU_LOAD);
+-	__copy_kernel_to_fpregs(&init_fpstate, -1);
++	__restore_fpregs_from_fpstate(&init_fpstate, -1);
+ 	return true;
+ }
+ EXPORT_SYMBOL_GPL(ex_handler_fprestore);
 
