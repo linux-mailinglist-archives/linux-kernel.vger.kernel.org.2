@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8ED3AD0DD
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC383AD0DC
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236018AbhFRREH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 13:04:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51702 "EHLO
+        id S233766AbhFRREE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 13:04:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233366AbhFRREA (ORCPT
+        with ESMTP id S232827AbhFRRD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 13:04:00 -0400
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEE7CC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:01:49 -0700 (PDT)
-Received: by mail-il1-x132.google.com with SMTP id b14so8993087ilq.7
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:01:49 -0700 (PDT)
+        Fri, 18 Jun 2021 13:03:58 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD36C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:01:47 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id q3so7752956iop.11
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:01:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Iw5bM1oWSVgU2E0qpCpapukI6tZeaIAQEfdVoRxxe+U=;
-        b=HSvqD37VA3IlhlWhCnUah6hPnJedzYXIzunNPYQLx8TPc/ZKLlzCew98F3FfX7aGgh
-         kD9VkbEyp3QDSlHp7qhLVUcYnHS+4F9BhxDwJsBVwbX/+OxiI1SASVv7NM5Oa+vz6w6S
-         4+ToGV4QQJCMYrGB4q29bY5ESXRPJDbJI030jTK4gGHCWEXrlwrEIUGNrFyiO3wcX8yk
-         EoWAMJ56QSlX+xqhavoTv0bSHE0YNaA0DSDKie5F0E0NyFBcAwwRLlqGV9NSXiqIY9uM
-         rBPG3KKuM8ZjUJPo+WB9mKBPpfRKEjTa5DKawHuLmAK341jYWLFewdNRGDf6NeV6zrMl
-         bTow==
+        bh=EUNien+aG4u7uIUAY1T/akeSoYudRzYFUT7gMdbkf9c=;
+        b=iYbXRBVdeFLx03Ub2lztmis9AW08JCEKt2++nTwTfGHjNVnkaQwyuSGFBoYypO/1+D
+         s9wuUboQC4U58tcZu56HWAGybtcRcRgem9ZheUKr1u2T5PQzEhu2LOkjmhrLJUPKrUW6
+         VxNTVRHK91tbcHuUh6exFcxpAO5C2A/WmYGRtGTDLeYl5uOmaG5+Ng35Y89in1BNXtsm
+         pOEKZmc3SfSQJ1vVKPrh0z8Q/s4+tqV1FRZNaTYnOCJDt3dzjtxRD9sFltTULuOCdkrj
+         aOckBdwHK6lesFwrdUxOC6IRzyDTmc0dLbsXT1uS9bsy+3ffSm/zQc4H8UiMnIvAM8u+
+         4XUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Iw5bM1oWSVgU2E0qpCpapukI6tZeaIAQEfdVoRxxe+U=;
-        b=jDWaZzcXs97M0fOH4JUxuJ6LANpXwXnTYZk9wsrifuSpKvnBecKbzGhhOD2AQEhjL4
-         8GieD7JZFPCFfdD/6Rfs3gARIGALO0f17gC/Pc29wOjSoHLKHTsV+ltSl7QR6YYSfdnR
-         qeTSFksCBR79OsHbsCLh5QV4dxrKKxyIdnZ4ReZPCdHZukh7vpvgZ5z6JQwyaUoW8Dx5
-         3yWUY6o0w2sV0oc2xvM1PFug5PAlcVmt7axEW1qHAL0dfNCpB22OdckgvHKlbQesVHXq
-         osa4yKKMPtb1RfgbKsgGLOBjAfoe0KTUZnhqwPAdxL3SO2O/hV6V+5Tgr9Q0vxtCcX3T
-         DJ4Q==
-X-Gm-Message-State: AOAM530AlftqDUHK5Xyji1Y2jBMJUHKxllV6gSy2TaRWWYkMInY1DxeQ
-        eWuRv3xJMErsQnEuH+/doQI=
-X-Google-Smtp-Source: ABdhPJy4idYNPz4DyOm3g0ENJMxtKcA0JrxS+opyVBfuTzW+NA13kj4tDySOIg/IZIM3GQ9lGVL7sA==
-X-Received: by 2002:a05:6e02:612:: with SMTP id t18mr8375035ils.261.1624035709187;
-        Fri, 18 Jun 2021 10:01:49 -0700 (PDT)
+        bh=EUNien+aG4u7uIUAY1T/akeSoYudRzYFUT7gMdbkf9c=;
+        b=BE6XO7uRDZzc0IlZLD8/E4gHaTNIwQojlbsRJZpGGqhB+cYpO9nmOVjX2dGKUIdLCS
+         fxePAZJ+qnLUqqbJ6SNbJ0abA3+EBSw3yBP1urARj6PkmoEhqmkD34mXm+9UL3UAS46f
+         0d+aWm6payTLkFntviFB2z7IeRaTa/krwvI6FhZYZQ7T7DtsajN1Pp5dPzJVk06saM4a
+         MYtHca7Zgc7vc7hs1sR9KqlEWGPSzBWEmcaF/hGBuaoBnt18M1LaXW2ME1LL9tvXrj3P
+         3DrS48zXB4doTnaxN5s/mRGQ/z0OqTZlsvG4q2gvSR/+ejFijc9P/SkvF4SSTVKm1IQ7
+         cwQA==
+X-Gm-Message-State: AOAM530aR7uF2M+WutdnTuxHPascUZQAETdzdsLGVCRESZ7J0VvWaEyn
+        HTkPmp1g/Rqnl9ihJryyv5U=
+X-Google-Smtp-Source: ABdhPJz8EGPbCmSDOFMc6GMloJe9Bs7GHWyAt5R/wQ8nA5UZfpeW5ljcQ3XnFbobWJdnJ4r+NwbLTQ==
+X-Received: by 2002:a02:4b44:: with SMTP id q65mr4214959jaa.28.1624035706876;
+        Fri, 18 Jun 2021 10:01:46 -0700 (PDT)
 Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id y4sm416122iop.54.2021.06.18.10.01.44
+        by smtp.gmail.com with ESMTPSA id l11sm1402485ilo.77.2021.06.18.10.01.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 10:01:45 -0700 (PDT)
+        Fri, 18 Jun 2021 10:01:46 -0700 (PDT)
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 9D27827C0054;
-        Fri, 18 Jun 2021 13:01:44 -0400 (EDT)
+        by mailauth.nyi.internal (Postfix) with ESMTP id C290A27C005A;
+        Fri, 18 Jun 2021 13:01:45 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Fri, 18 Jun 2021 13:01:44 -0400
-X-ME-Sender: <xms:eNHMYGnsKGZtB10UBL55MAotXOti1h8r7dNT0m2hDzS_y7p-AqWraA>
-    <xme:eNHMYN0alYqE2UF9T09slgIJvJwArB_Oy8662zFypl3V_cn6FWIQ8UrZUFK9CD6-9
-    KhU37Ier-fvnhuuLw>
-X-ME-Received: <xmr:eNHMYEpWu1ii3n-CzBLhjEeWsCKTnXktjPaMbJYTc4I4X98d2AVqODH5MCs>
+  by compute3.internal (MEProxy); Fri, 18 Jun 2021 13:01:45 -0400
+X-ME-Sender: <xms:edHMYMr4qxC-xfzlLyVYKsm2AxBVRiNqs6qhX7ZB7GIT95pLJ6XgMA>
+    <xme:edHMYCqG7GjcaU-lRNl49oq3a9mfGhM2OeElhn3UuTfBLHfkbkjXWG9SZNJtypeTW
+    OYVGPSdwHm4nQIn7A>
+X-ME-Received: <xmr:edHMYBM0Vz9YTE2wqg3AwXTobzpH7-EhomXSKSlSsu_Ksn23KTxyhcAQfUI>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeffedguddtgecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
@@ -67,12 +67,12 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeffedguddtgecutefuodetgg
     gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
     gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
     igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:eNHMYKmlZRQ4ywQrcX_U9s28ME2_8tnR2NY9cihIprK4TfZwyIwr3w>
-    <xmx:eNHMYE0jLYQTcNpLLTjt4i1rPpqLO1SfSf0r-sTq_q9HCN3XpENY_w>
-    <xmx:eNHMYBvS0aaXdqHOJAaGwawFe_KBDD6PL6VS8gNyACQckcdBKXLT8Q>
-    <xmx:eNHMYI92nazHw0sgWjwVqOuFmQqXtMRZqisRFmfb6UyB8PbFd8Cl0Q>
+X-ME-Proxy: <xmx:edHMYD6qURECYGHr_rHPW7P6i3yY5yakFCOt78GMG19UD6VTNhEpaw>
+    <xmx:edHMYL70JLB4i1hnwP-hbZGdO5zGJVYCwJ8mbGNwmk7JF6GB3lkjVg>
+    <xmx:edHMYDiFrRdM-jb9LIzDnVLMP34joxhi8tUioZEHqnKXLsX-k9brjQ>
+    <xmx:edHMYBRnG3KNTTFw3foq5KmIiJRw_F2wKe7DGc3MerbSrbHURnsF4Q>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 18 Jun 2021 13:01:44 -0400 (EDT)
+ 18 Jun 2021 13:01:45 -0400 (EDT)
 From:   Boqun Feng <boqun.feng@gmail.com>
 To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
@@ -80,9 +80,9 @@ Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         linux-kernel@vger.kernel.org,
         Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH 3/4] lockding/lockdep: Avoid to find wrong lock dep path in check_irq_usage()
-Date:   Sat, 19 Jun 2021 01:01:09 +0800
-Message-Id: <20210618170110.3699115-4-boqun.feng@gmail.com>
+Subject: [PATCH 4/4] locking/selftests: Add a selftest for check_irq_usage()
+Date:   Sat, 19 Jun 2021 01:01:10 +0800
+Message-Id: <20210618170110.3699115-5-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210618170110.3699115-1-boqun.feng@gmail.com>
 References: <20210618170110.3699115-1-boqun.feng@gmail.com>
@@ -92,49 +92,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the step #3 of check_irq_usage(), we seach backwards to find a lock
-whose usage conflicts the usage of @target_entry1 on safe/unsafe.
-However, we should only keep the irq-unsafe usage of @target_entry1 into
-consideration, because it could be a case where a lock is hardirq-unsafe
-but soft-safe, and in check_irq_usage() we find it because its
-hardirq-unsafe could result into a hardirq-safe-unsafe deadlock, but
-currently since we don't filter out the other usage bits, so we may find
-a lock dependency path softirq-unsafe -> softirq-safe, which in fact
-doesn't cause a deadlock. And this may cause misleading lockdep splats.
+Johannes Berg reported a lockdep problem which could be reproduced by
+the special test case introduced in this patch, so add it.
 
-Fix this by only keeping LOCKF_ENABLED_IRQ_ALL bits when we try the
-backwards search.
-
-Reported-by: Johannes Berg <johannes@sipsolutions.net>
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 ---
- kernel/locking/lockdep.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ lib/locking-selftest.c | 65 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 65 insertions(+)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 74d084a398be..6ff1e8405a83 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -2768,8 +2768,18 @@ static int check_irq_usage(struct task_struct *curr, struct held_lock *prev,
- 	 * Step 3: we found a bad match! Now retrieve a lock from the backward
- 	 * list whose usage mask matches the exclusive usage mask from the
- 	 * lock found on the forward list.
-+	 *
-+	 * Note, we should only keep the LOCKF_ENABLED_IRQ_ALL bits, considering
-+	 * the follow case:
-+	 *
-+	 * When trying to add A -> B to the graph, we find that there is a
-+	 * hardirq-safe L, that L -> ... -> A, and another hardirq-unsafe M,
-+	 * that B -> ... -> M. However M is **softirq-safe**, if we use exact
-+	 * invert bits of M's usage_mask, we will find another lock N that is
-+	 * **softirq-unsafe** and N -> ... -> A, however N -> .. -> M will not
-+	 * cause a inversion deadlock.
- 	 */
--	backward_mask = original_mask(target_entry1->class->usage_mask);
-+	backward_mask = original_mask(target_entry1->class->usage_mask & LOCKF_ENABLED_IRQ_ALL);
+diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
+index 2d85abac1744..5c50b0910396 100644
+--- a/lib/locking-selftest.c
++++ b/lib/locking-selftest.c
+@@ -53,6 +53,7 @@ __setup("debug_locks_verbose=", setup_debug_locks_verbose);
+ #define LOCKTYPE_WW	0x10
+ #define LOCKTYPE_RTMUTEX 0x20
+ #define LOCKTYPE_LL	0x40
++#define LOCKTYPE_SPECIAL 0x80
  
- 	ret = find_usage_backwards(&this, backward_mask, &target_entry);
- 	if (bfs_error(ret)) {
+ static struct ww_acquire_ctx t, t2;
+ static struct ww_mutex o, o2, o3;
+@@ -2744,6 +2745,66 @@ static void local_lock_tests(void)
+ 	pr_cont("\n");
+ }
+ 
++static void hardirq_deadlock_softirq_not_deadlock(void)
++{
++	/* mutex_A is hardirq-unsafe and softirq-unsafe */
++	/* mutex_A -> lock_C */
++	mutex_lock(&mutex_A);
++	HARDIRQ_DISABLE();
++	spin_lock(&lock_C);
++	spin_unlock(&lock_C);
++	HARDIRQ_ENABLE();
++	mutex_unlock(&mutex_A);
++
++	/* lock_A is hardirq-safe */
++	HARDIRQ_ENTER();
++	spin_lock(&lock_A);
++	spin_unlock(&lock_A);
++	HARDIRQ_EXIT();
++
++	/* lock_A -> lock_B */
++	HARDIRQ_DISABLE();
++	spin_lock(&lock_A);
++	spin_lock(&lock_B);
++	spin_unlock(&lock_B);
++	spin_unlock(&lock_A);
++	HARDIRQ_ENABLE();
++
++	/* lock_B -> lock_C */
++	HARDIRQ_DISABLE();
++	spin_lock(&lock_B);
++	spin_lock(&lock_C);
++	spin_unlock(&lock_C);
++	spin_unlock(&lock_B);
++	HARDIRQ_ENABLE();
++
++	/* lock_D is softirq-safe */
++	SOFTIRQ_ENTER();
++	spin_lock(&lock_D);
++	spin_unlock(&lock_D);
++	SOFTIRQ_EXIT();
++
++	/* And lock_D is hardirq-unsafe */
++	SOFTIRQ_DISABLE();
++	spin_lock(&lock_D);
++	spin_unlock(&lock_D);
++	SOFTIRQ_ENABLE();
++
++	/*
++	 * mutex_A -> lock_C -> lock_D is softirq-unsafe -> softirq-safe, not
++	 * deadlock.
++	 *
++	 * lock_A -> lock_B -> lock_C -> lock_D is hardirq-safe ->
++	 * hardirq-unsafe, deadlock.
++	 */
++	HARDIRQ_DISABLE();
++	spin_lock(&lock_C);
++	spin_lock(&lock_D);
++	spin_unlock(&lock_D);
++	spin_unlock(&lock_C);
++	HARDIRQ_ENABLE();
++}
++
+ void locking_selftest(void)
+ {
+ 	/*
+@@ -2872,6 +2933,10 @@ void locking_selftest(void)
+ 
+ 	local_lock_tests();
+ 
++	print_testname("hardirq_unsafe_softirq_safe");
++	dotest(hardirq_deadlock_softirq_not_deadlock, FAILURE, LOCKTYPE_SPECIAL);
++	pr_cont("\n");
++
+ 	if (unexpected_testcase_failures) {
+ 		printk("-----------------------------------------------------------------\n");
+ 		debug_locks = 0;
 -- 
 2.30.2
 
