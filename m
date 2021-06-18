@@ -2,103 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A13BE3AD1B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A393AD1BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234779AbhFRSFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 14:05:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37232 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234538AbhFRSE4 (ORCPT
+        id S234813AbhFRSFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 14:05:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:39828 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234782AbhFRSFr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 14:04:56 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 892AAC061767
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 11:02:46 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 66-20020a9d02c80000b02903615edf7c1aso10461127otl.13
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 11:02:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vPb+Fog9Orm8Pn55YFU+qXYgMRym8/cqFi5Nfj1rr0A=;
-        b=w8UmirZyfCHJtL3TMF2/4bJodKSnlw6obTznBVHws83fKuuctaC8Ce7tE4EE4hfCiy
-         Bp1MGojo4VgoPYQ1c5xeInLXlx2zRuuXVFywqGFFf1XXFVEhr6lrAZglPAWskceBW64s
-         dE+VBsv94ztG1TuPEKFMZzO/5pQ2kRN0aA5v2kSdheTL1DIZbrmBZoppwaXrWgbyknZV
-         iAFDRgiwJfJwKBGDPcOUbhRR+njWPR8OX1HQA4Y+RHk0mGzR27FuctWsSOu3vB88IR9J
-         h0ybTKSIi5yM2cKCOYvkDB4WlBmzemYFZ/GI/fjHl+NP7qV3a9i4TqU/+lipDmzXa4aY
-         Mmfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vPb+Fog9Orm8Pn55YFU+qXYgMRym8/cqFi5Nfj1rr0A=;
-        b=Ebu66NJTgtCGwnaw19CUN0Yc7hJTeqx7sNwFSi6VQw0Jgwg2ECheBzd7Zm3k/B46Vd
-         qbirD36PXyi7RqRYv3fKCQI+xKmH1ByOj73YMM7gat8ttSWz21T9GqXked8f0xJYeBKu
-         y8suT/5bIWRNuWzrSC4Kk+kzTwgUtKxaJ+6qgSDbNHTrsBvgHYmmIqtAAK/BdkqYIs7M
-         +2ubdc13l1WBb0qbWR4WZ+Y7ikDZjLLlyb0PoSwecvQqdVFK7eg79gTleaexmkGgZgDN
-         W5AuVwASC+Ry29dxqRlKPm2tNtsAjnjZSbCAHZWrQTk/G3gX+YdwwU00N7synbrpheAk
-         lmUA==
-X-Gm-Message-State: AOAM532w+W+WZ3mGiWw4OdL5HD1/Y7x2TWQ/0IKvAb6paK/aQqhZAnSY
-        Lk7oQAsDU7Khl4DL6XAcU3gHVg==
-X-Google-Smtp-Source: ABdhPJyC5Ud5gLpaNoU1AiG0wOs/5NZVyraUm6k8xZTxFudxfVVqMKAFio+Gt8ojf1wDPTqOByawtA==
-X-Received: by 2002:a05:6830:2e3:: with SMTP id r3mr3886792ote.229.1624039365903;
-        Fri, 18 Jun 2021 11:02:45 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id l25sm1905270oie.57.2021.06.18.11.02.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 11:02:45 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 13:02:43 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, bhupesh.linux@gmail.com,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, lgirdwood@gmail.com,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v3 4/4] pinctrl: qcom/pinctrl-spmi-gpio: Add compatible
- for pmic-gpio on SA8155p-adp
-Message-ID: <YMzfwwscHU2rWjNL@builder.lan>
-References: <20210617053432.350486-1-bhupesh.sharma@linaro.org>
- <20210617053432.350486-5-bhupesh.sharma@linaro.org>
+        Fri, 18 Jun 2021 14:05:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624039417;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tQAGTbIKTlX+eSDKtwFxg8eJEsQ646RlIwkzsIfqLBM=;
+        b=fGma3SEpgHKfVZfS4SVztJ1RQ1hI2nbdYVJ8a8sWUTGecWpmT2K85w/TPGYoorESW3Yg52
+        y8GPNk9R4PL8wKnuLs63j/1JcI1nKJktJZu/17A2RWLtWMkIHeTK4WDfXI7gVuAQpIAjMP
+        cqJrHf18BoHHgn0He/4x5QhaqoNwrtM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-156-PJiakoOuMgyLdP39Wx6lAQ-1; Fri, 18 Jun 2021 14:03:33 -0400
+X-MC-Unique: PJiakoOuMgyLdP39Wx6lAQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7E811804145;
+        Fri, 18 Jun 2021 18:03:32 +0000 (UTC)
+Received: from localhost (ovpn-112-86.ams2.redhat.com [10.36.112.86])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CA1CA19710;
+        Fri, 18 Jun 2021 18:03:28 +0000 (UTC)
+Date:   Fri, 18 Jun 2021 19:03:27 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        virtio-fs@redhat.com, linux-kernel@vger.kernel.org,
+        Vivek Goyal <vgoyal@redhat.com>
+Subject: Re: [Virtio-fs] support booting of arbitrary non-blockdevice file
+ systems
+Message-ID: <YMzf72yCJqnDTYYo@stefanha-x1.localdomain>
+References: <20210617153649.1886693-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="BJ2t6DUwu2C54aee"
 Content-Disposition: inline
-In-Reply-To: <20210617053432.350486-5-bhupesh.sharma@linaro.org>
+In-Reply-To: <20210617153649.1886693-1-hch@lst.de>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 17 Jun 00:34 CDT 2021, Bhupesh Sharma wrote:
 
-> SA8155p-adp PMIC (PMM8155AU) exposes 10 GPIOs.
-> 
-> Add support for the same in the pinctrl driver.
-> 
+--BJ2t6DUwu2C54aee
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+On Thu, Jun 17, 2021 at 05:36:47PM +0200, Christoph Hellwig wrote:
+> this series adds support to boot off arbitrary non-blockdevice root file
+> systems, based off an earlier patch from Vivek.
 
-Regards,
-Bjorn
+Cool, thanks for working on generic syntax for mounting non-blockdevice
+file systems. Looks good modulo the comments Vivek had.
 
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> ---
->  drivers/pinctrl/qcom/pinctrl-spmi-gpio.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-> index 89f6147efe58..cc50cfc576fd 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c
-> @@ -1132,6 +1132,7 @@ static const struct of_device_id pmic_gpio_of_match[] = {
->  	{ .compatible = "qcom,pmi8994-gpio", .data = (void *) 10 },
->  	{ .compatible = "qcom,pmi8998-gpio", .data = (void *) 14 },
->  	{ .compatible = "qcom,pmk8350-gpio", .data = (void *) 4 },
-> +	{ .compatible = "qcom,pmm8155au-gpio", .data = (void *) 10 },
->  	{ .compatible = "qcom,pmr735a-gpio", .data = (void *) 4 },
->  	{ .compatible = "qcom,pmr735b-gpio", .data = (void *) 4 },
->  	/* pms405 has 12 GPIOs with holes on 1, 9, and 10 */
-> -- 
-> 2.31.1
-> 
+Stefan
+
+--BJ2t6DUwu2C54aee
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmDM3+8ACgkQnKSrs4Gr
+c8iYRQf7BnTsXpltlcUc1ZB0ZEVw8116KM4IDmMLTrZI2+DB6dQUUDoVFGhDQ8Js
+8H+kO2B6gCyRK1kem+d6JF0B9YkWkGmot4c0LljqJs55aAmRRFNFqga3fuGu7/h8
+amS/Hm+QKgmCLIj+U/+nLkUqbxI/vSdmGMLOVgHC05Qw6m/3IRlJlXKjss2jOIzP
+NhaVbWL1WIaDjpgLFFZunGqNQ0jLN7o3SRUhtiJPwZ/9xXJcGem9X7/cFZQ12/Nd
+qP1ATC/vjVnwIZoHFjgn4O0wk3bv8zUMBLZqnnT9PYC5IbAW9oX8LWEine+T58X0
+yQNil38SKTfuWw2ZIRdiX2W7CfuZ3w==
+=zBxt
+-----END PGP SIGNATURE-----
+
+--BJ2t6DUwu2C54aee--
+
