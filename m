@@ -2,209 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4621F3AD0EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 739383AD0F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:09:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233149AbhFRRI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 13:08:57 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:15566 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232406AbhFRRI4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 13:08:56 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624036007; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=AheiMetiBmenXcPfXq7qxPpbL4c0SjGL6/bf+pWs2mc=;
- b=R7GWn89vTCuCuuX7logxdTCjySTL4+/mFLE/tTxf0Yu7I7E/5Hz4+QJmmb3hWAHyO99J1OH+
- 8nOirgMe0n38dKVLWkCoQl9NSInPy0+LfTFgpusDpOQ4GZgXleZ7T6yo8WT1OjXJ9uHdCS50
- mHbCCCn7qq5WWWYtBBoxUNmKoNQ=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 60ccd296b7e6c05f95499df5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Jun 2021 17:06:30
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 27CFEC43217; Fri, 18 Jun 2021 17:06:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0CF1FC433D3;
-        Fri, 18 Jun 2021 17:06:28 +0000 (UTC)
+        id S233693AbhFRRLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 13:11:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232740AbhFRRLn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 13:11:43 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43713C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:09:33 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id o19so8052750qtp.5
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:09:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4NOrwzxRJlcGICPYrhUba54bgGdQ7/VU92/Q3ir7evY=;
+        b=lTO79RcKMGPliGX8pcleoEMngI6k/CwfeVJMXEyzDQKx1czuTjHNBfJjSOyag22fbM
+         cbC6ZH0lwWDpXS3Up2fYwjFAiVdo5tigdUb2bCpdbswuNYk6JtPaiqLk2VNPcOJTTjj3
+         G7GLJDz4zE1mXtTC2rna8924cjBkSJzQ3zM0C3+6T8hHEJu1j9l7KTlNC83+Muo58oqa
+         yWw/SmkPqoWLN8ZWdppvgzxakOB3mx4zxog3eOHeq//GX39iOsZ23S6tcEoJI9GLJsDU
+         pepSvQcBKH1en2jXZGO2E8bOodjc2BJrPUM9cMXAu4I783iWxxhKa0hmSISOzCC2GvF0
+         mOvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4NOrwzxRJlcGICPYrhUba54bgGdQ7/VU92/Q3ir7evY=;
+        b=OQNgdf1K343JQ0Jw7MUp4uMC7wO6ISkgfqn7ZNE2451+WQQOeJGm5Wg9oEQdUXpNND
+         nfhs8OEffVL6ZflZQFZLT0/qC4V79ZBUsVHC/La0EGTKVhiCRkb+nXSvTOs6zODsZpej
+         bJUv+J+3bo2TgKt043NDg3T8p4QqADp3teNciI8S1d8mQQrd4pzhomhTLyHcxuvA4eTm
+         PnBxxehUq9zDXEXqRZZon2yexsyvlzRS90XWqfpCMnAtvyUfOINQoreHvI4OVhFG7dwY
+         CtI+CRhsqIrEiF890ETwyFMGE+ywKNhtDtZs6FPwzLAQDPEKvnPYri/5L/IYw3Ga2RB4
+         2rQw==
+X-Gm-Message-State: AOAM5317tfVS8GWgd00A+J0Woc6S2f5rftq7KCQ2oBP6h8rIQhl39aKT
+        oKOA89HsFK/Bj1sYpQCh1G1N2A==
+X-Google-Smtp-Source: ABdhPJw4e+jfpVDo37iUkRBB/jk3NpOfIkAm19e9INoUu3m8YmPekAemW3VXjAuhd7KzOj9bG/XkOw==
+X-Received: by 2002:ac8:6641:: with SMTP id j1mr11458339qtp.103.1624036172483;
+        Fri, 18 Jun 2021 10:09:32 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id u18sm5521044qta.38.2021.06.18.10.09.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 10:09:31 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 13:09:30 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Dave Chinner <david@fromorbit.com>, Roman Gushchin <guro@fb.com>,
+        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH 4/4] vfs: keep inodes with page cache off the inode
+ shrinker LRU
+Message-ID: <YMzTSteDJkZkVziO@cmpxchg.org>
+References: <20210614211904.14420-1-hannes@cmpxchg.org>
+ <20210614211904.14420-4-hannes@cmpxchg.org>
+ <20210615062640.GD2419729@dread.disaster.area>
+ <YMj2YbqJvVh1busC@cmpxchg.org>
+ <20210616012008.GE2419729@dread.disaster.area>
+ <YMmD9xhBm9wGqYhf@cmpxchg.org>
+ <20210616183043.cdd36c5ca6bee8614c609a90@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 18 Jun 2021 10:06:28 -0700
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        carl.yin@quectel.com, naveen.kumar@quectel.com,
-        loic.poulain@linaro.org
-Subject: Re: [PATCH] bus: mhi: pci_generic: Apply no-op for wake using inband
- wake support flag
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <20210618065249.GN3682@workstation>
-References: <1623954233-32092-1-git-send-email-bbhatt@codeaurora.org>
- <20210618065249.GN3682@workstation>
-Message-ID: <83d12d5cc46ef7fda12caf7e3bdfddd1@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210616183043.cdd36c5ca6bee8614c609a90@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mani,
-On 2021-06-17 11:52 PM, Manivannan Sadhasivam wrote:
-> On Thu, Jun 17, 2021 at 11:23:53AM -0700, Bhaumik Bhatt wrote:
->> Devices such as SDX24 do not have the provision for inband wake
->> doorbell in the form of channel 127. Newer devices such as SDX55
->> or SDX65 have it by default. Ensure the functionality is used
->> based on this such that device wake stays held when a client
->> driver uses mhi_device_get() API or the equivalent debugfs entry.
->> 
->> Fixes: e3e5e6508fc1 ("bus: mhi: pci_generic: No-Op for device_wake 
->> operations")
->> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
->> ---
->>  drivers/bus/mhi/pci_generic.c | 26 ++++++++++++++++++--------
->>  1 file changed, 18 insertions(+), 8 deletions(-)
->> 
->> diff --git a/drivers/bus/mhi/pci_generic.c 
->> b/drivers/bus/mhi/pci_generic.c
->> index d84b743..31360a2 100644
->> --- a/drivers/bus/mhi/pci_generic.c
->> +++ b/drivers/bus/mhi/pci_generic.c
->> @@ -32,6 +32,7 @@
->>   * @edl: emergency download mode firmware path (if any)
->>   * @bar_num: PCI base address register to use for MHI MMIO register 
->> space
->>   * @dma_data_width: DMA transfer word size (32 or 64 bits)
->> + * @no_inband_wake: Devices without inband wake support (such as 
->> sdx24)
+On Wed, Jun 16, 2021 at 06:30:43PM -0700, Andrew Morton wrote:
+> On Wed, 16 Jun 2021 00:54:15 -0400 Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > On Wed, Jun 16, 2021 at 11:20:08AM +1000, Dave Chinner wrote:
+> > > On Tue, Jun 15, 2021 at 02:50:09PM -0400, Johannes Weiner wrote:
+> > > > On Tue, Jun 15, 2021 at 04:26:40PM +1000, Dave Chinner wrote:
+> > > > > On Mon, Jun 14, 2021 at 05:19:04PM -0400, Johannes Weiner wrote:
+> > > > > > @@ -1123,6 +1125,9 @@ static int __remove_mapping(struct address_space *mapping, struct page *page,
+> > > > > >  			shadow = workingset_eviction(page, target_memcg);
+> > > > > >  		__delete_from_page_cache(page, shadow);
+> > > > > >  		xa_unlock_irq(&mapping->i_pages);
+> > > > > > +		if (mapping_shrinkable(mapping))
+> > > > > > +			inode_add_lru(mapping->host);
+> > > > > > +		spin_unlock(&mapping->host->i_lock);
+> > > > > >  
+> > > > > 
+> > > > > No. Inode locks have absolutely no place serialising core vmscan
+> > > > > algorithms.
+> > > > 
+> > > > What if, and hear me out on this one, core vmscan algorithms change
+> > > > the state of the inode?
+> > > 
+> > > Then the core vmscan algorithm has a layering violation.
+> > 
+> > You're just playing a word game here.
 > 
-> I'd rather like this field to be "inband_wake" and set to false/true
-> based on the capability of the devices. Rest looks good.
-> 
-> Thanks,
-> Mani
-> 
-I should have known this was coming :)
+> Don't think so.  David is quite correct in saying that vmscan shouldn't
+> mess with inode state unless it's via address_space_operations?
 
-Can I use sideband_wake instead of no_inband_wake and leave the booleans 
-as is?
-By default, inband_wake will have to be true for any and all devices 
-moving
-forward.
+It seemed to me the complaint was more about vmscan propagating this
+state into the inode in general - effecting fs inode acquisitions and
+LRU manipulations from the page reclaim callstack - regardless of
+whether they are open-coded or indirect through API functions?
 
-Please let me know your preference.
->>   */
->>  struct mhi_pci_dev_info {
->>  	const struct mhi_controller_config *config;
->> @@ -40,6 +41,7 @@ struct mhi_pci_dev_info {
->>  	const char *edl;
->>  	unsigned int bar_num;
->>  	unsigned int dma_data_width;
->> +	bool no_inband_wake;
->>  };
->> 
->>  #define MHI_CHANNEL_CONFIG_UL(ch_num, ch_name, el_count, ev_ring) \
->> @@ -242,7 +244,8 @@ static const struct mhi_pci_dev_info 
->> mhi_qcom_sdx65_info = {
->>  	.edl = "qcom/sdx65m/edl.mbn",
->>  	.config = &modem_qcom_v1_mhiv_config,
->>  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
->> -	.dma_data_width = 32
->> +	.dma_data_width = 32,
->> +	.no_inband_wake = false
->>  };
->> 
->>  static const struct mhi_pci_dev_info mhi_qcom_sdx55_info = {
->> @@ -251,7 +254,8 @@ static const struct mhi_pci_dev_info 
->> mhi_qcom_sdx55_info = {
->>  	.edl = "qcom/sdx55m/edl.mbn",
->>  	.config = &modem_qcom_v1_mhiv_config,
->>  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
->> -	.dma_data_width = 32
->> +	.dma_data_width = 32,
->> +	.no_inband_wake = false
->>  };
->> 
->>  static const struct mhi_pci_dev_info mhi_qcom_sdx24_info = {
->> @@ -259,7 +263,8 @@ static const struct mhi_pci_dev_info 
->> mhi_qcom_sdx24_info = {
->>  	.edl = "qcom/prog_firehose_sdx24.mbn",
->>  	.config = &modem_qcom_v1_mhiv_config,
->>  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
->> -	.dma_data_width = 32
->> +	.dma_data_width = 32,
->> +	.no_inband_wake = true
->>  };
->> 
->>  static const struct mhi_channel_config mhi_quectel_em1xx_channels[] = 
->> {
->> @@ -301,7 +306,8 @@ static const struct mhi_pci_dev_info 
->> mhi_quectel_em1xx_info = {
->>  	.edl = "qcom/prog_firehose_sdx24.mbn",
->>  	.config = &modem_quectel_em1xx_config,
->>  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
->> -	.dma_data_width = 32
->> +	.dma_data_width = 32,
->> +	.no_inband_wake = true
->>  };
->> 
->>  static const struct mhi_channel_config mhi_foxconn_sdx55_channels[] = 
->> {
->> @@ -339,7 +345,8 @@ static const struct mhi_pci_dev_info 
->> mhi_foxconn_sdx55_info = {
->>  	.edl = "qcom/sdx55m/edl.mbn",
->>  	.config = &modem_foxconn_sdx55_config,
->>  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
->> -	.dma_data_width = 32
->> +	.dma_data_width = 32,
->> +	.no_inband_wake = false
->>  };
->> 
->>  static const struct pci_device_id mhi_pci_id_table[] = {
->> @@ -640,9 +647,12 @@ static int mhi_pci_probe(struct pci_dev *pdev, 
->> const struct pci_device_id *id)
->>  	mhi_cntrl->status_cb = mhi_pci_status_cb;
->>  	mhi_cntrl->runtime_get = mhi_pci_runtime_get;
->>  	mhi_cntrl->runtime_put = mhi_pci_runtime_put;
->> -	mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
->> -	mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
->> -	mhi_cntrl->wake_toggle = mhi_pci_wake_toggle_nop;
->> +
->> +	if (info->no_inband_wake) {
->> +		mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
->> +		mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
->> +		mhi_cntrl->wake_toggle = mhi_pci_wake_toggle_nop;
->> +	}
->> 
->>  	err = mhi_pci_claim(mhi_cntrl, info->bar_num, 
->> DMA_BIT_MASK(info->dma_data_width));
->>  	if (err)
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
-
-Thanks,
-Bhaumik
----
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+Since I mentioned better encapsulation but received no response...
