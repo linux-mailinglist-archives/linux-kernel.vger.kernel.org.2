@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 626933ACE72
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:16:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D11C03ACE77
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234911AbhFRPS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:18:59 -0400
-Received: from mga06.intel.com ([134.134.136.31]:53199 "EHLO mga06.intel.com"
+        id S234978AbhFRPTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:19:20 -0400
+Received: from mga11.intel.com ([192.55.52.93]:43908 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234897AbhFRPSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:18:55 -0400
-IronPort-SDR: 5abcgMKnha8WjCz/UR8q6bBVkeH6+RtasFpE8csmZml4x6XlxY1QHbOHi4HtMTBFeJMPnQEcBJ
- IHOvnZpMXJFg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="267713573"
+        id S234920AbhFRPTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 11:19:03 -0400
+IronPort-SDR: /3jSNezd0wL0zAb2PA1OCN8ndt06+tqXOIerH1Wp8mUVZ9ZTNNV96y1iee6fGNQAjqV/v8g2tc
+ oxfHuAHJdaTQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="203545112"
 X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
-   d="scan'208";a="267713573"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 08:16:45 -0700
-IronPort-SDR: bUWn2aZ+KSWpqGLPniPUe4ytW8LWunC0LMYg7GeZzOY+uZJ6s1xAlopJsW03gj+ZFxbdxB1zFN
- JAUSB3pDdGQA==
+   d="scan'208";a="203545112"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 08:16:46 -0700
+IronPort-SDR: 5xNIyIt+KVgy6vf8LLlD2o/7eztn5hWSJlPn67HksO+ShYXYRgk3m7E63O9iX+i25TReGNrqHl
+ XUMt/FBWvtRw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
-   d="scan'208";a="451423868"
+   d="scan'208";a="416470862"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga008.jf.intel.com with ESMTP; 18 Jun 2021 08:16:43 -0700
+  by fmsmga007.fm.intel.com with ESMTP; 18 Jun 2021 08:16:43 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id EBEA450E; Fri, 18 Jun 2021 18:17:07 +0300 (EEST)
+        id 03553516; Fri, 18 Jun 2021 18:17:07 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Marc Zyngier <maz@kernel.org>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -37,9 +37,9 @@ Cc:     Tsahee Zidenberg <tsahee@annapurnalabs.com>,
         Andrew Lunn <andrew@lunn.ch>,
         Gregory Clement <gregory.clement@bootlin.com>,
         Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Subject: [PATCH v1 4/7] irqchip/gic-v3: Switch to bitmap_zalloc()
-Date:   Fri, 18 Jun 2021 18:16:54 +0300
-Message-Id: <20210618151657.65305-4-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 5/7] irqchip/ls-scfg-msi: Switch to devm_bitmap_zalloc()
+Date:   Fri, 18 Jun 2021 18:16:55 +0300
+Message-Id: <20210618151657.65305-5-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210618151657.65305-1-andriy.shevchenko@linux.intel.com>
 References: <20210618151657.65305-1-andriy.shevchenko@linux.intel.com>
@@ -49,79 +49,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch to bitmap_zalloc() to show clearly what we are allocating.
+Switch to devm_bitmap_zalloc() to show clearly what we are allocating.
 Besides that it returns pointer of bitmap type instead of opaque void *.
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/irqchip/irq-gic-v3-its.c | 9 ++++-----
- drivers/irqchip/irq-gic-v3-mbi.c | 5 ++---
- 2 files changed, 6 insertions(+), 8 deletions(-)
+ drivers/irqchip/irq-ls-scfg-msi.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-index ba39668c3e08..daa5b1c968f0 100644
---- a/drivers/irqchip/irq-gic-v3-its.c
-+++ b/drivers/irqchip/irq-gic-v3-its.c
-@@ -2140,7 +2140,7 @@ static unsigned long *its_lpi_alloc(int nr_irqs, u32 *base, int *nr_ids)
- 	if (err)
- 		goto out;
+diff --git a/drivers/irqchip/irq-ls-scfg-msi.c b/drivers/irqchip/irq-ls-scfg-msi.c
+index 55322da51c56..b4927e425f7b 100644
+--- a/drivers/irqchip/irq-ls-scfg-msi.c
++++ b/drivers/irqchip/irq-ls-scfg-msi.c
+@@ -362,10 +362,7 @@ static int ls_scfg_msi_probe(struct platform_device *pdev)
  
--	bitmap = kcalloc(BITS_TO_LONGS(nr_irqs), sizeof (long), GFP_ATOMIC);
-+	bitmap = bitmap_zalloc(nr_irqs, GFP_ATOMIC);
- 	if (!bitmap)
- 		goto out;
- 
-@@ -2156,7 +2156,7 @@ static unsigned long *its_lpi_alloc(int nr_irqs, u32 *base, int *nr_ids)
- static void its_lpi_free(unsigned long *bitmap, u32 base, u32 nr_ids)
- {
- 	WARN_ON(free_lpi_range(base, nr_ids));
--	kfree(bitmap);
-+	bitmap_free(bitmap);
- }
- 
- static void gic_reset_prop_table(void *va)
-@@ -3376,8 +3376,7 @@ static struct its_device *its_create_device(struct its_node *its, u32 dev_id,
- 	if (alloc_lpis) {
- 		lpi_map = its_lpi_alloc(nvecs, &lpi_base, &nr_lpis);
- 		if (lpi_map)
--			col_map = kcalloc(nr_lpis, sizeof(*col_map),
--					  GFP_KERNEL);
-+			col_map = kcalloc(nr_lpis, sizeof(*col_map), GFP_KERNEL);
- 	} else {
- 		col_map = kcalloc(nr_ites, sizeof(*col_map), GFP_KERNEL);
- 		nr_lpis = 0;
-@@ -3387,7 +3386,7 @@ static struct its_device *its_create_device(struct its_node *its, u32 dev_id,
- 	if (!dev || !itt ||  !col_map || (!lpi_map && alloc_lpis)) {
- 		kfree(dev);
- 		kfree(itt);
--		kfree(lpi_map);
-+		bitmap_free(lpi_map);
- 		kfree(col_map);
- 		return NULL;
- 	}
-diff --git a/drivers/irqchip/irq-gic-v3-mbi.c b/drivers/irqchip/irq-gic-v3-mbi.c
-index e81e89a81cb5..b84c9c2eccdc 100644
---- a/drivers/irqchip/irq-gic-v3-mbi.c
-+++ b/drivers/irqchip/irq-gic-v3-mbi.c
-@@ -290,8 +290,7 @@ int __init mbi_init(struct fwnode_handle *fwnode, struct irq_domain *parent)
- 		if (ret)
- 			goto err_free_mbi;
- 
--		mbi_ranges[n].bm = kcalloc(BITS_TO_LONGS(mbi_ranges[n].nr_spis),
--					   sizeof(long), GFP_KERNEL);
-+		mbi_ranges[n].bm = bitmap_zalloc(mbi_ranges[n].nr_spis, GFP_KERNEL);
- 		if (!mbi_ranges[n].bm) {
- 			ret = -ENOMEM;
- 			goto err_free_mbi;
-@@ -329,7 +328,7 @@ int __init mbi_init(struct fwnode_handle *fwnode, struct irq_domain *parent)
- err_free_mbi:
- 	if (mbi_ranges) {
- 		for (n = 0; n < mbi_range_nr; n++)
--			kfree(mbi_ranges[n].bm);
-+			bitmap_free(mbi_ranges[n].bm);
- 		kfree(mbi_ranges);
- 	}
- 
+ 	msi_data->irqs_num = MSI_IRQS_PER_MSIR *
+ 			     (1 << msi_data->cfg->ibs_shift);
+-	msi_data->used = devm_kcalloc(&pdev->dev,
+-				    BITS_TO_LONGS(msi_data->irqs_num),
+-				    sizeof(*msi_data->used),
+-				    GFP_KERNEL);
++	msi_data->used = devm_bitmap_zalloc(&pdev->dev, msi_data->irqs_num, GFP_KERNEL);
+ 	if (!msi_data->used)
+ 		return -ENOMEM;
+ 	/*
 -- 
 2.30.2
 
