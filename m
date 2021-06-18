@@ -2,97 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D773AC8F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 12:37:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B862B3AC8F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 12:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232997AbhFRKjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 06:39:42 -0400
-Received: from lb1-smtp-cloud8.xs4all.net ([194.109.24.21]:38775 "EHLO
-        lb1-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232620AbhFRKjk (ORCPT
+        id S233019AbhFRKla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 06:41:30 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:31585 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231478AbhFRKl3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 06:39:40 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id uBsKlChofhqltuBsNl4qYb; Fri, 18 Jun 2021 12:37:29 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1624012649; bh=VlAoir4iEvONAT/BY+cgI0IYuXDYmhxoRI0C9ApQ6wc=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=rDLXGSi8AsyID7i8J1ovZ3rCmDiKIFj7+HjJ3IqnxXLgLVW2Uefxy4RXM/NhSraP6
-         xUIFfkeML5loBY9IfD5l+eCGY2JEd3YoC6xfSK284fzgyeS3yAgE4ZwSV0wK+9Ny2b
-         geK1Ds/BOTolRdBuE64yGI7hkuSZVr/1+JnaE+ugnIXDun32lhcCb8cNjufkKMVk4M
-         Nrk0OSjQQug+UggvN9LQgUntduKboeQps0uX9Z2dhK3jFskgt8F8jCWl7n51KmHHaD
-         zvxd8STpK/vJgT5z+OFnvhWtF3BmeZTWtnP/CbWLiu2a4B9A1XLaVR+GpOPe/EAFIE
-         4osaNeTFdv7/g==
-Subject: Re: [PATCH] media: atomisp: fix the uninitialized use
-To:     Yizhuo Zhai <yzhai003@ucr.edu>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        akari.ailus@linux.intel.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        juant.aldea@gmail.com, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <CABvMjLRkmsrxXxHkX7PrkoRK5m=7_b3wpvyZK88V19b05CFx2w@mail.gmail.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <8b717a74-e863-87d9-d42e-ede344a9e036@xs4all.nl>
-Date:   Fri, 18 Jun 2021 12:37:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.0
+        Fri, 18 Jun 2021 06:41:29 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624012760; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=4fG1y8WDPrYtBMq9UfTcY0OGD8AEXRPSN4vcguMIVpM=;
+ b=hM9Gp4811nlQerq7VsPYBgtKBagW3wRe0FX/zT+hpja8LgnEPgPalU+zm1VFNGuXlf5LCb6L
+ u6BWtkzKmHiunn/9njmTj5tSfCaKb7A0hLzADjkUz3o2hBTsSbtMGHY7uQ+isXsUUd3/HrkZ
+ mYlgJhGqj6zU1Ca6/ifqbqUeb2g=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 60cc77d751f29e6bae2a4a70 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Jun 2021 10:39:19
+ GMT
+Sender: rajeevny=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 04CA2C4338A; Fri, 18 Jun 2021 10:39:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rajeevny)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4116CC433D3;
+        Fri, 18 Jun 2021 10:39:17 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <CABvMjLRkmsrxXxHkX7PrkoRK5m=7_b3wpvyZK88V19b05CFx2w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfKmXUTMoU7DtZ3Beut9p5klX6/m9criQsvlt5IGujsj6uzPjxzuIz7/JYvEcUkbNvJxU76YduC0OS2op4syZwei3S/ANIwgVSa6WxuQxm8aRrmOJ8YMS
- oG5Gmj7zitcf1a7SdUIst8Ai3RkYCP8H8AS9DeUS0R5WSlTJ/GelXzxS+O5CxXYQSROBQ//eKyC7YjhZDp8ORAEeqjSs+tkq9mkaw78JI+kXJ3u5cGcgz0W/
- TYem41lTtjiSVjE25fJ843JRBDJG/pArnoZDc0gOTryg1Bx1ejZVxbq+op4UGwm0nTV2F4v0xeKLlFKh3ceSnpYJPv4EIAchipFDg1IZFNd17RYIwOewbSDe
- epNG9ewqiRovObNr+TUMCBNWI45yNC36TZWekEbWulkOAWx84vVz2hLGdGjaKmJf5HjF2LE8a7jwWA/edrGYkMZ12xXtUnUagVlU0jQeS00aAe+cYVE=
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Fri, 18 Jun 2021 16:09:17 +0530
+From:   rajeevny@codeaurora.org
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     Rob Herring <robh@kernel.org>, robh+dt@kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sean@poorly.run, robdclark@gmail.com,
+        abhinavk@codeaurora.org, kalyan_t@codeaurora.org,
+        mkrishn@codeaurora.org
+Subject: Re: [v1 1/3] dt-bindings: msm/dsi: Add yaml schema for 7nm DSI PHY
+In-Reply-To: <a453734a-ab1f-bf35-9272-0b94c713f05b@marek.ca>
+References: <1622468035-8453-1-git-send-email-rajeevny@codeaurora.org>
+ <1622468035-8453-2-git-send-email-rajeevny@codeaurora.org>
+ <20210601205848.GA1025498@robh.at.kernel.org>
+ <ec1bcb4e734b784ab17c4fc558a5fab9@codeaurora.org>
+ <27dec6f881a3b8bd5e13ba32990f975b@codeaurora.org>
+ <a453734a-ab1f-bf35-9272-0b94c713f05b@marek.ca>
+Message-ID: <a736c5e48907bc2da064f98d94dff9da@codeaurora.org>
+X-Sender: rajeevny@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/06/2021 20:45, Yizhuo Zhai wrote:
-> Inside function mt9m114_detect(), variable "retvalue" could
-> be uninitialized if mt9m114_read_reg() returns error, however, it
-> is used in the later if statement, which is potentially unsafe.
-> 
-> Signed-off-by: Yizhuo <yzhai003@ucr.edu>
-> ---
->  drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> index f5de81132177..8ddddb18ffbb 100644
-> --- a/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> +++ b/drivers/staging/media/atomisp/i2c/atomisp-mt9m114.c
-> @@ -1534,12 +1534,15 @@ static int mt9m114_detect(struct
-> mt9m114_device *dev, struct i2c_client *client)
->  {
->         struct i2c_adapter *adapter = client->adapter;
->         u32 retvalue;
-> +       int ret;
 
-Hmm, 'ret' and 'retvalue'. That's a bit confusing. Just rename 'retvalue'
-to 'model', then it makes more sense.
-
+On 17-06-2021 20:37, Jonathan Marek wrote:
+> On 6/16/21 1:50 AM, rajeevny@codeaurora.org wrote:
+>> On 03-06-2021 01:32, rajeevny@codeaurora.org wrote:
+>>> On 02-06-2021 02:28, Rob Herring wrote:
+>>>> On Mon, May 31, 2021 at 07:03:53PM +0530, Rajeev Nandan wrote:
+>>> 
+>>>>> +
+>>>>> +properties:
+>>>>> +  compatible:
+>>>>> +    oneOf:
+>>>>> +      - const: qcom,dsi-phy-7nm
+>>>> 
+>>>> When would one use this?
+>>> This is for SM8250.
+>>> 
+>>>> 
+>>>>> +      - const: qcom,dsi-phy-7nm-7280
+>>>>> +      - const: qcom,dsi-phy-7nm-8150
+>>>> 
+>>>> These don't look like full SoC names (sm8150?) and it's
+>>>> <vendor>,<soc>-<block>.
+>>> 
+>>> Thanks, Rob, for the review.
+>>> 
+>>> I just took the `compatible` property currently used in the DSI PHY 
+>>> driver
+>>> (drivers/gpu/drm/msm/dsi/phy/dsi_phy.c), and added a new entry for 
+>>> sc7280.
+>>> A similar pattern of `compatible` names are used in other variants of 
+>>> the
+>>> DSI PHY driver e.g. qcom,qcom,dsi-phy-10nm-8998, 
+>>> qcom,dsi-phy-14nm-660 etc.
+>>> 
+>>> The existing compatible names "qcom,dsi-phy-7nm-8150" (SoC at the 
+>>> end) make
+>>> some sense, if we look at the organization of the dsi phy driver 
+>>> code.
+>>> I am new to this and don't know the reason behind the current code
+>>> organization and this naming.
+>>> 
+>>> Yes, I agree with you, we should use full SoC names. Adding
+>>> the SoC name at the end does not feel very convincing, so I will 
+>>> change this
+>>> to the suggested format e.g. "qcom,sm8250-dsi-phy-7nm", and will 
+>>> rename the
+>>> occurrences in the driver and device tree accordingly.
+>>> Do I need to make changes for 10nm, 14nm, 20nm, and 28nm DSI PHY too?
+>>> Bindings doc for these PHYs recently got merged to msm-next [1]
+>>> 
+>>> 
+>>> [1]
+>>> https://gitlab.freedesktop.org/drm/msm/-/commit/8fc939e72ff80116c090aaf03952253a124d2a8e
+>> 
+>> Hi Rob,
+>> 
+>> I missed adding "robh+dt@kernel.org" earlier in this thread.
+>> 
+>> Please check my response to your review comments. Regarding your 
+>> suggestion to use <vendor>,<soc>-<block> format for compatible 
+>> property, should I also upload a new patch to make changes in 10nm, 
+>> 14nm, 20nm, and 28nm DSI PHY DT bindings?
+>> 
+>> Thanks,
+>> Rajeev
+>> 
 > 
->         if (!i2c_check_functionality(adapter, I2C_FUNC_I2C)) {
->                 dev_err(&client->dev, "%s: i2c error", __func__);
->                 return -ENODEV;
->         }
-> -       mt9m114_read_reg(client, MISENSOR_16BIT, (u32)MT9M114_PID, &retvalue);
-> +       ret = mt9m114_read_reg(client, MISENSOR_16BIT,
-> (u32)MT9M114_PID, &retvalue);
-> +       if (ret)
-> +               return ret;
->         dev->real_model_id = retvalue;
+> Hi,
 > 
->         if (retvalue != MT9M114_MOD_ID) {
+> I missed this and ended up sending a similar patch a week later (as
+> part of my cphy series, because I needed it to add a "phy-type"
+> property).
 > 
+> "qcom,dsi-phy-7nm" and "qcom,dsi-phy-7nm-8150" aren't new compatibles,
+> they were previously documented in the .txt bindings, which are
+> getting removed, but the new .yaml bindings didn't include them.
+> Documenting them is just a fixup to that patch [1] which is already
+> R-B'd by RobH (and has similar compatibles such as "qcom,dsi-phy-10nm"
+> and "qcom,dsi-phy-10nm-8998
+> ").
+> 
+> You can use a different/better naming scheme for sc7280, but changing
+> the others has nothing to do with adding support for sc7280.
+> 
+> [1]
+> https://gitlab.freedesktop.org/drm/msm/-/commit/8fc939e72ff80116c090aaf03952253a124d2a8e
 
-This patch got mangled by your mail client: long lines were wrapped around.
+Hi Jonathan,
 
-Regards,
+I will discard this patch and will add the bindings for the sc7280 on 
+top of your patch [1].
 
-	Hans
+[1] 
+https://lore.kernel.org/linux-arm-msm/20210617144349.28448-2-jonathan@marek.ca/
+
+
+Thanks,
+Rajeev
