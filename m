@@ -2,84 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E543ACE78
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECBC13ACE83
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234981AbhFRPT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:19:26 -0400
-Received: from mga11.intel.com ([192.55.52.93]:43908 "EHLO mga11.intel.com"
+        id S234942AbhFRPVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:21:34 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:29198 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234925AbhFRPTD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:19:03 -0400
-IronPort-SDR: OA/tR/XljH3S3KuoI3dZ+F27stmNUrd3J0W2zl/ph0e/9opcivtx/mFTI2K6VDyCSNgs5fGVNP
- CqBM2eD+5EeQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="203545123"
-X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
-   d="scan'208";a="203545123"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 08:16:49 -0700
-IronPort-SDR: l88ugZuCTd4LwDkS8RN7RX9Z/0a1zHb350z8eo2TeAkQJZJbyupWEnUHf0+3eui2WV1N1GTK5K
- DEKir6tpoI7A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
-   d="scan'208";a="416470877"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga007.fm.intel.com with ESMTP; 18 Jun 2021 08:16:46 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 1A0A45B5; Fri, 18 Jun 2021 18:17:08 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Marc Zyngier <maz@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Tsahee Zidenberg <tsahee@annapurnalabs.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>
-Subject: [PATCH v1 7/7] irqchip/mvebu-odmi: Switch to bitmap_zalloc()
-Date:   Fri, 18 Jun 2021 18:16:57 +0300
-Message-Id: <20210618151657.65305-7-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210618151657.65305-1-andriy.shevchenko@linux.intel.com>
-References: <20210618151657.65305-1-andriy.shevchenko@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S233518AbhFRPVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 11:21:31 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624029562; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=J9yXQ6oRlJ+lpMcEvlTUhkm+Zl/MViuXSRM8imLm6O4=; b=NNT8DvGGeNNcpx12gb1iRCMdUooF5eBE9Ywfkl+6U7DYveA4F4vYLnFbFnY/bYjx3XV0hrk2
+ pkOTrIYAdjBRdi5fTwjZfZCqJ0OZuSun9O7ufxIy5q3GWDn+LCrMylIVBI3XtLXqqiuzhUs/
+ 3CXlcvK8VBGdEOoOpBoY+WG9PxY=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 60ccb979e27c0cc77f914615 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Jun 2021 15:19:21
+ GMT
+Sender: charante=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 67E5BC4323A; Fri, 18 Jun 2021 15:19:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hu-charante-hyd.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D8E01C4360C;
+        Fri, 18 Jun 2021 15:19:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D8E01C4360C
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
+From:   Charan Teja Reddy <charante@codeaurora.org>
+To:     akpm@linux-foundation.org, vbabka@suse.cz, corbet@lwn.net,
+        mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
+        osalvador@suse.de, rientjes@google.com, mchehab+huawei@kernel.org,
+        lokeshgidra@google.com, andrew.a.klychkov@gmail.com,
+        xi.fengfei@h3c.com, nigupta@nvidia.com,
+        dave.hansen@linux.intel.com, famzheng@amazon.com,
+        mateusznosek0@gmail.com, oleksandr@redhat.com, sh_def@163.com
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Charan Teja Reddy <charante@codeaurora.org>
+Subject: [PATCH V4,0/3] mm: compaction: proactive compaction trigger by user
+Date:   Fri, 18 Jun 2021 20:48:52 +0530
+Message-Id: <cover.1624028025.git.charante@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Switch to bitmap_zalloc() to show clearly what we are allocating.
-Besides that it returns pointer of bitmap type instead of opaque void *.
+These patches support triggering of proactive compaction by user on write
+to the /proc/sys/vm/compaction_proactiveness.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/irqchip/irq-mvebu-odmi.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Changes in V4:
+  -- Changed the code as the 'proactive_defer' counter is removed.
+  -- No changes in the logic of triggering the proactive compaction.
+  -- Removed the 'proactive_defer' counter.
 
-diff --git a/drivers/irqchip/irq-mvebu-odmi.c b/drivers/irqchip/irq-mvebu-odmi.c
-index b4d367868dbb..dc4145abdd6f 100644
---- a/drivers/irqchip/irq-mvebu-odmi.c
-+++ b/drivers/irqchip/irq-mvebu-odmi.c
-@@ -171,8 +171,7 @@ static int __init mvebu_odmi_init(struct device_node *node,
- 	if (!odmis)
- 		return -ENOMEM;
- 
--	odmis_bm = kcalloc(BITS_TO_LONGS(odmis_count * NODMIS_PER_FRAME),
--			   sizeof(long), GFP_KERNEL);
-+	odmis_bm = bitmap_zalloc(odmis_count * NODMIS_PER_FRAME, GFP_KERNEL);
- 	if (!odmis_bm) {
- 		ret = -ENOMEM;
- 		goto err_alloc;
-@@ -227,7 +226,7 @@ static int __init mvebu_odmi_init(struct device_node *node,
- 		if (odmi->base && !IS_ERR(odmi->base))
- 			iounmap(odmis[i].base);
- 	}
--	kfree(odmis_bm);
-+	bitmap_free(odmis_bm);
- err_alloc:
- 	kfree(odmis);
- 	return ret;
+Changes in V3:
+  -- Fixed review comments from Vlastimil and others.
+  -- Fixed wake up logic when compaction_proactiveness is zero.
+  -- https://lore.kernel.org/patchwork/patch/1438211/
+
+Changes in V2:
+  -- remove /proc/../proactive_compact_memory interface trigger for proactive compaction
+  -- Intention is same that add a way to trigger proactive compaction by user.
+  -- https://lore.kernel.org/patchwork/patch/1431283/
+
+Changes in V1:
+  -- Created the new /proc/sys/vm/proactive_compact_memory in
+     interface to trigger proactive compaction from user 
+  -- https://lore.kernel.org/lkml/1619098678-8501-1-git-send-email-charante@codeaurora.org/
+
+
+Charan Teja Reddy (3):
+  mm: compaction:  optimize proactive compaction deferrals
+  mm: compaction: support triggering of proactive compaction by user
+  mm: compaction: fix wakeup logic of proactive compaction
+
+ Documentation/admin-guide/sysctl/vm.rst |  3 +-
+ include/linux/compaction.h              |  2 ++
+ include/linux/mmzone.h                  |  1 +
+ kernel/sysctl.c                         |  2 +-
+ mm/compaction.c                         | 61 +++++++++++++++++++++++++++------
+ 5 files changed, 56 insertions(+), 13 deletions(-)
+
 -- 
-2.30.2
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of the Code Aurora Forum, hosted by The Linux Foundation
 
