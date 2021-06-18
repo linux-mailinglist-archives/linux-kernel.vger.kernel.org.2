@@ -2,94 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 164003ACBCA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F8E3ACBC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232682AbhFRNM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:12:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232627AbhFRNM4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:12:56 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075C1C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:10:47 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id m17so1467566plx.7
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:10:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xeflnMpXCc8lQl488t2UyqqllAHiO3IjtrjGZgwxjE8=;
-        b=l4JvENXKS+0wuXa9Dd7ASyOi+R2Ra1aLIyA3k6/hFxsit72DMEgc04M2UT1qYk5Sb0
-         WspU0VkFFL2rOaKiwcWlw6iLuFtDYrkBFGTYnoWKOx0j5yPXk6liOpjHGfCyYCF/WXSb
-         uXLJ80qb0RBPXArA/ItZJI05DK9fbVDKsCbP3OrZS+F9FIA+kjubUgtL33FY+wHQvdqA
-         IlUzws0eoYgmiXbL1Aog1Fxp9UDyg8ViwDqml0U9R5abh5W+c3OtLIc3PDV145QF493k
-         5OazSdv+z0dulHEsk7iosWreirruFs8y3ZBkwSFKYQtqA7QikIbxeVkqaV7+ISh+MZWf
-         fr6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xeflnMpXCc8lQl488t2UyqqllAHiO3IjtrjGZgwxjE8=;
-        b=ErEl/w2cHnHW03Q4WRKQXO7EHysHlSlWjEUXFXrt1nK4fNboLadX8gUTG2hY/S9PMU
-         cv+NTjmxE6Yv7hiRY58zQq/2QgIQq3wQzPozTB2AXaBjYpXaM+3zuhEDVFVoxViaTFeB
-         9hsrsWXT/8xuS10kR1YQDtgVzUAMW1IInBvrQ1pz4ngnWFQrekePlLeeOmp+BnpPFeaX
-         wfAiQ4CJajcoqpJKFc2WJm5E+NEPwx5irQD0P0w9xgdS0efFROQhhqnsDIxi88LKOebI
-         3Mvd7lyZ4LdYQfneAiql8MBIVRhpHZ1ffeuQCMiprkBBmOZQIAw8KOXCFJGgHHRsnkXn
-         KA6w==
-X-Gm-Message-State: AOAM532Np2KfWPIGCEdYBhAjdUeRyMFvtUaGEOYnjIBJnN5i6uCHPJiI
-        vgs2E8pev+0AYjI8vlstJkV4dbZRvYksaMpYXbg=
-X-Google-Smtp-Source: ABdhPJzcSX6tm09hnesQWqlEKd9p2OWaX9DN17n4s3XcCvm5NLcAdCBgDPUZFvnKjiSXNhS667ToHT0D90tnVJ9s7Nk=
-X-Received: by 2002:a17:90a:880c:: with SMTP id s12mr11065571pjn.66.1624021846430;
- Fri, 18 Jun 2021 06:10:46 -0700 (PDT)
+        id S232598AbhFRNMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:12:52 -0400
+Received: from mga04.intel.com ([192.55.52.120]:64373 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232238AbhFRNMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 09:12:50 -0400
+IronPort-SDR: T2w412mmboZhkx4k+r06c/DMBFp3p8ITDo8jqMYjXLgJnlodtt7QjHxgjOTlQA/ltld0F3E8Us
+ btkH2j9Wyc4A==
+X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="204721394"
+X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
+   d="scan'208";a="204721394"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 06:10:41 -0700
+IronPort-SDR: ndZdFsDW8Q3BKEovwvKaFojvoM9Lgdt1pUsbdH7Je72Npur3QRwE+sGTVj3Ui9CsuA7D0y+wic
+ hZY4iAqUlEBQ==
+X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
+   d="scan'208";a="485683801"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.212.157]) ([10.254.212.157])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 06:10:38 -0700
+Cc:     baolu.lu@linux.intel.com, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linuxarm@huawei.com,
+        thunder.leizhen@huawei.com, chenxiang66@hisilicon.com,
+        linux-doc@vger.kernel.org
+Subject: Re: [PATCH v14 2/6] iommu: Print strict or lazy mode at init time
+To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
+        will@kernel.org, dwmw2@infradead.org, robin.murphy@arm.com,
+        corbet@lwn.net
+References: <1624016058-189713-1-git-send-email-john.garry@huawei.com>
+ <1624016058-189713-3-git-send-email-john.garry@huawei.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <502b7d81-7c6e-affd-0e06-4f0caf7e9fb9@linux.intel.com>
+Date:   Fri, 18 Jun 2021 21:10:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210203091306.140518-1-jagan@amarulasolutions.com>
-In-Reply-To: <20210203091306.140518-1-jagan@amarulasolutions.com>
-From:   Jonathan Liu <net147@gmail.com>
-Date:   Fri, 18 Jun 2021 23:10:33 +1000
-Message-ID: <CANwerB1Bev8Ljta9OyO6vAKsQqHHmaJnjV1YRGmY4bVk_J6xZA@mail.gmail.com>
-Subject: Re: [PATCH] drm/bridge: dw-mipi-dsi: Move drm_bridge_add into probe
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Heiko Stubner <heiko@sntech.de>,
-        Yannick Fertre <yannick.fertre@st.com>,
-        Philippe Cornu <philippe.cornu@st.com>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        Vincent Abriou <vincent.abriou@st.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-amarula@amarulasolutions.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1624016058-189713-3-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jagan,
+On 2021/6/18 19:34, John Garry wrote:
+> As well as the default domain type, it's useful to know whether strict
+> or lazy for DMA domains, so add this info in a separate print.
+> 
+> The (stict/lazy) mode may be also set via iommu.strict earlyparm, but
+> this will be processed prior to iommu_subsys_init(), so that print will be
+> accurate for drivers which don't set the mode via custom means.
+> 
+> For the drivers which set the mode via custom means - AMD and Intel drivers
+> - they maintain prints to inform a change in policy or that custom cmdline
+> methods to change policy are deprecated.
+> 
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+> ---
+>   drivers/iommu/iommu.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index 5419c4b9f27a..cf58949cc2f3 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -138,6 +138,11 @@ static int __init iommu_subsys_init(void)
+>   		(iommu_cmd_line & IOMMU_CMD_LINE_DMA_API) ?
+>   			"(set via kernel command line)" : "");
+>   
+> +	pr_info("DMA domain TLB invalidation policy: %s mode %s\n",
+> +		iommu_dma_strict ? "strict" : "lazy",
+> +		(iommu_cmd_line & IOMMU_CMD_LINE_STRICT) ?
+> +			"(set via kernel command line)" : "");
+> +
+>   	return 0;
+>   }
+>   subsys_initcall(iommu_subsys_init);
+> 
 
-On Wed, 3 Feb 2021 at 09:13, Jagan Teki <jagan@amarulasolutions.com> wrote:
-> @@ -1167,6 +1151,20 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
->         dw_mipi_dsi_debugfs_init(dsi);
->         pm_runtime_enable(dev);
->
-> +       ret = drm_of_find_panel_or_bridge(dev->of_node, 1, 0,
-> +                                         &panel, &bridge);
-> +       if (ret)
-> +               return ERR_PTR(ret);
+Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
 
-On RK3399 if the error is EPROBE_DEFER, __dw_mipi_dsi_probe can be
-called again and result in the following errors:
-[    0.717589] debugfs: Directory 'ff960000.mipi' with parent '/'
-already present!
-[    0.717601] dw-mipi-dsi-rockchip ff960000.mipi: failed to create debugfs root
-[    0.717606] dw-mipi-dsi-rockchip ff960000.mipi: Unbalanced pm_runtime_enable!
-
-Regards,
-Jonathan
+Best regards,
+baolu
