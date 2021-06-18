@@ -2,125 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73503AD0BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B64F23AD0C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235977AbhFRQv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 12:51:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50952 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229730AbhFRQvz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 12:51:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B8A02613EB;
-        Fri, 18 Jun 2021 16:49:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624034985;
-        bh=mTZnpeYyj5Av/AzIIZndE8lb3hBum1ZaDaXOdWjBMfw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OXpbWO+S3Md/YSfnSYTYwInfGeT2T6j+K0grh7Uog3hSNasVP9V46Z2XayriLrdlT
-         Tl+6J4n9RVM9Z4SOq1Ef9xofCKzS0nCZq3WDQ7CnmjszqZGFJ0oHaKjjEtkEyB+3yH
-         VyvlHdlaClDAzcfZ9iPPpEtMaIbwwovP97KTbReh5jY+HZO/c9bd3AlZmUQiFRnDcW
-         dzKI+7QroiJp3et548rkoWtsNpS+2Qg9ktETlfvSZ8lTUlvVlG7IyJwrKoX7DI1oOD
-         hokPk6KeKUVhOSHKzCI3Mj6HZQBUH+S7+jfYtRMDsIDvVDZK0Rj3LIU0jnIqPw7wUJ
-         bJyHfJlczmBgA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 63AD640B1A; Fri, 18 Jun 2021 13:49:42 -0300 (-03)
-Date:   Fri, 18 Jun 2021 13:49:42 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 2/4] perf test: Pass the verbose option to shell tests
-Message-ID: <YMzOpgZPJeC2jGKf@kernel.org>
-References: <20210617184216.2075588-1-irogers@google.com>
- <20210617184216.2075588-2-irogers@google.com>
- <YMugKlkH7lTWxTQ/@kernel.org>
+        id S235990AbhFRQ4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 12:56:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233369AbhFRQ4O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 12:56:14 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02CFAC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 09:54:05 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id x196so11196048oif.10
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 09:54:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AtSqJOQGfjKv3UOcjj+P/M/U0KAJcbotecQbdXLeGdE=;
+        b=S6H4mLsocQZXJTWCCi58vEGYojWSPpW0UBu5oyIqTluZ1mhtIhmr8gi/WkMNeemx9V
+         ZVVxgzztTTFLcKcB7Fl9a6JjekIFLAD7GK8aco+Ed9UvOgWLWmhtPKxbFX7Mrii+GK36
+         +vCHyWa+xfsZbl8w9tKOmCXqnyHgWTsCGYhiqctrFdiWgo6mBo6503RS8pHiIA+1kgNy
+         Lo0e8EpTtukNP0M0cubZstkmwYWHaCIzJx7hIwLb3IcYuXpfOlay3MIWYwWYDIbyqQ9y
+         3OccBtAaOIJQ4IxlAb4Zyp8/H3I0oUeZLf6vCuoF7iakCwbd7Fv9Z/dTSnxhl9Nlqvdn
+         UeZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AtSqJOQGfjKv3UOcjj+P/M/U0KAJcbotecQbdXLeGdE=;
+        b=UsMAxjhgnlND6W2BUDYyeDicvpLas1RqsyQoiBq83R+YQi9Qr3pRTQldIapMmtsKtJ
+         YeG+jsTc/6f6FlhdOky2gDBQJzKWdPFKMZNbudjefpmBkkwHndTxtK6SRiiz+xQLkzyZ
+         d8sibcrngd6JR4I/A0e3KzTb4fyTrONxOttO9NpdWVT4Qm0PHC7F6V5JXRXCUQ5DI186
+         S/8WtAyohZhURibgc/mvSYm8acsuMhfySDFLkZ7gQsHf3ONCOcG18Ic72gjMV/+6m3JM
+         2Av5ON54ixtFQBch7Q8JqrMYoK768E7XcnjwTCE9dwt2LDnXcx4BZ9imOKJTW0xRkulw
+         FYaw==
+X-Gm-Message-State: AOAM530Vo13ctWcci9QoY43k0mObxn8/CyGz7PK+UnG9GJ/urNvR6r1Q
+        zqV/xR3WmK1+HlRAh3PuHY6Ik161WOVGlmfwRLtnBA==
+X-Google-Smtp-Source: ABdhPJyHzNg1FTlnP0ojeJkXrYeJkXPTb5H3tCQJjlx70G2MdTVcBObUsy/Yte/q9+CooW6Ir2VvuD/lJo1v/CAIyYs=
+X-Received: by 2002:aca:1e07:: with SMTP id m7mr7727189oic.28.1624035244083;
+ Fri, 18 Jun 2021 09:54:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMugKlkH7lTWxTQ/@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <0c00d96c46d34d69f5f459baebf3c89a507730fc.camel@perches.com>
+ <20200603101131.2107303-1-efremov@linux.com> <CALMp9eSFkRrWLjegJ5OC7kZ4oWtZypKRDjXFQD5=tFX4YLpUgw@mail.gmail.com>
+ <YMw2YeWHFsn+AFmN@dhcp22.suse.cz>
+In-Reply-To: <YMw2YeWHFsn+AFmN@dhcp22.suse.cz>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Fri, 18 Jun 2021 09:53:53 -0700
+Message-ID: <CALMp9eR9n6N5EB-nUEJPM=e2YtE3_tQBDHj0uP3T2dcGsutSCQ@mail.gmail.com>
+Subject: Re: [PATCH] KVM: Use vmemdup_user()
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Denis Efremov <efremov@linux.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, joe@perches.com,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jun 17, 2021 at 04:19:06PM -0300, Arnaldo Carvalho de Melo escreveu:
-> Em Thu, Jun 17, 2021 at 11:42:14AM -0700, Ian Rogers escreveu:
-> > Having a verbose option will allow shell tests to provide extra failure
-> > details when the fail or skip.
->  
-> 
-> Thanks, applied to perf/core.
-> 
-> - Arnaldo
-> 
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/tests/builtin-test.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
-> > index cbbfe48ab802..a8160b1684de 100644
-> > --- a/tools/perf/tests/builtin-test.c
-> > +++ b/tools/perf/tests/builtin-test.c
-> > @@ -577,11 +577,14 @@ struct shell_test {
-> >  static int shell_test__run(struct test *test, int subdir __maybe_unused)
-> >  {
-> >  	int err;
-> > -	char script[PATH_MAX];
-> > +	char script[PATH_MAX + 3];
-> >  	struct shell_test *st = test->priv;
-> >  
-> >  	path__join(script, sizeof(script), st->dir, st->file);
+On Thu, Jun 17, 2021 at 11:00 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Thu 17-06-21 17:25:04, Jim Mattson wrote:
+> > On Wed, Jun 3, 2020 at 3:10 AM Denis Efremov <efremov@linux.com> wrote:
+> > >
+> > > Replace opencoded alloc and copy with vmemdup_user().
+> > >
+> > > Signed-off-by: Denis Efremov <efremov@linux.com>
+> > > ---
+> > > Looks like these are the only places in KVM that are suitable for
+> > > vmemdup_user().
+> > >
+> > >  arch/x86/kvm/cpuid.c | 17 +++++++----------
+> > >  virt/kvm/kvm_main.c  | 19 ++++++++-----------
+> > >  2 files changed, 15 insertions(+), 21 deletions(-)
+> > >
+> > > diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> > > index 901cd1fdecd9..27438a2bdb62 100644
+> > > --- a/arch/x86/kvm/cpuid.c
+> > > +++ b/arch/x86/kvm/cpuid.c
+> > > @@ -182,17 +182,14 @@ int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
+> > >         r = -E2BIG;
+> > >         if (cpuid->nent > KVM_MAX_CPUID_ENTRIES)
+> > >                 goto out;
+> > > -       r = -ENOMEM;
+> > >         if (cpuid->nent) {
+> > > -               cpuid_entries =
+> > > -                       vmalloc(array_size(sizeof(struct kvm_cpuid_entry),
+> > > -                                          cpuid->nent));
+> > > -               if (!cpuid_entries)
+> > > -                       goto out;
+> > > -               r = -EFAULT;
+> > > -               if (copy_from_user(cpuid_entries, entries,
+> > > -                                  cpuid->nent * sizeof(struct kvm_cpuid_entry)))
+> > > +               cpuid_entries = vmemdup_user(entries,
+> > > +                                            array_size(sizeof(struct kvm_cpuid_entry),
+> > > +                                                       cpuid->nent));
+> >
+> > Does this break memcg accounting? I ask, because I'm really not sure.
+>
+> What do you mean by that? The original code uses plain vmalloc so the
+> allocation is not memcg accounted (please note that __GFP_ACCOUNT needs
+> to be specified explicitly). vmemdup_user is the same in that regards.
 
-probably you need to add a  '- 3' after the sizeof above, right?
+I asked, because I wasn't sure if plain vmalloc was accounted or not.
 
-> >  
-> > +	if (verbose)
-> > +		strncat(script, " -v", sizeof(script));
-> > +
-
-Seemed simple enough, but gcc knows better, I'm removing this one:
-
-    tests/builtin-test.c:586:26: error: the value of the size argument in 'strncat' is too large, might lead to a buffer overflow [-Werror,-Wstrncat-size]
-                    strncat(script, " -v", sizeof(script));
-                                           ^~~~~~~~~~~~~~
-    tests/builtin-test.c:586:26: note: change the argument to be the free space in the destination buffer minus the terminating null byte
-                    strncat(script, " -v", sizeof(script));
-                                           ^~~~~~~~~~~~~~
-                                           sizeof(script) - strlen(script) - 1
-    1 error generated.
-    make[3]: *** [/git/perf-5.13.0-rc4/tools/build/Makefile.build:139: tests] Error 2
-  77    31.98 ubuntu:21.04                  : FAIL gcc version 10.3.0 (Ubuntu 10.3.0-1ubuntu1)
-    tests/builtin-test.c:586:26: error: the value of the size argument in 'strncat' is too large, might lead to a buffer overflow [-Werror,-Wstrncat-size]
-                    strncat(script, " -v", sizeof(script));
-                                           ^~~~~~~~~~~~~~
-    tests/builtin-test.c:586:26: note: change the argument to be the free space in the destination buffer minus the terminating null byte
-                    strncat(script, " -v", sizeof(script));
-                                           ^~~~~~~~~~~~~~
-                                           sizeof(script) - strlen(script) - 1
-    1 error generated.
-    make[3]: *** [/git/perf-5.13.0-rc4/tools/build/Makefile.build:139: tests] Error 2
-
-
-> >  	err = system(script);
-> >  	if (!err)
-> >  		return TEST_OK;
-> > -- 
-> > 2.32.0.288.g62a8d224e6-goog
-> > 
-> 
-> -- 
-> 
-> - Arnaldo
-
--- 
-
-- Arnaldo
+In any case, these allocations *should* be accounted, shouldn't they?
