@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4493ACD45
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B2D83ACD46
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234387AbhFROQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42050 "EHLO
+        id S234404AbhFROQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 10:16:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbhFROQd (ORCPT
+        with ESMTP id S229782AbhFROQi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:16:33 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F9CBC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 07:14:24 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso7236629pjx.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 07:14:24 -0700 (PDT)
+        Fri, 18 Jun 2021 10:16:38 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE234C061767
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 07:14:29 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id g6so7801610pfq.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 07:14:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ingics-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=II8CESjac+2BHRhdj6Fakm9t+Cyr5Rk+P7JcjZB40QA=;
-        b=07h/VUSUeaTOOVeoUuQhTpvx037wbZoyuatyADlG29lIWdtTX4hVAbxxvEgOb/OZ3y
-         rs3w2cAMfzrliWE9NKH5+tcZYICsYQckic7AtP2YYil1/LbQRpDcSmMJ+ZbzcZwqFW7I
-         lbFDD1Leu902Ug4cMqDIIFLTbTuiOdUfpc8SsiYjuDkMPeWFc8Sx90XTKP/0IYsQv1o1
-         tKPHmSQMu4V6G+5d+qsY5Ee0V95JJrnrwjEP+rrO8ac6LIwrZVUQSoLKsvFGZwK1Sovj
-         XAXX8m8UgHRCjPqVa6leN2orrnG9Xiru1ZIwr4qr9PaFBrKboRneFF0jpGKmE1UyJCWp
-         mRCQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=zvGGydPfxJPTCbBZHjXWcmwTH4QszJeUIL9ROnYW6B8=;
+        b=WAToPKOtsLQP1XdybIZCFClE+6Fww3bS3j9cYufBJJu6KMB1z12dCOvveg9yWFP6Q6
+         j4dn/wkqpLElg1dtf8avYv9pDHv9Wbt4NeBoCOzb+o7QmVMTDN5eLkED5Sr0lAlNVqRu
+         E/gh4xCNZM46N+mtgZUsuyCg0S/ppY8pshYn7G9CaD020E6prKgAFUGHJD8jHyptw6Q/
+         +gx2GMQPBvu7fcH/pX4ZcQz7KFfCgxdy8PLw1j3KbvWIwA2alhFtbdnXgzM/7Of5OhUJ
+         auTdhPbS0qZOt+wCiiyYbplH7QuBxgNG/wUUgMEBLYDJghnsj6mk/y8BpGG16ibOjAFa
+         ApMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=II8CESjac+2BHRhdj6Fakm9t+Cyr5Rk+P7JcjZB40QA=;
-        b=bWsSkqk2AsQM4ww8Zz0SqrymYWLy4BS95VqlGP+dfX0g3BcCy1swlL1Ew207xhzS/I
-         FXoNZMCcc4l/W+olttUMCxydktYG3qIkqHAbAJ4hmHuc0dc3pNycoxI0uoIop2GC3Vvn
-         GNtiHuF8DZXPkqsMDoraztfyD7TcqanZbjoAbLdpz78Fp2Vs0aGxSOAqtr4YpM+K+R/P
-         1UCb+rYUsh5u7sEhS0cUZnMk5UfFy1eC2mdZxsK5l2fRGCI2dIiJ+qU4AB+e6PSO0W9u
-         c6jkd7L19jZ43sjjcUra03yHQwlp5gU617MyfSz2JxDvaET+1s5ra4Lo0jBz2C+DTRt8
-         xLJA==
-X-Gm-Message-State: AOAM533qrtECAYENtu9TpOl+rnokBMhPPseHXXpNez3k+i+JZXwvVsMw
-        6V2XtpGyieGH+tqLVB7lGEKC1g==
-X-Google-Smtp-Source: ABdhPJz/LPpdlMuTiGjQWwf56UfZa181aNgoyzUTiiFBYzZ5kLak9ow9UvOIcOxpH60I+e2cQp6r6Q==
-X-Received: by 2002:a17:902:ee06:b029:11f:f229:1a5d with SMTP id z6-20020a170902ee06b029011ff2291a5dmr4895651plb.61.1624025663538;
-        Fri, 18 Jun 2021 07:14:23 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zvGGydPfxJPTCbBZHjXWcmwTH4QszJeUIL9ROnYW6B8=;
+        b=dgl7J4c9fNMQkcS0/KAvp/YyHMOySqUA2/R5uyxSlzGB40aNst9q7tP32+Mw9iKj1V
+         Cujlro5w0sqDjDSTbb+KvPwLfT9sGP/B5qeBDiIG0E2F6V4XpT7zOz9L6f3pQatGTsOn
+         X4AymQjB/7lsPvG+KnuSrvkBfpe47amI7JNFkDm0sxUS4dPB/EWaoPcDZO98KRk7N/jH
+         eOD6h5n9pkTI4Ye+rhQBOJrpROebRvjwNZdDgWwXsF74qx6OMJ8NSCcUm12HUf9PZRB2
+         RuZGj6ygKW8lk1Y3Aiae/Bj682vujTat8z52isW9SPwFaxvao/7HO4FmeELkdxkUbBkS
+         50jw==
+X-Gm-Message-State: AOAM5338n/HscYn9XIWjtLTvnnFwXm9+bVdVIsd6AQSMhQWtGX/zmzV2
+        hAjKb+tCalfltRiU+1ybOWh43w==
+X-Google-Smtp-Source: ABdhPJwAjwQ2URWJof6f9wf0caDabN5nD2RH6piTgFPrAclb1VyyIRfwTX/ZcRL1aBVftyVfUrZS3g==
+X-Received: by 2002:a65:4c05:: with SMTP id u5mr10274306pgq.430.1624025669186;
+        Fri, 18 Jun 2021 07:14:29 -0700 (PDT)
 Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
-        by smtp.gmail.com with ESMTPSA id y7sm2431874pja.8.2021.06.18.07.14.21
+        by smtp.gmail.com with ESMTPSA id y7sm2431874pja.8.2021.06.18.07.14.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 07:14:22 -0700 (PDT)
+        Fri, 18 Jun 2021 07:14:28 -0700 (PDT)
 From:   Axel Lin <axel.lin@ingics.com>
 To:     Mark Brown <broonie@kernel.org>
 Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
@@ -55,40 +55,81 @@ Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
         Support Opensource <support.opensource@diasemi.com>,
         Liam Girdwood <lgirdwood@gmail.com>,
         linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH 1/2] regulator: da9052: Ensure enough delay time for .set_voltage_time_sel
-Date:   Fri, 18 Jun 2021 22:14:11 +0800
-Message-Id: <20210618141412.4014912-1-axel.lin@ingics.com>
+Subject: [PATCH 2/2] regulator: da9052: Simplify checking DVC controlled regulators
+Date:   Fri, 18 Jun 2021 22:14:12 +0800
+Message-Id: <20210618141412.4014912-2-axel.lin@ingics.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210618141412.4014912-1-axel.lin@ingics.com>
+References: <20210618141412.4014912-1-axel.lin@ingics.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DIV_ROUND_UP to prevent truncation by integer division issue.
-This ensures we return enough delay time.
-
-Also fix returning negative value when new_sel < old_sel.
+Only DVC controlled regulators have activate_bit set, so just check
+activate_bit we can know if the regulator is DVC controlled.
 
 Signed-off-by: Axel Lin <axel.lin@ingics.com>
 ---
- drivers/regulator/da9052-regulator.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/regulator/da9052-regulator.c | 20 ++------------------
+ 1 file changed, 2 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/regulator/da9052-regulator.c b/drivers/regulator/da9052-regulator.c
-index e18d291c7f21..23fa429ebe76 100644
+index 23fa429ebe76..74ab8d615d1f 100644
 --- a/drivers/regulator/da9052-regulator.c
 +++ b/drivers/regulator/da9052-regulator.c
-@@ -250,7 +250,8 @@ static int da9052_regulator_set_voltage_time_sel(struct regulator_dev *rdev,
- 	case DA9052_ID_BUCK3:
- 	case DA9052_ID_LDO2:
- 	case DA9052_ID_LDO3:
--		ret = (new_sel - old_sel) * info->step_uV / 6250;
-+		ret = DIV_ROUND_UP(abs(new_sel - old_sel) * info->step_uV,
-+				   6250);
- 		break;
- 	}
+@@ -207,7 +207,6 @@ static int da9052_regulator_set_voltage_sel(struct regulator_dev *rdev,
+ {
+ 	struct da9052_regulator *regulator = rdev_get_drvdata(rdev);
+ 	struct da9052_regulator_info *info = regulator->info;
+-	int id = rdev_get_id(rdev);
+ 	int ret;
  
+ 	ret = da9052_reg_update(regulator->da9052, rdev->desc->vsel_reg,
+@@ -218,16 +217,9 @@ static int da9052_regulator_set_voltage_sel(struct regulator_dev *rdev,
+ 	/* Some LDOs and DCDCs are DVC controlled which requires enabling of
+ 	 * the activate bit to implment the changes on the output.
+ 	 */
+-	switch (id) {
+-	case DA9052_ID_BUCK1:
+-	case DA9052_ID_BUCK2:
+-	case DA9052_ID_BUCK3:
+-	case DA9052_ID_LDO2:
+-	case DA9052_ID_LDO3:
++	if (info->activate_bit)
+ 		ret = da9052_reg_update(regulator->da9052, DA9052_SUPPLY_REG,
+ 					info->activate_bit, info->activate_bit);
+-		break;
+-	}
+ 
+ 	return ret;
+ }
+@@ -238,22 +230,14 @@ static int da9052_regulator_set_voltage_time_sel(struct regulator_dev *rdev,
+ {
+ 	struct da9052_regulator *regulator = rdev_get_drvdata(rdev);
+ 	struct da9052_regulator_info *info = regulator->info;
+-	int id = rdev_get_id(rdev);
+ 	int ret = 0;
+ 
+ 	/* The DVC controlled LDOs and DCDCs ramp with 6.25mV/µs after enabling
+ 	 * the activate bit.
+ 	 */
+-	switch (id) {
+-	case DA9052_ID_BUCK1:
+-	case DA9052_ID_BUCK2:
+-	case DA9052_ID_BUCK3:
+-	case DA9052_ID_LDO2:
+-	case DA9052_ID_LDO3:
++	if (info->activate_bit)
+ 		ret = DIV_ROUND_UP(abs(new_sel - old_sel) * info->step_uV,
+ 				   6250);
+-		break;
+-	}
+ 
+ 	return ret;
+ }
 -- 
 2.25.1
 
