@@ -2,105 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA4D3ACF1D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0633ACF27
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:33:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235334AbhFRPfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:35:10 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58464 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233169AbhFRPdp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:33:45 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15IF3ZID103031;
-        Fri, 18 Jun 2021 11:31:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=XqU0A+B1ac7tNPPHpM0nczn7qj190C/lKCLTI9PXato=;
- b=jmPWBFACy9e/94TEzQj6tTpj/iV0FC+pfFNK9DHnb3J6QwzqxxGJh5XtoRd4N+Xp0vGI
- AF/bV1tgQdLgcHYzxY/aHYlFyv2DtUR4OzfA+/5Q3W8eenOMh8pnqioL2rBXqs5c6kCJ
- pm8mFaNOL1DlYoSvh5AmQpy/FMOgdXgah3qjZZSC7Cs5XKJ6i1I+9mOHsa26pqSrMuLx
- RMAyEejgfqGsdBtxxqtGfGANEBHTgIIh9r7I6DUq1qchTwInkPiXPZl/liOMGHkdwQIE
- 2EjVJ14UvIWC47/k0d8JCBA/GNvcMzs01PN6lZZ3R1ZwIiTzkOcbr7+gxo1dqDZDmgxv 3g== 
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 398u3ay3jm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Jun 2021 11:31:32 -0400
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15IFIGum013032;
-        Fri, 18 Jun 2021 15:31:31 GMT
-Received: from b01cxnp22034.gho.pok.ibm.com (b01cxnp22034.gho.pok.ibm.com [9.57.198.24])
-        by ppma03wdc.us.ibm.com with ESMTP id 394mjaaa0t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Jun 2021 15:31:31 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp22034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15IFVVuM27132274
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Jun 2021 15:31:31 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 24E2DAE06D;
-        Fri, 18 Jun 2021 15:31:31 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DC713AE062;
-        Fri, 18 Jun 2021 15:31:30 +0000 (GMT)
-Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.128.252])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 18 Jun 2021 15:31:30 +0000 (GMT)
-Subject: Re: [PATCH] s390/vfio-ap: Fix module unload memory leak of matrix_dev
-To:     "Jason J. Herne" <jjherne@linux.ibm.com>,
-        linux-s390@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, pasic@linux.ibm.com, jgg@nvidia.com
-References: <20210618133524.22386-1-jjherne@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <1eb41038-b732-7498-687e-1e8489ab04be@linux.ibm.com>
-Date:   Fri, 18 Jun 2021 11:31:30 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S235388AbhFRPfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:35:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59414 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235710AbhFRPfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 11:35:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 00BEB6120A;
+        Fri, 18 Jun 2021 15:32:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624030376;
+        bh=+FFSC0zj5RwLkGI3nedO+OdvNVE7P5xcolwUD5+csdM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=a91Z9QyM5lf3pO3gumqpUQpzlBcimPsoRvNl9xcT/OkC/UwBLxXD1c2HHJxzwS6xY
+         oyhw7cWJm5svXcpzDDP7gB8cd4Z1XkW1yFeBwK2lRKnqhYGuW6yC4ShbtIqwHNv78k
+         NIqH09prr5+xFH1y2bEE86cnH+yhGXsQjbmauGK/zGjq1HGc/HznLjRKpGs+01bk2n
+         ZHYA40H5k3Fbt+2IDg9Zx0Na1cyUJoBKIqfhtaGu4lPDIzzVnX6brbvkHd8o95WcID
+         9m00zajpridHKyryJhnyqyDcXMgM3bolfInXjD7PR2zcQgEPf4AeW3Onlur4/KDV/d
+         bPC6DHtn3Fxag==
+Date:   Fri, 18 Jun 2021 10:32:54 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Domenico Andreoli <domenico.andreoli@linux.com>
+Cc:     Punit Agrawal <punitagrawal@gmail.com>, robh+dt@kernel.org,
+        maz@kernel.org, leobras.c@gmail.com,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, alexandru.elisei@arm.com, wqu@suse.com,
+        robin.murphy@arm.com, pgwipeout@gmail.com, ardb@kernel.org,
+        briannorris@chromium.org, shawn.lin@rock-chips.com,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: Re: [PATCH v4] PCI: of: Clear 64-bit flag for non-prefetchable
+ memory below 4GB
+Message-ID: <20210618153254.GA3191723@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20210618133524.22386-1-jjherne@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: -xnqTyW0znWGWReU7Bgf0pmk0HWDNUOI
-X-Proofpoint-ORIG-GUID: -xnqTyW0znWGWReU7Bgf0pmk0HWDNUOI
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-18_07:2021-06-18,2021-06-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 impostorscore=0 malwarescore=0 clxscore=1015
- bulkscore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0
- adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106180089
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMyl31ERhGDE1yGh@m4>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reviewed-by: Tony Krowiak <akrowiak@linux.ibm.com>
+On Fri, Jun 18, 2021 at 03:55:43PM +0200, Domenico Andreoli wrote:
+> On Wed, Jun 16, 2021 at 06:12:34PM -0500, Bjorn Helgaas wrote:
+> > On Tue, Jun 15, 2021 at 08:04:57AM +0900, Punit Agrawal wrote:
+> > > Alexandru and Qu reported this resource allocation failure on
+> > > ROCKPro64 v2 and ROCK Pi 4B, both based on the RK3399:
+> > > 
+> > >   pci_bus 0000:00: root bus resource [mem 0xfa000000-0xfbdfffff 64bit]
+> > >   pci 0000:00:00.0: PCI bridge to [bus 01]
+> > >   pci 0000:00:00.0: BAR 14: no space for [mem size 0x00100000]
+> > >   pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x00003fff 64bit]
+> > > 
+> > > "BAR 14" is the PCI bridge's 32-bit non-prefetchable window, and our
+> > > PCI allocation code isn't smart enough to allocate it in a host
+> > > bridge window marked as 64-bit, even though this should work fine.
+> > > 
+> > > A DT host bridge description includes the windows from the CPU
+> > > address space to the PCI bus space.  On a few architectures
+> > > (microblaze, powerpc, sparc), the DT may also describe PCI devices
+> > > themselves, including their BARs.
+> > > 
+> > > Before 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource
+> > > flags for 64-bit memory addresses"), of_bus_pci_get_flags() ignored
+> > > the fact that some DT addresses described 64-bit windows and BARs.
+> > > That was a problem because the virtio virtual NIC has a 32-bit BAR
+> > > and a 64-bit BAR, and the driver couldn't distinguish them.
+> > > 
+> > > 9d57e61bf723 set IORESOURCE_MEM_64 for those 64-bit DT ranges, which
+> > > fixed the virtio driver.  But it also set IORESOURCE_MEM_64 for host
+> > > bridge windows, which exposed the fact that the PCI allocator isn't
+> > > smart enough to put 32-bit resources in those 64-bit windows.
+> > > 
+> > > Clear IORESOURCE_MEM_64 from host bridge windows since we don't need
+> > > that information.
+> > > 
+> > > Fixes: 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for 64-bit memory addresses")
+> > > Reported-at: https://lore.kernel.org/lkml/7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com/
+> > > Reported-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> > > Reported-by: Qu Wenruo <wqu@suse.com>
+> > > Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
+> > > Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
+> > > Cc: Bjorn Helgaas <bhelgaas@google.com>
+> > > Cc: Rob Herring <robh+dt@kernel.org>
+> > 
+> > Applied with:
+> > 
+> >     Tested-by: Alexandru Elisei <alexandru.elisei@arm.com>
+> >     Reviewed-by: Rob Herring <robh@kernel.org>
+> >     Acked-by: Ard Biesheuvel <ardb@kernel.org>
+> > 
+> > to for-linus for v5.13, thanks a lot!
+> 
+> Late-tested-by: Domenico Andreoli <domenico.andreoli@linux.com>
+> 
+> See https://lore.kernel.org/lkml/YMyTUv7Jsd89PGci@m4/T/#u
 
-On 6/18/21 9:35 AM, Jason J. Herne wrote:
-> vfio_ap_matrix_dev_release is shadowing the global matrix_dev with driver
-> data that never gets set. So when release is called we end up not freeing
-> matrix_dev. The fix is to remove the shadow variable and just free the
-> global.
->
-> Signed-off-by: Jason J. Herne <jjherne@linux.ibm.com>
-> ---
->   drivers/s390/crypto/vfio_ap_drv.c | 2 --
->   1 file changed, 2 deletions(-)
->
-> diff --git a/drivers/s390/crypto/vfio_ap_drv.c b/drivers/s390/crypto/vfio_ap_drv.c
-> index 7dc72cb718b0..6d3eea838e18 100644
-> --- a/drivers/s390/crypto/vfio_ap_drv.c
-> +++ b/drivers/s390/crypto/vfio_ap_drv.c
-> @@ -82,8 +82,6 @@ static void vfio_ap_queue_dev_remove(struct ap_device *apdev)
->   
->   static void vfio_ap_matrix_dev_release(struct device *dev)
->   {
-> -	struct ap_matrix_dev *matrix_dev = dev_get_drvdata(dev);
-> -
->   	kfree(matrix_dev);
->   }
->   
-
+I updated the commit to add your report and tested-by, thanks!
