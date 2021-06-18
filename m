@@ -2,117 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC9B3AD1D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F4F43AD1E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235003AbhFRSNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 14:13:38 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12794 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230024AbhFRSNh (ORCPT
+        id S236197AbhFRSPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 14:15:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39578 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229816AbhFRSPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 14:13:37 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15II2Yud118785;
-        Fri, 18 Jun 2021 14:11:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=LDeXJAMIrd7Bzszgl+66ueq612J8mydZvMkXyfHiR/c=;
- b=hVSrh+Jht8KCJPKS3LnXXjyez+P+NqEzSEo4TGrZrVSso1gmK1wCxEQ6XfBg+s7j6qlk
- 0dDPbbvEbVaCnHgosefb4PfUA0vYQxor+Pm1cU/4vWxDf6qriDoF0QdSCfpwb/SLLWP/
- p76DsN/MmtLh5Ro9bEL/tuMprsSzPBD7HSFxCsPV+F5+wzNl4sT/jL8kNbJvfKMD0TdH
- sb6S2IDWLT/oTDNuiV8gK56KWsVCSwTHYYOugyU1YTexh2BQuLCpjTAMyKds/Dp4ogYw
- dzlMoHXDXIp0wIJwnVioQvTcqQi+Zh+LqcfbrcEvFROOytXS8Z0f0dxBIrPIHFhQuADC UA== 
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 398xtp2wbh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Jun 2021 14:11:25 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15II8SsV001921;
-        Fri, 18 Jun 2021 18:11:24 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma04dal.us.ibm.com with ESMTP id 3980b9rfhw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Jun 2021 18:11:24 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15IIBNNI12518384
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Jun 2021 18:11:23 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D4307AE060;
-        Fri, 18 Jun 2021 18:11:23 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9295DAE05C;
-        Fri, 18 Jun 2021 18:11:23 +0000 (GMT)
-Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.128.252])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 18 Jun 2021 18:11:23 +0000 (GMT)
-Subject: Re: [PATCH v2] s390/vfio-ap: Fix module unload memory leak of
- matrix_dev
-To:     "Jason J. Herne" <jjherne@linux.ibm.com>,
-        linux-s390@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, pasic@linux.ibm.com, jgg@nvidia.com
-References: <20210618171255.2025-1-jjherne@linux.ibm.com>
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-Message-ID: <af3d6c67-e045-770f-82ff-dd8e691c1317@linux.ibm.com>
-Date:   Fri, 18 Jun 2021 14:11:23 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 18 Jun 2021 14:15:12 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2004CC061574;
+        Fri, 18 Jun 2021 11:13:03 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id l7-20020a05600c1d07b02901b0e2ebd6deso6270531wms.1;
+        Fri, 18 Jun 2021 11:13:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K98EYWEUrUiQZaYXU/th664Hrf+PPLxMaWShDbXXluI=;
+        b=MagQyTCH6HKucF9M5MPjQOtjWLH5BVKOy3z+P6fS8qm/GxQkX1sdrEJfjjCTsPb7mk
+         Wo6W+qwF+/gPPDBAHXFtYBZgygw4Oxk4b3ZmLQggQh6HLvlaX0yHfSeETlmDIRxXb+4N
+         q9GaC3Hcs2q7yXQFSv8f/VoDdX1m+bSX/BLwXotMwPxD5dMPv/SRXA2cI7SHGnXDr9Wr
+         FGjsc1c4DwVDXWxTDWOmwT4LuyhIRVqHgYPutZ+nU/3foiKwxL3wCCBdkARAS5TsFKHs
+         5WRJe0bXrdLAY2wfChXOCH5mFjMRZM27ZpJEi0EePdUOSheOv+x6AsDfH81L9IqMoJK9
+         Jc8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K98EYWEUrUiQZaYXU/th664Hrf+PPLxMaWShDbXXluI=;
+        b=snFL2FsjiagXLr4H5humygTG4mEeoxoBIcawwXmaXcaL6Tr21HddgI71WSU/XkMZk/
+         h7YeNeZ/5nQ3B6DfX8CuoZyMb+VOq+Fjm56BJp7sFFvYPZEpRpBZ6g3923CO81m4LLJ4
+         mj8a45G1G/qRpFJDECtjmaJBwCNlPsalr4Tt5cATAjUIk3tbAIBvtfEbUfHBEW6/tyz5
+         ptqTr0R5X92MxvlCdwSwQc8SVgPGZtvXhrp0FToJSQ452llntaGLi52ICoZ9MtVBsM8m
+         n1nY6aWXqkj1kbm4hQ3tP7jvjhl8haLPCcijt1m4Qx4jsndo5JPRTyqQf0E+f52TYdA/
+         Bu0w==
+X-Gm-Message-State: AOAM530gOWj7X5ccFarJWW80osOeRoh04sNosMTfF/ni8e8eRiX7q58+
+        cYuCeAHOCuO2MsS0ITqM8w==
+X-Google-Smtp-Source: ABdhPJyy8iHBbsu57j9eptw73dfQDpL/8ILy4+jW+ngV7ZBRnAfUd4HJTMW6O3/lPCP+LW2Hxq9nCg==
+X-Received: by 2002:a05:600c:410c:: with SMTP id j12mr12895602wmi.117.1624039981706;
+        Fri, 18 Jun 2021 11:13:01 -0700 (PDT)
+Received: from localhost.localdomain (ip5b434b8b.dynamic.kabel-deutschland.de. [91.67.75.139])
+        by smtp.googlemail.com with ESMTPSA id l10sm9306782wrv.82.2021.06.18.11.13.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 11:13:01 -0700 (PDT)
+From:   Alex Bee <knaerzche@gmail.com>
+To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>
+Cc:     Johan Jonker <jbx6244@gmail.com>,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Alex Bee <knaerzche@gmail.com>
+Subject: [PATCH v2 0/5] Updates for Radxa ROCK Pi 4
+Date:   Fri, 18 Jun 2021 20:12:51 +0200
+Message-Id: <20210618181256.27992-1-knaerzche@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210618171255.2025-1-jjherne@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: OGz9te48wsybWvLCzreZE7cm2VZGxwly
-X-Proofpoint-GUID: OGz9te48wsybWvLCzreZE7cm2VZGxwly
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-18_10:2021-06-18,2021-06-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
- adultscore=0 suspectscore=0 priorityscore=1501 bulkscore=0 impostorscore=0
- mlxlogscore=999 phishscore=0 lowpriorityscore=0 malwarescore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106180104
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi list,
+
+This series adds support for 2 new revisions of Radxa's ROCK Pi 4,
+namely ROCK Pi 4A+ and ROCK Pi 4B+. While most things are in common
+with the previous 4A and 4B revisions, they have OP1 revision of
+the SoC and eMMC soldered on board.
+Patch 4 and 5 add SPDIF and anlog Codec to the common device tree,
+since they are in place in previous revisions as well.
+It superseeds
+https://lore.kernel.org/linux-rockchip/d4e4e06e-6ddd-4707-232d-b829c1d646e6@gmail.com/
+
+There is no example (which I could find) for Rockchip on how to
+deal with "+" revisions - so I looked up other SoCs and the rule
+seems to be to use the "+" for the model name (which is the "offical"
+name), but use "-plus" for compatible name and device tree files names
+(see "Raspberry Pi Model A+", for instance).
+
+A short node for testing ES8316 codec:
+The driver disables the headphone jack by default - for testing
+one would have to enable it via amixer with:
+amixer [card index] 'Right Headphone Mixer Right DAC' on
+amixer [card index] 'Left Headphone Mixer Left DAC' on
+
+Alex
+
+Changes in v2:
+- added additional compatibles for the new revisions (Heiko)
+- renamed ES8316 audio card name to "Analog" (Johan)
+- added patch for SPDIF
+- aligned spelling of board name(s)
+
+Alex Bee (5):
+  dt-bindings: Add doc for ROCK Pi 4 A+ and B+
+  arm64: dts: rockchip: Add RK3399 ROCK Pi 4A+ board
+  arm64: dts: rockchip: Add RK3399 ROCK Pi 4B+ board
+  arm64: dts: rockchip: add ES8316 codec for ROCK Pi 4
+  arm64: dts: rockchip: add SPDIF node for ROCK Pi 4
+
+ .../devicetree/bindings/arm/rockchip.yaml     |  4 +-
+ arch/arm64/boot/dts/rockchip/Makefile         |  2 +
+ .../boot/dts/rockchip/rk3399-rock-pi-4.dtsi   | 54 +++++++++++++++++++
+ .../dts/rockchip/rk3399-rock-pi-4a-plus.dts   | 14 +++++
+ .../dts/rockchip/rk3399-rock-pi-4b-plus.dts   | 47 ++++++++++++++++
+ 5 files changed, 120 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a-plus.dts
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4b-plus.dts
 
 
-On 6/18/21 1:12 PM, Jason J. Herne wrote:
-> vfio_ap_matrix_dev_release is shadowing the global matrix_dev with a NULL
-> pointer. Driver data for the matrix device is never set and so
-> dev_get_drvdata() always returns NULL. When release is called we end up
-> not freeing matrix_dev. The fix is to remove the shadow variable and get
-> the correct pointer from the device using container_of. We'll also NULL
-> the global to prevent any future use.
->
-> Signed-off-by: Jason J. Herne <jjherne@linux.ibm.com>
-> ---
->   drivers/s390/crypto/vfio_ap_drv.c | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/s390/crypto/vfio_ap_drv.c b/drivers/s390/crypto/vfio_ap_drv.c
-> index 7dc72cb718b0..40e66cb363d1 100644
-> --- a/drivers/s390/crypto/vfio_ap_drv.c
-> +++ b/drivers/s390/crypto/vfio_ap_drv.c
-> @@ -82,9 +82,8 @@ static void vfio_ap_queue_dev_remove(struct ap_device *apdev)
->   
->   static void vfio_ap_matrix_dev_release(struct device *dev)
->   {
-> -	struct ap_matrix_dev *matrix_dev = dev_get_drvdata(dev);
-> -
-> -	kfree(matrix_dev);
-> +	kfree(container_of(dev, struct ap_matrix_dev, device));
-
-I suppose if we're not going to assume that the release is being
-called to free the global matrix_dev, then if you are going to
-retrieve it using container_of(), then maybe we should verify
-the retrieved pointer is the same as the global matrix_dev?
-
-> +	matrix_dev = NULL;
->   }
->   
->   static int matrix_bus_match(struct device *dev, struct device_driver *drv)
+base-commit: 009c9aa5be652675a06d5211e1640e02bbb1c33d
+-- 
+2.27.0
 
