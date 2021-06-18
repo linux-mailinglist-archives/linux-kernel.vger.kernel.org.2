@@ -2,157 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C618F3ACC05
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE8DD3ACC04
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233492AbhFRNWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230438AbhFRNWw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:22:52 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03670C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:20:43 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1luEQH-00064Z-3G; Fri, 18 Jun 2021 15:20:37 +0200
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1luEQF-0005uo-Fo; Fri, 18 Jun 2021 15:20:35 +0200
-Date:   Fri, 18 Jun 2021 15:20:35 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Russell King <linux@armlinux.org.uk>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v2 4/8] net: usb: asix: ax88772: add phylib
- support
-Message-ID: <20210618132035.6vg53gjwuyildlry@pengutronix.de>
-References: <20210607082727.26045-1-o.rempel@pengutronix.de>
- <20210607082727.26045-5-o.rempel@pengutronix.de>
- <CGME20210618083914eucas1p240f88e7064a7bf15b68370b7506d24a9@eucas1p2.samsung.com>
- <15e1bb24-7d67-9d45-54c1-c1c1a0fe444a@samsung.com>
- <20210618101317.55fr5vl5akmtgcf6@pengutronix.de>
- <b1c48fa1-d406-766e-f8d7-54f76d3acb7c@gmail.com>
- <e868450d-c623-bea9-6325-aca4e8367ad5@samsung.com>
+        id S233259AbhFRNWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:22:51 -0400
+Received: from verein.lst.de ([213.95.11.211]:34849 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230438AbhFRNWt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 09:22:49 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 7E51368D08; Fri, 18 Jun 2021 15:20:38 +0200 (CEST)
+Date:   Fri, 18 Jun 2021 15:20:38 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     Christoph Hellwig <hch@lst.de>, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com
+Subject: Re: [PATCH 2/2] init: allow mounting arbitrary non-blockdevice
+ filesystems as root
+Message-ID: <20210618132038.GA13406@lst.de>
+References: <20210617153649.1886693-1-hch@lst.de> <20210617153649.1886693-3-hch@lst.de> <20210617162610.GC1142820@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e868450d-c623-bea9-6325-aca4e8367ad5@samsung.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 15:19:26 up 198 days,  3:25, 50 users,  load average: 0.01, 0.05,
- 0.02
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210617162610.GC1142820@redhat.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 01:11:41PM +0200, Marek Szyprowski wrote:
-> Hi Heiner,
-> 
-> On 18.06.2021 13:04, Heiner Kallweit wrote:
-> > On 18.06.2021 12:13, Oleksij Rempel wrote:
-> >> thank you for your feedback.
-> >>
-> >> On Fri, Jun 18, 2021 at 10:39:12AM +0200, Marek Szyprowski wrote:
-> >>> On 07.06.2021 10:27, Oleksij Rempel wrote:
-> >>>> To be able to use ax88772 with external PHYs and use advantage of
-> >>>> existing PHY drivers, we need to port at least ax88772 part of asix
-> >>>> driver to the phylib framework.
-> >>>>
-> >>>> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> >>> I found one more issue with this patch. On one of my test boards
-> >>> (Samsung Exynos5250 SoC based Arndale) system fails to establish network
-> >>> connection just after starting the kernel when the driver is build-in.
-> >>>
-> > If you build in the MAC driver, do you also build in the PHY driver?
-> > If the PHY driver is still a module this could explain why genphy
-> > driver is used.
-> > And your dmesg filtering suppresses the phy_attached_info() output
-> > that would tell us the truth.
-> 
-> Here is a bit more complete log:
-> 
-> # dmesg | grep -i Asix
-> [    2.412966] usbcore: registered new interface driver asix
-> [    4.620094] usb 1-3.2.4: Manufacturer: ASIX Elec. Corp.
-> [    4.641797] asix 1-3.2.4:1.0 (unnamed net_device) (uninitialized): 
-> invalid hw address, using random
-> [    5.657009] libphy: Asix MDIO Bus: probed
-> [    5.750584] Asix Electronics AX88772A usb-001:004:10: attached PHY 
-> driver (mii_bus:phy_addr=usb-001:004:10, irq=POLL)
-> [    5.763908] asix 1-3.2.4:1.0 eth0: register 'asix' at 
-> usb-12110000.usb-3.2.4, ASIX AX88772 USB 2.0 Ethernet, fe:a5:29:e2:97:3e
-> [    9.090270] asix 1-3.2.4:1.0 eth0: Link is Up - 100Mbps/Full - flow 
-> control off
-> 
-> This seems to be something different than missing PHY driver.
+On Thu, Jun 17, 2021 at 12:26:10PM -0400, Vivek Goyal wrote:
+> Not sure what FS_BINARY_MOUNTDATA is why fs should not have that set. nfs
+> seems to set it too. So that means they can't use try_mount_nodev().
 
-Can you please test it:
+We can't really pass actual binary mountdata using the string separation
+scheme used by the rootfstype= option.  But given that NFS only uses
+binary mountdata for legacy reasons and people get what they ask for
+using the option I think we can drop the check.
 
-diff --git a/drivers/net/usb/asix_devices.c b/drivers/net/usb/asix_devices.c
-index aec97b021a73..7897108a1a42 100644
---- a/drivers/net/usb/asix_devices.c
-+++ b/drivers/net/usb/asix_devices.c
-@@ -453,6 +453,7 @@ static int ax88772a_hw_reset(struct usbnet *dev, int in_pm)
- 	u16 rx_ctl, phy14h, phy15h, phy16h;
- 	u8 chipcode = 0;
+> In case of success err == 0, but we still panic(). We will need to
+> check for success as well.
+
+Indeed.
+
+> root_fs_names can be NULL and it crashes with NULL pointer dereference.
+
+True.
+
+What do you think of this version?
+
+---
+From 141caa79a619b5f5d100eeb8e94ecf8b3b1c9af7 Mon Sep 17 00:00:00 2001
+From: Christoph Hellwig <hch@lst.de>
+Date: Fri, 18 Jun 2021 15:10:39 +0200
+Subject: init: allow mounting arbitrary non-blockdevice filesystems as root
+
+Currently the only non-blockdevice filesystems that can be used as the
+initial root filesystem are NFS and CIFS, which use the magic
+"root=/dev/nfs" and "root=/dev/cifs" syntax that requires the root
+device file system details to come from filesystem specific kernel
+command line options.
+
+Add a little bit of new code that allows to just pass arbitrary
+string mount options to any non-blockdevice filesystems so that it can
+be mounted as the root file system.
+
+For example a virtiofs root file system can be mounted using the
+following syntax:
+
+"root=myfs rootfstype=virtiofs rw"
+
+Based on an earlier patch from Vivek Goyal <vgoyal@redhat.com>.
+
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ init/do_mounts.c | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
+
+diff --git a/init/do_mounts.c b/init/do_mounts.c
+index ec32de3ad52b..66c47193e9ee 100644
+--- a/init/do_mounts.c
++++ b/init/do_mounts.c
+@@ -534,6 +534,45 @@ static int __init mount_cifs_root(void)
+ }
+ #endif
  
-+	netdev_info(dev->net, "ax88772a_hw_reset\n");
- 	ret = asix_write_gpio(dev, AX_GPIO_RSE, 5, in_pm);
- 	if (ret < 0)
- 		goto out;
-@@ -509,31 +510,7 @@ static int ax88772a_hw_reset(struct usbnet *dev, int in_pm)
- 			goto out;
- 		}
- 	} else if ((chipcode & AX_CHIPCODE_MASK) == AX_AX88772A_CHIPCODE) {
--		/* Check if the PHY registers have default settings */
--		phy14h = asix_mdio_read_nopm(dev->net, dev->mii.phy_id,
--					     AX88772A_PHY14H);
--		phy15h = asix_mdio_read_nopm(dev->net, dev->mii.phy_id,
--					     AX88772A_PHY15H);
--		phy16h = asix_mdio_read_nopm(dev->net, dev->mii.phy_id,
--					     AX88772A_PHY16H);
--
--		netdev_dbg(dev->net,
--			   "772a_hw_reset: MR20=0x%x MR21=0x%x MR22=0x%x\n",
--			   phy14h, phy15h, phy16h);
--
--		/* Restore PHY registers default setting if not */
--		if (phy14h != AX88772A_PHY14H_DEFAULT)
--			asix_mdio_write_nopm(dev->net, dev->mii.phy_id,
--					     AX88772A_PHY14H,
--					     AX88772A_PHY14H_DEFAULT);
--		if (phy15h != AX88772A_PHY15H_DEFAULT)
--			asix_mdio_write_nopm(dev->net, dev->mii.phy_id,
--					     AX88772A_PHY15H,
--					     AX88772A_PHY15H_DEFAULT);
--		if (phy16h != AX88772A_PHY16H_DEFAULT)
--			asix_mdio_write_nopm(dev->net, dev->mii.phy_id,
--					     AX88772A_PHY16H,
--					     AX88772A_PHY16H_DEFAULT);
-+		netdev_info(dev->net, "do not touch PHY regs\n");
++static bool __init fs_is_nodev(char *fstype)
++{
++	struct file_system_type *fs = get_fs_type(fstype);
++	bool ret = false;
++
++	if (fs) {
++		ret = !(fs->fs_flags & FS_REQUIRES_DEV);
++		put_filesystem(fs);
++	}
++
++	return ret;
++}
++
++static int __init mount_nodev_root(void)
++{
++	char *fs_names, *fstype;
++	int err = -EINVAL;
++
++	fs_names = (void *)__get_free_page(GFP_KERNEL);
++	if (!fs_names)
++		return -EINVAL;
++	split_fs_names(fs_names, root_fs_names);
++
++	for (fstype = fs_names; *fstype; fstype += strlen(fstype) + 1) {
++		if (!fs_is_nodev(fstype))
++			continue;
++		err = do_mount_root(root_device_name, fstype, root_mountflags,
++				    root_mount_data);
++		if (!err)
++			break;
++		if (err != -EACCES && err != -EINVAL)
++			panic("VFS: Unable to mount root \"%s\" (%s), err=%d\n",
++			      root_device_name, fstype, err);
++	}
++
++	free_page((unsigned long)fs_names);
++	return err;
++}
++
+ void __init mount_root(void)
+ {
+ #ifdef CONFIG_ROOT_NFS
+@@ -550,6 +589,10 @@ void __init mount_root(void)
+ 		return;
  	}
- 
- 	ret = asix_write_cmd(dev, AX_CMD_WRITE_IPG0,
+ #endif
++	if (ROOT_DEV == 0 && root_fs_names) {
++		if (mount_nodev_root() == 0)
++			return;
++	}
+ #ifdef CONFIG_BLOCK
+ 	{
+ 		int err = create_dev("/dev/root", ROOT_DEV);
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.30.2
+
