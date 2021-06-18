@@ -2,124 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5EA23AC12B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 05:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC35C3AC12E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 05:05:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbhFRDEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 23:04:08 -0400
-Received: from mga03.intel.com ([134.134.136.65]:25793 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231815AbhFRDEH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 23:04:07 -0400
-IronPort-SDR: wde48Q8onOCWWWLuTHKh4oHb8HudVZw8WRmTCP3Oz5kFXFaK3W/IYnv/8PCSiQLY9pioGwoFmf
- c9IqvW1D4Y+A==
-X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="206524997"
-X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
-   d="scan'208";a="206524997"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 20:01:58 -0700
-IronPort-SDR: kDCIXbw7lwEjZFI+nFNOMy4qgHpPd6rsmqYlpb0ps01Z+DdBhWSAQ5G+mGTpSRcepgH2/cP20z
- fFfj3eWUWROQ==
-X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
-   d="scan'208";a="451243562"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 20:01:58 -0700
-Date:   Thu, 17 Jun 2021 20:01:57 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Thomas Gleixner <tglx@linutronix.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geoff Levand <geoff@infradead.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Dongsheng Yang <dongsheng.yang@easystack.cn>,
-        Mike Snitzer <snitzer@redhat.com>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        dm-devel@redhat.com, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
-        linux-arch@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 01/18] mm: add a kunmap_local_dirty helper
-Message-ID: <20210618030157.GA1905674@iweiny-DESK2.sc.intel.com>
-References: <20210615132456.753241-1-hch@lst.de>
- <20210615132456.753241-2-hch@lst.de>
+        id S231151AbhFRDHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 23:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229580AbhFRDHU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 23:07:20 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D10C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:05:10 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id v7so6617338pgl.2
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:05:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=5Hkc1Bod9XeIHJJRLDjduZE/jHZcAso4vB+S4dzyd3A=;
+        b=Kjcy42HJCHBpM0LWBplRFsAQd1+Iv2qTJwbxsL8oRWoeFc8dRWnP4bqO/lpX1qny5F
+         sAhnvJfXBj6HJZW4FfXRvjgLnbF5zVp5xZhsr2PBm7LkEjC3KRKBfXeBRPARTIbNxPQK
+         631lLr0VPBj93bHbIJAxQXohxwtVcmRNkCm6KZXJYi0DI4A+xCpVasF/MZwj9GlqynW4
+         drbP9t1nRR2qR7C8b6lf9ltMdU2g4SeMzj+0DHhk7oe87BsTWRoHVCHrfUITNulDHbME
+         g0GrxFjSgWjNW5eDdoMJo0o5tWg/gwxRG+GFJajXe97oqrWMAHognSTMKJJRAFv/Mvv4
+         OHwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5Hkc1Bod9XeIHJJRLDjduZE/jHZcAso4vB+S4dzyd3A=;
+        b=Yacmgdh7fxnbJv4Cvg2/LO5F0WsuGwRsP5dSfvUyDY/sFLfBsyFGm0WS5wdminGAM/
+         z4LUFJTs5HITMIYxJtPWzsYS67nl4KlK/hEfIHiY9NDBp/oiRMdqsOCMOpNx77B5V2pC
+         AK+IVUWBttuU1nKFDI28zf5ADsNs11Mfu997C6cITpheEOE7VFuavy8CE75j/NPOfUAn
+         imzxQWfR0gOt73vLaRkFDAyfwExQ1gvXDiR7NOgWnrsmsfkuRClGhadfQnvwuVHEOIGf
+         tLI3hBp9xzjiD/lzUPk7cv4Z6UQeSTycz2llxgEiJRPsbGWZPzIZI7dx8ORqSmO9VqWA
+         Od1w==
+X-Gm-Message-State: AOAM532bDhiXgVQGsYKmVyWEjceKHzSLNGuJNF9+raWLIYooi1wWqHO4
+        CVKdGcDldF0DvPF502k4vSY=
+X-Google-Smtp-Source: ABdhPJz26NHLGsvOBOgNmuPd/Y3RYtrJrpgvkQ3rEBaVG3zDw9JBCXksBI2LY66YF6ehmRCXpKL2ew==
+X-Received: by 2002:a62:7b4c:0:b029:2e9:cec2:e252 with SMTP id w73-20020a627b4c0000b02902e9cec2e252mr2802617pfc.56.1623985509826;
+        Thu, 17 Jun 2021 20:05:09 -0700 (PDT)
+Received: from [192.168.1.237] ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id w18sm6798863pjg.50.2021.06.17.20.05.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Jun 2021 20:05:09 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] drm: Protect drm_master pointers in drm_lease.c
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        emil.l.velikov@gmail.com
+References: <20210615023645.6535-1-desmondcheongzx@gmail.com>
+ <20210615023645.6535-3-desmondcheongzx@gmail.com>
+ <YMuCYqLafn5sGcFo@phenom.ffwll.local>
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+Message-ID: <c384d835-d910-5b04-e88c-a7878ce6d37d@gmail.com>
+Date:   Fri, 18 Jun 2021 11:05:04 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615132456.753241-2-hch@lst.de>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <YMuCYqLafn5sGcFo@phenom.ffwll.local>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 03:24:39PM +0200, Christoph Hellwig wrote:
-> Add a helper that calls flush_kernel_dcache_page before unmapping the
-> local mapping.  flush_kernel_dcache_page is required for all pages
-> potentially mapped into userspace that were written to using kmap*,
-> so having a helper that does the right thing can be very convenient.
+On 18/6/21 1:12 am, Daniel Vetter wrote:
+> On Tue, Jun 15, 2021 at 10:36:45AM +0800, Desmond Cheong Zhi Xi wrote:
+>> This patch ensures that the device's master mutex is acquired before
+>> accessing pointers to struct drm_master that are subsequently
+>> dereferenced. Without the mutex, the struct drm_master may be freed
+>> concurrently by another process calling drm_setmaster_ioctl(). This
+>> could then lead to use-after-free errors.
+>>
+>> Reported-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+>> Signed-off-by: Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+>> Reviewed-by: Emil Velikov <emil.l.velikov@gmail.com>
+>> ---
+>>   drivers/gpu/drm/drm_lease.c | 58 +++++++++++++++++++++++++++----------
+>>   1 file changed, 43 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/drm_lease.c b/drivers/gpu/drm/drm_lease.c
+>> index da4f085fc09e..3e6f689236e5 100644
+>> --- a/drivers/gpu/drm/drm_lease.c
+>> +++ b/drivers/gpu/drm/drm_lease.c
+>> @@ -107,10 +107,16 @@ static bool _drm_has_leased(struct drm_master *master, int id)
+>>    */
+>>   bool _drm_lease_held(struct drm_file *file_priv, int id)
+>>   {
+>> +	bool ret;
+>> +
+>>   	if (!file_priv || !file_priv->master)
+>>   		return true;
+>>   
+>> -	return _drm_lease_held_master(file_priv->master, id);
+>> +	mutex_lock(&file_priv->master->dev->master_mutex);
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  include/linux/highmem-internal.h | 7 +++++++
->  include/linux/highmem.h          | 4 ++++
->  2 files changed, 11 insertions(+)
+> So maybe we have a bug somewhere, and the kerneldoc isn't 100% clear, but
+> I thought file_priv->master is invariant over the lifetime of file_priv.
+> So we don't need a lock to check anything here.
 > 
-> diff --git a/include/linux/highmem-internal.h b/include/linux/highmem-internal.h
-> index 7902c7d8b55f..bd37706db147 100644
-> --- a/include/linux/highmem-internal.h
-> +++ b/include/linux/highmem-internal.h
-> @@ -224,4 +224,11 @@ do {								\
->  	__kunmap_local(__addr);					\
->  } while (0)
->  
-> +#define kunmap_local_dirty(__page, __addr)			\
-
-I think having to store the page and addr to return to kunmap_local_dirty() is
-going to be a pain in some code paths.  Not a show stopper but see below...
-
-> +do {								\
-> +	if (!PageSlab(__page))					\
-
-Was there some clarification why the page can't be a Slab page?  Or is this
-just an optimization?
-
-> +		flush_kernel_dcache_page(__page);		\
-
-Is this required on 32bit systems?  Why is kunmap_flush_on_unmap() not
-sufficient on 64bit systems?  The normal kunmap_local() path does that.
-
-I'm sorry but I did not see a conclusion to my query on V1. Herbert implied the
-he just copied from the crypto code.[1]  I'm concerned that this _dirty() call
-is just going to confuse the users of kmap even more.  So why can't we get to
-the bottom of why flush_kernel_dcache_page() needs so much logic around it
-before complicating the general kernel users.
-
-I would like to see it go away if possible.
-
-Ira
-
-[1] https://lore.kernel.org/lkml/20210615050258.GA5208@gondor.apana.org.au/
-
-> +	kunmap_local(__addr);					\
-> +} while (0)
-> +
->  #endif
-> diff --git a/include/linux/highmem.h b/include/linux/highmem.h
-> index 832b49b50c7b..65f548db4f2d 100644
-> --- a/include/linux/highmem.h
-> +++ b/include/linux/highmem.h
-> @@ -93,6 +93,10 @@ static inline void kmap_flush_unused(void);
->   * On HIGHMEM enabled systems mapping a highmem page has the side effect of
->   * disabling migration in order to keep the virtual address stable across
->   * preemption. No caller of kmap_local_page() can rely on this side effect.
-> + *
-> + * If data is written to the returned kernel mapping, the callers needs to
-> + * unmap the mapping using kunmap_local_dirty(), else kunmap_local() should
-> + * be used.
->   */
->  static inline void *kmap_local_page(struct page *page);
->  
-> -- 
-> 2.30.2
+> It's the drm_device->master derefence that gets us into trouble. Well also
+> file_priv->is_owner is protected by dev->master_mutex.
 > 
+> So I think with your previous patch all the access here in drm_lease.c is
+> ok and already protected? Or am I missing something?
+> 
+> Thanks, Daniel
+> 
+
+My thinking was that file_priv->master is invariant only if it is the 
+creator of master. If file_priv->is_master is false, then a call to 
+drm_setmaster_ioctl will invoke drm_new_set_master, which then allocates 
+a new master for file_priv, and puts the old master.
+
+This could be an issue in _drm_lease_held_master, because we dereference 
+master to get master->dev, master->lessor, and master->leases.
+
+With the same reasoning, in other parts of drm_lease.c, if there's an 
+access to drm_file->master that's subsequently dereferenced, I added a 
+lock around them.
+
+I could definitely be mistaken on this, so apologies if this scenario 
+doesn't arise.
+
+Best wishes,
+Desmond
+
+
+
