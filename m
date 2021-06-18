@@ -2,104 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD4E3AC1B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 06:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2191E3AC1A4
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 05:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229816AbhFREC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 00:02:26 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:59639 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229466AbhFRECZ (ORCPT
+        id S231465AbhFRDzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 23:55:52 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:8269 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230137AbhFRDzu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 00:02:25 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 15I3ic7p020343;
-        Fri, 18 Jun 2021 11:44:38 +0800 (GMT-8)
-        (envelope-from jamin_lin@aspeedtech.com)
-Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 18 Jun
- 2021 11:59:01 +0800
-Date:   Fri, 18 Jun 2021 11:58:55 +0800
-From:   Jamin Lin <jamin_lin@aspeedtech.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        "Andrew Jeffery" <andrew@aj.id.au>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Wolfram Sang" <wsa+renesas@sang-engineering.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Jean Delvare" <jdelvare@suse.de>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Khalil Blaiech <kblaiech@mellanox.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Bence =?utf-8?B?Q3PDs2vDoXM=?= <bence98@sch.bme.hu>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        ChiaWei Wang <chiawei_wang@aspeedtech.com>,
-        Troy Lee <troy_lee@aspeedtech.com>,
-        Steven Lee <steven_lee@aspeedtech.com>
-Subject: Re: [PATCH 3/3] i2c:support new register set for ast2600
-Message-ID: <20210618035855.GB31659@aspeedtech.com>
-References: <20210617094424.27123-1-jamin_lin@aspeedtech.com>
- <20210617094424.27123-4-jamin_lin@aspeedtech.com>
- <YMslyzUKp/7J0ncu@smile.fi.intel.com>
+        Thu, 17 Jun 2021 23:55:50 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G5lJh0CjNz1BN5G;
+        Fri, 18 Jun 2021 11:48:36 +0800 (CST)
+Received: from dggpeml500020.china.huawei.com (7.185.36.88) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 18 Jun 2021 11:53:38 +0800
+Received: from huawei.com (10.175.127.227) by dggpeml500020.china.huawei.com
+ (7.185.36.88) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 18 Jun
+ 2021 11:53:38 +0800
+From:   Baokun Li <libaokun1@huawei.com>
+To:     <libaokun1@huawei.com>, Steve French <sfrench@samba.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-cifs@vger.kernel.org>,
+        <samba-technical@lists.samba.org>,
+        <kernel-janitors@vger.kernel.org>, "Hulk Robot" <hulkci@huawei.com>
+Subject: [PATCH -next v2] cifs: convert list_for_each to entry variant in smb2misc.c
+Date:   Fri, 18 Jun 2021 12:02:32 +0800
+Message-ID: <20210618040232.2550645-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <YMslyzUKp/7J0ncu@smile.fi.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 15I3ic7p020343
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500020.china.huawei.com (7.185.36.88)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 06/17/2021 10:36, Andy Shevchenko wrote:
-> On Thu, Jun 17, 2021 at 05:43:40PM +0800, Jamin Lin wrote:
-> > Add i2c new driver to support new register set for AST2600.
-> > AST2600 support three modes for data transfer which are
-> > byte mode, buffer mode and dma mode, respectively.
-> > The global driver of i2c is used to set the new register
-> > mode and define the base clock frequency
-> > of baseclk_1~baseclk_4.
-> > 
-> > Signed-off-by: Jamin Lin <jamin_lin@aspeedtech.com>
-> > ---
-> >  drivers/i2c/busses/Kconfig              |   11 +
-> >  drivers/i2c/busses/Makefile             |    1 +
-> >  drivers/i2c/busses/ast2600-i2c-global.c |  205 +++
-> >  drivers/i2c/busses/ast2600-i2c-global.h |   25 +
-> >  drivers/i2c/busses/i2c-new-aspeed.c     | 1796 +++++++++++++++++++++++
-> 
-> I commented _something_ (but read comments carefully, they will cover much
-> more). The overall it seems you have to:
->  - shrink the code base by at least ~15% (it's possible), i.e. -200 LOCs
-Can you describe it more detail?
-Do you mean I should separate the patch file to fix size limitation? 
->  - rethink how you do calculations and bit operations
->  - better code style
->
-Thanks for your review and very good suggestion
-I will update them and sent patch again.
-By the way, I received test failed email from Robot due to compiling
-warning. I will fix them, too. 
+convert list_for_each() to list_for_each_entry() where
+applicable.
 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+V1->V2:
+	Convert the missing list_for_each to entry
+
+ fs/cifs/smb2misc.c | 33 ++++++++-------------------------
+ 1 file changed, 8 insertions(+), 25 deletions(-)
+
+diff --git a/fs/cifs/smb2misc.c b/fs/cifs/smb2misc.c
+index 06d555d4da9a..aba048153f79 100644
+--- a/fs/cifs/smb2misc.c
++++ b/fs/cifs/smb2misc.c
+@@ -164,12 +164,10 @@ smb2_check_message(char *buf, unsigned int len, struct TCP_Server_Info *srvr)
+ 		struct smb2_transform_hdr *thdr =
+ 			(struct smb2_transform_hdr *)buf;
+ 		struct cifs_ses *ses = NULL;
+-		struct list_head *tmp;
+ 
+ 		/* decrypt frame now that it is completely read in */
+ 		spin_lock(&cifs_tcp_ses_lock);
+-		list_for_each(tmp, &srvr->smb_ses_list) {
+-			ses = list_entry(tmp, struct cifs_ses, smb_ses_list);
++		list_for_each_entry(ses, &srvr->smb_ses_list, smb_ses_list) {
+ 			if (ses->Suid == thdr->SessionId)
+ 				break;
+ 
+@@ -548,7 +546,6 @@ static bool
+ smb2_tcon_has_lease(struct cifs_tcon *tcon, struct smb2_lease_break *rsp)
+ {
+ 	__u8 lease_state;
+-	struct list_head *tmp;
+ 	struct cifsFileInfo *cfile;
+ 	struct cifsInodeInfo *cinode;
+ 	int ack_req = le32_to_cpu(rsp->Flags &
+@@ -556,8 +553,7 @@ smb2_tcon_has_lease(struct cifs_tcon *tcon, struct smb2_lease_break *rsp)
+ 
+ 	lease_state = le32_to_cpu(rsp->NewLeaseState);
+ 
+-	list_for_each(tmp, &tcon->openFileList) {
+-		cfile = list_entry(tmp, struct cifsFileInfo, tlist);
++	list_for_each_entry(cfile, &tcon->openFileList, tlist) {
+ 		cinode = CIFS_I(d_inode(cfile->dentry));
+ 
+ 		if (memcmp(cinode->lease_key, rsp->LeaseKey,
+@@ -618,7 +614,6 @@ static bool
+ smb2_is_valid_lease_break(char *buffer)
+ {
+ 	struct smb2_lease_break *rsp = (struct smb2_lease_break *)buffer;
+-	struct list_head *tmp, *tmp1, *tmp2;
+ 	struct TCP_Server_Info *server;
+ 	struct cifs_ses *ses;
+ 	struct cifs_tcon *tcon;
+@@ -628,15 +623,9 @@ smb2_is_valid_lease_break(char *buffer)
+ 
+ 	/* look up tcon based on tid & uid */
+ 	spin_lock(&cifs_tcp_ses_lock);
+-	list_for_each(tmp, &cifs_tcp_ses_list) {
+-		server = list_entry(tmp, struct TCP_Server_Info, tcp_ses_list);
+-
+-		list_for_each(tmp1, &server->smb_ses_list) {
+-			ses = list_entry(tmp1, struct cifs_ses, smb_ses_list);
+-
+-			list_for_each(tmp2, &ses->tcon_list) {
+-				tcon = list_entry(tmp2, struct cifs_tcon,
+-						  tcon_list);
++	list_for_each_entry(server, &cifs_tcp_ses_list, tcp_ses_list) {
++		list_for_each_entry(ses, &server->smb_ses_list, smb_ses_list) {
++			list_for_each_entry(tcon, &ses->tcon_list, tcon_list) {
+ 				spin_lock(&tcon->open_file_lock);
+ 				cifs_stats_inc(
+ 				    &tcon->stats.cifs_stats.num_oplock_brks);
+@@ -687,7 +676,6 @@ bool
+ smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
+ {
+ 	struct smb2_oplock_break *rsp = (struct smb2_oplock_break *)buffer;
+-	struct list_head *tmp, *tmp1, *tmp2;
+ 	struct cifs_ses *ses;
+ 	struct cifs_tcon *tcon;
+ 	struct cifsInodeInfo *cinode;
+@@ -710,16 +698,11 @@ smb2_is_valid_oplock_break(char *buffer, struct TCP_Server_Info *server)
+ 
+ 	/* look up tcon based on tid & uid */
+ 	spin_lock(&cifs_tcp_ses_lock);
+-	list_for_each(tmp, &server->smb_ses_list) {
+-		ses = list_entry(tmp, struct cifs_ses, smb_ses_list);
+-
+-		list_for_each(tmp1, &ses->tcon_list) {
+-			tcon = list_entry(tmp1, struct cifs_tcon, tcon_list);
++	list_for_each_entry(ses, &server->smb_ses_list, smb_ses_list) {
++		list_for_each_entry(tcon, &ses->tcon_list, tcon_list) {
+ 
+ 			spin_lock(&tcon->open_file_lock);
+-			list_for_each(tmp2, &tcon->openFileList) {
+-				cfile = list_entry(tmp2, struct cifsFileInfo,
+-						     tlist);
++			list_for_each_entry(cfile, &tcon->openFileList, tlist) {
+ 				if (rsp->PersistentFid !=
+ 				    cfile->fid.persistent_fid ||
+ 				    rsp->VolatileFid !=
+-- 
+2.31.1
+
