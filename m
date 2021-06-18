@@ -2,73 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E113ACA9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:08:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39F2E3ACAA9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234101AbhFRMKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 08:10:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234092AbhFRMK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 08:10:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 002FD613EB;
-        Fri, 18 Jun 2021 12:08:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624018099;
-        bh=7qgOWH+nPcb2n6CEaH8HR2FF25lTlE4tAE8bf61gk/E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bgWnRLDssZJpxPfygsD+SOhyfBaYcSuwZvA7pBGgiCVv2zqvo5aMG+lv4ahDHiGNQ
-         VXydgXhDNzxmYKp+ATYVdKRQ+wuHUby2A237gLXe2LXbHjcfE0OtksCRhmKjJHCsHY
-         ibhuTCN/YTSdHtRrhxeoh0btoHnh28h8+AskaLOZXd+61jwE/yCeKq8aTd53mnP7i+
-         eHnQV3ociVgEBrbvBMR7Bnd0QksQuUTU3HDAP0s5d39YZNXBi+mUzKvuk3dKxNM/Y0
-         HOkuPIehep6Cu7xzMTmSbeUS6mWPewaykw3CIfrY3fh71ziSj4woKJCl9OfV2bsPw4
-         hJBECVMvJaupw==
-From:   Mark Brown <broonie@kernel.org>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Flavio Suligoi <f.suligoi@asem.it>
-Cc:     Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ASoC: fsi: fix spelling mistake
-Date:   Fri, 18 Jun 2021 13:07:54 +0100
-Message-Id: <162401758813.52682.15832699521448200223.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210618085324.1038524-1-f.suligoi@asem.it>
-References: <20210618085324.1038524-1-f.suligoi@asem.it>
+        id S233567AbhFRMPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 08:15:12 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:7489 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231250AbhFRMPL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 08:15:11 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G5yRG4hrzzZjjq;
+        Fri, 18 Jun 2021 20:10:02 +0800 (CST)
+Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 18 Jun 2021 20:12:58 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 18 Jun 2021 20:12:58 +0800
+From:   Guangbin Huang <huangguangbin2@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <salil.mehta@huawei.com>, <lipeng321@huawei.com>,
+        <huangguangbin2@huawei.com>
+Subject: [PATCH net-next] net: hns3: fix reuse conflict of the rx page
+Date:   Fri, 18 Jun 2021 20:09:45 +0800
+Message-ID: <1624018185-38469-1-git-send-email-huangguangbin2@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggemi759-chm.china.huawei.com (10.1.198.145)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Jun 2021 10:53:24 +0200, Flavio Suligoi wrote:
-> Fix "thse" --> "these" in struct fsi_stream declaration.
+From: Yunsheng Lin <linyunsheng@huawei.com>
 
-Applied to
+In the current rx page reuse handling process, the rx page buffer may
+have conflict between driver and stack in high-pressure scenario.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+To fix this problem, we need to check whether the page is only owned
+by driver at the begin and at the end of a page to make sure there is
+no reuse conflict between driver and stack when desc_cb->page_offset
+is rollbacked to zero or increased.
 
-Thanks!
+Fixes: fa7711b888f2 ("net: hns3: optimize the rx page reuse handling process")
+Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
+Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+---
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 26 ++++++++++++++++++-------
+ 1 file changed, 19 insertions(+), 7 deletions(-)
 
-[1/1] ASoC: fsi: fix spelling mistake
-      commit: eb1e9b8f581a48943073c60adc3cd3cf63972580
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+index 51bbf5f760c5..cdb5f14fb6bc 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+@@ -3537,21 +3537,33 @@ static void hns3_nic_reuse_page(struct sk_buff *skb, int i,
+ 	int size = le16_to_cpu(desc->rx.size);
+ 	u32 truesize = hns3_buf_size(ring);
+ 	u32 frag_size = size - pull_len;
++	bool reused;
+ 
+ 	/* Avoid re-using remote or pfmem page */
+ 	if (unlikely(!dev_page_is_reusable(desc_cb->priv)))
+ 		goto out;
+ 
+-	/* Stack is not using and current page_offset is non-zero, we can
+-	 * reuse from the zero offset.
++	reused = hns3_can_reuse_page(desc_cb);
++
++	/* Rx page can be reused when:
++	 * 1. Rx page is only owned by the driver when page_offset
++	 *    is zero, which means 0 @ truesize will be used by
++	 *    stack after skb_add_rx_frag() is called, and the rest
++	 *    of rx page can be reused by driver.
++	 * Or
++	 * 2. Rx page is only owned by the driver when page_offset
++	 *    is non-zero, which means page_offset @ truesize will
++	 *    be used by stack after skb_add_rx_frag() is called,
++	 *    and 0 @ truesize can be reused by driver.
+ 	 */
+-	if (desc_cb->page_offset && hns3_can_reuse_page(desc_cb)) {
+-		desc_cb->page_offset = 0;
+-		desc_cb->reuse_flag = 1;
+-	} else if (desc_cb->page_offset + truesize * 2 <=
+-		   hns3_page_size(ring)) {
++	if ((!desc_cb->page_offset && reused) ||
++	    ((desc_cb->page_offset + truesize + truesize) <=
++	     hns3_page_size(ring) && desc_cb->page_offset)) {
+ 		desc_cb->page_offset += truesize;
+ 		desc_cb->reuse_flag = 1;
++	} else if (desc_cb->page_offset && reused) {
++		desc_cb->page_offset = 0;
++		desc_cb->reuse_flag = 1;
+ 	} else if (frag_size <= ring->rx_copybreak) {
+ 		void *frag = napi_alloc_frag(frag_size);
+ 
+-- 
+2.8.1
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
