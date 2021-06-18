@@ -2,114 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6383AD625
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:49:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E06353AD62C
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235282AbhFRXvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 19:51:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58966 "EHLO
+        id S235280AbhFRXym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 19:54:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235222AbhFRXvr (ORCPT
+        with ESMTP id S232678AbhFRXyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 19:51:47 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6001AC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:49:37 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id x73so8921501pfc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:49:37 -0700 (PDT)
+        Fri, 18 Jun 2021 19:54:41 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B701C061767
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:52:28 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id pf4-20020a17090b1d84b029016f6699c3f2so1763010pjb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:52:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=1LjPznQ/uIsBDTfnzklraJ3U4KjBtmygs7CsvfkuOpE=;
-        b=DOvQjNeS+IMvZE3V2rm/bsTOIE2+ElVWYpXBZFcbc3+qR4DzP1GrEt9yKpj0PRQqM5
-         QK21+zJTSoN1Btb1LpXsZEUBLD482NwV90tCJzDecrk9yRXIR7/iS40hHtUX6HWl3Caq
-         KqA7e5DTfGdu/IRPBaotih4QTz2Uw9/rrROpk=
+        bh=3QYcwvtyhPnU4XufKlxXAbadnyn0yvfQI9M4GTCqOZc=;
+        b=cPWHs2b8m52BLZv7t3tqRbKyB9koU8IBShogTCNe8qX3i2zUvDaiwjUXulMd1ZUCPG
+         cyQpL+ovwPpT1u7E04n2hxuP7GXYtcFNFxH9lnpykwL/IUzXZE4Wm0IMFBST2on5ZHPp
+         HTSMSMuLbTFMiAUKrtAwuBTjXROUp89Bxf9OwMgbrYyS0A0l74O0jJwIUWr/Rspfgkrl
+         cbTcOKVfxnCRZdLfmT7bQmscPIVq1R8uJHW7AWBkdcyXmpbN4kdOR1ET+nttQr8oIT8/
+         hn/4oBYYRnHQyU6Af9CEtlGl64Y6sR+79s4pdnxLoXhE1MVUmy+yI3BjLaJge4PSyb/H
+         fBRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=1LjPznQ/uIsBDTfnzklraJ3U4KjBtmygs7CsvfkuOpE=;
-        b=a1nM1YqCUO1Pd6PhSYDVwzCAB8c6qOvGdCQ8ldo3Fj6JOJeSwFP24ezemBAgZ3V5ZW
-         B5IyoGVGFy8+b8gj7+7PRGtOlDNo97NW4wZiOSxXDAqFKo1yEbtl0Ebw9O6iWsDEh1Td
-         D8rkyxVK8GqKQh7K8DoiNyVeDck0QPADHsxdKo1YacuqPjt9kxaivG8WkODeGzHG64xO
-         Z8cU0/RR7zWJAUK0vik1Gg5bsol2YHFN34qckg+/k/boB4tcTIfJLFqfH2Er0/YPJDUd
-         wpvy6HIo9JPfd8A+LVhexOXSOS9pve0Wm7lua0K7k7XuSde9AegjfPxRff+eCTsJmX4Q
-         kr1w==
-X-Gm-Message-State: AOAM531v2Gy7DR6tDK+JVcdIGchq37zYbSOG7UZAwIsMj+WgL+N546KE
-        M2El/fHELoGFnfNuqKCwq+7L+A==
-X-Google-Smtp-Source: ABdhPJwZim075DfvinUYZnIyBpgJHTRdBHlySZ9Lv5z4lp07rXwavP5/Oq5awRv5qpMc/S7ulDSg/Q==
-X-Received: by 2002:a63:d47:: with SMTP id 7mr12346532pgn.339.1624060177005;
-        Fri, 18 Jun 2021 16:49:37 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id b1sm472127pjk.51.2021.06.18.16.49.35
+        bh=3QYcwvtyhPnU4XufKlxXAbadnyn0yvfQI9M4GTCqOZc=;
+        b=dKO76Vd5uIKoJkl19l4DJiLfr8vthWnZF/Ctw8MXnD2HRMNrzJtZRDuJ51cpinIeM8
+         XT5kUFLRxNcQZJU6pAFGgjrkq/EskYdzvL0U746D9Q/xBQWTNh2aFfuBRF1V8bE8TJzu
+         sqoJq+4Ryz4tzKJTCmdsxtbz9ovkDihNmp50c0XVAeP1ANcGoh0szjL4jWZ+KKWX4I2l
+         LFVRIUSYOQ6x+7kSx0/tqr4q25+xQvaBshe3Upgu4dLELXZuCEAwilm21iss7TPBj7Ho
+         mpNYB85yxtQyK3YFO4qac0MG6O9j70zGMeEJn0a3Hd3aOPLRgfjcJMQApoMtMMeql2Pr
+         Ta9g==
+X-Gm-Message-State: AOAM530OCArL7dzTSeLwJ/YHsz1lPquNX+sP4FXrWgEciVYJeMVC24Ji
+        gx+DFcFn3cjpv6M+CMvVSkDEBw==
+X-Google-Smtp-Source: ABdhPJxkmDEDb99V5Rag5bSuyb8OzH3uPgagDn2It+ROt3XsV+7Qz1fE4DIvkZKbvuXxca1yWN9nTg==
+X-Received: by 2002:a17:90b:1946:: with SMTP id nk6mr6004677pjb.86.1624060347511;
+        Fri, 18 Jun 2021 16:52:27 -0700 (PDT)
+Received: from google.com ([2620:15c:2ce:200:7718:8bff:acab:aa6b])
+        by smtp.gmail.com with ESMTPSA id x22sm8897487pjp.37.2021.06.18.16.52.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 16:49:36 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 16:49:34 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>, stable@vger.kernel.org,
-        Breno =?iso-8859-1?Q?Leit=E3o?= <leitao@debian.org>,
-        Nayna Jain <nayna@linux.ibm.com>,
-        Paulo Flabiano Smorigo <pfsmorigo@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] crypto: nx: Fix memcpy() over-reading in nonce
-Message-ID: <202106181648.0C5FA93@keescook>
-References: <20210616203459.1248036-1-keescook@chromium.org>
- <87zgvpqb00.fsf@mpe.ellerman.id.au>
+        Fri, 18 Jun 2021 16:52:26 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 16:52:22 -0700
+From:   Fangrui Song <maskray@google.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Bill Wendling <wcw@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
+        Martin Liska <mliska@suse.cz>, Marco Elver <elver@google.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        johannes.berg@intel.com, linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH 0/2] no_profile fn attr and Kconfig for GCOV+PGO
+Message-ID: <20210618235222.s6l552hpkbfod6sv@google.com>
+References: <20210618233023.1360185-1-ndesaulniers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <87zgvpqb00.fsf@mpe.ellerman.id.au>
+In-Reply-To: <20210618233023.1360185-1-ndesaulniers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 04:08:15PM +1000, Michael Ellerman wrote:
-> Kees Cook <keescook@chromium.org> writes:
-> > Fix typo in memcpy() where size should be CTR_RFC3686_NONCE_SIZE.
-> >
-> > Fixes: 030f4e968741 ("crypto: nx - Fix reentrancy bugs")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> 
-> Thanks.
-> 
-> > ---
-> >  drivers/crypto/nx/nx-aes-ctr.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/crypto/nx/nx-aes-ctr.c b/drivers/crypto/nx/nx-aes-ctr.c
-> > index 13f518802343..6120e350ff71 100644
-> > --- a/drivers/crypto/nx/nx-aes-ctr.c
-> > +++ b/drivers/crypto/nx/nx-aes-ctr.c
-> > @@ -118,7 +118,7 @@ static int ctr3686_aes_nx_crypt(struct skcipher_request *req)
-> >  	struct nx_crypto_ctx *nx_ctx = crypto_skcipher_ctx(tfm);
-> >  	u8 iv[16];
-> >  
-> > -	memcpy(iv, nx_ctx->priv.ctr.nonce, CTR_RFC3686_IV_SIZE);
-> > +	memcpy(iv, nx_ctx->priv.ctr.nonce, CTR_RFC3686_NONCE_SIZE);
-> >  	memcpy(iv + CTR_RFC3686_NONCE_SIZE, req->iv, CTR_RFC3686_IV_SIZE);
-> >  	iv[12] = iv[13] = iv[14] = 0;
-> >  	iv[15] = 1;
-> 
-> Where IV_SIZE is 8 and NONCE_SIZE is 4.
-> 
-> And iv is 16 bytes, so it's not a buffer overflow.
-> 
-> But priv.ctr.nonce is 4 bytes, and at the end of the struct, so it reads
-> 4 bytes past the end of the nx_crypto_ctx, which is not good.
-> 
-> But then immediately overwrites whatever it read with req->iv.
-> 
-> So seems pretty harmless in practice?
+On 2021-06-18, Nick Desaulniers wrote:
+>When we say noinstr, we mean noinstr.  GCOV and PGO can both instrument
+>functions. Add a new function annotation __no_profile that expands to
+>__attribute__((__no_profile__)) and Kconfig value
+>CC_HAS_NO_PROFILE_FN_ATTR.
+>
+>Base is
+>https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/log/?h=for-next/clang/pgo.
+>
+>Nick Desaulniers (2):
+>  compiler_attributes.h: define __no_profile, add to noinstr
+>  Kconfig: CC_HAS_NO_PROFILE_FN_ATTR, depend on for GCOV and PGO
+>
+> include/linux/compiler_attributes.h | 12 ++++++++++++
+> include/linux/compiler_types.h      |  2 +-
+> init/Kconfig                        |  3 +++
+> kernel/gcov/Kconfig                 |  1 +
+> kernel/pgo/Kconfig                  |  3 ++-
+> 5 files changed, 19 insertions(+), 2 deletions(-)
+>
+>
+>base-commit: 4356bc4c0425c81e204f561acf4dd0095544a6cb
+>-- 
+>2.32.0.288.g62a8d224e6-goog
+>
 
-Right -- there's no damage done, but future memcpy() FORTIFY work alerts
-on this, so I'm going through cleaning all of these up. :)
-
--- 
-Kees Cook
+Thanks for the attribute work in clang and kernel! Hope we can use clang
+PGO in 5.14...  (I am a casual contributor to clang PGO/coverage)
