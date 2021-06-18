@@ -2,234 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69CF43AC843
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:59:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B69573AC848
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233466AbhFRKBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 06:01:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233325AbhFRKBC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 06:01:02 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 412A8C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:58:53 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id r16so9978584oiw.3
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:58:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QOIw6n82TPYeF0v/0YjgvxC4lNlWdjmeYawtnmFBQYc=;
-        b=EPA4AJrspMLp/Ra/H5I5fQ00+L141U+Kz4boPpR/WuTEjzDeX+VKL84fkeUFeeEmq+
-         61cR65dyTXNfSQ3xpjNyTBmfGW144v60mLb4keUyKlblCJRyBDed7bv+/KrNbveNn4q/
-         CvLKaqwGTM4PDBoxomaC3t62QRQWCMFfvnaNqnwXjV4WCVDFtT1acI5RnuZ+GVSkiCKU
-         +WZUyTVXdZi9w9NRM3rMI3AQZ0iaTbTwsB27+7Etrr+ZMTVU5zKp/Q00t6iGZbd38k6n
-         +SbeCNIwT11SgimNvuQDQ+IWmHB8WyuZmemJKK7w17OYTuyRCvfspwfsv2JF9t8oPROd
-         Mc0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QOIw6n82TPYeF0v/0YjgvxC4lNlWdjmeYawtnmFBQYc=;
-        b=h9Z6zJm6pLZ2/RZvaTVg4EZ+paZ1Lw65jn1MWguJTnxnxbIzWdv/XEOvm+rIkJRy99
-         d/e+pr9Ex0+ftYMVgVx4RIeboLC8C/RL8V+7IZW8GjrNMTdzzbw5g5d53cx/IVA/zetw
-         Q8bfoV/iCAKyB0yieNsB4P6LNYItUZdVfqouAUGf8NJKqEASbR29DOhu8o7vNDDODgND
-         Jp8ysSFbYhcZE80V0OdYlmUkv0eQ9uFJN22KbvniN1TCLbOrPZoU7Y3SKtHLyI1gJYjb
-         pKIiQNmkM8vAyFwKWPGiPtpYzCu5BCXlwmoT3sY4rI0fkzbMb7pRY2SKdF5XujB7j7sg
-         J5aA==
-X-Gm-Message-State: AOAM532HspleOfcPFxMpmvxhqaUndbRn6FE8xFNLrJjtABB+iUKaXOdE
-        v6ETeOriI7GwMok4WzusBtSWyjkNWhIA4dJffJLyYw==
-X-Google-Smtp-Source: ABdhPJyFpWjzpuT5d0e6NwVemzHMdNPpkfuJ8rhZ5h81rBu8lA4gOlgQ5xjt4ubqCEuQhfLBUC88O3DD7nYKAm65G5g=
-X-Received: by 2002:aca:4bd7:: with SMTP id y206mr6972005oia.40.1624010332587;
- Fri, 18 Jun 2021 02:58:52 -0700 (PDT)
+        id S233236AbhFRKBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 06:01:42 -0400
+Received: from mga02.intel.com ([134.134.136.20]:20339 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232740AbhFRKBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 06:01:40 -0400
+IronPort-SDR: rk7a0cMixwIChTgPt5xhfiQVin++LJgWIkDopPfdV2SlAFQUrHT1Ytp1tXG9Kd/y1CRO/mCvnv
+ wFx6xahUoPNQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="193659005"
+X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
+   d="scan'208";a="193659005"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 02:59:30 -0700
+IronPort-SDR: skSE3amv8mKVXb+EWAHxoHXR1wl2/JzlAJCk0BlYpeVNHRHZmDiZtMmFL07HiG7D9N2XTzskgH
+ jcbnbvO1e9Pw==
+X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
+   d="scan'208";a="555527300"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 02:59:24 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1luBHU-003ZKx-Se; Fri, 18 Jun 2021 12:59:20 +0300
+Date:   Fri, 18 Jun 2021 12:59:20 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jamin Lin <jamin_lin@aspeedtech.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jean Delvare <jdelvare@suse.de>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Khalil Blaiech <kblaiech@mellanox.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Bence =?iso-8859-1?B?Q3Pza+Fz?= <bence98@sch.bme.hu>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        ChiaWei Wang <chiawei_wang@aspeedtech.com>,
+        Troy Lee <troy_lee@aspeedtech.com>,
+        Steven Lee <steven_lee@aspeedtech.com>
+Subject: Re: [PATCH 3/3] i2c:support new register set for ast2600
+Message-ID: <YMxueLOhlXjy1ZRH@smile.fi.intel.com>
+References: <20210617094424.27123-1-jamin_lin@aspeedtech.com>
+ <20210617094424.27123-4-jamin_lin@aspeedtech.com>
+ <YMslFSOrnUc5b+zP@smile.fi.intel.com>
+ <20210618035340.GA31659@aspeedtech.com>
 MIME-Version: 1.0
-References: <20210617054548.353293-1-bhupesh.sharma@linaro.org>
- <20210617054548.353293-4-bhupesh.sharma@linaro.org> <cba788c2-f826-94f0-0bcd-bae491ac4189@somainline.org>
-In-Reply-To: <cba788c2-f826-94f0-0bcd-bae491ac4189@somainline.org>
-From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Date:   Fri, 18 Jun 2021 15:28:41 +0530
-Message-ID: <CAH=2NtxezX75zfY0qVuFFjO-XfSgh7fuSwdyO25z9q8bq6nG4Q@mail.gmail.com>
-Subject: Re: [PATCH v3 3/5] arm64: dts: qcom: pmm8155au_1: Add base dts file
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     linux-arm-msm@vger.kernel.org, bhupesh.linux@gmail.com,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Mark Brown <broonie@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210618035340.GA31659@aspeedtech.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Konrad,
+On Fri, Jun 18, 2021 at 11:53:41AM +0800, Jamin Lin wrote:
+> The 06/17/2021 10:33, Andy Shevchenko wrote:
+> > On Thu, Jun 17, 2021 at 05:43:40PM +0800, Jamin Lin wrote:
 
-Thanks for the review.
+...
 
-On Fri, 18 Jun 2021 at 04:04, Konrad Dybcio
-<konrad.dybcio@somainline.org> wrote:
->
->
-> On 17.06.2021 07:45, Bhupesh Sharma wrote:
-> > Add base DTS file for pmm8155au_1 along with GPIOs, power-on, rtc and vadc
-> > nodes.
+> > > + *
+> > > + *  This program is free software; you can redistribute it and/or modify
+> > > + *  it under the terms of the GNU General Public License version 2 as
+> > > + *  published by the Free Software Foundation.
+> > 
+> > SPDX covers this.
 > >
-> > Cc: Mark Brown <broonie@kernel.org>
-> > Cc: Vinod Koul <vkoul@kernel.org>
-> > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> > ---
-> >  arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi | 134 ++++++++++++++++++++++
-> >  1 file changed, 134 insertions(+)
-> >  create mode 100644 arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
+> Will change as following what do you think?
+> // SPDX-License-Identifier: GPL-2.0-or-later
+> /*
+>  *  Aspeed I2C Interrupt Controller.
+>  * Copyright (C) ASPEED Technology Inc.
+>  * Ryan Chen <ryan_chen@aspeedtech.com>
+>  */
+
+Yes, something like this.
+
+...
+
+> > > +static const struct aspeed_i2c_base_clk i2c_base_clk[BASE_CLK_COUNT] = {
+> > > +	/* name	target_freq */
+> > > +	{  "base_clk0",	1000000 },	/* 1M */
+> > > +	{  "base_clk1",	4000000 },	/* 4M */
+> > > +	{  "base_clk2",	10000000 },	/* 10M */
+> > > +	{  "base_clk3",	40000000 },	/* 40M */
+> > > +};
+> > 
+> > Why it's not provided as the clock provider(s)?
+
+> According to the design of ASPEED AST2600 SOC, the I2C bus is connected to PHB bus.
+> The clock driver provides PHB clock and its default frequency is 100MHZ.
+> AST2600 support the bus frequency of I2C from 0.1kbps to 5Mbps if PHB clock is 50MHZ.
+> To meet the different bus frequency of I2C, we use this programmer to calculate the divider to 
+> change the base clock.
+> For example, 
+> It calculates divider to change base_clock 1 to 1M to support I2C bus frequency 100KHZ
+> It calculates divider to change base_clock 2 to 4M to support I2C bus frequency 400KHZ 
+
+My question is, why don't you provide a clock provider (under drivers/clk) for
+this platform and use it instead?
+
+...
+
+> > > +	struct clk_hw_onecell_data *onecell;
+> > > +	struct clk_hw *hw;
+> > > +	int err;
+> > > +	u32 clk_divider = 0;
+> > > +	int i, j;
+> > > +	unsigned long base_freq;
+> > 
+> > Use reversed xmas tree order for all these blocks.
+> > 
+> > The rule of thumb, btw, that any comment applies to all similar places by
+> > default (independently on which line it was given against).
 > >
-> > diff --git a/arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi b/arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
-> > new file mode 100644
-> > index 000000000000..b04c28e54470
-> > --- /dev/null
-> > +++ b/arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi
-> > @@ -0,0 +1,134 @@
-> > +// SPDX-License-Identifier: BSD-3-Clause
-> > +/*
-> > + * Copyright (c) 2021, Linaro Limited
-> > + */
-> > +
-> > +#include <dt-bindings/input/input.h>
-> > +#include <dt-bindings/interrupt-controller/irq.h>
-> > +#include <dt-bindings/spmi/spmi.h>
-> > +#include <dt-bindings/iio/qcom,spmi-vadc.h>
-> > +
-> > +/ {
-> > +     thermal-zones {
-> > +             pmm8155au-1-thermal {
-> > +                     polling-delay-passive = <100>;
-> > +                     polling-delay = <0>;
-> > +
-> > +                     thermal-sensors = <&pmm8155au_1_temp>;
-> > +
-> > +                     trips {
-> > +                             trip0 {
-> > +                                     temperature = <95000>;
-> > +                                     hysteresis = <0>;
-> > +                                     type = "passive";
-> > +                             };
-> > +
-> > +                             trip1 {
-> > +                                     temperature = <115000>;
-> > +                                     hysteresis = <0>;
-> > +                                     type = "hot";
-> > +                             };
-> > +
-> > +                             trip2 {
-> > +                                     temperature = <145000>;
-> > +                                     hysteresis = <0>;
-> > +                                     type = "critical";
-> > +                             };
-> > +                     };
-> > +             };
-> > +     };
-> > +};
-> > +
-> > +&spmi_bus {
-> > +     pmic@0 {
-> > +             compatible = "qcom,pmm8155au", "qcom,spmi-pmic";
-> > +             reg = <0x0 SPMI_USID>;
-> > +             #address-cells = <1>;
-> > +             #size-cells = <0>;
-> > +
-> > +             pon: power-on@800 {
-> > +                     compatible = "qcom,pm8916-pon";
-> > +                     reg = <0x0800>;
-> > +                     pwrkey {
-> > +                             compatible = "qcom,pm8941-pwrkey";
-> > +                             interrupts = <0x0 0x8 0x0 IRQ_TYPE_EDGE_BOTH>;
-> > +                             debounce = <15625>;
-> > +                             bias-pull-up;
-> > +                             linux,code = <KEY_POWER>;
-> > +
-> > +                             status = "disabled";
-> > +                     };
->
-> Oh, okay, so the power key is there, then I withdraw my worries from _2.
->
-> I'm still interested in the reg situation though.
->
->
->
-> > +             };
-> > +
-> > +             pmm8155au_1_temp: temp-alarm@2400 {
-> > +                     compatible = "qcom,spmi-temp-alarm";
-> > +                     reg = <0x2400>;
-> > +                     interrupts = <0x0 0x24 0x0 IRQ_TYPE_EDGE_BOTH>;
-> > +                     io-channels = <&pmm8155au_1_adc ADC5_DIE_TEMP>;
-> > +                     io-channel-names = "thermal";
-> > +                     #thermal-sensor-cells = <0>;
-> > +             };
-> > +
-> > +             pmm8155au_1_adc: adc@3100 {
-> > +                     compatible = "qcom,spmi-adc5";
-> > +                     reg = <0x3100>;
-> > +                     #address-cells = <1>;
-> > +                     #size-cells = <0>;
-> > +                     #io-channel-cells = <1>;
-> > +                     interrupts = <0x0 0x31 0x0 IRQ_TYPE_EDGE_RISING>;
-> > +
-> > +                     ref-gnd@0 {
-> > +                             reg = <ADC5_REF_GND>;
-> > +                             qcom,pre-scaling = <1 1>;
-> > +                             label = "ref_gnd";
-> > +                     };
-> > +
-> > +                     vref-1p25@1 {
-> > +                             reg = <ADC5_1P25VREF>;
-> > +                             qcom,pre-scaling = <1 1>;
-> > +                             label = "vref_1p25";
-> > +                     };
-> > +
-> > +                     die-temp@6 {
-> > +                             reg = <ADC5_DIE_TEMP>;
-> > +                             qcom,pre-scaling = <1 1>;
-> > +                             label = "die_temp";
-> > +                     };
-> > +             };
-> > +
-> > +             pmm8155au_1_adc_tm: adc-tm@3500 {
-> > +                     compatible = "qcom,spmi-adc-tm5";
-> > +                     reg = <0x3500>;
-> > +                     interrupts = <0x0 0x35 0x0 IRQ_TYPE_EDGE_RISING>;
-> > +                     #thermal-sensor-cells = <1>;
-> > +                     #address-cells = <1>;
-> > +                     #size-cells = <0>;
-> > +                     status = "disabled";
-> > +             };
-> > +
-> > +             pmm8155au_1_rtc: rtc@6000 {
-> > +                     compatible = "qcom,pm8941-rtc";
-> > +                     reg = <0x6000>;
-> > +                     reg-names = "rtc", "alarm";
-> > +                     interrupts = <0x0 0x61 0x1 IRQ_TYPE_NONE>;
-> > +
-> > +                     status = "disabled";
-> > +             };
-> > +
-> > +             pmm8155au_1_gpios: gpio@c000 {
-> > +                     compatible = "qcom,pmm8155au-gpio";
-> > +                     reg = <0xc000>;
-> > +                     gpio-controller;
-> > +                     #gpio-cells = <2>;
-> > +                     interrupt-controller;
-> > +                     #interrupt-cells = <2>;
-> > +             };
->
-> And the same question about gpio-ranges from _2.
+> Do you mena change as following?
+> struct clk_hw_onecell_data *onecell;
+> unsigned long base_freq;
+> u32 clk_divider = 0;
+> struct clk_hw *hw;
+> int err;
+> int i;
+> int j;
 
-Sure, let's use the thread for [PATCH 2/5] for the discussion on these
-review comments as the same comments are applicable there as well.
+Yes.
 
-Thanks,
-Bhupesh
+...
+
+> > > +		for (i = 0; i < 0xff; i++) {
+> > > +			/*
+> > > +			 * i maps to div:
+> > > +			 * 0x00: div 1
+> > > +			 * 0x01: div 1.5
+> > > +			 * 0x02: div 2
+> > > +			 * 0x03: div 2.5
+> > > +			 * 0x04: div 3
+> > > +			 * ...
+> > > +			 * 0xFE: div 128
+> > > +			 * 0xFF: div 128.5
+> > > +			 */
+> > > +			base_freq = base_clk * 2 / (2 + i);
+> > > +			if (base_freq <= i2c_base_clk[j].base_freq)
+> > > +				break;
+> > > +		}
+> > 
+> > oAre yuo sure you can't eliminate the entire for-loop? Think about it a bit,
+> > please.
+> >
+> What do you think if we use "lookup table" instaed of above for loop?
+
+Besides that it should be a part of clock provider, no, you may use a formula
+(bit operations and so on).
+
+...
+
+> > > +	i2c_ic->rst = devm_reset_control_get_exclusive(&pdev->dev, NULL);
+
+> > > +	if (IS_ERR(i2c_ic->rst)) {
+> > 
+> > > +		dev_dbg(&pdev->dev,
+> > > +			"missing or invalid reset controller device tree entry");
+> > 
+> > Make it optional.
+> Can I change to use "dev_err"?
+
+What I meant here is to make the reset optional (there is even specific API for
+that) and return an error in that case.
+
+> > > +	} else {
+> > > +		/* SCU I2C Reset */
+> > > +		reset_control_assert(i2c_ic->rst);
+> > > +		udelay(3);
+> > > +		reset_control_deassert(i2c_ic->rst);
+> > > +	}
+
+...
+
+> > > +static struct ast_i2c_timing_table aspeed_old_i2c_timing_table[] = {
+> > 
+> > What the ... is this for?!
+> AST2600 support old/new register set for I2C controller.
+> This lookup table is used to find the divisor for the specific I2C bus
+> frequency for AST2600 I2C controller with old register set.
+> For example
+> If I2C bus frequency is 100KHZ and PHB clock is 100MHZ, it will find this table
+> because 100000000/1024 < 100000
+> "{ 1024, 0x00000300 | (0x5) | (0xf << 20) | (0xf << 16) | (0xf << 12) }"
+
+Can't you derive it by formula(s)?
+
+> > > +	/* Divisor : Base Clock : tCKHighMin : tCK High : tCK Low  */
+> > > +	/* Divisor :	  [3:0] : [23: 20]   :   [19:16]:   [15:12] */
+
+> > > +};
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
