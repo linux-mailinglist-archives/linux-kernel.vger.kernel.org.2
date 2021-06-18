@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 066693ACBB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B373ACBBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232250AbhFRNIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:08:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbhFRNIm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:08:42 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D73FC061574;
-        Fri, 18 Jun 2021 06:06:31 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id d11so8337572wrm.0;
-        Fri, 18 Jun 2021 06:06:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=dhEuPtsR/KNuGS/VgmTVMfARz6wFRoqIXPQfU/Gtd54=;
-        b=WXwG0ImU0W+FCIwSp/R90xf5d8IUZpDwj8Cq2yls4n3j5ToW1p21WLELba6IhAD8jf
-         OErGnbLxAtw/fR9WUGyN/zLvu/oVXGlJtoXgHMtDuD6tCdQLvuMA6Ptsrd7RbGb1gFmV
-         bcMQjszW8U5VIgG2Ok0FzpDMd2NXaxqZ0Jn3mv5JWfJXcoaj0rzmjHUF7684XeoXrTXV
-         R/q3qvoEqzyV7PWxcsVTJAgwtH6dIedodhFEuK+F2hUn5PiYLk8tebSwfa22bDVXC/7H
-         Jr4tZX9YhFouWR0JxtQBZF7T81BgxGgWGuh7ksEIKrx/XxoYerHPUKoVCnMr9NPgeHxz
-         6r6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=dhEuPtsR/KNuGS/VgmTVMfARz6wFRoqIXPQfU/Gtd54=;
-        b=IdTsIMu0xGUA2CLd8w9ktDv+iiBU1UEB+LNPHRqyS/c91YCzpiIzjaiGUfafPtIHyH
-         mtSxJQVoQRkm3lCHxF7xT6Ymp3WSjrk8E45j31pkbmIujx2x7a3c4phnh1TgWvyxWLlK
-         crl1RhJgaGqJM784MdKa4hw0kPtNj7jDzVw7dYybql6hUeXEO/UBJKsW/RzzulYjOC5K
-         XBYH2K0h/U6XaP2TDhme/WME22Xj9WPGT20sc8pwCHWxdrh6U2ZmxIAtR53kJZenxpnB
-         yTnDnxHPQkHyUkXgtePLvYnpCdiqRNsq3Ctbxi7l4tX1J9nGCxMvpTPs9d/YfsiNtF6B
-         Uw5Q==
-X-Gm-Message-State: AOAM5318zi1zPyrB9TazRV3q9FlyvJyUJRx+d3/L+ePl09/Bz6w7Id8c
-        4JkoZMr6OKAIVz8A4rnFsco=
-X-Google-Smtp-Source: ABdhPJzSrcojCkaxwj+uuLYe+Yxj0KiP0W9bjeXKIMlVP2mlIGd7Hr6QLnYmVxBUgQ6cU0qVvyWtGg==
-X-Received: by 2002:a05:6000:18ab:: with SMTP id b11mr12585540wri.42.1624021590283;
-        Fri, 18 Jun 2021 06:06:30 -0700 (PDT)
-Received: from [192.168.1.211] ([2.29.20.116])
-        by smtp.gmail.com with ESMTPSA id u12sm8960739wrr.40.2021.06.18.06.06.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 06:06:29 -0700 (PDT)
-Subject: Re: [PATCH v1 2/4] platform/x86: intel_skl_int3472: Fix dependencies
- (drop CLKDEV_LOOKUP)
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        Mark Gross <mgross@linux.intel.com>
-References: <20210617183031.70685-1-andriy.shevchenko@linux.intel.com>
- <20210617183031.70685-2-andriy.shevchenko@linux.intel.com>
- <c3aec3b4-1ba1-6442-fbed-57a16febde68@gmail.com>
- <YMyX4dxscWirfsBj@smile.fi.intel.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <1ba47a56-2ab0-ab79-69a4-b8c6cd40086d@gmail.com>
-Date:   Fri, 18 Jun 2021 14:06:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231167AbhFRNKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:10:49 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:45216 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230430AbhFRNKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 09:10:43 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1luEEZ-00022y-QZ; Fri, 18 Jun 2021 15:08:31 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Alex Bee <knaerzche@gmail.com>
+Cc:     devicetree@vger.kernel.org, balbi@kernel.org,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
+        Alex Bee <knaerzche@gmail.com>
+Subject: Re: [PATCH 2/3] arm64: dts: rockchip: Add RK3399 Rock Pi 4a plus board
+Date:   Fri, 18 Jun 2021 15:08:31 +0200
+Message-ID: <4545451.QWXsJ6tzlI@diego>
+In-Reply-To: <20210617044955.598994-2-knaerzche@gmail.com>
+References: <20210617044955.598994-1-knaerzche@gmail.com> <20210617044955.598994-2-knaerzche@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YMyX4dxscWirfsBj@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy
+Am Donnerstag, 17. Juni 2021, 06:49:54 CEST schrieb Alex Bee:
+> Rock Pi 4a plus board is the successor of Rock Pi 4a board.
+> 
+> Differences to the original version are
+> - has RK3399 OP1 SoC revision
+> - has eMMC (16 or 32 GB) soldered on board (no changes required,
+>   since it is enabled in rk3399-rock-pi-4.dtsi)
+> - dev boards have SPI flash soldered, but as per manufacturer response,
+>   this won't be the case for mass production boards
+> 
+> I didn't add yet another compatible, since the small set of differences
+> are captured by the device tree.
+> 
+> Signed-off-by: Alex Bee <knaerzche@gmail.com>
+> ---
+>  arch/arm64/boot/dts/rockchip/Makefile              |  1 +
+>  .../boot/dts/rockchip/rk3399-rock-pi-4a-plus.dts   | 14 ++++++++++++++
+>  2 files changed, 15 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a-plus.dts
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
+> index c3e00c0e2db7..dbd7d37950f1 100644
+> --- a/arch/arm64/boot/dts/rockchip/Makefile
+> +++ b/arch/arm64/boot/dts/rockchip/Makefile
+> @@ -43,6 +43,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-puma-haikou.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-roc-pc.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-roc-pc-mezzanine.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rock-pi-4a.dtb
+> +dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rock-pi-4a-plus.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rock-pi-4b.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rock-pi-4c.dtb
+>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rock960.dtb
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a-plus.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a-plus.dts
+> new file mode 100644
+> index 000000000000..2deaab7f9307
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a-plus.dts
+> @@ -0,0 +1,14 @@
+> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> +/*
+> + * Copyright (c) 2019 Akash Gajjar <Akash_Gajjar@mentor.com>
+> + * Copyright (c) 2019 Pragnesh Patel <Pragnesh_Patel@mentor.com>
+> + */
+> +
+> +/dts-v1/;
+> +#include "rk3399-rock-pi-4.dtsi"
+> +#include "rk3399-op1-opp.dtsi"
+> +
+> +/ {
+> +	model = "Radxa ROCK Pi 4A plus";
+> +	compatible = "radxa,rockpi4a", "radxa,rockpi4", "rockchip,rk3399";
 
-On 18/06/2021 13:56, Andy Shevchenko wrote:
-> On Thu, Jun 17, 2021 at 11:50:36PM +0100, Daniel Scally wrote:
->> Hi Andy
->>
->> On 17/06/2021 19:30, Andy Shevchenko wrote:
->>> Besides the fact that COMMON_CLK selects CLKDEV_LOOKUP
->>
->> So it does - thanks
->>
->>> , the latter
->>> is going to be removed from clock framework.
->>>
->>> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->>
->> Reviewed-by: Daniel Scally <djrscally@gmail.com>
-> Thanks!
-> I have sent v2 with more patches added (twice bigger than this).
-> Would you be able to test them?
->
-Sure - I'll test them later tonight - thanks!
+hmm, I don't really follow why you're re-using the radxa,rockpi4a
+compatible. I'd assume this should be radxa,rockpi4a+ or something?
+
+I.e. if a bootloader needs to select the matching devicetree from a list
+of available devicetrees, this could end up running a regular rockpi4a
+(without +) using the OP1 operating points and thus at way too high
+frequencies.
+
+
+Heiko
+
+
+> +};
+> 
+
+
+
+
