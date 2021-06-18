@@ -2,153 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E01203ACCBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E786F3ACCC0
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:51:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234090AbhFRNw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36608 "EHLO
+        id S234118AbhFRNxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:53:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231855AbhFRNw5 (ORCPT
+        with ESMTP id S231855AbhFRNxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:52:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4092C061574;
-        Fri, 18 Jun 2021 06:50:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ewwK7sg1H70Jke6Z5DisBb+g+MN1RA6uvk0li+GYvDw=; b=pzlu4L3D71tGoinu8Rd1rBqER+
-        uBcmcBdM4dRVw+a9JlVbz/puS2EwW4hf8qENTtZ211JLmTYykx2oWnNVRzEU5LD1Rejgu9t9i6gkC
-        KGRd1yDlp50zgjz4UWOiIV4/kd2i02PrvhriGWGHuRJUsZWBQjfRe8P24gTDvKnr5dLSyjL63Uoi6
-        hOWh9kvFmMbTSyiQTx0p6HeVKKQHNLhiQCnPcOtllMAnHUSQwExqiOB0pTnU0RnfSnFxXrx1gKc56
-        yaXM1bCMFUHLCY8Bt5O7G2YC4IF9pxI7SjXK1ffg7mHnzN5O3LouHVh5clIdd3UVEVsYtG671UuPp
-        Yf65JvQg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1luEsi-00AK2X-CO; Fri, 18 Jun 2021 13:50:03 +0000
-Date:   Fri, 18 Jun 2021 14:50:00 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Jann Horn <jannh@google.com>, John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Jan Kara <jack@suse.cz>, stable <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] mm/gup: fix try_grab_compound_head() race with
- split_huge_page()
-Message-ID: <YMykiGuZYMqF7DuU@casper.infradead.org>
-References: <20210615012014.1100672-1-jannh@google.com>
- <50d828d1-2ce6-21b4-0e27-fb15daa77561@nvidia.com>
- <CAG48ez3Vbcvh4AisU7=ukeJeSjHGTKQVd0NOU6XOpRru7oP_ig@mail.gmail.com>
- <20210618132556.GY1096940@ziepe.ca>
+        Fri, 18 Jun 2021 09:53:06 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A297C061574;
+        Fri, 18 Jun 2021 06:50:56 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id n23so5726799wms.2;
+        Fri, 18 Jun 2021 06:50:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=dtovv/K8yfnYJqOxDgzB30UQELk3d/5XWOox6hnEDLs=;
+        b=OANY3fHjjNRTHesTx7eEJ2yCXhvqLh87yoeuA9tuGDeMyIjcYjWrwKohJdhcIMSotC
+         ntV80jttyIgF+UPVSR2Kj/6KjCNVDtbA6ewIsYpKwYxG+WwRFNUy+dnIwwKTnwYlZpXL
+         /0N5bPyINXIrCWRjeG7ww8E0XSCtm5ySomovkrZfLgv1KYM0N0F/FfJbh+e9DkQ+yZky
+         B32TSuhbVQXm22LVvvpLVPN9lhyZ6sdDC2aALH72ZpPOXRUG2+lTA+mX8el4YyZtTO21
+         iT6JNAkv82bf7AF/pzsvSAg0XKtJeJfAHkz4EEKEHRihT8ImRLwIVAKpi5ptk+p11Nbm
+         PU/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dtovv/K8yfnYJqOxDgzB30UQELk3d/5XWOox6hnEDLs=;
+        b=FMgCPqHGY5eybSSw7eTQK1ynT5wCxoFn4a7n/Nrbp0FfTcKHj14G35kYDPaos5BPU+
+         4S7PYIWKbWe4/Cp19TfvnAEyBSo7msbNclv3dSgpv3qCpZ/QJ7BgQLr+DwhOvGTHFr15
+         DUVoHDtM/HCITisnmWZzgbIGiavmdcJ3aMsX1ZAZVVso70IgHam+YUGiHiszwhcUfqrX
+         y9tQujjHYk1pJZzdVJ4zhYnignlzlrDgLo1vU8O0MeK6+jAQx0PL3wz6/lHX3Nispjvk
+         OFa/YEPzUsmUhXExQ++MXk3GupUktHRDvNDPyCQWYdvFlu4PalrrxYg+4OuwpHTtD3sd
+         8Q3g==
+X-Gm-Message-State: AOAM532/Us7gowOpzjnGzyQ0AwFP2mN2kz2qF1HNvceKYwBeXFwzqQ7k
+        ppo25rI+Ualcp1GDxn67se4=
+X-Google-Smtp-Source: ABdhPJzZl84wUFGxHgDS72TiTUz7fnPfBKmWjvV/GpBzDDa8v0y6BvkqlGsDIMkcKmEOni1iHfohBA==
+X-Received: by 2002:a1c:f60f:: with SMTP id w15mr11678131wmc.71.1624024254592;
+        Fri, 18 Jun 2021 06:50:54 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id l9sm7753655wme.21.2021.06.18.06.50.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jun 2021 06:50:54 -0700 (PDT)
+Subject: Re: [PATCH v9 01/22] dt-bindings: ARM: Mediatek: Add new document
+ bindings of imp i2c wrapper controller
+To:     Chen-Yu Tsai <wenst@chromium.org>, Stephen Boyd <sboyd@kernel.org>
+Cc:     Chun-Jie Chen <chun-jie.chen@mediatek.com>,
+        Rob Herring <robh@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Weiyi Lu <weiyi.lu@mediatek.com>
+References: <20210524122053.17155-1-chun-jie.chen@mediatek.com>
+ <20210524122053.17155-2-chun-jie.chen@mediatek.com>
+ <20210602171201.GA3566462@robh.at.kernel.org>
+ <66e017401ab93aa02c5d2bbf11be9589b36649ac.camel@mediatek.com>
+ <1f59ed31-4a0e-9719-bf84-1fe4cdd6c57d@gmail.com>
+ <162334689784.9598.2709970788186333494@swboyd.mtv.corp.google.com>
+ <de082c64-ace3-30b5-7404-1f4b607a83e1@gmail.com>
+ <c8e8535cef67adeaefcfe943bbd8287806921e03.camel@mediatek.com>
+ <CAGXv+5HcV6jbyDdZGzRX-2NHMztSONBKxmLxLQX6k+aQrwJ1ww@mail.gmail.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <5c0a88c7-7f64-fd00-4e0c-2b3163926f71@gmail.com>
+Date:   Fri, 18 Jun 2021 15:50:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210618132556.GY1096940@ziepe.ca>
+In-Reply-To: <CAGXv+5HcV6jbyDdZGzRX-2NHMztSONBKxmLxLQX6k+aQrwJ1ww@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 10:25:56AM -0300, Jason Gunthorpe wrote:
-> On Tue, Jun 15, 2021 at 02:09:38PM +0200, Jann Horn wrote:
-> > On Tue, Jun 15, 2021 at 8:37 AM John Hubbard <jhubbard@nvidia.com> wrote:
-> > > On 6/14/21 6:20 PM, Jann Horn wrote:
-> > > > @@ -55,8 +72,23 @@ static inline struct page *try_get_compound_head(struct page *page, int refs)
-> > > >       if (WARN_ON_ONCE(page_ref_count(head) < 0))
-> > > >               return NULL;
-> > > >       if (unlikely(!page_cache_add_speculative(head, refs)))
-> > > >               return NULL;
-> > > > +
-> > > > +     /*
-> > > > +      * At this point we have a stable reference to the head page; but it
-> > > > +      * could be that between the compound_head() lookup and the refcount
-> > > > +      * increment, the compound page was split, in which case we'd end up
-> > > > +      * holding a reference on a page that has nothing to do with the page
-> > > > +      * we were given anymore.
-> > > > +      * So now that the head page is stable, recheck that the pages still
-> > > > +      * belong together.
-> > > > +      */
-> > > > +     if (unlikely(compound_head(page) != head)) {
-> > >
-> > > I was just wondering about what all could happen here. Such as: page gets split,
-> > > reallocated into a different-sized compound page, one that still has page pointing
-> > > to head. I think that's OK, because we don't look at or change other huge page
-> > > fields.
-> > >
-> > > But I thought I'd mention the idea in case anyone else has any clever ideas about
-> > > how this simple check might be insufficient here. It seems fine to me, but I
-> > > routinely lack enough imagination about concurrent operations. :)
-> > 
-> > Hmmm... I think the scariest aspect here is probably the interaction
-> > with concurrent allocation of a compound page on architectures with
-> > store-store reordering (like ARM). *If* the page allocator handled
-> > compound pages with lockless, non-atomic percpu freelists, I think it
-> > might be possible that the zeroing of tail_page->compound_head in
-> > put_page() could be reordered after the page has been freed,
-> > reallocated and set to refcount 1 again?
+
+
+On 18/06/2021 08:32, Chen-Yu Tsai wrote:
+> On Wed, Jun 16, 2021 at 2:34 AM Chun-Jie Chen
+> <chun-jie.chen@mediatek.com> wrote:
+>>
+>> On Fri, 2021-06-11 at 11:56 +0200, Matthias Brugger wrote:
+>>>
+>>> On 10/06/2021 19:41, Stephen Boyd wrote:
+>>>> Quoting Matthias Brugger (2021-06-08 07:45:49)
+>>>>>
+>>>>>
+>>>>> On 07/06/2021 07:20, Chun-Jie Chen wrote:
+>>>>>> On Wed, 2021-06-02 at 12:12 -0500, Rob Herring wrote:
+>>>>>>>> +
+>>>>>>>> +description:
+>>>>>>>> +  The Mediatek imp i2c wrapper controller provides
+>>>>>>>> functional
+>>>>>>>> configurations and clocks to the system.
+>>>>>>>> +
+>>>>>>>> +properties:
+>>>>>>>> +  compatible:
+>>>>>>>> +    items:
+>>>>>>>> +      - enum:
+>>>>>>>> +          - mediatek,mt8192-imp_iic_wrap_c
+>>>>>>>> +          - mediatek,mt8192-imp_iic_wrap_e
+>>>>>>>> +          - mediatek,mt8192-imp_iic_wrap_s
+>>>>>>>> +          - mediatek,mt8192-imp_iic_wrap_ws
+>>>>>>>> +          - mediatek,mt8192-imp_iic_wrap_w
+>>>>>>>> +          - mediatek,mt8192-imp_iic_wrap_n
+>>>>>>>
+>>>>>>> Looks to me like these are all the same h/w, but just have
+>>>>>>> differing
+>>>>>>> sets of clocks. That's not really a reason to have different
+>>>>>>> compatibles.
+>>>>>>>
+>>>>>>> If you need to know what clocks are present, you can walk the
+>>>>>>> DT for
+>>>>>>> all 'clocks' properties matching this clock controller
+>>>>>>> instance. Or
+>>>>>>> use
+>>>>>>> 'clock-indices' to define which ones are present.
+>>>>
+>>>> Is the idea to use clock-indices and then list all the clock ids in
+>>>> there and match them up at driver probe time to register the clocks
+>>>> provided by the IO region? Feels like we'll do a lot of parsing at
+>>>> each
+>>>> boot to match up structures and register clks with the clk
+>>>> framework.
+>>>>
+>>>> If it's like other SoCs then the clk id maps to a hard macro for a
+>>>> type
+>>>> of clk, and those hard macros have been glued together with other
+>>>> clks
+>>>> and then partitioned into different IO regions to make up a clock
+>>>> controller. Or maybe in this case, those clk hard macros have been
+>>>> scattered into each IP block like SPI, i2c, uart, etc. so that the
+>>>> clock
+>>>> controller doesn't really exist and merely the gates and rate
+>>>> control
+>>>> (mux/divider) for the clk that's clocking some particular IP block
+>>>> all
+>>>> live inside the IP wrapper. If it's this case then I hope there are
+>>>> a
+>>>> bunch of PLLs that are fixed rate so that the i2c clk doesn't have
+>>>> to go
+>>>> outside the wrapper to change frequency (of which there should be
+>>>> two
+>>>> "standard" frequencies anyway).
+>>>>
+>>>>>>>
+>>>>>>> Rob
+>>>>>>
+>>>>>> Some module is divided to sub-modules which are designed in
+>>>>>> different
+>>>>>> h/w blocks for different usage, and if we want to use the same
+>>>>>> compatible to present these h/w blocks, we need to move the
+>>>>>> clock data
+>>>>>> provided by these h/w blocks to dts, but we usually use
+>>>>>> different
+>>>>>> compatible to get the h/w blocks data in
+>>>>>> Mediatek's clock driver, so do you suggest to register clock
+>>>>>> provided
+>>>>>> by different h/w blocks using same compatible?
+>>>>>>
+>>>>>
+>>>>> The mapping of them is as following:
+>>>>> imp_iic_wrap_c:  11007000
+>>>>> imp_iic_wrap_e:  11cb1000
+>>>>> imp_iic_wrap_s:  11d03000
+>>>>> imp_iic_wrap_ws: 11d23000
+>>>>> imp_iic_wrap_w:  11e01000
+>>>>> imp_iic_wrap_n:  11f02000
+>>>>>
+>>>>
+>>>> Sure. What is their purpose though? Are they simply a bunch of
+>>>> different
+>>>> i2c clks?
+>>>>
+>>>
+>>> That would be need to be answered by MediaTek as I don't have access
+>>> to any
+>>> documentation.
+>>>
+>>> Regards,
+>>> Matthias
+>>
+>> We describe which clock controllers are exist in dts and
+>> get the clock data provided by clock controller in driver data
+>> by matching device compatible.
+>>
+>> The clock data contains several clocks which includes the clock index,
+>> parent clock source and the details of reg control inside the IP block
+>> of clock controller.
+>>
+>> In MT8192 platform, some IP block is divide to several sub-blocks and
+>> each sub-block provides clock control by itself.
 > 
-> Oh wow, yes, this all looks sketchy! Doing a RCU access to page->head
-> is a really challenging thing :\
+> Some more information:
 > 
-> On the simplified store side:
+> Based on what I read in the datasheets, I'm guessing that MediaTek groups
+> the I2C controllers into several groups and places them in different parts
+> of the die. The suffix of imp_iic_wrap_XXX is likely pointing to the
+> placement of the group. And the imp_iic_wrap_XXX is what the name suggests
+> a wrapper around the group of I2C controllers. The wrapper contains clock
+> and reset controls, as well as other things that I can't make out.
 > 
->   page->head = my_compound
->   *ptep = page
-> 
-> There must be some kind of release barrier between those two
-> operations or this is all broken.. That definately deserves a comment.
 
-set_compound_head() includes a WRITE_ONCE.  Is that enough, or does it
-need an smp_wmb()?
+Thanks for the clarification. If the wrapper contains more then just clocks,
+then probably we will need a solution as done by MMSYS subsystem. Would be good
+if you could work with MediaTek to find out what exactly this wrappers contain,
+to get a better picture of if we need an additional driver or not.
 
-> Ideally we'd use smp_store_release to install the *pte :\
-> 
-> Assuming we cover the release barrier, I would think the algorithm
-> should be broadly:
-> 
->  struct page *target_page = READ_ONCE(pte)
->  struct page *target_folio = READ_ONCE(target_page->head)
-
-compound_head() includes a READ_ONCE already.
-
->  page_cache_add_speculative(target_folio, refs)
-
-That's spelled folio_ref_try_add_rcu() right now.
-
->  if (target_folio != READ_ONCE(target_page->head) ||
->      target_page != READ_ONCE(pte))
->     goto abort
-> 
-> Which is what this patch does but I would like to see the
-> READ_ONCE's.
-
-... you want them to be uninlined from compound_head(), et al?
-
-> And there possibly should be two try_grab_compound_head()'s since we
-> don't need this overhead on the fully locked path, especially the
-> double atomic on page_ref_add()
-
-There's only one atomic on page_ref_add().  And you need more of this
-overhead on the fully locked path than you realise; the page might be
-split without holding the mmap_sem, for example.
-
-> > I think the lockless page cache code also has to deal with somewhat
-> > similar ordering concerns when it uses page_cache_get_speculative(),
-> > e.g. in mapping_get_entry() - first it looks up a page pointer with
-> > xas_load(), and any access to the page later on would be a _dependent
-> > load_, but if the page then gets freed, reallocated, and inserted into
-> > the page cache again before the refcount increment and the re-check
-> > using xas_reload(), then there would be no data dependency from
-> > xas_reload() to the following use of the page...
-> 
-> xas_store() should have the smp_store_release() inside it at least..
-> 
-> Even so it doesn't seem to do page->head, so this is not quite the
-> same thing
-
-The page cache only stores head pages, so it's a little simpler than
-lookup from PTE.  I have ideas for making PFN->folio lookup go directly
-to the folio without passing through a page on the way, but that's for
-much, much later.
+Regards,
+Matthias
