@@ -2,124 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F743AC022
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 02:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAC4C3AC024
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 02:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233332AbhFRAf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 20:35:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40388 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232683AbhFRAfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 20:35:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B6576610EA;
-        Fri, 18 Jun 2021 00:33:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623976397;
-        bh=CMcK2YQApJFBvI9v9Q2bNfCCJpxv0tzXnN3JkJqHUm8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RzImgnStN51RG+afGKhMJFcTXX+LE1P0LbTGy5RPifvhxZogkpNUpD5LnV7MP60iJ
-         GM4bQz1t6lbQF+TukUORUS5F4RAY9LOO3FT/POcFLOafFiIsG7LLe5Oozh31s2J6oQ
-         w7G8DVaMycy7bZ9+KLDBBeayhDs9qDCdjHt8eBHQNO7Vo9kvaJPHi42aAiSyYDkKEn
-         l3KZWpVS5BDKLQalCHQXPF/+XdRw5Sy3BA4Bc8bmSYL3D4v87loDLebRMmnWxoAxLH
-         mWAEyYbIfFMkq+4VK/hMZaLCmsTuBpnv/4V/aCPL1P/c2+sJfNDtBw0OIMve9osC5i
-         AligLYAk8pIcA==
-Date:   Fri, 18 Jun 2021 09:33:13 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>
-Subject: Re: [PATCH -tip v7 09/13] kprobes: Setup instruction pointer in
- __kretprobe_trampoline_handler
-Message-Id: <20210618093313.de8528635c61880cccf743d7@kernel.org>
-In-Reply-To: <CAEf4BzbGp6aGuv9CY_uAJ9JxeQy9uNDNYRCtgZSksorEcSWp6A@mail.gmail.com>
-References: <162209754288.436794.3904335049560916855.stgit@devnote2>
-        <162209762943.436794.874947392889792501.stgit@devnote2>
-        <20210617043909.fgu2lhnkxflmy5mk@treble>
-        <20210617044032.txng4enhiduacvt6@treble>
-        <20210617234001.54cd2ff60410ff82a39a2020@kernel.org>
-        <20210618000239.f95de17418beae6d84ce783d@kernel.org>
-        <CAEf4Bzbob_M0aS-GUY5XaqePZr_prxUag3RLHtp=HY8Uu__10g@mail.gmail.com>
-        <20210617182159.ka227nkmhe4yu2de@treble>
-        <CAEf4BzbQxxAWEvE7BfrBPCPzBjrAEVL9cg-duwbFNzEmbPPW2w@mail.gmail.com>
-        <20210617192608.4nt6sdass6gw5ehl@treble>
-        <CAEf4BzbGp6aGuv9CY_uAJ9JxeQy9uNDNYRCtgZSksorEcSWp6A@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S232889AbhFRAhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 20:37:46 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:7363 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232027AbhFRAho (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 20:37:44 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G5fxJ713Mz6yYp;
+        Fri, 18 Jun 2021 08:31:32 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 18 Jun 2021 08:35:32 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 18 Jun 2021 08:35:31 +0800
+Subject: Re: [PATCH 5.4 00/28] 5.4.127-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210616152834.149064097@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <13247545-3ece-c017-8683-47c289d6c771@huawei.com>
+Date:   Fri, 18 Jun 2021 08:35:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <20210616152834.149064097@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Jun 2021 12:46:19 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
 
-> On Thu, Jun 17, 2021 at 12:26 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> >
-> > On Thu, Jun 17, 2021 at 11:31:03AM -0700, Andrii Nakryiko wrote:
-> > > On Thu, Jun 17, 2021 at 11:22 AM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> > > >
-> > > > On Thu, Jun 17, 2021 at 10:45:41AM -0700, Andrii Nakryiko wrote:
-> > > > > > > > > I know I suggested this patch, but I believe it would only be useful in
-> > > > > > > > > combination with the use of UNWIND_HINT_REGS in SAVE_REGS_STRING.  But I
-> > > > > > > > > think that would be tricky to pull off correctly.  Instead, we have
-> > > > > > > > > UNWIND_HINT_FUNC, which is working fine.
-> > > > > > > > >
-> > > > > > > > > So I'd suggest dropping this patch, as the unwinder isn't actually
-> > > > > > > > > reading regs->ip after all.
-> > > > > > > >
-> > > > > > > > ... and I guess this means patches 6-8 are no longer necessary.
-> > > > > > >
-> > > > > > > OK, I also confirmed that dropping those patche does not make any change
-> > > > > > > on the stacktrace.
-> > > > > > > Let me update the series without those.
-> > > > > >
-> > > > > > Oops, Andrii, can you also test the kernel without this patch?
-> > > > > > (you don't need to drop patch 6-8)
-> > > > >
-> > > > > Hi Masami,
-> > > > >
-> > > > > Dropping this patch and leaving all the other in place breaks stack
-> > > > > traces from kretprobes for BPF. I double checked with and without this
-> > > > > patch. Without this patch we are back to having broken stack traces. I
-> > > > > see either
-> > > > >
-> > > > >   kretprobe_trampoline+0x0
-> > > > >
-> > > > > or
-> > > > >
-> > > > >   ftrace_trampoline+0xc8
-> > > > >   kretprobe_trampoline+0x0
-> >
-> > Do the stack traces end there?  Or do they continue normally after that?
+
+On 2021/6/16 23:33, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.127 release.
+> There are 28 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> That's the entire stack trace.
+> Responses should be made by Fri, 18 Jun 2021 15:28:19 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.127-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-So, there are 2 cases of the stacktrace from inside the kretprobe handler.
+Tested on arm64 and x86 for 5.4.127-rc1,
 
-1) Call stack_trace_save() in the handler. This will unwind stack from the
-  handler's context. This is the case of the ftrace dynamic events.
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-5.4.y
+Version: 5.4.127-rc1
+Commit: 4e778e863160695fca936b0a9452e94fc9824a76
+Compiler: gcc version 7.3.0 (GCC)
 
-2) Call stack_trace_save_regs(regs) in the handler with the pt_regs passed
-  by the kretprobe. This is the case of ebpf.
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8905
+passed: 8905
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
 
-For the case 1, these patches can be dropped because ORC can unwind the
-stack with UNWIND_HINT_FUNC. For the case 2, regs->ip must be set to the
-correct (return) address so that ORC can find the correct entry from that
-ip.
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8905
+passed: 8905
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
 
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
