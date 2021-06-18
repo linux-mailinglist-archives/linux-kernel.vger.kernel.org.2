@@ -2,37 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C86D3ACD5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A0903ACD61
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233527AbhFROUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:20:31 -0400
-Received: from verein.lst.de ([213.95.11.211]:35116 "EHLO verein.lst.de"
+        id S234461AbhFROVA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 10:21:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58534 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232052AbhFROU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:20:29 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 92AA668D08; Fri, 18 Jun 2021 16:18:17 +0200 (CEST)
-Date:   Fri, 18 Jun 2021 16:18:17 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     zhouchuangao <zhouchuangao@vivo.com>
-Cc:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers/nvme/host: Use kobj_to_dev() API
-Message-ID: <20210618141817.GA18781@lst.de>
-References: <1624025458-56465-1-git-send-email-zhouchuangao@vivo.com>
+        id S232052AbhFROU7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 10:20:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC299611B0;
+        Fri, 18 Jun 2021 14:18:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624025930;
+        bh=9NWfv8SOUC1sTwGhgAi0WHOSRqQ3iXjIBLnpzw0VwZU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=XA+zDEs0VtHzmx23V2+tC57dn+LnJUeFmIFAILIbXrBBZrBiW5OLvIVLwrWbK/Puy
+         GAL0yLrzcjDIDn3Rh1NpwnZuGYxIvkX8fJeFWRdqiCN2wNtsTaKTIlFAhFc0qw2wuN
+         Sq4Y+/2qQ4nE6rXxnjXpk9EPEJkP1SSTF9Bg60OYWMOuqKXi4SoI/iaWUMHLHrNXnx
+         ZFjBLJx6FFVVdsyQj/2FeitFRPUiI49XP27dMAPB+4B0LDyAPWbwdYStI94JxZ88ty
+         ohEbxvn9u/u8QdXUK0YsMmJXuWA6Sgi4ZLb4bdXR8Zcz5A/ulu3y/SXNzV8jK2tJld
+         LdF9k1fdOPVtQ==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] soc: qcom: geni: add support for gpi dma
+Date:   Fri, 18 Jun 2021 19:48:36 +0530
+Message-Id: <20210618141839.3777270-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1624025458-56465-1-git-send-email-zhouchuangao@vivo.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 07:10:58AM -0700, zhouchuangao wrote:
-> Use kobj_to_dev() API instead of container_of().
+This is version 2 of the GPI dma series [1]
 
-Why?  That just makes the code harder to read.
+This series add the GPI DMA in qcom geni drivers. For this we
+first need to move GENI_IF_DISABLE_RO and struct geni_wrapper to common
+headers and then add support in the gpi dma in geni driver.
+
+The SPI and I2C driver changes shall follow shortly
+
+[1]: http://lore.kernel.org/r/20210111151651.1616813-1-vkoul@kernel.org
+
+Changes in v2:
+ - add r-b from Bjorn on patch 1
+ - add more details in log for patch 2
+ - Fix the comments from Doug and Bjorn for patch3, notable use read, modify
+   update for irq registers, use geni_se_irq_clear() for irq, dont update
+   single bit registers, add a bit more description for gpi dma etc
+
+Vinod Koul (3):
+  soc: qcom: geni: move GENI_IF_DISABLE_RO to common header
+  soc: qcom: geni: move struct geni_wrapper to header
+  soc: qcom: geni: Add support for gpi dma
+
+ drivers/soc/qcom/qcom-geni-se.c | 47 ++++++++++++++++++++++-----------
+ include/linux/qcom-geni-se.h    | 23 ++++++++++++++--
+ 2 files changed, 52 insertions(+), 18 deletions(-)
+
+-- 
+2.31.1
+
