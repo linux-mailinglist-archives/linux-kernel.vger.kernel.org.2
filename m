@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C569B3ACE8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:20:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8833ACE8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235075AbhFRPWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:22:08 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56308 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234970AbhFRPVj (ORCPT
+        id S235095AbhFRPWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234990AbhFRPVl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:21:39 -0400
-Message-Id: <20210618143445.422319402@linutronix.de>
+        Fri, 18 Jun 2021 11:21:41 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57D66C061768
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 08:19:32 -0700 (PDT)
+Message-Id: <20210618143445.524423978@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624029569;
+        s=2020; t=1624029571;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=1glffWmYal90SdCehK93TSvLeLHY88IdIWbPCpM1zfM=;
-        b=e0xQMAykeQEaJEvNriX+AiBeveFiC+DIhNSRqeQGn8qzvP3XEu23Ub9zol5Dbq9/q3YZcR
-        atbq4P3/ZkABk22QJn1wMN+UtMBM+m/nlZzZgBElmAyNvjECDg6Zn+7pTIxEQOJIih9Zuj
-        sCtk+YqmLJkiKGscnztjUVu7+zRkE8nHD5FUYCIr47H0hCqp3dNuUQ+UKEhLXwga1dmjC9
-        awABh/ufYj9V1qg0NDehmcGjHMThjnCrYW3dDGkHlLSo8YHn7lk1sVrVSZuGOncTSznUIb
-        +0C3pO60U7qxwDngQAX6QFRki6llbZHvfQcjAA4QUHaKt4llU3gIR9IObXkLRQ==
+        bh=PNXAB1DnDnyL1GTBuJIqwadxQuJx7h6oBO7+UdmwpTs=;
+        b=TKHPm9IBnbIttJss8o+S3OWzxw0kVgUGz3TGBKSOxBIiWXlMYVVGn2IdXTqBKBpM72tQuE
+        YEbW/qodFW1MCHtiakS23903dbTwt10orDksI7azgn39HTe+qI2NZnZ7FH6optMwJrrQVS
+        7TNa96b252WCsJZ8VQ97PeXtVvopIRfQ6ZIYz0sSDcsdxfWUSpvKuqbrEtvWXvYoBNm0mU
+        /wUcdAKN8EQoj3S7eXk8rQRGlM580QEMqsoRp7LM/Z/4hBuAoYQpO+5xFjuLjnz6jNky+r
+        wmI2xtQhIeWHBNfX3ota33hyszi1yU/7XwKST1gEmNrhwngHsUd3HsLuXaavhQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624029569;
+        s=2020e; t=1624029571;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=1glffWmYal90SdCehK93TSvLeLHY88IdIWbPCpM1zfM=;
-        b=o5waiyZmplIlh6cgGZm3NLhclYjYMRpMPCihENBS9anLqBcNrFqh/HNO5yYf+mT0oJdaIM
-        JXoHqc6Vc9gMALBg==
-Date:   Fri, 18 Jun 2021 16:18:32 +0200
+        bh=PNXAB1DnDnyL1GTBuJIqwadxQuJx7h6oBO7+UdmwpTs=;
+        b=iK0zJ34g2tvl3ISPocc0J6h6fAwAgMOCAQNcao4r7jaooHS/E62uQ7D75ez0vvLZxVBp68
+        aTxgsMymtTU0FiCw==
+Date:   Fri, 18 Jun 2021 16:18:33 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -44,7 +47,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V3 09/66] x86/fpu: Move inlines where they belong
+Subject: [patch V3 10/66] x86/fpu: Limit xstate copy size in xstateregs_set()
 References: <20210618141823.161158090@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,61 +56,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-They are only used in fpstate_init() and there is no point to have them in
-a header just to make reading the code harder.
+If the count argument is larger than the xstate size, this will happily
+copy beyond the end of xstate.
 
+Fixes: 91c3dba7dbc1 ("x86/fpu/xstate: Fix PTRACE frames for XSAVES")
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Andy Lutomirski <luto@kernel.org>
 Reviewed-by: Borislav Petkov <bp@suse.de>
 ---
- arch/x86/include/asm/fpu/internal.h |   14 --------------
- arch/x86/kernel/fpu/core.c          |   15 +++++++++++++++
- 2 files changed, 15 insertions(+), 14 deletions(-)
+ arch/x86/kernel/fpu/regset.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -86,20 +86,6 @@ extern void fpstate_init_soft(struct swr
- static inline void fpstate_init_soft(struct swregs_state *soft) {}
- #endif
+--- a/arch/x86/kernel/fpu/regset.c
++++ b/arch/x86/kernel/fpu/regset.c
+@@ -117,7 +117,7 @@ int xstateregs_set(struct task_struct *t
+ 	/*
+ 	 * A whole standard-format XSAVE buffer is needed:
+ 	 */
+-	if ((pos != 0) || (count < fpu_user_xstate_size))
++	if (pos != 0 || count != fpu_user_xstate_size)
+ 		return -EFAULT;
  
--static inline void fpstate_init_xstate(struct xregs_state *xsave)
--{
--	/*
--	 * XRSTORS requires these bits set in xcomp_bv, or it will
--	 * trigger #GP:
--	 */
--	xsave->header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT | xfeatures_mask_all;
--}
--
--static inline void fpstate_init_fxstate(struct fxregs_state *fx)
--{
--	fx->cwd = 0x37f;
--	fx->mxcsr = MXCSR_DEFAULT;
--}
- extern void fpstate_sanitize_xstate(struct fpu *fpu);
- 
- #define user_insn(insn, output, input...)				\
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -181,6 +181,21 @@ void fpu__save(struct fpu *fpu)
- 	fpregs_unlock();
- }
- 
-+static inline void fpstate_init_xstate(struct xregs_state *xsave)
-+{
-+	/*
-+	 * XRSTORS requires these bits set in xcomp_bv, or it will
-+	 * trigger #GP:
-+	 */
-+	xsave->header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT | xfeatures_mask_all;
-+}
-+
-+static inline void fpstate_init_fxstate(struct fxregs_state *fx)
-+{
-+	fx->cwd = 0x37f;
-+	fx->mxcsr = MXCSR_DEFAULT;
-+}
-+
- /*
-  * Legacy x87 fpstate state init:
-  */
+ 	xsave = &fpu->state.xsave;
 
