@@ -2,175 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 609013ACBFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C766D3ACBFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232627AbhFRNVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:21:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbhFRNV2 (ORCPT
+        id S232969AbhFRNV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:21:58 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23314 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230438AbhFRNV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:21:28 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E7AC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:19:18 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id ji1so9783436ejc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:19:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P8V4PPjDC1gz6JriGuuoHP1QKqxpavt/zsBJP5m9gcE=;
-        b=e2Cic6CbgHhdrBDz14ZdYtzulhyV+7dKvI09WXaTR0dOvZ5PLsNABW3otQIIncHt1J
-         gO1LWIfD2zc2qKiF/HubchlTc6kC2PEV7FHsWhO+5zL0y/0c8EOsIUtZTfE/4wReDKZf
-         t6czmTxN9sU1EgNvlESX6xVb/wGfM4VDXD8KMkTOnIiXJGqPaGetbyWordY1KAkyhbj6
-         pC+7CGaUmLEeS/bnJFapglFMEoG+xTPbcKz0PaZBGQEiItiXF2wtUmPlfV6jCSNx3D/j
-         LQ4ZNDBIzH1ojYb7mNzFMlGjU4sEADW7/IDd1oZ/Y2AeX8YclE0ZZjhbCcYmsDG7xFbz
-         cc7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P8V4PPjDC1gz6JriGuuoHP1QKqxpavt/zsBJP5m9gcE=;
-        b=fbG0XhcWA/MzCPibyJkUNPDXyoqvb3fUqUZn5LmiPNTTOPcGlHKuhAjw660PlWCgEt
-         d3dqSNhU5jdfbIQfsqMB1h60iP6y6pY/IulHEOOMRSlCpVTItpxhk/x5yEj5MQs8cCGZ
-         S1zPZX/dcnQa7HVIauFk1ZX/4A3j7BM2btMSfiZ9u8SOmG0R5lHoFXok/yKRaR7fAC/s
-         HTV+S5BpFKi2mlFGYM9dld8mohR3+yte1DKPrzInpFLhGhZGLVAlYGFvq66JSlTYVwmo
-         PUwNojCnTlq7ZolPu9xKkkp5FbjDPyVQv642cIuC8XbMZgdTSZJn/PPBRmlS7Na2ptuj
-         moJg==
-X-Gm-Message-State: AOAM533e0rm0Ry5V/0XQqu1MnqEmDJEWKSwLj0kQGnxZZ7LYKTJ98Dth
-        F+Qh/0yA4c2ic7bTuY3UGGeVXQIct1jJIvnSJQM=
-X-Google-Smtp-Source: ABdhPJwWJL6HHS3kXwwEJ2gM8GNLYhNhomtQGKiImb6LnNLsv+4EMk98BFu7/G2bgbQrIGlpl2DkoSY82MVmAMI4VVc=
-X-Received: by 2002:a17:907:7848:: with SMTP id lb8mr11322909ejc.494.1624022357121;
- Fri, 18 Jun 2021 06:19:17 -0700 (PDT)
+        Fri, 18 Jun 2021 09:21:56 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15IDELW1144638;
+        Fri, 18 Jun 2021 09:19:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : cc : references : in-reply-to : mime-version : message-id :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=9WElNsztdLIBuwZhmn5+RVyTutN8t+G6ITl/P1IAki4=;
+ b=LUV/HaJAwQGDZkUNr1HwggM2nvwSNlEa6qOmULiyTy0PEParjMragq04c1fqnB42vxo9
+ zOH1bborShoIq7ufGY5z8AnFEPdhAAGCEBEQZBKL7UzRj8HVJIPxGm/nSr3T29WUAogl
+ Kam6Sh2tJgJ7r6uyMgInozIRhmZZn06hkgSWXOx0YW00e4QC1q8AeegJZbdJZvKmsyFb
+ iYc49llBxlF/Fxv7OKMaBSIYLD4uLLJEAAMPeeNefq39vtuYBBiFGhVjIZQbo4t4XRvo
+ OFpLwAtFAT+kre/JEZqIy3Ujt1cj3Z6OGilrKo4JBcqDZpq7QzbrGVwNNd0bXLfQbMwE 0Q== 
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 398v6pr5mb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Jun 2021 09:19:13 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15IDDXur019989;
+        Fri, 18 Jun 2021 13:19:11 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04fra.de.ibm.com with ESMTP id 394mj8sud7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Jun 2021 13:19:10 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15IDJ8eI15991224
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 18 Jun 2021 13:19:08 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 81DB411C04C;
+        Fri, 18 Jun 2021 13:19:08 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EE87611C050;
+        Fri, 18 Jun 2021 13:19:07 +0000 (GMT)
+Received: from localhost (unknown [9.85.125.40])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 18 Jun 2021 13:19:07 +0000 (GMT)
+Date:   Fri, 18 Jun 2021 18:49:06 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Subject: Re: [PATCH 2/2] trace/kprobe: Remove limit on kretprobe maxactive
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Anton Blanchard <anton@ozlabs.org>, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+References: <cover.1623693448.git.naveen.n.rao@linux.vnet.ibm.com>
+        <a751a0617a2c06e7e233f2c98ccabe8b94a8076d.1623693448.git.naveen.n.rao@linux.vnet.ibm.com>
+        <20210615183527.9068ef2f70fdd2a45fea78f0@kernel.org>
+        <1623777582.jsiokbdey1.naveen@linux.ibm.com>
+        <20210616094622.c8bd37840898c67dddde1053@kernel.org>
+        <1623934820.8pqjdszq8o.naveen@linux.ibm.com>
+        <20210618151714.3ae6528eba99eea39771b859@kernel.org>
+In-Reply-To: <20210618151714.3ae6528eba99eea39771b859@kernel.org>
 MIME-Version: 1.0
-References: <20210617194154.2397-1-linux.amoon@gmail.com> <20210617194154.2397-5-linux.amoon@gmail.com>
- <CAFBinCB1rrmJ5=M0tSGS_47BarFcrs2Kz5qFzrHw8+OEYxX3DA@mail.gmail.com>
-In-Reply-To: <CAFBinCB1rrmJ5=M0tSGS_47BarFcrs2Kz5qFzrHw8+OEYxX3DA@mail.gmail.com>
-From:   Anand Moon <linux.amoon@gmail.com>
-Date:   Fri, 18 Jun 2021 18:49:05 +0530
-Message-ID: <CANAwSgQVgKUoTpfaJyfxdphqc6M=Oq6jj5zZ7An9St7PdzQHYA@mail.gmail.com>
-Subject: Re: [RFCv1 4/8] phy: amlogic: meson8b-usb2: Use phy set_mode callback function
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-phy@lists.infradead.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-amlogic@lists.infradead.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: astroid/v0.15-23-gcdc62b30
+ (https://github.com/astroidmail/astroid)
+Message-Id: <1624005747.j7xp8o9byl.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: vmVOML3UhC9mUH7mzjlYJWidem2_7ICh
+X-Proofpoint-GUID: vmVOML3UhC9mUH7mzjlYJWidem2_7ICh
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-18_07:2021-06-18,2021-06-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
+ priorityscore=1501 suspectscore=0 clxscore=1015 impostorscore=0
+ phishscore=0 mlxlogscore=999 bulkscore=0 lowpriorityscore=0 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106180077
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi Martin.
+Masami Hiramatsu wrote:
+>=20
+>> To address this, as a first step, we should probably consider parsing=20
+>> kprobe_profile and printing a warning with 'perf' if we detect a=20
+>> non-zero miss count for a probe -- both a regular probe, as well as a=20
+>> retprobe.
+>=20
+> Yeah, it is doable. Note that perf-probe only set up the event and
+> perf-trace or other commands will use it.
+>=20
+>=20
+>> If we do this, the nice thing with kprobe_profile is that the probe miss=
+=20
+>> count is available, and can serve as a good way to decide what a more=20
+>> reasonable maxactive value should be. This should help prevent users=20
+>> from trying with arbitrary maxactive values.
+>=20
+> Such feedback loop is an interesting idea.
+> Note that nmissed count is an accumulate value, not the max number of
+> the instance which will be needed.
 
-Thanks for your review comments.
+Yes, we will have to factor-in the duration during which the event was=20
+active. This will still be an approximation, but serves as a good=20
+starting point. It may need a few tries to get this right, but more
+importantly, the user knows instantly that there are missed probes.
 
-On Fri, 18 Jun 2021 at 03:46, Martin Blumenstingl
-<martin.blumenstingl@googlemail.com> wrote:
->
-> Hi Anand,
->
-> On Thu, Jun 17, 2021 at 9:43 PM Anand Moon <linux.amoon@gmail.com> wrote:
-> >
-> > Reorder the code for phy set_mode in .set_mode callback function.
-> > For now configure the phy in host mode.
-> as mentioned in the cover-letter: to my knowledge these register bits
-> are "static"
-> The settings for dr_mode == USB_DR_MODE_HOST mainly apply to the
-> second PHY (usb1_phy)
->
-> [...]
-> > +static int phy_meson8b_usb2_setmode(struct phy *phy, enum phy_mode mode,
-> > +                                   int submode)
-> >  {
-> >         struct phy_meson8b_usb2_priv *priv = phy_get_drvdata(phy);
-> >         u32 reg;
-> >
-> > +       switch (mode) {
-> > +       case PHY_MODE_USB_HOST:
-> > +               if (priv->match->host_enable_aca) {
-> > +                       regmap_update_bits(priv->regmap, REG_ADP_BC,
-> > +                                          REG_ADP_BC_ACA_ENABLE,
-> > +                                          REG_ADP_BC_ACA_ENABLE);
-> > +
-> > +                       udelay(ACA_ENABLE_COMPLETE_TIME);
-> > +
-> > +                       regmap_read(priv->regmap, REG_ADP_BC, &reg);
-> > +                       if (reg & REG_ADP_BC_ACA_PIN_FLOAT) {
-> > +                               dev_warn(&phy->dev, "USB ID detect failed!\n");
-> > +                               return -EINVAL;
-> > +                       }
-> > +               }
-> > +               break;
-> > +       default:
-> > +               dev_warn(&phy->dev, "USB ID detect failed to setnode! %d\n", mode);
-> > +               return -EINVAL;
-> I have tested this driver already with PHY_MODE_USB_DEVICE (on my
-> Odroid-C1) so I don't see why we should drop support for this
-> Also if we want runtime mode switching in this driver then we would
-> need to undo the changes from "case PHY_MODE_USB_HOST" above
->
-> I suggest dropping this patch until we know for sure if and which
-> registers need to be updated based on the DR mode.
+>=20
+>> For perf_event_open(), perhaps we can introduce an ioctl to query the=20
+>> probe miss count.
+>=20
+> Or, maybe we can expand the maxactive in runtime. e.g. add a shortage
+> counter on the kretprobe, and run a monitor kernel thread (or kworker).
+> If the shortage counter is incremented, the monitor allocates instances
+> (2x counter) and give it to the kretprobe. And it resets the shortage
+> counter. This adaptive maxactive may cause mis-hit in the beginning,
+> but finally find the optimal maxactive value automatically.
 
-Yes, I have observed this, Can you give these small changes a try?
-With the below changes, I got the  PHY_MODE_USB_DEVICE support working.
+I like this idea and I have been thinking along these lines too. If we=20
+start with a better default (rather than just num_possible_cpus() used=20
+today), I suspect we may be able to get this to work well enough to not=20
+have to miss any probes. Specifying 'maxactive' can still serve as a=20
+workaround to allocate a larger initial set of kretprobe_instances in=20
+case this doesn't work.
 
-Here is the boot log of odroid c1+
-[0] https://pastebin.com/pCXLS5Vu
+>=20
+>=20
+>> > To avoid such trouble, I had set the 4096 limitation for the maxactive
+>> > parameter. Of course 4096 may not enough for some use-cases. I'm=20
+>> > welcome
+>> > to expand it (e.g. 32k, isn't it enough?), but removing the limitation
+>> > may cause OOM trouble easily.
+>>=20
+>> Do you have suggestions for how we can determine a better limit? As you=20
+>> point out in the other email, there could very well be 64k or more=20
+>> processes on a large machine. Since the primary concern is memory usage,=
+=20
+>> we probably need to decide this based on total memory. But, memory usage=
+=20
+>> will vary depending on system load...
+>=20
+> This is very good question. IMHO, it might better to calculate the total
+> maxactive from the system memory size. For example, 1% of system memory
+> can be used for the kretprobes, 16GB system will allow using 160MB for
+> kretprobes, which means about "30M" is the max number of maxactive, or
+> multiple kretprobes can share it. Doesn't it sound enough? Of course
+> this will need to show the current usage of the kretprobe instance object=
+s
+> via tracefs or debugfs. But this total cap seems reasonable for me to
+> avoid OOM trouble.
+>=20
+>> Perhaps we can start by making maxactive limit be a tunable with a=20
+>> default value of 4096, with the understanding that users will be careful=
+=20
+>> when bumping up this value. Hopefully, scripts won't simply start=20
+>> writing into this file ;)
+>=20
+> Yeah, that's what I suggested at first, because the best maxactive will
+> depend on the max number of the *processes* and the probed function.
+>=20
+> If the probed function will NOT be preempted or slept, maxactive will be
+> the number of *processor cores*. Or, if it can be preempted or slept, it
+> will be the max number of *processes*. If the probed function can
+> recursively called (Note: this is rare case), the maxactive has to
+> be multiplied.
+>=20
+> It is hard to estimate the max number of processes, since it depends
+> on the system. Small embedded systems don't run thousands of processes,
+> but big servers will run more than ten thousands of processes.
+> Thus make it tunable will be a good idea.
 
-$ lsusb -t
-/:  Bus 02.Port 1: Dev 1, Class=root_hub, Driver=dwc2/1p, 480M
-    |__ Port 1: Dev 2, If 0, Class=Hub, Driver=hub/4p, 480M
-        |__ Port 3: Dev 4, If 0, Class=Mass Storage, Driver=usb-storage, 480M
-/:  Bus 01.Port 1: Dev 1, Class=root_hub, Driver=dwc2/1p, 480M
-    |__ Port 1: Dev 2, If 0, Class=Human Interface Device, Driver=usbhid, 12M
-    |__ Port 1: Dev 2, If 1, Class=Human Interface Device, Driver=usbhid, 12M
-
- git diff drivers/phy/amlogic/phy-meson8b-usb2.c
-diff --git a/drivers/phy/amlogic/phy-meson8b-usb2.c
-b/drivers/phy/amlogic/phy-meson8b-usb2.c
-index bd624781d914..9b79e86d7a0d 100644
---- a/drivers/phy/amlogic/phy-meson8b-usb2.c
-+++ b/drivers/phy/amlogic/phy-meson8b-usb2.c
-@@ -204,6 +204,22 @@ static int phy_meson8b_usb2_setmode(struct phy
-*phy, enum phy_mode mode,
-                        }
-                }
-                break;
-+       case PHY_MODE_USB_DEVICE:
-+       case PHY_MODE_USB_OTG:
-+               regmap_update_bits(priv->regmap, REG_ADP_BC,
-+                                  REG_ADP_BC_DCD_ENABLE,
-+                                  REG_ADP_BC_DCD_ENABLE);
-+
-+               udelay(ACA_ENABLE_COMPLETE_TIME);
-+
-+               regmap_read(priv->regmap, REG_ADP_BC, &reg);
-+               if (reg & REG_ADP_BC_ACA_PIN_FLOAT) {
-+                       dev_warn(&phy->dev, "USB ID detect failed!\n");
-+                       return -EINVAL;
-+               }
-+               regmap_update_bits(priv->regmap, REG_ADP_BC,
-+                                  REG_ADP_BC_ID_PULLUP, REG_ADP_BC_ID_PULLUP);
-+               break;
-        default:
-                dev_warn(&phy->dev, "USB ID detect failed to setnode!
-%d\n", mode);
-                return -EINVAL;
->
->
-> Best regards,
-> Martin
-
-Thanks
+Agree.
 
 
--Anand
+Thanks,
+Naveen
+
