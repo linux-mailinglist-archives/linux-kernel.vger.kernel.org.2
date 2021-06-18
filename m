@@ -2,209 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF033AC17B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 05:40:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 268543AC185
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 05:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232179AbhFRDmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 23:42:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232208AbhFRDmq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 23:42:46 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19E5C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:40:36 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id n20so6628955edv.8
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:40:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v3U6tSssyiyTmySewt2Ln0yQu0gc7Qdpf16AvD+Xaxk=;
-        b=2IcUlThUD9BpN0YyQAHGmGcQr5S6gOJpFAuAjkTFZTnpzRn9tzKgvjENS7ySkBTDUb
-         WVu8rDNnk4oMaPDWaYfJqGQq5hspjx3UAm8iGpqhN5Tm3s/4JNu9ecnP/aWmJefz9KgA
-         jyaF4PQvWKhcAMY06wY9zLmJ3F3grfHwVu/lTteAZll8NquJe5RM3crl0S/T9nJz4lga
-         qE6I+1oXf+z4XpHgtSakyooDjOifTHlFJYDjvZrRG53E21pvvJVkEQhe7yTOwfRW+SR3
-         lPE0DbuCzB2/MU+0Ln8LRSJFFCt8crMBcGon76/h7fb0x+sFtOdRmHlxhubL8TVLcdkW
-         w8MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v3U6tSssyiyTmySewt2Ln0yQu0gc7Qdpf16AvD+Xaxk=;
-        b=Nlc2wge4BMeYkIFDqMj1Gd9PtefHEjQteArrhDegRpb5ROs38kBSYbCfG8HJn5R8Xf
-         vj5qqzki462LiVo0Mg88VJaJg2Yc8udUf9rWGcuy5pPHrrx0jw+OnqgdXnet5I3dpcgT
-         swCyE0OZIoGpgDA2ZYpq2+7vv4ACaTBEROx7LAvQm98t7uOkqC00lyZfih654TbGZzZP
-         Rlx/A2FekJQTdzpFvh5sJbLsmBvkmlDfZKr2RrRYCBlMwVy+b3jhx5iNdnNqWbqsgpXx
-         Wm85jXzE+r6eAtqgX61m8ELFIkdgiKrqUW269Siak5vxL7D352xs/9iw0Jw86osA3Fyp
-         AbQg==
-X-Gm-Message-State: AOAM532Ri0zKevjNaHhdUN6xqcGmXZcR+4uBTYDYkg4NpMLsO5OPLagG
-        YC9d+kJVePKKmkaA6vAK6wR3FFOqnj8mwGeFGTRE
-X-Google-Smtp-Source: ABdhPJw5b/xZ/eb8rl7JdfhOxmPvL4XDmYW6VYxutA0Sjq6NM72bhKaQUg+rtX3S00r5obIGVrm+f+Zrvy0193ShGoE=
-X-Received: by 2002:a05:6402:1771:: with SMTP id da17mr2074259edb.31.1623987634898;
- Thu, 17 Jun 2021 20:40:34 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210616085118.1141101-1-omosnace@redhat.com>
-In-Reply-To: <20210616085118.1141101-1-omosnace@redhat.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 17 Jun 2021 23:40:24 -0400
-Message-ID: <CAHC9VhSr2KpeBXuyoHR3_hs+qczFUaBx0oCSMfBBA5UNYU+0KA@mail.gmail.com>
-Subject: Re: [PATCH v3] lockdown,selinux: fix wrong subject in some SELinux
- lockdown checks
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-Cc:     linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        x86@kernel.org, linux-acpi@vger.kernel.org,
-        linux-cxl@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-serial@vger.kernel.org,
-        bpf@vger.kernel.org, netdev@vger.kernel.org,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S230161AbhFRDrA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 23:47:00 -0400
+Received: from mga06.intel.com ([134.134.136.31]:1056 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229683AbhFRDq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 23:46:58 -0400
+IronPort-SDR: m+OeCOsucgo+2BZTyqI73Ft7RC3KxVmBzBncDhNG1jNGvP2s13AcKhFC3xXHJAhvTyq8lpaYJA
+ 4etx2xDGvkLw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="267636012"
+X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
+   d="scan'208";a="267636012"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 20:44:49 -0700
+IronPort-SDR: 0N2poWjcGlgPP5SEiYJ9BPGJLhBrjBzjdcZAin1DppoX2RhJI+IkZgJFN4rXFpK/rQm+zYYswQ
+ uhUDVVI5uv1w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
+   d="scan'208";a="485539795"
+Received: from shbuild999.sh.intel.com ([10.239.147.94])
+  by orsmga001.jf.intel.com with ESMTP; 17 Jun 2021 20:44:44 -0700
+From:   Feng Tang <feng.tang@intel.com>
+To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com,
+        Feng Tang <feng.tang@intel.com>
+Subject: [PATCH v5 -mm 0/6] Introduced multi-preference mempolicy
+Date:   Fri, 18 Jun 2021 11:44:38 +0800
+Message-Id: <1623987884-43576-1-git-send-email-feng.tang@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 4:51 AM Ondrej Mosnacek <omosnace@redhat.com> wrote:
->
-> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
-> lockdown") added an implementation of the locked_down LSM hook to
-> SELinux, with the aim to restrict which domains are allowed to perform
-> operations that would breach lockdown.
->
-> However, in several places the security_locked_down() hook is called in
-> situations where the current task isn't doing any action that would
-> directly breach lockdown, leading to SELinux checks that are basically
-> bogus.
->
-> To fix this, add an explicit struct cred pointer argument to
-> security_lockdown() and define NULL as a special value to pass instead
-> of current_cred() in such situations. LSMs that take the subject
-> credentials into account can then fall back to some default or ignore
-> such calls altogether. In the SELinux lockdown hook implementation, use
-> SECINITSID_KERNEL in case the cred argument is NULL.
->
-> Most of the callers are updated to pass current_cred() as the cred
-> pointer, thus maintaining the same behavior. The following callers are
-> modified to pass NULL as the cred pointer instead:
-> 1. arch/powerpc/xmon/xmon.c
->      Seems to be some interactive debugging facility. It appears that
->      the lockdown hook is called from interrupt context here, so it
->      should be more appropriate to request a global lockdown decision.
-> 2. fs/tracefs/inode.c:tracefs_create_file()
->      Here the call is used to prevent creating new tracefs entries when
->      the kernel is locked down. Assumes that locking down is one-way -
->      i.e. if the hook returns non-zero once, it will never return zero
->      again, thus no point in creating these files. Also, the hook is
->      often called by a module's init function when it is loaded by
->      userspace, where it doesn't make much sense to do a check against
->      the current task's creds, since the task itself doesn't actually
->      use the tracing functionality (i.e. doesn't breach lockdown), just
->      indirectly makes some new tracepoints available to whoever is
->      authorized to use them.
-> 3. net/xfrm/xfrm_user.c:copy_to_user_*()
->      Here a cryptographic secret is redacted based on the value returned
->      from the hook. There are two possible actions that may lead here:
->      a) A netlink message XFRM_MSG_GETSA with NLM_F_DUMP set - here the
->         task context is relevant, since the dumped data is sent back to
->         the current task.
->      b) When adding/deleting/updating an SA via XFRM_MSG_xxxSA, the
->         dumped SA is broadcasted to tasks subscribed to XFRM events -
->         here the current task context is not relevant as it doesn't
->         represent the tasks that could potentially see the secret.
->      It doesn't seem worth it to try to keep using the current task's
->      context in the a) case, since the eventual data leak can be
->      circumvented anyway via b), plus there is no way for the task to
->      indicate that it doesn't care about the actual key value, so the
->      check could generate a lot of "false alert" denials with SELinux.
->      Thus, let's pass NULL instead of current_cred() here faute de
->      mieux.
->
-> Improvements-suggested-by: Casey Schaufler <casey@schaufler-ca.com>
-> Improvements-suggested-by: Paul Moore <paul@paul-moore.com>
-> Fixes: 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
-> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+This patch series introduces the concept of the MPOL_PREFERRED_MANY mempolicy.
+This mempolicy mode can be used with either the set_mempolicy(2) or mbind(2)
+interfaces. Like the MPOL_PREFERRED interface, it allows an application to set a
+preference for nodes which will fulfil memory allocation requests. Unlike the
+MPOL_PREFERRED mode, it takes a set of nodes. Like the MPOL_BIND interface, it
+works over a set of nodes. Unlike MPOL_BIND, it will not cause a SIGSEGV or
+invoke the OOM killer if those preferred nodes are not available.
 
-This seems reasonable to me, but before I merge it into the SELinux
-tree I think it would be good to get some ACKs from the relevant
-subsystem folks.  I don't believe we ever saw a response to the last
-question for the PPC folks, did we?
+Along with these patches are patches for libnuma, numactl, numademo, and memhog.
+They still need some polish, but can be found here:
+https://gitlab.com/bwidawsk/numactl/-/tree/prefer-many
+It allows new usage: `numactl -P 0,3,4`
 
-> ---
+The goal of the new mode is to enable some use-cases when using tiered memory
+usage models which I've lovingly named.
+1a. The Hare - The interconnect is fast enough to meet bandwidth and latency
+requirements allowing preference to be given to all nodes with "fast" memory.
+1b. The Indiscriminate Hare - An application knows it wants fast memory (or
+perhaps slow memory), but doesn't care which node it runs on. The application
+can prefer a set of nodes and then xpu bind to the local node (cpu, accelerator,
+etc). This reverses the nodes are chosen today where the kernel attempts to use
+local memory to the CPU whenever possible. This will attempt to use the local
+accelerator to the memory.
+2. The Tortoise - The administrator (or the application itself) is aware it only
+needs slow memory, and so can prefer that.
+
+Much of this is almost achievable with the bind interface, but the bind
+interface suffers from an inability to fallback to another set of nodes if
+binding fails to all nodes in the nodemask.
+
+Like MPOL_BIND a nodemask is given. Inherently this removes ordering from the
+preference.
+
+> /* Set first two nodes as preferred in an 8 node system. */
+> const unsigned long nodes = 0x3
+> set_mempolicy(MPOL_PREFER_MANY, &nodes, 8);
+
+> /* Mimic interleave policy, but have fallback *.
+> const unsigned long nodes = 0xaa
+> set_mempolicy(MPOL_PREFER_MANY, &nodes, 8);
+
+Some internal discussion took place around the interface. There are two
+alternatives which we have discussed, plus one I stuck in:
+1. Ordered list of nodes. Currently it's believed that the added complexity is
+   nod needed for expected usecases.
+2. A flag for bind to allow falling back to other nodes. This confuses the
+   notion of binding and is less flexible than the current solution.
+3. Create flags or new modes that helps with some ordering. This offers both a
+   friendlier API as well as a solution for more customized usage. It's unknown
+   if it's worth the complexity to support this. Here is sample code for how
+   this might work:
+
+> // Prefer specific nodes for some something wacky
+> set_mempolicy(MPOL_PREFER_MANY, 0x17c, 1024);
 >
-> v3:
-> - add the cred argument to security_locked_down() and adapt all callers
-> - keep using current_cred() in BPF, as the hook calls have been shifted
->   to program load time (commit ff40e51043af ("bpf, lockdown, audit: Fix
->   buggy SELinux lockdown permission checks"))
-> - in SELinux, don't ignore hook calls where cred == NULL, but use
->   SECINITSID_KERNEL as the subject instead
-> - update explanations in the commit message
+> // Default
+> set_mempolicy(MPOL_PREFER_MANY | MPOL_F_PREFER_ORDER_SOCKET, NULL, 0);
+> // which is the same as
+> set_mempolicy(MPOL_DEFAULT, NULL, 0);
 >
-> v2: https://lore.kernel.org/lkml/20210517092006.803332-1-omosnace@redhat.com/
-> - change to a single hook based on suggestions by Casey Schaufler
+> // The Hare
+> set_mempolicy(MPOL_PREFER_MANY | MPOL_F_PREFER_ORDER_TYPE, NULL, 0);
 >
-> v1: https://lore.kernel.org/lkml/20210507114048.138933-1-omosnace@redhat.com/
+> // The Tortoise
+> set_mempolicy(MPOL_PREFER_MANY | MPOL_F_PREFER_ORDER_TYPE_REV, NULL, 0);
 >
->  arch/powerpc/xmon/xmon.c             |  4 ++--
->  arch/x86/kernel/ioport.c             |  4 ++--
->  arch/x86/kernel/msr.c                |  4 ++--
->  arch/x86/mm/testmmiotrace.c          |  2 +-
->  drivers/acpi/acpi_configfs.c         |  2 +-
->  drivers/acpi/custom_method.c         |  2 +-
->  drivers/acpi/osl.c                   |  3 ++-
->  drivers/acpi/tables.c                |  2 +-
->  drivers/char/mem.c                   |  2 +-
->  drivers/cxl/mem.c                    |  2 +-
->  drivers/firmware/efi/efi.c           |  2 +-
->  drivers/firmware/efi/test/efi_test.c |  2 +-
->  drivers/pci/pci-sysfs.c              |  6 +++---
->  drivers/pci/proc.c                   |  6 +++---
->  drivers/pci/syscall.c                |  2 +-
->  drivers/pcmcia/cistpl.c              |  2 +-
->  drivers/tty/serial/serial_core.c     |  2 +-
->  fs/debugfs/file.c                    |  2 +-
->  fs/debugfs/inode.c                   |  2 +-
->  fs/proc/kcore.c                      |  2 +-
->  fs/tracefs/inode.c                   |  2 +-
->  include/linux/lsm_hook_defs.h        |  2 +-
->  include/linux/lsm_hooks.h            |  1 +
->  include/linux/security.h             |  4 ++--
->  kernel/bpf/helpers.c                 | 10 ++++++----
->  kernel/events/core.c                 |  2 +-
->  kernel/kexec.c                       |  2 +-
->  kernel/kexec_file.c                  |  2 +-
->  kernel/module.c                      |  2 +-
->  kernel/params.c                      |  2 +-
->  kernel/power/hibernate.c             |  3 ++-
->  kernel/trace/bpf_trace.c             | 20 ++++++++++++--------
->  kernel/trace/ftrace.c                |  4 ++--
->  kernel/trace/ring_buffer.c           |  2 +-
->  kernel/trace/trace.c                 | 10 +++++-----
->  kernel/trace/trace_events.c          |  2 +-
->  kernel/trace/trace_events_hist.c     |  4 ++--
->  kernel/trace/trace_events_synth.c    |  2 +-
->  kernel/trace/trace_events_trigger.c  |  2 +-
->  kernel/trace/trace_kprobe.c          |  6 +++---
->  kernel/trace/trace_printk.c          |  2 +-
->  kernel/trace/trace_stack.c           |  2 +-
->  kernel/trace/trace_stat.c            |  2 +-
->  kernel/trace/trace_uprobe.c          |  4 ++--
->  net/xfrm/xfrm_user.c                 | 11 +++++++++--
->  security/lockdown/lockdown.c         |  3 ++-
->  security/security.c                  |  4 ++--
->  security/selinux/hooks.c             |  7 +++++--
->  48 files changed, 97 insertions(+), 77 deletions(-)
+> // Prefer the fast memory of the first two sockets
+> set_mempolicy(MPOL_PREFER_MANY | MPOL_F_PREFER_ORDER_TYPE, -1, 2);
+>
+
+In v1, Andi Kleen brought up reusing MPOL_PREFERRED as the mode for the API.
+There wasn't consensus around this, so I've left the existing API as it was. I'm
+open to more feedback here, but my slight preference is to use a new API as it
+ensures if people are using it, they are entirely aware of what they're doing
+and not accidentally misusing the old interface. (In a similar way to how
+MPOL_LOCAL was introduced).
+
+In v1, Michal also brought up renaming this MPOL_PREFERRED_MASK. I'm equally
+fine with that change, but I hadn't heard much emphatic support for one way or
+another, so I've left that too.
+
+
+---
+Changelog: 
+
+  Since v4:
+  * Rebased on latest -mm tree (v5.13-rc), whose mempolicy code has
+    been refactored much since v4 submission
+  * add a dedicated alloc_page_preferred_many() (Michal Hocko)
+  * refactor and add fix to hugetlb supporting code (Michal Hocko) 
+
+  Since v3:
+  * Rebased against v5.12-rc2
+  * Drop the v3/0013 patch of creating NO_SLOWPATH gfp_mask bit
+  * Skip direct reclaim for the first allocation try for
+    MPOL_PREFERRED_MANY, which makes its semantics close to
+    existing MPOL_PREFFERRED policy
+
+  Since v2:
+  * Rebased against v5.11
+  * Fix a stack overflow related panic, and a kernel warning (Feng)
+  * Some code clearup (Feng)
+  * One RFC patch to speedup mem alloc in some case (Feng)
+
+  Since v1:
+  * Dropped patch to replace numa_node_id in some places (mhocko)
+  * Dropped all the page allocation patches in favor of new mechanism to
+    use fallbacks. (mhocko)
+  * Dropped the special snowflake preferred node algorithm (bwidawsk)
+  * If the preferred node fails, ALL nodes are rechecked instead of just
+    the non-preferred nodes.
+
+Ben Widawsky (3):
+  mm/mempolicy: enable page allocation for MPOL_PREFERRED_MANY for
+    general cases
+  mm/hugetlb: add support for mempolicy MPOL_PREFERRED_MANY
+  mm/mempolicy: Advertise new MPOL_PREFERRED_MANY
+
+Dave Hansen (1):
+  mm/mempolicy: Add MPOL_PREFERRED_MANY for multiple preferred nodes
+
+Feng Tang (2):
+  mm/memplicy: add page allocation function for MPOL_PREFERRED_MANY
+    policy
+  mm/mempolicy: unify the create() func for bind/interleave/prefer-many
+    policies
+
+ .../admin-guide/mm/numa_memory_policy.rst          | 16 +++--
+ include/uapi/linux/mempolicy.h                     |  1 +
+ mm/hugetlb.c                                       | 27 +++++++-
+ mm/mempolicy.c                                     | 75 +++++++++++++++++-----
+ 4 files changed, 96 insertions(+), 23 deletions(-)
 
 -- 
-paul moore
-www.paul-moore.com
+2.7.4
+
