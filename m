@@ -2,95 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4C33ACD7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 557AF3ACD85
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234531AbhFROa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:30:26 -0400
-Received: from mail-vs1-f48.google.com ([209.85.217.48]:38644 "EHLO
-        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233642AbhFROaY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:30:24 -0400
-Received: by mail-vs1-f48.google.com with SMTP id x8so5054542vso.5;
-        Fri, 18 Jun 2021 07:28:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wpS6QroHuI0Ot0nY6i49aZuPyLqHan9IIfQa2dpKXgY=;
-        b=IfiNQBUzURsf2EszxU+s9Z6Af2EQRwU/yOQq4DeA6pBtwZcYF/9LPjH+/5ZO+7qnaK
-         9x462dUr3+2XeTvKAHui4hf2KBjzJbiMCQZu5IBOrLAAikp4r0mW7LCGT4+P/WLnrzUK
-         7Zd7Ysb+pBw0rBPbdigMW43k+/ZNmSLvVMGiCtqX+m8rhZhIZ5lYfamr8Wzh8M4uRJc7
-         yHh2mfPSHEMblmUnfnU4Xd1vvpHOKxuLkxyPK9DdXiDoAwvxI3reGbHL1wTQZR3FLr4o
-         SncrbexpzyCwGAbUuU6kaLV7k1EzWbqjkyt7meP69jQTwD0ushog3tHwe/qzkNmHyaNZ
-         peBg==
-X-Gm-Message-State: AOAM532h59fhNMmvO5gaXlTTq4o/03EnVcBhJPzoCR5g6pLZYUQtttYU
-        rC7gPYao3bb+Dew7DKi0Kh/VuPiYPPlcFXH+iIE=
-X-Google-Smtp-Source: ABdhPJzdh6L1VpRsrh92eO3uJR1GKWcu3EWNO1w+Ez7YI5z7LoBIg3gSmZF2HB6Pv0YFaCrWrh9wQb1RBGmHtXwjJ0k=
-X-Received: by 2002:a67:7787:: with SMTP id s129mr2392253vsc.40.1624026494097;
- Fri, 18 Jun 2021 07:28:14 -0700 (PDT)
+        id S234501AbhFROcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 10:32:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33878 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232052AbhFROcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 10:32:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E13F861248;
+        Fri, 18 Jun 2021 14:30:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624026631;
+        bh=Z55SLbU8ZD5nUDrh8T99iwxmj76HXBy5zPcLuyKUE+k=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RnrkiZpe9q8B2Cg+xjqgeayELOfe8JGeBbnl2PONMDfxp9XwIAbvo775WBxcxHj9z
+         fdtB6Mo6csKLCexqWsaHgnLkhyuP/SGlOAxUdRkGyYRWJ2KbJUEMhLgGZaxhw9Z+Tx
+         L9ReImrcqoTfHIwXsXmZgVdfVNQdrL/LCA2mqoMW0bzpP4Rt0xnFBVmFg6f9j/mQY/
+         6mS1QUzvQtJvu6fMXVhTuy1im2USzuuQUTzlGtkZy3J7k/YWt1fnLOZuvt4Ftq9GPD
+         Fk3a0nRu1MSSHckSYLkTr/rJUfLK10u6YFfHKWpXmTovY5AUOJhAPTEnBxI+qu2pXa
+         hKz9rD3josUbQ==
+Received: by mail-ed1-f52.google.com with SMTP id s15so8893834edt.13;
+        Fri, 18 Jun 2021 07:30:31 -0700 (PDT)
+X-Gm-Message-State: AOAM5337JZyqub5K3EyXOy5Ul4AJ9ixB3WYfLh0Xs5O0PMS0WgleLlSj
+        8enfgE8xWmBroTWRI0POZHgGJ8A+OxD9I7MRbw==
+X-Google-Smtp-Source: ABdhPJxL9CaQPuY06jCjKdQITDNtB6+/Tex0AkJknZjnOdcaEnznF5fo8kfUkN0Y3H/xw1kcmv3KZ4ICsSup5WIpZBM=
+X-Received: by 2002:aa7:cac9:: with SMTP id l9mr5255201edt.373.1624026630436;
+ Fri, 18 Jun 2021 07:30:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <YIx7R6tmcRRCl/az@mit.edu> <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
- <YK+esqGjKaPb+b/Q@kroah.com> <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
- <b32c8672-06ee-bf68-7963-10aeabc0596c@redhat.com> <5038827c-463f-232d-4dec-da56c71089bd@metux.net>
- <20210610182318.jrxe3avfhkqq7xqn@nitro.local> <YMJcdbRaQYAgI9ER@pendragon.ideasonboard.com>
- <20210610152633.7e4a7304@oasis.local.home> <37e8d1a5-7c32-8e77-bb05-f851c87a1004@linuxfoundation.org>
- <YMyjryXiAfKgS6BY@pendragon.ideasonboard.com> <cd7ffbe516255c30faab7a3ee3ee48f32e9aa797.camel@HansenPartnership.com>
-In-Reply-To: <cd7ffbe516255c30faab7a3ee3ee48f32e9aa797.camel@HansenPartnership.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 18 Jun 2021 16:28:02 +0200
-Message-ID: <CAMuHMdVcNfDvpPXHSkdL3VuLXCX5m=M_AQF-P8ZajSdXt8NdQg@mail.gmail.com>
-Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        David Hildenbrand <david@redhat.com>, Greg KH <greg@kroah.com>,
-        Christoph Lameter <cl@gentwo.de>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
-        ksummit@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, netdev <netdev@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>
+References: <20210618063821.1383357-1-art@khadas.com> <CAFBinCB6bHy6Han0+oUcuGfccv1Rh_P0Gows1ezWdV4eA267tg@mail.gmail.com>
+In-Reply-To: <CAFBinCB6bHy6Han0+oUcuGfccv1Rh_P0Gows1ezWdV4eA267tg@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 18 Jun 2021 08:30:18 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqK+zjf2r_Q9gE8JwJw+Emn+JB4wOyH7eQct=kBvpUKstw@mail.gmail.com>
+Message-ID: <CAL_JsqK+zjf2r_Q9gE8JwJw+Emn+JB4wOyH7eQct=kBvpUKstw@mail.gmail.com>
+Subject: Re: [PATCH] PCI: dwc: meson add quirk
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     Artem Lapkin <email2tema@gmail.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Yue Wang <yue.wang@amlogic.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Krzysztof Wilczynski <kw@linux.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        art@khadas.com, Nick Xie <nick@khadas.com>, gouwa@khadas.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 4:11 PM James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
-> On Fri, 2021-06-18 at 16:46 +0300, Laurent Pinchart wrote:
-> > For workshop or brainstorming types of sessions, the highest barrier
-> > to participation for remote attendees is local attendees not speaking
-> > in microphones. That's the number one rule that moderators would need
-> > to enforce, I think all the rest depends on it. This may require a
-> > larger number of microphones in the room than usual.
+On Fri, Jun 18, 2021 at 6:12 AM Martin Blumenstingl
+<martin.blumenstingl@googlemail.com> wrote:
 >
-> Plumbers has been pretty good at that.  Even before remote
-> participation, if people don't speak into the mic, it's not captured on
-> the recording, so we've spent ages developing protocols for this.
-> Mostly centred around having someone in the room to remind everyone to
-> speak into the mic and easily throwable padded mic boxes.  Ironically,
-> this is the detail that meant we couldn't hold Plumbers in person under
-> the current hotel protocols ... the mic needs sanitizing after each
-> throw.
+> Hi Artem,
+>
+> On Fri, Jun 18, 2021 at 8:38 AM Artem Lapkin <email2tema@gmail.com> wrote:
+> >
+> > Device set same 256 bytes maximum read request size equal MAX_READ_REQ_SIZE
+> > was find some issue with HDMI scrambled picture and nvme devices
+> > at intensive writing...
+> >
+> > [    4.798971] nvme 0000:01:00.0: fix MRRS from 512 to 256
+> >
+> > This quirk setup same MRRS if we try solve this problem with
+> > pci=pcie_bus_perf kernel command line param
+> thank you for investigating this issue and for providing a fix!
+>
+> [...]
+> > +static void meson_pcie_quirk(struct pci_dev *dev)
+> > +{
+> > +       int mrrs;
+> > +
+> > +       /* no need quirk */
+> > +       if (pcie_bus_config != PCIE_BUS_DEFAULT)
+> > +               return;
+> > +
+> > +       /* no need for root bus */
+> > +       if (pci_is_root_bus(dev->bus))
+> > +               return;
+> > +
+> > +       mrrs = pcie_get_readrq(dev);
+> > +
+> > +       /*
+> > +        * set same 256 bytes maximum read request size equal MAX_READ_REQ_SIZE
+> > +        * was find some issue with HDMI scrambled picture and nvme devices
+> > +        * at intensive writing...
+> > +        */
+> > +
+> > +       if (mrrs != MAX_READ_REQ_SIZE) {
+> > +               dev_info(&dev->dev, "fix MRRS from %d to %d\n", mrrs, MAX_READ_REQ_SIZE);
+> > +               pcie_set_readrq(dev, MAX_READ_REQ_SIZE);
+> > +       }
+> > +}
+> > +DECLARE_PCI_FIXUP_ENABLE(PCI_ANY_ID, PCI_ANY_ID, meson_pcie_quirk);
 
-What about letting people use the personal mic they're already
-carrying, i.e. a phone?
+Isn't this going to run for everyone if meson driver happens to be enabled?
 
-Gr{oetje,eeting}s,
+> it seems that other PCIe controllers need something similar. in
+> particular I found pci-keystone [0] and pci-loongson [1]
+> while comparing your code with the two existing implementations two
+> things came to my mind:
+> 1. your implementation slightly differs from the two existing ones as
+> it's not walking through the parent PCI busses (I think this would be
+> relevant if there's another bridge between the host bridge and the
+> actual device)
+> 2. (this is a question towards the PCI maintainers) does it make sense
+> to have this MRRS quirk re-usable somewhere?
 
-                        Geert
+Yes. Ideally, the max size could just be data in the bus or bridge
+struct and perhaps some flags too, then the core can handle
+everything.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Rob
