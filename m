@@ -2,109 +2,296 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98BB73ACDA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 275BA3ACDB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234591AbhFROhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:37:35 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63128 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234482AbhFROhf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:37:35 -0400
-Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15IEXZ3M138915;
-        Fri, 18 Jun 2021 10:35:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=reply-to : subject : to
- : cc : references : from : message-id : date : mime-version : in-reply-to
- : content-type : content-transfer-encoding; s=pp1;
- bh=utnCngW3hDrD4dCnqL9kmi0H9czRh3hOkfrGpGF5KN8=;
- b=aLWmMfu9XvFY7G49Ib3A3Rfm4r06nmF9x8ZNA+TgsWT7SIRtqolBN7pr1MNsVqAlHlsG
- vD7JLVohuChCrn6pet0oW+g1qeQ2ReB7ZyeU7ZJtVWZ8WJhUlI+KoJThG7ho086WRe6s
- MKYeUEyRmA9RGAFYDzjV3mduXPFjZXQTtzeeDPkwhXMX6mCPIu02J7qIi499FNkq7Ev8
- vfqkEl++LFUwEHj3AFGSQHOpL5q/OHTUmNAbeu16W6Xx4zcCQcZUnkOP8kphgBTTL2qz
- Zrr0dCnplCd0UYCLEtj5TEzoHYyNZId2ytfxFar3qmZX7RmcmYYXtnaTQHNLB2qtMtzZ VA== 
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 398veu24vj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Jun 2021 10:35:23 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15IEWG8R018849;
-        Fri, 18 Jun 2021 14:35:22 GMT
-Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
-        by ppma02wdc.us.ibm.com with ESMTP id 394mjahxtu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Jun 2021 14:35:22 +0000
-Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
-        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15IEZLpb29294938
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Jun 2021 14:35:21 GMT
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B2B6FAE060;
-        Fri, 18 Jun 2021 14:35:21 +0000 (GMT)
-Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 75FBEAE05C;
-        Fri, 18 Jun 2021 14:35:21 +0000 (GMT)
-Received: from [9.85.129.236] (unknown [9.85.129.236])
-        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
-        Fri, 18 Jun 2021 14:35:21 +0000 (GMT)
-Reply-To: jjherne@linux.ibm.com
-Subject: Re: [PATCH] s390/vfio-ap: Fix module unload memory leak of matrix_dev
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pasic@linux.ibm.com, akrowiak@linux.ibm.com
-References: <20210618133524.22386-1-jjherne@linux.ibm.com>
- <20210618141018.GE1002214@nvidia.com>
-From:   "Jason J. Herne" <jjherne@linux.ibm.com>
-Organization: IBM
-Message-ID: <4ea3de71-9d68-59c6-bfb8-d8258019e585@linux.ibm.com>
-Date:   Fri, 18 Jun 2021 10:35:21 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
+        id S234617AbhFROmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 10:42:04 -0400
+Received: from mga11.intel.com ([192.55.52.93]:40747 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234592AbhFROl6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 10:41:58 -0400
+IronPort-SDR: KcuG6gQN43LXPm4GdYSg+rbUPUgE8tT1aIwCIvZXf9XLXhuSFPYx49kLoDe29APBwAsnes/P+Q
+ CVfORbaseawA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="203538993"
+X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
+   d="scan'208";a="203538993"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 07:39:47 -0700
+IronPort-SDR: DimTAerlVzGU6PTA0wYmkjzg/IsTKLrGrZOpeU1BLw27jw5tlL2d+4Vjmn6VGjl1S7pMxddc9G
+ bTPAxQRThB9A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
+   d="scan'208";a="443592038"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga007.jf.intel.com with ESMTP; 18 Jun 2021 07:39:42 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 9AE32431; Fri, 18 Jun 2021 17:40:06 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Yury Norov <yury.norov@gmail.com>,
+        Ian Rogers <irogers@google.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Leo Yan <leo.yan@linaro.org>, Jiri Olsa <jolsa@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ben Gardon <bgardon@google.com>, Peter Xu <peterx@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Yury Norov <ynorov@caviumnetworks.com>
+Subject: [PATCH v1 1/1] tools: Rename bitmap_alloc() to bitmap_zalloc()
+Date:   Fri, 18 Jun 2021 17:38:54 +0300
+Message-Id: <20210618143854.62967-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210618141018.GE1002214@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: zwht2JWtS1X4ZwQIcekUVNTpqdQuDKLG
-X-Proofpoint-ORIG-GUID: zwht2JWtS1X4ZwQIcekUVNTpqdQuDKLG
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-18_07:2021-06-18,2021-06-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 phishscore=0
- lowpriorityscore=0 malwarescore=0 priorityscore=1501 adultscore=0
- mlxlogscore=999 spamscore=0 clxscore=1015 impostorscore=0 suspectscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106180085
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/18/21 10:10 AM, Jason Gunthorpe wrote:
-> On Fri, Jun 18, 2021 at 09:35:24AM -0400, Jason J. Herne wrote:
->> vfio_ap_matrix_dev_release is shadowing the global matrix_dev with driver
->> data that never gets set. So when release is called we end up not freeing
->> matrix_dev. The fix is to remove the shadow variable and just free the
->> global.
-> 
-> I would clarify this commit message to say that the drv_data of the
-> matrix_dev is never set and so dev_get_drvdata() always returns NULL
-> 
-> And I would suggest to use
-> 
->    container_of(dev, struct ap_matrix_dev, dev)
-> 
-> instead of the global variable, and probably NULL the global
-> too..
-> 
+Rename bitmap_alloc() to bitmap_zalloc() in tools to follow new coming
+bitmap API extension in kernel.
 
-The use of driver_data seems to have been completely erroneous here. In this
-case the global matrix_dev is the top level struct. It is not contained in
-anything. matrix_dev is created upon module load, and it is freed when the
-module exits.
+No functional changes intended.
 
-So I don't think using container_of makes sense. Unless I've
-misunderstood your suggestion?
+Suggested-by: Yury Norov <ynorov@caviumnetworks.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ tools/include/linux/bitmap.h                            | 4 ++--
+ tools/perf/bench/find-bit-bench.c                       | 2 +-
+ tools/perf/builtin-c2c.c                                | 6 +++---
+ tools/perf/builtin-record.c                             | 2 +-
+ tools/perf/tests/bitmap.c                               | 2 +-
+ tools/perf/tests/mem2node.c                             | 2 +-
+ tools/perf/util/affinity.c                              | 4 ++--
+ tools/perf/util/header.c                                | 4 ++--
+ tools/perf/util/metricgroup.c                           | 2 +-
+ tools/perf/util/mmap.c                                  | 4 ++--
+ tools/testing/selftests/kvm/dirty_log_perf_test.c       | 2 +-
+ tools/testing/selftests/kvm/dirty_log_test.c            | 4 ++--
+ tools/testing/selftests/kvm/x86_64/vmx_dirty_log_test.c | 2 +-
+ 13 files changed, 20 insertions(+), 20 deletions(-)
 
+diff --git a/tools/include/linux/bitmap.h b/tools/include/linux/bitmap.h
+index 330dbf7509cc..7eae64eb5c80 100644
+--- a/tools/include/linux/bitmap.h
++++ b/tools/include/linux/bitmap.h
+@@ -109,10 +109,10 @@ static inline int test_and_clear_bit(int nr, unsigned long *addr)
+ }
+ 
+ /**
+- * bitmap_alloc - Allocate bitmap
++ * bitmap_zalloc - Allocate bitmap
+  * @nbits: Number of bits
+  */
+-static inline unsigned long *bitmap_alloc(int nbits)
++static inline unsigned long *bitmap_zalloc(int nbits)
+ {
+ 	return calloc(1, BITS_TO_LONGS(nbits) * sizeof(unsigned long));
+ }
+diff --git a/tools/perf/bench/find-bit-bench.c b/tools/perf/bench/find-bit-bench.c
+index 73b5bcc5946a..22b5cfe97023 100644
+--- a/tools/perf/bench/find-bit-bench.c
++++ b/tools/perf/bench/find-bit-bench.c
+@@ -54,7 +54,7 @@ static bool asm_test_bit(long nr, const unsigned long *addr)
+ 
+ static int do_for_each_set_bit(unsigned int num_bits)
+ {
+-	unsigned long *to_test = bitmap_alloc(num_bits);
++	unsigned long *to_test = bitmap_zalloc(num_bits);
+ 	struct timeval start, end, diff;
+ 	u64 runtime_us;
+ 	struct stats fb_time_stats, tb_time_stats;
+diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
+index e3b9d63077ef..a17726ff85a9 100644
+--- a/tools/perf/builtin-c2c.c
++++ b/tools/perf/builtin-c2c.c
+@@ -137,11 +137,11 @@ static void *c2c_he_zalloc(size_t size)
+ 	if (!c2c_he)
+ 		return NULL;
+ 
+-	c2c_he->cpuset = bitmap_alloc(c2c.cpus_cnt);
++	c2c_he->cpuset = bitmap_zalloc(c2c.cpus_cnt);
+ 	if (!c2c_he->cpuset)
+ 		return NULL;
+ 
+-	c2c_he->nodeset = bitmap_alloc(c2c.nodes_cnt);
++	c2c_he->nodeset = bitmap_zalloc(c2c.nodes_cnt);
+ 	if (!c2c_he->nodeset)
+ 		return NULL;
+ 
+@@ -2045,7 +2045,7 @@ static int setup_nodes(struct perf_session *session)
+ 		struct perf_cpu_map *map = n[node].map;
+ 		unsigned long *set;
+ 
+-		set = bitmap_alloc(c2c.cpus_cnt);
++		set = bitmap_zalloc(c2c.cpus_cnt);
+ 		if (!set)
+ 			return -ENOMEM;
+ 
+diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+index 84803abeb942..978b6bbd06e4 100644
+--- a/tools/perf/builtin-record.c
++++ b/tools/perf/builtin-record.c
+@@ -2766,7 +2766,7 @@ int cmd_record(int argc, const char **argv)
+ 
+ 	if (rec->opts.affinity != PERF_AFFINITY_SYS) {
+ 		rec->affinity_mask.nbits = cpu__max_cpu();
+-		rec->affinity_mask.bits = bitmap_alloc(rec->affinity_mask.nbits);
++		rec->affinity_mask.bits = bitmap_zalloc(rec->affinity_mask.nbits);
+ 		if (!rec->affinity_mask.bits) {
+ 			pr_err("Failed to allocate thread mask for %zd cpus\n", rec->affinity_mask.nbits);
+ 			err = -ENOMEM;
+diff --git a/tools/perf/tests/bitmap.c b/tools/perf/tests/bitmap.c
+index 96c137360918..12b805efdca0 100644
+--- a/tools/perf/tests/bitmap.c
++++ b/tools/perf/tests/bitmap.c
+@@ -14,7 +14,7 @@ static unsigned long *get_bitmap(const char *str, int nbits)
+ 	unsigned long *bm = NULL;
+ 	int i;
+ 
+-	bm = bitmap_alloc(nbits);
++	bm = bitmap_zalloc(nbits);
+ 
+ 	if (map && bm) {
+ 		for (i = 0; i < map->nr; i++)
+diff --git a/tools/perf/tests/mem2node.c b/tools/perf/tests/mem2node.c
+index a258bd51f1a4..e4d0d58b97f8 100644
+--- a/tools/perf/tests/mem2node.c
++++ b/tools/perf/tests/mem2node.c
+@@ -27,7 +27,7 @@ static unsigned long *get_bitmap(const char *str, int nbits)
+ 	unsigned long *bm = NULL;
+ 	int i;
+ 
+-	bm = bitmap_alloc(nbits);
++	bm = bitmap_zalloc(nbits);
+ 
+ 	if (map && bm) {
+ 		for (i = 0; i < map->nr; i++) {
+diff --git a/tools/perf/util/affinity.c b/tools/perf/util/affinity.c
+index a5e31f826828..7b12bd7a3080 100644
+--- a/tools/perf/util/affinity.c
++++ b/tools/perf/util/affinity.c
+@@ -25,11 +25,11 @@ int affinity__setup(struct affinity *a)
+ {
+ 	int cpu_set_size = get_cpu_set_size();
+ 
+-	a->orig_cpus = bitmap_alloc(cpu_set_size * 8);
++	a->orig_cpus = bitmap_zalloc(cpu_set_size * 8);
+ 	if (!a->orig_cpus)
+ 		return -1;
+ 	sched_getaffinity(0, cpu_set_size, (cpu_set_t *)a->orig_cpus);
+-	a->sched_cpus = bitmap_alloc(cpu_set_size * 8);
++	a->sched_cpus = bitmap_zalloc(cpu_set_size * 8);
+ 	if (!a->sched_cpus) {
+ 		zfree(&a->orig_cpus);
+ 		return -1;
+diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+index aa1e42518d37..c67c03dd3db2 100644
+--- a/tools/perf/util/header.c
++++ b/tools/perf/util/header.c
+@@ -277,7 +277,7 @@ static int do_read_bitmap(struct feat_fd *ff, unsigned long **pset, u64 *psize)
+ 	if (ret)
+ 		return ret;
+ 
+-	set = bitmap_alloc(size);
++	set = bitmap_zalloc(size);
+ 	if (!set)
+ 		return -ENOMEM;
+ 
+@@ -1259,7 +1259,7 @@ static int memory_node__read(struct memory_node *n, unsigned long idx)
+ 
+ 	size++;
+ 
+-	n->set = bitmap_alloc(size);
++	n->set = bitmap_zalloc(size);
+ 	if (!n->set) {
+ 		closedir(dir);
+ 		return -ENOMEM;
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index 8336dd8e8098..f24c6998d26c 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -313,7 +313,7 @@ static int metricgroup__setup_events(struct list_head *groups,
+ 	struct evsel *evsel, *tmp;
+ 	unsigned long *evlist_used;
+ 
+-	evlist_used = bitmap_alloc(perf_evlist->core.nr_entries);
++	evlist_used = bitmap_zalloc(perf_evlist->core.nr_entries);
+ 	if (!evlist_used)
+ 		return -ENOMEM;
+ 
+diff --git a/tools/perf/util/mmap.c b/tools/perf/util/mmap.c
+index ab7108d22428..512dc8b9c168 100644
+--- a/tools/perf/util/mmap.c
++++ b/tools/perf/util/mmap.c
+@@ -106,7 +106,7 @@ static int perf_mmap__aio_bind(struct mmap *map, int idx, int cpu, int affinity)
+ 		data = map->aio.data[idx];
+ 		mmap_len = mmap__mmap_len(map);
+ 		node_index = cpu__get_node(cpu);
+-		node_mask = bitmap_alloc(node_index + 1);
++		node_mask = bitmap_zalloc(node_index + 1);
+ 		if (!node_mask) {
+ 			pr_err("Failed to allocate node mask for mbind: error %m\n");
+ 			return -1;
+@@ -258,7 +258,7 @@ static void build_node_mask(int node, struct mmap_cpu_mask *mask)
+ static int perf_mmap__setup_affinity_mask(struct mmap *map, struct mmap_params *mp)
+ {
+ 	map->affinity_mask.nbits = cpu__max_cpu();
+-	map->affinity_mask.bits = bitmap_alloc(map->affinity_mask.nbits);
++	map->affinity_mask.bits = bitmap_zalloc(map->affinity_mask.nbits);
+ 	if (!map->affinity_mask.bits)
+ 		return -1;
+ 
+diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+index 04a2641261be..fbf0c2c1fbc9 100644
+--- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
++++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+@@ -121,7 +121,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+ 	guest_num_pages = (nr_vcpus * guest_percpu_mem_size) >> vm_get_page_shift(vm);
+ 	guest_num_pages = vm_adjust_num_guest_pages(mode, guest_num_pages);
+ 	host_num_pages = vm_num_host_pages(mode, guest_num_pages);
+-	bmap = bitmap_alloc(host_num_pages);
++	bmap = bitmap_zalloc(host_num_pages);
+ 
+ 	if (dirty_log_manual_caps) {
+ 		cap.cap = KVM_CAP_MANUAL_DIRTY_LOG_PROTECT2;
+diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
+index 81edbd23d371..ef641b0ff125 100644
+--- a/tools/testing/selftests/kvm/dirty_log_test.c
++++ b/tools/testing/selftests/kvm/dirty_log_test.c
+@@ -750,8 +750,8 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+ 
+ 	pr_info("guest physical test memory offset: 0x%lx\n", guest_test_phys_mem);
+ 
+-	bmap = bitmap_alloc(host_num_pages);
+-	host_bmap_track = bitmap_alloc(host_num_pages);
++	bmap = bitmap_zalloc(host_num_pages);
++	host_bmap_track = bitmap_zalloc(host_num_pages);
+ 
+ 	/* Add an extra memory slot for testing dirty logging */
+ 	vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
+diff --git a/tools/testing/selftests/kvm/x86_64/vmx_dirty_log_test.c b/tools/testing/selftests/kvm/x86_64/vmx_dirty_log_test.c
+index 537de1068554..a2f1bab6c234 100644
+--- a/tools/testing/selftests/kvm/x86_64/vmx_dirty_log_test.c
++++ b/tools/testing/selftests/kvm/x86_64/vmx_dirty_log_test.c
+@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
+ 	nested_map(vmx, vm, NESTED_TEST_MEM1, GUEST_TEST_MEM, 4096, 0);
+ 	nested_map(vmx, vm, NESTED_TEST_MEM2, GUEST_TEST_MEM, 4096, 0);
+ 
+-	bmap = bitmap_alloc(TEST_MEM_PAGES);
++	bmap = bitmap_zalloc(TEST_MEM_PAGES);
+ 	host_test_mem = addr_gpa2hva(vm, GUEST_TEST_MEM);
+ 
+ 	while (!done) {
 -- 
--- Jason J. Herne (jjherne@linux.ibm.com)
+2.30.2
+
