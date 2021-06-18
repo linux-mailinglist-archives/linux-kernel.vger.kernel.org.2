@@ -2,102 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 700443AD32D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:51:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36FA3AD337
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232957AbhFRTxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 15:53:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33620 "EHLO
+        id S231694AbhFRT7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 15:59:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233572AbhFRTxT (ORCPT
+        with ESMTP id S230136AbhFRT7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 15:53:19 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A07EDC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 12:51:08 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id m21so18427192lfg.13
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 12:51:08 -0700 (PDT)
+        Fri, 18 Jun 2021 15:59:48 -0400
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3475BC061574;
+        Fri, 18 Jun 2021 12:57:39 -0700 (PDT)
+Received: by mail-qv1-xf34.google.com with SMTP id f5so4169156qvu.8;
+        Fri, 18 Jun 2021 12:57:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xMVSNrHGcdt1vbOgCt0p2SZ9LSnvDYsg9SnZkED+C08=;
-        b=OI+p8vNSYtg5dOKoFneDPR48HNRCn5+KtmQCC1iEiqeAkn90I7DNnoQ+1FM+nplYfP
-         3G8Bcf6gj2Veo22h9O+8GD5/NmlqM8wVuLUEXuYSQW2TiFmCI9geu61KyyJITWbw4dD5
-         RwtGyFY+nmPaVQBF6pZuo1fQ5EWDOIUpdiyQjvXGWoHvzaqaB4tHqISE3lOa0p8JVH16
-         aKRi/LfxMyvI08TLkYOS1nt2K6i8a6wCsffNAMk+B9/AG43n4M7EhkqVyFlW4QlHAsA+
-         CEvkfsnwzQ7BtnmuP9WaFc5g9E2fRp9jQnDGC/Ik0UMdQ36Z4YnZa6uPHeMXDgmvtEFc
-         DvGw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C7EJEdD4t44D/JXomia6XzLDMkDQTa0QGymZbz46VVU=;
+        b=iRFBGqOhtmYr2gGcozlyLfVZbxJpNLg5N2U+3Xj6O7liQWVYnfyPCGR/nNGUTy9/th
+         K5jOnP/qtO9QsIC0PhmucEFXrUySBo+TR4ppLIZZJinOLF7Yg6L0lruM/pFEVp4y1aA2
+         7igA+rJu4KkQlSy8f/P3D/8SYxloP4DPHpLwHSoZ4auiz+++P7EiWr691hfhg9J7DW/t
+         TTJ8t+iKxfrFO4uCUMPcpFEWTASYzgSN8XHif1TZ8mpnTM5TRqzwsqMwQGLrC2FZue98
+         I07gpIevRgvarpGUKQD/llNN8eHi0BZpYs3yWR+foLat2bq2TYmcfSbWscjPqQZx7F+C
+         5dGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xMVSNrHGcdt1vbOgCt0p2SZ9LSnvDYsg9SnZkED+C08=;
-        b=qQ5njZHK3Xni97L4QlFUw6OmQdkFx36MCElldyv7A4iP8jU37JQK5GUe3E4dPm8X3B
-         SnGayuzAp6tzAy/MPeju+R3k0ieR0lXESa6HNPUBV5FGzh882BoHffVZZ1H7ZrhmVUho
-         eJ6iC2E7H6tKJyvDwthpML8bEr/XCHpZ/CRc8NwflrBwBjfRbZOjQ+eNYD3MXvzB7XDB
-         igXDYKa5u5HkgGa0gmBRpMVPjiLsD5L5ZQID/ZP+3wv3ldfHNRaH4zrpjOUqI7Xi+9go
-         VpJm8CiyTkLKGTnbq8W3Kn0bfsaDiyM2Nlr5WKZdcCASgI+D7PyOlPM/EKKJggw013vn
-         8I/w==
-X-Gm-Message-State: AOAM533aoGyh7V4rqhkDjqZ/Xd4ZbUnsrO17PUPOkkpleeqjTTxr/QeF
-        Ux5OztAxL/fcmBIKHXviuphKAQ==
-X-Google-Smtp-Source: ABdhPJxTn9yUM//lgUINg3OMvXib0w3U1/wNLfUqdwLiM++zP7wiXYpSlpAY/I1XHz3rygGFqrs0KA==
-X-Received: by 2002:a19:24c3:: with SMTP id k186mr4452699lfk.472.1624045867006;
-        Fri, 18 Jun 2021 12:51:07 -0700 (PDT)
-Received: from gilgamesh.lab.semihalf.net ([83.142.187.85])
-        by smtp.gmail.com with ESMTPSA id o7sm993221lfu.215.2021.06.18.12.51.06
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C7EJEdD4t44D/JXomia6XzLDMkDQTa0QGymZbz46VVU=;
+        b=Luy+x6sRe+C6DU25odIcGgofB9FRQa5nCG6wHQy6lRoO34LfJcBTYX+RkNv9nYVEEQ
+         Prgx9knbAaqMAihFQAwhsjLSGDRiEeMV+2JTqCDu0EaNhLV3JtUAWGpHU7WAeJ68IVff
+         Ug1zP+6SUWcn1W2f8D9qPt6IonVPyv86JhmSWD6/Wgf48OVipkZAVjUiZUQHJaNO8rYO
+         yelLKoi4VsdPvnbQ7clGKSYbZxMX7nXutsB0pnx3Dxpj9bpHQVbyjW9SUV6kMEtN7k+8
+         1DjYXRP7SF6Ruh6oFculNJrWS2MilV73s7CvrXr155huqoHJIkuRRhYzgvCWiRz60X6F
+         lKBw==
+X-Gm-Message-State: AOAM531fBgdS+8kKCfFIHChFL5lZPslgMLI70/vatiyNKJPM7kKQuhY8
+        0i+LLgeWwZXJHAdm5dtQ+/U=
+X-Google-Smtp-Source: ABdhPJyIUyQDxz2UY0b7qp2wXD/+ssfkJ79/j/7N/t8FSsiZad6mriv6DGGePeCP5WLb8DKxfk+8aA==
+X-Received: by 2002:ad4:5042:: with SMTP id m2mr7417541qvq.29.1624046257839;
+        Fri, 18 Jun 2021 12:57:37 -0700 (PDT)
+Received: from localhost ([207.98.216.60])
+        by smtp.gmail.com with ESMTPSA id z6sm4628404qke.24.2021.06.18.12.57.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 12:51:06 -0700 (PDT)
-From:   Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-To:     wim@linux-watchdog.org, linux@roeck-us.net, shawnguo@kernel.org
-Cc:     linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        grzegorz.jaszczyk@linaro.org,
-        Michal Koziel <michal.koziel@emlogic.no>
-Subject: [PATCH v2 2/2] watchdog: imx2_wdg: notify wdog core to stop ping worker on suspend
-Date:   Fri, 18 Jun 2021 21:50:33 +0200
-Message-Id: <20210618195033.3209598-3-grzegorz.jaszczyk@linaro.org>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <20210618195033.3209598-1-grzegorz.jaszczyk@linaro.org>
-References: <20210618195033.3209598-1-grzegorz.jaszczyk@linaro.org>
+        Fri, 18 Jun 2021 12:57:37 -0700 (PDT)
+From:   Yury Norov <yury.norov@gmail.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Marc Zyngier <maz@kernel.org>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Alexey Klimov <aklimov@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org
+Cc:     Yury Norov <yury.norov@gmail.com>
+Subject: [PATCH 0/3] for_each_*_bit: move to find.h and reconsider
+Date:   Fri, 18 Jun 2021 12:57:32 -0700
+Message-Id: <20210618195735.55933-1-yury.norov@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Suspend routine disables wdog clk. Nevertheless, the watchdog subsystem
-is not aware of that and can still try to ping wdog through
-watchdog_ping_work. In order to prevent such condition and therefore
-prevent from system hang (caused by the wdog register access issued
-while the wdog clock is disabled) notify watchdog core that the ping
-worker should be canceled during watchdog core suspend and restored
-during resume.
+for_each_bit() macro family uses find_bit() functions, so it's better
+to have for_each_bit() and find_bit() functions in the same header. 
 
-Signed-off-by: Michal Koziel <michal.koziel@emlogic.no>
-Signed-off-by: Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
----
-v1->v2:
-- Do not use watchdog_dev_suspend/resume directly, instead notify the
-watchdog core that the ping worker should be canceled during watchdog
-core suspend and restored during resume.
-- Commit log was updated accordingly.
----
- drivers/watchdog/imx2_wdt.c | 1 +
- 1 file changed, 1 insertion(+)
+This series puts for_each_bit() to a proper place and optimizes its
+usage over the kernel.
 
-diff --git a/drivers/watchdog/imx2_wdt.c b/drivers/watchdog/imx2_wdt.c
-index b84f80f7d342..3e8d9c3b6386 100644
---- a/drivers/watchdog/imx2_wdt.c
-+++ b/drivers/watchdog/imx2_wdt.c
-@@ -311,6 +311,7 @@ static int __init imx2_wdt_probe(struct platform_device *pdev)
- 	watchdog_set_nowayout(wdog, nowayout);
- 	watchdog_set_restart_priority(wdog, 128);
- 	watchdog_init_timeout(wdog, timeout, dev);
-+	watchdog_stop_ping_on_suspend(wdog);
- 
- 	if (imx2_wdt_is_running(wdev)) {
- 		imx2_wdt_set_timeout(wdog, wdog->timeout);
+The series is based on this:
+https://lore.kernel.org/linux-arch/20210612123639.329047-1-yury.norov@gmail.com/
+
+The full series can be found here:
+https://github.com/norov/linux/commits/bm-final
+
+Yury Norov (3):
+  include/linux: move for_each_bit() macros from bitops.h to find.h
+  find: micro-optimize for_each_{set,clear}_bit()
+  Replace for_each_*_bit_from() with for_each_*_bit() where appropriate
+
+ arch/x86/kernel/apic/vector.c         |  4 ++--
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.c |  4 ++--
+ drivers/hwmon/ltc2992.c               |  3 +--
+ include/linux/bitops.h                | 34 ---------------------------
+ include/linux/find.h                  | 34 +++++++++++++++++++++++++++
+ 5 files changed, 39 insertions(+), 40 deletions(-)
+
 -- 
-2.29.0
+2.30.2
 
