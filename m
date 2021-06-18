@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A40E3AD2B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:21:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F50F3AD2BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235542AbhFRTWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 15:22:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33910 "EHLO mail.kernel.org"
+        id S235755AbhFRTWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 15:22:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33918 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235383AbhFRTWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235402AbhFRTWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Jun 2021 15:22:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 87A30613F2;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9DD3C613F8;
         Fri, 18 Jun 2021 19:20:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1624044006;
-        bh=mYgWKU/yFlFwqULnKKlEddjTohRi2vp79RE6lcadDus=;
+        bh=WXXhO9FuY5yV2NncArmi17NLQRykIEQqMoaheEffRYQ=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=Ya1dUiVpey5BGTaPAgG72l5NSbk68K6gUlnuPIXj4nIU8PKKmPHpMDXzOINxdXnfx
-         A/bDEC+eXvijvwpWL1eMpChIlzrHUN1fvQz8oq49AFc2yokrMSATP6siskPrQNL++K
-         oZRw9cYtNFFj3zSsv2wo/qlZ+CIQKwDBUgnaVsz7h50bLds0uI25eidLsBo1V3rF0u
-         6DU/Vm6HlW6IfxIgpA/XR+/OtWfGHHtziyON1A+CxhX05y1UG41Pzodoa+5IMTbUcE
-         NJMsfnOTnk2sN70bXfiH/CfB7DejDeN+votONz8/cQtg0QkobwID/HAuKWC7vrN3Vd
-         B03WSkZX8V5KQ==
+        b=aS5EiNaDkR6kbhWXe1aWe73dkfNJ8GJ9XpM5NtsWY3Pq4zMlOW4mR7XBn0M//UngI
+         yqm2+/SJ7D1v3Wnm36ocfY4Bo5OngxPmi7QF/c2D7FpGzr93cEdJgpWimKFtyqW4gP
+         D6760LKd3epugHLX/dXrxzn9FBgTd/iVfQqYVDSsrRQDCDRWQdKIv1Hfae3Op7Hoyu
+         ScknmTfAzAg2NXqgFTXiXssgGzBD1TPwIy2N/54pTMi8G6CiXLoK/DJH3SaqpydEmb
+         +ak8R8vO2msUak3cGhagZBQ93jOETrmKQmY1m1tRjxEKLm50MIan66a50l8W86rxIn
+         0Kmeq1RsSwsJg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7D71B60CDF;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 92CC560C29;
         Fri, 18 Jun 2021 19:20:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: bridge: remove redundant continue statement
+Subject: Re: [PATCH] net: caif: modify the label out_err to out
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162404400650.12339.9396305686886729563.git-patchwork-notify@kernel.org>
+Message-Id: <162404400659.12339.13389955025693488534.git-patchwork-notify@kernel.org>
 Date:   Fri, 18 Jun 2021 19:20:06 +0000
-References: <20210618100155.101386-1-colin.king@canonical.com>
-In-Reply-To: <20210618100155.101386-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     roopa@nvidia.com, davem@davemloft.net, kuba@kernel.org,
-        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210618073205.3318788-1-mudongliangabcd@gmail.com>
+In-Reply-To: <20210618073205.3318788-1-mudongliangabcd@gmail.com>
+To:     Dongliang Mu <mudongliangabcd@gmail.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -47,20 +46,17 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Fri, 18 Jun 2021 11:01:55 +0100 you wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Fri, 18 Jun 2021 15:32:04 +0800 you wrote:
+> Modify the label out_err to out to avoid the meanless kfree.
 > 
-> The continue statement at the end of a for-loop has no effect,
-> invert the if expression and remove the continue.
-> 
-> Addresses-Coverity: ("Continue has no effect")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> 
-> [...]
+> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> ---
+>  net/caif/cfcnfg.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
 Here is the summary with links:
-  - net: bridge: remove redundant continue statement
-    https://git.kernel.org/netdev/net-next/c/040c12570e68
+  - net: caif: modify the label out_err to out
+    https://git.kernel.org/netdev/net-next/c/9fd2bc3206b3
 
 You are awesome, thank you!
 --
