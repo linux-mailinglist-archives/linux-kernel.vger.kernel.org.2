@@ -2,97 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC6C3AC590
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:59:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C273AC59F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232605AbhFRIBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 04:01:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41910 "EHLO
+        id S233680AbhFRIER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 04:04:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232455AbhFRIBm (ORCPT
+        with ESMTP id S232647AbhFRIDH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 04:01:42 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A363C061574;
-        Fri, 18 Jun 2021 00:59:32 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id e33so7153396pgm.3;
-        Fri, 18 Jun 2021 00:59:32 -0700 (PDT)
+        Fri, 18 Jun 2021 04:03:07 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D20D8C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:00:45 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id m17so1097406plx.7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:00:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=dO9vd7sYPzUkbEGL9cf5HXTiOWzCKdLCgZPTGvHdqSI=;
-        b=qf3WPuQbi1rO7hQHqHTLHqAPpN4YDpZI4MQmpdNeabsd9uDI+8MRBjKHkqKV9baqxA
-         UjRcsfV5si/2LZrZVEgALCDmdsaQrFMOJNACRjQj+vaIF01Iqd1Q2yZi7QtjhzK4FiTS
-         2FS2OC11ZqzX0eVVOlTO8Ix15oRpHN2wsNxP26BAMvo3dMgS9Y5l75qeb04f8wsd0UvN
-         7Snw/QtYpxmbSR3LQT6Du+1r9ZIguTpvTkh/1X5/zLQfLplXWAaXs37U8r73IYw4m5U2
-         n3THln3WKLX2pZvZvh2kKOJE0WCnIJRZGD2xpnvznjPPgFurNnU4hroCUfARYkkMDRb+
-         AaFA==
+        bh=PNadQEIR3cQzWjVHVl6U6Trj5czCwGU5K/9fEbS0IFU=;
+        b=NU8H2cHGLU8WEZ5cFDQ1P4KyBmnlbSWQ3asS8zTU2HWSpaLBo1Qq1YgqMQRniXV215
+         zsPaU4Lv+/GkMn8szM2Mww/8H9FOeSNPT5cYd6zx9YJLYb/JNUn67jGYBeRn/ydFG8/A
+         8ZN88h6ngwT4VeZmiHLk+IpA8YnqvoW6VkLFQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=dO9vd7sYPzUkbEGL9cf5HXTiOWzCKdLCgZPTGvHdqSI=;
-        b=uPqxXsfw8TRQtQvHo7olB29SPh1faJriQGHQ4MPgF+/m9rK7ZJ1a/g1GPQ/Ila7kUt
-         i8ZjuD+G2m62ZyQeOe2/R+se1d48ECy98hS24Nvaq9ocCsX1WUf+zgEIq4McMiobZTM5
-         B7oRsoTkg+Z8Je08fgj7chH2Jpj4cgnlph0pzYXlLp9OtSUj8lF7FHKQVmSR7ztIoPiM
-         OVS4ZY/pYPW9Cp7XWKK93cAmq4HuSODr4pybi3QvtaIOsJvH3LOEynTkA7uWCxDL+B/8
-         khOXoBw3IkwoQEQ8zFSOGCNBlCjPv3a3XpfaWwmX9b76pcbkIz0A3m3rf1lJAiFW9pRY
-         l5Vw==
-X-Gm-Message-State: AOAM533fxf5ypRkztgZzntY+5NsUHG6SwhsdN1HH7w0MBAGKkXI0jzxZ
-        HPvhgiKnXDz157fCPq/Zhjc=
-X-Google-Smtp-Source: ABdhPJz3JwXH7zCmtl+3Mwn2iiW+9nGV+M6hL+pXbQoAcV1YDSC/sGIlPqhT47so8g9ez5/9OElq6w==
-X-Received: by 2002:a05:6a00:1789:b029:2f4:cb41:ec1d with SMTP id s9-20020a056a001789b02902f4cb41ec1dmr3805646pfg.3.1624003171965;
-        Fri, 18 Jun 2021 00:59:31 -0700 (PDT)
-Received: from localhost.localdomain (220-130-175-235.HINET-IP.hinet.net. [220.130.175.235])
-        by smtp.gmail.com with ESMTPSA id 195sm412598pfw.133.2021.06.18.00.59.30
+        bh=PNadQEIR3cQzWjVHVl6U6Trj5czCwGU5K/9fEbS0IFU=;
+        b=jfFeYlPqwSN27xQeRR6ogbDGEnl8YApxc7PDS8q6dPTml7hnIJv4O357IiytStTC1z
+         IMJCklOhw54XUy1E3q7Kf+Deq+D8ZHQ8pqXKQMgLVpm6TXfPxavQsgY4EqXfbHHxg8hb
+         ggxdHwXLeNFaGDFACsSntIiRnH/LyDMmom6OcrgSODJu+okMV08zlNrBMwM2rQdSKq1W
+         TSrlvkHmR6qXfL7COsIhFRwP9Ke8/RchIen4gdWVnAlzPGXt0oIZH9aScJs+UEQZ0i8o
+         wXgIPGP6KE3M8DecDAx2C/r3FnXXx4Sn68tKtUszOYzKYYTXU9U9tBxAtjwDIUrfVrLw
+         j/UA==
+X-Gm-Message-State: AOAM531uu/W0rQOFxxWhkVsa7bvj1F7hRWmEHUNzKHZr4bwzhWtTnps6
+        h3Pyzn5AtbSEQdC5w+clIdMGpg==
+X-Google-Smtp-Source: ABdhPJxzdqGEUb0JVxCzggTlO/YE2Y915WsH0HOI45DOrpgw0nqBKotR038Ddo1QhF7u299lTMRg4Q==
+X-Received: by 2002:a17:90a:4e02:: with SMTP id n2mr5852194pjh.80.1624003245264;
+        Fri, 18 Jun 2021 01:00:45 -0700 (PDT)
+Received: from josephsih-z840.tpe.corp.google.com ([2401:fa00:1:10:6cbb:95eb:e2ae:8479])
+        by smtp.gmail.com with ESMTPSA id v21sm7341671pfu.77.2021.06.18.01.00.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 00:59:31 -0700 (PDT)
-From:   Chung-Chiang Cheng <shepjeng@gmail.com>
-X-Google-Original-From: Chung-Chiang Cheng <cccheng@synology.com>
-To:     jlbec@evilplan.org, hch@lst.de, pantelis.antoniou@konsulko.com
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Chung-Chiang Cheng <cccheng@synology.com>
-Subject: [PATCH] configfs: fix memleak in configfs_release_bin_file
-Date:   Fri, 18 Jun 2021 15:59:25 +0800
-Message-Id: <20210618075925.803052-1-cccheng@synology.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 18 Jun 2021 01:00:44 -0700 (PDT)
+From:   Joseph Hwang <josephsih@chromium.org>
+To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
+        luiz.dentz@gmail.com, pali@kernel.org
+Cc:     josephsih@google.com, chromeos-bluetooth-upstreaming@chromium.org,
+        Joseph Hwang <josephsih@chromium.org>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        Chethan T N <chethan.tumkur.narayan@intel.com>,
+        Kiran K <kiran.k@intel.com>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4 1/4] Bluetooth: btusb: disable Intel link statistics telemetry events
+Date:   Fri, 18 Jun 2021 16:00:36 +0800
+Message-Id: <20210618160016.v4.1.I41aec59e65ffd3226d368dabeb084af13cc133c8@changeid>
+X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When reading binary attributes in progress, buffer->bin_buffer is setup in
-configfs_read_bin_file() but never freed.
+To avoid the overhead on both the controller and the host, the
+Intel link statistics telemetry events are disabled by default.
 
-Fixes: 03607ace807b4 ("configfs: implement binary attributes")
-Signed-off-by: Chung-Chiang Cheng <cccheng@synology.com>
+Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+Signed-off-by: Chethan T N <chethan.tumkur.narayan@intel.com>
+Signed-off-by: Kiran K <kiran.k@intel.com>
+Signed-off-by: Joseph Hwang <josephsih@chromium.org>
 ---
- fs/configfs/file.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/fs/configfs/file.c b/fs/configfs/file.c
-index e26060dae70a..cdd23f4a51c8 100644
---- a/fs/configfs/file.c
-+++ b/fs/configfs/file.c
-@@ -466,9 +466,13 @@ static int configfs_release_bin_file(struct inode *inode, struct file *file)
- {
- 	struct configfs_buffer *buffer = file->private_data;
+Changes in v4:
+- The original 2 patches in Series-version 3 are split into
+  2 patches from each patch per reviewers' comments. There are
+  A total of 4 patches in this series now.
+- The callback function is renamed from hdev->set_vs_dbg_evt to
+  hdev->set_quality_report. Note that there are two different
+  specifications which will be integrated soon and enabled/disabled
+  with the same callback. One is Android Bluetooth Quality Report
+  (BQR), and the other Intel link statistics telemetry events here.
+  While most Bluetooth controller vendors have supported or are
+  supporting the Android specification in their controllers, it looks
+  making sense to use set_quality_report as the callback name.
+- Similarly, the config option BT_FEATURE_VS_DBG_EVT is renamed as
+  BT_FEATURE_QUALITY_REPORT which depends on BT now.
+- The BQR is controller specific. There needs to be a valid hdev in the
+  first place. This is fixed in set_exp_feature().
+- In set_exp_feature(), bluez will only set experimental feature to set
+  BQR when the feature is supported. Please refer to bluez CLs.
+- Also refer to bluez patches for the decoding support of btmon.
+
+Changes in v3:
+- fix the long line in the commit message
+
+Changes in v2:
+- take care of intel_newgen as well as intel_new
+- fix the long lines in mgmt.c
+
+ drivers/bluetooth/btusb.c | 18 ------------------
+ 1 file changed, 18 deletions(-)
+
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index a9855a2dd561..4c3b26c5e507 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -2850,7 +2850,6 @@ static int btusb_setup_intel_new(struct hci_dev *hdev)
+ 	u32 boot_param;
+ 	char ddcname[64];
+ 	int err;
+-	struct intel_debug_features features;
  
--	buffer->read_in_progress = false;
+ 	BT_DBG("%s", hdev->name);
+ 
+@@ -2904,14 +2903,6 @@ static int btusb_setup_intel_new(struct hci_dev *hdev)
+ 		btintel_load_ddc_config(hdev, ddcname);
+ 	}
+ 
+-	/* Read the Intel supported features and if new exception formats
+-	 * supported, need to load the additional DDC config to enable.
+-	 */
+-	btintel_read_debug_features(hdev, &features);
 -
--	if (buffer->write_in_progress) {
-+	if (buffer->read_in_progress) {
-+		buffer->read_in_progress = false;
-+		vfree(buffer->bin_buffer);
-+		buffer->bin_buffer = NULL;
-+		buffer->bin_buffer_size = 0;
-+		buffer->needs_read_fill = 1;
-+	} else if (buffer->write_in_progress) {
- 		struct configfs_fragment *frag = to_frag(file);
- 		buffer->write_in_progress = false;
+-	/* Set DDC mask for available debug features */
+-	btintel_set_debug_features(hdev, &features);
+-
+ 	/* Read the Intel version information after loading the FW  */
+ 	err = btintel_read_version(hdev, &ver);
+ 	if (err)
+@@ -2950,7 +2941,6 @@ static int btusb_setup_intel_newgen(struct hci_dev *hdev)
+ 	u32 boot_param;
+ 	char ddcname[64];
+ 	int err;
+-	struct intel_debug_features features;
+ 	struct intel_version_tlv version;
  
+ 	bt_dev_dbg(hdev, "");
+@@ -3000,14 +2990,6 @@ static int btusb_setup_intel_newgen(struct hci_dev *hdev)
+ 	 */
+ 	btintel_load_ddc_config(hdev, ddcname);
+ 
+-	/* Read the Intel supported features and if new exception formats
+-	 * supported, need to load the additional DDC config to enable.
+-	 */
+-	btintel_read_debug_features(hdev, &features);
+-
+-	/* Set DDC mask for available debug features */
+-	btintel_set_debug_features(hdev, &features);
+-
+ 	/* Read the Intel version information after loading the FW  */
+ 	err = btintel_read_version_tlv(hdev, &version);
+ 	if (err)
 -- 
-2.25.1
+2.32.0.288.g62a8d224e6-goog
 
