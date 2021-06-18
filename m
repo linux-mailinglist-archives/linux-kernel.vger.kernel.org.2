@@ -2,95 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CF5A3AC0A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 03:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79EAC3AC0A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 03:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233563AbhFRB4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 21:56:09 -0400
-Received: from mga09.intel.com ([134.134.136.24]:33130 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230137AbhFRB4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 21:56:08 -0400
-IronPort-SDR: KYoHLS4KXRrwb2NU1pQmwg4vKP9r8C06glvOoCflgGR8spICw+K2oIUbkqtQRitJym6ZAbd3kl
- IbRqV5oNh4KA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="206433565"
-X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
-   d="scan'208";a="206433565"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 18:53:59 -0700
-IronPort-SDR: M+7j3e8w7yg2eVqLS5rDHawbsDeYbC4twNz64FToCwPMeSFGvwl1+C7/OBU26n4Mmu2kNQruxh
- Qt87RSrquZzw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
-   d="scan'208";a="472613025"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.118]) ([10.239.159.118])
-  by fmsmga004.fm.intel.com with ESMTP; 17 Jun 2021 18:53:56 -0700
-Cc:     baolu.lu@linux.intel.com, linux-kernel@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linuxarm@huawei.com,
-        thunder.leizhen@huawei.com, chenxiang66@hisilicon.com,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH v13 6/6] iommu: Remove mode argument from
- iommu_set_dma_strict()
-To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
-        will@kernel.org, dwmw2@infradead.org, robin.murphy@arm.com,
-        corbet@lwn.net
-References: <1623841437-211832-1-git-send-email-john.garry@huawei.com>
- <1623841437-211832-7-git-send-email-john.garry@huawei.com>
- <de6a2874-3d6d-ed2a-78f5-fb1fb0195228@linux.intel.com>
- <c61376c8-5285-1121-046f-3ab12eee9902@huawei.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <cac021f9-8469-a3b4-a0c6-80a37e882b6f@linux.intel.com>
-Date:   Fri, 18 Jun 2021 09:52:29 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233599AbhFRByu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 21:54:50 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5030 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230211AbhFRBys (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 21:54:48 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G5hd256cNzXh6G;
+        Fri, 18 Jun 2021 09:47:34 +0800 (CST)
+Received: from dggpemm500023.china.huawei.com (7.185.36.83) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 18 Jun 2021 09:52:38 +0800
+Received: from [10.174.187.128] (10.174.187.128) by
+ dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 18 Jun 2021 09:52:37 +0800
+Subject: Re: [PATCH v7 1/4] KVM: arm64: Introduce two cache maintenance
+ callbacks
+To:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
+CC:     Quentin Perret <qperret@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        <kvmarm@lists.cs.columbia.edu>,
+        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Gavin Shan <gshan@redhat.com>, <wanghaibin.wang@huawei.com>,
+        <zhukeqian1@huawei.com>, <yuzenghui@huawei.com>
+References: <20210617105824.31752-1-wangyanan55@huawei.com>
+ <20210617105824.31752-2-wangyanan55@huawei.com>
+ <20210617123837.GA24457@willie-the-truck> <87eed0d13p.wl-maz@kernel.org>
+From:   "wangyanan (Y)" <wangyanan55@huawei.com>
+Message-ID: <2c1b9376-3997-aa7b-d5f3-b04da985c260@huawei.com>
+Date:   Fri, 18 Jun 2021 09:52:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <c61376c8-5285-1121-046f-3ab12eee9902@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <87eed0d13p.wl-maz@kernel.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.187.128]
+X-ClientProxiedBy: dggeme718-chm.china.huawei.com (10.1.199.114) To
+ dggpemm500023.china.huawei.com (7.185.36.83)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/17/21 3:41 PM, John Garry wrote:
-> 
->>> @@ -349,10 +349,9 @@ static int __init iommu_dma_setup(char *str)
->>>   }
->>>   early_param("iommu.strict", iommu_dma_setup);
->>> -void iommu_set_dma_strict(bool strict)
->>> +void iommu_set_dma_strict(void)
->>>   {
->>> -    if (strict || !(iommu_cmd_line & IOMMU_CMD_LINE_STRICT))
->>> -        iommu_dma_strict = strict;
->>> +    iommu_dma_strict = true;
->>
->> Sorry, I still can't get how iommu.strict kernel option works.
->>
->> static int __init iommu_dma_setup(char *str)
->> {
->>          int ret = kstrtobool(str, &iommu_dma_strict);
->>
->>          if (!ret)
->>                  iommu_cmd_line |= IOMMU_CMD_LINE_STRICT;
->>          return ret;
->> }
->> early_param("iommu.strict", iommu_dma_setup);
->>
->> The bit IOMMU_CMD_LINE_STRICT is only set, but not used anywhere.
-> 
-> It is used in patch 2/6:
-> 
-> +    pr_info("DMA domain TLB invalidation policy: %s mode %s\n",
-> +        iommu_dma_strict ? "strict" : "lazy",
-> +        (iommu_cmd_line & IOMMU_CMD_LINE_STRICT) ?
-> +            "(set via kernel command line)" : "");
-> 
->> Hence,
->> I am wondering how could it work? A bug or I missed anything?
-> 
-> It is really just used for informative purpose now.
 
-I am clear now. Thanks!
 
-Best regards,
-baolu
+On 2021/6/17 22:20, Marc Zyngier wrote:
+> On Thu, 17 Jun 2021 13:38:37 +0100,
+> Will Deacon <will@kernel.org> wrote:
+>> On Thu, Jun 17, 2021 at 06:58:21PM +0800, Yanan Wang wrote:
+>>> To prepare for performing CMOs for guest stage-2 in the fault handlers
+>>> in pgtable.c, here introduce two cache maintenance callbacks in struct
+>>> kvm_pgtable_mm_ops. We also adjust the comment alignment for the
+>>> existing part but make no real content change at all.
+>>>
+>>> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+>>> ---
+>>>   arch/arm64/include/asm/kvm_pgtable.h | 42 +++++++++++++++++-----------
+>>>   1 file changed, 25 insertions(+), 17 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+>>> index c3674c47d48c..b6ce34aa44bb 100644
+>>> --- a/arch/arm64/include/asm/kvm_pgtable.h
+>>> +++ b/arch/arm64/include/asm/kvm_pgtable.h
+>>> @@ -27,23 +27,29 @@ typedef u64 kvm_pte_t;
+>>>   
+>>>   /**
+>>>    * struct kvm_pgtable_mm_ops - Memory management callbacks.
+>>> - * @zalloc_page:	Allocate a single zeroed memory page. The @arg parameter
+>>> - *			can be used by the walker to pass a memcache. The
+>>> - *			initial refcount of the page is 1.
+>>> - * @zalloc_pages_exact:	Allocate an exact number of zeroed memory pages. The
+>>> - *			@size parameter is in bytes, and is rounded-up to the
+>>> - *			next page boundary. The resulting allocation is
+>>> - *			physically contiguous.
+>>> - * @free_pages_exact:	Free an exact number of memory pages previously
+>>> - *			allocated by zalloc_pages_exact.
+>>> - * @get_page:		Increment the refcount on a page.
+>>> - * @put_page:		Decrement the refcount on a page. When the refcount
+>>> - *			reaches 0 the page is automatically freed.
+>>> - * @page_count:		Return the refcount of a page.
+>>> - * @phys_to_virt:	Convert a physical address into a virtual address mapped
+>>> - *			in the current context.
+>>> - * @virt_to_phys:	Convert a virtual address mapped in the current context
+>>> - *			into a physical address.
+>>> + * @zalloc_page:		Allocate a single zeroed memory page.
+>>> + *				The @arg parameter can be used by the walker
+>>> + *				to pass a memcache. The initial refcount of
+>>> + *				the page is 1.
+>>> + * @zalloc_pages_exact:		Allocate an exact number of zeroed memory pages.
+>>> + *				The @size parameter is in bytes, and is rounded
+>>> + *				up to the next page boundary. The resulting
+>>> + *				allocation is physically contiguous.
+>>> + * @free_pages_exact:		Free an exact number of memory pages previously
+>>> + *				allocated by zalloc_pages_exact.
+>>> + * @get_page:			Increment the refcount on a page.
+>>> + * @put_page:			Decrement the refcount on a page. When the
+>>> + *				refcount reaches 0 the page is automatically
+>>> + *				freed.
+>>> + * @page_count:			Return the refcount of a page.
+>>> + * @phys_to_virt:		Convert a physical address into a virtual address
+>>> + *				mapped in the current context.
+>>> + * @virt_to_phys:		Convert a virtual address mapped in the current
+>>> + *				context into a physical address.
+>>> + * @clean_invalidate_dcache:	Clean and invalidate the data cache for the
+>>> + *				specified memory address range.
+>> This should probably be explicit about whether this to the PoU/PoC/PoP.
+> Indeed. I can fix that locally if there is nothing else that requires
+> adjusting.
+Will be grateful !
+
+Thanks,
+Yanan
+.
+>
+> 	M.
+>
+
