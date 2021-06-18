@@ -2,111 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037AC3ACC6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C86733ACC6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234017AbhFRNie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:38:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37407 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234090AbhFRNiV (ORCPT
+        id S233756AbhFRNlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:41:12 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:46709 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232089AbhFRNlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:38:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624023372;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dwAv77AeNlMLDZyLBksUycGFC3fX4Q/aI+Elu1Kw5xU=;
-        b=b25NPsDkpKnMysoa3BpTBgzx7tJQV0Em53xtgxfjNkXwK31tdFNdyfH6mMCFnZQIzsgp13
-        +n0JFrhX8lYFxUHScQudaPRFIn9VYYK64dLkB87oWmBxDx6Pu2fcSR+0fqgD46iFPi0jnu
-        pW+Ae3GjhwxkdP1IGvx+wUF7E9Zt/XA=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-420-k5izVtFnPdywF403T4wwbw-1; Fri, 18 Jun 2021 09:36:10 -0400
-X-MC-Unique: k5izVtFnPdywF403T4wwbw-1
-Received: by mail-ej1-f70.google.com with SMTP id j26-20020a170906411ab02904774cb499f8so1599130ejk.6
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:36:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dwAv77AeNlMLDZyLBksUycGFC3fX4Q/aI+Elu1Kw5xU=;
-        b=hXPd1rHN9ty/eypt4cMsufaZWqiH32mk5KPshF0OwfpkZVFK/EiUBfOZVrWzg/RUvV
-         Yj7YPucioOglTPsn8Wh3ivO2W00Gxiih/wYIgUUy/lz9Dn1y/8d10557JTHFSjBSUK+P
-         zfT0qZyn49JWauQFw6Bm9W2Lqg+nL3AdzYRtYEFbx7OqXkOLmOVXhRc1PKpFSM/+4Kyx
-         HYpSghP/z3XvGZ5LE8ZTShRUHmhh8cz6mPqqqwDwntB7mjxDxMduUWj4sy7dv0lXHOtb
-         g9UKsr2bkBpxE7bGimzp3e1TPKxDG4GkOncrld9hCoG9q2bFIP/o3Fik6qgeCyR+rlOE
-         /etg==
-X-Gm-Message-State: AOAM531/WiDZY0lno58fyMxOX3WXn93vZr10bMqu+/Tr8PAe+CozlC/a
-        xGfk+j1OvfMg0kyna2QuL5vl/1lx8p9K2z4GKt3AS5K/mAhRamzUH/HipngmkROU53ZEv4M3SOH
-        juP7L18F+rcFFoaHhVA5Z4iH/MX9GAPTekHS6il+PCBNpWo/ugWlj2Uba8PJGRk3y3UB8KFlc46
-        qR
-X-Received: by 2002:a17:906:1704:: with SMTP id c4mr11309290eje.182.1624023369381;
-        Fri, 18 Jun 2021 06:36:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzR91c6OPYoDNV+ixeXoAS0a4lEBGMZghoM8VLy/9noopvEnzhrLCC5z06NQNHkpEdJHuzVDQ==
-X-Received: by 2002:a17:906:1704:: with SMTP id c4mr11309273eje.182.1624023369190;
-        Fri, 18 Jun 2021 06:36:09 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id e12sm1047791ejk.99.2021.06.18.06.36.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 06:36:08 -0700 (PDT)
-Subject: Re: [PATCH] power: supply: axp288_fuel_gauge: remove redundant
- continue statement
-To:     Colin King <colin.king@canonical.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, linux-pm@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210618092924.99722-1-colin.king@canonical.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <9d482c54-f578-5afb-9661-dbb658471b5d@redhat.com>
-Date:   Fri, 18 Jun 2021 15:36:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Fri, 18 Jun 2021 09:41:11 -0400
+Received: from mail-wr1-f42.google.com ([209.85.221.42]) by
+ mrelayeu.kundenserver.de (mreue011 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MrhDg-1lWzEO3j4W-00nlOQ for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021
+ 15:39:00 +0200
+Received: by mail-wr1-f42.google.com with SMTP id i94so10818619wri.4
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:39:00 -0700 (PDT)
+X-Gm-Message-State: AOAM531rd9QqSX9y0fEkRg7Oe6SRUeTWnPrxbKAYZ3Qmhi1UVTl8MVqj
+        IjX52Py+TBuNNN8xpjK03ANOhydIuoOR3FUIqwM=
+X-Google-Smtp-Source: ABdhPJxVD5+tW/Jgy58X+CwgUp4mUTAmg464TUvUB8YCvLiMqzZHmfKDoNJ2ZUN/OE5n7UNa4bVSUdvXG8KC+jFlc64=
+X-Received: by 2002:a05:6000:1561:: with SMTP id 1mr12561494wrz.165.1624023540546;
+ Fri, 18 Jun 2021 06:39:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210618092924.99722-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <2142129092ff9aa00e600c42a26c4015b7f5ceec.1623813516.git.luto@kernel.org>
+ <YMnPezLs6vb418Wz@hirez.programming.kicks-ass.net> <YMnQVoKvM5G34Yan@hirez.programming.kicks-ass.net>
+ <20210616103446.GC22278@shell.armlinux.org.uk> <YMncQv1uT5QyQ84w@hirez.programming.kicks-ass.net>
+ <20210616132226.GD22278@shell.armlinux.org.uk> <20210616150456.GC22433@arm.com>
+ <20210616152326.GG22278@shell.armlinux.org.uk> <20210616154529.GD22433@arm.com>
+ <20210616160050.GE22433@arm.com> <20210616162716.GH22278@shell.armlinux.org.uk>
+ <CACRpkdYHoC66K7W6mUMqKfAJkcKeopBnAq8Rq+tLSdLo61jtAQ@mail.gmail.com>
+In-Reply-To: <CACRpkdYHoC66K7W6mUMqKfAJkcKeopBnAq8Rq+tLSdLo61jtAQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Fri, 18 Jun 2021 15:36:49 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2P=AzY09OVvHQreLGKjQkN9Z=GM4OrO77zWhh7dF1bMw@mail.gmail.com>
+Message-ID: <CAK8P3a2P=AzY09OVvHQreLGKjQkN9Z=GM4OrO77zWhh7dF1bMw@mail.gmail.com>
+Subject: Re: [PATCH 7/8] membarrier: Remove arm (32) support for SYNC_CORE
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Daniel Golle <daniel@makrotopia.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:IRqfIhNTch6ZRjsAdF7kJImwIx+3BApZ8XNCItn3xu+auGYPC6w
+ xKlysM/Lvr05Hd2yC+oDTYBQYnlYjcErEAuZd8BqqUy1FHBUCFXDMqCqVjBP5o4iVcER+t4
+ 3EFDNitI5vA2XjcksXbq5wtK8B+RCvYE7GkfieNPawOUBoFdAzOwgd0iPwl8QrFeRzHt6AE
+ x9fAyPJ8NVqojUVihV1uA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:EPAqwZ4LlE8=:L3zQEKuKQArW2JtYO/wxa3
+ wbC4qrpxkEyJ6D0dFjHFCNaD809EhO+MXCzzOQfb5n6vgClnq99tLwxFQqcX7Fg/9znVoQyyQ
+ Z948Rg+xirm3635UblXKgS4faulN+rhksdJ6gG5+z8SbxLSvjlSC6vXIM5tx4XgIA7JcTAlPt
+ pRpJUVTchiLQejatexREDfIvWBUWoHc3WheEPFigS4zEZFg7BflBda8UQ7L7SoSft+4ijqEz6
+ +2bejJOSsvQaaLCV7xgNu/w1gjIfqvC6en8ZgCtnRbhx+XrghotvrcYlxNsUGMdHq2YQu/ICX
+ hucPagYgyd5pyZC+WpW9d73XJFlVxZyK/h+Xrsxa+Z4TnBUbcNpj6W1wWXArlxBB55SzszcCP
+ eVHxiC8P+z9TTpKHlz9LUHL0hX8VTsg23pqkgQyeu5xufQNTf7XcLCwm6WQeD+IMa6fGn79Ii
+ Yuh3OGHs3fEopdeqUbOAMo6BFvXwwok+WpFljzepsVY7Vve6U4R0llvDCYuG8FoGgTrn7MnSV
+ x1FmrRjwsrYdR377XXF3yhddbT4MvqwhsOawaep3yzp6zY2s4CZptYmdqn6gNTECEENEVx07a
+ lI8E+MkT1IkMVnKc5aeLa4YJBzx1tkLGOppWH+yMQ0OI6vYCmVCTlYfD3c3ZNTIYjdhFkDpGm
+ TuD8=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Jun 18, 2021 at 2:54 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+> On Wed, Jun 16, 2021 at 6:27 PM Russell King (Oracle) <linux@armlinux.org.uk> wrote:
 
-On 6/18/21 11:29 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The continue statement at the end of a for-loop has no effect,
-> invert the if expression and remove the continue.
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/power/supply/axp288_fuel_gauge.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/power/supply/axp288_fuel_gauge.c b/drivers/power/supply/axp288_fuel_gauge.c
-> index 39e16ecb7638..20e63609ab47 100644
-> --- a/drivers/power/supply/axp288_fuel_gauge.c
-> +++ b/drivers/power/supply/axp288_fuel_gauge.c
-> @@ -142,9 +142,7 @@ static int fuel_gauge_reg_readb(struct axp288_fg_info *info, int reg)
->  
->  	for (i = 0; i < NR_RETRY_CNT; i++) {
->  		ret = regmap_read(info->regmap, reg, &val);
-> -		if (ret == -EBUSY)
-> -			continue;
-> -		else
-> +		if (ret != -EBUSY)
->  			break;
->  	}
+> > So it seems to come down to a question about CNS3xxx and OXNAS. If
+> > these aren't being used, maybe we can drop ARM11MPCore support and
+> > the associated platforms?
+> >
+> > Linus, Krzysztof, Neil, any input?
+>
+> I don't especially need to keep the ARM11MPCore machine alive,
+> it is just a testchip after all. The Oxnas is another story, that has wide
+> deployment and was contributed recently (2016) and has excellent
+> support in OpenWrt so I wouldn't really want to axe that.
 
-Thanks, patch looks good to me:
+Agreed, as long as oxnas and/or cns3xxx are around, we should just keep
+the realview 11mpcore support, but if both of the commercial platforms
+are gone, then the realview can be retired as far as I'm concerned.
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Regarding oxnas, I see that OpenWRT has a number of essential
+device drivers (sata, pcie, usb and reset) that look like they could just
+be merged upstream, but that effort appears to have stalled: no
+device support was added to the dts files since the original 2016
+merge. While the support in OpenWRT may be excellent, the platform
+support in the mainline kernel is limited to ethernet, nand, uart
+and gpio.
 
-Regards,
-
-Hans
-
+       Arnd
