@@ -2,174 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A913AD490
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 23:47:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E4C3AD494
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 23:49:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234676AbhFRVtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 17:49:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234662AbhFRVtM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 17:49:12 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DEBCC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 14:47:02 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id d12-20020ac8668c0000b0290246e35b30f8so5908549qtp.21
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 14:47:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=229mnDm6P0b0PXS4C471S6HQyDxSv4bvPmDKNuB7k40=;
-        b=aKAShhDSlz34FFmsBMzsWaopNkOIayd5iqC4WyI4nw7EHmyz6gT3UNsYYkA71XKeGs
-         HYe325z0spWnArGr1ct0HlvaPXJayYmoz3xEBsLNR2pYu9W5ytLUi3GbsyqNYhhg8FCD
-         Kb0ZSi/hLFCt9lXQLZwNJrIiFthTWhjtN8xLE6U8McLD2HTX3ZnPVJOlc6yt4/ltMrLJ
-         pxCJi0HXJEepqSOcKixEIappwWajaMiojKxb6YUNU6JblgSinSZlx5p1CKyHSE+IrT0d
-         VmEnviQfI4knT2PFN30QysB8oRcrx//+0BzI2VxVhymP1HfHRYD6i2XTIeuYzik0eK+B
-         fpVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=229mnDm6P0b0PXS4C471S6HQyDxSv4bvPmDKNuB7k40=;
-        b=feTlrQEjGqmqWMcnJfaekjaTyRKni+bfEJ22f2HEBJquU1Uv2DadArfvccizadeNVJ
-         CYj9MQ3ePHSe+MWajn8mOzyHb4ccR4j41OdbN+Iv9CC2N85ilQyV7k80d3I9R+6kDC2P
-         7zHLxGp9XdWgXJmFQp3ZaG6c5l6qUg+adQzeyrle4NKlYVUdVmMZA6mk1B7jzOjaf/7K
-         jZdywaMCGuwGD51+rqysEa6CQjC1C8YljiqOse3JQVPAKxWzc3f31s2YXT5uRtD3qkoP
-         AqVVEcTLpZ9eQtBcJRPFGwAWa8bJGtUMDQJg5nymw1R++5zSoqunlz0jNwxbGRQCM/J8
-         Kv7w==
-X-Gm-Message-State: AOAM531g5EmZkIrJYWtY3C9NSf/8Kflh4TEPQebdwoK+/i/UyfDyB+At
-        H4CLrf5EyFtwXytYnvqE5g5Q+egyx5c=
-X-Google-Smtp-Source: ABdhPJxZL8lxhONicplEpmwS8lyjiTsFH0Vv+IEk6+sMdK7gQPIj8pWgQOmqhB6KusakfNutUaK0t9NtoaI=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:d689:126c:66f2:8013])
- (user=seanjc job=sendgmr) by 2002:a25:4048:: with SMTP id n69mr15751195yba.91.1624052821314;
- Fri, 18 Jun 2021 14:47:01 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 18 Jun 2021 14:46:58 -0700
-Message-Id: <20210618214658.2700765-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH] KVM: nVMX: Dynamically compute max VMCS index for vmcs12
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S234627AbhFRVvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 17:51:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34122 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230338AbhFRVvi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 17:51:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CD0E60FF4;
+        Fri, 18 Jun 2021 21:49:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624052968;
+        bh=5/rudTHymhS5/VkI6IvvQ85pgOE0dlvzeUnEKWNpFME=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=mp3O28Yx6lGIUqPBlRzqUcz3w3lYXgEkW+Fs5UqRIDqZNRVI4a3AooALQ3rJf4+lE
+         dyTiRxyreslt8Wvu3O3GyV3YpgwQsZlqJnEPSacB2DbU1NIjaRMGOtrS893DPf+ZqV
+         BEQ47w2nm9aQL2u3wM1MPZ9NE+mkuK8MG/BH5qzLrxwsA/gad7zUPBxlWzggilnxfy
+         3rVSpHVWIzRtEt8AIGFz8ou3OpWhkAdNaFPrsMHaNEiKTv3yRkmnp3USfAgHtD1Ufj
+         lL1mOFO0GjpMoBNLqrOMZ//cXA1ArNJle9f0NZQ+nloy2ORAV51ALozQPggohhOLqT
+         cQBsJe72Z+Ifw==
+Subject: Re: vmemmap alloc failure in hot_add_req()
+To:     Michael Kelley <mikelley@microsoft.com>,
+        David Hildenbrand <david@redhat.com>
+Cc:     KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Hillf Danton <hdanton@sina.com>
+References: <YMO+CoYnCgObRtOI@DESKTOP-1V8MEUQ.localdomain>
+ <20210612021115.2136-1-hdanton@sina.com>
+ <951ddbaf-3d74-7043-4866-3809ff991cfd@redhat.com>
+ <d6a82778-024a-3a01-a081-dab6c8b54d62@kernel.org>
+ <98cba3fa-f787-081f-b833-cfea3a124254@redhat.com>
+ <MWHPR21MB159397B915AFE4EF1FEEF301D70D9@MWHPR21MB1593.namprd21.prod.outlook.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <ff7f3fd0-dfd9-25c8-ef01-8fe29d5af9f5@kernel.org>
+Date:   Fri, 18 Jun 2021 14:49:22 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+MIME-Version: 1.0
+In-Reply-To: <MWHPR21MB159397B915AFE4EF1FEEF301D70D9@MWHPR21MB1593.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Calculate the max VMCS index for vmcs12 by walking the array to find the
-actual max index.  Hardcoding the index is prone to bitrot, and the
-calculation is only done on KVM bringup (albeit on every CPU, but there
-aren't _that_ many null entries in the array).
+Hi Michael,
 
-Fixes: 3c0f99366e34 ("KVM: nVMX: Add a TSC multiplier field in VMCS12")
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
+On 6/17/2021 5:16 PM, Michael Kelley wrote:
+> From: David Hildenbrand <david@redhat.com> Sent: Thursday, June 17, 2021 1:43 AM
+>>
+>>> It does look like this kernel configuration has
+>>> CONFIG_MEMORY_HOTPLUG_DEFAULT_ONLINE=y.
+>>
+>> Okay, so then it's most likely really more of an issue with fragmented
+>> physical memory -- which is suboptimal but not a show blocker in your setup.
+>>
+>> (there are still cases where memory onlining can fail, especially with
+>> kasan running, but these are rather corner cases)
+>>
+>>>
+>>>> If it's not getting onlined, you easily sport after hotplug e.g., via
+>>>> "lsmem" that there are quite some offline memory blocks.
+>>>>
+>>>> Note that x86_64 code will fallback from populating huge pages to
+>>>> populating base pages for the vmemmap; this can happen easily when under
+>>>> memory pressure.
+>>>
+>>> Not sure if it is relevant or not but this warning can show up within a
+>>> minute of startup without me doing anything in particular.
+>>
+>> I remember that Hyper-V will start with a certain (configured) boot VM
+>> memory size and once the guest is up and running, use memory stats of
+>> the guest to decide whether to add (hotplug) or remove (balloon inflate)
+>> memory from the VM.
+>>
+>> So this could just be Hyper-V trying to apply its heuristics.
+> 
+> Nathan --
+> 
+> Could you clarify if your VM is running in the context of the Windows
+> Subsystem for Linux (WSL) v2 feature in Windows 10?  Or are you
+> running a "traditional" VM created using the Hyper-V Manager UI
+> or Powershell?
 
-Note, the vmx test in kvm-unit-tests will still fail using stock QEMU,
-as QEMU also hardcodes and overwrites the MSR.  The test passes if I
-hack KVM to ignore userspace (it was easier than rebuilding QEMU).
+This is a traditional VM created using the Hyper-V Manager.
 
- arch/x86/kvm/vmx/nested.c | 37 +++++++++++++++++++++++++++++++++++--
- arch/x86/kvm/vmx/vmcs.h   |  8 ++++++++
- arch/x86/kvm/vmx/vmcs12.h |  6 ------
- 3 files changed, 43 insertions(+), 8 deletions(-)
+> If the latter, how do you have the memory configuration set up?  In
+> the UI, first you can specify the RAM allocated to the VM.  Then
+> separately, you can enable the "Dynamic Memory" feature, in which
+> case you also specify a "Minimum RAM" and "Maximum RAM".  It
+> looks like you must have the "Dynamic Memory" feature enabled
+> since the original stack trace includes the hot_add_req() function
+> from the hv_balloon driver.
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index b531e08a095b..183fd9d62fc5 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -6374,6 +6374,40 @@ void nested_vmx_set_vmcs_shadowing_bitmap(void)
- 	}
- }
- 
-+/*
-+ * Indexing into the vmcs12 uses the VMCS encoding rotated left by 6.  Undo
-+ * that madness to get the encoding for comparison.
-+ */
-+#define VMCS12_IDX_TO_ENC(idx) ((u16)(((u16)(idx) >> 6) | ((u16)(idx) << 10)))
-+
-+static u64 nested_vmx_calc_vmcs_enum_msr(void)
-+{
-+	/*
-+	 * Note these are the so called "index" of the VMCS field encoding, not
-+	 * the index into vmcs12.
-+	 */
-+	unsigned int max_idx, idx;
-+	int i;
-+
-+	/*
-+	 * For better or worse, KVM allows VMREAD/VMWRITE to all fields in
-+	 * vmcs12, regardless of whether or not the associated feature is
-+	 * exposed to L1.  Simply find the field with the highest index.
-+	 */
-+	max_idx = 0;
-+	for (i = 0; i < nr_vmcs12_fields; i++) {
-+		/* The vmcs12 table is very, very sparsely populated. */
-+		if (!vmcs_field_to_offset_table[i])
-+			continue;
-+
-+		idx = vmcs_field_index(VMCS12_IDX_TO_ENC(i));
-+		if (idx > max_idx)
-+			max_idx = idx;
-+	}
-+
-+	return (u64)max_idx << VMCS_FIELD_INDEX_SHIFT;
-+}
-+
- /*
-  * nested_vmx_setup_ctls_msrs() sets up variables containing the values to be
-  * returned for the various VMX controls MSRs when nested VMX is enabled.
-@@ -6619,8 +6653,7 @@ void nested_vmx_setup_ctls_msrs(struct nested_vmx_msrs *msrs, u32 ept_caps)
- 	rdmsrl(MSR_IA32_VMX_CR0_FIXED1, msrs->cr0_fixed1);
- 	rdmsrl(MSR_IA32_VMX_CR4_FIXED1, msrs->cr4_fixed1);
- 
--	/* highest index: VMX_PREEMPTION_TIMER_VALUE */
--	msrs->vmcs_enum = VMCS12_MAX_FIELD_INDEX << 1;
-+	msrs->vmcs_enum = nested_vmx_calc_vmcs_enum_msr();
- }
- 
- void nested_vmx_hardware_unsetup(void)
-diff --git a/arch/x86/kvm/vmx/vmcs.h b/arch/x86/kvm/vmx/vmcs.h
-index 1472c6c376f7..de3b04d4b587 100644
---- a/arch/x86/kvm/vmx/vmcs.h
-+++ b/arch/x86/kvm/vmx/vmcs.h
-@@ -164,4 +164,12 @@ static inline int vmcs_field_readonly(unsigned long field)
- 	return (((field >> 10) & 0x3) == 1);
- }
- 
-+#define VMCS_FIELD_INDEX_SHIFT		(1)
-+#define VMCS_FIELD_INDEX_MASK		GENMASK(9, 1)
-+
-+static inline unsigned int vmcs_field_index(unsigned long field)
-+{
-+	return (field & VMCS_FIELD_INDEX_MASK) >> VMCS_FIELD_INDEX_SHIFT;
-+}
-+
- #endif /* __KVM_X86_VMX_VMCS_H */
-diff --git a/arch/x86/kvm/vmx/vmcs12.h b/arch/x86/kvm/vmx/vmcs12.h
-index bb81a23afe89..5e0e1b39f495 100644
---- a/arch/x86/kvm/vmx/vmcs12.h
-+++ b/arch/x86/kvm/vmx/vmcs12.h
-@@ -205,12 +205,6 @@ struct __packed vmcs12 {
-  */
- #define VMCS12_SIZE		KVM_STATE_NESTED_VMX_VMCS_SIZE
- 
--/*
-- * VMCS12_MAX_FIELD_INDEX is the highest index value used in any
-- * supported VMCS12 field encoding.
-- */
--#define VMCS12_MAX_FIELD_INDEX 0x17
--
- /*
-  * For save/restore compatibility, the vmcs12 field offsets must not change.
-  */
--- 
-2.32.0.288.g62a8d224e6-goog
+That is correct. I believe Dynamic Memory is the default setting so I 
+just left that as it was. The startup memory for this virtual machine is 
+2GB as it is a lightweight Arch Linux Xfce4 configuration and aside from 
+occasionally compiling software, it will just be sitting there because 
+it is mainly there for testing kernels.
 
+> The Dynamic Memory feature is generally used only when you
+> need to allow Hyper-V to manage the allocation of physical memory
+> across multiple VMs.  Dynamic Memory is essentially Hyper-V's way of
+> allowing memory overcommit.  If you don't need that capability,
+> turning off Dynamic Memory and just specifying the amount of
+> memory you want to assign to the VM is the best course of action.
+
+Ack. My workstation was occasionally memory constrained so I figured 
+relying on the Dynamic Memory feature would make sense. I upgraded the 
+amount of RAM that I had today so I will probably just end up disabling 
+the Dynamic Memory feature and allocating the amount of memory up front.
+
+> With Dynamic Memory enabled, you may have encountered a
+> situation where the memory needs of the VM grew very quickly,
+> and Hyper-V balloon driver got into a situation where it needed
+> to allocate memory in order to add memory, and it couldn't.  If
+> you want to continue to use the Dynamic Memory feature, then
+> you probably need to increase the initial amount of RAM assigned
+> to the VM (the "RAM" setting in the Hyper-V Manager UI).
+
+I will keep that in mind and see if I can find a good number.
+
+Thanks for the reply!
+
+Cheers,
+Nathan
