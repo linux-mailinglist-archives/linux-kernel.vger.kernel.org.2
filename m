@@ -2,70 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F5A43ACC74
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A70A3ACC78
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233883AbhFRNnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:43:24 -0400
-Received: from mga09.intel.com ([134.134.136.24]:46601 "EHLO mga09.intel.com"
+        id S233935AbhFRNny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:43:54 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:44546 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231883AbhFRNnV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:43:21 -0400
-IronPort-SDR: sHMXAt/QsUk9PYbpsKnPf2CaDKTpLCto1++f468hvtnKj1Dkz6kpdMDbzv9vVhi0tqQewe1/Um
- OqKJ1ZCNAlsQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="206505398"
-X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
-   d="scan'208";a="206505398"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 06:41:11 -0700
-IronPort-SDR: iyygx+58mlC2GMejq+dIOom1L92eLlYbOy+LQFrubTG1ekPdi75Oqs/dTP3NVpKWiyFjRjFcGc
- 1PLS8LlpS5EQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
-   d="scan'208";a="485691314"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga001.jf.intel.com with ESMTP; 18 Jun 2021 06:41:09 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 23401516; Fri, 18 Jun 2021 16:41:34 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-Subject: [PATCH v2 2/2] ACPI: sysfs: Remove tailing return statement in void function
-Date:   Fri, 18 Jun 2021 16:41:28 +0300
-Message-Id: <20210618134128.59335-2-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210618134128.59335-1-andriy.shevchenko@linux.intel.com>
-References: <20210618134128.59335-1-andriy.shevchenko@linux.intel.com>
+        id S233904AbhFRNnv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 09:43:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=78qpKeNOzP/NAiEhB003K9aO28jOhCI8hGIf6ql5ius=; b=NzC8w6hiC2xjfYYW9YbyuUHhXq
+        zVLU0VY8iMe3blpC9TTcef5XD5TdYf/gBOYyVgS/hRWlKlud97SvoZnR4uePoO6t67cO1NhbjVk6g
+        JuuBeRME8DpU/cD0Z8eDTbdmoWxOLUov6rwmvU9uP2o9cgvTGaOjd8t3t1F8mpaWkgKA=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1luEkd-00A4hL-T6; Fri, 18 Jun 2021 15:41:39 +0200
+Date:   Fri, 18 Jun 2021 15:41:39 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vadym Kochan <vadym.kochan@plvision.eu>
+Cc:     linux-firmware@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
+        Serhiy Boiko <serhiy.boiko@plvision.eu>,
+        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
+        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
+        Taras Chornyi <taras.chornyi@plvision.eu>,
+        Mickey Rachamim <mickeyr@marvell.com>
+Subject: Re: [GIT PULL] linux-firmware: mrvl: prestera: Update Marvell
+ Prestera Switchdev v3.0 with policer support
+Message-ID: <YMyikxsdqNi8V5zG@lunn.ch>
+References: <20210617154206.GA17555@plvision.eu>
+ <YMt8GvxSen6gB7y+@lunn.ch>
+ <20210617165824.GA5220@plvision.eu>
+ <YMv0WEchRT25GC0Q@lunn.ch>
+ <20210618095824.GA21805@plvision.eu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210618095824.GA21805@plvision.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The tail return statement is redundant in void functions. Remove it.
+> I just picked some from the git log:
+> 
+>     48237834129d ("QCA: Update Bluetooth firmware for QCA6174")
+> 
+> this just updates the binary and description says that it updates
+> to v26.
+> 
+> Not sure if it is good example.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
-v2: rebased on top of bleeding-edge (Rafael)
+The filename is qca/rampatch_usb_00000302.bin. If you look at
+drivers/bluetooth/btusb.c you can see that 00000302 is the version of
+the ROM in the device which is being patched. So there is no
+expectation of knowing the firmware version from the firmware
+filename.
 
- drivers/acpi/sysfs.c | 1 -
- 1 file changed, 1 deletion(-)
+> But anyway, I agree with you that better if new changes also reflects
+> the FW binary name (version) so it will be easy to find out which FW binary
+> have or not particular features.
+> 
+> So I think better to add new FW 3.1 binary ?
 
-diff --git a/drivers/acpi/sysfs.c b/drivers/acpi/sysfs.c
-index 18e93c3c39cf..00c0ebaab29f 100644
---- a/drivers/acpi/sysfs.c
-+++ b/drivers/acpi/sysfs.c
-@@ -897,7 +897,6 @@ void acpi_irq_stats_init(void)
- 
- fail:
- 	delete_gpe_attr_array();
--	return;
- }
- 
- static void __exit interrupt_stats_exit(void)
--- 
-2.30.2
+Probably. But please consider your whole upgrade story. You are
+changing the firmware version quite frequently. How do end users cope
+with this? Is the driver going to support 3.1, 3.0 and 2.0? Or just
+3.1 and 2.0?
 
+Do you have more features in firmware 3.1 you need to add driver
+support for? Or can we expect a 3.2 in a few weeks time? What are your
+users expectations at the moment? It could be, you don't consider the
+driver has enough features at the moment that anybody other than early
+adopters playing with it would consider using it. That you don't
+expect real use of it for another six months, or a year. If that is
+true, you probably can be a bit more disruptive at the moment. But
+when you have a production ready driver, you really do need to
+consider how your users deal with upgrades, keeping the firmware
+version stable for a longer period of time.
+
+	Andrew
