@@ -2,140 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 623453AC0AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 03:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 507FA3AC0AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 03:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232021AbhFRB5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 21:57:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229819AbhFRB5g (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 21:57:36 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F4FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 18:55:27 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id m21so13674567lfg.13
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 18:55:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=n5i265Dlxku7LS7cdoB+aE9Pgv2Etk1tGVQ6RT312v8=;
-        b=g1rr3d/OMdqTsZsWIZ9JbUl1qgzRPBwLfABUe7p5nQ8PBNZkxKmt+GfvAuwSY6IWAc
-         xhPKj6tRNNLMNUOY3kO1gXjoanK/9Xe03wT7YnqdBdheUqXRcbC0D6kN+uwJ59mPKiln
-         OKtR3/xub0ZLy8iDyTs2UUgMCFH5lSGzu0YrmDLyxE/abS1MW2hNNdXRrsfQhC/wHJAn
-         0F+w4q5FawNUzIAPD2a3/ohn4idaVk1rA7eF0DGGln84QzbtyBF3h3vsqCjNZVjNpDjJ
-         VHTC1VixnxGcQt8TBqbslZwU8iq21LjEv4M42prmCk1Ihj2MCjbFxiCmzKD4ubDZJWXC
-         YzAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n5i265Dlxku7LS7cdoB+aE9Pgv2Etk1tGVQ6RT312v8=;
-        b=rwMnzmgue3fKU3JgVBq7PItYYsIVxOQbXX3nKP3cUerrB1XCJzyNr2POLgycbt14DI
-         66u9/We2fs+UMhupEdpY+Ds10mT7UM9NKiJtPvcUp0Gf+rYUCa1W5abz4cUkv05h4T5J
-         PBhyNPD5Ncle6Ddu6xmwloxDUzhPHE3sn948V4E/8XIIRgjEtqC2ssF0aDiptypemf2p
-         RyB9pwF9Weh93svD1hYmhXIwT8Ce86lF1VMdiGSVVAWOuuPvD43v1fGrBE7csi5c/8l5
-         qidtUXoU9apGawBgNuwq/rqSJ4YGGCyAhWemp/VIPpFevpSoVnRcZ5tt5L6LBAL/OoJb
-         moiw==
-X-Gm-Message-State: AOAM530djiMy3T4zYKtfPY7y6KLDlXYa4Qnw4KDRgAiBmUQEFkC7OQFG
-        MqYI8suxDgAqGQqCJwWqPVYJmgdKEG3a9CnekXw=
-X-Google-Smtp-Source: ABdhPJy3vkr7BI6anDuxlu4H4B08E/nVAyuy9myGCasQwPP1tOWV5HxHT/QatJ4BngMTJ18LuK9OUVfoAjkma89+ulc=
-X-Received: by 2002:a05:6512:63:: with SMTP id i3mr1036235lfo.587.1623981326032;
- Thu, 17 Jun 2021 18:55:26 -0700 (PDT)
+        id S233604AbhFRB5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 21:57:48 -0400
+Received: from ozlabs.org ([203.11.71.1]:60309 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232184AbhFRB5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 21:57:47 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G5hpH5W9Fz9sW7;
+        Fri, 18 Jun 2021 11:55:34 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623981337;
+        bh=XmyczsaQJihdD+7yn5OfStr2NqGehTh8SfXAVkoT4UA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Aj5s6kzmUqVCwdg48oFyA4+4YGiUy/rLH+qkATlNd6V7PHUOt3EckY+MCXHwoAyYl
+         QiKcgQqJOQxXCoOt+l0ps9vGZdcgSWFQpHc8FDa5OEelSPhH0Zl+z2GeVCT/Sa33RU
+         wVws+tY1cLwkZ6jWVDgeqdROYM8nlo16jcqIUGaOvME4TVcphZOvspvVgclc5ogIWL
+         XEGhPelmGPbXz3oUbH1dfIltt6Ck2P6fPPFJLrDJfmwEUi3FZ6tfyHLW4C4FXGf+PV
+         uoBReRTA8uL2uDJMRQMIPJD1DCGr/17Sx/qoc7rCCCilUrs/GyfGwmR+oB5riGICOv
+         46svGyQSpbZyQ==
+Date:   Fri, 18 Jun 2021 11:55:33 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Oleksandr Mazur <oleksandr.mazur@plvision.eu>
+Subject: linux-next: manual merge of the net-next tree with the jc_docs tree
+Message-ID: <20210618115533.0b48bf39@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210617142828.346111-1-sxwjean@me.com> <20210617142828.346111-4-sxwjean@me.com>
- <YMtmbjw5EGdXRdD8@boqun-archlinux>
-In-Reply-To: <YMtmbjw5EGdXRdD8@boqun-archlinux>
-From:   Xiongwei Song <sxwjean@gmail.com>
-Date:   Fri, 18 Jun 2021 09:54:59 +0800
-Message-ID: <CAEVVKH8TYoQjZSJr7DjecgEq-EAZEqWqC=EC_pFPzti3VLh6_g@mail.gmail.com>
-Subject: Re: [PATCH 3/3] locking/lockdep: print possible warning after
- counting deps
-To:     Boqun Feng <boqun.feng@gmail.com>
-Cc:     Xiongwei Song <sxwjean@me.com>, peterz@infradead.org,
-        mingo@redhat.com, will@kernel.org, longman@redhat.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/951M1p4Xhojfz7Qb2cfUEEx";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 11:13 PM Boqun Feng <boqun.feng@gmail.com> wrote:
->
-> Hi,
->
-> On Thu, Jun 17, 2021 at 10:28:28PM +0800, Xiongwei Song wrote:
-> > From: Xiongwei Song <sxwjean@gmail.com>
-> >
-> > The graph walk might hit error when counting dependencies. Once the
-> > return value is negative, print a warning to reminder users.
-> >
->
-> Thanks for the improvement, but please see below:
->
-> > Suggested-by: Waiman Long <longman@redhat.com>
-> > Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
-> > ---
-> >  kernel/locking/lockdep.c | 12 ++++++++++--
-> >  1 file changed, 10 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> > index cb94097014d8..cfe0f4374594 100644
-> > --- a/kernel/locking/lockdep.c
-> > +++ b/kernel/locking/lockdep.c
-> > @@ -2028,8 +2028,12 @@ static unsigned long __lockdep_count_forward_deps(struct lock_list *this)
-> >  {
-> >       unsigned long  count = 0;
-> >       struct lock_list *target_entry;
-> > +     enum bfs_result ret;
-> > +
-> > +     ret = __bfs_forwards(this, (void *)&count, noop_count, NULL, &target_entry);
-> >
-> > -     __bfs_forwards(this, (void *)&count, noop_count, NULL, &target_entry);
-> > +     if (bfs_error(ret))
-> > +             print_bfs_bug(ret);
->
-> Here print_bfs_bug() will eventually call debug_locks_off_graph_unlock()
-> to release the graph lock, and the caller (lockdep_count_fowards_deps())
-> will also call graph_unlock() afterwards, and that means we unlock
-> *twice* if a BFS error happens... although in that case, lockdep should
-> stop working so messing up with the graph lock may not hurt anything,
-> but still, I don't think we want to do that.
->
-> So probably you can open-code __lockdep_count_forward_deps() into
-> lockdep_count_forwards_deps(), and call print_bfs_bug() or
-> graph_unlock() accordingly. The body of __lockdep_count_forward_deps()
-> is really small, so I think it's OK to open-code it into its caller.
+--Sig_/951M1p4Xhojfz7Qb2cfUEEx
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thank you so much for the detailed comments. Let me improve and update
-the patch.
+Hi all,
 
-Regards,
-Xiongwei
+Today's linux-next merge of the net-next tree got a conflict in:
 
->
-> Regards,
-> Boqun
->
-> >
-> >       return count;
-> >  }
-> > @@ -2053,8 +2057,12 @@ static unsigned long __lockdep_count_backward_deps(struct lock_list *this)
-> >  {
-> >       unsigned long  count = 0;
-> >       struct lock_list *target_entry;
-> > +     enum bfs_result ret;
-> > +
-> > +     ret = __bfs_backwards(this, (void *)&count, noop_count, NULL, &target_entry);
-> >
-> > -     __bfs_backwards(this, (void *)&count, noop_count, NULL, &target_entry);
-> > +     if (bfs_error(ret))
-> > +             print_bfs_bug(ret);
-> >
-> >       return count;
-> >  }
-> > --
-> > 2.30.2
-> >
+  Documentation/networking/devlink/devlink-trap.rst
+
+between commit:
+
+  8d4a0adc9cab ("docs: networking: devlink: avoid using ReST :doc:`foo` mar=
+kup")
+
+from the jc_docs tree and commit:
+
+  01f1b6ed2b84 ("documentation: networking: devlink: fix prestera.rst forma=
+tting that causes build warnings")
+
+from the net-next tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc Documentation/networking/devlink/devlink-trap.rst
+index efa5f7f42c88,ef8928c355df..000000000000
+--- a/Documentation/networking/devlink/devlink-trap.rst
++++ b/Documentation/networking/devlink/devlink-trap.rst
+@@@ -495,8 -495,9 +495,9 @@@ help debug packet drops caused by thes
+  links to the description of driver-specific traps registered by various d=
+evice
+  drivers:
+ =20
+ -  * :doc:`netdevsim`
+ -  * :doc:`mlxsw`
+ -  * :doc:`prestera`
+ +  * Documentation/networking/devlink/netdevsim.rst
+ +  * Documentation/networking/devlink/mlxsw.rst
+++  * Documentation/networking/devlink/prestera.rst
+ =20
+  .. _Generic-Packet-Trap-Groups:
+ =20
+
+--Sig_/951M1p4Xhojfz7Qb2cfUEEx
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDL/RUACgkQAVBC80lX
+0GxBhwf/TiJXYFl1pmGuXq+x8sV9KjTpACydjFxe2N16HC9bG4O3Utp6i7JCpelJ
+nEUBpDecCVk+5Y5MvAOD/TkHa4LpU7/vpjCDx6Yh6gete9sClu3k37j1aRBtna7a
+XqqLFG1GUKdVH2E7XuNlhMFenZ3+P4ZdikiiqDki5dG+eKonELE90eiUmO0KmiEC
+0901TS3QRaq43NOq2BFk5AGvWA1nYKHd9EJtAGglMf9F7JgznYhepgpzTaNTn4Vq
+HRtoD1ylgRHmR5vi7YA2n/sn2ETl2rVn6ZddBOTc7X3Z6esLkZM/RTdiXIUemnWQ
+dc9dHFkkByjmTqocQImtkq8YVeNxpg==
+=MwXc
+-----END PGP SIGNATURE-----
+
+--Sig_/951M1p4Xhojfz7Qb2cfUEEx--
