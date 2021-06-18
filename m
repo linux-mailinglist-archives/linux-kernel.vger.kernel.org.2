@@ -2,245 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA513AD15E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA253AD164
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234194AbhFRRnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 13:43:49 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:28127 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234013AbhFRRns (ORCPT
+        id S234228AbhFRRo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 13:44:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233934AbhFRRoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 13:43:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624038099; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=sU5sgKcZ96Cn66e0czyDGcy1KU+KfvULcO3v9tIfoSY=;
- b=nAdCm/vMHB7D+iPd0tmQLjvZNdHxqzWjCEjUAoyvbg/Rl8p/ww6lo6nnBnZ55Sr7KBH9M8QB
- Un1YP7xonxaclh7aM8Rr4zwv2hVmaeAMqD7aBwn1Moh9Pt95VmewQeN2czXkr1BTPCTUvj4Y
- Bz1iS+tEmJjyRYlWIw0crenG9sw=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 60ccdad0abfd22a3dcea0dc4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Jun 2021 17:41:36
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CCA16C433F1; Fri, 18 Jun 2021 17:41:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BC8B3C433D3;
-        Fri, 18 Jun 2021 17:41:34 +0000 (UTC)
+        Fri, 18 Jun 2021 13:44:55 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBBCBC061574;
+        Fri, 18 Jun 2021 10:42:45 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 17:42:42 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624038163;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=m4T6r4OFbKcFYZScWGv36zptdxpcLrCD12HgvKArkW0=;
+        b=Vbk2whrVEWRzOaBsDa1SRsBK7OamJQ8mv5uqqWjypR9RDo3dHD/o9LRWo6iHNfoqTADaIY
+        W3ZjgN+0VOgI+ivvb/52RJadYfWq8DhKPKKT6C6Aa1lvy3nuXE1Oqro/QSW4La4BKFSxCz
+        mP9aqf/FJZynNSpnFaO7u8PNsE++MJZd0kDZag3bRIwdJoeEGYpsv8C3uL7HKy/fmuZ/bD
+        b8oNE9JoOosE7cDqFHWRP6HWBGkWkJI5o1zLofiFRaafo/IhZaxb/mDy9TJ5MuNqhKUnhr
+        56fyhN6sh5m8aqTGXxSZR+x1YvfV9VcDj1l6nIPiJyRd8nWKtOxZrGoZMx1ARA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624038163;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=m4T6r4OFbKcFYZScWGv36zptdxpcLrCD12HgvKArkW0=;
+        b=kL4cKFhRia7OCNkSrXx51ld7LaN/rAwOHPXqshk9eODPGS/Y6Bt+QwjCuiSMUExgho5YxG
+        vXDpxBOjZqAiRhAA==
+From:   "tip-bot2 for Fan Du" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/mm: Avoid truncating memblocks for SGX memory
+Cc:     Reinette Chatre <reinette.chatre@intel.com>,
+        Fan Du <fan.du@intel.com>, Dave Hansen <dave.hansen@intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        <stable@vger.kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210617194657.0A99CB22@viggo.jf.intel.com>
+References: <20210617194657.0A99CB22@viggo.jf.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Message-ID: <162403816226.19906.11145156429556481411.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 18 Jun 2021 10:41:34 -0700
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        carl.yin@quectel.com, naveen.kumar@quectel.com,
-        loic.poulain@linaro.org
-Subject: Re: [PATCH] bus: mhi: pci_generic: Apply no-op for wake using inband
- wake support flag
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <20210618172746.GA30140@workstation>
-References: <1623954233-32092-1-git-send-email-bbhatt@codeaurora.org>
- <20210618065249.GN3682@workstation>
- <83d12d5cc46ef7fda12caf7e3bdfddd1@codeaurora.org>
- <20210618172746.GA30140@workstation>
-Message-ID: <e568a1f1db7325800b6e43f3526be2fd@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-18 10:27 AM, Manivannan Sadhasivam wrote:
-> On Fri, Jun 18, 2021 at 10:06:28AM -0700, Bhaumik Bhatt wrote:
->> Hi Mani,
->> On 2021-06-17 11:52 PM, Manivannan Sadhasivam wrote:
->> > On Thu, Jun 17, 2021 at 11:23:53AM -0700, Bhaumik Bhatt wrote:
->> > > Devices such as SDX24 do not have the provision for inband wake
->> > > doorbell in the form of channel 127. Newer devices such as SDX55
->> > > or SDX65 have it by default. Ensure the functionality is used
->> > > based on this such that device wake stays held when a client
->> > > driver uses mhi_device_get() API or the equivalent debugfs entry.
->> > >
->> > > Fixes: e3e5e6508fc1 ("bus: mhi: pci_generic: No-Op for device_wake
->> > > operations")
->> > > Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
->> > > ---
->> > >  drivers/bus/mhi/pci_generic.c | 26 ++++++++++++++++++--------
->> > >  1 file changed, 18 insertions(+), 8 deletions(-)
->> > >
->> > > diff --git a/drivers/bus/mhi/pci_generic.c
->> > > b/drivers/bus/mhi/pci_generic.c
->> > > index d84b743..31360a2 100644
->> > > --- a/drivers/bus/mhi/pci_generic.c
->> > > +++ b/drivers/bus/mhi/pci_generic.c
->> > > @@ -32,6 +32,7 @@
->> > >   * @edl: emergency download mode firmware path (if any)
->> > >   * @bar_num: PCI base address register to use for MHI MMIO register
->> > > space
->> > >   * @dma_data_width: DMA transfer word size (32 or 64 bits)
->> > > + * @no_inband_wake: Devices without inband wake support (such as
->> > > sdx24)
->> >
->> > I'd rather like this field to be "inband_wake" and set to false/true
->> > based on the capability of the devices. Rest looks good.
->> >
->> > Thanks,
->> > Mani
->> >
->> I should have known this was coming :)
->> 
->> Can I use sideband_wake instead of no_inband_wake and leave the 
->> booleans as
->> is?
-> 
-> Do you mean, the older devices uses a dedicated sideband GPIO for
-> controlling the wakeup? If so, what is it?
-> 
- From what I know, this used to be the DEVICE_WAKE GPIO for SDX24. We 
-moved to use
-the channel 127 doorbell as WAKE doorbell for this purpose SDX55 onwards 
-for ease
-of deployment.
+The following commit has been merged into the x86/urgent branch of tip:
 
->> By default, inband_wake will have to be true for any and all devices 
->> moving
->> forward.
->> 
-> 
-> Right but still the functionality is not present in older devices. So I
-> think it makes sense to stay with "inband_wake".
-> 
-> Thanks,
-> Mani
-> 
-So, by default we would not have to add explicit "true" for inband_wake 
-as
-newer devices will have the feature and controller drivers do not need 
-to
-populate the entry for a static const struct.
+Commit-ID:     28e5e44aa3f4e0e0370864ed008fb5e2d85f4dc8
+Gitweb:        https://git.kernel.org/tip/28e5e44aa3f4e0e0370864ed008fb5e2d85f4dc8
+Author:        Fan Du <fan.du@intel.com>
+AuthorDate:    Thu, 17 Jun 2021 12:46:57 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 18 Jun 2021 19:37:01 +02:00
 
->> Please let me know your preference.
->> > >   */
->> > >  struct mhi_pci_dev_info {
->> > >  	const struct mhi_controller_config *config;
->> > > @@ -40,6 +41,7 @@ struct mhi_pci_dev_info {
->> > >  	const char *edl;
->> > >  	unsigned int bar_num;
->> > >  	unsigned int dma_data_width;
->> > > +	bool no_inband_wake;
->> > >  };
->> > >
->> > >  #define MHI_CHANNEL_CONFIG_UL(ch_num, ch_name, el_count, ev_ring) \
->> > > @@ -242,7 +244,8 @@ static const struct mhi_pci_dev_info
->> > > mhi_qcom_sdx65_info = {
->> > >  	.edl = "qcom/sdx65m/edl.mbn",
->> > >  	.config = &modem_qcom_v1_mhiv_config,
->> > >  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
->> > > -	.dma_data_width = 32
->> > > +	.dma_data_width = 32,
->> > > +	.no_inband_wake = false
->> > >  };
->> > >
->> > >  static const struct mhi_pci_dev_info mhi_qcom_sdx55_info = {
->> > > @@ -251,7 +254,8 @@ static const struct mhi_pci_dev_info
->> > > mhi_qcom_sdx55_info = {
->> > >  	.edl = "qcom/sdx55m/edl.mbn",
->> > >  	.config = &modem_qcom_v1_mhiv_config,
->> > >  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
->> > > -	.dma_data_width = 32
->> > > +	.dma_data_width = 32,
->> > > +	.no_inband_wake = false
->> > >  };
->> > >
->> > >  static const struct mhi_pci_dev_info mhi_qcom_sdx24_info = {
->> > > @@ -259,7 +263,8 @@ static const struct mhi_pci_dev_info
->> > > mhi_qcom_sdx24_info = {
->> > >  	.edl = "qcom/prog_firehose_sdx24.mbn",
->> > >  	.config = &modem_qcom_v1_mhiv_config,
->> > >  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
->> > > -	.dma_data_width = 32
->> > > +	.dma_data_width = 32,
->> > > +	.no_inband_wake = true
->> > >  };
->> > >
->> > >  static const struct mhi_channel_config mhi_quectel_em1xx_channels[]
->> > > = {
->> > > @@ -301,7 +306,8 @@ static const struct mhi_pci_dev_info
->> > > mhi_quectel_em1xx_info = {
->> > >  	.edl = "qcom/prog_firehose_sdx24.mbn",
->> > >  	.config = &modem_quectel_em1xx_config,
->> > >  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
->> > > -	.dma_data_width = 32
->> > > +	.dma_data_width = 32,
->> > > +	.no_inband_wake = true
->> > >  };
->> > >
->> > >  static const struct mhi_channel_config mhi_foxconn_sdx55_channels[]
->> > > = {
->> > > @@ -339,7 +345,8 @@ static const struct mhi_pci_dev_info
->> > > mhi_foxconn_sdx55_info = {
->> > >  	.edl = "qcom/sdx55m/edl.mbn",
->> > >  	.config = &modem_foxconn_sdx55_config,
->> > >  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
->> > > -	.dma_data_width = 32
->> > > +	.dma_data_width = 32,
->> > > +	.no_inband_wake = false
->> > >  };
->> > >
->> > >  static const struct pci_device_id mhi_pci_id_table[] = {
->> > > @@ -640,9 +647,12 @@ static int mhi_pci_probe(struct pci_dev *pdev,
->> > > const struct pci_device_id *id)
->> > >  	mhi_cntrl->status_cb = mhi_pci_status_cb;
->> > >  	mhi_cntrl->runtime_get = mhi_pci_runtime_get;
->> > >  	mhi_cntrl->runtime_put = mhi_pci_runtime_put;
->> > > -	mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
->> > > -	mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
->> > > -	mhi_cntrl->wake_toggle = mhi_pci_wake_toggle_nop;
->> > > +
->> > > +	if (info->no_inband_wake) {
->> > > +		mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
->> > > +		mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
->> > > +		mhi_cntrl->wake_toggle = mhi_pci_wake_toggle_nop;
->> > > +	}
->> > >
->> > >  	err = mhi_pci_claim(mhi_cntrl, info->bar_num,
->> > > DMA_BIT_MASK(info->dma_data_width));
->> > >  	if (err)
->> > > --
->> > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
->> > > Forum,
->> > > a Linux Foundation Collaborative Project
->> > >
->> 
->> Thanks,
->> Bhaumik
->> ---
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
+x86/mm: Avoid truncating memblocks for SGX memory
 
-Thanks,
-Bhaumik
+tl;dr:
+
+Several SGX users reported seeing the following message on NUMA systems:
+
+  sgx: [Firmware Bug]: Unable to map EPC section to online node. Fallback to the NUMA node 0.
+
+This turned out to be the memblock code mistakenly throwing away SGX
+memory.
+
+=== Full Changelog ===
+
+The 'max_pfn' variable represents the highest known RAM address.  It can
+be used, for instance, to quickly determine for which physical addresses
+there is mem_map[] space allocated.  The numa_meminfo code makes an
+effort to throw out ("trim") all memory blocks which are above 'max_pfn'.
+
+SGX memory is not considered RAM (it is marked as "Reserved" in the
+e820) and is not taken into account by max_pfn. Despite this, SGX memory
+areas have NUMA affinity and are enumerated in the ACPI SRAT table. The
+existing SGX code uses the numa_meminfo mechanism to look up the NUMA
+affinity for its memory areas.
+
+In cases where SGX memory was above max_pfn (usually just the one EPC
+section in the last highest NUMA node), the numa_memblock is truncated
+at 'max_pfn', which is below the SGX memory.  When the SGX code tries to
+look up the affinity of this memory, it fails and produces an error message:
+
+  sgx: [Firmware Bug]: Unable to map EPC section to online node. Fallback to the NUMA node 0.
+
+and assigns the memory to NUMA node 0.
+
+Instead of silently truncating the memory block at 'max_pfn' and
+dropping the SGX memory, add the truncated portion to
+'numa_reserved_meminfo'.  This allows the SGX code to later determine
+the NUMA affinity of its 'Reserved' area.
+
+Before, numa_meminfo looked like this (from 'crash'):
+
+  blk = { start =          0x0, end = 0x2080000000, nid = 0x0 }
+        { start = 0x2080000000, end = 0x4000000000, nid = 0x1 }
+
+numa_reserved_meminfo is empty.
+
+With this, numa_meminfo looks like this:
+
+  blk = { start =          0x0, end = 0x2080000000, nid = 0x0 }
+        { start = 0x2080000000, end = 0x4000000000, nid = 0x1 }
+
+and numa_reserved_meminfo has an entry for node 1's SGX memory:
+
+  blk =  { start = 0x4000000000, end = 0x4080000000, nid = 0x1 }
+
+ [ daveh: completely rewrote/reworked changelog ]
+
+Fixes: 5d30f92e7631 ("x86/NUMA: Provide a range-to-target_node lookup facility")
+Reported-by: Reinette Chatre <reinette.chatre@intel.com>
+Signed-off-by: Fan Du <fan.du@intel.com>
+Signed-off-by: Dave Hansen <dave.hansen@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Reviewed-by: Dave Hansen <dave.hansen@intel.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/20210617194657.0A99CB22@viggo.jf.intel.com
 ---
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+ arch/x86/mm/numa.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
+index 5eb4dc2..e94da74 100644
+--- a/arch/x86/mm/numa.c
++++ b/arch/x86/mm/numa.c
+@@ -254,7 +254,13 @@ int __init numa_cleanup_meminfo(struct numa_meminfo *mi)
+ 
+ 		/* make sure all non-reserved blocks are inside the limits */
+ 		bi->start = max(bi->start, low);
+-		bi->end = min(bi->end, high);
++
++		/* preserve info for non-RAM areas above 'max_pfn': */
++		if (bi->end > high) {
++			numa_add_memblk_to(bi->nid, high, bi->end,
++					   &numa_reserved_meminfo);
++			bi->end = high;
++		}
+ 
+ 		/* and there's no empty block */
+ 		if (bi->start >= bi->end)
