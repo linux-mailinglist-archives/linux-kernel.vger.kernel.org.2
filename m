@@ -2,159 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC2253AD601
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671683AD609
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235080AbhFRXiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 19:38:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234082AbhFRXiD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 19:38:03 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C977C061574;
-        Fri, 18 Jun 2021 16:35:53 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624059348;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VS1kEFj6NGxOacoKrHgfdHSnLlRh4SbebwWizyJZYAQ=;
-        b=bL9fI3hkWv9PH8dWCaMIiufhxPnkLjnyHYN+0q7OBXHCKUBnaV7eaQPujoorCSKLiD5tMC
-        SIsn56dSt7/b0XVY9FAfyUzt1yUfJDNAjNl5AKgC4E66LM2EaSLNoLmJSEK7uESfsC/ChC
-        MW+wB8Q+XTba+uFDxN9PHw6asAGtfbtBd+5MQd2q0a26FzD7KPZUIIOrhzH54vsc+9gt89
-        eUOcXNIXu5qN13/iQu9JkA6rzVni2sAJgDfF35Ic/BtvYQZyD+sb9+e4Co9R/XjDOOnycX
-        lyV6WuJdKCPOYPe/Z4j5xE0EoA/wWgiA7Huumyi96UjqnJkOZhVpA1p60kF1Ig==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624059348;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VS1kEFj6NGxOacoKrHgfdHSnLlRh4SbebwWizyJZYAQ=;
-        b=F9n+R9/XKZUhSghkg/hlUe4kVkioHlAPWvPyVzZnBSojsqQV3DYUgVN8ezqSFokGiAi6wA
-        /9KadsMRKM1MDtAA==
-To:     Juri Lelli <juri.lelli@redhat.com>, bigeasy@linutronix.de
-Cc:     linux-rt-users@vger.kernel.org, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, bristot@redhat.com,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: Re: [RFC PATCH RT v2 1/2] time/hrtimer: Add PINNED_HARD mode for realtime hrtimers
-In-Reply-To: <20210616071705.166658-2-juri.lelli@redhat.com>
-References: <20210616071705.166658-1-juri.lelli@redhat.com> <20210616071705.166658-2-juri.lelli@redhat.com>
-Date:   Sat, 19 Jun 2021 01:35:47 +0200
-Message-ID: <87k0mqeofg.ffs@nanos.tec.linutronix.de>
+        id S235148AbhFRXky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 19:40:54 -0400
+Received: from mga14.intel.com ([192.55.52.115]:47071 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234082AbhFRXkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 19:40:53 -0400
+IronPort-SDR: O3uh00xWNfSxt00PnrNWWyLJ2kK/AS+dAR5MQQFoxSv32/p6pT1skznjTFS4bQNNrGXpf5LkWU
+ fvrYvR6/gcuw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="206455847"
+X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
+   d="scan'208";a="206455847"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 16:38:43 -0700
+IronPort-SDR: 8lrlscrp010EhK1m6h4HH+i/RAAkcTR6znVWBPeh3hdUHXYCPoqb77koEl8Dh1t8xuFRPqFRPJ
+ 6+CIZQCd1e+Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
+   d="scan'208";a="554882543"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 18 Jun 2021 16:38:41 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1luO4O-0003CD-V0; Fri, 18 Jun 2021 23:38:40 +0000
+Date:   Sat, 19 Jun 2021 07:37:46 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ edfbcdafc27b9a0eb9280aa3fbe34f48f202b7f4
+Message-ID: <60cd2e4a.5E/op21kF1+YTRBp%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Juri,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: edfbcdafc27b9a0eb9280aa3fbe34f48f202b7f4  Merge branch 'sched/core'
 
-On Wed, Jun 16 2021 at 09:17, Juri Lelli wrote:
-> While running cyclictest on isolated CPUs with timer_migration enabled,
-> I noticed the following behavior, where CPU0 is one of the housekeeping
-> CPUs and CPU2 is isolated:
->
->      <idle>-0     [000] ... hrtimer_cancel:       hrtimer=0xffffb4a74be7fe70
->      <idle>-0     [000] ... hrtimer_expire_entry: hrtimer=0xffffb4a74be7fe70 now=144805770984 function=hrtimer_wakeup/0x0
->      <idle>-0     [000] ... sched_wakeup:         cyclictest:1171 [4] success=1 CPU:002
->      <idle>-0     [000] ... hrtimer_expire_exit:  hrtimer=0xffffb4a74be7fe70
->      <idle>-0     [002] ... sched_switch:         swapper/2:0 [120] R ==> cyclictest:1171 [4]
->  cyclictest-1171  [002] ... hrtimer_init:         hrtimer=0xffffb4a74be7fe70 clockid=CLOCK_MONOTONIC mode=0x8
->  cyclictest-1171  [002] ... hrtimer_start:        hrtimer=0xffffb4a74be7fe70 function=hrtimer_wakeup/0x0 ...
->  cyclictest-1171  [002] ... sched_switch:         cyclictest:1171 [4] S ==> swapper/2:0 [120]
->
-> While cyclitest was arming the hrtimer while running on isolated CPU2
-> (by means of clock_nanosleep), the hrtimer was then firing on CPU0. This
-> is due to the fact that switch_hrtimer_base(), called at hrtimer enqueue
-> time, will prefer to enqueue the timer on an housekeeping !idle CPU, if
-> the timer is not pinned and timer_migration is enabled.
->
-> The problem with this is that we are measuring wake up latencies across
-> isolated and !isolated domains, which is against the purpose of
-> configuring the latter.
->
-> Since PREEMPT_RT already forces HARD mode for hrtimers armed by tasks
-> running with RT policies, it makes sense to also force PINNED mode under
-> the same conditions.
->
-> This patch implements this behavior, achieving something like the
+elapsed time: 724m
 
- git grep 'This patch' Documentation/process
+configs tested: 83
+configs skipped: 2
 
-Also look at the recommended usage of 'We, I' while at it.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> @@ -55,6 +55,8 @@ enum hrtimer_mode {
->  	HRTIMER_MODE_ABS_HARD	= HRTIMER_MODE_ABS | HRTIMER_MODE_HARD,
->  	HRTIMER_MODE_REL_HARD	= HRTIMER_MODE_REL | HRTIMER_MODE_HARD,
->  
-> +	HRTIMER_MODE_PINNED_HARD = HRTIMER_MODE_PINNED | HRTIMER_MODE_HARD,
-> +
->  	HRTIMER_MODE_ABS_PINNED_HARD = HRTIMER_MODE_ABS_PINNED | HRTIMER_MODE_HARD,
->  	HRTIMER_MODE_REL_PINNED_HARD = HRTIMER_MODE_REL_PINNED | HRTIMER_MODE_HARD,
->  };
-> diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
-> index 3fa18a01f5b2..f64954d5c8f8 100644
-> --- a/kernel/time/hrtimer.c
-> +++ b/kernel/time/hrtimer.c
-> @@ -1842,7 +1842,7 @@ static void __hrtimer_init_sleeper(struct hrtimer_sleeper *sl,
->  	 */
->  	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
->  		if (task_is_realtime(current) && !(mode & HRTIMER_MODE_SOFT))
-> -			mode |= HRTIMER_MODE_HARD;
-> +			mode |= HRTIMER_MODE_PINNED_HARD;
->  	}
->  
->  	__hrtimer_init(&sl->timer, clock_id, mode);
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                         bcm2835_defconfig
+powerpc                    klondike_defconfig
+mips                          rb532_defconfig
+powerpc                     tqm8540_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+x86_64                            allnoconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20210618
+i386                 randconfig-a006-20210618
+i386                 randconfig-a004-20210618
+i386                 randconfig-a001-20210618
+i386                 randconfig-a005-20210618
+i386                 randconfig-a003-20210618
+x86_64               randconfig-a015-20210618
+x86_64               randconfig-a011-20210618
+x86_64               randconfig-a012-20210618
+x86_64               randconfig-a014-20210618
+x86_64               randconfig-a016-20210618
+x86_64               randconfig-a013-20210618
+i386                 randconfig-a015-20210618
+i386                 randconfig-a016-20210618
+i386                 randconfig-a013-20210618
+i386                 randconfig-a014-20210618
+i386                 randconfig-a012-20210618
+i386                 randconfig-a011-20210618
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-It makes sense to some extent, but in fact you are curing the symptom.
+clang tested configs:
+x86_64               randconfig-b001-20210618
+x86_64               randconfig-a002-20210618
+x86_64               randconfig-a001-20210618
+x86_64               randconfig-a004-20210618
+x86_64               randconfig-a003-20210618
+x86_64               randconfig-a006-20210618
+x86_64               randconfig-a005-20210618
 
-The root cause is that all of this is semantically ill defined.
-
-The underlying problem is get_nohz_timer_target() which is a completely
-broken heuristics trying to predict which CPU is the proper target for
-handling the timer some unspecified time in the future.
-
-In hindsight I regret that I even helped to merge that, but hindsight.
-Is get_nohz_timer_target() anything near correct for some unspecified
-reason? You surely know that it's not.
-
-In fact your patch makes it even more semantically undefined simply
-because it is solving the single RT thread per CPU use case which is
-exposed by cyclictest. Is that universaly true for all RT tasks and use
-cases?
-
-The wild west of anything which scratches 'my itch' based on 'my use
-case numbers' in Linux ended many years ago and while RT was always a
-valuable playground for unthinkable ideas we definitely tried hard not
-to accept use case specific hacks wihtout a proper justification that it
-makes sense in general.
-
-So why are you even trying to sell this to me?
-
-get_nohz_timer_target() is broken by definition and while it made some
-sense years ago despite it's heuristic nature, this is something which
-really needs to be cleaned up because it causes more trouble than it
-solves. Tagging every other timer as pinned just to work around that
-underlying nonsense is just wrong.
-
-We have been working on getting rid of this at least for the timer list
-timers (which are admittedly the easier part of the problem) on and off
-for years. I can't find the public links right now, but I'll ask
-Anna-Maria to fill the void. Might take a while as she's AFK for a
-while.
-
-Thanks,
-
-        tglx
-
-
-
-
-
-
-
-
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
