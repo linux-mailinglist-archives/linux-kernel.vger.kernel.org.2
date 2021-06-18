@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0E63ACE81
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7493ACE82
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233674AbhFRPVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:21:31 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56246 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231465AbhFRPV3 (ORCPT
+        id S234920AbhFRPVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:21:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233119AbhFRPVb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:21:29 -0400
-Message-Id: <20210618141823.161158090@linutronix.de>
+        Fri, 18 Jun 2021 11:21:31 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EBCAC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 08:19:21 -0700 (PDT)
+Message-Id: <20210618143444.438635017@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624029559;
+        s=2020; t=1624029560;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=3QSTFnLmDCaDo2BSry6gh962IV7Ui8ng9SM51PdA1i8=;
-        b=CM0iXyTiVm/Y22tnUXkPyUmpaoexNO8fK44fGdWC0iP6he/grVD1nFE/ERK4qDcrutBlFO
-        s+BBpVpf30dhZjDrhZnJ9/X16oAlJIIVqCK5Snfp4IS4Cv2Fs2LoOsOP0jtffCgJxwkDAp
-        Wd3YtadS6s1L8XDMK4f1cYAJ22PjE7GsEGzKN8YR5Xs+1zdmBrXkeVO3KRdsH0hrfkYMI8
-        RH+Zwk0XT+XqCvxVOZ5qXoLJcgYbtdseJTRQBNzIbG/AIKb5PpngypcUOCP6jqeWHm0sjp
-        dYQ/qgJ0Q2Oit+LuuIqvLm26T4n3FxI7SWVjcI6PvYPKj/QAvwlqV/pBAGMIMQ==
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=NV3dF4mvbZ3pyRCUcLgbs+oTmEaMPjaISeC3pG6mczo=;
+        b=kPSezow3dDo175GUjH1nvJrFASaKf6QtTjosiGFFds6amdKl7Wo3Bg+H4VyYTk7CZ8/uOV
+        SDc6U6IxrCc4IFNVmFUs8r+8hfMjK2mDEHy8fsIZ50NRZCQcWurhokMZKkntdLXU5IgMdl
+        KN9GaO9upOMk/D98hzE9OaY1tfxgl6/iO4GfA/xKICLRaywwxmfVsL02/Df6gl7XtdTqWV
+        TmQxNORUH8M0cpgM+aBofMqSxyJe0Y6OYKyH7D+aQHfVv35Yk9G7yPMx3XY0M7A028+CAP
+        UnAnws3XzEPBD8kCo2r8rG/dGW/nHVYmxiHkDaa31cby1JivlMD2V8t7MBtBJw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624029559;
+        s=2020e; t=1624029560;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=3QSTFnLmDCaDo2BSry6gh962IV7Ui8ng9SM51PdA1i8=;
-        b=aeNXaAdRzCk7ggrqBcfUHagaFrCvVoXwPKQ+J8mOfdOwX2sX2qBAtLzlTz2Li1uwa0zJ30
-        DN6OT8UgtChETrBA==
-Date:   Fri, 18 Jun 2021 16:18:23 +0200
+         content-transfer-encoding:content-transfer-encoding:  references:references;
+        bh=NV3dF4mvbZ3pyRCUcLgbs+oTmEaMPjaISeC3pG6mczo=;
+        b=z2BMhRIMzi8wIKfR/WOdi5nzxgs6CfGYxoZiFhNtW/eUE2e7Crxovc3k0rIa9athKEyPDo
+        sgYK4C53eh36s4Aw==
+Date:   Fri, 18 Jun 2021 16:18:24 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -44,75 +47,68 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V3 00/66] x86/fpu: Spring cleaning and PKRU sanitizing
+Subject: [patch V3 01/66] x86/fpu: x86/fpu: Preserve supervisor states in
+ sanitize_restored_user_xstate()
+References: <20210618141823.161158090@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-transfer-encoding: 8-bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhlIG1haW4gcGFydHMgb2YgdGhpcyBzZXJpZXMgYXJlOgoKICAtIFlldCBtb3JlIGJ1ZyBmaXhl
-cwoKICAtIFNpbXBsaWZpY2F0aW9uIGFuZCByZW1vdmFsL3JlcGxhY2VtZW50IG9mIHJlZHVuZGFu
-dCBhbmQvb3IKICAgIG92ZXJlbmdpbmVlcmVkIGNvZGUuCgogIC0gTmFtZSBzcGFjZSBjbGVhbnVw
-IGFzIHRoZSBleGlzdGluZyBuYW1lcyB3ZXJlIGp1c3QgYSBwZXJtYW5lbnQgc291cmNlCiAgICBv
-ZiBjb25mdXNpb24uCgogIC0gQ2xlYXIgc2VwZXJhdGlvbiBvZiB1c2VyIEFCSSBhbmQga2VybmVs
-IGludGVybmFsIHN0YXRlIGhhbmRsaW5nLgoKICAtIFJlbW92YWwgb2YgUEtSVSBmcm9tIGJlaW5n
-IFhTVEFURSBtYW5hZ2VkIGluIHRoZSBrZXJuZWwgYmVjYXVzZSBQS1JVCiAgICBoYXMgdG8gYmUg
-ZWFnZXJseSByZXN0b3JlZCBvbiBjb250ZXh0IHN3aXRjaCBhbmQga2VlcGluZyBpdCBpbiBzeW5j
-CiAgICBpbiB0aGUgeHN0YXRlIGJ1ZmZlciBpcyBqdXN0IHBvaW50bGVzcyBvdmVyaGVhZCBhbmQg
-ZnJhZ2lsZS4KCiAgICBUaGUga2VybmVsIHN0aWxsIFhTQVZFcyBQS1JVIG9uIGNvbnRleHQgc3dp
-dGNoIGJ1dCB0aGUgdmFsdWUgaW4gdGhlCiAgICBidWZmZXIgaXMgbm90IGxvbmdlciB1c2VkIGFu
-ZCBuZXZlciByZXN0b3JlZCBmcm9tIHRoZSBidWZmZXIuCgogICAgVGhpcyBzdGlsbCBuZWVkcyB0
-byBiZSBjbGVhbmVkIHVwLCBidXQgdGhlIHNlcmllcyBpcyBhbHJlYWR5IDQwKwogICAgcGF0Y2hl
-cyBsYXJnZSBhbmQgdGhlIGNsZWFudXAgb2YgdGhpcyBpcyBub3QgYSBmdW5jdGlvbmFsIHByb2Js
-ZW0uCgogICAgVGhlIGZ1bmN0aW9uYWwgaXNzdWVzIG9mIFBLUlUgbWFuYWdlbWVudCBhcmUgZnVs
-bHkgYWRkcmVzc2VkIHdpdGggdGhlCiAgICBzZXJpZXMgYXMgaXMuCgogIC0gQ2xlYW51cCBvZiBm
-cHUgc2lnbmFsIHJlc3RvcmUKCiAgICAtIE1ha2UgdGhlIGZhc3QgcGF0aCBzZWxmIGNvbnRhaW5l
-ZC4gSGFuZGxlICNQRiBkaXJlY3RseSBhbmQgc2tpcAogICAgICB0aGUgc2xvdyBwYXRoIG9uIGFu
-eSBvdGhlciBleGNlcHRpb24gYXMgdGhhdCB3aWxsIGp1c3QgZW5kIHVwCiAgICAgIHdpdGggdGhl
-IHNhbWUgcmVzdWx0IHRoYXQgdGhlIGZyYW1lIGlzIGludmFsaWQuIFRoaXMgYWxsb3dzCiAgICAg
-IHRoZSBjb21waWxlciB0byBvcHRpbWl6ZSB0aGUgc2xvdyBwYXRoIG91dCBmb3IgNjRiaXQga2Vy
-bmVscwogICAgICB3L28gaWEzMiBlbXVsYXRpb24uCgogICAgLSBSZWR1Y2UgY29kZSBkdXBsaWNh
-dGlvbiBhbmQgdW5uZWNlc3Nhcnkgb3BlcmF0aW9ucwogICAgICAKCkl0IGFwcGxpZXMgb24gdG9w
-IG9mCgogIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90aXAv
-dGlwLmdpdCBtYXN0ZXIKCmFuZCBpcyBhbHNvIGF2YWlsYWJsZSB2aWEgZ2l0OgoKICBnaXQ6Ly9n
-aXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdGdseC9kZXZlbC5naXQgeDg2
-L2ZwdQoKVGhpcyBpcyBhIGZvbGxvdyB1cCB0byBWMiB3aGljaCBjYW4gYmUgZm91bmQgaGVyZToK
-CiAgICAgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvci8yMDIxMDYxNDE1NDQwOC42NzM0Nzg2MjNA
-bGludXRyb25peC5kZQoKQ2hhbmdlcyB2cy4gVjI6CgogIC0gRml4ZWQgdGhlIHRlc3RpbmcgZmFs
-bG91dCAoRGF2ZSwgS2FuKQoKICAtIEZpeGVkIGEgZmV3IGlzc3VlcyBmb3VuZCBieSBteXNlbGYg
-d2hlbiBnb2luZyB0aHJvdWdoIHRoZSBsb3QKICAgIHdpdGggYSBmaW5lIGNvbWIsIGVzcGVjaWFs
-bHkgTVhDU1IgaGFuZGxpbmcKCiAgLSBEcm9wIHRoZSBGTlNBVkUgb3B0aW1pemF0aW9ucwoKICAt
-IENsZWFudXAgb2Ygc2lnbmFsIHJlc3RvcmUKCiAgLSBBZGRyZXNzZWQgcmV2aWV3IGNvbW1lbnRz
-LCBtb3N0bHkgY29tbWVudHMgYW5kIGEgaG9wZWZ1bGx5IGJldHRlcgogICAgbmFtaW5nIHNjaGVt
-ZSB3aGljaCBub3cganVzdCB1c2VzIHRoZSBpbnN0cnVjdGlvbiBuYW1lcyBhbmQKICAgIGNvbnNv
-bGlkYXRlcyBldmVyeXRoaW5nIGVsc2Ugb24gc2F2ZS9yZXN0b3JlIHNvIGl0J3MgY2xvc2UgdG8g
-dGhlIHdheQogICAgaG93IHRoZSBoYXJkd2FyZSB3b3Jrcy4KCiAgLSBBIGZldyBjbGVhbnVwcyBh
-bmQgc2ltcGxpZmljYXRpb25zIG9uIHRoZSB3YXkgKG1vc3RseSByZWdzZXQgcmVsYXRlZCkuCgog
-IC0gUGlja2VkIHVwIHRhZ3MKCldpdGggdGhlIGFib3ZlIEknbSBub3QgaW50ZW5kaW5nIHRvIGRv
-IGFueSBmdXJ0aGVyIHN1cmdlcnkgb24gdGhhdApjb2RlIGF0IHRoZSBtb21lbnQsIHRob3VnaCB0
-aGVyZSBpcyBzdGlsbCByb29tIGZvciBpbXByb3ZlbWVudCB3aGljaApjYW4gYW5kIGhhcyB0byBi
-ZSB3b3JrZWQgb24gd2hlbiBuZXcgYml0cyBhcmUgYWRkZWQuCgpUaGFua3MsCgoJdGdseAotLS0K
-IGFyY2gveDg2L2V2ZW50cy9pbnRlbC9sYnIuYyAgICAgICAgICB8ICAgIDYgCiBhcmNoL3g4Ni9p
-bmNsdWRlL2FzbS9mcHUvaW50ZXJuYWwuaCAgfCAgMjExICsrKy0tLS0tLS0KIGFyY2gveDg2L2lu
-Y2x1ZGUvYXNtL2ZwdS94c3RhdGUuaCAgICB8ICAgNzAgKystCiBhcmNoL3g4Ni9pbmNsdWRlL2Fz
-bS9wZ3RhYmxlLmggICAgICAgfCAgIDU3IC0tCiBhcmNoL3g4Ni9pbmNsdWRlL2FzbS9wa2V5cy5o
-ICAgICAgICAgfCAgICA5IAogYXJjaC94ODYvaW5jbHVkZS9hc20vcGtydS5oICAgICAgICAgIHwg
-ICA2MiArKysKIGFyY2gveDg2L2luY2x1ZGUvYXNtL3Byb2Nlc3Nvci5oICAgICB8ICAgIDkgCiBh
-cmNoL3g4Ni9pbmNsdWRlL2FzbS9zcGVjaWFsX2luc25zLmggfCAgIDE0IAogYXJjaC94ODYva2Vy
-bmVsL2NwdS9jb21tb24uYyAgICAgICAgIHwgICAzNCAtCiBhcmNoL3g4Ni9rZXJuZWwvZnB1L2Nv
-cmUuYyAgICAgICAgICAgfCAgMjc2ICsrKysrKystLS0tLS0KIGFyY2gveDg2L2tlcm5lbC9mcHUv
-aW5pdC5jICAgICAgICAgICB8ICAgMTUgCiBhcmNoL3g4Ni9rZXJuZWwvZnB1L3JlZ3NldC5jICAg
-ICAgICAgfCAgMjIwICsrKysrKy0tLS0tCiBhcmNoL3g4Ni9rZXJuZWwvZnB1L3NpZ25hbC5jICAg
-ICAgICAgfCAgNDIzICsrKysrKysrKy0tLS0tLS0tLS0tLQogYXJjaC94ODYva2VybmVsL2ZwdS94
-c3RhdGUuYyAgICAgICAgIHwgIDY5MyArKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0t
-LQogYXJjaC94ODYva2VybmVsL3Byb2Nlc3MuYyAgICAgICAgICAgIHwgICAyMiAtCiBhcmNoL3g4
-Ni9rZXJuZWwvcHJvY2Vzc182NC5jICAgICAgICAgfCAgIDI4ICsKIGFyY2gveDg2L2tlcm5lbC90
-cmFwcy5jICAgICAgICAgICAgICB8ICAgIDUgCiBhcmNoL3g4Ni9rdm0vc3ZtL3Nldi5jICAgICAg
-ICAgICAgICAgfCAgICAxIAogYXJjaC94ODYva3ZtL3g4Ni5jICAgICAgICAgICAgICAgICAgIHwg
-ICA1NiArLQogYXJjaC94ODYvbW0vZXh0YWJsZS5jICAgICAgICAgICAgICAgIHwgICAgMiAKIGFy
-Y2gveDg2L21tL2ZhdWx0LmMgICAgICAgICAgICAgICAgICB8ICAgIDIgCiBhcmNoL3g4Ni9tbS9w
-a2V5cy5jICAgICAgICAgICAgICAgICAgfCAgIDIyIC0KIGluY2x1ZGUvbGludXgvcGtleXMuaCAg
-ICAgICAgICAgICAgICB8ICAgIDQgCiAyMyBmaWxlcyBjaGFuZ2VkLCAxMDYwIGluc2VydGlvbnMo
-KyksIDExODEgZGVsZXRpb25zKC0pCgoK
+From: Thomas Gleixner <tglx@linutronix.de>
+
+sanitize_restored_user_xstate() preserves the supervisor states only
+when the fx_only argument is zero, which allows unpriviledged user space
+to put supervisor states back into init state.
+
+Preserve them unconditionally.
+
+Fixes: 5d6b6a6f9b5c ("x86/fpu/xstate: Update sanitize_restored_xstate() for supervisor xstates")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: stable@vger.kernel.org
+---
+ arch/x86/kernel/fpu/signal.c |   26 ++++++++------------------
+ 1 file changed, 8 insertions(+), 18 deletions(-)
+
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -221,28 +221,18 @@ sanitize_restored_user_xstate(union fpre
+ 
+ 	if (use_xsave()) {
+ 		/*
+-		 * Note: we don't need to zero the reserved bits in the
+-		 * xstate_header here because we either didn't copy them at all,
+-		 * or we checked earlier that they aren't set.
++		 * Clear all features bit which are not set in
++		 * user_xfeatures and clear all extended features
++		 * for fx_only mode.
+ 		 */
++		u64 mask = fx_only ? XFEATURE_MASK_FPSSE : user_xfeatures;
+ 
+ 		/*
+-		 * 'user_xfeatures' might have bits clear which are
+-		 * set in header->xfeatures. This represents features that
+-		 * were in init state prior to a signal delivery, and need
+-		 * to be reset back to the init state.  Clear any user
+-		 * feature bits which are set in the kernel buffer to get
+-		 * them back to the init state.
+-		 *
+-		 * Supervisor state is unchanged by input from userspace.
+-		 * Ensure supervisor state bits stay set and supervisor
+-		 * state is not modified.
++		 * Supervisor state has to be preserved. The sigframe
++		 * restore can only modify user features, i.e. @mask
++		 * cannot contain them.
+ 		 */
+-		if (fx_only)
+-			header->xfeatures = XFEATURE_MASK_FPSSE;
+-		else
+-			header->xfeatures &= user_xfeatures |
+-					     xfeatures_mask_supervisor();
++		header->xfeatures &= mask | xfeatures_mask_supervisor();
+ 	}
+ 
+ 	if (use_fxsr()) {
+
