@@ -2,193 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5A13AD60D
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4065B3AD60F
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235188AbhFRXlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 19:41:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235165AbhFRXlM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 19:41:12 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B54C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:39:02 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id s22so16182981ljg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:39:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Tc6KnzldMt7lAUMkOKZvz0InbTpN/HVH+jn+WvW53/E=;
-        b=eL7fdXlfwBHtKxmU60+CMtMA5r/XRaknloeToSvovaCy6C1p3D+StnRGc6RHxSKOyB
-         cbYWJzeNoxiX28R42+0V7Is0XqgT4rJZybOUPajsM5WmZT59S1flesvHNzV55nydgD8i
-         zrq3N45K8cnGIdEvTrRRZAan57g2JQv+zqU+8zH2iOuH2PmKzAgWc/kX/kfhYxIwNKJa
-         5obKI77TLDUM8aw3RbCG8up/2Cdi9EiN+j9Jybf71xqaOyGGi1fq1EdaKDn1VvdWEwre
-         jmbSxEbYJwvYUzhjyRt2W8BKdvi7sHpAfYEOsBn1K0jgoqJXweGTYOdJIR0oFJ1ZJyH9
-         /Erw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Tc6KnzldMt7lAUMkOKZvz0InbTpN/HVH+jn+WvW53/E=;
-        b=sidYSakdfcwYuysEJqfc/bjobdns+XGNnvUiaUn4I1y00A7R3Lpm7Tn6UnVp8NM2kf
-         KwDd1lL5yVt6Tcb9FK9RRdSGOJmBPb9T4zxcZbSLpImcSBKw0apkNGNOfJE3oHa9LSay
-         axVvnbNkd9YiTym+l85nYtUISiFgbDOALLb7k0PWAbNliXMhbPxPUKn3yVFJr17Pnwhk
-         PLSqm/yYhRk5WJm0QkQ3702tF1V/Rb5KscbNUpN2BL+/QVTfrAX7n6VtAn+fdv6daaH1
-         aL6XkpY3EBQ2vAQ5knpQKkItqm2jyHbTpIn3K2j5Tg8eV4xVra7F47t5HbYZslvX9oQS
-         /1/g==
-X-Gm-Message-State: AOAM532DUIc/x+ewkHPk/ywaskrB2tMqgkYj85PoPgskE2Vv21ODOfW4
-        uvrqcmiJBPA4GluOxoPFEIEPKbR8oFbi2JnaZDkUQlqAu+lHIg==
-X-Google-Smtp-Source: ABdhPJyNRAgajgALbhCeexQMXZgno4VB8f7zK8yOADUk0+qMeoNDo2tJ9pGi8pHJ/tzQZNYzH21l23ame2aoIMzBkxY=
-X-Received: by 2002:a05:651c:1108:: with SMTP id d8mr10895928ljo.0.1624059540015;
- Fri, 18 Jun 2021 16:39:00 -0700 (PDT)
+        id S235200AbhFRXmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 19:42:01 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:48442 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231697AbhFRXmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 19:42:00 -0400
+Received: from zn.tnic (p200300ec2f0dd80047b5b1fd1153f566.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:d800:47b5:b1fd:1153:f566])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 69CA71EC056D;
+        Sat, 19 Jun 2021 01:39:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1624059589;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=uzD+CRq9e3tCGtxdW12AZAUDuKDuE835JN1hDqc1yMI=;
+        b=l2Pqz7PImrWy2EtK7Xzf/0TUMV76f0g/36l3T7vSgEO4iGZubtnUgTiGh8nsurwjFnMZtM
+        xEwXUWS8vYDGaZQXODhbF1CypSYU+a9pMb93piPHVstRqkZuokPhXpjgAdK44kBjK6RJXb
+        5kaUs6FFXywBpwfipdfLlRVQrrbB5mI=
+Date:   Sat, 19 Jun 2021 01:39:39 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 03/11] x86/cpufeatures: Add TDX Guest CPU feature
+Message-ID: <YM0uoTnAi7TpU5fF@zn.tnic>
+References: <20210618225755.662725-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210618225755.662725-4-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-References: <ac070cd90c0d45b7a554366f235262fa5c566435.1622716926.git.legion@kernel.org>
- <20210615113222.edzkaqfvrris4nth@wittgenstein> <20210615124715.nzd5we5tl7xc2n2p@example.org>
- <CALvZod7po_fK9JpcUNVrN6PyyP9k=hdcyRfZmHjSVE5r_8Laqw@mail.gmail.com> <87zgvpg4wt.fsf@disp2133>
-In-Reply-To: <87zgvpg4wt.fsf@disp2133>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 18 Jun 2021 16:38:48 -0700
-Message-ID: <CALvZod70DNiWF-jTUHp6pOVtVX9pzdvYXaQ1At3GHtdKD=iTwQ@mail.gmail.com>
-Subject: Re: [PATCH v1] proc: Implement /proc/self/meminfo
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Chris Down <chris@chrisdown.name>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210618225755.662725-4-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 9:17 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> Shakeel Butt <shakeelb@google.com> writes:
->
-> > On Tue, Jun 15, 2021 at 5:47 AM Alexey Gladkov <legion@kernel.org> wrote:
-> >>
-> > [...]
-> >>
-> >> I made the second version of the patch [1], but then I had a conversation
-> >> with Eric W. Biederman offlist. He convinced me that it is a bad idea to
-> >> change all the values in meminfo to accommodate cgroups. But we agreed
-> >> that MemAvailable in /proc/meminfo should respect cgroups limits. This
-> >> field was created to hide implementation details when calculating
-> >> available memory. You can see that it is quite widely used [2].
-> >> So I want to try to move in that direction.
-> >>
-> >> [1] https://git.kernel.org/pub/scm/linux/kernel/git/legion/linux.git/log/?h=patchset/meminfo/v2.0
-> >> [2] https://codesearch.debian.net/search?q=MemAvailable%3A
-> >>
-> >
-> > Please see following two links on the previous discussion on having
-> > per-memcg MemAvailable stat.
-> >
-> > [1] https://lore.kernel.org/linux-mm/alpine.DEB.2.22.394.2006281445210.855265@chino.kir.corp.google.com/
-> > [2] https://lore.kernel.org/linux-mm/alpine.DEB.2.23.453.2007142018150.2667860@chino.kir.corp.google.com/
-> >
-> > MemAvailable itself is an imprecise metric and involving memcg makes
-> > this metric even more weird. The difference of semantics of swap
-> > accounting of v1 and v2 is one source of this weirdness (I have not
-> > checked your patch if it is handling this weirdness). The lazyfree and
-> > deferred split pages are another source.
-> >
-> > So, I am not sure if complicating an already imprecise metric will
-> > make it more useful.
->
-> Making a good guess at how much memory can be allocated without
-> triggering swapping or otherwise stressing the system is something that
-> requires understanding our mm internals.
->
-> To be able to continue changing the mm or even mm policy without
-> introducing regressions in userspace we need to export values that
-> userspace can use.
+On Fri, Jun 18, 2021 at 03:57:47PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> Add CPU feature detection for Trusted Domain Extensions support. TDX
+> feature adds capabilities to keep guest register state and memory
+> isolated from hypervisor.
+> 
+> For TDX guest platforms, executing CPUID(eax=0x21, ecx=0) will return
+> following values in EAX, EBX, ECX and EDX.
+> 
+> EAX:  Maximum sub-leaf number:  0
+> EBX/EDX/ECX:  Vendor string:
+> 
+> EBX =  "Inte"
+> EDX =  "lTDX"
+> ECX =  "    "
+> 
+> So when above condition is true, set X86_FEATURE_TDX_GUEST feature cap
+> bit.
+> 
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> Reviewed-by: Tony Luck <tony.luck@intel.com>
+> ---
+> 
+> Changes since v2:
+>  * Fixed debug prints as per Borislav suggestion.
+> 
+> Changes since v1:
+>  * Fixed commit log issues reported by Borislav.
+>  * Moved header file include to the start of tdx.h.
+>  * Added pr_fmt for TDX.
+>  * Simplified cpuid_has_tdx_guest() implementation as per
+>    Borislav comments.
 
-The issue is the dependence of such exported values on mm internals.
-MM internal code and policy changes will change this value and there
-is a potential of userspace regression.
+From Documentation/process/submitting-patches.rst:
 
->
-> At a first approximation that seems to look like MemAvailable.
->
-> MemAvailable seems to have a good definition.  Roughly the amount of
-> memory that can be allocated without triggering swapping.
+"Both Tested-by and Reviewed-by tags, once received on mailing list from tester
+or reviewer, should be added by author to the applicable patches when sending
+next versions.  However if the patch has changed substantially in following
+version, these tags might not be applicable anymore and thus should be removed.
+Usually removal of someone's Tested-by or Reviewed-by tags should be mentioned
+in the patch changelog (after the '---' separator)."
 
-Nowadays, I don't think MemAvailable giving "amount of memory that can
-be allocated without triggering swapping" is even roughly accurate.
-Actually IMO "without triggering swap" is not something an application
-should concern itself with where refaults from some swap types
-(zswap/swap-on-zram) are much faster than refaults from disk.
+IOW, for the next revisions of your patchsets, you should drop
+Reviewed-by: tags on patches when they've changed more than trivially
+because otherwise those tags have no meaning at all.
 
-> Updated
-> to include not trigger memory cgroup based swapping and I sounds good.
->
-> I don't know if it will work in practice but I think it is worth
-> exploring.
+Also, please take the time to peruse the above document on the kernel
+process while waiting.
 
-I agree.
+Thx.
 
->
-> I do know that hiding the implementation details and providing userspace
-> with information it can directly use seems like the programming model
-> that needs to be explored.  Most programs should not care if they are in
-> a memory cgroup, etc.  Programs, load management systems, and even
-> balloon drivers have a legitimately interest in how much additional load
-> can be placed on a systems memory.
->
+-- 
+Regards/Gruss,
+    Boris.
 
-How much additional load can be placed on a system *until what*. I
-think we should focus more on the "until" part to make the problem
-more tractable.
-
->
-> A version of this that I remember working fairly well is free space
-> on compressed filesystems.  As I recall compressed filesystems report
-> the amount of uncompressed space that is available (an underestimate).
-> This results in the amount of space consumed going up faster than the
-> free space goes down.
->
-> We can't do exactly the same thing with our memory usability estimate,
-> but having our estimate be a reliable underestimate might be enough
-> to avoid problems with reporting too much memory as available to
-> userspace.
->
-> I know that MemAvailable already does that /2 so maybe it is already
-> aiming at being an underestimate.  Perhaps we need some additional
-> accounting to help create a useful metric for userspace as well.
->
-
-The real challenge here is that we are not 100% sure if a page is
-reclaimable until we try to reclaim it. For example we might have file
-lrus filled with lazyfree pages which might have been accessed.
-MemAvailable will show half the size of file lrus but once we try to
-reclaim them, we have to move them back to anon lru and drastic drop
-in MemAvailable.
-
->
-> I don't know the final answer.  I do know that not designing an
-> interface that userspace can use to deal with it's legitimate concerns
-> is sticking our collective heads in the sand and wishing the problem
-> will go away.
-
-I am a bit skeptical that a single interface would be enough but first
-we should formalize what exactly the application wants with some
-concrete use-cases. More specifically, are the applications interested
-in avoiding swapping or OOM or stall?
-
-Second, is the reactive approach acceptable? Instead of an upfront
-number representing the room for growth, how about just grow and
-backoff when some event (oom or stall) which we want to avoid is about
-to happen? This is achievable today for oom and stall with PSI and
-memory.high and it avoids the hard problem of reliably estimating the
-reclaimable memory.
+https://people.kernel.org/tglx/notes-about-netiquette
