@@ -2,96 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D9FD3AC5F3
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 103DF3AC5F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233678AbhFRI0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 04:26:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233627AbhFRI0C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 04:26:02 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99749C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:23:52 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id v9so9778865wrx.6
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:23:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=rmQ6WBzoGVhtUeA3zz6XybkQWUIie1tVypqrqYDVKQA=;
-        b=EGZzsFlkLoWIi5ibSrG+GHza3c8d6tzKH08N/+1SAj20rpjh8y/ms2qSTM65IISQuD
-         PdZAp01iW5y25lsTkqok+e7Kjx4DIbYy4FyspANDB1AoqJEoPekMN5UygjhdlK9Ol/4g
-         NfqAF37g+lrUoCK4I1tyhu0gemIJx/zWJTGZjNdKIjkc8ZNPSDO092NOmCcHcwO82YAC
-         vzmjHyVyTfz+GzVqh6m3vEAOuHqno+KDm3g5JCOnIov4xYcFAUR7CDDeQp6k/dHXAVVH
-         M+PURuJtO50NYasWUoBFqAtiKR9y+rQlYP+C/R+IsdUnSNTu04zjbn/6n+d228V1E8tY
-         rm2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=rmQ6WBzoGVhtUeA3zz6XybkQWUIie1tVypqrqYDVKQA=;
-        b=uJoWphJdGohFhm4KpftIkZ7/8OdGDvSdVaNJjqx/WRdxx2SFSJgWmOkjrDY8f87mXj
-         NGu9uUIsC4DOMp5j55IcbRPr0UyN+V4bDd95CscphZuI1WVKZL8SUrokqMX+vOcz0AfX
-         WU7S7rizi2LTarUTawyHdPgI8go7A/PZJoEbLfObH7yzJbXaEWXQ242iOE1Vt+TmeuY+
-         oIpM1BDYomXKfbVQ4UHPKeQUVRqZ+hR78DWJha6vW69vw5RDvTHxJTKFeyaELPNWYNt8
-         8XcO5Zu5X/kT7y1JvVZtnbcmbH8XpdNlXjOivlzzosoar5aeOOrSqz6GoJq5+7uFe7xR
-         RGUQ==
-X-Gm-Message-State: AOAM533knXhApub73fR0wtD4qck+HX6ah4V5S4WM4K938xrSW1XwdHQP
-        HGClcVtczqWFEjWmHq8ZF4KwtQ==
-X-Google-Smtp-Source: ABdhPJwwv4MjlcpmpDwK5BWwm6nCOzQ2kfK3F9vK09ohlA10+038mjZpaNDZsUJpJmscpesPur8ltQ==
-X-Received: by 2002:a5d:6082:: with SMTP id w2mr10989472wrt.209.1624004631254;
-        Fri, 18 Jun 2021 01:23:51 -0700 (PDT)
-Received: from dell ([91.110.221.170])
-        by smtp.gmail.com with ESMTPSA id n7sm9758380wmq.37.2021.06.18.01.23.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 01:23:50 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 09:23:49 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] arm64: KVM: Bump debugging information print down to
- KERN_DEBUG
-Message-ID: <YMxYFbuC4Ka1PNDb@dell>
-References: <20210617073059.315542-1-lee.jones@linaro.org>
- <162396615830.1467937.16143448603491809431.b4-ty@kernel.org>
+        id S233688AbhFRI0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 04:26:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39602 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233482AbhFRI0b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 04:26:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 14DEF6121D;
+        Fri, 18 Jun 2021 08:24:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624004660;
+        bh=dQlXw02WjtEp60rXOsyReBjH983jfBdDxnwT9fris78=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Yi7uGHy9jWppcgvLScuztJm2kqpZWNcsA8nZ/Uvu0VYvJnlpICDFlrU5f5jgjf7cs
+         RQ1dBxSFxIbOc6zff0iNDM+dgUhY7UQA50aIrmegUa9Hg+ttUINxkWeS3pqhN0dFtV
+         7FeHHuyQ2ncP6HP8DJJWiYXMuKZ1R1b8DUc8zIZU=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 5.4.127
+Date:   Fri, 18 Jun 2021 10:24:16 +0200
+Message-Id: <1624004657231172@kroah.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <162396615830.1467937.16143448603491809431.b4-ty@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Jun 2021, Will Deacon wrote:
+I'm announcing the release of the 5.4.127 kernel.
 
-> On Thu, 17 Jun 2021 08:30:59 +0100, Lee Jones wrote:
-> > This sort of information is only generally useful when debugging.
-> > 
-> > No need to have these sprinkled through the kernel log otherwise.
-> 
-> Not sure why this has "KVM" in the subject, so I replaced it with "smp".
+All users of the 5.4 kernel series must upgrade.
 
-Mea culpa.  Looks like I stole it from the wrong:
+The updated 5.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-  `git log --oneline -- arch/arm64/kernel/smp.c`
+thanks,
 
-> Applied to arm64 (for-next/misc), thanks!
-> 
-> [1/1] arm64: smp: Bump debugging information print down to KERN_DEBUG
->       https://git.kernel.org/arm64/c/cf814bcfa1e6
-> 
-> Cheers,
+greg k-h
 
-Thanking you.
+------------
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+ Makefile                                              |    2 -
+ arch/arm/mach-omap2/board-n8x0.c                      |    2 -
+ arch/riscv/Makefile                                   |    9 ++++++++
+ drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c |    2 -
+ drivers/gpu/drm/tegra/sor.c                           |   14 +++++++++---
+ drivers/hid/hid-core.c                                |    3 ++
+ drivers/hid/hid-debug.c                               |    1 
+ drivers/hid/hid-gt683r.c                              |    1 
+ drivers/hid/hid-ids.h                                 |    2 +
+ drivers/hid/hid-input.c                               |    3 ++
+ drivers/hid/hid-multitouch.c                          |    8 +++----
+ drivers/hid/hid-quirks.c                              |    2 +
+ drivers/hid/hid-sensor-hub.c                          |   13 ++++++++---
+ drivers/hid/usbhid/hid-core.c                         |    2 -
+ drivers/net/ethernet/myricom/myri10ge/myri10ge.c      |    1 
+ drivers/nvme/target/loop.c                            |    5 +++-
+ drivers/scsi/qedf/qedf_main.c                         |   20 ++++++++----------
+ drivers/scsi/scsi_devinfo.c                           |    1 
+ drivers/target/target_core_transport.c                |    4 ---
+ fs/gfs2/file.c                                        |    5 +++-
+ fs/gfs2/glock.c                                       |    2 -
+ include/linux/hid.h                                   |    3 --
+ include/uapi/linux/input-event-codes.h                |    1 
+ net/compat.c                                          |    2 -
+ net/core/fib_rules.c                                  |    2 -
+ net/core/rtnetlink.c                                  |    4 ++-
+ net/ieee802154/nl802154.c                             |    9 ++++----
+ net/ipv4/ipconfig.c                                   |   13 +++++++----
+ net/x25/af_x25.c                                      |    2 -
+ 29 files changed, 90 insertions(+), 48 deletions(-)
+
+Ahelenia Ziemiańska (1):
+      HID: multitouch: set Stylus suffix for Stylus-application devices, too
+
+Andreas Gruenbacher (1):
+      gfs2: Prevent direct-I/O write fallback errors from getting lost
+
+Anirudh Rayabharam (1):
+      HID: usbhid: fix info leak in hid_submit_ctrl
+
+Bindu Ramamurthy (1):
+      drm/amd/display: Allow bandwidth validation for 0 streams.
+
+Bixuan Cui (1):
+      HID: gt683r: add missing MODULE_DEVICE_TABLE
+
+Dan Robertson (1):
+      net: ieee802154: fix null deref in parse dev addr
+
+Daniel Wagner (1):
+      scsi: qedf: Do not put host in qedf_vport_create() unconditionally
+
+Dmitry Torokhov (1):
+      HID: hid-input: add mapping for emoji picker key
+
+Ewan D. Milne (1):
+      scsi: scsi_devinfo: Add blacklist entry for HPE OPEN-V
+
+Greg Kroah-Hartman (1):
+      Linux 5.4.127
+
+Hannes Reinecke (3):
+      nvme-loop: reset queue count to 1 in nvme_loop_destroy_io_queues()
+      nvme-loop: clear NVME_LOOP_Q_LIVE when nvme_loop_configure_admin_queue() fails
+      nvme-loop: check for NVME_LOOP_Q_LIVE in nvme_loop_destroy_admin_queue()
+
+Hillf Danton (1):
+      gfs2: Fix use-after-free in gfs2_glock_shrink_scan
+
+Jiapeng Chong (2):
+      ethernet: myri10ge: Fix missing error code in myri10ge_probe()
+      rtnetlink: Fix missing error code in rtnl_bridge_notify()
+
+Josh Triplett (1):
+      net: ipconfig: Don't override command-line hostnames or domains
+
+Khem Raj (1):
+      riscv: Use -mno-relax when using lld linker
+
+Mark Bolhuis (1):
+      HID: Add BUS_VIRTUAL to hid_connect logging
+
+Maurizio Lombardi (1):
+      scsi: target: core: Fix warning on realtime kernels
+
+Nirenjan Krishnan (1):
+      HID: quirks: Set INCREMENT_USAGE_ON_DUPLICATE for Saitek X65
+
+Pavel Machek (CIP) (1):
+      drm/tegra: sor: Do not leak runtime PM reference
+
+Saeed Mirzamohammadi (1):
+      HID: quirks: Add quirk for Lenovo optical mouse
+
+Srinivas Pandruvada (1):
+      HID: hid-sensor-hub: Return error for hid_set_field() failure
+
+Yongqiang Liu (1):
+      ARM: OMAP2+: Fix build warning when mmc_omap is not built
+
+Zheng Yongjun (3):
+      net/x25: Return the correct errno code
+      net: Return the correct errno code
+      fib: Return the correct errno code
+
