@@ -2,141 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6593ACCB8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E01203ACCBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234047AbhFRNwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:52:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37429 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233615AbhFRNwE (ORCPT
+        id S234090AbhFRNw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231855AbhFRNw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:52:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624024194;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6HoUIMXGDRyxX15B0OSH99zC37qr5ecUlX8BEKoHItE=;
-        b=iHjXmatj1Y2LMIxRCwnCI3KuYPrejDjAJ3vz9gNI2NVNlDMeb7P/XGb98sAnD028FO8GKp
-        IM8KnKIkaB4DBpE1liFcwH//c8KG30AyZ8+BRZNMAW+kQCEie2UGGdCiZoG0hSQsfohGFp
-        /A8UNy4FebMLOuDOo+JhgOFEmTv0O58=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-330-us7MU0pDNTCrk9U1oyOOxA-1; Fri, 18 Jun 2021 09:49:53 -0400
-X-MC-Unique: us7MU0pDNTCrk9U1oyOOxA-1
-Received: by mail-wr1-f71.google.com with SMTP id l6-20020a0560000226b029011a80413b4fso1101272wrz.23
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:49:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6HoUIMXGDRyxX15B0OSH99zC37qr5ecUlX8BEKoHItE=;
-        b=hGWb69iDFer6WYp3HYkoToclQaDY1deTqf4KhhCDELVBrVlsYwkc334JbUXgr6dl1P
-         ezl865HCtl3c3p4/A5jeDiwSNaJ8TyvQP3g3zooPQ7xbZiZE9mf+hmzA7YpmOoPnIWu4
-         YKTFRkqnoSRYR24sznrAtDmBTrBbKZNaxX65Vog0k4gkV5CJPdw+BgNVwc+umnEi6hXm
-         Au+BMYdQBcGAfQykvfAQsgdMMImSmyneA7FnuwHZMw2+A0PIkS2AZtS2cgYBaYeiwihb
-         c8cGTF8rhQyP+HLhzP3jRPMqyekFz+O2YPp2rxEJwe4TCm9KCVm4prY6ih2fOqnOlWbI
-         0vrw==
-X-Gm-Message-State: AOAM531N8O/dHll4bDwXZRQCvbMCCNdC/qVN5la81b24FMgzYsQ9GFD5
-        SjmMX5R5AodCSWFwWW3VQGzqqGpfGI5MeB6Y4RQxbvw3ZNWH27EaqiitFP4Qr52TDXl1iG8sZM3
-        B0JVbR5gseuGBIR+GDCHsyWl+
-X-Received: by 2002:a7b:ce95:: with SMTP id q21mr11631724wmj.59.1624024191916;
-        Fri, 18 Jun 2021 06:49:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx0yMkDjr+tukARGep0TvBKEJk88iUPh4P+McQ1eT/TSNVb46YaflNZmxNuwGdGDQ4lDKQjQg==
-X-Received: by 2002:a7b:ce95:: with SMTP id q21mr11631713wmj.59.1624024191719;
-        Fri, 18 Jun 2021 06:49:51 -0700 (PDT)
-Received: from redhat.com ([77.126.22.11])
-        by smtp.gmail.com with ESMTPSA id r6sm8645754wrt.21.2021.06.18.06.49.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 06:49:48 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 09:49:44 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     patchwork-bot+netdevbpf@kernel.org
-Cc:     Arseny Krasnov <arseny.krasnov@kaspersky.com>, stefanha@redhat.com,
-        sgarzare@redhat.com, jasowang@redhat.com, davem@davemloft.net,
-        kuba@kernel.org, andraprs@amazon.com, nslusarek@gmx.net,
-        colin.king@canonical.com, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, oxffffaa@gmail.com
-Subject: Re: [PATCH v11 00/18] virtio/vsock: introduce SOCK_SEQPACKET support
-Message-ID: <20210618094746-mutt-send-email-mst@kernel.org>
-References: <20210611110744.3650456-1-arseny.krasnov@kaspersky.com>
- <162344521373.30951.11000282953901961373.git-patchwork-notify@kernel.org>
+        Fri, 18 Jun 2021 09:52:57 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4092C061574;
+        Fri, 18 Jun 2021 06:50:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ewwK7sg1H70Jke6Z5DisBb+g+MN1RA6uvk0li+GYvDw=; b=pzlu4L3D71tGoinu8Rd1rBqER+
+        uBcmcBdM4dRVw+a9JlVbz/puS2EwW4hf8qENTtZ211JLmTYykx2oWnNVRzEU5LD1Rejgu9t9i6gkC
+        KGRd1yDlp50zgjz4UWOiIV4/kd2i02PrvhriGWGHuRJUsZWBQjfRe8P24gTDvKnr5dLSyjL63Uoi6
+        hOWh9kvFmMbTSyiQTx0p6HeVKKQHNLhiQCnPcOtllMAnHUSQwExqiOB0pTnU0RnfSnFxXrx1gKc56
+        yaXM1bCMFUHLCY8Bt5O7G2YC4IF9pxI7SjXK1ffg7mHnzN5O3LouHVh5clIdd3UVEVsYtG671UuPp
+        Yf65JvQg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1luEsi-00AK2X-CO; Fri, 18 Jun 2021 13:50:03 +0000
+Date:   Fri, 18 Jun 2021 14:50:00 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Jann Horn <jannh@google.com>, John Hubbard <jhubbard@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Jan Kara <jack@suse.cz>, stable <stable@vger.kernel.org>
+Subject: Re: [PATCH v2] mm/gup: fix try_grab_compound_head() race with
+ split_huge_page()
+Message-ID: <YMykiGuZYMqF7DuU@casper.infradead.org>
+References: <20210615012014.1100672-1-jannh@google.com>
+ <50d828d1-2ce6-21b4-0e27-fb15daa77561@nvidia.com>
+ <CAG48ez3Vbcvh4AisU7=ukeJeSjHGTKQVd0NOU6XOpRru7oP_ig@mail.gmail.com>
+ <20210618132556.GY1096940@ziepe.ca>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <162344521373.30951.11000282953901961373.git-patchwork-notify@kernel.org>
+In-Reply-To: <20210618132556.GY1096940@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11, 2021 at 09:00:13PM +0000, patchwork-bot+netdevbpf@kernel.org wrote:
-> Hello:
-> 
-> This series was applied to netdev/net-next.git (refs/heads/master):
-> 
-> On Fri, 11 Jun 2021 14:07:40 +0300 you wrote:
-> > This patchset implements support of SOCK_SEQPACKET for virtio
-> > transport.
-> > 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
-> > do it, new bit for field 'flags' was added: SEQ_EOR. This bit is
-> > set to 1 in last RW packet of message.
-> > 	Now as  packets of one socket are not reordered neither on vsock
-> > nor on vhost transport layers, such bit allows to restore original
-> > message on receiver's side. If user's buffer is smaller than message
-> > length, when all out of size data is dropped.
-> > 	Maximum length of datagram is limited by 'peer_buf_alloc' value.
-> > 	Implementation also supports 'MSG_TRUNC' flags.
-> > 	Tests also implemented.
+On Fri, Jun 18, 2021 at 10:25:56AM -0300, Jason Gunthorpe wrote:
+> On Tue, Jun 15, 2021 at 02:09:38PM +0200, Jann Horn wrote:
+> > On Tue, Jun 15, 2021 at 8:37 AM John Hubbard <jhubbard@nvidia.com> wrote:
+> > > On 6/14/21 6:20 PM, Jann Horn wrote:
+> > > > @@ -55,8 +72,23 @@ static inline struct page *try_get_compound_head(struct page *page, int refs)
+> > > >       if (WARN_ON_ONCE(page_ref_count(head) < 0))
+> > > >               return NULL;
+> > > >       if (unlikely(!page_cache_add_speculative(head, refs)))
+> > > >               return NULL;
+> > > > +
+> > > > +     /*
+> > > > +      * At this point we have a stable reference to the head page; but it
+> > > > +      * could be that between the compound_head() lookup and the refcount
+> > > > +      * increment, the compound page was split, in which case we'd end up
+> > > > +      * holding a reference on a page that has nothing to do with the page
+> > > > +      * we were given anymore.
+> > > > +      * So now that the head page is stable, recheck that the pages still
+> > > > +      * belong together.
+> > > > +      */
+> > > > +     if (unlikely(compound_head(page) != head)) {
+> > >
+> > > I was just wondering about what all could happen here. Such as: page gets split,
+> > > reallocated into a different-sized compound page, one that still has page pointing
+> > > to head. I think that's OK, because we don't look at or change other huge page
+> > > fields.
+> > >
+> > > But I thought I'd mention the idea in case anyone else has any clever ideas about
+> > > how this simple check might be insufficient here. It seems fine to me, but I
+> > > routinely lack enough imagination about concurrent operations. :)
 > > 
-> > [...]
+> > Hmmm... I think the scariest aspect here is probably the interaction
+> > with concurrent allocation of a compound page on architectures with
+> > store-store reordering (like ARM). *If* the page allocator handled
+> > compound pages with lockless, non-atomic percpu freelists, I think it
+> > might be possible that the zeroing of tail_page->compound_head in
+> > put_page() could be reordered after the page has been freed,
+> > reallocated and set to refcount 1 again?
 > 
-> Here is the summary with links:
->   - [v11,01/18] af_vsock: update functions for connectible socket
->     https://git.kernel.org/netdev/net-next/c/a9e29e5511b9
->   - [v11,02/18] af_vsock: separate wait data loop
->     https://git.kernel.org/netdev/net-next/c/b3f7fd54881b
->   - [v11,03/18] af_vsock: separate receive data loop
->     https://git.kernel.org/netdev/net-next/c/19c1b90e1979
->   - [v11,04/18] af_vsock: implement SEQPACKET receive loop
->     https://git.kernel.org/netdev/net-next/c/9942c192b256
->   - [v11,05/18] af_vsock: implement send logic for SEQPACKET
->     https://git.kernel.org/netdev/net-next/c/fbe70c480796
->   - [v11,06/18] af_vsock: rest of SEQPACKET support
->     https://git.kernel.org/netdev/net-next/c/0798e78b102b
->   - [v11,07/18] af_vsock: update comments for stream sockets
->     https://git.kernel.org/netdev/net-next/c/8cb48554ad82
->   - [v11,08/18] virtio/vsock: set packet's type in virtio_transport_send_pkt_info()
->     https://git.kernel.org/netdev/net-next/c/b93f8877c1f2
->   - [v11,09/18] virtio/vsock: simplify credit update function API
->     https://git.kernel.org/netdev/net-next/c/c10844c59799
->   - [v11,10/18] virtio/vsock: defines and constants for SEQPACKET
->     https://git.kernel.org/netdev/net-next/c/f07b2a5b04d4
->   - [v11,11/18] virtio/vsock: dequeue callback for SOCK_SEQPACKET
->     https://git.kernel.org/netdev/net-next/c/44931195a541
->   - [v11,12/18] virtio/vsock: add SEQPACKET receive logic
->     https://git.kernel.org/netdev/net-next/c/e4b1ef152f53
->   - [v11,13/18] virtio/vsock: rest of SOCK_SEQPACKET support
->     https://git.kernel.org/netdev/net-next/c/9ac841f5e9f2
->   - [v11,14/18] virtio/vsock: enable SEQPACKET for transport
->     https://git.kernel.org/netdev/net-next/c/53efbba12cc7
->   - [v11,15/18] vhost/vsock: support SEQPACKET for transport
->     https://git.kernel.org/netdev/net-next/c/ced7b713711f
->   - [v11,16/18] vsock/loopback: enable SEQPACKET for transport
->     https://git.kernel.org/netdev/net-next/c/6e90a57795aa
->   - [v11,17/18] vsock_test: add SOCK_SEQPACKET tests
->     https://git.kernel.org/netdev/net-next/c/41b792d7a86d
->   - [v11,18/18] virtio/vsock: update trace event for SEQPACKET
->     https://git.kernel.org/netdev/net-next/c/184039eefeae
-
-Hmm so the virtio part was merged before the spec is ready.
-What's the plan now?
-
-
-> You are awesome, thank you!
-> --
-> Deet-doot-dot, I am a bot.
-> https://korg.docs.kernel.org/patchwork/pwbot.html
+> Oh wow, yes, this all looks sketchy! Doing a RCU access to page->head
+> is a really challenging thing :\
 > 
+> On the simplified store side:
+> 
+>   page->head = my_compound
+>   *ptep = page
+> 
+> There must be some kind of release barrier between those two
+> operations or this is all broken.. That definately deserves a comment.
 
+set_compound_head() includes a WRITE_ONCE.  Is that enough, or does it
+need an smp_wmb()?
+
+> Ideally we'd use smp_store_release to install the *pte :\
+> 
+> Assuming we cover the release barrier, I would think the algorithm
+> should be broadly:
+> 
+>  struct page *target_page = READ_ONCE(pte)
+>  struct page *target_folio = READ_ONCE(target_page->head)
+
+compound_head() includes a READ_ONCE already.
+
+>  page_cache_add_speculative(target_folio, refs)
+
+That's spelled folio_ref_try_add_rcu() right now.
+
+>  if (target_folio != READ_ONCE(target_page->head) ||
+>      target_page != READ_ONCE(pte))
+>     goto abort
+> 
+> Which is what this patch does but I would like to see the
+> READ_ONCE's.
+
+... you want them to be uninlined from compound_head(), et al?
+
+> And there possibly should be two try_grab_compound_head()'s since we
+> don't need this overhead on the fully locked path, especially the
+> double atomic on page_ref_add()
+
+There's only one atomic on page_ref_add().  And you need more of this
+overhead on the fully locked path than you realise; the page might be
+split without holding the mmap_sem, for example.
+
+> > I think the lockless page cache code also has to deal with somewhat
+> > similar ordering concerns when it uses page_cache_get_speculative(),
+> > e.g. in mapping_get_entry() - first it looks up a page pointer with
+> > xas_load(), and any access to the page later on would be a _dependent
+> > load_, but if the page then gets freed, reallocated, and inserted into
+> > the page cache again before the refcount increment and the re-check
+> > using xas_reload(), then there would be no data dependency from
+> > xas_reload() to the following use of the page...
+> 
+> xas_store() should have the smp_store_release() inside it at least..
+> 
+> Even so it doesn't seem to do page->head, so this is not quite the
+> same thing
+
+The page cache only stores head pages, so it's a little simpler than
+lookup from PTE.  I have ideas for making PFN->folio lookup go directly
+to the folio without passing through a page on the way, but that's for
+much, much later.
