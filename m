@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6023ACED5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A66293ACED6
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235444AbhFRP17 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:27:59 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56444 "EHLO
+        id S235454AbhFRP2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:28:00 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56768 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235086AbhFRPX0 (ORCPT
+        with ESMTP id S235293AbhFRPX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:23:26 -0400
-Message-Id: <20210618143451.325530702@linutronix.de>
+        Fri, 18 Jun 2021 11:23:28 -0400
+Message-Id: <20210618143451.442467526@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624029633;
+        s=2020; t=1624029634;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=U/j+bLAYpwYzPFYIEqs7Lp0XE+O/VWJCLTVgfMDK3x8=;
-        b=jXQGKyHKihkT+bLlTIXCN13EhtcgRZHislSegJaPdoEkLVv/GdlpFMqisq8BtXcOiGRz+F
-        aZM9D/WITmn1mr7MK0mT//xbzinXbUk183SihQwM4H9BDB1JM+N3BhxZwRWFA3TM7Px+ao
-        3pdrmSVzrf9xFwX05TFm1F2qW3FLW1D6kmjXTNpyLbrFSFd3/hGNmNRNwZbSssBhY5cTNI
-        ovP3Zwbq/ecBgsRilN507lnDGqkOf3hDSkqrEACaZmj8uFJglckXq7vAaBQhtuSLrcGP19
-        NB7uNFAz2/loR1aqDfqVxBAiMd70VG/cAkYh+Xdh9u80D7LdiLS/kkEuO5n8jA==
+        bh=G8iaiN0Nz3z/S/4NxUHUVDR+5LdmMYCqLA5fWAwGTu0=;
+        b=ZRn0qL+6esKN1u2T1Zp+oFgST3gVZaNsX3OZy1duZur9fon+WjJF1blrY50Nn39So6bigq
+        iknJdAu6oR54DVDF2roY8NeuIbCh6kIaXzcRO2Y67z4cawQ2+ErJUUOiaB+OVYbuqfmGHj
+        xDiZHrnE74ElrpZ8X0UO6bS/TfxU2JLyZkx8e7D5SH9bdVoptdKPOrFGmu0x1IkQGFB5ZX
+        Xp0nXR8hWbDwe08SoUuRDGCnJez49Xr9nr5ZsoQ8UwJGTC+0cs6qQlNH5Fc3MvJZEhIqUE
+        e38p15LXziRfvtIG+DdBIIPmSNE76ukALILVPugVeIdpcURGyG5sHRvUC8H9NQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624029633;
+        s=2020e; t=1624029634;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=U/j+bLAYpwYzPFYIEqs7Lp0XE+O/VWJCLTVgfMDK3x8=;
-        b=/tOIgUri/5FOGbLUKkAIotyBiAytaXj9+nw1uINMEzkpmNmmhWZ0RZ66IpBgf2KuJx5ikW
-        EKRJxZxIuQTs3LBg==
-Date:   Fri, 18 Jun 2021 16:19:24 +0200
+        bh=G8iaiN0Nz3z/S/4NxUHUVDR+5LdmMYCqLA5fWAwGTu0=;
+        b=XuSu6WaiA8TmdMwgLPwvRt8c3hR85mOe/NGsqQlElhMXavXnG553vPCqkmzDB62GBhgT19
+        8WNhWR0yoiSMvDAA==
+Date:   Fri, 18 Jun 2021 16:19:25 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -44,7 +44,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V3 61/66] x86/fpu/signal: Sanitize the xstate check on sigframe
+Subject: [patch V3 62/66] x86/fpu/signal: Sanitize copy_user_to_fpregs_zeroing()
 References: <20210618141823.161158090@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,155 +53,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Utilize the check for the extended state magic in the FX software reserved
-bytes and set the parameters for restoring fx_only in the relevant members
-of fw_sw_user.
+Now that user_xfeatures is correctly set when xsave is enabled, remove the
+duplicated initialization of components.
 
-This allows further cleanups on top because the data is consistent.
+Rename the function while at it.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/kernel/fpu/signal.c |   69 +++++++++++++++++++------------------------
- 1 file changed, 32 insertions(+), 37 deletions(-)
+ arch/x86/kernel/fpu/signal.c |   36 +++++++++++++++---------------------
+ 1 file changed, 15 insertions(+), 21 deletions(-)
 
 --- a/arch/x86/kernel/fpu/signal.c
 +++ b/arch/x86/kernel/fpu/signal.c
-@@ -15,29 +15,29 @@
- #include <asm/sigframe.h>
- #include <asm/trace/fpu.h>
- 
--static struct _fpx_sw_bytes fx_sw_reserved, fx_sw_reserved_ia32;
-+static struct _fpx_sw_bytes fx_sw_reserved, fx_sw_reserved_ia32 __ro_after_init;
- 
- /*
-  * Check for the presence of extended state information in the
-  * user fpstate pointer in the sigcontext.
-  */
--static inline int check_for_xstate(struct fxregs_state __user *buf,
--				   void __user *fpstate,
--				   struct _fpx_sw_bytes *fx_sw)
-+static inline int check_xstate_in_sigframe(struct fxregs_state __user *fxbuf,
-+					   struct _fpx_sw_bytes *fx_sw)
- {
- 	int min_xstate_size = sizeof(struct fxregs_state) +
- 			      sizeof(struct xstate_header);
-+	void __user *fpstate = fxbuf;
- 	unsigned int magic2;
- 
--	if (__copy_from_user(fx_sw, &buf->sw_reserved[0], sizeof(*fx_sw)))
--		return -1;
-+	if (__copy_from_user(fx_sw, &fxbuf->sw_reserved[0], sizeof(*fx_sw)))
-+		return -EFAULT;
- 
- 	/* Check for the first magic field and other error scenarios. */
- 	if (fx_sw->magic1 != FP_XSTATE_MAGIC1 ||
- 	    fx_sw->xstate_size < min_xstate_size ||
- 	    fx_sw->xstate_size > fpu_user_xstate_size ||
- 	    fx_sw->xstate_size > fx_sw->extended_size)
--		return -1;
-+		goto setfx;
- 
- 	/*
- 	 * Check for the presence of second magic word at the end of memory
-@@ -45,10 +45,18 @@ static inline int check_for_xstate(struc
- 	 * fpstate layout with out copying the extended state information
- 	 * in the memory layout.
- 	 */
--	if (__get_user(magic2, (__u32 __user *)(fpstate + fx_sw->xstate_size))
--	    || magic2 != FP_XSTATE_MAGIC2)
--		return -1;
-+	if (__get_user(magic2, (__u32 __user *)(fpstate + fx_sw->xstate_size)))
-+		return -EFAULT;
- 
-+	if (likely(magic2 == FP_XSTATE_MAGIC2))
-+		return 0;
-+setfx:
-+	trace_x86_fpu_xstate_check_failed(&current->thread.fpu);
-+
-+	/* Set the parameters for fx only state */
-+	fx_sw->magic1 = 0;
-+	fx_sw->xstate_size = sizeof(struct fxregs_state);
-+	fx_sw->xfeatures = XFEATURE_MASK_FPSSE;
- 	return 0;
+@@ -250,33 +250,27 @@ sanitize_restored_user_xstate(union fpre
  }
  
-@@ -213,21 +221,15 @@ int copy_fpstate_to_sigframe(void __user
- 
- static inline void
- sanitize_restored_user_xstate(union fpregs_state *state,
--			      struct user_i387_ia32_struct *ia32_env,
--			      u64 user_xfeatures, int fx_only)
-+			      struct user_i387_ia32_struct *ia32_env, u64 mask)
+ /*
+- * Restore the extended state if present. Otherwise, restore the FP/SSE state.
++ * Restore the FPU state directly from the userspace signal frame.
+  */
+-static int copy_user_to_fpregs_zeroing(void __user *buf, u64 xbv, int fx_only)
++static int restore_fpregs_from_user(void __user *buf, u64 xrestore, bool fx_only)
  {
- 	struct xregs_state *xsave = &state->xsave;
- 	struct xstate_header *header = &xsave->header;
- 
- 	if (use_xsave()) {
- 		/*
--		 * Clear all features bit which are not set in
--		 * user_xfeatures and clear all extended features
--		 * for fx_only mode.
--		 */
--		u64 mask = fx_only ? XFEATURE_MASK_FPSSE : user_xfeatures;
+-	u64 init_bv;
+-	int r;
 -
--		/*
-+		 * Clear all features bit which are not set in mask
-+		 *
- 		 * Supervisor state has to be preserved. The sigframe
- 		 * restore can only modify user features, i.e. @mask
- 		 * cannot contain them.
-@@ -286,24 +288,19 @@ static int __fpu_restore_sig(void __user
- 	struct fpu *fpu = &tsk->thread.fpu;
- 	struct user_i387_ia32_struct env;
- 	u64 user_xfeatures = 0;
--	int fx_only = 0;
-+	bool fx_only = false;
- 	int ret = 0;
- 
  	if (use_xsave()) {
- 		struct _fpx_sw_bytes fx_sw_user;
--		if (unlikely(check_for_xstate(buf_fx, buf_fx, &fx_sw_user))) {
--			/*
--			 * Couldn't find the extended state information in the
--			 * memory layout. Restore just the FP/SSE and init all
--			 * the other extended state.
--			 */
--			state_size = sizeof(struct fxregs_state);
--			fx_only = 1;
--			trace_x86_fpu_xstate_check_failed(fpu);
+-		if (fx_only) {
+-			init_bv = xfeatures_mask_uabi() & ~XFEATURE_MASK_FPSSE;
++		u64 init_bv = xfeatures_mask_uabi() & ~xrestore;
++		int ret;
+ 
+-			r = fxrstor_from_user_sigframe(buf);
+-			if (!r)
+-				os_xrstor(&init_fpstate.xsave, init_bv);
+-			return r;
 -		} else {
--			state_size = fx_sw_user.xstate_size;
--			user_xfeatures = fx_sw_user.xfeatures;
+-			init_bv = xfeatures_mask_uabi() & ~xbv;
+-
+-			r = xrstor_from_user_sigframe(buf, xbv);
+-			if (!r && unlikely(init_bv))
+-				os_xrstor(&init_fpstate.xsave, init_bv);
+-			return r;
 -		}
++		if (likely(!fx_only))
++			ret = xrstor_from_user_sigframe(buf, xrestore);
++		else
++			ret = fxrstor_from_user_sigframe(buf);
 +
-+		ret = check_xstate_in_sigframe(buf_fx, &fx_sw_user);
-+		if (unlikely(ret))
-+			return ret;
-+
-+		fx_only = !fx_sw_user.magic1;
-+		state_size = fx_sw_user.xstate_size;
-+		user_xfeatures = fx_sw_user.xfeatures;
- 	}
++		if (!ret && unlikely(init_bv))
++			os_xrstor(&init_fpstate.xsave, init_bv);
++		return ret;
+ 	} else if (use_fxsr()) {
+ 		return fxrstor_from_user_sigframe(buf);
+-	} else
++	} else {
+ 		return frstor_from_user_sigframe(buf);
++	}
+ }
  
- 	if (!ia32_fxstate) {
-@@ -403,8 +400,7 @@ static int __fpu_restore_sig(void __user
- 		if (ret)
- 			return ret;
- 
--		sanitize_restored_user_xstate(&fpu->state, envp, user_xfeatures,
--					      fx_only);
-+		sanitize_restored_user_xstate(&fpu->state, envp, user_xfeatures);
- 
+ static int __fpu_restore_sig(void __user *buf, void __user *buf_fx,
+@@ -313,7 +307,7 @@ static int __fpu_restore_sig(void __user
+ 		 */
  		fpregs_lock();
- 		if (unlikely(init_bv))
-@@ -422,8 +418,7 @@ static int __fpu_restore_sig(void __user
- 		if (ret)
- 			return -EFAULT;
+ 		pagefault_disable();
+-		ret = copy_user_to_fpregs_zeroing(buf_fx, user_xfeatures, fx_only);
++		ret = restore_fpregs_from_user(buf_fx, user_xfeatures, fx_only);
+ 		pagefault_enable();
+ 		if (!ret) {
  
--		sanitize_restored_user_xstate(&fpu->state, envp, user_xfeatures,
--					      fx_only);
-+		sanitize_restored_user_xstate(&fpu->state, envp, user_xfeatures);
- 
- 		fpregs_lock();
- 		if (use_xsave()) {
 
