@@ -2,632 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483A83AC5FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:24:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F813AC5FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233730AbhFRI0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 04:26:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39648 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233482AbhFRI0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 04:26:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DAF996121D;
-        Fri, 18 Jun 2021 08:24:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624004665;
-        bh=bxGBhuaHfSdDlkCQKxEFzCCuBGRRluIWKOI3cF4QRSM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ItMemIaTWrdUc/lo9krZX5L/HNJYvFrBXw97LfJkVjpS4X0zQz+VXf+B6hrcOVxQo
-         AGKCpQ04uIiBo5xvaoc5Tu2MPGOM5YBNIw6Hmqttd1chITvMLuasPbD+ny9wnz6/D/
-         zbSFpYaMuqX55UDqIvzQCju0ErcyF7hrGkAFpTww=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Linux 5.4.127
-Date:   Fri, 18 Jun 2021 10:24:17 +0200
-Message-Id: <162400465746181@kroah.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <1624004657231172@kroah.com>
-References: <1624004657231172@kroah.com>
+        id S233778AbhFRI0v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 04:26:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233732AbhFRI0h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 04:26:37 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C4EDC061574;
+        Fri, 18 Jun 2021 01:24:28 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G5sQw5VTsz9sRf;
+        Fri, 18 Jun 2021 18:24:24 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624004664;
+        bh=FwPCMp6jNhNLVIMSjr0Qp4GBe17sLfHc8OMJ1/7XnVc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=A3SiUVgj6a6TcdEVupKiAFBinc0FOezvWjUoIgGvDcNSSnG4OvAKDgekg8In+PFbv
+         e9z9vC4CPofzIfPPQG1lJGsGX+sHLkbKtrS43cr7TOsI9ARdrccFLiLs4j87t2JaLd
+         zgBMPRC5EikkDgLNmKM9Y2Ho81eOj8uaUd1MUS4+C+1XnC7+s78E3Zboljc7vv8ddU
+         xFO5YQsgDH7QHtOX5ij3CceLi1k6gIIinIHimlAdf0Z/C/84Rndr4ND/zLtPA3ofp0
+         oOxAsyhhvd2y4dzDxFFeZBFx1iq8sv/y5ammygLtfxYar2ymURjZSsyG7KWnkzgsGN
+         gPzW3ClRbcaGw==
+Date:   Fri, 18 Jun 2021 18:24:20 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the akpm tree
+Message-ID: <20210618182420.5832c08b@canb.auug.org.au>
+In-Reply-To: <20210616230744.34b8682f@canb.auug.org.au>
+References: <20210616230744.34b8682f@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/dE5bM5n4PFAM=Hn6DnMQST/";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-diff --git a/Makefile b/Makefile
-index 184d9e029130..ba10c6811342 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 5
- PATCHLEVEL = 4
--SUBLEVEL = 126
-+SUBLEVEL = 127
- EXTRAVERSION =
- NAME = Kleptomaniac Octopus
- 
-diff --git a/arch/arm/mach-omap2/board-n8x0.c b/arch/arm/mach-omap2/board-n8x0.c
-index 418a61ecb827..5e86145db0e2 100644
---- a/arch/arm/mach-omap2/board-n8x0.c
-+++ b/arch/arm/mach-omap2/board-n8x0.c
-@@ -322,6 +322,7 @@ static int n8x0_mmc_get_cover_state(struct device *dev, int slot)
- 
- static void n8x0_mmc_callback(void *data, u8 card_mask)
- {
-+#ifdef CONFIG_MMC_OMAP
- 	int bit, *openp, index;
- 
- 	if (board_is_n800()) {
-@@ -339,7 +340,6 @@ static void n8x0_mmc_callback(void *data, u8 card_mask)
- 	else
- 		*openp = 0;
- 
--#ifdef CONFIG_MMC_OMAP
- 	omap_mmc_notify_cover_event(mmc_device, index, *openp);
- #else
- 	pr_warn("MMC: notify cover event not available\n");
-diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
-index f5e914210245..1cbe0ad78b0f 100644
---- a/arch/riscv/Makefile
-+++ b/arch/riscv/Makefile
-@@ -34,6 +34,15 @@ else
- 	KBUILD_LDFLAGS += -melf32lriscv
- endif
- 
-+ifeq ($(CONFIG_LD_IS_LLD),y)
-+	KBUILD_CFLAGS += -mno-relax
-+	KBUILD_AFLAGS += -mno-relax
-+ifneq ($(LLVM_IAS),1)
-+	KBUILD_CFLAGS += -Wa,-mno-relax
-+	KBUILD_AFLAGS += -Wa,-mno-relax
-+endif
-+endif
-+
- # ISA string setting
- riscv-march-$(CONFIG_ARCH_RV32I)	:= rv32ima
- riscv-march-$(CONFIG_ARCH_RV64I)	:= rv64ima
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-index 08062de3fbeb..2b1175bb2dae 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_resource.c
-@@ -2917,7 +2917,7 @@ bool dcn20_validate_bandwidth(struct dc *dc, struct dc_state *context,
- 	voltage_supported = dcn20_validate_bandwidth_internal(dc, context, false);
- 	dummy_pstate_supported = context->bw_ctx.bw.dcn.clk.p_state_change_support;
- 
--	if (voltage_supported && dummy_pstate_supported) {
-+	if (voltage_supported && (dummy_pstate_supported || !(context->stream_count))) {
- 		context->bw_ctx.bw.dcn.clk.p_state_change_support = false;
- 		goto restore_dml_state;
- 	}
-diff --git a/drivers/gpu/drm/tegra/sor.c b/drivers/gpu/drm/tegra/sor.c
-index 6c3d22165239..0419b6105c8a 100644
---- a/drivers/gpu/drm/tegra/sor.c
-+++ b/drivers/gpu/drm/tegra/sor.c
-@@ -2875,21 +2875,21 @@ static int tegra_sor_init(struct host1x_client *client)
- 		if (err < 0) {
- 			dev_err(sor->dev, "failed to acquire SOR reset: %d\n",
- 				err);
--			return err;
-+			goto rpm_put;
- 		}
- 
- 		err = reset_control_assert(sor->rst);
- 		if (err < 0) {
- 			dev_err(sor->dev, "failed to assert SOR reset: %d\n",
- 				err);
--			return err;
-+			goto rpm_put;
- 		}
- 	}
- 
- 	err = clk_prepare_enable(sor->clk);
- 	if (err < 0) {
- 		dev_err(sor->dev, "failed to enable clock: %d\n", err);
--		return err;
-+		goto rpm_put;
- 	}
- 
- 	usleep_range(1000, 3000);
-@@ -2900,7 +2900,7 @@ static int tegra_sor_init(struct host1x_client *client)
- 			dev_err(sor->dev, "failed to deassert SOR reset: %d\n",
- 				err);
- 			clk_disable_unprepare(sor->clk);
--			return err;
-+			goto rpm_put;
- 		}
- 
- 		reset_control_release(sor->rst);
-@@ -2929,6 +2929,12 @@ static int tegra_sor_init(struct host1x_client *client)
- 	tegra_sor_writel(sor, value, SOR_INT_MASK);
- 
- 	return 0;
-+
-+rpm_put:
-+	if (sor->rst)
-+		pm_runtime_put(sor->dev);
-+
-+	return err;
- }
- 
- static int tegra_sor_exit(struct host1x_client *client)
-diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
-index 8d202011b2db..550fff6e41ec 100644
---- a/drivers/hid/hid-core.c
-+++ b/drivers/hid/hid-core.c
-@@ -1998,6 +1998,9 @@ int hid_connect(struct hid_device *hdev, unsigned int connect_mask)
- 	case BUS_I2C:
- 		bus = "I2C";
- 		break;
-+	case BUS_VIRTUAL:
-+		bus = "VIRTUAL";
-+		break;
- 	default:
- 		bus = "<UNKNOWN>";
- 	}
-diff --git a/drivers/hid/hid-debug.c b/drivers/hid/hid-debug.c
-index 9453147d020d..01135713e8f9 100644
---- a/drivers/hid/hid-debug.c
-+++ b/drivers/hid/hid-debug.c
-@@ -929,6 +929,7 @@ static const char *keys[KEY_MAX + 1] = {
- 	[KEY_APPSELECT] = "AppSelect",
- 	[KEY_SCREENSAVER] = "ScreenSaver",
- 	[KEY_VOICECOMMAND] = "VoiceCommand",
-+	[KEY_EMOJI_PICKER] = "EmojiPicker",
- 	[KEY_BRIGHTNESS_MIN] = "BrightnessMin",
- 	[KEY_BRIGHTNESS_MAX] = "BrightnessMax",
- 	[KEY_BRIGHTNESS_AUTO] = "BrightnessAuto",
-diff --git a/drivers/hid/hid-gt683r.c b/drivers/hid/hid-gt683r.c
-index 898871c8c768..29ccb0accfba 100644
---- a/drivers/hid/hid-gt683r.c
-+++ b/drivers/hid/hid-gt683r.c
-@@ -54,6 +54,7 @@ static const struct hid_device_id gt683r_led_id[] = {
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_MSI, USB_DEVICE_ID_MSI_GT683R_LED_PANEL) },
- 	{ }
- };
-+MODULE_DEVICE_TABLE(hid, gt683r_led_id);
- 
- static void gt683r_brightness_set(struct led_classdev *led_cdev,
- 				enum led_brightness brightness)
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 1bfa690143d7..6ed6158d4f73 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -741,6 +741,7 @@
- #define USB_DEVICE_ID_LENOVO_X1_COVER	0x6085
- #define USB_DEVICE_ID_LENOVO_X1_TAB	0x60a3
- #define USB_DEVICE_ID_LENOVO_X1_TAB3	0x60b5
-+#define USB_DEVICE_ID_LENOVO_OPTICAL_USB_MOUSE_600E	0x600e
- #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_608D	0x608d
- #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_6019	0x6019
- #define USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_602E	0x602e
-@@ -1028,6 +1029,7 @@
- #define USB_DEVICE_ID_SAITEK_X52	0x075c
- #define USB_DEVICE_ID_SAITEK_X52_2	0x0255
- #define USB_DEVICE_ID_SAITEK_X52_PRO	0x0762
-+#define USB_DEVICE_ID_SAITEK_X65	0x0b6a
- 
- #define USB_VENDOR_ID_SAMSUNG		0x0419
- #define USB_DEVICE_ID_SAMSUNG_IR_REMOTE	0x0001
-diff --git a/drivers/hid/hid-input.c b/drivers/hid/hid-input.c
-index ec08895e7b1d..6d551ae251c0 100644
---- a/drivers/hid/hid-input.c
-+++ b/drivers/hid/hid-input.c
-@@ -957,6 +957,9 @@ static void hidinput_configure_usage(struct hid_input *hidinput, struct hid_fiel
- 
- 		case 0x0cd: map_key_clear(KEY_PLAYPAUSE);	break;
- 		case 0x0cf: map_key_clear(KEY_VOICECOMMAND);	break;
-+
-+		case 0x0d9: map_key_clear(KEY_EMOJI_PICKER);	break;
-+
- 		case 0x0e0: map_abs_clear(ABS_VOLUME);		break;
- 		case 0x0e2: map_key_clear(KEY_MUTE);		break;
- 		case 0x0e5: map_key_clear(KEY_BASSBOOST);	break;
-diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
-index f290ba856323..37270b8f4e58 100644
---- a/drivers/hid/hid-multitouch.c
-+++ b/drivers/hid/hid-multitouch.c
-@@ -1587,13 +1587,13 @@ static int mt_input_configured(struct hid_device *hdev, struct hid_input *hi)
- 		/* we do not set suffix = "Touchscreen" */
- 		hi->input->name = hdev->name;
- 		break;
--	case HID_DG_STYLUS:
--		/* force BTN_STYLUS to allow tablet matching in udev */
--		__set_bit(BTN_STYLUS, hi->input->keybit);
--		break;
- 	case HID_VD_ASUS_CUSTOM_MEDIA_KEYS:
- 		suffix = "Custom Media Keys";
- 		break;
-+	case HID_DG_STYLUS:
-+		/* force BTN_STYLUS to allow tablet matching in udev */
-+		__set_bit(BTN_STYLUS, hi->input->keybit);
-+		fallthrough;
- 	case HID_DG_PEN:
- 		suffix = "Stylus";
- 		break;
-diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
-index f35d919c4eba..efc9d0d28170 100644
---- a/drivers/hid/hid-quirks.c
-+++ b/drivers/hid/hid-quirks.c
-@@ -110,6 +110,7 @@ static const struct hid_device_id hid_quirks[] = {
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_KYE, USB_DEVICE_ID_KYE_PENSKETCH_M912), HID_QUIRK_MULTI_INPUT },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_KYE, USB_DEVICE_ID_KYE_EASYPEN_M406XE), HID_QUIRK_MULTI_INPUT },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_KYE, USB_DEVICE_ID_PIXART_USB_OPTICAL_MOUSE_ID2), HID_QUIRK_ALWAYS_POLL },
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_OPTICAL_USB_MOUSE_600E), HID_QUIRK_ALWAYS_POLL },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_608D), HID_QUIRK_ALWAYS_POLL },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_6019), HID_QUIRK_ALWAYS_POLL },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_LENOVO, USB_DEVICE_ID_LENOVO_PIXART_USB_MOUSE_602E), HID_QUIRK_ALWAYS_POLL },
-@@ -158,6 +159,7 @@ static const struct hid_device_id hid_quirks[] = {
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_SAITEK, USB_DEVICE_ID_SAITEK_X52), HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_SAITEK, USB_DEVICE_ID_SAITEK_X52_2), HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_SAITEK, USB_DEVICE_ID_SAITEK_X52_PRO), HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_SAITEK, USB_DEVICE_ID_SAITEK_X65), HID_QUIRK_INCREMENT_USAGE_ON_DUPLICATE },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_SEMICO, USB_DEVICE_ID_SEMICO_USB_KEYKOARD2), HID_QUIRK_NO_INIT_REPORTS },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_SEMICO, USB_DEVICE_ID_SEMICO_USB_KEYKOARD), HID_QUIRK_NO_INIT_REPORTS },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_SENNHEISER, USB_DEVICE_ID_SENNHEISER_BTD500USB), HID_QUIRK_NOGET },
-diff --git a/drivers/hid/hid-sensor-hub.c b/drivers/hid/hid-sensor-hub.c
-index 3dd7d3246737..f9983145d4e7 100644
---- a/drivers/hid/hid-sensor-hub.c
-+++ b/drivers/hid/hid-sensor-hub.c
-@@ -210,16 +210,21 @@ int sensor_hub_set_feature(struct hid_sensor_hub_device *hsdev, u32 report_id,
- 	buffer_size = buffer_size / sizeof(__s32);
- 	if (buffer_size) {
- 		for (i = 0; i < buffer_size; ++i) {
--			hid_set_field(report->field[field_index], i,
--				      (__force __s32)cpu_to_le32(*buf32));
-+			ret = hid_set_field(report->field[field_index], i,
-+					    (__force __s32)cpu_to_le32(*buf32));
-+			if (ret)
-+				goto done_proc;
-+
- 			++buf32;
- 		}
- 	}
- 	if (remaining_bytes) {
- 		value = 0;
- 		memcpy(&value, (u8 *)buf32, remaining_bytes);
--		hid_set_field(report->field[field_index], i,
--			      (__force __s32)cpu_to_le32(value));
-+		ret = hid_set_field(report->field[field_index], i,
-+				    (__force __s32)cpu_to_le32(value));
-+		if (ret)
-+			goto done_proc;
- 	}
- 	hid_hw_request(hsdev->hdev, report, HID_REQ_SET_REPORT);
- 	hid_hw_wait(hsdev->hdev);
-diff --git a/drivers/hid/usbhid/hid-core.c b/drivers/hid/usbhid/hid-core.c
-index 17a638f15082..1cfbbaf6901d 100644
---- a/drivers/hid/usbhid/hid-core.c
-+++ b/drivers/hid/usbhid/hid-core.c
-@@ -374,7 +374,7 @@ static int hid_submit_ctrl(struct hid_device *hid)
- 	raw_report = usbhid->ctrl[usbhid->ctrltail].raw_report;
- 	dir = usbhid->ctrl[usbhid->ctrltail].dir;
- 
--	len = ((report->size - 1) >> 3) + 1 + (report->id > 0);
-+	len = hid_report_len(report);
- 	if (dir == USB_DIR_OUT) {
- 		usbhid->urbctrl->pipe = usb_sndctrlpipe(hid_to_usb_dev(hid), 0);
- 		usbhid->urbctrl->transfer_buffer_length = len;
-diff --git a/drivers/net/ethernet/myricom/myri10ge/myri10ge.c b/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-index c979f38a2e0c..c4c716094982 100644
---- a/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-+++ b/drivers/net/ethernet/myricom/myri10ge/myri10ge.c
-@@ -3849,6 +3849,7 @@ static int myri10ge_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
- 		dev_err(&pdev->dev,
- 			"invalid sram_size %dB or board span %ldB\n",
- 			mgp->sram_size, mgp->board_span);
-+		status = -EINVAL;
- 		goto abort_with_ioremap;
- 	}
- 	memcpy_fromio(mgp->eeprom_strings,
-diff --git a/drivers/nvme/target/loop.c b/drivers/nvme/target/loop.c
-index 82b87a4c50f6..f657a12bf1fe 100644
---- a/drivers/nvme/target/loop.c
-+++ b/drivers/nvme/target/loop.c
-@@ -252,7 +252,8 @@ static const struct blk_mq_ops nvme_loop_admin_mq_ops = {
- 
- static void nvme_loop_destroy_admin_queue(struct nvme_loop_ctrl *ctrl)
- {
--	clear_bit(NVME_LOOP_Q_LIVE, &ctrl->queues[0].flags);
-+	if (!test_and_clear_bit(NVME_LOOP_Q_LIVE, &ctrl->queues[0].flags))
-+		return;
- 	nvmet_sq_destroy(&ctrl->queues[0].nvme_sq);
- 	blk_cleanup_queue(ctrl->ctrl.admin_q);
- 	blk_cleanup_queue(ctrl->ctrl.fabrics_q);
-@@ -288,6 +289,7 @@ static void nvme_loop_destroy_io_queues(struct nvme_loop_ctrl *ctrl)
- 		clear_bit(NVME_LOOP_Q_LIVE, &ctrl->queues[i].flags);
- 		nvmet_sq_destroy(&ctrl->queues[i].nvme_sq);
- 	}
-+	ctrl->ctrl.queue_count = 1;
- }
- 
- static int nvme_loop_init_io_queues(struct nvme_loop_ctrl *ctrl)
-@@ -394,6 +396,7 @@ static int nvme_loop_configure_admin_queue(struct nvme_loop_ctrl *ctrl)
- 	return 0;
- 
- out_cleanup_queue:
-+	clear_bit(NVME_LOOP_Q_LIVE, &ctrl->queues[0].flags);
- 	blk_cleanup_queue(ctrl->ctrl.admin_q);
- out_cleanup_fabrics_q:
- 	blk_cleanup_queue(ctrl->ctrl.fabrics_q);
-diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
-index 9c0955c334e3..7a6306f8483e 100644
---- a/drivers/scsi/qedf/qedf_main.c
-+++ b/drivers/scsi/qedf/qedf_main.c
-@@ -1729,22 +1729,20 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
- 		fcoe_wwn_to_str(vport->port_name, buf, sizeof(buf));
- 		QEDF_WARN(&(base_qedf->dbg_ctx), "Failed to create vport, "
- 			   "WWPN (0x%s) already exists.\n", buf);
--		goto err1;
-+		return rc;
- 	}
- 
- 	if (atomic_read(&base_qedf->link_state) != QEDF_LINK_UP) {
- 		QEDF_WARN(&(base_qedf->dbg_ctx), "Cannot create vport "
- 			   "because link is not up.\n");
--		rc = -EIO;
--		goto err1;
-+		return -EIO;
- 	}
- 
- 	vn_port = libfc_vport_create(vport, sizeof(struct qedf_ctx));
- 	if (!vn_port) {
- 		QEDF_WARN(&(base_qedf->dbg_ctx), "Could not create lport "
- 			   "for vport.\n");
--		rc = -ENOMEM;
--		goto err1;
-+		return -ENOMEM;
- 	}
- 
- 	fcoe_wwn_to_str(vport->port_name, buf, sizeof(buf));
-@@ -1768,7 +1766,7 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
- 	if (rc) {
- 		QEDF_ERR(&(base_qedf->dbg_ctx), "Could not allocate memory "
- 		    "for lport stats.\n");
--		goto err2;
-+		goto err;
- 	}
- 
- 	fc_set_wwnn(vn_port, vport->node_name);
-@@ -1786,7 +1784,7 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
- 	if (rc) {
- 		QEDF_WARN(&base_qedf->dbg_ctx,
- 			  "Error adding Scsi_Host rc=0x%x.\n", rc);
--		goto err2;
-+		goto err;
- 	}
- 
- 	/* Set default dev_loss_tmo based on module parameter */
-@@ -1827,9 +1825,10 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
- 	vport_qedf->dbg_ctx.host_no = vn_port->host->host_no;
- 	vport_qedf->dbg_ctx.pdev = base_qedf->pdev;
- 
--err2:
-+	return 0;
-+
-+err:
- 	scsi_host_put(vn_port->host);
--err1:
- 	return rc;
- }
- 
-@@ -1870,8 +1869,7 @@ static int qedf_vport_destroy(struct fc_vport *vport)
- 	fc_lport_free_stats(vn_port);
- 
- 	/* Release Scsi_Host */
--	if (vn_port->host)
--		scsi_host_put(vn_port->host);
-+	scsi_host_put(vn_port->host);
- 
- out:
- 	return 0;
-diff --git a/drivers/scsi/scsi_devinfo.c b/drivers/scsi/scsi_devinfo.c
-index fb5a7832353c..7f76bf5cc8a8 100644
---- a/drivers/scsi/scsi_devinfo.c
-+++ b/drivers/scsi/scsi_devinfo.c
-@@ -184,6 +184,7 @@ static struct {
- 	{"HP", "C3323-300", "4269", BLIST_NOTQ},
- 	{"HP", "C5713A", NULL, BLIST_NOREPORTLUN},
- 	{"HP", "DISK-SUBSYSTEM", "*", BLIST_REPORTLUN2},
-+	{"HPE", "OPEN-", "*", BLIST_REPORTLUN2 | BLIST_TRY_VPD_PAGES},
- 	{"IBM", "AuSaV1S2", NULL, BLIST_FORCELUN},
- 	{"IBM", "ProFibre 4000R", "*", BLIST_SPARSELUN | BLIST_LARGELUN},
- 	{"IBM", "2105", NULL, BLIST_RETRY_HWERROR},
-diff --git a/drivers/target/target_core_transport.c b/drivers/target/target_core_transport.c
-index a16835c0bb1d..5cf9e7677926 100644
---- a/drivers/target/target_core_transport.c
-+++ b/drivers/target/target_core_transport.c
-@@ -2993,9 +2993,7 @@ __transport_wait_for_tasks(struct se_cmd *cmd, bool fabric_stop,
- 	__releases(&cmd->t_state_lock)
- 	__acquires(&cmd->t_state_lock)
- {
--
--	assert_spin_locked(&cmd->t_state_lock);
--	WARN_ON_ONCE(!irqs_disabled());
-+	lockdep_assert_held(&cmd->t_state_lock);
- 
- 	if (fabric_stop)
- 		cmd->transport_state |= CMD_T_FABRIC_STOP;
-diff --git a/fs/gfs2/file.c b/fs/gfs2/file.c
-index 4a10b4e7092a..69c52edf5713 100644
---- a/fs/gfs2/file.c
-+++ b/fs/gfs2/file.c
-@@ -875,8 +875,11 @@ static ssize_t gfs2_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 		current->backing_dev_info = inode_to_bdi(inode);
- 		buffered = iomap_file_buffered_write(iocb, from, &gfs2_iomap_ops);
- 		current->backing_dev_info = NULL;
--		if (unlikely(buffered <= 0))
-+		if (unlikely(buffered <= 0)) {
-+			if (!ret)
-+				ret = buffered;
- 			goto out_unlock;
-+		}
- 
- 		/*
- 		 * We need to ensure that the page cache pages are written to
-diff --git a/fs/gfs2/glock.c b/fs/gfs2/glock.c
-index 9e1685a30bf8..01c41087f067 100644
---- a/fs/gfs2/glock.c
-+++ b/fs/gfs2/glock.c
-@@ -1552,6 +1552,7 @@ __acquires(&lru_lock)
- 	while(!list_empty(list)) {
- 		gl = list_entry(list->next, struct gfs2_glock, gl_lru);
- 		list_del_init(&gl->gl_lru);
-+		clear_bit(GLF_LRU, &gl->gl_flags);
- 		if (!spin_trylock(&gl->gl_lockref.lock)) {
- add_back_to_lru:
- 			list_add(&gl->gl_lru, &lru_list);
-@@ -1597,7 +1598,6 @@ static long gfs2_scan_glock_lru(int nr)
- 		if (!test_bit(GLF_LOCK, &gl->gl_flags)) {
- 			list_move(&gl->gl_lru, &dispose);
- 			atomic_dec(&lru_count);
--			clear_bit(GLF_LRU, &gl->gl_flags);
- 			freed++;
- 			continue;
- 		}
-diff --git a/include/linux/hid.h b/include/linux/hid.h
-index ae906deb42e8..85bedeb9ca9f 100644
---- a/include/linux/hid.h
-+++ b/include/linux/hid.h
-@@ -1154,8 +1154,7 @@ static inline void hid_hw_wait(struct hid_device *hdev)
-  */
- static inline u32 hid_report_len(struct hid_report *report)
- {
--	/* equivalent to DIV_ROUND_UP(report->size, 8) + !!(report->id > 0) */
--	return ((report->size - 1) >> 3) + 1 + (report->id > 0);
-+	return DIV_ROUND_UP(report->size, 8) + (report->id > 0);
- }
- 
- int hid_report_raw_event(struct hid_device *hid, int type, u8 *data, u32 size,
-diff --git a/include/uapi/linux/input-event-codes.h b/include/uapi/linux/input-event-codes.h
-index 472cd5bc5567..311a57f3e01a 100644
---- a/include/uapi/linux/input-event-codes.h
-+++ b/include/uapi/linux/input-event-codes.h
-@@ -607,6 +607,7 @@
- #define KEY_VOICECOMMAND		0x246	/* Listening Voice Command */
- #define KEY_ASSISTANT		0x247	/* AL Context-aware desktop assistant */
- #define KEY_KBD_LAYOUT_NEXT	0x248	/* AC Next Keyboard Layout Select */
-+#define KEY_EMOJI_PICKER	0x249	/* Show/hide emoji picker (HUTRR101) */
- 
- #define KEY_BRIGHTNESS_MIN		0x250	/* Set Brightness to Minimum */
- #define KEY_BRIGHTNESS_MAX		0x251	/* Set Brightness to Maximum */
-diff --git a/net/compat.c b/net/compat.c
-index c848bcb517f3..f5b88166c44a 100644
---- a/net/compat.c
-+++ b/net/compat.c
-@@ -160,7 +160,7 @@ int cmsghdr_from_user_compat_to_kern(struct msghdr *kmsg, struct sock *sk,
- 	if (kcmlen > stackbuf_size)
- 		kcmsg_base = kcmsg = sock_kmalloc(sk, kcmlen, GFP_KERNEL);
- 	if (kcmsg == NULL)
--		return -ENOBUFS;
-+		return -ENOMEM;
- 
- 	/* Now copy them over neatly. */
- 	memset(kcmsg, 0, kcmlen);
-diff --git a/net/core/fib_rules.c b/net/core/fib_rules.c
-index bb11fc87bbae..675f27ef6872 100644
---- a/net/core/fib_rules.c
-+++ b/net/core/fib_rules.c
-@@ -1138,7 +1138,7 @@ static void notify_rule_change(int event, struct fib_rule *rule,
- {
- 	struct net *net;
- 	struct sk_buff *skb;
--	int err = -ENOBUFS;
-+	int err = -ENOMEM;
- 
- 	net = ops->fro_net;
- 	skb = nlmsg_new(fib_rule_nlmsg_size(ops, rule), GFP_KERNEL);
-diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-index 73c09b5864d7..bdeb169a7a99 100644
---- a/net/core/rtnetlink.c
-+++ b/net/core/rtnetlink.c
-@@ -4535,8 +4535,10 @@ static int rtnl_bridge_notify(struct net_device *dev)
- 	if (err < 0)
- 		goto errout;
- 
--	if (!skb->len)
-+	if (!skb->len) {
-+		err = -EINVAL;
- 		goto errout;
-+	}
- 
- 	rtnl_notify(skb, net, 0, RTNLGRP_LINK, NULL, GFP_ATOMIC);
- 	return 0;
-diff --git a/net/ieee802154/nl802154.c b/net/ieee802154/nl802154.c
-index 328bb9f5342e..b2ba1d2556f1 100644
---- a/net/ieee802154/nl802154.c
-+++ b/net/ieee802154/nl802154.c
-@@ -1314,19 +1314,20 @@ ieee802154_llsec_parse_dev_addr(struct nlattr *nla,
- 	if (!nla || nla_parse_nested_deprecated(attrs, NL802154_DEV_ADDR_ATTR_MAX, nla, nl802154_dev_addr_policy, NULL))
- 		return -EINVAL;
- 
--	if (!attrs[NL802154_DEV_ADDR_ATTR_PAN_ID] ||
--	    !attrs[NL802154_DEV_ADDR_ATTR_MODE] ||
--	    !(attrs[NL802154_DEV_ADDR_ATTR_SHORT] ||
--	      attrs[NL802154_DEV_ADDR_ATTR_EXTENDED]))
-+	if (!attrs[NL802154_DEV_ADDR_ATTR_PAN_ID] || !attrs[NL802154_DEV_ADDR_ATTR_MODE])
- 		return -EINVAL;
- 
- 	addr->pan_id = nla_get_le16(attrs[NL802154_DEV_ADDR_ATTR_PAN_ID]);
- 	addr->mode = nla_get_u32(attrs[NL802154_DEV_ADDR_ATTR_MODE]);
- 	switch (addr->mode) {
- 	case NL802154_DEV_ADDR_SHORT:
-+		if (!attrs[NL802154_DEV_ADDR_ATTR_SHORT])
-+			return -EINVAL;
- 		addr->short_addr = nla_get_le16(attrs[NL802154_DEV_ADDR_ATTR_SHORT]);
- 		break;
- 	case NL802154_DEV_ADDR_EXTENDED:
-+		if (!attrs[NL802154_DEV_ADDR_ATTR_EXTENDED])
-+			return -EINVAL;
- 		addr->extended_addr = nla_get_le64(attrs[NL802154_DEV_ADDR_ATTR_EXTENDED]);
- 		break;
- 	default:
-diff --git a/net/ipv4/ipconfig.c b/net/ipv4/ipconfig.c
-index 9bcca08efec9..c05ad600a4ff 100644
---- a/net/ipv4/ipconfig.c
-+++ b/net/ipv4/ipconfig.c
-@@ -870,7 +870,7 @@ static void __init ic_bootp_send_if(struct ic_device *d, unsigned long jiffies_d
- 
- 
- /*
-- *  Copy BOOTP-supplied string if not already set.
-+ *  Copy BOOTP-supplied string
-  */
- static int __init ic_bootp_string(char *dest, char *src, int len, int max)
- {
-@@ -919,12 +919,15 @@ static void __init ic_do_bootp_ext(u8 *ext)
- 		}
- 		break;
- 	case 12:	/* Host name */
--		ic_bootp_string(utsname()->nodename, ext+1, *ext,
--				__NEW_UTS_LEN);
--		ic_host_name_set = 1;
-+		if (!ic_host_name_set) {
-+			ic_bootp_string(utsname()->nodename, ext+1, *ext,
-+					__NEW_UTS_LEN);
-+			ic_host_name_set = 1;
-+		}
- 		break;
- 	case 15:	/* Domain name (DNS) */
--		ic_bootp_string(ic_domain, ext+1, *ext, sizeof(ic_domain));
-+		if (!ic_domain[0])
-+			ic_bootp_string(ic_domain, ext+1, *ext, sizeof(ic_domain));
- 		break;
- 	case 17:	/* Root path */
- 		if (!root_server_path[0])
-diff --git a/net/x25/af_x25.c b/net/x25/af_x25.c
-index cb1f5016c433..d8d603aa4887 100644
---- a/net/x25/af_x25.c
-+++ b/net/x25/af_x25.c
-@@ -546,7 +546,7 @@ static int x25_create(struct net *net, struct socket *sock, int protocol,
- 	if (protocol)
- 		goto out;
- 
--	rc = -ENOBUFS;
-+	rc = -ENOMEM;
- 	if ((sk = x25_alloc_socket(net, kern)) == NULL)
- 		goto out;
- 
+--Sig_/dE5bM5n4PFAM=Hn6DnMQST/
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+On Wed, 16 Jun 2021 23:07:44 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> After merging the akpm tree, today's linux-next build (sparc defconfig)
+> failed like this:
+>=20
+> In file included from arch/sparc/include/asm/pgtable.h:7:0,
+>                  from include/linux/pgtable.h:6,
+>                  from include/linux/mm.h:33,
+>                  from include/linux/ring_buffer.h:5,
+>                  from include/linux/trace_events.h:6,
+>                  from include/trace/syscall.h:7,
+>                  from include/linux/syscalls.h:87,
+>                  from fs/io_uring.c:45:
+> arch/sparc/include/asm/pgtable_32.h: In function 'pud_pgtable':
+> arch/sparc/include/asm/pgtable_32.h:157:10: warning: return makes pointer=
+ from integer without a cast [-Wint-conversion]
+>    return ~0;
+>           ^
+>=20
+> and many, many more like this.
+>=20
+> This is an error due to (part of) the tree being built with -Werror
+>=20
+> Caused by commit
+>=20
+>   8aef6710db27 ("mm: rename pud_page_vaddr to pud_pgtable and make it ret=
+urn pmd_t *")
+>=20
+> I have applied the following hack fix for today.
+>=20
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Wed, 16 Jun 2021 22:51:50 +1000
+> Subject: [PATCH] mm: rename pud_page_vaddr to pud_pgtable and make it ret=
+urn pmd_t * fix
+>=20
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  arch/sparc/include/asm/pgtable_32.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/arch/sparc/include/asm/pgtable_32.h b/arch/sparc/include/asm=
+/pgtable_32.h
+> index 1e6b55425f3d..ffccfe3b22ed 100644
+> --- a/arch/sparc/include/asm/pgtable_32.h
+> +++ b/arch/sparc/include/asm/pgtable_32.h
+> @@ -154,7 +154,7 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
+>  static inline pmd_t *pud_pgtable(pud_t pud)
+>  {
+>  	if (srmmu_device_memory(pud_val(pud))) {
+> -		return ~0;
+> +		return (pmd_t *)~0;
+>  	} else {
+>  		unsigned long v =3D pud_val(pud) & SRMMU_PTD_PMASK;
+>  		return (pmd_t *)__nocache_va(v << 4);
+> --=20
+> 2.30.2
+
+Did this get missed in the latest mmotm update?  I still have to apply it .=
+..
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/dE5bM5n4PFAM=Hn6DnMQST/
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDMWDUACgkQAVBC80lX
+0Gwn9wf/cvXgIU5kWpfxvllVs9SeKa8JrmT83u5PBg5SRJix4JAV+MQMf+NFtggF
+Ir2lDnHTX8c4ldewNe/71U2xHqJD1FgCqKJE59K3dbQ9mv9EuSH9pUHzNAvbjhH7
+N8F44I8tTNdHdlmAa7Ds2s5/mTTLSui2lkr+qkuyMMv8k8SEe2kr4YMog1TjZ7le
+QXDa1anMRpsm+ZvVIU+/W9wTaBqceXRKyWUaHLRleI2KmAuvtXI6rV+yxbCbxDHV
+RfP1VxpXtauJ/DDEnCpAoPMzmkwUNm6Iff6dk4SMwFXqTyodkOuNKqf8JuxL5Wm4
+Lm4PTGcz2HaMbyMyYb8URzwZy47nsw==
+=3cbW
+-----END PGP SIGNATURE-----
+
+--Sig_/dE5bM5n4PFAM=Hn6DnMQST/--
