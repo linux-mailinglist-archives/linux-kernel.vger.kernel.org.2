@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE523ACE99
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C763ACE9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235184AbhFRPWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:22:49 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56514 "EHLO
+        id S235069AbhFRPW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:22:58 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56328 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235036AbhFRPVx (ORCPT
+        with ESMTP id S235043AbhFRPVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:21:53 -0400
-Message-Id: <20210618143446.661863871@linutronix.de>
+        Fri, 18 Jun 2021 11:21:54 -0400
+Message-Id: <20210618143446.797089970@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624029583;
+        s=2020; t=1624029584;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=FY/+twPykszdIzzh3Htoeix7tp6EP1elZ9OvTqUVybQ=;
-        b=C7aH77onEJr3io5xK/kZA5ANnN9BCyWQR+bZ0O3P0UPbAmDR+uGnZ9fKSxCjghNAIssgJH
-        qGbWODWovsmFd80i45sNShVZebTyvhfeRUpF3YXd132g2sps07lCE+aaO6o5TZ5fAl+KPd
-        4mf5A8kJtXnxOQwcZZ50xBgzoKnpQEpcCZKJXPuOKqrmYnpF3aJvXKzXNJilwEXpDSTiiB
-        OW0nXXU/S6Dthh/Tx0Scsyfjv/wxnqZmb+7keTYUfoQwFwh/9Y7UDW6RqVSdFbRPP7mktu
-        5DzIPOWhPxAhWWAmTO0xrAH33k4yVHLjm6exZpyXdN4qLHpYmLho6Pbid5KmBg==
+        bh=Z44UcUFaoETlK2Z+lyZln3W5ENZj+2o+D1dsWdv0UTU=;
+        b=JcxddxfPxhK4ikGIamwLOMMiIMjiUJ3zamUWDHgoJCiTpPtcDimrIBYEaAoLe1GYBVpHP2
+        1RZZkcJgGSlZH0DHoZ6qgYBhOCHtZ7nzOVQRKrvP+COQ6NBoHSGeMSJ8ZfFzJPo79RtCX1
+        KBNI5DeUhvUl9ntq+ySYmiaX3M23eeUnV92Da9/kfWAUKPjKoHYqlO0isB4aYdLvvlamdX
+        F/Mmye6v9qaKfqdVsznqt7l1YdzF56wj3OhYCBY0vOhu8qH5ipoPjn4Yf17voWUSbQZvC9
+        67SplRzIm6UuDqM+5stqrn+nKshKhDxJ1x9uzZI0jCbClcfvCWr8GhwprsrixA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624029583;
+        s=2020e; t=1624029584;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=FY/+twPykszdIzzh3Htoeix7tp6EP1elZ9OvTqUVybQ=;
-        b=7pbnYlCimd9ewahN4Yn8Ko7RAa0aM4uCb8EeGZFanCJFEyWrf+vd2XHHskpMjISn71CqOf
-        rraol49QFJkWXCBA==
-Date:   Fri, 18 Jun 2021 16:18:43 +0200
+        bh=Z44UcUFaoETlK2Z+lyZln3W5ENZj+2o+D1dsWdv0UTU=;
+        b=BZnGtb1beWuCUCB+nkIwTzH/mPPiGiYT8beeOulQYJR7LL3+EZUAKzFCOIcQCNiKRDGjim
+        v+Ye29PEdZfHPPAw==
+Date:   Fri, 18 Jun 2021 16:18:44 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -44,7 +44,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V3 20/66] x86/fpu: Remove fpstate_sanitize_xstate()
+Subject: [patch V3 21/66] x86/fpu/regset: Move fpu__read_begin() into regset
 References: <20210618141823.161158090@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,113 +53,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No more users.
+The function can only be used from the regset get() callbacks safely. So
+there is no reason to have it globaly exposed.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V2: New patch
----
- arch/x86/include/asm/fpu/internal.h |    2 
- arch/x86/kernel/fpu/xstate.c        |   79 ------------------------------------
- 2 files changed, 81 deletions(-)
+ arch/x86/include/asm/fpu/internal.h |    1 -
+ arch/x86/kernel/fpu/core.c          |   20 --------------------
+ arch/x86/kernel/fpu/regset.c        |   22 +++++++++++++++++++---
+ 3 files changed, 19 insertions(+), 24 deletions(-)
 
 --- a/arch/x86/include/asm/fpu/internal.h
 +++ b/arch/x86/include/asm/fpu/internal.h
-@@ -86,8 +86,6 @@ extern void fpstate_init_soft(struct swr
- static inline void fpstate_init_soft(struct swregs_state *soft) {}
- #endif
- 
--extern void fpstate_sanitize_xstate(struct fpu *fpu);
--
- #define user_insn(insn, output, input...)				\
- ({									\
- 	int err;							\
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -129,85 +129,6 @@ static bool xfeature_is_supervisor(int x
+@@ -26,7 +26,6 @@
+ /*
+  * High level FPU state handling functions:
+  */
+-extern void fpu__prepare_read(struct fpu *fpu);
+ extern void fpu__prepare_write(struct fpu *fpu);
+ extern void fpu__save(struct fpu *fpu);
+ extern int  fpu__restore_sig(void __user *buf, int ia32_frame);
+--- a/arch/x86/kernel/fpu/core.c
++++ b/arch/x86/kernel/fpu/core.c
+@@ -282,26 +282,6 @@ static void fpu__initialize(struct fpu *
  }
  
  /*
-- * When executing XSAVEOPT (or other optimized XSAVE instructions), if
-- * a processor implementation detects that an FPU state component is still
-- * (or is again) in its initialized state, it may clear the corresponding
-- * bit in the header.xfeatures field, and can skip the writeout of registers
-- * to the corresponding memory layout.
+- * This function must be called before we read a task's fpstate.
 - *
-- * This means that when the bit is zero, the state component might still contain
-- * some previous - non-initialized register state.
+- * There's two cases where this gets called:
 - *
-- * Before writing xstate information to user-space we sanitize those components,
-- * to always ensure that the memory layout of a feature will be in the init state
-- * if the corresponding header bit is zero. This is to ensure that user-space doesn't
-- * see some stale state in the memory layout during signal handling, debugging etc.
+- * - for the current task (when coredumping), in which case we have
+- *   to save the latest FPU registers into the fpstate,
+- *
+- * - or it's called for stopped tasks (ptrace), in which case the
+- *   registers were already saved by the context-switch code when
+- *   the task scheduled out.
+- *
+- * If the task has used the FPU before then save it.
 - */
--void fpstate_sanitize_xstate(struct fpu *fpu)
+-void fpu__prepare_read(struct fpu *fpu)
 -{
--	struct fxregs_state *fx = &fpu->state.fxsave;
--	int feature_bit;
--	u64 xfeatures;
--
--	if (!use_xsaveopt())
--		return;
--
--	xfeatures = fpu->state.xsave.header.xfeatures;
--
--	/*
--	 * None of the feature bits are in init state. So nothing else
--	 * to do for us, as the memory layout is up to date.
--	 */
--	if ((xfeatures & xfeatures_mask_all) == xfeatures_mask_all)
--		return;
--
--	/*
--	 * FP is in init state
--	 */
--	if (!(xfeatures & XFEATURE_MASK_FP)) {
--		fx->cwd = 0x37f;
--		fx->swd = 0;
--		fx->twd = 0;
--		fx->fop = 0;
--		fx->rip = 0;
--		fx->rdp = 0;
--		memset(fx->st_space, 0, sizeof(fx->st_space));
--	}
--
--	/*
--	 * SSE is in init state
--	 */
--	if (!(xfeatures & XFEATURE_MASK_SSE))
--		memset(fx->xmm_space, 0, sizeof(fx->xmm_space));
--
--	/*
--	 * First two features are FPU and SSE, which above we handled
--	 * in a special way already:
--	 */
--	feature_bit = 0x2;
--	xfeatures = (xfeatures_mask_user() & ~xfeatures) >> 2;
--
--	/*
--	 * Update all the remaining memory layouts according to their
--	 * standard xstate layout, if their header bit is in the init
--	 * state:
--	 */
--	while (xfeatures) {
--		if (xfeatures & 0x1) {
--			int offset = xstate_comp_offsets[feature_bit];
--			int size = xstate_sizes[feature_bit];
--
--			memcpy((void *)fx + offset,
--			       (void *)&init_fpstate.xsave + offset,
--			       size);
--		}
--
--		xfeatures >>= 1;
--		feature_bit++;
--	}
+-	if (fpu == &current->thread.fpu)
+-		fpu__save(fpu);
 -}
 -
 -/*
-  * Enable the extended processor state save/restore feature.
-  * Called once per CPU onlining.
-  */
+  * This function must be called before we write a task's fpstate.
+  *
+  * Invalidate any cached FPU registers.
+--- a/arch/x86/kernel/fpu/regset.c
++++ b/arch/x86/kernel/fpu/regset.c
+@@ -28,6 +28,22 @@ int regset_xregset_fpregs_active(struct
+ 		return 0;
+ }
+ 
++/*
++ * The regset get() functions are invoked from:
++ *
++ *   - coredump to dump the current task's fpstate. If the current task
++ *     owns the FPU then the memory state has to be synchronized and the
++ *     FPU register state preserved. Otherwise fpstate is already in sync.
++ *
++ *   - ptrace to dump fpstate of a stopped task, in which case the register
++ *     have already been saved to fpstate on context switch.
++ */
++static void sync_fpstate(struct fpu *fpu)
++{
++	if (fpu == &current->thread.fpu)
++		fpu__save(fpu);
++}
++
+ int xfpregs_get(struct task_struct *target, const struct user_regset *regset,
+ 		struct membuf to)
+ {
+@@ -36,7 +52,7 @@ int xfpregs_get(struct task_struct *targ
+ 	if (!cpu_feature_enabled(X86_FEATURE_FXSR))
+ 		return -ENODEV;
+ 
+-	fpu__prepare_read(fpu);
++	sync_fpstate(fpu);
+ 
+ 	if (!use_xsave()) {
+ 		return membuf_write(&to, &fpu->state.fxsave,
+@@ -97,7 +113,7 @@ int xstateregs_get(struct task_struct *t
+ 	if (!cpu_feature_enabled(X86_FEATURE_XSAVE))
+ 		return -ENODEV;
+ 
+-	fpu__prepare_read(fpu);
++	sync_fpstate(fpu);
+ 
+ 	copy_xstate_to_uabi_buf(to, &fpu->state.xsave, XSTATE_COPY_XSAVE);
+ 	return 0;
+@@ -288,7 +304,7 @@ int fpregs_get(struct task_struct *targe
+ 	struct user_i387_ia32_struct env;
+ 	struct fxregs_state fxsave, *fx;
+ 
+-	fpu__prepare_read(fpu);
++	sync_fpstate(fpu);
+ 
+ 	if (!cpu_feature_enabled(X86_FEATURE_FPU))
+ 		return fpregs_soft_get(target, regset, to);
 
