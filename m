@@ -2,265 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 792843ACDF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3715D3ACDFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234744AbhFROyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:54:21 -0400
-Received: from smtp49.i.mail.ru ([94.100.177.109]:43856 "EHLO smtp49.i.mail.ru"
+        id S234756AbhFROzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 10:55:03 -0400
+Received: from mout.gmx.net ([212.227.15.15]:50719 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234651AbhFROyU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:54:20 -0400
-X-Greylist: delayed 2150 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Jun 2021 10:54:19 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail3;
-        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=ijK73F/lg2DhM4aUQACgPn0lF4hO8YJZvqHfVCtI7Wg=;
-        b=EDi2Plvg1/ja+JijN4zKK6hejdvt+Q6zz9/M0jk4H+0vZdl3MUzgDkSaYnK7TCd8BijmkQrdAVel8ondsmxT4e39HykgMuYtdV6Z3Tw18yBbJyBI97P/g/WvUu+b7fNRVoNkj3W26C7A+eceFWw1aRRJZ6gzhQHVd8YIagxKVKY=;
-Received: by smtp49.i.mail.ru with esmtpa (envelope-from <cerg2010cerg2010@mail.ru>)
-        id 1luFqq-0001bv-09; Fri, 18 Jun 2021 17:52:08 +0300
-From:   Sergey Larin <cerg2010cerg2010@mail.ru>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc:     linux-input@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Sergey Larin <cerg2010cerg2010@mail.ru>
-Subject: [PATCH] Input: stmpe-keypad - add STMPE1801 support
-Date:   Fri, 18 Jun 2021 17:51:49 +0300
-Message-Id: <20210618145149.10136-1-cerg2010cerg2010@mail.ru>
-X-Mailer: git-send-email 2.32.0
+        id S234753AbhFROzB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 10:55:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1624027966;
+        bh=5KANbDUOSm1uBFlCYYXKIoijReWqt8fXs2haBqiKeDk=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=MV+R3p/o2RUR7HWu7O/XF6HRNyrXijA4LNhqWkghgdN01r3VXHULGG8wjfUFyr66K
+         arkFArj6dUrM9szGqWWAPqlNDsagbrlJXydhYIdyg7wsdOU72k4DzmkFdkxnW+eda0
+         Gp8+OZ8+a2vuF/2dW+fQgfFLmIjiJtIf9LjNxdBg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from Venus.fritz.box ([149.172.234.120]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MBDjA-1m0HSa0Xi2-00Cktx; Fri, 18
+ Jun 2021 16:52:46 +0200
+From:   Lino Sanfilippo <LinoSanfilippo@gmx.de>
+To:     gregkh@linuxfoundation.org
+Cc:     linux@armlinux.org.uk, jirislaby@kernel.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Subject: [PATCH v2] serial: amba-pl011: add RS485 support
+Date:   Fri, 18 Jun 2021 16:51:53 +0200
+Message-Id: <20210618145153.1906-1-LinoSanfilippo@gmx.de>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp49.i.mail.ru; auth=pass smtp.auth=cerg2010cerg2010@mail.ru smtp.mailfrom=cerg2010cerg2010@mail.ru
-X-7564579A: 646B95376F6C166E
-X-77F55803: 4F1203BC0FB41BD91C2C07775F13263A075164279ADA4DEE4DF6CBEA76D0A4B700894C459B0CD1B96A756C19C813DA90BB093D7B977E284D4A4F2FA72D6FC0293DBFFC9DE3409321
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE73C696014E2DCCA1EEA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637E78B284398E2029E8638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8F8B8055A963F40B626E7A556CE19E2A76F9789CCF6C18C3F8528715B7D10C86878DA827A17800CE7850F8B975A76562C9FA2833FD35BB23D9E625A9149C048EE26055571C92BF10FF04B652EEC242312D2E47CDBA5A96583BD4B6F7A4D31EC0BC014FD901B82EE079FA2833FD35BB23D27C277FBC8AE2E8B44DFDAE72D78788F389733CBF5DBD5E9B5C8C57E37DE458BD9DD9810294C998ED8FC6C240DEA76428AA50765F79006379B52A4D16EC328CCD81D268191BDAD3DBD4B6F7A4D31EC0BEA7A3FFF5B025636D81D268191BDAD3D78DA827A17800CE74FED4A516E967888EC76A7562686271EEC990983EF5C03292E808ACE2090B5E14AD6D5ED66289B5259CC434672EE63711DD303D21008E298D5E8D9A59859A8B6B372FE9A2E580EFC725E5C173C3A84C330F6261E3B51B4EA089D37D7C0E48F6C5571747095F342E88FB05168BE4CE3AF
-X-C1DE0DAB: C20DE7B7AB408E4181F030C43753B8186998911F362727C414F749A5E30D975C128C1281A48FD13C64F4A1F1B4D66FAFC7E6C40DD18CCA4C9C2B6934AE262D3EE7EAB7254005DCED3E00E3B59223EED21E0A4E2319210D9B64D260DF9561598F01A9E91200F654B0F5DD670F6F5D62878E8E86DC7131B365E7726E8460B7C23C
-X-C8649E89: 4E36BF7865823D7055A7F0CF078B5EC49A30900B95165D3451BBE684D17D7221757BAAD8DC2B9EAAD333B539987F6C4E5B7FB3CC35ECC8C531AD0C459A615C441D7E09C32AA3244C3855E112C3B7D6A21133044E8F827AA65595C85A795C7BAEAD832FF50B3043B1
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj0Roc5o5ut94anVs539TTpA==
-X-Mailru-Sender: 24CCEAA761B392C83D438B890C7CDC3C81E547FAADE5F02D8733E1D2EFA86DA86CCF71F689FD47EECAD91EC71FC00F3837D2A27E1A8065646C7A2150F6097340301919DCEDD5454186FA049C4F996C4B5FEEDEB644C299C0ED14614B50AE0675
-X-Mras: Ok
+Content-Transfer-Encoding: base64
+X-Provags-ID: V03:K1:CB+ebwe0LaU4nsaqrxqhNQ+UJYl2zS7N5eKwzKvGEATKkoQVXMw
+ hFlEzlNCJiHpDmh1g7EBmJu/TjZSaSQfTZ1YlCusP6DEZ28rs3P6xmYVoCbwyvmavdWJE3a
+ bbADF8RRKTm5v7J5EbU/fv4dKh47GJEbiReZFu5GFRDfl7qg2/Upv35NP/yrCGDQ0h9uoVk
+ wGpWV69yoLk3xQFPgV8DA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:yp5ZZtAgNTc=:NWNaVPC/JuUbpWa3ifh5Gu
+ Go+9QcV9zy+BmSf/fPHMV+v8ufrVMdv90HwLuLPAxT83tZz9+Uu4SzHbqswiOCitYq7lnMNxp
+ P6o+lysDPmIfn3JNJAo5opBppPCLIDjfdAFmT4THz7YpZ63rnb068WRWRE6FTkGcI9XsE7I8p
+ OLw2ygWMKE2JmemwXTBql6A6Lyrv/yg/7CFXkjGX342tSd2D3i9jhYLmBvLyxPwDauIjkUANS
+ GkAjZKN5SOulMsApFXGppH9ak2bazmYY4GDMDsi8V+QY+gFC40NOpr7NiJ2T+ZZYAAZ8RdQVX
+ ayWcP4ucoQy5bxuunHFhJybo8rC69D4yN4Gab4o9NEqL6p3NzpVqtAZU+HvSAK2Nj6y3cg6Hv
+ dxzNJYpGq3WmyR5kmLkV+u0xSqVCgZgrbTO5FcEZKYATDgYpVducrrJ58uuI77zWT2/BEO/RV
+ FBAWIO36xAWFIWx9exzvMPo4nMfP7AsgxyCqUC8jqj7Z8B5OV3Tj7Shh2cCO4BxVsr4q7ViD3
+ 5RakTESCr5yeE8RERaObQXgjrYlhTHUcq5bVsHGz6YVArgJAORe2jZj+qRhJs0HePuridSTLG
+ 8cPU/BiGAuBhKe0p8CK9MgO7QZ0l15IYwU6gGHcEu7pFBU2G6P0Qu3DHLtHMu/DxaeKhWUW8Q
+ uSV6a4keCpM5/V6HQB+E8bdOaXCSxwqNaf7Aqyh/iNvP1uca+AOcUha9kURZDLBUmFxxfM5Fl
+ LSIoS8kE0CcZJTg8/y5/3CFlFBfIO26Y29WUTfTDXkXS2yYWnkaIKIfvJ7d0LPm5CW9ByGSFx
+ X0vdRTEuYH6o6YHUPHrFsUyr47XXw4gjng8+WpvkhVOuSeuE0ZZZQuXqDCIqcqHeTGjOALIOF
+ yp3/MivVPuHmRXf4druC9GsYwEQGWy41KIzo3zGAvhlQzuoxJFvZ61mMH7YwHrt57D4geiQ6H
+ I/Ice5VLk2TNWuEoJmB+AYs+CUqk9Lqkm5AwId0d5Mnes52B3LZMgUXmG/05JC3bt31wygUZm
+ 1uHUWIV/SSouowSWrSHmprhuKwUAaMqG0zM2OodypFjrp9Tvt9geOaS1OUKtMQmHfw4+TfknP
+ XJMu4IZBpIuYOxWbnr4iv+xryboSVOHdHJsjOdbdcXtMp9SZaroDVCquw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This chip variant differs from others - it has different register
-map and swapped rows/columns.
-
-Signed-off-by: Sergey Larin <cerg2010cerg2010@mail.ru>
----
- drivers/input/keyboard/stmpe-keypad.c | 108 ++++++++++++++++++++------
- 1 file changed, 85 insertions(+), 23 deletions(-)
-
-diff --git a/drivers/input/keyboard/stmpe-keypad.c b/drivers/input/keyboard/stmpe-keypad.c
-index 7bf97285e30c..ed74578927a3 100644
---- a/drivers/input/keyboard/stmpe-keypad.c
-+++ b/drivers/input/keyboard/stmpe-keypad.c
-@@ -13,7 +13,7 @@
- #include <linux/input/matrix_keypad.h>
- #include <linux/mfd/stmpe.h>
- 
--/* These are at the same addresses in all STMPE variants */
-+/* These are at the same addresses in all STMPE variants, except 1801 */
- #define STMPE_KPC_COL			0x60
- #define STMPE_KPC_ROW_MSB		0x61
- #define STMPE_KPC_ROW_LSB		0x62
-@@ -42,14 +42,15 @@
- #define STMPE_KEYPAD_MAX_DEBOUNCE	127
- #define STMPE_KEYPAD_MAX_SCAN_COUNT	15
- 
--#define STMPE_KEYPAD_MAX_ROWS		8
--#define STMPE_KEYPAD_MAX_COLS		8
-+#define STMPE_KEYPAD_MAX_ROWS		10
-+#define STMPE_KEYPAD_MAX_COLS		12
- #define STMPE_KEYPAD_ROW_SHIFT		3
- #define STMPE_KEYPAD_KEYMAP_MAX_SIZE \
- 	(STMPE_KEYPAD_MAX_ROWS * STMPE_KEYPAD_MAX_COLS)
- 
- 
- #define STMPE1601_NUM_DATA	5
-+#define STMPE1801_NUM_DATA	5
- #define STMPE2401_NUM_DATA	3
- #define STMPE2403_NUM_DATA	5
- 
-@@ -67,6 +68,12 @@
-  * @max_rows: maximum number of rows supported
-  * @col_gpios: bitmask of gpios which can be used for columns
-  * @row_gpios: bitmask of gpios which can be used for rows
-+ * @col_regs: registers for setting column pins
-+ * @row_regs: registers for setting row pins
-+ * @data_regs: registers for reading key data
-+ * @ctrl_msb_reg: register for setting scan count
-+ * @ctrl_lsb_reg: register for setting debounce time
-+ * @cmd_reg: register for toggling scan mode
-  */
- struct stmpe_keypad_variant {
- 	bool		auto_increment;
-@@ -77,6 +84,18 @@ struct stmpe_keypad_variant {
- 	int		max_rows;
- 	unsigned int	col_gpios;
- 	unsigned int	row_gpios;
-+
-+#define MAX_COL_REGS 3
-+#define MAX_ROW_REGS 3
-+#define MAX_DATA_REGS 5
-+
-+	u8 col_regs[MAX_COL_REGS];
-+	u8 row_regs[MAX_ROW_REGS];
-+	u8 data_regs[MAX_DATA_REGS];
-+	u8 ctrl_msb_reg;
-+	u8 ctrl_lsb_reg;
-+	u8 cmd_reg;
-+	bool read_inverted;
- };
- 
- static const struct stmpe_keypad_variant stmpe_keypad_variants[] = {
-@@ -88,6 +107,29 @@ static const struct stmpe_keypad_variant stmpe_keypad_variants[] = {
- 		.max_rows		= 8,
- 		.col_gpios		= 0x000ff,	/* GPIO 0 - 7 */
- 		.row_gpios		= 0x0ff00,	/* GPIO 8 - 15 */
-+		.col_regs		= { 0x60 },
-+		.row_regs		= { 0x62, 0x61 },
-+		.data_regs		= { 0x68, 0x69, 0x6a, 0x6b, 0x6c },
-+		.ctrl_msb_reg		= 0x63,
-+		.ctrl_lsb_reg		= 0x64,
-+		.cmd_reg		= 0x64,
-+		.read_inverted		= 0,
-+	},
-+	[STMPE1801] = {
-+		.auto_increment		= true,
-+		.num_data		= STMPE1801_NUM_DATA,
-+		.num_normal_data	= 3,
-+		.max_cols		= 10,
-+		.max_rows		= 8,
-+		.col_gpios		= 0x3ff00,	/* GPIO 8 - 17 */
-+		.row_gpios		= 0x000ff,	/* GPIO 0 - 7 */
-+		.col_regs		= { 0x31, 0x32 },
-+		.row_regs		= { 0x30 },
-+		.data_regs		= { 0x3a, 0x3b, 0x3c, 0x3d, 0x3e },
-+		.ctrl_msb_reg		= 0x33,
-+		.ctrl_lsb_reg		= 0x34,
-+		.cmd_reg		= 0x36,
-+		.read_inverted		= 1,
- 	},
- 	[STMPE2401] = {
- 		.auto_increment		= false,
-@@ -98,6 +140,13 @@ static const struct stmpe_keypad_variant stmpe_keypad_variants[] = {
- 		.max_rows		= 12,
- 		.col_gpios		= 0x0000ff,	/* GPIO 0 - 7*/
- 		.row_gpios		= 0x1f7f00,	/* GPIO 8-14, 16-20 */
-+		.col_regs		= { 0x60 },
-+		.row_regs		= { 0x62, 0x61 },
-+		.data_regs		= { 0x68, 0x69, 0x6a, 0x6b, 0x6c },
-+		.ctrl_msb_reg		= 0x63,
-+		.ctrl_lsb_reg		= 0x64,
-+		.cmd_reg		= 0x64,
-+		.read_inverted		= 0,
- 	},
- 	[STMPE2403] = {
- 		.auto_increment		= true,
-@@ -108,6 +157,13 @@ static const struct stmpe_keypad_variant stmpe_keypad_variants[] = {
- 		.max_rows		= 12,
- 		.col_gpios		= 0x0000ff,	/* GPIO 0 - 7*/
- 		.row_gpios		= 0x1fef00,	/* GPIO 8-14, 16-20 */
-+		.col_regs		= { 0x60 },
-+		.row_regs		= { 0x62, 0x61 },
-+		.data_regs		= { 0x68, 0x69, 0x6a, 0x6b, 0x6c },
-+		.ctrl_msb_reg		= 0x63,
-+		.ctrl_lsb_reg		= 0x64,
-+		.cmd_reg		= 0x64,
-+		.read_inverted		= 0,
- 	},
- };
- 
-@@ -145,11 +201,11 @@ static int stmpe_keypad_read_data(struct stmpe_keypad *keypad, u8 *data)
- 	int i;
- 
- 	if (variant->auto_increment)
--		return stmpe_block_read(stmpe, STMPE_KPC_DATA_BYTE0,
-+		return stmpe_block_read(stmpe, variant->data_regs[0],
- 					variant->num_data, data);
- 
- 	for (i = 0; i < variant->num_data; i++) {
--		ret = stmpe_reg_read(stmpe, STMPE_KPC_DATA_BYTE0 + i);
-+		ret = stmpe_reg_read(stmpe, variant->data_regs[i]);
- 		if (ret < 0)
- 			return ret;
- 
-@@ -176,7 +232,9 @@ static irqreturn_t stmpe_keypad_irq(int irq, void *dev)
- 		u8 data = fifo[i];
- 		int row = (data & STMPE_KPC_DATA_ROW) >> 3;
- 		int col = data & STMPE_KPC_DATA_COL;
--		int code = MATRIX_SCAN_CODE(row, col, STMPE_KEYPAD_ROW_SHIFT);
-+		int code = variant->read_inverted ?
-+			  MATRIX_SCAN_CODE(col, row, STMPE_KEYPAD_ROW_SHIFT)
-+			: MATRIX_SCAN_CODE(row, col, STMPE_KEYPAD_ROW_SHIFT);
- 		bool up = data & STMPE_KPC_DATA_UP;
- 
- 		if ((data & STMPE_KPC_DATA_NOKEY_MASK)
-@@ -265,7 +323,7 @@ static int stmpe_keypad_chip_init(struct stmpe_keypad *keypad)
- {
- 	const struct stmpe_keypad_variant *variant = keypad->variant;
- 	struct stmpe *stmpe = keypad->stmpe;
--	int ret;
-+	int ret, val, i;
- 
- 	if (keypad->debounce_ms > STMPE_KEYPAD_MAX_DEBOUNCE)
- 		return -EINVAL;
-@@ -281,33 +339,37 @@ static int stmpe_keypad_chip_init(struct stmpe_keypad *keypad)
- 	if (ret < 0)
- 		return ret;
- 
--	ret = stmpe_reg_write(stmpe, STMPE_KPC_COL, keypad->cols);
--	if (ret < 0)
--		return ret;
--
--	ret = stmpe_reg_write(stmpe, STMPE_KPC_ROW_LSB, keypad->rows);
--	if (ret < 0)
--		return ret;
-+	val = keypad->cols;
-+	i = 0;
-+	do {
-+		ret = stmpe_reg_write(stmpe, variant->col_regs[i++], val & 0xff);
-+		if (ret < 0)
-+			return ret;
-+	} while ((val >>= 8) != 0);
- 
--	if (variant->max_rows > 8) {
--		ret = stmpe_set_bits(stmpe, STMPE_KPC_ROW_MSB,
--				     STMPE_KPC_ROW_MSB_ROWS,
--				     keypad->rows >> 8);
-+	val = keypad->rows;
-+	i = 0;
-+	do {
-+		ret = stmpe_reg_write(stmpe, variant->row_regs[i++], val & 0xff);
- 		if (ret < 0)
- 			return ret;
--	}
-+	} while ((val >>= 8) != 0);
- 
--	ret = stmpe_set_bits(stmpe, STMPE_KPC_CTRL_MSB,
-+	ret = stmpe_set_bits(stmpe, variant->ctrl_msb_reg,
- 			     STMPE_KPC_CTRL_MSB_SCAN_COUNT,
- 			     keypad->scan_count << 4);
- 	if (ret < 0)
- 		return ret;
- 
--	return stmpe_set_bits(stmpe, STMPE_KPC_CTRL_LSB,
--			      STMPE_KPC_CTRL_LSB_SCAN |
-+	ret = stmpe_set_bits(stmpe, variant->ctrl_lsb_reg,
- 			      STMPE_KPC_CTRL_LSB_DEBOUNCE,
--			      STMPE_KPC_CTRL_LSB_SCAN |
- 			      (keypad->debounce_ms << 1));
-+	if (ret < 0)
-+		return ret;
-+
-+	return stmpe_set_bits(stmpe, variant->cmd_reg,
-+			      STMPE_KPC_CTRL_LSB_SCAN,
-+			      STMPE_KPC_CTRL_LSB_SCAN);
- }
- 
- static void stmpe_keypad_fill_used_pins(struct stmpe_keypad *keypad,
--- 
-2.32.0
-
+QWRkIGJhc2ljIHN1cHBvcnQgZm9yIFJTNDg1OiBQcm92aWRlIGEgY2FsbGJhY2sgdG8gY29uZmln
+dXJlIFJTNDg1CnNldHRpbmdzLiBIYW5kbGUgdGhlIFJTNDg1IHNwZWNpZmljIHBhcnQgaW4gdGhl
+IGZ1bmN0aW9ucwpwbDAxMV9yczQ4NV90eF9zdGFydCgpIGFuZCBwbDAxMV9yczQ4NV90eF9zdG9w
+KCkgd2hpY2ggZXh0ZW5kIHRoZSBnZW5lcmljCnN0YXJ0L3N0b3AgY2FsbGJhY2tzLgpCZXNpZGUg
+dmlhIElPQ1RMIGZyb20gdXNlcnNwYWNlIFJTNDg1IGNhbiBiZSBlbmFibGVkIGJ5IG1lYW5zIG9m
+IHRoZQpkZXZpY2UgdHJlZSBwcm9wZXJ0eSAicnM0ODUtZW5hYmxlZC1hdC1ib290LXRpbWUiLgoK
+U2lnbmVkLW9mZi1ieTogTGlubyBTYW5maWxpcHBvIDxMaW5vU2FuZmlsaXBwb0BnbXguZGU+Ci0t
+LQpUaGlzIHBhdGNoIGFwcGxpZXMgYWdhaW5zdCBHcmVncyB0dHktdGVzdGluZyBicmFuY2ggYW5k
+IHdhcyB0ZXN0ZWQgb24gYQpSYXNwYmVycnkgUGkgQ00zLgoKQ2hhbmdlcyBpbiBWMjoKLSBjbGFt
+cCBSVFMgZGVsYXlzIHRvIDEwMG1zIGFzIHN1Z2dlc3RlZCBieSBKaXJpIFNsYWJ5Ci0gaW5zdGVh
+ZCBvZiBjb3VudGluZyBiaXRzICJieSBoYW5kIiB1c2UgdGhlIG5ldyBmdW5jdGlvbiB0dHlfZ2V0
+X2ZyYW1lX3NpemUoKQogIChhbHNvIHN1Z2dlc3RlZCBieSBKaXJpKQotIHVzZSB0aGUgdGVybSBS
+UzQ4NSBjb25zaXN0ZW50bHkgaW4gdGhlIGNvbW1pdCBtZXNzYWdlCi0gcmVtb3ZlIG9uZSBibGFu
+ayBsaW5lCgoKIGRyaXZlcnMvdHR5L3NlcmlhbC9hbWJhLXBsMDExLmMgfCAxNTIgKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKy0KIDEgZmlsZSBjaGFuZ2VkLCAxNTAgaW5zZXJ0aW9ucygr
+KSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9kcml2ZXJzL3R0eS9zZXJpYWwvYW1iYS1w
+bDAxMS5jIGIvZHJpdmVycy90dHkvc2VyaWFsL2FtYmEtcGwwMTEuYwppbmRleCBlMTRmMzM3OGI4
+YTAuLjkyYzZiMDhkNTZmYiAxMDA2NDQKLS0tIGEvZHJpdmVycy90dHkvc2VyaWFsL2FtYmEtcGww
+MTEuYworKysgYi9kcml2ZXJzL3R0eS9zZXJpYWwvYW1iYS1wbDAxMS5jCkBAIC0yNjUsNiArMjY1
+LDggQEAgc3RydWN0IHVhcnRfYW1iYV9wb3J0IHsKIAl1bnNpZ25lZCBpbnQJCW9sZF9jcjsJCS8q
+IHN0YXRlIGR1cmluZyBzaHV0ZG93biAqLwogCXVuc2lnbmVkIGludAkJZml4ZWRfYmF1ZDsJLyog
+dmVuZG9yLXNldCBmaXhlZCBiYXVkIHJhdGUgKi8KIAljaGFyCQkJdHlwZVsxMl07CisJYm9vbAkJ
+CXJzNDg1X3R4X3N0YXJ0ZWQ7CisJdW5zaWduZWQgaW50CQlyczQ4NV90eF9kcmFpbl9pbnRlcnZh
+bDsgLyogdXNlY3MgKi8KICNpZmRlZiBDT05GSUdfRE1BX0VOR0lORQogCS8qIERNQSBzdHVmZiAq
+LwogCWJvb2wJCQl1c2luZ190eF9kbWE7CkBAIC0yNzUsNiArMjc3LDggQEAgc3RydWN0IHVhcnRf
+YW1iYV9wb3J0IHsKICNlbmRpZgogfTsKIAorc3RhdGljIHVuc2lnbmVkIGludCBwbDAxMV90eF9l
+bXB0eShzdHJ1Y3QgdWFydF9wb3J0ICpwb3J0KTsKKwogc3RhdGljIHVuc2lnbmVkIGludCBwbDAx
+MV9yZWdfdG9fb2Zmc2V0KGNvbnN0IHN0cnVjdCB1YXJ0X2FtYmFfcG9ydCAqdWFwLAogCXVuc2ln
+bmVkIGludCByZWcpCiB7CkBAIC0xMjgyLDYgKzEyODYsMzQgQEAgc3RhdGljIGlubGluZSBib29s
+IHBsMDExX2RtYV9yeF9ydW5uaW5nKHN0cnVjdCB1YXJ0X2FtYmFfcG9ydCAqdWFwKQogI2RlZmlu
+ZSBwbDAxMV9kbWFfZmx1c2hfYnVmZmVyCU5VTEwKICNlbmRpZgogCitzdGF0aWMgaW50IHBsMDEx
+X3JzNDg1X3R4X3N0b3Aoc3RydWN0IHVhcnRfYW1iYV9wb3J0ICp1YXApCit7CisJc3RydWN0IHVh
+cnRfcG9ydCAqcG9ydCA9ICZ1YXAtPnBvcnQ7CisJdTMyIGNyOworCisJLyogV2FpdCB1bnRpbCBo
+YXJkd2FyZSB0eCBxdWV1ZSBpcyBlbXB0eSAqLworCXdoaWxlICghcGwwMTFfdHhfZW1wdHkocG9y
+dCkpCisJCXVkZWxheSh1YXAtPnJzNDg1X3R4X2RyYWluX2ludGVydmFsKTsKKworCWlmIChwb3J0
+LT5yczQ4NS5kZWxheV9ydHNfYWZ0ZXJfc2VuZCkKKwkJbWRlbGF5KHBvcnQtPnJzNDg1LmRlbGF5
+X3J0c19hZnRlcl9zZW5kKTsKKworCWNyID0gcGwwMTFfcmVhZCh1YXAsIFJFR19DUik7CisKKwlp
+ZiAocG9ydC0+cnM0ODUuZmxhZ3MgJiBTRVJfUlM0ODVfUlRTX0FGVEVSX1NFTkQpCisJCWNyICY9
+IH5VQVJUMDExX0NSX1JUUzsKKwllbHNlCisJCWNyIHw9IFVBUlQwMTFfQ1JfUlRTOworCS8qIERp
+c2FibGUgdGhlIHRyYW5zbWl0dGVyIGFuZCByZWVuYWJsZSB0aGUgdHJhbnNjZWl2ZXIgKi8KKwlj
+ciAmPSB+VUFSVDAxMV9DUl9UWEU7CisJY3IgfD0gVUFSVDAxMV9DUl9SWEU7CisJcGwwMTFfd3Jp
+dGUoY3IsIHVhcCwgUkVHX0NSKTsKKworCXVhcC0+cnM0ODVfdHhfc3RhcnRlZCA9IGZhbHNlOwor
+CisJcmV0dXJuIDA7Cit9CisKIHN0YXRpYyB2b2lkIHBsMDExX3N0b3BfdHgoc3RydWN0IHVhcnRf
+cG9ydCAqcG9ydCkKIHsKIAlzdHJ1Y3QgdWFydF9hbWJhX3BvcnQgKnVhcCA9CkBAIC0xMjkwLDYg
+KzEzMjIsOSBAQCBzdGF0aWMgdm9pZCBwbDAxMV9zdG9wX3R4KHN0cnVjdCB1YXJ0X3BvcnQgKnBv
+cnQpCiAJdWFwLT5pbSAmPSB+VUFSVDAxMV9UWElNOwogCXBsMDExX3dyaXRlKHVhcC0+aW0sIHVh
+cCwgUkVHX0lNU0MpOwogCXBsMDExX2RtYV90eF9zdG9wKHVhcCk7CisKKwlpZiAoKHBvcnQtPnJz
+NDg1LmZsYWdzICYgU0VSX1JTNDg1X0VOQUJMRUQpICYmIHVhcC0+cnM0ODVfdHhfc3RhcnRlZCkK
+KwkJcGwwMTFfcnM0ODVfdHhfc3RvcCh1YXApOwogfQogCiBzdGF0aWMgYm9vbCBwbDAxMV90eF9j
+aGFycyhzdHJ1Y3QgdWFydF9hbWJhX3BvcnQgKnVhcCwgYm9vbCBmcm9tX2lycSk7CkBAIC0xMzgw
+LDYgKzE0MTUsMzEgQEAgc3RhdGljIGJvb2wgcGwwMTFfdHhfY2hhcihzdHJ1Y3QgdWFydF9hbWJh
+X3BvcnQgKnVhcCwgdW5zaWduZWQgY2hhciBjLAogCXJldHVybiB0cnVlOwogfQogCitzdGF0aWMg
+dm9pZCBwbDAxMV9yczQ4NV90eF9zdGFydChzdHJ1Y3QgdWFydF9hbWJhX3BvcnQgKnVhcCkKK3sK
+KwlzdHJ1Y3QgdWFydF9wb3J0ICpwb3J0ID0gJnVhcC0+cG9ydDsKKwl1MzIgY3I7CisKKwkvKiBF
+bmFibGUgdHJhbnNtaXR0ZXIgKi8KKwljciA9IHBsMDExX3JlYWQodWFwLCBSRUdfQ1IpOworCWNy
+IHw9IFVBUlQwMTFfQ1JfVFhFOworCS8qIERpc2FibGUgcmVjZWl2ZXIgaWYgaGFsZi1kdXBsZXgg
+Ki8KKwlpZiAoIShwb3J0LT5yczQ4NS5mbGFncyAmIFNFUl9SUzQ4NV9SWF9EVVJJTkdfVFgpKQor
+CQljciAmPSB+VUFSVDAxMV9DUl9SWEU7CisKKwlpZiAocG9ydC0+cnM0ODUuZmxhZ3MgJiBTRVJf
+UlM0ODVfUlRTX09OX1NFTkQpCisJCWNyICY9IH5VQVJUMDExX0NSX1JUUzsKKwllbHNlCisJCWNy
+IHw9IFVBUlQwMTFfQ1JfUlRTOworCisJcGwwMTFfd3JpdGUoY3IsIHVhcCwgUkVHX0NSKTsKKwor
+CWlmIChwb3J0LT5yczQ4NS5kZWxheV9ydHNfYmVmb3JlX3NlbmQpCisJCW1kZWxheShwb3J0LT5y
+czQ4NS5kZWxheV9ydHNfYmVmb3JlX3NlbmQpOworCisJdWFwLT5yczQ4NV90eF9zdGFydGVkID0g
+dHJ1ZTsKK30KKwogLyogUmV0dXJucyB0cnVlIGlmIHR4IGludGVycnVwdHMgaGF2ZSB0byBiZSAo
+a2VwdCkgZW5hYmxlZCAgKi8KIHN0YXRpYyBib29sIHBsMDExX3R4X2NoYXJzKHN0cnVjdCB1YXJ0
+X2FtYmFfcG9ydCAqdWFwLCBib29sIGZyb21faXJxKQogewpAQCAtMTM5Nyw2ICsxNDU3LDEwIEBA
+IHN0YXRpYyBib29sIHBsMDExX3R4X2NoYXJzKHN0cnVjdCB1YXJ0X2FtYmFfcG9ydCAqdWFwLCBi
+b29sIGZyb21faXJxKQogCQlyZXR1cm4gZmFsc2U7CiAJfQogCisJaWYgKCh1YXAtPnBvcnQucnM0
+ODUuZmxhZ3MgJiBTRVJfUlM0ODVfRU5BQkxFRCkgJiYKKwkgICAgIXVhcC0+cnM0ODVfdHhfc3Rh
+cnRlZCkKKwkJcGwwMTFfcnM0ODVfdHhfc3RhcnQodWFwKTsKKwogCS8qIElmIHdlIGFyZSB1c2lu
+ZyBETUEgbW9kZSwgdHJ5IHRvIHNlbmQgc29tZSBjaGFyYWN0ZXJzLiAqLwogCWlmIChwbDAxMV9k
+bWFfdHhfaXJxKHVhcCkpCiAJCXJldHVybiB0cnVlOwpAQCAtMTU0Miw2ICsxNjA2LDkgQEAgc3Rh
+dGljIHZvaWQgcGwwMTFfc2V0X21jdHJsKHN0cnVjdCB1YXJ0X3BvcnQgKnBvcnQsIHVuc2lnbmVk
+IGludCBtY3RybCkKIAkgICAgY29udGFpbmVyX29mKHBvcnQsIHN0cnVjdCB1YXJ0X2FtYmFfcG9y
+dCwgcG9ydCk7CiAJdW5zaWduZWQgaW50IGNyOwogCisJaWYgKHBvcnQtPnJzNDg1LmZsYWdzICYg
+U0VSX1JTNDg1X0VOQUJMRUQpCisJCW1jdHJsICY9IH5USU9DTV9SVFM7CisKIAljciA9IHBsMDEx
+X3JlYWQodWFwLCBSRUdfQ1IpOwogCiAjZGVmaW5lCVRJT0NNQklUKHRpb2NtYml0LCB1YXJ0Yml0
+KQkJXApAQCAtMTc2Myw3ICsxODMwLDE3IEBAIHN0YXRpYyBpbnQgcGwwMTFfc3RhcnR1cChzdHJ1
+Y3QgdWFydF9wb3J0ICpwb3J0KQogCiAJLyogcmVzdG9yZSBSVFMgYW5kIERUUiAqLwogCWNyID0g
+dWFwLT5vbGRfY3IgJiAoVUFSVDAxMV9DUl9SVFMgfCBVQVJUMDExX0NSX0RUUik7Ci0JY3IgfD0g
+VUFSVDAxeF9DUl9VQVJURU4gfCBVQVJUMDExX0NSX1JYRSB8IFVBUlQwMTFfQ1JfVFhFOworCWNy
+IHw9IFVBUlQwMXhfQ1JfVUFSVEVOIHwgVUFSVDAxMV9DUl9SWEU7CisKKwlpZiAocG9ydC0+cnM0
+ODUuZmxhZ3MgJiBTRVJfUlM0ODVfRU5BQkxFRCkgeworCQlpZiAocG9ydC0+cnM0ODUuZmxhZ3Mg
+JiBTRVJfUlM0ODVfUlRTX0FGVEVSX1NFTkQpCisJCQljciAmPSB+VUFSVDAxMV9DUl9SVFM7CisJ
+CWVsc2UKKwkJCWNyIHw9IFVBUlQwMTFfQ1JfUlRTOworCX0gZWxzZSB7CisJCWNyIHw9IFVBUlQw
+MTFfQ1JfVFhFOworCX0KKwogCXBsMDExX3dyaXRlKGNyLCB1YXAsIFJFR19DUik7CiAKIAlzcGlu
+X3VubG9ja19pcnEoJnVhcC0+cG9ydC5sb2NrKTsKQEAgLTE4NjQsNiArMTk0MSw5IEBAIHN0YXRp
+YyB2b2lkIHBsMDExX3NodXRkb3duKHN0cnVjdCB1YXJ0X3BvcnQgKnBvcnQpCiAKIAlwbDAxMV9k
+bWFfc2h1dGRvd24odWFwKTsKIAorCWlmICgocG9ydC0+cnM0ODUuZmxhZ3MgJiBTRVJfUlM0ODVf
+RU5BQkxFRCkgJiYgdWFwLT5yczQ4NV90eF9zdGFydGVkKQorCQlwbDAxMV9yczQ4NV90eF9zdG9w
+KHVhcCk7CisKIAlmcmVlX2lycSh1YXAtPnBvcnQuaXJxLCB1YXApOwogCiAJcGwwMTFfZGlzYWJs
+ZV91YXJ0KHVhcCk7CkBAIC0xOTQxLDYgKzIwMjEsNyBAQCBwbDAxMV9zZXRfdGVybWlvcyhzdHJ1
+Y3QgdWFydF9wb3J0ICpwb3J0LCBzdHJ1Y3Qga3Rlcm1pb3MgKnRlcm1pb3MsCiAJdW5zaWduZWQg
+aW50IGxjcl9oLCBvbGRfY3I7CiAJdW5zaWduZWQgbG9uZyBmbGFnczsKIAl1bnNpZ25lZCBpbnQg
+YmF1ZCwgcXVvdCwgY2xrZGl2OworCXVuc2lnbmVkIGludCBiaXRzOwogCiAJaWYgKHVhcC0+dmVu
+ZG9yLT5vdmVyc2FtcGxpbmcpCiAJCWNsa2RpdiA9IDg7CkBAIC0xOTkxLDE4ICsyMDcyLDI5IEBA
+IHBsMDExX3NldF90ZXJtaW9zKHN0cnVjdCB1YXJ0X3BvcnQgKnBvcnQsIHN0cnVjdCBrdGVybWlv
+cyAqdGVybWlvcywKIAlpZiAodWFwLT5maWZvc2l6ZSA+IDEpCiAJCWxjcl9oIHw9IFVBUlQwMXhf
+TENSSF9GRU47CiAKKwliaXRzID0gdHR5X2dldF9mcmFtZV9zaXplKHRlcm1pb3MtPmNfY2ZsYWcp
+OworCiAJc3Bpbl9sb2NrX2lycXNhdmUoJnBvcnQtPmxvY2ssIGZsYWdzKTsKIAogCS8qCiAJICog
+VXBkYXRlIHRoZSBwZXItcG9ydCB0aW1lb3V0LgogCSAqLwogCXVhcnRfdXBkYXRlX3RpbWVvdXQo
+cG9ydCwgdGVybWlvcy0+Y19jZmxhZywgYmF1ZCk7CisJLyoKKwkgKiBDYWxjdWxhdGUgdGhlIGFw
+cHJveGltYXRlZCB0aW1lIGl0IHRha2VzIHRvIHRyYW5zbWl0IG9uZSBjaGFyYWN0ZXIKKwkgKiB3
+aXRoIHRoZSBnaXZlbiBiYXVkIHJhdGUuIFdlIHVzZSB0aGlzIGFzIHRoZSBwb2xsIGludGVydmFs
+IHdoZW4gd2UKKwkgKiB3YWl0IGZvciB0aGUgdHggcXVldWUgdG8gZW1wdHkuCisJICovCisJdWFw
+LT5yczQ4NV90eF9kcmFpbl9pbnRlcnZhbCA9IChiaXRzICogMTAwMCAqIDEwMDApIC8gYmF1ZDsK
+IAogCXBsMDExX3NldHVwX3N0YXR1c19tYXNrcyhwb3J0LCB0ZXJtaW9zKTsKIAogCWlmIChVQVJU
+X0VOQUJMRV9NUyhwb3J0LCB0ZXJtaW9zLT5jX2NmbGFnKSkKIAkJcGwwMTFfZW5hYmxlX21zKHBv
+cnQpOwogCisJaWYgKHBvcnQtPnJzNDg1LmZsYWdzICYgU0VSX1JTNDg1X0VOQUJMRUQpCisJCXRl
+cm1pb3MtPmNfY2ZsYWcgJj0gfkNSVFNDVFM7CisKIAkvKiBmaXJzdCwgZGlzYWJsZSBldmVyeXRo
+aW5nICovCiAJb2xkX2NyID0gcGwwMTFfcmVhZCh1YXAsIFJFR19DUik7CiAJcGwwMTFfd3JpdGUo
+MCwgdWFwLCBSRUdfQ1IpOwpAQCAtMjEyNCw2ICsyMjE2LDQwIEBAIHN0YXRpYyBpbnQgcGwwMTFf
+dmVyaWZ5X3BvcnQoc3RydWN0IHVhcnRfcG9ydCAqcG9ydCwgc3RydWN0IHNlcmlhbF9zdHJ1Y3Qg
+KnNlcikKIAlyZXR1cm4gcmV0OwogfQogCitzdGF0aWMgaW50IHBsMDExX3JzNDg1X2NvbmZpZyhz
+dHJ1Y3QgdWFydF9wb3J0ICpwb3J0LAorCQkJICAgICAgc3RydWN0IHNlcmlhbF9yczQ4NSAqcnM0
+ODUpCit7CisJc3RydWN0IHVhcnRfYW1iYV9wb3J0ICp1YXAgPQorCQljb250YWluZXJfb2YocG9y
+dCwgc3RydWN0IHVhcnRfYW1iYV9wb3J0LCBwb3J0KTsKKworCS8qIHBpY2sgc2FuZSBzZXR0aW5n
+cyBpZiB0aGUgdXNlciBoYXNuJ3QgKi8KKwlpZiAoISEocnM0ODUtPmZsYWdzICYgU0VSX1JTNDg1
+X1JUU19PTl9TRU5EKSA9PQorCSAgICAhIShyczQ4NS0+ZmxhZ3MgJiBTRVJfUlM0ODVfUlRTX0FG
+VEVSX1NFTkQpKSB7CisJCXJzNDg1LT5mbGFncyB8PSBTRVJfUlM0ODVfUlRTX09OX1NFTkQ7CisJ
+CXJzNDg1LT5mbGFncyAmPSB+U0VSX1JTNDg1X1JUU19BRlRFUl9TRU5EOworCX0KKwkvKiBjbGFt
+cCB0aGUgZGVsYXlzIHRvIFswLCAxMDBtc10gKi8KKwlyczQ4NS0+ZGVsYXlfcnRzX2JlZm9yZV9z
+ZW5kID0gbWluKHJzNDg1LT5kZWxheV9ydHNfYmVmb3JlX3NlbmQsIDEwMFUpOworCXJzNDg1LT5k
+ZWxheV9ydHNfYWZ0ZXJfc2VuZCA9IG1pbihyczQ4NS0+ZGVsYXlfcnRzX2FmdGVyX3NlbmQsIDEw
+MFUpOworCW1lbXNldChyczQ4NS0+cGFkZGluZywgMCwgc2l6ZW9mKHJzNDg1LT5wYWRkaW5nKSk7
+CisKKwlpZiAocG9ydC0+cnM0ODUuZmxhZ3MgJiBTRVJfUlM0ODVfRU5BQkxFRCkKKwkJcGwwMTFf
+cnM0ODVfdHhfc3RvcCh1YXApOworCisJLyogU2V0IG5ldyBjb25maWd1cmF0aW9uICovCisJcG9y
+dC0+cnM0ODUgPSAqcnM0ODU7CisJLyogTWFrZSBzdXJlIGF1dG8gUlRTIGlzIGRpc2FibGVkICov
+CisJaWYgKHBvcnQtPnJzNDg1LmZsYWdzICYgU0VSX1JTNDg1X0VOQUJMRUQpIHsKKwkJdTMyIGNy
+ID0gcGwwMTFfcmVhZCh1YXAsIFJFR19DUik7CisKKwkJY3IgJj0gflVBUlQwMTFfQ1JfUlRTRU47
+CisJCXBsMDExX3dyaXRlKGNyLCB1YXAsIFJFR19DUik7CisJCXBvcnQtPnN0YXR1cyAmPSB+VVBT
+VEFUX0FVVE9SVFM7CisJfQorCisJcmV0dXJuIDA7Cit9CisKIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
+dWFydF9vcHMgYW1iYV9wbDAxMV9wb3BzID0gewogCS50eF9lbXB0eQk9IHBsMDExX3R4X2VtcHR5
+LAogCS5zZXRfbWN0cmwJPSBwbDAxMV9zZXRfbWN0cmwsCkBAIC0yNTg4LDEwICsyNzE0LDI4IEBA
+IHN0YXRpYyBpbnQgcGwwMTFfZmluZF9mcmVlX3BvcnQodm9pZCkKIAlyZXR1cm4gLUVCVVNZOwog
+fQogCitzdGF0aWMgaW50IHBsMDExX2dldF9yczQ4NV9tb2RlKHN0cnVjdCB1YXJ0X2FtYmFfcG9y
+dCAqdWFwKQoreworCXN0cnVjdCB1YXJ0X3BvcnQgKnBvcnQgPSAmdWFwLT5wb3J0OworCXN0cnVj
+dCBzZXJpYWxfcnM0ODUgKnJzNDg1ID0gJnBvcnQtPnJzNDg1OworCWludCByZXQ7CisKKwlyZXQg
+PSB1YXJ0X2dldF9yczQ4NV9tb2RlKHBvcnQpOworCWlmIChyZXQpCisJCXJldHVybiByZXQ7CisK
+KwkvKiBjbGFtcCB0aGUgZGVsYXlzIHRvIFswLCAxMDBtc10gKi8KKwlyczQ4NS0+ZGVsYXlfcnRz
+X2JlZm9yZV9zZW5kID0gbWluKHJzNDg1LT5kZWxheV9ydHNfYmVmb3JlX3NlbmQsIDEwMFUpOwor
+CXJzNDg1LT5kZWxheV9ydHNfYWZ0ZXJfc2VuZCA9IG1pbihyczQ4NS0+ZGVsYXlfcnRzX2FmdGVy
+X3NlbmQsIDEwMFUpOworCisJcmV0dXJuIDA7Cit9CisKIHN0YXRpYyBpbnQgcGwwMTFfc2V0dXBf
+cG9ydChzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCB1YXJ0X2FtYmFfcG9ydCAqdWFwLAogCQkJ
+ICAgIHN0cnVjdCByZXNvdXJjZSAqbW1pb2Jhc2UsIGludCBpbmRleCkKIHsKIAl2b2lkIF9faW9t
+ZW0gKmJhc2U7CisJaW50IHJldDsKIAogCWJhc2UgPSBkZXZtX2lvcmVtYXBfcmVzb3VyY2UoZGV2
+LCBtbWlvYmFzZSk7CiAJaWYgKElTX0VSUihiYXNlKSkKQEAgLTI2MDgsNiArMjc1MiwxMCBAQCBz
+dGF0aWMgaW50IHBsMDExX3NldHVwX3BvcnQoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QgdWFy
+dF9hbWJhX3BvcnQgKnVhcCwKIAl1YXAtPnBvcnQuZmxhZ3MgPSBVUEZfQk9PVF9BVVRPQ09ORjsK
+IAl1YXAtPnBvcnQubGluZSA9IGluZGV4OwogCisJcmV0ID0gcGwwMTFfZ2V0X3JzNDg1X21vZGUo
+dWFwKTsKKwlpZiAocmV0KQorCQlyZXR1cm4gcmV0OworCiAJYW1iYV9wb3J0c1tpbmRleF0gPSB1
+YXA7CiAKIAlyZXR1cm4gMDsKQEAgLTI2NjUsNyArMjgxMyw3IEBAIHN0YXRpYyBpbnQgcGwwMTFf
+cHJvYmUoc3RydWN0IGFtYmFfZGV2aWNlICpkZXYsIGNvbnN0IHN0cnVjdCBhbWJhX2lkICppZCkK
+IAl1YXAtPnBvcnQuaW90eXBlID0gdmVuZG9yLT5hY2Nlc3NfMzJiID8gVVBJT19NRU0zMiA6IFVQ
+SU9fTUVNOwogCXVhcC0+cG9ydC5pcnEgPSBkZXYtPmlycVswXTsKIAl1YXAtPnBvcnQub3BzID0g
+JmFtYmFfcGwwMTFfcG9wczsKLQorCXVhcC0+cG9ydC5yczQ4NV9jb25maWcgPSBwbDAxMV9yczQ4
+NV9jb25maWc7CiAJc25wcmludGYodWFwLT50eXBlLCBzaXplb2YodWFwLT50eXBlKSwgIlBMMDEx
+IHJldiV1IiwgYW1iYV9yZXYoZGV2KSk7CiAKIAlyZXQgPSBwbDAxMV9zZXR1cF9wb3J0KCZkZXYt
+PmRldiwgdWFwLCAmZGV2LT5yZXMsIHBvcnRucik7CgpiYXNlLWNvbW1pdDogYjYxYzhiZjQ2OTRi
+NTExNTc2Njg0OTM3OGRjYjg3ODdmZjU0ZTY1ZQotLSAKMi4zMS4xCgo=
