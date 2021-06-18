@@ -2,135 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E66303ACCEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:57:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A4653ACC42
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234248AbhFRN7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:59:39 -0400
-Received: from m12-12.163.com ([220.181.12.12]:33534 "EHLO m12-12.163.com"
+        id S233692AbhFRNet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:34:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:41182 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233754AbhFRN7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:59:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=eCW+C4iVQPGpJOG3QE
-        vEPn+ptIsdgDaQpBCpWgq1I7U=; b=oGKw+ZW1F4gDVFYwsejb3kCgoCgj6u14Cj
-        41a7G8GWwgaRCbzBza0MdFY4RKtUBguYNbot4HjT7sfqmsLdRHVOQY7dtw2gLrWI
-        +81Vww1I7MI4L9X9XjXrMCSa5fwlWlIOMcTbLuYiAcQ96IfYJRyCjzHOMF3RFM/T
-        cbwKdGtQk=
-Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
-        by smtp8 (Coremail) with SMTP id DMCowACnqtbvYsxgV+ZQKg--.33014S2;
-        Fri, 18 Jun 2021 17:10:08 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     charles.gorand@effinnov.com, krzysztof.kozlowski@canonical.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH v2] NFC: nxp-nci: remove unnecessary labels
-Date:   Fri, 18 Jun 2021 17:10:16 +0800
-Message-Id: <20210618091016.19500-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: DMCowACnqtbvYsxgV+ZQKg--.33014S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7uw4kuFW8WFWDWw43Xr48Xrb_yoW8uFWDpF
-        13WFyayryrtr97WFn5Ar12vFZ5tw18J39rWr9rt393X3WYyryjqr4kCFW0vFWrJrZakFya
-        yr4IvFyDWF17JaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bUUDXUUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiERC1sV7+3wZmMQAAsr
+        id S232258AbhFRNes (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 09:34:48 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E0ED91424;
+        Fri, 18 Jun 2021 06:32:38 -0700 (PDT)
+Received: from e120877-lin.cambridge.arm.com (e120877-lin.cambridge.arm.com [10.1.194.43])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A88CA3F719;
+        Fri, 18 Jun 2021 06:32:37 -0700 (PDT)
+From:   Vincent Donnefort <vincent.donnefort@arm.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com
+Cc:     vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        valentin.schneider@arm.com, rostedt@goodmis.org,
+        linux-kernel@vger.kernel.org,
+        Vincent Donnefort <vincent.donnefort@arm.com>
+Subject: [PATCH 1/2] sched/rt: Fix RT utilization tracking during policy change
+Date:   Fri, 18 Jun 2021 14:32:18 +0100
+Message-Id: <1624023139-66147-1-git-send-email-vincent.donnefort@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+RT keeps track of the utilization on a per-rq basis with the structure
+avg_rt. This utilization is updated during task_tick_rt(),
+put_prev_task_rt() and set_next_task_rt(). However, when the current
+running task changes its policy, set_next_task_rt() which would usually
+take care of updating the utilization when the rq starts running RT tasks,
+will not see a such change, leaving the avg_rt structure outdated. When
+that very same task will be dequeued later, put_prev_task_rt() will then
+update the utilization, based on a wrong last_update_time, leading a huge
+spike in the RT utilization signal.
 
-Simplify the code by removing unnecessary labels and returning directly.
+The signal would eventually recover from this issue after few ms. Even if
+no RT tasks are run, avg_rt is also updated in __update_blocked_others().
+But as the CPU capacity depends partly on the avg_rt, this issue has
+nonetheless a significant impact on the scheduler.
 
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
----
- drivers/nfc/nxp-nci/core.c | 39 +++++++++++++--------------------------
- 1 file changed, 13 insertions(+), 26 deletions(-)
+Fix this issue by ensuring a load update when a running task changes
+its policy to RT.
 
-diff --git a/drivers/nfc/nxp-nci/core.c b/drivers/nfc/nxp-nci/core.c
-index a0ce95a..2b0c723 100644
---- a/drivers/nfc/nxp-nci/core.c
-+++ b/drivers/nfc/nxp-nci/core.c
-@@ -70,21 +70,16 @@ static int nxp_nci_send(struct nci_dev *ndev, struct sk_buff *skb)
- 	struct nxp_nci_info *info = nci_get_drvdata(ndev);
- 	int r;
- 
--	if (!info->phy_ops->write) {
--		r = -ENOTSUPP;
--		goto send_exit;
--	}
-+	if (!info->phy_ops->write)
-+		return -EOPNOTSUPP;
- 
--	if (info->mode != NXP_NCI_MODE_NCI) {
--		r = -EINVAL;
--		goto send_exit;
--	}
-+	if (info->mode != NXP_NCI_MODE_NCI)
-+		return -EINVAL;
- 
- 	r = info->phy_ops->write(info->phy_id, skb);
- 	if (r < 0)
- 		kfree_skb(skb);
- 
--send_exit:
- 	return r;
- }
- 
-@@ -104,10 +99,8 @@ int nxp_nci_probe(void *phy_id, struct device *pdev,
- 	int r;
- 
- 	info = devm_kzalloc(pdev, sizeof(struct nxp_nci_info), GFP_KERNEL);
--	if (!info) {
--		r = -ENOMEM;
--		goto probe_exit;
--	}
-+	if (!info)
-+		return -ENOMEM;
- 
- 	info->phy_id = phy_id;
- 	info->pdev = pdev;
-@@ -120,31 +113,25 @@ int nxp_nci_probe(void *phy_id, struct device *pdev,
- 	if (info->phy_ops->set_mode) {
- 		r = info->phy_ops->set_mode(info->phy_id, NXP_NCI_MODE_COLD);
- 		if (r < 0)
--			goto probe_exit;
-+			return r;
+Fixes: 371bf427 ("sched/rt: Add rt_rq utilization tracking")
+Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+
+diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+index a525447..5ac0f31 100644
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -2341,10 +2341,8 @@ void __init init_sched_rt_class(void)
+ static void switched_to_rt(struct rq *rq, struct task_struct *p)
+ {
+ 	/*
+-	 * If we are already running, then there's nothing
+-	 * that needs to be done. But if we are not running
+-	 * we may need to preempt the current running task.
+-	 * If that current running task is also an RT task
++	 * If we are not running we may need to preempt the current
++	 * running task. If that current running task is also an RT task
+ 	 * then see if we can move to another run queue.
+ 	 */
+ 	if (task_on_rq_queued(p) && rq->curr != p) {
+@@ -2355,6 +2353,13 @@ static void switched_to_rt(struct rq *rq, struct task_struct *p)
+ 		if (p->prio < rq->curr->prio && cpu_online(cpu_of(rq)))
+ 			resched_curr(rq);
  	}
- 
- 	info->mode = NXP_NCI_MODE_COLD;
- 
- 	info->ndev = nci_allocate_device(&nxp_nci_ops, NXP_NCI_NFC_PROTOCOLS,
- 					 NXP_NCI_HDR_LEN, 0);
--	if (!info->ndev) {
--		r = -ENOMEM;
--		goto probe_exit;
--	}
-+	if (!info->ndev)
-+		return -ENOMEM;
- 
- 	nci_set_parent_dev(info->ndev, pdev);
- 	nci_set_drvdata(info->ndev, info);
- 	r = nci_register_device(info->ndev);
--	if (r < 0)
--		goto probe_exit_free_nci;
-+	if (r < 0) {
-+		nci_free_device(info->ndev);
-+		return r;
-+	}
- 
- 	*ndev = info->ndev;
--
--	goto probe_exit;
--
--probe_exit_free_nci:
--	nci_free_device(info->ndev);
--probe_exit:
- 	return r;
++
++	/*
++	 * If we are running, update the avg_rt tracking, as the running time
++	 * will now on be accounted into the latter.
++	 */
++	if (task_current(rq, p))
++		update_rt_rq_load_avg(rq_clock_pelt(rq), rq, 0);
  }
- EXPORT_SYMBOL(nxp_nci_probe);
+ 
+ /*
 -- 
-1.9.1
-
+2.7.4
 
