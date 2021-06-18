@@ -2,129 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 410353ACD67
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D38C93ACD6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:22:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234478AbhFROVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:21:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234472AbhFROVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:21:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB5C861222;
-        Fri, 18 Jun 2021 14:18:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624025940;
-        bh=6Us+RX3nl4iAlpEY6I+lqz2fIEguQp5Np4nXwZxMqZw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k8lqdYl7MvypBonkaG8UM1gOUkoU1UNs3JJ5Hfa37GsqZlHnv9JCLLd7nKnnwr6G3
-         LZn/aUz5+2rmAmBH3MLtjzXSQtXyArQhLEYs6iCaYzXoTBqjDRSfHNaHr0eTHCT4RJ
-         zUh79kIiR8F62Cbo8sQrPYIVH8p4YeEFVx2ghp/DB2+AKsfzXoGNGi5ototVKxPMRc
-         YHLtJln4Z491PHpHWbV4S6wKwfv4ol5OWR3fWgIhuxEk7w4iyFX0Q4UuNeokXMnQb5
-         FdAnfwZs3BFW7QRU0r7Hi8nTi2j6ZeG3Nl93VtCirvQ3+68w6FHqZcNcZj3d1xy43A
-         kYIMxu63ft8IA==
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] soc: qcom: geni: Add support for gpi dma
-Date:   Fri, 18 Jun 2021 19:48:39 +0530
-Message-Id: <20210618141839.3777270-4-vkoul@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210618141839.3777270-1-vkoul@kernel.org>
-References: <20210618141839.3777270-1-vkoul@kernel.org>
+        id S234114AbhFROYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 10:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234503AbhFROYL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 10:24:11 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 453E5C061574;
+        Fri, 18 Jun 2021 07:22:02 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id f16-20020a05600c1550b02901b00c1be4abso8835854wmg.2;
+        Fri, 18 Jun 2021 07:22:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/biPioDVeS+IYbxYtzg7Tz6IEPtjr5QXhP/AdQlfO84=;
+        b=P4/4h2b8qp4XU9blbA89ELz8vd5WafBNDUFlcZ1rj6cknCBtbZrc20qCrXCo/NAQ+0
+         IzaZPkavTJrdzjocPjtmceGDDcolEMj/M7faIc99CL3xJ2dRr4YYi6ogQ2e+YlQw54oQ
+         413krdch49fpbem9cgIxN7ox0jAl2jZnuQmVBGp5AoW2CX3wrGSkCg8iola01SIFn/ch
+         D5swQzJBZx72+6P4nMYOUmQmVWCTlrFylwfmtWCKGiK3Do/WTPNIIlGHmXOiy0fNKp4R
+         9ECjXAHpoNYBRlYjnvans2huDbtNpNkcEC4/VIdWqzKzDeOIDWjiqrgACJhaO98P5riJ
+         TLiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/biPioDVeS+IYbxYtzg7Tz6IEPtjr5QXhP/AdQlfO84=;
+        b=XJ2p83RTVkmVNRMXIa83iH0XqjxfALplr5C4nXspE8PX/imZDXJIGa/82vwhgteygn
+         r705NmUy904ebkFY6MsaNnI9cnsDYNkVAPQiy6STl9DwCyhcKZEbPEeWiYipGzLCstPz
+         j82gsyDffOoEAWjeGLMVeDi8avzivFxD/56bxiXgQWCpQ3bkI1xOtgNI71AorxwPsI2u
+         qRq9sD+qlgOf1OyhGb3CuiqMl/jqmos81RlsEiFWyvMxjWGrlR+iPPrbF7wmbmpIAl1o
+         BHU+Qe2WuQecQN/mhKYnwLgg91Qa2LXgLIX+DfWnQupP0PjT0tbqx+ZkBJkcM7GiXPQW
+         ButQ==
+X-Gm-Message-State: AOAM531A2/5RBUqUOwx5emZlRjCpdTz8tSi06Zib1NMQcPG83rAxRwAk
+        7iCXBNFxZSVWrlxHYMntfjvzgxNW4tVX1A==
+X-Google-Smtp-Source: ABdhPJyKstre3DomrgnI/Zr73Kb9mawHY+FIwq0XyXEcaToktorCgbIDII2H5TgRhE1qLHB74af1bw==
+X-Received: by 2002:a1c:5413:: with SMTP id i19mr12213783wmb.12.1624026120589;
+        Fri, 18 Jun 2021 07:22:00 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id x18sm8583826wrw.19.2021.06.18.07.21.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jun 2021 07:22:00 -0700 (PDT)
+Subject: Re: arm64: dts: mt8195: Add Mediatek SoC MT8195 device nodes
+To:     Tinghan Shen <tinghan.shen@mediatek.com>, robh+dt@kernel.org
+Cc:     devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        srv_heupstream@mediatek.com, seiya.wang@mediatek.com,
+        wenst@google.com, Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20210615173233.26682-1-tinghan.shen@mediatek.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <b1ee64c4-eeb6-a664-ebcd-4a0cc62e2ded@gmail.com>
+Date:   Fri, 18 Jun 2021 16:21:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210615173233.26682-1-tinghan.shen@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GPI DMA is one of the DMA modes supported on geni, this adds support to
-enable that mode
+Hi Tnghan,
 
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
----
- drivers/soc/qcom/qcom-geni-se.c | 32 +++++++++++++++++++++++++++++++-
- include/linux/qcom-geni-se.h    |  5 +++--
- 2 files changed, 34 insertions(+), 3 deletions(-)
+It looks like as if you send a whole bunch of device tree files which don't have
+any binding description yet.
 
-diff --git a/drivers/soc/qcom/qcom-geni-se.c b/drivers/soc/qcom/qcom-geni-se.c
-index 08d645b90ed3..40a0a1f88070 100644
---- a/drivers/soc/qcom/qcom-geni-se.c
-+++ b/drivers/soc/qcom/qcom-geni-se.c
-@@ -307,6 +307,32 @@ static void geni_se_select_dma_mode(struct geni_se *se)
- 		writel_relaxed(val, se->base + SE_GENI_DMA_MODE_EN);
- }
- 
-+static void geni_se_select_gpi_mode(struct geni_se *se)
-+{
-+	unsigned int gpi_event_en;
-+	unsigned int m_irq_en;
-+	unsigned int s_irq_en;
-+
-+	geni_se_irq_clear(se);
-+	writel(0, se->base + SE_IRQ_EN);
-+
-+	s_irq_en = readl_relaxed(se->base + SE_GENI_S_IRQ_EN);
-+	s_irq_en &= ~S_CMD_DONE_EN;
-+	writel(s_irq_en, se->base + SE_GENI_S_IRQ_EN);
-+
-+	m_irq_en = readl(se->base + SE_GENI_M_IRQ_EN);
-+	m_irq_en &= ~(M_CMD_DONE_EN | M_TX_FIFO_WATERMARK_EN |
-+		      M_RX_FIFO_WATERMARK_EN | M_RX_FIFO_LAST_EN);
-+	writel(m_irq_en, se->base + SE_GENI_M_IRQ_EN);
-+
-+	writel(GENI_DMA_MODE_EN, se->base + SE_GENI_DMA_MODE_EN);
-+
-+	gpi_event_en = readl(se->base + SE_GSI_EVENT_EN);
-+	gpi_event_en |= (DMA_RX_EVENT_EN | DMA_TX_EVENT_EN |
-+			 GENI_M_EVENT_EN | GENI_S_EVENT_EN);
-+	writel(gpi_event_en, se->base + SE_GSI_EVENT_EN);
-+}
-+
- /**
-  * geni_se_select_mode() - Select the serial engine transfer mode
-  * @se:		Pointer to the concerned serial engine.
-@@ -314,7 +340,8 @@ static void geni_se_select_dma_mode(struct geni_se *se)
-  */
- void geni_se_select_mode(struct geni_se *se, enum geni_se_xfer_mode mode)
- {
--	WARN_ON(mode != GENI_SE_FIFO && mode != GENI_SE_DMA);
-+	WARN_ON(mode != GENI_SE_FIFO && mode != GENI_SE_DMA &&
-+		mode != GENI_GPI_DMA);
- 
- 	switch (mode) {
- 	case GENI_SE_FIFO:
-@@ -323,6 +350,9 @@ void geni_se_select_mode(struct geni_se *se, enum geni_se_xfer_mode mode)
- 	case GENI_SE_DMA:
- 		geni_se_select_dma_mode(se);
- 		break;
-+	case GENI_GPI_DMA:
-+		geni_se_select_gpi_mode(se);
-+		break;
- 	case GENI_SE_INVALID:
- 	default:
- 		break;
-diff --git a/include/linux/qcom-geni-se.h b/include/linux/qcom-geni-se.h
-index 5fda675c5cfe..336b682392b1 100644
---- a/include/linux/qcom-geni-se.h
-+++ b/include/linux/qcom-geni-se.h
-@@ -11,8 +11,9 @@
- /* Transfer mode supported by GENI Serial Engines */
- enum geni_se_xfer_mode {
- 	GENI_SE_INVALID,
--	GENI_SE_FIFO,
--	GENI_SE_DMA,
-+	GENI_SE_FIFO, /* FIFO mode */
-+	GENI_GPI_DMA, /* GSI aka GPI DMA mode */
-+	GENI_SE_DMA,  /* SE DMA mode */
- };
- 
- /* Protocols supported by GENI Serial Engines */
--- 
-2.31.1
+Can you please filter and only send these patches that actually have a binding
+entry? That would make my life much easier.
 
+Apart from that it would be good if you could ask internally to get some advice
+how to improve Signed-off-by tags (I spotted at least one patch where yours was
+missing) or how to improve commit messages.
+
+Thanks!
+Matthias
+
+On 15/06/2021 19:32, Tinghan Shen wrote:
+> This series is a collection of device nodes for Mediatek SoC MT8195 and
+> depends on patches[1][2][3].
+> 
+> The dependency list is not complete.
+> some dependencies are still under working.
+> 
+> [1] arm64: dts: Add Mediatek SoC MT8195 and evaluation board dts and Makefile
+>     https://patchwork.kernel.org/project/linux-mediatek/patch/20210601075350.31515-2-seiya.wang@mediatek.com/
+> 
+> [2] dt-bindings: power: Add MT8195 power domains
+>     https://patchwork.kernel.org/project/linux-mediatek/patch/20210610023614.5375-3-chun-jie.chen@mediatek.com/
+> 
+> [3] dt-bindings: pinctrl: mt8195: add pinctrl file and binding document
+>     https://patchwork.kernel.org/project/linux-mediatek/patch/20210413055702.27535-2-zhiyong.tao@mediatek.com/
+> 
+> 
