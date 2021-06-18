@@ -2,123 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0120C3AC60A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACD9C3AC628
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233742AbhFRI1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 04:27:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47800 "EHLO
+        id S233762AbhFRIeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 04:34:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233483AbhFRI1q (ORCPT
+        with ESMTP id S232038AbhFRId4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 04:27:46 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68243C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:25:35 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id e22so6190632wrc.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:25:35 -0700 (PDT)
+        Fri, 18 Jun 2021 04:33:56 -0400
+Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87FB5C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:31:47 -0700 (PDT)
+Received: by mail-il1-x12e.google.com with SMTP id x12so7801600ill.4
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:31:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4yp7aW76jFlM4QGK/SoDKL6wd3P2t/udl1+SDe7k800=;
-        b=BG0Nfd0nx1VHlxLzdTQQ3ED2RabTSSG48wjdiktWarSyDtWH7wtp8Y1jYIrLy7OMQl
-         /uF5LWaFesJdjieJXeNov6439Vdf77ldaBKjP0JhiQstT4R1KUFcararw3iTBQ8Xk7eQ
-         1mWOi9Qj50S9gcm2aftPRMri//xgOSdQ+cpyuBMTv702gnxQt3JQSYIOPsPFkgioT4RF
-         TK9R+pLbiXomEAZ5gGXFX8nD4EQl44c/2KUw4IBPQnHJe3xbtRHz2qQjqZh43ye+t69V
-         WB0MnQasYrm7AHeQfDJ/QEmnwNJlXq25RvMH3TUk18nZIXpxzneC/e0ESgKf6Ls1QLeh
-         abqQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=lFwm1133mv6gxG1yIy3y8qPNcT3vkNGLZdF4eVbKc4I=;
+        b=jHt/p+aVlcMOygY50yvW43NaSczEC3OyNJrGb3v1OHPn1V89uTvqQXK61I7zMR/1Pb
+         vCn7+bq2nynS1GHsP4i39ckUJ2+Qd4KmPVmapIGlk9Ku7eBjEZwgi5D7RSbSo4D6jVat
+         O3ASuJ8tVkYEUTq6zOOhdpC1YvIhaETytfu1t7GtW+NmkopC841Q6Qcpvfr4IJW8BudI
+         G51ytOasxj5HMj6iqqp9U73pqFwKBTkDoxFFvzjgaVjCeTzN3dnsBdtY57tgaKzpK2k/
+         Vg3qerhoUID546HGUMKidgDP/8iFWqnabCncJekSqGPewjRSYon4fTNnCm4FScCPzumc
+         Ej+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4yp7aW76jFlM4QGK/SoDKL6wd3P2t/udl1+SDe7k800=;
-        b=FwSvaG7S8/sVxQMQuRQI+gENgt1NyVNdTkkJyUNWB1KTTQ971W2oDP6ogzvcQSsF5w
-         MIgE4/DPpfrsCXPGdv1SAW/TBiF7bIxXLD7PFs7FJcmUzT6Pqu+ivKaj95IR5f4arX1t
-         v4tPq/bNek0WHCkZD6OVIb8NdZV9zcGJpv915kaWfvYXa9AJpzRAanQhp78fJbolL5ki
-         v+FSH+lQUVrRnZEASbThAaKR/OHdLN58M6HXwsEjh13hmFpTBY9MhFy3AKPzVgArnPiJ
-         mcLqZ1qxkB2tboPV+K5pRso8EHlhw2YYp0Y25wbZo64dDcoekSHSeMrhaKmzLKkLSdKm
-         /IMg==
-X-Gm-Message-State: AOAM531ZdpvpuO6SX68ToRA36YrRmF47glsJ+CT6xZ4olt+vyOnM5Oud
-        SWEg814DvzLm/NzPSPs4JeGXmg==
-X-Google-Smtp-Source: ABdhPJyTirQETOkkN7vwg+3NJQ/zG57MMk4RQWhF6OW951WA7/4o1C6UqRnF1tjfF87SdRedMYT15A==
-X-Received: by 2002:a5d:5683:: with SMTP id f3mr11126026wrv.61.1624004733764;
-        Fri, 18 Jun 2021 01:25:33 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:1042:9733:3014:e2b4? ([2a01:e34:ed2f:f020:1042:9733:3014:e2b4])
-        by smtp.googlemail.com with ESMTPSA id r10sm3805289wrq.17.2021.06.18.01.25.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 01:25:33 -0700 (PDT)
-Subject: Re: [PATCH RESEND v10 02/11] reboot: Add hardware protection
- power-off
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "agross@kernel.org" <agross@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-arm-msm@vger.kernel.org" <linux-arm-msm@vger.kernel.org>,
-        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Matteo Croce <mcroce@microsoft.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linux-pm@vger.kernel.org
-References: <cover.1622628333.git.matti.vaittinen@fi.rohmeurope.com>
- <e83ec1ca9408f90c857ea9dcdc57b14d9037b03f.1622628333.git.matti.vaittinen@fi.rohmeurope.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <cb86a545-69d9-9fc0-6fa6-8ed2f786c5ae@linaro.org>
-Date:   Fri, 18 Jun 2021 10:25:30 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=lFwm1133mv6gxG1yIy3y8qPNcT3vkNGLZdF4eVbKc4I=;
+        b=YWWQIXXW88BNamCC94OWcGBJgb+Wg7wAwrXkGkPjongqzqow2OnC3m7xhE4Gxhv5CT
+         QPf3l2gEaPeoz3iU99fl5GjFf0oFN65RThOs8Q/gFcf0KtGLSGpHSeUutYZ/n6JGyMDX
+         exYgtDMQ6EXPhGtPNkMPHqQ0qpUSSDNEvt4D32UEBV23hnzEPeR90f1KPnYX+CgK9KIN
+         nQ74hSJtTQZPkOMTPJQijnagUkJwCRjXVm8WiZqKVVmEDcvwVcPPeepysin/HWrA8RQa
+         NJ3wCjwDZJWaVOBpndIxPksusbJEMEYhNmQXh0TjeEPmWR8mGPLCge9Axmjay/I3Kt5c
+         xKeA==
+X-Gm-Message-State: AOAM530qPgvQpqyUENlWWqm/Jp7ZyUq62sGjqo3fmFDy2u0nX5ZzEOcl
+        btxackmU2C00QBC5XphezOWZTAQWRHs8THAX+/rKd30LQKzWpTGa
+X-Google-Smtp-Source: ABdhPJxCJDhUsGS4lgP4T4pc9htmYI/CVF8R+RBqRDnuazrU3rpD4EH4CupNL8GEPU7n/znMLx51qUJMuIyg2AfczY8=
+X-Received: by 2002:a05:6e02:5a3:: with SMTP id k3mr6743092ils.302.1624005106809;
+ Fri, 18 Jun 2021 01:31:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <e83ec1ca9408f90c857ea9dcdc57b14d9037b03f.1622628333.git.matti.vaittinen@fi.rohmeurope.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210617095309.3542373-1-stapelberg+linux@google.com> <CAJfpegvpnQMSRU+TW4J5+F+3KiAj8J_m+OjNrnh7f2X9DZp2Ag@mail.gmail.com>
+In-Reply-To: <CAJfpegvpnQMSRU+TW4J5+F+3KiAj8J_m+OjNrnh7f2X9DZp2Ag@mail.gmail.com>
+From:   Michael Stapelberg <stapelberg+linux@google.com>
+Date:   Fri, 18 Jun 2021 10:31:35 +0200
+Message-ID: <CAH9Oa-ZcG0+08d=D5-rbzY-v1cdUcuW0E7D_GcwjDoC1Phf+0g@mail.gmail.com>
+Subject: Re: [PATCH] backing_dev_info: introduce min_bw/max_bw limits
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        linux-fsdevel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        Dennis Zhou <dennis@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Roman Gushchin <guro@fb.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Jan Kara <jack@suse.cz>, Song Liu <song@kernel.org>,
+        David Sterba <dsterba@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/06/2021 07:40, Matti Vaittinen wrote:
-> There can be few cases when we need to shut-down the system in order to
-> protect the hardware. Currently this is done at least by the thermal core
-> when temperature raises over certain limit.
-> 
-> Some PMICs can also generate interrupts for example for over-current or
-> over-voltage, voltage drops, short-circuit, ... etc. On some systems
-> these are a sign of hardware failure and only thing to do is try to
-> protect the rest of the hardware by shutting down the system.
-> 
-> Add shut-down logic which can be used by all subsystems instead of
-> implementing the shutdown in each subsystem. The logic is stolen from
-> thermal_core with difference of using atomic_t instead of a mutex in
-> order to allow calls directly from IRQ context and changing the WARN()
-> to pr_emerg() as discussed here:
-> https://lore.kernel.org/lkml/YJuPwAZroVZ%2Fw633@alley/
-> and here:
-> https://lore.kernel.org/linux-iommu/20210331093104.383705-4-geert+renesas@glider.be/
-> 
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Hey Miklos
 
-Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Thanks for taking a look!
+
+On Fri, 18 Jun 2021 at 10:18, Miklos Szeredi <miklos@szeredi.hu> wrote:
+>
+> On Thu, 17 Jun 2021 at 11:53, Michael Stapelberg
+> <stapelberg+linux@google.com> wrote:
+> >
+> > These new knobs allow e.g. FUSE file systems to guide kernel memory
+> > writeback bandwidth throttling.
+> >
+> > Background:
+> >
+> > When using mmap(2) to read/write files, the page-writeback code tries t=
+o
+> > measure how quick file system backing devices (BDI) are able to write d=
+ata,
+> > so that it can throttle processes accordingly.
+> >
+> > Unfortunately, certain usage patterns, such as linkers (tested with GCC=
+,
+> > but also the Go linker) seem to hit an unfortunate corner case when wri=
+ting
+> > their large executable output files: the kernel only ever measures
+> > the (non-representative) rising slope of the starting bulk write, but t=
+he
+> > whole file write is already over before the kernel could possibly measu=
+re
+> > the representative steady-state.
+> >
+> > As a consequence, with each program invocation hitting this corner case=
+,
+> > the FUSE write bandwidth steadily sinks in a downward spiral, until it
+> > eventually reaches 0 (!). This results in the kernel heavily throttling
+> > page dirtying in programs trying to write to FUSE, which in turn manife=
+sts
+> > itself in slow or even entirely stalled linker processes.
+> >
+> > Change:
+> >
+> > This commit adds 2 knobs which allow avoiding this situation entirely o=
+n a
+> > per-file-system basis by restricting the minimum/maximum bandwidth.
+>
+>
+> This looks like  a bug in the dirty throttling heuristics, that may be
+> effecting multiple fuse based filesystems.
+>
+> Ideally the solution should be a fix to those heuristics, not adding more=
+ knobs.
 
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+Agreed.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+>
+>
+> Is there a fundamental reason why that can't be done?    Maybe the
+> heuristics need to detect the fact that steady state has not been
+> reached, and not modify the bandwidth in that case, or something along
+> those lines.
+
+Maybe, but I don=E2=80=99t have the expertise, motivation or time to
+investigate this any further, let alone commit to get it done.
+During our previous discussion I got the impression that nobody else
+had any cycles for this either:
+https://lore.kernel.org/linux-fsdevel/CANnVG6n=3DySfe1gOr=3D0ituQidp56idGAR=
+DKHzP0hv=3DERedeMrMA@mail.gmail.com/
+
+Have you had a look at the China LSF report at
+http://bardofschool.blogspot.com/2011/?
+The author of the heuristic has spent significant effort and time
+coming up with what we currently have in the kernel:
+
+"""
+Fengguang said he draw more than 10K performance graphs and read even
+more in the past year.
+"""
+
+This implies that making changes to the heuristic will not be a quick fix.
+
+I think adding these limit knobs could be useful regardless of the
+specific heuristic behavior.
+The knobs are certainly easy to understand, safe to introduce (no regressio=
+ns),
+and can be used to fix the issue at hand as well as other issues (if
+any, now or in the future).
+
+Thanks
+Best regards
+Michael
