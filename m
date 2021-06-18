@@ -2,90 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 871323AC67E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E73E3AC680
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:50:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231234AbhFRIvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 04:51:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:37218 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229591AbhFRIvN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 04:51:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D1B913D5;
-        Fri, 18 Jun 2021 01:49:04 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 658D83F694;
-        Fri, 18 Jun 2021 01:48:56 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 09:48:47 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, will@kernel.org,
-        boqun.feng@gmail.com, peterz@infradead.org, aou@eecs.berkeley.edu,
-        arnd@arndb.de, bcain@codeaurora.org, benh@kernel.crashing.org,
-        chris@zankel.net, dalias@libc.org, davem@davemloft.net,
-        deanbo422@gmail.com, deller@gmx.de, geert@linux-m68k.org,
-        gerg@linux-m68k.org, green.hu@gmail.com, guoren@kernel.org,
-        ink@jurassic.park.msu.ru, James.Bottomley@HansenPartnership.com,
-        jcmvbkbc@gmail.com, jonas@southpole.se, ley.foon.tan@intel.com,
-        linux@armlinux.org.uk, mattst88@gmail.com, monstr@monstr.eu,
-        mpe@ellerman.id.au, nickhu@andestech.com, palmerdabbelt@google.com,
-        paulus@samba.org, paul.walmsley@sifive.com, rth@twiddle.net,
-        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
-        tsbogend@alpha.franken.de, vgupta@synopsys.com,
-        ysato@users.sourceforge.jp
-Subject: Re: [PATCH v2 00/33] locking/atomic: convert all architectures to
- ARCH_ATOMIC
-Message-ID: <20210618084847.GA93984@C02TD0UTHF1T.local>
-References: <20210525140232.53872-1-mark.rutland@arm.com>
- <a15122e9-700d-c909-4794-d569ed1f6c61@infradead.org>
+        id S231466AbhFRIwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 04:52:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229591AbhFRIww (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 04:52:52 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E37BCC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:50:43 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id t40so9774789oiw.8
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:50:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jdFKobz0v5eVip0thXQlonp2mF35EnH4oN1hYfZc5Y8=;
+        b=eaI1qif8hWH4BDUPA4zAfU/JyLPIPsuOqFjMGM8Bena5fakXJe42h1NsUQcLTvKdJ1
+         LOcf3Qw8GQpYgpe1f/t5BZwAua9NJK/G8Q5YA0x3gEUix6SK0puD0UuAtx+522RhyFpH
+         v4eUaoWuflGssbIsWGhZ4Q0auBg7DdWZVHDrnnwfk2+9LefFaGFSuIuQ9zld9KS8IFv6
+         Sd0rdtaCXNVsby6BzdgBjLciQorxLwS2MxQSfyQVweBhblWYkBi4L+gKasclg9l19zHq
+         1GMpCGCj40H2EsIOBz8dw37C0Qe0+/jP52+2bQikzN3ft8mTNr0GKkink3eqiPd9DNE/
+         sy/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jdFKobz0v5eVip0thXQlonp2mF35EnH4oN1hYfZc5Y8=;
+        b=ShxYPiDsliJvbmW5v8mmiBeskbDhBD5ZklK38TlVDi1OKKPyP2e1J6VEN3EyR25aZC
+         5rLR0BxDA2yhTidXkeIxwkifYLePPXG4uzVzXjKA6bj7uiqTGitG2p+1Q2X8DCFUU+pi
+         f6VXDM841vnkK0napgR7ZIe1i0VAHp4tzEvBpiS1GdY8w2NSNtfE+J6BjfLv6tOARMJS
+         oV+UrmbkWoQZQFNu8heRDr5UZ87EOlaAyqsDdF9hku/AC8j3703zoQB7KDSbkdNNoFCZ
+         enHh8DfXJ8iw8FZVtonHIwJiW1IKF8v5shJkSjvTtqjtb7Wz6/HzAONtpMyze34mpobv
+         x9CQ==
+X-Gm-Message-State: AOAM531zUq7YdtICtSZS2Csl8Q37SMV03sD/FV1X7X0zp8L4VJC9xIkG
+        aHUsEmBSktwW13HPQAg65IOFBEbZ8TRYDuA1p64GMg==
+X-Google-Smtp-Source: ABdhPJypyxrsFJT695FL1xens+cccnkIs+C967czc330C77nK9BPZwBZ32eYzwZk3n/kX5cAq1Thkw1gKRvl10izUa0=
+X-Received: by 2002:aca:de07:: with SMTP id v7mr13635036oig.8.1624006243106;
+ Fri, 18 Jun 2021 01:50:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a15122e9-700d-c909-4794-d569ed1f6c61@infradead.org>
+References: <20210616095200.38008-1-wangyanan55@huawei.com> <20210616095200.38008-2-wangyanan55@huawei.com>
+In-Reply-To: <20210616095200.38008-2-wangyanan55@huawei.com>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Fri, 18 Jun 2021 09:50:06 +0100
+Message-ID: <CA+EHjTyVnHkk5rYb=W6msqoT5E_bVTBdhLtpeRR_b2wsib4Vgw@mail.gmail.com>
+Subject: Re: [PATCH v6 1/4] KVM: arm64: Introduce cache maintenance callbacks
+ for guest stage-2
+To:     Yanan Wang <wangyanan55@huawei.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Quentin Perret <qperret@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 04, 2021 at 10:56:16PM -0700, Randy Dunlap wrote:
-> On 5/25/21 7:01 AM, Mark Rutland wrote:
-> > This series (based on v5.13-rc2) converts all architectures to
-> > ARCH_ATOMIC. This will allow the use of instrumented atomics on all
-> > architectures (e.g. for KASAN and similar), and simplifies the core
-> > atomic code (which should allow for easier rework of the fallbacks and
-> > other bits in future).
+Hi Yanan,
 
-[...]
+On Wed, Jun 16, 2021 at 10:52 AM Yanan Wang <wangyanan55@huawei.com> wrote:
+>
+> To prepare for performing guest CMOs in the fault handlers in pgtable.c,
+> introduce two cache maintenance callbacks in struct kvm_pgtable_mm_ops.
+>
+> The new callbacks are specific for guest stage-2, so they will only be
+> initialized in 'struct kvm_pgtable_mm_ops kvm_s2_mm_ops'.
+>
+> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
+> ---
+>  arch/arm64/include/asm/kvm_pgtable.h | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+> index c3674c47d48c..302eca32e0af 100644
+> --- a/arch/arm64/include/asm/kvm_pgtable.h
+> +++ b/arch/arm64/include/asm/kvm_pgtable.h
+> @@ -44,6 +44,11 @@ typedef u64 kvm_pte_t;
+>   *                     in the current context.
+>   * @virt_to_phys:      Convert a virtual address mapped in the current context
+>   *                     into a physical address.
+> + * @flush_dcache:      Clean data cache for a guest page address range before
+> + *                     creating the corresponding stage-2 mapping.
+> + * @flush_icache:      Invalidate instruction cache for a guest page address
+> + *                     range before creating or updating the corresponding
+> + *                     stage-2 mapping.
+>   */
+>  struct kvm_pgtable_mm_ops {
+>         void*           (*zalloc_page)(void *arg);
+> @@ -54,6 +59,8 @@ struct kvm_pgtable_mm_ops {
+>         int             (*page_count)(void *addr);
+>         void*           (*phys_to_virt)(phys_addr_t phys);
+>         phys_addr_t     (*virt_to_phys)(void *addr);
+> +       void            (*flush_dcache)(void *addr, size_t size);
+> +       void            (*flush_icache)(void *addr, size_t size);
+>  };
+>
 
-> Hi Mark,
-> Sorry for the late reply. 
+Just to add to Marc's comment on naming, flush_dcache is in this case
+a clean and invalidate: I see that in patch 4 it eventually does a
+civac. So, yes, although it is a mouthful, I think it should be
+dcache_clean_inval and not just dcache_clean. An alternative, if it's
+acceptable by Marc and the others, is to name the parameters dcmo/icmo
+or something like that, where the nature of the maintenance operation
+is not necessarily tied to the name.
 
-Hi Randy,
+For reference, this is the patch Marc mentioned, where we're trying to
+fix the naming to make it consistent with Arm terminology (Arm doesn't
+define what a flush is):
+https://lore.kernel.org/linux-arm-kernel/20210524083001.2586635-19-tabba@google.com/
 
-Likewise, apologies in the delay in getting to this!
+Otherwise:
+Reviewed-by: Fuad Tabba <tabba@google.com>
 
-> I was just trying to update a patch
-> to arch/sh/include/asm/cmpxchg.h, in its xchg() macro:
-> 
-> https://lore.kernel.org/lkml/20210602231443.4670-2-rdunlap@infradead.org/
-> 
-> The patch simply converts xchg() to a GCC statement expression to
-> eliminate a build warning.
-> 
-> Arnd has done this for m68k and I have done it for sparc in the past.
-> 
-> Is there any (good) reason that all versions of arch_xchg() are not
-> statement expressions?  In this patch series, they seem to be quite
-> mixed (as they were before this patch series). I count 11 arches
-> that use a statement expression and 4 that do not (including arch/sh/).
+Cheers,
+/fuad
 
-Largely I tried to make the minimal change from what was there before,
-and I didn't have any specific reason to either use or avoid statement
-expressions.
 
-This series has been queued in the tip tree's locking/core branch for a
-while now, but we could spin a patch atop. Do you want to spin a patch
-to convert the remaining 4 architectures in one go?
-
-Thanks,
-Mark.
+>  /**
+> --
+> 2.23.0
+>
+> _______________________________________________
+> kvmarm mailing list
+> kvmarm@lists.cs.columbia.edu
+> https://lists.cs.columbia.edu/mailman/listinfo/kvmarm
