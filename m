@@ -2,104 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60BFE3ACE85
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02563ACEE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233533AbhFRPVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:21:38 -0400
-Received: from mga02.intel.com ([134.134.136.20]:42741 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234918AbhFRPVd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:21:33 -0400
-IronPort-SDR: Cq09ZNRNOgo62mgdw3OTFDyPzwNU3UXbCv6XJfIzQZYzSkgB2EeK//ssmuVfiaEdFcp/tlNp0h
- U307eu3MF8sQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="193699868"
-X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
-   d="scan'208";a="193699868"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 08:19:23 -0700
-IronPort-SDR: mjHVUwERwSYWDTHmPPBDw0vlKQqhY+2854CGLlihvy9w6Ge/97gWvZMHn1BMteBTvKuLATzL1e
- rXt/SzGkbhhQ==
-X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
-   d="scan'208";a="451424780"
-Received: from mahmoo2x-mobl.amr.corp.intel.com (HELO [10.252.143.210]) ([10.252.143.210])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 08:19:22 -0700
-Subject: Re: [PATCH] x86/mm: avoid truncating memblocks for SGX memory
-To:     Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, fan.du@intel.com,
-        reinette.chatre@intel.com, jarkko@kernel.org,
-        dan.j.williams@intel.com, x86@kernel.org,
-        linux-sgx@vger.kernel.org, luto@kernel.org, peterz@infradead.org
-References: <20210617194657.0A99CB22@viggo.jf.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
- oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
- 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
- ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
- VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
- iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
- c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
- pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
- ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
- QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
- c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
- CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
- 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
- K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
- VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
- e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
- ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
- kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
- rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
- f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
- mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
- UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
- sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
- 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
- cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
- UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
- db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
- lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
- kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
- gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
- AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
- XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
- e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
- pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
- YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
- lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
- M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
- 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
- 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
- OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
- ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
- z5cecg==
-Message-ID: <5a733af3-bf60-b658-3b4b-5916f9229e25@intel.com>
-Date:   Fri, 18 Jun 2021 08:19:20 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235514AbhFRP2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:28:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235156AbhFRPX6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 11:23:58 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E80AAC061144
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 08:20:22 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l7-20020a05600c1d07b02901b0e2ebd6deso6014323wms.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 08:20:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=4VkjEvJ7U0wJW+1WACjRWS0YBIwd4PDI2T3rCd695Z4=;
+        b=vUnYZlifdf+uN5aujONzSopwOt+W09Ra354XggT6fw0pwbmiy629BxX/DnzwenoNnI
+         F5hE67DFHZ6WF000a/C1hOaqt+xwyohuNx9gI5k7eUi90HWDf/9hLwZS/lYR526xDy7z
+         VJpdCwDOkia6XUSyGKF4AjfVwXr6AjP3jXckj6+xO3SGB2iG7hf9OGzyYso+97QuM0jT
+         RhZ6vn//oAyjIIS05HrAMTn2xaFnsbQX5nwC4mAweSokpxU0A7hyH/6xzyo5nI+QkdrT
+         o9oke/FhnTKBA20BwTCSQLqwfIIKz65mZF5iiEMcY0PlT5dMgct7QuA49Upel16Cv3jf
+         YR5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=4VkjEvJ7U0wJW+1WACjRWS0YBIwd4PDI2T3rCd695Z4=;
+        b=hab9LNVOYgZpHe6aNFsZxaXbaqMWus2qJyXigR8R/+LuE0UswkAG7OJgJs/c+uaRAt
+         rHjNerozJoY1HnlhCbjRbKPTgr5m8tg/6JVXw8CITEoW6qJK8+cmiHCyy37kvo6f0Jo3
+         7QYNC7Zyu2EaXKtr/1KkB0/3aLaCh8k6Ee2D1rZX8XY9ggnpjpMIN2Ag+1Qg7VbES08E
+         c0F+cyy5IkE99Shirfr8mlkm0M/0w1qyWRL8YWFn6mCMadiEPxiT8sDmPu1Ot+535fUE
+         fDhG7wnWBTO84ukPGnqQ0pFiNAM+bphE4Rss0WSlWiAcj2USBy4s8eX1tKbPmJaSEepX
+         hMjw==
+X-Gm-Message-State: AOAM532utpLks0ktSwVqffo5k9VC6SkIw2dXvL/kiKcpX6GV7UVqVmRM
+        BU3aKaGJivHR6G5AjiPYsFHkoDafVWnkn9zifr8=
+X-Google-Smtp-Source: ABdhPJxZKuEli9BIig93gbV9/v73hpTvZMatTwvXau+IoPHWxQjwCjHXdLw3UcPtCUXUQSX7XAqwIwEgOhRG56DyCCg=
+X-Received: by 2002:a1c:2cc3:: with SMTP id s186mr12588062wms.150.1624029621238;
+ Fri, 18 Jun 2021 08:20:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210617194657.0A99CB22@viggo.jf.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Sender: mcinnesdonna05@gmail.com
+Received: by 2002:a7b:c052:0:0:0:0:0 with HTTP; Fri, 18 Jun 2021 08:20:20
+ -0700 (PDT)
+From:   Debby Hallcom <debbyhallcom137@gmail.com>
+Date:   Fri, 18 Jun 2021 15:20:20 +0000
+X-Google-Sender-Auth: 7N6bkk_q1-xbci0maaZma4evZlY
+Message-ID: <CAK+X-7XYO1BuACuPvZFaiQoogkHdJxJge6ORO1mPrEft7UfzAw@mail.gmail.com>
+Subject: HELLO
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/17/21 12:46 PM, Dave Hansen wrote:
-> Signed-off-by: Fan Du <fan.du@intel.com>
-> Reported-by: Reinette Chatre <reinette.chatre@intel.com>
-> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-> Reviewed-by: Dave Hansen <dave.hansen@intel.com>
-> Fixes: 5d30f92e7631 ("x86/NUMA: Provide a range-to-target_node lookup facility")
-> Cc: x86@kernel.org
-> Cc: linux-sgx@vger.kernel.org
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
+I NEED YOUR IMMEDIATE REPLY
 
-Forgot to add:
+HELLO DEAR
 
-Signed-off-by: Dave Hansen <dave.hansen@intel.com>
+ My Name is Mrs. Debby Hallcom, from Norway. I know that this message
+will  be a surprise to you. Firstly, I am married to Mr.Smith Hallcom,
+A gold merchant who owns a small gold Mine in Burkina Faso; He died of
+Cardiovascular Disease in mid-March 2011. During his life time he
+deposited the sum of ($12,500,000.000, dollars.) with my name as the
+legal rightful appointed beneficiary to the fund in a bank in
+Ouagadougou the capital city of Burkina Faso in West Africa.The
+deposited money was from the sale of the shares, death benefits
+payment and entitlements of my deceased husband by his company.
+
+  I am sending this message to you praying that it will reach you in
+good health, since I am not in good health condition in which I sleep
+every night without knowing if I may be alive to see the next day. I
+am suffering from long time cancer and presently i am partially
+suffering
+from a stroke illness which has become almost impossible for me to
+move around. I am married to my late husband for over 4 years before
+he died and is unfortunately that we don't have a child, my doctor
+confided in me that i have less chance to live. Having known my health
+condition, I decided to contact you to claim the fund since I don't
+have any relation I grew up from the orphanage home, I have decided to
+donate what I have to you for the support of helping Motherless
+babies/Less privileged/Widows' because I am dying and diagnosed of
+cancer for about 2 years ago. I have been touched by God Almighty to
+donate from what I have inherited from my late husband to you for good
+work of God Almighty. I have asked Almighty God to forgive me and
+believe he has, because He is a Merciful God I will be going in for an
+operation surgery soon
+.This is the reason i need your services to stand as my next of kin or
+an executor to claim the funds for charity purposes. If this money
+remains unclaimed after my death, the bank executives or the
+government will take the money as unclaimed fund and maybe use it for
+selfish and worthless ventures, I need a very honest person who can
+claim this money and use it for Charity works, for orphanages, widows
+and also build schools for less privilege that will be named after my
+late husband and my name.I need your urgent answer to know if you will
+be able to execute this project, and I will give you more information
+on how the fund will be transferred to your bank account.
+
+Thanks
+Mrs. Debby Hallcom.
