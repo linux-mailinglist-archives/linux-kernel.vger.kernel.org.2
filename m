@@ -2,110 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E06353AD62C
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:52:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC6F3AD63C
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 02:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235280AbhFRXym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 19:54:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59610 "EHLO
+        id S233829AbhFSASn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 20:18:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232678AbhFRXyl (ORCPT
+        with ESMTP id S231723AbhFSASl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 19:54:41 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B701C061767
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:52:28 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id pf4-20020a17090b1d84b029016f6699c3f2so1763010pjb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:52:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3QYcwvtyhPnU4XufKlxXAbadnyn0yvfQI9M4GTCqOZc=;
-        b=cPWHs2b8m52BLZv7t3tqRbKyB9koU8IBShogTCNe8qX3i2zUvDaiwjUXulMd1ZUCPG
-         cyQpL+ovwPpT1u7E04n2hxuP7GXYtcFNFxH9lnpykwL/IUzXZE4Wm0IMFBST2on5ZHPp
-         HTSMSMuLbTFMiAUKrtAwuBTjXROUp89Bxf9OwMgbrYyS0A0l74O0jJwIUWr/Rspfgkrl
-         cbTcOKVfxnCRZdLfmT7bQmscPIVq1R8uJHW7AWBkdcyXmpbN4kdOR1ET+nttQr8oIT8/
-         hn/4oBYYRnHQyU6Af9CEtlGl64Y6sR+79s4pdnxLoXhE1MVUmy+yI3BjLaJge4PSyb/H
-         fBRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3QYcwvtyhPnU4XufKlxXAbadnyn0yvfQI9M4GTCqOZc=;
-        b=dKO76Vd5uIKoJkl19l4DJiLfr8vthWnZF/Ctw8MXnD2HRMNrzJtZRDuJ51cpinIeM8
-         XT5kUFLRxNcQZJU6pAFGgjrkq/EskYdzvL0U746D9Q/xBQWTNh2aFfuBRF1V8bE8TJzu
-         sqoJq+4Ryz4tzKJTCmdsxtbz9ovkDihNmp50c0XVAeP1ANcGoh0szjL4jWZ+KKWX4I2l
-         LFVRIUSYOQ6x+7kSx0/tqr4q25+xQvaBshe3Upgu4dLELXZuCEAwilm21iss7TPBj7Ho
-         mpNYB85yxtQyK3YFO4qac0MG6O9j70zGMeEJn0a3Hd3aOPLRgfjcJMQApoMtMMeql2Pr
-         Ta9g==
-X-Gm-Message-State: AOAM530OCArL7dzTSeLwJ/YHsz1lPquNX+sP4FXrWgEciVYJeMVC24Ji
-        gx+DFcFn3cjpv6M+CMvVSkDEBw==
-X-Google-Smtp-Source: ABdhPJxkmDEDb99V5Rag5bSuyb8OzH3uPgagDn2It+ROt3XsV+7Qz1fE4DIvkZKbvuXxca1yWN9nTg==
-X-Received: by 2002:a17:90b:1946:: with SMTP id nk6mr6004677pjb.86.1624060347511;
-        Fri, 18 Jun 2021 16:52:27 -0700 (PDT)
-Received: from google.com ([2620:15c:2ce:200:7718:8bff:acab:aa6b])
-        by smtp.gmail.com with ESMTPSA id x22sm8897487pjp.37.2021.06.18.16.52.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 16:52:26 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 16:52:22 -0700
-From:   Fangrui Song <maskray@google.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Bill Wendling <wcw@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
-        Martin Liska <mliska@suse.cz>, Marco Elver <elver@google.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        johannes.berg@intel.com, linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH 0/2] no_profile fn attr and Kconfig for GCOV+PGO
-Message-ID: <20210618235222.s6l552hpkbfod6sv@google.com>
-References: <20210618233023.1360185-1-ndesaulniers@google.com>
+        Fri, 18 Jun 2021 20:18:41 -0400
+X-Greylist: delayed 1075 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 18 Jun 2021 17:16:31 PDT
+Received: from puleglot.ru (puleglot.ru [IPv6:2a01:4f8:1c0c:58e8::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E08EFC061574;
+        Fri, 18 Jun 2021 17:16:31 -0700 (PDT)
+Received: from [2a00:1370:8125:af50::b41]
+        by puleglot.ru with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <puleglot@puleglot.ru>)
+        id 1luONb-0000mP-2Y; Sat, 19 Jun 2021 02:58:30 +0300
+Message-ID: <fb24ef9ad94f8b052407c5bdd4e3815675b89213.camel@tsoy.me>
+Subject: Re: [PATCH 5.10 35/38] rtnetlink: Fix missing error code in
+ rtnl_bridge_notify()
+From:   Alexander Tsoy <alexander@tsoy.me>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Date:   Sat, 19 Jun 2021 02:58:28 +0300
+In-Reply-To: <20210616152836.507544876@linuxfoundation.org>
+References: <20210616152835.407925718@linuxfoundation.org>
+         <20210616152836.507544876@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210618233023.1360185-1-ndesaulniers@google.com>
+Content-Transfer-Encoding: 8bit
+Sender: puleglot@puleglot.ru
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-18, Nick Desaulniers wrote:
->When we say noinstr, we mean noinstr.  GCOV and PGO can both instrument
->functions. Add a new function annotation __no_profile that expands to
->__attribute__((__no_profile__)) and Kconfig value
->CC_HAS_NO_PROFILE_FN_ATTR.
->
->Base is
->https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/log/?h=for-next/clang/pgo.
->
->Nick Desaulniers (2):
->  compiler_attributes.h: define __no_profile, add to noinstr
->  Kconfig: CC_HAS_NO_PROFILE_FN_ATTR, depend on for GCOV and PGO
->
-> include/linux/compiler_attributes.h | 12 ++++++++++++
-> include/linux/compiler_types.h      |  2 +-
-> init/Kconfig                        |  3 +++
-> kernel/gcov/Kconfig                 |  1 +
-> kernel/pgo/Kconfig                  |  3 ++-
-> 5 files changed, 19 insertions(+), 2 deletions(-)
->
->
->base-commit: 4356bc4c0425c81e204f561acf4dd0095544a6cb
->-- 
->2.32.0.288.g62a8d224e6-goog
->
+В Ср, 16/06/2021 в 17:33 +0200, Greg Kroah-Hartman пишет:
+> From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> 
+> [ Upstream commit a8db57c1d285c758adc7fb43d6e2bad2554106e1 ]
+> 
+> The error code is missing in this code scenario, add the error code
+> '-EINVAL' to the return value 'err'.
+> 
+> Eliminate the follow smatch warning:
+> 
+> net/core/rtnetlink.c:4834 rtnl_bridge_notify() warn: missing error code
+> 'err'.
 
-Thanks for the attribute work in clang and kernel! Hope we can use clang
-PGO in 5.14...  (I am a casual contributor to clang PGO/coverage)
+This patch breaks systemd-resolved. It is 100% reproducible on two of
+my systems, but there are also systems where I cannot reproduce it. The
+problem manifests itself as SERVFAIL on every DNS query.
+
+Just reverting this patch from 5.10.45 fixes the problem for me.
+
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> Signed-off-by: David S. Miller <davem@davemloft.net>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  net/core/rtnetlink.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
+> index eae8e87930cd..83894723ebee 100644
+> --- a/net/core/rtnetlink.c
+> +++ b/net/core/rtnetlink.c
+> @@ -4842,8 +4842,10 @@ static int rtnl_bridge_notify(struct net_device
+> *dev)
+>         if (err < 0)
+>                 goto errout;
+>  
+> -       if (!skb->len)
+> +       if (!skb->len) {
+> +               err = -EINVAL;
+>                 goto errout;
+> +       }
+>  
+>         rtnl_notify(skb, net, 0, RTNLGRP_LINK, NULL, GFP_ATOMIC);
+>         return 0;
+
+
