@@ -2,97 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F323AC015
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 02:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD3D3AC01C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 02:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233297AbhFRA1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 20:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231431AbhFRA10 (ORCPT
+        id S233309AbhFRAev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 20:34:51 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:60872 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232683AbhFRAet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 20:27:26 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19DBEC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 17:25:17 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 6-20020a9d07860000b02903e83bf8f8fcso7957537oto.12
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 17:25:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZfOxy6B9936aDr3FkxCQBFdYz6SUIfbRHNLIvfYjoy8=;
-        b=nJM4kjVHo2pgFfFtO4EXrsUY7f1ptG1r+askYt8B9fLkJ0t5FtpfVarXxb0G4RvNbm
-         3IUVG4Tffdah3RRkw5pNSysZ9wc5VptbdR/s0lzR3B+pAXpSEH/Kqpd+1mF0Lbn2BVv0
-         d+4mAdo5uNNXZfFkcxkDWBG//jldV55Z3BKWj15ievJreu4qz84JVzZCuQhjafgbR2Mn
-         2JBkPsriy8GCg4IMaOqHIt44+9RZosuAoGT3aRQNgQYPrZWge8ef5RuxT3rLFQjYJFKI
-         daPILzWMOKtNrcPI8wN36kS9erz9Zg3U6YSPF2+rGyxYwRXQ1OW1H58DXT1Ewz9S3c28
-         YYAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZfOxy6B9936aDr3FkxCQBFdYz6SUIfbRHNLIvfYjoy8=;
-        b=qIQp9E8PmZs3cpOxstWbhgKr8tDuy7dnlI5Ye+jTlgC6NKoB8rts/wy15yQsaEmzfO
-         Cw8NECbJ3kfFaJ9S65FIPKjlEhIze2/8gkAbWcWU6p9RaS1QtvohlFK4X/DrtcIv//kz
-         3yTOBzR4VBLkXC3IzZ0Fenswj7a59ELcXlfjgnG+6CHlvOVX5Mm7NDisACwULpn6wp5G
-         yvIrNoMcVKxK2OSw92ggRdy5nMT7XcpPJO2EUfk0rn3mm83QC1N1yVDipUQJcrrp3Ui1
-         oQFWxkJIjqEeCzNOl3Q8EpsrDmHbwGTBLQPN/p1zujPHaosZyyeqqHPNrNWFbcPJY2MC
-         LFbg==
-X-Gm-Message-State: AOAM532i5AObgSppHAVztO2C3RuuD9Ch2W8jgc8+DpgcV9fPluH/fYcO
-        18PENn7Xl0naoh0SIBXXtN7lGcHSXnkUnFRXdmJryA==
-X-Google-Smtp-Source: ABdhPJzYkGMvEZViIH8DW46yytaNROBnd9a+z5yzIU+tvHWWy8wR2jgjKANsJhzAKGFBPycbV+OETmP0PxaH0wXzFqc=
-X-Received: by 2002:a05:6830:2011:: with SMTP id e17mr6825485otp.295.1623975916039;
- Thu, 17 Jun 2021 17:25:16 -0700 (PDT)
+        Thu, 17 Jun 2021 20:34:49 -0400
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+        by linux.microsoft.com (Postfix) with ESMTPSA id AE73F20B83FE;
+        Thu, 17 Jun 2021 17:32:40 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AE73F20B83FE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1623976360;
+        bh=MedTKdd/PKZblDl4NMMlMN/75NblysabVRfkStvy+Nk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ARUuURYMOvgZxU6jLzFVZQR4NCEm9QnL7P7N3gaUvlp6VKCaYY4o4JBrEfWkEpHuM
+         P414CuS96BERO8HLlYt9UpvDdJxBEGICDBgFj96CXY+bbI0IJoZWdezLBR7vqwekFh
+         lo2+kc8AzGL4Zkscl91swlgmSrbTNXyIY/SCd4u8=
+Received: by mail-pg1-f175.google.com with SMTP id e33so6349455pgm.3;
+        Thu, 17 Jun 2021 17:32:40 -0700 (PDT)
+X-Gm-Message-State: AOAM530z2szV9M90eOIakBibPxMHVXiTj5dEBH5l9zGIqOfBHE475v1M
+        nHeb7rNT+YRDd5yG+E26Nb9BrMImiUimEFlCnqw=
+X-Google-Smtp-Source: ABdhPJw9hqZXza08A7iBCMeKbhQ7X8rmdrwebS+21moWecLDSXghQZciP18y8EmllVrgWTKyeZx01F/nX9EFj1JYezE=
+X-Received: by 2002:aa7:900f:0:b029:2ec:82d2:d23 with SMTP id
+ m15-20020aa7900f0000b02902ec82d20d23mr2343462pfo.16.1623976360182; Thu, 17
+ Jun 2021 17:32:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <0c00d96c46d34d69f5f459baebf3c89a507730fc.camel@perches.com> <20200603101131.2107303-1-efremov@linux.com>
-In-Reply-To: <20200603101131.2107303-1-efremov@linux.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Thu, 17 Jun 2021 17:25:04 -0700
-Message-ID: <CALMp9eSFkRrWLjegJ5OC7kZ4oWtZypKRDjXFQD5=tFX4YLpUgw@mail.gmail.com>
-Subject: Re: [PATCH] KVM: Use vmemdup_user()
-To:     Denis Efremov <efremov@linux.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, joe@perches.com,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210615023812.50885-1-mcroce@linux.microsoft.com>
+ <20210615023812.50885-2-mcroce@linux.microsoft.com> <CAJF2gTTreOvQYYXHBYxznB9+vMaASKg8vwA5mkqVo1T6=eVhzw@mail.gmail.com>
+ <CAFnufp1OHdRd-tbB+Hi0UnXARtxGPdkK6MJktnaNCNt65d3Oew@mail.gmail.com>
+ <f9b78350d9504e889813fc47df41f3fe@AcuMS.aculab.com> <CAFnufp1CA7g=poF3UpKjX7YYz569Wxc1YORSv+uhpU5847xuXw@mail.gmail.com>
+In-Reply-To: <CAFnufp1CA7g=poF3UpKjX7YYz569Wxc1YORSv+uhpU5847xuXw@mail.gmail.com>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Fri, 18 Jun 2021 02:32:04 +0200
+X-Gmail-Original-Message-ID: <CAFnufp2LmXxs6+aH7cjH=T4Ye_Yo6yvJpF93JcY+HtVvXB44oQ@mail.gmail.com>
+Message-ID: <CAFnufp2LmXxs6+aH7cjH=T4Ye_Yo6yvJpF93JcY+HtVvXB44oQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] riscv: optimized memcpy
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Guo Ren <guoren@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Bin Meng <bmeng.cn@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 3, 2020 at 3:10 AM Denis Efremov <efremov@linux.com> wrote:
+On Thu, Jun 17, 2021 at 11:48 PM Matteo Croce
+<mcroce@linux.microsoft.com> wrote:
 >
-> Replace opencoded alloc and copy with vmemdup_user().
+> On Thu, Jun 17, 2021 at 11:30 PM David Laight <David.Laight@aculab.com> wrote:
+> >
+> > From: Matteo Croce
+> > > Sent: 16 June 2021 19:52
+> > > To: Guo Ren <guoren@kernel.org>
+> > >
+> > > On Wed, Jun 16, 2021 at 1:46 PM Guo Ren <guoren@kernel.org> wrote:
+> > > >
+> > > > Hi Matteo,
+> > > >
+> > > > Have you tried Glibc generic implementation code?
+> > > > ref: https://lore.kernel.org/linux-arch/20190629053641.3iBfk9-
+> > > I_D29cDp9yJnIdIg7oMtHNZlDmhLQPTumhEc@z/#t
+> > > >
+> > > > If Glibc codes have the same performance in your hardware, then you
+> > > > could give a generic implementation first.
+> >
+> > Isn't that a byte copy loop - the performance of that ought to be terrible.
+> > ...
+> >
+> > > I had a look, it seems that it's a C unrolled version with the
+> > > 'register' keyword.
+> > > The same one was already merged in nios2:
+> > > https://elixir.bootlin.com/linux/latest/source/arch/nios2/lib/memcpy.c#L68
+> >
+> > I know a lot about the nios2 instruction timings.
+> > (I've looked at code execution in the fpga's intel 'logic analiser.)
+> > It is a very simple 4-clock pipeline cpu with a 2-clock delay
+> > before a value read from 'tightly coupled memory' (aka cache)
+> > can be used in another instruction.
+> > There is also a subtle pipeline stall if a read follows a write
+> > to the same memory block because the write is executed one
+> > clock later - and would collide with the read.
+> > Since it only ever executes one instruction per clock loop
+> > unrolling does help - since you never get the loop control 'for free'.
+> > OTOH you don't need to use that many registers.
+> > But an unrolled loop should approach 2 bytes/clock (32bit cpu).
+> >
+> > > I copied _wordcopy_fwd_aligned() from Glibc, and I have a very similar
+> > > result of the other versions:
+> > >
+> > > [  563.359126] Strings selftest: memcpy(src+7, dst+7): 257 Mb/s
+> >
+> > What clock speed is that running at?
+> > It seems very slow for a 64bit cpu (that isn't an fpga soft-cpu).
+> >
+> > While the small riscv cpu might be similar to the nios2 (and mips
+> > for that matter), there are also bigger/faster cpu.
+> > I'm sure these can execute multiple instructions/clock
+> > and possible even read and write at the same time.
+> > Unless they also support significant instruction re-ordering
+> > the trivial copy loops are going to be slow on such cpu.
+> >
 >
-> Signed-off-by: Denis Efremov <efremov@linux.com>
-> ---
-> Looks like these are the only places in KVM that are suitable for
-> vmemdup_user().
+> It's running at 1 GHz.
 >
->  arch/x86/kvm/cpuid.c | 17 +++++++----------
->  virt/kvm/kvm_main.c  | 19 ++++++++-----------
->  2 files changed, 15 insertions(+), 21 deletions(-)
+> I get 257 Mb/s with a memcpy, a bit more with a memset,
+> but I get 1200 Mb/s with a cyle which just reads memory with 64 bit addressing.
 >
-> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> index 901cd1fdecd9..27438a2bdb62 100644
-> --- a/arch/x86/kvm/cpuid.c
-> +++ b/arch/x86/kvm/cpuid.c
-> @@ -182,17 +182,14 @@ int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
->         r = -E2BIG;
->         if (cpuid->nent > KVM_MAX_CPUID_ENTRIES)
->                 goto out;
-> -       r = -ENOMEM;
->         if (cpuid->nent) {
-> -               cpuid_entries =
-> -                       vmalloc(array_size(sizeof(struct kvm_cpuid_entry),
-> -                                          cpuid->nent));
-> -               if (!cpuid_entries)
-> -                       goto out;
-> -               r = -EFAULT;
-> -               if (copy_from_user(cpuid_entries, entries,
-> -                                  cpuid->nent * sizeof(struct kvm_cpuid_entry)))
-> +               cpuid_entries = vmemdup_user(entries,
-> +                                            array_size(sizeof(struct kvm_cpuid_entry),
-> +                                                       cpuid->nent));
 
-Does this break memcg accounting? I ask, because I'm really not sure.
+Err, I forget a mlock() before accessing the memory in userspace.
+
+The real speed here is:
+
+8 bit read: 155.42 Mb/s
+64 bit read: 277.29 Mb/s
+8 bit write: 138.57 Mb/s
+64 bit write: 239.21 Mb/s
+
+-- 
+per aspera ad upstream
