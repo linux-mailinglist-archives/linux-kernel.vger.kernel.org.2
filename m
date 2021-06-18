@@ -2,108 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067973ACEEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0293ACF02
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235472AbhFRPbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:31:06 -0400
-Received: from mga18.intel.com ([134.134.136.126]:64875 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235495AbhFRPa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:30:26 -0400
-IronPort-SDR: Stf7Zwm6TDlOxa+DGpaRVUT4vWEomiTYKZcCUhZjTsSFUIxRcmc1/0wXse4935C4Zd2F/RV3SH
- XWj+ucGSOJxA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="193883835"
-X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
-   d="scan'208";a="193883835"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 08:28:16 -0700
-IronPort-SDR: tXz/DeiAVks+cDsEly+zSEIB1Rr8PgbebPoxlYQ+o2gY45Akxd/kzS6WUq6dDl72DHPx7qRD+o
- eKKwL/3yJGyg==
-X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
-   d="scan'208";a="622422622"
-Received: from myshevts-mobl.ccr.corp.intel.com (HELO [10.209.154.63]) ([10.209.154.63])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 08:28:15 -0700
-Subject: Re: [PATCH] soundwire: stream: Fix test for DP prepare complete
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>, vkoul@kernel.org,
-        yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        patches@opensource.cirrus.com
-References: <20210618144745.30629-1-rf@opensource.cirrus.com>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <a401be25-8ab6-4d28-3a87-10860ca1102d@linux.intel.com>
-Date:   Fri, 18 Jun 2021 10:28:13 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S235537AbhFRPcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:32:09 -0400
+Received: from mail-vk1-f171.google.com ([209.85.221.171]:36787 "EHLO
+        mail-vk1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235286AbhFRPb2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 11:31:28 -0400
+Received: by mail-vk1-f171.google.com with SMTP id c17so2216360vke.3;
+        Fri, 18 Jun 2021 08:29:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tbwA+IyCm/NwRqK4N5oJ3bfkUBqvAezf/1PBaQCP7JY=;
+        b=JPsaYHjtczQ2SHwZ2VHowOAXSyd6k9c04k8lSMpJxNUNI3WOxuFTqXl0qvxLZ6BKDP
+         bsjEBqOX4M7kBymcrCH7Tju5R32bSQs0VoBsYOFhC5H0P00N4OhjlDN36GajlvnA38U8
+         zvXARxCKBuBYniU6geq+xqnjWJ3wL85FwESFQHmmagYijzIA/GSQW4hqx3TJjv3WwnEs
+         7cQkCe9tpom/oid1ScqOwTj5tTwnF5IAVeIlt/yrCxiQhsOo3t35ayGwkdM3aGPELTAm
+         chpvIMfrnzSzfVYAkTi3XEldIc7GiRbMKiV1qJTTTb+hPAErnr29GC/v878cxZ+DiCKy
+         ihjQ==
+X-Gm-Message-State: AOAM5335kupY3m9Nbb8oHdZJOtX7xhfsjG8OwFvgTe9EokKiss2yTO3x
+        h9B8TNNVPMwqzXF3fyG3IEVK7GLP/X5ElLQixzI=
+X-Google-Smtp-Source: ABdhPJxEmFJfAgHdVEc+LB6mHSUHXYmYvJXtX7mWpBI0zcQ/6Lnom0KNtzfTrxWWH15izbyVI9mkUGQnhQl2V6QtMjM=
+X-Received: by 2002:a1f:1a41:: with SMTP id a62mr6774027vka.5.1624030156104;
+ Fri, 18 Jun 2021 08:29:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210618144745.30629-1-rf@opensource.cirrus.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <5038827c-463f-232d-4dec-da56c71089bd@metux.net>
+ <20210610182318.jrxe3avfhkqq7xqn@nitro.local> <YMJcdbRaQYAgI9ER@pendragon.ideasonboard.com>
+ <20210610152633.7e4a7304@oasis.local.home> <37e8d1a5-7c32-8e77-bb05-f851c87a1004@linuxfoundation.org>
+ <YMyjryXiAfKgS6BY@pendragon.ideasonboard.com> <cd7ffbe516255c30faab7a3ee3ee48f32e9aa797.camel@HansenPartnership.com>
+ <CAMuHMdVcNfDvpPXHSkdL3VuLXCX5m=M_AQF-P8ZajSdXt8NdQg@mail.gmail.com>
+ <20210618103214.0df292ec@oasis.local.home> <CAMuHMdWK4NPzanF68TMVuihLFdRzxhs0EkbZdaA=BUkZo-k6QQ@mail.gmail.com>
+ <YMy4UjWH565ElFtZ@casper.infradead.org>
+In-Reply-To: <YMy4UjWH565ElFtZ@casper.infradead.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 18 Jun 2021 17:29:04 +0200
+Message-ID: <CAMuHMdWqUkfe7kdBO+eQdXHzhpygH=TivOBNqQJujyqP=wM5cw@mail.gmail.com>
+Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        David Hildenbrand <david@redhat.com>, Greg KH <greg@kroah.com>,
+        Christoph Lameter <cl@gentwo.de>,
+        "Theodore Ts'o" <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
+        ksummit@lists.linux.dev,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-block@vger.kernel.org,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, netdev <netdev@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 18, 2021 at 5:15 PM Matthew Wilcox <willy@infradead.org> wrote:
+> On Fri, Jun 18, 2021 at 04:58:08PM +0200, Geert Uytterhoeven wrote:
+> > On Fri, Jun 18, 2021 at 4:32 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+> > > On Fri, 18 Jun 2021 16:28:02 +0200
+> > > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > >
+> > > > What about letting people use the personal mic they're already
+> > > > carrying, i.e. a phone?
+> > >
+> > > Interesting idea.
+> > >
+> > > I wonder how well that would work in practice. Are all phones good
+> > > enough to prevent echo?
+> >
+> > I deliberately didn't say anything about a speaker ;-)
+>
+> There's usually a speaker in the room so everyone can hear the question
+> ...
 
+Oh IC.  I meant that not using the speaker on the phone, there cannot
+be any feedback from the phone speaker to the phone mic.
 
-On 6/18/21 9:47 AM, Richard Fitzgerald wrote:
-> In sdw_prep_deprep_slave_ports(), after the wait_for_completion()
-> the DP prepare status register is read. If this indicates that the
-> port is now prepared, the code should continue with the port setup.
-> It is irrelevant whether the wait_for_completion() timed out if the
-> port is now ready.
-> 
-> The previous implementation would always fail if the
-> wait_for_completion() timed out, even if the port was reporting
-> successful prepare.
-> 
-> This patch also fixes a minor bug where the return from sdw_read()
-> was not checked for error - any error code with LSBits clear could
-> be misinterpreted as a successful port prepare.
-> 
-> Fixes: 79df15b7d37c ("soundwire: Add helpers for ports operations")
-> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+W.r.t. the other speaker in the room, isn't that similar to the normal mic,
+and can't that be handled at the receiving side?
+There will be a bit more delay involved, though.
 
-Looks good to me
+Gr{oetje,eeting}s,
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+                        Geert
 
-> ---
->  drivers/soundwire/stream.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-> index 1eaedaaba094..1a18308f4ef4 100644
-> --- a/drivers/soundwire/stream.c
-> +++ b/drivers/soundwire/stream.c
-> @@ -422,7 +422,6 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
->  	struct completion *port_ready;
->  	struct sdw_dpn_prop *dpn_prop;
->  	struct sdw_prepare_ch prep_ch;
-> -	unsigned int time_left;
->  	bool intr = false;
->  	int ret = 0, val;
->  	u32 addr;
-> @@ -479,15 +478,15 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
->  
->  		/* Wait for completion on port ready */
->  		port_ready = &s_rt->slave->port_ready[prep_ch.num];
-> -		time_left = wait_for_completion_timeout(port_ready,
-> -				msecs_to_jiffies(dpn_prop->ch_prep_timeout));
-> +		wait_for_completion_timeout(port_ready,
-> +			msecs_to_jiffies(dpn_prop->ch_prep_timeout));
->  
->  		val = sdw_read(s_rt->slave, SDW_DPN_PREPARESTATUS(p_rt->num));
-> -		val &= p_rt->ch_mask;
-> -		if (!time_left || val) {
-> +		if ((val < 0) || (val & p_rt->ch_mask)) {
-> +			ret = (val < 0) ? val : -ETIMEDOUT;
->  			dev_err(&s_rt->slave->dev,
-> -				"Chn prep failed for port:%d\n", prep_ch.num);
-> -			return -ETIMEDOUT;
-> +				"Chn prep failed for port %d: %d\n", prep_ch.num, ret);
-> +			return ret;
->  		}
->  	}
->  
-> 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
