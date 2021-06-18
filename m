@@ -2,158 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACD9C3AC628
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:31:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D83A03AC62A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233762AbhFRIeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 04:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232038AbhFRId4 (ORCPT
+        id S233808AbhFRIeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 04:34:36 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:44276 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233876AbhFRIe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 04:33:56 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87FB5C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:31:47 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id x12so7801600ill.4
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:31:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=lFwm1133mv6gxG1yIy3y8qPNcT3vkNGLZdF4eVbKc4I=;
-        b=jHt/p+aVlcMOygY50yvW43NaSczEC3OyNJrGb3v1OHPn1V89uTvqQXK61I7zMR/1Pb
-         vCn7+bq2nynS1GHsP4i39ckUJ2+Qd4KmPVmapIGlk9Ku7eBjEZwgi5D7RSbSo4D6jVat
-         O3ASuJ8tVkYEUTq6zOOhdpC1YvIhaETytfu1t7GtW+NmkopC841Q6Qcpvfr4IJW8BudI
-         G51ytOasxj5HMj6iqqp9U73pqFwKBTkDoxFFvzjgaVjCeTzN3dnsBdtY57tgaKzpK2k/
-         Vg3qerhoUID546HGUMKidgDP/8iFWqnabCncJekSqGPewjRSYon4fTNnCm4FScCPzumc
-         Ej+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lFwm1133mv6gxG1yIy3y8qPNcT3vkNGLZdF4eVbKc4I=;
-        b=YWWQIXXW88BNamCC94OWcGBJgb+Wg7wAwrXkGkPjongqzqow2OnC3m7xhE4Gxhv5CT
-         QPf3l2gEaPeoz3iU99fl5GjFf0oFN65RThOs8Q/gFcf0KtGLSGpHSeUutYZ/n6JGyMDX
-         exYgtDMQ6EXPhGtPNkMPHqQ0qpUSSDNEvt4D32UEBV23hnzEPeR90f1KPnYX+CgK9KIN
-         nQ74hSJtTQZPkOMTPJQijnagUkJwCRjXVm8WiZqKVVmEDcvwVcPPeepysin/HWrA8RQa
-         NJ3wCjwDZJWaVOBpndIxPksusbJEMEYhNmQXh0TjeEPmWR8mGPLCge9Axmjay/I3Kt5c
-         xKeA==
-X-Gm-Message-State: AOAM530qPgvQpqyUENlWWqm/Jp7ZyUq62sGjqo3fmFDy2u0nX5ZzEOcl
-        btxackmU2C00QBC5XphezOWZTAQWRHs8THAX+/rKd30LQKzWpTGa
-X-Google-Smtp-Source: ABdhPJxCJDhUsGS4lgP4T4pc9htmYI/CVF8R+RBqRDnuazrU3rpD4EH4CupNL8GEPU7n/znMLx51qUJMuIyg2AfczY8=
-X-Received: by 2002:a05:6e02:5a3:: with SMTP id k3mr6743092ils.302.1624005106809;
- Fri, 18 Jun 2021 01:31:46 -0700 (PDT)
+        Fri, 18 Jun 2021 04:34:26 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-11-fKdMvnO2P96mfGP2YKpuQQ-1; Fri, 18 Jun 2021 09:32:15 +0100
+X-MC-Unique: fKdMvnO2P96mfGP2YKpuQQ-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 18 Jun
+ 2021 09:32:14 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.018; Fri, 18 Jun 2021 09:32:14 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Matteo Croce' <mcroce@linux.microsoft.com>
+CC:     Guo Ren <guoren@kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        "Akira Tsukamoto" <akira.tsukamoto@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Bin Meng <bmeng.cn@gmail.com>
+Subject: RE: [PATCH 1/3] riscv: optimized memcpy
+Thread-Topic: [PATCH 1/3] riscv: optimized memcpy
+Thread-Index: AQHXYuC4XkdMIImxVUmoQbZ37iIZIqsYtSAggABBV22AAHkiQA==
+Date:   Fri, 18 Jun 2021 08:32:14 +0000
+Message-ID: <0fe90e43868f49b5953afe5abba41327@AcuMS.aculab.com>
+References: <20210615023812.50885-1-mcroce@linux.microsoft.com>
+ <20210615023812.50885-2-mcroce@linux.microsoft.com>
+ <CAJF2gTTreOvQYYXHBYxznB9+vMaASKg8vwA5mkqVo1T6=eVhzw@mail.gmail.com>
+ <CAFnufp1OHdRd-tbB+Hi0UnXARtxGPdkK6MJktnaNCNt65d3Oew@mail.gmail.com>
+ <f9b78350d9504e889813fc47df41f3fe@AcuMS.aculab.com>
+ <CAFnufp1CA7g=poF3UpKjX7YYz569Wxc1YORSv+uhpU5847xuXw@mail.gmail.com>
+ <CAFnufp2LmXxs6+aH7cjH=T4Ye_Yo6yvJpF93JcY+HtVvXB44oQ@mail.gmail.com>
+ <CAFnufp0qjJG4fr=rcAHYrZp3CVfSs0TBuDN_eAOwOM-K804yow@mail.gmail.com>
+In-Reply-To: <CAFnufp0qjJG4fr=rcAHYrZp3CVfSs0TBuDN_eAOwOM-K804yow@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20210617095309.3542373-1-stapelberg+linux@google.com> <CAJfpegvpnQMSRU+TW4J5+F+3KiAj8J_m+OjNrnh7f2X9DZp2Ag@mail.gmail.com>
-In-Reply-To: <CAJfpegvpnQMSRU+TW4J5+F+3KiAj8J_m+OjNrnh7f2X9DZp2Ag@mail.gmail.com>
-From:   Michael Stapelberg <stapelberg+linux@google.com>
-Date:   Fri, 18 Jun 2021 10:31:35 +0200
-Message-ID: <CAH9Oa-ZcG0+08d=D5-rbzY-v1cdUcuW0E7D_GcwjDoC1Phf+0g@mail.gmail.com>
-Subject: Re: [PATCH] backing_dev_info: introduce min_bw/max_bw limits
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        linux-fsdevel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Dennis Zhou <dennis@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Roman Gushchin <guro@fb.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Jan Kara <jack@suse.cz>, Song Liu <song@kernel.org>,
-        David Sterba <dsterba@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Miklos
+RnJvbTogTWF0dGVvIENyb2NlDQo+IFNlbnQ6IDE4IEp1bmUgMjAyMSAwMjowNQ0KLi4uDQo+ID4g
+PiBJdCdzIHJ1bm5pbmcgYXQgMSBHSHouDQo+ID4gPg0KPiA+ID4gSSBnZXQgMjU3IE1iL3Mgd2l0
+aCBhIG1lbWNweSwgYSBiaXQgbW9yZSB3aXRoIGEgbWVtc2V0LA0KPiA+ID4gYnV0IEkgZ2V0IDEy
+MDAgTWIvcyB3aXRoIGEgY3lsZSB3aGljaCBqdXN0IHJlYWRzIG1lbW9yeSB3aXRoIDY0IGJpdCBh
+ZGRyZXNzaW5nLg0KPiA+ID4NCj4gPg0KPiA+IEVyciwgSSBmb3JnZXQgYSBtbG9jaygpIGJlZm9y
+ZSBhY2Nlc3NpbmcgdGhlIG1lbW9yeSBpbiB1c2Vyc3BhY2UuDQoNCldoYXQgaXMgdGhlIG1sb2Nr
+KCkgZm9yPw0KVGhlIGRhdGEgZm9yIGEgcXVpY2sgbG9vcCB3b24ndCBnZXQgcGFnZWQgb3V0Lg0K
+WW91IHdhbnQgdG8gdGVzdCBjYWNoZSB0byBjYWNoZSBjb3BpZXMsIHNvIHRoZSBmaXJzdCBsb29w
+DQp3aWxsIGFsd2F5cyBiZSBzbG93Lg0KQWZ0ZXIgdGhhdCBlYWNoIGl0ZXJhdGlvbiBzaG91bGQg
+YmUgbXVjaCB0aGUgc2FtZS4NCkkgdXNlIGNvZGUgbGlrZToNCglmb3IgKDs7KSB7DQoJCXN0YXJ0
+ID0gcmVhZF90c2MoKTsNCgkJZG9fdGVzdCgpOw0KCQloaXN0b2dyYW1bKHJlYWRfdHNjKCkgLSBz
+dGFydCkgPj4gbl0rKw0KCX0NCihZb3UgbmVlZCB0byBleGNsdWRlIG91dGxpZXJzKQ0KdG8gZ2V0
+IGEgZGlzdHJpYnV0aW9uIGZvciB0aGUgZXhlY3V0aW9uIHRpbWVzLg0KVGVuZHMgdG8gYmUgcHJl
+dHR5IHN0YWJsZSAtIGV2ZW4gdGhvdWdoIGRpZmZlcmVudCBwcm9ncmFtDQpydW5zIGNhbiBnaXZl
+IGRpZmZlcmVudCB2YWx1ZXMhDQoJDQo+ID4gVGhlIHJlYWwgc3BlZWQgaGVyZSBpczoNCj4gPg0K
+PiA+IDggYml0IHJlYWQ6IDE1NS40MiBNYi9zDQo+ID4gNjQgYml0IHJlYWQ6IDI3Ny4yOSBNYi9z
+DQo+ID4gOCBiaXQgd3JpdGU6IDEzOC41NyBNYi9zDQo+ID4gNjQgYml0IHdyaXRlOiAyMzkuMjEg
+TWIvcw0KPiA+DQo+IA0KPiBBbnl3YXksIHRoYW5rcyBmb3IgdGhlIGluZm8gb24gbmlvMiB0aW1p
+bmdzLg0KPiBJZiB5b3UgdGhpbmsgdGhhdCBhbiB1bnJvbGxlZCBsb29wIHdvdWxkIGhlbHAsIHdl
+IGNhbiBhY2hpZXZlIHRoZSBzYW1lIGluIEMuDQo+IEkgdGhpbmsgd2UgY291bGQgY29kZSBzb21l
+dGhpbmcgc2ltaWxhciB0byBhIER1ZmYgZGV2aWNlIChvciB3aXRoIGp1bXANCj4gbGFiZWxzKSB0
+byB1bnJvbGwgdGhlIGxvb3AgYnV0IGF0IHRoZSBzYW1lIHRpbWUgZG9pbmcgZWZmaWNpZW50IHNt
+YWxsIGNvcGllcy4NCg0KVW5yb2xsaW5nIGhhcyB0byBiZSBkb25lIHdpdGggY2FyZS4NCkl0IHRl
+bmRzIHRvIGltcHJvdmUgYmVuY2htYXJrcywgYnV0IHRoZSBleHRyYSBjb2RlIGRpc3BsYWNlcw0K
+b3RoZXIgY29kZSBmcm9tIHRoZSBpLWNhY2hlIGFuZCBzbG93cyBkb3duIG92ZXJhbGwgcGVyZm9y
+bWFuY2UuDQpTbyB5b3UgbmVlZCAnanVzdCBlbm91Z2gnIHVucm9sbGluZyB0byBhdm9pZCBjcHUg
+c3RhbGxzLg0KDQpPbiB5b3VyIHN5c3RlbSBpdCBsb29rcyBsaWtlIHRoZSBtZW1vcnkvY2FjaGUg
+c3Vic3lzdGVtDQppcyB0aGUgYm90dGxlbmVjayBmb3IgdGhlIHRlc3RzIHlvdSBhcmUgZG9pbmcu
+DQpJJ2QgcmVhbGx5IGV4cGVjdCBhIDFHSHogY3B1IHRvIGJlIGFibGUgdG8gcmVhZC93cml0ZSBm
+cm9tDQppdHMgZGF0YSBjYWNoZSBldmVyeSBjbG9jay4NClNvIEknZCBleHBlY3QgdHJhbnNmZXIg
+cmF0ZXMgbmVhcmVyIDgwMDAgTUIvcywgbm90IDI1MCBNQi9zLg0KDQoJRGF2aWQNCg0KLQ0KUmVn
+aXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRv
+biBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-Thanks for taking a look!
-
-On Fri, 18 Jun 2021 at 10:18, Miklos Szeredi <miklos@szeredi.hu> wrote:
->
-> On Thu, 17 Jun 2021 at 11:53, Michael Stapelberg
-> <stapelberg+linux@google.com> wrote:
-> >
-> > These new knobs allow e.g. FUSE file systems to guide kernel memory
-> > writeback bandwidth throttling.
-> >
-> > Background:
-> >
-> > When using mmap(2) to read/write files, the page-writeback code tries t=
-o
-> > measure how quick file system backing devices (BDI) are able to write d=
-ata,
-> > so that it can throttle processes accordingly.
-> >
-> > Unfortunately, certain usage patterns, such as linkers (tested with GCC=
-,
-> > but also the Go linker) seem to hit an unfortunate corner case when wri=
-ting
-> > their large executable output files: the kernel only ever measures
-> > the (non-representative) rising slope of the starting bulk write, but t=
-he
-> > whole file write is already over before the kernel could possibly measu=
-re
-> > the representative steady-state.
-> >
-> > As a consequence, with each program invocation hitting this corner case=
-,
-> > the FUSE write bandwidth steadily sinks in a downward spiral, until it
-> > eventually reaches 0 (!). This results in the kernel heavily throttling
-> > page dirtying in programs trying to write to FUSE, which in turn manife=
-sts
-> > itself in slow or even entirely stalled linker processes.
-> >
-> > Change:
-> >
-> > This commit adds 2 knobs which allow avoiding this situation entirely o=
-n a
-> > per-file-system basis by restricting the minimum/maximum bandwidth.
->
->
-> This looks like  a bug in the dirty throttling heuristics, that may be
-> effecting multiple fuse based filesystems.
->
-> Ideally the solution should be a fix to those heuristics, not adding more=
- knobs.
-
-
-Agreed.
-
->
->
-> Is there a fundamental reason why that can't be done?    Maybe the
-> heuristics need to detect the fact that steady state has not been
-> reached, and not modify the bandwidth in that case, or something along
-> those lines.
-
-Maybe, but I don=E2=80=99t have the expertise, motivation or time to
-investigate this any further, let alone commit to get it done.
-During our previous discussion I got the impression that nobody else
-had any cycles for this either:
-https://lore.kernel.org/linux-fsdevel/CANnVG6n=3DySfe1gOr=3D0ituQidp56idGAR=
-DKHzP0hv=3DERedeMrMA@mail.gmail.com/
-
-Have you had a look at the China LSF report at
-http://bardofschool.blogspot.com/2011/?
-The author of the heuristic has spent significant effort and time
-coming up with what we currently have in the kernel:
-
-"""
-Fengguang said he draw more than 10K performance graphs and read even
-more in the past year.
-"""
-
-This implies that making changes to the heuristic will not be a quick fix.
-
-I think adding these limit knobs could be useful regardless of the
-specific heuristic behavior.
-The knobs are certainly easy to understand, safe to introduce (no regressio=
-ns),
-and can be used to fix the issue at hand as well as other issues (if
-any, now or in the future).
-
-Thanks
-Best regards
-Michael
