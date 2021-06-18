@@ -2,101 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D33483AC194
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 05:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C233AC197
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 05:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbhFRDsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 23:48:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42600 "EHLO
+        id S231874AbhFRDsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 23:48:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231455AbhFRDsC (ORCPT
+        with ESMTP id S231417AbhFRDsj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 23:48:02 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24290C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:45:52 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id y4so245799pfi.9
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:45:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=D3gfKDAObxcZS4gWY0UN6lYsR+wBujiRgEXvE08JM/k=;
-        b=w6pQpx38ffbNxQxqffZYOJWP8IocJze1Hw2LnlGTADR4yQYBGEzpWlUGLmvUOvD6EP
-         0VoWFrZy2++m9UH4rvkPtJpiqjgK7c60fxkUZqV3sqAM7+Zhg+hiHARBg2nKjLpeC0gv
-         9eaE3iRMAelIHjBkpit1Alu11R2dFsPm4oo95+IlxlpDVqXQiNIvgCoBNJJItqWwX8FP
-         bkanzCt9M6TGtWH3+QyU1iF2zyU5QmhwASREQXXK2NGMmlQw2NBUc3vnp+J2bis7QUJ7
-         yPViUaI1Xj+Wdqy/oeVSH4nLrtSA5FlgN6iQq6wRDK0nlh8I14FADTCVUirtdbQx7c5L
-         I5Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=D3gfKDAObxcZS4gWY0UN6lYsR+wBujiRgEXvE08JM/k=;
-        b=ZaF0ATqi/LGgDFzng90yBj+DY10zSK+6HRkuvfQH9PIdlm6Z44YVewGljRO/zBWfhY
-         vhPO2sDst11exp632hnZawJoyCwD3ZqSGoGh3ByMZdYObdcAqIEKEuyevMa9h0gcFguT
-         Z+JVWuJhq/PMC4wDkCf/byzOZrc3CP7fMHhWy/JySThG433ke/GVXD4Om1qjJ2XeP1IW
-         Y1Kupfa7yNli/W2Erk3G5Jk0kNN3q8hE8f7x/LjgXr7dgE9TWDzOg2a78jXlHkYp3U4F
-         sjKJeoN8CAPl6BfxE8NMAIaRdKwxS+9wexERvbFpvVTSv6w9+7YUAdHQLymLZnmrRyNF
-         qPgg==
-X-Gm-Message-State: AOAM533ea2RnfE/T16uQv3LaOv5fkcgsvRY5olqnEXElVGje8CBhnhdX
-        501V5avFq+zCVcScifANS+r4Mw==
-X-Google-Smtp-Source: ABdhPJzRWmiQooLbv5uZ+44+FIxqwu3Clpnkep9PA7KGuWsZ6OfDbHJ1VpuW0h4g20cCCqSwuWuWGA==
-X-Received: by 2002:a65:5206:: with SMTP id o6mr8038475pgp.129.1623987951683;
-        Thu, 17 Jun 2021 20:45:51 -0700 (PDT)
-Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id u73sm6652292pfc.169.2021.06.17.20.45.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 20:45:50 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 09:15:49 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ionela Voinescu <ionela.voinescu@arm.com>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-pm@vger.kernel.org, Qian Cai <quic_qiancai@quicinc.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 3/3] cpufreq: CPPC: Add support for frequency
- invariance
-Message-ID: <20210618034549.wfz24gx4zr2jyfec@vireshk-i7>
-References: <cover.1623825725.git.viresh.kumar@linaro.org>
- <e7e653ede3ef54acc906d2bde47a3b9a41533404.1623825725.git.viresh.kumar@linaro.org>
- <20210616124806.GA6495@arm.com>
- <20210617032416.r2gfp25xxvhc5t4x@vireshk-i7>
- <20210617103415.GA29877@arm.com>
- <20210617111936.cfjzoh6g5zvolaf5@vireshk-i7>
- <YMs+hOKafJMu7Sfu@hirez.programming.kicks-ass.net>
+        Thu, 17 Jun 2021 23:48:39 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC09C061574;
+        Thu, 17 Jun 2021 20:46:30 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lu5Sa-009UL9-7S; Fri, 18 Jun 2021 03:46:24 +0000
+Date:   Fri, 18 Jun 2021 03:46:24 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        ceph-devel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
+        Andrew W Elble <aweits@rit.edu>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] netfs, afs: Fix netfs_write_begin and THP handling
+Message-ID: <YMwXEAMxEgGADeiG@zeniv-ca.linux.org.uk>
+References: <162391823192.1173366.9740514875196345746.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YMs+hOKafJMu7Sfu@hirez.programming.kicks-ass.net>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <162391823192.1173366.9740514875196345746.stgit@warthog.procyon.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-06-21, 14:22, Peter Zijlstra wrote:
-> On Thu, Jun 17, 2021 at 04:49:36PM +0530, Viresh Kumar wrote:
-> > Peter: Can you help here on this ? Lemme try to explain a bit here:
-> > 
-> > We are starting an irq-work (in cppc cpufreq driver) from
-> > scheduler_tick()->arch_scale_freq_tick(). What will happen if the driver doesn't
-> > take care of CPU hotplug explicitly and make sure this work isn't queued again
-> > from the next tick.
-> > 
-> > Is it important for user to make sure it gets rid of the irq-work during hotplug
-> > here ?
+On Thu, Jun 17, 2021 at 09:23:51AM +0100, David Howells wrote:
 > 
-> irq-work is flushed on hotplug, see smpcfd_dying_cpu().
+> Here are some patches to fix netfs_write_begin() and the handling of THPs in
+> that and afs_write_begin/end() in the following ways:
+> 
+>  (1) Use offset_in_thp() rather than manually calculating the offset into
+>      the page.
+> 
+>  (2) In the future, the len parameter may extend beyond the page allocated.
+>      This is because the page allocation is deferred to write_begin() and
+>      that gets to decide what size of THP to allocate.
+> 
+>  (3) In netfs_write_begin(), extract the decision about whether to skip a
+>      page out to its own helper and have that clear around the region to be
+>      written, but not clear that region.  This requires the filesystem to
+>      patch it up afterwards if the hole doesn't get completely filled.
+> 
+>  (4) Due to (3), afs_write_end() now needs to handle short data write into
+>      the page by generic_perform_write().  I've adopted an analogous
+>      approach to ceph of just returning 0 in this case and letting the
+>      caller go round again.
 
-Thanks Peter.
+Series looks sane.  I'd like to hear about the thp-related plans in
+more detail, but that's a separate story.
 
--- 
-viresh
+> I wonder if generic_perform_write() should pass in a flag indicating
+> whether this is the first attempt or a second attempt at this, and on the
+> second attempt we just completely prefill the page and just let the partial
+> write stand - which we have to do if the page was already uptodate when we
+> started.
+
+Not really - we'll simply get a shorter chunk next time around (with
+the patches in -next right now it'll be "the amount we'd actually
+managed to copy this time around" in case ->write_begin() tells us
+to take a hike), and that shorter chunk is what ->write_begin() will
+see.  No need for the flags...
