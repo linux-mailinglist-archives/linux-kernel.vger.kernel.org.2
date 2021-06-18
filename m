@@ -2,206 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86F893ACE28
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CD63ACE34
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:00:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234833AbhFRPAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:00:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234183AbhFRPAn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:00:43 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9467C0617AE
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 07:58:32 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id o20so7710047qtr.8
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 07:58:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=repfQyDKTAMeHKXGuDmTN3Wtz95/exNHme61bRWFg+k=;
-        b=NowrGpf/C+bkFi8CG9LI5D/bmOQq5TDoeixlbZs0EWotTC5jYFGNA9ip90Yw6DvbZy
-         ScXR8pPQH8ctKBBUcFcRVunrNTcRsQDgMoyMHNJC/72R/4A/i46FIGsWKZRxz7jCr9RV
-         B/nfwrkzS71Mwn2gJCvvC2ueoUlU+uyfd8RiMPi2898nKJ9JQ5yXItUQe7gECOz+9Ax7
-         8UrFGrA3RGZGm7MkYWoE7tCWl9DjJqhxezOQRqK1aRLKr+bkXwp++beSO31Dy0j16XVn
-         85j9YnKW74TqM0DdwAKEA30nOfnGx9pYyFT5DSANJEhocUr5Qf/q4zdMX3qprxaKdBeh
-         f7TA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=repfQyDKTAMeHKXGuDmTN3Wtz95/exNHme61bRWFg+k=;
-        b=QTS4gAZgSHdAK2zKy6YFWhlI59Mxts67kCupzlIP18GNimYk4dzysbnGOBUp00WtGg
-         rc7Zy/Nw0aHiiyb+nWEmP40+qk5wYiGnbuaSdaRRIfZZlRLWZUm6L1dxQvxxQvpxcp17
-         TlwNLSuV6AtEHuwpnvjcMzEi83cdohLlY4qRnxzCwadKRHUtaTrtWSrpGSxImuDFpI6v
-         rhS4X99EVA+3SGIOkpCNm0slvG8thMFQMVHySsCYtWQ3J0Qwtvu4/ETIuDLVVn7Q2A3h
-         L1BKHenbTyD0w5TtAjWRkIyWNq66c+AAG2DFO4XuGELL6VMHxMFmFdD/49RZUB5zpeso
-         utvQ==
-X-Gm-Message-State: AOAM530Gn1AtKrBxucNTLvlyGtWwyWNFdOtm8AKnEKCKNhIIP1NHFNHT
-        8bN00FsHx+cKA0JIIZtOX5HDnA==
-X-Google-Smtp-Source: ABdhPJwTC0HmCXRT2TBG+mPczj34Kxdt8JxOZvxCw5dBA8SK1MsxRcZZI+HtnPitJIZwDWkd+iQn0Q==
-X-Received: by 2002:ac8:444f:: with SMTP id m15mr1880050qtn.340.1624028311456;
-        Fri, 18 Jun 2021 07:58:31 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id d19sm925301qkl.10.2021.06.18.07.58.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 07:58:31 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1luFx0-008Ydr-5l; Fri, 18 Jun 2021 11:58:30 -0300
-Date:   Fri, 18 Jun 2021 11:58:30 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jann Horn <jannh@google.com>, John Hubbard <jhubbard@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Jan Kara <jack@suse.cz>, stable <stable@vger.kernel.org>
-Subject: Re: [PATCH v2] mm/gup: fix try_grab_compound_head() race with
- split_huge_page()
-Message-ID: <20210618145830.GZ1096940@ziepe.ca>
-References: <20210615012014.1100672-1-jannh@google.com>
- <50d828d1-2ce6-21b4-0e27-fb15daa77561@nvidia.com>
- <CAG48ez3Vbcvh4AisU7=ukeJeSjHGTKQVd0NOU6XOpRru7oP_ig@mail.gmail.com>
- <20210618132556.GY1096940@ziepe.ca>
- <YMykiGuZYMqF7DuU@casper.infradead.org>
-MIME-Version: 1.0
+        id S234855AbhFRPCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:02:17 -0400
+Received: from mail-bn8nam08on2056.outbound.protection.outlook.com ([40.107.100.56]:44385
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234183AbhFRPCP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 11:02:15 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=R6Q45rts9G530eCrjMWxcJaHUWMd5oNgSlVtVBO+JNJaSS7mABh6pp3q3tF+42+1zTbDyK74sI3nodu4bE3fJWaJfVdQN0/j9hXkM5gz2lXUEtkZ/3kzxC87OckH0R9t646sIGnzE5fLRXxtFMYavcUqjXglqMtulqItlEO2NlDKwDN97xrUcP8zgvkWnfTWJt8yzhAtaaV5bLM14iH67ojIzQjK04ckpzlviPWG4DT713iZyJS33+gphfr4tVet46CekOO1zQL4rzlfTAlCBBsKideQ2zlH94qF5gABZpIV48mzFS8JC9LrjpgX2U2ACv/20YrMAI0OXTYMJZ8HZw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=62IjmDe4wjcin7//5c777r2FRECWE20Ya2cuhRKJplo=;
+ b=cxZUaEE3lk4IXyZU3Oe4HYp9iNlmI6+WykLiBRUVsfDT0NoPHPzMKhHOqaoI+4ECVwhso2sMw6QYyIM84rpXLaCsphfgI58wKZufR5v5O8Q2zJHIKbM5CBywnDfrk5OI/4WAVmHXEJAuhlKvbdMCfUKRhlpsiKQDG5s3zwsX6dahZN1NhSjnJ1+aD8mPuNMYnbVD3cagsSeoFys91pyIZ+CU7OfvtgwUYsuy6ktSdVdUZeF7FAA0+uSay2tTUqwkN7KsS5wHOujtB5T1azNmlid3BxxI7BSvBYi71xkEX4qKqHtrlEsG9PCmfz1MqwS88pSjuZFF3ZjYJ0DZ7sH5ig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=62IjmDe4wjcin7//5c777r2FRECWE20Ya2cuhRKJplo=;
+ b=g/xfYiQJKaKqpK1mB/PU+VN6jIJf8lzdcpF7/uVMophq9/iltoIh2gxFX62MlOfVZ+/3iOKQwrfDIWBRd+s8iRJSTX02Fy61UlWP8uO/jxa5ey4NKvBpIZ33pXV5Ux9TJ4oA5DS9xk3oPRxhUD2anudW9Q25e6COdUsy0pSWLDai6KO38vesSJH4MiKIHzFsCKwmLO1apa1kJI6hAbB5EkDCyO47hUa2JQcndSlVmVkuKZw1rUKL7w0u1AevxMArp9M9no8uThc904HyTozikGbLrfupASzPSwhjMffZPgX8Hi8ccKF8qSFtQHIDRNn0gzWjrz0zrxI4YzBi3tE8yg==
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5176.namprd12.prod.outlook.com (2603:10b6:208:311::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Fri, 18 Jun
+ 2021 15:00:01 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4242.021; Fri, 18 Jun 2021
+ 15:00:00 +0000
+Date:   Fri, 18 Jun 2021 11:59:59 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Jason J. Herne" <jjherne@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pasic@linux.ibm.com, akrowiak@linux.ibm.com
+Subject: Re: [PATCH] s390/vfio-ap: Fix module unload memory leak of matrix_dev
+Message-ID: <20210618145959.GF1002214@nvidia.com>
+References: <20210618133524.22386-1-jjherne@linux.ibm.com>
+ <20210618141018.GE1002214@nvidia.com>
+ <4ea3de71-9d68-59c6-bfb8-d8258019e585@linux.ibm.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YMykiGuZYMqF7DuU@casper.infradead.org>
+In-Reply-To: <4ea3de71-9d68-59c6-bfb8-d8258019e585@linux.ibm.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BLAPR03CA0022.namprd03.prod.outlook.com
+ (2603:10b6:208:32b::27) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BLAPR03CA0022.namprd03.prod.outlook.com (2603:10b6:208:32b::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend Transport; Fri, 18 Jun 2021 15:00:00 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1luFyR-008Yg4-T1; Fri, 18 Jun 2021 11:59:59 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 986d1afb-e770-4c93-a886-08d93269beee
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5176:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5176BE8A43CF13269EA13A1EC20D9@BL1PR12MB5176.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: fZu2FapsMxFvAN1+chBGehSY99AOd+5draGbpuFZQ58+n4Qz9XxJDdgBR9KKiPiZ4AXZwjH2mtQlD84R8Rf9mHYtc5A4XIr0iGwXqzvc5exRT22lDck7ElBNX+k+QclPf5m35xhq9o/ANhLBFazORhucBRD3rUPhgTdinp3dKecA4B0LxhZlX2+3c3Uwm9U6LhULxCz9Yt2rasltcxFWgTu5WeWixZM3yTGbbEj7JWi1C9kzTA1F64MlEwalYvveRzvBiPkEXBoXwyub3lA522mtOn8xryxqNjHPKo1Va8yDEdnyG/AXg1MCfPnzJmtzmPLvkR6SUuFLrP5HQE1J4dFTtzD0q0JsHBJDOarz6e4hLsE1qFUbDntlzNj7BiZ1pz9nY++XvaDTPI6LUjsUm+5tD3oWb6HYXV0y5djDRX4kQrt0zwHnUn91SD2/UBaguB54H0PgMoPJSiITBU76ASGT5ImK35Nl7DfHquC87Ujyamzs8NaqiXOzl4zEBJ468lKG5otRZ+lcFBwO12z7gUaqbPb9K/MxeTq1on8Tjr3qHiIMKMqn7Fl2wdmB/QKZSCgJKQ3uz5atbYCGigQNy1REDfL4Wdy+T4qZnIjYCzI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(346002)(376002)(136003)(396003)(38100700002)(6916009)(2616005)(426003)(4326008)(9786002)(8676002)(1076003)(8936002)(33656002)(9746002)(478600001)(5660300002)(66476007)(86362001)(316002)(53546011)(36756003)(83380400001)(66556008)(2906002)(186003)(66946007)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?diBv2I2zpqAaT/ePoKWrcsgx5yY8rRCAkM8Y5Z4FuD2TqXRihekMIjZ3MuVm?=
+ =?us-ascii?Q?ZVV0umCXhxtQ0ZHiJtMwub/AWP02Q8geo0hTFm7HZGlaodNTME9yYnyr9mM8?=
+ =?us-ascii?Q?q3nIm+hynOo6XtSohCCA/0ywE2m+quoJ3N1KkcI2Hw88g96y7PHO47TmRc8D?=
+ =?us-ascii?Q?2w/0XBBOd+n32e01SDtlTVL8IlDVUqyVYIIldXetki0L4cuAt5RZVUOjHfGT?=
+ =?us-ascii?Q?JQK7qpNNykfGsp0olq4rGNdyVlrr9WiZYKpWwRA8VWxPtaobSQy0AK/BIu6K?=
+ =?us-ascii?Q?CxEiXDvbHzwv1ksZRR7ksQc8IQNidXXHyQv3Ck6qSrX1PFCahpEN6QdnaWYb?=
+ =?us-ascii?Q?X47/0zLP04JWERUw6xjeg8jjiR+XTsLZKetYs8qGGUSlVtxfa9FGA0F+phQh?=
+ =?us-ascii?Q?66JVG7JafzJyGRVLOSUsokrGMbzCQFU3gac97g89T/g8n8zML3oGwPhmYI/Z?=
+ =?us-ascii?Q?Hvv8PmfS6Mds4wYWGQvLCLoIqCPddPm9VK6HeNzlxagKua8ZR7wNkYCFUPFQ?=
+ =?us-ascii?Q?LEkzC/aDi6N7VM6F7TxZKwqDUBbynEeQQWed+AXf7kYdO+Y3bX3n3QfEDxWC?=
+ =?us-ascii?Q?DIpgLXt1d9fWZ2LSJ1/pvo9ppamsg+Wjb6aKUyO7GT8N1EEf5Ve2GWpMLiL8?=
+ =?us-ascii?Q?UTqmPVVv4MGPbuSwZN90Go+ebe9cAQd0EXbWa9t1NOJBjIeil4Rcl9y+Y/DV?=
+ =?us-ascii?Q?GgNRdV92AojVLcrZ+mj2x8NVUkq0rAYfPMYbe+pGpGnxHg8ZBA+iWqHKhNZh?=
+ =?us-ascii?Q?Rh8Xj4seiGahM7r3WziUJk1reWFb9ariehxfNF3B86HtB+yXey1c7JVsWUpb?=
+ =?us-ascii?Q?3wWkLOBt1FwPQ24br/VAsGeEmsU5AsoUimCIlnZnyI/e2BcBX9Nog6dZ7K8S?=
+ =?us-ascii?Q?oqQNpmRxGQ5AWdHvpKDv8s11Xsm4GAj+UL2M3yHW02LCao4RPsYyPhYQYsUB?=
+ =?us-ascii?Q?FAKk8fQDw/OTKruPxhpNS36iu8nwg/7EKn9fDN5M+XnAnSAH6DHuFhim3L7t?=
+ =?us-ascii?Q?lxMmjgYqQ6dhfcnOxdBBuGSQgLUnhOaF+eeSqObNSHqy5G2RZsx84WyhdeuV?=
+ =?us-ascii?Q?BXx70COKmlYxIx0gWdEkirfHqCoBkza0YR4ELdfr6eE5J9AbLTnc3PGu4X8c?=
+ =?us-ascii?Q?sWU99vVpnjXOVZ1+svtUX08Bnb/Enuro07pRObsScYK6kBxRA+zkUkADdJ/d?=
+ =?us-ascii?Q?zqurqmvCRmYtH/niWjEpH4hF9JddfJODCJ9yWUyWWGHZeI3KMMyP7rf9gucL?=
+ =?us-ascii?Q?2XbjUoKmv6e4YNXfRv3o4lm38oXrZTXWLG/83nN8VvYt1gphGpghijSpTtJP?=
+ =?us-ascii?Q?8UFqd1qe+b/NDmQeBN5N/UCY?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 986d1afb-e770-4c93-a886-08d93269beee
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2021 15:00:00.8252
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pNKxvRJ+Ay2sUN5SzRsiVEfnnPgoBHkY4HBPBxJw0xyhliv7MzXMctAAC/XqSnoZ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5176
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 02:50:00PM +0100, Matthew Wilcox wrote:
-> On Fri, Jun 18, 2021 at 10:25:56AM -0300, Jason Gunthorpe wrote:
-> > On Tue, Jun 15, 2021 at 02:09:38PM +0200, Jann Horn wrote:
-> > > On Tue, Jun 15, 2021 at 8:37 AM John Hubbard <jhubbard@nvidia.com> wrote:
-> > > > On 6/14/21 6:20 PM, Jann Horn wrote:
-> > > > > @@ -55,8 +72,23 @@ static inline struct page *try_get_compound_head(struct page *page, int refs)
-> > > > >       if (WARN_ON_ONCE(page_ref_count(head) < 0))
-> > > > >               return NULL;
-> > > > >       if (unlikely(!page_cache_add_speculative(head, refs)))
-> > > > >               return NULL;
-> > > > > +
-> > > > > +     /*
-> > > > > +      * At this point we have a stable reference to the head page; but it
-> > > > > +      * could be that between the compound_head() lookup and the refcount
-> > > > > +      * increment, the compound page was split, in which case we'd end up
-> > > > > +      * holding a reference on a page that has nothing to do with the page
-> > > > > +      * we were given anymore.
-> > > > > +      * So now that the head page is stable, recheck that the pages still
-> > > > > +      * belong together.
-> > > > > +      */
-> > > > > +     if (unlikely(compound_head(page) != head)) {
-> > > >
-> > > > I was just wondering about what all could happen here. Such as: page gets split,
-> > > > reallocated into a different-sized compound page, one that still has page pointing
-> > > > to head. I think that's OK, because we don't look at or change other huge page
-> > > > fields.
-> > > >
-> > > > But I thought I'd mention the idea in case anyone else has any clever ideas about
-> > > > how this simple check might be insufficient here. It seems fine to me, but I
-> > > > routinely lack enough imagination about concurrent operations. :)
-> > > 
-> > > Hmmm... I think the scariest aspect here is probably the interaction
-> > > with concurrent allocation of a compound page on architectures with
-> > > store-store reordering (like ARM). *If* the page allocator handled
-> > > compound pages with lockless, non-atomic percpu freelists, I think it
-> > > might be possible that the zeroing of tail_page->compound_head in
-> > > put_page() could be reordered after the page has been freed,
-> > > reallocated and set to refcount 1 again?
+On Fri, Jun 18, 2021 at 10:35:21AM -0400, Jason J. Herne wrote:
+> On 6/18/21 10:10 AM, Jason Gunthorpe wrote:
+> > On Fri, Jun 18, 2021 at 09:35:24AM -0400, Jason J. Herne wrote:
+> > > vfio_ap_matrix_dev_release is shadowing the global matrix_dev with driver
+> > > data that never gets set. So when release is called we end up not freeing
+> > > matrix_dev. The fix is to remove the shadow variable and just free the
+> > > global.
 > > 
-> > Oh wow, yes, this all looks sketchy! Doing a RCU access to page->head
-> > is a really challenging thing :\
+> > I would clarify this commit message to say that the drv_data of the
+> > matrix_dev is never set and so dev_get_drvdata() always returns NULL
 > > 
-> > On the simplified store side:
+> > And I would suggest to use
 > > 
-> >   page->head = my_compound
-> >   *ptep = page
+> >    container_of(dev, struct ap_matrix_dev, dev)
 > > 
-> > There must be some kind of release barrier between those two
-> > operations or this is all broken.. That definately deserves a comment.
+> > instead of the global variable, and probably NULL the global
+> > too..
+> > 
 > 
-> set_compound_head() includes a WRITE_ONCE.  Is that enough, or does it
-> need an smp_wmb()?
-
-Probably, at least the generic code maps smp_store_release() to
-__smp_wmb.
-
-I think Jann was making the argument that there is going to be some
-other release operation due to locking between the two above, eg a
-lock unlock or something.
-
-> > Ideally we'd use smp_store_release to install the *pte :\
-> > 
-> > Assuming we cover the release barrier, I would think the algorithm
-> > should be broadly:
-> > 
-> >  struct page *target_page = READ_ONCE(pte)
-> >  struct page *target_folio = READ_ONCE(target_page->head)
+> The use of driver_data seems to have been completely erroneous here. In this
+> case the global matrix_dev is the top level struct. It is not contained in
+> anything. matrix_dev is created upon module load, and it is freed when the
+> module exits.
 > 
-> compound_head() includes a READ_ONCE already.
+> So I don't think using container_of makes sense. Unless I've
+> misunderstood your suggestion?
 
-Ah, see I obviously haven't memorized that detail :\
+	matrix_dev = kzalloc(sizeof(*matrix_dev), GFP_KERNEL);
+	matrix_dev->device.release = vfio_ap_matrix_dev_release;
+	ret = device_register(&matrix_dev->device);
 
-> >  page_cache_add_speculative(target_folio, refs)
-> 
-> That's spelled folio_ref_try_add_rcu() right now.
-
-That seems a much better name
-
-> >  if (target_folio != READ_ONCE(target_page->head) ||
-> >      target_page != READ_ONCE(pte))
-> >     goto abort
-> > 
-> > Which is what this patch does but I would like to see the
-> > READ_ONCE's.
-> 
-> ... you want them to be uninlined from compound_head(), et al?
-
-Not really (though see below), I was mostly looking at the pte which
-just does pte_val(), no READ_ONCE in there
-
-> > And there possibly should be two try_grab_compound_head()'s since we
-> > don't need this overhead on the fully locked path, especially the
-> > double atomic on page_ref_add()
-> 
-> There's only one atomic on page_ref_add(). 
-
-Look at the original patch, it adds this:
-
-+		else
-+			page_ref_add(page, refs * (GUP_PIN_COUNTING_BIAS - 1));
-
-Where page is the folio, which is now two atomics to do the same
-ref. This is happening because we can't do hpage_pincount_available()
-before having initially locked the folio, thus we can no longer
-precompute what 'ref' to give to the first folio_ref_try_add_rcu()
-
-> And you need more of this overhead on the fully locked path than you
-> realise; the page might be split without holding the mmap_sem, for
-> example.
-
-Fully locked here means holding the PTL spinlocks, so we know the pte
-cannot change and particularly the refcount of a folio can't go to
-zero. We can't change compound_head if the refcount is
-elevated.
-
-Keep in mind we also do this in gpu:
-
- folio_ref_try_add_rcu(READ_ONCE(target_page->head), 1)
- [..]
- folio_put_refs(READ_ONCE(target_page->head), 1)
-
-Which makes me wonder why we have READ_ONCE inside compound_head?
-
-I'm reading the commit message of 1d798ca3f164 ("mm: make
-compound_head() robust"), and to me that looks like another special
-lockless algorithm that should have the READ_ONCE in it, not the
-general code.
+"dev" is contained inside matrix_dev which is why we should use
+container of to go from a struct device pointer back to the containing
+matrix_dev pointer
 
 Jason
