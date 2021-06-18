@@ -2,67 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97FE3AC076
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 03:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07DFA3AC07A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 03:18:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233494AbhFRBSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 21:18:48 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:49113 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231310AbhFRBSr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 21:18:47 -0400
-X-UUID: f12b4df563d747778db672e4b5ab6f5d-20210618
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=KOzvCy7uxSkX1CX2/k53ocjUMWvU6GOJfwgH1rFZydI=;
-        b=LwtPA6TdfL/56QH4cjL7+yNWaZO/cUxVKVby9TLecGiyoersJvCDBXLCkUOAV5imbcSVNdfEci5ch6+gfg/5XPDEmJolGQjXHO7CKi/JUIsvcvjgD4IAO7qCKEgtZgltTwYQtISWF3NnuiA/4CQEs0j7SRQtKQRic/h+4RSbftc=;
-X-UUID: f12b4df563d747778db672e4b5ab6f5d-20210618
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 381214056; Fri, 18 Jun 2021 09:16:35 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 18 Jun 2021 09:16:33 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 18 Jun 2021 09:16:33 +0800
-Message-ID: <1623978993.5433.1.camel@mtkswgap22>
-Subject: Re: [PATCH -next] scsi: ufs-mediatek: Add missing of_node_put() in
- ufs_mtk_probe()
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Zou Wei <zou_wei@huawei.com>
-CC:     <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <matthias.bgg@gmail.com>, <linux-scsi@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <peter.wang@mediatek.com>
-Date:   Fri, 18 Jun 2021 09:16:33 +0800
-In-Reply-To: <1623929522-4389-1-git-send-email-zou_wei@huawei.com>
-References: <1623929522-4389-1-git-send-email-zou_wei@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S233509AbhFRBU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 21:20:29 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:43732 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231310AbhFRBU1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 21:20:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=G2TbT6vZaY52J+Jfk/VAd2BbCLwYdAr/yuhd+MfL9Xk=; b=jC6Cc4AGyANpa+v03+mqqWKi4O
+        yPnGxJD3xyas8WHH7Vfsfm/xjXsTt3a/e0Y7eNQMwcs2EDYupmOOU67jCL8Jx6X0I+OGpmDI0VGq7
+        U65h8aw5Q4juoSYjHh87yH6f21A2mU9Yvn0ru1V2Dra82wLxGt/wQt/AWE3hCj1YaAEs=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lu39E-009ztR-AN; Fri, 18 Jun 2021 03:18:16 +0200
+Date:   Fri, 18 Jun 2021 03:18:16 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vadym Kochan <vadym.kochan@plvision.eu>
+Cc:     linux-firmware@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Oleksandr Mazur <oleksandr.mazur@plvision.eu>,
+        Serhiy Boiko <serhiy.boiko@plvision.eu>,
+        Serhiy Pshyk <serhiy.pshyk@plvision.eu>,
+        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
+        Taras Chornyi <taras.chornyi@plvision.eu>,
+        Mickey Rachamim <mickeyr@marvell.com>
+Subject: Re: [GIT PULL] linux-firmware: mrvl: prestera: Update Marvell
+ Prestera Switchdev v3.0 with policer support
+Message-ID: <YMv0WEchRT25GC0Q@lunn.ch>
+References: <20210617154206.GA17555@plvision.eu>
+ <YMt8GvxSen6gB7y+@lunn.ch>
+ <20210617165824.GA5220@plvision.eu>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210617165824.GA5220@plvision.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgWm91LA0KDQpPbiBUaHUsIDIwMjEtMDYtMTcgYXQgMTk6MzIgKzA4MDAsIFpvdSBXZWkgd3Jv
-dGU6DQo+IFRoZSBmdW5jdGlvbiBpcyBtaXNzaW5nIGEgb2Zfbm9kZV9wdXQgb24gbm9kZSwgZml4
-IHRoaXMgYnkgYWRkaW5nIHRoZSBjYWxsDQo+IGJlZm9yZSByZXR1cm5pbmcuDQo+IA0KPiBSZXBv
-cnRlZC1ieTogSHVsayBSb2JvdCA8aHVsa2NpQGh1YXdlaS5jb20+DQo+IFNpZ25lZC1vZmYtYnk6
-IFpvdSBXZWkgPHpvdV93ZWlAaHVhd2VpLmNvbT4NCj4gLS0tDQo+ICBkcml2ZXJzL3Njc2kvdWZz
-L3Vmcy1tZWRpYXRlay5jIHwgMSArDQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykN
-Cj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5jIGIvZHJp
-dmVycy9zY3NpL3Vmcy91ZnMtbWVkaWF0ZWsuYw0KPiBpbmRleCAxYTUxN2M5Li5kMmMyNTE2IDEw
-MDY0NA0KPiAtLS0gYS9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1tZWRpYXRlay5jDQo+ICsrKyBiL2Ry
-aXZlcnMvc2NzaS91ZnMvdWZzLW1lZGlhdGVrLmMNCj4gQEAgLTExMjAsNiArMTEyMCw3IEBAIHN0
-YXRpYyBpbnQgdWZzX210a19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiAg
-CWlmIChlcnIpDQo+ICAJCWRldl9pbmZvKGRldiwgInByb2JlIGZhaWxlZCAlZFxuIiwgZXJyKTsN
-Cj4gIA0KPiArCW9mX25vZGVfcHV0KHJlc2V0X25vZGUpOw0KPiAgCXJldHVybiBlcnI7DQo+ICB9
-DQo+ICANCg0KVGhhbmtzIGZvciB0aGlzIGZpeC4NCg0KUmV2aWV3ZWQtYnk6IFN0YW5sZXkgQ2h1
-IDxzdGFubGV5LmNodUBtZWRpYXRlay5jb20+DQoNCg==
+On Thu, Jun 17, 2021 at 07:58:24PM +0300, Vadym Kochan wrote:
+> Hi Andrew,
+> 
+> On Thu, Jun 17, 2021 at 06:45:14PM +0200, Andrew Lunn wrote:
+> > On Thu, Jun 17, 2021 at 06:42:06PM +0300, Vadym Kochan wrote:
+> > > The following changes since commit 0f66b74b6267fce66395316308d88b0535aa3df2:
+> > > 
+> > >   cypress: update firmware for cyw54591 pcie (2021-06-09 07:12:02 -0400)
+> > > 
+> > > are available in the Git repository at:
+> > > 
+> > >   https://github.com/PLVision/linux-firmware.git mrvl-prestera
+> > > 
+> > > for you to fetch changes up to a43d95a48b8e8167e21fb72429d860c7961c2e32:
+> > > 
+> > >   mrvl: prestera: Update Marvell Prestera Switchdev v3.0 with policer support (2021-06-17 18:22:57 +0300)
+> > > 
+> > > ----------------------------------------------------------------
+> > > Vadym Kochan (1):
+> > >       mrvl: prestera: Update Marvell Prestera Switchdev v3.0 with policer support
+> > > 
+> > >  mrvl/prestera/mvsw_prestera_fw-v3.0.img | Bin 13721584 -> 13721676 bytes
+> > >  1 file changed, 0 insertions(+), 0 deletions(-)
+> > 
+> > Hi Vadym
+> > 
+> > You keep the version the same, but add new features? So what does the
+> > version number actually mean? How does the driver know if should not
+> > use the policer if it cannot tell old version 3.0 from new version
+> > 3.0?  How is a user supposed to know if they have old version 3.0
+> > rather than new 3.0, when policer fails?
+> > 
+> >     Andrew
+> 
+> So the last 'sub' x.x.1 version will be showed in dmesg output and via:
+> 
+>     $ ethtool -i $PORT
+> 
+>     ...
+>     firmware-version: 3.0.1
 
+That is pretty unfriendly, the filename saying one thing, the kernel
+another.
+
+If you look back in the git history, are there other firmware blobs
+which get updated while retaining the same version? If this is very
+unusual, you probably should not be doing it. If it is common
+practice, then i will be surprised, and it is probably acceptable.
+
+I suppose you could consider another alternative: Make
+mrvl/prestera/mvsw_prestera_fw-v3.0.img a symbolic link, and it would
+point to mrvl/prestera/mvsw_prestera_fw-v3.0.1.img.
+
+	  Andrew
