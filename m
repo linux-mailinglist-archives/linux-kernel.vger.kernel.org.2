@@ -2,218 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C4B3AD411
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 23:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 997333AD42C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 23:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234183AbhFRVDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 17:03:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232159AbhFRVDm (ORCPT
+        id S234446AbhFRVM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 17:12:26 -0400
+Received: from esa1.hc3370-68.iphmx.com ([216.71.145.142]:1296 "EHLO
+        esa1.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232882AbhFRVMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 17:03:42 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8731DC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 14:01:31 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id f3-20020a0568301c23b029044ce5da4794so4390234ote.11
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 14:01:31 -0700 (PDT)
+        Fri, 18 Jun 2021 17:12:24 -0400
+X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Jun 2021 17:12:24 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=citrix.com; s=securemail; t=1624050615;
+  h=subject:to:cc:references:from:message-id:date:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=aLMsuXLCsllpZFldY8OT15tgzAl46T576xjLKmM9eOk=;
+  b=JqkyOQrXMcwTXdQ0MqGrM3ENRqwpe2iK6fmFPRdWwB3IEtAGpptGBvzH
+   1xE9MxhpCvd7nTU2NhXGCTbEodvRzW3VBk1mUiP65vU0oqQHNaG1qRDGc
+   koYT25Z8AxIsWMkqi8Kael304XP//dJ7ZpywgMzFFJw/cXdK6seqHQ+F6
+   o=;
+Authentication-Results: esa1.hc3370-68.iphmx.com; dkim=pass (signature verified) header.i=@citrix.onmicrosoft.com
+IronPort-SDR: VNjKez3ptyZ7SSVXgfZxYnNiPNVaLAA2ll0P2pUjNkQN2S/6FshCZTnGDuWEol50lETPo3B9C8
+ Xs5W9bwul4fy6kI1DgwHi+wgPE9xOv47FJ9ciTxlbiHbX/wdsT91fuY6bLJLIlSr/NYu7cfAAS
+ A8jATjXVfUI1UxfmyeA6RFSeHVwQ7CogPNPzNAiIQdLi0jGvqKv5spT662k9VFoOX9ymNFlXhd
+ QgGaAIaPYqv9qXz4yEYOi7MtuS71uDn09irsH6oyzhmdd/PDfV/QHuZOSFgWBNRQZ2wFlTDGF7
+ uZk=
+X-SBRS: 5.1
+X-MesageID: 46860835
+X-Ironport-Server: esa1.hc3370-68.iphmx.com
+X-Remote-IP: 162.221.158.21
+X-Policy: $RELAYED
+IronPort-HdrOrdr: A9a23:cQwIuKqzpRmtaXZXw4YKlBcaV5vPL9V00zEX/kB9WHVpm5Oj+f
+ xGzc516farslossREb+expOMG7MBThHO1OkPcs1NCZLXbbUQqTXf1fBO7ZogEIdBeOjdK1uZ
+ 0QCpSWTeeAcGSS7vyKkjVQcexQuOVvmZrA7Yy1ogYPPGMaH52IrT0JbDpzencGNzWubqBJca
+ Z0iPA3wwZINU5nFPhSURI+Lpj+TpDw5dzbSC9DIyRixBiFjDuu5rK/Ox+E3i0GWzcK5bs562
+ DKnyHw+63m6piAu1/h/l6Wy64TtMrqy9NFCsDJos8JKg/0ggLtQIh6QbWNsB08venqwlc3l9
+ vnpQsmIq1ImjLsV1DwhSGo9xjr0T4o5XOn40Sfm2HfrcvwQy9/I9ZdhKpCGyGprnYIjZVZ6u
+ ZmzmiZv51YAVfrhyLm/eXFUBlsiw6dvWciq+gOlHZSOLFuKoO5lbZvu3+9La1wWh4TsOscYb
+ BT5YDnlbVrmGqhHjTkVjIF+q31YpxbdS32N3TruaSuonVrdT5CvhAlLGF2pAZJyHsHcegz2w
+ 3zCNUjqFh/dL5gUUtDPpZJfSKWMB2AffueChPcHbzYfJt3cE4l/KSHkYndotvaIqA18A==
+X-IronPort-AV: E=Sophos;i="5.83,284,1616472000"; 
+   d="scan'208";a="46860835"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=akeni4rJx21m5e0ZP9C3t+x85RLpUepbX7kyXKu+dcIrJWWzcfDra6UOd2b8dxoNdJqlKuIl/DPFVQbVzh2bRq8ufJ3JHNVIl7Dma7oYeL6kyw743LehzETisjLp3Q8/5wv8I5Wy7OSryMyA8O3aR+Un8gQWLMukMyGgb1bdxF0KH3awYbFU0UO37p+PdvUkrXzwHnPagNfrpji6iw/Bxb/dhjhZvtyaM5at+0dTW+kd5C2eMEZ0Fn88hzg8kh0oiQJR476WNTJEsGhuq5nrkj2/574AN6GDXBWEK7pLOR4tYcNVQJwx2h0bC5vBQhjP4GAm3tLeYpVYt7lTSHqoRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XfLR7wkmxE9Jo89PqdEuBA1b6xJ7tP036iKTQhqbm90=;
+ b=eb/XBneeTYP87S/MpF6NuZtjXNlDLj1SwgsGs0OkpBzsHU0JB5ACDrlz6RIQoCa9e/VxgCZb70bgojex8LyjepUtsLZxGSCGQrfVW12QUDjSu8m8r7EeZOKBndnv/G0rA85b+gbkVscQzcObHWhB+MtfffavY3tqMZIgluqLGLjrmHnjQmcFuhoMfEfHPjwrWv+o5CC/tnjZAIr7CuA4QWpXK5KVLMdi6SHaRMiPO9iinAbeKzqgfcIZWiNHc/sP57oYTvkyLLdB8p/MuQ8cdEPYRpqILBlmC7fVSOR6X+UJE+C5z2qYzO8248VTQ3fR6bsvBe/XV+/reNE2vST8AQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=citrix.com; dmarc=pass action=none header.from=citrix.com;
+ dkim=pass header.d=citrix.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=H17G11qGODSdDOGEe1xmBe6pWkQ5qPdhrIEmhXM+rw0=;
-        b=RHK/5OXFBKs+4LPZvc+CUDOd5wQ47ro+3v+Z2pnoIWr261BWAMrs5aEbrq8cclHrrr
-         8rVvUs6GEGt+dNZ/oPA7HccZXozm46JCx2gjx8mVwqZP3w4d6Xm3xWRik3EfgvJfY1LS
-         A+ZoQK50lRrEU5KhTlDW2ufHKiyEzNSN+6hMQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=H17G11qGODSdDOGEe1xmBe6pWkQ5qPdhrIEmhXM+rw0=;
-        b=l9Ix8gpASYrfV9dMihXPdC8WTDBheiQVZzAPbdQBnZ2sCdeinVmGiPvZQfI47djvxx
-         ZmeOQWRVCri+OLk9lzORmWRiL9dTUMGXxSeILDUjbzHU6VBDKmEwxH9W9tFwwJGRgq2a
-         o06SOP9VxrDywVzvPENJi1hIEykW1h/62mvZwdV91PNEVatO8WnaNyJ8z48uvVtsl9Wf
-         ZDgjr0z+KA+T5HVnlaFIvDFK+47v/VCix2GiYwzaCo3uahfF5s+IsFEXDH2QY2tThObz
-         3bD3lDYDJkX+Z3cEcX/qC3rjn6P/TaP7pnmNbb7k4a2+RRFNSzsr2n1WarxgqUVTP05J
-         l7RQ==
-X-Gm-Message-State: AOAM531sQQ1exNDu0J9i+ObbqrWR0Z5Gs9iiHfYB7I9QiHh+vvCG/117
-        hYHI+WsIZNj2Vb08hz0ODLW4MauHBGDy5nViy8dCOQ==
-X-Google-Smtp-Source: ABdhPJxjtXMdrYKvKpZRnjmtZfC9Z8wYXjc1peXnZpKUPxLpRF5e+Dr1uEmSe4rbLNz8drYEa5YCYoR0Nm0zi9qFrVU=
-X-Received: by 2002:a9d:624d:: with SMTP id i13mr2777378otk.34.1624050090738;
- Fri, 18 Jun 2021 14:01:30 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 18 Jun 2021 14:01:30 -0700
+ d=citrix.onmicrosoft.com; s=selector2-citrix-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XfLR7wkmxE9Jo89PqdEuBA1b6xJ7tP036iKTQhqbm90=;
+ b=BGmz0uZ+geTLNBf5LrIhJJRjYl07FCMvEr9GRADikEZLU7n1JrrJqpNNFbTEQKrg1U1b4aK9KP+xbWUYKybtyZScSmLjtuyVn6Bs7/koYyDJFdEMcmSZfC4AvqrO6Wjkg5tv+lWStjmdhG8KB3s2OseuP890oIvq/h5W+hqxp6s=
+Subject: Re: [patch V3 61/66] x86/fpu/signal: Sanitize the xstate check on
+ sigframe
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+CC:     Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        "Sebastian Andrzej Siewior" <bigeasy@linutronix.de>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+References: <20210618141823.161158090@linutronix.de>
+ <20210618143451.325530702@linutronix.de>
+From:   Andrew Cooper <andrew.cooper3@citrix.com>
+Message-ID: <e166f71b-bd83-04b1-27d7-cea59ebe81fb@citrix.com>
+Date:   Fri, 18 Jun 2021 22:02:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210618143451.325530702@linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+X-ClientProxiedBy: LO4P123CA0218.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:1a6::7) To BYAPR03MB3623.namprd03.prod.outlook.com
+ (2603:10b6:a02:aa::12)
 MIME-Version: 1.0
-In-Reply-To: <68b1697e-acb0-10b7-3e89-2287e196a230@linaro.org>
-References: <20210608195519.125561-1-swboyd@chromium.org> <a6356956-9d4a-6fe7-2acc-bbe968d3a936@linaro.org>
- <CAE-0n521fW2F9V6E_7ei2KMsEUMLKSOCtAbRrVX+xXyrS0K9XQ@mail.gmail.com> <68b1697e-acb0-10b7-3e89-2287e196a230@linaro.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Fri, 18 Jun 2021 14:01:30 -0700
-Message-ID: <CAE-0n50QLnxaUZNkAb9Vm0553QMWKz6nHp9qXjrm=JPD++w6SA@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/dsi: Stash away calculated vco frequency on recalc
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Clark <robdclark@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Abhinav Kumar <abhinavk@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: db3b8c5d-99aa-4174-5af4-08d9329c7748
+X-MS-TrafficTypeDiagnostic: SJ0PR03MB5663:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SJ0PR03MB5663153EB74A4A39AE6829C1BA0D9@SJ0PR03MB5663.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pwHwxIq9plmYUJug5DTTTf5R48JoxAceirGjb9IeDpq5diBmjkAXMKZFBW5DvjFA5ihOF+XnNnKuE4SoFZZF9iUw2g/69NyP2d+GNNePTIc9mEbmt05PTEMF1Cw1+UqSt0dhVyxy+VPwxoBI98Lk0EkpqYjHzNmDfRTOD2K/v6OCdnlyqUKeqwGxoBZ1/zOyvDEKNCDYFgaJ9HzkuNT9YkgIuljElw0rZHTraTGpnJ6ChHv4rCqNd7y6jSpOh7ffb+xvvacaDtXemlio1j1kGkifyt3WypDHV4+0t61Hs4buqHy+dogWqI9tWcJbjHGnax2jqgo193QLIkQ2KywmDQo1aYTYSX4bj0iBoVsI38bosZN8utXqHLA0fobIvQUAe/WjaWqofDHqy0Lyf70NWv2aA8ku08o7c2BNuAYN7O+kwsCFq/mkyW0PhrTvCKOPCptR9l45YiBoY3L7ao+PLgSqKJTiKPlZ66xWS/6XjyLsiPG6S1CsHHYPuCgIhtypZYwgTcLszS9S/P+01thd4vaIRl6NtcOoptXZ8W8nIRXVwPocgf0a82lfYkfCb60fmb+IBsCFOUa06Pcp7FQw/d8/BYbmksI5gdf51RgIE4qyMI4x9Vy1DV6DROQ5wh5YF7QLNGmGAcsnLg+59DhA2DDyjEZUoTOwjHZGc5i9SqyqCkC40JHfBXGaK8jQ6DXf
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR03MB3623.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(376002)(366004)(396003)(316002)(4326008)(36756003)(107886003)(31686004)(7416002)(66556008)(110136005)(54906003)(66476007)(16576012)(83380400001)(16526019)(38100700002)(186003)(31696002)(66946007)(2906002)(956004)(53546011)(478600001)(8936002)(8676002)(26005)(4744005)(5660300002)(6666004)(86362001)(2616005)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b2FjQkJLWWJ2aGRzTUlFakVPKzJKRzVPYXl1MWw4UTNxTGFkUWJuWVNIRGNr?=
+ =?utf-8?B?U2kwNGZ5Ujl5MkM3NUlkMXNLTjE3WGdOOUx3Tk9MOC9SUDBKN0h4bERTN1A0?=
+ =?utf-8?B?TmdKclMyZzRXSGpnMDBrc01uUE5SVFJteDhHeGFGZ0pHZ285NlpiVVptaWlL?=
+ =?utf-8?B?emV5dGFsTEk4TndNeURHV0ZvckhZM2VHenJoZWtSRUd6WUxENEY1K0NlRU9l?=
+ =?utf-8?B?NVoxWWNpMWE1MldMb29CTmNyN1pzMjlyaHZWMWtZa2NrRTk1NEZnZmY0Kyts?=
+ =?utf-8?B?V05wSXh2eEl3djl2UHBKbDh3K0s2M1gwanc1OFZOWjBVVVo1ek1FRU5GT1VK?=
+ =?utf-8?B?MWEza1RIWitmTEpXN05PQTNoVnMwUE9IbTVaTzBxMnBNd1dCOElvaGxvd1VN?=
+ =?utf-8?B?bW82VjVVQU9jYjRTOTN6RUdZUjNkT0k4TVYyS0V4cGFrWERjamJRYjFwejc4?=
+ =?utf-8?B?ZDdlakVETHlvQWRoNHcySndsaXozRFc3SGdYR0ROSWh1S2MwTDcxMitoUEha?=
+ =?utf-8?B?dVgwUERJSnUxS0VRdTlTRVNvaHl0TXJoOW5SdUhrRlhzSkVZNVNLQWQ1K3pt?=
+ =?utf-8?B?UTU3WWNadG9GNVFXa1JZb2VmbzRqOHhuSWxWRHF6dVNXTjlCK1JnNUF4RWxI?=
+ =?utf-8?B?Z2Rha2oxejhyNXgzWTZTeUlFZWZlYTh1OHE2RENMNmFENGZZaXd1dGNudXMy?=
+ =?utf-8?B?MlYzbmJwRllzaG8rZTRHRE5zdEdhN3dwTWZjWUZkaGJyWjBQeks0YUU0bWVB?=
+ =?utf-8?B?dWxsVEJpNXI3a05JKy85eGZpRkVvc28wWXMrRlF2UkhVRW5BaFFwN0VsZUZu?=
+ =?utf-8?B?NEJ1WmZIMzZYaXVZZlBoUm1PZW5vUGhWeWRLU1F6am45eFJGcDJ4Y0lzOUJi?=
+ =?utf-8?B?VnJSS1h6ME9kK3pYdVpLSlVTdFV4eloyYnRkeFlhZDlVNXpDTkEvbGpYNnBK?=
+ =?utf-8?B?TDBad1RSZTFldStiOGV0OEttcG1RWmQ2b3czZkY3dHFsU0R1cFduRWg1dERs?=
+ =?utf-8?B?bTBmLzhBaEZjaThWTExqV2xGTnRKb1hqS0MxaDhUVGprTlRLMGpRRXRSZ2Ur?=
+ =?utf-8?B?b3lyZzVxQzNObHZPc0NzaEJQTElqemdCbkFGN2JPRnY0d25yQmVKZ0ZqNk1w?=
+ =?utf-8?B?akNpK3FtTjNrRGtvTEVsVDk1b25Ncjk0MWVudU0yMVE2cGk3OW1YbWhiZFcr?=
+ =?utf-8?B?NVFVTSt2YTk0Zll1ZUFiVXNLZlZCR1hKU2tUemRGTEQ5SEM3MkdwZ095OUZO?=
+ =?utf-8?B?Zm1pL0pWNWZUUVc5RUpRNzY3YmppcWVqNHFJak5tUHQ1dnN6UnIxUjFrTy82?=
+ =?utf-8?B?dVl5N0lySnhVZXhLQTViK0hKeHZEZkxuWnBRaDJyZFl5NHhiNkh2S2NZZGVy?=
+ =?utf-8?B?TUY1SDhkcDV3RTN6SkdybXkwU0VUZ2JuNnpWVnAzbVBKNExHV3poeVR1ZFZH?=
+ =?utf-8?B?VVVsdDlzVXpWaXBTak5SVXpYekVmeUdNdGhQMndLY1FRanRQMmtMZkZFWm5O?=
+ =?utf-8?B?R1I5ZWxSaVByTlJnNDhpbHMwTXlqQ1VRZnppOWp4MVNmS2psZjRqaVZ2a3pM?=
+ =?utf-8?B?VmhRazg1MDlrNHRwNHhXalBGNGlJYzlqV3RYZDRBakUzRWpXZWYvNzhITEFI?=
+ =?utf-8?B?djArbUFZcGVYeks3U0c1VXYrT3dqUDIxeEovTlFCaSthZlAyT2dKSHRnWnFi?=
+ =?utf-8?B?bGpobGdkaTcwUjRBSHRPL2JvdGFmUkw0WFRmVkVMV0dBK2pQYXAxdEtnRXBZ?=
+ =?utf-8?Q?XmvzUmVEpidNqGqWNhQZLFisoHRjg3Cr7omukGE?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: db3b8c5d-99aa-4174-5af4-08d9329c7748
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR03MB3623.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2021 21:03:04.8262
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335836de-42ef-43a2-b145-348c2ee9ca5b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xKzAsgadMVe0SlpARDLMraL8FpHBvhOVx9NzhbDZCQriBQC5V2x5L5YLkoym4zXNLl6TBuva6jfD9FJvvQegjag16EU3wpsfASlUr/8vCxk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR03MB5663
+X-OriginatorOrg: citrix.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Dmitry Baryshkov (2021-06-09 09:03:14)
-> On 09/06/2021 01:11, Stephen Boyd wrote:
-> > Quoting Dmitry Baryshkov (2021-06-08 14:41:21)
-> >> Hi Stephen,
-> >>
-> >> On 08/06/2021 22:55, Stephen Boyd wrote:
-> >>> A problem was reported on CoachZ devices where the display wouldn't come
-> >>> up, or it would be distorted. It turns out that the PLL code here wasn't
-> >>> getting called once dsi_pll_10nm_vco_recalc_rate() started returning the
-> >>> same exact frequency, down to the Hz, that the bootloader was setting
-> >>> instead of 0 when the clk was registered with the clk framework.
-> >>>
-> >>> After commit 001d8dc33875 ("drm/msm/dsi: remove temp data from global
-> >>> pll structure") we use a hardcoded value for the parent clk frequency,
-> >>> i.e.  VCO_REF_CLK_RATE, and we also hardcode the value for FRAC_BITS,
-> >>> instead of getting it from the config structure. This combination of
-> >>> changes to the recalc function allows us to properly calculate the
-> >>> frequency of the PLL regardless of whether or not the PLL has been
-> >>> clk_prepare()d or clk_set_rate()d. That's a good improvement.
-> >>>
-> >>> Unfortunately, this means that now we won't call down into the PLL clk
-> >>> driver when we call clk_set_rate() because the frequency calculated in
-> >>> the framework matches the frequency that is set in hardware. If the rate
-> >>> is the same as what we want it should be OK to not call the set_rate PLL
-> >>> op. The real problem is that the prepare op in this driver uses a
-> >>> private struct member to stash away the vco frequency so that it can
-> >>> call the set_rate op directly during prepare. Once the set_rate op is
-> >>> never called because recalc_rate told us the rate is the same, we don't
-> >>> set this private struct member before the prepare op runs, so we try to
-> >>> call the set_rate function directly with a frequency of 0. This
-> >>> effectively kills the PLL and configures it for a rate that won't work.
-> >>> Calling set_rate from prepare is really quite bad and will confuse any
-> >>> downstream clks about what the rate actually is of their parent. Fixing
-> >>> that will be a rather large change though so we leave that to later.
-> >>>
-> >>> For now, let's stash away the rate we calculate during recalc so that
-> >>> the prepare op knows what frequency to set, instead of 0. This way
-> >>> things keep working and the display can enable the PLL properly. In the
-> >>> future, we should remove that code from the prepare op so that it
-> >>> doesn't even try to call the set rate function.
-> >>>
-> >>> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> >>> Cc: Abhinav Kumar <abhinavk@codeaurora.org>
-> >>> Fixes: 001d8dc33875 ("drm/msm/dsi: remove temp data from global pll structure")
-> >>> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> >>
-> >> Thank you for the lengthy explanation. May I suggest another solution:
-> >>    - Apply
-> >> https://lore.kernel.org/linux-arm-msm/010101750064e17e-3db0087e-fc37-494d-aac9-2c2b9b0a7c5b-000000@us-west-2.amazonses.com/
-> >>
-> >>    - And make save_state for 7nm and 10nm cache vco freq (like 14nm does).
-> >>
-> >> What do you think?
-> >>
-> >
-> > Maybe that can be done for the next merge window? I'd like to get the
-> > smallest possible patch in as a fix for this cycle given that the Fixes
-> > tag is a recent regression introduced during the most recent merge
-> > window.
-> >
-> > I honestly have no idea what's going on with the clk driver in these
-> > files but from the clk framework perspective there are bigger problems
-> > than caching the vco freq properly. As I stated in the commit text
-> > above, calling set_rate from prepare is plain bad. That should stop.
+On 18/06/2021 15:19, Thomas Gleixner wrote:
+> Utilize the check for the extended state magic in the FX software reserved
+> bytes and set the parameters for restoring fx_only in the relevant members
+> of fw_sw_user.
 >
-> Could you please spend few more words, on why calling the clock's
-> set_rate() callback from the same clock's prepare callback is bad? I
-> don't see how this would affect downstream clocks (as we do not change
-> the frequency, we just set the registers).
+> This allows further cleanups on top because the data is consistent.
+>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  arch/x86/kernel/fpu/signal.c |   69 +++++++++++++++++++------------------------
+>  1 file changed, 32 insertions(+), 37 deletions(-)
+>
+> --- a/arch/x86/kernel/fpu/signal.c
+> +++ b/arch/x86/kernel/fpu/signal.c
+> @@ -15,29 +15,29 @@
+>  #include <asm/sigframe.h>
+>  #include <asm/trace/fpu.h>
+>  
+> -static struct _fpx_sw_bytes fx_sw_reserved, fx_sw_reserved_ia32;
+> +static struct _fpx_sw_bytes fx_sw_reserved, fx_sw_reserved_ia32 __ro_after_init;
 
-The clk framework is caching things and we don't want clk providers to
-be calling into the clk framework again from within the clk ops. This
-recursion into the framework is why we have a nasty recursive aware lock
-in the clk framework that we're never going to get rid of if more and
-more code keeps recursing into the framework.
+You probably want a second __ro_after_init here.
 
-I think you're saying that the code is reusing the set rate clk op
-without going through the framework. That's mostly OK, as long as some
-proper locking is in place so that clk_prepare() can't call down into
-the clk op while clk_set_rate() is also calling down into the same clk
-op. Do we have to call the set rate code here on prepare so that the clk
-frequency can be restored? Maybe the name of the function threw me off.
-
->
-> >  From my quick glance, the patch you mention looks like another
-> > workaround instead of a proper fix. Why would we need to save the
-> > registers at boot and then snap them back into place on enable? Maybe we
-> > shouldn't reset the phy after registering the clks? Instead register the
-> > clks after the phy is reset so recalc_rate can accurately calculate the
-> > frequency.
->
-> The problem here is not about registration. PHY gets reset not just only
-> on registration, it also might be powered off/reset later (e.g. when the
-> DSI output is disabled for any reason). And during each of these resets
-> we have to keep the PLL state. So keeping the state from the bootloaders
-> seems also natural to me.
-
-Got it. This seems like another version of the half-baked
-save_context()/restore_context() clk ops. Maybe we should add some sort
-of save/restore a clk and all its children API that clk providers can
-call that calls the clk ops to save and restore and then puts things
-back into place. Then the clk framework will be aware of what's going on
-and be able to cache frequency and enable state, etc.
-
->
-> > I suppose that would break continuous splash screen though
-> > where you want the PLL to stay running the entire boot? But then
-> > issuing a reset would break that, wouldn't it? As you can see I'm pretty
-> > confused about how this is all supposed to work.
->
-> Yes, the continuous splash would be broken by resetting the PHY early.
->
-> > Note: my problem isn't about recovering what boot sets, it's mostly
-> > exposing incorrect usage of the clk framework in this driver because it
-> > relies on this chain of events:
-> >
-> >   1) recalc rate calculates something different than what is
-> >      set via clk_set_rate()
-> >
-> >   2) clk_set_rate() is called with the different rate
-> >
-> >   3) clk_prepare() is called to actually enable the PLL and wait for it
-> >      to start
-> >
-> > If clk_prepare() was called before clk_set_rate(), which is totally
-> > valid, then it should similarly fail and think the rate is 0 and the PLL
-> > won't lock. Does implementing save_state fix that? If so, it seems like
-> > we have two pieces of code working around each other, maybe for
-> > suspend/resume purposes.
->
-> Ah, we were safe here because the DSI driver first calls clk_set_rate,
-> then clk_prepare_enable for the link clocks, which in turn makes VCO
-> clock first receive the rate and then enable PLL.
-
-Yep.
-
->
-> > I admit this patch I'm proposing is another workaround, but at least it
-> > makes things work again without going off and adding a bunch of register
-> > save/restore logic.
->
-> I think we can not come with the better solution in the next day or two,
-> we should merge your workaround. For now I'm trying to understand what
-> are the alternatives and which of them can be better.
->
-> Also it's not about registers save/resore. We can add a call to
-> recalc_rate to pll_save_state (as 14nm driver does).
->
-
-The recalc_rate function can be called many times even when nothing has
-changed, similarly the determine_rate/round_rate callback can be called
-many times before the framework decides what it really wants to use.
-Please don't bolt on state saving logic to recalc_rate. I'd prefer that
-recalc_rate does one thing, calculate the frequency of the clk, and
-return it to the framework.
+~Andrew
