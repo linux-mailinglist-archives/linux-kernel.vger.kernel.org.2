@@ -2,84 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B023ACDB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83C703ACDBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234626AbhFROmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:42:54 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:57634 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234595AbhFROmw (ORCPT
+        id S234632AbhFROoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 10:44:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234590AbhFROoT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:42:52 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15IEeNZY026566;
-        Fri, 18 Jun 2021 09:40:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1624027223;
-        bh=XCiiUC6/DdJ/G9x9Zx5amlsB3d7bKlx25c8cMWep5YA=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=Rsubx4mUTip2MOEffz+AVYRfpKvcO/d4/QlIqlxalG6cE7f7jugfRgBuysUI+hxb9
-         fmo8dGq+1XkaLVs8l19fIg6xAEo7xH0BesfPuZqOjBDWM8UaO/9FmwA96uuK3vCcWQ
-         Mvxen6dR2nHIrEUfbA8iq1s9HPFH4QHXPEAs5tjY=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15IEeN89028527
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 18 Jun 2021 09:40:23 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 18
- Jun 2021 09:40:23 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 18 Jun 2021 09:40:23 -0500
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15IEeIkS129394;
-        Fri, 18 Jun 2021 09:40:19 -0500
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Michael Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Richard Weinberger <richard@nod.at>,
-        Heiko Thiery <heiko.thiery@gmail.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Alexander Williams <awill@google.com>
-Subject: Re: [PATCH v4 0/2] mtd: spi-nor: support dumping sfdp tables
-Date:   Fri, 18 Jun 2021 20:10:15 +0530
-Message-ID: <162402719645.24673.15238447229532389824.b4-ty@ti.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210503155651.30889-1-michael@walle.cc>
-References: <20210503155651.30889-1-michael@walle.cc>
+        Fri, 18 Jun 2021 10:44:19 -0400
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DD8C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 07:42:09 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id n61so3477110uan.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 07:42:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=nqlCd2eHu+FNO0OH2gW6QkHD4Px5yMOfqRW26XQAK2o=;
+        b=kYhMqUnz83h3s/37sIDv6unVm3hgmAnDw21NoXLxZpBiEwBC4HQ+gGAsfPYatAsbuA
+         X6IEjDZiJzyns2/lnFDnsJqMlW113kPs5bpoxHBn/CzbOfrqQyh9d84b9u1Mffj/ekUZ
+         pAWAT6WofHxbRthUqO1Wercd8AhpTrNpbSfLM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=nqlCd2eHu+FNO0OH2gW6QkHD4Px5yMOfqRW26XQAK2o=;
+        b=YF3KmnuU673xY/0GEKkTDFUjphFNo6MEDzhMzSqp2uOUpC/hl3LC/d6Ks3qJU6Aamg
+         FqHmkGutbmMKEqfM/sbuFQ56d6vW8LFJoFSoF2AvfGfrkMjVLMUOk93U4/JjeaRVGhdD
+         /ODZohvYaroZNddsG9aiACaDXEzw9EBhBpJljQSYP5r8ocMGa1k03CnIy0nWo0nlUDHI
+         j3U3N1LQlleOopVdMeWbmqzSN/gEY2SzIMNaTz4hoEMZl+NN4JOhWOGONF9yifaGVyJC
+         3F64itgG48I42y4PSiWl7NOV+Jz2dbXNJyW28B21P/o6nyRnkCbvr/+NgqV+2c5qCp+r
+         WqDw==
+X-Gm-Message-State: AOAM5302bQZoHVhWlHCiyedBUV5x+pKywuSlY/7omdkf+1bPiloLxpES
+        Yw71pIBjIopTEv6HfZDMHZuWTrEiSrz4a/ZGox9avg==
+X-Google-Smtp-Source: ABdhPJxCPhcUp8VAgjMWYNQ+3Qh6e+CuVyciWjfH2mFAT6A530O3DOsPQ0ktvjy3CnVHRYCPNLlXR3q0wOPmds5CHuM=
+X-Received: by 2002:ab0:6448:: with SMTP id j8mr12732714uap.13.1624027329045;
+ Fri, 18 Jun 2021 07:42:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20210617095309.3542373-1-stapelberg+linux@google.com>
+ <CAJfpegvpnQMSRU+TW4J5+F+3KiAj8J_m+OjNrnh7f2X9DZp2Ag@mail.gmail.com> <CAH9Oa-ZcG0+08d=D5-rbzY-v1cdUcuW0E7D_GcwjDoC1Phf+0g@mail.gmail.com>
+In-Reply-To: <CAH9Oa-ZcG0+08d=D5-rbzY-v1cdUcuW0E7D_GcwjDoC1Phf+0g@mail.gmail.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Fri, 18 Jun 2021 16:41:58 +0200
+Message-ID: <CAJfpegu0prjjHVhBzwZBVk5N+avHvUcyi4ovhKbf+F7GEuVkmw@mail.gmail.com>
+Subject: Re: [PATCH] backing_dev_info: introduce min_bw/max_bw limits
+To:     Michael Stapelberg <stapelberg+linux@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        linux-fsdevel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        Dennis Zhou <dennis@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Roman Gushchin <guro@fb.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Jan Kara <jack@suse.cz>, Song Liu <song@kernel.org>,
+        David Sterba <dsterba@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 3 May 2021 17:56:49 +0200, Michael Walle wrote:
-> Add the possibility to dump the SFDP data of a flash device.
-> 
-> More and more flash devices share the same flash ID and we need per device
-> fixups. Usually, these fixups differentiate flashes by looking at
-> differences in the SFDP data. Determining the difference is only possible
-> if we have the SFDP data for all the flashes which share a flash ID. This
-> will lay the foundation to dump the whole SFDP data of a flash device.
-> 
-> [...]
+On Fri, 18 Jun 2021 at 10:31, Michael Stapelberg
+<stapelberg+linux@google.com> wrote:
 
-Applied to spi-nor/next, thanks!
-[1/2] mtd: spi-nor: sfdp: save a copy of the SFDP data
-      https://git.kernel.org/mtd/c/65b6d89d45
-[2/2] mtd: spi-nor: add initial sysfs support
-      https://git.kernel.org/mtd/c/36ac022862
+> Maybe, but I don=E2=80=99t have the expertise, motivation or time to
+> investigate this any further, let alone commit to get it done.
+> During our previous discussion I got the impression that nobody else
+> had any cycles for this either:
+> https://lore.kernel.org/linux-fsdevel/CANnVG6n=3DySfe1gOr=3D0ituQidp56idG=
+ARDKHzP0hv=3DERedeMrMA@mail.gmail.com/
+>
+> Have you had a look at the China LSF report at
+> http://bardofschool.blogspot.com/2011/?
+> The author of the heuristic has spent significant effort and time
+> coming up with what we currently have in the kernel:
+>
+> """
+> Fengguang said he draw more than 10K performance graphs and read even
+> more in the past year.
+> """
+>
+> This implies that making changes to the heuristic will not be a quick fix=
+.
 
---
-Regards
-Vignesh
+Having a piece of kernel code sitting there that nobody is willing to
+fix is certainly not a great situation to be in.
 
+And introducing band aids is not going improve the above situation,
+more likely it will prolong it even further.
+
+Thanks,
+Miklos
