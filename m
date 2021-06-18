@@ -2,183 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C4333AD56B
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 00:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2BF3AD56F
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 00:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235075AbhFRWvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 18:51:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45762 "EHLO
+        id S235081AbhFRWwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 18:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234773AbhFRWvt (ORCPT
+        with ESMTP id S233892AbhFRWwk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 18:51:49 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 562FEC06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 15:49:38 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id bj15so13044205qkb.11
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 15:49:38 -0700 (PDT)
+        Fri, 18 Jun 2021 18:52:40 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB526C061574;
+        Fri, 18 Jun 2021 15:50:29 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id i34so3430364pgl.9;
+        Fri, 18 Jun 2021 15:50:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ktb+B+b7YpWNqBLAg48mnhQI50UvERSDdtrZnblI9HU=;
-        b=T9VFJX4YEeh7eMQHcPoLkAfNoNqF7kjS6JiPYqg59mdPb5UVdCl5tBXxbSMILgDEQ3
-         9FA7csi/u30eQQd6DQNERCWTl+nKvU605QshIMF1sspYfxOhRnBhQhieQlb3qLyxsDop
-         8ftxY9Oe2oh2yB2BsuxEaD6Ar1uw+qpqoPBUk=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=SNyDGkX9Ukd5scsSsx1mRm+k+4LOQgsMRHMLkmzl73k=;
+        b=Tzl4zMuYNWzbP5/C6fLlIy37r5yYy0/qQCJCG6LbJWYTkgQFXGdAWQlMod5SMbhoKb
+         Ph+JZ0jL0x1J1Lah+wDUSX7/cEPctjDHKjIfmiNWyvrflA3eU+bimC6Bsai3/HlCDXBk
+         H+y9VvWTA0ZwtipohajMg6FNsHedLmALsJJ0z9QRoaqQvVMrZ5gL0SsRAKLzFvNGqqzv
+         wLPELf5p6kLY5nEv6Yvzx0LLLgscWXhHK6XrNSe6QvegmynBmWon+xesskooq6SKwiGf
+         iPXVfCUpHcjDZTCU7/tgj2Gus2Isb3ckF3mLVsNBdTU8qHgt3rbxCsWAGDihjI5IZxQD
+         7oXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ktb+B+b7YpWNqBLAg48mnhQI50UvERSDdtrZnblI9HU=;
-        b=Joox/DlvQ7hbBpzLMMgkU0nSxv6RLvUYkEuBsrQseQ/K1jdE92EhvJdnyRZdNavb/F
-         3fir1+961hx0jgUOvO5C3YZMIgatcky731FGkFAazHJ3lHLZROUCDjCT/iqB2c6bwEgZ
-         DDCnbjpW5jZwAWAvtMfn++madx2cLLccVnqHSAEWukqDmGY2tCjhCDyOzS7gkeTUP2hK
-         VXuy48Yu1qmow26HF6BzE5Oot+S3BolKHcw/2TznI9gR46WwjrFn+hovOSNfcMFhLfnV
-         9szDQxE0Yon/sLMIgo9Wle88HLd5dQhMbvrKSaya0WHywoNzihUY/yCRWedxDOJi6e+q
-         EaJw==
-X-Gm-Message-State: AOAM531rlgK0XTuB9Bn2s97GmdXqFZQwWW2GA0ExjuWlQR4s6rggp4Oq
-        gpjM71bOlC28uC+QELmrDHBqnvu5aM5qOw==
-X-Google-Smtp-Source: ABdhPJzbkX41catOSv7ohBNySVJ0YtI0/NrASaIRgwDDRW5XIVbYl8e8NvvYw5KDS3LhJHT1ujxTEQ==
-X-Received: by 2002:a37:a44a:: with SMTP id n71mr8333312qke.255.1624056576732;
-        Fri, 18 Jun 2021 15:49:36 -0700 (PDT)
-Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com. [209.85.222.182])
-        by smtp.gmail.com with ESMTPSA id l6sm5069009qkk.117.2021.06.18.15.49.35
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SNyDGkX9Ukd5scsSsx1mRm+k+4LOQgsMRHMLkmzl73k=;
+        b=D4dcQbC9zstPPrIZIyb9UsHefWUnkKS1XuSVYxCKxgXt4RKB2LJhAPS2iLjTRW207R
+         4VThEb/IRi/Nw9GqeT52G6b2plDIa2zUOe0XuR/fKL/iaYRfENeCPRLCs8o85UZNUhUO
+         huUYIl6Qu9IlsbwitnRBd2sQDHsrtgerlWb0SJGdl7xxz5kTYjKIl6ktR4GmkoVqz6Nj
+         OIjbi2wzaWGyhpTxfhM8LDOnYIRYvsNllqGkGw0+2GUaeTu0wjGCh6MBS3hfZPfs44kU
+         0fxr7aNIMEwnZGDwvXvsJm3JnaRB9Gr1tuh5SzvJp4JzBJAOTIuLZWrEucpRi1lvrrQU
+         tXmw==
+X-Gm-Message-State: AOAM532euQLFaT9UV46Pz5KFOGvM9dE626dMEGN/TihZLZuhNfmwN3U3
+        kIyb+X69pR8qOGfMF+cn9ZIESD+L9nc=
+X-Google-Smtp-Source: ABdhPJzXDtxt0EPBs1yBhC5rZmwo4WwV7vOF2JNkyC+v/CKUxbK5agTtt73wTl77N3/3peKNoAYzrw==
+X-Received: by 2002:aa7:9901:0:b029:2ff:17ed:feaf with SMTP id z1-20020aa799010000b02902ff17edfeafmr7145045pff.34.1624056629409;
+        Fri, 18 Jun 2021 15:50:29 -0700 (PDT)
+Received: from [192.168.1.27] (ip174-67-196-173.oc.oc.cox.net. [174.67.196.173])
+        by smtp.gmail.com with ESMTPSA id 11sm8892018pfh.182.2021.06.18.15.50.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 15:49:35 -0700 (PDT)
-Received: by mail-qk1-f182.google.com with SMTP id q190so12110613qkd.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 15:49:35 -0700 (PDT)
-X-Received: by 2002:a25:80d4:: with SMTP id c20mr16432816ybm.345.1624056575113;
- Fri, 18 Jun 2021 15:49:35 -0700 (PDT)
+        Fri, 18 Jun 2021 15:50:29 -0700 (PDT)
+Subject: Re: [PATCH][next] scsi: elx: efct: remove redundant initialization of
+ variable lun
+To:     Colin King <colin.king@canonical.com>,
+        James Smart <james.smart@broadcom.com>,
+        Ram Vegesna <ram.vegesna@broadcom.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Hannes Reinecke <hare@suse.de>, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210616171621.16176-1-colin.king@canonical.com>
+From:   James Smart <jsmart2021@gmail.com>
+Message-ID: <3be6287a-9ac3-2837-11b2-a0270522a607@gmail.com>
+Date:   Fri, 18 Jun 2021 15:50:27 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-References: <1623835535-30871-1-git-send-email-sbhanu@codeaurora.org> <585e003c-0342-4691-ab6d-8c6a930f9404@codeaurora.org>
-In-Reply-To: <585e003c-0342-4691-ab6d-8c6a930f9404@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 18 Jun 2021 15:49:23 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UVYxfZ_U+-spCcHpe6hGxKHG4SWbc6-DfzH8Ax13DNOQ@mail.gmail.com>
-Message-ID: <CAD=FV=UVYxfZ_U+-spCcHpe6hGxKHG4SWbc6-DfzH8Ax13DNOQ@mail.gmail.com>
-Subject: Re: [PATCH V1] mmc: sdhci: Update the software timeout value for sdhc
-To:     Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Cc:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        Sahitya Tummala <stummala@codeaurora.org>,
-        Ram Prakash Gupta <rampraka@codeaurora.org>,
-        Sayali Lokhande <sayalil@codeaurora.org>,
-        sartgarg@codeaurora.org, Rajendra Nayak <rnayak@codeaurora.org>,
-        cang@codeaurora.org, pragalla@codeaurora.org,
-        nitirawa@codeaurora.org,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210616171621.16176-1-colin.king@canonical.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 6/16/2021 10:16 AM, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The variable lun is being initialized with a value that is never
+> read, it is being updated later on. The assignment is redundant and
+> can be removed.
+> 
+> Addresses-Coverity: ("Unused value")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>   drivers/scsi/elx/efct/efct_unsol.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-On Fri, Jun 18, 2021 at 8:31 AM Veerabhadrarao Badiganti
-<vbadigan@codeaurora.org> wrote:
->
->
-> On 6/16/2021 2:55 PM, Shaik Sajida Bhanu wrote:
-> > Whenever SDHC run at clock rate 50MHZ or below, the hardware data
-> > timeout value will be 21.47secs, which is approx. 22secs and we have
-> > a current software timeout value as 10secs. We have to set software
-> > timeout value more than the hardware data timeout value to avioid seeing
-> > the below register dumps.
-> >
-> > [  332.953670] mmc2: Timeout waiting for hardware interrupt.
-> > [  332.959608] mmc2: sdhci: ============ SDHCI REGISTER DUMP ===========
-> > [  332.966450] mmc2: sdhci: Sys addr:  0x00000000 | Version:  0x00007202
-> > [  332.973256] mmc2: sdhci: Blk size:  0x00000200 | Blk cnt:  0x00000001
-> > [  332.980054] mmc2: sdhci: Argument:  0x00000000 | Trn mode: 0x00000027
-> > [  332.986864] mmc2: sdhci: Present:   0x01f801f6 | Host ctl: 0x0000001f
-> > [  332.993671] mmc2: sdhci: Power:     0x00000001 | Blk gap:  0x00000000
-> > [  333.000583] mmc2: sdhci: Wake-up:   0x00000000 | Clock:    0x00000007
-> > [  333.007386] mmc2: sdhci: Timeout:   0x0000000e | Int stat: 0x00000000
-> > [  333.014182] mmc2: sdhci: Int enab:  0x03ff100b | Sig enab: 0x03ff100b
-> > [  333.020976] mmc2: sdhci: ACmd stat: 0x00000000 | Slot int: 0x00000000
-> > [  333.027771] mmc2: sdhci: Caps:      0x322dc8b2 | Caps_1:   0x0000808f
-> > [  333.034561] mmc2: sdhci: Cmd:       0x0000183a | Max curr: 0x00000000
-> > [  333.041359] mmc2: sdhci: Resp[0]:   0x00000900 | Resp[1]:  0x00000000
-> > [  333.048157] mmc2: sdhci: Resp[2]:   0x00000000 | Resp[3]:  0x00000000
-> > [  333.054945] mmc2: sdhci: Host ctl2: 0x00000000
-> > [  333.059657] mmc2: sdhci: ADMA Err:  0x00000000 | ADMA Ptr:
-> > 0x0000000ffffff218
-> > [  333.067178] mmc2: sdhci_msm: ----------- VENDOR REGISTER DUMP
-> > -----------
-> > [  333.074343] mmc2: sdhci_msm: DLL sts: 0x00000000 | DLL cfg:
-> > 0x6000642c | DLL cfg2: 0x0020a000
-> > [  333.083417] mmc2: sdhci_msm: DLL cfg3: 0x00000000 | DLL usr ctl:
-> > 0x00000000 | DDR cfg: 0x80040873
-> > [  333.092850] mmc2: sdhci_msm: Vndr func: 0x00008a9c | Vndr func2 :
-> > 0xf88218a8 Vndr func3: 0x02626040
-> > [  333.102371] mmc2: sdhci: ============================================
-> >
-> > So, set software timeout value more than hardware timeout value.
-> >
-> > Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
-> > ---
-> >   drivers/mmc/host/sdhci.c | 9 ++++++++-
-> >   1 file changed, 8 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-> > index bf238ad..1386f7d 100644
-> > --- a/drivers/mmc/host/sdhci.c
-> > +++ b/drivers/mmc/host/sdhci.c
-> > @@ -1670,7 +1670,14 @@ static bool sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
-> >       else if (!cmd->data && cmd->busy_timeout > 9000)
-> >               timeout += DIV_ROUND_UP(cmd->busy_timeout, 1000) * HZ + HZ;
-> >       else
-> > -             timeout += 10 * HZ;
-> > +            /*
-> > +             * In some of the conditions hardware data timeout value could be
-> > +             * approx 21.5 seconds and driver is setting software data timeout
-> > +             * value less than the hardware data timeout value and software data
-> > +             * timeout value should be more than the hardware data timeout value.
-> > +             * So, set software data timeout value more than 21.5 sec i.e. 22sec.
-> > +             */
-> > +             timeout += 22 * HZ;
->
-> This timeout is qcom SDHC specific.
-> I think right way is to, define your own set_timeout op and update
-> host->data_timeout
-> in that as per qcom SDHC requirements.
+Thanks
 
-It is? Off-thread Shaik was indicating that the problem had to do with
-the inaccuracy of the "SDHCI_TIMEOUT_CONTROL" register. That seems to
-be in the common SDHCI code. Specifically looking at
-sdhci_calc_timeout() it can be seen that the possible hardware values
-for the timeout double each time, so if you need a hardware timeout
-that's slightly higher than one of the possible values you might end
-up with a hardware timeout that's almost double what you want.
+Reviewed-by: James Smart <jsmart2021@gmail.com>
 
-Assuming that the problem actually is with the inaccuracy of
-SDHCI_TIMEOUT_CONTROL (I didn't walk through and validate), it
-actually seems like we should generally be doubling the value we were
-programming for the software timeout (in other words, not just ones
-that are <= 9 seconds). I haven't done all the math, but I presume the
-reason that we need 22 instead of 20 is some type of extra fudge
-factor somewhere?
+-- james
 
-Maybe the only reason that Qualcomm hits this is due to the PLL that's
-sourcing the SDHCI controller at a non-standard rate?
-
-I suppose another reason maybe why people aren't hitting it is just
-the random chance of what rate the integer overflow in
-mmc_set_data_timeout() leaves you at? I pointed this out to Shiak and
-was hoping a patch would be included for that, but I can always try to
-write one later if not. To be concrete, I have
-card->csd.taac_ns=5000000 and card->csd.r2w_factor=5. Multiplying
-things out (and accounting for mult=100 for SD cards), I end up with a
-timeout_ns of 0x3b9aca000 (16 seconds) which doesn't fit in the 32-bit
-data->timeout_ns earlier. The truncation was making it look like the
-card requested a max timeout of 3,115,098,112 ns = ~3.1 seconds.
-
--Doug
