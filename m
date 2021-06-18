@@ -2,58 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1260D3ACFBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 254423ACFBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235695AbhFRQGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 12:06:06 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57418 "EHLO
+        id S235723AbhFRQGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 12:06:09 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:57364 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233033AbhFRQFv (ORCPT
+        with ESMTP id S231193AbhFRQFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 12:05:51 -0400
-Date:   Fri, 18 Jun 2021 16:03:40 -0000
+        Fri, 18 Jun 2021 12:05:52 -0400
+Date:   Fri, 18 Jun 2021 16:03:41 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624032221;
+        s=2020; t=1624032222;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=s9NOyDN1Emmtcu9gsSsGTxEq1iVk0D7i6S4fpHLEpys=;
-        b=B6BYkRWZTADpLI500g2/qeElwG3Et+nMivxvRI8zn49j4w9iJCNF2+iiE8/El65lhSbhpv
-        Jzn3LR1/214gLpUdkIgIaAGAIHF4dNFcYzO+7RF6VywmKLGftaWRtjaqsNpE95hARvTRgZ
-        wLBWm2CjZwM+Sw9P9KeWS1Q36tmgDevpVemAVwsBn64ZxSL7cNn81i5s3jwhpnqlaprk2J
-        kbAfI910kdWgPUwrelM0LKKWUbMipIc6HqtKv4gX6xZ9LqzuGuvBRz+0D3eJntMwaq6+dQ
-        JTfBluit37Taj4bswKZzj+bgplLeTbIMpB8ak/yRTSEbFOUwSp8ixztvQ+FguA==
+        bh=NbGW+Y7W47+cfpkIZZJFy9dX6g9AtN+YqA/g1Kf47ik=;
+        b=VnooZu3e/oC6ZDtFPamG4W6Hkf0OdsUOE0/hovC/BQb4LmeD2h1Rfi8KbFgKpneEDRfQli
+        fJiR+xXwIPUnc7usnIzjNkmBsHzw84CcwjN+Lghv7JFTWHKKP0lfl0laVVPmtmncBjU7To
+        nAmU56pnQDeGwov+XVaJjn5Zl9wuq4059iF9qFRF7rLlme+YG5OUG5E8Rey3Q14D/1rqDN
+        6JA5MSXgzYV0x23JV2enFxA8d29GRmS76Gru2D4phdEjETYX/izKyRFVEtUK/qUcbRj134
+        0I8UJRNnhHt8LzWC7rE+0vhipJzVBsdOrdTooYkXIRxWw3MzrS8mv2A1iVNy+w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624032221;
+        s=2020e; t=1624032222;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=s9NOyDN1Emmtcu9gsSsGTxEq1iVk0D7i6S4fpHLEpys=;
-        b=FYzyokFUcUG2FeYJrNnu0H52rTmxqWTyM316WgQRmqT7a4nOPPqsrqN2oZ9oF5TkjZyFpB
-        ouydwUpYKJllP3AQ==
-From:   "tip-bot2 for Tony Lindgren" <tip-bot2@linutronix.de>
+        bh=NbGW+Y7W47+cfpkIZZJFy9dX6g9AtN+YqA/g1Kf47ik=;
+        b=uMuDYqlnpDuoTmShveOzwBrZ8UZID+/aNqFk8D9MYttleNKS+F2Pein2DM5V2tN/2pdDBB
+        WG2A1KRvRiOdl1DQ==
+From:   "tip-bot2 for Krzysztof Kozlowski" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] clocksource/drivers/timer-ti-dm: Save and restore
- timer TIOCP_CFG
-Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Adam Ford <aford173@gmail.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
+Subject: [tip: timers/core] clocksource/drivers/samsung_pwm: Constify source IO memory
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
         Daniel Lezcano <daniel.lezcano@linaro.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210415085506.56828-1-tony@atomide.com>
-References: <20210415085506.56828-1-tony@atomide.com>
+In-Reply-To: <20210506202729.157260-4-krzysztof.kozlowski@canonical.com>
+References: <20210506202729.157260-4-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Message-ID: <162403222040.19906.12782574837725084275.tip-bot2@tip-bot2>
+Message-ID: <162403222155.19906.7758421303806023527.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -64,66 +58,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     9517c577f9f722270584cfb1a7b4e1354e408658
-Gitweb:        https://git.kernel.org/tip/9517c577f9f722270584cfb1a7b4e1354e408658
-Author:        Tony Lindgren <tony@atomide.com>
-AuthorDate:    Thu, 15 Apr 2021 11:55:06 +03:00
+Commit-ID:     b4318ce203db8f8b7004e7ab82a957f894660c88
+Gitweb:        https://git.kernel.org/tip/b4318ce203db8f8b7004e7ab82a957f894660c88
+Author:        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+AuthorDate:    Thu, 06 May 2021 16:27:28 -04:00
 Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
-CommitterDate: Tue, 15 Jun 2021 14:14:14 +02:00
+CommitterDate: Fri, 04 Jun 2021 10:12:13 +02:00
 
-clocksource/drivers/timer-ti-dm: Save and restore timer TIOCP_CFG
+clocksource/drivers/samsung_pwm: Constify source IO memory
 
-As we are using cpu_pm to save and restore context, we must also save and
-restore the timer sysconfig register TIOCP_CFG. This is needed because
-we are not calling PM runtime functions at all with cpu_pm.
+The 'source_reg' IO memory is only read, so the pointer can point to
+const for safety.
 
-Fixes: b34677b0999a ("clocksource/drivers/timer-ti-dm: Implement cpu_pm notifier for context save and restore")
-Cc: Aaro Koskinen <aaro.koskinen@iki.fi>
-Cc: Adam Ford <aford173@gmail.com>
-Cc: Andreas Kemnade <andreas@kemnade.info>
-Cc: Lokesh Vutla <lokeshvutla@ti.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20210415085506.56828-1-tony@atomide.com
+Link: https://lore.kernel.org/r/20210506202729.157260-4-krzysztof.kozlowski@canonical.com
 ---
- drivers/clocksource/timer-ti-dm.c | 6 ++++++
- include/clocksource/timer-ti-dm.h | 1 +
- 2 files changed, 7 insertions(+)
+ drivers/clocksource/samsung_pwm_timer.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/clocksource/timer-ti-dm.c b/drivers/clocksource/timer-ti-dm.c
-index 33eeabf..e5c631f 100644
---- a/drivers/clocksource/timer-ti-dm.c
-+++ b/drivers/clocksource/timer-ti-dm.c
-@@ -78,6 +78,9 @@ static void omap_dm_timer_write_reg(struct omap_dm_timer *timer, u32 reg,
+diff --git a/drivers/clocksource/samsung_pwm_timer.c b/drivers/clocksource/samsung_pwm_timer.c
+index 55e2f9f..6e46781 100644
+--- a/drivers/clocksource/samsung_pwm_timer.c
++++ b/drivers/clocksource/samsung_pwm_timer.c
+@@ -61,7 +61,7 @@ EXPORT_SYMBOL(samsung_pwm_lock);
  
- static void omap_timer_restore_context(struct omap_dm_timer *timer)
- {
-+	__omap_dm_timer_write(timer, OMAP_TIMER_OCP_CFG_OFFSET,
-+			      timer->context.ocp_cfg, 0);
-+
- 	omap_dm_timer_write_reg(timer, OMAP_TIMER_WAKEUP_EN_REG,
- 				timer->context.twer);
- 	omap_dm_timer_write_reg(timer, OMAP_TIMER_COUNTER_REG,
-@@ -95,6 +98,9 @@ static void omap_timer_restore_context(struct omap_dm_timer *timer)
+ struct samsung_pwm_clocksource {
+ 	void __iomem *base;
+-	void __iomem *source_reg;
++	const void __iomem *source_reg;
+ 	unsigned int irq[SAMSUNG_PWM_NUM];
+ 	struct samsung_pwm_variant variant;
  
- static void omap_timer_save_context(struct omap_dm_timer *timer)
- {
-+	timer->context.ocp_cfg =
-+		__omap_dm_timer_read(timer, OMAP_TIMER_OCP_CFG_OFFSET, 0);
-+
- 	timer->context.tclr =
- 			omap_dm_timer_read_reg(timer, OMAP_TIMER_CTRL_REG);
- 	timer->context.twer =
-diff --git a/include/clocksource/timer-ti-dm.h b/include/clocksource/timer-ti-dm.h
-index 4c61dad..f6da8a1 100644
---- a/include/clocksource/timer-ti-dm.h
-+++ b/include/clocksource/timer-ti-dm.h
-@@ -74,6 +74,7 @@
- #define OMAP_TIMER_ERRATA_I103_I767			0x80000000
- 
- struct timer_regs {
-+	u32 ocp_cfg;
- 	u32 tidr;
- 	u32 tier;
- 	u32 twer;
