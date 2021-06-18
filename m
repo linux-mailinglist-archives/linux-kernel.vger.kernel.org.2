@@ -2,126 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5157A3AD1EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C81143AD1DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236247AbhFRSPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 14:15:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235139AbhFRSPk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 14:15:40 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1F5C06175F;
-        Fri, 18 Jun 2021 11:13:29 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id y7so11641680wrh.7;
-        Fri, 18 Jun 2021 11:13:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FRadAAJthazKXCs3EEyrRLqIIy1SFHZ81iHPWgmnJRI=;
-        b=ny3LB6aXzm8w8C3+A9jf74tf+BJ986neHs79X76TCRusy5yLSp0LO3EWdBMg0srLNh
-         KIeluN/0svlz2LiKKVdBMwWQ2tyMAriywQiW9cqmW/LaGjqjtfbb5d9ECq2MWH2UpXmA
-         mE6DQTzTQIrkOc82FAufn5lZ0UHmzBzzD1yoHZVQcKa45Wx/8lkFLyAy0o/QBW0MQVj0
-         myGns/y4E4h/zzLtvcglLgvzg/Hz2drPsNPJpYYhgYi86j3gEAvx12/a7cnDoZUI+2bT
-         n013PLal7MkOMd3BP6gE7OervN1873OvazXnpI1urafITd3UmANw62uMjEBfKxdlGmwt
-         jWSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FRadAAJthazKXCs3EEyrRLqIIy1SFHZ81iHPWgmnJRI=;
-        b=I0gg4u+OrJkXftvpua79qkrNud/zEy75k5H5/H+YgH1C9Kun11Ra0OgCOaJok8EuQa
-         1UlzA1ywR1r4WfI8+qauAeWfLvQfOdhQiZF3QlYeX9aiDjDEwkGlM7geu2kk20dTD6Zr
-         fZfrgoZEbEbQSV8qAqrJp9aKw6PTCPBMKMs+c9mxx7Hxq61us72rqlERftok1cDgefEs
-         cXZED29NNs9RnmdFiLMIIthYn5gHD1+Q0I7LaxdShNzuIVr+AvkxxwV2Kgws8e/B3XZ2
-         wLvSoQZKAlre8SVxKLhWzf38r4+WniDxmxmvac+mYzFxzxJPqPw5jyeRkNstXSoF7H05
-         T0Cw==
-X-Gm-Message-State: AOAM533HlWtET3mE5LsljYWpGJAnWVNoYwP6oYZw+5piCkIltGN35XMz
-        ROk8O5x4t4MHzsvD7YybmA==
-X-Google-Smtp-Source: ABdhPJxwYQRQMqECTGWplAPGQubZuPc+DAoMbIBgAWiqVlg7kAw1Gi3FbNatZS9UZrU2FM6mBdz28w==
-X-Received: by 2002:adf:d4cc:: with SMTP id w12mr13871170wrk.216.1624040007816;
-        Fri, 18 Jun 2021 11:13:27 -0700 (PDT)
-Received: from localhost.localdomain (ip5b434b8b.dynamic.kabel-deutschland.de. [91.67.75.139])
-        by smtp.googlemail.com with ESMTPSA id l10sm9306782wrv.82.2021.06.18.11.13.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 11:13:27 -0700 (PDT)
-From:   Alex Bee <knaerzche@gmail.com>
-To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>
-Cc:     Johan Jonker <jbx6244@gmail.com>,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alex Bee <knaerzche@gmail.com>
-Subject: [PATCH v2 5/5] arm64: dts: rockchip: add SPDIF node for ROCK Pi 4
-Date:   Fri, 18 Jun 2021 20:12:56 +0200
-Message-Id: <20210618181256.27992-6-knaerzche@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210618181256.27992-1-knaerzche@gmail.com>
-References: <20210618181256.27992-1-knaerzche@gmail.com>
+        id S235052AbhFRSPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 14:15:11 -0400
+Received: from mga01.intel.com ([192.55.52.88]:21508 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229816AbhFRSPK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 14:15:10 -0400
+IronPort-SDR: 4BfT8humAN2ALNjUzCLOCS4uv0cmFaxGAqim28EeRyYYtSF34bEVludBax4VEqIhmX6Z+Y46v5
+ p/PHYgt9Julw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="228130352"
+X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
+   d="scan'208";a="228130352"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 11:13:00 -0700
+IronPort-SDR: fZjz2UBcjkF09ZLFZzZqWyvwCbkGqlZanM6atUtLAcrBp3dXyferraXT69g8eiZc0puz+dQdsp
+ 3jQAgCFqGSuA==
+X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
+   d="scan'208";a="453226714"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 11:12:58 -0700
+Date:   Fri, 18 Jun 2021 11:12:58 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Geoff Levand <geoff@infradead.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Dongsheng Yang <dongsheng.yang@easystack.cn>,
+        Mike Snitzer <snitzer@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        dm-devel@redhat.com, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
+        linux-arch@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Christoph Lameter <cl@gentwo.de>
+Subject: Re: [PATCH 01/18] mm: add a kunmap_local_dirty helper
+Message-ID: <20210618181258.GC1905674@iweiny-DESK2.sc.intel.com>
+References: <20210615132456.753241-1-hch@lst.de>
+ <20210615132456.753241-2-hch@lst.de>
+ <20210618030157.GA1905674@iweiny-DESK2.sc.intel.com>
+ <20210618033728.GA16787@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210618033728.GA16787@gondor.apana.org.au>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a SPDIF audio-graph-card to ROCK Pi 4 device tree.
+On Fri, Jun 18, 2021 at 11:37:28AM +0800, Herbert Xu wrote:
+> On Thu, Jun 17, 2021 at 08:01:57PM -0700, Ira Weiny wrote:
+> >
+> > > +		flush_kernel_dcache_page(__page);		\
+> > 
+> > Is this required on 32bit systems?  Why is kunmap_flush_on_unmap() not
+> > sufficient on 64bit systems?  The normal kunmap_local() path does that.
+> > 
+> > I'm sorry but I did not see a conclusion to my query on V1. Herbert implied the
+> > he just copied from the crypto code.[1]  I'm concerned that this _dirty() call
+> > is just going to confuse the users of kmap even more.  So why can't we get to
+> > the bottom of why flush_kernel_dcache_page() needs so much logic around it
+> > before complicating the general kernel users.
+> > 
+> > I would like to see it go away if possible.
+> 
+> This thread may be related:
+> 
+> https://lwn.net/Articles/240249/
 
-It's not enabled by default since all dma channels are used by
-the (already) enabled i2s0/1/2 and the pin is muxed with GPIO4_C5
-which might be in use already.
-If enabled SPDIF_TX will be available at pin #15.
+Interesting!  Thanks!
 
-Signed-off-by: Alex Bee <knaerzche@gmail.com>
----
- .../boot/dts/rockchip/rk3399-rock-pi-4.dtsi   | 26 +++++++++++++++++++
- 1 file changed, 26 insertions(+)
+Digging around a bit more I found:
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
-index 80925a58e470..b5b8a79116fd 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
-@@ -42,6 +42,23 @@ sound {
- 		dais = <&i2s0_p0>;
- 	};
- 
-+	sound-dit {
-+		compatible = "audio-graph-card";
-+		label = "SPDIF";
-+		dais = <&spdif_p0>;
-+	};
-+
-+	spdif-dit {
-+		compatible = "linux,spdif-dit";
-+		#sound-dai-cells = <0>;
-+
-+		port {
-+			dit_p0_0: endpoint {
-+				remote-endpoint = <&spdif_p0_0>;
-+			};
-+		};
-+	};
-+
- 	vcc12v_dcin: dc-12v {
- 		compatible = "regulator-fixed";
- 		regulator-name = "vcc12v_dcin";
-@@ -632,6 +649,15 @@ &sdhci {
- 	status = "okay";
- };
- 
-+&spdif {
-+
-+	spdif_p0: port {
-+		spdif_p0_0: endpoint {
-+			remote-endpoint = <&dit_p0_0>;
-+		};
-+	};
-+};
-+
- &tcphy0 {
- 	status = "okay";
- };
--- 
-2.27.0
+https://lore.kernel.org/patchwork/patch/439637/
 
+Auditing all the flush_dcache_page() arch code reveals that the mapping field
+is either unused, or is checked for NULL.  Furthermore, all the implementations
+call page_mapping_file() which further limits the page to not be a swap page.
+
+All flush_kernel_dcache_page() implementations appears to operate the same way
+in all arch's which define that call.
+
+So I'm confident now that additional !PageSlab(__page) checks are not needed
+and this patch is unnecessary.   Christoph, can we leave this out of the kmap
+API and just fold the flush_kernel_dcache_page() calls back into the bvec code?
+
+Unfortunately, I'm not convinced this can be handled completely by
+kunmap_local() nor the mem*_page() calls because there is a difference between
+flush_dcache_page() and flush_kernel_dcache_page() in most archs...  [parisc
+being an exception which falls back to flush_kernel_dcache_page()]...
+
+It seems like the generic unmap path _should_ be able to determine which call
+to make based on the page but I'd have to look at that more.
+
+Ira
