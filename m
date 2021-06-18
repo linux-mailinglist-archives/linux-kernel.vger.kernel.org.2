@@ -2,113 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A16E3AC7EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:45:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 819C43AC7F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232682AbhFRJrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 05:47:10 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:45039 "EHLO ozlabs.org"
+        id S231418AbhFRJtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 05:49:14 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:34154 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230399AbhFRJrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 05:47:08 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S230399AbhFRJtL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 05:49:11 -0400
+Received: from zn.tnic (p200300ec2f0dd8004fc95bebb5201001.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:d800:4fc9:5beb:b520:1001])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G5vCs0bdBz9sVp;
-        Fri, 18 Jun 2021 19:44:57 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624009497;
-        bh=uXi1N22K4kq4QBq+OXKjx0+1W75j2S5j6clTcEGS40c=;
-        h=Date:From:To:Cc:Subject:From;
-        b=c4dDPzFMr/46NzUIfpuv6iR3JOW7oMFztc+UavAX9LHPSoo6FRNjlO+I54Zw0fHPk
-         opCtGe9dQfPy+YJk9FdwDikgoxJOxwC8bzueuPgHsQHCgPaX6PxI3J3mIoBtamL4ef
-         Bi6blF3YWXJ+zyJ/MB85LPQTfboFJsgMohKu/Y9MO8s0b6ykt4NpBQRRxxYLuRwA8O
-         jfilsrN583yJ0u9rxdQ+PvdJW2/CqN07hGMQmRZicCItmZ1xGE/TTscZqAJGSxdSwB
-         WeUvfpn8qOs3zvraMmjuSOQz+WEt1tIFdSqs/rDUhaZQ5EgA3nyrNF6Q3LfhQNoTyp
-         /YQvV0fxchhfQ==
-Date:   Fri, 18 Jun 2021 19:44:55 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>
-Subject: linux-next: manual merge of the akpm-current tree with the powerpc
- tree
-Message-ID: <20210618194455.0d6c278c@canb.auug.org.au>
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6F1EC1EC0559;
+        Fri, 18 Jun 2021 11:46:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1624009601;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=fhCS1VjB+E7C2WKgFiWhTOQPZHXnjbEcqr3FRlWi0xU=;
+        b=mVNHyRCG/AgGBIUULY2n0rYyqbBpwtuaHTqg5MgQ8DzjcE9TF4eqo9kb51Zi7yIPdYmL1j
+        UmVDFMG5XYUnevK4WKpCAJrbwegX9Q43eENYMOjzOw/qYPF1y04M24QPeRJ9ZYw+hFFVzJ
+        pl8wgyAk+mMAdq8y2SXzcZsoQS0G0Ek=
+Date:   Fri, 18 Jun 2021 11:46:31 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
+        npmccallum@redhat.com
+Subject: Re: [PATCH Part1 RFC v3 21/22] x86/sev: Register SNP guest request
+ platform device
+Message-ID: <YMxrd5M1teku/hnA@zn.tnic>
+References: <20210602140416.23573-1-brijesh.singh@amd.com>
+ <20210602140416.23573-22-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/M+Wq.F/4zU0/J14IKaaJLBi";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210602140416.23573-22-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/M+Wq.F/4zU0/J14IKaaJLBi
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jun 02, 2021 at 09:04:15AM -0500, Brijesh Singh wrote:
+>  arch/x86/include/asm/sev.h      |  12 +++
+>  arch/x86/include/uapi/asm/svm.h |   2 +
+>  arch/x86/kernel/sev.c           | 176 ++++++++++++++++++++++++++++++++
+>  arch/x86/platform/efi/efi.c     |   2 +
+>  include/linux/efi.h             |   1 +
+>  include/linux/sev-guest.h       |  76 ++++++++++++++
+>  6 files changed, 269 insertions(+)
+>  create mode 100644 include/linux/sev-guest.h
 
-Hi all,
+This patch is at least three patches in one:
 
-Today's linux-next merge of the akpm-current tree got a conflict in:
+1. EFI changes
+2. SNP_GUEST_REQUEST struct etc definitions
+3. Add the functionality.
 
-  arch/powerpc/kernel/smp.c
+Please split it this way before I take a look.
 
-between commit:
+Thx.
 
-  86f46f343272 ("powerpc/32s: Initialise KUAP and KUEP in C")
+-- 
+Regards/Gruss,
+    Boris.
 
-from the powerpc tree and commit:
-
-  103e676c91d0 ("lazy tlb: introduce lazy mm refcount helper functions")
-
-from the akpm-current tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc arch/powerpc/kernel/smp.c
-index b83a59ce9beb,b289f1d213f8..000000000000
---- a/arch/powerpc/kernel/smp.c
-+++ b/arch/powerpc/kernel/smp.c
-@@@ -1541,11 -1541,7 +1541,11 @@@ void start_secondary(void *unused
-  {
-  	unsigned int cpu =3D raw_smp_processor_id();
- =20
- +	/* PPC64 calls setup_kup() in early_setup_secondary() */
- +	if (IS_ENABLED(CONFIG_PPC32))
- +		setup_kup();
- +
-- 	mmgrab(&init_mm);
-+ 	mmgrab_lazy_tlb(&init_mm);
-  	current->active_mm =3D &init_mm;
- =20
-  	smp_store_cpu_info(cpu);
-
---Sig_/M+Wq.F/4zU0/J14IKaaJLBi
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDMaxcACgkQAVBC80lX
-0GzLXwf8C7WvRhGnluquFmE4QTsgIa5BfVUijJRQokPBLJ36guAvonwimv3k5sIW
-0wXj9QKboomPEoK2XAMuAqO4xj3Q0YWrwatlMb1fH11tZB4xJ011gGDVxtJM/Xsn
-U114Jh+5ISE5a6zsoaHV4EsCOcDXgdvd+exXFoi2ulKL+YSFTGv9OA7S0iPbdJGk
-PUkmAfYxrOLkAvC85J4XBrzhCCwcI4eQPrjtWq2/OP0d5so5uAT6MAkUjFQYT46G
-1DGw9U9gGZT4F47uhX8oTrwzpJup2SWbA76WHbUJhdj99SEyN3K0stF4KtZL/BtH
-7cOczdtZrkIV+JwdCT90v/gNqhS1PA==
-=F/IL
------END PGP SIGNATURE-----
-
---Sig_/M+Wq.F/4zU0/J14IKaaJLBi--
+https://people.kernel.org/tglx/notes-about-netiquette
