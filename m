@@ -2,66 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B28F13ACE35
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B397C3ACEE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:27:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232835AbhFRPC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:02:29 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:38022 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230413AbhFRPC1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:02:27 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 4E4451FDE7;
-        Fri, 18 Jun 2021 15:00:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624028417; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y8ZaQr3Hg1tmY1ESaXoN1rX1Z4G2ErKX/EaIfe+IuhQ=;
-        b=ZcjDJOYNYKJV9h03ZWEC5o81xjvFgBZYNKm68ZM0Xq9O+b33+sIc3kFUNb2RYMS4bmRzk3
-        VgreMKS30kzMXO/2ba+vuJNsS5zEuzdwazhlVW/HunqfvxVDhqDHc/EsC5Haakkad7LgRZ
-        F6JC7adnk+qUPWEorRfCNXXPonjt9yM=
-Received: from suse.cz (unknown [10.100.224.162])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 1B86CA3B9F;
-        Fri, 18 Jun 2021 15:00:17 +0000 (UTC)
-Date:   Fri, 18 Jun 2021 17:00:16 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     kernel test robot <lkp@intel.com>, linux-kernel@vger.kernel.org,
-        kbuild-all@lists.01.org, Jessica Yu <jeyu@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v7 4/5] printk: Userspace format indexing support
-Message-ID: <YMy1AOpMkMpHuINI@alley>
-References: <e42070983637ac5e384f17fbdbe86d19c7b212a5.1623775748.git.chris@chrisdown.name>
- <202106181930.0rU3pZgm-lkp@intel.com>
- <YMyPXXnDCZNC7Bp+@chrisdown.name>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMyPXXnDCZNC7Bp+@chrisdown.name>
+        id S235111AbhFRP3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:29:54 -0400
+Received: from m12-12.163.com ([220.181.12.12]:41740 "EHLO m12-12.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235505AbhFRP2Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 11:28:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=f9Ui/oYSk48oHVAu8A
+        I9c5OPGqStY9Q1e3ITf86NGJc=; b=qcMbnVgXG6N1rv76bbLuwbvg5zISzIZ+Ro
+        yD9idEwYaJqayWgG7MelvM4EmO8bVzmQ6+yBPB+UUkVdFnkdCj9ZYUyT0nho+ko/
+        PDdBj4KKrptl1KZsXeJuYBbCu2YCHhS9ytbrO4QAqGlIy97v1Eu9NfPAzouZ4RDE
+        Gz4JS5oSg=
+Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
+        by smtp8 (Coremail) with SMTP id DMCowACHpyvBXsxgrcJOKg--.33804S2;
+        Fri, 18 Jun 2021 16:52:19 +0800 (CST)
+From:   samirweng1979 <samirweng1979@163.com>
+To:     charles.gorand@effinnov.com, krzysztof.kozlowski@canonical.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: [PATCH v2] NFC: nxp-nci: remove unnecessary label
+Date:   Fri, 18 Jun 2021 16:52:26 +0800
+Message-Id: <20210618085226.18440-1-samirweng1979@163.com>
+X-Mailer: git-send-email 2.15.0.windows.1
+X-CM-TRANSID: DMCowACHpyvBXsxgrcJOKg--.33804S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtrW7ur4UCw13GrWDKr4Uurg_yoWDXFb_ur
+        yrZ34fXrWUCrWFvw1xKasxuFyDtw10gaykX3Za9ay3AFyqgw15Ww4Ivrn3Gw1UWFW8CFyD
+        Cw18Aw42yr4qyjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5Ub15UUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/xtbBHAO1sV3l-enGnAAAst
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2021-06-18 13:19:41, Chris Down wrote:
-> kernel test robot writes:
-> > > > include/linux/printk.h:219:5: error: static declaration of '_printk' follows non-static declaration
-> 
-> This issue already exists before this patch and has done for a very long
-> time, just the error message changed. Let's fix it in a different series.
+From: wengjianfeng <wengjianfeng@yulong.com>
 
-It is build when CONFIG_PRINTK is not set. Do I get it correctly?
-Yes, I agree that it is an older problem and we could fix it later.
+Remove unnecessary label chunk_exit and return directly.
 
-Best Regards,
-Petr
+Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+---
+ drivers/nfc/nxp-nci/firmware.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/nfc/nxp-nci/firmware.c b/drivers/nfc/nxp-nci/firmware.c
+index dae0c80..119bf30 100644
+--- a/drivers/nfc/nxp-nci/firmware.c
++++ b/drivers/nfc/nxp-nci/firmware.c
+@@ -95,10 +95,8 @@ static int nxp_nci_fw_send_chunk(struct nxp_nci_info *info)
+ 	int r;
+ 
+ 	skb = nci_skb_alloc(info->ndev, info->max_payload, GFP_KERNEL);
+-	if (!skb) {
+-		r = -ENOMEM;
+-		goto chunk_exit;
+-	}
++	if (!skb)
++		return -ENOMEM;
+ 
+ 	chunk_len = info->max_payload - NXP_NCI_FW_HDR_LEN - NXP_NCI_FW_CRC_LEN;
+ 	remaining_len = fw_info->frame_size - fw_info->written;
+@@ -124,7 +122,6 @@ static int nxp_nci_fw_send_chunk(struct nxp_nci_info *info)
+ 
+ 	kfree_skb(skb);
+ 
+-chunk_exit:
+ 	return r;
+ }
+ 
+-- 
+1.9.1
+
+
