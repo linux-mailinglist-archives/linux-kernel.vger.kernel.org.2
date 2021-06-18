@@ -2,273 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AFB13AD05B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 297093AD06B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235887AbhFRQ3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 12:29:13 -0400
-Received: from mx12.kaspersky-labs.com ([91.103.66.155]:45597 "EHLO
-        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234001AbhFRQ3H (ORCPT
+        id S235190AbhFRQce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 12:32:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231203AbhFRQcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 12:29:07 -0400
-Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 8702976954;
-        Fri, 18 Jun 2021 19:26:52 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail202102; t=1624033612;
-        bh=iQmltOvrHzvEY/ZPm+V981Olell4SUkDQ4jPxSiWNMY=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
-        b=R2Mpqp5u+torzDWgAgQxzxrOxBjrjC6c+zgyQrdYRTfyMW1EUzTSiBq7taNUyGy2D
-         PuiCW68X0LnnhVbSpKoMNirzjoWUI4/kFvpLJySB16WEyPhQVBN9OTj+pT3yQkszFF
-         SvIQ3uH+8pyc/MSrGiyvJqXcxpgXH4Lq6DU6Op2GvRlUm37kEhMM1jD2o3SP3t8K9n
-         1UkcZvGerWxOCENvIrGRW28bPP/fEwIm25IshGQw+eaoLlfCZbk+lmk21hxD0n8rey
-         s7BOhCd9/IDHrzzc5w5oi4yVOq6jf1tQOz3o1RVVbTFnU9LrfUAlUFCXfHdy3D5hER
-         hEKEi5oVUS9cw==
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id C23077694F;
-        Fri, 18 Jun 2021 19:26:51 +0300 (MSK)
-Received: from [10.16.171.77] (10.64.64.121) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Fri, 18
- Jun 2021 19:26:50 +0300
-Subject: Re: [MASSMAIL KLMS] Re: [PATCH v11 11/18] virtio/vsock: dequeue
- callback for SOCK_SEQPACKET
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-References: <20210611110744.3650456-1-arseny.krasnov@kaspersky.com>
- <20210611111241.3652274-1-arseny.krasnov@kaspersky.com>
- <20210618134423.mksgnbmchmow4sgh@steredhat.lan>
- <bb323125-f802-1d16-7530-6e4f4abb00a6@kaspersky.com>
- <20210618155555.j5p4v6j5gk2dboj3@steredhat.lan>
- <650673dc-8b29-657e-5bbd-2cc974628ec9@kaspersky.com>
- <20210618162509.yppkajmvcbzvidy4@steredhat.lan>
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Message-ID: <31f58b17-02e6-4246-5ad8-7e8d7892ecb7@kaspersky.com>
-Date:   Fri, 18 Jun 2021 19:26:49 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 18 Jun 2021 12:32:24 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C7ADC061574;
+        Fri, 18 Jun 2021 09:30:13 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id t11-20020a1cc30b0000b02901cec841b6a0so6166463wmf.0;
+        Fri, 18 Jun 2021 09:30:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=l9rirGTX9IKkD9bpHXZHalsVI51vG9jgV3KWdghVMEw=;
+        b=kfdepGu517XhNkOHjQLDoHqOKJRZRJLi6aQLe0B0vz1ZrehFoPBcKilWIjKQGRxhzu
+         GrHN0rSqh+yzWgNZyeBTVs0SjeA508kM7rFJh+riQ6gTXsMYKCQU/VmnRbc24UHS9xiE
+         P+Crk97KjZve0b8MKnUEwPmi8OoBDuY+SQjAvC/61nyatMxYOXYavpo5+P7bKl28PIDv
+         69TctXGe9nPkXd0Art5wZvwic6UKMz9NSBkPs8GihQ70WrbwMmSrTfH4vAyj1N2yEyyA
+         LHBPOLRKEOpb/Tgdp2QSdB29jo71EomWH8+aGUDH7UBCdkdj7mo2Ko548+PT25uSgeQu
+         sGcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=l9rirGTX9IKkD9bpHXZHalsVI51vG9jgV3KWdghVMEw=;
+        b=kqbQIKudEsdVcaWvPGT2tP/5wkP2kOvPRvGmM23spBj4gf5+UURF4AvtO40q7v5HOc
+         ox9JN95Y6koiYMA2PmlNgGB01gpaDorymHZjZz78n+u/eOVQmFrMnXRoDSDpDN6uDxlI
+         Dt5GZ3Fiwngjcjy7k0WaXYtV+KFQ7ZsFA0WaiTRWqCkCAg6qsaRavzTIkJNEqExxmr9o
+         TT/HwIn8zgIWkMNKXmcjVawt/Qe60BY7RgPLHfUzViZqK7Bb0k7xR7OweKXqwPpjT26E
+         xSIxDowiXW6U7OvYsPcIN5PdXP0uGhkbGXGkr1nMSL2FJtw26d5MWxv22VtW1OIuBKuf
+         SpJw==
+X-Gm-Message-State: AOAM531u5cgaATY8CDSxe5Iz05ZhoSTA15nObhQxUtrwKverz5y2V7pE
+        o1VNPtE+x2TBgCCzUdHWRA==
+X-Google-Smtp-Source: ABdhPJyH/jfmzkG+Bu55AqXkxDs9qM0nYbBphoXS6Ff83BHpbC3sFi1TCxb1evEQ1Ul0PgG4r8YebA==
+X-Received: by 2002:a05:600c:3ba0:: with SMTP id n32mr12483723wms.107.1624033811784;
+        Fri, 18 Jun 2021 09:30:11 -0700 (PDT)
+Received: from [192.168.200.247] (ip5b434b8b.dynamic.kabel-deutschland.de. [91.67.75.139])
+        by smtp.gmail.com with ESMTPSA id a24sm7871081wmj.30.2021.06.18.09.30.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jun 2021 09:30:11 -0700 (PDT)
+Subject: Re: [PATCH 2/3] arm64: dts: rockchip: Add RK3399 Rock Pi 4a plus
+ board
+To:     =?UTF-8?Q?Heiko_St=c3=bcbner?= <heiko@sntech.de>
+Cc:     devicetree@vger.kernel.org, balbi@kernel.org,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20210617044955.598994-1-knaerzche@gmail.com>
+ <20210617044955.598994-2-knaerzche@gmail.com> <4545451.QWXsJ6tzlI@diego>
+From:   Alex Bee <knaerzche@gmail.com>
+Message-ID: <d88df311-9ec5-9552-7b12-2db88b99b434@gmail.com>
+Date:   Fri, 18 Jun 2021 18:30:10 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210618162509.yppkajmvcbzvidy4@steredhat.lan>
-Content-Type: text/plain; charset="windows-1252"
+In-Reply-To: <4545451.QWXsJ6tzlI@diego>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-X-Originating-IP: [10.64.64.121]
-X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 06/18/2021 16:10:37
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 164483 [Jun 18 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
-X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: kaspersky.com:7.1.1;lore.kernel.org:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 06/18/2021 16:12:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 18.06.2021 12:17:00
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/06/18 14:20:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/06/18 12:17:00 #16756757
-X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Heiko,
 
-On 18.06.2021 19:25, Stefano Garzarella wrote:
-> On Fri, Jun 18, 2021 at 07:08:30PM +0300, Arseny Krasnov wrote:
->> On 18.06.2021 18:55, Stefano Garzarella wrote:
->>> On Fri, Jun 18, 2021 at 06:04:37PM +0300, Arseny Krasnov wrote:
->>>> On 18.06.2021 16:44, Stefano Garzarella wrote:
->>>>> Hi Arseny,
->>>>> the series looks great, I have just a question below about
->>>>> seqpacket_dequeue.
->>>>>
->>>>> I also sent a couple a simple fixes, it would be great if you can review
->>>>> them:
->>>>> https://lore.kernel.org/netdev/20210618133526.300347-1-sgarzare@redhat.com/
->>>>>
->>>>>
->>>>> On Fri, Jun 11, 2021 at 02:12:38PM +0300, Arseny Krasnov wrote:
->>>>>> Callback fetches RW packets from rx queue of socket until whole record
->>>>>> is copied(if user's buffer is full, user is not woken up). This is done
->>>>>> to not stall sender, because if we wake up user and it leaves syscall,
->>>>>> nobody will send credit update for rest of record, and sender will wait
->>>>>> for next enter of read syscall at receiver's side. So if user buffer is
->>>>>> full, we just send credit update and drop data.
->>>>>>
->>>>>> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->>>>>> ---
->>>>>> v10 -> v11:
->>>>>> 1) 'msg_count' field added to count current number of EORs.
->>>>>> 2) 'msg_ready' argument removed from callback.
->>>>>> 3) If 'memcpy_to_msg()' failed during copy loop, there will be
->>>>>>    no next attempts to copy data, rest of record will be freed.
->>>>>>
->>>>>> include/linux/virtio_vsock.h            |  5 ++
->>>>>> net/vmw_vsock/virtio_transport_common.c | 84 +++++++++++++++++++++++++
->>>>>> 2 files changed, 89 insertions(+)
->>>>>>
->>>>>> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
->>>>>> index dc636b727179..1d9a302cb91d 100644
->>>>>> --- a/include/linux/virtio_vsock.h
->>>>>> +++ b/include/linux/virtio_vsock.h
->>>>>> @@ -36,6 +36,7 @@ struct virtio_vsock_sock {
->>>>>> 	u32 rx_bytes;
->>>>>> 	u32 buf_alloc;
->>>>>> 	struct list_head rx_queue;
->>>>>> +	u32 msg_count;
->>>>>> };
->>>>>>
->>>>>> struct virtio_vsock_pkt {
->>>>>> @@ -80,6 +81,10 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
->>>>>> 			       struct msghdr *msg,
->>>>>> 			       size_t len, int flags);
->>>>>>
->>>>>> +ssize_t
->>>>>> +virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
->>>>>> +				   struct msghdr *msg,
->>>>>> +				   int flags);
->>>>>> s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
->>>>>> s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
->>>>>>
->>>>>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->>>>>> index ad0d34d41444..1e1df19ec164 100644
->>>>>> --- a/net/vmw_vsock/virtio_transport_common.c
->>>>>> +++ b/net/vmw_vsock/virtio_transport_common.c
->>>>>> @@ -393,6 +393,78 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
->>>>>> 	return err;
->>>>>> }
->>>>>>
->>>>>> +static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
->>>>>> +						 struct msghdr *msg,
->>>>>> +						 int flags)
->>>>>> +{
->>>>>> +	struct virtio_vsock_sock *vvs = vsk->trans;
->>>>>> +	struct virtio_vsock_pkt *pkt;
->>>>>> +	int dequeued_len = 0;
->>>>>> +	size_t user_buf_len = msg_data_left(msg);
->>>>>> +	bool copy_failed = false;
->>>>>> +	bool msg_ready = false;
->>>>>> +
->>>>>> +	spin_lock_bh(&vvs->rx_lock);
->>>>>> +
->>>>>> +	if (vvs->msg_count == 0) {
->>>>>> +		spin_unlock_bh(&vvs->rx_lock);
->>>>>> +		return 0;
->>>>>> +	}
->>>>>> +
->>>>>> +	while (!msg_ready) {
->>>>>> +		pkt = list_first_entry(&vvs->rx_queue, struct virtio_vsock_pkt, list);
->>>>>> +
->>>>>> +		if (!copy_failed) {
->>>>>> +			size_t pkt_len;
->>>>>> +			size_t bytes_to_copy;
->>>>>> +
->>>>>> +			pkt_len = (size_t)le32_to_cpu(pkt->hdr.len);
->>>>>> +			bytes_to_copy = min(user_buf_len, pkt_len);
->>>>>> +
->>>>>> +			if (bytes_to_copy) {
->>>>>> +				int err;
->>>>>> +
->>>>>> +				/* sk_lock is held by caller so no one else can dequeue.
->>>>>> +				 * Unlock rx_lock since memcpy_to_msg() may sleep.
->>>>>> +				 */
->>>>>> +				spin_unlock_bh(&vvs->rx_lock);
->>>>>> +
->>>>>> +				err = memcpy_to_msg(msg, pkt->buf, bytes_to_copy);
->>>>>> +				if (err) {
->>>>>> +					/* Copy of message failed, set flag to skip
->>>>>> +					 * copy path for rest of fragments. Rest of
->>>>>> +					 * fragments will be freed without copy.
->>>>>> +					 */
->>>>>> +					copy_failed = true;
->>>>>> +					dequeued_len = err;
->>>>> If we fail to copy the message we will discard the entire packet.
->>>>> Is it acceptable for the user point of view, or we should leave the
->>>>> packet in the queue and the user can retry, maybe with a different
->>>>> buffer?
->>>>>
->>>>> Then we can remove the packets only when we successfully copied all the
->>>>> fragments.
->>>>>
->>>>> I'm not sure make sense, maybe better to check also other
->>>>> implementations :-)
->>>>>
->>>>> Thanks,
->>>>> Stefano
->>>> Understand, i'll check it on weekend, anyway I think it is
->>>> not critical for implementation.
->>> Yep, I agree.
->>>
->>>> I have another question: may be it is useful to research for
->>>> approach where packets are not queued until whole message
->>>> is received, but copied to user's buffer thus freeing memory.
->>>> (like previous implementation, of course with solution of problem
->>>> where part of message still in queue, while reader was woken
->>>> by timeout or signal).
->>>>
->>>> I think it is better, because  in current version, sender may set
->>>> 'peer_alloc_buf' to  for example 1MB, so at receiver we get
->>>> 1MB of 'kmalloc()' memory allocated, while having user's buffer
->>>> to copy data there or drop it(if user's buffer is full). This way
->>>> won't change spec(e.g. no message id or SEQ_BEGIN will be added).
->>>>
->>>> What do You think?
->>> Yep, I see your point and it would be great, but I think the main issues
->>> to fix is how to handle a signal while we are waiting other fragments
->>> since the other peer can take unspecified time to send them.
->> What about transport callback, something like 'seqpacket_drain()' or
+Am 18.06.21 um 15:08 schrieb Heiko StÃ¼bner:
+> Am Donnerstag, 17. Juni 2021, 06:49:54 CEST schrieb Alex Bee:
+>> Rock Pi 4a plus board is the successor of Rock Pi 4a board.
 >>
->> 'seqpacket_drop_curr()' - when we got signal or timeout, notify transport
+>> Differences to the original version are
+>> - has RK3399 OP1 SoC revision
+>> - has eMMC (16 or 32 GB) soldered on board (no changes required,
+>>    since it is enabled in rk3399-rock-pi-4.dtsi)
+>> - dev boards have SPI flash soldered, but as per manufacturer response,
+>>    this won't be the case for mass production boards
 >>
->> to drop current message. In virtio case this will set special flag in transport,
+>> I didn't add yet another compatible, since the small set of differences
+>> are captured by the device tree.
 >>
->> so on next dequeue, this flag is checked and if it is set - we drop all packets
+>> Signed-off-by: Alex Bee <knaerzche@gmail.com>
+>> ---
+>>   arch/arm64/boot/dts/rockchip/Makefile              |  1 +
+>>   .../boot/dts/rockchip/rk3399-rock-pi-4a-plus.dts   | 14 ++++++++++++++
+>>   2 files changed, 15 insertions(+)
+>>   create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a-plus.dts
 >>
->> until EOR found. Then we can copy untouched new record.
->>
-> But in this way, we will lose the entire message.
+>> diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
+>> index c3e00c0e2db7..dbd7d37950f1 100644
+>> --- a/arch/arm64/boot/dts/rockchip/Makefile
+>> +++ b/arch/arm64/boot/dts/rockchip/Makefile
+>> @@ -43,6 +43,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-puma-haikou.dtb
+>>   dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-roc-pc.dtb
+>>   dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-roc-pc-mezzanine.dtb
+>>   dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rock-pi-4a.dtb
+>> +dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rock-pi-4a-plus.dtb
+>>   dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rock-pi-4b.dtb
+>>   dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rock-pi-4c.dtb
+>>   dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-rock960.dtb
+>> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a-plus.dts b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a-plus.dts
+>> new file mode 100644
+>> index 000000000000..2deaab7f9307
+>> --- /dev/null
+>> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a-plus.dts
+>> @@ -0,0 +1,14 @@
+>> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+>> +/*
+>> + * Copyright (c) 2019 Akash Gajjar <Akash_Gajjar@mentor.com>
+>> + * Copyright (c) 2019 Pragnesh Patel <Pragnesh_Patel@mentor.com>
+>> + */
+>> +
+>> +/dts-v1/;
+>> +#include "rk3399-rock-pi-4.dtsi"
+>> +#include "rk3399-op1-opp.dtsi"
+>> +
+>> +/ {
+>> +	model = "Radxa ROCK Pi 4A plus";
+>> +	compatible = "radxa,rockpi4a", "radxa,rockpi4", "rockchip,rk3399";
+> hmm, I don't really follow why you're re-using the radxa,rockpi4a
+> compatible. I'd assume this should be radxa,rockpi4a+ or something?
+
+Ah, yes this was part of my cover letter, which obviously got lost 
+somewhere.
+
+Anyways: Reason I thought of was: For example broadcom nvram file names 
+must match the compatible string and they have to be copied/symlinked 
+over and over if we add new compatibles for every minor changed revision 
+of a board. I guess there are more examples for that in userland.
+
 >
-> Is it acceptable for seqpacket?
+> I.e. if a bootloader needs to select the matching devicetree from a list
+> of available devicetrees, this could end up running a regular rockpi4a
+> (without +) using the OP1 operating points and thus at way too high
+> frequencies.
+
+Besides I wasn't aware, that "a bootloader" can do that already I 
+understand your concerns and will change it.
+
+Alex.
+
 >
-> Stefano
-Hm, i'll check it. At least for unix domain sockets - it supports SEQPACKET
+> Heiko
+>
+>
+>> +};
+>>
+>
 >
 >
