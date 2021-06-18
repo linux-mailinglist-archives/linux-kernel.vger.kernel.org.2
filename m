@@ -2,90 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF903ACA1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 13:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A277B3ACA21
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 13:41:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233685AbhFRLnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 07:43:20 -0400
-Received: from mail-vs1-f44.google.com ([209.85.217.44]:44610 "EHLO
-        mail-vs1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231819AbhFRLnR (ORCPT
+        id S231819AbhFRLn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 07:43:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232987AbhFRLn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 07:43:17 -0400
-Received: by mail-vs1-f44.google.com with SMTP id x13so4763688vsf.11;
-        Fri, 18 Jun 2021 04:41:07 -0700 (PDT)
+        Fri, 18 Jun 2021 07:43:26 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA296C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 04:41:12 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id a11so10433304wrt.13
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 04:41:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=2+aVtjIZPMWAlSORuslJEgy3WIqb0GMm7Q4JpdPCkC0=;
+        b=TId1KcZQnz4L0hbs4WelnUMqcvwWWi1WzMVQ5EOOM2NgW6Xi2Y9wwFhhDRFn7VX7hS
+         uaWIZNTtdUL8kzuGdo494lwZEYt1+LEw4vydd790n69r7iz8DfD7JaO7PGii2coZFaFh
+         yzwVf0YskKDyzKyEjLltHqA4Vr3uihuQDYJ5v7F8idCcAlrZHEyC9Rk7wz/4PGECRTZE
+         SgiSuE0hgiaVyqmmRMmk/d0P4vWxXeuq86Z54X7DqS99MZDUg+GXaXmQbDbr09Ly71D3
+         gJYwRPPhUaTgiZ7jpnwXEhGdJRcnZhSvRhyD6WxXpeNeVABMkSj9k00eauzED27LCSpn
+         fejQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=REVNzACq42gLwR5p2Aog6lzmFlHaKRfIiJ6QtzULbeg=;
-        b=m/+zD4rwkIt2Mz1U7FFUTR1pJbCVYiPoIMVYVBoq9oMnQ7pDe3KUkH+SjxweSd720j
-         GgKQYK4ZznYR7YRwMKuG2+5+ln8TNTFAzqWDwF8ihduVY9HTP/rE/20tbI2JSJGjVlm7
-         5BktoljpG8WG71l7990U2NkbIg2wAB8mylVAqkWfi87/IaQd5Zw3ueFZEywpOmU9G3pX
-         SGW+4l0w0YkFLAOJY/OdrWpbcpVAlK2Fbi/Lyk7gU897Jnk/vdn3LLDSh9MvmAeCRcin
-         8ouxTEj5awqMALlaayrPH8BAibdY3+jA5vm/Bxci2gD5y1agSd8uukF6nd8GWACCEQrp
-         kp0Q==
-X-Gm-Message-State: AOAM5332r1Zps5BmrGaKoiQrtzbtgh6VGpZyOkPgVz7pGV9V/j+/WRxP
-        PXjrWR6cRQ5jJxN9V+mqCS5Vs+vT00kCaufkgKsEpRiOWKw=
-X-Google-Smtp-Source: ABdhPJxL9NnEa1E+Xo+NueVDWae10cfaf6Std76F6y9921IIHk9eELLufK0zFNy2zeaQ7BbHzL0yTH8K9SL0NiEJRZM=
-X-Received: by 2002:a67:7787:: with SMTP id s129mr1323024vsc.40.1624016466865;
- Fri, 18 Jun 2021 04:41:06 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2+aVtjIZPMWAlSORuslJEgy3WIqb0GMm7Q4JpdPCkC0=;
+        b=B/P7cvyy8ebDHnjc1/1JJ9oPJRvweZqIp0n0KD3aYPhZwAdJoxAU19b9DDlFadog8t
+         XkvXWwRUVSRvjTmH4LlTRcbFVFHWfIxPlfEp+eWdubPCdv1OgZkoA1yENGIs/foD/nbm
+         fHPn74oLg5bGkr/UEUW/2psQtH4unvaROBu5z9FRob7zfPFAAq0Zt0IXGr+RjiHhMONo
+         HUjMw+TMt8ygIwTYV4gboGMFaIKIbjCYxnpv+ST1jBC/UWkS7BWft2X/091MsOTu+LEe
+         rIIuToskwtuxtYZgm0eNhauP0OTJoTHU0hmoAwFT+2dLvvizBRAvRr/6ZsEQ1Q5LIaQH
+         bXtg==
+X-Gm-Message-State: AOAM530XxGFd2RSiCOj+MHBQT5z840tcdDrp1uYUOZfzKaviMF00ReLz
+        VUgoCam/Axfl6fBspprm4zisFw==
+X-Google-Smtp-Source: ABdhPJwhkaQHejxBMQnTClcBCXFQ2/K58vup9P7+dj81rIrBztuammVJmK/4c3JNzjsIcgV4Cbj5PQ==
+X-Received: by 2002:a5d:6849:: with SMTP id o9mr11612861wrw.44.1624016471416;
+        Fri, 18 Jun 2021 04:41:11 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id u15sm8553491wmq.1.2021.06.18.04.41.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 18 Jun 2021 04:41:10 -0700 (PDT)
+Subject: Re: [PATCH v3] ASoC: qcom: Fix for DMA interrupt clear reg
+ overwriting
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, swboyd@chromium.org,
+        judyhsiao@chromium.org
+References: <20210609072310.26099-1-srivasam@codeaurora.org>
+ <CGME20210617193537eucas1p217b93d091ae8795581b30931ad8c7467@eucas1p2.samsung.com>
+ <5ae06ccb-ffd4-ca9f-5a88-1f8bf8b48d37@samsung.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <83be2add-2fa7-a16e-4250-95520e80c514@linaro.org>
+Date:   Fri, 18 Jun 2021 12:41:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <1623896524-102058-1-git-send-email-yang.lee@linux.alibaba.com>
- <CAMuHMdX53h16UuaC8VobKX20_3dQS1Ve+3a8oqX-oYeT6vTi5w@mail.gmail.com> <CAMuHMdUb+mCONrv2bYc_z-fayVf+7ZnV58CZsg5p=g0yh8TAjw@mail.gmail.com>
-In-Reply-To: <CAMuHMdUb+mCONrv2bYc_z-fayVf+7ZnV58CZsg5p=g0yh8TAjw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 18 Jun 2021 13:40:55 +0200
-Message-ID: <CAMuHMdVGr7Q2_qy8GU5p_Dt+z7WSfpxaq3aoZgFnFMNrOc9+0g@mail.gmail.com>
-Subject: Re: [PATCH -next v2] clk: renesas: fix return value and unused assignment
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <5ae06ccb-ffd4-ca9f-5a88-1f8bf8b48d37@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 1:19 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Thu, Jun 17, 2021 at 9:25 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Thu, Jun 17, 2021 at 4:22 AM Yang Li <yang.lee@linux.alibaba.com> wrote:
-> > > Currently the function returns NULL on error, so exact error code is lost.
-> > > This patch changes return convention of the function to use ERR_PTR()
-> > > on error instead.
-> > >
-> > > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> > > Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> >
-> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> > i.e. will queue in renesas-clk-for-v5.15.
-> >
-> > > --- a/drivers/clk/renesas/renesas-rzg2l-cpg.c
-> > > +++ b/drivers/clk/renesas/renesas-rzg2l-cpg.c
-> > > @@ -182,8 +182,7 @@ static unsigned long rzg2l_cpg_pll_clk_recalc_rate(struct clk_hw *hw,
-> > >
-> > >         pll_clk = devm_kzalloc(dev, sizeof(*pll_clk), GFP_KERNEL);
-> > >         if (!pll_clk) {
-> > > -               clk = ERR_PTR(-ENOMEM);
-> > > -               return NULL;
-> > > +               return ERR_PTR(-ENOMEM);
-> > >         }
-> >
-> > I'll drop the curly braces while applying.
->
-> ... and the now unused clk variable.
+Hi Marek,
 
-Oops, that's only after Dan's patch. Reshuffling...
+Thanks for testing next and reporting this back.
 
-Gr{oetje,eeting}s,
+On 17/06/2021 20:35, Marek Szyprowski wrote:
+> Hi,
+> 
+> On 09.06.2021 09:23, Srinivasa Rao Mandadapu wrote:
+>> The DMA interrupt clear register overwritten during
+>> simultaneous playback and capture in lpass platform
+>> interrupt handler. It's causing playback or capture stuck
+>> in similtaneous plaback on speaker and capture on dmic test.
+>> Update appropriate reg fields of corresponding channel instead
+>> of entire register write.
+>>
+>> Fixes: commit c5c8635a04711 ("ASoC: qcom: Add LPASS platform driver")
+>>
+>> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> 
+> This patch landed recently in linux-next as commit da0363f7bfd3 ("ASoC:
+> qcom: Fix for DMA interrupt clear reg overwriting"). It breaks ALSA
+> playback on DragonBoard 410c (arch/arm64/boot/dts/qcom/apq8016-sbc.dts).
+> After applying this patch, running 'speaker-test -l1' never finishes.
+> There is no error nor kernel warning message. Before that commit, the
+> playback worked fine on that board.
 
-                        Geert
+TBH, I should have looked at the hw register description that is being 
+updated in the patch. This is a software write only and hardware 
+readable register for which update_bits really does not make sense at 
+all. While digging out I found an issue with regmap_cache reads which 
+should have reported an error while attempting to even do this. I sent 
+out a patch to fix this.
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Now for this patch itself, We should send a patch to revert it.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
+thanks,
+srini
+
+
+> 
+>> ---
+>> Changes since v2:
+>> 	-- Removed redundant variables.
+>> Changes since v1:
+>> 	-- Subject lines changed.
+>>    sound/soc/qcom/lpass-platform.c | 12 ++++++------
+>>    1 file changed, 6 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
+>> index 0df9481ea4c6..f9df76d37858 100644
+>> --- a/sound/soc/qcom/lpass-platform.c
+>> +++ b/sound/soc/qcom/lpass-platform.c
+>> @@ -526,7 +526,7 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
+>>    			return -EINVAL;
+>>    		}
+>>    
+>> -		ret = regmap_write(map, reg_irqclr, val_irqclr);
+>> +		ret = regmap_update_bits(map, reg_irqclr, val_irqclr, val_irqclr);
+>>    		if (ret) {
+>>    			dev_err(soc_runtime->dev, "error writing to irqclear reg: %d\n", ret);
+>>    			return ret;
+>> @@ -650,10 +650,11 @@ static irqreturn_t lpass_dma_interrupt_handler(
+>>    	struct lpass_variant *v = drvdata->variant;
+>>    	irqreturn_t ret = IRQ_NONE;
+>>    	int rv;
+>> -	unsigned int reg = 0, val = 0;
+>> +	unsigned int reg, val, mask;
+>>    	struct regmap *map;
+>>    	unsigned int dai_id = cpu_dai->driver->id;
+>>    
+>> +	mask = LPAIF_IRQ_ALL(chan);
+>>    	switch (dai_id) {
+>>    	case LPASS_DP_RX:
+>>    		map = drvdata->hdmiif_map;
+>> @@ -676,8 +677,7 @@ static irqreturn_t lpass_dma_interrupt_handler(
+>>    	return -EINVAL;
+>>    	}
+>>    	if (interrupts & LPAIF_IRQ_PER(chan)) {
+>> -
+>> -		rv = regmap_write(map, reg, LPAIF_IRQ_PER(chan) | val);
+>> +		rv = regmap_update_bits(map, reg, mask, (LPAIF_IRQ_PER(chan) | val));
+>>    		if (rv) {
+>>    			dev_err(soc_runtime->dev,
+>>    				"error writing to irqclear reg: %d\n", rv);
+>> @@ -688,7 +688,7 @@ static irqreturn_t lpass_dma_interrupt_handler(
+>>    	}
+>>    
+>>    	if (interrupts & LPAIF_IRQ_XRUN(chan)) {
+>> -		rv = regmap_write(map, reg, LPAIF_IRQ_XRUN(chan) | val);
+>> +		rv = regmap_update_bits(map, reg, mask, (LPAIF_IRQ_XRUN(chan) | val));
+>>    		if (rv) {
+>>    			dev_err(soc_runtime->dev,
+>>    				"error writing to irqclear reg: %d\n", rv);
+>> @@ -700,7 +700,7 @@ static irqreturn_t lpass_dma_interrupt_handler(
+>>    	}
+>>    
+>>    	if (interrupts & LPAIF_IRQ_ERR(chan)) {
+>> -		rv = regmap_write(map, reg, LPAIF_IRQ_ERR(chan) | val);
+>> +		rv = regmap_update_bits(map, reg, mask, (LPAIF_IRQ_ERR(chan) | val));
+>>    		if (rv) {
+>>    			dev_err(soc_runtime->dev,
+>>    				"error writing to irqclear reg: %d\n", rv);
+> 
+> Best regards
+> 
