@@ -2,119 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D385D3ABFEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 01:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5A1E3ABFF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 02:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232323AbhFRAA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 20:00:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56514 "EHLO mail.kernel.org"
+        id S233089AbhFRAHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 20:07:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59820 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229848AbhFRAAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 20:00:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A98C361019;
-        Thu, 17 Jun 2021 23:58:13 +0000 (UTC)
+        id S229848AbhFRAHL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 20:07:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FCA061369;
+        Fri, 18 Jun 2021 00:05:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1623974295;
-        bh=M0lRaJht8iOxf3cY0Le5dA8WTI73qlYLqx7cmUga8cA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=uR+jaHbIFOiP1N1bZF91AcJpKpoCLDh5MS+QwS/B6V7VL35kk1fLu0yhGmOKnsWdy
-         A1RQixbBMPj2iJ4h73eZxwlBAKoD4WsU02kq8ukkU8Xm4SrCXTnoEXbiZF1j0U+jmP
-         eOEvxHg6q/FC2i4rfbDFvIdvio5KoG+GmfPiW5Zlur4sPjclnPN/0enES53byckVPu
-         hoshuo/aK5nClbdKYjTRISgQtPSLtGaWrKtj22p6fL0DnskhbQd2xvYQDErkLQ+1u2
-         V7ztTkspcRI1irecm9DgT+IdU7NlUdAdgjfZIqQtALLm7DQuQJDjtilHTTBCcib8mS
-         3WiLp4wBEWf6g==
-Date:   Fri, 18 Jun 2021 08:58:11 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@kernel.org>, X86 ML <x86@kernel.org>,
-        Daniel Xu <dxu@dxuuu.xyz>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Kernel Team <kernel-team@fb.com>, Yonghong Song <yhs@fb.com>,
-        linux-ia64@vger.kernel.org,
-        Abhishek Sagar <sagar.abhishek@gmail.com>
-Subject: Re: [PATCH -tip v7 09/13] kprobes: Setup instruction pointer in
- __kretprobe_trampoline_handler
-Message-Id: <20210618085811.19f0a7b8c1e91d54483ba9f8@kernel.org>
-In-Reply-To: <20210617182159.ka227nkmhe4yu2de@treble>
-References: <162209754288.436794.3904335049560916855.stgit@devnote2>
-        <162209762943.436794.874947392889792501.stgit@devnote2>
-        <20210617043909.fgu2lhnkxflmy5mk@treble>
-        <20210617044032.txng4enhiduacvt6@treble>
-        <20210617234001.54cd2ff60410ff82a39a2020@kernel.org>
-        <20210618000239.f95de17418beae6d84ce783d@kernel.org>
-        <CAEf4Bzbob_M0aS-GUY5XaqePZr_prxUag3RLHtp=HY8Uu__10g@mail.gmail.com>
-        <20210617182159.ka227nkmhe4yu2de@treble>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=k20201202; t=1623974702;
+        bh=MEsWiZlMtxcrV/QOrUJyp+E0fsqBpIcMcqq8myyO81Q=;
+        h=From:To:Cc:Subject:Date:From;
+        b=grzMm7uXMCQnNxhRvyJY01V/OjzS51U616atg4MjFMENbqj7a8a0bvwq2iu/O7afJ
+         l7Z0Dohb+gREI2VIW/DEjaZy/cu2rFoxf5bITKjX0CBlStwcLvcQ73HYwscfNis2zK
+         t+tmgvqbXtdMk03NWAcnFnRaLrUxXQBdSaJZLY5/ELyMUvc51qSgJjm7ZHdFVIn/yG
+         IpHQQV9/mn+mjEhcF0z8/fjKhwQ0UIhdQTDyDC65h63O0/7Gs0YomZmt5pLHpMt+pu
+         VzPTjeawmWl1NBnDpmKUSlef1Hrl+qD1b6Sr9d36dTxMeHmCmsRg7iM3/VdXvvrIgs
+         wDY8Dn8GuEyug==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>, netdev@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH net-next] net/mlx5: Use cpumask_available() in mlx5_eq_create_generic()
+Date:   Thu, 17 Jun 2021 17:03:59 -0700
+Message-Id: <20210618000358.2402567-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.32.0.93.g670b81a890
+MIME-Version: 1.0
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Jun 2021 13:21:59 -0500
-Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+When CONFIG_CPUMASK_OFFSTACK is unset, cpumask_var_t is not a pointer
+but a single element array, meaning its address in a structure cannot be
+NULL as long as it is not the first element, which it is not. This
+results in a clang warning:
 
-> On Thu, Jun 17, 2021 at 10:45:41AM -0700, Andrii Nakryiko wrote:
-> > > > > > I know I suggested this patch, but I believe it would only be useful in
-> > > > > > combination with the use of UNWIND_HINT_REGS in SAVE_REGS_STRING.  But I
-> > > > > > think that would be tricky to pull off correctly.  Instead, we have
-> > > > > > UNWIND_HINT_FUNC, which is working fine.
-> > > > > >
-> > > > > > So I'd suggest dropping this patch, as the unwinder isn't actually
-> > > > > > reading regs->ip after all.
-> > > > >
-> > > > > ... and I guess this means patches 6-8 are no longer necessary.
-> > > >
-> > > > OK, I also confirmed that dropping those patche does not make any change
-> > > > on the stacktrace.
-> > > > Let me update the series without those.
-> > >
-> > > Oops, Andrii, can you also test the kernel without this patch?
-> > > (you don't need to drop patch 6-8)
-> > 
-> > Hi Masami,
-> > 
-> > Dropping this patch and leaving all the other in place breaks stack
-> > traces from kretprobes for BPF. I double checked with and without this
-> > patch. Without this patch we are back to having broken stack traces. I
-> > see either
-> > 
-> >   kretprobe_trampoline+0x0
-> > 
-> > or
-> > 
-> >   ftrace_trampoline+0xc8
-> >   kretprobe_trampoline+0x0
+drivers/net/ethernet/mellanox/mlx5/core/eq.c:715:14: warning: address of
+array 'param->affinity' will always evaluate to 'true'
+[-Wpointer-bool-conversion]
+        if (!param->affinity)
+            ~~~~~~~~^~~~~~~~
+1 warning generated.
 
-Thanks for confirmation.
+The helper cpumask_available was added in commit f7e30f01a9e2 ("cpumask:
+Add helper cpumask_available()") to handle situations like this so use
+it to keep the meaning of the code the same while resolving the warning.
 
-> > 
-> > Is there any problem if you leave this patch as is?
-> 
-> Hm, I must be missing something then.  The patch is probably fine to
-> keep, we just may need to improve the commit log so that it makes sense
-> to me.
+Fixes: e4e3f24b822f ("net/mlx5: Provide cpumask at EQ creation phase")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1400
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ drivers/net/ethernet/mellanox/mlx5/core/eq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yeah, I need to update the commit message so that this will help
-the stacktrace from kretprobe's pt_regs, which will be used in bpf. 
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/eq.c b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+index 7e5b3826eae5..d3356771e628 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/eq.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/eq.c
+@@ -710,7 +710,7 @@ mlx5_eq_create_generic(struct mlx5_core_dev *dev,
+ 	struct mlx5_eq *eq = kvzalloc(sizeof(*eq), GFP_KERNEL);
+ 	int err;
+ 
+-	if (!param->affinity)
++	if (!cpumask_available(param->affinity))
+ 		return ERR_PTR(-EINVAL);
+ 
+ 	if (!eq)
 
-Thank you!
-
-> 
-> Which unwinder are you using (CONFIG_UNWINDER_*)?
-> 
-> -- 
-> Josh
-> 
-
-
+base-commit: 8fe088bd4fd12f4c8899b51d5bc3daad98767d49
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.32.0.93.g670b81a890
+
