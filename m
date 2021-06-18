@@ -2,273 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893923ACD2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 410103ACD31
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234300AbhFROLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:11:37 -0400
-Received: from mail-dm6nam10on2049.outbound.protection.outlook.com ([40.107.93.49]:46945
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        id S234320AbhFROMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 10:12:31 -0400
+Received: from mail-mw2nam10on2064.outbound.protection.outlook.com ([40.107.94.64]:10270
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229782AbhFROLg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:11:36 -0400
+        id S229782AbhFROMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 10:12:30 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YJSsYvboq8gK2ur+DEJF7/J3IbzVkGpEzFSjZTQotrndojQ62R8+OibN05lQOSwpuRc5yfOJDVQ2BVstOZuRkgARLmJEedTW7/rb4NlqIdG/nSgXjlDPcGA1Bt4ylj1XnEo6/nUi+wHUwWTF3JwoVkJYMu7HlE2dU/pgZ8FDqjbAuoOCBKpYqxRKAz3w/ztqSwpT6Vod3rwpqF14EMGOG0qerWCrHKYmtzTohr2Sq2EeN3kg5pCgJZqLJtKOuFE1+piunZKuc1WJ6WPlW3X250BUvk8p2BVkiraXkGlwBmKS2V9lqjQKki18TVvmKpn9vbaH33eQvvuc2iq56sN1Sw==
+ b=ZiRHdBG/vKrB0ythYIaQEtRZAWvYatBK2kjc7dBi07TnNte7rSqKpZ3fo5yGEiqqf0tgOoOlxlNPTFUVDo7n/O71KgMD6YnsFfSeVPyNEZUFXkK05Cw6l1ihuDyU9BmzhWcJYmB2Yic8dHSm1Vvcstl+nMAujTPfB4fARj9kGNq/axNZ59/KgV0rBydC5vcSIKImiACTKMH4jm290UYUrmnnve0msYyBgHRRcfhpATcXLyK3qMBiTzEIQif5ctffJ/KKW3mh1xcbm9xwfk36GKgzxhP8D5L0pN2Ja1wcH+LskNGPFQvo2kMR3LqouCXzh/kD/Nmm1szggFlgr+WHPQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oLRi1XsPF7LgTrIYyzkEtdY9k36UwfVsdF2v+x/5S7Y=;
- b=TPRxPNpmSTJ/7vN1brX9+s2241iEZh09BhG6JVeUU09lOFXod+A15TqUFVEnNjvSqVI08EutTgspB2uGyk4fOxGW64vkzNmXqYSHoknJoM/xNx9Y8fSVib8DBrhlkTxPCdsmrfcKE4LThxydPppibLHnc7cQ8W/h0YiE+FAROIuH+8TlA/iLle1UkIZOo3BVM6TgRr/dUp1TJNSbBP28UFn7VQaVu2wqYvpnzy7VXoCwBG1zpo1B3AUkbfFtDU5rLW44pTkMKByGlZopoiH6iVwPR32388WBJ7XVHrnPzjuck8iDAf7HLSOv1UL060FuspIg3RA9tI22zAKQZJA+ww==
+ bh=PaxOB6me61eaWDjPZhLB9qN8cVvY05RlgVopUeGYBXo=;
+ b=I2TWYuFsLWIHL+fM12IrH0j+XQ9G3kQ1yKKnBIx2onvK5JKmdmALJMdmYzQAKbB/v1E2ukbLi8UDZOeCJpbCgKVM2Z9P1/558H9WtMWcb+pIlXgcs/bH7Gunudzv6wbu+GO1/b+MPgcF7pdJg448YOzS5a40aCu03U31J60kfT0lH63l+9PRsPnFYHmeVCDX14LxHX+N9sO+zuhG1LNnU2o2E7MSoLslIsQM4aWbtpdvbDjhQYFr2pryaHXVSUmOJd/Q/tAZp+mVbPs7o23acV5v/ZwXVdjMt/2P/2ZgEo0Qrb1ZHdhyl/PVPei9QtqOASURUrxtfUrEZzg4mKlK3w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oLRi1XsPF7LgTrIYyzkEtdY9k36UwfVsdF2v+x/5S7Y=;
- b=QkUKm9sET1rE+gXzqy9H/m4lcTx8io7KEu+5iEyilS9oOa536mQ9CuuzUlzqObo8Aqc/DocZRkn8x5EgNoclnkM+a94e4DFoy3ffNlXcdMSAejySPZ7CV8WK9ZTyTrzXWxITeNJ+c38M9xEbthHMZ/icYFKs5avw+x92jS1O4xU=
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM5PR12MB1708.namprd12.prod.outlook.com (2603:10b6:3:10e::22) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4242.19; Fri, 18 Jun 2021 14:09:22 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::6437:2e87:f7dc:a686]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::6437:2e87:f7dc:a686%12]) with mapi id 15.20.4219.026; Fri, 18 Jun
- 2021 14:09:22 +0000
-Subject: Re: [PATCH v13 01/12] swiotlb: Refactor swiotlb init functions
-To:     Claire Chang <tientzu@chromium.org>,
-        Stefano Stabellini <sstabellini@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Robin Murphy <robin.murphy@arm.com>, grant.likely@arm.com,
-        xypron.glpk@gmx.de, Thierry Reding <treding@nvidia.com>,
-        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>,
-        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
-        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
-        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
-        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
-        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
-References: <20210617062635.1660944-1-tientzu@chromium.org>
- <20210617062635.1660944-2-tientzu@chromium.org>
- <alpine.DEB.2.21.2106171434480.24906@sstabellini-ThinkPad-T480s>
- <CALiNf29SJ0jXirWVDhJw4BUNvkjUeGPyGNJK9m8c30OPX41=5Q@mail.gmail.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <741a34cc-547c-984d-8af4-2f309880acfa@amd.com>
-Date:   Fri, 18 Jun 2021 09:09:17 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-In-Reply-To: <CALiNf29SJ0jXirWVDhJw4BUNvkjUeGPyGNJK9m8c30OPX41=5Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [67.79.209.213]
-X-ClientProxiedBy: SN4PR0601CA0004.namprd06.prod.outlook.com
- (2603:10b6:803:2f::14) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
+ bh=PaxOB6me61eaWDjPZhLB9qN8cVvY05RlgVopUeGYBXo=;
+ b=gPv8PJ+5TlTZOl0PH+u1rLFVH8AQ1jXJV03MO9EQlOIvCZFJAB1bNhFIrj4vFPauTXOV+tcRRnazL+Bi7DuwiJd1jSMlcVmJgKUjj8IUNW7C2eyxvBzf9w3Uemr6FczLjHxxLIAri3j7CQbZ6Kg+mmkz1aIPI3Mq+Ohsa0JhzHjLQG7thUcXyhXCc4ZzX9adsIm5QJzePTIB8jCpBWZXSXeBNgdHJYfPR9/7k+Aa55hfH5H0VvSWX8r2Ys5qj5e92Wlfn3w9Pbr8pnzaQCCWPIriuczfPrPxFVxrAASsAsQ/HHkHKE8jw+IIIuUTq85WIwfwq9+QGVCwqXqc0Y62Eg==
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5160.namprd12.prod.outlook.com (2603:10b6:208:311::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Fri, 18 Jun
+ 2021 14:10:19 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4242.021; Fri, 18 Jun 2021
+ 14:10:19 +0000
+Date:   Fri, 18 Jun 2021 11:10:18 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     "Jason J. Herne" <jjherne@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pasic@linux.ibm.com, akrowiak@linux.ibm.com
+Subject: Re: [PATCH] s390/vfio-ap: Fix module unload memory leak of matrix_dev
+Message-ID: <20210618141018.GE1002214@nvidia.com>
+References: <20210618133524.22386-1-jjherne@linux.ibm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210618133524.22386-1-jjherne@linux.ibm.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BL1PR13CA0186.namprd13.prod.outlook.com
+ (2603:10b6:208:2be::11) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from office-ryzen.texastahm.com (67.79.209.213) by SN4PR0601CA0004.namprd06.prod.outlook.com (2603:10b6:803:2f::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19 via Frontend Transport; Fri, 18 Jun 2021 14:09:19 +0000
+Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0186.namprd13.prod.outlook.com (2603:10b6:208:2be::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.7 via Frontend Transport; Fri, 18 Jun 2021 14:10:19 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1luFCM-008Xnc-CL; Fri, 18 Jun 2021 11:10:18 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f221e95d-4e30-47fa-acd3-08d93262abdb
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1708:
-X-Microsoft-Antispam-PRVS: <DM5PR12MB17081865F840834BCF17A650EC0D9@DM5PR12MB1708.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Office365-Filtering-Correlation-Id: 96d0580a-341c-43ba-f723-08d93262cdd2
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5160:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5160D8785709469C910488BDC20D9@BL1PR12MB5160.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: W81zqNegGhXtmyGutYcXqZK6WKj93KvXEUQwinaX80I9UREJRH1X5ZjFo1bKCiBISoKjvPxFNrviGDgVpQw4M2gllzpECvkJWY31E4OCRtIQaq/+3i9fVL2/FWbzndFFmn2/y+Y5dZPeDx3ZIjwt6mOIuKijzIrzFQ7L07JWGQYcqmOaeNlKVE4rRh56CXuZQSFnvAy9O88DDyIBhSA15TxXobwBeyTQc3xSDctJrRF5sOM9pXIQNjT5lZWdEQR4xbKUdhtfp05lOLmbPIRSJcZQQwovsa52ZlzKn/NBTrjz5vqID/h+QlQpFRrBnO7I08jU+Z+zsoXIHstg6kSSgQ2UpU4Rqlv1EO4zKV/ShGbXgk2s1K2G0pJ1wpIHGmiRTwe/4FVtjVflUFLZdKECngBqGM4OUHsiEvIw6xj2dLFgkO1T/6vX0rIrWZPxn0eaHxGVv+xfGX6fpFkETbq5u79tnzKR5hgOZg2W85yQYeB8urPkhQEF7InNTbkkk6ZkrP6jjoNlBC/mg9wfDaylrRMM7DCner6q6TQ65AT0vHCMj1zGXzP8mAUQY8fy7AGzIrZAYKE+Q/p2lScDVNETcZNZlpdUzPXuQD4KNWNhh/JqTvD/fctFNKibIOQ0kWQP2L7pdUNyyHHO1WMMu3iAVHU8inHMg9CXJD30R9W34kljaPWy58nsvxvQExo0YNdotgHO21WNgw0xATsJMmODiG0GBp8KgvACKlNj80F4coAEgQWg5shi8PBatp0KTneYofTkP67Va0k2my2pPOGXG/JoKR5pQ4pBlKjmk8U2z4ObHjREhC0onwr2djrKFcQdKQzDyK/vHjjb8/LTdYo3vg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(396003)(366004)(39860400002)(136003)(83380400001)(186003)(8936002)(16526019)(26005)(4326008)(6486002)(7416002)(31696002)(66556008)(7366002)(6506007)(5660300002)(53546011)(2906002)(54906003)(38100700002)(8676002)(966005)(86362001)(45080400002)(66946007)(36756003)(478600001)(7406005)(6512007)(66476007)(2616005)(316002)(956004)(110136005)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: RhAn3KoIT6qLwtF4pwjvUjq2Fw5j5JfCeugtOrGDTgYTXDryUtin2QotpKPrEThGksJC4TbWwCwq4uFZDQNRBhIbuW2dc/VAdcsDDm6/6P/Y+DCCmyj57MjP+SxWcGd2mm3ESanooGQtLcxKKk59otlOPGnr08tXkRvJxZgOXJd6/T3Wq7tujIBwvV9Na+XkCM6k2LG6rQQF6jLLtyzDi6VxWQNE3OV+JLb9bM5pfwdVRdCEDlfRAUGNvPKoSayQnP0C99hn4aUKKloi2/8L2qeyPijnoGGtJgtQfve5ma4574kXgdoGBu58wZXjJYZGcTwzvYJqzTflqJmdZYIP8delhO0vqIzKK804+rMDJLuu1zkH5zPyRQerZ6pDUoZ7WnvVF1yJxUESUw2OpoyofEIXD8uW0O9Pp6y09zAhv+jUf0N3j3qrFwGOpD37X8qFBns4IOdUIfDnseNhFDa/djdlz53OoCF42SutF3ACsiSWT9PMmOsUYzwar/CS4eC5SS7i3iPmL2ibE4PoDmXCR27Nay5abDEVr02cx1XNFxNtPjhKn5CQjGB0orpibS6Cqxpw07C+1eCh9ZC6eXuL8xaQZ8tbKaAwhpkNbA58Vzw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(39860400002)(366004)(346002)(396003)(5660300002)(426003)(36756003)(83380400001)(478600001)(8676002)(6916009)(38100700002)(4326008)(66476007)(4744005)(9786002)(26005)(8936002)(66946007)(2906002)(1076003)(33656002)(2616005)(186003)(86362001)(316002)(9746002)(66556008);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RTF1VW8zMVRmaGpmRzFsSWRqT08wSW5zbFMvbFp6VGtDQXJpc1ZCT0doNCs3?=
- =?utf-8?B?YkxZMlpmMDFVUTZETXRLU0RsMCtwalpJWHlLaDh1U2ZZL2pCSnVCNXdvdUZQ?=
- =?utf-8?B?NG1nOUJ3bDh2NEkzN1VrempKQUpERzgwZ2dRSWZPcEZLRGhtU2N2Qkw0Q2FH?=
- =?utf-8?B?OTV0RWxiWnBrWmczM2FwWTlvRVYzVzljOW9xYTg4ZWhsc01rVVlodWdFUEx4?=
- =?utf-8?B?UFJzcEpIMjcrbGRVcVBoeFVjL09YemszMFNnd1pPRi84bFhibXIvbGhRSk93?=
- =?utf-8?B?Uis2WHFSakxvUjQ0ZUF1USt2NU05Z2tXZkV6TXZBdzdLL0RqWmpMbUF5K1Zv?=
- =?utf-8?B?TnMvSThpODNDMURUaEVmcG5EVFVEdjdpZ2R4RVlaR01NQVBqOGp3cjhxcnE2?=
- =?utf-8?B?b0daNFlPcVorYzlWV2IrNXJiQTA0R1VRY0FrWjV6UmVrYVM0U0VBUFpMYWMr?=
- =?utf-8?B?V3ZmU1pHSnVlUWpnRkJzOTB2Rkl3MDJnL3lRWVJuMkw0OS9nV3llMHMrSWU4?=
- =?utf-8?B?QkNjbGNIMjNNM002Q0pjeDhxL0E3Z29qVm1GQTdmUEpiajAxMGU1NVVJNFo2?=
- =?utf-8?B?WWYrS0V3QWNkSUFZbjVGRU5pQXg5V2hmTHhCaStPUnF3SVlOTHg1VHJmUjUr?=
- =?utf-8?B?a3FuOVFhYUNmQlk2Rk43aHNQTUo0Z29kQ3N2V3dFVkxnQlh6Z3cvZGtpTTBJ?=
- =?utf-8?B?bytrdDdKTm1iV3UvZnNpcjJkNC9RRCtwZlllUmQzOEs4UnZONytFMzZZNnk3?=
- =?utf-8?B?UDFPSEtwUDBGTGpldEJEVmtSNm42SC9PckxwaGxkaUlJMDU4T3lzWldPTUtM?=
- =?utf-8?B?clUzVlpjcDVuYWk3akYrZ0V1RmNwMXZFWVA5S0p4UzA3eUh6azFKVWtBRE5q?=
- =?utf-8?B?MVorMkVnY3l1dFpjNHRzK3E0YTIrSFRjQWlBRnhoZG01UVJNRGMzZXcrb3RD?=
- =?utf-8?B?Z1BSS3FBNm95bFdQemF0eitMMWZvS3Uva1ZlQWI0ZFd3MTB3cXJaS1FiSnRx?=
- =?utf-8?B?V2xkbGJvRnE1VnpMYUZUYjFvQi9RWmwzODcrajFsQzlDQjJaYWo0dDQ1UVB5?=
- =?utf-8?B?cGhpek5NS3hReDcvUVUvZUpoN2V1Q1pxbGNjMUVqUG44MWhMUU94eml6c2Rl?=
- =?utf-8?B?dmdpQysyVWppaE1qbXp6YUh4U0lyZU5TN1VueFFxazdienhmTDVmV1VyeDlT?=
- =?utf-8?B?dXFrNFgwLzNkeDFqRkdmcUFHNjhjWncwTHdKWkk3YVhJWnlMTGNGNkVNc29r?=
- =?utf-8?B?Z3NzSnZLQW5HRXFTMWZYdWdmT21samhtN0JMdzFzTmNLb21ZaHJyVnVqQnpB?=
- =?utf-8?B?VGVkMnFlTktvcldFQVdZMGxBQ1drNjdLV213N3ZIY3c3UGlCUmZuUXFmeHpF?=
- =?utf-8?B?TEJZRnN0U2hKeUx2S0RjWFVSZjllazZ4ckViUm1VSWQ1U0g1L1ZOZ1ZPL2k3?=
- =?utf-8?B?OG81QlFkK3lnUW5weUFJVnVqSnMyNndCSjdJdi9EazBlekxkYThJYldqMDhr?=
- =?utf-8?B?KzRaUUI3OFE1NlNCV1J3elBEVlNBTUtUdTU0eU5Ld3lQKzFER1oyb1ZEL2c0?=
- =?utf-8?B?aklFUEg1bGR2TXp1NE9Nd3dQVU81ZGJXb0FKUG01Tk5ZYUlPTWRWenpJbnAx?=
- =?utf-8?B?M01vYjh1THg4V0VaNDYvVXl1WDZ6aVI5TTFITlRDNzdTMGRmQ21NOTFOZEpz?=
- =?utf-8?B?eno3RGo1dFhiR2c1ZE1WOHlTVnVGenc3L2QrbHZ0S1diWTJJcDVhWEhUc2Fi?=
- =?utf-8?Q?esIpSlmSoBBKai4kWvfAW6bnueBOslxVkn4yALT?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f221e95d-4e30-47fa-acd3-08d93262abdb
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/BcPMO1j2ACIV/7gCAtWZXOM9xKOlN8xCBUUDMb/pLShkmbYSg1pxJt4hLAM?=
+ =?us-ascii?Q?YHRZ0Ywu60USapU/276Hkx6BClLfJvbes3qwHlYXvhtiV0iWr+AZD24kyaA8?=
+ =?us-ascii?Q?wLyXgw/bzdXKugaedMKNpJfAMejPaRNVhbe1Yl99aV4KY4r4gpUYKY6an0Sy?=
+ =?us-ascii?Q?x2M5bMutbPDt5s497BFPgAxskFElFqmzRIjsfpWkTjeIY1uWj/fPttuGM9q/?=
+ =?us-ascii?Q?3/aWF/Nv7eT82K51zUVT5fl1u5HFsr0EVCDE1MEX39EKrbZEt9VCNV7nYiK6?=
+ =?us-ascii?Q?BBWDpL6Eqb8oT9M4MUrFTR9kNzT7BIfvO9DZcultR7npBxwCy3fG5g9pegsI?=
+ =?us-ascii?Q?fzof81arXWImb5mEkUaWPND0GGknIXIseyKNhlQ6IPa6tgzc2d9+23XCMijS?=
+ =?us-ascii?Q?D1hW2x8B9dyveYGXSIFy4x4Hy5qwi4ULYJ98SL7DT6GRoF/kgahw/epLCVSS?=
+ =?us-ascii?Q?2Pnpd9znaTXLfwSyiVPvu3JhAEKsO7FzE2j0OlK5Khgtgg3X116sC4u+uo2Z?=
+ =?us-ascii?Q?vJyBc6SBagi6VzQk/zb/Zmi3QCYZRnOk/OKEp30qRy0svcXH8GArEw8ZYrjq?=
+ =?us-ascii?Q?ETXqEb6RoYJpafEmNn55H7kyzUSZLTUYtbjQrGik9C54UPLqcEwRB7k2zXCc?=
+ =?us-ascii?Q?d7m60y+KSaCqaT3Oal8LAue+dl8JmRZ1b0Khha+bwhotWkGZj4Qd6It70Woz?=
+ =?us-ascii?Q?7xT9pp6O6MZlZvKW9ifUrpMwZWetURD8ubibxWPs8OEeq4wMYjEUaLFC8b3c?=
+ =?us-ascii?Q?scFDcZcQnSJlGunlriaFQU3Uvg6SGJxKFdhJp/mn/nrjQsnORoHZ4Xfh0+iM?=
+ =?us-ascii?Q?vTfmleFaUD01GMPabilHdTWeSKL0assXgyzqScW+i4/h83+jF43ywM90MJWj?=
+ =?us-ascii?Q?W6KidJvi2DD27c3Cmm/6sHhsRBqAlYaV0/I+rLwEmspwYJropFxPe/d21I88?=
+ =?us-ascii?Q?kzoZbunQTKl3xZDnNDZ2d7AciWnmqLu81zroP+P0bezQwg0YdzDTABQfhKv8?=
+ =?us-ascii?Q?zsNNQCMwF2+boD821FuwwwcxgF632m/8cF9dWUuYKhM+nJk/UiKzPm+/Yadt?=
+ =?us-ascii?Q?C4KNx3QfGxPD9oZqA7s6XfTtMERrs1RnQFBqMjMSCL58PkQleifcOHJ1w0eL?=
+ =?us-ascii?Q?7AGqeFCbMTBGPqjgNBggiKpf27+Os9QrMnHL9k8YCsABtWppJIeyvWiVRn5X?=
+ =?us-ascii?Q?xYEuxD9pBL8UaAx5vguMT6AqHJb7EsC6fL0nn7W7Oh1+NljEVRCrXRek2cxv?=
+ =?us-ascii?Q?4OvChTF7vL2VDgt2mNBZhdt0nFgvc/+L3rdjcXcTeLWJP2XC80Mri8meLfCh?=
+ =?us-ascii?Q?LGEPlghUiZoz3U3YfkZWXs/D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 96d0580a-341c-43ba-f723-08d93262cdd2
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2021 14:09:22.5058
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2021 14:10:19.2159
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Fc+b5bk+EKsqI5tf6Y9m5leX8+yq5/ThpNw9DurxKQTMG6UvMLJkVdybTkyH0xi09bRkLzh9r2w1pSsYiVXV4Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1708
+X-MS-Exchange-CrossTenant-UserPrincipalName: A3suRa9w7MF6HG6ltc5E0iaJ1MUQ6KuZ6pB8JIgbwMmIZypB1n1gTgnjEHvIEn8c
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5160
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/18/21 1:25 AM, Claire Chang wrote:
-> On Fri, Jun 18, 2021 at 7:30 AM Stefano Stabellini
-> <sstabellini@kernel.org> wrote:
->>
->> On Thu, 17 Jun 2021, Claire Chang wrote:
->>> Add a new function, swiotlb_init_io_tlb_mem, for the io_tlb_mem struct
->>> initialization to make the code reusable.
->>>
->>> Signed-off-by: Claire Chang <tientzu@chromium.org>
->>> Reviewed-by: Christoph Hellwig <hch@lst.de>
->>> Tested-by: Stefano Stabellini <sstabellini@kernel.org>
->>> Tested-by: Will Deacon <will@kernel.org>
->>> ---
->>>  kernel/dma/swiotlb.c | 50 ++++++++++++++++++++++----------------------
->>>  1 file changed, 25 insertions(+), 25 deletions(-)
->>>
->>> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
->>> index 52e2ac526757..47bb2a766798 100644
->>> --- a/kernel/dma/swiotlb.c
->>> +++ b/kernel/dma/swiotlb.c
->>> @@ -168,9 +168,28 @@ void __init swiotlb_update_mem_attributes(void)
->>>       memset(vaddr, 0, bytes);
->>>  }
->>>
->>> -int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
->>> +static void swiotlb_init_io_tlb_mem(struct io_tlb_mem *mem, phys_addr_t start,
->>> +                                 unsigned long nslabs, bool late_alloc)
->>>  {
->>> +     void *vaddr = phys_to_virt(start);
->>>       unsigned long bytes = nslabs << IO_TLB_SHIFT, i;
->>> +
->>> +     mem->nslabs = nslabs;
->>> +     mem->start = start;
->>> +     mem->end = mem->start + bytes;
->>> +     mem->index = 0;
->>> +     mem->late_alloc = late_alloc;
->>> +     spin_lock_init(&mem->lock);
->>> +     for (i = 0; i < mem->nslabs; i++) {
->>> +             mem->slots[i].list = IO_TLB_SEGSIZE - io_tlb_offset(i);
->>> +             mem->slots[i].orig_addr = INVALID_PHYS_ADDR;
->>> +             mem->slots[i].alloc_size = 0;
->>> +     }
->>> +     memset(vaddr, 0, bytes);
->>> +}
->>> +
->>> +int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
->>> +{
->>>       struct io_tlb_mem *mem;
->>>       size_t alloc_size;
->>>
->>> @@ -186,16 +205,8 @@ int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
->>>       if (!mem)
->>>               panic("%s: Failed to allocate %zu bytes align=0x%lx\n",
->>>                     __func__, alloc_size, PAGE_SIZE);
->>> -     mem->nslabs = nslabs;
->>> -     mem->start = __pa(tlb);
->>> -     mem->end = mem->start + bytes;
->>> -     mem->index = 0;
->>> -     spin_lock_init(&mem->lock);
->>> -     for (i = 0; i < mem->nslabs; i++) {
->>> -             mem->slots[i].list = IO_TLB_SEGSIZE - io_tlb_offset(i);
->>> -             mem->slots[i].orig_addr = INVALID_PHYS_ADDR;
->>> -             mem->slots[i].alloc_size = 0;
->>> -     }
->>> +
->>> +     swiotlb_init_io_tlb_mem(mem, __pa(tlb), nslabs, false);
->>>
->>>       io_tlb_default_mem = mem;
->>>       if (verbose)
->>> @@ -282,8 +293,8 @@ swiotlb_late_init_with_default_size(size_t default_size)
->>>  int
->>>  swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs)
->>>  {
->>> -     unsigned long bytes = nslabs << IO_TLB_SHIFT, i;
->>>       struct io_tlb_mem *mem;
->>> +     unsigned long bytes = nslabs << IO_TLB_SHIFT;
->>>
->>>       if (swiotlb_force == SWIOTLB_NO_FORCE)
->>>               return 0;
->>> @@ -297,20 +308,9 @@ swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs)
->>>       if (!mem)
->>>               return -ENOMEM;
->>>
->>> -     mem->nslabs = nslabs;
->>> -     mem->start = virt_to_phys(tlb);
->>> -     mem->end = mem->start + bytes;
->>> -     mem->index = 0;
->>> -     mem->late_alloc = 1;
->>> -     spin_lock_init(&mem->lock);
->>> -     for (i = 0; i < mem->nslabs; i++) {
->>> -             mem->slots[i].list = IO_TLB_SEGSIZE - io_tlb_offset(i);
->>> -             mem->slots[i].orig_addr = INVALID_PHYS_ADDR;
->>> -             mem->slots[i].alloc_size = 0;
->>> -     }
->>> -
->>> +     memset(mem, 0, sizeof(*mem));
->>> +     swiotlb_init_io_tlb_mem(mem, virt_to_phys(tlb), nslabs, true);
->>>       set_memory_decrypted((unsigned long)tlb, bytes >> PAGE_SHIFT);
->>> -     memset(tlb, 0, bytes);
->>
->> This is good for swiotlb_late_init_with_tbl. However I have just noticed
->> that mem could also be allocated from swiotlb_init_with_tbl, in which
->> case the zeroing is missing. I think we need another memset in
->> swiotlb_init_with_tbl as well. Or maybe it could be better to have a
->> single memset at the beginning of swiotlb_init_io_tlb_mem instead. Up to
->> you.
-> 
-> swiotlb_init_with_tbl uses memblock_alloc to allocate the io_tlb_mem
-> and memblock_alloc[1] will do memset in memblock_alloc_try_nid[2], so
-> swiotlb_init_with_tbl is also good.
-> I'm happy to add the memset in swiotlb_init_io_tlb_mem if you think
-> it's clearer and safer.
+On Fri, Jun 18, 2021 at 09:35:24AM -0400, Jason J. Herne wrote:
+> vfio_ap_matrix_dev_release is shadowing the global matrix_dev with driver
+> data that never gets set. So when release is called we end up not freeing
+> matrix_dev. The fix is to remove the shadow variable and just free the
+> global.
 
-On x86, if the memset is done before set_memory_decrypted() and memory
-encryption is active, then the memory will look like ciphertext afterwards
-and not be zeroes. If zeroed memory is required, then a memset must be
-done after the set_memory_decrypted() calls.
+I would clarify this commit message to say that the drv_data of the
+matrix_dev is never set and so dev_get_drvdata() always returns NULL
 
-Thanks,
-Tom
+And I would suggest to use 
 
-> 
-> [1] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Felixir.bootlin.com%2Flinux%2Fv5.13-rc6%2Fsource%2Finclude%2Flinux%2Fmemblock.h%23L407&amp;data=04%7C01%7Cthomas.lendacky%40amd.com%7C3e33e04212b84f9e4ed108d932230511%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637595948355050693%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=TGBDj18KuSHTb45EBz%2Bypfbr4Xgqb1aGTRDCTIpIgJo%3D&amp;reserved=0
-> [2] https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Felixir.bootlin.com%2Flinux%2Fv5.13-rc6%2Fsource%2Fmm%2Fmemblock.c%23L1555&amp;data=04%7C01%7Cthomas.lendacky%40amd.com%7C3e33e04212b84f9e4ed108d932230511%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637595948355060689%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=K%2FWbN6iKN9JNtwDSkIaKH2BVLdDTWhn8tPfNdCOVkSA%3D&amp;reserved=0
-> 
+  container_of(dev, struct ap_matrix_dev, dev)
+
+instead of the global variable, and probably NULL the global
+too..
+
+Jason
+
