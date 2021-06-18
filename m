@@ -2,73 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E13B3AC404
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA7B3AC409
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:40:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232199AbhFRGky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 02:40:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230408AbhFRGkw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 02:40:52 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4187CC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 23:38:43 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id p13so6991957pfw.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 23:38:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=Aauu7gYvMaBruI9Zt1CgTlkxSZ8evQwPBhKOMH6jf8s=;
-        b=guWNvXO8VjoNnBH3zo7Vvbv6kZGzVFwxzjkn7yBUiMFAoYBZmefV6H4ixbdRp0ETil
-         Oo3fN80I4UMoZRJBD2Ndu2FNBn3mboJaBQTtdcfTvj+xYm8jYbD3wJ85+Dl4KYieEozj
-         CmPtjkzFuBSNThdmoRdKajEOKKvAsv1CEB4JXiygTd9UZvrDo7e5kfC0deoMWdM5uOVv
-         HsoIaxIXGio3sqHZ/RzNoA4WVWzGyCCm1pKkCJ3tyEtkNdRz6ED86BgIcvz1wQRuaE61
-         brSM2BqTHb/c64C1Efvzt0Y1C/SZ0PFOv44js24nnr5cu/pat0UQowQ/cF3Ztg0XpBYS
-         dLSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=Aauu7gYvMaBruI9Zt1CgTlkxSZ8evQwPBhKOMH6jf8s=;
-        b=I7b0f2Pt/SfqzOi8zeuCeIRaVuVSLhTLYBJvxpihqC7+BFOZkhvMH2y7oFFidPDpHj
-         gCqgILNgZrEXiw7H4hbDJx3iutskdaemzDilNfi7ZGLohubXMgE5QRnwGKvJNglYDH8a
-         bOvwUibwnRu0qvpGNPKos2XcIMv3gZNzhoBnfL2BXQN86tiN+U+XvpXvDbIDChN/mWuL
-         Yv+KFxx1v/3IRyjKEIptoTC/pXiRb6rLOm8ofMaVCv+WPtazILFBWmPHUjELw4NIQRxx
-         SVzEpI3O1uhaqmR9hI20nzicACb/JTB2DFLeKH5AA6Dr82oWqoBGzmze5d/vPsCdmd1k
-         6QDg==
-X-Gm-Message-State: AOAM531kSv1fzy1UgD99x6L4mwdwbkYokBb1Vzl8Qf6v7D0YWKClEWNl
-        IauwnPDwjALLO7j+yAT2zPG0216RiTIgxm//9bA=
-X-Google-Smtp-Source: ABdhPJzDLo4i5YvMgxsPBYNrYTBD5w+/yNtr3pbikrqVq7bVCuP7mbphMK15bRyK53/EayiveuMcsI8LawiThZ7FyJQ=
-X-Received: by 2002:aa7:9491:0:b029:2ed:2787:be36 with SMTP id
- z17-20020aa794910000b02902ed2787be36mr3601836pfk.43.1623998322566; Thu, 17
- Jun 2021 23:38:42 -0700 (PDT)
+        id S232192AbhFRGnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 02:43:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230408AbhFRGnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 02:43:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B78F60FF4;
+        Fri, 18 Jun 2021 06:40:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1623998455;
+        bh=I6t3BsuXoW1cps0ZCaiZQV3tOIvkZXAxUoTVJlmGoVE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bV8rj8NKR6MT5+dMfX1d3UWWu78qlCZdZJdArcyOc5sixFcTYkFI73RvUPKpYRgbq
+         C7VTjsvmwQLugqTAF6z+zKfS2ayJfb0iUTrEo24yVwdMWxXmPxmv8tUJFYYVABMHZZ
+         d9dSl9N9eM+mof6SoYrdl9qrP2/HYhskIE36SXbo=
+Date:   Fri, 18 Jun 2021 08:40:52 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-usb@vger.kernel.or, lkft-triage@lists.linaro.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [next] [arm64] allmodconfig build failed - xhci-plat.c:427:
+ undefined reference to `onboard_hub_destroy_pdevs'
+Message-ID: <YMw/9NzwwfRhUX/y@kroah.com>
+References: <CA+G9fYu6er1nZ602gCnrY+-JNtDHrUJk-RH2biPmjRoe06_m4Q@mail.gmail.com>
+ <YMtSFVg6UoOpDqIP@kroah.com>
+ <YMuRcrE8xlWnFSWW@google.com>
 MIME-Version: 1.0
-Reply-To: godwinppter@gmail.com
-Sender: azizissa85@gmail.com
-Received: by 2002:a17:90a:5801:0:0:0:0 with HTTP; Thu, 17 Jun 2021 23:38:41
- -0700 (PDT)
-From:   Godwin Pete <godwinnpeter@gmail.com>
-Date:   Thu, 17 Jun 2021 23:38:41 -0700
-X-Google-Sender-Auth: ODp20q9XRwusFYIUAL4UfhYuORY
-Message-ID: <CAGDYFmRcTzMuwy+EeEsRfptRTu_WNP_4vY=7hn1LZj1kgXG_+A@mail.gmail.com>
-Subject: I need your response
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMuRcrE8xlWnFSWW@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-My good friend,
+On Thu, Jun 17, 2021 at 11:16:18AM -0700, Matthias Kaehlcke wrote:
+> On Thu, Jun 17, 2021 at 03:45:57PM +0200, Greg Kroah-Hartman wrote:
+> > On Thu, Jun 17, 2021 at 07:09:15PM +0530, Naresh Kamboju wrote:
+> > > The arm64 allmodconfig build failed on Linux next 20210617 tag due to
+> > > the commit,
+> > > 
+> > > c950686b382d ("usb: host: xhci-plat: Create platform device for
+> > > onboard hubs in probe()")
+> > > 
+> > > build error:
+> > > ------------
+> > > aarch64-linux-gnu-ld: drivers/usb/host/xhci-plat.o: in function
+> > > `xhci_plat_remove':
+> > > drivers/usb/host/xhci-plat.c:427: undefined reference to
+> > > `onboard_hub_destroy_pdevs'
+> > > drivers/usb/host/xhci-plat.c:427:(.text+0x82c): relocation truncated
+> > > to fit: R_AARCH64_CALL26 against undefined symbol
+> > > `onboard_hub_destroy_pdevs'
+> > > aarch64-linux-gnu-ld: drivers/usb/host/xhci-plat.o: in function
+> > > `xhci_plat_probe':
+> > > drivers/usb/host/xhci-plat.c:379: undefined reference to
+> > > `onboard_hub_create_pdevs'
+> > > drivers/usb/host/xhci-plat.c:379:(.text+0x131c): relocation truncated
+> > > to fit: R_AARCH64_CALL26 against undefined symbol
+> > > `onboard_hub_create_pdevs'
+> > > make[1]: *** [Makefile:1252: vmlinux] Error 1
+> > > make[1]: Target '__all' not remade because of errors.
+> > > make: *** [Makefile:222: __sub-make] Error 2
+> > > make: Target '__all' not remade because of errors.
+> > 
+> > Matthias, this is due to your patch, yet-another config option mis-match
+> > somewhere. Can you please fix it up?
+> 
+> I can repro this with:
+> 
+> make -j 16 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- \
+>   KCONFIG_ALLCONFIG=arch/arm64/configs/defconfig allmodconfig kernel modules
+> 
+> This results in:
+> 
+> CONFIG_USB_XHCI_PLATFORM=y
+> CONFIG_USB_ONBOARD_HUB=m
+> 
+> The following Kconfig dependency was supposed to prevent this scenario:
+> 
+> config USB_XHCI_PLATFORM
+>         depends on USB_ONBOARD_HUB || !USB_ONBOARD_HUB
+> 
+> But apparently this isn't the case.
+> 
+> With the above allmodconfig command the following warning is emitted:
+> 
+> WARNING: unmet direct dependencies detected for USB_XHCI_PLATFORM
+>   Depends on [m]: USB_SUPPORT [=y] && USB [=y] && USB_XHCI_HCD [=y] && (USB_ONBOARD_HUB [=m] || !USB_ONBOARD_HUB [=m])
+> 
+> I read through kconfig-language.rst multiple times, but it's still not
+> clear to me how to specify this dependency properly.
+> 
+> Masahiro/Greg, do you have any pointers?
 
-I just want to know if you, can help me to transfer the amount of
-($6Million). After the transfer we have to share it, 50% for me, and
-50% for you. Please let me know if you can help me for more
-information in regards with the transfer. I hope you can work with me
-honestly?
+Right now, no, sorry, and I don't have the bandwidth to look into this
+myself.
 
+I've reverted this series from the tree for now, as this issue isn't ok
+for breaking linux-next, and due to the other merge issues with the dts
+files.  Please work on fixing this up and resending the series when it
+is resolved.
 
-Thanks.
+thanks,
 
-Godwin Peter,
+greg k-h
