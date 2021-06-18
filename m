@@ -2,72 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89CDF3AD4D0
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 00:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612223AD4C5
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 00:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234858AbhFRWJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 18:09:02 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:50700 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234791AbhFRWJB (ORCPT
+        id S234818AbhFRWGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 18:06:16 -0400
+Received: from mail-pf1-f175.google.com ([209.85.210.175]:37438 "EHLO
+        mail-pf1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234644AbhFRWGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 18:09:01 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 3CA9721A95;
-        Fri, 18 Jun 2021 22:06:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624054010; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=eQ97ySKqUY5sJYiNs0e4ec4qGYY54ruXYkWNXH/lJUw=;
-        b=U2F+C+QZaEKg00JMjrdlbQR0z5uvg2+I37mydQiNuF8bq/BhQfpJ/+DSB3bVyYG9sQz6XK
-        YUEGoN+DuCXhf74NSljxfoVpbgBktdPHQD/3ex508+tmsc+ANYsZqw9WHmrOmKgevFbtfe
-        VyIxLI5x1Fa1kGoCGkSqRUc5fpXTOHI=
-Received: from ds.suse.cz (ds.suse.cz [10.100.12.205])
-        by relay2.suse.de (Postfix) with ESMTP id 32A3BA3BC2;
-        Fri, 18 Jun 2021 22:06:50 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 5992BDA79B; Sat, 19 Jun 2021 00:04:01 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fix for 5.13-rc7
-Date:   Sat, 19 Jun 2021 00:03:55 +0200
-Message-Id: <cover.1624051838.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 18 Jun 2021 18:06:14 -0400
+Received: by mail-pf1-f175.google.com with SMTP id y15so2956792pfl.4;
+        Fri, 18 Jun 2021 15:04:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hkNP585a5xlPYA20Og1iRNDEjU13UUBC0QX07bSQG+s=;
+        b=r4SLARvkCxcw8/g6Z2mI4kH3FNlxfefR0sAQ8V5mPARALH+6ES3EQRrV5F0eD94nrT
+         ofaTa/VbvNCzTiA7C1iLIrtkeoU55T1/6+/UbqIiCDOmSUvv9ZuLOlB2XdrMhPECJqJP
+         RjtiYYvrN7G0U25pcXe1VjC0MtCzwEOvD40O9Dj17TFefWZc+SrmkcWfghxucqUA/9K5
+         fiwKFGxVUGExjPgcof9J47lLS6lqvEVSv7K1SYsY6jP8DLlBOpzZsf5qD2PgAsfHipFQ
+         Z7itI7Pa3CrvBejy/GrLLA1z3xUK7/mov2CvUdG9P1IiKh/LPHODjngqf+D2XJARPaYt
+         rBnA==
+X-Gm-Message-State: AOAM531XQbJZyVlpp9S9ufZrUjk2E3PHmx4ofIFBbPOh4wYT/nCjA2pV
+        CiXEB6eva5Y8cwTkdirwEQw=
+X-Google-Smtp-Source: ABdhPJzP1/CYXUpkZlMjnJtsfsGgosInFZf1i7QV+y/ubdfaYFr/rY9jqUPioDdJJxxhYuvVp5b7uA==
+X-Received: by 2002:a63:f749:: with SMTP id f9mr11882425pgk.369.1624053843230;
+        Fri, 18 Jun 2021 15:04:03 -0700 (PDT)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id d127sm8721779pfc.50.2021.06.18.15.04.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 15:04:02 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 15:04:01 -0700
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Tom Rix <trix@redhat.com>
+Cc:     "Wu, Hao" <hao.wu@intel.com>, Moritz Fischer <mdf@kernel.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "michal.simek@xilinx.com" <michal.simek@xilinx.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "krzysztof.kozlowski@canonical.com" 
+        <krzysztof.kozlowski@canonical.com>,
+        "nava.manne@xilinx.com" <nava.manne@xilinx.com>,
+        "Xu, Yilun" <yilun.xu@intel.com>,
+        "davidgow@google.com" <davidgow@google.com>,
+        "fpacheco@redhat.com" <fpacheco@redhat.com>,
+        "Gong, Richard" <richard.gong@intel.com>,
+        "luca@lucaceresoli.net" <luca@lucaceresoli.net>,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v4 1/4] fpga: dfl: reorganize to subdir layout
+Message-ID: <YM0YUboHxgzWvtgY@epycbox.lan>
+References: <20210614201648.3358206-1-trix@redhat.com>
+ <20210614201648.3358206-3-trix@redhat.com>
+ <DM6PR11MB381964374223D0D2958AFA6985309@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <d64b0fb8-5f83-2995-7ee9-b4ed2932ef60@redhat.com>
+ <DM6PR11MB3819259241791EB04A2CB9C8850F9@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <YMrS9OUSaCdtGwrE@epycbox.lan>
+ <DM6PR11MB381924F43550A6699CB55213850E9@DM6PR11MB3819.namprd11.prod.outlook.com>
+ <9c527087-3646-2f22-1234-2b0247511cc9@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9c527087-3646-2f22-1234-2b0247511cc9@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Jun 17, 2021 at 06:21:07AM -0700, Tom Rix wrote:
 
-one more fix, for a space accounting bug in zoned mode. It happens when
-a block group is switched back rw->ro and unusable bytes (due to
-zoned constraints) are subtracted twice.
+> xrt is bringing in the subdir xrt/
 
-It has user visible effects so I consider it important enough for late
--rc inclusion and backport to stable.
+That alone I don't mind too much.
+ 
+> Even after the likely move of xrt subdevices to other subsystems, there will
+> be about as many files in fpga/xrt/ as in fpga/
+> 
+> If both of you are fine with a mixed files and subdir organization, then
+> I'll drop this patchset.
 
-Please pull, thanks.
+You've done most of the work for this already, so we might as well
+finish what you started :)
 
-----------------------------------------------------------------
-The following changes since commit aefd7f7065567a4666f42c0fc8cdb379d2e036bf:
-
-  btrfs: promote debugging asserts to full-fledged checks in validate_super (2021-06-04 13:12:06 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.13-rc6-tag
-
-for you to fetch changes up to f9f28e5bd0baee9708c9011897196f06ae3a2733:
-
-  btrfs: zoned: fix negative space_info->bytes_readonly (2021-06-17 11:12:14 +0200)
-
-----------------------------------------------------------------
-Naohiro Aota (1):
-      btrfs: zoned: fix negative space_info->bytes_readonly
-
- fs/btrfs/block-group.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Thanks,
+Moritz
