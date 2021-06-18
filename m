@@ -2,102 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0633ACF27
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7A693ACF29
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235388AbhFRPfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:35:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59414 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235710AbhFRPfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:35:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 00BEB6120A;
-        Fri, 18 Jun 2021 15:32:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624030376;
-        bh=+FFSC0zj5RwLkGI3nedO+OdvNVE7P5xcolwUD5+csdM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=a91Z9QyM5lf3pO3gumqpUQpzlBcimPsoRvNl9xcT/OkC/UwBLxXD1c2HHJxzwS6xY
-         oyhw7cWJm5svXcpzDDP7gB8cd4Z1XkW1yFeBwK2lRKnqhYGuW6yC4ShbtIqwHNv78k
-         NIqH09prr5+xFH1y2bEE86cnH+yhGXsQjbmauGK/zGjq1HGc/HznLjRKpGs+01bk2n
-         ZHYA40H5k3Fbt+2IDg9Zx0Na1cyUJoBKIqfhtaGu4lPDIzzVnX6brbvkHd8o95WcID
-         9m00zajpridHKyryJhnyqyDcXMgM3bolfInXjD7PR2zcQgEPf4AeW3Onlur4/KDV/d
-         bPC6DHtn3Fxag==
-Date:   Fri, 18 Jun 2021 10:32:54 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Domenico Andreoli <domenico.andreoli@linux.com>
-Cc:     Punit Agrawal <punitagrawal@gmail.com>, robh+dt@kernel.org,
-        maz@kernel.org, leobras.c@gmail.com,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, alexandru.elisei@arm.com, wqu@suse.com,
-        robin.murphy@arm.com, pgwipeout@gmail.com, ardb@kernel.org,
-        briannorris@chromium.org, shawn.lin@rock-chips.com,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v4] PCI: of: Clear 64-bit flag for non-prefetchable
- memory below 4GB
-Message-ID: <20210618153254.GA3191723@bjorn-Precision-5520>
+        id S235175AbhFRPfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:35:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234467AbhFRPfW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 11:35:22 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E373C0617A8
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 08:33:12 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id r7so9147524edv.12
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 08:33:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=j7+uP79JThVaX8f53c7eMngvAvys/A7Np1BX1mntKjE=;
+        b=mRLykS7ioyfUInLCKyugxfYIbQA1nW7S1oNhEUyFkiSp7eggq3BCN3mamatVEHbwvH
+         sp4rxG+AX6EV/kIEvdI7+nPD6iVJU3/mhL3KvRMXMyTj/erLDUE/3q1QDNwhRjzLpgLb
+         yUfFZaEEO5KIIUtp7JuhS5Rgv40SLegrVmV4CoHEBheMMkVvmR2k+7bkwMho5/kuXodG
+         IyiSjFjRXWQeoxJ6PVHHAY6Y9bnDiIiHWaSZ+gdyBu/O1GSMfoansFSBGUxOqtpntgj4
+         xuYw20gmMzVdOFH3POAEcLJY0G9mNDR7wK49JcXX4YqhOGy9HnmezEoQTKegD6O4kHuD
+         dLMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=j7+uP79JThVaX8f53c7eMngvAvys/A7Np1BX1mntKjE=;
+        b=qtZMVmX5AYVvlSanC8zjcrIUgR0Y+kUZYZD5Flu+FISAPpICViUsCKDGkybf1m98tJ
+         O/ORsYsQi/XWvPMHzckBgGXM8tecctRW3jup4ZH+32S+mrvzj2KEVVykMJzvHzuopT8D
+         QpaNnH/TwDhLc8n/Byhss/UafdjdYB7ycRWmZQxLnDtF5lDv3vLxxZzoewYB+81S41IG
+         tXi+pqtTW7NFlKM5f2UqP1/7q1EN6/Lx4jch0iRe6BXzHndUt12vNLMyXmw/domu7HU6
+         O32Dq1Zn5IUrFT2mXH2zENr48LG19QIDQIjqyXctvzXohk7E/oUAX4cl8pW+oTPwPfb0
+         lyoQ==
+X-Gm-Message-State: AOAM5325c5jWmCrdp2O0pVWBHPYootQNghzfonyc+LjbBa+6wLMEHZmZ
+        U/G61sQ9AbrcKfewuZvs3xALwz8utTeSlBEurDE=
+X-Google-Smtp-Source: ABdhPJzVpYdl46kNg1iSo7yUJy2SDRIUByyY0vMTJTeroezDWoNPYoH2CNyDv8bb6R/+Yej27Wl9gPheNol3ueOZCCk=
+X-Received: by 2002:aa7:c40a:: with SMTP id j10mr5732813edq.59.1624030390723;
+ Fri, 18 Jun 2021 08:33:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMyl31ERhGDE1yGh@m4>
+References: <20210617194154.2397-1-linux.amoon@gmail.com> <20210617194154.2397-2-linux.amoon@gmail.com>
+ <CAFBinCC4_bsTEwj5+=iH-ZF3LpSzSjN-x44Yr_XU4R9=Wzq-Mw@mail.gmail.com>
+In-Reply-To: <CAFBinCC4_bsTEwj5+=iH-ZF3LpSzSjN-x44Yr_XU4R9=Wzq-Mw@mail.gmail.com>
+From:   Anand Moon <linux.amoon@gmail.com>
+Date:   Fri, 18 Jun 2021 21:02:59 +0530
+Message-ID: <CANAwSgSbr-NZknhQXjhNQiDcz9FNOdFjZKsHhBk3bbEt_UCCEw@mail.gmail.com>
+Subject: Re: [RFCv1 1/8] phy: amlogic: meson8b-usb2: Use clock bulk to get
+ clocks for phy
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-phy@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-amlogic@lists.infradead.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 03:55:43PM +0200, Domenico Andreoli wrote:
-> On Wed, Jun 16, 2021 at 06:12:34PM -0500, Bjorn Helgaas wrote:
-> > On Tue, Jun 15, 2021 at 08:04:57AM +0900, Punit Agrawal wrote:
-> > > Alexandru and Qu reported this resource allocation failure on
-> > > ROCKPro64 v2 and ROCK Pi 4B, both based on the RK3399:
-> > > 
-> > >   pci_bus 0000:00: root bus resource [mem 0xfa000000-0xfbdfffff 64bit]
-> > >   pci 0000:00:00.0: PCI bridge to [bus 01]
-> > >   pci 0000:00:00.0: BAR 14: no space for [mem size 0x00100000]
-> > >   pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x00003fff 64bit]
-> > > 
-> > > "BAR 14" is the PCI bridge's 32-bit non-prefetchable window, and our
-> > > PCI allocation code isn't smart enough to allocate it in a host
-> > > bridge window marked as 64-bit, even though this should work fine.
-> > > 
-> > > A DT host bridge description includes the windows from the CPU
-> > > address space to the PCI bus space.  On a few architectures
-> > > (microblaze, powerpc, sparc), the DT may also describe PCI devices
-> > > themselves, including their BARs.
-> > > 
-> > > Before 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource
-> > > flags for 64-bit memory addresses"), of_bus_pci_get_flags() ignored
-> > > the fact that some DT addresses described 64-bit windows and BARs.
-> > > That was a problem because the virtio virtual NIC has a 32-bit BAR
-> > > and a 64-bit BAR, and the driver couldn't distinguish them.
-> > > 
-> > > 9d57e61bf723 set IORESOURCE_MEM_64 for those 64-bit DT ranges, which
-> > > fixed the virtio driver.  But it also set IORESOURCE_MEM_64 for host
-> > > bridge windows, which exposed the fact that the PCI allocator isn't
-> > > smart enough to put 32-bit resources in those 64-bit windows.
-> > > 
-> > > Clear IORESOURCE_MEM_64 from host bridge windows since we don't need
-> > > that information.
-> > > 
-> > > Fixes: 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for 64-bit memory addresses")
-> > > Reported-at: https://lore.kernel.org/lkml/7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com/
-> > > Reported-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> > > Reported-by: Qu Wenruo <wqu@suse.com>
-> > > Suggested-by: Bjorn Helgaas <bhelgaas@google.com>
-> > > Signed-off-by: Punit Agrawal <punitagrawal@gmail.com>
-> > > Cc: Bjorn Helgaas <bhelgaas@google.com>
-> > > Cc: Rob Herring <robh+dt@kernel.org>
-> > 
-> > Applied with:
-> > 
-> >     Tested-by: Alexandru Elisei <alexandru.elisei@arm.com>
-> >     Reviewed-by: Rob Herring <robh@kernel.org>
-> >     Acked-by: Ard Biesheuvel <ardb@kernel.org>
-> > 
-> > to for-linus for v5.13, thanks a lot!
-> 
-> Late-tested-by: Domenico Andreoli <domenico.andreoli@linux.com>
-> 
-> See https://lore.kernel.org/lkml/YMyTUv7Jsd89PGci@m4/T/#u
+Hi Martin,
 
-I updated the commit to add your report and tested-by, thanks!
+On Fri, 18 Jun 2021 at 04:03, Martin Blumenstingl
+<martin.blumenstingl@googlemail.com> wrote:
+>
+> Hi Anand,
+>
+> On Thu, Jun 17, 2021 at 9:42 PM Anand Moon <linux.amoon@gmail.com> wrote:
+> [...]
+> > +       int                                             num_clks;
+> > +       struct clk_bulk_data                            *clks;
+> personally I'd get rid of the num_clks as this value is static
+> instead I would add a #define with the number of clocks and then...
+>
+> >         struct reset_control                            *reset;
+> ... use something like:
+> struct clk_bulk_data                            clks[MESON8B_USB2_PHY_NUM_CLKS];
+>
+> [...]
+> > +               dev_err(&phy->dev, "Failed to enable USB clock\n");
+> clock -> clocks
+>
+> [...]
+> > +       priv->num_clks = ARRAY_SIZE(meson_phy_clks);
+> > +       priv->clks = devm_kcalloc(&pdev->dev, priv->num_clks,
+> > +                                 sizeof(*priv->clks), GFP_KERNEL);
+> > +       if (!priv->clks)
+> > +               return -ENOMEM;
+> by using a fixed-size array as suggested above you don't need to
+> dynamically allocate memory anymore
+>
+>
+
+Thanks for this tip.It works for me.
+
+> Best regards,
+> Martin
+
+Thanks
+
+-Anand
