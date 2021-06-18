@@ -2,145 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9543B3ACB8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 678163ACB92
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232238AbhFRNCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:02:30 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:61486 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231445AbhFRNC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:02:28 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624021219; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=tD4U/RzNqFGWpjdS5wnIrcWZDQlWRWp1xuR2I5dn0+o=;
- b=H1ipM5afLMXpzcmBZHOiC8B5UKVh/CkWNFHjBFCPdUYi0LDdJU8PjcpoJFj0UlUihE+z0Z2L
- IYGNg0KaDG03gG9oiF4Bgy2ZkJbjaEsy7vIuDNX+Ya164eCv8iMYPzQz0j64OeT0hyEsb8g6
- XAxgzYp+JfwYCyWuwMF5g/gWz4c=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 60cc98d3e27c0cc77f72ae59 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Jun 2021 13:00:03
- GMT
-Sender: pmaliset=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A2BF0C43217; Fri, 18 Jun 2021 13:00:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmaliset)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F3DDDC4338A;
-        Fri, 18 Jun 2021 13:00:01 +0000 (UTC)
+        id S231565AbhFRNE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:04:58 -0400
+Received: from pv50p00im-ztdg10022001.me.com ([17.58.6.58]:34684 "EHLO
+        pv50p00im-ztdg10022001.me.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230243AbhFRNEz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 09:04:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+        t=1624021366; bh=ugLh746OO0SNJWXsgRc08+EAuOljXKfy3d1bDRmZEAg=;
+        h=From:To:Subject:Date:Message-Id:MIME-Version;
+        b=eG9+Vq9f0MttMKcrtEY8nCW+w3wIeT3OeGlXtlUacnfBYjpqQ6unQAe949r38eJ+/
+         iDlUmAwptTgy9hAlEexeUFjCU6Dfi/+Q5HV1VE3kIQN78TZuJ1aLJHxdce5yAyb0NS
+         W1BzfGYCF5t1LTM32fJw1Cp2aAkf8A7I0JKUDMjtrsnUb/yWePqEm2J08inklwF2uq
+         4GKs2vGK1q8WycuQBPcu8F+nLPuQzwwuxApqxuzY5Jqt93vvG6GdirTAaAtoa8S+bJ
+         5MI9PcKAc1jk+zm1ldGTACwH97F6IRFbPzrh/il/AagGevY1fpvz3hgwDAkbXSv4P4
+         SgzsWysLzmwPg==
+Received: from xiongwei.. (unknown [120.245.2.120])
+        by pv50p00im-ztdg10022001.me.com (Postfix) with ESMTPSA id 9E373A0490;
+        Fri, 18 Jun 2021 13:02:42 +0000 (UTC)
+From:   Xiongwei Song <sxwjean@me.com>
+To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        longman@redhat.com, boqun.feng@gmail.com
+Cc:     linux-kernel@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
+Subject: [PATCH] locking/lockdep: Correct the description error for check_redundant()
+Date:   Fri, 18 Jun 2021 21:02:30 +0800
+Message-Id: <20210618130230.123249-1-sxwjean@me.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 18 Jun 2021 18:30:01 +0530
-From:   Prasad Malisetty <pmaliset@codeaurora.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     agross@kernel.org, bhelgaas@google.com, bjorn.andersson@linaro.org,
-        lorenzo.pieralisi@arm.com, robh+dt@kernel.org,
-        svarbanov@mm-sol.com, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mgautam@codeaurora.org,
-        dianders@chromium.org, mka@chromium.org, sanm@codeaurora.org
-Subject: Re: [PATCH v2 3/4] PCIe: qcom: Add support to control pipe clk mux
-In-Reply-To: <CAE-0n50WxF_S7Zo4MhFqppjSELTFo7nOEtmCXJ4DoqvhF7kMQw@mail.gmail.com>
-References: <1622904059-21244-1-git-send-email-pmaliset@codeaurora.org>
- <1622904059-21244-4-git-send-email-pmaliset@codeaurora.org>
- <CAE-0n50WxF_S7Zo4MhFqppjSELTFo7nOEtmCXJ4DoqvhF7kMQw@mail.gmail.com>
-Message-ID: <915d51888c2577cc3266370bfda603e8@codeaurora.org>
-X-Sender: pmaliset@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-18_07:2021-06-18,2021-06-18 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=721 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2009150000 definitions=main-2106180077
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-06 02:56, Stephen Boyd wrote:
-> Quoting Prasad Malisetty (2021-06-05 07:40:58)
->> In PCIe driver pipe-clk mux needs to switch between pipe_clk
->> and XO for GDSC enable. This is done by setting pipe_clk mux
->> as parent of pipe_clk after phy init.
-> 
-> Just to confirm, we can't set this parent via assigned-clock-parents
-> property in DT?
-> 
->> 
-This clock setting need be done after phy init.
+From: Xiongwei Song <sxwjean@gmail.com>
 
->> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
->> ---
->>  drivers/pci/controller/dwc/pcie-qcom.c | 22 ++++++++++++++++++++++
->>  1 file changed, 22 insertions(+)
->> 
->> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c 
->> b/drivers/pci/controller/dwc/pcie-qcom.c
->> index 8a7a300..5cbbea4 100644
->> --- a/drivers/pci/controller/dwc/pcie-qcom.c
->> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
->> @@ -166,6 +166,9 @@ struct qcom_pcie_resources_2_7_0 {
->>         struct regulator_bulk_data supplies[2];
->>         struct reset_control *pci_reset;
->>         struct clk *pipe_clk;
->> +       struct clk *pipe_clk_mux;
->> +       struct clk *pipe_ext_src;
->> +       struct clk *ref_clk_src;
->>  };
->> 
->>  union qcom_pcie_resources {
->> @@ -1167,6 +1170,20 @@ static int qcom_pcie_get_resources_2_7_0(struct 
->> qcom_pcie *pcie)
->>         if (ret < 0)
->>                 return ret;
->> 
->> +       if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280")) 
->> {
->> +               res->pipe_clk_mux = devm_clk_get(dev, "pipe_src");
->> +               if (IS_ERR(res->pipe_clk_mux))
->> +                       return PTR_ERR(res->pipe_clk_mux);
->> +
->> +               res->pipe_ext_src = devm_clk_get(dev, "pipe_ext");
->> +               if (IS_ERR(res->pipe_ext_src))
->> +                       return PTR_ERR(res->pipe_ext_src);
->> +
->> +               res->ref_clk_src = devm_clk_get(dev, "ref");
-> 
-> Is this going to be used by any code?
-> 
-Yes, ref clock will be used in system suspend case. currently system 
-suspend changes are in under validation.
+If there is no matched result, check_redundant() will return BFS_RNOMATCH.
 
->> +               if (IS_ERR(res->ref_clk_src))
->> +                       return PTR_ERR(res->ref_clk_src);
->> +       }
->> +
->>         res->pipe_clk = devm_clk_get(dev, "pipe");
->>         return PTR_ERR_OR_ZERO(res->pipe_clk);
->>  }
->> @@ -1255,6 +1272,11 @@ static void qcom_pcie_deinit_2_7_0(struct 
->> qcom_pcie *pcie)
->>  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
->>  {
->>         struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
->> +       struct dw_pcie *pci = pcie->pci;
->> +       struct device *dev = pci->dev;
->> +
->> +       if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280"))
->> +               clk_set_parent(res->pipe_clk_mux, res->pipe_ext_src);
->> 
->>         return clk_prepare_enable(res->pipe_clk);
->>  }
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
+Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+---
+ kernel/locking/lockdep.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index cfe0f4374594..1f126ca7fbd7 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -2726,7 +2726,7 @@ static inline bool usage_skip(struct lock_list *entry, void *mask)
+  * <target> or not. If it can, <src> -> <target> dependency is already
+  * in the graph.
+  *
+- * Return BFS_RMATCH if it does, or BFS_RMATCH if it does not, return BFS_E* if
++ * Return BFS_RMATCH if it does, or BFS_RNOMATCH if it does not, return BFS_E* if
+  * any error appears in the bfs search.
+  */
+ static noinline enum bfs_result
+-- 
+2.30.2
+
