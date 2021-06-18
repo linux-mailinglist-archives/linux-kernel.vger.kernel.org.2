@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A87D3ACEAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93C383ACEAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:21:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235119AbhFRPXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:23:50 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56444 "EHLO
+        id S235125AbhFRPXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:23:54 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56768 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235084AbhFRPWP (ORCPT
+        with ESMTP id S235091AbhFRPWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:22:15 -0400
-Message-Id: <20210618143448.635748676@linutronix.de>
+        Fri, 18 Jun 2021 11:22:16 -0400
+Message-Id: <20210618143448.745062645@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624029604;
+        s=2020; t=1624029605;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=eO8WMrKzAkI2p22ftLgxCO4cYyO5CDr7UlSsAIynvVg=;
-        b=qU9jnuyO0nTA+VAkteGhf5ZgLXBIyn+7pWjeH0m+b6l+KMip722TKqx4T1IpyX/iIUO22J
-        zakk0Z56qp+VW0VDxC/XS/1JEs9sDhxqbiOg/De3pTSfN5rOi2ZsKf5n3yXLwy7oMe0lw1
-        lcUl3q+cdc++arXDTU7wiRHFnC1fkr/tvux1mgg17tFO8lRH07s58Ro80DurM6+omSe74L
-        WkFQL6jUb083yvcm2Eay9ggyH0hG45lgdTg1j/baLfCKTgrlvDvKvLy9K84r4JZPNLUPRY
-        JoIZif5QerF2oEEgv3s3GjgYY0iasfeTevuDL65yvpAQnHA8GWCDtrfdw4hgUQ==
+        bh=B7ctSpEZ0qFA84IYISyrQ8MCZgN3njzlC6ldZXX174k=;
+        b=nc21gRRKUtByLDb/PijwHTRhREVVSiaqMy/9anC55qOmyJFmtDcvc+nkqgOEOaGr40uVBC
+        1gkVVFP16T3GhzqQy4yRfwVEJh7PcFKE7d3I0e7F8316IBXHcbRW9W6M/8mLPRxhTmNZle
+        fJxBzPWuv1ZKt/zxwOQoNpJA5GmaYU1TKsuFutn8wxS8+H8byzx+fqnXSkldc9+irxRQWP
+        uo4cjK+Q8QDHuXoXkmP8pKw5wMosEstsqVYKYxdhflYKPk66UVhcMqEA1pok1XhhgSYIAq
+        ewvVOTcyD8GtA17iRGw4ac05KQcW6sAW7KL27QV5GODT6O7MHsKCZudSzNHFdA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624029604;
+        s=2020e; t=1624029605;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=eO8WMrKzAkI2p22ftLgxCO4cYyO5CDr7UlSsAIynvVg=;
-        b=pP5ERXf/WAuwoV0T9E3zx7Q7FOLrmzlFlfbjme9PDKCWcH784+gZVz3KkIwK29NwS4T/mn
-        XbdKnxXqiBfq0QDQ==
-Date:   Fri, 18 Jun 2021 16:19:00 +0200
+        bh=B7ctSpEZ0qFA84IYISyrQ8MCZgN3njzlC6ldZXX174k=;
+        b=+0eXeTRYqlATipClqhhlK/X15CfXa6sTiweRxsljpJ4DoCuCLo3971FVDIdygUIE2Ne2Em
+        TdbAfg45cx80n+Bw==
+Date:   Fri, 18 Jun 2021 16:19:01 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -44,7 +44,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V3 37/66] x86/fpu: Rename "dynamic" XSTATEs to "independent"
+Subject: [patch V3 38/66] x86/fpu/xstate: Sanitize handling of independent features
 References: <20210618141823.161158090@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,25 +53,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Lutomirski <luto@kernel.org>
+The copy functions for the independent features are horribly named and the
+supervisor and independent part is just overengineered.
 
-The salient feature of "dynamic" XSTATEs is that they are not part of the
-main task XSTATE buffer.  The fact that they are dynamically allocated is
-irrelevant and will become quite confusing when user math XSTATEs start
-being dynamically allocated.  Rename them to "independent" because they
-are independent of the main XSTATE code.
+The point is that the supplied mask has either to be a subset of the
+independent feature or a subset of the task->fpu.xstate managed features.
 
-This is just a search-and-replace with some whitespace updates to keep
-things aligned.
+Rewrite it so it checks check for invalid overlaps of these areas in the
+caller supplied feature mask. Rename it so it follows the new naming
+convention for these operations. Mop up the function documentation.
 
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
+This allows to use that function for other purposes as well.
+
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/1eecb0e4f3e07828ebe5d737ec77dc3b708fad2d.1623388344.git.luto@kernel.org
+Cc: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/intel/lbr.c       |    6 +--
- arch/x86/include/asm/fpu/xstate.h |   14 ++++----
- arch/x86/kernel/fpu/xstate.c      |   62 +++++++++++++++++++-------------------
- 3 files changed, 41 insertions(+), 41 deletions(-)
+V3: Rename
+---
+ arch/x86/events/intel/lbr.c       |    6 +-
+ arch/x86/include/asm/fpu/xstate.h |    5 +-
+ arch/x86/kernel/fpu/xstate.c      |   93 +++++++++++++++++++-------------------
+ 3 files changed, 53 insertions(+), 51 deletions(-)
 
 --- a/arch/x86/events/intel/lbr.c
 +++ b/arch/x86/events/intel/lbr.c
@@ -79,8 +82,8 @@ Link: https://lore.kernel.org/r/1eecb0e4f3e07828ebe5d737ec77dc3b708fad2d.1623388
  {
  	struct x86_perf_task_context_arch_lbr_xsave *task_ctx = ctx;
  
--	copy_kernel_to_dynamic_supervisor(&task_ctx->xsave, XFEATURE_MASK_LBR);
-+	copy_kernel_to_independent_supervisor(&task_ctx->xsave, XFEATURE_MASK_LBR);
+-	copy_kernel_to_independent_supervisor(&task_ctx->xsave, XFEATURE_MASK_LBR);
++	xrstors(&task_ctx->xsave, XFEATURE_MASK_LBR);
  }
  
  static __always_inline bool lbr_is_reset_in_cstate(void *ctx)
@@ -88,8 +91,8 @@ Link: https://lore.kernel.org/r/1eecb0e4f3e07828ebe5d737ec77dc3b708fad2d.1623388
  {
  	struct x86_perf_task_context_arch_lbr_xsave *task_ctx = ctx;
  
--	copy_dynamic_supervisor_to_kernel(&task_ctx->xsave, XFEATURE_MASK_LBR);
-+	copy_independent_supervisor_to_kernel(&task_ctx->xsave, XFEATURE_MASK_LBR);
+-	copy_independent_supervisor_to_kernel(&task_ctx->xsave, XFEATURE_MASK_LBR);
++	xsaves(&task_ctx->xsave, XFEATURE_MASK_LBR);
  }
  
  static void __intel_pmu_lbr_save(void *ctx)
@@ -97,218 +100,148 @@ Link: https://lore.kernel.org/r/1eecb0e4f3e07828ebe5d737ec77dc3b708fad2d.1623388
  		intel_pmu_store_lbr(cpuc, NULL);
  		return;
  	}
--	copy_dynamic_supervisor_to_kernel(&xsave->xsave, XFEATURE_MASK_LBR);
-+	copy_independent_supervisor_to_kernel(&xsave->xsave, XFEATURE_MASK_LBR);
+-	copy_independent_supervisor_to_kernel(&xsave->xsave, XFEATURE_MASK_LBR);
++	xsaves(&xsave->xsave, XFEATURE_MASK_LBR);
  
  	intel_pmu_store_lbr(cpuc, xsave->lbr.entries);
  }
 --- a/arch/x86/include/asm/fpu/xstate.h
 +++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -56,7 +56,7 @@
-  * - Don't set the bit corresponding to the dynamic supervisor feature in
-  *   IA32_XSS at run time, since it has been set at boot time.
-  */
--#define XFEATURE_MASK_DYNAMIC (XFEATURE_MASK_LBR)
-+#define XFEATURE_MASK_INDEPENDENT (XFEATURE_MASK_LBR)
- 
- /*
-  * Unsupported supervisor features. When a supervisor feature in this mask is
-@@ -66,7 +66,7 @@
- 
- /* All supervisor states including supported and unsupported states. */
- #define XFEATURE_MASK_SUPERVISOR_ALL (XFEATURE_MASK_SUPERVISOR_SUPPORTED | \
--				      XFEATURE_MASK_DYNAMIC | \
-+				      XFEATURE_MASK_INDEPENDENT | \
- 				      XFEATURE_MASK_SUPERVISOR_UNSUPPORTED)
- 
- #ifdef CONFIG_X86_64
-@@ -87,12 +87,12 @@ static inline u64 xfeatures_mask_user(vo
- 	return xfeatures_mask_all & XFEATURE_MASK_USER_SUPPORTED;
- }
- 
--static inline u64 xfeatures_mask_dynamic(void)
-+static inline u64 xfeatures_mask_independent(void)
- {
- 	if (!boot_cpu_has(X86_FEATURE_ARCH_LBR))
--		return XFEATURE_MASK_DYNAMIC & ~XFEATURE_MASK_LBR;
-+		return XFEATURE_MASK_INDEPENDENT & ~XFEATURE_MASK_LBR;
- 
--	return XFEATURE_MASK_DYNAMIC;
-+	return XFEATURE_MASK_INDEPENDENT;
- }
- 
- extern u64 xstate_fx_sw_bytes[USER_XSTATE_FX_SW_WORDS];
-@@ -104,8 +104,8 @@ void *get_xsave_addr(struct xregs_state
+@@ -104,8 +104,9 @@ void *get_xsave_addr(struct xregs_state
  int xfeature_size(int xfeature_nr);
  int copy_uabi_from_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf);
  int copy_sigframe_from_user_to_xstate(struct xregs_state *xsave, const void __user *ubuf);
--void copy_dynamic_supervisor_to_kernel(struct xregs_state *xstate, u64 mask);
--void copy_kernel_to_dynamic_supervisor(struct xregs_state *xstate, u64 mask);
-+void copy_independent_supervisor_to_kernel(struct xregs_state *xstate, u64 mask);
-+void copy_kernel_to_independent_supervisor(struct xregs_state *xstate, u64 mask);
+-void copy_independent_supervisor_to_kernel(struct xregs_state *xstate, u64 mask);
+-void copy_kernel_to_independent_supervisor(struct xregs_state *xstate, u64 mask);
++
++void xsaves(struct xregs_state *xsave, u64 mask);
++void xrstors(struct xregs_state *xsave, u64 mask);
  
  enum xstate_copy_mode {
  	XSTATE_COPY_FP,
 --- a/arch/x86/kernel/fpu/xstate.c
 +++ b/arch/x86/kernel/fpu/xstate.c
-@@ -151,7 +151,7 @@ void fpu__init_cpu_xstate(void)
- 	 */
- 	if (boot_cpu_has(X86_FEATURE_XSAVES)) {
- 		wrmsrl(MSR_IA32_XSS, xfeatures_mask_supervisor() |
--				     xfeatures_mask_dynamic());
-+				     xfeatures_mask_independent());
- 	}
- }
- 
-@@ -551,7 +551,7 @@ static void check_xstate_against_struct(
-  * how large the XSAVE buffer needs to be.  We are recalculating
-  * it to be safe.
-  *
-- * Dynamic XSAVE features allocate their own buffers and are not
-+ * Independent XSAVE features allocate their own buffers and are not
-  * covered by these checks. Only the size of the buffer for task->fpu
-  * is checked here.
-  */
-@@ -617,18 +617,18 @@ static unsigned int __init get_xsaves_si
- }
- 
- /*
-- * Get the total size of the enabled xstates without the dynamic supervisor
-+ * Get the total size of the enabled xstates without the independent supervisor
-  * features.
-  */
--static unsigned int __init get_xsaves_size_no_dynamic(void)
-+static unsigned int __init get_xsaves_size_no_independent(void)
- {
--	u64 mask = xfeatures_mask_dynamic();
-+	u64 mask = xfeatures_mask_independent();
- 	unsigned int size;
- 
- 	if (!mask)
- 		return get_xsaves_size();
- 
--	/* Disable dynamic features. */
-+	/* Disable independent features. */
- 	wrmsrl(MSR_IA32_XSS, xfeatures_mask_supervisor());
- 
- 	/*
-@@ -637,7 +637,7 @@ static unsigned int __init get_xsaves_si
- 	 */
- 	size = get_xsaves_size();
- 
--	/* Re-enable dynamic features so XSAVES will work on them again. */
-+	/* Re-enable independent features so XSAVES will work on them again. */
- 	wrmsrl(MSR_IA32_XSS, xfeatures_mask_supervisor() | mask);
- 
- 	return size;
-@@ -680,7 +680,7 @@ static int __init init_xstate_size(void)
- 	xsave_size = get_xsave_size();
- 
- 	if (boot_cpu_has(X86_FEATURE_XSAVES))
--		possible_xstate_size = get_xsaves_size_no_dynamic();
-+		possible_xstate_size = get_xsaves_size_no_independent();
- 	else
- 		possible_xstate_size = xsave_size;
- 
-@@ -837,7 +837,7 @@ void fpu__resume_cpu(void)
- 	 */
- 	if (boot_cpu_has(X86_FEATURE_XSAVES)) {
- 		wrmsrl(MSR_IA32_XSS, xfeatures_mask_supervisor()  |
--				     xfeatures_mask_dynamic());
-+				     xfeatures_mask_independent());
- 	}
- }
- 
-@@ -1163,34 +1163,34 @@ int copy_sigframe_from_user_to_xstate(st
+@@ -1163,75 +1163,76 @@ int copy_sigframe_from_user_to_xstate(st
  }
  
  /**
-- * copy_dynamic_supervisor_to_kernel() - Save dynamic supervisor states to
-- *                                       an xsave area
-+ * copy_independent_supervisor_to_kernel() - Save independent supervisor states to
-+ *                                           an xsave area
-  * @xstate: A pointer to an xsave area
-- * @mask: Represent the dynamic supervisor features saved into the xsave area
-+ * @mask: Represent the independent supervisor features saved into the xsave area
+- * copy_independent_supervisor_to_kernel() - Save independent supervisor states to
+- *                                           an xsave area
+- * @xstate: A pointer to an xsave area
+- * @mask: Represent the independent supervisor features saved into the xsave area
++ * xsaves - Save selected components to a kernel xstate buffer
++ * @xstate:	Pointer to the buffer
++ * @mask:	Feature mask to select the components to save
   *
-- * Only the dynamic supervisor states sets in the mask are saved into the xsave
-- * area (See the comment in XFEATURE_MASK_DYNAMIC for the details of dynamic
-- * supervisor feature). Besides the dynamic supervisor states, the legacy
-+ * Only the independent supervisor states sets in the mask are saved into the xsave
-+ * area (See the comment in XFEATURE_MASK_INDEPENDENT for the details of independent
-+ * supervisor feature). Besides the independent supervisor states, the legacy
-  * region and XSAVE header are also saved into the xsave area. The supervisor
-  * features in the XFEATURE_MASK_SUPERVISOR_SUPPORTED and
-  * XFEATURE_MASK_SUPERVISOR_UNSUPPORTED are not saved.
+- * Only the independent supervisor states sets in the mask are saved into the xsave
+- * area (See the comment in XFEATURE_MASK_INDEPENDENT for the details of independent
+- * supervisor feature). Besides the independent supervisor states, the legacy
+- * region and XSAVE header are also saved into the xsave area. The supervisor
+- * features in the XFEATURE_MASK_SUPERVISOR_SUPPORTED and
+- * XFEATURE_MASK_SUPERVISOR_UNSUPPORTED are not saved.
++ * The @xstate buffer must be 64 byte aligned and correctly initialized as
++ * XSAVES does not write the full xstate header. Before first use the
++ * buffer should be zeroed otherwise a consecutive XRSTORS from that buffer
++ * can #GP.
   *
-  * The xsave area must be 64-bytes aligned.
+- * The xsave area must be 64-bytes aligned.
++ * The feature mask must either be a subset of the independent features or
++ * a subset of the task->fpstate related features
   */
--void copy_dynamic_supervisor_to_kernel(struct xregs_state *xstate, u64 mask)
-+void copy_independent_supervisor_to_kernel(struct xregs_state *xstate, u64 mask)
+-void copy_independent_supervisor_to_kernel(struct xregs_state *xstate, u64 mask)
++void xsaves(struct xregs_state *xstate, u64 mask)
  {
--	u64 dynamic_mask = xfeatures_mask_dynamic() & mask;
-+	u64 independent_mask = xfeatures_mask_independent() & mask;
- 	u32 lmask, hmask;
+-	u64 independent_mask = xfeatures_mask_independent() & mask;
+-	u32 lmask, hmask;
++	u64 xchk;
  	int err;
  
- 	if (WARN_ON_FPU(!boot_cpu_has(X86_FEATURE_XSAVES)))
+-	if (WARN_ON_FPU(!boot_cpu_has(X86_FEATURE_XSAVES)))
++	if (WARN_ON_FPU(!cpu_feature_enabled(X86_FEATURE_XSAVES)))
+ 		return;
++	/*
++	 * Validate that this is either a task->fpstate related component
++	 * subset or an independent one.
++	 */
++	if (mask & xfeatures_mask_independent())
++		xchk = ~xfeatures_mask_independent();
++	else
++		xchk = ~xfeatures_mask_all;
+ 
+-	if (WARN_ON_FPU(!independent_mask))
++	if (WARN_ON_ONCE(!mask || mask & xchk))
  		return;
  
--	if (WARN_ON_FPU(!dynamic_mask))
-+	if (WARN_ON_FPU(!independent_mask))
- 		return;
- 
--	lmask = dynamic_mask;
--	hmask = dynamic_mask >> 32;
-+	lmask = independent_mask;
-+	hmask = independent_mask >> 32;
- 
- 	XSTATE_OP(XSAVES, xstate, lmask, hmask, err);
- 
-@@ -1199,34 +1199,34 @@ void copy_dynamic_supervisor_to_kernel(s
+-	lmask = independent_mask;
+-	hmask = independent_mask >> 32;
+-
+-	XSTATE_OP(XSAVES, xstate, lmask, hmask, err);
+-
+-	/* Should never fault when copying to a kernel buffer */
+-	WARN_ON_FPU(err);
++	XSTATE_OP(XSAVES, xstate, (u32)mask, (u32)(mask >> 32), err);
++	WARN_ON_ONCE(err);
  }
  
  /**
-- * copy_kernel_to_dynamic_supervisor() - Restore dynamic supervisor states from
-- *                                       an xsave area
-+ * copy_kernel_to_independent_supervisor() - Restore independent supervisor states from
-+ *                                           an xsave area
-  * @xstate: A pointer to an xsave area
-- * @mask: Represent the dynamic supervisor features restored from the xsave area
-+ * @mask: Represent the independent supervisor features restored from the xsave area
+- * copy_kernel_to_independent_supervisor() - Restore independent supervisor states from
+- *                                           an xsave area
+- * @xstate: A pointer to an xsave area
+- * @mask: Represent the independent supervisor features restored from the xsave area
++ * xrstors - Restore selected components from a kernel xstate buffer
++ * @xstate:	Pointer to the buffer
++ * @mask:	Feature mask to select the components to restore
++ *
++ * The @xstate buffer must be 64 byte aligned and correctly initialized
++ * otherwise XRSTORS from that buffer can #GP.
   *
-- * Only the dynamic supervisor states sets in the mask are restored from the
-- * xsave area (See the comment in XFEATURE_MASK_DYNAMIC for the details of
-- * dynamic supervisor feature). Besides the dynamic supervisor states, the
-+ * Only the independent supervisor states sets in the mask are restored from the
-+ * xsave area (See the comment in XFEATURE_MASK_INDEPENDENT for the details of
-+ * independent supervisor feature). Besides the independent supervisor states, the
-  * legacy region and XSAVE header are also restored from the xsave area. The
-  * supervisor features in the XFEATURE_MASK_SUPERVISOR_SUPPORTED and
-  * XFEATURE_MASK_SUPERVISOR_UNSUPPORTED are not restored.
+- * Only the independent supervisor states sets in the mask are restored from the
+- * xsave area (See the comment in XFEATURE_MASK_INDEPENDENT for the details of
+- * independent supervisor feature). Besides the independent supervisor states, the
+- * legacy region and XSAVE header are also restored from the xsave area. The
+- * supervisor features in the XFEATURE_MASK_SUPERVISOR_SUPPORTED and
+- * XFEATURE_MASK_SUPERVISOR_UNSUPPORTED are not restored.
++ * Proper usage is to restore the state which was saved with
++ * xsaves() into @xstate.
   *
-  * The xsave area must be 64-bytes aligned.
+- * The xsave area must be 64-bytes aligned.
++ * The feature mask must either be a subset of the independent features or
++ * a subset of the task->fpstate related features
   */
--void copy_kernel_to_dynamic_supervisor(struct xregs_state *xstate, u64 mask)
-+void copy_kernel_to_independent_supervisor(struct xregs_state *xstate, u64 mask)
+-void copy_kernel_to_independent_supervisor(struct xregs_state *xstate, u64 mask)
++void xrstors(struct xregs_state *xstate, u64 mask)
  {
--	u64 dynamic_mask = xfeatures_mask_dynamic() & mask;
-+	u64 independent_mask = xfeatures_mask_independent() & mask;
- 	u32 lmask, hmask;
+-	u64 independent_mask = xfeatures_mask_independent() & mask;
+-	u32 lmask, hmask;
++	u64 xchk;
  	int err;
  
- 	if (WARN_ON_FPU(!boot_cpu_has(X86_FEATURE_XSAVES)))
+-	if (WARN_ON_FPU(!boot_cpu_has(X86_FEATURE_XSAVES)))
++	if (WARN_ON_FPU(!cpu_feature_enabled(X86_FEATURE_XSAVES)))
+ 		return;
++	/*
++	 * Validate that this is either a task->fpstate related component
++	 * subset or an independent one.
++	 */
++	if (mask & xfeatures_mask_independent())
++		xchk = ~xfeatures_mask_independent();
++	else
++		xchk = ~xfeatures_mask_all;
+ 
+-	if (WARN_ON_FPU(!independent_mask))
++	if (WARN_ON_ONCE(!mask || mask & xchk))
  		return;
  
--	if (WARN_ON_FPU(!dynamic_mask))
-+	if (WARN_ON_FPU(!independent_mask))
- 		return;
+-	lmask = independent_mask;
+-	hmask = independent_mask >> 32;
+-
+-	XSTATE_OP(XRSTORS, xstate, lmask, hmask, err);
+-
+-	/* Should never fault when copying from a kernel buffer */
+-	WARN_ON_FPU(err);
++	XSTATE_OP(XRSTORS, xstate, (u32)mask, (u32)(mask >> 32), err);
++	WARN_ON_ONCE(err);
+ }
  
--	lmask = dynamic_mask;
--	hmask = dynamic_mask >> 32;
-+	lmask = independent_mask;
-+	hmask = independent_mask >> 32;
- 
- 	XSTATE_OP(XRSTORS, xstate, lmask, hmask, err);
- 
+ #ifdef CONFIG_PROC_PID_ARCH_STATUS
 
