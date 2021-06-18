@@ -2,104 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 774093AC8B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 12:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A90173AC8B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 12:23:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233522AbhFRKZj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Jun 2021 06:25:39 -0400
-Received: from mail-lf1-f49.google.com ([209.85.167.49]:37720 "EHLO
-        mail-lf1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233092AbhFRKZf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 06:25:35 -0400
-Received: by mail-lf1-f49.google.com with SMTP id p7so15746042lfg.4;
-        Fri, 18 Jun 2021 03:23:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5lJmmJOJ0EpO1wHCkdkF75XWhHVKX9ri+BWC0WJ2EQw=;
-        b=Ep/eNkcTj/d/8jRI1yZK5IA8g9VfmdYQ9Wcca/W1ED9xABA47sa9fweFAPlzcDithF
-         +0szjC+a+bYjASfu1orlrwL3zrM2LSr3NWmVcDnuk7Bfoc00UxQfYxTgEkCK+/eBT82c
-         E5RhiqVEqoeU4P7ZfovZGo628eiNl7uCxyGh5AnSOAhrqM+Htj5uZVc+/NLjxQunFHBw
-         NIwVflxk7+6pM5W3pLGux2Zb0AymjSGVEc2AL2jnQRahCFt10EVDD0rbJBCp7nllYLYd
-         Ey0Tn0D0QLi+IZXnV4pTbKhE5Kxi9Nz+MCawtpr6WnCZm1tjL965JiDAV0fdOVRGeCwM
-         9LoQ==
-X-Gm-Message-State: AOAM531R+8eVj4GOW98J9S10JQufBvKLg9ZhA5oLevz7VYU8C1h44OKg
-        kaberNXr/wNNBha9nPCNOG1HAFF6+q3jS9xW325sryhiVNHOjA==
-X-Google-Smtp-Source: ABdhPJxu0U3/fdgUjqtjiKDOznPc1uqGUEsxMpfFbCXKZKNzpnrMKwzgrMcx0eMrXd9N5L48P33fEyaKk6bhExsfeTM=
-X-Received: by 2002:a05:6512:3d08:: with SMTP id d8mr2579457lfv.393.1624011804126;
- Fri, 18 Jun 2021 03:23:24 -0700 (PDT)
+        id S233086AbhFRKZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 06:25:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230329AbhFRKZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 06:25:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05E3361159;
+        Fri, 18 Jun 2021 10:23:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624011802;
+        bh=1ZxM0FCMwZiZghnpuKtTVnbmtQtc1YYDd9NZGwlFpFs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=1W6vyZoSBAzSTkWS0wOYbBIg/Im0WwpOf6bKl5rB8OP6GFC9KMgPkw/eeMzF/ciJb
+         fF46LcniH39Hh22MSaVob/xpHsnZrUeph+8WYIeIys6v9Gju4c69MzPCJHLIyLy9JL
+         UgHb0ADE67tnbQGdyKbMb6FKLCojIH4s9i1BNaxw=
+Date:   Fri, 18 Jun 2021 12:23:20 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     liuhailong <liuhailong@oppo.com>
+Cc:     arve@android.com, tkjos@android.com, maco@android.com,
+        joel@joelfernandes.org, christian@brauner.io, hridya@google.com,
+        surenb@google.com, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH] staging: android: ashmem: add size field in procfs fdinfo
+Message-ID: <YMx0GIRQmpRC7pdQ@kroah.com>
+References: <20210618095035.32410-1-liuhailong@oppo.com>
 MIME-Version: 1.0
-References: <20210603151550.140727-1-mailhol.vincent@wanadoo.fr>
- <20210603151550.140727-3-mailhol.vincent@wanadoo.fr> <20210618093424.xohvsqaaq5qf2bjn@pengutronix.de>
-In-Reply-To: <20210618093424.xohvsqaaq5qf2bjn@pengutronix.de>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Fri, 18 Jun 2021 19:23:12 +0900
-Message-ID: <CAMZ6RqJn5z-9PfkcJdiS6aG+qCPnifXDwH26ZEwo8-=id=TXbw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] can: netlink: add interface for CAN-FD Transmitter
- Delay Compensation (TDC)
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     linux-can <linux-can@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210618095035.32410-1-liuhailong@oppo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri. 18 Jun 2021 at 18:34, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> On 04.06.2021 00:15:50, Vincent Mailhol wrote:
-> > Add the netlink interface for TDC parameters of struct can_tdc_const
-> > and can_tdc.
-> >
-> > Contrary to the can_bittiming(_const) structures for which there is
-> > just a single IFLA_CAN(_DATA)_BITTMING(_CONST) entry per structure,
-> > here, we create a nested entry IFLA_CAN_TDC. Within this nested entry,
-> > additional IFLA_CAN_TDC_TDC* entries are added for each of the TDC
-> > parameters of the newly introduced struct can_tdc_const and struct
-> > can_tdc.
-> >
-> > For struct can_tdc_const, these are:
-> >         IFLA_CAN_TDC_TDCV_MAX
-> >         IFLA_CAN_TDC_TDCO_MAX
-> >         IFLA_CAN_TDC_TDCF_MAX
-> >
-> > For struct can_tdc, these are:
-> >         IFLA_CAN_TDC_TDCV
-> >         IFLA_CAN_TDC_TDCO
-> >         IFLA_CAN_TDC_TDCF
->
-> I just noticed in the mcp2518fd data sheet:
->
-> | bit 14-8 TDCO[6:0]: Transmitter Delay Compensation Offset bits;
-> | Secondary Sample Point (SSP) Two’s complement; offset can be positive,
-> | zero, or negative.
-> |
-> | 011 1111 = 63 x TSYSCLK
-> | ...
-> | 000 0000 = 0 x TSYSCLK
-> | ...
-> | 111 1111 = –64 x TSYSCLK
->
-> Have you takes this into account?
+On Fri, Jun 18, 2021 at 05:50:35PM +0800, liuhailong wrote:
+> add this information to help user to find ashmem problem.
+> 
+> ashmem leak scenario:
+> -000|fd = ashmem_create_region
+> -001|mmap and pagefault
+> -002|munmap
+> -003|forget close(fd) <---- which lead to ashmem leak
+> 
+> Signed-off-by: liuhailong <liuhailong@oppo.com>
+> ---
+>  drivers/staging/android/ashmem.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/drivers/staging/android/ashmem.c b/drivers/staging/android/ashmem.c
+> index d66a64e42273..ee2fd75111d8 100644
+> --- a/drivers/staging/android/ashmem.c
+> +++ b/drivers/staging/android/ashmem.c
+> @@ -894,6 +894,8 @@ static void ashmem_show_fdinfo(struct seq_file *m, struct file *file)
+>  		seq_printf(m, "name:\t%s\n",
+>  			   asma->name + ASHMEM_NAME_PREFIX_LEN);
+>  
+> +	seq_printf(m, "size:\t%zu\n", asma->size);
+> +
+>  	mutex_unlock(&ashmem_mutex);
+>  }
+>  #endif
+> -- 
+> 2.30.2
+> 
+> 
 
-I have not. And I fail to understand what would be the physical
-meaning if TDCO is zero or negative.
+As you are changing a user-facing proc file, what tools will break now
+that you have added a new line?
 
-TDCV indicates the position of the bit start on the RX pin. If
-TDCO is zero, the measurement occurs on the bit start when all
-the ringing occurs. That is a really bad choice to do the
-measurement.  If it is negative, it means that you are measuring
-the previous bit o_O !?
+What tools do you use to look at this file and what has been modified to
+handle the change?
 
-Maybe I am missing something but I just do not get it.
+thanks,
 
-I believe you started to implement the mcp2518fd. Can you force a
-zero and a negative value and tell me if the bus is stable?
-
-
-Yours sincerely,
-Vincent Mailhol
+greg k-h
