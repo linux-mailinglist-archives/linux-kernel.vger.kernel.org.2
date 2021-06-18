@@ -2,74 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8A13AD419
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 23:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3C53AD41B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 23:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233605AbhFRVGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 17:06:21 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:46048 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbhFRVGT (ORCPT
+        id S234217AbhFRVIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 17:08:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230437AbhFRVIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 17:06:19 -0400
-Received: by mail-oi1-f178.google.com with SMTP id w127so11980794oig.12;
-        Fri, 18 Jun 2021 14:04:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=TqQpsaLK+esgXTn20wN1XoitRPv/E5tklHK/5Zb8GAs=;
-        b=npaSkGVpniIpI3E34Udf1Na+CKh43MEtjyd1rS6xradVYRq9PH2uRt3z9BtM7vqwT4
-         nJeBPgeRVsYLYMj49bsAa/+IqjGevNR8aykY9hlsjcl1KTNilUbR6iTaOJMm4yIIhF8x
-         MFI15lhzEFy0tqfYgG3l0TQz9cdSs3NJbfqj4nEUncJCuT/oYg8EyQI4pGIr88+7Uw/2
-         cNYLBH9teTxqRHqE+XxHumdRZ6m1RUIJfBUE9kmvlrNuTNhzgnEmvQb0Z0duw99ythfI
-         R1UQM7rpqJ3kJFzQ47Zxnenwjuw8mJ4Cgs4Ul/x7XVloXmdh7SvyWtt9TjQkgcIGbWIG
-         uHxw==
-X-Gm-Message-State: AOAM530SET/K9jCGgkhY7ViaBhdyR09klLUHWUsZlL481lq8A7YNt+sI
-        JqolnIxuYU/9cB03fyLXDg==
-X-Google-Smtp-Source: ABdhPJwVHrWrW873t5oh335FCxM/fUMQjEYLop6U4lSN3JFuKUjH2QkeI7wm6zxpuGA8uF6XQP1yzw==
-X-Received: by 2002:aca:3904:: with SMTP id g4mr15687596oia.129.1624050248616;
-        Fri, 18 Jun 2021 14:04:08 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id a25sm238415otp.40.2021.06.18.14.04.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 14:04:07 -0700 (PDT)
-Received: (nullmailer pid 2870738 invoked by uid 1000);
-        Fri, 18 Jun 2021 21:04:05 -0000
-Date:   Fri, 18 Jun 2021 15:04:05 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     Stephen Boyd <sboyd@kernel.org>, Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-clk@vger.kernel.org,
-        robert.foss@linaro.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, andrey.konovalov@linaro.org
-Subject: Re: [PATCH v2 2/3] dt-bindings: clock: add QCOM SM8250 camera clock
- bindings
-Message-ID: <20210618210405.GA2870695@robh.at.kernel.org>
-References: <20210609022051.2171-1-jonathan@marek.ca>
- <20210609022051.2171-3-jonathan@marek.ca>
+        Fri, 18 Jun 2021 17:08:19 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028EDC061574;
+        Fri, 18 Jun 2021 14:06:09 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624050368;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=f83ggUS1oIlNNC9hfEwN+dr34PECUFOQa5KW491Gq9Q=;
+        b=sQ6I40ywzqmBhOJhDOHOjSSkVTUHWAzfyaN0XlR2kZG/MuZEnZJi7rUMwdInWKrU9lfIoe
+        K4GQw+Blm7jSQIaKZbKyVmOm/bAbZ8CMnJEMqwG6p/K8czPjiV/ssmhwvUAM97z7Nv+p31
+        gR8NNzaA80Na+E9CBPpHbKnQMOFhPApHZa2yoeE/oFEWMLJcE6Yc/V19/dAcexJPAt0C6v
+        UMyiDh79OCbMAfLlcce74vTHzLYCNrSt+xObMA/RtYtX6lmLwevvVtt0eyYwUgDzopKN0E
+        gbHcygac6MAapFD96kN5qliiRdIFkJNZCDofQY35baG95S6EmK23zpsd5TYxGw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624050368;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=f83ggUS1oIlNNC9hfEwN+dr34PECUFOQa5KW491Gq9Q=;
+        b=UaD5FPo27aRlFWQy9e26SNLK8fPIYjj6+T/uvWS7j0LKgtHTXAdJTBOEA8mq8/B3Q/aEs7
+        /8n6jcVHrTnDO4CQ==
+To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        linux-rt-users@vger.kernel.org, frederic@kernel.org
+Cc:     mtosatti@redhat.com, Nicolas Saenz Julienne <nsaenzju@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC 1/2] timers: Add pending timer bool in struct timer_base
+In-Reply-To: <20210610125945.558872-1-nsaenzju@redhat.com>
+References: <20210610125945.558872-1-nsaenzju@redhat.com>
+Date:   Fri, 18 Jun 2021 23:06:08 +0200
+Message-ID: <87pmwievcv.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210609022051.2171-3-jonathan@marek.ca>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 08 Jun 2021 22:20:47 -0400, Jonathan Marek wrote:
-> Add device tree bindings for camera clock controller for
-> Qualcomm Technology Inc's SM8250 SoC.
-> 
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
->  .../bindings/clock/qcom,camcc-sm8250.yaml     |  68 +++++++++
->  include/dt-bindings/clock/qcom,camcc-sm8250.h | 138 ++++++++++++++++++
->  2 files changed, 206 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/qcom,camcc-sm8250.yaml
->  create mode 100644 include/dt-bindings/clock/qcom,camcc-sm8250.h
-> 
+Nicolas,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+On Thu, Jun 10 2021 at 14:59, Nicolas Saenz Julienne wrote:
+
+please always Cc the relevant mailing lists and the maintainers.
+MAINTAINERS exists for a reason.
+
+> We need to efficiently check whether a timer base has no pending
+> events.
+
+'We need' is not a technical explanation. That's close to 'I want a pony'.
+
+Please describe what you are trying to solve and why the existing
+mechanisms are not good enough.
+
+See Documentation/process/submitting-patches.rst
+
+> So introduce a new variable in struct timer_base to do so.
+
+The variable solves your problem? Interesting solution.
+
+>  		base->next_expiry = bucket_expiry;
+>  		base->next_expiry_recalc = false;
+> +#ifdef CONFIG_PREEMPT_RT
+> +		base->pending = true;
+> +#endif
+
+What is RT specific about that?
+
+>  		trigger_dyntick_cpu(base, timer);
+>  	}
+>  }
+> @@ -1598,6 +1602,9 @@ static unsigned long __next_timer_interrupt(struct timer_base *base)
+>  	}
+>  
+>  	base->next_expiry_recalc = false;
+> +#ifdef CONFIG_PREEMPT_RT
+> +	base->pending = (next != base->clk + NEXT_TIMER_MAX_DELTA);
+> +#endif
+
+This lacks any information about the semantics of this flag:
+
+  - When is it valid and when not?
+  - What is the valid use case for this flag?
+
+Summary of the supplied information: We need a flag, so we added one.
+
+Sorry that's not sufficient.
+
+Thanks,
+
+        tglx
+
+  
+
