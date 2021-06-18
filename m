@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F50F3AD2BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 325143AD2B8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235755AbhFRTWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 15:22:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33918 "EHLO mail.kernel.org"
+        id S235619AbhFRTWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 15:22:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235402AbhFRTWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235434AbhFRTWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Jun 2021 15:22:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 9DD3C613F8;
+Received: by mail.kernel.org (Postfix) with ESMTPS id B2CA2613FA;
         Fri, 18 Jun 2021 19:20:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1624044006;
-        bh=WXXhO9FuY5yV2NncArmi17NLQRykIEQqMoaheEffRYQ=;
+        bh=Boffnogb8HbtZJOa/QBADPbzDn4obiZkPMFYmvM0RFA=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=aS5EiNaDkR6kbhWXe1aWe73dkfNJ8GJ9XpM5NtsWY3Pq4zMlOW4mR7XBn0M//UngI
-         yqm2+/SJ7D1v3Wnm36ocfY4Bo5OngxPmi7QF/c2D7FpGzr93cEdJgpWimKFtyqW4gP
-         D6760LKd3epugHLX/dXrxzn9FBgTd/iVfQqYVDSsrRQDCDRWQdKIv1Hfae3Op7Hoyu
-         ScknmTfAzAg2NXqgFTXiXssgGzBD1TPwIy2N/54pTMi8G6CiXLoK/DJH3SaqpydEmb
-         +ak8R8vO2msUak3cGhagZBQ93jOETrmKQmY1m1tRjxEKLm50MIan66a50l8W86rxIn
-         0Kmeq1RsSwsJg==
+        b=fIkm7Si+ULocwXFaS0XjwMY/crD1AqbS6PtiX2SwYqXRu4uB/DPXtiXPmIkh08KV9
+         CtqTf4rbNRH6PlUiUjSsYBxD9i0kM9EqxY/NICELn3lq5x7ai4xFYMkH/5zpC+LfNL
+         3lgKlgpp1w2IfRLs0MpIt01cDjMKhwGNBD81hm3BiLp85W4+KpTL9wOBM0k5F79HtV
+         C+TXCMkus0qtiu9gvO9PjLHSYJzSBT9qInvamxTrtpka20VNp3+teskH2UaxndcbDb
+         Jy5Gcntmb0fIQp6PAxaX5c8H6o7qYg+F9T7+1XnmlDF67wShtaQ5DYVs0c+8XcI3tv
+         36/uCWJlCAzYw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 92CC560C29;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A5EF360CDF;
         Fri, 18 Jun 2021 19:20:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: caif: modify the label out_err to out
+Subject: Re: net: pxa168_eth: Fix a potential data race in pxa168_eth_remove
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162404400659.12339.13389955025693488534.git-patchwork-notify@kernel.org>
+Message-Id: <162404400667.12339.18217501119774620104.git-patchwork-notify@kernel.org>
 Date:   Fri, 18 Jun 2021 19:20:06 +0000
-References: <20210618073205.3318788-1-mudongliangabcd@gmail.com>
-In-Reply-To: <20210618073205.3318788-1-mudongliangabcd@gmail.com>
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20210618093526.GA20534@duo.ucw.cz>
+In-Reply-To: <20210618093526.GA20534@duo.ucw.cz>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     davem@davemloft.net, kuba@kernel.org, zhangchangzhong@huawei.com,
+        andrianov@ispras.ru, michael@walle.cc, andrew@lunn.ch,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -46,17 +47,16 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Fri, 18 Jun 2021 15:32:04 +0800 you wrote:
-> Modify the label out_err to out to avoid the meanless kfree.
+On Fri, 18 Jun 2021 11:35:26 +0200 you wrote:
+> Commit 0571a753cb07 cancelled delayed work too late, keeping small
+> race. Cancel work sooner to close it completely.
 > 
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> ---
->  net/caif/cfcnfg.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+> Fixes: 0571a753cb07 ("net: pxa168_eth: Fix a potential data race in pxa168_eth_remove")
 
 Here is the summary with links:
-  - net: caif: modify the label out_err to out
-    https://git.kernel.org/netdev/net-next/c/9fd2bc3206b3
+  - net: pxa168_eth: Fix a potential data race in pxa168_eth_remove
+    https://git.kernel.org/netdev/net-next/c/bd70957438f0
 
 You are awesome, thank you!
 --
