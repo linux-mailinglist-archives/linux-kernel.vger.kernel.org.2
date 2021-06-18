@@ -2,190 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 383F13AC7E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CAC43AC7E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:44:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231676AbhFRJq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 05:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231436AbhFRJqT (ORCPT
+        id S232634AbhFRJqr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 05:46:47 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:49608 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231843AbhFRJqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 05:46:19 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A99C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:44:08 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id bp38so15750167lfb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:44:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8MpyH2W/Qi16vZF1RutDfX/LXWayA+uMuphu1a4gDY8=;
-        b=WS97S26sHLsjWjnE4s2jX0/ynLhPoe0+VUb0hrL9k3lZ0LxP5jHd7PkAhea6aF429B
-         Y+qwux8Btsy6lCFc/+i0aB6x+MGHD46ahPFfVf9Kn937OEb7QczXPOCIZ5HHNUyUf3It
-         eRH8Rij5W3fCdq0jCzeEpTpd+D1wycYbbYve+Z6hubf30WMg4FgSff9vD2mA7cJkyhFf
-         5lWW9sZtAOSfGYqO0hAZaCntF5/qPm97kpkeIYlGl3o7puopBYT1CW/z6FTdet91yO38
-         sBphYsO/Ty7OXJY8TkssfooKxvef+GmimD8/2MjK1tXm5GRKIrMxXyV0BQP8arKq2Pft
-         ZlIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8MpyH2W/Qi16vZF1RutDfX/LXWayA+uMuphu1a4gDY8=;
-        b=TqRuKuSEVyGQROd3BE1pXioOOy1FGEGxZdvgKu4Gm73IVk7l2va/6niv22us4Ijr2w
-         NWZww8uV4A5r6TkDS0ZmX8I4We0i6+Csfa+BHE5Xd06EnqXwciX0gYSiJE/iUjGSY5rg
-         ONYCd77UGTFu/poM7YSLILq/5P43DVmNNOR0nic2CtMGDXKhdPj4VhW/mns2wcSHTDXw
-         /bFGoviw94OBDQgWS2V/xHhT/k4TywsqJTIuCAGkzajfoPn+K7Wh1HLc6jpJI+vFUHdm
-         VfR2vtYgugxf+bbkS1xEelqMUKzWpLLPBaF/YNK+rlT8o/ExbnPfGoq2mEEky3ATcHti
-         waHw==
-X-Gm-Message-State: AOAM5328qyFVU7ZAr5l8UqCGwjvKfgxxECm1uoMUNJKd30TgdRWmEcmf
-        BEXL/QeffNIcRxvrQFznlyV1GnRtbwjXU9HF+SL43A==
-X-Google-Smtp-Source: ABdhPJzo4qbbSF3xLRiPOBtDaxlez1Z9u7fCpK1MwfRoaiuf8Qyc5m63k0jWd26FO6A0lO02OSeSEHK0P3YE5fo4/UQ=
-X-Received: by 2002:a05:6512:3241:: with SMTP id c1mr2595058lfr.29.1624009446392;
- Fri, 18 Jun 2021 02:44:06 -0700 (PDT)
+        Fri, 18 Jun 2021 05:46:40 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1luB34-0005Vw-57; Fri, 18 Jun 2021 09:44:26 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: stmmac: remove redundant continue statement
+Date:   Fri, 18 Jun 2021 10:44:25 +0100
+Message-Id: <20210618094425.100395-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210615080553.2021061-1-piyush.mehta@xilinx.com> <20210615080553.2021061-3-piyush.mehta@xilinx.com>
-In-Reply-To: <20210615080553.2021061-3-piyush.mehta@xilinx.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 18 Jun 2021 11:43:55 +0200
-Message-ID: <CACRpkdYv6yosZ1KJazrMzaizpYz-cv-y4LcCqHm+Q94jva8sAA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] gpio: modepin: Add driver support for modepin GPIO controller
-To:     Piyush Mehta <piyush.mehta@xilinx.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        git <git@xilinx.com>, Srinivas Goud <sgoud@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Piyush!
+From: Colin Ian King <colin.king@canonical.com>
 
-thanks for your patch!
+The continue statement in the for-loop has no effect, remove it.
 
-On Tue, Jun 15, 2021 at 10:06 AM Piyush Mehta <piyush.mehta@xilinx.com> wrote:
+Addresses-Coverity: ("Continue has no effect")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-> This patch adds support for the mode pin GPIO controller. GPIO Modepin
-> driver set and get the value and status of the PS_MODE pin, based on
-> device-tree pin configuration. These 4-bits boot-mode pins are dedicated
-> configurable as input/output. After the stabilization of the system,
-> these mode pins are sampled.
->
-> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+index 4e70efc45458..92dab609d4f8 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_tc.c
+@@ -573,10 +573,8 @@ static int tc_add_flow(struct stmmac_priv *priv,
+ 
+ 	for (i = 0; i < ARRAY_SIZE(tc_flow_parsers); i++) {
+ 		ret = tc_flow_parsers[i].fn(priv, cls, entry);
+-		if (!ret) {
++		if (!ret)
+ 			entry->in_use = true;
+-			continue;
+-		}
+ 	}
+ 
+ 	if (!entry->in_use)
+-- 
+2.31.1
 
-OK, sounds interesting!
-
-> +#include <linux/slab.h>
-
-I think I saw somewhere that this is not needed anymore, check if you need it.
-
-> +#define GET_OUTEN_PIN(pin)             (1U << (pin))
-
-Delete this macro and just use BIT(pin) inline.
-#include <linux/bits.h>
-
-> +static int modepin_gpio_get_value(struct gpio_chip *chip, unsigned int pin)
-> +{
-> +       u32 out_en;
-> +       u32 regval = 0;
-> +       int ret;
-> +
-> +       out_en = GET_OUTEN_PIN(pin);
-
-Drop this and out_en
-
-> +       ret = zynqmp_pm_bootmode_read(&regval);
-> +       if (ret) {
-> +               pr_err("modepin: get value err %d\n", ret);
-> +               return ret;
-> +       }
-> +
-> +       return (out_en & (regval >> 8U)) ? 1 : 0;
-
-return !!(regval & BIT(pin + 8));
-
-should work and is easier to read IMO. We just check the right
-bit immediately.
-
-> +static void modepin_gpio_set_value(struct gpio_chip *chip, unsigned int pin,
-> +                                  int state)
-> +{
-> +       u32 out_en;
-> +       u32 bootpin_val = 0;
-> +       int ret;
-> +
-> +       out_en = GET_OUTEN_PIN(pin);
-
-Skip this helper variable.
-
-> +       state = state != 0 ? out_en : 0;
-
-Uh that is really hard to read and modified a parameter. Skip that too.
-
-> +       bootpin_val = (state << (8U)) | out_en;
-
-What you want is mask and set.
-
-bootpin_val = BIT(pin + 8);
-
-> +       /* Configure bootpin value */
-> +       ret = zynqmp_pm_bootmode_write(bootpin_val);
-
-This just looks weird.
-
-Why are you not reading the value first since you are using
-read/modify/write?
-
-I *think* you want to do this:
-
-ret = zynqmp_pm_bootmode_read(&val);
-if (ret)
-   /* error handling */
-if (state)
-    val |= BIT(pin + 8);
-else
-    val &= ~BIT(pin + 8);
-ret = zynqmp_pm_bootmode_write(val);
-if (ret)
-   /* error handling */
-
-> +/*
-> + * modepin_gpio_dir_in - Set the direction of the specified GPIO pin as input
-> + * @chip:      gpio_chip instance to be worked on
-> + * @pin:       gpio pin number within the device
-> + *
-> + * Return: 0 always
-> + */
-> +static int modepin_gpio_dir_in(struct gpio_chip *chip, unsigned int pin)
-> +{
-> +       return 0;
-> +}
-
-I think you said this was configurable in the commit message.
-
-Use the define GPIO_LINE_DIRECTION_OUT rather than 0.
-
-> +static int modepin_gpio_dir_out(struct gpio_chip *chip, unsigned int pin,
-> +                               int state)
-> +{
-> +       return 0;
-> +}
-
-Configurable?
-
-> +       status = devm_gpiochip_add_data(&pdev->dev, chip, chip);
-> +       if (status)
-> +               dev_err_probe(&pdev->dev, status,
-> +                             "Failed to add GPIO chip\n");
-
-just return dev_err_probe(...)
-
-Yours,
-Linus Walleij
