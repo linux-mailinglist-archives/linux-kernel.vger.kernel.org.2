@@ -2,79 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 910E73AC57D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B4C3AC580
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232171AbhFRH71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 03:59:27 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:7367 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbhFRH7Z (ORCPT
+        id S232434AbhFRH7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 03:59:35 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:54884 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232260AbhFRH7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 03:59:25 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G5rkx4Dy6z6xxj;
-        Fri, 18 Jun 2021 15:53:13 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 18 Jun 2021 15:57:14 +0800
-Received: from [10.174.179.215] (10.174.179.215) by
- dggema769-chm.china.huawei.com (10.1.198.211) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 18 Jun 2021 15:57:13 +0800
-Subject: Re: [PATCH -next] crypto: sl3516 - Fix build warning without
- CONFIG_PM
-To:     LABBE Corentin <clabbe@baylibre.com>
-CC:     <ulli.kroll@googlemail.com>, <linus.walleij@linaro.org>,
-        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210617035129.4948-1-yuehaibing@huawei.com>
- <YMtHcruTqo3WE+g6@Red>
-From:   YueHaibing <yuehaibing@huawei.com>
-Message-ID: <00d33044-8101-bc41-ac02-90517c13f19a@huawei.com>
-Date:   Fri, 18 Jun 2021 15:57:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Fri, 18 Jun 2021 03:59:34 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7B5AD1FDE7;
+        Fri, 18 Jun 2021 07:57:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624003044; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=00PGLHSy+8q9cRmQ8fgZXfLgJHGTi7QAl5WB49PoiEY=;
+        b=NlPIItnwAI7vEYQyT3Nf6AimO6jm0zVj46b/cqshLivcLlvrDhFn1TpBPyRB4cwwL/BRI7
+        SrQLjSyqffKPvMgRaPwtP7YHRL/nf2rfQZMpyoq9L68ugkg8HeIL4kSnNWvmffzQS/Yln1
+        hxvOWCC6jp5yTgkVoWer1VVCK+kp1/o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624003044;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=00PGLHSy+8q9cRmQ8fgZXfLgJHGTi7QAl5WB49PoiEY=;
+        b=BWmbx4uWUUSAHrzr4+MS4N6T7M2PNVfdBol3/YMZzHBXWQqKw/6q7LVz0R3JBs3mH/85nE
+        Y/GtZbc80bG/CEDQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 1EB6E118DD;
+        Fri, 18 Jun 2021 07:57:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624003044; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=00PGLHSy+8q9cRmQ8fgZXfLgJHGTi7QAl5WB49PoiEY=;
+        b=NlPIItnwAI7vEYQyT3Nf6AimO6jm0zVj46b/cqshLivcLlvrDhFn1TpBPyRB4cwwL/BRI7
+        SrQLjSyqffKPvMgRaPwtP7YHRL/nf2rfQZMpyoq9L68ugkg8HeIL4kSnNWvmffzQS/Yln1
+        hxvOWCC6jp5yTgkVoWer1VVCK+kp1/o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624003044;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=00PGLHSy+8q9cRmQ8fgZXfLgJHGTi7QAl5WB49PoiEY=;
+        b=BWmbx4uWUUSAHrzr4+MS4N6T7M2PNVfdBol3/YMZzHBXWQqKw/6q7LVz0R3JBs3mH/85nE
+        Y/GtZbc80bG/CEDQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id mCyyBeRRzGCGVAAALh3uQQ
+        (envelope-from <jroedel@suse.de>); Fri, 18 Jun 2021 07:57:24 +0000
+Date:   Fri, 18 Jun 2021 09:57:22 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] iommu/vt-d: Fix W=1 clang warning in intel/perf.c
+Message-ID: <YMxR4ggRGZQZbiz1@suse.de>
+References: <20210617145339.2692-1-joro@8bytes.org>
+ <CAKwvOd=8jUsRFKg6+sqq2-DakbRBGR6Z6mR_smuxp+cMEmCHLw@mail.gmail.com>
+ <YMuw+LtM/B1QTTJI@suse.de>
+ <32f14288-315a-b75d-913b-2fc6a16cd748@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <YMtHcruTqo3WE+g6@Red>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <32f14288-315a-b75d-913b-2fc6a16cd748@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/17 21:00, LABBE Corentin wrote:
-> Le Thu, Jun 17, 2021 at 11:51:29AM +0800, YueHaibing a écrit :
->> drivers/crypto/gemini/sl3516-ce-core.c:345:12:
->>  warning: ‘sl3516_ce_pm_resume’ defined but not used [-Wunused-function]
->>  static int sl3516_ce_pm_resume(struct device *dev)
->>             ^~~~~~~~~~~~~~~~~~~
->>
->> Use #ifdef macro to guard this.
->>
->> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
->> ---
->>  drivers/crypto/gemini/sl3516-ce-core.c | 2 ++
->>  1 file changed, 2 insertions(+)
->>
-> 
-> Hello
-> 
-> Thanks for the report, but I am sorry and need to NAK this patch.
-> 
-> The driver needs PM, without it, clock and resets are never set.
-> The correct fix is to add "depends on PM".
+On Thu, Jun 17, 2021 at 01:51:24PM -0700, Nathan Chancellor wrote:
+> kernel-doc is run automatically with W=1, regardless of gcc versus clang.
 
-Ok, v2 on the way, thanks.
+I see, thanks. Will update the commit message.
 
-> 
-> Regards
-> .
-> 
+Thanks,
+
+	Joerg
