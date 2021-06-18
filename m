@@ -2,130 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C494C3AD358
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 22:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C07F93AD35A
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 22:05:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232387AbhFRUHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 16:07:52 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:55278 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229768AbhFRUHu (ORCPT
+        id S232835AbhFRUH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 16:07:56 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8698 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232357AbhFRUHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 16:07:50 -0400
-Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:33072 helo=[192.168.1.179])
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1luKkD-0008K1-VF; Fri, 18 Jun 2021 16:05:38 -0400
-Message-ID: <b8327afcd3ba1d9a2d2def40343efb2e79c489b7.camel@trillion01.com>
-Subject: Re: [PATCH] coredump: Limit what can interrupt coredumps
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Pavel Begunkov>" <asml.silence@gmail.com>
-Date:   Fri, 18 Jun 2021 16:05:36 -0400
-In-Reply-To: <87v96dd1gz.fsf@disp2133>
-References: <CAHk-=wjC7GmCHTkoz2_CkgSc_Cgy19qwSQgJGXz+v2f=KT3UOw@mail.gmail.com>
-         <198e912402486f66214146d4eabad8cb3f010a8e.camel@trillion01.com>
-         <87eeda7nqe.fsf@disp2133>
-         <b8434a8987672ab16f9fb755c1fc4d51e0f4004a.camel@trillion01.com>
-         <87pmwt6biw.fsf@disp2133> <87czst5yxh.fsf_-_@disp2133>
-         <CAHk-=wiax83WoS0p5nWvPhU_O+hcjXwv6q3DXV8Ejb62BfynhQ@mail.gmail.com>
-         <87y2bh4jg5.fsf@disp2133>
-         <CAHk-=wjPiEaXjUp6PTcLZFjT8RrYX+ExtD-RY3NjFWDN7mKLbw@mail.gmail.com>
-         <87sg1p4h0g.fsf_-_@disp2133> <20210614141032.GA13677@redhat.com>
-         <87pmwmn5m0.fsf@disp2133>
-         <4163ed48afbcb1c288b366fe2745205cd66bea3d.camel@trillion01.com>
-         <87v96dd1gz.fsf@disp2133>
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.2 
+        Fri, 18 Jun 2021 16:07:54 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15IK525m053681;
+        Fri, 18 Jun 2021 16:05:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=2nTcRrb+LP3a3HBH5DQjGcwYoM6+yiDCY4R/OtVw6rU=;
+ b=E8w9JDdRLTPvxPDsKWEP9EfYZEmCp35s+jHlezZWHhyfewpNXZYC5SVOrSv3RDhtKuM+
+ dfegAL03fep6wjitft6tQ1X8yldDTSXKT+4xC1HSrp2+BIMv/gT6zku/WBMI8R5+AfeS
+ YpjPMVeE99xjlSWnrlElOPB1KnqaLr1vuVHUUyqVrqaQqwRK8F5M6FwM8vQ7ACGz6+1Z
+ WCeXs79FVLhBuKGaIn/WcH160NzyloCJA5R4HU10SITirnfPsHCbm1LM8+3/YJYDCoD3
+ gMMT/BD20/3dKm7EBQZKJzpoMRhQKHcVxIy29n/xiQ4xvpgJu30XspAyQCenGrlTLSNf zA== 
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3991ngrwht-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Jun 2021 16:05:41 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15IJwD5C015439;
+        Fri, 18 Jun 2021 20:05:41 GMT
+Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
+        by ppma03wdc.us.ibm.com with ESMTP id 394mjabvw4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Jun 2021 20:05:41 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15IK5eae31588790
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 18 Jun 2021 20:05:40 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D0617AE05C;
+        Fri, 18 Jun 2021 20:05:40 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 99FCBAE05F;
+        Fri, 18 Jun 2021 20:05:40 +0000 (GMT)
+Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.128.252])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 18 Jun 2021 20:05:40 +0000 (GMT)
+Subject: Re: [PATCH v2] s390/vfio-ap: Fix module unload memory leak of
+ matrix_dev
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Jason J. Herne" <jjherne@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pasic@linux.ibm.com
+References: <20210618171255.2025-1-jjherne@linux.ibm.com>
+ <af3d6c67-e045-770f-82ff-dd8e691c1317@linux.ibm.com>
+ <20210618182336.GJ1002214@nvidia.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <1a951d33-e1bc-d23f-36e1-4987c661c7a9@linux.ibm.com>
+Date:   Fri, 18 Jun 2021 16:05:40 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+In-Reply-To: <20210618182336.GJ1002214@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: XKEs9Hqze12ivyN5XsbkxukNql5pbfBp
+X-Proofpoint-GUID: XKEs9Hqze12ivyN5XsbkxukNql5pbfBp
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-18_11:2021-06-18,2021-06-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 phishscore=0 mlxlogscore=999 mlxscore=0 lowpriorityscore=0
+ impostorscore=0 adultscore=0 clxscore=1015 spamscore=0 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106180117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-06-16 at 15:00 -0500, Eric W. Biederman wrote:
-> Olivier Langlois <olivier@trillion01.com> writes:
-> 
-> > I redid my test but this time instead of dumping directly into a
-> > file,
-> > I did let the coredump be piped to the systemd coredump module and
-> > the
-> > coredump generation isn't working as expected when piping.
-> > 
-> > So your code review conclusions are correct.
-> 
-> Thank you for confirming that.
-> 
-> Do you know how your test program is using io_uring?
-> 
-> I have been trying to put the pieces together on what io_uring is
-> doing
-> that stops the coredump.  The fact that it takes a little while
-> before
-> it kills the coredump is a little puzzling.  The code looks like all
-> of
-> the io_uring operations should have been canceled before the coredump
-> starts.
-> 
-> 
-With a very simple setup, I guess that this could easily be
-reproducible. Make a TCP connection with a server that is streaming
-non-stop data and enter a loop where you keep initiating async
-OP_IOURING_READ operations on your TCP fd.
 
-Once you have that, manually sending a SIG_SEGV is a sure fire way to
-stumble into the problem. This is how I am testing the patches.
 
-IRL, it is possible to call io_uring_enter() to submit operations and
-return from the syscall without waiting on all events to have
-completed. Once the process is back in userspace, if it stumble into a
-bug that triggers a coredump, any remaining pending I/O operations can
-set TIF_SIGNAL_NOTIFY while the coredump is generated.
+On 6/18/21 2:23 PM, Jason Gunthorpe wrote:
+> On Fri, Jun 18, 2021 at 02:11:23PM -0400, Tony Krowiak wrote:
+>>
+>> On 6/18/21 1:12 PM, Jason J. Herne wrote:
+>>> vfio_ap_matrix_dev_release is shadowing the global matrix_dev with a NULL
+>>> pointer. Driver data for the matrix device is never set and so
+>>> dev_get_drvdata() always returns NULL. When release is called we end up
+>>> not freeing matrix_dev. The fix is to remove the shadow variable and get
+>>> the correct pointer from the device using container_of. We'll also NULL
+>>> the global to prevent any future use.
+>>>
+>>> Signed-off-by: Jason J. Herne <jjherne@linux.ibm.com>
+>>>    drivers/s390/crypto/vfio_ap_drv.c | 5 ++---
+>>>    1 file changed, 2 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/drivers/s390/crypto/vfio_ap_drv.c b/drivers/s390/crypto/vfio_ap_drv.c
+>>> index 7dc72cb718b0..40e66cb363d1 100644
+>>> +++ b/drivers/s390/crypto/vfio_ap_drv.c
+>>> @@ -82,9 +82,8 @@ static void vfio_ap_queue_dev_remove(struct ap_device *apdev)
+>>>    static void vfio_ap_matrix_dev_release(struct device *dev)
+>>>    {
+>>> -	struct ap_matrix_dev *matrix_dev = dev_get_drvdata(dev);
+>>> -
+>>> -	kfree(matrix_dev);
+>>> +	kfree(container_of(dev, struct ap_matrix_dev, device));
+>> I suppose if we're not going to assume that the release is being
+>> called to free the global matrix_dev, then if you are going to
+>> retrieve it using container_of(), then maybe we should verify
+>> the retrieved pointer is the same as the global matrix_dev?
+> That seems like overkill to me
 
-I have read the part of your previous email where you share the result
-of your ongoing investigation. I didn't comment as the definitive
-references in io_uring matters are Jens and Pavel but I am going to
-share my opinion on the matter.
+After thinking about it, it's probably more than overkill as I
+assume the container_of() function would fail if dev was
+not contained in matrix_mdev:
 
-I think that you did put the finger on the code cleaning up the
-io_uring instance in regards to pending operations. It seems to be
-io_uring_release() which is probably called from exit_files() which
-happens to be after the call to exit_mm().
+Reviewed-by: Tony Krowiak <akrowiak@linux.ibm.com>
 
-At first, I did entertain the idea of considering if it could be
-possible to duplicate some of the operations performed by
-io_uring_release() related to the infamous TIF_SIGNAL_NOTIFY setting
-into io_uring_files_cancel() which is called before exit_mm().
-
-but the idea is useless as it is not the other threads of the group
-that are causing the TIF_SIGNAL_NOTIFY problem. It is the thread
-calling do_coredump() which is done by the signal handing code even
-before that thread enters do_exit() and start to be cleaned up. That
-thread when it enters do_coredump() is still fully loaded and
-operational in terms of io_uring functionality.
-
-I guess that this io_uring cancel all pending operations hook would
-have to be called from do_coredump or from get_signal() but if it is
-the way to go, I feel that this is a change major enough that wouldn't
-dare going there without the blessing of the maintainers in cause....
-
+>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+>
+> Jason
 
