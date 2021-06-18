@@ -2,90 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6EF3AC6CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D1E3AC6DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233114AbhFRJKJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 05:10:09 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:48425 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233080AbhFRJKG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 05:10:06 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-231-kCri9fpRP8m35SUQHdVvyg-1; Fri, 18 Jun 2021 10:07:54 +0100
-X-MC-Unique: kCri9fpRP8m35SUQHdVvyg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Fri, 18 Jun
- 2021 10:07:53 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.018; Fri, 18 Jun 2021 10:07:53 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Krzysztof Kozlowski' <krzysztof.kozlowski@canonical.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Christoph Hellwig <hch@lst.de>, Jessica Yu <jeyu@kernel.org>
-Subject: RE: [PATCH 5.4 031/184] modules: inherit TAINT_PROPRIETARY_MODULE
-Thread-Topic: [PATCH 5.4 031/184] modules: inherit TAINT_PROPRIETARY_MODULE
-Thread-Index: AQHXZB/50QaIqTZSLEykqrpaWct/h6sZeMHQ
-Date:   Fri, 18 Jun 2021 09:07:53 +0000
-Message-ID: <5ac70bdf2c5b440c83f12e75ca42a107@AcuMS.aculab.com>
-References: <20210510101950.200777181@linuxfoundation.org>
- <20210510101951.249384110@linuxfoundation.org>
- <8edc6f45-6c42-19c7-6f40-6f1a49cc685b@canonical.com>
-In-Reply-To: <8edc6f45-6c42-19c7-6f40-6f1a49cc685b@canonical.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S233632AbhFRJNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 05:13:48 -0400
+Received: from srv6.fidu.org ([159.69.62.71]:56508 "EHLO srv6.fidu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232184AbhFRJNo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 05:13:44 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id AE2D8C800B7;
+        Fri, 18 Jun 2021 11:11:30 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id zQ1WkbLuMcXL; Fri, 18 Jun 2021 11:11:30 +0200 (CEST)
+Received: from wsembach-tuxedo.fritz.box (p200300e37f3949001760E5710682cA7E.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:4900:1760:e571:682:ca7e])
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPA id 3F4B5C800B3;
+        Fri, 18 Jun 2021 11:11:29 +0200 (CEST)
+From:   Werner Sembach <wse@tuxedocomputers.com>
+To:     harry.wentland@amd.com, sunpeng.li@amd.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, jani.nikula@linux.intel.com,
+        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org
+Subject: [PATCH v4 00/17] New uAPI drm properties for color management
+Date:   Fri, 18 Jun 2021 11:10:59 +0200
+Message-Id: <20210618091116.14428-1-wse@tuxedocomputers.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogS3J6eXN6dG9mIEtvemxvd3NraQ0KPiBTZW50OiAxOCBKdW5lIDIwMjEgMDk6NTcNCj4g
-DQo+IE9uIDEwLzA1LzIwMjEgMTI6MTgsIEdyZWcgS3JvYWgtSGFydG1hbiB3cm90ZToNCj4gPiBG
-cm9tOiBDaHJpc3RvcGggSGVsbHdpZyA8aGNoQGxzdC5kZT4NCj4gPg0KPiA+IGNvbW1pdCAyNjJl
-NmFlNzA4MWRmMzA0ZmM2MjVjZjM2OGQ1YzJjYmJhMmJiOTkxIHVwc3RyZWFtLg0KPiA+DQo+ID4g
-SWYgYSBUQUlOVF9QUk9QUklFVEFSWV9NT0RVTEUgZXhwb3J0cyBzeW1ib2wsIGluaGVyaXQgdGhl
-IHRhaW50IGZsYWcNCj4gPiBmb3IgYWxsIG1vZHVsZXMgaW1wb3J0aW5nIHRoZXNlIHN5bWJvbHMs
-IGFuZCBkb24ndCBhbGxvdyBsb2FkaW5nDQo+ID4gc3ltYm9scyBmcm9tIFRBSU5UX1BST1BSSUVU
-QVJZX01PRFVMRSBtb2R1bGVzIGlmIHRoZSBtb2R1bGUgcHJldmlvdXNseQ0KPiA+IGltcG9ydGVk
-IGdwbG9ubHkgc3ltYm9scy4gIEFkZCBhIGFudGktY2lyY3VtdmVudGlvbiBkZXZpY2VzIHNvIHBl
-b3BsZQ0KPiA+IGRvbid0IGFjY2lkZW50YWxseSBnZXQgdGhlbXNlbHZlcyBpbnRvIHRyb3VibGUg
-dGhpcyB3YXkuDQo+ID4NCj4gPiBDb21tZW50IGZyb20gR3JlZzoNCj4gPiAgICJBaCwgdGhlIHBy
-b3Zlbi10by1iZS1pbGxlZ2FsICJHUEwgQ29uZG9tIiBkZWZlbnNlIDopIg0KPiANCj4gUGF0Y2gg
-Z290IGluIHRvIHN0YWJsZSwgc28gbXkgY29tbWVudHMgYXJlIHF1aXRlIGxhdGUsIGJ1dCBjYW4g
-c29tZW9uZQ0KPiBleHBsYWluIG1lIC0gaG93IHRoaXMgaXMgYSBzdGFibGUgbWF0ZXJpYWw/IFdo
-YXQgc3BlY2lmaWMsIHJlYWwgYnVnIHRoYXQNCj4gYm90aGVycyBwZW9wbGUsIGlzIGJlaW5nIGZp
-eGVkIGhlcmU/IE9yIG1heWJlIGl0IGZpeGVzIHNlcmlvdXMgaXNzdWUNCj4gcmVwb3J0ZWQgYnkg
-YSB1c2VyIG9mIGRpc3RyaWJ1dGlvbiBrZXJuZWw/IElPVywgaG93IGRvZXMgdGhpcyBtYXRjaA0K
-PiBzdGFibGUga2VybmVsIHJ1bGVzIGF0IGFsbD8NCj4gDQo+IEZvciBzdXJlIGl0IGJyZWFrcyBz
-b21lIG91dC1vZi10cmVlIG1vZHVsZXMgYWxyZWFkeSBwcmVzZW50IGFuZCB1c2VkIGJ5DQo+IGN1
-c3RvbWVycyBvZiBkb3duc3RyZWFtIHN0YWJsZSBrZXJuZWxzLiBUaGVyZWZvcmUgSSB3b25kZXIg
-d2hhdCBpcyB0aGUNCj4gYnVnIGZpeGVkIGhlcmUsIHNvIHRoZSBicmVha2FnZSBhbmQgYW5ub3lh
-bmNlIG9mIHN0YWJsZSB1c2VycyBpcyBqdXN0aWZpZWQuDQoNCkl0IGFsc28gZG9lc24ndCBzdG9w
-IG5vbi1ncGwgb3V0LW9mLXRyZWUgbW9kdWxlcyBkb2luZyBhbnl0aGluZy4NClRoZXkganVzdCBo
-YXZlIHRvIGJlIHJlb3JnYW5pemVkIHdpdGggYSAnYmFzZScgR1BMIG1vZHVsZSB0aGF0DQppbmNs
-dWRlcyB3cmFwcGVycyBmb3IgYWxsIHRoZSBncGxvbmx5IHN5bWJvbHMgYW5kIHRoZW4gYWxsDQp0
-aGUgcmVzdCBvZiB0aGUgbW9kdWxlcyBjYW4gYmUgbm9uLWdwbC4NCg0KVGhpcyBtZWFucyB0aGF0
-IGRyaXZlcnMgdGhhdCB3ZXJlIG1hcmtlZCBncGwgbm8gbG9uZ2VyIG5lZWQgdG8NCmJlIGJlY2F1
-c2UgdGhleSBub3cgdXNlIHRoZSB3cmFwcGVycy4NCg0KU28gaXQgaXMganVzdCBhbiBhbm5veWFu
-Y2UuDQoNCkZvcnR1bmF0ZWx5IG91ciBtYWluIG91dC1vZi10cmVlIGRyaXZlcnMgZG9uJ3QgdXNl
-IGFueSBHUEwgYml0cw0KYXQgYWxsIC0gc28gdGhpcyBjaGFuZ2UgZG9lc24ndCBhZmZlY3Qgb3Vy
-IGN1c3RvbWVyIHJlbGVhc2VzLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExh
-a2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQs
-IFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+Implementation of https://lkml.org/lkml/2021/5/12/764 now feature complete
+albeit not fully tested.
+
+I have not yet corrected the DSC behavior and double checked the dithering
+behavior. I release the feature complete patch series now anyways so that
+work on the userspace implementation can start.
+
+I have no DP MST splitter at hand. I tried my best to not break anything,
+but if one who has one could test it would be very helpful.
+
+amdgpu in the former implementation was full color range only, albeit there
+was a path prepared for limited color range on both rgb and ycbcr encoding,
+which was never selected however. With the Broadcast RGB property, a user
+can now select this program path.
+
+On i915 Broadcast RGB still only affects rgb as ycbcr was and is always
+limited with this driver, which I didn't change.
+
+gma500 driver still uses it's own implementation of the "Broadcast RGB"
+property, which doesn't have an "Automatic" setting. I too didn't touch
+this as I can't test a corresponding card.
+
 
