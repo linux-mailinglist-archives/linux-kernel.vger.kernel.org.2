@@ -2,172 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB603AD101
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB913AD106
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236048AbhFRRQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 13:16:28 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:5361 "EHLO pegase1.c-s.fr"
+        id S236062AbhFRRRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 13:17:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:44460 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232598AbhFRRQW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 13:16:22 -0400
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4G65BC2JzFzBF8j;
-        Fri, 18 Jun 2021 19:14:11 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id vFQ9Fjr9vo63; Fri, 18 Jun 2021 19:14:11 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4G65BC1F6JzBF8S;
-        Fri, 18 Jun 2021 19:14:11 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id E461E8B84F;
-        Fri, 18 Jun 2021 19:14:10 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 2wpqGmPr9Fdb; Fri, 18 Jun 2021 19:14:10 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8CB7F8B84E;
-        Fri, 18 Jun 2021 19:14:09 +0200 (CEST)
-Subject: Re: [PATCH for 4.16 v7 02/11] powerpc: membarrier: Skip memory
- barrier in switch_mm()
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        id S232598AbhFRRRF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 13:17:05 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AA8541424;
+        Fri, 18 Jun 2021 10:14:55 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB7143F70D;
+        Fri, 18 Jun 2021 10:14:52 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 18:14:50 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     YT Chang <yt.chang@mediatek.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
         Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Maged Michael <maged.michael@gmail.com>,
-        Dave Watson <davejwatson@fb.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        David Sehr <sehr@google.com>,
-        Paul Mackerras <paulus@samba.org>,
-        "H . Peter Anvin" <hpa@zytor.com>, linux-arch@vger.kernel.org,
-        x86@kernel.org, Andrew Hunter <ahh@google.com>,
-        Greg Hackmann <ghackmann@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        "Paul E . McKenney" <paulmck@linux.vnet.ibm.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Avi Kivity <avi@scylladb.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org, Nicholas Piggin <npiggin@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <20180129202020.8515-1-mathieu.desnoyers@efficios.com>
- <20180129202020.8515-3-mathieu.desnoyers@efficios.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <8b200dd5-f37b-b208-82fb-2775df7bcd49@csgroup.eu>
-Date:   Fri, 18 Jun 2021 19:13:59 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Paul Turner <pjt@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com
+Subject: Re: [PATCH 1/1] sched: Add tunable capacity margin for fis_capacity
+Message-ID: <20210618171450.c5tgggydukcmap5v@e107158-lin.cambridge.arm.com>
+References: <1623855954-6970-1-git-send-email-yt.chang@mediatek.com>
 MIME-Version: 1.0
-In-Reply-To: <20180129202020.8515-3-mathieu.desnoyers@efficios.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1623855954-6970-1-git-send-email-yt.chang@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi YT Chang
 
+Thanks for the patch.
 
-Le 29/01/2018 à 21:20, Mathieu Desnoyers a écrit :
-> Allow PowerPC to skip the full memory barrier in switch_mm(), and
-> only issue the barrier when scheduling into a task belonging to a
-> process that has registered to use expedited private.
+On 06/16/21 23:05, YT Chang wrote:
+> Currently, the margin of cpu frequency raising and cpu overutilized are
+> hard-coded as 25% (1280/1024). Make the margin tunable
+
+The way I see cpu overutilized is that we check if we're above the 80% range.
+
+> to control the aggressive for placement and frequency control. Such as
+> for power tuning framework could adjust smaller margin to slow down
+> frequency raising speed and let task stay in smaller cpu.
 > 
-> Threads targeting the same VM but which belong to different thread
-> groups is a tricky case. It has a few consequences:
+> For light loading scenarios, like beach buggy blitz and messaging apps,
+> the app threads are moved big core with 25% margin and causing
+> unnecessary power.
+> With 0% capacity margin (1024/1024), the app threads could be kept in
+> little core and deliver better power results without any fps drop.
 > 
-> It turns out that we cannot rely on get_nr_threads(p) to count the
-> number of threads using a VM. We can use
-> (atomic_read(&mm->mm_users) == 1 && get_nr_threads(p) == 1)
-> instead to skip the synchronize_sched() for cases where the VM only has
-> a single user, and that user only has a single thread.
+> capacity margin        0%          10%          20%          30%
+>                      current        current       current      current
+>                   Fps  (mA)    Fps    (mA)   Fps   (mA)    Fps  (mA)
+> Beach buggy blitz  60 198.164  60   203.211  60   209.984  60  213.374
+> Yahoo browser      60 232.301 59.97 237.52  59.95 248.213  60  262.809
 > 
-> It also turns out that we cannot use for_each_thread() to set
-> thread flags in all threads using a VM, as it only iterates on the
-> thread group.
-> 
-> Therefore, test the membarrier state variable directly rather than
-> relying on thread flags. This means
-> membarrier_register_private_expedited() needs to set the
-> MEMBARRIER_STATE_PRIVATE_EXPEDITED flag, issue synchronize_sched(), and
-> only then set MEMBARRIER_STATE_PRIVATE_EXPEDITED_READY which allows
-> private expedited membarrier commands to succeed.
-> membarrier_arch_switch_mm() now tests for the
-> MEMBARRIER_STATE_PRIVATE_EXPEDITED flag.
+> Change-Id: Iba48c556ed1b73c9a2699e9e809bc7d9333dc004
+> Signed-off-by: YT Chang <yt.chang@mediatek.com>
+> ---
 
-Looking at switch_mm_irqs_off(), I found it more complex than expected and found that this patch is 
-the reason for that complexity.
+We are aware of the cpu overutilized value not being adequate on some modern
+platforms. But I haven't considered or seen any issues with the frequency one.
+So the latter is an interesting one.
 
-Before the patch (ie in kernel 4.14), we have:
+I like your patch, but sadly I can't agree with it too.
 
-00000000 <switch_mm_irqs_off>:
-    0:	81 24 01 c8 	lwz     r9,456(r4)
-    4:	71 29 00 01 	andi.   r9,r9,1
-    8:	40 82 00 1c 	bne     24 <switch_mm_irqs_off+0x24>
-    c:	39 24 01 c8 	addi    r9,r4,456
-   10:	39 40 00 01 	li      r10,1
-   14:	7d 00 48 28 	lwarx   r8,0,r9
-   18:	7d 08 53 78 	or      r8,r8,r10
-   1c:	7d 00 49 2d 	stwcx.  r8,0,r9
-   20:	40 c2 ff f4 	bne-    14 <switch_mm_irqs_off+0x14>
-   24:	7c 04 18 40 	cmplw   r4,r3
-   28:	81 24 00 24 	lwz     r9,36(r4)
-   2c:	91 25 04 4c 	stw     r9,1100(r5)
-   30:	4d 82 00 20 	beqlr
-   34:	48 00 00 00 	b       34 <switch_mm_irqs_off+0x34>
-			34: R_PPC_REL24	switch_mmu_context
+The dilemma is that there are several options forward based on what we've seen
+vendors do/want:
 
+	1. Modify the margin to be small for high end SoC and larger for lower
+	   end ones. Which is what your patch allows.
+	2. Some vendors have a per cluster (perf domain) value. So within the
+	   same SoC different margins are used for each capacity level.
+	3. Some vendors have asymmetric margin. A margin to move up and a
+	   different margin to go down.
 
-After the patch (ie in 5.13-rc6), that now is:
+We're still not sure which approach is the best way forward.
 
-00000000 <switch_mm_irqs_off>:
-    0:	81 24 02 18 	lwz     r9,536(r4)
-    4:	71 29 00 01 	andi.   r9,r9,1
-    8:	41 82 00 24 	beq     2c <switch_mm_irqs_off+0x2c>
-    c:	7c 04 18 40 	cmplw   r4,r3
-   10:	81 24 00 24 	lwz     r9,36(r4)
-   14:	91 25 04 d0 	stw     r9,1232(r5)
-   18:	4d 82 00 20 	beqlr
-   1c:	81 24 00 28 	lwz     r9,40(r4)
-   20:	71 29 00 0a 	andi.   r9,r9,10
-   24:	40 82 00 34 	bne     58 <switch_mm_irqs_off+0x58>
-   28:	48 00 00 00 	b       28 <switch_mm_irqs_off+0x28>
-			28: R_PPC_REL24	switch_mmu_context
-   2c:	39 24 02 18 	addi    r9,r4,536
-   30:	39 40 00 01 	li      r10,1
-   34:	7d 00 48 28 	lwarx   r8,0,r9
-   38:	7d 08 53 78 	or      r8,r8,r10
-   3c:	7d 00 49 2d 	stwcx.  r8,0,r9
-   40:	40 a2 ff f4 	bne     34 <switch_mm_irqs_off+0x34>
-   44:	7c 04 18 40 	cmplw   r4,r3
-   48:	81 24 00 24 	lwz     r9,36(r4)
-   4c:	91 25 04 d0 	stw     r9,1232(r5)
-   50:	4d 82 00 20 	beqlr
-   54:	48 00 00 00 	b       54 <switch_mm_irqs_off+0x54>
-			54: R_PPC_REL24	switch_mmu_context
-   58:	2c 03 00 00 	cmpwi   r3,0
-   5c:	41 82 ff cc 	beq     28 <switch_mm_irqs_off+0x28>
-   60:	48 00 00 00 	b       60 <switch_mm_irqs_off+0x60>
-			60: R_PPC_REL24	switch_mmu_context
+Your patch allows 1, but if it turned out options 2 or 3 are better; the ABI
+will make it hard to change.
 
+Have you considered all these options? Do you have any data to help support
+1 is enough for the range of platforms you work with at least?
 
-Especially, the comparison of 'prev' to 0 is pointless as both cases end up with just branching to 
-'switch_mmu_context'
+We were considering also whether we can have a smarter logic to automagically
+set a better value for the platform, but no concrete suggestions yet.
 
-I don't understand all that complexity to just replace a simple 'smp_mb__after_unlock_lock()'.
+So while I agree the current margin value of one size fits all is no longer
+suitable. But the variation of hardware and the possible approaches we could
+take need more careful thinking and consideration before committing to an ABI.
 
-#define smp_mb__after_unlock_lock()	smp_mb()
-#define smp_mb()	barrier()
-# define barrier() __asm__ __volatile__("": : :"memory")
+This patch is a good start for this discussion :)
 
-
-Am I missing some subtility ?
 
 Thanks
-Christophe
+
+--
+Qais Yousef
