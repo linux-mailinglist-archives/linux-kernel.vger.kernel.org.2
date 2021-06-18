@@ -2,113 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D9B3AC4AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:07:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C2423AC4AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233062AbhFRHJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 03:09:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbhFRHJe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 03:09:34 -0400
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA12C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 00:07:25 -0700 (PDT)
-Received: by mail-vs1-xe2b.google.com with SMTP id b1so4437244vsh.7
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 00:07:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tlodzRLKjYsmSIvJvfyHmyRZLG20ROka1PyN+VfwfnY=;
-        b=mdFl213r1n1uA6uKofvIKHWo5sizoJZyxajbWz27X3DF1VPnIRBBR8iCB7pGgabrWv
-         0JKDQLz2F+SRodYFTB4NF/9URm8CCY9XPrzZ1jV7oFeOJOBt9hKPZOhLFvkyBXgOXhd8
-         hA8SqcnfTAKYGkMOMHfAzHP2bOY32bYG7Hw8g=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tlodzRLKjYsmSIvJvfyHmyRZLG20ROka1PyN+VfwfnY=;
-        b=mRLAkL8CqPMc4VPaUlXgLO6At/zB8WzuzJOcYdIvB10joQLb14mde3U8MRdkrvqMbD
-         dHBG1eGMWJwrfYXfo9aGign7NnLSWENE8UKmDKRALDqGf0dNsv3aNXH/vVW4tIVYRvbD
-         UTXu312LenPVU4+XNI2WnYtJM/L3vUsiv7KWLQZSqNBhGTiBKwTRh46yp20FVQvZ3a6D
-         xMuA0Z8H4mxy3IPg0zbEwtnOKMSS9CvUvx6qQ9P3+GmSlGHTgBEJQ+CgULJm6NYnud1F
-         /aUS3Q9smOSawf33dSViKJWLZPy5CuYBU4bmu0oeA+vT7RRIt8vk+i3PFw9AE4rs4p+s
-         s23A==
-X-Gm-Message-State: AOAM532GL/IXnFeONx4G8cGPTcIYt454QHGX4y4ucOnO/3hFsjKKD/Qv
-        veX5QpYyYLxdLjGmZ+BeCUgF54disImhK3I36rsjSQ==
-X-Google-Smtp-Source: ABdhPJyvf5sruheatAks9eE+EGnBl6isJKiLy/2d9eFZrcjA+lnmitpD0wWr1RLBJMvgKuMZ7wE0T+qIjzgo250CRGI=
-X-Received: by 2002:a67:bb14:: with SMTP id m20mr5468628vsn.0.1624000045114;
- Fri, 18 Jun 2021 00:07:25 -0700 (PDT)
+        id S233056AbhFRHJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 03:09:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46158 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232316AbhFRHJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 03:09:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 465FF6100A;
+        Fri, 18 Jun 2021 07:07:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624000040;
+        bh=3tn+mKttIhl6B6aZ+Em2tVtX8FIsTpCZn3isL59O8XA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=fYUuucuXybx9Cj6rRgXrnwP6OX92aZMtUezV4uFUr/lIdBX44tTYXZuyfAuxlB8bW
+         L6l29aClqpEpL+OY/CpNTWKcNEOy0SKpysS3AUBHTkLQAS7W/WP7BVIzS8Mlt0GXO6
+         PFyxEyw6pLSSex65itU4+QktY8/iVuEB8RZgTfrEH+c9hih99RujGQC+BOm0us/+gI
+         CkBKPkYlTc/0StD/2COWAda1zWGJz21+2Yt63FPlJZTpxwyEb+Kgp2O6LyNYRwG9CO
+         yQwvGRURTZsNOkafL/cqavAsNvMpZ7eIzQ7IwoU0IYqC3l155hhMKhdSDkvX96zPJj
+         nCo04txgC/TJA==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+        Daniel Xu <dxu@dxuuu.xyz>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, kuba@kernel.org, mingo@redhat.com,
+        ast@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        yhs@fb.com, linux-ia64@vger.kernel.org,
+        Abhishek Sagar <sagar.abhishek@gmail.com>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Subject: [PATCH -tip v8 12/13] tracing: Show kretprobe unknown indicator only for kretprobe_trampoline
+Date:   Fri, 18 Jun 2021 16:07:17 +0900
+Message-Id: <162400003685.506599.13956516484858326490.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <162399992186.506599.8457763707951687195.stgit@devnote2>
+References: <162399992186.506599.8457763707951687195.stgit@devnote2>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-References: <20210614174454.903555-1-vgoyal@redhat.com> <20210614174454.903555-2-vgoyal@redhat.com>
-In-Reply-To: <20210614174454.903555-2-vgoyal@redhat.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 18 Jun 2021 09:07:14 +0200
-Message-ID: <CAJfpeguD+F3Ai01=-JYNTKS4LP4d879=+8T7eOBewZpevTRbJg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] init/do_mounts.c: Add a path to boot from tag
- based filesystems
-To:     Vivek Goyal <vgoyal@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        Richard Weinberger <richard.weinberger@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        v9fs-developer@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Jun 2021 at 19:45, Vivek Goyal <vgoyal@redhat.com> wrote:
->
-> We want to be able to mount virtiofs as rootfs and pass appropriate
-> kernel command line. Right now there does not seem to be a good way
-> to do that. If I specify "root=myfs rootfstype=virtiofs", system
-> panics.
->
-> virtio-fs: tag </dev/root> not found
-> ..
-> ..
-> [ end Kernel panic - not syncing: VFS: Unable to mount root fs on
-> +unknown-block(0,0) ]
->
-> Basic problem here is that kernel assumes that device identifier
-> passed in "root=" is a block device. But there are few execptions
-> to this rule to take care of the needs of mtd, ubi, NFS and CIFS.
->
-> For example, mtd and ubi prefix "mtd:" or "ubi:" respectively.
->
-> "root=mtd:<identifier>" or "root=ubi:<identifier>"
->
-> NFS and CIFS use "root=/dev/nfs" and CIFS passes "root=/dev/cifs" and
-> actual root device details come from filesystem specific kernel
-> command line options.
->
-> virtiofs does not seem to fit in any of the above categories. In fact
-> we have 9pfs which can be used to boot from but it also does not
-> have a proper syntax to specify rootfs and does not fit into any of
-> the existing syntax. They both expect a device "tag" to be passed
-> in a device to be mounted. And filesystem knows how to parse and
-> use "tag".
->
-> So there seem to be a class of filesystems which specify root device
-> using a "tag" which is understood by the filesystem. And filesystem
-> simply expects that "tag" to be passed as "source" of mount and
-> how to mount filesystem using that "tag" is responsibility of filesystem.
->
-> This patch proposes that we internally create a list of filesystems
-> which pass a "tag" in "root=<tag>" and expect that tag to be passed
-> as "source" of mount. With this patch I can boot into virtiofs rootfs
-> with following syntax.
->
-> "root=myfs rootfstype=virtiofs rw"
+ftrace shows "[unknown/kretprobe'd]" indicator all addresses in the
+kretprobe_trampoline, but the modified address by kretprobe should
+be only kretprobe_trampoline+0.
 
-The syntax and the implementation looks good.
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Tested-by: Andrii Nakryik <andrii@kernel.org>
+---
+ kernel/trace/trace_output.c |   17 ++++-------------
+ 1 file changed, 4 insertions(+), 13 deletions(-)
 
-Acked-by: Miklos Szeredi <mszeredi@redhat.com>
+diff --git a/kernel/trace/trace_output.c b/kernel/trace/trace_output.c
+index d0368a569bfa..e46780670742 100644
+--- a/kernel/trace/trace_output.c
++++ b/kernel/trace/trace_output.c
+@@ -8,6 +8,7 @@
+ #include <linux/module.h>
+ #include <linux/mutex.h>
+ #include <linux/ftrace.h>
++#include <linux/kprobes.h>
+ #include <linux/sched/clock.h>
+ #include <linux/sched/mm.h>
+ 
+@@ -346,22 +347,12 @@ int trace_output_call(struct trace_iterator *iter, char *name, char *fmt, ...)
+ }
+ EXPORT_SYMBOL_GPL(trace_output_call);
+ 
+-#ifdef CONFIG_KRETPROBES
+-static inline const char *kretprobed(const char *name)
++static inline const char *kretprobed(const char *name, unsigned long addr)
+ {
+-	static const char tramp_name[] = "kretprobe_trampoline";
+-	int size = sizeof(tramp_name);
+-
+-	if (strncmp(tramp_name, name, size) == 0)
++	if (is_kretprobe_trampoline(addr))
+ 		return "[unknown/kretprobe'd]";
+ 	return name;
+ }
+-#else
+-static inline const char *kretprobed(const char *name)
+-{
+-	return name;
+-}
+-#endif /* CONFIG_KRETPROBES */
+ 
+ void
+ trace_seq_print_sym(struct trace_seq *s, unsigned long address, bool offset)
+@@ -374,7 +365,7 @@ trace_seq_print_sym(struct trace_seq *s, unsigned long address, bool offset)
+ 		sprint_symbol(str, address);
+ 	else
+ 		kallsyms_lookup(address, NULL, NULL, NULL, str);
+-	name = kretprobed(str);
++	name = kretprobed(str, address);
+ 
+ 	if (name && strlen(name)) {
+ 		trace_seq_puts(s, name);
+
