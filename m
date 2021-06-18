@@ -2,147 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C90423ACBDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 033E93ACBE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:15:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232164AbhFRNRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:17:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbhFRNRi (ORCPT
+        id S232981AbhFRNRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:17:49 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:44442 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232895AbhFRNRq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:17:38 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A10C061574;
-        Fri, 18 Jun 2021 06:15:28 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id m2so7787501pgk.7;
-        Fri, 18 Jun 2021 06:15:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Twuar8f1m162HtsR53xfdWJPeS8wU+HnCYEtzd/kDzU=;
-        b=AKX0kcMMvFjzJmYNyo47EZQExEAJf+yPrIVuo6TGfBEcUwYl4fNhCriY/k20JIK0ad
-         h9tdQ0t+SNXkvndqB8KI64u+94DRMjv3+DmrjILrGvaKNdiw9N1wmwyb8YrhJodqtaH7
-         mKEnCulDiPU3f2v3ZNgp/TzXeufjS7GIxJaoD45IjO32u1k8OsALhfkFctz4UKD9Jjc3
-         MS6yqoRcTIM9SXJf1V7ywu415d5WrsYTfiFhf0nOCBMuxioZ2OWrDOWhZkd366fAU13P
-         RXOvAvY5PcADcKwlTzKH84P+hlsvLU9FZZFooubwn+z+kWJ6gKt8HE+lsUVKbTA9fceH
-         cjNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Twuar8f1m162HtsR53xfdWJPeS8wU+HnCYEtzd/kDzU=;
-        b=JUw/GkKYVaehiY0JQ8J7cCDYemsnkkkrC/l8F0a4i7frxnrD1dK4e2CheFVdiE+tuX
-         97zeB7QEvyPBzfwVsyvLaQLX5LgWOaq/tFuTaJFdFsP/bvJuKIUmbGvOWM7NR3CaIhoQ
-         /1MxK78nTY1raIFAvE3z8LyfYx7WrEK47LTqBrAQSYDGy0BtlbOKqPihMfj6vrO/eRQc
-         xe2oIquQ27N7BUuMmajVx4k1UP2Ur5Yb08XwC41/KVTAmQ344Lzi4IrJ6kppVN15SbMI
-         x/wW8rK0ol4RExRSVsR+xuRC09Pdn9LwyBVIaXMoxYXFW5Nc6hxhbGUxIsqKNn2FRXuA
-         9IDw==
-X-Gm-Message-State: AOAM531oZhjP2V3c6P4zs8wTmAIGx7V1de7GpNnOKctMArflA8Er7maV
-        JHa8Z/dzyLtjoNRuq96pnG0RiDBSJaJwnLMD/Nk=
-X-Google-Smtp-Source: ABdhPJyQFLfjGWZTbirdbthO6x+tp600u8Q2ytxfqIv3ETREf+tc28SEiMP3sqX8pv6J4q82AxW8TQe8z6rK8Eq6frs=
-X-Received: by 2002:a63:b00d:: with SMTP id h13mr10126532pgf.74.1624022127826;
- Fri, 18 Jun 2021 06:15:27 -0700 (PDT)
+        Fri, 18 Jun 2021 09:17:46 -0400
+Received: from localhost.localdomain (unknown [IPv6:2a01:e0a:4cb:a870:141f:c87a:873e:7b6f])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: benjamin.gaignard)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 772591F448CC;
+        Fri, 18 Jun 2021 14:15:34 +0100 (BST)
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To:     hverkuil@xs4all.nl, ezequiel@collabora.com, p.zabel@pengutronix.de,
+        mchehab@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com, gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
+        andrzej.p@collabora.com, jc@kynesim.co.uk,
+        jernej.skrabec@gmail.com, nicolas@ndufresne.ca
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH v3 0/8] Additional features for Hantro HEVC
+Date:   Fri, 18 Jun 2021 15:15:18 +0200
+Message-Id: <20210618131526.566762-1-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1624019875-611-1-git-send-email-faiyazm@codeaurora.org>
-In-Reply-To: <1624019875-611-1-git-send-email-faiyazm@codeaurora.org>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 18 Jun 2021 16:15:11 +0300
-Message-ID: <CAHp75VePzuYwHxA4S8UiUKG1uSqpvnJhfajjJkQi1qS-BhHSdg@mail.gmail.com>
-Subject: Re: [PATCH v1] mm: slub: fix the leak of alloc/free traces debugfs interface
-To:     Faiyaz Mohammed <faiyazm@codeaurora.org>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        linux-mm <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg KH <greg@kroah.com>, glittao@gmail.com,
-        vinmenon@codeaurora.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 3:38 PM Faiyaz Mohammed <faiyazm@codeaurora.org> wrote:
->
-> fix the leak of alloc/free traces debugfs interface, reported
+version 3:
+ - Change trace file name to hantro_trace.h
 
-Fix
+version 2:
+ - Fix structure name in ext-ctrls-codec.rst
+ - Define the value for compression storage size
+ - Add comments about registers usage
+ - Add documentation about P010 padding
 
-> by kmemleak like below,
->
-> unreferenced object 0xffff00091ae1b540 (size 64):
->   comm "lsbug", pid 1607, jiffies 4294958291 (age 1476.340s)
->   hex dump (first 32 bytes):
->     02 00 00 00 00 00 00 00 6b 6b 6b 6b 6b 6b 6b 6b  ........kkkkkkkk
->     6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
->   backtrace:
->     [<ffff8000106b06b8>] slab_post_alloc_hook+0xa0/0x418
->     [<ffff8000106b5c7c>] kmem_cache_alloc_trace+0x1e4/0x378
->     [<ffff8000106b5e40>] slab_debugfs_start+0x30/0x50
->     slab_debugfs_start at mm/slub.c:5831
->     [<ffff8000107b3dbc>] seq_read_iter+0x214/0xd50
->     [<ffff8000107b4b84>] seq_read+0x28c/0x418
->     [<ffff8000109560b4>] full_proxy_read+0xdc/0x148
->     [<ffff800010738f24>] vfs_read+0x104/0x340
->     [<ffff800010739ee0>] ksys_read+0xf8/0x1e0
->     [<ffff80001073a03c>] __arm64_sys_read+0x74/0xa8
->     [<ffff8000100358d4>] invoke_syscall.constprop.0+0xdc/0x1d8
->     [<ffff800010035ab4>] do_el0_svc+0xe4/0x298
->     [<ffff800011138528>] el0_svc+0x20/0x30
->     [<ffff800011138b08>] el0t_64_sync_handler+0xb0/0xb8
->     [<ffff80001001259c>] el0t_64_sync+0x178/0x17c
+Basic HEVC support has been added to Hantro driver in this pull request:
+https://www.spinics.net/lists/linux-media/msg193744.html
 
-Can you shrink this a bit?
+Thanks to that it is now possible to support more features for this driver.
 
-> Fixes: 84a2bdb1b458fc968d6d9e07dab388dc679bd747 ("mm: slub: move sysfs slab alloc/free interfaces to debugfs")
+The first patch allow to log the hardware performance per macroblock.
+The second patch makes the driver use compressed reference frames to
+reduce memory bandwidth consumption.
+Patches 3 to 5 allow to decode and produce 10-bits P010 frames.
+Patch 6 make usage of G2 post processor to scale down the frames.
+Patches 7 and 8 add the support of HEVC scaling matrix by adding a new
+control.
 
-We use 12, which is shorter.
+All these patches enhance the HEVC support for Hantro (G2) hardware.
+Unluckily they almost all touch the same pieces of code, where buffer
+size, offset and addresses are set, so they have to be in this order.
+They depend of the series pushed in this pull request:
+https://www.spinics.net/lists/linux-media/msg193744.html
 
-> Link: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/mm/slub.c?h=next-20210617&id=84a2bdb1b458fc968d6d9e07dab388dc679bd747
+Benjamin
 
->
 
-Must be no blank lines in the tag block.
+Benjamin Gaignard (8):
+  media: hantro: Trace hevc hw cycles performance register
+  media: hantro: Add support of compressed reference buffers
+  media: hantro: hevc: Allow 10-bits encoded streams
+  media: Add P010 video format
+  media: hantro: hevc: Allow to produce 10-bit frames
+  media: hantro: enumerate scaled output formats
+  media: hevc: Add scaling matrix control
+  media: hantro: Add scaling lists feature
 
-> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
-
-...
-
->  static void *slab_debugfs_next(struct seq_file *seq, void *v, loff_t *ppos)
->  {
-> -       loff_t *spos = v;
->         struct loc_track *t = seq->private;
->
-> +       v = ppos;
->         if (*ppos < t->count) {
-> -               *ppos = ++*spos;
-> -               return spos;
-> +               ++*ppos;
-> +               return v;
->         }
-> -       *ppos = ++*spos;
-> +       ++*ppos;
->         return NULL;
-
-Can it be
-
-       v = ppos;
-       ++*ppos;
-       if (*ppos <= t->count)
-              return v;
-       return NULL;
-
-?  (basically the question is, is the comparison equivalent in this case or not)
-
->  }
+ .../media/v4l/ext-ctrls-codec.rst             |  45 +++++
+ .../media/v4l/pixfmt-yuv-planar.rst           |  78 +++++++-
+ .../media/v4l/vidioc-queryctrl.rst            |   6 +
+ drivers/media/v4l2-core/v4l2-common.c         |   1 +
+ drivers/media/v4l2-core/v4l2-ctrls-core.c     |   6 +
+ drivers/media/v4l2-core/v4l2-ctrls-defs.c     |   4 +
+ drivers/media/v4l2-core/v4l2-ioctl.c          |   1 +
+ drivers/staging/media/hantro/hantro.h         |   4 +
+ drivers/staging/media/hantro/hantro_drv.c     |  32 ++-
+ .../staging/media/hantro/hantro_g2_hevc_dec.c | 186 ++++++++++++++++--
+ drivers/staging/media/hantro/hantro_g2_regs.h |  12 ++
+ drivers/staging/media/hantro/hantro_hevc.c    |  67 ++++++-
+ drivers/staging/media/hantro/hantro_hw.h      |   7 +
+ drivers/staging/media/hantro/hantro_trace.h   |  39 ++++
+ drivers/staging/media/hantro/hantro_v4l2.c    |  10 +-
+ drivers/staging/media/hantro/imx8m_vpu_hw.c   |   6 +
+ include/media/hevc-ctrls.h                    |  11 ++
+ include/uapi/linux/videodev2.h                |   1 +
+ 18 files changed, 492 insertions(+), 24 deletions(-)
+ create mode 100644 drivers/staging/media/hantro/hantro_trace.h
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.25.1
+
