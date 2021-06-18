@@ -2,206 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1ED63AC47E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E47F53AC4C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:17:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232347AbhFRHFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 03:05:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57606 "EHLO
+        id S233130AbhFRHTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 03:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbhFRHFh (ORCPT
+        with ESMTP id S233081AbhFRHTh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 03:05:37 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C0BC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 00:03:27 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id h12so6999902pfe.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 00:03:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=YHUNoxdGHn4gGZipI5lJSpd5Y8QcYMlV/w2gq+m6IgQ=;
-        b=Dc+Q3L8+z1VbGpvqKsIkQsw0gG0Clvgjh4/fjJa/le3hjr3xQCpO7/2zo6zXqGzWO9
-         raza3LkR+w4vMv/zoaA8AiAshCisDRAktr7NuERGfRmGcUXT/LUoo48rNqIQ5SUUjQ27
-         9lsi07RjmxpQwcVdkglyJjAGcZMgrbi7tc66BVZLBD6XM9m90jMvFliYQhqQjDfa4nhM
-         TEm3kGPEzRvDqcaK6+U88pNvdZzPWsIyvOO3IGtEBKevu7kc8W6Me0d8+tmD4pYhW0ry
-         g3VaZNKbqWse8xNPMAzMUZ3tW0mzN+NIdK2dPj6Ia4dPxFWOlILMFKCnWPZkL6QId+uj
-         x2FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=YHUNoxdGHn4gGZipI5lJSpd5Y8QcYMlV/w2gq+m6IgQ=;
-        b=lWdFEG8e47rcPKmQslkksPDtdXEX6a+Mdiz3rSazSq3+/il+bREQG8PHIbL9pkyif7
-         t6FPg7L82r7sboSBASj+LVEz2tlD74NE4gB0MNlw+eCy42/n6KYTsZFZrkKkmcbVNyjX
-         hqGLwqbPIe1xQ0WiCZZKKbF10gH9ZKxGh2zJ+gArKYzQFykBLKqgo3UCZ9Clr3+gqeFV
-         IWAkP0+sXTuceUMsXGNP/kUNK/IFUpxdoBq0CbNfBH+hlocetn7Aj76yoVQwr3CTqWbE
-         oLUlOcF8O/bmOVESmLEh+wXXfpw+Zosja3ERmXjmPbaVtyzd8u/xa6rSDpJGAU14GNYF
-         P9uQ==
-X-Gm-Message-State: AOAM530noyQZGaPCN8scENq6RzWmF2kDnsPfZUQ0ayz2vvN83muuQ9Yp
-        aJHhLZuc08GM78eme+IJTagi
-X-Google-Smtp-Source: ABdhPJwEF9c9WuD4IG74uLxbVxs0Q+NuvVKOwn3iSWRzUCL/gOb8CkjtG4cn2G69glGyAAHIWtviTQ==
-X-Received: by 2002:a63:4241:: with SMTP id p62mr8949611pga.264.1623999807429;
-        Fri, 18 Jun 2021 00:03:27 -0700 (PDT)
-Received: from workstation ([120.138.13.11])
-        by smtp.gmail.com with ESMTPSA id g6sm7358552pfq.110.2021.06.18.00.03.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 18 Jun 2021 00:03:26 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 12:33:22 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        carl.yin@quectel.com, naveen.kumar@quectel.com,
-        loic.poulain@linaro.org
-Subject: Re: [PATCH v1 1/4] bus: mhi: core: Add support for processing
- priority of event ring
-Message-ID: <20210618070322.GO3682@workstation>
-References: <1623965435-30224-1-git-send-email-bbhatt@codeaurora.org>
- <1623965435-30224-2-git-send-email-bbhatt@codeaurora.org>
+        Fri, 18 Jun 2021 03:19:37 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F91BC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 00:17:28 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1lu8km-0003gp-5p; Fri, 18 Jun 2021 09:17:24 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:e7d0:b47e:7728:2b24])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id A8CA463EA3C;
+        Fri, 18 Jun 2021 07:04:52 +0000 (UTC)
+Date:   Fri, 18 Jun 2021 09:04:52 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     wg@grandegger.com, davem@davemloft.net, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] net: can: fix use-after-free in ems_usb_disconnect
+Message-ID: <20210618070452.cjt7f5hzlfikztwz@pengutronix.de>
+References: <20210617185130.5834-1-paskripkin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6tq7svrpdp6b2uth"
 Content-Disposition: inline
-In-Reply-To: <1623965435-30224-2-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210617185130.5834-1-paskripkin@gmail.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 02:30:32PM -0700, Bhaumik Bhatt wrote:
-> From: Hemant Kumar <hemantk@codeaurora.org>
-> 
-> Event ring priorities are currently set to 1 and are unused.
-> Default processing priority for event rings is set to regular
-> tasklet. Controllers can choose to use high priority tasklet
-> scheduling for certain event rings critical for processing such
-> as ones transporting control information if they wish to avoid
-> with system scheduling delays for those packets. In order to
-> support these use cases, allow controllers to set event ring
-> priority to high. This patch only adds support and does not
-> enable usage of these priorities.
-> 
-> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
->  drivers/bus/mhi/core/internal.h |  2 +-
->  drivers/bus/mhi/core/main.c     | 19 ++++++++++++++++---
->  include/linux/mhi.h             | 14 ++++++++++++--
->  3 files changed, 29 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
-> index 672052f..666e102 100644
-> --- a/drivers/bus/mhi/core/internal.h
-> +++ b/drivers/bus/mhi/core/internal.h
-> @@ -535,7 +535,7 @@ struct mhi_event {
->  	u32 intmod;
->  	u32 irq;
->  	int chan; /* this event ring is dedicated to a channel (optional) */
-> -	u32 priority;
-> +	enum mhi_er_priority priority;
 
-Instead of using enum for priorities, can we just make use of the
-existing "priority" field? Since the existing controllers set it to "1",
-can we use "0" as the high priority?
+--6tq7svrpdp6b2uth
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This way we don't need to change the controller drivers.
+On 17.06.2021 21:51:30, Pavel Skripkin wrote:
+> In ems_usb_disconnect() dev pointer, which is
+> netdev private data, is used after free_candev() call:
+>=20
+> 	if (dev) {
+> 		unregister_netdev(dev->netdev);
+> 		free_candev(dev->netdev);
+>=20
+> 		unlink_all_urbs(dev);
+>=20
+> 		usb_free_urb(dev->intr_urb);
+>=20
+> 		kfree(dev->intr_in_buffer);
+> 		kfree(dev->tx_msg_buffer);
+> 	}
+>=20
+> Fix it by simply moving free_candev() at the end of
+> the block.
+>=20
+> Fail log:
+>  BUG: KASAN: use-after-free in ems_usb_disconnect
+>  Read of size 8 at addr ffff88804e041008 by task kworker/1:2/2895
+>=20
+>  CPU: 1 PID: 2895 Comm: kworker/1:2 Not tainted 5.13.0-rc5+ #164
+>  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0=
+-g155821a-rebuilt.opensuse.4
+>  Workqueue: usb_hub_wq hub_event
+>  Call Trace:
+>      dump_stack (lib/dump_stack.c:122)
+>      print_address_description.constprop.0.cold (mm/kasan/report.c:234)
+>      kasan_report.cold (mm/kasan/report.c:420 mm/kasan/report.c:436)
+>      ems_usb_disconnect (drivers/net/can/usb/ems_usb.c:683 drivers/net/ca=
+n/usb/ems_usb.c:1058)
+>=20
+> Fixes: 702171adeed3 ("ems_usb: Added support for EMS CPC-USB/ARM7 CAN/USB=
+ interface")
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 
->  	enum mhi_er_data_type data_type;
->  	struct mhi_ring ring;
->  	struct db_cfg db_cfg;
-> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> index 8ac73f9..bfc9776 100644
-> --- a/drivers/bus/mhi/core/main.c
-> +++ b/drivers/bus/mhi/core/main.c
-> @@ -425,10 +425,11 @@ void mhi_create_devices(struct mhi_controller *mhi_cntrl)
->  	}
->  }
->  
-> -irqreturn_t mhi_irq_handler(int irq_number, void *dev)
-> +irqreturn_t mhi_irq_handler(int irq_number, void *priv)
->  {
-> -	struct mhi_event *mhi_event = dev;
-> +	struct mhi_event *mhi_event = priv;
->  	struct mhi_controller *mhi_cntrl = mhi_event->mhi_cntrl;
-> +	struct device *dev = &mhi_cntrl->mhi_dev->dev;
->  	struct mhi_event_ctxt *er_ctxt =
->  		&mhi_cntrl->mhi_ctxt->er_ctxt[mhi_event->er_index];
->  	struct mhi_ring *ev_ring = &mhi_event->ring;
-> @@ -454,8 +455,20 @@ irqreturn_t mhi_irq_handler(int irq_number, void *dev)
->  
->  		if (mhi_dev)
->  			mhi_notify(mhi_dev, MHI_CB_PENDING_DATA);
-> -	} else {
-> +
-> +		return IRQ_HANDLED;
-> +	}
-> +
-> +	switch (mhi_event->priority) {
-> +	case MHI_ER_PRIORITY_HI:
-
-This could be,
-
-	/* Use high priority tasklet for high priority event ring */
-	if (!mhi_event->priority)
-		tasklet_hi_schedule(&mhi_event->task);
-	else
-		tasklet_schedule(&mhi_event->task);
+Applied to linux-can/testing and added stable on Cc.
 
 Thanks,
-Mani
+Marc
 
-> +		tasklet_hi_schedule(&mhi_event->task);
-> +		break;
-> +	case MHI_ER_PRIORITY_DEFAULT:
->  		tasklet_schedule(&mhi_event->task);
-> +		break;
-> +	default:
-> +		dev_err(dev, "Skip event of unknown priority\n");
-> +		break;
->  	}
->  
->  	return IRQ_HANDLED;
-> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-> index 86cea52..25ee312 100644
-> --- a/include/linux/mhi.h
-> +++ b/include/linux/mhi.h
-> @@ -198,6 +198,16 @@ enum mhi_er_data_type {
->  };
->  
->  /**
-> + * enum mhi_er_priority - Event ring processing priority
-> + * @MHI_ER_PRIORITY_HI: processed by hi-priority tasklet
-> + * @MHI_ER_PRIORITY_DEFAULT: processed by regular tasklet
-> + */
-> +enum mhi_er_priority {
-> +	MHI_ER_PRIORITY_HI,
-> +	MHI_ER_PRIORITY_DEFAULT,
-> +};
-> +
-> +/**
->   * enum mhi_db_brst_mode - Doorbell mode
->   * @MHI_DB_BRST_DISABLE: Burst mode disable
->   * @MHI_DB_BRST_ENABLE: Burst mode enable
-> @@ -250,7 +260,7 @@ struct mhi_channel_config {
->   * @irq_moderation_ms: Delay irq for additional events to be aggregated
->   * @irq: IRQ associated with this ring
->   * @channel: Dedicated channel number. U32_MAX indicates a non-dedicated ring
-> - * @priority: Priority of this ring. Use 1 for now
-> + * @priority: Processing priority of this ring.
->   * @mode: Doorbell mode
->   * @data_type: Type of data this ring will process
->   * @hardware_event: This ring is associated with hardware channels
-> @@ -262,7 +272,7 @@ struct mhi_event_config {
->  	u32 irq_moderation_ms;
->  	u32 irq;
->  	u32 channel;
-> -	u32 priority;
-> +	enum mhi_er_priority priority;
->  	enum mhi_db_brst_mode mode;
->  	enum mhi_er_data_type data_type;
->  	bool hardware_event;
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+
+--6tq7svrpdp6b2uth
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmDMRZEACgkQqclaivrt
+76mnqgf/aSKQviylfEMXNmblnBD4eGq3CMjiugvH+K4jof1OJ72ztvdUzP2DAfd/
+9CA0EE0UWEVpqhcUteGMMgM7F0+AqJF4PvgqiR5YT2qqnWg40xDcC2+NtdRYNBqt
+fQt+mzbXNj5J39v8l8FJGPo5Ip7E561khpGG9jA5BFgIT70jegTdNPho+uUV+CKV
+1co2LUuDCPtnN/GZHOI3bLflWqr2p1V60RimGZK9QbOLYuf5ZynHkB4+GrwVO+MV
+Sryao3eO/JR06Ty6vo4RVh0SqWOFx549SGsl+O9pn7W5U4Sw+5eklu5UVW6OyL52
+pWNIVhvfae9qHdITE3ZftnG0OPd1gQ==
+=n50B
+-----END PGP SIGNATURE-----
+
+--6tq7svrpdp6b2uth--
