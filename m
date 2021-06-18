@@ -2,260 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E96C53AD34C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 22:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93C3C3AD34F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 22:01:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233597AbhFRUC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 16:02:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44710 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230409AbhFRUC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 16:02:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73E5C61284;
-        Fri, 18 Jun 2021 20:00:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624046446;
-        bh=ukCWv700nw419U/zUESyNHC+5o4jEIFSTw/JYrj1TFk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=E70arPAPnlwDPp50+ZsC5gCoaTmTqh3qost0EhI7J5QYPFYNy+TAgkkFwDOsiY0uo
-         QQpPCOQn6qOWdcKXKYRI2mHYMB0vVeiqTzRrD7zCv/7QJcBCqaHEN6qj717R4+cTCz
-         cCOF2TF1+sP50xHa5oBOwoPfCX2qVTIpid5kL7FAkBMfDVwK0SxgI9BNe1uuQMlN3t
-         wfUTZKhqySM9w1ng7/ifZ2wTRT8Q4whYQlUQIr/46VCh0Bu3qCaTdeAFFmQnErGYOT
-         4S4+EFmgaWFMj0IWdy077aeaEfk+TFaYptEv3EPQFTfMUhrPn4y0CtluHz75s4L7Gn
-         1XAjO8s0mNbzQ==
-Date:   Fri, 18 Jun 2021 15:00:45 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v7 4/8] PCI/sysfs: Allow userspace to query and set
- device reset mechanism
-Message-ID: <20210618200045.GA3141153@bjorn-Precision-5520>
+        id S232792AbhFRUD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 16:03:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229819AbhFRUD4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 16:03:56 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26147C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 13:01:46 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id w21so10169081edv.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 13:01:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6QTjBFDFCa5wxgzXV7/ZQNMNegFSSiirJH3DOi2Mowg=;
+        b=U4p6NUo6NxmDTnbo2R00GUSqOPKE+qjZt8Klk6p9jMVaMwcujnDAhKDocwfnPzjfJa
+         7g7w/VxyBj/G+S2lqjPNd6lGwHp+FU2Y5YP4kz3a1mSzGjEodtZYT0xRNXqcrcl0Yfbh
+         4DIUFApCND6+hnkPtPI4EX3/vYFjEr9GZqkub0TOYThSX2LFzdV1N/Z2jWVwxZRff5KA
+         CsLl3WMtOMbXaUpK4GcJAr0ade4BluXa7DFCladX8l9jkgHBncxIm0YbcCQbfN1EBXZL
+         HOBjx9yl9ur6YHWnH+V4yYyeIY0kzAKwZ8bLmxcUQ5Gbp9KDiwLdv7YlVywxo0jogVlQ
+         PpPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6QTjBFDFCa5wxgzXV7/ZQNMNegFSSiirJH3DOi2Mowg=;
+        b=r2ApAgIcaPe3yFyegFGDWy5fDssUHFUWptgGOqjkRNJiuQ8Gg+hp/9aAgSUkil8VwQ
+         SQOx3czBYdieX/AiM8jeH3Wy/HBrK15UfETdBlr03QLmrsFyUGBK/xeF0JjntJU6KfVx
+         8BXJUt88Rg/HGVotvaVTudSqqgIwxs2XfX8HtFh8gLTNWqZ91Un4rl0QnktM8fyOALvP
+         8rOKxDBGs+x+LWmSp7B/JvuPtRFA9u9bKsPnu68PeGFirr1cGrAat/IjKq+piL8o7RrF
+         LyJcu9l/eX4jQ3TRBJ90XEevdblWIHmKXQv3UIycvLWhPoxzvBkCn38ZQA9UXEhUwxvc
+         2C7A==
+X-Gm-Message-State: AOAM533Kjxuhi252JfBcGMkdwd8YIVqVGwmxquWwFXwZRsKwCVAP9qDQ
+        H5550NvQhFlNzq+XOimk3n/57idTgjzdbkKKAr8=
+X-Google-Smtp-Source: ABdhPJxohO1/4OynRMCvyD6kNQVy6NdX8sknWeZm6xSBJ9r5JVQ2eHpMXAwyt9cYBeaA1M2EVrmvSxABcvi/4z9tMjc=
+X-Received: by 2002:a05:6402:3581:: with SMTP id y1mr7253865edc.143.1624046504688;
+ Fri, 18 Jun 2021 13:01:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608054857.18963-5-ameynarkhede03@gmail.com>
+References: <20210617194154.2397-1-linux.amoon@gmail.com> <20210617194154.2397-5-linux.amoon@gmail.com>
+ <CAFBinCB1rrmJ5=M0tSGS_47BarFcrs2Kz5qFzrHw8+OEYxX3DA@mail.gmail.com> <CANAwSgQVgKUoTpfaJyfxdphqc6M=Oq6jj5zZ7An9St7PdzQHYA@mail.gmail.com>
+In-Reply-To: <CANAwSgQVgKUoTpfaJyfxdphqc6M=Oq6jj5zZ7An9St7PdzQHYA@mail.gmail.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Fri, 18 Jun 2021 22:01:33 +0200
+Message-ID: <CAFBinCDpQybqD96CCMBDKYUXEYCABr0QMfxFH1AWrXP12UxxMg@mail.gmail.com>
+Subject: Re: [RFCv1 4/8] phy: amlogic: meson8b-usb2: Use phy set_mode callback function
+To:     Anand Moon <linux.amoon@gmail.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-phy@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-amlogic@lists.infradead.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 11:18:53AM +0530, Amey Narkhede wrote:
-> Add reset_method sysfs attribute to enable user to
-> query and set user preferred device reset methods and
-> their ordering.
+Hi Anand,
 
-Rewrap to fill 75 columns (also apply to other patches if applicable,
-e.g., 3/8 looks like it could use it).
+On Fri, Jun 18, 2021 at 3:19 PM Anand Moon <linux.amoon@gmail.com> wrote:
+[...]
+> > I suggest dropping this patch until we know for sure if and which
+> > registers need to be updated based on the DR mode.
+>
+> Yes, I have observed this, Can you give these small changes a try?
+> With the below changes, I got the  PHY_MODE_USB_DEVICE support working.
+first of all: sorry that I have not linked my source of information previously:
+- Meson8b: [0]
+- Meson8 and Meson8m2: [1]
 
-2/8 looks like it's missing a blank line between paragraphs.
+Unfortunately I don't have any datasheet or "better documentation" of
+how the registers should be programmed.
+This is why I am a bit defensive when I am asked to change something
+there - as I simply have no way of knowing if the changes are good or
+not. I can only tell whether they're "identical" or "different" from
+what the vendor kernel does.
 
-> Co-developed-by: Alex Williamson <alex.williamson@redhat.com>
-> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
-> ---
->  Documentation/ABI/testing/sysfs-bus-pci |  16 ++++
->  drivers/pci/pci-sysfs.c                 | 118 ++++++++++++++++++++++++
->  2 files changed, 134 insertions(+)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
-> index ef00fada2..cf6dbbb3c 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-pci
-> +++ b/Documentation/ABI/testing/sysfs-bus-pci
-> @@ -121,6 +121,22 @@ Description:
->  		child buses, and re-discover devices removed earlier
->  		from this part of the device tree.
->  
-> +What:		/sys/bus/pci/devices/.../reset_method
-> +Date:		March 2021
-> +Contact:	Amey Narkhede <ameynarkhede03@gmail.com>
-> +Description:
-> +		Some devices allow an individual function to be reset
-> +		without affecting other functions in the same slot.
-> +		For devices that have this support, a file named reset_method
-> +		will be present in sysfs. Reading this file will give names
-> +		of the device supported reset methods and their ordering.
-> +		Writing the name or comma separated list of names of any of
-> +		the device supported reset methods to this file will set the
-> +		reset methods and their ordering to be used when resetting
-> +		the device. Writing empty string to this file will disable
-> +		ability to reset the device and writing "default" will return
-> +		to the original value.
-
-Rewrap to fill or add a blank line if "For devices ..." is supposed to
-start a new paragraph.
-
-My guess is you intend reading to show the *currently enabled* reset
-methods, not the entire "supported" set?  So if a user has disabled
-one of them, it no longer appears when you read the file?
-
+[...]
+> +       case PHY_MODE_USB_DEVICE:
+> +       case PHY_MODE_USB_OTG:
+> +               regmap_update_bits(priv->regmap, REG_ADP_BC,
+> +                                  REG_ADP_BC_DCD_ENABLE,
+> +                                  REG_ADP_BC_DCD_ENABLE);
 > +
->  What:		/sys/bus/pci/devices/.../reset
->  Date:		July 2009
->  Contact:	Michael S. Tsirkin <mst@redhat.com>
-> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> index 316f70c3e..52def79aa 100644
-> --- a/drivers/pci/pci-sysfs.c
-> +++ b/drivers/pci/pci-sysfs.c
-> @@ -1334,6 +1334,123 @@ static const struct attribute_group pci_dev_rom_attr_group = {
->  	.is_bin_visible = pci_dev_rom_attr_is_visible,
->  };
->  
-> +static ssize_t reset_method_show(struct device *dev,
-> +				 struct device_attribute *attr,
-> +				 char *buf)
-> +{
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	ssize_t len = 0;
-> +	int i, prio;
+> +               udelay(ACA_ENABLE_COMPLETE_TIME);
 > +
-> +	for (prio = PCI_RESET_METHODS_NUM; prio; prio--) {
-> +		for (i = 0; i < PCI_RESET_METHODS_NUM; i++) {
-> +			if (prio == pdev->reset_methods[i]) {
-> +				len += sysfs_emit_at(buf, len, "%s%s",
-> +						     len ? "," : "",
-> +						     pci_reset_fn_methods[i].name);
-> +				break;
-> +			}
-> +		}
-> +
-> +		if (i == PCI_RESET_METHODS_NUM)
-> +			break;
-> +	}
+> +               regmap_read(priv->regmap, REG_ADP_BC, &reg);
+> +               if (reg & REG_ADP_BC_ACA_PIN_FLOAT) {
+> +                       dev_warn(&phy->dev, "USB ID detect failed!\n");
+> +                       return -EINVAL;
+> +               }
+> +               regmap_update_bits(priv->regmap, REG_ADP_BC,
+> +                                  REG_ADP_BC_ID_PULLUP, REG_ADP_BC_ID_PULLUP);
+> +               break;
+According to the vendor kernel this should only be applied to
+"host-only" USB_PORT_IDX_B (which is usb1 in the mainline .dtsi).
+Based on that I think it's not correct to apply this for DEVICE and OTG modes.
 
-I'm guessing that if you adopt the alternate reset_methods[] encoding,
-this nested loop becomes a single loop and "prio" goes away?
+The vendor kernel does not configure REG_ADP_BC_ID_PULLUP anywhere.
+Also DCD_ENABLE is only ever set to 0 (while you are enabling it now), see [2].
 
-> +	if (len)
-> +		len += sysfs_emit_at(buf, len, "\n");
-> +
-> +	return len;
-> +}
-> +
-> +static ssize_t reset_method_store(struct device *dev,
-> +				  struct device_attribute *attr,
-> +				  const char *buf, size_t count)
-> +{
-> +	u8 reset_methods[PCI_RESET_METHODS_NUM];
-> +	struct pci_dev *pdev = to_pci_dev(dev);
-> +	u8 prio = PCI_RESET_METHODS_NUM;
-> +	char *name, *options;
-> +	int i;
+As mentioned before: all I can say about this patch is that it
+programs the registers differently than the vendor kernel does.
+From your description I am not sure if you are now getting different
+behavior on Odroid-C1 with this patch (compared to what we had
+before).
 
-Reorder decls with to_pci_dev(dev) first, then in order of use.
 
-> +	if (count >= (PAGE_SIZE - 1))
-> +		return -EINVAL;
-> +
-> +	options = kstrndup(buf, count, GFP_KERNEL);
-> +	if (!options)
-> +		return -ENOMEM;
-> +
-> +	/*
-> +	 * Initialize reset_method such that 0xff indicates
-> +	 * supported but not currently enabled reset methods
-> +	 * as we only use priority values which are within
-> +	 * the range of PCI_RESET_FN_METHODS array size
-> +	 */
-> +	for (i = 0; i < PCI_RESET_METHODS_NUM; i++)
-> +		reset_methods[i] = pdev->reset_methods[i] ? 0xff : 0;
+Best regards,
+Martin
 
-I'm hoping the 0xff trick goes away with the alternate encoding?
 
-> +	if (sysfs_streq(options, "")) {
-> +		pci_warn(pdev, "All device reset methods disabled by user");
-> +		goto set_reset_methods;
-> +	}
-
-I think you can get this case out of the way early with no kstrndup(),
-no goto, etc.
-
-> +	if (sysfs_streq(options, "default")) {
-> +		for (i = 0; i < PCI_RESET_METHODS_NUM; i++)
-> +			reset_methods[i] = reset_methods[i] ? prio-- : 0;
-> +		goto set_reset_methods;
-> +	}
-
-If you use pci_init_reset_methods() here, you can also get this case
-out of the way early.
-
-> +	while ((name = strsep(&options, ",")) != NULL) {
-> +		if (sysfs_streq(name, ""))
-> +			continue;
-> +
-> +		name = strim(name);
-> +
-> +		for (i = 0; i < PCI_RESET_METHODS_NUM; i++) {
-> +			if (reset_methods[i] &&
-> +			    sysfs_streq(name, pci_reset_fn_methods[i].name)) {
-> +				reset_methods[i] = prio--;
-> +				break;
-> +			}
-> +		}
-> +
-> +		if (i == PCI_RESET_METHODS_NUM) {
-> +			kfree(options);
-> +			return -EINVAL;
-> +		}
-> +	}
-> +
-> +	if (reset_methods[0] &&
-> +	    reset_methods[0] != PCI_RESET_METHODS_NUM)
-> +		pci_warn(pdev, "Device specific reset disabled/de-prioritized by user");
-
-Is there a specific reason for this warning?  Is it just telling the
-user that he might have shot himself in the foot?  Not sure that's
-necessary.
-
-> +set_reset_methods:
-> +	kfree(options);
-> +	memcpy(pdev->reset_methods, reset_methods, sizeof(reset_methods));
-> +	return count;
-> +}
-> +static DEVICE_ATTR_RW(reset_method);
-> +
-> +static struct attribute *pci_dev_reset_method_attrs[] = {
-> +	&dev_attr_reset_method.attr,
-> +	NULL,
-> +};
-> +
-> +static umode_t pci_dev_reset_method_attr_is_visible(struct kobject *kobj,
-> +						    struct attribute *a, int n)
-> +{
-> +	struct pci_dev *pdev = to_pci_dev(kobj_to_dev(kobj));
-> +
-> +	if (!pci_reset_supported(pdev))
-> +		return 0;
-
-I think this _is_visible method is executed only once, at
-device_add()-time.  That means if a device doesn't support any resets
-at that time, "reset_method" will not be visible, and there will be no
-way to ever enable a reset method at run-time.  I assume that's OK;
-just double-checking.
-
-> +
-> +	return a->mode;
-> +}
-> +
-> +static const struct attribute_group pci_dev_reset_method_attr_group = {
-> +	.attrs = pci_dev_reset_method_attrs,
-> +	.is_visible = pci_dev_reset_method_attr_is_visible,
-> +};
-> +
->  static ssize_t reset_store(struct device *dev, struct device_attribute *attr,
->  			   const char *buf, size_t count)
->  {
-> @@ -1491,6 +1608,7 @@ const struct attribute_group *pci_dev_groups[] = {
->  	&pci_dev_config_attr_group,
->  	&pci_dev_rom_attr_group,
->  	&pci_dev_reset_attr_group,
-> +	&pci_dev_reset_method_attr_group,
->  	&pci_dev_vpd_attr_group,
->  #ifdef CONFIG_DMI
->  	&pci_dev_smbios_attr_group,
-> -- 
-> 2.31.1
-> 
+[0] https://github.com/endlessm/linux-meson/blob/03393bb8e8478626e03ee93b0a2a225d6de242b5/arch/arm/mach-meson8b/usbclock.c#L120
+[1] https://github.com/endlessm/linux-meson/blob/03393bb8e8478626e03ee93b0a2a225d6de242b5/arch/arm/mach-meson8/usbclock.c#L120
+[2] https://github.com/endlessm/linux-meson/blob/d6e13c220931110fe676ede6da69fc61a7cb04b6/drivers/amlogic/usb/dwc_otg/310/dwc_otg_pcd.c#L71
