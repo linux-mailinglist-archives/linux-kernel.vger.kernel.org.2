@@ -2,150 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D41203AD487
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 23:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A913AD490
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 23:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234649AbhFRVoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 17:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58642 "EHLO
+        id S234676AbhFRVtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 17:49:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234626AbhFRVoD (ORCPT
+        with ESMTP id S234662AbhFRVtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 17:44:03 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F1B7C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 14:41:53 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id t40so12077382oiw.8
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 14:41:53 -0700 (PDT)
+        Fri, 18 Jun 2021 17:49:12 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DEBCC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 14:47:02 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id d12-20020ac8668c0000b0290246e35b30f8so5908549qtp.21
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 14:47:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HEAuigaKYRmeY+WM5XLEktX0+rBVmYO66uMcr8Tpv8k=;
-        b=qKuYzrv6j4NzmU3yjTgh08cBfgpCmtwmdOO7VGZ7x0Wpyin21OENhZDu7wYnqoPHs0
-         HSf75CkxWeZDgoBEaPxChHYUt5+6a/LZp+UQfFNLL72O/1pm3JfnKtHcimfPf1wvGFsK
-         poM9I5TIeRpi+AimpmuU9P+DEjUlJCP5DvFRLmNJ3ohBlA38DBiGpq/qbXooI+RTeqE2
-         QEZBQesKMQb1KSBaVQP/GcKcH5JDJNePOIK0Tjz2UnVD/BrvTieA7bjgoJJ7mSpQILtx
-         pegolu/d0kmopoCrWrq8d+aWTjSm/xsplTaxmVBEc1adWHwRzLxv8kFO639cXh2f2XTX
-         R9Uw==
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=229mnDm6P0b0PXS4C471S6HQyDxSv4bvPmDKNuB7k40=;
+        b=aKAShhDSlz34FFmsBMzsWaopNkOIayd5iqC4WyI4nw7EHmyz6gT3UNsYYkA71XKeGs
+         HYe325z0spWnArGr1ct0HlvaPXJayYmoz3xEBsLNR2pYu9W5ytLUi3GbsyqNYhhg8FCD
+         Kb0ZSi/hLFCt9lXQLZwNJrIiFthTWhjtN8xLE6U8McLD2HTX3ZnPVJOlc6yt4/ltMrLJ
+         pxCJi0HXJEepqSOcKixEIappwWajaMiojKxb6YUNU6JblgSinSZlx5p1CKyHSE+IrT0d
+         VmEnviQfI4knT2PFN30QysB8oRcrx//+0BzI2VxVhymP1HfHRYD6i2XTIeuYzik0eK+B
+         fpVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HEAuigaKYRmeY+WM5XLEktX0+rBVmYO66uMcr8Tpv8k=;
-        b=EqEPqVI0T/KmcLZ3xdTtGT1kFk+JAFzl5rghvuSZ3Vd/Y9O8hmTTi7tndEvLT6kj9R
-         WYXgpjalMAHQlGZeOyh4JmBWKUkeyjQME8JqVUKDNVRljMXQ2g4tMx1mgNVFLM9Xr64j
-         FEdu7j2KUjjyoGvn0lXhlHbbbwyWc/y4oLFUBBtoCh7k1UyI+MJf3o+MKedNcPMHM+OH
-         4WyysNwk5+/QEVFoBRFzLqKJjP6CifrYgptE36hn+Yg1Cw8K/k/2ah/OWRtrqAT3o8Ru
-         XrwoTGGfsAOA9KXnsLu0Z42hypgqPvlDSQOiukq+iHMrgLuoZ36XvRqJHwF67rMi9rkn
-         G/Uw==
-X-Gm-Message-State: AOAM5326HLMKsgEDwqkexc958VqxN8bBAKggv3MjHckyL24pQdRiy/sh
-        X7pP0Fmgp4IYXbFgHHn9ePYWXQ==
-X-Google-Smtp-Source: ABdhPJw+EvH62tnCFbU9WxcWHYUQU643zznk/FLKiDJaeLJ8T0g0z4cu85QEzzdO6spdx+DKHd9AHQ==
-X-Received: by 2002:aca:de07:: with SMTP id v7mr15863677oig.8.1624052512628;
-        Fri, 18 Jun 2021 14:41:52 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 94sm2251023otj.33.2021.06.18.14.41.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 14:41:51 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 16:41:50 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     khsieh@codeaurora.org, robdclark@gmail.com, sean@poorly.run,
-        vkoul@kernel.org, agross@kernel.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64/dts/qcom/sc7180: Add Display Port dt node
-Message-ID: <YM0THrlJlv7ADW8w@builder.lan>
-References: <ef1879fa7ecfefaf0c70c7a4782240a9@codeaurora.org>
- <YL6sY/1E5wLzMiP/@yoga>
- <CAE-0n50-X03sMyJdsw7s=Ue0dWXBo=iHOc0HxDQm5yh2J-uS3A@mail.gmail.com>
- <YL/uj+t+BFkII1Fh@yoga>
- <CAE-0n50WP25kRQkWMVdDZGsZWBXwfbVSTFKyBLF7f8Mp3x2Wfg@mail.gmail.com>
- <YL/wWdRs6e/eECiC@yoga>
- <CAE-0n51GM65rZVJgXuHy6FerJorHeHKf2W31GijG8sDEhaX_KQ@mail.gmail.com>
- <YL/41hWz8xB+jSeO@yoga>
- <21dc5c9fc2efdc1a0ba924354bfd9d75@codeaurora.org>
- <CAE-0n52J_mLsmXLS+skZn2u3k9dhn+GcHeXi0B2BeQyQxEUL9A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAE-0n52J_mLsmXLS+skZn2u3k9dhn+GcHeXi0B2BeQyQxEUL9A@mail.gmail.com>
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=229mnDm6P0b0PXS4C471S6HQyDxSv4bvPmDKNuB7k40=;
+        b=feTlrQEjGqmqWMcnJfaekjaTyRKni+bfEJ22f2HEBJquU1Uv2DadArfvccizadeNVJ
+         CYj9MQ3ePHSe+MWajn8mOzyHb4ccR4j41OdbN+Iv9CC2N85ilQyV7k80d3I9R+6kDC2P
+         7zHLxGp9XdWgXJmFQp3ZaG6c5l6qUg+adQzeyrle4NKlYVUdVmMZA6mk1B7jzOjaf/7K
+         jZdywaMCGuwGD51+rqysEa6CQjC1C8YljiqOse3JQVPAKxWzc3f31s2YXT5uRtD3qkoP
+         AqVVEcTLpZ9eQtBcJRPFGwAWa8bJGtUMDQJg5nymw1R++5zSoqunlz0jNwxbGRQCM/J8
+         Kv7w==
+X-Gm-Message-State: AOAM531g5EmZkIrJYWtY3C9NSf/8Kflh4TEPQebdwoK+/i/UyfDyB+At
+        H4CLrf5EyFtwXytYnvqE5g5Q+egyx5c=
+X-Google-Smtp-Source: ABdhPJxZL8lxhONicplEpmwS8lyjiTsFH0Vv+IEk6+sMdK7gQPIj8pWgQOmqhB6KusakfNutUaK0t9NtoaI=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:d689:126c:66f2:8013])
+ (user=seanjc job=sendgmr) by 2002:a25:4048:: with SMTP id n69mr15751195yba.91.1624052821314;
+ Fri, 18 Jun 2021 14:47:01 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri, 18 Jun 2021 14:46:58 -0700
+Message-Id: <20210618214658.2700765-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
+Subject: [PATCH] KVM: nVMX: Dynamically compute max VMCS index for vmcs12
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 18 Jun 15:49 CDT 2021, Stephen Boyd wrote:
+Calculate the max VMCS index for vmcs12 by walking the array to find the
+actual max index.  Hardcoding the index is prone to bitrot, and the
+calculation is only done on KVM bringup (albeit on every CPU, but there
+aren't _that_ many null entries in the array).
 
-> Quoting khsieh@codeaurora.org (2021-06-10 09:54:05)
-> > On 2021-06-08 16:10, Bjorn Andersson wrote:
-> > > On Tue 08 Jun 17:44 CDT 2021, Stephen Boyd wrote:
-> > >
-> > >> Honestly I suspect the DP PHY is _not_ in the CX domain as CX is for
-> > >> digital logic. Probably the PLL is the hardware that has some minimum
-> > >> CX
-> > >> requirement, and that flows down into the various display clks like
-> > >> the
-> > >> link clk that actually clock the DP controller hardware. The mdss_gdsc
-> > >> probably gates CX for the display subsystem (mdss) so if we had proper
-> > >> corner aggregation logic we could indicate that mdss_gdsc is a child
-> > >> of
-> > >> the CX domain and then make requests from the DP driver for particular
-> > >> link frequencies on the mdss_gdsc and then have that bubble up to CX
-> > >> appropriately. I don't think any of that sort of code is in place
-> > >> though, right?
-> > >
-> > > I haven't checked sc7180, but I'm guessing that it's following the
-> > > other
-> > > modern platforms, where all the MDSS related pieces (including e.g.
-> > > dispcc) lives in the MMCX domain, which is separate from CX.
-> > >
-> > > So the parent of MDSS_GDSC should be MMCX, while Kuogee's answer (and
-> > > the dp-opp-table) tells us that the PLL lives in the CX domain.
-> 
-> Isn't MMCX a "child" of CX? At least my understanding is that MMCX is
-> basically a GDSC that clamps all of multimedia hardware block power
-> logic so that the leakage is minimized when multimedia isn't in use,
-> i.e. the device is suspended. In terms of bumping up the voltage we have
-> to pin that on CX though as far as I know because that's the only power
-> domain that can actually change voltage, while MMCX merely gates that
-> voltage for multimedia.
-> 
+Fixes: 3c0f99366e34 ("KVM: nVMX: Add a TSC multiplier field in VMCS12")
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
 
-No, MMCX is a separate rail from CX, which powers the display blocks and
-is parent of MDSS_GDSC. But I see in rpmhpd that sc7180 is not one of
-these platforms, so I presume this means that the displayport controller
-thereby sits in MDSS_GDSC parented by CX.
+Note, the vmx test in kvm-unit-tests will still fail using stock QEMU,
+as QEMU also hardcodes and overwrites the MSR.  The test passes if I
+hack KVM to ignore userspace (it was easier than rebuilding QEMU).
 
-But in line with what you're saying, the naming of the supplies to the
-QMP indicates that the power for the PLLs is static. As such the only
-moving things would be the clock rates in the DP controller and as such
-that's what needs to scale the voltage.
+ arch/x86/kvm/vmx/nested.c | 37 +++++++++++++++++++++++++++++++++++--
+ arch/x86/kvm/vmx/vmcs.h   |  8 ++++++++
+ arch/x86/kvm/vmx/vmcs12.h |  6 ------
+ 3 files changed, 43 insertions(+), 8 deletions(-)
 
-So if the resources we're scaling is the clocks in the DP controller
-then the gist of the patch is correct. The only details I see is that
-the DP controller actually sits in MDSS_GDSC - while it should control
-the level of its parent (CX). Not sure if we can describe that in a
-simple way.
+diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+index b531e08a095b..183fd9d62fc5 100644
+--- a/arch/x86/kvm/vmx/nested.c
++++ b/arch/x86/kvm/vmx/nested.c
+@@ -6374,6 +6374,40 @@ void nested_vmx_set_vmcs_shadowing_bitmap(void)
+ 	}
+ }
+ 
++/*
++ * Indexing into the vmcs12 uses the VMCS encoding rotated left by 6.  Undo
++ * that madness to get the encoding for comparison.
++ */
++#define VMCS12_IDX_TO_ENC(idx) ((u16)(((u16)(idx) >> 6) | ((u16)(idx) << 10)))
++
++static u64 nested_vmx_calc_vmcs_enum_msr(void)
++{
++	/*
++	 * Note these are the so called "index" of the VMCS field encoding, not
++	 * the index into vmcs12.
++	 */
++	unsigned int max_idx, idx;
++	int i;
++
++	/*
++	 * For better or worse, KVM allows VMREAD/VMWRITE to all fields in
++	 * vmcs12, regardless of whether or not the associated feature is
++	 * exposed to L1.  Simply find the field with the highest index.
++	 */
++	max_idx = 0;
++	for (i = 0; i < nr_vmcs12_fields; i++) {
++		/* The vmcs12 table is very, very sparsely populated. */
++		if (!vmcs_field_to_offset_table[i])
++			continue;
++
++		idx = vmcs_field_index(VMCS12_IDX_TO_ENC(i));
++		if (idx > max_idx)
++			max_idx = idx;
++	}
++
++	return (u64)max_idx << VMCS_FIELD_INDEX_SHIFT;
++}
++
+ /*
+  * nested_vmx_setup_ctls_msrs() sets up variables containing the values to be
+  * returned for the various VMX controls MSRs when nested VMX is enabled.
+@@ -6619,8 +6653,7 @@ void nested_vmx_setup_ctls_msrs(struct nested_vmx_msrs *msrs, u32 ept_caps)
+ 	rdmsrl(MSR_IA32_VMX_CR0_FIXED1, msrs->cr0_fixed1);
+ 	rdmsrl(MSR_IA32_VMX_CR4_FIXED1, msrs->cr4_fixed1);
+ 
+-	/* highest index: VMX_PREEMPTION_TIMER_VALUE */
+-	msrs->vmcs_enum = VMCS12_MAX_FIELD_INDEX << 1;
++	msrs->vmcs_enum = nested_vmx_calc_vmcs_enum_msr();
+ }
+ 
+ void nested_vmx_hardware_unsetup(void)
+diff --git a/arch/x86/kvm/vmx/vmcs.h b/arch/x86/kvm/vmx/vmcs.h
+index 1472c6c376f7..de3b04d4b587 100644
+--- a/arch/x86/kvm/vmx/vmcs.h
++++ b/arch/x86/kvm/vmx/vmcs.h
+@@ -164,4 +164,12 @@ static inline int vmcs_field_readonly(unsigned long field)
+ 	return (((field >> 10) & 0x3) == 1);
+ }
+ 
++#define VMCS_FIELD_INDEX_SHIFT		(1)
++#define VMCS_FIELD_INDEX_MASK		GENMASK(9, 1)
++
++static inline unsigned int vmcs_field_index(unsigned long field)
++{
++	return (field & VMCS_FIELD_INDEX_MASK) >> VMCS_FIELD_INDEX_SHIFT;
++}
++
+ #endif /* __KVM_X86_VMX_VMCS_H */
+diff --git a/arch/x86/kvm/vmx/vmcs12.h b/arch/x86/kvm/vmx/vmcs12.h
+index bb81a23afe89..5e0e1b39f495 100644
+--- a/arch/x86/kvm/vmx/vmcs12.h
++++ b/arch/x86/kvm/vmx/vmcs12.h
+@@ -205,12 +205,6 @@ struct __packed vmcs12 {
+  */
+ #define VMCS12_SIZE		KVM_STATE_NESTED_VMX_VMCS_SIZE
+ 
+-/*
+- * VMCS12_MAX_FIELD_INDEX is the highest index value used in any
+- * supported VMCS12 field encoding.
+- */
+-#define VMCS12_MAX_FIELD_INDEX 0x17
+-
+ /*
+  * For save/restore compatibility, the vmcs12 field offsets must not change.
+  */
+-- 
+2.32.0.288.g62a8d224e6-goog
 
-
-PS. Why does the node name of the opp-table have to be globally unique?
-
-Regards,
-Bjorn
-
-> > >
-> > >
-> > > PS. While this goes for the QMPs the DSI and eDP/DP PHYs (and PLLs)
-> > > seems to live in MMCX.
-> > >
-> > > Regards,
-> > > Bjorn
-> >
-> > Dp link clock rate is sourced from phy/pll (vco). However it is possible
-> > that different link clock rate
-> > are sourced from same vco (phy/pll) rate. Therefore I think CX rail
-> > voltage level is more proper to
-> > be decided base on link clock rate.
-> >
