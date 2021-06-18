@@ -2,144 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD7E83AD29E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE723AD2A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234863AbhFRTQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 15:16:33 -0400
-Received: from mga12.intel.com ([192.55.52.136]:56334 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234373AbhFRTQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 15:16:30 -0400
-IronPort-SDR: lHar69czcFMeiP9jkBKeEu3a5gF4nagOIjuX2eXfNUnbztRu256lzRMaxsRqSi6ufB1RhqM69v
- GaMVXbU+mDuA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="186300890"
-X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
-   d="scan'208";a="186300890"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 12:14:19 -0700
-IronPort-SDR: PwujYWixwF0gYHwXquNyDtZah+9gdAcwgYWQdqQO0UwRZKMtulYf/G8xtjS3zo6KHK3WMwM0Cv
- UjklOXyePiUQ==
-X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
-   d="scan'208";a="451496009"
-Received: from msayeed-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.213.172.5])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 12:14:18 -0700
-Subject: Re: [PATCH v2 04/12] x86/x86: Add early_is_tdx_guest() interface
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-References: <YMJ/IrBZiCsNMtvO@zn.tnic>
- <20210612210445.2164948-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YMuAvP7bqwHVSCw8@zn.tnic>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <76e177b6-7666-bc8f-a00a-c6206578d566@linux.intel.com>
-Date:   Fri, 18 Jun 2021 12:14:16 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234346AbhFRTV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 15:21:27 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:58504 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232433AbhFRTVY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 15:21:24 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624043953;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sSLxGC3VTRMA2Whz78he85SSFCN5pOWp9Ja2rRincrE=;
+        b=Nh4soZq81bzyJPDPuk6OzK7HF4t54zEr2or1xJZHbE/JpRDaIB2XoDCYU9n1UiBMxI+SpZ
+        gYAStHegI/oNOuab4hNo8UKqfktYNa6DHie9NnNhpHnOi3ZTmOnHBRS9t6Mwni1Sw0CrRv
+        2++Ypt6yi9HJswKEy/4ehOO1ygPmj9JcbMcNedlZGwJwRriy8Sdg1U6HWjRRrw9tto4BTC
+        /TfF50Bzzxe/CTixRdGbI9ln6URYNxw0lM/9SNRLk1Q9BPybWFiwTOEWlCLd3VT237g679
+        Kl5ANInl8B/rrHu6xEerRqfVGkFhf2eavm+zWxVhvBbP6DegejfN/f65ELFQeQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624043953;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sSLxGC3VTRMA2Whz78he85SSFCN5pOWp9Ja2rRincrE=;
+        b=RSZzBGebnC17LsPojYK3bBoRQRgGmd+zjyPW5m11as59RHQl5NDNcQRPMID7YkOywbpvre
+        Lg6856XaSEqMB/AA==
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ming Lei <ming.lei@redhat.com>, Christoph Hellwig <hch@lst.de>,
+        Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+        Keith Busch <keith.busch@intel.com>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Shivasharan Srikanteshwara 
+        <shivasharan.srikanteshwara@broadcom.com>
+Subject: Re: [patch v6 3/7] genirq/affinity: Add new callback for (re)calculating interrupt sets
+In-Reply-To: <20210615195707.GA2909907@bjorn-Precision-5520>
+References: <20210615195707.GA2909907@bjorn-Precision-5520>
+Date:   Fri, 18 Jun 2021 21:19:12 +0200
+Message-ID: <878s37f0b3.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <YMuAvP7bqwHVSCw8@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 15 2021 at 14:57, Bjorn Helgaas wrote:
+>
+>> @@ -1196,6 +1196,13 @@ int pci_alloc_irq_vectors_affinity(struc
+>>  	/* use legacy irq if allowed */
+>>  	if (flags & PCI_IRQ_LEGACY) {
+>>  		if (min_vecs == 1 && dev->irq) {
+>> +			/*
+>> +			 * Invoke the affinity spreading logic to ensure that
+>> +			 * the device driver can adjust queue configuration
+>> +			 * for the single interrupt case.
+>> +			 */
+>> +			if (affd)
+>> +				irq_create_affinity_masks(1, affd);
+>
+> This looks like a leak because irq_create_affinity_masks() returns a
+> pointer to kcalloc()ed space, but we throw away the pointer.
+>
+> Or is there something very subtle going on here, like this special
+> case doesn't allocate anything?  I do see the "Nothing to assign?"
+> case that returns NULL with no alloc, but it's not completely trivial
+> to verify that we take that case here.
 
+Yes, it's subtle and it's subtle crap. Sorry that I did not catch that.
 
-On 6/17/21 10:05 AM, Borislav Petkov wrote:
-> On Sat, Jun 12, 2021 at 02:04:45PM -0700, Kuppuswamy Sathyanarayanan wrote:
-> 
->> Subject: Re: [PATCH v2 04/12] x86/x86: Add early_is_tdx_guest() interface
-> 
-> Subject prefix should be "x86/tdx:" ofc.
+Thanks,
 
-I will fix this in next version.
-
-> 
->> diff --git a/arch/x86/boot/compressed/tdx.c b/arch/x86/boot/compressed/tdx.c
->> new file mode 100644
->> index 000000000000..ddfa4a6d1939
->> --- /dev/null
->> +++ b/arch/x86/boot/compressed/tdx.c
->> @@ -0,0 +1,28 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * tdx.c - Early boot code for TDX
->> + */
->> +
->> +#include <asm/tdx.h>
-> 
-> Please no kernel proper includes in the decompressor stage - that thing
-> is an include hell mess and needs cleaning up. Use cpuid_count() from
-> arch/x86/boot/cpuflags.c by exporting it properly and add the other
-> defines here instead of using kernel proper facilities.
-> 
-> I know, I know, there is other misuse but it has to stop.
-
-I will re-use cpuid_count() from cpuflags.c. But it is missing definition
-for cpuid_eax(0). So, I will have to define a new function to handle it.
-Hope its alright with you.
-
-> 
->> +static int __ro_after_init tdx_guest = -1;
->> +
->> +static inline bool native_cpuid_has_tdx_guest(void)
-> 
-> Why is this function prefixed with "native_"?
-> 
->> +{
->> +	u32 eax = TDX_CPUID_LEAF_ID, sig[3] = {0};
->> +
->> +	if (native_cpuid_eax(0) < TDX_CPUID_LEAF_ID)
->> +		return false;
->> +
->> +	native_cpuid(&eax, &sig[0], &sig[1], &sig[2]);
->> +
->> +	return !memcmp("IntelTDX    ", sig, 12);
->> +}
->> +
->> +bool early_is_tdx_guest(void)
-> 
-> So I guess this is going to be used somewhere, because I don't see it.
-> Or is it going away in favor of prot_guest_has(PR_GUEST_TDX) ?
-
-It is used for handling TDX specific I/O support in decompressor code.
-
-You can find its usage in https://lore.kernel.org/patchwork/patch/1444186/
-
-May be I should move this patch next to that patch for easy reading.
-
-> 
-> This is the problem with sending new versions of patches as a reply to
-> the old ones in the patchset: I get confused. Why don't you wait until
-> the whole thing has been reviewed and then send a new revision which has
-> all the changes and I can find my way in the context?
-> 
-> And with the amount of changes so far, you should probably send a new
-> revision of the initial support set now-ish instead of me reviewing this
-> one 'til the end.
-
-I will send the new series with review fixes. Also, since this patch is only
-used by I/O support code, I will move this patch to another TDX series which
-adds TDX I/O support.
-
-> 
-> Thx.
-> 
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+        tglx
