@@ -2,92 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7673ACC47
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 446F13ACC52
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233805AbhFRNfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:35:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33353 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233003AbhFRNfn (ORCPT
+        id S233901AbhFRNhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:37:00 -0400
+Received: from mout.kundenserver.de ([212.227.17.24]:52731 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232253AbhFRNgw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:35:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624023213;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hYXdgxT03Bgph7WTDdx6mZuCz5B0Ty3MU8GPyXf11Ac=;
-        b=SOn9o6vc45xs1Ur1AzNTGiMQGL2gvk7ONbrFnVXnrKMUrftn043UKqRedzW3zZ4kfji/jM
-        m+0SGCr9UhX9tXFLfRrNMwxK0oexLenPdxGKzlsXeL2x9w7lB076HRHnBAvTuegZWtMK9N
-        kGSdnvaaK2cvbK4Pz5/6iLxmlw4k3qs=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-537-9IwffEJNN1qmfXQ5Gn-L3w-1; Fri, 18 Jun 2021 09:33:31 -0400
-X-MC-Unique: 9IwffEJNN1qmfXQ5Gn-L3w-1
-Received: by mail-ej1-f71.google.com with SMTP id p20-20020a1709064994b02903cd421d7803so3961661eju.22
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:33:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hYXdgxT03Bgph7WTDdx6mZuCz5B0Ty3MU8GPyXf11Ac=;
-        b=SUM3YRjWl/7Jyj9J4ed8fswANKtWD4onLHvKHZLmcrMdGJSsoYIyTtjHYZBitYxaiP
-         SxTMaIOjdMu1DbwmiOru6Mqbr3kdhml6I4PaHCmMWNy4jSZF1UZ2+Nn6wgy+fr4cdepL
-         uT0bL5sS19z49vTiGfdu1Cd3M6HpFd1uP/XrBEdLEbZ/5n/aUV0WWtQi/DG4pPBFsLSw
-         ECqbd7HLVB9M05ZSRC87RNQye9kp8W60sFn6vpaq31RiVUySKZi9IC8vqh7aSlECDf4j
-         3Mrq8Dld+Oxqke0yr9qsLJbvWQ4FuY66xThLMpDZCaoJWIgBfoOwuNgDBbTlh/Ft9wnc
-         V7tQ==
-X-Gm-Message-State: AOAM5301k+MTRHEQeqyFOyjOZ8tIirVD3x6lyhrKMv2rNH2UQN0Z71pD
-        ekMDM9zxjpHMqifmEyFUSBhg554Kk6GDvQ3eG6jMHqAfPZisQz/+i0+rS5pqnqgW2aIowh+zf6K
-        0wa6JEWnCp1I3mOeymM6L+ySu
-X-Received: by 2002:a17:906:1c84:: with SMTP id g4mr10664767ejh.99.1624023210731;
-        Fri, 18 Jun 2021 06:33:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzUYge8g478XkDG3g7ixMeylORBPehaGxAmNlFEtobCLRtX380pG18G0WHDaGLeP37/8MZjAA==
-X-Received: by 2002:a17:906:1c84:: with SMTP id g4mr10664754ejh.99.1624023210629;
-        Fri, 18 Jun 2021 06:33:30 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id y20sm6074920edq.69.2021.06.18.06.33.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 06:33:30 -0700 (PDT)
-Subject: Re: linux-next: Signed-off-by missing for commits in the drivers-x86
- tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Mark Gross <mark.gross@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210618083731.2481f7b5@canb.auug.org.au>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <cce5200d-d408-cc5d-3ea2-4e299488cdcf@redhat.com>
-Date:   Fri, 18 Jun 2021 15:33:29 +0200
+        Fri, 18 Jun 2021 09:36:52 -0400
+Received: from [192.168.1.155] ([77.4.121.131]) by mrelayeu.kundenserver.de
+ (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MXH3Y-1ln9Tn1L0o-00YfuT; Fri, 18 Jun 2021 15:34:21 +0200
+Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
+To:     David Hildenbrand <david@redhat.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Greg KH <greg@kroah.com>, Christoph Lameter <cl@gentwo.de>
+Cc:     Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
+        ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org
+References: <YH2hs6EsPTpDAqXc@mit.edu>
+ <nycvar.YFH.7.76.2104281228350.18270@cbobk.fhfr.pm>
+ <YIx7R6tmcRRCl/az@mit.edu>
+ <alpine.DEB.2.22.394.2105271522320.172088@gentwo.de>
+ <YK+esqGjKaPb+b/Q@kroah.com>
+ <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
+ <b32c8672-06ee-bf68-7963-10aeabc0596c@redhat.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <87a0352d-7bd1-94fe-5586-2322c98cae15@metux.net>
+Date:   Fri, 18 Jun 2021 15:34:19 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210618083731.2481f7b5@canb.auug.org.au>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <b32c8672-06ee-bf68-7963-10aeabc0596c@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:lXlgNZQBNbe/1PCHa9NFfMFVAMYHizpg0dHiP4mDYfild/2Fz/0
+ NK4rSXjwK84RuMdCre0U1oAL00q6B7ydKpimHGybcF5r2NJbTVLVJCas9h96LlCyaQquYJc
+ VWyWO+jOrQxCJmUlewkveLsLM82fyP16BwB8wZm/PCMsDHHbOS+dG9TvVxo7DUEPv6jY1Os
+ 1vksdXo+HUxTL5GPIhujw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1Pbaw9XW4KY=:33uNPw5m/Ml0bAeU0h6qJ7
+ rt8QzEytx1ZkJAoE71JCmsnZ043EOrbxo7Egr9/38t0eFKuy9t7S7FewNVr/7xYmPxF5DNlVq
+ ghdrQRf/VVXhMWCdLpnQJuJ1YtW+8FZL359DWyXe/d6uuFFHreJunpyDHsBrIeY/h3difn8LT
+ iM3XnQ1H3LgcswgVOwczIplmsaLVp9RN/RYtkU1Zj09n0Jp35HgRC2hBXdZ9Fb9UPMilOHdGK
+ YEmesqTDoK8cXb+jiWNG5Vvv6DhIAgdn0GSM8/DwyzMsGT9ksvz+LN+WUPxt1/ldTiQS2hrUf
+ KR1F1Y8aIrzMhPD2y9rc59r6rz4v/7pDT/a0BsA2vXUurWfx5340xKWJlu19jHEAFgwc8bkPi
+ 28fxbqY1HwBahrqUPVOPxnTxJ4qeQCzLdqNUe1iRoxcxTOXTiK0hTy3YznsXKsPHsxLn2xUCq
+ ZaldkCEM9HF1rKhFHtQ7z725Yn+/yHbrMtyuaFD83XC+qXUg1B8yXYODuWwIW+NdPKymtN5hq
+ aEkwHXYn0gorLvybhxGodg=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 09.06.21 12:37, David Hildenbrand wrote:
 
-On 6/18/21 12:37 AM, Stephen Rothwell wrote:
-> Hi all,
-> 
-> Commits
-> 
->   de5db8ebe7de ("tools/power/x86/intel-speed-select: v1.10 release")
->   f45d05b29cca ("tools/power/x86/intel-speed-select: Fix uncore memory frequency display")
-> 
-> are missing a Signed-off-by from their committer.
+> Just make sure to not
+> ignore the poor souls that really won't be traveling this year, because
+> "we are not vaccinated".
 
-My bad, sorry. I've just done a forced push to platform-drivers-x86/for-next to fix this.
+That's NOT correct.
 
-Regards,
+People can't travel freely because OPPRESSIVE regimes all around the
+world forbid traveling freely - and enforcing that with brute force.
 
-Hans
+Last year, i've been gunpointed by a cop just for walking over a market
+place in Nuremberg with my family, wearing a shirt with some Tucholsky
+quote and having my hands in the pants pockets !
 
+It is NOT the unvaxed who are stopping anybody from travel - it is
+nobody else than the GOVERMENT and its compliant abettors.
+
+US americans should remind themselves of the 2nd amendment.
+
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
