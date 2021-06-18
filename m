@@ -2,78 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EDDD3AD0A1
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:42:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9703AD071
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235950AbhFRQoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 12:44:23 -0400
-Received: from m12-12.163.com ([220.181.12.12]:36861 "EHLO m12-12.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233058AbhFRQoV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 12:44:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=f9Ui/oYSk48oHVAu8A
-        I9c5OPGqStY9Q1e3ITf86NGJc=; b=qcMbnVgXG6N1rv76bbLuwbvg5zISzIZ+Ro
-        yD9idEwYaJqayWgG7MelvM4EmO8bVzmQ6+yBPB+UUkVdFnkdCj9ZYUyT0nho+ko/
-        PDdBj4KKrptl1KZsXeJuYBbCu2YCHhS9ytbrO4QAqGlIy97v1Eu9NfPAzouZ4RDE
-        Gz4JS5oSg=
-Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
-        by smtp8 (Coremail) with SMTP id DMCowACHpyvBXsxgrcJOKg--.33804S2;
-        Fri, 18 Jun 2021 16:52:19 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     charles.gorand@effinnov.com, krzysztof.kozlowski@canonical.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH v2] NFC: nxp-nci: remove unnecessary label
-Date:   Fri, 18 Jun 2021 16:52:26 +0800
-Message-Id: <20210618085226.18440-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: DMCowACHpyvBXsxgrcJOKg--.33804S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtrW7ur4UCw13GrWDKr4Uurg_yoWDXFb_ur
-        yrZ34fXrWUCrWFvw1xKasxuFyDtw10gaykX3Za9ay3AFyqgw15Ww4Ivrn3Gw1UWFW8CFyD
-        Cw18Aw42yr4qyjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5Ub15UUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/xtbBHAO1sV3l-enGnAAAst
+        id S235318AbhFRQeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 12:34:12 -0400
+Received: from mail.efficios.com ([167.114.26.124]:59078 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231203AbhFRQeC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 12:34:02 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 00410345A19;
+        Fri, 18 Jun 2021 12:31:51 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id g5Prvf2nTCgQ; Fri, 18 Jun 2021 12:31:49 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 14489345611;
+        Fri, 18 Jun 2021 12:31:49 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 14489345611
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1624033909;
+        bh=c30zfFZ+WKXp4ykxS8QnPIbIIw3DBmBBPY/OSicceS4=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=UdYQQe9V8UnysEHZ4ypvGhvkJakwKFlXZfOOSiEIx6Vtn4MVWDCrB932vqHkbKDKO
+         0R9dfLQXGPkjN89K5anYMmVgNOk6oFxWfoY7hu4LHYYqhYsFOEBkbgCQCJ+KnksiIo
+         YRpyADqxvJEhcW/uoC3HtqyW987ODuYHgfKfd0kLgqp1P/734eJrGBnpOjUyLQF4AG
+         kkoCq1Ds0EKHyY6V8GY3PAaZqCzpzoMt8y613SPe567xcsvzsIYaa8253BOuNNzf7X
+         pVIVn4WSii7sy9z2zzLq6ld8JD/iEVwzmGvPjkDq/nkwmVI5H37veoPOBGZoqwjg4U
+         YZPHdZIm0XFug==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id AfQYFeayD4T7; Fri, 18 Jun 2021 12:31:49 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id ED14C345A18;
+        Fri, 18 Jun 2021 12:31:48 -0400 (EDT)
+Date:   Fri, 18 Jun 2021 12:31:48 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     x86 <x86@kernel.org>, Dave Hansen <dave.hansen@intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        stable <stable@vger.kernel.org>
+Message-ID: <593983567.12619.1624033908849.JavaMail.zimbra@efficios.com>
+In-Reply-To: <26196903-4aee-33c4-bed8-8bf8c7b46793@kernel.org>
+References: <cover.1623813516.git.luto@kernel.org> <07a8b963002cb955b7516e61bad19514a3acaa82.1623813516.git.luto@kernel.org> <827549827.10547.1623941277868.JavaMail.zimbra@efficios.com> <26196903-4aee-33c4-bed8-8bf8c7b46793@kernel.org>
+Subject: Re: [PATCH 8/8] membarrier: Rewrite sync_core_before_usermode() and
+ improve documentation
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - FF89 (Linux)/8.8.15_GA_4026)
+Thread-Topic: membarrier: Rewrite sync_core_before_usermode() and improve documentation
+Thread-Index: C3ezcgff2ZvgoZp+6lVucwS8DABVog==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+----- On Jun 17, 2021, at 8:12 PM, Andy Lutomirski luto@kernel.org wrote:
 
-Remove unnecessary label chunk_exit and return directly.
+> On 6/17/21 7:47 AM, Mathieu Desnoyers wrote:
+> 
+>> Please change back this #ifndef / #else / #endif within function for
+>> 
+>> if (!IS_ENABLED(CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE)) {
+>>   ...
+>> } else {
+>>   ...
+>> }
+>> 
+>> I don't think mixing up preprocessor and code logic makes it more readable.
+> 
+> I agree, but I don't know how to make the result work well.
+> membarrier_sync_core_before_usermode() isn't defined in the !IS_ENABLED
+> case, so either I need to fake up a definition or use #ifdef.
+> 
+> If I faked up a definition, I would want to assert, at build time, that
+> it isn't called.  I don't think we can do:
+> 
+> static void membarrier_sync_core_before_usermode()
+> {
+>    BUILD_BUG_IF_REACHABLE();
+> }
 
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
----
- drivers/nfc/nxp-nci/firmware.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+Let's look at the context here:
 
-diff --git a/drivers/nfc/nxp-nci/firmware.c b/drivers/nfc/nxp-nci/firmware.c
-index dae0c80..119bf30 100644
---- a/drivers/nfc/nxp-nci/firmware.c
-+++ b/drivers/nfc/nxp-nci/firmware.c
-@@ -95,10 +95,8 @@ static int nxp_nci_fw_send_chunk(struct nxp_nci_info *info)
- 	int r;
- 
- 	skb = nci_skb_alloc(info->ndev, info->max_payload, GFP_KERNEL);
--	if (!skb) {
--		r = -ENOMEM;
--		goto chunk_exit;
--	}
-+	if (!skb)
-+		return -ENOMEM;
- 
- 	chunk_len = info->max_payload - NXP_NCI_FW_HDR_LEN - NXP_NCI_FW_CRC_LEN;
- 	remaining_len = fw_info->frame_size - fw_info->written;
-@@ -124,7 +122,6 @@ static int nxp_nci_fw_send_chunk(struct nxp_nci_info *info)
- 
- 	kfree_skb(skb);
- 
--chunk_exit:
- 	return r;
- }
- 
+static void ipi_sync_core(void *info)
+{
+    [....]
+    membarrier_sync_core_before_usermode()
+}
+
+^ this can be within #ifdef / #endif
+
+static int membarrier_private_expedited(int flags, int cpu_id)
+[...]
+               if (!IS_ENABLED(CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE))
+                        return -EINVAL;
+                if (!(atomic_read(&mm->membarrier_state) &
+                      MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE_READY))
+                        return -EPERM;
+                ipi_func = ipi_sync_core;
+
+All we need to make the line above work is to define an empty ipi_sync_core
+function in the #else case after the ipi_sync_core() function definition.
+
+Or am I missing your point ?
+
+Thanks,
+
+Mathieu
+
 -- 
-1.9.1
-
-
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
