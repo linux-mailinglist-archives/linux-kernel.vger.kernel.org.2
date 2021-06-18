@@ -2,237 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41293ACF65
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:46:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 957B53ACF6B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:49:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235609AbhFRPtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:49:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230334AbhFRPtB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:49:01 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B91EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 08:46:51 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id q190so9367584qkd.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 08:46:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zcQ7KK9hBr7yvfbTrQi3Dt8X1Vt9/IIv1M0D2G1Phvg=;
-        b=d6zx0EVQIUvYQKiq5vg04ODnRSh3aGr1a4W5bd212/iIGjXiQkaD5wFJ5cwXwMXenx
-         +TTT2W2Pz/bfQsaV5Z9Mr7zuyJkWKU444YC5R2BUqLgkZB7cwtux8b8tqsiiyM6TpgVU
-         ESQLBs4GzhK69GPIM7/pM1iniJvkHekT4cq9PArNOhWGdRKuX8JehmeabeQ5KMe/R+6/
-         biaWwvgWsVvIdhoGqgbx/bYxYtE251FrlNdqhcSSKnINGgSd0aMCFHZEi2vjEKw1Pm5M
-         psIxwZJrtgFiAnHuxVThFK6U4xqjcbIFobjYzIlszVp17uFuwGe6rhmgsaV4YMJOGhfG
-         arWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zcQ7KK9hBr7yvfbTrQi3Dt8X1Vt9/IIv1M0D2G1Phvg=;
-        b=cEybU2Qwlu6twO3ly7l5FLEGJiMbMpIq4YSLziuHy9zisfsEJwfZqqH0ARYm3/9Nzn
-         HgCHY7Qw03KXWgc2j6f6YJYzN5PE9W2Ibr8nWF2qTyBc3YSapDaToYhdHngu+FT8w7pB
-         zD+2xHkDVzJ8PpfNe28yqBwHWEaavHLWbbLuBIPWnH7f3pK6stlXVi7nVYnUKiVDwofk
-         kiwpms8jhnTFlsKqSyNoyTkpCn2lxXYdRT9FMwF3RVACb4Gm6X+akNqe5Pxt6K4bED7h
-         Pn22MMOCPRGGEqgq7SrNzUH5dFLcLXvJUs02eGFMZf82ZCJ6I4jaaHHxX8/JUcxlYYdi
-         pxpQ==
-X-Gm-Message-State: AOAM532Fv2dUe4OGk7Vr6Ia/VNdxM74CWNKiLhNBAjfIX4ZKQv1etJx9
-        KtHaGC8v+nppnEky2wQzseHb1Ata5EM2N0Zwsgg=
-X-Google-Smtp-Source: ABdhPJxeeNCGxHdVH+QTwJHu5xaAsLnCKxDux48dD7O23fN1VXkfNzhfdtFjRSJIuoNIO5YzqhK0a5tN7P14CwSm2v4=
-X-Received: by 2002:a05:620a:15d3:: with SMTP id o19mr9806718qkm.481.1624031210454;
- Fri, 18 Jun 2021 08:46:50 -0700 (PDT)
+        id S235254AbhFRPvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:51:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34264 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230334AbhFRPvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 11:51:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1192861351;
+        Fri, 18 Jun 2021 15:48:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624031337;
+        bh=PGGvVrkMfYH/qnVXzL1ynHkXyfl4h/zcwQx6X9fgpDQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d9p48mZSZZwIyejtBkS+zdYTLSoOoWeVDRQj4MxSMqpfc2bx/kRN+4fbtXNu9d9ZA
+         vF7uLab4tYZL1/u3YnHcbxuFG85fzkeoyFxY8B6xC2WPYUlYspQNtc6o0+xdlUBKRG
+         TpfB27FW49PDAPdddqo5sGc0DUgqX4wc6ZuOKUmT38qCoQNQ1JGB092hLFF9M3CV2z
+         XjpYTWWlUO6XMC0wr4e718EsDUUzxyWAV3qAnuuVyzRyDVMPQ9iq/WI1gBC0Z4T9Qk
+         a5HK4jsJYXBpmygX8VTC9xYBtY38Ov6IbcvwHx3aBh0NEoqcx8LmUKhnAqztgieCsk
+         G8Pj9cP8FmbFA==
+Date:   Fri, 18 Jun 2021 16:48:36 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     srivasam@codeaurora.org, rafael@kernel.org,
+        dp@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH] regmap: move readable check before accessing regcache.
+Message-ID: <20210618154836.GC4920@sirena.org.uk>
+References: <20210618113558.10046-1-srinivas.kandagatla@linaro.org>
+ <20210618115104.GB4920@sirena.org.uk>
+ <666da41f-173e-152d-84e5-e9b32baa60da@linaro.org>
 MIME-Version: 1.0
-References: <YMdPcWZi4x7vnCxI@google.com> <YMuGGqs4cDotxuKO@phenom.ffwll.local>
-In-Reply-To: <YMuGGqs4cDotxuKO@phenom.ffwll.local>
-From:   Matthew Auld <matthew.william.auld@gmail.com>
-Date:   Fri, 18 Jun 2021 16:46:24 +0100
-Message-ID: <CAM0jSHMYk3GeZTP7FQ8z2H02GfCcJsUeNwbzH3GLdRVxvMzqDg@mail.gmail.com>
-Subject: Re: drm/i915: __GFP_RETRY_MAYFAIL allocations in stable kernels
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Matthew Auld <matthew.william.auld@gmail.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="L6iaP+gRLNZHKoI4"
+Content-Disposition: inline
+In-Reply-To: <666da41f-173e-152d-84e5-e9b32baa60da@linaro.org>
+X-Cookie: Are you a turtle?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Jun 2021 at 18:27, Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Mon, Jun 14, 2021 at 09:45:37PM +0900, Sergey Senozhatsky wrote:
-> > Hi,
-> >
-> > We are observing some user-space crashes (sigabort, segfaults etc.)
-> > under moderate memory pressure (pretty far from severe pressure) which
-> > have one thing in common - restrictive GFP mask in setup_scratch_page().
-> >
-> > For instance, (stable 4.19) drivers/gpu/drm/i915/i915_gem_gtt.c
-> >
-> > (trimmed down version)
-> >
-> > static int gen8_init_scratch(struct i915_address_space *vm)
-> > {
-> >         setup_scratch_page(vm, __GFP_HIGHMEM);
-> >
-> >         vm->scratch_pt = alloc_pt(vm);
-> >         vm->scratch_pd = alloc_pd(vm);
-> >         if (use_4lvl(vm)) {
-> >                 vm->scratch_pdp = alloc_pdp(vm);
-> >         }
-> > }
-> >
-> > gen8_init_scratch() function puts a rather inconsistent restrictions on mm.
-> >
-> > Looking at it line by line:
-> >
-> > setup_scratch_page() uses very restrictive gfp mask:
-> >       __GFP_HIGHMEM | __GFP_ZERO | __GFP_RETRY_MAYFAIL
-> >
-> > it doesn't try to reclaim anything and fails almost immediately.
-> >
-> > alloc_pt() - uses more permissive gfp mask:
-> >       GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN
-> >
-> > alloc_pd() - likewise:
-> >       GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN
-> >
-> > alloc_pdp() - very permissive gfp mask:
-> >       GFP_KERNEL
-> >
-> >
-> > So can all allocations in gen8_init_scratch() use
-> >       GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN
->
-> Yeah that looks all fairly broken tbh. The only thing I didn't know was
-> that GFP_DMA32 wasn't a full gfp mask with reclaim bits set as needed. I
-> guess it would be clearer if we use GFP_KERNEL | __GFP_DMA32 for these.
->
-> The commit that introduced a lot of this, including I915_GFP_ALLOW_FAIL
-> seems to be
->
-> commit 1abb70f5955d1a9021f96359a2c6502ca569b68d
-> Author: Chris Wilson <chris@chris-wilson.co.uk>
-> Date:   Tue May 22 09:36:43 2018 +0100
->
->     drm/i915/gtt: Allow pagedirectory allocations to fail
->
-> which used a selftest as justification, not real world workloads, so looks
-> rather dubious.
->
-> Adding Matt Auld to this thread, maybe he has ideas.
 
-The latest code is quite different, but for both scratch and the
-various paging structures it's now sharing the same GFP
-flags(I915_GFP_ALLOW_FAIL). And for the actual backing page, which is
-now a GEM object, we use i915_gem_object_get_pages_internal().
+--L6iaP+gRLNZHKoI4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Not sure why scratch wants to be different, and I don't recall
-anything funny. At first I thought it might have been related to
-needing only one scratch page/directory etc which was then shared
-between different VMs, but I don't think we had read-only support in
-the driver at that point, so can't be that. But I guess once we did
-add that seeing failures in init_scratch() was very unlikely, at least
-until gen11+ arrived which then broke read-only support in the HW.
+On Fri, Jun 18, 2021 at 01:29:50PM +0100, Srinivas Kandagatla wrote:
+> On 18/06/2021 12:51, Mark Brown wrote:
 
->
-> Thanks, Daniel
->
-> > ?
-> >
-> > E.g.
-> >
-> > ---
-> > diff --git a/drivers/gpu/drm/i915/i915_gem_gtt.c b/drivers/gpu/drm/i915/i915_gem_gtt.c
-> > index a12430187108..e862680b9c93 100644
-> > --- a/drivers/gpu/drm/i915/i915_gem_gtt.c
-> > +++ b/drivers/gpu/drm/i915/i915_gem_gtt.c
-> > @@ -792,7 +792,7 @@ alloc_pdp(struct i915_address_space *vm)
-> >
-> >         GEM_BUG_ON(!use_4lvl(vm));
-> >
-> > -       pdp = kzalloc(sizeof(*pdp), GFP_KERNEL);
-> > +       pdp = kzalloc(sizeof(*pdp), I915_GFP_ALLOW_FAIL);
-> >         if (!pdp)
-> >                 return ERR_PTR(-ENOMEM);
-> >
-> > @@ -1262,7 +1262,7 @@ static int gen8_init_scratch(struct i915_address_space *vm)
-> >  {
-> >         int ret;
-> >
-> > -       ret = setup_scratch_page(vm, __GFP_HIGHMEM);
-> > +       ret = setup_scratch_page(vm, GFP_KERNEL | __GFP_HIGHMEM);
-> >         if (ret)
-> >                 return ret;
-> >
-> > @@ -1972,7 +1972,7 @@ static int gen6_ppgtt_init_scratch(struct gen6_hw_ppgtt *ppgtt)
-> >         u32 pde;
-> >         int ret;
-> >
-> > -       ret = setup_scratch_page(vm, __GFP_HIGHMEM);
-> > +       ret = setup_scratch_page(vm, GFP_KERNEL | __GFP_HIGHMEM);
-> >         if (ret)
-> >                 return ret;
-> >
-> > @@ -3078,7 +3078,7 @@ static int ggtt_probe_common(struct i915_ggtt *ggtt, u64 size)
-> >                 return -ENOMEM;
-> >         }
-> >
-> > -       ret = setup_scratch_page(&ggtt->vm, GFP_DMA32);
-> > +       ret = setup_scratch_page(&ggtt->vm, GFP_KERNEL | GFP_DMA32);
-> >         if (ret) {
-> >                 DRM_ERROR("Scratch setup failed\n");
-> >                 /* iounmap will also get called at remove, but meh */
-> > ---
-> >
-> >
-> >
-> > It's quite similar on stable 5.4 - setup_scratch_page() uses restrictive
-> > gfp mask again.
-> >
-> > ---
-> > diff --git a/drivers/gpu/drm/i915/i915_gem_gtt.c b/drivers/gpu/drm/i915/i915_gem_gtt.c
-> > index f614646ed3f9..99d78b1052df 100644
-> > --- a/drivers/gpu/drm/i915/i915_gem_gtt.c
-> > +++ b/drivers/gpu/drm/i915/i915_gem_gtt.c
-> > @@ -1378,7 +1378,7 @@ static int gen8_init_scratch(struct i915_address_space *vm)
-> >                 return 0;
-> >         }
-> >
-> > -       ret = setup_scratch_page(vm, __GFP_HIGHMEM);
-> > +       ret = setup_scratch_page(vm, GFP_KERNEL | __GFP_HIGHMEM);
-> >         if (ret)
-> >                 return ret;
-> >
-> > @@ -1753,7 +1753,7 @@ static int gen6_ppgtt_init_scratch(struct gen6_ppgtt *ppgtt)
-> >         struct i915_page_directory * const pd = ppgtt->base.pd;
-> >         int ret;
-> >
-> > -       ret = setup_scratch_page(vm, __GFP_HIGHMEM);
-> > +       ret = setup_scratch_page(vm, GFP_KERNEL | __GFP_HIGHMEM);
-> >         if (ret)
-> >                 return ret;
-> >
-> > @@ -2860,7 +2860,7 @@ static int ggtt_probe_common(struct i915_ggtt *ggtt, u64 size)
-> >                 return -ENOMEM;
-> >         }
-> >
-> > -       ret = setup_scratch_page(&ggtt->vm, GFP_DMA32);
-> > +       ret = setup_scratch_page(&ggtt->vm, GFP_KERNEL | GFP_DMA32);
-> >         if (ret) {
-> >                 DRM_ERROR("Scratch setup failed\n");
-> >                 /* iounmap will also get called at remove, but meh */
-> > ---
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+> > Why will use of regmap_update_bits() mean that a driver will never
+> > notice a write failure?  Shouldn't remgap_update_bits() be fixed to
+> > report any errors it isn't reporting, or the driver fixed to check
+
+> usecase is performing regmap_update_bits() on a *write-only* registers.
+
+> _regmap_update_bits() checks _regmap_read() return value before bailing o=
+ut.
+> In non cache path we have this regmap_readable() check however in cached
+> patch we do not have this check, so _regmap_read() will return success in
+> this case so regmap_update_bits() never reports any error.
+
+> driver in question does check the return value.
+
+OK, so everything is working fine then - what's the problem?  The value
+in the register is cached, the read returns that cached value and then
+the relevant bits are updated and the new value written out to both the
+cache and the hardware.  No part of that sounds like a problem to me.
+
+> > error codes?  I really don't understand the issue you're trying to
+> > report - what is "the right thing" and what makes you believe that a
+> > driver can't do an _update_bits() on a write only but cached register?
+> > Can you specify in concrete terms what the problem is.
+
+> So one of recent patch ("ASoC: qcom: Fix for DMA interrupt clear reg
+> overwriting) https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-n=
+ext.git/commit/?h=3Dnext-20210618&id=3Dda0363f7bfd3c32f8d5918e40bfddb9905c8=
+6ee1
+>=20
+> broke audio on DragonBoard 410c.
+
+> This patch simply converts writes to regmap_update_bits for that particul=
+ar
+> dma channel. The register that its updating is IRQ_CLEAR register which is
+> software "WRITE-ONLY" and Hardware read-only register.
+
+So the driver is buggy then, the register is clearly volatile and can't
+be cached, and it sounds like it's unsafe to use _update_bits() on it.
+The register is clearly not write only since it can be read and it's
+volatile since the readback value does not reflect what was written (and
+presumably can change),.  Even without that it's buggy to use
+_update_bits() here since the device needs the write to happen
+regardless of the value that is read back, with the register marked as
+volatile that will still potentially fail if the readback value happens
+to be the same as whatever bits the driver is trying to set.
+
+Your description of the register is being "software write only" and
+"hardware read only" should be a warning sign here, think about what
+that might mean for a minute.
+
+> The bits in particular case is updating is a period interrupt clear bit.
+
+> Because we are using regmap cache in this driver,
+
+> first regmap_update_bits(map, 0x1, 0x1) on first period interrupt will
+> update the cache and write to IRQ_CLEAR hardware register which then clea=
+rs
+> the interrupt latch.
+> On second period interrupt we do regmap_update_bits(map, 0x1, 0x1) with t=
+he
+> same bits, Because we are using cache for this regmap caches sees no chan=
+ge
+> in the cache value vs the new value so it will never write/update  IRQ_CL=
+EAR
+> hardware register, so hardware is stuck here waiting for IRQ_CLEAR write
+> from driver and audio keeps repeating the last period.
+
+This is because the register is volatile and we can't cache the written
+value, it is a driver bug.  If the value in the register does not change
+=66rom the value written unexpectedly then the register can be cached and
+there is no problem but that's not the case here.
+
+--L6iaP+gRLNZHKoI4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDMwFMACgkQJNaLcl1U
+h9AgvAf+O2iXF73nAl/Z/pHHSRh0SYND8UF9rb9lkKpGLz6EkfggX6JF3CDffZH2
+b6KsnBeujrFYIeu2sUOGGiu7ZpTtFHGeXT1Y0kQ8KOQxyYXVZB0KaVw2StBCdXJB
+bVFtbHv+SLPQ1Di1g4/g+YmwHXS0Dgp9bKCjxmCpuLhjD03c3Eb8a24Cu6DDhwEp
+DQoCJSDnAVOtVwsJn4AOhfX6glbDk6AviI++OhxYh24C8tY56PhnlKx/pKq8fB3+
+JGW4NSyqTosNuSKKkPZLCOB+Ytr7/SrXWpXwSXrrVjcnjw+hcs5r1LWBlRGE9FEW
+K4wRSCfbEFcnOTaUqsS6uwxmFerhNQ==
+=g9qE
+-----END PGP SIGNATURE-----
+
+--L6iaP+gRLNZHKoI4--
