@@ -2,94 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C543AC304
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E103AC308
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232716AbhFRGCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 02:02:12 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:56900 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232250AbhFRGCL (ORCPT
+        id S232425AbhFRGEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 02:04:15 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:46965 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232250AbhFRGEN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 02:02:11 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 2C57621AB1;
-        Fri, 18 Jun 2021 06:00:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1623996002; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Etb+e8FSSeXWZbq2Xf9BFn2ebx78s4yb03Of9slw210=;
-        b=qgX66veJVOAz8w/h06hvEAy8tj7LJjm5kroBTguRv6+yqaHR+HF86BS5Q3nBuTgu9TT3bm
-        iCeVwMkvKakAibJlJv4QHp0BYt++KCebhnO7eyG1NVL/0wEgZwsd9lnHm0IghQ42F2uc9m
-        sFwT1ETlMcSACt+8efwjXONSPFB6AUs=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 18 Jun 2021 02:04:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623996125; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=diQVGTKWxVl8pROsUPH7uMBRC5qSN2k/dc63nuVFOtY=; b=tiokWvHcvuJOOUP0eCLbxaLoRPE2URQFZA1gdXKK5m5HaDtAWl0u0I4fIv/No4MWYWEy1SFF
+ l7E+gJjgDBAq/pmTQpGNJgAo5eJncUshZMZih4finQH9+f/LS6ti5WkyZhvr09K7tZgIMWMk
+ rV6M1NMSETI69YFF3E6FL6o14QM=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60cc36dced59bf69cc4629ad (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Jun 2021 06:02:04
+ GMT
+Sender: rnayak=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 64608C43460; Fri, 18 Jun 2021 06:02:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.50.13.151] (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id E0E8AA3B9D;
-        Fri, 18 Jun 2021 06:00:01 +0000 (UTC)
-Date:   Fri, 18 Jun 2021 08:00:01 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Denis Efremov <efremov@linux.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, joe@perches.com,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] KVM: Use vmemdup_user()
-Message-ID: <YMw2YeWHFsn+AFmN@dhcp22.suse.cz>
-References: <0c00d96c46d34d69f5f459baebf3c89a507730fc.camel@perches.com>
- <20200603101131.2107303-1-efremov@linux.com>
- <CALMp9eSFkRrWLjegJ5OC7kZ4oWtZypKRDjXFQD5=tFX4YLpUgw@mail.gmail.com>
+        (Authenticated sender: rnayak)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BBBFFC433F1;
+        Fri, 18 Jun 2021 06:02:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BBBFFC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=rnayak@codeaurora.org
+Subject: Re: [PATCH v2 1/3] dt-bindings: power: Introduce
+ 'assigned-performance-states' property
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Roja Rani Yarubandi <rojay@codeaurora.org>
+References: <1622095949-2014-1-git-send-email-rnayak@codeaurora.org>
+ <1622095949-2014-2-git-send-email-rnayak@codeaurora.org>
+ <CAPDyKFpc2Kh8y-=2F6kBmw74wReVP5QcYOfu1y9AguOvzTQtPg@mail.gmail.com>
+From:   Rajendra Nayak <rnayak@codeaurora.org>
+Message-ID: <4245f8c0-bafb-3c80-ff4b-8db4855f1432@codeaurora.org>
+Date:   Fri, 18 Jun 2021 11:31:58 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALMp9eSFkRrWLjegJ5OC7kZ4oWtZypKRDjXFQD5=tFX4YLpUgw@mail.gmail.com>
+In-Reply-To: <CAPDyKFpc2Kh8y-=2F6kBmw74wReVP5QcYOfu1y9AguOvzTQtPg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 17-06-21 17:25:04, Jim Mattson wrote:
-> On Wed, Jun 3, 2020 at 3:10 AM Denis Efremov <efremov@linux.com> wrote:
-> >
-> > Replace opencoded alloc and copy with vmemdup_user().
-> >
-> > Signed-off-by: Denis Efremov <efremov@linux.com>
-> > ---
-> > Looks like these are the only places in KVM that are suitable for
-> > vmemdup_user().
-> >
-> >  arch/x86/kvm/cpuid.c | 17 +++++++----------
-> >  virt/kvm/kvm_main.c  | 19 ++++++++-----------
-> >  2 files changed, 15 insertions(+), 21 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> > index 901cd1fdecd9..27438a2bdb62 100644
-> > --- a/arch/x86/kvm/cpuid.c
-> > +++ b/arch/x86/kvm/cpuid.c
-> > @@ -182,17 +182,14 @@ int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
-> >         r = -E2BIG;
-> >         if (cpuid->nent > KVM_MAX_CPUID_ENTRIES)
-> >                 goto out;
-> > -       r = -ENOMEM;
-> >         if (cpuid->nent) {
-> > -               cpuid_entries =
-> > -                       vmalloc(array_size(sizeof(struct kvm_cpuid_entry),
-> > -                                          cpuid->nent));
-> > -               if (!cpuid_entries)
-> > -                       goto out;
-> > -               r = -EFAULT;
-> > -               if (copy_from_user(cpuid_entries, entries,
-> > -                                  cpuid->nent * sizeof(struct kvm_cpuid_entry)))
-> > +               cpuid_entries = vmemdup_user(entries,
-> > +                                            array_size(sizeof(struct kvm_cpuid_entry),
-> > +                                                       cpuid->nent));
-> 
-> Does this break memcg accounting? I ask, because I'm really not sure.
 
-What do you mean by that? The original code uses plain vmalloc so the
-allocation is not memcg accounted (please note that __GFP_ACCOUNT needs
-to be specified explicitly). vmemdup_user is the same in that regards.
+On 6/15/2021 8:35 PM, Ulf Hansson wrote:
+> On Thu, 27 May 2021 at 08:13, Rajendra Nayak <rnayak@codeaurora.org> wrote:
+>>
+>> While most devices within power-domains which support performance states,
+>> scale the performance state dynamically, some devices might want to
+>> set a static/default performance state while the device is active.
+>> These devices typically would also run off a fixed clock and not support
+>> dynamically scaling the device's performance, also known as DVFS techniques.
+>> Add a property 'assigned-performance-states' which client devices can
+>> use to set this default performance state on their power-domains.
+>>
+>> Signed-off-by: Rajendra Nayak <rnayak@codeaurora.org>
+> 
+> Rajendra, I think this is ready to be re-spinned on top of the latest
+> changes for genpd that Rafael recently queued [1].
+
+Thanks Ulf, yes, I plan to re-spin these based on the recent discussions,
+re-using the existing required-opps bindings soon.
+  
+> If you would prefer me to do it, then please let me know. Otherwise I
+> will be awaiting a new version from you.
+> 
+> Kind regards
+> Uffe
+> 
+> [1]
+> https://lore.kernel.org/linux-pm/CAJZ5v0i0FD-F7tN=AJNEY5HVVTCNuciLT4hCqdoS5bgF5WdmaA@mail.gmail.com/
+> 
+>> ---
+>>   .../devicetree/bindings/power/power-domain.yaml    | 50 ++++++++++++++++++++++
+>>   1 file changed, 50 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/power/power-domain.yaml b/Documentation/devicetree/bindings/power/power-domain.yaml
+>> index aed51e9..88cebf2 100644
+>> --- a/Documentation/devicetree/bindings/power/power-domain.yaml
+>> +++ b/Documentation/devicetree/bindings/power/power-domain.yaml
+>> @@ -66,6 +66,19 @@ properties:
+>>         by the given provider should be subdomains of the domain specified
+>>         by this binding.
+>>
+>> +  assigned-performance-states:
+>> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+>> +    description:
+>> +       Some devices might need to configure their power domains in a default
+>> +       performance state while the device is active. These devices typically
+>> +       would also run off a fixed clock and not support dynamically scaling the
+>> +       device's performance, also known as DVFS techniques. The list of performance
+>> +       state values should correspond to the list of power domains specified as part
+>> +       of the power-domains property. Each cell corresponds to one power-domain.
+>> +       A value of 0 can be used for power-domains with no performance state
+>> +       requirement. In case the power-domains have OPP tables associated, the values
+>> +       here would typically match with one of the entries in the OPP table.
+>> +
+>>   required:
+>>     - "#power-domain-cells"
+>>
+>> @@ -131,3 +144,40 @@ examples:
+>>               min-residency-us = <7000>;
+>>           };
+>>       };
+>> +
+>> +  - |
+>> +    parent4: power-controller@12340000 {
+>> +        compatible = "foo,power-controller";
+>> +        reg = <0x12340000 0x1000>;
+>> +        #power-domain-cells = <0>;
+>> +    };
+>> +
+>> +    parent5: power-controller@43210000 {
+>> +        compatible = "foo,power-controller";
+>> +        reg = <0x43210000 0x1000>;
+>> +        #power-domain-cells = <0>;
+>> +        operating-points-v2 = <&power_opp_table>;
+>> +
+>> +        power_opp_table: opp-table {
+>> +            compatible = "operating-points-v2";
+>> +
+>> +            power_opp_low: opp1 {
+>> +                opp-level = <16>;
+>> +            };
+>> +
+>> +            rpmpd_opp_ret: opp2 {
+>> +                opp-level = <64>;
+>> +            };
+>> +
+>> +            rpmpd_opp_svs: opp3 {
+>> +                opp-level = <256>;
+>> +            };
+>> +        };
+>> +    };
+>> +
+>> +    child4: consumer@12341000 {
+>> +        compatible = "foo,consumer";
+>> +        reg = <0x12341000 0x1000>;
+>> +        power-domains = <&parent4>, <&parent5>;
+>> +        assigned-performance-states = <0>, <256>;
+>> +    };
+>> --
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+>>
 
 -- 
-Michal Hocko
-SUSE Labs
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
