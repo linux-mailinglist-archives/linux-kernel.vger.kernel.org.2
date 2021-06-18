@@ -2,125 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D644A3AC7D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:41:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 383F13AC7E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232609AbhFRJnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 05:43:24 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:49545 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231436AbhFRJnW (ORCPT
+        id S231676AbhFRJq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 05:46:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231436AbhFRJqT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 05:43:22 -0400
-Received: from mail-ed1-f69.google.com ([209.85.208.69])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1luAzx-0005Ga-1P
-        for linux-kernel@vger.kernel.org; Fri, 18 Jun 2021 09:41:13 +0000
-Received: by mail-ed1-f69.google.com with SMTP id ay20-20020a0564022034b0290394938d698bso341628edb.10
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:41:13 -0700 (PDT)
+        Fri, 18 Jun 2021 05:46:19 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A99C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:44:08 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id bp38so15750167lfb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:44:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8MpyH2W/Qi16vZF1RutDfX/LXWayA+uMuphu1a4gDY8=;
+        b=WS97S26sHLsjWjnE4s2jX0/ynLhPoe0+VUb0hrL9k3lZ0LxP5jHd7PkAhea6aF429B
+         Y+qwux8Btsy6lCFc/+i0aB6x+MGHD46ahPFfVf9Kn937OEb7QczXPOCIZ5HHNUyUf3It
+         eRH8Rij5W3fCdq0jCzeEpTpd+D1wycYbbYve+Z6hubf30WMg4FgSff9vD2mA7cJkyhFf
+         5lWW9sZtAOSfGYqO0hAZaCntF5/qPm97kpkeIYlGl3o7puopBYT1CW/z6FTdet91yO38
+         sBphYsO/Ty7OXJY8TkssfooKxvef+GmimD8/2MjK1tXm5GRKIrMxXyV0BQP8arKq2Pft
+         ZlIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wo2cA5pweSO0kqrQxgILuU1snjksEOHw0ShsHwnGQtI=;
-        b=B73zifq3lvUQmLs63I8BMJi0FrBGbkUHhzDm0cl11hnrjvX1KhdyNnw2y6PCOauzmI
-         5qOha10obeZf1b4As9R8lfZ4nILghjVpiPPM3UIpW9Cvkp+s8artuG/YG0jOsqSg+NdS
-         uMmlfZdopvUMgiiQ2OMzjQE913xKcgJPBRDyHzhJBa48tSInHxPk8MJsW73Ncoj923a4
-         cYZEIBUfFbQwFuKDvkRqMjCONpjbPabtpByPFSs3jYXODtSLEzR3/rsM2/cRBouPBuwY
-         LPyQU82ktis4ZPWu3oRCszpw3oqJf6uktnpkIHNW3JDwJRulGZyuPFTir+DLs+fdmAPL
-         IsRA==
-X-Gm-Message-State: AOAM530KeemFsx+mRca2gkUC3AxEfbYZvGSuDkWMrlv2pvosrA8tcNil
-        aRuQ7SWZCtQ2r7pQpBBU1Upy0Of194cmdxgu189dDkRzXIQ433wxOcCC/syoRtt6+Wu98vxtBQ3
-        DYP5ddEX7fFexNhZHVg8bi9cc3iOgxNnoLiE8gIR9+Q==
-X-Received: by 2002:a50:a447:: with SMTP id v7mr3754053edb.183.1624009272796;
-        Fri, 18 Jun 2021 02:41:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz1WiDYFrsj6mJMQRLbXFqr/rU2eP2bom1b8TfxvYhAlycRQg2/g/+hXKY9QL0vEHNbGqcSMA==
-X-Received: by 2002:a50:a447:: with SMTP id v7mr3754040edb.183.1624009272677;
-        Fri, 18 Jun 2021 02:41:12 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id kj1sm839242ejc.10.2021.06.18.02.41.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 02:41:12 -0700 (PDT)
-Subject: Re: [PATCH 5.4 031/184] modules: inherit TAINT_PROPRIETARY_MODULE
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Christoph Hellwig <hch@lst.de>, Jessica Yu <jeyu@kernel.org>
-References: <20210510101950.200777181@linuxfoundation.org>
- <20210510101951.249384110@linuxfoundation.org>
- <8edc6f45-6c42-19c7-6f40-6f1a49cc685b@canonical.com>
- <YMxlP2EMTaG9+2y6@kroah.com>
- <e56625df-dda3-01f3-0f9d-f4dffdbd6690@canonical.com>
- <YMxnXQzcP0g1F9Iw@kroah.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <0abfc041-571b-75ae-0d53-48f801aab043@canonical.com>
-Date:   Fri, 18 Jun 2021 11:41:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8MpyH2W/Qi16vZF1RutDfX/LXWayA+uMuphu1a4gDY8=;
+        b=TqRuKuSEVyGQROd3BE1pXioOOy1FGEGxZdvgKu4Gm73IVk7l2va/6niv22us4Ijr2w
+         NWZww8uV4A5r6TkDS0ZmX8I4We0i6+Csfa+BHE5Xd06EnqXwciX0gYSiJE/iUjGSY5rg
+         ONYCd77UGTFu/poM7YSLILq/5P43DVmNNOR0nic2CtMGDXKhdPj4VhW/mns2wcSHTDXw
+         /bFGoviw94OBDQgWS2V/xHhT/k4TywsqJTIuCAGkzajfoPn+K7Wh1HLc6jpJI+vFUHdm
+         VfR2vtYgugxf+bbkS1xEelqMUKzWpLLPBaF/YNK+rlT8o/ExbnPfGoq2mEEky3ATcHti
+         waHw==
+X-Gm-Message-State: AOAM5328qyFVU7ZAr5l8UqCGwjvKfgxxECm1uoMUNJKd30TgdRWmEcmf
+        BEXL/QeffNIcRxvrQFznlyV1GnRtbwjXU9HF+SL43A==
+X-Google-Smtp-Source: ABdhPJzo4qbbSF3xLRiPOBtDaxlez1Z9u7fCpK1MwfRoaiuf8Qyc5m63k0jWd26FO6A0lO02OSeSEHK0P3YE5fo4/UQ=
+X-Received: by 2002:a05:6512:3241:: with SMTP id c1mr2595058lfr.29.1624009446392;
+ Fri, 18 Jun 2021 02:44:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YMxnXQzcP0g1F9Iw@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210615080553.2021061-1-piyush.mehta@xilinx.com> <20210615080553.2021061-3-piyush.mehta@xilinx.com>
+In-Reply-To: <20210615080553.2021061-3-piyush.mehta@xilinx.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 18 Jun 2021 11:43:55 +0200
+Message-ID: <CACRpkdYv6yosZ1KJazrMzaizpYz-cv-y4LcCqHm+Q94jva8sAA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] gpio: modepin: Add driver support for modepin GPIO controller
+To:     Piyush Mehta <piyush.mehta@xilinx.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        git <git@xilinx.com>, Srinivas Goud <sgoud@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/06/2021 11:29, Greg Kroah-Hartman wrote:
-> On Fri, Jun 18, 2021 at 11:22:37AM +0200, Krzysztof Kozlowski wrote:
->> On 18/06/2021 11:19, Greg Kroah-Hartman wrote:
->>> On Fri, Jun 18, 2021 at 10:57:23AM +0200, Krzysztof Kozlowski wrote:
->>>> On 10/05/2021 12:18, Greg Kroah-Hartman wrote:
->>>>> From: Christoph Hellwig <hch@lst.de>
->>>>>
->>>>> commit 262e6ae7081df304fc625cf368d5c2cbba2bb991 upstream.
->>>>>
->>>>> If a TAINT_PROPRIETARY_MODULE exports symbol, inherit the taint flag
->>>>> for all modules importing these symbols, and don't allow loading
->>>>> symbols from TAINT_PROPRIETARY_MODULE modules if the module previously
->>>>> imported gplonly symbols.  Add a anti-circumvention devices so people
->>>>> don't accidentally get themselves into trouble this way.
->>>>>
->>>>> Comment from Greg:
->>>>>   "Ah, the proven-to-be-illegal "GPL Condom" defense :)"
->>>>
->>>> Patch got in to stable, so my comments are quite late, but can someone
->>>> explain me - how this is a stable material? What specific, real bug that
->>>> bothers people, is being fixed here? Or maybe it fixes serious issue
->>>> reported by a user of distribution kernel? IOW, how does this match
->>>> stable kernel rules at all?
->>>>
->>>> For sure it breaks some out-of-tree modules already present and used by
->>>> customers of downstream stable kernels. Therefore I wonder what is the
->>>> bug fixed here, so the breakage and annoyance of stable users is justified.
->>>
->>> It fixes a reported bug in that somehow symbols are being exported to
->>> modules that should not have been.  This has been in mainline and newer
->>> stable releases for quite some time, it should not be a suprise that
->>> this was backported further as well.
->>
->> This is vague. What exactly is the bug? How exporting symbols which
->> should not be exported, causes it? Is there OOPs? Some feature does not
->> work?
-> 
-> The bug/issue is that symbols were being incorrectly exported in ways
-> that they should not have been and were available to users that should
-> not have been able to use them.  That is what this patch series
-> resolves.  I can go into details but they are boring and deal with
-> closed source monstrosities that feel they are allowed to muck around in
-> kernel internals at will, which causes a support burden on the kernel
-> community.
+Hi Piyush!
 
-Thanks Greg, I would prefer honest "we don't want others to do something
-we don't like or approve and we can change it" :)
+thanks for your patch!
 
-> If you object to this, that's fine, you are free to revert them in your
-> local distro kernel after discussing it with your lawyers to get their
-> approval to do so.
+On Tue, Jun 15, 2021 at 10:06 AM Piyush Mehta <piyush.mehta@xilinx.com> wrote:
 
+> This patch adds support for the mode pin GPIO controller. GPIO Modepin
+> driver set and get the value and status of the PS_MODE pin, based on
+> device-tree pin configuration. These 4-bits boot-mode pins are dedicated
+> configurable as input/output. After the stabilization of the system,
+> these mode pins are sampled.
+>
+> Signed-off-by: Piyush Mehta <piyush.mehta@xilinx.com>
 
-Best regards,
-Krzysztof
+OK, sounds interesting!
+
+> +#include <linux/slab.h>
+
+I think I saw somewhere that this is not needed anymore, check if you need it.
+
+> +#define GET_OUTEN_PIN(pin)             (1U << (pin))
+
+Delete this macro and just use BIT(pin) inline.
+#include <linux/bits.h>
+
+> +static int modepin_gpio_get_value(struct gpio_chip *chip, unsigned int pin)
+> +{
+> +       u32 out_en;
+> +       u32 regval = 0;
+> +       int ret;
+> +
+> +       out_en = GET_OUTEN_PIN(pin);
+
+Drop this and out_en
+
+> +       ret = zynqmp_pm_bootmode_read(&regval);
+> +       if (ret) {
+> +               pr_err("modepin: get value err %d\n", ret);
+> +               return ret;
+> +       }
+> +
+> +       return (out_en & (regval >> 8U)) ? 1 : 0;
+
+return !!(regval & BIT(pin + 8));
+
+should work and is easier to read IMO. We just check the right
+bit immediately.
+
+> +static void modepin_gpio_set_value(struct gpio_chip *chip, unsigned int pin,
+> +                                  int state)
+> +{
+> +       u32 out_en;
+> +       u32 bootpin_val = 0;
+> +       int ret;
+> +
+> +       out_en = GET_OUTEN_PIN(pin);
+
+Skip this helper variable.
+
+> +       state = state != 0 ? out_en : 0;
+
+Uh that is really hard to read and modified a parameter. Skip that too.
+
+> +       bootpin_val = (state << (8U)) | out_en;
+
+What you want is mask and set.
+
+bootpin_val = BIT(pin + 8);
+
+> +       /* Configure bootpin value */
+> +       ret = zynqmp_pm_bootmode_write(bootpin_val);
+
+This just looks weird.
+
+Why are you not reading the value first since you are using
+read/modify/write?
+
+I *think* you want to do this:
+
+ret = zynqmp_pm_bootmode_read(&val);
+if (ret)
+   /* error handling */
+if (state)
+    val |= BIT(pin + 8);
+else
+    val &= ~BIT(pin + 8);
+ret = zynqmp_pm_bootmode_write(val);
+if (ret)
+   /* error handling */
+
+> +/*
+> + * modepin_gpio_dir_in - Set the direction of the specified GPIO pin as input
+> + * @chip:      gpio_chip instance to be worked on
+> + * @pin:       gpio pin number within the device
+> + *
+> + * Return: 0 always
+> + */
+> +static int modepin_gpio_dir_in(struct gpio_chip *chip, unsigned int pin)
+> +{
+> +       return 0;
+> +}
+
+I think you said this was configurable in the commit message.
+
+Use the define GPIO_LINE_DIRECTION_OUT rather than 0.
+
+> +static int modepin_gpio_dir_out(struct gpio_chip *chip, unsigned int pin,
+> +                               int state)
+> +{
+> +       return 0;
+> +}
+
+Configurable?
+
+> +       status = devm_gpiochip_add_data(&pdev->dev, chip, chip);
+> +       if (status)
+> +               dev_err_probe(&pdev->dev, status,
+> +                             "Failed to add GPIO chip\n");
+
+just return dev_err_probe(...)
+
+Yours,
+Linus Walleij
