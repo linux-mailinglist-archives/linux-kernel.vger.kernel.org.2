@@ -2,120 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50EB63AC810
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD9C83AC813
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232605AbhFRJz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 05:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230399AbhFRJz4 (ORCPT
+        id S232877AbhFRJ42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 05:56:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36492 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230399AbhFRJ40 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 05:55:56 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47D5EC061574;
-        Fri, 18 Jun 2021 02:53:47 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id r7so7768804edv.12;
-        Fri, 18 Jun 2021 02:53:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KphIuuhm2yqQlp9qrgGfS/PVG7WOVx1GZqsoFWVz/zo=;
-        b=fou6MqTcxNm/sRTvOMI5UbAYgRO2oSqp7ClWJ6B8nL5sII3dMrIS/cdcExgi/g0flZ
-         mNrf4HqY8F69jKEAz7pTW6BJdNfpmjneTRpJvN5jBP5xcOu+MlC+h7rDDcF1N6aNSDKc
-         IjHQDCQzl4h7T6/C/b/TNR0jU7mtq4Lb7TP081HUwzeHk8rXh1FO5kch0kW2II0HJaWr
-         2xSWecdwXbi3LNeoyugiez3x9EHAkWyZTVzBdtPpfzKyDP3pmtmG/cug3d6aVFDOQEgs
-         2Fu5UWm8fuORY7FwnLR4wFtxR8zj1R4yu6oi27J9L4J6Hph6KUuFFo7OJa2NGuk6xdgv
-         QlgA==
+        Fri, 18 Jun 2021 05:56:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624010057;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y0YXDU9YxlQ+hNYdZgdqLVuT+mH4+43SSYjLUVicsFM=;
+        b=TbOvBev+vxhKFZjuvvxvg+Fbs3Sji4FwvtwsR1U0wrBtCmmypgqSn/F1jh4olx6j6K86r8
+        MQnEOxQfpPVErFzmN7GzMG2KfQ/nQNCgb1ldlvUb23foQZjGjbSEjpU3y0gp/A53dd3XuC
+        j5kCR0GcqrMalSAQC7dYSTSTXJoY/T0=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-384-iQlzgIGFNM-7H6soyqfjYg-1; Fri, 18 Jun 2021 05:54:16 -0400
+X-MC-Unique: iQlzgIGFNM-7H6soyqfjYg-1
+Received: by mail-ej1-f72.google.com with SMTP id q7-20020a1709063607b02903f57f85ac45so1834616ejb.15
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:54:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KphIuuhm2yqQlp9qrgGfS/PVG7WOVx1GZqsoFWVz/zo=;
-        b=rmCf6o/iLmTfbY0OgjW0dUzzSpLBmQN0Kv1CGivwAg/0QpmvfubEJ3lM260oD2DlKN
-         mvCbJHOYFbDBHZWQaZGOWB0/BZ0KOgnb+ltyN7dXeu1YqknXbmmVu6IVvNP8T7bJPmoa
-         W6JfokauVWViufdl2Ueirei/mmzAVBHLAWfzoep2iNPae/QeVMY1ZnRZPWyJrPcjQhMz
-         SHSKFF0zMgFzY5ABm1ZPl3uYgTSDvws+3G8A5gY/V+6mQjbIQGmsG5VG0T5mFS+ax7uq
-         dzU1olZMZkekCoE6FYA1b8QHKB1YphrMBR1X7CzlV+gU7eD3Z91zD1ABUsYRPGy+aqYT
-         fPAw==
-X-Gm-Message-State: AOAM5320r3Wcmlu4Welwe7aj69jnPCByEf+un39QkqY0scaTiCrmnPOL
-        HmZIT7dkCiN/K4YBoog80uPew8gZM7/tCSuQUkM=
-X-Google-Smtp-Source: ABdhPJxOrUaBqcE61H02ZwPi8pgyQKHafQ4qIrbTESBbsR8RfA/yufUwS9W/Voq8ONktJM6OoDu+m9Hx3d4ajx7yecI=
-X-Received: by 2002:a50:d943:: with SMTP id u3mr3884499edj.175.1624010024795;
- Fri, 18 Jun 2021 02:53:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210512144743.039977287@linuxfoundation.org> <20210512144748.600206118@linuxfoundation.org>
- <CANEQ_++O0XVVdvynGtf37YCHSBT8CYHnUkK+VsFkOTqeqwOUtA@mail.gmail.com>
- <YMmlPHMn/+EPdbvm@kroah.com> <CANEQ_++gbwU2Rvcqg5KtngZC1UX1XcjOKfPKRr3Pvxi+VyQX+Q@mail.gmail.com>
- <YMoRNZYXoykO7mk0@kroah.com>
-In-Reply-To: <YMoRNZYXoykO7mk0@kroah.com>
-From:   Amit Klein <aksecurity@gmail.com>
-Date:   Fri, 18 Jun 2021 12:53:33 +0300
-Message-ID: <CANEQ_+JwAvcHFN__41-QxTSqXo7RfDLbTZ-t3S51zsyqkpw=PQ@mail.gmail.com>
-Subject: Re: [PATCH 5.4 175/244] inet: use bigger hash table for IP ID generation
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Eric Dumazet <edumazet@google.com>, Willy Tarreau <w@1wt.eu>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Y0YXDU9YxlQ+hNYdZgdqLVuT+mH4+43SSYjLUVicsFM=;
+        b=ETBdo/a7l5HPEYh/BxlesvfEFKaUwWOZeTYY0GS+szSeVc1ko/Mb3FV0483qraDw4J
+         s3kQb4Tuhvc3g44SN/cWyqPKzz3Owa2c88o9cN9p2jVtp5ft3wEAyFAAI47l5aK1zO/y
+         WRcDX43IiKl6++x8fwvM9ANZljNb+Cm8Pk476hdIFxk6ehCqGmk2wb6QKQ9AI8w6qaL/
+         im9Vpy4INEVuYo/Jn2HHKQ7TnzCa+1D9RZTZJlzy5s2diOski8FDxyanQ4D90qMofNIH
+         EfVlPWNNsENOKNk8T7ijM2VfbK1ZsBaPQHaBVLUGTMmasesfQpAtCWLkND2tiJZsTxqA
+         yI3w==
+X-Gm-Message-State: AOAM530WNDktThshWfHBsJ4ud+PvPodxvVP1XDIgppbRGPSgCqYlymU5
+        B9sUsNUbfH7UCXFbcvVB8UPKd6pqVyfJXFAUg1Zxy5IBPdZ0F1rv7wdlq6rNsfYP2vpC7yp+xEO
+        APW8sfUO4PXJ+Hbz2YVKyYKAR
+X-Received: by 2002:a50:c344:: with SMTP id q4mr813921edb.197.1624010055205;
+        Fri, 18 Jun 2021 02:54:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyWMR1bJzOfZ97L3/bNEKDwZD9gm2Oo2XE369CjGC2l9w0RaUVQn+dQb1wcWVE0CXQxEAZmHA==
+X-Received: by 2002:a50:c344:: with SMTP id q4mr813911edb.197.1624010055087;
+        Fri, 18 Jun 2021 02:54:15 -0700 (PDT)
+Received: from steredhat.lan ([5.170.128.252])
+        by smtp.gmail.com with ESMTPSA id n23sm6101995edr.87.2021.06.18.02.54.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 02:54:14 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 11:54:09 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Jiang Wang <jiang.wang@bytedance.com>
+Cc:     virtualization@lists.linux-foundation.org, stefanha@redhat.com,
+        mst@redhat.com, arseny.krasnov@kaspersky.com,
+        jhansen@vmware.comments, cong.wang@bytedance.com,
+        duanxiongchun@bytedance.com, xieyongji@bytedance.com,
+        chaiwen.cc@bytedance.com, Jason Wang <jasowang@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jakub Kicinski <kuba@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Lu Wei <luwei32@huawei.com>,
+        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC v1 5/6] vhost/vsock: add kconfig for vhost dgram support
+Message-ID: <20210618095409.q6s3knm2m4u7lezd@steredhat.lan>
+References: <20210609232501.171257-1-jiang.wang@bytedance.com>
+ <20210609232501.171257-6-jiang.wang@bytedance.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210609232501.171257-6-jiang.wang@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I just submitted a revised patch for 4.14. Sorry for the earlier blunder.
+On Wed, Jun 09, 2021 at 11:24:57PM +0000, Jiang Wang wrote:
+>Also change number of vqs according to the config
+>
+>Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
+>---
+> drivers/vhost/Kconfig |  8 ++++++++
+> drivers/vhost/vsock.c | 11 ++++++++---
+> 2 files changed, 16 insertions(+), 3 deletions(-)
 
-On Wed, Jun 16, 2021 at 5:56 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Jun 16, 2021 at 12:16:52PM +0300, Amit Klein wrote:
-> > Here is the patch (minus headers, description, etc. - I believe these
-> > can be copied as is from the 5.x patch, but not sure about the
-> > rules...). It can be applied to 4.14.236. If this is OK, I can move on
-> > to 4.9 and 4.4.
-> >
-> >
-> >  net/ipv4/route.c | 41 ++++++++++++++++++++++++++++-------------
-> >  1 file changed, 28 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-> > index 78d6bc61a1d8..022a2b748da3 100644
-> > --- a/net/ipv4/route.c
-> > +++ b/net/ipv4/route.c
-> > @@ -70,6 +70,7 @@
-> >  #include <linux/types.h>
-> >  #include <linux/kernel.h>
-> >  #include <linux/mm.h>
-> > +#include <linux/memblock.h>
-> >  #include <linux/string.h>
-> >  #include <linux/socket.h>
-> >  #include <linux/sockios.h>
-> > @@ -485,8 +486,10 @@ static void ipv4_confirm_neigh(const struct
-> > dst_entry *dst, const void *daddr)
-> >      __ipv4_confirm_neigh(dev, *(__force u32 *)pkey);
-> >  }
-> >
-> > -#define IP_IDENTS_SZ 2048u
-> > -
-> > +/* Hash tables of size 2048..262144 depending on RAM size.
-> > + * Each bucket uses 8 bytes.
-> > + */
-> > +static u32 ip_idents_mask __read_mostly;
-> >  static atomic_t *ip_idents __read_mostly;
-> >  static u32 *ip_tstamps __read_mostly;
-> >
-> > @@ -496,12 +499,16 @@ static u32 *ip_tstamps __read_mostly;
-> >   */
-> >  u32 ip_idents_reserve(u32 hash, int segs)
-> >  {
-> > -    u32 *p_tstamp = ip_tstamps + hash % IP_IDENTS_SZ;
-> > -    atomic_t *p_id = ip_idents + hash % IP_IDENTS_SZ;
-> > -    u32 old = ACCESS_ONCE(*p_tstamp);
-> > -    u32 now = (u32)jiffies;
-> > +    u32 bucket, old, now = (u32)jiffies;
-> > +    atomic_t *p_id;
-> > +    u32 *p_tstamp;
->
-> Your patch is corrupted and couldn't be applied if I wanted to :(
->
+As we already discussed, I think we don't need this patch.
+
+Thanks,
+Stefano
+
