@@ -2,250 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F18063AD054
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:25:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 228993AD055
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235878AbhFRQ1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 12:27:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28638 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233992AbhFRQ1h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 12:27:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624033527;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=fPUXuwIIMubJnCMUYIbK/KDXv25S7tj9NL4K7WirAU0=;
-        b=QCkDJ6lHW5Z0gei7Y6gq+DJlc1W2bvmDSwJcBOC5VBgg+MulsQL2uMLuVA0DFSDZG38dmc
-        4oJimaJwZU/0KrtOzR7Xijp+uF/o0LhW+QitBj7Sxa/2I5l6VsYW7+NF51SUTUV39x5pmm
-        U5L00OMbDUOwpTyprXm+qnX9DiX+u/A=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-591-vYOYG7MiOG2Qy32y7yOq2Q-1; Fri, 18 Jun 2021 12:25:20 -0400
-X-MC-Unique: vYOYG7MiOG2Qy32y7yOq2Q-1
-Received: by mail-wr1-f69.google.com with SMTP id y12-20020adffa4c0000b0290119c11bd29eso4617063wrr.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 09:25:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=fPUXuwIIMubJnCMUYIbK/KDXv25S7tj9NL4K7WirAU0=;
-        b=GtaSDYBffPYZlWNBWNRvLPtg/7vYZ3FBzAJTy2/Uy8HsInw9M+WrmbBYrwWwP3pmoJ
-         BPoybqsuJ6lYCFaMnrgh44ix5XoVD3cWUFhqbp/OTUgap6ksKrYJ0ZiZlxUQbo1aLXmJ
-         RM0giZj4h2+XqybJsy1qDzs4Wr0Qg0OVK/1MX6TrKVdFA+5MBYEjHUCsRc4udSo/Hgv9
-         oczPKWyyW2XiwAdDEchnuPk7GQk6bvcMJkfQBGx3Py6OKI2QIrcdJ4DW7On3sIcHtkLh
-         njC1E0AL+PybOm9jKO9IzmDuqQK2JX5KsNA6wpX3pQKAs1Zeia472p+nVr9/4l9FPlms
-         iZCw==
-X-Gm-Message-State: AOAM5307//KCo5phfyh7VntcClh0kPpzDljX1xgI2PLRRvq0pSdEHao2
-        HrrTLZLe5gBu233+XuzPA2YeCTJXbIuN8yClGWCNiRm9/Qlu1uB/SagKw3hwklseFid8ghYEOs9
-        DsUyfJh2pWNBRhtx3QhqWZIyI
-X-Received: by 2002:a7b:c24a:: with SMTP id b10mr12434114wmj.25.1624033519685;
-        Fri, 18 Jun 2021 09:25:19 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwypvvAg3317DbyVnwhInIuaBYNfidXY9XCDlEhFKWAq87Ip2EXKAD5iESujtcowWxg2zw+hQ==
-X-Received: by 2002:a7b:c24a:: with SMTP id b10mr12434092wmj.25.1624033519510;
-        Fri, 18 Jun 2021 09:25:19 -0700 (PDT)
-Received: from steredhat.lan ([5.170.128.175])
-        by smtp.gmail.com with ESMTPSA id z12sm9045409wmc.5.2021.06.18.09.25.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 09:25:19 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 18:25:09 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-Subject: Re: [MASSMAIL KLMS] Re: [PATCH v11 11/18] virtio/vsock: dequeue
- callback for SOCK_SEQPACKET
-Message-ID: <20210618162509.yppkajmvcbzvidy4@steredhat.lan>
-References: <20210611110744.3650456-1-arseny.krasnov@kaspersky.com>
- <20210611111241.3652274-1-arseny.krasnov@kaspersky.com>
- <20210618134423.mksgnbmchmow4sgh@steredhat.lan>
- <bb323125-f802-1d16-7530-6e4f4abb00a6@kaspersky.com>
- <20210618155555.j5p4v6j5gk2dboj3@steredhat.lan>
- <650673dc-8b29-657e-5bbd-2cc974628ec9@kaspersky.com>
+        id S235877AbhFRQ1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 12:27:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44100 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231898AbhFRQ1x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 12:27:53 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 033CD61260;
+        Fri, 18 Jun 2021 16:25:42 +0000 (UTC)
+Date:   Fri, 18 Jun 2021 12:25:41 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Alexander Potapenko <glider@google.com>
+Subject: Re: [PATCH next v4 1/2] lib/dump_stack: move cpu lock to printk.c
+Message-ID: <20210618122541.49fbd114@oasis.local.home>
+In-Reply-To: <YMyyCwMt549micJE@alley>
+References: <20210617095051.4808-1-john.ogness@linutronix.de>
+        <20210617095051.4808-2-john.ogness@linutronix.de>
+        <20210617093243.795b4853@gandalf.local.home>
+        <YMyyCwMt549micJE@alley>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <650673dc-8b29-657e-5bbd-2cc974628ec9@kaspersky.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 07:08:30PM +0300, Arseny Krasnov wrote:
->
->On 18.06.2021 18:55, Stefano Garzarella wrote:
->> On Fri, Jun 18, 2021 at 06:04:37PM +0300, Arseny Krasnov wrote:
->>> On 18.06.2021 16:44, Stefano Garzarella wrote:
->>>> Hi Arseny,
->>>> the series looks great, I have just a question below about
->>>> seqpacket_dequeue.
->>>>
->>>> I also sent a couple a simple fixes, it would be great if you can review
->>>> them:
->>>> https://lore.kernel.org/netdev/20210618133526.300347-1-sgarzare@redhat.com/
->>>>
->>>>
->>>> On Fri, Jun 11, 2021 at 02:12:38PM +0300, Arseny Krasnov wrote:
->>>>> Callback fetches RW packets from rx queue of socket until whole record
->>>>> is copied(if user's buffer is full, user is not woken up). This is done
->>>>> to not stall sender, because if we wake up user and it leaves syscall,
->>>>> nobody will send credit update for rest of record, and sender will wait
->>>>> for next enter of read syscall at receiver's side. So if user buffer is
->>>>> full, we just send credit update and drop data.
->>>>>
->>>>> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->>>>> ---
->>>>> v10 -> v11:
->>>>> 1) 'msg_count' field added to count current number of EORs.
->>>>> 2) 'msg_ready' argument removed from callback.
->>>>> 3) If 'memcpy_to_msg()' failed during copy loop, there will be
->>>>>    no next attempts to copy data, rest of record will be freed.
->>>>>
->>>>> include/linux/virtio_vsock.h            |  5 ++
->>>>> net/vmw_vsock/virtio_transport_common.c | 84 +++++++++++++++++++++++++
->>>>> 2 files changed, 89 insertions(+)
->>>>>
->>>>> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
->>>>> index dc636b727179..1d9a302cb91d 100644
->>>>> --- a/include/linux/virtio_vsock.h
->>>>> +++ b/include/linux/virtio_vsock.h
->>>>> @@ -36,6 +36,7 @@ struct virtio_vsock_sock {
->>>>> 	u32 rx_bytes;
->>>>> 	u32 buf_alloc;
->>>>> 	struct list_head rx_queue;
->>>>> +	u32 msg_count;
->>>>> };
->>>>>
->>>>> struct virtio_vsock_pkt {
->>>>> @@ -80,6 +81,10 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
->>>>> 			       struct msghdr *msg,
->>>>> 			       size_t len, int flags);
->>>>>
->>>>> +ssize_t
->>>>> +virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
->>>>> +				   struct msghdr *msg,
->>>>> +				   int flags);
->>>>> s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
->>>>> s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
->>>>>
->>>>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->>>>> index ad0d34d41444..1e1df19ec164 100644
->>>>> --- a/net/vmw_vsock/virtio_transport_common.c
->>>>> +++ b/net/vmw_vsock/virtio_transport_common.c
->>>>> @@ -393,6 +393,78 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
->>>>> 	return err;
->>>>> }
->>>>>
->>>>> +static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
->>>>> +						 struct msghdr *msg,
->>>>> +						 int flags)
->>>>> +{
->>>>> +	struct virtio_vsock_sock *vvs = vsk->trans;
->>>>> +	struct virtio_vsock_pkt *pkt;
->>>>> +	int dequeued_len = 0;
->>>>> +	size_t user_buf_len = msg_data_left(msg);
->>>>> +	bool copy_failed = false;
->>>>> +	bool msg_ready = false;
->>>>> +
->>>>> +	spin_lock_bh(&vvs->rx_lock);
->>>>> +
->>>>> +	if (vvs->msg_count == 0) {
->>>>> +		spin_unlock_bh(&vvs->rx_lock);
->>>>> +		return 0;
->>>>> +	}
->>>>> +
->>>>> +	while (!msg_ready) {
->>>>> +		pkt = list_first_entry(&vvs->rx_queue, struct virtio_vsock_pkt, list);
->>>>> +
->>>>> +		if (!copy_failed) {
->>>>> +			size_t pkt_len;
->>>>> +			size_t bytes_to_copy;
->>>>> +
->>>>> +			pkt_len = (size_t)le32_to_cpu(pkt->hdr.len);
->>>>> +			bytes_to_copy = min(user_buf_len, pkt_len);
->>>>> +
->>>>> +			if (bytes_to_copy) {
->>>>> +				int err;
->>>>> +
->>>>> +				/* sk_lock is held by caller so no one else can dequeue.
->>>>> +				 * Unlock rx_lock since memcpy_to_msg() may sleep.
->>>>> +				 */
->>>>> +				spin_unlock_bh(&vvs->rx_lock);
->>>>> +
->>>>> +				err = memcpy_to_msg(msg, pkt->buf, bytes_to_copy);
->>>>> +				if (err) {
->>>>> +					/* Copy of message failed, set flag to skip
->>>>> +					 * copy path for rest of fragments. Rest of
->>>>> +					 * fragments will be freed without copy.
->>>>> +					 */
->>>>> +					copy_failed = true;
->>>>> +					dequeued_len = err;
->>>> If we fail to copy the message we will discard the entire packet.
->>>> Is it acceptable for the user point of view, or we should leave the
->>>> packet in the queue and the user can retry, maybe with a different
->>>> buffer?
->>>>
->>>> Then we can remove the packets only when we successfully copied all the
->>>> fragments.
->>>>
->>>> I'm not sure make sense, maybe better to check also other
->>>> implementations :-)
->>>>
->>>> Thanks,
->>>> Stefano
->>> Understand, i'll check it on weekend, anyway I think it is
->>> not critical for implementation.
->> Yep, I agree.
->>
->>>
->>> I have another question: may be it is useful to research for
->>> approach where packets are not queued until whole message
->>> is received, but copied to user's buffer thus freeing memory.
->>> (like previous implementation, of course with solution of problem
->>> where part of message still in queue, while reader was woken
->>> by timeout or signal).
->>>
->>> I think it is better, because  in current version, sender may set
->>> 'peer_alloc_buf' to  for example 1MB, so at receiver we get
->>> 1MB of 'kmalloc()' memory allocated, while having user's buffer
->>> to copy data there or drop it(if user's buffer is full). This way
->>> won't change spec(e.g. no message id or SEQ_BEGIN will be added).
->>>
->>> What do You think?
->> Yep, I see your point and it would be great, but I think the main issues
->> to fix is how to handle a signal while we are waiting other fragments
->> since the other peer can take unspecified time to send them.
->
->What about transport callback, something like 'seqpacket_drain()' or
->
->'seqpacket_drop_curr()' - when we got signal or timeout, notify transport
->
->to drop current message. In virtio case this will set special flag in transport,
->
->so on next dequeue, this flag is checked and if it is set - we drop all packets
->
->until EOR found. Then we can copy untouched new record.
->
+On Fri, 18 Jun 2021 16:47:39 +0200
+Petr Mladek <pmladek@suse.com> wrote:
 
-But in this way, we will lose the entire message.
+> Good point! Just to be sure. Do you see the messed output with plain
+> kernel? Or do you need the extra patches (from Peter Zijlstra) that
+> redirect normal printk() to early_printk()?
 
-Is it acceptable for seqpacket?
+I sometimes use this with Peter's patches, which also do basically the
+same thing.
 
-Stefano
+> 
+> My understanding is that early_printk() is used only for very early
+> boot message in plain kernel. And that there is not much concurrency
+> at that time.
+
+It will continue if you use ",keep" option. And that is something I
+have done without Peter's patches, but then they become illegible when
+there's a bug if more than one CPU triggers.
+
+> 
+> That said. I always wanted to upstream Peter's patchset. But I never
+> found time to clean it up.
+
+That would be great too!
+
+-- Steve
 
