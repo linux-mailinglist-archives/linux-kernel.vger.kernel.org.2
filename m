@@ -2,43 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 325143AD2B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2AB3AD2C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235619AbhFRTWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 15:22:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33960 "EHLO mail.kernel.org"
+        id S235902AbhFRTWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 15:22:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235434AbhFRTWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235435AbhFRTWQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Jun 2021 15:22:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id B2CA2613FA;
+Received: by mail.kernel.org (Postfix) with ESMTPS id AB2C0613F9;
         Fri, 18 Jun 2021 19:20:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1624044006;
-        bh=Boffnogb8HbtZJOa/QBADPbzDn4obiZkPMFYmvM0RFA=;
+        bh=HZ4786m59RuoK2hhVqx9AEvfGS19lUp25OPPq29lkUU=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=fIkm7Si+ULocwXFaS0XjwMY/crD1AqbS6PtiX2SwYqXRu4uB/DPXtiXPmIkh08KV9
-         CtqTf4rbNRH6PlUiUjSsYBxD9i0kM9EqxY/NICELn3lq5x7ai4xFYMkH/5zpC+LfNL
-         3lgKlgpp1w2IfRLs0MpIt01cDjMKhwGNBD81hm3BiLp85W4+KpTL9wOBM0k5F79HtV
-         C+TXCMkus0qtiu9gvO9PjLHSYJzSBT9qInvamxTrtpka20VNp3+teskH2UaxndcbDb
-         Jy5Gcntmb0fIQp6PAxaX5c8H6o7qYg+F9T7+1XnmlDF67wShtaQ5DYVs0c+8XcI3tv
-         36/uCWJlCAzYw==
+        b=m2OgkkTsdmofpAAu+W1ppBUgg89bpi+1Rut7sSdt4QOX6ZIbFyLif7ypQ6aA9wbDU
+         +gaLLp7pX/cIr1d3ak3nb/YXyOoBCqpjRZvUolGJxw4RsExGqy2Z749K4WvUnarJ9G
+         CBNVDmLMxX7RS/B6IcVMKj2YSCD44wPK/yl9n0vtH1CFeznK0ul49HoIZ+ZTCqYti3
+         9dmnEQhninmnPpwIjfL8s+AKlz08LFngtHSp+2R62c5ugzIWHd17Zi/ebJcfoqBe4z
+         c0fJK90vs8Vpa4E8ZyAYo63WkC7rga5LTcxlZSOSDTQMkAWuhSiCe9B2T35tqHuufu
+         dGroWBUz9RBdA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A5EF360CDF;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9BDEA60CE2;
         Fri, 18 Jun 2021 19:20:06 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: net: pxa168_eth: Fix a potential data race in pxa168_eth_remove
+Subject: Re: [PATCH] net: stmmac: remove redundant continue statement
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162404400667.12339.18217501119774620104.git-patchwork-notify@kernel.org>
+Message-Id: <162404400663.12339.191732752255079680.git-patchwork-notify@kernel.org>
 Date:   Fri, 18 Jun 2021 19:20:06 +0000
-References: <20210618093526.GA20534@duo.ucw.cz>
-In-Reply-To: <20210618093526.GA20534@duo.ucw.cz>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     davem@davemloft.net, kuba@kernel.org, zhangchangzhong@huawei.com,
-        andrianov@ispras.ru, michael@walle.cc, andrew@lunn.ch,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210618094425.100395-1-colin.king@canonical.com>
+In-Reply-To: <20210618094425.100395-1-colin.king@canonical.com>
+To:     Colin King <colin.king@canonical.com>
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -47,16 +50,19 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Fri, 18 Jun 2021 11:35:26 +0200 you wrote:
-> Commit 0571a753cb07 cancelled delayed work too late, keeping small
-> race. Cancel work sooner to close it completely.
+On Fri, 18 Jun 2021 10:44:25 +0100 you wrote:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-> Fixes: 0571a753cb07 ("net: pxa168_eth: Fix a potential data race in pxa168_eth_remove")
+> The continue statement in the for-loop has no effect, remove it.
+> 
+> Addresses-Coverity: ("Continue has no effect")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> 
+> [...]
 
 Here is the summary with links:
-  - net: pxa168_eth: Fix a potential data race in pxa168_eth_remove
-    https://git.kernel.org/netdev/net-next/c/bd70957438f0
+  - net: stmmac: remove redundant continue statement
+    https://git.kernel.org/netdev/net-next/c/c44924c532fb
 
 You are awesome, thank you!
 --
