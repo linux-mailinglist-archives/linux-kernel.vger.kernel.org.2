@@ -2,74 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66C153AD3E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 22:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 496A93AD3E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 22:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234183AbhFRUw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 16:52:27 -0400
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:42918 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234095AbhFRUw0 (ORCPT
+        id S234195AbhFRUw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 16:52:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234192AbhFRUw5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 16:52:26 -0400
-Received: by mail-oi1-f171.google.com with SMTP id s23so11916014oiw.9;
-        Fri, 18 Jun 2021 13:50:15 -0700 (PDT)
+        Fri, 18 Jun 2021 16:52:57 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C6DC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 13:50:46 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso10961908otu.10
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 13:50:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to;
+        bh=kRNWiMsuDwCABlJIXRwiBrKtEw3zU1zAQGApvhY0o0E=;
+        b=iE+xCRsQztTO6PzEVaaF9P0kqpmlM+yqS3oZ6CQpqC3bnRiVEsDPOKyWmi5svcQhVl
+         tzJeX6HZtpQVMkLaLPqylQ3F+0gPSchDtbceTCw6QDnnc4EHX5iqHuDW05ZjDu/mOP1a
+         tYXXq8nR2IkNbtxrHB/pyt25mcyGn7pUG+ibI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=L4LtPggW7wvPnjUlNRBXXdn1hi2ZE+tMVWYTEK9xv38=;
-        b=DJ3VLXMvDhsCaguYPRg7XJjnweDhuoD6R+3DHjALYSm/D3Md3ZQ0lJxxP83cwrWmT9
-         DTXlU1PWlVF4UTp81Xt1uWCSv8V+PeL3hcKwMlIq6FwuR+l2fPXetJhSosmvtl8JUh4U
-         QTt/u74UWtux+kbVs9n0ONb17XNcu/HPC6CqyGHlsuI+zCNUmUPlN9wxdqlxgb/1j3NE
-         EZX60CvK3IQUsHga0+iwdUUK03oHhXmGTlSxzmupamIKz2UEmGsKRzZefHTeNwhHbZeN
-         56zO1/D5mtkUaR1YvmK72pog+/3uaeOdRQUsI9g+WIMmds1dYCLqPhQoGA9ZiJJFwSvu
-         fsZg==
-X-Gm-Message-State: AOAM532gNBR/b9bpipp5FEFcTrNQJHnRrBHIU2YDTaUEp1Qf7kQt2E1r
-        SBm+IN84ACuojGJb/LqTAw==
-X-Google-Smtp-Source: ABdhPJwCOlKuuRdR95kemB3u4Pg0nnwc98yxBEAvptV6v0cIeDEJeZgovpBvppTduCWTCRcJMHui2w==
-X-Received: by 2002:aca:d603:: with SMTP id n3mr8740640oig.17.1624049414979;
-        Fri, 18 Jun 2021 13:50:14 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id o20sm2187997otl.2.2021.06.18.13.50.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 13:50:14 -0700 (PDT)
-Received: (nullmailer pid 2851931 invoked by uid 1000);
-        Fri, 18 Jun 2021 20:50:11 -0000
-Date:   Fri, 18 Jun 2021 14:50:11 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Andy Gross <agross@kernel.org>, linux-arm-msm@vger.kernel.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>
-Subject: Re: [PATCH v2 1/2] dt-bindings: remoteproc: qcom: pas: Add SC8180X
- adsp, cdsp and mpss
-Message-ID: <20210618205011.GA2851898@robh.at.kernel.org>
-References: <20210608174944.2045215-1-bjorn.andersson@linaro.org>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to;
+        bh=kRNWiMsuDwCABlJIXRwiBrKtEw3zU1zAQGApvhY0o0E=;
+        b=cOV4ZjGsdBC50PoSV0ka+BzF0O3CFehGNTBMIxOdfIxbVVn15z81f40+p9oXycyrbL
+         IqOSq3HS34lpdz/REq+7yQ4cXcxmY/rTIwGlBCXpT9asA4JiYU657yF4eR7EHli6GYyZ
+         ZlblUtxcw/5gTsnCP0I4r7mXpRlnjALnFrroF0f44/htUkA6eqzdKrqpOkk488Cq8x3Z
+         IS8qbsYadi/hvY5Fw+J8W0mL5YlaE1Xqs9tvBMHX3MGo3pQG1X7osYUXPNr4FHUhtHKK
+         9aKF0ngVOHS+ZMmtrQYueBeIV7TZ5OnEdey3vT2N5OPTKITqLuQR95VVp7IscaEHpzlR
+         0Bwg==
+X-Gm-Message-State: AOAM532XnsvPL8GLLCYedYn/CRhG23rtuyCcM7tgIFiMvsQxTuFGjypU
+        jQUqv4AYetzBipmr6uc4Him0korbZjuTxuMAEEP11Q==
+X-Google-Smtp-Source: ABdhPJysVVnraSQWaWv6lOjj1uXH2d1ll8biMB/3yfG2+2C6R9WMkadXSyDiiEon494WDlVCIDNuVMsbc2eM7btPOZg=
+X-Received: by 2002:a9d:624d:: with SMTP id i13mr2754794otk.34.1624049446316;
+ Fri, 18 Jun 2021 13:50:46 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 18 Jun 2021 13:50:45 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210608174944.2045215-1-bjorn.andersson@linaro.org>
+In-Reply-To: <1624025283-56360-1-git-send-email-zhouchuangao@vivo.com>
+References: <1624025283-56360-1-git-send-email-zhouchuangao@vivo.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Fri, 18 Jun 2021 13:50:45 -0700
+Message-ID: <CAE-0n536Xk3W-eG6HvgW+SVcBQXB=XgFT0e9QNktbYZEnw4feA@mail.gmail.com>
+Subject: Re: [PATCH] drivers/input/keyboard/cros_ec_keyb: Use kobj_to_dev() API
+To:     Benson Leung <bleung@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Philip Chen <philipchen@chromium.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhouchuangao <zhouchuangao@vivo.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 08 Jun 2021 10:49:43 -0700, Bjorn Andersson wrote:
-> Add compatibles for the Audio DSP, Compute DSP and Modem subsystem found
-> in the Qualcomm SC8180x to the Peripheral Authentication Service
-> remoteproc binding.
-> 
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Quoting zhouchuangao (2021-06-18 07:08:01)
+> Use kobj_to_dev() API instead of container_of().
+>
+> Signed-off-by: zhouchuangao <zhouchuangao@vivo.com>
 > ---
-> 
-> Changes since v1:
-> - "Rebased" on yaml conversion
-> 
->  .../devicetree/bindings/remoteproc/qcom,adsp.yaml     | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
 
-Acked-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
