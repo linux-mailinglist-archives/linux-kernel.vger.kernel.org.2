@@ -2,82 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1C93AD2CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C3CF3AD2CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:30:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232891AbhFRTcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 15:32:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57002 "EHLO
+        id S233159AbhFRTcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 15:32:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbhFRTcF (ORCPT
+        with ESMTP id S232152AbhFRTcL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 15:32:05 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C13C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 12:29:55 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1luKB2-009jVk-HT; Fri, 18 Jun 2021 19:29:16 +0000
-Date:   Fri, 18 Jun 2021 19:29:16 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Jhih-Ming Huang <fbihjmeric@gmail.com>
-Cc:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
-        ross.schm.dev@gmail.com, maqianga@uniontech.com,
-        marcocesati@gmail.com, linux-staging@lists.linux.dev,
+        Fri, 18 Jun 2021 15:32:11 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C022C061574;
+        Fri, 18 Jun 2021 12:30:01 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: gtucker)
+        with ESMTPSA id E9D041F44CE8
+Subject: Re: [PATCH] selftests/lkdtm: Use /bin/sh not $SHELL
+To:     Kees Cook <keescook@chromium.org>, Shuah Khan <shuah@kernel.org>
+Cc:     stable@vger.kernel.org, linux-kselftest@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] rtw_security: fix cast to restricted __le32
-Message-ID: <YMz0DH0+v39xsCYU@zeniv-ca.linux.org.uk>
-References: <YMeL7PjstV601pbN@zeniv-ca.linux.org.uk>
- <20210618181751.95967-1-fbihjmeric@gmail.com>
+References: <20210617231027.3908585-1-keescook@chromium.org>
+From:   Guillaume Tucker <guillaume.tucker@collabora.com>
+Message-ID: <57775fe8-d9c2-4004-b8c5-0247faf33aa4@collabora.com>
+Date:   Fri, 18 Jun 2021 20:29:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210618181751.95967-1-fbihjmeric@gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20210617231027.3908585-1-keescook@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 19, 2021 at 02:17:51AM +0800, Jhih-Ming Huang wrote:
-> This patch fixes the sparse warning of fix cast to restricted __le32.
-> 
-> There was a change for replacing private CRC-32 routines with in kernel
-> ones.
-> However, the author used le32_to_cpu to convert crc32_le(), and we
-> should cpu_to_le32.
-> 
-> Ths commit also fixes the payload checking by memcmp instead of checking element
-> by element.
-> 
-> Signed-off-by: Jhih-Ming Huang <fbihjmeric@gmail.com>
+On 18/06/2021 00:10, Kees Cook wrote:
+> Some environments (e.g. kerneci.org) do not set $SHELL for their test
+> environment. There's no need to use $SHELL here anyway, so just replace
+> it with hard-coded /bin/sh instead. Without this, the LKDTM tests would
+> never actually run on kerneci.org.
+
+There's a bit more to it...  The lkdtm tests make use of the
+process substitution feature with the <() syntax which is
+specific to Bash.  The tests run by KernelCI use Debian, where
+/bin/sh points to /bin/dash by default which doesn't support this
+feature.  So one way to fix it would be:
+
+  (/bin/bash -c 'cat <(echo '"$test"') >'"$TRIGGER")
+
+However, this might break others' workflows.
+
+In fact the LAVA jobs run by KernelCI do define the $SHELL
+environment variable except it's defined to be /bin/sh - and that
+means /bin/dash gets called and we're back to the issue explained
+above.
+
+I've manually run a modified test job which defines
+SHELL=/bin/bash and that works:
+
+  https://lava.collabora.co.uk/scheduler/job/4055547#L2835
+
+So to avoid hitting the same issue in other places, as it seems
+like there is an implicit dependency on Bash, we can just change
+KernelCI kselftest jobs to always export SHELL=/bin/bash.
+
+I suppose an even better fix would be to use standard shell
+features that would work with any /bin/sh implementation, but
+this is there to kill the sub-shell rather than the main script
+process so I'm not entirely sure if we can easily do that
+differently.  Maybe we can pipe the output to cat rather than the
+substitution syntax, e.g.:
+
+  (/bin/sh -c '(echo '"$test"') | cat >'"$TRIGGER") || true
+
+
+So I think the "safest" solution is to not change the kselftest
+script and export SHELL=/bin/bash in the KernelCI jobs.  If the
+pipe approach is good enough at catching signals then it could be
+done on top of this patch as it's standard and should work with
+any /bin/sh implementation.  What do you think?
+
+Thanks,
+Guillaume
+
+
+> Fixes: 46d1a0f03d66 ("selftests/lkdtm: Add tests for LKDTM targets")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 > ---
->  drivers/staging/rtl8723bs/core/rtw_security.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
+>  tools/testing/selftests/lkdtm/run.sh | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
-> index a99f439328f1..97a7485f8f58 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_security.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_security.c
-> @@ -121,7 +121,7 @@ void rtw_wep_decrypt(struct adapter  *padapter, u8 *precvframe)
->  		arc4_crypt(ctx, payload, payload,  length);
+> diff --git a/tools/testing/selftests/lkdtm/run.sh b/tools/testing/selftests/lkdtm/run.sh
+> index bb7a1775307b..968ff3cf5667 100755
+> --- a/tools/testing/selftests/lkdtm/run.sh
+> +++ b/tools/testing/selftests/lkdtm/run.sh
+> @@ -79,7 +79,7 @@ dmesg > "$DMESG"
+>  # Most shells yell about signals and we're expecting the "cat" process
+>  # to usually be killed by the kernel. So we have to run it in a sub-shell
+>  # and silence errors.
+> -($SHELL -c 'cat <(echo '"$test"') >'"$TRIGGER" 2>/dev/null) || true
+> +(/bin/sh -c 'cat <(echo '"$test"') >'"$TRIGGER" 2>/dev/null) || true
 >  
->  		/* calculate icv and compare the icv */
-> -		*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
-> +		*crc = cpu_to_le32(~crc32_le(~0, payload, length - 4));
+>  # Record and dump the results
+>  dmesg | comm --nocheck-order -13 "$DMESG" - > "$LOG" || true
+> 
 
-Huh?  crc is u8[4]; that assignment will truncate that le32 to u8 and store it in
-the first byte of your 4-element array.  How the hell does sparse *not* complain
-on that?
-
-Either make crc __le32 (and turn assignment into crc = cpu_to_le32(...)), or
-make that *(__le32 *)crc = ...
-
-> @@ -618,10 +618,9 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
->  			arc4_setkey(ctx, rc4key, 16);
->  			arc4_crypt(ctx, payload, payload, length);
->  
-> -			*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
-> +			*crc = cpu_to_le32(~crc32_le(~0, payload, length - 4));
-
-Ditto.  Declare crc as __le32 and use
-			crc = cpu_to_le32(~crc32_le(~0, payload, length - 4));
-here.
