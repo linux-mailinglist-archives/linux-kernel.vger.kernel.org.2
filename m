@@ -2,166 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC9D3ACE27
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E26283ACDE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234849AbhFRPAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:00:48 -0400
-Received: from mailout1.w2.samsung.com ([211.189.100.11]:31043 "EHLO
-        mailout1.w2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234832AbhFRPAk (ORCPT
+        id S234450AbhFROwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 10:52:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:20833 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234697AbhFROwh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:00:40 -0400
-Received: from uscas1p1.samsung.com (unknown [182.198.245.206])
-        by mailout1.w2.samsung.com (KnoxPortal) with ESMTP id 20210618144958usoutp01dbe60fb1587904053c63b483a55f60d5~JtK2bToOM0166701667usoutp01F;
-        Fri, 18 Jun 2021 14:49:58 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w2.samsung.com 20210618144958usoutp01dbe60fb1587904053c63b483a55f60d5~JtK2bToOM0166701667usoutp01F
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1624027798;
-        bh=iUVr5JmOMO+MwdqHyU8GkgmRUeFPf/64YB/2H+HZjfs=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
-        b=SfexU4HsrPI3fbtaApn0xP13/BAv+hAHP0YMMP5YQucisbFJEbQoZTwRXdo6YU/Iu
-         rBz765PysC8fUrqvpVlU1tRVlwJmxiIiN/dgwg/f/Z37QbnTKpJX6Oad5XedHnyqc2
-         5caV5xiwslTk5RJzsakGFG5hkWclz1n9yot+GFcs=
-Received: from ussmges2new.samsung.com (u111.gpu85.samsung.co.kr
-        [203.254.195.111]) by uscas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210618144958uscas1p18dd396f8ce5c74c2332e6f742da3abc6~JtK2P33qd2510025100uscas1p1-;
-        Fri, 18 Jun 2021 14:49:58 +0000 (GMT)
-Received: from uscas1p1.samsung.com ( [182.198.245.206]) by
-        ussmges2new.samsung.com (USCPEMTA) with SMTP id 3E.49.53491.692BCC06; Fri,
-        18 Jun 2021 10:49:58 -0400 (EDT)
-Received: from ussmgxs2new.samsung.com (u91.gpu85.samsung.co.kr
-        [203.254.195.91]) by uscas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210618144957uscas1p2b49a0cb5c20870a96842a9fab548a56e~JtK1c0dWM0843908439uscas1p2o;
-        Fri, 18 Jun 2021 14:49:57 +0000 (GMT)
-X-AuditID: cbfec36f-f09ff7000001d0f3-49-60ccb296f8f9
-Received: from SSI-EX1.ssi.samsung.com ( [105.128.2.146]) by
-        ussmgxs2new.samsung.com (USCPEXMTA) with SMTP id 9E.93.26904.492BCC06; Fri,
-        18 Jun 2021 10:49:57 -0400 (EDT)
-Received: from SSI-EX1.ssi.samsung.com (105.128.2.226) by
-        SSI-EX1.ssi.samsung.com (105.128.2.226) with Microsoft SMTP Server
-        (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
-        15.1.2242.4; Fri, 18 Jun 2021 07:49:56 -0700
-Received: from SSI-EX1.ssi.samsung.com ([fe80::255d:1bae:c3ae:e3c3]) by
-        SSI-EX1.ssi.samsung.com ([fe80::255d:1bae:c3ae:e3c3%7]) with mapi id
-        15.01.2242.008; Fri, 18 Jun 2021 07:49:56 -0700
-From:   Adam Manzanares <a.manzanares@samsung.com>
-To:     Niklas Cassel <Niklas.Cassel@wdc.com>
-CC:     Jens Axboe <axboe@kernel.dk>, Hannes Reinecke <hare@suse.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Shaun Tancheff <shaun@tancheff.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jens Axboe <axboe@fb.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/2] blk-zoned: allow BLKREPORTZONE without
- CAP_SYS_ADMIN
-Thread-Topic: [PATCH v3 2/2] blk-zoned: allow BLKREPORTZONE without
-        CAP_SYS_ADMIN
-Thread-Index: AQHXYRgQCVfFQ7HNWEWEcKzi48L9sqsaVZAA
-Date:   Fri, 18 Jun 2021 14:49:56 +0000
-Message-ID: <20210618144956.GB33886@bgt-140510-bm01>
-In-Reply-To: <20210614122303.154378-3-Niklas.Cassel@wdc.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [105.128.2.176]
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <B5CDFD0C97F7DA4584EDD78FCE32D6C1@ssi.samsung.com>
-Content-Transfer-Encoding: quoted-printable
+        Fri, 18 Jun 2021 10:52:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624027827;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fbPbuj0msVDGWFUsKqeCrFUb5LMoYgYB88VJeRxprBs=;
+        b=CCYulatqXIF7UN47eDnR6yJ8xEJ7DfrOvzoZuPsTwJrgIiq5ldhbQ3NzSiIkQjbyaHgwCj
+        6RQNfCqzZa12PyA6uxfFgzMeVWNn9W7WNYqW24JxY8cLx+T1//Av3L1CF6w4BcB0D+1EVS
+        b1mzU/U9aDI6nkZ7SuemWjw7BnudFcI=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-314-cGRyEh3BOYm_f7ZLjZrxNA-1; Fri, 18 Jun 2021 10:50:26 -0400
+X-MC-Unique: cGRyEh3BOYm_f7ZLjZrxNA-1
+Received: by mail-ed1-f72.google.com with SMTP id u26-20020a05640207dab02903935beb5c71so3808792edy.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 07:50:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fbPbuj0msVDGWFUsKqeCrFUb5LMoYgYB88VJeRxprBs=;
+        b=s+QdJsUxhEXdzp9ewdj53HpUqLMYlfEll/5mPBFIGVjH1CD9d1RVHWrY5WiDBX5+Lo
+         MsjNXPp9aGC/iz0/B5wvSU7m24KrVt8Q+g28ANvIA10bqgsNw8tftMbWYYGCmWmcgnRH
+         ocEdrqTI1L0jB6UaXVJ2oiJ0YTc3g7ucGZHGVD5/ZPLEXOOtJcGaSNXTo1RASVwYeRhJ
+         B654+zMLffWaG/Fwa8fPtcJschJjEDes8XwbEcxTu4rwYkxy7O1jQrP7VtWJeaWHC8nN
+         Ds6zDNmuy8iNxyd02dworNI4+zNgY6wjVqI1fzDL3ycdi/n85kteuzzz2Sb61M1pKriB
+         ZEqQ==
+X-Gm-Message-State: AOAM532lSKwUlUyRfzLSxqZ74rhZ44R05JmF1AQ5h63/GLlsTi1y1uRL
+        j2aCyufVEdfptZXAFd2/Sx7eNUBoOmNEXpGlhNicHNwBV341iJe9iQUgMkz5BHmH1iOL834tybM
+        wE7i+N7msyTv6D0EJaHKIFUBf
+X-Received: by 2002:a17:906:6d59:: with SMTP id a25mr3271309ejt.83.1624027825309;
+        Fri, 18 Jun 2021 07:50:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxGMqnaIUeLgzXdL4MB+nq3qWIIQQpHpYHpBobQjDwJLtjovX4eLv3MrjB5uzX9trFvePwGEg==
+X-Received: by 2002:a17:906:6d59:: with SMTP id a25mr3271295ejt.83.1624027825049;
+        Fri, 18 Jun 2021 07:50:25 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id i10sm1112727eja.3.2021.06.18.07.50.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jun 2021 07:50:24 -0700 (PDT)
+Subject: Re: [PATCH v1 1/1] tools: Rename bitmap_alloc() to bitmap_zalloc()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Yury Norov <yury.norov@gmail.com>,
+        Ian Rogers <irogers@google.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Leo Yan <leo.yan@linaro.org>, Jiri Olsa <jolsa@redhat.com>,
+        Ben Gardon <bgardon@google.com>, Peter Xu <peterx@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Yury Norov <ynorov@caviumnetworks.com>
+References: <20210618143854.62967-1-andriy.shevchenko@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f159d297-7eed-e054-ae70-e593a42685b5@redhat.com>
+Date:   Fri, 18 Jun 2021 16:50:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrCKsWRmVeSWpSXmKPExsWy7djXc7rTNp1JMLi9gs3i/55jbBar7/az
-        WbS2f2OyWPBmL5vF3lvaFpd3zWGzWH78H5PFgz+P2S0mnz7BarFg4yNGBy6Pic3v2D0uny31
-        +Pj0FovH+i1XWTxu3J/C5PF5k5xH+4FupgD2KC6blNSczLLUIn27BK6M1RO3sxT85Km4O+c+
-        YwPjca4uRk4OCQETiSO/DrOC2EICKxklVuyvhrBbmSR2TdSGqTn1vYWpi5ELKL6WUeLz7SeM
-        EM5HRok3T1ZBOQcYJY7duQg2ik3AQOL38Y3MILaIgKbE51NrweLMAlOZJfa1uoDYwgJBEotm
-        TmWHqAmWePrtOSOEbSSxfN0DsDiLgKrE0T+rmEBsXqAzVrb/BpvDKWAjMeHNCbB6RgExie+n
-        1jBBzBeXuPVkPhPE2YISi2bvYYawxST+7XrIBmErStz//pIdol5HYsHuT2wQtp3Elv5GFghb
-        W2LZwtfMEHsFJU7OfMIC0SspcXDFDRaQhyUEmjklOqb2sUMkXCRO74Y4SEJAWuLv3WVMEEW7
-        GCXmzP7ICuEcZpTYdGE5VJW1xI2XXYwTGFVmIbl8FpKrZiG5ahaSq2YhuWoBI+sqRvHS4uLc
-        9NRio7zUcr3ixNzi0rx0veT83E2MwIR2+t/h/B2M12991DvEyMTBeIhRgoNZSYSXM/NMghBv
-        SmJlVWpRfnxRaU5q8SFGaQ4WJXFepoiJ8UIC6YklqdmpqQWpRTBZJg5OqQYmI7YPmnc1qiRK
-        bDeb6n35m3q4du2RC/67RCU8WZeVmxrseJz/Qy5z9qMpd5sXLu2T/PR3hYBY1q3I1WEz28wK
-        uVmzNu+8ExG6RJUtTHxW7qElE2t3z3ljX2X4NvitmDTjvppTRgemmVk1FUvNWFrbsUK9QG33
-        hyt9xotP5PZqv+11Zk8+KbF2PdOe+LCsxewrPhVVfHG1Nz4XXOHG+cDn+9xfS/27LDevWlke
-        sub6Ay/j/jucc8JyT39Srn557+COjbdOL/krx3rJ+eXB+DO85yrVX+xx/SbILrVA2IXn8qPf
-        NcvzTax5e3aecd7CG71ALLhvoY7YtrM//EIPLdqzNWfS3Jc6tp9/lHWkXlX/ocRSnJFoqMVc
-        VJwIAHXQT+3XAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMIsWRmVeSWpSXmKPExsWS2cA0SXfqpjMJBkffclv833OMzWL13X42
-        i9b2b0wWC97sZbPYe0vb4vKuOWwWy4//Y7J48Ocxu8Xk0ydYLRZsfMTowOUxsfkdu8fls6Ue
-        H5/eYvFYv+Uqi8eN+1OYPD5vkvNoP9DNFMAexWWTkpqTWZZapG+XwJWxeuJ2loKfPBV359xn
-        bGA8ztXFyMkhIWAicep7C1MXIxeHkMBqRolFDz+xQDgfGSV+fbrKDuEcYJRY/aODFaSFTcBA
-        4vfxjcwgtoiApsTnU2tZQYqYBaYySzxdsZsdJCEsECSxaOZUdoiiYIm/S5+xQNhGEsvXPQCL
-        swioShz9s4oJxOYFumNl+29WiG0HGSWOr78Dto1TwEZiwpsTjCA2o4CYxPdTa8AamAXEJW49
-        mc8E8YSAxJI955khbFGJl4//sULYihL3v79kh6jXkViw+xMbhG0nsaW/kQXC1pZYtvA1M8QR
-        ghInZz5hgeiVlDi44gbLBEaJWUjWzUIyahaSUbOQjJqFZNQCRtZVjOKlxcW56RXFRnmp5XrF
-        ibnFpXnpesn5uZsYgeng9L/D0TsYb9/6qHeIkYmD8RCjBAezkggvZ+aZBCHelMTKqtSi/Pii
-        0pzU4kOM0hwsSuK8L6MmxgsJpCeWpGanphakFsFkmTg4pRqYGCqfTSj1+qFh8uZvqKSKQ4KT
-        6PS9DH8OrC2x2rBxN88DvzWOB8K+fWK2i5UxnnXwHU/jauvI4zwVAtcnLr+nueJDgGEl8zdX
-        Nn2ZsxLSOm87r4ZPVNvldXXl+zuPLCXOfNrxZe49k6poXY656fuvLe++uXKizdSGjgteHsKZ
-        j4xXWs2e/yo8xWPuef4tW/Im3s1+dChH7FR4YLr/jvPmpfFOVnN3vWS/ZCUXHjHF+G9R1ZMk
-        hxtbHwtn709b+qvkyYr7Kf6WlodKJ02/Z/lo4W4NUYuvrzxNhb7vSSiessYs3fVT7W0b7TtX
-        K24JPmEtVmt5uGFdwap3aZvbl9Tzrtmv1/Pyw6TpPWEbJK9u3q/EUpyRaKjFXFScCADjvWr5
-        dgMAAA==
-X-CMS-MailID: 20210618144957uscas1p2b49a0cb5c20870a96842a9fab548a56e
-CMS-TYPE: 301P
-X-CMS-RootMailID: 20210614122358uscas1p1b06438713a13aef1eb31a9b0a6c359dc
-References: <20210614122303.154378-1-Niklas.Cassel@wdc.com>
-        <CGME20210614122358uscas1p1b06438713a13aef1eb31a9b0a6c359dc@uscas1p1.samsung.com>
-        <20210614122303.154378-3-Niklas.Cassel@wdc.com>
+In-Reply-To: <20210618143854.62967-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 12:23:21PM +0000, Niklas Cassel wrote:
-> From: Niklas Cassel <niklas.cassel@wdc.com>
->=20
-> A user space process should not need the CAP_SYS_ADMIN capability set
-> in order to perform a BLKREPORTZONE ioctl.
->=20
-> Getting the zone report is required in order to get the write pointer.
-> Neither read() nor write() requires CAP_SYS_ADMIN, so it is reasonable
-> that a user space process that can read/write from/to the device, also
-> can get the write pointer. (Since e.g. writes have to be at the write
-> pointer.)
->=20
-> Fixes: 3ed05a987e0f ("blk-zoned: implement ioctls")
-> Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
-> Cc: stable@vger.kernel.org # v4.10+
+On 18/06/21 16:38, Andy Shevchenko wrote:
+> Rename bitmap_alloc() to bitmap_zalloc() in tools to follow new coming
+> bitmap API extension in kernel.
+> 
+> No functional changes intended.
+> 
+> Suggested-by: Yury Norov <ynorov@caviumnetworks.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
-> Changes since v2:
-> -Drop the FMODE_READ check. Right now it is possible to open() the device=
- with
-> O_WRONLY and get the zone report from that fd. Therefore adding a FMODE_R=
-EAD
-> check on BLKREPORTZONE would break existing applications. Instead, just r=
-emove
-> the existing CAP_SYS_ADMIN check.
->=20
->  block/blk-zoned.c | 3 ---
->  1 file changed, 3 deletions(-)
->=20
-> diff --git a/block/blk-zoned.c b/block/blk-zoned.c
-> index 0789e6e9f7db..457eceabed2e 100644
-> --- a/block/blk-zoned.c
-> +++ b/block/blk-zoned.c
-> @@ -288,9 +288,6 @@ int blkdev_report_zones_ioctl(struct block_device *bd=
-ev, fmode_t mode,
->  	if (!blk_queue_is_zoned(q))
->  		return -ENOTTY;
-> =20
-> -	if (!capable(CAP_SYS_ADMIN))
-> -		return -EACCES;
-> -
->  	if (copy_from_user(&rep, argp, sizeof(struct blk_zone_report)))
->  		return -EFAULT;
-> =20
-> --=20
-> 2.31.1
+>   tools/include/linux/bitmap.h                            | 4 ++--
+>   tools/perf/bench/find-bit-bench.c                       | 2 +-
+>   tools/perf/builtin-c2c.c                                | 6 +++---
+>   tools/perf/builtin-record.c                             | 2 +-
+>   tools/perf/tests/bitmap.c                               | 2 +-
+>   tools/perf/tests/mem2node.c                             | 2 +-
+>   tools/perf/util/affinity.c                              | 4 ++--
+>   tools/perf/util/header.c                                | 4 ++--
+>   tools/perf/util/metricgroup.c                           | 2 +-
+>   tools/perf/util/mmap.c                                  | 4 ++--
+>   tools/testing/selftests/kvm/dirty_log_perf_test.c       | 2 +-
+>   tools/testing/selftests/kvm/dirty_log_test.c            | 4 ++--
+>   tools/testing/selftests/kvm/x86_64/vmx_dirty_log_test.c | 2 +-
+>   13 files changed, 20 insertions(+), 20 deletions(-)
+> 
+> diff --git a/tools/include/linux/bitmap.h b/tools/include/linux/bitmap.h
+> index 330dbf7509cc..7eae64eb5c80 100644
+> --- a/tools/include/linux/bitmap.h
+> +++ b/tools/include/linux/bitmap.h
+> @@ -109,10 +109,10 @@ static inline int test_and_clear_bit(int nr, unsigned long *addr)
+>   }
+>   
+>   /**
+> - * bitmap_alloc - Allocate bitmap
+> + * bitmap_zalloc - Allocate bitmap
+>    * @nbits: Number of bits
+>    */
+> -static inline unsigned long *bitmap_alloc(int nbits)
+> +static inline unsigned long *bitmap_zalloc(int nbits)
+>   {
+>   	return calloc(1, BITS_TO_LONGS(nbits) * sizeof(unsigned long));
+>   }
+> diff --git a/tools/perf/bench/find-bit-bench.c b/tools/perf/bench/find-bit-bench.c
+> index 73b5bcc5946a..22b5cfe97023 100644
+> --- a/tools/perf/bench/find-bit-bench.c
+> +++ b/tools/perf/bench/find-bit-bench.c
+> @@ -54,7 +54,7 @@ static bool asm_test_bit(long nr, const unsigned long *addr)
+>   
+>   static int do_for_each_set_bit(unsigned int num_bits)
+>   {
+> -	unsigned long *to_test = bitmap_alloc(num_bits);
+> +	unsigned long *to_test = bitmap_zalloc(num_bits);
+>   	struct timeval start, end, diff;
+>   	u64 runtime_us;
+>   	struct stats fb_time_stats, tb_time_stats;
+> diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
+> index e3b9d63077ef..a17726ff85a9 100644
+> --- a/tools/perf/builtin-c2c.c
+> +++ b/tools/perf/builtin-c2c.c
+> @@ -137,11 +137,11 @@ static void *c2c_he_zalloc(size_t size)
+>   	if (!c2c_he)
+>   		return NULL;
+>   
+> -	c2c_he->cpuset = bitmap_alloc(c2c.cpus_cnt);
+> +	c2c_he->cpuset = bitmap_zalloc(c2c.cpus_cnt);
+>   	if (!c2c_he->cpuset)
+>   		return NULL;
+>   
+> -	c2c_he->nodeset = bitmap_alloc(c2c.nodes_cnt);
+> +	c2c_he->nodeset = bitmap_zalloc(c2c.nodes_cnt);
+>   	if (!c2c_he->nodeset)
+>   		return NULL;
+>   
+> @@ -2045,7 +2045,7 @@ static int setup_nodes(struct perf_session *session)
+>   		struct perf_cpu_map *map = n[node].map;
+>   		unsigned long *set;
+>   
+> -		set = bitmap_alloc(c2c.cpus_cnt);
+> +		set = bitmap_zalloc(c2c.cpus_cnt);
+>   		if (!set)
+>   			return -ENOMEM;
+>   
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index 84803abeb942..978b6bbd06e4 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -2766,7 +2766,7 @@ int cmd_record(int argc, const char **argv)
+>   
+>   	if (rec->opts.affinity != PERF_AFFINITY_SYS) {
+>   		rec->affinity_mask.nbits = cpu__max_cpu();
+> -		rec->affinity_mask.bits = bitmap_alloc(rec->affinity_mask.nbits);
+> +		rec->affinity_mask.bits = bitmap_zalloc(rec->affinity_mask.nbits);
+>   		if (!rec->affinity_mask.bits) {
+>   			pr_err("Failed to allocate thread mask for %zd cpus\n", rec->affinity_mask.nbits);
+>   			err = -ENOMEM;
+> diff --git a/tools/perf/tests/bitmap.c b/tools/perf/tests/bitmap.c
+> index 96c137360918..12b805efdca0 100644
+> --- a/tools/perf/tests/bitmap.c
+> +++ b/tools/perf/tests/bitmap.c
+> @@ -14,7 +14,7 @@ static unsigned long *get_bitmap(const char *str, int nbits)
+>   	unsigned long *bm = NULL;
+>   	int i;
+>   
+> -	bm = bitmap_alloc(nbits);
+> +	bm = bitmap_zalloc(nbits);
+>   
+>   	if (map && bm) {
+>   		for (i = 0; i < map->nr; i++)
+> diff --git a/tools/perf/tests/mem2node.c b/tools/perf/tests/mem2node.c
+> index a258bd51f1a4..e4d0d58b97f8 100644
+> --- a/tools/perf/tests/mem2node.c
+> +++ b/tools/perf/tests/mem2node.c
+> @@ -27,7 +27,7 @@ static unsigned long *get_bitmap(const char *str, int nbits)
+>   	unsigned long *bm = NULL;
+>   	int i;
+>   
+> -	bm = bitmap_alloc(nbits);
+> +	bm = bitmap_zalloc(nbits);
+>   
+>   	if (map && bm) {
+>   		for (i = 0; i < map->nr; i++) {
+> diff --git a/tools/perf/util/affinity.c b/tools/perf/util/affinity.c
+> index a5e31f826828..7b12bd7a3080 100644
+> --- a/tools/perf/util/affinity.c
+> +++ b/tools/perf/util/affinity.c
+> @@ -25,11 +25,11 @@ int affinity__setup(struct affinity *a)
+>   {
+>   	int cpu_set_size = get_cpu_set_size();
+>   
+> -	a->orig_cpus = bitmap_alloc(cpu_set_size * 8);
+> +	a->orig_cpus = bitmap_zalloc(cpu_set_size * 8);
+>   	if (!a->orig_cpus)
+>   		return -1;
+>   	sched_getaffinity(0, cpu_set_size, (cpu_set_t *)a->orig_cpus);
+> -	a->sched_cpus = bitmap_alloc(cpu_set_size * 8);
+> +	a->sched_cpus = bitmap_zalloc(cpu_set_size * 8);
+>   	if (!a->sched_cpus) {
+>   		zfree(&a->orig_cpus);
+>   		return -1;
+> diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+> index aa1e42518d37..c67c03dd3db2 100644
+> --- a/tools/perf/util/header.c
+> +++ b/tools/perf/util/header.c
+> @@ -277,7 +277,7 @@ static int do_read_bitmap(struct feat_fd *ff, unsigned long **pset, u64 *psize)
+>   	if (ret)
+>   		return ret;
+>   
+> -	set = bitmap_alloc(size);
+> +	set = bitmap_zalloc(size);
+>   	if (!set)
+>   		return -ENOMEM;
+>   
+> @@ -1259,7 +1259,7 @@ static int memory_node__read(struct memory_node *n, unsigned long idx)
+>   
+>   	size++;
+>   
+> -	n->set = bitmap_alloc(size);
+> +	n->set = bitmap_zalloc(size);
+>   	if (!n->set) {
+>   		closedir(dir);
+>   		return -ENOMEM;
+> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> index 8336dd8e8098..f24c6998d26c 100644
+> --- a/tools/perf/util/metricgroup.c
+> +++ b/tools/perf/util/metricgroup.c
+> @@ -313,7 +313,7 @@ static int metricgroup__setup_events(struct list_head *groups,
+>   	struct evsel *evsel, *tmp;
+>   	unsigned long *evlist_used;
+>   
+> -	evlist_used = bitmap_alloc(perf_evlist->core.nr_entries);
+> +	evlist_used = bitmap_zalloc(perf_evlist->core.nr_entries);
+>   	if (!evlist_used)
+>   		return -ENOMEM;
+>   
+> diff --git a/tools/perf/util/mmap.c b/tools/perf/util/mmap.c
+> index ab7108d22428..512dc8b9c168 100644
+> --- a/tools/perf/util/mmap.c
+> +++ b/tools/perf/util/mmap.c
+> @@ -106,7 +106,7 @@ static int perf_mmap__aio_bind(struct mmap *map, int idx, int cpu, int affinity)
+>   		data = map->aio.data[idx];
+>   		mmap_len = mmap__mmap_len(map);
+>   		node_index = cpu__get_node(cpu);
+> -		node_mask = bitmap_alloc(node_index + 1);
+> +		node_mask = bitmap_zalloc(node_index + 1);
+>   		if (!node_mask) {
+>   			pr_err("Failed to allocate node mask for mbind: error %m\n");
+>   			return -1;
+> @@ -258,7 +258,7 @@ static void build_node_mask(int node, struct mmap_cpu_mask *mask)
+>   static int perf_mmap__setup_affinity_mask(struct mmap *map, struct mmap_params *mp)
+>   {
+>   	map->affinity_mask.nbits = cpu__max_cpu();
+> -	map->affinity_mask.bits = bitmap_alloc(map->affinity_mask.nbits);
+> +	map->affinity_mask.bits = bitmap_zalloc(map->affinity_mask.nbits);
+>   	if (!map->affinity_mask.bits)
+>   		return -1;
+>   
+> diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+> index 04a2641261be..fbf0c2c1fbc9 100644
+> --- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
+> +++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+> @@ -121,7 +121,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+>   	guest_num_pages = (nr_vcpus * guest_percpu_mem_size) >> vm_get_page_shift(vm);
+>   	guest_num_pages = vm_adjust_num_guest_pages(mode, guest_num_pages);
+>   	host_num_pages = vm_num_host_pages(mode, guest_num_pages);
+> -	bmap = bitmap_alloc(host_num_pages);
+> +	bmap = bitmap_zalloc(host_num_pages);
+>   
+>   	if (dirty_log_manual_caps) {
+>   		cap.cap = KVM_CAP_MANUAL_DIRTY_LOG_PROTECT2;
+> diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
+> index 81edbd23d371..ef641b0ff125 100644
+> --- a/tools/testing/selftests/kvm/dirty_log_test.c
+> +++ b/tools/testing/selftests/kvm/dirty_log_test.c
+> @@ -750,8 +750,8 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+>   
+>   	pr_info("guest physical test memory offset: 0x%lx\n", guest_test_phys_mem);
+>   
+> -	bmap = bitmap_alloc(host_num_pages);
+> -	host_bmap_track = bitmap_alloc(host_num_pages);
+> +	bmap = bitmap_zalloc(host_num_pages);
+> +	host_bmap_track = bitmap_zalloc(host_num_pages);
+>   
+>   	/* Add an extra memory slot for testing dirty logging */
+>   	vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS,
+> diff --git a/tools/testing/selftests/kvm/x86_64/vmx_dirty_log_test.c b/tools/testing/selftests/kvm/x86_64/vmx_dirty_log_test.c
+> index 537de1068554..a2f1bab6c234 100644
+> --- a/tools/testing/selftests/kvm/x86_64/vmx_dirty_log_test.c
+> +++ b/tools/testing/selftests/kvm/x86_64/vmx_dirty_log_test.c
+> @@ -111,7 +111,7 @@ int main(int argc, char *argv[])
+>   	nested_map(vmx, vm, NESTED_TEST_MEM1, GUEST_TEST_MEM, 4096, 0);
+>   	nested_map(vmx, vm, NESTED_TEST_MEM2, GUEST_TEST_MEM, 4096, 0);
+>   
+> -	bmap = bitmap_alloc(TEST_MEM_PAGES);
+> +	bmap = bitmap_zalloc(TEST_MEM_PAGES);
+>   	host_test_mem = addr_gpa2hva(vm, GUEST_TEST_MEM);
+>   
+>   	while (!done) {
+> 
 
-LGTM
+Acked-by: Paolo Bonzini <pbonzini@redhat.com>
 
-Reviewed-by: Adam Manzanares <a.manzanares@samsung.com>=
