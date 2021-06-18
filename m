@@ -2,81 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA82C3AC3BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:19:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1283B3AC3B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233056AbhFRGWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 02:22:00 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:59974 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233048AbhFRGSc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 02:18:32 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 178A721B4D;
-        Fri, 18 Jun 2021 06:15:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1623996932; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hhqhJJHGQgh1nSjIpUSQwyMaH6oNC00EvkhH+O8kSEw=;
-        b=qFXAvluC5MMr4B6HeKKxDqKi6CyJXU7LjvUi1LOsS/5aKm+iw6T9CrPEn+Idn8KcHR6oe5
-        D/ZpOmakzVP/CKB4kf5iqKGaLtJLlUfTBw/smO7yC3/+kFBfEHBClb5ZqKWtooSr7olnGo
-        12X//FQ7QOf4xeanJ8cDLgzYbSKBUKY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1623996932;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hhqhJJHGQgh1nSjIpUSQwyMaH6oNC00EvkhH+O8kSEw=;
-        b=C5+df4lJGtRSgQ4rb9NAedppvONpue8HmhMW0KZYFhfVC1ZPxrV3npbSTRs6G40vwR+mEo
-        45thYwE3CTNdCpBg==
-Received: from localhost.localdomain (unknown [10.100.208.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id E4D70A3B9E;
-        Fri, 18 Jun 2021 06:15:31 +0000 (UTC)
-From:   Jiri Slaby <jslaby@suse.cz>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 70/70] MAINTAINERS: add me back as mxser maintainer
-Date:   Fri, 18 Jun 2021 08:15:16 +0200
-Message-Id: <20210618061516.662-71-jslaby@suse.cz>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210618061516.662-1-jslaby@suse.cz>
-References: <20210618061516.662-1-jslaby@suse.cz>
+        id S233383AbhFRGVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 02:21:25 -0400
+Received: from mga18.intel.com ([134.134.136.126]:4815 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233227AbhFRGSO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 02:18:14 -0400
+IronPort-SDR: TEIirjPT2lVfnhfI6Oe4S+eSPbLwsv1FTmNmuoSJiKwEiFu1HiNkWGyKAH5mngFwMDCc8xq7R1
+ zv25ZwaZHURw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="193815217"
+X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
+   d="scan'208";a="193815217"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 23:16:05 -0700
+IronPort-SDR: Tsnx0Ge7sp4sdJLwb8pmYdtHwANin74FJyHckWAl5UNJQ7Vn3uJcH/SnuGsAJGQVHT5RZHvhR3
+ COBTqSqGnkiQ==
+X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
+   d="scan'208";a="485573590"
+Received: from mzhou6-mobl1.ccr.corp.intel.com (HELO yhuang6-mobl1.ccr.corp.intel.com) ([10.254.212.155])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 23:16:01 -0700
+From:   Huang Ying <ying.huang@intel.com>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        yang.shi@linux.alibaba.com, rientjes@google.com,
+        ying.huang@intel.com, dan.j.williams@intel.com, david@redhat.com,
+        osalvador@suse.de, weixugc@google.com,
+        Michal Hocko <mhocko@suse.com>, Yang Shi <shy828301@gmail.com>
+Subject: [PATCH -V8 00/10] Migrate Pages in lieu of discard
+Date:   Fri, 18 Jun 2021 14:15:27 +0800
+Message-Id: <20210618061537.434999-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I was given a few cards from MOXA (thanks a lot). Provided I can now
-test changes, I cleaned up the driver a bit and can continue maintaining
-it.
+The full series is also available here:
 
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
----
- MAINTAINERS | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+	https://github.com/hying-caritas/linux/tree/automigrate-20210618
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index cff342847673..314207ccc82a 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12498,7 +12498,8 @@ S:	Maintained
- F:	drivers/net/phy/motorcomm.c
- 
- MOXA SMARTIO/INDUSTIO/INTELLIO SERIAL CARD
--S:	Orphan
-+M:	Jiri Slaby <jirislaby@kernel.org>
-+S:	Maintained
- F:	Documentation/driver-api/serial/moxa-smartio.rst
- F:	drivers/tty/mxser.*
- 
--- 
-2.32.0
+The changes since the last post are as follows,
 
+ * Change the page allocation flags per Michal's comments.
+ * Change the user interface to enable the feature.
+
+--
+
+We're starting to see systems with more and more kinds of memory such
+as Intel's implementation of persistent memory.
+
+Let's say you have a system with some DRAM and some persistent memory.
+Today, once DRAM fills up, reclaim will start and some of the DRAM
+contents will be thrown out.  Allocations will, at some point, start
+falling over to the slower persistent memory.
+
+That has two nasty properties.  First, the newer allocations can end
+up in the slower persistent memory.  Second, reclaimed data in DRAM
+are just discarded even if there are gobs of space in persistent
+memory that could be used.
+
+This set implements a solution to these problems.  At the end of the
+reclaim process in shrink_page_list() just before the last page
+refcount is dropped, the page is migrated to persistent memory instead
+of being dropped.
+
+While I've talked about a DRAM/PMEM pairing, this approach would
+function in any environment where memory tiers exist.
+
+This is not perfect.  It "strands" pages in slower memory and never
+brings them back to fast DRAM.  Huang Ying has follow-on work which
+repurposes autonuma to promote hot pages back to DRAM.
+
+This is also all based on an upstream mechanism that allows
+persistent memory to be onlined and used as if it were volatile:
+
+	http://lkml.kernel.org/r/20190124231441.37A4A305@viggo.jf.intel.com
+
+We have tested the patchset with the postgresql and pgbench.  On a
+2-socket server machine with DRAM and PMEM, the kernel with the
+patchset can improve the score of pgbench up to 22.1% compared with
+that of the DRAM only + disk case.  This comes from the reduced disk
+read throughput (which reduces up to 70.8%).
+
+== Open Issues ==
+
+ * Memory policies and cpusets that, for instance, restrict allocations
+   to DRAM can be demoted to PMEM whenever they opt in to this
+   new mechanism.  A cgroup-level API to opt-in or opt-out of
+   these migrations will likely be required as a follow-on.
+ * Could be more aggressive about where anon LRU scanning occurs
+   since it no longer necessarily involves I/O.  get_scan_count()
+   for instance says: "If we have no swap space, do not bother
+   scanning anon pages"
+
+--
+
+Changes since (automigrate-20210331):
+ * Change the page allocation flags per Michal's comments.
+ * Change the user interface to enable the feature.
+
+Changes since (automigrate-20210304):
+ * Add ack/review tags
+ * Remove duplicate synchronize_rcu() call
+
+Changes since (automigrate-20210122):
+ * move from GFP_HIGHUSER -> GFP_HIGHUSER_MOVABLE since pages *are*
+   movable.
+ * Separate out helpers that check for being able to relaim anonymous
+   pages versus being able to meaningfully scan the anon LRU.
+
+Changes since (automigrate-20200818):
+ * Fall back to normal reclaim when demotion fails
+ * Fix some compile issues, when page migration and NUMA are off
+
+Changes since (automigrate-20201007):
+ * separate out checks for "can scan anon LRU" from "can actually
+   swap anon pages right now".  Previous series conflated them
+   and may have been overly aggressive scanning LRU
+ * add MR_DEMOTION to tracepoint header
+ * remove unnecessary hugetlb page check
+
+Changes since (https://lwn.net/Articles/824830/):
+ * Use higher-level migrate_pages() API approach from Yang Shi's
+   earlier patches.
+ * made sure to actually check node_reclaim_mode's new bit
+ * disabled migration entirely before introducing RECLAIM_MIGRATE
+ * Replace GFP_NOWAIT with explicit __GFP_KSWAPD_RECLAIM and
+   comment why we want that.
+ * Comment on effects of that keep multiple source nodes from
+   sharing target nodes
+
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: osalvador <osalvador@suse.de>
+Cc: Wei Xu <weixugc@google.com>
