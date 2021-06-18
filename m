@@ -2,168 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190463AC9D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 13:28:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18FA3AC9E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 13:29:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232027AbhFRLaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 07:30:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37742 "EHLO mail.kernel.org"
+        id S234035AbhFRLby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 07:31:54 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:51346 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232090AbhFRLau (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 07:30:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 254E261351;
-        Fri, 18 Jun 2021 11:28:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624015721;
-        bh=5Pz1lNiWEhdxcezIWbGtg4zMJZ0g3vMwrjj21gjwJ1s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=As9lj7p7HqC2AMpE5ep3GslM0kgf7qfGXiINV/Bnk47S7/h+eX3aC/rQ51jrd/Xdu
-         V7SDFyAeTI9Wuv4ZnRvX1lpi5s4pWaEtIZvmTek8DdglDyaLR8ilG3ZuF3VsDL2/cs
-         7EkuWLPwcMX8ji0g1Y35UPku43ifRausmNUwh9trft93TRXvM5B3yxzy/TInxNyxaT
-         kJGxf5QQNvIM8PgV8aO3JVV+qZnSNxbs5w+TJAdeKvcVwTy1d7glQ3lZaXWEPqE9dL
-         ISP8oNxxrpWgkyLzX+gMYRvs0irJi/FIHyFB/eT7A8FNkbaAAAdUtDhwsOY3iZqFiQ
-         /gaqPfZcQlayQ==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1luCfu-008agM-Sk; Fri, 18 Jun 2021 13:28:38 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Cameron" <jic23@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH RFC 1/1] get_abi.pl: Check for missing symbols at the ABI specs
-Date:   Fri, 18 Jun 2021 13:28:37 +0200
-Message-Id: <fe2f4437c8b8b4ec01b7911b0ee64e9d6804449e.1624014140.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1624014140.git.mchehab+huawei@kernel.org>
-References: <cover.1624014140.git.mchehab+huawei@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+        id S233159AbhFRLbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 07:31:51 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624015782; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=71O0EH5WcchJDFoozRa29bOwZCDQa5INUojIx8UHm7E=; b=UYQeVfHqeNzyh61Y9t0QZm9w0alPozI4CFa2mkqqDS7yVQpAe0LgpXhhr+7A4KnVGD596ke0
+ Q1Q2GE7Tr+n7+ixD0aNa6p7tovjgMa2/FcCeFYmkhdtEfuM3LmWjdBgQTCxLM3bhgGs/G+XB
+ znfTMS7qiT+y7blMxY3D0pPDsqU=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 60cc8387f726fa418836441d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Jun 2021 11:29:11
+ GMT
+Sender: okukatla=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E3806C4360C; Fri, 18 Jun 2021 11:29:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from okukatla1-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: okukatla)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AE0C9C433F1;
+        Fri, 18 Jun 2021 11:29:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AE0C9C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=okukatla@codeaurora.org
+From:   Odelu Kukatla <okukatla@codeaurora.org>
+To:     georgi.djakov@linaro.org, bjorn.andersson@linaro.org,
+        evgreen@google.com
+Cc:     sboyd@kernel.org, seansw@qti.qualcomm.com, elder@linaro.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org,
+        Odelu Kukatla <okukatla@codeaurora.org>
+Subject: [V4 0/3] Add L3 provider support for SC7280
+Date:   Fri, 18 Jun 2021 16:58:51 +0530
+Message-Id: <1624015734-16778-1-git-send-email-okukatla@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check for the symbols that exists under /sys but aren't
-defined at Documentation/ABI.
+Add Epoch Subsystem (EPSS) L3 provider support on SM7280 SoCs.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- scripts/get_abi.pl | 72 ++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 70 insertions(+), 2 deletions(-)
+v4:
+ - Addressed review comments (Rob Herring)
+ 
+Depends on: https://lore.kernel.org/patchwork/cover/1418814/
+ 
+Odelu Kukatla (3):
+  dt-bindings: interconnect: Add EPSS L3 DT binding on SC7280
+  interconnect: qcom: Add EPSS L3 support on SC7280
+  arm64: dts: qcom: sc7280: Add EPSS L3 interconnect provider
 
-diff --git a/scripts/get_abi.pl b/scripts/get_abi.pl
-index d7aa82094296..e85cee0f8901 100755
---- a/scripts/get_abi.pl
-+++ b/scripts/get_abi.pl
-@@ -14,6 +14,7 @@ my $man = 0;
- my $debug = 0;
- my $enable_lineno = 0;
- my $prefix="Documentation/ABI";
-+my $sysfs_prefix="/sys";
- 
- #
- # If true, assumes that the description is formatted with ReST
-@@ -36,7 +37,7 @@ pod2usage(2) if (scalar @ARGV < 1 || @ARGV > 2);
- 
- my ($cmd, $arg) = @ARGV;
- 
--pod2usage(2) if ($cmd ne "search" && $cmd ne "rest" && $cmd ne "validate");
-+pod2usage(2) if ($cmd ne "search" && $cmd ne "rest" && $cmd ne "validate" && $cmd ne "undefined");
- pod2usage(2) if ($cmd eq "search" && !$arg);
- 
- require Data::Dumper if ($debug);
-@@ -521,6 +522,68 @@ sub search_symbols {
- 	}
- }
- 
-+my %leaf;
-+
-+my $escape_symbols = qr { ([\x01-\x08\x0e-\x1f\x21-\x29\x2b-\x2d\x3a-\x40\x7b-\xff]) }x;
-+sub parse_existing_sysfs {
-+	my $file = $File::Find::name;
-+
-+	my $mode = (stat($file))[2];
-+	return if ($mode & S_IFDIR);
-+
-+	# /sys/.*/<foo>
-+	return if ($file =~ m/(initstate|bind|unbind)/);
-+
-+	my $leave = $file;
-+	$leave =~ s,.*/,,;
-+
-+	if (defined($leaf{$leave})) {
-+		# FIXME: need to check if the path makes sense
-+		my $what = $leaf{$leave};
-+
-+		$what =~ s/,/ /g;
-+
-+		$what =~ s/\<[^\>]+\>/.*/g;
-+		$what =~ s/\{[^\}]+\}/.*/g;
-+		$what =~ s/\[[^\]]+\]/.*/g;
-+		$what =~ s,/\.\.\./,/.*/,g;
-+		$what =~ s,/\*/,/.*/,g;
-+
-+		$what =~ s/\s+/ /g;
-+
-+		# Escape all other symbols
-+		$what =~ s/$escape_symbols/\\$1/g;
-+
-+		foreach my $i (split / /,$what) {
-+			if ($file =~ m#^$i$#) {
-+#				print "$file: $i: OK!\n";
-+				return;
-+			}
-+		}
-+
-+		print "$file: $leave is defined at $what\n";
-+
-+		return;
-+	}
-+
-+#	print "$file not found.\n";
-+}
-+
-+sub undefined_symbols {
-+	foreach my $what (sort keys %data) {
-+		my $leave = $what;
-+		$leave =~ s,.*/,,;
-+
-+		if (defined($leaf{$leave})) {
-+			$leaf{$leave} .= " " . $what;
-+		} else {
-+			$leaf{$leave} = $what;
-+		}
-+	}
-+
-+	find({wanted =>\&parse_existing_sysfs, no_chdir => 1}, $sysfs_prefix);
-+}
-+
- # Ensure that the prefix will always end with a slash
- # While this is not needed for find, it makes the patch nicer
- # with --enable-lineno
-@@ -536,7 +599,9 @@ print STDERR Data::Dumper->Dump([\%data], [qw(*data)]) if ($debug);
- #
- # Handles the command
- #
--if ($cmd eq "search") {
-+if ($cmd eq "undefined") {
-+	undefined_symbols;
-+} elsif ($cmd eq "search") {
- 	search_symbols;
- } else {
- 	if ($cmd eq "rest") {
-@@ -575,6 +640,9 @@ B<rest>                  - output the ABI in ReST markup language
- 
- B<validate>              - validate the ABI contents
- 
-+B<undefined>             - existing symbols at the system that aren't
-+                           defined at Documentation/ABI
-+
- =back
- 
- =head1 OPTIONS
+ .../bindings/interconnect/qcom,osm-l3.yaml         |   9 +-
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               |   9 ++
+ drivers/interconnect/qcom/osm-l3.c                 | 135 ++++++++++++++++-----
+ drivers/interconnect/qcom/sc7280.h                 |  10 ++
+ include/dt-bindings/interconnect/qcom,osm-l3.h     |  10 +-
+ 5 files changed, 142 insertions(+), 31 deletions(-)
+
 -- 
-2.31.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
