@@ -2,131 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C5373AC26C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 06:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE3FF3AC26D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 06:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231969AbhFREqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 00:46:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231693AbhFREqd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 00:46:33 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1430AC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 21:44:24 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id u24so6717970edy.11
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 21:44:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xClIV3g2rAFuoyZHyCnYEVOzgSyn0J/b3rPgod6lQRo=;
-        b=IysTrToP+mR4ZL3tTCrr87Yg6G1IcGhuMnYEyffxAEn8bzy3GdmpYfYIJkqF8PHMgb
-         u0ISALkuGhVi0o1uZg1zyw72CX83FQ3ECFQLnGPzuz7YSmcogSZRpf1dTmtrB7dJsEzM
-         BjrOup6I0s9ICwQ8TCbuwdbwrh5NA/ongy16w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xClIV3g2rAFuoyZHyCnYEVOzgSyn0J/b3rPgod6lQRo=;
-        b=E4BJCfbBVle6H9dreD8BONbvMHqEiUm80Ae5vcCQ75+C6MjqLoLmLbW52xeXhUR/ZT
-         isgaOZpzMB1qlYEl1NjYZpc28c4mH0VCgjDpZcWWi7/FW9WBzy74K439mkjZl1qyhnVH
-         Ced0m9lGWLZ265Vwuj9CG3aQifsuq2/1YzwhweWc3HZ+KKxg2ILaUhle8VLLSeoGYHPw
-         MlBFtGqdFX0IZAYo9doyo0O6KZHCzKNynSE9rJbbiVUSZSOSXACotCxNB31jrRUuMttp
-         1qKIUOVoNomjiZbGuejdcHh3XDGagWb/s/ZlQLjbSUrBxXkSCVedHpbQWN6Rjd3yrkGj
-         BgzQ==
-X-Gm-Message-State: AOAM5318EeIvSN85BPZYdn9wtm9xTa64QzBTpWMij7vAPk2KFlQC/PDf
-        flal3UIWP/ycyafutwmXRMk/b7KqfVimrA==
-X-Google-Smtp-Source: ABdhPJz1ytgym09BUz2Ti3Kp0hm1FY7znA+hhw726UBFqCL5gOyyV7PX0MMHJ0tc3lN6s1wp/pLDJA==
-X-Received: by 2002:a05:6402:51cf:: with SMTP id r15mr2298457edd.263.1623991462086;
-        Thu, 17 Jun 2021 21:44:22 -0700 (PDT)
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com. [209.85.221.41])
-        by smtp.gmail.com with ESMTPSA id m11sm512899ejl.102.2021.06.17.21.44.20
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Jun 2021 21:44:21 -0700 (PDT)
-Received: by mail-wr1-f41.google.com with SMTP id f2so9139480wri.11
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 21:44:20 -0700 (PDT)
-X-Received: by 2002:adf:e804:: with SMTP id o4mr8875519wrm.103.1623991460457;
- Thu, 17 Jun 2021 21:44:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210427131344.139443-1-senozhatsky@chromium.org>
- <20210427131344.139443-9-senozhatsky@chromium.org> <10a0903a-e295-5cba-683a-1eb89a0804ed@xs4all.nl>
- <YMsAIVs7G2hUDR2F@google.com> <20210617080107.GA1422@lst.de>
- <CAAFQd5DiPstn-s+yQM3iMd=G9oaag39qCyX483a7-Jrn=gxWCA@mail.gmail.com>
- <20210617085233.GA4702@lst.de> <CAAFQd5DqK2gSTGjfo-vahXwMzzO9gv26cY=vV6urn3viDLPE7g@mail.gmail.com>
- <20210617100656.GA11107@lst.de> <CAAFQd5CgLDkJ3t1aU2PRcGu6cGFjLXOnvMqDg62Z7Zuc8ABVHg@mail.gmail.com>
- <20210618042526.GA17794@lst.de>
-In-Reply-To: <20210618042526.GA17794@lst.de>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Fri, 18 Jun 2021 13:44:08 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5Bt9TJ87Yk5ZpqTqrX9rmP0Uq8VNwx_rwFHakWP850Axw@mail.gmail.com>
-Message-ID: <CAAFQd5Bt9TJ87Yk5ZpqTqrX9rmP0Uq8VNwx_rwFHakWP850Axw@mail.gmail.com>
-Subject: Re: [PATCHv2 8/8] videobuf2: handle non-contiguous DMA allocations
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S232024AbhFREso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 00:48:44 -0400
+Received: from foss.arm.com ([217.140.110.172]:34828 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231693AbhFREsg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 00:48:36 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F3DD113A1;
+        Thu, 17 Jun 2021 21:46:27 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.86.56])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A386E3F694;
+        Thu, 17 Jun 2021 21:46:25 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64/mm: Rename ARM64_SWAPPER_USES_SECTION_MAPS
+Date:   Fri, 18 Jun 2021 10:17:02 +0530
+Message-Id: <1623991622-24294-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 1:25 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Fri, Jun 18, 2021 at 12:21:33PM +0900, Tomasz Figa wrote:
-> > > On Thu, Jun 17, 2021 at 06:40:58PM +0900, Tomasz Figa wrote:
-> > > > Sorry, I meant dma_alloc_attrs() and yes, it's indeed a misnomer. Our
-> > > > use case basically has no need for the additional coherent mapping, so
-> > > > creation of it can be skipped to save some vmalloc space. (Yes, it
-> > > > probably only matters for 32-bit architectures.)
-> > >
-> > > Yes, that is the normal use case, and it is solved by using
-> > > dma_alloc_noncoherent or dma_alloc_noncontigous without the vmap
-> > > step.
-> >
-> > True, silly me. Probably not enough coffee at the time I was looking at it.
-> >
-> > With that, wouldn't it be possible to completely get rid of
-> > dma_alloc_{coherent,attrs}() and use dma_alloc_noncontiguous() +
-> > optional kernel and/or userspace mapping helper everywhere? (Possibly
-> > renaming it to something as simple as dma_alloc().
->
-> Well, dma_alloc_coherent users want a non-cached mapping.  And while
-> some architectures provide that using a vmap with "uncached" bits in the
-> PTE to provide that, this:
->
->  a) is not possibly everywhere
->  b) even where possible is not always the best idea as it creates mappings
->     with differnet cachability bets
+ARM64_SWAPPER_USES_SECTION_MAPS implies that a PMD level huge page mappings
+are used for swapper, idmap and vmemmap. Lets make it PMD explicit removing
+any possible confusion with generic memory sections and also bit generic as
+it's applicable for idmap and vmemmap mappings as well. Hence rename it as
+ARM64_KERNEL_USES_PMD_MAPS instead.
 
-I think this could be addressed by having a dma_vmap() helper that
-does the right thing, whether it's vmap() or dma_common_pages_remap()
-as appropriate. Or would be this still insufficient for some
-architectures?
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+This applies on latest linux-next (20210617).
 
->
-> And even without that dma_alloc_noncoherent causes less overhead than
-> dma_alloc_noncontigious if you only need a single contiguous range.
->
+ arch/arm64/include/asm/kernel-pgtable.h | 10 +++++-----
+ arch/arm64/mm/mmu.c                     |  6 +++---
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-Given that behind the scenes dma_alloc_noncontiguous() would also just
-call __dma_alloc_pages() for devices that need contiguous pages, would
-the overhead be basically the creation of a single-entry sgtable?
+diff --git a/arch/arm64/include/asm/kernel-pgtable.h b/arch/arm64/include/asm/kernel-pgtable.h
+index 1260187adb31..3512184cfec1 100644
+--- a/arch/arm64/include/asm/kernel-pgtable.h
++++ b/arch/arm64/include/asm/kernel-pgtable.h
+@@ -18,9 +18,9 @@
+  * 64K (section size = 512M).
+  */
+ #ifdef CONFIG_ARM64_4K_PAGES
+-#define ARM64_SWAPPER_USES_SECTION_MAPS 1
++#define ARM64_KERNEL_USES_PMD_MAPS 1
+ #else
+-#define ARM64_SWAPPER_USES_SECTION_MAPS 0
++#define ARM64_KERNEL_USES_PMD_MAPS 0
+ #endif
+ 
+ /*
+@@ -33,7 +33,7 @@
+  * VA range, so pages required to map highest possible PA are reserved in all
+  * cases.
+  */
+-#if ARM64_SWAPPER_USES_SECTION_MAPS
++#if ARM64_KERNEL_USES_PMD_MAPS
+ #define SWAPPER_PGTABLE_LEVELS	(CONFIG_PGTABLE_LEVELS - 1)
+ #define IDMAP_PGTABLE_LEVELS	(ARM64_HW_PGTABLE_LEVELS(PHYS_MASK_SHIFT) - 1)
+ #else
+@@ -90,7 +90,7 @@
+ #define IDMAP_DIR_SIZE		(IDMAP_PGTABLE_LEVELS * PAGE_SIZE)
+ 
+ /* Initial memory map size */
+-#if ARM64_SWAPPER_USES_SECTION_MAPS
++#if ARM64_KERNEL_USES_PMD_MAPS
+ #define SWAPPER_BLOCK_SHIFT	PMD_SHIFT
+ #define SWAPPER_BLOCK_SIZE	PMD_SIZE
+ #define SWAPPER_TABLE_SHIFT	PUD_SHIFT
+@@ -106,7 +106,7 @@
+ #define SWAPPER_PTE_FLAGS	(PTE_TYPE_PAGE | PTE_AF | PTE_SHARED)
+ #define SWAPPER_PMD_FLAGS	(PMD_TYPE_SECT | PMD_SECT_AF | PMD_SECT_S)
+ 
+-#if ARM64_SWAPPER_USES_SECTION_MAPS
++#if ARM64_KERNEL_USES_PMD_MAPS
+ #define SWAPPER_MM_MMUFLAGS	(PMD_ATTRINDX(MT_NORMAL) | SWAPPER_PMD_FLAGS)
+ #else
+ #define SWAPPER_MM_MMUFLAGS	(PTE_ATTRINDX(MT_NORMAL) | SWAPPER_PTE_FLAGS)
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index 37a9b8875769..d74586508448 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -1114,14 +1114,14 @@ static void free_empty_tables(unsigned long addr, unsigned long end,
+ }
+ #endif
+ 
+-#if !ARM64_SWAPPER_USES_SECTION_MAPS
++#if !ARM64_KERNEL_USES_PMD_MAPS
+ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
+ 		struct vmem_altmap *altmap)
+ {
+ 	WARN_ON((start < VMEMMAP_START) || (end > VMEMMAP_END));
+ 	return vmemmap_populate_basepages(start, end, node, altmap);
+ }
+-#else	/* !ARM64_SWAPPER_USES_SECTION_MAPS */
++#else	/* !ARM64_KERNEL_USES_PMD_MAPS */
+ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
+ 		struct vmem_altmap *altmap)
+ {
+@@ -1166,7 +1166,7 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
+ 
+ 	return 0;
+ }
+-#endif	/* !ARM64_SWAPPER_USES_SECTION_MAPS */
++#endif	/* !ARM64_KERNEL_USES_PMD_MAPS */
+ 
+ #ifdef CONFIG_MEMORY_HOTPLUG
+ void vmemmap_free(unsigned long start, unsigned long end,
+-- 
+2.20.1
 
-> So while I'm happy we have something useful for more complex drivers like
-> v4l I think the simple dma_alloc_coherent API, including some of the less
-> crazy flags for dma_alloc_attrs is the right thing to use for more than
-> 90% of the use cases.
-
-One thing to take into account here is that many drivers use the
-existing "simple" way, just because there wasn't a viable alternative
-to do something better. Agreed, though, that we shouldn't optimize for
-the rare cases.
-
-Best regards,
-Tomasz
