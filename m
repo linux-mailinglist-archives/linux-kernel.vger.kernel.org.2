@@ -2,129 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 251AD3ABFFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 02:10:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C48A3ABFFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 02:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232479AbhFRAMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 20:12:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232931AbhFRAMB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 20:12:01 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F23CC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 17:09:52 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 9A99783640;
-        Fri, 18 Jun 2021 12:09:49 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1623974989;
-        bh=AHBtbXwm2xMmYb4uxx88KQ1fnNAj1rBtjk3rabAXtrQ=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=KBjb4e7NGGlHi/FYiPsjftrv67LhziiNGr406pVO2qowfQawMfquHiUsuLZ6aLQAE
-         Wr7ABnywBQSZs2mTvOWIMy8Ce+pRDqsMmRc57ZWdQoa/LGJk5Vkvr9om5Y8A+OhpEB
-         kYUAQHLklD+2riV27YX4cn/+yp+trWeGJqhct13aZTu83KLZx9WkGkAjAcTfoQetXs
-         vONkgKLC/NsEjyW1ub0oQ1f8IvKF/1Zqce7NgFcqSfO3O9L+DZpMd8B4rbsSUKfhOa
-         EuPsYNudnYdm7BMfgRGj6Kt06vNzBCSGY9vhQ0e/ddUH9ohQWTJXnK4PSOu54ixmKe
-         Q3S9dLO37Mo+Q==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B60cbe44d0001>; Fri, 18 Jun 2021 12:09:49 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
- (TLS) id 15.0.1497.18; Fri, 18 Jun 2021 12:09:49 +1200
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.018; Fri, 18 Jun 2021 12:09:49 +1200
-From:   Callum Sinclair <Callum.Sinclair@alliedtelesis.co.nz>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "dsahern@kernel.org" <dsahern@kernel.org>,
-        "nikolay@nvidia.com" <nikolay@nvidia.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linus.luessing@c0d3.blue" <linus.luessing@c0d3.blue>
-Subject: Re: [PATCH 1/1] net: Allow all multicast packets to be received on a
- interface.
-Thread-Topic: [PATCH 1/1] net: Allow all multicast packets to be received on a
- interface.
-Thread-Index: AQHXY15AjPZKD1gBPUW680Mm+Pg7t6sXd18AgAFtyb4=
-Date:   Fri, 18 Jun 2021 00:09:48 +0000
-Message-ID: <1623974988948.39187@alliedtelesis.co.nz>
-References: <20210617095020.28628-1-callum.sinclair@alliedtelesis.co.nz>
- <20210617095020.28628-2-callum.sinclair@alliedtelesis.co.nz>,<YMtZspsYH0wd9SVf@lunn.ch>
-In-Reply-To: <YMtZspsYH0wd9SVf@lunn.ch>
-Accept-Language: en-US, en-NZ
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S233204AbhFRANJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 20:13:09 -0400
+Received: from mail-bn8nam08on2077.outbound.protection.outlook.com ([40.107.100.77]:17690
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229848AbhFRANI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 20:13:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TRwnr70ZdsLBOJd7FZfzlm87pn/0GPANWM9bbj88ROKRiX0F0vVQo6Ja7WuY54Hrh13d8Vb0ch2i5abILM7GDgr9T5kJPQ6loQtklR/s5dqKzL96xpU8ihYUTn9Z3iG/oW6/UX0D86rfPvwaNHKS6ipbsox48J6MizESEHoG95c1RkQ1F9WCd5sBzQj/REtqoy1C6Es/FOaK9CKur9fWKknwH6Ch2yzf+DOukGvydb04P1c7DrrrKkGP+MrYEgZbjjdAvESUvNuEnUhqKYgbEwlJnm5TbUY/I7IeldSg0mMN2zO6z1VJbUdl0dx+030jCr7iaGHctQP8QesDXULTMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1NJTwr3QfULOMHB2SffB+qqbmhbkV8aHkx8RIgJWBXw=;
+ b=kAZmte2AaTMWAccywhuGUs8+B61DjdE8zaGFwnftCKBvC7vNB6YUMdnN6TZjEBvbMqETorZ8aRdFXriNb87Yo0f1KpDvq9maTfmoY2sYRDJJN24xJjVgrNDRmTZStJyDNpL16g83eq9zfTqJ+HdUWp+mswz11SOtVoNbVBmmT95WatgCk7BVgtqobc01KeouKNL8X71BCQpFFKlOZor9MMhXd5Nra6XCtiv5HrE4JG6W+dADJKoQsQFizXyUGPpN04PESl9Ewbks9NDRZgNZ6Ah+MOlHskBVXD6VCAKv5khVEmi5JHq4Vz40VGmuwVhlSuzgJV7CPNesQdNwQlnuAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1NJTwr3QfULOMHB2SffB+qqbmhbkV8aHkx8RIgJWBXw=;
+ b=o3zOvU06kt978HX9UZYsy1JX+0C4k105v4A/xrZbeTWA/bkEuErej3L3QZ+HHA6bwiod3jq2TdxuiddxAxhJZVLj2gc1D/k0xAwELkK+FS4HsNzNNbwU4sLOxXfFMVhkBBg6F6A3GAUjFl1rC8lWqv0+/+9SYYzP6NWYEhj28gP2kKyWlTR0aSHHGAm4ukgA+ciwAwv8ctHlNmM9//wE3/J9Im5saamUXKBpb6bOSmJkaOIhwbECQh4Uv8P1eKRWGxhp5p6Hk9GU/HvfAT0l7sao780vl93KI5JbNPtrqecrY+pkVUkFbzhmNpoAoV11xQlhhKwFN/tPmFEEnVFLSA==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL0PR12MB5521.namprd12.prod.outlook.com (2603:10b6:208:1c7::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16; Fri, 18 Jun
+ 2021 00:10:58 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4242.021; Fri, 18 Jun 2021
+ 00:10:58 +0000
+Date:   Thu, 17 Jun 2021 21:10:56 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Jason Wang <jasowang@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shenming Lu <lushenming@huawei.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: Plan for /dev/ioasid RFC v2
+Message-ID: <20210618001056.GB1002214@nvidia.com>
+References: <20210609184940.GH1002214@nvidia.com>
+ <20210610093842.6b9a4e5b.alex.williamson@redhat.com>
+ <20210611164529.GR1002214@nvidia.com>
+ <20210611133828.6c6e8b29.alex.williamson@redhat.com>
+ <20210612012846.GC1002214@nvidia.com>
+ <20210612105711.7ac68c83.alex.williamson@redhat.com>
+ <20210614140711.GI1002214@nvidia.com>
+ <20210614102814.43ada8df.alex.williamson@redhat.com>
+ <MWHPR11MB1886239C82D6B66A732830B88C309@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210615101215.4ba67c86.alex.williamson@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615101215.4ba67c86.alex.williamson@redhat.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: MN2PR15CA0006.namprd15.prod.outlook.com
+ (2603:10b6:208:1b4::19) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=IOh89TnG c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=8nJEP1OIZ-IA:10 a=r6YtysWOX24A:10 a=VwQbUJbxAAAA:8 a=Ikd4Dj_1AAAA:8 a=62ntRvTiAAAA:8 a=BjvkRneYAAAA:8 a=TQE1fwpsvIluFpPGKlQA:9 a=wPNLvfGTeEIA:10 a=AjGcO6oz07-iQ99wixmX:22 a=pToNdpNmrtiFLRE6bQ9Z:22 a=RwQB74oxMe2pVKaOgktC:22
-X-SEG-SpamProfiler-Score: 0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR15CA0006.namprd15.prod.outlook.com (2603:10b6:208:1b4::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19 via Frontend Transport; Fri, 18 Jun 2021 00:10:57 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lu264-008L1O-IQ; Thu, 17 Jun 2021 21:10:56 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: cad01430-a874-44df-ef50-08d931ed8c09
+X-MS-TrafficTypeDiagnostic: BL0PR12MB5521:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB552147877A13904E1D862E46C20D9@BL0PR12MB5521.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lRdqpWAsmQb3i90WvyuhuZqip61r2kTRSV3gP7rEXvb49IHXh37sIHrTPukM2WztntV8Ydry/9yxbEY6uoyap+h8CwulXq486OesWfkYtw0cDIiYIP7pczUy7o2e94JZpO3bWzxcDBvuTt4HjyXiXXwBU0ySNmCnbb1nnEx6zALgYvXn2N9x3zjR1+z1qXP176AYezdUhyWkVEyEP5/f+r5ZGn+wmkDJ8v3LuvBwswQNvq/0o0ZTPQDffKNrkWM5hoyWLcj0uDIK1LjHOIWE3oErqF+Z6tHYFNiS+WdAKPlCegqiQ5MAsKRnjx20TfyYb6e0v1XfsMJMXRwHjtojU2ERbPYj6+zGgtvicGesrzbONgq6gSKYwIP1A0Pmw48DtqG6QjT32SQELpw2xwGpIC5vKqbtGfxzD9qJbxTR3N+ZuQklFJyrk1MRPo+jntHK6oT64BFmHxPk/cy0eEV3+Z6Jdebi6J3xV1RnF9iNIuFi8jHrx2G0IGwA7aX8BI9BbAMgHccFN+9ZAoZrgm/UQTrwz/rEFeMfGz3Ztg7g3ST0hrN71bOlF8mXwoAZjbpaQ/ErjirlVDxQ5NrvO2TWWKhLBr4UWdWUB1rKfLPoH74=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(136003)(39860400002)(396003)(86362001)(426003)(7416002)(33656002)(478600001)(8676002)(66946007)(26005)(9746002)(36756003)(316002)(9786002)(66476007)(66556008)(6916009)(186003)(5660300002)(4326008)(2616005)(1076003)(83380400001)(2906002)(38100700002)(8936002)(54906003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4Cwf903D4fqkzYn6Wk3ivb5bTxk8WRHZh6l9NtPAo6V4YqXAk/+Q5FM47e8w?=
+ =?us-ascii?Q?rfVzs7agTy7g3EgePvdIvi6J4meHXSsa4GMyE4pBbYxssvIcvsBLDd9TXN9V?=
+ =?us-ascii?Q?ouoD/reU6eEbLOwFoh7mh5JovogtGPSDrv7zxEcORVlVjpovgrQhYuov0pvE?=
+ =?us-ascii?Q?1DBEPaHWxoYZEskO9E2sr2rwwZ6U96U7NNXWmaMPB/PKAxlbbTws18F2nHz1?=
+ =?us-ascii?Q?wnjfn5xnPXGMQHbkES6WUyZSGpQ7Dou3rh8MgquynnY+JrFogbqmZwcT8w8H?=
+ =?us-ascii?Q?RnOW3BKJ8p4UnJ+PwAodq29qaQTtmcZrWDGvCIoL5G4gFrQo394ILmGod3EC?=
+ =?us-ascii?Q?81J9te+hCOEzqaO2Gq7CffbELdYG2qwtFg76M3IoW6QPqJ66r5G3xTaeCSDR?=
+ =?us-ascii?Q?mvair9dfyBeWPZhFI/OuVZbm2kxQwZ9NlTtmk9s1bHGPqzmuLnvTiiISxKxE?=
+ =?us-ascii?Q?mtMtt5MBx7AYHfC5JbiLLK9pgsQNUEneseRSTZ7PkG6WYZYT9BKm1KHgaZrO?=
+ =?us-ascii?Q?VGyE7zN40wFzSvpoZIz9wccZrla78dv01jWFqYgZmurhjVNK1JHqm9yM1RsC?=
+ =?us-ascii?Q?pUk3Pl26EQ0OSNSX65yix7wD5sLY84Awq++LpusD+CZ8jciY0kb5+bBVQp9M?=
+ =?us-ascii?Q?X9FosESY8Trl08thiFnCIBFlUjV8FpuOjCgw1TGk1IIRcV6QD1nFRcOJwBQe?=
+ =?us-ascii?Q?miP1LvgE6MLKQA0HMANsdEDq3xnLdR2By4Xnp6nfYHExWhIUaqSs+fgIAo1i?=
+ =?us-ascii?Q?deTJo+PawL18Bvb0aCL2eZHv9wO+Qpc2Tpx8EYTu2z5Cf++Wel9ac1k130rg?=
+ =?us-ascii?Q?Km3sYb//jRRhNrzTuS/WJTrrCHP7eEVfY4rx5HyyMZzyq90GxzyLC5tpn2Jo?=
+ =?us-ascii?Q?XhwAe9333pIhT5QukdbKRTaI75c1ECU7c1BpCz0y9m93rn9eLh+Sum0Y8RD6?=
+ =?us-ascii?Q?5vmW+v2cFzjdZQXyM10dQll9T7V1qZ61iCmMEOJRwt4/YrcOoJDag2kJu0rl?=
+ =?us-ascii?Q?Eo+I1AQMtueHfs5cezgrkCsEVw2SaazNKgj2Ybw3Zrjl2/it05bK1i01l+o/?=
+ =?us-ascii?Q?UVQVqaqb9RuGm9e01om0HqGdWDrgIfpipVrzDsP9Yv5mR7xNjM82hQh3Kx4b?=
+ =?us-ascii?Q?IvlldBKpbAsJAFdEFH6dTQYJM3k/E6v9UwqlsE8BzrnBlOA6Oln2Wk5LDBXG?=
+ =?us-ascii?Q?L2fxVVyUEdUKN9QvN4BWNPEsLVBKB7u7BoRhU6g53IJVz50wiZoh3kubyZUG?=
+ =?us-ascii?Q?NjdvT4lm8Mg2Xo5EvsDcA3T/XTsk1+bWPcGQBCWDz7WEpCov98pV5bB3l/Hl?=
+ =?us-ascii?Q?2VnM76U+25TxOt/gWDdTARl9?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cad01430-a874-44df-ef50-08d931ed8c09
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2021 00:10:58.0826
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Y55zyGeAi/mgS1YdgC3qNgF2hKImzZ+UFizgCC/yyWET+3FYOYD8SCYA99XKyc9Z
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5521
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew=0A=
-=0A=
-> What is the big picture here? Are you trying to move the snooping=0A=
-> algorithm into user space? User space will then add/remove Multicast=0A=
-> FIB entries to the bridge to control where mulitcast frames are sent?=0A=
-=0A=
-Yes I want to run a IGMP, MLD and PIM implementation in userspace and=0A=
-just use the kernel to send multicast frames to addresses that have been=0A=
-installed into the multicast forwarding cache.=0A=
-=0A=
-> In the past i have written a multicast routing daemon. It is a similar=0A=
-> problem. You need access to all the join/leaves. But the stack does=0A=
-> provide them, if you bind to the multicast routing socket. Why not use=0A=
-> that mechanism? Look in the mrouted sources for an example.=0A=
-=0A=
-Ah I can see that I get the IGMP and MLD packets now. I was just creating=
-=0A=
-the socket as a IP socket without multicast routing. Thanks for your help.=
-=0A=
-=0A=
-Cheers=0A=
-Callum=0A=
-________________________________________=0A=
-From: Andrew Lunn <andrew@lunn.ch>=0A=
-Sent: Friday, June 18, 2021 2:18 AM=0A=
-To: Callum Sinclair=0A=
-Cc: dsahern@kernel.org; nikolay@nvidia.com; netdev@vger.kernel.org; linux-k=
-ernel@vger.kernel.org; linus.luessing@c0d3.blue=0A=
-Subject: Re: [PATCH 1/1] net: Allow all multicast packets to be received on=
- a interface.=0A=
-=0A=
-On Thu, Jun 17, 2021 at 09:50:20PM +1200, Callum Sinclair wrote:=0A=
-> To receive IGMP or MLD packets on a IP socket on any interface the=0A=
-> multicast group needs to be explicitly joined. This works well for when=
-=0A=
-> the multicast group the user is interested in is known, but does not=0A=
-> provide an easy way to snoop all packets in the http://scanmail.trustwave=
-.com/?c=3D20988&d=3DwNnL4EU-bOXOuxnfu9BLng8ncWxDIw3ACrur9S2N4w&u=3Dhttp%3a%=
-2f%2f224%2e0%2e0%2e0%2f8 or the=0A=
-> FF00::/8 range.=0A=
->=0A=
-> Define a new sysctl to allow a given interface to become a IGMP or MLD=0A=
-> snooper. When set the interface will allow any IGMP or MLD packet to be=
-=0A=
-> received on sockets bound to these devices.=0A=
-=0A=
-Hi Callum=0A=
-=0A=
-What is the big picture here? Are you trying to move the snooping=0A=
-algorithm into user space? User space will then add/remove Multicast=0A=
-FIB entries to the bridge to control where mulitcast frames are sent?=0A=
-=0A=
-In the past i have written a multicast routing daemon. It is a similar=0A=
-problem. You need access to all the join/leaves. But the stack does=0A=
-provide them, if you bind to the multicast routing socket. Why not use=0A=
-that mechanism? Look in the mrouted sources for an example.=0A=
-=0A=
-     Andrew=0A=
+On Tue, Jun 15, 2021 at 10:12:15AM -0600, Alex Williamson wrote:
+> 
+> 1) A dual-function PCIe e1000e NIC where the functions are grouped
+>    together due to ACS isolation issues.
+> 
+>    a) Initial state: functions 0 & 1 are both bound to e1000e driver.
+> 
+>    b) Admin uses driverctl to bind function 1 to vfio-pci, creating
+>       vfio device file, which is chmod'd to grant to a user.
+> 
+>    c) User opens vfio function 1 device file and an iommu_fd, binds
+>    device_fd to iommu_fd.
+> 
+>    Does this succeed?
+>      - if no, specifically where does it fail?
+
+No, the e1000e driver is still connected to the device.
+
+It fails during the VFIO_BIND_IOASID_FD call because the iommu common
+code checks the group membership for consistency.
+
+We detect it basically the same way things work today, just moved to
+the iommu code.
+
+>    d) Repeat b) for function 0.
+>    e) Repeat c), still using function 1, is it different?  Where?  Why?
+
+Succeeds because all group device members are now bound to vfio
+
+It is hard to predict the nicest way to do all of this, but I would
+start by imagining that iommu_fd using drivers (like vfio) will call
+some kind of iommu_fd_allow_dma_blocking() call during their probe()
+which organizes the machinery to drive this.
+
+> 2) The same NIC as 1)
+> 
+>    a) Initial state: functions 0 & 1 bound to vfio-pci, vfio device
+>       files granted to user, user has bound both device_fds to the same
+>       iommu_fd.
+> 
+>    AIUI, even though not bound to an IOASID, vfio can now enable access
+>    through the device_fds, right?
+
+Yes
+
+>    What specific entity has placed these
+>    devices into a block DMA state, when, and how?
+
+To keep all the semantics the same it must be done as part of
+VFIO_BIND_IOASID_FD. 
+
+This will have to go over every device in the group and put it in the
+dma blocked state. Riffing on the above this is possible if there is
+no attached device driver, or the device driver that is attached has
+called iommu_fd_allow_dma_blocking() during its probe()
+
+I haven't gone through all of Kevins notes about how this could be
+sorted out directly in the iomumu code though..
+
+>    b) Both devices are attached to the same IOASID.
+>
+>    Are we assuming that each device was atomically moved to the new
+>    IOMMU context by the IOASID code?  What if the IOMMU cannot change
+>    the domain atomically?
+
+What does "atomically" mean here? I assume all IOMMU HW can
+change IOASIDs without accidentally leaking traffic
+through.
+
+Otherwise that is a major design restriction..
+
+> c) The device_fd for function 1 is detached from the IOASID.
+> 
+>    Are we assuming the reverse of b) performed by the IOASID code?
+
+Yes, the IOMMU will change from the active IOASID to the "block DMA"
+ioasid in a way that is secure.
+
+>    d) The device_fd for function 1 is unbound from the iommu_fd.
+> 
+>    Does this succeed?
+
+Yes
+
+>      - if yes, what is the resulting IOMMU context of the device and
+>        who owns it?
+
+device_fd for function 1 remains set to the "block DMA"
+ioasid.
+
+Attempting to attach a kernel driver triggers bug_on as today
+
+Attempting to open it again and use it with a different iommu_fd fails
+
+>    e) Function 1 is unbound from vfio-pci.
+> 
+>    Does this work or is it blocked?  If blocked, by what entity
+>    specifically?
+
+As today, it is allowed. The IOASID would have to remain at the "block
+all dma" until the implicit connection to the group in the iommu_fd is
+released.
+
+>    f) Function 1 is bound to e1000e driver.
+
+As today bug_on is triggered via the same maze of notifiers (gross,
+but where we are for now). The notifiers would be done by the iommu_fd
+instead of vfio
+
+> 3) A dual-function conventional PCI e1000 NIC where the functions are
+>    grouped together due to shared RID.
+
+This operates effectively the same as today. Manipulating a device
+implicitly manipulates the group. Instead of doing dma block the
+devices track the IOASID the group is using. 
+
+We model it by demanding that all devices attach to the same IOASID
+and instead of doing the DMA block step the device remains attached to
+the group's IOASID.  Today this is such an uncommon configuration (a
+PCI bridge!) we shouldn't design the entire API around it.
+
+> If vfio gets to offload all of it's group management to IOASID code,
+> that's great, but I'm afraid that IOASID is so focused on a
+> device-level API that we're instead just ignoring the group dynamics
+> and vfio will be forced to provide oversight to maintain secure
+> userspace access.
+
+I think it would be a major design failure if VFIO is required to
+provide additional security on top of the iommu code. This is
+basically the refactoring excercise - to move the VFIO code that is
+only about iommu concerns to the iommu layer and VFIO becomes thinner.
+
+Otherwise we still can't properly share this code - why should VDPA
+and VFIO have different isolation models? Is it just because we expect
+that everything except VFIO has 1:1 groups or not group at all? Feels
+wonky.
+
+Jason
