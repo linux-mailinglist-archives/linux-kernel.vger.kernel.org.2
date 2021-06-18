@@ -2,101 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165453AD030
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CAC23AD031
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:15:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235831AbhFRQRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 12:17:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235837AbhFRQRD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 12:17:03 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F12C0617AF;
-        Fri, 18 Jun 2021 09:14:52 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id d2so14744155ljj.11;
-        Fri, 18 Jun 2021 09:14:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pmmBYlRHWMosP77C0Ii9Ste9VmkpwQxWPopXChKoX8U=;
-        b=MiWyikh06egv+CM+dP0DpbAtt8nVnjcXBSwZfudsgaHkFKpVWZdO1XgMC8Vfqv87yF
-         kXEDIHkcjUwTI3NI9TFzFxLPuqWp0a0Zizi60a09ip1Fse/VqAclrZd685Gtc+gFfEMh
-         gd8XYo8ZB+Wq7C4e1mB0k53cCnvLWXZHV/hTYCuhPj+j674yehtwuJah9zH3TYCqY/21
-         jMDkvaf6/wOEd+3cFQRNJsTDAXgeg++xj+y6mj+uzQwo0UttB/pAaStzyqKAgWHYcLHu
-         hZp1buRIco2EGghQKo4zLSdT4HQhOVOxrbCgqGkZ9pcVs6sBUZbQVSlQ0Ys8t5paX6tb
-         JvdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pmmBYlRHWMosP77C0Ii9Ste9VmkpwQxWPopXChKoX8U=;
-        b=poCW0ESlWt7tdrWLKmf2rvlExD7SlWa02po/Qi8kXQXzWM7lHjvXj02KaP3qrSD45M
-         ozSK8SfiFCyJ3dOyhErroT9Z3ZKNQWuHdU5JqET63aqMuvmxEObbNCGuyhtUESEz8P4a
-         Uwm2IVMSXeJDAfsnkeoYXGq7yQzVfGBxaYiiWQVYw9MziABOO0Q4PawHZinG0d8yHa25
-         nuPwPAq3G7xnwnn9HJ1v8V9LuN4BFLAG/bUdanlKgBVQlwK9thAhDIYSuBJcpiAs9sdQ
-         jkJb367HEAn34NEi4erOMPDDrqWjQOfm/jkQdWyvdgjobVKj4Vf9SPvrYERmaH0vzVLF
-         Nhdg==
-X-Gm-Message-State: AOAM532Gmq55VOITAND5yekRpe0HEKFs/fQUikSzth/h57Tpf5uG7WI3
-        PP4YfgnH26a7j5g0R/uBo2k=
-X-Google-Smtp-Source: ABdhPJxfdpCMQB64fi+Tq38fP/1PEKy84mwF7jCmbBdPM+AUz90aStt4Wp6ix1eYPrqW3yEixSjXqg==
-X-Received: by 2002:a05:651c:201d:: with SMTP id s29mr10262196ljo.258.1624032890195;
-        Fri, 18 Jun 2021 09:14:50 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.229.24])
-        by smtp.gmail.com with ESMTPSA id h19sm951025lfc.225.2021.06.18.09.14.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 09:14:49 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
-        michael@walle.cc, abrodkin@synopsys.com, talz@ezchip.com,
-        noamc@ezchip.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH 3/3] net: ethernet: ezchip: fix error handling
-Date:   Fri, 18 Jun 2021 19:14:47 +0300
-Message-Id: <422b1921ce3ff8f29da93d9a2c99e1d34cf66c77.1624032669.git.paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1624032669.git.paskripkin@gmail.com>
-References: <cover.1624032669.git.paskripkin@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S234021AbhFRQRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 12:17:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42604 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235866AbhFRQR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 12:17:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F4E561164;
+        Fri, 18 Jun 2021 16:15:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624032919;
+        bh=8qEH77Y0Qf30/JIPXOCXqB6LDvWgELe4XZuXXAGh9wE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Ae15oKi+Z8TrdXO23sUZFDCesgwuN+90p290VWV4DFd3RgEKqrHJ4Me1LDyo+7NHv
+         IIaPhx3CCFWNWmrjEehfCXCcIvwIFNgOH+C4KmYckEgWhwFcmABImVTU13Auba+UxX
+         NT0Cxh/K62pK54ctkCMyLEO2sD0IaGo+D0+Wa+NKhpUFNN2Rtvr2E+D3DzCB1/Xc3R
+         9wfR/dXdtfZqEEJ6qIWzHJ4YLG63+Wj8IAt1bjPoCOHaxqEzwpUc++aZ+hZjhh5U/r
+         OSf0wYiCTP1qk0l6jxzi/r0z/7vUGA6rUNAaN36rJntTMtHahJX1qwJONaPJSeYJJs
+         VclI7DLoci0zA==
+Date:   Sat, 19 Jun 2021 01:15:16 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] kprobes: Print an error if probe is rejected
+Message-Id: <20210619011516.dadbd24e27996bae62fd288f@kernel.org>
+In-Reply-To: <1623684632.0k2j6ky7k3.naveen@linux.ibm.com>
+References: <20210610085617.1590138-1-naveen.n.rao@linux.vnet.ibm.com>
+        <20210610191643.d24e7d56d102567070fe8386@kernel.org>
+        <1623419180.o4u5xf72jm.naveen@linux.ibm.com>
+        <20210611154021.008537b0@gandalf.local.home>
+        <1623684632.0k2j6ky7k3.naveen@linux.ibm.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As documented at drivers/base/platform.c for platform_get_irq:
+Hi Naveen,
 
- * Gets an IRQ for a platform device and prints an error message if finding the
- * IRQ fails. Device drivers should check the return value for errors so as to
- * not pass a negative integer value to the request_irq() APIs.
+On Mon, 14 Jun 2021 21:00:52 +0530
+"Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
 
-So, the driver should check that platform_get_irq() return value
-is _negative_, not that it's equal to zero, because -ENXIO (return
-value from request_irq() if irq was not found) will
-pass this check and it leads to passing negative irq to request_irq()
+> Steven Rostedt wrote:
+> > On Fri, 11 Jun 2021 19:25:38 +0530
+> > "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
+> > 
+> >> We also have perf_event_open() as an interface to add probes, and I 
+> >> don't think it would be helpful to require all tools to utilize the 
+> >> error log from tracefs for this purpose.
+> > 
+> > The there should be a perf interface to read the errors. I agree with
+> > Masami. Let's not have console logs for probe errors.
+> 
+> Ok, understood.
 
-Fixes: 0dd077093636 ("NET: Add ezchip ethernet driver")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- drivers/net/ethernet/ezchip/nps_enet.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Will you update this?
 
-diff --git a/drivers/net/ethernet/ezchip/nps_enet.c b/drivers/net/ethernet/ezchip/nps_enet.c
-index c562a1e83913..f9a288a6ec8c 100644
---- a/drivers/net/ethernet/ezchip/nps_enet.c
-+++ b/drivers/net/ethernet/ezchip/nps_enet.c
-@@ -607,7 +607,7 @@ static s32 nps_enet_probe(struct platform_device *pdev)
- 
- 	/* Get IRQ number */
- 	priv->irq = platform_get_irq(pdev, 0);
--	if (!priv->irq) {
-+	if (priv->irq < 0) {
- 		dev_err(dev, "failed to retrieve <irq Rx-Tx> value from device tree\n");
- 		err = -ENODEV;
- 		goto out_netdev;
+Thank you,
+
+> 
+> 
+> Thanks,
+> Naveen
+> 
+
+
 -- 
-2.32.0
-
+Masami Hiramatsu <mhiramat@kernel.org>
