@@ -2,124 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F103AD25B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877543AD25D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:50:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235337AbhFRSth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 14:49:37 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:37419 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhFRStb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 14:49:31 -0400
-Received: by mail-io1-f71.google.com with SMTP id l8-20020a6b70080000b02904d98e22b01eso4756761ioc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 11:47:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=yFmUr511A7Swb4Gxe5jCJZh8Muw3dGq5OHPJy+nSss8=;
-        b=Q+IHw17b4Ox0xxj6Pk+2wkmMcU//Qa0SeRKQz2jL4Xa5KzrlfbayALBBymaAcXsDAM
-         4ohprRxVe9of71JaFFXta4hyS1t4e+T3ucJFR7RH3dm2HA2a9frG1C6+licOAlAYL2O7
-         e/tjHTPT6hj/PrF7RvalY79Vo0hUSdn1QHge60THiemLgDvTCHdLhrP1NqugrHhiK+tY
-         1bW++o+3KGZEaNUYWc1ElU+wGBcV4Or8TynVAMXCDcPGJ3K50taeq8a91+H91GKU1/Ct
-         DBrmvygkNacOxTx4xxl+6Zjn1ukbFQxJmeCWZk1GTRDUfyCQCV/tUHukg+dlDoJbNuaf
-         UktQ==
-X-Gm-Message-State: AOAM531uUpXkR8LkabGBpOQISOM4jogUUmk5GuFR1/flr9sfhizMySrU
-        T0jG3yRE4RBU7Gy2ZQZ+/PSv/9eRgtmMRTdm3xOKs6DO75Fc
-X-Google-Smtp-Source: ABdhPJwB4cHi0OxmyC3Qlyj9PLpMmAuCPJttgR0q6uqbZA7gosfeKOpPfW+/NwWtQ0MRa6eRHauWYl5W3nBXZjgPvDGLRcquYt97
+        id S235390AbhFRSwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 14:52:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56646 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229591AbhFRSwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 14:52:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8FC4D613E9;
+        Fri, 18 Jun 2021 18:50:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624042207;
+        bh=xwJrzaiVjJUsX2kGV3cg9XlnlhVQDpsGA6ECu0DhPZY=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=GDcwcT2P6QGGesY+VU1j0QUvzWefpmnKwYUzYn0X2rDiuX5lFiInaWU6vYY/cmORQ
+         eRVYb7RCRuJ30OxQ6f1axAWi3X6U17vq/0bPvx1+4hYMbHQLVn2IAgNk/tN8RgvLSr
+         lrJJ5M9dr0cC42wodpBBfolrRUK5GBxCakh8xga8RNOk36KQ/JweG0SqZ4aHbVIh6f
+         AqpNjKvfdkHxLVbZwnwUH96cKwbO1WNIw7NBVZgajIZhDplVjkxato8RlAEmCObFAT
+         3+YxPvTrjpj+dP2w4WZ2Zu+m/K0AFl++yqnBGuXC/Nhf3TRnt6sI3bxNeGlyNQiELb
+         kAylJUkbij6bw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 838BF60C29;
+        Fri, 18 Jun 2021 18:50:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-Received: by 2002:a5e:d616:: with SMTP id w22mr9173574iom.75.1624042041657;
- Fri, 18 Jun 2021 11:47:21 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 11:47:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fe4d2805c50ec062@google.com>
-Subject: [syzbot] WARNING in send_hsr_supervision_frame (2)
-From:   syzbot <syzbot+4d244034ec23341ac562@syzkaller.appspotmail.com>
-To:     ap420073@gmail.com, davem@davemloft.net,
-        george.mccollister@gmail.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, m-karicheri2@ti.com,
-        netdev@vger.kernel.org, olteanv@gmail.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH V2 net-next 0/7] net: hostess_sv11: clean up some code style
+ issues
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162404220753.29148.4485679312661505691.git-patchwork-notify@kernel.org>
+Date:   Fri, 18 Jun 2021 18:50:07 +0000
+References: <1623983544-39879-1-git-send-email-lipeng321@huawei.com>
+In-Reply-To: <1623983544-39879-1-git-send-email-lipeng321@huawei.com>
+To:     Peng Li <lipeng321@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, xie.he.0141@gmail.com,
+        ms@dev.tdt.de, willemb@google.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, huangguangbin2@huawei.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hello:
 
-syzbot found the following issue on:
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-HEAD commit:    009c9aa5 Linux 5.13-rc6
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14a01a6fd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5c800d14ba1dd912
-dashboard link: https://syzkaller.appspot.com/bug?extid=4d244034ec23341ac562
+On Fri, 18 Jun 2021 10:32:17 +0800 you wrote:
+> This patchset clean up some code style issues.
+> 
+> ---
+> Change Log：
+> V1 -> V2:
+> 1. Add patch "[patch 5/7] net: hostess_sv11: remove dead code"
+> suggested by Andrew Lunn.
+> 
+> [...]
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Here is the summary with links:
+  - [V2,net-next,1/7] net: hostess_sv11: fix the code style issue about "foo* bar"
+    https://git.kernel.org/netdev/net-next/c/fefed8af5ed4
+  - [V2,net-next,2/7] net: hostess_sv11: move out assignment in if condition
+    https://git.kernel.org/netdev/net-next/c/fe9be8daef8a
+  - [V2,net-next,3/7] net: hostess_sv11: remove trailing whitespace
+    https://git.kernel.org/netdev/net-next/c/534f76d46245
+  - [V2,net-next,4/7] net: hostess_sv11: fix the code style issue about switch and case
+    https://git.kernel.org/netdev/net-next/c/9562aef3c0c3
+  - [V2,net-next,5/7] net: hostess_sv11: remove dead code
+    https://git.kernel.org/netdev/net-next/c/d25a944693c7
+  - [V2,net-next,6/7] net: hostess_sv11: fix the comments style issue
+    https://git.kernel.org/netdev/net-next/c/67c1876897da
+  - [V2,net-next,7/7] net: hostess_sv11: fix the alignment issue
+    https://git.kernel.org/netdev/net-next/c/7d40bfc1933e
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4d244034ec23341ac562@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-HSR: Could not send supervision frame
-WARNING: CPU: 0 PID: 2130 at net/hsr/hsr_device.c:293 send_hsr_supervision_frame+0x66d/0x8d0 net/hsr/hsr_device.c:293
-Modules linked in:
-CPU: 0 PID: 2130 Comm: kswapd0 Not tainted 5.13.0-rc6-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:send_hsr_supervision_frame+0x66d/0x8d0 net/hsr/hsr_device.c:293
-Code: 1d 5d eb eb 04 31 ff 89 de e8 7f 21 ab f8 84 db 75 b6 e8 66 19 ab f8 48 c7 c7 80 df 91 8a c6 05 3d eb eb 04 01 e8 78 22 0c 00 <0f> 0b eb 9a e8 4a 19 ab f8 41 be 3c 00 00 00 ba 01 00 00 00 4c 89
-RSP: 0018:ffffc90000007c60 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: ffff88801cc0c000 RSI: ffffffff815c1755 RDI: fffff52000000f7e
-RBP: ffff88807591ac00 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815bb58e R11: 0000000000000000 R12: ffff88802a74a700
-R13: 0000000000000000 R14: ffff88802a74a718 R15: 0000000000000017
-FS:  0000000000000000(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f2138902303 CR3: 0000000014fd0000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <IRQ>
- hsr_announce+0x122/0x320 net/hsr/hsr_device.c:382
- call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1431
- expire_timers kernel/time/timer.c:1476 [inline]
- __run_timers.part.0+0x67c/0xa50 kernel/time/timer.c:1745
- __run_timers kernel/time/timer.c:1726 [inline]
- run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1758
- __do_softirq+0x29b/0x9f6 kernel/softirq.c:559
- invoke_softirq kernel/softirq.c:433 [inline]
- __irq_exit_rcu+0x136/0x200 kernel/softirq.c:637
- irq_exit_rcu+0x5/0x20 kernel/softirq.c:649
- sysvec_apic_timer_interrupt+0x93/0xc0 arch/x86/kernel/apic/apic.c:1100
- </IRQ>
- asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:647
-RIP: 0010:free_unref_page_list+0x4ec/0x7c0 mm/page_alloc.c:3342
-Code: ff ff e8 f6 d0 50 ff e9 b4 fe ff ff 48 85 d2 0f 85 95 00 00 00 9c 58 f6 c4 02 0f 85 e6 00 00 00 48 85 d2 74 01 fb 48 83 c4 20 <5b> 5d 41 5c 41 5d 41 5e 41 5f c3 48 89 14 24 e8 70 ac ca ff 48 8b
-RSP: 0018:ffffc90007f17500 EFLAGS: 00000286
-RAX: 0000000000000002 RBX: ffffc90007f17658 RCX: 1ffffffff2046962
-RDX: 0000000000000200 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc90007f17660 R08: 0000000000000001 R09: ffffffff9022c8b7
-R10: 0000000000000001 R11: 0000000000000000 R12: ffffc90007f17658
-R13: ffffc90007f17660 R14: ffffea0001e93448 R15: ffffc90007f17660
- shrink_page_list+0x14ce/0x6060 mm/vmscan.c:1684
- shrink_inactive_list+0x347/0xca0 mm/vmscan.c:2145
- shrink_list mm/vmscan.c:2367 [inline]
- shrink_lruvec+0x7f9/0x14f0 mm/vmscan.c:2662
- shrink_node_memcgs mm/vmscan.c:2850 [inline]
- shrink_node+0x868/0x1de0 mm/vmscan.c:2967
- kswapd_shrink_node mm/vmscan.c:3710 [inline]
- balance_pgdat+0x745/0x1270 mm/vmscan.c:3868
- kswapd+0x5b6/0xdb0 mm/vmscan.c:4125
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
