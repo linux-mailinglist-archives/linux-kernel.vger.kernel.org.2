@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7493ACE82
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47AFB3ACE84
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:19:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234920AbhFRPVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:21:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56836 "EHLO
+        id S234949AbhFRPVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:21:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233119AbhFRPVb (ORCPT
+        with ESMTP id S234864AbhFRPVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:21:31 -0400
+        Fri, 18 Jun 2021 11:21:32 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EBCAC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 08:19:21 -0700 (PDT)
-Message-Id: <20210618143444.438635017@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40C7C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 08:19:22 -0700 (PDT)
+Message-Id: <20210618143444.587311343@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624029560;
+        s=2020; t=1624029561;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=NV3dF4mvbZ3pyRCUcLgbs+oTmEaMPjaISeC3pG6mczo=;
-        b=kPSezow3dDo175GUjH1nvJrFASaKf6QtTjosiGFFds6amdKl7Wo3Bg+H4VyYTk7CZ8/uOV
-        SDc6U6IxrCc4IFNVmFUs8r+8hfMjK2mDEHy8fsIZ50NRZCQcWurhokMZKkntdLXU5IgMdl
-        KN9GaO9upOMk/D98hzE9OaY1tfxgl6/iO4GfA/xKICLRaywwxmfVsL02/Df6gl7XtdTqWV
-        TmQxNORUH8M0cpgM+aBofMqSxyJe0Y6OYKyH7D+aQHfVv35Yk9G7yPMx3XY0M7A028+CAP
-        UnAnws3XzEPBD8kCo2r8rG/dGW/nHVYmxiHkDaa31cby1JivlMD2V8t7MBtBJw==
+        bh=OD/z3wX4ALGeihHhAG6Pg3Bk6AXkzsiS2mo6ri4GS88=;
+        b=i9x03/MB5W7cS6dqyerNM+q0eTgsiGA9HMVtRRWNfnboSeF4m3DQbPdk/vyj4z2ON8+qUS
+        C15IHqbWt6aH9zuu/op5zUBgqsg6qJTp3+7BVjQ4uUl2ZyqpH0QMApDSF9P+/dTHM/Bzhd
+        bOQ9yeMrGwJzVH8Pfam7Spz6o/IU7v8nRi/s6zoKugo//FQME4mClWh51WNKu6KMqGltvx
+        KKLH3alOqyTLVUk497oHc458IwW7AWXlp5DaEezm5ujgU2eo9pYKXeakw+pGh4CFrxebZs
+        V38sHF4SOo96coGCWZWs+7bkp7gH5hWATBh/WwkJoq/4eb4R9Lzdc7e8u7IJdw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624029560;
+        s=2020e; t=1624029561;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=NV3dF4mvbZ3pyRCUcLgbs+oTmEaMPjaISeC3pG6mczo=;
-        b=z2BMhRIMzi8wIKfR/WOdi5nzxgs6CfGYxoZiFhNtW/eUE2e7Crxovc3k0rIa9athKEyPDo
-        sgYK4C53eh36s4Aw==
-Date:   Fri, 18 Jun 2021 16:18:24 +0200
+        bh=OD/z3wX4ALGeihHhAG6Pg3Bk6AXkzsiS2mo6ri4GS88=;
+        b=GHbwi/XKbeOBLjoq6jwcybWLZ9wv+ximRB9o+MW6WFvIL3FJvpv/6r7jP6vJsj2cqAFjCK
+        CIB+dgzXZsB5HFCw==
+Date:   Fri, 18 Jun 2021 16:18:25 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -47,8 +47,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V3 01/66] x86/fpu: x86/fpu: Preserve supervisor states in
- sanitize_restored_user_xstate()
+Subject: [patch V3 02/66] x86/fpu: Make init_fpstate correct with optimized XSAVE
 References: <20210618141823.161158090@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -57,58 +56,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+The XSAVE init code initializes all enabled and supported components with
+XRSTOR(S) to init state. Then it XSAVEs the state of the components back
+into init_fpstate which is used in several places to fill in the init state
+of components.
 
-sanitize_restored_user_xstate() preserves the supervisor states only
-when the fx_only argument is zero, which allows unpriviledged user space
-to put supervisor states back into init state.
+This works correctly with XSAVE, but not with XSAVEOPT and XSAVES because
+those use the init optimization and skip writing state of components which
+are in init state. So init_fpstate.xsave still contains all zeroes after
+this operation.
 
-Preserve them unconditionally.
+There are two ways to solve that:
 
-Fixes: 5d6b6a6f9b5c ("x86/fpu/xstate: Update sanitize_restored_xstate() for supervisor xstates")
+   1) Use XSAVE unconditionally, but that requires to reshuffle the buffer when
+      XSAVES is enabled because XSAVES uses compacted format.
+
+   2) Save the components which are known to have a non-zero init state by other
+      means.
+
+Looking deeper #2 is the right thing to do because all components the
+kernel supports have all-zeroes init state except the legacy features (FP,
+SSE). Those cannot be hard coded because the states are not identical on all
+CPUs, but they can be saved with FXSAVE which avoids all conditionals.
+
+Use FXSAVE to save the legacy FP/SSE components in init_fpstate along with
+a BUILD_BUG_ON() which reminds developers to validate that a newly added
+component has all zeroes init state. As a bonus remove the now unused
+copy_xregs_to_kernel_booting() crutch.
+
+The XSAVE and reshuffle method can still be implemented in the unlikely
+case that components are added which have a non-zero init state and no
+other means to save them. For now FXSAVE is just simple and good enough.
+
+Fixes: 6bad06b76892 ("x86, xsave: Use xsaveopt in context-switch path when supported")
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
 Cc: stable@vger.kernel.org
 ---
- arch/x86/kernel/fpu/signal.c |   26 ++++++++------------------
- 1 file changed, 8 insertions(+), 18 deletions(-)
+V3: Adjust comment - Boris
+V2: New patch
+---
+ arch/x86/include/asm/fpu/internal.h |   30 +++++++-------------------
+ arch/x86/kernel/fpu/xstate.c        |   41 +++++++++++++++++++++++++++++++++---
+ 2 files changed, 46 insertions(+), 25 deletions(-)
 
---- a/arch/x86/kernel/fpu/signal.c
-+++ b/arch/x86/kernel/fpu/signal.c
-@@ -221,28 +221,18 @@ sanitize_restored_user_xstate(union fpre
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -204,6 +204,14 @@ static inline void copy_fxregs_to_kernel
+ 		asm volatile("fxsaveq %[fx]" : [fx] "=m" (fpu->state.fxsave));
+ }
  
- 	if (use_xsave()) {
- 		/*
--		 * Note: we don't need to zero the reserved bits in the
--		 * xstate_header here because we either didn't copy them at all,
--		 * or we checked earlier that they aren't set.
-+		 * Clear all features bit which are not set in
-+		 * user_xfeatures and clear all extended features
-+		 * for fx_only mode.
- 		 */
-+		u64 mask = fx_only ? XFEATURE_MASK_FPSSE : user_xfeatures;
++static inline void fxsave(struct fxregs_state *fx)
++{
++	if (IS_ENABLED(CONFIG_X86_32))
++		asm volatile( "fxsave %[fx]" : [fx] "=m" (*fx));
++	else
++		asm volatile("fxsaveq %[fx]" : [fx] "=m" (*fx));
++}
++
+ /* These macros all use (%edi)/(%rdi) as the single memory argument. */
+ #define XSAVE		".byte " REX_PREFIX "0x0f,0xae,0x27"
+ #define XSAVEOPT	".byte " REX_PREFIX "0x0f,0xae,0x37"
+@@ -270,28 +278,6 @@ static inline void copy_fxregs_to_kernel
  
- 		/*
--		 * 'user_xfeatures' might have bits clear which are
--		 * set in header->xfeatures. This represents features that
--		 * were in init state prior to a signal delivery, and need
--		 * to be reset back to the init state.  Clear any user
--		 * feature bits which are set in the kernel buffer to get
--		 * them back to the init state.
--		 *
--		 * Supervisor state is unchanged by input from userspace.
--		 * Ensure supervisor state bits stay set and supervisor
--		 * state is not modified.
-+		 * Supervisor state has to be preserved. The sigframe
-+		 * restore can only modify user features, i.e. @mask
-+		 * cannot contain them.
- 		 */
--		if (fx_only)
--			header->xfeatures = XFEATURE_MASK_FPSSE;
--		else
--			header->xfeatures &= user_xfeatures |
--					     xfeatures_mask_supervisor();
-+		header->xfeatures &= mask | xfeatures_mask_supervisor();
- 	}
+ /*
+  * This function is called only during boot time when x86 caps are not set
+- * up and alternative can not be used yet.
+- */
+-static inline void copy_xregs_to_kernel_booting(struct xregs_state *xstate)
+-{
+-	u64 mask = xfeatures_mask_all;
+-	u32 lmask = mask;
+-	u32 hmask = mask >> 32;
+-	int err;
+-
+-	WARN_ON(system_state != SYSTEM_BOOTING);
+-
+-	if (boot_cpu_has(X86_FEATURE_XSAVES))
+-		XSTATE_OP(XSAVES, xstate, lmask, hmask, err);
+-	else
+-		XSTATE_OP(XSAVE, xstate, lmask, hmask, err);
+-
+-	/* We should never fault when copying to a kernel buffer: */
+-	WARN_ON_FPU(err);
+-}
+-
+-/*
+- * This function is called only during boot time when x86 caps are not set
+  * up and alternative can not be used yet.
+  */
+ static inline void copy_kernel_to_xregs_booting(struct xregs_state *xstate)
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -441,12 +441,35 @@ static void __init print_xstate_offset_s
+ }
  
- 	if (use_fxsr()) {
+ /*
++ * All supported features have either init state all zeros or are
++ * handled in setup_init_fpu() individually. This is an explicit
++ * feature list and does not use XFEATURE_MASK*SUPPORTED to catch
++ * newly added supported features at build time and make people
++ * actually look at the init state for the new feature.
++ */
++#define XFEATURES_INIT_FPSTATE_HANDLED		\
++	(XFEATURE_MASK_FP |			\
++	 XFEATURE_MASK_SSE |			\
++	 XFEATURE_MASK_YMM |			\
++	 XFEATURE_MASK_OPMASK |			\
++	 XFEATURE_MASK_ZMM_Hi256 |		\
++	 XFEATURE_MASK_Hi16_ZMM	 |		\
++	 XFEATURE_MASK_PKRU |			\
++	 XFEATURE_MASK_BNDREGS |		\
++	 XFEATURE_MASK_BNDCSR |			\
++	 XFEATURE_MASK_PASID)
++
++/*
+  * setup the xstate image representing the init state
+  */
+ static void __init setup_init_fpu_buf(void)
+ {
+ 	static int on_boot_cpu __initdata = 1;
+ 
++	BUILD_BUG_ON((XFEATURE_MASK_USER_SUPPORTED |
++		      XFEATURE_MASK_SUPERVISOR_SUPPORTED) !=
++		     XFEATURES_INIT_FPSTATE_HANDLED);
++
+ 	WARN_ON_FPU(!on_boot_cpu);
+ 	on_boot_cpu = 0;
+ 
+@@ -466,10 +489,22 @@ static void __init setup_init_fpu_buf(vo
+ 	copy_kernel_to_xregs_booting(&init_fpstate.xsave);
+ 
+ 	/*
+-	 * Dump the init state again. This is to identify the init state
+-	 * of any feature which is not represented by all zero's.
++	 * All components are now in init state. Read the state back so
++	 * that init_fpstate contains all non-zero init state. This only
++	 * workswith XSAVE, but not with XSAVEOPT and XSAVES because
++	 * those use the init optimization which skips writing data for
++	 * components in init state.
++	 *
++	 * XSAVE could be used, but that would require to reshuffle the
++	 * data when XSAVES is available because XSAVES uses xstate
++	 * compaction. But doing so is a pointless exercise because most
++	 * components have an all zeros init state except for the legacy
++	 * ones (FP and SSE). Those can be saved with FXSAVE into the
++	 * legacy area. Adding new features requires to ensure that init
++	 * state is all zeroes or if not to add the necessary handling
++	 * here.
+ 	 */
+-	copy_xregs_to_kernel_booting(&init_fpstate.xsave);
++	fxsave(&init_fpstate.fxsave);
+ }
+ 
+ static int xfeature_uncompacted_offset(int xfeature_nr)
 
