@@ -2,99 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AE273ACB07
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5233F3ACB14
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:35:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234471AbhFRMdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 08:33:49 -0400
-Received: from aposti.net ([89.234.176.197]:41166 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234529AbhFRMda (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 08:33:30 -0400
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Alexandru Ardelean <ardeleanalex@gmail.com>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH v3 2/2] iio: core: Support reading extended name as label
-Date:   Fri, 18 Jun 2021 13:30:05 +0100
-Message-Id: <20210618123005.49867-3-paul@crapouillou.net>
-In-Reply-To: <20210618123005.49867-1-paul@crapouillou.net>
-References: <20210618123005.49867-1-paul@crapouillou.net>
+        id S231919AbhFRMh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 08:37:27 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:8278 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230402AbhFRMh0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 08:37:26 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G5ytV5r8dz1BNvZ;
+        Fri, 18 Jun 2021 20:30:10 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 18 Jun 2021 20:35:14 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 18 Jun 2021 20:35:14 +0800
+Subject: Re: [PATCH -next] mtd: rawnand: arasan: Fix missing
+ clk_disable_unprepare() on error in anfc_probe()
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+CC:     <nagasure@xilinx.com>, <richard@nod.at>, <vigneshr@ti.com>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <1623816404-66213-1-git-send-email-zou_wei@huawei.com>
+ <20210618092752.5f117365@xps13>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <be3b786d-dc6e-90b5-9bc6-05d078b21c40@huawei.com>
+Date:   Fri, 18 Jun 2021 20:35:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <20210618092752.5f117365@xps13>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The point of this new change is to make the IIO tree actually parsable.
 
-Before, given this attribute as a filename:
-in_voltage0_aux_sample_rate
+Hi Miquel,
 
-Userspace had no way to know if the attribute name was
-"aux_sample_rate" with no extended name, or "sample_rate" with "aux" as
-the extended name, or just "rate" with "aux_sample" as the extended
-name.
+Thanks for your review, and it's OK include the goto change.
 
-This was somewhat possible to deduce when there was more than one
-attribute present for a given channel, e.g:
-in_voltage0_aux_sample_rate
-in_voltage0_aux_frequency
-
-There, it was possible to deduce that "aux" was the extended name. But
-even with more than one attribute, this wasn't very robust, as two
-attributes starting with the same prefix (e.g. "sample_rate" and
-"sample_size") would result in the first part of the prefix being
-interpreted as being part of the extended name.
-
-To address the issue, knowing that channels will never have both a label
-and an extended name, set the channel's label to the extended name.
-In this case, the label's attribute will also have the extended name in
-its filename, but we can live with that - userspace can open
-in_voltage0_<prefix>_label and verify that it returns <prefix> to obtain
-the extended name.
-
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
-
-Notes:
-    v3: Refactor code to make it look better
-
- drivers/iio/industrialio-core.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index 81f40dab778a..a19938b0c3a6 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -717,10 +717,13 @@ static ssize_t iio_read_channel_label(struct device *dev,
- 	struct iio_dev *indio_dev = dev_to_iio_dev(dev);
- 	struct iio_dev_attr *this_attr = to_iio_dev_attr(attr);
- 
--	if (!indio_dev->info->read_label)
--		return -EINVAL;
-+	if (indio_dev->info->read_label)
-+		return indio_dev->info->read_label(indio_dev, this_attr->c, buf);
-+
-+	if (this_attr->c->extend_name)
-+		return sprintf(buf, "%s\n", this_attr->c->extend_name);
- 
--	return indio_dev->info->read_label(indio_dev, this_attr->c, buf);
-+	return -EINVAL;
- }
- 
- static ssize_t iio_read_channel_info(struct device *dev,
-@@ -1160,7 +1163,7 @@ static int iio_device_add_channel_label(struct iio_dev *indio_dev,
- 	struct iio_dev_opaque *iio_dev_opaque = to_iio_dev_opaque(indio_dev);
- 	int ret;
- 
--	if (!indio_dev->info->read_label)
-+	if (!indio_dev->info->read_label && !chan->extend_name)
- 		return 0;
- 
- 	ret = __iio_add_chan_devattr("label",
--- 
-2.30.2
-
+On 2021/6/18 15:27, Miquel Raynal wrote:
+> Hi Zou,
+> 
+> Zou Wei <zou_wei@huawei.com> wrote on Wed, 16 Jun 2021 12:06:44 +0800:
+> 
+>> Fix the missing clk_disable_unprepare() before return
+>> from anfc_probe() in the error handling case.
+>>
+>> Fixes: 61622f6791a1 ("mtd: rawnand: arasan: Use the right DMA mask")
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> 
+> Thanks for the patch, 61622f6791a1 being problematic because of the
+> mask not being correctly declared I prefer to fix this patch inline and
+> if you don't mind I'll include the goto change as well.
+> 
+>> ---
+>>   drivers/mtd/nand/raw/arasan-nand-controller.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/mtd/nand/raw/arasan-nand-controller.c b/drivers/mtd/nand/raw/arasan-nand-controller.c
+>> index 8317d97..9cbcc69 100644
+>> --- a/drivers/mtd/nand/raw/arasan-nand-controller.c
+>> +++ b/drivers/mtd/nand/raw/arasan-nand-controller.c
+>> @@ -1452,7 +1452,7 @@ static int anfc_probe(struct platform_device *pdev)
+>>   
+>>   	ret = dma_set_mask(&pdev->dev, DMA_BIT_MASK(64));
+>>   	if (ret)
+>> -		return ret;
+>> +		goto disable_bus_clk;
+>>   
+>>   	ret = anfc_parse_cs(nfc);
+>>   	if (ret)
+> 
+> Thanks,
+> Miquèl
+> .
+> 
