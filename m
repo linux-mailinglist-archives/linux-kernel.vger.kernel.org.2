@@ -2,65 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1713ACF9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F293ACFAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235660AbhFRQDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 12:03:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37868 "EHLO
+        id S232968AbhFRQFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 12:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234057AbhFRQDJ (ORCPT
+        with ESMTP id S231193AbhFRQFr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 12:03:09 -0400
+        Fri, 18 Jun 2021 12:05:47 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E11C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 09:00:59 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C897C061574;
+        Fri, 18 Jun 2021 09:03:38 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 16:03:36 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624032057;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        s=2020; t=1624032217;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WWe8aUzcnMAbXG5rd+miMyOIe41LlzQ7svV6dR727iM=;
-        b=L3qpTcO8eVQidHVoVRGeu9ezZdtAm5eBugEIGKRZOCnl3to/3c3Q0WhB985uMUV8fqhPY9
-        uyS6U/AgK3rcthop1mc249Z/JVpBDG1znD+wCnV89aM4iPnsoYczT/kbpLqdT0apaYjVp/
-        0E6XZ1sSbV5lEuBDB4h9kFbtUyQz41thlmS+h8LcnmE+jhvtBClhXFp+Q11wxBiEWCnIvt
-        RPwnzTRoRCEke7z7CbQYoK4z1nscNOMi2JA0lXZA6h/h+L28XrLg89QV0hwa06U9FTyAvu
-        fB57pJcHdX8wOoNUxazGOQpsuW+eNnmeVE+hNzzsNAGtRPnoKL/Kc+TV3rmMRQ==
+        bh=O0UO4w4rOsmiQaq+i1vnUzazgKvHygYcq5DooCqL1gY=;
+        b=Lk5WJM6XVHuEenL2LQQDy/GTNl7A7ABxfJ+Tre+2i3C6iDo7CLOZzvoahwtR3/2/0g/yRs
+        fLMh4n/Q2UPL0QGJ6rF6wNmHT7Dv1KIAIEen7GooMGMgy5Q846IXixpG/cPe0o2mLvmxnh
+        h2yjIrMl3PQIJx4TmfT7328LKhtI7ZTzY3414JQCtAEvo1cBBmCv2SVxAJem+LgY9ZUaVD
+        EVQ0rGfQCyKyRi4m+29xDkjEIpONIREetY8I1AWfXafVFADmUaH267o3dz5hDZ5/su2wOt
+        +dci7Xg6qmm9phshQGTaRan6fu9zfzGqODd+fWU8ugC4My3dYEUkYlh552YQ/A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624032057;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        s=2020e; t=1624032217;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=WWe8aUzcnMAbXG5rd+miMyOIe41LlzQ7svV6dR727iM=;
-        b=pyE2++pi/rDZohCTa16nr6r/04eg/NedLUbin8dc8fwwaSLdJTj3zSD1J0L1+AszA2AvN+
-        sa+hzU1pZ3l9qrAw==
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
-        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
-        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
-        ak@linux.intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
-        luming.yu@intel.com
-Subject: Re: [GIT PULL clocksource] Clocksource watchdog commits for v5.14
-In-Reply-To: <20210609233723.GA1717240@paulmck-ThinkPad-P17-Gen-1>
-References: <20210609233723.GA1717240@paulmck-ThinkPad-P17-Gen-1>
-Date:   Fri, 18 Jun 2021 18:00:57 +0200
-Message-ID: <87bl83f9hi.ffs@nanos.tec.linutronix.de>
+        bh=O0UO4w4rOsmiQaq+i1vnUzazgKvHygYcq5DooCqL1gY=;
+        b=UkahyCyqLAROTvFr3I8AZOLGWGcKNiOMezh09cAm/rf4pDYnc6WAtUegitmo4ovck8YBVK
+        a7ElAaWKJdtrHLCg==
+From:   "tip-bot2 for Tony Lindgren" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] clocksource/drivers/timer-ti-dm: Drop unnecessary restore
+Cc:     Lokesh Vutla <lokeshvutla@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210518075306.35532-1-tony@atomide.com>
+References: <20210518075306.35532-1-tony@atomide.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Message-ID: <162403221618.19906.4283672210096454045.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09 2021 at 16:37, Paul E. McKenney wrote:
-> This pull request contains changes to cause the clocksource watchdog to
-> reject measurement noise caused by delays between clocksource reads.
-> These have been posted a few times to LKML, most recently v15:
->
-> https://lore.kernel.org/lkml/20210527190042.GA438700@paulmck-ThinkPad-P17-Gen-1/
->
-> These have been acked by Feng Tang and reviewed by Luming Yu.  These have
-> also been subjected to subjected to the kbuild test robot and -next
-> testing, and are available in the git repository based on v5.13-rc1 at:
+The following commit has been merged into the timers/core branch of tip:
 
-I'll go through them soon. Sorry for the delay.
+Commit-ID:     3d41fff3ae3980c055f3c7861264c46c924f3e4c
+Gitweb:        https://git.kernel.org/tip/3d41fff3ae3980c055f3c7861264c46c924f3e4c
+Author:        Tony Lindgren <tony@atomide.com>
+AuthorDate:    Tue, 18 May 2021 10:53:06 +03:00
+Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
+CommitterDate: Wed, 16 Jun 2021 17:33:04 +02:00
+
+clocksource/drivers/timer-ti-dm: Drop unnecessary restore
+
+The device is not losing context on CPU_CLUSTER_PM_ERROR. As we are only
+saving and restoring context with cpu_pm, there is no need to restore the
+context in case of an error.
+
+Note that the unnecessary restoring of context does not cause issues, it's
+just not needed.
+
+Cc: Lokesh Vutla <lokeshvutla@ti.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20210518075306.35532-1-tony@atomide.com
+---
+ drivers/clocksource/timer-ti-dm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/clocksource/timer-ti-dm.c b/drivers/clocksource/timer-ti-dm.c
+index e5c631f..3e52c52 100644
+--- a/drivers/clocksource/timer-ti-dm.c
++++ b/drivers/clocksource/timer-ti-dm.c
+@@ -128,7 +128,8 @@ static int omap_timer_context_notifier(struct notifier_block *nb,
+ 			break;
+ 		omap_timer_save_context(timer);
+ 		break;
+-	case CPU_CLUSTER_PM_ENTER_FAILED:
++	case CPU_CLUSTER_PM_ENTER_FAILED:	/* No need to restore context */
++		break;
+ 	case CPU_CLUSTER_PM_EXIT:
+ 		if ((timer->capability & OMAP_TIMER_ALWON) ||
+ 		    !atomic_read(&timer->enabled))
