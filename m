@@ -2,95 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CDE93AD02A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BACDD3AD02F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235808AbhFRQQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 12:16:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41114 "EHLO
+        id S235849AbhFRQRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 12:17:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235424AbhFRQQv (ORCPT
+        with ESMTP id S235833AbhFRQRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 12:16:51 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA9EC061574;
-        Fri, 18 Jun 2021 09:14:42 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id a11so4468938lfg.11;
-        Fri, 18 Jun 2021 09:14:42 -0700 (PDT)
+        Fri, 18 Jun 2021 12:17:02 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80850C0617A8;
+        Fri, 18 Jun 2021 09:14:47 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id e22so7776034wrc.1;
+        Fri, 18 Jun 2021 09:14:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=T9okz+M2qPAYpLlhHUmFyKIgqTEHlJ9zAXaCBBl6R2o=;
-        b=X/TRDAfHqp3Emi7hNQXLhA/9qb+JxRk9Rtl2H3LK43EM2L9YfbVie+MJq+TOUGNFw6
-         gf23cC5NcQn2v2Y3OPMGQFi+XeypenTMBZOAN8fG/Tb231Hp1uq5J6/8Le0HiSF+giRa
-         bcjepACjH16YQVOqeIPEF7R5+9UAMCUa3+hKmRP5/xnzgYWUypzjoqa/+oHEM98RjHLv
-         myGRQixYozdlQjtutZBwBwX9TCYdRNRVCtKDPPELlAaAtxOBQdAPN35jaPEUQ6vx5DZ5
-         FQqiw6fVuFlHI2wCUZ867XdECszBSonAO6cfO7hDhiY4wGZsKH9PWm0hUwM39GdBNVnZ
-         2KfA==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=sJ6tmXCDWjYjTczKpyWz/c7MXBSmbvzpLSbj8oATx1Q=;
+        b=bzfqVe75gKphpiq2mBVpRUpqbWAfNiGGhYiKv5KnyMBkGwdeRYT2HRmSIgt1eazns8
+         x185YYf5Bi4dJW5Dj6VQk0m9RiQKxqNJT26JeeJqUqNxgUJ0/R7X6J3y3SAv7Beh1UaM
+         R7S3EjGfqLAqWstc2RBaKjRF666GRtuA/W6pNCvgsvP2Xm5jkKwDzbLFuGeMCUb+VB7l
+         vpN5DK9ilJs+L6uQ88Ma7RHwFd/K49zAnfdb3lIkxwp1lYG/ZeM01blEPOKkpwdtltlU
+         3UJGg9oa7dNdPa7pklG7IeZlXaUAqACPHwPbQjk51YtRynr11vB4c+b/Rw+k/ElBTp8V
+         okVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=T9okz+M2qPAYpLlhHUmFyKIgqTEHlJ9zAXaCBBl6R2o=;
-        b=IFULaHh4cs+GNUJQsiumz/UaR0Kq5xhAm3SOcbfZePZZe8cpJnTxLtCIxrirdPpIiT
-         k7AkFt1IhU4bgNUDfOALRlsSxfA6N/eZYevdfNdewCu1LQlPNQ2impzeQQQ2B6xjPZR7
-         nJoDoUHZ65bAVV54AIRD9uhCGzwA4wvmYLTeshw+lCm7yW2KOh1ouDgd66XbSGaKF4Yu
-         QjOptfHuBHdNZ3xezg7sUfHZE6lKUFF/6GKfa4KEnc3Fk8QJO6KBZMjnwxLuV17A9FI2
-         e+oTjzvzY5NliTdKqtZI9kKyzBpFf4vsmkLHxE1y6m1i8+rp3Y03gw18C8LTedVGDmXA
-         68PA==
-X-Gm-Message-State: AOAM533XnVrQ5bDJ5uyj2dpOQIhac7967logO/dY9WeZv4hmS7egGQm3
-        ZMKpYTIIIRKHho/LmzXpkk0=
-X-Google-Smtp-Source: ABdhPJxJG+NvjpvDGi1JSzcI+V468eSj7LvLu0XhxSejd6slJ6oF4AuurfyYp3vNP69765Xj7qW31Q==
-X-Received: by 2002:a05:6512:15a2:: with SMTP id bp34mr3673389lfb.40.1624032880483;
-        Fri, 18 Jun 2021 09:14:40 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.229.24])
-        by smtp.gmail.com with ESMTPSA id t1sm947623lfg.252.2021.06.18.09.14.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 09:14:40 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, andrew@lunn.ch,
-        michael@walle.cc, abrodkin@synopsys.com, talz@ezchip.com,
-        noamc@ezchip.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH 2/3] net: ethernet: ezchip: remove redundant check
-Date:   Fri, 18 Jun 2021 19:14:37 +0300
-Message-Id: <38bf1b24e45d652242318803fa746ab27a9def23.1624032669.git.paskripkin@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <cover.1624032669.git.paskripkin@gmail.com>
-References: <cover.1624032669.git.paskripkin@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=sJ6tmXCDWjYjTczKpyWz/c7MXBSmbvzpLSbj8oATx1Q=;
+        b=G7dNo6aXSQtUXWE1X3Bja+3PueSvxaQbwtwYPOgKrN2kyG/S0nUaohVGLSol9NMPsp
+         G5yegsR/c1Go3Z464HVlNHAQA2GoaBjcCxSFm+kZidRX8KJ9vFtuX1+CaIHun9vLchVl
+         CjvrGn7RNsdiZ40ecNkLyxoDaCeud/nsxZN/CueAW06ExieDlQLrjm4MVXTpeX8n23KM
+         x4ze5LaavNfuoENSpmYS5kfIJCHb4NfqEiAHuJxoaZr8iiJorn/cM8Wb3kcGsPd/q5Ur
+         7nvU97xTvirmITCchQUwDB7bybmbcYPRpGKPBQVcUewGY3YIJdbk8W5JNQ0gwwn8NrVt
+         y6ig==
+X-Gm-Message-State: AOAM532iZOYyTuhFKlSTVIzw3t0TIBI9kd4jWfl28wQGFjydPUm9yXYB
+        UTATUGfdvjnDqYPKipgDEg==
+X-Google-Smtp-Source: ABdhPJzyRQ3tfsoH1rSyh/EmkjzS6/pApI0k24VzPoJ3O+CU+eYsyrsdp2T0S+bhgTosH5J7ozEfcg==
+X-Received: by 2002:adf:ea49:: with SMTP id j9mr13474888wrn.366.1624032886125;
+        Fri, 18 Jun 2021 09:14:46 -0700 (PDT)
+Received: from [192.168.200.247] (ip5b434b8b.dynamic.kabel-deutschland.de. [91.67.75.139])
+        by smtp.gmail.com with ESMTPSA id w18sm9053618wrt.55.2021.06.18.09.14.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jun 2021 09:14:45 -0700 (PDT)
+Subject: Re: [PATCH 1/3] arm64: dts: rockchip: add ES8316 codec for Rock Pi4
+To:     Johan Jonker <jbx6244@gmail.com>, Heiko Stuebner <heiko@sntech.de>
+Cc:     devicetree@vger.kernel.org, balbi@kernel.org,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20210617044955.598994-1-knaerzche@gmail.com>
+ <d562b025-23cc-f26d-b118-e269501f459b@gmail.com>
+From:   Alex Bee <knaerzche@gmail.com>
+Message-ID: <d4e4e06e-6ddd-4707-232d-b829c1d646e6@gmail.com>
+Date:   Fri, 18 Jun 2021 18:14:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <d562b025-23cc-f26d-b118-e269501f459b@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-err varibale will be set everytime, when code gets
-into this path. This check will just slowdown the execution
-and that's all.
+Hi Johan,
 
-Fixes: 0dd077093636 ("NET: Add ezchip ethernet driver")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- drivers/net/ethernet/ezchip/nps_enet.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Am 18.06.21 um 11:54 schrieb Johan Jonker:
+> Hi Alex,
+>
+> On 6/17/21 6:49 AM, Alex Bee wrote:
+>> Rock Pi4 boards have the codec connected to i2s0 and it is accessible
+>> via i2c1 address 0x11.
+>> Add an audio-graph-card it.
+>>
+>> Signed-off-by: Alex Bee <knaerzche@gmail.com>
+>> ---
+>>   .../boot/dts/rockchip/rk3399-rock-pi-4.dtsi   | 28 +++++++++++++++++++
+>>   1 file changed, 28 insertions(+)
+>>
+>> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+>> index 7d0a7c697703..e5c1083174ff 100644
+>> --- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+>> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+>> @@ -36,6 +36,12 @@ sdio_pwrseq: sdio-pwrseq {
+>>   		reset-gpios = <&gpio0 RK_PB2 GPIO_ACTIVE_LOW>;
+>>   	};
+>>   
+>> +	sound {
+>> +		compatible = "audio-graph-card";
+>> +		label = "rockchip,rk3399";
+> See previous discussion:
+>
+> https://lore.kernel.org/linux-rockchip/e5ab2c62-ad00-4cdf-8b0a-24fda59c980b@gmail.com/
+>
+> It seems that aplay/linux? adds "-1" to it and removes the comma and
+> "-", so we get:
+>
+> hdmisound
+> rockchiprk3399
+> rockchiprk339_1
+>
+> Shouldn't we label it with something that reflect the function/output.
+> Shouldn't we standardize to SPDIF, HDMI and Analog similar to rk3318/rk3328?
+> Make a shorter label without spaces or special chars, so that chars
+> don't get removed?
+>
+> Proposal:
+>
+> Analog
+> HDMI
+> ES8316 <---
+> SPDIF
 
-diff --git a/drivers/net/ethernet/ezchip/nps_enet.c b/drivers/net/ethernet/ezchip/nps_enet.c
-index 20d2c2bb26e4..c562a1e83913 100644
---- a/drivers/net/ethernet/ezchip/nps_enet.c
-+++ b/drivers/net/ethernet/ezchip/nps_enet.c
-@@ -630,8 +630,7 @@ static s32 nps_enet_probe(struct platform_device *pdev)
- out_netif_api:
- 	netif_napi_del(&priv->napi);
- out_netdev:
--	if (err)
--		free_netdev(ndev);
-+	free_netdev(ndev);
- 
- 	return err;
- }
--- 
-2.32.0
+OK - thanks for that, I wasn't aware.
 
+I'll go for "Analog", since that seems to be the accepted solution for 
+RockPro64 board and I think we should keep it the same across boards (on 
+distro side it can get annoying if you need a couple of alsa configs 
+with the same contents, just because audio card names are different).
+
+Alex.
+
+>
+>
+> Possible example solutions:
+>
+> [PATCH] arm64: dts: rockchip: more user friendly name of sound nodes
+> https://lore.kernel.org/lkml/20210110151913.3615326-1-katsuhiro@katsuster.net/
+>
+> ===
+>
+> Johan
+>
+>> +		dais = <&i2s0_p0>;
+>> +	};
+>> +
+>>   	vcc12v_dcin: dc-12v {
+>>   		compatible = "regulator-fixed";
+>>   		regulator-name = "vcc12v_dcin";
+>> @@ -422,6 +428,20 @@ &i2c1 {
+>>   	i2c-scl-rising-time-ns = <300>;
+>>   	i2c-scl-falling-time-ns = <15>;
+>>   	status = "okay";
+>> +
+>> +	es8316: codec@11 {
+>> +		compatible = "everest,es8316";
+>> +		reg = <0x11>;
+>> +		clocks = <&cru SCLK_I2S_8CH_OUT>;
+>> +		clock-names = "mclk";
+>> +		#sound-dai-cells = <0>;
+>> +
+>> +		port {
+>> +			es8316_p0_0: endpoint {
+>> +				remote-endpoint = <&i2s0_p0_0>;
+>> +			};
+>> +		};
+>> +	};
+>>   };
+>>   
+>>   &i2c3 {
+>> @@ -441,6 +461,14 @@ &i2s0 {
+>>   	rockchip,capture-channels = <2>;
+>>   	rockchip,playback-channels = <2>;
+>>   	status = "okay";
+>> +
+>> +	i2s0_p0: port {
+>> +		i2s0_p0_0: endpoint {
+>> +			dai-format = "i2s";
+>> +			mclk-fs = <256>;
+>> +			remote-endpoint = <&es8316_p0_0>;
+>> +		};
+>> +	};
+>>   };
+>>   
+>>   &i2s1 {
+>>
