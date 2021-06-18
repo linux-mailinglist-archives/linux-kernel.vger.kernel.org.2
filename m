@@ -2,203 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD883ACAFF
+	by mail.lfdr.de (Postfix) with ESMTP id D86603ACB00
 	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234580AbhFRMcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 08:32:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46140 "EHLO
+        id S234584AbhFRMcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 08:32:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234388AbhFRMb4 (ORCPT
+        with ESMTP id S234425AbhFRMcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 08:31:56 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31365C0613A3
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:29:40 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id nb6so15543328ejc.10
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:29:40 -0700 (PDT)
+        Fri, 18 Jun 2021 08:32:03 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDA9DC06121D
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:29:53 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id j18so5387540wms.3
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:29:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=m+hFJNCbeJLA3oJ6JwV/uvjXUtfmTb5JQKee7MXWqMM=;
-        b=Pn2iNfaLXTvxTLKr7AgjS7DzOztYnzoQ+qw+vz1cObxUaUpcqHcnBdYrV1Ghs0mQiU
-         EOO1QrWNNG27I2Dc17mWwrtI2QJpM3iCqN9fvzVXWwczWatGYFga0O/Js1ia6VW/Kl+s
-         RAjSK1h08kwyZADbgcxDlqROI+ZnT6Lv/yJw0=
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=AF/9ugvcaR0qWAq1+q07h3mZXYOA6TNaXRCBlnFD4wA=;
+        b=ETITULQfqpXRKA20QYUFH+yqebqfOtw0Q5cVBoAyLI9vux0Ej7iTJKARS+Kimvm0/V
+         F8O9f0zTJvGG4mR64agMq7v/bRilDFvhxphA4qbIgBkg+Zt8gOw513A7pQZgi8UevDXz
+         6VZSYkwm8e3nc5OBGqYvxCie0SxjgsqTpBYRU219gPiaQ+kQc5K166mMSqApSJG3fbyh
+         gUiE1AqoCEZh3i0T/C+agGwzkFo9ZkgaBhjYuz/YBntY4ao8tc5lli66OGRItw0aTq3k
+         Ix6Fttp7si2mL0NUJzwhyB5bu01BVn4dVHPpRlAQZ+JsI65CwH02MhCaGcICU5a+bVUz
+         uB4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=m+hFJNCbeJLA3oJ6JwV/uvjXUtfmTb5JQKee7MXWqMM=;
-        b=lTWMJ2I3YiPw/guW7XwHve6D0ICWNdd19GXh9UofIDsDrD5GXV8mQjked+pTUx+tCa
-         rYB86hQvbtcmSgNcnkXy750Q/UlgJuhoCyrHOBn/TJl1j5/S5Ugw9d05FV3qmBlI7vSQ
-         Ooy5EKxzTrTfNDU3/UelOTaV4DsomPPou23Vs9Tt03DLJlI55I3Ke580XaumLmAkrEWM
-         U5OnAW8s70kOIxFm7OhVwbZ1d7iCNcPXDoRWWSWAidkBnFZm6F6cTmsCemC4fyTCGM7R
-         D86k0NJ38LA4/YnfccH6Ihc84DVYU8C/nrzx6JTQCnCVafgKodKqo1qUPeEs/qFKRypA
-         lbdA==
-X-Gm-Message-State: AOAM532Zuf88Erzz+8qUv8csblHnsdr0Jz6jbbp5oQOZxvhACsiH5peH
-        f/cZQLL8+HUmz/brXlPD/59rM9KexHDR0Q==
-X-Google-Smtp-Source: ABdhPJzLu0wAxu7yCNVgFKEy3ChdRdylbBM9W+1dVY78xPgjWS3AiWqgYkOM1M6l3M7odUGMig3p/w==
-X-Received: by 2002:a17:906:5289:: with SMTP id c9mr10823084ejm.342.1624019378767;
-        Fri, 18 Jun 2021 05:29:38 -0700 (PDT)
-Received: from alco.lan (80.71.134.83.ipv4.parknet.dk. [80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id o26sm4336403edt.62.2021.06.18.05.29.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 05:29:38 -0700 (PDT)
-From:   Ricardo Ribalda <ribalda@chromium.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tfiga@chromium.org
-Cc:     Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH v10 21/21] media: uvcvideo: Return -EACCES to inactive controls
-Date:   Fri, 18 Jun 2021 14:29:23 +0200
-Message-Id: <20210618122923.385938-22-ribalda@chromium.org>
-X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-In-Reply-To: <20210618122923.385938-1-ribalda@chromium.org>
-References: <20210618122923.385938-1-ribalda@chromium.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AF/9ugvcaR0qWAq1+q07h3mZXYOA6TNaXRCBlnFD4wA=;
+        b=g06D+sCaNGkEZ8H8to01mX2j0uazgiXoqbjckFWvZAGoINdL8HSDX10+7lDNqUEXpp
+         XQp98SfycSinZctZqlWz4sP4W2HqU+3fQwwuh/nxyu6NejYLGbthYNtGa4spM3SAKnfl
+         zWEnvULyarSOS5Jb84qCM5YaI8EHIagV62i3e+4k9KS4qQsO5k7SnDdMjXR44TSBwNmj
+         Jep1FXWX8SFbSBqEAp2oOmiN/f4d0Yll7i7jjS+PtBb5nDGzOmANk5Cm9dkB9fLXekcI
+         kMnvnfH4qwAfq7tePL1TYY6G1UF3VY2Q6qmi2TNq9Q33+LuE1odhy/dO2vxybM98U6KZ
+         LGlA==
+X-Gm-Message-State: AOAM531+asbelRXUdjduj4YOIDtBusLO1XnqQxKrkUbQuZ/UvJ33qnrw
+        802EW5M0sEsg1eyu5TuTlEdVkg==
+X-Google-Smtp-Source: ABdhPJy42dnPo0rChhHEcXwymBX0iZovSkFs3aYubP1cLQ9EUkEwfrWSzFijT3ic5xPBP/2udHcHCg==
+X-Received: by 2002:a05:600c:3ba8:: with SMTP id n40mr11371890wms.175.1624019392268;
+        Fri, 18 Jun 2021 05:29:52 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id 3sm10095480wmv.6.2021.06.18.05.29.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 18 Jun 2021 05:29:51 -0700 (PDT)
+Subject: Re: [PATCH] regmap: move readable check before accessing regcache.
+To:     Mark Brown <broonie@kernel.org>
+Cc:     srivasam@codeaurora.org, rafael@kernel.org,
+        dp@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Marek Szyprowski <m.szyprowski@samsung.com>
+References: <20210618113558.10046-1-srinivas.kandagatla@linaro.org>
+ <20210618115104.GB4920@sirena.org.uk>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <666da41f-173e-152d-84e5-e9b32baa60da@linaro.org>
+Date:   Fri, 18 Jun 2021 13:29:50 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210618115104.GB4920@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a control is inactive return -EACCES to let the userspace know that
-the value will not be applied automatically when the control is active
-again.
+Thanks Mark for review,
 
-Also make sure that query_v4l2_ctrl doesn't return an error.
+On 18/06/2021 12:51, Mark Brown wrote:
+> On Fri, Jun 18, 2021 at 12:35:58PM +0100, Srinivas Kandagatla wrote:
+> 
+>> The issue that I encountered is when doing regmap_update_bits on
+>> a write only register. In regcache path this will not do the right
+>> thing as the register is not readable and driver which is using
+>> regmap_update_bits will never notice that it can not do a update
+>> bits on write only register leading to inconsistent writes and
+>> random hardware behavior.
+> 
+> Why will use of regmap_update_bits() mean that a driver will never
+> notice a write failure?  Shouldn't remgap_update_bits() be fixed to
+> report any errors it isn't reporting, or the driver fixed to check
 
-Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
- drivers/media/usb/uvc/uvc_ctrl.c | 73 +++++++++++++++++++++-----------
- 1 file changed, 49 insertions(+), 24 deletions(-)
+usecase is performing regmap_update_bits() on a *write-only* registers.
 
-diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-index da44d5c0b9ad..4f80c06d3c43 100644
---- a/drivers/media/usb/uvc/uvc_ctrl.c
-+++ b/drivers/media/usb/uvc/uvc_ctrl.c
-@@ -1104,13 +1104,36 @@ static const char *uvc_map_get_name(const struct uvc_control_mapping *map)
- 	return "Unknown Control";
- }
- 
-+static bool uvc_ctrl_is_inactive(struct uvc_video_chain *chain,
-+				 struct uvc_control *ctrl,
-+				 struct uvc_control_mapping *mapping)
-+{
-+	struct uvc_control_mapping *master_map = NULL;
-+	struct uvc_control *master_ctrl = NULL;
-+	s32 val;
-+	int ret;
-+
-+	if (!mapping->master_id)
-+		return false;
-+
-+	__uvc_find_control(ctrl->entity, mapping->master_id, &master_map,
-+			   &master_ctrl, 0);
-+
-+	if (!master_ctrl || !(master_ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR))
-+		return false;
-+
-+	ret = __uvc_ctrl_get(chain, master_ctrl, master_map, &val);
-+	if (ret < 0 || val == mapping->master_manual)
-+		return false;
-+
-+	return true;
-+}
-+
- static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
- 	struct uvc_control *ctrl,
- 	struct uvc_control_mapping *mapping,
- 	struct v4l2_queryctrl *v4l2_ctrl)
- {
--	struct uvc_control_mapping *master_map = NULL;
--	struct uvc_control *master_ctrl = NULL;
- 	const struct uvc_menu_info *menu;
- 	unsigned int i;
- 
-@@ -1126,18 +1149,8 @@ static int __uvc_query_v4l2_ctrl(struct uvc_video_chain *chain,
- 	if (!(ctrl->info.flags & UVC_CTRL_FLAG_SET_CUR))
- 		v4l2_ctrl->flags |= V4L2_CTRL_FLAG_READ_ONLY;
- 
--	if (mapping->master_id)
--		__uvc_find_control(ctrl->entity, mapping->master_id,
--				   &master_map, &master_ctrl, 0);
--	if (master_ctrl && (master_ctrl->info.flags & UVC_CTRL_FLAG_GET_CUR)) {
--		s32 val;
--		int ret = __uvc_ctrl_get(chain, master_ctrl, master_map, &val);
--		if (ret < 0)
--			return ret;
--
--		if (val != mapping->master_manual)
--				v4l2_ctrl->flags |= V4L2_CTRL_FLAG_INACTIVE;
--	}
-+	if (uvc_ctrl_is_inactive(chain, ctrl, mapping))
-+		v4l2_ctrl->flags |= V4L2_CTRL_FLAG_INACTIVE;
- 
- 	if (!ctrl->cached) {
- 		int ret = uvc_ctrl_populate_cache(chain, ctrl);
-@@ -1660,25 +1673,37 @@ static int uvc_ctrl_commit_entity(struct uvc_device *dev,
- 	return 0;
- }
- 
--static int uvc_ctrl_find_ctrl_idx(struct uvc_entity *entity,
--				  struct v4l2_ext_controls *ctrls,
--				  struct uvc_control *uvc_control)
-+static int uvc_ctrl_commit_error(struct uvc_video_chain *chain,
-+				 struct uvc_entity *entity,
-+				 struct v4l2_ext_controls *ctrls,
-+				 struct uvc_control *err_control,
-+				 int ret)
- {
- 	struct uvc_control_mapping *mapping;
- 	struct uvc_control *ctrl_found;
- 	unsigned int i;
- 
--	if (!entity)
--		return ctrls->count;
-+	if (!entity) {
-+		ctrls->error_idx = ctrls->count;
-+		return ret;
-+	}
- 
- 	for (i = 0; i < ctrls->count; i++) {
- 		__uvc_find_control(entity, ctrls->controls[i].id, &mapping,
- 				   &ctrl_found, 0);
--		if (uvc_control == ctrl_found)
--			return i;
-+		if (err_control == ctrl_found)
-+			break;
- 	}
-+	ctrls->error_idx = i;
-+
-+	/* We could not find the control that failed. */
-+	if (i == ctrls->count)
-+		return ret;
-+
-+	if (uvc_ctrl_is_inactive(chain, err_control, mapping))
-+		return -EACCES;
- 
--	return ctrls->count;
-+	return ret;
- }
- 
- int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
-@@ -1701,8 +1726,8 @@ int __uvc_ctrl_commit(struct uvc_fh *handle, int rollback,
- 		uvc_ctrl_send_events(handle, ctrls->controls, ctrls->count);
- done:
- 	if (ret < 0 && ctrls)
--		ctrls->error_idx = uvc_ctrl_find_ctrl_idx(entity, ctrls,
--							  err_ctrl);
-+		ret = uvc_ctrl_commit_error(chain, entity, ctrls, err_ctrl,
-+					    ret);
- 	mutex_unlock(&chain->ctrl_mutex);
- 	return ret;
- }
--- 
-2.32.0.288.g62a8d224e6-goog
+_regmap_update_bits() checks _regmap_read() return value before bailing 
+out. In non cache path we have this regmap_readable() check however in 
+cached patch we do not have this check, so _regmap_read() will return 
+success in this case so regmap_update_bits() never reports any error.
 
+driver in question does check the return value.
+
+> error codes?  I really don't understand the issue you're trying to
+> report - what is "the right thing" and what makes you believe that a
+> driver can't do an _update_bits() on a write only but cached register?
+> Can you specify in concrete terms what the problem is.
+
+So one of recent patch ("ASoC: qcom: Fix for DMA interrupt clear reg 
+overwriting) 
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=next-20210618&id=da0363f7bfd3c32f8d5918e40bfddb9905c86ee1
+
+broke audio on DragonBoard 410c.
+
+This patch simply converts writes to regmap_update_bits for that 
+particular dma channel. The register that its updating is IRQ_CLEAR 
+register which is software "WRITE-ONLY" and Hardware read-only register.
+
+The bits in particular case is updating is a period interrupt clear bit.
+
+Because we are using regmap cache in this driver,
+
+first regmap_update_bits(map, 0x1, 0x1) on first period interrupt will 
+update the cache and write to IRQ_CLEAR hardware register which then 
+clears the interrupt latch.
+On second period interrupt we do regmap_update_bits(map, 0x1, 0x1) with 
+the same bits, Because we are using cache for this regmap caches sees no 
+change in the cache value vs the new value so it will never write/update 
+  IRQ_CLEAR hardware register, so hardware is stuck here waiting for 
+IRQ_CLEAR write from driver and audio keeps repeating the last period.
+
+> 
+>> There seems to be missing checks in regcache_read() which is
+>> now added by moving the orignal check in _regmap_read() before
+>> accessing regcache.
+> 
+>> Cc: stable@vger.kernel.org
+>> Fixes: 5d1729e7f02f ("regmap: Incorporate the regcache core into regmap")
+> 
+> Are you *sure* you've identified the actual issue here - nobody has seen
+
+I think so, my above triage does summarizes the problem in detail.
+
+> any problems with this in the past decade?  Please don't just pick a
+> random commit for the sake of adding a Fixes tag.
+
+I did git blame and picked up this changeset which is when the cache was 
+integrated.
+
+> 
+>> @@ -2677,6 +2677,9 @@ static int _regmap_read(struct regmap *map, unsigned int reg,
+>>   	int ret;
+>>   	void *context = _regmap_map_get_context(map);
+>>   
+>> +	if (!regmap_readable(map, reg))
+>> +		return -EIO;
+>> +
+>>   	if (!map->cache_bypass) {
+>>   		ret = regcache_read(map, reg, val);
+>>   		if (ret == 0)
+>> @@ -2686,9 +2689,6 @@ static int _regmap_read(struct regmap *map, unsigned int reg,
+>>   	if (map->cache_only)
+>>   		return -EBUSY;
+>>   
+>> -	if (!regmap_readable(map, reg))
+>> -		return -EIO;
+>> -
+> 
+> This puts the readability check before the cache check which will break
+> all drivers using the cache on write only registers.
+Initially I added check in regcache_read(), later I moved it to 
+_regmap_read. do you think check in regcache_read() is the correct place?
+
+--srini
+> 
