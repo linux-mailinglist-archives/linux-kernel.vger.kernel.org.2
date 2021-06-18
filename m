@@ -2,85 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A40B3AC2E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 07:40:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 912343AC2E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 07:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232559AbhFRFnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 01:43:00 -0400
-Received: from phobos.denx.de ([85.214.62.61]:44218 "EHLO phobos.denx.de"
+        id S232573AbhFRFrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 01:47:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232456AbhFRFm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 01:42:57 -0400
-Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: marex@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 43E6780563;
-        Fri, 18 Jun 2021 07:40:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1623994846;
-        bh=uNXPIXPD8fqjMp54pQS8vQeSgs5ZSHX/0gwovObOC0E=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=soYQdyUYvzgSM4U5r9XFh4FEnd1GrO9vEHbdox17WFLfCvG82LXhiN5WEd579t8fw
-         6U7DAWBWP4GITzRSBvB0gdoTYr55vQQGRu4HK5JVBUxQdFk+jEvsvbzjbCb0ewTnza
-         Ks+m7VgZwyJ0Kc+gmf5D/znMnrrN+5255RJ83pHASG3ziL8hy40mss7ZDbt1h+4fDl
-         QHZMI21mwoEvOc74PN5LLxj4OhboQrEpiBccE4XRtwQIlscdmR2MQH2FFYaY9gNqa0
-         zZ9YLScdE0W98E+ts0qxZiINVmf4U1IWCBDVuDhl0PNlntPFFpNRfWoSfsRDf15Gy5
-         KEyNmO+45tUsQ==
-Subject: Re: [PATCH] drm/bridge: ti-sn65dsi83: Fix null pointer dereference in
- remove callback
-To:     Jonathan Liu <net147@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>
-References: <20210617111925.162120-1-net147@gmail.com>
- <YMtYoaSIIRhb85fh@pendragon.ideasonboard.com>
- <CANwerB0J9xKj3kjYPjzfeDvKV8JXPcDtoZaLMzkudCBz8=ZnVw@mail.gmail.com>
-From:   Marek Vasut <marex@denx.de>
-Message-ID: <d708823a-3b28-2541-da06-86eb41484aaa@denx.de>
-Date:   Fri, 18 Jun 2021 07:40:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S229671AbhFRFrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 01:47:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 38A706054E;
+        Fri, 18 Jun 2021 05:44:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1623995094;
+        bh=dbWGvEAfiOwyJFvGKuRzF0wsAwrqGBZuvn9lAIDW3UY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qvFw7ZQqWkKlwKOz7Ia1Pd+jC2Bb4oQNjNHRqkIqoN+LC5IaYr7JqiAW1Hk49czfv
+         DuFmxP5vupK1SPyDLBXYt8+NfjerCSxPPNwhmlRN/oyFloXS28jvPIOHOyDlJH6I+c
+         5K0OQAT9kS2XqxKEaZi4VbpKSkSd1Zg3oBtUfY1icDvkLBzjTKK9irtwk1Il0vsxGJ
+         VKHjG1SRSFV2HU589ZSMPi5AzZtIL8tHrW4K7q0X6Z71MlP7kpdwO+i1lJVQj/AW9C
+         GBk2Ovx/ncjnsJgZhx1LbwrSLHC5Hz+p0m3h7bG3tOBJMItcqkGka6Z0TfQbxrkxM3
+         M5lYxcK4zCzqw==
+Date:   Fri, 18 Jun 2021 11:14:48 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Paul Davey <paul.davey@alliedtelesis.co.nz>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] bus: mhi: Fix MHI on big endian architectures
+Message-ID: <20210618054448.GI3682@workstation>
+References: <20210618033132.24839-1-paul.davey@alliedtelesis.co.nz>
 MIME-Version: 1.0
-In-Reply-To: <CANwerB0J9xKj3kjYPjzfeDvKV8JXPcDtoZaLMzkudCBz8=ZnVw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
-X-Virus-Status: Clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210618033132.24839-1-paul.davey@alliedtelesis.co.nz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/18/21 5:06 AM, Jonathan Liu wrote:
-> Hi Marek,
-
-Hi,
-
->> Hi Jonathan,
->>
->> Thank you for the patch.
->>
->> On Thu, Jun 17, 2021 at 09:19:25PM +1000, Jonathan Liu wrote:
->>> If attach has not been called, unloading the driver can result in a null
->>> pointer dereference in mipi_dsi_detach as ctx->dsi has not been assigned
->>> yet.
->>
->> Shouldn't this be done in a brige .detach() operation instead ?
->>
+On Fri, Jun 18, 2021 at 03:31:30PM +1200, Paul Davey wrote:
+> I encountered some problems getting the MHI driver to work on an Octeon
+> 3 platform these seem to all be related to endianness issues.  The modem
+> interface appears to require the DMA structures to be in little endian,
+> however the MHI core driver was assembling them in native endianness.
 > 
-> Could you please take a look?
-> I don't have a working setup to test moving the code to detach.
 
-I just replied to your other email regarding bringing the chip up, so 
-please bring your setup up first, then test this patch again, and then 
-let's revisit this topic.
+So glad to see MHI being used on big endian architectures :)
+
+Thanks,
+Mani
+
+> Using little endian explicitly allows the interface to function as
+> expected.
+> 
+> Paul Davey (2):
+>   bus: mhi: Fix pm_state conversion to string
+>   bus: mhi: Fix MHI DMA structure endianness
+> 
+>  drivers/bus/mhi/core/debugfs.c  |  26 +++----
+>  drivers/bus/mhi/core/init.c     |  39 +++++-----
+>  drivers/bus/mhi/core/internal.h | 129 ++++++++++++++++----------------
+>  drivers/bus/mhi/core/main.c     |  36 ++++-----
+>  drivers/bus/mhi/core/pm.c       |   8 +-
+>  5 files changed, 121 insertions(+), 117 deletions(-)
+> 
+> -- 
+> 2.32.0
+> 
