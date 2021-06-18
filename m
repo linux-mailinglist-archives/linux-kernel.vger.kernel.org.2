@@ -2,101 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D503AD57C
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 00:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2573AD587
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 00:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235092AbhFRW4q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 18:56:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46838 "EHLO
+        id S235129AbhFRW6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 18:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231270AbhFRW4p (ORCPT
+        with ESMTP id S231270AbhFRW6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 18:56:45 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CE9CC061574;
-        Fri, 18 Jun 2021 15:54:34 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id o88-20020a17090a0a61b029016eeb2adf66so8853756pjo.4;
-        Fri, 18 Jun 2021 15:54:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rzOxWgOfLVUoE/zhN+Hv/nujRU8lGHYED4ijbZLx+m4=;
-        b=jgQ1L91cfMQM/qQBtomKGL3/CMrlamfrL+mybW0Oq5EoVtn1/rf2owYr0EW6eusISX
-         Keeti/dkr07avw8/GK0HD2BAY14QF9/HdKR5r14+RYFzS5TEH/cKxQdpE2frMxNILm6h
-         7+E782vXfI0pR0TjTZ3nSx5Hif2vlYqeRqfMubKLpICBzJB9kqQ3WGn6It0l8c7fRKSe
-         lvtHemBK0xjasQh/nlBD+7+5l6UK0woqoX1kSvU7atcnFsNumIBQOihghj+gVNoG6/nb
-         4WyNvVup2Hi6TxRk9E3XzfqRcMCoz6JLXpni15kT5amtWLCmpHTZVNXF4BuFhgIQh/cA
-         Xrsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rzOxWgOfLVUoE/zhN+Hv/nujRU8lGHYED4ijbZLx+m4=;
-        b=fwFMar0ISr+6do9P/1DxUcbz5trNNATc++k7xU3UQpLKllKupDa9Z94XV0DoyHXxJ7
-         SdBzfxpapsg7FBF9k7ptlwnfoisGb9T4n1fYAGPYYOf6ZV5EPGTWFdzMawB8Tl0wgF0x
-         MtozZn9P0QzEjn+quaCGKoFL3l/RXxFHwfQWIyRt/u+8lJiMBTUYvhYKWLojnx4TFtLi
-         ow04/2DBCqzaQ/Av3htHiemmpKIkV8oHmaMBaBL7/edhoeJgiIwmGWBGsDxYfLMCdskA
-         0f3J4uoEHm8sJot7An/jwM4boLRqctabwCVSb2Zecl0UJhp1bG8gEpeWbX/isYC0nbBe
-         COCg==
-X-Gm-Message-State: AOAM533JxK8amev5CxyEvBrWK3xMvjkTowbXkdIxJU+883roYp2BZbxd
-        mYuu5lwfhl5UFCrzjAXkkQM=
-X-Google-Smtp-Source: ABdhPJxgGabDW4kArlQJfK1SpOkSAWjiRe51TdEqINac9PPVSlB7NeY5Vf1fWnU0L/+pD/QFyPdNIw==
-X-Received: by 2002:a17:90a:d3d2:: with SMTP id d18mr24467610pjw.102.1624056873737;
-        Fri, 18 Jun 2021 15:54:33 -0700 (PDT)
-Received: from [10.230.185.151] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id 1sm2893856pfo.92.2021.06.18.15.54.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 15:54:33 -0700 (PDT)
-Subject: Re: [PATCH] scsi: elx: efct: Eliminate unnecessary boolean check in
- efct_hw_command_cancel()
-To:     Nathan Chancellor <nathan@kernel.org>,
-        James Smart <james.smart@broadcom.com>,
-        Ram Vegesna <ram.vegesna@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-References: <20210617063123.21239-1-nathan@kernel.org>
-From:   James Smart <jsmart2021@gmail.com>
-Message-ID: <7afb1139-79d8-57b6-b629-bc0a0d142687@gmail.com>
-Date:   Fri, 18 Jun 2021 15:54:26 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Fri, 18 Jun 2021 18:58:38 -0400
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC9E8C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 15:56:27 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id B67083F325;
+        Sat, 19 Jun 2021 00:56:22 +0200 (CEST)
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+To:     bjorn.andersson@linaro.org
+Cc:     agross@kernel.org, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com,
+        jamipkettunen@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht, stephan@gerhold.net,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Subject: [PATCH v5 0/3] Implement SPM/SAW for MSM8998 and SDM6xx
+Date:   Sat, 19 Jun 2021 00:56:17 +0200
+Message-Id: <20210618225620.623359-1-angelogioacchino.delregno@somainline.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <20210617063123.21239-1-nathan@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/2021 11:31 PM, Nathan Chancellor wrote:
-> clang warns:
-> 
-> drivers/scsi/elx/efct/efct_hw.c:1523:17: warning: address of array
-> 'ctx->buf' will always evaluate to 'true' [-Wpointer-bool-conversion]
->                                (!ctx->buf ? U32_MAX : *((u32 *)ctx->buf)));
->                                 ~~~~~~^~~
-> 
-> buf is an array in the middle of a struct so deferencing it is not a
-> problem as long as ctx is not NULL. Eliminate the check, which fixes the
-> warning.
-> 
-> Fixes: 580c0255e4ef ("scsi: elx: efct: RQ buffer, memory pool allocation and deallocation APIs")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1398
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> ---
->   drivers/scsi/elx/efct/efct_hw.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
+Changes in v5:
+- Fixed contamination from patch 2/3 in patch 1/3
+- Fixed missing bits in cpuidle-qcom-spm (thanks Stephan)
 
-Thanks!
+Changes in v4:
+- Huge patch series has been split for better reviewability,
+  as suggested by Bjorn
 
-Reviewed-by: James Smart <jsmart2021@gmail.com>
+Changes in v3:
+- Rebased (no changes - was in previous series' v3)
 
--- james
+Changes in v2:
+- Fixed MSM8998 SAW parameters on SPM driver
 
+Tested on the following smartphones:
+- Sony Xperia XA2        (SDM630)
+- Sony Xperia XA2 Ultra  (SDM630)
+- Sony Xperia 10         (SDM630)
+- Sony Xperia XZ Premium (MSM8998)
+- F(x)Tec Pro 1          (MSM8998)
+
+This is a component that we can find on very old
+chips, like MSM8974; there, it has been used to actually do the
+power scaling basically "on its own" - sending the cores in a specific
+sleep mode to save power.
+On the newer ones, including MSM8998, SDM630, 660 and others, it is still
+present! Though, this time, it's being used for the cluster caches and it
+has a different firmware (and maybe it's also slightly different HW),
+implementing the SAWv4.1 set and getting controlled *not by the OS* but
+by other controllers in the SoC (like the OSM).
+
+Contrary from MSM8974 and the like, this new version of the SPM just
+requires us to set the initial parameters for AVS and *nothing else*, as
+its states will be totally managed internally.
+
+AngeloGioacchino Del Regno (3):
+  cpuidle: qcom_spm: Detach state machine from main SPM handling
+  soc: qcom: spm: Implement support for SAWv4.1, SDM630/660 L2 AVS
+  soc: qcom: spm: Add compatible for MSM8998 SAWv4.1 L2
+
+ drivers/cpuidle/Kconfig.arm        |   1 +
+ drivers/cpuidle/cpuidle-qcom-spm.c | 295 ++++++-----------------------
+ drivers/soc/qcom/Kconfig           |   9 +
+ drivers/soc/qcom/Makefile          |   1 +
+ drivers/soc/qcom/spm.c             | 240 +++++++++++++++++++++++
+ include/soc/qcom/spm.h             |  45 +++++
+ 6 files changed, 355 insertions(+), 236 deletions(-)
+ create mode 100644 drivers/soc/qcom/spm.c
+ create mode 100644 include/soc/qcom/spm.h
+
+-- 
+2.32.0
 
