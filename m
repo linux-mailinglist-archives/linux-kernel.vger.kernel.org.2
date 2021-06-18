@@ -2,71 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2BF3AD56F
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 00:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B68F73AD578
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 00:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235081AbhFRWwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 18:52:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45954 "EHLO
+        id S235083AbhFRWyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 18:54:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233892AbhFRWwk (ORCPT
+        with ESMTP id S233892AbhFRWyi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 18:52:40 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB526C061574;
-        Fri, 18 Jun 2021 15:50:29 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id i34so3430364pgl.9;
-        Fri, 18 Jun 2021 15:50:29 -0700 (PDT)
+        Fri, 18 Jun 2021 18:54:38 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A545BC061574;
+        Fri, 18 Jun 2021 15:52:27 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id x19so5464440pln.2;
+        Fri, 18 Jun 2021 15:52:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=SNyDGkX9Ukd5scsSsx1mRm+k+4LOQgsMRHMLkmzl73k=;
-        b=Tzl4zMuYNWzbP5/C6fLlIy37r5yYy0/qQCJCG6LbJWYTkgQFXGdAWQlMod5SMbhoKb
-         Ph+JZ0jL0x1J1Lah+wDUSX7/cEPctjDHKjIfmiNWyvrflA3eU+bimC6Bsai3/HlCDXBk
-         H+y9VvWTA0ZwtipohajMg6FNsHedLmALsJJ0z9QRoaqQvVMrZ5gL0SsRAKLzFvNGqqzv
-         wLPELf5p6kLY5nEv6Yvzx0LLLgscWXhHK6XrNSe6QvegmynBmWon+xesskooq6SKwiGf
-         iPXVfCUpHcjDZTCU7/tgj2Gus2Isb3ckF3mLVsNBdTU8qHgt3rbxCsWAGDihjI5IZxQD
-         7oXw==
+        bh=QBEReQMrLJnmJ7k9QX7jY95T5VJ5V7GviHdKGKUsvvg=;
+        b=tII83pBLIBi/2wESwabagm4ntRSICChI31q+bE5qSHQG5f7yiBn50dgPVAlj5aCKh1
+         0jYbWVMv1YTdVCIX1p8RtnSpdyog/uMidDqhFQqy1qsfcQNfT6Umb0KP5r09Ssbiy9hi
+         36UQU+RxnvDCvoR6e3u3ln6f5TT7HshoMTQMbQcshMnqPkc97sSDDbfKuE91jHn2BHE5
+         U/G1dQJHpoEzoE+IdwtK6/DsfHSsR2XJKoUbXs+wgXsW/6OC3DyUIC1lhK1bhnARk4cI
+         hO5B/Gn0qEFgn/aqwBT88zAL1ZuhfRQiX55hj5c8EZg/5U8iKgIz3O8fcbxw5Jen+Jgn
+         XRAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=SNyDGkX9Ukd5scsSsx1mRm+k+4LOQgsMRHMLkmzl73k=;
-        b=D4dcQbC9zstPPrIZIyb9UsHefWUnkKS1XuSVYxCKxgXt4RKB2LJhAPS2iLjTRW207R
-         4VThEb/IRi/Nw9GqeT52G6b2plDIa2zUOe0XuR/fKL/iaYRfENeCPRLCs8o85UZNUhUO
-         huUYIl6Qu9IlsbwitnRBd2sQDHsrtgerlWb0SJGdl7xxz5kTYjKIl6ktR4GmkoVqz6Nj
-         OIjbi2wzaWGyhpTxfhM8LDOnYIRYvsNllqGkGw0+2GUaeTu0wjGCh6MBS3hfZPfs44kU
-         0fxr7aNIMEwnZGDwvXvsJm3JnaRB9Gr1tuh5SzvJp4JzBJAOTIuLZWrEucpRi1lvrrQU
-         tXmw==
-X-Gm-Message-State: AOAM532euQLFaT9UV46Pz5KFOGvM9dE626dMEGN/TihZLZuhNfmwN3U3
-        kIyb+X69pR8qOGfMF+cn9ZIESD+L9nc=
-X-Google-Smtp-Source: ABdhPJzXDtxt0EPBs1yBhC5rZmwo4WwV7vOF2JNkyC+v/CKUxbK5agTtt73wTl77N3/3peKNoAYzrw==
-X-Received: by 2002:aa7:9901:0:b029:2ff:17ed:feaf with SMTP id z1-20020aa799010000b02902ff17edfeafmr7145045pff.34.1624056629409;
-        Fri, 18 Jun 2021 15:50:29 -0700 (PDT)
-Received: from [192.168.1.27] (ip174-67-196-173.oc.oc.cox.net. [174.67.196.173])
-        by smtp.gmail.com with ESMTPSA id 11sm8892018pfh.182.2021.06.18.15.50.28
+        bh=QBEReQMrLJnmJ7k9QX7jY95T5VJ5V7GviHdKGKUsvvg=;
+        b=suJsmNyjxW1xPacrMGtEDvLuXpkadSjBNC/p2u0l0wdPMNbToKn1xG+Yg0DvFZjTFz
+         xwxDJvmGBDx6zD5WYaiMeQ4DvPuXuoiF4xbwTwiqOi0tlb9NI4k5fofOg5Q70tAkFkZO
+         rQ9h3moCWn7GNCEmznq5pNKJk0aAmiOOoLHawak9SyAjCOXJVXvcE9d13vRsjIh+L6Bp
+         FeCWy+GI63LIFrCRcbeDj23mE2+cnymio05WHVN3bHju+88JoSFC19ACHjajCLnf3YOS
+         lI84JkEz9edmWINxQcC6RGE7ByGfEzyHAaMfXFKU5/UD++IJU6T62gBBrhXkuOfQ8JYZ
+         aqIA==
+X-Gm-Message-State: AOAM532wh5JFbO2yZy384fhxwFTfhhkb57HMQ89FzQBJ5Itpm5DJA5DC
+        nXLCcA3TcyllkWwBEzaV2HOAfjlYuBM=
+X-Google-Smtp-Source: ABdhPJw4yiHQ2vg2xEf7tsb0sifRldVovSyqJZweszGMsk3g7d2ZVYr36o8e+BOQ5kl/B4QsuCyyvw==
+X-Received: by 2002:a17:90a:ea0d:: with SMTP id w13mr16079475pjy.51.1624056747314;
+        Fri, 18 Jun 2021 15:52:27 -0700 (PDT)
+Received: from [10.230.185.151] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id g8sm10218823pgo.10.2021.06.18.15.52.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 15:50:29 -0700 (PDT)
-Subject: Re: [PATCH][next] scsi: elx: efct: remove redundant initialization of
- variable lun
-To:     Colin King <colin.king@canonical.com>,
+        Fri, 18 Jun 2021 15:52:26 -0700 (PDT)
+Subject: Re: [PATCH] scsi: elx: efct: Do not use id uninitialized in
+ efct_lio_setup_session()
+To:     Nathan Chancellor <nathan@kernel.org>,
         James Smart <james.smart@broadcom.com>,
         Ram Vegesna <ram.vegesna@broadcom.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Hannes Reinecke <hare@suse.de>, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210616171621.16176-1-colin.king@canonical.com>
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+References: <20210617061721.2405511-1-nathan@kernel.org>
 From:   James Smart <jsmart2021@gmail.com>
-Message-ID: <3be6287a-9ac3-2837-11b2-a0270522a607@gmail.com>
-Date:   Fri, 18 Jun 2021 15:50:27 -0700
+Message-ID: <bd2d2be8-8ec9-601a-14d6-aa4edb92859c@gmail.com>
+Date:   Fri, 18 Jun 2021 15:52:20 -0700
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <20210616171621.16176-1-colin.king@canonical.com>
+In-Reply-To: <20210617061721.2405511-1-nathan@kernel.org>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -74,18 +74,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/2021 10:16 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On 6/16/2021 11:17 PM, Nathan Chancellor wrote:
+> clang warns:
 > 
-> The variable lun is being initialized with a value that is never
-> read, it is being updated later on. The assignment is redundant and
-> can be removed.
+> drivers/scsi/elx/efct/efct_lio.c:1216:24: warning: variable 'id' is
+> uninitialized when used here [-Wuninitialized]
+>                        se_sess, node, id);
+>                                       ^~
 > 
-> Addresses-Coverity: ("Unused value")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Shuffle the debug print after id's initialization so that the actual
+> value is printed.
+> 
+> Fixes: 692e5d73a811 ("scsi: elx: efct: LIO backend interface routines")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1397
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 > ---
->   drivers/scsi/elx/efct/efct_unsol.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>   drivers/scsi/elx/efct/efct_lio.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
 > 
 
 Thanks
@@ -93,4 +98,5 @@ Thanks
 Reviewed-by: James Smart <jsmart2021@gmail.com>
 
 -- james
+
 
