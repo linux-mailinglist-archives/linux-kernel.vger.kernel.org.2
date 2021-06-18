@@ -2,49 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE4A3AC20D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 06:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFFA83AC1C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 06:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232315AbhFRE0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 00:26:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231894AbhFREZM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 00:25:12 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 445E3C0617A8
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 21:23:03 -0700 (PDT)
-Received: by ozlabs.org (Postfix, from userid 1034)
-        id 4G5m4N62hdz9sWk; Fri, 18 Jun 2021 14:23:00 +1000 (AEST)
-From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Finn Thain <fthain@linux-m68k.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-In-Reply-To: <a1456e8bbd33ef702e3ff6f14b1bf3919241c62b.1623398307.git.fthain@linux-m68k.org>
-References: <a1456e8bbd33ef702e3ff6f14b1bf3919241c62b.1623398307.git.fthain@linux-m68k.org>
-Subject: Re: [PATCH v2] powerpc/tau: Remove superfluous parameter in alloc_workqueue() call
-Message-Id: <162398829913.1363949.18107899985945378048.b4-ty@ellerman.id.au>
-Date:   Fri, 18 Jun 2021 13:51:39 +1000
+        id S230070AbhFREHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 00:07:41 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:54915 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229816AbhFREHj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 00:07:39 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1623989130; h=Content-Transfer-Encoding: MIME-Version:
+ References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=k4HKuaL//VdF5gQIL9VhYemVHmDBvisX1u+MgvW5TN4=; b=OaiAm464chI6fiUWd+BoMSTtK/ENZsTEPsl3nNvv0p+T3We7SZUK3ViTv12e5yen5gSmr5w+
+ iWUtHMg4LuBl+pxq0KuAvwxgs5KQs4SAAqw6QAla4iQgRyvrCFFyGgOK3uvrVanAJFq6DMVR
+ uX/BZ6dq3d29QY56dOCfkMgnxcE=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 60cc1b6fb6ccaab753fad1d7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Jun 2021 04:05:03
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9B415C43217; Fri, 18 Jun 2021 04:05:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D7F05C433D3;
+        Fri, 18 Jun 2021 04:04:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D7F05C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     saiprakash.ranjan@codeaurora.org, vdumpa@nvidia.com
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robin.murphy@arm.com, treding@nvidia.com, will@kernel.org
+Subject: Re: [PATCH] iommu/io-pgtable-arm: Optimize partial walk flush for large scatter-gather list
+Date:   Fri, 18 Jun 2021 09:34:44 +0530
+Message-Id: <20210618040444.17270-1-saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
+In-Reply-To: <5eb5146ab51a8fe0b558680d479a26cd@codeaurora.org>
+References: <5eb5146ab51a8fe0b558680d479a26cd@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Jun 2021 17:58:27 +1000, Finn Thain wrote:
-> This avoids an (optional) compiler warning:
+On 2021-06-15 17:21, Sai Prakash Ranjan wrote:
+> Hi Krishna,
 > 
-> arch/powerpc/kernel/tau_6xx.c: In function 'TAU_init':
-> arch/powerpc/kernel/tau_6xx.c:204:30: error: too many arguments for format [-Werror=format-extra-args]
->   tau_workq = alloc_workqueue("tau", WQ_UNBOUND, 1, 0);
+> On 2021-06-14 23:18, Krishna Reddy wrote:
+>>> Right but we won't know until we profile the specific usecases or try them in
+>>> generic workload to see if they affect the performance. Sure, over invalidation is
+>>> a concern where multiple buffers can be mapped to same context and the cache
+>>> is not usable at the time for lookup and such but we don't do it for small buffers
+>>> and only for large buffers which means thousands of TLB entry mappings in
+>>> which case TLBIASID is preferred (note: I mentioned the HW team
+>>> recommendation to use it for anything greater than 128 TLB entries) in my
+>>> earlier reply. And also note that we do this only for partial walk flush, we are not
+>>> arbitrarily changing all the TLBIs to ASID based.
+>>
+>> Most of the heavy bw use cases does involve processing larger buffers.
+>> When the physical memory is allocated dis-contiguously at page_size
+>> (let's use 4KB here)
+>> granularity, each aligned 2MB chunks IOVA unmap would involve
+>> performing a TLBIASID
+>> as 2MB is not a leaf. Essentially, It happens all the time during
+>> large buffer unmaps and
+>> potentially impact active traffic on other large buffers. Depending on how much
+>> latency HW engines can absorb, the overflow/underflow issues for ISO
+>> engines can be
+>> sporadic and vendor specific.
+>> Performing TLBIASID as default for all SoCs is not a safe operation.
+>>
+> 
+> Ok so from what I gather from this is that its not easy to test for the
+> negative impact and you don't have data on such yet and the behaviour is
+> very vendor specific. To add on qcom impl, we have several performance
+> improvements for TLB cache invalidations in HW like wait-for-safe(for realtime
+> clients such as camera and display) and few others to allow for cache
+> lookups/updates when TLBI is in progress for the same context bank, so atleast
+> we are good here.
+> 
+>>
+>>> I am no camera expert but from what the camera team mentioned is that there
+>>> is a thread which frees memory(large unused memory buffers) periodically which
+>>> ends up taking around 100+ms and causing some camera test failures with
+>>> frame drops. Parallel efforts are already being made to optimize this usage of
+>>> thread but as I mentioned previously, this is *not a camera specific*, lets say
+>>> someone else invokes such large unmaps, it's going to face the same issue.
+>>
+>> From the above, It doesn't look like the root cause of frame drops is
+>> fully understood.
+>> Why is 100+ms delay causing camera frame drop?  Is the same thread
+>> submitting the buffers
+>> to camera after unmap is complete? If not, how is the unmap latency
+>> causing issue here?
+>>
+> 
+> Ok since you are interested in camera usecase, I have requested for more details
+> from the camera team and will give it once they comeback. However I don't think
+> its good to have unmap latency at all and that is being addressed by this patch.
+> 
 
-Applied to powerpc/next.
+As promised, here are some more details shared by camera team:
 
-[1/1] powerpc/tau: Remove superfluous parameter in alloc_workqueue() call
-      https://git.kernel.org/powerpc/c/ddf4a7bcd09439e82c4d6f959f4ff6c53f07466f
+Mapping of a framework buffer happens at the time of process request and unmapping
+of a framework buffer happens once the buffer is available from hardware and result
+will be notified to camera framework.
+ * When there is a delay in unmapping of a buffer, result notification to framework
+   will be delayed and based on pipeline delay depth, new requests from framework
+   will be delayed.
+ * Camera stack uses internal buffer managers for internal and framework buffers.
+   While mapping and unmapping these managers will be accessed, so uses common lock
+   and hence is a blocking call. So unmapping delay will cause the delay for mapping
+   of a new request and leads to framedrop.
 
-cheers
+Map and unmap happens in the camera service process context. There is no separate perf
+path to perform unmapping.
+
+In Camera stack along with map/unmap delay, additional delays are due to HW. So HW should
+be able to get the requests in time from SW to avoid frame drops.
+
+Thanks,
+Sai
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
