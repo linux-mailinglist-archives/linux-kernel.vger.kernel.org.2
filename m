@@ -2,78 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8F943ACE46
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 786123ACE48
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234075AbhFRPH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:07:56 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:55038 "EHLO mail.skyhub.de"
+        id S234119AbhFRPJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:09:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50498 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229550AbhFRPHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:07:53 -0400
-Received: from zn.tnic (p200300ec2f0dd800f1d29af1870b9e89.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:d800:f1d2:9af1:870b:9e89])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E16551EC0529;
-        Fri, 18 Jun 2021 17:05:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1624028743;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=DAkmjtSEjAQW5/oSQSGY2SJZEOQXFtsl+lpahSbt7CM=;
-        b=Ol1RhoAL2zOpnn55wSrncRMqg5PShyikP6yN9Dd9Spb+mo2L1xWn7DUx8YDT6MBohBRh4j
-        r4JUcLI0Bq1CtLIQIkucqpI/IRSrlQ8P5Qg6k9hoOVYEc08pew3bLadc5ekrVfBLtZef1X
-        N+VDfH4YnAnzuSIy9dUDc4cKbLo9mC4=
-Date:   Fri, 18 Jun 2021 17:05:28 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-coco@lists.linux.dev, linux-mm@kvack.org,
-        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        id S229550AbhFRPJn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 11:09:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A1DFC61369;
+        Fri, 18 Jun 2021 15:07:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624028853;
+        bh=E5TkELht0XoHbON/7pEImT6/4qm4Ej3h03c9ygt6FAk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NynnUz80ZKGAIai1yMDN1Qo5pjgrqd5cO+SP2rlK0+MJAfYFdjmmvoi8F8xp0za89
+         yDF5K0uyvuhxNKxjTIm6zRtuXHScLMbSgqCaCOdFBVu6wthJ8AB5lpuJ8abB6F5zJa
+         6huPKb91Kv1mJwFjkvZdiohkhtCzTeeeb1nL6nVprzyN0B+OOkj0M2FArvMc+jKuxa
+         mkk66pqM83hyWg8cgdt9fDeXtWiQjWuChaGZdwiA0vG/gKSP5NkEzYOQHjaFuTMMaJ
+         ZlNHp1IOg9Wrx5ud/hXC4l/HJSPGACc+9bLhlQ2PapBXVH15o3TXtvh2OCHwJu4spG
+         0MOi9AIdDg4rw==
+Date:   Sat, 19 Jun 2021 00:07:31 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
-        npmccallum@redhat.com
-Subject: Re: [PATCH Part1 RFC v3 20/22] x86/boot: Add Confidential Computing
- address to setup_header
-Message-ID: <YMy2OGwsRzrR5bwD@zn.tnic>
-References: <20210602140416.23573-1-brijesh.singh@amd.com>
- <20210602140416.23573-21-brijesh.singh@amd.com>
- <YMw4UZn6AujpPSZO@zn.tnic>
- <15568c80-c9a9-5602-d940-264af87bed98@amd.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <15568c80-c9a9-5602-d940-264af87bed98@amd.com>
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 3/3] perf/probe: Add --bootconfig to output definition
+ in bootconfig format
+Message-Id: <20210619000731.56f0d7ee63c4acd857c2f287@kernel.org>
+In-Reply-To: <YMycGkhkPuo4xTc4@kernel.org>
+References: <162282409255.452340.4645118932261585719.stgit@devnote2>
+        <162282412351.452340.14871995440005640114.stgit@devnote2>
+        <YMycGkhkPuo4xTc4@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 08:57:12AM -0500, Brijesh Singh wrote:
-> Don't have any strong reason to keep it separate, I can define a new
-> type and use the setup_data to pass this information.
+On Fri, 18 Jun 2021 10:14:02 -0300
+Arnaldo Carvalho de Melo <acme@kernel.org> wrote:
 
-setup_data is exactly for use cases like that - pass a bunch of data
-to the kernel. So there's no need for a separate thing. Also see that
-kernel_info thing which got added recently for read_only data.
+> Em Sat, Jun 05, 2021 at 01:28:43AM +0900, Masami Hiramatsu escreveu:
+> > Now the boot-time tracing supports the kprobes events and that
+> > must be written in bootconfig file as following format.
+> > 
+> > ftrace.event.kprobes.<EVENT_NAME>.probes = <PROBE-DEF>
+> > 
+> > The perf probe already supports --definition (-D) action to
+> > show the probe definitions, but the format is for the tracefs.
+> 
+> You forgot to add the tools/perf/Documentation/perf-probe.txt entry for
+> this new command line option, please sent it as a followup patch.
 
-Thx.
+Oops, let me write it up! Thanks for pointing!
+
+> 
+> Applied.
+> 
+> - Arnaldo
+>  
+> > [p|r][:EVENT_NAME] <PROBE-DEF>
+> > 
+> > This adds --bootconfig option for -D action so that it output
+> > the probe definitions in bootconfig fromat. E.g.
+> > 
+> >  $ perf probe --bootconfig -D "path_lookupat:7 err:s32 s:string"
+> >  ftrace.event.kprobes.path_lookupat_L7.probe = 'path_lookupat.isra.0+309 err_s32=%ax:s32 s_string=+0(%r13):string'
+> > 
+> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> > ---
+> >  tools/perf/builtin-probe.c    |   12 ++++++-
+> >  tools/perf/util/probe-event.c |   72 +++++++++++++++++++++++++++++++++++++++++
+> >  tools/perf/util/probe-event.h |    2 +
+> >  3 files changed, 85 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/tools/perf/builtin-probe.c b/tools/perf/builtin-probe.c
+> > index 6b1507566770..2bfd41df621c 100644
+> > --- a/tools/perf/builtin-probe.c
+> > +++ b/tools/perf/builtin-probe.c
+> > @@ -347,7 +347,10 @@ static int perf_add_probe_events(struct perf_probe_event *pevs, int npevs)
+> >  		goto out_cleanup;
+> >  
+> >  	if (params.command == 'D') {	/* it shows definition */
+> > -		ret = show_probe_trace_events(pevs, npevs);
+> > +		if (probe_conf.bootconfig)
+> > +			ret = show_bootconfig_events(pevs, npevs);
+> > +		else
+> > +			ret = show_probe_trace_events(pevs, npevs);
+> >  		goto out_cleanup;
+> >  	}
+> >  
+> > @@ -581,6 +584,8 @@ __cmd_probe(int argc, const char **argv)
+> >  		   "Look for files with symbols relative to this directory"),
+> >  	OPT_CALLBACK(0, "target-ns", NULL, "pid",
+> >  		     "target pid for namespace contexts", opt_set_target_ns),
+> > +	OPT_BOOLEAN(0, "bootconfig", &probe_conf.bootconfig,
+> > +		    "Output probe definition with bootconfig format"),
+> >  	OPT_END()
+> >  	};
+> >  	int ret;
+> > @@ -692,6 +697,11 @@ __cmd_probe(int argc, const char **argv)
+> >  		}
+> >  		break;
+> >  	case 'D':
+> > +		if (probe_conf.bootconfig && params.uprobes) {
+> > +			pr_err("  Error: --bootconfig doesn't support uprobes.\n");
+> > +			return -EINVAL;
+> > +		}
+> > +		__fallthrough;
+> >  	case 'a':
+> >  
+> >  		/* Ensure the last given target is used */
+> > diff --git a/tools/perf/util/probe-event.c b/tools/perf/util/probe-event.c
+> > index 505c0702dbe2..f1348fa3dd1b 100644
+> > --- a/tools/perf/util/probe-event.c
+> > +++ b/tools/perf/util/probe-event.c
+> > @@ -3564,6 +3564,78 @@ int show_probe_trace_events(struct perf_probe_event *pevs, int npevs)
+> >  	return ret;
+> >  }
+> >  
+> > +static int show_bootconfig_event(struct probe_trace_event *tev)
+> > +{
+> > +	struct probe_trace_point *tp = &tev->point;
+> > +	struct strbuf buf;
+> > +	char *ret = NULL;
+> > +	int err;
+> > +
+> > +	if (strbuf_init(&buf, 32) < 0)
+> > +		return -ENOMEM;
+> > +
+> > +	err = synthesize_kprobe_trace_def(tp, &buf);
+> > +	if (err >= 0)
+> > +		err = synthesize_probe_trace_args(tev, &buf);
+> > +	if (err >= 0)
+> > +		ret = strbuf_detach(&buf, NULL);
+> > +	strbuf_release(&buf);
+> > +
+> > +	if (ret) {
+> > +		printf("'%s'", ret);
+> > +		free(ret);
+> > +	}
+> > +
+> > +	return err;
+> > +}
+> > +
+> > +int show_bootconfig_events(struct perf_probe_event *pevs, int npevs)
+> > +{
+> > +	struct strlist *namelist = strlist__new(NULL, NULL);
+> > +	struct probe_trace_event *tev;
+> > +	struct perf_probe_event *pev;
+> > +	char *cur_name = NULL;
+> > +	int i, j, ret = 0;
+> > +
+> > +	if (!namelist)
+> > +		return -ENOMEM;
+> > +
+> > +	for (j = 0; j < npevs && !ret; j++) {
+> > +		pev = &pevs[j];
+> > +		if (pev->group && strcmp(pev->group, "probe"))
+> > +			pr_warning("WARN: Group name %s is ignored\n", pev->group);
+> > +		if (pev->uprobes) {
+> > +			pr_warning("ERROR: Bootconfig doesn't support uprobes\n");
+> > +			ret = -EINVAL;
+> > +			break;
+> > +		}
+> > +		for (i = 0; i < pev->ntevs && !ret; i++) {
+> > +			tev = &pev->tevs[i];
+> > +			/* Skip if the symbol is out of .text or blacklisted */
+> > +			if (!tev->point.symbol && !pev->uprobes)
+> > +				continue;
+> > +
+> > +			/* Set new name for tev (and update namelist) */
+> > +			ret = probe_trace_event__set_name(tev, pev,
+> > +							  namelist, true);
+> > +			if (ret)
+> > +				break;
+> > +
+> > +			if (!cur_name || strcmp(cur_name, tev->event)) {
+> > +				printf("%sftrace.event.kprobes.%s.probe = ",
+> > +					cur_name ? "\n" : "", tev->event);
+> > +				cur_name = tev->event;
+> > +			} else
+> > +				printf(", ");
+> > +			ret = show_bootconfig_event(tev);
+> > +		}
+> > +	}
+> > +	printf("\n");
+> > +	strlist__delete(namelist);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> >  int apply_perf_probe_events(struct perf_probe_event *pevs, int npevs)
+> >  {
+> >  	int i, ret = 0;
+> > diff --git a/tools/perf/util/probe-event.h b/tools/perf/util/probe-event.h
+> > index 4f0eb3a20c36..65769d7949a3 100644
+> > --- a/tools/perf/util/probe-event.h
+> > +++ b/tools/perf/util/probe-event.h
+> > @@ -15,6 +15,7 @@ struct probe_conf {
+> >  	bool	force_add;
+> >  	bool	no_inlines;
+> >  	bool	cache;
+> > +	bool	bootconfig;
+> >  	int	max_probes;
+> >  	unsigned long	magic_num;
+> >  };
+> > @@ -163,6 +164,7 @@ int add_perf_probe_events(struct perf_probe_event *pevs, int npevs);
+> >  int convert_perf_probe_events(struct perf_probe_event *pevs, int npevs);
+> >  int apply_perf_probe_events(struct perf_probe_event *pevs, int npevs);
+> >  int show_probe_trace_events(struct perf_probe_event *pevs, int npevs);
+> > +int show_bootconfig_events(struct perf_probe_event *pevs, int npevs);
+> >  void cleanup_perf_probe_events(struct perf_probe_event *pevs, int npevs);
+> >  
+> >  struct strfilter;
+> > 
+> 
+> -- 
+> 
+> - Arnaldo
+
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Masami Hiramatsu <mhiramat@kernel.org>
