@@ -2,240 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B483AC10F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 04:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE5CF3AC11F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 04:54:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231867AbhFRCzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 22:55:16 -0400
-Received: from mail-io1-f50.google.com ([209.85.166.50]:43589 "EHLO
-        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231565AbhFRCzP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 22:55:15 -0400
-Received: by mail-io1-f50.google.com with SMTP id k16so5417438ios.10
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 19:53:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SDWeQISHJ4j5pHR3hlooWBcjy0lmkm8xWsM2aTeQjac=;
-        b=YGXNZtMPMbQWOoh7C0+aam5E5xDsmkP1GltUHv8lWMlBlwfTjtfbhzLu5z1x6YybPL
-         H7KXQvMPFd6TD+I6yPnmMiTn7fIHDzAo66Ipa8CVFdvMu2lBLU1sbsBcczpS1ai0TxuA
-         k1MiKQSiJ+RP6dqdZNYF9fSUIEJhoNRSfQubza2zV6gdzt2oHRor/VcTx7RVlwJjqhZI
-         /3xNX3zW46aZSkHuwpjrBBt+A5VpZfEYD2HM5SWERoTNogHxASac4KWrcKk7OU0u8d64
-         5dxDcKRuQHrqfgporn1asbXUgBgddSzbQfNdpqhIPI4UbViIm7xGGJub356w4Kt4a6KW
-         Eh9Q==
-X-Gm-Message-State: AOAM532V+WuHVKKtFpdsXlaDClIiJ4UaiCBjW3WXt9yc6GmVX7MP75hZ
-        CIXe2oGPolFK1732PlLoYxE=
-X-Google-Smtp-Source: ABdhPJwJQHFhl4GJ+Max18sHnW1XiMYPvOP8W1h5MMA+wQ2c2NSucJh/dr8YLKj4CsHZdI5+xZmu1Q==
-X-Received: by 2002:a6b:7c07:: with SMTP id m7mr1469288iok.177.1623984785393;
-        Thu, 17 Jun 2021 19:53:05 -0700 (PDT)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id v18sm3791164iom.5.2021.06.17.19.53.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Jun 2021 19:53:05 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 02:53:03 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] percpu: optimize locking in pcpu_balance_workfn()
-Message-ID: <YMwKj10VhO5JTMjE@google.com>
-References: <20210617190322.3636731-1-guro@fb.com>
+        id S232089AbhFRC4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 22:56:20 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:39854 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232072AbhFRC4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 17 Jun 2021 22:56:13 -0400
+Received: from localhost.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv0CzCsxgVnITAA--.632S2;
+        Fri, 18 Jun 2021 10:53:41 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Huacai Chen <chenhc@lemote.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: [PATCH 1/4] stmmac: pci: Add dwmac support for Loongson
+Date:   Fri, 18 Jun 2021 10:53:34 +0800
+Message-Id: <20210618025337.5705-1-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210617190322.3636731-1-guro@fb.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Dxv0CzCsxgVnITAA--.632S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxuFW3Cry3Ar18CF45XF1rXrb_yoW3XFWDpa
+        1fAas0gr97Xr4xGws5Ar4DJF98uayav3y0g3yIkwna9FZYyrWqqwn5KFWYyF97CrWkWw1a
+        qF4jkF48uF4DJa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvGb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
+        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r4j6F
+        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kI
+        c2xKxwCY02Avz4vE14v_Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
+        73UjIFyTuYvjxUcD73DUUUU
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This GMAC module is integrated into the Loongson-2K SoC and the LS7A
+bridge chip.
 
-On Thu, Jun 17, 2021 at 12:03:22PM -0700, Roman Gushchin wrote:
-> pcpu_balance_workfn() unconditionally calls pcpu_balance_free(),
-> pcpu_reclaim_populated(), pcpu_balance_populated() and
-> pcpu_balance_free() again.
-> 
-> Each call to pcpu_balance_free() and pcpu_reclaim_populated() will
-> cause at least one acquisition of the pcpu_lock. So even if the
-> balancing was scheduled because of a failed atomic allocation,
-> pcpu_lock will be acquired at least 4 times. This obviously
-> increases the contention on the pcpu_lock.
-> 
-> To optimize the scheme let's grab the pcpu_lock on the upper level
-> (in pcpu_balance_workfn()) and keep it generally locked for the whole
-> duration of the scheduled work, but release conditionally to perform
-> any slow operations like chunk (de)population and creation of new
-> chunks.
-> 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> ---
->  mm/percpu.c | 41 +++++++++++++++++++++++++++++------------
->  1 file changed, 29 insertions(+), 12 deletions(-)
-> 
-> diff --git a/mm/percpu.c b/mm/percpu.c
-> index e7b9ca82e9aa..deee7e5bb255 100644
-> --- a/mm/percpu.c
-> +++ b/mm/percpu.c
-> @@ -1980,6 +1980,9 @@ void __percpu *__alloc_reserved_percpu(size_t size, size_t align)
->   * If empty_only is %false, reclaim all fully free chunks regardless of the
->   * number of populated pages.  Otherwise, only reclaim chunks that have no
->   * populated pages.
-> + *
-> + * CONTEXT:
-> + * pcpu_lock (can be dropped temporarily)
->   */
->  static void pcpu_balance_free(bool empty_only)
->  {
-> @@ -1987,12 +1990,12 @@ static void pcpu_balance_free(bool empty_only)
->  	struct list_head *free_head = &pcpu_chunk_lists[pcpu_free_slot];
->  	struct pcpu_chunk *chunk, *next;
->  
-> +	lockdep_assert_held(&pcpu_lock);
-> +
->  	/*
->  	 * There's no reason to keep around multiple unused chunks and VM
->  	 * areas can be scarce.  Destroy all free chunks except for one.
->  	 */
-> -	spin_lock_irq(&pcpu_lock);
-> -
->  	list_for_each_entry_safe(chunk, next, free_head, list) {
->  		WARN_ON(chunk->immutable);
->  
-> @@ -2004,8 +2007,10 @@ static void pcpu_balance_free(bool empty_only)
->  			list_move(&chunk->list, &to_free);
->  	}
->  
-> -	spin_unlock_irq(&pcpu_lock);
-> +	if (list_empty(&to_free))
-> +		return;
->  
-> +	spin_unlock_irq(&pcpu_lock);
->  	list_for_each_entry_safe(chunk, next, &to_free, list) {
->  		unsigned int rs, re;
->  
-> @@ -2019,6 +2024,7 @@ static void pcpu_balance_free(bool empty_only)
->  		pcpu_destroy_chunk(chunk);
->  		cond_resched();
->  	}
-> +	spin_lock_irq(&pcpu_lock);
->  }
->  
->  /**
-> @@ -2029,6 +2035,9 @@ static void pcpu_balance_free(bool empty_only)
->   * OOM killer to be triggered.  We should avoid doing so until an actual
->   * allocation causes the failure as it is possible that requests can be
->   * serviced from already backed regions.
-> + *
-> + * CONTEXT:
-> + * pcpu_lock (can be dropped temporarily)
->   */
->  static void pcpu_balance_populated(void)
->  {
-> @@ -2037,6 +2046,8 @@ static void pcpu_balance_populated(void)
->  	struct pcpu_chunk *chunk;
->  	int slot, nr_to_pop, ret;
->  
-> +	lockdep_assert_held(&pcpu_lock);
-> +
->  	/*
->  	 * Ensure there are certain number of free populated pages for
->  	 * atomic allocs.  Fill up from the most packed so that atomic
-> @@ -2064,13 +2075,11 @@ static void pcpu_balance_populated(void)
->  		if (!nr_to_pop)
->  			break;
->  
-> -		spin_lock_irq(&pcpu_lock);
->  		list_for_each_entry(chunk, &pcpu_chunk_lists[slot], list) {
->  			nr_unpop = chunk->nr_pages - chunk->nr_populated;
->  			if (nr_unpop)
->  				break;
->  		}
-> -		spin_unlock_irq(&pcpu_lock);
->  
->  		if (!nr_unpop)
->  			continue;
-> @@ -2080,12 +2089,13 @@ static void pcpu_balance_populated(void)
->  					     chunk->nr_pages) {
->  			int nr = min_t(int, re - rs, nr_to_pop);
->  
-> +			spin_unlock_irq(&pcpu_lock);
->  			ret = pcpu_populate_chunk(chunk, rs, rs + nr, gfp);
-> +			cond_resched();
-> +			spin_lock_irq(&pcpu_lock);
->  			if (!ret) {
->  				nr_to_pop -= nr;
-> -				spin_lock_irq(&pcpu_lock);
->  				pcpu_chunk_populated(chunk, rs, rs + nr);
-> -				spin_unlock_irq(&pcpu_lock);
->  			} else {
->  				nr_to_pop = 0;
->  			}
-> @@ -2097,11 +2107,12 @@ static void pcpu_balance_populated(void)
->  
->  	if (nr_to_pop) {
->  		/* ran out of chunks to populate, create a new one and retry */
-> +		spin_unlock_irq(&pcpu_lock);
->  		chunk = pcpu_create_chunk(gfp);
-> +		cond_resched();
-> +		spin_lock_irq(&pcpu_lock);
->  		if (chunk) {
-> -			spin_lock_irq(&pcpu_lock);
->  			pcpu_chunk_relocate(chunk, -1);
-> -			spin_unlock_irq(&pcpu_lock);
->  			goto retry_pop;
->  		}
->  	}
-> @@ -2117,6 +2128,10 @@ static void pcpu_balance_populated(void)
->   * populated pages threshold, reintegrate the chunk if it has empty free pages.
->   * Each chunk is scanned in the reverse order to keep populated pages close to
->   * the beginning of the chunk.
-> + *
-> + * CONTEXT:
-> + * pcpu_lock (can be dropped temporarily)
-> + *
->   */
->  static void pcpu_reclaim_populated(void)
->  {
-> @@ -2124,7 +2139,7 @@ static void pcpu_reclaim_populated(void)
->  	struct pcpu_block_md *block;
->  	int i, end;
->  
-> -	spin_lock_irq(&pcpu_lock);
-> +	lockdep_assert_held(&pcpu_lock);
->  
->  restart:
->  	/*
-> @@ -2190,8 +2205,6 @@ static void pcpu_reclaim_populated(void)
->  			list_move(&chunk->list,
->  				  &pcpu_chunk_lists[pcpu_sidelined_slot]);
->  	}
-> -
-> -	spin_unlock_irq(&pcpu_lock);
->  }
->  
->  /**
-> @@ -2212,10 +2225,14 @@ static void pcpu_balance_workfn(struct work_struct *work)
->  	 * appropriate.
->  	 */
->  	mutex_lock(&pcpu_alloc_mutex);
-> +	spin_lock_irq(&pcpu_lock);
-> +
->  	pcpu_balance_free(false);
->  	pcpu_reclaim_populated();
->  	pcpu_balance_populated();
->  	pcpu_balance_free(true);
-> +
-> +	spin_unlock_irq(&pcpu_lock);
->  	mutex_unlock(&pcpu_alloc_mutex);
->  }
->  
-> -- 
-> 2.31.1
-> 
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/Kconfig   |   9 +
+ drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
+ .../ethernet/stmicro/stmmac/dwmac-loongson.c  | 218 ++++++++++++++++++
+ 3 files changed, 228 insertions(+)
+ create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c
 
-I've applied this to for-5.14.
+diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
+index 7737e4d0bb9e..0fc4532a2caa 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
++++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
+@@ -238,6 +238,15 @@ config DWMAC_INTEL
+ 	  This selects the Intel platform specific bus support for the
+ 	  stmmac driver. This driver is used for Intel Quark/EHL/TGL.
+ 
++config DWMAC_LOONGSON
++	tristate "Loongson PCI DWMAC support"
++	default MACH_LOONGSON64
++	depends on STMMAC_ETH && PCI
++	depends on COMMON_CLK
++	help
++	  This selects the LOONGSON PCI bus support for the stmmac driver,
++	  Support for ethernet controller on Loongson-2K1000 SoC and LS7A1000 bridge.
++
+ config STMMAC_PCI
+ 	tristate "STMMAC PCI bus support"
+ 	depends on STMMAC_ETH && PCI
+diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net/ethernet/stmicro/stmmac/Makefile
+index f2e478b884b0..56d0d536859c 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/Makefile
++++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
+@@ -36,4 +36,5 @@ dwmac-altr-socfpga-objs := altr_tse_pcs.o dwmac-socfpga.o
+ 
+ obj-$(CONFIG_STMMAC_PCI)	+= stmmac-pci.o
+ obj-$(CONFIG_DWMAC_INTEL)	+= dwmac-intel.o
++obj-$(CONFIG_DWMAC_LOONGSON)	+= dwmac-loongson.o
+ stmmac-pci-objs:= stmmac_pci.o
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c
+new file mode 100644
+index 000000000000..8cd4e2e8ec40
+--- /dev/null
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c
+@@ -0,0 +1,218 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2020, Loongson Corporation
++ */
++
++#include <linux/clk-provider.h>
++#include <linux/pci.h>
++#include <linux/dmi.h>
++#include <linux/device.h>
++#include <linux/of_irq.h>
++#include "stmmac.h"
++
++static int loongson_default_data(struct plat_stmmacenet_data *plat)
++{
++	plat->clk_csr = 2;	/* clk_csr_i = 20-35MHz & MDC = clk_csr_i/16 */
++	plat->has_gmac = 1;
++	plat->force_sf_dma_mode = 1;
++
++	/* Set default value for multicast hash bins */
++	plat->multicast_filter_bins = HASH_TABLE_SIZE;
++
++	/* Set default value for unicast filter entries */
++	plat->unicast_filter_entries = 1;
++
++	/* Set the maxmtu to a default of JUMBO_LEN */
++	plat->maxmtu = JUMBO_LEN;
++
++	/* Set default number of RX and TX queues to use */
++	plat->tx_queues_to_use = 1;
++	plat->rx_queues_to_use = 1;
++
++	/* Disable Priority config by default */
++	plat->tx_queues_cfg[0].use_prio = false;
++	plat->rx_queues_cfg[0].use_prio = false;
++
++	/* Disable RX queues routing by default */
++	plat->rx_queues_cfg[0].pkt_route = 0x0;
++
++	/* Default to phy auto-detection */
++	plat->phy_addr = -1;
++
++	plat->dma_cfg->pbl = 32;
++	plat->dma_cfg->pblx8 = true;
++
++	plat->multicast_filter_bins = 256;
++	return 0;
++}
++
++static int loongson_dwmac_probe(struct pci_dev *pdev, const struct pci_device_id *id)
++{
++	struct plat_stmmacenet_data *plat;
++	struct stmmac_resources res;
++	int ret, i, mdio;
++	struct device_node *np;
++
++	np = dev_of_node(&pdev->dev);
++
++	if (!np) {
++		pr_info("dwmac_loongson_pci: No OF node\n");
++		return -ENODEV;
++	}
++
++	if (!of_device_is_compatible(np, "loongson, pci-gmac")) {
++		pr_info("dwmac_loongson_pci: Incompatible OF node\n");
++		return -ENODEV;
++	}
++
++	plat = devm_kzalloc(&pdev->dev, sizeof(*plat), GFP_KERNEL);
++	if (!plat)
++		return -ENOMEM;
++
++	if (plat->mdio_node) {
++		dev_err(&pdev->dev, "Found MDIO subnode\n");
++		mdio = true;
++	}
++
++	if (mdio) {
++		plat->mdio_bus_data = devm_kzalloc(&pdev->dev,
++						   sizeof(*plat->mdio_bus_data),
++						   GFP_KERNEL);
++		if (!plat->mdio_bus_data)
++			return -ENOMEM;
++		plat->mdio_bus_data->needs_reset = true;
++	}
++
++	plat->dma_cfg = devm_kzalloc(&pdev->dev, sizeof(*plat->dma_cfg), GFP_KERNEL);
++	if (!plat->dma_cfg)
++		return -ENOMEM;
++
++	/* Enable pci device */
++	ret = pci_enable_device(pdev);
++	if (ret) {
++		dev_err(&pdev->dev, "%s: ERROR: failed to enable device\n", __func__);
++		return ret;
++	}
++
++	/* Get the base address of device */
++	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
++		if (pci_resource_len(pdev, i) == 0)
++			continue;
++		ret = pcim_iomap_regions(pdev, BIT(0), pci_name(pdev));
++		if (ret)
++			return ret;
++		break;
++	}
++
++	plat->bus_id = of_alias_get_id(np, "ethernet");
++	if (plat->bus_id < 0)
++		plat->bus_id = pci_dev_id(pdev);
++
++	plat->phy_interface = device_get_phy_mode(&pdev->dev);
++	if (plat->phy_interface < 0)
++		dev_err(&pdev->dev, "phy_mode not found\n");
++
++	plat->interface = PHY_INTERFACE_MODE_GMII;
++
++	pci_set_master(pdev);
++
++	loongson_default_data(plat);
++	pci_enable_msi(pdev);
++	memset(&res, 0, sizeof(res));
++	res.addr = pcim_iomap_table(pdev)[0];
++
++	res.irq = of_irq_get_byname(np, "macirq");
++	if (res.irq < 0) {
++		dev_err(&pdev->dev, "IRQ macirq not found\n");
++		ret = -ENODEV;
++	}
++
++	res.wol_irq = of_irq_get_byname(np, "eth_wake_irq");
++	if (res.wol_irq < 0) {
++		dev_info(&pdev->dev, "IRQ eth_wake_irq not found, using macirq\n");
++		res.wol_irq = res.irq;
++	}
++
++	res.lpi_irq = of_irq_get_byname(np, "eth_lpi");
++	if (res.lpi_irq < 0) {
++		dev_err(&pdev->dev, "IRQ eth_lpi not found\n");
++		ret = -ENODEV;
++	}
++
++	return stmmac_dvr_probe(&pdev->dev, plat, &res);
++}
++
++static void loongson_dwmac_remove(struct pci_dev *pdev)
++{
++	int i;
++
++	stmmac_dvr_remove(&pdev->dev);
++
++	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
++		if (pci_resource_len(pdev, i) == 0)
++			continue;
++		pcim_iounmap_regions(pdev, BIT(i));
++		break;
++	}
++
++	pci_disable_device(pdev);
++}
++
++static int __maybe_unused loongson_dwmac_suspend(struct device *dev)
++{
++	struct pci_dev *pdev = to_pci_dev(dev);
++	int ret;
++
++	ret = stmmac_suspend(dev);
++	if (ret)
++		return ret;
++
++	ret = pci_save_state(pdev);
++	if (ret)
++		return ret;
++
++	pci_disable_device(pdev);
++	pci_wake_from_d3(pdev, true);
++	return 0;
++}
++
++static int __maybe_unused loongson_dwmac_resume(struct device *dev)
++{
++	struct pci_dev *pdev = to_pci_dev(dev);
++	int ret;
++
++	pci_restore_state(pdev);
++	pci_set_power_state(pdev, PCI_D0);
++
++	ret = pci_enable_device(pdev);
++	if (ret)
++		return ret;
++
++	pci_set_master(pdev);
++
++	return stmmac_resume(dev);
++}
++
++static SIMPLE_DEV_PM_OPS(loongson_dwmac_pm_ops, loongson_dwmac_suspend,
++			 loongson_dwmac_resume);
++
++static const struct pci_device_id loongson_dwmac_id_table[] = {
++	{ PCI_VDEVICE(LOONGSON, 0x7a03) },
++	{}
++};
++MODULE_DEVICE_TABLE(pci, loongson_dwmac_id_table);
++
++struct pci_driver loongson_dwmac_driver = {
++	.name = "dwmac-loongson-pci",
++	.id_table = loongson_dwmac_id_table,
++	.probe = loongson_dwmac_probe,
++	.remove = loongson_dwmac_remove,
++	.driver = {
++		.pm = &loongson_dwmac_pm_ops,
++	},
++};
++
++module_pci_driver(loongson_dwmac_driver);
++
++MODULE_DESCRIPTION("Loongson DWMAC PCI driver");
++MODULE_AUTHOR("Qing Zhang <zhangqing@loongson.cn>");
++MODULE_LICENSE("GPL v2");
+-- 
+2.31.0
 
-Thanks,
-Dennis
