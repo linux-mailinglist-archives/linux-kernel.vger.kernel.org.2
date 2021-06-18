@@ -2,80 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5F23AC4B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:13:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF603AC4BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:15:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232842AbhFRHPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 03:15:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59738 "EHLO
+        id S232912AbhFRHRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 03:17:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230447AbhFRHPL (ORCPT
+        with ESMTP id S230447AbhFRHRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 03:15:11 -0400
-Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC86C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 00:13:01 -0700 (PDT)
-Received: by mail-ua1-x932.google.com with SMTP id r4so2150407uap.8
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 00:13:01 -0700 (PDT)
+        Fri, 18 Jun 2021 03:17:07 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82665C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 00:14:57 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id ji1so8124027ejc.4
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 00:14:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hTT5ZsIEPC31rh2i5dgbNFLjOHADYWpb81q5A6MltNs=;
-        b=QR982XZHnvKy0kMVowEg8rOWXN3rOElV6H+cTm4PjI9w0oOdLfamzCj9dL/yidpq1X
-         7Xs46nImgGkredeeD9pjVwid8kuLSWEB0mE+k7amBb5nZl7hf9LZ4bd7u+QkgnMhnio4
-         cxn9+gUdcxReUj/ikV9V3irRVGgQkPIh3QQnU=
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=E0SoMThWmExXzF5EbvKyjPfd/YPiucGrDsQng1mFduk=;
+        b=PATDK3CAWfHyAm2itpJvl9i8Z2DKKunEb8Xc4FIYyrGMvm0t+vwrqD2Z4RchiNR+tD
+         9oLeENVltFulbQjyEKgq7OKxJE0HF+NUnwcxR+Y6qu+y528s0USIBTF/kFyU2bcs5CHs
+         68MQ4zeKM8jE23yaVv9I5qRa//WUw88e0bsQaonvvgu60PfarCvrxQy1gh8YoN3rydgS
+         2woDYZSahk57Eya9hRtf13YGVl1r+ZZ0xC++6aSz1hN/D/Gc0HTG2KFqdQSIGHoMdRWs
+         iT6FHLgyUnlBXqN29R0OXk+z0VhRkX5L8hDwr05Ju3oil+1VdFIMFuvFnp8O+sGjsUHn
+         7lqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hTT5ZsIEPC31rh2i5dgbNFLjOHADYWpb81q5A6MltNs=;
-        b=eL/Uo3G9yvWul7DhfGPaiQ6b1yB1im9Gkrcc3a7YWJaT0p6yUDFaITJbXj3rnlGlPs
-         qQF9RQG57HYGWUISRtHalkSSLy7i1A5kRjLec1qNBt76FIn3yLimaXzy2KWhKILFEFDm
-         tunhPuqkd21FnrSai8lKvlW1SZHQlpS+k/bBYz9yPTF+2ZCpY7UQ69K1v8xKHxBiJSll
-         hHkWBLX2aXqNMVIKepkVNfivPV1duMRgVoGCjeblinYNlOAdWwDwxdxv4EAqiv/Ac7a6
-         /07SiZ2DvrvvISrSYrUHDydDndwWyFbnU0X5ZNlsec5JJp/yFZshjY8UR5qbjADwGYTL
-         qCeg==
-X-Gm-Message-State: AOAM531/TxEomBuuKYDLf1zPCT5i8S+b5HVbSaREwcEKg/L1JyaJqJRb
-        efA4IdVh4rxcfoLBF5HBaXFtdHLLYRaAIhcRhjgpOS0XvcA=
-X-Google-Smtp-Source: ABdhPJxllpxOra45K65lwZpKCY+dEU2zRZr2ziz7XoQ5lV4m+GwBGb6yoVY47QiteupuFAOi00da4FGaGtwVFYv5mB8=
-X-Received: by 2002:ab0:2690:: with SMTP id t16mr10545968uao.9.1624000380770;
- Fri, 18 Jun 2021 00:13:00 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=E0SoMThWmExXzF5EbvKyjPfd/YPiucGrDsQng1mFduk=;
+        b=cs8RZV+EXm38mBz8evWKw0L95YUj+PiHn1724XQmAPuydbL9swQur6VsXrWho9UHeD
+         HK47DzcLmo7t15mkn+h+s+9wkFVrAKJm6hQqurzLbx/owjLL8wvAm5QWGmdAfHPtFZG9
+         VilO347VIzxhcvM0BFQn9QGz8p6M0trNVPfOb19wM8VK2vv6uwc+NCGU4ZqH4pnUqBez
+         hhmFBji+Jnf5DF1PPkmnYcyKLdQ9m0j62p/sHarIAR6dYYKAzpX9mCe/9SmR1GrwX8Cz
+         CBNF0Qac4eqYU7KbkIR1+b2o71EIBR4jDapOMCmiTA7wwk/iT7Wt+kchCirFdE84XVPz
+         L7+g==
+X-Gm-Message-State: AOAM5326Zi3YrMJyxbAJw0hCDdR+OW4r6FpCM1/pfvppKcQos1sG7Zuv
+        C6dKdfwnn830SmU+o5b68xpfx5+vbqEPENP5VHFOuKKuQ/0pdg==
+X-Google-Smtp-Source: ABdhPJwRCq12s1+295PmMXlgcXctiEnAnFhf42DJxoB+LnuEkPGvIX8N4YXYitUsMPTVUZFDEebjwbBL3gV2x6Z2FOk=
+X-Received: by 2002:a17:907:3d94:: with SMTP id he20mr9781311ejc.9.1624000495889;
+ Fri, 18 Jun 2021 00:14:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210512161848.3513818-1-rjones@redhat.com> <20210512161848.3513818-2-rjones@redhat.com>
- <CAJfpegv=C-tUwbAi+JMWrNb+pai=HiAU8YCDunE5yUZB7qMK1g@mail.gmail.com> <20210615103357.GP26415@redhat.com>
-In-Reply-To: <20210615103357.GP26415@redhat.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 18 Jun 2021 09:12:49 +0200
-Message-ID: <CAJfpegv6c6xR-ye9hj0AAiw_OsoYpHqTjH=jwAWPj4R2Wb6-1g@mail.gmail.com>
-Subject: Re: [PATCH v4] fuse: Allow fallocate(FALLOC_FL_ZERO_RANGE)
-To:     "Richard W.M. Jones" <rjones@redhat.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        eblake@redhat.com, libguestfs@redhat.com,
-        Shachar Sharon <synarete@gmail.com>
+From:   Dave Airlie <airlied@gmail.com>
+Date:   Fri, 18 Jun 2021 17:14:45 +1000
+Message-ID: <CAPM=9txDgvo3Gu7bX_C9A4hAQJf+pGk+pMUR1bKg4EapEeqazQ@mail.gmail.com>
+Subject: [git pull] drm fixes for 5.13-rc7
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 at 12:34, Richard W.M. Jones <rjones@redhat.com> wrote:
->
-> On Tue, May 18, 2021 at 03:56:25PM +0200, Miklos Szeredi wrote:
-> > On Wed, 12 May 2021 at 18:19, Richard W.M. Jones <rjones@redhat.com> wrote:
-> > >
-> > > The current fuse module filters out fallocate(FALLOC_FL_ZERO_RANGE)
-> > > returning -EOPNOTSUPP.  libnbd's nbdfuse would like to translate
-> > > FALLOC_FL_ZERO_RANGE requests into the NBD command
-> > > NBD_CMD_WRITE_ZEROES which allows NBD servers that support it to do
-> > > zeroing efficiently.
-> > >
-> > > This commit treats this flag exactly like FALLOC_FL_PUNCH_HOLE.
-> >
-> > Thanks, applied.
->
-> Hi Miklos, did this patch get forgotten?
+Hi Linus,
 
-It's in my internal patch queue.   Will push to fuse.git#for-next in a few days.
+Not much happening in fixes land this week only one PR for two amdgpu
+powergating fixes was waiting for me, maybe something will show up
+over the weekend, maybe not.
 
-Thanks,
-Miklos
+Dave.
+
+drm-fixes-2021-06-18:
+drm fixes for 5.13-rc7
+
+amdgpu:
+- GFX9 and 10 powergating fixes
+The following changes since commit 009c9aa5be652675a06d5211e1640e02bbb1c33d:
+
+  Linux 5.13-rc6 (2021-06-13 14:43:10 -0700)
+
+are available in the Git repository at:
+
+  git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-06-18
+
+for you to fetch changes up to c55338d34cc2434d4ff9de89498f91171bd1f120:
+
+  Merge tag 'amd-drm-fixes-5.13-2021-06-16' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes (2021-06-18
+11:15:04 +1000)
+
+----------------------------------------------------------------
+drm fixes for 5.13-rc7
+
+amdgpu:
+- GFX9 and 10 powergating fixes
+
+----------------------------------------------------------------
+Dave Airlie (1):
+      Merge tag 'amd-drm-fixes-5.13-2021-06-16' of
+https://gitlab.freedesktop.org/agd5f/linux into drm-fixes
+
+Yifan Zhang (2):
+      drm/amdgpu/gfx9: fix the doorbell missing when in CGPG issue.
+      drm/amdgpu/gfx10: enlarge CP_MEC_DOORBELL_RANGE_UPPER to cover
+full doorbell.
+
+ drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c | 6 +++++-
+ drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c  | 6 +++++-
+ 2 files changed, 10 insertions(+), 2 deletions(-)
