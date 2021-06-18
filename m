@@ -2,193 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C7F3AD0DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC0FA3AD0E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233387AbhFRRGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 13:06:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52188 "EHLO
+        id S233626AbhFRRGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 13:06:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230438AbhFRRGD (ORCPT
+        with ESMTP id S233818AbhFRRGJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 13:06:03 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C7FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:03:53 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id gt18so16870912ejc.11
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:03:53 -0700 (PDT)
+        Fri, 18 Jun 2021 13:06:09 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0845C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:03:59 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id v22-20020a0568301416b029044e2d8e855eso1131508otp.8
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:03:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ZO+mLMtBmmkLNPwv3zhliZxU6KZC5d6RsGFH75FYv2M=;
-        b=zWUlO12gOz2OERwXyreg7Ulhmi9E56KEw7Qw+3yW43QiICBJfPKbj8krfUBOdMP+gK
-         pLmFZ385DrBlqf844plfiaQADkGD19b5iE6b79BwVzBA/7gN4sMLdozHNj9WDXbHrLwD
-         7GQDssKv6Crw0GVWUv7ikqpQ4jKQZXxSbB9QCvXeL4X09uX7HO75qqfbcP8BNTVVCxdn
-         nKAGGhRgEUquYMAuSzssyQycozXiMjmgF8lc73wvdbIR/dbIX2ba86Mftem08eF08cQ6
-         axooW6WKpTISgIRtKYIbVGkoPKFGIDD9EFe1zVkm+P5F7eV/ZclTnQfYNAnbNS6SkBYt
-         m4dA==
+        bh=hS6Ph+TqVJWLf/2tgtcoPQIPDI6nxlHVB3e8hgJ1e5s=;
+        b=z6K4EVsU5YmuAv8fyPRqVbdKQTLOUqGuWhR8Vbrpz9IY8Dbp7GvP3hv7FniKulj9X+
+         KA9DrJZsU0ZXwAJvolbkpK6hQOy/L3D2S1ajmkiAzAsKcv+Wt4e9nfgh7XO8a/TNh/WR
+         OVIQh+Zk0Tt76WVwkmkueaycQPHP3zJRl94E3971SdMjHmXHhcngUS75P+ZeUNgX609D
+         6slySbsCttF8lpeV+wnlWs/wM7tfDk9gM/bKmqoxAgvKaR4PX/0h9v2rkveILJqPae8v
+         Rxqvs0Y0iaYUmi2P3g523btyZ91EX2tEiyO90FnXn620hKdadJnbnS9xoHJHDnQ+QvV5
+         ZZsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ZO+mLMtBmmkLNPwv3zhliZxU6KZC5d6RsGFH75FYv2M=;
-        b=G0b8A5KcfWW/My4CxX3Ciz0D05gTPhr8MGGG2q/J4G5vNtfhqKAlNRaGAyhXNuMpbD
-         +w10eIaFplfK2KNBkFcxY85whwdXYYRSCumMcY5jnZF/otRIqDbGOhVVJ1gemA9DVe9i
-         kyHXi20k7vsozNFI8zP5eCxKAHrf/jXx6nwyyCQGrShNMGiCnqTAEw+p74l7v3fKv/G3
-         6khf0EEHUjKL69vj9q07HgqwVkAJ/kM4n8e/e5mQmzSEnKzqG0s/zz3ljyFxk63tBkyj
-         iYAa7Ed6HuteB2DF1K0FJFMlAfJsUTJFSiWwS6RbvfsOO6TE1hbGthDyJEvuch69M8H8
-         ZLQw==
-X-Gm-Message-State: AOAM5300cxLh2LpqaRYvhsQR3wLy+IhfbtwVQK5nRQyZ9I+gLwCleTGw
-        +TPW2+7RAkzD7uJqbjVotg1mpQ==
-X-Google-Smtp-Source: ABdhPJzcyYDv6aSKnhXtTDMkhc8qOBAYB16gr9FATqdfat0iAjtcVmzU9ngRif5A9tWMT/G36FBa/A==
-X-Received: by 2002:a17:907:e90:: with SMTP id ho16mr12120777ejc.410.1624035832047;
-        Fri, 18 Jun 2021 10:03:52 -0700 (PDT)
-Received: from myrica (adsl-84-226-111-173.adslplus.ch. [84.226.111.173])
-        by smtp.gmail.com with ESMTPSA id h9sm6373752edt.18.2021.06.18.10.03.50
+        bh=hS6Ph+TqVJWLf/2tgtcoPQIPDI6nxlHVB3e8hgJ1e5s=;
+        b=J8nkIo5KkEzNG/H4TGvvEWOVlKhKWwxvt0a1nowX2tPTO7jwCi0loqMjE6vufL7+FP
+         MVG5VgvtEBVLyoVHNVN9X50WNwaLT4RJppn6InDwnpMO4zoqNTjM2casyfF2ArQb5UPB
+         pcDV9nSxoIW0bh3tsIAhI2tr8s3nXAehpcYfCY05698lLAqptbr/T6lzeU6lF2/kAH91
+         INorGzzgR70K5E0i1N7MXMo3BXqkJh/68pUbI/GrWhs6lychNwsyCp5VSC7qbQae1XHw
+         DsuLB3Noj4gfnzjlhmcsfVARrc3f7LpxeAyMdH0TNm1eBaGQulbJYWOx/gINq/47s9PM
+         ZSAQ==
+X-Gm-Message-State: AOAM532rSk19aBdd7shS+FreV9xOPQ6rboVBXDutk6u2gFirjAW+17FP
+        ibsNCdT53beK8R7ilyVy+zU+SZo4MbhYAQ==
+X-Google-Smtp-Source: ABdhPJz8D52Hor6uFvXUI9Taldgxm9IHzYZgejikA1YYxSPQ5zdIORsVPxFwalrB+BGvVXA8wpxxTQ==
+X-Received: by 2002:a9d:389:: with SMTP id f9mr7726513otf.213.1624035839270;
+        Fri, 18 Jun 2021 10:03:59 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id n20sm2255333otj.11.2021.06.18.10.03.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 10:03:51 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 19:03:31 +0200
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     David Gibson <david@gibson.dropbear.id.au>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "Alex Williamson (alex.williamson@redhat.com)" 
-        <alex.williamson@redhat.com>, Jason Wang <jasowang@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>
-Subject: Re: [RFC] /dev/ioasid uAPI proposal
-Message-ID: <YMzR46luaG7hXsJi@myrica>
-References: <MWHPR11MB1886422D4839B372C6AB245F8C239@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210528195839.GO1002214@nvidia.com>
- <YLcpw5Kx61L7TVmR@yekko>
- <20210602165838.GA1002214@nvidia.com>
- <YLhsZRc72aIMZajz@yekko>
- <YLn/SJtzuJopSO2x@myrica>
- <YL8O1pAlg1jtHudn@yekko>
- <YMI/yynDsX/aaG8T@myrica>
- <YMq6voIhXt7guI+W@yekko>
+        Fri, 18 Jun 2021 10:03:58 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 12:03:56 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] soc: qcom: geni: move GENI_IF_DISABLE_RO to
+ common header
+Message-ID: <YMzR/H3QyQeEB2hB@yoga>
+References: <20210618141839.3777270-1-vkoul@kernel.org>
+ <20210618141839.3777270-2-vkoul@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YMq6voIhXt7guI+W@yekko>
+In-Reply-To: <20210618141839.3777270-2-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 01:00:14PM +1000, David Gibson wrote:
-> On Thu, Jun 10, 2021 at 06:37:31PM +0200, Jean-Philippe Brucker wrote:
-> > On Tue, Jun 08, 2021 at 04:31:50PM +1000, David Gibson wrote:
-> > > For the qemu case, I would imagine a two stage fallback:
-> > > 
-> > >     1) Ask for the exact IOMMU capabilities (including pagetable
-> > >        format) that the vIOMMU has.  If the host can supply, you're
-> > >        good
-> > > 
-> > >     2) If not, ask for a kernel managed IOAS.  Verify that it can map
-> > >        all the IOVA ranges the guest vIOMMU needs, and has an equal or
-> > >        smaller pagesize than the guest vIOMMU presents.  If so,
-> > >        software emulate the vIOMMU by shadowing guest io pagetable
-> > >        updates into the kernel managed IOAS.
-> > > 
-> > >     3) You're out of luck, don't start.
-> > >     
-> > > For both (1) and (2) I'd expect it to be asking this question *after*
-> > > saying what devices are attached to the IOAS, based on the virtual
-> > > hardware configuration.  That doesn't cover hotplug, of course, for
-> > > that you have to just fail the hotplug if the new device isn't
-> > > supportable with the IOAS you already have.
-> > 
-> > Yes. So there is a point in time when the IOAS is frozen, and cannot take
-> > in new incompatible devices. I think that can support the usage I had in
-> > mind. If the VMM (non-QEMU, let's say) wanted to create one IOASID FD per
-> > feature set it could bind the first device, freeze the features, then bind
+On Fri 18 Jun 09:18 CDT 2021, Vinod Koul wrote:
+
+> GENI_IF_DISABLE_RO is used by geni spi driver as well to check the
+> status if GENI, so move this to common header qcom-geni-se.h
 > 
-> Are you thinking of this "freeze the features" as an explicitly
-> triggered action?  I have suggested that an explicit "ENABLE" step
-> might be useful, but that hasn't had much traction from what I've
-> seen.
-
-Seems like we do need an explicit enable step for the flow you described
-above:
-
-a) Bind all devices to an ioasid. Each bind succeeds.
-b) Ask for a specific set of features for this aggregate of device. Ask
-   for (1), fall back to (2), or abort.
-c) Boot the VM
-d) Hotplug a device, bind it to the ioasid. We're long past negotiating
-   features for the ioasid, so the host needs to reject the bind if the
-   new device is incompatible with what was requested at (b)
-
-So a successful request at (b) would be the point where we change the
-behavior of bind.
-
-Since the kernel needs a form of feature check in any case, I still have a
-preference for aborting the bind at (a) if the device isn't exactly
-compatible with other devices already in the ioasid, because it might be
-simpler to implement in the host, but I don't feel strongly about this.
-
-
-> > I'd like to understand better where the difficulty lies, with migration.
-> > Is the problem, once we have a guest running on physical machine A, to
-> > make sure that physical machine B supports the same IOMMU properties
-> > before migrating the VM over to B?  Why can't QEMU (instead of the user)
-> > select a feature set on machine A, then when time comes to migrate, query
-> > all information from the host kernel on machine B and check that it
-> > matches what was picked for machine A?  Or is it only trying to
-> > accommodate different sets of features between A and B, that would be too
-> > difficult?
+> Also, add FIFO_IF_DISABLE define.
 > 
-> There are two problems
-> 
-> 1) Although it could be done in theory, it's hard, and it would need a
-> huge rewrite to qemu's whole migration infrastructure to do this.
-> We'd need a way of representing host features, working out which sets
-> are compatible with which others depending on what things the guest is
-> allowed to use, encoding the information in the migration stream and
-> reporting failure.  None of this exists now.
-> 
-> Indeed qemu requires that you create the (stopped) machine on the
-> destination (including virtual hardware configuration) before even
-> attempting to process the incoming migration.  It does not for the
-> most part transfer the machine configuration in the migration stream.
-> Now, that's generally considered a flaw with the design, but fixing it
-> is a huge project that no-one's really had the energy to begin despite
-> the idea being around for years.
-> 
-> 2) It makes behaviour really hard to predict for management layers
-> above.  Things like oVirt automatically migrate around a cluster for
-> load balancing.  At the moment the model which works is basically that
-> you if you request the same guest features on each end of the
-> migration, and qemu starts with that configuration on each end, the
-> migration should work (or only fail for transient reasons).  If you
-> can't know if the migration is possible until you get the incoming
-> stream, reporting and exposing what will and won't work to the layer
-> above also becomes an immensely fiddly problem.
 
-That was really useful, thanks. One thing I'm worried about is the user
-having to know way too much detail about IOMMUs in order to pick a precise
-configuration. The Arm SMMUs have a lot of small features that
-implementations can mix and match and that a user shouldn't have to care
-about, and there are lots of different implementations by various vendors.
-I suppose QEMU can offer a couple of configurations with predefined sets
-of features, but it seems easy to end up with a config that gets rejected
-because it is slightly different than the hardware. Anyway this is a
-discussion we can have once we touch on the features in GET_INFO, I don't
-have a precise idea at the moment.
+Afaict these registers relates to the hardware block that is primarily
+owned by the individual engine-drivers, would it not make sense to move
+them all to the shared header file?
 
-Thanks,
-Jean
+(The patch itself still looks ok, but needs the consuming patch to be
+merged)
 
+Regards,
+Bjorn
+
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  drivers/soc/qcom/qcom-geni-se.c | 1 -
+>  include/linux/qcom-geni-se.h    | 4 ++++
+>  2 files changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soc/qcom/qcom-geni-se.c b/drivers/soc/qcom/qcom-geni-se.c
+> index 5bdfb1565c14..fe666ea0c487 100644
+> --- a/drivers/soc/qcom/qcom-geni-se.c
+> +++ b/drivers/soc/qcom/qcom-geni-se.c
+> @@ -104,7 +104,6 @@ static const char * const icc_path_names[] = {"qup-core", "qup-config",
+>  #define GENI_OUTPUT_CTRL		0x24
+>  #define GENI_CGC_CTRL			0x28
+>  #define GENI_CLK_CTRL_RO		0x60
+> -#define GENI_IF_DISABLE_RO		0x64
+>  #define GENI_FW_S_REVISION_RO		0x6c
+>  #define SE_GENI_BYTE_GRAN		0x254
+>  #define SE_GENI_TX_PACKING_CFG0		0x260
+> diff --git a/include/linux/qcom-geni-se.h b/include/linux/qcom-geni-se.h
+> index 7c811eebcaab..5114e2144b17 100644
+> --- a/include/linux/qcom-geni-se.h
+> +++ b/include/linux/qcom-geni-se.h
+> @@ -63,6 +63,7 @@ struct geni_se {
+>  #define SE_GENI_STATUS			0x40
+>  #define GENI_SER_M_CLK_CFG		0x48
+>  #define GENI_SER_S_CLK_CFG		0x4c
+> +#define GENI_IF_DISABLE_RO		0x64
+>  #define GENI_FW_REVISION_RO		0x68
+>  #define SE_GENI_CLK_SEL			0x7c
+>  #define SE_GENI_DMA_MODE_EN		0x258
+> @@ -105,6 +106,9 @@ struct geni_se {
+>  #define CLK_DIV_MSK			GENMASK(15, 4)
+>  #define CLK_DIV_SHFT			4
+>  
+> +/* GENI_IF_DISABLE_RO fields */
+> +#define FIFO_IF_DISABLE			(BIT(0))
+> +
+>  /* GENI_FW_REVISION_RO fields */
+>  #define FW_REV_PROTOCOL_MSK		GENMASK(15, 8)
+>  #define FW_REV_PROTOCOL_SHFT		8
+> -- 
+> 2.31.1
+> 
