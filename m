@@ -2,121 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352163AD125
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5892D3AD128
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236093AbhFRR2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 13:28:46 -0400
-Received: from mail.efficios.com ([167.114.26.124]:48982 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230387AbhFRR2o (ORCPT
+        id S236102AbhFRR24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 13:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234200AbhFRR2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 13:28:44 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 7AEE0345C4E;
-        Fri, 18 Jun 2021 13:26:34 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id TuF5gIHS_P9W; Fri, 18 Jun 2021 13:26:33 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 39D64346030;
-        Fri, 18 Jun 2021 13:26:33 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 39D64346030
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1624037193;
-        bh=RVU1L7Bs5o8SF/s3fQLWZ2mgUojZ65JgsimVBayw7WM=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=QxaZv37PI2T8k93cxNlviHuor7Eo1jdIh84JQW8lKtRqEnYg+leveVO3V0WFWrykT
-         MvqRXaDcPeJ0eAiUxm+yvxtY3zYscfcARDn2rN0ViMIPWwVcsj7n0OufUs3b9Z1+9R
-         oEl+McAQbfLVbznVaLyI+IjT8OEOZRe3hMWnqTSYXPrFjcy1639fmawQUsbPISdolV
-         vzjbXySgml575Cim3yIEQOpynXR/OAVs0L+ob5PmJZT2AamgShg4nH+wblsIvv+a9o
-         2rIOi5IDZ47uAsVlnSrTmJsFS38xpSUbGgJqwa7YawAOIt4JkaTWO/VI7k6xNPxC35
-         h+2QpUFHgBE5Q==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id aQITEBiYLT6c; Fri, 18 Jun 2021 13:26:33 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 1BA0A346100;
-        Fri, 18 Jun 2021 13:26:33 -0400 (EDT)
-Date:   Fri, 18 Jun 2021 13:26:32 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        maged michael <maged.michael@gmail.com>,
-        Dave Watson <davejwatson@fb.com>,
-        Will Deacon <will.deacon@arm.com>,
-        "Russell King, ARM Linux" <linux@armlinux.org.uk>,
-        David Sehr <sehr@google.com>,
-        Paul Mackerras <paulus@samba.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        linux-arch <linux-arch@vger.kernel.org>, x86 <x86@kernel.org>,
-        Andrew Hunter <ahh@google.com>,
-        Greg Hackmann <ghackmann@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Paul <paulmck@linux.vnet.ibm.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Avi Kivity <avi@scylladb.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-api <linux-api@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <2077369633.12794.1624037192994.JavaMail.zimbra@efficios.com>
-In-Reply-To: <8b200dd5-f37b-b208-82fb-2775df7bcd49@csgroup.eu>
-References: <20180129202020.8515-1-mathieu.desnoyers@efficios.com> <20180129202020.8515-3-mathieu.desnoyers@efficios.com> <8b200dd5-f37b-b208-82fb-2775df7bcd49@csgroup.eu>
-Subject: Re: [PATCH for 4.16 v7 02/11] powerpc: membarrier: Skip memory
- barrier in switch_mm()
+        Fri, 18 Jun 2021 13:28:54 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BC59C061574;
+        Fri, 18 Jun 2021 10:26:45 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 48BBA9A2;
+        Fri, 18 Jun 2021 17:26:45 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 48BBA9A2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1624037205; bh=09oYYdW1hZezx5tjmKQezNJ3L4WiSkZd4lmL9Z+LwtY=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=pXy524DJQB8OobdxnK3wy+d6XeFFbH3vMf8O7eszDi35BWyFN6oyDzHdm7PE9ONRr
+         sh29ToMUQLGth8Vow1gqtTFT/FeD6q9c1wlADasbNnkubReAy/Xs9LCtTVM7E0dVnx
+         ou9I+jTobQOO05mGcrJJn9SHj8cs3wmoUo4Yz/+YBoBpsXkd/nw8CRC9Ph8cZJ5bl4
+         EAG1WjpLRtW1nJWrgRpxMhKqSMrLnkUysb9qOebljuZ+hEwjjheNtnppBDKE4/K43I
+         3jN/Ab1S8Hjrq1ibLe0BHbcLGyPAGAXQMjEazt7DcZVjDTNU65xdAIN1h+PsZXhBEc
+         wwRqhgDpMDdwg==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Kees Cook <keescook@chromium.org>, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH] docs: Makefile: Use CONFIG_SHELL not SHELL
+In-Reply-To: <20210617225808.3907377-1-keescook@chromium.org>
+References: <20210617225808.3907377-1-keescook@chromium.org>
+Date:   Fri, 18 Jun 2021 11:26:44 -0600
+Message-ID: <87wnqrqe23.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_4018 (ZimbraWebClient - FF89 (Linux)/8.8.15_GA_4026)
-Thread-Topic: powerpc: membarrier: Skip memory barrier in switch_mm()
-Thread-Index: CQE5LhemvVU5Lc+W1e2QOiB/EG3b7A==
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Jun 18, 2021, at 1:13 PM, Christophe Leroy christophe.leroy@csgroup.eu wrote:
-[...]
-> 
-> I don't understand all that complexity to just replace a simple
-> 'smp_mb__after_unlock_lock()'.
-> 
-> #define smp_mb__after_unlock_lock()	smp_mb()
-> #define smp_mb()	barrier()
-> # define barrier() __asm__ __volatile__("": : :"memory")
-> 
-> 
-> Am I missing some subtility ?
+Kees Cook <keescook@chromium.org> writes:
 
-On powerpc CONFIG_SMP, smp_mb() is actually defined as:
+> Fix think-o about which variable to find the Kbuild-configured shell.
+> This has accidentally worked due to most shells setting $SHELL by
+> default.
+>
+> Fixes: 51e46c7a4007 ("docs, parallelism: Rearrange how jobserver reservations are made")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  Documentation/Makefile | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/Makefile b/Documentation/Makefile
+> index 9c42dde97671..c3feb657b654 100644
+> --- a/Documentation/Makefile
+> +++ b/Documentation/Makefile
+> @@ -76,7 +76,7 @@ quiet_cmd_sphinx = SPHINX  $@ --> file://$(abspath $(BUILDDIR)/$3/$4)
+>  	PYTHONDONTWRITEBYTECODE=1 \
+>  	BUILDDIR=$(abspath $(BUILDDIR)) SPHINX_CONF=$(abspath $(srctree)/$(src)/$5/$(SPHINX_CONF)) \
+>  	$(PYTHON3) $(srctree)/scripts/jobserver-exec \
+> -	$(SHELL) $(srctree)/Documentation/sphinx/parallel-wrapper.sh \
+> +	$(CONFIG_SHELL) $(srctree)/Documentation/sphinx/parallel-wrapper.sh \
+>  	$(SPHINXBUILD) \
+>  	-b $2 \
+>  	-c $(abspath $(srctree)/$(src)) \
 
-#define smp_mb()        __smp_mb()
-#define __smp_mb()      mb()
-#define mb()   __asm__ __volatile__ ("sync" : : : "memory")
+Applied, thanks.
 
-So the original motivation here was to skip a "sync" instruction whenever
-switching between threads which are part of the same process. But based on
-recent discussions, I suspect my implementation may be inaccurately doing
-so though.
-
-Thanks,
-
-Mathieu
-
-
-> 
-> Thanks
-> Christophe
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+jon
