@@ -2,180 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C766D3ACBFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C70293ACBFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232969AbhFRNV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:21:58 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23314 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230438AbhFRNV4 (ORCPT
+        id S233081AbhFRNWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:22:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230438AbhFRNWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:21:56 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15IDELW1144638;
-        Fri, 18 Jun 2021 09:19:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
- to : cc : references : in-reply-to : mime-version : message-id :
- content-type : content-transfer-encoding; s=pp1;
- bh=9WElNsztdLIBuwZhmn5+RVyTutN8t+G6ITl/P1IAki4=;
- b=LUV/HaJAwQGDZkUNr1HwggM2nvwSNlEa6qOmULiyTy0PEParjMragq04c1fqnB42vxo9
- zOH1bborShoIq7ufGY5z8AnFEPdhAAGCEBEQZBKL7UzRj8HVJIPxGm/nSr3T29WUAogl
- Kam6Sh2tJgJ7r6uyMgInozIRhmZZn06hkgSWXOx0YW00e4QC1q8AeegJZbdJZvKmsyFb
- iYc49llBxlF/Fxv7OKMaBSIYLD4uLLJEAAMPeeNefq39vtuYBBiFGhVjIZQbo4t4XRvo
- OFpLwAtFAT+kre/JEZqIy3Ujt1cj3Z6OGilrKo4JBcqDZpq7QzbrGVwNNd0bXLfQbMwE 0Q== 
-Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 398v6pr5mb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Jun 2021 09:19:13 -0400
-Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
-        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15IDDXur019989;
-        Fri, 18 Jun 2021 13:19:11 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma04fra.de.ibm.com with ESMTP id 394mj8sud7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Jun 2021 13:19:10 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15IDJ8eI15991224
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 18 Jun 2021 13:19:08 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 81DB411C04C;
-        Fri, 18 Jun 2021 13:19:08 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EE87611C050;
-        Fri, 18 Jun 2021 13:19:07 +0000 (GMT)
-Received: from localhost (unknown [9.85.125.40])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 18 Jun 2021 13:19:07 +0000 (GMT)
-Date:   Fri, 18 Jun 2021 18:49:06 +0530
-From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Subject: Re: [PATCH 2/2] trace/kprobe: Remove limit on kretprobe maxactive
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Anton Blanchard <anton@ozlabs.org>, linux-kernel@vger.kernel.org,
+        Fri, 18 Jun 2021 09:22:21 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88313C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:20:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=OfU5Cc2TKMfWLUf4GRZWyAL3UpUGP7UR7XxGIF7IULA=; b=Ny4Yw8+FiO1zJsBQmDR+73C1H
+        5n4vMHWdIIkkjaBXur1bt3gqXM3XGBBVm4Y63dCHOlUCqHGCQC2i5QjfAfKVEAYh7AHQH/N1lqGg6
+        sfDGV9vm+aCB+rPtbJDEIzoQeuAjqn/ntJHhGna0TXuxFH7bxvULPU5wX3I9vioppdYpVWfoh0fod
+        5/F3b2bSYCOORgD63zEwKHmFuVKP/tUJoTgKuU8ivOQXN01TQZi9QMQZ8GZNsGqGIRc3gk0FT4R8O
+        MFBiCa2ufLcqS1pF/KMi1211l5MxlOea2yJbby5Qqeihp/2cp6wCVCtthcTewRNBxgWIX2pYh/EL5
+        7IlkQwkPw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45128)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1luEPW-0001Tk-Tl; Fri, 18 Jun 2021 14:19:50 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1luEPQ-0007xo-Fo; Fri, 18 Jun 2021 14:19:44 +0100
+Date:   Fri, 18 Jun 2021 14:19:44 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Krzysztof Halasa <khalasa@piap.pl>,
+        Neil Armstrong <narmstrong@baylibre.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-References: <cover.1623693448.git.naveen.n.rao@linux.vnet.ibm.com>
-        <a751a0617a2c06e7e233f2c98ccabe8b94a8076d.1623693448.git.naveen.n.rao@linux.vnet.ibm.com>
-        <20210615183527.9068ef2f70fdd2a45fea78f0@kernel.org>
-        <1623777582.jsiokbdey1.naveen@linux.ibm.com>
-        <20210616094622.c8bd37840898c67dddde1053@kernel.org>
-        <1623934820.8pqjdszq8o.naveen@linux.ibm.com>
-        <20210618151714.3ae6528eba99eea39771b859@kernel.org>
-In-Reply-To: <20210618151714.3ae6528eba99eea39771b859@kernel.org>
+        Andy Lutomirski <luto@kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Will Deacon <will@kernel.org>
+Subject: Re: [PATCH 7/8] membarrier: Remove arm (32) support for SYNC_CORE
+Message-ID: <20210618131944.GL22278@shell.armlinux.org.uk>
+References: <YMnQVoKvM5G34Yan@hirez.programming.kicks-ass.net>
+ <20210616103446.GC22278@shell.armlinux.org.uk>
+ <YMncQv1uT5QyQ84w@hirez.programming.kicks-ass.net>
+ <20210616132226.GD22278@shell.armlinux.org.uk>
+ <20210616150456.GC22433@arm.com>
+ <20210616152326.GG22278@shell.armlinux.org.uk>
+ <20210616154529.GD22433@arm.com>
+ <20210616160050.GE22433@arm.com>
+ <20210616162716.GH22278@shell.armlinux.org.uk>
+ <CACRpkdYHoC66K7W6mUMqKfAJkcKeopBnAq8Rq+tLSdLo61jtAQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: astroid/v0.15-23-gcdc62b30
- (https://github.com/astroidmail/astroid)
-Message-Id: <1624005747.j7xp8o9byl.naveen@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: vmVOML3UhC9mUH7mzjlYJWidem2_7ICh
-X-Proofpoint-GUID: vmVOML3UhC9mUH7mzjlYJWidem2_7ICh
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-18_07:2021-06-18,2021-06-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 spamscore=0
- priorityscore=1501 suspectscore=0 clxscore=1015 impostorscore=0
- phishscore=0 mlxlogscore=999 bulkscore=0 lowpriorityscore=0 malwarescore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106180077
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACRpkdYHoC66K7W6mUMqKfAJkcKeopBnAq8Rq+tLSdLo61jtAQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Masami Hiramatsu wrote:
->=20
->> To address this, as a first step, we should probably consider parsing=20
->> kprobe_profile and printing a warning with 'perf' if we detect a=20
->> non-zero miss count for a probe -- both a regular probe, as well as a=20
->> retprobe.
->=20
-> Yeah, it is doable. Note that perf-probe only set up the event and
-> perf-trace or other commands will use it.
->=20
->=20
->> If we do this, the nice thing with kprobe_profile is that the probe miss=
-=20
->> count is available, and can serve as a good way to decide what a more=20
->> reasonable maxactive value should be. This should help prevent users=20
->> from trying with arbitrary maxactive values.
->=20
-> Such feedback loop is an interesting idea.
-> Note that nmissed count is an accumulate value, not the max number of
-> the instance which will be needed.
+On Fri, Jun 18, 2021 at 02:54:05PM +0200, Linus Walleij wrote:
+> On Wed, Jun 16, 2021 at 6:27 PM Russell King (Oracle)
+> <linux@armlinux.org.uk> wrote:
+> 
+> > Arnd tells me that the current remaining ARM11MPCore users are:
+> > - CNS3xxx (where there is some martinal interest in the Gateworks
+> >   Laguna platform)
+> > - Similar for OXNAS
+> > - There used to be the Realview MPCore tile - I haven't turned that on
+> >   in ages, and it may be that the 3V cell that backs up the encryption
+> >   keys is dead so it may not even boot.
+> 
+> I have this machine with 4 x ARM11 MPCore, it works like a charm.
+> I use it to test exactly this kind of stuff, I know if a kernel works
+> on ARM11MPCore it works on anything because of how fragile
+> it is.
+> 
+> > So it seems to come down to a question about CNS3xxx and OXNAS. If
+> > these aren't being used, maybe we can drop ARM11MPCore support and
+> > the associated platforms?
+> >
+> > Linus, Krzysztof, Neil, any input?
+> 
+> I don't especially need to keep the ARM11MPCore machine alive,
+> it is just a testchip after all. The Oxnas is another story, that has wide
+> deployment and was contributed recently (2016) and has excellent
+> support in OpenWrt so I wouldn't really want
+> to axe that.
 
-Yes, we will have to factor-in the duration during which the event was=20
-active. This will still be an approximation, but serves as a good=20
-starting point. It may need a few tries to get this right, but more
-importantly, the user knows instantly that there are missed probes.
+So I suppose the next question is... are these issues (with userland
+self-modifying code and kernel module loading) entirely theoretical
+or can they be produced on real hardware?
 
->=20
->> For perf_event_open(), perhaps we can introduce an ioctl to query the=20
->> probe miss count.
->=20
-> Or, maybe we can expand the maxactive in runtime. e.g. add a shortage
-> counter on the kretprobe, and run a monitor kernel thread (or kworker).
-> If the shortage counter is incremented, the monitor allocates instances
-> (2x counter) and give it to the kretprobe. And it resets the shortage
-> counter. This adaptive maxactive may cause mis-hit in the beginning,
-> but finally find the optimal maxactive value automatically.
+If they can't be produced on real hardware, and we attempt to fix them
+how do we know that the fix has worked...
 
-I like this idea and I have been thinking along these lines too. If we=20
-start with a better default (rather than just num_possible_cpus() used=20
-today), I suspect we may be able to get this to work well enough to not=20
-have to miss any probes. Specifying 'maxactive' can still serve as a=20
-workaround to allocate a larger initial set of kretprobe_instances in=20
-case this doesn't work.
-
->=20
->=20
->> > To avoid such trouble, I had set the 4096 limitation for the maxactive
->> > parameter. Of course 4096 may not enough for some use-cases. I'm=20
->> > welcome
->> > to expand it (e.g. 32k, isn't it enough?), but removing the limitation
->> > may cause OOM trouble easily.
->>=20
->> Do you have suggestions for how we can determine a better limit? As you=20
->> point out in the other email, there could very well be 64k or more=20
->> processes on a large machine. Since the primary concern is memory usage,=
-=20
->> we probably need to decide this based on total memory. But, memory usage=
-=20
->> will vary depending on system load...
->=20
-> This is very good question. IMHO, it might better to calculate the total
-> maxactive from the system memory size. For example, 1% of system memory
-> can be used for the kretprobes, 16GB system will allow using 160MB for
-> kretprobes, which means about "30M" is the max number of maxactive, or
-> multiple kretprobes can share it. Doesn't it sound enough? Of course
-> this will need to show the current usage of the kretprobe instance object=
-s
-> via tracefs or debugfs. But this total cap seems reasonable for me to
-> avoid OOM trouble.
->=20
->> Perhaps we can start by making maxactive limit be a tunable with a=20
->> default value of 4096, with the understanding that users will be careful=
-=20
->> when bumping up this value. Hopefully, scripts won't simply start=20
->> writing into this file ;)
->=20
-> Yeah, that's what I suggested at first, because the best maxactive will
-> depend on the max number of the *processes* and the probed function.
->=20
-> If the probed function will NOT be preempted or slept, maxactive will be
-> the number of *processor cores*. Or, if it can be preempted or slept, it
-> will be the max number of *processes*. If the probed function can
-> recursively called (Note: this is rare case), the maxactive has to
-> be multiplied.
->=20
-> It is hard to estimate the max number of processes, since it depends
-> on the system. Small embedded systems don't run thousands of processes,
-> but big servers will run more than ten thousands of processes.
-> Thus make it tunable will be a good idea.
-
-Agree.
-
-
-Thanks,
-Naveen
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
