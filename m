@@ -2,113 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD6A3AC55A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910E73AC57D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:57:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233538AbhFRHzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 03:55:52 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:37194 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233521AbhFRHzp (ORCPT
+        id S232171AbhFRH71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 03:59:27 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:7367 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229671AbhFRH7Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 03:55:45 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CDDED21AF1;
-        Fri, 18 Jun 2021 07:53:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624002815; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nvivQRnbw0lq6DwS0bzrS7/TCENjmTPFP8+H7Q1VDjM=;
-        b=RylMVhSJDCZ4vYAKct7MP45fy/0v8eXlt6fJ9GyAOWM8TtTkVm9ikFHwe8B7TZOPAu4jhr
-        bEiZE2C0eHuh5zIYsfzy+Bl9CQYH2qWLWGLaVnLQFtI1mF/DpX2dS/8yeYLCx31RDjf+Mv
-        J0R2uux6U559FszYSQSUsuVQ1hlF2AY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624002815;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nvivQRnbw0lq6DwS0bzrS7/TCENjmTPFP8+H7Q1VDjM=;
-        b=gNbjBM021OmwoYdiVo8jhqJECQU7QIsvLkKaS1cS7dmi9EqM2DaD8d2OkKMPEhDUNap8bo
-        EcNSVqbUct3OYaBA==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 20034118DD;
-        Fri, 18 Jun 2021 07:53:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624002815; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nvivQRnbw0lq6DwS0bzrS7/TCENjmTPFP8+H7Q1VDjM=;
-        b=RylMVhSJDCZ4vYAKct7MP45fy/0v8eXlt6fJ9GyAOWM8TtTkVm9ikFHwe8B7TZOPAu4jhr
-        bEiZE2C0eHuh5zIYsfzy+Bl9CQYH2qWLWGLaVnLQFtI1mF/DpX2dS/8yeYLCx31RDjf+Mv
-        J0R2uux6U559FszYSQSUsuVQ1hlF2AY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624002815;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nvivQRnbw0lq6DwS0bzrS7/TCENjmTPFP8+H7Q1VDjM=;
-        b=gNbjBM021OmwoYdiVo8jhqJECQU7QIsvLkKaS1cS7dmi9EqM2DaD8d2OkKMPEhDUNap8bo
-        EcNSVqbUct3OYaBA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id xR5rBP9QzGD2TgAALh3uQQ
-        (envelope-from <osalvador@suse.de>); Fri, 18 Jun 2021 07:53:35 +0000
-Date:   Fri, 18 Jun 2021 09:53:33 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Huang Ying <ying.huang@intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        Wei Xu <weixugc@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH -V8 04/10] mm/migrate: make migrate_pages() return
- nr_succeeded
-Message-ID: <20210618075328.GA23470@linux>
-References: <20210618061537.434999-1-ying.huang@intel.com>
- <20210618061537.434999-5-ying.huang@intel.com>
+        Fri, 18 Jun 2021 03:59:25 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G5rkx4Dy6z6xxj;
+        Fri, 18 Jun 2021 15:53:13 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 18 Jun 2021 15:57:14 +0800
+Received: from [10.174.179.215] (10.174.179.215) by
+ dggema769-chm.china.huawei.com (10.1.198.211) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 18 Jun 2021 15:57:13 +0800
+Subject: Re: [PATCH -next] crypto: sl3516 - Fix build warning without
+ CONFIG_PM
+To:     LABBE Corentin <clabbe@baylibre.com>
+CC:     <ulli.kroll@googlemail.com>, <linus.walleij@linaro.org>,
+        <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210617035129.4948-1-yuehaibing@huawei.com>
+ <YMtHcruTqo3WE+g6@Red>
+From:   YueHaibing <yuehaibing@huawei.com>
+Message-ID: <00d33044-8101-bc41-ac02-90517c13f19a@huawei.com>
+Date:   Fri, 18 Jun 2021 15:57:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210618061537.434999-5-ying.huang@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <YMtHcruTqo3WE+g6@Red>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 02:15:31PM +0800, Huang Ying wrote:
-> From: Yang Shi <yang.shi@linux.alibaba.com>
+On 2021/6/17 21:00, LABBE Corentin wrote:
+> Le Thu, Jun 17, 2021 at 11:51:29AM +0800, YueHaibing a écrit :
+>> drivers/crypto/gemini/sl3516-ce-core.c:345:12:
+>>  warning: ‘sl3516_ce_pm_resume’ defined but not used [-Wunused-function]
+>>  static int sl3516_ce_pm_resume(struct device *dev)
+>>             ^~~~~~~~~~~~~~~~~~~
+>>
+>> Use #ifdef macro to guard this.
+>>
+>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+>> ---
+>>  drivers/crypto/gemini/sl3516-ce-core.c | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
 > 
-> The migrate_pages() returns the number of pages that were not migrated,
-> or an error code.  When returning an error code, there is no way to know
-> how many pages were migrated or not migrated.
+> Hello
 > 
-> In the following patch, migrate_pages() is used to demote pages to PMEM
-> node, we need account how many pages are reclaimed (demoted) since page
-> reclaim behavior depends on this.  Add *nr_succeeded parameter to make
-> migrate_pages() return how many pages are demoted successfully for all
-> cases.
+> Thanks for the report, but I am sorry and need to NAK this patch.
 > 
-> Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
-> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-> Reviewed-by: Yang Shi <shy828301@gmail.com>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Wei Xu <weixugc@google.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: osalvador <osalvador@suse.de>
+> The driver needs PM, without it, clock and resets are never set.
+> The correct fix is to add "depends on PM".
 
-I thought we all agreed on making nr_succeed an optional argument [1].
-It reduced the churn quite a lot.
+Ok, v2 on the way, thanks.
 
-[1] https://patchwork.kernel.org/comment/24104453/
-
-
--- 
-Oscar Salvador
-SUSE L3
+> 
+> Regards
+> .
+> 
