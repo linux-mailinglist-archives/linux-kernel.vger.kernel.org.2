@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3EFB3AC382
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:17:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6317B3AC38C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233651AbhFRGTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 02:19:07 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:46746 "EHLO
+        id S233644AbhFRGTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 02:19:21 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:46780 "EHLO
         smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232971AbhFRGRl (ORCPT
+        with ESMTP id S232997AbhFRGRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 02:17:41 -0400
+        Fri, 18 Jun 2021 02:17:43 -0400
 Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id 227DD1FE02;
+        by smtp-out2.suse.de (Postfix) with ESMTP id 48FFD1FE04;
         Fri, 18 Jun 2021 06:15:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
         t=1623996923; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GLTnXZ4QUq2WNtmjZk7+V0DJY7p/Dd8KBWBUwF3DW2E=;
-        b=GCh9mPPhaT4PfeQscADxFeC70Ja7BMXkkmetzwe7cKuu3xIDzbRQTLOCCKi5j6PzQDlep3
-        qCIOv/DDKltpuu3tJMLAdy6GLa13A3Bth7aVDDfzhn6OyEuUqM8bh+JJkiL8MNB+nwIZ80
-        6c+BYy7oOfrJ22EKayz+9B5lj2wsCeg=
+        bh=gXYV3WoE6otUox1ZIh+NXdHRLbvXNs6Ix+bq974Czl8=;
+        b=yGy7ptEiKurqWueVq9tpPftbQOr6gKfoM2UZj8odKMxN8Vvoj9uP8DZ4uxvARaWE8aLUEy
+        q2xp151PxK0FoXp3N/Jb4jBpLzJ/hGZyK9tEg92HsTU+GhcfcUENG1KDgVA1+ip0UO6tYb
+        B9HbgnKfi3qBFOKRd01I+lnBHkmgpbQ=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
         s=susede2_ed25519; t=1623996923;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GLTnXZ4QUq2WNtmjZk7+V0DJY7p/Dd8KBWBUwF3DW2E=;
-        b=9DecCV8TBK6/tVI3lFR0deUT0Kgs93k6EQ62RkZQwAcAYYudmMhNjxO1tAOg+XGsH37pX+
-        X20wkY8RvtpGL5BA==
+        bh=gXYV3WoE6otUox1ZIh+NXdHRLbvXNs6Ix+bq974Czl8=;
+        b=ZFDXGMhtbB4pycwXbsmjBvWsp6eTz1awNbossJOdqcQFIzJOz+Ph3tGDaeRbOscwf5DK1o
+        bwrLNcJm2jHZmJCA==
 Received: from localhost.localdomain (unknown [10.100.208.98])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id EFDC5A3B9E;
-        Fri, 18 Jun 2021 06:15:22 +0000 (UTC)
+        by relay2.suse.de (Postfix) with ESMTPS id 24BA0A3BC2;
+        Fri, 18 Jun 2021 06:15:23 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 28/70] mxser: remove MOXA_GETMSTATUS ioctl
-Date:   Fri, 18 Jun 2021 08:14:34 +0200
-Message-Id: <20210618061516.662-29-jslaby@suse.cz>
+Subject: [PATCH 29/70] mxser: remove MOXA_ASPP_OQUEUE ioctl
+Date:   Fri, 18 Jun 2021 08:14:35 +0200
+Message-Id: <20210618061516.662-30-jslaby@suse.cz>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210618061516.662-1-jslaby@suse.cz>
 References: <20210618061516.662-1-jslaby@suse.cz>
@@ -54,117 +54,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1) MOXA_GETMSTATUS is broken at least since commit ecbbfd44a08f (TTY:
-   move tty buffers to tty_port) in 2012.
-   Even though it's mentioned in the mon_pa moxa utility, obviously
-   noone ever tried that in that timeframe.
-2) The ioctl definition was never exposed to userspace, so noone
-   should actually be reliably using this.
+1) The semantics are defined exactly nowhere.
+2) The ioctl definition was never exposed to userspace, so noone should
+   actually be reliably using this.
+3) It's not even mentioned in any of the mxser utilities.
 
 Provided the above, remove this mxser-special ioctl.
 
-And remove the whole concept of mxser_ioctl_special as this was the last
-ioctl in there.
-
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
 ---
- drivers/tty/mxser.c | 62 +--------------------------------------------
- 1 file changed, 1 insertion(+), 61 deletions(-)
+ drivers/tty/mxser.c | 13 -------------
+ 1 file changed, 13 deletions(-)
 
 diff --git a/drivers/tty/mxser.c b/drivers/tty/mxser.c
-index 9e241f8bd814..1eb48141d6ca 100644
+index 1eb48141d6ca..ca417d9a03cf 100644
 --- a/drivers/tty/mxser.c
 +++ b/drivers/tty/mxser.c
-@@ -51,7 +51,6 @@
+@@ -60,8 +60,6 @@
+ #define RS485_4WIRE_MODE	3
+ #define OP_MODE_MASK		3
  
- #define MOXA			0x400
- #define MOXA_HighSpeedOn	(MOXA + 61)
--#define MOXA_GETMSTATUS		(MOXA + 65)
- #define MOXA_SET_OP_MODE	(MOXA + 66)
- #define MOXA_GET_OP_MODE	(MOXA + 67)
- 
-@@ -318,14 +317,6 @@ struct mxser_board {
- 	struct mxser_port ports[MXSER_PORTS_PER_BOARD];
- };
- 
--struct mxser_mstatus {
--	tcflag_t cflag;
--	int cts;
--	int dsr;
--	int ri;
--	int dcd;
--};
+-#define MOXA_ASPP_OQUEUE	(MOXA + 70)
 -
- static struct mxser_board mxser_boards[MXSER_BOARDS];
- static struct tty_driver *mxvar_sdriver;
+ /* --------------------------------------------------- */
  
-@@ -1416,57 +1407,6 @@ static int mxser_tiocmset(struct tty_struct *tty,
- 	return 0;
- }
- 
--static int mxser_ioctl_special(unsigned int cmd, void __user *argp)
--{
--	struct mxser_port *ip;
--	struct tty_port *port;
--	struct tty_struct *tty;
--	int status;
--	unsigned int i, j;
+ /*
+@@ -1499,17 +1497,6 @@ static int mxser_ioctl(struct tty_struct *tty,
+ 				mxser_cflags_changed(info, arg, &cnow));
+ 	case MOXA_HighSpeedOn:
+ 		return put_user(info->baud_base != 115200 ? 1 : 0, (int __user *)argp);
+-	case MOXA_ASPP_OQUEUE:{
+-		int len, lsr;
 -
--	switch (cmd) {
--	case MOXA_GETMSTATUS: {
--		struct mxser_mstatus ms, __user *msu = argp;
--		for (i = 0; i < MXSER_BOARDS; i++)
--			for (j = 0; j < MXSER_PORTS_PER_BOARD; j++) {
--				ip = &mxser_boards[i].ports[j];
--				port = &ip->port;
--				memset(&ms, 0, sizeof(ms));
+-		len = mxser_chars_in_buffer(tty);
+-		spin_lock_irq(&info->slock);
+-		lsr = inb(info->ioaddr + UART_LSR) & UART_LSR_THRE;
+-		spin_unlock_irq(&info->slock);
+-		len += (lsr ? 0 : 1);
 -
--				mutex_lock(&port->mutex);
--				if (!ip->ioaddr)
--					goto copy;
--				
--				tty = tty_port_tty_get(port);
--
--				if (!tty)
--					ms.cflag = ip->normal_termios.c_cflag;
--				else
--					ms.cflag = tty->termios.c_cflag;
--				tty_kref_put(tty);
--				spin_lock_irq(&ip->slock);
--				status = inb(ip->ioaddr + UART_MSR);
--				spin_unlock_irq(&ip->slock);
--				if (status & UART_MSR_DCD)
--					ms.dcd = 1;
--				if (status & UART_MSR_DSR)
--					ms.dsr = 1;
--				if (status & UART_MSR_CTS)
--					ms.cts = 1;
--			copy:
--				mutex_unlock(&port->mutex);
--				if (copy_to_user(msu, &ms, sizeof(ms)))
--					return -EFAULT;
--				msu++;
--			}
--		return 0;
+-		return put_user(len, (int __user *)argp);
 -	}
--	default:
--		return -ENOIOCTLCMD;
--	}
--	return 0;
--}
--
- static int mxser_cflags_changed(struct mxser_port *info, unsigned long arg,
- 		struct async_icount *cprev)
- {
-@@ -1497,7 +1437,7 @@ static int mxser_ioctl(struct tty_struct *tty,
- 	void __user *argp = (void __user *)arg;
- 
- 	if (tty->index == MXSER_PORTS)
--		return mxser_ioctl_special(cmd, argp);
-+		return -ENOTTY;
- 
- 	if (cmd == MOXA_SET_OP_MODE || cmd == MOXA_GET_OP_MODE) {
- 		int p;
+ 	default:
+ 		return -ENOIOCTLCMD;
+ 	}
 -- 
 2.32.0
 
