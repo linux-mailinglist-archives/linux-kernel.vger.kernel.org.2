@@ -2,62 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3DD3AD26B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 484A83AD270
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235061AbhFRS6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 14:58:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49544 "EHLO
+        id S235314AbhFRTBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 15:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231689AbhFRS6f (ORCPT
+        with ESMTP id S231589AbhFRTBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 14:58:35 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C4EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 11:56:25 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id q5-20020a9d4b050000b029044ecc922d44so413882otf.7
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 11:56:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=ThWDIZznm6D308g2/ago6p1/uAxauQd+U9VLdlDvs/8=;
-        b=TcoLegPqRPUILvY1DpRWjqvco6DgOZTPKmOAvuPbLyoK8J84ijxEmDHWPQQUt9XjqK
-         yAWD/RUhnuRugwF3aWzJoLQl6KgkgbkDe7MKM/ePYHu0ZO3nOBJo8htFRqgNqo2qjnxF
-         YiAULLvhQh2FYSQUnyjZUyyQ7BpYJspkXstJEw5pjQSzyhOyZ7JjMAA3UGWckyjzeiIY
-         70uHxWtxDUi0j0MIMg2XZMDvrggoDvh1sHjKH//6yvymSIk1eM7XuY/G3oe6eMlOiQ13
-         d42FC0Ch9jRRs6grBlomuypGRzH4Pkr0n9UR2R7DsOtocogMPskQ4SWOtllvdfpceB9g
-         T3dQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=ThWDIZznm6D308g2/ago6p1/uAxauQd+U9VLdlDvs/8=;
-        b=mgnO0qMP4sOJKh5IZEWv13cCKccHU8brw7tx4ZAfoUeEsY5+G77FEu80H4vJQ11pwu
-         nro5i+iuFMJlCWjfnjPU7jukxOs0HIjjtg7t5iy+WOJPporSVxNMX0m8eGoQy370W15O
-         5wrxLK4op/T5zI/juCiEJizXmEYxPWxH+atBxQ5uqwaO9l4y/jY+Mlf97Q8NtTcf0pdx
-         uh1hoXyBS8WZYqFkOeQ0toOWEgDjNLdte82B3nMf3PZk2WMLl/lAWGbztZNPuQt61fwq
-         wTahhc9BxJDyXfhZMz8G+TrXBtn3j+MidgghKGRpI5Xvrvrwqjzpx/wMsS3vE55UJwKe
-         8vfQ==
-X-Gm-Message-State: AOAM531YfJG4kT/SDYKRHxBugBPACtAkmDkl7DaITs2l7m/UirEpyYJO
-        fOAGnlWDCGUb8pn77wDdj5tR5DpWXEn+my7IA08=
-X-Google-Smtp-Source: ABdhPJwUu6KSjGlpreE3XEj1zY3s1ZNuAbZdeX41uKaD+5sOct7mFmk6CmD9FKIXj6ukLC8g9vOBwgEDSVU0mvc8Cys=
-X-Received: by 2002:a9d:7102:: with SMTP id n2mr10925180otj.87.1624042584722;
- Fri, 18 Jun 2021 11:56:24 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a9d:6b97:0:0:0:0:0 with HTTP; Fri, 18 Jun 2021 11:56:24
- -0700 (PDT)
-Reply-To: ghekbabi@gmail.com
-From:   David Filo <rasta7738@gmail.com>
-Date:   Fri, 18 Jun 2021 19:56:24 +0100
-Message-ID: <CAEDzUbVf3imwhOA=2z=QKewcw-24ndzJ884BUDpQn_1fdQ_TNg@mail.gmail.com>
-Subject: Hello,
-To:     undisclosed-recipients:;
+        Fri, 18 Jun 2021 15:01:11 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389D0C061574;
+        Fri, 18 Jun 2021 11:59:01 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id C099B1F44BE3
+Message-ID: <418311dac48d3a29b4fe9e363f7d4e82c360f586.camel@collabora.com>
+Subject: Re: [PATCH v3 1/8] media: hantro: Trace hevc hw cycles performance
+ register
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        hverkuil@xs4all.nl, p.zabel@pengutronix.de, mchehab@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
+        andrzej.p@collabora.com, jc@kynesim.co.uk,
+        jernej.skrabec@gmail.com, nicolas@ndufresne.ca
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Fri, 18 Jun 2021 15:58:46 -0300
+In-Reply-To: <20210618131526.566762-2-benjamin.gaignard@collabora.com>
+References: <20210618131526.566762-1-benjamin.gaignard@collabora.com>
+         <20210618131526.566762-2-benjamin.gaignard@collabora.com>
+Organization: Collabora
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good day to you, i have a lucrative business proposal, which I believe
-we could mutually benefit from. Please contact me for more details.
+Hi Benjamin,
 
-Sincerely,
+On Fri, 2021-06-18 at 15:15 +0200, Benjamin Gaignard wrote:
+> After each hevc decoded frame trace the hardware performance.
+> It provides the number of hw cycles spend per decoded macroblock.
+> 
+
+Please add some documentation about how these are supposed
+to be used. It will be easier to discuss after seeing
+things in actiion.
+
+A good place for the documentation would be:
+
+https://www.kernel.org/doc/html/latest/admin-guide/media/v4l-drivers.html
+
+[..]
+> @@ -22,6 +23,21 @@ static inline void hantro_write_addr(struct hantro_dev *vpu,
+>         vdpu_write(vpu, addr & 0xffffffff, offset);
+>  }
+>  
+> +void hantro_g2_hevc_dec_done(struct hantro_ctx *ctx)
+
+I'm worried about the runtime cost this would have.
+
+I see other drivers (i915, panfrost) seem to have an ioctl
+to enable the perf counters.
+
+Perhaps we don't need an ioctl, but a module param would be enough
+for now.
+
+> +{
+> +       const struct hantro_hevc_dec_ctrls *ctrls = &ctx->hevc_dec.ctrls;
+> +       const struct v4l2_ctrl_hevc_sps *sps = ctrls->sps;
+> +       struct hantro_dev *vpu = ctx->dev;
+> +       u32 hw_cycles = 0;
+> +       u32 mbs = (sps->pic_width_in_luma_samples *
+> +                  sps->pic_height_in_luma_samples) >> 8;
+> +
+> +       if (mbs)
+> +               hw_cycles = vdpu_read(vpu, G2_HW_PERFORMANCE) / mbs;
+> +
+> +       trace_hantro_hevc_perf(ctx, hw_cycles);
+> +}
+> +
+> 
+[..]
+> +
+> +TRACE_EVENT(hantro_hevc_perf,
+> +       TP_PROTO(struct hantro_ctx *ctx, u32 hw_cycles),
+> +
+> +       TP_ARGS(ctx, hw_cycles),
+> +
+> +       TP_STRUCT__entry(
+> +               __field(int, minor)
+> +               __field(u32, hw_cycles)
+> +       ),
+> +
+> +       TP_fast_assign(
+> +               __entry->minor = ctx->fh.vdev->minor;
+
+Tracking performance per minor doesn't seem useful,
+we'd like to track per-fd (i.e. per context).
+
+Thanks,
+Ezequiel
+
