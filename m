@@ -2,103 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D38C93ACD6D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0AB43ACD6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:23:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234114AbhFROYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234503AbhFROYL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:24:11 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 453E5C061574;
-        Fri, 18 Jun 2021 07:22:02 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id f16-20020a05600c1550b02901b00c1be4abso8835854wmg.2;
-        Fri, 18 Jun 2021 07:22:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/biPioDVeS+IYbxYtzg7Tz6IEPtjr5QXhP/AdQlfO84=;
-        b=P4/4h2b8qp4XU9blbA89ELz8vd5WafBNDUFlcZ1rj6cknCBtbZrc20qCrXCo/NAQ+0
-         IzaZPkavTJrdzjocPjtmceGDDcolEMj/M7faIc99CL3xJ2dRr4YYi6ogQ2e+YlQw54oQ
-         413krdch49fpbem9cgIxN7ox0jAl2jZnuQmVBGp5AoW2CX3wrGSkCg8iola01SIFn/ch
-         D5swQzJBZx72+6P4nMYOUmQmVWCTlrFylwfmtWCKGiK3Do/WTPNIIlGHmXOiy0fNKp4R
-         9ECjXAHpoNYBRlYjnvans2huDbtNpNkcEC4/VIdWqzKzDeOIDWjiqrgACJhaO98P5riJ
-         TLiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/biPioDVeS+IYbxYtzg7Tz6IEPtjr5QXhP/AdQlfO84=;
-        b=XJ2p83RTVkmVNRMXIa83iH0XqjxfALplr5C4nXspE8PX/imZDXJIGa/82vwhgteygn
-         r705NmUy904ebkFY6MsaNnI9cnsDYNkVAPQiy6STl9DwCyhcKZEbPEeWiYipGzLCstPz
-         j82gsyDffOoEAWjeGLMVeDi8avzivFxD/56bxiXgQWCpQ3bkI1xOtgNI71AorxwPsI2u
-         qRq9sD+qlgOf1OyhGb3CuiqMl/jqmos81RlsEiFWyvMxjWGrlR+iPPrbF7wmbmpIAl1o
-         BHU+Qe2WuQecQN/mhKYnwLgg91Qa2LXgLIX+DfWnQupP0PjT0tbqx+ZkBJkcM7GiXPQW
-         ButQ==
-X-Gm-Message-State: AOAM531A2/5RBUqUOwx5emZlRjCpdTz8tSi06Zib1NMQcPG83rAxRwAk
-        7iCXBNFxZSVWrlxHYMntfjvzgxNW4tVX1A==
-X-Google-Smtp-Source: ABdhPJyKstre3DomrgnI/Zr73Kb9mawHY+FIwq0XyXEcaToktorCgbIDII2H5TgRhE1qLHB74af1bw==
-X-Received: by 2002:a1c:5413:: with SMTP id i19mr12213783wmb.12.1624026120589;
-        Fri, 18 Jun 2021 07:22:00 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id x18sm8583826wrw.19.2021.06.18.07.21.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 07:22:00 -0700 (PDT)
-Subject: Re: arm64: dts: mt8195: Add Mediatek SoC MT8195 device nodes
-To:     Tinghan Shen <tinghan.shen@mediatek.com>, robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        srv_heupstream@mediatek.com, seiya.wang@mediatek.com,
-        wenst@google.com, Project_Global_Chrome_Upstream_Group@mediatek.com
-References: <20210615173233.26682-1-tinghan.shen@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <b1ee64c4-eeb6-a664-ebcd-4a0cc62e2ded@gmail.com>
-Date:   Fri, 18 Jun 2021 16:21:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S234422AbhFROZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 10:25:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234370AbhFROZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 10:25:34 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2DDA0611ED;
+        Fri, 18 Jun 2021 14:23:25 +0000 (UTC)
+Date:   Fri, 18 Jun 2021 10:23:23 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+Subject: [GIT PULL] tracing: Fixes for 5.13-rc6
+Message-ID: <20210618102323.3b630647@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210615173233.26682-1-tinghan.shen@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tnghan,
+Linus,
 
-It looks like as if you send a whole bunch of device tree files which don't have
-any binding description yet.
+Tracing fixes for 5.13:
 
-Can you please filter and only send these patches that actually have a binding
-entry? That would make my life much easier.
+ - Have recordmcount check for valid st_shndx otherwise some archs may have
+   invalid references for the mcount location.
 
-Apart from that it would be good if you could ask internally to get some advice
-how to improve Signed-off-by tags (I spotted at least one patch where yours was
-missing) or how to improve commit messages.
+ - Two fixes done for mapping pids to task names. Traces were not showing
+   the names of tasks when they should have.
 
-Thanks!
-Matthias
+ - Fix to trace_clock_global() to prevent it from going backwards
 
-On 15/06/2021 19:32, Tinghan Shen wrote:
-> This series is a collection of device nodes for Mediatek SoC MT8195 and
-> depends on patches[1][2][3].
-> 
-> The dependency list is not complete.
-> some dependencies are still under working.
-> 
-> [1] arm64: dts: Add Mediatek SoC MT8195 and evaluation board dts and Makefile
->     https://patchwork.kernel.org/project/linux-mediatek/patch/20210601075350.31515-2-seiya.wang@mediatek.com/
-> 
-> [2] dt-bindings: power: Add MT8195 power domains
->     https://patchwork.kernel.org/project/linux-mediatek/patch/20210610023614.5375-3-chun-jie.chen@mediatek.com/
-> 
-> [3] dt-bindings: pinctrl: mt8195: add pinctrl file and binding document
->     https://patchwork.kernel.org/project/linux-mediatek/patch/20210413055702.27535-2-zhiyong.tao@mediatek.com/
-> 
-> 
+
+Please pull the latest trace-v5.13-rc6 tree, which can be found at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+trace-v5.13-rc6
+
+Tag SHA1: 41def28d8719d14033b29b043f8b6e141b9ac874
+Head SHA1: 89529d8b8f8daf92d9979382b8d2eb39966846ea
+
+
+Peter Zijlstra (1):
+      recordmcount: Correct st_shndx handling
+
+Steven Rostedt (VMware) (3):
+      tracing: Do not stop recording cmdlines when tracing is off
+      tracing: Do not stop recording comms if the trace file is being read
+      tracing: Do no increment trace_clock_global() by one
+
+----
+ kernel/trace/trace.c       | 11 -----------
+ kernel/trace/trace_clock.c |  6 +++---
+ scripts/recordmcount.h     | 15 ++++++++++-----
+ 3 files changed, 13 insertions(+), 19 deletions(-)
+---------------------------
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 9299057feb56..d23a09d3eb37 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2198,9 +2198,6 @@ struct saved_cmdlines_buffer {
+ };
+ static struct saved_cmdlines_buffer *savedcmd;
+ 
+-/* temporary disable recording */
+-static atomic_t trace_record_taskinfo_disabled __read_mostly;
+-
+ static inline char *get_saved_cmdlines(int idx)
+ {
+ 	return &savedcmd->saved_cmdlines[idx * TASK_COMM_LEN];
+@@ -2486,8 +2483,6 @@ static bool tracing_record_taskinfo_skip(int flags)
+ {
+ 	if (unlikely(!(flags & (TRACE_RECORD_CMDLINE | TRACE_RECORD_TGID))))
+ 		return true;
+-	if (atomic_read(&trace_record_taskinfo_disabled) || !tracing_is_on())
+-		return true;
+ 	if (!__this_cpu_read(trace_taskinfo_save))
+ 		return true;
+ 	return false;
+@@ -3998,9 +3993,6 @@ static void *s_start(struct seq_file *m, loff_t *pos)
+ 		return ERR_PTR(-EBUSY);
+ #endif
+ 
+-	if (!iter->snapshot)
+-		atomic_inc(&trace_record_taskinfo_disabled);
+-
+ 	if (*pos != iter->pos) {
+ 		iter->ent = NULL;
+ 		iter->cpu = 0;
+@@ -4043,9 +4035,6 @@ static void s_stop(struct seq_file *m, void *p)
+ 		return;
+ #endif
+ 
+-	if (!iter->snapshot)
+-		atomic_dec(&trace_record_taskinfo_disabled);
+-
+ 	trace_access_unlock(iter->cpu_file);
+ 	trace_event_read_unlock();
+ }
+diff --git a/kernel/trace/trace_clock.c b/kernel/trace/trace_clock.c
+index c1637f90c8a3..4702efb00ff2 100644
+--- a/kernel/trace/trace_clock.c
++++ b/kernel/trace/trace_clock.c
+@@ -115,9 +115,9 @@ u64 notrace trace_clock_global(void)
+ 	prev_time = READ_ONCE(trace_clock_struct.prev_time);
+ 	now = sched_clock_cpu(this_cpu);
+ 
+-	/* Make sure that now is always greater than prev_time */
++	/* Make sure that now is always greater than or equal to prev_time */
+ 	if ((s64)(now - prev_time) < 0)
+-		now = prev_time + 1;
++		now = prev_time;
+ 
+ 	/*
+ 	 * If in an NMI context then dont risk lockups and simply return
+@@ -131,7 +131,7 @@ u64 notrace trace_clock_global(void)
+ 		/* Reread prev_time in case it was already updated */
+ 		prev_time = READ_ONCE(trace_clock_struct.prev_time);
+ 		if ((s64)(now - prev_time) < 0)
+-			now = prev_time + 1;
++			now = prev_time;
+ 
+ 		trace_clock_struct.prev_time = now;
+ 
+diff --git a/scripts/recordmcount.h b/scripts/recordmcount.h
+index f9b19524da11..1e9baa5c4fc6 100644
+--- a/scripts/recordmcount.h
++++ b/scripts/recordmcount.h
+@@ -192,15 +192,20 @@ static unsigned int get_symindex(Elf_Sym const *sym, Elf32_Word const *symtab,
+ 				 Elf32_Word const *symtab_shndx)
+ {
+ 	unsigned long offset;
++	unsigned short shndx = w2(sym->st_shndx);
+ 	int index;
+ 
+-	if (sym->st_shndx != SHN_XINDEX)
+-		return w2(sym->st_shndx);
++	if (shndx > SHN_UNDEF && shndx < SHN_LORESERVE)
++		return shndx;
+ 
+-	offset = (unsigned long)sym - (unsigned long)symtab;
+-	index = offset / sizeof(*sym);
++	if (shndx == SHN_XINDEX) {
++		offset = (unsigned long)sym - (unsigned long)symtab;
++		index = offset / sizeof(*sym);
+ 
+-	return w(symtab_shndx[index]);
++		return w(symtab_shndx[index]);
++	}
++
++	return 0;
+ }
+ 
+ static unsigned int get_shnum(Elf_Ehdr const *ehdr, Elf_Shdr const *shdr0)
