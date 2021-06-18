@@ -2,120 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8C63ACDDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:48:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 593023ACE26
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234694AbhFROuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:50:13 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:23348 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S234687AbhFROuK (ORCPT
+        id S234826AbhFRPAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:00:47 -0400
+Received: from mailout1.w2.samsung.com ([211.189.100.11]:31055 "EHLO
+        mailout1.w2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234831AbhFRPAk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:50:10 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15IEkBCZ012726;
-        Fri, 18 Jun 2021 09:47:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=7iQjQe++wWGoO7R/YbIdASwb2/mpDN1SfTlBbTs/qB8=;
- b=co6LQ7aDeUDwnRNCVCADw8l23PTidruMWJ0YnSvtxgu0MwOXAC/MMw9/eZaJ4vpDurw/
- 1EFCOPuZvz5A7IwsUKh0sgnQJ+iLOaxkYjr2JpTgWL22GAnln1KEJ0CHfOOpNNizytXH
- UlAv1mCqeC/EUO0miP+XeyNZtKDynwcMGJDaJbcaFj3+TBV6SCJpoTZYJKdDvPfiPoV9
- CC4D/pv9j3oGQW1HczdW0bK/IQB/ibzUV3ZIRg392mpK7+/xaeIBuuwwW/P+bsDCH9Kl
- irx7yPDLn0rgMN24Nn0ATxXAW5BK5hDc2biHBIK442KCYM4NnmyEd4xarBpBMKTcLpfW Gg== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 398qj8gkj6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 18 Jun 2021 09:47:49 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 18 Jun
- 2021 15:47:47 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Fri, 18 Jun 2021 15:47:47 +0100
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.68])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 64FB92B2;
-        Fri, 18 Jun 2021 14:47:47 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <vkoul@kernel.org>, <yung-chuan.liao@linux.intel.com>,
-        <pierre-louis.bossart@linux.intel.com>, <sanyog.r.kale@intel.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH] soundwire: stream: Fix test for DP prepare complete
-Date:   Fri, 18 Jun 2021 15:47:45 +0100
-Message-ID: <20210618144745.30629-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 18 Jun 2021 11:00:40 -0400
+X-Greylist: delayed 580 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Jun 2021 11:00:37 EDT
+Received: from uscas1p2.samsung.com (unknown [182.198.245.207])
+        by mailout1.w2.samsung.com (KnoxPortal) with ESMTP id 20210618144844usoutp01ada70eb0788dde429235d51363a9ab2c~JtJxs3PoR2822828228usoutp01S;
+        Fri, 18 Jun 2021 14:48:44 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w2.samsung.com 20210618144844usoutp01ada70eb0788dde429235d51363a9ab2c~JtJxs3PoR2822828228usoutp01S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1624027724;
+        bh=NwpSqfChnbYWL67ohYJmb5b6V9dEA+79cx1XRyd86T8=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
+        b=YiZHTIk9QK+563ZMQhei2EpP6zvJVlLnGyC/LPs1Wwei6ClXIcD1reRSyKc3Vf7Qg
+         6Yi9ejOKrfKTr4XgxnFVtmQ1Kz4Gkt6xS/rBUTyui3PMDrjDzUSRViTXhor/irXNc1
+         LNgCpmcWPx25imHGukVYhaxT4l9Iok1I9BEE+pfI=
+Received: from ussmges2new.samsung.com (u111.gpu85.samsung.co.kr
+        [203.254.195.111]) by uscas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210618144844uscas1p2705fb2a126bd71955a11b8795bee3182~JtJxkNTu60144801448uscas1p27;
+        Fri, 18 Jun 2021 14:48:44 +0000 (GMT)
+Received: from uscas1p1.samsung.com ( [182.198.245.206]) by
+        ussmges2new.samsung.com (USCPEMTA) with SMTP id 94.29.53491.C42BCC06; Fri,
+        18 Jun 2021 10:48:44 -0400 (EDT)
+Received: from ussmgxs2new.samsung.com (u91.gpu85.samsung.co.kr
+        [203.254.195.91]) by uscas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210618144844uscas1p280d192b12fc852b36879565030b13cd6~JtJxK6dXb0371003710uscas1p2x;
+        Fri, 18 Jun 2021 14:48:44 +0000 (GMT)
+X-AuditID: cbfec36f-f09ff7000001d0f3-8b-60ccb24c467a
+Received: from SSI-EX2.ssi.samsung.com ( [105.128.2.146]) by
+        ussmgxs2new.samsung.com (USCPEXMTA) with SMTP id DB.93.26904.B42BCC06; Fri,
+        18 Jun 2021 10:48:43 -0400 (EDT)
+Received: from SSI-EX1.ssi.samsung.com (105.128.2.226) by
+        SSI-EX2.ssi.samsung.com (105.128.2.227) with Microsoft SMTP Server
+        (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+        15.1.2242.4; Fri, 18 Jun 2021 07:48:43 -0700
+Received: from SSI-EX1.ssi.samsung.com ([fe80::255d:1bae:c3ae:e3c3]) by
+        SSI-EX1.ssi.samsung.com ([fe80::255d:1bae:c3ae:e3c3%7]) with mapi id
+        15.01.2242.008; Fri, 18 Jun 2021 07:48:43 -0700
+From:   Adam Manzanares <a.manzanares@samsung.com>
+To:     Niklas Cassel <Niklas.Cassel@wdc.com>
+CC:     Jens Axboe <axboe@kernel.dk>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Shaun Tancheff <shaun@tancheff.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Hannes Reinecke <hare@suse.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Jens Axboe <axboe@fb.com>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 1/2] blk-zoned: allow zone management send operations
+ without CAP_SYS_ADMIN
+Thread-Topic: [PATCH v3 1/2] blk-zoned: allow zone management send
+        operations without CAP_SYS_ADMIN
+Thread-Index: AQHXYRgQMteA58G2kEuU7Azlx40Z/qsaVTmA
+Date:   Fri, 18 Jun 2021 14:48:43 +0000
+Message-ID: <20210618144843.GA33886@bgt-140510-bm01>
+In-Reply-To: <20210614122303.154378-2-Niklas.Cassel@wdc.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [105.128.2.176]
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <BE5F368FAE175742BB504CA5C6918049@ssi.samsung.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: B_pmV6x3EuB3inHcs9sadnPYReqKVlUv
-X-Proofpoint-ORIG-GUID: B_pmV6x3EuB3inHcs9sadnPYReqKVlUv
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 priorityscore=1501
- spamscore=0 adultscore=0 mlxlogscore=999 clxscore=1015 bulkscore=0
- suspectscore=0 phishscore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106180087
+X-CFilter-Loop: Reflected
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGKsWRmVeSWpSXmKPExsWy7djXc7o+m84kGHz7KGzxf88xNovVd/vZ
+        LFrbvzFZLHizl81i7y1ti8u75rBZLD/+j8niwZ/H7BaTT59gtViw8RGjA5fHxOZ37B6Xz5Z6
+        fHx6i8Vj/ZarLB437k9h8vi8Sc6j/UA3UwB7FJdNSmpOZllqkb5dAlfGwo7zrAVn+CpmHfvI
+        0sDYwtPFyMkhIWAicWfrU7YuRi4OIYGVjBIvtj+DclqZJO4te88KU/Vm/SWoxFpGiR8fu6Cc
+        j4wSnzsWM0M4Bxgldn4/wAbSwiZgIPH7+EZmEFtEQFPi86m1rCBFzAJTmSWmdL5n6mLk4BAW
+        SJG4/NgDoiZVou32Qah6I4nDBxaxgNgsAqoSH5+dAIvzAp3xYWcn2HxOARuJ9283M4LYjAJi
+        Et9PrWECsZkFxCVuPZnPBHG2oMSi2XuYIWwxiX+7HrJB2IoS97+/ZIeo15FYsPsTG4RtJ7Fq
+        VTeUrS2xbOFrqL2CEidnPmGB6JWUOLjiBgvILxIC/zkk2q7MhVrgIrGreyXUYmmJv3eXMUEU
+        7WKUmDP7IyuEc5hRYtOF5YwQVdYSN152MU5gVJmF5PJZSK6aheSqWUiumoXkqgWMrKsYxUuL
+        i3PTU4uN8lLL9YoTc4tL89L1kvNzNzECk9rpf4fzdzBev/VR7xAjEwfjIUYJDmYlEV7OzDMJ
+        QrwpiZVVqUX58UWlOanFhxilOViUxHmZIibGCwmkJ5akZqemFqQWwWSZODilGph0T7BZzvnz
+        cJf6GrFtKi+nPD6r9fjJ5/nJG+se5gZejmXQEfVZ9X8j06bd32JuLPH1vDlNy6PKz7k9NdJn
+        gfvFBef+b+XOl/y+VV140Y5zZsGKG39khs642DHtdMqDb7ejhdd7vlphZHtxo6B0xIrUz7/X
+        pK+boaEWvtV8S2BGdfoSqRRHFs9nR1O0vx0NMjLZ/YV50ccTNyccvKB9Nm/OnKfXFvxOi597
+        adN7Y6nzz04LXuGyD92nOvtAtuZRkW+cvyoWf3u8gXHnnf6P+V9E53lPWxts1HJv7uXFjb63
+        Fi/Ji4z3OLRsuWjh4RmLZmnotyUt6tA/Z7x22p+mJkeedflvH/yy/tTA1WNu+dozbKoSS3FG
+        oqEWc1FxIgDjfPRk2QMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrEIsWRmVeSWpSXmKPExsWS2cA0Sdd705kEg+UvTS3+7znGZrH6bj+b
+        RWv7NyaLBW/2slnsvaVtcXnXHDaL5cf/MVk8+POY3WLy6ROsFgs2PmJ04PKY2PyO3ePy2VKP
+        j09vsXis33KVxePG/SlMHp83yXm0H+hmCmCP4rJJSc3JLEst0rdL4MpY2HGeteAMX8WsYx9Z
+        GhhbeLoYOTkkBEwk3qy/xNbFyMUhJLCaUWLG2vVMEM5HRomDq1+yQjgHGCVO7H7FDtLCJmAg
+        8fv4RmYQW0RAU+LzqbVgRcwCU5kluhZPZ+xi5OAQFkiRuPzYA6ImVeLFt0XsELaRxOEDi1hA
+        bBYBVYmPz06AzeEFOuPDzk6oMw4ySjS197OCJDgFbCTev93MCGIzCohJfD+1hgnEZhYQl7j1
+        ZD4TxA8CEkv2nGeGsEUlXj7+xwphK0rc//6SHaJeR2LB7k9sELadxKpV3VC2tsSyha+hjhCU
+        ODnzCQtEr6TEwRU3WCYwSsxCsm4WklGzkIyahWTULCSjFjCyrmIULy0uzk2vKDbKSy3XK07M
+        LS7NS9dLzs/dxAhMBqf/HY7ewXj71ke9Q4xMHIyHGCU4mJVEeDkzzyQI8aYkVlalFuXHF5Xm
+        pBYfYpTmYFES530ZNTFeSCA9sSQ1OzW1ILUIJsvEwSnVwGRz6P2EFR96jtj8F912QDSao+Xf
+        dQs/tuCrEeIztn+t2sfwgkPW4298hvDTnXnLLxk/frdg5/TJNzQkFV5Oe+r3uyHKUMjlwMtO
+        NbZHy5OaS5qPL9te/O2F6Mbk1KQW9wuaT1ckXf/07rNmyQJ3i8tv4k+Zi8hEbmW99GW3hXvm
+        Js+vwsUF3AITdLaL2BXsXMGfwlcS+ndq2Kb8DdftLzfN/y5V/Xaqjmvzz1OPFHb53lH66f1u
+        m+6zN26NhScOcniahR88/DX5H++TKT/Ws/AeD5pybU9s4DKlslO3ed99+P44+cPcCLH5/1fd
+        2HPz4/fd+5YzCa85a3/q+8rLucGHHd/+S2w40WsXP+XCzGqd70osxRmJhlrMRcWJAJIP1Zx1
+        AwAA
+X-CMS-MailID: 20210618144844uscas1p280d192b12fc852b36879565030b13cd6
+CMS-TYPE: 301P
+X-CMS-RootMailID: 20210614122356uscas1p1cd196d14f778284120dde445dfba4611
+References: <20210614122303.154378-1-Niklas.Cassel@wdc.com>
+        <CGME20210614122356uscas1p1cd196d14f778284120dde445dfba4611@uscas1p1.samsung.com>
+        <20210614122303.154378-2-Niklas.Cassel@wdc.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In sdw_prep_deprep_slave_ports(), after the wait_for_completion()
-the DP prepare status register is read. If this indicates that the
-port is now prepared, the code should continue with the port setup.
-It is irrelevant whether the wait_for_completion() timed out if the
-port is now ready.
+On Mon, Jun 14, 2021 at 12:23:20PM +0000, Niklas Cassel wrote:
+> From: Niklas Cassel <niklas.cassel@wdc.com>
+>=20
+> Zone management send operations (BLKRESETZONE, BLKOPENZONE, BLKCLOSEZONE
+> and BLKFINISHZONE) should be allowed under the same permissions as write(=
+).
+> (write() does not require CAP_SYS_ADMIN).
+>=20
+> Additionally, other ioctls like BLKSECDISCARD and BLKZEROOUT only check i=
+f
+> the fd was successfully opened with FMODE_WRITE.
+> (They do not require CAP_SYS_ADMIN).
+>=20
+> Currently, zone management send operations require both CAP_SYS_ADMIN
+> and that the fd was successfully opened with FMODE_WRITE.
+>=20
+> Remove the CAP_SYS_ADMIN requirement, so that zone management send
+> operations match the access control requirement of write(), BLKSECDISCARD
+> and BLKZEROOUT.
+>=20
+> Fixes: 3ed05a987e0f ("blk-zoned: implement ioctls")
+> Signed-off-by: Niklas Cassel <niklas.cassel@wdc.com>
+> Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
+> Cc: stable@vger.kernel.org # v4.10+
+> ---
+> Changes since v2:
+> -None
+>=20
+> Note to backporter:
+> Function was added as blkdev_reset_zones_ioctl() in v4.10.
+> Function was renamed to blkdev_zone_mgmt_ioctl() in v5.5.
+> The patch is valid both before and after the function rename.
+>=20
+>  block/blk-zoned.c | 3 ---
+>  1 file changed, 3 deletions(-)
+>=20
+> diff --git a/block/blk-zoned.c b/block/blk-zoned.c
+> index 250cb76ee615..0789e6e9f7db 100644
+> --- a/block/blk-zoned.c
+> +++ b/block/blk-zoned.c
+> @@ -349,9 +349,6 @@ int blkdev_zone_mgmt_ioctl(struct block_device *bdev,=
+ fmode_t mode,
+>  	if (!blk_queue_is_zoned(q))
+>  		return -ENOTTY;
+> =20
+> -	if (!capable(CAP_SYS_ADMIN))
+> -		return -EACCES;
+> -
+>  	if (!(mode & FMODE_WRITE))
+>  		return -EBADF;
+> =20
+> --=20
+> 2.31.1
 
-The previous implementation would always fail if the
-wait_for_completion() timed out, even if the port was reporting
-successful prepare.
+LGTM
 
-This patch also fixes a minor bug where the return from sdw_read()
-was not checked for error - any error code with LSBits clear could
-be misinterpreted as a successful port prepare.
-
-Fixes: 79df15b7d37c ("soundwire: Add helpers for ports operations")
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- drivers/soundwire/stream.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index 1eaedaaba094..1a18308f4ef4 100644
---- a/drivers/soundwire/stream.c
-+++ b/drivers/soundwire/stream.c
-@@ -422,7 +422,6 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
- 	struct completion *port_ready;
- 	struct sdw_dpn_prop *dpn_prop;
- 	struct sdw_prepare_ch prep_ch;
--	unsigned int time_left;
- 	bool intr = false;
- 	int ret = 0, val;
- 	u32 addr;
-@@ -479,15 +478,15 @@ static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
- 
- 		/* Wait for completion on port ready */
- 		port_ready = &s_rt->slave->port_ready[prep_ch.num];
--		time_left = wait_for_completion_timeout(port_ready,
--				msecs_to_jiffies(dpn_prop->ch_prep_timeout));
-+		wait_for_completion_timeout(port_ready,
-+			msecs_to_jiffies(dpn_prop->ch_prep_timeout));
- 
- 		val = sdw_read(s_rt->slave, SDW_DPN_PREPARESTATUS(p_rt->num));
--		val &= p_rt->ch_mask;
--		if (!time_left || val) {
-+		if ((val < 0) || (val & p_rt->ch_mask)) {
-+			ret = (val < 0) ? val : -ETIMEDOUT;
- 			dev_err(&s_rt->slave->dev,
--				"Chn prep failed for port:%d\n", prep_ch.num);
--			return -ETIMEDOUT;
-+				"Chn prep failed for port %d: %d\n", prep_ch.num, ret);
-+			return ret;
- 		}
- 	}
- 
--- 
-2.20.1
-
+Reviewed-by: Adam Manzanares <a.manzanares@samsung.com>=
