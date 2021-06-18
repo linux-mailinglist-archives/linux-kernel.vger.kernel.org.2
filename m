@@ -2,116 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5B23AD59B
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8EC3AD5A0
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232885AbhFRXDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 19:03:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44498 "EHLO mail.kernel.org"
+        id S232885AbhFRXHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 19:07:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231240AbhFRXDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 19:03:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AFA1613BD;
-        Fri, 18 Jun 2021 23:01:34 +0000 (UTC)
+        id S230024AbhFRXHd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 19:07:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF02961078;
+        Fri, 18 Jun 2021 23:05:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624057294;
-        bh=O1HK2H+gu/eyMSlkJPLC7a6tkuqX8DtvddAbywKNgsY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=AwlM75/MLDYy2ICXfXKfgBe+lffzr9iRQdVYubIDEDRCZn2QBg8NRxVp1nmERZx0K
-         VJk/xLkFoiYZh+SPdCLHlhUtra58DbPOdmy5mFL2Agnd2xL+5p74UNPN9NfEi2otoN
-         8V8wCIr3mQ/R1whT+fDFA7vpHPe+cRR+9JS/SPFT/Y6g1xYhA9Njq78YxZC1BpeFIW
-         9QgL0SIPuoItZvKcwfeLaefKIFggtxY9pB6CeDZKy+38jzLU2db7EcBDYCvsjq1HuU
-         Gydk6a8b3tP8rJyS95wI4tkeeLoVxNpTrNWCqODTn19GCfrIJ7UD6m88vRNyXI1jfP
-         DMfaE0ADiIP0w==
-Date:   Fri, 18 Jun 2021 18:01:32 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Artem Lapkin <email2tema@gmail.com>
-Cc:     narmstrong@baylibre.com, yue.wang@Amlogic.com,
-        khilman@baylibre.com, lorenzo.pieralisi@arm.com, robh@kernel.org,
-        kw@linux.com, jbrunet@baylibre.com, christianshewitt@gmail.com,
-        martin.blumenstingl@googlemail.com, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        art@khadas.com, nick@khadas.com, gouwa@khadas.com
-Subject: Re: [PATCH] PCI: dwc: meson add quirk
-Message-ID: <20210618230132.GA3228427@bjorn-Precision-5520>
+        s=k20201202; t=1624057523;
+        bh=G+jqxlyGbiQRmuv7Op8PGzyCrvARiAzvbUMuCk+sATc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pOi4gQgxN2WAWNlxGZJM51qtNaMiRMYNHNfglrR3HfsVUfJRLEScpil9/7sMpfTeT
+         7NHmX29rFhAqjTql30Tyku39E/6ZbllF46qHXSMzn1BcfomPQEjQh15+BD/I1WXuRB
+         OQ8N3WiGQ7IBF/31k/d3ikA0FkAlG0FI6mlhzCU6AInm+wRUfIOkeB6sOi1GWrmikP
+         drC/Icm25Vv/2gE1NlREMbWEPx66/a3z9y7hrVEx9fxnBVptemp0f6VKMf19vAVPF3
+         zBP+seiGKRYoNmbk1Fl6K1+XPPDn5OnNZRk8bKLAmMR8fltnlm5S1/i1wOJZs+Pyxr
+         NwSVkNEcAln3A==
+Date:   Fri, 18 Jun 2021 16:05:17 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        linux-next@vger.kernel.org, clang-built-linux@googlegroups.com,
+        lkft-triage@lists.linaro.org, linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: Re: [next] [clang] x86_64-linux-gnu-ld: mm/mremap.o: in function
+ `move_pgt_entry': mremap.c:(.text+0x763): undefined reference to
+ `__compiletime_assert_342'
+Message-ID: <YM0mrZIPM+sWTDHf@Ryzen-9-3900X.localdomain>
+References: <CA+G9fYsWHE5Vu9T3FV-vtHHbVFJWEF=bmjQxwaZs3uVYef028g@mail.gmail.com>
+ <CA+G9fYvvf+XTvZg1sTq4_f9OrVFsCazGo0ozaEbjVYgSeKCkWA@mail.gmail.com>
+ <YMtTdU2b9fI3dnFD@casper.infradead.org>
+ <YMuOSnJsL9qkxweY@archlinux-ax161>
+ <6f3c5317-2877-9a57-0126-e9305f000269@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210618063821.1383357-1-art@khadas.com>
+In-Reply-To: <6f3c5317-2877-9a57-0126-e9305f000269@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 02:38:21PM +0800, Artem Lapkin wrote:
-> Device set same 256 bytes maximum read request size equal MAX_READ_REQ_SIZE
-> was find some issue with HDMI scrambled picture and nvme devices
-> at intensive writing...
-
-Wait a minute.  We're getting way too much of this MRRS fiddling with 
-too little understanding of what the real problem is, and this is
-becoming a maintenance problem.
-
-We need more details about what the problem is and what specific
-devices are affected.  If this is a defect in the host bridge, we
-should have published errata about this because AFAICT there is
-nothing in the spec that limits the MRRS the OS can program.
-
-If we need to work around a problem, the quirk should relate to the
-device that is defective, not to every PCI device that could
-potentially be plugged in.
-
-Related recent issue:
-https://lore.kernel.org/r/20210528203224.GA1516603@bjorn-Precision-5520
-
-> [    4.798971] nvme 0000:01:00.0: fix MRRS from 512 to 256
+On Fri, Jun 18, 2021 at 10:32:42AM +0530, Aneesh Kumar K.V wrote:
+> On 6/17/21 11:32 PM, Nathan Chancellor wrote:
+> > Rebuilt the CC list because most people were added based on the
+> > incorrect bisect result.
+> > 
+> > On Thu, Jun 17, 2021 at 02:51:49PM +0100, Matthew Wilcox wrote:
+> > > On Thu, Jun 17, 2021 at 06:15:45PM +0530, Naresh Kamboju wrote:
+> > > > On Thu, 17 Jun 2021 at 17:41, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> > > > > x86_64-linux-gnu-ld: mm/mremap.o: in function `move_pgt_entry':
+> > > > > mremap.c:(.text+0x763): undefined reference to `__compiletime_assert_342'
+> > > > 
+> > > > The git bisect pointed out the first bad commit.
+> > > > 
+> > > > The first bad commit:
+> > > > commit 928cf6adc7d60c96eca760c05c1000cda061604e
+> > > > Author: Stephen Boyd <swboyd@chromium.org>
+> > > > Date:   Thu Jun 17 15:21:35 2021 +1000
+> > > >      module: add printk formats to add module build ID to stacktraces
+> > > 
+> > > Your git bisect probably went astray.  There's no way that commit
+> > > caused that regression.
+> > 
+> > My bisect landed on commit 83f85ac75855 ("mm/mremap: convert huge PUD
+> > move to separate helper"). flush_pud_tlb_range() evaluates to
+> > BUILD_BUG() when CONFIG_TRANSPARENT_HUGEPAGE is unset but this function
+> > is present just based on the value of
+> > CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD.
+> > 
+> > $ make -skj(nproc) ARCH=x86_64 CC=clang O=build/x86_64 distclean allnoconfig mm/mremap.o
+> > 
+> > $ llvm-readelf -s build/x86_64/mm/mremap.o &| rg __compiletime_assert
+> >      21: 0000000000000000     0 NOTYPE  GLOBAL DEFAULT   UND __compiletime_assert_337
+> > 
+> > $ rg TRANSPARENT_ build/x86_64/.config
+> > 450:CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE=y
+> > 451:CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD=y
+> > 562:# CONFIG_TRANSPARENT_HUGEPAGE is not set
+> > 
+> > Not sure why this does not happen on newer clang versions, presumably
+> > something with inlining decisions? Still seems like a legitimate issue
+> > to me.
+> > 
 > 
-> This quirk setup same MRRS if we try solve this problem with
-> pci=pcie_bus_perf kernel command line param
+> gcc 10 also doesn't give a build error. I guess that is because we evaluate
 > 
-> Signed-off-by: Artem Lapkin <art@khadas.com>
-> ---
->  drivers/pci/controller/dwc/pci-meson.c | 27 ++++++++++++++++++++++++++
->  1 file changed, 27 insertions(+)
+>      if (pud_trans_huge(*old_pud) || pud_devmap(*old_pud)) {
 > 
-> diff --git a/drivers/pci/controller/dwc/pci-meson.c b/drivers/pci/controller/dwc/pci-meson.c
-> index 686ded034f22..e2d40e5c2661 100644
-> --- a/drivers/pci/controller/dwc/pci-meson.c
-> +++ b/drivers/pci/controller/dwc/pci-meson.c
-> @@ -466,6 +466,33 @@ static int meson_pcie_probe(struct platform_device *pdev)
->  	return ret;
+>  to if (0) with CONFIG_TRANSPARENT_HUGEPAGE disabled.
+> 
+> switching that to if (1) do results in BUILD_BUG triggering.
+
+Thanks for pointing that out. I think what happens with clang-10 and
+clang-11 is that move_huge_pud() gets inlined into move_pgt_entry() but
+then the compiler does not figure out that the HPAGE_PUD case is dead so
+the code sticks around, where as GCC and newer clang versions can figure
+that out and eliminate that case.
+
+> Should we fix this ?
+
+Yes, I believe that we should.
+
+> modified   mm/mremap.c
+> @@ -336,7 +336,7 @@ static inline bool move_normal_pud(struct vm_area_struct
+> *vma,
 >  }
->  
-> +static void meson_pcie_quirk(struct pci_dev *dev)
-> +{
-> +	int mrrs;
-> +
-> +	/* no need quirk */
-> +	if (pcie_bus_config != PCIE_BUS_DEFAULT)
-> +		return;
-> +
-> +	/* no need for root bus */
-> +	if (pci_is_root_bus(dev->bus))
-> +		return;
-> +
-> +	mrrs = pcie_get_readrq(dev);
-> +
-> +	/*
-> +	 * set same 256 bytes maximum read request size equal MAX_READ_REQ_SIZE
-> +	 * was find some issue with HDMI scrambled picture and nvme devices
-> +	 * at intensive writing...
-> +	 */
-> +
-> +	if (mrrs != MAX_READ_REQ_SIZE) {
-> +		dev_info(&dev->dev, "fix MRRS from %d to %d\n", mrrs, MAX_READ_REQ_SIZE);
-> +		pcie_set_readrq(dev, MAX_READ_REQ_SIZE);
-> +	}
-> +}
-> +DECLARE_PCI_FIXUP_ENABLE(PCI_ANY_ID, PCI_ANY_ID, meson_pcie_quirk);
-> +
->  static const struct of_device_id meson_pcie_of_match[] = {
->  	{
->  		.compatible = "amlogic,axg-pcie",
-> -- 
-> 2.25.1
+>  #endif
 > 
+> -#ifdef CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+> +#if defined(CONFIG_HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD) &&
+> defined(CONFIG_TRANSPARENT_HUGEPAGE)
+>  static bool move_huge_pud(struct vm_area_struct *vma, unsigned long
+> old_addr,
+>  			  unsigned long new_addr, pud_t *old_pud, pud_t *new_pud)
+>  {
+
+That works or we could mirror what has already been done for the
+HPAGE_PMD case. No personal preference.
+
+diff --git a/mm/mremap.c b/mm/mremap.c
+index 9a7fbec31dc9..5989d3990020 100644
+--- a/mm/mremap.c
++++ b/mm/mremap.c
+@@ -460,7 +460,8 @@ static bool move_pgt_entry(enum pgt_entry entry, struct vm_area_struct *vma,
+                                      new_entry);
+                break;
+        case HPAGE_PUD:
+-               moved = move_huge_pud(vma, old_addr, new_addr, old_entry,
++               moved = IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
++                       move_huge_pud(vma, old_addr, new_addr, old_entry,
+                                      new_entry);
+                break;
+
+
+Cheers,
+Nathan
