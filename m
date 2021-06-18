@@ -2,162 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EA253AD164
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 100F13AD166
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234228AbhFRRo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 13:44:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233934AbhFRRoz (ORCPT
+        id S234279AbhFRRpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 13:45:33 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:28127 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233934AbhFRRpc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 13:44:55 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBBCBC061574;
-        Fri, 18 Jun 2021 10:42:45 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 17:42:42 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624038163;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=m4T6r4OFbKcFYZScWGv36zptdxpcLrCD12HgvKArkW0=;
-        b=Vbk2whrVEWRzOaBsDa1SRsBK7OamJQ8mv5uqqWjypR9RDo3dHD/o9LRWo6iHNfoqTADaIY
-        W3ZjgN+0VOgI+ivvb/52RJadYfWq8DhKPKKT6C6Aa1lvy3nuXE1Oqro/QSW4La4BKFSxCz
-        mP9aqf/FJZynNSpnFaO7u8PNsE++MJZd0kDZag3bRIwdJoeEGYpsv8C3uL7HKy/fmuZ/bD
-        b8oNE9JoOosE7cDqFHWRP6HWBGkWkJI5o1zLofiFRaafo/IhZaxb/mDy9TJ5MuNqhKUnhr
-        56fyhN6sh5m8aqTGXxSZR+x1YvfV9VcDj1l6nIPiJyRd8nWKtOxZrGoZMx1ARA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624038163;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=m4T6r4OFbKcFYZScWGv36zptdxpcLrCD12HgvKArkW0=;
-        b=kL4cKFhRia7OCNkSrXx51ld7LaN/rAwOHPXqshk9eODPGS/Y6Bt+QwjCuiSMUExgho5YxG
-        vXDpxBOjZqAiRhAA==
-From:   "tip-bot2 for Fan Du" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/mm: Avoid truncating memblocks for SGX memory
-Cc:     Reinette Chatre <reinette.chatre@intel.com>,
-        Fan Du <fan.du@intel.com>, Dave Hansen <dave.hansen@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        <stable@vger.kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210617194657.0A99CB22@viggo.jf.intel.com>
-References: <20210617194657.0A99CB22@viggo.jf.intel.com>
+        Fri, 18 Jun 2021 13:45:32 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624038202; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=WgLS2/3NtLjKkjEgDI5ory+8H10ZKBPmMZF6FlD9dMQ=;
+ b=oXXp4M+B4xk3s7yUNDB6fsXzgYAXiY5MejDpPKMDLcKYkOJudV/A6iSXqrmUYi1u9m3AZaCP
+ o57qy3AsxzPeWJgzepuZi28B2Wbcd7LUBSscLkqJEftx1CRzRek6KfhVLLP/vYuIKO6plXFW
+ IOS7Jxr6Xu7iiz8xBbjfREKwR/M=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 60ccdb2eea2aacd72903a8a3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Jun 2021 17:43:10
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 464BCC43460; Fri, 18 Jun 2021 17:43:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 25348C4338A;
+        Fri, 18 Jun 2021 17:43:09 +0000 (UTC)
 MIME-Version: 1.0
-Message-ID: <162403816226.19906.11145156429556481411.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 18 Jun 2021 10:43:09 -0700
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        carl.yin@quectel.com, naveen.kumar@quectel.com,
+        loic.poulain@linaro.org
+Subject: Re: [PATCH v1 1/4] bus: mhi: core: Add support for processing
+ priority of event ring
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <20210618173102.GB30140@workstation>
+References: <1623965435-30224-1-git-send-email-bbhatt@codeaurora.org>
+ <1623965435-30224-2-git-send-email-bbhatt@codeaurora.org>
+ <20210618070322.GO3682@workstation>
+ <df7c735f0caeb449bbaa8a6e040ae556@codeaurora.org>
+ <20210618173102.GB30140@workstation>
+Message-ID: <a7dabe81a269af96638389854294d0ae@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+Hi Mani,
+On 2021-06-18 10:31 AM, Manivannan Sadhasivam wrote:
+> On Fri, Jun 18, 2021 at 10:17:59AM -0700, Bhaumik Bhatt wrote:
+>> Hi Mani,
+>> 
+>> On 2021-06-18 12:03 AM, Manivannan Sadhasivam wrote:
+>> > On Thu, Jun 17, 2021 at 02:30:32PM -0700, Bhaumik Bhatt wrote:
+>> > > From: Hemant Kumar <hemantk@codeaurora.org>
+>> > >
+>> > > Event ring priorities are currently set to 1 and are unused.
+>> > > Default processing priority for event rings is set to regular
+>> > > tasklet. Controllers can choose to use high priority tasklet
+>> > > scheduling for certain event rings critical for processing such
+>> > > as ones transporting control information if they wish to avoid
+>> > > with system scheduling delays for those packets. In order to
+>> > > support these use cases, allow controllers to set event ring
+>> > > priority to high. This patch only adds support and does not
+>> > > enable usage of these priorities.
+>> > >
+>> > > Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
+>> > > Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> > > ---
+>> > >  drivers/bus/mhi/core/internal.h |  2 +-
+>> > >  drivers/bus/mhi/core/main.c     | 19 ++++++++++++++++---
+>> > >  include/linux/mhi.h             | 14 ++++++++++++--
+>> > >  3 files changed, 29 insertions(+), 6 deletions(-)
+>> > >
+>> > > diff --git a/drivers/bus/mhi/core/internal.h
+>> > > b/drivers/bus/mhi/core/internal.h
+>> > > index 672052f..666e102 100644
+>> > > --- a/drivers/bus/mhi/core/internal.h
+>> > > +++ b/drivers/bus/mhi/core/internal.h
+>> > > @@ -535,7 +535,7 @@ struct mhi_event {
+>> > >  	u32 intmod;
+>> > >  	u32 irq;
+>> > >  	int chan; /* this event ring is dedicated to a channel (optional) */
+>> > > -	u32 priority;
+>> > > +	enum mhi_er_priority priority;
+>> >
+>> > Instead of using enum for priorities, can we just make use of the
+>> > existing "priority" field? Since the existing controllers set it to "1",
+>> > can we use "0" as the high priority?
+>> >
+>> > This way we don't need to change the controller drivers.
+>> >
+>> I agree but the reasons to do the enum approach was to allow for 
+>> future
+>> expansion of the handling if it becomes necessary and provide clarity 
+>> for
+>> the field.
+>> 
+>> I can always do it this way for now and we can have the enum for 
+>> another
+>> time but would prefer updating what we have now.
+> 
+> Yeah, let's deal with it later once the necessity arises.
+> 
+Sure. I will make the v2.
 
-Commit-ID:     28e5e44aa3f4e0e0370864ed008fb5e2d85f4dc8
-Gitweb:        https://git.kernel.org/tip/28e5e44aa3f4e0e0370864ed008fb5e2d85f4dc8
-Author:        Fan Du <fan.du@intel.com>
-AuthorDate:    Thu, 17 Jun 2021 12:46:57 -07:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 18 Jun 2021 19:37:01 +02:00
+>> > >  	enum mhi_er_data_type data_type;
+>> > >  	struct mhi_ring ring;
+>> > >  	struct db_cfg db_cfg;
+>> > > diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+>> > > index 8ac73f9..bfc9776 100644
+>> > > --- a/drivers/bus/mhi/core/main.c
+>> > > +++ b/drivers/bus/mhi/core/main.c
+>> > > @@ -425,10 +425,11 @@ void mhi_create_devices(struct mhi_controller
+>> > > *mhi_cntrl)
+>> > >  	}
+>> > >  }
+>> > >
+> 
+> [...]
+> 
+>> Existing controllers would be fine.
+>> 
+>> Do you think we have a problem if a new controller blindly inputs a 
+>> "0" in
+>> the priority not knowing the impact of it?
+>> 
+> 
+> We should document it in the kernel doc for the struct field and that
+> should be enough. We can't do much if people doesn't read the doc ;)
+> 
+> Thanks,
+> Mani
+> 
+Totally agree :)
 
-x86/mm: Avoid truncating memblocks for SGX memory
+>> If you give me a go ahead, I can make these changes in v2 and leave 
+>> the enum
+>> stuff out.
+>> 
+>> Thanks,
+>> Bhaumik
+>> ---
+>> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+>> Forum,
+>> a Linux Foundation Collaborative Project
 
-tl;dr:
-
-Several SGX users reported seeing the following message on NUMA systems:
-
-  sgx: [Firmware Bug]: Unable to map EPC section to online node. Fallback to the NUMA node 0.
-
-This turned out to be the memblock code mistakenly throwing away SGX
-memory.
-
-=== Full Changelog ===
-
-The 'max_pfn' variable represents the highest known RAM address.  It can
-be used, for instance, to quickly determine for which physical addresses
-there is mem_map[] space allocated.  The numa_meminfo code makes an
-effort to throw out ("trim") all memory blocks which are above 'max_pfn'.
-
-SGX memory is not considered RAM (it is marked as "Reserved" in the
-e820) and is not taken into account by max_pfn. Despite this, SGX memory
-areas have NUMA affinity and are enumerated in the ACPI SRAT table. The
-existing SGX code uses the numa_meminfo mechanism to look up the NUMA
-affinity for its memory areas.
-
-In cases where SGX memory was above max_pfn (usually just the one EPC
-section in the last highest NUMA node), the numa_memblock is truncated
-at 'max_pfn', which is below the SGX memory.  When the SGX code tries to
-look up the affinity of this memory, it fails and produces an error message:
-
-  sgx: [Firmware Bug]: Unable to map EPC section to online node. Fallback to the NUMA node 0.
-
-and assigns the memory to NUMA node 0.
-
-Instead of silently truncating the memory block at 'max_pfn' and
-dropping the SGX memory, add the truncated portion to
-'numa_reserved_meminfo'.  This allows the SGX code to later determine
-the NUMA affinity of its 'Reserved' area.
-
-Before, numa_meminfo looked like this (from 'crash'):
-
-  blk = { start =          0x0, end = 0x2080000000, nid = 0x0 }
-        { start = 0x2080000000, end = 0x4000000000, nid = 0x1 }
-
-numa_reserved_meminfo is empty.
-
-With this, numa_meminfo looks like this:
-
-  blk = { start =          0x0, end = 0x2080000000, nid = 0x0 }
-        { start = 0x2080000000, end = 0x4000000000, nid = 0x1 }
-
-and numa_reserved_meminfo has an entry for node 1's SGX memory:
-
-  blk =  { start = 0x4000000000, end = 0x4080000000, nid = 0x1 }
-
- [ daveh: completely rewrote/reworked changelog ]
-
-Fixes: 5d30f92e7631 ("x86/NUMA: Provide a range-to-target_node lookup facility")
-Reported-by: Reinette Chatre <reinette.chatre@intel.com>
-Signed-off-by: Fan Du <fan.du@intel.com>
-Signed-off-by: Dave Hansen <dave.hansen@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Reviewed-by: Dave Hansen <dave.hansen@intel.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20210617194657.0A99CB22@viggo.jf.intel.com
+Thanks,
+Bhaumik
 ---
- arch/x86/mm/numa.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
-index 5eb4dc2..e94da74 100644
---- a/arch/x86/mm/numa.c
-+++ b/arch/x86/mm/numa.c
-@@ -254,7 +254,13 @@ int __init numa_cleanup_meminfo(struct numa_meminfo *mi)
- 
- 		/* make sure all non-reserved blocks are inside the limits */
- 		bi->start = max(bi->start, low);
--		bi->end = min(bi->end, high);
-+
-+		/* preserve info for non-RAM areas above 'max_pfn': */
-+		if (bi->end > high) {
-+			numa_add_memblk_to(bi->nid, high, bi->end,
-+					   &numa_reserved_meminfo);
-+			bi->end = high;
-+		}
- 
- 		/* and there's no empty block */
- 		if (bi->start >= bi->end)
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
