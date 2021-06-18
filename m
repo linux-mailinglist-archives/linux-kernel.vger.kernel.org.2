@@ -2,151 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A18CC3AC3E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A513AC3F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231630AbhFRGda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 02:33:30 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:20342 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231461AbhFRGd2 (ORCPT
+        id S231676AbhFRGet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 02:34:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231553AbhFRGes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 02:33:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1623997875;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=16NeATO+rAWtDGVzD3paA8MGh0HDW7gttOUSTi4Onw4=;
-        b=YoAL+r/aqNZL2awyzaZXjKipPzVvZWwV/jIUvJa3e1HotW+20erDmDFgH+wfWeGvQQoPAE
-        YiYo6kxrEO/tN8SraqLR6+5vBECKnB18YFnxj0Z/w2iFm385e6UBzm4ZeKGSvIfbS/PXaL
-        Cv5JSOZYffHC3APuJuEV8nvaOPOE0iA=
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com
- (mail-vi1eur05lp2176.outbound.protection.outlook.com [104.47.17.176])
- (Using TLS) by relay.mimecast.com with ESMTP id
- de-mta-8-v70B4lrkMMuCrSt6kmdZAw-1; Fri, 18 Jun 2021 08:31:14 +0200
-X-MC-Unique: v70B4lrkMMuCrSt6kmdZAw-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Ji3PVFDpAAvoqs+alXEtzMIp0df1hx9XJqyU4yo3ZqFh7JnIptEPOiyaJf16EZeymiRkuNAFUT7N82abs7g1UAgRhuMtKprNCrXAmLeifExFCmAUWQ3tGeirRch3xewWHAnxwJM4PQ62CjgD8Df2HwQ68leF76BAkt5rUPN29gNFAQV1MXur4yBg5Cg/tQibwtC12OlZ5BVWzAP0J/pS1ZmeHWsiqIbSkKXvOzOusQnsKlExpn05ayMbd++MiOG4BGm7uQ14NQTZHVjArysWALygTV8woLt03RDUjnFizLE3CSRexVjOaSzilMZU7M4loblBeTc2fzS3TCUJEeCYzQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=veDGfnDZrLXR+ieBLavnw0XJbHrGMGBGbkaISpEo7lg=;
- b=Vxec6/FgYcO04aE3xYSRBMzoOvW7d9BHzBs2n+bBdJIJBwu0X9l1bD337oOKEi7OL3WCJJLV7fwBKy9/RvsQznhBv96fbJP7kzLSOuksnTAsttwrCtEuXyMM/8iSGTiygISkw7i0JMvEdz86fAzFNvxfhExMWFgNR7FpeQcjDAgUD1k22nKtERDFjHMk0U/xkizZh7SShPj79ykHrEM+sLoxtOZjwV3AIGWG6jn6x9Tj2bDKPafw9I+wcyeex1k8xRGFVhDxoPKabY9raARJZ63IEPm40+L1Cf1MMoHQUzxNe9VNwsBnsaMtKS/FtaKm9LnXe8Q3taQzFCflyW4RWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=suse.com;
-Received: from AM7PR04MB6821.eurprd04.prod.outlook.com (2603:10a6:20b:105::22)
- by AS8PR04MB8309.eurprd04.prod.outlook.com (2603:10a6:20b:3fe::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4195.25; Fri, 18 Jun
- 2021 06:31:13 +0000
-Received: from AM7PR04MB6821.eurprd04.prod.outlook.com
- ([fe80::b4b5:823d:f2fd:d10]) by AM7PR04MB6821.eurprd04.prod.outlook.com
- ([fe80::b4b5:823d:f2fd:d10%8]) with mapi id 15.20.4219.025; Fri, 18 Jun 2021
- 06:31:13 +0000
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-From:   Qu Wenruo <wqu@suse.com>
-Subject: Please don't waste maintainers' time on your KPI grabbing patches
- (AKA, don't be a KPI jerk)
-Message-ID: <e78add0a-8211-86c3-7032-6d851c30f614@suse.com>
-Date:   Fri, 18 Jun 2021 14:31:03 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [149.28.201.231]
-X-ClientProxiedBy: BYAPR06CA0017.namprd06.prod.outlook.com
- (2603:10b6:a03:d4::30) To AM7PR04MB6821.eurprd04.prod.outlook.com
- (2603:10a6:20b:105::22)
+        Fri, 18 Jun 2021 02:34:48 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3A0EC061760
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 23:32:38 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id a11so1646112lfg.11
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 23:32:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FcqiM6OKoI9kz5wi4xxOdBHKAWW28rWhb54WENTCYlg=;
+        b=as0jcEU2Kw4vkeFE9aQYOArqSa433Qcii85hTVwoWOm1lj5H2Q/pzP+059YsRJhLdC
+         eTERXFkcC+sRTzDUKybkwsVujdqr+hY3rO8f4j0L2lPXNbNldXWJ0Xa2hkgr+/X/6xF7
+         DmxiDcEMOvsQdahRV0GMXc8McRfczsfsUqGbc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FcqiM6OKoI9kz5wi4xxOdBHKAWW28rWhb54WENTCYlg=;
+        b=YkGYem7swA4AW7URE6XKTndNsw1XC6OF8Hfl5O7b76NpBg8I72T07zNPgHxsvXCbgl
+         GbcMpBBJhzl8CvqUdki0S0e1BapG6vgjQHoYzV1c7IluZlaXJWzR9d+fs/MeSWb8D3PT
+         Zof5/NVtCkM03YQN05V/xM64lG3WsuXOV2S9m0ugpydYX3134xfGww9Ndz1G03cdQKW6
+         1J4us6FnFUGnqUUcWJaOz24pKJdzOC+316uJ4ZP6dz6KIQEkWT8jajnsnU8pUfOlkbe0
+         eJN+mGFP5dSXgWYJEL66LAeMYX2NLCehZZSirs5evDC9udTO2A2/UixTn1jss+x1yzD0
+         TxPA==
+X-Gm-Message-State: AOAM533BuuhAP9+XzDeoESp2bqz4oqCA2JXie1g61SX3cIgNxIt/iy7j
+        KcqY6fAZruy2vmiyUBN9kgDjDCudm11daSGxiJaMQw==
+X-Google-Smtp-Source: ABdhPJz9n25XQXeae5FgmLVYRSWumiYzvEvvgvJUqRLfLsqolm6mHnftZfZe24scZrNt+nSJwTtlDhigDROdPGjiHR4=
+X-Received: by 2002:a19:f809:: with SMTP id a9mr1983941lff.342.1623997956967;
+ Thu, 17 Jun 2021 23:32:36 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [0.0.0.0] (149.28.201.231) by BYAPR06CA0017.namprd06.prod.outlook.com (2603:10b6:a03:d4::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19 via Frontend Transport; Fri, 18 Jun 2021 06:31:11 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b8bb6526-3679-4876-ca9d-08d93222ab0c
-X-MS-TrafficTypeDiagnostic: AS8PR04MB8309:
-X-Microsoft-Antispam-PRVS: <AS8PR04MB830983F9710DE2B7FA2947F3D60D9@AS8PR04MB8309.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: e8VJ0Cyr5Iti8a6IRd5x7wf4s4jD0lR/eJVPUKh/+8nwjMsL2LkxO7tLUtggtZsVW5Mol18fISUpbB+7fRBzVcBOd3T137z0CWVlp8rXRpgmzS0eUDPZal07mHARkJSsSBrXcMeh4euURj5gt2Kywn3ToZovAd2FkxkKiYwEU8v9zZ6sKHw+AuRSwhDF/kGBGgrNkg3+vZAlhV6vtPRQQUtzIMKAbpSYKbA3lxByVUlq/bK4gWF7VqUC7Z9ieayOCzWVfTiTZuRtz6d5CFMy5Q+W7uHEuU8R318DN9Vj5BmvHXuL0HzFKGVsvv24EaWRaKz5s4mB2XZEWJ4vVG0dqwr2qIqdeCZfqNQvSttXitERqO+0oV+JWxKpMeKw6uATAZe8Wg7D0tKY5Oa7gJRQ9nvTGHBz4+AaE7mdGLiK66nvqixRGCfs5q+AcACPEbQCejjRhdG4fLlwHaH3cfA1o2dU52J9fqAtcxHQeTcbG/+Xt5ER795O2oY8Xi7H5HjPx+IUNi5IN+btFE+SVDcuWfwCJLaBpQE1J2YE+Ga+n8GIUumW+mIc0SirDVgiV6ptRsmF1b+9BuJdIqoh8LOFNXtZHtGRhGB0GsJXMFM5xr+9DNp+chQX9jnmyoHxMQJN1ViTuWU+voNF+WXubYAqDhC/klWc4/MqCiRRZFjfGIVTU7oq1IbQTZnmj5D3bW6Ey0hiT7F5FKbCucCEkJxOdQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB6821.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(136003)(39860400002)(396003)(366004)(478600001)(16526019)(66946007)(31686004)(2906002)(6486002)(956004)(31696002)(6706004)(110136005)(8936002)(86362001)(186003)(66476007)(8676002)(36756003)(16576012)(316002)(26005)(38100700002)(5660300002)(83380400001)(66556008)(2616005)(6666004)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FGPzTySKfbL+3TjTbebLKfDhTFU/29oHETWl4dKUo8lx4EVRh+M+qEeLGgYd?=
- =?us-ascii?Q?KZjCyYMkt4W+AeJm3QQIfNYuDKk3nsoDnT+JbC5J4tFRTXxdpUSXq8OQguAL?=
- =?us-ascii?Q?lHdPVEhvRYCAdnPWxy/5Bu1FYKgU6j2NQMk4lnp6GPNP7JvuqnLKeN6AXH5c?=
- =?us-ascii?Q?gOIYmNtfIcOtBRJael8DATDcDJUcc/uXunAxTUAENrswbHKf8/AmnzPD6sVL?=
- =?us-ascii?Q?gKT4Ntmqsm39OlAFcaM9P4Gop507uMl7gmlJD5nXPNi4VnSvC052ZJZwfiqA?=
- =?us-ascii?Q?tUx14hZyjIPYAl52xFGMg9StNE42ZilaUuaX9PysFsBsFYDC776uZM+6LOAN?=
- =?us-ascii?Q?MPkWX86rpoaTpQRUm4jmxvYr+HYx1y14oEPyHXTPKtmx+vW9feUEdBuYj60X?=
- =?us-ascii?Q?2Ok3z3m4ffnqpH2EhlOjE2VU0HF58whD7cCgFK2PYt1eRvDowDZfsIM2iS9x?=
- =?us-ascii?Q?miJH0mQA5mbjhnQzYxyce5bF/0YEE25Q3Z9c0Z8i5HLpptOtyggcZtnzDUqV?=
- =?us-ascii?Q?/Y4sStvGXxoKWY1ng/7TIHZdbva2Y/T5vXm6DQSfX3IQKao0d1u6fKbQry56?=
- =?us-ascii?Q?vitlrHFZ2BsPZzRJLZo8Py6wVqwrF0aQos1IIRFMrtNj/SoT5BIZTSYFPE25?=
- =?us-ascii?Q?px8sNJgYxP437Z91ZVFrtn5Vs57aLHx3lfksIXm4+40U1FnvJoRaZ3S96AMj?=
- =?us-ascii?Q?ZF7zLR1FVlET3HvwcLOxJG5T5o1+d7okzlCN/L/DJeHnqxf+AFRgnPQMJ5XB?=
- =?us-ascii?Q?jQCZlgtlfM+UG6hwxGV/rpM+mh9Qi4y7Lo3WmQz6ahEwgcQ3NNcbteMpHEFX?=
- =?us-ascii?Q?mmXDGOvzHSkdJUamT4b731BiWntqhIeepKpOVDzmCNYooYyru/tUnSv4EEma?=
- =?us-ascii?Q?isD5yEfVJPEzqyweTXgcUKadtkXyYFrvjgQjYfzijZUQHfe73dNBDKms4zcD?=
- =?us-ascii?Q?PBp1Srv4E84G9a2LwZTejOb56nEla8HDQRvum4HL61EQMCOZRWz/RLNDb7qE?=
- =?us-ascii?Q?nVMVjiUfSIkhsLwCgaUfkICj0teYyFXllgjGwOmRdlkYWRqMFjeYMIcXnRBd?=
- =?us-ascii?Q?Bc6vITUfOkIxTCPFSnIbiPH+8HUqNCL5COUGl0QdKoFkFEtbcWrssgZUVBSC?=
- =?us-ascii?Q?tVUSM3SZBE5S2SN8fO5xi/ZYPVx0Lti0An+KLLhv++BS2g02mSPKWEjSgOTg?=
- =?us-ascii?Q?eitA9Tl+a5sL/g6UBNUf86zl9p7wntBXuDj6bANMnm4GF9VUwSCT71RQxuUw?=
- =?us-ascii?Q?rpjHo8EYem8CpJE6+1peUWCg4rJF68AVHLpgafjI8DkiQfSF24dqiB5CkP5p?=
- =?us-ascii?Q?8lARhjzLYybHmezqPMk56Mri?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b8bb6526-3679-4876-ca9d-08d93222ab0c
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB6821.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Jun 2021 06:31:13.1974
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IOGzDTVTkZWtZHfTpA12pWaclugy+l/cAhz/NIPfDISoux1VnNQr4UWWJLpwZc6W
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8309
+References: <20210524122053.17155-1-chun-jie.chen@mediatek.com>
+ <20210524122053.17155-2-chun-jie.chen@mediatek.com> <20210602171201.GA3566462@robh.at.kernel.org>
+ <66e017401ab93aa02c5d2bbf11be9589b36649ac.camel@mediatek.com>
+ <1f59ed31-4a0e-9719-bf84-1fe4cdd6c57d@gmail.com> <162334689784.9598.2709970788186333494@swboyd.mtv.corp.google.com>
+ <de082c64-ace3-30b5-7404-1f4b607a83e1@gmail.com> <c8e8535cef67adeaefcfe943bbd8287806921e03.camel@mediatek.com>
+In-Reply-To: <c8e8535cef67adeaefcfe943bbd8287806921e03.camel@mediatek.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Fri, 18 Jun 2021 14:32:25 +0800
+Message-ID: <CAGXv+5HcV6jbyDdZGzRX-2NHMztSONBKxmLxLQX6k+aQrwJ1ww@mail.gmail.com>
+Subject: Re: [PATCH v9 01/22] dt-bindings: ARM: Mediatek: Add new document
+ bindings of imp i2c wrapper controller
+To:     Stephen Boyd <sboyd@kernel.org>
+Cc:     Chun-Jie Chen <chun-jie.chen@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Weiyi Lu <weiyi.lu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leizhen, and guys in the mail list,
+On Wed, Jun 16, 2021 at 2:34 AM Chun-Jie Chen
+<chun-jie.chen@mediatek.com> wrote:
+>
+> On Fri, 2021-06-11 at 11:56 +0200, Matthias Brugger wrote:
+> >
+> > On 10/06/2021 19:41, Stephen Boyd wrote:
+> > > Quoting Matthias Brugger (2021-06-08 07:45:49)
+> > > >
+> > > >
+> > > > On 07/06/2021 07:20, Chun-Jie Chen wrote:
+> > > > > On Wed, 2021-06-02 at 12:12 -0500, Rob Herring wrote:
+> > > > > > > +
+> > > > > > > +description:
+> > > > > > > +  The Mediatek imp i2c wrapper controller provides
+> > > > > > > functional
+> > > > > > > configurations and clocks to the system.
+> > > > > > > +
+> > > > > > > +properties:
+> > > > > > > +  compatible:
+> > > > > > > +    items:
+> > > > > > > +      - enum:
+> > > > > > > +          - mediatek,mt8192-imp_iic_wrap_c
+> > > > > > > +          - mediatek,mt8192-imp_iic_wrap_e
+> > > > > > > +          - mediatek,mt8192-imp_iic_wrap_s
+> > > > > > > +          - mediatek,mt8192-imp_iic_wrap_ws
+> > > > > > > +          - mediatek,mt8192-imp_iic_wrap_w
+> > > > > > > +          - mediatek,mt8192-imp_iic_wrap_n
+> > > > > >
+> > > > > > Looks to me like these are all the same h/w, but just have
+> > > > > > differing
+> > > > > > sets of clocks. That's not really a reason to have different
+> > > > > > compatibles.
+> > > > > >
+> > > > > > If you need to know what clocks are present, you can walk the
+> > > > > > DT for
+> > > > > > all 'clocks' properties matching this clock controller
+> > > > > > instance. Or
+> > > > > > use
+> > > > > > 'clock-indices' to define which ones are present.
+> > >
+> > > Is the idea to use clock-indices and then list all the clock ids in
+> > > there and match them up at driver probe time to register the clocks
+> > > provided by the IO region? Feels like we'll do a lot of parsing at
+> > > each
+> > > boot to match up structures and register clks with the clk
+> > > framework.
+> > >
+> > > If it's like other SoCs then the clk id maps to a hard macro for a
+> > > type
+> > > of clk, and those hard macros have been glued together with other
+> > > clks
+> > > and then partitioned into different IO regions to make up a clock
+> > > controller. Or maybe in this case, those clk hard macros have been
+> > > scattered into each IP block like SPI, i2c, uart, etc. so that the
+> > > clock
+> > > controller doesn't really exist and merely the gates and rate
+> > > control
+> > > (mux/divider) for the clk that's clocking some particular IP block
+> > > all
+> > > live inside the IP wrapper. If it's this case then I hope there are
+> > > a
+> > > bunch of PLLs that are fixed rate so that the i2c clk doesn't have
+> > > to go
+> > > outside the wrapper to change frequency (of which there should be
+> > > two
+> > > "standard" frequencies anyway).
+> > >
+> > > > > >
+> > > > > > Rob
+> > > > >
+> > > > > Some module is divided to sub-modules which are designed in
+> > > > > different
+> > > > > h/w blocks for different usage, and if we want to use the same
+> > > > > compatible to present these h/w blocks, we need to move the
+> > > > > clock data
+> > > > > provided by these h/w blocks to dts, but we usually use
+> > > > > different
+> > > > > compatible to get the h/w blocks data in
+> > > > > Mediatek's clock driver, so do you suggest to register clock
+> > > > > provided
+> > > > > by different h/w blocks using same compatible?
+> > > > >
+> > > >
+> > > > The mapping of them is as following:
+> > > > imp_iic_wrap_c:  11007000
+> > > > imp_iic_wrap_e:  11cb1000
+> > > > imp_iic_wrap_s:  11d03000
+> > > > imp_iic_wrap_ws: 11d23000
+> > > > imp_iic_wrap_w:  11e01000
+> > > > imp_iic_wrap_n:  11f02000
+> > > >
+> > >
+> > > Sure. What is their purpose though? Are they simply a bunch of
+> > > different
+> > > i2c clks?
+> > >
+> >
+> > That would be need to be answered by MediaTek as I don't have access
+> > to any
+> > documentation.
+> >
+> > Regards,
+> > Matthias
+>
+> We describe which clock controllers are exist in dts and
+> get the clock data provided by clock controller in driver data
+> by matching device compatible.
+>
+> The clock data contains several clocks which includes the clock index,
+> parent clock source and the details of reg control inside the IP block
+> of clock controller.
+>
+> In MT8192 platform, some IP block is divide to several sub-blocks and
+> each sub-block provides clock control by itself.
 
-Recently I find one patch removing a debug OOM error message from btrfs=20
-selftest.
+Some more information:
 
-It's nothing special, some small cleanup work from some kernel newbie.
-
-But the mail address makes me cautious, "@huawei.com".
-
-The last time we got some similar patches from the same company, doing=20
-something harmless "cleanup". But those "fixes" are also useless.
-
-This makes me wonder, what is really going on here.
-
-After some quick search, more and more oom error message "cleanup"=20
-patches just show up, even some misspell fixes.
+Based on what I read in the datasheets, I'm guessing that MediaTek groups
+the I2C controllers into several groups and places them in different parts
+of the die. The suffix of imp_iic_wrap_XXX is likely pointing to the
+placement of the group. And the imp_iic_wrap_XXX is what the name suggests
+a wrapper around the group of I2C controllers. The wrapper contains clock
+and reset controls, as well as other things that I can't make out.
 
 
-It's OK for first-time/student developers to submit such patches, and I=20
-really hope such patches would make them become a long term contributor.
-In fact, I started my kernel contribution exactly by doing such "cleanups".
-
-But what you guys are doing is really KPI grabbing, I have already see=20
-several maintainers arguing with you on such "cleanups", and you're=20
-always defending yourself to try to get those patches merged.
-
-You're sending the patch representing your company, by doing this you're=20
-really just damaging the already broken reputation.
-
-Please stop this KPI grabbing behavior, and do real contribution to fix=20
-the damaged reputation.
-
-Thanks,
-Qu
-
+ChenYu
