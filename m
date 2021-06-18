@@ -2,90 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD33B3AD1CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC9B3AD1D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235718AbhFRSL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 14:11:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233224AbhFRSL2 (ORCPT
+        id S235003AbhFRSNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 14:13:38 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12794 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230024AbhFRSNh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 14:11:28 -0400
-Received: from relay04.th.seeweb.it (relay04.th.seeweb.it [IPv6:2001:4b7a:2000:18::165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F54C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 11:09:18 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 53C111F5D0;
-        Fri, 18 Jun 2021 20:09:15 +0200 (CEST)
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-To:     bjorn.andersson@linaro.org
-Cc:     agross@kernel.org, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com,
-        jamipkettunen@somainline.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Subject: [RESEND PATCH v4 3/3] soc: qcom: spm: Add compatible for MSM8998 SAWv4.1 L2
-Date:   Fri, 18 Jun 2021 20:09:07 +0200
-Message-Id: <20210618180907.258149-4-angelogioacchino.delregno@somainline.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210618180907.258149-1-angelogioacchino.delregno@somainline.org>
-References: <20210618180907.258149-1-angelogioacchino.delregno@somainline.org>
+        Fri, 18 Jun 2021 14:13:37 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15II2Yud118785;
+        Fri, 18 Jun 2021 14:11:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=LDeXJAMIrd7Bzszgl+66ueq612J8mydZvMkXyfHiR/c=;
+ b=hVSrh+Jht8KCJPKS3LnXXjyez+P+NqEzSEo4TGrZrVSso1gmK1wCxEQ6XfBg+s7j6qlk
+ 0dDPbbvEbVaCnHgosefb4PfUA0vYQxor+Pm1cU/4vWxDf6qriDoF0QdSCfpwb/SLLWP/
+ p76DsN/MmtLh5Ro9bEL/tuMprsSzPBD7HSFxCsPV+F5+wzNl4sT/jL8kNbJvfKMD0TdH
+ sb6S2IDWLT/oTDNuiV8gK56KWsVCSwTHYYOugyU1YTexh2BQuLCpjTAMyKds/Dp4ogYw
+ dzlMoHXDXIp0wIJwnVioQvTcqQi+Zh+LqcfbrcEvFROOytXS8Z0f0dxBIrPIHFhQuADC UA== 
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 398xtp2wbh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Jun 2021 14:11:25 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15II8SsV001921;
+        Fri, 18 Jun 2021 18:11:24 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma04dal.us.ibm.com with ESMTP id 3980b9rfhw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Jun 2021 18:11:24 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15IIBNNI12518384
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 18 Jun 2021 18:11:23 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D4307AE060;
+        Fri, 18 Jun 2021 18:11:23 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9295DAE05C;
+        Fri, 18 Jun 2021 18:11:23 +0000 (GMT)
+Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.128.252])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 18 Jun 2021 18:11:23 +0000 (GMT)
+Subject: Re: [PATCH v2] s390/vfio-ap: Fix module unload memory leak of
+ matrix_dev
+To:     "Jason J. Herne" <jjherne@linux.ibm.com>,
+        linux-s390@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, pasic@linux.ibm.com, jgg@nvidia.com
+References: <20210618171255.2025-1-jjherne@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <af3d6c67-e045-770f-82ff-dd8e691c1317@linux.ibm.com>
+Date:   Fri, 18 Jun 2021 14:11:23 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210618171255.2025-1-jjherne@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: OGz9te48wsybWvLCzreZE7cm2VZGxwly
+X-Proofpoint-GUID: OGz9te48wsybWvLCzreZE7cm2VZGxwly
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-18_10:2021-06-18,2021-06-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
+ adultscore=0 suspectscore=0 priorityscore=1501 bulkscore=0 impostorscore=0
+ mlxlogscore=999 phishscore=0 lowpriorityscore=0 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106180104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the SAWv4.1 parameters for MSM8998's Gold and Silver clusters.
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
----
- drivers/soc/qcom/spm.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
 
-diff --git a/drivers/soc/qcom/spm.c b/drivers/soc/qcom/spm.c
-index 843732d12c54..2e6312663293 100644
---- a/drivers/soc/qcom/spm.c
-+++ b/drivers/soc/qcom/spm.c
-@@ -54,6 +54,18 @@ static const struct spm_reg_data spm_reg_660_silver_l2  = {
- 	.avs_limit = 0x4580458,
- };
- 
-+static const struct spm_reg_data spm_reg_8998_gold_l2  = {
-+	.reg_offset = spm_reg_offset_v4_1,
-+	.avs_ctl = 0x1010031,
-+	.avs_limit = 0x4700470,
-+};
-+
-+static const struct spm_reg_data spm_reg_8998_silver_l2  = {
-+	.reg_offset = spm_reg_offset_v4_1,
-+	.avs_ctl = 0x1010031,
-+	.avs_limit = 0x4200420,
-+};
-+
- static const u16 spm_reg_offset_v2_1[SPM_REG_NR] = {
- 	[SPM_REG_CFG]		= 0x08,
- 	[SPM_REG_SPM_CTL]	= 0x30,
-@@ -149,6 +161,10 @@ static const struct of_device_id spm_match_table[] = {
- 	  .data = &spm_reg_660_gold_l2 },
- 	{ .compatible = "qcom,sdm660-silver-saw2-v4.1-l2",
- 	  .data = &spm_reg_660_silver_l2 },
-+	{ .compatible = "qcom,msm8998-gold-saw2-v4.1-l2",
-+	  .data = &spm_reg_8998_gold_l2 },
-+	{ .compatible = "qcom,msm8998-silver-saw2-v4.1-l2",
-+	  .data = &spm_reg_8998_silver_l2 },
- 	{ .compatible = "qcom,msm8974-saw2-v2.1-cpu",
- 	  .data = &spm_reg_8974_8084_cpu },
- 	{ .compatible = "qcom,apq8084-saw2-v2.1-cpu",
--- 
-2.30.0
+On 6/18/21 1:12 PM, Jason J. Herne wrote:
+> vfio_ap_matrix_dev_release is shadowing the global matrix_dev with a NULL
+> pointer. Driver data for the matrix device is never set and so
+> dev_get_drvdata() always returns NULL. When release is called we end up
+> not freeing matrix_dev. The fix is to remove the shadow variable and get
+> the correct pointer from the device using container_of. We'll also NULL
+> the global to prevent any future use.
+>
+> Signed-off-by: Jason J. Herne <jjherne@linux.ibm.com>
+> ---
+>   drivers/s390/crypto/vfio_ap_drv.c | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/s390/crypto/vfio_ap_drv.c b/drivers/s390/crypto/vfio_ap_drv.c
+> index 7dc72cb718b0..40e66cb363d1 100644
+> --- a/drivers/s390/crypto/vfio_ap_drv.c
+> +++ b/drivers/s390/crypto/vfio_ap_drv.c
+> @@ -82,9 +82,8 @@ static void vfio_ap_queue_dev_remove(struct ap_device *apdev)
+>   
+>   static void vfio_ap_matrix_dev_release(struct device *dev)
+>   {
+> -	struct ap_matrix_dev *matrix_dev = dev_get_drvdata(dev);
+> -
+> -	kfree(matrix_dev);
+> +	kfree(container_of(dev, struct ap_matrix_dev, device));
+
+I suppose if we're not going to assume that the release is being
+called to free the global matrix_dev, then if you are going to
+retrieve it using container_of(), then maybe we should verify
+the retrieved pointer is the same as the global matrix_dev?
+
+> +	matrix_dev = NULL;
+>   }
+>   
+>   static int matrix_bus_match(struct device *dev, struct device_driver *drv)
 
