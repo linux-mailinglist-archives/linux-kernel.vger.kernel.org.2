@@ -2,77 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 664343AC4B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D9B3AC4AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233059AbhFRHK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 03:10:26 -0400
-Received: from m12-11.163.com ([220.181.12.11]:54101 "EHLO m12-11.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229782AbhFRHKY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 03:10:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=jw4Ny
-        qUfENfmmInxbzCNBgOZSZp3/aylnUAW1kI4/qQ=; b=qJ5XG2K+3YMY1vXcSrb5O
-        Z5Ru8DzOFWYLIlXdSfua0M4kn1r+JDFg0bWgbYxWoAzXK20CUjnawT89rF6pHcfY
-        4KVtikRB6aR5Hzr6eefMeHLIwoGcqtMAymMwvbVpjiIkZQHJcCBLBFYtChXI5qea
-        x7wo6HOXcXgOaglEYTj9m8=
-Received: from localhost.localdomain (unknown [218.17.89.92])
-        by smtp7 (Coremail) with SMTP id C8CowADXUlVYRsxgvVyrig--.30727S2;
-        Fri, 18 Jun 2021 15:08:09 +0800 (CST)
-From:   lijian_8010a29@163.com
-To:     gustavoars@kernel.org, mchehab@kernel.org, hverkuil-cisco@xs4all.nl
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lijian <lijian@yulong.com>
-Subject: [PATCH] media: dvb-frontends: dib0090: Delete 'break' after 'goto'
-Date:   Fri, 18 Jun 2021 15:07:07 +0800
-Message-Id: <20210618070707.4731-1-lijian_8010a29@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S233062AbhFRHJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 03:09:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229782AbhFRHJe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 03:09:34 -0400
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA12C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 00:07:25 -0700 (PDT)
+Received: by mail-vs1-xe2b.google.com with SMTP id b1so4437244vsh.7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 00:07:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tlodzRLKjYsmSIvJvfyHmyRZLG20ROka1PyN+VfwfnY=;
+        b=mdFl213r1n1uA6uKofvIKHWo5sizoJZyxajbWz27X3DF1VPnIRBBR8iCB7pGgabrWv
+         0JKDQLz2F+SRodYFTB4NF/9URm8CCY9XPrzZ1jV7oFeOJOBt9hKPZOhLFvkyBXgOXhd8
+         hA8SqcnfTAKYGkMOMHfAzHP2bOY32bYG7Hw8g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tlodzRLKjYsmSIvJvfyHmyRZLG20ROka1PyN+VfwfnY=;
+        b=mRLAkL8CqPMc4VPaUlXgLO6At/zB8WzuzJOcYdIvB10joQLb14mde3U8MRdkrvqMbD
+         dHBG1eGMWJwrfYXfo9aGign7NnLSWENE8UKmDKRALDqGf0dNsv3aNXH/vVW4tIVYRvbD
+         UTXu312LenPVU4+XNI2WnYtJM/L3vUsiv7KWLQZSqNBhGTiBKwTRh46yp20FVQvZ3a6D
+         xMuA0Z8H4mxy3IPg0zbEwtnOKMSS9CvUvx6qQ9P3+GmSlGHTgBEJQ+CgULJm6NYnud1F
+         /aUS3Q9smOSawf33dSViKJWLZPy5CuYBU4bmu0oeA+vT7RRIt8vk+i3PFw9AE4rs4p+s
+         s23A==
+X-Gm-Message-State: AOAM532GL/IXnFeONx4G8cGPTcIYt454QHGX4y4ucOnO/3hFsjKKD/Qv
+        veX5QpYyYLxdLjGmZ+BeCUgF54disImhK3I36rsjSQ==
+X-Google-Smtp-Source: ABdhPJyvf5sruheatAks9eE+EGnBl6isJKiLy/2d9eFZrcjA+lnmitpD0wWr1RLBJMvgKuMZ7wE0T+qIjzgo250CRGI=
+X-Received: by 2002:a67:bb14:: with SMTP id m20mr5468628vsn.0.1624000045114;
+ Fri, 18 Jun 2021 00:07:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: C8CowADXUlVYRsxgvVyrig--.30727S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWruw1rKFW7uw18Aw1ftF13Arb_yoWDurX_Cw
-        15JwnxZ3yqqr1kXF9Iqr1fZ3yqk3yI9r4vga1Utr43JrZ3XFy8WF4DtFn2yrW0yFyUu3ZI
-        kF95WF1DAa4akjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU55Ma5UUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5olmxttqbyiikqdsmqqrwthudrp/1tbiRRq1UFl92IP2YgAAsR
+References: <20210614174454.903555-1-vgoyal@redhat.com> <20210614174454.903555-2-vgoyal@redhat.com>
+In-Reply-To: <20210614174454.903555-2-vgoyal@redhat.com>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Fri, 18 Jun 2021 09:07:14 +0200
+Message-ID: <CAJfpeguD+F3Ai01=-JYNTKS4LP4d879=+8T7eOBewZpevTRbJg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] init/do_mounts.c: Add a path to boot from tag
+ based filesystems
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        Richard Weinberger <richard.weinberger@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        v9fs-developer@lists.sourceforge.net
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: lijian <lijian@yulong.com>
+On Mon, 14 Jun 2021 at 19:45, Vivek Goyal <vgoyal@redhat.com> wrote:
+>
+> We want to be able to mount virtiofs as rootfs and pass appropriate
+> kernel command line. Right now there does not seem to be a good way
+> to do that. If I specify "root=myfs rootfstype=virtiofs", system
+> panics.
+>
+> virtio-fs: tag </dev/root> not found
+> ..
+> ..
+> [ end Kernel panic - not syncing: VFS: Unable to mount root fs on
+> +unknown-block(0,0) ]
+>
+> Basic problem here is that kernel assumes that device identifier
+> passed in "root=" is a block device. But there are few execptions
+> to this rule to take care of the needs of mtd, ubi, NFS and CIFS.
+>
+> For example, mtd and ubi prefix "mtd:" or "ubi:" respectively.
+>
+> "root=mtd:<identifier>" or "root=ubi:<identifier>"
+>
+> NFS and CIFS use "root=/dev/nfs" and CIFS passes "root=/dev/cifs" and
+> actual root device details come from filesystem specific kernel
+> command line options.
+>
+> virtiofs does not seem to fit in any of the above categories. In fact
+> we have 9pfs which can be used to boot from but it also does not
+> have a proper syntax to specify rootfs and does not fit into any of
+> the existing syntax. They both expect a device "tag" to be passed
+> in a device to be mounted. And filesystem knows how to parse and
+> use "tag".
+>
+> So there seem to be a class of filesystems which specify root device
+> using a "tag" which is understood by the filesystem. And filesystem
+> simply expects that "tag" to be passed as "source" of mount and
+> how to mount filesystem using that "tag" is responsibility of filesystem.
+>
+> This patch proposes that we internally create a list of filesystems
+> which pass a "tag" in "root=<tag>" and expect that tag to be passed
+> as "source" of mount. With this patch I can boot into virtiofs rootfs
+> with following syntax.
+>
+> "root=myfs rootfstype=virtiofs rw"
 
-break is not useful after a goto, so delete 'break' after 'goto',
-and delete reused 'goto identification_error;'.
+The syntax and the implementation looks good.
 
-Signed-off-by: lijian <lijian@yulong.com>
----
- drivers/media/dvb-frontends/dib0090.c | 4 ----
- 1 file changed, 4 deletions(-)
-
-diff --git a/drivers/media/dvb-frontends/dib0090.c b/drivers/media/dvb-frontends/dib0090.c
-index 903da33642df..9179fe1bd713 100644
---- a/drivers/media/dvb-frontends/dib0090.c
-+++ b/drivers/media/dvb-frontends/dib0090.c
-@@ -403,8 +403,6 @@ static int dib0090_identify(struct dvb_frontend *fe)
- 			break;
- 		case P1A_B:
- 			dprintk("P1-A/B detected: driver is deactivated - not available\n");
--			goto identification_error;
--			break;
- 		default:
- 			goto identification_error;
- 		}
-@@ -493,8 +491,6 @@ static int dib0090_fw_identify(struct dvb_frontend *fe)
- 			break;
- 		case P1A_B:
- 			dprintk("P1-A/B detected: driver is deactivated - not available\n");
--			goto identification_error;
--			break;
- 		default:
- 			goto identification_error;
- 		}
--- 
-2.25.1
-
+Acked-by: Miklos Szeredi <mszeredi@redhat.com>
