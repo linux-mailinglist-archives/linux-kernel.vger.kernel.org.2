@@ -2,95 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9C83AC813
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BB153AC818
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:55:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232877AbhFRJ42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 05:56:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36492 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230399AbhFRJ40 (ORCPT
+        id S233015AbhFRJ5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 05:57:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230399AbhFRJ5N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 05:56:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624010057;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y0YXDU9YxlQ+hNYdZgdqLVuT+mH4+43SSYjLUVicsFM=;
-        b=TbOvBev+vxhKFZjuvvxvg+Fbs3Sji4FwvtwsR1U0wrBtCmmypgqSn/F1jh4olx6j6K86r8
-        MQnEOxQfpPVErFzmN7GzMG2KfQ/nQNCgb1ldlvUb23foQZjGjbSEjpU3y0gp/A53dd3XuC
-        j5kCR0GcqrMalSAQC7dYSTSTXJoY/T0=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-384-iQlzgIGFNM-7H6soyqfjYg-1; Fri, 18 Jun 2021 05:54:16 -0400
-X-MC-Unique: iQlzgIGFNM-7H6soyqfjYg-1
-Received: by mail-ej1-f72.google.com with SMTP id q7-20020a1709063607b02903f57f85ac45so1834616ejb.15
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:54:16 -0700 (PDT)
+        Fri, 18 Jun 2021 05:57:13 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D0FC061574;
+        Fri, 18 Jun 2021 02:55:03 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id gt18so14912555ejc.11;
+        Fri, 18 Jun 2021 02:55:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=w6OHpzFqMhfGysmy1AjapbSWOUF8PkX0rUS/FwR+ecA=;
+        b=qaGlPMxABKfJyXTb0/wTCoPW8b97JlTZ0vf0gVMPkt/LRRigN3XmsHfRkDH34vMx4F
+         AGicn5KaCu4h2i/4Zqf99m9qL0/5lZMu9kbouE3ItC+sCCztNaH5FoI5Js4evjaD5ex7
+         VcbTr9paOIua3fsblA5xFO9erK5kRnLXGHuFFW3x3ndVNN3NJZACi/9Mp+TRwZQoMywn
+         0+q1JLhhMAUUS7aE8iosmainGCTJ2WXcj0khqBOs7lJ+4M/7tBuh/bmh01n7oxRnnxkA
+         3d5ycOADzsI8J7VLxMbLVlKO1wEiP3VTf9eKkF0RgvTvEX+NCsKujQgeEHWc42vv/kJJ
+         cZ8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Y0YXDU9YxlQ+hNYdZgdqLVuT+mH4+43SSYjLUVicsFM=;
-        b=ETBdo/a7l5HPEYh/BxlesvfEFKaUwWOZeTYY0GS+szSeVc1ko/Mb3FV0483qraDw4J
-         s3kQb4Tuhvc3g44SN/cWyqPKzz3Owa2c88o9cN9p2jVtp5ft3wEAyFAAI47l5aK1zO/y
-         WRcDX43IiKl6++x8fwvM9ANZljNb+Cm8Pk476hdIFxk6ehCqGmk2wb6QKQ9AI8w6qaL/
-         im9Vpy4INEVuYo/Jn2HHKQ7TnzCa+1D9RZTZJlzy5s2diOski8FDxyanQ4D90qMofNIH
-         EfVlPWNNsENOKNk8T7ijM2VfbK1ZsBaPQHaBVLUGTMmasesfQpAtCWLkND2tiJZsTxqA
-         yI3w==
-X-Gm-Message-State: AOAM530WNDktThshWfHBsJ4ud+PvPodxvVP1XDIgppbRGPSgCqYlymU5
-        B9sUsNUbfH7UCXFbcvVB8UPKd6pqVyfJXFAUg1Zxy5IBPdZ0F1rv7wdlq6rNsfYP2vpC7yp+xEO
-        APW8sfUO4PXJ+Hbz2YVKyYKAR
-X-Received: by 2002:a50:c344:: with SMTP id q4mr813921edb.197.1624010055205;
-        Fri, 18 Jun 2021 02:54:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyWMR1bJzOfZ97L3/bNEKDwZD9gm2Oo2XE369CjGC2l9w0RaUVQn+dQb1wcWVE0CXQxEAZmHA==
-X-Received: by 2002:a50:c344:: with SMTP id q4mr813911edb.197.1624010055087;
-        Fri, 18 Jun 2021 02:54:15 -0700 (PDT)
-Received: from steredhat.lan ([5.170.128.252])
-        by smtp.gmail.com with ESMTPSA id n23sm6101995edr.87.2021.06.18.02.54.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 02:54:14 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 11:54:09 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Jiang Wang <jiang.wang@bytedance.com>
-Cc:     virtualization@lists.linux-foundation.org, stefanha@redhat.com,
-        mst@redhat.com, arseny.krasnov@kaspersky.com,
-        jhansen@vmware.comments, cong.wang@bytedance.com,
-        duanxiongchun@bytedance.com, xieyongji@bytedance.com,
-        chaiwen.cc@bytedance.com, Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Lu Wei <luwei32@huawei.com>,
-        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC v1 5/6] vhost/vsock: add kconfig for vhost dgram support
-Message-ID: <20210618095409.q6s3knm2m4u7lezd@steredhat.lan>
-References: <20210609232501.171257-1-jiang.wang@bytedance.com>
- <20210609232501.171257-6-jiang.wang@bytedance.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=w6OHpzFqMhfGysmy1AjapbSWOUF8PkX0rUS/FwR+ecA=;
+        b=RUUsrHcWMMy4IPHJ+749uSMM1ti935MklfKNDv8TGzFU1GYQE1r3QqW5MkOGs4RNpu
+         r5Eufv7IV1M3BQBKaGxfnpfFEYrgF5JIkVQEEkIgX+1zeKlys5BMmzrpYzYki8/SjRb9
+         /yPa+dBSpYXP0qKq2ImIa8dmKMleSmQK1KlcowT4a6hzEozpbbJSMleg81zXF9Mk72kL
+         pHZP4TAv0HXHWvrSuky/W1Ur+X+GOnw2+JsdVimMPZVrjvYL7xu8ldRgqbkDPXOVBMW3
+         C+wP4LKmhk4ImU5VuIEEM78i1+osHQAsiJyhJK38njp2xE6BV4f8k17383HkDwQ0iXJs
+         pnvg==
+X-Gm-Message-State: AOAM5302ZAT4XBlD6ihHOZWOQhzOwtHHUcRvqLFPEghVRckUPCW+LHkQ
+        1S9YWxQsVxqHdWlWZGKWXb8=
+X-Google-Smtp-Source: ABdhPJykYF/zptHx7zpqrTLT8w4dZMVzpPcKGfLn8gJgk3Tcqhei8wEXFKxedWCrPXnMb0HoLCs3Dg==
+X-Received: by 2002:a17:907:1b20:: with SMTP id mp32mr10188290ejc.495.1624010101951;
+        Fri, 18 Jun 2021 02:55:01 -0700 (PDT)
+Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id n18sm818960ejx.41.2021.06.18.02.55.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jun 2021 02:55:01 -0700 (PDT)
+Subject: Re: [PATCH 1/3] arm64: dts: rockchip: add ES8316 codec for Rock Pi4
+To:     Alex Bee <knaerzche@gmail.com>, Heiko Stuebner <heiko@sntech.de>
+Cc:     devicetree@vger.kernel.org, balbi@kernel.org,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20210617044955.598994-1-knaerzche@gmail.com>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <d562b025-23cc-f26d-b118-e269501f459b@gmail.com>
+Date:   Fri, 18 Jun 2021 11:54:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210609232501.171257-6-jiang.wang@bytedance.com>
+In-Reply-To: <20210617044955.598994-1-knaerzche@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09, 2021 at 11:24:57PM +0000, Jiang Wang wrote:
->Also change number of vqs according to the config
->
->Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
->---
-> drivers/vhost/Kconfig |  8 ++++++++
-> drivers/vhost/vsock.c | 11 ++++++++---
-> 2 files changed, 16 insertions(+), 3 deletions(-)
+Hi Alex,
 
-As we already discussed, I think we don't need this patch.
+On 6/17/21 6:49 AM, Alex Bee wrote:
+> Rock Pi4 boards have the codec connected to i2s0 and it is accessible
+> via i2c1 address 0x11.
+> Add an audio-graph-card it.
+> 
+> Signed-off-by: Alex Bee <knaerzche@gmail.com>
+> ---
+>  .../boot/dts/rockchip/rk3399-rock-pi-4.dtsi   | 28 +++++++++++++++++++
+>  1 file changed, 28 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+> index 7d0a7c697703..e5c1083174ff 100644
+> --- a/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4.dtsi
+> @@ -36,6 +36,12 @@ sdio_pwrseq: sdio-pwrseq {
+>  		reset-gpios = <&gpio0 RK_PB2 GPIO_ACTIVE_LOW>;
+>  	};
+>  
+> +	sound {
+> +		compatible = "audio-graph-card";
 
-Thanks,
-Stefano
+> +		label = "rockchip,rk3399";
 
+See previous discussion:
+
+https://lore.kernel.org/linux-rockchip/e5ab2c62-ad00-4cdf-8b0a-24fda59c980b@gmail.com/
+
+It seems that aplay/linux? adds "-1" to it and removes the comma and
+"-", so we get:
+
+hdmisound
+rockchiprk3399
+rockchiprk339_1
+
+Shouldn't we label it with something that reflect the function/output.
+Shouldn't we standardize to SPDIF, HDMI and Analog similar to rk3318/rk3328?
+Make a shorter label without spaces or special chars, so that chars
+don't get removed?
+
+Proposal:
+
+Analog
+HDMI
+ES8316 <---
+SPDIF
+
+
+Possible example solutions:
+
+[PATCH] arm64: dts: rockchip: more user friendly name of sound nodes
+https://lore.kernel.org/lkml/20210110151913.3615326-1-katsuhiro@katsuster.net/
+
+===
+
+Johan
+
+> +		dais = <&i2s0_p0>;
+> +	};
+> +
+>  	vcc12v_dcin: dc-12v {
+>  		compatible = "regulator-fixed";
+>  		regulator-name = "vcc12v_dcin";
+> @@ -422,6 +428,20 @@ &i2c1 {
+>  	i2c-scl-rising-time-ns = <300>;
+>  	i2c-scl-falling-time-ns = <15>;
+>  	status = "okay";
+> +
+> +	es8316: codec@11 {
+> +		compatible = "everest,es8316";
+> +		reg = <0x11>;
+> +		clocks = <&cru SCLK_I2S_8CH_OUT>;
+> +		clock-names = "mclk";
+> +		#sound-dai-cells = <0>;
+> +
+> +		port {
+> +			es8316_p0_0: endpoint {
+> +				remote-endpoint = <&i2s0_p0_0>;
+> +			};
+> +		};
+> +	};
+>  };
+>  
+>  &i2c3 {
+> @@ -441,6 +461,14 @@ &i2s0 {
+>  	rockchip,capture-channels = <2>;
+>  	rockchip,playback-channels = <2>;
+>  	status = "okay";
+> +
+> +	i2s0_p0: port {
+> +		i2s0_p0_0: endpoint {
+> +			dai-format = "i2s";
+> +			mclk-fs = <256>;
+> +			remote-endpoint = <&es8316_p0_0>;
+> +		};
+> +	};
+>  };
+>  
+>  &i2s1 {
+> 
