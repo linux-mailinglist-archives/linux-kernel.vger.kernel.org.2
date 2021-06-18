@@ -2,164 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8E43AC10E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 04:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B483AC10F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 04:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231815AbhFRCy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 22:54:57 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:11060 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231565AbhFRCy4 (ORCPT
+        id S231867AbhFRCzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 22:55:16 -0400
+Received: from mail-io1-f50.google.com ([209.85.166.50]:43589 "EHLO
+        mail-io1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231565AbhFRCzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 22:54:56 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G5k0s1c6lzZdGs;
-        Fri, 18 Jun 2021 10:49:49 +0800 (CST)
-Received: from [10.174.176.146] (10.174.176.146) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 18 Jun 2021 10:52:45 +0800
-Subject: Re: [PATCH v2 2/2] mm/zbud: don't export any zbud API
-To:     Nathan Chancellor <nathan@kernel.org>
-CC:     <akpm@linux-foundation.org>, <sjenning@redhat.com>,
-        <ddstreet@ieee.org>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>
-References: <20210608114515.206992-1-linmiaohe@huawei.com>
- <20210608114515.206992-3-linmiaohe@huawei.com>
- <YMvsYm8b+yTIrqBC@archlinux-ax161>
- <813ac556-4a48-1e29-ad87-1ddb74546ef1@huawei.com>
- <621684b8-7aac-97e5-198e-e62061c79301@kernel.org>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <ce708f00-750c-8d31-8c16-c54da7384349@huawei.com>
-Date:   Fri, 18 Jun 2021 10:52:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 17 Jun 2021 22:55:15 -0400
+Received: by mail-io1-f50.google.com with SMTP id k16so5417438ios.10
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 19:53:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SDWeQISHJ4j5pHR3hlooWBcjy0lmkm8xWsM2aTeQjac=;
+        b=YGXNZtMPMbQWOoh7C0+aam5E5xDsmkP1GltUHv8lWMlBlwfTjtfbhzLu5z1x6YybPL
+         H7KXQvMPFd6TD+I6yPnmMiTn7fIHDzAo66Ipa8CVFdvMu2lBLU1sbsBcczpS1ai0TxuA
+         k1MiKQSiJ+RP6dqdZNYF9fSUIEJhoNRSfQubza2zV6gdzt2oHRor/VcTx7RVlwJjqhZI
+         /3xNX3zW46aZSkHuwpjrBBt+A5VpZfEYD2HM5SWERoTNogHxASac4KWrcKk7OU0u8d64
+         5dxDcKRuQHrqfgporn1asbXUgBgddSzbQfNdpqhIPI4UbViIm7xGGJub356w4Kt4a6KW
+         Eh9Q==
+X-Gm-Message-State: AOAM532V+WuHVKKtFpdsXlaDClIiJ4UaiCBjW3WXt9yc6GmVX7MP75hZ
+        CIXe2oGPolFK1732PlLoYxE=
+X-Google-Smtp-Source: ABdhPJwJQHFhl4GJ+Max18sHnW1XiMYPvOP8W1h5MMA+wQ2c2NSucJh/dr8YLKj4CsHZdI5+xZmu1Q==
+X-Received: by 2002:a6b:7c07:: with SMTP id m7mr1469288iok.177.1623984785393;
+        Thu, 17 Jun 2021 19:53:05 -0700 (PDT)
+Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
+        by smtp.gmail.com with ESMTPSA id v18sm3791164iom.5.2021.06.17.19.53.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 19:53:05 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 02:53:03 +0000
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] percpu: optimize locking in pcpu_balance_workfn()
+Message-ID: <YMwKj10VhO5JTMjE@google.com>
+References: <20210617190322.3636731-1-guro@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <621684b8-7aac-97e5-198e-e62061c79301@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.146]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210617190322.3636731-1-guro@fb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/18 10:42, Nathan Chancellor wrote:
-> On 6/17/2021 7:28 PM, Miaohe Lin wrote:
->> Hi:
->> On 2021/6/18 8:44, Nathan Chancellor wrote:
->>> On Tue, Jun 08, 2021 at 07:45:15PM +0800, Miaohe Lin wrote:
->>>> The zbud doesn't need to export any API and it is meant to be used via
->>>> zpool API since the commit 12d79d64bfd3 ("mm/zpool: update zswap to use
->>>> zpool"). So we can remove the unneeded zbud.h and move down zpool API
->>>> to avoid any forward declaration.
->>>>
->>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>>
->>
->> Thank you for help figure these warnings out. It seems zbud module won't do
->> anything when CONFIG_ZPOOL is disabled. I think we should make zbud depends
->> on ZPOOL and eliminate the CONFIG_ZPOOL macro in zbud.c like what z3fold does.
->> Does this make sense for you?
->> Thanks again. :)
-> 
-> That seems logical to me. It probably makes sense to send that as a fix patch for this one so Andrew can squash it in.
+Hello,
 
-Sure. This is also what I meant to do. Will do it later.
-Many thanks!
+On Thu, Jun 17, 2021 at 12:03:22PM -0700, Roman Gushchin wrote:
+> pcpu_balance_workfn() unconditionally calls pcpu_balance_free(),
+> pcpu_reclaim_populated(), pcpu_balance_populated() and
+> pcpu_balance_free() again.
+> 
+> Each call to pcpu_balance_free() and pcpu_reclaim_populated() will
+> cause at least one acquisition of the pcpu_lock. So even if the
+> balancing was scheduled because of a failed atomic allocation,
+> pcpu_lock will be acquired at least 4 times. This obviously
+> increases the contention on the pcpu_lock.
+> 
+> To optimize the scheme let's grab the pcpu_lock on the upper level
+> (in pcpu_balance_workfn()) and keep it generally locked for the whole
+> duration of the scheduled work, but release conditionally to perform
+> any slow operations like chunk (de)population and creation of new
+> chunks.
+> 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> ---
+>  mm/percpu.c | 41 +++++++++++++++++++++++++++++------------
+>  1 file changed, 29 insertions(+), 12 deletions(-)
+> 
+> diff --git a/mm/percpu.c b/mm/percpu.c
+> index e7b9ca82e9aa..deee7e5bb255 100644
+> --- a/mm/percpu.c
+> +++ b/mm/percpu.c
+> @@ -1980,6 +1980,9 @@ void __percpu *__alloc_reserved_percpu(size_t size, size_t align)
+>   * If empty_only is %false, reclaim all fully free chunks regardless of the
+>   * number of populated pages.  Otherwise, only reclaim chunks that have no
+>   * populated pages.
+> + *
+> + * CONTEXT:
+> + * pcpu_lock (can be dropped temporarily)
+>   */
+>  static void pcpu_balance_free(bool empty_only)
+>  {
+> @@ -1987,12 +1990,12 @@ static void pcpu_balance_free(bool empty_only)
+>  	struct list_head *free_head = &pcpu_chunk_lists[pcpu_free_slot];
+>  	struct pcpu_chunk *chunk, *next;
+>  
+> +	lockdep_assert_held(&pcpu_lock);
+> +
+>  	/*
+>  	 * There's no reason to keep around multiple unused chunks and VM
+>  	 * areas can be scarce.  Destroy all free chunks except for one.
+>  	 */
+> -	spin_lock_irq(&pcpu_lock);
+> -
+>  	list_for_each_entry_safe(chunk, next, free_head, list) {
+>  		WARN_ON(chunk->immutable);
+>  
+> @@ -2004,8 +2007,10 @@ static void pcpu_balance_free(bool empty_only)
+>  			list_move(&chunk->list, &to_free);
+>  	}
+>  
+> -	spin_unlock_irq(&pcpu_lock);
+> +	if (list_empty(&to_free))
+> +		return;
+>  
+> +	spin_unlock_irq(&pcpu_lock);
+>  	list_for_each_entry_safe(chunk, next, &to_free, list) {
+>  		unsigned int rs, re;
+>  
+> @@ -2019,6 +2024,7 @@ static void pcpu_balance_free(bool empty_only)
+>  		pcpu_destroy_chunk(chunk);
+>  		cond_resched();
+>  	}
+> +	spin_lock_irq(&pcpu_lock);
+>  }
+>  
+>  /**
+> @@ -2029,6 +2035,9 @@ static void pcpu_balance_free(bool empty_only)
+>   * OOM killer to be triggered.  We should avoid doing so until an actual
+>   * allocation causes the failure as it is possible that requests can be
+>   * serviced from already backed regions.
+> + *
+> + * CONTEXT:
+> + * pcpu_lock (can be dropped temporarily)
+>   */
+>  static void pcpu_balance_populated(void)
+>  {
+> @@ -2037,6 +2046,8 @@ static void pcpu_balance_populated(void)
+>  	struct pcpu_chunk *chunk;
+>  	int slot, nr_to_pop, ret;
+>  
+> +	lockdep_assert_held(&pcpu_lock);
+> +
+>  	/*
+>  	 * Ensure there are certain number of free populated pages for
+>  	 * atomic allocs.  Fill up from the most packed so that atomic
+> @@ -2064,13 +2075,11 @@ static void pcpu_balance_populated(void)
+>  		if (!nr_to_pop)
+>  			break;
+>  
+> -		spin_lock_irq(&pcpu_lock);
+>  		list_for_each_entry(chunk, &pcpu_chunk_lists[slot], list) {
+>  			nr_unpop = chunk->nr_pages - chunk->nr_populated;
+>  			if (nr_unpop)
+>  				break;
+>  		}
+> -		spin_unlock_irq(&pcpu_lock);
+>  
+>  		if (!nr_unpop)
+>  			continue;
+> @@ -2080,12 +2089,13 @@ static void pcpu_balance_populated(void)
+>  					     chunk->nr_pages) {
+>  			int nr = min_t(int, re - rs, nr_to_pop);
+>  
+> +			spin_unlock_irq(&pcpu_lock);
+>  			ret = pcpu_populate_chunk(chunk, rs, rs + nr, gfp);
+> +			cond_resched();
+> +			spin_lock_irq(&pcpu_lock);
+>  			if (!ret) {
+>  				nr_to_pop -= nr;
+> -				spin_lock_irq(&pcpu_lock);
+>  				pcpu_chunk_populated(chunk, rs, rs + nr);
+> -				spin_unlock_irq(&pcpu_lock);
+>  			} else {
+>  				nr_to_pop = 0;
+>  			}
+> @@ -2097,11 +2107,12 @@ static void pcpu_balance_populated(void)
+>  
+>  	if (nr_to_pop) {
+>  		/* ran out of chunks to populate, create a new one and retry */
+> +		spin_unlock_irq(&pcpu_lock);
+>  		chunk = pcpu_create_chunk(gfp);
+> +		cond_resched();
+> +		spin_lock_irq(&pcpu_lock);
+>  		if (chunk) {
+> -			spin_lock_irq(&pcpu_lock);
+>  			pcpu_chunk_relocate(chunk, -1);
+> -			spin_unlock_irq(&pcpu_lock);
+>  			goto retry_pop;
+>  		}
+>  	}
+> @@ -2117,6 +2128,10 @@ static void pcpu_balance_populated(void)
+>   * populated pages threshold, reintegrate the chunk if it has empty free pages.
+>   * Each chunk is scanned in the reverse order to keep populated pages close to
+>   * the beginning of the chunk.
+> + *
+> + * CONTEXT:
+> + * pcpu_lock (can be dropped temporarily)
+> + *
+>   */
+>  static void pcpu_reclaim_populated(void)
+>  {
+> @@ -2124,7 +2139,7 @@ static void pcpu_reclaim_populated(void)
+>  	struct pcpu_block_md *block;
+>  	int i, end;
+>  
+> -	spin_lock_irq(&pcpu_lock);
+> +	lockdep_assert_held(&pcpu_lock);
+>  
+>  restart:
+>  	/*
+> @@ -2190,8 +2205,6 @@ static void pcpu_reclaim_populated(void)
+>  			list_move(&chunk->list,
+>  				  &pcpu_chunk_lists[pcpu_sidelined_slot]);
+>  	}
+> -
+> -	spin_unlock_irq(&pcpu_lock);
+>  }
+>  
+>  /**
+> @@ -2212,10 +2225,14 @@ static void pcpu_balance_workfn(struct work_struct *work)
+>  	 * appropriate.
+>  	 */
+>  	mutex_lock(&pcpu_alloc_mutex);
+> +	spin_lock_irq(&pcpu_lock);
+> +
+>  	pcpu_balance_free(false);
+>  	pcpu_reclaim_populated();
+>  	pcpu_balance_populated();
+>  	pcpu_balance_free(true);
+> +
+> +	spin_unlock_irq(&pcpu_lock);
+>  	mutex_unlock(&pcpu_alloc_mutex);
+>  }
+>  
+> -- 
+> 2.31.1
+> 
 
-> 
-> Cheers,
-> Nathan
-> 
->> diff --git a/mm/Kconfig b/mm/Kconfig
->> index 8f748010f7ea..5dc28e9205e0 100644
->> --- a/mm/Kconfig
->> +++ b/mm/Kconfig
->> @@ -674,6 +674,7 @@ config ZPOOL
->>
->>   config ZBUD
->>          tristate "Low (Up to 2x) density storage for compressed pages"
->> +       depends on ZPOOL
->>          help
->>            A special purpose allocator for storing compressed pages.
->>            It is designed to store up to two compressed pages per physical
->> diff --git a/mm/zbud.c b/mm/zbud.c
->> index 3f61304405cb..6348932430b8 100644
->> --- a/mm/zbud.c
->> +++ b/mm/zbud.c
->> @@ -111,10 +111,8 @@ struct zbud_pool {
->>          struct list_head lru;
->>          u64 pages_nr;
->>          const struct zbud_ops *ops;
->> -#ifdef CONFIG_ZPOOL
->>          struct zpool *zpool;
->>          const struct zpool_ops *zpool_ops;
->> -#endif
->>   };
->>
->>   /*
->> @@ -526,8 +524,6 @@ static u64 zbud_get_pool_size(struct zbud_pool *pool)
->>    * zpool
->>    ****************/
->>
->> -#ifdef CONFIG_ZPOOL
->> -
->>   static int zbud_zpool_evict(struct zbud_pool *pool, unsigned long handle)
->>   {
->>          if (pool->zpool && pool->zpool_ops && pool->zpool_ops->evict)
->> @@ -618,7 +614,6 @@ static struct zpool_driver zbud_zpool_driver = {
->>   };
->>
->>   MODULE_ALIAS("zpool-zbud");
->> -#endif /* CONFIG_ZPOOL */
->>
->>   static int __init init_zbud(void)
->>   {
->> @@ -626,19 +621,14 @@ static int __init init_zbud(void)
->>          BUILD_BUG_ON(sizeof(struct zbud_header) > ZHDR_SIZE_ALIGNED);
->>          pr_info("loaded\n");
->>
->> -#ifdef CONFIG_ZPOOL
->>          zpool_register_driver(&zbud_zpool_driver);
->> -#endif
->>
->>          return 0;
->>   }
->>
->>   static void __exit exit_zbud(void)
->>   {
->> -#ifdef CONFIG_ZPOOL
->>          zpool_unregister_driver(&zbud_zpool_driver);
->> -#endif
->> -
->>          pr_info("unloaded\n");
->>   }
->>
->>> This patch causes several new warnings when CONFIG_ZPOOL is disabled:
->>>
->>> mm/zbud.c:222:26: warning: unused function 'zbud_create_pool' [-Wunused-function]
->>> mm/zbud.c:246:13: warning: unused function 'zbud_destroy_pool' [-Wunused-function]
->>> mm/zbud.c:270:12: warning: unused function 'zbud_alloc' [-Wunused-function]
->>> mm/zbud.c:345:13: warning: unused function 'zbud_free' [-Wunused-function]
->>> mm/zbud.c:417:12: warning: unused function 'zbud_reclaim_page' [-Wunused-function]
->>> mm/zbud.c:499:14: warning: unused function 'zbud_map' [-Wunused-function]
->>> mm/zbud.c:509:13: warning: unused function 'zbud_unmap' [-Wunused-function]
->>> mm/zbud.c:520:12: warning: unused function 'zbud_get_pool_size' [-Wunused-function]
->>>
->>> It seems to me like all of these functions should be sunk into their
->>> callers and eliminated entirely as part of this refactoring. I took a
->>> whack at it but got lost with the kernel docs so someone who is familiar
->>> with this should probably do it.
->>>
->>> Cheers,
->>> Nathan
->>> .
->>>
->>
-> 
-> .
+I've applied this to for-5.14.
 
+Thanks,
+Dennis
