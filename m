@@ -2,140 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5DB3AD5F1
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2253AD601
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235012AbhFRXdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 19:33:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54810 "EHLO
+        id S235080AbhFRXiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 19:38:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234629AbhFRXdA (ORCPT
+        with ESMTP id S234082AbhFRXiD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 19:33:00 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC61FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:30:49 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id e18-20020ad441920000b029025ddd75f418so7153227qvp.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:30:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=K5IKvJejgNpA3AFkHBDCXpqjsqKJvtxs1XINxFL+/80=;
-        b=Xv1vHb+6WsCa/m6Vu4jkUgfv1Vfd65hhIYj1E3ovZR0PeSnobLEZ8/fkUe0eW4cw9K
-         yDZ7kCLjXQ7qoo6HDD6UtUX371UzqR+Ln4OgvkHTaIzVLvh8NPmG67ec4obfZhhR9D1r
-         wG/Zpu1orD+4NmfnjCqPZjGf9nOuo0lVIUYkhbYV6FPjdHnZmHKd3veFeTf14H4CGmlv
-         v/PwyJLYCw7Xq/GwW4fgY8vwlddErA6HThDqWuFyK9CR8Y83dz1jVNtwk+2vNcDVJV1U
-         pQu2txUobp7XJW2tyungb03WIolNt1xZvhhD5A+rWy5p/xWtqYE38+HOv9Xf/4asOGv3
-         KIDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=K5IKvJejgNpA3AFkHBDCXpqjsqKJvtxs1XINxFL+/80=;
-        b=fz1PTCaOlnF1Lg7dYyaHXkqvXA+jzd5OI1LcW0Mssj1rgV7Gr7NiXJ6iYxdkbegZfO
-         KRvJAq5TpIAH0I6VSyLBBKTE+OE+L9prgcL6t3of1ngMMPD1WPpQIwQg84IQfq2nuKB+
-         x6SuHPhIQgrIqYCP9Pz6vu239RU9iAVv8fFaeuODZaWQgnyzSY93X4AYS7PcOcOL6TlR
-         TFcAGCX41a4CspGH6JjBL7+LnCu+gQwH78XUKVf0I4oSvfT/8J3bEfKyYuYEA7gGY73p
-         fYZvbcqeAPWEx9eBS3YjwB85SCcM6pPEVhvueTY82BeTkeTQSXSPLWTGsMH2ApYIG1Tm
-         pHtA==
-X-Gm-Message-State: AOAM531z4urRnXC760KAKHsDwoTdxmY8PzdTSJBAmRFpkfnd1zCaJyVg
-        ygIElYcmJD20FebO/f2SEDgpJve6msYmbY3bwLM=
-X-Google-Smtp-Source: ABdhPJzv3iuu4rmC8ir3YJzvMzMIGBJAAJJhBB51vid/gVjQPP1e/24XhYkWkAPDbTnLwPxLy7jP+XAcFn4lE+v0wXI=
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:7c41:e84c:8fcb:6664])
- (user=ndesaulniers job=sendgmr) by 2002:a25:d257:: with SMTP id
- j84mr16278281ybg.404.1624059048916; Fri, 18 Jun 2021 16:30:48 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 16:30:23 -0700
-In-Reply-To: <20210618233023.1360185-1-ndesaulniers@google.com>
-Message-Id: <20210618233023.1360185-3-ndesaulniers@google.com>
-Mime-Version: 1.0
-References: <20210618233023.1360185-1-ndesaulniers@google.com>
-X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH 2/2] Kconfig: CC_HAS_NO_PROFILE_FN_ATTR, depend on for GCOV
- and PGO
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Bill Wendling <wcw@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
-        Martin Liska <mliska@suse.cz>, Marco Elver <elver@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Fangrui Song <maskray@google.com>, linux-doc@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        johannes.berg@intel.com, linux-toolchains@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 18 Jun 2021 19:38:03 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C977C061574;
+        Fri, 18 Jun 2021 16:35:53 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624059348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VS1kEFj6NGxOacoKrHgfdHSnLlRh4SbebwWizyJZYAQ=;
+        b=bL9fI3hkWv9PH8dWCaMIiufhxPnkLjnyHYN+0q7OBXHCKUBnaV7eaQPujoorCSKLiD5tMC
+        SIsn56dSt7/b0XVY9FAfyUzt1yUfJDNAjNl5AKgC4E66LM2EaSLNoLmJSEK7uESfsC/ChC
+        MW+wB8Q+XTba+uFDxN9PHw6asAGtfbtBd+5MQd2q0a26FzD7KPZUIIOrhzH54vsc+9gt89
+        eUOcXNIXu5qN13/iQu9JkA6rzVni2sAJgDfF35Ic/BtvYQZyD+sb9+e4Co9R/XjDOOnycX
+        lyV6WuJdKCPOYPe/Z4j5xE0EoA/wWgiA7Huumyi96UjqnJkOZhVpA1p60kF1Ig==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624059348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=VS1kEFj6NGxOacoKrHgfdHSnLlRh4SbebwWizyJZYAQ=;
+        b=F9n+R9/XKZUhSghkg/hlUe4kVkioHlAPWvPyVzZnBSojsqQV3DYUgVN8ezqSFokGiAi6wA
+        /9KadsMRKM1MDtAA==
+To:     Juri Lelli <juri.lelli@redhat.com>, bigeasy@linutronix.de
+Cc:     linux-rt-users@vger.kernel.org, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, bristot@redhat.com,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>
+Subject: Re: [RFC PATCH RT v2 1/2] time/hrtimer: Add PINNED_HARD mode for realtime hrtimers
+In-Reply-To: <20210616071705.166658-2-juri.lelli@redhat.com>
+References: <20210616071705.166658-1-juri.lelli@redhat.com> <20210616071705.166658-2-juri.lelli@redhat.com>
+Date:   Sat, 19 Jun 2021 01:35:47 +0200
+Message-ID: <87k0mqeofg.ffs@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We don't want compiler instrumentation to touch noinstr functions, which
-are annotated with the no_profile function attribute. Add a Kconfig test
-for this and make PGO and GCOV depend on it.
+Juri,
 
-Cc: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Peter Oberparleiter <oberpar@linux.ibm.com>
-Link: https://lore.kernel.org/lkml/YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net/
-Link: https://lore.kernel.org/lkml/YMcssV%2Fn5IBGv4f0@hirez.programming.kicks-ass.net/
-Suggested-by: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
----
- init/Kconfig        | 3 +++
- kernel/gcov/Kconfig | 1 +
- kernel/pgo/Kconfig  | 3 ++-
- 3 files changed, 6 insertions(+), 1 deletion(-)
+On Wed, Jun 16 2021 at 09:17, Juri Lelli wrote:
+> While running cyclictest on isolated CPUs with timer_migration enabled,
+> I noticed the following behavior, where CPU0 is one of the housekeeping
+> CPUs and CPU2 is isolated:
+>
+>      <idle>-0     [000] ... hrtimer_cancel:       hrtimer=0xffffb4a74be7fe70
+>      <idle>-0     [000] ... hrtimer_expire_entry: hrtimer=0xffffb4a74be7fe70 now=144805770984 function=hrtimer_wakeup/0x0
+>      <idle>-0     [000] ... sched_wakeup:         cyclictest:1171 [4] success=1 CPU:002
+>      <idle>-0     [000] ... hrtimer_expire_exit:  hrtimer=0xffffb4a74be7fe70
+>      <idle>-0     [002] ... sched_switch:         swapper/2:0 [120] R ==> cyclictest:1171 [4]
+>  cyclictest-1171  [002] ... hrtimer_init:         hrtimer=0xffffb4a74be7fe70 clockid=CLOCK_MONOTONIC mode=0x8
+>  cyclictest-1171  [002] ... hrtimer_start:        hrtimer=0xffffb4a74be7fe70 function=hrtimer_wakeup/0x0 ...
+>  cyclictest-1171  [002] ... sched_switch:         cyclictest:1171 [4] S ==> swapper/2:0 [120]
+>
+> While cyclitest was arming the hrtimer while running on isolated CPU2
+> (by means of clock_nanosleep), the hrtimer was then firing on CPU0. This
+> is due to the fact that switch_hrtimer_base(), called at hrtimer enqueue
+> time, will prefer to enqueue the timer on an housekeeping !idle CPU, if
+> the timer is not pinned and timer_migration is enabled.
+>
+> The problem with this is that we are measuring wake up latencies across
+> isolated and !isolated domains, which is against the purpose of
+> configuring the latter.
+>
+> Since PREEMPT_RT already forces HARD mode for hrtimers armed by tasks
+> running with RT policies, it makes sense to also force PINNED mode under
+> the same conditions.
+>
+> This patch implements this behavior, achieving something like the
 
-diff --git a/init/Kconfig b/init/Kconfig
-index 1ea12c64e4c9..540f862b40c6 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -83,6 +83,9 @@ config TOOLS_SUPPORT_RELR
- config CC_HAS_ASM_INLINE
- 	def_bool $(success,echo 'void foo(void) { asm inline (""); }' | $(CC) -x c - -c -o /dev/null)
- 
-+config CC_HAS_NO_PROFILE_FN_ATTR
-+	def_bool $(success,echo '__attribute__((no_profile)) int x();' | $(CC) -x c - -c -o /dev/null -Werror)
-+
- config CONSTRUCTORS
- 	bool
- 
-diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
-index 58f87a3092f3..19facd4289cd 100644
---- a/kernel/gcov/Kconfig
-+++ b/kernel/gcov/Kconfig
-@@ -5,6 +5,7 @@ config GCOV_KERNEL
- 	bool "Enable gcov-based kernel profiling"
- 	depends on DEBUG_FS
- 	depends on !CC_IS_CLANG || CLANG_VERSION >= 110000
-+	depends on !X86 || (X86 && CC_HAS_NO_PROFILE_FN_ATTR)
- 	select CONSTRUCTORS
- 	default n
- 	help
-diff --git a/kernel/pgo/Kconfig b/kernel/pgo/Kconfig
-index d2053df1111c..26f75ac4c6c1 100644
---- a/kernel/pgo/Kconfig
-+++ b/kernel/pgo/Kconfig
-@@ -8,7 +8,8 @@ config PGO_CLANG
- 	bool "Enable clang's PGO-based kernel profiling"
- 	depends on DEBUG_FS
- 	depends on ARCH_SUPPORTS_PGO_CLANG
--	depends on CC_IS_CLANG && CLANG_VERSION >= 120000
-+	depends on CC_IS_CLANG
-+	depends on CC_HAS_NO_PROFILE_FN_ATTR
- 	help
- 	  This option enables clang's PGO (Profile Guided Optimization) based
- 	  code profiling to better optimize the kernel.
--- 
-2.32.0.288.g62a8d224e6-goog
+ git grep 'This patch' Documentation/process
+
+Also look at the recommended usage of 'We, I' while at it.
+
+> @@ -55,6 +55,8 @@ enum hrtimer_mode {
+>  	HRTIMER_MODE_ABS_HARD	= HRTIMER_MODE_ABS | HRTIMER_MODE_HARD,
+>  	HRTIMER_MODE_REL_HARD	= HRTIMER_MODE_REL | HRTIMER_MODE_HARD,
+>  
+> +	HRTIMER_MODE_PINNED_HARD = HRTIMER_MODE_PINNED | HRTIMER_MODE_HARD,
+> +
+>  	HRTIMER_MODE_ABS_PINNED_HARD = HRTIMER_MODE_ABS_PINNED | HRTIMER_MODE_HARD,
+>  	HRTIMER_MODE_REL_PINNED_HARD = HRTIMER_MODE_REL_PINNED | HRTIMER_MODE_HARD,
+>  };
+> diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+> index 3fa18a01f5b2..f64954d5c8f8 100644
+> --- a/kernel/time/hrtimer.c
+> +++ b/kernel/time/hrtimer.c
+> @@ -1842,7 +1842,7 @@ static void __hrtimer_init_sleeper(struct hrtimer_sleeper *sl,
+>  	 */
+>  	if (IS_ENABLED(CONFIG_PREEMPT_RT)) {
+>  		if (task_is_realtime(current) && !(mode & HRTIMER_MODE_SOFT))
+> -			mode |= HRTIMER_MODE_HARD;
+> +			mode |= HRTIMER_MODE_PINNED_HARD;
+>  	}
+>  
+>  	__hrtimer_init(&sl->timer, clock_id, mode);
+
+It makes sense to some extent, but in fact you are curing the symptom.
+
+The root cause is that all of this is semantically ill defined.
+
+The underlying problem is get_nohz_timer_target() which is a completely
+broken heuristics trying to predict which CPU is the proper target for
+handling the timer some unspecified time in the future.
+
+In hindsight I regret that I even helped to merge that, but hindsight.
+Is get_nohz_timer_target() anything near correct for some unspecified
+reason? You surely know that it's not.
+
+In fact your patch makes it even more semantically undefined simply
+because it is solving the single RT thread per CPU use case which is
+exposed by cyclictest. Is that universaly true for all RT tasks and use
+cases?
+
+The wild west of anything which scratches 'my itch' based on 'my use
+case numbers' in Linux ended many years ago and while RT was always a
+valuable playground for unthinkable ideas we definitely tried hard not
+to accept use case specific hacks wihtout a proper justification that it
+makes sense in general.
+
+So why are you even trying to sell this to me?
+
+get_nohz_timer_target() is broken by definition and while it made some
+sense years ago despite it's heuristic nature, this is something which
+really needs to be cleaned up because it causes more trouble than it
+solves. Tagging every other timer as pinned just to work around that
+underlying nonsense is just wrong.
+
+We have been working on getting rid of this at least for the timer list
+timers (which are admittedly the easier part of the problem) on and off
+for years. I can't find the public links right now, but I'll ask
+Anna-Maria to fill the void. Might take a while as she's AFK for a
+while.
+
+Thanks,
+
+        tglx
+
+
+
+
+
+
+
 
