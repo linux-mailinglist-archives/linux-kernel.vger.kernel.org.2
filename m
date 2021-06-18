@@ -2,82 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394EC3ACDFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F3FB3ACE08
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234769AbhFROzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:55:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234772AbhFROzH (ORCPT
+        id S234774AbhFRO5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 10:57:15 -0400
+Received: from mx13.kaspersky-labs.com ([91.103.66.164]:11055 "EHLO
+        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234651AbhFRO5O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:55:07 -0400
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF414C061768
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 07:52:57 -0700 (PDT)
-Received: by mail-oi1-x22b.google.com with SMTP id u11so10827674oiv.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 07:52:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lfcsRgFy2xq8rFyaA8Nz5ZAiMzCPmlUUdOOARhZaZCQ=;
-        b=gsoQ9aEfUO7Xvs0FyVDIHEU7u9CS+WcWA/IyOVjbcfTH6pgLtYG8n2K/qgdFFkFmRf
-         CXTr/rOKIp7UANm9ovr65iZDf2vHLmZXO0NOcG2mXmkgoSworF25MLAOtYU6BaU6Ichi
-         GOlS7y1zLqEGJ9rFASZT+JtZpp7+ECxoZiEAIP1DCUfxe7nPbSyGxqSvowpB/q6Yvykp
-         9TLWjo5CE+48kh9XOMzUniF9/K92pN4OF45voWnFAQ28XOrkbcz1cWim2QhVcOj65y0G
-         pnGfcfxt92pZ42v4BaXBzEZCgklA785C01Zo5obJPxYqQCFfnBYPpNC0uBD8JWsZEFc+
-         ybWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lfcsRgFy2xq8rFyaA8Nz5ZAiMzCPmlUUdOOARhZaZCQ=;
-        b=KSk6kooqFJt2hukJ5JPIwD8Smvwr84VgCWkdv9xNYv4BWa5GBTzyLHtZSETXZRTyFL
-         +gdr0uduW7R5HTulLY152PSfC+yuXvHFR1seZ0TlSberHO+sQ22T76TZ13QKN0G8uW5K
-         KK2e6s8i8CxnTJRIBmK9O9GIPrlHx/AHuPYDdsOGn4Anw8tg82zk+PAUPFpkVGr7sPuf
-         ZslbP7aPpJRrQYkqmBlM2jtBiky9BXT2UFtoSQuX2idjOfBbux1L9SUNlZJzPKzfNOc5
-         WXoBBLMDQE+1LaFLpdEi3wxW2pPKwQGkesECXZBQ1ZhoovpVKY0tFLHLKXKNPS7/p0Xb
-         pYYQ==
-X-Gm-Message-State: AOAM530hXesv63e9J8346bgkwHlUWd6OCP6MMIFy0kmw8mcX0fajt3G5
-        s+zLD7JPnf08Mq/CSnniU4Mbi+Q37Dwrjg==
-X-Google-Smtp-Source: ABdhPJye1eow3zDlcW8WFc5WqtQz3JnuGxiQji+GYWeMI7kL1izOVo3QAosH6I6TqQTmqa+mXYdt2A==
-X-Received: by 2002:aca:4fcc:: with SMTP id d195mr14553893oib.88.1624027976941;
-        Fri, 18 Jun 2021 07:52:56 -0700 (PDT)
-Received: from [192.168.1.134] ([198.8.77.61])
-        by smtp.gmail.com with ESMTPSA id 3sm1856148oob.1.2021.06.18.07.52.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 07:52:56 -0700 (PDT)
-Subject: Re: [PATCH v2] loop: Fix missing discard support when using
- LOOP_CONFIGURE
-To:     Kristian Klausen <kristian@klausen.dk>, linux-block@vger.kernel.org
-Cc:     stable@vger.kernel.org, Martijn Coenen <maco@android.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210618115157.31452-1-kristian@klausen.dk>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <64494b7d-01b3-8da3-e10c-d346746758ea@kernel.dk>
-Date:   Fri, 18 Jun 2021 08:52:58 -0600
+        Fri, 18 Jun 2021 10:57:14 -0400
+Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay13.kaspersky-labs.com (Postfix) with ESMTP id 77277520D59;
+        Fri, 18 Jun 2021 17:55:02 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1624028102;
+        bh=4Ql2rRzdl8rVudC6sQhZlsTSCRCyLAPTeKvmUH4ZV68=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=CGmcPwOBQ7brMtIRE+8e/jXVot5m/l6FHoZJBXs8GGevSHPw5EWTweTolD7JdERZ+
+         yXsVXQQ+ircs6P03VKuxCJqbNKs9A7aZqXv6PqIgFyBhSaxJ4ciD4C/PNuLhENYdmz
+         PDWtiXPsehK6XCqkH6VlLxfcMBT6ePqC6LO3wcCmwaJH3CtCFwpNzNL+r2+Vzn5mDL
+         +iKDMiQygHPhbdBhg6GxoiZRE5ibpc4R1Qz7GW8EWbid4fq9P9/Xn464GvrKkEVnjc
+         ho629tHd7BBG02vZSRWPDba+EtmcU1pX0oARUcI8zr0lyFrLoIsGCAUfZ/uMKIENZG
+         1govM/81gDcAA==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id 2B31E520D4E;
+        Fri, 18 Jun 2021 17:55:02 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.64.121) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Fri, 18
+ Jun 2021 17:55:01 +0300
+Subject: Re: [PATCH net-next 3/3] vsock/virtio: remove redundant `copy_failed`
+ variable
+To:     Stefano Garzarella <sgarzare@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210618133526.300347-1-sgarzare@redhat.com>
+ <20210618133526.300347-4-sgarzare@redhat.com>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <22ee764c-ea35-7510-28c4-bccaf0ab7269@kaspersky.com>
+Date:   Fri, 18 Jun 2021 17:55:00 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210618115157.31452-1-kristian@klausen.dk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210618133526.300347-4-sgarzare@redhat.com>
+Content-Type: text/plain; charset="koi8-r"
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.64.64.121]
+X-ClientProxiedBy: hqmailmbx3.avp.ru (10.64.67.243) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 06/18/2021 14:29:51
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 164482 [Jun 18 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;kaspersky.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 06/18/2021 14:32:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 18.06.2021 12:17:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/06/18 13:10:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/06/18 12:17:00 #16756757
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/18/21 5:51 AM, Kristian Klausen wrote:
-> Without calling loop_config_discard() the discard flag and parameters
-> aren't set/updated for the loop device and worst-case they could
-> indicate discard support when it isn't the case (ex: if the
-> LOOP_SET_STATUS ioctl was used with a different file prior to
-> LOOP_CONFIGURE).
 
-Applied, thanks.
-
--- 
-Jens Axboe
-
+On 18.06.2021 16:35, Stefano Garzarella wrote:
+> When memcpy_to_msg() fails in virtio_transport_seqpacket_do_dequeue(),
+> we already set `dequeued_len` with the negative error value returned
+> by memcpy_to_msg().
+>
+> So we can directly check `dequeued_len` value instead of using a
+> dedicated flag variable to skip the copy path for the rest of
+> fragments.
+>
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> ---
+>  net/vmw_vsock/virtio_transport_common.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+>
+> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+> index 23704a6bc437..f014ccfdd9c2 100644
+> --- a/net/vmw_vsock/virtio_transport_common.c
+> +++ b/net/vmw_vsock/virtio_transport_common.c
+> @@ -413,7 +413,6 @@ static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
+>  	struct virtio_vsock_pkt *pkt;
+>  	int dequeued_len = 0;
+>  	size_t user_buf_len = msg_data_left(msg);
+> -	bool copy_failed = false;
+>  	bool msg_ready = false;
+>  
+>  	spin_lock_bh(&vvs->rx_lock);
+> @@ -426,7 +425,7 @@ static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
+>  	while (!msg_ready) {
+>  		pkt = list_first_entry(&vvs->rx_queue, struct virtio_vsock_pkt, list);
+>  
+> -		if (!copy_failed) {
+> +		if (dequeued_len >= 0) {
+>  			size_t pkt_len;
+>  			size_t bytes_to_copy;
+>  
+> @@ -443,11 +442,9 @@ static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
+>  
+>  				err = memcpy_to_msg(msg, pkt->buf, bytes_to_copy);
+>  				if (err) {
+> -					/* Copy of message failed, set flag to skip
+> -					 * copy path for rest of fragments. Rest of
+> +					/* Copy of message failed. Rest of
+>  					 * fragments will be freed without copy.
+>  					 */
+> -					copy_failed = true;
+>  					dequeued_len = err;
+>  				} else {
+>  					user_buf_len -= bytes_to_copy;
+LGTM
