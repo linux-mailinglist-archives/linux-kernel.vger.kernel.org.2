@@ -2,86 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61BC43ACE70
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:16:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6423ACE63
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234890AbhFRPSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:18:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230399AbhFRPSq (ORCPT
+        id S234851AbhFRPRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:17:07 -0400
+Received: from mail-m121144.qiye.163.com ([115.236.121.144]:48988 "EHLO
+        mail-m121144.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231461AbhFRPRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:18:46 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D32F9C061574;
-        Fri, 18 Jun 2021 08:16:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RgVJs2i8tjM9Pp4R41S3t73s45Mwafddh6w7ln+ElM8=; b=R2PFR6jNbhLZQlpmxq/JWMwAr/
-        6/+buuKy5tLGwbjl1+xqZ6b5Z6ZvR8fhu2Z7ZdJqlU7AvMh+P1AXqVDr46MFZvjqPoc7o0lqL5IHK
-        gL69zR2N10yHqOnnBMUfcdqqoIID5L3vUHJBBTZ72+cTTRAl2PV6a+F2jCnS7JxPydBkhq4S5dNwe
-        Cfb6I/g6AncVgs1hDvitkH7bI06nS8CuNX592/uIlTlkm+J6ZTBzY3AL3ImuabxIfasxZoeaU6yNU
-        yFcMrQ/7GT6xdlU35a/Lk9UM6Hq7hjJ8e+RL5PMHITV2nXJuN/4Zwo3Q0ceWQy2EsH8jMKE2pzKun
-        Dbt0dPBA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1luGCQ-00AOje-B9; Fri, 18 Jun 2021 15:14:38 +0000
-Date:   Fri, 18 Jun 2021 16:14:26 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        David Hildenbrand <david@redhat.com>, Greg KH <greg@kroah.com>,
-        Christoph Lameter <cl@gentwo.de>,
-        Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
-        ksummit@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, netdev <netdev@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
-Message-ID: <YMy4UjWH565ElFtZ@casper.infradead.org>
-References: <5038827c-463f-232d-4dec-da56c71089bd@metux.net>
- <20210610182318.jrxe3avfhkqq7xqn@nitro.local>
- <YMJcdbRaQYAgI9ER@pendragon.ideasonboard.com>
- <20210610152633.7e4a7304@oasis.local.home>
- <37e8d1a5-7c32-8e77-bb05-f851c87a1004@linuxfoundation.org>
- <YMyjryXiAfKgS6BY@pendragon.ideasonboard.com>
- <cd7ffbe516255c30faab7a3ee3ee48f32e9aa797.camel@HansenPartnership.com>
- <CAMuHMdVcNfDvpPXHSkdL3VuLXCX5m=M_AQF-P8ZajSdXt8NdQg@mail.gmail.com>
- <20210618103214.0df292ec@oasis.local.home>
- <CAMuHMdWK4NPzanF68TMVuihLFdRzxhs0EkbZdaA=BUkZo-k6QQ@mail.gmail.com>
+        Fri, 18 Jun 2021 11:17:06 -0400
+DKIM-Signature: a=rsa-sha256;
+        b=Bz0r8uYyPM98aHAe5UMPi4gZvyNYM1hyGSpqr5L/MeQ6Q3znO7eCvOwMco0C4DKvdXpdlnlArpG1HrGJy+M1SgqY9PVNjUJeJLGT6Huvwd3L3xqfD5oJkuy0Mu0MZYN2FgdDvt6K9dcBoGHJW8TNS+rc2RwNmXHJ2obC4zyK3WI=;
+        c=relaxed/relaxed; s=default; d=vivo.com; v=1;
+        bh=WUFv4LRD+NHrRC3a1phX1cKlBvVWd+7I1lPNQTHkgM8=;
+        h=date:mime-version:subject:message-id:from;
+Received: from wanjb-KLV-WX9.. (unknown [121.229.73.16])
+        by mail-m121144.qiye.163.com (Hmail) with ESMTPA id 8BF8BAC0167;
+        Fri, 18 Jun 2021 23:14:50 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] mm/percpu: Fix gfp flag in pcpu_balance_populated
+Date:   Fri, 18 Jun 2021 23:14:36 +0800
+Message-Id: <20210618151436.38217-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWK4NPzanF68TMVuihLFdRzxhs0EkbZdaA=BUkZo-k6QQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGhhCHlZOSB1NGEsaHUMYQk1VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PD46Myo*Gj8LN0IdVgEaHUIY
+        MTgKCyFVSlVKTUlPS0lCSUJKS0xIVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlK
+        SUpVSUlCVUxIVUpNWVdZCAFZQUpDQkw3Bg++
+X-HM-Tid: 0a7a1fb060e5b039kuuu8bf8bac0167
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 04:58:08PM +0200, Geert Uytterhoeven wrote:
-> Hi Steven,
-> 
-> On Fri, Jun 18, 2021 at 4:32 PM Steven Rostedt <rostedt@goodmis.org> wrote:
-> > On Fri, 18 Jun 2021 16:28:02 +0200
-> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> >
-> > > What about letting people use the personal mic they're already
-> > > carrying, i.e. a phone?
-> >
-> > Interesting idea.
-> >
-> > I wonder how well that would work in practice. Are all phones good
-> > enough to prevent echo?
-> 
-> I deliberately didn't say anything about a speaker ;-)
+Fix coccicheck warning:
 
-There's usually a speaker in the room so everyone can hear the question
-...
+./mm/percpu.c:2045:19-29: ERROR: function pcpu_balance_populated
+called on line 2232 inside lock on line 2228 but uses GFP_KERNEL
+
+When pcpu_balance_populated() is called in pcpu_balance_workfn(),
+it helds spin_lock but use GFP_KERNEL to alloc mem, which is unsafe.
+
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ mm/percpu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/percpu.c b/mm/percpu.c
+index b4cebeca4c0c..4031f32e6975 100644
+--- a/mm/percpu.c
++++ b/mm/percpu.c
+@@ -2042,7 +2042,7 @@ static void pcpu_balance_free(bool empty_only)
+ static void pcpu_balance_populated(void)
+ {
+ 	/* gfp flags passed to underlying allocators */
+-	const gfp_t gfp = GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN;
++	const gfp_t gfp = GFP_ATOMIC | __GFP_NORETRY | __GFP_NOWARN;
+ 	struct pcpu_chunk *chunk;
+ 	int slot, nr_to_pop, ret;
+ 
+-- 
+2.30.2
+
