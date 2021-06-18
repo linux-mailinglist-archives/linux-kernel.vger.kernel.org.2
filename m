@@ -2,52 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C1C3AD3CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 22:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CE523AD3B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 22:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234058AbhFRUpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 16:45:07 -0400
-Received: from mx4.wp.pl ([212.77.101.11]:11771 "EHLO mx4.wp.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233971AbhFRUpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 16:45:01 -0400
-Received: (wp-smtpd smtp.wp.pl 1651 invoked from network); 18 Jun 2021 22:36:06 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1624048566; bh=+T2bcNC2sHv5Q9iE59Xr1PSmlQKpTEY5+sa+qobzycw=;
-          h=From:To:Cc:Subject;
-          b=iTOJJf9fUeROTjRNWRZ3n2W1HNDuKCswwPfIsbedBObs/qoFDNXFdejAdoli5mfo2
-           f9yQ/O201owv5rCglHhXy2sEcXFr3QGezP+/PqKq9vPzGtsuxDf6/+QX3+p1uZdS19
-           TPqBDN6kI21sqYGxaeU9UtthBJXkSVStcwzmXwIU=
-Received: from unknown (HELO kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com) (kubakici@wp.pl@[163.114.132.3])
-          (envelope-sender <kubakici@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <whistler@member.fsf.org>; 18 Jun 2021 22:36:06 +0200
-Date:   Fri, 18 Jun 2021 13:35:54 -0700
-From:   Jakub Kicinski <kubakici@wp.pl>
-To:     Wei Mingzhi <whistler@member.fsf.org>
-Cc:     kvalo@codeaurora.org, davem@davemloft.net, matthias.bgg@gmail.com,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mt7601u: add USB device ID for some versions of XiaoDu
- WiFi Dongle.
-Message-ID: <20210618133554.7d5c8e3d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210618160840.305024-1-whistler@member.fsf.org>
-References: <20210618160840.305024-1-whistler@member.fsf.org>
+        id S233859AbhFRUi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 16:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232426AbhFRUiX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 16:38:23 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B1F7C061574;
+        Fri, 18 Jun 2021 13:36:14 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so10999344otl.0;
+        Fri, 18 Jun 2021 13:36:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FwzvVbuJlgu6DBRUWFo9BEm/hzQ+wY0U0PlSZsQGHWY=;
+        b=WdnhFyyu6n7P6JsoopbACwoe7AOK+QOg+3/Ko1PmYCVdMIS9EvhxqPe0fqh4xbv28G
+         KQFDPBb7TRq7Fgk2W4R7099i+F1aW8MPrZwKy+1LSEYUzzEuodod0s6kK3yNfs8rlb3e
+         sgPgI+EEWNOuaE/XLVE3Sb8oehkfPQxQuebacQnQ3s3wsVwZoFmR5/Kw+KU7zrADZyDK
+         qeyEC4D8QyUHfcJsUtKp1JbWcaFW1YCI1HvXIDHw2gljF+Yd4flqBwhj8xsLMHYeXyTH
+         IJbq8gN4BgMZVAqLoRwYa0/ZyR2pQLD7tiJ3Kn3cSE/E/0UYO3mTAZJsfM4Qyg22Zb69
+         ioMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FwzvVbuJlgu6DBRUWFo9BEm/hzQ+wY0U0PlSZsQGHWY=;
+        b=qP6I0lsy6SlPPxSYBsjOHTb3shqO4WW5TLNtd/7GESrqxbAgTzIYLqdXJ7svzdQZq/
+         z/vAqvgwWB/jqov2a+GkzPjOaxAVSwVqyZaGkLiqjLFDLkvWTNvucMEX0xtnVxh9CxF1
+         euMlyqCyKc1S4vGx5km6bGpdTtdmIGLN6ENNhwPdeHok71wBB9xl7hWxX2kTv/Z9egvC
+         uI9fKKCs/kydoRUhFf4EinF1yCD7E816V7MyAJwFhfCkqx5quaz5Xu6tj9EqBCxYJ/aY
+         2fehK/F9twM9y8WOG4xpEiVTt9mn7CydJWTkXs2gBdEMUUtw5Bb59PMUtzFMEy9d4qJO
+         0mlA==
+X-Gm-Message-State: AOAM533tHSe7ZqiHb09kpMhCS9I1nvHDeGxZA+DM5puwUITYLWHgXXMb
+        hKfnABL7fEJvqV2yowqhgvBdDHI/EcVi4qJeLSE=
+X-Google-Smtp-Source: ABdhPJzF78KAFsqPc87SewWRBrPw3zNm1t0kg3ndekO4Ac022ElkbsuZKs6pwn6DG0+gmaEZzECQIoIb8XCyvEaP2MI=
+X-Received: by 2002:a05:6830:33ef:: with SMTP id i15mr11036214otu.311.1624048573626;
+ Fri, 18 Jun 2021 13:36:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-WP-MailID: 056658d67fe8a0af829ae53f4852c704
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000001 [8UKz]                               
+References: <20210616205206.GA17547@embeddedor> <3e68b60f-a9af-1f58-076d-1d348e3bf892@amd.com>
+In-Reply-To: <3e68b60f-a9af-1f58-076d-1d348e3bf892@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 18 Jun 2021 16:36:02 -0400
+Message-ID: <CADnq5_MZ7vTxH6aB-rsZqSLGaffi6OwgVBDAFcT=16RRNw+UKA@mail.gmail.com>
+Subject: Re: [PATCH][next] drm/amd/display: Fix fall-through warning for Clang
+To:     Harry Wentland <harry.wentland@amd.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Leo Li <sunpeng.li@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-hardening@vger.kernel.org,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 19 Jun 2021 00:08:40 +0800 Wei Mingzhi wrote:
-> USB device ID of some versions of XiaoDu WiFi Dongle is 2955:1003
-> instead of 2955:1001. Both are the same mt7601u hardware.
-> 
-> Signed-off-by: Wei Mingzhi <whistler@member.fsf.org>
+Applied.  Thanks!
 
-Acked-by: Jakub Kicinski <kubakici@wp.pl>
+Alex
+
+On Thu, Jun 17, 2021 at 3:20 PM Harry Wentland <harry.wentland@amd.com> wrote:
+>
+>
+>
+> On 2021-06-16 4:52 p.m., Gustavo A. R. Silva wrote:
+> > In preparation to enable -Wimplicit-fallthrough for Clang, fix
+> > the following warning by replacing a /* fall through */ comment
+> > with the new pseudo-keyword macro fallthrough:
+> >
+> > rivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_aux.c:672:4: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
+> >                         case AUX_TRANSACTION_REPLY_I2C_OVER_AUX_DEFER:
+> >                         ^
+> >
+> > Notice that Clang doesn't recognize /* fall through */ comments as
+> > implicit fall-through markings, so in order to globally enable
+> > -Wimplicit-fallthrough for Clang, these comments need to be
+> > replaced with fallthrough; in the whole codebase.
+> >
+> > Link: https://github.com/KSPP/linux/issues/115
+> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+>
+> Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+>
+> Harry
+>
+> > ---
+> > JFYI: We had thousands of these sorts of warnings and now we are down
+> >       to just 15 in linux-next. This is one of those last remaining
+> >       warnings.
+> >
+> >  drivers/gpu/drm/amd/display/dc/dce/dce_aux.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_aux.c b/drivers/gpu/drm/amd/display/dc/dce/dce_aux.c
+> > index 28631714f697..2fb88e54a4bf 100644
+> > --- a/drivers/gpu/drm/amd/display/dc/dce/dce_aux.c
+> > +++ b/drivers/gpu/drm/amd/display/dc/dce/dce_aux.c
+> > @@ -668,7 +668,7 @@ bool dce_aux_transfer_with_retries(struct ddc_service *ddc,
+> >                               /* polling_timeout_period is in us */
+> >                               defer_time_in_ms += aux110->polling_timeout_period / 1000;
+> >                               ++aux_defer_retries;
+> > -                             /* fall through */
+> > +                             fallthrough;
+> >                       case AUX_TRANSACTION_REPLY_I2C_OVER_AUX_DEFER:
+> >                               retry_on_defer = true;
+> >                               fallthrough;
+> >
+>
