@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A0C3ACEB1
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4484B3ACEA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235385AbhFRPYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:24:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234944AbhFRPWV (ORCPT
+        id S235232AbhFRPXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:23:07 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56586 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232127AbhFRPV7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:22:21 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E92EC0617A8
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 08:19:49 -0700 (PDT)
-Message-Id: <20210618143447.118734952@linutronix.de>
+        Fri, 18 Jun 2021 11:21:59 -0400
+Message-Id: <20210618143447.223513172@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624029588;
+        s=2020; t=1624029589;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=MOoCipyUPUSuz7nAW1zwlopmeSmXAqoVGwOdF+2iuZA=;
-        b=QlcbdgROwn8ONNUTPJ9FiMWjDhGJvQwydrjXyi66s4+juQrgrEzIKrlYiHIzmac+FmfNe3
-        zkMf3gvcO55Y19qV6g7+0Z9Jl0NBcGzxhuCO0Xq2SiVUkPxN4YTBwCexpi8Q10SNTCkIPZ
-        VgfDyl97QtJgvnH1Ss/DVrBRD7Z3ZjiCEWMvVXsx17I9KYO/cmFkwAnSfk/odk+nB6ybzu
-        jwK3bnNiJYue7iOfZ1xcU+BWmr2YY0hqM38cH0cQu2mmHKvNVGleAPodLf2CiTXsE3lU0r
-        w/fNYrbjH1HxmfAwSOgco2RVVEDiNGvyKig2UK6Gq3o0xTb7/ZvIdNbWdwCxVg==
+        bh=12h4JTTW0YJqkmMVMRoBj49CzVR9KDBA7AcXATEmIV8=;
+        b=mfvoKDcjhnbS0pF7sosyzYE4sh6JoHcIqoZ0Wlz8kusy9W/LRaN69hSLTZJOk/7CLgYLMu
+        N11UcF7Tvw9E291WvWOmuAdzhTmri49VeZEP5USg/wpj57D5MLvOmB9am3/bgP4mGz7NNh
+        ILfo+FTyxkxtIMmtD9yQqszIqWCbt6mzf3/8ogRa7R3Sc/e+tEnJz/UMPXwaSMyH9laZE5
+        QpObWxNSV3DlS9Nnx6Sv6O3PXXku1YAqxWR99WaRn9GuzRz5lXrqw7/dPi4OjlK3RQXrhA
+        /gtvcHI+h5NBP14fL07V3Hd7paZfUr7zvBP8q8qYvT2rRHVodAGFOTeKZL8APw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624029588;
+        s=2020e; t=1624029589;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=MOoCipyUPUSuz7nAW1zwlopmeSmXAqoVGwOdF+2iuZA=;
-        b=yPS5tWUzrVEjKdkk0MipEvgftjLxQTBIDQ0ob3xlvfHrBohM5kSJBQ6iphYv9fbU/jB6wK
-        1QQDCnU+9uimzZCA==
-Date:   Fri, 18 Jun 2021 16:18:47 +0200
+        bh=12h4JTTW0YJqkmMVMRoBj49CzVR9KDBA7AcXATEmIV8=;
+        b=mc+RPW1wxynTldA8swzHwq0F3lJcaPJ5BO2P22JSOuY5zcnwXYNpbLgF5EITWqxBE+5aju
+        +Zpo0yUEjSRRNWBg==
+Date:   Fri, 18 Jun 2021 16:18:48 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -47,7 +44,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V3 24/66] x86/kvm: Avoid looking up PKRU in XSAVE buffer
+Subject: [patch V3 25/66] x86/fpu: Cleanup arch_set_user_pkey_access()
 References: <20210618141823.161158090@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,91 +53,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Hansen <dave.hansen@linux.intel.com>
+The function does a sanity check with a WARN_ON_ONCE() but happily proceeds
+when the pkey argument is out of range.
 
-PKRU is being removed from the kernel XSAVE/FPU buffers.  This removal
-will probably include warnings for code that look up PKRU in those
-buffers.
+Clean it up.
 
-KVM currently looks up the location of PKRU but doesn't even use the
-pointer that it gets back.  Rework the code to avoid calling
-get_xsave_addr() except in cases where its result is actually used.
-
-This makes the code more clear and also avoids the inevitable PKRU
-warnings.
-
-This is probably a good cleanup and could go upstream idependently
-of any PKRU rework.
-
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Borislav Petkov <bp@suse.de>
 ---
- arch/x86/kvm/x86.c |   41 ++++++++++++++++++++++-------------------
- 1 file changed, 22 insertions(+), 19 deletions(-)
+ arch/x86/kernel/fpu/xstate.c |   11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4589,20 +4589,21 @@ static void fill_xsave(u8 *dest, struct
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -912,11 +912,10 @@ EXPORT_SYMBOL_GPL(get_xsave_addr);
+  * rights for @pkey to @init_val.
+  */
+ int arch_set_user_pkey_access(struct task_struct *tsk, int pkey,
+-		unsigned long init_val)
++			      unsigned long init_val)
+ {
+-	u32 old_pkru;
+-	int pkey_shift = (pkey * PKRU_BITS_PER_PKEY);
+-	u32 new_pkru_bits = 0;
++	u32 old_pkru, new_pkru_bits = 0;
++	int pkey_shift;
+ 
+ 	/*
+ 	 * This check implies XSAVE support.  OSPKE only gets
+@@ -930,7 +929,8 @@ int arch_set_user_pkey_access(struct tas
+ 	 * values originating from in-kernel users.  Complain
+ 	 * if a bad value is observed.
  	 */
- 	valid = xstate_bv & ~XFEATURE_MASK_FPSSE;
- 	while (valid) {
-+		u32 size, offset, ecx, edx;
- 		u64 xfeature_mask = valid & -valid;
- 		int xfeature_nr = fls64(xfeature_mask) - 1;
--		void *src = get_xsave_addr(xsave, xfeature_nr);
-+		void *src;
+-	WARN_ON_ONCE(pkey >= arch_max_pkey());
++	if (WARN_ON_ONCE(pkey >= arch_max_pkey()))
++		return -EINVAL;
  
--		if (src) {
--			u32 size, offset, ecx, edx;
--			cpuid_count(XSTATE_CPUID, xfeature_nr,
--				    &size, &offset, &ecx, &edx);
--			if (xfeature_nr == XFEATURE_PKRU)
--				memcpy(dest + offset, &vcpu->arch.pkru,
--				       sizeof(vcpu->arch.pkru));
--			else
--				memcpy(dest + offset, src, size);
-+		cpuid_count(XSTATE_CPUID, xfeature_nr,
-+			    &size, &offset, &ecx, &edx);
+ 	/* Set the bits we need in PKRU:  */
+ 	if (init_val & PKEY_DISABLE_ACCESS)
+@@ -939,6 +939,7 @@ int arch_set_user_pkey_access(struct tas
+ 		new_pkru_bits |= PKRU_WD_BIT;
  
-+		if (xfeature_nr == XFEATURE_PKRU) {
-+			memcpy(dest + offset, &vcpu->arch.pkru,
-+			       sizeof(vcpu->arch.pkru));
-+		} else {
-+			src = get_xsave_addr(xsave, xfeature_nr);
-+			if (src)
-+				memcpy(dest + offset, src, size);
- 		}
+ 	/* Shift the bits in to the correct place in PKRU for pkey: */
++	pkey_shift = pkey * PKRU_BITS_PER_PKEY;
+ 	new_pkru_bits <<= pkey_shift;
  
- 		valid -= xfeature_mask;
-@@ -4632,18 +4633,20 @@ static void load_xsave(struct kvm_vcpu *
- 	 */
- 	valid = xstate_bv & ~XFEATURE_MASK_FPSSE;
- 	while (valid) {
-+		u32 size, offset, ecx, edx;
- 		u64 xfeature_mask = valid & -valid;
- 		int xfeature_nr = fls64(xfeature_mask) - 1;
--		void *dest = get_xsave_addr(xsave, xfeature_nr);
- 
--		if (dest) {
--			u32 size, offset, ecx, edx;
--			cpuid_count(XSTATE_CPUID, xfeature_nr,
--				    &size, &offset, &ecx, &edx);
--			if (xfeature_nr == XFEATURE_PKRU)
--				memcpy(&vcpu->arch.pkru, src + offset,
--				       sizeof(vcpu->arch.pkru));
--			else
-+		cpuid_count(XSTATE_CPUID, xfeature_nr,
-+			    &size, &offset, &ecx, &edx);
-+
-+		if (xfeature_nr == XFEATURE_PKRU) {
-+			memcpy(&vcpu->arch.pkru, src + offset,
-+			       sizeof(vcpu->arch.pkru));
-+		} else {
-+			void *dest = get_xsave_addr(xsave, xfeature_nr);
-+
-+			if (dest)
- 				memcpy(dest, src + offset, size);
- 		}
- 
+ 	/* Get old PKRU and mask off any old bits in place: */
 
