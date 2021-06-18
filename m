@@ -2,168 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631F03AD34A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 22:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E96C53AD34C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 22:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233580AbhFRUCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 16:02:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbhFRUCr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 16:02:47 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13421C061574;
-        Fri, 18 Jun 2021 13:00:37 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id u11so4599862ljh.2;
-        Fri, 18 Jun 2021 13:00:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6QuBVdrLsWBIw9qblqNt5qVCjcnfhwQloDnEvmIwQRc=;
-        b=LVAcp9971d/MurwapYAXElHTIJsaJUhXE8Mrvi4fADDmgT/V7nhnkhhYmg5DROOQaT
-         fSRkbstRi28OKOSd3Y3pw5WSZ+6lVwZUGOxc571QAzYfaSqhiUZ/H3AbYyUfehG1n6tY
-         u4NjaB7AM0ukbGRyJGnWSmZv3aSYRvOpBJfGDCsz5VZgwCY4ae8gNIrVhFw14uiqIgyK
-         03BfBLKnlNVHrFUGrBXTXieaAT0f9z4/GOb4N2E4HzQgWopqpSr0zTVkDw5FIaH4AabM
-         uLxelY6Hiv1PNSEcDwiUW4uWEDIl0J5ykvya0vG6HYs0LO+5b1KsyMPTcuzt5ncZU02H
-         pFDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6QuBVdrLsWBIw9qblqNt5qVCjcnfhwQloDnEvmIwQRc=;
-        b=j/ArBZLfyeahMI0QOgMRbeT+DZhM9TocprXr6/6x/vEEx1EQFAGfQX5RnmhRwGgsuR
-         K5N5iyTsEgH0Q2nBQxA2cdEi4hgG2vkwiqQAVixjkiI50YQDpVQS+DUIixRyP6a527n2
-         kVU/wSnCZs+hq1zZpGqtfnDoYKsCN6CchNlsz20VKVQTSD67GPvzDI8n5TEm9QHU+USf
-         8ODYyjtkB4PZ4K68t3bTimJhg+ZhoAO0lulJqe3I4lkB4NM/dbzDFH39R1suhp4MEvnb
-         YPmkLVzUIDggRdEQfPUGeHju4o6PHrzkrX822Nx56rwet+STreGc9T7w/7r3OA9xfRDR
-         QyoQ==
-X-Gm-Message-State: AOAM533tL0D43U2bUjFzv5mWr6GYOrBdmEvKCJvHiP5wljGKZbQWKwDu
-        1htaLnGVZZxgU1agqpDi+/ezVfGgOpw=
-X-Google-Smtp-Source: ABdhPJxa8LeyyippqBBNNh6IhRBTYAfMW24aC88Ll+ilCRLcvIjYIw0PBaM/Hv1Z7UoIP80ByFnTug==
-X-Received: by 2002:a2e:a22a:: with SMTP id i10mr11075005ljm.425.1624046435318;
-        Fri, 18 Jun 2021 13:00:35 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
-        by smtp.googlemail.com with ESMTPSA id g16sm1134194ljn.103.2021.06.18.13.00.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 13:00:34 -0700 (PDT)
-Subject: Re: [BUG] brcmfmac: brcmf_sdio_bus_rxctl: resumed on timeout (WiFi
- dies)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
-        Wright Feng <wright.feng@cypress.com>,
-        Kalle Valo <kvalo@codeaurora.org>
-Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "brcm80211-dev-list.pdl@broadcom.com" 
-        <brcm80211-dev-list.pdl@broadcom.com>,
-        "brcm80211-dev-list@cypress.com" <brcm80211-dev-list@cypress.com>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <fcf95129-cba7-817d-4bfd-8efaf92f957f@gmail.com>
- <cc328771-0c1d-93e7-cec6-3f4fb7f64d02@broadcom.com>
- <fe3bf47f-7a95-8b58-1d33-c9ba1c8b1ebb@gmail.com>
-Message-ID: <f84ec7d1-e4bd-874e-d8dd-296e629edb2a@gmail.com>
-Date:   Fri, 18 Jun 2021 23:00:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233597AbhFRUC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 16:02:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44710 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230409AbhFRUC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 16:02:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73E5C61284;
+        Fri, 18 Jun 2021 20:00:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624046446;
+        bh=ukCWv700nw419U/zUESyNHC+5o4jEIFSTw/JYrj1TFk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=E70arPAPnlwDPp50+ZsC5gCoaTmTqh3qost0EhI7J5QYPFYNy+TAgkkFwDOsiY0uo
+         QQpPCOQn6qOWdcKXKYRI2mHYMB0vVeiqTzRrD7zCv/7QJcBCqaHEN6qj717R4+cTCz
+         cCOF2TF1+sP50xHa5oBOwoPfCX2qVTIpid5kL7FAkBMfDVwK0SxgI9BNe1uuQMlN3t
+         wfUTZKhqySM9w1ng7/ifZ2wTRT8Q4whYQlUQIr/46VCh0Bu3qCaTdeAFFmQnErGYOT
+         4S4+EFmgaWFMj0IWdy077aeaEfk+TFaYptEv3EPQFTfMUhrPn4y0CtluHz75s4L7Gn
+         1XAjO8s0mNbzQ==
+Date:   Fri, 18 Jun 2021 15:00:45 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v7 4/8] PCI/sysfs: Allow userspace to query and set
+ device reset mechanism
+Message-ID: <20210618200045.GA3141153@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <fe3bf47f-7a95-8b58-1d33-c9ba1c8b1ebb@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210608054857.18963-5-ameynarkhede03@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-28.05.2021 01:47, Dmitry Osipenko пишет:
-> 27.05.2021 19:42, Arend van Spriel пишет:
->> On 5/26/2021 5:10 PM, Dmitry Osipenko wrote:
->>> Hello,
->>>
->>> After updating to Ubuntu 21.04 I found two problems related to the
->>> BRCMF_C_GET_ASSOCLIST using an older BCM4329 SDIO WiFi.
->>>
->>> 1. The kernel is spammed with:
->>>
->>>   ieee80211 phy0: brcmf_cfg80211_dump_station: BRCMF_C_GET_ASSOCLIST
->>> unsupported, err=-52
->>>   ieee80211 phy0: brcmf_cfg80211_dump_station: BRCMF_C_GET_ASSOCLIST
->>> unsupported, err=-52
->>>   ieee80211 phy0: brcmf_cfg80211_dump_station: BRCMF_C_GET_ASSOCLIST
->>> unsupported, err=-52
->>>
->>> Which happens apparently due to a newer NetworkManager version that
->>> pokes dump_station() periodically. I sent [1] that fixes this noise.
->>>
->>> [1]
->>> https://patchwork.kernel.org/project/linux-wireless/list/?series=480715
->>
->> Right. I noticed this one and did not have anything to add to the
->> review/suggestion.
-> 
-> Please feel free to add yours r-b to the patches if they are good to you.
-> 
->>> 2. The other much worse problem is that WiFi eventually dies now with
->>> these errors:
->>>
->>> ...
->>>   ieee80211 phy0: brcmf_cfg80211_dump_station: BRCMF_C_GET_ASSOCLIST
->>> unsupported, err=-52
->>>   brcmfmac: brcmf_sdio_bus_rxctl: resumed on timeout
->>>   ieee80211 phy0: brcmf_cfg80211_dump_station: BRCMF_C_GET_ASSOCLIST
->>> unsupported, err=-110
->>>   ieee80211 phy0: brcmf_proto_bcdc_query_dcmd: brcmf_proto_bcdc_msg
->>> failed w/status -110
->>>
->>>  From this point all firmware calls start to fail with err=-110 and
->>> WiFi doesn't work anymore. This problem is reproducible with 5.13-rc
->>> and current -next, I haven't checked older kernel versions. Somehow
->>> it's worse using a recent -next, WiFi dies quicker.
->>>
->>> What's interesting is that I see that there is always a pending signal
->>> in brcmf_sdio_dcmd_resp_wait() when timeout happens. It looks like the
->>> timeout happens when there is access to a swap partition, which stalls
->>> system for a second or two, but this is not 100%. Increasing
->>> DCMD_RESP_TIMEOUT doesn't help.
->>
->> The timeout error (-110) can have two root causes that I am aware off.
->> Either the firmware died or the SDIO layer has gone haywire. Not sure if
->> that swap partition is on eMMC device, but if so it could be related.
->> You could try generating device coredump. If that also gives -110 errors
->> we know it is the SDIO layer.
-> 
-> Coredump is a good idea, thank you. The swap partition is on external SD
-> card, everything else is on eMMC.
-> 
->>> Please let me know if you have any ideas of how to fix this trouble
->>> properly or if you need need any more info.
->>>
->>> Removing BRCMF_C_GET_ASSOCLIST firmware call entirely from the driver
->>> fixes the problem.
->>
->> My guess is that reducing interaction with firmware is what is avoiding
->> the issue and not so much this specific firmware command. As always it
->> is good to know the conditions in which the issue occurs. What is the
->> hardware platform you are running Ubuntu on? Stuff like that.
-> 
-> That's an older Acer A500 NVIDIA Tegra20 tablet device [1]. I may also
-> try to reproduce problem on Tegra30 Nexus 7 with BCM4330.
-> 
-> [1]
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/tegra20-acer-a500-picasso.dts
-> 
-> Thank you very much for the suggestions. I will try to collect more info
-> and come back with the report.
-> 
+On Tue, Jun 08, 2021 at 11:18:53AM +0530, Amey Narkhede wrote:
+> Add reset_method sysfs attribute to enable user to
+> query and set user preferred device reset methods and
+> their ordering.
 
-I was testing this for the past weeks and the problem is not
-reproducible anymore. Apparently something got fixed in linux-next. I
-haven't tried to bisect the fix since it's a bit too painful to do.
+Rewrap to fill 75 columns (also apply to other patches if applicable,
+e.g., 3/8 looks like it could use it).
 
-Still there are occasional -110 errors when system stalls on a memory
-swap, but WiFi keeps working now.
+2/8 looks like it's missing a blank line between paragraphs.
+
+> Co-developed-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> ---
+>  Documentation/ABI/testing/sysfs-bus-pci |  16 ++++
+>  drivers/pci/pci-sysfs.c                 | 118 ++++++++++++++++++++++++
+>  2 files changed, 134 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+> index ef00fada2..cf6dbbb3c 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-pci
+> +++ b/Documentation/ABI/testing/sysfs-bus-pci
+> @@ -121,6 +121,22 @@ Description:
+>  		child buses, and re-discover devices removed earlier
+>  		from this part of the device tree.
+>  
+> +What:		/sys/bus/pci/devices/.../reset_method
+> +Date:		March 2021
+> +Contact:	Amey Narkhede <ameynarkhede03@gmail.com>
+> +Description:
+> +		Some devices allow an individual function to be reset
+> +		without affecting other functions in the same slot.
+> +		For devices that have this support, a file named reset_method
+> +		will be present in sysfs. Reading this file will give names
+> +		of the device supported reset methods and their ordering.
+> +		Writing the name or comma separated list of names of any of
+> +		the device supported reset methods to this file will set the
+> +		reset methods and their ordering to be used when resetting
+> +		the device. Writing empty string to this file will disable
+> +		ability to reset the device and writing "default" will return
+> +		to the original value.
+
+Rewrap to fill or add a blank line if "For devices ..." is supposed to
+start a new paragraph.
+
+My guess is you intend reading to show the *currently enabled* reset
+methods, not the entire "supported" set?  So if a user has disabled
+one of them, it no longer appears when you read the file?
+
+> +
+>  What:		/sys/bus/pci/devices/.../reset
+>  Date:		July 2009
+>  Contact:	Michael S. Tsirkin <mst@redhat.com>
+> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> index 316f70c3e..52def79aa 100644
+> --- a/drivers/pci/pci-sysfs.c
+> +++ b/drivers/pci/pci-sysfs.c
+> @@ -1334,6 +1334,123 @@ static const struct attribute_group pci_dev_rom_attr_group = {
+>  	.is_bin_visible = pci_dev_rom_attr_is_visible,
+>  };
+>  
+> +static ssize_t reset_method_show(struct device *dev,
+> +				 struct device_attribute *attr,
+> +				 char *buf)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +	ssize_t len = 0;
+> +	int i, prio;
+> +
+> +	for (prio = PCI_RESET_METHODS_NUM; prio; prio--) {
+> +		for (i = 0; i < PCI_RESET_METHODS_NUM; i++) {
+> +			if (prio == pdev->reset_methods[i]) {
+> +				len += sysfs_emit_at(buf, len, "%s%s",
+> +						     len ? "," : "",
+> +						     pci_reset_fn_methods[i].name);
+> +				break;
+> +			}
+> +		}
+> +
+> +		if (i == PCI_RESET_METHODS_NUM)
+> +			break;
+> +	}
+
+I'm guessing that if you adopt the alternate reset_methods[] encoding,
+this nested loop becomes a single loop and "prio" goes away?
+
+> +	if (len)
+> +		len += sysfs_emit_at(buf, len, "\n");
+> +
+> +	return len;
+> +}
+> +
+> +static ssize_t reset_method_store(struct device *dev,
+> +				  struct device_attribute *attr,
+> +				  const char *buf, size_t count)
+> +{
+> +	u8 reset_methods[PCI_RESET_METHODS_NUM];
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +	u8 prio = PCI_RESET_METHODS_NUM;
+> +	char *name, *options;
+> +	int i;
+
+Reorder decls with to_pci_dev(dev) first, then in order of use.
+
+> +	if (count >= (PAGE_SIZE - 1))
+> +		return -EINVAL;
+> +
+> +	options = kstrndup(buf, count, GFP_KERNEL);
+> +	if (!options)
+> +		return -ENOMEM;
+> +
+> +	/*
+> +	 * Initialize reset_method such that 0xff indicates
+> +	 * supported but not currently enabled reset methods
+> +	 * as we only use priority values which are within
+> +	 * the range of PCI_RESET_FN_METHODS array size
+> +	 */
+> +	for (i = 0; i < PCI_RESET_METHODS_NUM; i++)
+> +		reset_methods[i] = pdev->reset_methods[i] ? 0xff : 0;
+
+I'm hoping the 0xff trick goes away with the alternate encoding?
+
+> +	if (sysfs_streq(options, "")) {
+> +		pci_warn(pdev, "All device reset methods disabled by user");
+> +		goto set_reset_methods;
+> +	}
+
+I think you can get this case out of the way early with no kstrndup(),
+no goto, etc.
+
+> +	if (sysfs_streq(options, "default")) {
+> +		for (i = 0; i < PCI_RESET_METHODS_NUM; i++)
+> +			reset_methods[i] = reset_methods[i] ? prio-- : 0;
+> +		goto set_reset_methods;
+> +	}
+
+If you use pci_init_reset_methods() here, you can also get this case
+out of the way early.
+
+> +	while ((name = strsep(&options, ",")) != NULL) {
+> +		if (sysfs_streq(name, ""))
+> +			continue;
+> +
+> +		name = strim(name);
+> +
+> +		for (i = 0; i < PCI_RESET_METHODS_NUM; i++) {
+> +			if (reset_methods[i] &&
+> +			    sysfs_streq(name, pci_reset_fn_methods[i].name)) {
+> +				reset_methods[i] = prio--;
+> +				break;
+> +			}
+> +		}
+> +
+> +		if (i == PCI_RESET_METHODS_NUM) {
+> +			kfree(options);
+> +			return -EINVAL;
+> +		}
+> +	}
+> +
+> +	if (reset_methods[0] &&
+> +	    reset_methods[0] != PCI_RESET_METHODS_NUM)
+> +		pci_warn(pdev, "Device specific reset disabled/de-prioritized by user");
+
+Is there a specific reason for this warning?  Is it just telling the
+user that he might have shot himself in the foot?  Not sure that's
+necessary.
+
+> +set_reset_methods:
+> +	kfree(options);
+> +	memcpy(pdev->reset_methods, reset_methods, sizeof(reset_methods));
+> +	return count;
+> +}
+> +static DEVICE_ATTR_RW(reset_method);
+> +
+> +static struct attribute *pci_dev_reset_method_attrs[] = {
+> +	&dev_attr_reset_method.attr,
+> +	NULL,
+> +};
+> +
+> +static umode_t pci_dev_reset_method_attr_is_visible(struct kobject *kobj,
+> +						    struct attribute *a, int n)
+> +{
+> +	struct pci_dev *pdev = to_pci_dev(kobj_to_dev(kobj));
+> +
+> +	if (!pci_reset_supported(pdev))
+> +		return 0;
+
+I think this _is_visible method is executed only once, at
+device_add()-time.  That means if a device doesn't support any resets
+at that time, "reset_method" will not be visible, and there will be no
+way to ever enable a reset method at run-time.  I assume that's OK;
+just double-checking.
+
+> +
+> +	return a->mode;
+> +}
+> +
+> +static const struct attribute_group pci_dev_reset_method_attr_group = {
+> +	.attrs = pci_dev_reset_method_attrs,
+> +	.is_visible = pci_dev_reset_method_attr_is_visible,
+> +};
+> +
+>  static ssize_t reset_store(struct device *dev, struct device_attribute *attr,
+>  			   const char *buf, size_t count)
+>  {
+> @@ -1491,6 +1608,7 @@ const struct attribute_group *pci_dev_groups[] = {
+>  	&pci_dev_config_attr_group,
+>  	&pci_dev_rom_attr_group,
+>  	&pci_dev_reset_attr_group,
+> +	&pci_dev_reset_method_attr_group,
+>  	&pci_dev_vpd_attr_group,
+>  #ifdef CONFIG_DMI
+>  	&pci_dev_smbios_attr_group,
+> -- 
+> 2.31.1
+> 
