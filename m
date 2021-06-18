@@ -2,89 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A93D43AD619
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F3E3AD61A
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235221AbhFRXqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 19:46:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235189AbhFRXqC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 19:46:02 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFEAEC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:43:51 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso7917076pjx.1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:43:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VaxeR6kq1TatKHxRpRVY2RGQ7tO/m+vKgd0wWV7OHFE=;
-        b=oKpBYtD2pXCHjq5y/Nt8YG3X6Hc+aprbg2b9ZkAsrU+kH2cTN5vRzPu4dhgdPq/BMg
-         YXfowyn9ZKcrfjQU2uBOSxrSmWRwg+rw+35xxmHk+/WEnlFCFefwGdPe+yGDw18U+/v5
-         fpDCZe8f7Xg4iY29vtdBl9/pA7c436jM7zKjE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VaxeR6kq1TatKHxRpRVY2RGQ7tO/m+vKgd0wWV7OHFE=;
-        b=d43Or/9ad2dVK8kMpIAD8Ib/UrxvikYBqRPwTRxhRuVGgQkrAGO+4bdWGwd0rJhF+P
-         9FUbYAP1xU/2h9qMz3g9npCV/TvKbA07hZnVWQF8XgT4iMD6DH3csIV3Zutdgc+n37vl
-         uDjWAa4iQD+uA3TlTjvx5FgQo3Pp7qLg66OpHg4YPJvaymlp6YxmZfkr/VrXbHeC4iF3
-         jJufNN19qSrgSIHTFpkMwKapiqujNAb+Wlp59tjT5cucYGYEPI6eV1fPwx2o4Gy2EUGQ
-         D9RHJs+X/PndPVUOSPhHUH4ENOYyldSJIbMVEg0QoQXZhOJRpaMgUMTELfQfpTJqooSt
-         ekAQ==
-X-Gm-Message-State: AOAM532rIrXROQ8qSfBOQ8lkhvQ5j7xfh6o2Bf7ZDyyAPXYrjr6aD3LR
-        M506RcUEDw1BYw3O2iQ8I0nMJA==
-X-Google-Smtp-Source: ABdhPJxCYWIunQzevcI7fFjpJx4ABhcng0aYoYnWLpsnKsb7BHY1Kizbat1j8IK9uKd7lLwjs1tOIg==
-X-Received: by 2002:a17:902:aa4a:b029:10e:f98c:2b83 with SMTP id c10-20020a170902aa4ab029010ef98c2b83mr6883721plr.62.1624059831217;
-        Fri, 18 Jun 2021 16:43:51 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id n23sm9178485pff.93.2021.06.18.16.43.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 16:43:50 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 16:43:49 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] xfs: Fix multiple fall-through warnings for Clang
-Message-ID: <202106181643.99B75165@keescook>
-References: <20210616191714.GA104231@embeddedor>
+        id S235238AbhFRXqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 19:46:44 -0400
+Received: from mga03.intel.com ([134.134.136.65]:27153 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235189AbhFRXql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 19:46:41 -0400
+IronPort-SDR: UBIEJrLFtxvEGsjW5AFbsoniHS1YyDJv68TjK0peirriIR80l1XNe6GapI/BbFC3SHRX+h/x8K
+ d7MSrFeAXltg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="206676451"
+X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
+   d="scan'208";a="206676451"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 16:44:31 -0700
+IronPort-SDR: Dx8/KkCY67i+ow2RrMnxb8suKWFJFvo45op/9lDV6Njt+DaLVU+9ODQjP+Psli1xH6fwbdYMZ9
+ m7EZAeRbtvbg==
+X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
+   d="scan'208";a="485857268"
+Received: from rchatre-mobl3.amr.corp.intel.com (HELO [10.212.236.226]) ([10.212.236.226])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 16:44:31 -0700
+Subject: Re: [PATCH v4] x86/resctrl: Fix kernel-doc in internal.h
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org
+References: <20210618223206.29539-1-fmdefrancesco@gmail.com>
+From:   Reinette Chatre <reinette.chatre@intel.com>
+Message-ID: <21d58f6c-c112-ddb7-dabf-8fae378cd43f@intel.com>
+Date:   Fri, 18 Jun 2021 16:44:30 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210616191714.GA104231@embeddedor>
+In-Reply-To: <20210618223206.29539-1-fmdefrancesco@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 02:17:14PM -0500, Gustavo A. R. Silva wrote:
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix
-> the following warnings by replacing /* fallthrough */ comments,
-> and its variants, with the new pseudo-keyword macro fallthrough:
-> 
-> fs/xfs/libxfs/xfs_attr.c:487:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> fs/xfs/libxfs/xfs_attr.c:500:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> fs/xfs/libxfs/xfs_attr.c:532:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> fs/xfs/libxfs/xfs_attr.c:594:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> fs/xfs/libxfs/xfs_attr.c:607:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> fs/xfs/libxfs/xfs_attr.c:1410:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> fs/xfs/libxfs/xfs_attr.c:1445:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> fs/xfs/libxfs/xfs_attr.c:1473:2: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> 
-> Notice that Clang doesn't recognize /* fallthrough */ comments as
-> implicit fall-through markings, so in order to globally enable
-> -Wimplicit-fallthrough for Clang, these comments need to be
-> replaced with fallthrough; in the whole codebase.
-> 
-> Link: https://github.com/KSPP/linux/issues/115
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Hi Fabio,
 
-Thanks for carrying these!
+On 6/18/2021 3:32 PM, Fabio M. De Francesco wrote:
+> Add description of undocumented parameters. Issues detected by
+> scripts/kernel-doc.
+> 
+> Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+> ---
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Before this patch:
+$ scripts/kernel-doc -none arch/x86/kernel/cpu/resctrl/internal.h
+arch/x86/kernel/cpu/resctrl/internal.h:78: warning: Function parameter 
+or member 'list' not described in 'mon_evt'
+arch/x86/kernel/cpu/resctrl/internal.h:93: warning: Function parameter 
+or member 'priv' not described in 'mon_data_bits'
+arch/x86/kernel/cpu/resctrl/internal.h:93: warning: Function parameter 
+or member 'u' not described in 'mon_data_bits'
+arch/x86/kernel/cpu/resctrl/internal.h:141: warning: Enum value 
+'RDT_NUM_MODES' not described in enum 'rdtgrp_mode'
+arch/x86/kernel/cpu/resctrl/internal.h:155: warning: Function parameter 
+or member 'mon_data_kn' not described in 'mongroup'
+arch/x86/kernel/cpu/resctrl/internal.h:298: warning: Function parameter 
+or member 'prev_msr' not described in 'mbm_state'
+arch/x86/kernel/cpu/resctrl/internal.h:298: warning: Function parameter 
+or member 'prev_bw' not described in 'mbm_state'
+arch/x86/kernel/cpu/resctrl/internal.h:298: warning: Function parameter 
+or member 'delta_bw' not described in 'mbm_state'
+arch/x86/kernel/cpu/resctrl/internal.h:298: warning: Function parameter 
+or member 'delta_comp' not described in 'mbm_state'
+arch/x86/kernel/cpu/resctrl/internal.h:492: warning: Function parameter 
+or member 'membw' not described in 'rdt_resource'
+arch/x86/kernel/cpu/resctrl/internal.h:492: warning: Function parameter 
+or member 'mbm_width' not described in 'rdt_resource'
+$
 
--- 
-Kees Cook
+After this patch:
+$ scripts/kernel-doc -none arch/x86/kernel/cpu/resctrl/internal.h
+$
+
+Thank you very much.
+
+Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+
+Reinette
