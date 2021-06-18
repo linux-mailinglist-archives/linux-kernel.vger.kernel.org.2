@@ -2,63 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 832883AC6AF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDEC53AC6B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:01:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232716AbhFRJCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 05:02:03 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:48109 "EHLO
+        id S231234AbhFRJD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 05:03:28 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:48153 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232609AbhFRJCB (ORCPT
+        with ESMTP id S230070AbhFRJD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 05:02:01 -0400
-Received: from mail-ej1-f72.google.com ([209.85.218.72])
+        Fri, 18 Jun 2021 05:03:26 -0400
+Received: from mail-ed1-f70.google.com ([209.85.208.70])
         by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.93)
         (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1luALv-0001FK-Ow
-        for linux-kernel@vger.kernel.org; Fri, 18 Jun 2021 08:59:51 +0000
-Received: by mail-ej1-f72.google.com with SMTP id p20-20020a1709064994b02903cd421d7803so3622206eju.22
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:59:51 -0700 (PDT)
+        id 1luANJ-0001MN-4o
+        for linux-kernel@vger.kernel.org; Fri, 18 Jun 2021 09:01:17 +0000
+Received: by mail-ed1-f70.google.com with SMTP id v12-20020aa7dbcc0000b029038fc8e57037so3222795edt.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 02:01:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=PEcc2XLwF7gLUJu71YgacFESmL81dpTQvc0XnJ0Z794=;
-        b=HrbAimeJZBuQKvxoGJJzfeEuHRtwZhoKhlbaHY6r3YvOrLlGMe+5to0wKxYS1ukcP5
-         ZXbMuts8QODy/cf0xSXcIwi+7/FBs8KnhCv6kl4qU0+A721bKGNdXca9Zg8RuHqAj+p1
-         YhIRYVFdrjTd8nv9LGPf+R7wTXcYHeGcjO/QYvUPFltm82BLQQ68P+aTcF2tdIrkQAuZ
-         n7aUEW8GGvWZR1iWoPpbC5mms/zaDUHcd9Eu/MfK9UoZeaSCgTk39dluNTUwth4ejvsm
-         SHjfoz40Wows1KpriBVCBjwwxQwdmpWQMd+pDdx65WyHnsMaEU128WinslofRvPjEztY
-         d8Cg==
-X-Gm-Message-State: AOAM530d3h9BCZYx+7t+uvbtmdWCNlmoQhyN39rsWuQsiWiIPkAZoIYr
-        ocOTKLQJGFjR+cUvjspId3aT1fNvo4JQaDSMQWtgolYcY/RYOMfBoRdBtC026aHAc6JV+aT99TM
-        ZuXH1eeJWqN8yRxc6fuxEBiCHITvr8pc+iOf5iojemw==
-X-Received: by 2002:a05:6402:18f6:: with SMTP id x54mr3654889edy.53.1624006791574;
-        Fri, 18 Jun 2021 01:59:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwMQ0H4LDz9fog0E8p/D6NA/qzZNLkPqQI/pYPUCukC7/7rPKA6YEBSYoQrWiaPFZY5N9RtTQ==
-X-Received: by 2002:a05:6402:18f6:: with SMTP id x54mr3654881edy.53.1624006791433;
-        Fri, 18 Jun 2021 01:59:51 -0700 (PDT)
+        bh=4Rpo5v0so+s5bFTiYG2x3xDNdr/p1fKsU61iXsP86UQ=;
+        b=RDPJCqnYdP5XMoSw0FSZFzV7h6f4/1P4Gr+X98OaLnK0t6U2vLW052nIxbYAflFwbI
+         foHTcmAO9BBjrGwOj92Hpg2FWi1oTnIGmUaeki54fRzpsSGExnShb1L7sNd360Hd5bNB
+         MAdDvJ4/PmQ52h2PFTvhwz5qI3m8Bd6nD1gN8xhWZNXjDrn/Hdy93OrHp1zVq2YQK7Rc
+         /EjywpPIwfHlpwIRcrlDI+gJJ7zvZa7+mJd7Wwl8++NxXtQYuWr7m+CUMaqSQVS/WVlK
+         lMppTKdFB8t7GvNVm6nG9YEPH01FOwAVmN8Tw11yL0CEtnQPx6uz+JedCWBp29ziFjE8
+         HHtQ==
+X-Gm-Message-State: AOAM530B0we+hRxMw+Tj0psNPgaqMhC4zTOIVDkCU6KsWtr5SO/6iyJu
+        K3PHDLfoRRGGW341iENymQXuB2NetUM95Hn7UAxHFibZPeF+MEgPveFPxJnZ7cgPhqSf5JwdCIG
+        gjmHG5wMbeqRlmZKaxWIAcpdrpnMpaZJwTX3DBYMw6g==
+X-Received: by 2002:a17:906:2752:: with SMTP id a18mr10451913ejd.458.1624006876932;
+        Fri, 18 Jun 2021 02:01:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz2MB2+Q8e0FJ/0cH1Qq/fGA0AiH6hJVmgNkJ1FexQwOk2Rh7qUGVrnNY3ri6yOvmqlsOFFpw==
+X-Received: by 2002:a17:906:2752:: with SMTP id a18mr10451900ejd.458.1624006876745;
+        Fri, 18 Jun 2021 02:01:16 -0700 (PDT)
 Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id y20sm5737732edq.69.2021.06.18.01.59.50
+        by smtp.gmail.com with ESMTPSA id de6sm402336edb.77.2021.06.18.02.01.16
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 01:59:50 -0700 (PDT)
-Subject: Re: [PATCH 5.4 031/184] modules: inherit TAINT_PROPRIETARY_MODULE
+        Fri, 18 Jun 2021 02:01:16 -0700 (PDT)
+Subject: Re: [PATCH v2] NFC: nxp-nci: remove unnecessary label
+To:     samirweng1979 <samirweng1979@163.com>, charles.gorand@effinnov.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+References: <20210618085226.18440-1-samirweng1979@163.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org, Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Christoph Hellwig <hch@lst.de>, Jessica Yu <jeyu@kernel.org>
-References: <20210510101950.200777181@linuxfoundation.org>
- <20210510101951.249384110@linuxfoundation.org>
- <8edc6f45-6c42-19c7-6f40-6f1a49cc685b@canonical.com>
-Message-ID: <08a2e600-74cf-dbf8-1ecc-777ff65e06b0@canonical.com>
-Date:   Fri, 18 Jun 2021 10:59:50 +0200
+Message-ID: <8ff9ac28-5d83-ebf8-a6b1-53a2a7b7d912@canonical.com>
+Date:   Fri, 18 Jun 2021 11:01:15 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <8edc6f45-6c42-19c7-6f40-6f1a49cc685b@canonical.com>
+In-Reply-To: <20210618085226.18440-1-samirweng1979@163.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -66,40 +63,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/06/2021 10:57, Krzysztof Kozlowski wrote:
-> On 10/05/2021 12:18, Greg Kroah-Hartman wrote:
->> From: Christoph Hellwig <hch@lst.de>
->>
->> commit 262e6ae7081df304fc625cf368d5c2cbba2bb991 upstream.
->>
->> If a TAINT_PROPRIETARY_MODULE exports symbol, inherit the taint flag
->> for all modules importing these symbols, and don't allow loading
->> symbols from TAINT_PROPRIETARY_MODULE modules if the module previously
->> imported gplonly symbols.  Add a anti-circumvention devices so people
->> don't accidentally get themselves into trouble this way.
->>
->> Comment from Greg:
->>   "Ah, the proven-to-be-illegal "GPL Condom" defense :)"
+On 18/06/2021 10:52, samirweng1979 wrote:
+> From: wengjianfeng <wengjianfeng@yulong.com>
 > 
-> Patch got in to stable, so my comments are quite late, but can someone
-> explain me - how this is a stable material? What specific, real bug that
-> bothers people, is being fixed here? Or maybe it fixes serious issue
-> reported by a user of distribution kernel? IOW, how does this match
-> stable kernel rules at all?
+> Remove unnecessary label chunk_exit and return directly.
 > 
-> For sure it breaks some out-of-tree modules already present and used by
-> customers of downstream stable kernels. Therefore I wonder what is the
-> bug fixed here, so the breakage and annoyance of stable users is justified.
+> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+> ---
+>  drivers/nfc/nxp-nci/firmware.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
 
-And for the record I am not talking about this patch only. I am asking
-also what serious or real bug is being fixed by:
-"modules: mark find_symbol static
-find_symbol is only used in module.c."
 
-I would be really happy to extend my knowledge about real bugs faced by
-people, where the fix is to un-export unused symbol. It must have been
-very interesting, real bug bothering people. :)
-
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
 Best regards,
 Krzysztof
+
+> diff --git a/drivers/nfc/nxp-nci/firmware.c b/drivers/nfc/nxp-nci/firmware.c
+> index dae0c80..119bf30 100644
+> --- a/drivers/nfc/nxp-nci/firmware.c
+> +++ b/drivers/nfc/nxp-nci/firmware.c
+> @@ -95,10 +95,8 @@ static int nxp_nci_fw_send_chunk(struct nxp_nci_info *info)
+>  	int r;
+>  
+>  	skb = nci_skb_alloc(info->ndev, info->max_payload, GFP_KERNEL);
+> -	if (!skb) {
+> -		r = -ENOMEM;
+> -		goto chunk_exit;
+> -	}
+> +	if (!skb)
+> +		return -ENOMEM;
+>  
+>  	chunk_len = info->max_payload - NXP_NCI_FW_HDR_LEN - NXP_NCI_FW_CRC_LEN;
+>  	remaining_len = fw_info->frame_size - fw_info->written;
+> @@ -124,7 +122,6 @@ static int nxp_nci_fw_send_chunk(struct nxp_nci_info *info)
+>  
+>  	kfree_skb(skb);
+>  
+> -chunk_exit:
+>  	return r;
+>  }
+>  
+> 
