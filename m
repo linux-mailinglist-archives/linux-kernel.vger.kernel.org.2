@@ -2,63 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1973AD2E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38AEF3AD2E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235137AbhFRTdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 15:33:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233430AbhFRTcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 15:32:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3653F613BD;
-        Fri, 18 Jun 2021 19:30:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624044626;
-        bh=ltTvNTMwFkYJTPxjAqKMsOTKLtt1NT5IwT7W1f0kua4=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=I6lVmofZzICzAqQbKRT5BVdXfeEJil48C1TwbwGWUUCL5/rSlLtZLifiVIyvbx/UA
-         gwZVZDILLhriCqrZ4HO1Lc685YOcOPFtppkSrK8fJjHZWXuUNZdCUZlMeu+cNdc471
-         1x/ftAZfvorFjqpYDfhU4Vgggs52NeN5HWl0cZfqw9032yJEKa+uuWKrOmaGlAzdR8
-         PIrCtoVxNm0u7jhrBXWCc4H2ETvD3jDEL9HBKpLtyas46u97HBzoerzHQU227JOzkH
-         MDS08/NnLg8UhM/S9ZWtJDjfjNjZhn7MKwsT4Wpg6/Ma7reO10CAHbW/4q4UzMc/PY
-         i8NrL3a/p81Og==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2D99060C29;
-        Fri, 18 Jun 2021 19:30:26 +0000 (UTC)
-Subject: Re: [GIT PULL] tracing: Fixes for 5.13-rc6
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210618102323.3b630647@oasis.local.home>
-References: <20210618102323.3b630647@oasis.local.home>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210618102323.3b630647@oasis.local.home>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.13-rc6
-X-PR-Tracked-Commit-Id: 89529d8b8f8daf92d9979382b8d2eb39966846ea
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 89fec7420354ff2d23ed46e62aaea402587efd1c
-Message-Id: <162404462618.17995.7308625891019380946.pr-tracker-bot@kernel.org>
-Date:   Fri, 18 Jun 2021 19:30:26 +0000
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+        id S231241AbhFRTek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 15:34:40 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:58578 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230318AbhFRTej (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 15:34:39 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624044748;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uGYDUibjRJnL82nD8o3BWNGmm7rRgf7fDGXt/JOep+Y=;
+        b=sUzKg4BepwE7mv3qWCix1guOBHZSMT8DXBkwFLMTULjbfeKMG/v0Be1pssBXpuJ7qBTefD
+        EAZZcGJtwmWTWqNQOzwsdfNv+JGakxIdAvjKTy5DhKOEa2tb9jZpjFwLshZ5nXdaR/vWFB
+        +f82bgqbIbec0ACPaDMfh0QHpV8mQBNW/Ngi6TnKCRMlJlivQvuWcSJC8OaGKXFAa6/C4e
+        1igh80HtnFSygR8IyCIwjJbh5jNhn/ZA4LT2UB1cEZSuWMW7SN9uyidMjirfiMM5/9FUzL
+        bTk2LH8lobMsGTlcV6Om83acKgM4PUNr2UFCR+yBKRgUyS12TvSAVrFOOEnffA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624044748;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uGYDUibjRJnL82nD8o3BWNGmm7rRgf7fDGXt/JOep+Y=;
+        b=O4Tyuu3AGxQcKB3jYIokFBqi7TQbdNSdn3r02m2Tb81waKj+8YkqzliySHPtD3MwGFeKI3
+        49tR6qJY2A6WWYDQ==
+To:     Ming Lei <ming.lei@redhat.com>, Bjorn Helgaas <helgaas@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        linux-block@vger.kernel.org, Sagi Grimberg <sagi@grimberg.me>,
+        linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org,
+        Keith Busch <keith.busch@intel.com>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Sumit Saxena <sumit.saxena@broadcom.com>,
+        Kashyap Desai <kashyap.desai@broadcom.com>,
+        Shivasharan Srikanteshwara 
+        <shivasharan.srikanteshwara@broadcom.com>
+Subject: Re: [patch v6 3/7] genirq/affinity: Add new callback for (re)calculating interrupt sets
+In-Reply-To: <YMlIbt3EPyRJHNWf@T590>
+References: <20190216172228.512444498@linutronix.de> <20210615195707.GA2909907@bjorn-Precision-5520> <YMlIbt3EPyRJHNWf@T590>
+Date:   Fri, 18 Jun 2021 21:32:28 +0200
+Message-ID: <875yybezoz.ffs@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 18 Jun 2021 10:23:23 -0400:
+On Wed, Jun 16 2021 at 08:40, Ming Lei wrote:
+> On Tue, Jun 15, 2021 at 02:57:07PM -0500, Bjorn Helgaas wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git trace-v5.13-rc6
+> +static inline void irq_affinity_calc_sets_legacy(struct irq_affinity *affd)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/89fec7420354ff2d23ed46e62aaea402587efd1c
+This function name sucks because the function is really a wrapper around
+irq_affinity_calc_sets(). What's so legacy about this? The fact that
+it's called from the legacy PCI single interrupt code path?
 
-Thank you!
+> @@ -405,6 +405,30 @@ static void default_calc_sets(struct irq_affinity *affd, unsigned int affvecs)
+>  	affd->set_size[0] = affvecs;
+>  }
+>  
+> +static void irq_affinity_calc_sets(unsigned int affvecs,
+> +		struct irq_affinity *affd)
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Please align the arguments when you need a line break.
+
+> +{
+> +	/*
+> +	 * Simple invocations do not provide a calc_sets() callback. Install
+> +	 * the generic one.
+> +	 */
+> +	if (!affd->calc_sets)
+> +		affd->calc_sets = default_calc_sets;
+> +
+> +	/* Recalculate the sets */
+> +	affd->calc_sets(affd, affvecs);
+> +
+> +	WARN_ON_ONCE(affd->nr_sets > IRQ_AFFINITY_MAX_SETS);
+
+Hrm. That function really should return an error code to tell the caller
+that something went wrong.
+
+> +}
+> +
+> +/* Provide a chance to call ->calc_sets for legacy */
+
+What does this comment tell? Close to zero. 
+
+> +void irq_affinity_calc_sets_legacy(struct irq_affinity *affd)
+> +{
+> +	if (!affd)
+> +		return;
+> +	irq_affinity_calc_sets(0, affd);
+> +}
+
+What's wrong with just exposing irq_affinity_calc_sets() have that
+NULL pointer check in the function and add proper function documentation
+which explains what this is about?
+
+Thanks,
+
+        tglx
