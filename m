@@ -2,218 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B69573AC848
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 11:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1691D3AC84F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 12:01:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233236AbhFRKBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 06:01:42 -0400
-Received: from mga02.intel.com ([134.134.136.20]:20339 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232740AbhFRKBk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 06:01:40 -0400
-IronPort-SDR: rk7a0cMixwIChTgPt5xhfiQVin++LJgWIkDopPfdV2SlAFQUrHT1Ytp1tXG9Kd/y1CRO/mCvnv
- wFx6xahUoPNQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="193659005"
-X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
-   d="scan'208";a="193659005"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 02:59:30 -0700
-IronPort-SDR: skSE3amv8mKVXb+EWAHxoHXR1wl2/JzlAJCk0BlYpeVNHRHZmDiZtMmFL07HiG7D9N2XTzskgH
- jcbnbvO1e9Pw==
-X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
-   d="scan'208";a="555527300"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 02:59:24 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1luBHU-003ZKx-Se; Fri, 18 Jun 2021 12:59:20 +0300
-Date:   Fri, 18 Jun 2021 12:59:20 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jamin Lin <jamin_lin@aspeedtech.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jean Delvare <jdelvare@suse.de>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Khalil Blaiech <kblaiech@mellanox.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Bence =?iso-8859-1?B?Q3Pza+Fz?= <bence98@sch.bme.hu>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        ChiaWei Wang <chiawei_wang@aspeedtech.com>,
-        Troy Lee <troy_lee@aspeedtech.com>,
-        Steven Lee <steven_lee@aspeedtech.com>
-Subject: Re: [PATCH 3/3] i2c:support new register set for ast2600
-Message-ID: <YMxueLOhlXjy1ZRH@smile.fi.intel.com>
-References: <20210617094424.27123-1-jamin_lin@aspeedtech.com>
- <20210617094424.27123-4-jamin_lin@aspeedtech.com>
- <YMslFSOrnUc5b+zP@smile.fi.intel.com>
- <20210618035340.GA31659@aspeedtech.com>
+        id S232944AbhFRKDI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Jun 2021 06:03:08 -0400
+Received: from de-smtp-delivery-105.mimecast.com ([194.104.111.105]:55239 "EHLO
+        de-smtp-delivery-105.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232282AbhFRKC5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 06:02:57 -0400
+Received: from GBR01-CWL-obe.outbound.protection.outlook.com
+ (mail-cwlgbr01lp2055.outbound.protection.outlook.com [104.47.20.55]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-40-0q5TGiLwN0qZ2-g_lHIsag-1; Fri, 18 Jun 2021 12:00:41 +0200
+X-MC-Unique: 0q5TGiLwN0qZ2-g_lHIsag-1
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
+ by CWXP265MB4090.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:131::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Fri, 18 Jun
+ 2021 10:00:41 +0000
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::259d:65ac:ae6d:409d]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::259d:65ac:ae6d:409d%9]) with mapi id 15.20.4242.021; Fri, 18 Jun 2021
+ 10:00:41 +0000
+From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "shawn.lin@rock-chips.com" <shawn.lin@rock-chips.com>
+Subject: Re: [PATCH] mmc: block: ioctl: Poll for TRAN if possible
+Thread-Topic: [PATCH] mmc: block: ioctl: Poll for TRAN if possible
+Thread-Index: AQHXXSMDiXAg1fej0U+LBOvD9D6/9asZlxVh
+Date:   Fri, 18 Jun 2021 10:00:40 +0000
+Message-ID: <CWXP265MB26809CC8BCD8A0289697CBBDC40D9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+References: <LO2P265MB26880B222999818677722528C4369@LO2P265MB2688.GBRP265.PROD.OUTLOOK.COM>
+In-Reply-To: <LO2P265MB26880B222999818677722528C4369@LO2P265MB2688.GBRP265.PROD.OUTLOOK.COM>
+Accept-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [185.80.168.10]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: cbfc0c05-4f4e-4afe-c472-08d9323fee34
+x-ms-traffictypediagnostic: CWXP265MB4090:
+x-microsoft-antispam-prvs: <CWXP265MB4090F3F45A07BF4E8E322104C40D9@CWXP265MB4090.GBRP265.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:10000
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0
+x-microsoft-antispam-message-info: SiPZ5XdFwxtauAcCqNOxNUAo5VVxynLcIe+lZEFCDbTWP7c8GrEVBzhyMe63FZDgEE7okOOhrQYZhozaKmYH24oNyNiSyJRcpEx7I4qJQrjz7jnu7bzA9vf6/R7ievwsbXCmQATy5XZ9HMqlUE2HBTsCboW20HTrCbK3cxWWmJfDUNOzHssRNqRk06bcvBN6Mych8WCUxsMnO99mq/eS+D6hn1BCbuhjh0resb5hHAOVwRq4JsfOkg4HNDM5DiEQ1lwIfHHn5tnC1GpB8cS5XtEIaYoFyg8An3muUS1p+Mn6dHEaVM3KOmo0oAB5dj310SLnCeNL+n3KuzMM4/mi8hsY0e2CcP3pqmNCe2mDjA9guHprZMknoScv/rY0eYkWknanl8g/RhYZk6ZOLOL+BlpW0BXnykt8Y+cOoOB+QTtixSTTsr/iOYzz/U+88QjfH954s7EGdiSH6ihKqEKnSY7JXJE/CHxv9qnKQfSqDDp9PFuTRH/uv4Sgur/qA6e9X/FwjxCfM/MvsrUSdElmud8oZZr+sEy1aQOQ883FgpMrVC9pXub4GYCpb9nMBVeq1wHnDN6JrQvnbsEFTAxtF3Jkkg62L5bYfjJyp/wupfM=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(366004)(396003)(136003)(376002)(39830400003)(346002)(76116006)(316002)(91956017)(33656002)(86362001)(186003)(26005)(38100700002)(64756008)(66556008)(66446008)(66946007)(6506007)(7696005)(66476007)(52536014)(478600001)(8676002)(110136005)(122000001)(4744005)(2906002)(5660300002)(55016002)(8936002)(71200400001)(9686003);DIR:OUT;SFP:1101
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?d/LTRzwhhMRSEVu1STeyQOezzjBszVX8BRLTK7Zp6a8q3FFRIZHpmotFUm?=
+ =?iso-8859-1?Q?mUj7Ke/W77qQwZJTRMDBbuJwLgNolN7zEdVshJXY5GjR7oWkve/WRYMgb0?=
+ =?iso-8859-1?Q?iUlPpAgGlNybjB1eMsfSQ5GdrhF+uBmgcGCmgkSgsH1nIThnSXYdCQnHAX?=
+ =?iso-8859-1?Q?sssZnXNjcn8busd0c9WFEqsxbnC0om7ApVF0AfHF2eTBtMUieAO8iDAIqa?=
+ =?iso-8859-1?Q?8u0kbhG8uZNgXi3Vg51j1jxckkB8K9ny62yGudUNzrDoZL7xtftQY0iRFd?=
+ =?iso-8859-1?Q?LEAR9ZUGT6Ndua3D8BGzSkLy0WxTB5Qlyo8RmyvrYl1yhEgsUFIpwR9x0f?=
+ =?iso-8859-1?Q?AvrpORyih/mkwXJkTOwQNxpSJp21aiIJAd9PxBLMdzrvVzFt3Xlfg3Q0e/?=
+ =?iso-8859-1?Q?VciWxn3zofhC9ftzNZQxoPOKDp/SgwSK/Tu5ogpiNhV6Mg31MK5cZBsq9j?=
+ =?iso-8859-1?Q?x2OOYk9fNiMDPimJ9nXd0XVJ/OIlPNo8QKtZoUPdxAzi5RYF94MRVpU7Qw?=
+ =?iso-8859-1?Q?TCeLCCdL1q/ddeqwbboVQ9etlB6Jh4GgmWHC/4Bsy0eOchAgDhHIl2Swy2?=
+ =?iso-8859-1?Q?7vZ+FloQoDkc2RCYzNgIMX1UMwiQuackCZwcTnb+OCwgOWW/uIaff2j0b5?=
+ =?iso-8859-1?Q?Vh72sZ6u0TUnJ9SCs6b7lzecs4HE4kHW/OSY/h+wWjqejKP8oJetMTqcIC?=
+ =?iso-8859-1?Q?d9fXT2lw05iqZCkQx6IqKb2pTADXU7d/PD3lCOTuKlyx7W8pDUmbpkJ2mp?=
+ =?iso-8859-1?Q?Yb84jzVYHt0nFQYKlZMZwtr+vabf3/V4/75XETveopZiS6EHJF6e7xQ7BB?=
+ =?iso-8859-1?Q?vW6r/CiQd5u+PEhcjr1KNYSzw0/hrs2wBlQb7JDZpsg0SYhaCAgS1PH1mr?=
+ =?iso-8859-1?Q?BRea18mDYkcWev54/hBpWobIhiY7IvN/3vCSvsAv60Za3yjP0Z1ykL8BDU?=
+ =?iso-8859-1?Q?JiaiAuaaiIFt6UI+fkVShaSRgeaPiZcAJp79Ju78sHEVf3jTWHL/6SSxoR?=
+ =?iso-8859-1?Q?W7Y7SbkVh1VqOH5Brh1jXUNEFwG94hKziMm/VYIksvb6bmpSOz5RZO+eX1?=
+ =?iso-8859-1?Q?1cw2ua0REv58HObrT2FVnxBFqNtS0zfQvYRuQSQJikOpfF69uQ8p2BvH7D?=
+ =?iso-8859-1?Q?MBGIlYk2YyrUSpeMPviwL1ZJ/iChOg97h2Iu/3FoMqQzRu/2MkIFHnJ18e?=
+ =?iso-8859-1?Q?rK06GhVDaUfZqdo0+epFlcoddT8CBJfzAyoSk0Rd4cxsqyP8Q6vxPNZ52A?=
+ =?iso-8859-1?Q?BB3pLnX9i8pRzfU5r2AXmLNufOT16Bx6vwt20qMv8JgPBRC630FKaXCWjj?=
+ =?iso-8859-1?Q?eo9JXppGgX9vvqI6h578wmN1tKFkbULxlAkCBhC2tlpVQw0=3D?=
+x-ms-exchange-transport-forked: True
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210618035340.GA31659@aspeedtech.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-OriginatorOrg: hyperstone.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: cbfc0c05-4f4e-4afe-c472-08d9323fee34
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jun 2021 10:00:40.9892
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: BRmjfwkseRVhq4IN28WDR6+EQkAfp+zMb0g7ltqSVhyQXOnGqr7boy0n0Dk2bei28MLUTMfrjYUSbraaVYNCVw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB4090
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CDE5A68 smtp.mailfrom=cloehle@hyperstone.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: hyperstone.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 11:53:41AM +0800, Jamin Lin wrote:
-> The 06/17/2021 10:33, Andy Shevchenko wrote:
-> > On Thu, Jun 17, 2021 at 05:43:40PM +0800, Jamin Lin wrote:
+>Poll for TRAN state if the ioctl command will eventually return to TRAN
+>
+>The ioctl submitted command should not be considered completed until
+>the card has returned back to TRAN state. Waiting just for the card
+>to no longer signal busy is not enough as they might remain in a
+>non-busy PROG state for a while after the command.
+>Further commands requiring TRAN will fail then.
+>It should not be the responsibility of the user to check if their command
+>has completed until sending the next via ioctl,
+>instead the check should be made here.
+>So now, in doubt, wait for TRAN except for the few commands that will
+>never return to TRAN state.
 
-...
+So apart from the fact that I missed a couple of non-TRAN returning MMC
+commands, which I will add in v2, are there any other thoughts about this
+patch? It would change the behavior of the ioctl interface, but I think it is
+the only way to prevent race conditions here.
 
-> > > + *
-> > > + *  This program is free software; you can redistribute it and/or modify
-> > > + *  it under the terms of the GNU General Public License version 2 as
-> > > + *  published by the Free Software Foundation.
-> > 
-> > SPDX covers this.
-> >
-> Will change as following what do you think?
-> // SPDX-License-Identifier: GPL-2.0-or-later
-> /*
->  *  Aspeed I2C Interrupt Controller.
->  * Copyright (C) ASPEED Technology Inc.
->  * Ryan Chen <ryan_chen@aspeedtech.com>
->  */
+Best Regards,
+Christian
 
-Yes, something like this.
-
-...
-
-> > > +static const struct aspeed_i2c_base_clk i2c_base_clk[BASE_CLK_COUNT] = {
-> > > +	/* name	target_freq */
-> > > +	{  "base_clk0",	1000000 },	/* 1M */
-> > > +	{  "base_clk1",	4000000 },	/* 4M */
-> > > +	{  "base_clk2",	10000000 },	/* 10M */
-> > > +	{  "base_clk3",	40000000 },	/* 40M */
-> > > +};
-> > 
-> > Why it's not provided as the clock provider(s)?
-
-> According to the design of ASPEED AST2600 SOC, the I2C bus is connected to PHB bus.
-> The clock driver provides PHB clock and its default frequency is 100MHZ.
-> AST2600 support the bus frequency of I2C from 0.1kbps to 5Mbps if PHB clock is 50MHZ.
-> To meet the different bus frequency of I2C, we use this programmer to calculate the divider to 
-> change the base clock.
-> For example, 
-> It calculates divider to change base_clock 1 to 1M to support I2C bus frequency 100KHZ
-> It calculates divider to change base_clock 2 to 4M to support I2C bus frequency 400KHZ 
-
-My question is, why don't you provide a clock provider (under drivers/clk) for
-this platform and use it instead?
-
-...
-
-> > > +	struct clk_hw_onecell_data *onecell;
-> > > +	struct clk_hw *hw;
-> > > +	int err;
-> > > +	u32 clk_divider = 0;
-> > > +	int i, j;
-> > > +	unsigned long base_freq;
-> > 
-> > Use reversed xmas tree order for all these blocks.
-> > 
-> > The rule of thumb, btw, that any comment applies to all similar places by
-> > default (independently on which line it was given against).
-> >
-> Do you mena change as following?
-> struct clk_hw_onecell_data *onecell;
-> unsigned long base_freq;
-> u32 clk_divider = 0;
-> struct clk_hw *hw;
-> int err;
-> int i;
-> int j;
-
-Yes.
-
-...
-
-> > > +		for (i = 0; i < 0xff; i++) {
-> > > +			/*
-> > > +			 * i maps to div:
-> > > +			 * 0x00: div 1
-> > > +			 * 0x01: div 1.5
-> > > +			 * 0x02: div 2
-> > > +			 * 0x03: div 2.5
-> > > +			 * 0x04: div 3
-> > > +			 * ...
-> > > +			 * 0xFE: div 128
-> > > +			 * 0xFF: div 128.5
-> > > +			 */
-> > > +			base_freq = base_clk * 2 / (2 + i);
-> > > +			if (base_freq <= i2c_base_clk[j].base_freq)
-> > > +				break;
-> > > +		}
-> > 
-> > oAre yuo sure you can't eliminate the entire for-loop? Think about it a bit,
-> > please.
-> >
-> What do you think if we use "lookup table" instaed of above for loop?
-
-Besides that it should be a part of clock provider, no, you may use a formula
-(bit operations and so on).
-
-...
-
-> > > +	i2c_ic->rst = devm_reset_control_get_exclusive(&pdev->dev, NULL);
-
-> > > +	if (IS_ERR(i2c_ic->rst)) {
-> > 
-> > > +		dev_dbg(&pdev->dev,
-> > > +			"missing or invalid reset controller device tree entry");
-> > 
-> > Make it optional.
-> Can I change to use "dev_err"?
-
-What I meant here is to make the reset optional (there is even specific API for
-that) and return an error in that case.
-
-> > > +	} else {
-> > > +		/* SCU I2C Reset */
-> > > +		reset_control_assert(i2c_ic->rst);
-> > > +		udelay(3);
-> > > +		reset_control_deassert(i2c_ic->rst);
-> > > +	}
-
-...
-
-> > > +static struct ast_i2c_timing_table aspeed_old_i2c_timing_table[] = {
-> > 
-> > What the ... is this for?!
-> AST2600 support old/new register set for I2C controller.
-> This lookup table is used to find the divisor for the specific I2C bus
-> frequency for AST2600 I2C controller with old register set.
-> For example
-> If I2C bus frequency is 100KHZ and PHB clock is 100MHZ, it will find this table
-> because 100000000/1024 < 100000
-> "{ 1024, 0x00000300 | (0x5) | (0xf << 20) | (0xf << 16) | (0xf << 12) }"
-
-Can't you derive it by formula(s)?
-
-> > > +	/* Divisor : Base Clock : tCKHighMin : tCK High : tCK Low  */
-> > > +	/* Divisor :	  [3:0] : [23: 20]   :   [19:16]:   [15:12] */
-
-> > > +};
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
+Managing Directors: Dr. Jan Peter Berns.
+Commercial register of local courts: Freiburg HRB381782
 
