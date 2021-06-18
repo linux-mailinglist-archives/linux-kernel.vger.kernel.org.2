@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C35623ACECF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:25:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0F9C3ACED2
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235181AbhFRP1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:27:13 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56640 "EHLO
+        id S235297AbhFRP10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:27:26 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56668 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235219AbhFRPXC (ORCPT
+        with ESMTP id S235221AbhFRPXC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Jun 2021 11:23:02 -0400
-Message-Id: <20210618143450.643422340@linutronix.de>
+Message-Id: <20210618143450.752639563@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624029626;
+        s=2020; t=1624029627;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=FLU9xb+KaJEErkpNWe5fXK/9Dxoh5neHYL0w/s0D18s=;
-        b=b1O8obLk0y78B1n1OnE7aiEz5Jluylysv6tvUBeR5v6G8TQhfm7//I1+TWWIm6uqWF2n/a
-        OxtihFTuBhWuj4F3EyqGYH9iLcTl0KKe0WyQUChHauvdsZGwyTNGPGFXKX8Q97Mew8ZCZF
-        LnpAsE0xr+ulrjPxRUJdWMgVqBTr3ytiYZUD3Ug8vfvx6V2bH6wpjrv83INt3AJEqmqjdg
-        hNcMUGfpVvUyWdwqjdsnB/Y7eTwEiRcLWsxD4NkULUOGMGKnfk0+SeVwNxHTXRcZ07AAVa
-        1Z0IrfH397e8QijOXVgv8kfc9MRBcrHHb2zWELX1JCpDurQ469SWVt3AOBbdCQ==
+        bh=yXhxHhPu2UmPkfXLL2+ihpjOP9TXabQ1b95tUjsHnZ8=;
+        b=NKR2XpYwy6BMwnSUOUsn3qs2Ga7C/W9i9UIapiqicSaQP+w1ple4axIc9zf6EDOhO0Wwxy
+        CmOTWC3P0XU53ntr6ykKSmOx6DCKHR2kTw1z3/MLuDPJyW7fNih9p/Un4BGTNq7UIw4PqJ
+        CzqvRQDOHnrnTEsAV++LsZANa1li2MA0MO80mllZ2Hdz/AAhBA3SU2mArKQEHBHTVTm/1G
+        4tb/Vpzg55/mpLYocW48FgF1qLT68HOQu6qFn46LtfDvLCXDk0lcc8HHsScc7o2tAWcgBM
+        syEbm5w6WTCkI9rOJ/WF3BxHvXIiX8nOCXfXxkhU5gQ0RLYImTd3qKch7j8etA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624029626;
+        s=2020e; t=1624029627;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=FLU9xb+KaJEErkpNWe5fXK/9Dxoh5neHYL0w/s0D18s=;
-        b=TZbaBXhaE6H//AXBBzgy02Wp4M3hGxQ8XjtOZ9Lc7ra+5S1UEBrzBeQof+DXbi4DRGkei4
-        sRa5v8vXA5wclXAA==
-Date:   Fri, 18 Jun 2021 16:19:18 +0200
+        bh=yXhxHhPu2UmPkfXLL2+ihpjOP9TXabQ1b95tUjsHnZ8=;
+        b=CkcAINnf75w/YjdD39tpys2dllBHTc6VlzpOLpD8PFgKxL2n4EKfFfh9421HiKCGjktnp9
+        5NK0PRH8tE4V5ZAA==
+Date:   Fri, 18 Jun 2021 16:19:19 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -44,7 +44,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V3 55/66] x86/fpu: Remove PKRU handling from switch_fpu_finish()
+Subject: [patch V3 56/66] x86/fpu: Dont store PKRU in xstate in fpu_reset_fpstate()
 References: <20210618141823.161158090@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,58 +53,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PKRU is already updated and the xstate is not longer the proper source of
-information.
+PKRU for a task is stored in task->thread.pkru when the task is scheduled
+out. For 'current' the authoritative source of PKRU is the hardware.
+
+fpu_reset_fpstate() has two callers:
+
+  1) fpu__clear_user_states() for !FPU systems. For those PKRU is irrelevant
+
+  2) fpu_flush_thread() which is invoked from flush_thread(). flush_thread()
+     resets the hardware to the kernel restrictive default value.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- arch/x86/include/asm/fpu/internal.h |   34 ++++------------------------------
- 1 file changed, 4 insertions(+), 30 deletions(-)
+ arch/x86/kernel/fpu/core.c |   22 ++++------------------
+ 1 file changed, 4 insertions(+), 18 deletions(-)
 
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -549,39 +549,13 @@ static inline void switch_fpu_prepare(st
-  */
+--- a/arch/x86/kernel/fpu/core.c
++++ b/arch/x86/kernel/fpu/core.c
+@@ -337,23 +337,6 @@ static inline unsigned int init_fpstate_
+ 	return sizeof(init_fpstate.xsave);
+ }
  
- /*
-- * Load PKRU from the FPU context if available. Delay loading of the
-- * complete FPU state until the return to userland.
-+ * Delay loading of the complete FPU state until the return to userland.
-+ * PKRU is handled seperately.
-  */
- static inline void switch_fpu_finish(struct fpu *new_fpu)
- {
--	u32 pkru_val = init_pkru_value;
+-/* Temporary workaround. Will be removed once PKRU and XSTATE are distangled. */
+-static inline void pkru_set_default_in_xstate(struct xregs_state *xsave)
+-{
 -	struct pkru_state *pk;
--
--	if (!static_cpu_has(X86_FEATURE_FPU))
--		return;
--
--	set_thread_flag(TIF_NEED_FPU_LOAD);
 -
 -	if (!cpu_feature_enabled(X86_FEATURE_OSPKE))
 -		return;
--
 -	/*
--	 * PKRU state is switched eagerly because it needs to be valid before we
--	 * return to userland e.g. for a copy_to_user() operation.
+-	 * Force XFEATURE_PKRU to be set in the header otherwise
+-	 * get_xsave_addr() does not work and it also needs to be set to
+-	 * make XRSTOR(S) load it.
 -	 */
--	if (!(current->flags & PF_KTHREAD)) {
--		/*
--		 * If the PKRU bit in xsave.header.xfeatures is not set,
--		 * then the PKRU component was in init state, which means
--		 * XRSTOR will set PKRU to 0. If the bit is not set then
--		 * get_xsave_addr() will return NULL because the PKRU value
--		 * in memory is not valid. This means pkru_val has to be
--		 * set to 0 and not to init_pkru_value.
--		 */
--		pk = get_xsave_addr(&new_fpu->state.xsave, XFEATURE_PKRU);
--		pkru_val = pk ? pk->pkru : 0;
--	}
--	__write_pkru(pkru_val);
-+	if (static_cpu_has(X86_FEATURE_FPU))
-+		set_thread_flag(TIF_NEED_FPU_LOAD);
+-	xsave->header.xfeatures |= XFEATURE_MASK_PKRU;
+-	pk = get_xsave_addr(xsave, XFEATURE_PKRU);
+-	pk->pkru = pkru_get_init_value();
+-}
+-
+ /*
+  * Reset current->fpu memory state to the init values.
+  */
+@@ -371,9 +354,12 @@ static void fpu_reset_fpstate(void)
+ 	 *
+ 	 * Do not use fpstate_init() here. Just copy init_fpstate which has
+ 	 * the correct content already except for PKRU.
++	 *
++	 * PKRU handling does not rely on the xstate when restoring for
++	 * user space as PKRU is eagerly written in switch_to() and
++	 * flush_thread().
+ 	 */
+ 	memcpy(&fpu->state, &init_fpstate, init_fpstate_copy_size());
+-	pkru_set_default_in_xstate(&fpu->state.xsave);
+ 	set_thread_flag(TIF_NEED_FPU_LOAD);
+ 	fpregs_unlock();
  }
- 
- #endif /* _ASM_X86_FPU_INTERNAL_H */
 
