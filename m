@@ -2,133 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E73E3AC680
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D601B3AC689
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbhFRIwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 04:52:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhFRIww (ORCPT
+        id S231417AbhFRIzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 04:55:49 -0400
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:43368 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231319AbhFRIzr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 04:52:52 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E37BCC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:50:43 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id t40so9774789oiw.8
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:50:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jdFKobz0v5eVip0thXQlonp2mF35EnH4oN1hYfZc5Y8=;
-        b=eaI1qif8hWH4BDUPA4zAfU/JyLPIPsuOqFjMGM8Bena5fakXJe42h1NsUQcLTvKdJ1
-         LOcf3Qw8GQpYgpe1f/t5BZwAua9NJK/G8Q5YA0x3gEUix6SK0puD0UuAtx+522RhyFpH
-         v4eUaoWuflGssbIsWGhZ4Q0auBg7DdWZVHDrnnwfk2+9LefFaGFSuIuQ9zld9KS8IFv6
-         Sd0rdtaCXNVsby6BzdgBjLciQorxLwS2MxQSfyQVweBhblWYkBi4L+gKasclg9l19zHq
-         1GMpCGCj40H2EsIOBz8dw37C0Qe0+/jP52+2bQikzN3ft8mTNr0GKkink3eqiPd9DNE/
-         sy/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jdFKobz0v5eVip0thXQlonp2mF35EnH4oN1hYfZc5Y8=;
-        b=ShxYPiDsliJvbmW5v8mmiBeskbDhBD5ZklK38TlVDi1OKKPyP2e1J6VEN3EyR25aZC
-         5rLR0BxDA2yhTidXkeIxwkifYLePPXG4uzVzXjKA6bj7uiqTGitG2p+1Q2X8DCFUU+pi
-         f6VXDM841vnkK0napgR7ZIe1i0VAHp4tzEvBpiS1GdY8w2NSNtfE+J6BjfLv6tOARMJS
-         oV+UrmbkWoQZQFNu8heRDr5UZ87EOlaAyqsDdF9hku/AC8j3703zoQB7KDSbkdNNoFCZ
-         enHh8DfXJ8iw8FZVtonHIwJiW1IKF8v5shJkSjvTtqjtb7Wz6/HzAONtpMyze34mpobv
-         x9CQ==
-X-Gm-Message-State: AOAM531zUq7YdtICtSZS2Csl8Q37SMV03sD/FV1X7X0zp8L4VJC9xIkG
-        aHUsEmBSktwW13HPQAg65IOFBEbZ8TRYDuA1p64GMg==
-X-Google-Smtp-Source: ABdhPJypyxrsFJT695FL1xens+cccnkIs+C967czc330C77nK9BPZwBZ32eYzwZk3n/kX5cAq1Thkw1gKRvl10izUa0=
-X-Received: by 2002:aca:de07:: with SMTP id v7mr13635036oig.8.1624006243106;
- Fri, 18 Jun 2021 01:50:43 -0700 (PDT)
+        Fri, 18 Jun 2021 04:55:47 -0400
+Received: from localhost.localdomain ([114.149.34.46])
+        by mwinf5d28 with ME
+        id JYtR2500E0zjR6y03Ytabz; Fri, 18 Jun 2021 10:53:37 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 18 Jun 2021 10:53:37 +0200
+X-ME-IP: 114.149.34.46
+From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        linux-can@vger.kernel.org
+Cc:     Oliver Hartkopp <socketcan@hartkopp.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Subject: [PATCH v3 0/4] iplink_can: cleaning, fixes and adding TDC support.
+Date:   Fri, 18 Jun 2021 17:53:18 +0900
+Message-Id: <20210618085322.147462-1-mailhol.vincent@wanadoo.fr>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210616095200.38008-1-wangyanan55@huawei.com> <20210616095200.38008-2-wangyanan55@huawei.com>
-In-Reply-To: <20210616095200.38008-2-wangyanan55@huawei.com>
-From:   Fuad Tabba <tabba@google.com>
-Date:   Fri, 18 Jun 2021 09:50:06 +0100
-Message-ID: <CA+EHjTyVnHkk5rYb=W6msqoT5E_bVTBdhLtpeRR_b2wsib4Vgw@mail.gmail.com>
-Subject: Re: [PATCH v6 1/4] KVM: arm64: Introduce cache maintenance callbacks
- for guest stage-2
-To:     Yanan Wang <wangyanan55@huawei.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        Quentin Perret <qperret@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yanan,
+The main purpose is to add commandline support for Transmitter Delay
+Compensation (TDC) in iproute. Other issues found during the
+development of this feature also get addressed.
 
-On Wed, Jun 16, 2021 at 10:52 AM Yanan Wang <wangyanan55@huawei.com> wrote:
->
-> To prepare for performing guest CMOs in the fault handlers in pgtable.c,
-> introduce two cache maintenance callbacks in struct kvm_pgtable_mm_ops.
->
-> The new callbacks are specific for guest stage-2, so they will only be
-> initialized in 'struct kvm_pgtable_mm_ops kvm_s2_mm_ops'.
->
-> Signed-off-by: Yanan Wang <wangyanan55@huawei.com>
-> ---
->  arch/arm64/include/asm/kvm_pgtable.h | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
-> index c3674c47d48c..302eca32e0af 100644
-> --- a/arch/arm64/include/asm/kvm_pgtable.h
-> +++ b/arch/arm64/include/asm/kvm_pgtable.h
-> @@ -44,6 +44,11 @@ typedef u64 kvm_pte_t;
->   *                     in the current context.
->   * @virt_to_phys:      Convert a virtual address mapped in the current context
->   *                     into a physical address.
-> + * @flush_dcache:      Clean data cache for a guest page address range before
-> + *                     creating the corresponding stage-2 mapping.
-> + * @flush_icache:      Invalidate instruction cache for a guest page address
-> + *                     range before creating or updating the corresponding
-> + *                     stage-2 mapping.
->   */
->  struct kvm_pgtable_mm_ops {
->         void*           (*zalloc_page)(void *arg);
-> @@ -54,6 +59,8 @@ struct kvm_pgtable_mm_ops {
->         int             (*page_count)(void *addr);
->         void*           (*phys_to_virt)(phys_addr_t phys);
->         phys_addr_t     (*virt_to_phys)(void *addr);
-> +       void            (*flush_dcache)(void *addr, size_t size);
-> +       void            (*flush_icache)(void *addr, size_t size);
->  };
->
-
-Just to add to Marc's comment on naming, flush_dcache is in this case
-a clean and invalidate: I see that in patch 4 it eventually does a
-civac. So, yes, although it is a mouthful, I think it should be
-dcache_clean_inval and not just dcache_clean. An alternative, if it's
-acceptable by Marc and the others, is to name the parameters dcmo/icmo
-or something like that, where the nature of the maintenance operation
-is not necessarily tied to the name.
-
-For reference, this is the patch Marc mentioned, where we're trying to
-fix the naming to make it consistent with Arm terminology (Arm doesn't
-define what a flush is):
-https://lore.kernel.org/linux-arm-kernel/20210524083001.2586635-19-tabba@google.com/
-
-Otherwise:
-Reviewed-by: Fuad Tabba <tabba@google.com>
-
-Cheers,
-/fuad
+This patch series contains four patches which respectively:
+  1. Correct the bittiming ranges in the print_usage function.
+  2. factorize the many print_*(PRINT_JSON, ...) and fprintf
+  occurrences in a single print_*(PRINT_ANY, ...) call and fix the
+  signedness while doing that.
+  3. report the value of the bitrate prescalers (brp and dbrp).
+  4. adds command line support for the TDC in iproute and goes together
+  with below series in the kernel:
+  https://lore.kernel.org/r/20210603151550.140727-3-mailhol.vincent@wanadoo.fr
 
 
->  /**
-> --
-> 2.23.0
->
-> _______________________________________________
-> kvmarm mailing list
-> kvmarm@lists.cs.columbia.edu
-> https://lists.cs.columbia.edu/mailman/listinfo/kvmarm
+** Changelog **
+
+From RFC v1 to RFC v2:
+  * Add an additional patch to the series to fix the issues reported
+    by Stephen Hemminger
+    Ref: https://lore.kernel.org/linux-can/20210506112007.1666738-1-mailhol.vincent@wanadoo.fr/T/#t
+
+From RFC v2 to v3:
+  * Dropped the RFC tag. Now that the kernel patch reach the testing
+    branch, I am finaly ready.
+  * Regression fix: configuring a link with only nominal bittiming
+    returned -EOPNOTSUPP
+  * Added two more patches to the series:
+      - iplink_can: fix configuration ranges in print_usage()
+      - iplink_can: print brp and dbrp bittiming variables
+  * Other small fixes on formatting.
+
+Vincent Mailhol (4):
+  iplink_can: fix configuration ranges in print_usage()
+  iplink_can: use PRINT_ANY to factorize code and fix signedness
+  iplink_can: print brp and dbrp bittiming variables
+  iplink_can: add new CAN FD bittiming parameters: Transmitter Delay
+    Compensation (TDC)
+
+ include/uapi/linux/can/netlink.h |  25 +-
+ ip/iplink_can.c                  | 430 ++++++++++++++++---------------
+ 2 files changed, 247 insertions(+), 208 deletions(-)
+
+-- 
+2.31.1
+
