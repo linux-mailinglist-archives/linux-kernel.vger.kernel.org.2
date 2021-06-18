@@ -2,96 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C703ACDBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4CB3ACDC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 16:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234632AbhFROoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 10:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234590AbhFROoT (ORCPT
+        id S234548AbhFROrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 10:47:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52449 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234485AbhFROrJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 10:44:19 -0400
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7DD8C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 07:42:09 -0700 (PDT)
-Received: by mail-ua1-x936.google.com with SMTP id n61so3477110uan.2
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 07:42:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nqlCd2eHu+FNO0OH2gW6QkHD4Px5yMOfqRW26XQAK2o=;
-        b=kYhMqUnz83h3s/37sIDv6unVm3hgmAnDw21NoXLxZpBiEwBC4HQ+gGAsfPYatAsbuA
-         X6IEjDZiJzyns2/lnFDnsJqMlW113kPs5bpoxHBn/CzbOfrqQyh9d84b9u1Mffj/ekUZ
-         pAWAT6WofHxbRthUqO1Wercd8AhpTrNpbSfLM=
+        Fri, 18 Jun 2021 10:47:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624027499;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=V/WnAvrrvHUpmCgAw99j9Kec2UebwacAruxQ8zG2B7M=;
+        b=HT/1qc79JJhwxg1eyPIDD8eAEH4x9FW/mGHmz1SMLECqj33avFExyGg7kGRifrERlwP9mo
+        0n0xoz+5JU+e5LdFdXi3zpNyQzYHuy0lMtycLO00V2StWH/yxbm7jCIyJ3nTwoceJGymNe
+        aYfQjiJWtSbOVY6w5gQzgDVRFxanuPs=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-273-xBnoyvh-P_O_9ctIWuRZpA-1; Fri, 18 Jun 2021 10:44:57 -0400
+X-MC-Unique: xBnoyvh-P_O_9ctIWuRZpA-1
+Received: by mail-ej1-f69.google.com with SMTP id w22-20020a17090652d6b029048a3391d9f6so604910ejn.12
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 07:44:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nqlCd2eHu+FNO0OH2gW6QkHD4Px5yMOfqRW26XQAK2o=;
-        b=YF3KmnuU673xY/0GEKkTDFUjphFNo6MEDzhMzSqp2uOUpC/hl3LC/d6Ks3qJU6Aamg
-         FqHmkGutbmMKEqfM/sbuFQ56d6vW8LFJoFSoF2AvfGfrkMjVLMUOk93U4/JjeaRVGhdD
-         /ODZohvYaroZNddsG9aiACaDXEzw9EBhBpJljQSYP5r8ocMGa1k03CnIy0nWo0nlUDHI
-         j3U3N1LQlleOopVdMeWbmqzSN/gEY2SzIMNaTz4hoEMZl+NN4JOhWOGONF9yifaGVyJC
-         3F64itgG48I42y4PSiWl7NOV+Jz2dbXNJyW28B21P/o6nyRnkCbvr/+NgqV+2c5qCp+r
-         WqDw==
-X-Gm-Message-State: AOAM5302bQZoHVhWlHCiyedBUV5x+pKywuSlY/7omdkf+1bPiloLxpES
-        Yw71pIBjIopTEv6HfZDMHZuWTrEiSrz4a/ZGox9avg==
-X-Google-Smtp-Source: ABdhPJxCPhcUp8VAgjMWYNQ+3Qh6e+CuVyciWjfH2mFAT6A530O3DOsPQ0ktvjy3CnVHRYCPNLlXR3q0wOPmds5CHuM=
-X-Received: by 2002:ab0:6448:: with SMTP id j8mr12732714uap.13.1624027329045;
- Fri, 18 Jun 2021 07:42:09 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=V/WnAvrrvHUpmCgAw99j9Kec2UebwacAruxQ8zG2B7M=;
+        b=G28BiTiGKQ1sn0GgDDi5SZ+8QJlawisPaP8ppEUyaqhpwF3mSQqNJCmtYwrHYftFbU
+         GYDowWMK4XJyAW+XD+UuANeQxUZnr9oMHxtk5rhBWYjWEoLjp56HO/yvcauIBuLGtqfJ
+         nOU06NwIqC3i1yHhxtOTtU6M2YTDEx4jEiF+UCmt7qjBf57HcwEt9lhmd2qcEIpXpLOG
+         Sc3M08PF3AePnXMla8WJK8AYYfGYZqXstZZXhdYYZYELw/dpS3hpgircsJzm7xKIR8AF
+         GoGNGhMIsTYM7bV29Xl0MCqfoRGMhhIN6BGIPfYRF7NeGPZecbxBkWZ84H3ci/X8khib
+         Oo0g==
+X-Gm-Message-State: AOAM533TYnRtGimB1fcorfqJM6hyalV6CxYeZg2qFA+lnuJ8cAGMLpED
+        XTPpAckicwJmbfwso2KtFKYqBWM/3dyshEVDNeWPT4o+FESuBBN3UL5ykjlBtzLCoLB77CB+uHw
+        TkLjMgO0SI2RT6eqkgfNDItpe
+X-Received: by 2002:a50:fe84:: with SMTP id d4mr3407523edt.204.1624027496831;
+        Fri, 18 Jun 2021 07:44:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzK4Z8Hr0HyQjHs6Puo8AmSdgMXl6TuIWEB1lOjBOybncOitI6nTXoOqO4csz4fz/xLxynwbg==
+X-Received: by 2002:a50:fe84:: with SMTP id d4mr3407501edt.204.1624027496686;
+        Fri, 18 Jun 2021 07:44:56 -0700 (PDT)
+Received: from steredhat.lan ([5.170.128.175])
+        by smtp.gmail.com with ESMTPSA id c18sm6178818edt.97.2021.06.18.07.44.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 07:44:56 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 16:44:51 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        oxffffaa@gmail.com
+Subject: Re: [PATCH v11 11/18] virtio/vsock: dequeue callback for
+ SOCK_SEQPACKET
+Message-ID: <20210618144451.6gmeqtfawdjpvgkv@steredhat.lan>
+References: <20210611110744.3650456-1-arseny.krasnov@kaspersky.com>
+ <20210611111241.3652274-1-arseny.krasnov@kaspersky.com>
+ <20210618134423.mksgnbmchmow4sgh@steredhat.lan>
+ <20210618095006-mutt-send-email-mst@kernel.org>
 MIME-Version: 1.0
-References: <20210617095309.3542373-1-stapelberg+linux@google.com>
- <CAJfpegvpnQMSRU+TW4J5+F+3KiAj8J_m+OjNrnh7f2X9DZp2Ag@mail.gmail.com> <CAH9Oa-ZcG0+08d=D5-rbzY-v1cdUcuW0E7D_GcwjDoC1Phf+0g@mail.gmail.com>
-In-Reply-To: <CAH9Oa-ZcG0+08d=D5-rbzY-v1cdUcuW0E7D_GcwjDoC1Phf+0g@mail.gmail.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 18 Jun 2021 16:41:58 +0200
-Message-ID: <CAJfpegu0prjjHVhBzwZBVk5N+avHvUcyi4ovhKbf+F7GEuVkmw@mail.gmail.com>
-Subject: Re: [PATCH] backing_dev_info: introduce min_bw/max_bw limits
-To:     Michael Stapelberg <stapelberg+linux@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        linux-fsdevel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Dennis Zhou <dennis@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Roman Gushchin <guro@fb.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Jan Kara <jack@suse.cz>, Song Liu <song@kernel.org>,
-        David Sterba <dsterba@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210618095006-mutt-send-email-mst@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Jun 2021 at 10:31, Michael Stapelberg
-<stapelberg+linux@google.com> wrote:
-
-> Maybe, but I don=E2=80=99t have the expertise, motivation or time to
-> investigate this any further, let alone commit to get it done.
-> During our previous discussion I got the impression that nobody else
-> had any cycles for this either:
-> https://lore.kernel.org/linux-fsdevel/CANnVG6n=3DySfe1gOr=3D0ituQidp56idG=
-ARDKHzP0hv=3DERedeMrMA@mail.gmail.com/
+On Fri, Jun 18, 2021 at 09:51:44AM -0400, Michael S. Tsirkin wrote:
+>On Fri, Jun 18, 2021 at 03:44:23PM +0200, Stefano Garzarella wrote:
+>> Hi Arseny,
+>> the series looks great, I have just a question below about
+>> seqpacket_dequeue.
+>>
+>> I also sent a couple a simple fixes, it would be great if you can review
+>> them:
+>> https://lore.kernel.org/netdev/20210618133526.300347-1-sgarzare@redhat.com/
 >
-> Have you had a look at the China LSF report at
-> http://bardofschool.blogspot.com/2011/?
-> The author of the heuristic has spent significant effort and time
-> coming up with what we currently have in the kernel:
->
-> """
-> Fengguang said he draw more than 10K performance graphs and read even
-> more in the past year.
-> """
->
-> This implies that making changes to the heuristic will not be a quick fix=
-.
+>So given this was picked into net next, what's the plan? Just make spec
+>follow code? We can wait and see, if there are issues with the spec just
+>remember to mask the feature before release.
 
-Having a piece of kernel code sitting there that nobody is willing to
-fix is certainly not a great situation to be in.
+Yep, the spec patches was already posted, but not merged yet: 
+https://lists.oasis-open.org/archives/virtio-comment/202105/msg00017.html
 
-And introducing band aids is not going improve the above situation,
-more likely it will prolong it even further.
+The changes are quite small and they are aligned with the current 
+implementation.
+
+Anyway, I perfectly agree with you about waiting and mask it before 
+v5.14 release if there are any issue.
 
 Thanks,
-Miklos
+Stefano
+
