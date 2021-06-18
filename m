@@ -2,71 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7659F3AC2CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 07:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 986083AC2D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 07:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232425AbhFRFR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 01:17:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232398AbhFRFRy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 01:17:54 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 268FCC061574;
-        Thu, 17 Jun 2021 22:15:42 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0dd800c1c0f109d0ca36f4.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:d800:c1c0:f109:d0ca:36f4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 25E2F1EC054F;
-        Fri, 18 Jun 2021 07:15:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1623993338;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=3LhMeMwTtpbDI2KT9uOpkZEiNfn65D72VUhwV0Ssmqw=;
-        b=i1LUcSwc3otnx7wma6kWyGTtZF1RnaoMbctvhAymN7TPxb3I/rqhVaevTKGvUjHIziha47
-        wpmjOMzYn9JzdInpItJBFhvbIUjR0lhwZI1f7Tn5DNvmN+ular6ys4hiV7QtPKwohXYp7D
-        Zb8G1aeuyAProPkUIhqwAp5ZgEi1lc4=
-Date:   Fri, 18 Jun 2021 07:15:27 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>, linux-sgx@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org, seanjc@google.com,
-        dave.hansen@intel.com, tglx@linutronix.de, mingo@redhat.com,
-        Yang Zhong <yang.zhong@intel.com>
-Subject: Re: [PATCH] x86/sgx: Add missing xa_destroy() when virtual EPC is
- destroyed
-Message-ID: <YMwr7xTBMUs60A9Q@zn.tnic>
-References: <20210615101639.291929-1-kai.huang@intel.com>
- <20210615132001.kd6cuktq37dvoq3l@kernel.org>
- <618b42d66a4f2087ef4c54cc50fd56d01233eab1.camel@intel.com>
- <YMtdWduyALHxggoP@zn.tnic>
- <88eb26df062c473a6bffe5a0e1299f75e6a3cb78.camel@intel.com>
+        id S232468AbhFRFZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 01:25:36 -0400
+Received: from mga12.intel.com ([192.55.52.136]:45541 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229671AbhFRFZb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 01:25:31 -0400
+IronPort-SDR: b6Dn0RQZ0m6w/AcA8NgjB7mB4bDHPV8tntR4/T4NHh+qCmA5BelsV3deAH4VZsVd8emJ+AftWL
+ TpfDqa+JtXKg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="186190427"
+X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
+   d="scan'208";a="186190427"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 22:23:21 -0700
+IronPort-SDR: 4NGXo4KjN3kz+xI8wopVyXJfV6B9U5dgiyrFssRbBVsZnBC+5BLY00MKKQNFZOy06EeRcJ8FJr
+ 9RnOGfuyridQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
+   d="scan'208";a="555469079"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.118]) ([10.239.159.118])
+  by fmsmga001.fm.intel.com with ESMTP; 17 Jun 2021 22:23:16 -0700
+Cc:     baolu.lu@linux.intel.com, Jason Gunthorpe <jgg@nvidia.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "Alex Williamson (alex.williamson@redhat.com)" 
+        <alex.williamson@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Jason Wang <jasowang@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shenming Lu <lushenming@huawei.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Plan for /dev/ioasid RFC v2
+To:     David Gibson <david@gibson.dropbear.id.au>
+References: <MWHPR11MB188699D0B9C10EB51686C4138C389@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <YMCy48Xnt/aphfh3@8bytes.org> <20210609123919.GA1002214@nvidia.com>
+ <14d884a8-13bc-b2ba-7020-94b219e3e2d9@linux.intel.com>
+ <YMrcLcTL+cUKd1a5@yekko>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <b9c48526-8b8f-ff9e-4ece-4a39f476e3b7@linux.intel.com>
+Date:   Fri, 18 Jun 2021 13:21:47 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <88eb26df062c473a6bffe5a0e1299f75e6a3cb78.camel@intel.com>
+In-Reply-To: <YMrcLcTL+cUKd1a5@yekko>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 12:04:55PM +1200, Kai Huang wrote:
-> Thanks for suggestion. Yes I actually did the checkpatch.pl, but it
-> didn't report typo in commit message. A little bit strange.
+Hi David,
 
-Yah, and I know it does catch typos. It seems it does so only sometimes:
+On 6/17/21 1:22 PM, David Gibson wrote:
+>> The iommu_group can guarantee the isolation among different physical
+>> devices (represented by RIDs). But when it comes to sub-devices (ex. mdev or
+>> vDPA devices represented by RID + SSID), we have to rely on the
+>> device driver for isolation. The devices which are able to generate sub-
+>> devices should either use their own on-device mechanisms or use the
+>> platform features like Intel Scalable IOV to isolate the sub-devices.
+> This seems like a misunderstanding of groups.  Groups are not tied to
+> any PCI meaning.  Groups are the smallest unit of isolation, no matter
+> what is providing that isolation.
+> 
+> If mdevs are isolated from each other by clever software, even though
+> they're on the same PCI device they are in different groups from each
+> other*by definition*.  They are also in a different group from their
+> parent device (however the mdevs only exist when mdev driver is
+> active, which implies that the parent device's group is owned by the
+> kernel).
 
-$ ./scripts/checkpatch.pl --strict /tmp/kai.01
-total: 0 errors, 0 warnings, 0 checks, 7 lines checked
 
-/tmp/kai.01 has no obvious style problems and is ready for submission.
+You are right. This is also my understanding of an "isolation group".
 
-Someday soon we'll have a better way to deal with this.
+But, as I understand it, iommu_group is only the isolation group visible
+to IOMMU. When we talk about sub-devices (sw-mdev or mdev w/ pasid),
+only the device and device driver knows the details of isolation, hence
+iommu_group could not be extended to cover them. The device drivers
+should define their own isolation groups.
 
--- 
-Regards/Gruss,
-    Boris.
+Otherwise, the device driver has to fake an iommu_group and add hacky
+code to link the related IOMMU elements (iommu device, domain, group
+etc.) together. Actually this is part of the problem that this proposal
+tries to solve.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> 
+>> Under above conditions, different sub-device from a same RID device
+>> could be able to use different IOASID. This seems to means that we can't
+>> support mixed mode where, for example, two RIDs share an iommu_group and
+>> one (or both) of them have sub-devices.
+> That doesn't necessarily follow.  mdevs which can be successfully
+> isolated by their mdev driver are in a different group from their
+> parent device, and therefore need not be affected by whether the
+> parent device shares a group with some other physical device.  They
+> *might*  be, but that's up to the mdev driver to determine based on
+> what it can safely isolate.
+> 
+
+If we understand it as multiple levels of isolation, can we classify the
+devices into the following categories?
+
+1) Legacy devices
+    - devices without device-level isolation
+    - multiple devices could sit in a single iommu_group
+    - only a single I/O address space could be bound to IOMMU
+
+2) Modern devices
+    - devices capable of device-level isolation
+    - able to have subdevices
+    - self-isolated, hence not share iommu_group with others
+    - multiple I/O address spaces could be bound to IOMMU
+
+For 1), all devices in an iommu_group should be bound to a single
+IOASID; The isolation is guaranteed by an iommu_group.
+
+For 2) a single device could be bound to multiple IOASIDs with each sub-
+device corresponding to an IOASID. The isolation of each subdevice is
+guaranteed by the device driver.
+
+Best regards,
+baolu
+
