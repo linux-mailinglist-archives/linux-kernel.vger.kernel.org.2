@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A2F3AD0DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC24F3AD0DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232997AbhFRRD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 13:03:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51680 "EHLO
+        id S233694AbhFRREB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 13:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231881AbhFRRDz (ORCPT
+        with ESMTP id S232279AbhFRRD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 13:03:55 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A26EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:01:44 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id a6so7802412ioe.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:01:44 -0700 (PDT)
+        Fri, 18 Jun 2021 13:03:56 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5549DC06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:01:45 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id a11so2218495ilf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:01:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5X++ZMQgQPQwkDUzKNJ9qZUoWVgJ/Ufw/Erm7Z0OcB0=;
-        b=IfJm9xqmpWI1KkewnBXdsds4xNZjdhStK24T7jjpdPS6gNjXm+KCTGyKwbTTWWsQBP
-         o6GCaxxSSbIRZUGJ7pOu9uXRfBldNdXwvprnnauI487GQGqjnj1PhH61NljLOltGRRn2
-         AWueQNi1AX0SUOG9MXta6asACDMxOH+/CRfpnc2jVymV+GBhqxF/CA2qAs2O++U2+SeI
-         knjwtA6xM8qbopTn7mAo6B4SsYvERsCmbJPnGwyblENCGj+yZvSvx7xy2jB2ChYUrOKz
-         kijW2P+24GF2YOKxTBzzQR7mtQqRAjTlqv72tWhrGnF5ainviPjxgtc9Di0U37Y6kmSI
-         macA==
+        bh=J97xGdoeJ/5GC12SOPK5ESidN5KNkQ3VRXSijQXay5g=;
+        b=A6Qe9R3P5J3pZ56qAdc2OUlemiodwJ3Im2lYSVSNVlQATiF1xJIcr+1YrGv0kbHUQB
+         XIy0u2TY2FXaZXqj2bicKGeLv7DnXyoa0huRT+AjQC+ELO/pjrAlcbQ2V11eqjVmxMye
+         sxmvXX54vmvWEPivMb2JPzNlLv6cJfcv/YgIN+i1kLNWgkt7GrahPIoDoL3V2drekird
+         7RbNoesfXbw1YuVioQyvvYmgOf05iUp+pvvtRQTDosZ/6PpKbBsdq1uVVsttgG9GEmow
+         5emjePybBd9Kp82aDmWlzCpPacLYtPJatVAvO9OrRwy0MDl6kf2K7nwbLMhlevphKlkR
+         7cbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5X++ZMQgQPQwkDUzKNJ9qZUoWVgJ/Ufw/Erm7Z0OcB0=;
-        b=V/3KLKQhktaukwYi6FsRvL5UEGTYH2co5F650/4s/EPXaGGoGd075mR3r9kj4lDs3M
-         ZxcQu4McyKPohtsOycidHMEVmYTZ7SQx7TPTSNH0B3ZZpNIXrZgaQvLqobUl0g9gJ4Qs
-         +BpH2CTbDmvn/bOlFx5SnDpK0Lj/jItD6RarL0+cxlQDn8Em2cimdvKioXcTX3RWyyH8
-         6pNx0iFxwe4toZht/U5r0UPHGYlD+M/85dbqtyf6MJVcu89Tm7L3vmX/xgTBRafxwa5/
-         QnxGZ7UQ6fFL/n3eB8B2EV8zRjGzbroY8frcjd8xEBOVqpM/v8TY6pNBsBRtdcWSYkfB
-         OWDA==
-X-Gm-Message-State: AOAM5302dj8vHjwqbK4eN9fGLxGqxhVbsrh90gz8EdR3MqhzaYMwYxBp
-        UdQW5vyxsfpenDa3NUSMiVw=
-X-Google-Smtp-Source: ABdhPJyV/fx9o6/YbHPiLb9fSBgGWOlpHza/ozW/81DBqN+3tV27NLC1whFGdWXICJ3lXjDLJ8S8ug==
-X-Received: by 2002:a05:6602:14cd:: with SMTP id b13mr4406522iow.193.1624035704090;
+        bh=J97xGdoeJ/5GC12SOPK5ESidN5KNkQ3VRXSijQXay5g=;
+        b=t+rPhtXUEDY9/J9EkXPikYERc5BS1bW7V8SMU3zXSDRjmRBf+If6PCIzrkzIKj5CnI
+         QaidldleJtC5vZ6vgXAPK7vDZ4R1ST6O41Ct1ZKbZ98o/aJTEdFRMZUMXuV6/Zpawo8p
+         clD3M1UKnGy69W1s+CEkCJs03GrSc9SwpLO0abHSmy3LJOKQJhW2SKOUP2xCeHGvNOJI
+         hsdYSO+eMfxyKTDEalKfL/zCxrxMMfNMZ5ADrBlTzpM7ibFVaCBwoQd1tG6fKUxPpWH1
+         mSHedOsZWzJuTA8IfKCJe+Hj7OaWegnkAQy54Qe7r66OGYdvf69cIYM4j2cWBlxwmDav
+         pVpA==
+X-Gm-Message-State: AOAM530REL8ZJ8sMQFw4UwcMXYLG8aiRX1JxWIl7z1CoCTrNScUYRltT
+        AlOQOIGoCENceUWqqxYcBsQ=
+X-Google-Smtp-Source: ABdhPJx/g2TTbImBHdGj8y/jlOkWCn8RbKxUGkfAmHUXoanJrcudP78VE/a/VpwS+AYoxNB5Lu6BTQ==
+X-Received: by 2002:a92:6d0b:: with SMTP id i11mr7997010ilc.160.1624035704799;
         Fri, 18 Jun 2021 10:01:44 -0700 (PDT)
 Received: from auth1-smtp.messagingengine.com (auth1-smtp.messagingengine.com. [66.111.4.227])
-        by smtp.gmail.com with ESMTPSA id m5sm4377698iov.31.2021.06.18.10.01.42
+        by smtp.gmail.com with ESMTPSA id v1sm1390941ilo.81.2021.06.18.10.01.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 10:01:43 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 1748E27C005B;
-        Fri, 18 Jun 2021 13:01:42 -0400 (EDT)
+        Fri, 18 Jun 2021 10:01:44 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 78E7627C005A;
+        Fri, 18 Jun 2021 13:01:43 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Fri, 18 Jun 2021 13:01:42 -0400
-X-ME-Sender: <xms:ddHMYH7VNLqzgitoOpGqwt5uvwe4ZGPdBrlbWZ5P9DRrPCn-P44siw>
-    <xme:ddHMYM42bBypBjX11dtAemGg7-z3qA9geqpwPpOXtqnJXE9rjnA4L9Wb_03EKfDv6
-    Nkpq-xjfSyFbULWjg>
-X-ME-Received: <xmr:ddHMYOfBmHRjP2NtILaMbmxmYP3hHfNBy__YGU5ywaUaFtcFVssG42U95GE>
+  by compute4.internal (MEProxy); Fri, 18 Jun 2021 13:01:43 -0400
+X-ME-Sender: <xms:d9HMYFM4RVsAkSVHdNPBY3MZT3CsKGU1vNPLnXcId-ANY2iEotq3JQ>
+    <xme:d9HMYH-pjTu9xiRfZyxE6esnGuHCCrJth-pwK8_VQHOou-GkszseW2hZoYRFeJ5oC
+    bNEweXSc7n7ln1nVw>
+X-ME-Received: <xmr:d9HMYESdDfyYpKcnFtMDzCEoAfosu5NwHigptfFzfiS20ryJDfDZaojElIQ>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeffedguddtgecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
@@ -67,12 +67,12 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeffedguddtgecutefuodetgg
     gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
     gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
     igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:ddHMYIKFFztOsIURW2u1zhw8jYtWF608ldbRXh54yE1fvii59QTd4w>
-    <xmx:ddHMYLJoEleTW85dD8NMywd2mcyZq3lbYBUwt04_pxHnYAVEy9lT8g>
-    <xmx:ddHMYBwc5f0otuwTguXpJl84XBkFrpcCtlyLc2dUcS9_C1mIFCxBUA>
-    <xmx:dtHMYBifAQpI5uIN93U95cHJAYULiQTMdi7j22G7hin8x06E6TFSYg>
+X-ME-Proxy: <xmx:d9HMYBt6qsQldHdyxiD0G_TdpQsSvcm5r72mO-jypB1HBJNBOWCQiQ>
+    <xmx:d9HMYNcDch1WZkSkmoNv9evmPTGReg5dPGNYej9J_zjWscjiYouwTg>
+    <xmx:d9HMYN1oGXZTBEzstrErjeuLim72iXF19rgWl4TFxKRiH62sd4dVlA>
+    <xmx:d9HMYGHAVr-h6_y769-vc7gClfZMpU3OjILuZR89a6Cbt3XYW3hjlg>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 18 Jun 2021 13:01:41 -0400 (EDT)
+ 18 Jun 2021 13:01:42 -0400 (EDT)
 From:   Boqun Feng <boqun.feng@gmail.com>
 To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
@@ -80,9 +80,9 @@ Cc:     Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
         Boqun Feng <boqun.feng@gmail.com>,
         linux-kernel@vger.kernel.org,
         Johannes Berg <johannes@sipsolutions.net>
-Subject: [PATCH 1/4] locking/lockdep: Fix the dep path printing for backwards BFS
-Date:   Sat, 19 Jun 2021 01:01:07 +0800
-Message-Id: <20210618170110.3699115-2-boqun.feng@gmail.com>
+Subject: [PATCH 2/4] locking/lockdep: Remove the unnecessary trace saving
+Date:   Sat, 19 Jun 2021 01:01:08 +0800
+Message-Id: <20210618170110.3699115-3-boqun.feng@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210618170110.3699115-1-boqun.feng@gmail.com>
 References: <20210618170110.3699115-1-boqun.feng@gmail.com>
@@ -92,154 +92,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We use the same code to print backwards lock dependency path as the
-forwards lock dependency path, and this could result into incorrect
-printing because for a backwards lock_list ->trace is not the call trace
-where the lock of ->class is acquired.
-
-Fix this by introducing a separate function on printing the backwards
-dependency path. Also add a few comments about the printing while we are
-at it.
+In print_bad_irq_dependency(), save_trace() is called to set the ->trace
+for @prev_root as the current call trace, however @prev_root corresponds
+to the the held lock, which may not be acquired in current call trace,
+therefore it's wrong to use save_trace() to set ->trace of @prev_root.
+Moreover, with our adjustment of printing backwards dependency path, the
+->trace of @prev_root is unncessary, so remove it.
 
 Reported-by: Johannes Berg <johannes@sipsolutions.net>
 Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
 ---
- kernel/locking/lockdep.c | 108 ++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 106 insertions(+), 2 deletions(-)
+ kernel/locking/lockdep.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index 48d736aa03b2..3b32cd9cdfd0 100644
+index 3b32cd9cdfd0..74d084a398be 100644
 --- a/kernel/locking/lockdep.c
 +++ b/kernel/locking/lockdep.c
-@@ -2304,7 +2304,56 @@ static void print_lock_class_header(struct lock_class *class, int depth)
- }
+@@ -2550,9 +2550,6 @@ print_bad_irq_dependency(struct task_struct *curr,
+ 	lockdep_print_held_locks(curr);
  
- /*
-- * printk the shortest lock dependencies from @start to @end in reverse order:
-+ * Dependency path printing:
-+ *
-+ * After BFS we get a lock dependency path (linked via ->parent of lock_list),
-+ * printing out each lock in the dependency path will help on understanding how
-+ * the deadlock could happen. Here are some details about dependency path
-+ * printing:
-+ *
-+ * 1)	A lock_list can be either forwards or backwards for a lock dependency,
-+ * 	for a lock dependency A -> B, there are two lock_lists:
-+ *
-+ * 	a)	lock_list in the ->locks_after list of A, whose ->class is B and
-+ * 		->links_to is A. In this case, we can say the lock_list is
-+ * 		"A -> B" (forwards case).
-+ *
-+ * 	b)	lock_list in the ->locks_before list of B, whose ->class is A
-+ * 		and ->links_to is B. In this case, we can say the lock_list is
-+ * 		"B <- A" (bacwards case).
-+ *
-+ * 	The ->trace of both a) and b) point to the call trace where B was
-+ * 	acquired with A held.
-+ *
-+ * 2)	A "helper" lock_list is introduced during BFS, this lock_list doesn't
-+ * 	represent a certain lock dependency, it only provides an initial entry
-+ * 	for BFS. For example, BFS may introduce a "helper" lock_list whose
-+ * 	->class is A, as a result BFS will search all dependencies starting with
-+ * 	A, e.g. A -> B or A -> C.
-+ *
-+ * 	The notation of a forwards helper lock_list is like "-> A", which means
-+ * 	we should search the forwards dependencies starting with "A", e.g A -> B
-+ * 	or A -> C.
-+ *
-+ * 	The notation of a bacwards helper lock_list is like "<- B", which means
-+ * 	we should search the backwards dependencies ending with "B", e.g.
-+ * 	B <- A or B <- C.
-+ */
-+
-+/*
-+ * printk the shortest lock dependencies from @root to @leaf in reverse order.
-+ *
-+ * We have a lock dependency path as follow:
-+ *
-+ *    @root                                                                 @leaf
-+ *      |                                                                     |
-+ *      V                                                                     V
-+ *	          ->parent                                   ->parent
-+ * | lock_list | <--------- | lock_list | ... | lock_list  | <--------- | lock_list |
-+ * |    -> L1  |            | L1 -> L2  | ... |Ln-2 -> Ln-1|            | Ln-1 -> Ln|
-+ *
-+ * , so it's natural that we start from @leaf and print every ->class and
-+ * ->trace until we reach the @root.
-  */
- static void __used
- print_shortest_lock_dependencies(struct lock_list *leaf,
-@@ -2332,6 +2381,61 @@ print_shortest_lock_dependencies(struct lock_list *leaf,
- 	} while (entry && (depth >= 0));
- }
- 
-+/*
-+ * printk the shortest lock dependencies from @leaf to @root.
-+ *
-+ * We have a lock dependency path (from a backwards search) as follow:
-+ *
-+ *    @leaf                                                                 @root
-+ *      |                                                                     |
-+ *      V                                                                     V
-+ *	          ->parent                                   ->parent
-+ * | lock_list | ---------> | lock_list | ... | lock_list  | ---------> | lock_list |
-+ * | L2 <- L1  |            | L3 <- L2  | ... | Ln <- Ln-1 |            |    <- Ln  |
-+ *
-+ * , so when we iterate from @leaf to @root, we actually print the lock
-+ * dependency path L1 -> L2 -> .. -> Ln in the non-reverse order.
-+ *
-+ * Another thing to notice here is that ->class of L2 <- L1 is L1, while the
-+ * ->trace of L2 <- L1 is the call trace of L2, in fact we don't have the call
-+ * trace of L1 in the dependency path, which is alright, because most of the
-+ * time we can figure out where L1 is held from the call trace of L2.
-+ */
-+static void __used
-+print_shortest_lock_dependencies_backwards(struct lock_list *leaf,
-+					   struct lock_list *root)
-+{
-+	struct lock_list *entry = leaf;
-+	const struct lock_trace *trace = NULL;
-+	int depth;
-+
-+	/*compute depth from generated tree by BFS*/
-+	depth = get_lock_depth(leaf);
-+
-+	do {
-+		print_lock_class_header(entry->class, depth);
-+		if (trace) {
-+			printk("%*s ... acquired at:\n", depth, "");
-+			print_lock_trace(trace, 2);
-+			printk("\n");
-+		}
-+
-+		/*
-+		 * Record the pointer to the trace for the next lock_list
-+		 * entry, see the comments for the function.
-+		 */
-+		trace = entry->trace;
-+
-+		if (depth == 0 && (entry != root)) {
-+			printk("lockdep:%s bad path found in chain graph\n", __func__);
-+			break;
-+		}
-+
-+		entry = get_lock_parent(entry);
-+		depth--;
-+	} while (entry && (depth >= 0));
-+}
-+
- static void
- print_irq_lock_scenario(struct lock_list *safe_entry,
- 			struct lock_list *unsafe_entry,
-@@ -2449,7 +2553,7 @@ print_bad_irq_dependency(struct task_struct *curr,
- 	prev_root->trace = save_trace();
- 	if (!prev_root->trace)
- 		return;
--	print_shortest_lock_dependencies(backwards_entry, prev_root);
-+	print_shortest_lock_dependencies_backwards(backwards_entry, prev_root);
+ 	pr_warn("\nthe dependencies between %s-irq-safe lock and the holding lock:\n", irqclass);
+-	prev_root->trace = save_trace();
+-	if (!prev_root->trace)
+-		return;
+ 	print_shortest_lock_dependencies_backwards(backwards_entry, prev_root);
  
  	pr_warn("\nthe dependencies between the lock to be acquired");
- 	pr_warn(" and %s-irq-unsafe lock:\n", irqclass);
 -- 
 2.30.2
 
