@@ -2,110 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B79E53ACBED
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:16:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF7F3ACBF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233488AbhFRNSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:18:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55710 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233127AbhFRNRy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:17:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37079613EC;
-        Fri, 18 Jun 2021 13:15:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624022145;
-        bh=+n+iHw/j953X5GMz1sQCPRm5FJcdR4ToT3OFSKdiL3k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ax+jEfjMCJEE89SyEn9HKAWDxXDEo6JUdgyVentdZCuUYjmA4ylMBNjD6qojpej53
-         T+IfkGlH3y1UMTtNb4QdnhiLYcs6U05Te6Ld3m1Z31Nw86cMFo3JDlpd+FB8UT3zed
-         4xLQIq6ykZM5+q5NFl/fNYcSA8fuZZGP7oZVIyzOVm0a3a5Lo2t6VxCDXdN0jgQ07k
-         JGV5jEy7PYojjhPs8DDG5Vj0DfIUorJm+mGqvFxYoj/O6GewcyGS0sK70Jnj7Jwxv6
-         cXN72yikaIO04ZvqIchqXvH/JGSU2QROQi9JdJFiElHO7Q8aZOdFQzzx15wk1ImjM9
-         8bW0g+n4+sdjg==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id AAB0B40B1A; Fri, 18 Jun 2021 10:15:42 -0300 (-03)
-Date:   Fri, 18 Jun 2021 10:15:42 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-Subject: Re: [PATCH] tools/perf probe: Print a hint if adding a probe fails
-Message-ID: <YMycflwgCrosgTcb@kernel.org>
-References: <20210610094442.1602714-1-naveen.n.rao@linux.vnet.ibm.com>
- <20210610192926.6f7b606f1fefd285b3907cd5@kernel.org>
+        id S232740AbhFRNTT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:19:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230340AbhFRNTR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 09:19:17 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B801C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:17:07 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id f30so16708639lfj.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 06:17:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VJblJ74TTklvoFnfadsBOoaZefbWdJ5ucMdB1rLtJlA=;
+        b=q8Qzhgp9v98ILMXTSeLDJvcsqB/Dz83eAR9lg/7wVXZ2uYMCERR0Dwu2gQbClPrSAz
+         JEHxfe4qKxY5sEcg/mlqMef/OUyjQatVWM27DVQ4O6CAkMSGZiEBVpDgKat7okcI+gri
+         XLjgSmM/bdbRBtptiTML8eSz6VixV5MOLhZKf2wqjtFPXriYp6ZxyYG7IoSor6fbwReG
+         xVDEkveWJwekilXx3nephC95XGPE8weMKn/9gKvPXFRXd2HIDX6Jl4m+zQg48hSGFolS
+         NDIfetiZ/OYLoLOjwh+Nuhv83ILP06sIQa1EfqTv3vVSFonmY/lMCBj6xqMBOHUNsf7V
+         DJOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VJblJ74TTklvoFnfadsBOoaZefbWdJ5ucMdB1rLtJlA=;
+        b=fUDiK1rQsZJvsM/xwXfEc00oB/7uryqj0XrJcJO9eUNIXMzr5POwHRlAJb+WWAd4Ne
+         ufSGRvCk77XBNPnWdlv1E4h11SH03oCGPMe1rxThOUct6WSQjTlLycDHfR4cRt65svPQ
+         INJbODV/S0GByPO9Wgzpg5+AuuQtiPBassdKnJvOCDrmStfx6dNwJArVa14e5qzlj0EQ
+         D7606OH1odUHcySf/D8DkdzPe4INtQ7oGufSXCJMvMtvnCBnpDIOBxWDXKBbX6ySaUnP
+         TVssyUq7DmX3jNBZWW0GcQ+2nD2+Aw6TntYssT/Hjgq0D1e4JyA1RJiXIebadJtOuHET
+         QCuA==
+X-Gm-Message-State: AOAM531Yk3SD8Alg6tNfoVS/VvFkrNjlpuv/W9800H+V5VAU6WlTzNf3
+        Gt4E+NScrQHwOsA9Ga/q+l7O2p8HPmhB84TgH3E=
+X-Google-Smtp-Source: ABdhPJwZ7v4NwsYzXeAh5f4OfP8slBFuvKnxQxdVfkym+WxyszxsVH4wXdOc+PT3sReY+V9ZotsvRr7nqCkf7WuEuAo=
+X-Received: by 2002:a19:6515:: with SMTP id z21mr3123022lfb.641.1624022225635;
+ Fri, 18 Jun 2021 06:17:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210610192926.6f7b606f1fefd285b3907cd5@kernel.org>
-X-Url:  http://acmel.wordpress.com
+References: <20210618130230.123249-1-sxwjean@me.com>
+In-Reply-To: <20210618130230.123249-1-sxwjean@me.com>
+From:   Xiongwei Song <sxwjean@gmail.com>
+Date:   Fri, 18 Jun 2021 21:16:15 +0800
+Message-ID: <CAEVVKH-h4fK0WobzfKUBs9d2t+XPmUQQCYJQmacPPVymFrntrA@mail.gmail.com>
+Subject: Re: [PATCH] locking/lockdep: Correct the description error for check_redundant()
+To:     Xiongwei Song <sxwjean@me.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        longman@redhat.com, Boqun Feng <boqun.feng@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, Jun 10, 2021 at 07:29:26PM +0900, Masami Hiramatsu escreveu:
-> Hi Naveen,
-> 
-> On Thu, 10 Jun 2021 15:14:42 +0530
-> "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
-> 
-> > Adding a probe can fail in a few scenarios. perf already checks for the
-> > address in the kprobe blacklist. However, the address could still be a
-> > jump label, or have a BUG_ON(). In such cases, it isn't always evident
-> > why adding the probe failed. Add a hint so that the user knows how to
-> > proceed.
-> > 
-> 
-> Thanks for the report.
-> 
-> Since now there is <tracefs>/error_log, if you see any errors in registering
-> probe-events, perf probe should dump the error_log for the hint message.
-> Also, kprobes should return the correct different error code for each
-> errors.
+On Fri, Jun 18, 2021 at 9:02 PM Xiongwei Song <sxwjean@me.com> wrote:
+>
+> From: Xiongwei Song <sxwjean@gmail.com>
+>
+> If there is no matched result, check_redundant() will return BFS_RNOMATCH.
+>
+> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+> ---
+>  kernel/locking/lockdep.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+> index cfe0f4374594..1f126ca7fbd7 100644
+> --- a/kernel/locking/lockdep.c
+> +++ b/kernel/locking/lockdep.c
+> @@ -2726,7 +2726,7 @@ static inline bool usage_skip(struct lock_list *entry, void *mask)
+>   * <target> or not. If it can, <src> -> <target> dependency is already
+>   * in the graph.
+>   *
+> - * Return BFS_RMATCH if it does, or BFS_RMATCH if it does not, return BFS_E* if
+> + * Return BFS_RMATCH if it does, or BFS_RNOMATCH if it does not, return BFS_E* if
+>   * any error appears in the bfs search.
+>   */
+>  static noinline enum bfs_result
 
-Was there any followup on this? I think we should do as Masami suggests,
-Naveen, could you do it?
+Sorry I forgot to add version info, this is v2.
+Regarding v1 please see https://lkml.org/lkml/2021/6/17/1156.
 
-Thanks,
+Regards,
+Xiongwei
 
-- Arnaldo
- 
-> Thank you,
-> 
-> > Reported-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-> > Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-> > ---
-> >  tools/perf/builtin-probe.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/tools/perf/builtin-probe.c b/tools/perf/builtin-probe.c
-> > index 6b150756677014..ff9f3fdce600dd 100644
-> > --- a/tools/perf/builtin-probe.c
-> > +++ b/tools/perf/builtin-probe.c
-> > @@ -352,8 +352,11 @@ static int perf_add_probe_events(struct perf_probe_event *pevs, int npevs)
-> >  	}
-> >  
-> >  	ret = apply_perf_probe_events(pevs, npevs);
-> > -	if (ret < 0)
-> > +	if (ret < 0) {
-> > +		pr_info("Hint: Check dmesg to understand reason for probe failure.\n"
-> > +			"      Consider probing at the next/previous instruction.\n");
-> >  		goto out_cleanup;
-> > +	}
-> >  
-> >  	for (i = k = 0; i < npevs; i++)
-> >  		k += pevs[i].ntevs;
-> > 
-> > base-commit: 0808b3d5b7514dc856178dbc509929329bbf301d
-> > -- 
-> > 2.31.1
-> > 
-> 
-> 
-> -- 
-> Masami Hiramatsu <mhiramat@kernel.org>
-
--- 
-
-- Arnaldo
+> --
+> 2.30.2
+>
