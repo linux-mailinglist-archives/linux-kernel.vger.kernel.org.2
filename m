@@ -2,103 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C163ACFC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0273ACFCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235756AbhFRQGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 12:06:36 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57474 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234784AbhFRQFz (ORCPT
+        id S235700AbhFRQG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 12:06:58 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:22346 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235724AbhFRQGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 12:05:55 -0400
-Date:   Fri, 18 Jun 2021 16:03:44 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624032225;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bBxvYf0FN4jiFQ4rbawy1zAQuYvLQYj9z9RHwYz51r8=;
-        b=f7lckfoSwxw8ctTinR7xCVewG6xIP0Bt/GAVanNSqC1Rm5ure6Myn3g5rPOfnCDuzZJ8iC
-        NA9aWPuTnCLqoKWJtXzk1R9oU/xk4s2kkuRyndRSsU983S5k0m8KkupsNnjYsCTgBQnO2o
-        hlQjvA2i5HRTtY54AxC2UnPR33B6ANEV/f8QPdJaYR7o+GuYcmYaWs4EhSGXACM8ilzCWu
-        EP2xe18FcTgRdmZwnZ3GelOmaQXRBrP0R2KDh7IQ9n/E3WTb3hR+3zoe27TA1uSaZP/8Ch
-        8oXw9x6e2sGds6XDxDE1oAwd5CcgT8N0lG7pkt+opHlyPUo1m64Fj0x+BClE+g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624032225;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bBxvYf0FN4jiFQ4rbawy1zAQuYvLQYj9z9RHwYz51r8=;
-        b=CtQsCJ7iyoHTqXSmtPX3rObvdDcZ4Xl9wnvq5Dnho+79C79v+8SMrAF5orTSHUVJrTH8qO
-        i+DpMn3LyYcWQABg==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] Merge tag 'timers-v5.14' of
- https://git.linaro.org/people/daniel.lezcano/linux into timers/core
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <65ed5f60-d7a5-b4ae-ff78-0382d4671cc5@linaro.org>
-References: <65ed5f60-d7a5-b4ae-ff78-0382d4671cc5@linaro.org>
-MIME-Version: 1.0
-Message-ID: <162403222436.19906.11280472168955346294.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+        Fri, 18 Jun 2021 12:06:46 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15IG45dr088167;
+        Fri, 18 Jun 2021 12:04:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=f0ceIPiYDxY/booagKQSwOn88XfgJKGtoIutFEB+Cjs=;
+ b=Xh0g8a/JdFKWjh1pa6DJZMSzNkpGOwnVLdQ1kOXceSR4Rh3Vwhzay+YlDMPmA2z3H83A
+ zmu6+dFK+xHyewV9jcr+/g9H/iOpO7Ojz1+3k6gm7YLJyk6FXalRsz04RlWU+mKEl3h+
+ Y641lxUpBOK8czXEBko1/Ml1nqDZ+CpYdbeObvm1HOprUZdrYrZtYzHhB9y2NMXQ8uDG
+ UB6FXJPItSz8MW6iiDV3ViFULSmJmbiNAZzVOc3M2gNoD8D97MgQtVRt/EtvyS8Kp7zg
+ E32poU4B33G/dTUBwurwi5hNSenz1PoHCmAvepIRgqHMG5VGyqDrPQ/OsX24Cn1aCNVj MQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 398xd6gng4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Jun 2021 12:04:30 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15IG4THq094487;
+        Fri, 18 Jun 2021 12:04:29 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 398xd6gnem-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Jun 2021 12:04:29 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15IG4QeY015728;
+        Fri, 18 Jun 2021 16:04:26 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06fra.de.ibm.com with ESMTP id 394m6h9vp1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 18 Jun 2021 16:04:26 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15IG4OkL20644140
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 18 Jun 2021 16:04:24 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5D393A4064;
+        Fri, 18 Jun 2021 16:04:24 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2E6E6A4060;
+        Fri, 18 Jun 2021 16:04:22 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.93.34])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 18 Jun 2021 16:04:22 +0000 (GMT)
+Message-ID: <c92d0ac71a8db8bb016a7e94b83c193956d71a26.camel@linux.ibm.com>
+Subject: Re: [PATCH] fs: Return raw xattr for security.* if there is size
+ disagreement with LSMs
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Roberto Sassu <roberto.sassu@huawei.com>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "stephen.smalley.work@gmail.com" <stephen.smalley.work@gmail.com>,
+        "casey@schaufler-ca.com" <casey@schaufler-ca.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
+Date:   Fri, 18 Jun 2021 12:04:21 -0400
+In-Reply-To: <CAHC9VhTv6Zn8gYaB6cG4wPzy_Ty0XjOM-QL4cZ525RnhFY4bTQ@mail.gmail.com>
+References: <ee75bde9a17f418984186caa70abd33b@huawei.com>
+         <20210616132227.999256-1-roberto.sassu@huawei.com>
+         <6e1c9807-d7e8-7c26-e0ee-975afa4b9515@linux.ibm.com>
+         <9cb676de40714d0288f85292c1f1a430@huawei.com>
+         <d822efcc0bb05178057ab2f52293575124cde1fc.camel@linux.ibm.com>
+         <CAHC9VhTv6Zn8gYaB6cG4wPzy_Ty0XjOM-QL4cZ525RnhFY4bTQ@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: AdhDHHaCU3yaVieHCH-VrseouUkXcA_2
+X-Proofpoint-ORIG-GUID: CkEmq2yFkV_GcP0onKt5fShi-ls-1vh3
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-18_07:2021-06-18,2021-06-18 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 adultscore=0 priorityscore=1501 clxscore=1015
+ mlxlogscore=999 spamscore=0 mlxscore=0 phishscore=0 impostorscore=0
+ bulkscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106180094
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+On Thu, 2021-06-17 at 23:18 -0400, Paul Moore wrote:
+> On Thu, Jun 17, 2021 at 11:28 AM Mimi Zohar <zohar@linux.ibm.com> wrote:
+> > On Thu, 2021-06-17 at 07:09 +0000, Roberto Sassu wrote:
+> 
+> ...
+> 
+> > > An alternative would be to do the EVM verification twice if the
+> > > first time didn't succeed (with vfs_getxattr_alloc() and with the
+> > > new function that behaves like vfs_getxattr()).
+> >
+> > Unfortunately, I don't see an alternative.
+> 
+> ... and while unfortunate, the impact should be non-existant if you
+> are using the right tools to label files or ensuring that you are
+> formatting labels properly if doing it by hand.
+> 
+> Handling a corner case is good, but I wouldn't add a lot of code
+> complexity trying to optimize it.
 
-Commit-ID:     f6b6a80360995ad175e43d220af979f119e52cd3
-Gitweb:        https://git.kernel.org/tip/f6b6a80360995ad175e43d220af979f119e52cd3
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Fri, 18 Jun 2021 17:57:47 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Fri, 18 Jun 2021 17:57:47 +02:00
+From userspace it's really difficult to understand the EVM signature
+verification failure is due to the missing NULL.
 
-Merge tag 'timers-v5.14' of https://git.linaro.org/people/daniel.lezcano/linux into timers/core
+Roberto, I just pushed the "evm: output EVM digest calculation info"
+patch to the next-integrity-testing branch, which includes some
+debugging.   Instead of this patch, which returns the raw xattr data,
+how about adding additional debugging info in evm_calc_hmac_or_hash()
+indicating the size discrepancy between the raw xattr and the LSM
+returned xattr?
 
-Pull clockevent/source updates from Daniel Lezcano:
+thanks,
 
- - Remove arch_timer_rate1 variable as it is unused in the architected
-   ARM timer (Jisheng Zhang)
+Mimi
 
- - Minor cleanups (whitespace, constification, ...) for the Samsung pwm
-   timer (Krzysztof Kozlowski)
-
- - Acknowledge and disable the timer interrupt at suspend time to
-   prevent the suspend to be aborted by the ATF if there is a pending
-   one on the Mediatek timer (Evan Benn)
-
- - Save and restore the configuration register at suspend/resume time
-   for TI dm timer (Tony Lindgren)
-
- - Set the scene for the next timers support by renaming the array
-   variables on the Ingenic time (Zhou Yanjie)
-
- - Add the clock rate change notification to adjust the prescalar value
-   and compensate the clock source on the ARM global timer (Andrea
-   Merello)
-
- - Add missing variable static annotation on the ARM global timer (Zou
-   Wei)
-
- - Remove a duplicate argument when building the bits field on the ARM
-   global timer (Wan Jiabing)
-
- - Improve the timer workaround function by reducing the loop on the
-   Allwinner A64 timer (Samuel Holland)
-
- - Do no restore the register context in case of error on the TI dm
-   timer (Tony Lindgren)
-
-Link: https://lore.kernel.org/r/65ed5f60-d7a5-b4ae-ff78-0382d4671cc5@linaro.org
----
