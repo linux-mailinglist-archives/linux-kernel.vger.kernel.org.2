@@ -2,73 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7B83ACF44
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:36:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C77BC3ACF49
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235571AbhFRPiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:38:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60522 "EHLO mail.kernel.org"
+        id S235577AbhFRPjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:39:49 -0400
+Received: from mga11.intel.com ([192.55.52.93]:45828 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235536AbhFRPiu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:38:50 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5D26B610A2;
-        Fri, 18 Jun 2021 15:36:39 +0000 (UTC)
-Date:   Fri, 18 Jun 2021 11:36:37 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        id S230334AbhFRPjr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 11:39:47 -0400
+IronPort-SDR: tSvdvpt9fUhTWz2YmMjj8LlhZJtM4kLLDS/U4MafrojeJ2l8CeQv8TrtP1V77vxMsmJqN9M0M5
+ LK0RyMu7yXUg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="203549581"
+X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
+   d="scan'208";a="203549581"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 08:37:38 -0700
+IronPort-SDR: xhESf2oMa+8VoQ5jV/dGg2MUo/FbH7/yt+V3DJLY/BhMChnHHNfE0MCQxRHVYZgqywzqx4n2m3
+ RcB9xiGAa+tA==
+X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
+   d="scan'208";a="489102206"
+Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 08:37:37 -0700
+Date:   Fri, 18 Jun 2021 08:37:35 -0700
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Jason Wang <jasowang@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
         "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        David Hildenbrand <david@redhat.com>, Greg KH <greg@kroah.com>,
-        Christoph Lameter <cl@gentwo.de>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
-        ksummit@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, netdev <netdev@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
-Message-ID: <20210618113637.5890bbcf@oasis.local.home>
-In-Reply-To: <20210618113452.7ab0033e@oasis.local.home>
-References: <5038827c-463f-232d-4dec-da56c71089bd@metux.net>
-        <20210610182318.jrxe3avfhkqq7xqn@nitro.local>
-        <YMJcdbRaQYAgI9ER@pendragon.ideasonboard.com>
-        <20210610152633.7e4a7304@oasis.local.home>
-        <37e8d1a5-7c32-8e77-bb05-f851c87a1004@linuxfoundation.org>
-        <YMyjryXiAfKgS6BY@pendragon.ideasonboard.com>
-        <cd7ffbe516255c30faab7a3ee3ee48f32e9aa797.camel@HansenPartnership.com>
-        <CAMuHMdVcNfDvpPXHSkdL3VuLXCX5m=M_AQF-P8ZajSdXt8NdQg@mail.gmail.com>
-        <20210618103214.0df292ec@oasis.local.home>
-        <CAMuHMdWK4NPzanF68TMVuihLFdRzxhs0EkbZdaA=BUkZo-k6QQ@mail.gmail.com>
-        <YMy4UjWH565ElFtZ@casper.infradead.org>
-        <CAMuHMdWqUkfe7kdBO+eQdXHzhpygH=TivOBNqQJujyqP=wM5cw@mail.gmail.com>
-        <20210618113452.7ab0033e@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shenming Lu <lushenming@huawei.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: Plan for /dev/ioasid RFC v2
+Message-ID: <20210618153735.GA37688@otc-nc-03>
+References: <20210612105711.7ac68c83.alex.williamson@redhat.com>
+ <20210614140711.GI1002214@nvidia.com>
+ <20210614102814.43ada8df.alex.williamson@redhat.com>
+ <MWHPR11MB1886239C82D6B66A732830B88C309@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210615101215.4ba67c86.alex.williamson@redhat.com>
+ <MWHPR11MB188692A6182B1292FADB3BDB8C0F9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210616133937.59050e1a.alex.williamson@redhat.com>
+ <MWHPR11MB18865DF9C50F295820D038798C0E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <YMykBzUHmATPbmdV@8bytes.org>
+ <20210618151506.GG1002214@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210618151506.GG1002214@nvidia.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Jun 2021 11:34:52 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
-
-> How many times have you been in a conference where the normal mic and
-> speaker caused a nasty feedback loop?
+On Fri, Jun 18, 2021 at 12:15:06PM -0300, Jason Gunthorpe wrote:
+> On Fri, Jun 18, 2021 at 03:47:51PM +0200, Joerg Roedel wrote:
+> > Hi Kevin,
+> > 
+> > On Thu, Jun 17, 2021 at 07:31:03AM +0000, Tian, Kevin wrote:
+> > > Now let's talk about the new IOMMU behavior:
+> > > 
+> > > -   A device is blocked from doing DMA to any resource outside of
+> > >     its group when it's probed by the IOMMU driver. This could be a
+> > >     special state w/o attaching to any domain, or a new special domain
+> > >     type which differentiates it from existing domain types (identity, 
+> > >     dma, or unmanged). Actually existing code already includes a
+> > >     IOMMU_DOMAIN_BLOCKED type but nobody uses it.
+> > 
+> > There is a reason for the default domain to exist: Devices which require
+> > RMRR mappings to be present. You can't just block all DMA from devices
+> > until a driver takes over, we put much effort into making sure there is
+> > not even a small window in time where RMRR regions (unity mapped regions
+> > on AMD) are not mapped.
 > 
-> I'm not sure how well phone mics and room speakers will work.
+> Yes, I think the DMA blocking can only start around/after a VFIO type
+> driver has probed() and bound to a device in the group, not much
+> different from today.
 
-BTW, Don't take these criticisms as a rejection of your idea. I
-actually like the idea. But to implement it, we need to go through all
-the scenarios that will likely go wrong, if we want it to work.
+Does this mean when a device has a required "RMRR" that requires a unity
+mapping we block assigning those devices to guests? I remember we had some
+restriction but there was a need to go around it at some point in time.
 
--- Steve
+- Either we disallow assigning devices with RMRR
+- Break that unity map when the device is probed and after which any RMRR
+  access from device will fault.
+
+Cheers,
+Ashok
