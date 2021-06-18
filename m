@@ -2,106 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D743AD0E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:04:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C093AD0EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 19:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236023AbhFRRHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 13:07:04 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:53628 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233454AbhFRRHC (ORCPT
+        id S236043AbhFRRIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 13:08:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236037AbhFRRIB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 13:07:02 -0400
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id CAFF21FDAE;
-        Fri, 18 Jun 2021 17:04:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1624035891; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RRj7fgDRtAehPcgrufisp/9Ya/S7fBGeH0Q99DKFBUg=;
-        b=D8rrZRYDsoVVhrdfz7W0QCUuphU0nV+ZkITBeWFLnMVGmIdAmqnZmTMjI/Uf6/ALA7pWxk
-        QMamWOBwp2urL3ZtNaTOJUXk/1aDFrH8FdTwN6Kx7ShotJM4yvfOg7JlBmWhA/UtGSjmTZ
-        9xuvppuraIZt2cTxhVYd1VbmVqvTvK4=
-Received: from suse.cz (unknown [10.100.201.86])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 884E3A3BCA;
-        Fri, 18 Jun 2021 17:04:51 +0000 (UTC)
-Date:   Fri, 18 Jun 2021 19:04:51 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Denis Efremov <efremov@linux.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, joe@perches.com,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] KVM: Use vmemdup_user()
-Message-ID: <YMzSM2WAmxpXIHhJ@dhcp22.suse.cz>
-References: <0c00d96c46d34d69f5f459baebf3c89a507730fc.camel@perches.com>
- <20200603101131.2107303-1-efremov@linux.com>
- <CALMp9eSFkRrWLjegJ5OC7kZ4oWtZypKRDjXFQD5=tFX4YLpUgw@mail.gmail.com>
- <YMw2YeWHFsn+AFmN@dhcp22.suse.cz>
- <CALMp9eR9n6N5EB-nUEJPM=e2YtE3_tQBDHj0uP3T2dcGsutSCQ@mail.gmail.com>
+        Fri, 18 Jun 2021 13:08:01 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D54C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:05:50 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id k22-20020a17090aef16b0290163512accedso7490526pjz.0
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 10:05:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=qTOYa6VhtAfYdU8yuXkzLLIRhZabeT449uqXhMg152g=;
+        b=QiaqxIU8Yl801vg/PKgLpWP4/4pJfQSS16mpSkH3ha3rWxljiIckNqxVACbZDMIw9M
+         UoHZGiovyuPVceko166WfFGi2VSAEW2gMOMdmLYVa9/vyuGLKl1YzT0t02+R+wSfG2fU
+         PmjSzcWoRNv0C4JB3VqdAjoC5vNj3D1E9s7ng=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=qTOYa6VhtAfYdU8yuXkzLLIRhZabeT449uqXhMg152g=;
+        b=g2sBPYICa80lQ9T8CmJUtsBjaUkwVEDNu/IqjvAGqWb/Wdy/1geJSFCkBYjgFnYw2F
+         ko9J2sOoNK3CtagkE0PEIw5uD31eHlt4ZEJN2CHaaOJF2V6gg/wJ7I1+RaD4JEk/Owxi
+         oo3f1FRmb4eDaNjO1nfEqQpnMW2KNMYoF+BF4ff3gBUNNgjUtJDefjzZhvX9SHl9eD3g
+         Q2hQocwstCkGcgdvDqrK424PeCHfTebTf+VUciZ0YWSO9PJyIzuogfogl4JghZflBYjg
+         Ho4nTOMuu15etepSOqqr/9WbPBux1d3dBD7uC4YGLkW77uncY9ToY7tnbgmHzAEJtGWY
+         Okpg==
+X-Gm-Message-State: AOAM533/2xskJaDPPfP1gaxyl+fqWFQYaJzoEvs7Djka3IbUg0tc5CmA
+        Q9reDsllqPc0V+l4H/BtBc78pA==
+X-Google-Smtp-Source: ABdhPJztLCuOSgFk0F8O90YzsazxQC0I0zuxXibIagh43Pzx21u4sz6EtJQzvBYfddyvV1SOGtX4ng==
+X-Received: by 2002:a17:90a:2a86:: with SMTP id j6mr15533375pjd.67.1624035950508;
+        Fri, 18 Jun 2021 10:05:50 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:636c:38ca:1965:590a])
+        by smtp.gmail.com with UTF8SMTPSA id o189sm1638432pga.78.2021.06.18.10.05.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jun 2021 10:05:50 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 10:05:48 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Douglas Anderson <dianders@chromium.org>
+Subject: Looking for help with Kconfig dependencies
+Message-ID: <YMzSbDL+XvpLPaTb@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CALMp9eR9n6N5EB-nUEJPM=e2YtE3_tQBDHj0uP3T2dcGsutSCQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 18-06-21 09:53:53, Jim Mattson wrote:
-> On Thu, Jun 17, 2021 at 11:00 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Thu 17-06-21 17:25:04, Jim Mattson wrote:
-> > > On Wed, Jun 3, 2020 at 3:10 AM Denis Efremov <efremov@linux.com> wrote:
-> > > >
-> > > > Replace opencoded alloc and copy with vmemdup_user().
-> > > >
-> > > > Signed-off-by: Denis Efremov <efremov@linux.com>
-> > > > ---
-> > > > Looks like these are the only places in KVM that are suitable for
-> > > > vmemdup_user().
-> > > >
-> > > >  arch/x86/kvm/cpuid.c | 17 +++++++----------
-> > > >  virt/kvm/kvm_main.c  | 19 ++++++++-----------
-> > > >  2 files changed, 15 insertions(+), 21 deletions(-)
-> > > >
-> > > > diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-> > > > index 901cd1fdecd9..27438a2bdb62 100644
-> > > > --- a/arch/x86/kvm/cpuid.c
-> > > > +++ b/arch/x86/kvm/cpuid.c
-> > > > @@ -182,17 +182,14 @@ int kvm_vcpu_ioctl_set_cpuid(struct kvm_vcpu *vcpu,
-> > > >         r = -E2BIG;
-> > > >         if (cpuid->nent > KVM_MAX_CPUID_ENTRIES)
-> > > >                 goto out;
-> > > > -       r = -ENOMEM;
-> > > >         if (cpuid->nent) {
-> > > > -               cpuid_entries =
-> > > > -                       vmalloc(array_size(sizeof(struct kvm_cpuid_entry),
-> > > > -                                          cpuid->nent));
-> > > > -               if (!cpuid_entries)
-> > > > -                       goto out;
-> > > > -               r = -EFAULT;
-> > > > -               if (copy_from_user(cpuid_entries, entries,
-> > > > -                                  cpuid->nent * sizeof(struct kvm_cpuid_entry)))
-> > > > +               cpuid_entries = vmemdup_user(entries,
-> > > > +                                            array_size(sizeof(struct kvm_cpuid_entry),
-> > > > +                                                       cpuid->nent));
-> > >
-> > > Does this break memcg accounting? I ask, because I'm really not sure.
-> >
-> > What do you mean by that? The original code uses plain vmalloc so the
-> > allocation is not memcg accounted (please note that __GFP_ACCOUNT needs
-> > to be specified explicitly). vmemdup_user is the same in that regards.
-> 
-> I asked, because I wasn't sure if plain vmalloc was accounted or not.
-> 
-> In any case, these allocations *should* be accounted, shouldn't they?
+Hi,
 
-This is more of a question to maintainers. Are these objects easy to
-request by userspace without any bounds?
+I'm adding a new driver and have an issue with Kconfig dependencies
+that I coulnd't sort out so far.
 
--- 
-Michal Hocko
-SUSE Labs
+Patch https://lore.kernel.org/patchwork/patch/1444212/ adds the new
+onboard_usb_hub driver which exports two functions,
+onboard_hub_create_pdevs() and onboard_hub_destroy_pdevs(). It also
+provides stubs for these functions which are used when the driver
+is not selected (CONFIG_USB_ONBOARD_HUB=n).
+
+The new exported functions are called by the xhci-plat driver
+(https://lore.kernel.org/patchwork/patch/1444215/). Since xhci-plat
+now depends on symbols from the onboard_hub_driver the following
+dependency was added to its Kconfig entry:
+
+  config USB_XHCI_PLATFORM
+    tristate "Generic xHCI driver for a platform device"
+    select USB_XHCI_RCAR if ARCH_RENESAS
+ +  depends on USB_ONBOARD_HUB || !USB_ONBOARD_HUB
+
+This generally seems to work, however when USB_XHCI_PLATFORM is
+forced to be builtin by another driver that depends on it (e.g.
+USB_DWC3) it is still possible to build the onboard_hub driver
+as a module, which results in unresolved symbols:
+
+aarch64-linux-gnu-ld: drivers/usb/host/xhci-plat.o: in function
+`xhci_plat_remove':
+drivers/usb/host/xhci-plat.c:427: undefined reference to
+`onboard_hub_destroy_pdevs'
+drivers/usb/host/xhci-plat.c:427:(.text+0x82c): relocation truncated
+to fit: R_AARCH64_CALL26 against undefined symbol
+`onboard_hub_destroy_pdevs'
+aarch64-linux-gnu-ld: drivers/usb/host/xhci-plat.o: in function
+`xhci_plat_probe':
+drivers/usb/host/xhci-plat.c:379: undefined reference to
+`onboard_hub_create_pdevs'
+drivers/usb/host/xhci-plat.c:379:(.text+0x131c): relocation truncated
+to fit: R_AARCH64_CALL26 against undefined symbol
+`onboard_hub_create_pdevs'
+
+Kconfig generates the following warning with this configuration:
+
+WARNING: unmet direct dependencies detected for USB_XHCI_PLATFORM
+  Depends on [m]: USB_SUPPORT [=y] && USB [=y] && USB_XHCI_HCD [=y] && (USB_ONBOARD_HUB [=m] || !USB_ONBOARD_HUB [=m])
+  Selected by [y]:
+  - USB_DWC3 [=y] && USB_SUPPORT [=y] && (USB [=y] || USB_GADGET [=y]) && HAS_DMA [=y] && USB_XHCI_HCD [=y]
+  Selected by [m]:
+  - USB_CDNS_SUPPORT [=m] && USB_SUPPORT [=y] && (USB [=y] || USB_GADGET [=y]) && HAS_DMA [=y] && USB_XHCI_HCD [=y]
+  - USB_BRCMSTB [=m] && USB_SUPPORT [=y] && USB [=y] && (ARCH_BRCMSTB [=y] && PHY_BRCM_USB [=m] || COMPILE_TEST [=y]) && USB_XHCI_HCD [=y]
+  - USB_XHCI_MVEBU [=m] && USB_SUPPORT [=y] && USB [=y] && USB_XHCI_HCD [=y] && HAS_IOMEM [=y] && (ARCH_MVEBU [=y] || COMPILE_TEST [=y])
+
+I read through kconfig-language.rst and experimented a fair bit,
+but haven't found a working solution. Any advice would be
+appreciated.
+
+Thanks
+
+Matthias
