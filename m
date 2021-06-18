@@ -2,109 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65FDF3AC403
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:37:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F410B3AC406
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232156AbhFRGjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 02:39:18 -0400
-Received: from regular1.263xmail.com ([211.150.70.198]:40326 "EHLO
-        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230408AbhFRGjR (ORCPT
+        id S232316AbhFRGlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 02:41:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230408AbhFRGk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 02:39:17 -0400
-Received: from localhost (unknown [192.168.167.69])
-        by regular1.263xmail.com (Postfix) with ESMTP id 794BA754;
-        Fri, 18 Jun 2021 14:36:54 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ABS-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from desktop-sg5v5ea (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P30975T140062811473664S1623998207885233_;
-        Fri, 18 Jun 2021 14:36:48 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <f33ec33d6031fb0924d2aa586d694260>
-X-RL-SENDER: jay.xu@rock-chips.com
-X-SENDER: xjq@rock-chips.com
-X-LOGIN-NAME: jay.xu@rock-chips.com
-X-FST-TO: heiko@sntech.de
-X-RCPT-COUNT: 6
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-Date:   Fri, 18 Jun 2021 14:36:48 +0800
-From:   "jay.xu@rock-chips.com" <jay.xu@rock-chips.com>
-To:     =?utf-8?B?SGVpa28gU3TDvGJuZXI=?= <heiko@sntech.de>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        robh+dt <robh+dt@kernel.org>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Subject: Re: Re: [PATCH v5 5/7] gpio/rockchip: support next version gpio controller
-References: <20210527071239.1424430-1-jay.xu@rock-chips.com>, 
-        <20210527071345.1424493-1-jay.xu@rock-chips.com>, 
-        <4162826.Y6S9NjorxK@diego>
-X-Priority: 3
-X-Has-Attach: no
-X-Mailer: Foxmail 7.2.19.158[cn]
-Mime-Version: 1.0
-Message-ID: <202106181436485250639@rock-chips.com>
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: base64
+        Fri, 18 Jun 2021 02:40:59 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED9D2C061574;
+        Thu, 17 Jun 2021 23:38:49 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id k22-20020a17090aef16b0290163512accedso6695616pjz.0;
+        Thu, 17 Jun 2021 23:38:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ACxHVcK0Ryo9RIAxVD4v0if52uvGSzNC+4znNKdgqQc=;
+        b=fVceLY8i+XTr2ehlpRUASqQbKHbdPcrWn2ltMuUoOxlaSstLq9oDHQwzM71ozgv//c
+         54vXD9aEJP1qBvnYYab72d8XW15fggwjsMGIjPxzVuZsIPGHzUrfa4yO/o3+nDVzu5gr
+         L8gWIQY/3IYpHQ7RLc7enQS0JjxvuC58DHgXQ3MoO1/0v/Ovy6uun/epGt8XzOu7UTqv
+         L0540M6uTSJ0z28ColEmdULeHo7VykwubNCUY5wLZ5k8XiVQNsw91bX7a2Aw4b1WRUAF
+         u1kMBOA6MVNjKfh4w7olDuiGjWLPioZ0f/jsjSsIcaL6D57YXpIdgJYmWNRrE26CIVok
+         yD4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ACxHVcK0Ryo9RIAxVD4v0if52uvGSzNC+4znNKdgqQc=;
+        b=AzwKrRMrUq/6k/ouMVSxTRWNe54491fZSEK300BVtBU1G75vehbdpIgog5siy5FXMy
+         XPJxiS39EJ3rSq2XI57mitb9DKwKlg+gRr3EVlQQdCb2Bvy7CKp2DQIr60L/iIeZ8fNw
+         lH/tyc9gN3gdHL361Bic2rLB51QkPkEhpLS+5Ye2BYal+MhLBuRVdSA1mq69ZT4GY58r
+         4I/ddITpumKTgWlCINfhoJyIoLC/sGevC0QiIIICcElaRbrvydwtjmf/0RshLxgNZokU
+         SoEsjIKKZYP3WbuGQd9esI/ruRsqhTyJLx+za7ouH/PwAF6xJ4y2KKL3+yzSJDH9X/0Q
+         s3XQ==
+X-Gm-Message-State: AOAM532Q1CA+N8qVJMl82DlmuwMlN3bmYoq9MMX6JG8noDXW2cpWWfZW
+        TOAbWCcPyp+UPIBkuiZ5Zs8=
+X-Google-Smtp-Source: ABdhPJypBALpu5GeFhgh8yLD19XLlfA/C7wvL5ldLBSZeGcMfkSKMcYTZD8PYh04Z5DtlYJo/JjxnA==
+X-Received: by 2002:a17:90b:3001:: with SMTP id hg1mr20365432pjb.169.1623998329465;
+        Thu, 17 Jun 2021 23:38:49 -0700 (PDT)
+Received: from localhost.localdomain (199.19.111.227.16clouds.com. [199.19.111.227])
+        by smtp.gmail.com with ESMTPSA id s1sm7612604pgg.49.2021.06.17.23.38.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 23:38:49 -0700 (PDT)
+From:   Artem Lapkin <email2tema@gmail.com>
+X-Google-Original-From: Artem Lapkin <art@khadas.com>
+To:     narmstrong@baylibre.com
+Cc:     yue.wang@Amlogic.com, khilman@baylibre.com,
+        lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com,
+        jbrunet@baylibre.com, christianshewitt@gmail.com,
+        martin.blumenstingl@googlemail.com, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        art@khadas.com, nick@khadas.com, gouwa@khadas.com
+Subject: [PATCH] PCI: dwc: meson add quirk
+Date:   Fri, 18 Jun 2021 14:38:21 +0800
+Message-Id: <20210618063821.1383357-1-art@khadas.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgSGVpa28KCi0tLS0tLS0tLS0tLS0tCmpheS54dUByb2NrLWNoaXBzLmNvbQo+QW0gRG9ubmVy
-c3RhZywgMjcuIE1haSAyMDIxLCAwOToxMzo0NSBDRVNUIHNjaHJpZWIgSmlhbnF1biBYdToKPj4g
-VGhlIG5leHQgdmVyc2lvbiBncGlvIGNvbnRyb2xsZXIgb24gU29DcyBsaWtlIHJrMzU2OCBoYXZl
-IG1vcmUgd3JpdGUKPj4gbWFzayBiaXRzIGZvciByZWdpc3RlcnMuCj4+Cj4+IFNpZ25lZC1vZmYt
-Ynk6IEppYW5xdW4gWHUgPGpheS54dUByb2NrLWNoaXBzLmNvbT4KPgo+PiBAQCAtNTQ5LDE1ICs2
-NzcsMzMgQEAgc3RhdGljIGludCByb2NrY2hpcF9nZXRfYmFua19kYXRhKHN0cnVjdCByb2NrY2hp
-cF9waW5fYmFuayAqYmFuaykKPj7CoCByZXR1cm4gUFRSX0VSUihiYW5rLT5yZWdfYmFzZSk7Cj4+
-wqAKPj7CoCBiYW5rLT5pcnEgPSBpcnFfb2ZfcGFyc2VfYW5kX21hcChiYW5rLT5vZl9ub2RlLCAw
-KTsKPj4gLQo+PiAtCWJhbmstPmdwaW9fcmVncyA9ICZncGlvX3JlZ3NfdjE7Cj4+IC0JYmFuay0+
-Z3Bpb190eXBlID0gR1BJT19UWVBFX1YxOwo+PiArCWlmICghYmFuay0+aXJxKQo+PiArCXJldHVy
-biAtRUlOVkFMOwo+PsKgCj4+wqAgYmFuay0+Y2xrID0gb2ZfY2xrX2dldChiYW5rLT5vZl9ub2Rl
-LCAwKTsKPj4gLQlpZiAoIUlTX0VSUihiYW5rLT5jbGspKQo+PiAtCXJldHVybiBjbGtfcHJlcGFy
-ZShiYW5rLT5jbGspOwo+PiArCWlmIChJU19FUlIoYmFuay0+Y2xrKSkKPj4gKwlyZXR1cm4gUFRS
-X0VSUihiYW5rLT5jbGspOwo+PiArCj4+ICsJY2xrX3ByZXBhcmVfZW5hYmxlKGJhbmstPmNsayk7
-Cj4+ICsJaWQgPSByZWFkbChiYW5rLT5yZWdfYmFzZSArIGdwaW9fcmVnc192Mi52ZXJzaW9uX2lk
-KTsKPj4gKwo+PiArCS8qIElmIG5vdCBncGlvIHYyLCB0aGF0IGlzIGRlZmF1bHQgdG8gdjEuICov
-Cj4+ICsJaWYgKGlkID09IEdQSU9fVFlQRV9WMikgewo+PiArCWJhbmstPmdwaW9fcmVncyA9ICZn
-cGlvX3JlZ3NfdjI7Cj4+ICsJYmFuay0+Z3Bpb190eXBlID0gR1BJT19UWVBFX1YyOwo+PiArCWJh
-bmstPmRiX2NsayA9IG9mX2Nsa19nZXQoYmFuay0+b2Zfbm9kZSwgMSk7Cj4+ICsJaWYgKElTX0VS
-UihiYW5rLT5kYl9jbGspKSB7Cj4+ICsJZGV2X2VycihiYW5rLT5kZXYsICJjYW5ub3QgZmluZCBk
-ZWJvdW5jZSBjbGtcbiIpOwo+PiArCWJhbmstPmRiX2NsayA9IE5VTEw7Cj4+ICsJY2xrX2Rpc2Fi
-bGUoYmFuay0+Y2xrKTsKPj4gKwlyZXR1cm4gLUVJTlZBTDsKPj4gKwl9Cj4+ICsJfSBlbHNlIHsK
-Pj4gKwliYW5rLT5ncGlvX3JlZ3MgPSAmZ3Bpb19yZWdzX3YxOwo+PiArCWJhbmstPmdwaW9fdHlw
-ZSA9IEdQSU9fVFlQRV9WMTsKPj4gKwl9Cj4+wqAKPj4gLQliYW5rLT5jbGsgPSBOVUxMOwo+PiAr
-CWNsa19kaXNhYmxlKGJhbmstPmNsayk7Cj4KPk5JVDogeW91IGNvdWxkIG1vdmUgdGhlICJhbHdh
-eXMgZW5hYmxlIGNsb2NrIGZvciBncGlvIGNvbnRyb2xsZXIiIHBhdGNoCj5iZWZvcmUgYWRkaW5n
-IHRoZSB2MiBzdXBwb3J0LiBUaGF0IHdheSB5b3Ugc2F2ZSBvbiBub3QgbmVlZGluZyB0byBhZGQK
-PnRoZSBjbG9jayBoYW5kbGluZyBoZXJlLgo+IApWNiBoYXMgcmVvZGVyIHRoZSBwYXRjaGVzLCBJ
-IGhhdm4ndCBhZGQgYWNrZWQtYnkgb3IgcmV2aWV3ZWQtYnkgeWV0LCBwbGVhc2UgdGFrZSBhIGxv
-b2sgYWdhaW4sIHRoYW5rcwoKPk90aGVyd2lzZSBsb29rcyBuaWNlIHRvIG1lLgo+Cj5BY2tlZC1i
-eTogSGVpa28gU3R1ZWJuZXIgPGhlaWtvQHNudGVjaC5kZT4KPgo+Cj5IZWlrbwo+Cj4KPj7CoCBy
-ZXR1cm4gMDsKPj7CoCB9Cj4+wqAKPj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvcGluY3RybC9waW5j
-dHJsLXJvY2tjaGlwLmggYi9kcml2ZXJzL3BpbmN0cmwvcGluY3RybC1yb2NrY2hpcC5oCj4+IGlu
-ZGV4IDFiNzc0YjZiYmMzZS4uNTg5ZDRkMmE5OGM5IDEwMDY0NAo+PiAtLS0gYS9kcml2ZXJzL3Bp
-bmN0cmwvcGluY3RybC1yb2NrY2hpcC5oCj4+ICsrKyBiL2RyaXZlcnMvcGluY3RybC9waW5jdHJs
-LXJvY2tjaGlwLmgKPj4gQEAgLTEyMSw2ICsxMjEsNyBAQCBzdHJ1Y3Qgcm9ja2NoaXBfZHJ2IHsK
-Pj7CoMKgICogQHJlZ19iYXNlOiByZWdpc3RlciBiYXNlIG9mIHRoZSBncGlvIGJhbmsKPj7CoMKg
-ICogQHJlZ21hcF9wdWxsOiBvcHRpb25hbCBzZXBhcmF0ZSByZWdpc3RlciBmb3IgYWRkaXRpb25h
-bCBwdWxsIHNldHRpbmdzCj4+wqDCoCAqIEBjbGs6IGNsb2NrIG9mIHRoZSBncGlvIGJhbmsKPj4g
-KyAqIEBkYl9jbGs6IGNsb2NrIG9mIHRoZSBncGlvIGRlYm91bmNlCj4+wqDCoCAqIEBpcnE6IGlu
-dGVycnVwdCBvZiB0aGUgZ3BpbyBiYW5rCj4+wqDCoCAqIEBzYXZlZF9tYXNrczogU2F2ZWQgY29u
-dGVudCBvZiBHUElPX0lOVEVOIGF0IHN1c3BlbmQgdGltZS4KPj7CoMKgICogQHBpbl9iYXNlOiBm
-aXJzdCBwaW4gbnVtYmVyCj4+IEBAIC0xNDYsNiArMTQ3LDcgQEAgc3RydWN0IHJvY2tjaGlwX3Bp
-bl9iYW5rIHsKPj7CoCB2b2lkIF9faW9tZW0JKnJlZ19iYXNlOwo+PsKgIHN0cnVjdCByZWdtYXAJ
-KnJlZ21hcF9wdWxsOwo+PsKgIHN0cnVjdCBjbGsJKmNsazsKPj4gKwlzdHJ1Y3QgY2xrCSpkYl9j
-bGs7Cj4+wqAgaW50CWlycTsKPj7CoCB1MzIJc2F2ZWRfbWFza3M7Cj4+wqAgdTMyCXBpbl9iYXNl
-Owo+Pgo+Cj4KPgo+Cj4KPgo+
+Device set same 256 bytes maximum read request size equal MAX_READ_REQ_SIZE
+was find some issue with HDMI scrambled picture and nvme devices
+at intensive writing...
 
+[    4.798971] nvme 0000:01:00.0: fix MRRS from 512 to 256
 
+This quirk setup same MRRS if we try solve this problem with
+pci=pcie_bus_perf kernel command line param
+
+Signed-off-by: Artem Lapkin <art@khadas.com>
+---
+ drivers/pci/controller/dwc/pci-meson.c | 27 ++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+diff --git a/drivers/pci/controller/dwc/pci-meson.c b/drivers/pci/controller/dwc/pci-meson.c
+index 686ded034f22..e2d40e5c2661 100644
+--- a/drivers/pci/controller/dwc/pci-meson.c
++++ b/drivers/pci/controller/dwc/pci-meson.c
+@@ -466,6 +466,33 @@ static int meson_pcie_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
++static void meson_pcie_quirk(struct pci_dev *dev)
++{
++	int mrrs;
++
++	/* no need quirk */
++	if (pcie_bus_config != PCIE_BUS_DEFAULT)
++		return;
++
++	/* no need for root bus */
++	if (pci_is_root_bus(dev->bus))
++		return;
++
++	mrrs = pcie_get_readrq(dev);
++
++	/*
++	 * set same 256 bytes maximum read request size equal MAX_READ_REQ_SIZE
++	 * was find some issue with HDMI scrambled picture and nvme devices
++	 * at intensive writing...
++	 */
++
++	if (mrrs != MAX_READ_REQ_SIZE) {
++		dev_info(&dev->dev, "fix MRRS from %d to %d\n", mrrs, MAX_READ_REQ_SIZE);
++		pcie_set_readrq(dev, MAX_READ_REQ_SIZE);
++	}
++}
++DECLARE_PCI_FIXUP_ENABLE(PCI_ANY_ID, PCI_ANY_ID, meson_pcie_quirk);
++
+ static const struct of_device_id meson_pcie_of_match[] = {
+ 	{
+ 		.compatible = "amlogic,axg-pcie",
+-- 
+2.25.1
 
