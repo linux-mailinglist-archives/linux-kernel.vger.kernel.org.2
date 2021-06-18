@@ -2,145 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671683AD609
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5A13AD60D
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 01:39:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235148AbhFRXky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 19:40:54 -0400
-Received: from mga14.intel.com ([192.55.52.115]:47071 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234082AbhFRXkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 19:40:53 -0400
-IronPort-SDR: O3uh00xWNfSxt00PnrNWWyLJ2kK/AS+dAR5MQQFoxSv32/p6pT1skznjTFS4bQNNrGXpf5LkWU
- fvrYvR6/gcuw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="206455847"
-X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
-   d="scan'208";a="206455847"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 16:38:43 -0700
-IronPort-SDR: 8lrlscrp010EhK1m6h4HH+i/RAAkcTR6znVWBPeh3hdUHXYCPoqb77koEl8Dh1t8xuFRPqFRPJ
- 6+CIZQCd1e+Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,284,1616482800"; 
-   d="scan'208";a="554882543"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 18 Jun 2021 16:38:41 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1luO4O-0003CD-V0; Fri, 18 Jun 2021 23:38:40 +0000
-Date:   Sat, 19 Jun 2021 07:37:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- edfbcdafc27b9a0eb9280aa3fbe34f48f202b7f4
-Message-ID: <60cd2e4a.5E/op21kF1+YTRBp%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S235188AbhFRXlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 19:41:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235165AbhFRXlM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 19:41:12 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B54C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:39:02 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id s22so16182981ljg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 16:39:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Tc6KnzldMt7lAUMkOKZvz0InbTpN/HVH+jn+WvW53/E=;
+        b=eL7fdXlfwBHtKxmU60+CMtMA5r/XRaknloeToSvovaCy6C1p3D+StnRGc6RHxSKOyB
+         cbYWJzeNoxiX28R42+0V7Is0XqgT4rJZybOUPajsM5WmZT59S1flesvHNzV55nydgD8i
+         zrq3N45K8cnGIdEvTrRRZAan57g2JQv+zqU+8zH2iOuH2PmKzAgWc/kX/kfhYxIwNKJa
+         5obKI77TLDUM8aw3RbCG8up/2Cdi9EiN+j9Jybf71xqaOyGGi1fq1EdaKDn1VvdWEwre
+         jmbSxEbYJwvYUzhjyRt2W8BKdvi7sHpAfYEOsBn1K0jgoqJXweGTYOdJIR0oFJ1ZJyH9
+         /Erw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Tc6KnzldMt7lAUMkOKZvz0InbTpN/HVH+jn+WvW53/E=;
+        b=sidYSakdfcwYuysEJqfc/bjobdns+XGNnvUiaUn4I1y00A7R3Lpm7Tn6UnVp8NM2kf
+         KwDd1lL5yVt6Tcb9FK9RRdSGOJmBPb9T4zxcZbSLpImcSBKw0apkNGNOfJE3oHa9LSay
+         axVvnbNkd9YiTym+l85nYtUISiFgbDOALLb7k0PWAbNliXMhbPxPUKn3yVFJr17Pnwhk
+         PLSqm/yYhRk5WJm0QkQ3702tF1V/Rb5KscbNUpN2BL+/QVTfrAX7n6VtAn+fdv6daaH1
+         aL6XkpY3EBQ2vAQ5knpQKkItqm2jyHbTpIn3K2j5Tg8eV4xVra7F47t5HbYZslvX9oQS
+         /1/g==
+X-Gm-Message-State: AOAM532DUIc/x+ewkHPk/ywaskrB2tMqgkYj85PoPgskE2Vv21ODOfW4
+        uvrqcmiJBPA4GluOxoPFEIEPKbR8oFbi2JnaZDkUQlqAu+lHIg==
+X-Google-Smtp-Source: ABdhPJyNRAgajgALbhCeexQMXZgno4VB8f7zK8yOADUk0+qMeoNDo2tJ9pGi8pHJ/tzQZNYzH21l23ame2aoIMzBkxY=
+X-Received: by 2002:a05:651c:1108:: with SMTP id d8mr10895928ljo.0.1624059540015;
+ Fri, 18 Jun 2021 16:39:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <ac070cd90c0d45b7a554366f235262fa5c566435.1622716926.git.legion@kernel.org>
+ <20210615113222.edzkaqfvrris4nth@wittgenstein> <20210615124715.nzd5we5tl7xc2n2p@example.org>
+ <CALvZod7po_fK9JpcUNVrN6PyyP9k=hdcyRfZmHjSVE5r_8Laqw@mail.gmail.com> <87zgvpg4wt.fsf@disp2133>
+In-Reply-To: <87zgvpg4wt.fsf@disp2133>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 18 Jun 2021 16:38:48 -0700
+Message-ID: <CALvZod70DNiWF-jTUHp6pOVtVX9pzdvYXaQ1At3GHtdKD=iTwQ@mail.gmail.com>
+Subject: Re: [PATCH v1] proc: Implement /proc/self/meminfo
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux.dev>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Chris Down <chris@chrisdown.name>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: edfbcdafc27b9a0eb9280aa3fbe34f48f202b7f4  Merge branch 'sched/core'
+On Wed, Jun 16, 2021 at 9:17 AM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> Shakeel Butt <shakeelb@google.com> writes:
+>
+> > On Tue, Jun 15, 2021 at 5:47 AM Alexey Gladkov <legion@kernel.org> wrote:
+> >>
+> > [...]
+> >>
+> >> I made the second version of the patch [1], but then I had a conversation
+> >> with Eric W. Biederman offlist. He convinced me that it is a bad idea to
+> >> change all the values in meminfo to accommodate cgroups. But we agreed
+> >> that MemAvailable in /proc/meminfo should respect cgroups limits. This
+> >> field was created to hide implementation details when calculating
+> >> available memory. You can see that it is quite widely used [2].
+> >> So I want to try to move in that direction.
+> >>
+> >> [1] https://git.kernel.org/pub/scm/linux/kernel/git/legion/linux.git/log/?h=patchset/meminfo/v2.0
+> >> [2] https://codesearch.debian.net/search?q=MemAvailable%3A
+> >>
+> >
+> > Please see following two links on the previous discussion on having
+> > per-memcg MemAvailable stat.
+> >
+> > [1] https://lore.kernel.org/linux-mm/alpine.DEB.2.22.394.2006281445210.855265@chino.kir.corp.google.com/
+> > [2] https://lore.kernel.org/linux-mm/alpine.DEB.2.23.453.2007142018150.2667860@chino.kir.corp.google.com/
+> >
+> > MemAvailable itself is an imprecise metric and involving memcg makes
+> > this metric even more weird. The difference of semantics of swap
+> > accounting of v1 and v2 is one source of this weirdness (I have not
+> > checked your patch if it is handling this weirdness). The lazyfree and
+> > deferred split pages are another source.
+> >
+> > So, I am not sure if complicating an already imprecise metric will
+> > make it more useful.
+>
+> Making a good guess at how much memory can be allocated without
+> triggering swapping or otherwise stressing the system is something that
+> requires understanding our mm internals.
+>
+> To be able to continue changing the mm or even mm policy without
+> introducing regressions in userspace we need to export values that
+> userspace can use.
 
-elapsed time: 724m
+The issue is the dependence of such exported values on mm internals.
+MM internal code and policy changes will change this value and there
+is a potential of userspace regression.
 
-configs tested: 83
-configs skipped: 2
+>
+> At a first approximation that seems to look like MemAvailable.
+>
+> MemAvailable seems to have a good definition.  Roughly the amount of
+> memory that can be allocated without triggering swapping.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Nowadays, I don't think MemAvailable giving "amount of memory that can
+be allocated without triggering swapping" is even roughly accurate.
+Actually IMO "without triggering swap" is not something an application
+should concern itself with where refaults from some swap types
+(zswap/swap-on-zram) are much faster than refaults from disk.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                         bcm2835_defconfig
-powerpc                    klondike_defconfig
-mips                          rb532_defconfig
-powerpc                     tqm8540_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-x86_64                            allnoconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20210618
-i386                 randconfig-a006-20210618
-i386                 randconfig-a004-20210618
-i386                 randconfig-a001-20210618
-i386                 randconfig-a005-20210618
-i386                 randconfig-a003-20210618
-x86_64               randconfig-a015-20210618
-x86_64               randconfig-a011-20210618
-x86_64               randconfig-a012-20210618
-x86_64               randconfig-a014-20210618
-x86_64               randconfig-a016-20210618
-x86_64               randconfig-a013-20210618
-i386                 randconfig-a015-20210618
-i386                 randconfig-a016-20210618
-i386                 randconfig-a013-20210618
-i386                 randconfig-a014-20210618
-i386                 randconfig-a012-20210618
-i386                 randconfig-a011-20210618
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+> Updated
+> to include not trigger memory cgroup based swapping and I sounds good.
+>
+> I don't know if it will work in practice but I think it is worth
+> exploring.
 
-clang tested configs:
-x86_64               randconfig-b001-20210618
-x86_64               randconfig-a002-20210618
-x86_64               randconfig-a001-20210618
-x86_64               randconfig-a004-20210618
-x86_64               randconfig-a003-20210618
-x86_64               randconfig-a006-20210618
-x86_64               randconfig-a005-20210618
+I agree.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+> I do know that hiding the implementation details and providing userspace
+> with information it can directly use seems like the programming model
+> that needs to be explored.  Most programs should not care if they are in
+> a memory cgroup, etc.  Programs, load management systems, and even
+> balloon drivers have a legitimately interest in how much additional load
+> can be placed on a systems memory.
+>
+
+How much additional load can be placed on a system *until what*. I
+think we should focus more on the "until" part to make the problem
+more tractable.
+
+>
+> A version of this that I remember working fairly well is free space
+> on compressed filesystems.  As I recall compressed filesystems report
+> the amount of uncompressed space that is available (an underestimate).
+> This results in the amount of space consumed going up faster than the
+> free space goes down.
+>
+> We can't do exactly the same thing with our memory usability estimate,
+> but having our estimate be a reliable underestimate might be enough
+> to avoid problems with reporting too much memory as available to
+> userspace.
+>
+> I know that MemAvailable already does that /2 so maybe it is already
+> aiming at being an underestimate.  Perhaps we need some additional
+> accounting to help create a useful metric for userspace as well.
+>
+
+The real challenge here is that we are not 100% sure if a page is
+reclaimable until we try to reclaim it. For example we might have file
+lrus filled with lazyfree pages which might have been accessed.
+MemAvailable will show half the size of file lrus but once we try to
+reclaim them, we have to move them back to anon lru and drastic drop
+in MemAvailable.
+
+>
+> I don't know the final answer.  I do know that not designing an
+> interface that userspace can use to deal with it's legitimate concerns
+> is sticking our collective heads in the sand and wishing the problem
+> will go away.
+
+I am a bit skeptical that a single interface would be enough but first
+we should formalize what exactly the application wants with some
+concrete use-cases. More specifically, are the applications interested
+in avoiding swapping or OOM or stall?
+
+Second, is the reactive approach acceptable? Instead of an upfront
+number representing the room for growth, how about just grow and
+backoff when some event (oom or stall) which we want to avoid is about
+to happen? This is achievable today for oom and stall with PSI and
+memory.high and it avoids the hard problem of reliably estimating the
+reclaimable memory.
