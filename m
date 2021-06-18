@@ -2,373 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C17E3AC6AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 832883AC6AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 10:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232185AbhFRJBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 05:01:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55472 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbhFRJBo (ORCPT
+        id S232716AbhFRJCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 05:02:03 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:48109 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232609AbhFRJCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 05:01:44 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84EE9C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:59:34 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id k42so3280850wms.0
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:59:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=iKNbL/zXfWhJPVVlPR8BRu0VXdbLV4Pr2zdCodIQIBo=;
-        b=Q+xCLaSQ2W4tMpOLs7mcRteCFoS8XPSo8VPO5aTeEEtcB79VnQOdkvkckeHF/jtb+P
-         2gxBOUbMbsbZDhgtQwiaVN0Q2minclbefAz4+72n2tKhZ8dz23HDuJv78sYZnlf6sC6v
-         O50U/Fsgp8i66tJr4l9g7yasuNuMROdNHhj7mPKt8uGkup8ZFqG2oQOh5z7PajQZTpn8
-         xBgf3WaBMrUAgYTeNKBVl2LPxYJcAQ9/5r2UMHdMEdvVl3R+ZKhyYqKrAVbCKu5oN2S0
-         TumcmMz7yrXXjRPLUoGmaxAUew7+hZf4I2HwVdTBb+f2P+WFsRm+JDKOTgd3tiUe3IEg
-         LbeQ==
+        Fri, 18 Jun 2021 05:02:01 -0400
+Received: from mail-ej1-f72.google.com ([209.85.218.72])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1luALv-0001FK-Ow
+        for linux-kernel@vger.kernel.org; Fri, 18 Jun 2021 08:59:51 +0000
+Received: by mail-ej1-f72.google.com with SMTP id p20-20020a1709064994b02903cd421d7803so3622206eju.22
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 01:59:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=iKNbL/zXfWhJPVVlPR8BRu0VXdbLV4Pr2zdCodIQIBo=;
-        b=FsKtlzK2wHlnQpb/APyKlvzhFDVmzyz7uxwC5sW+ufw+z26q/6c5QMi3Y+VvTQlDDr
-         dt/C74QrQ51t5mp+lehXEGtJ1jKUzBXPGPmTV8el7HLjxjTl0JxQn30EyeGmeQHPeJ+0
-         dyXT/BFVmnya3wwEEe6XB+t7KpankjTiiAhI4i/d4SPlMgGINAbtQGnnS2DVsC0z6c/p
-         HT+fc1zP5uN8VSIF0caqhVwl7+5WOn9O4tqIPRazSoPhR9eZ28GWy6oINwIqhYFHRMva
-         Jd424m4l6IETBiQiDRLs/kB2elDjB4A6ayKpA96nx5Snp5RInKql0qsIkeSW034kWC03
-         B6rw==
-X-Gm-Message-State: AOAM531LDo6/LoVxoZZIdffX2c5mijluHOhhgA6gB/rZQtFJD+dXnNAJ
-        xw7f00422MOMuA6zVhqyRZDfdQ==
-X-Google-Smtp-Source: ABdhPJzEo71VIYy6WfAvLKile7vIXzFgpSwaiZbDJsasoeCkqxHiiQADO66qrbPI1p6DMEWrRfAlMw==
-X-Received: by 2002:a1c:a5ce:: with SMTP id o197mr8174930wme.84.1624006772892;
-        Fri, 18 Jun 2021 01:59:32 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:f927:d21d:7ac:d122])
-        by smtp.gmail.com with ESMTPSA id u20sm6888444wmq.24.2021.06.18.01.59.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 01:59:32 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 10:59:26 +0200
-From:   Marco Elver <elver@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Paul McKenney <paulmck@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: RCU vs data_race()
-Message-ID: <YMxgbuEdrq8k3eZp@elver.google.com>
-References: <YMxYR33XEfVg6AoD@hirez.programming.kicks-ass.net>
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PEcc2XLwF7gLUJu71YgacFESmL81dpTQvc0XnJ0Z794=;
+        b=HrbAimeJZBuQKvxoGJJzfeEuHRtwZhoKhlbaHY6r3YvOrLlGMe+5to0wKxYS1ukcP5
+         ZXbMuts8QODy/cf0xSXcIwi+7/FBs8KnhCv6kl4qU0+A721bKGNdXca9Zg8RuHqAj+p1
+         YhIRYVFdrjTd8nv9LGPf+R7wTXcYHeGcjO/QYvUPFltm82BLQQ68P+aTcF2tdIrkQAuZ
+         n7aUEW8GGvWZR1iWoPpbC5mms/zaDUHcd9Eu/MfK9UoZeaSCgTk39dluNTUwth4ejvsm
+         SHjfoz40Wows1KpriBVCBjwwxQwdmpWQMd+pDdx65WyHnsMaEU128WinslofRvPjEztY
+         d8Cg==
+X-Gm-Message-State: AOAM530d3h9BCZYx+7t+uvbtmdWCNlmoQhyN39rsWuQsiWiIPkAZoIYr
+        ocOTKLQJGFjR+cUvjspId3aT1fNvo4JQaDSMQWtgolYcY/RYOMfBoRdBtC026aHAc6JV+aT99TM
+        ZuXH1eeJWqN8yRxc6fuxEBiCHITvr8pc+iOf5iojemw==
+X-Received: by 2002:a05:6402:18f6:: with SMTP id x54mr3654889edy.53.1624006791574;
+        Fri, 18 Jun 2021 01:59:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwMQ0H4LDz9fog0E8p/D6NA/qzZNLkPqQI/pYPUCukC7/7rPKA6YEBSYoQrWiaPFZY5N9RtTQ==
+X-Received: by 2002:a05:6402:18f6:: with SMTP id x54mr3654881edy.53.1624006791433;
+        Fri, 18 Jun 2021 01:59:51 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
+        by smtp.gmail.com with ESMTPSA id y20sm5737732edq.69.2021.06.18.01.59.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jun 2021 01:59:50 -0700 (PDT)
+Subject: Re: [PATCH 5.4 031/184] modules: inherit TAINT_PROPRIETARY_MODULE
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Christoph Hellwig <hch@lst.de>, Jessica Yu <jeyu@kernel.org>
+References: <20210510101950.200777181@linuxfoundation.org>
+ <20210510101951.249384110@linuxfoundation.org>
+ <8edc6f45-6c42-19c7-6f40-6f1a49cc685b@canonical.com>
+Message-ID: <08a2e600-74cf-dbf8-1ecc-777ff65e06b0@canonical.com>
+Date:   Fri, 18 Jun 2021 10:59:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YMxYR33XEfVg6AoD@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+In-Reply-To: <8edc6f45-6c42-19c7-6f40-6f1a49cc685b@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 10:24AM +0200, Peter Zijlstra wrote:
-> Hi Paul,
+On 18/06/2021 10:57, Krzysztof Kozlowski wrote:
+> On 10/05/2021 12:18, Greg Kroah-Hartman wrote:
+>> From: Christoph Hellwig <hch@lst.de>
+>>
+>> commit 262e6ae7081df304fc625cf368d5c2cbba2bb991 upstream.
+>>
+>> If a TAINT_PROPRIETARY_MODULE exports symbol, inherit the taint flag
+>> for all modules importing these symbols, and don't allow loading
+>> symbols from TAINT_PROPRIETARY_MODULE modules if the module previously
+>> imported gplonly symbols.  Add a anti-circumvention devices so people
+>> don't accidentally get themselves into trouble this way.
+>>
+>> Comment from Greg:
+>>   "Ah, the proven-to-be-illegal "GPL Condom" defense :)"
 > 
-> Due to a merge conflict I had to look at some recent RCU code, and I saw
-> you went a little overboard with data_race(). How's something like the
-> below look to you?
+> Patch got in to stable, so my comments are quite late, but can someone
+> explain me - how this is a stable material? What specific, real bug that
+> bothers people, is being fixed here? Or maybe it fixes serious issue
+> reported by a user of distribution kernel? IOW, how does this match
+> stable kernel rules at all?
+> 
+> For sure it breaks some out-of-tree modules already present and used by
+> customers of downstream stable kernels. Therefore I wonder what is the
+> bug fixed here, so the breakage and annoyance of stable users is justified.
 
-I commented below. The main thing is just using the __no_kcsan function
-attribute if it's only about accesses within the function (and not
-also about called functions elsewhere).
+And for the record I am not talking about this patch only. I am asking
+also what serious or real bug is being fixed by:
+"modules: mark find_symbol static
+find_symbol is only used in module.c."
 
-Using the attribute also improves performance slightly (not that it
-matters much in a KCSAN-enabled kernel) due to no instrumentation.
+I would be really happy to extend my knowledge about real bugs faced by
+people, where the fix is to un-export unused symbol. It must have been
+very interesting, real bug bothering people. :)
 
-> The idea being that we fundamentally don't care about data races for
-> debug/error condition prints, so marking every single variable access is
-> just clutter.
 
-Having data_race() around the pr_* helpers seems reasonable, if you
-worry about future unnecessary markings that might pop up due to them.
-
-> ---
-> diff --git a/include/linux/printk.h b/include/linux/printk.h
-> index f589b8b60806..8f21916c2fe2 100644
-> --- a/include/linux/printk.h
-> +++ b/include/linux/printk.h
-> @@ -315,7 +315,7 @@ extern int kptr_restrict;
->   * generate the format string.
->   */
->  #define pr_emerg(fmt, ...) \
-> -	printk(KERN_EMERG pr_fmt(fmt), ##__VA_ARGS__)
-> +	data_race(printk(KERN_EMERG pr_fmt(fmt), ##__VA_ARGS__))
->  /**
->   * pr_alert - Print an alert-level message
->   * @fmt: format string
-> @@ -325,7 +325,7 @@ extern int kptr_restrict;
->   * generate the format string.
->   */
->  #define pr_alert(fmt, ...) \
-> -	printk(KERN_ALERT pr_fmt(fmt), ##__VA_ARGS__)
-> +	data_race(printk(KERN_ALERT pr_fmt(fmt), ##__VA_ARGS__))
->  /**
->   * pr_crit - Print a critical-level message
->   * @fmt: format string
-> @@ -335,7 +335,7 @@ extern int kptr_restrict;
->   * generate the format string.
->   */
->  #define pr_crit(fmt, ...) \
-> -	printk(KERN_CRIT pr_fmt(fmt), ##__VA_ARGS__)
-> +	data_race(printk(KERN_CRIT pr_fmt(fmt), ##__VA_ARGS__))
->  /**
->   * pr_err - Print an error-level message
->   * @fmt: format string
-> @@ -345,7 +345,7 @@ extern int kptr_restrict;
->   * generate the format string.
->   */
->  #define pr_err(fmt, ...) \
-> -	printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__)
-> +	data_race(printk(KERN_ERR pr_fmt(fmt), ##__VA_ARGS__))
->  /**
->   * pr_warn - Print a warning-level message
->   * @fmt: format string
-> @@ -355,7 +355,7 @@ extern int kptr_restrict;
->   * to generate the format string.
->   */
->  #define pr_warn(fmt, ...) \
-> -	printk(KERN_WARNING pr_fmt(fmt), ##__VA_ARGS__)
-> +	data_race(printk(KERN_WARNING pr_fmt(fmt), ##__VA_ARGS__))
->  /**
->   * pr_notice - Print a notice-level message
->   * @fmt: format string
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 6833d8887181..8bb4ec3c7e6e 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -1353,8 +1353,10 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
-
-Looks like this is the whole function, so this could just be:
-
-	void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf) __no_kcsan
-
-	[Attribute can be placed in front or at end, but it seems less
-	 intrusive if at the end.]
-
->  		struct srcu_data *sdp;
->  
->  		sdp = per_cpu_ptr(ssp->sda, cpu);
-> -		u0 = data_race(sdp->srcu_unlock_count[!idx]);
-> -		u1 = data_race(sdp->srcu_unlock_count[idx]);
-> +
-> +		data_race(
-
-... and we'd no longer require this if using the attribute for the whole
-function.
-
-> +		u0 = sdp->srcu_unlock_count[!idx];
-> +		u1 = sdp->srcu_unlock_count[idx];
->  
->  		/*
->  		 * Make sure that a lock is always counted if the corresponding
-> @@ -1362,14 +1364,15 @@ void srcu_torture_stats_print(struct srcu_struct *ssp, char *tt, char *tf)
->  		 */
->  		smp_rmb();
->  
-> -		l0 = data_race(sdp->srcu_lock_count[!idx]);
-> -		l1 = data_race(sdp->srcu_lock_count[idx]);
-> +		l0 = sdp->srcu_lock_count[!idx];
-> +		l1 = sdp->srcu_lock_count[idx];
->  
->  		c0 = l0 - u0;
->  		c1 = l1 - u1;
->  		pr_cont(" %d(%ld,%ld %c)",
->  			cpu, c0, c1,
-> -			"C."[rcu_segcblist_empty(&sdp->srcu_cblist)]);
-> +			"C."[rcu_segcblist_empty(&sdp->srcu_cblist)]));
-> +
->  		s0 += c0;
->  		s1 += c1;
->  	}
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index 1cece5e9be9a..53080c3bede2 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -280,15 +280,15 @@ static void __init rcu_tasks_bootup_oddness(void)
->  /* Dump out rcutorture-relevant state common to all RCU-tasks flavors. */
->  static void show_rcu_tasks_generic_gp_kthread(struct rcu_tasks *rtp, char *s)
-
-	static void show_rcu_tasks_generic_gp_kthread(struct rcu_tasks *rtp, char *s) __no_kcsan
-
-... and so on below.
-
->  {
-> +	data_race(
->  	pr_info("%s: %s(%d) since %lu g:%lu i:%lu/%lu %c%c %s\n",
->  		rtp->kname,
-> -		tasks_gp_state_getname(rtp), data_race(rtp->gp_state),
-> -		jiffies - data_race(rtp->gp_jiffies),
-> -		data_race(rtp->n_gps),
-> -		data_race(rtp->n_ipis_fails), data_race(rtp->n_ipis),
-> -		".k"[!!data_race(rtp->kthread_ptr)],
-> -		".C"[!!data_race(rtp->cbs_head)],
-> -		s);
-> +		tasks_gp_state_getname(rtp), rtp->gp_state,
-> +		jiffies - rtp->gp_jiffies,
-> +		rtp->n_gps, rtp->n_ipis_fails, rtp->n_ipis,
-> +		".k"[!!rtp->kthread_ptr],
-> +		".C"[!!rtp->cbs_head],
-> +		s));
->  }
->  #endif // #ifndef CONFIG_TINY_RCU
->  
-> @@ -1291,10 +1291,11 @@ void show_rcu_tasks_trace_gp_kthread(void)
->  {
->  	char buf[64];
->  
-> +	data_race(
->  	sprintf(buf, "N%d h:%lu/%lu/%lu", atomic_read(&trc_n_readers_need_end),
-> -		data_race(n_heavy_reader_ofl_updates),
-> -		data_race(n_heavy_reader_updates),
-> -		data_race(n_heavy_reader_attempts));
-> +		n_heavy_reader_ofl_updates,
-> +		n_heavy_reader_updates,
-> +		n_heavy_reader_attempts));
->  	show_rcu_tasks_generic_gp_kthread(&rcu_tasks_trace, buf);
->  }
->  EXPORT_SYMBOL_GPL(show_rcu_tasks_trace_gp_kthread);
-> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> index 24065f1acb8b..1e392beabbba 100644
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@ -448,7 +448,7 @@ static void print_cpu_stall_info(int cpu)
->  	       rcu_dynticks_snap(rdp) & 0xfff,
->  	       rdp->dynticks_nesting, rdp->dynticks_nmi_nesting,
->  	       rdp->softirq_snap, kstat_softirqs_cpu(RCU_SOFTIRQ, cpu),
-> -	       data_race(rcu_state.n_force_qs) - rcu_state.n_force_qs_gpstart,
-> +	       rcu_state.n_force_qs - rcu_state.n_force_qs_gpstart,
->  	       fast_no_hz,
->  	       falsepositive ? " (false positive?)" : "");
->  }
-> @@ -465,10 +465,10 @@ static void rcu_check_gp_kthread_starvation(void)
->  		pr_err("%s kthread starved for %ld jiffies! g%ld f%#x %s(%d) ->state=%#lx ->cpu=%d\n",
->  		       rcu_state.name, j,
->  		       (long)rcu_seq_current(&rcu_state.gp_seq),
-> -		       data_race(READ_ONCE(rcu_state.gp_flags)),
-> +		       READ_ONCE(rcu_state.gp_flags),
->  		       gp_state_getname(rcu_state.gp_state),
-> -		       data_race(READ_ONCE(rcu_state.gp_state)),
-> -		       gpk ? data_race(READ_ONCE(gpk->state)) : ~0, cpu);
-> +		       READ_ONCE(rcu_state.gp_state),
-> +		       gpk ? READ_ONCE(gpk->state) : ~0, cpu);
->  		if (gpk) {
->  			pr_err("\tUnless %s kthread gets sufficient CPU time, OOM is now expected behavior.\n", rcu_state.name);
->  			pr_err("RCU grace-period kthread stack dump:\n");
-> @@ -509,9 +509,9 @@ static void rcu_check_gp_kthread_expired_fqs_timer(void)
->  		pr_err("%s kthread timer wakeup didn't happen for %ld jiffies! g%ld f%#x %s(%d) ->state=%#lx\n",
->  		       rcu_state.name, (jiffies - jiffies_fqs),
->  		       (long)rcu_seq_current(&rcu_state.gp_seq),
-> -		       data_race(rcu_state.gp_flags),
-> +		       rcu_state.gp_flags,
->  		       gp_state_getname(RCU_GP_WAIT_FQS), RCU_GP_WAIT_FQS,
-> -		       data_race(READ_ONCE(gpk->state)));
-> +		       READ_ONCE(gpk->state));
->  		pr_err("\tPossible timer handling issue on cpu=%d timer-softirq=%u\n",
->  		       cpu, kstat_softirqs_cpu(TIMER_SOFTIRQ, cpu));
->  	}
-> @@ -573,8 +573,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
->  			gpa = data_race(READ_ONCE(rcu_state.gp_activity));
->  			pr_err("All QSes seen, last %s kthread activity %ld (%ld-%ld), jiffies_till_next_fqs=%ld, root ->qsmask %#lx\n",
->  			       rcu_state.name, j - gpa, j, gpa,
-> -			       data_race(READ_ONCE(jiffies_till_next_fqs)),
-> -			       data_race(READ_ONCE(rcu_get_root()->qsmask)));
-> +			       READ_ONCE(jiffies_till_next_fqs),
-> +			       READ_ONCE(rcu_get_root()->qsmask));
->  		}
->  	}
->  	/* Rewrite if needed in case of slow consoles. */
-> @@ -815,37 +815,43 @@ void show_rcu_gp_kthreads(void)
->  	struct rcu_node *rnp;
->  	struct task_struct *t = READ_ONCE(rcu_state.gp_kthread);
->  
-> +	kcsan_disable_current();
-
-I guess the main difference is if there are calls that should also
-ignore data races, in which case kcsan_disable_current() is required and
-__no_kcsan doesn't work.
-
-> +
->  	j = jiffies;
-> -	ja = j - data_race(READ_ONCE(rcu_state.gp_activity));
-> -	jr = j - data_race(READ_ONCE(rcu_state.gp_req_activity));
-> -	js = j - data_race(READ_ONCE(rcu_state.gp_start));
-> -	jw = j - data_race(READ_ONCE(rcu_state.gp_wake_time));
-> +	ja = j - READ_ONCE(rcu_state.gp_activity);
-> +	jr = j - READ_ONCE(rcu_state.gp_req_activity);
-> +	js = j - READ_ONCE(rcu_state.gp_start);
-> +	jw = j - READ_ONCE(rcu_state.gp_wake_time);
->  	pr_info("%s: wait state: %s(%d) ->state: %#lx ->rt_priority %u delta ->gp_start %lu ->gp_activity %lu ->gp_req_activity %lu ->gp_wake_time %lu ->gp_wake_seq %ld ->gp_seq %ld ->gp_seq_needed %ld ->gp_max %lu ->gp_flags %#x\n",
->  		rcu_state.name, gp_state_getname(rcu_state.gp_state),
-> -		data_race(READ_ONCE(rcu_state.gp_state)),
-> -		t ? data_race(READ_ONCE(t->state)) : 0x1ffffL, t ? t->rt_priority : 0xffU,
-> -		js, ja, jr, jw, (long)data_race(READ_ONCE(rcu_state.gp_wake_seq)),
-> -		(long)data_race(READ_ONCE(rcu_state.gp_seq)),
-> -		(long)data_race(READ_ONCE(rcu_get_root()->gp_seq_needed)),
-> -		data_race(READ_ONCE(rcu_state.gp_max)),
-> -		data_race(READ_ONCE(rcu_state.gp_flags)));
-> +		READ_ONCE(rcu_state.gp_state),
-> +		t ? READ_ONCE(t->state) : 0x1ffffL, t ? t->rt_priority : 0xffU,
-> +		js, ja, jr, jw, (long)READ_ONCE(rcu_state.gp_wake_seq),
-> +		(long)READ_ONCE(rcu_state.gp_seq),
-> +		(long)READ_ONCE(rcu_get_root()->gp_seq_needed),
-> +		READ_ONCE(rcu_state.gp_max),
-> +		READ_ONCE(rcu_state.gp_flags));
-> +
->  	rcu_for_each_node_breadth_first(rnp) {
->  		if (ULONG_CMP_GE(READ_ONCE(rcu_state.gp_seq), READ_ONCE(rnp->gp_seq_needed)) &&
-> -		    !data_race(READ_ONCE(rnp->qsmask)) && !data_race(READ_ONCE(rnp->boost_tasks)) &&
-> -		    !data_race(READ_ONCE(rnp->exp_tasks)) && !data_race(READ_ONCE(rnp->gp_tasks)))
-> +		    !READ_ONCE(rnp->qsmask) && !READ_ONCE(rnp->boost_tasks) &&
-> +		    !READ_ONCE(rnp->exp_tasks) && !READ_ONCE(rnp->gp_tasks))
->  			continue;
-> +
->  		pr_info("\trcu_node %d:%d ->gp_seq %ld ->gp_seq_needed %ld ->qsmask %#lx %c%c%c%c ->n_boosts %ld\n",
->  			rnp->grplo, rnp->grphi,
-> -			(long)data_race(READ_ONCE(rnp->gp_seq)),
-> -			(long)data_race(READ_ONCE(rnp->gp_seq_needed)),
-> -			data_race(READ_ONCE(rnp->qsmask)),
-> -			".b"[!!data_race(READ_ONCE(rnp->boost_kthread_task))],
-> -			".B"[!!data_race(READ_ONCE(rnp->boost_tasks))],
-> -			".E"[!!data_race(READ_ONCE(rnp->exp_tasks))],
-> -			".G"[!!data_race(READ_ONCE(rnp->gp_tasks))],
-> -			data_race(READ_ONCE(rnp->n_boosts)));
-> +			(long)READ_ONCE(rnp->gp_seq),
-> +			(long)READ_ONCE(rnp->gp_seq_needed),
-> +			READ_ONCE(rnp->qsmask),
-> +			".b"[!!READ_ONCE(rnp->boost_kthread_task)],
-> +			".B"[!!READ_ONCE(rnp->boost_tasks)],
-> +			".E"[!!READ_ONCE(rnp->exp_tasks)],
-> +			".G"[!!READ_ONCE(rnp->gp_tasks)],
-> +			READ_ONCE(rnp->n_boosts));
-> +
->  		if (!rcu_is_leaf_node(rnp))
->  			continue;
-> +
->  		for_each_leaf_node_possible_cpu(rnp, cpu) {
->  			rdp = per_cpu_ptr(&rcu_data, cpu);
->  			if (READ_ONCE(rdp->gpwrap) ||
-> @@ -853,17 +859,19 @@ void show_rcu_gp_kthreads(void)
->  					 READ_ONCE(rdp->gp_seq_needed)))
->  				continue;
->  			pr_info("\tcpu %d ->gp_seq_needed %ld\n",
-> -				cpu, (long)data_race(READ_ONCE(rdp->gp_seq_needed)));
-> +				cpu, (long)READ_ONCE(rdp->gp_seq_needed));
->  		}
->  	}
->  	for_each_possible_cpu(cpu) {
->  		rdp = per_cpu_ptr(&rcu_data, cpu);
-> -		cbs += data_race(READ_ONCE(rdp->n_cbs_invoked));
-> +		cbs += READ_ONCE(rdp->n_cbs_invoked);
->  		if (rcu_segcblist_is_offloaded(&rdp->cblist))
->  			show_rcu_nocb_state(rdp);
->  	}
->  	pr_info("RCU callbacks invoked since boot: %lu\n", cbs);
->  	show_rcu_tasks_gp_kthreads();
-> +
-> +	kcsan_enable_current();
->  }
->  EXPORT_SYMBOL_GPL(show_rcu_gp_kthreads);
->  
+Best regards,
+Krzysztof
