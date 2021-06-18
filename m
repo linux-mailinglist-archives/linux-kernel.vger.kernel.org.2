@@ -2,141 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF493AC2E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 07:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB1883AC2EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 07:46:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232601AbhFRFsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 01:48:30 -0400
-Received: from mailgw02.mediatek.com ([1.203.163.81]:23494 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229671AbhFRFs3 (ORCPT
+        id S232620AbhFRFtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 01:49:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229671AbhFRFs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 01:48:29 -0400
-X-UUID: d2b6d1d52d5949d7b46b2a66002cf363-20210618
-X-UUID: d2b6d1d52d5949d7b46b2a66002cf363-20210618
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1020669437; Fri, 18 Jun 2021 13:46:17 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 18 Jun 2021 13:46:07 +0800
-Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 18 Jun 2021 13:46:06 +0800
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Mathias Nyman <mathias.nyman@intel.com>
-CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-usb@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Ikjoon Jang <ikjn@chromium.org>,
-        Tianping Fang <tianping.fang@mediatek.com>
-Subject: [PATCH v2] usb: xhci-mtk: allow multiple Start-Split in a microframe
-Date:   Fri, 18 Jun 2021 13:46:05 +0800
-Message-ID: <1623995165-25759-1-git-send-email-chunfeng.yun@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
+        Fri, 18 Jun 2021 01:48:59 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEF98C061574;
+        Thu, 17 Jun 2021 22:46:50 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0dd800c1c0f109d0ca36f4.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:d800:c1c0:f109:d0ca:36f4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 739671EC054F;
+        Fri, 18 Jun 2021 07:46:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1623995209;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Z2NcsQEXbnE2U0G6jQczPtJMf0zCLQ336536FRXg81M=;
+        b=gf8n4odDGWXwGJEBtSR/Ph2wRe/dCxc/qC6TznTV/wZrAPIanM6DBG6ZnaRQcHTW2w7jNL
+        7X76OBMJf6LrsqYa+IVNSsAA0wJdWACrEla2WhdlZQLbax/a9Joo5Vv5xqQ+MarhLrZCi2
+        E5aBSMueO9iMceLUivF9j6PX26bQGqo=
+Date:   Fri, 18 Jun 2021 07:46:38 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-efi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-coco@lists.linux.dev, linux-mm@kvack.org,
+        linux-crypto@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Sergio Lopez <slp@redhat.com>, Peter Gonda <pgonda@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        David Rientjes <rientjes@google.com>, tony.luck@intel.com,
+        npmccallum@redhat.com
+Subject: Re: [PATCH Part1 RFC v3 06/22] x86/sev: check SEV-SNP features
+ support
+Message-ID: <YMwzPjV9s/6qW75m@zn.tnic>
+References: <20210602140416.23573-1-brijesh.singh@amd.com>
+ <20210602140416.23573-7-brijesh.singh@amd.com>
+ <YL4zJT1v6OuH+tvI@zn.tnic>
+ <e617a0a1-bb8d-9d75-56a4-2ac1138ebf8b@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 02BB984D341FF26AAEC4515F05D01F59A1311868CC49A7C74FF13F345B3278832000:8
-X-MTK:  N
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <e617a0a1-bb8d-9d75-56a4-2ac1138ebf8b@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch is used to relax bandwidth schedule by allowing multiple
-Start-Split in the same microframe.
+On Thu, Jun 17, 2021 at 01:46:08PM -0500, Brijesh Singh wrote:
+> Based on your feedback on AP creation patch to not use the accessors, I am inclined to
+> remove this helper and have the caller directly check the feature bit, is that okay ?
+> 
+> something like:
+> 
+> if (sev_snp_enabled() && !(hv_features & GHCB_HV_FT_SNP))
+> 	sev_es_terminate(GHCB_SNP_UNSUPPORTED);
+> 
+> Let me know if you think I should still keep the accessors.
 
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
----
-v2: fix build warning unused-but-set-variable
----
- drivers/usb/host/xhci-mtk-sch.c | 18 ------------------
- drivers/usb/host/xhci-mtk.h     |  2 --
- 2 files changed, 20 deletions(-)
+Yeah, looks about right. Let's keep hv_features in a sev-specific
+header so that there are no name clashes. Or maybe we should call it
+sev_hv_features since it is going to be read-only anyway.
 
-diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
-index c07411d9b16f..cffcaf4dfa9f 100644
---- a/drivers/usb/host/xhci-mtk-sch.c
-+++ b/drivers/usb/host/xhci-mtk-sch.c
-@@ -470,11 +470,9 @@ static int check_fs_bus_bw(struct mu3h_sch_ep_info *sch_ep, int offset)
- 
- static int check_sch_tt(struct mu3h_sch_ep_info *sch_ep, u32 offset)
- {
--	struct mu3h_sch_tt *tt = sch_ep->sch_tt;
- 	u32 extra_cs_count;
- 	u32 start_ss, last_ss;
- 	u32 start_cs, last_cs;
--	int i;
- 
- 	if (!sch_ep->sch_tt)
- 		return 0;
-@@ -491,10 +489,6 @@ static int check_sch_tt(struct mu3h_sch_ep_info *sch_ep, u32 offset)
- 		if (!(start_ss == 7 || last_ss < 6))
- 			return -ESCH_SS_Y6;
- 
--		for (i = 0; i < sch_ep->cs_count; i++)
--			if (test_bit(offset + i, tt->ss_bit_map))
--				return -ESCH_SS_OVERLAP;
--
- 	} else {
- 		u32 cs_count = DIV_ROUND_UP(sch_ep->maxpkt, FS_PAYLOAD_MAX);
- 
-@@ -521,9 +515,6 @@ static int check_sch_tt(struct mu3h_sch_ep_info *sch_ep, u32 offset)
- 		if (cs_count > 7)
- 			cs_count = 7; /* HW limit */
- 
--		if (test_bit(offset, tt->ss_bit_map))
--			return -ESCH_SS_OVERLAP;
--
- 		sch_ep->cs_count = cs_count;
- 		/* one for ss, the other for idle */
- 		sch_ep->num_budget_microframes = cs_count + 2;
-@@ -544,11 +535,9 @@ static void update_sch_tt(struct mu3h_sch_ep_info *sch_ep, bool used)
- 	struct mu3h_sch_tt *tt = sch_ep->sch_tt;
- 	u32 base, num_esit;
- 	int bw_updated;
--	int bits;
- 	int i, j;
- 
- 	num_esit = XHCI_MTK_MAX_ESIT / sch_ep->esit;
--	bits = (sch_ep->ep_type == ISOC_OUT_EP) ? sch_ep->cs_count : 1;
- 
- 	if (used)
- 		bw_updated = sch_ep->bw_cost_per_microframe;
-@@ -558,13 +547,6 @@ static void update_sch_tt(struct mu3h_sch_ep_info *sch_ep, bool used)
- 	for (i = 0; i < num_esit; i++) {
- 		base = sch_ep->offset + i * sch_ep->esit;
- 
--		for (j = 0; j < bits; j++) {
--			if (used)
--				set_bit(base + j, tt->ss_bit_map);
--			else
--				clear_bit(base + j, tt->ss_bit_map);
--		}
--
- 		for (j = 0; j < sch_ep->cs_count; j++)
- 			tt->fs_bus_bw[base + j] += bw_updated;
- 	}
-diff --git a/drivers/usb/host/xhci-mtk.h b/drivers/usb/host/xhci-mtk.h
-index cd3a37bb73e6..390cb5a86082 100644
---- a/drivers/usb/host/xhci-mtk.h
-+++ b/drivers/usb/host/xhci-mtk.h
-@@ -24,12 +24,10 @@
- #define XHCI_MTK_MAX_ESIT	64
- 
- /**
-- * @ss_bit_map: used to avoid start split microframes overlay
-  * @fs_bus_bw: array to keep track of bandwidth already used for FS
-  * @ep_list: Endpoints using this TT
-  */
- struct mu3h_sch_tt {
--	DECLARE_BITMAP(ss_bit_map, XHCI_MTK_MAX_ESIT);
- 	u32 fs_bus_bw[XHCI_MTK_MAX_ESIT];
- 	struct list_head ep_list;
- };
+Thx.
+
 -- 
-2.18.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
