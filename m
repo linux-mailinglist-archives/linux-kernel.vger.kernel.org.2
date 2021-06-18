@@ -2,105 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB9DF3AC9BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 13:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 776F53AC9BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 13:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234006AbhFRLXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 07:23:35 -0400
-Received: from mail-ua1-f47.google.com ([209.85.222.47]:37723 "EHLO
-        mail-ua1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231240AbhFRLXd (ORCPT
+        id S233936AbhFRLZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 07:25:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24984 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231240AbhFRLZn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 07:23:33 -0400
-Received: by mail-ua1-f47.google.com with SMTP id f34so3256565uae.4;
-        Fri, 18 Jun 2021 04:21:24 -0700 (PDT)
+        Fri, 18 Jun 2021 07:25:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624015414;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CaKo1mrmMJtUIlZg1JMv5hfVSdfXZesaUam0Bk5hUBc=;
+        b=N4zIH5t+HjixjYlQ0W6LBYAF1ZPeZBbRI0M0MRYAAe3vLP/KRKY4gidyL8027XpfDdVigD
+        tkPwYlMz9eODq5Z8qowV7g25hNsESjvlYy1D5eCD0r/qbqbYRj72rXB16KqsT4g0xUJKuM
+        jQDg+Mph60bX4LYk2WrSg/iTk/Tu6jY=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-265-Cabmns4uPkSnBYeAzxsUAQ-1; Fri, 18 Jun 2021 07:23:33 -0400
+X-MC-Unique: Cabmns4uPkSnBYeAzxsUAQ-1
+Received: by mail-ej1-f71.google.com with SMTP id nd10-20020a170907628ab02903a324b229bfso3800484ejc.7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 04:23:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LUEdaM1hppiNrgci9zgX87f5flI84RrFcNouNxBCARM=;
-        b=VMjj+D641hTnyVNwzkJetQyb3NdFPfEQ/2PcQM3Ez3Q7IzRzkxcCXB5mYEazQ69LG8
-         fCbhxayPBi45sPBuyFx9uVnAmzXLBPzq0r3N9JSPyjrJLOb7EeNbv2Qfk2JCmBJEuub1
-         l1Cj9MwlgKYZnNRsfKLJyQdn9gWt0O0ZzpkeqEdyYVN3oP3A5EflHnz4qFG7nfraQzMb
-         hYK01DZs4uZL1MOhq7zFWgjQkgwkYJuGnIxApj8VdloIR33m+dd3GyP69ihMSkbrxRJT
-         gz3s/m+Nu7ntTQePI5YEBkzRJMbCVajIjsVmBGxX0DPZpw1O8qTQRfAsvkFNE6JWrlvq
-         46Vw==
-X-Gm-Message-State: AOAM530uvXX2yD/Mc44WtnUJFSPIM5W5OAITyet9d0+eTMAmOI8ocapd
-        sZ2h33vZVyEW06gFmMHIj7CKpe5F8m22UMOeLQ8=
-X-Google-Smtp-Source: ABdhPJyooSRBNffX2OYV1jgVsZM9h+Rg5u4fSdcU7u4MbNErD9e3yzpFvVUx42I4K4FOiQUMrw6MShg+1ceE1Jt0nyc=
-X-Received: by 2002:ab0:70b3:: with SMTP id q19mr11421814ual.2.1624015284122;
- Fri, 18 Jun 2021 04:21:24 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CaKo1mrmMJtUIlZg1JMv5hfVSdfXZesaUam0Bk5hUBc=;
+        b=lYwF8ZlJugy3z2XHzI50hfCuQh9jk1NPJidTEjIjFsYMjy/2n9U91J9xlyYX6I/2bj
+         Dsuw6x7f+buWwvzLmygpTJhmR4Cp6P2LzZICjB0G1rqBFzeNMK1SJ5I3eGM02//XrOxM
+         J0Pjxv7BSlfJJmOE97xKH5+orNyGN/dJkzzRkbrfSokkMsjmfh3YYccvUx3xYFaThr16
+         KImpahmBlfphlJch/Q1LVRwiicV2U1QUlEAGQQ0k4/uWPdhP8d8ssHbkc37h5/0rF6cR
+         0DEAwi4h1fu3zilB99YfWZmcRIDCSzKYUyerMSO922XP0/J89ZOG2xVe8X8r+pGF0zpL
+         ChIA==
+X-Gm-Message-State: AOAM532ITUpnaSk93Dy5w8cYrLjYchrUFcZeJXXj9iLb+T9/SKEmsRbd
+        gTICxXm2wuLuJx5zZatQp/JeTPl0bU32w+ArhF/YOoE4LmjbzqjaNb+GRElT43XjVZO9dIvmq4b
+        XUMHfzNXbsD6aq+kMv2zIetk2vFiC7qwLgrLj/kfLRCAED6/2uhptzes3F4rGJ2Nex5du87PjdG
+        F7
+X-Received: by 2002:a05:6402:51cf:: with SMTP id r15mr4203632edd.263.1624015411735;
+        Fri, 18 Jun 2021 04:23:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxBCZ3MT8wZ1z2RiBuPHONZucYHG2kQITyGncjCaLfOKetllVSe9SUBYwsGGkV6IDKgGwg/Vg==
+X-Received: by 2002:a05:6402:51cf:: with SMTP id r15mr4203616edd.263.1624015411586;
+        Fri, 18 Jun 2021 04:23:31 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id e6sm909373ejm.35.2021.06.18.04.23.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jun 2021 04:23:30 -0700 (PDT)
+Subject: Re: [GIT PULL] Immutable branch between drivers/platform/x86 and
+ drivers/extcon due for the v5.14 merge window
+To:     Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <CGME20210617140425epcas1p146979efb16135032d9c2bc7666ecd825@epcas1p1.samsung.com>
+ <667247a0-e40a-84d9-889b-8ecf51e5d453@redhat.com>
+ <cde62fb0-835b-11a4-871b-e140019a2f58@samsung.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <bf19a601-426e-4814-e820-dde6e58876e3@redhat.com>
+Date:   Fri, 18 Jun 2021 13:23:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <YMtYs7LVveYH4eRe@mwanda> <YMtY7nOtqEvTokh7@mwanda>
-In-Reply-To: <YMtY7nOtqEvTokh7@mwanda>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 18 Jun 2021 13:21:13 +0200
-Message-ID: <CAMuHMdWw99xv6=HtKFN4mJy_to5xOO-659dc_owR3+mmt8zjMA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] clk: renesas: Avoid mixing error pointers and NULL
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <cde62fb0-835b-11a4-871b-e140019a2f58@samsung.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
+Hi,
 
-On Thu, Jun 17, 2021 at 4:15 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> These functions accidentally return both error pointers and NULL when
-> there is an error.  It doesn't cause a problem but it is confusing and
-> seems unintentional.
->
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+On 6/18/21 4:30 AM, Chanwoo Choi wrote:
+> Hi Hans,
+> 
+> Thanks for immutable branch.
+> I think again that you better apply them via your tree
+> for merging them to linus tree finally without extcon tree.
+> I'm sorry about change of my opinion.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-clk-for-v5.15.
+That is fine, I've already merged the branch into my tree.
 
-> --- a/drivers/clk/renesas/renesas-rzg2l-cpg.c
-> +++ b/drivers/clk/renesas/renesas-rzg2l-cpg.c
-> @@ -124,7 +124,7 @@ rzg2l_cpg_div_clk_register(const struct cpg_core_clk *core,
->                                                  core->flag, &priv->rmw_lock);
->
->         if (IS_ERR(clk_hw))
-> -               return NULL;
-> +               return ERR_CAST(clk_hw);
->
->         return clk_hw->clk;
->  }
-> @@ -174,17 +174,14 @@ rzg2l_cpg_pll_clk_register(const struct cpg_core_clk *core,
->         struct clk_init_data init;
->         const char *parent_name;
->         struct pll_clk *pll_clk;
-> -       struct clk *clk;
->
->         parent = clks[core->parent & 0xffff];
->         if (IS_ERR(parent))
->                 return ERR_CAST(parent);
->
->         pll_clk = devm_kzalloc(dev, sizeof(*pll_clk), GFP_KERNEL);
-> -       if (!pll_clk) {
-> -               clk = ERR_PTR(-ENOMEM);
-> -               return NULL;
-> -       }
-> +       if (!pll_clk)
-> +               return ERR_PTR(-ENOMEM);
+If you end up needing it for some changes for 5.14 after all
+feel free to also merge it into your tree.
 
-This part I already have, by virtue of
-https://lore.kernel.org/r/1623896524-102058-1-git-send-email-yang.lee@linux.alibaba.com
+Regards,
 
-Gr{oetje,eeting}s,
+Hans
 
-                        Geert
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> On 6/17/21 11:04 PM, Hans de Goede wrote:
+>> Hi Chanwoo,
+>>
+>> As discussed here is a pull-req from an immutable branch with the
+>> devm-helper changes from Matti for you to merge into the extcon tree.
+>>
+>> I have already merged this into my review-hans branch and once the
+>> builders had a chance to play with this I will push this
+>> branch to platform-drivers-x86/for-next.
+>>
+>> Regards,
+>>
+>> Hans
+>>
+>>
+>> The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
+>>
+>>   Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+>>
+>> are available in the Git repository at:
+>>
+>>   git://git.kernel.org/pub/scm/linux/kernel/git/hansg/linux.git tags/devm-helpers-v5.14-1
+>>
+>> for you to fetch changes up to 87ee8de23c9df3a368504f34cf3d7f9be9207717:
+>>
+>>   extcon: extcon-max8997: Simplify driver using devm (2021-06-17 13:22:27 +0200)
+>>
+>> ----------------------------------------------------------------
+>> Signed tag for the immutable devm-helpers branch for merging
+>> into the extcon and pdx86 trees.
+>>
+>> ----------------------------------------------------------------
+>> Matti Vaittinen (5):
+>>       devm-helpers: Add resource managed version of work init
+>>       extcon: extcon-max14577: Fix potential work-queue cancellation race
+>>       extcon: extcon-max77693.c: Fix potential work-queue cancellation race
+>>       extcon: extcon-max8997: Fix IRQ freeing at error path
+>>       extcon: extcon-max8997: Simplify driver using devm
+>>
+>>  drivers/extcon/extcon-max14577.c | 16 +++++---------
+>>  drivers/extcon/extcon-max77693.c | 17 +++++----------
+>>  drivers/extcon/extcon-max8997.c  | 45 ++++++++++++++--------------------------
+>>  include/linux/devm-helpers.h     | 25 ++++++++++++++++++++++
+>>  4 files changed, 50 insertions(+), 53 deletions(-)
+>>
+>>
+>>
+> 
+
