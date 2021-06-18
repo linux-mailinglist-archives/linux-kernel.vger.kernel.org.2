@@ -2,145 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3073AC06E
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 03:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD843AC06F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 03:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233384AbhFRBIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 21:08:13 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:36646 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230318AbhFRBIJ (ORCPT
+        id S233475AbhFRBIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 21:08:32 -0400
+Received: from server.eikelenboom.it ([91.121.65.215]:45658 "EHLO
+        server.eikelenboom.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230318AbhFRBIc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 21:08:09 -0400
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 0E63420B83FE;
-        Thu, 17 Jun 2021 18:06:00 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0E63420B83FE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623978361;
-        bh=bcgnjvQBfThviAfC+nD0r2UT09RJuWAKCqEqQjpA3Og=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fUL6DWKLJQUl6vGWhBUXX+k/2dBmtGWCQxF7DjcAdmRLWwjVd1iZZDodMcxjpTpdf
-         5qheHDrPcxAEBOmU2QOutsCe9ZY+2rSDqtIUnXNkbCXXFHAGCjk7vGLkx6r1krTRrK
-         v9LKbFrGUrExxaaqW8kNvsOShTkFnuIj9ewAOX9c=
-Received: by mail-pj1-f51.google.com with SMTP id o10-20020a17090aac0ab029016e92770073so4881643pjq.5;
-        Thu, 17 Jun 2021 18:06:00 -0700 (PDT)
-X-Gm-Message-State: AOAM531TmHof7tRwKrRpZFLHYzy8VRM76ErnQEBG8d9NPNfSK6rMVIL4
-        AyFaQhUTS4gvgRUxSgLuP7IUBouhObHkazrv8hE=
-X-Google-Smtp-Source: ABdhPJy1CyLirX67m04udv8UHON+e5LssQwZjwMZGuMURb8bRjcpQvLKYFf0zMAVsCblD14Q5nNYc/2Dk/zxdAQjUN4=
-X-Received: by 2002:a17:90a:650b:: with SMTP id i11mr8254024pjj.39.1623978360544;
- Thu, 17 Jun 2021 18:06:00 -0700 (PDT)
+        Thu, 17 Jun 2021 21:08:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=eikelenboom.it; s=20180706; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Fd1zkhbHbgLlW8EB8x79t8JJ4Wq3JOq8GZOSFxBd4ZA=; b=YKxs40SrY3dKlnlP+qZO1JSMMn
+        W34a+umSP0S5guWCtNnmZ8r8iBsisO67qgf7zhnAmLj+xOm98sv9MynCbEsThQ1dD24mUHACc3fZb
+        5KlRJce1fIM9rquXYX4Z5ZE3WOTwHyXluEdp0S9oHW6JxAju0dQ/U6dMZTBAHbxgWTIg=;
+Received: from 76-24-144-85.ftth.glasoperator.nl ([85.144.24.76]:51070 helo=[172.16.1.50])
+        by server.eikelenboom.it with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <linux@eikelenboom.it>)
+        id 1lu32K-0007qg-Iu; Fri, 18 Jun 2021 03:11:08 +0200
+Subject: Re: Linux 5.13-rc6 regression to 5.12.x: kernel OOM and panic during
+ kernel boot in low memory Xen VM's (256MB assigned memory).
+From:   Sander Eikelenboom <linux@eikelenboom.it>
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Juergen Gross <jgross@suse.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
+References: <ee8bf04c-6e55-1d9b-7bdb-25e6108e8e1e@eikelenboom.it>
+ <CAHk-=wjgg67NMBNG99naEQ1cM0mXBBzdhCJaYFH-kC+mLK+J2g@mail.gmail.com>
+ <9108c22e-3521-9e24-6124-7776d947b788@rasmusvillemoes.dk>
+ <0b12f27b-1109-b621-c969-10814b2c1c2f@eikelenboom.it>
+ <7338064f-10b6-545d-bc6c-843d04aafe28@eikelenboom.it>
+Message-ID: <e7f9c4f8-1669-75ce-b052-1030350a159e@eikelenboom.it>
+Date:   Fri, 18 Jun 2021 03:06:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210615023812.50885-1-mcroce@linux.microsoft.com>
- <20210615023812.50885-2-mcroce@linux.microsoft.com> <CAJF2gTTreOvQYYXHBYxznB9+vMaASKg8vwA5mkqVo1T6=eVhzw@mail.gmail.com>
- <CAFnufp1OHdRd-tbB+Hi0UnXARtxGPdkK6MJktnaNCNt65d3Oew@mail.gmail.com>
- <f9b78350d9504e889813fc47df41f3fe@AcuMS.aculab.com> <CAFnufp1CA7g=poF3UpKjX7YYz569Wxc1YORSv+uhpU5847xuXw@mail.gmail.com>
- <CAFnufp2LmXxs6+aH7cjH=T4Ye_Yo6yvJpF93JcY+HtVvXB44oQ@mail.gmail.com>
-In-Reply-To: <CAFnufp2LmXxs6+aH7cjH=T4Ye_Yo6yvJpF93JcY+HtVvXB44oQ@mail.gmail.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Fri, 18 Jun 2021 03:05:24 +0200
-X-Gmail-Original-Message-ID: <CAFnufp0qjJG4fr=rcAHYrZp3CVfSs0TBuDN_eAOwOM-K804yow@mail.gmail.com>
-Message-ID: <CAFnufp0qjJG4fr=rcAHYrZp3CVfSs0TBuDN_eAOwOM-K804yow@mail.gmail.com>
-Subject: Re: [PATCH 1/3] riscv: optimized memcpy
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Guo Ren <guoren@kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Bin Meng <bmeng.cn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <7338064f-10b6-545d-bc6c-843d04aafe28@eikelenboom.it>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 2:32 AM Matteo Croce <mcroce@linux.microsoft.com> wrote:
->
-> On Thu, Jun 17, 2021 at 11:48 PM Matteo Croce
-> <mcroce@linux.microsoft.com> wrote:
-> >
-> > On Thu, Jun 17, 2021 at 11:30 PM David Laight <David.Laight@aculab.com> wrote:
-> > >
-> > > From: Matteo Croce
-> > > > Sent: 16 June 2021 19:52
-> > > > To: Guo Ren <guoren@kernel.org>
-> > > >
-> > > > On Wed, Jun 16, 2021 at 1:46 PM Guo Ren <guoren@kernel.org> wrote:
-> > > > >
-> > > > > Hi Matteo,
-> > > > >
-> > > > > Have you tried Glibc generic implementation code?
-> > > > > ref: https://lore.kernel.org/linux-arch/20190629053641.3iBfk9-
-> > > > I_D29cDp9yJnIdIg7oMtHNZlDmhLQPTumhEc@z/#t
-> > > > >
-> > > > > If Glibc codes have the same performance in your hardware, then you
-> > > > > could give a generic implementation first.
-> > >
-> > > Isn't that a byte copy loop - the performance of that ought to be terrible.
-> > > ...
-> > >
-> > > > I had a look, it seems that it's a C unrolled version with the
-> > > > 'register' keyword.
-> > > > The same one was already merged in nios2:
-> > > > https://elixir.bootlin.com/linux/latest/source/arch/nios2/lib/memcpy.c#L68
-> > >
-> > > I know a lot about the nios2 instruction timings.
-> > > (I've looked at code execution in the fpga's intel 'logic analiser.)
-> > > It is a very simple 4-clock pipeline cpu with a 2-clock delay
-> > > before a value read from 'tightly coupled memory' (aka cache)
-> > > can be used in another instruction.
-> > > There is also a subtle pipeline stall if a read follows a write
-> > > to the same memory block because the write is executed one
-> > > clock later - and would collide with the read.
-> > > Since it only ever executes one instruction per clock loop
-> > > unrolling does help - since you never get the loop control 'for free'.
-> > > OTOH you don't need to use that many registers.
-> > > But an unrolled loop should approach 2 bytes/clock (32bit cpu).
-> > >
-> > > > I copied _wordcopy_fwd_aligned() from Glibc, and I have a very similar
-> > > > result of the other versions:
-> > > >
-> > > > [  563.359126] Strings selftest: memcpy(src+7, dst+7): 257 Mb/s
-> > >
-> > > What clock speed is that running at?
-> > > It seems very slow for a 64bit cpu (that isn't an fpga soft-cpu).
-> > >
-> > > While the small riscv cpu might be similar to the nios2 (and mips
-> > > for that matter), there are also bigger/faster cpu.
-> > > I'm sure these can execute multiple instructions/clock
-> > > and possible even read and write at the same time.
-> > > Unless they also support significant instruction re-ordering
-> > > the trivial copy loops are going to be slow on such cpu.
-> > >
-> >
-> > It's running at 1 GHz.
-> >
-> > I get 257 Mb/s with a memcpy, a bit more with a memset,
-> > but I get 1200 Mb/s with a cyle which just reads memory with 64 bit addressing.
-> >
->
-> Err, I forget a mlock() before accessing the memory in userspace.
->
-> The real speed here is:
->
-> 8 bit read: 155.42 Mb/s
-> 64 bit read: 277.29 Mb/s
-> 8 bit write: 138.57 Mb/s
-> 64 bit write: 239.21 Mb/s
->
+On 17/06/2021 21:39, Sander Eikelenboom wrote:
+> On 17/06/2021 20:02, Sander Eikelenboom wrote:
+>> On 17/06/2021 17:37, Rasmus Villemoes wrote:
+>>> On 17/06/2021 17.01, Linus Torvalds wrote:
+>>>> On Thu, Jun 17, 2021 at 2:26 AM Sander Eikelenboom <linux@eikelenboom.it> wrote:
+>>>>>
+>>>>> I just tried to upgrade and test the linux kernel going from the 5.12 kernel series to 5.13-rc6 on my homeserver with Xen, but ran in some trouble.
+>>>>>
+>>>>> Some VM's boot fine (with more than 256MB memory assigned), but the smaller (memory wise) PVH ones crash during kernel boot due to OOM.
+>>>>> Booting VM's with 5.12(.9) kernel still works fine, also when dom0 is running 5.13-rc6 (but it has more memory assigned, so that is not unexpected).
+>>>>
+>>>> Adding Rasmus to the cc, because this looks kind of like the async
+>>>> roofs population thing that caused some other oom issues too.
+>>>
+>>> Yes, that looks like the same issue.
+>>>
+>>>> Rasmus? Original report here:
+>>>>
+>>>>       https://lore.kernel.org/lkml/ee8bf04c-6e55-1d9b-7bdb-25e6108e8e1e@eikelenboom.it/
+>>>>
+>>>> I do find it odd that we'd be running out of memory so early..
+>>>
+>>> Indeed. It would be nice to know if these also reproduce with
+>>> initramfs_async=0 on the command line.
+>>>
+>>> But what is even more curious is that in the other report
+>>> (https://lore.kernel.org/lkml/20210607144419.GA23706@xsang-OptiPlex-9020/),
+>>> it seemed to trigger with _more_ memory - though I may be misreading
+>>> what Oliver was telling me:
+>>>
+>>>> please be noted that we use 'vmalloc=512M' for both parent and this
+>>> commit.
+>>>> since it's ok on parent but oom on this commit, we want to send this
+>>> report
+>>>> to show the potential problem of the commit on some cases.
+>>>>
+>>>> we also tested by changing to use 'vmalloc=128M', it will succeed.
+>>>
+>>> Those tests were done in a VM with 16G memory, and then he also wrote
+>>>
+>>>> we also tried to follow exactly above steps to test on
+>>>> some local machine (8G memory), but cannot reproduce.
+>>>
+>>> Are there some special rules for what memory pools PID1 versus the
+>>> kworker threads can dip into?
+>>>
+>>>
+>>> Side note: I also had a ppc64 report with different symptoms (the
+>>> initramfs was corrupted), but that turned out to also reproduce with
+>>> e7cb072eb98 reverted, so that is likely unrelated. But just FTR that
+>>> thread is here:
+>>> https://lore.kernel.org/lkml/CA+QYu4qxf2CYe2gC6EYnOHXPKS-+cEXL=MnUvqRFaN7W1i6ahQ@mail.gmail.com/
+>>>
+>>> Rasmus
+>>>
+>>
+>> I choose to first finish the bisection attempt, not so suprising it ends up with:
+>> e7cb072eb988e46295512617c39d004f9e1c26f8 is the first bad commit
+>>
+>> So at least that link is confirmed.
+>>
+>> I also checked out booting with "initramfs_async=0" and now the guest boots with the 5.13-rc6-ish kernel which fails without that.
+>>
+>> --
+>> Sander
+>>
+> 
+> CC'ed Juergen.
+> 
+> Juergen, do you know how the direct kernel boot works and if that could interfere
+> with this commit ?
+> 
+> After reading the last part of the commit message e7cb072eb98 namely:
+> 
+>       Should one of the initcalls done after rootfs_initcall time (i.e., device_
+>       and late_ initcalls) need something from the initramfs (say, a kernel
+>       module or a firmware blob), it will simply wait for the initramfs
+>       unpacking to be done before proceeding, which should in theory make this
+>       completely safe.
+>       
+>       But if some driver pokes around in the filesystem directly and not via one
+>       of the official kernel interfaces (i.e.  request_firmware*(),
+>       call_usermodehelper*) that theory may not hold - also, I certainly might
+>       have missed a spot when sprinkling wait_for_initramfs().  So there is an
+>       escape hatch in the form of an initramfs_async= command line parameter.
+> 
+> It dawned on me I'm using "direct kernel boot" functionality, which lets you boot a guest
+> were the kernel and initramfs get copied in from dom0, that works great, but perhaps it
+> pokes around as the last part of the commit message warns about ?
+> 
+> (I think the feature was called "direct kernel boot", what I mean is using the for example:
+>       kernel      = '/boot/vmlinuz-5.13.0-rc6-20210617-doflr-mac80211debug+'
+>       ramdisk     = '/boot/initrd.img-5.13.0-rc6-20210617-doflr-mac80211debug+'
+>       cmdline     = 'root=UUID=2f757320-caca-4215-868d-73a4aacf12aa ro nomodeset xen_blkfront.max_ring_page_order=1 console=hvc0 earlyprintk=xen initramfs_async=0'
+> 
+> options in the xen guest config file to boot the (in this case PVH) guest.
+> )
+> 
+> --
+> Sander
+> 
 
-Anyway, thanks for the info on nio2 timings.
-If you think that an unrolled loop would help, we can achieve the same in C.
-I think we could code something similar to a Duff device (or with jump
-labels) to unroll the loop but at the same time doing efficient small copies.
+OK, done some experimentation and it seems with 256M assigned to the VM it was almost at the edge of OOM with the 5.12 kernel as well in the config I am using it.
+With v5.12 when I assign 240M it boots, with 230M it doesn't. With 5.13 the tipping point seems to be around 265M and 270M, so my config was already quite close to the edge.
 
-Regards,
+The "direct kernel boot" feature I'm using just seems somewhat memory hungry, but using another compression algorithm for the kernel and initramfs already helped in my case.
+
+So sorry for the noise, clearly user-error.
 
 --
-per aspera ad upstream
+Sander
+
+
+
