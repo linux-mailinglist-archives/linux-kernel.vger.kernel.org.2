@@ -2,79 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B2C3AC937
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 12:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F247B3AC93F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 12:55:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232638AbhFRKza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 06:55:30 -0400
-Received: from first.geanix.com ([116.203.34.67]:53926 "EHLO first.geanix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233014AbhFRKyv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 06:54:51 -0400
-Received: from localhost (80-62-117-165-mobile.dk.customer.tdc.net [80.62.117.165])
-        by first.geanix.com (Postfix) with ESMTPSA id 96BCB4C36E0;
-        Fri, 18 Jun 2021 10:52:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1624013560; bh=ZxZg/ybmf0dZDYjJCDKl8z7xwrG15DvFCOiKFYT8Emg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=JMbFP/ewH8KSoz8S07Vt0P7YRLnwiDSZeuhNglezIxCi6xetcRHC8znkPUs78aGa/
-         MYHH/zw1Q17TtC6myWWPsuqG86tuFXKD3RDUuk5O5gEPGhXswq5pq34Ycr/tvLGL2H
-         tMHKTiVVu/ioETu+vBYTyqbt8OW844ITdE4HuulSIFSsOI4XfzigdfQnjf8/Eh1Uap
-         G7XU6OPYVb7OifbPG/uU9VEcdy5MaGKsk27qoZDD1kcZ+Zqt4uZNHdlm6FdS5wbDdf
-         SZ5qaJAC6/3AWiyhEvl45+85pv2Vvl9iwGvej+XqLrPIYlRIrWVnucbahyWH7XyIx4
-         gTHzINRodCK/Q==
-From:   Esben Haabendal <esben@geanix.com>
-To:     netdev@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Zhang Changzhong <zhangchangzhong@huawei.com>,
-        Andrew Lunn <andrew@lunn.ch>, Michael Walle <michael@walle.cc>,
-        Wang Hai <wanghai38@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] net: ll_temac: Avoid ndo_start_xmit returning NETDEV_TX_BUSY
-Date:   Fri, 18 Jun 2021 12:52:38 +0200
-Message-Id: <4c927f4c3da854dc60145d170008a2a09ab25027.1624013456.git.esben@geanix.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <d9200a5023973fbe372a2d51dc4e500400450ecd.1624013456.git.esben@geanix.com>
-References: <d9200a5023973fbe372a2d51dc4e500400450ecd.1624013456.git.esben@geanix.com>
+        id S233745AbhFRK5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 06:57:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229550AbhFRK5U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 06:57:20 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E098C061574;
+        Fri, 18 Jun 2021 03:55:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=WXE8AGIvrigHAr3bWkiTQ8lrgYlIfDElqocU4mw+Hqk=; b=DBRrSrmnwX8IhMiypDyD/kXhC7
+        +boU6L8ETBEcjztGRQxBjSlCAbA0dNg+PYtDCa9zkXGFl9+6xm7LV524fQHHUqQnkDWzrM8FqdDjk
+        JdRZJ7WUVY76TE1Kz5ykIqdg1rDwG0YFzK0qwfj7hpejRnN0r+WC/tEcTo8MzAEfkzgtuS0Q5kxU6
+        jrgt0fnGeAbRQhWAQ6AGQsnErqOtDZNrPkzdcC0CJlqp2fZyh5pOzrj5Y689ksfCS33EhcPTfJBLl
+        kS3udIaHPKp7tXH3iYPKg/nhK/ix+2GMxD3rQ/AvsSAawuMlYlzL5+kCvt5gefxG79tasJ4B+EblB
+        2bdHZdbg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1luC7v-00AAwD-3g; Fri, 18 Jun 2021 10:53:46 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 21546300204;
+        Fri, 18 Jun 2021 12:53:29 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 063ED21BD53A7; Fri, 18 Jun 2021 12:53:29 +0200 (CEST)
+Date:   Fri, 18 Jun 2021 12:53:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v6 1/2] x86/sev: Make sure IRQs are disabled while GHCB
+ is active
+Message-ID: <YMx7KDtf7S0W8oxy@hirez.programming.kicks-ass.net>
+References: <20210616184913.13064-1-joro@8bytes.org>
+ <20210616184913.13064-2-joro@8bytes.org>
+ <YMtshtgEbiQ993Zk@hirez.programming.kicks-ass.net>
+ <YMxWsjZcudaorPgV@8bytes.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,URIBL_BLOCKED
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on 93bd6fdb21b5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YMxWsjZcudaorPgV@8bytes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As documented in Documentation/networking/driver.rst, the ndo_start_xmit
-method must not return NETDEV_TX_BUSY under any normal circumstances, and
-as recommended, we simply stop the tx queue in advance, when there is a
-risk that the next xmit would cause a NETDEV_TX_BUSY return.
+On Fri, Jun 18, 2021 at 10:17:54AM +0200, Joerg Roedel wrote:
+> On Thu, Jun 17, 2021 at 05:38:46PM +0200, Peter Zijlstra wrote:
+> > I'm getting (with all of v6.1 applied):
+> > 
+> > vmlinux.o: warning: objtool: __sev_es_nmi_complete()+0x1bf: call to panic() leaves .noinstr.text section
+> > 
+> > $ ./scripts/faddr2line defconfig-build/vmlinux __sev_es_nmi_complete+0x1bf
+> > __sev_es_nmi_complete+0x1bf/0x1d0:
+> > __sev_get_ghcb at arch/x86/kernel/sev.c:223
+> > (inlined by) __sev_es_nmi_complete at arch/x86/kernel/sev.c:519
+> 
+> I see where this is coming from, but can't create the same warning. I
+> did run 'objtool check -n vmlinux'. Is there more to do to get the full
+> check?
 
-Signed-off-by: Esben Haabendal <esben@geanix.com>
----
- drivers/net/ethernet/xilinx/ll_temac_main.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/net/ethernet/xilinx/ll_temac_main.c b/drivers/net/ethernet/xilinx/ll_temac_main.c
-index cc482ee36501..9a13953ea70f 100644
---- a/drivers/net/ethernet/xilinx/ll_temac_main.c
-+++ b/drivers/net/ethernet/xilinx/ll_temac_main.c
-@@ -942,6 +942,11 @@ temac_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 	wmb();
- 	lp->dma_out(lp, TX_TAILDESC_PTR, tail_p); /* DMA start */
- 
-+	if (temac_check_tx_bd_space(lp, MAX_SKB_FRAGS + 1)) {
-+		netdev_info(ndev, "%s -> netif_stop_queue\n", __func__);
-+		netif_stop_queue(ndev);
-+	}
-+
- 	return NETDEV_TX_OK;
- }
- 
--- 
-2.32.0
-
+You get those when you enable CONFIG_DEBUG_ENTRY=y (make sure to have
+PARAVIRT=n, I so need to go fix that :/).
