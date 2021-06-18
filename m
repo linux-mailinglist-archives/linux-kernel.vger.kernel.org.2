@@ -2,74 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B743A3AD445
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 23:16:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E31FE3AD44C
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 23:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234456AbhFRVSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 17:18:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233725AbhFRVS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 17:18:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 36CF861209;
-        Fri, 18 Jun 2021 21:16:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624050979;
-        bh=wT2zMcdIYi+tuN4Qngd7z5joDawv6bnBZC2kL+p5I+E=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=MmqymCxiZ2JAYIx+mzS0tNb2B+vB3qxEc6B8JUnKGe1JxP0RPjNkixdNNQXWX0uRJ
-         RBb6P+EL5Av4xctoSYhrGouHiF0/u7tvRH51ZYIl6TbPT01Q3q+I+uMTbO5WpIbYLB
-         0wX8fIkj1Cb+J3O5K3JX/aCXLhXvclfqVZZpjkY7yVdRBYj82RMyo5H5kqUFG4cS/+
-         m6V9IEVwpqqoOaw86xyLkrIWXjY3ErRekECjKBFhVR+3pNQzmkgncRyptzapdHvWPH
-         bhR5bE18h3Eut1nrS0vu7jNe/YkN0zfIJHX1chk20ZbzSWq/Y7X3TR0cfkSARlDxVL
-         JQsFAoWevo/CA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 210F760A17;
-        Fri, 18 Jun 2021 21:16:19 +0000 (UTC)
-Subject: Re: [GIT PULL] PCI fixes for v5.13
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210618204937.GA3216522@bjorn-Precision-5520>
-References: <20210618204937.GA3216522@bjorn-Precision-5520>
-X-PR-Tracked-List-Id: <linux-pci.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210618204937.GA3216522@bjorn-Precision-5520>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.13-fixes-2
-X-PR-Tracked-Commit-Id: f18139966d072dab8e4398c95ce955a9742e04f7
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 728a748b3ff70326f652ab92081d639dc51269ea
-Message-Id: <162405097907.7571.5080941137543538357.pr-tracker-bot@kernel.org>
-Date:   Fri, 18 Jun 2021 21:16:19 +0000
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Punit Agrawal <punitagrawal@gmail.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Qu Wenruo <wqu@suse.com>,
-        Domenico Andreoli <domenico.andreoli@linux.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Antti =?iso-8859-1?Q?J=E4rvinen?= <antti.jarvinen@gmail.com>,
-        Shanker Donthineni <sdonthineni@nvidia.com>,
-        Chiqijun <chiqijun@huawei.com>, Evan Quan <evan.quan@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Mikel Rychliski <mikel@mikelr.com>,
-        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
+        id S234540AbhFRVTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 17:19:44 -0400
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:43828 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233969AbhFRVTm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 17:19:42 -0400
+Received: by mail-ot1-f49.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso11030187otu.10;
+        Fri, 18 Jun 2021 14:17:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UjUuhsmA5mgfVc/1Uy18d1ppznnOcj7kd0qIBjlj0Qg=;
+        b=FZUN8LDzqpoQZIQJbyhl3o+1EBijVQtFR7J8PSYdvHrRreAM0K03L5NBuN4jqsvh46
+         /1LwFUREyH85KnyHD9L5VHXHLmcfJuIHLQATedT8ynZpNlGv3bK96ZheDVtirMRhz1ra
+         iyLjr6tFMFTICEJNJHwvtEVVOo/GjjFa7QrIBZ4txzw16/N+q+b1t7ug8FrAiOiDgGgi
+         YlZTWyl2v0imnE5/c7uYTBlGIoVSvZfawAR3/x3k/p/MKlrhWsg9CpXOO7pQ6ZpScEsU
+         ZXZOcZFEf1HApfg3iIbtPfwPSBEh8Toy3umeQD0pFaBxnNkydZlAt85AEyX8N8WEIoLB
+         9dZA==
+X-Gm-Message-State: AOAM531a9pcq9KnZ8aRMpDLRs2Phm7agl4WEhuhng3HxV86YysuXWzIM
+        qBDcyk6D1ooRZQsVcuH/xlVntiG4Rw==
+X-Google-Smtp-Source: ABdhPJxKqsxxAEVOEUJVHSPYIPZnK9BE8rbpPuJuwl1gbU8hpsT0qpmCkLgl3B9TrzZ8p0ww36AjQA==
+X-Received: by 2002:a9d:5e8b:: with SMTP id f11mr11155641otl.274.1624051052049;
+        Fri, 18 Jun 2021 14:17:32 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id o20sm1142195ook.40.2021.06.18.14.17.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 14:17:31 -0700 (PDT)
+Received: (nullmailer pid 2909228 invoked by uid 1000);
+        Fri, 18 Jun 2021 21:17:29 -0000
+Date:   Fri, 18 Jun 2021 15:17:29 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     martin.botka@somainline.org, jamipkettunen@somainline.org,
+        marijn.suijten@somainline.org, Andy Gross <agross@kernel.org>,
+        Taniya Das <tdas@codeaurora.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        angelogioacchino.delregno@somainline.org,
+        devicetree@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Michael Turquette <mturquette@baylibre.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Subject: Re: [PATCH v2 9/9] clk: qcom: gcc-msm8994: Add a quirk for a
+ different SDCC configuration
+Message-ID: <20210618211729.GA2909138@robh.at.kernel.org>
+References: <20210609145523.467090-1-konrad.dybcio@somainline.org>
+ <20210609145523.467090-9-konrad.dybcio@somainline.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210609145523.467090-9-konrad.dybcio@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 18 Jun 2021 15:49:37 -0500:
+On Wed, 09 Jun 2021 16:55:21 +0200, Konrad Dybcio wrote:
+> Some devices come with a different SDCC clock configuration,
+> account for that.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> ---
+>  .../bindings/clock/qcom,gcc-msm8994.yaml         |  4 ++++
+>  drivers/clk/qcom/gcc-msm8994.c                   | 16 ++++++++++++++++
+>  2 files changed, 20 insertions(+)
+> 
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.13-fixes-2
-
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/728a748b3ff70326f652ab92081d639dc51269ea
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Acked-by: Rob Herring <robh@kernel.org>
