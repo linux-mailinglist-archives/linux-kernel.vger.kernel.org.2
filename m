@@ -2,143 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 957B53ACF6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 771CB3ACF78
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:52:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235254AbhFRPvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:51:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230334AbhFRPvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:51:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1192861351;
-        Fri, 18 Jun 2021 15:48:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624031337;
-        bh=PGGvVrkMfYH/qnVXzL1ynHkXyfl4h/zcwQx6X9fgpDQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d9p48mZSZZwIyejtBkS+zdYTLSoOoWeVDRQj4MxSMqpfc2bx/kRN+4fbtXNu9d9ZA
-         vF7uLab4tYZL1/u3YnHcbxuFG85fzkeoyFxY8B6xC2WPYUlYspQNtc6o0+xdlUBKRG
-         TpfB27FW49PDAPdddqo5sGc0DUgqX4wc6ZuOKUmT38qCoQNQ1JGB092hLFF9M3CV2z
-         XjpYTWWlUO6XMC0wr4e718EsDUUzxyWAV3qAnuuVyzRyDVMPQ9iq/WI1gBC0Z4T9Qk
-         a5HK4jsJYXBpmygX8VTC9xYBtY38Ov6IbcvwHx3aBh0NEoqcx8LmUKhnAqztgieCsk
-         G8Pj9cP8FmbFA==
-Date:   Fri, 18 Jun 2021 16:48:36 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     srivasam@codeaurora.org, rafael@kernel.org,
-        dp@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH] regmap: move readable check before accessing regcache.
-Message-ID: <20210618154836.GC4920@sirena.org.uk>
-References: <20210618113558.10046-1-srinivas.kandagatla@linaro.org>
- <20210618115104.GB4920@sirena.org.uk>
- <666da41f-173e-152d-84e5-e9b32baa60da@linaro.org>
+        id S235624AbhFRPyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:54:13 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36898 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235658AbhFRPyL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 11:54:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624031521;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2JEl/D8fElGUs5qE1bIG8tGOHlH8JDuVtFpyPtPAcRM=;
+        b=JEFPYe7eYkoNs0u1MF2VlyQ3u0ZtH+8Qz6FK7E9IFj6Vf7dGULakGJI49asSHs8uJYouXW
+        fj/L9iteQXMWKHhQpcCPk598sJhvzbcCGhi1cXXZzt8CHX72ZI68u3vjlBC780B7frsuI1
+        /TiZlB75ke9C+cwaQnw2Iwq/FM/U0LQ=
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
+ [209.85.166.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-577-KONeMURzPTur3reikz6_Zw-1; Fri, 18 Jun 2021 11:52:00 -0400
+X-MC-Unique: KONeMURzPTur3reikz6_Zw-1
+Received: by mail-il1-f198.google.com with SMTP id g14-20020a926b0e0000b02901bb2deb9d71so6234682ilc.6
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 08:52:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:organization:mime-version:content-transfer-encoding;
+        bh=2JEl/D8fElGUs5qE1bIG8tGOHlH8JDuVtFpyPtPAcRM=;
+        b=FqdbflCJnGsRUpkzL5UXeQKDq7PfcdvnWrTmY5kqfpcvHRoaxsV9I5dAXwVebcUU3n
+         zL+v/W8M90FHSNORuMe+9KU/QAfVNM7iR+z52ASQ36bTK1feKwCbE58p5jaxfk85OP+y
+         ZqbEOiUFBBk3J1/slDet0l0wkLPaXbIX0qXlR+qFNpGWaB23kGc7bd71DS3R2rKwXvtv
+         WfoCw0B1dGbaD5g7cSt+lihQtDiW2rxl2BT1/Luro+Palk/DmPFvV30BKJJ9WS5vYhws
+         VpH27I7Fi+lgIDvI93bPT19RAWwFkvLog21ES6WD4dfPo9AaKBk1slmaZC6t7HqriPEk
+         Otrg==
+X-Gm-Message-State: AOAM532TyQAYo3FvaWPNfTnDFZ7ENb/eeeFYD5AZp9K/VeXdsnMpXNxk
+        0+uLpBjoURm4Rafl+yYpamM+2mV1CCFx7JqwTHullTgzdRAjQnII14gItR8nmXmYsA0ehiF7xvv
+        TT/l3bxcR+bx/RL1NrofmJYNh
+X-Received: by 2002:a05:6e02:1383:: with SMTP id d3mr6837998ilo.172.1624031519706;
+        Fri, 18 Jun 2021 08:51:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxyba3VKvMFyZqbrNjMBnKEoGABQfH7jzv5PsLUxAyjyr9uMPZs6fX5eNRt3vqIMNQW+GtEqg==
+X-Received: by 2002:a05:6e02:1383:: with SMTP id d3mr6837986ilo.172.1624031519497;
+        Fri, 18 Jun 2021 08:51:59 -0700 (PDT)
+Received: from redhat.com (c-73-14-100-188.hsd1.co.comcast.net. [73.14.100.188])
+        by smtp.gmail.com with ESMTPSA id y13sm4516131ioa.51.2021.06.18.08.51.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 08:51:59 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 09:51:57 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     "Raj, Ashok" <ashok.raj@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, Joerg Roedel <joro@8bytes.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        Jason Wang <jasowang@redhat.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shenming Lu <lushenming@huawei.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        David Woodhouse <dwmw2@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: Plan for /dev/ioasid RFC v2
+Message-ID: <20210618095157.131eb309.alex.williamson@redhat.com>
+In-Reply-To: <20210618153735.GA37688@otc-nc-03>
+References: <20210612105711.7ac68c83.alex.williamson@redhat.com>
+        <20210614140711.GI1002214@nvidia.com>
+        <20210614102814.43ada8df.alex.williamson@redhat.com>
+        <MWHPR11MB1886239C82D6B66A732830B88C309@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210615101215.4ba67c86.alex.williamson@redhat.com>
+        <MWHPR11MB188692A6182B1292FADB3BDB8C0F9@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210616133937.59050e1a.alex.williamson@redhat.com>
+        <MWHPR11MB18865DF9C50F295820D038798C0E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <YMykBzUHmATPbmdV@8bytes.org>
+        <20210618151506.GG1002214@nvidia.com>
+        <20210618153735.GA37688@otc-nc-03>
+Organization: Red Hat
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="L6iaP+gRLNZHKoI4"
-Content-Disposition: inline
-In-Reply-To: <666da41f-173e-152d-84e5-e9b32baa60da@linaro.org>
-X-Cookie: Are you a turtle?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 18 Jun 2021 08:37:35 -0700
+"Raj, Ashok" <ashok.raj@intel.com> wrote:
 
---L6iaP+gRLNZHKoI4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> On Fri, Jun 18, 2021 at 12:15:06PM -0300, Jason Gunthorpe wrote:
+> > On Fri, Jun 18, 2021 at 03:47:51PM +0200, Joerg Roedel wrote:  
+> > > Hi Kevin,
+> > > 
+> > > On Thu, Jun 17, 2021 at 07:31:03AM +0000, Tian, Kevin wrote:  
+> > > > Now let's talk about the new IOMMU behavior:
+> > > > 
+> > > > -   A device is blocked from doing DMA to any resource outside of
+> > > >     its group when it's probed by the IOMMU driver. This could be a
+> > > >     special state w/o attaching to any domain, or a new special domain
+> > > >     type which differentiates it from existing domain types (identity, 
+> > > >     dma, or unmanged). Actually existing code already includes a
+> > > >     IOMMU_DOMAIN_BLOCKED type but nobody uses it.  
+> > > 
+> > > There is a reason for the default domain to exist: Devices which require
+> > > RMRR mappings to be present. You can't just block all DMA from devices
+> > > until a driver takes over, we put much effort into making sure there is
+> > > not even a small window in time where RMRR regions (unity mapped regions
+> > > on AMD) are not mapped.  
+> > 
+> > Yes, I think the DMA blocking can only start around/after a VFIO type
+> > driver has probed() and bound to a device in the group, not much
+> > different from today.  
+> 
+> Does this mean when a device has a required "RMRR" that requires a unity
+> mapping we block assigning those devices to guests? I remember we had some
+> restriction but there was a need to go around it at some point in time.
+> 
+> - Either we disallow assigning devices with RMRR
+> - Break that unity map when the device is probed and after which any RMRR
+>   access from device will fault.
 
-On Fri, Jun 18, 2021 at 01:29:50PM +0100, Srinivas Kandagatla wrote:
-> On 18/06/2021 12:51, Mark Brown wrote:
+We currently disallow assignment of RMRR encumbered devices except for
+the known cases of USB and IGD.  In the general case, an RMRR imposes
+a requirement on the host system to maintain ranges of identity mapping
+that is incompatible with userspace ownership of the device and IOVA
+address space.  AFAICT, nothing changes in the /dev/iommu model that
+would make it safe to entrust userspace with RMRR encumbered devices.
+Thanks,
 
-> > Why will use of regmap_update_bits() mean that a driver will never
-> > notice a write failure?  Shouldn't remgap_update_bits() be fixed to
-> > report any errors it isn't reporting, or the driver fixed to check
+Alex
 
-> usecase is performing regmap_update_bits() on a *write-only* registers.
-
-> _regmap_update_bits() checks _regmap_read() return value before bailing o=
-ut.
-> In non cache path we have this regmap_readable() check however in cached
-> patch we do not have this check, so _regmap_read() will return success in
-> this case so regmap_update_bits() never reports any error.
-
-> driver in question does check the return value.
-
-OK, so everything is working fine then - what's the problem?  The value
-in the register is cached, the read returns that cached value and then
-the relevant bits are updated and the new value written out to both the
-cache and the hardware.  No part of that sounds like a problem to me.
-
-> > error codes?  I really don't understand the issue you're trying to
-> > report - what is "the right thing" and what makes you believe that a
-> > driver can't do an _update_bits() on a write only but cached register?
-> > Can you specify in concrete terms what the problem is.
-
-> So one of recent patch ("ASoC: qcom: Fix for DMA interrupt clear reg
-> overwriting) https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-n=
-ext.git/commit/?h=3Dnext-20210618&id=3Dda0363f7bfd3c32f8d5918e40bfddb9905c8=
-6ee1
->=20
-> broke audio on DragonBoard 410c.
-
-> This patch simply converts writes to regmap_update_bits for that particul=
-ar
-> dma channel. The register that its updating is IRQ_CLEAR register which is
-> software "WRITE-ONLY" and Hardware read-only register.
-
-So the driver is buggy then, the register is clearly volatile and can't
-be cached, and it sounds like it's unsafe to use _update_bits() on it.
-The register is clearly not write only since it can be read and it's
-volatile since the readback value does not reflect what was written (and
-presumably can change),.  Even without that it's buggy to use
-_update_bits() here since the device needs the write to happen
-regardless of the value that is read back, with the register marked as
-volatile that will still potentially fail if the readback value happens
-to be the same as whatever bits the driver is trying to set.
-
-Your description of the register is being "software write only" and
-"hardware read only" should be a warning sign here, think about what
-that might mean for a minute.
-
-> The bits in particular case is updating is a period interrupt clear bit.
-
-> Because we are using regmap cache in this driver,
-
-> first regmap_update_bits(map, 0x1, 0x1) on first period interrupt will
-> update the cache and write to IRQ_CLEAR hardware register which then clea=
-rs
-> the interrupt latch.
-> On second period interrupt we do regmap_update_bits(map, 0x1, 0x1) with t=
-he
-> same bits, Because we are using cache for this regmap caches sees no chan=
-ge
-> in the cache value vs the new value so it will never write/update  IRQ_CL=
-EAR
-> hardware register, so hardware is stuck here waiting for IRQ_CLEAR write
-> from driver and audio keeps repeating the last period.
-
-This is because the register is volatile and we can't cache the written
-value, it is a driver bug.  If the value in the register does not change
-=66rom the value written unexpectedly then the register can be cached and
-there is no problem but that's not the case here.
-
---L6iaP+gRLNZHKoI4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDMwFMACgkQJNaLcl1U
-h9AgvAf+O2iXF73nAl/Z/pHHSRh0SYND8UF9rb9lkKpGLz6EkfggX6JF3CDffZH2
-b6KsnBeujrFYIeu2sUOGGiu7ZpTtFHGeXT1Y0kQ8KOQxyYXVZB0KaVw2StBCdXJB
-bVFtbHv+SLPQ1Di1g4/g+YmwHXS0Dgp9bKCjxmCpuLhjD03c3Eb8a24Cu6DDhwEp
-DQoCJSDnAVOtVwsJn4AOhfX6glbDk6AviI++OhxYh24C8tY56PhnlKx/pKq8fB3+
-JGW4NSyqTosNuSKKkPZLCOB+Ytr7/SrXWpXwSXrrVjcnjw+hcs5r1LWBlRGE9FEW
-K4wRSCfbEFcnOTaUqsS6uwxmFerhNQ==
-=g9qE
------END PGP SIGNATURE-----
-
---L6iaP+gRLNZHKoI4--
