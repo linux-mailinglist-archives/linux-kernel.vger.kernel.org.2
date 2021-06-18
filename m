@@ -2,77 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 651E83AC4E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895233AC4ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233186AbhFRHXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 03:23:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
+        id S233230AbhFRH1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 03:27:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231598AbhFRHXx (ORCPT
+        with ESMTP id S233217AbhFRH1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 03:23:53 -0400
-Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6871C061574;
-        Fri, 18 Jun 2021 00:21:43 -0700 (PDT)
-Received: by mail-qv1-xf2c.google.com with SMTP id if15so3090018qvb.2;
-        Fri, 18 Jun 2021 00:21:43 -0700 (PDT)
+        Fri, 18 Jun 2021 03:27:10 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C999C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 00:25:00 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id bb10-20020a17090b008ab029016eef083425so7186942pjb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 00:25:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AseZqmRRFSAWxlkl2H15IzgmyWSQsQrTGUE3obWRyrM=;
-        b=MgJa/mVtq6XWZKn0imgyglg6ZDupmBYLsc6nqx+ZO1zknwhEReGKbW0bIN9kjCm914
-         7E0WAR6WoiSOPVxaB4Sadr237fXQYjs9EIPdgHjw9yI7oCPSKi4s9wk8qO8viYfzO3j3
-         oX+nQ93PDsxTTWGmQ+zEoHHEzIbrkCpmblgepC5prfbUg/gCfpWMcO/C4y9jHTrhS7J9
-         aDBO2TOUCs0o7DhFQLYvBcSNaj7d6xtPRM96we9l/KZVn0ibRSkALFFBsZamfIFH6mcS
-         yO9FBRCXYYW6AVbx1b8Fo3NeTpoSHj0kqJzDZ75OBnVurCO3pnFCMY6pcN+WXE9z1ab5
-         BNWg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oQ7j4KWfTTyvLXb9Q14D2rlz0l6gky8bN6zkafs2a1E=;
+        b=IjMTgC4PAPXDufNja9BoQndIkB7TliHo6U/WgmL53vKrOB41w0sMmLwqflatryB2L/
+         go341RGiCwhWowAhF6El6Dvurd49CNgtdR01AOw07lagrSEFZUo+cwcMqFwZoPAS97bH
+         FzhD8lSyNUm9er0sVexgieu/pO4nakGLn9IoPF1HA0tOBVI/dFfRcsCBIt/d+oTDI5Fq
+         JqUOOc+OiL9MMMVd7u89gkeBM+3bOKjVPG0DdFQJNj3/q3nu2bl/YUf/yo5hIo3056dw
+         IWVGI1eWuPT5m5Wo+v5pUYmYMK40jBI8NRKAwDHYlnwRYryekpiAMNEP3WslYUp6nCmm
+         byzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AseZqmRRFSAWxlkl2H15IzgmyWSQsQrTGUE3obWRyrM=;
-        b=Ef+MtmPqPoSibr80Jz7KUYPznH43/IAULpfs66YOsPV95ENh9x9R45TxtICvXYKfbg
-         TAZNL5eKxY7UcsIMH0cTjLSvQqZtv7JMVMi3ZhT29WNjJw/84pZKObr4vID1CyNRP+us
-         eLJ3AxTp2FMApZzFQ5PkhSNAq65rvxW2MELMyrkagzX5MQoRW05vV7N6Kq8KwfoOanzY
-         F8h/Dxto8t6FAe7hsQ5RjiT/bCHfdy6OO1jQOQE8cKH/dnbVf1zV0HgnuBu/IkWLzL75
-         b6/mHP9TmjCkGlXx3FFp2wsqJMZTutobSQEe1xPztSCNEDPszd7UT+k76dghk4cTwuCM
-         cAoA==
-X-Gm-Message-State: AOAM533fmfuA9dvx0Tt6wV4MJcUE0ghXMGM+Wrc9ruirtwMlECP1gfGQ
-        PTIoi2me11i15Fkf612qpoNxc6u3yEygs/ituAc=
-X-Google-Smtp-Source: ABdhPJzI+iK7/41znGGgZl/dbRcTtghUb49l1y3drihvMzNc/ZojRa6nxa5QP29LX6atdU7DeSKN+KsCA9Lpx5XaGQY=
-X-Received: by 2002:a0c:f982:: with SMTP id t2mr4206794qvn.28.1624000902896;
- Fri, 18 Jun 2021 00:21:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oQ7j4KWfTTyvLXb9Q14D2rlz0l6gky8bN6zkafs2a1E=;
+        b=IuAWLTEXdJ/NdaQ37bF1Ovjx1xHtixNwM5u+zzw/Xpq+j8VS0fxqK7afOYY8/+1Hnc
+         LLH3r1irFnQ69DGeq1WaIKhR9d96D6Jr2Fx/8Uip5/S9/0Ap41l4bCEf/9kubU3XbE1G
+         6w77WLUG7LE42qwsP9wYbJW2wfZKTUCSmdK5XVyd2tUUw9R8MFvie+H58B6YSqJf7ISW
+         xONHxI4erRlrFvsOoGD7w8Dcs78yauF2tuz54nl2e7kSz+tS1fVxz5tbo9XDegbJJmWt
+         c0CSM0JhqWTc2kYJfe71ogfKGV6Mltjq5OyHJBlAIQEFl4OHD41E4xBdQtv8IB5AfuiB
+         ol5Q==
+X-Gm-Message-State: AOAM530Wwk5xVa9oatzUnQZmfJ3gd7tBiIrO3AMMSfUiU9AteLjezRXB
+        8M3AbmzEdvVWEfv6asKN/1g=
+X-Google-Smtp-Source: ABdhPJzktkn8nQZGs7YoFSms8BBQtuQot2odU78DrgDzz2ahNpH7oYYyR2Ef4m+Km4NLmgVAG9XlRQ==
+X-Received: by 2002:a17:902:d704:b029:121:4e28:de0b with SMTP id w4-20020a170902d704b02901214e28de0bmr2162040ply.50.1624001100156;
+        Fri, 18 Jun 2021 00:25:00 -0700 (PDT)
+Received: from BJ10918PCW.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id v8sm6991065pff.34.2021.06.18.00.24.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 00:24:59 -0700 (PDT)
+From:   Xuewen Yan <xuewen.yan94@gmail.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com
+Cc:     rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org,
+        patrick.bellasi@arm.com, zhang.lyra@gmail.com
+Subject: [PATCH] sched/uclamp: Fix getting unreasonable ucalmp_max when rq is idle
+Date:   Fri, 18 Jun 2021 15:23:49 +0800
+Message-Id: <20210618072349.503-1-xuewen.yan94@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210618060446.7969-1-wesley.sheng@amd.com>
-In-Reply-To: <20210618060446.7969-1-wesley.sheng@amd.com>
-From:   "Oliver O'Halloran" <oohall@gmail.com>
-Date:   Fri, 18 Jun 2021 17:21:32 +1000
-Message-ID: <CAOSf1CHaLCAsnB42Je+ynJ6xv-M8qmScbfOLSHVze7D4fEh66Q@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: PCI: pci-error-recovery: rearrange the
- general sequence
-To:     Wesley Sheng <wesley.sheng@amd.com>
-Cc:     linasvepstas@gmail.com, Russell Currey <ruscur@russell.cc>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-doc@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        wesleyshenggit@sina.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 4:05 PM Wesley Sheng <wesley.sheng@amd.com> wrote:
->
-> Reset_link() callback function was called before mmio_enabled() in
-> pcie_do_recovery() function actually, so rearrange the general
-> sequence betwen step 2 and step 3 accordingly.
+From: Xuewen Yan <xuewen.yan@unisoc.com>
 
-I don't think this is true in all cases. If pcie_do_recovery() is
-called with state==pci_channel_io_normal (i.e. non-fatal AER) the link
-won't be reset. EEH (ppc PCI error recovery thing) also uses
-.mmio_enabled() as described.
+Now in uclamp_rq_util_with(), when the task != NULL, the uclamp_max as following:
+uc_rq_max = rq->uclamp[UCLAMP_MAX].value;
+uc_eff_max = uclamp_eff_value(p, UCLAMP_MAX);
+uclamp_max = max{uc_rq_max, uc_eff_max};
+
+Consider the following scenario:
+(1)the rq is idle, the uc_rq_max is last task's UCLAMP_MAX;
+(2)the p's uc_eff_max < uc_rq_max.
+
+The result is the uclamp_max = uc_rq_max instead of uc_eff_max, it is unreasonable.
+
+The scenario often happens in find_energy_efficient_cpu(), when the task has smaller UCLAMP_MAX.
+
+Inserts whether the rq is idle in the uclamp_rq_util_with().
+
+Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+---
+ kernel/sched/sched.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index a189bec13729..0feef6af89f2 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -2550,7 +2550,10 @@ unsigned long uclamp_rq_util_with(struct rq *rq, unsigned long util,
+ 
+ 	if (p) {
+ 		min_util = max(min_util, uclamp_eff_value(p, UCLAMP_MIN));
+-		max_util = max(max_util, uclamp_eff_value(p, UCLAMP_MAX));
++		if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)
++			max_util = uclamp_eff_value(p, UCLAMP_MAX);
++		else
++			max_util = max(max_util, uclamp_eff_value(p, UCLAMP_MAX));
+ 	}
+ 
+ 	/*
+-- 
+2.25.1
+
