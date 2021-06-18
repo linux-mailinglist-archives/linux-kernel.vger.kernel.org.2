@@ -2,135 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD3D3AC01C
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 02:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC953AC01E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 02:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233309AbhFRAev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 20:34:51 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:60872 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232683AbhFRAet (ORCPT
+        id S233321AbhFRAfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 20:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232683AbhFRAe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 20:34:49 -0400
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
-        by linux.microsoft.com (Postfix) with ESMTPSA id AE73F20B83FE;
-        Thu, 17 Jun 2021 17:32:40 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AE73F20B83FE
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623976360;
-        bh=MedTKdd/PKZblDl4NMMlMN/75NblysabVRfkStvy+Nk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ARUuURYMOvgZxU6jLzFVZQR4NCEm9QnL7P7N3gaUvlp6VKCaYY4o4JBrEfWkEpHuM
-         P414CuS96BERO8HLlYt9UpvDdJxBEGICDBgFj96CXY+bbI0IJoZWdezLBR7vqwekFh
-         lo2+kc8AzGL4Zkscl91swlgmSrbTNXyIY/SCd4u8=
-Received: by mail-pg1-f175.google.com with SMTP id e33so6349455pgm.3;
-        Thu, 17 Jun 2021 17:32:40 -0700 (PDT)
-X-Gm-Message-State: AOAM530z2szV9M90eOIakBibPxMHVXiTj5dEBH5l9zGIqOfBHE475v1M
-        nHeb7rNT+YRDd5yG+E26Nb9BrMImiUimEFlCnqw=
-X-Google-Smtp-Source: ABdhPJw9hqZXza08A7iBCMeKbhQ7X8rmdrwebS+21moWecLDSXghQZciP18y8EmllVrgWTKyeZx01F/nX9EFj1JYezE=
-X-Received: by 2002:aa7:900f:0:b029:2ec:82d2:d23 with SMTP id
- m15-20020aa7900f0000b02902ec82d20d23mr2343462pfo.16.1623976360182; Thu, 17
- Jun 2021 17:32:40 -0700 (PDT)
+        Thu, 17 Jun 2021 20:34:59 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D5B1C061574;
+        Thu, 17 Jun 2021 17:32:51 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G5fyl3c7kz9sT6;
+        Fri, 18 Jun 2021 10:32:46 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1623976368;
+        bh=TkB+VDpF08WUR0vy6/bzN+A7ca+W8/ZnWNr3TFqRcRc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=OsJvn6gH+V/q4tznradn+aNlt5sLGc7EG98Sf0ABvF8H3iimJLy0A85wzXmPAAa9d
+         qgRgPZlt7yFbEKYlFxhOYbknFC1UYFwfoiFCFoSxYTf7LGyOso17/oTwTDMLlAzGh6
+         JNOU6hMCeBXxcMTxNh3R30Ln8BaSA7GfNib7wv68P2pP6oMotX0fFoXNWdidbQRgzw
+         r7Sr4CD55A/pJ0E7Y4sq98QhAiCYEbH/zwXc3jpdOFKcf+OTj1lG4tA1PyWp+HnZxA
+         XM9oZaCUNgp7x+7VhqddKr4Huy1zg+Xv4rX+Zb2GzSZTOfP41xnlg4QLUWpjMyPFCC
+         M58zCG6MPE9Lw==
+Date:   Fri, 18 Jun 2021 10:32:45 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Marcin Juszkiewicz <marcin@juszkiewicz.com.pl>
+Subject: linux-next: manual merge of the ext3 tree with Linus' tree
+Message-ID: <20210618103245.02f030b5@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210615023812.50885-1-mcroce@linux.microsoft.com>
- <20210615023812.50885-2-mcroce@linux.microsoft.com> <CAJF2gTTreOvQYYXHBYxznB9+vMaASKg8vwA5mkqVo1T6=eVhzw@mail.gmail.com>
- <CAFnufp1OHdRd-tbB+Hi0UnXARtxGPdkK6MJktnaNCNt65d3Oew@mail.gmail.com>
- <f9b78350d9504e889813fc47df41f3fe@AcuMS.aculab.com> <CAFnufp1CA7g=poF3UpKjX7YYz569Wxc1YORSv+uhpU5847xuXw@mail.gmail.com>
-In-Reply-To: <CAFnufp1CA7g=poF3UpKjX7YYz569Wxc1YORSv+uhpU5847xuXw@mail.gmail.com>
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-Date:   Fri, 18 Jun 2021 02:32:04 +0200
-X-Gmail-Original-Message-ID: <CAFnufp2LmXxs6+aH7cjH=T4Ye_Yo6yvJpF93JcY+HtVvXB44oQ@mail.gmail.com>
-Message-ID: <CAFnufp2LmXxs6+aH7cjH=T4Ye_Yo6yvJpF93JcY+HtVvXB44oQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] riscv: optimized memcpy
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Guo Ren <guoren@kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Bin Meng <bmeng.cn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/inD=ugamMelSXyu0PolZeSk";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 11:48 PM Matteo Croce
-<mcroce@linux.microsoft.com> wrote:
->
-> On Thu, Jun 17, 2021 at 11:30 PM David Laight <David.Laight@aculab.com> wrote:
-> >
-> > From: Matteo Croce
-> > > Sent: 16 June 2021 19:52
-> > > To: Guo Ren <guoren@kernel.org>
-> > >
-> > > On Wed, Jun 16, 2021 at 1:46 PM Guo Ren <guoren@kernel.org> wrote:
-> > > >
-> > > > Hi Matteo,
-> > > >
-> > > > Have you tried Glibc generic implementation code?
-> > > > ref: https://lore.kernel.org/linux-arch/20190629053641.3iBfk9-
-> > > I_D29cDp9yJnIdIg7oMtHNZlDmhLQPTumhEc@z/#t
-> > > >
-> > > > If Glibc codes have the same performance in your hardware, then you
-> > > > could give a generic implementation first.
-> >
-> > Isn't that a byte copy loop - the performance of that ought to be terrible.
-> > ...
-> >
-> > > I had a look, it seems that it's a C unrolled version with the
-> > > 'register' keyword.
-> > > The same one was already merged in nios2:
-> > > https://elixir.bootlin.com/linux/latest/source/arch/nios2/lib/memcpy.c#L68
-> >
-> > I know a lot about the nios2 instruction timings.
-> > (I've looked at code execution in the fpga's intel 'logic analiser.)
-> > It is a very simple 4-clock pipeline cpu with a 2-clock delay
-> > before a value read from 'tightly coupled memory' (aka cache)
-> > can be used in another instruction.
-> > There is also a subtle pipeline stall if a read follows a write
-> > to the same memory block because the write is executed one
-> > clock later - and would collide with the read.
-> > Since it only ever executes one instruction per clock loop
-> > unrolling does help - since you never get the loop control 'for free'.
-> > OTOH you don't need to use that many registers.
-> > But an unrolled loop should approach 2 bytes/clock (32bit cpu).
-> >
-> > > I copied _wordcopy_fwd_aligned() from Glibc, and I have a very similar
-> > > result of the other versions:
-> > >
-> > > [  563.359126] Strings selftest: memcpy(src+7, dst+7): 257 Mb/s
-> >
-> > What clock speed is that running at?
-> > It seems very slow for a 64bit cpu (that isn't an fpga soft-cpu).
-> >
-> > While the small riscv cpu might be similar to the nios2 (and mips
-> > for that matter), there are also bigger/faster cpu.
-> > I'm sure these can execute multiple instructions/clock
-> > and possible even read and write at the same time.
-> > Unless they also support significant instruction re-ordering
-> > the trivial copy loops are going to be slow on such cpu.
-> >
->
-> It's running at 1 GHz.
->
-> I get 257 Mb/s with a memcpy, a bit more with a memset,
-> but I get 1200 Mb/s with a cyle which just reads memory with 64 bit addressing.
->
+--Sig_/inD=ugamMelSXyu0PolZeSk
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Err, I forget a mlock() before accessing the memory in userspace.
+Hi all,
 
-The real speed here is:
+Today's linux-next merge of the ext3 tree got a conflict in:
 
-8 bit read: 155.42 Mb/s
-64 bit read: 277.29 Mb/s
-8 bit write: 138.57 Mb/s
-64 bit write: 239.21 Mb/s
+  include/uapi/asm-generic/unistd.h
 
--- 
-per aspera ad upstream
+between commit:
+
+  8b1462b67f23 ("quota: finish disable quotactl_path syscall")
+
+from Linus' tree and commit:
+
+  64c2c2c62f92 ("quota: Change quotactl_path() systcall to an fd-based one")
+
+from the ext3 tree.
+
+I fixed it up (I just used the latter version) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/inD=ugamMelSXyu0PolZeSk
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDL6a0ACgkQAVBC80lX
+0Gw7QAgAiBxSofL4ZgyR56BktZdX779GBiwMXcvGNC+hMYkBJCCyVX+zAjDojRU9
+UFGN8YFIlXRtt6+VnMH+M8I7jhLc3NJntayDFzsnUOdOl8vkmDEIZh0FJKjKP6WP
+bLdCDVGEtUArg/5xtQ2Ii3WwBTmOjiP80is5USmZ6lkSOatRT3CqX9n1JN6DGEsA
+i1yigdzfD86p1FSpACECm3AHbxHr3Kc0mQMj6xhzEJAeBXqq6Wig7wfX0sDIi7zf
+EC/TBPYU+s1muSG2rema8JaFS1hTtaBaZkxXHfoD9Qyhul6ulOnKm7+84YXFibly
+nwtM42B5Q7ZzpeQskPL7Pv3uOISJpQ==
+=mv+g
+-----END PGP SIGNATURE-----
+
+--Sig_/inD=ugamMelSXyu0PolZeSk--
