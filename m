@@ -2,122 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FBFC3ACF97
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1713ACF9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:01:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235649AbhFRQBB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 12:01:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36896 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231697AbhFRQBA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 12:01:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6F87861003;
-        Fri, 18 Jun 2021 15:58:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624031930;
-        bh=Apapoa0ogz+j1ETylMG/djv0vpJmf2hXxs1HUu5smKs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nmXkOJh0glyvoe4C3vhRq3VOaXh+UE85KdrCTJQPn5GFT9bi2pzzFSTtrQ1Htls4G
-         nCSKDUlUvVfV8YpvZ74Y0DeLcMOsHfeLD1+y6XqT5hzwDaIgbiUz47IXs63v5hzt+O
-         HW61APQCAyu9w9EaIF+OnK5LNLTYeUYdiMVK3Ensr6OO4TnZvMIFkov8vJ78pJtOzR
-         y9rbKsii9bfXNnh3cxgbfmHazh4sn5pAeqXsCcYRq9BSJ/t6jkJG69JlQNKxkzt3RF
-         qJ/3J/VvIoqV9DFd7bO2MiuYoq5XNMEo8SoZ6vB/ZsVNSCUr6QGdJROF9Bb0FrKRCx
-         QSK17KzLVHKuQ==
-Date:   Fri, 18 Jun 2021 16:58:29 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        David Hildenbrand <david@redhat.com>, Greg KH <greg@kroah.com>,
-        Christoph Lameter <cl@gentwo.de>,
-        Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
-        ksummit@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, netdev <netdev@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
-Message-ID: <20210618155829.GD4920@sirena.org.uk>
-Mail-Followup-To: Steven Rostedt <rostedt@goodmis.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        David Hildenbrand <david@redhat.com>, Greg KH <greg@kroah.com>,
-        Christoph Lameter <cl@gentwo.de>, Theodore Ts'o <tytso@mit.edu>,
-        Jiri Kosina <jikos@kernel.org>, ksummit@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, netdev <netdev@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>
-References: <b32c8672-06ee-bf68-7963-10aeabc0596c@redhat.com>
- <5038827c-463f-232d-4dec-da56c71089bd@metux.net>
- <20210610182318.jrxe3avfhkqq7xqn@nitro.local>
- <YMJcdbRaQYAgI9ER@pendragon.ideasonboard.com>
- <20210610152633.7e4a7304@oasis.local.home>
- <37e8d1a5-7c32-8e77-bb05-f851c87a1004@linuxfoundation.org>
- <YMyjryXiAfKgS6BY@pendragon.ideasonboard.com>
- <cd7ffbe516255c30faab7a3ee3ee48f32e9aa797.camel@HansenPartnership.com>
- <CAMuHMdVcNfDvpPXHSkdL3VuLXCX5m=M_AQF-P8ZajSdXt8NdQg@mail.gmail.com>
- <20210618103214.0df292ec@oasis.local.home>
+        id S235660AbhFRQDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 12:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234057AbhFRQDJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 12:03:09 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E11C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 09:00:59 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624032057;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WWe8aUzcnMAbXG5rd+miMyOIe41LlzQ7svV6dR727iM=;
+        b=L3qpTcO8eVQidHVoVRGeu9ezZdtAm5eBugEIGKRZOCnl3to/3c3Q0WhB985uMUV8fqhPY9
+        uyS6U/AgK3rcthop1mc249Z/JVpBDG1znD+wCnV89aM4iPnsoYczT/kbpLqdT0apaYjVp/
+        0E6XZ1sSbV5lEuBDB4h9kFbtUyQz41thlmS+h8LcnmE+jhvtBClhXFp+Q11wxBiEWCnIvt
+        RPwnzTRoRCEke7z7CbQYoK4z1nscNOMi2JA0lXZA6h/h+L28XrLg89QV0hwa06U9FTyAvu
+        fB57pJcHdX8wOoNUxazGOQpsuW+eNnmeVE+hNzzsNAGtRPnoKL/Kc+TV3rmMRQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624032057;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=WWe8aUzcnMAbXG5rd+miMyOIe41LlzQ7svV6dR727iM=;
+        b=pyE2++pi/rDZohCTa16nr6r/04eg/NedLUbin8dc8fwwaSLdJTj3zSD1J0L1+AszA2AvN+
+        sa+hzU1pZ3l9qrAw==
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org, john.stultz@linaro.org,
+        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
+        maz@kernel.org, kernel-team@fb.com, neeraju@codeaurora.org,
+        ak@linux.intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
+        luming.yu@intel.com
+Subject: Re: [GIT PULL clocksource] Clocksource watchdog commits for v5.14
+In-Reply-To: <20210609233723.GA1717240@paulmck-ThinkPad-P17-Gen-1>
+References: <20210609233723.GA1717240@paulmck-ThinkPad-P17-Gen-1>
+Date:   Fri, 18 Jun 2021 18:00:57 +0200
+Message-ID: <87bl83f9hi.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="KdquIMZPjGJQvRdI"
-Content-Disposition: inline
-In-Reply-To: <20210618103214.0df292ec@oasis.local.home>
-X-Cookie: Are you a turtle?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 09 2021 at 16:37, Paul E. McKenney wrote:
+> This pull request contains changes to cause the clocksource watchdog to
+> reject measurement noise caused by delays between clocksource reads.
+> These have been posted a few times to LKML, most recently v15:
+>
+> https://lore.kernel.org/lkml/20210527190042.GA438700@paulmck-ThinkPad-P17-Gen-1/
+>
+> These have been acked by Feng Tang and reviewed by Luming Yu.  These have
+> also been subjected to subjected to the kbuild test robot and -next
+> testing, and are available in the git repository based on v5.13-rc1 at:
 
---KdquIMZPjGJQvRdI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jun 18, 2021 at 10:32:14AM -0400, Steven Rostedt wrote:
-> On Fri, 18 Jun 2021 16:28:02 +0200
-> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-
-> > What about letting people use the personal mic they're already
-> > carrying, i.e. a phone?
-
-> Interesting idea.
-
-> I wonder how well that would work in practice. Are all phones good
-> enough to prevent echo?
-
-Unless you get the latency for the WebRTC<->in room speaker down lower
-than I'd expect it to be I'd expect echo cancellation to have fun,
-though beam forming might reject a lot of in room noise including that -
-higher end modern phones are astonishingly good at this stuff.  I'd not
-trust it to work reliably for all attendees though, it's the sort of
-thing where you'll get lots of per device variation.
-
---KdquIMZPjGJQvRdI
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDMwqUACgkQJNaLcl1U
-h9Cg1Af5ARxVAXKtGlzoOtDRp3GzESJ+QAXYphyxV7cPGNDckB/qsv28tntr04Bn
-1QJeSujCWn3PVGGTr/AKgLgUIiicysbjbiz2MDuyKmSl/pjhJLGaKNvLb4jH14tp
-My3o3TUioxhdXmwiQAbMuEvfVVJAoccMhpLcF3DfgKGaCfuaeZ7Jrc5miAQsXqbB
-LNgM3ist9ZldXeiemRo41yZ3gQ1qwEadxhRM184rmjcvd4Xl7IyItX85s1CSwvr4
-Bi493dDbTQA3n0kb2bPD0yez6pq0xu2dGDyGTALno6HfjNA/PCxROQRgg/cQ7LUK
-U7mM4yBMrM2+z+akydMtX9us4TX2+g==
-=mrCm
------END PGP SIGNATURE-----
-
---KdquIMZPjGJQvRdI--
+I'll go through them soon. Sorry for the delay.
