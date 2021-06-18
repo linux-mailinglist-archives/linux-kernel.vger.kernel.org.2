@@ -2,90 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFCE13ACCAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2053ACCBB
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234034AbhFRNuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35920 "EHLO
+        id S234066AbhFRNwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:52:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233615AbhFRNuD (ORCPT
+        with ESMTP id S233444AbhFRNwf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:50:03 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCCA0C061574;
-        Fri, 18 Jun 2021 06:47:53 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 6801E3A7; Fri, 18 Jun 2021 15:47:52 +0200 (CEST)
-Date:   Fri, 18 Jun 2021 15:47:51 +0200
-From:   Joerg Roedel <joro@8bytes.org>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        Jason Wang <jasowang@redhat.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shenming Lu <lushenming@huawei.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: Plan for /dev/ioasid RFC v2
-Message-ID: <YMykBzUHmATPbmdV@8bytes.org>
-References: <20210611133828.6c6e8b29.alex.williamson@redhat.com>
- <20210612012846.GC1002214@nvidia.com>
- <20210612105711.7ac68c83.alex.williamson@redhat.com>
- <20210614140711.GI1002214@nvidia.com>
- <20210614102814.43ada8df.alex.williamson@redhat.com>
- <MWHPR11MB1886239C82D6B66A732830B88C309@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210615101215.4ba67c86.alex.williamson@redhat.com>
- <MWHPR11MB188692A6182B1292FADB3BDB8C0F9@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210616133937.59050e1a.alex.williamson@redhat.com>
- <MWHPR11MB18865DF9C50F295820D038798C0E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+        Fri, 18 Jun 2021 09:52:35 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B6BFC061574;
+        Fri, 18 Jun 2021 06:50:26 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id b37so14087357ljr.13;
+        Fri, 18 Jun 2021 06:50:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PF1lwVLZjO0TaZRIPSE+RYDa9z8BPF1tUWPYliWRKnc=;
+        b=HNXfeSlEg8BXH11sQ4vpGj1n8hXO2g66OnPe8iX33KoxwRFq3Xw2r4ZMhqDyQUNttq
+         55BcvKOnz8mw9DYDTCzab4t3h3LOi//dCYSbUst9nWsRkVxGIaPdV+7sLC4j/n+vXovo
+         B4oa9Rq34Q/FqSz/S9AtSl2rlUj8CTkk87aULV5oZ+p8j0CgkhP7ZQ5LDFQ8GbazkpxT
+         Hjx/U0d6o3tDfH6RsitHSwfIUaocAZrSCijVmUmNXvzkXOxiW6tmQiwPfjKgyLbM0YST
+         +nN0JMwjrHlCaDBg3j8YhqR3Ti2KDaddq1o+Wmo8ZVwbieTCtlnSetjOzF1McbrbnAzg
+         TIgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PF1lwVLZjO0TaZRIPSE+RYDa9z8BPF1tUWPYliWRKnc=;
+        b=sLJKmsIXmsNsSnLhCvG4BxTIDHgrvb+kzYh/AsT/S+fEt/iQrOddTyWE8UxJNrTiPx
+         k/U8N8vgc+v/FwVsN3A12SCFYhpjOMKUUSXjpFTKpEoztzCoBIA6BEb/vfmWBEy1wXzD
+         cjD1J3tho4t7nZmt2s7XcGjSo8rj32S8Qi2mcWMb4JCRdZR/mFhNiRVuHr0GD3iyVjht
+         GlEXenQoGUAMMfduU0EDao0HawZjVddHUNw/EOoyiEjEndpAVkWRbxJHgvgTCbOPVtB1
+         5pLRydToeywTcoq49lC0UjnKZHOElotRxliAsTL4rTeb3aqtsYEqii98fQM93mUHKKS2
+         l3Vw==
+X-Gm-Message-State: AOAM533+92PPalG8p4sxsZlCKHmFs7GVk2zNPiCm2wRcxHqqrcOlmvtU
+        Fo/IS/YGvC2xoBvequn40KY=
+X-Google-Smtp-Source: ABdhPJxrJ9TDOw/Wl4DcvgjPxkQjBduGj9Lc2qQ214ODXqD3Tm33ax8AK4edkHfd/5Z3WlnEQR+5Ig==
+X-Received: by 2002:a2e:580e:: with SMTP id m14mr9599947ljb.197.1624024224596;
+        Fri, 18 Jun 2021 06:50:24 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.229.24])
+        by smtp.gmail.com with ESMTPSA id r9sm918112lfm.158.2021.06.18.06.50.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 06:50:23 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     reksio@newterm.pl, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH] net: ethernet: fix potential use-after-free in ec_bhf_remove
+Date:   Fri, 18 Jun 2021 16:49:02 +0300
+Message-Id: <20210618134902.9793-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR11MB18865DF9C50F295820D038798C0E9@MWHPR11MB1886.namprd11.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kevin,
+static void ec_bhf_remove(struct pci_dev *dev)
+{
+...
+	struct ec_bhf_priv *priv = netdev_priv(net_dev);
 
-On Thu, Jun 17, 2021 at 07:31:03AM +0000, Tian, Kevin wrote:
-> Now let's talk about the new IOMMU behavior:
-> 
-> -   A device is blocked from doing DMA to any resource outside of
->     its group when it's probed by the IOMMU driver. This could be a
->     special state w/o attaching to any domain, or a new special domain
->     type which differentiates it from existing domain types (identity, 
->     dma, or unmanged). Actually existing code already includes a
->     IOMMU_DOMAIN_BLOCKED type but nobody uses it.
+	unregister_netdev(net_dev);
+	free_netdev(net_dev);
 
-There is a reason for the default domain to exist: Devices which require
-RMRR mappings to be present. You can't just block all DMA from devices
-until a driver takes over, we put much effort into making sure there is
-not even a small window in time where RMRR regions (unity mapped regions
-on AMD) are not mapped.
+	pci_iounmap(dev, priv->dma_io);
+	pci_iounmap(dev, priv->io);
+...
+}
 
-And if a device has no RMRR regions defined, then the default domain
-will be identical to a blocking domain. Device driver bugs don't count
-here, as they can be fixed. The kernel trusts itself, so we can rely on
-drivers unmapping all of their DMA buffers. Maybe that should be checked
-by dma-debug to find violations there.
+priv is netdev private data, but it is used
+after free_netdev(). It can cause use-after-free when accessing priv
+pointer. So, fix it by moving free_netdev() after pci_iounmap()
+calls.
 
-Regards,
+Fixes: 6af55ff52b02 ("Driver for Beckhoff CX5020 EtherCAT master module.")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/net/ethernet/ec_bhf.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-	Joerg
+diff --git a/drivers/net/ethernet/ec_bhf.c b/drivers/net/ethernet/ec_bhf.c
+index 46b0dbab8aad..7c992172933b 100644
+--- a/drivers/net/ethernet/ec_bhf.c
++++ b/drivers/net/ethernet/ec_bhf.c
+@@ -576,10 +576,12 @@ static void ec_bhf_remove(struct pci_dev *dev)
+ 	struct ec_bhf_priv *priv = netdev_priv(net_dev);
+ 
+ 	unregister_netdev(net_dev);
+-	free_netdev(net_dev);
+ 
+ 	pci_iounmap(dev, priv->dma_io);
+ 	pci_iounmap(dev, priv->io);
++
++	free_netdev(net_dev);
++
+ 	pci_release_regions(dev);
+ 	pci_clear_master(dev);
+ 	pci_disable_device(dev);
+-- 
+2.32.0
+
