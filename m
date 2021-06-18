@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355DA3ACAD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:29:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22FBE3ACADA
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234325AbhFRMbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 08:31:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46138 "EHLO
+        id S234351AbhFRMbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 08:31:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233276AbhFRMbi (ORCPT
+        with ESMTP id S233526AbhFRMbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 08:31:38 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA84C061768
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:29:28 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id g20so15729352ejt.0
+        Fri, 18 Jun 2021 08:31:39 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07FA2C0617A6
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:29:29 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id nd37so15688037ejc.3
         for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:29:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=chveVvqRyDjx/NebSnv0sb7ZMgkccsQXLdhoqCZBIE4=;
-        b=dVV5K3NncP9uBSJZEV6oQU8CwVvaxlhliXHoJzBTBvhUNCV0v2KYxb/TbUTvPuwKY4
-         HbE5umlMIpg5q4gjaUeMpho1kMg6XocVN3iGFP5B6bayUYM8s01BN4QIT4KeFRzNsSYJ
-         FQTXo9tuz7wgXCtrVWd/Yi5w+1YKhhEs4cZUs=
+        bh=BTV2BvYY8bWiutEhIP2/m/mfzC6d/lLuRadlg4Dfous=;
+        b=gcIDPulPQp3gl0wGUFdyXG2mEvhm7yHKumZulkrQ1F8PjggWVC1SGMzEOLqpKTA2Bh
+         GU3imyIJLEdpqWIXmJme537HhWSWzY/Juw2PDzHQoL+UF+sRRbu4RbF9/pZFD2XfiGP/
+         Sfvb05lauUtgNws0ceox1jyH88q71zrQljLwM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=chveVvqRyDjx/NebSnv0sb7ZMgkccsQXLdhoqCZBIE4=;
-        b=IArBsUeKce6nzAACOGttdoW4EWMk6qwWoKIoeG10YUajuvxFSGCrwW4uMCwr0qYwjL
-         yUmxMeQxaj540Y5L59PiSqltT3lpWzTQ2H4vxPQec8BDojBOi0Ym5kYXo1p13otYn3qL
-         f5WERmsfjcjKpCxIlJqn8d8h1qQEygQ8l44oQLDKAIri3UFvf+z3XZpJKQfmosvxpHIH
-         QdubumKtPS6udRwPPVR75TaP8/Ll43Sib/qJa7Af8kBDFWO7Zq2qxzC8pcZ6QKCU1ZaI
-         c9/BHpI2X4krKs6obpVdUPcgkWJwrPQtblGgzp7qNqL9j2G+okBc2uvbDI41XHXkC3B0
-         a/qA==
-X-Gm-Message-State: AOAM532qYCfFsqfdcFR6T+Fp2xJewmJa8F9jJQ7q0HsG6oljj6cfouFN
-        HU2yYB/l6Xf3ZRQDriT5xOMCBA==
-X-Google-Smtp-Source: ABdhPJw1fD/77qQ4ZofO8v+fz1Gr3C+9JJLJMqqg2JCHHXjeTACzCiSd+9tWT2WSfgcJbzrRVpb85Q==
-X-Received: by 2002:a17:907:7b9e:: with SMTP id ne30mr10841453ejc.389.1624019366966;
-        Fri, 18 Jun 2021 05:29:26 -0700 (PDT)
+        bh=BTV2BvYY8bWiutEhIP2/m/mfzC6d/lLuRadlg4Dfous=;
+        b=r6pf/TeVCeFgwXeefPXAl8e9vd5ryVxrvaZeJnNfQRuGeCpfl+vNTXk+0IGGbmJHGq
+         byQIf95ceBXWK+UGf9AvbvqiujcbnJceZpp1zq7e65sCrxAe34tbokDWHIDOww8pZRIk
+         WbpubHPsr/jQVwZkH5Ad+qy70i6qgvLM51nCzfG59GouxgY93MQt7JPlsHdod+VDQ2hU
+         0rrKm74P7jgi3fZ7cWrzQhHJCGiGGaOj26UOfqMwR4onZuJuO5uX+pA8o0kuQN/1R4t5
+         fgvvATxypn9DSe1Ybz9Kc7b1ddBHY5AQ0rKbVh84736yr61o2Mrl2QE02Q5xxSuUJaay
+         YZ5A==
+X-Gm-Message-State: AOAM530UDZD2n5y7eM2gXOeXEit1+znH2oRWjZNL0FumF+u7VDjhXoTs
+        7MncAnb10pZx6zSwByU3+P/U7g==
+X-Google-Smtp-Source: ABdhPJyoHanZsBjdG04zfmm0g14w/Fp9HfQ9yadHWdyYmzBTuikt6C/cYUHS17GFGIOdEW8c/Gp6lw==
+X-Received: by 2002:a17:906:6847:: with SMTP id a7mr7165661ejs.268.1624019367638;
+        Fri, 18 Jun 2021 05:29:27 -0700 (PDT)
 Received: from alco.lan (80.71.134.83.ipv4.parknet.dk. [80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id o26sm4336403edt.62.2021.06.18.05.29.26
+        by smtp.gmail.com with ESMTPSA id o26sm4336403edt.62.2021.06.18.05.29.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 05:29:26 -0700 (PDT)
+        Fri, 18 Jun 2021 05:29:27 -0700 (PDT)
 From:   Ricardo Ribalda <ribalda@chromium.org>
 To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
@@ -52,10 +52,11 @@ To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
         Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         tfiga@chromium.org
-Cc:     Ricardo Ribalda <ribalda@chromium.org>, stable@vger.kernel.org
-Subject: [PATCH v10 01/21] media: v4l2-ioctl: Fix check_ext_ctrls
-Date:   Fri, 18 Jun 2021 14:29:03 +0200
-Message-Id: <20210618122923.385938-2-ribalda@chromium.org>
+Cc:     Ricardo Ribalda <ribalda@chromium.org>,
+        Mike Isely <isely@pobox.com>
+Subject: [PATCH v10 02/21] media: pvrusb2: Do not check for V4L2_CTRL_WHICH_DEF_VAL
+Date:   Fri, 18 Jun 2021 14:29:04 +0200
+Message-Id: <20210618122923.385938-3-ribalda@chromium.org>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
 In-Reply-To: <20210618122923.385938-1-ribalda@chromium.org>
 References: <20210618122923.385938-1-ribalda@chromium.org>
@@ -65,159 +66,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drivers that do not use the ctrl-framework use this function instead.
+The framework already checks for us if V4L2_CTRL_WHICH_DEF_VAL is
+written.
 
-Fix the following issues:
-
-- Do not check for multiple classes when getting the DEF_VAL.
-- Return -EINVAL for request_api calls
-- Default value cannot be changed, return EINVAL as soon as possible.
-- Return the right error_idx
-[If an error is found when validating the list of controls passed with
-VIDIOC_G_EXT_CTRLS, then error_idx shall be set to ctrls->count to
-indicate to userspace that no actual hardware was touched.
-It would have been much nicer of course if error_idx could point to the
-control index that failed the validation, but sadly that's not how the
-API was designed.]
-
-Fixes v4l2-compliance:
-Control ioctls (Input 0):
-        warn: v4l2-test-controls.cpp(834): error_idx should be equal to count
-        warn: v4l2-test-controls.cpp(855): error_idx should be equal to count
-		fail: v4l2-test-controls.cpp(813): doioctl(node, VIDIOC_G_EXT_CTRLS, &ctrls)
-	test VIDIOC_G/S/TRY_EXT_CTRLS: FAIL
-Buffer ioctls (Input 0):
-		fail: v4l2-test-buffers.cpp(1994): ret != EINVAL && ret != EBADR && ret != ENOTTY
-	test Requests: FAIL
-
-Cc: stable@vger.kernel.org
-Fixes: 6fa6f831f095 ("media: v4l2-ctrls: add core request support")
-Suggested-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Mike Isely <isely@pobox.com>
 Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Reviewed-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 ---
- drivers/media/v4l2-core/v4l2-ioctl.c | 60 ++++++++++++++++++----------
- 1 file changed, 39 insertions(+), 21 deletions(-)
+ drivers/media/usb/pvrusb2/pvrusb2-v4l2.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 2673f51aafa4..8b3977a85b23 100644
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -869,7 +869,7 @@ static void v4l_print_default(const void *arg, bool write_only)
- 	pr_cont("driver-specific ioctl\n");
- }
+diff --git a/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c b/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
+index 9657c1883311..c04ab7258d64 100644
+--- a/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
++++ b/drivers/media/usb/pvrusb2/pvrusb2-v4l2.c
+@@ -640,10 +640,6 @@ static int pvr2_s_ext_ctrls(struct file *file, void *priv,
+ 	unsigned int idx;
+ 	int ret;
  
--static int check_ext_ctrls(struct v4l2_ext_controls *c, int allow_priv)
-+static bool check_ext_ctrls(struct v4l2_ext_controls *c, unsigned long ioctl)
- {
- 	__u32 i;
- 
-@@ -878,23 +878,41 @@ static int check_ext_ctrls(struct v4l2_ext_controls *c, int allow_priv)
- 	for (i = 0; i < c->count; i++)
- 		c->controls[i].reserved2[0] = 0;
- 
--	/* V4L2_CID_PRIVATE_BASE cannot be used as control class
--	   when using extended controls.
--	   Only when passed in through VIDIOC_G_CTRL and VIDIOC_S_CTRL
--	   is it allowed for backwards compatibility.
--	 */
--	if (!allow_priv && c->which == V4L2_CID_PRIVATE_BASE)
--		return 0;
--	if (!c->which)
--		return 1;
-+	switch (c->which) {
-+	case V4L2_CID_PRIVATE_BASE:
-+		/*
-+		 * V4L2_CID_PRIVATE_BASE cannot be used as control class
-+		 * when using extended controls.
-+		 * Only when passed in through VIDIOC_G_CTRL and VIDIOC_S_CTRL
-+		 * is it allowed for backwards compatibility.
-+		 */
-+		if (ioctl == VIDIOC_G_CTRL || ioctl == VIDIOC_S_CTRL)
-+			return false;
-+		break;
-+	case V4L2_CTRL_WHICH_DEF_VAL:
-+		/* Default value cannot be changed */
-+		if (ioctl == VIDIOC_S_EXT_CTRLS ||
-+		    ioctl == VIDIOC_TRY_EXT_CTRLS) {
-+			c->error_idx = c->count;
-+			return false;
-+		}
-+		return true;
-+	case V4L2_CTRL_WHICH_CUR_VAL:
-+		return true;
-+	case V4L2_CTRL_WHICH_REQUEST_VAL:
-+		c->error_idx = c->count;
-+		return false;
-+	}
-+
- 	/* Check that all controls are from the same control class. */
- 	for (i = 0; i < c->count; i++) {
- 		if (V4L2_CTRL_ID2WHICH(c->controls[i].id) != c->which) {
--			c->error_idx = i;
--			return 0;
-+			c->error_idx = ioctl == VIDIOC_TRY_EXT_CTRLS ? i :
-+								      c->count;
-+			return false;
- 		}
- 	}
--	return 1;
-+	return true;
- }
- 
- static int check_fmt(struct file *file, enum v4l2_buf_type type)
-@@ -2187,7 +2205,7 @@ static int v4l_g_ctrl(const struct v4l2_ioctl_ops *ops,
- 	ctrls.controls = &ctrl;
- 	ctrl.id = p->id;
- 	ctrl.value = p->value;
--	if (check_ext_ctrls(&ctrls, 1)) {
-+	if (check_ext_ctrls(&ctrls, VIDIOC_G_CTRL)) {
- 		int ret = ops->vidioc_g_ext_ctrls(file, fh, &ctrls);
- 
- 		if (ret == 0)
-@@ -2221,7 +2239,7 @@ static int v4l_s_ctrl(const struct v4l2_ioctl_ops *ops,
- 	ctrls.controls = &ctrl;
- 	ctrl.id = p->id;
- 	ctrl.value = p->value;
--	if (check_ext_ctrls(&ctrls, 1))
-+	if (check_ext_ctrls(&ctrls, VIDIOC_S_CTRL))
- 		return ops->vidioc_s_ext_ctrls(file, fh, &ctrls);
- 	return -EINVAL;
- }
-@@ -2243,8 +2261,8 @@ static int v4l_g_ext_ctrls(const struct v4l2_ioctl_ops *ops,
- 					vfd, vfd->v4l2_dev->mdev, p);
- 	if (ops->vidioc_g_ext_ctrls == NULL)
- 		return -ENOTTY;
--	return check_ext_ctrls(p, 0) ? ops->vidioc_g_ext_ctrls(file, fh, p) :
--					-EINVAL;
-+	return check_ext_ctrls(p, VIDIOC_G_EXT_CTRLS) ?
-+				ops->vidioc_g_ext_ctrls(file, fh, p) : -EINVAL;
- }
- 
- static int v4l_s_ext_ctrls(const struct v4l2_ioctl_ops *ops,
-@@ -2264,8 +2282,8 @@ static int v4l_s_ext_ctrls(const struct v4l2_ioctl_ops *ops,
- 					vfd, vfd->v4l2_dev->mdev, p);
- 	if (ops->vidioc_s_ext_ctrls == NULL)
- 		return -ENOTTY;
--	return check_ext_ctrls(p, 0) ? ops->vidioc_s_ext_ctrls(file, fh, p) :
--					-EINVAL;
-+	return check_ext_ctrls(p, VIDIOC_S_EXT_CTRLS) ?
-+				ops->vidioc_s_ext_ctrls(file, fh, p) : -EINVAL;
- }
- 
- static int v4l_try_ext_ctrls(const struct v4l2_ioctl_ops *ops,
-@@ -2285,8 +2303,8 @@ static int v4l_try_ext_ctrls(const struct v4l2_ioctl_ops *ops,
- 					  vfd, vfd->v4l2_dev->mdev, p);
- 	if (ops->vidioc_try_ext_ctrls == NULL)
- 		return -ENOTTY;
--	return check_ext_ctrls(p, 0) ? ops->vidioc_try_ext_ctrls(file, fh, p) :
--					-EINVAL;
-+	return check_ext_ctrls(p, VIDIOC_TRY_EXT_CTRLS) ?
-+			ops->vidioc_try_ext_ctrls(file, fh, p) : -EINVAL;
- }
- 
- /*
+-	/* Default value cannot be changed */
+-	if (ctls->which == V4L2_CTRL_WHICH_DEF_VAL)
+-		return -EINVAL;
+-
+ 	ret = 0;
+ 	for (idx = 0; idx < ctls->count; idx++) {
+ 		ctrl = ctls->controls + idx;
 -- 
 2.32.0.288.g62a8d224e6-goog
 
