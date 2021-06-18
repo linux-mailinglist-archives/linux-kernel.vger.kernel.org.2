@@ -2,106 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC1FA3AD374
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 22:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B854B3AD375
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 22:17:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232083AbhFRUTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 16:19:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230136AbhFRUTN (ORCPT
+        id S232426AbhFRUTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 16:19:32 -0400
+Received: from mail-oo1-f50.google.com ([209.85.161.50]:45605 "EHLO
+        mail-oo1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230136AbhFRUTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 16:19:13 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FAE7C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 13:17:03 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id dm5so5257510ejc.9
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 13:17:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YErG3nsC1wpUdGOxN53HPKj5RJIEYjjh/nGCBmnSwyU=;
-        b=Pa0lJFQeRj540tKKzMKLN5/JSaecM7l/kTaoSNkJ6lmb7Ts1euLl+WIhPYDV6PrbXK
-         SREIB1OAGs/OXCGL8WnzC4MrnJxVgyvEgMPr3HFWwx1BzWbGhAWUnnsl/Fz5lKiXhaok
-         r8F4X7Nod0tFySZYgNg9IxZEUwSG/RpEmzXdoLrKpDi8LOaoQnbCBMPBdeig+nc9ej+g
-         E5Wfgj7PHJEGuwSNS2WOFlR2lOlxAn7uN7eFEK0fR1w/K53OyYWjoUYgWeaa8HjZVacN
-         ScMNVn/nEnzi3m0Wky9Aszc0sSYfxiHkOY9tMkZ0YXFKsz7HyYYfA5R6Nag7vzDaky8N
-         PWdg==
+        Fri, 18 Jun 2021 16:19:30 -0400
+Received: by mail-oo1-f50.google.com with SMTP id q20-20020a4a6c140000b029024915d1bd7cso2735372ooc.12;
+        Fri, 18 Jun 2021 13:17:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YErG3nsC1wpUdGOxN53HPKj5RJIEYjjh/nGCBmnSwyU=;
-        b=saFpLnQa85Cv/PX4rYKvdl4HSALdbrEMWcCMQQQDUHDrr5E8eLL7lO37zNiKDjOa2P
-         T79BoNlHoTwhlMvWUoeYUYUk9nYgRioGKtvECJybqFu9e+B1CX8gnNVGcBEr0v/rp6Ly
-         bNhbFBI9HVgGFr/N7xC8gIvkSL0uQ9zxxAe2BcFtfHi1XuRuI8rCews+3Zgnxxz/8BOA
-         kvp1flFpHShhE+7NoPN91yC17vl6xHtot/mn03XnNfSpD4ekXyGAsLzw95eE87CVe+1N
-         5zRpyzD8iODFgn2AKqo1Hxtn533NqUD7tvptk1zh+LBMTUswXCpvIv+udPyASGh5SBiQ
-         vaiQ==
-X-Gm-Message-State: AOAM531Zk/X5WJLJyvRRF7Yg42tdBGnF4bGo/FK0hDihsly/ir4EmN4C
-        GqufCplFNeElRnS9kXf74wF5NrV6gZzNcEcJ9P4=
-X-Google-Smtp-Source: ABdhPJzuvG3rFfUe4S6n0416xLdb1JkOOjogjvkHUHWHawCwHS3pxkZTCYzpCZZfCwAy34dWxUzSPVsCQ3nFJ1U8DXw=
-X-Received: by 2002:a17:907:1de6:: with SMTP id og38mr12866537ejc.471.1624047421761;
- Fri, 18 Jun 2021 13:17:01 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=at8Myk4DsreoksXWhWhn1VfubfRyMhmgM5RY9nidd0I=;
+        b=qrX8Z2HvN1D4cQ2CB01pRIzJ7f1xHkPoVPMZzl0XMHWG8EmQmv6l3UXakiNCdtKu/7
+         TkyvDn1R8p6hGYRI/92vHfq/RMkmib9/cP86qMdBMW6+BKi6aj7jIcItGQWjByP2qq7x
+         T7yrkIuB/DgM6++GODo5H7d4OP2gwnOcf4Mcd6LTBWLIEfC54r7VknHuBkuZKEERnftQ
+         lVko8LsNUsm4ALui85z8WSR8jKm9RTg/jTbHdxhhLCgaFUMaEIUBJjrNa56JayHqaJsP
+         goGoYA2dsmn8Alus1FrnhlBhI+SrFJfdGGvFwsxL3ATSvVdbA+lFk++2vMydGOBHU5JH
+         J9Ng==
+X-Gm-Message-State: AOAM530SJ7DrecioWfO0YDyfgOXKdRkMtfhMPz4gNp0tgtqzFA9N4S2O
+        HvnR7SCsyoHVoU8FpF9kREXnKs7c5w==
+X-Google-Smtp-Source: ABdhPJxqFEA9rXPOgW7E10gTRzwgMNK+lYYml+/GsKKYEMjiCcf2jlqnug3lBLGqDZKwbY45tBWPmw==
+X-Received: by 2002:a4a:97ed:: with SMTP id x42mr10401939ooi.49.1624047440838;
+        Fri, 18 Jun 2021 13:17:20 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id r12sm1243890otc.38.2021.06.18.13.17.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 13:17:20 -0700 (PDT)
+Received: (nullmailer pid 2808537 invoked by uid 1000);
+        Fri, 18 Jun 2021 20:17:18 -0000
+Date:   Fri, 18 Jun 2021 14:17:18 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     bjorn.andersson@linaro.org, broonie@kernel.org,
+        plai@codeaurora.org, tiwai@suse.de, devicetree@vger.kernel.org,
+        perex@perex.cz, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, lgirdwood@gmail.com,
+        bgoswami@codeaurora.org
+Subject: Re: [RFC PATCH 05/13] ASoC: qcom: audioreach: add q6apm support
+Message-ID: <20210618201718.GA2807622@robh.at.kernel.org>
+References: <20210607152836.17154-1-srinivas.kandagatla@linaro.org>
+ <20210607152836.17154-6-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
-References: <20210617194154.2397-1-linux.amoon@gmail.com> <CAFBinCDVnBApYziHazeS8f2FXHQ-tUS55-g6B22c20OtfYD=xw@mail.gmail.com>
- <CANAwSgQcVDdPMZjuaN4O1dpVDd-KrNCGLDq0h4vfP4YZ2vSV2Q@mail.gmail.com>
-In-Reply-To: <CANAwSgQcVDdPMZjuaN4O1dpVDd-KrNCGLDq0h4vfP4YZ2vSV2Q@mail.gmail.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Fri, 18 Jun 2021 22:16:51 +0200
-Message-ID: <CAFBinCA0-M-P5bWMKmMTq+Kgx+iEBpxirjWGxpaQqR3pfn84Fw@mail.gmail.com>
-Subject: Re: [RFCv1 0/8] Meson-8b and Meson-gxbb USB phy code re-structure
-To:     Anand Moon <linux.amoon@gmail.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-phy@lists.infradead.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-amlogic@lists.infradead.org,
-        Linux Kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210607152836.17154-6-srinivas.kandagatla@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Anand,
+On Mon, Jun 07, 2021 at 04:28:28PM +0100, Srinivas Kandagatla wrote:
+> Add support to q6apm (Audio Process Manager) component which is
+> core Audioreach service running in the DSP.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  include/dt-bindings/sound/qcom,q6apm.h | 215 ++++++++
 
-On Fri, Jun 18, 2021 at 3:20 PM Anand Moon <linux.amoon@gmail.com> wrote:
-[...]
-> (some email id got messed up while sending these changes.)
-it happened to me before: don't worry, it's something that can be fixed
+This goes in the binding patch.
 
-[...]
-> > > Initially if we connect USB HDD at initial boot it get detected.
-> > > but after that usb hotplug of USB HDD is broken.
-> > > I did not observe and USB debug events messages to trace the root cause.
-> > >
-> > > Another issue I observed is increase of USB interrupts event
-> > > even if there is not much activity on USB ports.
-> > > I tried some clk changes but it did not workout for me.
-> > I suggest reporting this to the dwc2 maintainers and asking for advice
-> > on how to debug these issues.
-> >
-> Yes I have enabled the CONFIG_USB_DWC2_DEBUG
-> to help debug this issue but could not find much clue on
-> why this is happening.
-I think CONFIG_USB_DWC2_DEBUG is a good starting point.
-For myself I came to the conclusion that the dwc2 IP is too complex to
-understand without additional information
-Some additional information can be found in public datasheets of other
-SoCs which are also using a dwc2 core, see for example RK3128 [0] or
-RT3050 [1]
-That's why my suggestion is to additionally ask the dwc2 maintainers
-(which are not Cc'ed on this mail) for debugging suggestions.
+>  sound/soc/qcom/audioreach/Makefile     |   2 +-
+>  sound/soc/qcom/audioreach/audioreach.c | 252 +++++++++
+>  sound/soc/qcom/audioreach/audioreach.h |   6 +
+>  sound/soc/qcom/audioreach/q6apm.c      | 695 +++++++++++++++++++++++++
+>  sound/soc/qcom/audioreach/q6apm.h      | 171 ++++++
+>  6 files changed, 1340 insertions(+), 1 deletion(-)
+>  create mode 100644 include/dt-bindings/sound/qcom,q6apm.h
+>  create mode 100644 sound/soc/qcom/audioreach/q6apm.c
+>  create mode 100644 sound/soc/qcom/audioreach/q6apm.h
+> 
+> diff --git a/include/dt-bindings/sound/qcom,q6apm.h b/include/dt-bindings/sound/qcom,q6apm.h
+> new file mode 100644
+> index 000000000000..38e3a426b15a
+> --- /dev/null
+> +++ b/include/dt-bindings/sound/qcom,q6apm.h
+> @@ -0,0 +1,215 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
 
+Dual license.
 
-Best regards,
-Martin
-
-
-[0] https://rockchip.fr/RK312X%20TRM/chapter-26-usb-otg-2-0.pdf
-[1] http://static6.arrow.com/aropdfconversion/aa9a14376a75e7c5d6daa9f6aaed8411909d2021/rt3050_5x_v2.0_081408_0902.pdf
+> +#ifndef __DT_BINDINGS_Q6_APM_H__
+> +#define __DT_BINDINGS_Q6_APM_H__
+> +
+> +#define	MSM_FRONTEND_DAI_MULTIMEDIA1	1
+> +#define	MSM_FRONTEND_DAI_MULTIMEDIA2	2
+> +#define	MSM_FRONTEND_DAI_MULTIMEDIA3	3
+> +#define	MSM_FRONTEND_DAI_MULTIMEDIA4	4
+> +#define	MSM_FRONTEND_DAI_MULTIMEDIA5	5
+> +#define	MSM_FRONTEND_DAI_MULTIMEDIA6	6
+> +#define	MSM_FRONTEND_DAI_MULTIMEDIA7	7
+> +#define	MSM_FRONTEND_DAI_MULTIMEDIA8	8
+> +
+> +/* Audio Process Manager (APM) virtual ports IDs */
+> +#define HDMI_RX		1
+> +#define SLIMBUS_0_RX    2
+> +#define SLIMBUS_0_TX    3
+> +#define SLIMBUS_1_RX    4
+> +#define SLIMBUS_1_TX    5
+> +#define SLIMBUS_2_RX    6
+> +#define SLIMBUS_2_TX    7
+> +#define SLIMBUS_3_RX    8
+> +#define SLIMBUS_3_TX    9
+> +#define SLIMBUS_4_RX    10
+> +#define SLIMBUS_4_TX    11
+> +#define SLIMBUS_5_RX    12
+> +#define SLIMBUS_5_TX    13
+> +#define SLIMBUS_6_RX    14
+> +#define SLIMBUS_6_TX    15
+> +#define PRIMARY_MI2S_RX		16
+> +#define PRIMARY_MI2S_TX		17
+> +#define SECONDARY_MI2S_RX	18
+> +#define SECONDARY_MI2S_TX	19
+> +#define TERTIARY_MI2S_RX	20
+> +#define TERTIARY_MI2S_TX	21
+> +#define QUATERNARY_MI2S_RX	22
+> +#define QUATERNARY_MI2S_TX	23
+> +#define PRIMARY_TDM_RX_0	24
+> +#define PRIMARY_TDM_TX_0	25
+> +#define PRIMARY_TDM_RX_1	26
+> +#define PRIMARY_TDM_TX_1	27
+> +#define PRIMARY_TDM_RX_2	28
+> +#define PRIMARY_TDM_TX_2	29
+> +#define PRIMARY_TDM_RX_3	30
+> +#define PRIMARY_TDM_TX_3	31
+> +#define PRIMARY_TDM_RX_4	32
+> +#define PRIMARY_TDM_TX_4	33
+> +#define PRIMARY_TDM_RX_5	34
+> +#define PRIMARY_TDM_TX_5	35
+> +#define PRIMARY_TDM_RX_6	36
+> +#define PRIMARY_TDM_TX_6	37
+> +#define PRIMARY_TDM_RX_7	38
+> +#define PRIMARY_TDM_TX_7	39
+> +#define SECONDARY_TDM_RX_0	40
+> +#define SECONDARY_TDM_TX_0	41
+> +#define SECONDARY_TDM_RX_1	42
+> +#define SECONDARY_TDM_TX_1	43
+> +#define SECONDARY_TDM_RX_2	44
+> +#define SECONDARY_TDM_TX_2	45
+> +#define SECONDARY_TDM_RX_3	46
+> +#define SECONDARY_TDM_TX_3	47
+> +#define SECONDARY_TDM_RX_4	48
+> +#define SECONDARY_TDM_TX_4	49
+> +#define SECONDARY_TDM_RX_5	50
+> +#define SECONDARY_TDM_TX_5	51
+> +#define SECONDARY_TDM_RX_6	52
+> +#define SECONDARY_TDM_TX_6	53
+> +#define SECONDARY_TDM_RX_7	54
+> +#define SECONDARY_TDM_TX_7	55
+> +#define TERTIARY_TDM_RX_0	56
+> +#define TERTIARY_TDM_TX_0	57
+> +#define TERTIARY_TDM_RX_1	58
+> +#define TERTIARY_TDM_TX_1	59
+> +#define TERTIARY_TDM_RX_2	60
+> +#define TERTIARY_TDM_TX_2	61
+> +#define TERTIARY_TDM_RX_3	62
+> +#define TERTIARY_TDM_TX_3	63
+> +#define TERTIARY_TDM_RX_4	64
+> +#define TERTIARY_TDM_TX_4	65
+> +#define TERTIARY_TDM_RX_5	66
+> +#define TERTIARY_TDM_TX_5	67
+> +#define TERTIARY_TDM_RX_6	68
+> +#define TERTIARY_TDM_TX_6	69
+> +#define TERTIARY_TDM_RX_7	70
+> +#define TERTIARY_TDM_TX_7	71
+> +#define QUATERNARY_TDM_RX_0	72
+> +#define QUATERNARY_TDM_TX_0	73
+> +#define QUATERNARY_TDM_RX_1	74
+> +#define QUATERNARY_TDM_TX_1	75
+> +#define QUATERNARY_TDM_RX_2	76
+> +#define QUATERNARY_TDM_TX_2	77
+> +#define QUATERNARY_TDM_RX_3	78
+> +#define QUATERNARY_TDM_TX_3	79
+> +#define QUATERNARY_TDM_RX_4	80
+> +#define QUATERNARY_TDM_TX_4	81
+> +#define QUATERNARY_TDM_RX_5	82
+> +#define QUATERNARY_TDM_TX_5	83
+> +#define QUATERNARY_TDM_RX_6	84
+> +#define QUATERNARY_TDM_TX_6	85
+> +#define QUATERNARY_TDM_RX_7	86
+> +#define QUATERNARY_TDM_TX_7	87
+> +#define QUINARY_TDM_RX_0	88
+> +#define QUINARY_TDM_TX_0	89
+> +#define QUINARY_TDM_RX_1	90
+> +#define QUINARY_TDM_TX_1	91
+> +#define QUINARY_TDM_RX_2	92
+> +#define QUINARY_TDM_TX_2	93
+> +#define QUINARY_TDM_RX_3	94
+> +#define QUINARY_TDM_TX_3	95
+> +#define QUINARY_TDM_RX_4	96
+> +#define QUINARY_TDM_TX_4	97
+> +#define QUINARY_TDM_RX_5	98
+> +#define QUINARY_TDM_TX_5	99
+> +#define QUINARY_TDM_RX_6	100
+> +#define QUINARY_TDM_TX_6	101
+> +#define QUINARY_TDM_RX_7	102
+> +#define QUINARY_TDM_TX_7	103
+> +#define DISPLAY_PORT_RX		104
+> +#define WSA_CODEC_DMA_RX_0	105
+> +#define WSA_CODEC_DMA_TX_0	106
+> +#define WSA_CODEC_DMA_RX_1	107
+> +#define WSA_CODEC_DMA_TX_1	108
+> +#define WSA_CODEC_DMA_TX_2	109
+> +#define VA_CODEC_DMA_TX_0	110
+> +#define VA_CODEC_DMA_TX_1	111
+> +#define VA_CODEC_DMA_TX_2	112
+> +#define RX_CODEC_DMA_RX_0	113
+> +#define TX_CODEC_DMA_TX_0	114
+> +#define RX_CODEC_DMA_RX_1	115
+> +#define TX_CODEC_DMA_TX_1	116
+> +#define RX_CODEC_DMA_RX_2	117
+> +#define TX_CODEC_DMA_TX_2	118
+> +#define RX_CODEC_DMA_RX_3	119
+> +#define TX_CODEC_DMA_TX_3	120
+> +#define RX_CODEC_DMA_RX_4	121
+> +#define TX_CODEC_DMA_TX_4	122
+> +#define RX_CODEC_DMA_RX_5	123
+> +#define TX_CODEC_DMA_TX_5	124
+> +#define RX_CODEC_DMA_RX_6	125
+> +#define RX_CODEC_DMA_RX_7	126
+> +
+> +#define LPASS_CLK_ID_PRI_MI2S_IBIT	1
+> +#define LPASS_CLK_ID_PRI_MI2S_EBIT	2
+> +#define LPASS_CLK_ID_SEC_MI2S_IBIT	3
+> +#define LPASS_CLK_ID_SEC_MI2S_EBIT	4
+> +#define LPASS_CLK_ID_TER_MI2S_IBIT	5
+> +#define LPASS_CLK_ID_TER_MI2S_EBIT	6
+> +#define LPASS_CLK_ID_QUAD_MI2S_IBIT	7
+> +#define LPASS_CLK_ID_QUAD_MI2S_EBIT	8
+> +#define LPASS_CLK_ID_SPEAKER_I2S_IBIT	9
+> +#define LPASS_CLK_ID_SPEAKER_I2S_EBIT	10
+> +#define LPASS_CLK_ID_SPEAKER_I2S_OSR	11
+> +#define LPASS_CLK_ID_QUI_MI2S_IBIT	12
+> +#define LPASS_CLK_ID_QUI_MI2S_EBIT	13
+> +#define LPASS_CLK_ID_SEN_MI2S_IBIT	14
+> +#define LPASS_CLK_ID_SEN_MI2S_EBIT	15
+> +#define LPASS_CLK_ID_INT0_MI2S_IBIT	16
+> +#define LPASS_CLK_ID_INT1_MI2S_IBIT	17
+> +#define LPASS_CLK_ID_INT2_MI2S_IBIT	18
+> +#define LPASS_CLK_ID_INT3_MI2S_IBIT	19
+> +#define LPASS_CLK_ID_INT4_MI2S_IBIT	20
+> +#define LPASS_CLK_ID_INT5_MI2S_IBIT	21
+> +#define LPASS_CLK_ID_INT6_MI2S_IBIT	22
+> +#define LPASS_CLK_ID_QUI_MI2S_OSR	23
+> +#define LPASS_CLK_ID_PRI_PCM_IBIT	24
+> +#define LPASS_CLK_ID_PRI_PCM_EBIT	25
+> +#define LPASS_CLK_ID_SEC_PCM_IBIT	26
+> +#define LPASS_CLK_ID_SEC_PCM_EBIT	27
+> +#define LPASS_CLK_ID_TER_PCM_IBIT	28
+> +#define LPASS_CLK_ID_TER_PCM_EBIT	29
+> +#define LPASS_CLK_ID_QUAD_PCM_IBIT	30
+> +#define LPASS_CLK_ID_QUAD_PCM_EBIT	31
+> +#define LPASS_CLK_ID_QUIN_PCM_IBIT	32
+> +#define LPASS_CLK_ID_QUIN_PCM_EBIT	33
+> +#define LPASS_CLK_ID_QUI_PCM_OSR	34
+> +#define LPASS_CLK_ID_PRI_TDM_IBIT	35
+> +#define LPASS_CLK_ID_PRI_TDM_EBIT	36
+> +#define LPASS_CLK_ID_SEC_TDM_IBIT	37
+> +#define LPASS_CLK_ID_SEC_TDM_EBIT	38
+> +#define LPASS_CLK_ID_TER_TDM_IBIT	39
+> +#define LPASS_CLK_ID_TER_TDM_EBIT	40
+> +#define LPASS_CLK_ID_QUAD_TDM_IBIT	41
+> +#define LPASS_CLK_ID_QUAD_TDM_EBIT	42
+> +#define LPASS_CLK_ID_QUIN_TDM_IBIT	43
+> +#define LPASS_CLK_ID_QUIN_TDM_EBIT	44
+> +#define LPASS_CLK_ID_QUIN_TDM_OSR	45
+> +#define LPASS_CLK_ID_MCLK_1		46
+> +#define LPASS_CLK_ID_MCLK_2		47
+> +#define LPASS_CLK_ID_MCLK_3		48
+> +#define LPASS_CLK_ID_MCLK_4		49
+> +#define LPASS_CLK_ID_INTERNAL_DIGITAL_CODEC_CORE	50
+> +#define LPASS_CLK_ID_INT_MCLK_0		51
+> +#define LPASS_CLK_ID_INT_MCLK_1		52
+> +#define LPASS_CLK_ID_MCLK_5		53
+> +#define LPASS_CLK_ID_WSA_CORE_MCLK	54
+> +#define LPASS_CLK_ID_WSA_CORE_NPL_MCLK	55
+> +#define LPASS_CLK_ID_VA_CORE_MCLK	56
+> +#define LPASS_CLK_ID_TX_CORE_MCLK	57
+> +#define LPASS_CLK_ID_TX_CORE_NPL_MCLK	58
+> +#define LPASS_CLK_ID_RX_CORE_MCLK	59
+> +#define LPASS_CLK_ID_RX_CORE_NPL_MCLK	60
+> +#define LPASS_CLK_ID_VA_CORE_2X_MCLK	61
+> +
+> +#define LPASS_HW_AVTIMER_VOTE		101
+> +#define LPASS_HW_MACRO_VOTE		102
+> +#define LPASS_HW_DCODEC_VOTE		103
+> +
+> +#define Q6APM_MAX_CLK_ID			104
+> +
+> +#define LPASS_CLK_ATTRIBUTE_INVALID		0x0
+> +#define LPASS_CLK_ATTRIBUTE_COUPLE_NO		0x1
+> +#define LPASS_CLK_ATTRIBUTE_COUPLE_DIVIDEND	0x2
+> +#define LPASS_CLK_ATTRIBUTE_COUPLE_DIVISOR	0x3
+> +
+> +#endif /* __DT_BINDINGS_Q6_APM_H__ */
