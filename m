@@ -2,91 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C1383AD203
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:20:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D423AD206
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 20:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236265AbhFRSWO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 14:22:14 -0400
-Received: from mail-io1-f54.google.com ([209.85.166.54]:42513 "EHLO
-        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbhFRSWM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 14:22:12 -0400
-Received: by mail-io1-f54.google.com with SMTP id v3so2228180ioq.9
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 11:20:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xjOKNXx7mcvWVB9xbLB4nqglFfMMl1pNP/S9NAh2kJ4=;
-        b=nH+FblCoFrtlskj3POK0Mz30dgNifz2kIsrUu1DvG4GT/qxyAnNFuHrBVawlnjQdz+
-         OyDdNocn0/b+A0aS+RUmB/nW8TFDi7fqSDZTgHS8XDgI4s4ag3X5x6GdMQtBBHVSKmlW
-         dSZYHWn8soE9nzUBuTdtKOIb+jVTswvSwzMmgw6gKkKoEYkop5uf24ii4n3qR2zkMikp
-         aGoXC9nh+XiNlaUNrFAdNlaYkSh3CSJDwt8A6cwkAbNQIBbVDsp0ec/uWlIW1teJubj6
-         xC7dGW38GGCwNYAOJco3LCx0Dopawu0f++XzwY25bvLUTAMeBNLMU6ztSxSJQ/Mm+T43
-         7pgg==
-X-Gm-Message-State: AOAM532v2RZQVgsi/strc42vZgmKBtmmwGXy5rbJ9JusojzeDz+JKp7F
-        TCxtLyoIT/GQOQTHxWS0CzBFn/Sx4Z8=
-X-Google-Smtp-Source: ABdhPJydgA71BB/n2LEtmsw0Da6q0F7D6SyzH0sA53awOujaw5hdeV6E1TWu3uz7IHTdPsjjra3x3A==
-X-Received: by 2002:a6b:e018:: with SMTP id z24mr3292117iog.206.1624040403042;
-        Fri, 18 Jun 2021 11:20:03 -0700 (PDT)
-Received: from google.com (243.199.238.35.bc.googleusercontent.com. [35.238.199.243])
-        by smtp.gmail.com with ESMTPSA id y27sm4849431iox.17.2021.06.18.11.20.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 11:20:02 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 18:20:01 +0000
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Wan Jiabing <wanjiabing@vivo.com>
-Cc:     Tejun Heo <tj@kernel.org>, Christoph Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kael_w@yeah.net
-Subject: Re: [PATCH] mm/percpu: Fix gfp flag in pcpu_balance_populated
-Message-ID: <YMzj0V8CVte/Pynx@google.com>
-References: <20210618151436.38217-1-wanjiabing@vivo.com>
+        id S236288AbhFRSWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 14:22:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49946 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235154AbhFRSWN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 14:22:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 50748613ED;
+        Fri, 18 Jun 2021 18:20:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624040403;
+        bh=YZXDHEiAHJ+1uypHZRStDKgICoaBK0OZqOFPPhfmMtQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=kcFE0P0VEdRNCCKj3X2QVZOUuUugUFWKPJwXaN5yimptJuSQRTdqPMcYUHGq6Kzcx
+         AGx7AXbkVXy/OHpFQlekHMeMeX244Y/Vu2E8Ydl9etB22CRli2DJGykZlfB+DyojXS
+         ML9hh/M/I/BD4iGvPx1WsSafpAVEZLcSCFdw8Qar/NqqfJt5K8ieXHI9hFv1fQJHc0
+         CI/cHUpSTeywI+nGXkGl63911VMM0kr48rS8luqydNaBzNe5x8T09yB/Q/9Vh2chEz
+         n4K4a/UJkOYKAV+k9tRM3J0lP9gAyo5WeA89fYj0FeMVqsPsKyxwoLWueAtKGeB0I1
+         9AbRHumhwpVIQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 41EA460A17;
+        Fri, 18 Jun 2021 18:20:03 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210618151436.38217-1-wanjiabing@vivo.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH bpf] samples/bpf: Fix the error return code of xdp_redirect's
+ main()
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162404040326.13927.11610901471551028240.git-patchwork-notify@kernel.org>
+Date:   Fri, 18 Jun 2021 18:20:03 +0000
+References: <20210616042534.315097-1-wanghai38@huawei.com>
+In-Reply-To: <20210616042534.315097-1-wanghai38@huawei.com>
+To:     Wang Hai <wanghai38@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, ast@kernel.org,
+        daniel@iogearbox.net, hawk@kernel.org, john.fastabend@gmail.com,
+        andrii@kernel.org, kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hello:
 
-On Fri, Jun 18, 2021 at 11:14:36PM +0800, Wan Jiabing wrote:
-> Fix coccicheck warning:
-> 
-> ./mm/percpu.c:2045:19-29: ERROR: function pcpu_balance_populated
-> called on line 2232 inside lock on line 2228 but uses GFP_KERNEL
-> 
-> When pcpu_balance_populated() is called in pcpu_balance_workfn(),
-> it helds spin_lock but use GFP_KERNEL to alloc mem, which is unsafe.
-> 
-> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-> ---
->  mm/percpu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/percpu.c b/mm/percpu.c
-> index b4cebeca4c0c..4031f32e6975 100644
-> --- a/mm/percpu.c
-> +++ b/mm/percpu.c
-> @@ -2042,7 +2042,7 @@ static void pcpu_balance_free(bool empty_only)
->  static void pcpu_balance_populated(void)
->  {
->  	/* gfp flags passed to underlying allocators */
-> -	const gfp_t gfp = GFP_KERNEL | __GFP_NORETRY | __GFP_NOWARN;
-> +	const gfp_t gfp = GFP_ATOMIC | __GFP_NORETRY | __GFP_NOWARN;
->  	struct pcpu_chunk *chunk;
->  	int slot, nr_to_pop, ret;
->  
-> -- 
-> 2.30.2
-> 
+This patch was applied to bpf/bpf-next.git (refs/heads/master):
 
-In both places gfp flags are passed, the pcpu_lock is dropped. So I
-think this is an issue with coccicheck. Regardless, the fix wouldn't be
-to switch to GFP_ATOMIC but to make the locking correct.
+On Wed, 16 Jun 2021 12:25:34 +0800 you wrote:
+> Fix to return a negative error code from the error handling
+> case instead of 0, as done elsewhere in this function.
+> 
+> If bpf_map_update_elem() failed, main() should return a negative error.
+> 
+> Fixes: 832622e6bd18 ("xdp: sample program for new bpf_redirect helper")
+> Signed-off-by: Wang Hai <wanghai38@huawei.com>
+> 
+> [...]
 
-Thanks,
-Dennis
+Here is the summary with links:
+  - [bpf] samples/bpf: Fix the error return code of xdp_redirect's main()
+    https://git.kernel.org/bpf/bpf-next/c/7c6090ee2a7b
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
