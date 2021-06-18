@@ -2,165 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFCDF3AC420
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:45:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2163AC446
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 08:48:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232631AbhFRGre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 02:47:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232519AbhFRGra (ORCPT
+        id S232893AbhFRGut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 02:50:49 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:50941 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231637AbhFRGur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 02:47:30 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64768C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 23:45:20 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id v13so4172475ple.9
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 23:45:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=okAyK8M7Z6Ptw0beX4Y2yCnZuEPisK0I1+muMAhoiXg=;
-        b=zvf795snOW2u51TXtNSz7v4xK9goLJUViwWj0aEGNbsut7dP75ADSDlQh6oE7mcJ2S
-         KQxOAl4vPgYZpTfVuyt6MAnzP/7BgRrJu2/GVYEyZJwUT5IRHxkdr7Isvudt85dQ9zzh
-         xHAjB4fCPwghogU+JREfrotPHVsyLiXqyXfaCgPnWBYoF6vwyzckE1Odm7FiE+eEXMzO
-         TlsmJskTiSwW8U36LJKco/Ex63OSmZa/KZ5/IVsFNdhIdsGZdtLBTPaWEuUmPlyrW4Gc
-         X9XjDC3nw93l03ofs0zegJI5k8Wc2bWf1ivyX0i4zRjgUB7CVKGOqekAYHqlj3hFr3NL
-         PlRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=okAyK8M7Z6Ptw0beX4Y2yCnZuEPisK0I1+muMAhoiXg=;
-        b=H6IpK4SG3Q26KmiExqI/RmSjcdCNpAfFDevRZyDp+Z+olPsKtgnm81YTOPo3eN3/MQ
-         V7VvFGlb+MvKpWlCJ4sJacG8jkabRA7DgMqjC+GR7URcs3ANsH2wVOKiVI0fy9BfIWQD
-         68Zuf6ZLv1oghjH3DsUTvKzzPSDhOvBrkkcAJN4Ya/L8WhwlgMTt3/TolJ+4ch02oWOz
-         F/8dttEWCgZsg6sVxBUmvg85yENZ7CpVx/TTZlBsnz3aLXxsuGR2/F6W8qX8mphue5UV
-         69nwQiOx8Soln7M+rTUU3HW8v3wkXsbk5lYkVDGQg8Ai8HMN6MaSVxuaesVWy6GxzNLm
-         a0GA==
-X-Gm-Message-State: AOAM53325Gv+KHO5P7Qa4x5IzDhTmhXwoyrFrJOzXek/R3MYev/l07YX
-        e9f+iwKWYlSZEKERKMDB0sqK
-X-Google-Smtp-Source: ABdhPJw7hiGjytMs5xdZLxzGMXIBTPSrji65dpHP37DcFsR16C6/rcqV4IZNtVQLqLewkCrdfqATzw==
-X-Received: by 2002:a17:902:b188:b029:11b:1549:da31 with SMTP id s8-20020a170902b188b029011b1549da31mr3431833plr.7.1623998719794;
-        Thu, 17 Jun 2021 23:45:19 -0700 (PDT)
-Received: from workstation ([120.138.13.11])
-        by smtp.gmail.com with ESMTPSA id b18sm7026451pfb.131.2021.06.17.23.45.16
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 17 Jun 2021 23:45:19 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 12:15:14 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     Kalle Valo <kvalo@codeaurora.org>, linux-arm-msm@vger.kernel.org,
-        hemantk@codeaurora.org, jhugo@codeaurora.org,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
-        linux-wireless@vger.kernel.org, ath11k@lists.infradead.org,
-        bbhatt=codeaurora.org@codeaurora.org, lilic@codeaurora.org,
-        kangxu@codeaurora.org
-Subject: Re: [PATCH v4 4/6] ath11k: set register access length for MHI driver
-Message-ID: <20210618064514.GM3682@workstation>
-References: <1620330705-40192-1-git-send-email-bbhatt@codeaurora.org>
- <1620330705-40192-5-git-send-email-bbhatt@codeaurora.org>
- <20210521135152.GL70095@thinkpad>
- <87h7i0juxt.fsf@codeaurora.org>
- <37184e28dcc952ba9ad5ed0dc2c1a6da@codeaurora.org>
- <6ed9fe90f40e5f8151d3a028abf0acd1@codeaurora.org>
+        Fri, 18 Jun 2021 02:50:47 -0400
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 8F2072000D;
+        Fri, 18 Jun 2021 06:48:28 +0000 (UTC)
+Subject: Re: [PATCH v2] riscv: Ensure BPF_JIT_REGION_START aligned with PMD
+ size
+To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>,
+        Palmer Dabbelt <palmer@dabbelt.com>, schwab@linux-m68k.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, ryabinin.a.a@gmail.com, glider@google.com,
+        andreyknvl@gmail.com, dvyukov@google.com, bjorn@kernel.org,
+        ast@kernel.org, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, luke.r.nels@gmail.com, xi.wang@gmail.com
+Cc:     daniel@iogearbox.net, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <mhng-042979fe-75f0-4873-8afd-f8c07942f792@palmerdabbelt-glaptop>
+ <ae256a5d-70ac-3a5f-ca55-5e4210a0624c@ghiti.fr>
+ <50ebc99c-f0a2-b4ea-fc9b-cd93a8324697@ghiti.fr>
+ <20210618012731.345657bf@xhacker> <20210618014648.1857a62a@xhacker>
+ <20210618021038.52c2f558@xhacker> <20210618021535.29099c75@xhacker>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <058cfd88-07f0-8079-51dc-928fe9ee4fdb@ghiti.fr>
+Date:   Fri, 18 Jun 2021 08:48:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6ed9fe90f40e5f8151d3a028abf0acd1@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210618021535.29099c75@xhacker>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 10:38:01AM -0700, Bhaumik Bhatt wrote:
-> Hi Kalle/Mani,
+Le 17/06/2021 à 20:15, Jisheng Zhang a écrit :
+> Andreas reported commit fc8504765ec5 ("riscv: bpf: Avoid breaking W^X")
+> breaks booting with one kind of defconfig, I reproduced a kernel panic
+> with the defconfig:
 > 
-> On 2021-06-14 10:49 AM, Bhaumik Bhatt wrote:
-> > Hi Kalle,
-> > 
-> > On 2021-06-14 09:02 AM, Kalle Valo wrote:
-> > > Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> writes:
-> > > 
-> > > > On Thu, May 06, 2021 at 12:51:43PM -0700, Bhaumik Bhatt wrote:
-> > > > > MHI driver requires register space length to add range checks and
-> > > > > prevent memory region accesses outside of that for MMIO space.
-> > > > > Set it before registering the MHI controller.
-> > > > > 
-> > > > > Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> > > > > Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
-> > > > 
-> > > > Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > > 
-> > > > Kalle, should we do immutable branch for this patch or I can
-> > > > pick it up via MHI
-> > > > tree (if there are no other patches expected from ath11k for
-> > > > this controller)?
-> > > 
-> > > I'm not expecting any conflicts with this, and if there are, they
-> > > should
-> > > be easy for Stephen or Linus to fix. So it's easiest to route this via
-> > > your tree. But I'm not giving my ack yet, see below.
-> > > 
-> > > I'm worried that this patchset breaks bisect. Every patch in the
-> > > patchset should not break existing functionality, what if only patches
-> > > 1-3 are included in the tree but not patch 4? Wouldn't ath11k be
-> > > broken
-> > > then? I didn't review the whole patchset, but I suspect the fix is to
-> > > include the ath11k change in the actual mhi patch which changes the
-> > > functionality. So that way we would not have a separate ath11k patch
-> > > at
-> > > all.
-> > > 
-> > > Also I'm not able to test this patchset at the moment. Can someone
-> > > else
-> > > help and do a quick test with QCA6390 to verify these doesn't break
-> > > ath11k?
-> > 
-> > I have requested someone to try and test this patch series with QCA6390.
-> > 
-> > I or the testers will get back to you with the test results when they
-> > are
-> > available.
-> > 
-> > As far as your concerns go, you can choose to pick patches 1-3 and that
-> > would
-> > be just fine.
-> > 
-> > Things will break if patchset 4 is _not_ in place with patchset 6 being
-> > part of
-> > the tree.
-> > 
-> > It would, however, be nice to pick the whole series instead and ensure
-> > that
-> > the functionality MHI introduces for boot-up sanity is in place for any
-> > controllers such as ath11k.
-> > 
-> > Thanks,
-> > Bhaumik
-> > ---
-> > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
-> > Forum,
-> > a Linux Foundation Collaborative Project
+> [    0.138553] Unable to handle kernel paging request at virtual address ffffffff81201220
+> [    0.139159] Oops [#1]
+> [    0.139303] Modules linked in:
+> [    0.139601] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc5-default+ #1
+> [    0.139934] Hardware name: riscv-virtio,qemu (DT)
+> [    0.140193] epc : __memset+0xc4/0xfc
+> [    0.140416]  ra : skb_flow_dissector_init+0x1e/0x82
+> [    0.140609] epc : ffffffff8029806c ra : ffffffff8033be78 sp : ffffffe001647da0
+> [    0.140878]  gp : ffffffff81134b08 tp : ffffffe001654380 t0 : ffffffff81201158
+> [    0.141156]  t1 : 0000000000000002 t2 : 0000000000000154 s0 : ffffffe001647dd0
+> [    0.141424]  s1 : ffffffff80a43250 a0 : ffffffff81201220 a1 : 0000000000000000
+> [    0.141654]  a2 : 000000000000003c a3 : ffffffff81201258 a4 : 0000000000000064
+> [    0.141893]  a5 : ffffffff8029806c a6 : 0000000000000040 a7 : ffffffffffffffff
+> [    0.142126]  s2 : ffffffff81201220 s3 : 0000000000000009 s4 : ffffffff81135088
+> [    0.142353]  s5 : ffffffff81135038 s6 : ffffffff8080ce80 s7 : ffffffff80800438
+> [    0.142584]  s8 : ffffffff80bc6578 s9 : 0000000000000008 s10: ffffffff806000ac
+> [    0.142810]  s11: 0000000000000000 t3 : fffffffffffffffc t4 : 0000000000000000
+> [    0.143042]  t5 : 0000000000000155 t6 : 00000000000003ff
+> [    0.143220] status: 0000000000000120 badaddr: ffffffff81201220 cause: 000000000000000f
+> [    0.143560] [<ffffffff8029806c>] __memset+0xc4/0xfc
+> [    0.143859] [<ffffffff8061e984>] init_default_flow_dissectors+0x22/0x60
+> [    0.144092] [<ffffffff800010fc>] do_one_initcall+0x3e/0x168
+> [    0.144278] [<ffffffff80600df0>] kernel_init_freeable+0x1c8/0x224
+> [    0.144479] [<ffffffff804868a8>] kernel_init+0x12/0x110
+> [    0.144658] [<ffffffff800022de>] ret_from_exception+0x0/0xc
+> [    0.145124] ---[ end trace f1e9643daa46d591 ]---
 > 
-> Just got confirmation that the whole patch series was tested for functional
-> sanity on
-> Dell E7590 + QCA6390 with Ubuntu18.04 and patch 4/6 is also good to go.
+> After some investigation, I think I found the root cause: commit
+> 2bfc6cd81bd ("move kernel mapping outside of linear mapping") moves
+> BPF JIT region after the kernel:
 > 
-> Can you please ACK and pick up this series?
+> The &_end is unlikely aligned with PMD size, so the front bpf jit
+> region sits with part of kernel .data section in one PMD size mapping.
+> But kernel is mapped in PMD SIZE, when bpf_jit_binary_lock_ro() is
+> called to make the first bpf jit prog ROX, we will make part of kernel
+> .data section RO too, so when we write to, for example memset the
+> .data section, MMU will trigger a store page fault.
 > 
-
-I can pick the series but I need an Ack from Kalle since it contains
-ath11k changes. Kalle, can you please Ack this patch?
-
-I'm planning to send the PR by this weekend.
-
-Thanks,
-Mani
-
-> Thanks,
-> Bhaumik
+> To fix the issue, we need to ensure the BPF JIT region is PMD size
+> aligned. This patch acchieve this goal by restoring the BPF JIT region
+> to original position, I.E the 128MB before kernel .text section. The
+> modification to kasan_init.c is inspired by Alexandre.
+> 
+> Reported-by: Andreas Schwab <schwab@linux-m68k.org>
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 > ---
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+> 
+> Since v1:
+>   - Fix early boot hang when kasan is enabled
+>   - Update Documentation/riscv/vm-layout.rst
+> 
+>   Documentation/riscv/vm-layout.rst |  4 ++--
+>   arch/riscv/include/asm/pgtable.h  |  5 ++---
+>   arch/riscv/mm/kasan_init.c        | 10 +++++-----
+>   3 files changed, 9 insertions(+), 10 deletions(-)
+> 
+> diff --git a/Documentation/riscv/vm-layout.rst b/Documentation/riscv/vm-layout.rst
+> index 329d32098af4..b7f98930d38d 100644
+> --- a/Documentation/riscv/vm-layout.rst
+> +++ b/Documentation/riscv/vm-layout.rst
+> @@ -58,6 +58,6 @@ RISC-V Linux Kernel SV39
+>                                                                 |
+>     ____________________________________________________________|____________________________________________________________
+>                       |            |                  |         |
+> -   ffffffff00000000 |   -4    GB | ffffffff7fffffff |    2 GB | modules
+> -   ffffffff80000000 |   -2    GB | ffffffffffffffff |    2 GB | kernel, BPF
+> +   ffffffff00000000 |   -4    GB | ffffffff7fffffff |    2 GB | modules, BPF
+> +   ffffffff80000000 |   -2    GB | ffffffffffffffff |    2 GB | kernel
+>     __________________|____________|__________________|_________|____________________________________________________________
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> index 9469f464e71a..380cd3a7e548 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -30,9 +30,8 @@
+>   
+>   #define BPF_JIT_REGION_SIZE	(SZ_128M)
+>   #ifdef CONFIG_64BIT
+> -/* KASLR should leave at least 128MB for BPF after the kernel */
+> -#define BPF_JIT_REGION_START	PFN_ALIGN((unsigned long)&_end)
+> -#define BPF_JIT_REGION_END	(BPF_JIT_REGION_START + BPF_JIT_REGION_SIZE)
+> +#define BPF_JIT_REGION_START	(BPF_JIT_REGION_END - BPF_JIT_REGION_SIZE)
+> +#define BPF_JIT_REGION_END	(MODULES_END)
+>   #else
+>   #define BPF_JIT_REGION_START	(PAGE_OFFSET - BPF_JIT_REGION_SIZE)
+>   #define BPF_JIT_REGION_END	(VMALLOC_END)
+> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
+> index 9daacae93e33..d7189c8714a9 100644
+> --- a/arch/riscv/mm/kasan_init.c
+> +++ b/arch/riscv/mm/kasan_init.c
+> @@ -169,7 +169,7 @@ static void __init kasan_shallow_populate(void *start, void *end)
+>   
+>   void __init kasan_init(void)
+>   {
+> -	phys_addr_t _start, _end;
+> +	phys_addr_t p_start, p_end;
+
+
+IMHO this fix deserves its own patch, it is not related to the issue you 
+describe in the changelog and has been around for some time.
+
+That's too bad BPF people did not answer my question regarding BPF <-> 
+modules calls: I'll ask the question directly in kasan-dev mailing list 
+and add you in cc.
+
+
+>   	u64 i;
+>   
+>   	/*
+> @@ -189,9 +189,9 @@ void __init kasan_init(void)
+>   			(void *)kasan_mem_to_shadow((void *)VMALLOC_END));
+>   
+>   	/* Populate the linear mapping */
+> -	for_each_mem_range(i, &_start, &_end) {
+> -		void *start = (void *)__va(_start);
+> -		void *end = (void *)__va(_end);
+> +	for_each_mem_range(i, &p_start, &p_end) {
+> +		void *start = (void *)__va(p_start);
+> +		void *end = (void *)__va(p_end);
+>   
+>   		if (start >= end)
+>   			break;
+> @@ -201,7 +201,7 @@ void __init kasan_init(void)
+>   
+>   	/* Populate kernel, BPF, modules mapping */
+>   	kasan_populate(kasan_mem_to_shadow((const void *)MODULES_VADDR),
+> -		       kasan_mem_to_shadow((const void *)BPF_JIT_REGION_END));
+> +		       kasan_mem_to_shadow((const void *)MODULES_VADDR + SZ_2G));
+>   
+>   	for (i = 0; i < PTRS_PER_PTE; i++)
+>   		set_pte(&kasan_early_shadow_pte[i],
+> 
