@@ -2,127 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1691D3AC84F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 12:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407D83AC854
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 12:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232944AbhFRKDI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 18 Jun 2021 06:03:08 -0400
-Received: from de-smtp-delivery-105.mimecast.com ([194.104.111.105]:55239 "EHLO
-        de-smtp-delivery-105.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232282AbhFRKC5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 06:02:57 -0400
-Received: from GBR01-CWL-obe.outbound.protection.outlook.com
- (mail-cwlgbr01lp2055.outbound.protection.outlook.com [104.47.20.55]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-40-0q5TGiLwN0qZ2-g_lHIsag-1; Fri, 18 Jun 2021 12:00:41 +0200
-X-MC-Unique: 0q5TGiLwN0qZ2-g_lHIsag-1
-Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
- by CWXP265MB4090.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:131::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Fri, 18 Jun
- 2021 10:00:41 +0000
-Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
- ([fe80::259d:65ac:ae6d:409d]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
- ([fe80::259d:65ac:ae6d:409d%9]) with mapi id 15.20.4242.021; Fri, 18 Jun 2021
- 10:00:41 +0000
-From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        "shawn.lin@rock-chips.com" <shawn.lin@rock-chips.com>
-Subject: Re: [PATCH] mmc: block: ioctl: Poll for TRAN if possible
-Thread-Topic: [PATCH] mmc: block: ioctl: Poll for TRAN if possible
-Thread-Index: AQHXXSMDiXAg1fej0U+LBOvD9D6/9asZlxVh
-Date:   Fri, 18 Jun 2021 10:00:40 +0000
-Message-ID: <CWXP265MB26809CC8BCD8A0289697CBBDC40D9@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-References: <LO2P265MB26880B222999818677722528C4369@LO2P265MB2688.GBRP265.PROD.OUTLOOK.COM>
-In-Reply-To: <LO2P265MB26880B222999818677722528C4369@LO2P265MB2688.GBRP265.PROD.OUTLOOK.COM>
-Accept-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [185.80.168.10]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: cbfc0c05-4f4e-4afe-c472-08d9323fee34
-x-ms-traffictypediagnostic: CWXP265MB4090:
-x-microsoft-antispam-prvs: <CWXP265MB4090F3F45A07BF4E8E322104C40D9@CWXP265MB4090.GBRP265.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:10000
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0
-x-microsoft-antispam-message-info: SiPZ5XdFwxtauAcCqNOxNUAo5VVxynLcIe+lZEFCDbTWP7c8GrEVBzhyMe63FZDgEE7okOOhrQYZhozaKmYH24oNyNiSyJRcpEx7I4qJQrjz7jnu7bzA9vf6/R7ievwsbXCmQATy5XZ9HMqlUE2HBTsCboW20HTrCbK3cxWWmJfDUNOzHssRNqRk06bcvBN6Mych8WCUxsMnO99mq/eS+D6hn1BCbuhjh0resb5hHAOVwRq4JsfOkg4HNDM5DiEQ1lwIfHHn5tnC1GpB8cS5XtEIaYoFyg8An3muUS1p+Mn6dHEaVM3KOmo0oAB5dj310SLnCeNL+n3KuzMM4/mi8hsY0e2CcP3pqmNCe2mDjA9guHprZMknoScv/rY0eYkWknanl8g/RhYZk6ZOLOL+BlpW0BXnykt8Y+cOoOB+QTtixSTTsr/iOYzz/U+88QjfH954s7EGdiSH6ihKqEKnSY7JXJE/CHxv9qnKQfSqDDp9PFuTRH/uv4Sgur/qA6e9X/FwjxCfM/MvsrUSdElmud8oZZr+sEy1aQOQ883FgpMrVC9pXub4GYCpb9nMBVeq1wHnDN6JrQvnbsEFTAxtF3Jkkg62L5bYfjJyp/wupfM=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(366004)(396003)(136003)(376002)(39830400003)(346002)(76116006)(316002)(91956017)(33656002)(86362001)(186003)(26005)(38100700002)(64756008)(66556008)(66446008)(66946007)(6506007)(7696005)(66476007)(52536014)(478600001)(8676002)(110136005)(122000001)(4744005)(2906002)(5660300002)(55016002)(8936002)(71200400001)(9686003);DIR:OUT;SFP:1101
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?d/LTRzwhhMRSEVu1STeyQOezzjBszVX8BRLTK7Zp6a8q3FFRIZHpmotFUm?=
- =?iso-8859-1?Q?mUj7Ke/W77qQwZJTRMDBbuJwLgNolN7zEdVshJXY5GjR7oWkve/WRYMgb0?=
- =?iso-8859-1?Q?iUlPpAgGlNybjB1eMsfSQ5GdrhF+uBmgcGCmgkSgsH1nIThnSXYdCQnHAX?=
- =?iso-8859-1?Q?sssZnXNjcn8busd0c9WFEqsxbnC0om7ApVF0AfHF2eTBtMUieAO8iDAIqa?=
- =?iso-8859-1?Q?8u0kbhG8uZNgXi3Vg51j1jxckkB8K9ny62yGudUNzrDoZL7xtftQY0iRFd?=
- =?iso-8859-1?Q?LEAR9ZUGT6Ndua3D8BGzSkLy0WxTB5Qlyo8RmyvrYl1yhEgsUFIpwR9x0f?=
- =?iso-8859-1?Q?AvrpORyih/mkwXJkTOwQNxpSJp21aiIJAd9PxBLMdzrvVzFt3Xlfg3Q0e/?=
- =?iso-8859-1?Q?VciWxn3zofhC9ftzNZQxoPOKDp/SgwSK/Tu5ogpiNhV6Mg31MK5cZBsq9j?=
- =?iso-8859-1?Q?x2OOYk9fNiMDPimJ9nXd0XVJ/OIlPNo8QKtZoUPdxAzi5RYF94MRVpU7Qw?=
- =?iso-8859-1?Q?TCeLCCdL1q/ddeqwbboVQ9etlB6Jh4GgmWHC/4Bsy0eOchAgDhHIl2Swy2?=
- =?iso-8859-1?Q?7vZ+FloQoDkc2RCYzNgIMX1UMwiQuackCZwcTnb+OCwgOWW/uIaff2j0b5?=
- =?iso-8859-1?Q?Vh72sZ6u0TUnJ9SCs6b7lzecs4HE4kHW/OSY/h+wWjqejKP8oJetMTqcIC?=
- =?iso-8859-1?Q?d9fXT2lw05iqZCkQx6IqKb2pTADXU7d/PD3lCOTuKlyx7W8pDUmbpkJ2mp?=
- =?iso-8859-1?Q?Yb84jzVYHt0nFQYKlZMZwtr+vabf3/V4/75XETveopZiS6EHJF6e7xQ7BB?=
- =?iso-8859-1?Q?vW6r/CiQd5u+PEhcjr1KNYSzw0/hrs2wBlQb7JDZpsg0SYhaCAgS1PH1mr?=
- =?iso-8859-1?Q?BRea18mDYkcWev54/hBpWobIhiY7IvN/3vCSvsAv60Za3yjP0Z1ykL8BDU?=
- =?iso-8859-1?Q?JiaiAuaaiIFt6UI+fkVShaSRgeaPiZcAJp79Ju78sHEVf3jTWHL/6SSxoR?=
- =?iso-8859-1?Q?W7Y7SbkVh1VqOH5Brh1jXUNEFwG94hKziMm/VYIksvb6bmpSOz5RZO+eX1?=
- =?iso-8859-1?Q?1cw2ua0REv58HObrT2FVnxBFqNtS0zfQvYRuQSQJikOpfF69uQ8p2BvH7D?=
- =?iso-8859-1?Q?MBGIlYk2YyrUSpeMPviwL1ZJ/iChOg97h2Iu/3FoMqQzRu/2MkIFHnJ18e?=
- =?iso-8859-1?Q?rK06GhVDaUfZqdo0+epFlcoddT8CBJfzAyoSk0Rd4cxsqyP8Q6vxPNZ52A?=
- =?iso-8859-1?Q?BB3pLnX9i8pRzfU5r2AXmLNufOT16Bx6vwt20qMv8JgPBRC630FKaXCWjj?=
- =?iso-8859-1?Q?eo9JXppGgX9vvqI6h578wmN1tKFkbULxlAkCBhC2tlpVQw0=3D?=
-x-ms-exchange-transport-forked: True
+        id S233070AbhFRKDO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 06:03:14 -0400
+Received: from mga02.intel.com ([134.134.136.20]:20412 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232553AbhFRKDG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 06:03:06 -0400
+IronPort-SDR: /K5YjHuk7cdga+czhL4InLIIpySyQ0tRspGoChJRXfVqhp+RuBBJwRDxmrRG2E/LYrLKV88TeJ
+ ev0CMuwrYbkA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="193659193"
+X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
+   d="scan'208";a="193659193"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 03:00:57 -0700
+IronPort-SDR: 5gdfw7IuCHm/YLPTg4K/dBM62CuMxNb7JWSCYMa71bVWYnVFOyYu4OCNjIT6DXZ8053gWgdzHe
+ xoIJAgLxSW1w==
+X-IronPort-AV: E=Sophos;i="5.83,283,1616482800"; 
+   d="scan'208";a="416401095"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 03:00:51 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1luBIt-003ZLy-Lb; Fri, 18 Jun 2021 13:00:47 +0300
+Date:   Fri, 18 Jun 2021 13:00:47 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jamin Lin <jamin_lin@aspeedtech.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Arnd Bergmann <arnd@arndb.de>, Jean Delvare <jdelvare@suse.de>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Khalil Blaiech <kblaiech@mellanox.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Bence =?iso-8859-1?B?Q3Pza+Fz?= <bence98@sch.bme.hu>,
+        Yicong Yang <yangyicong@hisilicon.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Ryan Chen <ryan_chen@aspeedtech.com>,
+        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        ChiaWei Wang <chiawei_wang@aspeedtech.com>,
+        Troy Lee <troy_lee@aspeedtech.com>,
+        Steven Lee <steven_lee@aspeedtech.com>
+Subject: Re: [PATCH 3/3] i2c:support new register set for ast2600
+Message-ID: <YMxuz03aTijWH6uj@smile.fi.intel.com>
+References: <20210617094424.27123-1-jamin_lin@aspeedtech.com>
+ <20210617094424.27123-4-jamin_lin@aspeedtech.com>
+ <YMslyzUKp/7J0ncu@smile.fi.intel.com>
+ <20210618035855.GB31659@aspeedtech.com>
 MIME-Version: 1.0
-X-OriginatorOrg: hyperstone.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: cbfc0c05-4f4e-4afe-c472-08d9323fee34
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jun 2021 10:00:40.9892
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BRmjfwkseRVhq4IN28WDR6+EQkAfp+zMb0g7ltqSVhyQXOnGqr7boy0n0Dk2bei28MLUTMfrjYUSbraaVYNCVw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB4090
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CDE5A68 smtp.mailfrom=cloehle@hyperstone.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: hyperstone.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210618035855.GB31659@aspeedtech.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->Poll for TRAN state if the ioctl command will eventually return to TRAN
->
->The ioctl submitted command should not be considered completed until
->the card has returned back to TRAN state. Waiting just for the card
->to no longer signal busy is not enough as they might remain in a
->non-busy PROG state for a while after the command.
->Further commands requiring TRAN will fail then.
->It should not be the responsibility of the user to check if their command
->has completed until sending the next via ioctl,
->instead the check should be made here.
->So now, in doubt, wait for TRAN except for the few commands that will
->never return to TRAN state.
+On Fri, Jun 18, 2021 at 11:58:55AM +0800, Jamin Lin wrote:
+> The 06/17/2021 10:36, Andy Shevchenko wrote:
+> > On Thu, Jun 17, 2021 at 05:43:40PM +0800, Jamin Lin wrote:
+> > > Add i2c new driver to support new register set for AST2600.
+> > > AST2600 support three modes for data transfer which are
+> > > byte mode, buffer mode and dma mode, respectively.
+> > > The global driver of i2c is used to set the new register
+> > > mode and define the base clock frequency
+> > > of baseclk_1~baseclk_4.
 
-So apart from the fact that I missed a couple of non-TRAN returning MMC
-commands, which I will add in v2, are there any other thoughts about this
-patch? It would change the behavior of the ioctl interface, but I think it is
-the only way to prevent race conditions here.
+> >  - shrink the code base by at least ~15% (it's possible), i.e. -200 LOCs
+> Can you describe it more detail?
+> Do you mean I should separate the patch file to fix size limitation? 
 
-Best Regards,
-Christian
+No. Based on my brief review you introduce to many redundant LOCs (lines of
+code). Remove them, refactor the code, make it small and neat and easy to read
+and understand. It is possible to achieve!
 
-Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
-Managing Directors: Dr. Jan Peter Berns.
-Commercial register of local courts: Freiburg HRB381782
+> >  - rethink how you do calculations and bit operations
+> >  - better code style
+> >
+> Thanks for your review and very good suggestion
+> I will update them and sent patch again.
+> By the way, I received test failed email from Robot due to compiling
+> warning. I will fix them, too.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
