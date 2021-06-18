@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 966533ACE8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:19:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B9E3ACE8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:19:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234988AbhFRPVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:21:51 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56328 "EHLO
+        id S235046AbhFRPVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:21:55 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56308 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234951AbhFRPVg (ORCPT
+        with ESMTP id S234952AbhFRPVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 11:21:36 -0400
-Message-Id: <20210618143445.104177935@linutronix.de>
+        Fri, 18 Jun 2021 11:21:37 -0400
+Message-Id: <20210618143445.206372999@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624029566;
+        s=2020; t=1624029567;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=N9ju3zKYKNsFSMeCJGVjbzq++teoOw1o95TdaYtFUXk=;
-        b=Ycldk1SqVcqfwh65yyMKltZpRerQsGUlT0DKJMuULdhjrm89TNbrXojdvoWF5/54EIsp6a
-        POpaav1+J8X+K+CTn48Pr+lErJEvTEpBrpEkRvlqDbEKICGxgfWb1v4KX8a2zSGRH2mj3f
-        hiAE/GM+vPJQkV223rYwo23zrphTPl/3SaPn+k0EAnUeDAVWxmIbaPowApMCdvJhpov6mR
-        hrkWaNFAIVXX7nSRJ03hDjxru9MXKsJlkWKNHeVH7jt7iVHpG+Qx5QDHgdW/ZBJlwob7nP
-        97ylO46UckqHUlNSRzax/U2xQ11IHMp8PoIZ+09xu0sprWJfmuTZecLsuOA1Cg==
+        bh=5JupwahYfRQZ8SWnTbdoqKaQYuUvpeMd+3vDe4dbkJQ=;
+        b=H5AE58lqleXZmMnHOi+ATg4cVEse3s71lPGcElVehhQrdDxx9UVL1r09VXjsPbAFIgeYAT
+        5J8j11+tEGQz9ceZLsnRDFYULCMXG0r7n5ngQnkVPUMDSecDEVHhk8Qhdh4kZ1NnE77StW
+        HeABi8nDceYzSs6jpeZslxJ1qJnpRzTmevZtekPYhOQz+pUJkf1PP3z5wDok6zOBF5CahZ
+        zO+cRX1K7XVJmgLvXSB3svvH0WsGuvKcxx93DURfr/y1whgq1B40sjGd3y945F2Qz/QsKy
+        P2nh4QwZfNZLm466S+mPjPj8Dygos6YxymNcoVta/FhVcFNO6YLNFxGATVFO4w==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624029566;
+        s=2020e; t=1624029567;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=N9ju3zKYKNsFSMeCJGVjbzq++teoOw1o95TdaYtFUXk=;
-        b=tanwUxdD2Hn223CqtQX9VFQZKJXsXbQhbbkmGDF7JHK0vHgSYfsC54i9YskFVQrn/B4T/W
-        d6B9T2Aoq0qg6WCQ==
-Date:   Fri, 18 Jun 2021 16:18:29 +0200
+        bh=5JupwahYfRQZ8SWnTbdoqKaQYuUvpeMd+3vDe4dbkJQ=;
+        b=E26XrYMNpA3tpJGw72GEdg6dWhUmo46Twg9s32EipPPq7wMh9oiR9Z0JfSZEMrPgSNm/qf
+        G2wzPR5/MwZlozCw==
+Date:   Fri, 18 Jun 2021 16:18:30 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -44,7 +44,7 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V3 06/66] x86/fpu: Make xfeatures_mask_all __ro_after_init
+Subject: [patch V3 07/66] x86/fpu: Get rid of fpu__get_supported_xfeatures_mask()
 References: <20210618141823.161158090@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -53,100 +53,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nothing has to modify this after init.
+This function is really not doing what the comment advertises:
 
-But of course there is code which unconditionaly masks xfeatures_mask_all
-on CPU hotplug. This goes unnoticed during boot hotplug because at that
-point the variable is still RW mapped.
+ "Find supported xfeatures based on cpu features and command-line input.
+  This must be called after fpu__init_parse_early_param() is called and
+  xfeatures_mask is enumerated."
 
-This is broken in several ways:
+fpu__init_parse_early_param() does not exist anymore and the function just
+returns a constant.
 
-  1) Masking this in post init CPU hotplug means that any
-     modification of this state goes unnoticed until actual hotplug
-     happens.
+Remove it and fix the caller and get rid of further references to
+fpu__init_parse_early_param().
 
-  2) If that ever happens then these bogus feature bits are already
-     populated all over the place and the system is in inconsistent state
-     vs. the compacted XSTATE offsets. If at all then this has to panic the
-     machine because the inconsistency cannot be undone anymore.
-
-Make this a one time paranoia check in xstate init code and disable xsave
-when this happens.
-
-Reported-by: Kan Liang <kan.liang@linux.intel.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V3: New patch. Addresses the hotplug crash reported by Kan
+V3: New patch. Noticed when staring at the hotplug trainwreck.
 ---
- arch/x86/kernel/fpu/xstate.c |   28 +++++++++++++++-------------
- 1 file changed, 15 insertions(+), 13 deletions(-)
+ arch/x86/include/asm/fpu/internal.h |    1 -
+ arch/x86/kernel/cpu/common.c        |    5 ++---
+ arch/x86/kernel/fpu/init.c          |   11 -----------
+ arch/x86/kernel/fpu/xstate.c        |    4 +++-
+ 4 files changed, 5 insertions(+), 16 deletions(-)
 
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -45,7 +45,6 @@ extern void fpu__init_cpu_xstate(void);
+ extern void fpu__init_system(struct cpuinfo_x86 *c);
+ extern void fpu__init_check_bugs(void);
+ extern void fpu__resume_cpu(void);
+-extern u64 fpu__get_supported_xfeatures_mask(void);
+ 
+ /*
+  * Debugging facility:
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1715,9 +1715,8 @@ void print_cpu_info(struct cpuinfo_x86 *
+ }
+ 
+ /*
+- * clearcpuid= was already parsed in fpu__init_parse_early_param.
+- * But we need to keep a dummy __setup around otherwise it would
+- * show up as an environment variable for init.
++ * clearcpuid= was already parsed in cpu_parse_early_param().  This dummy
++ * function prevents it to become an environment variable for init.
+  */
+ static __init int setup_clearcpuid(char *arg)
+ {
+--- a/arch/x86/kernel/fpu/init.c
++++ b/arch/x86/kernel/fpu/init.c
+@@ -216,17 +216,6 @@ static void __init fpu__init_system_xsta
+ 	fpu_user_xstate_size = fpu_kernel_xstate_size;
+ }
+ 
+-/*
+- * Find supported xfeatures based on cpu features and command-line input.
+- * This must be called after fpu__init_parse_early_param() is called and
+- * xfeatures_mask is enumerated.
+- */
+-u64 __init fpu__get_supported_xfeatures_mask(void)
+-{
+-	return XFEATURE_MASK_USER_SUPPORTED |
+-	       XFEATURE_MASK_SUPERVISOR_SUPPORTED;
+-}
+-
+ /* Legacy code to initialize eager fpu mode. */
+ static void __init fpu__init_system_ctx_switch(void)
+ {
 --- a/arch/x86/kernel/fpu/xstate.c
 +++ b/arch/x86/kernel/fpu/xstate.c
-@@ -59,7 +59,7 @@ static short xsave_cpuid_features[] __in
-  * This represents the full set of bits that should ever be set in a kernel
-  * XSAVE buffer, both supervisor and user xstates.
-  */
--u64 xfeatures_mask_all;
-+u64 xfeatures_mask_all __ro_after_init;
- 
- static unsigned int xstate_offsets[XFEATURE_MAX] __ro_after_init =
- 	{ [ 0 ... XFEATURE_MAX - 1] = -1};
-@@ -213,19 +213,8 @@ void fpstate_sanitize_xstate(struct fpu
-  */
- void fpu__init_cpu_xstate(void)
- {
--	u64 unsup_bits;
--
- 	if (!boot_cpu_has(X86_FEATURE_XSAVE) || !xfeatures_mask_all)
- 		return;
--	/*
--	 * Unsupported supervisor xstates should not be found in
--	 * the xfeatures mask.
--	 */
--	unsup_bits = xfeatures_mask_all & XFEATURE_MASK_SUPERVISOR_UNSUPPORTED;
--	WARN_ONCE(unsup_bits, "x86/fpu: Found unsupported supervisor xstates: 0x%llx\n",
--		  unsup_bits);
--
--	xfeatures_mask_all &= ~XFEATURE_MASK_SUPERVISOR_UNSUPPORTED;
- 
- 	cr4_set_bits(X86_CR4_OSXSAVE);
- 
-@@ -825,6 +814,7 @@ void __init fpu__init_system_xstate(void
- {
- 	unsigned int eax, ebx, ecx, edx;
- 	static int on_boot_cpu __initdata = 1;
-+	u64 xfeatures;
- 	int err;
- 	int i;
- 
-@@ -879,6 +869,8 @@ void __init fpu__init_system_xstate(void
+@@ -868,7 +868,9 @@ void __init fpu__init_system_xstate(void
+ 			xfeatures_mask_all &= ~BIT_ULL(i);
  	}
  
- 	xfeatures_mask_all &= fpu__get_supported_xfeatures_mask();
-+	/* Store it for paranoia check at the end */
-+	xfeatures = xfeatures_mask_all;
- 
- 	/* Enable xstate instructions to be able to continue with initialization: */
- 	fpu__init_cpu_xstate();
-@@ -896,8 +888,18 @@ void __init fpu__init_system_xstate(void
- 	setup_init_fpu_buf();
- 	setup_xstate_comp_offsets();
- 	setup_supervisor_only_offsets();
--	print_xstate_offset_size();
- 
-+	/*
-+	 * Paranoia check whether something in the setup modified the
-+	 * xfeatures mask.
-+	 */
-+	if (xfeatures != xfeatures_mask_all) {
-+		pr_err("x86/fpu: xfeatures modified during init %016llx %016llx, disabling XSAVE\n",
-+		       xfeatures, xfeatures_mask_all);
-+		goto out_disable;
-+	}
+-	xfeatures_mask_all &= fpu__get_supported_xfeatures_mask();
++	xfeatures_mask_all &= XFEATURE_MASK_USER_SUPPORTED |
++			      XFEATURE_MASK_SUPERVISOR_SUPPORTED;
 +
-+	print_xstate_offset_size();
- 	pr_info("x86/fpu: Enabled xstate features 0x%llx, context size is %d bytes, using '%s' format.\n",
- 		xfeatures_mask_all,
- 		fpu_kernel_xstate_size,
+ 	/* Store it for paranoia check at the end */
+ 	xfeatures = xfeatures_mask_all;
+ 
 
