@@ -2,313 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA733ACCC5
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAEA53ACCCF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 15:53:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231855AbhFRNyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 09:54:14 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:39850 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234173AbhFRNyK (ORCPT
+        id S234211AbhFRNzS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 09:55:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234020AbhFRNzO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 09:54:10 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D8EB121B4C;
-        Fri, 18 Jun 2021 13:51:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624024319; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2M9odon69m0SFHZacWPEqZnEilKCCclmoosV1K7Him4=;
-        b=GU/ZgvRChGCrAlBAzgPG1jYLpQ2BCgE1YylP317mbYUnZKM/AS4+yJjfuxiJ/tIT5ncInv
-        gcoBOxBtRKVZL96GpjSUN8RTfFa/MH/4v8jk2oyoaFYPROTj5d/BQUjfF0EuL0z+sUyjMw
-        iYWkOGzHPMbjBkrrf9erRd0cjFl9tY4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624024319;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2M9odon69m0SFHZacWPEqZnEilKCCclmoosV1K7Him4=;
-        b=AIzWdzwf6duUMExBlwcbYIbVYs1cgNpakA0x+uE3kVj6EBdGjUP3wD2bsxkZhayATphBw2
-        deDYnryH0F0z+ECQ==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 96A33118DD;
-        Fri, 18 Jun 2021 13:51:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624024319; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2M9odon69m0SFHZacWPEqZnEilKCCclmoosV1K7Him4=;
-        b=GU/ZgvRChGCrAlBAzgPG1jYLpQ2BCgE1YylP317mbYUnZKM/AS4+yJjfuxiJ/tIT5ncInv
-        gcoBOxBtRKVZL96GpjSUN8RTfFa/MH/4v8jk2oyoaFYPROTj5d/BQUjfF0EuL0z+sUyjMw
-        iYWkOGzHPMbjBkrrf9erRd0cjFl9tY4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624024319;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2M9odon69m0SFHZacWPEqZnEilKCCclmoosV1K7Him4=;
-        b=AIzWdzwf6duUMExBlwcbYIbVYs1cgNpakA0x+uE3kVj6EBdGjUP3wD2bsxkZhayATphBw2
-        deDYnryH0F0z+ECQ==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id e9pcI/+kzGAGQAAALh3uQQ
-        (envelope-from <ykaukab@suse.de>); Fri, 18 Jun 2021 13:51:59 +0000
-Date:   Fri, 18 Jun 2021 15:51:58 +0200
-From:   Mian Yousaf Kaukab <ykaukab@suse.de>
-To:     Mikko Perttunen <cyndis@kapsi.fi>
-Cc:     Mikko Perttunen <mperttunen@nvidia.com>, arnd@arndb.de,
-        gregkh@linuxfoundation.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] misc: sram: Only map reserved areas in Tegra SYSRAM
-Message-ID: <20210618135158.GB81946@suse.de>
-References: <20210617094804.667716-1-mperttunen@nvidia.com>
- <20210618081811.GA81946@suse.de>
- <e3882a80-1bab-8216-3f9a-7f938d426d2c@kapsi.fi>
+        Fri, 18 Jun 2021 09:55:14 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51F8DC061574;
+        Fri, 18 Jun 2021 06:53:05 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id c9so10887523wrt.5;
+        Fri, 18 Jun 2021 06:53:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ITBAl4FWs2S5uSotuHXD8wqyuOBqmsc7zriYKDn2S+k=;
+        b=nTxIZ8xokQc6mlmltoY0rHWuh/kMpywSMXPOercEeeZbPaeZCE9/O22J53a2EBWUtP
+         d5foNFsym9xbqMkgBT+TrE9kMN76sMNzeDInDALWAJF7bizuIA0fI1rmBm42VY9o+TIg
+         /nzoJ9rZxBkcucm18mkhBVAOzneyEJWnKx0hPpkOPsvRjpVXaS7ZXtCuYpUPVL7Qc6Qo
+         2/Q5S5mPW/a47e8k+jUhrBYaqJTlZpCuKO5mZtvStOnyKRfVv+4FvA0uYFVrgRaS2Z2t
+         C1sU2SmbS2RIdP1cHKBdfcbRderokDveStCbZVTDVi4O6n69C1inDeb/Onc16cT3ytDK
+         Q2wQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ITBAl4FWs2S5uSotuHXD8wqyuOBqmsc7zriYKDn2S+k=;
+        b=eIW2GFy5vb8OPgLOLLptTpzQpqzq8Oc7GdqrhdohPHI2aOUWQToJTbTkSvLmwc6XL3
+         iIp5U0b3I/Rnu+lmx9bYoMZG/B6/cwO5Gs6O9QrN3Tpyp0AocmCrLaSkmtr3buHg1hZu
+         HpeqG5ws9iui/wzEI9DLwS9262baUp/+7PWbPL5z02Km/y6RXIdpHJ41eGgijHYRXvyU
+         jBY4fds816GKC92Po3N7DNLjUCSvn6u5x/kRGz/WwKHAMKtJcv4UJZLwbb2Bhx4mRt8H
+         wiizEDn+nmK1hwgSVERCi3DHNhG6AoECDks5VGBH67eQmb97G2pJ8k0aHd4SYWjwnhyE
+         BfEA==
+X-Gm-Message-State: AOAM531euGlbbbvzfUYY4dygNJb1L6Pdru6QBDfO9VOzR/zSEJr7VfIY
+        n0id1aURjXEmIV5cMlUW1kk=
+X-Google-Smtp-Source: ABdhPJw+MfiIKMOT70+0vEXXd5JNmRAUwX7q13K8fShJA9b0q7JJvb8tpaYMCPMQQ3AQQnp4h+HXRg==
+X-Received: by 2002:a05:6000:178e:: with SMTP id e14mr12911421wrg.246.1624024383863;
+        Fri, 18 Jun 2021 06:53:03 -0700 (PDT)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id c13sm8935127wrb.5.2021.06.18.06.53.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jun 2021 06:53:03 -0700 (PDT)
+Subject: Re: [PATCH] dmaengine: mediatek: Return the correct errno code
+To:     angkery <angkery@163.com>, sean.wang@mediatek.com, vkoul@kernel.org
+Cc:     dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Junlin Yang <yangjunlin@yulong.com>
+References: <20210617133229.1497-1-angkery@163.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <2eb509a4-73dd-b3db-41d3-e7a0043ce8c9@gmail.com>
+Date:   Fri, 18 Jun 2021 15:53:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
+In-Reply-To: <20210617133229.1497-1-angkery@163.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <e3882a80-1bab-8216-3f9a-7f938d426d2c@kapsi.fi>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 12:26:21PM +0300, Mikko Perttunen wrote:
-> On 6/18/21 11:18 AM, Mian Yousaf Kaukab wrote:
-> > On Thu, Jun 17, 2021 at 12:48:04PM +0300, Mikko Perttunen wrote:
-> > > On Tegra186 and later, a portion of the SYSRAM may be reserved for use
-> > > by TZ. Non-TZ memory accesses to this portion, including speculative
-> > > accesses, trigger SErrors that bring down the system. This does also
-> > > happen in practice occasionally (due to speculative accesses).
-> > > 
-> > > To fix the issue, add a flag to the SRAM driver to only map the
-> > > device tree-specified reserved areas depending on a flag set
-> > > based on the compatibility string. This would not affect non-Tegra
-> > > systems that rely on the entire thing being memory mapped.
-> > > 
-> > > Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
-> > > ---
-> > >   drivers/misc/sram.c | 108 +++++++++++++++++++++++++++++++-------------
-> > >   drivers/misc/sram.h |   9 ++++
-> > >   2 files changed, 86 insertions(+), 31 deletions(-)
-> > > 
-> > > diff --git a/drivers/misc/sram.c b/drivers/misc/sram.c
-> > > index 93638ae2753a..a27ffb3dbea8 100644
-> > > --- a/drivers/misc/sram.c
-> > > +++ b/drivers/misc/sram.c
-> > > @@ -97,7 +97,24 @@ static int sram_add_partition(struct sram_dev *sram, struct sram_reserve *block,
-> > >   	struct sram_partition *part = &sram->partition[sram->partitions];
-> > >   	mutex_init(&part->lock);
-> > > -	part->base = sram->virt_base + block->start;
-> > > +
-> > > +	if (sram->config->map_only_reserved) {
-> > > +		void *virt_base;
-> > > +
-> > > +		if (sram->no_memory_wc)
-> > > +			virt_base = devm_ioremap_resource(sram->dev, &block->res);
-> > > +		else
-> > > +			virt_base = devm_ioremap_resource_wc(sram->dev, &block->res);
-> > > +
-> > > +		if (IS_ERR(virt_base)) {
-> > > +			dev_err(sram->dev, "could not map SRAM at %pr\n", &block->res);
-> > > +			return PTR_ERR(virt_base);
-> > > +		}
-> > > +
-> > > +		part->base = virt_base;
-> > > +	} else {
-> > > +		part->base = sram->virt_base + block->start;
-> > > +	}
-> > >   	if (block->pool) {
-> > >   		ret = sram_add_pool(sram, block, start, part);
-> > > @@ -198,6 +215,7 @@ static int sram_reserve_regions(struct sram_dev *sram, struct resource *res)
-> > >   		block->start = child_res.start - res->start;
-> > >   		block->size = resource_size(&child_res);
-> > > +		block->res = child_res;
-> > >   		list_add_tail(&block->list, &reserve_list);
-> > >   		if (of_find_property(child, "export", NULL))
-> > > @@ -295,15 +313,17 @@ static int sram_reserve_regions(struct sram_dev *sram, struct resource *res)
-> > >   		 */
-> > >   		cur_size = block->start - cur_start;
-> > > -		dev_dbg(sram->dev, "adding chunk 0x%lx-0x%lx\n",
-> > > -			cur_start, cur_start + cur_size);
-> > > +		if (sram->pool) {
-> > > +			dev_dbg(sram->dev, "adding chunk 0x%lx-0x%lx\n",
-> > > +				cur_start, cur_start + cur_size);
-> > > -		ret = gen_pool_add_virt(sram->pool,
-> > > -				(unsigned long)sram->virt_base + cur_start,
-> > > -				res->start + cur_start, cur_size, -1);
-> > > -		if (ret < 0) {
-> > > -			sram_free_partitions(sram);
-> > > -			goto err_chunks;
-> > > +			ret = gen_pool_add_virt(sram->pool,
-> > > +					(unsigned long)sram->virt_base + cur_start,
-> > > +					res->start + cur_start, cur_size, -1);
-> > > +			if (ret < 0) {
-> > > +				sram_free_partitions(sram);
-> > > +				goto err_chunks;
-> > > +			}
-> > >   		}
-> > >   		/* next allocation after this reserved block */
-> > > @@ -331,40 +351,66 @@ static int atmel_securam_wait(void)
-> > >   					10000, 500000);
-> > >   }
-> > > +static const struct sram_config default_config = {
-> > > +};
-> > > +
-> > > +static const struct sram_config atmel_securam_config = {
-> > > +	.init = atmel_securam_wait
-> > > +};
-> > > +
-> > > +/*
-> > > + * SYSRAM contains areas that are not accessible by the
-> > > + * kernel, such as the first 256K that is reserved for TZ.
-> > > + * Accesses to those areas (including speculative accesses)
-> > > + * trigger SErrors. As such we must map only the areas of
-> > > + * SYSRAM specified in the device tree.
-> > > + */
-> > > +static const struct sram_config tegra_sysram_config = {
-> > > +	.map_only_reserved = true,
-> > 
-> > In case of Tegra sram base is 64K aligned and the reserved partitions
-> > are 4K aligned. How this flag will work if the kernel is using 64K
-> > page size?
-> 
-> Good point - perhaps we need to consider another approach that just excludes
-> any inaccessible areas, though I think it'll be somewhat more complicated
-> and more Tegra-specific.
-Perhaps SError due to speculative access can be avoided by just using
-no-memory-wc, provided the performance impact due to this is OK for
-bpmp driver.
-> 
-> I'm going on vacation starting this evening so I'll look into this
-> afterwards.
-Enjoy your vacations!
 
-> 
-> Thanks,
-> Mikko
 
-BR,
-Yousaf
+On 17/06/2021 15:32, angkery wrote:
+> From: Junlin Yang <yangjunlin@yulong.com>
 > 
-> > 
-> > > +};
-> > > +
-> > >   static const struct of_device_id sram_dt_ids[] = {
-> > > -	{ .compatible = "mmio-sram" },
-> > > -	{ .compatible = "atmel,sama5d2-securam", .data = atmel_securam_wait },
-> > > +	{ .compatible = "mmio-sram", .data = &default_config },
-> > > +	{ .compatible = "atmel,sama5d2-securam", .data = &atmel_securam_config },
-> > > +	{ .compatible = "nvidia,tegra186-sysram", .data = &tegra_sysram_config },
-> > > +	{ .compatible = "nvidia,tegra194-sysram", .data = &tegra_sysram_config },
-> > >   	{}
-> > >   };
-> > >   static int sram_probe(struct platform_device *pdev)
-> > >   {
-> > > +	const struct sram_config *config;
-> > >   	struct sram_dev *sram;
-> > >   	int ret;
-> > >   	struct resource *res;
-> > > -	int (*init_func)(void);
-> > > +
-> > > +	config = of_device_get_match_data(&pdev->dev);
-> > >   	sram = devm_kzalloc(&pdev->dev, sizeof(*sram), GFP_KERNEL);
-> > >   	if (!sram)
-> > >   		return -ENOMEM;
-> > >   	sram->dev = &pdev->dev;
-> > > +	sram->no_memory_wc = of_property_read_bool(pdev->dev.of_node, "no-memory-wc");
-> > > +	sram->config = config;
-> > > +
-> > > +	if (!config->map_only_reserved) {
-> > > +		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > > +		if (sram->no_memory_wc)
-> > > +			sram->virt_base = devm_ioremap_resource(&pdev->dev, res);
-> > > +		else
-> > > +			sram->virt_base = devm_ioremap_resource_wc(&pdev->dev, res);
-> > > +		if (IS_ERR(sram->virt_base)) {
-> > > +			dev_err(&pdev->dev, "could not map SRAM registers\n");
-> > > +			return PTR_ERR(sram->virt_base);
-> > > +		}
-> > > -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > > -	if (of_property_read_bool(pdev->dev.of_node, "no-memory-wc"))
-> > > -		sram->virt_base = devm_ioremap_resource(&pdev->dev, res);
-> > > -	else
-> > > -		sram->virt_base = devm_ioremap_resource_wc(&pdev->dev, res);
-> > > -	if (IS_ERR(sram->virt_base)) {
-> > > -		dev_err(&pdev->dev, "could not map SRAM registers\n");
-> > > -		return PTR_ERR(sram->virt_base);
-> > > +		sram->pool = devm_gen_pool_create(sram->dev, ilog2(SRAM_GRANULARITY),
-> > > +						  NUMA_NO_NODE, NULL);
-> > > +		if (IS_ERR(sram->pool))
-> > > +			return PTR_ERR(sram->pool);
-> > >   	}
-> > > -	sram->pool = devm_gen_pool_create(sram->dev, ilog2(SRAM_GRANULARITY),
-> > > -					  NUMA_NO_NODE, NULL);
-> > > -	if (IS_ERR(sram->pool))
-> > > -		return PTR_ERR(sram->pool);
-> > > -
-> > >   	sram->clk = devm_clk_get(sram->dev, NULL);
-> > >   	if (IS_ERR(sram->clk))
-> > >   		sram->clk = NULL;
-> > > @@ -378,15 +424,15 @@ static int sram_probe(struct platform_device *pdev)
-> > >   	platform_set_drvdata(pdev, sram);
-> > > -	init_func = of_device_get_match_data(&pdev->dev);
-> > > -	if (init_func) {
-> > > -		ret = init_func();
-> > > +	if (config->init) {
-> > > +		ret = config->init();
-> > >   		if (ret)
-> > >   			goto err_free_partitions;
-> > >   	}
-> > > -	dev_dbg(sram->dev, "SRAM pool: %zu KiB @ 0x%p\n",
-> > > -		gen_pool_size(sram->pool) / 1024, sram->virt_base);
-> > > +	if (sram->pool)
-> > > +		dev_dbg(sram->dev, "SRAM pool: %zu KiB @ 0x%p\n",
-> > > +			gen_pool_size(sram->pool) / 1024, sram->virt_base);
-> > >   	return 0;
-> > > @@ -405,7 +451,7 @@ static int sram_remove(struct platform_device *pdev)
-> > >   	sram_free_partitions(sram);
-> > > -	if (gen_pool_avail(sram->pool) < gen_pool_size(sram->pool))
-> > > +	if (sram->pool && gen_pool_avail(sram->pool) < gen_pool_size(sram->pool))
-> > >   		dev_err(sram->dev, "removed while SRAM allocated\n");
-> > >   	if (sram->clk)
-> > > diff --git a/drivers/misc/sram.h b/drivers/misc/sram.h
-> > > index 9c1d21ff7347..d2058d8c8f1d 100644
-> > > --- a/drivers/misc/sram.h
-> > > +++ b/drivers/misc/sram.h
-> > > @@ -5,6 +5,11 @@
-> > >   #ifndef __SRAM_H
-> > >   #define __SRAM_H
-> > > +struct sram_config {
-> > > +	int (*init)(void);
-> > > +	bool map_only_reserved;
-> > > +};
-> > > +
-> > >   struct sram_partition {
-> > >   	void __iomem *base;
-> > > @@ -15,8 +20,11 @@ struct sram_partition {
-> > >   };
-> > >   struct sram_dev {
-> > > +	const struct sram_config *config;
-> > > +
-> > >   	struct device *dev;
-> > >   	void __iomem *virt_base;
-> > > +	bool no_memory_wc;
-> > >   	struct gen_pool *pool;
-> > >   	struct clk *clk;
-> > > @@ -29,6 +37,7 @@ struct sram_reserve {
-> > >   	struct list_head list;
-> > >   	u32 start;
-> > >   	u32 size;
-> > > +	struct resource res;
-> > >   	bool export;
-> > >   	bool pool;
-> > >   	bool protect_exec;
-> > > -- 
-> > > 2.30.1
-> > 
-> > BR,
-> > Yousaf
-> > 
+> When devm_kzalloc failed, should return ENOMEM rather than ENODEV.
+> 
+> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+
+Reviewed-by: Matthias Brugger <matthias.bgg@gmail.com>
+
+> ---
+>  drivers/dma/mediatek/mtk-uart-apdma.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/dma/mediatek/mtk-uart-apdma.c b/drivers/dma/mediatek/mtk-uart-apdma.c
+> index 375e7e6..a4cb30f 100644
+> --- a/drivers/dma/mediatek/mtk-uart-apdma.c
+> +++ b/drivers/dma/mediatek/mtk-uart-apdma.c
+> @@ -529,7 +529,7 @@ static int mtk_uart_apdma_probe(struct platform_device *pdev)
+>  	for (i = 0; i < mtkd->dma_requests; i++) {
+>  		c = devm_kzalloc(mtkd->ddev.dev, sizeof(*c), GFP_KERNEL);
+>  		if (!c) {
+> -			rc = -ENODEV;
+> +			rc = -ENOMEM;
+>  			goto err_no_dma;
+>  		}
+>  
+> 
