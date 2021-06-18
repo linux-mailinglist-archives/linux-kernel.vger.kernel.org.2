@@ -2,153 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93D53AD561
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 00:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 523F63AD567
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 00:48:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235050AbhFRWtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 18:49:19 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:59600 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231455AbhFRWtR (ORCPT
+        id S235061AbhFRWuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 18:50:10 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.82]:8661 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231455AbhFRWuG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 18:49:17 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624056424;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0dH3VEH9mRkPB+iMMG13Bg8QIpRSqyXaZ7vD6FSJ6Q8=;
-        b=EvgI4ThMXq7mw55btOrbvC5XMqBy+62FBj6X7cCE+sM9qHF5Wd6m8w5uIMNyW7MJt7L482
-        NLiPaCjdEqFPc5cwtS00du/Q5HP9A1dwKB67axQ8Ig6Rs03wsiI7Z1reoTK0+ZNl/KQUze
-        JQFbkUvrS2DeMhw5h5m0wFdopfPKkmFPzsKSlYFzU6XL3m+ilRgeWxJLGmGAPaqVddCMGr
-        Tacf56+DP/cGko2g5hLQDgKxCKN2Y3/+OaQS2XCvXcv4O8otqRtrdl5qinu/QY33qLdd5u
-        8h/GV+3y4JsJKRjt+Y4bPi0sf/mUuPgZMPfm0wSkAtrqYB+gYTfLq0kod+Ghog==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624056424;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0dH3VEH9mRkPB+iMMG13Bg8QIpRSqyXaZ7vD6FSJ6Q8=;
-        b=J1eYyM5FnvUOfduY5/xCpovdMVbnQQY/6U+oOtSydNL2Txvp6Alw8UltJsFNy9miAWtZlh
-        0lZpGx+w9S7zvbAQ==
-To:     Nicolas Saenz Julienne <nsaenzju@redhat.com>
-Cc:     linux-rt-users@vger.kernel.org, frederic@kernel.org,
-        mtosatti@redhat.com, LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC 2/2] timers: Make sure irq_work is handled when no pending timers
-In-Reply-To: <20210610125945.558872-2-nsaenzju@redhat.com>
-References: <20210610125945.558872-1-nsaenzju@redhat.com> <20210610125945.558872-2-nsaenzju@redhat.com>
-Date:   Sat, 19 Jun 2021 00:47:04 +0200
-Message-ID: <87mtrmeqon.ffs@nanos.tec.linutronix.de>
+        Fri, 18 Jun 2021 18:50:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1624056472;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=twajwBko64kAXno6Y9wAWBSmDOSQJTRu0jNR5xYR5q4=;
+    b=Dr2hTq0B8K7BlXqPGc/R2pmQvkBh+D2NFuDUJqgvPihF9vgyrzNGZWrmG7KwNlds0v
+    8n7+rdElUUUICAPh0Eeqx6tPTmMtEbOEP0foTyqlfRNL8JArRA5pHfaQBTkqbGyEc3zQ
+    xn+uFALTYBpYNJ2ySWHg0/jiFmmQBjCqEbpmiUB3n3DVgNLI9C530r2oHMbGfqCkYMkc
+    pbZMTfnsXZ7DPNXjiH2IL0ExoX5QK8rRfLf1Wzh1lrLehDg8c0gw5wUtlmQRGHtGcMjZ
+    l48efkG7kUY7lHWSXBWsAzw3Eg/SotIqX67c6HH0TQ1MlyJtXr4SBAfiSQ/O9ojZgQ0U
+    pM9A==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8f7IcfABg=="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 47.27.3 DYNA|AUTH)
+    with ESMTPSA id 000885x5IMlp7Gi
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Sat, 19 Jun 2021 00:47:51 +0200 (CEST)
+Date:   Sat, 19 Jun 2021 00:47:50 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        daniel.lezcano@linaro.org, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com,
+        jamipkettunen@somainline.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [RESEND PATCH v4 2/3] soc: qcom: spm: Implement support for
+ SAWv4.1, SDM630/660 L2 AVS
+Message-ID: <YM0ilpLh9HTUPaua@gerhold.net>
+References: <20210618180907.258149-1-angelogioacchino.delregno@somainline.org>
+ <20210618180907.258149-3-angelogioacchino.delregno@somainline.org>
+ <YM0bM60FNof8d6ki@gerhold.net>
+ <1e0c47e6-01be-298d-8823-f34a55f4ee3f@somainline.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1e0c47e6-01be-298d-8823-f34a55f4ee3f@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nicolas,
+On Sat, Jun 19, 2021 at 12:39:00AM +0200, AngeloGioacchino Del Regno wrote:
+> Il 19/06/21 00:17, Stephan Gerhold ha scritto:
+> > On Fri, Jun 18, 2021 at 08:09:06PM +0200, AngeloGioacchino Del Regno wrote:
+> > > Implement the support for SAW v4.1, used in at least MSM8998,
+> > > SDM630, SDM660 and APQ variants and, while at it, also add the
+> > > configuration for the SDM630/660 Silver and Gold cluster L2
+> > > Adaptive Voltage Scaler: this is also one of the prerequisites
+> > > to allow the OSM controller to perform DCVS.
+> > > 
+> > > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> > > ---
+> > >   drivers/soc/qcom/spm.c | 28 +++++++++++++++++++++++++++-
+> > >   1 file changed, 27 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/soc/qcom/spm.c b/drivers/soc/qcom/spm.c
+> > > index 0c8aa9240c41..843732d12c54 100644
+> > > --- a/drivers/soc/qcom/spm.c
+> > > +++ b/drivers/soc/qcom/spm.c
+> > > @@ -32,9 +32,28 @@ enum spm_reg {
+> > >   	SPM_REG_SEQ_ENTRY,
+> > >   	SPM_REG_SPM_STS,
+> > >   	SPM_REG_PMIC_STS,
+> > > +	SPM_REG_AVS_CTL,
+> > > +	SPM_REG_AVS_LIMIT,
+> > >   	SPM_REG_NR,
+> > >   };
+> > > +static const u16 spm_reg_offset_v4_1[SPM_REG_NR] = {
+> > > +	[SPM_REG_AVS_CTL]	= 0x904,
+> > > +	[SPM_REG_AVS_LIMIT]	= 0x908,
+> > > +};
+> > > +
+> > > +static const struct spm_reg_data spm_reg_660_gold_l2  = {
+> > > +	.reg_offset = spm_reg_offset_v4_1,
+> > > +	.avs_ctl = 0x1010031,
+> > > +	.avs_limit = 0x4580458,
+> > > +};
+> > > +
+> > > +static const struct spm_reg_data spm_reg_660_silver_l2  = {
+> > > +	.reg_offset = spm_reg_offset_v4_1,
+> > > +	.avs_ctl = 0x101c031,
+> > 
+> > I was just randomly looking for the same value in downstream and it
+> > looks like Qualcomm reverted something here to the same value as for
+> > the gold cluster, claiming "stability issues":
+> > 
+> > https://source.codeaurora.org/quic/la/kernel/msm-4.4/commit/?h=LA.UM.8.2.r2-04600-sdm660.0&id=5a07b7336a1b3fa6a3ac67470805259c5026206e
+> > 
+> > The commit seems still present in recent qcom tags. I cannot say
+> > anything about this, but could you confirm if you are intentionally
+> > not also doing the same as qcom did in that commit?
+> > 
+> 
+> I am intentionally not doing the same as that commit; 4 out of 6 devices
+> experienced random lockups with the values you mentioned (4x SDM630,
+> 2x SDM636, of which all SDM630 and one SDM636 device are affected).
+> 
 
-On Thu, Jun 10 2021 at 14:59, Nicolas Saenz Julienne wrote:
-> PREEMPT_RT systems defer most irq_work handling into the timer softirq.
-> This softirq is only triggered when a timer is expired, which adds some
-> delay to the irq_work handling. It's a price PREEMPT_RT systems are
-> willing to pay in exchange for less IRQ noise.
->
-> This works fine for the majority of systems, but there's a catch. What
-> if no timer is ever armed after an irq_work is queued. This has been
-> observed on nohz_full CPUs while running oslat. The lack of armed timers
-> prevents a pending irq_work to run. Which in turn prevents the nohz code
-> from fully stopping the tick.
->
-> To avoid this situation introduce new logic in run_local_timers(). The
-> timer softirq will be triggered when an irq_work is pending but no
-> timers have been armed. This situation is only possible in PREEMPT_RT
-> systems, so make the code conditional to it.
+Might be worth a short comment in the file or commit message?
+Just in case someone is wondering the same in the future.
 
-now I can see the problem you are trying to solve, but unfortunately the
-solution is fundamentally wrong.
-
-> NOTE: All in all, this is the best I could think of with my limited
->       timers knowledge. A bigger hammer would be to unanimously trigger
->       the softirq if irq_work_needs_cpu(). But I get the feeling this is
->       something we want to avoid.
-
-Technical decisions based on feelings are not solving anything and they
-result in hard to analyse subtle issues:
-
-Q: Assume there is a timer armed to expire 24h from now. What's the
-   difference to no timer being armed?
-
-A: None.
-
-   Just because your use case has either no timers armed at all or has
-   timers armed with short expiry is no reason to ignore the really
-   simple and obvious technical facts.
-
-But that aside, you analyzed the problem pretty good, but then you
-stopped short of identifying the root cause and went off to cure the
-symptom.
-
-The irq_work deferring on RT to the timer softirq is the root cause of
-the problem. It's a sloppy hack and I'm well aware of that. So this
-needs to be fixed and not worked around by adding random undocumented
-workarounds into the timer code.
-
-Let's take a step back and analyze why this deferring to timer softirq
-context exists on RT.
-
- 1) The irq_work callbacks which are deferred on RT cannot be invoked from
-    hard interrupt (IPI) context usually - due to spin_lock usage.
-
- 2) Such irq_work has to be delegated to some suitable context and the
-    trivial and lazy way out was to just stick into the timer softirq.
-
-That hack survived for a long time and while I was aware of it, it was
-not really high on my priority list of cleanups.
-
-The real solution is to delegate this to a suitable context which is
-executed independent of any other constraints.
-
-There are two solutions:
-
-  1) Create a IRQ_WORK softirq and raise that
-
-  2) Simply delegate it to a workqueue
-
-So now you might rightfully ask why I did not do that back then:
-
-  #1 is not an option because we don't want to proliferate softirqs for
-     various reasons.
-
-  #2 was not feasible because back then queueing work from hard
-     interrupt context was not possible.
-
-So yes, I took the sloppy and easy way out and just glued it onto the
-timer softirqs. Nobody complained so far.
-
-As we since then made work queues RT aware and it's possible to queue
-work from the irq_work IPI context, the obvious solution is to delegate
-this to a work queue.
-
-If we do a proper analysis of the affected irq work callbacks then this
-probably makes a lot of sense independent of RT. There are only a few
-really urgent irq work items which need to be handled immediately in the
-IPI.
-
-RT is special, but as we have demonstrated over time it's not _that_
-special. It just needs a proper analysis and a real good argument why
-something has to be special for RT and does not fit into the common
-case. Or to demonstrate that the common case approach of 'do it right
-away' is pointless or even harmfull.
-
-Thanks,
-
-        tglx
----
-P.S.: I'm not blaming this on you as a newcomer. There are people on
-      your team who should have known better.   
-
- 
-
-
+You probably don't want someone else to refer to that commit in the
+future and suddenly your devices will experience "random lockups". :)
