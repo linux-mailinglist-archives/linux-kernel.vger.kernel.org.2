@@ -2,117 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D763AC10D
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 04:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0263AC0FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 04:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231790AbhFRCyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 22:54:24 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:24291 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231757AbhFRCyW (ORCPT
+        id S231654AbhFRCx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 22:53:28 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:5398 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230393AbhFRCx1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 22:54:22 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1623984734; h=Content-Transfer-Encoding: MIME-Version:
- References: In-Reply-To: Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=l6NvgxWFpAFA4sTezsbgFUqMQajeSOZtH1njEusUkcQ=; b=BB762jYnWpzHEKs9j3CdLd5FjxDdxiO+ytsBDOsCqg5m6fLaXa+V5xU4e45cGoN8aFG0kD3T
- 8GmgE+irrgb7vtbZ0d8y2DUmzVyd53pRVuJv/IJ1jrKlClVQSjuKo3rB4WdDTIVPZ+mm3v6u
- AByaFRRFZ2VhZg0zTU0jbbgYgJk=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
- 60cc0a3af726fa4188db2100 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Jun 2021 02:51:38
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 463B0C433F1; Fri, 18 Jun 2021 02:51:37 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2D852C43460;
-        Fri, 18 Jun 2021 02:51:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2D852C43460
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Subject: [PATCHv2 3/3] iommu/arm-smmu-qcom: Set IO_PGTABLE_QUIRK_TLB_INV_ALL for QTI SoC impl
-Date:   Fri, 18 Jun 2021 08:21:05 +0530
-Message-Id: <eaf513a8d4726c453f981504625e47141c56b000.1623981933.git.saiprakash.ranjan@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
-In-Reply-To: <cover.1623981933.git.saiprakash.ranjan@codeaurora.org>
-References: <cover.1623981933.git.saiprakash.ranjan@codeaurora.org>
+        Thu, 17 Jun 2021 22:53:27 -0400
+Received: from dggemv711-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4G5jys58clz70m7;
+        Fri, 18 Jun 2021 10:48:05 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv711-chm.china.huawei.com (10.1.198.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 18 Jun 2021 10:51:16 +0800
+Received: from [127.0.0.1] (10.174.179.0) by dggpemm500006.china.huawei.com
+ (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 18 Jun
+ 2021 10:51:15 +0800
+Subject: Re: [PATCH v2 1/3] scripts: add spelling_sanitizer.sh script
+To:     Petr Mladek <pmladek@suse.com>
+CC:     Jonathan Corbet <corbet@lwn.net>, Joe Perches <joe@perches.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        Jason Baron <jbaron@akamai.com>,
+        Stefani Seibold <stefani@seibold.net>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Thomas Graf <tgraf@suug.ch>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Jens Axboe <axboe@kernel.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210616122507.896-1-thunder.leizhen@huawei.com>
+ <20210616122507.896-2-thunder.leizhen@huawei.com>
+ <87bl85yi68.fsf@meer.lwn.net>
+ <4c8ca535-398c-0d19-5242-27ed1d3905ec@huawei.com> <YMr6nv1G+bq235nR@alley>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <2dd756b6-a02b-0bad-4161-1b3dbc223d84@huawei.com>
+Date:   Fri, 18 Jun 2021 10:51:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YMr6nv1G+bq235nR@alley>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.0]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set the pgtable quirk IO_PGTABLE_QUIRK_TLB_INV_ALL for QTI SoC
-implementation to use ::tlb_flush_all() for partial walk flush
-to improve unmap performance.
 
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
----
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-index 7771d40176de..b8ae51592d00 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-@@ -146,6 +146,8 @@ static int qcom_adreno_smmu_init_context(struct arm_smmu_domain *smmu_domain,
- {
- 	struct adreno_smmu_priv *priv;
- 
-+	pgtbl_cfg->quirks |= IO_PGTABLE_QUIRK_TLB_INV_ALL;
-+
- 	/* Only enable split pagetables for the GPU device (SID 0) */
- 	if (!qcom_adreno_smmu_is_gpu_device(dev))
- 		return 0;
-@@ -185,6 +187,14 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
- 	{ }
- };
- 
-+static int qcom_smmu_init_context(struct arm_smmu_domain *smmu_domain,
-+		struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
-+{
-+	pgtbl_cfg->quirks |= IO_PGTABLE_QUIRK_TLB_INV_ALL;
-+
-+	return 0;
-+}
-+
- static int qcom_smmu_cfg_probe(struct arm_smmu_device *smmu)
- {
- 	unsigned int last_s2cr = ARM_SMMU_GR0_S2CR(smmu->num_mapping_groups - 1);
-@@ -308,6 +318,7 @@ static int qcom_smmu500_reset(struct arm_smmu_device *smmu)
- }
- 
- static const struct arm_smmu_impl qcom_smmu_impl = {
-+	.init_context = qcom_smmu_init_context,
- 	.cfg_probe = qcom_smmu_cfg_probe,
- 	.def_domain_type = qcom_smmu_def_domain_type,
- 	.reset = qcom_smmu500_reset,
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
+On 2021/6/17 15:32, Petr Mladek wrote:
+> On Thu 2021-06-17 09:11:05, Leizhen (ThunderTown) wrote:
+>>
+>>
+>> On 2021/6/16 22:53, Jonathan Corbet wrote:
+>>> Zhen Lei <thunder.leizhen@huawei.com> writes:
+>>>
+>>>> The file scripts/spelling.txt recorded a large number of spelling
+>>>> "mistake||correction" pairs. These entries are currently maintained in
+>>>> order, but the results are not strict. In addition, when someone wants to
+>>>> add some new pairs, he either sort them manually or write a script, which
+>>>> is clearly a waste of labor. So add this script. For all spelling
+>>>> "mistake||correction" pairs, sort based on "correction", then on "mistake",
+>>>> and remove duplicates. Sorting based on "mistake" first is not chosen
+>>>> because it is uncontrollable.
+>>>>
+>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>>> ---
+>>>>  scripts/spelling_sanitizer.sh | 27 +++++++++++++++++++++++++++
+>>>>  1 file changed, 27 insertions(+)
+>>>>  create mode 100755 scripts/spelling_sanitizer.sh
+>>>>
+>>>> diff --git a/scripts/spelling_sanitizer.sh b/scripts/spelling_sanitizer.sh
+>>>> new file mode 100755
+>>>> index 000000000000..603bb7e0e66b
+>>>> --- /dev/null
+>>>> +++ b/scripts/spelling_sanitizer.sh
+>>>> @@ -0,0 +1,27 @@
+>>>> +#!/bin/sh -efu
+>>>> +# SPDX-License-Identifier: GPL-2.0
+>>>> +
+>>>> +# To get the traditional sort order that uses native byte values
+>>>
+>>> So I am of the naive opinion that everything we drop into scripts/
+>>> should start with a comment saying why it exists and how to use it.
+>>> Otherwise how are people going to benefit from it?
+>>
+>> Rigth, I will add the description, thanks.
+> 
+> Ideally, please add also some -h/--help option that would print a short
+> description and usage.
+
+OK, I will add it.
+
+> 
+> Best Regards,
+> Petr
+> 
+> .
+> 
 
