@@ -2,120 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AA653AC131
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 05:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 286453AC13D
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 05:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231693AbhFRDI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 23:08:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33966 "EHLO
+        id S231831AbhFRDUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 23:20:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231209AbhFRDI1 (ORCPT
+        with ESMTP id S230484AbhFRDUr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 23:08:27 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BB4C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:06:18 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id g4so4949064pjk.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:06:18 -0700 (PDT)
+        Thu, 17 Jun 2021 23:20:47 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE6EC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:18:38 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id og14so13420029ejc.5
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:18:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=MF+HvSh2Ph2aJcSQ8YS6FS+dV1UC86cI16zR69oJ2u8=;
-        b=jYJn0PjuLeGUOI9PsxEFTmfohuH85BJzoU5Rq7Fst9tN15oc/M1M6mieCH2th80v0h
-         +56mhuRuaWRmjRG3dECTL4xdtK9p2nica6EyBFtZYTNyrxY5oo6ArQhm4nR8Q/reji2G
-         MhbNSTEpCBm9snqP44Xr93566LvXK1Jlv52/Nii/MhWe7XSGe0efrZCezH/nA3AP0Qmf
-         dcIUHFaQbGdlcy9KzG9UybuyDDxpd21jHoMGH4Jrdafx8i+r28H9yDrcbLFn75ov5xhm
-         JvmoNp2SMIoGuSaU2ntbtrSdpOBxnEm0XhGbnXGtFZVQJMiaFg1PAF+JGmLTOK2+6oAj
-         pvUw==
+        bh=zLggwlEz9KvaqTsvD1N67bjXjYEPfw0xJN+eofsbIEg=;
+        b=LeS2JjPwBohnWSN3UMBVdfjycTPlOisHQcuIJVwOlO9eR1p8p0xWOrm91+3FZl6C97
+         G1rwNnlyYPzxy4McN2Y037p0crdsF8/zAOMC2sXR+QxnLekiwdb2BA+MMd4JepSPJy4j
+         CtB3r+X1EkC31clb9Iw+5PQUXoOjC9nRmepkaZcWiAgX1oufedkU7HIKEpZokMf2qH7H
+         RoEZKXdE3J0HnWEGuz8BKlTKHms1uoIqXENdI0+x5J0wBZHBJ74G78bGhvGT5wvq2Etw
+         VAuHVTYtD4nanHpASudOb+OmfBfxWJlFH8e/oxrCBqWm+l60T8FlLlDOj+Nq6rDyxqaA
+         a1kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=MF+HvSh2Ph2aJcSQ8YS6FS+dV1UC86cI16zR69oJ2u8=;
-        b=RMZNqYh07lfX2s4K70epw4USFTrxrk465Y8nHmh4shDjTTJcMYUYEUC54ubJaLPKKA
-         VkOue9L5jcP4Y4xcEzJXL8mVoOBJmshLSwFQY2q7NDOOgFggvPzvXRfeENIBQCjIkcYr
-         2etvqipuB42GV1VxHlNIdHb4pQh0gVrJxm9oCe4+6pg6/+YCcWXmKN+X9rF9TmnAqifo
-         rKw+4d43tP5OdD1FM8XU5W/Iqa65l65UzU6rwHPoX6HHZUkTI5js3YQzx9GuX7wk+Gvd
-         c07GHHzRvDdrGbX6hNU5x+5v1Yd48Zguutke7C84NhnNFVTuB9VVl2yvv3O7aVY8e01q
-         UCAg==
-X-Gm-Message-State: AOAM532Css7tKIEA9qCfORUxPe+8nu6rAWDYV8flkxXXrK/tfgJm9tM7
-        DYSsjp1FsyOb+nImG1WmRP/xQiJxonJxP8zpa4M=
-X-Google-Smtp-Source: ABdhPJzd3QjZo222960R4VEwMcg19qhdCaLwAOfwGm2SrRnSgF82Mc4zLEOH80+DEn9D9NbzapHzspaopRQih7B/NHE=
-X-Received: by 2002:a17:90a:e98f:: with SMTP id v15mr19574185pjy.235.1623985578289;
- Thu, 17 Jun 2021 20:06:18 -0700 (PDT)
+        bh=zLggwlEz9KvaqTsvD1N67bjXjYEPfw0xJN+eofsbIEg=;
+        b=GmO++Hq5P54aCFjUKIb4t+ZZmoWxsysFmHhZ2YKQQRIlkJQkPqRVhZjFFLdNQ59+WO
+         i+AoBDA2zdU6PFwnNWjxSXkJVAfaZkRzncJlUj62tOPrI8aO3ejOvLHy6eOv030hhc2a
+         cUiXzLC1myQkor/xyEUgVYQk/nD7ENB7J6D9WxXvI6PS+lhurkVziifkLTsfr+nYjvm2
+         ZhDq6uArOSyWOwPu/HRhnLiU/O8uUxzrmSS2fUQVSf9J7gSyWZTqmAldY87aH9ZVCwZQ
+         PAm3mnEn3/bBi6biuYv/MZ+f/jnNPcMzenaKrYBraIBJfE2+dXI9WmqppncK1/6T+r+f
+         qORg==
+X-Gm-Message-State: AOAM531LkSIAIJiA9ao4qnPGO5DRnfOFU7j4b33k3ZzIHlauxN6NUJnL
+        jyNPKiY8+NjK8ZHxQIX9kPM8aPkZGx6pEjXAR5xO
+X-Google-Smtp-Source: ABdhPJzN+mYgtC0eBkhZhzGJhLQjFCbBuFlJghEgoQO/wcTYdvnFAIXrjFWrVDier3cOEKa4xAydvckxOEAYsT5C+1Y=
+X-Received: by 2002:a17:907:a8f:: with SMTP id by15mr8609968ejc.91.1623986316521;
+ Thu, 17 Jun 2021 20:18:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210617111925.162120-1-net147@gmail.com> <YMtYoaSIIRhb85fh@pendragon.ideasonboard.com>
-In-Reply-To: <YMtYoaSIIRhb85fh@pendragon.ideasonboard.com>
-From:   Jonathan Liu <net147@gmail.com>
-Date:   Fri, 18 Jun 2021 13:06:07 +1000
-Message-ID: <CANwerB0J9xKj3kjYPjzfeDvKV8JXPcDtoZaLMzkudCBz8=ZnVw@mail.gmail.com>
-Subject: Re: [PATCH] drm/bridge: ti-sn65dsi83: Fix null pointer dereference in
- remove callback
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Marek Vasut <marex@denx.de>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>
+References: <ee75bde9a17f418984186caa70abd33b@huawei.com> <20210616132227.999256-1-roberto.sassu@huawei.com>
+ <6e1c9807-d7e8-7c26-e0ee-975afa4b9515@linux.ibm.com> <9cb676de40714d0288f85292c1f1a430@huawei.com>
+ <d822efcc0bb05178057ab2f52293575124cde1fc.camel@linux.ibm.com>
+In-Reply-To: <d822efcc0bb05178057ab2f52293575124cde1fc.camel@linux.ibm.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 17 Jun 2021 23:18:25 -0400
+Message-ID: <CAHC9VhTv6Zn8gYaB6cG4wPzy_Ty0XjOM-QL4cZ525RnhFY4bTQ@mail.gmail.com>
+Subject: Re: [PATCH] fs: Return raw xattr for security.* if there is size
+ disagreement with LSMs
+To:     Mimi Zohar <zohar@linux.ibm.com>
+Cc:     Roberto Sassu <roberto.sassu@huawei.com>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "stephen.smalley.work@gmail.com" <stephen.smalley.work@gmail.com>,
+        "casey@schaufler-ca.com" <casey@schaufler-ca.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "selinux@vger.kernel.org" <selinux@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marek,
+On Thu, Jun 17, 2021 at 11:28 AM Mimi Zohar <zohar@linux.ibm.com> wrote:
+> On Thu, 2021-06-17 at 07:09 +0000, Roberto Sassu wrote:
 
-On Fri, 18 Jun 2021 at 00:14, Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Jonathan,
->
-> Thank you for the patch.
->
-> On Thu, Jun 17, 2021 at 09:19:25PM +1000, Jonathan Liu wrote:
-> > If attach has not been called, unloading the driver can result in a null
-> > pointer dereference in mipi_dsi_detach as ctx->dsi has not been assigned
-> > yet.
->
-> Shouldn't this be done in a brige .detach() operation instead ?
->
+...
 
-Could you please take a look?
-I don't have a working setup to test moving the code to detach.
+> > An alternative would be to do the EVM verification twice if the
+> > first time didn't succeed (with vfs_getxattr_alloc() and with the
+> > new function that behaves like vfs_getxattr()).
+>
+> Unfortunately, I don't see an alternative.
 
-> > Fixes: ceb515ba29ba6b ("drm/bridge: ti-sn65dsi83: Add TI SN65DSI83 and SN65DSI84 driver")
-> > Signed-off-by: Jonathan Liu <net147@gmail.com>
-> > ---
-> >  drivers/gpu/drm/bridge/ti-sn65dsi83.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi83.c b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-> > index 750f2172ef08..8e9f45c5c7c1 100644
-> > --- a/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-> > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-> > @@ -671,8 +671,11 @@ static int sn65dsi83_remove(struct i2c_client *client)
-> >  {
-> >       struct sn65dsi83 *ctx = i2c_get_clientdata(client);
-> >
-> > -     mipi_dsi_detach(ctx->dsi);
-> > -     mipi_dsi_device_unregister(ctx->dsi);
-> > +     if (ctx->dsi) {
-> > +             mipi_dsi_detach(ctx->dsi);
-> > +             mipi_dsi_device_unregister(ctx->dsi);
-> > +     }
-> > +
-> >       drm_bridge_remove(&ctx->bridge);
-> >       of_node_put(ctx->host_node);
-> >
+... and while unfortunate, the impact should be non-existant if you
+are using the right tools to label files or ensuring that you are
+formatting labels properly if doing it by hand.
 
-Thanks.
+Handling a corner case is good, but I wouldn't add a lot of code
+complexity trying to optimize it.
 
-Regards,
-Jonathan
+-- 
+paul moore
+www.paul-moore.com
