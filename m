@@ -2,119 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D70C93AD4B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 23:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0667A3AD49E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 23:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234790AbhFRV5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 17:57:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234730AbhFRV5q (ORCPT
+        id S234702AbhFRV5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 17:57:23 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:40574 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232735AbhFRV5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 17:57:46 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9BF5C061574;
-        Fri, 18 Jun 2021 14:55:34 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id p7so18854107lfg.4;
-        Fri, 18 Jun 2021 14:55:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=yt0BSTexIurBcE0nAITbWkaUHmp5dbQZvjYenG8vIbg=;
-        b=DZduqRBHS/BOblgyH4GnfiEpqmMJfg8F9fekED1mVx2aYZLKo0+hBF/ZIulpmrl1XG
-         wlj4HdU3Jub009AZWpcZLnV81EdXyBHunMiiqniyM2wXIh4s2qWeHHetbE4F7SuzpD3F
-         AnJx6//uKD51oZcMZCXP1wYNYAEwj9+oc37uStVOZVECmNkM46szWFWLCCi3E5z5GZ5+
-         wQuhKJR9G39w5ZnY0JvUD+Ik4PnWv9my1yqaDB30WHzykVmN5gHz8i6+Kb3oqCUhBCLc
-         JXzhF8qN5fOAhcHpVqQK7hOAAQVpVfL1YcAGMQpVfxVNphz737henKoRwhkaKFznkWWf
-         0hGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yt0BSTexIurBcE0nAITbWkaUHmp5dbQZvjYenG8vIbg=;
-        b=t132fIvMbf5HzJ20SP+DG85UtZSEwBRYVhuJMLVKiLLdBLzk3gd/1LWCjGFy9iBa+v
-         iIiJhjqBt9mvWNRVoyJrPPur2Vk7IuA+WLsw0Pk2OqE99R7KS/VK84t51XcQcuZ/B4RB
-         IEyIMxqv7SKblSF9+3CXS4Zo9zvy+TipHYOhHnmwND1O2ExtUg1mkyI9tyjo/GbuB6r3
-         ZWPYVZjeH+gDSpvmIxn+2uMExQD/Cs2cfROuAR0SeCKOTIE02HkJ5QfgbVt8eFeNoZoa
-         2wl5R9yau77R3/7Wl1Wb8Gz78zTJcq+e25Eawh3x/FPa5jLbJ2fUZ9Z1X50x39xbISbP
-         /ksg==
-X-Gm-Message-State: AOAM533R5XPJRfQ4a61eYtvwcZ9mTzgTMmkPKaPcnnPuRZmg75/sqEq0
-        Aajf/uB+EmyvSmgzs0G7vSU=
-X-Google-Smtp-Source: ABdhPJxg9vKgC6+4txTLCB63suNJLKxw/Vh/JDODYms7X6iJLlT4M2vfsR9KAsL3FDF2JjOC0efIYA==
-X-Received: by 2002:a05:6512:ad6:: with SMTP id n22mr4830694lfu.114.1624053333342;
-        Fri, 18 Jun 2021 14:55:33 -0700 (PDT)
-Received: from localhost.localdomain (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
-        by smtp.gmail.com with ESMTPSA id b20sm791773ljo.138.2021.06.18.14.55.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 14:55:33 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: [PATCH v3 4/4] hwmon: (lm90) Disable interrupt on suspend
-Date:   Sat, 19 Jun 2021 00:54:55 +0300
-Message-Id: <20210618215455.19986-5-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210618215455.19986-1-digetx@gmail.com>
-References: <20210618215455.19986-1-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 18 Jun 2021 17:57:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624053312; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=vWuSQFDHY7f5boYAnelARlfd06pI5S2myIc0m2GVLnA=; b=VYtZGRc8QwP3DCotX85O3WRBDLG0VPRVcn9IoeCT4HwqzMfG6vcLkht+2wfryamjLUIfpZly
+ egN0WEc5iu+iN7dNqd3adGGee27ZdjrB01QdT8+i6a3BTQDCPnE7f0JxOJha9lh47bQ4vuTj
+ gva1m9k0EDpJcswXJENnBJmTOaw=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60cd163ee570c05619e4a69f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Jun 2021 21:55:10
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 06F44C43217; Fri, 18 Jun 2021 21:55:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 91F59C433D3;
+        Fri, 18 Jun 2021 21:55:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 91F59C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        carl.yin@quectel.com, naveen.kumar@quectel.com,
+        loic.poulain@linaro.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v2] bus: mhi: pci_generic: Apply no-op for wake using sideband wake boolean
+Date:   Fri, 18 Jun 2021 14:55:02 -0700
+Message-Id: <1624053302-22470-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I2C accesses are prohibited and will error out after suspending of the
-I2C controller, hence we need to ensure that interrupt won't fire on
-suspend when it's too late. Disable interrupt across suspend/resume.
+Devices such as SDX24 do not have the provision for inband wake
+doorbell in the form of channel 127 and instead have a sideband
+GPIO for it. Newer devices such as SDX55 or SDX65 support inband
+wake method by default. Ensure the functionality is used based on
+this such that device wake stays held when a client driver uses
+mhi_device_get() API or the equivalent debugfs entry.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Fixes: e3e5e6508fc1 ("bus: mhi: pci_generic: No-Op for device_wake operations")
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 ---
- drivers/hwmon/lm90.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+v2: Use sideband instead of no_inband_wake and update description
+Tested on: X86_64 architecture with SDX65 device on Ubuntu 18.04
 
-diff --git a/drivers/hwmon/lm90.c b/drivers/hwmon/lm90.c
-index 658b486d2f5e..b53f17511b05 100644
---- a/drivers/hwmon/lm90.c
-+++ b/drivers/hwmon/lm90.c
-@@ -1973,11 +1973,36 @@ static void lm90_alert(struct i2c_client *client, enum i2c_alert_protocol type,
- 	}
- }
+ drivers/bus/mhi/pci_generic.c | 26 ++++++++++++++++++--------
+ 1 file changed, 18 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
+index d84b743..56f7107 100644
+--- a/drivers/bus/mhi/pci_generic.c
++++ b/drivers/bus/mhi/pci_generic.c
+@@ -32,6 +32,7 @@
+  * @edl: emergency download mode firmware path (if any)
+  * @bar_num: PCI base address register to use for MHI MMIO register space
+  * @dma_data_width: DMA transfer word size (32 or 64 bits)
++ * @sideband_wake: Devices without inband wake support (such as sdx24)
+  */
+ struct mhi_pci_dev_info {
+ 	const struct mhi_controller_config *config;
+@@ -40,6 +41,7 @@ struct mhi_pci_dev_info {
+ 	const char *edl;
+ 	unsigned int bar_num;
+ 	unsigned int dma_data_width;
++	bool sideband_wake;
+ };
  
-+static int __maybe_unused lm90_suspend(struct device *dev)
-+{
-+	struct lm90_data *data = dev_get_drvdata(dev);
-+	struct i2c_client *client = data->client;
+ #define MHI_CHANNEL_CONFIG_UL(ch_num, ch_name, el_count, ev_ring) \
+@@ -242,7 +244,8 @@ static const struct mhi_pci_dev_info mhi_qcom_sdx65_info = {
+ 	.edl = "qcom/sdx65m/edl.mbn",
+ 	.config = &modem_qcom_v1_mhiv_config,
+ 	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+-	.dma_data_width = 32
++	.dma_data_width = 32,
++	.sideband_wake = false
+ };
+ 
+ static const struct mhi_pci_dev_info mhi_qcom_sdx55_info = {
+@@ -251,7 +254,8 @@ static const struct mhi_pci_dev_info mhi_qcom_sdx55_info = {
+ 	.edl = "qcom/sdx55m/edl.mbn",
+ 	.config = &modem_qcom_v1_mhiv_config,
+ 	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+-	.dma_data_width = 32
++	.dma_data_width = 32,
++	.sideband_wake = false
+ };
+ 
+ static const struct mhi_pci_dev_info mhi_qcom_sdx24_info = {
+@@ -259,7 +263,8 @@ static const struct mhi_pci_dev_info mhi_qcom_sdx24_info = {
+ 	.edl = "qcom/prog_firehose_sdx24.mbn",
+ 	.config = &modem_qcom_v1_mhiv_config,
+ 	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+-	.dma_data_width = 32
++	.dma_data_width = 32,
++	.sideband_wake = true
+ };
+ 
+ static const struct mhi_channel_config mhi_quectel_em1xx_channels[] = {
+@@ -301,7 +306,8 @@ static const struct mhi_pci_dev_info mhi_quectel_em1xx_info = {
+ 	.edl = "qcom/prog_firehose_sdx24.mbn",
+ 	.config = &modem_quectel_em1xx_config,
+ 	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+-	.dma_data_width = 32
++	.dma_data_width = 32,
++	.sideband_wake = true
+ };
+ 
+ static const struct mhi_channel_config mhi_foxconn_sdx55_channels[] = {
+@@ -339,7 +345,8 @@ static const struct mhi_pci_dev_info mhi_foxconn_sdx55_info = {
+ 	.edl = "qcom/sdx55m/edl.mbn",
+ 	.config = &modem_foxconn_sdx55_config,
+ 	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
+-	.dma_data_width = 32
++	.dma_data_width = 32,
++	.sideband_wake = false
+ };
+ 
+ static const struct pci_device_id mhi_pci_id_table[] = {
+@@ -640,9 +647,12 @@ static int mhi_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	mhi_cntrl->status_cb = mhi_pci_status_cb;
+ 	mhi_cntrl->runtime_get = mhi_pci_runtime_get;
+ 	mhi_cntrl->runtime_put = mhi_pci_runtime_put;
+-	mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
+-	mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
+-	mhi_cntrl->wake_toggle = mhi_pci_wake_toggle_nop;
 +
-+	if (client->irq)
-+		disable_irq(client->irq);
-+
-+	return 0;
-+}
-+
-+static int __maybe_unused lm90_resume(struct device *dev)
-+{
-+	struct lm90_data *data = dev_get_drvdata(dev);
-+	struct i2c_client *client = data->client;
-+
-+	if (client->irq)
-+		enable_irq(client->irq);
-+
-+	return 0;
-+}
-+
-+static SIMPLE_DEV_PM_OPS(lm90_pm_ops, lm90_suspend, lm90_resume);
-+
- static struct i2c_driver lm90_driver = {
- 	.class		= I2C_CLASS_HWMON,
- 	.driver = {
- 		.name	= "lm90",
- 		.of_match_table = of_match_ptr(lm90_of_match),
-+		.pm	= &lm90_pm_ops,
- 	},
- 	.probe_new	= lm90_probe,
- 	.alert		= lm90_alert,
++	if (info->sideband_wake) {
++		mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
++		mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
++		mhi_cntrl->wake_toggle = mhi_pci_wake_toggle_nop;
++	}
+ 
+ 	err = mhi_pci_claim(mhi_cntrl, info->bar_num, DMA_BIT_MASK(info->dma_data_width));
+ 	if (err)
 -- 
-2.30.2
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
