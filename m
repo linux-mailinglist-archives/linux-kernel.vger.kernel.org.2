@@ -2,94 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E86B43AC143
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 05:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AEEB3AC145
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 05:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231908AbhFRDYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 23:24:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37286 "EHLO
+        id S231955AbhFRDYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 23:24:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230484AbhFRDX6 (ORCPT
+        with ESMTP id S230484AbhFRDYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 23:23:58 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EFF1C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:21:48 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id d7so6672070edx.0
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:21:48 -0700 (PDT)
+        Thu, 17 Jun 2021 23:24:50 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5019FC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:22:41 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id o10-20020a17090aac0ab029016e92770073so5038316pjq.5
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:22:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6aJ7JLNwP8uQqbzACgqcuvU9N5foWZsWndyEyLlqRCY=;
-        b=Bs1lVn/Fv7HQ1gsS939rabvK+bgf5OnBx3+M7rkEyVztWkpe3oLTsa8T3TpZ6VCOil
-         FuB2/gbtM56yMReJ5wFMl/eXIAK1Vx5BOp+s8bekj51rQ47Dgv4UOa8M8/pgCG/wCdpG
-         ndNqRM2AFGTW82VnxFJdle/ZOI8IF+k6V6D10=
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=MqSK1zOymUxxq/T/RdAPgHK3/+Z9VBscAJFGiuft+WE=;
+        b=jP8eVoUmuigO/jQApq8Ze876NJSFHzAqT6HwtfW8AAg9FbfPQhrfV2TZCkRyjjH5HO
+         WicCMQs4wDMQWSlcOJYGarpinR3uniubQcC2kDvhsPKihq7qtzppn6+s+1uxTZCGiQbl
+         G+ahlp5ARFwSHmojJKhhWbaV9sRfAXxmQ069tTJQ8YIMC/c7dzy5w4i0W1HUDA4YJ3Wj
+         A+ffuYVHlur3Ui8R0FAtJz60rMGB1DbnjbhhK3ZmYaMEDb8bRKrj5FM+XGpSZgIgVTI7
+         rHhx85acp5Oq2bhRacLWgBfbgMun3tBf3cvoCT+ocKOQj8CSzbLxgncrxmvPlvmwNm4q
+         9rPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6aJ7JLNwP8uQqbzACgqcuvU9N5foWZsWndyEyLlqRCY=;
-        b=t9O4gP4gbV3oGIPm0IYup/8q/k6YhbDjDFtDkYjAnUwLPGVNP7c0A3lwxqKzrh0k0G
-         OfLEyQLIHfwVv8PoTZ6YFeBpjfim3jus+p3gFpfYX7XnGI8TKTNeJSs/RDlLgiOIMWP5
-         2r4kfsCqk/5CaWTR6ZQMZ+dzcvdiMbo1rd7YIkIDceeU8wZhACBRewWx7Xqk2U65Hc25
-         5K5wFfpQzvxdlUiJeqZuB5kKV1O3bGEQMLbGTfEWHEUXzrSah6Rswm0hRVGaynoCOn1U
-         dIIq5NptLHRK0+mLJ61lKb6qtsjkKewvOssG1+b85aZxl3vSh1udLBjNt1DSeFbaVc7D
-         H8qQ==
-X-Gm-Message-State: AOAM5305Q0fBN8m7NRr+o7gywVzyoSAoShqaH9bZM6zYajJNiR4h4PWo
-        notub+ms0jl8yUOiMHQXvNGqhttE8BeNJA==
-X-Google-Smtp-Source: ABdhPJxOt2Roemk8rhlfEx+IL5e34l9U1VpHhroyK80ckhm9ePvZ1PpH7OBsXyYSt1Elvq2HQYmP2g==
-X-Received: by 2002:aa7:dd5a:: with SMTP id o26mr1968657edw.277.1623986506698;
-        Thu, 17 Jun 2021 20:21:46 -0700 (PDT)
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com. [209.85.221.52])
-        by smtp.gmail.com with ESMTPSA id d22sm443845ejj.47.2021.06.17.20.21.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Jun 2021 20:21:46 -0700 (PDT)
-Received: by mail-wr1-f52.google.com with SMTP id c5so9002121wrq.9
-        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:21:45 -0700 (PDT)
-X-Received: by 2002:a5d:4f08:: with SMTP id c8mr9725940wru.197.1623986505267;
- Thu, 17 Jun 2021 20:21:45 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=MqSK1zOymUxxq/T/RdAPgHK3/+Z9VBscAJFGiuft+WE=;
+        b=OtKCMk5p2rXidDjK/tiefQRSr24ZzRqBz7hnhd5Q091aVXlJY/HyNdccqsEP9tnqYd
+         oS/xz9YVS0S5jEei2Eiw+TvdpKAdJZfe9j3zu6ZccIAMTM5eOoBpQV2pCo1cVKqJlxs/
+         TOp3/ck1iZ6T3iH8B7uYHC+BMD1t96xKCx+hXxKbSoTGisgaYc+bzLK/wNY8Gp0FwauH
+         ZQEVsbGrBy+Mci3YTolMHfnNIZeaI+pp8eOjL2DzWXuCRjVDIhfRyyHgHG1k3rhPv5Wo
+         Nioi9maF+ElWBah8k38Zc3RAogpu7OyLp7ANgtuNzD1TId+rM2cNwN0vNQDhuBa3RoAr
+         /HZA==
+X-Gm-Message-State: AOAM531pmx2UOY2XEKV+6KRINFFiCUNFqQJXgxK8ytdhfLWnqDTUaRMg
+        TN6CeCCeMxM6zUSpN/eDdX2JgQ==
+X-Google-Smtp-Source: ABdhPJxFthx1OT3wNaOe0+vA6MHe5CsoJnedW2rlLxOtLtzEfVgMYU4fUDUXA2YPPC72o9ZMNGPhJw==
+X-Received: by 2002:a17:90a:f0c2:: with SMTP id fa2mr7498294pjb.191.1623986560775;
+        Thu, 17 Jun 2021 20:22:40 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id 23sm6122897pjw.28.2021.06.17.20.22.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Jun 2021 20:22:40 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dirk Brandewie <dirk.brandewie@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V3 2/3] cpufreq: intel_pstate: Migrate away from ->stop_cpu() callback
+Date:   Fri, 18 Jun 2021 08:52:36 +0530
+Message-Id: <c31424b7962608eb13f946a665ba6848c4986856.1623986349.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
+In-Reply-To: <5c8da9d378dee39d9c6063713b093f51d271fa9d.1623825358.git.viresh.kumar@linaro.org>
+References: <5c8da9d378dee39d9c6063713b093f51d271fa9d.1623825358.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-References: <20210427131344.139443-1-senozhatsky@chromium.org>
- <20210427131344.139443-9-senozhatsky@chromium.org> <10a0903a-e295-5cba-683a-1eb89a0804ed@xs4all.nl>
- <YMsAIVs7G2hUDR2F@google.com> <20210617080107.GA1422@lst.de>
- <CAAFQd5DiPstn-s+yQM3iMd=G9oaag39qCyX483a7-Jrn=gxWCA@mail.gmail.com>
- <20210617085233.GA4702@lst.de> <CAAFQd5DqK2gSTGjfo-vahXwMzzO9gv26cY=vV6urn3viDLPE7g@mail.gmail.com>
- <20210617100656.GA11107@lst.de>
-In-Reply-To: <20210617100656.GA11107@lst.de>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Fri, 18 Jun 2021 12:21:33 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5CgLDkJ3t1aU2PRcGu6cGFjLXOnvMqDg62Z7Zuc8ABVHg@mail.gmail.com>
-Message-ID: <CAAFQd5CgLDkJ3t1aU2PRcGu6cGFjLXOnvMqDg62Z7Zuc8ABVHg@mail.gmail.com>
-Subject: Re: [PATCHv2 8/8] videobuf2: handle non-contiguous DMA allocations
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 7:07 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Thu, Jun 17, 2021 at 06:40:58PM +0900, Tomasz Figa wrote:
-> > Sorry, I meant dma_alloc_attrs() and yes, it's indeed a misnomer. Our
-> > use case basically has no need for the additional coherent mapping, so
-> > creation of it can be skipped to save some vmalloc space. (Yes, it
-> > probably only matters for 32-bit architectures.)
->
-> Yes, that is the normal use case, and it is solved by using
-> dma_alloc_noncoherent or dma_alloc_noncontigous without the vmap
-> step.
+commit 367dc4aa932b ("cpufreq: Add stop CPU callback to cpufreq_driver
+interface") added the stop_cpu() callback to allow the drivers to do
+clean up before the CPU is completely down and its state can't be
+modified.
 
-True, silly me. Probably not enough coffee at the time I was looking at it.
+At that time the CPU hotplug framework used to call the cpufreq core's
+registered notifier for different events like CPU_DOWN_PREPARE and
+CPU_POST_DEAD. The stop_cpu() callback was called during the
+CPU_DOWN_PREPARE event.
 
-With that, wouldn't it be possible to completely get rid of
-dma_alloc_{coherent,attrs}() and use dma_alloc_noncontiguous() +
-optional kernel and/or userspace mapping helper everywhere? (Possibly
-renaming it to something as simple as dma_alloc().
+This is no longer the case, cpuhp_cpufreq_offline() is called only once
+by the CPU hotplug core now and we don't really need to separately
+call stop_cpu() for cpufreq drivers.
+
+Migrate to using the exit() and offline() callbacks instead of
+stop_cpu().
+
+We need to clear util hook from both the callbacks, exit() and
+offline(), since it is possible that only exit() gets called sometimes
+(specially on errors) or both get called at other times.
+intel_pstate_clear_update_util_hook() anyway have enough protection in
+place if it gets called a second time and will return early then.
+
+Cc: Dirk Brandewie <dirk.brandewie@gmail.com>
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+V2->V3:
+- Update intel_pstate_cpu_offline() as well.
+- Improved commit log.
+
+ drivers/cpufreq/intel_pstate.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+index 0e69dffd5a76..8f8a2d9d7daa 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -2335,6 +2335,8 @@ static int intel_pstate_cpu_offline(struct cpufreq_policy *policy)
+ 
+ 	pr_debug("CPU %d going offline\n", cpu->cpu);
+ 
++	intel_pstate_clear_update_util_hook(policy->cpu);
++
+ 	if (cpu->suspended)
+ 		return 0;
+ 
+@@ -2374,17 +2376,12 @@ static int intel_pstate_cpu_online(struct cpufreq_policy *policy)
+ 	return 0;
+ }
+ 
+-static void intel_pstate_stop_cpu(struct cpufreq_policy *policy)
+-{
+-	pr_debug("CPU %d stopping\n", policy->cpu);
+-
+-	intel_pstate_clear_update_util_hook(policy->cpu);
+-}
+-
+ static int intel_pstate_cpu_exit(struct cpufreq_policy *policy)
+ {
+ 	pr_debug("CPU %d exiting\n", policy->cpu);
+ 
++	intel_pstate_clear_update_util_hook(policy->cpu);
++
+ 	policy->fast_switch_possible = false;
+ 
+ 	return 0;
+@@ -2451,7 +2448,6 @@ static struct cpufreq_driver intel_pstate = {
+ 	.resume		= intel_pstate_resume,
+ 	.init		= intel_pstate_cpu_init,
+ 	.exit		= intel_pstate_cpu_exit,
+-	.stop_cpu	= intel_pstate_stop_cpu,
+ 	.offline	= intel_pstate_cpu_offline,
+ 	.online		= intel_pstate_cpu_online,
+ 	.update_limits	= intel_pstate_update_limits,
+-- 
+2.31.1.272.g89b43f80a514
+
