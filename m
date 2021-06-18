@@ -2,214 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336293AC531
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA763AC530
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 09:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233357AbhFRHs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 03:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbhFRHsy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S233321AbhFRHsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 18 Jun 2021 03:48:54 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79068C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 00:46:45 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lu9D4-0006eM-Pr; Fri, 18 Jun 2021 09:46:38 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lu9Cy-0000ol-Ff; Fri, 18 Jun 2021 09:46:32 +0200
-Date:   Fri, 18 Jun 2021 09:46:25 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Doug Anderson <dianders@chromium.org>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] drm/bridge: ti-sn65dsi86: Implement the pwm_chip
-Message-ID: <20210618074625.rvw3xe7k2zqeo77z@pengutronix.de>
-References: <20210615231828.835164-1-bjorn.andersson@linaro.org>
- <20210615231828.835164-2-bjorn.andersson@linaro.org>
- <20210616075637.jtoa25uyhnqkctlu@pengutronix.de>
- <YMq/6VhXrYJoTVnj@yoga>
- <20210617062449.qwsjcpkyiwzdyfi3@pengutronix.de>
- <YMt6gvXQKijtPOql@yoga>
- <20210617165433.ltugrrj6ntmc6j57@pengutronix.de>
- <YMuPO3iKRSFNLbNZ@yoga>
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230491AbhFRHsv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 03:48:51 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E337BC061760
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 00:46:41 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id o88-20020a17090a0a61b029016eeb2adf66so7412089pjo.4
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 00:46:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=g3POzcgh/avJIeba5rT64dVp/8mkGkb9nAQDKfOaZvc=;
+        b=k5z0ZWdNtHkh8Y/xwVG3e95ujbaP4mNBt/D6YH496fcVHYKK2EHuzav6z7kmTw4o95
+         NedMoRF6WiPZemlu6YcKcBcGZuDb7J/vjeSftSQuQPAQbWpVCJmiaMQ4/yLRHaJZ0PXH
+         AQt70ImVTUjzb7eScjo1pOpRVze7hgWpVbnhFi7o3cS3ZpXJtf/oVB0Qn3ooooRdo9s6
+         taToB1C1bcs9jiGaZCFZNUKEv/F160ykT7HCN+4EWwbvrHwamBLsRH9phO7z6dnYCdAw
+         00ONmVW04VyGtpt+Ihn3IJMydkFzKBsMkZXMFwZ0LfvWj4dCGSMP2AsuMzRXSdvKO8/c
+         YPrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=g3POzcgh/avJIeba5rT64dVp/8mkGkb9nAQDKfOaZvc=;
+        b=PP6PmYYW9+VmQCBCUezKGqq4mTJEH/HxLkl1fWAj8gFJZcz2ZkV5Ck8O4oEu0eHhFr
+         LNezWDKqsUoToteUVN016lAIkKsi8nfrB4NTTbvKNz+tlhNtOn6kYQskkI+XnUpJOHo7
+         PVMJ8N8bNVCol5iXcKaKgq1PXTvIifSqGELxkOIfHOz+jiWBW1DTL8WsgS2wCD8fX72x
+         xxfyeGQr2qgLkr85V7j199GT+GcN1ncoYK1FxiNiYI2GguTzS74RVVzeiW8t2cnk0l1j
+         cxQ4rjfb9FoZcyai9EbgE+RPexiFchHbZ2LrSfj8lyhsTV0d2mehAsunm1iLvGsEis7l
+         TF4A==
+X-Gm-Message-State: AOAM531uk5vsgxovv4DFzQDgqGDJtEkb1j0iSw2qYKI+vdADmtglQjiF
+        503lFn3SSUgNc1+sSzo/E55XEg==
+X-Google-Smtp-Source: ABdhPJxdjnz2h6Pj0rYsysgBeBuNIV0JVP6cBKh1/5dlYvpJCOQELq8pxvTgs4wjgZp9MdPveIp2Pw==
+X-Received: by 2002:a17:90a:ce8b:: with SMTP id g11mr8849253pju.170.1624002401466;
+        Fri, 18 Jun 2021 00:46:41 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id s13sm8033700pgi.36.2021.06.18.00.46.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 00:46:40 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 13:16:39 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Qian Cai <quic_qiancai@quicinc.com>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V2 1/3] cpufreq: Add start_cpu() and stop_cpu() callbacks
+Message-ID: <20210618074639.d72shvu46aejvbwd@vireshk-i7>
+References: <cover.1623825725.git.viresh.kumar@linaro.org>
+ <2ffbaf079a21c2810c402cb5bba4e9c14c4a0ff4.1623825725.git.viresh.kumar@linaro.org>
+ <CAJZ5v0gBUMXs=oANZRuOO7uUVdSD-n1inwYsoLr5or=2gEa2Mg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="v2mxeqjbbvr4gdw3"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YMuPO3iKRSFNLbNZ@yoga>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <CAJZ5v0gBUMXs=oANZRuOO7uUVdSD-n1inwYsoLr5or=2gEa2Mg@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 17-06-21, 15:33, Rafael J. Wysocki wrote:
+> On Wed, Jun 16, 2021 at 8:48 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > +       /* Do CPU specific de-initialization if required */
+> > +       if (cpufreq_driver->stop_cpu)
+> > +               cpufreq_driver->stop_cpu(policy, cpu);
+> > +
+> >         /* Start governor again for active policy */
+> >         if (!policy_is_inactive(policy)) {
+> >                 if (has_target()) {
+> > @@ -1597,9 +1611,6 @@ static int cpufreq_offline(unsigned int cpu)
+> >                 policy->cdev = NULL;
+> >         }
+> >
+> > -       if (cpufreq_driver->stop_cpu)
+> > -               cpufreq_driver->stop_cpu(policy);
+> > -
+> 
+> This should be a separate patch IMO, after you've migrated everyone to
+> ->offline/->exit.
 
---v2mxeqjbbvr4gdw3
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Right, anyway this patch may not be required anymore. I will send a patch to
+remove this.
 
-Hello Bjorn,
+> BTW, IMO it might be better to migrate ->stop_cpu to ->offline rather
+> than to ->exit.
 
-On Thu, Jun 17, 2021 at 01:06:51PM -0500, Bjorn Andersson wrote:
-> On Thu 17 Jun 11:54 CDT 2021, Uwe Kleine-K?nig wrote:
-> > On Thu, Jun 17, 2021 at 11:38:26AM -0500, Bjorn Andersson wrote:
-> > > On Thu 17 Jun 01:24 CDT 2021, Uwe Kleine-K?nig wrote:
-> > > > On Wed, Jun 16, 2021 at 10:22:17PM -0500, Bjorn Andersson wrote:
-> > > > > > > +static int ti_sn_pwm_apply(struct pwm_chip *chip, struct pwm=
-_device *pwm,
-> > > > > > > +			   const struct pwm_state *state)
-> > > > > > > +{
-> > > > > > > +	struct ti_sn65dsi86 *pdata =3D pwm_chip_to_ti_sn_bridge(chi=
-p);
-> > > > > > > +	unsigned int pwm_en_inv;
-> > > > > > > +	unsigned int backlight;
-> > > > > > > +	unsigned int pre_div;
-> > > > > > > +	unsigned int scale;
-> > > > > > > +	int ret;
-> > > > > > > +
-> > > > > > > +	if (!pdata->pwm_enabled) {
-> > > > > > > +		ret =3D pm_runtime_get_sync(pdata->dev);
-> > > > > > > +		if (ret < 0)
-> > > > > > > +			return ret;
-> > > > > > > +
-> > > > > > > +		ret =3D regmap_update_bits(pdata->regmap, SN_GPIO_CTRL_REG,
-> > > > > > > +				SN_GPIO_MUX_MASK << (2 * SN_PWM_GPIO_IDX),
-> > > > > > > +				SN_GPIO_MUX_SPECIAL << (2 * SN_PWM_GPIO_IDX));
-> > > > > > > +		if (ret) {
-> > > > > > > +			dev_err(pdata->dev, "failed to mux in PWM function\n");
-> > > > > > > +			goto out;
-> > > > > > > +		}
-> > > > > >=20
-> > > > > > Do you need to do this even if state->enabled is false?
-> > > > >=20
-> > > > > I presume I should be able to explicitly mux in the GPIO function=
- and
-> > > > > configure that to output low. But I am not able to find anything =
-in the
-> > > > > data sheet that would indicate this to be preferred.
-> > > >=20
-> > > > My question targetted a different case. If the PWM is off
-> > > > (!pdata->pwm_enabled) and should remain off (state->enabled is fals=
-e)
-> > > > you can shortcut here, can you not?
-> > >=20
-> > > Right, if we're going off->off then we don't need to touch the hardwa=
-re.
-> > >=20
-> > > But am I expected to -EINVAL improper period and duty cycle even thou=
-gh
-> > > enabled is false?
-> > >=20
-> > > And also, what is the supposed behavior of enabled =3D false? Is it
-> > > supposedly equivalent of asking for a duty_cycle of 0?
-> >=20
-> > In my book enabled =3D false is just syntactic sugar to say:
-> > "duty_cycle=3D0, period=3Dsomething small". So to answer your questions=
-: if
-> > enabled =3D false, the consumer doesn't really care about period and
-> > duty_cycle. Some care that the output becomes inactive, some others
-> > don't, so from my POV just emit the inactive level on the output and
-> > ignore period and duty_cycle.
->=20
-> Giving this some further thought.
+This is a bit tricky IMO.
 
-Very appreciated, still more as you come to the same conclusions as I do
-:-)
+First, offline() isn't implemented by everyone, out of the three implementations
+which were using stop_cpu(), only intel-pstate had offline() as well.
 
-> In order to have a known state of the PWM signal we need the sn65dsi86
-> to be powered. The documentation describes a "suspend mode", but this is
-> currently not implemented in the driver, so there's a large power cost
-> coming from just keeping the pin low when disabled.
+Second, the primary purpose of online/offline callbacks was suspend/resume
+oriented and for the same reason, we don't call online() when the policy first
+comes up and so in case of errors during bring up, we end up calling exit()
+directly and not offline().
 
-In the past I already promoted the idea that a disabled PWM should give
-no guarantees about the output level. In fact there are several
-offenders, the ones I know off-hand are:
+IMO this is a very specific thing to drivers and they need to see what fits best
+for them, exit() or offline() or both.
 
- - pwm-imx27 emits a low level independent of the programmed polarity
- - pwm-iqs620a makes the output tristated and so relies on an external
-   pull to give the inactive level.
- - pwm-sl28cpld switches to a GPIO mode on disable which isn't
-   controlled by the driver
-
-and I assume there are more because before no one actively asked for
-and tracked this kind of information.
-
-IMHO a consumer who wants the output to stay inactive should configure
-
-	.enabled =3D true
-	.period =3D DC (or something low to allow quick reprogramming)
-	.duty_cycle =3D 0
-
-, so there is no loss of functionality and enabled=3Dfalse should mean the
-consumer doesn't care about the output which would allow some lowlevel
-drivers to save some more energy. So this makes the API more expressive
-because after dropping "disabled results in an inactive output"
-consumers can differentiate between "I care about the output staying
-inactive" and "I don't care". This in turn allows lowlevel drivers to
-better know when they can more aggressively save power and when they
-don't.
-
-Back then Thierry didn't like that approach though. (The thread started
-with a mail having Message-Id
-20180820144357.7206-1-u.kleine-koenig@pengutronix.de, this is missing on
-lore.kernel.org however and I didn't find it on another mirror.)
-
-Thierry's arguments were:
-
- - "An API whose result is an undefined state is useless in my opinion."
-   (from Message-Id: 20181009073407.GA5565@ulmo)
-   Yes, this is a drawback for some consumers, but it matches reality
-   that disabling the PWM counter on some PWM implementations doesn't
-   result in an inactive level. And if they care about the output, they
-   just use .duty_cycle =3D 0 + .enabled =3D true instead.
-   In my book changing the semantic fixes a bug because the API promises
-   more than some drivers are capable to do (with reasonable effort).
-
- - "[Emitting the inactive level] also matches what all other drivers,
-   and users, assume." (also from Message-Id: 20181009073407.GA5565@ulmo)
-   For the drivers this was an assumption, today we know it's wrong.
-   Users can be fixed.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---v2mxeqjbbvr4gdw3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmDMT04ACgkQwfwUeK3K
-7Amh1AgAn6mO1LK9QNIF7tma6jy27ModENVOazMzlhODRmU/4d8vMESJr7igZ+5D
-w5KftNey5LFHJEvC/qGedlraY6w87XDGW9j8FgATFB8ChpRDupQi9J2Ql+QzBwGW
-rk1KGA2fWmG465rjgg71n13TYmeuUepBW7sSMAdArEV519/l+leUosAJEhwycu8D
-WvUBGTOVyTS8I3E+vCutJ5L7E1PNqbd9ZRPUL/e57aPWeY26EhvkYfg4w9sTwwQA
-wgkQQPkE+46EYNSZT3mLMghswm7P6DJb3K6KGfYn2kr/PAE++pZCPd7ELpt+QX1A
-MPxtxS3M/K9xQjFAm/rr93QGlXuaLA==
-=aXyd
------END PGP SIGNATURE-----
-
---v2mxeqjbbvr4gdw3--
+-- 
+viresh
