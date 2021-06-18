@@ -2,100 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC273AD0B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D3413AD0B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 18:47:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235996AbhFRQsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 12:48:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235740AbhFRQsD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 12:48:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4FB96127C;
-        Fri, 18 Jun 2021 16:45:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624034753;
-        bh=ZTtwHmqh0rQ3M2ho9c60I0q0eOzXiN2NKnpGl1n9jAs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=R/HYr50FfFMgL8AT6+8hLyRxD/ZSJ4S2xb12SBGX3bFOa3uWO/saYDhlnVh86HZZi
-         OPDTpRuYv/2ZQouGk4fRnlCJgkL18zxi+4aIaD64YAzf49WelDhz2fEAbY0JRP/RbJ
-         VR1FI2PTAT6TbjogpFjK/WPi7QxmCYgwALtjhSbyhztW+Tjo7JUPS5dSdcGLjDT5A1
-         w5OHX7Fe1IquhO1WW9ds+tBjdvFYugD7ejgElqSQwxbbOUSkwwTVmZzxfTyxYEvOV8
-         s/Hgm/YM5MQ5/pN9z0oud2vd0ZPIKafP7cIaWCVfDbFVRZCpOjBzgT0HD4Wi/v2DQ0
-         4WeLullrbJTJg==
-Date:   Fri, 18 Jun 2021 18:45:45 +0200
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        David Hildenbrand <david@redhat.com>, Greg KH <greg@kroah.com>,
-        Christoph Lameter <cl@gentwo.de>,
-        Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
-        ksummit@lists.linux.dev,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-block@vger.kernel.org,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, netdev <netdev@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
-Message-ID: <20210618184545.33ea3d47@coco.lan>
-In-Reply-To: <20210618155829.GD4920@sirena.org.uk>
-References: <b32c8672-06ee-bf68-7963-10aeabc0596c@redhat.com>
-        <5038827c-463f-232d-4dec-da56c71089bd@metux.net>
-        <20210610182318.jrxe3avfhkqq7xqn@nitro.local>
-        <YMJcdbRaQYAgI9ER@pendragon.ideasonboard.com>
-        <20210610152633.7e4a7304@oasis.local.home>
-        <37e8d1a5-7c32-8e77-bb05-f851c87a1004@linuxfoundation.org>
-        <YMyjryXiAfKgS6BY@pendragon.ideasonboard.com>
-        <cd7ffbe516255c30faab7a3ee3ee48f32e9aa797.camel@HansenPartnership.com>
-        <CAMuHMdVcNfDvpPXHSkdL3VuLXCX5m=M_AQF-P8ZajSdXt8NdQg@mail.gmail.com>
-        <20210618103214.0df292ec@oasis.local.home>
-        <20210618155829.GD4920@sirena.org.uk>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S233294AbhFRQtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 12:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232180AbhFRQtc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 12:49:32 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9627AC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 09:47:21 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id r9so11443421wrz.10
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 09:47:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=immu-ne.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HhWeotyIlUAd02HmYmqGEB1lGzziABZiEINB4LXzIIU=;
+        b=iuBCWrGCKLVuyQE0GWOh1GeGL8P7gmW0ES0mYJ2myVJTkMmYgjJ1Uo4X/gwrYFreuy
+         p/WZAd2YYN+UaRtKct03d4VdRaslxHtaNFcOqb7kf+CMOvjIkz8XGym8ckDGJdRczwOB
+         HSIYPLLJySFtv3d+/eA1rwqqmaSTHfXE3Ed1ODZF+B+CnbK3UuHUiPWpaQ3NIJdDrEZP
+         JyAeZxXnNKkeS380rjgmcXvjJeCTF2odH4huEGqQBaLha5cyjL5+7mEUGdYYhQVo6mjZ
+         kUgrSItKjWG++CmM0mnrCRj5/HiOpbpYqFYzwNUxzEmpnXUV4etEu7S9xRAlFImUywKM
+         RhpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HhWeotyIlUAd02HmYmqGEB1lGzziABZiEINB4LXzIIU=;
+        b=mo5CkCg2BhIRrG+AoDX9rj8YM7nmWAT/JFDoTKBmMkmFwC15LETX8a0Llx4l4kIOuR
+         NcYLGYUNqG2Vye7rkTQ2go9hLezlBqfFnOqp2+mjl6QC3IEbPVWOTNPW7X9oL75Ay4+E
+         6DedME+/QhYHR890yB197wKbQBVO4QpWi+HeVNFOhXbX6zZUTfNfm2og2TW+otG0vipK
+         Qz32sIx2VDi6mz7zsneIIsGj5BeMxY06Io1K/m49hEcInRFKpArqxTu+NUN7+uPTSUTt
+         aZW6AJCQup2VQf1pbiaveABoHSNRERpYzVxN6El2ODlBQHuGqPJ5LLITFjMHRv36ws8f
+         9T2A==
+X-Gm-Message-State: AOAM532veCDwf+7fp/4izlJVSFqmWFsl2wnlS3NxE5nlerTDTzaqHo9I
+        GNOeaNFDL1kukD6rzi6Of2bKZg==
+X-Google-Smtp-Source: ABdhPJwZm+k6AWRWTqRtcidaBkGB+ZxHdk9M5VKSOtyNNNsshaIxSmt0HKT0LiU0fHr3vO/QrghXVg==
+X-Received: by 2002:adf:e110:: with SMTP id t16mr13720254wrz.359.1624034840248;
+        Fri, 18 Jun 2021 09:47:20 -0700 (PDT)
+Received: from ludmilla.9e.network (b2b-78-94-0-50.unitymedia.biz. [78.94.0.50])
+        by smtp.gmail.com with ESMTPSA id k16sm9407992wrn.96.2021.06.18.09.47.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 09:47:20 -0700 (PDT)
+From:   Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
+To:     akpm@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, philipp.deppenwiese@immu.ne,
+        Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
+Subject: [PATCH] firmware: export x86_64 platform flash bios region via sysfs
+Date:   Fri, 18 Jun 2021 18:47:18 +0200
+Message-Id: <20210618164718.37866-1-hans-gert.dahmen@immu.ne>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, 18 Jun 2021 16:58:29 +0100
-Mark Brown <broonie@kernel.org> escreveu:
+Make the 16MiB long memory-mapped BIOS region of the platform SPI flash
+on X86_64 system available via /sys/kernel/firmware/flash_mmap/bios_region
+for pen-testing, security analysis and malware detection on kernels
+which restrict module loading and/or access to /dev/mem.
 
-> On Fri, Jun 18, 2021 at 10:32:14AM -0400, Steven Rostedt wrote:
-> > On Fri, 18 Jun 2021 16:28:02 +0200
-> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:  
-> 
-> > > What about letting people use the personal mic they're already
-> > > carrying, i.e. a phone?  
-> 
-> > Interesting idea.  
-> 
-> > I wonder how well that would work in practice. Are all phones good
-> > enough to prevent echo?  
-> 
-> Unless you get the latency for the WebRTC<->in room speaker down lower
-> than I'd expect it to be I'd expect echo cancellation to have fun,
-> though beam forming might reject a lot of in room noise including that -
-> higher end modern phones are astonishingly good at this stuff.  I'd not
-> trust it to work reliably for all attendees though, it's the sort of
-> thing where you'll get lots of per device variation.
+It will be used by the open source Converged Security Suite.
+https://github.com/9elements/converged-security-suite
 
-The local audience should be listening to the in-room audio, in order
-to avoid echo. Also, all local mics should be muted, if someone is 
-speaking from a remote location. 
+Signed-off-by: Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>
+---
+ drivers/firmware/Kconfig             |  9 ++++
+ drivers/firmware/Makefile            |  1 +
+ drivers/firmware/x86_64_flash_mmap.c | 65 ++++++++++++++++++++++++++++
+ 3 files changed, 75 insertions(+)
+ create mode 100644 drivers/firmware/x86_64_flash_mmap.c
 
-Yet, echo is unavoidable if a remote participant is speaking while 
-listening to the audio without headphones. If this ever happens, I
-guess the moderator should cut the remote audio and ask the remote
-participant to lower their speakers or use a headphone.
+diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
+index db0ea2d2d75a..bd77ca2b4fa6 100644
+--- a/drivers/firmware/Kconfig
++++ b/drivers/firmware/Kconfig
+@@ -296,6 +296,15 @@ config TURRIS_MOX_RWTM
+ 	  other manufacturing data and also utilize the Entropy Bit Generator
+ 	  for hardware random number generation.
+ 
++config X86_64_FLASH_MMAP
++	tristate "Export platform flash memory-mapped BIOS region"
++	depends on X86_64
++	help
++	  Export the memory-mapped BIOS region of the platform SPI flash as
++	  a read-only sysfs binary attribute on X86_64 systems. The first 16MiB
++	  will be accessible via /sys/kernel/firmware/flash_mmap/bios_region
++	  for security and malware analysis for example.
++
+ source "drivers/firmware/broadcom/Kconfig"
+ source "drivers/firmware/google/Kconfig"
+ source "drivers/firmware/efi/Kconfig"
+diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
+index 5e013b6a3692..eb7483c5a2ac 100644
+--- a/drivers/firmware/Makefile
++++ b/drivers/firmware/Makefile
+@@ -21,6 +21,7 @@ obj-$(CONFIG_QCOM_SCM)		+= qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
+ obj-$(CONFIG_TI_SCI_PROTOCOL)	+= ti_sci.o
+ obj-$(CONFIG_TRUSTED_FOUNDATIONS) += trusted_foundations.o
+ obj-$(CONFIG_TURRIS_MOX_RWTM)	+= turris-mox-rwtm.o
++obj-$(CONFIG_X86_64_FLASH_MMAP)	+= x86_64_flash_mmap.o
+ 
+ obj-y				+= arm_scmi/
+ obj-y				+= broadcom/
+diff --git a/drivers/firmware/x86_64_flash_mmap.c b/drivers/firmware/x86_64_flash_mmap.c
+new file mode 100644
+index 000000000000..f9d871a8b516
+--- /dev/null
++++ b/drivers/firmware/x86_64_flash_mmap.c
+@@ -0,0 +1,65 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Export the memory-mapped BIOS region of the platform SPI flash as
++ * a read-only sysfs binary attribute on X86_64 systems.
++ *
++ * Copyright © 2021 immune GmbH
++ */
++
++#include <linux/version.h>
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/io.h>
++#include <linux/sysfs.h>
++#include <linux/kobject.h>
++
++#define FLASH_REGION_START 0xFF000000ULL
++#define FLASH_REGION_SIZE 0x1000000ULL
++#define FLASH_REGION_MASK (FLASH_REGION_SIZE - 1)
++
++struct kobject *kobj_ref;
++
++static ssize_t bios_region_read(struct file *file, struct kobject *kobj,
++				struct bin_attribute *bin_attr, char *buffer,
++				loff_t offset, size_t count)
++{
++	resource_size_t pa = FLASH_REGION_START + (offset & FLASH_REGION_MASK);
++	void __iomem *va = ioremap(pa, PAGE_SIZE);
++
++	memcpy_fromio(buffer, va, PAGE_SIZE);
++	iounmap(va);
++
++	return min(count, PAGE_SIZE);
++}
++
++BIN_ATTR_RO(bios_region, FLASH_REGION_SIZE);
++
++static int __init flash_mmap_init(void)
++{
++	int ret = 0;
++
++	kobj_ref = kobject_create_and_add("flash_mmap", firmware_kobj);
++	ret = sysfs_create_bin_file(kobj_ref, &bin_attr_bios_region);
++	if (ret) {
++		pr_err("sysfs_create_bin_file failed\n");
++		goto error;
++	}
++
++	return ret;
++
++error:
++	kobject_put(kobj_ref);
++	return ret;
++}
++
++static void __exit flash_mmap_exit(void)
++{
++	sysfs_remove_bin_file(kernel_kobj, &bin_attr_bios_region);
++	kobject_put(kobj_ref);
++}
++
++module_init(flash_mmap_init);
++module_exit(flash_mmap_exit);
++MODULE_DESCRIPTION("Export SPI platform flash memory mapped region via sysfs");
++MODULE_AUTHOR("Hans-Gert Dahmen <hans-gert.dahmen@immu.ne>");
++MODULE_LICENSE("GPL");
+-- 
+2.30.2
 
-
-Thanks,
-Mauro
