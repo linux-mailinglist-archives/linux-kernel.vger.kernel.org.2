@@ -2,153 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF08E3ACB19
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7AA33ACB1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 14:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhFRMiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 08:38:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232399AbhFRMir (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 08:38:47 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BB0C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:36:38 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id my49so15639178ejc.7
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 05:36:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=/agSD8eP3pg9HWHU9Iy7NF0HQURMb8oBGT/c+RAp/hc=;
-        b=jQ3wangC7h0O/4MOnlme63Mj28FBfCjCkYEQi/Ru7yY0SNgK1MCQyBKjBkiWLT5Iiu
-         40gXzeKk2EOy9coC+ApAa65AqyaY6rGjlLkglL4qb48/xpltBhQSizmlaxhUAP6a61fn
-         oU4Z2fKkDq2hvFGxFcXFhcBVGf3ytzgTqu0Q06Iah8FV07vi/cygnkQeK0n42r6dbIIr
-         ZRjGOVpaeNjlQJfi6PnOqGncus60PJRwI8G+Y/BRZYJ0E2d1TEUvZ43mdPNwaRp6vlzs
-         VMgTmLVVByQQFTEqcJQr0ZAJ8okG4i9SCBrI/OX3j/WydSPcJQc5qo66VEGDmQrnTydT
-         LkvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=/agSD8eP3pg9HWHU9Iy7NF0HQURMb8oBGT/c+RAp/hc=;
-        b=aFaKunmVIVJ/8MK73+/PDOQo2CwjZtlPE9lZy730AoS+7pBrqLXp3492TnLaQnYOBb
-         xBuRlUaw5jv+Tpzgpcz2e77UZ6IVgLekc2UzWeapFSuV3kjrAMEOHhvjhkcrnS0rgs7i
-         aE3REnvuAaIUeZeMJgHTjM6hzvL0dnuzOjuwX1w/DPwebfS9YMLJZiFYWyX1wVdYphUq
-         EOz3NHnDPR5/lXEIhvGnEBatvrGmnaE+6xcxX7lp2XRdXi2hBaursTCbtQg/wMqJ322g
-         ho3vTfdwTxzdycACvdvhrfowejuijHpOzn0Un7SVm3zoFRVjQF1k9QuDSodQamyXk1yY
-         qHGg==
-X-Gm-Message-State: AOAM531e/Wsw4Mzabco+FjIFs2t6iuCJ0SBO3FVOS2YdwrKTiVK1IZAH
-        wmFoQP9bUzrXp/PfmADIcOI=
-X-Google-Smtp-Source: ABdhPJzlDUIDa61MQKfXHtvjePLzsZpWMF/CSH2QAIMEVAg8xeMjYPWNEyMX6ffGiqJZsBoOliq14Q==
-X-Received: by 2002:a17:907:a92:: with SMTP id by18mr10796417ejc.224.1624019796972;
-        Fri, 18 Jun 2021 05:36:36 -0700 (PDT)
-Received: from m4.home (tor-exit-8.zbau.f3netze.de. [2a0b:f4c0:16c:8::1])
-        by smtp.gmail.com with ESMTPSA id a22sm981428ejv.67.2021.06.18.05.36.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 05:36:35 -0700 (PDT)
-Sender: Domenico Andreoli <domenico.andreoli.it@gmail.com>
-Received: from cavok by m4.home with local (Exim 4.94.2)
-        (envelope-from <cavok@m4>)
-        id 1luDje-00032B-6S; Fri, 18 Jun 2021 14:36:34 +0200
-Date:   Fri, 18 Jun 2021 14:36:34 +0200
-From:   Domenico Andreoli <domenico.andreoli@linux.com>
-To:     Leonardo Bras <leobras.c@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org
-Subject: REGRESSION: v5.13-rc1 does not boot because of "of/pci: Add
- IORESOURCE_MEM_64 to resource flags for 64-bit memory addresses"
-Message-ID: <YMyTUv7Jsd89PGci@m4>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NwBGr37j3zSa/Qed"
-Content-Disposition: inline
+        id S232796AbhFRMko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 08:40:44 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:36734 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229550AbhFRMkh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 08:40:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624019908; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=qiuLMl18HhFSYMKHcPeThGQ32zAb/F1gnFVEgwuX6pw=; b=vQB9j0ZMdYbnePCz8lMLL0YPBMYV4ibCx1k5JdJneXuYTK54Oh77uAOUXM9NTv4lxwQcKGYm
+ TAgXjGkWJAcISMXBsZ1FI9dOR+PQMZNwr3CujMp25gKwh62DIpkWmFXNTG+/vb3anbTbhqdm
+ kbpcSdpqAaXgThY3MMdbkrdxfkA=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60cc93bbe27c0cc77f549f4f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 18 Jun 2021 12:38:19
+ GMT
+Sender: faiyazm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A991CC43147; Fri, 18 Jun 2021 12:38:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from faiyazm-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: faiyazm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6ACCCC433F1;
+        Fri, 18 Jun 2021 12:38:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6ACCCC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
+From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
+To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, greg@kroah.com,
+        glittao@gmail.com, andy.shevchenko@gmail.com
+Cc:     vinmenon@codeaurora.org, catalin.marinas@arm.com,
+        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        Faiyaz Mohammed <faiyazm@codeaurora.org>
+Subject: [PATCH v1] mm: slub: fix the leak of alloc/free traces debugfs interface
+Date:   Fri, 18 Jun 2021 18:07:55 +0530
+Message-Id: <1624019875-611-1-git-send-email-faiyazm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+fix the leak of alloc/free traces debugfs interface, reported
+by kmemleak like below,
 
---NwBGr37j3zSa/Qed
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+unreferenced object 0xffff00091ae1b540 (size 64):
+  comm "lsbug", pid 1607, jiffies 4294958291 (age 1476.340s)
+  hex dump (first 32 bytes):
+    02 00 00 00 00 00 00 00 6b 6b 6b 6b 6b 6b 6b 6b  ........kkkkkkkk
+    6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
+  backtrace:
+    [<ffff8000106b06b8>] slab_post_alloc_hook+0xa0/0x418
+    [<ffff8000106b5c7c>] kmem_cache_alloc_trace+0x1e4/0x378
+    [<ffff8000106b5e40>] slab_debugfs_start+0x30/0x50
+    slab_debugfs_start at mm/slub.c:5831
+    [<ffff8000107b3dbc>] seq_read_iter+0x214/0xd50
+    [<ffff8000107b4b84>] seq_read+0x28c/0x418
+    [<ffff8000109560b4>] full_proxy_read+0xdc/0x148
+    [<ffff800010738f24>] vfs_read+0x104/0x340
+    [<ffff800010739ee0>] ksys_read+0xf8/0x1e0
+    [<ffff80001073a03c>] __arm64_sys_read+0x74/0xa8
+    [<ffff8000100358d4>] invoke_syscall.constprop.0+0xdc/0x1d8
+    [<ffff800010035ab4>] do_el0_svc+0xe4/0x298
+    [<ffff800011138528>] el0_svc+0x20/0x30
+    [<ffff800011138b08>] el0t_64_sync_handler+0xb0/0xb8
+    [<ffff80001001259c>] el0t_64_sync+0x178/0x17c
 
-Hi Leonardo,
+Fixes: 84a2bdb1b458fc968d6d9e07dab388dc679bd747 ("mm: slub: move sysfs slab alloc/free interfaces to debugfs")
+Link: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/mm/slub.c?h=next-20210617&id=84a2bdb1b458fc968d6d9e07dab388dc679bd747
 
-Since v5.13-rc1 my NanoPI M4 (arm64 with pcie-attached nvme) does not boot =
-any more.
+Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+---
+ mm/slub.c | 17 +++++------------
+ 1 file changed, 5 insertions(+), 12 deletions(-)
 
-I could bisect it down to your commit 9d57e61bf72336e13e4cd3c31e93ab2626629=
-6a8, just
-reverting it from v5.13-rc6 makes the boot happen again.
+diff --git a/mm/slub.c b/mm/slub.c
+index fcb0c50..f006766 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -5785,31 +5785,24 @@ static int slab_debugfs_show(struct seq_file *seq, void *v)
+ 
+ static void slab_debugfs_stop(struct seq_file *seq, void *v)
+ {
+-	kfree(v);
+ }
+ 
+ static void *slab_debugfs_next(struct seq_file *seq, void *v, loff_t *ppos)
+ {
+-	loff_t *spos = v;
+ 	struct loc_track *t = seq->private;
+ 
++	v = ppos;
+ 	if (*ppos < t->count) {
+-		*ppos = ++*spos;
+-		return spos;
++		++*ppos;
++		return v;
+ 	}
+-	*ppos = ++*spos;
++	++*ppos;
+ 	return NULL;
+ }
+ 
+ static void *slab_debugfs_start(struct seq_file *seq, loff_t *ppos)
+ {
+-	loff_t *spos = kmalloc(sizeof(loff_t), GFP_KERNEL);
+-
+-	if (!spos)
+-		return NULL;
+-
+-	*spos = *ppos;
+-	return spos;
++	return ppos;
+ }
+ 
+ static const struct seq_operations slab_debugfs_sops = {
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of the Code Aurora Forum, hosted by The Linux Foundation
 
-The .dts file I use is arch/arm64/boot/dts/rockchip/rk3399-nanopi-m4v2.dts.
-
-This is the output of lspci -vv:
-
-00:00.0 PCI bridge: Fuzhou Rockchip Electronics Co., Ltd RK3399 PCI Express=
- Root Port (prog-if 00 [Normal decode])
-	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Steppi=
-ng- SERR- FastB2B- DisINTx+
-	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=3Dfast >TAbort- <TAbort- =
-<MAbort- >SERR- <PERR- INTx-
-	Latency: 0
-	Interrupt: pin A routed to IRQ 90
-	Bus: primary=3D00, secondary=3D01, subordinate=3D01, sec-latency=3D0
-	I/O behind bridge: 00000000-00000fff [size=3D4K]
-	Memory behind bridge: fa000000-fa0fffff [size=3D1M]
-	Prefetchable memory behind bridge: 00000000-000fffff [size=3D1M]
-	Secondary status: 66MHz- FastB2B- ParErr- DEVSEL=3Dfast >TAbort- <TAbort- =
-<MAbort- <SERR- <PERR-
-	BridgeCtl: Parity- SERR+ NoISA- VGA- VGA16- MAbort- >Reset- FastB2B-
-		PriDiscTmr- SecDiscTmr- DiscTmrStat- DiscTmrSERREn-
-	Capabilities: <access denied>
-	Kernel driver in use: pcieport
-
-01:00.0 Non-Volatile memory controller: Samsung Electronics Co Ltd NVMe SSD=
- Controller SM981/PM981/PM983 (prog-if 02 [NVM Express])
-	Subsystem: Samsung Electronics Co Ltd NVMe SSD Controller SM981/PM981/PM983
-	Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Steppi=
-ng- SERR- FastB2B- DisINTx+
-	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=3Dfast >TAbort- <TAbort- =
-<MAbort- >SERR- <PERR- INTx-
-	Latency: 0
-	Interrupt: pin A routed to IRQ 89
-	NUMA node: 0
-	Region 0: Memory at fa000000 (64-bit, non-prefetchable) [size=3D16K]
-	Capabilities: <access denied>
-	Kernel driver in use: nvme
-	Kernel modules: nvme
-
-Is there anything I can do to help you understanding why this is happening?
-
-I apologize for not having bisected it earlier.
-
-Kind regards,
-Domenico
-
---=20
-rsa4096: 3B10 0CA1 8674 ACBA B4FE  FCD2 CE5B CF17 9960 DE13
-ed25519: FFB4 0CC3 7F2E 091D F7DA  356E CC79 2832 ED38 CB05
-
---NwBGr37j3zSa/Qed
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE0znebYyV6RAN/q8htwRzp/vsqYEFAmDMkvgACgkQtwRzp/vs
-qYFkURAAkgtQYBKAG/9Xnh5EaIbq/Za/pb0CPrDbuHIEs4V0wS+K6D4dO8WozIl+
-Etcn85e4aoiftwV6ZD72N5w+m0DLn8IpHBysLQyPrJKQNZGXImk1DGIgG4TUU1rz
-+aUHuSn5eiojfT4jymNo/xOZF6LhQil47OdRVyE2G/f0bZRXxYvWSzB0Y8P1sV1P
-hG77y9mSDPwsLEdiGKR+1PHsp7RNtM9SgF1x8/ss70pmU6nUxMPoFrmHaRSfKmO+
-qG3PRqmgG8PWYJb5brtNSGNU9I2p9yC7RhNd/kDHuW93xTL4+bI8qix/S5Fr0Azp
-KWXDP18qpsLFTPtQ/INfBDR2eAu1ft7H66rvBWkeDWb2fQQQgUSrWCy2Lw+vkKVZ
-jXB885sVXadI2M5Nue/4NTaGCYgdPdRv2bIlzUhkftI5Ct8gXOnkaLxtKNn0WzJj
-21fCIxAa++3ZwMm3VRQfo+L9/rHkNjXNAPqVkvRFiRbbklZeutxmMtdTnpXKZrdg
-4GEyWfVFJi4BToz5DykrXnVbr/CFekoT2zH2xMZ4L3xqinl61am3/Gs8dq7EaMJ4
-IFq4OSMyhPrGJRDhzydhd7CB/B0D9hAac1mBIa/QcvtogICu63l4nyxZmZpRwfUu
-mCXSJYJ0Py7j5FUudA4D88C6DMQy0J/GuvPvGr0b6Vvh1fgNFuw=
-=7rVZ
------END PGP SIGNATURE-----
-
---NwBGr37j3zSa/Qed--
