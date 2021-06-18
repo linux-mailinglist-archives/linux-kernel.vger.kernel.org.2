@@ -2,98 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E163AC14F
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 05:28:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 994553AC158
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 05:30:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbhFRDbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 17 Jun 2021 23:31:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38812 "EHLO
+        id S232154AbhFRDbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 17 Jun 2021 23:31:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230484AbhFRDbD (ORCPT
+        with ESMTP id S232072AbhFRDbl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 17 Jun 2021 23:31:03 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0940C061574;
-        Thu, 17 Jun 2021 20:28:54 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id r16so12001070ljk.9;
-        Thu, 17 Jun 2021 20:28:54 -0700 (PDT)
+        Thu, 17 Jun 2021 23:31:41 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75DE7C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:29:31 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id u24so6547804edy.11
+        for <linux-kernel@vger.kernel.org>; Thu, 17 Jun 2021 20:29:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=KU0XIwJ0XXrc92jT9YLWiEwSpSoGcMOVK76Rj0AjqYE=;
-        b=p50ZkJy8Px6CQI47WEA9P7w5S12ZlUR4qZMAJ1jBHmahMP0ijF98QnO18pKdc/w/3Y
-         9A+gh/mOFAG0E1z0oq/zuCPwDZwpjjjBknFg4qWs0b6rXGDpj99bnPIrxTs/gBANuxoT
-         DsiC7qpOOqZbESsfjuIuCeWRWOb4Wt50ODKbJHQzmoMHbHF1qdzLsiN73zRHh0vpTh0S
-         qklC/oQbKwBfuV4VobOIB4PanGDU4dh1tG/sMo+jQpKaaQwjCXTGGSqNl8fqSEGDeICa
-         KqJn2Xz2P3wmkcOwlUSkwXVzJZ/0Xnjz4TNXM4V+heS+gvT6nzJcZCo1v3MQ+GWhj13F
-         pp7g==
+         :cc;
+        bh=RMJgBEdiibhwSUyvuLKFkBrL4/U8fE/jxx04irYLGbA=;
+        b=av/95B/MiI0xJSuNnIDSIou3GubtAy+v+Cj0IrEJ68VjpsLdRM7w3o1oORGPuxM9E9
+         WcXBTXk69tPR+JRT9pirwPl1i4rEmPN+ROSzO+PpYUb6DGevaUs4cQChuJ9gWp9jybLU
+         337xsWnlSDEFmVS8b9WCf45xojO+ucnKBtO3ThsQgErg6gNQGMsF1NJtWAQTA+IzuLEE
+         lYIbqpRQcPEBixvBPRcSDXBPAnVFOEE11AW5zQ6nXaMHXzougZshHL3HBZOa0i1hhh2b
+         I2Et2SNidVGS73kG8qlrW1IyTkcBNKTv++J6c5+xl/hwwNMONF8NwQMk+WXrJ33LwaNC
+         opBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KU0XIwJ0XXrc92jT9YLWiEwSpSoGcMOVK76Rj0AjqYE=;
-        b=uKIaE2+H2oN7ZHBujdy5c1QCkcv/Y7GPW+Gt/FfdFnWzt7fPfv7ycITDEkbgYZiq8b
-         0XADp0e8OB+n+wMRRNpgTtnaSGxu39MFxHoiNeNSHaCErFCB6Mv8ibNVqCn4yV+7SUnj
-         sX0CrdVvYBu5IjiZpdQZySm7mJ3L5YoDjWfsHGpXdzYfKVwIQarFWD46nykOykMMvqVt
-         ILiloKmDjUK4oK03+M+mfGBO1UCfLgB2Zrg4OJtA90eASNjUDt/VBM3dxce3k78bl3S0
-         kA6n9WUEhZQY5MgmRVojOopcsIK1i2YYY23s5ig9vOaPO5+VJ4cTYwxI7gdWZTbdQv/z
-         T+Ig==
-X-Gm-Message-State: AOAM531T6PpS6OK/lQ8hJ1Wl6G/BVw97CnMCKaPm7s6rJPWXXB+TF8tx
-        LbViVHjAklNAG058yd/hqnUUqSeJxW8Kw4aWyhXADbOX
-X-Google-Smtp-Source: ABdhPJw9OuwMCESWUrDgrF6XLH+4Rsb+54yvZX5ftkDs5+pzB/f5YhbOu4aeL+7uEtI5hxmTOeAQPVQBsov8IFIUCCc=
-X-Received: by 2002:a2e:8542:: with SMTP id u2mr7580839ljj.141.1623986932876;
- Thu, 17 Jun 2021 20:28:52 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=RMJgBEdiibhwSUyvuLKFkBrL4/U8fE/jxx04irYLGbA=;
+        b=MFWm1GUtd/+z15iYAUuGvAAJPbGGlTrp7uDcAIARQ5eoz6NPCu2DqjQdlJURDHpabP
+         2F1rlTg8g6QNkkN1TyQxJr4j6ehTKS2ZCAVP4Spfu9qRdoXZ5fgcytcrGTkj6i9YjjEA
+         L48iOcAIOeVrGOcxRBfKxvA/wrDFTlw0r1qBq+7HaUeQudbrxluQ/dIu17Otj6/JObmW
+         SmbjCg1wR56vFRGHA9j+Su6NniCoqk1qaP7dhCDwGyrElJFgZgQjayoRtZxMWPM9qX9h
+         8iFSFzMexyM338enCQZtY7qgj9KsXeFaXfHiGwV6o7kPyiRm2F8ZBFj9uwMGFWdJFFuq
+         5ocQ==
+X-Gm-Message-State: AOAM533BFEtobm8WTsiPNsVClJiVwDlemSzHYDJkYP95UlAM+LNYLGpk
+        YQ1fpUJgSvpVHW0fcL1zp30mWWIpUWyjFCmow3zD
+X-Google-Smtp-Source: ABdhPJykGigJ4CmNJwWRgh5x2T6MNjBJPAc2OA16hTcBQrCjxSZwuj53EmfZdOWUW2UcDeCGl7ONh7uq9+Uou058YZU=
+X-Received: by 2002:aa7:d9d3:: with SMTP id v19mr2042806eds.145.1623986969936;
+ Thu, 17 Jun 2021 20:29:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <1622616875-22740-1-git-send-email-u0084500@gmail.com>
- <20210611201643.GA1583875@robh.at.kernel.org> <CADiBU39Prz99ZLtkYdcM9XDQsd0nKKeiEGjW3wq=u75JGjwX=g@mail.gmail.com>
- <20210617162919.GH5067@sirena.org.uk>
-In-Reply-To: <20210617162919.GH5067@sirena.org.uk>
-From:   ChiYuan Huang <u0084500@gmail.com>
-Date:   Fri, 18 Jun 2021 11:28:41 +0800
-Message-ID: <CADiBU39-HA518TP=7_i8bYQWfhAUK_pj+Gn0O6rTKEZxq6GR1A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] regulator: mt6360: Add optional mediatek.power-off-sequence
- in bindings document
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Rob Herring <robh@kernel.org>, lgirdwood@gmail.com,
-        matthias.bgg@gmail.com, gene_chen@richtek.com,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, cy_huang <cy_huang@richtek.com>,
-        gene.chen.richtek@gmail.com
+References: <20210615141331.407-1-xieyongji@bytedance.com> <20210615141331.407-4-xieyongji@bytedance.com>
+ <8aeac914-7602-7323-31bd-71015a26f74c@windriver.com>
+In-Reply-To: <8aeac914-7602-7323-31bd-71015a26f74c@windriver.com>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Fri, 18 Jun 2021 11:29:19 +0800
+Message-ID: <CACycT3t1Dgrzsr7LbBrDhRLDa3qZ85ZOgj9H7r1fqPi-kf7r6Q@mail.gmail.com>
+Subject: Re: Re: [PATCH v8 03/10] eventfd: Increase the recursion depth of eventfd_signal()
+To:     He Zhe <zhe.he@windriver.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        Greg KH <gregkh@linuxfoundation.org>, songmuchun@bytedance.com,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        qiang.zhang@windriver.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mark Brown <broonie@kernel.org> =E6=96=BC 2021=E5=B9=B46=E6=9C=8818=E6=97=
-=A5 =E9=80=B1=E4=BA=94 =E4=B8=8A=E5=8D=8812:29=E5=AF=AB=E9=81=93=EF=BC=9A
+On Thu, Jun 17, 2021 at 4:34 PM He Zhe <zhe.he@windriver.com> wrote:
 >
-> On Mon, Jun 14, 2021 at 11:04:01PM +0800, ChiYuan Huang wrote:
-> > Rob Herring <robh@kernel.org> =E6=96=BC 2021=E5=B9=B46=E6=9C=8812=E6=97=
-=A5 =E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=884:16=E5=AF=AB=E9=81=93=EF=BC=9A
 >
-> > > > Originally, we think it must write in platform dependent code like =
-as bootloader.
-> > > > But after the evaluation, it must write only when system normal HAL=
-T or POWER_OFF.
-> > > > For the other cases, just follow HW immediate off by default.
 >
-> > > Wouldn't this be handled by PSCI implementation?
+> On 6/15/21 10:13 PM, Xie Yongji wrote:
+> > Increase the recursion depth of eventfd_signal() to 1. This
+> > is the maximum recursion depth we have found so far, which
+> > can be triggered with the following call chain:
+> >
+> >     kvm_io_bus_write                        [kvm]
+> >       --> ioeventfd_write                   [kvm]
+> >         --> eventfd_signal                  [eventfd]
+> >           --> vhost_poll_wakeup             [vhost]
+> >             --> vduse_vdpa_kick_vq          [vduse]
+> >               --> eventfd_signal            [eventfd]
+> >
+> > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+> > Acked-by: Jason Wang <jasowang@redhat.com>
 >
-> > No, the current application default on powers buck1/buck2/ldo7/ldo6
-> > are for Dram power.
-> > It's not the soc core power. It seems not appropriate  to implement
-> > like as PSCI.
-> > MT6360 play the role for the subpmic in the SOC application reference d=
-esign.
+> The fix had been posted one year ago.
 >
-> If this is part of the overall system power off that seems like it fits
-> well enough into what PSCI is doing - it's got operations like
-> SYSTEM_OFF which talk about the system as a whole.
+> https://lore.kernel.org/lkml/20200410114720.24838-1-zhe.he@windriver.com/
+>
 
-Thanks, I'll check and survey the PSCI about the SYSTEM_OFF.
-I think it may work.
+OK, so it seems to be a fix for the RT system if my understanding is
+correct? Any reason why it's not merged? I'm happy to rebase my series
+on your patch if you'd like to repost it.
+
+BTW, I also notice another thread for this issue:
+
+https://lore.kernel.org/linux-fsdevel/DM6PR11MB420291B550A10853403C7592FF349@DM6PR11MB4202.namprd11.prod.outlook.com/T/
+
+>
+> > ---
+> >  fs/eventfd.c            | 2 +-
+> >  include/linux/eventfd.h | 5 ++++-
+> >  2 files changed, 5 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/fs/eventfd.c b/fs/eventfd.c
+> > index e265b6dd4f34..cc7cd1dbedd3 100644
+> > --- a/fs/eventfd.c
+> > +++ b/fs/eventfd.c
+> > @@ -71,7 +71,7 @@ __u64 eventfd_signal(struct eventfd_ctx *ctx, __u64 n)
+> >        * it returns true, the eventfd_signal() call should be deferred to a
+> >        * safe context.
+> >        */
+> > -     if (WARN_ON_ONCE(this_cpu_read(eventfd_wake_count)))
+> > +     if (WARN_ON_ONCE(this_cpu_read(eventfd_wake_count) > EFD_WAKE_DEPTH))
+> >               return 0;
+> >
+> >       spin_lock_irqsave(&ctx->wqh.lock, flags);
+> > diff --git a/include/linux/eventfd.h b/include/linux/eventfd.h
+> > index fa0a524baed0..886d99cd38ef 100644
+> > --- a/include/linux/eventfd.h
+> > +++ b/include/linux/eventfd.h
+> > @@ -29,6 +29,9 @@
+> >  #define EFD_SHARED_FCNTL_FLAGS (O_CLOEXEC | O_NONBLOCK)
+> >  #define EFD_FLAGS_SET (EFD_SHARED_FCNTL_FLAGS | EFD_SEMAPHORE)
+> >
+> > +/* Maximum recursion depth */
+> > +#define EFD_WAKE_DEPTH 1
+> > +
+> >  struct eventfd_ctx;
+> >  struct file;
+> >
+> > @@ -47,7 +50,7 @@ DECLARE_PER_CPU(int, eventfd_wake_count);
+> >
+> >  static inline bool eventfd_signal_count(void)
+> >  {
+> > -     return this_cpu_read(eventfd_wake_count);
+> > +     return this_cpu_read(eventfd_wake_count) > EFD_WAKE_DEPTH;
+>
+> count is just count. How deep is acceptable should be put
+> where eventfd_signal_count is called.
+>
+
+The return value of this function is boolean rather than integer.
+Please see the comments in eventfd_signal():
+
+"then it should check eventfd_signal_count() before calling this
+function. If it returns true, the eventfd_signal() call should be
+deferred to a safe context."
+
+Thanks,
+Yongji
