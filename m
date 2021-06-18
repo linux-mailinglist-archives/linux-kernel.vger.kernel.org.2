@@ -2,65 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17A913AD277
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2623AD279
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 21:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235432AbhFRTCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 15:02:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57896 "EHLO mail.kernel.org"
+        id S234611AbhFRTCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 15:02:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231589AbhFRTCN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 15:02:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id D610F611B0;
-        Fri, 18 Jun 2021 19:00:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624042803;
-        bh=A2Rlmp2CAn41txesR3WXlK2V201i9HjRH+7b5YHh1oI=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=GevRAvQPV5we6Vq8rxZwbM2uM2sQZLi+sNjkHXsx1dM9rUpMmZSOeKGp5rQjEdhRN
-         CP+cpdiCZN8YRuuqvLqMCyKedU7phdlKHIkBD3hZ1Q+Yu+GCk4A0tPNcZaBc77baa9
-         wQbHpj8H+UBmaW5GeyeKVTFMsA1Ey+2sD2d9Ir5+9jQAMyfj2CVOmSAuWczMusgxOD
-         nxvEPge1/YUclaVSJqCzg7Th/uyp5NRf9TU5bUDCZ/OeA6C3Ux2GeF6+oZHi9UiwZ3
-         yan9ScWEMnv+y7AnnzMvv9lyh6dp3YYdJhDhMN6PhhRdIz0n/44hWZJkxIL3gOOKeR
-         l1pZoynqji7TA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C8C6360CDF;
-        Fri, 18 Jun 2021 19:00:03 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231589AbhFRTCd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 15:02:33 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39E25610EA;
+        Fri, 18 Jun 2021 19:00:22 +0000 (UTC)
+Date:   Fri, 18 Jun 2021 15:00:20 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     Phil Auld <pauld@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Kate Carcia <kcarcia@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Clark Willaims <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 05/12] trace/hwlat: Support hotplug operations
+Message-ID: <20210618150020.689439d4@oasis.local.home>
+In-Reply-To: <20210618124503.388fe4d4@oasis.local.home>
+References: <cover.1623746916.git.bristot@redhat.com>
+        <8899f8a8bec38bc600f7a2c61bc6ca664aa7beeb.1623746916.git.bristot@redhat.com>
+        <20210618124503.388fe4d4@oasis.local.home>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCHv2] cxgb4: fix wrong shift.
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162404280381.1350.4674309237695129409.git-patchwork-notify@kernel.org>
-Date:   Fri, 18 Jun 2021 19:00:03 +0000
-References: <20210618092948.GA19615@duo.ucw.cz>
-In-Reply-To: <20210618092948.GA19615@duo.ucw.cz>
-To:     Pavel Machek <pavel@denx.de>
-Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        colin.king@canonical.com, rajur@chelsio.com, kuba@kernel.org,
-        netdev@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Fri, 18 Jun 2021 12:45:03 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Fri, 18 Jun 2021 11:29:48 +0200 you wrote:
-> While fixing coverity warning, commit dd2c79677375 introduced typo in
-> shift value. Fix that.
+> > +/*
+> > + * hwlat_cpu_init - CPU hotplug online callback function
+> > + */
+> > +static int hwlat_cpu_init(unsigned int cpu)
+> > +{
+> > +	struct trace_array *tr = hwlat_trace;
+> > +  
 > 
-> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-> Fixes: dd2c79677375 ("cxgb4: Fix unintentional sign extension issues")
+> You need to take the trace_types_lock here, between testing the
+> hwlat_busy and starting the threads. Otherwise, between the two, the
+> hwlat tracer could be turned off while a CPU is coming on line, and
+> then you just started a per cpu thread, while the hwlat tracer is not
+> enabled.
 
-Here is the summary with links:
-  - [PATCHv2] cxgb4: fix wrong shift.
-    https://git.kernel.org/netdev/net/c/39eb028183bc
+And of course, because get_online_cpus() is called within
+trace_types_lock, doing this check is going to cause a lock inversion.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+The only thing I could think of is to wake up a worker thread to do the
+work. That is, this just wakes the worker thread, then the worker grabs
+the trace_types_lock, iterates through the cpu mask of expect running
+threads, and then starts or kills them depending on the hwlat_busy
+value.
 
+-- Steve
 
+> 
+> > +	if (!hwlat_busy)
+> > +		return 0;
+> > +
+> > +	if (!cpumask_test_cpu(cpu, tr->tracing_cpumask))
+> > +		return 0;
+> > +
+> > +	return start_cpu_kthread(cpu);
+> > +}
