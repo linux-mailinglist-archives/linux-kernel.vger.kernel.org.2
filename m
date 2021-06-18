@@ -2,122 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE523AD3B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 22:36:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EA353AD3B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 22:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233859AbhFRUi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 16:38:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43744 "EHLO
+        id S233874AbhFRUia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 16:38:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232426AbhFRUiX (ORCPT
+        with ESMTP id S233702AbhFRUiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 16:38:23 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B1F7C061574;
+        Fri, 18 Jun 2021 16:38:24 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C06C06175F;
         Fri, 18 Jun 2021 13:36:14 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so10999344otl.0;
+Received: by mail-lj1-x22b.google.com with SMTP id 131so15696709ljj.3;
         Fri, 18 Jun 2021 13:36:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FwzvVbuJlgu6DBRUWFo9BEm/hzQ+wY0U0PlSZsQGHWY=;
-        b=WdnhFyyu6n7P6JsoopbACwoe7AOK+QOg+3/Ko1PmYCVdMIS9EvhxqPe0fqh4xbv28G
-         KQFDPBb7TRq7Fgk2W4R7099i+F1aW8MPrZwKy+1LSEYUzzEuodod0s6kK3yNfs8rlb3e
-         sgPgI+EEWNOuaE/XLVE3Sb8oehkfPQxQuebacQnQ3s3wsVwZoFmR5/Kw+KU7zrADZyDK
-         qeyEC4D8QyUHfcJsUtKp1JbWcaFW1YCI1HvXIDHw2gljF+Yd4flqBwhj8xsLMHYeXyTH
-         IJbq8gN4BgMZVAqLoRwYa0/ZyR2pQLD7tiJ3Kn3cSE/E/0UYO3mTAZJsfM4Qyg22Zb69
-         ioMw==
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=3HTz9I8D+4N2bV9p3EcdNQ0xs4XLEY9cd73dl9RCW88=;
+        b=HCz+lQdSM4QIoO3BnGk9Y8f/RrX5xiv5npcGdeZtcK6VKTy0bKGVWn8+abUPN+B9S4
+         I1jWU/0KYekEtFbhOk87rL5PHaNQ8tbdSdPX778Ba7kPRVpmxL+YAYWMrsUdiCwbDbAK
+         o4duwp1MkAyRdA1+bU4dBHEzR8ezHZRHmUDnkFnI2FMA/cw+i1iseNr1KwEprSHBFRJW
+         DRy6HMbNZqfEWCfZflu5NDjFqsbWGfL11A+UaPWA5tHMI7jiT7LeljONQzVC9fTL3AR4
+         Q68BB/z+WQAIprKMFijHYkJzc9hZGqf5/MQuILUtzrnZyBREoVv2MVfz31Zn6PGGjA3F
+         axDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FwzvVbuJlgu6DBRUWFo9BEm/hzQ+wY0U0PlSZsQGHWY=;
-        b=qP6I0lsy6SlPPxSYBsjOHTb3shqO4WW5TLNtd/7GESrqxbAgTzIYLqdXJ7svzdQZq/
-         z/vAqvgwWB/jqov2a+GkzPjOaxAVSwVqyZaGkLiqjLFDLkvWTNvucMEX0xtnVxh9CxF1
-         euMlyqCyKc1S4vGx5km6bGpdTtdmIGLN6ENNhwPdeHok71wBB9xl7hWxX2kTv/Z9egvC
-         uI9fKKCs/kydoRUhFf4EinF1yCD7E816V7MyAJwFhfCkqx5quaz5Xu6tj9EqBCxYJ/aY
-         2fehK/F9twM9y8WOG4xpEiVTt9mn7CydJWTkXs2gBdEMUUtw5Bb59PMUtzFMEy9d4qJO
-         0mlA==
-X-Gm-Message-State: AOAM533tHSe7ZqiHb09kpMhCS9I1nvHDeGxZA+DM5puwUITYLWHgXXMb
-        hKfnABL7fEJvqV2yowqhgvBdDHI/EcVi4qJeLSE=
-X-Google-Smtp-Source: ABdhPJzF78KAFsqPc87SewWRBrPw3zNm1t0kg3ndekO4Ac022ElkbsuZKs6pwn6DG0+gmaEZzECQIoIb8XCyvEaP2MI=
-X-Received: by 2002:a05:6830:33ef:: with SMTP id i15mr11036214otu.311.1624048573626;
- Fri, 18 Jun 2021 13:36:13 -0700 (PDT)
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=3HTz9I8D+4N2bV9p3EcdNQ0xs4XLEY9cd73dl9RCW88=;
+        b=pJSG9Vhd/h1oWopyzvd+U1CN9b3LnTa7Sugaod3Zt8k+GhJnI4H4h765UuVquvXVzs
+         Kyxl7bj6LRb5olubZKkaJBV3IArxv00alfKAVxcHCy1Y6bInMVt04bK/t4aSzi0LGnfX
+         DACmxnHpSCJWB0SeRQb+l8A0AI2MnQHEML6Hq6N1bpA/LO68EwxiQ99WvYx1bEKVyRBO
+         +kpHSbst203RZDmO64iyo+nBLLvUfY1bbnYk8GM1fQlkPb4VQCIPrnw5MnLq1iQPDujG
+         2JGwXCknMQTb/x4e98Uw0hUmd6YtYMCdGqZttdfhRwu9Fc9Zrlrzvk5Lwlhp+tE9L55B
+         E0xg==
+X-Gm-Message-State: AOAM530dAwjbBJUA2eo4lYzXOPPGzOf31PqdKKfcFxDrviFa20w6hFPi
+        xo6BVml9VUJzxaL5rMNFNP5Yd5eIaIo=
+X-Google-Smtp-Source: ABdhPJywh+CbFNaUvchQtHi/+J6K5vOEJjGumLQ2mp3r+jzSl6C/FA8oUj9kqvp3jahsIv7AyFwWmQ==
+X-Received: by 2002:a2e:3209:: with SMTP id y9mr10842654ljy.254.1624048572954;
+        Fri, 18 Jun 2021 13:36:12 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
+        by smtp.googlemail.com with ESMTPSA id w22sm1179618ljg.115.2021.06.18.13.36.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 18 Jun 2021 13:36:12 -0700 (PDT)
+To:     Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "brcm80211-dev-list.pdl@broadcom.com" 
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        "brcm80211-dev-list@cypress.com" <brcm80211-dev-list@cypress.com>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Subject: [BUG] brcmfmac locks up on resume from suspend
+Message-ID: <b853d145-0edf-db0a-ff42-065011f7a149@gmail.com>
+Date:   Fri, 18 Jun 2021 23:36:11 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210616205206.GA17547@embeddedor> <3e68b60f-a9af-1f58-076d-1d348e3bf892@amd.com>
-In-Reply-To: <3e68b60f-a9af-1f58-076d-1d348e3bf892@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 18 Jun 2021 16:36:02 -0400
-Message-ID: <CADnq5_MZ7vTxH6aB-rsZqSLGaffi6OwgVBDAFcT=16RRNw+UKA@mail.gmail.com>
-Subject: Re: [PATCH][next] drm/amd/display: Fix fall-through warning for Clang
-To:     Harry Wentland <harry.wentland@amd.com>
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Leo Li <sunpeng.li@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-hardening@vger.kernel.org,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+Hi,
 
-Alex
+I'm getting a hang on resume from suspend using today's next-20210618.
+It's tested on Tegra20 Acer A500 that has older BCM4329, but seems the
+problem is generic.
 
-On Thu, Jun 17, 2021 at 3:20 PM Harry Wentland <harry.wentland@amd.com> wrote:
->
->
->
-> On 2021-06-16 4:52 p.m., Gustavo A. R. Silva wrote:
-> > In preparation to enable -Wimplicit-fallthrough for Clang, fix
-> > the following warning by replacing a /* fall through */ comment
-> > with the new pseudo-keyword macro fallthrough:
-> >
-> > rivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_aux.c:672:4: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-> >                         case AUX_TRANSACTION_REPLY_I2C_OVER_AUX_DEFER:
-> >                         ^
-> >
-> > Notice that Clang doesn't recognize /* fall through */ comments as
-> > implicit fall-through markings, so in order to globally enable
-> > -Wimplicit-fallthrough for Clang, these comments need to be
-> > replaced with fallthrough; in the whole codebase.
-> >
-> > Link: https://github.com/KSPP/linux/issues/115
-> > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
->
-> Reviewed-by: Harry Wentland <harry.wentland@amd.com>
->
-> Harry
->
-> > ---
-> > JFYI: We had thousands of these sorts of warnings and now we are down
-> >       to just 15 in linux-next. This is one of those last remaining
-> >       warnings.
-> >
-> >  drivers/gpu/drm/amd/display/dc/dce/dce_aux.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_aux.c b/drivers/gpu/drm/amd/display/dc/dce/dce_aux.c
-> > index 28631714f697..2fb88e54a4bf 100644
-> > --- a/drivers/gpu/drm/amd/display/dc/dce/dce_aux.c
-> > +++ b/drivers/gpu/drm/amd/display/dc/dce/dce_aux.c
-> > @@ -668,7 +668,7 @@ bool dce_aux_transfer_with_retries(struct ddc_service *ddc,
-> >                               /* polling_timeout_period is in us */
-> >                               defer_time_in_ms += aux110->polling_timeout_period / 1000;
-> >                               ++aux_defer_retries;
-> > -                             /* fall through */
-> > +                             fallthrough;
-> >                       case AUX_TRANSACTION_REPLY_I2C_OVER_AUX_DEFER:
-> >                               retry_on_defer = true;
-> >                               fallthrough;
-> >
->
+There is this line in pstore log:
+
+  ieee80211 phy0: brcmf_netdev_start_xmit: xmit rejected state=0
+
+Steps to reproduce:
+
+1. Boot system
+2. Connect WiFi
+3. Run "rtcwake -s10 -mmem"
+
+What's interesting is that turning WiFi off/on before suspending makes
+resume to work and there are no suspicious messages in KMSG, all further
+resumes work too.
+
+This change fixes the hang:
+
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
+b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
+index db5f8535fdb5..06d16f7776c7 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
+@@ -301,7 +301,6 @@ static netdev_tx_t brcmf_netdev_start_xmit(struct
+sk_buff *skb,
+ 	/* Can the device send data? */
+ 	if (drvr->bus_if->state != BRCMF_BUS_UP) {
+ 		bphy_err(drvr, "xmit rejected state=%d\n", drvr->bus_if->state);
+-		netif_stop_queue(ndev);
+ 		dev_kfree_skb(skb);
+ 		ret = -ENODEV;
+ 		goto done;
+8<---
+
+Comments? Suggestions? Thanks in advance.
