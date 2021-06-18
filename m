@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF89C3ACEBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF3C63ACEBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 18 Jun 2021 17:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235277AbhFRPZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 11:25:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57150 "EHLO
+        id S235411AbhFRPZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 11:25:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235157AbhFRPWn (ORCPT
+        with ESMTP id S235161AbhFRPWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Jun 2021 11:22:43 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47540C0611C1
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 08:19:53 -0700 (PDT)
-Message-Id: <20210618143447.472279566@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B093C0611C2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 08:19:54 -0700 (PDT)
+Message-Id: <20210618143447.575056756@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624029591;
+        s=2020; t=1624029593;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=WNyFRDtZDIkdCZ5iVeSk0QhfNXF7wOUFfTi8mhGzFTU=;
-        b=ledM14WdgaL4JnwDbReiQ1vxbPUegyoDDSYqk9jWiEF09cj0bOkG8xVZcYWbCBp2XcDcuL
-        qFU9DQ/EVGgcMARHwMxNASwu2OB8LuYkFKvykbOhq0KzBO+RsGvi57HcqvmdtEwo4z1bFF
-        EHANiubM9+bGklxiA+BsM+cHRDE9cIKUL3v0xBRrTM5o65+awGFhlhdQlayKiioLjR5BF5
-        +LypwDcAxWr1GWmgoGijPHAcXAX/Hat2BYkGk3f0QeMewnlL14EN2pUsDTMhhdFVhHl5gY
-        tlR1MeYeLn9TAxqpvFY2Cpxm2zVndU0GPVBrAwcgZFesgcku0lEWdFANOQvL9w==
+        bh=5nxS4acYkwzPGdJZu39mrBIae17GFhHQ/cIcJW9fMb4=;
+        b=32qBct06DpvMlPbK8JnDlKXZxoDo8tsguvsHTRaYXC6iWnKTvHSWRBnxtOrXIqTuPNtfco
+        pJUlnoEvy/y17aT+MYcm6pHQ2h7qcy9c6R1ouLWXHzeLVezYKtCZ4i3ES4nZhSomRSSPI1
+        kFZx8cvrFB9LTsY/DCiwwJAD98co7RmnAL9pH4ioNBBYCKe5Ew9tqT/Z+TARYMY9MIkRzl
+        nrs57AN5pkuEoVlWND+UEMvtQLopFCWKkF0MH5qJ/DumGj0fl20g4jv40zh0RgMfdzSCVO
+        MFcgBDmEevoAfq+BE4mEDAw9IPzBglyu2ZKhnxUBNZxLZyrv64Dw+EtihWNnaA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624029591;
+        s=2020e; t=1624029593;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=WNyFRDtZDIkdCZ5iVeSk0QhfNXF7wOUFfTi8mhGzFTU=;
-        b=WwlnTr3AeCXV7pbXt2fG6K2ym636LLQw87JbgIf1XUCFDNVgUpsfEjIyQl6MQETNglBPFm
-        pxGsFYbcbgqfOiCQ==
-Date:   Fri, 18 Jun 2021 16:18:50 +0200
+        bh=5nxS4acYkwzPGdJZu39mrBIae17GFhHQ/cIcJW9fMb4=;
+        b=AnG29HloSB9rBsimcWXw4ynBn/yx9f6tuDy5h5oajAPYrB1eEu7NaFUyQ6QYCia8yYXjBJ
+        xnnZSqmjIgl9VqCg==
+Date:   Fri, 18 Jun 2021 16:18:51 +0200
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     Andy Lutomirski <luto@kernel.org>,
@@ -47,8 +47,8 @@ Cc:     Andy Lutomirski <luto@kernel.org>,
         Borislav Petkov <bp@suse.de>,
         Peter Zijlstra <peterz@infradead.org>,
         Kan Liang <kan.liang@linux.intel.com>
-Subject: [patch V3 27/66] x86/fpu: Rename copy_xregs_to_kernel() and
- copy_kernel_to_xregs()
+Subject: [patch V3 28/66] x86/fpu: Rename copy_user_to_xregs() and
+ copy_xregs_to_user()
 References: <20210618141823.161158090@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -61,198 +61,59 @@ The function names for xsave[s]/xrstor[s] operations are horribly named and
 a permanent source of confusion.
 
 Rename:
-	copy_xregs_to_kernel() to os_xsave()
-	copy_kernel_to_xregs() to os_xrstor()
+	copy_xregs_to_user() to xsave_to_user_sigframe()
+	copy_user_to_xregs() to xrstor_from_user_sigframe()
 
-These are truly low level wrappers around the actual instructions
-XSAVE[OPT]/XRSTOR and XSAVES/XRSTORS with the twist that the selection
-based on the available CPU features happens with an alternative to avoid
-conditionals all over the place and to provide the best performance for hot
-pathes.
-
-The os_ prefix tells that this is the OS selected mechanism.
+so it's entirely clear what this is about. This is also a clear indicator
+of the potentially different storage format because this is user ABI and
+cannot use compacted format.
 
 No functional change.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
-V3: Rename (Boris)
----
- arch/x86/include/asm/fpu/internal.h |   17 +++++++++++------
- arch/x86/kernel/fpu/core.c          |    7 +++----
- arch/x86/kernel/fpu/signal.c        |   21 +++++++++++----------
- arch/x86/kernel/fpu/xstate.c        |    2 +-
- 4 files changed, 26 insertions(+), 21 deletions(-)
+ arch/x86/include/asm/fpu/internal.h |    4 ++--
+ arch/x86/kernel/fpu/signal.c        |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
 --- a/arch/x86/include/asm/fpu/internal.h
 +++ b/arch/x86/include/asm/fpu/internal.h
-@@ -263,7 +263,7 @@ static inline void fxsave_to_kernel(stru
-  * This function is called only during boot time when x86 caps are not set
-  * up and alternative can not be used yet.
+@@ -328,7 +328,7 @@ static inline void os_xrstor(struct xreg
+  * backward compatibility for old applications which don't understand
+  * compacted format of xsave area.
   */
--static inline void copy_kernel_to_xregs_booting(struct xregs_state *xstate)
-+static inline void os_xrstor_booting(struct xregs_state *xstate)
+-static inline int copy_xregs_to_user(struct xregs_state __user *buf)
++static inline int xsave_to_user_sigframe(struct xregs_state __user *buf)
  {
- 	u64 mask = -1;
+ 	u64 mask = xfeatures_mask_user();
  	u32 lmask = mask;
-@@ -286,8 +286,11 @@ static inline void copy_kernel_to_xregs_
- 
+@@ -353,7 +353,7 @@ static inline int copy_xregs_to_user(str
  /*
-  * Save processor xstate to xsave area.
-+ *
-+ * Uses either XSAVE or XSAVEOPT or XSAVES depending on the CPU features
-+ * and command line options. The choice is permanent until the next reboot.
+  * Restore xstate from user space xsave area.
   */
--static inline void copy_xregs_to_kernel(struct xregs_state *xstate)
-+static inline void os_xsave(struct xregs_state *xstate)
+-static inline int copy_user_to_xregs(struct xregs_state __user *buf, u64 mask)
++static inline int xrstor_from_user_sigframe(struct xregs_state __user *buf, u64 mask)
  {
- 	u64 mask = xfeatures_mask_all;
+ 	struct xregs_state *xstate = ((__force struct xregs_state *)buf);
  	u32 lmask = mask;
-@@ -304,8 +307,10 @@ static inline void copy_xregs_to_kernel(
- 
- /*
-  * Restore processor xstate from xsave area.
-+ *
-+ * Uses XRSTORS when XSAVES is used, XRSTOR otherwise.
-  */
--static inline void copy_kernel_to_xregs(struct xregs_state *xstate, u64 mask)
-+static inline void os_xrstor(struct xregs_state *xstate, u64 mask)
- {
- 	u32 lmask = mask;
- 	u32 hmask = mask >> 32;
-@@ -366,13 +371,13 @@ static inline int copy_user_to_xregs(str
-  * Restore xstate from kernel space xsave area, return an error code instead of
-  * an exception.
-  */
--static inline int copy_kernel_to_xregs_err(struct xregs_state *xstate, u64 mask)
-+static inline int os_xrstor_safe(struct xregs_state *xstate, u64 mask)
- {
- 	u32 lmask = mask;
- 	u32 hmask = mask >> 32;
- 	int err;
- 
--	if (static_cpu_has(X86_FEATURE_XSAVES))
-+	if (cpu_feature_enabled(X86_FEATURE_XSAVES))
- 		XSTATE_OP(XRSTORS, xstate, lmask, hmask, err);
- 	else
- 		XSTATE_OP(XRSTOR, xstate, lmask, hmask, err);
-@@ -385,7 +390,7 @@ extern int copy_fpregs_to_fpstate(struct
- static inline void __copy_kernel_to_fpregs(union fpregs_state *fpstate, u64 mask)
- {
- 	if (use_xsave()) {
--		copy_kernel_to_xregs(&fpstate->xsave, mask);
-+		os_xrstor(&fpstate->xsave, mask);
- 	} else {
- 		if (use_fxsr())
- 			copy_kernel_to_fxregs(&fpstate->fxsave);
---- a/arch/x86/kernel/fpu/core.c
-+++ b/arch/x86/kernel/fpu/core.c
-@@ -95,7 +95,7 @@ EXPORT_SYMBOL(irq_fpu_usable);
- int copy_fpregs_to_fpstate(struct fpu *fpu)
- {
- 	if (likely(use_xsave())) {
--		copy_xregs_to_kernel(&fpu->state.xsave);
-+		os_xsave(&fpu->state.xsave);
- 
- 		/*
- 		 * AVX512 state is tracked here because its use is
-@@ -358,7 +358,7 @@ void fpu__drop(struct fpu *fpu)
- static inline void copy_init_fpstate_to_fpregs(u64 features_mask)
- {
- 	if (use_xsave())
--		copy_kernel_to_xregs(&init_fpstate.xsave, features_mask);
-+		os_xrstor(&init_fpstate.xsave, features_mask);
- 	else if (static_cpu_has(X86_FEATURE_FXSR))
- 		copy_kernel_to_fxregs(&init_fpstate.fxsave);
- 	else
-@@ -389,8 +389,7 @@ static void fpu__clear(struct fpu *fpu,
- 	if (user_only) {
- 		if (!fpregs_state_valid(fpu, smp_processor_id()) &&
- 		    xfeatures_mask_supervisor())
--			copy_kernel_to_xregs(&fpu->state.xsave,
--					     xfeatures_mask_supervisor());
-+			os_xrstor(&fpu->state.xsave, xfeatures_mask_supervisor());
- 		copy_init_fpstate_to_fpregs(xfeatures_mask_user());
- 	} else {
- 		copy_init_fpstate_to_fpregs(xfeatures_mask_all);
 --- a/arch/x86/kernel/fpu/signal.c
 +++ b/arch/x86/kernel/fpu/signal.c
-@@ -261,14 +261,14 @@ static int copy_user_to_fpregs_zeroing(v
+@@ -129,7 +129,7 @@ static inline int copy_fpregs_to_sigfram
+ 	int err;
  
- 			r = copy_user_to_fxregs(buf);
- 			if (!r)
--				copy_kernel_to_xregs(&init_fpstate.xsave, init_bv);
-+				os_xrstor(&init_fpstate.xsave, init_bv);
- 			return r;
+ 	if (use_xsave())
+-		err = copy_xregs_to_user(buf);
++		err = xsave_to_user_sigframe(buf);
+ 	else if (use_fxsr())
+ 		err = copy_fxregs_to_user((struct fxregs_state __user *) buf);
+ 	else
+@@ -266,7 +266,7 @@ static int copy_user_to_fpregs_zeroing(v
  		} else {
  			init_bv = xfeatures_mask_user() & ~xbv;
  
- 			r = copy_user_to_xregs(buf, xbv);
+-			r = copy_user_to_xregs(buf, xbv);
++			r = xrstor_from_user_sigframe(buf, xbv);
  			if (!r && unlikely(init_bv))
--				copy_kernel_to_xregs(&init_fpstate.xsave, init_bv);
-+				os_xrstor(&init_fpstate.xsave, init_bv);
+ 				os_xrstor(&init_fpstate.xsave, init_bv);
  			return r;
- 		}
- 	} else if (use_fxsr()) {
-@@ -356,9 +356,10 @@ static int __fpu__restore_sig(void __use
- 			 * has been copied to the kernel one.
- 			 */
- 			if (test_thread_flag(TIF_NEED_FPU_LOAD) &&
--			    xfeatures_mask_supervisor())
--				copy_kernel_to_xregs(&fpu->state.xsave,
--						     xfeatures_mask_supervisor());
-+			    xfeatures_mask_supervisor()) {
-+				os_xrstor(&fpu->state.xsave,
-+					  xfeatures_mask_supervisor());
-+			}
- 			fpregs_mark_activate();
- 			fpregs_unlock();
- 			return 0;
-@@ -412,7 +413,7 @@ static int __fpu__restore_sig(void __use
- 		 * above XRSTOR failed or ia32_fxstate is true. Shrug.
- 		 */
- 		if (xfeatures_mask_supervisor())
--			copy_xregs_to_kernel(&fpu->state.xsave);
-+			os_xsave(&fpu->state.xsave);
- 		set_thread_flag(TIF_NEED_FPU_LOAD);
- 	}
- 	__fpu_invalidate_fpregs_state(fpu);
-@@ -430,14 +431,14 @@ static int __fpu__restore_sig(void __use
- 
- 		fpregs_lock();
- 		if (unlikely(init_bv))
--			copy_kernel_to_xregs(&init_fpstate.xsave, init_bv);
-+			os_xrstor(&init_fpstate.xsave, init_bv);
- 
- 		/*
- 		 * Restore previously saved supervisor xstates along with
- 		 * copied-in user xstates.
- 		 */
--		ret = copy_kernel_to_xregs_err(&fpu->state.xsave,
--					       user_xfeatures | xfeatures_mask_supervisor());
-+		ret = os_xrstor_safe(&fpu->state.xsave,
-+				     user_xfeatures | xfeatures_mask_supervisor());
- 
- 	} else if (use_fxsr()) {
- 		ret = __copy_from_user(&fpu->state.fxsave, buf_fx, state_size);
-@@ -454,7 +455,7 @@ static int __fpu__restore_sig(void __use
- 			u64 init_bv;
- 
- 			init_bv = xfeatures_mask_user() & ~XFEATURE_MASK_FPSSE;
--			copy_kernel_to_xregs(&init_fpstate.xsave, init_bv);
-+			os_xrstor(&init_fpstate.xsave, init_bv);
- 		}
- 
- 		ret = copy_kernel_to_fxregs_err(&fpu->state.fxsave);
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -400,7 +400,7 @@ static void __init setup_init_fpu_buf(vo
- 	/*
- 	 * Init all the features state with header.xfeatures being 0x0
- 	 */
--	copy_kernel_to_xregs_booting(&init_fpstate.xsave);
-+	os_xrstor_booting(&init_fpstate.xsave);
- 
- 	/*
- 	 * All components are now in init state. Read the state back so
 
