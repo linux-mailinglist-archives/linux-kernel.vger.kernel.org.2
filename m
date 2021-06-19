@@ -2,59 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD3AE3ADAC8
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 17:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE5B13ADACA
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 18:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234692AbhFSQAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 12:00:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234676AbhFSQAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 12:00:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 337A161159;
-        Sat, 19 Jun 2021 15:58:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624118308;
-        bh=CCnEEpYjax/88/40kieIEn+5Hb9pnHYH+EwEkzyEOLY=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=ccU9c33kOR26j6t2T8xICsk0r5dPlwZaulQFZoUVZ72Dx+ZCux8CJACWfhxPcZ019
-         oXhZ/IuwxFDpOsRM8PBTihfDHoUIyumzoxj6DKwws8T6KkZEicyOHbSasGa0e9WSAf
-         bsUIUe2HHIqMxaAdc8NmpW68u0lyTvr+aMIyIiMTlt4hzn6oK3aAwl+FuX/hUuxZgm
-         LHpKQmv6nom1iN9A6Lnujo5yfvDzSabDG8mV+PsuOTOaBV7vazjmHX0jTrrm1HNpwm
-         NNQ/xUUFSwRw0zthWyZFDbbCWbU5bMAjiIl1LCNsxuWJPQsEA/DDa/Zd4TMXnHgs6L
-         marHk6F3prXdA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 27EF460A02;
-        Sat, 19 Jun 2021 15:58:28 +0000 (UTC)
-Subject: Re: [GIT PULL] RISC-V Fixes for 5.13-rc7
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <mhng-768bd541-d21a-4a3e-9c92-da08277ab3ba@palmerdabbelt-glaptop>
-References: <mhng-768bd541-d21a-4a3e-9c92-da08277ab3ba@palmerdabbelt-glaptop>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <mhng-768bd541-d21a-4a3e-9c92-da08277ab3ba@palmerdabbelt-glaptop>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.13-rc7
-X-PR-Tracked-Commit-Id: 7ede12b01b59dc67bef2e2035297dd2da5bfe427
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d9403d307dba1a71ee6462b22300c2d3be773b1c
-Message-Id: <162411830815.5022.4024485479331822245.pr-tracker-bot@kernel.org>
-Date:   Sat, 19 Jun 2021 15:58:28 +0000
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+        id S234709AbhFSQDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 12:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234676AbhFSQDj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 12:03:39 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967D1C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 09:01:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=uXPHLU3hV4qMnUsWVZpS/Eb0r9gRa5L7KTOCm8VKpCg=; b=dc2fR2TOCzLOec4jyoj+YEzooT
+        U7a4iFRExeKQUs7mTtXDUZeJFYXodDdQCDrQcWrMgQie1CnFBqFWsG0qBEcGrLByqQPluq+UTkEX9
+        IqLS2p2LH5+8sEXo1XLOAwFndpm19mBbBVJO/dPB8jRGpvwfgdjzrsXs3qRxS4CNsxvf0JgGLkkJA
+        LzIc9yQPOk9VQBuMw+Vcu/T8X7A3L/Td7O9uzV6TgpPkXQtG5RG+/DMR2q0fWYj+6AkB3MxEjjkKz
+        qxn2JZgUcWyUjNw+gsNZVNtMBZN7AK2+EvlN/pM6H8xpjCe5o/wHaI2ysK8/omg1x1ZeNQ0NUKfYo
+        1nNFagrw==;
+Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1ludPR-00HFgj-Kv; Sat, 19 Jun 2021 16:01:25 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "H . Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH] x86/tools: fix objdump version check again
+Date:   Sat, 19 Jun 2021 09:01:23 -0700
+Message-Id: <20210619160123.26328-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 19 Jun 2021 08:42:59 -0700 (PDT):
+Skip (omit) any version string info that is parenthesized.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.13-rc7
+Warning: objdump version 15) is older than 2.19
+build-r1020.out:Warning: Skipping posttest.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d9403d307dba1a71ee6462b22300c2d3be773b1c
+when 'objdump -v' says:
+GNU objdump (GNU Binutils; SUSE Linux Enterprise 15) 2.35.1.20201123-7.18
 
-Thank you!
+Fixes: 8bee738bb1979 ("x86: Fix objdump version check in chkobjdump.awk for different formats.")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@elte.hu>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: H. Peter Anvin <hpa@zytor.com>
+---
+ arch/x86/tools/chkobjdump.awk |    1 +
+ 1 file changed, 1 insertion(+)
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+--- linux-next-20210618.orig/arch/x86/tools/chkobjdump.awk
++++ linux-next-20210618/arch/x86/tools/chkobjdump.awk
+@@ -10,6 +10,7 @@ BEGIN {
+ 
+ /^GNU objdump/ {
+ 	verstr = ""
++	gsub(/\(.*\)/, "");
+ 	for (i = 3; i <= NF; i++)
+ 		if (match($(i), "^[0-9]")) {
+ 			verstr = $(i);
