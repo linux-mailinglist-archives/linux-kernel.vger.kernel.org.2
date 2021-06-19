@@ -2,79 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE4253ADBB8
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 22:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3900C3ADBB9
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 22:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbhFSUnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 16:43:46 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35824 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbhFSUno (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 16:43:44 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624135292;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pzh1DyExfIq0Y7Pu0XOsv12S409B+VC12R0cmnhOOts=;
-        b=tEhckMapSVimxmEW8jhnm39F9FRzyVnl5yG7d2WAeK7Z7EJ1NwRs7XIT02tlR1Y974CUgE
-        NZO5nXq6If/Ka7ZEroOkO0PaZ4e/zMNnOc9D1vwCvYIWMAOWIWJni6E1bsB6szZKKn7OdK
-        dcV2OUTCi29fftY/FtwDp60nJTDd/vuJ7gC8QflK6pAAVcQBEW7BeFhZynV0aJMFJGSjkY
-        BaUp37udo62mz5fVyG0kMKlXHOAsqCnC67MJjsHvXarSbTf6uSvLftQ+SdDSu6W6DeoaBW
-        IIiMdHukacX5ONO4B3xKmUZ/2BU5s6JYBlbGxDappjXH8A8eihd+gZaMuEKlEg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624135292;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Pzh1DyExfIq0Y7Pu0XOsv12S409B+VC12R0cmnhOOts=;
-        b=Mk08qu1KM9kLKsJVgt6qdszwMyPLW5gnQ0xN3h2wki58H9xx8kq/HgY2GtMsBidbaoZ9xD
-        Rygiu4m6rrtcnyDQ==
-To:     Dmitry Safonov <dima@arista.com>, linux-kernel@vger.kernel.org
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Dmitry Safonov <dima@arista.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>, x86@kernel.org
-Subject: Re: [PATCH v3 01/23] x86/elf: Check in_x32_syscall() in compat_arch_setup_additional_pages()
-In-Reply-To: <20210611180242.711399-2-dima@arista.com>
-References: <20210611180242.711399-1-dima@arista.com> <20210611180242.711399-2-dima@arista.com>
-Date:   Sat, 19 Jun 2021 22:41:31 +0200
-Message-ID: <87tulth9j8.ffs@nanos.tec.linutronix.de>
+        id S230377AbhFSUoU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 19 Jun 2021 16:44:20 -0400
+Received: from mga02.intel.com ([134.134.136.20]:38733 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229475AbhFSUoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 16:44:19 -0400
+IronPort-SDR: mwyvUJc52i8OiMr3a17wV8Bdr622pda2o7NBGS7geGt43k4L1JfWqod4LRbxcn1iWUxKM6AKka
+ q/0P374QV/gQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10020"; a="193819921"
+X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
+   d="scan'208";a="193819921"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2021 13:42:07 -0700
+IronPort-SDR: j/t/P9ktNrjAQl346jfP2P0A+bzQRnqBcBTlWv+6ktdjG3FPZqqrQuL5ZyP0UOkOQMViVtZSgM
+ 6Tc88fGMZTzw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
+   d="scan'208";a="489455805"
+Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
+  by fmsmga002.fm.intel.com with ESMTP; 19 Jun 2021 13:42:07 -0700
+Received: from hasmsx603.ger.corp.intel.com (10.184.107.143) by
+ fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Sat, 19 Jun 2021 13:42:06 -0700
+Received: from hasmsx602.ger.corp.intel.com (10.184.107.142) by
+ HASMSX603.ger.corp.intel.com (10.184.107.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2242.4; Sat, 19 Jun 2021 23:42:04 +0300
+Received: from hasmsx602.ger.corp.intel.com ([10.184.107.142]) by
+ HASMSX602.ger.corp.intel.com ([10.184.107.142]) with mapi id 15.01.2242.008;
+ Sat, 19 Jun 2021 23:42:04 +0300
+From:   "Winkler, Tomas" <tomas.winkler@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC:     "Usyskin, Alexander" <alexander.usyskin@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [char-misc-next 2/2] mei: revamp mei extension header structure
+ layout.
+Thread-Topic: [char-misc-next 2/2] mei: revamp mei extension header structure
+ layout.
+Thread-Index: AQHXYivAs7Yrh3qA70q22HOx3NZkRasX5taAgAPkyLA=
+Date:   Sat, 19 Jun 2021 20:42:04 +0000
+Message-ID: <31dd3bfbb3e04c9c9a2ccc701b7e56df@intel.com>
+References: <20210615211557.248292-1-tomas.winkler@intel.com>
+ <20210615211557.248292-2-tomas.winkler@intel.com>
+ <YMs2oemOeLvwwnue@kroah.com>
+In-Reply-To: <YMs2oemOeLvwwnue@kroah.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.22.254.132]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 11 2021 at 19:02, Dmitry Safonov wrote:
-> Partly revert commit 3316ec8ccd34 ("x86/elf: Use e_machine to check for
-> x32/ia32 in setup_additional_pages()") and commit 9a29a671902c ("elf:
-> Expose ELF header on arch_setup_additional_pages()".
-> Both patches did a good thing: removed usage of TIF_X32, but with
-> a price of additional macros ARCH_SETUP_ADDITIONAL_PAGES() and ifdeffs.
->
-> Instead, use in_x32_syscall() - the first thing load_elf_binary() does
-> after parsing and checking new ELF binary. It's done that early after
-> exec() that mmap() code already uses it straight away, which is needed
-> to know which mmap_base to use (see arch_pick_mmap_layout()).
-> Add comments to describe how it works.
+> 
+> On Wed, Jun 16, 2021 at 12:15:57AM +0300, Tomas Winkler wrote:
+> > The mei extension header was build as array of flexible structures
+> > which will not work if actually more headers are added
+> 
+> Why not?  What is wrong with what you currently have?
+Because it is not possible to create array of flexible structures in C as far as I know. 
 
-I still have no idea what this is trying to solve. All you describe is
-what this does.
+> And did you forget a '.' here?
+Thanks will resend. 
 
-Thanks,
+> 
+> > Use basic type u8 for the variable sized extension.
+> > Define explicitly mei_ext_hdr_vtag structure.
+> > Fix also mei_ext_next() function to point correctly to the end of the
+> > header.
+> >
+> > Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+> > ---
+> >  drivers/misc/mei/client.c    | 16 +++++++++-------
+> >  drivers/misc/mei/hw.h        | 28 ++++++++++++++++++++--------
+> >  drivers/misc/mei/interrupt.c | 23 ++++++++++-------------
+> >  3 files changed, 39 insertions(+), 28 deletions(-)
+> >
+> > diff --git a/drivers/misc/mei/client.c b/drivers/misc/mei/client.c
+> > index 18e49479d8b0..96f4e59c32a5 100644
+> > --- a/drivers/misc/mei/client.c
+> > +++ b/drivers/misc/mei/client.c
+> > @@ -1726,12 +1726,15 @@ int mei_cl_read_start(struct mei_cl *cl, size_t
+> length, const struct file *fp)
+> >  	return rets;
+> >  }
+> >
+> > -static inline u8 mei_ext_hdr_set_vtag(struct mei_ext_hdr *ext, u8
+> > vtag)
+> > +static inline u8 mei_ext_hdr_set_vtag(void *ext, u8 vtag)
+> >  {
+> > -	ext->type = MEI_EXT_HDR_VTAG;
+> > -	ext->ext_payload[0] = vtag;
+> > -	ext->length = mei_data2slots(sizeof(*ext));
+> > -	return ext->length;
+> > +	struct mei_ext_hdr_vtag *vtag_hdr = ext;
+> > +
+> > +	vtag_hdr->hdr.type = MEI_EXT_HDR_VTAG;
+> > +	vtag_hdr->hdr.length = mei_data2slots(sizeof(*vtag_hdr));
+> > +	vtag_hdr->vtag = vtag;
+> > +	vtag_hdr->reserved = 0;
+> > +	return vtag_hdr->hdr.length;
+> >  }
+> >
+> >  /**
+> > @@ -1745,7 +1748,6 @@ static struct mei_msg_hdr
+> > *mei_msg_hdr_init(const struct mei_cl_cb *cb)  {
+> >  	size_t hdr_len;
+> >  	struct mei_ext_meta_hdr *meta;
+> > -	struct mei_ext_hdr *ext;
+> >  	struct mei_msg_hdr *mei_hdr;
+> >  	bool is_ext, is_vtag;
+> >
+> > @@ -1764,7 +1766,7 @@ static struct mei_msg_hdr
+> > *mei_msg_hdr_init(const struct mei_cl_cb *cb)
+> >
+> >  	hdr_len += sizeof(*meta);
+> >  	if (is_vtag)
+> > -		hdr_len += sizeof(*ext);
+> > +		hdr_len += sizeof(struct mei_ext_hdr_vtag);
+> >
+> >  setup_hdr:
+> >  	mei_hdr = kzalloc(hdr_len, GFP_KERNEL); diff --git
+> > a/drivers/misc/mei/hw.h b/drivers/misc/mei/hw.h index
+> > b10606550613..dfd60c916da0 100644
+> > --- a/drivers/misc/mei/hw.h
+> > +++ b/drivers/misc/mei/hw.h
+> > @@ -235,9 +235,8 @@ enum mei_ext_hdr_type {  struct mei_ext_hdr {
+> >  	u8 type;
+> >  	u8 length;
+> > -	u8 ext_payload[2];
+> > -	u8 hdr[];
+> > -};
+> > +	u8 data[];
+> > +} __packed;
+> 
+> why packed?
+It's an aligned structure but still It's HW interface. 
+> 
+> >
+> >  /**
+> >   * struct mei_ext_meta_hdr - extend header meta data @@ -250,8
+> > +249,21 @@ struct mei_ext_meta_hdr {
+> >  	u8 count;
+> >  	u8 size;
+> >  	u8 reserved[2];
+> > -	struct mei_ext_hdr hdrs[];
+> > -};
+> > +	u8 hdrs[];
+> > +} __packed;
+> 
+> Why packed?
+Same here. 
 
-        tglx
+> 
+> > +
+> > +/**
+> > + * struct mei_ext_hdr_vtag - extend header for vtag
+> > + *
+> > + * @hdr: standard extend header
+> > + * @vtag: virtual tag
+> > + * @reserved: reserved
+> > + */
+> > +struct mei_ext_hdr_vtag {
+> > +	struct mei_ext_hdr hdr;
+> > +	u8 vtag;
+> > +	u8 reserved;
+> > +} __packed;
+> 
+> Why packed?
+> 
+> These are not being read directly from hardware are they?
+They are.
+
+Thanks
+Tomas
+
