@@ -2,88 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704733ADA96
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 17:22:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E183ADA9D
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 17:36:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234594AbhFSPYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 11:24:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230024AbhFSPYP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 11:24:15 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S234590AbhFSPi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 11:38:58 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:61378 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230334AbhFSPi5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 11:38:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624117006; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=Wko5qcid5oJUYBgyNU+mwlBuBnLCwbwsAkuNrjuh3Zc=; b=ETsUpFrGIMBI3PpD5re7lpkrZgKlst8UfYiY8QzxMZogQCg6ZMlb0Drlx19KSfYoI3pwlhB6
+ 98fkJRmFgtio5lfv3abIb3Yu3kuTMMvaoLBRrprV/5PwpP6CLCKBH0zqlkpUARpWp99iQ+Fn
+ pb8MqzAixAEcEfk3IWXSRGYzUFQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60ce0eeb8491191eb305cd23 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 19 Jun 2021 15:36:11
+ GMT
+Sender: linyyuan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 74B31C433F1; Sat, 19 Jun 2021 15:36:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from localhost.localdomain (unknown [101.87.142.17])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4849A60FE5;
-        Sat, 19 Jun 2021 15:22:04 +0000 (UTC)
-Date:   Sat, 19 Jun 2021 11:22:02 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Ingo Molnar <mingo@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [RFC PATCH 1/2] ftrace: Introduce cmdline argument
- ftrace_disabled
-Message-ID: <20210619112202.0a2c7196@gandalf.local.home>
-In-Reply-To: <1624084160-3342-2-git-send-email-yangtiezhu@loongson.cn>
-References: <1624084160-3342-1-git-send-email-yangtiezhu@loongson.cn>
-        <1624084160-3342-2-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        (Authenticated sender: linyyuan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 05A24C433D3;
+        Sat, 19 Jun 2021 15:36:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 05A24C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=linyyuan@codeaurora.org
+From:   Linyu Yuan <linyyuan@codeaurora.org>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jack Pham <jackp@codeaurora.org>
+Subject: PATCH v2
+Date:   Sat, 19 Jun 2021 23:35:39 +0800
+Message-Id: <20210619153541.51938-1-linyyuan@codeaurora.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 19 Jun 2021 14:29:19 +0800
-Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+Subject: [PATCH v2 0/2] usb: udc: indroduce more api for lower gadget driver
 
-> If set CONFIG_FUNCTION_TRACER=y, we can use the following command to
-> disable ftrace after boot up:
-> echo 0 > /proc/sys/kernel/ftrace_enabled
+introdue following udc apis which will forbid lower gadget driver
+operate upper layer usb gadget driver directly.
 
-I'd love to just remove that. It's original purpose was to stop function
-tracing when the latency tracers were active. That's now done via a tracefs
-option. The "ftrace_enabled" really has no use anymore.
+void usb_gadget_udc_disconnect(struct usb_gadget *);
+void usb_gadget_udc_suspend(struct usb_gadget *);
+void usb_gadget_udc_resume(struct usb_gadget *);
+int usb_gadget_udc_setup(struct usb_gadget *,
+			const struct usb_ctrlrequest *);
 
-> 
-> ftrace_disabled is much stronger than ftrace_enabled, introduce a new
-> cmdline argument ftrace_disabled for user to control whether to disable
-> ftrace when boot up.
+dwc3 is first driver to use these apis.
 
-"ftrace_disabled" is triggered when an anomaly is detected, and for the
-safety of the system, ftrace shuts down. It was never meant to be a user
-triggered event.
+Linyu Yuan (2):
+  usb: udc: core: hide struct usb_gadget_driver to gadget driver
+  usb: dwc3: fix race of usb_gadget_driver operation
 
-You have no rationale for this change. What's the purpose of this?
-
--- Steve
-
-
-> 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> ---
->  kernel/trace/ftrace.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-> index 72ef4dc..a015699 100644
-> --- a/kernel/trace/ftrace.c
-> +++ b/kernel/trace/ftrace.c
-> @@ -5517,6 +5517,14 @@ static char ftrace_filter_buf[FTRACE_FILTER_SIZE] __initdata;
->  /* Used by function selftest to not test if filter is set */
->  bool ftrace_filter_param __initdata;
->  
-> +static int __init set_ftrace_disabled(char *str)
-> +{
-> +	pr_info("Set ftrace_disabled to disable ftrace\n");
-> +	ftrace_disabled = 1;
-> +	return 1;
-> +}
-> +__setup("ftrace_disabled", set_ftrace_disabled);
-> +
->  static int __init set_ftrace_notrace(char *str)
->  {
->  	ftrace_filter_param = true;
+ drivers/usb/dwc3/core.h       |  2 --
+ drivers/usb/dwc3/ep0.c        |  6 +---
+ drivers/usb/dwc3/gadget.c     | 53 +++++++++--------------------------
+ drivers/usb/gadget/udc/core.c | 47 ++++++++++++++++++++++++++++++-
+ include/linux/usb/gadget.h    |  6 ++++
+ 5 files changed, 66 insertions(+), 48 deletions(-)
 
