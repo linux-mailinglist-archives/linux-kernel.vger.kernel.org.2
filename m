@@ -2,87 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0E33AD7F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 07:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A983AD7FE
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 08:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233522AbhFSFGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 01:06:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42574 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232924AbhFSFGH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 01:06:07 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23DF1C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 22:03:57 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so11843676otl.3
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 22:03:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=3mMdu9LseXe+ymUT/wP7oypou8lDboqPRRR7IbCiXfQ=;
-        b=SCPLeFXlxJnkQ4idfbSuA//Lg2Tn8jS2nBveT4ICGwBzoHDlnP0gIhJ4pRCP9MgQ2D
-         ZVvEtPAPhMHYrmfQx0KUG9inWuRi8C3jyBeJTuuponLZv8rmQQHOC87c9tRTqflPJXpO
-         ERnL4GowTYJU2HhR9cypVKK0s/BnUFFWI6NZQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=3mMdu9LseXe+ymUT/wP7oypou8lDboqPRRR7IbCiXfQ=;
-        b=CQzFOT1u45OR3Ou7PiPpIcH31xKyU4tmZMhr/1Mu3PGrKLh6daaBN3XP1LPA7l4nGT
-         HSakoP91mvS7o5RrdHnNXu71w/JGlIwQQKMlcQTtaW+9zVi/fneK/xVX+19oKWviPCxG
-         ORspz+yEtNLyC7+igJUItwGwb2chc45hWx/plrT0GWIKPCHJaQF6LVYRUaVu3Dn0GVRI
-         YH3Fu10tZ/mXXV8oleiiVJc3wcxD8/8Ptm8e+AFko83K1Lwonvf5fSDpGU+hr6dRYNmT
-         AAexFofX5e0ZMB46RG24+VF0GbcyywyPf1eUYWAkBp1qawgUYxgbtWgP4/s2XXuqqBSG
-         91MQ==
-X-Gm-Message-State: AOAM532YlhN/9DpR1e8uV8aqkJ0mBpCrrbmjfDo+hJIKp4i6FqBvx+mz
-        v1sjMFqbydMdthi4dCfhzUTdGF63RFx8WSQXolIHyA==
-X-Google-Smtp-Source: ABdhPJzyHnvx+IHPysUXoXKO+WpriDPcIB8125hq5StBjgIs3XlXYEcb+4/k+SbDzhhuvn6FIlYMUCbPMUd1T25ABQ4=
-X-Received: by 2002:a9d:4e7:: with SMTP id 94mr12250496otm.233.1624079036367;
- Fri, 18 Jun 2021 22:03:56 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 18 Jun 2021 22:03:55 -0700
-MIME-Version: 1.0
-In-Reply-To: <20210617071027.60278-1-hexin.op@bytedance.com>
-References: <20210617071027.60278-1-hexin.op@bytedance.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Fri, 18 Jun 2021 22:03:55 -0700
-Message-ID: <CAE-0n51T9ZGADCk6LaKJdnQwPvMCawSvjwUP+AF0hFohAFom0A@mail.gmail.com>
-Subject: Re: [PATCH] debugobjects: add missing empty function debug_object_active_state()
-To:     Xin He <hexin.op@bytedance.com>, keescook@chromium.org,
-        tglx@linutronix.de
+        id S233656AbhFSFuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 01:50:14 -0400
+Received: from mga11.intel.com ([192.55.52.93]:17660 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233574AbhFSFuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 01:50:11 -0400
+IronPort-SDR: aQlgQuphUy8ESK9WUNstoTCFOLeKZ3Qa8w5yFt7xVNv0bJnFhNHVpaDvzH+OCNkdFSB6qQ6hpU
+ Y4VSbrlzmj8Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="203631470"
+X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
+   d="scan'208";a="203631470"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2021 22:48:00 -0700
+IronPort-SDR: 4ma+DsNibY9/hx6KxIqWnKwAGvEpRS98ipg8y+UfF8Fd01/z+CX3r9xRXK56acP8HXbD8AtOXL
+ 9SxLghclAR7w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
+   d="scan'208";a="405166394"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by orsmga006.jf.intel.com with ESMTP; 18 Jun 2021 22:47:58 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1luTpm-0003N7-9r; Sat, 19 Jun 2021 05:47:58 +0000
+Date:   Sat, 19 Jun 2021 13:47:14 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: [tip:x86/urgent] BUILD SUCCESS
+ 28e5e44aa3f4e0e0370864ed008fb5e2d85f4dc8
+Message-ID: <60cd84e2.VuWU/siMW3kMA/j/%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Xin He (2021-06-17 00:10:27)
-> All other functions are defined for when CONFIG_DEBUG_OBJECTS
-> is not set.
->
-> Signed-off-by: Xin He <hexin.op@bytedance.com>
-> ---
->  include/linux/debugobjects.h | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/include/linux/debugobjects.h b/include/linux/debugobjects.h
-> index 8d2dde23e9fb..af0d73d8d29b 100644
-> --- a/include/linux/debugobjects.h
-> +++ b/include/linux/debugobjects.h
-> @@ -99,6 +99,9 @@ static inline void
->  debug_object_free      (void *addr, const struct debug_obj_descr *descr) { }
->  static inline void
->  debug_object_assert_init(void *addr, const struct debug_obj_descr *descr) { }
-> +static inline void
-> +debug_object_active_state(void *addr, const struct debug_obj_descr *descr,
-> +                         unsigned int expect, unsigned int next) { }
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
+branch HEAD: 28e5e44aa3f4e0e0370864ed008fb5e2d85f4dc8  x86/mm: Avoid truncating memblocks for SGX memory
 
-I suppose it's a landmine that may go off at some point, but this isn't
-fixing anything that's broken at the moment, correct?
+elapsed time: 724m
 
->
->  static inline void debug_objects_early_init(void) { }
->  static inline void debug_objects_mem_init(void) { }
+configs tested: 120
+configs skipped: 87
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          rsk7269_defconfig
+powerpc                     asp8347_defconfig
+sh                  sh7785lcr_32bit_defconfig
+powerpc                     skiroot_defconfig
+powerpc                 mpc834x_itx_defconfig
+sh                          polaris_defconfig
+x86_64                            allnoconfig
+xtensa                       common_defconfig
+arm                          pxa168_defconfig
+powerpc                     tqm8555_defconfig
+arm                     am200epdkit_defconfig
+arm                         orion5x_defconfig
+sh                        edosk7705_defconfig
+powerpc                    sam440ep_defconfig
+powerpc                       ebony_defconfig
+mips                           mtx1_defconfig
+mips                        jmr3927_defconfig
+powerpc                    gamecube_defconfig
+mips                   sb1250_swarm_defconfig
+arm                         axm55xx_defconfig
+arc                        vdk_hs38_defconfig
+m68k                        mvme16x_defconfig
+microblaze                          defconfig
+m68k                        stmark2_defconfig
+s390                                defconfig
+powerpc                 mpc836x_rdk_defconfig
+arm                          pxa3xx_defconfig
+powerpc                      cm5200_defconfig
+sparc                            alldefconfig
+powerpc                        icon_defconfig
+sh                   sh7724_generic_defconfig
+arm                          exynos_defconfig
+mips                           ip32_defconfig
+microblaze                      mmu_defconfig
+s390                          debug_defconfig
+powerpc                     tqm5200_defconfig
+arm                       netwinder_defconfig
+arc                           tb10x_defconfig
+arm                             ezx_defconfig
+powerpc                     kmeter1_defconfig
+powerpc                       maple_defconfig
+powerpc                      ep88xc_defconfig
+sh                           sh2007_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20210618
+i386                 randconfig-a006-20210618
+i386                 randconfig-a004-20210618
+i386                 randconfig-a001-20210618
+i386                 randconfig-a005-20210618
+i386                 randconfig-a003-20210618
+x86_64               randconfig-a015-20210618
+x86_64               randconfig-a011-20210618
+x86_64               randconfig-a012-20210618
+x86_64               randconfig-a014-20210618
+x86_64               randconfig-a016-20210618
+x86_64               randconfig-a013-20210618
+i386                 randconfig-a015-20210618
+i386                 randconfig-a016-20210618
+i386                 randconfig-a013-20210618
+i386                 randconfig-a014-20210618
+i386                 randconfig-a012-20210618
+i386                 randconfig-a011-20210618
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210618
+x86_64               randconfig-a002-20210618
+x86_64               randconfig-a001-20210618
+x86_64               randconfig-a004-20210618
+x86_64               randconfig-a003-20210618
+x86_64               randconfig-a006-20210618
+x86_64               randconfig-a005-20210618
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
