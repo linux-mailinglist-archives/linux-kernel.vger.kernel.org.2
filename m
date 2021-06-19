@@ -2,105 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C99733ADAF6
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 18:54:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E63DD3ADB03
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 19:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234850AbhFSQ4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 12:56:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44052 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234800AbhFSQ4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 12:56:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 156FD61002;
-        Sat, 19 Jun 2021 16:54:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624121667;
-        bh=/c0MjA9qCgiipSBFS+d1fptRbka4uIyU5IAVrlf53V4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Rp3AeNW1qYtYwdt6cZi+FX0bpTucS4R3Ex6XjzdGn18De/29P8h/rTCTnzTqbg5cW
-         yrCwybJT35RuqBaP8Lxk5VJ9Jr8cbWY/C8/+5o37nfY48g+ek5qrC0SPhzXGjV9R6U
-         4FkJV8dEw4R+oPpCmfgNPGUpk+d+rND/o2qShSDHGpvczkxcE3187+lYONvmMl6Eis
-         l2bmH8nu/abn217FyBEKHcPA92bOxqa8w9vnIHQjuRXEGNMOK4aSvB38tkiQ5iP5Qc
-         P6Kplrh6l7ZBFt+W/NTj/iGM5/hjpKSNmvWNCYTKog2OO+p7mJgNRz32MBTmqC/Imi
-         bF1Myeku3QDew==
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        John Garry <john.garry@huawei.com>,
-        Riccardo Mancini <rickyman7@gmail.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: [GIT PULL] perf tools fixes for v5.13: 6th batch
-Date:   Sat, 19 Jun 2021 13:54:17 -0300
-Message-Id: <20210619165417.871997-1-acme@kernel.org>
-X-Mailer: git-send-email 2.31.1
+        id S234869AbhFSRCr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 13:02:47 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:35076 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232203AbhFSRCo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 13:02:44 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624122031;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=B0WuIzDMWF99bBZuLNCq2ygkfH35IcPVOSY6Jg7e+OI=;
+        b=zWzKICElodmiWYNyww0vsbIf5K1JIwRn9+v/TR+PlrsUkchd2PKtD5ng6LpeFgbgsTCKw4
+        GBwmGVSPosDKlhUUBZWSNx6e7wz2eqzwKRj1CuthEf+l1vTDYf3U+Y7Xu9kTG+70DBDmlK
+        Bk6Dco+InfRE+z5QGnIXhU31JJXAS+rcpcEninckSnnpG0svX6TEdlrLdqMEQTZMVfly3x
+        9TxzUOm6mtr/EJi67HqlweKY04sNhwUhk8rFZHANb9cX23E1VUNpFGkNaiwqoMfPsIyG8B
+        kcgTJwMUfiPDmBVazSTYhENptpnSjrZ1yRGnj0brteKWvQfemy8H9dbCFDc8/A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624122031;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=B0WuIzDMWF99bBZuLNCq2ygkfH35IcPVOSY6Jg7e+OI=;
+        b=yGz+IcnIfKBafxps3sdFRFstTzITkh1lKwhIXMPHyEs4gwR741lmdzOnbFnqgotz0a8XG7
+        K3OHwMhzVPurVVAg==
+To:     Ondrej Mosnacek <omosnace@redhat.com>,
+        linux-security-module@vger.kernel.org,
+        James Morris <jmorris@namei.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        x86@kernel.org, linux-acpi@vger.kernel.org,
+        linux-cxl@vger.kernel.org, linux-efi@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-serial@vger.kernel.org,
+        bpf@vger.kernel.org, netdev@vger.kernel.org,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Casey Schaufler <casey@schaufler-ca.com>
+Subject: Re: [PATCH v3] lockdown,selinux: fix wrong subject in some SELinux lockdown checks
+In-Reply-To: <20210616085118.1141101-1-omosnace@redhat.com>
+References: <20210616085118.1141101-1-omosnace@redhat.com>
+Date:   Sat, 19 Jun 2021 19:00:30 +0200
+Message-ID: <8735tdiyc1.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Wed, Jun 16 2021 at 10:51, Ondrej Mosnacek wrote:
+> diff --git a/arch/x86/mm/testmmiotrace.c b/arch/x86/mm/testmmiotrace.c
+> index bda73cb7a044..c43a13241ae8 100644
+> --- a/arch/x86/mm/testmmiotrace.c
+> +++ b/arch/x86/mm/testmmiotrace.c
+> @@ -116,7 +116,7 @@ static void do_test_bulk_ioremapping(void)
+>  static int __init init(void)
+>  {
+>  	unsigned long size = (read_far) ? (8 << 20) : (16 << 10);
+> -	int ret = security_locked_down(LOCKDOWN_MMIOTRACE);
+> +	int ret = security_locked_down(current_cred(), LOCKDOWN_MMIOTRACE);
 
-	Please consider pulling,
+I have no real objection to those patches, but it strikes me odd that
+out of the 62 changed places 58 have 'current_cred()' and 4 have NULL as
+argument.
 
-Best regards,
+I can't see why this would ever end up with anything else than
+current_cred() or NULL and NULL being the 'special' case. So why not
+having security_locked_down_no_cred() and make current_cred() implicit
+for security_locked_down() which avoids most of the churn and just makes
+the special cases special. I might be missing something though.
 
-- Arnaldo
+Thanks,
 
-
-The following changes since commit 9ed13a17e38e0537e24d9b507645002bf8d0201f:
-
-  Merge tag 'net-5.13-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2021-06-18 18:55:29 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-for-v5.13-2021-06-19
-
-for you to fetch changes up to 1792a59eab9593de2eae36c40c5a22d70f52c026:
-
-  tools headers UAPI: Sync linux/in.h copy with the kernel sources (2021-06-19 10:15:22 -0300)
-
-----------------------------------------------------------------
-perf tools fixes for v5.13: 6th batch
-
-- Fix refcount usage when processing PERF_RECORD_KSYMBOL.
-
-- 'perf stat' metric group fixes.
-
-- Fix 'perf test' non-bash issue with stat bpf counters.
-
-- Update unistd, in.h and socket.h with the kernel sources, silencing
-  perf build warnings.
-
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-----------------------------------------------------------------
-Arnaldo Carvalho de Melo (3):
-      perf beauty: Update copy of linux/socket.h with the kernel sources
-      tools headers UAPI: Sync asm-generic/unistd.h with the kernel original
-      tools headers UAPI: Sync linux/in.h copy with the kernel sources
-
-Ian Rogers (1):
-      perf test: Fix non-bash issue with stat bpf counters
-
-John Garry (2):
-      perf metricgroup: Fix find_evsel_group() event selector
-      perf metricgroup: Return error code from metricgroup__add_metric_sys_event_iter()
-
-Riccardo Mancini (1):
-      perf machine: Fix refcount usage when processing PERF_RECORD_KSYMBOL
-
- tools/include/uapi/asm-generic/unistd.h        |  3 +--
- tools/include/uapi/linux/in.h                  |  3 +++
- tools/perf/tests/shell/stat_bpf_counters.sh    |  4 ++--
- tools/perf/trace/beauty/include/linux/socket.h |  2 --
- tools/perf/util/machine.c                      |  3 ++-
- tools/perf/util/metricgroup.c                  | 14 ++++++++------
- 6 files changed, 16 insertions(+), 13 deletions(-)
+        tglx
