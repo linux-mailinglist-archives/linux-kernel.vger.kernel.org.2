@@ -2,110 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A97A3ADC1D
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 01:55:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1582C3ADC1E
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 01:55:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbhFSXm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 19:42:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58422 "EHLO
+        id S230136AbhFSX5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 19:57:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhFSXm4 (ORCPT
+        with ESMTP id S229584AbhFSX5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 19:42:56 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4EE0C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 16:40:44 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G6sjg4MXnz9sRN;
-        Sun, 20 Jun 2021 09:40:39 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1624146041;
-        bh=amvNJNy+ZWUWObBHVKZALCApYZ772MCSmqS8exnahqU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=UBmgtB05/SVwKFjZD2cDLvE4cv+BfuimTIO0RR3f08Jq07Sa+f2Z5N0CDTtTI5ZwF
-         Qpz29XamRsPkPV6UoLfEiN7+d1lyuyfR9E9llPw8hHx+Idq2V43ZfcZia1qaGj5BA3
-         9QkaeEpL2nDp4mfQF418EvDmh1IElz053ydH0k4L0lQJCJsL0FOrNrWUNjxkL2TFcF
-         mem+jEgIJ6CIGesD68o7SGhJFIo9PXRNlpzwhYgyAKv/YG1/Bfvcyz71lAdfXxGTzC
-         JjfXdMEgGgypDN6ijvA/4iBM3fFWkYbOuNxi2vNE/Bum4bTkSE9uXl8cqmkkHC/FyI
-         Ky3Iv+S6YMgXA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     atrajeev@linux.vnet.ibm.com, christophe.leroy@csgroup.eu,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.13-6 tag
-Date:   Sun, 20 Jun 2021 09:40:38 +1000
-Message-ID: <87lf752zk9.fsf@mpe.ellerman.id.au>
+        Sat, 19 Jun 2021 19:57:36 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00DCFC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 16:55:23 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso8674812pjx.1
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 16:55:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=44d1tWo9uoxKtqiMU5cRkfudx3SHPks/06nJLnMab5I=;
+        b=BfREz8IH90dC2WDUAwrlakOxtazo/EgGp2omMj4RAUjyQm9Hm1l9N4+YzjAlmb49PJ
+         ULLxckE3CNd7HufNGYH1OMZuaK4ipaoVInuFVwKq4pf9q8sHhftfnDvJu2QIxQM6oSkz
+         rAAEr7Vpx+wtK6HK6Tnobe4FZqNCOcAxrvLXG2M0iGTIpOck853lE9QDRGLNn7mFYR64
+         kujAPRHDtOyf+OVlUoKefvc5YmKx60E+LKPRIzIiaJkMdV+OzdvX8Q2Mw5r6o9Lo1eVg
+         Q0teJPHA0CvFL+enmeMqked7EfWZWcoaB6vl36GXK1yZbDeelmYJ6wO3oAwtsLjOD+JX
+         BwdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=44d1tWo9uoxKtqiMU5cRkfudx3SHPks/06nJLnMab5I=;
+        b=j6xp0CX4KoUfMisUCK/yi7bFzjyioXJcNdx56VsQriRl++AKsxEUMjSwNLWrt5J3s1
+         XseTCCKb9UsvG/bsUVdwXBaLfbZqVwnOt/EitFjidqW0aLgmO6o4hskfJ/9LUZnEsWcS
+         853ZGD9yf6m0U1kkF0OnqKIoCKodYZqfc4TsteO9NSt57+QvUQnfTn5N8HOp+N8sCLzX
+         pbc3O89Xih8vy62hTqnXI1k7UEUCH84VvXWwMEvwBopIaRDZmFovyxOADjsboPR0Wq84
+         n8gs3tASptDBUIy1P56N4n3CKep6c6RpJGmKi7pd5As5PbzFdfwt8JS6SBX4vXOobLN8
+         PhJA==
+X-Gm-Message-State: AOAM530jP1cJzn7XFEBxUPcIOwupTzHJR3TUXkz5lfVKaUHJmzwU1R+k
+        wHvMaT0sc9ZVH6Glpso1ojxCNJUZ1RZSqJc+BLOEDNz91cM=
+X-Google-Smtp-Source: ABdhPJy4BjHi3EfoA0PIAAi8iWliVdZFhRuIWwJ3dl5zP60s89P3SBan+FB+Lxt5F83E1+qh7TEI0XzCUWYT8NmiU/k=
+X-Received: by 2002:a17:90a:bb97:: with SMTP id v23mr29917944pjr.146.1624146922296;
+ Sat, 19 Jun 2021 16:55:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+From:   "David F." <df7729@gmail.com>
+Date:   Sat, 19 Jun 2021 16:55:11 -0700
+Message-ID: <CAGRSmLvaZ7av7ne-XKfZGrij1x9i5v1aH=t0ufL=Ad1193G0vA@mail.gmail.com>
+Subject: LockDown that allows read of /dev/mem ?
+To:     linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+I'm finding that LockDown Integrity prevents blocks things like mdadm,
+Xvesa, and a couple of my specialized tools.    There should be an
+option to allow /dev/mem read access.  Is there?  There are no secrets
+to the boot disk booted environment it's all root.
 
-Hi Linus,
-
-Please pull some more powerpc fixes for 5.13:
-
-The following changes since commit 59cc84c802eb923805e7bba425976a3df5ce35d8:
-
-  Revert "powerpc/kernel/iommu: Align size for IOMMU_PAGE_SIZE() to save TCEs" (2021-06-01 11:17:08 +1000)
-
-are available in the git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.13-6
-
-for you to fetch changes up to 60b7ed54a41b550d50caf7f2418db4a7e75b5bdc:
-
-  powerpc/perf: Fix crash in perf_instruction_pointer() when ppmu is not set (2021-06-18 16:30:36 +1000)
-
-- ------------------------------------------------------------------
-powerpc fixes for 5.13 #6
-
-Fix initrd corruption caused by our recent change to use relative jump labels.
-
-Fix a crash using perf record on systems without a hardware PMU backend.
-
-Rework our 64-bit signal handling slighty to make it more closely match the old behaviour,
-after the recent change to use unsafe user accessors.
-
-Thanks to: Anastasia Kovaleva, Athira Rajeev, Christophe Leroy, Daniel Axtens, Greg Kurz,
-Roman Bolshakov.
-
-- ------------------------------------------------------------------
-Athira Rajeev (1):
-      powerpc/perf: Fix crash in perf_instruction_pointer() when ppmu is not set
-
-Christophe Leroy (1):
-      powerpc/mem: Add back missing header to fix 'no previous prototype' error
-
-Michael Ellerman (2):
-      powerpc/signal64: Copy siginfo before changing regs->nip
-      powerpc: Fix initrd corruption with relative jump labels
-
-
- arch/powerpc/include/asm/jump_label.h | 2 +-
- arch/powerpc/kernel/signal_64.c       | 9 ++++-----
- arch/powerpc/mm/mem.c                 | 1 +
- arch/powerpc/perf/core-book3s.c       | 2 +-
- 4 files changed, 7 insertions(+), 7 deletions(-)
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmDOf4MACgkQUevqPMjh
-pYCWZQ/+IFYW1st6xlM1jBDlLSItSn234dqOmvlihIo+9lCR82l72H4E4EWIj7A+
-3GGzMllEdDcGooEF1jg+7+zUlx8i1WNlRCF4RNszGzpipiDWGPlxW2t5FqNeQRQ7
-YyooMzrgPYlRxGHnG/KHfGiPJxxLj4ZsyRhWfoS6cY1EbS/YOX8SDX1Xz2qQu/Jr
-qRzZvSZKkBpVdvcxEYcn7WSauDpqtZ9keWHdP8e6WRd/Bceu4nyxlxOI0z+pBUsr
-3IhWzQexznJwCGClQBbaXg/uPmUDtEjx+LzhU0jTmSMLxVI+UFPVDIbco6bMX7AE
-EevcU35aDLu8tclNd3IAA9Au/EZPUe8kMNUPmBncFAID4ek+gybRJuGO9b9XEJ1r
-AZFFCb2rRugBvOeNtb5y3u9XNR0Ct0S2lsZygSOkCQ6R3Sf2yoVgP0M49PbFvEEO
-fSVLnAMEWQDWfaLjYxFXp2S3vddyLw8G36lBzJo74Y/cRuz10g/87oWpIlFq5tqK
-aMXTroINmErOv1XVALqix1ScrLeBnPlL2nH0gBSZ96W0A196kFjWkKaGsQFwXMEH
-X2Om1rKYiC3/vKrLXRYcxSZcoRg7/a1es7ftVSv5DQAPGRGWDrplCJh70x5JW2Js
-kA6IB2K8+Ehf3F0a7O+i5q5t1oTvOvR+wIEl2TpJdx5aMVGkBt0=
-=CmCH
------END PGP SIGNATURE-----
+?
