@@ -2,113 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C09D33ADB9A
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 22:12:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A6A63ADB9D
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 22:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbhFSUPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 16:15:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230028AbhFSUPD (ORCPT
+        id S230174AbhFSUQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 16:16:39 -0400
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:60127 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229868AbhFSUQh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 16:15:03 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C2FBC061756
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 13:12:51 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1luhKc-0004Y7-Nf; Sat, 19 Jun 2021 22:12:42 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:8352:71b5:153f:5f88])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 149D363F78A;
-        Sat, 19 Jun 2021 20:12:38 +0000 (UTC)
-Date:   Sat, 19 Jun 2021 22:12:38 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
-Cc:     linux-can@vger.kernel.org,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+0f7e7e5e2f4f40fa89c0@syzkaller.appspotmail.com,
-        Norbert Slusarek <nslusarek@gmx.net>
-Subject: Re: [PATCH] can: bcm: delay release of struct bcm_op after
- synchronize_rcu
-Message-ID: <20210619201238.isat2vojezfkfndf@pengutronix.de>
-References: <20210619161813.2098382-1-cascardo@canonical.com>
+        Sat, 19 Jun 2021 16:16:37 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d18 with ME
+        id K8EM2500721Fzsu038EMqf; Sat, 19 Jun 2021 22:14:24 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 19 Jun 2021 22:14:24 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Larry.Finger@lwfinger.net, gregkh@linuxfoundation.org,
+        insafonov@gmail.com, linux@roeck-us.net, straube.linux@gmail.com,
+        gustavoars@kernel.org, liushixin2@huawei.com,
+        yepeilin.cs@gmail.com, phil@philpotter.co.uk
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 1/2] staging: rtl8188eu: remove "rtw_ieee80211_back_actioncode"
+Date:   Sat, 19 Jun 2021 22:14:20 +0200
+Message-Id: <6b6d8d81e7b2115e9206d2960ce09e1b2e8b6381.1624132543.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mgigocquvvi3aw7a"
-Content-Disposition: inline
-In-Reply-To: <20210619161813.2098382-1-cascardo@canonical.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This enum is the same as "ieee80211_back_actioncode" in
+"include/linux/ieee80211.h".
 
---mgigocquvvi3aw7a
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Update the code accordingly and remove useless comment.
 
-On 19.06.2021 13:18:13, Thadeu Lima de Souza Cascardo wrote:
-> can_rx_register callbacks may be called concurrently to the call to
-> can_rx_unregister. The callbacks and callback data, though, are protected=
- by
-> RCU and the struct sock reference count.
->=20
-> So the callback data is really attached to the life of sk, meaning that it
-> should be released on sk_destruct. However, bcm_remove_op calls tasklet_k=
-ill,
-> and RCU callbacks may be called under RCU softirq, so that cannot be used=
- on
-> kernels before the introduction of HRTIMER_MODE_SOFT.
->=20
-> However, bcm_rx_handler is called under RCU protection, so after calling
-> can_rx_unregister, we may call synchronize_rcu in order to wait for any R=
-CU
-> read-side critical sections to finish. That is, bcm_rx_handler won't be c=
-alled
-> anymore for those ops. So, we only free them, after we do that synchroniz=
-e_rcu.
->=20
-> Reported-by: syzbot+0f7e7e5e2f4f40fa89c0@syzkaller.appspotmail.com
-> Reported-by: Norbert Slusarek <nslusarek@gmx.net>
-> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/staging/rtl8188eu/core/rtw_mlme_ext.c | 14 +++++++-------
+ drivers/staging/rtl8188eu/include/ieee80211.h |  7 -------
+ 2 files changed, 7 insertions(+), 14 deletions(-)
 
-Added to linux-can/testing.
+diff --git a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c b/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
+index 6107257900c2..eb2202a11aa7 100644
+--- a/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
++++ b/drivers/staging/rtl8188eu/core/rtw_mlme_ext.c
+@@ -1744,7 +1744,7 @@ unsigned int send_delba(struct adapter *padapter, u8 initiator, u8 *addr)
+ 	if (initiator == 0) { /*  recipient */
+ 		for (tid = 0; tid < MAXTID; tid++) {
+ 			if (psta->recvreorder_ctrl[tid].enable) {
+-				issue_action_BA(padapter, addr, RTW_WLAN_ACTION_DELBA, (((tid << 1) | initiator) & 0x1F));
++				issue_action_BA(padapter, addr, WLAN_ACTION_DELBA, (((tid << 1) | initiator) & 0x1F));
+ 				psta->recvreorder_ctrl[tid].enable = false;
+ 				psta->recvreorder_ctrl[tid].indicate_seq = 0xffff;
+ 			}
+@@ -1752,7 +1752,7 @@ unsigned int send_delba(struct adapter *padapter, u8 initiator, u8 *addr)
+ 	} else if (initiator == 1) { /*  originator */
+ 		for (tid = 0; tid < MAXTID; tid++) {
+ 			if (psta->htpriv.agg_enable_bitmap & BIT(tid)) {
+-				issue_action_BA(padapter, addr, RTW_WLAN_ACTION_DELBA, (((tid << 1) | initiator) & 0x1F));
++				issue_action_BA(padapter, addr, WLAN_ACTION_DELBA, (((tid << 1) | initiator) & 0x1F));
+ 				psta->htpriv.agg_enable_bitmap &= ~BIT(tid);
+ 				psta->htpriv.candidate_tid_bitmap &= ~BIT(tid);
+ 			}
+@@ -3426,16 +3426,16 @@ static unsigned int OnAction_back(struct adapter *padapter,
+ 			return _SUCCESS;
+ 		action = frame_body[1];
+ 		switch (action) {
+-		case RTW_WLAN_ACTION_ADDBA_REQ: /* ADDBA request */
++		case WLAN_ACTION_ADDBA_REQ:
+ 			memcpy(&pmlmeinfo->ADDBA_req, &frame_body[2], sizeof(struct ADDBA_request));
+ 			process_addba_req(padapter, (u8 *)&pmlmeinfo->ADDBA_req, addr);
+ 
+ 			/* 37 = reject ADDBA Req */
+ 			issue_action_BA(padapter, addr,
+-					RTW_WLAN_ACTION_ADDBA_RESP,
++					WLAN_ACTION_ADDBA_RESP,
+ 					pmlmeinfo->accept_addba_req ? 0 : 37);
+ 			break;
+-		case RTW_WLAN_ACTION_ADDBA_RESP: /* ADDBA response */
++		case WLAN_ACTION_ADDBA_RESP:
+ 			status = get_unaligned_le16(&frame_body[3]);
+ 			tid = (frame_body[5] >> 2) & 0x7;
+ 			if (status == 0) {	/* successful */
+@@ -3445,7 +3445,7 @@ static unsigned int OnAction_back(struct adapter *padapter,
+ 				psta->htpriv.agg_enable_bitmap &= ~BIT(tid);
+ 			}
+ 			break;
+-		case RTW_WLAN_ACTION_DELBA: /* DELBA */
++		case WLAN_ACTION_DELBA:
+ 			if ((frame_body[3] & BIT(3)) == 0) {
+ 				psta->htpriv.agg_enable_bitmap &= ~(1 << ((frame_body[3] >> 4) & 0xf));
+ 				psta->htpriv.candidate_tid_bitmap &= ~(1 << ((frame_body[3] >> 4) & 0xf));
+@@ -5068,7 +5068,7 @@ u8 add_ba_hdl(struct adapter *padapter, unsigned char *pbuf)
+ 
+ 	if (((pmlmeinfo->state & WIFI_FW_ASSOC_SUCCESS) && (pmlmeinfo->HT_enable)) ||
+ 	    ((pmlmeinfo->state & 0x03) == WIFI_FW_AP_STATE)) {
+-		issue_action_BA(padapter, pparm->addr, RTW_WLAN_ACTION_ADDBA_REQ, (u16)pparm->tid);
++		issue_action_BA(padapter, pparm->addr, WLAN_ACTION_ADDBA_REQ, (u16)pparm->tid);
+ 		mod_timer(&psta->addba_retry_timer,
+ 			  jiffies + msecs_to_jiffies(ADDBA_TO));
+ 	} else {
+diff --git a/drivers/staging/rtl8188eu/include/ieee80211.h b/drivers/staging/rtl8188eu/include/ieee80211.h
+index cb6940d2aeab..4becf4edaa25 100644
+--- a/drivers/staging/rtl8188eu/include/ieee80211.h
++++ b/drivers/staging/rtl8188eu/include/ieee80211.h
+@@ -546,13 +546,6 @@ enum _PUBLIC_ACTION {
+ 	ACT_PUBLIC_MAX
+ };
+ 
+-/* BACK action code */
+-enum rtw_ieee80211_back_actioncode {
+-	RTW_WLAN_ACTION_ADDBA_REQ = 0,
+-	RTW_WLAN_ACTION_ADDBA_RESP = 1,
+-	RTW_WLAN_ACTION_DELBA = 2,
+-};
+-
+ /* HT features action code */
+ enum rtw_ieee80211_ht_actioncode {
+ 	RTW_WLAN_ACTION_NOTIFY_CH_WIDTH = 0,
+-- 
+2.30.2
 
-Thanks,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---mgigocquvvi3aw7a
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmDOT7MACgkQqclaivrt
-76lDQAf/aep/tGDob6DaLHc5aJhktFcJfqkXx1PwdEIQEve0WIEdLxHu9uYlFK4H
-T+Yg/I1A2dtovq+SeWsRkKFDwNpQKRUQ78RjTozr0gs7dIQNNb2NwAb4d5Hywtux
-rfbN1YaNOJYisLLqlLTARr9kez16pWnahuJIM8kS/HFkwCOn/pzuzWJDC6oYFfBQ
-o3pMRgeZ0FWJH1RkfPbcRGCrdN+UX9dZ04F5muCLOUjqsP1r5mO47iRbkD+qTwKv
-OoyhQrZedww2TZlyb/4P5j3aY6kGLGL/wAEA3EMBB9dWVHsgxjqwfH+ohIXbgiAw
-nwkdGXDVHtB3SJEsgBxcux9U8dQ8pw==
-=56Ct
------END PGP SIGNATURE-----
-
---mgigocquvvi3aw7a--
