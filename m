@@ -2,90 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9D33AD920
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 11:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B04213AD923
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 11:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbhFSJsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 05:48:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47442 "EHLO
+        id S231313AbhFSJtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 05:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhFSJsI (ORCPT
+        with ESMTP id S229477AbhFSJtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 05:48:08 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D51CC061574;
-        Sat, 19 Jun 2021 02:45:57 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id g4so16105556qkl.1;
-        Sat, 19 Jun 2021 02:45:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PzhHRAQ5Svkk0I70djnQE5HENy3mID1lQRTd49BDNKg=;
-        b=vW+YLNCLFosuKGCa6q+hnHHqYNXp/k57Va1OC9XIrIkUq8Wk0aJiFck3fzzRM8jd9h
-         Yd0sP0nr4w4at3yrJTuIg049EM+Uz8COeHdwGN3hzOeYRSMJq/O4QWAuS7+kR+l4Pmp8
-         +YHI9pW6fXDDMPSDtBl/9+fmT1De5ICus/AvZvMnaPZik5eN8Y6Viu6ueqBO7OSHppaC
-         v7tcwS0V7CKy88ZaTAZ6FDVst0dhH6cYmKDEj3JfEJI8OVyx0djlq5sUv17LntPpZnMJ
-         RpNRvYfSmUjkyHdmhnmZGNw3yVO3QR7Ib+vAqP6gYV4xnaLwVnmlx729zTcMpIJ5mzfZ
-         bbFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PzhHRAQ5Svkk0I70djnQE5HENy3mID1lQRTd49BDNKg=;
-        b=b9Zv8ISiNsOPW2Jp+tJl3xNyszO9F9NHj09Pwf6fSUxRJ9Y0NMgQbeG4PURdDyyeJD
-         D4IetknrDuncaxmipPHRdTyf5ijuGGV929x3e7bTp21yNxk50gQxwSe26mbtf5nweNI8
-         KBqQzAY6ackYXRy0NSYzwplwtmXWAxMQB4GiLZTeiubIFI5AFp3L9d4ttbggXCM0hvCf
-         yvSfVnv2tGWdM2c3iEoTVOCpWOJwhpG9ETGqB5yQidwhiMs7HP80tx+D4ZaYzUcsCwkt
-         tQPKzIQmxSdJ/Hc4lGCjY0EOZepnOBzpUlXdrsaa87BcPrGNJG9OBTdmsFVCORydqbz+
-         /mhQ==
-X-Gm-Message-State: AOAM531PEFNmGEErMrGJeLqpt+g1f2dif3tTWv4Mo9ILRWPEqc0G31rb
-        EfbwXCzvU4aJMzOaQI5iy8FOa/mXOaEj1aW+T8XDK6DidF0iHA==
-X-Google-Smtp-Source: ABdhPJzqgTsUss+Mlk8wTIbZKaO/PULpJ49bXoyv8GTim81lOQQyKy7c5dnduRsXsY6gra4Z8sR5zEYkSRAPJsWOpYk=
-X-Received: by 2002:a25:26cb:: with SMTP id m194mr19905097ybm.362.1624095956135;
- Sat, 19 Jun 2021 02:45:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <CADxRZqwzbHvMwEB=y_xi2GYK55wtnzycWcUoK_t4q_ccisp+Sg@mail.gmail.com>
- <f9bd5a0e-6f9e-c042-cbfc-2e03bf16b92c@canonical.com>
-In-Reply-To: <f9bd5a0e-6f9e-c042-cbfc-2e03bf16b92c@canonical.com>
-From:   Anatoly Pugachev <matorola@gmail.com>
-Date:   Sat, 19 Jun 2021 12:45:45 +0300
-Message-ID: <CADxRZqz6EZ-K+mWn4A5kp9yZEt1v1YjmFqeZNcf+W99fT2dm8w@mail.gmail.com>
-Subject: Re: [sparc64] kernel panic from running a program in userspace
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Sparc kernel list <sparclinux@vger.kernel.org>,
-        Linux Kernel list <linux-kernel@vger.kernel.org>,
-        debian-sparc <debian-sparc@lists.debian.org>,
-        kernel-testers@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Sat, 19 Jun 2021 05:49:15 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A426C061574;
+        Sat, 19 Jun 2021 02:47:04 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: dafna)
+        with ESMTPSA id D2E9E1F448EC
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+To:     linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-kernel@vger.kernel.org, bin.liu@mediatek.com,
+        rick.chang@mediatek.com
+Cc:     dafna.hirschfeld@collabora.com, hverkuil@xs4all.nl,
+        kernel@collabora.com, dafna3@gmail.com, mchehab@kernel.org,
+        tfiga@chromium.org, matthias.bgg@gmail.com,
+        enric.balletbo@collabora.com
+Subject: [PATCH] media: mtk-jpeg: fix setting plane paylod
+Date:   Sat, 19 Jun 2021 12:46:42 +0300
+Message-Id: <20210619094642.17779-1-dafna.hirschfeld@collabora.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 19, 2021 at 12:31 PM Colin Ian King
-<colin.king@canonical.com> wrote:
->
-> Hi,
->
-> I suspect this issue was fixed with the following commit:
->
-> commit e5e8b80d352ec999d2bba3ea584f541c83f4ca3f
-> Author: Rob Gardner <rob.gardner@oracle.com>
-> Date:   Sun Feb 28 22:48:16 2021 -0700
->
->     sparc64: Fix opcode filtering in handling of no fault loads
+In mtk_jpeg_buf_prepare, in case the format is V4L2_PIX_FMT_JPEG,
+then the payload of the vb2_buffer planes can be overwritten
+only if 'ctx->enable_exif' is true, in that case, the driver is
+a jpeg encoder and the payload is determined by the driver.
 
-Colin,
+If 'ctx->enable_exif' is not set and the format is V4L2_PIX_FMT_JPEG
+then the payload might came from userspace (in case of a decoder)
+and should not be overwritten by the driver.
 
-yes, but I believe that it was quite a different kernel bug.
-Besides, my current kernel test is based on git kernel 5.13.0-rc6
-(released last monday), which already includes the mentioned 'opcode'
-fix.
+In addition, the cb 'queue_setup' should add the MTK_JPEG_MAX_EXIF_SIZE
+to the plane sizes in case the format is V4L2_PIX_FMT_JPEG
+and ctx->enable_exif is set.
 
-> > stress-ng.git$ ./stress-ng --verbose --timeout 10m --opcode -1
-> > stress-ng: debug: [480950] stress-ng 0.12.10 g27f90a2276bd
-> > stress-ng: debug: [480950] system: Linux ttip 5.13.0-rc6 #229 SMP Tue
-> > Jun 15 12:30:23 MSK 2021 sparc64
-> > stress-ng: debug: [480950] RAM total: 7.8G, RAM free: 7.0G, swap free: 768.7M
-> > stress-ng: debug: [480950] 8 processors online, 256 processors configured
-> > stress-ng: info:  [480950] dispatching hogs: 8 opcode
+Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+---
+ .../media/platform/mtk-jpeg/mtk_jpeg_core.c   | 20 ++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c b/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
+index 88a23bce569d..397a27888a84 100644
+--- a/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
++++ b/drivers/media/platform/mtk-jpeg/mtk_jpeg_core.c
+@@ -651,6 +651,7 @@ static int mtk_jpeg_queue_setup(struct vb2_queue *q,
+ 	struct mtk_jpeg_ctx *ctx = vb2_get_drv_priv(q);
+ 	struct mtk_jpeg_q_data *q_data = NULL;
+ 	struct mtk_jpeg_dev *jpeg = ctx->jpeg;
++	unsigned int exif_extra;
+ 	int i;
+ 
+ 	v4l2_dbg(1, debug, &jpeg->v4l2_dev, "(%d) buf_req count=%u\n",
+@@ -660,18 +661,20 @@ static int mtk_jpeg_queue_setup(struct vb2_queue *q,
+ 	if (!q_data)
+ 		return -EINVAL;
+ 
++	exif_extra = ctx->enable_exif && V4L2_TYPE_IS_CAPTURE(q->type) ?
++		     MTK_JPEG_MAX_EXIF_SIZE : 0;
++
+ 	if (*num_planes) {
+ 		for (i = 0; i < *num_planes; i++)
+-			if (sizes[i] < q_data->pix_mp.plane_fmt[i].sizeimage)
++			if (sizes[i] < q_data->pix_mp.plane_fmt[i].sizeimage + exif_extra)
+ 				return -EINVAL;
+ 		return 0;
+ 	}
+ 
+ 	*num_planes = q_data->fmt->colplanes;
+ 	for (i = 0; i < q_data->fmt->colplanes; i++) {
+-		sizes[i] =  q_data->pix_mp.plane_fmt[i].sizeimage;
+-		v4l2_dbg(1, debug, &jpeg->v4l2_dev, "sizeimage[%d]=%u\n",
+-			 i, sizes[i]);
++		sizes[i] =  q_data->pix_mp.plane_fmt[i].sizeimage + exif_extra;
++		v4l2_dbg(1, debug, &jpeg->v4l2_dev, "sizes[%d]=%u\n", i, sizes[i]);
+ 	}
+ 
+ 	return 0;
+@@ -690,12 +693,11 @@ static int mtk_jpeg_buf_prepare(struct vb2_buffer *vb)
+ 
+ 	for (i = 0; i < q_data->fmt->colplanes; i++) {
+ 		plane_fmt = q_data->pix_mp.plane_fmt[i];
+-		if (ctx->enable_exif &&
+-		    q_data->fmt->fourcc == V4L2_PIX_FMT_JPEG)
+-			vb2_set_plane_payload(vb, i, plane_fmt.sizeimage +
++		if (q_data->fmt->fourcc != V4L2_PIX_FMT_JPEG)
++			vb2_set_plane_payload(vb, i, plane_fmt.sizeimage);
++		else if (ctx->enable_exif)
++			vb2_set_plane_payload(vb, i,  plane_fmt.sizeimage +
+ 					      MTK_JPEG_MAX_EXIF_SIZE);
+-		else
+-			vb2_set_plane_payload(vb, i,  plane_fmt.sizeimage);
+ 	}
+ 
+ 	return 0;
+-- 
+2.17.1
+
