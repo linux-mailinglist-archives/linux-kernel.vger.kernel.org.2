@@ -2,160 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B99763AD8A1
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 10:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 634423AD8A9
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 10:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234292AbhFSIhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 04:37:15 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:58582 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234202AbhFSIhO (ORCPT
+        id S234327AbhFSIne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 04:43:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33322 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230032AbhFSInc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 04:37:14 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 7B1951FD2D;
-        Sat, 19 Jun 2021 08:35:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624091703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q+MjFqL+kLBlA8ILICgJ1s2xiR+V4tpKyupBnPQjWVI=;
-        b=2TPmR165IiCFkKmw8g+5DX17lW1HU9W4RL4keeI328TBsuTDRPJCov8UYldh71mXEpGvYF
-        ng87vt+V4KJEgc0c09Vif8J4ygrDLfTEtSDVNdI7R5CPjbTArvmU0+DbLx2DmKz/H1G2/7
-        zh2ed8uzS+ohClI5g9uhVLDM+eT1HkA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624091703;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q+MjFqL+kLBlA8ILICgJ1s2xiR+V4tpKyupBnPQjWVI=;
-        b=QSB6bRJm0LvxXyhXcqNKvKdCXMP3VT/G+tdmMWBD2HqW46OYLa58kDzaUacdrg0SYzV6MM
-        0PdVbR7h+n8067BQ==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 62DA1118DD;
-        Sat, 19 Jun 2021 08:35:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624091703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q+MjFqL+kLBlA8ILICgJ1s2xiR+V4tpKyupBnPQjWVI=;
-        b=2TPmR165IiCFkKmw8g+5DX17lW1HU9W4RL4keeI328TBsuTDRPJCov8UYldh71mXEpGvYF
-        ng87vt+V4KJEgc0c09Vif8J4ygrDLfTEtSDVNdI7R5CPjbTArvmU0+DbLx2DmKz/H1G2/7
-        zh2ed8uzS+ohClI5g9uhVLDM+eT1HkA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624091703;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q+MjFqL+kLBlA8ILICgJ1s2xiR+V4tpKyupBnPQjWVI=;
-        b=QSB6bRJm0LvxXyhXcqNKvKdCXMP3VT/G+tdmMWBD2HqW46OYLa58kDzaUacdrg0SYzV6MM
-        0PdVbR7h+n8067BQ==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id OyGBFzeszWBkQAAALh3uQQ
-        (envelope-from <bp@suse.de>); Sat, 19 Jun 2021 08:35:03 +0000
-Date:   Sat, 19 Jun 2021 10:34:53 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V3 01/66] x86/fpu: x86/fpu: Preserve supervisor states in
- sanitize_restored_user_xstate()
-Message-ID: <YM2sLY56q4LIxv6t@zn.tnic>
-References: <20210618141823.161158090@linutronix.de>
- <20210618143444.438635017@linutronix.de>
+        Sat, 19 Jun 2021 04:43:32 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A7DDC061574;
+        Sat, 19 Jun 2021 01:41:22 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso8225271pjx.1;
+        Sat, 19 Jun 2021 01:41:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OTx6q5PnXq+yGS2yZ7d+MKeUb58X7yAoJp+atwowZSw=;
+        b=c5c2+U0N0+79Mckt6pAaqn1Im1dEZCItC/bgPnCF5XmctsnUZrmCtbDSDvkvZ+mbxP
+         ePKmJMnfLY5ZiKWGq5pw9opXQ7ivT9r8+qsj7+MWEFOgadXMZN5ausc+I61Q1/97kJCU
+         iF7tUczgFcChc5AkbMdhpCDR9DZVuDZC806vx0VfP83Lgd5VKEj022rRxbFl8pbvOQM4
+         x1MB4jNK3o9ryK6trkcP/igjOm0EPstXX/MMaDaVQhAfTGBf29CjogANY7q7VrHIELLs
+         2FHkHympM5RqUHlIH7NwqCtzCwW0iAExxLsM1doKwpUB5ecNMpZr9PAEQSI28DaxOpbe
+         R0mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OTx6q5PnXq+yGS2yZ7d+MKeUb58X7yAoJp+atwowZSw=;
+        b=N5Kw0PChN1Ngtz5n3EZxHDmIbJWtgbSJSkkSxkss6j4LSVle05pDnPN9IP1ZV3XnEc
+         RXGrYS57wWaFT1FL0yAvc2MaG3LLD9poL16I3l4+vo8UGWzGGnRe7u+33Yd5VlP2T4NC
+         +lq+sB3uftvtP8MI0Bjt3b5wIbvQRw7PlkLuQPDwgCAPG0Ocsp2IrZR1zoYlx4bfJ3Zc
+         6D3Tr+H70HZiGXtrsP7VPIsBvyGXANcSYuxTQUoYaFgUN1XbOvy2YjayHC/+dAdfEF91
+         PqwL1NG7mVZi7zNiZgfogyS7VrG961SKZwINqKnG2KW/NSU2QDhgD9KCu6GYZSQT8heK
+         SOrw==
+X-Gm-Message-State: AOAM533TuBMVhbGTsGiHY9nq3JtZ5IYSNer9IJSJwkKpNlmDaWk82anb
+        TKnWfSdyDBrkdiRx5aA0XnI=
+X-Google-Smtp-Source: ABdhPJwHZPSRKMK4Xx9Du44YE9frNlglRxbJeMbwobTX2fVSIbdUZuKj318obreCw31gIg4PSQGepQ==
+X-Received: by 2002:a17:90a:4503:: with SMTP id u3mr15791921pjg.210.1624092081583;
+        Sat, 19 Jun 2021 01:41:21 -0700 (PDT)
+Received: from localhost ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id v6sm10153921pfi.46.2021.06.19.01.41.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Jun 2021 01:41:21 -0700 (PDT)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     jmaloy@redhat.com
+Cc:     ying.xue@windriver.com, davem@davemloft.net, kuba@kernel.org,
+        netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, lxin@redhat.com,
+        hoang.h.le@dektech.com.au, Menglong Dong <dong.menglong@zte.com.cn>
+Subject: [PATCH v5 net-next 0/2] net: tipc: fix FB_MTU eat two pages and do some code cleanup
+Date:   Sat, 19 Jun 2021 16:41:04 +0800
+Message-Id: <20210619084106.3657-1-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210618143444.438635017@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 04:18:24PM +0200, Thomas Gleixner wrote:
-> Subject: Re: [patch V3 01/66] x86/fpu: x86/fpu: Preserve supervisor states in
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-Prefix repeated.
+In the first patch, FB_MTU is redefined to make sure data size will not
+exceed PAGE_SIZE. Besides, I removed the alignment for buf_size in
+tipc_buf_acquire, because skb_alloc_fclone will do the alignment job.
 
-> From: Thomas Gleixner <tglx@linutronix.de>
-> 
-> sanitize_restored_user_xstate() preserves the supervisor states only
-> when the fx_only argument is zero, which allows unpriviledged user space
-> to put supervisor states back into init state.
+In the second patch, I removed align() in msg.c and replace it with
+BUF_ALIGN().
 
-Yikes.
+Changes since V4:
+- remove ONE_PAGE_SKB_SZ and replace it with one_page_mtu in the first
+  patch.
+- fix some code style problems for the second patch.
 
-> Preserve them unconditionally.
-> 
-> Fixes: 5d6b6a6f9b5c ("x86/fpu/xstate: Update sanitize_restored_xstate() for supervisor xstates")
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: stable@vger.kernel.org
-> ---
->  arch/x86/kernel/fpu/signal.c |   26 ++++++++------------------
->  1 file changed, 8 insertions(+), 18 deletions(-)
-> 
-> --- a/arch/x86/kernel/fpu/signal.c
-> +++ b/arch/x86/kernel/fpu/signal.c
-> @@ -221,28 +221,18 @@ sanitize_restored_user_xstate(union fpre
->  
->  	if (use_xsave()) {
->  		/*
-> -		 * Note: we don't need to zero the reserved bits in the
-> -		 * xstate_header here because we either didn't copy them at all,
-> -		 * or we checked earlier that they aren't set.
-> +		 * Clear all features bit which are not set in
 
-			    feature bits
+Menglong Dong (2):
+  net: tipc: fix FB_MTU eat two pages
+  net: tipc: replace align() with ALIGN in msg.c
 
-> +		 * user_xfeatures and clear all extended features
-> +		 * for fx_only mode.
->  		 */
-> +		u64 mask = fx_only ? XFEATURE_MASK_FPSSE : user_xfeatures;
->  
->  		/*
-> -		 * 'user_xfeatures' might have bits clear which are
-> -		 * set in header->xfeatures. This represents features that
-> -		 * were in init state prior to a signal delivery, and need
-> -		 * to be reset back to the init state.  Clear any user
-> -		 * feature bits which are set in the kernel buffer to get
-> -		 * them back to the init state.
-> -		 *
-> -		 * Supervisor state is unchanged by input from userspace.
-> -		 * Ensure supervisor state bits stay set and supervisor
-> -		 * state is not modified.
-> +		 * Supervisor state has to be preserved. The sigframe
-> +		 * restore can only modify user features, i.e. @mask
-> +		 * cannot contain them.
->  		 */
-> -		if (fx_only)
-> -			header->xfeatures = XFEATURE_MASK_FPSSE;
-> -		else
-> -			header->xfeatures &= user_xfeatures |
-> -					     xfeatures_mask_supervisor();
-> +		header->xfeatures &= mask | xfeatures_mask_supervisor();
-
-With those addressed:
-
-Reviewed-by: Borislav Petkov <bp@suse.de>
-
-Thx.
+ net/tipc/bcast.c |  2 +-
+ net/tipc/msg.c   | 27 +++++++++++----------------
+ net/tipc/msg.h   |  3 ++-
+ 3 files changed, 14 insertions(+), 18 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.32.0
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
