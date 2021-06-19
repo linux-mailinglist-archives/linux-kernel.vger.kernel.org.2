@@ -2,117 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C44C3ADAE7
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 18:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B318E3ADAE5
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 18:28:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234784AbhFSQbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 12:31:09 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:33708 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232959AbhFSQbI (ORCPT
+        id S234763AbhFSQaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 12:30:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232959AbhFSQaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 12:31:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1624119953;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=RT/Z+HTuBHVYZyc8sHkhkVJxAthV/PxHFaygLMLHaKE=;
-    b=pHc5df34V7CZBMWNwLaQ2bRjKTlgS+Z7yagyXLQ7IGLPssw/0Motm6yYS0KMfYlNjr
-    1yAmOMYCHvEsPBowKfoH76whD9log5vyBc2nKextmG15A3AUoPByK0hfjBVkWY+h8DXr
-    wdnc+isLc9v7IKzYtMksk7vrwyCcP32K6Hh9iLH6SE52oPUUd7YpTwuM6TGNJ903ISil
-    Bk7XPqqvDTnMtWG3y34fcLgHGWUBn86QVT0JQjbIaiSJKyfheaQQE9asdPks1fSK2g6C
-    +7c0LEmRglKHQbDJMIZCslLRDBfT5maTBVHSjTTm7LOT0MrGBS//cmfmxpGla6L77toM
-    T1tQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3TMaFqTEVR9J8xozF0="
-X-RZG-CLASS-ID: mo00
-Received: from [192.168.50.177]
-    by smtp.strato.de (RZmta 47.27.3 DYNA|AUTH)
-    with ESMTPSA id N0b2dax5JGPr3mm
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Sat, 19 Jun 2021 18:25:53 +0200 (CEST)
-Subject: Re: [PATCH] can: bcm: delay release of struct bcm_op after
- synchronize_rcu
-To:     Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
-        linux-can@vger.kernel.org
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        syzbot+0f7e7e5e2f4f40fa89c0@syzkaller.appspotmail.com,
-        Norbert Slusarek <nslusarek@gmx.net>
-References: <20210619161813.2098382-1-cascardo@canonical.com>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <685d97b7-3129-251f-9b44-03c636a44845@hartkopp.net>
-Date:   Sat, 19 Jun 2021 18:25:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sat, 19 Jun 2021 12:30:11 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D2D3C061574;
+        Sat, 19 Jun 2021 09:27:59 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id hv20so15043265ejc.12;
+        Sat, 19 Jun 2021 09:27:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lW8P034mJuoO9/n8/vxpCs/CxHgMLpd5lKfr+WkihzU=;
+        b=u/6/X5PEqtIAiinN1SY9A4nz7A6SKbkQhloYdjTkrsxOcmsTK2hY1/lTjbvPuep63S
+         YeY1qCKc/bx2jBHa/UkyyqUQ/WHZ2nPwQObOQRNgdDUPF5vtNkFGVRE+0XrNt5wq3b15
+         WVcwWcaAT7zjd836Khee+M9H4dsjA+kQziowM0iPGSFs6S+QfgunqWtCkz1gMldybKL1
+         6+D9R/cyXyLnV9AOv1TopZSP6Zea2dtw2hecC5q8yiOj+TnnmNdrZ22swgfhlsJQnqk1
+         85HsKRGPUdZwha7y/EfM0g6pqSl7jmY49lsYKgRnLLTNJM3zbU9Df7C/J37F8cA2XbF0
+         hN7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lW8P034mJuoO9/n8/vxpCs/CxHgMLpd5lKfr+WkihzU=;
+        b=qxnXuLYQGpiMMMW1Ut93Lt7ZRlNKKn8rjxcmEUjb4M78nfv34pWCStyxmYULTs/Wpk
+         BGK4AbBb/ur1Yqe29QhsdLiuytnVel1QSOSRCd5vnilQ9/Pg/p6TVbZW/mLmYrAuIngv
+         aVcQuE/tXu4z+JmCgh4h1uqUD3dmUar5Ho0J4JN3oeY2m8bCSrCCcw7DxXW7OlWmjwiT
+         9GUdusMu6xfpcuEenSAZpWXHLhPMby6TjyC7qB6fQ0tEETF4kAqYNaMGuA3nT/ZndLtt
+         W482ZuztjpmkDogQllAcUwIsTqy41Fy/DHtvD6KwrbCx/2VHCuM2EGT921Z9wLZaRLHi
+         c38A==
+X-Gm-Message-State: AOAM530YfgL43FGdYmWGNN+C3GeeYdC1hT8Am2Ya4/M36X9vkJDIJObz
+        +yKoMtbRzERuMntbyJiXlwI=
+X-Google-Smtp-Source: ABdhPJyZLGWOIqEaT70/yOHvoyck69CYgikbWxSnZqgXMjUImvlXeCa33X/vUeLi67D3AKKnlLK+Ag==
+X-Received: by 2002:a17:907:c16:: with SMTP id ga22mr16448264ejc.116.1624120077787;
+        Sat, 19 Jun 2021 09:27:57 -0700 (PDT)
+Received: from localhost.localdomain (dh207-99-202.xnet.hr. [88.207.99.202])
+        by smtp.googlemail.com with ESMTPSA id s11sm7399248edd.65.2021.06.19.09.27.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Jun 2021 09:27:57 -0700 (PDT)
+From:   Robert Marko <robimarko@gmail.com>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Robert Marko <robimarko@gmail.com>
+Subject: [PATCH] arm64: dts: ipq8074: Add QUP6 I2C node
+Date:   Sat, 19 Jun 2021 18:27:51 +0200
+Message-Id: <20210619162751.2336974-1-robimarko@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210619161813.2098382-1-cascardo@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add node to support the QUP6 I2C controller inside
+of IPQ8074.
+It is exactly the same as QUP2 and QUP3 controllers.
 
+Some routers like Xiaomi AX9000 and Netgear RBK850
+use this bus.
 
-On 19.06.21 18:18, Thadeu Lima de Souza Cascardo wrote:
-> can_rx_register callbacks may be called concurrently to the call to
-> can_rx_unregister. The callbacks and callback data, though, are protected by
-> RCU and the struct sock reference count.
-> 
-> So the callback data is really attached to the life of sk, meaning that it
-> should be released on sk_destruct. However, bcm_remove_op calls tasklet_kill,
-> and RCU callbacks may be called under RCU softirq, so that cannot be used on
-> kernels before the introduction of HRTIMER_MODE_SOFT.
-> 
-> However, bcm_rx_handler is called under RCU protection, so after calling
-> can_rx_unregister, we may call synchronize_rcu in order to wait for any RCU
-> read-side critical sections to finish. That is, bcm_rx_handler won't be called
-> anymore for those ops. So, we only free them, after we do that synchronize_rcu.
-> 
-> Reported-by: syzbot+0f7e7e5e2f4f40fa89c0@syzkaller.appspotmail.com
-> Reported-by: Norbert Slusarek <nslusarek@gmx.net>
-> Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Signed-off-by: Robert Marko <robimarko@gmail.com>
+---
+ arch/arm64/boot/dts/qcom/ipq8074.dtsi | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-Fixes: ffd980f976e7 ("[CAN]: Add broadcast manager (bcm) protocol")
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+index a5b16e151485..07404cdbf697 100644
+--- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+@@ -455,6 +455,21 @@ blsp1_i2c3: i2c@78b7000 {
+ 			status = "disabled";
+ 		};
+ 
++		blsp1_i2c6: i2c@78ba000 {
++			compatible = "qcom,i2c-qup-v2.2.1";
++			#address-cells = <1>;
++			#size-cells = <0>;
++			reg = <0x078ba000 0x600>;
++			interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&gcc GCC_BLSP1_AHB_CLK>,
++				 <&gcc GCC_BLSP1_QUP6_I2C_APPS_CLK>;
++			clock-names = "iface", "core";
++			clock-frequency = <100000>;
++			dmas = <&blsp_dma 23>, <&blsp_dma 22>;
++			dma-names = "rx", "tx";
++			status = "disabled";
++		};
++
+ 		qpic_bam: dma-controller@7984000 {
+ 			compatible = "qcom,bam-v1.7.0";
+ 			reg = <0x07984000 0x1a000>;
+-- 
+2.31.1
 
-Thanks Norbert for reporting and Thadeu for working out the fix!
-
-Best regards,
-Oliver
-
-> ---
->   net/can/bcm.c | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/net/can/bcm.c b/net/can/bcm.c
-> index f3e4d9528fa3..c67916020e63 100644
-> --- a/net/can/bcm.c
-> +++ b/net/can/bcm.c
-> @@ -785,6 +785,7 @@ static int bcm_delete_rx_op(struct list_head *ops, struct bcm_msg_head *mh,
->   						  bcm_rx_handler, op);
->   
->   			list_del(&op->list);
-> +			synchronize_rcu();
->   			bcm_remove_op(op);
->   			return 1; /* done */
->   		}
-> @@ -1533,6 +1534,11 @@ static int bcm_release(struct socket *sock)
->   					  REGMASK(op->can_id),
->   					  bcm_rx_handler, op);
->   
-> +	}
-> +
-> +	synchronize_rcu();
-> +
-> +	list_for_each_entry_safe(op, next, &bo->rx_ops, list) {
->   		bcm_remove_op(op);
->   	}
->   
-> 
