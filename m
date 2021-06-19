@@ -2,144 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B883AD9C8
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 13:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC013AD9D0
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 13:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233731AbhFSLXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 07:23:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39962 "EHLO
+        id S233766AbhFSL3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 07:29:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233146AbhFSLXd (ORCPT
+        with ESMTP id S233146AbhFSL3A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 07:23:33 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 840C4C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 04:21:21 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id h16so7204091pjv.2
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 04:21:21 -0700 (PDT)
+        Sat, 19 Jun 2021 07:29:00 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C35DC061574;
+        Sat, 19 Jun 2021 04:26:48 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id f70so17668132qke.13;
+        Sat, 19 Jun 2021 04:26:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=vF9uOfHJd5f9mPzqhhnKRBmuIenlnkTe2hqoo2WNujU=;
-        b=jAcNBEWYtlgil0B8TcQV7IQbsRXT3FQsWsDLHO+2T1Ffyy6WccQN/jydqkKOSWB8AI
-         pogmvFeIUzz+zjyROLCR+PLIFTXtDFneTZ1FIzUoDVUBBbMC1Crpofblz5ShHlDHvH4b
-         7a8+wCPKFbUnA9w9Hw4BGgv2tMIwMsftki8nHinptNBWBbFZejX3w18AyXuulYyb6A96
-         6qS0gSTtaLgI78bl/mpHi3UOrNkoVLhKNwlu1QVjwYnAljQwB6rg9Xhha1s4okjT+ojM
-         5pOZAv1rWdGS2inD+2jhDwUVNoq1NA8U3r4YKuZ8WhaULE9XiGeDsCWkqSokbrRsuBTU
-         ST6Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3qptZHIBpv3JxNQPkyiO+mSheyAcYqB/CsUvSm+UpOU=;
+        b=vdXQ0zFaCYeb3u6QxofEl6GX56wlrAOqgRXV8CZe9Vlc7Uevz6a5sP5aeuPNNrxx1j
+         /8iJsG8vNyasPhbG87LpsE5NTTvPhTAEgZGtLUruqLYIrPg+ZjibFeQUKZNubCHUpRoo
+         HtZqojcW3xs35EeNV9lFWLCgFJ2HngBTnMux0lsScchul7xMlpGLiKIUrAhzqd3KPrPv
+         emCjGqcHpuKkj9GOC9eeVzdr8bj8a312siQrobqErLBk8g7FGNchsLNwZJ4B7F0Vta+G
+         vcwJcnkVa0A0wQJXFWcZoo+Rpn0YAkfWlpvYq6veEgt1u6lg2Cp5x5hROb11Kj1eIHbL
+         d58w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=vF9uOfHJd5f9mPzqhhnKRBmuIenlnkTe2hqoo2WNujU=;
-        b=OTtEpZm7Zh08nIsG44wepOsrIQxsGxknm6uzNdhTkBNcZ/tjDJdSAWpqe+NZTq/gAM
-         tiJDE/w7qw7fA7G8UedhY8ZctDhI09D/hPfamiPwWAkeyoubRAvx3ghKxjT//YOw+hdc
-         zBF/7hzZTPtBiN6GJvqHjX4WENbfZVgzGK0rpXzzWl4OehQzrayhsALSKc/5KMRMi26H
-         uz1uxueKhr4rxwHY0XgNUKVlY6ncwzz/k2esBB4DhlGi75BIluPZmGCXb8uV+KhQbV7U
-         0R7kxCzwS23oIgtyRuZXh4ilDk6Mn/Pog01aLP/WyUuq2hZBzpiDePr6WCmDTDJCRbxL
-         p+Pg==
-X-Gm-Message-State: AOAM532HxS2aVS1t8rZkSTwKrR90l0GZIMa8Ns73lcepjIrBuZ+JWgX/
-        cSpBOaxlg69EPEvf9JiJtc39fuMTHAe0GQ==
-X-Google-Smtp-Source: ABdhPJyfWmxhkH1IA4NxqFHIOul9JxnZQCQu1y3miRlYPE/Ny2zthirr1eWHuQI8jm8AMXKvu4y5/w==
-X-Received: by 2002:a17:902:9a4c:b029:119:d507:dccd with SMTP id x12-20020a1709029a4cb0290119d507dccdmr8856951plv.55.1624101680959;
-        Sat, 19 Jun 2021 04:21:20 -0700 (PDT)
-Received: from [192.168.1.153] (87.19.178.217.shared.user.transix.jp. [217.178.19.87])
-        by smtp.gmail.com with ESMTPSA id z15sm12255218pgu.71.2021.06.19.04.21.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Jun 2021 04:21:20 -0700 (PDT)
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-From:   Akira Tsukamoto <akira.tsukamoto@gmail.com>
-Subject: [PATCH v2 0/5] riscv: improving uaccess with logs from network bench
-Message-ID: <5a5c07ac-8c11-79d3-46a3-a255d4148f76@gmail.com>
-Date:   Sat, 19 Jun 2021 20:21:17 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3qptZHIBpv3JxNQPkyiO+mSheyAcYqB/CsUvSm+UpOU=;
+        b=lC8LBk8PpKKw6vW3mDE/lFbyr3sq7ya/Hg+2YriiW3LdMplVMxUxrKydD1C1DUWOkc
+         JUcFMcUE+Ymk9yYwvBiuI/N+Dd0jXcEvMsRoJhhiTVEd6wBS7Ylu9tu7B6c81vKqdECS
+         bjSfRDSno9lhgcEp1gjr+gi0h4RQb/yAJDxYml3h6VGxlzyEz51HMsP+VYAsb8IGZIkg
+         vwaCI/ASHdsl+C8/hQV23Qa7HL+UBassWwI6t0Y8Z+9ml8aU8T4M+uFuUQv67SrVgEyn
+         /8Oxmz2F8i2JhPV/8wl0ODzN8RowEI9nnkl51PSmZvCGfoWopVEUp8PLjV7CVOQtK0Zf
+         vpDA==
+X-Gm-Message-State: AOAM531MxG7f6wqepoWGH+Rx6isf490chOyYwdljTuIRvdra0F9p2vFl
+        LxVWF+RWrUEM3jNXlH3lyLPTCOTcs40kPk3KvYk=
+X-Google-Smtp-Source: ABdhPJy1asqv8Q5Z5vk+ewOuWO+vnAY3L/cXdjdtq+Yq0qTpukFXoDsNrmSnALn1koXZNPc6uasYqmp5kayEy3tGsM4=
+X-Received: by 2002:a5b:892:: with SMTP id e18mr19183246ybq.22.1624102007702;
+ Sat, 19 Jun 2021 04:26:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20210618233023.1360185-1-ndesaulniers@google.com> <20210618233023.1360185-2-ndesaulniers@google.com>
+In-Reply-To: <20210618233023.1360185-2-ndesaulniers@google.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Sat, 19 Jun 2021 13:26:37 +0200
+Message-ID: <CANiq72kjyiAQn2+ijZKFo7SY3z+dCV6fGXYP1O_Mq7Ui3EqSzQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] compiler_attributes.h: define __no_profile, add to noinstr
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Bill Wendling <wcw@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, Martin Liska <mliska@suse.cz>,
+        Marco Elver <elver@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Fangrui Song <maskray@google.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>, johannes.berg@intel.com,
+        linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Optimizing copy_to_user and copy_from_user.
+On Sat, Jun 19, 2021 at 1:30 AM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> +/*
+> + * Optional: only supported since clang >= 13
+> + *      gcc: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80223
+> + *    clang: https://clang.llvm.org/docs/AttributeReference.html#no_profile
+> + */
 
-I rewrote the functions in v2, heavily influenced by Garry's memcpy
-function [1].
-The functions must be written in assembler to handle page faults manually
-inside the function.
+I am not sure if it is best or not to have the GCC link in order to be
+consistent with the rest of the links (they are for the docs only). Do
+we know if GCC going to implement it soon?
 
-With the changes, improves in the percentage usage and some performance
-of network speed in UDP packets.
-Only patching copy_user. Using the original memcpy.
+Otherwise, it looks good to me.
 
-All results are from the same base kernel, same rootfs and same
-BeagleV beta board.
-
-Comparison by "perf top -Ue task-clock" while running iperf3.
-
---- TCP recv ---
-  * Before
-   40.40%  [kernel]  [k] memcpy
-   33.09%  [kernel]  [k] __asm_copy_to_user
-  * After
-   50.35%  [kernel]  [k] memcpy
-   13.76%  [kernel]  [k] __asm_copy_to_user
-
---- TCP send ---
-  * Before
-   19.96%  [kernel]  [k] memcpy
-    9.84%  [kernel]  [k] __asm_copy_to_user
-  * After
-   14.27%  [kernel]  [k] memcpy
-    7.37%  [kernel]  [k] __asm_copy_to_user
-
---- UDP send ---
-  * Before
-   25.18%  [kernel]  [k] memcpy
-   22.50%  [kernel]  [k] __asm_copy_to_user
-  * After
-   28.90%  [kernel]  [k] memcpy
-    9.49%  [kernel]  [k] __asm_copy_to_user
-
---- UDP recv ---
-  * Before
-   44.45%  [kernel]  [k] memcpy
-   31.04%  [kernel]  [k] __asm_copy_to_user
-  * After
-   55.62%  [kernel]  [k] memcpy
-   11.22%  [kernel]  [k] __asm_copy_to_user
-
-Processing network packets require a lot of unaligned access for the packet
-header, which is not able to change the design of the header format to be
-aligned.
-And user applications call system calls with a large buffer for send/recf()
-and sendto/recvfrom() to repeat less function calls for the optimization.
-
-v1 -> v2:
-- Added shift copy
-- Separated patches for readability of changes in assembler
-- Using perf results
-
-[1] https://lkml.org/lkml/2021/2/16/778
-
-Akira Tsukamoto (5):
-   riscv: __asm_to/copy_from_user: delete existing code
-   riscv: __asm_to/copy_from_user: Adding byte copy first
-   riscv: __asm_to/copy_from_user: Copy until dst is aligned address
-   riscv: __asm_to/copy_from_user: Bulk copy while shifting misaligned
-     data
-   riscv: __asm_to/copy_from_user: Bulk copy when both src dst are
-     aligned
-
-  arch/riscv/lib/uaccess.S | 181 +++++++++++++++++++++++++++++++--------
-  1 file changed, 146 insertions(+), 35 deletions(-)
-
--- 
-2.17.1
-
+Cheers,
+Miguel
