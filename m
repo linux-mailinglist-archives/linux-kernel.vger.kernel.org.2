@@ -2,189 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D573AD7E0
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 06:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9A23AD7E3
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 06:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232951AbhFSEnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 00:43:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37680 "EHLO
+        id S233149AbhFSErc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 00:47:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229971AbhFSEnW (ORCPT
+        with ESMTP id S232965AbhFSEra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 00:43:22 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A76B7C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 21:41:12 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id g192so1604451pfb.6
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 21:41:12 -0700 (PDT)
+        Sat, 19 Jun 2021 00:47:30 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59A33C061760
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 21:45:19 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id o3so12993321wri.8
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 21:45:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=L+FkwuKoKiTPSoSjVlEsRP6H4c6gq5WUFtj0/g0L8iw=;
-        b=BPKaVlyFFNrMbLIyT5/ssBznlQHvvlhArZbGZcAQdZp1hDyZoeP1C1tb0+DplIcY9i
-         HUP9GK9CRVLyM+EaFUv+iIZAUbrKNvdpLwj7QeaKFWlRDRYGdqZH6OVHBcMoVZEuLwuW
-         y8ZZfi2AqfytK0uIXfEfWmD8THwl25h6nsP3V6/2T8By/zkrmH8qb5LI7NgFdUG4lnCT
-         Fb/lEnkuhfVg7OoVevrGhNwr+vH7GhdJygFvPtFpCq9TP4SyoPCtRgtDlW1R8tKliFf5
-         Ok3ryGFiMA5EZExlj6IppDpDRxnxTlo1R4ibuZWVUdhGIOe8ukQhYqQUoj9nxwuS+11t
-         TrXg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=idsAK6GUcXFkxK0P/rvOOxu0Fst33XB043NfWRK/EsI=;
+        b=SvnQNhK5Fw2psUOj4KHtI/SAF52lMkQiVEXCSX4RJRXPpY/8BpY60EV/m2Aa9A4g2J
+         RmIjnCzLmcmtCV757thEy4OsBlq0DdNvzebs3PeYpiznHTu/bMXWUUf8ULIftJeuibUx
+         +I/HE9M+Sb+q8CmGRY034/OZouxVGbl6NkSzhdf0+DFtmNbdt5u+sHhfu7GcYeiOx7m6
+         cW1jC5H9O6K7nhAso75Pi60OcHii0DIVHfiwjOxifhA+wn8yCCTXeZ70JPvhfyNEY7hv
+         S4GiUyHTZETcOCSdJblRNhoEQdt+PtnpLdIoyvI21Jwc+ebe4iPwcXMocB7Gkc+wzKkQ
+         udUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=L+FkwuKoKiTPSoSjVlEsRP6H4c6gq5WUFtj0/g0L8iw=;
-        b=gSaCKF3OE42riGQb0Ab4dKs8GqHhJ3j+EqvOVFlBoxd0WqSylidz6f3xltSaHrRFFQ
-         eyYt+7gFFj1j9OHLpjY6Nov3zInWc4FZLIxpqmikHWQ8rnRlX2PNA7Av44SvggZECCq+
-         Zm5PmRWoI5Om5IZWLsQ2xIqk4YJeVJ47Ta3XBlq//jSP9gNoDvf3lf5AftHvTaTmvMBd
-         4PdaOVB+f7mzFhcRYQL7lhODuUf5qsXpSRF7LAEkDybwAxCI4E2fB0xk3rTo9iRZgfW4
-         wk1ne8EU1V+au4euP2cxp+z9DAuhcaNr5A+DACVRK3fds87x/VxnOyEU+7iI+lj1D2ty
-         MnsQ==
-X-Gm-Message-State: AOAM533nMaSzcxUOkCsGkIXpW+1s/sXrg3UFbKwA7jrvJcfigfAKbrXj
-        kE7evCSURZsEHrFNsoxfwUSG
-X-Google-Smtp-Source: ABdhPJxSTRhdopdhslvzxn3+uPeYSgdTaw/74YCyMv9DhLc9/WvHi67mBrWQDGiot26tNlJ5Y2LhuA==
-X-Received: by 2002:a05:6a00:1146:b029:2fe:d681:fbcc with SMTP id b6-20020a056a001146b02902fed681fbccmr8592085pfm.31.1624077671932;
-        Fri, 18 Jun 2021 21:41:11 -0700 (PDT)
-Received: from workstation ([120.138.12.53])
-        by smtp.gmail.com with ESMTPSA id q4sm9487870pfg.3.2021.06.18.21.41.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 18 Jun 2021 21:41:11 -0700 (PDT)
-Date:   Sat, 19 Jun 2021 10:11:07 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        carl.yin@quectel.com, naveen.kumar@quectel.com,
-        loic.poulain@linaro.org
-Subject: Re: [PATCH v2] bus: mhi: pci_generic: Apply no-op for wake using
- sideband wake boolean
-Message-ID: <20210619044107.GB4889@workstation>
-References: <1624053302-22470-1-git-send-email-bbhatt@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=idsAK6GUcXFkxK0P/rvOOxu0Fst33XB043NfWRK/EsI=;
+        b=JnDKHMEdITsTdcVR8JEOn1ocFlymneU8yyyAwqPosAeyba+VTKQsb6cIrnRat7LZXw
+         UCf6YTzlFf/I1hx9PjaTzMQnRQBCW/xnM3WKkR8yT9sbFnydV+E6+NLNYa3minYIrgk8
+         rGHm5O30fhfKGOG5JsB0iySr+YzfDdt4dNngezvaniiGWC4O13U+D2ZXaWP3v4PHjHgs
+         MKN2fumevO6tGzRHwx36BlhKaiqf+aBQM2cHoMSg8hwP3sOAaA02+LJf4w6IEJoVFyRx
+         3PZt6T7aw1WQXb5k0o+TTjbpZf5t1l/TzWriuFDf7n6xXyiqRRxN4bPNIjButqyq8vrc
+         Eu0w==
+X-Gm-Message-State: AOAM530p/qbihuqc6bTBubbYylfKxssCFmXYmv3ka8leiVyNszIkFY6C
+        BPRFneFZuPTyxS/TfeA6qq/rfaMnZQORdpl3dGig9Q==
+X-Google-Smtp-Source: ABdhPJzRdAi53rmEs5yNcu8lpH3vJulYPlhvTRikeoGaCYRL/vh2fMrYN5Lb/d6rikq3nOqtev+5bHzoG6T8YTvdB30=
+X-Received: by 2002:a05:6000:1c1:: with SMTP id t1mr15550367wrx.282.1624077917613;
+ Fri, 18 Jun 2021 21:45:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1624053302-22470-1-git-send-email-bbhatt@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210617184216.2075588-1-irogers@google.com> <20210617184216.2075588-2-irogers@google.com>
+ <YMugKlkH7lTWxTQ/@kernel.org> <YMzOpgZPJeC2jGKf@kernel.org>
+In-Reply-To: <YMzOpgZPJeC2jGKf@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Fri, 18 Jun 2021 21:45:05 -0700
+Message-ID: <CAP-5=fXFgOz5V3_yCHEENtRsQdgCDEK=fWMri84FPD1ivC2w+A@mail.gmail.com>
+Subject: Re: [PATCH 2/4] perf test: Pass the verbose option to shell tests
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 02:55:02PM -0700, Bhaumik Bhatt wrote:
-> Devices such as SDX24 do not have the provision for inband wake
-> doorbell in the form of channel 127 and instead have a sideband
-> GPIO for it. Newer devices such as SDX55 or SDX65 support inband
-> wake method by default. Ensure the functionality is used based on
-> this such that device wake stays held when a client driver uses
-> mhi_device_get() API or the equivalent debugfs entry.
-> 
-> Fixes: e3e5e6508fc1 ("bus: mhi: pci_generic: No-Op for device_wake operations")
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+On Fri, Jun 18, 2021 at 9:49 AM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> Em Thu, Jun 17, 2021 at 04:19:06PM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Thu, Jun 17, 2021 at 11:42:14AM -0700, Ian Rogers escreveu:
+> > > Having a verbose option will allow shell tests to provide extra failure
+> > > details when the fail or skip.
+> >
+> >
+> > Thanks, applied to perf/core.
+> >
+> > - Arnaldo
+> >
+> > > Signed-off-by: Ian Rogers <irogers@google.com>
+> > > ---
+> > >  tools/perf/tests/builtin-test.c | 5 ++++-
+> > >  1 file changed, 4 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+> > > index cbbfe48ab802..a8160b1684de 100644
+> > > --- a/tools/perf/tests/builtin-test.c
+> > > +++ b/tools/perf/tests/builtin-test.c
+> > > @@ -577,11 +577,14 @@ struct shell_test {
+> > >  static int shell_test__run(struct test *test, int subdir __maybe_unused)
+> > >  {
+> > >     int err;
+> > > -   char script[PATH_MAX];
+> > > +   char script[PATH_MAX + 3];
+> > >     struct shell_test *st = test->priv;
+> > >
+> > >     path__join(script, sizeof(script), st->dir, st->file);
+>
+> probably you need to add a  '- 3' after the sizeof above, right?
 
-One minor nit below but I'll fix it while applying.
+Either way is fine, but -3 is ok with me.
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > >
+> > > +   if (verbose)
+> > > +           strncat(script, " -v", sizeof(script));
+> > > +
+>
+> Seemed simple enough, but gcc knows better, I'm removing this one:
+>
+>     tests/builtin-test.c:586:26: error: the value of the size argument in 'strncat' is too large, might lead to a buffer overflow [-Werror,-Wstrncat-size]
+>                     strncat(script, " -v", sizeof(script));
+>                                            ^~~~~~~~~~~~~~
+>     tests/builtin-test.c:586:26: note: change the argument to be the free space in the destination buffer minus the terminating null byte
+>                     strncat(script, " -v", sizeof(script));
+>                                            ^~~~~~~~~~~~~~
+>                                            sizeof(script) - strlen(script) - 1
+>     1 error generated.
+>     make[3]: *** [/git/perf-5.13.0-rc4/tools/build/Makefile.build:139: tests] Error 2
+>   77    31.98 ubuntu:21.04                  : FAIL gcc version 10.3.0 (Ubuntu 10.3.0-1ubuntu1)
+>     tests/builtin-test.c:586:26: error: the value of the size argument in 'strncat' is too large, might lead to a buffer overflow [-Werror,-Wstrncat-size]
+>                     strncat(script, " -v", sizeof(script));
+>                                            ^~~~~~~~~~~~~~
+>     tests/builtin-test.c:586:26: note: change the argument to be the free space in the destination buffer minus the terminating null byte
+>                     strncat(script, " -v", sizeof(script));
+>                                            ^~~~~~~~~~~~~~
+>                                            sizeof(script) - strlen(script) - 1
+>     1 error generated.
+>     make[3]: *** [/git/perf-5.13.0-rc4/tools/build/Makefile.build:139: tests] Error 2
 
-Thanks,
-Mani
+Thanks gcc :-) Do you want me to resend the patch?
 
-> ---
-> v2: Use sideband instead of no_inband_wake and update description
-> Tested on: X86_64 architecture with SDX65 device on Ubuntu 18.04
-> 
->  drivers/bus/mhi/pci_generic.c | 26 ++++++++++++++++++--------
->  1 file changed, 18 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
-> index d84b743..56f7107 100644
-> --- a/drivers/bus/mhi/pci_generic.c
-> +++ b/drivers/bus/mhi/pci_generic.c
-> @@ -32,6 +32,7 @@
->   * @edl: emergency download mode firmware path (if any)
->   * @bar_num: PCI base address register to use for MHI MMIO register space
->   * @dma_data_width: DMA transfer word size (32 or 64 bits)
-> + * @sideband_wake: Devices without inband wake support (such as sdx24)
+Ian
 
-Will change to:
-@sideband_wake: Devices using dedicated sideband GPIO for wakeup instead
-		of inband wake support (such as sdx24)
-
->   */
->  struct mhi_pci_dev_info {
->  	const struct mhi_controller_config *config;
-> @@ -40,6 +41,7 @@ struct mhi_pci_dev_info {
->  	const char *edl;
->  	unsigned int bar_num;
->  	unsigned int dma_data_width;
-> +	bool sideband_wake;
->  };
->  
->  #define MHI_CHANNEL_CONFIG_UL(ch_num, ch_name, el_count, ev_ring) \
-> @@ -242,7 +244,8 @@ static const struct mhi_pci_dev_info mhi_qcom_sdx65_info = {
->  	.edl = "qcom/sdx65m/edl.mbn",
->  	.config = &modem_qcom_v1_mhiv_config,
->  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
-> -	.dma_data_width = 32
-> +	.dma_data_width = 32,
-> +	.sideband_wake = false
->  };
->  
->  static const struct mhi_pci_dev_info mhi_qcom_sdx55_info = {
-> @@ -251,7 +254,8 @@ static const struct mhi_pci_dev_info mhi_qcom_sdx55_info = {
->  	.edl = "qcom/sdx55m/edl.mbn",
->  	.config = &modem_qcom_v1_mhiv_config,
->  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
-> -	.dma_data_width = 32
-> +	.dma_data_width = 32,
-> +	.sideband_wake = false
->  };
->  
->  static const struct mhi_pci_dev_info mhi_qcom_sdx24_info = {
-> @@ -259,7 +263,8 @@ static const struct mhi_pci_dev_info mhi_qcom_sdx24_info = {
->  	.edl = "qcom/prog_firehose_sdx24.mbn",
->  	.config = &modem_qcom_v1_mhiv_config,
->  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
-> -	.dma_data_width = 32
-> +	.dma_data_width = 32,
-> +	.sideband_wake = true
->  };
->  
->  static const struct mhi_channel_config mhi_quectel_em1xx_channels[] = {
-> @@ -301,7 +306,8 @@ static const struct mhi_pci_dev_info mhi_quectel_em1xx_info = {
->  	.edl = "qcom/prog_firehose_sdx24.mbn",
->  	.config = &modem_quectel_em1xx_config,
->  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
-> -	.dma_data_width = 32
-> +	.dma_data_width = 32,
-> +	.sideband_wake = true
->  };
->  
->  static const struct mhi_channel_config mhi_foxconn_sdx55_channels[] = {
-> @@ -339,7 +345,8 @@ static const struct mhi_pci_dev_info mhi_foxconn_sdx55_info = {
->  	.edl = "qcom/sdx55m/edl.mbn",
->  	.config = &modem_foxconn_sdx55_config,
->  	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
-> -	.dma_data_width = 32
-> +	.dma_data_width = 32,
-> +	.sideband_wake = false
->  };
->  
->  static const struct pci_device_id mhi_pci_id_table[] = {
-> @@ -640,9 +647,12 @@ static int mhi_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
->  	mhi_cntrl->status_cb = mhi_pci_status_cb;
->  	mhi_cntrl->runtime_get = mhi_pci_runtime_get;
->  	mhi_cntrl->runtime_put = mhi_pci_runtime_put;
-> -	mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
-> -	mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
-> -	mhi_cntrl->wake_toggle = mhi_pci_wake_toggle_nop;
-> +
-> +	if (info->sideband_wake) {
-> +		mhi_cntrl->wake_get = mhi_pci_wake_get_nop;
-> +		mhi_cntrl->wake_put = mhi_pci_wake_put_nop;
-> +		mhi_cntrl->wake_toggle = mhi_pci_wake_toggle_nop;
-> +	}
->  
->  	err = mhi_pci_claim(mhi_cntrl, info->bar_num, DMA_BIT_MASK(info->dma_data_width));
->  	if (err)
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+> > >     err = system(script);
+> > >     if (!err)
+> > >             return TEST_OK;
+> > > --
+> > > 2.32.0.288.g62a8d224e6-goog
+> > >
+> >
+> > --
+> >
+> > - Arnaldo
+>
+> --
+>
+> - Arnaldo
