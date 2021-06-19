@@ -2,149 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F15BF3AD89A
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 10:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B99763AD8A1
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 10:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234242AbhFSI0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 04:26:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231697AbhFSI0m (ORCPT
+        id S234292AbhFSIhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 04:37:15 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:58582 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234202AbhFSIhO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 04:26:42 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E37C061574;
-        Sat, 19 Jun 2021 01:24:31 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id j184so17032302qkd.6;
-        Sat, 19 Jun 2021 01:24:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=RDkBDm0SYLRjTGg8PQ+NNj5tJgXTB3ckGqb+GRoqwgM=;
-        b=O5OLeDzqVTfyxxXzMQsv3G9iYHMb5rEFUReJi+QOw3QfEjcnjYZ5Hu6vKrjzLGxtuD
-         6ukfGfjrgLiOv7NzXrXlxB4oogaqbunGdfERWO1DX5LEGZ4f1QfKBbHIIobwG+hfF04B
-         Ne1H7TYi2cfNMA1kdA8DBaqlgrgcmdnHtoZ6122oqKwEn42Y6n5y/ZbyTpNDabJ5UcWN
-         8QlQF860kEojYSncNab8TrAT+SEjTJM9TFrNrt/0o/L6145iOuo88m7BST/3giSzGLqv
-         evu8Alw6oRJV+A1UKfsMSrYLOm1Z1Iz+fQf8vIWxcWa2R82yzyyAeAFBeO/vrMZYxMFX
-         IROA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=RDkBDm0SYLRjTGg8PQ+NNj5tJgXTB3ckGqb+GRoqwgM=;
-        b=t0MQr11MACINwIy5SD0wTTbPlrLCXGRZqs4jmBbhwHdjurGpGl05wPanLYsPdwBnWv
-         VVp5MG+H216UQZ60wO28BaAyENMvFqNCgYn1JOAn72sEgpgJzdrV66G4y849QyxUyJjI
-         h4EVDllbn9SvgywyxJ9Zd4lHtcsS8IaWGiKSSH4+9WHQJznJQopIhBWG4cfax72xjbJC
-         AO07/D6xs3/jHil96Yr5HBjtOh5g0O0WVjpXTM16FUGm9Nys8cSF3NmkKNGmUJgfj4kl
-         Dxv/3708vcexMzwlTxTs/Frqdnf/YtOwoH4Ztspgpq2TqxksyaBL077jjCnhFLGiyX+Y
-         YOWA==
-X-Gm-Message-State: AOAM531uJvPKN34Y48iq+Vn+/MfadeFP3nqwgaZ0ivycaBvDPZrk+JNv
-        WqCTJOyMnxWhxf/rMs2pqOKBfvcWY70YKNRpdKZ84fqcltUwSA==
-X-Google-Smtp-Source: ABdhPJxH21iorHyah8H7pEJFqwC/W5lNBwGqhKH/+kyWzB1R/lUXmDcuJ1C6Zxwg46fu1RIWrBoNIrMKtv4V8Wn/zjA=
-X-Received: by 2002:a25:b18c:: with SMTP id h12mr17369792ybj.500.1624091070832;
- Sat, 19 Jun 2021 01:24:30 -0700 (PDT)
+        Sat, 19 Jun 2021 04:37:14 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 7B1951FD2D;
+        Sat, 19 Jun 2021 08:35:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624091703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q+MjFqL+kLBlA8ILICgJ1s2xiR+V4tpKyupBnPQjWVI=;
+        b=2TPmR165IiCFkKmw8g+5DX17lW1HU9W4RL4keeI328TBsuTDRPJCov8UYldh71mXEpGvYF
+        ng87vt+V4KJEgc0c09Vif8J4ygrDLfTEtSDVNdI7R5CPjbTArvmU0+DbLx2DmKz/H1G2/7
+        zh2ed8uzS+ohClI5g9uhVLDM+eT1HkA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624091703;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q+MjFqL+kLBlA8ILICgJ1s2xiR+V4tpKyupBnPQjWVI=;
+        b=QSB6bRJm0LvxXyhXcqNKvKdCXMP3VT/G+tdmMWBD2HqW46OYLa58kDzaUacdrg0SYzV6MM
+        0PdVbR7h+n8067BQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 62DA1118DD;
+        Sat, 19 Jun 2021 08:35:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624091703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q+MjFqL+kLBlA8ILICgJ1s2xiR+V4tpKyupBnPQjWVI=;
+        b=2TPmR165IiCFkKmw8g+5DX17lW1HU9W4RL4keeI328TBsuTDRPJCov8UYldh71mXEpGvYF
+        ng87vt+V4KJEgc0c09Vif8J4ygrDLfTEtSDVNdI7R5CPjbTArvmU0+DbLx2DmKz/H1G2/7
+        zh2ed8uzS+ohClI5g9uhVLDM+eT1HkA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624091703;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q+MjFqL+kLBlA8ILICgJ1s2xiR+V4tpKyupBnPQjWVI=;
+        b=QSB6bRJm0LvxXyhXcqNKvKdCXMP3VT/G+tdmMWBD2HqW46OYLa58kDzaUacdrg0SYzV6MM
+        0PdVbR7h+n8067BQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id OyGBFzeszWBkQAAALh3uQQ
+        (envelope-from <bp@suse.de>); Sat, 19 Jun 2021 08:35:03 +0000
+Date:   Sat, 19 Jun 2021 10:34:53 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch V3 01/66] x86/fpu: x86/fpu: Preserve supervisor states in
+ sanitize_restored_user_xstate()
+Message-ID: <YM2sLY56q4LIxv6t@zn.tnic>
+References: <20210618141823.161158090@linutronix.de>
+ <20210618143444.438635017@linutronix.de>
 MIME-Version: 1.0
-From:   Anatoly Pugachev <matorola@gmail.com>
-Date:   Sat, 19 Jun 2021 11:24:20 +0300
-Message-ID: <CADxRZqwzbHvMwEB=y_xi2GYK55wtnzycWcUoK_t4q_ccisp+Sg@mail.gmail.com>
-Subject: [sparc64] kernel panic from running a program in userspace
-To:     Sparc kernel list <sparclinux@vger.kernel.org>
-Cc:     Linux Kernel list <linux-kernel@vger.kernel.org>,
-        debian-sparc <debian-sparc@lists.debian.org>,
-        kernel-testers@vger.kernel.org,
-        Colin Ian King <colin.king@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210618143444.438635017@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Fri, Jun 18, 2021 at 04:18:24PM +0200, Thomas Gleixner wrote:
+> Subject: Re: [patch V3 01/66] x86/fpu: x86/fpu: Preserve supervisor states in
 
-Getting the following in logs:
-(reproducible with almost every run, tried different kernel as well -
-debian packaged 5.10.0-7-sparc64-smp )
+Prefix repeated.
 
-[  863.344843] stress-ng[593992]: bad register window fault: SP
-00000000fcd023ff (orig_sp 00000000fcd01c00) TPC fff80001000237fc O7
-fff800010003e008
-[  890.782498] CPU[4]: SUN4V mondo timeout, cpu(5) made no forward
-progress after 500001 retries. Total target cpus(7).
-[  890.782539] CPU[3]: SUN4V mondo timeout, cpu(5) made no forward
-progress after 500001 retries. Total target cpus(7).
-[  890.782590] Kernel panic - not syncing: SUN4V mondo timeout panic
-[  890.782664] CPU: 4 PID: 480951 Comm: stress-ng Tainted: G
- E     5.13.0-rc6 #229
-[  890.782713] Call Trace:
-[  890.782733] [<0000000000c806c8>] panic+0xf4/0x2d4
-[  890.782773] [<000000000043f3a8>] hypervisor_xcall_deliver+0x288/0x320
-[  890.782816] [<000000000043efb8>] xcall_deliver+0xf8/0x120
-[  890.782860] [<0000000000440518>] smp_flush_tlb_page+0x38/0x60
-[  890.782898] [<000000000044ee44>] flush_tlb_pending+0x64/0xa0
-[  890.782938] [<000000000044f1c4>] arch_leave_lazy_mmu_mode+0x24/0x40
-[  890.782977] [<0000000000651b4c>] copy_pte_range+0x5ac/0x860
-[  890.783013] [<0000000000655974>] copy_pud_range+0x1f4/0x260
-[  890.783049] [<0000000000655b2c>] copy_page_range+0x14c/0x1c0
-[  890.783083] [<00000000004613b4>] dup_mmap+0x374/0x4a0
-[  890.783123] [<0000000000461530>] dup_mm+0x50/0x200
-[  890.783157] [<0000000000462384>] copy_process+0x704/0x1280
-[  890.783196] [<00000000004631a8>] kernel_clone+0x88/0x380
-[  890.783231] [<000000000042d170>] sparc_clone+0xb0/0xe0
-[  890.783274] [<0000000000406274>] linux_sparc_syscall+0x34/0x44
-[  890.784106] CPU[7]: SUN4V mondo timeout, cpu(5) made no forward
-progress after 500002 retries. Total target cpus(7).
-[  890.784119] CPU[6]: SUN4V mondo timeout, cpu(5) made no forward
-progress after 500003 retries. Total target cpus(7).
-[  890.784876] Press Stop-A (L1-A) from sun keyboard or send break
-[  890.784876] twice on console to return to the boot prom
-[  890.784897] ---[ end Kernel panic - not syncing: SUN4V mondo
-timeout panic ]---
+> From: Thomas Gleixner <tglx@linutronix.de>
+> 
+> sanitize_restored_user_xstate() preserves the supervisor states only
+> when the fx_only argument is zero, which allows unpriviledged user space
+> to put supervisor states back into init state.
 
-(and machine halt)
+Yikes.
 
-after running stress-ng :
+> Preserve them unconditionally.
+> 
+> Fixes: 5d6b6a6f9b5c ("x86/fpu/xstate: Update sanitize_restored_xstate() for supervisor xstates")
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Cc: stable@vger.kernel.org
+> ---
+>  arch/x86/kernel/fpu/signal.c |   26 ++++++++------------------
+>  1 file changed, 8 insertions(+), 18 deletions(-)
+> 
+> --- a/arch/x86/kernel/fpu/signal.c
+> +++ b/arch/x86/kernel/fpu/signal.c
+> @@ -221,28 +221,18 @@ sanitize_restored_user_xstate(union fpre
+>  
+>  	if (use_xsave()) {
+>  		/*
+> -		 * Note: we don't need to zero the reserved bits in the
+> -		 * xstate_header here because we either didn't copy them at all,
+> -		 * or we checked earlier that they aren't set.
+> +		 * Clear all features bit which are not set in
 
-stress-ng.git$ ./stress-ng --verbose --timeout 10m --opcode -1
-stress-ng: debug: [480950] stress-ng 0.12.10 g27f90a2276bd
-stress-ng: debug: [480950] system: Linux ttip 5.13.0-rc6 #229 SMP Tue
-Jun 15 12:30:23 MSK 2021 sparc64
-stress-ng: debug: [480950] RAM total: 7.8G, RAM free: 7.0G, swap free: 768.=
-7M
-stress-ng: debug: [480950] 8 processors online, 256 processors configured
-stress-ng: info:  [480950] dispatching hogs: 8 opcode
-stress-ng: debug: [480950] cache allocate: using cache maximum level L2
-stress-ng: debug: [480950] cache allocate: shared cache buffer size: 128K
-stress-ng: debug: [480950] starting stressors
-stress-ng: debug: [480951] stress-ng-opcode: started [480951] (instance 0)
-stress-ng: debug: [480952] stress-ng-opcode: started [480952] (instance 1)
-stress-ng: debug: [480953] stress-ng-opcode: started [480953] (instance 2)
-stress-ng: debug: [480955] stress-ng-opcode: started [480955] (instance 3)
-stress-ng: debug: [480957] stress-ng-opcode: started [480957] (instance 4)
-stress-ng: debug: [480959] stress-ng-opcode: started [480959] (instance 5)
-stress-ng: debug: [480961] stress-ng-opcode: started [480961] (instance 6)
-stress-ng: debug: [480950] 8 stressors started
-stress-ng: debug: [480963] stress-ng-opcode: started [480963] (instance 7)
-*** stack smashing detected ***: terminated
-*** stack smashing detected ***: terminated
-*** stack smashing detected ***: terminated
-*** stack smashing detected ***: terminated
-*** stack smashing detected ***: terminated
-*** stack smashing detected ***: terminated
-*** stack smashing detected ***: terminated
-Inconsistency detected by ld.so: dl-runtime.c: 80: _dl_fixup:
-Assertion `ELFW(R_TYPE)(reloc->r_info) =3D=3D ELF_MACHINE_JMP_SLOT'
-failed!
-*** stack smashing detected ***: terminated
-munmap_chunk(): invalid pointer
-*** stack smashing detected ***: terminated
-*** stack smashing detected ***: terminated
-*** stack smashing detected ***: terminated
-*** stack smashing detected ***: terminated
-*** stack smashing detected ***: terminated
-Inconsistency detected by ld.so: : 422: Assertion `=EF=BF=BD' failed!
-*** stack smashing detected ***: terminated
+			    feature bits
 
+> +		 * user_xfeatures and clear all extended features
+> +		 * for fx_only mode.
+>  		 */
+> +		u64 mask = fx_only ? XFEATURE_MASK_FPSSE : user_xfeatures;
+>  
+>  		/*
+> -		 * 'user_xfeatures' might have bits clear which are
+> -		 * set in header->xfeatures. This represents features that
+> -		 * were in init state prior to a signal delivery, and need
+> -		 * to be reset back to the init state.  Clear any user
+> -		 * feature bits which are set in the kernel buffer to get
+> -		 * them back to the init state.
+> -		 *
+> -		 * Supervisor state is unchanged by input from userspace.
+> -		 * Ensure supervisor state bits stay set and supervisor
+> -		 * state is not modified.
+> +		 * Supervisor state has to be preserved. The sigframe
+> +		 * restore can only modify user features, i.e. @mask
+> +		 * cannot contain them.
+>  		 */
+> -		if (fx_only)
+> -			header->xfeatures = XFEATURE_MASK_FPSSE;
+> -		else
+> -			header->xfeatures &= user_xfeatures |
+> -					     xfeatures_mask_supervisor();
+> +		header->xfeatures &= mask | xfeatures_mask_supervisor();
 
-Machine is my testing LDOM (virtual machine), installed and running
-the latest sparc4 debian sid (unstable).
+With those addressed:
+
+Reviewed-by: Borislav Petkov <bp@suse.de>
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
