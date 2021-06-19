@@ -2,112 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F343AD9F8
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 14:23:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AAE13AD9FB
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 14:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234100AbhFSMZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 08:25:54 -0400
-Received: from mail-m118208.qiye.163.com ([115.236.118.208]:46848 "EHLO
-        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234066AbhFSMZx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 08:25:53 -0400
-Received: from 2CD-RMPB.local (unknown [113.118.120.96])
-        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id DEC93E01C3;
-        Sat, 19 Jun 2021 20:23:36 +0800 (CST)
-Subject: Re: [PATCH v1 6/6] mm/hwpoison: fix unpoison_memory()
-To:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>
-Cc:     Naoya Horiguchi <nao.horiguchi@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Tony Luck <tony.luck@intel.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210614021212.223326-1-nao.horiguchi@gmail.com>
- <20210614021212.223326-7-nao.horiguchi@gmail.com>
- <94984984-f123-85ae-20bc-b40e90d536f6@sangfor.com.cn>
- <20210618083625.GA2215283@hori.linux.bs1.fc.nec.co.jp>
-From:   Ding Hui <dinghui@sangfor.com.cn>
-Message-ID: <a2162c28-78ce-1ce7-327c-e8c4dce164cd@sangfor.com.cn>
-Date:   Sat, 19 Jun 2021 20:22:32 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.4.0
+        id S234110AbhFSMe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 08:34:27 -0400
+Received: from mga06.intel.com ([134.134.136.31]:14714 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234059AbhFSMeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 08:34:25 -0400
+IronPort-SDR: dUbTDOgFk5hTNwIrPuYuWy18VesuqK2rDRKqJ6AyryhXFLN9G4vCI+OVjUvr3Nyqtu9fROMwOG
+ B9uMQ59y6G5g==
+X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="267810475"
+X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
+   d="scan'208";a="267810475"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2021 05:32:13 -0700
+IronPort-SDR: Ob6blIaOpVQeWSdcIG+6RS0wCYbj2KjmazCdwc2D7JzKIDqpc6ZP1/r0M+he4qI3Gx4/sre2Gv
+ DQWSs+9JcHiw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
+   d="scan'208";a="451692508"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 19 Jun 2021 05:32:07 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lua8t-0003Yw-2l; Sat, 19 Jun 2021 12:32:07 +0000
+Date:   Sat, 19 Jun 2021 20:31:08 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:auto-latest] BUILD SUCCESS
+ 185c87ee7510e3cc162dccb7cb9820cedcec27e3
+Message-ID: <60cde38c.00oLfz6+WnKm4DaZ%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <20210618083625.GA2215283@hori.linux.bs1.fc.nec.co.jp>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGhpJS1ZCH0xMHU4fSUpDS09VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OBA6GBw5ST9DUTpKPyk6ODpW
-        HigaCi9VSlVKTUlPSktOT0pMTkhCVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
-        QVlKSkhVSkpDVUpJS1VCTVlXWQgBWUFPQ01PNwY+
-X-HM-Tid: 0a7a2439fa1f2c17kusndec93e01c3
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/18 4:36 下午, HORIGUCHI NAOYA(堀口 直也) wrote:
-> On Thu, Jun 17, 2021 at 06:00:21PM +0800, Ding Hui wrote:
->> On 2021/6/14 10:12, Naoya Horiguchi wrote:
->>> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
->>>
->>> After recent soft-offline rework, error pages can be taken off from
->>> buddy allocator, but the existing unpoison_memory() does not properly
->>> undo the operation.  Moreover, due to the recent change on
->>> __get_hwpoison_page(), get_page_unless_zero() is hardly called for
->>> hwpoisoned pages.  So __get_hwpoison_page() mostly returns zero (meaning
->>> to fail to grab page refcount) and unpoison just clears PG_hwpoison
->>> without releasing a refcount.  That does not lead to a critical issue
->>> like kernel panic, but unpoisoned pages never get back to buddy (leaked
->>> permanently), which is not good.
->>
->> As I mention in [1], I'm not sure about the exactly meaning of "broken" in
->> unpoison_memory().
->>
->> Maybe the misunderstanding is:
->>
->> I think __get_hwpoison_page() mostly returns one for hwpoisoned page.
->> In 06be6ff3d2ec ("mm,hwpoison: rework soft offline for free pages"),
->> page_handle_poison() is introduced, it will add refcount for all
->> soft-offlineed hwpoison page.
->> In memory_failure() for hard-offline，page_ref_inc() called on free page
->> too, and for used page, we do not call put_page() after get_hwpoison_page()
->> != 0.
->> So all hwpoisoned page refcount must be great than zero when
->> unpoison_memory() if regardless of racy.
-> 
-> Hi, Ding,
-> 
-> Thanks for the comment.  I feel that I failed to define the exact issue in
-> unpoison.  Maybe I saw and misinterpreted some random error as unpoison's
-> issue during developing other hwpoison patches, so please don't take serious
-> my previous wrong word "broken", sorry about that.
-> 
-> Anyway I reconsider how to handle this 6/6, maybe it will be a clear
-> description of the problem, and will be simplified.
-> 
->>
->> Recently I tested loop soft-offline random pages and unpoison them for days,
->> it works fine to me. (with bac9c6fa1f92 patched)
-> 
-> Thank you for testing,
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git auto-latest
+branch HEAD: 185c87ee7510e3cc162dccb7cb9820cedcec27e3  Merge branch 'irq/urgent'
 
-Hi Naoya,
+elapsed time: 1589m
 
-I'm afraid of my description about testing is ambiguous for others, let 
-me clarify that I ran stress soft-offline test case from mce-test 
-project (https://git.kernel.org/pub/scm/utils/cpu/mce/mce-test.git) for 
-days to verify my modify about NR_FREE_PAGES (bac9c6fa1f92), without 
-your current patchset, the case is loop soft-offline random pages and 
-unpoison them, and it works basic fine to me.
+configs tested: 109
+configs skipped: 3
 
--- 
-Thanks,
--dinghui
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          rsk7269_defconfig
+powerpc                     asp8347_defconfig
+sh                  sh7785lcr_32bit_defconfig
+powerpc                     skiroot_defconfig
+arm                         bcm2835_defconfig
+ia64                                defconfig
+powerpc                    klondike_defconfig
+mips                          rb532_defconfig
+powerpc                     tqm8540_defconfig
+powerpc                 mpc834x_itx_defconfig
+sh                          polaris_defconfig
+x86_64                            allnoconfig
+xtensa                       common_defconfig
+arm                          pxa168_defconfig
+nios2                         3c120_defconfig
+arm                           sama5_defconfig
+arm                       imx_v6_v7_defconfig
+mips                     loongson1c_defconfig
+m68k                            mac_defconfig
+powerpc                 mpc836x_rdk_defconfig
+arm                          pxa3xx_defconfig
+powerpc                      cm5200_defconfig
+powerpc                        icon_defconfig
+powerpc                       maple_defconfig
+powerpc                      ep88xc_defconfig
+sparc                            alldefconfig
+sh                           sh2007_defconfig
+m68k                         apollo_defconfig
+sh                               j2_defconfig
+riscv                            alldefconfig
+arc                           tb10x_defconfig
+arm                           sunxi_defconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20210618
+i386                 randconfig-a006-20210618
+i386                 randconfig-a004-20210618
+i386                 randconfig-a001-20210618
+i386                 randconfig-a005-20210618
+i386                 randconfig-a003-20210618
+x86_64               randconfig-a015-20210618
+x86_64               randconfig-a011-20210618
+x86_64               randconfig-a012-20210618
+x86_64               randconfig-a014-20210618
+x86_64               randconfig-a016-20210618
+x86_64               randconfig-a013-20210618
+i386                 randconfig-a015-20210618
+i386                 randconfig-a016-20210618
+i386                 randconfig-a013-20210618
+i386                 randconfig-a014-20210618
+i386                 randconfig-a012-20210618
+i386                 randconfig-a011-20210618
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                           x86_64_defconfig
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210618
+x86_64               randconfig-a002-20210618
+x86_64               randconfig-a001-20210618
+x86_64               randconfig-a004-20210618
+x86_64               randconfig-a003-20210618
+x86_64               randconfig-a006-20210618
+x86_64               randconfig-a005-20210618
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
