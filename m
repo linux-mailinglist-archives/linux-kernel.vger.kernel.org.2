@@ -2,151 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0503E3AD836
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 08:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E130F3AD837
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 08:42:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234059AbhFSGmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 02:42:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233909AbhFSGmk (ORCPT
+        id S233963AbhFSGoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 02:44:22 -0400
+Received: from ivanoab7.miniserver.com ([37.128.132.42]:51536 "EHLO
+        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232835AbhFSGoV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 02:42:40 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF132C061574;
-        Fri, 18 Jun 2021 23:40:29 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so9446701pjs.2;
-        Fri, 18 Jun 2021 23:40:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1glDM6oLeTVKmgkuXKty5D8QEB/JX/Xhu+0hRlzxY50=;
-        b=ck0SbqtDwvvUv3IUYad5DJbmdangdvOau/iCF9srKXiWZ2fV80yAO2xqVqvTZbOUr9
-         vdKxDq+MfnRmzW9JqCyZB1oifJpXKLJmsUwXsLWYe/3xwCLFI5hGK3iblNeQshsIKBSC
-         9mGrHWq8CmakB5U9A9am3FED/Z3S5wE8bNGopHZBPT7LC1c0dBS/IKteyzryggtIFaDk
-         7uqtxXmvinZCZFHYD8aN15OmZh30c3RoLTmCWxG1AYpJ9LRvGREa+13OCPYMDw2aWmQo
-         neQtOvKO1FYfVV4w7ChdXNMecl6yc9UiQhLFAcGCIjpgM1w571u+qSHdkSyV+GIC6HsM
-         MM0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1glDM6oLeTVKmgkuXKty5D8QEB/JX/Xhu+0hRlzxY50=;
-        b=mS2pVimPN5mvwsc7Z84ryFC2vQYgN3eISlVWTRbK3WkTFBNrM+9icUp0fqhioEou4d
-         uaX+AJGd9OhfJLh8U85vYkeli6bSJGf9/lwlUPbImT3Gb6W2Qv1AE7d9DdsHheys/ae/
-         imbtms5TZEpeX8QXK2YplVXBrwTNqMxgUb/K4Bjvvr92DSZBLbLvRlJOaZU1GmSM4ath
-         iSZ30dbqMMk+mgL4AoTglaSgOrGAqsUE1bRfEkYZr4hjnJWce4LlWcPqjdh7caVeliM+
-         tcw92dIMfLYvw9p4bSJ/ysNJpQ0zP0bvaOsunH+usqOjuAGu1ENgpxkUbbWIoc1XsutD
-         /lAQ==
-X-Gm-Message-State: AOAM532A2z5QDSv6TyOIXQoE4i1XD8Egf4B5xXnlPDT8isqHtfFA6CD8
-        CgP8egn4btzPmBbut2clqwg=
-X-Google-Smtp-Source: ABdhPJxylxUb3CRVvUOB7sWREsvDlUHSsbGKGDdn2Z/cAkCOJOGn25zImPk4XDriCcBsagFUQaG9lA==
-X-Received: by 2002:a17:90a:5907:: with SMTP id k7mr14518747pji.46.1624084829359;
-        Fri, 18 Jun 2021 23:40:29 -0700 (PDT)
-Received: from localhost.localdomain (199.19.111.227.16clouds.com. [199.19.111.227])
-        by smtp.gmail.com with ESMTPSA id r19sm9440274pfh.152.2021.06.18.23.40.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 23:40:29 -0700 (PDT)
-From:   Artem Lapkin <email2tema@gmail.com>
-X-Google-Original-From: Artem Lapkin <art@khadas.com>
-To:     narmstrong@baylibre.com
-Cc:     yue.wang@Amlogic.com, khilman@baylibre.com,
-        lorenzo.pieralisi@arm.com, robh@kernel.org, kw@linux.com,
-        jbrunet@baylibre.com, christianshewitt@gmail.com,
-        martin.blumenstingl@googlemail.com, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        art@khadas.com, nick@khadas.com, gouwa@khadas.com
-Subject: [PATCH 4/4] PCI: loongson move mrrs quirk to core
-Date:   Sat, 19 Jun 2021 14:39:52 +0800
-Message-Id: <20210619063952.2008746-5-art@khadas.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210619063952.2008746-1-art@khadas.com>
-References: <20210619063952.2008746-1-art@khadas.com>
+        Sat, 19 Jun 2021 02:44:21 -0400
+Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
+        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1luUg5-00029l-IH; Sat, 19 Jun 2021 06:42:01 +0000
+Received: from madding.kot-begemot.co.uk ([192.168.3.98])
+        by jain.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1luUg3-00029v-BT; Sat, 19 Jun 2021 07:42:01 +0100
+Subject: Re: [PATCH] um: remove unneeded semicolon in um_arch.c
+To:     Wan Jiabing <wanjiabing@vivo.com>, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Corey Minyard <cminyard@mvista.com>,
+        Thomas Meyer <thomas@m3y3r.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Joe Perches <joe@perches.com>, linux-um@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20210619020301.77672-1-wanjiabing@vivo.com>
+From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Organization: Cambridge Greys
+Message-ID: <4320e0ea-1339-e2c1-03c0-271dbcd6e22d@cambridgegreys.com>
+Date:   Sat, 19 Jun 2021 07:41:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210619020301.77672-1-wanjiabing@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0
+X-Spam-Score: -1.0
+X-Clacks-Overhead: GNU Terry Pratchett
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace dublicated functionality loongson_mrrs_quirk to mrrs_limit_quirk
-from core pci quirks
+On 19/06/2021 03:02, Wan Jiabing wrote:
+> Fix following coccicheck warning:
+> ./arch/um/kernel/um_arch.c:284:34-35: Unneeded semicolon
+> 
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+> ---
+>   arch/um/kernel/um_arch.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/um/kernel/um_arch.c b/arch/um/kernel/um_arch.c
+> index f9f1463f0521..a149a5e9a16a 100644
+> --- a/arch/um/kernel/um_arch.c
+> +++ b/arch/um/kernel/um_arch.c
+> @@ -281,7 +281,7 @@ static void parse_host_cpu_flags(char *line)
+>   	int i;
+>   	for (i = 0; i < 32*NCAPINTS; i++) {
+>   		if ((x86_cap_flags[i] != NULL) && strstr(line, x86_cap_flags[i]))
+> -			set_cpu_cap(&boot_cpu_data, i);;
+> +			set_cpu_cap(&boot_cpu_data, i);
+>   	}
+>   }
+>   static void parse_cache_line(char *line)
+> 
 
-Signed-off-by: Artem Lapkin <art@khadas.com>
----
- drivers/pci/controller/pci-loongson.c | 42 ++-------------------------
- 1 file changed, 3 insertions(+), 39 deletions(-)
+Thanks.
 
-diff --git a/drivers/pci/controller/pci-loongson.c b/drivers/pci/controller/pci-loongson.c
-index 48169b1e3..5a54faf10 100644
---- a/drivers/pci/controller/pci-loongson.c
-+++ b/drivers/pci/controller/pci-loongson.c
-@@ -13,10 +13,6 @@
- #include "../pci.h"
- 
- /* Device IDs */
--#define DEV_PCIE_PORT_0	0x7a09
--#define DEV_PCIE_PORT_1	0x7a19
--#define DEV_PCIE_PORT_2	0x7a29
--
- #define DEV_LS2K_APB	0x7a02
- #define DEV_LS7A_CONF	0x7a10
- #define DEV_LS7A_LPC	0x7a0c
-@@ -38,11 +34,11 @@ static void bridge_class_quirk(struct pci_dev *dev)
- 	dev->class = PCI_CLASS_BRIDGE_PCI << 8;
- }
- DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_LOONGSON,
--			DEV_PCIE_PORT_0, bridge_class_quirk);
-+			PCI_DEVICE_ID_LOONGSON_PCIE_PORT_0, bridge_class_quirk);
- DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_LOONGSON,
--			DEV_PCIE_PORT_1, bridge_class_quirk);
-+			PCI_DEVICE_ID_LOONGSON_PCIE_PORT_1, bridge_class_quirk);
- DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_LOONGSON,
--			DEV_PCIE_PORT_2, bridge_class_quirk);
-+			PCI_DEVICE_ID_LOONGSON_PCIE_PORT_2, bridge_class_quirk);
- 
- static void system_bus_quirk(struct pci_dev *pdev)
- {
-@@ -60,38 +56,6 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_LOONGSON,
- DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_LOONGSON,
- 			DEV_LS7A_LPC, system_bus_quirk);
- 
--static void loongson_mrrs_quirk(struct pci_dev *dev)
--{
--	struct pci_bus *bus = dev->bus;
--	struct pci_dev *bridge;
--	static const struct pci_device_id bridge_devids[] = {
--		{ PCI_VDEVICE(LOONGSON, DEV_PCIE_PORT_0) },
--		{ PCI_VDEVICE(LOONGSON, DEV_PCIE_PORT_1) },
--		{ PCI_VDEVICE(LOONGSON, DEV_PCIE_PORT_2) },
--		{ 0, },
--	};
--
--	/* look for the matching bridge */
--	while (!pci_is_root_bus(bus)) {
--		bridge = bus->self;
--		bus = bus->parent;
--		/*
--		 * Some Loongson PCIe ports have a h/w limitation of
--		 * 256 bytes maximum read request size. They can't handle
--		 * anything larger than this. So force this limit on
--		 * any devices attached under these ports.
--		 */
--		if (pci_match_id(bridge_devids, bridge)) {
--			if (pcie_get_readrq(dev) > 256) {
--				pci_info(dev, "limiting MRRS to 256\n");
--				pcie_set_readrq(dev, 256);
--			}
--			break;
--		}
--	}
--}
--DECLARE_PCI_FIXUP_ENABLE(PCI_ANY_ID, PCI_ANY_ID, loongson_mrrs_quirk);
--
- static void __iomem *cfg1_map(struct loongson_pci *priv, int bus,
- 				unsigned int devfn, int where)
- {
+I do not think the patch which introduces this ([v7,1/3] um: Add support 
+for host CPU flags and alignment) has been merged yet. I do not see it 
+in the tree as of this morning.
+
+I can see that it is already marked as done in patchwork so it is on its 
+way.
+
+Richard, what do you want me to do - reissue a fixed one or we should 
+accept the fix once the original is merged?
+
 -- 
-2.25.1
-
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
