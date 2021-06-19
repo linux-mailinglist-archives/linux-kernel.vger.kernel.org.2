@@ -2,121 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E19A93AD6EA
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 05:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39A5C3AD6EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 05:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235614AbhFSDE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 23:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235606AbhFSDE5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 23:04:57 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40493C06175F
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 20:02:46 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id i4so1937910plt.12
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 20:02:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AL3IkUbQ1a/LRO+FbqYHn+oMeAp1U0V5I8weht9YTe0=;
-        b=k53RtsI3wnZQDyMBB2CG0HfKnm17M/4fp/pxu553QmY3YKnUokW0BYYV2B/y43PAYi
-         tsF8RSy9K9cPND3oMbY//QXYo86K/BfFm6Ux4OofTfucse1uj+WWaogWNVYFgcXwFt08
-         BNSO1bFyyIhOdbD6j6MMJsA3VUDL87xawV8SE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AL3IkUbQ1a/LRO+FbqYHn+oMeAp1U0V5I8weht9YTe0=;
-        b=VBVCLgp738JADa0+icoKwKWIEtcnsrFHgDOA3R0O47erwW9ZiauZLauOBv9PkFF8Az
-         4HeY0U35Jnfod9jZlG0lsNq30iw+NloZR1fr4+mIl4/4tIUA7ty4qhbUBqJV5mB485/j
-         Xdk2KV7CA3xXsfAZTws7MMDsNI+rhzeYin29cw8kO94IYSlEixRfBAoB7E7YKDMVEhZ5
-         nxGDeMbISUqjIi25CYcRABZwaCSq5hC2+9kO4saLSZOMngCoHJxejs4NeC01UOv/SHQK
-         3gBFUlm+veume6lsrcWSxq0EV34lXL0c6sQjZPcfPVReQa3YK8Utjslh2gEvTOTLeUn8
-         /r8Q==
-X-Gm-Message-State: AOAM533HirvGsxZ5K1LrbfFOIQP9q2ZVd6G0ArwZY+ggPt9q/cNxJ1C6
-        NSdJWvnocrQzf6AcjaNdF1qu+Q==
-X-Google-Smtp-Source: ABdhPJy6MS0K3mHCnNh+tPj7v6JRbScEU8fnlcCNFoGwViNFPru2h4JAlYS997Vfx/7JHe0RA8woxw==
-X-Received: by 2002:a17:90a:14e5:: with SMTP id k92mr13697656pja.149.1624071765805;
-        Fri, 18 Jun 2021 20:02:45 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h28sm9512020pfr.10.2021.06.18.20.02.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 20:02:45 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 20:02:44 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Guillaume Tucker <guillaume.tucker@collabora.com>
-Cc:     Shuah Khan <shuah@kernel.org>, stable@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] selftests/lkdtm: Use /bin/sh not $SHELL
-Message-ID: <202106182000.D49612B26F@keescook>
-References: <20210617231027.3908585-1-keescook@chromium.org>
- <57775fe8-d9c2-4004-b8c5-0247faf33aa4@collabora.com>
+        id S235621AbhFSDMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 23:12:49 -0400
+Received: from m12-17.163.com ([220.181.12.17]:37227 "EHLO m12-17.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235206AbhFSDMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 18 Jun 2021 23:12:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=TRcSN
+        7ER03UoZDCumjMkss4Yzc53jQuAXejLACVSkss=; b=nQvxERUu8wJNHjX7R7Ckj
+        hfio2mJu3gHffs3LB0oGnAuo8LkS4YPOrahHw1mjmWvSosMVO4rOjIz2krfN+AwO
+        fYYE7+LqMbQniSNusFZWuhkv4Niq/NFLg7wLSe3KoJKBGLc+iwDXKwF2UrAMfGW4
+        IPz5HyA1qU6FHtqwYvszyM=
+Received: from localhost (unknown [218.17.89.111])
+        by smtp13 (Coremail) with SMTP id EcCowABXtDjjX81geZOD8Q--.57668S2;
+        Sat, 19 Jun 2021 11:09:24 +0800 (CST)
+Date:   Sat, 19 Jun 2021 11:09:23 +0800
+From:   Chunyou Tang <tangchunyou@163.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     robh@kernel.org, tomeu.vizoso@collabora.com,
+        alyssa.rosenzweig@collabora.com, airlied@linux.ie, daniel@ffwll.ch,
+        ChunyouTang <tangchunyou@icubecorp.cn>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] drm/panfrost:modify 'break' to 'continue' to traverse
+ the circulation
+Message-ID: <20210619110923.00001c64@163.com>
+In-Reply-To: <4d289eed-59f2-161a-40d1-2a434a1955c2@arm.com>
+References: <20210617080414.1940-1-tangchunyou@163.com>
+        <4d289eed-59f2-161a-40d1-2a434a1955c2@arm.com>
+Organization: icube
+X-Mailer: Claws Mail 3.10.1 (GTK+ 2.16.6; i586-pc-mingw32msvc)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <57775fe8-d9c2-4004-b8c5-0247faf33aa4@collabora.com>
+Content-Type: text/plain; charset=GB18030
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: EcCowABXtDjjX81geZOD8Q--.57668S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxCrWUXF17AFWDGF48ZF47Arb_yoW5CrWxpF
+        WUCr15AFWkX3Wrta929a4xCF4jq34Fqry5uF98AwsxArsxtF1YvF409a4rWr9rAF45KF4U
+        twsrWa47W3y0yw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jDR6rUUUUU=
+X-Originating-IP: [218.17.89.111]
+X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/xtbBRRO1UVPAMiD73gACsU
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 08:29:57PM +0100, Guillaume Tucker wrote:
-> There's a bit more to it...  The lkdtm tests make use of the
-> process substitution feature with the <() syntax which is
-> specific to Bash.  The tests run by KernelCI use Debian, where
-> /bin/sh points to /bin/dash by default which doesn't support this
-> feature.  So one way to fix it would be:
+Hi Steve,
+	1,
+from
+https://lore.kernel.org/lkml/31644881-134a-2d6e-dddf-e658a3a8176b@arm.com/
+I can see what your sent,I used a wrong email address,Now it correct.
+	2,
+> >Unless I'm mistaken the situation where some mappings may be NULL is
+> >caused by the loop in panfrost_lookup_bos() not completing
+> >successfully
+> >(panfrost_gem_mapping_get() returning NULL). In this case if
+> >mappings[i]
+> >is NULL then all following mappings must also be NULL. So 'break'
+> >allows
+> >us to skip the later ones. Admittedly the performance here isn't
+> >important so I'm not sure it's worth the optimisation, but AIUI this
+> >code isn't actually wrong.
+
+from panfrost_lookup_bos(),you can see:
+        for (i = 0; i < job->bo_count; i++) {
+                struct panfrost_gem_mapping *mapping;
+
+                bo = to_panfrost_bo(job->bos[i]);
+                ICUBE_DEBUG_PRINTK("panfrost bo gem handle=0x%x
+                is_dumb=%d\n", bo->gem_handle, bo->is_dumb);
+                if (!bo->is_dumb) {
+                       mapping = panfrost_gem_mapping_get(bo, priv);
+                       if (!mapping) {
+                                ret = -EINVAL;
+                                break;
+                       }
+
+                        atomic_inc(&bo->gpu_usecount);
+                        job->mappings[i] = mapping;
+                } else {
+                        atomic_inc(&bo->gpu_usecount);
+                        job->mappings[i] = NULL;
+                }
+        }
+if bo->is_dumb is TRUE,the job->mappings[i] will set to NULL,and the
+while will be continue,so if job->mappings[i] is NULL,the following
+can not be NULL.
+
+	3,
+I've had this problem in our project,the value of is_dumb like these:
+0
+0
+0
+1
+0
+0
+0
+so,when job->mappings[i] is NULL,we can not break the while in 
+panfrost_job_cleanup().
+
+thanks
+Chunyou
+
+ÓÚ Fri, 18 Jun 2021 13:43:25 +0100
+Steven Price <steven.price@arm.com> Ð´µÀ:
+
+> On 17/06/2021 09:04, ChunyouTang wrote:
+> > From: ChunyouTang <tangchunyou@icubecorp.cn>
+> > 
+> > The 'break' can cause 'Memory manager not clean during takedown'
+> > 
+> > It cannot use break to finish the circulation,it should use
+> > 
+> > continue to traverse the circulation.it should put every mapping
+> > 
+> > which is not NULL.
 > 
->   (/bin/bash -c 'cat <(echo '"$test"') >'"$TRIGGER")
-
-Argh. I always forget that <() is a bash-ism. Thank you for tracking
-this down!
-
-> However, this might break others' workflows.
+> You don't appear to have answered my question about whether you've
+> actually seen this happen (and ideally what circumstances). In my
+> previous email[1] I explained why I don't think this is needed. You
+> need to convince me that I've overlooked something.
 > 
-> In fact the LAVA jobs run by KernelCI do define the $SHELL
-> environment variable except it's defined to be /bin/sh - and that
-> means /bin/dash gets called and we're back to the issue explained
-> above.
+> Thanks,
 > 
-> I've manually run a modified test job which defines
-> SHELL=/bin/bash and that works:
+> Steve
 > 
->   https://lava.collabora.co.uk/scheduler/job/4055547#L2835
-
-Yay!!
-
-> So to avoid hitting the same issue in other places, as it seems
-> like there is an implicit dependency on Bash, we can just change
-> KernelCI kselftest jobs to always export SHELL=/bin/bash.
+> [1]
+> https://lore.kernel.org/r/31644881-134a-2d6e-dddf-e658a3a8176b%40arm.com
 > 
-> I suppose an even better fix would be to use standard shell
-> features that would work with any /bin/sh implementation, but
-> this is there to kill the sub-shell rather than the main script
-> process so I'm not entirely sure if we can easily do that
-> differently.  Maybe we can pipe the output to cat rather than the
-> substitution syntax, e.g.:
-> 
->   (/bin/sh -c '(echo '"$test"') | cat >'"$TRIGGER") || true
+> > Signed-off-by: ChunyouTang <tangchunyou@icubecorp.cn>
+> > ---
+> >  drivers/gpu/drm/panfrost/panfrost_job.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c
+> > b/drivers/gpu/drm/panfrost/panfrost_job.c index
+> > 6003cfeb1322..52bccc1d2d42 100644 ---
+> > a/drivers/gpu/drm/panfrost/panfrost_job.c +++
+> > b/drivers/gpu/drm/panfrost/panfrost_job.c @@ -281,7 +281,7 @@
+> > static void panfrost_job_cleanup(struct kref *ref) if
+> > (job->mappings) { for (i = 0; i < job->bo_count; i++) {
+> >  			if (!job->mappings[i])
+> > -				break;
+> > +				continue;
+> >  
+> >  			atomic_dec(&job->mappings[i]->obj->gpu_usecount);
+> >  			panfrost_gem_mapping_put(job->mappings[i]);
+> > 
 
-Yeah, this is the right fix. There's no reason anything should depend
-on bash; I was just not thinking when I wrote this originally. :)
 
-> So I think the "safest" solution is to not change the kselftest
-> script and export SHELL=/bin/bash in the KernelCI jobs.  If the
-> pipe approach is good enough at catching signals then it could be
-> done on top of this patch as it's standard and should work with
-> any /bin/sh implementation.  What do you think?
-
-If you set SHELL=/bin/bash for now, the lkdtm tests should work as they
-are, and once the v2 patch lands, they'll continue to work, and
-SHELL=/bin/bash can be removed.
-
-Thank you so much!
-
--Kees
-
--- 
-Kees Cook
