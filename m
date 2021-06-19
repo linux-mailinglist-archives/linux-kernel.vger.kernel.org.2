@@ -2,50 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E093AD76A
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 05:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E13B3AD772
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 05:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235892AbhFSDp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 23:45:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53188 "EHLO
+        id S232417AbhFSDqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 23:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235768AbhFSDpI (ORCPT
+        with ESMTP id S233737AbhFSDqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 23:45:08 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49184C061767
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 20:42:42 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id t13so9420481pgu.11
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 20:42:42 -0700 (PDT)
+        Fri, 18 Jun 2021 23:46:08 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 782F0C061768
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 20:43:57 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id d9so353833ioo.2
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 20:43:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xfRvKXXPDGozL9xpkc2RXgCWY6OxEYfQN41+lxoFnvY=;
-        b=Cri+5q/XNXci1dYh6yOlMvklOoS1iDf8znay8QN5g7HsmU2nwTC31fUj0kmPFl/d3E
-         UrEjZA23CpWhEyqBQFiiqYrjH128zTZ50xa1kFSsB4C7Qh0tYSnM/l7KxCIpPRLbXGbP
-         rfG2xRynjepqsE/jzwrzX5C1T4DpCVjhYeV64=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zO5LL7Owrsk50u85z5NQdq/+aN2FoxcpBADlxiwbwtc=;
+        b=GoMVApQGRvRIO7blwwZSLVX7KnEaLUsgQiZnYGnQ8mp+79muo9lTEuES+H8kLhS8xC
+         djxEq6nvfo+uAAf09DzdZIJgtSBquVbHx1Yy7Zj9ycZDtCn5PRIixQGHzFvC0S0QErMk
+         dzuQb1UZyozHrgC7e811z9kAB0L/tg8WkvJDw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xfRvKXXPDGozL9xpkc2RXgCWY6OxEYfQN41+lxoFnvY=;
-        b=qOMpMzUUBio37DohR9f8+i9N3PltWhzj4F3k9+RMbe9FRqmyqDB/xsn8VmJMByPDWC
-         EsUqjSJOZIlv3Y1eKuhn6ToLhksf7CDZnYaKn7PyEEOtGCBmIz9UrC53sRYHcFs8iJv9
-         KrIxQahhKlC6Z/vi+Ji9dotuyB0b9GzUsTNeU2/6Q7zx8UQ5t9vY65gqglg6xbklSN2t
-         CzabBalDaQNcwCBcFBUTTOxnI/4XJsOE5ZketrgLj+Jtai/bcHqdlBrrFxT9/fSAcryL
-         8pLOGoD4pMkY4lFb3fD7CbNtG2CaDb7n0a5KXPbDZDISLE6yJcSJT1r4DfOHKpIJTmgu
-         fM5g==
-X-Gm-Message-State: AOAM531ayeHmG5TFGd4BeksAX3vhwGkT1PnssNH/ipU3oQ9I4II7X9Rq
-        D6D1n69gDjlBCqLz0Ujqjz6qjg==
-X-Google-Smtp-Source: ABdhPJxWjk0LuUPrhsnJEc72kJfiH5b2VGot6yoSKHBS3bYastAOHzgWOpZYPuBhn5z9HTDgvvE2Og==
-X-Received: by 2002:aa7:9384:0:b029:2cc:5e38:933a with SMTP id t4-20020aa793840000b02902cc5e38933amr8282582pfe.81.1624074161816;
-        Fri, 18 Jun 2021 20:42:41 -0700 (PDT)
-Received: from localhost ([2401:fa00:95:205:4a46:e208:29e8:e076])
-        by smtp.gmail.com with UTF8SMTPSA id w123sm2105172pff.186.2021.06.18.20.42.34
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zO5LL7Owrsk50u85z5NQdq/+aN2FoxcpBADlxiwbwtc=;
+        b=QVwY1/nZ3koFe3uWPTYgdiHNCOi8CKgzEr3svv/Tq+GG4LqfoXUEKvA96z+xKxZJuG
+         Z3O5MaPUPF0VhyF0WBICXbcwVUf2RQ6x6+amTMCMZ/KGZo2402EKo36V/R4gAH5P/S1d
+         CfStnuSx9nFz/EIFZkn7CqeA0zfgSewBKis3BoM5+fqKeZqU2R64AijOylfIc/IgQe2x
+         eAXipI810jScN9Mwke92rXniYN0DirNnOgRxuLurlVyMuWpTOp665VZiyERqctKXZ6ef
+         1XdK+vXgUKPwL+00KlPxKOJZlpTdbQqPUKxlnTQCo+/79JLHofyAWXYZSvUj2/zj1m3e
+         57VQ==
+X-Gm-Message-State: AOAM531PXsK4Tbo0xTHbpPF+WBC2KTWUAamjh0DQMzAdJ2jfmtxm1Yz9
+        7qFJQtjiRZqKjaElw1WYOYwg1qR4W2vxhw==
+X-Google-Smtp-Source: ABdhPJx7aPCvHNDPYax/LyxC/BVxbCCAxfU52Xy1Ony12Tgd2r6x1BWOnXLMmVBnnBs7fvbITBy01g==
+X-Received: by 2002:a6b:c985:: with SMTP id z127mr10554755iof.33.1624074236551;
+        Fri, 18 Jun 2021 20:43:56 -0700 (PDT)
+Received: from mail-il1-f169.google.com (mail-il1-f169.google.com. [209.85.166.169])
+        by smtp.gmail.com with ESMTPSA id m17sm5651054ioc.42.2021.06.18.20.43.55
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 20:42:41 -0700 (PDT)
+        Fri, 18 Jun 2021 20:43:56 -0700 (PDT)
+Received: by mail-il1-f169.google.com with SMTP id b14so10149052ilq.7
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 20:43:55 -0700 (PDT)
+X-Received: by 2002:a05:6602:50:: with SMTP id z16mr10626949ioz.155.1624074224014;
+ Fri, 18 Jun 2021 20:43:44 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210617062635.1660944-1-tientzu@chromium.org> <CALiNf2_qF7OY0LHToNYx0E79BWMt2n7=nepPPLf+7YV3=KFEyw@mail.gmail.com>
+In-Reply-To: <CALiNf2_qF7OY0LHToNYx0E79BWMt2n7=nepPPLf+7YV3=KFEyw@mail.gmail.com>
 From:   Claire Chang <tientzu@chromium.org>
+Date:   Sat, 19 Jun 2021 11:43:33 +0800
+X-Gmail-Original-Message-ID: <CALiNf289bo1WzEWWapzeQ8xYiH8s1qgDkpHVgy=PgAmv6rvGnQ@mail.gmail.com>
+Message-ID: <CALiNf289bo1WzEWWapzeQ8xYiH8s1qgDkpHVgy=PgAmv6rvGnQ@mail.gmail.com>
+Subject: Re: [PATCH v13 00/12] Restricted DMA
 To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
         Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
         Frank Rowand <frowand.list@gmail.com>,
@@ -55,10 +67,10 @@ To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
         Marek Szyprowski <m.szyprowski@samsung.com>
 Cc:     benh@kernel.crashing.org, paulus@samba.org,
         "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
-        grant.likely@arm.com, xypron.glpk@gmx.de,
-        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
-        bauerman@linux.ibm.com, peterz@infradead.org,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>, grant.likely@arm.com,
+        xypron.glpk@gmx.de, Thierry Reding <treding@nvidia.com>,
+        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
         Greg KH <gregkh@linuxfoundation.org>,
         Saravana Kannan <saravanak@google.com>,
         "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
@@ -71,127 +83,18 @@ Cc:     benh@kernel.crashing.org, paulus@samba.org,
         lkml <linux-kernel@vger.kernel.org>,
         linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
         Nicolas Boichat <drinkcat@chromium.org>,
-        Jim Quinlan <james.quinlan@broadcom.com>, tfiga@chromium.org,
-        bskeggs@redhat.com, bhelgaas@google.com, chris@chris-wilson.co.uk,
-        tientzu@chromium.org, daniel@ffwll.ch, airlied@linux.ie,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
+        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
+        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
         dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, jxgao@google.com,
+        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
         joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
         maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
-        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com,
-        thomas.lendacky@amd.com
-Subject: [PATCH v14 12/12] of: Add plumbing for restricted DMA pool
-Date:   Sat, 19 Jun 2021 11:40:43 +0800
-Message-Id: <20210619034043.199220-13-tientzu@chromium.org>
-X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-In-Reply-To: <20210619034043.199220-1-tientzu@chromium.org>
-References: <20210619034043.199220-1-tientzu@chromium.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a device is not behind an IOMMU, we look up the device node and set
-up the restricted DMA when the restricted-dma-pool is presented.
-
-Signed-off-by: Claire Chang <tientzu@chromium.org>
-Tested-by: Stefano Stabellini <sstabellini@kernel.org>
-Tested-by: Will Deacon <will@kernel.org>
----
- drivers/of/address.c    | 33 +++++++++++++++++++++++++++++++++
- drivers/of/device.c     |  3 +++
- drivers/of/of_private.h |  6 ++++++
- 3 files changed, 42 insertions(+)
-
-diff --git a/drivers/of/address.c b/drivers/of/address.c
-index 73ddf2540f3f..cdf700fba5c4 100644
---- a/drivers/of/address.c
-+++ b/drivers/of/address.c
-@@ -8,6 +8,7 @@
- #include <linux/logic_pio.h>
- #include <linux/module.h>
- #include <linux/of_address.h>
-+#include <linux/of_reserved_mem.h>
- #include <linux/pci.h>
- #include <linux/pci_regs.h>
- #include <linux/sizes.h>
-@@ -1022,6 +1023,38 @@ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
- 	of_node_put(node);
- 	return ret;
- }
-+
-+int of_dma_set_restricted_buffer(struct device *dev, struct device_node *np)
-+{
-+	struct device_node *node, *of_node = dev->of_node;
-+	int count, i;
-+
-+	count = of_property_count_elems_of_size(of_node, "memory-region",
-+						sizeof(u32));
-+	/*
-+	 * If dev->of_node doesn't exist or doesn't contain memory-region, try
-+	 * the OF node having DMA configuration.
-+	 */
-+	if (count <= 0) {
-+		of_node = np;
-+		count = of_property_count_elems_of_size(
-+			of_node, "memory-region", sizeof(u32));
-+	}
-+
-+	for (i = 0; i < count; i++) {
-+		node = of_parse_phandle(of_node, "memory-region", i);
-+		/*
-+		 * There might be multiple memory regions, but only one
-+		 * restricted-dma-pool region is allowed.
-+		 */
-+		if (of_device_is_compatible(node, "restricted-dma-pool") &&
-+		    of_device_is_available(node))
-+			return of_reserved_mem_device_init_by_idx(dev, of_node,
-+								  i);
-+	}
-+
-+	return 0;
-+}
- #endif /* CONFIG_HAS_DMA */
- 
- /**
-diff --git a/drivers/of/device.c b/drivers/of/device.c
-index 6cb86de404f1..e68316836a7a 100644
---- a/drivers/of/device.c
-+++ b/drivers/of/device.c
-@@ -165,6 +165,9 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
- 
- 	arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
- 
-+	if (!iommu)
-+		return of_dma_set_restricted_buffer(dev, np);
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(of_dma_configure_id);
-diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
-index d9e6a324de0a..25cebbed5f02 100644
---- a/drivers/of/of_private.h
-+++ b/drivers/of/of_private.h
-@@ -161,12 +161,18 @@ struct bus_dma_region;
- #if defined(CONFIG_OF_ADDRESS) && defined(CONFIG_HAS_DMA)
- int of_dma_get_range(struct device_node *np,
- 		const struct bus_dma_region **map);
-+int of_dma_set_restricted_buffer(struct device *dev, struct device_node *np);
- #else
- static inline int of_dma_get_range(struct device_node *np,
- 		const struct bus_dma_region **map)
- {
- 	return -ENODEV;
- }
-+static inline int of_dma_set_restricted_buffer(struct device *dev,
-+					       struct device_node *np)
-+{
-+	return -ENODEV;
-+}
- #endif
- 
- #endif /* _LINUX_OF_PRIVATE_H */
--- 
-2.32.0.288.g62a8d224e6-goog
-
+v14: https://lore.kernel.org/patchwork/cover/1448954/
