@@ -2,123 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC78C3AD9B0
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 12:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A455A3AD9B3
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 12:55:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233127AbhFSKx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 06:53:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39020 "EHLO mail.kernel.org"
+        id S232967AbhFSK5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 06:57:32 -0400
+Received: from mga14.intel.com ([192.55.52.115]:3545 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233143AbhFSKxU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 06:53:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 212246120A;
-        Sat, 19 Jun 2021 10:51:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624099869;
-        bh=aUsPX+nFItWHPd+EdQgT8+dhm7c6uNdqhHhjptNmOss=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=JH4xBrXd9BAC3Lr6WW2Yw6oT09Zeci220I4NDA/EKgK1zDsyxNNszJf0gWFIHuBFc
-         giTbZ8z/zqQPfp+TAFiD8vLwSAYAlzalyZUinyE3vdwT9fBEQi4xbrhQQ/Y1OUNYZe
-         a5TapQqIoN601UmJ8uiBvhr4Wj/Eu+hiQflLWHbf/Rau6cW97a/RC38VsK11ZQy7+j
-         yfeOICVOKKAv4PFi4ixHdO57QfCouJ+acLh43LJ7/wcmdGpWac8k23gO1UgYWQcfza
-         B8S25Au7oNt+xZ/wZseDIqRniZCkzVE6wVoV3sRNVVHgmpqpoOnvj3rWWVBeNnW3dm
-         EF4H1ScNWJJLQ==
-Message-ID: <ca37212d9c848bbb6228cce95ca7f39ef3696437.camel@kernel.org>
-Subject: Re: [PATCH] net: ceph: Use CLOCK_MONOTONIC ktime_get_ts64()
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Yejune Deng <yejune.deng@gmail.com>, idryomov@gmail.com,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Sat, 19 Jun 2021 06:51:08 -0400
-In-Reply-To: <20210618142740.3345-1-yejune.deng@gmail.com>
-References: <20210618142740.3345-1-yejune.deng@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
+        id S230433AbhFSK5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 06:57:31 -0400
+IronPort-SDR: dX8WIhEAY/MtAANsbC+k2RxUdvT94isk1YFziDtVCpPK7V6JwGrWlcQJJH3K6soWWThhO+Q7SK
+ y5MKE5MgiXUA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="206484203"
+X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
+   d="scan'208";a="206484203"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2021 03:55:20 -0700
+IronPort-SDR: shIIIg1/X9y9YzjyUD4diASIuTOccwffi+cXRobJIdn5PTiaDhYgW62q3GSmj5H/kfj4fRXWjk
+ 9a8+0jkpK1KQ==
+X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
+   d="scan'208";a="443814730"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2021 03:55:15 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1luYd4-003nzI-M1; Sat, 19 Jun 2021 13:55:10 +0300
+Date:   Sat, 19 Jun 2021 13:55:10 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Marc Zyngier <maz@kernel.org>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Alexey Klimov <aklimov@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH 3/3] Replace for_each_*_bit_from() with for_each_*_bit()
+ where appropriate
+Message-ID: <YM3NDrgF3znR+/4z@smile.fi.intel.com>
+References: <20210618195735.55933-1-yury.norov@gmail.com>
+ <20210618195735.55933-4-yury.norov@gmail.com>
+ <YM3L1kciMw7zqhUp@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YM3L1kciMw7zqhUp@smile.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-06-18 at 22:27 +0800, Yejune Deng wrote:
-> The Documentation/core-api/timekeeping.rst recommend that we should use
-> monotonic time ktime_get_ts64(), to avoid glitches with a concurrent
-> settimeofday().
+On Sat, Jun 19, 2021 at 01:49:58PM +0300, Andy Shevchenko wrote:
+> On Fri, Jun 18, 2021 at 12:57:35PM -0700, Yury Norov wrote:
+> > A couple of kernel functions call for_each_*_bit_from() with start
+> > bit equal to 0. Replace them with for_each_*_bit().
+> > 
+> > No functional changes, but might improve on readability.
 > 
-> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
-> ---
->  net/ceph/messenger.c    | 2 +-
->  net/ceph/messenger_v1.c | 2 +-
->  net/ceph/messenger_v2.c | 2 +-
->  net/ceph/osd_client.c   | 4 ++--
->  4 files changed, 5 insertions(+), 5 deletions(-)
+> ...
 > 
-> diff --git a/net/ceph/messenger.c b/net/ceph/messenger.c
-> index 57d043b..2d07ab5 100644
-> --- a/net/ceph/messenger.c
-> +++ b/net/ceph/messenger.c
-> @@ -1809,7 +1809,7 @@ bool ceph_con_keepalive_expired(struct ceph_connection *con,
->  	    (con->peer_features & CEPH_FEATURE_MSGR_KEEPALIVE2)) {
->  		struct timespec64 now;
->  		struct timespec64 ts;
-> -		ktime_get_real_ts64(&now);
-> +		ktime_get_ts64(&now);
->  		jiffies_to_timespec64(interval, &ts);
->  		ts = timespec64_add(con->last_keepalive_ack, ts);
->  		return timespec64_compare(&now, &ts) >= 0;
-> diff --git a/net/ceph/messenger_v1.c b/net/ceph/messenger_v1.c
-> index 2cb5ffd..2ec7b1d 100644
-> --- a/net/ceph/messenger_v1.c
-> +++ b/net/ceph/messenger_v1.c
-> @@ -310,7 +310,7 @@ static void prepare_write_keepalive(struct ceph_connection *con)
->  	if (con->peer_features & CEPH_FEATURE_MSGR_KEEPALIVE2) {
->  		struct timespec64 now;
->  
-> -		ktime_get_real_ts64(&now);
-> +		ktime_get_ts64(&now);
->  		con_out_kvec_add(con, sizeof(tag_keepalive2), &tag_keepalive2);
->  		ceph_encode_timespec64(&con->v1.out_temp_keepalive2, &now);
->  		con_out_kvec_add(con, sizeof(con->v1.out_temp_keepalive2),
-> diff --git a/net/ceph/messenger_v2.c b/net/ceph/messenger_v2.c
-> index cc40ce4..2125e77 100644
-> --- a/net/ceph/messenger_v2.c
-> +++ b/net/ceph/messenger_v2.c
-> @@ -1439,7 +1439,7 @@ static int prepare_keepalive2(struct ceph_connection *con)
->  	struct ceph_timespec *ts = CTRL_BODY(con->v2.out_buf);
->  	struct timespec64 now;
->  
-> -	ktime_get_real_ts64(&now);
-> +	ktime_get_ts64(&now);
->  	dout("%s con %p timestamp %lld.%09ld\n", __func__, con, now.tv_sec,
->  	     now.tv_nsec);
->  
-> diff --git a/net/ceph/osd_client.c b/net/ceph/osd_client.c
-> index ff8624a..5192a8a 100644
-> --- a/net/ceph/osd_client.c
-> +++ b/net/ceph/osd_client.c
-> @@ -4717,7 +4717,7 @@ ceph_osdc_watch(struct ceph_osd_client *osdc,
->  	ceph_oid_copy(&lreq->t.base_oid, oid);
->  	ceph_oloc_copy(&lreq->t.base_oloc, oloc);
->  	lreq->t.flags = CEPH_OSD_FLAG_WRITE;
-> -	ktime_get_real_ts64(&lreq->mtime);
-> +	ktime_get_ts64(&lreq->mtime);
->  
->  	lreq->reg_req = alloc_watch_request(lreq, CEPH_OSD_WATCH_OP_WATCH);
->  	if (!lreq->reg_req) {
-> @@ -4767,7 +4767,7 @@ int ceph_osdc_unwatch(struct ceph_osd_client *osdc,
->  	ceph_oid_copy(&req->r_base_oid, &lreq->t.base_oid);
->  	ceph_oloc_copy(&req->r_base_oloc, &lreq->t.base_oloc);
->  	req->r_flags = CEPH_OSD_FLAG_WRITE;
-> -	ktime_get_real_ts64(&req->r_mtime);
-> +	ktime_get_ts64(&req->r_mtime);
->  	osd_req_op_watch_init(req, 0, lreq->linger_id,
->  			      CEPH_OSD_WATCH_OP_UNWATCH);
->  
+> > --- a/drivers/hwmon/ltc2992.c
+> > +++ b/drivers/hwmon/ltc2992.c
+> > @@ -248,8 +248,7 @@ static int ltc2992_gpio_get_multiple(struct gpio_chip *chip, unsigned long *mask
+> >  
+> >  	gpio_status = reg;
+> >  
+> > -	gpio_nr = 0;
+> > -	for_each_set_bit_from(gpio_nr, mask, LTC2992_GPIO_NR) {
+> > +	for_each_set_bit(gpio_nr, mask, LTC2992_GPIO_NR) {
+> >  		if (test_bit(LTC2992_GPIO_BIT(gpio_nr), &gpio_status))
+> >  			set_bit(gpio_nr, bits);
+> >  	}
+> 
+> I would replace the entire loop by bitmap_replace() call.
+> 
+> Something like
+> 	bitmap_replace(bits, bits, &gpio_status, mask, LTC2992_GPIO_NR);
 
-I think this is OK. Most of these timestamps get marshalled onto the
-wire to use as identifiers. Those are almost certainly better off with
-CLOCK_MONOTONIC since you could have a clock jump that caused you to
-send (e.g.) 2 keepalives with the same timestamp otherwise.
+Okay, it wouldn't work directly because it involves LTC2992_GPIO_BIT()
+macro. So, it rather some kind of bitmap_remap().
 
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
