@@ -2,61 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE2D3ADAA5
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 17:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3C7D3ADAA7
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 17:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234629AbhFSPoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 11:44:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55768 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230334AbhFSPoh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 11:44:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 370D2610CC;
-        Sat, 19 Jun 2021 15:42:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624117346;
-        bh=UEx7JsLWs3YweEcAuCrV4l6miBkaGBw2fHoihfrxjNs=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=hC74k2FyQ+ckjlmxm9myrkf8d3gHHO4MvqQjbP+U8/KpNhJAU6gt6VZgrdCp8TQw0
-         UeMl5f1dhLP4HdoqlyQXtv1xUMvik6DmtaKAJxMnPSzJj5rXwRvCVTKV6L84tBTWQy
-         c+vS7Gs/54CxUscMXDRoo7W2t5xdgIHyJMhAuSVwwdxT9QuFUQUg9vfmtocJSA0lvX
-         lGp+UeOGKaZ9Efu4wVk1ZlPhAJnSfM5tpLomXb/Nkx8WKJ6CdLBD7xx8YnNTpNXDy9
-         l5LXbCFlEQvw4NUt7osZaLoCpY/xkoExxXPeuMldc7Po3j2XBV+O8ICnZn7jT8B9qn
-         O83qxpNh/lqyw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2505F60A0D;
-        Sat, 19 Jun 2021 15:42:26 +0000 (UTC)
-Subject: Re: [GIT PULL] s390 fixes for 5.13-rc7
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <your-ad-here.call-01624097356-ext-0352@work.hours>
-References: <your-ad-here.call-01624097356-ext-0352@work.hours>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <your-ad-here.call-01624097356-ext-0352@work.hours>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.13-4
-X-PR-Tracked-Commit-Id: e73a99f3287a740a07d6618e9470f4d6cb217da8
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e14c779adebebe4b4aeeefb3cc09f376bec966c5
-Message-Id: <162411734609.28673.12097642456413544328.pr-tracker-bot@kernel.org>
-Date:   Sat, 19 Jun 2021 15:42:26 +0000
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+        id S234638AbhFSPpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 11:45:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234593AbhFSPpL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 11:45:11 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50FC6C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 08:43:00 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id n12so1660696pgs.13
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 08:43:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:cc:from:to:message-id;
+        bh=WLt1aypUZFf0uLl5W0e4Cbr/bbAeIOctJoAlWFkvXzE=;
+        b=gRPyoOYcDOFA7sfIDglnW7bevnFKWvhANMc+VSUN47ht8jV5axsiaZLo3NeGx74sT5
+         xO7oezOz14Ryt2FjqAcHB0y3hr0Lw5VORWn8EN1AcKdTju2hatrFenYVglOPvyu0sS7X
+         HKPqxcARMBYSqc6H+PpG6/TNGM0UAcbAoLPBkOVU6kBc3AL5vadpN0QOLxBkPNAwdcM5
+         bZeqOUE57M6dZ80NjlS5aqGNZWpRdYukOZ2i75zJV85TAP0W/zmL9XmS93BDnEcZxGK0
+         oGOr7hH6v9lDHTKmdiXpvAt6GNf/LSLPHCDiIn+/uAV55UNUXzl3v//8xqeyOOJuwLyu
+         EgWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:cc:from:to:message-id;
+        bh=WLt1aypUZFf0uLl5W0e4Cbr/bbAeIOctJoAlWFkvXzE=;
+        b=KrsCcJoTv//lpA9fwWwq4yODKm1KiUZjXI8++5mwioRD4XBBKZqApgHmVOmQnCfqfh
+         5+aBP38ozqhjoDesLhJYL+V8Xg0bwgA0CHDdd/A1nT/ZGKdid7P0FsVjeZFmCNGRraJF
+         S6qYKHfHLNhBG7zuTOEatWOoSDHJLQP5hWrGiYx3OdbwrTzls2uUGra+TNHEKzqpLnVk
+         se9cpmZSeD6H50kjv5JWdhopaxCOx+aneDAuGgMIfLoLViip0NNjRnuE1DFO39Tkeejj
+         zvtqQ39ujco2q0I78EI502Cf1k5IZ9n3qw4ieETsptNZddjFrkZHo8pPRaodDV9ve+sK
+         pDnw==
+X-Gm-Message-State: AOAM530JBF/W5G0IA8GJ4W6XvPiBgnraN+meKtAhmpmPkJfcnhrSAeWm
+        7/cbLGYTkgsRPkA/xSF8Ydi0HQ==
+X-Google-Smtp-Source: ABdhPJxA5FqeHFXUxAEAo2KZ9LrRDtalHguaHloHVDHAy7YM08UWIt6KnFzONUH5FP+Bje9Tkgga3Q==
+X-Received: by 2002:a05:6a00:a1e:b029:2e2:89d8:5c87 with SMTP id p30-20020a056a000a1eb02902e289d85c87mr11021738pfh.73.1624117379725;
+        Sat, 19 Jun 2021 08:42:59 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id 10sm8352494pfh.174.2021.06.19.08.42.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Jun 2021 08:42:59 -0700 (PDT)
+Date:   Sat, 19 Jun 2021 08:42:59 -0700 (PDT)
+X-Google-Original-Date: Sat, 19 Jun 2021 08:42:55 PDT (-0700)
+Subject: [GIT PULL] RISC-V Fixes for 5.13-rc7
+CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <mhng-768bd541-d21a-4a3e-9c92-da08277ab3ba@palmerdabbelt-glaptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 19 Jun 2021 12:09:16 +0200:
+The following changes since commit 0ddd7eaffa644baa78e247bbd220ab7195b1eed6:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.13-4
+  riscv: Fix BUILTIN_DTB for sifive and microchip soc (2021-06-11 21:07:09 -0700)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e14c779adebebe4b4aeeefb3cc09f376bec966c5
+are available in the Git repository at:
 
-Thank you!
+  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.13-rc7
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+for you to fetch changes up to 7ede12b01b59dc67bef2e2035297dd2da5bfe427:
+
+  riscv: dts: fu740: fix cache-controller interrupts (2021-06-19 00:11:53 -0700)
+
+----------------------------------------------------------------
+RISC-V Fixes for 5.13-rc7
+
+* A build fix to always build modules with the medany code model, as
+  the module loader doesn't support medlow.
+* A Kconfig warning fix for the SiFive errata.
+* A pair of fixes that for regressions to the recent memory layout
+  changes.
+* A fix for the FU740 device tree.
+
+----------------------------------------------------------------
+David Abdurachmanov (1):
+      riscv: dts: fu740: fix cache-controller interrupts
+
+Jisheng Zhang (2):
+      riscv: kasan: Fix MODULES_VADDR evaluation due to local variables' name
+      riscv: Ensure BPF_JIT_REGION_START aligned with PMD size
+
+Khem Raj (1):
+      riscv32: Use medany C model for modules
+
+Randy Dunlap (1):
+      riscv: sifive: fix Kconfig errata warning
+
+ Documentation/riscv/vm-layout.rst          |  4 ++--
+ arch/riscv/Kconfig.socs                    |  1 +
+ arch/riscv/Makefile                        |  2 +-
+ arch/riscv/boot/dts/sifive/fu740-c000.dtsi |  2 +-
+ arch/riscv/include/asm/pgtable.h           |  5 ++---
+ arch/riscv/mm/kasan_init.c                 | 10 +++++-----
+ 6 files changed, 12 insertions(+), 12 deletions(-)
