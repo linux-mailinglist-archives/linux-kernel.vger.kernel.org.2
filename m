@@ -2,153 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 897EA3AD67A
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 03:21:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBFB53AD66C
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 03:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235313AbhFSBXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 21:23:52 -0400
-Received: from mx0a-00268f01.pphosted.com ([148.163.148.236]:8326 "EHLO
-        mx0a-00268f01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234601AbhFSBXu (ORCPT
+        id S235310AbhFSBIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 21:08:05 -0400
+Received: from www262.sakura.ne.jp ([202.181.97.72]:52459 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231819AbhFSBIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 21:23:50 -0400
-Received: from pps.filterd (m0105196.ppops.net [127.0.0.1])
-        by mx0a-00268f01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15IN8wAn015235;
-        Fri, 18 Jun 2021 23:20:01 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2176.outbound.protection.outlook.com [104.47.55.176])
-        by mx0a-00268f01.pphosted.com with ESMTP id 398t5g24sw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 18 Jun 2021 23:20:00 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nRX2+4v49mUG/zLq8eAjtZP7wmT3Hi3PqyfT0S//E/FF+C7avZYfI2FlXi8nDLnA7mgLC5/PFkUE/gOsGE269IipJjBi1h85rOGx5CYlpGaTi9QA7LuR3TU167wlo96XM0QLZ3pdFTlI1QIp+8R4wJX37zNCBh5F3dM1BT+jzlp5iv9qTItt8ScYTi7DsIXyBTMPzWUz+hIUxnMqdGx4SShIIHpy4uCo819QQdHG66Ky2CyczsnbM/72bhaX2Hhu4yJsdn0txJBO+2BMlTkadFvIqYNHz+5RCmw4Zj4TiswiuG1tNRAlN4NZPfZO/P8i6U7QMbzG17te8eQb5HGQZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sbABBT10IcYLkFVUWSIKkBC8tyCnXj03pypEPn+Y+sE=;
- b=QU0GMLekFglYkWu3WanFXG0B6c0ppbkmeMstwOBf+l+WtRzBW5SEWiLqbHHjzAg2GJcdLkVsBc3yoXSTNodU75Z0+E0JyJ3uXOkUe4wPSVt7/rIYD6v3OWUW8z4jbOJwPl5wjEOQL5SUTZmr3HFps+e2WhDWKGcY4a8nA3X4Wnpj7MGLSmFWhZ6OUvFFT8RJlkpt7V/MP8uWYUVxKckjXQLn0g/WQzOTZ4ye1G/eSNg8TaVvzx9H5nKEa8VGvUjNYXb+nY3Wui5DHodYlSIRr2L3v+GjnD1ZCiu+xPUQPbrnKyX45iwML9fXE1OWaR2jZjEPh5xMakkX2tiSPXRHuQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=equinix.com; dmarc=pass action=none header.from=equinix.com;
- dkim=pass header.d=equinix.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=equinixinc.onmicrosoft.com; s=selector2-equinixinc-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=sbABBT10IcYLkFVUWSIKkBC8tyCnXj03pypEPn+Y+sE=;
- b=JpBn4QxAqWYpGn6LJtufbIsd2bSeN3u5/M1LAAQf4QR1hpTuW4Az4Qwfj9qpAuOigynmPCn2hz6ZG/4OMMdlRReHaFLwPY6SNa/rp+WqlaluVuebDQWGsZN7hA2tA2EQ+hwKpE3WYQqgD9Ouy4pW9ZktVgIT619mBUrWKB7fzlc=
-Received: from DM5PR04MB0762.namprd04.prod.outlook.com (2603:10b6:3:f3::13) by
- DM5PR04MB1212.namprd04.prod.outlook.com (2603:10b6:3:a2::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4219.24; Fri, 18 Jun 2021 23:19:57 +0000
-Received: from DM5PR04MB0762.namprd04.prod.outlook.com
- ([fe80::d9ba:6e7f:b51e:6cab]) by DM5PR04MB0762.namprd04.prod.outlook.com
- ([fe80::d9ba:6e7f:b51e:6cab%2]) with mapi id 15.20.4219.027; Fri, 18 Jun 2021
- 23:19:57 +0000
-From:   Zev Weiss <zweiss@equinix.com>
-To:     Andrew Jeffery <andrew@aj.id.au>
-CC:     "openipmi-developer@lists.sourceforge.net" 
-        <openipmi-developer@lists.sourceforge.net>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "minyard@acm.org" <minyard@acm.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "tmaimon77@gmail.com" <tmaimon77@gmail.com>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "avifishman70@gmail.com" <avifishman70@gmail.com>,
-        "venture@google.com" <venture@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tali.perry1@gmail.com" <tali.perry1@gmail.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "chiawei_wang@aspeedtech.com" <chiawei_wang@aspeedtech.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "benjaminfair@google.com" <benjaminfair@google.com>,
-        "arnd@arndb.de" <arnd@arndb.de>, "joel@jms.id.au" <joel@jms.id.au>,
-        "KWLIU@nuvoton.com" <KWLIU@nuvoton.com>
-Subject: Re: [PATCH v4 01/16] ipmi: kcs_bmc_aspeed: Use of match data to
- extract KCS properties
-Thread-Topic: [PATCH v4 01/16] ipmi: kcs_bmc_aspeed: Use of match data to
- extract KCS properties
-Thread-Index: AQHXZJhztxF34bFoakSOOepf4UmNuw==
-Date:   Fri, 18 Jun 2021 23:19:57 +0000
-Message-ID: <20210618231933.GA9658@hatter>
-References: <20210608104757.582199-1-andrew@aj.id.au>
- <20210608104757.582199-2-andrew@aj.id.au>
-In-Reply-To: <20210608104757.582199-2-andrew@aj.id.au>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: aj.id.au; dkim=none (message not signed)
- header.d=none;aj.id.au; dmarc=none action=none header.from=equinix.com;
-x-originating-ip: [24.181.166.149]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e9216bd0-6697-4bd8-15a1-08d932af968b
-x-ms-traffictypediagnostic: DM5PR04MB1212:
-x-microsoft-antispam-prvs: <DM5PR04MB1212904FFC84A932C13C85CCC30D9@DM5PR04MB1212.namprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:800;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: hq4tNvl9CGFoldduj7IFpewfEe1vw9lr9zMHqmJVHodAOEicyfCW8ExW3vqAG6xwf9wL7BXipYVxA1sWy4ZmCzsbapPYulWFqhGQLH7atayAso9BTddy4VFBGO3QXS3Hnx5QuMji6ifOQuLwQE6GdbLxPnrCMxvHStE9OCM9/nKQNj7mLN7eMLVshSxV3syMLry6hCJoV1ONm8bxG3LlM7lxyhbEleqYNymDK4cNCDzCBnWkIi3+vd8sDQwQ39uoW+WfpPILi5naEnIo5apdnxFLp4WDQud1yPmbxPSSVT2GoTtlup9JXghwY9FywdJ+iAoawJvdfTQEbS0l/JZndH2Tlqz0TvgFBJBo3pWczKeD5oz7EpiO2lNpqfvj2u6yGB6+qzNvlf2MWM42yU8tSfb3oZvwpXbmUnscxCBGUBnOvQ2ugruWizlYffnk8BdBqOdxBtW2ZSLzY4/D1/sUbUnbzMZ7iowrBFh4WIMZCgDLtzLbb7VbSjKuTwdUjcnRGHlKVzNQiWV5c2ubKq5gUCFJRcYmzkiUwOtlreojwR4z7WtvPTin01FCOPFCqtHwSWRMlQYkU6uZKMu+d2/BHw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR04MB0762.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(136003)(366004)(396003)(346002)(39860400002)(376002)(4744005)(86362001)(6506007)(83380400001)(186003)(76116006)(2906002)(316002)(33656002)(478600001)(4326008)(5660300002)(33716001)(54906003)(122000001)(38100700002)(8676002)(26005)(7416002)(6916009)(1076003)(6512007)(66946007)(66556008)(8936002)(66446008)(64756008)(71200400001)(66476007)(6486002)(9686003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?qPbeCHGVDhRKaTCcsK6Tj71Klie/e5WcOp0KYw2Z1XcqGBv+Y9cjiQN3nXE3?=
- =?us-ascii?Q?k+lo4gLqrTjHfHWenNUIhtUUuKkAFNXow+p6DBMJ4hMk1npZUuQWMAzhA54e?=
- =?us-ascii?Q?TPKeJYwXgZa4i3rjyxYrl6mhyikoR5D8rZeq+PqdVLj7mp0u7fLiDpGVuiln?=
- =?us-ascii?Q?2eae1KzNd0MJk6SbdRBzJkjpTJH/gd8b/zMJ1ukxhNE1j/aFGIO8YUCh8EEW?=
- =?us-ascii?Q?K5OKiDM8B5HXqYwhYUaKKjKHIY8ApCYKDroaaSH+gU1yFsLNWtVPoYUKD4cm?=
- =?us-ascii?Q?NH094u5ctaNEfIOe11tbTVwyCd9+6LN4jLoNtTKWsgIXT7oqEgfJvuYGKYhr?=
- =?us-ascii?Q?rdAPRPCvQ5DKcwtdvb5JBZj+6745x6eyPnUOMcFnI5NeKienuJAhTU1xLPXN?=
- =?us-ascii?Q?Dt77/HJnukh8aVSfxWQ4ZjoLX68gbzYnU4nCx1GKD3p/8wYylKg4Fajdevh6?=
- =?us-ascii?Q?aB/AQE/+ygxdD2p+Ox6DgWERccTYEME+37DeiMC/0qotOTxeTwOM1V/mS37I?=
- =?us-ascii?Q?XiG77ORq8kmQxAyELHKjY48CVhZzhBpF8rwADc4HNaYuTQ4v4txn3GWjxev7?=
- =?us-ascii?Q?E2BqN0du6WDamda/YdRTDpDrmKwW6q7IaCkDE50n5OGTQkj+rDqR+LrnHoEK?=
- =?us-ascii?Q?Q86rpbauiBqPQVfDwp9QSSjZi0PPBj6TAudsAFoNPP9NYHKHsP9SWkSGAxE5?=
- =?us-ascii?Q?lQjyVBjA1ZqypFurF1M+CWax4FSt48CpBoF10eRSIkJceGjjvGB+IB4jxQgt?=
- =?us-ascii?Q?RVuwE3e/YAfrA0eJycUShI19zgJd9rTK4+MH/jVsLo9MRyAfnjybp5PimLCi?=
- =?us-ascii?Q?DlBvYDpMUP+hyyVq35EEz+6pdWju9MS4uIHSYlZsMIE7WCXV5FXOuxALKr3C?=
- =?us-ascii?Q?j+QMowMKG9p/8GzMTkWswwneJyqGCHGme1YgFbU9xGJzi71X4qgN08/T0MkK?=
- =?us-ascii?Q?eQi4KzDWDvNVc0eVhT4nYYUa3z0DWS3yhMm66pgTWi2Y6IrfVUmwBavkzlpc?=
- =?us-ascii?Q?sd33jIgPFcawkOhQGF6wSTMlT+T4Erp7AtWN3zCnVSN2XEryGjD6x+aHGT4Q?=
- =?us-ascii?Q?vzZFOYYXoNo/gsprRBYXbx96wzCfQUJ991XqjHHPN0bujr6UJUcJaim941Hu?=
- =?us-ascii?Q?4vl0UwaxbDl7C+GTMJO6Om1xrHrwsI/SNZoBceCRKGadwps9wSlQG68Q0et/?=
- =?us-ascii?Q?e18rSuP4EiRzaRXRZeHnOKNkv46sodslyzyd7/9N6/NIdYrvt5qLIPArCCL7?=
- =?us-ascii?Q?JOsg3LYnigJ/ORtklSYi9eBYTduc+AEnJxFYvdrSTnCibSIFVtYI/bNMsvd0?=
- =?us-ascii?Q?CDn7f6nwRAorQO3POjgs5Jm9?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <321516ADC9BC284B8AD1C7CEE5DE0981@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Fri, 18 Jun 2021 21:08:02 -0400
+Received: from fsav314.sakura.ne.jp (fsav314.sakura.ne.jp [153.120.85.145])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 15J15nGa006768;
+        Sat, 19 Jun 2021 10:05:50 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav314.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav314.sakura.ne.jp);
+ Sat, 19 Jun 2021 10:05:49 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav314.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 15J15ikI006747
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 19 Jun 2021 10:05:49 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+In-Reply-To: 
+To:     hch@infradead.org
+Cc:     axboe@kernel.dk, desmondcheongzx@gmail.com,
+        gregkh@linuxfoundation.org, linux-block@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        miquel.raynal@bootlin.com, richard@nod.at,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        syzbot+6a8a0d93c91e8fbf2e80@syzkaller.appspotmail.com,
+        vigneshr@ti.com
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Subject: [PATCH v2] block: genhd: don't call probe function with
+ major_names_lock held
+Message-ID: <f790f8fb-5758-ea4e-a527-0ee4af82dd44@i-love.sakura.ne.jp>
+Date:   Sat, 19 Jun 2021 10:05:44 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: equinix.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR04MB0762.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e9216bd0-6697-4bd8-15a1-08d932af968b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jun 2021 23:19:57.4869
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72adb271-2fc7-4afe-a5ee-9de6a59f6bfb
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: uDIvegQ9KwMasPUoYse/IERjiVvnUWwZQ5JNYkYWr6qsZzgLQE3TDTAIZkwL5bXqGJEf3+utwhWa3u/Ub9zivw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR04MB1212
-X-Proofpoint-GUID: DbhFk7cKGSr5fg7Daib2b87oCmvwVRS9
-X-Proofpoint-ORIG-GUID: DbhFk7cKGSr5fg7Daib2b87oCmvwVRS9
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-18_12:2021-06-18,2021-06-18 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- priorityscore=1501 malwarescore=0 spamscore=0 impostorscore=0 phishscore=0
- mlxlogscore=852 adultscore=0 lowpriorityscore=0 clxscore=1011 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106180136
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 08, 2021 at 05:47:42AM CDT, Andrew Jeffery wrote:
->Unpack and remove the aspeed_kcs_probe_of_v[12]() functions to aid
->rearranging how the private device-driver memory is allocated.
->
->Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
->---
-> drivers/char/ipmi/kcs_bmc_aspeed.c | 154 ++++++++++++++---------------
-> 1 file changed, 77 insertions(+), 77 deletions(-)
->
+syzbot is reporting circular locking problem at blk_request_module() [1],
+for blk_request_module() is calling probe function with major_names_lock
+held while major_names_lock is held during module's __init and __exit
+functions.
 
-Reviewed-by: Zev Weiss <zweiss@equinix.com>
+                                         loop_exit() {
+                                           mutex_lock(&loop_ctl_mutex);
+  blk_request_module() {
+    mutex_lock(&major_names_lock);
+    loop_probe() {
+      mutex_lock(&loop_ctl_mutex); // Blocked by loop_exit()
+      mutex_unlock(&loop_ctl_mutex);
+    }
+    mutex_unlock(&major_names_lock);
+                                           unregister_blkdev() {
+                                             mutex_lock(&major_names_lock); // Blocked by blk_request_module()
+                                             mutex_unlock(&major_names_lock);
+                                           }
+                                           mutex_unlock(&loop_ctl_mutex);
+  }
+                                         }
+
+Based on an assumption that a probe callback passed to __register_blkdev()
+belongs to a module which calls __register_blkdev(), drop major_names_lock
+before calling probe function by holding a reference to that module which
+contains that probe function. If there is a module where this assumption
+does not hold, such module can call ____register_blkdev() directly.
+
+  blk_request_module() {
+    mutex_lock(&major_names_lock);
+    // Block loop_exit()
+    mutex_unlock(&major_names_lock);
+    loop_probe() {
+      mutex_lock(&loop_ctl_mutex);
+      mutex_unlock(&loop_ctl_mutex);
+    }
+    // Unblock loop_exit()
+  }
+                                         loop_exit() {
+                                           mutex_lock(&loop_ctl_mutex);
+                                           unregister_blkdev() {
+                                             mutex_lock(&major_names_lock);
+                                             mutex_unlock(&major_names_lock);
+                                           }
+                                           mutex_unlock(&loop_ctl_mutex);
+                                         }
+
+Note that regardless of this patch, it is up to probe function to
+serialize module's __init function and probe function in that module
+by using e.g. a mutex. This patch simply makes sure that module's __exit
+function won't be called when probe function is about to be called.
+
+While Desmond Cheong Zhi Xi already proposed a patch for breaking ABCD
+circular dependency [2], I consider that this patch is still needed for
+safely breaking AB-BA dependency upon module unloading. (Note that syzbot
+does not test module unloading code because the syzbot kernels are built
+with almost all modules built-in. We need manual inspection.)
+
+By doing kmalloc(GFP_KERNEL) in ____register_blkdev() before holding
+major_names_lock, we could convert major_names_lock from a mutex to
+a spinlock. But that is beyond the scope of this patch.
+
+Link: https://syzkaller.appspot.com/bug?id=7bd106c28e846d1023d4ca915718b1a0905444cb [1]
+Link: https://lkml.kernel.org/r/20210617160904.570111-1-desmondcheongzx@gmail.com [2]
+Reported-by: syzbot <syzbot+6a8a0d93c91e8fbf2e80@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Tested-by: syzbot <syzbot+6a8a0d93c91e8fbf2e80@syzkaller.appspotmail.com>
+---
+ block/genhd.c         | 36 +++++++++++++++++++++++++++---------
+ include/linux/genhd.h |  8 +++++---
+ 2 files changed, 32 insertions(+), 12 deletions(-)
+
+diff --git a/block/genhd.c b/block/genhd.c
+index 9f8cb7beaad1..9577c70a6bd3 100644
+--- a/block/genhd.c
++++ b/block/genhd.c
+@@ -169,6 +169,7 @@ static struct blk_major_name {
+ 	int major;
+ 	char name[16];
+ 	void (*probe)(dev_t devt);
++	struct module *owner;
+ } *major_names[BLKDEV_MAJOR_HASH_SIZE];
+ static DEFINE_MUTEX(major_names_lock);
+ 
+@@ -197,7 +198,8 @@ void blkdev_show(struct seq_file *seqf, off_t offset)
+  * @major: the requested major device number [1..BLKDEV_MAJOR_MAX-1]. If
+  *         @major = 0, try to allocate any unused major number.
+  * @name: the name of the new block device as a zero terminated string
+- * @probe: allback that is called on access to any minor number of @major
++ * @probe: callback that is called on access to any minor number of @major
++ * @owner: the owner of @probe function (i.e. THIS_MODULE or NULL).
+  *
+  * The @name must be unique within the system.
+  *
+@@ -214,8 +216,8 @@ void blkdev_show(struct seq_file *seqf, off_t offset)
+  *
+  * Use register_blkdev instead for any new code.
+  */
+-int __register_blkdev(unsigned int major, const char *name,
+-		void (*probe)(dev_t devt))
++int ____register_blkdev(unsigned int major, const char *name,
++			void (*probe)(dev_t devt), struct module *owner)
+ {
+ 	struct blk_major_name **n, *p;
+ 	int index, ret = 0;
+@@ -255,6 +257,7 @@ int __register_blkdev(unsigned int major, const char *name,
+ 
+ 	p->major = major;
+ 	p->probe = probe;
++	p->owner = owner;
+ 	strlcpy(p->name, name, sizeof(p->name));
+ 	p->next = NULL;
+ 	index = major_to_index(major);
+@@ -277,7 +280,7 @@ int __register_blkdev(unsigned int major, const char *name,
+ 	mutex_unlock(&major_names_lock);
+ 	return ret;
+ }
+-EXPORT_SYMBOL(__register_blkdev);
++EXPORT_SYMBOL(____register_blkdev);
+ 
+ void unregister_blkdev(unsigned int major, const char *name)
+ {
+@@ -676,14 +679,29 @@ void blk_request_module(dev_t devt)
+ {
+ 	unsigned int major = MAJOR(devt);
+ 	struct blk_major_name **n;
++	void (*probe_fn)(dev_t devt);
+ 
+ 	mutex_lock(&major_names_lock);
+ 	for (n = &major_names[major_to_index(major)]; *n; n = &(*n)->next) {
+-		if ((*n)->major == major && (*n)->probe) {
+-			(*n)->probe(devt);
+-			mutex_unlock(&major_names_lock);
+-			return;
+-		}
++		if ((*n)->major != major || !(*n)->probe)
++			continue;
++		if (!try_module_get((*n)->owner))
++			break;
++		/*
++		 * Calling probe function with major_names_lock held causes
++		 * circular locking dependency problem. Thus, call it after
++		 * releasing major_names_lock.
++		 */
++		probe_fn = (*n)->probe;
++		mutex_unlock(&major_names_lock);
++		/*
++		 * Assuming that unregister_blkdev() is called from module's
++		 * __exit function, a module refcount taken above allows us
++		 * to safely call probe function without major_names_lock held.
++		 */
++		probe_fn(devt);
++		module_put((*n)->owner);
++		return;
+ 	}
+ 	mutex_unlock(&major_names_lock);
+ 
+diff --git a/include/linux/genhd.h b/include/linux/genhd.h
+index 6fc26f7bdf71..070b73c043e6 100644
+--- a/include/linux/genhd.h
++++ b/include/linux/genhd.h
+@@ -277,10 +277,12 @@ extern void put_disk(struct gendisk *disk);
+ 
+ #define alloc_disk(minors) alloc_disk_node(minors, NUMA_NO_NODE)
+ 
+-int __register_blkdev(unsigned int major, const char *name,
+-		void (*probe)(dev_t devt));
++int ____register_blkdev(unsigned int major, const char *name,
++			void (*probe)(dev_t devt), struct module *owner);
++#define __register_blkdev(major, name, probe) \
++	____register_blkdev(major, name, probe, THIS_MODULE)
+ #define register_blkdev(major, name) \
+-	__register_blkdev(major, name, NULL)
++	____register_blkdev(major, name, NULL, NULL)
+ void unregister_blkdev(unsigned int major, const char *name);
+ 
+ bool bdev_check_media_change(struct block_device *bdev);
+-- 
+2.18.4
