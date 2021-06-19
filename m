@@ -2,104 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C7463AD9C1
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 13:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D716A3AD9C3
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 13:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233574AbhFSLM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 07:12:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232892AbhFSLM2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 07:12:28 -0400
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C608C061574;
-        Sat, 19 Jun 2021 04:10:18 -0700 (PDT)
-Received: by mail-oo1-xc31.google.com with SMTP id x22-20020a4a62160000b0290245cf6b7feeso3163220ooc.13;
-        Sat, 19 Jun 2021 04:10:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jGT3JoRbOKhxxTLocr8dP2N6w63SdfEBqzsNI5J17gw=;
-        b=RBzJvnEVWK1LtFiWxScAQn6nzT0Sk5L6qO25QaDXS0rVdnGk1WFArCdAosrmR3MJnA
-         1ljimPzii8/mYU287XUObiHlFm/T/d8PrymYmnfG7nN1bcVzvF1yea86YRJw4nM/Zx2A
-         POkNmZVrd2VNnWtgFr3lxUo94T5EqGuZ4DcLJd1nZjRjEtVd6t+rEdiXMpHR5WR8Qb1f
-         k0mMaoKx1nKlTFgs+EA+PdP82pxnBmP5F2s3A6LRxqNfEAEa8LvxlgmGHQAOIky8q6Bv
-         vr6QrTpcyAPz481g9166zi0Q8qkl7bTTbANoXieGJZYWjCqMOtqOlnWkl5wg1sB7qCES
-         OT7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=jGT3JoRbOKhxxTLocr8dP2N6w63SdfEBqzsNI5J17gw=;
-        b=PykxzQCdcWD1eg5OCRN01k96MChktpyIa7msKBk067dzqBigvDcJugDoGiubgfbJkr
-         vZfjxolrpr0Z5tN/vs0gcDeoI2UoNFJ0UB2Z13gk36HSz93SqybJWL1sGW9JAO+ijybM
-         CBMbYie0Vw2ILAZqvgDlUqE0pIe1u3fRfAiyjDErpK6jYlBDvHKU8ntiIP5aAbwrF8ep
-         5Ys1OGueg9yndnJEVfyZ16cF1D7H8sHUTvj3vGuaRR/xE0yVtv7mBKBP+1NnCPGYM+dV
-         5JNLSB1mZwbcyNzsi8Xic+XkkaM4B7d0NdGfJc5FXNaJw/+EsKkLuUmWuInb007BGx6W
-         FAVg==
-X-Gm-Message-State: AOAM530fczIx+oJL1+0Syg5p7lVgmaOMRZM+QibrtH8Io79JplrhwONq
-        /VVG2dXUYqudxuxrL76qXc8=
-X-Google-Smtp-Source: ABdhPJwXppZizYY6AC+p7d4cJtypRmsh1F1i0wyhnzY0E5EvdZVCOiblZthNHLTtn8GA1jEJUfknWg==
-X-Received: by 2002:a05:6820:23c:: with SMTP id j28mr12949720oob.88.1624101017470;
-        Sat, 19 Jun 2021 04:10:17 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 111sm2620855otg.25.2021.06.19.04.10.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Jun 2021 04:10:16 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 19 Jun 2021 04:10:14 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v3 0/4] HWMON LM90 interrupt fixes and improvements
-Message-ID: <20210619111014.GA1042635@roeck-us.net>
-References: <20210618215455.19986-1-digetx@gmail.com>
+        id S233614AbhFSLQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 07:16:20 -0400
+Received: from mga01.intel.com ([192.55.52.88]:60440 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233488AbhFSLQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 07:16:19 -0400
+IronPort-SDR: m78cGSc3rTSpd9hUx71swx5dppNdjA6K9jfaGLH6qlpXN9ldSRGhMaYOizH07hjEQ5wfaX/dzm
+ Qm/bwEpA00sA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="228201205"
+X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
+   d="scan'208";a="228201205"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2021 04:14:06 -0700
+IronPort-SDR: fR0LxNJoQ5ViK6YJMTDzJH5E/P1K+fQ+8Uonhvst8XEJfVCuHp4P0YbRmahGIbMYMbALaEk0lV
+ 9zJbQyHCfRiA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
+   d="scan'208";a="555812420"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 19 Jun 2021 04:14:05 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1luYvN-0003WT-1s; Sat, 19 Jun 2021 11:14:05 +0000
+Date:   Sat, 19 Jun 2021 19:13:22 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/next] BUILD SUCCESS
+ 8bd5745dc8faaee60839f9a70d63128e428ba422
+Message-ID: <60cdd152.8ZKyQtvbZCswRKtx%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210618215455.19986-1-digetx@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 19, 2021 at 12:54:51AM +0300, Dmitry Osipenko wrote:
-> Hi,
-> 
-> This series makes interrupt usable on NVIDIA Tegra devices, it also
-> switches LM90 driver to use hwmon_notify_event().
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
+branch HEAD: 8bd5745dc8faaee60839f9a70d63128e428ba422  torture: Protect kvm-remote.sh directory trees from /tmp reaping
 
-Series applied.
+elapsed time: 723m
 
-Thanks,
-Guenter
+configs tested: 127
+configs skipped: 2
 
-> Changelog:
-> 
-> v3: - No code changes. Added changelog.
-> 
-> v2: - Dropped "hwmon: (lm90) Use edge-triggered interrupt" patch
->       and replaced it with "hwmon: (lm90) Don't override interrupt
->       trigger type", as was discussed during review of v1.
-> 
->     - Added these new patches:
-> 
->         hwmon: (lm90) Use hwmon_notify_event()
->         hwmon: (lm90) Unmask hardware interrupt
->         hwmon: (lm90) Disable interrupt on suspend
-> 
-> Dmitry Osipenko (4):
->   hwmon: (lm90) Don't override interrupt trigger type
->   hwmon: (lm90) Use hwmon_notify_event()
->   hwmon: (lm90) Unmask hardware interrupt
->   hwmon: (lm90) Disable interrupt on suspend
-> 
->  drivers/hwmon/lm90.c | 79 ++++++++++++++++++++++++++++++++++++--------
->  1 file changed, 66 insertions(+), 13 deletions(-)
-> 
-> -- 
-> 2.30.2
-> 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+arm                         bcm2835_defconfig
+powerpc                    klondike_defconfig
+mips                          rb532_defconfig
+powerpc                     tqm8540_defconfig
+nios2                         3c120_defconfig
+nds32                             allnoconfig
+powerpc64                           defconfig
+arm                      pxa255-idp_defconfig
+powerpc                     tqm8555_defconfig
+arm                     am200epdkit_defconfig
+arm                         orion5x_defconfig
+sh                        edosk7705_defconfig
+powerpc                    sam440ep_defconfig
+powerpc                       ebony_defconfig
+mips                           mtx1_defconfig
+mips                        jmr3927_defconfig
+powerpc                    gamecube_defconfig
+mips                   sb1250_swarm_defconfig
+um                           x86_64_defconfig
+powerpc                        fsp2_defconfig
+arm                          badge4_defconfig
+sh                           se7619_defconfig
+powerpc                      pmac32_defconfig
+arm                             pxa_defconfig
+sh                                  defconfig
+arm                            pleb_defconfig
+m68k                        m5272c3_defconfig
+mips                      maltaaprp_defconfig
+powerpc                 mpc8540_ads_defconfig
+powerpc                      obs600_defconfig
+arm                           spitz_defconfig
+powerpc                     mpc83xx_defconfig
+ia64                            zx1_defconfig
+arm                     davinci_all_defconfig
+powerpc                 mpc832x_rdb_defconfig
+powerpc               mpc834x_itxgp_defconfig
+arm                          iop32x_defconfig
+arm                          lpd270_defconfig
+arm                          collie_defconfig
+s390                          debug_defconfig
+powerpc                     tqm5200_defconfig
+arm                       netwinder_defconfig
+arc                           tb10x_defconfig
+arm                             ezx_defconfig
+powerpc                     kmeter1_defconfig
+arm                       mainstone_defconfig
+m68k                       m5475evb_defconfig
+powerpc                         wii_defconfig
+xtensa                              defconfig
+sh                            migor_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20210618
+i386                 randconfig-a006-20210618
+i386                 randconfig-a004-20210618
+i386                 randconfig-a001-20210618
+i386                 randconfig-a005-20210618
+i386                 randconfig-a003-20210618
+x86_64               randconfig-a015-20210618
+x86_64               randconfig-a011-20210618
+x86_64               randconfig-a012-20210618
+x86_64               randconfig-a014-20210618
+x86_64               randconfig-a016-20210618
+x86_64               randconfig-a013-20210618
+i386                 randconfig-a015-20210618
+i386                 randconfig-a016-20210618
+i386                 randconfig-a013-20210618
+i386                 randconfig-a014-20210618
+i386                 randconfig-a012-20210618
+i386                 randconfig-a011-20210618
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210618
+x86_64               randconfig-a002-20210618
+x86_64               randconfig-a001-20210618
+x86_64               randconfig-a004-20210618
+x86_64               randconfig-a003-20210618
+x86_64               randconfig-a006-20210618
+x86_64               randconfig-a005-20210618
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
