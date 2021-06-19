@@ -2,171 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AAE13AD9FB
+	by mail.lfdr.de (Postfix) with ESMTP id 8B41A3AD9FC
 	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 14:35:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234110AbhFSMe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 08:34:27 -0400
-Received: from mga06.intel.com ([134.134.136.31]:14714 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234059AbhFSMeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 08:34:25 -0400
-IronPort-SDR: dUbTDOgFk5hTNwIrPuYuWy18VesuqK2rDRKqJ6AyryhXFLN9G4vCI+OVjUvr3Nyqtu9fROMwOG
- B9uMQ59y6G5g==
-X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="267810475"
-X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
-   d="scan'208";a="267810475"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2021 05:32:13 -0700
-IronPort-SDR: Ob6blIaOpVQeWSdcIG+6RS0wCYbj2KjmazCdwc2D7JzKIDqpc6ZP1/r0M+he4qI3Gx4/sre2Gv
- DQWSs+9JcHiw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
-   d="scan'208";a="451692508"
-Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 19 Jun 2021 05:32:07 -0700
-Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lua8t-0003Yw-2l; Sat, 19 Jun 2021 12:32:07 +0000
-Date:   Sat, 19 Jun 2021 20:31:08 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:auto-latest] BUILD SUCCESS
- 185c87ee7510e3cc162dccb7cb9820cedcec27e3
-Message-ID: <60cde38c.00oLfz6+WnKm4DaZ%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S234128AbhFSMgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 08:36:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234059AbhFSMgq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 08:36:46 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70887C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 05:34:34 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id t8so5232682pfe.3
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 05:34:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lnXkJrK3bbKfbG2bmCLaRAAKC3eTSFYqLBXTuAJNf/M=;
+        b=T+/kVZQDtcu6pepiucvXtHV7rqFV4eI+q3St1JDkyUw6Lq9OyyCq+zAowtqzfF8Rk7
+         /wqO5JetHMyjZrXZsGA8ZO7+vLTa4LZt60I4L9BasV2QyAWW45yTELNOI99AfMD7Cq9g
+         uyh+oX/71RnSRDM3TlWSiKRDTh97ERPg5OTX/nqLFQGXdXsg5YeJvQB46vwLD0DnyhZU
+         6puqJKHyeZc3Vhv8K3VE0Rp603ofegrvpKghQ2Odedu5rVfjpLZSLBTJvnaapF6HMAPk
+         vTEkhiR3o3+bQZy2Y8vGE0zoizyIcNbxyqq9vql2LQEUqeXlNLHrKtzSMlGqNxB15/pc
+         nqMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lnXkJrK3bbKfbG2bmCLaRAAKC3eTSFYqLBXTuAJNf/M=;
+        b=Lh4WQTZzep0agxzWnVnkuHNix3BkEjNM/sRqqddeur781+2Me2dvgyDY3oLFz0PxmZ
+         uIPhuF16jJAKsOlYJ+CMF/gZXAEjKontEFUPOfQ5dhmZCjbBgZtqdEtpBv8uAQ0o+nDS
+         H8ADT42oIEiV2zdK/GtfpBJ0w5aWImwoSPwMpkiWsdVJNe/Nwwh9Xqqr5NK6gIuVLoM+
+         xoQYd7m9KJSNdYV1EyJrIc+xSPOfh0dNsd0ay5HsVqIRa0oeq9hy2um2sHexpkzBf8JC
+         uA3RwmRpdjHM2n8l4/4zqT5tW6b3oFaXZbghwQY7I+nRrQfBwWVGXWP3tLQvbulPbm3S
+         7Piw==
+X-Gm-Message-State: AOAM5332iHUStLsi0kHsSif1TBn+KxzTuPcfl0WxPt1D5NG3iPzYetjA
+        fNHivxB5GZ6hptlyLJeNxTLhlrhwkrUihPCc
+X-Google-Smtp-Source: ABdhPJzJuBg+TnHM/T91eUyT0X8xLHuJ+GhkcrwiUOxeCKCC2Ykuo/ZunEa8AOacriuKBwUXUw6hzA==
+X-Received: by 2002:a65:5684:: with SMTP id v4mr14327702pgs.218.1624106073679;
+        Sat, 19 Jun 2021 05:34:33 -0700 (PDT)
+Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
+        by smtp.gmail.com with ESMTPSA id co18sm1606997pjb.37.2021.06.19.05.34.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Jun 2021 05:34:33 -0700 (PDT)
+From:   Axel Lin <axel.lin@ingics.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH] regulator: hi6421v600: Fix setting idle mode
+Date:   Sat, 19 Jun 2021 20:34:23 +0800
+Message-Id: <20210619123423.4091429-1-axel.lin@ingics.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git auto-latest
-branch HEAD: 185c87ee7510e3cc162dccb7cb9820cedcec27e3  Merge branch 'irq/urgent'
+commit db27f8294cd7 changed eco_mode << (ffs(sreg->eco_mode_mask) - 1)
+to sreg->eco_mode_mask << (ffs(sreg->eco_mode_mask) - 1) which is wrong.
+Fix it by simply set val = sreg->eco_mode_mask.
 
-elapsed time: 1589m
+In additional, sreg->eco_mode_mask can be 0 (LDO3, LDO33, LDO34).
+Return -EINVAL if idle mode is not supported when sreg->eco_mode_mask is 0.
 
-configs tested: 109
-configs skipped: 3
+While at it, also use unsigned int for reg_val/val which is the expected
+type for regmap_read and regmap_update_bits.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                          rsk7269_defconfig
-powerpc                     asp8347_defconfig
-sh                  sh7785lcr_32bit_defconfig
-powerpc                     skiroot_defconfig
-arm                         bcm2835_defconfig
-ia64                                defconfig
-powerpc                    klondike_defconfig
-mips                          rb532_defconfig
-powerpc                     tqm8540_defconfig
-powerpc                 mpc834x_itx_defconfig
-sh                          polaris_defconfig
-x86_64                            allnoconfig
-xtensa                       common_defconfig
-arm                          pxa168_defconfig
-nios2                         3c120_defconfig
-arm                           sama5_defconfig
-arm                       imx_v6_v7_defconfig
-mips                     loongson1c_defconfig
-m68k                            mac_defconfig
-powerpc                 mpc836x_rdk_defconfig
-arm                          pxa3xx_defconfig
-powerpc                      cm5200_defconfig
-powerpc                        icon_defconfig
-powerpc                       maple_defconfig
-powerpc                      ep88xc_defconfig
-sparc                            alldefconfig
-sh                           sh2007_defconfig
-m68k                         apollo_defconfig
-sh                               j2_defconfig
-riscv                            alldefconfig
-arc                           tb10x_defconfig
-arm                           sunxi_defconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20210618
-i386                 randconfig-a006-20210618
-i386                 randconfig-a004-20210618
-i386                 randconfig-a001-20210618
-i386                 randconfig-a005-20210618
-i386                 randconfig-a003-20210618
-x86_64               randconfig-a015-20210618
-x86_64               randconfig-a011-20210618
-x86_64               randconfig-a012-20210618
-x86_64               randconfig-a014-20210618
-x86_64               randconfig-a016-20210618
-x86_64               randconfig-a013-20210618
-i386                 randconfig-a015-20210618
-i386                 randconfig-a016-20210618
-i386                 randconfig-a013-20210618
-i386                 randconfig-a014-20210618
-i386                 randconfig-a012-20210618
-i386                 randconfig-a011-20210618
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                    rhel-8.3-kselftests
-um                           x86_64_defconfig
-um                             i386_defconfig
-um                            kunit_defconfig
-x86_64                           allyesconfig
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210618
-x86_64               randconfig-a002-20210618
-x86_64               randconfig-a001-20210618
-x86_64               randconfig-a004-20210618
-x86_64               randconfig-a003-20210618
-x86_64               randconfig-a006-20210618
-x86_64               randconfig-a005-20210618
-
+Fixes: db27f8294cd7 ("staging: regulator: hi6421v600-regulator: use shorter names for OF properties")
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/regulator/hi6421v600-regulator.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/regulator/hi6421v600-regulator.c b/drivers/regulator/hi6421v600-regulator.c
+index b5a19938fd3a..9a68ef251de6 100644
+--- a/drivers/regulator/hi6421v600-regulator.c
++++ b/drivers/regulator/hi6421v600-regulator.c
+@@ -117,7 +117,7 @@ static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
+ static unsigned int hi6421_spmi_regulator_get_mode(struct regulator_dev *rdev)
+ {
+ 	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+-	u32 reg_val;
++	unsigned int reg_val;
+ 
+ 	regmap_read(rdev->regmap, rdev->desc->enable_reg, &reg_val);
+ 
+@@ -131,14 +131,17 @@ static int hi6421_spmi_regulator_set_mode(struct regulator_dev *rdev,
+ 					  unsigned int mode)
+ {
+ 	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
+-	u32 val;
++	unsigned int val;
+ 
+ 	switch (mode) {
+ 	case REGULATOR_MODE_NORMAL:
+ 		val = 0;
+ 		break;
+ 	case REGULATOR_MODE_IDLE:
+-		val = sreg->eco_mode_mask << (ffs(sreg->eco_mode_mask) - 1);
++		if (!sreg->eco_mode_mask)
++			return -EINVAL;
++
++		val = sreg->eco_mode_mask;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+-- 
+2.25.1
+
