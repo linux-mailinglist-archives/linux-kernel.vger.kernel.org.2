@@ -2,152 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D726E3AD6D9
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 04:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D54373AD6DB
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 04:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235558AbhFSCvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 22:51:32 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:7666 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235352AbhFSCva (ORCPT
+        id S235569AbhFSCzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 22:55:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234263AbhFSCzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 22:51:30 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15J2h6pV016884;
-        Sat, 19 Jun 2021 02:48:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=ow2OnqLbwNGYeM8yDYJP45Tdkvy3j0vchcy0ggW3zQk=;
- b=EdDRrjD79PfuseL1+P39yNevzdhWKr0ZJy7B0pW+XzZQ4PDgBcx/Facx03fPYaC+EbBS
- XsK6HICEWs6R8pXJ40ZTC65C+fLE4fmj8y9nNruOuWogI64QtpbKECDO7YfzbLieaTeZ
- QkZrqH3KD4eUJviim7pHIs3CgUZc6FHU3KFhuMD8u3jqQO9s8ztS1Zh4/j4TWTDN2CZ0
- Cgxzk/i7s1ZgIotEZNtyXNbpNtmOB8v5gTf3AgmjPwErZMjYZA/Cs2FQNI8iwOILQPxU
- t1dGBCJy42c6dW74HCTY3HTV5YzMf73Yr63mRa7xljrvumYqJR2BidSQVyCCp3qk6Hr5 8g== 
-Received: from oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 399760012y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 19 Jun 2021 02:48:56 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15J2mtow059941;
-        Sat, 19 Jun 2021 02:48:55 GMT
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2044.outbound.protection.outlook.com [104.47.73.44])
-        by userp3030.oracle.com with ESMTP id 3995psb4gj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 19 Jun 2021 02:48:55 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f9L9rUNVPFZUYPJYiSJ57FzfqrvXAW9z1Y5zhokRl34Vvk0X6uGIU9iHKNB/1X5bPDzCMefwhxB45e8fZrgxddhQ8tj7rw81aAPM+5AShKj1aYlauwydANPTRfyyep26C36yL1NWmP71yWwvIqjB8V+kuaksGPGUm6qTRHc9aPee9FbGAKAXlH3rLYiXGw2bv5436LlC8JYPIz0XPnDY+HGIjXWye5s7ZWeZe+eBIR8KmdlQjDIGHC9QfewTfwLmPzVFtR9lizEC8fnsQ7k0fohxUjBPuZPOogR9uD25jkOFtqdbgMdHMCb7hDmeDJ/syU+4gDJO4ppGEgKjA/Bf/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ow2OnqLbwNGYeM8yDYJP45Tdkvy3j0vchcy0ggW3zQk=;
- b=RVuBfsEkknnDEM1sS0nKHi+U6D6RRGldM+BiFk7hNNa47O5dcpllWdMrRLPg5WiKJXJVpabcFlFv9PffIzvjJujlqE+6qH4tzEcs9hpwaHzC82zOIYg8UAA5KSsXhVRSyvwNxe/3uoP99q1zcz240i5LYnpB210UESNbomHWsdYlsm2MrYBEvGpqShdb9irl6dWe0z2g732kKge7zWHWkc3JBRbUYnxwWUWrum/paQnlOq5kK7DrzzsmfIuvbxg/zpaK119UgwDwxbQBTyY4T1Z8yC74R+KoHGI8sIcSh+/kps5E6EwQto4TVc1BD0W/7xRp6Q6KhrjV9lBI6JvnuQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Fri, 18 Jun 2021 22:55:52 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63E35C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 19:53:41 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id w31so9382786pga.6
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 19:53:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ow2OnqLbwNGYeM8yDYJP45Tdkvy3j0vchcy0ggW3zQk=;
- b=IdN4MgFjDfrasdQWITYY6f8C86pGkA+bQzCYud6mdRy633MjMgsbagCNXvM7Vk9UFRPSeraXf7vTC+bhksOreZ7BA4PSpB7vFeoCKrTgzfGRFbEECFMvQ0mWu8+7gHzAvj1vSAyYYysl97t8fYcd6jat4ubgPBjkl3vb18wlKV0=
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB5465.namprd10.prod.outlook.com (2603:10b6:510:e7::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18; Sat, 19 Jun
- 2021 02:48:52 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::4c61:9532:4af0:8796]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::4c61:9532:4af0:8796%7]) with mapi id 15.20.4242.022; Sat, 19 Jun 2021
- 02:48:52 +0000
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     <stanley.chu@mediatek.com>, <alim.akhtar@samsung.com>,
-        <avri.altman@wdc.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <matthias.bgg@gmail.com>,
-        <linux-scsi@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH -next] scsi: ufs-mediatek: Add missing of_node_put() in
- ufs_mtk_probe()
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1h7huwovr.fsf@ca-mkp.ca.oracle.com>
-References: <1623929522-4389-1-git-send-email-zou_wei@huawei.com>
-Date:   Fri, 18 Jun 2021 22:48:50 -0400
-In-Reply-To: <1623929522-4389-1-git-send-email-zou_wei@huawei.com> (Zou Wei's
-        message of "Thu, 17 Jun 2021 19:32:02 +0800")
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.58]
-X-ClientProxiedBy: SJ0PR03CA0322.namprd03.prod.outlook.com
- (2603:10b6:a03:39d::27) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=q8YruychI6H4V7aCbfFnQKh9MOjH+cOue3THeZ1aEH0=;
+        b=gBhB8ucFljqYNP/0N4TOpMY0ye7hXaHUEA+OIZMO77xyc78fVq99DSOr3wJuKfEGLD
+         i2wPOh1I/Lp3DgoBO+fYIDdyM3sFlmEwKlGGf7UqZ9PLjUPzQTkpeJf8HNiFCt6YyYbf
+         6ETL8MTijfXuw5SEs9D3jXITzFKmwV7YcSVWeaPQJ7Jj7p7HyKbcOevZ7FzAVxzFQhPr
+         U6W3NhVkC8yh6KMVcBEBoEHkBOnQ4YAFKyErs6JkX+D15/nkLOiJysO2XYhexYxMWrJ7
+         cFhJn8jbMtDrOHVkuGNUXuWeEpoeg/Uek1Dr/mXV+Vlhm2AirlhnpuzU1p5vDXbsvseP
+         gJ7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=q8YruychI6H4V7aCbfFnQKh9MOjH+cOue3THeZ1aEH0=;
+        b=p70VwC6AZlMIUmnFDeDU2SwG33ywlTXP3aYD6FgYC6G9hKoTBOEtPX5W857jGJU5D1
+         sw5fvtGHCuLDYkm86pWYyIMrjKzR/irDCx4g3C6RXRv5pIVAGrFESOySxllkXm1BYkTQ
+         ztB7RVoBHEzT7iX5QpXxdVLRVgECe35AHA6lSo0+M1d5YG3j8viTZzFieqm2ZS3WYvu6
+         qz/uz5kpleI8NFQtFt2E6A0GECG7bxke5OHWWroH1Z8lV5LW1SWBdJGh5x5dj+HBhCTq
+         Wk+pxUTLhM7pJxuBi9wwt9cN6L+K85UZsVhckCOU0Xpl6F0ofKje6DDRzBJT88qbnnkm
+         TByA==
+X-Gm-Message-State: AOAM530Y1Pwa+zOzEs4QSoPLcb5TVWCW815Zk6FLgVd49UEsd38lqEZd
+        rFWCHcHELLt7v54f0JAewME=
+X-Google-Smtp-Source: ABdhPJzWR7UvDZ+3PhdfjFOd+1ut5+rf7YW3sPc1+XA4N6s5E9b/C62R2XTVSp7XuiBe9GqR4dpvwg==
+X-Received: by 2002:a63:5b51:: with SMTP id l17mr12919707pgm.408.1624071220923;
+        Fri, 18 Jun 2021 19:53:40 -0700 (PDT)
+Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
+        by smtp.gmail.com with ESMTPSA id u1sm8922481pfu.160.2021.06.18.19.53.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 19:53:40 -0700 (PDT)
+Date:   Sat, 19 Jun 2021 12:53:34 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH 4/8] membarrier: Make the post-switch-mm barrier explicit
+To:     Andy Lutomirski <luto@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Rik van Riel <riel@surriel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mm@kvack.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+References: <cover.1623813516.git.luto@kernel.org>
+        <f184d013a255a523116b692db4996c5db2569e86.1623813516.git.luto@kernel.org>
+        <1623816595.myt8wbkcar.astroid@bobo.none>
+        <YMmpxP+ANG5nIUcm@hirez.programming.kicks-ass.net>
+        <617cb897-58b1-8266-ecec-ef210832e927@kernel.org>
+        <1623893358.bbty474jyy.astroid@bobo.none>
+        <58b949fb-663e-4675-8592-25933a3e361c@www.fastmail.com>
+        <c3c7a1cf-1c87-42cc-b2d6-cc2df55e5b57@www.fastmail.com>
+        <1623911501.q97zemobmw.astroid@bobo.none>
+        <5efaca70-35a0-1ce5-98ff-651a5f153a0a@kernel.org>
+In-Reply-To: <5efaca70-35a0-1ce5-98ff-651a5f153a0a@kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SJ0PR03CA0322.namprd03.prod.outlook.com (2603:10b6:a03:39d::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend Transport; Sat, 19 Jun 2021 02:48:52 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3ed93272-5b3c-439d-83a2-08d932ccc600
-X-MS-TrafficTypeDiagnostic: PH0PR10MB5465:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB5465DDF766D5D9C43C9BAD628E0C9@PH0PR10MB5465.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2/24rPWYndcDSM98KpB/hhztTs9WyCX7B1a+FDieMF2vqIf5wdJeRNZzgjHo2qA1zmQoelwXuf29wQWeW8xXBh8MC4rCrZJ/1hWIj4EYl2yqcF10dinr+x/1KiDTmyf1YpM2TTA+UvDx77vFcm41lNLTp7wmWiy/zFu7Kymb7w6IGUWgY94jrhAdiQpDW4P6AdjDInNfYPlUMbSQ3HJD8kyJd7aEPXAR4NAlXOgoxJlEEfAI7B4GS2f86/owpe50FB+Qs8+wWw71KfzT8iZ1S3hNdDsF1gd6ec7Cw+sRutSK27/vQIkvJaKdBjKrlA7rDnlcmCVUVWknjOfc5gdvnOxvRQowwE/upUGvzKjJPN03lnoJHsQOGp5AQTSUaRApkTjqHKmRF8mpbgNcDpJy1A8oH76V8VQKqnju0i5hZKIq7/8muEfBIS+uSfI7tYjNFNEVZ7xlf5uIj2Wvq0P3vtHN8kr+Qvx7EJPUIYjCeF8gnmomL7pTRtxyFlbfSyhHe2Yhx+gb2ws3yv3MWS7qIOoKQEagThhhUsHcCgLz4MSTutlnh2VSI/g7AOtGqcpVxJRyR71S0czvEWSnLXmtb8khDPvcgvZ3ZfLRmryTzQOTjfUkvHbiX//HYH951sVSFP0Q9zEn4SU14x+GLlH4lQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(366004)(346002)(39860400002)(376002)(5660300002)(316002)(66476007)(186003)(16526019)(52116002)(66556008)(36916002)(6916009)(55016002)(26005)(86362001)(66946007)(4326008)(7696005)(558084003)(7416002)(8676002)(478600001)(54906003)(2906002)(38350700002)(38100700002)(956004)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?n7zf90jpAeyCSRMWClkGkM6g2heiMcFnpaOV4qfxD+9WBsrq4YvwpCAHdJzC?=
- =?us-ascii?Q?QWrdWOicOxqL+hDFR7HfwjH+8OYsn/hfwYjoRAjov0MU5yiW4Si/TeZy2znE?=
- =?us-ascii?Q?HjhvvLiPMSsgxTBi0iTvxGOh636OXNI1HiMgkjRL68v2NUsdVcFZkaxOvS+y?=
- =?us-ascii?Q?S+x6WPDixIVswfPk6Y3IEb/qPSZ+HAh31p4skVIWEAfafmIbgPlcXX3rY5w5?=
- =?us-ascii?Q?nL+C0Z2sn/yDjAEvxbhb/RVgzC79Y4/eF8+3dwsOIWh7s1Hx4Szv9FY4v+eA?=
- =?us-ascii?Q?Jc/N9iWtipkXM1JzU4T/2y59KpZCZFRQy3TFqYBDbGBA/DXrK+IlJy78esxu?=
- =?us-ascii?Q?KjPhu7miiErrVdFQJcKX8gYQWAZbmfljzoZRDGD21A0Co671ge5oowcZF/c4?=
- =?us-ascii?Q?G5AWiv9BZmwGwqynz3wnrRTIkALGWTbUq1dFWXHT8N/oQ+MqiGGH7RrMHtAd?=
- =?us-ascii?Q?n51NaX+RxbvWzTjzMd07njX25c7Men45rb/OxqarlSoaUXBon8CCh5W47Yo/?=
- =?us-ascii?Q?zO4YYD59PDp/ZEU+zdefm+vxk9T4//3ssiAUyWYrNJ7pgxKRr0DHq3uAEJlA?=
- =?us-ascii?Q?0gX9+CADk1+09sZ/+HKfDeoPme8VH7YfB5zyumZ9RNkvnVr21bkB+NuMYTw1?=
- =?us-ascii?Q?AAQkNktSypzgQVEENViij6iNfb8JRyAGtHUw8oeVKoLXqdZbLmPkr6rhhvyZ?=
- =?us-ascii?Q?47EJ2o0uU3rWBfz0YQDKulg4Q5rsH776UuOmOdoaLmXJ9ibBZEPs2IfYCHQX?=
- =?us-ascii?Q?kojp/sZFv4p6N33agTPWflSuA1NqtGpvLg/C9qI+jifyv+neAuZQbyNJx8y0?=
- =?us-ascii?Q?ioh/RjJWBUpSOmrS3T5DVgTDVTdfPGRjJ8QX+oqOskophdWmNQAH81WG8clq?=
- =?us-ascii?Q?K6jwUQtSZOtkekkSrdYq2B7UXS+TRXJmTSo6bf4s9IZdk3kbKE9hkAi50mOF?=
- =?us-ascii?Q?IcRFNTQ4l1Fi/+Rr/yt/rthdVQ4y/qCx5pHT5qWGeSCnJogPI1R2Rpx0zv2D?=
- =?us-ascii?Q?nnDuv1QEGiqBQ0x6/IVlWmJvWzEgfCFp9QyHAwxT6YvEqGPI9eAcgCfDtCBO?=
- =?us-ascii?Q?CipgLaXqrGh8FKB5u0UDa8/S8UYwh2J3YotF40qOU2AtWJVLqWbucB3al27t?=
- =?us-ascii?Q?WqiFBE1G1iTqnz0uQ+n4N489SoHW5EWEoudFKs7Wp1p4uzKf3EfSt7ExUQWq?=
- =?us-ascii?Q?aGxmk5LE/aWc4aLMSwQFDBlbcU9eHpwl3qQ0xRRBV5XO25aejLebpHMbA/PZ?=
- =?us-ascii?Q?shokvgOnrvr5vQw2mSHBRwuWN8ukMa7tN7L8ZTayujplWQRhDJ3cZ/P1aTU4?=
- =?us-ascii?Q?oYtxVfCPUolvR32Qq9fCFhUB?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ed93272-5b3c-439d-83a2-08d932ccc600
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jun 2021 02:48:52.7052
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Tm4zTbhdIaGLSSxYfFYGJKnCgQidMSNPfYQJTG8H9nzGCD2fKNLCSkw4w790GnHcTewRXg68YSHJuz5GJzEIhk0ejkriJ8O+ioaBb1ltbVo=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB5465
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10019 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 suspectscore=0
- phishscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106190012
-X-Proofpoint-ORIG-GUID: ysG_mcHv5xN1Z6v6T6Ge0HWtyzLEjzA5
-X-Proofpoint-GUID: ysG_mcHv5xN1Z6v6T6Ge0HWtyzLEjzA5
+Message-Id: <1624070824.uyhrzf8zc7.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Excerpts from Andy Lutomirski's message of June 18, 2021 9:49 am:
+> On 6/16/21 11:51 PM, Nicholas Piggin wrote:
+>> Excerpts from Andy Lutomirski's message of June 17, 2021 3:32 pm:
+>>> On Wed, Jun 16, 2021, at 7:57 PM, Andy Lutomirski wrote:
+>>>>
+>>>>
+>>>> On Wed, Jun 16, 2021, at 6:37 PM, Nicholas Piggin wrote:
+>>>>> Excerpts from Andy Lutomirski's message of June 17, 2021 4:41 am:
+>>>>>> On 6/16/21 12:35 AM, Peter Zijlstra wrote:
+>>>>>>> On Wed, Jun 16, 2021 at 02:19:49PM +1000, Nicholas Piggin wrote:
+>>>>>>>> Excerpts from Andy Lutomirski's message of June 16, 2021 1:21 pm:
+>>>>>>>>> membarrier() needs a barrier after any CPU changes mm.  There is =
+currently
+>>>>>>>>> a comment explaining why this barrier probably exists in all case=
+s.  This
+>>>>>>>>> is very fragile -- any change to the relevant parts of the schedu=
+ler
+>>>>>>>>> might get rid of these barriers, and it's not really clear to me =
+that
+>>>>>>>>> the barrier actually exists in all necessary cases.
+>>>>>>>>
+>>>>>>>> The comments and barriers in the mmdrop() hunks? I don't see what =
+is=20
+>>>>>>>> fragile or maybe-buggy about this. The barrier definitely exists.
+>>>>>>>>
+>>>>>>>> And any change can change anything, that doesn't make it fragile. =
+My
+>>>>>>>> lazy tlb refcounting change avoids the mmdrop in some cases, but i=
+t
+>>>>>>>> replaces it with smp_mb for example.
+>>>>>>>
+>>>>>>> I'm with Nick again, on this. You're adding extra barriers for no
+>>>>>>> discernible reason, that's not generally encouraged, seeing how ext=
+ra
+>>>>>>> barriers is extra slow.
+>>>>>>>
+>>>>>>> Both mmdrop() itself, as well as the callsite have comments saying =
+how
+>>>>>>> membarrier relies on the implied barrier, what's fragile about that=
+?
+>>>>>>>
+>>>>>>
+>>>>>> My real motivation is that mmgrab() and mmdrop() don't actually need=
+ to
+>>>>>> be full barriers.  The current implementation has them being full
+>>>>>> barriers, and the current implementation is quite slow.  So let's tr=
+y
+>>>>>> that commit message again:
+>>>>>>
+>>>>>> membarrier() needs a barrier after any CPU changes mm.  There is cur=
+rently
+>>>>>> a comment explaining why this barrier probably exists in all cases. =
+The
+>>>>>> logic is based on ensuring that the barrier exists on every control =
+flow
+>>>>>> path through the scheduler.  It also relies on mmgrab() and mmdrop()=
+ being
+>>>>>> full barriers.
+>>>>>>
+>>>>>> mmgrab() and mmdrop() would be better if they were not full barriers=
+.  As a
+>>>>>> trivial optimization, mmgrab() could use a relaxed atomic and mmdrop=
+()
+>>>>>> could use a release on architectures that have these operations.
+>>>>>
+>>>>> I'm not against the idea, I've looked at something similar before (no=
+t
+>>>>> for mmdrop but a different primitive). Also my lazy tlb shootdown ser=
+ies=20
+>>>>> could possibly take advantage of this, I might cherry pick it and tes=
+t=20
+>>>>> performance :)
+>>>>>
+>>>>> I don't think it belongs in this series though. Should go together wi=
+th
+>>>>> something that takes advantage of it.
+>>>>
+>>>> I=E2=80=99m going to see if I can get hazard pointers into shape quick=
+ly.
+>>>
+>>> Here it is.  Not even boot tested!
+>>>
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/luto/linux.git/commit/?=
+h=3Dsched/lazymm&id=3Decc3992c36cb88087df9c537e2326efb51c95e31
+>>>
+>>> Nick, I think you can accomplish much the same thing as your patch by:
+>>>
+>>> #define for_each_possible_lazymm_cpu while (false)
+>>=20
+>> I'm not sure what you mean? For powerpc, other CPUs can be using the mm=20
+>> as lazy at this point. I must be missing something.
+>=20
+> What I mean is: if you want to shoot down lazies instead of doing the
+> hazard pointer trick to track them, you could do:
+>=20
+> #define for_each_possible_lazymm_cpu while (false)
+>=20
+> which would promise to the core code that you don't have any lazies left
+> by the time exit_mmap() is done.  You might need a new hook in
+> exit_mmap() depending on exactly how you implement the lazy shootdown.
 
-Zou,
+Oh for configuring it away entirely. I'll have to see how it falls out,=20
+I suspect we'd want to just no-op that entire function and avoid the 2=20
+atomics if we are taking care of our lazy mms with shootdowns.
 
-> The function is missing a of_node_put on node, fix this by adding the
-> call before returning.
+The more important thing would be the context switch fast path, but even=20
+there, there's really no reason why the two approaches couldn't be made=20
+to both work with some careful helper functions or structuring of the=20
+code.
 
-Applied to 5.14/scsi-staging, thanks!
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Thanks,
+Nick
