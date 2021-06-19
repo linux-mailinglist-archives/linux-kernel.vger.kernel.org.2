@@ -2,83 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7178A3AD88F
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 10:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C70FE3AD890
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 10:04:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233143AbhFSIEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 04:04:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229466AbhFSIEo (ORCPT
+        id S233511AbhFSIG4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 19 Jun 2021 04:06:56 -0400
+Received: from lithops.sigma-star.at ([195.201.40.130]:53332 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229466AbhFSIGy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 04:04:44 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9041C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 01:02:33 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624089751;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZWvtqV3TeC0Tm9I9yeacEOChKZjCO9EBxWKvJ6avhNw=;
-        b=WN+yU7SZfehMCpp5CyrAKTgEbZFRLGsjXfQxUkoAWyInqm8DsQeQC3MJN4gp55taVfAGfD
-        /ligzhR/EAcTO/c2XIPhOBptyhO2BuP7vciH8pZi+c3rITz3VqLWJ5+Up3l/+qmX1+kmMt
-        7KZ5kJqmOeVOlMFl0Dm9KteOkfiSkbYPlJbklD29gq5JBr5Z66t06WP763Lyw53kTfG7eZ
-        TW6lhAY2Ww8p5g6I+u460VQjXpUyImf88ZQAKkXnH+28P+DoRE4U8ruDWCI7qjbx67+CuN
-        Pw1/NKIG7PaiqdE7+eaQbmt258y/rHM2IJ9aHFpmSy/4XoLFt+oIQYM+LWSF/g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624089751;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZWvtqV3TeC0Tm9I9yeacEOChKZjCO9EBxWKvJ6avhNw=;
-        b=WiVq9cJx5k1pZtlSGE6et5TvC+8fnv6Midr36zeiiKVwvhBDR1JF1LMHA209djPQ6B6m+2
-        gbaiYj3m29HHyEBg==
-To:     Ani Sinha <ani@anisinha.ca>, linux-kernel@vger.kernel.org
-Cc:     anirban.sinha@nokia.com, Ani Sinha <ani@anisinha.ca>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [PATCH] Add missing kernel log when enabling NO_HZ_FULL is not possible
-In-Reply-To: <20210611103937.827565-1-ani@anisinha.ca>
-References: <20210611103937.827565-1-ani@anisinha.ca>
-Date:   Sat, 19 Jun 2021 10:02:30 +0200
-Message-ID: <878s36e0yx.ffs@nanos.tec.linutronix.de>
+        Sat, 19 Jun 2021 04:06:54 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id D950560A59C4;
+        Sat, 19 Jun 2021 10:04:42 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id ofoIBr20udHR; Sat, 19 Jun 2021 10:04:42 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 75FB560A59D3;
+        Sat, 19 Jun 2021 10:04:42 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 0_5-Fm-U75b0; Sat, 19 Jun 2021 10:04:42 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 0D9BF60A59C4;
+        Sat, 19 Jun 2021 10:04:42 +0200 (CEST)
+Date:   Sat, 19 Jun 2021 10:04:41 +0200 (CEST)
+From:   Richard Weinberger <richard@nod.at>
+To:     anton ivanov <anton.ivanov@cambridgegreys.com>
+Cc:     Wan Jiabing <wanjiabing@vivo.com>, Jeff Dike <jdike@addtoit.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Corey Minyard <cminyard@mvista.com>,
+        Thomas Meyer <thomas@m3y3r.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Joe Perches <joe@perches.com>,
+        linux-um <linux-um@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <653435823.132192.1624089881861.JavaMail.zimbra@nod.at>
+In-Reply-To: <4320e0ea-1339-e2c1-03c0-271dbcd6e22d@cambridgegreys.com>
+References: <20210619020301.77672-1-wanjiabing@vivo.com> <4320e0ea-1339-e2c1-03c0-271dbcd6e22d@cambridgegreys.com>
+Subject: Re: [PATCH] um: remove unneeded semicolon in um_arch.c
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Topic: remove unneeded semicolon in um_arch.c
+Thread-Index: 5dmVC/7fLFn0pliU7qn0muN46wzeWA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ani,
+Anton,
 
-On Fri, Jun 11 2021 at 16:09, Ani Sinha wrote:
-> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-> index 828b091501ca..a82480c036e2 100644
-> --- a/kernel/time/tick-sched.c
-> +++ b/kernel/time/tick-sched.c
-> @@ -937,10 +937,18 @@ static void tick_nohz_full_update_tick(struct tick_sched *ts)
->  	if (!ts->tick_stopped && ts->nohz_mode == NOHZ_MODE_INACTIVE)
->  		return;
->  
-> -	if (can_stop_full_tick(cpu, ts))
-> +	if (can_stop_full_tick(cpu, ts)) {
->  		tick_nohz_stop_sched_tick(ts, cpu);
-> -	else if (ts->tick_stopped)
-> -		tick_nohz_restart_sched_tick(ts, ktime_get());
-> +	} else {
-> +		/*
-> +		 * Don't allow the user to think they can get
-> +		 * full NO_HZ with this machine.
-> +		 */
-> +		WARN_ONCE(tick_nohz_full_running,
-> +			  "NO_HZ_FULL will not work with current sched clock");
+----- Ursprüngliche Mail -----
+> Thanks.
+> 
+> I do not think the patch which introduces this ([v7,1/3] um: Add support
+> for host CPU flags and alignment) has been merged yet. I do not see it
+> in the tree as of this morning.
+> 
+> I can see that it is already marked as done in patchwork so it is on its
+> way.
+> 
+> Richard, what do you want me to do - reissue a fixed one or we should
+> accept the fix once the original is merged?
 
-How is that warning useful and even remotely correct?
-
-can_stop_full_tick() has 4 x 5 == 20 ways to return false and the
-smaller portion of them is related to sched clock.
+I have just applied the fix to UML's next tree. :-)
 
 Thanks,
-
-        tglx
+//richard
