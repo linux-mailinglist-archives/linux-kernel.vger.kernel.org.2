@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B893ADBF9
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 00:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BEC3ADBFE
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 00:30:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229868AbhFSWaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 18:30:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhFSWaS (ORCPT
+        id S230075AbhFSWcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 18:32:50 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:36216 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229477AbhFSWcp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 18:30:18 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1E46C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 15:28:06 -0700 (PDT)
+        Sat, 19 Jun 2021 18:32:45 -0400
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624141685;
+        s=2020; t=1624141832;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=0WkUU1i1UNpoG5pIe7zGWwNtXQBifCDLlz/iTVaWavw=;
-        b=IoB2cHdkor3N6XKoijdTkXID8pdDe4JIzj5V6e/pbivlsZ4yftFbeXwv7fUt7iTrfPqLwy
-        HmG/aB9s5oNy2bvSQf6OdvZtNTkRy8B+v/hWXIo+4fQ9O4MEq6/4Y/83Bn6UMq6+sQWyC0
-        TRSk5F7TSunYTQNRrUAr/zlJF+tGp68jPykFS8erKoBTcdChSR1wpc4+avkXWAkxfodcjJ
-        uju60I0aZjLJgM4vZpBimI/u+YM/zEKStW3noSkYmB5C5364CJuMzwZHVQ1O3fmZYkgs9m
-        wvZ42ixLYCGuG8B6npwRjax6soLNZ7sKUaa6UGOfupJQQ9ixh6ziesY6C4wmWw==
+        bh=JCZqjT7BQkj4I3lqgj9b8LxZTn5XV5cNEOqOujIa9pk=;
+        b=Ogb+aW8iwz1bY+ijdG27mXqDeCAkPw4BQKtq+VTwbHeBHZDOpGHwGtoyeO7Q/4/glc/iRk
+        ivmaZ+/gE3tPQsifYo43bopsLe6hr9dKApsWGJsCjUaiacc1o4WF+/QwelspxzcbLzHceM
+        ZbrGI1xGz82e/tBTq9BW7t4ZPqXJ/674AQFe1QP7ct7vpsDc5EvluBrQU1zpitmRblpW5d
+        icoCHBIqkFDpdP/rypOX8G6lI6VykGGUjfRn2Dd9fikXaxfqwmhlpIfFI3urEU776w+xnq
+        k1usMIRED2k20MrUpF4g/cn//xT1oqwDgVkvk3nNHp5QfqsWSq11jBv+3GtScg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624141685;
+        s=2020e; t=1624141832;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=0WkUU1i1UNpoG5pIe7zGWwNtXQBifCDLlz/iTVaWavw=;
-        b=a2e27GGGAmo0bH0zDMZhcnNe1gmSW6n33X4SAj2CfS9MnN8sSDW1p4wIFKW03cbUHHqXAl
-        EokKR0YTBzhi/MAw==
+        bh=JCZqjT7BQkj4I3lqgj9b8LxZTn5XV5cNEOqOujIa9pk=;
+        b=/4PBb/SbidnUVdO7kcz49efhFZl4GYo6Eldmy5YZuJFo5c/bU7UAe5HCB2D4ETAONy1A3/
+        kkRl1wGJ/wVoEiAg==
 To:     Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org
 Cc:     benh@kernel.crashing.org, boqun.feng@gmail.com, bp@alien8.de,
         catalin.marinas@arm.com, dvyukov@google.com, elver@google.com,
@@ -45,40 +42,32 @@ Cc:     benh@kernel.crashing.org, boqun.feng@gmail.com, bp@alien8.de,
         paulus@samba.org, peterz@infradead.org, rth@twiddle.net,
         shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
         vincent.guittot@linaro.org, will@kernel.org
-Subject: Re: [RFC PATCH 01/10] thread_info: add helpers to snapshot thread flags
-In-Reply-To: <20210609122001.18277-2-mark.rutland@arm.com>
-References: <20210609122001.18277-1-mark.rutland@arm.com> <20210609122001.18277-2-mark.rutland@arm.com>
-Date:   Sun, 20 Jun 2021 00:28:04 +0200
-Message-ID: <87h7hth4ln.ffs@nanos.tec.linutronix.de>
+Subject: Re: [RFC PATCH 10/10] x86: snapshot thread flags
+In-Reply-To: <20210609122001.18277-11-mark.rutland@arm.com>
+References: <20210609122001.18277-1-mark.rutland@arm.com> <20210609122001.18277-11-mark.rutland@arm.com>
+Date:   Sun, 20 Jun 2021 00:30:32 +0200
+Message-ID: <87eecxh4hj.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 09 2021 at 13:19, Mark Rutland wrote:
-> We have common helpers to manipulate individual thread flags, but where
-> code wants to check several flags at once, it must open code reading
-> current_thread_info()->flags and operating on a snapshot.
-
-Who's we?
-
-> As some flags can be set remotely it's necessary to use READ_ONCE() to
-> get a consistent snapshot even when IRQs are disabled, but some code
-> forgets to do this. Generally this is unlike to cause a problem in
-> practice, but it is somewhat unsound, and KCSAN will legitimately warn
-> that there is a data race.
+On Wed, Jun 09 2021 at 13:20, Mark Rutland wrote:
+> Some thread flags can be set remotely, and so even when IRQs are
+> disabled, the flags can change under our feet. Generally this is
+> unlikely to cause a problem in practice, but it is somewhat unsound, and
+> KCSAN will legitimately warn that there is a data race.
 >
-> To make it easier to do the right thing, and to highlight that
-> concurrent modification is possible, let's add a new helpers to
-> snapshot
+> To avoid such issues, we should snapshot the flags prior to using them.
+> Let's use the new helpers to do so on x86.
 
-let's add? Why not simply "add"?
+ To avoid such issues, a snapshot of the flags has to be taken prior to
+ using them. Some places already use READ_ONCE() for that, others do
+ not.
 
-> +static inline unsigned long read_ti_thread_flags(struct thread_info *ti)
+ Convert them all to the new flag accessor helpers.
 
-__always_inline() as Marco pointed out already
-
-Other than those nitpicks:
+Other than that.
 
  Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
