@@ -2,127 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4C3C3AD915
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 11:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B9D33AD920
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 11:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbhFSJnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 05:43:43 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:41350 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229477AbhFSJnk (ORCPT
+        id S230433AbhFSJsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 05:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229477AbhFSJsI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 05:43:40 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D4AB221ADC;
-        Sat, 19 Jun 2021 09:41:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624095688; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mn9xRkCcao6dpo7BJ5O2NDcPb06oH4ZHo+K7nLuZBi8=;
-        b=qdTu8QFI3F5AmKCN99fWxg0F3JZjVi3qx77I99dpC+fYez2OiJntNz/VPQnLwSR0JVBaPv
-        c6AeGDT9dADP7+80UrcPVHNTJbBnMbhBwH3G9um+Uwlo6v1fN6uiu39Aa1Q/cJ5/xHt879
-        JHFOxxyEG6qVaWSm1nFEAZQmfcikB7k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624095688;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mn9xRkCcao6dpo7BJ5O2NDcPb06oH4ZHo+K7nLuZBi8=;
-        b=HMsUD7vWa0qCHieGDVnLHkpydW4mqlMf11FJ7JzXBMmV617YAzAR+bVMdkkVb81ebum5qL
-        xGPNVs23/hIcnLCQ==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id BE44B118DD;
-        Sat, 19 Jun 2021 09:41:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624095688; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mn9xRkCcao6dpo7BJ5O2NDcPb06oH4ZHo+K7nLuZBi8=;
-        b=qdTu8QFI3F5AmKCN99fWxg0F3JZjVi3qx77I99dpC+fYez2OiJntNz/VPQnLwSR0JVBaPv
-        c6AeGDT9dADP7+80UrcPVHNTJbBnMbhBwH3G9um+Uwlo6v1fN6uiu39Aa1Q/cJ5/xHt879
-        JHFOxxyEG6qVaWSm1nFEAZQmfcikB7k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624095688;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mn9xRkCcao6dpo7BJ5O2NDcPb06oH4ZHo+K7nLuZBi8=;
-        b=HMsUD7vWa0qCHieGDVnLHkpydW4mqlMf11FJ7JzXBMmV617YAzAR+bVMdkkVb81ebum5qL
-        xGPNVs23/hIcnLCQ==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id jm3FLsi7zWCYVAAALh3uQQ
-        (envelope-from <bp@suse.de>); Sat, 19 Jun 2021 09:41:28 +0000
-Date:   Sat, 19 Jun 2021 11:41:17 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V3 03/66] x86/fpu: Fix copy_xstate_to_kernel() gap
- handling
-Message-ID: <YM27vRoWhxZTVNTA@zn.tnic>
-References: <20210618141823.161158090@linutronix.de>
- <20210618143444.743973084@linutronix.de>
+        Sat, 19 Jun 2021 05:48:08 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D51CC061574;
+        Sat, 19 Jun 2021 02:45:57 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id g4so16105556qkl.1;
+        Sat, 19 Jun 2021 02:45:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PzhHRAQ5Svkk0I70djnQE5HENy3mID1lQRTd49BDNKg=;
+        b=vW+YLNCLFosuKGCa6q+hnHHqYNXp/k57Va1OC9XIrIkUq8Wk0aJiFck3fzzRM8jd9h
+         Yd0sP0nr4w4at3yrJTuIg049EM+Uz8COeHdwGN3hzOeYRSMJq/O4QWAuS7+kR+l4Pmp8
+         +YHI9pW6fXDDMPSDtBl/9+fmT1De5ICus/AvZvMnaPZik5eN8Y6Viu6ueqBO7OSHppaC
+         v7tcwS0V7CKy88ZaTAZ6FDVst0dhH6cYmKDEj3JfEJI8OVyx0djlq5sUv17LntPpZnMJ
+         RpNRvYfSmUjkyHdmhnmZGNw3yVO3QR7Ib+vAqP6gYV4xnaLwVnmlx729zTcMpIJ5mzfZ
+         bbFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PzhHRAQ5Svkk0I70djnQE5HENy3mID1lQRTd49BDNKg=;
+        b=b9Zv8ISiNsOPW2Jp+tJl3xNyszO9F9NHj09Pwf6fSUxRJ9Y0NMgQbeG4PURdDyyeJD
+         D4IetknrDuncaxmipPHRdTyf5ijuGGV929x3e7bTp21yNxk50gQxwSe26mbtf5nweNI8
+         KBqQzAY6ackYXRy0NSYzwplwtmXWAxMQB4GiLZTeiubIFI5AFp3L9d4ttbggXCM0hvCf
+         yvSfVnv2tGWdM2c3iEoTVOCpWOJwhpG9ETGqB5yQidwhiMs7HP80tx+D4ZaYzUcsCwkt
+         tQPKzIQmxSdJ/Hc4lGCjY0EOZepnOBzpUlXdrsaa87BcPrGNJG9OBTdmsFVCORydqbz+
+         /mhQ==
+X-Gm-Message-State: AOAM531PEFNmGEErMrGJeLqpt+g1f2dif3tTWv4Mo9ILRWPEqc0G31rb
+        EfbwXCzvU4aJMzOaQI5iy8FOa/mXOaEj1aW+T8XDK6DidF0iHA==
+X-Google-Smtp-Source: ABdhPJzqgTsUss+Mlk8wTIbZKaO/PULpJ49bXoyv8GTim81lOQQyKy7c5dnduRsXsY6gra4Z8sR5zEYkSRAPJsWOpYk=
+X-Received: by 2002:a25:26cb:: with SMTP id m194mr19905097ybm.362.1624095956135;
+ Sat, 19 Jun 2021 02:45:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210618143444.743973084@linutronix.de>
+References: <CADxRZqwzbHvMwEB=y_xi2GYK55wtnzycWcUoK_t4q_ccisp+Sg@mail.gmail.com>
+ <f9bd5a0e-6f9e-c042-cbfc-2e03bf16b92c@canonical.com>
+In-Reply-To: <f9bd5a0e-6f9e-c042-cbfc-2e03bf16b92c@canonical.com>
+From:   Anatoly Pugachev <matorola@gmail.com>
+Date:   Sat, 19 Jun 2021 12:45:45 +0300
+Message-ID: <CADxRZqz6EZ-K+mWn4A5kp9yZEt1v1YjmFqeZNcf+W99fT2dm8w@mail.gmail.com>
+Subject: Re: [sparc64] kernel panic from running a program in userspace
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Sparc kernel list <sparclinux@vger.kernel.org>,
+        Linux Kernel list <linux-kernel@vger.kernel.org>,
+        debian-sparc <debian-sparc@lists.debian.org>,
+        kernel-testers@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 04:18:26PM +0200, Thomas Gleixner wrote:
-> The gap handling in copy_xstate_to_kernel() is wrong when XSAVES is in use.
-> 
-> Using init_fpstate for copying the init state of features which are
-> not set in the xstate header is only correct for the legacy area, but
-> not for the extended features area because when XSAVES is in use then
-> init_fpstate is in compacted form which means the xstate offsets which
-> are used to copy from init_fpstate are not valid.
-> 
-> Fortunately this is not a real problem today because all extended
-> features in use have an all zeros init state, but it is wrong
-> nevertheless and with a potentially dynamically sized init_fpstate
-> this would result in access outside of the init_fpstate.
-> 
-> Fix this by keeping track of the last copied state in the target buffer and
-> explicitly zero it when there is a feature or alignment gap.
-> 
-> Use the compacted offset when accessing the extended feature space in
-> init_fpstate.
-> 
-> As this is not a functional issue on older kernels this is intentionally
-> not tagged for stable.
-> 
-> Fixes: b8be15d58806 ("x86/fpu/xstate: Re-enable XSAVES")
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
-> V3: Remove the AVX/SEE thinko
->     Fix comments (Boris)
-> V2: New patch
-> ---
->  arch/x86/kernel/fpu/xstate.c |  105 ++++++++++++++++++++++++-------------------
->  1 file changed, 61 insertions(+), 44 deletions(-)
+On Sat, Jun 19, 2021 at 12:31 PM Colin Ian King
+<colin.king@canonical.com> wrote:
+>
+> Hi,
+>
+> I suspect this issue was fixed with the following commit:
+>
+> commit e5e8b80d352ec999d2bba3ea584f541c83f4ca3f
+> Author: Rob Gardner <rob.gardner@oracle.com>
+> Date:   Sun Feb 28 22:48:16 2021 -0700
+>
+>     sparc64: Fix opcode filtering in handling of no fault loads
 
-Reviewed-by: Borislav Petkov <bp@suse.de>
+Colin,
 
--- 
-Regards/Gruss,
-    Boris.
+yes, but I believe that it was quite a different kernel bug.
+Besides, my current kernel test is based on git kernel 5.13.0-rc6
+(released last monday), which already includes the mentioned 'opcode'
+fix.
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+> > stress-ng.git$ ./stress-ng --verbose --timeout 10m --opcode -1
+> > stress-ng: debug: [480950] stress-ng 0.12.10 g27f90a2276bd
+> > stress-ng: debug: [480950] system: Linux ttip 5.13.0-rc6 #229 SMP Tue
+> > Jun 15 12:30:23 MSK 2021 sparc64
+> > stress-ng: debug: [480950] RAM total: 7.8G, RAM free: 7.0G, swap free: 768.7M
+> > stress-ng: debug: [480950] 8 processors online, 256 processors configured
+> > stress-ng: info:  [480950] dispatching hogs: 8 opcode
