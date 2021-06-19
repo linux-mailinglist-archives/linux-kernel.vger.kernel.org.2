@@ -2,133 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F6E3AD8AE
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 10:41:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43B473AD8AF
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 10:44:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234390AbhFSInp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 04:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234357AbhFSIno (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 04:43:44 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCEAC061574;
-        Sat, 19 Jun 2021 01:41:32 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id e33so9869310pgm.3;
-        Sat, 19 Jun 2021 01:41:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/1Rwnm8wm01ORDHn/DlKmW7MPMS9lQBNMJF6mJ4+ZYk=;
-        b=g2uvNK3YyO/jeMXHiponTM5coP5SWIglZNmGPAwBQnlTW1+BiRxy9u3hJ17k9yvfrW
-         coCplppcF2EksIMS8UxfijUVj0EIOb1fl3QsvxGXb0ZTTcyWOUGlHvBP06TLaE3nIF1c
-         iw9EKFL7nc4hKYZT9vV80QJXnYi+hXvEd7cyZVQ7ZVk1/sGMNd6sD3HGqqmjh0zoPc0D
-         JRoh04DPSAJ8TQ8PqhlIlp1rcE99XjnGcejydeh7ZSHQ5fxwx0+wy1q5L82dMZALGk04
-         GcGNhr5tL+mbC2AX9ewXJ5SzUMatWGeMx8pWMARL/Q1nAdIG27duGgbQPnh/jCn4KUKw
-         OQEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/1Rwnm8wm01ORDHn/DlKmW7MPMS9lQBNMJF6mJ4+ZYk=;
-        b=HRTebYRlK7wQVyMBUTLe7Lab6qZerPyOWZyWetoLQSFTFY8RiCFX5ajfYfZNiAq7Cm
-         6gqg1+EuxP2V1ZL/8xoYuzpOR2kjrgYxkA5l29HvkkIDM+063JMwk5GeIglLOISq27ln
-         BZgMihm29YHuEK8eRspVyav5f+wlzbxH3xI5wPlXFbi+Ems6+YNg4AwVnRo9CYEnF7Q+
-         ZCxS5VoK3Oub4xTsqYP63MlUWx4mUWTif8m98q9XhOmlWon73JsOlajy00QSl5jVbKnn
-         zfo7CqYJZrvLZbQrKVGfTJQeKIeG3fjeLb2oZgEW+L+Szx6fSjxOjgO4y82Z7ImdZgzD
-         /LXQ==
-X-Gm-Message-State: AOAM530XLJi0Tn+94RfzzqJfw6+YkWTpsjBLYdvHbKLwHqnhVHOPhahS
-        Qjkkr3VR1PfwlZR7543nnQwqm8TVDo29og==
-X-Google-Smtp-Source: ABdhPJz7MgDW6VmIOO3XCs5EnP9Ruu1Y/ySxDJ6PBcJRXvEzRYKGy7+/QEDCUb50HEa3Nw6YyCPsGg==
-X-Received: by 2002:a62:53c1:0:b029:2ef:25e8:d9e5 with SMTP id h184-20020a6253c10000b02902ef25e8d9e5mr9261979pfb.74.1624092092385;
-        Sat, 19 Jun 2021 01:41:32 -0700 (PDT)
-Received: from localhost ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id s13sm11388885pgi.36.2021.06.19.01.41.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Jun 2021 01:41:31 -0700 (PDT)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     jmaloy@redhat.com
-Cc:     ying.xue@windriver.com, davem@davemloft.net, kuba@kernel.org,
-        netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, lxin@redhat.com,
-        hoang.h.le@dektech.com.au, Menglong Dong <dong.menglong@zte.com.cn>
-Subject: [PATCH v5 net-next 2/2] net: tipc: replace align() with ALIGN in msg.c
-Date:   Sat, 19 Jun 2021 16:41:06 +0800
-Message-Id: <20210619084106.3657-3-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210619084106.3657-1-dong.menglong@zte.com.cn>
-References: <20210619084106.3657-1-dong.menglong@zte.com.cn>
+        id S234325AbhFSIqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 04:46:16 -0400
+Received: from mga09.intel.com ([134.134.136.24]:25326 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230225AbhFSIqO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 04:46:14 -0400
+IronPort-SDR: cFGx9QNJ9tpfhGHQ2eTGh53gSNuWzsjmmcCo7QrkW6J/Hhx5/MHmPJrqlv+CvnUWRuGzp6AsNH
+ MF7mP5cxzrMA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="206607665"
+X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
+   d="scan'208";a="206607665"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2021 01:44:03 -0700
+IronPort-SDR: ZLEVvI0Gu5OfSw2afb1uTdzffPZvyBO0/lQoCPZqVn6oVj4WizCq7zYDBMwYOZTMPRHK3wjLHF
+ aZjSsS8nqVzA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
+   d="scan'208";a="555795215"
+Received: from lkp-server01.sh.intel.com (HELO 4aae0cb4f5b5) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 19 Jun 2021 01:44:02 -0700
+Received: from kbuild by 4aae0cb4f5b5 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1luWa9-0003Sb-Uz; Sat, 19 Jun 2021 08:44:01 +0000
+Date:   Sat, 19 Jun 2021 16:43:36 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2021.06.16a] BUILD SUCCESS
+ 4b2e65c39cdcffc72c1a4c41f76c2f2ae00421af
+Message-ID: <60cdae38.yKG+4U8Hwh5uuM2J%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.06.16a
+branch HEAD: 4b2e65c39cdcffc72c1a4c41f76c2f2ae00421af  fixup! torture: Protect kvm-remote.sh directory trees from /tmp reaping
 
-The function align() which is defined in msg.c is redundant, replace it
-with ALIGN() and introduce a BUF_ALIGN().
+elapsed time: 721m
 
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
-Acked-by: Jon Maloy <jmaloy@redhat.com>
+configs tested: 145
+configs skipped: 3
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                          rsk7269_defconfig
+powerpc                     asp8347_defconfig
+sh                  sh7785lcr_32bit_defconfig
+powerpc                     skiroot_defconfig
+arm                         bcm2835_defconfig
+powerpc                    klondike_defconfig
+mips                          rb532_defconfig
+powerpc                     tqm8540_defconfig
+powerpc                 mpc834x_itx_defconfig
+sh                          polaris_defconfig
+x86_64                            allnoconfig
+xtensa                       common_defconfig
+arm                          pxa168_defconfig
+nios2                         3c120_defconfig
+nds32                             allnoconfig
+powerpc64                           defconfig
+arm                      pxa255-idp_defconfig
+powerpc                     tqm8555_defconfig
+arm                     am200epdkit_defconfig
+arm                         orion5x_defconfig
+sh                        edosk7705_defconfig
+sh                           se7722_defconfig
+mips                  maltasmvp_eva_defconfig
+m68k                       m5249evb_defconfig
+mips                         cobalt_defconfig
+m68k                        stmark2_defconfig
+powerpc                        fsp2_defconfig
+arm                          badge4_defconfig
+sh                           se7619_defconfig
+powerpc                      pmac32_defconfig
+um                           x86_64_defconfig
+arm                             pxa_defconfig
+sh                                  defconfig
+arm                            pleb_defconfig
+m68k                        m5272c3_defconfig
+mips                      maltaaprp_defconfig
+powerpc                 mpc8540_ads_defconfig
+powerpc                      obs600_defconfig
+arm                           spitz_defconfig
+powerpc                     mpc83xx_defconfig
+ia64                            zx1_defconfig
+powerpc                   motionpro_defconfig
+m68k                            q40_defconfig
+m68k                        m5307c3_defconfig
+ia64                      gensparse_defconfig
+arm                     davinci_all_defconfig
+powerpc                 mpc832x_rdb_defconfig
+powerpc               mpc834x_itxgp_defconfig
+arm                          iop32x_defconfig
+arm                          lpd270_defconfig
+arm                          collie_defconfig
+mips                malta_qemu_32r6_defconfig
+sh                             espt_defconfig
+powerpc                  storcenter_defconfig
+s390                             alldefconfig
+sh                     magicpanelr2_defconfig
+s390                          debug_defconfig
+powerpc                     tqm5200_defconfig
+arm                       netwinder_defconfig
+arc                           tb10x_defconfig
+arm                             ezx_defconfig
+powerpc                     kmeter1_defconfig
+arm                        clps711x_defconfig
+mips                  decstation_64_defconfig
+arm                       mainstone_defconfig
+m68k                       m5475evb_defconfig
+powerpc                         wii_defconfig
+xtensa                              defconfig
+sh                            migor_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a002-20210618
+i386                 randconfig-a006-20210618
+i386                 randconfig-a004-20210618
+i386                 randconfig-a001-20210618
+i386                 randconfig-a005-20210618
+i386                 randconfig-a003-20210618
+x86_64               randconfig-a015-20210618
+x86_64               randconfig-a011-20210618
+x86_64               randconfig-a012-20210618
+x86_64               randconfig-a014-20210618
+x86_64               randconfig-a016-20210618
+x86_64               randconfig-a013-20210618
+i386                 randconfig-a015-20210618
+i386                 randconfig-a016-20210618
+i386                 randconfig-a013-20210618
+i386                 randconfig-a014-20210618
+i386                 randconfig-a012-20210618
+i386                 randconfig-a011-20210618
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                    rhel-8.3-kselftests
+um                             i386_defconfig
+um                            kunit_defconfig
+x86_64                           allyesconfig
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210618
+x86_64               randconfig-a002-20210618
+x86_64               randconfig-a001-20210618
+x86_64               randconfig-a004-20210618
+x86_64               randconfig-a003-20210618
+x86_64               randconfig-a006-20210618
+x86_64               randconfig-a005-20210618
+
 ---
- net/tipc/msg.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
-
-diff --git a/net/tipc/msg.c b/net/tipc/msg.c
-index 7053c22e393e..5c9fd4791c4b 100644
---- a/net/tipc/msg.c
-+++ b/net/tipc/msg.c
-@@ -41,6 +41,7 @@
- #include "name_table.h"
- #include "crypto.h"
- 
-+#define BUF_ALIGN(x) ALIGN(x, 4)
- #define MAX_FORWARD_SIZE 1024
- #ifdef CONFIG_TIPC_CRYPTO
- #define BUF_HEADROOM ALIGN(((LL_MAX_HEADER + 48) + EHDR_MAX_SIZE), 16)
-@@ -53,11 +54,6 @@
- const int one_page_mtu = PAGE_SIZE - SKB_DATA_ALIGN(BUF_OVERHEAD) -
- 			 SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
- 
--static unsigned int align(unsigned int i)
--{
--	return (i + 3) & ~3u;
--}
--
- /**
-  * tipc_buf_acquire - creates a TIPC message buffer
-  * @size: message size (including TIPC header)
-@@ -489,7 +485,7 @@ static bool tipc_msg_bundle(struct sk_buff *bskb, struct tipc_msg *msg,
- 
- 	msz = msg_size(msg);
- 	bsz = msg_size(bmsg);
--	offset = align(bsz);
-+	offset = BUF_ALIGN(bsz);
- 	pad = offset - bsz;
- 
- 	if (unlikely(skb_tailroom(bskb) < (pad + msz)))
-@@ -546,7 +542,7 @@ bool tipc_msg_try_bundle(struct sk_buff *tskb, struct sk_buff **skb, u32 mss,
- 
- 	/* Make a new bundle of the two messages if possible */
- 	tsz = msg_size(buf_msg(tskb));
--	if (unlikely(mss < align(INT_H_SIZE + tsz) + msg_size(msg)))
-+	if (unlikely(mss < BUF_ALIGN(INT_H_SIZE + tsz) + msg_size(msg)))
- 		return true;
- 	if (unlikely(pskb_expand_head(tskb, INT_H_SIZE, mss - tsz - INT_H_SIZE,
- 				      GFP_ATOMIC)))
-@@ -605,7 +601,7 @@ bool tipc_msg_extract(struct sk_buff *skb, struct sk_buff **iskb, int *pos)
- 	if (unlikely(!tipc_msg_validate(iskb)))
- 		goto none;
- 
--	*pos += align(imsz);
-+	*pos += BUF_ALIGN(imsz);
- 	return true;
- none:
- 	kfree_skb(skb);
--- 
-2.32.0
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
