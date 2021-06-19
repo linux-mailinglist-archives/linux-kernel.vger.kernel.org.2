@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D323AD8FF
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 11:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 082073AD8FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 11:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234448AbhFSJfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 05:35:20 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:8282 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233867AbhFSJe7 (ORCPT
+        id S234333AbhFSJfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 05:35:04 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:11073 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233857AbhFSJe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 05:34:59 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G6VnT0plNz1BP8L;
-        Sat, 19 Jun 2021 17:27:41 +0800 (CST)
+        Sat, 19 Jun 2021 05:34:58 -0400
+Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G6Vqw5jBDzZdyB;
+        Sat, 19 Jun 2021 17:29:48 +0800 (CST)
 Received: from huawei.com (10.175.104.170) by dggeme703-chm.china.huawei.com
  (10.1.199.99) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sat, 19
- Jun 2021 17:32:45 +0800
+ Jun 2021 17:32:46 +0800
 From:   Miaohe Lin <linmiaohe@huawei.com>
 To:     <akpm@linux-foundation.org>
 CC:     <vitalywool@gmail.com>, <linux-kernel@vger.kernel.org>,
         <linux-mm@kvack.org>, <linmiaohe@huawei.com>
-Subject: [PATCH 4/6] mm/z3fold: remove unused function handle_to_z3fold_header()
-Date:   Sat, 19 Jun 2021 17:31:49 +0800
-Message-ID: <20210619093151.1492174-5-linmiaohe@huawei.com>
+Subject: [PATCH 5/6] mm/z3fold: fix potential memory leak in z3fold_destroy_pool()
+Date:   Sat, 19 Jun 2021 17:31:50 +0800
+Message-ID: <20210619093151.1492174-6-linmiaohe@huawei.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20210619093151.1492174-1-linmiaohe@huawei.com>
 References: <20210619093151.1492174-1-linmiaohe@huawei.com>
@@ -40,67 +40,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-handle_to_z3fold_header() is unused now. So we can remove it. As a result,
-get_z3fold_header() becomes the only caller of __get_z3fold_header() and
-the argument lock is always true. Therefore we could further fold the
-__get_z3fold_header() into get_z3fold_header() with lock = true.
+There is a memoryleak in z3fold_destroy_pool() as it forgets to free_percpu
+pool->unbuddied. Call free_percpu for pool->unbuddied to fix this issue.
 
+Fixes: d30561c56f41 ("z3fold: use per-cpu unbuddied lists")
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 ---
- mm/z3fold.c | 22 ++++------------------
- 1 file changed, 4 insertions(+), 18 deletions(-)
+ mm/z3fold.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/mm/z3fold.c b/mm/z3fold.c
-index 988d57c143fd..bab08c08bf19 100644
+index bab08c08bf19..196d886a3436 100644
 --- a/mm/z3fold.c
 +++ b/mm/z3fold.c
-@@ -255,9 +255,8 @@ static inline void z3fold_page_unlock(struct z3fold_header *zhdr)
- 	spin_unlock(&zhdr->page_lock);
+@@ -1048,6 +1048,7 @@ static void z3fold_destroy_pool(struct z3fold_pool *pool)
+ 	destroy_workqueue(pool->compact_wq);
+ 	destroy_workqueue(pool->release_wq);
+ 	z3fold_unregister_migration(pool);
++	free_percpu(pool->unbuddied);
+ 	kfree(pool);
  }
  
--
--static inline struct z3fold_header *__get_z3fold_header(unsigned long handle,
--							bool lock)
-+/* return locked z3fold page if it's not headless */
-+static inline struct z3fold_header *get_z3fold_header(unsigned long handle)
- {
- 	struct z3fold_buddy_slots *slots;
- 	struct z3fold_header *zhdr;
-@@ -271,13 +270,12 @@ static inline struct z3fold_header *__get_z3fold_header(unsigned long handle,
- 			read_lock(&slots->lock);
- 			addr = *(unsigned long *)handle;
- 			zhdr = (struct z3fold_header *)(addr & PAGE_MASK);
--			if (lock)
--				locked = z3fold_page_trylock(zhdr);
-+			locked = z3fold_page_trylock(zhdr);
- 			read_unlock(&slots->lock);
- 			if (locked)
- 				break;
- 			cpu_relax();
--		} while (lock);
-+		} while (true);
- 	} else {
- 		zhdr = (struct z3fold_header *)(handle & PAGE_MASK);
- 	}
-@@ -285,18 +283,6 @@ static inline struct z3fold_header *__get_z3fold_header(unsigned long handle,
- 	return zhdr;
- }
- 
--/* Returns the z3fold page where a given handle is stored */
--static inline struct z3fold_header *handle_to_z3fold_header(unsigned long h)
--{
--	return __get_z3fold_header(h, false);
--}
--
--/* return locked z3fold page if it's not headless */
--static inline struct z3fold_header *get_z3fold_header(unsigned long h)
--{
--	return __get_z3fold_header(h, true);
--}
--
- static inline void put_z3fold_header(struct z3fold_header *zhdr)
- {
- 	struct page *page = virt_to_page(zhdr);
 -- 
 2.23.0
 
