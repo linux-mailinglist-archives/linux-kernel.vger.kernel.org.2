@@ -2,174 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030643AD9AE
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 12:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC78C3AD9B0
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 12:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232921AbhFSKxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 06:53:13 -0400
-Received: from mga06.intel.com ([134.134.136.31]:27675 "EHLO mga06.intel.com"
+        id S233127AbhFSKx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 06:53:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232783AbhFSKxM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 06:53:12 -0400
-IronPort-SDR: neleyHUv0P0UpCfuQepCDBbOCWwZZfRRXoT3/WX8kA1H8EyaeVBDe2bUTNzN+nEZ6xOudMwVip
- MUA2BoDwBAaw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="267807102"
-X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
-   d="scan'208";a="267807102"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2021 03:51:01 -0700
-IronPort-SDR: +Epd2JPzuQKVgIZ28P0AmJve4W21BtVRQil8JAZ4x25NaABZ5IMUN+kLfhxQCqkPHUVErydyTP
- YarFheC0k7yQ==
-X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
-   d="scan'208";a="554979339"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2021 03:50:55 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1luYYs-003nwu-RM; Sat, 19 Jun 2021 13:50:50 +0300
-Date:   Sat, 19 Jun 2021 13:50:50 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Marc Zyngier <maz@kernel.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Alexey Klimov <aklimov@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, etnaviv@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH 1/3] include/linux: move for_each_bit() macros from
- bitops.h to find.h
-Message-ID: <YM3MCrveAlIa1TES@smile.fi.intel.com>
-References: <20210618195735.55933-1-yury.norov@gmail.com>
- <20210618195735.55933-2-yury.norov@gmail.com>
+        id S233143AbhFSKxU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 06:53:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 212246120A;
+        Sat, 19 Jun 2021 10:51:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624099869;
+        bh=aUsPX+nFItWHPd+EdQgT8+dhm7c6uNdqhHhjptNmOss=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=JH4xBrXd9BAC3Lr6WW2Yw6oT09Zeci220I4NDA/EKgK1zDsyxNNszJf0gWFIHuBFc
+         giTbZ8z/zqQPfp+TAFiD8vLwSAYAlzalyZUinyE3vdwT9fBEQi4xbrhQQ/Y1OUNYZe
+         a5TapQqIoN601UmJ8uiBvhr4Wj/Eu+hiQflLWHbf/Rau6cW97a/RC38VsK11ZQy7+j
+         yfeOICVOKKAv4PFi4ixHdO57QfCouJ+acLh43LJ7/wcmdGpWac8k23gO1UgYWQcfza
+         B8S25Au7oNt+xZ/wZseDIqRniZCkzVE6wVoV3sRNVVHgmpqpoOnvj3rWWVBeNnW3dm
+         EF4H1ScNWJJLQ==
+Message-ID: <ca37212d9c848bbb6228cce95ca7f39ef3696437.camel@kernel.org>
+Subject: Re: [PATCH] net: ceph: Use CLOCK_MONOTONIC ktime_get_ts64()
+From:   Jeff Layton <jlayton@kernel.org>
+To:     Yejune Deng <yejune.deng@gmail.com>, idryomov@gmail.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Sat, 19 Jun 2021 06:51:08 -0400
+In-Reply-To: <20210618142740.3345-1-yejune.deng@gmail.com>
+References: <20210618142740.3345-1-yejune.deng@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.40.2 (3.40.2-1.fc34) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210618195735.55933-2-yury.norov@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 12:57:33PM -0700, Yury Norov wrote:
-> for_each_bit() macros depend on find_bit() machinery, and so the
-> proper place for them is the find.h header.
-
-Fine with me.
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+On Fri, 2021-06-18 at 22:27 +0800, Yejune Deng wrote:
+> The Documentation/core-api/timekeeping.rst recommend that we should use
+> monotonic time ktime_get_ts64(), to avoid glitches with a concurrent
+> settimeofday().
+> 
+> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
 > ---
->  include/linux/bitops.h | 34 ----------------------------------
->  include/linux/find.h   | 34 ++++++++++++++++++++++++++++++++++
->  2 files changed, 34 insertions(+), 34 deletions(-)
+>  net/ceph/messenger.c    | 2 +-
+>  net/ceph/messenger_v1.c | 2 +-
+>  net/ceph/messenger_v2.c | 2 +-
+>  net/ceph/osd_client.c   | 4 ++--
+>  4 files changed, 5 insertions(+), 5 deletions(-)
 > 
-> diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-> index 26bf15e6cd35..31ae1ae1a974 100644
-> --- a/include/linux/bitops.h
-> +++ b/include/linux/bitops.h
-> @@ -31,40 +31,6 @@ extern unsigned long __sw_hweight64(__u64 w);
->   */
->  #include <asm/bitops.h>
+> diff --git a/net/ceph/messenger.c b/net/ceph/messenger.c
+> index 57d043b..2d07ab5 100644
+> --- a/net/ceph/messenger.c
+> +++ b/net/ceph/messenger.c
+> @@ -1809,7 +1809,7 @@ bool ceph_con_keepalive_expired(struct ceph_connection *con,
+>  	    (con->peer_features & CEPH_FEATURE_MSGR_KEEPALIVE2)) {
+>  		struct timespec64 now;
+>  		struct timespec64 ts;
+> -		ktime_get_real_ts64(&now);
+> +		ktime_get_ts64(&now);
+>  		jiffies_to_timespec64(interval, &ts);
+>  		ts = timespec64_add(con->last_keepalive_ack, ts);
+>  		return timespec64_compare(&now, &ts) >= 0;
+> diff --git a/net/ceph/messenger_v1.c b/net/ceph/messenger_v1.c
+> index 2cb5ffd..2ec7b1d 100644
+> --- a/net/ceph/messenger_v1.c
+> +++ b/net/ceph/messenger_v1.c
+> @@ -310,7 +310,7 @@ static void prepare_write_keepalive(struct ceph_connection *con)
+>  	if (con->peer_features & CEPH_FEATURE_MSGR_KEEPALIVE2) {
+>  		struct timespec64 now;
 >  
-> -#define for_each_set_bit(bit, addr, size) \
-> -	for ((bit) = find_first_bit((addr), (size));		\
-> -	     (bit) < (size);					\
-> -	     (bit) = find_next_bit((addr), (size), (bit) + 1))
-> -
-> -/* same as for_each_set_bit() but use bit as value to start with */
-> -#define for_each_set_bit_from(bit, addr, size) \
-> -	for ((bit) = find_next_bit((addr), (size), (bit));	\
-> -	     (bit) < (size);					\
-> -	     (bit) = find_next_bit((addr), (size), (bit) + 1))
-> -
-> -#define for_each_clear_bit(bit, addr, size) \
-> -	for ((bit) = find_first_zero_bit((addr), (size));	\
-> -	     (bit) < (size);					\
-> -	     (bit) = find_next_zero_bit((addr), (size), (bit) + 1))
-> -
-> -/* same as for_each_clear_bit() but use bit as value to start with */
-> -#define for_each_clear_bit_from(bit, addr, size) \
-> -	for ((bit) = find_next_zero_bit((addr), (size), (bit));	\
-> -	     (bit) < (size);					\
-> -	     (bit) = find_next_zero_bit((addr), (size), (bit) + 1))
-> -
-> -/**
-> - * for_each_set_clump8 - iterate over bitmap for each 8-bit clump with set bits
-> - * @start: bit offset to start search and to store the current iteration offset
-> - * @clump: location to store copy of current 8-bit clump
-> - * @bits: bitmap address to base the search on
-> - * @size: bitmap size in number of bits
-> - */
-> -#define for_each_set_clump8(start, clump, bits, size) \
-> -	for ((start) = find_first_clump8(&(clump), (bits), (size)); \
-> -	     (start) < (size); \
-> -	     (start) = find_next_clump8(&(clump), (bits), (size), (start) + 8))
-> -
->  static inline int get_bitmask_order(unsigned int count)
->  {
->  	int order;
-> diff --git a/include/linux/find.h b/include/linux/find.h
-> index 6048f8c97418..4500e8ab93e2 100644
-> --- a/include/linux/find.h
-> +++ b/include/linux/find.h
-> @@ -279,4 +279,38 @@ unsigned long find_next_bit_le(const void *addr, unsigned
->  #error "Please fix <asm/byteorder.h>"
->  #endif
+> -		ktime_get_real_ts64(&now);
+> +		ktime_get_ts64(&now);
+>  		con_out_kvec_add(con, sizeof(tag_keepalive2), &tag_keepalive2);
+>  		ceph_encode_timespec64(&con->v1.out_temp_keepalive2, &now);
+>  		con_out_kvec_add(con, sizeof(con->v1.out_temp_keepalive2),
+> diff --git a/net/ceph/messenger_v2.c b/net/ceph/messenger_v2.c
+> index cc40ce4..2125e77 100644
+> --- a/net/ceph/messenger_v2.c
+> +++ b/net/ceph/messenger_v2.c
+> @@ -1439,7 +1439,7 @@ static int prepare_keepalive2(struct ceph_connection *con)
+>  	struct ceph_timespec *ts = CTRL_BODY(con->v2.out_buf);
+>  	struct timespec64 now;
 >  
-> +#define for_each_set_bit(bit, addr, size) \
-> +	for ((bit) = find_first_bit((addr), (size));		\
-> +	     (bit) < (size);					\
-> +	     (bit) = find_next_bit((addr), (size), (bit) + 1))
-> +
-> +/* same as for_each_set_bit() but use bit as value to start with */
-> +#define for_each_set_bit_from(bit, addr, size) \
-> +	for ((bit) = find_next_bit((addr), (size), (bit));	\
-> +	     (bit) < (size);					\
-> +	     (bit) = find_next_bit((addr), (size), (bit) + 1))
-> +
-> +#define for_each_clear_bit(bit, addr, size) \
-> +	for ((bit) = find_first_zero_bit((addr), (size));	\
-> +	     (bit) < (size);					\
-> +	     (bit) = find_next_zero_bit((addr), (size), (bit) + 1))
-> +
-> +/* same as for_each_clear_bit() but use bit as value to start with */
-> +#define for_each_clear_bit_from(bit, addr, size) \
-> +	for ((bit) = find_next_zero_bit((addr), (size), (bit));	\
-> +	     (bit) < (size);					\
-> +	     (bit) = find_next_zero_bit((addr), (size), (bit) + 1))
-> +
-> +/**
-> + * for_each_set_clump8 - iterate over bitmap for each 8-bit clump with set bits
-> + * @start: bit offset to start search and to store the current iteration offset
-> + * @clump: location to store copy of current 8-bit clump
-> + * @bits: bitmap address to base the search on
-> + * @size: bitmap size in number of bits
-> + */
-> +#define for_each_set_clump8(start, clump, bits, size) \
-> +	for ((start) = find_first_clump8(&(clump), (bits), (size)); \
-> +	     (start) < (size); \
-> +	     (start) = find_next_clump8(&(clump), (bits), (size), (start) + 8))
-> +
->  #endif /*__LINUX_FIND_H_ */
-> -- 
-> 2.30.2
-> 
+> -	ktime_get_real_ts64(&now);
+> +	ktime_get_ts64(&now);
+>  	dout("%s con %p timestamp %lld.%09ld\n", __func__, con, now.tv_sec,
+>  	     now.tv_nsec);
+>  
+> diff --git a/net/ceph/osd_client.c b/net/ceph/osd_client.c
+> index ff8624a..5192a8a 100644
+> --- a/net/ceph/osd_client.c
+> +++ b/net/ceph/osd_client.c
+> @@ -4717,7 +4717,7 @@ ceph_osdc_watch(struct ceph_osd_client *osdc,
+>  	ceph_oid_copy(&lreq->t.base_oid, oid);
+>  	ceph_oloc_copy(&lreq->t.base_oloc, oloc);
+>  	lreq->t.flags = CEPH_OSD_FLAG_WRITE;
+> -	ktime_get_real_ts64(&lreq->mtime);
+> +	ktime_get_ts64(&lreq->mtime);
+>  
+>  	lreq->reg_req = alloc_watch_request(lreq, CEPH_OSD_WATCH_OP_WATCH);
+>  	if (!lreq->reg_req) {
+> @@ -4767,7 +4767,7 @@ int ceph_osdc_unwatch(struct ceph_osd_client *osdc,
+>  	ceph_oid_copy(&req->r_base_oid, &lreq->t.base_oid);
+>  	ceph_oloc_copy(&req->r_base_oloc, &lreq->t.base_oloc);
+>  	req->r_flags = CEPH_OSD_FLAG_WRITE;
+> -	ktime_get_real_ts64(&req->r_mtime);
+> +	ktime_get_ts64(&req->r_mtime);
+>  	osd_req_op_watch_init(req, 0, lreq->linger_id,
+>  			      CEPH_OSD_WATCH_OP_UNWATCH);
+>  
 
--- 
-With Best Regards,
-Andy Shevchenko
+I think this is OK. Most of these timestamps get marshalled onto the
+wire to use as identifiers. Those are almost certainly better off with
+CLOCK_MONOTONIC since you could have a clock jump that caused you to
+send (e.g.) 2 keepalives with the same timestamp otherwise.
 
+Reviewed-by: Jeff Layton <jlayton@kernel.org>
 
