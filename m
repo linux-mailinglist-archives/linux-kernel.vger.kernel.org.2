@@ -2,67 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57A303AD9D2
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 13:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C270C3AD9D6
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 13:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233802AbhFSLcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 07:32:22 -0400
-Received: from m12-14.163.com ([220.181.12.14]:56334 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233146AbhFSLcW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 07:32:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=sbkz9
-        1C9VvI/oDFBSMz+PetJvkdbKgHbo2rZE8Jc2pM=; b=XWxb377YKehNCcu1+LRWs
-        TQlZiAbxxhigDOQ+BJYfID85SRE7SeeXLbDm7lgAxC9Mvg5672IngPs+qJicNKi3
-        4aUNmj1S7/4OmsFUquiQFYQ5Q/F8yasbf5wpEZGN4OR4X+wJQCTPoLIA7T168KIo
-        DXIAZx72vjvEJBxhpcVKk8=
-Received: from yangjunlin.ccdomain.com (unknown [218.17.89.92])
-        by smtp10 (Coremail) with SMTP id DsCowABXXBg51c1gfpvlPg--.22537S2;
-        Sat, 19 Jun 2021 19:30:02 +0800 (CST)
-From:   angkery <angkery@163.com>
-To:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        anant.thazhemadam@gmail.com
-Cc:     linux-kernel@vger.kernel.org, Junlin Yang <yangjunlin@yulong.com>
-Subject: [PATCH] misc: vmw_vmci: return the correct errno code
-Date:   Sat, 19 Jun 2021 19:28:54 +0800
-Message-Id: <20210619112854.1720-1-angkery@163.com>
-X-Mailer: git-send-email 2.24.0.windows.2
+        id S233849AbhFSLef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 07:34:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233146AbhFSLeb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 07:34:31 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69842C061574;
+        Sat, 19 Jun 2021 04:32:20 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id c138so17794661qkg.5;
+        Sat, 19 Jun 2021 04:32:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wzF+HDIW4RpiFDwS3pehtK/Z2s3VtrcKXebmPCvAZ0Q=;
+        b=X+Qf5RWTBKQu6s7dtYculR2/zvfqf8gdMKqjVYzEv3qNetrKxMPAZvzz1cv4lqJJCZ
+         BrrhDIMj1wZnX/GbuH72DXqZH4gxo2hEmwxP9FXWh3fWaUR2BOkRNxB0vpdLjw/HVo95
+         dJPnzLlar08ywytPHAaNIBGbK56LyRTP1xkBdF3gdbQ0V/1IojPRvl6Rm80Ee4IEqPJV
+         l0Ldrs566oPH7TDjkfqgZ7pzyBXDroT3o5goUsH1lgBiK/2WWPFpdeOzG+YmgDi4HRov
+         ufMvi8cIShMHu3HgzKIU9+Vdu0Rd1+Zsv+fBgfiZ/XPBdcI+QUtLuzws+6HLXwOpEN33
+         WJ0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wzF+HDIW4RpiFDwS3pehtK/Z2s3VtrcKXebmPCvAZ0Q=;
+        b=jDuDNqsTt12tdy873VUmv8k8LBO7zNtHau86E2qkbO/8Cuo83kQpFvc6wSpSdbnTgh
+         SM4KBogxIbCgFULJ/Y3CJS4wyw5J01btkg6acesDY+yfI673ZtokYSYGGEgmgbsZZUcD
+         IH0M882gwDJNJ+eygpLUfAL6RHtFrVmH8Up5a0Gte26PkPkq1hf15G0MHuA2pQE76kTY
+         1MSyCk/5y5CbxHKRAroADIjN5LqTsYmin1uM+8JRGDCBoh2mwrgIGcXGXqGM/ZlV0g5e
+         0tU/k/Xx91zeS+nbUwr7ya0hY4hcAh50sDW68HgN8086oNiUPvE+9363roz3X1n/W+8r
+         Z90A==
+X-Gm-Message-State: AOAM533RIEq3oR9SdwXA3anNPu0oOpckOpSBqyxcUYuwV47Hp1UVj7ha
+        b5PPmU+HKrfCDVJqtJatUDZxAcluG3jIoJTFMWA=
+X-Google-Smtp-Source: ABdhPJx92e5rLjLDFjNc+QgHX4Z6IHN/Br95iCNXiblcUb6SA9kzIrWK8a3IFw+BgDRLkdt6KKpgOVMgSlR04EbJ/MA=
+X-Received: by 2002:a25:880f:: with SMTP id c15mr18259680ybl.247.1624102339591;
+ Sat, 19 Jun 2021 04:32:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DsCowABXXBg51c1gfpvlPg--.22537S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZF1fKF43Ww48Jr4UWw43GFg_yoW3Arg_C3
-        y0qrsrWrZ0yasa9wnFkFnxZ34rtrZ8urn3WrnxKry3XFy7Ar1xGr1qqrnxXa4rZrWxAF9x
-        Xr1DCa4Iy3WI9jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUeTSoJUUUUU==
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: 5dqjyvlu16il2tof0z/1tbiLBq2I1spa3wXKQAAs4
+References: <20210618233023.1360185-1-ndesaulniers@google.com>
+ <20210618233023.1360185-2-ndesaulniers@google.com> <CANiq72kjyiAQn2+ijZKFo7SY3z+dCV6fGXYP1O_Mq7Ui3EqSzQ@mail.gmail.com>
+In-Reply-To: <CANiq72kjyiAQn2+ijZKFo7SY3z+dCV6fGXYP1O_Mq7Ui3EqSzQ@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Sat, 19 Jun 2021 13:32:08 +0200
+Message-ID: <CANiq72nbbqeD2dv3z0y3rN-_kdnh=9-pD7oSyWUfaG8oJ2y_8A@mail.gmail.com>
+Subject: Re: [PATCH 1/2] compiler_attributes.h: define __no_profile, add to noinstr
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Bill Wendling <wcw@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, Martin Liska <mliska@suse.cz>,
+        Marco Elver <elver@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Fangrui Song <maskray@google.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>, johannes.berg@intel.com,
+        linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Junlin Yang <yangjunlin@yulong.com>
+On Sat, Jun 19, 2021 at 1:26 PM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+>
+> I am not sure if it is best or not to have the GCC link in order to be
+> consistent with the rest of the links (they are for the docs only). Do
+> we know if GCC going to implement it soon?
 
-When kzalloc failed, should return -ENOMEM rather than -EINVAL.
+i.e. if GCC does not implement it yet we use elsewhere this kind of
+marker instead:
 
-Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
----
- drivers/misc/vmw_vmci/vmci_context.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+     * Optional: not supported by gcc
 
-diff --git a/drivers/misc/vmw_vmci/vmci_context.c b/drivers/misc/vmw_vmci/vmci_context.c
-index 26ff49f..c0b5e33 100644
---- a/drivers/misc/vmw_vmci/vmci_context.c
-+++ b/drivers/misc/vmw_vmci/vmci_context.c
-@@ -107,7 +107,7 @@ struct vmci_ctx *vmci_ctx_create(u32 cid, u32 priv_flags,
- 	context = kzalloc(sizeof(*context), GFP_KERNEL);
- 	if (!context) {
- 		pr_warn("Failed to allocate memory for VMCI context\n");
--		error = -EINVAL;
-+		error = -ENOMEM;
- 		goto err_out;
- 	}
- 
--- 
-1.9.1
+The first of its kind, normally it is clang/icc there ;-)
 
+We could nevertheless have the link there, something like:
+
+    * Optional: not supported by GCC
+                https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80223
+
+Cheers,
+Miguel
