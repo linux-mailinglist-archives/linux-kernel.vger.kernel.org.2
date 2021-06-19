@@ -2,103 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C270C3AD9D6
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 13:32:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF493AD9D7
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 13:34:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233849AbhFSLef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 07:34:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42332 "EHLO
+        id S233887AbhFSLhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 07:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233146AbhFSLeb (ORCPT
+        with ESMTP id S233146AbhFSLhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 07:34:31 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69842C061574;
-        Sat, 19 Jun 2021 04:32:20 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id c138so17794661qkg.5;
-        Sat, 19 Jun 2021 04:32:20 -0700 (PDT)
+        Sat, 19 Jun 2021 07:37:00 -0400
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18817C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 04:34:49 -0700 (PDT)
+Received: by mail-pg1-x52e.google.com with SMTP id t13so10057409pgu.11
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 04:34:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wzF+HDIW4RpiFDwS3pehtK/Z2s3VtrcKXebmPCvAZ0Q=;
-        b=X+Qf5RWTBKQu6s7dtYculR2/zvfqf8gdMKqjVYzEv3qNetrKxMPAZvzz1cv4lqJJCZ
-         BrrhDIMj1wZnX/GbuH72DXqZH4gxo2hEmwxP9FXWh3fWaUR2BOkRNxB0vpdLjw/HVo95
-         dJPnzLlar08ywytPHAaNIBGbK56LyRTP1xkBdF3gdbQ0V/1IojPRvl6Rm80Ee4IEqPJV
-         l0Ldrs566oPH7TDjkfqgZ7pzyBXDroT3o5goUsH1lgBiK/2WWPFpdeOzG+YmgDi4HRov
-         ufMvi8cIShMHu3HgzKIU9+Vdu0Rd1+Zsv+fBgfiZ/XPBdcI+QUtLuzws+6HLXwOpEN33
-         WJ0g==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=PxDFQ3I0YJog9pgbJh/SJmwo/SIulZ+XOOwzT95hgRI=;
+        b=JCEUHJYya5T1Q1Qm4yidgPbR6DoCK/e1s3YMSHu9YwPL7XanlcDTu0x18rQmElD5Pt
+         8SucHreHwpRnYPcNe4VO5S1CwbIaCH+BgGm0CgtuM39boN1Wt1X8/3cyHrqcRpGKzI7M
+         /tX1roPGmUW9XWKk/xzERyih4NTXVUbZWXY6kgjEQPkwwEa9Nrdl1KaGh64+h2/4Hekx
+         WdSFpVP6w/wySTQAlWvYW1rywBdJqsSRSKX8NQzfQwgirerzOgr2moLNsupTbSfxca0t
+         LBiwb5mfo0Z2f2QY3NgTNHRdXe/ZrbYr5ZWIZ2sO+CZ10hkjYyd1GKeJR43dJLKEgGOh
+         jPRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wzF+HDIW4RpiFDwS3pehtK/Z2s3VtrcKXebmPCvAZ0Q=;
-        b=jDuDNqsTt12tdy873VUmv8k8LBO7zNtHau86E2qkbO/8Cuo83kQpFvc6wSpSdbnTgh
-         SM4KBogxIbCgFULJ/Y3CJS4wyw5J01btkg6acesDY+yfI673ZtokYSYGGEgmgbsZZUcD
-         IH0M882gwDJNJ+eygpLUfAL6RHtFrVmH8Up5a0Gte26PkPkq1hf15G0MHuA2pQE76kTY
-         1MSyCk/5y5CbxHKRAroADIjN5LqTsYmin1uM+8JRGDCBoh2mwrgIGcXGXqGM/ZlV0g5e
-         0tU/k/Xx91zeS+nbUwr7ya0hY4hcAh50sDW68HgN8086oNiUPvE+9363roz3X1n/W+8r
-         Z90A==
-X-Gm-Message-State: AOAM533RIEq3oR9SdwXA3anNPu0oOpckOpSBqyxcUYuwV47Hp1UVj7ha
-        b5PPmU+HKrfCDVJqtJatUDZxAcluG3jIoJTFMWA=
-X-Google-Smtp-Source: ABdhPJx92e5rLjLDFjNc+QgHX4Z6IHN/Br95iCNXiblcUb6SA9kzIrWK8a3IFw+BgDRLkdt6KKpgOVMgSlR04EbJ/MA=
-X-Received: by 2002:a25:880f:: with SMTP id c15mr18259680ybl.247.1624102339591;
- Sat, 19 Jun 2021 04:32:19 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=PxDFQ3I0YJog9pgbJh/SJmwo/SIulZ+XOOwzT95hgRI=;
+        b=DIUOJL73HY+D7X/yjfzpHVmgyPtggSgt5frn1uATnP7SfhB98Rb7IUZjVJiGOErxlr
+         j0GsQmbXhScBn/RjBGzpeQeHxF3QdJ7Kg/haUrQm5daGVLFNrb2Gqr3QVU+nHpedgc7L
+         QuUQOzdyJ5C93g7xAfYCe85bsn4ejKEuFJnAfjExpbiYnjrZ9jjjPpxXY/NOmxCDXiTi
+         QQeCaraX3+PqMKAAGFg6ur3yH/VgghN6eqNxT8WVFD35MQTL0eYI3p31QkQyE+te5H3s
+         8CIjjLOzwOqyn8hWmr8gCspS1Rk+1sK43gqAFlT7Z0WNv/FGfMlOXs7RNadpq181y1q5
+         7IUg==
+X-Gm-Message-State: AOAM531qyKynjiP6Dc+EvwFFgZX5HR4MDQQQdxcxv9JXOtkjRUzEp0Y3
+        BLzBqaIaRSV4L067HFLuWRM=
+X-Google-Smtp-Source: ABdhPJyjbBaZ6iRflKyZAFZkA3uGjZ7yFTU9YjiKzEk2ueC6ocCxhQ2H8r+fJMcBq+8pOIoGE4tv5Q==
+X-Received: by 2002:a63:d815:: with SMTP id b21mr14649944pgh.321.1624102488505;
+        Sat, 19 Jun 2021 04:34:48 -0700 (PDT)
+Received: from [192.168.1.153] (87.19.178.217.shared.user.transix.jp. [217.178.19.87])
+        by smtp.gmail.com with ESMTPSA id oc10sm9585530pjb.44.2021.06.19.04.34.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 19 Jun 2021 04:34:48 -0700 (PDT)
+Subject: [PATCH 1/5] riscv: __asm_to/copy_from_user: delete existing code
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+References: <5a5c07ac-8c11-79d3-46a3-a255d4148f76@gmail.com>
+From:   Akira Tsukamoto <akira.tsukamoto@gmail.com>
+Message-ID: <1b454390-cee5-a414-509b-3adb25ec0330@gmail.com>
+Date:   Sat, 19 Jun 2021 20:34:43 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210618233023.1360185-1-ndesaulniers@google.com>
- <20210618233023.1360185-2-ndesaulniers@google.com> <CANiq72kjyiAQn2+ijZKFo7SY3z+dCV6fGXYP1O_Mq7Ui3EqSzQ@mail.gmail.com>
-In-Reply-To: <CANiq72kjyiAQn2+ijZKFo7SY3z+dCV6fGXYP1O_Mq7Ui3EqSzQ@mail.gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Sat, 19 Jun 2021 13:32:08 +0200
-Message-ID: <CANiq72nbbqeD2dv3z0y3rN-_kdnh=9-pD7oSyWUfaG8oJ2y_8A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] compiler_attributes.h: define __no_profile, add to noinstr
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Bill Wendling <wcw@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Martin Liska <mliska@suse.cz>,
-        Marco Elver <elver@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Fangrui Song <maskray@google.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>, johannes.berg@intel.com,
-        linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <5a5c07ac-8c11-79d3-46a3-a255d4148f76@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 19, 2021 at 1:26 PM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
->
-> I am not sure if it is best or not to have the GCC link in order to be
-> consistent with the rest of the links (they are for the docs only). Do
-> we know if GCC going to implement it soon?
 
-i.e. if GCC does not implement it yet we use elsewhere this kind of
-marker instead:
+This is to make the diff easier to read, since the diff on
+assembler is horrible to read.
 
-     * Optional: not supported by gcc
+Signed-off-by: Akira Tsukamoto <akira.tsukamoto@gmail.com>
+---
+ arch/riscv/lib/uaccess.S | 40 ----------------------------------------
+ 1 file changed, 40 deletions(-)
 
-The first of its kind, normally it is clang/icc there ;-)
+diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
+index fceaeb18cc64..da9536e1e9cb 100644
+--- a/arch/riscv/lib/uaccess.S
++++ b/arch/riscv/lib/uaccess.S
+@@ -19,50 +19,10 @@ ENTRY(__asm_copy_from_user)
+ 	li t6, SR_SUM
+ 	csrs CSR_STATUS, t6
+ 
+-	add a3, a1, a2
+-	/* Use word-oriented copy only if low-order bits match */
+-	andi t0, a0, SZREG-1
+-	andi t1, a1, SZREG-1
+-	bne t0, t1, 2f
+-
+-	addi t0, a1, SZREG-1
+-	andi t1, a3, ~(SZREG-1)
+-	andi t0, t0, ~(SZREG-1)
+-	/*
+-	 * a3: terminal address of source region
+-	 * t0: lowest XLEN-aligned address in source
+-	 * t1: highest XLEN-aligned address in source
+-	 */
+-	bgeu t0, t1, 2f
+-	bltu a1, t0, 4f
+-1:
+-	fixup REG_L, t2, (a1), 10f
+-	fixup REG_S, t2, (a0), 10f
+-	addi a1, a1, SZREG
+-	addi a0, a0, SZREG
+-	bltu a1, t1, 1b
+-2:
+-	bltu a1, a3, 5f
+-
+-3:
+ 	/* Disable access to user memory */
+ 	csrc CSR_STATUS, t6
+ 	li a0, 0
+ 	ret
+-4: /* Edge case: unalignment */
+-	fixup lbu, t2, (a1), 10f
+-	fixup sb, t2, (a0), 10f
+-	addi a1, a1, 1
+-	addi a0, a0, 1
+-	bltu a1, t0, 4b
+-	j 1b
+-5: /* Edge case: remainder */
+-	fixup lbu, t2, (a1), 10f
+-	fixup sb, t2, (a0), 10f
+-	addi a1, a1, 1
+-	addi a0, a0, 1
+-	bltu a1, a3, 5b
+-	j 3b
+ ENDPROC(__asm_copy_to_user)
+ ENDPROC(__asm_copy_from_user)
+ EXPORT_SYMBOL(__asm_copy_to_user)
+-- 
+2.17.1
 
-We could nevertheless have the link there, something like:
 
-    * Optional: not supported by GCC
-                https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80223
-
-Cheers,
-Miguel
