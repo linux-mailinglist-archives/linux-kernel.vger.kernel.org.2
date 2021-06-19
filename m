@@ -2,96 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3F63AD6E3
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 04:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C0B3AD6E7
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 05:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235600AbhFSDAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 23:00:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43582 "EHLO
+        id S235605AbhFSDES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 23:04:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235592AbhFSDAs (ORCPT
+        with ESMTP id S235546AbhFSDEQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 23:00:48 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464D3C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 19:58:37 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id t9so9381774pgn.4
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 19:58:37 -0700 (PDT)
+        Fri, 18 Jun 2021 23:04:16 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 580CCC061574;
+        Fri, 18 Jun 2021 20:02:05 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id p14so3489757ilg.8;
+        Fri, 18 Jun 2021 20:02:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HbU9xu9H0S4Zp4/r0rFgl+fi72yv0penQhl6VWi1XNU=;
-        b=k93wQuuBxI/sMtxZrxrmp9tJ2kGwsdy4oLt5kcRif7GvZRi3rblvIkADOO+jtur7ph
-         IfUajvTk9AGEzP30fz+vdlULuEk9gOdEBrQPYhhZtbnDAnkH2jNV6/rrG3HMgqpHqG8C
-         +XVb7shFVf5/zHiMLtCYHAkosTvrZggLPRkYk=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xyPYkkSvMyYVEkMIHpUhP4h40bSciy9qGvek1zjV32o=;
+        b=hl7p5r9hd+XZvulOZ1jnVte4vowXCqxDrUCk7I82uif5A6EbofWobMvM3MMwv3c2hX
+         DbHqNTPPWtKtjukyEWnWCVwBx9ezt5LSdFwJTsa7ojEDGbRcqgFYOj9XdgonT/YrsDMc
+         NNClnul4oOFPWWG6DW+kQF4xUF+0OQ1IsfXsLMNRBLQ4tpvJliSWEdAXbVaSrYnSwr4r
+         7HFr2e/SDqQ2rKQSKxyJC8TWqZBUy2CiJtkby5iMvtubZxOJrR5JaMoFV/4lFFrpN58O
+         JAvPof4tE5bYCEGqhsU1ojoMgTKRF6KUv4+8Vkpr2ulCitybquS6aHYDMd7y7Y8/IMA5
+         C0Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HbU9xu9H0S4Zp4/r0rFgl+fi72yv0penQhl6VWi1XNU=;
-        b=bCYdfrdcoT9zGNQbUg6ttZyFl71PtRYkbNUG18pnJSJjFFR3nR7vgNu5sUBbYQpjM6
-         7oUo5IZp/7yTbxKXRatXuUWkxTKFYcnGYwB19qAduBkaXhfvsrE/GIlIY22yJMWl/5bz
-         BbWPFrqkJEVU8ozqqY0+NFmWSI3BSPrTXMVn0Bb1gwMskb6DgJSCJt+pMKmSg2jzo/2n
-         2zTHbhS1o4Bq6GP9bRYYOZ9N+qnKQXOkHUtq/XuWh73KtWvPHww2fqMdBN/7b4cMlTIK
-         cSYGBfme+72E8Ipm3LZ+DuvY32ZDL75Su5KAYxWd/CdGJpCV/ccEyFqM0goE1qie6S0h
-         oKzw==
-X-Gm-Message-State: AOAM530w/ePQ4OLjWwbFao6XOPUN6XENlln9QvUJ5yrKxZAFAESLNIc4
-        OMbnfw0Tv1PGm5YqUs8MZF+YQA==
-X-Google-Smtp-Source: ABdhPJyFqwJvi3zXG5gdWVDVkUwCru/35AquIu/0x+0F4XVjJOu3a6JE1G1Sjq7nMbZX6fGU42QA8A==
-X-Received: by 2002:a63:5a4b:: with SMTP id k11mr12899821pgm.289.1624071516653;
-        Fri, 18 Jun 2021 19:58:36 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i6sm11282648pgg.50.2021.06.18.19.58.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 19:58:36 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Guillaume Tucker <guillaume.tucker@collabora.com>,
-        stable@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] selftests/lkdtm: Use /bin/sh not $SHELL
-Date:   Fri, 18 Jun 2021 19:58:34 -0700
-Message-Id: <20210619025834.2505201-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xyPYkkSvMyYVEkMIHpUhP4h40bSciy9qGvek1zjV32o=;
+        b=DRfJUW8WQK5h1H5MBTovDVZU5MYY9uky881WbG3LFGSgi1MR1HmKlpv+n9VGz+TkIn
+         2qGUbpI2kmTObk1WD49lt13U7QYRHCKS3ETpbo6jwcnWTPYn78kLJAU8xFFaIsm6zFQR
+         ZI7cIebRyKZnCK5C0oAhABgYT2sLSUl1xewKU8Sqzen5Uc1BVkDaAVf3+7Tt8xh/ogja
+         32s/fnejP6mymDuiiWStbiDRpsfrODKXtL9UhN2H8mvA486FkMKme8BBPyN0pjojTO8p
+         fFFvSiXXNebfIlNqqyxa8gAJ+V3ncmFxUq8RZp5onFwibURSWbkJoUm8R7p4r0z21ECt
+         sxug==
+X-Gm-Message-State: AOAM530bcUETa+nN22nvjov+JLS0Mp6I5ZeeLz0CIhR83KNn55qZlaBv
+        V4gBxL6Gw6JjBgbaQMoyOlYNPs8/C8N4XJZP3fG4dPW4v2zMvciO
+X-Google-Smtp-Source: ABdhPJxeBt4cianRkuXSqEDXxBTpxQiNIcHs/73YLkSBRGbVm/gZYYz3e32m9s80nyIMxBwKAI0S0vPZ7V+LQW8eZzo=
+X-Received: by 2002:a92:7b0f:: with SMTP id w15mr9849020ilc.150.1624071724671;
+ Fri, 18 Jun 2021 20:02:04 -0700 (PDT)
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=abaacaeb40d19df3f0123ca96cc8242ca6e3268c; i=lfnT3xbl3M4bSoo3fY1JvS2JIxARVoZVIzxV1pBNVzw=; m=cu0dPMI36VjT72aoOxoHuPRqB3LHPSjswDa6MCN+MZc=; p=qUkO+dFY9Yp/ywFt5TFJleapjrvJYshagfpYradjlMA=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmDNXVkACgkQiXL039xtwCbq4g//dCV QHTL1nxrCKGLO65q5B3wUQ4hi8m7xJAECFT7za5dDw2MvlhH6RTZCotulF0nW7g+78Wl1GqDMJh54 9tQhmyyI/WZH82ab6ck/eTB/TZaWQXLhxnp5h9Y/yv+lpKM26fr6OQzeORwb7FbRMKx9Szxw4MVkg 5SzE0iNSFV6pnMHZZCGuGpPO+CIfLaynmvLlYOhUboaWkCFb3tzmVF5HR557XqEeTWnJitzKK9T16 Soc/6JvKuLiwAhHeW1UgU9fyb5Vj2wnjGQAoP7olpYU0Ry7aRBeMEajhSarHaLOq397zW+SqeNBVU SE3jQLpfNbGykVNd2DeKDdrZBYFLwJY5Z8nc5iCTjR0t+unvyYzI+EGNlhR6tKiuVZbRMa01sOz/U rYgEp0W43irDWvlRDUe+Gx8teTo3eMDk6DkX6I34j9UCqnJcRT65+uXWLqsakdWDxAXr1pmvoh3M8 0RGcNnHogNPddCI6aO5O7BwWFtOmLRygepsKk9afxTxgKeOKhpIDFaPHuNuXidfzqehuYg3NqCBhR GhWXI2/xOlXMAYmIIXzN0RDTgzxsVLd8EFfJQ2UWGOHUAcXHNgcOdVXlRMYpoaPVPmt8oDLA1qss9 7czBiL8tB4Gp12mRjiKKDcBET7eqsCizJZsgJKhjMVcnHmF4GAOdoeDC6uUGFDjg=
-Content-Transfer-Encoding: 8bit
+References: <20210618063821.1383357-1-art@khadas.com> <CAFBinCB6bHy6Han0+oUcuGfccv1Rh_P0Gows1ezWdV4eA267tg@mail.gmail.com>
+ <CAL_JsqK+zjf2r_Q9gE8JwJw+Emn+JB4wOyH7eQct=kBvpUKstw@mail.gmail.com> <9b27444c-ea13-0dd2-a671-cef27e03b35c@baylibre.com>
+In-Reply-To: <9b27444c-ea13-0dd2-a671-cef27e03b35c@baylibre.com>
+From:   Art Nikpal <email2tema@gmail.com>
+Date:   Sat, 19 Jun 2021 11:01:53 +0800
+Message-ID: <CAKaHn9JK341ijN81kJyh32LksXVNGXTz-59QiGPxp0K6WGFN6g@mail.gmail.com>
+Subject: Re: [PATCH] PCI: dwc: meson add quirk
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Yue Wang <yue.wang@amlogic.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Krzysztof Wilczynski <kw@linux.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Artem Lapkin <art@khadas.com>, Nick Xie <nick@khadas.com>,
+        Gouwa Wang <gouwa@khadas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some environments do not set $SHELL when running tests. There's no need
-to use $SHELL here anyway, so just replace it with hard-coded path
-instead. Additionally avoid using bash-isms in the command, so that
-regular /bin/sh can be used.
+> Neil
+> It should be enabled only when the Amlogic bridge is present, thus similar filtering as keystone & loongon
+> is needed, but with such filtering we could reuse ks_pcie_quirk() and loongson_mrrs_quirk() as is.
+> AFAIL Simply moving ks_pcie_quirk() and loongson_mrrs_quirk() to core with the amlogic pci IDS added would be sufficient here.
 
-Suggested-by: Guillaume Tucker <guillaume.tucker@collabora.com>
-Fixes: 46d1a0f03d66 ("selftests/lkdtm: Add tests for LKDTM targets")
-Cc: stable@vger.kernel.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- tools/testing/selftests/lkdtm/run.sh | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+My patch was not a good solution! its was just example how to fix our
+problem - need to remade it
 
-diff --git a/tools/testing/selftests/lkdtm/run.sh b/tools/testing/selftests/lkdtm/run.sh
-index bb7a1775307b..0f9f22ac004b 100755
---- a/tools/testing/selftests/lkdtm/run.sh
-+++ b/tools/testing/selftests/lkdtm/run.sh
-@@ -78,8 +78,9 @@ dmesg > "$DMESG"
- 
- # Most shells yell about signals and we're expecting the "cat" process
- # to usually be killed by the kernel. So we have to run it in a sub-shell
--# and silence errors.
--($SHELL -c 'cat <(echo '"$test"') >'"$TRIGGER" 2>/dev/null) || true
-+# to avoid terminating this script. Leave stderr alone, just in case
-+# something _else_ happens.
-+(/bin/sh -c '(echo '"$test"') | cat >'"$TRIGGER") || true
- 
- # Record and dump the results
- dmesg | comm --nocheck-order -13 "$DMESG" - > "$LOG" || true
--- 
-2.25.1
+Yes i'm agree with Neil , at this moment we can move (replace
+duplicate functionalities)  ks_pcie_quirk() and loongson_mrrs_quirk()
+to core  + add amlogic pci IDS PCI_DEVICE(PCI_VENDOR_ID_SYNOPSYS,
+PCI_DEVICE_ID_SYNOPSYS_HAPSUSB3) - without other changes for everyone,
+and after we can improve this quirk by next patches
 
+i will send new patches variant soon
+
+On Fri, Jun 18, 2021 at 11:08 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
+>
+> On 18/06/2021 16:30, Rob Herring wrote:
+> > On Fri, Jun 18, 2021 at 6:12 AM Martin Blumenstingl
+> > <martin.blumenstingl@googlemail.com> wrote:
+> >>
+> >> Hi Artem,
+> >>
+> >> On Fri, Jun 18, 2021 at 8:38 AM Artem Lapkin <email2tema@gmail.com> wrote:
+> >>>
+> >>> Device set same 256 bytes maximum read request size equal MAX_READ_REQ_SIZE
+> >>> was find some issue with HDMI scrambled picture and nvme devices
+> >>> at intensive writing...
+> >>>
+> >>> [    4.798971] nvme 0000:01:00.0: fix MRRS from 512 to 256
+> >>>
+> >>> This quirk setup same MRRS if we try solve this problem with
+> >>> pci=pcie_bus_perf kernel command line param
+> >> thank you for investigating this issue and for providing a fix!
+> >>
+> >> [...]
+> >>> +static void meson_pcie_quirk(struct pci_dev *dev)
+> >>> +{
+> >>> +       int mrrs;
+> >>> +
+> >>> +       /* no need quirk */
+> >>> +       if (pcie_bus_config != PCIE_BUS_DEFAULT)
+> >>> +               return;
+> >>> +
+> >>> +       /* no need for root bus */
+> >>> +       if (pci_is_root_bus(dev->bus))
+> >>> +               return;
+> >>> +
+> >>> +       mrrs = pcie_get_readrq(dev);
+> >>> +
+> >>> +       /*
+> >>> +        * set same 256 bytes maximum read request size equal MAX_READ_REQ_SIZE
+> >>> +        * was find some issue with HDMI scrambled picture and nvme devices
+> >>> +        * at intensive writing...
+> >>> +        */
+> >>> +
+> >>> +       if (mrrs != MAX_READ_REQ_SIZE) {
+> >>> +               dev_info(&dev->dev, "fix MRRS from %d to %d\n", mrrs, MAX_READ_REQ_SIZE);
+> >>> +               pcie_set_readrq(dev, MAX_READ_REQ_SIZE);
+> >>> +       }
+> >>> +}
+> >>> +DECLARE_PCI_FIXUP_ENABLE(PCI_ANY_ID, PCI_ANY_ID, meson_pcie_quirk);
+> >
+> > Isn't this going to run for everyone if meson driver happens to be enabled?
+>
+> It should be enabled only when the Amlogic bridge is present, thus similar filtering as keystone & loongon
+> is needed, but with such filtering we could reuse ks_pcie_quirk() and loongson_mrrs_quirk() as is.
+>
+> >
+> >> it seems that other PCIe controllers need something similar. in
+> >> particular I found pci-keystone [0] and pci-loongson [1]
+> >> while comparing your code with the two existing implementations two
+> >> things came to my mind:
+> >> 1. your implementation slightly differs from the two existing ones as
+> >> it's not walking through the parent PCI busses (I think this would be
+> >> relevant if there's another bridge between the host bridge and the
+> >> actual device)
+> >> 2. (this is a question towards the PCI maintainers) does it make sense
+> >> to have this MRRS quirk re-usable somewhere?
+> >
+> > Yes. Ideally, the max size could just be data in the bus or bridge
+> > struct and perhaps some flags too, then the core can handle
+> > everything.
+>
+> AFAIL Simply moving ks_pcie_quirk() and loongson_mrrs_quirk() to core with the amlogic pci IDS added would be sufficient here.
+>
+> Neil
+>
+> >
+> > Rob
+> >
+>
