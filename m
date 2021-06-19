@@ -2,87 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 144503AD9A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 12:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14ABD3AD9A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 12:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234045AbhFSKvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 06:51:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233294AbhFSKuA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 06:50:00 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D839DC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 03:47:48 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id n35-20020a05600c3ba3b02901cdecb6bda8so10283437wms.5
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 03:47:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LTkyAehf8YDMFLVUk7PThGVVorkKOg4GbKlGuTWT6o8=;
-        b=cmbaj81bapkWavHCB3MZVrkVnP/SZdNEKl67WB1irsh25jl7lvdLpz9waPXwilLIGl
-         Jvc777Se48ju/+gjqm7sUKF+4Cnq5OzCjtPdGKVudIWptxQFYKC8zbDIfNq+xmAJHXrq
-         GbumVzl7fK3+9jpHgLXnb+mB1gMC4QTWZpr6yPjakhbQQe0em8Bu/zd+FycUhymiXG6i
-         HgFbOwJU2IcCAjoZI8rcLWW+8kxX33rJt3PyUmpDQnoIzWhMxnBymBnsDUjAaLFajXg3
-         7whHdTQiw2xg/FeljOSIm5vhdzsONjt2vM/8bw3sTmmSyvmeI8k0Tejdg0jhZUzut2hu
-         49sA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LTkyAehf8YDMFLVUk7PThGVVorkKOg4GbKlGuTWT6o8=;
-        b=okgSR3eNRE0KuebY4ThFZqwxxFZWUMRpvnPqTLNrxk3/5S1aAXaCHYItLIm/w8480m
-         BAiE6hbYBP+eTse/hmBdwZYMPOzvOFInPuKV6UBc3bF2MbVI9KbUf0wtMwpEckFYO4S5
-         jK92SBL4rXzObMUvqp/TBUoFOpOSvI+hAtaP1hKU8sXUi54WrVodPhnufxPZjwjFLjc/
-         L7i2GgDNws/vZMMCnrBEld8H7J+eDxq3WKJG14723MRb6xcYcy3j9e0aXDetvnXybxn/
-         uHBfunLI7UudwoaFIOckzWvFcmAlj+sj6HOZLaYm98t8os3lXpUHHavm5Zi5hYE4MpwI
-         8qJA==
-X-Gm-Message-State: AOAM530cGseQeK2Yn9LRIj5UUVcwjOwFmyeRAnN76oUmCrFqdnNyEDm4
-        W9CbT8TSogC9t/F4TCvoEhcN+4zplRfuLA==
-X-Google-Smtp-Source: ABdhPJwZX9Q4hG7OqQvle/LI4PetvpeUXzf5ZfrXzUvOBrPdIsGgKbmH0UnFzrb2Q0XwGCGWEsz70A==
-X-Received: by 2002:a05:600c:190f:: with SMTP id j15mr15856276wmq.37.1624099667436;
-        Sat, 19 Jun 2021 03:47:47 -0700 (PDT)
-Received: from agape ([5.171.81.81])
-        by smtp.gmail.com with ESMTPSA id f14sm11050322wri.16.2021.06.19.03.47.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Jun 2021 03:47:47 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 18/18] staging: rtl8723bs: remove item from TODO list
-Date:   Sat, 19 Jun 2021 12:47:21 +0200
-Message-Id: <f85985665cd3d1a6e7cf4e6c2d63e7dc920fafab.1624099126.git.fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1624099125.git.fabioaiuto83@gmail.com>
-References: <cover.1624099125.git.fabioaiuto83@gmail.com>
+        id S230433AbhFSKwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 06:52:22 -0400
+Received: from mga09.intel.com ([134.134.136.24]:53248 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231403AbhFSKwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 06:52:19 -0400
+IronPort-SDR: 4vrjSwFiE45UJoS+V324bGl1jppXjSuTjyWVIFSZGHhxvXWPv7X+xJXpjb2/5IozMmEtnRCoe9
+ hTQu092OUAig==
+X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="206612084"
+X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
+   d="scan'208";a="206612084"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2021 03:50:07 -0700
+IronPort-SDR: o8DFUIQ+V+2TuG58ZEr4r3C8CkDGqWu2uw95vEN7oxLjJ8oaxloSWHsXFVzcWwtJJIbqrt7cig
+ dDphpiQ2jjXw==
+X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
+   d="scan'208";a="622629219"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2021 03:50:02 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1luYY2-003nwB-1Z; Sat, 19 Jun 2021 13:49:58 +0300
+Date:   Sat, 19 Jun 2021 13:49:58 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Marc Zyngier <maz@kernel.org>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Alexey Klimov <aklimov@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH 3/3] Replace for_each_*_bit_from() with for_each_*_bit()
+ where appropriate
+Message-ID: <YM3L1kciMw7zqhUp@smile.fi.intel.com>
+References: <20210618195735.55933-1-yury.norov@gmail.com>
+ <20210618195735.55933-4-yury.norov@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210618195735.55933-4-yury.norov@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove item related to 5Ghz code deletion from
-driver's TODO list.
+On Fri, Jun 18, 2021 at 12:57:35PM -0700, Yury Norov wrote:
+> A couple of kernel functions call for_each_*_bit_from() with start
+> bit equal to 0. Replace them with for_each_*_bit().
+> 
+> No functional changes, but might improve on readability.
 
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
----
- drivers/staging/rtl8723bs/TODO | 2 --
- 1 file changed, 2 deletions(-)
+...
 
-diff --git a/drivers/staging/rtl8723bs/TODO b/drivers/staging/rtl8723bs/TODO
-index afa620ceb2d8..3d8f5a634a10 100644
---- a/drivers/staging/rtl8723bs/TODO
-+++ b/drivers/staging/rtl8723bs/TODO
-@@ -1,6 +1,4 @@
- TODO:
--- find and remove remaining code valid only for 5 GHz. Most of the obvious
--  ones have been removed, but things like channel > 14 still exist.
- - find and remove any code for other chips that is left over
- - convert any remaining unusual variable types
- - find codes that can use %pM and %Nph formatting
+> --- a/drivers/hwmon/ltc2992.c
+> +++ b/drivers/hwmon/ltc2992.c
+> @@ -248,8 +248,7 @@ static int ltc2992_gpio_get_multiple(struct gpio_chip *chip, unsigned long *mask
+>  
+>  	gpio_status = reg;
+>  
+> -	gpio_nr = 0;
+> -	for_each_set_bit_from(gpio_nr, mask, LTC2992_GPIO_NR) {
+> +	for_each_set_bit(gpio_nr, mask, LTC2992_GPIO_NR) {
+>  		if (test_bit(LTC2992_GPIO_BIT(gpio_nr), &gpio_status))
+>  			set_bit(gpio_nr, bits);
+>  	}
+
+I would replace the entire loop by bitmap_replace() call.
+
+Something like
+	bitmap_replace(bits, bits, &gpio_status, mask, LTC2992_GPIO_NR);
+
+(Good to split sometimes :-)
+
 -- 
-2.20.1
+With Best Regards,
+Andy Shevchenko
+
 
