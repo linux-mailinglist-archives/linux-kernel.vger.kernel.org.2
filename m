@@ -2,75 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8593AD822
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 08:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0CF73AD829
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 08:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233935AbhFSGbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 02:31:44 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:45482 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233709AbhFSGbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 02:31:38 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx70DBjs1gXRcUAA--.23357S4;
-        Sat, 19 Jun 2021 14:29:23 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Steven Rostedt <rostedt@goodmis.org>,
+        id S233006AbhFSGkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 02:40:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231637AbhFSGkw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 02:40:52 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A214DC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 23:38:41 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f246700fd06b376b270bc91.dip0.t-ipconnect.de [IPv6:2003:ec:2f24:6700:fd06:b376:b270:bc91])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 52DED1EC0598;
+        Sat, 19 Jun 2021 08:38:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1624084717;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=VddUBuoes3XOSU2mW20xa4pvFao5Caqu6cazeuMucSM=;
+        b=bjWZ+EnNw/BT8j1PHqoQ68XDpbUgbuXR13oYuCQY4JIMYjICEEGfd8PUSaV+Se8rAQi+xt
+        XaTUIcau4lunH+9PPh+KMK4v/F3ODG5IlITvU5ji9sB4JM1hGu+K8etSkMqb/TG7/pWIXj
+        YYDIFEakjTSvSv/sK7hzTEtXiZxJKN0=
+Date:   Sat, 19 Jun 2021 08:38:27 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [RFC PATCH 2/2] docs: kernel-parameters: Add ftrace_disabled
-Date:   Sat, 19 Jun 2021 14:29:20 +0800
-Message-Id: <1624084160-3342-3-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1624084160-3342-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1624084160-3342-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dx70DBjs1gXRcUAA--.23357S4
-X-Coremail-Antispam: 1UD129KBjvdXoWrtF1DuFyxJw1UXF4kAr45Awb_yoWfXwbEqw
-        13XanYqa4UCwn5Jr18Gay5tF1I9r4S9FZ29w4kXrW5G3s7A398Cas5Jry5Aw4rWrs7uF45
-        CasxArn7GFnrWjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbhxFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXwA2048vs2IY02
-        0Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-        wVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84
-        ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr0_GcWl
-        e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
-        8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
-        jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r47MxAIw2
-        8IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4l
-        x2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrw
-        CI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI
-        42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z2
-        80aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUUyxRDUUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 03/11] x86/cpufeatures: Add TDX Guest CPU feature
+Message-ID: <YM2Q46fcNobyobek@zn.tnic>
+References: <20210618225755.662725-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20210618225755.662725-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YM0uoTnAi7TpU5fF@zn.tnic>
+ <6b68dc50-4d4c-f724-8ab8-0a12a07d42aa@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <6b68dc50-4d4c-f724-8ab8-0a12a07d42aa@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Explain the cmdline argument ftrace_disabled in the file
-Documentation/admin-guide/kernel-parameters.txt
+On Fri, Jun 18, 2021 at 05:13:39PM -0700, Kuppuswamy, Sathyanarayanan wrote:
+> On 6/18/21 4:39 PM, Borislav Petkov wrote:
+> >  From Documentation/process/submitting-patches.rst:
+> > 
+> > "Both Tested-by and Reviewed-by tags, once received on mailing list from tester
+> > or reviewer, should be added by author to the applicable patches when sending
+> > next versions.  However if the patch has changed substantially in following
+> > version, these tags might not be applicable anymore and thus should be removed.
+> > Usually removal of someone's Tested-by or Reviewed-by tags should be mentioned
+> > in the patch changelog (after the '---' separator)."
+> > 
+> > IOW, for the next revisions of your patchsets, you should drop
+> > Reviewed-by: tags on patches when they've changed more than trivially
+> > because otherwise those tags have no meaning at all.
+> > 
+> > Also, please take the time to peruse the above document on the kernel
+> > process while waiting.
+> 
+> I will make sure to remove the Reviewed-by/Tested-by tags for the changed patches
+> in the next submission. But, IMO, changes made in this patch is minimal. Nothing
+> changed functionally. So, do we still need to remove the tags for this patch?
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- Documentation/admin-guide/kernel-parameters.txt | 4 ++++
- 1 file changed, 4 insertions(+)
+My note was more of a general reminder: "for the next revisions of
+your patchsets" above. I simply replied to the first mail with a patch
+changelog.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index cb89dbd..f255aff 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -1392,6 +1392,10 @@
- 			dump only the buffer of the CPU that triggered the
- 			oops.
- 
-+	ftrace_disabled
-+			Set ftrace_disabled in cmdline to disable ftrace when
-+			boot up.
-+
- 	ftrace_filter=[function-list]
- 			[FTRACE] Limit the functions traced by the function
- 			tracer at boot up. function-list is a comma-separated
+Also, maybe our documentation text is not really clear. It says "changed
+substantially", you understood that as "changed functionally" and I've
+seen people complain about smaller things. But ok, let's agree on
+functional changes here.
+
+Thx.
+
 -- 
-2.1.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
