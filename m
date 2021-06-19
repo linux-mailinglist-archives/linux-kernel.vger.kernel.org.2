@@ -2,124 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A713AD9F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 14:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74F343AD9F8
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 14:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234090AbhFSMVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 08:21:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52560 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234077AbhFSMVw (ORCPT
+        id S234100AbhFSMZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 08:25:54 -0400
+Received: from mail-m118208.qiye.163.com ([115.236.118.208]:46848 "EHLO
+        mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234066AbhFSMZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 08:21:52 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D45C1C061574;
-        Sat, 19 Jun 2021 05:19:40 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id ho18so20379863ejc.8;
-        Sat, 19 Jun 2021 05:19:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iqaKCJ/vNidDzmWvE8Ei4HGIsfolJuD4g50roz5brLo=;
-        b=p6DFUjdh9W+9ZOuXEgrAJzqvw4HlQfCSoE5KjuaOhEiqgIKfbquadYu91Z6lYGSwsU
-         Pg1uV2sBaAzDDIIYwmXosaQwqRYvFEhmhH6av1PPy4NMijcSJVT+a9s+bt+yUweK79mH
-         cuYjufd64+ARD7R08LaxvW0SIUNBUj2EqslfXO5XLDWyzYYCCulefa1lxGL3VGsURur9
-         w+tmDFSmTXjs666V6TARTvMCSxAlWKSlpYq9l/qdJNq7OQfXqCX5mcjSZ1g/f2GtFAbP
-         uK+9jnidGTeFmYoJYKVV6hwKPwm1Ju8j2LXsWaDLY5TfFQTMMvqAnvcmscC0S39Bim/B
-         OH6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iqaKCJ/vNidDzmWvE8Ei4HGIsfolJuD4g50roz5brLo=;
-        b=ANr4B7xh15EYErid08aJPdnze0IwuC6Ptzi+amQR5YXD9VJ7P7VtQKaR7ZUzLLH2xB
-         dlcl3F87Fae2kPcHiPrCDRwulzXOpyKhzH2Zp0xsEbs3+dHpd/I1oJcJiS0tsHwgkB3S
-         4dafFiqAHU1LGm8CgJzIr0bOSkyREYpBftmUKX7bNR2jduo6BArIkBJnQSB0S0EncKfp
-         HlpsiVcJLqBaGuOiP/u3JaPgTlfHLgdUmgnW7jlE5L9DEhcHIQG8CQ7krFxcoyQvQrQJ
-         RQ/6UfSxLfLsRrPI502sqYT9/MsqhbZMjfcPGqAbEtEgKvhFnNmbyprFeJhqEXkcw96y
-         WNmQ==
-X-Gm-Message-State: AOAM5321x3PtbYWkuaQhM4/ng0wBt3sDDjxm0q/nmXjHH4fgUeGtW7NE
-        +bKQ7aU7DvGI1bsrl6pLBtI=
-X-Google-Smtp-Source: ABdhPJwsOi2XYm8L1rzaXqA1OPOhf+cK6DVMTj8QYRFL3OnvtqeS5oJ1CV+q+F0i+1jUniYnzLzcyA==
-X-Received: by 2002:a17:907:10d8:: with SMTP id rv24mr15243159ejb.542.1624105179476;
-        Sat, 19 Jun 2021 05:19:39 -0700 (PDT)
-Received: from BLUE.mydomain.example (83-87-52-217.cable.dynamic.v4.ziggo.nl. [83.87.52.217])
-        by smtp.googlemail.com with ESMTPSA id w17sm2299405ejk.112.2021.06.19.05.19.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Jun 2021 05:19:39 -0700 (PDT)
-From:   ericwouds@gmail.com
-To:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Eric Woudstra <ericwouds@gmail.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Fix mt7622.dtsi thermal cpu
-Date:   Sat, 19 Jun 2021 14:19:26 +0200
-Message-Id: <20210619121927.32699-1-ericwouds@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 19 Jun 2021 08:25:53 -0400
+Received: from 2CD-RMPB.local (unknown [113.118.120.96])
+        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id DEC93E01C3;
+        Sat, 19 Jun 2021 20:23:36 +0800 (CST)
+Subject: Re: [PATCH v1 6/6] mm/hwpoison: fix unpoison_memory()
+To:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>
+Cc:     Naoya Horiguchi <nao.horiguchi@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210614021212.223326-1-nao.horiguchi@gmail.com>
+ <20210614021212.223326-7-nao.horiguchi@gmail.com>
+ <94984984-f123-85ae-20bc-b40e90d536f6@sangfor.com.cn>
+ <20210618083625.GA2215283@hori.linux.bs1.fc.nec.co.jp>
+From:   Ding Hui <dinghui@sangfor.com.cn>
+Message-ID: <a2162c28-78ce-1ce7-327c-e8c4dce164cd@sangfor.com.cn>
+Date:   Sat, 19 Jun 2021 20:22:32 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <20210618083625.GA2215283@hori.linux.bs1.fc.nec.co.jp>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGhpJS1ZCH0xMHU4fSUpDS09VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OBA6GBw5ST9DUTpKPyk6ODpW
+        HigaCi9VSlVKTUlPSktOT0pMTkhCVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
+        QVlKSkhVSkpDVUpJS1VCTVlXWQgBWUFPQ01PNwY+
+X-HM-Tid: 0a7a2439fa1f2c17kusndec93e01c3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Woudstra <ericwouds@gmail.com>
+On 2021/6/18 4:36 下午, HORIGUCHI NAOYA(堀口 直也) wrote:
+> On Thu, Jun 17, 2021 at 06:00:21PM +0800, Ding Hui wrote:
+>> On 2021/6/14 10:12, Naoya Horiguchi wrote:
+>>> From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+>>>
+>>> After recent soft-offline rework, error pages can be taken off from
+>>> buddy allocator, but the existing unpoison_memory() does not properly
+>>> undo the operation.  Moreover, due to the recent change on
+>>> __get_hwpoison_page(), get_page_unless_zero() is hardly called for
+>>> hwpoisoned pages.  So __get_hwpoison_page() mostly returns zero (meaning
+>>> to fail to grab page refcount) and unpoison just clears PG_hwpoison
+>>> without releasing a refcount.  That does not lead to a critical issue
+>>> like kernel panic, but unpoisoned pages never get back to buddy (leaked
+>>> permanently), which is not good.
+>>
+>> As I mention in [1], I'm not sure about the exactly meaning of "broken" in
+>> unpoison_memory().
+>>
+>> Maybe the misunderstanding is:
+>>
+>> I think __get_hwpoison_page() mostly returns one for hwpoisoned page.
+>> In 06be6ff3d2ec ("mm,hwpoison: rework soft offline for free pages"),
+>> page_handle_poison() is introduced, it will add refcount for all
+>> soft-offlineed hwpoison page.
+>> In memory_failure() for hard-offline，page_ref_inc() called on free page
+>> too, and for used page, we do not call put_page() after get_hwpoison_page()
+>> != 0.
+>> So all hwpoisoned page refcount must be great than zero when
+>> unpoison_memory() if regardless of racy.
+> 
+> Hi, Ding,
+> 
+> Thanks for the comment.  I feel that I failed to define the exact issue in
+> unpoison.  Maybe I saw and misinterpreted some random error as unpoison's
+> issue during developing other hwpoison patches, so please don't take serious
+> my previous wrong word "broken", sorry about that.
+> 
+> Anyway I reconsider how to handle this 6/6, maybe it will be a clear
+> description of the problem, and will be simplified.
+> 
+>>
+>> Recently I tested loop soft-offline random pages and unpoison them for days,
+>> it works fine to me. (with bac9c6fa1f92 patched)
+> 
+> Thank you for testing,
+> 
 
-Cpu-thermal is set to use all frequencies already at 47 degrees. 
-Using the CPU at 50 for a minute, the CPU has reached 48 degrees, is 
-throttled back to lowest setting, making the mt7622 terrribly slow. 
-Even at this low speed, the CPU does not cool down lower then 47 so
-the CPU is stuck at lowest possible frequency until it shut down and
-stays off for 15 minutes.
+Hi Naoya,
 
-cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
-                 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+I'm afraid of my description about testing is ambiguous for others, let 
+me clarify that I ran stress soft-offline test case from mce-test 
+project (https://git.kernel.org/pub/scm/utils/cpu/mce/mce-test.git) for 
+days to verify my modify about NR_FREE_PAGES (bac9c6fa1f92), without 
+your current patchset, the case is loop soft-offline random pages and 
+unpoison them, and it works basic fine to me.
 
-This should not be set al every cooling map. It should only be set at
-the highest cooling map. Same as in the example:
-
-https://www.kernel.org/doc/Documentation/devicetree/bindings/
-thermal/thermal.txt  line 272
-
-But then without the fan and added a third map.
-
-Now temperature will be regulated at 87 degrees celcius. At temperatures
-lower then 87, all frequencies can be used.
-
-Also see the post:
-
-http://forum.banana-pi.org/t/bpi-r64-only-10-cpu-speed-at-already-48-
-degrees-celcius-speed-not-increasing-anymore/12262
-
-Signed-off-by: Eric Woudstra <ericwouds@gmail.com>
----
- arch/arm64/boot/dts/mediatek/mt7622.dtsi | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/arm64/boot/dts/mediatek/mt7622.dtsi b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
-index 890a942ec..b779c7aa6 100644
---- a/arch/arm64/boot/dts/mediatek/mt7622.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt7622.dtsi
-@@ -170,14 +170,14 @@ cpu-crit {
- 			cooling-maps {
- 				map0 {
- 					trip = <&cpu_passive>;
--					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
--							 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+					cooling-device = <&cpu0 0 0>,
-+							 <&cpu1 0 0>;
- 				};
- 
- 				map1 {
- 					trip = <&cpu_active>;
--					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>,
--							 <&cpu1 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+					cooling-device = <&cpu0 0 0>,
-+							 <&cpu1 0 0>;
- 				};
- 
- 				map2 {
 -- 
-2.25.1
-
+Thanks,
+-dinghui
