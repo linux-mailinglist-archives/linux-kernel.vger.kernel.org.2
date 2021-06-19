@@ -2,101 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3C7D3ADAA7
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 17:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB523ADAAA
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 17:44:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234638AbhFSPpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 11:45:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234593AbhFSPpL (ORCPT
+        id S234648AbhFSPqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 11:46:18 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:54176 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234593AbhFSPqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 11:45:11 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50FC6C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 08:43:00 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id n12so1660696pgs.13
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 08:43:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:cc:from:to:message-id;
-        bh=WLt1aypUZFf0uLl5W0e4Cbr/bbAeIOctJoAlWFkvXzE=;
-        b=gRPyoOYcDOFA7sfIDglnW7bevnFKWvhANMc+VSUN47ht8jV5axsiaZLo3NeGx74sT5
-         xO7oezOz14Ryt2FjqAcHB0y3hr0Lw5VORWn8EN1AcKdTju2hatrFenYVglOPvyu0sS7X
-         HKPqxcARMBYSqc6H+PpG6/TNGM0UAcbAoLPBkOVU6kBc3AL5vadpN0QOLxBkPNAwdcM5
-         bZeqOUE57M6dZ80NjlS5aqGNZWpRdYukOZ2i75zJV85TAP0W/zmL9XmS93BDnEcZxGK0
-         oGOr7hH6v9lDHTKmdiXpvAt6GNf/LSLPHCDiIn+/uAV55UNUXzl3v//8xqeyOOJuwLyu
-         EgWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:cc:from:to:message-id;
-        bh=WLt1aypUZFf0uLl5W0e4Cbr/bbAeIOctJoAlWFkvXzE=;
-        b=KrsCcJoTv//lpA9fwWwq4yODKm1KiUZjXI8++5mwioRD4XBBKZqApgHmVOmQnCfqfh
-         5+aBP38ozqhjoDesLhJYL+V8Xg0bwgA0CHDdd/A1nT/ZGKdid7P0FsVjeZFmCNGRraJF
-         S6qYKHfHLNhBG7zuTOEatWOoSDHJLQP5hWrGiYx3OdbwrTzls2uUGra+TNHEKzqpLnVk
-         se9cpmZSeD6H50kjv5JWdhopaxCOx+aneDAuGgMIfLoLViip0NNjRnuE1DFO39Tkeejj
-         zvtqQ39ujco2q0I78EI502Cf1k5IZ9n3qw4ieETsptNZddjFrkZHo8pPRaodDV9ve+sK
-         pDnw==
-X-Gm-Message-State: AOAM530JBF/W5G0IA8GJ4W6XvPiBgnraN+meKtAhmpmPkJfcnhrSAeWm
-        7/cbLGYTkgsRPkA/xSF8Ydi0HQ==
-X-Google-Smtp-Source: ABdhPJxA5FqeHFXUxAEAo2KZ9LrRDtalHguaHloHVDHAy7YM08UWIt6KnFzONUH5FP+Bje9Tkgga3Q==
-X-Received: by 2002:a05:6a00:a1e:b029:2e2:89d8:5c87 with SMTP id p30-20020a056a000a1eb02902e289d85c87mr11021738pfh.73.1624117379725;
-        Sat, 19 Jun 2021 08:42:59 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id 10sm8352494pfh.174.2021.06.19.08.42.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Jun 2021 08:42:59 -0700 (PDT)
-Date:   Sat, 19 Jun 2021 08:42:59 -0700 (PDT)
-X-Google-Original-Date: Sat, 19 Jun 2021 08:42:55 PDT (-0700)
-Subject: [GIT PULL] RISC-V Fixes for 5.13-rc7
-CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-768bd541-d21a-4a3e-9c92-da08277ab3ba@palmerdabbelt-glaptop>
+        Sat, 19 Jun 2021 11:46:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624117446; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=Ri5cchpabYVpYyuRXmLtfl/9pxuvePUUyJsuIYB0DU0=; b=QHPdME1eLJsoWqxAQEmLQDxnT/2/NLf9NBG4Ey9JtNZ4oCAdaCXuPLn0bqIJX911WPcPqwKg
+ Z+o0ys2G+KJL8cKvMVJUNM+LU/uibA3DGeDdQDg5TkrYl9GU750uIscY2IWhYA7Hw5/rNJha
+ tossF0By1PC3lCr2mBGrvOqDdz0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 60ce10aeea2aacd729bd9af3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 19 Jun 2021 15:43:42
+ GMT
+Sender: linyyuan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 98FC1C4338A; Sat, 19 Jun 2021 15:43:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from localhost.localdomain (unknown [101.87.142.17])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: linyyuan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1EA1FC433F1;
+        Sat, 19 Jun 2021 15:43:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1EA1FC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=linyyuan@codeaurora.org
+From:   Linyu Yuan <linyyuan@codeaurora.org>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jack Pham <jackp@codeaurora.org>
+Subject: [PATCH v3 0/2] usb: udc: indroduce more api for lower gadget driver
+Date:   Sat, 19 Jun 2021 23:43:07 +0800
+Message-Id: <20210619154309.52127-1-linyyuan@codeaurora.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 0ddd7eaffa644baa78e247bbd220ab7195b1eed6:
+void usb_gadget_udc_disconnect(struct usb_gadget *);
+void usb_gadget_udc_suspend(struct usb_gadget *);
+void usb_gadget_udc_resume(struct usb_gadget *);
+int usb_gadget_udc_setup(struct usb_gadget *,
+			const struct usb_ctrlrequest *);
 
-  riscv: Fix BUILTIN_DTB for sifive and microchip soc (2021-06-11 21:07:09 -0700)
+dwc3 is first driver to use these apis.
 
-are available in the Git repository at:
+v3: fix mail format
+v3: fix mail format
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.13-rc7
+Linyu Yuan (2):
+  usb: udc: core: hide struct usb_gadget_driver to gadget driver
+  usb: dwc3: fix race of usb_gadget_driver operation
 
-for you to fetch changes up to 7ede12b01b59dc67bef2e2035297dd2da5bfe427:
+ drivers/usb/dwc3/core.h       |  2 --
+ drivers/usb/dwc3/ep0.c        |  6 +---
+ drivers/usb/dwc3/gadget.c     | 53 +++++++++--------------------------
+ drivers/usb/gadget/udc/core.c | 47 ++++++++++++++++++++++++++++++-
+ include/linux/usb/gadget.h    |  6 ++++
+ 5 files changed, 66 insertions(+), 48 deletions(-)
 
-  riscv: dts: fu740: fix cache-controller interrupts (2021-06-19 00:11:53 -0700)
+-- 
+2.25.1
 
-----------------------------------------------------------------
-RISC-V Fixes for 5.13-rc7
-
-* A build fix to always build modules with the medany code model, as
-  the module loader doesn't support medlow.
-* A Kconfig warning fix for the SiFive errata.
-* A pair of fixes that for regressions to the recent memory layout
-  changes.
-* A fix for the FU740 device tree.
-
-----------------------------------------------------------------
-David Abdurachmanov (1):
-      riscv: dts: fu740: fix cache-controller interrupts
-
-Jisheng Zhang (2):
-      riscv: kasan: Fix MODULES_VADDR evaluation due to local variables' name
-      riscv: Ensure BPF_JIT_REGION_START aligned with PMD size
-
-Khem Raj (1):
-      riscv32: Use medany C model for modules
-
-Randy Dunlap (1):
-      riscv: sifive: fix Kconfig errata warning
-
- Documentation/riscv/vm-layout.rst          |  4 ++--
- arch/riscv/Kconfig.socs                    |  1 +
- arch/riscv/Makefile                        |  2 +-
- arch/riscv/boot/dts/sifive/fu740-c000.dtsi |  2 +-
- arch/riscv/include/asm/pgtable.h           |  5 ++---
- arch/riscv/mm/kasan_init.c                 | 10 +++++-----
- 6 files changed, 12 insertions(+), 12 deletions(-)
