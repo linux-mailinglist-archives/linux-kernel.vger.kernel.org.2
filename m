@@ -2,156 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9965E3AD800
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 08:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A393AD803
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 08:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233709AbhFSFy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 01:54:56 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:61053 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231952AbhFSFyy (ORCPT
+        id S233766AbhFSGEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 02:04:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233714AbhFSGEk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 01:54:54 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624081964; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=Q/juTnKCxiBQQdyEvtKPoStE1ioIgeHfyaGfZObCiA0=;
- b=PkwR1nRX3GpWHfgqJ0TMqA6Zr9v4dlQXvirWX9jlzTBCwlkJPdE/n8hFesH0Thv3EjkKyfaX
- Pgf090F3T7pQIIldPIYfwepvzoPvUX1tbE/jUaKmp8Oo6YBV6dn7H3hXYJ858+G7X6nkgsWK
- /KktbHVt77WtY6JrpR8m63woaw4=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 60cd862b51f29e6bae2a4dcb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 19 Jun 2021 05:52:43
- GMT
-Sender: vgarodia=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 67CC7C433F1; Sat, 19 Jun 2021 05:52:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: vgarodia)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9061CC433D3;
-        Sat, 19 Jun 2021 05:52:41 +0000 (UTC)
+        Sat, 19 Jun 2021 02:04:40 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0017C061574;
+        Fri, 18 Jun 2021 23:02:28 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id h1so5786123plt.1;
+        Fri, 18 Jun 2021 23:02:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=6wKXgd/ZhGiTUrwlorOP1aKdH3EvNfTZEGLOVoYRfnA=;
+        b=HqTuCzfRgtpxdtQsv5eXBAj6MY60ow4aM/DQATcTOrV/s2Z1lom+u5+UgkGJyFUMrR
+         sBm4Hw8mpm1b2NWuVNjV5HlFClau9nEewZt/h5Noo7Rxilij1QenUcYn5TMTv2ep4BZh
+         dezXiQiqQdwaClkPIiahsQD+wZr7r1cZzkkO94gYiK7GiRmDf84djWdzNhK6Dgtb4qgY
+         OFedJiTkHTSjVlGO0m4koiJ3G1Q/py26GcIKMZ7f2d4P4OipQ7ebZz3xK/obxcf2M4EW
+         TENafsgnBHGZNkqqvs4TCdkFQy6vdlx6ZMaNPOSS9IhtgLW2s2dztU5ieTx1F7/KHX/y
+         Gsfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=6wKXgd/ZhGiTUrwlorOP1aKdH3EvNfTZEGLOVoYRfnA=;
+        b=nnoUKQ1K4qhdtmlbSWTp3pzedw/7Pgmsb6iKAj2ly6Q/0egV+V5QYwllyhmK7/aLJH
+         CTG/mZsXfH/un6rImrP83fiUev/S32rMtTfP0K3BX9jDSl97JQpRrH2ahVsySOiG8RDr
+         Idtkp26MqyidxBwN3L+Pjy94B5Gl0x7PVfRXw4ZG1GLXrY4rMmQAhw6eGogQPvfGNy2x
+         ZS8vitztEQ5f8Vps3c53Tk+do4adpVYic2eXEmI79Hl5LFe9nJWYZs/dhLLOR5Fan8MT
+         HKBzV48zlwEuwbR61Y3ahv7xTOCIaeQXWhb3EMJQj/uWFJB/TWSF1bBggwCvvJxnVFP7
+         /XGQ==
+X-Gm-Message-State: AOAM532To7KAGTq9seqtrjGvGg1UL3GlyvF2WMEkaB9z8ukzqKm7Q3uQ
+        GVcgzF7c50HHZgs/9Epb0jM=
+X-Google-Smtp-Source: ABdhPJyKMGe6svO1edmje4gRVg+O1L9zIRT6wzOtEKvbi1F4rLOfCjfJ9mjTw5mzRepW9QleX5pgcQ==
+X-Received: by 2002:a17:902:b218:b029:11a:bf7b:1a80 with SMTP id t24-20020a170902b218b029011abf7b1a80mr8106460plr.82.1624082548020;
+        Fri, 18 Jun 2021 23:02:28 -0700 (PDT)
+Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
+        by smtp.gmail.com with ESMTPSA id s123sm9246118pfb.78.2021.06.18.23.02.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 23:02:27 -0700 (PDT)
+Date:   Sat, 19 Jun 2021 16:02:21 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [PATCH 8/8] membarrier: Rewrite sync_core_before_usermode() and
+ improve documentation
+To:     Andy Lutomirski <luto@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        stable <stable@vger.kernel.org>, Will Deacon <will@kernel.org>,
+        x86 <x86@kernel.org>
+References: <cover.1623813516.git.luto@kernel.org>
+        <07a8b963002cb955b7516e61bad19514a3acaa82.1623813516.git.luto@kernel.org>
+        <827549827.10547.1623941277868.JavaMail.zimbra@efficios.com>
+        <26196903-4aee-33c4-bed8-8bf8c7b46793@kernel.org>
+        <593983567.12619.1624033908849.JavaMail.zimbra@efficios.com>
+        <1d617df2-57fa-4953-9c75-6de3909a6f14@www.fastmail.com>
+        <639092151.13266.1624046981084.JavaMail.zimbra@efficios.com>
+In-Reply-To: <639092151.13266.1624046981084.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Sat, 19 Jun 2021 11:22:41 +0530
-From:   vgarodia@codeaurora.org
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Cc:     mansur@codeaurora.org,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, dikshita@codeaurora.org
-Subject: Re: [PATCH] venus: helper: do not set constrained format for UBWC
-In-Reply-To: <28ab2706-2a0c-e9d6-c02c-8ede6fa01efb@linaro.org>
-References: <1622195288-18541-1-git-send-email-mansur@codeaurora.org>
- <a66e00f2-af3a-9550-0779-625152cc2719@nexus-software.ie>
- <17aaec56-bfad-63a6-b1c4-7562dedb3137@linaro.org>
- <b649a7ecb3feb1fdf6d0743135814840@codeaurora.org>
- <28ab2706-2a0c-e9d6-c02c-8ede6fa01efb@linaro.org>
-Message-ID: <05db22230b573c47376c95b624dcf23c@codeaurora.org>
-X-Sender: vgarodia@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Message-Id: <1624080924.z61zvzi4cq.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bryan,
+Excerpts from Mathieu Desnoyers's message of June 19, 2021 6:09 am:
+> ----- On Jun 18, 2021, at 3:58 PM, Andy Lutomirski luto@kernel.org wrote:
+>=20
+>> On Fri, Jun 18, 2021, at 9:31 AM, Mathieu Desnoyers wrote:
+>>> ----- On Jun 17, 2021, at 8:12 PM, Andy Lutomirski luto@kernel.org wrot=
+e:
+>>>=20
+>>> > On 6/17/21 7:47 AM, Mathieu Desnoyers wrote:
+>>> >=20
+>>> >> Please change back this #ifndef / #else / #endif within function for
+>>> >>=20
+>>> >> if (!IS_ENABLED(CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE)) {
+>>> >>   ...
+>>> >> } else {
+>>> >>   ...
+>>> >> }
+>>> >>=20
+>>> >> I don't think mixing up preprocessor and code logic makes it more re=
+adable.
+>>> >=20
+>>> > I agree, but I don't know how to make the result work well.
+>>> > membarrier_sync_core_before_usermode() isn't defined in the !IS_ENABL=
+ED
+>>> > case, so either I need to fake up a definition or use #ifdef.
+>>> >=20
+>>> > If I faked up a definition, I would want to assert, at build time, th=
+at
+>>> > it isn't called.  I don't think we can do:
+>>> >=20
+>>> > static void membarrier_sync_core_before_usermode()
+>>> > {
+>>> >    BUILD_BUG_IF_REACHABLE();
+>>> > }
+>>>=20
+>>> Let's look at the context here:
+>>>=20
+>>> static void ipi_sync_core(void *info)
+>>> {
+>>>     [....]
+>>>     membarrier_sync_core_before_usermode()
+>>> }
+>>>=20
+>>> ^ this can be within #ifdef / #endif
+>>>=20
+>>> static int membarrier_private_expedited(int flags, int cpu_id)
+>>> [...]
+>>>                if (!IS_ENABLED(CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE))
+>>>                         return -EINVAL;
+>>>                 if (!(atomic_read(&mm->membarrier_state) &
+>>>                       MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE_READ=
+Y))
+>>>                         return -EPERM;
+>>>                 ipi_func =3D ipi_sync_core;
+>>>=20
+>>> All we need to make the line above work is to define an empty ipi_sync_=
+core
+>>> function in the #else case after the ipi_sync_core() function definitio=
+n.
+>>>=20
+>>> Or am I missing your point ?
+>>=20
+>> Maybe?
+>>=20
+>> My objection is that an empty ipi_sync_core is a lie =E2=80=94 it doesn=
+=E2=80=99t sync the core.
+>> I would be fine with that if I could have the compiler statically verify=
+ that
+>> it=E2=80=99s not called, but I=E2=80=99m uncomfortable having it there i=
+f the implementation is
+>> actively incorrect.
+>=20
+> I see. Another approach would be to implement a "setter" function to popu=
+late
+> "ipi_func". That setter function would return -EINVAL in its #ifndef CONF=
+IG_ARCH_HAS_MEMBARRIER_SYNC_CORE
+> implementation.
 
-On 2021-06-14 17:26, Bryan O'Donoghue wrote:
-> On 14/06/2021 07:25, mansur@codeaurora.org wrote:
->> On 2021-06-02 15:23, Stanimir Varbanov wrote:
->>> Mansur, could you answer to Bryan's comments?
->>> 
->>>> On 5/28/21 8:23 PM, Bryan O'Donoghue wrote:
->>>>> On 28/05/2021 10:48, Mansur Alisha Shaik wrote:
->>>>>> Do not set constrained format explicitly for UBWC
->>>>>> 
->>>>>> Signed-off-by: Mansur Alisha Shaik <mansur@codeaurora.org>
->>>>> 
->>>>> Could you give a little bit more detail on why, what the side 
->>>>> effects are ?
->>>>> 
->>      Sorry for late response, by default for NV12_UBWC is 128x32
->> 
-> 
-> Right so we have
-> 
-> pconstraint.plane_format[0].stride_multiples = 128;
-> pconstraint.plane_format[0].min_plane_buffer_height_multiple = 32;
-> 
-> and
-> 
-> pconstraint.plane_format[1].stride_multiples = 128;
-> pconstraint.plane_format[1].min_plane_buffer_height_multiple = 16;
-> 
-> and your patch says if opb_fmt == HFI_COLOR_FORMAT_NV12_UBWC then the
-> we shouldn't do hfi_session_set_property()
-> 
-> I'm sure that's a fix that works but, I wonder would it be possible to
-> fix this routine to continue to do hfi_session_set_property() with
-> updated parameters for opb_fmt == HFI_COLOR_FORMAT_NV12_UBWC ?
+I still don't get the problem with my suggestion. Sure the=20
+ipi is a "lie", but it doesn't get used. That's how a lot of
+ifdef folding works out. E.g.,
 
-Venus hardware would always go with alignments as 128x32 for WxH 
-irrespective
-of color formats. It happened so (historically) that for NV12 (linear) 
-format,
-usecase started demanding for alignments as 256(interlace) and 
-512(HEIF), and
-hence NV12 was defaulted to align as 512x512 in firmware. This was done 
-to avoid
-carrying multiple alignments for different usecases, since aligning with 
-512x512
-would also align it with 128x32 and 256x256 as well.
-For UBWC, there is no need to override the default alignment of 128x32, 
-hence
-the api was added to override default alignments for applicable formats, 
-in
-this case NV12(Linear).
-
-> Could you drill down into the detail in the commit log a little bit
-> maybe giving a description of why returning for opb_fmt ==
-> HFI_COLOR_FORMAT_NV12_UBWC is the right thing to-do instead of adding
-> a new case to the routine for HFI_COLOR_FORMAT_NV12_UBWC and calling
-> hfi_session_set_property() ?
-
-Above details should provide info on the need to set this only for NV12 
-(linear)
-and skip for NV12 (UBWC).
-
-> Its more for my own education on this topic :) but, also helps
-> somebody else reading the log to understand what the fix is, why it is
-> done this way.
-> 
->>>>> Should this be a Fixes: ?
->>>>> 
->>      without this fix on V6, firmware throws below SFR
->>      qcom-venus aa00000.video-codec: SFR message from FW: 
->> QC_IMAGE_VERSION_STRING=video-firmware.1.0-df9cb37cf8e507a4468265658702247652351a49 
->>      Err_Fatal - 
->> /local/mnt/workspace/pkg/builds/dynamic_timely/tree2/vendor/qcom/proprietary/video-firmware-noship/venus_proc/venus/decoders/common/src/video_decoder.c:6644:2fef3 
->>      which result in playback happens through Software codec.
-> OK, I think I can answer my own question here.
-> 
-> Technically no since 6XX isn't in the long-term-support kernel but,
-> I'd suggest adding a "Fixes" anyway, so that other users know to apply
-> this patch to their trees.
-> 
-> Fixes: bc28936bbba9 ("media: venus: helpers, hfi, vdec: Set actual
-> plane constraints to FW")
-
-Yes, it should go as "Fixes" tag to above patch which we made for 6xx 
-recently.
-
-Thanks,
-Vikash
+diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
+index b5add64d9698..54cb32d064af 100644
+--- a/kernel/sched/membarrier.c
++++ b/kernel/sched/membarrier.c
+@@ -5,6 +5,15 @@
+  * membarrier system call
+  */
+ #include "sched.h"
++#ifdef CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE
++#include <asm/sync_core.h>
++#else
++static inline void membarrier_sync_core_before_usermode(void)
++{
++	compiletime_assert(0, "architecture does not implement membarrier_sync_co=
+re_before_usermode");
++}
++
++#endif
+=20
+ /*
+  * For documentation purposes, here are some membarrier ordering
