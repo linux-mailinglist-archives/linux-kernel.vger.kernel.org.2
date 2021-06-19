@@ -2,76 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E749F3ADADB
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 18:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D95B3ADADE
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 18:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234752AbhFSQYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 12:24:55 -0400
-Received: from [43.250.32.171] ([43.250.32.171]:45213 "EHLO email.cn"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232640AbhFSQYx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 12:24:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=From:To:Date; bh=GKlF5EB7mGKaD81zQzs2lJshK1lmZDvSaejdz
-        KZHWQw=; b=j36DGc4bRuRL3t9UyhVzad/Zgb04ItD/fQgPJ+30iDh/60nGkhlQv
-        mC0OYlLnHYQxyGbeHGNhZHFraNOeMzU1F1/GSuD/43afGOSbVpItLjj92TaMsRYA
-        azEOYObC6oyV4c2j3rEloz+FDdPceu/IR+3+UUW5jxVbr3HB3jQoCE=
-Received: from localhost.localdomain (unknown [113.251.9.208])
-        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgA30jXPGc5gjs8ZAA--.42881S2;
-        Sun, 20 Jun 2021 00:22:39 +0800 (CST)
-From:   Hu Haowen <src.res@email.cn>
-To:     alexs@kernel.org, corbet@lwn.net
-Cc:     bobwxc@email.cn, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] docs/zh_CN: add a missing space character
-Date:   Sun, 20 Jun 2021 00:22:38 +0800
-Message-Id: <20210619162238.12665-1-src.res@email.cn>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LCKnCgA30jXPGc5gjs8ZAA--.42881S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Aw4rtr4UXr4DtFyfZr1kZrb_yoW8GF4rp3
-        y29r97Ka48Cw1Y93yxGr4IgFWfGF97uay7GFnFy34qgr1kCw1vvrZrKryDKr9xWryrZayU
-        Zr40kFy3WryIvFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUgm1xkIjI8I6I8E6xAIw20EY4v20xvaj40_JFC_Wr1l8cAvFVAK
-        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4
-        x0Y4vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r1j6r4UM28E
-        F7xvwVC2z280aVCY1x0267AKxVW8JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4
-        xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26F4UJr1UMcvjeVCFs4IE7xkEbVWU
-        JVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r
-        1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VWxJr1UJwCFx2IqxVCFs4IE7xkE
-        bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
-        AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI
-        42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMI
-        IF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2
-        KfnxnUUI43ZEXa7VU86Hq7UUUUU==
-X-Originating-IP: [113.251.9.208]
-X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
+        id S234765AbhFSQ0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 12:26:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232640AbhFSQ03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 12:26:29 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5BE6761208;
+        Sat, 19 Jun 2021 16:24:18 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1ludlY-008chF-A9; Sat, 19 Jun 2021 17:24:16 +0100
+Date:   Sat, 19 Jun 2021 17:24:15 +0100
+Message-ID: <87bl81ddqo.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Alexey Klimov <aklimov@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, etnaviv@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH 2/3] find: micro-optimize for_each_{set,clear}_bit()
+In-Reply-To: <20210618195735.55933-3-yury.norov@gmail.com>
+References: <20210618195735.55933-1-yury.norov@gmail.com>
+        <20210618195735.55933-3-yury.norov@gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: yury.norov@gmail.com, tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com, l.stach@pengutronix.de, linux+etnaviv@armlinux.org.uk, christian.gmeiner@gmail.com, airlied@linux.ie, daniel@ffwll.ch, jdelvare@suse.com, linux@roeck-us.net, andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk, dwmw@amazon.co.uk, akpm@linux-foundation.org, richard.weiyang@linux.alibaba.com, geert+renesas@glider.be, aklimov@redhat.com, x86@kernel.org, linux-kernel@vger.kernel.org, etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"LinusTorvalds" is not pretty. Replace it with "Linus Torvalds".
+On Fri, 18 Jun 2021 20:57:34 +0100,
+Yury Norov <yury.norov@gmail.com> wrote:
+> 
+> The macros iterate thru all set/clear bits in a bitmap. They search a
+> first bit using find_first_bit(), and the rest bits using find_next_bit().
+> 
+> Since find_next_bit() is called shortly after find_first_bit(), we can
+> save few lines of I-cache by not using find_first_bit().
 
-Signed-off-by: Hu Haowen <src.res@email.cn>
----
- Documentation/translations/zh_CN/process/2.Process.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Really?
 
-diff --git a/Documentation/translations/zh_CN/process/2.Process.rst b/Documentation/translations/zh_CN/process/2.Process.rst
-index 229629e305ca..0e69737e9889 100644
---- a/Documentation/translations/zh_CN/process/2.Process.rst
-+++ b/Documentation/translations/zh_CN/process/2.Process.rst
-@@ -47,7 +47,7 @@
- （顺便说一句，值得注意的是，合并窗口期间集成的更改并不是凭空产生的；它们是经
- 提前收集、测试和分级的。稍后将详细描述该过程的工作方式。）
- 
--合并窗口持续大约两周。在这段时间结束时，LinusTorvalds将声明窗口已关闭，并
-+合并窗口持续大约两周。在这段时间结束时，Linus Torvalds将声明窗口已关闭，并
- 释放第一个“rc”内核。例如，对于目标为5.6的内核，在合并窗口结束时发生的释放
- 将被称为5.6-rc1。-rc1 版本是一个信号，表示合并新特性的时间已经过去，稳定下一
- 个内核的时间已经到来。
+> 
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> ---
+>  include/linux/find.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/find.h b/include/linux/find.h
+> index 4500e8ab93e2..ae9ed52b52b8 100644
+> --- a/include/linux/find.h
+> +++ b/include/linux/find.h
+> @@ -280,7 +280,7 @@ unsigned long find_next_bit_le(const void *addr, unsigned
+>  #endif
+>  
+>  #define for_each_set_bit(bit, addr, size) \
+> -	for ((bit) = find_first_bit((addr), (size));		\
+> +	for ((bit) = find_next_bit((addr), (size), 0);		\
+
+On which architecture do you observe a gain? Only 32bit ARM and m68k
+implement their own version of find_first_bit(), and everyone else
+uses the canonical implementation:
+
+#ifndef find_first_bit
+#define find_first_bit(addr, size) find_next_bit((addr), (size), 0)
+#endif
+
+These architectures explicitly have different implementations for
+find_first_bit() and find_next_bit() because they can do better
+(whether that is true or not is another debate). I don't think you
+should remove this optimisation until it has been measured on these
+two architectures.
+
+Thanks,
+
+	M.
+
 -- 
-2.25.1
-
+Without deviation from the norm, progress is not possible.
