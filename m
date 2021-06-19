@@ -2,134 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA2783ADBB4
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 22:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42EF63ADBB7
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 22:41:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhFSUhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 16:37:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47988 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229475AbhFSUhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 16:37:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98E22610A7;
-        Sat, 19 Jun 2021 20:35:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624134933;
-        bh=lER0y7Z4cnY2Oauv/bbe+khn3ZDuybDepS871EY7/oc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KLrc/oEyPql2ZMfLtdBlF89tQMTs0USOuhYcZkJLVQIRRmLHE0Ne4GWx2mVgmZFYv
-         STnESKfAwfC3jQCOjw+SO6dN7RhAGtKtJZ7WxiCSMkUMYWkmqi/bIuRepJobtc17o5
-         kmHKnFum0+UQQDUiKqFVjLy2KPlf1igSOVC/gbzEnDX6QxHgi8wlWQjbGq9xj9ahpL
-         Tun6uy82t2YjFMhnrdfBHHIpdbsNo0Lkww5ZUP3+TIW4Ss1LAFRG4l5OTcmDBUdybU
-         MGrT3sv9XAzkMJpSxl0GPzh1lglrwoSHUu2OO95MyBS6Y3KijWxUaXe0KsdPjY30kN
-         IKtKFh07orfKg==
-Received: by pali.im (Postfix)
-        id 41EA71404; Sat, 19 Jun 2021 22:35:31 +0200 (CEST)
-Date:   Sat, 19 Jun 2021 22:35:31 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Madalin Bucur <madalin.bucur@nxp.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, Russell King <linux@armlinux.org.uk>,
-        Igal Liberman <Igal.Liberman@freescale.com>,
-        Shruti Kanetkar <Shruti@freescale.com>,
-        Emil Medve <Emilian.Medve@freescale.com>,
-        Scott Wood <oss@buserror.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Camelia Alexandra Groza (OSS)" <camelia.groza@oss.nxp.com>
-Subject: Re: Unsupported phy-connection-type sgmii-2500 in
- arch/powerpc/boot/dts/fsl/t1023rdb.dts
-Message-ID: <20210619203531.nmhpcux5hwwve47e@pali>
-References: <20210603143453.if7hgifupx5k433b@pali>
- <YLjxX/XPDoRRIvYf@lunn.ch>
- <20210603194853.ngz4jdso3kfncnj4@pali>
- <AM6PR04MB3976B62084EC462BA02F0C4CEC3B9@AM6PR04MB3976.eurprd04.prod.outlook.com>
- <20210604192732.GW30436@shell.armlinux.org.uk>
- <AM6PR04MB39768A569CE3CC4EC61A8769EC3B9@AM6PR04MB3976.eurprd04.prod.outlook.com>
- <YLqLzOltcb6jan+B@lunn.ch>
- <AM6PR04MB39760B986E86BA9169DEECC5EC3B9@AM6PR04MB3976.eurprd04.prod.outlook.com>
- <20210604233455.fwcu2chlsed2gwmu@pali>
+        id S230296AbhFSUnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 16:43:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229475AbhFSUni (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 16:43:38 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D28C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 13:41:27 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id my49so21606749ejc.7
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 13:41:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y7heK8jLCMAsTutXG9D4DyhQ6mrjIGHXdgIEcCAASY0=;
+        b=hngxuUDVRJVY6DUcHk9I1L3p2ved84CHmUxh6E5o2RGSW7sa5Hz++ePY+cOGZk+sY6
+         DFj+2S8GlqRDhMo40Hq2BJZBvmihyq58llZRh4eI4qfRHQdeAGDwDkvsrLG7Y3D18re7
+         4po8972Lz3XgjJkZ5bfeae6bYzcOcyhg8S9KiCDP/+G199J7gfzKZHDLhXjv3P2CvmOX
+         MjekgnjbH0iV4Zjie8L6G37hhomr1bl+8yXXcO2l2iLn/KQXdTuY4M8taBP5IMPzJsT5
+         Kpye7UBo0ror4XLcXfmwJk6pkDbq5oWgHrzpj737vhu/+4Mgb1mPC7Z9oCiXgRL1K9d0
+         O3ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=y7heK8jLCMAsTutXG9D4DyhQ6mrjIGHXdgIEcCAASY0=;
+        b=nCTLZRkPyTxafpYhlYUEo3hLy9msYFzTuaYK3xh+H2RM26SrpOx7IpmdI1m2qO++WI
+         Xlo3V+EbNW3DzEvgrimIW7gIBaqTNQaB68+cFEeHidUSuE8qzAhCFfsjR+a9e6rPkGBX
+         ntZaSy2oA/thJhNwGutArhvLbp1Y2d1vG15APUdZob85H8zJm9QQmMA1rO2moq5pJ9v8
+         OAWGBeRl9jU5lz2qjx/NXcCbjZn6GTl3HLiZvYEC+rJFO5Uqbe3ABpgNFXuWLAgAOlfu
+         3AMdZPPmzF8Fwf4ua8F8Gkv9ZHdFSJhGvBQg21d3HeWFElGAXN1S+/rpUHH2HMMsnEGJ
+         VrYQ==
+X-Gm-Message-State: AOAM532A4/rJIbuI18AiJdIvvuJ7goSTsad38oxcMV1Qk5kQZtkpHFeN
+        xQb2JKJaceReTJmFcH05Gw0=
+X-Google-Smtp-Source: ABdhPJwsp2ECG98d5l0TLg/JGqenBmU6zzzRTf63uWOHQ6NbHzdS1LeH0DS3H7tVjjmZUw2w3yhB/g==
+X-Received: by 2002:a17:907:1011:: with SMTP id ox17mr9147195ejb.149.1624135285646;
+        Sat, 19 Jun 2021 13:41:25 -0700 (PDT)
+Received: from spectre.. (host-79-18-36-75.retail.telecomitalia.it. [79.18.36.75])
+        by smtp.gmail.com with ESMTPSA id q16sm8408685edt.26.2021.06.19.13.41.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Jun 2021 13:41:25 -0700 (PDT)
+From:   Elia Devito <eliadevito@gmail.com>
+Cc:     Elia Devito <eliadevito@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kailang Yang <kailang@realtek.com>,
+        Jeremy Szu <jeremy.szu@canonical.com>,
+        Hui Wang <hui.wang@canonical.com>,
+        Jian-Hong Pan <jhp@endlessos.org>,
+        Chris Chiu <chris.chiu@canonical.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Sami Loone <sami@loone.fi>,
+        Werner Sembach <wse@tuxedocomputers.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: hda/realtek: Improve fixup for HP Spectre x360 15-df0xxx
+Date:   Sat, 19 Jun 2021 22:41:04 +0200
+Message-Id: <20210619204105.5682-1-eliadevito@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210604233455.fwcu2chlsed2gwmu@pali>
-User-Agent: NeoMutt/20180716
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday 05 June 2021 01:34:55 Pali Rohár wrote:
-> On Friday 04 June 2021 21:47:26 Madalin Bucur wrote:
-> > > -----Original Message-----
-> > > From: Andrew Lunn <andrew@lunn.ch>
-> > > Sent: 04 June 2021 23:24
-> > > To: Madalin Bucur <madalin.bucur@nxp.com>
-> > > Cc: Russell King <linux@armlinux.org.uk>; Pali Rohár <pali@kernel.org>;
-> > > Igal Liberman <Igal.Liberman@freescale.com>; Shruti Kanetkar
-> > > <Shruti@freescale.com>; Emil Medve <Emilian.Medve@freescale.com>; Scott
-> > > Wood <oss@buserror.net>; Rob Herring <robh+dt@kernel.org>; Michael
-> > > Ellerman <mpe@ellerman.id.au>; Benjamin Herrenschmidt
-> > > <benh@kernel.crashing.org>; netdev@vger.kernel.org;
-> > > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; Camelia
-> > > Alexandra Groza (OSS) <camelia.groza@oss.nxp.com>
-> > > Subject: Re: Unsupported phy-connection-type sgmii-2500 in
-> > > arch/powerpc/boot/dts/fsl/t1023rdb.dts
-> > > 
-> > > > The "sgmii-2500" compatible in that device tree describes an SGMII HW
-> > > > block, overclocked at 2.5G. Without that overclocking, it's a plain
-> > > > Cisco (like) SGMII HW block. That's the reason you need to disable it's
-> > > > AN setting when overclocked. With the proper Reset Configuration Word,
-> > > > you could remove the overclocking and transform that into a plain
-> > > "sgmii".
-> > > > Thus, the dts compatible describes the HW, as it is.
-> > > 
-> > > It sounds like the hardware is capable of swapping between SGMII and
-> > > 2500BaseX.
-> > > 
-> > > What we have in DT in this case is not describing the hardware, but
-> > > how we configure the hardware. It is one of the few places we abuse DT
-> > > for configuration.
-> > > 
-> > >     Andrew
-> > 
-> > The actual selection of this mode of operation is performed by the so called
-> > Reset Configuration Word from the boot media, that aligned with the HW and
-> > board design. The need to name it something other than plain "sgmii" comes
-> > from the HW special need for AN to be disabled to operate.
-> > 
-> > Actually, the weird/non-standard hardware is described by the device tree
-> > with a value that puts it in a class of its own. Instead of the overclocked
-> > SGMII denomination "sgmii-2500" it could have been named just as well
-> > "overclocked-nonstandard-2.5G-ethernet-no-autoneg-SGMII-hw-ip".
-> > 
-> > One could try to change device trees to slip configuration details, but the
-> > backwards compatibility aspect renders this futile. Is there any option to
-> > say "sgmii" then "autoneg disabled"?
-> > 
-> > Madalin
-> 
-> Madalin, my understanding is that "sgmii-2500" mode is unknown and
-> unsupported by kernel.
-> 
-> List of known modes which can be specified in DTS file are defined in
-> YAML schema for 'phy-connection-type' in file:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/net/ethernet-controller.yaml?h=v5.12#n55
-> 
-> And there is none "sgmii-2500", so some DTS schema validator could throw
-> validation error for that DTS file. I'm not sure if somebody has written
-> DTS schema validator with all those things (like there are JSON schema
-> or OpenAPI validators in JavaScript / HTTP world).
-> 
-> Plus also in linux/phy.h header file contains list of known Linux modes:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/phy.h?h=v5.12#n169
-> 
-> And based on all information in this email discussion, in my opinion the
-> mode which HW supports matches Linux meaning of "2500base-x" key/string.
-> So I would suggest to rename "sgmii-2500" in that DTS file to
-> "2500base-x". Does it make sense?
+On HP Spectre x360 15-df0xxx, after system boot with plugged headset, the
+headset mic are not detected.
+Moving pincfg and DAC's config to single fixup function fix this.
 
-Any opinion? Or should I send a patch?
+Signed-off-by: Elia Devito <eliadevito@gmail.com>
+---
+ sound/pci/hda/patch_realtek.c | 27 ++++++++++++++++++++-------
+ 1 file changed, 20 insertions(+), 7 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 59d0936377eb..07eabcf22b5f 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6354,6 +6354,24 @@ static void alc_fixup_no_int_mic(struct hda_codec *codec,
+ 	}
+ }
+ 
++static void alc285_fixup_hp_spectre_x360(struct hda_codec *codec,
++					  const struct hda_fixup *fix, int action)
++{
++	static const hda_nid_t conn[] = { 0x02 };
++	static const struct hda_pintbl pincfgs[] = {
++		{ 0x14, 0x90170110 },  /* rear speaker */
++		{ }
++	};
++
++	switch (action) {
++	case HDA_FIXUP_ACT_PRE_PROBE:
++		snd_hda_apply_pincfgs(codec, pincfgs);
++		/* force front speaker to DAC1 */
++		snd_hda_override_conn_list(codec, 0x17, ARRAY_SIZE(conn), conn);
++		break;
++	}
++}
++
+ /* for hda_fixup_thinkpad_acpi() */
+ #include "thinkpad_helper.c"
+ 
+@@ -8138,13 +8156,8 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chain_id = ALC269_FIXUP_HP_LINE1_MIC1_LED,
+ 	},
+ 	[ALC285_FIXUP_HP_SPECTRE_X360] = {
+-		.type = HDA_FIXUP_PINS,
+-		.v.pins = (const struct hda_pintbl[]) {
+-			{ 0x14, 0x90170110 }, /* enable top speaker */
+-			{}
+-		},
+-		.chained = true,
+-		.chain_id = ALC285_FIXUP_SPEAKER2_TO_DAC1,
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc285_fixup_hp_spectre_x360,
+ 	},
+ 	[ALC287_FIXUP_IDEAPAD_BASS_SPK_AMP] = {
+ 		.type = HDA_FIXUP_FUNC,
+-- 
+2.31.1
+
