@@ -2,69 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ADF33AD88D
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 09:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7178A3AD88F
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 10:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233963AbhFSH61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 03:58:27 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:33152 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229466AbhFSH60 (ORCPT
+        id S233143AbhFSIEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 04:04:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229466AbhFSIEo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 03:58:26 -0400
+        Sat, 19 Jun 2021 04:04:44 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9041C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 01:02:33 -0700 (PDT)
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624089375;
+        s=2020; t=1624089751;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=cNstW53zAdTSKjnd/uFTh8EXy2E4aia9C+TcSMNuBas=;
-        b=Y4Zza9RNF6VigLci/ADSaUf4+ygwxRn/7bMN/rCSZje+ZyBSxgRscBgwo+cRPkEhgihh3c
-        A5i9MWuuFoP+1KtABklDV2YsLnart5f45j8QCw4QIy8xeM6bgFQzP7tEf3F1UQMAjjiAlK
-        MHlZjZwaH6hPK1yyEvCN24tkeXlbrNth/bMC4A+4beG2UTwSpCh8mCUZMoCvmjILbh+wiK
-        7OnM/VN2PWIhMUOWU6o2xT0hClIcYxZ1o9rdw5dJ3JefCrft/n9t2OnOrW7D3cOapKsW1N
-        641PxYyino6lUNjKLh0Eb37rwpyt8X2mtmFLw6JpVOIViQWeV1cbnkC/pmT0ig==
+        bh=ZWvtqV3TeC0Tm9I9yeacEOChKZjCO9EBxWKvJ6avhNw=;
+        b=WN+yU7SZfehMCpp5CyrAKTgEbZFRLGsjXfQxUkoAWyInqm8DsQeQC3MJN4gp55taVfAGfD
+        /ligzhR/EAcTO/c2XIPhOBptyhO2BuP7vciH8pZi+c3rITz3VqLWJ5+Up3l/+qmX1+kmMt
+        7KZ5kJqmOeVOlMFl0Dm9KteOkfiSkbYPlJbklD29gq5JBr5Z66t06WP763Lyw53kTfG7eZ
+        TW6lhAY2Ww8p5g6I+u460VQjXpUyImf88ZQAKkXnH+28P+DoRE4U8ruDWCI7qjbx67+CuN
+        Pw1/NKIG7PaiqdE7+eaQbmt258y/rHM2IJ9aHFpmSy/4XoLFt+oIQYM+LWSF/g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624089375;
+        s=2020e; t=1624089751;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=cNstW53zAdTSKjnd/uFTh8EXy2E4aia9C+TcSMNuBas=;
-        b=bwBA7DmZJN1MBR4lu/rAt+eSH3j5NMDsmCO1p5SPtn9xYETMQSUEHzURcxDfOLhxZSy2hW
-        ugsocUyTTTEFcXCg==
-To:     Juri Lelli <juri.lelli@redhat.com>, bigeasy@linutronix.de
-Cc:     linux-rt-users@vger.kernel.org, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, bristot@redhat.com,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: Re: [RFC PATCH RT v2 1/2] time/hrtimer: Add PINNED_HARD mode for realtime hrtimers
-In-Reply-To: <87k0mqeofg.ffs@nanos.tec.linutronix.de>
-References: <20210616071705.166658-1-juri.lelli@redhat.com> <20210616071705.166658-2-juri.lelli@redhat.com> <87k0mqeofg.ffs@nanos.tec.linutronix.de>
-Date:   Sat, 19 Jun 2021 09:56:14 +0200
-Message-ID: <87bl82e19d.ffs@nanos.tec.linutronix.de>
+        bh=ZWvtqV3TeC0Tm9I9yeacEOChKZjCO9EBxWKvJ6avhNw=;
+        b=WiVq9cJx5k1pZtlSGE6et5TvC+8fnv6Midr36zeiiKVwvhBDR1JF1LMHA209djPQ6B6m+2
+        gbaiYj3m29HHyEBg==
+To:     Ani Sinha <ani@anisinha.ca>, linux-kernel@vger.kernel.org
+Cc:     anirban.sinha@nokia.com, Ani Sinha <ani@anisinha.ca>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH] Add missing kernel log when enabling NO_HZ_FULL is not possible
+In-Reply-To: <20210611103937.827565-1-ani@anisinha.ca>
+References: <20210611103937.827565-1-ani@anisinha.ca>
+Date:   Sat, 19 Jun 2021 10:02:30 +0200
+Message-ID: <878s36e0yx.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 19 2021 at 01:35, Thomas Gleixner wrote:
-> The wild west of anything which scratches 'my itch' based on 'my use
-> case numbers' in Linux ended many years ago and while RT was always a
-> valuable playground for unthinkable ideas we definitely tried hard not
-> to accept use case specific hacks wihtout a proper justification that it
-> makes sense in general.
->
-> So why are you even trying to sell this to me?
+Ani,
 
-I wouldn't have been that grumpy if you'd at least checked whether the
-task is pinned. Still I would have told you that you "fix" it at the
-wrong place.
+On Fri, Jun 11 2021 at 16:09, Ani Sinha wrote:
+> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+> index 828b091501ca..a82480c036e2 100644
+> --- a/kernel/time/tick-sched.c
+> +++ b/kernel/time/tick-sched.c
+> @@ -937,10 +937,18 @@ static void tick_nohz_full_update_tick(struct tick_sched *ts)
+>  	if (!ts->tick_stopped && ts->nohz_mode == NOHZ_MODE_INACTIVE)
+>  		return;
+>  
+> -	if (can_stop_full_tick(cpu, ts))
+> +	if (can_stop_full_tick(cpu, ts)) {
+>  		tick_nohz_stop_sched_tick(ts, cpu);
+> -	else if (ts->tick_stopped)
+> -		tick_nohz_restart_sched_tick(ts, ktime_get());
+> +	} else {
+> +		/*
+> +		 * Don't allow the user to think they can get
+> +		 * full NO_HZ with this machine.
+> +		 */
+> +		WARN_ONCE(tick_nohz_full_running,
+> +			  "NO_HZ_FULL will not work with current sched clock");
 
-Why on earth is that nohz heuristic trainwreck not even checking that?
-It's not a RT problem and it's not a problem restricted to RT tasks
-either. If a task is pinned then arming the timer on a random other CPU
-is blatant nonsense independent of the scheduling class.
+How is that warning useful and even remotely correct?
+
+can_stop_full_tick() has 4 x 5 == 20 ways to return false and the
+smaller portion of them is related to sched clock.
 
 Thanks,
 
