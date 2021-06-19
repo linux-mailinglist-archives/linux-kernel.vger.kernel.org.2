@@ -2,100 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A455A3AD9B3
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 12:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF3A3AD9BA
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 13:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232967AbhFSK5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 06:57:32 -0400
-Received: from mga14.intel.com ([192.55.52.115]:3545 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230433AbhFSK5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 06:57:31 -0400
-IronPort-SDR: dX8WIhEAY/MtAANsbC+k2RxUdvT94isk1YFziDtVCpPK7V6JwGrWlcQJJH3K6soWWThhO+Q7SK
- y5MKE5MgiXUA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10019"; a="206484203"
-X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
-   d="scan'208";a="206484203"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2021 03:55:20 -0700
-IronPort-SDR: shIIIg1/X9y9YzjyUD4diASIuTOccwffi+cXRobJIdn5PTiaDhYgW62q3GSmj5H/kfj4fRXWjk
- 9a8+0jkpK1KQ==
-X-IronPort-AV: E=Sophos;i="5.83,285,1616482800"; 
-   d="scan'208";a="443814730"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2021 03:55:15 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1luYd4-003nzI-M1; Sat, 19 Jun 2021 13:55:10 +0300
-Date:   Sat, 19 Jun 2021 13:55:10 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Marc Zyngier <maz@kernel.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Alexey Klimov <aklimov@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, etnaviv@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH 3/3] Replace for_each_*_bit_from() with for_each_*_bit()
- where appropriate
-Message-ID: <YM3NDrgF3znR+/4z@smile.fi.intel.com>
-References: <20210618195735.55933-1-yury.norov@gmail.com>
- <20210618195735.55933-4-yury.norov@gmail.com>
- <YM3L1kciMw7zqhUp@smile.fi.intel.com>
+        id S233146AbhFSLFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 07:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232892AbhFSLFA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 07:05:00 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6820C061574;
+        Sat, 19 Jun 2021 04:02:48 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id u13so1937867lfk.2;
+        Sat, 19 Jun 2021 04:02:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Gh/qA823gv0wUZBQ9vSTS2qs/t2ngMR2CfJ3i7Nee+k=;
+        b=qGvvmgl5w1yrnYggtooVweWGrVW8lInIgwxMc2pBs5cNptgsXJDQ+MMT+AklBGwtR+
+         wsXZtarIjYAGh+qUcPNFgLDssnOPvxYKZrJgBtBFQ8ebO/c/97pzyQyQQve59K47AaKn
+         hfL5GAseR7cNQESzteo0FrbJl60jAudILSAPJekKpU/gCyin3sa96dzU8sZV4ZkcVwL5
+         KhjkMt7BVAwLAVtwpNxDsggR1X5Y9BW8K9d2+WhJjGJC/sGyvCdakA8bBarqcQAiKxJp
+         vm69pBpsWW5dchkpxdevrVewxxkET3WGfhAAirLwUK+eYy347A/X6JyEO0kuIH61zbt8
+         wEbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Gh/qA823gv0wUZBQ9vSTS2qs/t2ngMR2CfJ3i7Nee+k=;
+        b=k2dmGLEFRbBucaDqlLs+McOYtIYCzEqtdC4+w1iS2jsn3zESAesWq6TbC3EeycXcE5
+         WAQsdpgzAhbwcqdj+8NH6M+JtyxkfxF3a6UBOyr5Krecsmfy8H28ZTU01wxxtp8Yrqzo
+         t2Fn9ezVEkJqwR0oMcfQ8e5IqoprELIm6LTdOj+/UPfDDUPzyQRMFtu9rIKoq5rtQd9r
+         phQo5d9MZZx9b2PrlxeaSqxVKijT9ThILldc3D89xXfhbYwxC+tLWHOJpIMhlGVk9/6y
+         IbMOkRM7YAMUMLSLBvpb6Awz93BKxJUE0zQQn2rMsNiFEzIrgPqQoR+CQA3wqT9zt9JB
+         aYtg==
+X-Gm-Message-State: AOAM531QBfhqo2YEvfLxAq037+U96HTG5hdED6iy4OzlgPfThFKzYdQv
+        6q5EPpVWavqHewbp5QC1l7E=
+X-Google-Smtp-Source: ABdhPJxYj+ZMaQFtctcc7+90N+CUnJOs0pnsPQZIqjJkIQb5K50AFerTOXUCVJuhEpMPxxj+vmbGqg==
+X-Received: by 2002:a05:6512:239d:: with SMTP id c29mr6683514lfv.248.1624100567125;
+        Sat, 19 Jun 2021 04:02:47 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
+        by smtp.googlemail.com with ESMTPSA id l5sm1306915lfc.250.2021.06.19.04.02.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 19 Jun 2021 04:02:46 -0700 (PDT)
+Subject: Re: [PATCH v2 1/2] cfg80211: Add wiphy_info_once()
+To:     Kalle Valo <kvalo@codeaurora.org>,
+        Johannes Berg <johannes@sipsolutions.net>
+Cc:     Arend van Spriel <arend.vanspriel@broadcom.com>,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Franky Lin <franky.lin@broadcom.com>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20210511211549.30571-1-digetx@gmail.com>
+ <e7495304-d62c-fd20-fab3-3930735f2076@gmail.com>
+ <87r1gyid39.fsf@codeaurora.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <46a3cb5a-2ce3-997b-154d-dd4e1b7333d1@gmail.com>
+Date:   Sat, 19 Jun 2021 14:02:45 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YM3L1kciMw7zqhUp@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <87r1gyid39.fsf@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 19, 2021 at 01:49:58PM +0300, Andy Shevchenko wrote:
-> On Fri, Jun 18, 2021 at 12:57:35PM -0700, Yury Norov wrote:
-> > A couple of kernel functions call for_each_*_bit_from() with start
-> > bit equal to 0. Replace them with for_each_*_bit().
-> > 
-> > No functional changes, but might improve on readability.
+19.06.2021 09:27, Kalle Valo пишет:
+> Dmitry Osipenko <digetx@gmail.com> writes:
 > 
-> ...
+>> 12.05.2021 00:15, Dmitry Osipenko пишет:
+>>> Add wiphy_info_once() helper that prints info message only once.
+>>>
+>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>>> ---
+>>>
+>>> Changelog:
+>>>
+>>> v2: - New patch added in v2.
+>>>
+>>>  include/net/cfg80211.h | 2 ++
+>>>  1 file changed, 2 insertions(+)
+>>>
+>>> diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
+>>> index 5224f885a99a..3b19e03509b3 100644
+>>> --- a/include/net/cfg80211.h
+>>> +++ b/include/net/cfg80211.h
+>>> @@ -8154,6 +8154,8 @@ bool cfg80211_iftype_allowed(struct wiphy *wiphy, enum nl80211_iftype iftype,
+>>>  	dev_notice(&(wiphy)->dev, format, ##args)
+>>>  #define wiphy_info(wiphy, format, args...)			\
+>>>  	dev_info(&(wiphy)->dev, format, ##args)
+>>> +#define wiphy_info_once(wiphy, format, args...)			\
+>>> +	dev_info_once(&(wiphy)->dev, format, ##args)
+>>>  
+>>>  #define wiphy_err_ratelimited(wiphy, format, args...)		\
+>>>  	dev_err_ratelimited(&(wiphy)->dev, format, ##args)
+>>>
+>>
+>> Ping?
+>>
+>> Arend, is this series good to you? I assume Kalle could pick it up if
+>> you'll give ack. Thanks in advance.
 > 
-> > --- a/drivers/hwmon/ltc2992.c
-> > +++ b/drivers/hwmon/ltc2992.c
-> > @@ -248,8 +248,7 @@ static int ltc2992_gpio_get_multiple(struct gpio_chip *chip, unsigned long *mask
-> >  
-> >  	gpio_status = reg;
-> >  
-> > -	gpio_nr = 0;
-> > -	for_each_set_bit_from(gpio_nr, mask, LTC2992_GPIO_NR) {
-> > +	for_each_set_bit(gpio_nr, mask, LTC2992_GPIO_NR) {
-> >  		if (test_bit(LTC2992_GPIO_BIT(gpio_nr), &gpio_status))
-> >  			set_bit(gpio_nr, bits);
-> >  	}
+> Normally cfg80211 changes go via Johannes' tree though I guess small
+> changes I could take it via my tree, but then I need an ack from
+> Johannes.
 > 
-> I would replace the entire loop by bitmap_replace() call.
-> 
-> Something like
-> 	bitmap_replace(bits, bits, &gpio_status, mask, LTC2992_GPIO_NR);
 
-Okay, it wouldn't work directly because it involves LTC2992_GPIO_BIT()
-macro. So, it rather some kind of bitmap_remap().
+Thank you for the clarification.
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Johannes, are these patches good to you?
