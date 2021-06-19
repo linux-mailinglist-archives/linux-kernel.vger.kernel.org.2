@@ -2,117 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 908933ADBBE
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 22:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C87FB3ADBC6
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 23:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhFSUqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 16:46:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48684 "EHLO
+        id S229580AbhFSVYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 17:24:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229475AbhFSUqL (ORCPT
+        with ESMTP id S229475AbhFSVYV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 16:46:11 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45CE6C061574;
-        Sat, 19 Jun 2021 13:44:00 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id z22so19099968ljh.8;
-        Sat, 19 Jun 2021 13:44:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8GbMbqcQNUFvLy7t/rqOVL6WYkEUAA9eyNxHIfi2L94=;
-        b=frwKhwlYwORDL90TK5zmJRbWkD2Py/0Uq5CFEXhAasiTywccZx9UJHn0NHo40MWJmb
-         tK3jqsOvFXawKzSghYMnb0wGnkn4ZqjBBxZXYnyaV64AtO0rU5aQygcwI7xUD09W5rMl
-         cmTxNx6x0AGBNV8qdDi7nDWSRiJFdDqzbcF0xtsHTHQCETUTG3jXGVQZIXU5/Rfdug2n
-         FrXIV0hNa3Atx9mt0PWVzBRx8bGGQJ7cg4iQethA5nb7YOBzRHnztmUDc/psuchbTW76
-         iShl8BKFIrneAWojK6BKwI+uQLhXzf8nWcG5qfq3YTPhdnp/uGyaPswSD09rG/hNiUoO
-         qrXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8GbMbqcQNUFvLy7t/rqOVL6WYkEUAA9eyNxHIfi2L94=;
-        b=dhpczlQsFEdVwCrYLzhmFNg+6iMrv7TBRz+Ak8jWdkcF4qiSXOrdZpehErfj3Wyi6Q
-         U2kpUW9H8K+Ec/3r4YyYe1GeK+FdzrODY13kCT4ISQ3XY/uxn9ZkY/TXdqSQ2RflQP2K
-         iRQrNBQ2PtJ+sB7+BRPuKyPVmviYhWDJDTcmNXDgGzp0tV1sdUsc93/AeiFuAHBTG2fT
-         4vIJHE+OK34L3xobnNB/MQ1bWEB0Lt20aEruCzBz43qApLAT5VPnPOzPwUYyPOo13CPC
-         H31g9eZV4S71Oof+HpfZJAWypYqOu1F65Ztc6jEIVv6gWAYB/AmnaI16RsG6/BvPIdy6
-         aUfA==
-X-Gm-Message-State: AOAM532YRcL6xA6M+nRwSTYDyv+6z0QX3wxHMLDDT2vgf9ta+VjhtuU1
-        avDmhcyOU57sjRwhJ5qewA5ZmSMPW4iowOG+zTI=
-X-Google-Smtp-Source: ABdhPJwSkGENbChwA2P/eGQlExYm0gQQR8dt6/aMVCK5PKYVPF5tvRKmaD8UwMXFCywmsWxNgbZP6GjBY63+y5hdeZM=
-X-Received: by 2002:a2e:b88b:: with SMTP id r11mr14977906ljp.24.1624135438613;
- Sat, 19 Jun 2021 13:43:58 -0700 (PDT)
+        Sat, 19 Jun 2021 17:24:21 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3233AC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 14:22:10 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624137728;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0ybseCEkhglvLk2wB5sT0IQom10HeFQDbBrMQNfSpj8=;
+        b=iAS4hSTPbS2YBOU0uE2wcVmpF8YZDHkv5C91bMpAO+xqFwzXIAe2DB44pbCYkDNfK3EjZ2
+        OSfkvildHF8YTaGeVyGp6GuqaUThT1+EHjraXBOQayV2NVofUMJqgXcVp7RrO3knrLtX1+
+        lxGgLo3NJR1oouVPu9OFVv/Ehoz9p2HdPx2UL+jw6sYWAsThyYCqMSSFPMJe4SamDy7/7V
+        4rjC1f9JBRuR33fkx5fyYQn55+lsC1BOvgKFjBgc4+uZcg7PJJAtPzuL6O5YsCntPTuQ1e
+        KO5qA8dxWAbebuByPto+40dVvuUS152XBVJP9Bc8Uwigesn+S/8QtkqleQYmeA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624137728;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0ybseCEkhglvLk2wB5sT0IQom10HeFQDbBrMQNfSpj8=;
+        b=wZ753qjYKTra1pYAwCU2clzEncUViMNWdUNGfpgY3njrQKYqwQCfcTBfBZa2qPjRpotjWJ
+        8n1Ke6Qij7wCyADQ==
+To:     Yaohui Wang <yaohuiwang@linux.alibaba.com>,
+        dave.hansen@linux.intel.com
+Cc:     luto@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, linux-kernel@vger.kernel.org,
+        Ben Luo <luoben@linux.alibaba.com>,
+        Yahui Wang <yaohuiwang@linux.alibaba.com>
+Subject: Re: [PATCH v2 1/2] mm: fix the pfn calculation mistake in __ioremap_check_ram
+In-Reply-To: <20210611042147.80744-2-yaohuiwang@linux.alibaba.com>
+References: <20210611042147.80744-1-yaohuiwang@linux.alibaba.com> <20210611042147.80744-2-yaohuiwang@linux.alibaba.com>
+Date:   Sat, 19 Jun 2021 23:22:08 +0200
+Message-ID: <87r1gxh7nj.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20210618183524.590186-1-colin.king@canonical.com> <20210619134025.GH1861@kadam>
-In-Reply-To: <20210619134025.GH1861@kadam>
-From:   Patrik Jakobsson <patrik.r.jakobsson@gmail.com>
-Date:   Sat, 19 Jun 2021 22:43:47 +0200
-Message-ID: <CAMeQTsaN-GYzix6X18bWxKY1L13bTrUUYDmp6tFdvaERZEj=3g@mail.gmail.com>
-Subject: Re: [PATCH] drm/gma500/oaktrail_lvds: replace continue with break
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Colin King <colin.king@canonical.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        kernel-janitors@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 19, 2021 at 3:40 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> On Fri, Jun 18, 2021 at 07:35:24PM +0100, Colin King wrote:
-> > From: Colin Ian King <colin.king@canonical.com>
-> >
-> > Currently a loop scans through the connector list checking
-> > for connectors that do not match a specific criteria. The
-> > use of the continue statement is a little unintuitive and
-> > can confuse static analysis checking.  Invert the criteria
-> > matching logic and use a break to terminate the loop once
-> > the first suitable connector has been found.
-> >
-> > Thanks to Patrik Jakobsson for explaining the original
-> > intent of the code and suggesting this change.
-> >
-> > Addresses-Coverity: ("Continue has no effect")
-> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > ---
-> >  drivers/gpu/drm/gma500/oaktrail_lvds.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/gma500/oaktrail_lvds.c b/drivers/gpu/drm/gma500/oaktrail_lvds.c
-> > index 432bdcc57ac9..8541dcf237eb 100644
-> > --- a/drivers/gpu/drm/gma500/oaktrail_lvds.c
-> > +++ b/drivers/gpu/drm/gma500/oaktrail_lvds.c
-> > @@ -113,8 +113,8 @@ static void oaktrail_lvds_mode_set(struct drm_encoder *encoder,
-> >
-> >       /* Find the connector we're trying to set up */
-> >       list_for_each_entry(connector, &mode_config->connector_list, head) {
-> > -             if (!connector->encoder || connector->encoder->crtc != crtc)
-> > -                     continue;
-> > +             if (connector->encoder && connector->encoder->crtc == crtc)
-> > +                     break;
-> >       }
-> >
-> >       if (!connector) {
->
-> This test is wrong/impossible.  It should be:
->
->         if (list_entry_is_head(connector, &mode_config->connector_list,
->                                head)) {
+Yaohui!
 
-Right, we should be back at the head if no match was found. Actually,
-when looking closer, we should use drm_for_each_connector_iter() when
-walking the connector list together with proper locking.
+On Fri, Jun 11 2021 at 12:21, Yaohui Wang wrote:
 
--Patrik
+A few formal things upfront. The prefix of the subject is incorrect. It
+should be "x86/ioremap:" git log $FILE helps to figure that out.
 
+Looking at the Signed-off-by chain below this misses either a
+
+From: Ben Luo <luoben@linux.alibaba.com> 
+
+right at the top of the changelog or a Co-Developed-by tag. See
+Documentation/process/
+
+> In arch/x86/mm/ioremap.c:__ioremap_check_ram, the original pfn
+> wrapping
+
+Just "In __ioremap_check_ram() ..." please. The file name is
+uninteresting and we want the '()' at the end of the symbol so it's
+obvious that this is a function.
+
+> calculation may cause the pfn range to ignore the very start page, if
+> res->start is not page-aligned, or the very end page, if res->end is not
+> page aligned.
 >
-> regards,
-> dan carpenter
+> So start_pfn should wrap down the res->start address, and end_pfn should
+> wrap up the res->end address. This makes the pfn range completely
+> contain [res->start, res->end] ram range. This check is more strict and is
+> more reasonable.
+
+This lacks a "Fixes:" tag
+
+> Signed-off-by: Ben Luo <luoben@linux.alibaba.com>
+> Signed-off-by: Yahui Wang <yaohuiwang@linux.alibaba.com>
+> ---
+>  arch/x86/mm/ioremap.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
->
+> diff --git a/arch/x86/mm/ioremap.c b/arch/x86/mm/ioremap.c
+> index 9e5ccc56f..79adf0d2d 100644
+> --- a/arch/x86/mm/ioremap.c
+> +++ b/arch/x86/mm/ioremap.c
+> @@ -74,8 +74,8 @@ static unsigned int __ioremap_check_ram(struct resource *res)
+>  	if ((res->flags & IORESOURCE_SYSTEM_RAM) != IORESOURCE_SYSTEM_RAM)
+>  		return 0;
+>  
+> -	start_pfn = (res->start + PAGE_SIZE - 1) >> PAGE_SHIFT;
+> -	stop_pfn = (res->end + 1) >> PAGE_SHIFT;
+> +	start_pfn = res->start >> PAGE_SHIFT;
+> +	stop_pfn = (res->end + PAGE_SIZE) >> PAGE_SHIFT;
+
+Please make that:
+
+       start_pfn = PFN_DOWN(res->start);
+       stop_pfn = PFN_UP(res->end);
+
+which gives you the first and the last PFN of that range. That obviously
+requires to fix the below as well, but that code is unreadable anyway.
+
+>  	if (stop_pfn > start_pfn) {
+>  		for (i = 0; i < (stop_pfn - start_pfn); ++i)
+>  			if (pfn_valid(start_pfn + i) &&
+
+	npages = stop_pfn - start_pfn + 1;
+	for (i = 0; i < npages; i++) {
+       		if (.....)
+        }
+
+you get the idea, right?
+
+Thanks,
+
+        tglx
