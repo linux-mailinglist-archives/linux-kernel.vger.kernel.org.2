@@ -2,131 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF64A3ADC0E
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 01:19:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A97A3ADC1D
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 01:55:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbhFSXVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 19:21:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53882 "EHLO
+        id S229897AbhFSXm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 19:42:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhFSXVs (ORCPT
+        with ESMTP id S229584AbhFSXm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 19:21:48 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EB65C061574;
-        Sat, 19 Jun 2021 16:19:36 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id 5-20020a9d01050000b02903c700c45721so13615397otu.6;
-        Sat, 19 Jun 2021 16:19:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aDfNGXcPF1Bi/JGi+LKoV/bPtk1Foubw8INWIdn030g=;
-        b=FyYvR+xLQT1b1SnKaRS7stgd0khsFCXdySsLS4iRuyhwkWVqBamCZlocDWBBYv6gf3
-         VMOgM8fIa/E5pw2xBRc3HkMZkpMAO1/bHcS622nUWrAgVmBQIePwiOCkCuPVZM4hKXex
-         ujF0NZORjuhtpLAN/uIlpriPaTY0auLf0Eu8LF6zBHvjimJOlV8iNjGMn+ox6IvVqd5E
-         2tYQ/JHlLHDxwHHyvclrERJ+CyFPBCPtX5691rSNJEyyM8FukmpVpQJq32yOIKx41DoP
-         WkflxdrJG30yqYyhTLm/TQ1GHDmxEuCwW1rGeeCE2k2P38gTDifMT6jAKmrdbmPTKYZM
-         PzlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=aDfNGXcPF1Bi/JGi+LKoV/bPtk1Foubw8INWIdn030g=;
-        b=rAHjEwUWNzEuOIfpgvTOtIKp8N1vgWmXJYRrGypfqDXA8kYRdKeZflrjUhvvuKh9Pa
-         SqIZu/9Qd9brFbOTD5wiKVg/yoW8a/866QVYsTjVF78VAcNFmVGe4tDQ7GnaoIcZq5kX
-         L93WekySllJl1+V7rE2PaBFTXTAs+20WqHq+37urD5/FfiNtv4xbT3WGkqZ4X6quc3yo
-         rSmivRk0hd0Ulybu9dxepRsSy2RZv7Z3CXc3O4b3n1eYQGL8z32/cq8/j5ajabsBNuXP
-         MgF6tHWHld8C7D2rYjWCc8m1vcIm5wArA8n2SPwrWWEnOGXhLi8jRKn4XBW0cYMXooPX
-         uiZw==
-X-Gm-Message-State: AOAM530MlX4N2duous+lbRI/+jZ0bVLQvEPqn35OGyeB87ec52S1lH5s
-        kCys/MHQZj75fXbKdn2YLMc=
-X-Google-Smtp-Source: ABdhPJwvHPcUYItMgvcgZF9MNmUcNY5MnqqFWEG7xfbgO8ra+6h5nuv3LL6MijtbhnruVSA8LYhL/Q==
-X-Received: by 2002:a05:6830:c5:: with SMTP id x5mr14942410oto.59.1624144775339;
-        Sat, 19 Jun 2021 16:19:35 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y17sm2737534oih.54.2021.06.19.16.19.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Jun 2021 16:19:34 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 19 Jun 2021 16:19:33 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     kernel test robot <lkp@intel.com>
-Cc:     "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org,
-        wim@linux-watchdog.org, linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH 1/2] watchdog: iTCO_wdt: use pm_ptr()
-Message-ID: <20210619231933.GA3821829@roeck-us.net>
-References: <20210616181708.19530-1-info@metux.net>
- <202106200634.4MqYLYfW-lkp@intel.com>
+        Sat, 19 Jun 2021 19:42:56 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4EE0C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 16:40:44 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G6sjg4MXnz9sRN;
+        Sun, 20 Jun 2021 09:40:39 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1624146041;
+        bh=amvNJNy+ZWUWObBHVKZALCApYZ772MCSmqS8exnahqU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UBmgtB05/SVwKFjZD2cDLvE4cv+BfuimTIO0RR3f08Jq07Sa+f2Z5N0CDTtTI5ZwF
+         Qpz29XamRsPkPV6UoLfEiN7+d1lyuyfR9E9llPw8hHx+Idq2V43ZfcZia1qaGj5BA3
+         9QkaeEpL2nDp4mfQF418EvDmh1IElz053ydH0k4L0lQJCJsL0FOrNrWUNjxkL2TFcF
+         mem+jEgIJ6CIGesD68o7SGhJFIo9PXRNlpzwhYgyAKv/YG1/Bfvcyz71lAdfXxGTzC
+         JjfXdMEgGgypDN6ijvA/4iBM3fFWkYbOuNxi2vNE/Bum4bTkSE9uXl8cqmkkHC/FyI
+         Ky3Iv+S6YMgXA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     atrajeev@linux.vnet.ibm.com, christophe.leroy@csgroup.eu,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.13-6 tag
+Date:   Sun, 20 Jun 2021 09:40:38 +1000
+Message-ID: <87lf752zk9.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202106200634.4MqYLYfW-lkp@intel.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 20, 2021 at 06:27:52AM +0800, kernel test robot wrote:
-> Hi "Enrico,
-> 
-> I love your patch! Yet something to improve:
-> 
-> [auto build test ERROR on linux/master]
-> [also build test ERROR on hwmon/hwmon-next linus/master v5.13-rc6 next-20210618]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Enrico-Weigelt-metux-IT-consult/watchdog-iTCO_wdt-use-pm_ptr/20210617-024441
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git dd860052c99b1e088352bdd4fb7aef46f8d2ef47
-> config: ia64-allmodconfig (attached as .config)
-> compiler: ia64-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/670a790c3acfccf4b5405459048ba2a05b912eef
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Enrico-Weigelt-metux-IT-consult/watchdog-iTCO_wdt-use-pm_ptr/20210617-024441
->         git checkout 670a790c3acfccf4b5405459048ba2a05b912eef
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=ia64 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
->    In file included from include/linux/device.h:25,
->                     from include/linux/acpi.h:15,
->                     from drivers/watchdog/iTCO_wdt.c:48:
-> >> drivers/watchdog/iTCO_wdt.c:645:21: error: 'iTCO_wdt_pm' undeclared here (not in a function); did you mean 'iTCO_wdt_ops'?
->      645 |   .pm     = pm_ptr(&iTCO_wdt_pm),
->          |                     ^~~~~~~~~~~
->    include/linux/pm.h:377:23: note: in definition of macro 'pm_ptr'
->      377 | #define pm_ptr(_ptr) (_ptr)
->          |                       ^~~~
-> 
-> 
-> vim +645 drivers/watchdog/iTCO_wdt.c
-> 
->    640	
->    641	static struct platform_driver iTCO_wdt_driver = {
->    642		.probe          = iTCO_wdt_probe,
->    643		.driver         = {
->    644			.name   = DRV_NAME,
->  > 645			.pm     = pm_ptr(&iTCO_wdt_pm),
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-I'll drop this patch for now.
+Hi Linus,
 
-Guenter
+Please pull some more powerpc fixes for 5.13:
 
->    646		},
->    647	};
->    648	
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+The following changes since commit 59cc84c802eb923805e7bba425976a3df5ce35d8:
+
+  Revert "powerpc/kernel/iommu: Align size for IOMMU_PAGE_SIZE() to save TCEs" (2021-06-01 11:17:08 +1000)
+
+are available in the git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.13-6
+
+for you to fetch changes up to 60b7ed54a41b550d50caf7f2418db4a7e75b5bdc:
+
+  powerpc/perf: Fix crash in perf_instruction_pointer() when ppmu is not set (2021-06-18 16:30:36 +1000)
+
+- ------------------------------------------------------------------
+powerpc fixes for 5.13 #6
+
+Fix initrd corruption caused by our recent change to use relative jump labels.
+
+Fix a crash using perf record on systems without a hardware PMU backend.
+
+Rework our 64-bit signal handling slighty to make it more closely match the old behaviour,
+after the recent change to use unsafe user accessors.
+
+Thanks to: Anastasia Kovaleva, Athira Rajeev, Christophe Leroy, Daniel Axtens, Greg Kurz,
+Roman Bolshakov.
+
+- ------------------------------------------------------------------
+Athira Rajeev (1):
+      powerpc/perf: Fix crash in perf_instruction_pointer() when ppmu is not set
+
+Christophe Leroy (1):
+      powerpc/mem: Add back missing header to fix 'no previous prototype' error
+
+Michael Ellerman (2):
+      powerpc/signal64: Copy siginfo before changing regs->nip
+      powerpc: Fix initrd corruption with relative jump labels
 
 
+ arch/powerpc/include/asm/jump_label.h | 2 +-
+ arch/powerpc/kernel/signal_64.c       | 9 ++++-----
+ arch/powerpc/mm/mem.c                 | 1 +
+ arch/powerpc/perf/core-book3s.c       | 2 +-
+ 4 files changed, 7 insertions(+), 7 deletions(-)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmDOf4MACgkQUevqPMjh
+pYCWZQ/+IFYW1st6xlM1jBDlLSItSn234dqOmvlihIo+9lCR82l72H4E4EWIj7A+
+3GGzMllEdDcGooEF1jg+7+zUlx8i1WNlRCF4RNszGzpipiDWGPlxW2t5FqNeQRQ7
+YyooMzrgPYlRxGHnG/KHfGiPJxxLj4ZsyRhWfoS6cY1EbS/YOX8SDX1Xz2qQu/Jr
+qRzZvSZKkBpVdvcxEYcn7WSauDpqtZ9keWHdP8e6WRd/Bceu4nyxlxOI0z+pBUsr
+3IhWzQexznJwCGClQBbaXg/uPmUDtEjx+LzhU0jTmSMLxVI+UFPVDIbco6bMX7AE
+EevcU35aDLu8tclNd3IAA9Au/EZPUe8kMNUPmBncFAID4ek+gybRJuGO9b9XEJ1r
+AZFFCb2rRugBvOeNtb5y3u9XNR0Ct0S2lsZygSOkCQ6R3Sf2yoVgP0M49PbFvEEO
+fSVLnAMEWQDWfaLjYxFXp2S3vddyLw8G36lBzJo74Y/cRuz10g/87oWpIlFq5tqK
+aMXTroINmErOv1XVALqix1ScrLeBnPlL2nH0gBSZ96W0A196kFjWkKaGsQFwXMEH
+X2Om1rKYiC3/vKrLXRYcxSZcoRg7/a1es7ftVSv5DQAPGRGWDrplCJh70x5JW2Js
+kA6IB2K8+Ehf3F0a7O+i5q5t1oTvOvR+wIEl2TpJdx5aMVGkBt0=
+=CmCH
+-----END PGP SIGNATURE-----
