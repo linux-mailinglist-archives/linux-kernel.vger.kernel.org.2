@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 801933AD998
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 12:48:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 206B73AD99A
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 12:48:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232409AbhFSKuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 06:50:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60766 "EHLO
+        id S233518AbhFSKuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 06:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232492AbhFSKtn (ORCPT
+        with ESMTP id S232723AbhFSKtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 06:49:43 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 882BFC061756
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 03:47:31 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id t4-20020a1c77040000b029019d22d84ebdso10302499wmi.3
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 03:47:31 -0700 (PDT)
+        Sat, 19 Jun 2021 06:49:45 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4D89C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 03:47:32 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id f2so13684640wri.11
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 03:47:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fuMF6VsqpQHGen6pDrwB6pK2wNwSSnPLXzA/6UmoJDM=;
-        b=TB9O6EbM//r2ckVijBZKpxGik/U3pQKiV30mWyiYoqiqAwhEtMWeuXIfRZkccyxEMq
-         Osl3ibf++hF1ZKssVJjfnZmJ//wR/5O33NI8oU0vpj3GDb6pZbPD7CPx/0BZyKgXlyVh
-         WUfQPmQmbyDPVTfoLK4Cxme4ZWnPe8I5eyOzwfTWZGcVEXDMIkaxxKoURo2WdLcesiLb
-         omokyUlJA7WL/QWDvEfjjSfI5Vlqw3VkQ1FP13MnEfXUX6i6Vg1iiaibw0ag8LFnIa+R
-         J3Yk8Y/IXDW1kclaWcV9wj3+Nua5pHlA/rCq3Op1mOeC44Bh7JTeb/ToUe8jrA9V/VPf
-         0kUg==
+        bh=VFzs8K1hJoNXpBOBcsMQ4sI+IDyzJg+qXoFm9HpkQS8=;
+        b=DiesITUqEl31aT+3IY4wHQx76ndlfP726XuxAs0S3/5+pVDCeVxojlSGyqPoLQejoE
+         uDVZT7hnfH3Llmi740N+xJI08eAOQ14wxc4+jI/Fp0YiJTEAumeRcWyrK2t9vWd74D2r
+         khkOf34/Weu+ZQn9/EAEfxRpxz+nOI3kDbpnPo+QmwZ4kra5iiM4ZuX2jISs9C4dSZ7T
+         363lJyeBircFzHpmHyHdqiQcH157G/rSK9MbTpt9dxWwMHZOPFSj5zxjYI6Gn38RCbJD
+         5FcQY9JfoBbFPWuGFRatWdnv2g4VZrdV1/7mm2bihsFdEkM9IRdfSmUkHykZO5EccnDW
+         TrBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fuMF6VsqpQHGen6pDrwB6pK2wNwSSnPLXzA/6UmoJDM=;
-        b=iO96lTu8SijrzAzqV5JkDbx3R6MvcI5JFIc7IsjjmFSQj6Dkx7sBLFmnOM2O9XSaqZ
-         PEtcWEiqJVAS9+MCFS1pAjALhYdwIuOxE5u2YcGsK5QeMBx995ipJRg3AuII+N87CFLC
-         efEEYza1mbfbSgLzZiCarKrSV8/0UtlFidjwInGyhqRxbuUer0k0q6grBAhqF+lTNRSk
-         e6PY/quWA+AULGT0i/WeHvv+OgvtGXvvGn25ZxXjQDNlK6TyZTX7FicRhUncKkh6AyD8
-         h0z0ZI/zzLrjxEjaENXZjP8tF1s/+mUfF9ysBPwet0VXn6WvN+iKGRup/1oYlMDjn+GV
-         xF4w==
-X-Gm-Message-State: AOAM5307Noi0YDt1S4182/uqWIMB8UxAtFwWHki3U0pRu/d4PxhHJqKC
-        qL8ng87HHKhoHn/Ba3TzhpA6SDKC2/OF2g==
-X-Google-Smtp-Source: ABdhPJyTT28EUO5h7sUhmYeB1tutWW8W08tFYp1InzaNJkD7BB4VN+rEHmUPRKV//CH5uzQ9PVwS9g==
-X-Received: by 2002:a1c:8083:: with SMTP id b125mr15890904wmd.176.1624099650061;
-        Sat, 19 Jun 2021 03:47:30 -0700 (PDT)
+        bh=VFzs8K1hJoNXpBOBcsMQ4sI+IDyzJg+qXoFm9HpkQS8=;
+        b=MViV0uW46HzRFfawKgpF0wVHTWpT2jofIpIOitISNP3R/rP7wVPvsse6hbNBqtUfF1
+         6hMJMmREbkVJO0D8nQvmfejunSYVEiBuFUdc8zuUeKfAEnoUiHlkFGfIQOG75gMHOcaZ
+         RS1wpbRftwYHQuwcsjzaPdlXkV5NQXPwDrBuV7U0TNRMh6oUeadrvPDO7exeBfPxLjvV
+         gHxs1uXfKzbrfgDcrAc3wxcHHJnFAiY34dusselSdpifUT/W5JIquCeqvTxYM6QSfipU
+         lfu6ndWv9sC+NEia4IPIeqWSF0xM5Wrmr3KEOXc+cSr6A6gG8jyncD187WnzKZR3gC72
+         bWgQ==
+X-Gm-Message-State: AOAM530T8DsKUU59Ef0m2K8/LNAL3xDb5qbhEiQRbnGxaXQfDMi21a7A
+        pb10X9pYw0gjqOE9bqlxm4eVi0sXCTUE1g==
+X-Google-Smtp-Source: ABdhPJySfUD3/A4E19eg9onIoONqqeXFG14DVx1JpfMRabP6ZcVND4L2ymwBVNZv5h1pLu2rdyOCzw==
+X-Received: by 2002:a5d:6708:: with SMTP id o8mr8687435wru.9.1624099651394;
+        Sat, 19 Jun 2021 03:47:31 -0700 (PDT)
 Received: from agape ([5.171.81.81])
-        by smtp.gmail.com with ESMTPSA id 62sm11991768wrm.1.2021.06.19.03.47.29
+        by smtp.gmail.com with ESMTPSA id e17sm12682916wre.79.2021.06.19.03.47.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Jun 2021 03:47:29 -0700 (PDT)
+        Sat, 19 Jun 2021 03:47:31 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 05/18] staging: rtl8723bs: remove 5Ghz field in struct registry_priv
-Date:   Sat, 19 Jun 2021 12:47:08 +0200
-Message-Id: <2d01d07bfad725fd8fd6437a3abe9332a781bd4e.1624099125.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 06/18] staging: rtl8723bs: remove struct rt_channel_plan_5g
+Date:   Sat, 19 Jun 2021 12:47:09 +0200
+Message-Id: <efc30a64f3c05874fd9fc95b85ebde030c828267.1624099125.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1624099125.git.fabioaiuto83@gmail.com>
 References: <cover.1624099125.git.fabioaiuto83@gmail.com>
@@ -64,39 +64,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove unused 5Ghz field in struct registry_priv.
+remove struct rt_channel_plan_5g, for rtl8723bs works
+only on 2.4Ghz band.
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/include/drv_types.h | 2 --
- drivers/staging/rtl8723bs/os_dep/os_intfs.c   | 1 -
- 2 files changed, 3 deletions(-)
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 58 +------------------
+ .../staging/rtl8723bs/include/rtw_mlme_ext.h  |  5 --
+ drivers/staging/rtl8723bs/include/rtw_rf.h    | 15 ++---
+ 3 files changed, 8 insertions(+), 70 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/include/drv_types.h b/drivers/staging/rtl8723bs/include/drv_types.h
-index 02df5bd8f575..895c41526164 100644
---- a/drivers/staging/rtl8723bs/include/drv_types.h
-+++ b/drivers/staging/rtl8723bs/include/drv_types.h
-@@ -171,9 +171,7 @@ struct registry_priv {
- 	u8 RegPowerBase;
- 	u8 RegPwrTblSel;
- 	s8	TxBBSwing_2G;
--	s8	TxBBSwing_5G;
- 	u8 AmplifierType_2G;
--	u8 AmplifierType_5G;
- 	u8 bEn_RFE;
- 	u8 RFE_Type;
- 	u8  check_fw_ps;
-diff --git a/drivers/staging/rtl8723bs/os_dep/os_intfs.c b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-index a06c8b1beb01..648456b992bb 100644
---- a/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-+++ b/drivers/staging/rtl8723bs/os_dep/os_intfs.c
-@@ -289,7 +289,6 @@ static void loadparam(struct adapter *padapter, struct net_device *pnetdev)
+diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+index 106779fb9fef..cf0079a0c179 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
++++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+@@ -79,46 +79,6 @@ static struct rt_channel_plan_2g	RTW_ChannelPlan2G[RT_CHANNEL_DOMAIN_2G_MAX] = {
+ 	{{}, 0},								/*  0x06, RT_CHANNEL_DOMAIN_2G_NULL */
+ };
  
- 	registry_par->RegPowerBase = 14;
- 	registry_par->TxBBSwing_2G = 0xFF;
--	registry_par->TxBBSwing_5G = 0xFF;
- 	registry_par->bEn_RFE = 1;
- 	registry_par->RFE_Type = 64;
+-static struct rt_channel_plan_5g	RTW_ChannelPlan5G[RT_CHANNEL_DOMAIN_5G_MAX] = {
+-	{{}, 0},																					/*  0x00, RT_CHANNEL_DOMAIN_5G_NULL */
+-	{{36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140}, 19},						/*  0x01, RT_CHANNEL_DOMAIN_5G_ETSI1 */
+-	{{36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 149, 153, 157, 161, 165}, 24},	/*  0x02, RT_CHANNEL_DOMAIN_5G_ETSI2 */
+-	{{36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 128, 132, 149, 153, 157, 161, 165}, 22},			/*  0x03, RT_CHANNEL_DOMAIN_5G_ETSI3 */
+-	{{36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 149, 153, 157, 161, 165}, 24},	/*  0x04, RT_CHANNEL_DOMAIN_5G_FCC1 */
+-	{{36, 40, 44, 48, 149, 153, 157, 161, 165}, 9},														/*  0x05, RT_CHANNEL_DOMAIN_5G_FCC2 */
+-	{{36, 40, 44, 48, 52, 56, 60, 64, 149, 153, 157, 161, 165}, 13},											/*  0x06, RT_CHANNEL_DOMAIN_5G_FCC3 */
+-	{{36, 40, 44, 48, 52, 56, 60, 64, 149, 153, 157, 161}, 12},												/*  0x07, RT_CHANNEL_DOMAIN_5G_FCC4 */
+-	{{149, 153, 157, 161, 165}, 5},																	/*  0x08, RT_CHANNEL_DOMAIN_5G_FCC5 */
+-	{{36, 40, 44, 48, 52, 56, 60, 64}, 8},																/*  0x09, RT_CHANNEL_DOMAIN_5G_FCC6 */
+-	{{36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 136, 140, 149, 153, 157, 161, 165}, 20},					/*  0x0A, RT_CHANNEL_DOMAIN_5G_FCC7_IC1 */
+-	{{36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 149, 153, 157, 161, 165}, 20},					/*  0x0B, RT_CHANNEL_DOMAIN_5G_KCC1 */
+-	{{36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140}, 19},						/*  0x0C, RT_CHANNEL_DOMAIN_5G_MKK1 */
+-	{{36, 40, 44, 48, 52, 56, 60, 64}, 8},																/*  0x0D, RT_CHANNEL_DOMAIN_5G_MKK2 */
+-	{{100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140}, 11},											/*  0x0E, RT_CHANNEL_DOMAIN_5G_MKK3 */
+-	{{56, 60, 64, 100, 104, 108, 112, 116, 136, 140, 149, 153, 157, 161, 165}, 15},								/*  0x0F, RT_CHANNEL_DOMAIN_5G_NCC1 */
+-	{{56, 60, 64, 149, 153, 157, 161, 165}, 8},															/*  0x10, RT_CHANNEL_DOMAIN_5G_NCC2 */
+-	{{149, 153, 157, 161, 165}, 5},																	/*  0x11, RT_CHANNEL_DOMAIN_5G_NCC3 */
+-	{{36, 40, 44, 48}, 4},																			/*  0x12, RT_CHANNEL_DOMAIN_5G_ETSI4 */
+-	{{36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 136, 140, 149, 153, 157, 161, 165}, 20},					/*  0x13, RT_CHANNEL_DOMAIN_5G_ETSI5 */
+-	{{149, 153, 157, 161}, 4},																		/*  0x14, RT_CHANNEL_DOMAIN_5G_FCC8 */
+-	{{36, 40, 44, 48, 52, 56, 60, 64}, 8},																/*  0x15, RT_CHANNEL_DOMAIN_5G_ETSI6 */
+-	{{36, 40, 44, 48, 52, 56, 60, 64, 149, 153, 157, 161, 165}, 13},											/*  0x16, RT_CHANNEL_DOMAIN_5G_ETSI7 */
+-	{{36, 40, 44, 48, 149, 153, 157, 161, 165}, 9},														/*  0x17, RT_CHANNEL_DOMAIN_5G_ETSI8 */
+-	{{100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140}, 11},											/*  0x18, RT_CHANNEL_DOMAIN_5G_ETSI9 */
+-	{{149, 153, 157, 161, 165}, 5},																	/*  0x19, RT_CHANNEL_DOMAIN_5G_ETSI10 */
+-	{{36, 40, 44, 48, 52, 56, 60, 64, 132, 136, 140, 149, 153, 157, 161, 165}, 16},									/*  0x1A, RT_CHANNEL_DOMAIN_5G_ETSI11 */
+-	{{52, 56, 60, 64, 100, 104, 108, 112, 116, 132, 136, 140, 149, 153, 157, 161, 165}, 17},							/*  0x1B, RT_CHANNEL_DOMAIN_5G_NCC4 */
+-	{{149, 153, 157, 161}, 4},																		/*  0x1C, RT_CHANNEL_DOMAIN_5G_ETSI12 */
+-	{{36, 40, 44, 48, 100, 104, 108, 112, 116, 132, 136, 140, 149, 153, 157, 161, 165}, 17},							/*  0x1D, RT_CHANNEL_DOMAIN_5G_FCC9 */
+-	{{36, 40, 44, 48, 100, 104, 108, 112, 116, 132, 136, 140}, 12},											/*  0x1E, RT_CHANNEL_DOMAIN_5G_ETSI13 */
+-	{{36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 132, 136, 140, 149, 153, 157, 161}, 20},					/*  0x1F, RT_CHANNEL_DOMAIN_5G_FCC10 */
+-
+-	/*  Driver self defined for old channel plan Compatible , Remember to modify if have new channel plan definition ===== */
+-	{{36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 132, 136, 140, 149, 153, 157, 161, 165}, 21},				/*  0x20, RT_CHANNEL_DOMAIN_5G_FCC */
+-	{{36, 40, 44, 48}, 4},																			/*  0x21, RT_CHANNEL_DOMAIN_5G_JAPAN_NO_DFS */
+-	{{36, 40, 44, 48, 149, 153, 157, 161}, 8},															/*  0x22, RT_CHANNEL_DOMAIN_5G_FCC4_NO_DFS */
+-};
+-
+ static struct rt_channel_plan_map	RTW_ChannelPlanMap[RT_CHANNEL_DOMAIN_MAX] = {
+ 	/*  0x00 ~ 0x1F , Old Define ===== */
+ 	{0x02, 0x20},	/* 0x00, RT_CHANNEL_DOMAIN_FCC */
+@@ -393,8 +353,8 @@ static void init_channel_list(struct adapter *padapter, struct rt_channel_info *
+ static u8 init_channel_set(struct adapter *padapter, u8 ChannelPlan, struct rt_channel_info *channel_set)
+ {
+ 	u8 index, chanset_size = 0;
+-	u8 b5GBand = false, b2_4GBand = false;
+-	u8 Index2G = 0, Index5G = 0;
++	u8 b2_4GBand = false;
++	u8 Index2G = 0;
+ 
+ 	memset(channel_set, 0, sizeof(struct rt_channel_info)*MAX_CHANNEL_NUM);
+ 
+@@ -433,20 +393,6 @@ static u8 init_channel_set(struct adapter *padapter, u8 ChannelPlan, struct rt_c
+ 		}
+ 	}
+ 
+-	if (b5GBand) {
+-		for (index = 0; index < RTW_ChannelPlan5G[Index5G].Len; index++) {
+-			if (RTW_ChannelPlan5G[Index5G].Channel[index] <= 48
+-				|| RTW_ChannelPlan5G[Index5G].Channel[index] >= 149) {
+-				channel_set[chanset_size].ChannelNum = RTW_ChannelPlan5G[Index5G].Channel[index];
+-				if (RT_CHANNEL_DOMAIN_WORLD_WIDE_5G == ChannelPlan)/* passive scan for all 5G channels */
+-					channel_set[chanset_size].ScanType = SCAN_PASSIVE;
+-				else
+-					channel_set[chanset_size].ScanType = SCAN_ACTIVE;
+-				chanset_size++;
+-			}
+-		}
+-	}
+-
+ 	return chanset_size;
+ }
+ 
+diff --git a/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h b/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
+index 0248b91b4525..7d655f02d383 100644
+--- a/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
++++ b/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
+@@ -248,11 +248,6 @@ struct rt_channel_plan_2g {
+ 	unsigned char Len;
+ };
+ 
+-struct rt_channel_plan_5g {
+-	unsigned char Channel[MAX_CHANNEL_NUM_5G];
+-	unsigned char Len;
+-};
+-
+ struct rt_channel_plan_map {
+ 	unsigned char Index2G;
+ 	unsigned char Index5G;
+diff --git a/drivers/staging/rtl8723bs/include/rtw_rf.h b/drivers/staging/rtl8723bs/include/rtw_rf.h
+index 48ff15a38bb0..6c25707f4ec8 100644
+--- a/drivers/staging/rtl8723bs/include/rtw_rf.h
++++ b/drivers/staging/rtl8723bs/include/rtw_rf.h
+@@ -21,16 +21,13 @@
+ #define RTL8711_RF_MAX_SENS	 6
+ #define RTL8711_RF_DEF_SENS	 4
+ 
+-/*  */
+-/*  We now define the following channels as the max channels in each channel plan. */
+-/*  2G, total 14 chnls */
+-/*  {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14} */
+-/*  5G, total 24 chnls */
+-/*  {36, 40, 44, 48, 52, 56, 60, 64, 100, 104, 108, 112, 116, 120,
+- *   124, 128, 132, 136, 140, 149, 153, 157, 161, 165} */
++/*
++ * We now define the following channels as the max channels in each channel plan.
++ * 2G, total 14 chnls
++ * {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14}
++ */
+ #define	MAX_CHANNEL_NUM_2G	14
+-#define	MAX_CHANNEL_NUM_5G	24
+-#define	MAX_CHANNEL_NUM		38/* 14+24 */
++#define	MAX_CHANNEL_NUM		14
+ 
+ #define NUM_REGULATORYS	1
  
 -- 
 2.20.1
