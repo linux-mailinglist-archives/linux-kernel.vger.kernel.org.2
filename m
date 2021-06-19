@@ -2,116 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B41A3AD9FC
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 14:35:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92DB23AD9FF
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 14:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234128AbhFSMgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 08:36:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55778 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234059AbhFSMgq (ORCPT
+        id S234184AbhFSMhQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 19 Jun 2021 08:37:16 -0400
+Received: from mail-lj1-f175.google.com ([209.85.208.175]:44791 "EHLO
+        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234148AbhFSMhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 08:36:46 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70887C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 05:34:34 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id t8so5232682pfe.3
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 05:34:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ingics-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lnXkJrK3bbKfbG2bmCLaRAAKC3eTSFYqLBXTuAJNf/M=;
-        b=T+/kVZQDtcu6pepiucvXtHV7rqFV4eI+q3St1JDkyUw6Lq9OyyCq+zAowtqzfF8Rk7
-         /wqO5JetHMyjZrXZsGA8ZO7+vLTa4LZt60I4L9BasV2QyAWW45yTELNOI99AfMD7Cq9g
-         uyh+oX/71RnSRDM3TlWSiKRDTh97ERPg5OTX/nqLFQGXdXsg5YeJvQB46vwLD0DnyhZU
-         6puqJKHyeZc3Vhv8K3VE0Rp603ofegrvpKghQ2Odedu5rVfjpLZSLBTJvnaapF6HMAPk
-         vTEkhiR3o3+bQZy2Y8vGE0zoizyIcNbxyqq9vql2LQEUqeXlNLHrKtzSMlGqNxB15/pc
-         nqMw==
+        Sat, 19 Jun 2021 08:37:13 -0400
+Received: by mail-lj1-f175.google.com with SMTP id d2so17970549ljj.11;
+        Sat, 19 Jun 2021 05:35:00 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lnXkJrK3bbKfbG2bmCLaRAAKC3eTSFYqLBXTuAJNf/M=;
-        b=Lh4WQTZzep0agxzWnVnkuHNix3BkEjNM/sRqqddeur781+2Me2dvgyDY3oLFz0PxmZ
-         uIPhuF16jJAKsOlYJ+CMF/gZXAEjKontEFUPOfQ5dhmZCjbBgZtqdEtpBv8uAQ0o+nDS
-         H8ADT42oIEiV2zdK/GtfpBJ0w5aWImwoSPwMpkiWsdVJNe/Nwwh9Xqqr5NK6gIuVLoM+
-         xoQYd7m9KJSNdYV1EyJrIc+xSPOfh0dNsd0ay5HsVqIRa0oeq9hy2um2sHexpkzBf8JC
-         uA3RwmRpdjHM2n8l4/4zqT5tW6b3oFaXZbghwQY7I+nRrQfBwWVGXWP3tLQvbulPbm3S
-         7Piw==
-X-Gm-Message-State: AOAM5332iHUStLsi0kHsSif1TBn+KxzTuPcfl0WxPt1D5NG3iPzYetjA
-        fNHivxB5GZ6hptlyLJeNxTLhlrhwkrUihPCc
-X-Google-Smtp-Source: ABdhPJzJuBg+TnHM/T91eUyT0X8xLHuJ+GhkcrwiUOxeCKCC2Ykuo/ZunEa8AOacriuKBwUXUw6hzA==
-X-Received: by 2002:a65:5684:: with SMTP id v4mr14327702pgs.218.1624106073679;
-        Sat, 19 Jun 2021 05:34:33 -0700 (PDT)
-Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
-        by smtp.gmail.com with ESMTPSA id co18sm1606997pjb.37.2021.06.19.05.34.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Jun 2021 05:34:33 -0700 (PDT)
-From:   Axel Lin <axel.lin@ingics.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] regulator: hi6421v600: Fix setting idle mode
-Date:   Sat, 19 Jun 2021 20:34:23 +0800
-Message-Id: <20210619123423.4091429-1-axel.lin@ingics.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6I2FWb7mQ/8/cNGUfD+T2KExB3NTxaQoGVuBZhhJFdQ=;
+        b=igiULZhtz8+3FMj25Zp6CXmJ/V6kvf/DZPLj3RYStiKHeIQzlqIfutyIqUIcm69tW3
+         gQDXq6ui0fRKP7aLtsRsKy8fL7oVWjBip+ROOml6q7WOcktzYjnCOpNUP9XbCPAYPsmc
+         mSJzSYW0ZiwDg5wvHiStlAb/s9RuhB/DIoZ1vHT872ceQ9QDsNuVA5w0+fCq2klHRTl2
+         Fds+ebDgCNbFQ7hlKUtzFERlUsrqQ9o1DLrubKvgZHYXXjZYTAlOCEj0YPUERSZJfJ7Q
+         XEg16Hj5UIaUcoxNBWwTnmiAmTnVImULF1QPUcXeI7BrubkqyEdsxowR+aWhyOkWoSRb
+         yPgg==
+X-Gm-Message-State: AOAM530cXQRzW00H2PI2459ykBpszNUQ7Ko5dGQBlrFjbKm7OWRGOD+5
+        ctxbmpUUcYuYaNqRBIzpK4qYMztl0LTIHjeyX2w=
+X-Google-Smtp-Source: ABdhPJyGlvxNS4qEXQbN9UP3lnf7MWdOw6Sbptjj9VjQMcrBuIX3nEGzgtK3JTp1QISnxGEeeIcFQ71Ygsg9KgOkymE=
+X-Received: by 2002:a2e:8699:: with SMTP id l25mr13273570lji.315.1624106100118;
+ Sat, 19 Jun 2021 05:35:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210603151550.140727-1-mailhol.vincent@wanadoo.fr>
+ <20210603151550.140727-3-mailhol.vincent@wanadoo.fr> <20210618093424.xohvsqaaq5qf2bjn@pengutronix.de>
+ <CAMZ6RqJn5z-9PfkcJdiS6aG+qCPnifXDwH26ZEwo8-=id=TXbw@mail.gmail.com>
+ <CAMZ6RqKrPQkPy-dAiQjAB4aKnqeaNx+L-cro8F_mc2VPgOD4Jw@mail.gmail.com>
+ <20210618124447.47cy7hyqp53d4tjh@pengutronix.de> <CAMZ6RqJCZB6Q79JYfxD7PGboPwMndDQRKsuUEk5Q34fj2vOcYg@mail.gmail.com>
+ <e90cbad2467e2ef42db1e4a14ecdfd8c512965ea.camel@esd.eu>
+In-Reply-To: <e90cbad2467e2ef42db1e4a14ecdfd8c512965ea.camel@esd.eu>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Sat, 19 Jun 2021 21:34:50 +0900
+Message-ID: <CAMZ6RqJphchOBFudyuVcN+imnCgCBu7P6yAaNhjzJypGKCQFpA@mail.gmail.com>
+Subject: Re: CAN-FD Transmitter Delay Compensation (TDC) on mcp2518fd
+To:     =?UTF-8?Q?Stefan_M=C3=A4tje?= <Stefan.Maetje@esd.eu>
+Cc:     "mkl@pengutronix.de" <mkl@pengutronix.de>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        "socketcan@hartkopp.net" <socketcan@hartkopp.net>,
+        "thomas.kopp@microchip.com" <thomas.kopp@microchip.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit db27f8294cd7 changed eco_mode << (ffs(sreg->eco_mode_mask) - 1)
-to sreg->eco_mode_mask << (ffs(sreg->eco_mode_mask) - 1) which is wrong.
-Fix it by simply set val = sreg->eco_mode_mask.
+On Sat. 19 Jun 2021 à 00:55, Stefan Mätje <Stefan.Maetje@esd.eu> wrote:
+> Am Freitag, den 18.06.2021, 23:27 +0900 schrieb Vincent MAILHOL:
+> > On Fri. 18 Jun 2021 at 21:44, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
+> > > On 18.06.2021 20:17:51, Vincent MAILHOL wrote:
+> > > > > > I just noticed in the mcp2518fd data sheet:
+> > > > > >
+> > > > > > > bit 14-8 TDCO[6:0]: Transmitter Delay Compensation Offset bits;
+> > > > > > > Secondary Sample Point (SSP) Two’s complement; offset can be
+> > > > > > > positive,
+> > > > > > > zero, or negative.
+> > > > > > >
+> > > > > > > 011 1111 = 63 x TSYSCLK
+> > > > > > > ...
+> > > > > > > 000 0000 = 0 x TSYSCLK
+> > > > > > > ...
+> > > > > > > 111 1111 = –64 x TSYSCLK
+> > > > > >
+> > > > > > Have you takes this into account?
+> > > > >
+> > > > > I have not. And I fail to understand what would be the physical
+> > > > > meaning if TDCO is zero or negative.
+> > >
+> > > The mcp25xxfd family data sheet says:
+> > >
+> > > > SSP = TDCV + TDCO
+> > > > > TDCV indicates the position of the bit start on the RX pin.
+> > >
+> > > If I understand correctly in automatic mode TDCV is measured by the CAN
+> > > controller and reflects the transceiver delay.
+> >
+> > Yes. I phrased it poorly but this is what I wanted to say. It is
+> > the delay to propagate from the TX pin to the RX pin.
+> >
+> > If TDCO = 0 then SSP = TDCV + 0 = TDCV thus the measurement
+> > occurs at the bit start on the RX pin.
+> >
+> > > I don't know why you want
+> > > to subtract a time from that....
+> > >
+> > > The rest of the relevant registers:
+> > >
+> > > > TDCMOD[1:0]: Transmitter Delay Compensation Mode bits; Secondary Sample
+> > > > Point (SSP)
+> > > > 10-11 = Auto; measure delay and add TDCO.
+> > > > 01 = Manual; Do not measure, use TDCV + TDCO from register
+> > > > 00 = TDC Disabled
+> > > >
+> > > > TDCO[6:0]: Transmitter Delay Compensation Offset bits; Secondary Sample
+> > > > Point (SSP)
+> > > > Two’s complement; offset can be positive, zero, or negative.
+> > > > 011 1111 = 63 x TSYSCLK
+> > > > ...
+> > > > 000 0000 = 0 x TSYSCLK
+> > > > ...
+> > > > 111 1111 = –64 x TSYSCLK
+> > > >
+> > > > TDCV[5:0]: Transmitter Delay Compensation Value bits; Secondary Sample
+> > > > Point (SSP)
+> > > > 11 1111 = 63 x TSYSCLK
+> > > > ...
+> > > > 00 0000 = 0 x TSYSCLK
+> >
+> > Aside from the negative TDCO, the rest is standard stuff. We can
+> > note the absence of the TDCF but that's not a blocker.
+> >
+> > > > > If TDCO is zero, the measurement occurs on the bit start when all
+> > > > > the ringing occurs. That is a really bad choice to do the
+> > > > > measurement. If it is negative, it means that you are measuring the
+> > > > > previous bit o_O !?
+> > >
+> > > I don't know...
+> > >
+> > > > > Maybe I am missing something but I just do not get it.
+> > > > >
+> > > > > I believe you started to implement the mcp2518fd.
+> > >
+> > > No I've just looked into the register description.
+> >
+> > OK. For your information, the ETAS ES58x FD devices do not allow
+> > the use of manual mode for TDCV. The microcontroller from
+> > Microchip supports it but ETAS firmware only exposes the
+> > automatic TDCV mode. So it can not be used to test what would
+> > occur if SSP = 0.
+> >
+> > I will prepare a patch to allow zero value for both TDCV and
+> > TDCO (I am a bit sad because I prefer the current design, but if
+> > ISO allows it, I feel like I have no choice).  However, I refuse
+> > to allow the negative TDCO value unless someone is able to
+> > explain the rationale.
+>
+> Hi,
+>
+> perhaps I can shed some light on the idea why it is a good idea to allow
+> negative TDC offset values. Therefore I would describe the TDC register
+> interface of the ESDACC CAN-FD controller of our company (see
+> https://esd.eu/en/products/esdacc).
 
-In additional, sreg->eco_mode_mask can be 0 (LDO3, LDO33, LDO34).
-Return -EINVAL if idle mode is not supported when sreg->eco_mode_mask is 0.
+Thanks for joining the conversation. I am happy to receive help
+from more experts!
 
-While at it, also use unsigned int for reg_val/val which is the expected
-type for regmap_read and regmap_update_bits.
+> Register description of TDC-CAN-FD register (reserved bits not shown):
+>
+> bits [5..0], RO: TDC Measured (TDCmeas)
+>         Currently measured TDC value, needs baudrate to be set and CAN traffic
+>
+> bits [21..16], R/W: TDC offset (TDCoffs)
+>         Depending on the selected mode (see TDC mode)
+>         - Auto TDC, automatic mode (default)
+>                 signed offset onto measured TDC (TDCeff = TDCmeas + TDCoffs),
+>                 interpreted as 6-bit two's complement value
+>         - Manual TDC
+>                 absolute unsigned offset (TDCeff = TDCoffs),
+>                 interpreted as 6-bit unsigned value
+>         - Other modes
+>                 ignored
+>         In either case TDC offset is a number of CAN clock cycles.
+>
+> bits [31..30], R/W: TDC mode
+>         00 = Auto TDC
+>         01 = Manual TDC
+>         10 = reserved
+>         11 = TDC off
 
-Fixes: db27f8294cd7 ("staging: regulator: hi6421v600-regulator: use shorter names for OF properties")
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- drivers/regulator/hi6421v600-regulator.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+First remark is that you use different naming than what I
+witnessed so far in other datasheets. Let me try to give the
+equivalences between your device and the struct can_tdc which I
+proposed in my patches.
 
-diff --git a/drivers/regulator/hi6421v600-regulator.c b/drivers/regulator/hi6421v600-regulator.c
-index b5a19938fd3a..9a68ef251de6 100644
---- a/drivers/regulator/hi6421v600-regulator.c
-+++ b/drivers/regulator/hi6421v600-regulator.c
-@@ -117,7 +117,7 @@ static int hi6421_spmi_regulator_enable(struct regulator_dev *rdev)
- static unsigned int hi6421_spmi_regulator_get_mode(struct regulator_dev *rdev)
- {
- 	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
--	u32 reg_val;
-+	unsigned int reg_val;
- 
- 	regmap_read(rdev->regmap, rdev->desc->enable_reg, &reg_val);
- 
-@@ -131,14 +131,17 @@ static int hi6421_spmi_regulator_set_mode(struct regulator_dev *rdev,
- 					  unsigned int mode)
- {
- 	struct hi6421_spmi_reg_info *sreg = rdev_get_drvdata(rdev);
--	u32 val;
-+	unsigned int val;
- 
- 	switch (mode) {
- 	case REGULATOR_MODE_NORMAL:
- 		val = 0;
- 		break;
- 	case REGULATOR_MODE_IDLE:
--		val = sreg->eco_mode_mask << (ffs(sreg->eco_mode_mask) - 1);
-+		if (!sreg->eco_mode_mask)
-+			return -EINVAL;
-+
-+		val = sreg->eco_mode_mask;
- 		break;
- 	default:
- 		return -EINVAL;
--- 
-2.25.1
+The Left members are ESDACC CAN-FD registers, the right members
+are variables from Socket CAN.
 
+** Auto TDC **
+TDCoffs = struct can_tdc::tdco
+
+** Manual TDC **
+TDCoffs = struct can_tdc::tdcv + struct can_tdc::tdco
+
+In both cases, TDCeff corresponds to the SSP position.
+
+> So in automatic mode the goal is to be able to move the real sample point
+> forward and(!) backward from the measured transmitter delay. Therefore the
+> TDCoffs is interpreted as 6-bit two's complement value to make negative offsets
+> possible and to decrease the effective (used) TDCeff below the measured value
+> TDCmeas.
+>
+> As far as I have understood our FPGA guy the TDCmeas value is the number of
+> clock cycles counted from the start of transmitting a dominant bit until the
+> dominant state reaches the RX pin.
+
+Your definition of TDCmeas is consistent with the definition of
+TDCV in socket CAN.
+
+What I miss to understand is what does it mean to subtract from
+that TDCmeas/TDCV value. If you subtract from it, it means that
+TDCeff/SSP is sampled before the signal reaches the RX
+pin. Correct?
+
+> During the data phase the sample point is controlled by the tseg values set for
+> the data phase but is moved additionally by the number of clocks specified by
+> TDCeff (or SSP in the mcp2518fd case).
+
+Here I do not follow you. The SSP, as specified in ISO 11898-1
+is "specified by its distance from the start of the bit
+time". Either you do not use TDC and the measurement is done on
+the SP according to the tseg values, either you do use TDC and
+the measurement is done on the SSP according to the TDC
+values. There is no mention of mixing the tseg and tdc values.
+
+P.S.: don't hesitate to invite your FPGA guy to this thread!
+
+
+Yours sincerely,
+Vincent
