@@ -2,128 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0D13ADA30
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 15:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62BF93ADA45
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 15:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234353AbhFSNsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 09:48:46 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:25886 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233286AbhFSNsn (ORCPT
+        id S234439AbhFSOBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 10:01:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233286AbhFSOBg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 09:48:43 -0400
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15JDf56E004044;
-        Sat, 19 Jun 2021 13:46:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=HP6iHUHGUTOwLc0E//CINN2obCmftl4AYOilvitxiCs=;
- b=Kg4whScVvT5tVH15TVen85gGD8B/U8YHZVOHnlzbGdnnIWSpm6d14M/zLokOzGEa7C5S
- N3fmTC59umPOCVesuhXYZhBEmW49yh2yrYcn0ua5ZFmJNb87GXWR1uiHBgsHNWl7Tu8K
- rj1rvi5wAcyV6l/pjMgINUnUDGHAQob/u+zgfuMSpGQA5up9wGpNJpY+/XPxB7V8P9ow
- aeG0XIpcDPbt6IgG2NZ/pAiIFwcW8xQ6QYTd0P1Qrx/hL/h2SqxwvoZzUX8hKyYr00uC
- fvjmOcWi0d1cz+ZEDWZMz9Gx/CC7hWtBdd6M0i7qbx2PCA6ysHo2t47k6dnjSf4cZ2q6 Cg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39970bggbt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 19 Jun 2021 13:46:24 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15JDf1oF108790;
-        Sat, 19 Jun 2021 13:46:23 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 3995psqfd0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 19 Jun 2021 13:46:23 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15JDkM8x119767;
-        Sat, 19 Jun 2021 13:46:22 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 3995psqfcg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 19 Jun 2021 13:46:22 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 15JDkK2t018967;
-        Sat, 19 Jun 2021 13:46:20 GMT
-Received: from kadam (/102.222.70.252)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sat, 19 Jun 2021 13:46:19 +0000
-Date:   Sat, 19 Jun 2021 16:46:13 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org, Samuel Cabrero <scabrero@suse.de>
-Cc:     lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Steve French <stfrench@microsoft.com>,
-        Aurelien Aptel <aaptel@suse.com>
-Subject: fs/cifs/cifs_swn.c:468 cifs_swn_store_swn_addr() error:
- uninitialized symbol 'port'.
-Message-ID: <202106192055.9FuqF8dj-lkp@intel.com>
+        Sat, 19 Jun 2021 10:01:36 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 633E4C061574;
+        Sat, 19 Jun 2021 06:59:24 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id i4so2425953plt.12;
+        Sat, 19 Jun 2021 06:59:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=JOA4qP4JI0hXa0maTyHwjdZvQ2VJl7saerJeP6fXVIg=;
+        b=USsqFbZKFskCwaBXraaW0fEZKiUbY5R3meq1J7KCjUQefiWzFMoqa24Ws+Pu/0ndVs
+         0j4ucgeoC1jvV3hn1kRq3rpZ8Kw7rBvakVLnG4oEtwKpw2ANyjLbty3A4/IE9O9xCP3e
+         dw8QNd1a2UQ/qklvcatKb+dxTCSMUeLCi2yct7AbwrC7r8HlvuwGT/QXkv/Py5WKa7pb
+         aBFzisVau8220RCOCblnlWN4tozFJW6NWTZ+OgNpq5nBK7IZzTQ5LxYnGOKXGFWms8zQ
+         phwAlU7c8fj/XE0waEToTSNi+QJ3xeT3v7equ3yg5gD1sr6SK/U4i62mjwzk7Bs0hL+4
+         mQxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JOA4qP4JI0hXa0maTyHwjdZvQ2VJl7saerJeP6fXVIg=;
+        b=s7fSN/qmPoAvbD1NjA/XYmN+4QQ71TbyX3ghva5Jpxe7uFk7aO58bOPlAvI6Sq210T
+         aat/JSFFS+inXj9TDVENoZn7k04NnDFCcvOowV87pJQXAHjoi+3HhQIub7YO/w4k0TCD
+         iLZcIG4k7VAs18pHRXEHf9ZlggMwmMnjj41/nW8ZVPl8huXZ5tTvnmrKNyNvaetkpwrl
+         gSxABfYBNFcUALKdDjFQnf9TNQrb3ECtSFgk0EHGgaGaMl0xT5bHlsLWq6Wi5JlhxZZu
+         4kyG4Bh3waTT17KRkSecQDtdenuvlOJv6vSA4xcnwiFxfIEcs4yTAb/iygWxlnMVzEwZ
+         D0wQ==
+X-Gm-Message-State: AOAM5331Qz0iQVJAHyNPjBcPyWvs9z3ClosnWTCO+89fFV6iF5DuzYQq
+        DKR+jZWD/BRO1HP3KU9sKw8=
+X-Google-Smtp-Source: ABdhPJyhfm2TdOXVlAeY5d74lvWjnOsFImjOAJruFiJ36r04CFLpbjyZ3n1UWGFbD6zRlCHU0zh0IA==
+X-Received: by 2002:a17:902:7b8a:b029:109:7bdb:ed9 with SMTP id w10-20020a1709027b8ab02901097bdb0ed9mr9346603pll.73.1624111163760;
+        Sat, 19 Jun 2021 06:59:23 -0700 (PDT)
+Received: from localhost ([103.248.31.165])
+        by smtp.gmail.com with ESMTPSA id n5sm8275613pgf.35.2021.06.19.06.59.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Jun 2021 06:59:23 -0700 (PDT)
+Date:   Sat, 19 Jun 2021 19:29:20 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v7 4/8] PCI/sysfs: Allow userspace to query and set
+ device reset mechanism
+Message-ID: <20210619135920.h42gp5ie5c2eutfq@archlinux>
+References: <20210608054857.18963-5-ameynarkhede03@gmail.com>
+ <20210618200045.GA3141153@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: Z54XJFU9_bf2oiGVt7wyID2GON94DJAn
-X-Proofpoint-ORIG-GUID: Z54XJFU9_bf2oiGVt7wyID2GON94DJAn
+In-Reply-To: <20210618200045.GA3141153@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   9ed13a17e38e0537e24d9b507645002bf8d0201f
-commit: 121d947d4fe15bcec90bcfc1249ee9b739cb9258 cifs: Handle witness client move notification
-config: h8300-randconfig-m031-20210618 (attached as .config)
-compiler: h8300-linux-gcc (GCC) 9.3.0
+On 21/06/18 03:00PM, Bjorn Helgaas wrote:
+> On Tue, Jun 08, 2021 at 11:18:53AM +0530, Amey Narkhede wrote:
+> > Add reset_method sysfs attribute to enable user to
+> > query and set user preferred device reset methods and
+> > their ordering.
+>
+> Rewrap to fill 75 columns (also apply to other patches if applicable,
+> e.g., 3/8 looks like it could use it).
+>
+> 2/8 looks like it's missing a blank line between paragraphs.
+>
+> > Co-developed-by: Alex Williamson <alex.williamson@redhat.com>
+> > Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> > Signed-off-by: Amey Narkhede <ameynarkhede03@gmail.com>
+> > ---
+> >  Documentation/ABI/testing/sysfs-bus-pci |  16 ++++
+> >  drivers/pci/pci-sysfs.c                 | 118 ++++++++++++++++++++++++
+> >  2 files changed, 134 insertions(+)
+> >
+> > diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
+> > index ef00fada2..cf6dbbb3c 100644
+> > --- a/Documentation/ABI/testing/sysfs-bus-pci
+> > +++ b/Documentation/ABI/testing/sysfs-bus-pci
+> > @@ -121,6 +121,22 @@ Description:
+> >  		child buses, and re-discover devices removed earlier
+> >  		from this part of the device tree.
+> >
+> > +What:		/sys/bus/pci/devices/.../reset_method
+> > +Date:		March 2021
+> > +Contact:	Amey Narkhede <ameynarkhede03@gmail.com>
+> > +Description:
+> > +		Some devices allow an individual function to be reset
+> > +		without affecting other functions in the same slot.
+> > +		For devices that have this support, a file named reset_method
+> > +		will be present in sysfs. Reading this file will give names
+> > +		of the device supported reset methods and their ordering.
+> > +		Writing the name or comma separated list of names of any of
+> > +		the device supported reset methods to this file will set the
+> > +		reset methods and their ordering to be used when resetting
+> > +		the device. Writing empty string to this file will disable
+> > +		ability to reset the device and writing "default" will return
+> > +		to the original value.
+>
+> Rewrap to fill or add a blank line if "For devices ..." is supposed to
+> start a new paragraph.
+>
+> My guess is you intend reading to show the *currently enabled* reset
+> methods, not the entire "supported" set?  So if a user has disabled
+> one of them, it no longer appears when you read the file?
+>
+> > +
+> >  What:		/sys/bus/pci/devices/.../reset
+> >  Date:		July 2009
+> >  Contact:	Michael S. Tsirkin <mst@redhat.com>
+> > diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+> > index 316f70c3e..52def79aa 100644
+> > --- a/drivers/pci/pci-sysfs.c
+> > +++ b/drivers/pci/pci-sysfs.c
+> > @@ -1334,6 +1334,123 @@ static const struct attribute_group pci_dev_rom_attr_group = {
+> >  	.is_bin_visible = pci_dev_rom_attr_is_visible,
+> >  };
+> >
+> > +static ssize_t reset_method_show(struct device *dev,
+> > +				 struct device_attribute *attr,
+> > +				 char *buf)
+> > +{
+> > +	struct pci_dev *pdev = to_pci_dev(dev);
+> > +	ssize_t len = 0;
+> > +	int i, prio;
+> > +
+> > +	for (prio = PCI_RESET_METHODS_NUM; prio; prio--) {
+> > +		for (i = 0; i < PCI_RESET_METHODS_NUM; i++) {
+> > +			if (prio == pdev->reset_methods[i]) {
+> > +				len += sysfs_emit_at(buf, len, "%s%s",
+> > +						     len ? "," : "",
+> > +						     pci_reset_fn_methods[i].name);
+> > +				break;
+> > +			}
+> > +		}
+> > +
+> > +		if (i == PCI_RESET_METHODS_NUM)
+> > +			break;
+> > +	}
+>
+> I'm guessing that if you adopt the alternate reset_methods[] encoding,
+> this nested loop becomes a single loop and "prio" goes away?
+>
+> > +	if (len)
+> > +		len += sysfs_emit_at(buf, len, "\n");
+> > +
+> > +	return len;
+> > +}
+> > +
+> > +static ssize_t reset_method_store(struct device *dev,
+> > +				  struct device_attribute *attr,
+> > +				  const char *buf, size_t count)
+> > +{
+> > +	u8 reset_methods[PCI_RESET_METHODS_NUM];
+> > +	struct pci_dev *pdev = to_pci_dev(dev);
+> > +	u8 prio = PCI_RESET_METHODS_NUM;
+> > +	char *name, *options;
+> > +	int i;
+>
+> Reorder decls with to_pci_dev(dev) first, then in order of use.
+>
+> > +	if (count >= (PAGE_SIZE - 1))
+> > +		return -EINVAL;
+> > +
+> > +	options = kstrndup(buf, count, GFP_KERNEL);
+> > +	if (!options)
+> > +		return -ENOMEM;
+> > +
+> > +	/*
+> > +	 * Initialize reset_method such that 0xff indicates
+> > +	 * supported but not currently enabled reset methods
+> > +	 * as we only use priority values which are within
+> > +	 * the range of PCI_RESET_FN_METHODS array size
+> > +	 */
+> > +	for (i = 0; i < PCI_RESET_METHODS_NUM; i++)
+> > +		reset_methods[i] = pdev->reset_methods[i] ? 0xff : 0;
+>
+> I'm hoping the 0xff trick goes away with the alternate encoding?
+>
+> > +	if (sysfs_streq(options, "")) {
+> > +		pci_warn(pdev, "All device reset methods disabled by user");
+> > +		goto set_reset_methods;
+> > +	}
+>
+> I think you can get this case out of the way early with no kstrndup(),
+> no goto, etc.
+>
+> > +	if (sysfs_streq(options, "default")) {
+> > +		for (i = 0; i < PCI_RESET_METHODS_NUM; i++)
+> > +			reset_methods[i] = reset_methods[i] ? prio-- : 0;
+> > +		goto set_reset_methods;
+> > +	}
+>
+> If you use pci_init_reset_methods() here, you can also get this case
+> out of the way early.
+>
+The problem with alternate encoding is we won't be able to know if
+one of the reset methods was disabled previously. For example,
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+# cat reset_methods
+flr,bus 			# dev->reset_methods = [3, 5, 0, ...]
+# echo bus > reset_methods 	# dev->reset_methods = [5, 0, 0, ...]
+# cat reset_methods
+bus
 
-New smatch warnings:
-fs/cifs/cifs_swn.c:468 cifs_swn_store_swn_addr() error: uninitialized symbol 'port'.
+Now if an user wants to enable flr
 
-vim +/port +468 fs/cifs/cifs_swn.c
+# echo flr > reset_methods 	# dev->reset_methods = [3, 0, 0, ...]
+OR
+# echo bus,flr > reset_methods 	# dev->reset_methods = [5, 3, 0, ...]
 
-121d947d4fe15b Samuel Cabrero 2020-11-30  447  static int cifs_swn_store_swn_addr(const struct sockaddr_storage *new,
-121d947d4fe15b Samuel Cabrero 2020-11-30  448  				   const struct sockaddr_storage *old,
-121d947d4fe15b Samuel Cabrero 2020-11-30  449  				   struct sockaddr_storage *dst)
-121d947d4fe15b Samuel Cabrero 2020-11-30  450  {
-121d947d4fe15b Samuel Cabrero 2020-11-30  451  	__be16 port;
-121d947d4fe15b Samuel Cabrero 2020-11-30  452  
-121d947d4fe15b Samuel Cabrero 2020-11-30  453  	if (old->ss_family == AF_INET) {
-121d947d4fe15b Samuel Cabrero 2020-11-30  454  		struct sockaddr_in *ipv4 = (struct sockaddr_in *)old;
-121d947d4fe15b Samuel Cabrero 2020-11-30  455  
-121d947d4fe15b Samuel Cabrero 2020-11-30  456  		port = ipv4->sin_port;
-121d947d4fe15b Samuel Cabrero 2020-11-30  457  	}
-121d947d4fe15b Samuel Cabrero 2020-11-30  458  
-121d947d4fe15b Samuel Cabrero 2020-11-30  459  	if (old->ss_family == AF_INET6) {
-121d947d4fe15b Samuel Cabrero 2020-11-30  460  		struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)old;
-121d947d4fe15b Samuel Cabrero 2020-11-30  461  
-121d947d4fe15b Samuel Cabrero 2020-11-30  462  		port = ipv6->sin6_port;
-121d947d4fe15b Samuel Cabrero 2020-11-30  463  	}
-121d947d4fe15b Samuel Cabrero 2020-11-30  464  
-121d947d4fe15b Samuel Cabrero 2020-11-30  465  	if (new->ss_family == AF_INET) {
-121d947d4fe15b Samuel Cabrero 2020-11-30  466  		struct sockaddr_in *ipv4 = (struct sockaddr_in *)new;
-121d947d4fe15b Samuel Cabrero 2020-11-30  467  
-121d947d4fe15b Samuel Cabrero 2020-11-30 @468  		ipv4->sin_port = port;
+either they need to write "default" first then flr or we will need to
+reprobe reset methods each time when user writes to reset_method attribute.
 
-Apparently Smatch is not smart enough to know that AF_INET and AF_INET6
-are the only possible values for old->ss_family.  I hope that eventually
-we will be able to enable GCC's uninitialized variable checking and GCC
-is certainly not able to figure this out either.
 
-121d947d4fe15b Samuel Cabrero 2020-11-30  469  	}
-121d947d4fe15b Samuel Cabrero 2020-11-30  470  
-121d947d4fe15b Samuel Cabrero 2020-11-30  471  	if (new->ss_family == AF_INET6) {
-121d947d4fe15b Samuel Cabrero 2020-11-30  472  		struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)new;
-121d947d4fe15b Samuel Cabrero 2020-11-30  473  
-121d947d4fe15b Samuel Cabrero 2020-11-30  474  		ipv6->sin6_port = port;
-121d947d4fe15b Samuel Cabrero 2020-11-30  475  	}
-121d947d4fe15b Samuel Cabrero 2020-11-30  476  
-121d947d4fe15b Samuel Cabrero 2020-11-30  477  	*dst = *new;
-121d947d4fe15b Samuel Cabrero 2020-11-30  478  
-121d947d4fe15b Samuel Cabrero 2020-11-30  479  	return 0;
-121d947d4fe15b Samuel Cabrero 2020-11-30  480  }
+> > +	while ((name = strsep(&options, ",")) != NULL) {
+> > +		if (sysfs_streq(name, ""))
+> > +			continue;
+> > +
+> > +		name = strim(name);
+> > +
+> > +		for (i = 0; i < PCI_RESET_METHODS_NUM; i++) {
+> > +			if (reset_methods[i] &&
+> > +			    sysfs_streq(name, pci_reset_fn_methods[i].name)) {
+> > +				reset_methods[i] = prio--;
+> > +				break;
+> > +			}
+> > +		}
+> > +
+> > +		if (i == PCI_RESET_METHODS_NUM) {
+> > +			kfree(options);
+> > +			return -EINVAL;
+> > +		}
+> > +	}
+> > +
+> > +	if (reset_methods[0] &&
+> > +	    reset_methods[0] != PCI_RESET_METHODS_NUM)
+> > +		pci_warn(pdev, "Device specific reset disabled/de-prioritized by user");
+>
+> Is there a specific reason for this warning?  Is it just telling the
+> user that he might have shot himself in the foot?  Not sure that's
+> necessary.
+>
+I think generally presence of device specific reset method means other
+methods are potentially broken. Is it okay to skip this?
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> > +set_reset_methods:
+> > +	kfree(options);
+> > +	memcpy(pdev->reset_methods, reset_methods, sizeof(reset_methods));
+> > +	return count;
+> > +}
+> > +static DEVICE_ATTR_RW(reset_method);
+> > +
+> > +static struct attribute *pci_dev_reset_method_attrs[] = {
+> > +	&dev_attr_reset_method.attr,
+> > +	NULL,
+> > +};
+> > +
+> > +static umode_t pci_dev_reset_method_attr_is_visible(struct kobject *kobj,
+> > +						    struct attribute *a, int n)
+> > +{
+> > +	struct pci_dev *pdev = to_pci_dev(kobj_to_dev(kobj));
+> > +
+> > +	if (!pci_reset_supported(pdev))
+> > +		return 0;
+>
+> I think this _is_visible method is executed only once, at
+> device_add()-time.  That means if a device doesn't support any resets
+> at that time, "reset_method" will not be visible, and there will be no
+> way to ever enable a reset method at run-time.  I assume that's OK;
+> just double-checking.
+>
+Correct. Its similar to exisitng reset_fn bitfield which is removed in this
+patch series.
+[...]
 
+Thanks,
+Amey
