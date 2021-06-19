@@ -2,71 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6CD43AD88C
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 09:54:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ADF33AD88D
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 09:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233840AbhFSH4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 03:56:11 -0400
-Received: from bmailout2.hostsharing.net ([83.223.78.240]:47017 "EHLO
-        bmailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229466AbhFSH4K (ORCPT
+        id S233963AbhFSH61 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 03:58:27 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:33152 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229466AbhFSH60 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 03:56:10 -0400
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
-        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 2AD5D2800B3C2;
-        Sat, 19 Jun 2021 09:53:58 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 103183BD009; Sat, 19 Jun 2021 09:53:58 +0200 (CEST)
-Date:   Sat, 19 Jun 2021 09:53:58 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     David Laight <David.Laight@ACULAB.COM>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Subject: Re: xhci_pci & PCIe hotplug crash
-Message-ID: <20210619075358.GA31639@wunner.de>
-References: <20210505120117.4wpmo6fhvzznf3wv@pali>
- <YJKK7SDIaeH1L/fC@kroah.com>
- <20210505123346.kxfpumww5i4qmhnk@pali>
- <20210505124402.GB29101@wunner.de>
- <20210505130240.lmryb26xffzkg4pl@pali>
- <ea58430d088742a1910475a680fb1de5@AcuMS.aculab.com>
- <20210505153942.mntbkmphw3ik3pdg@pali>
+        Sat, 19 Jun 2021 03:58:26 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624089375;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cNstW53zAdTSKjnd/uFTh8EXy2E4aia9C+TcSMNuBas=;
+        b=Y4Zza9RNF6VigLci/ADSaUf4+ygwxRn/7bMN/rCSZje+ZyBSxgRscBgwo+cRPkEhgihh3c
+        A5i9MWuuFoP+1KtABklDV2YsLnart5f45j8QCw4QIy8xeM6bgFQzP7tEf3F1UQMAjjiAlK
+        MHlZjZwaH6hPK1yyEvCN24tkeXlbrNth/bMC4A+4beG2UTwSpCh8mCUZMoCvmjILbh+wiK
+        7OnM/VN2PWIhMUOWU6o2xT0hClIcYxZ1o9rdw5dJ3JefCrft/n9t2OnOrW7D3cOapKsW1N
+        641PxYyino6lUNjKLh0Eb37rwpyt8X2mtmFLw6JpVOIViQWeV1cbnkC/pmT0ig==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624089375;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cNstW53zAdTSKjnd/uFTh8EXy2E4aia9C+TcSMNuBas=;
+        b=bwBA7DmZJN1MBR4lu/rAt+eSH3j5NMDsmCO1p5SPtn9xYETMQSUEHzURcxDfOLhxZSy2hW
+        ugsocUyTTTEFcXCg==
+To:     Juri Lelli <juri.lelli@redhat.com>, bigeasy@linutronix.de
+Cc:     linux-rt-users@vger.kernel.org, peterz@infradead.org,
+        linux-kernel@vger.kernel.org, bristot@redhat.com,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Anna-Maria Behnsen <anna-maria@linutronix.de>
+Subject: Re: [RFC PATCH RT v2 1/2] time/hrtimer: Add PINNED_HARD mode for realtime hrtimers
+In-Reply-To: <87k0mqeofg.ffs@nanos.tec.linutronix.de>
+References: <20210616071705.166658-1-juri.lelli@redhat.com> <20210616071705.166658-2-juri.lelli@redhat.com> <87k0mqeofg.ffs@nanos.tec.linutronix.de>
+Date:   Sat, 19 Jun 2021 09:56:14 +0200
+Message-ID: <87bl82e19d.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210505153942.mntbkmphw3ik3pdg@pali>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 05:39:42PM +0200, Pali Rohár wrote:
-> On Wednesday 05 May 2021 15:20:11 David Laight wrote:
-> > From: Pali Rohár
-> > Sent: 05 May 2021 14:03
-> > > So seems that PCIe controller HW triggers these external aborts when
-> > > device on PCIe bus is not accessible anymore.
-> > > 
-> > > If this issue is really caused by MMIO access from xhci driver when
-> > > device is not accessible on the bus anymore, can we do something to
-> > > prevent this kernel crash? Somehow mask that external abort in kernel
-> > > for a time during MMIO access?
-> > 
-> > If it is a cycle abort then the interrupted address is probably
-> > that of the MMIO instruction.
-> > So you need to catch the abort, emulate the instruction and
-> > then return to the next one.
-> 
-> Has kernel API & infrastructure for catching these aborts and executing
-> own driver handler when abort happens?
+On Sat, Jun 19 2021 at 01:35, Thomas Gleixner wrote:
+> The wild west of anything which scratches 'my itch' based on 'my use
+> case numbers' in Linux ended many years ago and while RT was always a
+> valuable playground for unthinkable ideas we definitely tried hard not
+> to accept use case specific hacks wihtout a proper justification that it
+> makes sense in general.
+>
+> So why are you even trying to sell this to me?
 
-Yes, see here for an example:
+I wouldn't have been that grumpy if you'd at least checked whether the
+task is pinned. Still I would have told you that you "fix" it at the
+wrong place.
 
-https://lore.kernel.org/linux-pci/20210615191405.21878-4-jim2101024@gmail.com/
+Why on earth is that nohz heuristic trainwreck not even checking that?
+It's not a RT problem and it's not a problem restricted to RT tasks
+either. If a task is pinned then arming the timer on a random other CPU
+is blatant nonsense independent of the scheduling class.
+
+Thanks,
+
+        tglx
