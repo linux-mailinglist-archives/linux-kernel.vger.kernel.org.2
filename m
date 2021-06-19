@@ -2,79 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9B13ADAF5
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 18:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C99733ADAF6
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 18:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234837AbhFSQ4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 12:56:23 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:40794 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234822AbhFSQ4S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 12:56:18 -0400
-Received: by mail-io1-f71.google.com with SMTP id l15-20020a5e820f0000b02904bd1794d00eso6621473iom.7
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 09:54:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=QqIncrQU8u3oTCnB+Mpzxl6+UwwC6+HMM9p8ltzPHS8=;
-        b=nehdQXpJuPsFNarAypQTNZGOFTI+p9p3fiYkh3MI5Q2SJ+IWCjnZbqO1DUfQN+zgz0
-         lfG9SZDqe/w+ziSmesjrwVxYMq+qSjjNW//3YKjJjcsxvxxbSJHo2akdxXzo2pzXNUYM
-         wacZ18kk/v43iMcz7/FD7KUAHPY2RYiFsVywUZKhFdpY7M2McLTRJcQl8bR0yEtlasWB
-         +/BMyDYv8kvGBXDHNm/fKmVKSkRyIYHmVvPiP52gR2KtHa6+tUmDovUMFYluaBhDbbtx
-         6Qo59GqDuo9c7IH8wsJOfpHxw+S6ry1Fyfgmk/Zwd2DG/oXxWhXPLeH5WoSd9ZYIoQqz
-         esDA==
-X-Gm-Message-State: AOAM533mU8yB1GcP93hJ0He5rhAi7IPU4JJipCtVx/LT+gdGEt6D/B3f
-        /cjMpS+iJ3Ozt8qu196goHsUKiN8tBSOvpzwLx9LDJS05uKT
-X-Google-Smtp-Source: ABdhPJx/AfnH2IlS/TiDpgCKO8HJ1dF/+Qf9wLPerlasfa7aKwjtTw6wDoV8Sg0G1dCQZ9I9Y1q/4o9tQB4bG00bf9WeDJQtc5Ow
+        id S234850AbhFSQ4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 12:56:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44052 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234800AbhFSQ4i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 12:56:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 156FD61002;
+        Sat, 19 Jun 2021 16:54:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624121667;
+        bh=/c0MjA9qCgiipSBFS+d1fptRbka4uIyU5IAVrlf53V4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Rp3AeNW1qYtYwdt6cZi+FX0bpTucS4R3Ex6XjzdGn18De/29P8h/rTCTnzTqbg5cW
+         yrCwybJT35RuqBaP8Lxk5VJ9Jr8cbWY/C8/+5o37nfY48g+ek5qrC0SPhzXGjV9R6U
+         4FkJV8dEw4R+oPpCmfgNPGUpk+d+rND/o2qShSDHGpvczkxcE3187+lYONvmMl6Eis
+         l2bmH8nu/abn217FyBEKHcPA92bOxqa8w9vnIHQjuRXEGNMOK4aSvB38tkiQ5iP5Qc
+         P6Kplrh6l7ZBFt+W/NTj/iGM5/hjpKSNmvWNCYTKog2OO+p7mJgNRz32MBTmqC/Imi
+         bF1Myeku3QDew==
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        John Garry <john.garry@huawei.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: [GIT PULL] perf tools fixes for v5.13: 6th batch
+Date:   Sat, 19 Jun 2021 13:54:17 -0300
+Message-Id: <20210619165417.871997-1-acme@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-Received: by 2002:a02:94af:: with SMTP id x44mr8962347jah.79.1624121646170;
- Sat, 19 Jun 2021 09:54:06 -0700 (PDT)
-Date:   Sat, 19 Jun 2021 09:54:06 -0700
-In-Reply-To: <000000000000f034fc05c2da6617@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cac82d05c5214992@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in check_all_holdout_tasks_trace
-From:   syzbot <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
-        axboe@kernel.dk, bpf@vger.kernel.org, christian@brauner.io,
-        coreteam@netfilter.org, daniel@iogearbox.net, davem@davemloft.net,
-        dsahern@kernel.org, dvyukov@google.com, fw@strlen.de,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        john.fastabend@gmail.com, josh@joshtriplett.org,
-        kadlec@netfilter.org, kafai@fb.com, kpsingh@kernel.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        mathieu.desnoyers@efficios.com, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        paulmck@kernel.org, peterz@infradead.org, rcu@vger.kernel.org,
-        rostedt@goodmis.org, shakeelb@google.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yanfei.xu@windriver.com,
-        yhs@fb.com, yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has bisected this issue to:
+Hi Linus,
 
-commit f9006acc8dfe59e25aa75729728ac57a8d84fc32
-Author: Florian Westphal <fw@strlen.de>
-Date:   Wed Apr 21 07:51:08 2021 +0000
+	Please consider pulling,
 
-    netfilter: arp_tables: pass table pointer via nf_hook_ops
+Best regards,
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10dceae8300000
-start commit:   0c38740c selftests/bpf: Fix ringbuf test fetching map FD
-git tree:       bpf-next
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=12dceae8300000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14dceae8300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a6380da8984033f1
-dashboard link: https://syzkaller.appspot.com/bug?extid=7b2b13f4943374609532
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1264c2d7d00000
+- Arnaldo
 
-Reported-by: syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com
-Fixes: f9006acc8dfe ("netfilter: arp_tables: pass table pointer via nf_hook_ops")
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+The following changes since commit 9ed13a17e38e0537e24d9b507645002bf8d0201f:
+
+  Merge tag 'net-5.13-rc7' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2021-06-18 18:55:29 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-for-v5.13-2021-06-19
+
+for you to fetch changes up to 1792a59eab9593de2eae36c40c5a22d70f52c026:
+
+  tools headers UAPI: Sync linux/in.h copy with the kernel sources (2021-06-19 10:15:22 -0300)
+
+----------------------------------------------------------------
+perf tools fixes for v5.13: 6th batch
+
+- Fix refcount usage when processing PERF_RECORD_KSYMBOL.
+
+- 'perf stat' metric group fixes.
+
+- Fix 'perf test' non-bash issue with stat bpf counters.
+
+- Update unistd, in.h and socket.h with the kernel sources, silencing
+  perf build warnings.
+
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+
+----------------------------------------------------------------
+Arnaldo Carvalho de Melo (3):
+      perf beauty: Update copy of linux/socket.h with the kernel sources
+      tools headers UAPI: Sync asm-generic/unistd.h with the kernel original
+      tools headers UAPI: Sync linux/in.h copy with the kernel sources
+
+Ian Rogers (1):
+      perf test: Fix non-bash issue with stat bpf counters
+
+John Garry (2):
+      perf metricgroup: Fix find_evsel_group() event selector
+      perf metricgroup: Return error code from metricgroup__add_metric_sys_event_iter()
+
+Riccardo Mancini (1):
+      perf machine: Fix refcount usage when processing PERF_RECORD_KSYMBOL
+
+ tools/include/uapi/asm-generic/unistd.h        |  3 +--
+ tools/include/uapi/linux/in.h                  |  3 +++
+ tools/perf/tests/shell/stat_bpf_counters.sh    |  4 ++--
+ tools/perf/trace/beauty/include/linux/socket.h |  2 --
+ tools/perf/util/machine.c                      |  3 ++-
+ tools/perf/util/metricgroup.c                  | 14 ++++++++------
+ 6 files changed, 16 insertions(+), 13 deletions(-)
