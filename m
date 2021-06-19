@@ -2,99 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0CF73AD829
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 08:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B15A23AD82C
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 08:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233006AbhFSGkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 02:40:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34754 "EHLO
+        id S233692AbhFSGmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 02:42:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbhFSGkw (ORCPT
+        with ESMTP id S231637AbhFSGmC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 02:40:52 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A214DC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 23:38:41 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f246700fd06b376b270bc91.dip0.t-ipconnect.de [IPv6:2003:ec:2f24:6700:fd06:b376:b270:bc91])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 52DED1EC0598;
-        Sat, 19 Jun 2021 08:38:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1624084717;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=VddUBuoes3XOSU2mW20xa4pvFao5Caqu6cazeuMucSM=;
-        b=bjWZ+EnNw/BT8j1PHqoQ68XDpbUgbuXR13oYuCQY4JIMYjICEEGfd8PUSaV+Se8rAQi+xt
-        XaTUIcau4lunH+9PPh+KMK4v/F3ODG5IlITvU5ji9sB4JM1hGu+K8etSkMqb/TG7/pWIXj
-        YYDIFEakjTSvSv/sK7hzTEtXiZxJKN0=
-Date:   Sat, 19 Jun 2021 08:38:27 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 03/11] x86/cpufeatures: Add TDX Guest CPU feature
-Message-ID: <YM2Q46fcNobyobek@zn.tnic>
-References: <20210618225755.662725-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210618225755.662725-4-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YM0uoTnAi7TpU5fF@zn.tnic>
- <6b68dc50-4d4c-f724-8ab8-0a12a07d42aa@linux.intel.com>
+        Sat, 19 Jun 2021 02:42:02 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F25C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 23:39:51 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id 13-20020a17090a08cdb029016eed209ca4so7197383pjn.1
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 23:39:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=7O6NiC7BTr3eVGuJkmQkcqtgkrwhWl7/Qlj0XvSRQpU=;
+        b=Tq/B3MqqSOHiSwlMSBlAYi++SRSc0W8ikCH4QbmMFDYjnsnF22a3XeZ0jTtKi9GMwL
+         dAOvvYOsSTxeljnKvWyRuOtiKvrOILA38Nzmja/VETR1+9l32dEWcfmzTa8tvq3+KAe2
+         DafAfJEyu1ZEbj7Vl6kbIORMFPKB/JhDDwAm5v7f2h+x7KFEzFK9WQsR2A54xoZS4ZUz
+         zIYPkgP747yuEaCG6WxGqiAYqW6uQlg/MDPQkThdkibUlDkiRhPiEhZ+XxtTUtUWiQG8
+         CZIdc8EztIAJpu1pH4/WYBUPCMTa3CwEFD7rbw7S5UQkGlSNxJpMQxehLkcR3hFflZIL
+         iS1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7O6NiC7BTr3eVGuJkmQkcqtgkrwhWl7/Qlj0XvSRQpU=;
+        b=tp52qHZz6djC+778k4Scw8Mr/NKmws9s02CYNTFmRCmNzcMISkr0hohJrH3bfYaU3U
+         9stos8n1GFiJzZbXRNoFGfhWvqErcdSqT8GUCEbFEL84uGrThGRsAlqKf4ls8hiqXFH3
+         kleLfr8yKgxyvXXoIcFN4mKvRu0FkHpFgCAgjGctlilb/cWX7y+LjozUFRRWiiuXEls4
+         jrb+MkV/PRQ0RwEvcm4cWXolnC9X6IbDHuEEVxOljGWbqTI0pet2Vo4YUNGJ/bFDwCkX
+         KCnSWCEcT9+iJYfK7RqP9In4U8jmmFG7zK/wS0Mk+2nGUfSBD0CWQ+lhvaP70VfBL8bG
+         sN+w==
+X-Gm-Message-State: AOAM530q7bGAejmd1GNWkvwSn5S3HrWuI5XAy3g1O1VGvZLXLKlL2DZJ
+        EANPhG8LD3y9Nh1+1oIK5Ew=
+X-Google-Smtp-Source: ABdhPJxymPRDpLaqkWmfArMf2I2OcRGRdxq6Ivh+KwifQhr+qlmJY0IfXNXv54VL/yc69EXfxgbunw==
+X-Received: by 2002:a17:902:9a8c:b029:113:d891:2eaf with SMTP id w12-20020a1709029a8cb0290113d8912eafmr8117146plp.61.1624084791379;
+        Fri, 18 Jun 2021 23:39:51 -0700 (PDT)
+Received: from DESKTOP-PJLD54P.localdomain (122-116-74-98.HINET-IP.hinet.net. [122.116.74.98])
+        by smtp.gmail.com with ESMTPSA id t13sm3566599pfq.173.2021.06.18.23.39.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 18 Jun 2021 23:39:50 -0700 (PDT)
+Date:   Sat, 19 Jun 2021 14:39:42 +0800
+From:   Kuan-Ying Lee <kylee0686026@gmail.com>
+To:     Marco Elver <elver@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Subject: Re: [PATCH v2 2/3] kasan: integrate the common part of two KASAN
+ tag-based modes
+Message-ID: <20210619063942.GA67@DESKTOP-PJLD54P.localdomain>
+References: <20210612045156.44763-1-kylee0686026@gmail.com>
+ <20210612045156.44763-3-kylee0686026@gmail.com>
+ <CANpmjNMLzxMO0k_kvGaAvzyGoyKxBTtjx4PH=-MKKgDb1-dQaA@mail.gmail.com>
+ <20210612155108.GA68@DESKTOP-PJLD54P.localdomain>
+ <CANpmjNOf8i6HPxFb3gjTrUWMh_6c4zdsh29izrSrHDi9ud4+gw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6b68dc50-4d4c-f724-8ab8-0a12a07d42aa@linux.intel.com>
+In-Reply-To: <CANpmjNOf8i6HPxFb3gjTrUWMh_6c4zdsh29izrSrHDi9ud4+gw@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 05:13:39PM -0700, Kuppuswamy, Sathyanarayanan wrote:
-> On 6/18/21 4:39 PM, Borislav Petkov wrote:
-> >  From Documentation/process/submitting-patches.rst:
-> > 
-> > "Both Tested-by and Reviewed-by tags, once received on mailing list from tester
-> > or reviewer, should be added by author to the applicable patches when sending
-> > next versions.  However if the patch has changed substantially in following
-> > version, these tags might not be applicable anymore and thus should be removed.
-> > Usually removal of someone's Tested-by or Reviewed-by tags should be mentioned
-> > in the patch changelog (after the '---' separator)."
-> > 
-> > IOW, for the next revisions of your patchsets, you should drop
-> > Reviewed-by: tags on patches when they've changed more than trivially
-> > because otherwise those tags have no meaning at all.
-> > 
-> > Also, please take the time to peruse the above document on the kernel
-> > process while waiting.
+On Mon, Jun 14, 2021 at 10:48:27AM +0200, Marco Elver wrote:
+> On Sat, 12 Jun 2021 at 17:51, Kuan-Ying Lee <kylee0686026@gmail.com> wrote:
+> [...]
+> > > > diff --git a/mm/kasan/report_tags.h b/mm/kasan/report_tags.h
+> > > > new file mode 100644
+> > > > index 000000000000..4f740d4d99ee
+> > > > --- /dev/null
+> > > > +++ b/mm/kasan/report_tags.h
+> > > > @@ -0,0 +1,56 @@
+> > > > +/* SPDX-License-Identifier: GPL-2.0 */
+> > > > +#ifndef __MM_KASAN_REPORT_TAGS_H
+> > > > +#define __MM_KASAN_REPORT_TAGS_H
+> > > > +
+> > > > +#include "kasan.h"
+> > > > +#include "../slab.h"
+> > > > +
+> > > > +#ifdef CONFIG_KASAN_TAGS_IDENTIFY
+> > > > +const char *kasan_get_bug_type(struct kasan_access_info *info)
+> > > > +{
+> > > [...]
+> > > > +       /*
+> > > > +        * If access_size is a negative number, then it has reason to be
+> > > > +        * defined as out-of-bounds bug type.
+> > > > +        *
+> > > > +        * Casting negative numbers to size_t would indeed turn up as
+> > > > +        * a large size_t and its value will be larger than ULONG_MAX/2,
+> > > > +        * so that this can qualify as out-of-bounds.
+> > > > +        */
+> > > > +       if (info->access_addr + info->access_size < info->access_addr)
+> > > > +               return "out-of-bounds";
+> > >
+> > > This seems to change behaviour for SW_TAGS because it was there even
+> > > if !CONFIG_KASAN_TAGS_IDENTIFY. Does it still work as before?
+> > >
+> >
+> > You are right. It will change the behavior.
+> > However, I think that if !CONFIG_KASAN_TAG_IDENTIFY, it should be reported
+> > "invalid-access".
 > 
-> I will make sure to remove the Reviewed-by/Tested-by tags for the changed patches
-> in the next submission. But, IMO, changes made in this patch is minimal. Nothing
-> changed functionally. So, do we still need to remove the tags for this patch?
+> There's no reason that if !CONFIG_KASAN_TAG_IDENTIFY it should be
+> reported as "invalid-acces" if we can do better without the additional
+> state that the config option introduces.
+> 
+> It's trivial to give a slightly better report without additional
+> state, see the comment explaining why it's reasonable to infer
+> out-of-bounds here.
+> 
+> > Or is it better to keep it in both conditions?
+> 
+> We want to make this patch a non-functional change.
+>
 
-My note was more of a general reminder: "for the next revisions of
-your patchsets" above. I simply replied to the first mail with a patch
-changelog.
+Got it.
 
-Also, maybe our documentation text is not really clear. It says "changed
-substantially", you understood that as "changed functionally" and I've
-seen people complain about smaller things. But ok, let's agree on
-functional changes here.
+> [...]
+> > > > diff --git a/mm/kasan/tags.c b/mm/kasan/tags.c
+> > > > new file mode 100644
+> > > > index 000000000000..9c33c0ebe1d1
+> > > > --- /dev/null
+> > > > +++ b/mm/kasan/tags.c
+> > > > @@ -0,0 +1,58 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > +/*
+> > > > + * This file contains common tag-based KASAN code.
+> > > > + *
+> > > > + * Author: Kuan-Ying Lee <kylee0686026@gmail.com>
+> > >
+> > > We appreciate your work on this, but this is misleading. Because you
+> > > merely copied/moved the code, have a look what sw_tags.c says -- that
+> > > should either be preserved, or we add nothing here.
+> > >
+> > > I prefer to add nothing or the bare minimum (e.g. if the company
+> > > requires a Copyright line) for non-substantial additions because this
+> > > stuff becomes out-of-date fast and just isn't useful at all. 'git log'
+> > > is the source of truth.
+> >
+> > This was my first time to upload a new file.
+> > Thanks for the suggestions. :)
+> > I will remove this author tag and wait for Greg's process advice.
+> >
+> > >
+> > > Cc'ing Greg for process advice. For moved code, does it have to
+> > > preserve the original Copyright line if there was one?
+> 
+> Greg responded, see his emails. Please preserve the original header
+> from the file the code was moved from (hw_tags.c/sw_tags.c).
 
-Thx.
+Ok. I will do it in v3.
+Thanks.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> 
+> Thanks,
+> -- Marco
