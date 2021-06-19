@@ -2,115 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 483FA3ADA29
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 15:40:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0D13ADA30
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 15:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234341AbhFSNm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 09:42:59 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:51752 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233286AbhFSNm7 (ORCPT
+        id S234353AbhFSNsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 09:48:46 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:25886 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233286AbhFSNsn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 09:42:59 -0400
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15JDV3LZ013262;
-        Sat, 19 Jun 2021 13:40:43 GMT
+        Sat, 19 Jun 2021 09:48:43 -0400
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15JDf56E004044;
+        Sat, 19 Jun 2021 13:46:24 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=hS26YoFHdPGYMTjYz8IS1maG13YzP8VVING5If3ikhs=;
- b=CUrBIQbFa6V5W2tfroKTaDubn/yoBCtm2+Q9cHXtUE6KDHiS+KRAAeav6XMYlBEo1AnO
- 2WlEyswrxrabeJ6MULZp1XThSHma6NCwIvngqgZI5h3ts7O5kQaE7WjnA4bv4jmTfjnj
- k5UTCirkVPofSZPk9fKJYRDVsgZUmHc34tcRgdmVpDE8FbrQkvWSjPXDvHDLt+BoGqiq
- h5JGFyAqqr6pqcnYXobZtZZRiabffk/kuQ0bCsG2khuH4XIeRkx+j5Pzgcd+odVgkF4T
- zRxw7NxeyHGZOfOhnC5us7XL53bsvOXOkfI8LSDwUpGEqhyix9Zlqj8HcHKWkuT4gOZv Ag== 
-Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39994r0dcq-1
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=HP6iHUHGUTOwLc0E//CINN2obCmftl4AYOilvitxiCs=;
+ b=Kg4whScVvT5tVH15TVen85gGD8B/U8YHZVOHnlzbGdnnIWSpm6d14M/zLokOzGEa7C5S
+ N3fmTC59umPOCVesuhXYZhBEmW49yh2yrYcn0ua5ZFmJNb87GXWR1uiHBgsHNWl7Tu8K
+ rj1rvi5wAcyV6l/pjMgINUnUDGHAQob/u+zgfuMSpGQA5up9wGpNJpY+/XPxB7V8P9ow
+ aeG0XIpcDPbt6IgG2NZ/pAiIFwcW8xQ6QYTd0P1Qrx/hL/h2SqxwvoZzUX8hKyYr00uC
+ fvjmOcWi0d1cz+ZEDWZMz9Gx/CC7hWtBdd6M0i7qbx2PCA6ysHo2t47k6dnjSf4cZ2q6 Cg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39970bggbt-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 19 Jun 2021 13:40:43 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15JDegtZ005639;
-        Sat, 19 Jun 2021 13:40:42 GMT
+        Sat, 19 Jun 2021 13:46:24 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 15JDf1oF108790;
+        Sat, 19 Jun 2021 13:46:23 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 3998d2uvyn-1
+        by userp3030.oracle.com with ESMTP id 3995psqfd0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 19 Jun 2021 13:40:42 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15JDegDS005628;
-        Sat, 19 Jun 2021 13:40:42 GMT
+        Sat, 19 Jun 2021 13:46:23 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15JDkM8x119767;
+        Sat, 19 Jun 2021 13:46:22 GMT
 Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 3998d2uvy8-1
+        by userp3030.oracle.com with ESMTP id 3995psqfcg-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 19 Jun 2021 13:40:42 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 15JDeXN7016087;
-        Sat, 19 Jun 2021 13:40:34 GMT
+        Sat, 19 Jun 2021 13:46:22 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 15JDkK2t018967;
+        Sat, 19 Jun 2021 13:46:20 GMT
 Received: from kadam (/102.222.70.252)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sat, 19 Jun 2021 06:40:32 -0700
-Date:   Sat, 19 Jun 2021 16:40:25 +0300
+        with ESMTP ; Sat, 19 Jun 2021 13:46:19 +0000
+Date:   Sat, 19 Jun 2021 16:46:13 +0300
 From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/gma500/oaktrail_lvds: replace continue with break
-Message-ID: <20210619134025.GH1861@kadam>
-References: <20210618183524.590186-1-colin.king@canonical.com>
+To:     kbuild@lists.01.org, Samuel Cabrero <scabrero@suse.de>
+Cc:     lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Steve French <stfrench@microsoft.com>,
+        Aurelien Aptel <aaptel@suse.com>
+Subject: fs/cifs/cifs_swn.c:468 cifs_swn_store_swn_addr() error:
+ uninitialized symbol 'port'.
+Message-ID: <202106192055.9FuqF8dj-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210618183524.590186-1-colin.king@canonical.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: Ih5-7A04RWlqzQ8H2vqzh7-dD5qJe8qd
-X-Proofpoint-GUID: Ih5-7A04RWlqzQ8H2vqzh7-dD5qJe8qd
+X-Proofpoint-GUID: Z54XJFU9_bf2oiGVt7wyID2GON94DJAn
+X-Proofpoint-ORIG-GUID: Z54XJFU9_bf2oiGVt7wyID2GON94DJAn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 07:35:24PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently a loop scans through the connector list checking
-> for connectors that do not match a specific criteria. The
-> use of the continue statement is a little unintuitive and
-> can confuse static analysis checking.  Invert the criteria
-> matching logic and use a break to terminate the loop once
-> the first suitable connector has been found.
-> 
-> Thanks to Patrik Jakobsson for explaining the original
-> intent of the code and suggesting this change.
-> 
-> Addresses-Coverity: ("Continue has no effect")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/gpu/drm/gma500/oaktrail_lvds.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/gma500/oaktrail_lvds.c b/drivers/gpu/drm/gma500/oaktrail_lvds.c
-> index 432bdcc57ac9..8541dcf237eb 100644
-> --- a/drivers/gpu/drm/gma500/oaktrail_lvds.c
-> +++ b/drivers/gpu/drm/gma500/oaktrail_lvds.c
-> @@ -113,8 +113,8 @@ static void oaktrail_lvds_mode_set(struct drm_encoder *encoder,
->  
->  	/* Find the connector we're trying to set up */
->  	list_for_each_entry(connector, &mode_config->connector_list, head) {
-> -		if (!connector->encoder || connector->encoder->crtc != crtc)
-> -			continue;
-> +		if (connector->encoder && connector->encoder->crtc == crtc)
-> +			break;
->  	}
->  
->  	if (!connector) {
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   9ed13a17e38e0537e24d9b507645002bf8d0201f
+commit: 121d947d4fe15bcec90bcfc1249ee9b739cb9258 cifs: Handle witness client move notification
+config: h8300-randconfig-m031-20210618 (attached as .config)
+compiler: h8300-linux-gcc (GCC) 9.3.0
 
-This test is wrong/impossible.  It should be:
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-	if (list_entry_is_head(connector, &mode_config->connector_list,
-			       head)) {
+New smatch warnings:
+fs/cifs/cifs_swn.c:468 cifs_swn_store_swn_addr() error: uninitialized symbol 'port'.
 
-regards,
-dan carpenter
+vim +/port +468 fs/cifs/cifs_swn.c
 
+121d947d4fe15b Samuel Cabrero 2020-11-30  447  static int cifs_swn_store_swn_addr(const struct sockaddr_storage *new,
+121d947d4fe15b Samuel Cabrero 2020-11-30  448  				   const struct sockaddr_storage *old,
+121d947d4fe15b Samuel Cabrero 2020-11-30  449  				   struct sockaddr_storage *dst)
+121d947d4fe15b Samuel Cabrero 2020-11-30  450  {
+121d947d4fe15b Samuel Cabrero 2020-11-30  451  	__be16 port;
+121d947d4fe15b Samuel Cabrero 2020-11-30  452  
+121d947d4fe15b Samuel Cabrero 2020-11-30  453  	if (old->ss_family == AF_INET) {
+121d947d4fe15b Samuel Cabrero 2020-11-30  454  		struct sockaddr_in *ipv4 = (struct sockaddr_in *)old;
+121d947d4fe15b Samuel Cabrero 2020-11-30  455  
+121d947d4fe15b Samuel Cabrero 2020-11-30  456  		port = ipv4->sin_port;
+121d947d4fe15b Samuel Cabrero 2020-11-30  457  	}
+121d947d4fe15b Samuel Cabrero 2020-11-30  458  
+121d947d4fe15b Samuel Cabrero 2020-11-30  459  	if (old->ss_family == AF_INET6) {
+121d947d4fe15b Samuel Cabrero 2020-11-30  460  		struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)old;
+121d947d4fe15b Samuel Cabrero 2020-11-30  461  
+121d947d4fe15b Samuel Cabrero 2020-11-30  462  		port = ipv6->sin6_port;
+121d947d4fe15b Samuel Cabrero 2020-11-30  463  	}
+121d947d4fe15b Samuel Cabrero 2020-11-30  464  
+121d947d4fe15b Samuel Cabrero 2020-11-30  465  	if (new->ss_family == AF_INET) {
+121d947d4fe15b Samuel Cabrero 2020-11-30  466  		struct sockaddr_in *ipv4 = (struct sockaddr_in *)new;
+121d947d4fe15b Samuel Cabrero 2020-11-30  467  
+121d947d4fe15b Samuel Cabrero 2020-11-30 @468  		ipv4->sin_port = port;
+
+Apparently Smatch is not smart enough to know that AF_INET and AF_INET6
+are the only possible values for old->ss_family.  I hope that eventually
+we will be able to enable GCC's uninitialized variable checking and GCC
+is certainly not able to figure this out either.
+
+121d947d4fe15b Samuel Cabrero 2020-11-30  469  	}
+121d947d4fe15b Samuel Cabrero 2020-11-30  470  
+121d947d4fe15b Samuel Cabrero 2020-11-30  471  	if (new->ss_family == AF_INET6) {
+121d947d4fe15b Samuel Cabrero 2020-11-30  472  		struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)new;
+121d947d4fe15b Samuel Cabrero 2020-11-30  473  
+121d947d4fe15b Samuel Cabrero 2020-11-30  474  		ipv6->sin6_port = port;
+121d947d4fe15b Samuel Cabrero 2020-11-30  475  	}
+121d947d4fe15b Samuel Cabrero 2020-11-30  476  
+121d947d4fe15b Samuel Cabrero 2020-11-30  477  	*dst = *new;
+121d947d4fe15b Samuel Cabrero 2020-11-30  478  
+121d947d4fe15b Samuel Cabrero 2020-11-30  479  	return 0;
+121d947d4fe15b Samuel Cabrero 2020-11-30  480  }
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
