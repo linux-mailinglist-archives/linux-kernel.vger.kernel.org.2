@@ -2,149 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C59403AD953
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 12:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14CA63AD956
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 12:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbhFSKKw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 06:10:52 -0400
-Received: from mout.gmx.net ([212.227.17.21]:47169 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230006AbhFSKKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 06:10:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1624097312;
-        bh=QLak8Qq7IU0Xb5Y6tOEtJCrVqVeA4BzC0twUCrEzVeE=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=MAx/+DikedSRuS8wrzbkhvhn1/V35f2zdlxgc1fJEHK0Rrb2JANfcsNIY/GN6mxCi
-         WfCpy6NHvxtNm6w4NxlNKroDjHzpq+l3J522YKFUTFoJU8ZqGbNqRJZswStZTX2fPH
-         V0OSWQhWpoOYJ6tk1OycpN6zDK+8GLW9f8hrAOmw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.214.247]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MXXyJ-1ln7GR0LD5-00Yx7p; Sat, 19
- Jun 2021 12:08:32 +0200
-Date:   Sat, 19 Jun 2021 12:08:29 +0200
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        openbmc@lists.ozlabs.org, Tomer Maimon <tmaimon77@gmail.com>,
-        Joel Stanley <joel@jms.id.au>, linux-kernel@vger.kernel.org,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>
-Subject: Re: [PATCH 1/8] dt-bindings: arm/npcm: Add binding for global
- control registers (GCR)
-Message-ID: <YM3CHdoqmynKAy5q@latitude>
-References: <20210602120329.2444672-1-j.neuschaefer@gmx.net>
- <20210602120329.2444672-2-j.neuschaefer@gmx.net>
- <20210615234321.GA1681813@robh.at.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5sLq0a2qfBclcfeQ"
+        id S231398AbhFSKLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 06:11:37 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49288 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231129AbhFSKLf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 06:11:35 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15JA3u5k046752;
+        Sat, 19 Jun 2021 06:09:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : content-type : mime-version; s=pp1;
+ bh=N5uN7fL2W8wsD4fRWosX357FzY+k/1QQqQWJ9ns8alw=;
+ b=R8crEZfwHzZaKFXP270kA4KnPdwovgHTE7NmdZt3LJtWZ26gt9ok5KMtzooKO4oSzNp0
+ xN73EJUAKSqXhkxcbmIdmGDfUcqc2xlS2Owton4oVfxygINUKNlyiZ9nT1cNdIDuZmNp
+ XwQGcr8nOginhXy8W0Dy4KLAeDkEeswcJSE1TgDPDxatp8We+LeX4369C08Co0xZXRKq
+ Bun1zeGCnFTWCChoOh03GS1BnkmmcV2KQzGNbHuB/+G878xWUDg472k2PajMCCbRJPMg
+ U9kLG9dm5v0x6WYEWsUUWj7GtARLD2HkY8dhtkYhGaVjfbfFhcuPVjXJOW3vqW/oHQeN 1w== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 399ee186dw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 19 Jun 2021 06:09:23 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15JA2t5o006515;
+        Sat, 19 Jun 2021 10:09:20 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03ams.nl.ibm.com with ESMTP id 399878835j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 19 Jun 2021 10:09:20 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15JA9H4S32375126
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 19 Jun 2021 10:09:17 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B540F5204E;
+        Sat, 19 Jun 2021 10:09:17 +0000 (GMT)
+Received: from localhost (unknown [9.171.5.120])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 67CC152051;
+        Sat, 19 Jun 2021 10:09:17 +0000 (GMT)
+Date:   Sat, 19 Jun 2021 12:09:16 +0200
+From:   Vasily Gorbik <gor@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: [GIT PULL] s390 fixes for 5.13-rc7
+Message-ID: <your-ad-here.call-01624097356-ext-0352@work.hours>
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210615234321.GA1681813@robh.at.kernel.org>
-X-Provags-ID: V03:K1:mZoQc1Cmuq59GB9vr/TEJLwKwJF6WJ9UcfMGDo+SrYfX4tvDiMg
- KU48z0CXEZN3WBeLPiV15PgRPXGWpSm4EGTUAA+ZTjMr4+ysq1r7E3kq61qM03LAE8U2Wzi
- ZSOk8+9yXwjByU3/17f4UA02t4Nl03qMtBAc5taX/0PrAATOY+/4Ljdo+gS1l6uvhnoDRMs
- XKsT1xPocYCbF8+L1hF3g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/NTpOcxK6wQ=:5f+uIplToDNDAVriAHF0En
- WhsNf2dFrXGkUaicN1wI71EnUe6ixMKyn9D+bta3wIXKvG1LjxIF/gSGI55jZLxSC7T4FZxyB
- 9YjB+8T+075SuMUxTAtuzN5YM5kKx5OK+bHemGWLX89BWZBZM+9kuQTEe9K03H12/PXVzu49T
- JkPTTYP/9Fq/XeudJldvO2tGFN7Om1RCPBQ5Qunycsg0NsbRukQTvXRc+sf3ERG6UA7cb5js7
- z502biUc3weOV5svQmLBW+wR0Qlkccop3QOK4R6llrddxnevhw+c++lvdXy7ihGe7SS9aJeuX
- uUI/vzISYlPB5goXQ1yuydfg9yF4OFeeDQ3+kTW/DLdM8sIkE85YHi+daZkvgLIh5gixMWe7V
- 873pcThaRV3BrqqohU69hqfrYHjWOGlAWregJ6H2OjuKNkkCbtHtg9Is+DU5xkZ9/h1yaS+ZS
- NDfFpkiChvm3mhCKgPl+Am3je+SPUBBWEVH7clucjV/mSMamCYB3cNoU7o7MdFxcJdCtBSqGN
- OTwW1TmCx6VfOvKuLT3WL6ayWpAinXVO4Di9j2ZwJoNasUUCeQExgaVw06b9HoH1CiK+KZfg4
- hWbMCGynEarRY+pAId/84MMh1re/DH8q8spPhPNxzj/YqtNf7UF1CxW3rW98kBpAWRtk0oL6h
- L0XwHdyL9Inx9uvEx5TJetDUjLs4n/yyOSCkWVb1N3eRyi1CIen2bSdOQASSY2CZo6sPEQaG7
- Jve9Ar2VvdxVl+13Gbz5V3oCBLqUOOvheEHx8w4EVnHXlk/glvqeaeZlG15oYFC/Gp3DXzCmh
- 17n1DtAEyfwFkXHp1u6rmCrDjfApxyT4SuBmUbM8bnXHga1TWL0jfmnCvamE0JjCbfMT5UJ8A
- XlfP1pej5lG3JmOTU+4VjgTM0QTPlfpo13yhmugh8JGAKebPcQblGUnmA5z5rfFK9Djei4dKL
- 8GmB8mcmth8wJBgd3y3c9NDFlXvaJeLYXBlSYpFKHktIuoEe6c9BwEOb9cBddfLWUaloH/aNe
- lom/CPVh9G3+RIkU1okWyiA0S2lnHUIXRwIpUlBnwOcCLHapUcxSX9OgslOX0/4C8pV1/wNZv
- AGFarUrmThz0lp8HuS19lvJraYOb6dHlI8UZLGcKXfcG6VGJdjCKfV7Sw==
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: nqoF9TORFSUi7k1HF-uNBDQlMxIi76r5
+X-Proofpoint-ORIG-GUID: nqoF9TORFSUi7k1HF-uNBDQlMxIi76r5
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-19_09:2021-06-18,2021-06-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ mlxlogscore=999 lowpriorityscore=0 adultscore=0 phishscore=0
+ impostorscore=0 clxscore=1015 priorityscore=1501 spamscore=0 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106190066
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Linus,
 
---5sLq0a2qfBclcfeQ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+please pull s390 fixes for 5.13-rc7.
 
-On Tue, Jun 15, 2021 at 05:43:21PM -0600, Rob Herring wrote:
-> On Wed, Jun 02, 2021 at 02:03:22PM +0200, Jonathan Neusch=C3=A4fer wrote:
-> > A nuvoton,*-gcr node is present in nuvoton-common-npcm7xx.dtsi and will
-> > be added to nuvoton-wpcm450.dtsi. It is necessary for the NPCM7xx and
-> > WPCM450 pinctrl drivers, and may later be used to retrieve SoC model and
-> > version information.
-> >=20
-> > This patch adds a binding to describe this node.
-> >=20
-> > Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-> > ---
-[...]
-> > +properties:
-> > +  compatible:
-> > +    items:
-> > +      - enum:
-> > +          - nuvoton,wpcm450-gcr
-> > +          - nuvoton,npcm750-gcr
-> > +      - const: syscon
-> > +      - const: simple-mfd
->=20
-> How is this a simple-mfd? There are no child nodes.
+Thank you,
+Vasily
 
-Some device trees, such as arch/arm/boot/dts/nuvoton-npcm730-gbs.dts,
-have subnodes of the GCR node (specifically, they (ab)use mmio-mux to
-set specific registers to specific values).
+The following changes since commit 614124bea77e452aa6df7a8714e8bc820b489922:
 
-> > +  reg: true
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    gcr: gcr@800000 {
-> > +      compatible =3D "nuvoton,npcm750-gcr", "syscon", "simple-mfd";
-> > +      reg =3D <0x800000 0x1000>;
-> > +    };
+  Linux 5.13-rc5 (2021-06-06 15:47:27 -0700)
 
-=2E.. I guess I should add a child node to the example, here.
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.13-4
 
+for you to fetch changes up to e73a99f3287a740a07d6618e9470f4d6cb217da8:
 
-Best regards,
-Jonathan Neusch=C3=A4fer
+  s390/ap: Fix hanging ioctl caused by wrong msg counter (2021-06-16 23:32:02 +0200)
 
---5sLq0a2qfBclcfeQ
-Content-Type: application/pgp-signature; name="signature.asc"
+----------------------------------------------------------------
+- Fix zcrypt ioctl hang due to AP queue msg counter dropping below 0 when
+  pending requests are purged.
 
------BEGIN PGP SIGNATURE-----
+- Two fixes for the machine check handler in the entry code.
 
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmDNwfUACgkQCDBEmo7z
-X9u3pw/+L8YlhSTgdM0NhfMD68vI0EsyemINtlQmV2dFUvVbQM93YSle04v4E5lL
-ZF1Rj8h+u0NKJAuguqSENb4meyH3EpACuhIip7bI/eQr2LzdHlocs0zky8kikWA4
-LvXKnb0Kiw9meA+OM1cF4C2wXbBE+q6pUfcZ1qr6glsY3pZlMsOWDjRhpRBH7Sy3
-VQZdk9UvUUO8/ZiLi/qds3JbqK8JovXbVAOWzxHSH6PuFWUfcogJnoyWFmzWbrGT
-GLh06wo8QqS/fiCyuh5ZjKhIdpLqav9L73wPf7o3Gny3hrepOrnfRaDarRhne9qY
-DYAY5+giV2cKRTv4ZYEORsYbqj00rClu1QSaJKUJW+D/dSpN5zgif5ZmCHkDMTFu
-6L82cq0neluLdj8VH40iRgcvGhrOose6ZZ+ZHNHma0rnDwsK3rxW0+U1RGh6Merc
-/dPJUa+iY+ieDdGY8/8NgnkeXdi9Umi8mA6d8TTF9pa41ZVUVYCpO6WYCMfjtfha
-vk5JkBA9T6tPjDemEWLs3Qd2EffVor3ciYNjIq2WlPFfrG/f9M+D+FKZJ55Yvt8z
-wNGuInoHk7aqEnU3KfR7AnysePQ+x3QYkwUBbjdEc89A5VfyoJnUYV53luNCVXYo
-fY7Oq/i8uQGIhrzndv5m8KmKYq4deMP4mzoKiHaexSvHB/k75L4=
-=gZYt
------END PGP SIGNATURE-----
+----------------------------------------------------------------
+Alexander Gordeev (2):
+      s390/mcck: fix calculation of SIE critical section size
+      s390/mcck: fix invalid KVM guest condition check
 
---5sLq0a2qfBclcfeQ--
+Harald Freudenberger (1):
+      s390/ap: Fix hanging ioctl caused by wrong msg counter
+
+ arch/s390/kernel/entry.S       |  4 ++--
+ drivers/s390/crypto/ap_queue.c | 11 +++++++++--
+ 2 files changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
+index 12de7a9c85b3..9cc71ca9a88f 100644
+--- a/arch/s390/kernel/entry.S
++++ b/arch/s390/kernel/entry.S
+@@ -651,9 +651,9 @@ ENDPROC(stack_overflow)
+ .Lcleanup_sie_mcck:
+ 	larl	%r13,.Lsie_entry
+ 	slgr	%r9,%r13
+-	larl	%r13,.Lsie_skip
++	lghi	%r13,.Lsie_skip - .Lsie_entry
+ 	clgr	%r9,%r13
+-	jh	.Lcleanup_sie_int
++	jhe	.Lcleanup_sie_int
+ 	oi	__LC_CPU_FLAGS+7, _CIF_MCCK_GUEST
+ .Lcleanup_sie_int:
+ 	BPENTER	__SF_SIE_FLAGS(%r15),(_TIF_ISOLATE_BP|_TIF_ISOLATE_BP_GUEST)
+diff --git a/drivers/s390/crypto/ap_queue.c b/drivers/s390/crypto/ap_queue.c
+index ecefc25eff0c..337353c9655e 100644
+--- a/drivers/s390/crypto/ap_queue.c
++++ b/drivers/s390/crypto/ap_queue.c
+@@ -135,12 +135,13 @@ static struct ap_queue_status ap_sm_recv(struct ap_queue *aq)
+ {
+ 	struct ap_queue_status status;
+ 	struct ap_message *ap_msg;
++	bool found = false;
+ 
+ 	status = ap_dqap(aq->qid, &aq->reply->psmid,
+ 			 aq->reply->msg, aq->reply->len);
+ 	switch (status.response_code) {
+ 	case AP_RESPONSE_NORMAL:
+-		aq->queue_count--;
++		aq->queue_count = max_t(int, 0, aq->queue_count - 1);
+ 		if (aq->queue_count > 0)
+ 			mod_timer(&aq->timeout,
+ 				  jiffies + aq->request_timeout);
+@@ -150,8 +151,14 @@ static struct ap_queue_status ap_sm_recv(struct ap_queue *aq)
+ 			list_del_init(&ap_msg->list);
+ 			aq->pendingq_count--;
+ 			ap_msg->receive(aq, ap_msg, aq->reply);
++			found = true;
+ 			break;
+ 		}
++		if (!found) {
++			AP_DBF_WARN("%s unassociated reply psmid=0x%016llx on 0x%02x.%04x\n",
++				    __func__, aq->reply->psmid,
++				    AP_QID_CARD(aq->qid), AP_QID_QUEUE(aq->qid));
++		}
+ 		fallthrough;
+ 	case AP_RESPONSE_NO_PENDING_REPLY:
+ 		if (!status.queue_empty || aq->queue_count <= 0)
+@@ -232,7 +239,7 @@ static enum ap_sm_wait ap_sm_write(struct ap_queue *aq)
+ 			   ap_msg->flags & AP_MSG_FLAG_SPECIAL);
+ 	switch (status.response_code) {
+ 	case AP_RESPONSE_NORMAL:
+-		aq->queue_count++;
++		aq->queue_count = max_t(int, 1, aq->queue_count + 1);
+ 		if (aq->queue_count == 1)
+ 			mod_timer(&aq->timeout, jiffies + aq->request_timeout);
+ 		list_move_tail(&ap_msg->list, &aq->pendingq);
