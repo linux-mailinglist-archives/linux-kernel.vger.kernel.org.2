@@ -2,79 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8A13ADBA2
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 22:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A223ADBA5
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 22:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhFSUUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 16:20:52 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:35730 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbhFSUUv (ORCPT
+        id S230311AbhFSUXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 16:23:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230076AbhFSUXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 16:20:51 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624133919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZGxCAU5/Gg8G2QXDWd/7foFOuvLUzMk0dmwKNfusq2U=;
-        b=FHmONuVOMr4+7/40TNNSG/hiyaLtRMfUkmIbkXSCD/DmuFl04ct6WCfWE+39chTJdbVo1K
-        lUkQjjBuuKAg6b3uWhjaay0x1XBeysHVjJvvYDnPA3CbOnwoaUXbS4dHcEX48bVwbs9A3d
-        c5ZICg5YoTojMIaLEza7vvJcfaRqO2QnCHxq/oE+NoZEJ7f8pIncF4YsfasW4My6HvrtyB
-        1TDAwwmoNiLm/PseNG964ShmAm7yLLmdOfa3d05H7gNgaqBdm911btMTVAIisw+eqxASYf
-        XZu4AQNSI2sTJOUfz242Z5WKZ+393Zc+Qj0gREGjZugpB/ngoSw+C6a4Z9KJfg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624133919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZGxCAU5/Gg8G2QXDWd/7foFOuvLUzMk0dmwKNfusq2U=;
-        b=6b7bpcDeTlfRnxblWGna3hiV6agE0oq0oY3LeyiryUSDr6tNRpuxRD1lIR9Ci0vNIP7Mef
-        VHs4dCzzxHGlwdAg==
-To:     Alexey Klimov <aklimov@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        cgroups@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Joshua Baker <jobaker@redhat.com>, audralmitchel@gmail.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rafael@kernel.org, tj@kernel.org,
-        Qais Yousef <qais.yousef@arm.com>, hannes@cmpxchg.org,
-        Alexey Klimov <klimov.linux@gmail.com>
-Subject: Re: [PATCH v3] cpu/hotplug: wait for cpuset_hotplug_work to finish on cpu onlining
-In-Reply-To: <CAFBcO+9wLjDW6n-ZSean_UQHSJ44Tpw9XBz-3UMoVCeUridj4Q@mail.gmail.com>
-References: <20210317003616.2817418-1-aklimov@redhat.com> <87tuowcnv3.ffs@nanos.tec.linutronix.de> <CALW4P+L9_tYgfOPv0riWWnv54HPhKPDJ4EK4yYaWsz0MdDGqfw@mail.gmail.com> <CAFBcO+8NBZxNdXtVuTXt9_m9gWTq7kxrcDcdFntvVjR_0rM13A@mail.gmail.com> <CAFBcO+9wLjDW6n-ZSean_UQHSJ44Tpw9XBz-3UMoVCeUridj4Q@mail.gmail.com>
-Date:   Sat, 19 Jun 2021 22:18:39 +0200
-Message-ID: <87zgvlhalc.ffs@nanos.tec.linutronix.de>
+        Sat, 19 Jun 2021 16:23:44 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B479EC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 13:21:32 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mkl@pengutronix.de>)
+        id 1luhT0-0005PM-Pt; Sat, 19 Jun 2021 22:21:22 +0200
+Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:8352:71b5:153f:5f88])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        (Authenticated sender: mkl-all@blackshift.org)
+        by smtp.blackshift.org (Postfix) with ESMTPSA id DD39363F796;
+        Sat, 19 Jun 2021 20:21:19 +0000 (UTC)
+Date:   Sat, 19 Jun 2021 22:21:19 +0200
+From:   Marc Kleine-Budde <mkl@pengutronix.de>
+To:     Guangbin Huang <huangguangbin2@huawei.com>
+Cc:     wg@grandegger.com, davem@davemloft.net, kuba@kernel.org,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lipeng321@huawei.com
+Subject: Re: [PATCH net-next 0/8] net: at91_can: clean up some code style
+ issues
+Message-ID: <20210619202119.4xkssewsebtg76rn@pengutronix.de>
+References: <1624096589-13452-1-git-send-email-huangguangbin2@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="bwh3gyhihsre2tqm"
+Content-Disposition: inline
+In-Reply-To: <1624096589-13452-1-git-send-email-huangguangbin2@huawei.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Alexey,
 
-On Mon, Jun 14 2021 at 19:14, Alexey Klimov wrote:
-> On Thu, Apr 15, 2021 at 2:30 AM Alexey Klimov <aklimov@redhat.com> wrote:
->>
->> On Sun, Apr 4, 2021 at 3:32 AM Alexey Klimov <klimov.linux@gmail.com> wrote:
->> >
->> > On Sat, Mar 27, 2021 at 9:01 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> [...]
->
->> Are you going to submit the patch? Or I can do it on your behalf if you like.
->
-> Are you going to send out this to lkml as a separate patch or do you
-> want me to do this on your behalf?
+--bwh3gyhihsre2tqm
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-sorry I forgot about this completely. No need to resend. It's on LKML
-already. I pick it up from this thread.
+On 19.06.2021 17:56:21, Guangbin Huang wrote:
+> This patchset clean up some code style issues.
+>=20
+> Peng Li (8):
+>   net: at91_can: remove redundant blank lines
+>   net: at91_can: add blank line after declarations
+>   net: at91_can: fix the code style issue about macro
+>   net: at91_can: use BIT macro
+>   net: at91_can: fix the alignment issue
+>   net: at91_can: add braces {} to all arms of the statement
+>   net: at91_can: remove redundant space
+>   net: at91_can: fix the comments style issue
+>=20
+>  drivers/net/can/at91_can.c | 131 +++++++++++++++++++++------------------=
+------
+>  1 file changed, 60 insertions(+), 71 deletions(-)
+
+Applied whole series to linux-can-net/testing.
 
 Thanks,
+Marc
 
-      tglx
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde           |
+Embedded Linux                   | https://www.pengutronix.de  |
+Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
 
+--bwh3gyhihsre2tqm
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmDOUbwACgkQqclaivrt
+76mu+Qf/dhaGIXcctaGvvJT3V7K6THcZgPMDatr4LWFwKVBTz/yO6pDRmYy8Cd4Z
+HmLRJzcSOTZHK4CHv7IDLJ4GHwYQi1yPszSEfV0Dbaqfwe7SNaNAvtaUNPXM9YQA
+NA0k0bBOQFtOxAl4mYegtIkR3c3im9zli2hnc3RDDtfuRLmd4u4zxJDdIPITE0Ok
+Is9qJZ0vaB3Eoyc1A74dwsRqq/83v+ioRoEHPTAYDUf3qYw0/qBgsZ9Ui+cxvR1+
+3s8aAaJWZ0h251B7qb8Wx6IBn3QM/q1O1Ai+t/PGbKvC4NfAaEvuFnMRmFUszLhJ
+RRpfXU5iVTvt1sx6D2tDVUb09MK6sg==
+=QhqL
+-----END PGP SIGNATURE-----
+
+--bwh3gyhihsre2tqm--
