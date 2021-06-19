@@ -2,95 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CDE93ADAB8
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 17:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39BA43ADABC
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 17:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234664AbhFSPsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 11:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231680AbhFSPsk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 11:48:40 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 377C7C061574;
-        Sat, 19 Jun 2021 08:46:29 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id 69so6224360plc.5;
-        Sat, 19 Jun 2021 08:46:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=b0K8HSAqOAgzoJk09xtqO95f4D/akP/DcQsZH563JKY=;
-        b=TuPm5T2vE34LrYNmzepdpUqwjK8MpRQNmhFeOP1xqMp3pWWca74FHaAqMtguYvHEQg
-         JrIgH23kfRh+u0D/IH6qg/iro6Jtco4SxOLVYNj6rwp/lQSsRbY9N72/I8vKod0gMvTI
-         nXvYEpqvrTxa1gojdnZggVOsp+lmxUmGHoQjhqMjmSxXkkWGxK31UTluRS9KNKyaRZoV
-         x6y5QOWbyzzCxqleVYDHD064+ShUXjvqs1b+AaqWMwvcTyHS7/4WhX/Jl8PkBEklViSY
-         YRrcf58Oeq5oz5YHbsq16DIdCaFpJ+SbLZbq62DrXDcsXxomgA+zYTzBpeWXaYEPCbUk
-         zgOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=b0K8HSAqOAgzoJk09xtqO95f4D/akP/DcQsZH563JKY=;
-        b=cXKctdnBZqfkb0opkURmNXx4XCQGmP0f/CqdyYCuAG840sXwl6Gj2xPo6kmAI4VAwO
-         e6P3QXODFx0iQMctsz3nM1kq1EC2WOJJyu49HaBpcmP7wc/qIsJBB0XcYui63OH48Rmj
-         DymAv3ZlT6dHd8JSNXQyG8w1LWXLxdmAqxI9GJmaevEyfz0Vw2r2lSaELwyk6RdCM6fS
-         cEVkgr5gqx95Kwf4Jc2DzRG9UHnXWMYS0TYXX1xLUBUu94zEl2vRHv221z7tUuani4hE
-         h2JlgK/qIa+DAKPu/QEbdc7PlArD0Vh3Oyu4AD9ldcjV9Im2bb6xFrYK+WY9sBQ00Ah7
-         SgnQ==
-X-Gm-Message-State: AOAM532NuDzqc0WSCR/HBT2kJ7SwJnaKIhsKEPK563gTo6ilwlkNK8O2
-        w7RVaNSgz4KYBYi1f3rI3z2B/BfxBpU=
-X-Google-Smtp-Source: ABdhPJxeLCgKu43N6SH9B2StFApUiyVm5/CK27TIBXxf4z5tJHFNJLJxXY1cXXtSzV2v7pJJ2uOBEg==
-X-Received: by 2002:a17:902:ab88:b029:11d:20fa:8ca6 with SMTP id f8-20020a170902ab88b029011d20fa8ca6mr9737530plr.67.1624117588705;
-        Sat, 19 Jun 2021 08:46:28 -0700 (PDT)
-Received: from [10.230.185.151] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id e24sm11926205pgi.17.2021.06.19.08.46.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 19 Jun 2021 08:46:28 -0700 (PDT)
-Subject: Re: [PATCH][next] scsi: elx: libefc: Fix less than zero comparison of
- a unsigned int
-To:     Colin King <colin.king@canonical.com>,
-        James Smart <james.smart@broadcom.com>,
-        Ram Vegesna <ram.vegesna@broadcom.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Hannes Reinecke <hare@suse.de>, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210616170401.15831-1-colin.king@canonical.com>
-From:   James Smart <jsmart2021@gmail.com>
-Message-ID: <b1fbaad3-972b-53f5-817c-9b6ee14a02ce@gmail.com>
-Date:   Sat, 19 Jun 2021 08:46:22 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
-MIME-Version: 1.0
-In-Reply-To: <20210616170401.15831-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S234664AbhFSPxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 11:53:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37954 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231680AbhFSPxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 11:53:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8EA760FE8;
+        Sat, 19 Jun 2021 15:51:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624117867;
+        bh=NAbdzRAxcLKnTWnhI0W9HCrw+I7jQyfR52LsWZAQDCM=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=koNOmC8DK+nVeBie7FTITAV5irnEs6QvMWvpYt58CqYuN+5lQ8bBssZz4hUGCRfGy
+         +yo+U86Q6yEQx+JS+nBD2LlvcqkPAGdxokDgzyJzsgQiwa9UH2uNjewPeWnxf/U3z6
+         d4ZQHid83QonJZyCXs4FkAV+xG6Z2NbkyEcqXMXRo1ad1es1joqpg8cCTG9dHRxDJu
+         4fkbSeJilnQVpzywdzqcjlVgxH8e4/0uWmj6PpMOM9UebrwhphfiqeP1Ac5kUlObK8
+         l/UTMIAKmTTDJk1RvwKLt9wGavIpjlnYHKgfAa475NuftH35nCqUzfJEE66WzDD5Ko
+         oYMZQBuAjiJzA==
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailauth.nyi.internal (Postfix) with ESMTP id E90E827C0060;
+        Sat, 19 Jun 2021 11:51:04 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute2.internal (MEProxy); Sat, 19 Jun 2021 11:51:04 -0400
+X-ME-Sender: <xms:ZRLOYMGbYGYK3_wLvC9YlzEDFAIsyn_M1plocPRdcFEBlDXhGlBh8w>
+    <xme:ZRLOYFXT855Ee_pqATnu3Kpt_54OxPyoZ3DPQCeYhhMrgoqPPrDK0c8ANcDruMW9L
+    mbxsaj0HG1eh_RVOSM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeefhedgleefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedftehn
+    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepvdelheejjeevhfdutdeggefftdejtdffgeevteehvdfgjeeiveei
+    ueefveeuvdetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
+    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
+    igrdhluhhtohdruhhs
+X-ME-Proxy: <xmx:ZRLOYGKxaz3BiAIbFWNbey2D8b308yFzK7krhsqDYCfdwIVh_LJpKQ>
+    <xmx:ZRLOYOH-c6-2Wm9xnbyMwV6VxVRqTFdwnv6eZ5a8YFPOCuFLcg8Ysg>
+    <xmx:ZRLOYCVwET137Ns_s8sYP3qy2ClqBj0DgvI73UVoSId_-uRu-5DBUA>
+    <xmx:aBLOYLWJRTR6L1OXw5odD-dqYPdDukO1ftL9XTs1WCQZ1uxKJaE4GFXrpoU>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id BB74651C0060; Sat, 19 Jun 2021 11:51:01 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-526-gf020ecf851-fm-20210616.001-gf020ecf8
+Mime-Version: 1.0
+Message-Id: <2f9e52eb-0105-4bc6-a903-f4ecbfc9b999@www.fastmail.com>
+In-Reply-To: <1624080924.z61zvzi4cq.astroid@bobo.none>
+References: <cover.1623813516.git.luto@kernel.org>
+ <07a8b963002cb955b7516e61bad19514a3acaa82.1623813516.git.luto@kernel.org>
+ <827549827.10547.1623941277868.JavaMail.zimbra@efficios.com>
+ <26196903-4aee-33c4-bed8-8bf8c7b46793@kernel.org>
+ <593983567.12619.1624033908849.JavaMail.zimbra@efficios.com>
+ <1d617df2-57fa-4953-9c75-6de3909a6f14@www.fastmail.com>
+ <639092151.13266.1624046981084.JavaMail.zimbra@efficios.com>
+ <1624080924.z61zvzi4cq.astroid@bobo.none>
+Date:   Sat, 19 Jun 2021 08:50:41 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Nicholas Piggin" <npiggin@gmail.com>,
+        "Mathieu Desnoyers" <mathieu.desnoyers@efficios.com>
+Cc:     "Andrew Morton" <akpm@linux-foundation.org>,
+        "Benjamin Herrenschmidt" <benh@kernel.crashing.org>,
+        "Catalin Marinas" <catalin.marinas@arm.com>,
+        "Dave Hansen" <dave.hansen@intel.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "Michael Ellerman" <mpe@ellerman.id.au>,
+        "Paul Mackerras" <paulus@samba.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        stable <stable@vger.kernel.org>, "Will Deacon" <will@kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Subject: =?UTF-8?Q?Re:_[PATCH_8/8]_membarrier:_Rewrite_sync=5Fcore=5Fbefore=5Fuse?=
+ =?UTF-8?Q?rmode()_and_improve_documentation?=
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/2021 10:04 AM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> The comparison of the u32 variable rc to less than zero always
-> false because it is unsigned. Fix this by making it an int.
-> 
-> Addresses-Coverity: ("Unsigned compared against 0")
-> Fixes: 202bfdffae27 ("scsi: elx: libefc: FC node ELS and state handling")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->   drivers/scsi/elx/libefc/efc_device.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-
-Thanks!
-
-Reviewed-by: James Smart <jsmart2021@gmail.com>
-
--- james
 
 
+On Fri, Jun 18, 2021, at 11:02 PM, Nicholas Piggin wrote:
+> Excerpts from Mathieu Desnoyers's message of June 19, 2021 6:09 am:
+> > ----- On Jun 18, 2021, at 3:58 PM, Andy Lutomirski luto@kernel.org w=
+rote:
+> >=20
+> >> On Fri, Jun 18, 2021, at 9:31 AM, Mathieu Desnoyers wrote:
+> >>> ----- On Jun 17, 2021, at 8:12 PM, Andy Lutomirski luto@kernel.org=
+ wrote:
+> >>>=20
+> >>> > On 6/17/21 7:47 AM, Mathieu Desnoyers wrote:
+> >>> >=20
+> >>> >> Please change back this #ifndef / #else / #endif within functio=
+n for
+> >>> >>=20
+> >>> >> if (!IS_ENABLED(CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE)) {
+> >>> >>   ...
+> >>> >> } else {
+> >>> >>   ...
+> >>> >> }
+> >>> >>=20
+> >>> >> I don't think mixing up preprocessor and code logic makes it mo=
+re readable.
+> >>> >=20
+> >>> > I agree, but I don't know how to make the result work well.
+> >>> > membarrier_sync_core_before_usermode() isn't defined in the !IS_=
+ENABLED
+> >>> > case, so either I need to fake up a definition or use #ifdef.
+> >>> >=20
+> >>> > If I faked up a definition, I would want to assert, at build tim=
+e, that
+> >>> > it isn't called.  I don't think we can do:
+> >>> >=20
+> >>> > static void membarrier_sync_core_before_usermode()
+> >>> > {
+> >>> >    BUILD_BUG_IF_REACHABLE();
+> >>> > }
+> >>>=20
+> >>> Let's look at the context here:
+> >>>=20
+> >>> static void ipi_sync_core(void *info)
+> >>> {
+> >>>     [....]
+> >>>     membarrier_sync_core_before_usermode()
+> >>> }
+> >>>=20
+> >>> ^ this can be within #ifdef / #endif
+> >>>=20
+> >>> static int membarrier_private_expedited(int flags, int cpu_id)
+> >>> [...]
+> >>>                if (!IS_ENABLED(CONFIG_ARCH_HAS_MEMBARRIER_SYNC_COR=
+E))
+> >>>                         return -EINVAL;
+> >>>                 if (!(atomic_read(&mm->membarrier_state) &
+> >>>                       MEMBARRIER_STATE_PRIVATE_EXPEDITED_SYNC_CORE=
+_READY))
+> >>>                         return -EPERM;
+> >>>                 ipi_func =3D ipi_sync_core;
+> >>>=20
+> >>> All we need to make the line above work is to define an empty ipi_=
+sync_core
+> >>> function in the #else case after the ipi_sync_core() function defi=
+nition.
+> >>>=20
+> >>> Or am I missing your point ?
+> >>=20
+> >> Maybe?
+> >>=20
+> >> My objection is that an empty ipi_sync_core is a lie =E2=80=94 it d=
+oesn=E2=80=99t sync the core.
+> >> I would be fine with that if I could have the compiler statically v=
+erify that
+> >> it=E2=80=99s not called, but I=E2=80=99m uncomfortable having it th=
+ere if the implementation is
+> >> actively incorrect.
+> >=20
+> > I see. Another approach would be to implement a "setter" function to=
+ populate
+> > "ipi_func". That setter function would return -EINVAL in its #ifndef=
+ CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE
+> > implementation.
+>=20
+> I still don't get the problem with my suggestion. Sure the=20
+> ipi is a "lie", but it doesn't get used. That's how a lot of
+> ifdef folding works out. E.g.,
+>=20
+> diff --git a/kernel/sched/membarrier.c b/kernel/sched/membarrier.c
+> index b5add64d9698..54cb32d064af 100644
+> --- a/kernel/sched/membarrier.c
+> +++ b/kernel/sched/membarrier.c
+> @@ -5,6 +5,15 @@
+>   * membarrier system call
+>   */
+>  #include "sched.h"
+> +#ifdef CONFIG_ARCH_HAS_MEMBARRIER_SYNC_CORE
+> +#include <asm/sync_core.h>
+> +#else
+> +static inline void membarrier_sync_core_before_usermode(void)
+> +{
+> +	compiletime_assert(0, "architecture does not implement=20
+> membarrier_sync_core_before_usermode");
+> +}
+> +
+
+With the assert there, I=E2=80=99m fine with this. Let me see if the res=
+ult builds.
+
+> +#endif
+> =20
+>  /*
+>   * For documentation purposes, here are some membarrier ordering
+>=20
