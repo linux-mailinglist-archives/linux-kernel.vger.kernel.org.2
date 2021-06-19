@@ -2,166 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C0B3AD6E7
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 05:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E19A93AD6EA
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 05:02:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235605AbhFSDES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 23:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44340 "EHLO
+        id S235614AbhFSDE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 23:04:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235546AbhFSDEQ (ORCPT
+        with ESMTP id S235606AbhFSDE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 23:04:16 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 580CCC061574;
-        Fri, 18 Jun 2021 20:02:05 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id p14so3489757ilg.8;
-        Fri, 18 Jun 2021 20:02:05 -0700 (PDT)
+        Fri, 18 Jun 2021 23:04:57 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40493C06175F
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 20:02:46 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id i4so1937910plt.12
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 20:02:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xyPYkkSvMyYVEkMIHpUhP4h40bSciy9qGvek1zjV32o=;
-        b=hl7p5r9hd+XZvulOZ1jnVte4vowXCqxDrUCk7I82uif5A6EbofWobMvM3MMwv3c2hX
-         DbHqNTPPWtKtjukyEWnWCVwBx9ezt5LSdFwJTsa7ojEDGbRcqgFYOj9XdgonT/YrsDMc
-         NNClnul4oOFPWWG6DW+kQF4xUF+0OQ1IsfXsLMNRBLQ4tpvJliSWEdAXbVaSrYnSwr4r
-         7HFr2e/SDqQ2rKQSKxyJC8TWqZBUy2CiJtkby5iMvtubZxOJrR5JaMoFV/4lFFrpN58O
-         JAvPof4tE5bYCEGqhsU1ojoMgTKRF6KUv4+8Vkpr2ulCitybquS6aHYDMd7y7Y8/IMA5
-         C0Lg==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AL3IkUbQ1a/LRO+FbqYHn+oMeAp1U0V5I8weht9YTe0=;
+        b=k53RtsI3wnZQDyMBB2CG0HfKnm17M/4fp/pxu553QmY3YKnUokW0BYYV2B/y43PAYi
+         tsF8RSy9K9cPND3oMbY//QXYo86K/BfFm6Ux4OofTfucse1uj+WWaogWNVYFgcXwFt08
+         BNSO1bFyyIhOdbD6j6MMJsA3VUDL87xawV8SE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xyPYkkSvMyYVEkMIHpUhP4h40bSciy9qGvek1zjV32o=;
-        b=DRfJUW8WQK5h1H5MBTovDVZU5MYY9uky881WbG3LFGSgi1MR1HmKlpv+n9VGz+TkIn
-         2qGUbpI2kmTObk1WD49lt13U7QYRHCKS3ETpbo6jwcnWTPYn78kLJAU8xFFaIsm6zFQR
-         ZI7cIebRyKZnCK5C0oAhABgYT2sLSUl1xewKU8Sqzen5Uc1BVkDaAVf3+7Tt8xh/ogja
-         32s/fnejP6mymDuiiWStbiDRpsfrODKXtL9UhN2H8mvA486FkMKme8BBPyN0pjojTO8p
-         fFFvSiXXNebfIlNqqyxa8gAJ+V3ncmFxUq8RZp5onFwibURSWbkJoUm8R7p4r0z21ECt
-         sxug==
-X-Gm-Message-State: AOAM530bcUETa+nN22nvjov+JLS0Mp6I5ZeeLz0CIhR83KNn55qZlaBv
-        V4gBxL6Gw6JjBgbaQMoyOlYNPs8/C8N4XJZP3fG4dPW4v2zMvciO
-X-Google-Smtp-Source: ABdhPJxeBt4cianRkuXSqEDXxBTpxQiNIcHs/73YLkSBRGbVm/gZYYz3e32m9s80nyIMxBwKAI0S0vPZ7V+LQW8eZzo=
-X-Received: by 2002:a92:7b0f:: with SMTP id w15mr9849020ilc.150.1624071724671;
- Fri, 18 Jun 2021 20:02:04 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AL3IkUbQ1a/LRO+FbqYHn+oMeAp1U0V5I8weht9YTe0=;
+        b=VBVCLgp738JADa0+icoKwKWIEtcnsrFHgDOA3R0O47erwW9ZiauZLauOBv9PkFF8Az
+         4HeY0U35Jnfod9jZlG0lsNq30iw+NloZR1fr4+mIl4/4tIUA7ty4qhbUBqJV5mB485/j
+         Xdk2KV7CA3xXsfAZTws7MMDsNI+rhzeYin29cw8kO94IYSlEixRfBAoB7E7YKDMVEhZ5
+         nxGDeMbISUqjIi25CYcRABZwaCSq5hC2+9kO4saLSZOMngCoHJxejs4NeC01UOv/SHQK
+         3gBFUlm+veume6lsrcWSxq0EV34lXL0c6sQjZPcfPVReQa3YK8Utjslh2gEvTOTLeUn8
+         /r8Q==
+X-Gm-Message-State: AOAM533HirvGsxZ5K1LrbfFOIQP9q2ZVd6G0ArwZY+ggPt9q/cNxJ1C6
+        NSdJWvnocrQzf6AcjaNdF1qu+Q==
+X-Google-Smtp-Source: ABdhPJy6MS0K3mHCnNh+tPj7v6JRbScEU8fnlcCNFoGwViNFPru2h4JAlYS997Vfx/7JHe0RA8woxw==
+X-Received: by 2002:a17:90a:14e5:: with SMTP id k92mr13697656pja.149.1624071765805;
+        Fri, 18 Jun 2021 20:02:45 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h28sm9512020pfr.10.2021.06.18.20.02.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 18 Jun 2021 20:02:45 -0700 (PDT)
+Date:   Fri, 18 Jun 2021 20:02:44 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Guillaume Tucker <guillaume.tucker@collabora.com>
+Cc:     Shuah Khan <shuah@kernel.org>, stable@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests/lkdtm: Use /bin/sh not $SHELL
+Message-ID: <202106182000.D49612B26F@keescook>
+References: <20210617231027.3908585-1-keescook@chromium.org>
+ <57775fe8-d9c2-4004-b8c5-0247faf33aa4@collabora.com>
 MIME-Version: 1.0
-References: <20210618063821.1383357-1-art@khadas.com> <CAFBinCB6bHy6Han0+oUcuGfccv1Rh_P0Gows1ezWdV4eA267tg@mail.gmail.com>
- <CAL_JsqK+zjf2r_Q9gE8JwJw+Emn+JB4wOyH7eQct=kBvpUKstw@mail.gmail.com> <9b27444c-ea13-0dd2-a671-cef27e03b35c@baylibre.com>
-In-Reply-To: <9b27444c-ea13-0dd2-a671-cef27e03b35c@baylibre.com>
-From:   Art Nikpal <email2tema@gmail.com>
-Date:   Sat, 19 Jun 2021 11:01:53 +0800
-Message-ID: <CAKaHn9JK341ijN81kJyh32LksXVNGXTz-59QiGPxp0K6WGFN6g@mail.gmail.com>
-Subject: Re: [PATCH] PCI: dwc: meson add quirk
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Yue Wang <yue.wang@amlogic.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Krzysztof Wilczynski <kw@linux.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        PCI <linux-pci@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Artem Lapkin <art@khadas.com>, Nick Xie <nick@khadas.com>,
-        Gouwa Wang <gouwa@khadas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <57775fe8-d9c2-4004-b8c5-0247faf33aa4@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Neil
-> It should be enabled only when the Amlogic bridge is present, thus similar filtering as keystone & loongon
-> is needed, but with such filtering we could reuse ks_pcie_quirk() and loongson_mrrs_quirk() as is.
-> AFAIL Simply moving ks_pcie_quirk() and loongson_mrrs_quirk() to core with the amlogic pci IDS added would be sufficient here.
+On Fri, Jun 18, 2021 at 08:29:57PM +0100, Guillaume Tucker wrote:
+> There's a bit more to it...  The lkdtm tests make use of the
+> process substitution feature with the <() syntax which is
+> specific to Bash.  The tests run by KernelCI use Debian, where
+> /bin/sh points to /bin/dash by default which doesn't support this
+> feature.  So one way to fix it would be:
+> 
+>   (/bin/bash -c 'cat <(echo '"$test"') >'"$TRIGGER")
 
-My patch was not a good solution! its was just example how to fix our
-problem - need to remade it
+Argh. I always forget that <() is a bash-ism. Thank you for tracking
+this down!
 
-Yes i'm agree with Neil , at this moment we can move (replace
-duplicate functionalities)  ks_pcie_quirk() and loongson_mrrs_quirk()
-to core  + add amlogic pci IDS PCI_DEVICE(PCI_VENDOR_ID_SYNOPSYS,
-PCI_DEVICE_ID_SYNOPSYS_HAPSUSB3) - without other changes for everyone,
-and after we can improve this quirk by next patches
+> However, this might break others' workflows.
+> 
+> In fact the LAVA jobs run by KernelCI do define the $SHELL
+> environment variable except it's defined to be /bin/sh - and that
+> means /bin/dash gets called and we're back to the issue explained
+> above.
+> 
+> I've manually run a modified test job which defines
+> SHELL=/bin/bash and that works:
+> 
+>   https://lava.collabora.co.uk/scheduler/job/4055547#L2835
 
-i will send new patches variant soon
+Yay!!
 
-On Fri, Jun 18, 2021 at 11:08 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> On 18/06/2021 16:30, Rob Herring wrote:
-> > On Fri, Jun 18, 2021 at 6:12 AM Martin Blumenstingl
-> > <martin.blumenstingl@googlemail.com> wrote:
-> >>
-> >> Hi Artem,
-> >>
-> >> On Fri, Jun 18, 2021 at 8:38 AM Artem Lapkin <email2tema@gmail.com> wrote:
-> >>>
-> >>> Device set same 256 bytes maximum read request size equal MAX_READ_REQ_SIZE
-> >>> was find some issue with HDMI scrambled picture and nvme devices
-> >>> at intensive writing...
-> >>>
-> >>> [    4.798971] nvme 0000:01:00.0: fix MRRS from 512 to 256
-> >>>
-> >>> This quirk setup same MRRS if we try solve this problem with
-> >>> pci=pcie_bus_perf kernel command line param
-> >> thank you for investigating this issue and for providing a fix!
-> >>
-> >> [...]
-> >>> +static void meson_pcie_quirk(struct pci_dev *dev)
-> >>> +{
-> >>> +       int mrrs;
-> >>> +
-> >>> +       /* no need quirk */
-> >>> +       if (pcie_bus_config != PCIE_BUS_DEFAULT)
-> >>> +               return;
-> >>> +
-> >>> +       /* no need for root bus */
-> >>> +       if (pci_is_root_bus(dev->bus))
-> >>> +               return;
-> >>> +
-> >>> +       mrrs = pcie_get_readrq(dev);
-> >>> +
-> >>> +       /*
-> >>> +        * set same 256 bytes maximum read request size equal MAX_READ_REQ_SIZE
-> >>> +        * was find some issue with HDMI scrambled picture and nvme devices
-> >>> +        * at intensive writing...
-> >>> +        */
-> >>> +
-> >>> +       if (mrrs != MAX_READ_REQ_SIZE) {
-> >>> +               dev_info(&dev->dev, "fix MRRS from %d to %d\n", mrrs, MAX_READ_REQ_SIZE);
-> >>> +               pcie_set_readrq(dev, MAX_READ_REQ_SIZE);
-> >>> +       }
-> >>> +}
-> >>> +DECLARE_PCI_FIXUP_ENABLE(PCI_ANY_ID, PCI_ANY_ID, meson_pcie_quirk);
-> >
-> > Isn't this going to run for everyone if meson driver happens to be enabled?
->
-> It should be enabled only when the Amlogic bridge is present, thus similar filtering as keystone & loongon
-> is needed, but with such filtering we could reuse ks_pcie_quirk() and loongson_mrrs_quirk() as is.
->
-> >
-> >> it seems that other PCIe controllers need something similar. in
-> >> particular I found pci-keystone [0] and pci-loongson [1]
-> >> while comparing your code with the two existing implementations two
-> >> things came to my mind:
-> >> 1. your implementation slightly differs from the two existing ones as
-> >> it's not walking through the parent PCI busses (I think this would be
-> >> relevant if there's another bridge between the host bridge and the
-> >> actual device)
-> >> 2. (this is a question towards the PCI maintainers) does it make sense
-> >> to have this MRRS quirk re-usable somewhere?
-> >
-> > Yes. Ideally, the max size could just be data in the bus or bridge
-> > struct and perhaps some flags too, then the core can handle
-> > everything.
->
-> AFAIL Simply moving ks_pcie_quirk() and loongson_mrrs_quirk() to core with the amlogic pci IDS added would be sufficient here.
->
-> Neil
->
-> >
-> > Rob
-> >
->
+> So to avoid hitting the same issue in other places, as it seems
+> like there is an implicit dependency on Bash, we can just change
+> KernelCI kselftest jobs to always export SHELL=/bin/bash.
+> 
+> I suppose an even better fix would be to use standard shell
+> features that would work with any /bin/sh implementation, but
+> this is there to kill the sub-shell rather than the main script
+> process so I'm not entirely sure if we can easily do that
+> differently.  Maybe we can pipe the output to cat rather than the
+> substitution syntax, e.g.:
+> 
+>   (/bin/sh -c '(echo '"$test"') | cat >'"$TRIGGER") || true
+
+Yeah, this is the right fix. There's no reason anything should depend
+on bash; I was just not thinking when I wrote this originally. :)
+
+> So I think the "safest" solution is to not change the kselftest
+> script and export SHELL=/bin/bash in the KernelCI jobs.  If the
+> pipe approach is good enough at catching signals then it could be
+> done on top of this patch as it's standard and should work with
+> any /bin/sh implementation.  What do you think?
+
+If you set SHELL=/bin/bash for now, the lkdtm tests should work as they
+are, and once the v2 patch lands, they'll continue to work, and
+SHELL=/bin/bash can be removed.
+
+Thank you so much!
+
+-Kees
+
+-- 
+Kees Cook
