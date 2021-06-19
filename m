@@ -2,221 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EE3A3AD8E5
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 11:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA9D53AD8F4
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 11:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232941AbhFSJZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 05:25:37 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:48564 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230318AbhFSJZh (ORCPT
+        id S233675AbhFSJdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 05:33:13 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:51041 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230107AbhFSJdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 05:25:37 -0400
-X-UUID: 29926a350148459a98c6dd5a3f9a8a75-20210619
-X-UUID: 29926a350148459a98c6dd5a3f9a8a75-20210619
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <kewei.xu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1214831891; Sat, 19 Jun 2021 17:23:22 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sat, 19 Jun 2021 17:23:20 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 19 Jun 2021 17:23:20 +0800
-From:   <kewei.xu@mediatek.com>
-To:     <wsa@the-dreams.de>
-CC:     <matthias.bgg@gmail.com>, <linux-i2c@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
-        <qii.wang@mediatek.com>, Kewei Xu <kewei.xu@mediatek.com>
-Subject: [PATCH] i2c: mediatek: Isolate speed setting via dts for special devices
-Date:   Sat, 19 Jun 2021 17:23:17 +0800
-Message-ID: <1624094597-23993-1-git-send-email-kewei.xu@mediatek.com>
-X-Mailer: git-send-email 1.9.1
+        Sat, 19 Jun 2021 05:33:11 -0400
+Received: from cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net ([80.193.200.194] helo=[192.168.0.210])
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1luXJb-0004tL-U4; Sat, 19 Jun 2021 09:30:59 +0000
+Subject: Re: [sparc64] kernel panic from running a program in userspace
+To:     Anatoly Pugachev <matorola@gmail.com>,
+        Sparc kernel list <sparclinux@vger.kernel.org>
+Cc:     Linux Kernel list <linux-kernel@vger.kernel.org>,
+        debian-sparc <debian-sparc@lists.debian.org>,
+        kernel-testers@vger.kernel.org
+References: <CADxRZqwzbHvMwEB=y_xi2GYK55wtnzycWcUoK_t4q_ccisp+Sg@mail.gmail.com>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <f9bd5a0e-6f9e-c042-cbfc-2e03bf16b92c@canonical.com>
+Date:   Sat, 19 Jun 2021 10:30:58 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <CADxRZqwzbHvMwEB=y_xi2GYK55wtnzycWcUoK_t4q_ccisp+Sg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kewei Xu <kewei.xu@mediatek.com>
+Hi,
 
-In the commit be5ce0e97cc7 ("i2c: mediatek: Add i2c ac-timing adjust
-support"), the I2C timing calculation has been revised to support
-ac-timing, revised to support ac-timing adjustment, however that will
-break on some I2C components. As a result we want to introduce a new
-setting "default-adjust-timing" so those components can choose to use the
-old (default) timing algorithm.
+I suspect this issue was fixed with the following commit:
 
-Signed-off-by: Kewei Xu <kewei.xu@mediatek.com>
----
- drivers/i2c/busses/i2c-mt65xx.c | 86 ++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 81 insertions(+), 5 deletions(-)
+commit e5e8b80d352ec999d2bba3ea584f541c83f4ca3f
+Author: Rob Gardner <rob.gardner@oracle.com>
+Date:   Sun Feb 28 22:48:16 2021 -0700
 
-diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
-index ded94f9..486076f 100644
---- a/drivers/i2c/busses/i2c-mt65xx.c
-+++ b/drivers/i2c/busses/i2c-mt65xx.c
-@@ -41,6 +41,8 @@
- #define I2C_HANDSHAKE_RST		0x0020
- #define I2C_FIFO_ADDR_CLR		0x0001
- #define I2C_DELAY_LEN			0x0002
-+#define I2C_ST_START_CON		0x8001
-+#define I2C_FS_START_CON		0x1800
- #define I2C_TIME_CLR_VALUE		0x0000
- #define I2C_TIME_DEFAULT_VALUE		0x0003
- #define I2C_WRRD_TRANAC_VALUE		0x0002
-@@ -63,6 +65,7 @@
- #define I2C_DMA_HARD_RST		0x0002
- #define I2C_DMA_HANDSHAKE_RST		0x0004
- 
-+#define I2C_DEFAULT_CLK_DIV		5
- #define MAX_SAMPLE_CNT_DIV		8
- #define MAX_STEP_CNT_DIV		64
- #define MAX_CLOCK_DIV			256
-@@ -247,6 +250,7 @@ struct mtk_i2c {
- 	struct clk *clk_arb;		/* Arbitrator clock for i2c */
- 	bool have_pmic;			/* can use i2c pins from PMIC */
- 	bool use_push_pull;		/* IO config push-pull mode */
-+	bool default_timing_adjust;	/* no timing adjust mode */
- 
- 	u16 irq_stat;			/* interrupt status */
- 	unsigned int clk_src_div;
-@@ -484,6 +488,7 @@ static void mtk_i2c_clock_disable(struct mtk_i2c *i2c)
- static void mtk_i2c_init_hw(struct mtk_i2c *i2c)
- {
- 	u16 control_reg;
-+	u16 ext_conf_val;
- 
- 	if (i2c->dev_comp->apdma_sync) {
- 		writel(I2C_DMA_WARM_RST, i2c->pdmabase + OFFSET_RST);
-@@ -518,8 +523,17 @@ static void mtk_i2c_init_hw(struct mtk_i2c *i2c)
- 	if (i2c->dev_comp->ltiming_adjust)
- 		mtk_i2c_writew(i2c, i2c->ltiming_reg, OFFSET_LTIMING);
- 
--	if (i2c->dev_comp->timing_adjust) {
--		mtk_i2c_writew(i2c, i2c->ac_timing.ext, OFFSET_EXT_CONF);
-+	if (i2c->speed_hz <= I2C_MAX_STANDARD_MODE_FREQ)
-+		ext_conf_val = I2C_ST_START_CON;
-+	else
-+		ext_conf_val = I2C_FS_START_CON;
-+
-+	if (i2c->default_timing_adjust) {
-+		if (i2c->dev_comp->timing_adjust)
-+			mtk_i2c_writew(i2c, I2C_DEFAULT_CLK_DIV - 1,
-+				       OFFSET_CLOCK_DIV);
-+	} else if (i2c->dev_comp->timing_adjust) {
-+		ext_conf_val = i2c->ac_timing.ext;
- 		mtk_i2c_writew(i2c, i2c->ac_timing.inter_clk_div,
- 			       OFFSET_CLOCK_DIV);
- 		mtk_i2c_writew(i2c, I2C_SCL_MIS_COMP_VALUE,
-@@ -544,6 +558,7 @@ static void mtk_i2c_init_hw(struct mtk_i2c *i2c)
- 				       OFFSET_HS_STA_STO_AC_TIMING);
- 		}
- 	}
-+	mtk_i2c_writew(i2c, ext_conf_val, OFFSET_EXT_CONF);
- 
- 	/* If use i2c pin from PMIC mt6397 side, need set PATH_DIR first */
- 	if (i2c->have_pmic)
-@@ -600,7 +615,7 @@ static int mtk_i2c_check_ac_timing(struct mtk_i2c *i2c,
- 	unsigned int sample_ns = div_u64(1000000000ULL * (sample_cnt + 1),
- 					 clk_src);
- 
--	if (!i2c->dev_comp->timing_adjust)
-+	if (i2c->default_timing_adjust || !i2c->dev_comp->timing_adjust)
- 		return 0;
- 
- 	if (i2c->dev_comp->ltiming_adjust)
-@@ -760,7 +775,63 @@ static int mtk_i2c_calculate_speed(struct mtk_i2c *i2c, unsigned int clk_src,
- 	return 0;
- }
- 
--static int mtk_i2c_set_speed(struct mtk_i2c *i2c, unsigned int parent_clk)
-+static int mtk_i2c_set_speed_default_timing(struct mtk_i2c *i2c, unsigned int parent_clk)
-+{
-+	unsigned int clk_src;
-+	unsigned int step_cnt;
-+	unsigned int sample_cnt;
-+	unsigned int l_step_cnt;
-+	unsigned int l_sample_cnt;
-+	unsigned int target_speed;
-+	int ret;
-+
-+	if (i2c->dev_comp->timing_adjust)
-+		i2c->clk_src_div *= I2C_DEFAULT_CLK_DIV;
-+
-+	clk_src = parent_clk / i2c->clk_src_div;
-+	target_speed = i2c->speed_hz;
-+
-+	if (target_speed > I2C_MAX_FAST_MODE_PLUS_FREQ) {
-+		/* Set master code speed register */
-+		ret = mtk_i2c_calculate_speed(i2c, clk_src, I2C_MAX_FAST_MODE_FREQ,
-+					      &l_step_cnt, &l_sample_cnt);
-+		if (ret < 0)
-+			return ret;
-+
-+		i2c->timing_reg = (l_sample_cnt << 8) | l_step_cnt;
-+
-+		/* Set the high speed mode register */
-+		ret = mtk_i2c_calculate_speed(i2c, clk_src, target_speed,
-+					      &step_cnt, &sample_cnt);
-+		if (ret < 0)
-+			return ret;
-+
-+		i2c->high_speed_reg = I2C_TIME_DEFAULT_VALUE |
-+			(sample_cnt << 12) | (step_cnt << 8);
-+
-+		if (i2c->dev_comp->ltiming_adjust)
-+			i2c->ltiming_reg = (l_sample_cnt << 6) | l_step_cnt |
-+					   (sample_cnt << 12) | (step_cnt << 9);
-+	} else {
-+		ret = mtk_i2c_calculate_speed(i2c, clk_src, target_speed,
-+					      &step_cnt, &sample_cnt);
-+		if (ret < 0)
-+			return ret;
-+
-+		i2c->timing_reg = (sample_cnt << 8) | step_cnt;
-+
-+		/* Disable the high speed transaction */
-+		i2c->high_speed_reg = I2C_TIME_CLR_VALUE;
-+
-+		if (i2c->dev_comp->ltiming_adjust)
-+			i2c->ltiming_reg = (sample_cnt << 6) | step_cnt;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mtk_i2c_set_speed_adjust_timing(struct mtk_i2c *i2c,
-+					   unsigned int parent_clk)
- {
- 	unsigned int clk_src;
- 	unsigned int step_cnt;
-@@ -1284,6 +1355,8 @@ static int mtk_i2c_parse_dt(struct device_node *np, struct mtk_i2c *i2c)
- 	i2c->have_pmic = of_property_read_bool(np, "mediatek,have-pmic");
- 	i2c->use_push_pull =
- 		of_property_read_bool(np, "mediatek,use-push-pull");
-+	i2c->default_timing_adjust =
-+		of_property_read_bool(np, "mediatek,default-timing-adjust");
- 
- 	i2c_parse_fw_timings(i2c->dev, &i2c->timing_info, true);
- 
-@@ -1363,7 +1436,10 @@ static int mtk_i2c_probe(struct platform_device *pdev)
- 
- 	strlcpy(i2c->adap.name, I2C_DRV_NAME, sizeof(i2c->adap.name));
- 
--	ret = mtk_i2c_set_speed(i2c, clk_get_rate(clk));
-+	if (i2c->default_timing_adjust)
-+		ret = mtk_i2c_set_speed_default_timing(i2c, clk_get_rate(clk));
-+	else
-+		ret = mtk_i2c_set_speed_adjust_timing(i2c, clk_get_rate(clk));
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to set the speed.\n");
- 		return -EINVAL;
--- 
-1.9.1
+    sparc64: Fix opcode filtering in handling of no fault loads
+
+Colin
+
+On 19/06/2021 09:24, Anatoly Pugachev wrote:
+> Hello!
+> 
+> Getting the following in logs:
+> (reproducible with almost every run, tried different kernel as well -
+> debian packaged 5.10.0-7-sparc64-smp )
+> 
+> [  863.344843] stress-ng[593992]: bad register window fault: SP
+> 00000000fcd023ff (orig_sp 00000000fcd01c00) TPC fff80001000237fc O7
+> fff800010003e008
+> [  890.782498] CPU[4]: SUN4V mondo timeout, cpu(5) made no forward
+> progress after 500001 retries. Total target cpus(7).
+> [  890.782539] CPU[3]: SUN4V mondo timeout, cpu(5) made no forward
+> progress after 500001 retries. Total target cpus(7).
+> [  890.782590] Kernel panic - not syncing: SUN4V mondo timeout panic
+> [  890.782664] CPU: 4 PID: 480951 Comm: stress-ng Tainted: G
+>  E     5.13.0-rc6 #229
+> [  890.782713] Call Trace:
+> [  890.782733] [<0000000000c806c8>] panic+0xf4/0x2d4
+> [  890.782773] [<000000000043f3a8>] hypervisor_xcall_deliver+0x288/0x320
+> [  890.782816] [<000000000043efb8>] xcall_deliver+0xf8/0x120
+> [  890.782860] [<0000000000440518>] smp_flush_tlb_page+0x38/0x60
+> [  890.782898] [<000000000044ee44>] flush_tlb_pending+0x64/0xa0
+> [  890.782938] [<000000000044f1c4>] arch_leave_lazy_mmu_mode+0x24/0x40
+> [  890.782977] [<0000000000651b4c>] copy_pte_range+0x5ac/0x860
+> [  890.783013] [<0000000000655974>] copy_pud_range+0x1f4/0x260
+> [  890.783049] [<0000000000655b2c>] copy_page_range+0x14c/0x1c0
+> [  890.783083] [<00000000004613b4>] dup_mmap+0x374/0x4a0
+> [  890.783123] [<0000000000461530>] dup_mm+0x50/0x200
+> [  890.783157] [<0000000000462384>] copy_process+0x704/0x1280
+> [  890.783196] [<00000000004631a8>] kernel_clone+0x88/0x380
+> [  890.783231] [<000000000042d170>] sparc_clone+0xb0/0xe0
+> [  890.783274] [<0000000000406274>] linux_sparc_syscall+0x34/0x44
+> [  890.784106] CPU[7]: SUN4V mondo timeout, cpu(5) made no forward
+> progress after 500002 retries. Total target cpus(7).
+> [  890.784119] CPU[6]: SUN4V mondo timeout, cpu(5) made no forward
+> progress after 500003 retries. Total target cpus(7).
+> [  890.784876] Press Stop-A (L1-A) from sun keyboard or send break
+> [  890.784876] twice on console to return to the boot prom
+> [  890.784897] ---[ end Kernel panic - not syncing: SUN4V mondo
+> timeout panic ]---
+> 
+> (and machine halt)
+> 
+> after running stress-ng :
+> 
+> stress-ng.git$ ./stress-ng --verbose --timeout 10m --opcode -1
+> stress-ng: debug: [480950] stress-ng 0.12.10 g27f90a2276bd
+> stress-ng: debug: [480950] system: Linux ttip 5.13.0-rc6 #229 SMP Tue
+> Jun 15 12:30:23 MSK 2021 sparc64
+> stress-ng: debug: [480950] RAM total: 7.8G, RAM free: 7.0G, swap free: 768.7M
+> stress-ng: debug: [480950] 8 processors online, 256 processors configured
+> stress-ng: info:  [480950] dispatching hogs: 8 opcode
+> stress-ng: debug: [480950] cache allocate: using cache maximum level L2
+> stress-ng: debug: [480950] cache allocate: shared cache buffer size: 128K
+> stress-ng: debug: [480950] starting stressors
+> stress-ng: debug: [480951] stress-ng-opcode: started [480951] (instance 0)
+> stress-ng: debug: [480952] stress-ng-opcode: started [480952] (instance 1)
+> stress-ng: debug: [480953] stress-ng-opcode: started [480953] (instance 2)
+> stress-ng: debug: [480955] stress-ng-opcode: started [480955] (instance 3)
+> stress-ng: debug: [480957] stress-ng-opcode: started [480957] (instance 4)
+> stress-ng: debug: [480959] stress-ng-opcode: started [480959] (instance 5)
+> stress-ng: debug: [480961] stress-ng-opcode: started [480961] (instance 6)
+> stress-ng: debug: [480950] 8 stressors started
+> stress-ng: debug: [480963] stress-ng-opcode: started [480963] (instance 7)
+> *** stack smashing detected ***: terminated
+> *** stack smashing detected ***: terminated
+> *** stack smashing detected ***: terminated
+> *** stack smashing detected ***: terminated
+> *** stack smashing detected ***: terminated
+> *** stack smashing detected ***: terminated
+> *** stack smashing detected ***: terminated
+> Inconsistency detected by ld.so: dl-runtime.c: 80: _dl_fixup:
+> Assertion `ELFW(R_TYPE)(reloc->r_info) == ELF_MACHINE_JMP_SLOT'
+> failed!
+> *** stack smashing detected ***: terminated
+> munmap_chunk(): invalid pointer
+> *** stack smashing detected ***: terminated
+> *** stack smashing detected ***: terminated
+> *** stack smashing detected ***: terminated
+> *** stack smashing detected ***: terminated
+> *** stack smashing detected ***: terminated
+> Inconsistency detected by ld.so: : 422: Assertion `�' failed!
+> *** stack smashing detected ***: terminated
+> 
+> 
+> Machine is my testing LDOM (virtual machine), installed and running
+> the latest sparc4 debian sid (unstable).
+> 
 
