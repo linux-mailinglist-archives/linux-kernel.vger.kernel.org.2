@@ -2,167 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14CA63AD956
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 12:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D163AD95C
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 12:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbhFSKLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 06:11:37 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49288 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231129AbhFSKLf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 06:11:35 -0400
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15JA3u5k046752;
-        Sat, 19 Jun 2021 06:09:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : content-type : mime-version; s=pp1;
- bh=N5uN7fL2W8wsD4fRWosX357FzY+k/1QQqQWJ9ns8alw=;
- b=R8crEZfwHzZaKFXP270kA4KnPdwovgHTE7NmdZt3LJtWZ26gt9ok5KMtzooKO4oSzNp0
- xN73EJUAKSqXhkxcbmIdmGDfUcqc2xlS2Owton4oVfxygINUKNlyiZ9nT1cNdIDuZmNp
- XwQGcr8nOginhXy8W0Dy4KLAeDkEeswcJSE1TgDPDxatp8We+LeX4369C08Co0xZXRKq
- Bun1zeGCnFTWCChoOh03GS1BnkmmcV2KQzGNbHuB/+G878xWUDg472k2PajMCCbRJPMg
- U9kLG9dm5v0x6WYEWsUUWj7GtARLD2HkY8dhtkYhGaVjfbfFhcuPVjXJOW3vqW/oHQeN 1w== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 399ee186dw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 19 Jun 2021 06:09:23 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15JA2t5o006515;
-        Sat, 19 Jun 2021 10:09:20 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03ams.nl.ibm.com with ESMTP id 399878835j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 19 Jun 2021 10:09:20 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15JA9H4S32375126
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 19 Jun 2021 10:09:17 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B540F5204E;
-        Sat, 19 Jun 2021 10:09:17 +0000 (GMT)
-Received: from localhost (unknown [9.171.5.120])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 67CC152051;
-        Sat, 19 Jun 2021 10:09:17 +0000 (GMT)
-Date:   Sat, 19 Jun 2021 12:09:16 +0200
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: [GIT PULL] s390 fixes for 5.13-rc7
-Message-ID: <your-ad-here.call-01624097356-ext-0352@work.hours>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: nqoF9TORFSUi7k1HF-uNBDQlMxIi76r5
-X-Proofpoint-ORIG-GUID: nqoF9TORFSUi7k1HF-uNBDQlMxIi76r5
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S230480AbhFSKTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 06:19:22 -0400
+Received: from mout.gmx.net ([212.227.17.22]:39075 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229475AbhFSKTU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 06:19:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1624097824;
+        bh=pUWqg54W1aADz7YDfDz1OgtQ7oXBYT2s7PJeI3X1NW4=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=JUfgaKxxGBrGh3bibpkb4jw9Ul3cu88f/87nLiHJS/q7DWEW+VpaKdAqR++NI45lT
+         C2VO+U6lYJ05BhQtV+5YXtf73oDB9VopMyWzKppztQo19JftxzjpYpGVguajqR/UCA
+         AttW9xLRW7Jp1HdllAY2sXV2NrC+b5Llyf3qLSgs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.214.247]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mv2xU-1l3XuK0AEq-00qyG7; Sat, 19
+ Jun 2021 12:17:04 +0200
+Date:   Sat, 19 Jun 2021 12:17:03 +0200
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        openbmc@lists.ozlabs.org, Tomer Maimon <tmaimon77@gmail.com>,
+        Joel Stanley <joel@jms.id.au>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/8] dt-bindings: pinctrl: Add Nuvoton WPCM450
+Message-ID: <YM3EH6Cu2GsLjd3O@latitude>
+References: <20210602120329.2444672-1-j.neuschaefer@gmx.net>
+ <20210602120329.2444672-5-j.neuschaefer@gmx.net>
+ <20210615234558.GA1684841@robh.at.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-19_09:2021-06-18,2021-06-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- mlxlogscore=999 lowpriorityscore=0 adultscore=0 phishscore=0
- impostorscore=0 clxscore=1015 priorityscore=1501 spamscore=0 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106190066
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Gfvb67XozB+au/Ks"
+Content-Disposition: inline
+In-Reply-To: <20210615234558.GA1684841@robh.at.kernel.org>
+X-Provags-ID: V03:K1:ySRazohGAFjgQt775MkM8h6zUwRgArurfbV/FAqh42AIuk3U7yW
+ Fb0ralSgR/vtJr2LlzMViqSG1CVldpEBTBY5/Hhr+FLFydjBZ35nFLyFp+mAJjFeTEu+0qd
+ vEK9EiqAzA4/dvJ89IjiUbyAc1fQ0RbbXP6Jkv6neBGGiHlSlk1u1DxuuSGZTJIfvbP6q7k
+ TLYslpMhHMGkyftuFjEjA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:R+G/zDXiB5Y=:mzD+Gg1RkHyUMfjgSFULEN
+ Lhcsp/UOYvEBlDu+62yqP4w+2VgOoz+vxp34vqKIbNfhrp88s6PtTL7iG+EeLGYv0Q5N2Ts9N
+ 4NOg2lb7vnA4+nfxQvU2fIn/GkDQ5v/F0d8PENZkAdcR0CwrEzMqNuFCL5llLRsNCiZgcwwu8
+ ve+rmpy9fC/n3QT8hdl/rV4M+OiEBXHdxx/DbFxCVzUFvb8wayw3xGsSEbdQQlL0rf4Az3J4a
+ 8iDDAaDiK8TH8yNC6h9r2chJu56Vty29g0NFYIZUIx1mgRn/F7NdPPdFGgUGR1zMTpiKPs4lP
+ O4fjqKbPX5MWw885tDEV2HhsqvjpSZK20/BUx86/qFJ70nexOABvn70s6CXngpASr0hMfhY8G
+ wWNusDA3oGslqWvu4/sBFcpwzdcpZ22oKyTyIAbjDjcBEl6xG2ThRuNzKmjTaesOY7XqoI7iW
+ 9V/AyVmS2QXJ3iVZDK62XOeuzSEXe3jmpABpnK4xZcUmOatDAiipiTUdfs3lPDPf5gctvwMSb
+ RXklePKMy4H0kW7uX1Z8BV+fmgfm9UW+Y+QxKRDOoruVLaPsnKnohxKTRZUShecS+sxy6U+jH
+ 6OW8DF8i7p6ON9EcR3KIp1GrYeQLYiLlzyuhGmbHRJirBoVMU64vT4DBmdW2NKkJ8dFzSX/0V
+ hZ8lhfwZaakvHB8NCabO2Ovzt8ffWLNj995r7yqbI1nCnvv2YTLU/CdM9SwsJ5IAmbtNHw4uH
+ uiU4MoiDH700XKqNDwMstmhQb1eNFm8qZ+OfTCLmpLRMR3CuKPL8zBqvb+P8u2PlfcUewZbI9
+ otua6hLfA5nhlKdKATBmaxmo79GCqjjYCgQYttDDfEzLSyAOPPYTikEawc7+lTTH3VOmko06h
+ KMsoUm9tsyb5/jRO9gVxirgZ671lfzXnThUuOX9esFevbGKI2PKOZASwRwxO/2i4dOaCdX4XA
+ 1J+A5Y1/Z8HG6OzAMtA7bEq2sGL2QnTyPBajykRINY5Pgd7SC81qJgXgYQdQ4gWJR8AcxSR9N
+ D2HMGhSksUE0ti7fRsFgyeGzkd4X8R/6NryvGpwj0kM0libxAxOW9iceuXmIyPixNgiu1ps/p
+ iEcQ/jdEcJEUUL9htl/Ir0s7DWkezcdkw+Ubcy84ifNf7AltMObULh0zA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
 
-please pull s390 fixes for 5.13-rc7.
+--Gfvb67XozB+au/Ks
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thank you,
-Vasily
+On Tue, Jun 15, 2021 at 05:45:58PM -0600, Rob Herring wrote:
+> On Wed, Jun 02, 2021 at 02:03:25PM +0200, Jonathan Neusch=C3=A4fer wrote:
+> > This binding is heavily based on the one for NPCM7xx, because the
+> > hardware is similar. One notable difference is that there are no
+> > sub-nodes for GPIO banks, because the GPIO registers are arranged
+> > differently.
+> >=20
+> > Certain pins support blink patterns in hardware. This is currently not
+> > modelled in the DT binding.
+> >=20
+> > Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+> > ---
+[...]
+> > +properties:
+> > +  compatible:
+> > +    const: "nuvoton,wpcm450-pinctrl"
+>=20
+> Don't need quotes.
 
-The following changes since commit 614124bea77e452aa6df7a8714e8bc820b489922:
+Ok, I'll remove them.
 
-  Linux 5.13-rc5 (2021-06-06 15:47:27 -0700)
+>=20
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  gpio-controller: true
+> > +
+> > +  '#gpio-cells':
+> > +    const: 2
+> > +
+> > +  interrupt-controller: true
+> > +
+> > +  "#interrupt-cells":
+> > +    const: 2
 
-are available in the Git repository at:
+and I just noticed the inconsistency in quotes here. I'll fix it.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.13-4
+> > +
+> > +  interrupts: true
+> > +
+> > +patternProperties:
+> > +  # There are two kinds of subnodes:
+> > +  # 1. a pinmux node configures pin muxing for a group of pins (e.g. r=
+mii2)
+> > +  # 2. a pinctrl node configures properties of a single pin
+> > +  "^.*$":
+> > +    if:
+> > +      type: object
+> > +    then:
+>=20
+> Don't do this hack for new bindings. Pick a node name pattern you can=20
+> match on.
 
-for you to fetch changes up to e73a99f3287a740a07d6618e9470f4d6cb217da8:
+Ok.
 
-  s390/ap: Fix hanging ioctl caused by wrong msg counter (2021-06-16 23:32:02 +0200)
+>=20
+> > +      allOf:
+> > +        - $ref: pincfg-node.yaml#
+> > +        - $ref: pinmux-node.yaml#
+> > +      properties:
+[...]
+> > +        phandle: true
+>=20
+> Needing this should be fixed now.
 
-----------------------------------------------------------------
-- Fix zcrypt ioctl hang due to AP queue msg counter dropping below 0 when
-  pending requests are purged.
+Ok, I'll drop it.
 
-- Two fixes for the machine check handler in the entry code.
 
-----------------------------------------------------------------
-Alexander Gordeev (2):
-      s390/mcck: fix calculation of SIE critical section size
-      s390/mcck: fix invalid KVM guest condition check
 
-Harald Freudenberger (1):
-      s390/ap: Fix hanging ioctl caused by wrong msg counter
+Thanks,
+Jonathan Neusch=C3=A4fer
 
- arch/s390/kernel/entry.S       |  4 ++--
- drivers/s390/crypto/ap_queue.c | 11 +++++++++--
- 2 files changed, 11 insertions(+), 4 deletions(-)
+--Gfvb67XozB+au/Ks
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/arch/s390/kernel/entry.S b/arch/s390/kernel/entry.S
-index 12de7a9c85b3..9cc71ca9a88f 100644
---- a/arch/s390/kernel/entry.S
-+++ b/arch/s390/kernel/entry.S
-@@ -651,9 +651,9 @@ ENDPROC(stack_overflow)
- .Lcleanup_sie_mcck:
- 	larl	%r13,.Lsie_entry
- 	slgr	%r9,%r13
--	larl	%r13,.Lsie_skip
-+	lghi	%r13,.Lsie_skip - .Lsie_entry
- 	clgr	%r9,%r13
--	jh	.Lcleanup_sie_int
-+	jhe	.Lcleanup_sie_int
- 	oi	__LC_CPU_FLAGS+7, _CIF_MCCK_GUEST
- .Lcleanup_sie_int:
- 	BPENTER	__SF_SIE_FLAGS(%r15),(_TIF_ISOLATE_BP|_TIF_ISOLATE_BP_GUEST)
-diff --git a/drivers/s390/crypto/ap_queue.c b/drivers/s390/crypto/ap_queue.c
-index ecefc25eff0c..337353c9655e 100644
---- a/drivers/s390/crypto/ap_queue.c
-+++ b/drivers/s390/crypto/ap_queue.c
-@@ -135,12 +135,13 @@ static struct ap_queue_status ap_sm_recv(struct ap_queue *aq)
- {
- 	struct ap_queue_status status;
- 	struct ap_message *ap_msg;
-+	bool found = false;
- 
- 	status = ap_dqap(aq->qid, &aq->reply->psmid,
- 			 aq->reply->msg, aq->reply->len);
- 	switch (status.response_code) {
- 	case AP_RESPONSE_NORMAL:
--		aq->queue_count--;
-+		aq->queue_count = max_t(int, 0, aq->queue_count - 1);
- 		if (aq->queue_count > 0)
- 			mod_timer(&aq->timeout,
- 				  jiffies + aq->request_timeout);
-@@ -150,8 +151,14 @@ static struct ap_queue_status ap_sm_recv(struct ap_queue *aq)
- 			list_del_init(&ap_msg->list);
- 			aq->pendingq_count--;
- 			ap_msg->receive(aq, ap_msg, aq->reply);
-+			found = true;
- 			break;
- 		}
-+		if (!found) {
-+			AP_DBF_WARN("%s unassociated reply psmid=0x%016llx on 0x%02x.%04x\n",
-+				    __func__, aq->reply->psmid,
-+				    AP_QID_CARD(aq->qid), AP_QID_QUEUE(aq->qid));
-+		}
- 		fallthrough;
- 	case AP_RESPONSE_NO_PENDING_REPLY:
- 		if (!status.queue_empty || aq->queue_count <= 0)
-@@ -232,7 +239,7 @@ static enum ap_sm_wait ap_sm_write(struct ap_queue *aq)
- 			   ap_msg->flags & AP_MSG_FLAG_SPECIAL);
- 	switch (status.response_code) {
- 	case AP_RESPONSE_NORMAL:
--		aq->queue_count++;
-+		aq->queue_count = max_t(int, 1, aq->queue_count + 1);
- 		if (aq->queue_count == 1)
- 			mod_timer(&aq->timeout, jiffies + aq->request_timeout);
- 		list_move_tail(&ap_msg->list, &aq->pendingq);
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmDNxB4ACgkQCDBEmo7z
+X9tBKw/9E2aL/JEYtxWOl9pHdUKEQ1dWghDn5bM+5blODa9NL2r2wE7ZqdSyMxwc
+g20MY053o4XwFt0S/ctzDonBtbhktpJLUaJAM6eXplC1atSdR0IGGGA7bNnCrQ0t
+G9vXW8attJAK1+1eINYK3HLLehSw5zRtkY7iO7XacCf+mAEplRtvh5GPyPj7VNt3
+vSdwEzdaM/uW/7wtkAbzUqtBG1zCSqCTtXn5Bd96yCVwBWPlyDEsecRTCqiDo3HG
+qCcME+UuzM4T70fy1heABFX2HeRehVvJ5f1pyZWsBAQB/XIA4SL8IFr4T3DXJwxn
+9mwdU6+NAGisGBqBowy9OZZ8KFUUXB7xNtr01SVLB/+LUYSG9XD1uM+Xq9c6LMsY
+0xS1Pqyv7BRA7LQzZkztclciHdtKbTCa0XLZ22xMd2V9xh/y1IeVFuraP4zExy24
+7LCX0XTK7Qy2lnpZMablJ9aAqK2syoC94/xSGXtvuROP57itM/FxdQ/wfYFKtbxQ
+eUcm/ifS2Bhg83U63SAKjLzBt+igIAMAlH8GmQL+eGfBapXJeUEeW6YBXoB+vb4u
+c0WPFbdKY6b/zuG60ZdnELqPEk92A1oBBPznlrUhtdALkBxLUaQSvd9pdNYCgsjm
+if4OeP/aKBz0tfhZOb+QFKMjhlAuewPosV8UQYGqH0uSxxoAe2M=
+=eRq1
+-----END PGP SIGNATURE-----
+
+--Gfvb67XozB+au/Ks--
