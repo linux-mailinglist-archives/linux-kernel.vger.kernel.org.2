@@ -2,113 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E193AD6D0
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 04:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64BA93AD6D2
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 04:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235268AbhFSCsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 22:48:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234923AbhFSCr7 (ORCPT
+        id S235439AbhFSCtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 22:49:45 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:3282 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S235311AbhFSCto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 18 Jun 2021 22:47:59 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17FF0C061760
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 19:45:48 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id y15so3326358pfl.4
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 19:45:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zAYV7wMM7Ezv8dDkbAjr47uPXYKTsdhdBtQn9j9OFnQ=;
-        b=Q2OJ2V/f8FZEH317J3bz6jJZxIGjbRaNkKQIRx821VhRbFsIHrPq+Zay4VGnDoiem3
-         h5LzzP3EtTb95X3yOnHsnK0DXz+ppJPbmxOjwonoz6Vp5YBhvZqOmANEITrlb7cwBX66
-         OHR4Cr7BDqNiJ6hJrDmkmpm82iFxhnS7Uk1do=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zAYV7wMM7Ezv8dDkbAjr47uPXYKTsdhdBtQn9j9OFnQ=;
-        b=JzbZfk6xpa+2E7se/aTR2CJPLgZjEFfwjk7zvSX5VSS8ulJExy9Hsrd258/QeBOPrC
-         Ax2KALynQJU9+WsE1OTYgInTQuqCu7X+KzqvUZt7b3IVDeS7oGZSB8MT2FUHcGDtyu98
-         pAQmjefTpTrLyq4E8pG44kAv28j7+ahyQgsdxOFsU4muHnqGRxru6Bs1yVfRxEeHFbuj
-         lRkfqMKPsFDcjNpQbaCgyJsOX42m9u1EOxSKrxhrL/ZDCSfxqf8nUeUc5rsqvlpNQXw4
-         LCY38mPLjfw+Hk+M+UZ+bcBdVGK5xWdV6a1dT8GSGctA+bQwDScXPM8ADtdyACdorqgI
-         SMkg==
-X-Gm-Message-State: AOAM530oZ0KlKWmAGLRQ2iyINKmCmoVsCFmAFFlXieq91E6LKH+cUHJc
-        Vds9QHVwP4dYdVpk8dsTvN9KLw==
-X-Google-Smtp-Source: ABdhPJweZiwRILILciRX6LD55JeoGO8LssAH/WdscRnLKM2PzFFoKdbgNhnxUUkHKzp2FHsJS7btNw==
-X-Received: by 2002:a62:6581:0:b029:2ef:bcb1:c406 with SMTP id z123-20020a6265810000b02902efbcb1c406mr8009133pfb.28.1624070747426;
-        Fri, 18 Jun 2021 19:45:47 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h21sm8559917pfv.190.2021.06.18.19.45.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 18 Jun 2021 19:45:46 -0700 (PDT)
-Date:   Fri, 18 Jun 2021 19:45:45 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Bill Wendling <wcw@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
-        Martin Liska <mliska@suse.cz>, Marco Elver <elver@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Fangrui Song <maskray@google.com>, linux-doc@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        johannes.berg@intel.com, linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH 0/2] no_profile fn attr and Kconfig for GCOV+PGO
-Message-ID: <202106181945.AC10BF38ED@keescook>
-References: <20210618233023.1360185-1-ndesaulniers@google.com>
+        Fri, 18 Jun 2021 22:49:44 -0400
+X-UUID: e790ef01e8cb4c819843708767eb56b5-20210619
+X-UUID: e790ef01e8cb4c819843708767eb56b5-20210619
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1252243222; Sat, 19 Jun 2021 10:47:29 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 19 Jun 2021 10:47:25 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 19 Jun 2021 10:47:24 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
+CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-phy@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 1/3] dt-bindings: phy: mediatek: tphy: add support hardware version 3
+Date:   Sat, 19 Jun 2021 10:47:17 +0800
+Message-ID: <1624070839-1233-1-git-send-email-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210618233023.1360185-1-ndesaulniers@google.com>
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 61F31F61220BC684D2241E75CFBD627072BEFBA453B5AAAAE65EB56E6EAC09FE2000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 04:30:21PM -0700, Nick Desaulniers wrote:
-> When we say noinstr, we mean noinstr.  GCOV and PGO can both instrument
-> functions. Add a new function annotation __no_profile that expands to
-> __attribute__((__no_profile__)) and Kconfig value
-> CC_HAS_NO_PROFILE_FN_ATTR.
-> 
-> Base is
-> https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/log/?h=for-next/clang/pgo.
-> 
-> Nick Desaulniers (2):
->   compiler_attributes.h: define __no_profile, add to noinstr
->   Kconfig: CC_HAS_NO_PROFILE_FN_ATTR, depend on for GCOV and PGO
+The PHYA architecture is updated, and doesn't support slew rate
+calibration anymore on 7nm or advanced process, add a new version
+number to support it.
+Due to the FreqMeter bank is not used but reserved, it's backward
+with v2 until now.
+For mt8195, no function changes when use generic v2 or v3 compatible,
+but prefer to use v3's compatible, it will not waste the time to
+calibrate the slew rate, and also correspond with hardware version.
 
-Oh, awesome! Thanks for the fast work on this. If there are no objections,
-I'll apply this in front of the PGO series and put it in -next.
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+---
+v2: add more commit log suggested by Rob
+---
+ .../devicetree/bindings/phy/mediatek,tphy.yaml     | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
--Kees
-
-> 
->  include/linux/compiler_attributes.h | 12 ++++++++++++
->  include/linux/compiler_types.h      |  2 +-
->  init/Kconfig                        |  3 +++
->  kernel/gcov/Kconfig                 |  1 +
->  kernel/pgo/Kconfig                  |  3 ++-
->  5 files changed, 19 insertions(+), 2 deletions(-)
-> 
-> 
-> base-commit: 4356bc4c0425c81e204f561acf4dd0095544a6cb
-> -- 
-> 2.32.0.288.g62a8d224e6-goog
-> 
-
+diff --git a/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml b/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+index b8a7651a3d9a..939c09296b5f 100644
+--- a/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
++++ b/Documentation/devicetree/bindings/phy/mediatek,tphy.yaml
+@@ -15,7 +15,7 @@ description: |
+   controllers on MediaTek SoCs, includes USB2.0, USB3.0, PCIe and SATA.
+ 
+   Layout differences of banks between T-PHY V1 (mt8173/mt2701) and
+-  T-PHY V2 (mt2712) when works on USB mode:
++  T-PHY V2 (mt2712) / V3 (mt8195) when works on USB mode:
+   -----------------------------------
+   Version 1:
+   port        offset    bank
+@@ -34,7 +34,7 @@ description: |
+   u2 port2    0x1800    U2PHY_COM
+               ...
+ 
+-  Version 2:
++  Version 2/3:
+   port        offset    bank
+   u2 port0    0x0000    MISC
+               0x0100    FMREG
+@@ -59,7 +59,8 @@ description: |
+ 
+   SPLLC shared by u3 ports and FMREG shared by u2 ports on V1 are put back
+   into each port; a new bank MISC for u2 ports and CHIP for u3 ports are
+-  added on V2.
++  added on V2; the FMREG bank for slew rate calibration is not used anymore
++  and reserved on V3;
+ 
+ properties:
+   $nodename:
+@@ -79,8 +80,11 @@ properties:
+               - mediatek,mt2712-tphy
+               - mediatek,mt7629-tphy
+               - mediatek,mt8183-tphy
+-              - mediatek,mt8195-tphy
+           - const: mediatek,generic-tphy-v2
++      - items:
++          - enum:
++              - mediatek,mt8195-tphy
++          - const: mediatek,generic-tphy-v3
+       - const: mediatek,mt2701-u3phy
+         deprecated: true
+       - const: mediatek,mt2712-u3phy
+@@ -91,7 +95,7 @@ properties:
+     description:
+       Register shared by multiple ports, exclude port's private register.
+       It is needed for T-PHY V1, such as mt2701 and mt8173, but not for
+-      T-PHY V2, such as mt2712.
++      T-PHY V2/V3, such as mt2712.
+     maxItems: 1
+ 
+   "#address-cells":
 -- 
-Kees Cook
+2.18.0
+
