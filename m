@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27D073AD741
-	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 05:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 420BF3AD743
+	for <lists+linux-kernel@lfdr.de>; Sat, 19 Jun 2021 05:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235740AbhFSDob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 18 Jun 2021 23:44:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53036 "EHLO
+        id S235761AbhFSDoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 18 Jun 2021 23:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234462AbhFSDoY (ORCPT
+        with ESMTP id S235674AbhFSDoY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 18 Jun 2021 23:44:24 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3484C061768
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 20:41:03 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id bb10-20020a17090b008ab029016eef083425so8907986pjb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 20:41:03 -0700 (PDT)
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E16C0617AE
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 20:41:12 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id e22so3262743pgv.10
+        for <linux-kernel@vger.kernel.org>; Fri, 18 Jun 2021 20:41:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=omy6cCV/mqNeN2Sml+g2G3v+YRTOPwPuj3rsSOaGbf8=;
-        b=I5TZjmCgnGS7QCzs+GcKzND2zopF611oSqEk2ecm02oxJXrYZUgoQDr2D20q350b//
-         QYtNYWxqxTTaqABZudTjO+NdWbPCAL6S986A1o51hT/KC6Y6jv56Aec5CbBEKD54AZvh
-         ONSLv3o8P/DZRDHIEq/KTzFADPEWg4DUzfKuQ=
+        bh=87F32lyNJPVTVtO+0wV8iOXVR4FYPSJ8Efeoe/l3AWY=;
+        b=i1ENWaFNKwGMCMiAeHBUHeHeWCgJo2DMoHTJ8FYIFrvt5MmhJ7OFiSW0SvgsImDco7
+         eyyIqWu+/Z0bEeYC6m5AiJ1SXr0nn6NCHriX3ZUuh6wWoj4iO9mtnXQIU1hsa49/kNzW
+         JSXwJ+CCVTQ+vErOyYxRYe6Lgoq4CUcXaMXXc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=omy6cCV/mqNeN2Sml+g2G3v+YRTOPwPuj3rsSOaGbf8=;
-        b=eg7xqxehZsk/Pi6f0oTiEZcb9+7Jc0WEJsVXucaNHoXraCVlo+8Uzw4zU9N/YB6yY+
-         AiOSF6ufciII1OG5jD+fUNh0FlADRCDPc0DQxbzEtj7unRjPkaXuDyaR64D1aRW43f7r
-         o7YjgGu8CEWNolFWIzeuUQEAqLbecE4IJcAFcWPd8h4r9X4diBuhU1ZjI3owPqDyKjSE
-         3aaQ0KeIAZnzSMmYUio/mlLMr+DszrOSePBi67XpN5fTrhau7nLW3ZRyYQuM6fnf7Ugv
-         4kLeHdCGS7UA3nKC2bsjJCoum8ZXY/IV3z4XVCD5H5Ww3E7rE/+v5APUxyto5Xz4lHA3
-         3iLQ==
-X-Gm-Message-State: AOAM532so9WkyPV2TBFtmY9YiYOMLLFRb13LeEcrigc0ZYGANsvk/xy5
-        ueTqI1iZnDcl6QML+CKfy7VKng==
-X-Google-Smtp-Source: ABdhPJxyHWTN70AeFSyU8U3sk1NtIzEKCT9EWu4JIVK1vqFXvWavgzlnfDikinONTGDBOm/HI5iFZg==
-X-Received: by 2002:a17:90a:3c8d:: with SMTP id g13mr7572126pjc.229.1624074063342;
-        Fri, 18 Jun 2021 20:41:03 -0700 (PDT)
+        bh=87F32lyNJPVTVtO+0wV8iOXVR4FYPSJ8Efeoe/l3AWY=;
+        b=f4Vn2J5feRtrKp6y6s9S1+Gduu+Kz4zTdNKQIShrl/z8PY8qd6ORl0Ti3LG1wOmdzf
+         92ShP7fZPngKSf69TYzza5i5btGPUs3lfhOA1fpdOawObhdeuf7k3Fcmcoeo5F3B3+gi
+         GEPvJ8W9NzY8jrqZwFOTufoHRwP8gWoZ+JLPcRUf3W/7Z2q2RKDDqURJ7RH6cyXmSY8U
+         0MRgmFCxYGmdmuf/uenlYG1bMU/RF61fbHW9uUCf+n4ZD9/95PTNd1R6fCCruVmQH1Lm
+         bhhnUcTMp7Yi4TNM47FFZmozgDlYo28EMwsuYTV6Ldo4CySP7BFQgV/7DJO5sP1j254r
+         G2eA==
+X-Gm-Message-State: AOAM5327NSJVPCejH27rK0xkb++Ojw7ElAO6EkiOxrn8ZEjoXkVBtWRi
+        9+PEzqws5Eog7j6HX5iCcDFSVQ==
+X-Google-Smtp-Source: ABdhPJyiBODmYapISErXaci/paTftzSQoq4G3MHhJ6blBXA4Xk2Rt3t9DUi7Q/sURCxYsvPxcPxH7g==
+X-Received: by 2002:a63:4915:: with SMTP id w21mr13046659pga.363.1624074072021;
+        Fri, 18 Jun 2021 20:41:12 -0700 (PDT)
 Received: from localhost ([2401:fa00:95:205:4a46:e208:29e8:e076])
-        by smtp.gmail.com with UTF8SMTPSA id v15sm10722584pgf.26.2021.06.18.20.40.55
+        by smtp.gmail.com with UTF8SMTPSA id 25sm10160700pgp.51.2021.06.18.20.41.04
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 18 Jun 2021 20:41:02 -0700 (PDT)
+        Fri, 18 Jun 2021 20:41:11 -0700 (PDT)
 From:   Claire Chang <tientzu@chromium.org>
 To:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
         Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
@@ -80,9 +80,9 @@ Cc:     benh@kernel.crashing.org, paulus@samba.org,
         maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
         rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com,
         thomas.lendacky@amd.com
-Subject: [PATCH v14 01/12] swiotlb: Refactor swiotlb init functions
-Date:   Sat, 19 Jun 2021 11:40:32 +0800
-Message-Id: <20210619034043.199220-2-tientzu@chromium.org>
+Subject: [PATCH v14 02/12] swiotlb: Refactor swiotlb_create_debugfs
+Date:   Sat, 19 Jun 2021 11:40:33 +0800
+Message-Id: <20210619034043.199220-3-tientzu@chromium.org>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
 In-Reply-To: <20210619034043.199220-1-tientzu@chromium.org>
 References: <20210619034043.199220-1-tientzu@chromium.org>
@@ -92,103 +92,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new function, swiotlb_init_io_tlb_mem, for the io_tlb_mem struct
-initialization to make the code reusable.
+Split the debugfs creation to make the code reusable for supporting
+different bounce buffer pools.
 
 Signed-off-by: Claire Chang <tientzu@chromium.org>
 Reviewed-by: Christoph Hellwig <hch@lst.de>
 Tested-by: Stefano Stabellini <sstabellini@kernel.org>
 Tested-by: Will Deacon <will@kernel.org>
 ---
- kernel/dma/swiotlb.c | 50 ++++++++++++++++++++++----------------------
- 1 file changed, 25 insertions(+), 25 deletions(-)
+ kernel/dma/swiotlb.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
 diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 52e2ac526757..1f9b2b9e7490 100644
+index 1f9b2b9e7490..ede66df6835b 100644
 --- a/kernel/dma/swiotlb.c
 +++ b/kernel/dma/swiotlb.c
-@@ -168,9 +168,28 @@ void __init swiotlb_update_mem_attributes(void)
- 	memset(vaddr, 0, bytes);
- }
+@@ -671,19 +671,26 @@ bool is_swiotlb_active(void)
+ EXPORT_SYMBOL_GPL(is_swiotlb_active);
  
--int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
-+static void swiotlb_init_io_tlb_mem(struct io_tlb_mem *mem, phys_addr_t start,
-+				    unsigned long nslabs, bool late_alloc)
+ #ifdef CONFIG_DEBUG_FS
++static struct dentry *debugfs_dir;
+ 
+-static int __init swiotlb_create_debugfs(void)
++static void swiotlb_create_debugfs_files(struct io_tlb_mem *mem)
  {
-+	void *vaddr = phys_to_virt(start);
- 	unsigned long bytes = nslabs << IO_TLB_SHIFT, i;
-+
-+	mem->nslabs = nslabs;
-+	mem->start = start;
-+	mem->end = mem->start + bytes;
-+	mem->index = 0;
-+	mem->late_alloc = late_alloc;
-+	spin_lock_init(&mem->lock);
-+	for (i = 0; i < mem->nslabs; i++) {
-+		mem->slots[i].list = IO_TLB_SEGSIZE - io_tlb_offset(i);
-+		mem->slots[i].orig_addr = INVALID_PHYS_ADDR;
-+		mem->slots[i].alloc_size = 0;
-+	}
-+	memset(vaddr, 0, bytes);
+-	struct io_tlb_mem *mem = io_tlb_default_mem;
+-
+-	if (!mem)
+-		return 0;
+-	mem->debugfs = debugfs_create_dir("swiotlb", NULL);
+ 	debugfs_create_ulong("io_tlb_nslabs", 0400, mem->debugfs, &mem->nslabs);
+ 	debugfs_create_ulong("io_tlb_used", 0400, mem->debugfs, &mem->used);
 +}
 +
-+int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
++static int __init swiotlb_create_default_debugfs(void)
 +{
- 	struct io_tlb_mem *mem;
- 	size_t alloc_size;
- 
-@@ -186,16 +205,8 @@ int __init swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, int verbose)
- 	if (!mem)
- 		panic("%s: Failed to allocate %zu bytes align=0x%lx\n",
- 		      __func__, alloc_size, PAGE_SIZE);
--	mem->nslabs = nslabs;
--	mem->start = __pa(tlb);
--	mem->end = mem->start + bytes;
--	mem->index = 0;
--	spin_lock_init(&mem->lock);
--	for (i = 0; i < mem->nslabs; i++) {
--		mem->slots[i].list = IO_TLB_SEGSIZE - io_tlb_offset(i);
--		mem->slots[i].orig_addr = INVALID_PHYS_ADDR;
--		mem->slots[i].alloc_size = 0;
--	}
++	struct io_tlb_mem *mem = io_tlb_default_mem;
 +
-+	swiotlb_init_io_tlb_mem(mem, __pa(tlb), nslabs, false);
++	debugfs_dir = debugfs_create_dir("swiotlb", NULL);
++	if (mem) {
++		mem->debugfs = debugfs_dir;
++		swiotlb_create_debugfs_files(mem);
++	}
+ 	return 0;
+ }
  
- 	io_tlb_default_mem = mem;
- 	if (verbose)
-@@ -282,8 +293,8 @@ swiotlb_late_init_with_default_size(size_t default_size)
- int
- swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs)
- {
--	unsigned long bytes = nslabs << IO_TLB_SHIFT, i;
- 	struct io_tlb_mem *mem;
-+	unsigned long bytes = nslabs << IO_TLB_SHIFT;
+-late_initcall(swiotlb_create_debugfs);
++late_initcall(swiotlb_create_default_debugfs);
  
- 	if (swiotlb_force == SWIOTLB_NO_FORCE)
- 		return 0;
-@@ -297,20 +308,9 @@ swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs)
- 	if (!mem)
- 		return -ENOMEM;
- 
--	mem->nslabs = nslabs;
--	mem->start = virt_to_phys(tlb);
--	mem->end = mem->start + bytes;
--	mem->index = 0;
--	mem->late_alloc = 1;
--	spin_lock_init(&mem->lock);
--	for (i = 0; i < mem->nslabs; i++) {
--		mem->slots[i].list = IO_TLB_SEGSIZE - io_tlb_offset(i);
--		mem->slots[i].orig_addr = INVALID_PHYS_ADDR;
--		mem->slots[i].alloc_size = 0;
--	}
--
-+	memset(mem, 0, sizeof(*mem));
- 	set_memory_decrypted((unsigned long)tlb, bytes >> PAGE_SHIFT);
--	memset(tlb, 0, bytes);
-+	swiotlb_init_io_tlb_mem(mem, virt_to_phys(tlb), nslabs, true);
- 
- 	io_tlb_default_mem = mem;
- 	swiotlb_print_info();
+ #endif
 -- 
 2.32.0.288.g62a8d224e6-goog
 
