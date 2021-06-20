@@ -2,62 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8F13ADFE9
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 21:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ADD43AE007
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 21:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhFTTao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 15:30:44 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:38800 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbhFTTam (ORCPT
+        id S230137AbhFTTeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 15:34:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230083AbhFTTeY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 15:30:42 -0400
-Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:33254 helo=[192.168.1.179])
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1lv37H-000547-Va; Sun, 20 Jun 2021 15:28:24 -0400
-Message-ID: <b0c5175177af0bfd216d45da361e114870f07aad.camel@trillion01.com>
-Subject: Re: [PATCH v2] io_uring: reduce latency by reissueing the operation
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     Randy Dunlap <rdunlap@infradead.org>, Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Sun, 20 Jun 2021 15:28:21 -0400
-In-Reply-To: <c5394ace-d003-df18-c816-2592fc40bf08@infradead.org>
-References: <e4614f9442d971016f47d69fbcba226f758377a8.1624215754.git.olivier@trillion01.com>
-         <c5394ace-d003-df18-c816-2592fc40bf08@infradead.org>
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.2 
+        Sun, 20 Jun 2021 15:34:24 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C409C061760
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 12:32:10 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id m21so26402874lfg.13
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 12:32:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=a2zlJLb2cHVJ/vhYiwd0h6Ss03bH4wa1SiOeNNr1qqA=;
+        b=GtgQ14FxOjyjFdwA25s7wkO/XJ0N6rYX+lT/nvBxbtU5mszTzg3wZBwdDHzPEe57KD
+         zyyGgdgzHlZ8++pJTDtdLMKmm4hwGT9rBg6fl/am+DoSpGsDygAgLsUIw1gFt+rUKrWZ
+         hf7bFKXsUGBJ9tPYtLiahcot1UqGRdAakVOInTjDUcAHoC3wjH3BiLtXZ0Pok8lZt7QT
+         JNTax46LcoteBKMCaupMicDZSU+1SZGCXqKk8mzVycUPBPA1b7UsuY7SXxR+kCT6ILKg
+         iRPbJLu4ZF4ABTDPGPWbsNSY8aZS9fhxpnAIbG98UkCv9adkYnSWh9QE3afOovpqVexZ
+         LJSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=a2zlJLb2cHVJ/vhYiwd0h6Ss03bH4wa1SiOeNNr1qqA=;
+        b=PcVDMXB6gvLZJGl2DYtgXjvDAfalKjXFuwEERSWNpw0JyLpBpmtvxqoxsV1n/2vR0M
+         mcYB31oXB2drYOHqNXc/18mlMDxwf8tfXd5O23zRsU5TWr7Nw/YNp6W/Acu+283ehx4j
+         EYKWAO/pzKSOEDy6HUNvQ9mZPcfM8uDN2txU9Pw0W0LPFGMp+kC01PFx7MVnbDOhsw6v
+         6Uujgcu0CTLqD5V4hKJPSnA9KPUDsHq8cRHEq5wXE1aL5qJONp7TImzMU1HQ3aasDzak
+         7vdoq7gkMyK2QyBLBEJFqbG2dwgyNwc1VFGSOZmXG5OmZYu1pP41ldSnNoVFtIxOoZa6
+         B0Ng==
+X-Gm-Message-State: AOAM531buGXcGlSaPxXcipxfsEBqyipS2ogGW45eCYFv7KLiIZ12eVX2
+        eH4s3NhsrZKsHd1vO5IHr9Q2u8uCBPo1fKvb9kY=
+X-Google-Smtp-Source: ABdhPJyyInrOe9nI301ArLVhE0QteINw1CDdEnr24x5wlnnbDQTDiegfUETmrH5uqBeOQFmV2CkOJ4QiPOuD4BzWCIY=
+X-Received: by 2002:a05:6512:1184:: with SMTP id g4mr11188837lfr.567.1624217528730;
+ Sun, 20 Jun 2021 12:32:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Received: by 2002:aa6:da47:0:b029:fa:6d7d:24c with HTTP; Sun, 20 Jun 2021
+ 12:32:08 -0700 (PDT)
+Reply-To: contactcenter@gnbinvestorsb.com
+From:   Gnb Investors Bank <sandraquntoo@gmail.com>
+Date:   Sun, 20 Jun 2021 22:32:08 +0300
+Message-ID: <CAPu=tC68--U1MPBTZoJ+MG5eq_MvkD_0U_UQNFukUxQBpUo+uQ@mail.gmail.com>
+Subject: Brauchen Sie einen Kredit?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-06-20 at 12:07 -0700, Randy Dunlap wrote:
-> On 6/20/21 12:05 PM, Olivier Langlois wrote:
-> > -               return false;
-> > +               return ret?IO_ARM_POLL_READY:IO_ARM_POLL_ERR;
-> 
-> Hi,
-> Please make that return expression more readable.
-> 
-> 
-How exactly?
+--=20
+Brauchen Sie einen Kredit? Unsere Bank vergibt Kredite zu einem Zinssatz vo=
+n 2%
 
-by adding spaces?
-Changing the define names??
+Melden Sie sich f=C3=BCr weitere Informationen bei uns.
 
-
+E-Mail: contactcenter@gnbinvestorsb.com
