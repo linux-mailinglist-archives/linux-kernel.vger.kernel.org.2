@@ -2,105 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3DEF3ADF3E
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 17:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80843ADF44
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 18:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229899AbhFTPsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 11:48:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbhFTPsO (ORCPT
+        id S229915AbhFTQEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 12:04:04 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:33309 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229680AbhFTQD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 11:48:14 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0524C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 08:46:00 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso15102017otu.10
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 08:46:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uNULw8Wxtv+zIGQLsQfQlYJ7X4n+hkFjwgFJLvbtrR4=;
-        b=UuAAWZDejm0W8lwVw8Kh8ePS/qBx/53i8XoVcDxoVvebHF1rU/rYnsIfhjncJPC4fF
-         iHdqFvxwM0QyvTeO+U8fAcK4jeuTys0jOJ6wnmM3grt8ZDRZgSZ0qAzMLNr86GxHv38b
-         iE3BrCZljmWPQ7bpX6jVfWI3nj7I7sx63UnqU1gguA8QaxB3PEyDg8HC6u+4Z2I1enyN
-         CzBDclraL9pz54RULq4gmKlvPhdalFkEGkeFAj1uyrQpNyiOYQHie99Hxg8jzRg7Unzl
-         qbPYYjb6aihIIr1tOAhF3k/IgKs6SyDXB+yFJJbu3Z7nQ+vZ1SUx13sc51j7BPSPZeJI
-         9okQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=uNULw8Wxtv+zIGQLsQfQlYJ7X4n+hkFjwgFJLvbtrR4=;
-        b=XS+wMaGea4E/16W0n7mAxAyVQr8UWxPe01urn4wnE43wuRAG9xVMd2B3YBIQTYYE3A
-         QbNA5AIFCMXZYjGOCqwYtDLcZOo8nZ11v5G62ByvBQ7ZEfFO4a0JzRhyu8WUBbXU57As
-         ta70G4XJUULjzmjO25EmUU8cIJMBsqYgvlZej7KDtfQNy+nAqr+lU/6ATQGutoRCdH+f
-         AnWLXeh+CXEeTCW1qbpWgjOOfgikPdm76hjaRUpCmiVYlAtEmRAeA51HqoDodX9K8wrY
-         CgHukLvzlhNA9WL8lXSPYavkQtPUuvUX6PuSzrDnO6fNxbn5fWT52e+7Fq1jCT9tfVku
-         s3wQ==
-X-Gm-Message-State: AOAM531zJVU6Jlxd3Q2Kq4PAYJ9YCy9uxBvRwHyKYZkeHvUhkxDeGbNX
-        xxnzeGJ7MDSp84eRYh07Oz0=
-X-Google-Smtp-Source: ABdhPJxSa7mf7oMdXXfTX2nkdbp4ZG15QxyYQ8x40gIcpDovdYEJH4/Gv7OGtcNmdVIr5rmlv+nBOQ==
-X-Received: by 2002:a05:6830:1f51:: with SMTP id u17mr17712847oth.25.1624203958822;
-        Sun, 20 Jun 2021 08:45:58 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z14sm3378318oti.29.2021.06.20.08.45.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Jun 2021 08:45:58 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Andy Whitcroft <apw@canonical.com>
-Cc:     Joe Perches <joe@perches.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH] checkpatch: Do not complain about positive return values starting with EPOLL
-Date:   Sun, 20 Jun 2021 08:45:55 -0700
-Message-Id: <20210620154555.3848275-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.25.1
+        Sun, 20 Jun 2021 12:03:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624204907; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: References: Cc: To:
+ Subject: From: Sender; bh=tBT+9R016OURPd1+oAsunExiWefitK40L6H5apyub1U=;
+ b=tzVf1lTlF6S6BVh8rAbp6ZhGP6qnUiblQsRyUXntUVtD9xJoA1sJ9c/AUS/GDSva690bdYFI
+ oujEOvxeeva18kzZtAcK2GnznxVOsHKSS4WwhHfZw4n/qqCvKW9fWQFtIV4gTisxWk2nnZK3
+ ixd7m+p05jH45j9pCXidKhscl38=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60cf6662e27c0cc77f49bb73 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sun, 20 Jun 2021 16:01:38
+ GMT
+Sender: faiyazm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 73BABC43217; Sun, 20 Jun 2021 16:01:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.0.102] (unknown [49.204.183.187])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: faiyazm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 75B03C433F1;
+        Sun, 20 Jun 2021 16:01:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 75B03C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
+From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
+Subject: Re: [PATCH v1] mm: slub: fix the leak of alloc/free traces debugfs
+ interface
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        linux-mm <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg KH <greg@kroah.com>, glittao@gmail.com,
+        vinmenon@codeaurora.org, Catalin Marinas <catalin.marinas@arm.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+References: <1624019875-611-1-git-send-email-faiyazm@codeaurora.org>
+ <CAHp75VePzuYwHxA4S8UiUKG1uSqpvnJhfajjJkQi1qS-BhHSdg@mail.gmail.com>
+Message-ID: <4ecb4c12-6183-95c5-af59-02fe5da0c17c@codeaurora.org>
+Date:   Sun, 20 Jun 2021 21:31:28 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75VePzuYwHxA4S8UiUKG1uSqpvnJhfajjJkQi1qS-BhHSdg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-checkpatch complains about positive return values of poll functions.
-Example:
 
-WARNING: return of an errno should typically be negative (ie: return -EPOLLIN)
-+		return EPOLLIN;
 
-Poll functions return positive values. The defines for the return values
-of poll functions all start with EPOLL, resulting in a number of false
-positives. An often used workaround is to assign poll function return
-values to variables and returning that variable, but that is a less than
-perfect solution.
+On 6/18/2021 6:45 PM, Andy Shevchenko wrote:
+> On Fri, Jun 18, 2021 at 3:38 PM Faiyaz Mohammed <faiyazm@codeaurora.org> wrote:
+>>
+>> fix the leak of alloc/free traces debugfs interface, reported
+> 
+> Fix
+> 
+Okay, I will update in next patch version.
 
-There is no error definition which starts with EPOLL, so it is safe to omit
-the warning for return values starting with EPOLL.
+>> by kmemleak like below,
+>>
+>> unreferenced object 0xffff00091ae1b540 (size 64):
+>>   comm "lsbug", pid 1607, jiffies 4294958291 (age 1476.340s)
+>>   hex dump (first 32 bytes):
+>>     02 00 00 00 00 00 00 00 6b 6b 6b 6b 6b 6b 6b 6b  ........kkkkkkkk
+>>     6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
+>>   backtrace:
+>>     [<ffff8000106b06b8>] slab_post_alloc_hook+0xa0/0x418
+>>     [<ffff8000106b5c7c>] kmem_cache_alloc_trace+0x1e4/0x378
+>>     [<ffff8000106b5e40>] slab_debugfs_start+0x30/0x50
+>>     slab_debugfs_start at mm/slub.c:5831
+>>     [<ffff8000107b3dbc>] seq_read_iter+0x214/0xd50
+>>     [<ffff8000107b4b84>] seq_read+0x28c/0x418
+>>     [<ffff8000109560b4>] full_proxy_read+0xdc/0x148
+>>     [<ffff800010738f24>] vfs_read+0x104/0x340
+>>     [<ffff800010739ee0>] ksys_read+0xf8/0x1e0
+>>     [<ffff80001073a03c>] __arm64_sys_read+0x74/0xa8
+>>     [<ffff8000100358d4>] invoke_syscall.constprop.0+0xdc/0x1d8
+>>     [<ffff800010035ab4>] do_el0_svc+0xe4/0x298
+>>     [<ffff800011138528>] el0_svc+0x20/0x30
+>>     [<ffff800011138b08>] el0t_64_sync_handler+0xb0/0xb8
+>>     [<ffff80001001259c>] el0t_64_sync+0x178/0x17c
+> 
+> Can you shrink this a bit?
+>
+Okay
 
-Cc: Ricardo Ribalda <ribalda@chromium.org>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- scripts/checkpatch.pl | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+>> Fixes: 84a2bdb1b458fc968d6d9e07dab388dc679bd747 ("mm: slub: move sysfs slab alloc/free interfaces to debugfs")
+> 
+> We use 12, which is shorter.
+> 
+>> Link: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/mm/slub.c?h=next-20210617&id=84a2bdb1b458fc968d6d9e07dab388dc679bd747
+> 
+>>
+> 
+> Must be no blank lines in the tag block.
+> >> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+> 
+Okay
+> ...
+> 
+>>  static void *slab_debugfs_next(struct seq_file *seq, void *v, loff_t *ppos)
+>>  {
+>> -       loff_t *spos = v;
+>>         struct loc_track *t = seq->private;
+>>
+>> +       v = ppos;
+>>         if (*ppos < t->count) {
+>> -               *ppos = ++*spos;
+>> -               return spos;
+>> +               ++*ppos;
+>> +               return v;
+>>         }
+>> -       *ppos = ++*spos;
+>> +       ++*ppos;
+>>         return NULL;
+> 
+> Can it be
+> 
+>        v = ppos;
+>        ++*ppos;
+>        if (*ppos <= t->count>               return v;
+>        return NULL;
+> 
+> ?  (basically the question is, is the comparison equivalent in this case or not)
+> 
+>>  }
+>Yes, we can update it and slab_debugfs_show has the index check as well.
+I will update in next patch version.
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 23697a6b1eaa..cf82dbd7d9d1 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -5458,7 +5458,8 @@ sub process {
- # Return of what appears to be an errno should normally be negative
- 		if ($sline =~ /\breturn(?:\s*\(+\s*|\s+)(E[A-Z]+)(?:\s*\)+\s*|\s*)[;:,]/) {
- 			my $name = $1;
--			if ($name ne 'EOF' && $name ne 'ERROR') {
-+			if ($name ne 'EOF' && $name ne 'ERROR' &&
-+			    rindex($name, 'EPOLL', 0) != 0) {
- 				WARN("USE_NEGATIVE_ERRNO",
- 				     "return of an errno should typically be negative (ie: return -$1)\n" . $herecurr);
- 			}
--- 
-2.25.1
-
+Thanks and regards,
+Mohammed Faiyaz
