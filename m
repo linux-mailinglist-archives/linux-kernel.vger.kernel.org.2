@@ -2,76 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE923AE10A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 00:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC5DB3AE10F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 00:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbhFTW6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 18:58:05 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:34019 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229875AbhFTW6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 18:58:04 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G7SgT68t9z9sRN;
-        Mon, 21 Jun 2021 08:55:49 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624229749;
-        bh=kuZ7JguMSNRvdRa59Mbz0GxNvMF0WJ1DhhX31Za9FeQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=XDVdel5kdsPFjT0KENldTMYorylI4V/pt2IokuZp6Ple66xPY/EWD7TiH2JMqB0e8
-         c9DzsNADGoQl1YAeWI/umdq33yofzINxcIx2MqEGXgEZkOXCZM2u/zBB1jr8WDva2x
-         AN/kuisWREd/IUBbxztIqusNGVO50KGa333sa8dZA4MyNEq3ESIoP6LK//oXH00jAb
-         wAIaD63cWk8icqjYQLcbF+IGdtxTkhHb5i5z5SAECikkBFYGJSCtCIoJMPKreXrZp1
-         NTvTHU+ImATn5NLKD0bak3IOfAWbjEwrjUvIgsRr9DDXx4rgWRdUEurc76+/KfJ8xx
-         bx7itt6rODo5A==
-Date:   Mon, 21 Jun 2021 08:55:48 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the hyperv tree
-Message-ID: <20210621085548.35b6f88c@canb.auug.org.au>
+        id S230059AbhFTXBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 19:01:49 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:42198 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229899AbhFTXBs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Jun 2021 19:01:48 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 196101C0B82; Mon, 21 Jun 2021 00:59:34 +0200 (CEST)
+Date:   Mon, 21 Jun 2021 00:59:33 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Rob Herring <robh+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: rtc: ti,bq32k: take maintainership
+Message-ID: <20210620225933.GA21262@amd>
+References: <20210620224030.1115356-1-alexandre.belloni@bootlin.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/lOgRmqrroS_XfMSGB0A10y7";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
+Content-Disposition: inline
+In-Reply-To: <20210620224030.1115356-1-alexandre.belloni@bootlin.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/lOgRmqrroS_XfMSGB0A10y7
-Content-Type: text/plain; charset=US-ASCII
+
+--HcAYCG3uE/tztfnV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+Hi!
 
-Commit
+> Take maintainership of the binding as PAvel said he doesn't have the
+> hardware anymore.
 
-  13d5ac4c5a3d ("PCI: hv: Add check for hyperv_initialized in init_hv_pci_d=
-rv()")
+Thank you!
 
-is missing a Signed-off-by from its committer.
+Best regards,
+								Pavel
+
+> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+
+Acked-by: Pavel Machek <pavel@ucw.cz>
+
+> +++ b/Documentation/devicetree/bindings/rtc/ti,bq32000.yaml
+> @@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
+>  title: TI BQ32000 I2C Serial Real-Time Clock
+> =20
+>  maintainers:
+> -  - Pavel Machek <pavel@ucw.cz>
+> +  - Alexandre Belloni <alexandre.belloni@bootlin.com>
+> =20
+>  allOf:
+>    - $ref: rtc.yaml#
 
 --=20
-Cheers,
-Stephen Rothwell
+http://www.livejournal.com/~pavelmachek
 
---Sig_/lOgRmqrroS_XfMSGB0A10y7
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--HcAYCG3uE/tztfnV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDPx3QACgkQAVBC80lX
-0GyGzQf/Vt3MWG2sZFmO/gjuxdzi+f0zy3hYkXeuuWbnN1Q3dAsZ9uyU8LyKxgnZ
-C0DoF1Sw5VZXuq40fzPsmTjk33OzRYfEjq1tGeh7tMWOeHSZ4ZiQ3qNlGJUjQHAr
-HUVyeG0vvH2PTnGE6KYL6cDSumGAIoD46ZQIlIMOFh62LbFOgljWF9y6U0iw0bQC
-gsD/2YmFKSXe+oAsC/Nr4Av4ONfs4R75YNBuCD9DC8lHqv8uuNPiTaAzGDr9m7SZ
-m9HEvvfGtkxSGYZmkdbWZDCioE3t6zIJUNGNNy2vA51hgHFxTIw+63dpOPerT9WL
-HJGiRGRkYx3vsKzts3RKaBad0nY//g==
-=bWjy
+iEYEARECAAYFAmDPyFUACgkQMOfwapXb+vI2egCfZbwKFy3jqZWHwfBqrffZuD5v
+8DgAoJLPr5UZ3jqf9lS3SXy9KY6JqQBs
+=uWTP
 -----END PGP SIGNATURE-----
 
---Sig_/lOgRmqrroS_XfMSGB0A10y7--
+--HcAYCG3uE/tztfnV--
