@@ -2,83 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC5DB3AE10F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 00:59:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B163AE113
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 01:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbhFTXBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 19:01:49 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:42198 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbhFTXBs (ORCPT
+        id S230013AbhFTXME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 19:12:04 -0400
+Received: from mail-wr1-f53.google.com ([209.85.221.53]:47052 "EHLO
+        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229875AbhFTXMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 19:01:48 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 196101C0B82; Mon, 21 Jun 2021 00:59:34 +0200 (CEST)
-Date:   Mon, 21 Jun 2021 00:59:33 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: rtc: ti,bq32k: take maintainership
-Message-ID: <20210620225933.GA21262@amd>
-References: <20210620224030.1115356-1-alexandre.belloni@bootlin.com>
+        Sun, 20 Jun 2021 19:12:02 -0400
+Received: by mail-wr1-f53.google.com with SMTP id a11so17477514wrt.13;
+        Sun, 20 Jun 2021 16:09:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=QqweIxdIU8VZggzKpTR6wXR6FTUbL29z9hu1zISg3lk=;
+        b=sl4AXIUg4wu3I5bWrF+2IblhVUAHDWmOJRwWfIsK2J8p2Nl91NYQGv28/XNjXDIvF5
+         AV+sTecM7vwoH/mVmBPMNkJSawpQJpE6Lv7T4hfHyxgEwt9EyxZp+fint1tSqhmx76AY
+         JGJVM4VqxGV0Lv9tGkTEuvqXAWa5nC1Ns8ULtfCRpVOdTKBCYRw9RJWKbWmkWTMO0Hoo
+         vIOveKr14vrZxjWzqqf7x7qRnF2j3LR8ItzQxmnEIyNPxsesrx1diy+ofjxomKOPVx6e
+         5PdLdOYCVFdM+cXpAOMmSBIcGn5ZuctZ3akkhV0/n/bsLIvbw90md801JeBRZJdwQ3xz
+         cibQ==
+X-Gm-Message-State: AOAM530u4ZHN/g4j90vKjkMdiZmcBvK9hO1QyGz4IBqxTSwQDeWmOtsy
+        kSxgwTKEfpN5X3Y2+yPscQFxeNcxPuM=
+X-Google-Smtp-Source: ABdhPJxl+3QNCqz3xbXXz0oDAwhsX9PGqIWp2SxDSlvhxth+OeXhq2dIUmwzVuOkYggsvtrAJO5oeg==
+X-Received: by 2002:adf:f688:: with SMTP id v8mr11362429wrp.209.1624230587646;
+        Sun, 20 Jun 2021 16:09:47 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id n8sm2455072wmc.45.2021.06.20.16.09.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Jun 2021 16:09:47 -0700 (PDT)
+Date:   Sun, 20 Jun 2021 23:09:45 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the hyperv tree
+Message-ID: <20210620230945.t4u7rxyxcot5re5y@liuwe-devbox-debian-v2>
+References: <20210621085548.35b6f88c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="HcAYCG3uE/tztfnV"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210620224030.1115356-1-alexandre.belloni@bootlin.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+In-Reply-To: <20210621085548.35b6f88c@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 21, 2021 at 08:55:48AM +1000, Stephen Rothwell wrote:
+> Hi all,
+> 
+> Commit
+> 
+>   13d5ac4c5a3d ("PCI: hv: Add check for hyperv_initialized in init_hv_pci_drv()")
+> 
+> is missing a Signed-off-by from its committer.
 
---HcAYCG3uE/tztfnV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is fixed. Thanks.
 
-Hi!
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
 
-> Take maintainership of the binding as PAvel said he doesn't have the
-> hardware anymore.
 
-Thank you!
-
-Best regards,
-								Pavel
-
-> Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-
-Acked-by: Pavel Machek <pavel@ucw.cz>
-
-> +++ b/Documentation/devicetree/bindings/rtc/ti,bq32000.yaml
-> @@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
->  title: TI BQ32000 I2C Serial Real-Time Clock
-> =20
->  maintainers:
-> -  - Pavel Machek <pavel@ucw.cz>
-> +  - Alexandre Belloni <alexandre.belloni@bootlin.com>
-> =20
->  allOf:
->    - $ref: rtc.yaml#
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---HcAYCG3uE/tztfnV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmDPyFUACgkQMOfwapXb+vI2egCfZbwKFy3jqZWHwfBqrffZuD5v
-8DgAoJLPr5UZ3jqf9lS3SXy9KY6JqQBs
-=uWTP
------END PGP SIGNATURE-----
-
---HcAYCG3uE/tztfnV--
