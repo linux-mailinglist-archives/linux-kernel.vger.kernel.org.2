@@ -2,57 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B86D3AE0FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 00:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D1D3AE0FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 00:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbhFTWm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 18:42:56 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:55733 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbhFTWmx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 18:42:53 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id E78C5C0005;
-        Sun, 20 Jun 2021 22:40:37 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Pavel Machek <pavel@ucw.cz>, linux-rtc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: rtc: ti,bq32k: take maintainership
-Date:   Mon, 21 Jun 2021 00:40:29 +0200
-Message-Id: <20210620224030.1115356-1-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.31.1
+        id S230047AbhFTWod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 18:44:33 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:34223 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229875AbhFTWoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Jun 2021 18:44:32 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G7SMr6Zpfz9sRN;
+        Mon, 21 Jun 2021 08:42:16 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624228937;
+        bh=ryN3VW4wUOBX143rkIRY0DHXX+TkHYGButZNlc6372M=;
+        h=Date:From:To:Cc:Subject:From;
+        b=uJPtN7iy14pOtwQUTnX2KesNaIVmCDakRU4Oq0fcSATaYikHNGeM2LKJY0PuFmUqE
+         6MtOAxo1lJTatN3qkpT6Z5rt9aFkDY0HIA5+ezS9lYHIUAp7pU1Txyj6NpdJwRNb6I
+         lLNCrN5yWZ9jsamQO6Cao5Mx0xpKr7Ee0eShwjuqC0v/hQGGBkcdXEEYz6NGKgkVor
+         m3HIY+DhPS29dhmG811Nz7li1tkpWr3v2jwKoiaJHzIYB3ZK2XB+7vGtsaXN9GsuH7
+         Oizv9vfVGdPlmpc7T5DFfprXTgDj1ICAWshEG5fr6HyJE5uZVEk6xmgo1tH/vDJo8B
+         53tHS0i1Q83Pg==
+Date:   Mon, 21 Jun 2021 08:42:16 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Herring <robherring2@gmail.com>
+Cc:     Sean Anderson <sean.anderson@seco.com>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the devicetree tree
+Message-ID: <20210621084216.3c477f94@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/azdgCMcLraYFlaPs2kP.3oi";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Take maintainership of the binding as PAvel said he doesn't have the
-hardware anymore.
+--Sig_/azdgCMcLraYFlaPs2kP.3oi
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- Documentation/devicetree/bindings/rtc/ti,bq32000.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi all,
 
-diff --git a/Documentation/devicetree/bindings/rtc/ti,bq32000.yaml b/Documentation/devicetree/bindings/rtc/ti,bq32000.yaml
-index 392bd71bd1be..bf9c1c4ddb7e 100644
---- a/Documentation/devicetree/bindings/rtc/ti,bq32000.yaml
-+++ b/Documentation/devicetree/bindings/rtc/ti,bq32000.yaml
-@@ -7,7 +7,7 @@ $schema: http://devicetree.org/meta-schemas/core.yaml#
- title: TI BQ32000 I2C Serial Real-Time Clock
- 
- maintainers:
--  - Pavel Machek <pavel@ucw.cz>
-+  - Alexandre Belloni <alexandre.belloni@bootlin.com>
- 
- allOf:
-   - $ref: rtc.yaml#
--- 
-2.31.1
+In commit
 
+  f92f2726e3dd ("dt-bindings: clk: vc5: Fix example")
+
+Fixes tag
+
+  Fixes: 766e1b8608bf ("dt-bindings: clk: versaclock5: convert to yaml")
+
+has these problem(s):
+
+  - Target SHA1 does not exist
+
+Maybe you meant
+
+Fixes: 45c940184b50 ("dt-bindings: clk: versaclock5: convert to yaml")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/azdgCMcLraYFlaPs2kP.3oi
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDPxEgACgkQAVBC80lX
+0GxbhAgAhU/vaQQMdI94H9bgvMSyrtAMiMdpvsr3GaU1Wh0DpWzEhGI5SZ3fBULL
+R6tUaMEQAKIYhyg4mHabC104Tf8Zy3AL/RZsAyOKUDQZfnMv2K9pUFDIqhSyczGi
+hA5J6euMUhE5NV9wIzPLT1XqH0gVVwMJ2Bs5IB+Gau2ZwfcFcrov8QmhTgZymeEz
+zRH8T4GQaqXpXFeCUBHkik0XjZTgaihwW5pEWuht9mvByZzr8Gcn6ChDz7eGOGOf
+m3qoCTc672sZxChV0+12LPTI0mXuekoIXFlWq4R2Y6d2sFdah73R9qpUUPQO++zs
+EWCiyYoj3X8W0yqz18qxSBPivZYZHA==
+=aM0T
+-----END PGP SIGNATURE-----
+
+--Sig_/azdgCMcLraYFlaPs2kP.3oi--
