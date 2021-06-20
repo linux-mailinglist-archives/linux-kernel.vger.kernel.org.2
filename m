@@ -2,130 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 572BD3AE055
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 22:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C01E13AE06F
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 22:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbhFTUhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 16:37:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbhFTUhs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 16:37:48 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78721C061574;
-        Sun, 20 Jun 2021 13:35:34 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id f8so14805756lfu.6;
-        Sun, 20 Jun 2021 13:35:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=h7qy3vsXHdigHBzb/NyGdUZpvcQTxWroavq6cxrlgrU=;
-        b=Btk7qYK3cuIjJG70Wd/CdQyik6FRcf7NkbaeLKdXQ8EfUJVLVOJXJyVT0AfFFkZ5HX
-         KRthrLtmpbmtwnav53QuXUqfulOH0mZ0BhTI/IIVQs62u//haV0ZOnbLKk8fW/yRdiRd
-         dQbAFKoN+rCYZSvbxUN18b6RehqOr+Y1y+qLVpSPGsR9klV5ixxtp67axlZjyDVs11Hi
-         oDGd0Z9sYfz807Up17DrEfqedQLt30hKltSzgvhRzZj3st0kze7RDzHtLArKx5XgbqTe
-         saOuHrwYo4t2CcBEt585IbbPMam2DTv6SELZKsObgCLwzdgXqZ49xwW4fUna5e3s9+GZ
-         Xjjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=h7qy3vsXHdigHBzb/NyGdUZpvcQTxWroavq6cxrlgrU=;
-        b=kGpFAExK8u1Wk89usRfzMNYtjjYtL94kau8kfP57MiAz7GH+eL+V3peY9l5oMITq3f
-         FjPLyaBaFd9G9CyJlKICqoNbyITuDiwoVFGWg6F1zKFzyB0SbzOfuexIGIRR7XT3WHLF
-         AUOUT3WFqtOQ+TjF33xp76eGSnnrFsH/bLy9TuXgL7yRwLKXkHpMNlXz2EZP1tM7Emsn
-         ogQ44DD/wz8ECrcdDIEcpMpnxCXJFXzX4vbCwbnThn3/AqPS0Du2NmuevI6NSDnXauf2
-         Ja2ljb1U9IThDaMsJvwd5AWUGtsM2fMYMyBDSBQWs6gpD18dspqQ1gTTN/C4GFSMZ3aD
-         13MA==
-X-Gm-Message-State: AOAM533/BLjHjp/dwYp3eLlI+7w/Jwuj/eXrXQjnpyw6MVr9am57LxKF
-        0lCdhoaFN1lcKUvFkV/GsKxqninfT4E=
-X-Google-Smtp-Source: ABdhPJy2QDvhHZzX8bLZV5CJENS4/s2JkNM/+OmtNh27GCujgDHvSadOKkXf+/kSAVAiSAkMkq7kiw==
-X-Received: by 2002:a05:6512:3f8d:: with SMTP id x13mr11719547lfa.278.1624221332611;
-        Sun, 20 Jun 2021 13:35:32 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
-        by smtp.googlemail.com with ESMTPSA id g16sm1860932ljn.103.2021.06.20.13.35.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 20 Jun 2021 13:35:31 -0700 (PDT)
-Subject: Re: [PATCH v1 1/2] hwmon: Support set_trips() of thermal device ops
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20210620161223.16844-1-digetx@gmail.com>
- <20210620161223.16844-2-digetx@gmail.com>
- <20210620172329.GA3850372@roeck-us.net>
- <1cb97f70-9fdd-e7d5-da73-dc5c42a53104@gmail.com>
- <20210620192124.GA3853199@roeck-us.net>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <4d12b57c-3dbb-e290-3f82-eb30aefa7dd4@gmail.com>
-Date:   Sun, 20 Jun 2021 23:35:31 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230137AbhFTUss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 16:48:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57680 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229905AbhFTUsp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Jun 2021 16:48:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 454E36109F;
+        Sun, 20 Jun 2021 20:46:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624221992;
+        bh=Ld8DsLuN9uxyfxOIjiJtuRFKzCbOVD9P45An2hX0fLE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ODlAsUemSl9Qu5lwmSdExvzujHRyL8qYs0KcT1NZD2TVMZy4sPGkHZji/Qm/bZooU
+         vtrjcqdkU9TSRV+emzAJSXMO3QeVcsntW7b+iurlHdgt3OPzVGBtNybbwO0ok1w7Et
+         FkVuEggFhY+E+aAq0QvPP3eWqz5SzhGxj1i+nhlkUvKHlkdJn/xkAE3uX4Ahj51HLc
+         7egyRuzRjYEApoFHWAZrygIjEWXUa5HTlnxwbpz/Mr1FCRkOnP4DWbEFEwDtFkxcvs
+         aIXSqGv+O3LNFqR+wdnZb5fOc7t4aQNaJS5h6IWWrU4/nk9Ck31fqaj6OEqfiMnblw
+         y2YSjtRnCJNnw==
+Date:   Sun, 20 Jun 2021 22:46:29 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     linux-arm-msm@vger.kernel.org, robert.foss@linaro.org,
+        andrey.konovalov@linaro.org,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:QUALCOMM I2C CCI DRIVER" <linux-i2c@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] i2c: qcom-cci: add sm8250 compatible
+Message-ID: <YM+pJSOULPmlITIc@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org,
+        robert.foss@linaro.org, andrey.konovalov@linaro.org,
+        Loic Poulain <loic.poulain@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:QUALCOMM I2C CCI DRIVER" <linux-i2c@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210513175518.6023-1-jonathan@marek.ca>
 MIME-Version: 1.0
-In-Reply-To: <20210620192124.GA3853199@roeck-us.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="QiJGXfUyvzMgjqNF"
+Content-Disposition: inline
+In-Reply-To: <20210513175518.6023-1-jonathan@marek.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-20.06.2021 22:21, Guenter Roeck пишет:
-> On Sun, Jun 20, 2021 at 08:38:27PM +0300, Dmitry Osipenko wrote:
->> 20.06.2021 20:23, Guenter Roeck пишет:
->>> On Sun, Jun 20, 2021 at 07:12:22PM +0300, Dmitry Osipenko wrote:
->>>> Support set_trips() callback of thermal device ops. This allows HWMON
->>>> device to operatively notify thermal core about temperature changes, which
->>>> is very handy to have in a case where HWMON sensor is used by CPU thermal
->>>> zone that performs passive cooling and emergency shutdown on overheat.
->>>> Thermal core will be able to react faster to temperature changes.
->>>>
->>>
->>> Why would this require a driver callback, and why can it not be handled
->>> in the hwmon core alone ? The hwmon core could register a set_trip function
->>> if the chip (driver) supports setting low and high limits, and it could
->>> call the appropriate driver functions when hwmon_thermal_set_trips()
->>> is called.
->>
->> I wasn't sure about what other hwmon drivers may need and want to do for
->> programming of the trips, so decided to start with this variant. I'll
->> prepare v2 since you're suggesting that the universal callback should
->> work okay for all drivers, thanks.
-> 
-> It will require some checks during probe to make sure that writeable limits
-> exist, but that is still better than per-driver code. If for whatever
-> reason some platform expects a different set of registers (say,
-> critical limits instead of warning limits to attach to trip points),
-> or if some platform expects that limits are _not_ used as trip points,
-> that would not be driver but platform specific. You would not be able
-> to address that on driver level with a single callback either (after all,
-> lm90 compatible chips support up to three sets of limits).
-> That means you already made an implementation specific choice with your
-> code, by selecting one of those three sets of limits to act as trip
-> points, and by making trip point support mandatory for all lm90 compatible
-> chips. If we need to make that configurable, we'll need a better solution
-> than a single driver callback, and that solution may as well be generic
-> and driver independent.
 
-Thank you for the clarification! If device makes a special use of lm90,
-then very likely that it won't attach sensor to thermal zone. At least
-all devices supported by mainline kernel should be okay here.
+--QiJGXfUyvzMgjqNF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I think other sensors should be in a similar position. If a more complex
-solution will be needed, then indeed hwmon API could be improved
-further. The thermal device is created only for hwmon sensors that are
-attached to thermal zone in a device-tree, so the scope of potentially
-affected device should be small. Seems lm90 is actually the only hwmon
-sensor that is used by thermal zones today.
+On Thu, May 13, 2021 at 01:55:17PM -0400, Jonathan Marek wrote:
+> SM8250 CCI is the same as SDM845, add an equivalent compatible for SM8250.
+>=20
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 
-AFAICS, all drivers return -EOPNOTSUPP if limits can't be changed, so we
-could equal this error code to success in a case of set_trips(). The
-set_trips() is very optional, if driver can't set limits, then the trips
-won't trigger and thermal core will continue to work like set_trips()
-wasn't hooked up. I'll implement this in v2.
+For the record: Applied to for-next on 2021-05-21, thanks!
+
+
+--QiJGXfUyvzMgjqNF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDPqSQACgkQFA3kzBSg
+KbaJVA/+PYq/2WzJj/80zSo/kaLH08GAfxSYvoch0h7HPkkufpYjzeBzkdVF19Qd
+dPhzOxDqy9Z8zDP05ttEAtPPtKPHXUOxP7B5Sx3fXJ+ypv5OJznpMmFdvT6P9KpH
+XHzxokK5PYg4J7feHKBS9hbM5gvq97WiYtD7xPb+iBDc1S4LSL38J0fdWHB19PWw
+mpeA6Ummb4/jkhxHYMl0hay2NijxndTPBKa+uNvwRvOl++gV9bVM6KGDWZbv6dVI
+/sbtT2Id+U0XYEijj8+eroEAGaCfJdWRYIPknCc0/aUU0nETwK1qLmE+KQ01Kbf3
+ieiloxHmF95WdrNy5pnAu29sEAIvLPMdGqi8NCdP5UV4hepA5tzhmTYIUDqck6UC
+Gpw0swi/nsR9NtcimJUVdICkVrSeLtler57PGJm1pOB9L7+2f585yl3USc9TM+qa
+4JO+Be2ECa8VpSudcSOHC9DDkMIchKWCm0WUFoW07rxSEHUtiB3uyjAW+JX2cZG3
+RdBwby5JNzSEzPHXg3IMGJVgmGsjv7m72+4V5IkDIRYMlLHrMvmtvqNIolIsKr3g
+X4oaWDVTPWEcUzqPQXYo7VwsyWKdT9ehK7vnUKZrvAb+OfvhN26fESQ4VkiCX/H6
+d/yMK77dKJfn6DB+fsgZIH2vfmWZCrid6Tmv65mFvVL7x6n2tbo=
+=mqe+
+-----END PGP SIGNATURE-----
+
+--QiJGXfUyvzMgjqNF--
