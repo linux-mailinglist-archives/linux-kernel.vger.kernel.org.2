@@ -2,129 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCBD03ADE26
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 13:20:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 930983ADE27
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 13:23:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229594AbhFTLWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 07:22:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39286 "EHLO
+        id S229579AbhFTLZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 07:25:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhFTLWs (ORCPT
+        with ESMTP id S229554AbhFTLZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 07:22:48 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8C36C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 04:20:20 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id z3-20020a17090a3983b029016bc232e40bso8518583pjb.4
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 04:20:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=K6Jin+oRoPzWqmnMdtDjz2qXrxn1uIUsQeJZkd8zSLY=;
-        b=iYfV60Ankpmvmb5migldwlyEp8txyMoTq0+7KSQgkqccj4AwU7Kgn3KGtR6osF/nS/
-         z2wp/0UCHdjUH32D2LMrx62ty8Ts4bUQTc76UIrPkaosCeJiq2OsMqm4KvreaGQwsfBV
-         8Ot5B8hTNOgvWbeJ+JJ0s1vOvzxzQEqf7zB4f+nVCJVttnphuu+aRPkfL6FEfn6nUJsM
-         3E62N3kExqIC0abjZJuLtXOLW1qoTGhH6vriGzaOMk0OuvW1/QUlSyGQQzRIHxYP9RQy
-         m1WA4TaQc5BVVoYQzCbAF3bjkOOPYcsXclum9Pjd6QyEl/lzhFaAJnR4TtlXoP8fN4oc
-         Cs1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=K6Jin+oRoPzWqmnMdtDjz2qXrxn1uIUsQeJZkd8zSLY=;
-        b=iN0HJ1rmabv66ijTIdj75yjC5xBhSGbW0bua6uOuKsDUjxScwIDgjDRLE/oqXOG8b+
-         S8PUcc78JTTdzH4EeQxSi/BPNCwN5SoEXVj0As7t0e3S4zBghDbgUI+2bWRA40cgC4FC
-         SCz4Gtaw58iY8cvy/xmifsnUAoABZeg3fI1NgPRQmCr/B3bh6ZG/TqNukbTESY2aqcWr
-         qrJI2/6WawGPVhWO1wBvBcVTxukEr4xbGpEzHX3a4yQCy1cS5iOH6JcKYHldwXU64P5B
-         uKRl57jTao4nY8MMbrYMgRU6H+Woor34XJfgyrp8VQJE7NAwDmekYOIr1GOAs5FA21Ma
-         UTXQ==
-X-Gm-Message-State: AOAM531VL4Cj6zKQiuAJMA/41QI9Y+vUvgRjkASd5J3QrAiep6M08dKK
-        qlOoJfFryWIu0pm8ts5zIG432fotv1PmmdZ6U74=
-X-Google-Smtp-Source: ABdhPJwR4yL6qLFrcdv4b1gVNkoKK2N25cLT91N+3RRilFosno2nLqLCjJnk3lix+OEJXUupKd3yG7eASebXJPO2LPw=
-X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr32726301pja.181.1624188020256;
- Sun, 20 Jun 2021 04:20:20 -0700 (PDT)
+        Sun, 20 Jun 2021 07:25:25 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F5AC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 04:23:12 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624188189;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v5bNhJoM3/FLw4Sw6281mYeD7esoBy928BpQg2VpBIY=;
+        b=BU+N+QWnB/4dZ5yiG7ScsxJDGXXx+1aD3RaMxGM8cmmiVV4VMK4melGWva7N1V1UbjKhZP
+        smkJG0RkRHYWg2iKWGjFCfF3nj/uqAxewGN4gWNo5z26ptzWrUmmyv27FChG0+UuIvizC4
+        I+13/3sAiut01kwjIbod6XuxgbWh6o/5+05XJqmICNXwdfE8r1Tp05lqSNnUnyYegs/G1p
+        iDdaCfpp2mqKNYnsqHm9YU6QEv8v+Q0++5qTjw8zSe+kdlqD039yc8pAcwBngzhhXH3fmk
+        AcQJK7V6oYIoDgTU5XcrDGSDZdpsvJ6ONGCNFIxkCUn6C5V2sqB+6FmYefkCow==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624188189;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v5bNhJoM3/FLw4Sw6281mYeD7esoBy928BpQg2VpBIY=;
+        b=wtgM6bxF41VoEmg0ep1ScW4g4ce986W/us+H9vFBuMrHFC6Z4EwnhgY4XkMu5C0+Sb0lMN
+        841kTnoDdQ5MHjAg==
+To:     Andy Lutomirski <luto@kernel.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <jgross@suse.com>,
+        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Arvind Sankar <nivedita@alum.mit.edu>
+Subject: Re: [RFC PATCH 1/4] x86/entry/nmi: Switch to the entry stack before switching to the thread stack
+In-Reply-To: <444d7139-e47a-4831-93d0-8eb5b9680fdc@www.fastmail.com>
+References: <20210601065217.23540-1-jiangshanlai@gmail.com> <20210601065217.23540-2-jiangshanlai@gmail.com> <87bl81h3ih.ffs@nanos.tec.linutronix.de> <444d7139-e47a-4831-93d0-8eb5b9680fdc@www.fastmail.com>
+Date:   Sun, 20 Jun 2021 13:23:08 +0200
+Message-ID: <87wnqog4pv.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <YM77uq51jmDC/rHt@owl.dominikbrodowski.net>
-In-Reply-To: <YM77uq51jmDC/rHt@owl.dominikbrodowski.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 20 Jun 2021 14:19:44 +0300
-Message-ID: <CAHp75VfP2h_aLVR9cgfXWHmqNbUZg-KZj2UwMs6dAkbS5eSghg@mail.gmail.com>
-Subject: Re: v5.13-rcX regression - NULL pointer dereference - MFD and
- software node API
-To:     Dominik Brodowski <linux@dominikbrodowski.net>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 20, 2021 at 11:36 AM Dominik Brodowski
-<linux@dominikbrodowski.net> wrote:
+On Sat, Jun 19 2021 at 20:13, Andy Lutomirski wrote:
+> On Sat, Jun 19, 2021, at 3:51 PM, Thomas Gleixner wrote:
+>> On Tue, Jun 01 2021 at 14:52, Lai Jiangshan wrote:
+>> > From: Lai Jiangshan <laijs@linux.alibaba.com>
+>> >
+>> > Current kernel has no code to enforce data breakpoint not on the thread
+>> > stack.  If there is any data breakpoint on the top area of the thread
+>> > stack, there might be problem.
+>>=20
+>> And because the kernel does not prevent data breakpoints on the thread
+>> stack we need to do more complicated things in the already horrible
+>> entry code instead of just doing the obvious and preventing data
+>> breakpoints on the thread stack?
 >
-> Over a month ago, Andy Shevchenko reported and fixed a NULL pointer
-> dereference issue introduced by commit
->         42e59982917a ("mfd: core: Add support for software nodes")
-> in v5.13-rc1:
->         https://lore.kernel.org/lkml/20210510141552.57045-1-andriy.shevchenko@linux.intel.com/
->
-> A bisect shows that it is indeed commit 42e59982917a which causes boot to
-> fail due to a NULL pointer dereference on my work laptop,
+> Preventing breakpoints on the thread stack is a bit messy: it=E2=80=99s
+> possible for a breakpoint to be set before the address in question is
+> allocated for the thread stack.
 
-Can you, please, be more specific? E.g. where may I find the ACPI dump
-of your laptop, along with other information?
-What you may prepare is (all run under root user)
-1. `acpidump -o laptop-$MODEL.dat` (the *.dat file)
-2. `grep -H 15 /sys/bus/acpi/devices/*/status`
-3. `dmesg`
-4. `cat /proc/iomem /proc/ioport`
-5. `lspci -nk -vv`
+Bah.
 
-(#2 and #3 are interesting to have in working and non-working cases)
+> None of this is NMI-specific. #DB itself has the same problem.
 
-Perhaps a bug on the kernel bugzilla would be a good container for all these.
+Oh well.
 
-Also it's not clear what exactly an Oops you have (I don't believe
-it's the same).
+> We could plausibly solve it differently by disarming breakpoints in
+> the entry asm before switching stacks. I=E2=80=99m not sure how much I li=
+ke
+> that approach.
 
-> where "intel-lpss"
-> is bound to
->         00:15.0 Signal processing controller: Intel Corporation Sunrise Point-LP Serial IO I2C Controller #0 (rev 21)
-> and fails to bind to INT3446:
+That's ugly and TBH in some sense is a breakpoint on the thread stack a
+violation of noinstr. I rather see them prevented completely, but yes
+that would have to be expanded to pretty much any variable which is
+touched in noinstr sections. What a mess.
 
-Yeah, this is confusing (see above for additional information needed).
+Thanks,
 
-> [    6.048087] intel-lpss 0000:00:15.0: enabling device (0000 -> 0002)
-> [    6.050625] idma64 idma64.0: Found Intel integrated DMA 64-bit
-> [    6.109112] intel-lpss 0000:00:15.1: enabling device (0000 -> 0002)
-> [    6.111348] idma64 idma64.1: Found Intel integrated DMA 64-bit
-> [    6.172229] intel-lpss 0000:00:15.2: enabling device (0000 -> 0002)
-> [    6.174353] idma64 idma64.2: Found Intel integrated DMA 64-bit
-> [    6.231865] intel-lpss 0000:00:15.3: enabling device (0000 -> 0002)
-> [    6.233845] idma64 idma64.3: Found Intel integrated DMA 64-bit
-> [    6.287492] ACPI Warning: SystemMemory range 0x00000000FE028000-0x00000000FE0281FF conflicts with OpRegion 0x00000000FE028000-0x00000000FE028207 (\_SB.PCI0.GEXP.BAR0) (20210331/utaddress-204)
-> [    6.287704] ACPI: OSL: Resource conflict; ACPI support missing from driver?
-> [    6.289760] intel-lpss: probe of INT3446:00 failed with error -16
->
-> Unfortunately, the patch by Andy Shevchenko (applied on top of Linus' tree)
-> does not fix the issue. A complete revert, however, does fix the issue, and
-> allows my laptop to boot again.
+        tglx
 
-The problem my patch fixed (besides logical issues) was to work around
-_buggy_ ACPI table. If anything, I guess the firmware is to blame for
-this, but let's see the actual data before judging and getting the
-right course of action.
 
-> In my opinion, it is unfortunate that although it has been known for over a
-> month that commit 42e59982917a is broken, the bugfix (though probably not
-> far-reaching enough) has not yet progressed upstream.
-
-Which sounds like a narrow scope of the issue and supports the theory
-of buggy tables. It may also be possible that some driver
-
--- 
-With Best Regards,
-Andy Shevchenko
