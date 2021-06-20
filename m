@@ -2,140 +2,354 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C5153AE117
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 01:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41D273AE12A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 01:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhFTXYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 19:24:32 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:51056 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229905AbhFTXYa (ORCPT
+        id S230005AbhFUABf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 20:01:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229872AbhFUABd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 19:24:30 -0400
-Received: by mail-io1-f70.google.com with SMTP id x4-20020a5eda040000b02904a91aa10037so8999773ioj.17
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 16:22:16 -0700 (PDT)
+        Sun, 20 Jun 2021 20:01:33 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22BDCC061574;
+        Sun, 20 Jun 2021 16:59:20 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id y4so5296202pfi.9;
+        Sun, 20 Jun 2021 16:59:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=7U6CzGv2e/d/9047/ln4AbfjZylQ7TJyWzhvRZicX1k=;
+        b=ttLoaFZ32+SckRm3H2Y4vXJOF8o6EabyWpvbGR62l3yPzqtMmRGf4EFBU6KPuDaEXC
+         kqMs9UYHqY06J78l4msarVGie30SsXzdsbsxBTmFz4zmIi9P0T2DPeqopfjKvHrBfocA
+         UOjAnzQH1MSXUj7MPFEjvPRO3lG3JGntxhjDjmzjICTKQVTXPjOAO69U/tc7UySsTVso
+         6TmoG86lusyS5msZFZcELwj+kC8JPWmz8g1Pp4vpA32f+ZpCUS0Kma4y/1oTzaWQ5W5n
+         MGEqfHXlZBacdH15smKgDmzC065ytSqXLp6MHk04xS1J6U6nojEb1PdXpZy2IQpFMSU2
+         b22Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=BqnKWzwtAQvEzSaBToMPLDFYUsWkoHiliy61h2x+ZUA=;
-        b=gQrA+x8kTnaZcGzJ2vsk0ri1/Flmd/DHgdLdEONoapAKkFycjUredipw0MpyICqpYU
-         0wVi+crg14k6+B7bXr9m/HlqptBHRg7SFitMjEpGqwuKE6pH45wuLeeYeGXBIBR8Ainv
-         DGFMAa5zf7nYcR67B9sOi7FhfmKsmlruDZndNQ65Sa5lesXOUIFVl/eEBbpzgpgccogM
-         veUrXz9gHVkUsH36laie+wPDji9vntzu/alODq9Z18G2CotWEcB6aE8SXQSEOF3f7qyM
-         cDSWe4F+7FqU73PwhojPeHvWahNySPJZq+y4lwMgCPlkiWPkCKLZoIluHADOeJDC+gGr
-         HvVw==
-X-Gm-Message-State: AOAM5325IFIRRalcdc+bbi77meYs33IylxhgeElTFkkMdlp/2JZzio8H
-        CPy1Ye/PmI/YVWcLvrCrUJcRFiuPp/OLrae5KkVu8OJwboOq
-X-Google-Smtp-Source: ABdhPJyWiEMVZPD/h2RokK4V7o73QVWvvWVi7Idtwt3lT6GGw5JlKqF3+/47RIQpKsRVunqRvAKgkoohdAJANQTmcMaP3Y/372q0
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=7U6CzGv2e/d/9047/ln4AbfjZylQ7TJyWzhvRZicX1k=;
+        b=hGBLWeEiU9Pw86mZoyv+y+AyDOVnGgKG/0O1sNcHpBBr5NoYWLeadb/Qs9sQwiAsuG
+         Aw6Te7HcQonjNf4f2zK2hKPv4Mt8KmLzETLuwpOWoEFiVYfIVlIDESXHtL32xAxGuN/2
+         b6FuZ7po8l1cp1DV8YflEBSlL3VUZ9DNMQG4gQwm/35EoqX7fQYHsfa/zy8EgGwwKP5e
+         UpmXvXMcFdPWwMli2igfmpnr8gq4rwhlw0nOw0o7+Hn6ZwGUqsWFbszfOPJYphphA+00
+         FQG/cGHkowe7xkTzfOkIxQYSBgHxwluNLIyE2TnWzuEYfEPjYauvHkEVA/HkbItD3TJt
+         vbGg==
+X-Gm-Message-State: AOAM533bV9JIps2tS9uG63L4r33ulVbIOSImkcKs8gpx3hlevJjkjyeu
+        b2NpyxWvAnpkH/ujMGrfNuE=
+X-Google-Smtp-Source: ABdhPJxxKUdMS/ugL34eltdY7w7K41j11J0NvfXCSkGBnE77Cyk2pDLNNjaK019W3vgupInJdGY55g==
+X-Received: by 2002:aa7:949c:0:b029:2fa:c881:dd0 with SMTP id z28-20020aa7949c0000b02902fac8810dd0mr16755067pfk.9.1624233559655;
+        Sun, 20 Jun 2021 16:59:19 -0700 (PDT)
+Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
+        by smtp.gmail.com with ESMTPSA id l6sm545873pgh.34.2021.06.20.16.59.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Jun 2021 16:59:19 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 09:59:14 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: arch/powerpc/kvm/book3s_hv_nested.c:264:6: error: stack frame
+ size of 2304 bytes in function 'kvmhv_enter_nested_guest'
+To:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
+        Kees Cook <keescook@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org
+References: <202104031853.vDT0Qjqj-lkp@intel.com>
+In-Reply-To: <202104031853.vDT0Qjqj-lkp@intel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a5d:9051:: with SMTP id v17mr565354ioq.81.1624231336038;
- Sun, 20 Jun 2021 16:22:16 -0700 (PDT)
-Date:   Sun, 20 Jun 2021 16:22:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d154d905c53ad34d@google.com>
-Subject: [syzbot] general protection fault in smc_tx_sendmsg
-From:   syzbot <syzbot+5dda108b672b54141857@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, dsahern@kernel.org,
-        fw@strlen.de, kadlec@netfilter.org, kgraul@linux.ibm.com,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <1624232938.d90brlmh3p.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Excerpts from kernel test robot's message of April 3, 2021 8:47 pm:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t master
+> head:   d93a0d43e3d0ba9e19387be4dae4a8d5b175a8d7
+> commit: 97e4910232fa1f81e806aa60c25a0450276d99a2 linux/compiler-clang.h: =
+define HAVE_BUILTIN_BSWAP*
+> date:   3 weeks ago
+> config: powerpc64-randconfig-r006-20210403 (attached as .config)
+> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 0fe8=
+af94688aa03c01913c2001d6a1a911f42ce6)
+> reproduce (this is a W=3D1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbi=
+n/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install powerpc64 cross compiling tool for clang build
+>         # apt-get install binutils-powerpc64-linux-gnu
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.=
+git/commit/?id=3D97e4910232fa1f81e806aa60c25a0450276d99a2
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/=
+git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 97e4910232fa1f81e806aa60c25a0450276d99a2
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=3D$HOME/0day COMPILER=3Dclang make.cross AR=
+CH=3Dpowerpc64=20
+>=20
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>=20
+> All errors (new ones prefixed by >>):
+>=20
+>>> arch/powerpc/kvm/book3s_hv_nested.c:264:6: error: stack frame size of 2=
+304 bytes in function 'kvmhv_enter_nested_guest' [-Werror,-Wframe-larger-th=
+an=3D]
+>    long kvmhv_enter_nested_guest(struct kvm_vcpu *vcpu)
+>         ^
+>    1 error generated.
+>=20
+>=20
+> vim +/kvmhv_enter_nested_guest +264 arch/powerpc/kvm/book3s_hv_nested.c
 
-syzbot found the following issue on:
+Not much changed here recently. It's not that big a concern because it's=20
+only called in the KVM ioctl path, not in any deep IO paths or anything,
+and doesn't recurse. Might be a bit of inlining or stack spilling put it
+over the edge.
 
-HEAD commit:    0c337952 Merge tag 'wireless-drivers-next-2021-06-16' of g..
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1621de10300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a6380da8984033f1
-dashboard link: https://syzkaller.appspot.com/bug?extid=5dda108b672b54141857
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=121d2d20300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=100bd768300000
+powerpc does make it an error though, would be good to avoid that so the
+robot doesn't keep tripping over.
 
-The issue was bisected to:
-
-commit f9006acc8dfe59e25aa75729728ac57a8d84fc32
-Author: Florian Westphal <fw@strlen.de>
-Date:   Wed Apr 21 07:51:08 2021 +0000
-
-    netfilter: arp_tables: pass table pointer via nf_hook_ops
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12600fffd00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11600fffd00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16600fffd00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5dda108b672b54141857@syzkaller.appspotmail.com
-Fixes: f9006acc8dfe ("netfilter: arp_tables: pass table pointer via nf_hook_ops")
-
-general protection fault, probably for non-canonical address 0xdffffc0000000004: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
-CPU: 1 PID: 8455 Comm: syz-executor893 Not tainted 5.13.0-rc3-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:smc_tx_sendmsg+0x204/0x1ba0 net/smc/smc_tx.c:157
-Code: 48 c1 ea 03 80 3c 02 00 0f 85 8b 17 00 00 49 8b 9d 08 05 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d 7b 20 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 8f 17 00 00 48 63 5b 20 4c 8b
-RSP: 0018:ffffc9000164f800 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000004 RSI: ffffffff889cd6ae RDI: 0000000000000020
-RBP: ffff88801cf58000 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff889cd6a1 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff88801cf58000 R14: ffffc9000164fd90 R15: ffff88801cf58060
-FS:  0000000000ebf300(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffd43ca1328 CR3: 000000002acf2000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- smc_sendmsg+0x274/0x5b0 net/smc/af_smc.c:2037
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:674
- ____sys_sendmsg+0x331/0x810 net/socket.c:2350
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
- __sys_sendmmsg+0x195/0x470 net/socket.c:2490
- __do_sys_sendmmsg net/socket.c:2519 [inline]
- __se_sys_sendmmsg net/socket.c:2516 [inline]
- __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2516
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x43ee89
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc82b20a58 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 000000000043ee89
-RDX: 0000000000000001 RSI: 0000000020003d80 RDI: 0000000000000003
-RBP: 0000000000402e70 R08: 0000000000000000 R09: 0000000000400488
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402f00
-R13: 0000000000000000 R14: 00000000004ac018 R15: 0000000000400488
-Modules linked in:
----[ end trace 459b28282ae53115 ]---
-RIP: 0010:smc_tx_sendmsg+0x204/0x1ba0 net/smc/smc_tx.c:157
-Code: 48 c1 ea 03 80 3c 02 00 0f 85 8b 17 00 00 49 8b 9d 08 05 00 00 48 b8 00 00 00 00 00 fc ff df 48 8d 7b 20 48 89 fa 48 c1 ea 03 <0f> b6 04 02 84 c0 74 08 3c 03 0f 8e 8f 17 00 00 48 63 5b 20 4c 8b
-RSP: 0018:ffffc9000164f800 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000000004 RSI: ffffffff889cd6ae RDI: 0000000000000020
-RBP: ffff88801cf58000 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff889cd6a1 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff88801cf58000 R14: ffffc9000164fd90 R15: ffff88801cf58060
-FS:  0000000000ebf300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055b7501be298 CR3: 000000002acf2000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Thanks,
+Nick
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+>=20
+> afe75049303f75 Ravi Bangoria        2020-12-16  263 =20
+> 360cae313702cd Paul Mackerras       2018-10-08 @264  long kvmhv_enter_nes=
+ted_guest(struct kvm_vcpu *vcpu)
+> 360cae313702cd Paul Mackerras       2018-10-08  265  {
+> 360cae313702cd Paul Mackerras       2018-10-08  266  	long int err, r;
+> 360cae313702cd Paul Mackerras       2018-10-08  267  	struct kvm_nested_g=
+uest *l2;
+> 360cae313702cd Paul Mackerras       2018-10-08  268  	struct pt_regs l2_r=
+egs, saved_l1_regs;
+> afe75049303f75 Ravi Bangoria        2020-12-16  269  	struct hv_guest_sta=
+te l2_hv =3D {0}, saved_l1_hv;
+> 360cae313702cd Paul Mackerras       2018-10-08  270  	struct kvmppc_vcore=
+ *vc =3D vcpu->arch.vcore;
+> 360cae313702cd Paul Mackerras       2018-10-08  271  	u64 hv_ptr, regs_pt=
+r;
+> 360cae313702cd Paul Mackerras       2018-10-08  272  	u64 hdec_exp;
+> 360cae313702cd Paul Mackerras       2018-10-08  273  	s64 delta_purr, del=
+ta_spurr, delta_ic, delta_vtb;
+> 360cae313702cd Paul Mackerras       2018-10-08  274  	u64 mask;
+> 360cae313702cd Paul Mackerras       2018-10-08  275  	unsigned long lpcr;
+> 360cae313702cd Paul Mackerras       2018-10-08  276 =20
+> 360cae313702cd Paul Mackerras       2018-10-08  277  	if (vcpu->kvm->arch=
+.l1_ptcr =3D=3D 0)
+> 360cae313702cd Paul Mackerras       2018-10-08  278  		return H_NOT_AVAIL=
+ABLE;
+> 360cae313702cd Paul Mackerras       2018-10-08  279 =20
+> 360cae313702cd Paul Mackerras       2018-10-08  280  	/* copy parameters =
+in */
+> 360cae313702cd Paul Mackerras       2018-10-08  281  	hv_ptr =3D kvmppc_g=
+et_gpr(vcpu, 4);
+> 1508c22f112ce1 Alexey Kardashevskiy 2020-06-09  282  	regs_ptr =3D kvmppc=
+_get_gpr(vcpu, 5);
+> 1508c22f112ce1 Alexey Kardashevskiy 2020-06-09  283  	vcpu->srcu_idx =3D =
+srcu_read_lock(&vcpu->kvm->srcu);
+> afe75049303f75 Ravi Bangoria        2020-12-16  284  	err =3D kvmhv_read_=
+guest_state_and_regs(vcpu, &l2_hv, &l2_regs,
+> afe75049303f75 Ravi Bangoria        2020-12-16  285  					      hv_ptr, r=
+egs_ptr);
+> 1508c22f112ce1 Alexey Kardashevskiy 2020-06-09  286  	srcu_read_unlock(&v=
+cpu->kvm->srcu, vcpu->srcu_idx);
+> 360cae313702cd Paul Mackerras       2018-10-08  287  	if (err)
+> 360cae313702cd Paul Mackerras       2018-10-08  288  		return H_PARAMETER=
+;
+> 1508c22f112ce1 Alexey Kardashevskiy 2020-06-09  289 =20
+> 10b5022db7861a Suraj Jitindar Singh 2018-10-08  290  	if (kvmppc_need_byt=
+eswap(vcpu))
+> 10b5022db7861a Suraj Jitindar Singh 2018-10-08  291  		byteswap_hv_regs(&=
+l2_hv);
+> afe75049303f75 Ravi Bangoria        2020-12-16  292  	if (l2_hv.version >=
+ HV_GUEST_STATE_VERSION)
+> 360cae313702cd Paul Mackerras       2018-10-08  293  		return H_P2;
+> 360cae313702cd Paul Mackerras       2018-10-08  294 =20
+> 10b5022db7861a Suraj Jitindar Singh 2018-10-08  295  	if (kvmppc_need_byt=
+eswap(vcpu))
+> 10b5022db7861a Suraj Jitindar Singh 2018-10-08  296  		byteswap_pt_regs(&=
+l2_regs);
+> 9d0b048da788c1 Suraj Jitindar Singh 2018-10-08  297  	if (l2_hv.vcpu_toke=
+n >=3D NR_CPUS)
+> 9d0b048da788c1 Suraj Jitindar Singh 2018-10-08  298  		return H_PARAMETER=
+;
+> 9d0b048da788c1 Suraj Jitindar Singh 2018-10-08  299 =20
+> 360cae313702cd Paul Mackerras       2018-10-08  300  	/* translate lpid *=
+/
+> 360cae313702cd Paul Mackerras       2018-10-08  301  	l2 =3D kvmhv_get_ne=
+sted(vcpu->kvm, l2_hv.lpid, true);
+> 360cae313702cd Paul Mackerras       2018-10-08  302  	if (!l2)
+> 360cae313702cd Paul Mackerras       2018-10-08  303  		return H_PARAMETER=
+;
+> 360cae313702cd Paul Mackerras       2018-10-08  304  	if (!l2->l1_gr_to_h=
+r) {
+> 360cae313702cd Paul Mackerras       2018-10-08  305  		mutex_lock(&l2->tl=
+b_lock);
+> 360cae313702cd Paul Mackerras       2018-10-08  306  		kvmhv_update_ptbl_=
+cache(l2);
+> 360cae313702cd Paul Mackerras       2018-10-08  307  		mutex_unlock(&l2->=
+tlb_lock);
+> 360cae313702cd Paul Mackerras       2018-10-08  308  	}
+> 360cae313702cd Paul Mackerras       2018-10-08  309 =20
+> 360cae313702cd Paul Mackerras       2018-10-08  310  	/* save l1 values o=
+f things */
+> 360cae313702cd Paul Mackerras       2018-10-08  311  	vcpu->arch.regs.msr=
+ =3D vcpu->arch.shregs.msr;
+> 360cae313702cd Paul Mackerras       2018-10-08  312  	saved_l1_regs =3D v=
+cpu->arch.regs;
+> 360cae313702cd Paul Mackerras       2018-10-08  313  	kvmhv_save_hv_regs(=
+vcpu, &saved_l1_hv);
+> 360cae313702cd Paul Mackerras       2018-10-08  314 =20
+> 360cae313702cd Paul Mackerras       2018-10-08  315  	/* convert TB value=
+s/offsets to host (L0) values */
+> 360cae313702cd Paul Mackerras       2018-10-08  316  	hdec_exp =3D l2_hv.=
+hdec_expiry - vc->tb_offset;
+> 360cae313702cd Paul Mackerras       2018-10-08  317  	vc->tb_offset +=3D =
+l2_hv.tb_offset;
+> 360cae313702cd Paul Mackerras       2018-10-08  318 =20
+> 360cae313702cd Paul Mackerras       2018-10-08  319  	/* set L1 state to =
+L2 state */
+> 360cae313702cd Paul Mackerras       2018-10-08  320  	vcpu->arch.nested =
+=3D l2;
+> 360cae313702cd Paul Mackerras       2018-10-08  321  	vcpu->arch.nested_v=
+cpu_id =3D l2_hv.vcpu_token;
+> 360cae313702cd Paul Mackerras       2018-10-08  322  	vcpu->arch.regs =3D=
+ l2_regs;
+> 360cae313702cd Paul Mackerras       2018-10-08  323  	vcpu->arch.shregs.m=
+sr =3D vcpu->arch.regs.msr;
+> 360cae313702cd Paul Mackerras       2018-10-08  324  	mask =3D LPCR_DPFD =
+| LPCR_ILE | LPCR_TC | LPCR_AIL | LPCR_LD |
+> 360cae313702cd Paul Mackerras       2018-10-08  325  		LPCR_LPES | LPCR_M=
+ER;
+> 360cae313702cd Paul Mackerras       2018-10-08  326  	lpcr =3D (vc->lpcr =
+& ~mask) | (l2_hv.lpcr & mask);
+> 73937deb4b2d7f Suraj Jitindar Singh 2018-10-08  327  	sanitise_hv_regs(vc=
+pu, &l2_hv);
+> 360cae313702cd Paul Mackerras       2018-10-08  328  	restore_hv_regs(vcp=
+u, &l2_hv);
+> 360cae313702cd Paul Mackerras       2018-10-08  329 =20
+> 360cae313702cd Paul Mackerras       2018-10-08  330  	vcpu->arch.ret =3D =
+RESUME_GUEST;
+> 360cae313702cd Paul Mackerras       2018-10-08  331  	vcpu->arch.trap =3D=
+ 0;
+> 360cae313702cd Paul Mackerras       2018-10-08  332  	do {
+> 360cae313702cd Paul Mackerras       2018-10-08  333  		if (mftb() >=3D hd=
+ec_exp) {
+> 360cae313702cd Paul Mackerras       2018-10-08  334  			vcpu->arch.trap =
+=3D BOOK3S_INTERRUPT_HV_DECREMENTER;
+> 360cae313702cd Paul Mackerras       2018-10-08  335  			r =3D RESUME_HOST=
+;
+> 360cae313702cd Paul Mackerras       2018-10-08  336  			break;
+> 360cae313702cd Paul Mackerras       2018-10-08  337  		}
+> 8c99d34578628b Tianjia Zhang        2020-04-27  338  		r =3D kvmhv_run_si=
+ngle_vcpu(vcpu, hdec_exp, lpcr);
+> 360cae313702cd Paul Mackerras       2018-10-08  339  	} while (is_kvmppc_=
+resume_guest(r));
+> 360cae313702cd Paul Mackerras       2018-10-08  340 =20
+> 360cae313702cd Paul Mackerras       2018-10-08  341  	/* save L2 state fo=
+r return */
+> 360cae313702cd Paul Mackerras       2018-10-08  342  	l2_regs =3D vcpu->a=
+rch.regs;
+> 360cae313702cd Paul Mackerras       2018-10-08  343  	l2_regs.msr =3D vcp=
+u->arch.shregs.msr;
+> 360cae313702cd Paul Mackerras       2018-10-08  344  	delta_purr =3D vcpu=
+->arch.purr - l2_hv.purr;
+> 360cae313702cd Paul Mackerras       2018-10-08  345  	delta_spurr =3D vcp=
+u->arch.spurr - l2_hv.spurr;
+> 360cae313702cd Paul Mackerras       2018-10-08  346  	delta_ic =3D vcpu->=
+arch.ic - l2_hv.ic;
+> 360cae313702cd Paul Mackerras       2018-10-08  347  	delta_vtb =3D vc->v=
+tb - l2_hv.vtb;
+> 360cae313702cd Paul Mackerras       2018-10-08  348  	save_hv_return_stat=
+e(vcpu, vcpu->arch.trap, &l2_hv);
+> 360cae313702cd Paul Mackerras       2018-10-08  349 =20
+> 360cae313702cd Paul Mackerras       2018-10-08  350  	/* restore L1 state=
+ */
+> 360cae313702cd Paul Mackerras       2018-10-08  351  	vcpu->arch.nested =
+=3D NULL;
+> 360cae313702cd Paul Mackerras       2018-10-08  352  	vcpu->arch.regs =3D=
+ saved_l1_regs;
+> 360cae313702cd Paul Mackerras       2018-10-08  353  	vcpu->arch.shregs.m=
+sr =3D saved_l1_regs.msr & ~MSR_TS_MASK;
+> 360cae313702cd Paul Mackerras       2018-10-08  354  	/* set L1 MSR TS fi=
+eld according to L2 transaction state */
+> 360cae313702cd Paul Mackerras       2018-10-08  355  	if (l2_regs.msr & M=
+SR_TS_MASK)
+> 360cae313702cd Paul Mackerras       2018-10-08  356  		vcpu->arch.shregs.=
+msr |=3D MSR_TS_S;
+> 360cae313702cd Paul Mackerras       2018-10-08  357  	vc->tb_offset =3D s=
+aved_l1_hv.tb_offset;
+> 360cae313702cd Paul Mackerras       2018-10-08  358  	restore_hv_regs(vcp=
+u, &saved_l1_hv);
+> 360cae313702cd Paul Mackerras       2018-10-08  359  	vcpu->arch.purr +=
+=3D delta_purr;
+> 360cae313702cd Paul Mackerras       2018-10-08  360  	vcpu->arch.spurr +=
+=3D delta_spurr;
+> 360cae313702cd Paul Mackerras       2018-10-08  361  	vcpu->arch.ic +=3D =
+delta_ic;
+> 360cae313702cd Paul Mackerras       2018-10-08  362  	vc->vtb +=3D delta_=
+vtb;
+> 360cae313702cd Paul Mackerras       2018-10-08  363 =20
+> 360cae313702cd Paul Mackerras       2018-10-08  364  	kvmhv_put_nested(l2=
+);
+> 360cae313702cd Paul Mackerras       2018-10-08  365 =20
+> 360cae313702cd Paul Mackerras       2018-10-08  366  	/* copy l2_hv_state=
+ and regs back to guest */
+> 10b5022db7861a Suraj Jitindar Singh 2018-10-08  367  	if (kvmppc_need_byt=
+eswap(vcpu)) {
+> 10b5022db7861a Suraj Jitindar Singh 2018-10-08  368  		byteswap_hv_regs(&=
+l2_hv);
+> 10b5022db7861a Suraj Jitindar Singh 2018-10-08  369  		byteswap_pt_regs(&=
+l2_regs);
+> 10b5022db7861a Suraj Jitindar Singh 2018-10-08  370  	}
+> 1508c22f112ce1 Alexey Kardashevskiy 2020-06-09  371  	vcpu->srcu_idx =3D =
+srcu_read_lock(&vcpu->kvm->srcu);
+> afe75049303f75 Ravi Bangoria        2020-12-16  372  	err =3D kvmhv_write=
+_guest_state_and_regs(vcpu, &l2_hv, &l2_regs,
+> afe75049303f75 Ravi Bangoria        2020-12-16  373  					       hv_ptr, =
+regs_ptr);
+> 1508c22f112ce1 Alexey Kardashevskiy 2020-06-09  374  	srcu_read_unlock(&v=
+cpu->kvm->srcu, vcpu->srcu_idx);
+> 360cae313702cd Paul Mackerras       2018-10-08  375  	if (err)
+> 360cae313702cd Paul Mackerras       2018-10-08  376  		return H_AUTHORITY=
+;
+> 360cae313702cd Paul Mackerras       2018-10-08  377 =20
+> 360cae313702cd Paul Mackerras       2018-10-08  378  	if (r =3D=3D -EINTR=
+)
+> 360cae313702cd Paul Mackerras       2018-10-08  379  		return H_INTERRUPT=
+;
+> 360cae313702cd Paul Mackerras       2018-10-08  380 =20
+> 873db2cd9a6d7f Suraj Jitindar Singh 2018-12-14  381  	if (vcpu->mmio_need=
+ed) {
+> 873db2cd9a6d7f Suraj Jitindar Singh 2018-12-14  382  		kvmhv_nested_mmio_=
+needed(vcpu, regs_ptr);
+> 873db2cd9a6d7f Suraj Jitindar Singh 2018-12-14  383  		return H_TOO_HARD;
+> 873db2cd9a6d7f Suraj Jitindar Singh 2018-12-14  384  	}
+> 873db2cd9a6d7f Suraj Jitindar Singh 2018-12-14  385 =20
+> 360cae313702cd Paul Mackerras       2018-10-08  386  	return vcpu->arch.t=
+rap;
+> 360cae313702cd Paul Mackerras       2018-10-08  387  }
+> 360cae313702cd Paul Mackerras       2018-10-08  388 =20
+>=20
+> :::::: The code at line 264 was first introduced by commit
+> :::::: 360cae313702cdd0b90f82c261a8302fecef030a KVM: PPC: Book3S HV: Nest=
+ed guest entry via hypercall
+>=20
+> :::::: TO: Paul Mackerras <paulus@ozlabs.org>
+> :::::: CC: Michael Ellerman <mpe@ellerman.id.au>
+>=20
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>=20
