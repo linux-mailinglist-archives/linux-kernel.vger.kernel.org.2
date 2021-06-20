@@ -2,112 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDFC3ADC66
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 05:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3303ADC69
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 05:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229756AbhFTDPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 23:15:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229538AbhFTDPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 23:15:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D68360FEE;
-        Sun, 20 Jun 2021 03:13:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624158821;
-        bh=3OedRV0Jb4/bcaLZQGAhpxa0h+tij6pqKNPN145wFtg=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=m3WsNOKtp4jzqtFNvkEnXwBWBKEaHq1iJpCoYAYuZw6FYV7bn3AV7q32UaFdZt9ju
-         SwlQWZ4a+j2W0ax0wWjN6wqrxqKxt8YuF+DH7sgu5fZkfkvLa9xDqiXrZH6CCXAYEP
-         qgAc/0v0I1wn244W/VeqOdSr3Yk246f84+NJ0lT1TJgcyg5g0EnhnpICv4jT0Ky4ce
-         cyXl+vSi+FyOrARAh5V0ewmxYFOpJLM5mcM1CYHR5duAoYV3NpQcGIGp0WgMb1zWau
-         ha2qnz17SVBOk3MXXgbCqdMBScID5M3ZjitD8ce4YcEWkY9kk5/cYiRD9n49+q4Z4f
-         nGj65fzUAkm+A==
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 1EB8B27C0054;
-        Sat, 19 Jun 2021 23:13:39 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute2.internal (MEProxy); Sat, 19 Jun 2021 23:13:39 -0400
-X-ME-Sender: <xms:YbLOYCimAvyoy4uurVdUTa3BBg-RSz-BEADV38uBstDhCb5NnXP9aQ>
-    <xme:YbLOYDDLPtOLOWAkGz1fbVMiPRQoyWIbCYA1bQRcaRPMBTm-RYB1q5MePIGEevyMB
-    nQj_-kXpJpRMAaBXtc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeefiedgkeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedftehn
-    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepvdelheejjeevhfdutdeggefftdejtdffgeevteehvdfgjeeiveei
-    ueefveeuvdetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
-    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
-    igrdhluhhtohdruhhs
-X-ME-Proxy: <xmx:YbLOYKH76UMLika4uwQ9IaDQR8vP2GFOzj4CaUAWbVmhYxxOcduGpA>
-    <xmx:YbLOYLQ1Av4XTkjtmjDZFqWT7k_YkTmAouaKWOc4Uwl3I2NkzgRp_g>
-    <xmx:YbLOYPxZZPnyssfsUtWqUYIGG9azrOCpnchyNH9ScdqbuvYF9WEiyw>
-    <xmx:Y7LOYEpjxfFbIX8sfyS6wLZg7n7dG8HmlyunRTsTicW4tHvDuaUl4XkuQ6o>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 160A351C0060; Sat, 19 Jun 2021 23:13:37 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-526-gf020ecf851-fm-20210616.001-gf020ecf8
-Mime-Version: 1.0
-Message-Id: <444d7139-e47a-4831-93d0-8eb5b9680fdc@www.fastmail.com>
-In-Reply-To: <87bl81h3ih.ffs@nanos.tec.linutronix.de>
-References: <20210601065217.23540-1-jiangshanlai@gmail.com>
- <20210601065217.23540-2-jiangshanlai@gmail.com>
- <87bl81h3ih.ffs@nanos.tec.linutronix.de>
-Date:   Sat, 19 Jun 2021 20:13:15 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Thomas Gleixner" <tglx@linutronix.de>,
-        "Lai Jiangshan" <jiangshanlai@gmail.com>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
-Cc:     "Steven Rostedt" <rostedt@goodmis.org>,
-        "Lai Jiangshan" <laijs@linux.alibaba.com>,
-        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Juergen Gross" <jgross@suse.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        "Al Viro" <viro@zeniv.linux.org.uk>,
-        "Arvind Sankar" <nivedita@alum.mit.edu>
-Subject: =?UTF-8?Q?Re:_[RFC_PATCH_1/4]_x86/entry/nmi:_Switch_to_the_entry_stack_b?=
- =?UTF-8?Q?efore_switching_to_the_thread_stack?=
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S229851AbhFTDZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 23:25:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49740 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229538AbhFTDZY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 23:25:24 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A483EC061574;
+        Sat, 19 Jun 2021 20:23:11 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id u190so7376634pgd.8;
+        Sat, 19 Jun 2021 20:23:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uFxh1ZGIK/+pJPgILY3Q3wxUIQmjqsKGWessG1EhcPw=;
+        b=fDieeDzaVdYRo0NYMemRxsE44dHc3XwycBmYAdUkUtJUgzgCfU1L3nEBQUplkzV6LC
+         6j/iDs0R/xkVjZjG8LsOgN9hFTwvHwO8+C1i3aOSOgjEFfnHvT9wlZpk4/iTjIWfFRuN
+         /ZmVT/shiaAahnoEDKuhRZ1tMmTGs/nURpDoiyoL/hrZG7XjSh53lHcSaaIZsEdCB8YA
+         D08H54W9P14CaT0Y+2jJ597xiVXo9HMqZ5tTgODebYHHWkFCwSjKxxcQg79isJLJIvgK
+         gvppR8PYidOBdCJGQ4zL3TboF7Gvtl9P1mR4F8r+QTj/eVkI72MfXIiW9MKAiZSJeuk/
+         UFWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uFxh1ZGIK/+pJPgILY3Q3wxUIQmjqsKGWessG1EhcPw=;
+        b=Uu9jSC2Y9g0ML1zlu6YSLtf+T8vi5vARQm6krT4g+m4JQcOBdmQpZywuIIqGlQUoVB
+         7+yBDGdmLSaYgAtQvQ52xWcAjI009FJ6px5vXjfTvz6zDCL1b63DNEaow7m07U/vq00u
+         crc7vvDNv6h12M+D7WgZVjkexQangFxb99P04NTa9GhuAAEUMvI6PdpQnV1/gi1cyQZw
+         DuljTARbAJsSVtkRj9qnEiXdZNwtPQL7drDvUU8Wdmn956rx1fQyskZjFsRJ4b3XKHkr
+         1FkDUiEysr9GAd3R/4uO5oBR4qqzvdWoNisNRE92i2VDMYtNiKNbgOhgaMOszWL0ABDl
+         G3iw==
+X-Gm-Message-State: AOAM532pM126ybPZSrVENyn29f3rJnalVA3f9SEOEsc7w7IbOEnUILJb
+        3NE6h8oyi2Wnc9xlTSOb/w0=
+X-Google-Smtp-Source: ABdhPJxwbd6RYHB6D8mAbxJAXfrEB19aNDpFT5x8W8YZyIHTAGxYFyvmCefbn9cmwu3FRrOay6RzjA==
+X-Received: by 2002:a63:d815:: with SMTP id b21mr17508601pgh.321.1624159390797;
+        Sat, 19 Jun 2021 20:23:10 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:b83e:d8b6:9f4f:2be2])
+        by smtp.gmail.com with ESMTPSA id j13sm12573163pgp.29.2021.06.19.20.23.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Jun 2021 20:23:09 -0700 (PDT)
+Date:   Sat, 19 Jun 2021 20:23:06 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Nikita Shubin <nikita.shubin@maquefel.me>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/7] Input: ep93xx_keypad: Prepare clock before using it
+Message-ID: <YM60mjew2mqMAMRO@google.com>
+References: <20210613233041.128961-1-alexander.sverdlin@gmail.com>
+ <20210613233041.128961-4-alexander.sverdlin@gmail.com>
+ <YMfQR8iM9be5Qg8+@google.com>
+ <9bf87ee0e1c2a97b0a1b98734e34e456f84ea3d7.camel@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9bf87ee0e1c2a97b0a1b98734e34e456f84ea3d7.camel@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 15, 2021 at 09:46:51AM +0200, Alexander Sverdlin wrote:
+> Hello Dmitry!
+> 
+> On Mon, 2021-06-14 at 14:55 -0700, Dmitry Torokhov wrote:
+> > > Use clk_prepare_enable()/clk_disable_unprepare() in preparation for switch
+> > > to Common Clock Framework.
+> > 
+> > Can this be merged standalone?
+> 
+> In principle, yes, but I thought it would be easier if the patches
+> would go via the same path as CCF conversion.
 
+OK, in this case:
 
-On Sat, Jun 19, 2021, at 3:51 PM, Thomas Gleixner wrote:
-> On Tue, Jun 01 2021 at 14:52, Lai Jiangshan wrote:
-> > From: Lai Jiangshan <laijs@linux.alibaba.com>
-> >
-> > Current kernel has no code to enforce data breakpoint not on the thr=
-ead
-> > stack.  If there is any data breakpoint on the top area of the threa=
-d
-> > stack, there might be problem.
->=20
-> And because the kernel does not prevent data breakpoints on the thread=
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-> stack we need to do more complicated things in the already horrible
-> entry code instead of just doing the obvious and preventing data
-> breakpoints on the thread stack?
-
-Preventing breakpoints on the thread stack is a bit messy: it=E2=80=99s =
-possible for a breakpoint to be set before the address in question is al=
-located for the thread stack.
-
-None of this is NMI-specific. #DB itself has the same problem.  We could=
- plausibly solve it differently by disarming breakpoints in the entry as=
-m before switching stacks. I=E2=80=99m not sure how much I like that app=
-roach.
-
->=20
-> Confused.
->=20
-> Thanks,
->=20
->         tglx
->=20
+-- 
+Dmitry
