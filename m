@@ -2,83 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C39733AE071
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 22:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0FC3AE076
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 22:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhFTUuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 16:50:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57992 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229905AbhFTUuD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 16:50:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F10B06108E;
-        Sun, 20 Jun 2021 20:47:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624222070;
-        bh=Bp8cnLr7xfqy+UKnnykADt2ZO35GTyUrsLstokF0RNg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MI+FE/u3nf6Isuo06cjBFROaYAOqk3WUkfMKaSaWv0HbKKLbmKvxVaQP44IkbQhhN
-         vxkcXCzJV2TAQoGAH4jDhTM9J4H03DGva9eXn+GZvBdqn96d4FaohLXibXGtdw/9A5
-         359EbzJHwZVpdPRafLLY+Em0rd7g7a+8QllrxD3BM+X3tX4GsGSvkFLM6X3eBWrIQZ
-         Iy6WgXkhoDS2P7kxbhhx/sKgk5RJ0lB1BSPhB9Fo3O/jzLHkQonLrkFaSIDeBbVZue
-         hi68mDoudMO3PrK7k84ydKL5tz1Xfn+dWkzBOCbY290A7GCrKr4QYZaa40CtseeeHp
-         lO1Cb7ynqOVkA==
-Date:   Sun, 20 Jun 2021 22:47:46 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH v2 1/1] i2c: cht-wc: Replace of_node by NULL
-Message-ID: <YM+pcm7WaK0LvtQQ@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hans de Goede <hdegoede@redhat.com>
-References: <20210609173035.83777-1-andriy.shevchenko@linux.intel.com>
+        id S230107AbhFTU5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 16:57:01 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:59186 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229845AbhFTU46 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Jun 2021 16:56:58 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:33262 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1lv4So-0000CS-DS; Sun, 20 Jun 2021 16:54:42 -0400
+Message-ID: <3c6e168b40ebf4e8fd2aa9c9cf1785cdd8b5e6c1.camel@trillion01.com>
+Subject: Re: [PATCH v2] io_uring: reduce latency by reissueing the operation
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 20 Jun 2021 16:54:38 -0400
+In-Reply-To: <7ad30cb0-3322-6c40-2a1b-27308aa757d8@gmail.com>
+References: <e4614f9442d971016f47d69fbcba226f758377a8.1624215754.git.olivier@trillion01.com>
+         <c5394ace-d003-df18-c816-2592fc40bf08@infradead.org>
+         <b0c5175177af0bfd216d45da361e114870f07aad.camel@trillion01.com>
+         <4578f817-c920-85f1-91af-923d792fc912@infradead.org>
+         <7ad30cb0-3322-6c40-2a1b-27308aa757d8@gmail.com>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.2 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sAMmsqq1V/mM7NId"
-Content-Disposition: inline
-In-Reply-To: <20210609173035.83777-1-andriy.shevchenko@linux.intel.com>
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 2021-06-20 at 21:08 +0100, Pavel Begunkov wrote:
+> On 6/20/21 9:01 PM, Randy Dunlap wrote:
+> > On 6/20/21 12:28 PM, Olivier Langlois wrote:
+> > > On Sun, 2021-06-20 at 12:07 -0700, Randy Dunlap wrote:
+> > > > On 6/20/21 12:05 PM, Olivier Langlois wrote:
+> > > > > -               return false;
+> > > > > +               return ret?IO_ARM_POLL_READY:IO_ARM_POLL_ERR;
+> > > > 
+> > > > Hi,
+> > > > Please make that return expression more readable.
+> > > > 
+> > > > 
+> > > How exactly?
+> > > 
+> > > by adding spaces?
+> > > Changing the define names??
+> > 
+> > Adding spaces would be sufficient IMO (like Pavel suggested also).
+> 
+> Agree. That should be in the code style somewhere
+> 
+Sure no problem.
 
---sAMmsqq1V/mM7NId
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Jun 09, 2021 at 08:30:35PM +0300, Andy Shevchenko wrote:
-> The driver is run on the platforms where OF node is always NULL.
-> The confusion comes from IRQ domain APIs that take either OF or
-> firmware node as input parameter. Since fwnode is not used here
-> either, replace of_node by NULL.
->=20
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-Applied to for-next, thanks!
+This hasn't been reported by checkpatch.pl but I have just discovered
+codespell... Maybe this addon reports more issues than vanilla
+checkpatch
 
 
---sAMmsqq1V/mM7NId
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmDPqXIACgkQFA3kzBSg
-Kbbq2A/6AsBLgI8X0UQSGvFG5aemun6SOI01KYa2LM1B33EF6VStN+YipkX5ced6
-M/JiBWtb6B06rqCAZzQuKab+s3R/wp3xAIwRcJHxdMrE+nsww0PwWc5AfyZjd5+9
-BUdt8hkmK5FD7cXUXIe1vQ4CdYc6kkMtK6sR1j2tfeBhuB7cclXKEBHYjh7AGvY7
-PGrCMboPAIBMey6GGfiRp2ixpoxiRALf/2OmJxBJIwKFzVvgL3KnkYDcOLAK7abp
-R5kzZQROAeAFT/TTKY//bh6LbinuSCUQIAtxTizxkNVpu9hlwyS3YTPdlzqc4yOM
-OFHtBV5b1PpnkCCq5xJYZfcAh0+1vWbPWn1nJ940mFed1d1BM1A47otKnMHrY97C
-LnT64lrr6z4uG6Ohdq/3uVjiMTb3d6cXL03414uezjqN2+m4zfDcTERP8wXYmC9j
-2m06Ti9lP+8U57sXtfDtXGCkxEd96DW0GBuxkQZ0slakbxh7aK14/a6yzQZwYxCh
-4KoU4cHwG3mPfnCv8wXbhzylVHZiUZPqev7vIW1489xSMUqTD0rKa5u2W//L5nlU
-bM1u/gPijW/dFp4n3fx2k66EvASB8AvkHEVqw4CfxufJFxl3jDiZXWkcQDFsFk+Z
-5QXhqUBjF4DZJp9jxNStUekoDnTIuIwcPHD/hbfLfdeHkLCMnU8=
-=2uBb
------END PGP SIGNATURE-----
-
---sAMmsqq1V/mM7NId--
