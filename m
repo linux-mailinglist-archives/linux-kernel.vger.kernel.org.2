@@ -2,116 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32ADC3ADFC7
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 20:28:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C9723ADFD4
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 21:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbhFTSa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 14:30:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47020 "EHLO
+        id S229901AbhFTSpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 14:45:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbhFTSaY (ORCPT
+        with ESMTP id S229872AbhFTSpJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 14:30:24 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 806CAC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 11:28:11 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id h4so782483pgp.5
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 11:28:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U6zvSQULmBV2QlEmA9WqGHtSW57kHdL85SlLu7727jk=;
-        b=oCsSmEUORZxZaDLDX7wlttYZa8i3yc4McBsp+JedK/d+hs718R3TQnnyGlM007mtBy
-         +rnjmE/Q7C4NSQYoPOjMCqIALMhVmZMpLc7pfksqdj2Xw0aUlBfp47hHCaBxZ1GmweiI
-         dcKIQsaBe6aEYQdTGpuqFly0xvX+GvH/PZT8uJJjbvJSIpciIA+W2gIYI/syKtHVqXV4
-         Xjum/KIUgj+DbON9ZQC26AWxzjoqMOCcKIOW1jqlh3U7cSIvqUCvsMbkj747JIQHfvU4
-         rpo7eTIKGbAv5Qb9rxvtIum5Bhw/5oYUcwK8/zU6Bx4wcr56Ar8w/HKwY+M+L0YtQU8I
-         p+pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U6zvSQULmBV2QlEmA9WqGHtSW57kHdL85SlLu7727jk=;
-        b=QNBtog0VnpQO2R2QJ7Mu5h722qkVdLWUCi4i/uJX37CnvuWTI+udqw3t7Ez2bH7q3v
-         YZZLZLYMMwBlvdPGBgiO4CCTDzKhdlfqlsFmMkV/y1dlJea5n6csFElxqtm0m8q73k/F
-         KIQg9BaYV56hjcGnH2HjrQIWSNXiPYOY7JBEQU7y4NNVrbKA8drrsRaTAUGf9d8GqBdC
-         QyAxk9eZ8Qv/m7p3UgvajPtlWo7sDDBxRtZLuR7MhC2EHrjC/TfpbuS++Nl7xJLXQ7/y
-         xM3CZLUKm2cQrszUnNFbsgBikc5c6l0wdlzeP5y9cMSMs2gagTwr2oUcg2j+6+N4Lzoy
-         bjVQ==
-X-Gm-Message-State: AOAM532QFMUzGIq8pczd526Llm2xe+yo4CvjgVbyb/eXT2dp7KJRBOL4
-        L/cB668ygN8mK1/Hn4epYLT+KJrwMYT25TUAdFGd9AHpTcGr4A==
-X-Google-Smtp-Source: ABdhPJz8pZ2wbhybqk5UJtOOKjaWkb0GrBJznAnA4thnxDhVkeOTz874iyoKNl3ScF17SIEE73tZcL6vbnZZBrl2nUQ=
-X-Received: by 2002:a63:b00d:: with SMTP id h13mr20239358pgf.74.1624213690990;
- Sun, 20 Jun 2021 11:28:10 -0700 (PDT)
+        Sun, 20 Jun 2021 14:45:09 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B37E9C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 11:42:56 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0DBBC29A;
+        Sun, 20 Jun 2021 20:42:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1624214572;
+        bh=LvZUAWriaHo0DLhtpKAS8zjZlU61JfwBr4YsVCduvp0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eYEWXoT04QXZicjMCUCevkExmAFrVN4JnMkaQ5+Zir0y2fe4MuETM81UxzuiTYpe3
+         Q8g3f2cz4UNOrA6w4yaD9AWVuj0emuoeQ7xJym9swYSNAhxc3r4mTjmbVchUq7riK4
+         p7EKcJMLYggmlmTGt4ccHKG/zzx7nnilsgq35UO4=
+Date:   Sun, 20 Jun 2021 21:42:26 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Dave Stevenson <dave.stevenson@raspberrypi.com>
+Cc:     Maxime Ripard <maxime@cerno.tech>, Marek Vasut <marex@denx.de>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Eric Anholt <eric@anholt.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Phil Elwell <phil@raspberrypi.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] drm/vc4: dsi: Only register our component once a DSI
+ device is attached
+Message-ID: <YM+MEsKjdkYAVI5X@pendragon.ideasonboard.com>
+References: <20200707101912.571531-1-maxime@cerno.tech>
+ <YM6dgVb12oITNfc0@pendragon.ideasonboard.com>
+ <CAPY8ntC+hzmfrJwWW0ytNdHSXruMKMi7N3K6tdJbp9gDBbJ3Qw@mail.gmail.com>
 MIME-Version: 1.0
-References: <YM77uq51jmDC/rHt@owl.dominikbrodowski.net> <CAHp75VfP2h_aLVR9cgfXWHmqNbUZg-KZj2UwMs6dAkbS5eSghg@mail.gmail.com>
- <YM8rY5hi+zuAekg+@owl.dominikbrodowski.net> <CAHp75VdSyM7JdGDhdo5t+FbmouEA7ZSOwGAtSwSRD8vTwTc+LA@mail.gmail.com>
-In-Reply-To: <CAHp75VdSyM7JdGDhdo5t+FbmouEA7ZSOwGAtSwSRD8vTwTc+LA@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sun, 20 Jun 2021 21:27:34 +0300
-Message-ID: <CAHp75Ve=j+u-9TF0az3o82wOyzixCezkgOm=yUHh37JS_Awiig@mail.gmail.com>
-Subject: Re: v5.13-rcX regression - NULL pointer dereference - MFD and
- software node API
-To:     Dominik Brodowski <linux@dominikbrodowski.net>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAPY8ntC+hzmfrJwWW0ytNdHSXruMKMi7N3K6tdJbp9gDBbJ3Qw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 20, 2021 at 7:36 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> On Sun, Jun 20, 2021 at 2:50 PM Dominik Brodowski
-> <linux@dominikbrodowski.net> wrote:
-> > Am Sun, Jun 20, 2021 at 02:19:44PM +0300 schrieb Andy Shevchenko:
-> > > On Sun, Jun 20, 2021 at 11:36 AM Dominik Brodowski
-> > > <linux@dominikbrodowski.net> wrote:
-> > > >
-> > > > Over a month ago, Andy Shevchenko reported and fixed a NULL pointer
-> > > > dereference issue introduced by commit
-> > > >         42e59982917a ("mfd: core: Add support for software nodes")
-> > > > in v5.13-rc1:
-> > > >         https://lore.kernel.org/lkml/20210510141552.57045-1-andriy.shevchenko@linux.intel.com/
-> > > >
-> > > > A bisect shows that it is indeed commit 42e59982917a which causes boot to
-> > > > fail due to a NULL pointer dereference on my work laptop,
-> > >
-> > > Can you, please, be more specific? E.g. where may I find the ACPI dump
-> > > of your laptop, along with other information?
-> > > What you may prepare is (all run under root user)
-> > > 1. `acpidump -o laptop-$MODEL.dat` (the *.dat file)
-> > > 2. `grep -H 15 /sys/bus/acpi/devices/*/status`
-> > > 3. `dmesg`
-> > > 4. `cat /proc/iomem /proc/ioport`
-> > > 5. `lspci -nk -vv`
-> > >
-> > > (#2 and #3 are interesting to have in working and non-working cases)
-> > >
-> > > Perhaps a bug on the kernel bugzilla would be a good container for all these.
-> > >
-> > > Also it's not clear what exactly an Oops you have (I don't believe
-> > > it's the same).
-> >
-> > Thanks for taking a look at this issue. As it's actually a panic during
-> > boot which triggers before initramfs is ready, I can only provide the data
-> > for the "working case", i.e. with the patch causing the regression already
-> > reverted:
-> >
-> >         https://bugzilla.kernel.org/show_bug.cgi?id=213511
-> >
-> > With commit 42e59982917a reverted, the system works just fine.
->
-> Is it possible to have any traces of the panic to be logged / photoed / etc?
+Hi Dave,
 
-I'm just wondering (based on the idea behind my fix) if the commenting
-out INT3446 ID entry in the intel-lpss-acpi.c will help boot this? If
-so, you may try to bind it later to the driver and see the Oops.
+On Sun, Jun 20, 2021 at 03:29:03PM +0100, Dave Stevenson wrote:
+> On Sun, 20 Jun 2021 at 04:26, Laurent Pinchart wrote:
+> >
+> > Hi Maxime,
+> >
+> > I'm testing this, and I'm afraid it causes an issue with all the
+> > I2C-controlled bridges. I'm focussing on the newly merged ti-sn65dsi83
+> > driver at the moment, but other are affected the same way.
+> >
+> > With this patch, the DSI component is only added when the DSI device is
+> > attached to the host with mipi_dsi_attach(). In the ti-sn65dsi83 driver,
+> > this happens in the bridge attach callback, which is called when the
+> > bridge is attached by a call to drm_bridge_attach() in vc4_dsi_bind().
+> > This creates a circular dependency, and the DRM/KMS device is never
+> > created.
+> >
+> > How should this be solved ? Dave, I think you have shown an interest in
+> > the sn65dsi83 recently, any help would be appreciated. On a side note,
+> > I've tested the ti-sn65dsi83 driver on a v5.10 RPi kernel, without much
+> > success (on top of commit e1499baa0b0c I get a very weird frame rate -
+> > 147 fps of 99 fps instead of 60 fps - and nothing on the screen, and on
+> > top of the latest v5.10 RPi branch, I get lock-related warnings at every
+> > page flip), which is why I tried v5.12 and noticed this patch. Is it
+> > worth trying to bring up the display on the v5.10 RPi kernel in parallel
+> > to fixing the issue introduced in this patch, or is DSI known to be
+> > broken there ?
+> 
+> I've been looking at SN65DSI83/4, but as I don't have any hardware
+> I've largely been suggesting things to try to those on the forums who
+> do [1].
+> 
+> My branch at https://github.com/6by9/linux/tree/rpi-5.10.y-sn65dsi8x-marek
+> is the latest one I've worked on. It's rpi-5.10.y with Marek's driver
+> cherry-picked, and an overlay and simple-panel definition by others.
+> It also has a rework for vc4_dsi to use pm_runtime, instead of
+> breaking up the DSI bridge chain (which is flawed as it never calls
+> the bridge mode_set or mode_valid functions which sn65dsi83 relies
+> on).
+> 
+> I ran it on Friday in the lab and encountered an issue with vc4_dsi
+> should vc4_dsi_encoder_mode_fixup wish for a divider of 7 (required
+> for this 800x1280 panel over 4 lanes) where it resulted in an invalid
+> mode configuration. That resulted in patch [2] which then gave me
+> sensible numbers.
+> 
+> That branch with dtoverlay=vc4-kms-v3d and
+> dtoverlay=vc4-kms-dsi-ti-sn65dsi83 created all the expected devices,
+> and everything came up normally.
+> It was a busy day, but I think I even stuck a scope on the clock lanes
+> at that point and confirmed that they were at the link frequency
+> expected.
 
+Thanks, I'll test your branch and will report the results.
+
+> Coming back to this patch though, it isn't in 5.10 so I'm not seeing
+> the issues. As to the exact ordering of attaches, I can't claim
+> sufficient knowledge on that front.
+> I can try a cherry-pick of this patch to see what goes on, but it
+> won't be for a day or two.
+
+Let's see if Maxime has an opinion :-)
+
+> [1] Largely https://www.raspberrypi.org/forums/viewtopic.php?f=44&t=305690,
+> but ignore about the first 5 pages of the thread as different driver
+> versions were floating about. Most stuff after that is based on
+> Marek's driver.
+> [2] https://github.com/6by9/linux/commit/c3c774136a1e946109048711d16974be8d520aaa
+> 
+> > On Tue, Jul 07, 2020 at 12:19:12PM +0200, Maxime Ripard wrote:
+> > > If the DSI driver is the last to probe, component_add will try to run all
+> > > the bind callbacks straight away and return the error code.
+> > >
+> > > However, since we depend on a power domain, we're pretty much guaranteed to
+> > > be in that case on the BCM2711, and are just lucky on the previous SoCs
+> > > since the v3d also depends on that power domain and is further in the probe
+> > > order.
+> > >
+> > > In that case, the DSI host will not stick around in the system: the DSI
+> > > bind callback will be executed, will not find any DSI device attached and
+> > > will return EPROBE_DEFER, and we will then remove the DSI host and ask to
+> > > be probed later on.
+> > >
+> > > But since that host doesn't stick around, DSI devices like the RaspberryPi
+> > > touchscreen whose probe is not linked to the DSI host (unlike the usual DSI
+> > > devices that will be probed through the call to mipi_dsi_host_register)
+> > > cannot attach to the DSI host, and we thus end up in a situation where the
+> > > DSI host cannot probe because the panel hasn't probed yet, and the panel
+> > > cannot probe because the DSI host hasn't yet.
+> > >
+> > > In order to break this cycle, let's wait until there's a DSI device that
+> > > attaches to the DSI host to register the component and allow to progress
+> > > further.
+> > >
+> > > Suggested-by: Andrzej Hajda <a.hajda@samsung.com>
+> > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> > > ---
+> > >  drivers/gpu/drm/vc4/vc4_dsi.c | 25 ++++++++-----------------
+> > >  1 file changed, 8 insertions(+), 17 deletions(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/vc4/vc4_dsi.c b/drivers/gpu/drm/vc4/vc4_dsi.c
+> > > index eaf276978ee7..19aab4e7e209 100644
+> > > --- a/drivers/gpu/drm/vc4/vc4_dsi.c
+> > > +++ b/drivers/gpu/drm/vc4/vc4_dsi.c
+> > > @@ -1246,10 +1246,12 @@ static ssize_t vc4_dsi_host_transfer(struct mipi_dsi_host *host,
+> > >       return ret;
+> > >  }
+> > >
+> > > +static const struct component_ops vc4_dsi_ops;
+> > >  static int vc4_dsi_host_attach(struct mipi_dsi_host *host,
+> > >                              struct mipi_dsi_device *device)
+> > >  {
+> > >       struct vc4_dsi *dsi = host_to_dsi(host);
+> > > +     int ret;
+> > >
+> > >       dsi->lanes = device->lanes;
+> > >       dsi->channel = device->channel;
+> > > @@ -1284,6 +1286,12 @@ static int vc4_dsi_host_attach(struct mipi_dsi_host *host,
+> > >               return 0;
+> > >       }
+> > >
+> > > +     ret = component_add(&dsi->pdev->dev, &vc4_dsi_ops);
+> > > +     if (ret) {
+> > > +             mipi_dsi_host_unregister(&dsi->dsi_host);
+> > > +             return ret;
+> > > +     }
+> > > +
+> > >       return 0;
+> > >  }
+> > >
+> > > @@ -1662,7 +1670,6 @@ static int vc4_dsi_dev_probe(struct platform_device *pdev)
+> > >  {
+> > >       struct device *dev = &pdev->dev;
+> > >       struct vc4_dsi *dsi;
+> > > -     int ret;
+> > >
+> > >       dsi = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
+> > >       if (!dsi)
+> > > @@ -1670,26 +1677,10 @@ static int vc4_dsi_dev_probe(struct platform_device *pdev)
+> > >       dev_set_drvdata(dev, dsi);
+> > >
+> > >       dsi->pdev = pdev;
+> > > -
+> > > -     /* Note, the initialization sequence for DSI and panels is
+> > > -      * tricky.  The component bind above won't get past its
+> > > -      * -EPROBE_DEFER until the panel/bridge probes.  The
+> > > -      * panel/bridge will return -EPROBE_DEFER until it has a
+> > > -      * mipi_dsi_host to register its device to.  So, we register
+> > > -      * the host during pdev probe time, so vc4 as a whole can then
+> > > -      * -EPROBE_DEFER its component bind process until the panel
+> > > -      * successfully attaches.
+> > > -      */
+> > >       dsi->dsi_host.ops = &vc4_dsi_host_ops;
+> > >       dsi->dsi_host.dev = dev;
+> > >       mipi_dsi_host_register(&dsi->dsi_host);
+> > >
+> > > -     ret = component_add(&pdev->dev, &vc4_dsi_ops);
+> > > -     if (ret) {
+> > > -             mipi_dsi_host_unregister(&dsi->dsi_host);
+> > > -             return ret;
+> > > -     }
+> > > -
+> > >       return 0;
+> > >  }
+> > >
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards,
+
+Laurent Pinchart
