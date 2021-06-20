@@ -2,131 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE28D3AE0B1
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 23:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C84DA3AE0CB
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 23:55:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbhFTVdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 17:33:47 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:59674 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbhFTVdq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 17:33:46 -0400
-Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:33270 helo=[192.168.1.179])
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1lv52S-0001l9-7c; Sun, 20 Jun 2021 17:31:32 -0400
-Message-ID: <be356f5f0e951a3b5a76b9369ed7715393e12a15.camel@trillion01.com>
-Subject: Re: [PATCH] io_uring: reduce latency by reissueing the operation
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Sun, 20 Jun 2021 17:31:31 -0400
-In-Reply-To: <bc6d5e7b-fc63-827f-078b-b3423da0e5f7@gmail.com>
-References: <60c13bec.1c69fb81.73967.f06dSMTPIN_ADDED_MISSING@mx.google.com>
-         <84e42313-d738-fb19-c398-08a4ed0e0d9c@gmail.com>
-         <4b5644bff43e072a98a19d7a5ca36bb5e11497ec.camel@trillion01.com>
-         <a7d6f2fd-b59e-e6fa-475a-23962d45b6fa@gmail.com>
-         <9938f22a0bb09f344fa5c9c5c1b91f0d12e7566f.camel@trillion01.com>
-         <a12e218a-518d-1dac-5e8c-d9784c9850b0@gmail.com>
-         <b0a8c92cffb3dc1b48b081e5e19b016fee4c6511.camel@trillion01.com>
-         <7d9a481b-ae8c-873e-5c61-ab0a57243905@gmail.com>
-         <f511d34b1a1ae5f76c9c4ba1ab87bbf15046a588.camel@trillion01.com>
-         <bc6d5e7b-fc63-827f-078b-b3423da0e5f7@gmail.com>
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.2 
+        id S229945AbhFTV5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 17:57:48 -0400
+Received: from ozlabs.org ([203.11.71.1]:48519 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229708AbhFTV5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Jun 2021 17:57:47 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G7RKq57Bwz9sVp;
+        Mon, 21 Jun 2021 07:55:27 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624226132;
+        bh=tdHZKt3n8QMhM7P+AhMaV6aoHvRWZ3MqYrGNEHyCAWg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JCEjcAiOxAMTbXM3XkS29q1DyvKDerVqg4nI7N1AOLBLHKUIRm4/PQGtuUhqvSRQJ
+         Btr/+YTsFdO8GkLTjIJXDxxP2BKFkoqL56S0NOgxr6TyxIQ0c/eyoYaiYorm1wT5j3
+         lfQWjF+A8gnKzXfl2bnNb8Rv2ceZ3vw8pVoXD06hkthj0vc7EERNBdZy7yb+5XLXk/
+         r9sWFQJqRMD+LuPEveUqLqSk8X6wJ4vNffP5wV5zANN5kH9EV3b3H9XY64+fVw7iqm
+         sWKT0E4ya1DOgIEznXNTUTClG+C0z95amzrBtJKENkgE9NzkCteGRUY0Hj3ek+jGTo
+         X8DNFNOqF6WuA==
+Date:   Mon, 21 Jun 2021 07:55:25 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Ian Rogers <irogers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH 1/4] perf test: Fix non-bash issue with stat bpf
+ counters
+Message-ID: <20210621075525.128b476f@canb.auug.org.au>
+In-Reply-To: <20210617184216.2075588-1-irogers@google.com>
+References: <20210617184216.2075588-1-irogers@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: multipart/signed; boundary="Sig_/zoZrJw/m85R1sYwgf=Mbt_b";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-06-20 at 21:55 +0100, Pavel Begunkov wrote:
-> On 6/18/21 11:45 PM, Olivier Langlois wrote:
-> > 
-> 
-> For io_uring part, e.g. recv is slimmer than recvmsg, doesn't
-> need to copy extra.
-> 
-> Read can be more expensive on the io_uring side because it
-> may copy/alloc extra stuff. Plus additional logic on the
-> io_read() part for generality.
-> 
-> But don't expect it to be much of a difference, but never
-> tested.
+--Sig_/zoZrJw/m85R1sYwgf=Mbt_b
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-That is super interesting. The way that I see it after getting your
-explanations it is that in the worse case scenario, there won't be any
-difference but in the best case, I could see a small speed gain.
+Hi Ian,
 
-I made the switch yesterday evening. One of the metric that I monitor
-the most is my system reaction time from incoming packets.
+On Thu, 17 Jun 2021 11:42:13 -0700 Ian Rogers <irogers@google.com> wrote:
+>
+> $(( .. )) is a bash feature but the test's interpreter is !/bin/sh,
+> switch the code to use expr.
 
-I will let you know if switching to recv() is beneficial in that
-regard.
-> 
-> > 
-> 
-> > > Also, not particularly about reissue stuff, but a note to myself:
-> > > 59us is much, so I wonder where the overhead comes from.
-> > > Definitely not the iowq queueing (i.e. putting into a list).
-> > > - waking a worker?
-> > > - creating a new worker? Do we manage workers sanely? e.g.
-> > >   don't keep them constantly recreated and dying back.
-> > > - scheduling a worker?
-> > 
-> > creating a new worker is for sure not free but I would remove that
-> > cause from the suspect list as in my scenario, it was a one-shot
-> > event.
-> 
-> Not sure what you mean, but speculating, io-wq may have not
-> optimal policy for recycling worker threads leading to
-> recreating/removing more than needed. Depends on bugs, use
-> cases and so on.
+The $(( .. )) syntax is specified in POSIX (see
+https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#t=
+ag_18_06_04),
+so unless this caused an actual problem, this change is unnecessary.
 
-Since that I absolutely don't use the async workers feature I was
-obsessed about the fact that I was seeing a io worker created. This is
-root of why I ended up writing the patch.
+--=20
+Cheers,
+Stephen Rothwell
 
-My understanding of how io worker life scope are managed, it is that
-one remains present once created.
+--Sig_/zoZrJw/m85R1sYwgf=Mbt_b
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-In my scenario, once that single persistent io worker thread is
-created, no others are ever created. So this is a one shot cost. I was
-prepared to eliminate the first measurement to be as fair as possible
-and not pollute the async performance result with a one time only
-thread creation cost but to my surprise... The thread creation cost was
-not visible in the first measurement time...
+-----BEGIN PGP SIGNATURE-----
 
-From that, maybe this is an erroneous shortcut, I do not feel that
-thread creation is the bottleneck.
-> 
-> > First measurement was even not significantly higher than all the
-> > other
-> > measurements.
-> 
-> You get a huge max for io-wq case. Obviously nothing can be
-> said just because of max. We'd need latency distribution
-> and probably longer runs, but I'm still curious where it's
-> coming from. Just keeping an eye in general
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDPuU0ACgkQAVBC80lX
+0Gz49wgAmStmGqWpOagN6Ov5tTwdPk1XiTOzF7QnzPkIrSsrlb14wdiartR9A9Yi
+L/xFGhRz7nlGZu2Rgsq1CVKA9maLkFpUJN5qjGVRlmBi1o6xDNhfvSoenHY6J4sI
++yUEboS8gH3C3OpSlVSj6HhGlfUFrXDjCHSaoZVZZ+S7cwP8PnaN02IkXouYbGES
+fJuBjgzbxxIChC6YFa4Ws9YGlQfNAJsqok9W+mUuT2dfIj3Ymns7GzNqnxmtUTXk
++pttH+/Y1kwPca3MljuMfBxQaKWD+ogdJwOVOWnIL4DLellxoMamJ9Yg2oOBQPZe
+DjM7fviURinAyv98w8kmMniXyIrZCA==
+=0kaQ
+-----END PGP SIGNATURE-----
 
-Maybe it is scheduling...
-
-I'll keep this mystery in the back of my mind in case that I would end
-up with a way to find out where the time is spend...
-
-> > 
-
+--Sig_/zoZrJw/m85R1sYwgf=Mbt_b--
