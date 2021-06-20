@@ -2,126 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165FA3AE0AF
+	by mail.lfdr.de (Postfix) with ESMTP id AE28D3AE0B1
 	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 23:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230222AbhFTVcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 17:32:51 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57830 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230051AbhFTVcv (ORCPT
+        id S230286AbhFTVdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 17:33:47 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:59674 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229875AbhFTVdq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 17:32:51 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 222641FD29;
-        Sun, 20 Jun 2021 21:30:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624224637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jr3EKkDtgn8FizBBDVJKegsYoeH9jissvBbAKGoDq+8=;
-        b=gSAmezX+CA9jlMqe+4UmOmWobkOa54tZqltCq/MslwgMLDn69QASbjgqLG3OdHfvC8gxs5
-        e9/c3GAeGpilTx3EEWP+75NRZOxlsIgeD540C6M8nJPLZp3bcjPflnURe7/zwK9pdcwmlA
-        laaA1YQ3HaBhqcqT1Y4cbGCh7bMA0kc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624224637;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jr3EKkDtgn8FizBBDVJKegsYoeH9jissvBbAKGoDq+8=;
-        b=dLVsKyeB21FpEOtAyaYBvbY1mZLtc/yYTPibx1udlGA7tw86YHWqR1Ta3yd3yH2jye5LFP
-        9FUbe27lu9o1gIBQ==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 09DB2118DD;
-        Sun, 20 Jun 2021 21:30:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624224637; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jr3EKkDtgn8FizBBDVJKegsYoeH9jissvBbAKGoDq+8=;
-        b=gSAmezX+CA9jlMqe+4UmOmWobkOa54tZqltCq/MslwgMLDn69QASbjgqLG3OdHfvC8gxs5
-        e9/c3GAeGpilTx3EEWP+75NRZOxlsIgeD540C6M8nJPLZp3bcjPflnURe7/zwK9pdcwmlA
-        laaA1YQ3HaBhqcqT1Y4cbGCh7bMA0kc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624224637;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jr3EKkDtgn8FizBBDVJKegsYoeH9jissvBbAKGoDq+8=;
-        b=dLVsKyeB21FpEOtAyaYBvbY1mZLtc/yYTPibx1udlGA7tw86YHWqR1Ta3yd3yH2jye5LFP
-        9FUbe27lu9o1gIBQ==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id GH+jAn2zz2CHTwAALh3uQQ
-        (envelope-from <bp@suse.de>); Sun, 20 Jun 2021 21:30:37 +0000
-Date:   Sun, 20 Jun 2021 23:30:23 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V3 11/66] x86/fpu: Sanitize xstateregs_set()
-Message-ID: <YM+zbxOj5Bxl5R8D@zn.tnic>
-References: <20210618141823.161158090@linutronix.de>
- <20210618143445.667573756@linutronix.de>
+        Sun, 20 Jun 2021 17:33:46 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:33270 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1lv52S-0001l9-7c; Sun, 20 Jun 2021 17:31:32 -0400
+Message-ID: <be356f5f0e951a3b5a76b9369ed7715393e12a15.camel@trillion01.com>
+Subject: Re: [PATCH] io_uring: reduce latency by reissueing the operation
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 20 Jun 2021 17:31:31 -0400
+In-Reply-To: <bc6d5e7b-fc63-827f-078b-b3423da0e5f7@gmail.com>
+References: <60c13bec.1c69fb81.73967.f06dSMTPIN_ADDED_MISSING@mx.google.com>
+         <84e42313-d738-fb19-c398-08a4ed0e0d9c@gmail.com>
+         <4b5644bff43e072a98a19d7a5ca36bb5e11497ec.camel@trillion01.com>
+         <a7d6f2fd-b59e-e6fa-475a-23962d45b6fa@gmail.com>
+         <9938f22a0bb09f344fa5c9c5c1b91f0d12e7566f.camel@trillion01.com>
+         <a12e218a-518d-1dac-5e8c-d9784c9850b0@gmail.com>
+         <b0a8c92cffb3dc1b48b081e5e19b016fee4c6511.camel@trillion01.com>
+         <7d9a481b-ae8c-873e-5c61-ab0a57243905@gmail.com>
+         <f511d34b1a1ae5f76c9c4ba1ab87bbf15046a588.camel@trillion01.com>
+         <bc6d5e7b-fc63-827f-078b-b3423da0e5f7@gmail.com>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210618143445.667573756@linutronix.de>
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 04:18:34PM +0200, Thomas Gleixner wrote:
-> xstateregs_set() operates on a stopped task and tries to copy the provided
-> buffer into the task's fpu.state.xsave buffer.
+On Sun, 2021-06-20 at 21:55 +0100, Pavel Begunkov wrote:
+> On 6/18/21 11:45 PM, Olivier Langlois wrote:
+> > 
 > 
-> Any error while copying or invalid state detected after copying results in
-> wiping the target task's FPU state completely including supervisor states.
+> For io_uring part, e.g. recv is slimmer than recvmsg, doesn't
+> need to copy extra.
 > 
-> That's just wrong. The caller supplied invalid data or has a problem with
-> unmapped memory, so there is absolutely no justification to corrupt the
-> target state.
+> Read can be more expensive on the io_uring side because it
+> may copy/alloc extra stuff. Plus additional logic on the
+> io_read() part for generality.
 > 
-> Fix this with the following modifications:
-> 
->  1) If data has to be copied from userspace, allocate a buffer and copy from
->     user first.
-> 
->  2) Use copy_kernel_to_xstate() unconditionally so that header checking
->     works correctly.
-> 
->  3) Return on error without corrupting the target state.
-> 
-> This prevents corrupting states and lets the caller deal with the problem
-> it caused in the first place.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  arch/x86/include/asm/fpu/xstate.h |    4 ---
->  arch/x86/kernel/fpu/regset.c      |   44 +++++++++++++++-----------------------
->  arch/x86/kernel/fpu/xstate.c      |   14 ++++++------
->  3 files changed, 26 insertions(+), 36 deletions(-)
+> But don't expect it to be much of a difference, but never
+> tested.
 
-Reviewed-by: Borislav Petkov <bp@suse.de>
+That is super interesting. The way that I see it after getting your
+explanations it is that in the worse case scenario, there won't be any
+difference but in the best case, I could see a small speed gain.
 
-Nice!
+I made the switch yesterday evening. One of the metric that I monitor
+the most is my system reaction time from incoming packets.
 
--- 
-Regards/Gruss,
-    Boris.
+I will let you know if switching to recv() is beneficial in that
+regard.
+> 
+> > 
+> 
+> > > Also, not particularly about reissue stuff, but a note to myself:
+> > > 59us is much, so I wonder where the overhead comes from.
+> > > Definitely not the iowq queueing (i.e. putting into a list).
+> > > - waking a worker?
+> > > - creating a new worker? Do we manage workers sanely? e.g.
+> > > � don't keep them constantly recreated and dying back.
+> > > - scheduling a worker?
+> > 
+> > creating a new worker is for sure not free but I would remove that
+> > cause from the suspect list as in my scenario, it was a one-shot
+> > event.
+> 
+> Not sure what you mean, but speculating, io-wq may have not
+> optimal policy for recycling worker threads leading to
+> recreating/removing more than needed. Depends on bugs, use
+> cases and so on.
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Since that I absolutely don't use the async workers feature I was
+obsessed about the fact that I was seeing a io worker created. This is
+root of why I ended up writing the patch.
+
+My understanding of how io worker life scope are managed, it is that
+one remains present once created.
+
+In my scenario, once that single persistent io worker thread is
+created, no others are ever created. So this is a one shot cost. I was
+prepared to eliminate the first measurement to be as fair as possible
+and not pollute the async performance result with a one time only
+thread creation cost but to my surprise... The thread creation cost was
+not visible in the first measurement time...
+
+From that, maybe this is an erroneous shortcut, I do not feel that
+thread creation is the bottleneck.
+> 
+> > First measurement was even not significantly higher than all the
+> > other
+> > measurements.
+> 
+> You get a huge max for io-wq case. Obviously nothing can be
+> said just because of max. We'd need latency distribution
+> and probably longer runs, but I'm still curious where it's
+> coming from. Just keeping an eye in general
+
+Maybe it is scheduling...
+
+I'll keep this mystery in the back of my mind in case that I would end
+up with a way to find out where the time is spend...
+
+> > 
+
