@@ -2,137 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9D23ADE20
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 13:18:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCBD03ADE26
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 13:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbhFTLUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 07:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38798 "EHLO
+        id S229594AbhFTLWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 07:22:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbhFTLUc (ORCPT
+        with ESMTP id S229541AbhFTLWs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 07:20:32 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338CBC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 04:18:19 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id hz1so1127978ejc.1
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 04:18:19 -0700 (PDT)
+        Sun, 20 Jun 2021 07:22:48 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8C36C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 04:20:20 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id z3-20020a17090a3983b029016bc232e40bso8518583pjb.4
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 04:20:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QziFBff9GiMT4Os8umf/EiLjglEeNn/Ybki8x4poeu0=;
-        b=PUPR7UCLEc58GXQJRHHhcsalboiBUKhgIE37jx1X1YWBZACe0Brp+YmMs43CnCPuk0
-         us8/fLV6tuKG8vV0wrRUK3vn0vXtCMCHxecWzLCL1D4hN8dijyv/IHdQBvbpmZKUy47O
-         R8kuM3qxft9OQVL9Dy3fs1+G1UrlmaLws7fcflaiVAY9pLiLsILpNtw/t7qpKmhYHg49
-         Ifmnzs+CNNZsUpJlD8v3fA8QEvt3towamggAmaQHQ3kpn5+jClmKsv+38uoXEloU00zh
-         jSGl0ayd9jQFJVe9TPf0sAmzWf/gm2n7NiYPpUgFMnI/10QTa+ZBwKcYmXez/NCSG6z+
-         r6Dw==
+        bh=K6Jin+oRoPzWqmnMdtDjz2qXrxn1uIUsQeJZkd8zSLY=;
+        b=iYfV60Ankpmvmb5migldwlyEp8txyMoTq0+7KSQgkqccj4AwU7Kgn3KGtR6osF/nS/
+         z2wp/0UCHdjUH32D2LMrx62ty8Ts4bUQTc76UIrPkaosCeJiq2OsMqm4KvreaGQwsfBV
+         8Ot5B8hTNOgvWbeJ+JJ0s1vOvzxzQEqf7zB4f+nVCJVttnphuu+aRPkfL6FEfn6nUJsM
+         3E62N3kExqIC0abjZJuLtXOLW1qoTGhH6vriGzaOMk0OuvW1/QUlSyGQQzRIHxYP9RQy
+         m1WA4TaQc5BVVoYQzCbAF3bjkOOPYcsXclum9Pjd6QyEl/lzhFaAJnR4TtlXoP8fN4oc
+         Cs1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QziFBff9GiMT4Os8umf/EiLjglEeNn/Ybki8x4poeu0=;
-        b=tyKJKAJAAwa8AeEcohdyOWeMnlbfK2ApfX9WucXn9cCspfQZwwm71fRhtSHOIFCjkh
-         w4HERTHVthAPRe+lFaFQCzojkpZ3/76lyFoUJGIrR3UUomBYYjnCa6KIBSLcICWcRIi0
-         GOw/9ghePGMXrhOKn/GTUT859/3pH//z0RLdjsMj/JNILkrq59QguEl5vO/aIzZ+Z5Fb
-         V26DGtUHJd0v3VhyHFwmTCsvE+K6+lqumN5Ub7OnybYaESa12PuPTUSTTLgRvJXdRbrZ
-         UbH3En6Jx8dcuTR/eOBSJVdQE1entzYhw2EBB2fDyrhW/OcBIHHKqgiXZlxTXLYHOknf
-         N7NQ==
-X-Gm-Message-State: AOAM533R/dvciYj4DtVHA/onjpzsJGZS7jZM8K9VfN8q6cc7xCECVO4L
-        ZMvCBPcf+iI6gBMgYxt64JlqqiWUsAkPEt1elj0=
-X-Google-Smtp-Source: ABdhPJz/S/MSqo/80qI6QRv0Bhi2f8HKVBKRu6I41epUdGXpKkIFJ4CV/4mirJli5A5XQPAh/IdIMWx6bo4q/0vs1BY=
-X-Received: by 2002:a17:906:6b90:: with SMTP id l16mr11511853ejr.439.1624187897865;
- Sun, 20 Jun 2021 04:18:17 -0700 (PDT)
+        bh=K6Jin+oRoPzWqmnMdtDjz2qXrxn1uIUsQeJZkd8zSLY=;
+        b=iN0HJ1rmabv66ijTIdj75yjC5xBhSGbW0bua6uOuKsDUjxScwIDgjDRLE/oqXOG8b+
+         S8PUcc78JTTdzH4EeQxSi/BPNCwN5SoEXVj0As7t0e3S4zBghDbgUI+2bWRA40cgC4FC
+         SCz4Gtaw58iY8cvy/xmifsnUAoABZeg3fI1NgPRQmCr/B3bh6ZG/TqNukbTESY2aqcWr
+         qrJI2/6WawGPVhWO1wBvBcVTxukEr4xbGpEzHX3a4yQCy1cS5iOH6JcKYHldwXU64P5B
+         uKRl57jTao4nY8MMbrYMgRU6H+Woor34XJfgyrp8VQJE7NAwDmekYOIr1GOAs5FA21Ma
+         UTXQ==
+X-Gm-Message-State: AOAM531VL4Cj6zKQiuAJMA/41QI9Y+vUvgRjkASd5J3QrAiep6M08dKK
+        qlOoJfFryWIu0pm8ts5zIG432fotv1PmmdZ6U74=
+X-Google-Smtp-Source: ABdhPJwR4yL6qLFrcdv4b1gVNkoKK2N25cLT91N+3RRilFosno2nLqLCjJnk3lix+OEJXUupKd3yG7eASebXJPO2LPw=
+X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr32726301pja.181.1624188020256;
+ Sun, 20 Jun 2021 04:20:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210617093032.103097-1-dja@axtens.net> <20210617093032.103097-5-dja@axtens.net>
-In-Reply-To: <20210617093032.103097-5-dja@axtens.net>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Sun, 20 Jun 2021 14:17:57 +0300
-Message-ID: <CA+fCnZejE20i=R4=J1TCkoqhukT1G-vnADP_byxpoRULfOvC-A@mail.gmail.com>
-Subject: Re: [PATCH v15 4/4] kasan: use MAX_PTRS_PER_* for early shadow tables
-To:     Daniel Axtens <dja@axtens.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Marco Elver <elver@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org, christophe.leroy@csgroup.eu,
-        aneesh.kumar@linux.ibm.com, bsingharora@gmail.com
+References: <YM77uq51jmDC/rHt@owl.dominikbrodowski.net>
+In-Reply-To: <YM77uq51jmDC/rHt@owl.dominikbrodowski.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 20 Jun 2021 14:19:44 +0300
+Message-ID: <CAHp75VfP2h_aLVR9cgfXWHmqNbUZg-KZj2UwMs6dAkbS5eSghg@mail.gmail.com>
+Subject: Re: v5.13-rcX regression - NULL pointer dereference - MFD and
+ software node API
+To:     Dominik Brodowski <linux@dominikbrodowski.net>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 12:30 PM Daniel Axtens <dja@axtens.net> wrote:
+On Sun, Jun 20, 2021 at 11:36 AM Dominik Brodowski
+<linux@dominikbrodowski.net> wrote:
 >
-> powerpc has a variable number of PTRS_PER_*, set at runtime based
-> on the MMU that the kernel is booted under.
+> Over a month ago, Andy Shevchenko reported and fixed a NULL pointer
+> dereference issue introduced by commit
+>         42e59982917a ("mfd: core: Add support for software nodes")
+> in v5.13-rc1:
+>         https://lore.kernel.org/lkml/20210510141552.57045-1-andriy.shevchenko@linux.intel.com/
 >
-> This means the PTRS_PER_* are no longer constants, and therefore
-> breaks the build. Switch to using MAX_PTRS_PER_*, which are constant.
->
-> Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Suggested-by: Balbir Singh <bsingharora@gmail.com>
-> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Reviewed-by: Balbir Singh <bsingharora@gmail.com>
-> Reviewed-by: Marco Elver <elver@google.com>
-> Signed-off-by: Daniel Axtens <dja@axtens.net>
-> ---
->  include/linux/kasan.h | 6 +++---
->  mm/kasan/init.c       | 6 +++---
->  2 files changed, 6 insertions(+), 6 deletions(-)
->
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index 768d7d342757..5310e217bd74 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -41,9 +41,9 @@ struct kunit_kasan_expectation {
->  #endif
->
->  extern unsigned char kasan_early_shadow_page[PAGE_SIZE];
-> -extern pte_t kasan_early_shadow_pte[PTRS_PER_PTE + PTE_HWTABLE_PTRS];
-> -extern pmd_t kasan_early_shadow_pmd[PTRS_PER_PMD];
-> -extern pud_t kasan_early_shadow_pud[PTRS_PER_PUD];
-> +extern pte_t kasan_early_shadow_pte[MAX_PTRS_PER_PTE + PTE_HWTABLE_PTRS];
-> +extern pmd_t kasan_early_shadow_pmd[MAX_PTRS_PER_PMD];
-> +extern pud_t kasan_early_shadow_pud[MAX_PTRS_PER_PUD];
->  extern p4d_t kasan_early_shadow_p4d[MAX_PTRS_PER_P4D];
->
->  int kasan_populate_early_shadow(const void *shadow_start,
-> diff --git a/mm/kasan/init.c b/mm/kasan/init.c
-> index 348f31d15a97..cc64ed6858c6 100644
-> --- a/mm/kasan/init.c
-> +++ b/mm/kasan/init.c
-> @@ -41,7 +41,7 @@ static inline bool kasan_p4d_table(pgd_t pgd)
->  }
->  #endif
->  #if CONFIG_PGTABLE_LEVELS > 3
-> -pud_t kasan_early_shadow_pud[PTRS_PER_PUD] __page_aligned_bss;
-> +pud_t kasan_early_shadow_pud[MAX_PTRS_PER_PUD] __page_aligned_bss;
->  static inline bool kasan_pud_table(p4d_t p4d)
->  {
->         return p4d_page(p4d) == virt_to_page(lm_alias(kasan_early_shadow_pud));
-> @@ -53,7 +53,7 @@ static inline bool kasan_pud_table(p4d_t p4d)
->  }
->  #endif
->  #if CONFIG_PGTABLE_LEVELS > 2
-> -pmd_t kasan_early_shadow_pmd[PTRS_PER_PMD] __page_aligned_bss;
-> +pmd_t kasan_early_shadow_pmd[MAX_PTRS_PER_PMD] __page_aligned_bss;
->  static inline bool kasan_pmd_table(pud_t pud)
->  {
->         return pud_page(pud) == virt_to_page(lm_alias(kasan_early_shadow_pmd));
-> @@ -64,7 +64,7 @@ static inline bool kasan_pmd_table(pud_t pud)
->         return false;
->  }
->  #endif
-> -pte_t kasan_early_shadow_pte[PTRS_PER_PTE + PTE_HWTABLE_PTRS]
-> +pte_t kasan_early_shadow_pte[MAX_PTRS_PER_PTE + PTE_HWTABLE_PTRS]
->         __page_aligned_bss;
->
->  static inline bool kasan_pte_table(pmd_t pmd)
-> --
-> 2.30.2
->
+> A bisect shows that it is indeed commit 42e59982917a which causes boot to
+> fail due to a NULL pointer dereference on my work laptop,
 
-Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+Can you, please, be more specific? E.g. where may I find the ACPI dump
+of your laptop, along with other information?
+What you may prepare is (all run under root user)
+1. `acpidump -o laptop-$MODEL.dat` (the *.dat file)
+2. `grep -H 15 /sys/bus/acpi/devices/*/status`
+3. `dmesg`
+4. `cat /proc/iomem /proc/ioport`
+5. `lspci -nk -vv`
+
+(#2 and #3 are interesting to have in working and non-working cases)
+
+Perhaps a bug on the kernel bugzilla would be a good container for all these.
+
+Also it's not clear what exactly an Oops you have (I don't believe
+it's the same).
+
+> where "intel-lpss"
+> is bound to
+>         00:15.0 Signal processing controller: Intel Corporation Sunrise Point-LP Serial IO I2C Controller #0 (rev 21)
+> and fails to bind to INT3446:
+
+Yeah, this is confusing (see above for additional information needed).
+
+> [    6.048087] intel-lpss 0000:00:15.0: enabling device (0000 -> 0002)
+> [    6.050625] idma64 idma64.0: Found Intel integrated DMA 64-bit
+> [    6.109112] intel-lpss 0000:00:15.1: enabling device (0000 -> 0002)
+> [    6.111348] idma64 idma64.1: Found Intel integrated DMA 64-bit
+> [    6.172229] intel-lpss 0000:00:15.2: enabling device (0000 -> 0002)
+> [    6.174353] idma64 idma64.2: Found Intel integrated DMA 64-bit
+> [    6.231865] intel-lpss 0000:00:15.3: enabling device (0000 -> 0002)
+> [    6.233845] idma64 idma64.3: Found Intel integrated DMA 64-bit
+> [    6.287492] ACPI Warning: SystemMemory range 0x00000000FE028000-0x00000000FE0281FF conflicts with OpRegion 0x00000000FE028000-0x00000000FE028207 (\_SB.PCI0.GEXP.BAR0) (20210331/utaddress-204)
+> [    6.287704] ACPI: OSL: Resource conflict; ACPI support missing from driver?
+> [    6.289760] intel-lpss: probe of INT3446:00 failed with error -16
+>
+> Unfortunately, the patch by Andy Shevchenko (applied on top of Linus' tree)
+> does not fix the issue. A complete revert, however, does fix the issue, and
+> allows my laptop to boot again.
+
+The problem my patch fixed (besides logical issues) was to work around
+_buggy_ ACPI table. If anything, I guess the firmware is to blame for
+this, but let's see the actual data before judging and getting the
+right course of action.
+
+> In my opinion, it is unfortunate that although it has been known for over a
+> month that commit 42e59982917a is broken, the bugfix (though probably not
+> far-reaching enough) has not yet progressed upstream.
+
+Which sounds like a narrow scope of the issue and supports the theory
+of buggy tables. It may also be possible that some driver
+
+-- 
+With Best Regards,
+Andy Shevchenko
