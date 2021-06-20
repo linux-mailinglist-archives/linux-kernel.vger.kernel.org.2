@@ -2,95 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF303ADE38
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 13:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF073ADE3B
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 13:50:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229679AbhFTLuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 07:50:32 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:60758 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229632AbhFTLu1 (ORCPT
+        id S229684AbhFTLwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 07:52:30 -0400
+Received: from isilmar-4.linta.de ([136.243.71.142]:36438 "EHLO
+        isilmar-4.linta.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhFTLwZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 07:50:27 -0400
-X-UUID: 4ad91dac93454e12a7fff2379ad760e2-20210620
-X-UUID: 4ad91dac93454e12a7fff2379ad760e2-20210620
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <kuan-ying.lee@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1014899775; Sun, 20 Jun 2021 19:48:12 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sun, 20 Jun 2021 19:48:11 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 20 Jun 2021 19:48:11 +0800
-From:   Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-To:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <kasan-dev@googlegroups.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        <chinwen.chang@mediatek.com>, <nicholas.tang@mediatek.com>,
-        Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-Subject: [PATCH v3 3/3] kasan: add memory corruption identification support for hardware tag-based mode
-Date:   Sun, 20 Jun 2021 19:47:56 +0800
-Message-ID: <20210620114756.31304-4-Kuan-Ying.Lee@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210620114756.31304-1-Kuan-Ying.Lee@mediatek.com>
-References: <20210620114756.31304-1-Kuan-Ying.Lee@mediatek.com>
+        Sun, 20 Jun 2021 07:52:25 -0400
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+Received: from owl.dominikbrodowski.net (owl.brodo.linta [10.2.0.111])
+        by isilmar-4.linta.de (Postfix) with ESMTPSA id 80B532000AC;
+        Sun, 20 Jun 2021 11:50:09 +0000 (UTC)
+Received: by owl.dominikbrodowski.net (Postfix, from userid 1000)
+        id 7F28E804D5; Sun, 20 Jun 2021 13:49:55 +0200 (CEST)
+Date:   Sun, 20 Jun 2021 13:49:55 +0200
+From:   Dominik Brodowski <linux@dominikbrodowski.net>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>
+Subject: Re: v5.13-rcX regression - NULL pointer dereference - MFD and
+ software node API
+Message-ID: <YM8rY5hi+zuAekg+@owl.dominikbrodowski.net>
+References: <YM77uq51jmDC/rHt@owl.dominikbrodowski.net>
+ <CAHp75VfP2h_aLVR9cgfXWHmqNbUZg-KZj2UwMs6dAkbS5eSghg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VfP2h_aLVR9cgfXWHmqNbUZg-KZj2UwMs6dAkbS5eSghg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add memory corruption identification support for hardware tag-based
-mode. We store one old free pointer tag and free backtrace.
+Am Sun, Jun 20, 2021 at 02:19:44PM +0300 schrieb Andy Shevchenko:
+> On Sun, Jun 20, 2021 at 11:36 AM Dominik Brodowski
+> <linux@dominikbrodowski.net> wrote:
+> >
+> > Over a month ago, Andy Shevchenko reported and fixed a NULL pointer
+> > dereference issue introduced by commit
+> >         42e59982917a ("mfd: core: Add support for software nodes")
+> > in v5.13-rc1:
+> >         https://lore.kernel.org/lkml/20210510141552.57045-1-andriy.shevchenko@linux.intel.com/
+> >
+> > A bisect shows that it is indeed commit 42e59982917a which causes boot to
+> > fail due to a NULL pointer dereference on my work laptop,
+> 
+> Can you, please, be more specific? E.g. where may I find the ACPI dump
+> of your laptop, along with other information?
+> What you may prepare is (all run under root user)
+> 1. `acpidump -o laptop-$MODEL.dat` (the *.dat file)
+> 2. `grep -H 15 /sys/bus/acpi/devices/*/status`
+> 3. `dmesg`
+> 4. `cat /proc/iomem /proc/ioport`
+> 5. `lspci -nk -vv`
+> 
+> (#2 and #3 are interesting to have in working and non-working cases)
+> 
+> Perhaps a bug on the kernel bugzilla would be a good container for all these.
+> 
+> Also it's not clear what exactly an Oops you have (I don't believe
+> it's the same).
 
-Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-Suggested-by: Marco Elver <elver@google.com>
-Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
----
- lib/Kconfig.kasan | 2 +-
- mm/kasan/kasan.h  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Thanks for taking a look at this issue. As it's actually a panic during
+boot which triggers before initramfs is ready, I can only provide the data
+for the "working case", i.e. with the patch causing the regression already
+reverted:
 
-diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
-index 6f5d48832139..2cc25792bc2f 100644
---- a/lib/Kconfig.kasan
-+++ b/lib/Kconfig.kasan
-@@ -157,7 +157,7 @@ config KASAN_STACK
- 
- config KASAN_TAGS_IDENTIFY
- 	bool "Enable memory corruption identification"
--	depends on KASAN_SW_TAGS
-+	depends on KASAN_SW_TAGS || KASAN_HW_TAGS
- 	help
- 	  This option enables best-effort identification of bug type
- 	  (use-after-free or out-of-bounds) at the cost of increased
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index b0fc9a1eb7e3..d6f982b8a84e 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -153,7 +153,7 @@ struct kasan_track {
- 	depot_stack_handle_t stack;
- };
- 
--#ifdef CONFIG_KASAN_TAGS_IDENTIFY
-+#if defined(CONFIG_KASAN_TAGS_IDENTIFY) && defined(CONFIG_KASAN_SW_TAGS)
- #define KASAN_NR_FREE_STACKS 5
- #else
- #define KASAN_NR_FREE_STACKS 1
--- 
-2.18.0
+	https://bugzilla.kernel.org/show_bug.cgi?id=213511
 
+With commit 42e59982917a reverted, the system works just fine.
+
+> > In my opinion, it is unfortunate that although it has been known for over a
+> > month that commit 42e59982917a is broken, the bugfix (though probably not
+> > far-reaching enough) has not yet progressed upstream.
+> 
+> Which sounds like a narrow scope of the issue and supports the theory
+> of buggy tables. It may also be possible that some driver
+
+... still, it's a regression, with a clear "git bisect" result :-(
+
+Thanks,
+	Dominik
