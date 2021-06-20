@@ -2,111 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C88D53ADD4A
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 07:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4E133ADD4C
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 08:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbhFTFyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 01:54:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbhFTFyu (ORCPT
+        id S229579AbhFTGDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 02:03:25 -0400
+Received: from mx-lax3-3.ucr.edu ([169.235.156.38]:9285 "EHLO
+        mx-lax3-3.ucr.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhFTGDX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 01:54:50 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFEF1C061756
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 22:52:36 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id x14so20179483ljp.7
-        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 22:52:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=n+tKlkajW6Vx9drB71r32BwcKUgAEh+DEGbzs80J8ds=;
-        b=pkXnugDU5F1cob7L8JUgEowRz8H7YsDeNwBDBNbW/VVH9XWyc7B0kg+JGpxRBrW2uE
-         6Yf8F7Fo6+xUeNlD8SyU5V8DmC3hGvTSxWHy1JKgtOlsdE8fcTCGl3X/FaL2VuGnTeg5
-         yxYHgzpixsRtt6FUiqUbMcNMbarPSMXbSvQNiqR6Ueup1JwUylKXYvgxItN2RPthcBgN
-         HHWGMCsFT5dliGztfuHMu7vsHDqC4UGJId2qlu2huSdF0vGgjVDwWdqDobjnhZ5onKAQ
-         CrpncmAsrTNf0Dm9HGEVxeVLBUhkC12OeXZPLd1fDTt8uoTztkcjd9ApFTsdnnawe95L
-         y6Bw==
+        Sun, 20 Jun 2021 02:03:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
+  t=1624168872; x=1655704872;
+  h=mime-version:references:in-reply-to:from:date:message-id:
+   subject:to:cc;
+  bh=ca2COAjHKL7+OCkgt+dQm/iTK6CkVF0mlcxAWJfZ2rg=;
+  b=AF/qJVPSCFLJX5+AkNKjAbOO2Mnc402aHib33c/BAbJgg4QnsyjNLmK6
+   Vv9k8U8mTsbZT8Og2uG9aEiZ+1IhVb8BxASjLmgrxG6bX2OcveSalKQsK
+   gLAkX0ki05MfoIZI6hWdsJMRVPwS+G4e0PGabW8Q1fPc9SjNo+lIy+EFq
+   QbSzrgb5AeDnO/IZDGG3HeGB9B3Lj7u+OzhlFjfIlZckESY1uNUnKgcwN
+   pobAqdBlYQ0xFr63DWHLPyyfDvVIKdu6ZBCz3JNz4wcBVwZECZgttv2vt
+   OZTBaYT/pdMxE6Z2Mw1kxqzQxVw54dHa7g7zKeZKu6ihvl3eUYdxAWYTs
+   A==;
+IronPort-SDR: m2RkeRndped622VIzKJ0guDzs9xUo9uwNfhZNgpD/k5T4v2hSpOLjih6GH4P64LxnVpAnMJ217
+ jh5qtEs1VYRL+uzHs3MuC7ho2KrbA/B88eVLgdSwdqFO6IKj5uF16XIHZYpQjokWjArMnsna8m
+ Vnmm0/ZgQQGSxD/M7h5DzQ8ACMh556tjuelBYp2j95imq49rfDDIDWAcHu/0ggUmGMAV+tI6z5
+ eW8a42XFICl4D6CKn/BKpSN8nXM1JzD4Caq8VhazKwL5N46+d+26M3GJAWaBiUsr4Uk4hLPrYI
+ QFE=
+X-IPAS-Result: =?us-ascii?q?A2EmAwA+2c5ghsjXVdFagQmFT2yESJFxikuLQYc7AgkBA?=
+ =?us-ascii?q?QEPQQQBAYRQAoJuAiU4EwIEAQEBAQMCAwEBAQEFAQEGAQEBAQEBBQQBAQIQA?=
+ =?us-ascii?q?QEBAWyFL0aCOCkBg20BAQEDEhFWEAsLDQICJgICIQESAQUBHAYTIoJPglYDL?=
+ =?us-ascii?q?5lCgQQ9izKBMoEBh1UNTAEJDYFiEn4qhwmGYSeCKYFLgjc2PoIghTuCZASEG?=
+ =?us-ascii?q?G5pgjIBAQGeRJwMWgEGAoMFHJIXhgyFWyuDXosnhW+Qfi2GNZ49kVGDQxAjg?=
+ =?us-ascii?q?UiBfjMaJX8GZ4FLUBkOjjiOVSQvOAIGCgEBAwmNNAEB?=
+IronPort-PHdr: A9a23:M800dxa/N8frER5DTfC9UWz/LTEz0IqcDmcuAnoPtbtCf+yZ8oj4O
+ wSHvLMx1Q6PBt6FoKsd1qL/iOPJYSQ4+5GPsXQPItRndiQuroEopTEmG9OPEkbhLfTnPGQQF
+ cVGU0J5rTngaRAGUMnxaEfPrXKs8DUcBgvwNRZvJuTyB4Xek9m72/q99pHOZwhEnjSwbL1zI
+ Rm5sAndq8kbipZ+J6gszRfEvmFGcPlMy2NyIlKTkRf85sOu85Nm7i9dpfEv+dNeXKvjZ6g3Q
+ qBWAzogM2Au+c3krgLDQheV5nsdSWoZjBxFCBXY4R7gX5fxtiz6tvdh2CSfIMb7Q6w4VSik4
+ qx2UxLjljsJOCAl/2HWksxwjbxUoBS9pxxk3oXYZJiZOOdicq/BeN8XQ3dKUMRMWCxbGo6zY
+ IUPAOgBM+hWrIfzukUAogelCAmwGO/i0CNEimPq0aA41ekqDAHI3BYnH9ILqHnbrtT1NaYSU
+ eCoy6nD0DbMb/NM1jf89YPFdRAgoPCMXb1qcMrd1VUjGg3eg1WNtYPlJSmZ2foQvGiG9udtU
+ /+khGE7pQ9ruDev2tsshZfThoIT0l3J+iF0zYI1KNO2VkJ2btqpHpRTuiyVOYZ7Qs0vTn1pt
+ Ssmy7ALt522cDUXxZg6xBPSdfKKfoeL7x/+WuicPCt1iXR4c7y8nxa/6VasxvH4W8Wu01tHr
+ jBJnsfRun0NzRDf9NSLRud780y8wziAzRrT5ftBIU0skKrbLIMuzaAom5oItETDAjf2mELrj
+ K+Kbkkk+van6+DgYrj+o5+TLY50igXnPqQ2lcyzHP00MgYQU2SH5eiwzrLj/Ur+QLVFiv05j
+ LPVv4zdJcQevqK5AglV3Zg/6xunETuqzNAVkWMEIV9FYh6LkZXlNlHULPzmEfuzn0ygkDJxy
+ PDHOr3hDI/NLn/GkLr5fbd86k5cxxAyzdxD+55ZBKoMIO/vVU/rrtDXEAI2MxGsz+b9FNp9z
+ p8eWX6IAqKBNKPSsFmI5v8gIuWVZ48apiz9K/476P7qlnI5h1Adcrez3ZcNa3C3AO5mI0OHb
+ nromNsBFn0KvgVtBNDt3XGHUCJJdj6OWLg75TE8FsryAYLCWpq8xqCGxiC4HppITm9DA1GIV
+ 3zvctPXde0LbXejI91hjztMZ7ioSsd1xAOuvQ6ik+FPM+HOvCAUqMSwh5BO++TPmERqpnRPB
+ MOH3jTIFjks9l4=
+IronPort-HdrOrdr: A9a23:1x45VayZH6rlYxdxYQr3KrPwF71zdoMgy1knxilNoNJuA7Wlfq
+ GV7YwmPHDP+VMssR0b6LK90ey7MBDhHP1OgLX5X43SODUO0VHAROpfBMnZowEIcBeOkdK1u5
+ 0QFZSWy+ecMbG5t6zHCcWDfOrICePqnpyVuQ==
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.83,286,1616482800"; 
+   d="scan'208";a="52623606"
+Received: from mail-pg1-f200.google.com ([209.85.215.200])
+  by smtp-lax3-3.ucr.edu with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 Jun 2021 23:01:11 -0700
+Received: by mail-pg1-f200.google.com with SMTP id r5-20020a635d050000b0290220f78694c8so9213778pgb.0
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 23:01:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=n+tKlkajW6Vx9drB71r32BwcKUgAEh+DEGbzs80J8ds=;
-        b=MIb5wUCUGPdh1QcoEtj6lu55Xd6FEqxzSjxwoXvGLb8YG4xHGhkznv9CMjLjvC2PGA
-         iW1b5Y+YmBeU6VUizKBcbAKyWiMmhiWy0UZ8f+u2z+fNPLm+fQFoYSfIYoIIYZnx+RCd
-         DWREzEAwk4HLhNpqa/zx2Ys6fZIm5ooVhpthR9bvArY9Dy/Th5Ms+bk2VDYhHnlar01N
-         fsATy3huPNx42X/AuUGZ2F2ru2G8NOkEWI6J4DEF132xMQv0KDIr/IB8Spht+nRSrWnM
-         fEMAFj6+jKI9hk/q9g1XXcimzD7FIaNvtodecYGcfO5FWVAb7VPRV3y+PJs2e48B3aiE
-         fngg==
-X-Gm-Message-State: AOAM531/mTZuv7bHHBA6FnVyRjPVbPE6sK4gUOqQZ2YWk7EVB6+6+2Wr
-        xIJoJSOUc0rAWZMBjMqjwAgRptysyM0VALOdW++QEA==
-X-Google-Smtp-Source: ABdhPJy0N2FygctnaM1zWFW6o5ILhqXJ2MTiCMg/Gy59u73692l5Q85owxqt1lIwqOvevKqhVm9MDVYH2qq+zl7GwfY=
-X-Received: by 2002:a2e:8503:: with SMTP id j3mr16240319lji.322.1624168348979;
- Sat, 19 Jun 2021 22:52:28 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=sbFMlSU8VOH+3s30vncOXVUKJU1McKhQjkr8IIeWaNk=;
+        b=uWwhbHPvcSRUKVMmcHowfHSqpSUx5WXpGCTyB84rjFcpUNwrq+boDSBVLkzaiixU+X
+         DIjYB+nZrUX9n8ZBnqkXPd1yMAjMtVhuc2oLIH59wjJNi80jIryw1hmIo9+0L1Bd+qMc
+         385IxQBZvORQ9Y0bLt319WOG0ZAcoVNbIJ7QFCcfhdlRBps7IGARqwlzCzP705E9M/kr
+         YJ3B4uT61sKcK2RP5jq9TKb97By3Cds4IOo8Zdyj4ndFOZAVQ89NIr77guW2nzth8jmr
+         Psrz7tOkVp/D+YYOgfOUXJcWkRsjczeuXb8jb0QTW+5O5EYuztK6WoL6LBczbG8K6iMq
+         3GaQ==
+X-Gm-Message-State: AOAM532/ZRrfb0mlTZWoSiM2za0p00ZqekxAYT7aSYzdjlV41YlUGBny
+        5uWpKM4KNDsV4ZiLKJeDA7mqzGOyX4jGyzrPEbh2prlNU/Ocg4m62SK5yQpJCSGAdvkIpJRlYi/
+        vptRTnqUPwzIUXSnPJbb0CBKZBkG411XEF8JondYXOg==
+X-Received: by 2002:a63:805:: with SMTP id 5mr17808119pgi.353.1624168870254;
+        Sat, 19 Jun 2021 23:01:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzD9PEuA2dT9jWZUEPhmwSRvJzCmrsGK5wEPE61ZuokJ1CUZk9YPzk0ucz0jUcMkSU2fTyYcxnEWHxpVFbtSI0=
+X-Received: by 2002:a63:805:: with SMTP id 5mr17808101pgi.353.1624168869944;
+ Sat, 19 Jun 2021 23:01:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210617071027.60278-1-hexin.op@bytedance.com>
- <CAE-0n51T9ZGADCk6LaKJdnQwPvMCawSvjwUP+AF0hFohAFom0A@mail.gmail.com> <87wnqpdco2.ffs@nanos.tec.linutronix.de>
-In-Reply-To: <87wnqpdco2.ffs@nanos.tec.linutronix.de>
-From:   =?UTF-8?B?5L2V6ZGr?= <hexin.op@bytedance.com>
-Date:   Sun, 20 Jun 2021 13:52:18 +0800
-Message-ID: <CACKzwj=ZybyemyAJLcV0GOyPE+dQYz8r+tNvv67AaniJJg7tDA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] debugobjects: add missing empty function debug_object_active_state()
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
+References: <CABvMjLRxy1yqXUOWqTTeq=UOsLtuPAyOSCi4SPgcbAqjMuWCCg@mail.gmail.com>
+ <YM7NzYgEl8NhU36H@google.com> <YM7RkI8fvpkfwAGA@google.com> <YM7ToLeaDajmBiwi@google.com>
+In-Reply-To: <YM7ToLeaDajmBiwi@google.com>
+From:   Yizhuo Zhai <yzhai003@ucr.edu>
+Date:   Sat, 19 Jun 2021 23:00:59 -0700
+Message-ID: <CABvMjLTP+Vh0cTDLU72Q-64f4DWQAp8-7DZ9GTBtoiqnKsaChA@mail.gmail.com>
+Subject: Re: [PATCH] Input: hideep - fix the uninitialized use in hideep_nvm_unlock()
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Anthony Kim <anthony.kim@hideep.com>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thomas Gleixner <tglx@linutronix.de> =E4=BA=8E2021=E5=B9=B46=E6=9C=8820=E6=
-=97=A5=E5=91=A8=E6=97=A5 =E4=B8=8A=E5=8D=8812:47=E5=86=99=E9=81=93=EF=BC=9A
+Dimitry:
+
+Sorry for the inconvenience, I would build the changes next time.
+Thanks for your help : )
+
+On Sat, Jun 19, 2021 at 10:35 PM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
 >
-> On Fri, Jun 18 2021 at 22:03, Stephen Boyd wrote:
-> > Quoting Xin He (2021-06-17 00:10:27)
-> >> All other functions are defined for when CONFIG_DEBUG_OBJECTS
-> >> is not set.
-> >>
-> >> Signed-off-by: Xin He <hexin.op@bytedance.com>
-> >> ---
-> >>  include/linux/debugobjects.h | 3 +++
-> >>  1 file changed, 3 insertions(+)
-> >>
-> >> diff --git a/include/linux/debugobjects.h b/include/linux/debugobjects=
-.h
-> >> index 8d2dde23e9fb..af0d73d8d29b 100644
-> >> --- a/include/linux/debugobjects.h
-> >> +++ b/include/linux/debugobjects.h
-> >> @@ -99,6 +99,9 @@ static inline void
-> >>  debug_object_free      (void *addr, const struct debug_obj_descr *des=
-cr) { }
-> >>  static inline void
-> >>  debug_object_assert_init(void *addr, const struct debug_obj_descr *de=
-scr) { }
-> >> +static inline void
-> >> +debug_object_active_state(void *addr, const struct debug_obj_descr *d=
-escr,
-> >> +                         unsigned int expect, unsigned int next) { }
+> On Sat, Jun 19, 2021 at 10:26:40PM -0700, Dmitry Torokhov wrote:
+> > On Sat, Jun 19, 2021 at 10:10:37PM -0700, Dmitry Torokhov wrote:
+> > > On Wed, Jun 16, 2021 at 03:48:51PM -0700, Yizhuo Zhai wrote:
+> > > > Inside function hideep_nvm_unlock(), variable "unmask_code" could
+> > > > be uninitialized if hideep_pgm_r_reg() returns error, however, it
+> > > > is used in the later if statement after an "and" operation, which
+> > > > is potentially unsafe.
+> > >
+> > > I think this is pretty sensible, but let's see if the original author
+> > > has some comments...
 > >
-> > I suppose it's a landmine that may go off at some point, but this isn't
-> > fixing anything that's broken at the moment, correct?
+> > I guess not. Oh well...
+> >
+> > Applied, thank you.
 >
-> The two users (RCU/i915) have it guarded with RCU/I915 specific config
-> options which depend on CONFIG_DEBUG_OBJECTS.
+> Note that I had to make some changes to make it compile. Please next
+> time try building your changes before posting them,
 >
-> I have no problem with the patch per se, but it want's a proper use case.
+> Thanks.
 >
-> Thanks,
->
->         tglx
->
->
->
+> --
+> Dmitry
 
-Yes, config options ensure that there will be no problems. But when
-CONFIG_DEBUG_OBJECTS is not set, we should provide all empty
-functions that may be used.
 
-Thanks.
+
+-- 
+Kind Regards,
+
+Yizhuo Zhai
+
+Computer Science, Graduate Student
+University of California, Riverside
