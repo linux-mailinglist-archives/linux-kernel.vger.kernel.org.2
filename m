@@ -2,67 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADD43AE007
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 21:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D42EE3AE017
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 21:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhFTTeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 15:34:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60820 "EHLO
+        id S230005AbhFTTrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 15:47:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230083AbhFTTeY (ORCPT
+        with ESMTP id S229872AbhFTTrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 15:34:24 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C409C061760
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 12:32:10 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id m21so26402874lfg.13
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 12:32:10 -0700 (PDT)
+        Sun, 20 Jun 2021 15:47:12 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21387C061574;
+        Sun, 20 Jun 2021 12:44:59 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id a11so13398732lfg.11;
+        Sun, 20 Jun 2021 12:44:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=a2zlJLb2cHVJ/vhYiwd0h6Ss03bH4wa1SiOeNNr1qqA=;
-        b=GtgQ14FxOjyjFdwA25s7wkO/XJ0N6rYX+lT/nvBxbtU5mszTzg3wZBwdDHzPEe57KD
-         zyyGgdgzHlZ8++pJTDtdLMKmm4hwGT9rBg6fl/am+DoSpGsDygAgLsUIw1gFt+rUKrWZ
-         hf7bFKXsUGBJ9tPYtLiahcot1UqGRdAakVOInTjDUcAHoC3wjH3BiLtXZ0Pok8lZt7QT
-         JNTax46LcoteBKMCaupMicDZSU+1SZGCXqKk8mzVycUPBPA1b7UsuY7SXxR+kCT6ILKg
-         iRPbJLu4ZF4ABTDPGPWbsNSY8aZS9fhxpnAIbG98UkCv9adkYnSWh9QE3afOovpqVexZ
-         LJSw==
+        bh=7p5HEGqVeMErSYe7rEIAAwOp1ZmyshLqSPpzV13r4lI=;
+        b=C/0EPLb+pY6Fnyoz17LGQrhKk8Ipq/PIUAZ3z3XPf4UKwuxTAsb+dOLIes9ax6Sl4/
+         KDq07cjwsTMkfw9Qh6X19svGo2m4XP9cTfksmSniAtV2wfLpLR0McJ0dfcJBSa8Efi3U
+         TUzzHkwWvOFwQAx/oW+1hKsVKe04ugRSctc1RLtOWn2FiqY2kFmrac+0+JHM7wX/rojM
+         W2zwhEBLLX6MPjB5p/nMy7q3u/BiRwBRhUvVEepkdvp9ITnHRE/33OSD4iV7TTidfAO0
+         IhxgBmt9oaxmu+8YvDPGneX4sOcGhIqeHWGN6palFh0+e2HI4Em/VrmhbMLIktM4sWZ3
+         VkXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=a2zlJLb2cHVJ/vhYiwd0h6Ss03bH4wa1SiOeNNr1qqA=;
-        b=PcVDMXB6gvLZJGl2DYtgXjvDAfalKjXFuwEERSWNpw0JyLpBpmtvxqoxsV1n/2vR0M
-         mcYB31oXB2drYOHqNXc/18mlMDxwf8tfXd5O23zRsU5TWr7Nw/YNp6W/Acu+283ehx4j
-         EYKWAO/pzKSOEDy6HUNvQ9mZPcfM8uDN2txU9Pw0W0LPFGMp+kC01PFx7MVnbDOhsw6v
-         6Uujgcu0CTLqD5V4hKJPSnA9KPUDsHq8cRHEq5wXE1aL5qJONp7TImzMU1HQ3aasDzak
-         7vdoq7gkMyK2QyBLBEJFqbG2dwgyNwc1VFGSOZmXG5OmZYu1pP41ldSnNoVFtIxOoZa6
-         B0Ng==
-X-Gm-Message-State: AOAM531buGXcGlSaPxXcipxfsEBqyipS2ogGW45eCYFv7KLiIZ12eVX2
-        eH4s3NhsrZKsHd1vO5IHr9Q2u8uCBPo1fKvb9kY=
-X-Google-Smtp-Source: ABdhPJyyInrOe9nI301ArLVhE0QteINw1CDdEnr24x5wlnnbDQTDiegfUETmrH5uqBeOQFmV2CkOJ4QiPOuD4BzWCIY=
-X-Received: by 2002:a05:6512:1184:: with SMTP id g4mr11188837lfr.567.1624217528730;
- Sun, 20 Jun 2021 12:32:08 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7p5HEGqVeMErSYe7rEIAAwOp1ZmyshLqSPpzV13r4lI=;
+        b=AJS4/IeVEg5sIIVYOV+etQ+2erH56BkD58S09QUJAqxzVvY6aLbOy0wxPP4azlXz3A
+         tikD5zO3md6UuY8UNKZdO+P+HsZOZ8kxDrpaCnKm599dwjkP+iduzL6d5xaLY1N4AE4c
+         pJn3B4VTlp7dbj+GQYD6hL6UD8eEhhidTjmOeGWKY6iTmUUi71Jd1es+diCCatTTNaYD
+         2SmRpCJ+27c/8x4fATOmsGQUeeRvJz+VSSC6kzXQCIxCm3AYPZ5r2uUmsadocABTHmM9
+         lnlTOSUBjBv2WQX0Ow9fjNnigkgDHVYlmim+NrRgV2jtdqnmhp4vavDhKVtWVOSdJYcO
+         gLRg==
+X-Gm-Message-State: AOAM5330xadTynprkpR4Yv5fYhXDaja588y5kigAZz3A8UKtg1WxRW2K
+        DSaIeXJQLsH7OWi+Bh3aV6Q=
+X-Google-Smtp-Source: ABdhPJzg4aw3Q5wWLo8BCL/I3aIxrBqjsNilTKEzaHAcKxlO04p5AWoaCfyrUgcC7Bs0QPQ1IFNuyw==
+X-Received: by 2002:a19:ed14:: with SMTP id y20mr11583264lfy.479.1624218297302;
+        Sun, 20 Jun 2021 12:44:57 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.229.24])
+        by smtp.gmail.com with ESMTPSA id d23sm1620195lfe.183.2021.06.20.12.44.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Jun 2021 12:44:56 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     hverkuil-cisco@xs4all.nl, mchehab@kernel.org, oneukum@suse.com,
+        gregkh@suse.de
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Pavel Skripkin <paskripkin@gmail.com>
+Subject: [PATCH 0/2] media: go7007: code improvment and bug fixes
+Date:   Sun, 20 Jun 2021 22:44:33 +0300
+Message-Id: <cover.1624217907.git.paskripkin@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Received: by 2002:aa6:da47:0:b029:fa:6d7d:24c with HTTP; Sun, 20 Jun 2021
- 12:32:08 -0700 (PDT)
-Reply-To: contactcenter@gnbinvestorsb.com
-From:   Gnb Investors Bank <sandraquntoo@gmail.com>
-Date:   Sun, 20 Jun 2021 22:32:08 +0300
-Message-ID: <CAPu=tC68--U1MPBTZoJ+MG5eq_MvkD_0U_UQNFukUxQBpUo+uQ@mail.gmail.com>
-Subject: Brauchen Sie einen Kredit?
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=20
-Brauchen Sie einen Kredit? Unsere Bank vergibt Kredite zu einem Zinssatz vo=
-n 2%
+In this patch series, I fixed memory leak reported by my
+local syzkaller instance and increased go7007_alloc() execution
+speed by removing reduntant zeroing members in kzalloc allocated
+structure.
 
-Melden Sie sich f=C3=BCr weitere Informationen bei uns.
 
-E-Mail: contactcenter@gnbinvestorsb.com
+Pavel Skripkin (2):
+  media: go7007: fix memory leak in go7007_usb_probe
+  media: go7007: remove redundant initialization
+
+ drivers/media/usb/go7007/go7007-driver.c | 26 ------------------------
+ drivers/media/usb/go7007/go7007-usb.c    |  2 +-
+ 2 files changed, 1 insertion(+), 27 deletions(-)
+
+-- 
+2.32.0
+
