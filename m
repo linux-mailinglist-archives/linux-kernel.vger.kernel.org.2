@@ -2,1418 +2,492 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 110573ADE6A
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 14:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F073ADE77
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 15:22:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbhFTM7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 08:59:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbhFTM7v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 08:59:51 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE098C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 05:57:38 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id bb20so4179323pjb.3
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 05:57:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bLdCas7X3LkNs4ttDItS1W5jgGf0j45KNW4xOoMdFCs=;
-        b=TND25wscFbac2J933iYeikhbRdw2RUW1/KJgF0tGguL3eytUbWa2uidfjHfTCd6zrj
-         e8F1BZRUbnrd/2Bl3tbOYSvvjHNkQF/eOIy0Z5oO7lztuE2SCmvvrfMCNQqte91oCMyH
-         Wv044OV0q3tOjKJWD7IvPgNua2tLLcH/Ng5tO48x9SDFwkFEaE7eDH78BaePHrd27ESv
-         KeFqO5W8H8T+Mhi26aGLaQSUOCyR0s5DPX2q7kJAiRI41AvOcHs9lQw8wVUqsE2t4jC+
-         Qz9TuXioZh7P7GfXD0f9fI59mjwNZJM0imeFSxU5k/bRvfRcWLR9fdCOMDSTWf1mA3dr
-         PLig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bLdCas7X3LkNs4ttDItS1W5jgGf0j45KNW4xOoMdFCs=;
-        b=B7+nGWCoJOgvhofsjQoxpqqOqd5inwnrey+oZG8TMKdrhy7IB+i+ONQIHTfKrJK06+
-         NeXomjEjTRZFH/4p7B7v/GSQkF6gHoaZxFvnBPn1uupPpMeK47Dx1X5vSgZZv9+T1o6H
-         b+JGR86sqLCUsK1eLTDpEI53mhbuBCgNokwNQpa0u5DXt8mWqhx843MYCk2ZJICuMX6o
-         xPvejQwl1/B+K75nK9SQUjY/R6yYkT6rY4hJ/6tiK0ME8TrUVbsZPN6kYNgBCI/d574a
-         zDatFThrQiiqyGb1anUKtm1wojs5QJYecFib9+NYvvDUu/iA0RwfroTFYcQtBnALMoNn
-         pdxw==
-X-Gm-Message-State: AOAM531cviEF1BocOoYu6JJABKZaeeUqIt4t6HcQo5Dp4/m0qpGklnmz
-        WULzqfO7sgBaio6EWp/3cWs=
-X-Google-Smtp-Source: ABdhPJyfLv+oSPcgXygQx51RcC9mQ3b83kNRCDMi0Af0qglylchIZLlbeM1RU/ClG2Ov0FHiwovHzQ==
-X-Received: by 2002:a17:90a:4404:: with SMTP id s4mr32931717pjg.218.1624193858309;
-        Sun, 20 Jun 2021 05:57:38 -0700 (PDT)
-Received: from ojas ([122.177.154.120])
-        by smtp.gmail.com with ESMTPSA id q12sm14236861pgc.25.2021.06.20.05.57.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Jun 2021 05:57:38 -0700 (PDT)
-Date:   Sun, 20 Jun 2021 18:27:25 +0530
-From:   Ojaswin Mujoo <ojaswin98@gmail.com>
-To:     nsaenz@kernel.org
-Cc:     gregkh@linuxfoundation.org, stefan.wahren@i2se.com, arnd@arndb.de,
-        dan.carpenter@oracle.com, phil@raspberrypi.com,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] staging: vchiq: Combine vchiq platform code into
- single file
-Message-ID: <03145b153c7d1b1a285ccdefb60abc2377dc5558.1624185152.git.ojaswin98@gmail.com>
-References: <cover.1624185152.git.ojaswin98@gmail.com>
+        id S229618AbhFTNYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 09:24:20 -0400
+Received: from mail-dm6nam12on2074.outbound.protection.outlook.com ([40.107.243.74]:21380
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229593AbhFTNYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Jun 2021 09:24:18 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=U0Glel2EPnGl5sa80PBbNJLF37sJiTIL6eCdRgea2PDztU7sDkxotPwGlCfA6ODW2LRKV/95gEgVPZFwYKuU1b3mXOiYXPwsVq6Y6/5DxZo+a9cxauaVMY3AtOj04N7JL39+euB7z/a6kLRdrP+u/esoHAS+a3HeydX/181yPqQjCfPylq4Qy/eJDeflTFaGKYpEpD56DV9rRK9XG01f9oDjuCXHBdm5P0Cif2/z0ROhPCooFJf2aGRrpvQGg/QiFuJCPdAIL663+31hAHBs/zjNDVyekO5rf/iWQxqmZvqOFkNKydjinSnqbg6kMlAv8WWFGwT3Fvt0NM0SQmu0sA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u+6FmtstBc3XpTznfvc8cfZITV0/CQxeTENK9BQc2h4=;
+ b=SclSStxVGRRVAW9D82TShSOn0t/hW+jI2yygJiqoO7rAHHrszI22Un/1w7qC7B0aIoNNHCfU6jfJcIR5Ge7m3QQbOi2Wt+Uz9qvrNUXAbJbyfmUAmJfAf3R/5vkdFeI+deTHEhCf1U1vnmDRPQO2OWzIYCW7lQ9XeIGw4h4889CfT4uMoIaFO7b2LnvkKYf0xDbFoJetbPTiRA80IyEEHvfW2lnyvOFic1fgEiX/eEmqZ3LbO9A5w/ErKBxfWeSb+Gdf/KOCkQhT3JRsuHrgPKRm3lK3QhijONO8T/HXp5DHAOOZIMoHKyzXV5OrXFgEj4nP049XtirZkQznEUDxGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u+6FmtstBc3XpTznfvc8cfZITV0/CQxeTENK9BQc2h4=;
+ b=uUV+pMcqtGWFeOxjC+a7Nb0ep2mssz+UKdj/BRyQjS5qEolvU7GZg/iZFOuRVfrA98yyTDVRu51PB5+DFDvQPF9eIssRSylsWxdVwbUSjnIUV0TkKIPWM0uCw+/gzKY+Krj0jvORR8bSdTJKsxjRoFlK+2ypFxzK5NCeV1RaLT7/3aSDtwACaMh3M6Yv/WOQ205FZXg2OXphMW+Rs4doNUbuCM9g8uiNNcehRSQzZiEP1TTVDNK/LI6b1m21T+TOa0q0IMCZ9gmvksiqBc8jR93VK5PV+37NijHFtHErJm/N2jFaEcSFinE1cuk3ybM8DhkjaMEkTFsfkqxQPUVqdw==
+Received: from MW4PR04CA0111.namprd04.prod.outlook.com (2603:10b6:303:83::26)
+ by DM6PR12MB4651.namprd12.prod.outlook.com (2603:10b6:5:1f6::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Sun, 20 Jun
+ 2021 13:22:04 +0000
+Received: from CO1NAM11FT039.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:303:83:cafe::6b) by MW4PR04CA0111.outlook.office365.com
+ (2603:10b6:303:83::26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21 via Frontend
+ Transport; Sun, 20 Jun 2021 13:22:04 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ CO1NAM11FT039.mail.protection.outlook.com (10.13.174.110) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4242.16 via Frontend Transport; Sun, 20 Jun 2021 13:22:03 +0000
+Received: from [10.25.74.204] (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 20 Jun
+ 2021 13:21:55 +0000
+Subject: Re: [PATCH v2 2/5] PCI: endpoint: Replace spinlock with mutex
+From:   Vidya Sagar <vidyas@nvidia.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Athani Nadeem Ladkhan" <nadeem@cadence.com>,
+        Tom Joseph <tjoseph@cadence.com>,
+        Manikanta Maddireddy <mmaddireddy@nvidia.com>,
+        Om Prakash Singh <omp@nvidia.com>,
+        Krishna Thota <kthota@nvidia.com>
+References: <20200212112514.2000-1-kishon@ti.com>
+ <20200212112514.2000-3-kishon@ti.com>
+ <901293cd-e67a-04a4-d61e-37a105c33d15@nvidia.com>
+Message-ID: <3a541265-f73d-6e3a-8a04-f0616d8ed961@nvidia.com>
+Date:   Sun, 20 Jun 2021 18:51:53 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1624185152.git.ojaswin98@gmail.com>
+In-Reply-To: <901293cd-e67a-04a4-d61e-37a105c33d15@nvidia.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2e8cfd16-950c-4624-08ac-08d933ee6573
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4651:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB46517D270ED052EF07746B6EB80B9@DM6PR12MB4651.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Q7014PULzjy3dJmj3Ltt+s+1R32gdrt11rAKP4rkH33RpY9dWCu2+RappZ+RiQWrg0iEpZCx10ebodZ35iEwe0aG7rkOkmRJxdPpklvgfNYFMtptw+f30ekJvq6Iy2es5ca+5lnd49RZUuDgjSVhF/6auSD+fvcOOFres+Mo4oaXFMiB03lvwJsfIRXGiM6yU1NGbV1nsy83GgYoHHQ9vCnoris0nWBrLJV6zROwSZtO2xrGSyW1n7gtTHEfwVKpnz5OGbCB5Ruf4PGRT3et+BJY6QyQAYeHz76IJG8JlZIs5KxNUdki+SC+qfKW03FO/4uIIThz+s4fGveLCFaZLL4Edgdf1Kovc90GGEgRVPKJY3eX6kB5/9O3ReA0BuGOnzw+nChx4/oPeRghuosx16XPZPLIGKYfZVa6tJ4Y62HWf+A3ogV2BI3nC+1pNj4R/E5z7ryrmyVhqkfCT8nHfIlID+lfMXayyjzFlkgeuch/a7iD03TQc81MEbbdsgKggsVjm/RoNvsIk887I532Qgzcf4G7R5PLIMphnF86uBrzLCzT13r7EPQakfY1Hc3zfNZwH/+AW5R42RTDALzRpJvoT6bVNtIdP5OpwromYVjmkd4HDUwAiIJmQ9NYl+DudirHpS0bf6EA4adamlTgeJUmdJ76aNihcJ0ndthSFqnJXVjIRoSrERr0bwCpq1jL
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(376002)(346002)(39860400002)(136003)(36840700001)(46966006)(47076005)(4326008)(36906005)(26005)(478600001)(82740400003)(16576012)(316002)(426003)(186003)(8676002)(336012)(16526019)(82310400003)(83380400001)(31696002)(70586007)(5660300002)(36756003)(6916009)(86362001)(356005)(53546011)(2616005)(8936002)(54906003)(2906002)(70206006)(31686004)(36860700001)(107886003)(30864003)(7636003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jun 2021 13:22:03.9950
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2e8cfd16-950c-4624-08ac-08d933ee6573
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT039.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4651
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Combine the vchiq platform initialization code into a single file. The
-file vchiq_2835_arm.c is now merged in vchiq_arm.c
+Hi Kishon,
+Did you get time to look into it?
 
-Signed-off-by: Ojaswin Mujoo <ojaswin98@gmail.com>
----
- drivers/staging/vc04_services/Makefile        |   1 -
- .../interface/vchiq_arm/vchiq_2835_arm.c      | 651 ------------------
- .../interface/vchiq_arm/vchiq_arm.c           | 635 +++++++++++++++++
- 3 files changed, 635 insertions(+), 652 deletions(-)
- delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_2835_arm.c
+Thanks,
+Vidya Sagar
 
-diff --git a/drivers/staging/vc04_services/Makefile b/drivers/staging/vc04_services/Makefile
-index cc6371386a62..cc0a81996eda 100644
---- a/drivers/staging/vc04_services/Makefile
-+++ b/drivers/staging/vc04_services/Makefile
-@@ -4,7 +4,6 @@ obj-$(CONFIG_BCM2835_VCHIQ)	+= vchiq.o
- vchiq-objs := \
-    interface/vchiq_arm/vchiq_core.o  \
-    interface/vchiq_arm/vchiq_arm.o \
--   interface/vchiq_arm/vchiq_2835_arm.o \
-    interface/vchiq_arm/vchiq_debugfs.o \
-    interface/vchiq_arm/vchiq_connected.o \
- 
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_2835_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_2835_arm.c
-deleted file mode 100644
-index 2a1d8d6541b2..000000000000
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_2835_arm.c
-+++ /dev/null
-@@ -1,651 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
--/* Copyright (c) 2010-2012 Broadcom. All rights reserved. */
--
--#include <linux/kernel.h>
--#include <linux/types.h>
--#include <linux/errno.h>
--#include <linux/interrupt.h>
--#include <linux/pagemap.h>
--#include <linux/dma-mapping.h>
--#include <linux/dmapool.h>
--#include <linux/io.h>
--#include <linux/platform_device.h>
--#include <linux/uaccess.h>
--#include <linux/mm.h>
--#include <linux/of.h>
--#include <linux/slab.h>
--#include <soc/bcm2835/raspberrypi-firmware.h>
--
--#define TOTAL_SLOTS (VCHIQ_SLOT_ZERO_SLOTS + 2 * 32)
--
--#include "vchiq_arm.h"
--#include "vchiq_connected.h"
--#include "vchiq_pagelist.h"
--
--#define MAX_FRAGMENTS (VCHIQ_NUM_CURRENT_BULKS * 2)
--
--#define VCHIQ_PLATFORM_FRAGMENTS_OFFSET_IDX 0
--#define VCHIQ_PLATFORM_FRAGMENTS_COUNT_IDX  1
--
--#define BELL0	0x00
--#define BELL2	0x08
--
--#define VCHIQ_DMA_POOL_SIZE PAGE_SIZE
--
--struct vchiq_2835_state {
--	int inited;
--	struct vchiq_arm_state arm_state;
--};
--
--struct vchiq_pagelist_info {
--	struct pagelist *pagelist;
--	size_t pagelist_buffer_size;
--	dma_addr_t dma_addr;
--	bool is_from_pool;
--	enum dma_data_direction dma_dir;
--	unsigned int num_pages;
--	unsigned int pages_need_release;
--	struct page **pages;
--	struct scatterlist *scatterlist;
--	unsigned int scatterlist_mapped;
--};
--
--static void __iomem *g_regs;
--/* This value is the size of the L2 cache lines as understood by the
-- * VPU firmware, which determines the required alignment of the
-- * offsets/sizes in pagelists.
-- *
-- * Modern VPU firmware looks for a DT "cache-line-size" property in
-- * the VCHIQ node and will overwrite it with the actual L2 cache size,
-- * which the kernel must then respect.  That property was rejected
-- * upstream, so we have to use the VPU firmware's compatibility value
-- * of 32.
-- */
--static unsigned int g_cache_line_size = 32;
--static struct dma_pool *g_dma_pool;
--static unsigned int g_use_36bit_addrs = 0;
--static unsigned int g_fragments_size;
--static char *g_fragments_base;
--static char *g_free_fragments;
--static struct semaphore g_free_fragments_sema;
--static struct device *g_dev;
--static struct device *g_dma_dev;
--
--static DEFINE_SEMAPHORE(g_free_fragments_mutex);
--
--static irqreturn_t
--vchiq_doorbell_irq(int irq, void *dev_id);
--
--static struct vchiq_pagelist_info *
--create_pagelist(char *buf, char __user *ubuf, size_t count, unsigned short type);
--
--static void
--free_pagelist(struct vchiq_pagelist_info *pagelistinfo,
--	      int actual);
--
--int vchiq_platform_init(struct platform_device *pdev, struct vchiq_state *state)
--{
--	struct device *dev = &pdev->dev;
--	struct device *dma_dev = NULL;
--	struct vchiq_drvdata *drvdata = platform_get_drvdata(pdev);
--	struct rpi_firmware *fw = drvdata->fw;
--	struct vchiq_slot_zero *vchiq_slot_zero;
--	void *slot_mem;
--	dma_addr_t slot_phys;
--	u32 channelbase;
--	int slot_mem_size, frag_mem_size;
--	int err, irq, i;
--
--	/*
--	 * VCHI messages between the CPU and firmware use
--	 * 32-bit bus addresses.
--	 */
--	err = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
--
--	if (err < 0)
--		return err;
--
--	g_cache_line_size = drvdata->cache_line_size;
--	g_fragments_size = 2 * g_cache_line_size;
--
--	if (drvdata->use_36bit_addrs) {
--		struct device_node *dma_node =
--			of_find_compatible_node(NULL, NULL, "brcm,bcm2711-dma");
--
--		if (dma_node) {
--			struct platform_device *pdev;
--
--			pdev = of_find_device_by_node(dma_node);
--			if (pdev)
--				dma_dev = &pdev->dev;
--			of_node_put(dma_node);
--			g_use_36bit_addrs = true;
--		} else {
--			dev_err(dev, "40-bit DMA controller not found\n");
--			return -EINVAL;
--		}
--	}
--
--	/* Allocate space for the channels in coherent memory */
--	slot_mem_size = PAGE_ALIGN(TOTAL_SLOTS * VCHIQ_SLOT_SIZE);
--	frag_mem_size = PAGE_ALIGN(g_fragments_size * MAX_FRAGMENTS);
--
--	slot_mem = dmam_alloc_coherent(dev, slot_mem_size + frag_mem_size,
--				       &slot_phys, GFP_KERNEL);
--	if (!slot_mem) {
--		dev_err(dev, "could not allocate DMA memory\n");
--		return -ENOMEM;
--	}
--
--	WARN_ON(((unsigned long)slot_mem & (PAGE_SIZE - 1)) != 0);
--	channelbase = slot_phys;
--
--	vchiq_slot_zero = vchiq_init_slots(slot_mem, slot_mem_size);
--	if (!vchiq_slot_zero)
--		return -EINVAL;
--
--	vchiq_slot_zero->platform_data[VCHIQ_PLATFORM_FRAGMENTS_OFFSET_IDX] =
--		channelbase + slot_mem_size;
--	vchiq_slot_zero->platform_data[VCHIQ_PLATFORM_FRAGMENTS_COUNT_IDX] =
--		MAX_FRAGMENTS;
--
--	g_fragments_base = (char *)slot_mem + slot_mem_size;
--
--	g_free_fragments = g_fragments_base;
--	for (i = 0; i < (MAX_FRAGMENTS - 1); i++) {
--		*(char **)&g_fragments_base[i*g_fragments_size] =
--			&g_fragments_base[(i + 1)*g_fragments_size];
--	}
--	*(char **)&g_fragments_base[i * g_fragments_size] = NULL;
--	sema_init(&g_free_fragments_sema, MAX_FRAGMENTS);
--
--	if (vchiq_init_state(state, vchiq_slot_zero) != VCHIQ_SUCCESS)
--		return -EINVAL;
--
--	g_regs = devm_platform_ioremap_resource(pdev, 0);
--	if (IS_ERR(g_regs))
--		return PTR_ERR(g_regs);
--
--	irq = platform_get_irq(pdev, 0);
--	if (irq <= 0)
--		return irq;
--
--	err = devm_request_irq(dev, irq, vchiq_doorbell_irq, IRQF_IRQPOLL,
--			       "VCHIQ doorbell", state);
--	if (err) {
--		dev_err(dev, "failed to register irq=%d\n", irq);
--		return err;
--	}
--
--	/* Send the base address of the slots to VideoCore */
--	err = rpi_firmware_property(fw, RPI_FIRMWARE_VCHIQ_INIT,
--				    &channelbase, sizeof(channelbase));
--	if (err || channelbase) {
--		dev_err(dev, "failed to set channelbase\n");
--		return err ? : -ENXIO;
--	}
--
--	g_dev = dev;
--	g_dma_dev = dma_dev ?: dev;
--	g_dma_pool = dmam_pool_create("vchiq_scatter_pool", dev,
--				      VCHIQ_DMA_POOL_SIZE, g_cache_line_size,
--				      0);
--	if (!g_dma_pool) {
--		dev_err(dev, "failed to create dma pool");
--		return -ENOMEM;
--	}
--
--	vchiq_log_info(vchiq_arm_log_level,
--		"vchiq_init - done (slots %pK, phys %pad)",
--		vchiq_slot_zero, &slot_phys);
--
--	vchiq_call_connected_callbacks();
--
--	return 0;
--}
--
--enum vchiq_status
--vchiq_platform_init_state(struct vchiq_state *state)
--{
--	enum vchiq_status status = VCHIQ_SUCCESS;
--	struct vchiq_2835_state *platform_state;
--
--	state->platform_state = kzalloc(sizeof(*platform_state), GFP_KERNEL);
--	if (!state->platform_state)
--		return VCHIQ_ERROR;
--
--	platform_state = (struct vchiq_2835_state *)state->platform_state;
--
--	platform_state->inited = 1;
--	status = vchiq_arm_init_state(state, &platform_state->arm_state);
--
--	if (status != VCHIQ_SUCCESS)
--		platform_state->inited = 0;
--
--	return status;
--}
--
--struct vchiq_arm_state*
--vchiq_platform_get_arm_state(struct vchiq_state *state)
--{
--	struct vchiq_2835_state *platform_state;
--
--	platform_state   = (struct vchiq_2835_state *)state->platform_state;
--
--	WARN_ON_ONCE(!platform_state->inited);
--
--	return &platform_state->arm_state;
--}
--
--void
--remote_event_signal(struct remote_event *event)
--{
--	wmb();
--
--	event->fired = 1;
--
--	dsb(sy);         /* data barrier operation */
--
--	if (event->armed)
--		writel(0, g_regs + BELL2); /* trigger vc interrupt */
--}
--
--enum vchiq_status
--vchiq_prepare_bulk_data(struct vchiq_bulk *bulk, void *offset,
--			void __user *uoffset, int size, int dir)
--{
--	struct vchiq_pagelist_info *pagelistinfo;
--
--	pagelistinfo = create_pagelist(offset, uoffset, size,
--				       (dir == VCHIQ_BULK_RECEIVE)
--				       ? PAGELIST_READ
--				       : PAGELIST_WRITE);
--
--	if (!pagelistinfo)
--		return VCHIQ_ERROR;
--
--	bulk->data = pagelistinfo->dma_addr;
--
--	/*
--	 * Store the pagelistinfo address in remote_data,
--	 * which isn't used by the slave.
--	 */
--	bulk->remote_data = pagelistinfo;
--
--	return VCHIQ_SUCCESS;
--}
--
--void
--vchiq_complete_bulk(struct vchiq_bulk *bulk)
--{
--	if (bulk && bulk->remote_data && bulk->actual)
--		free_pagelist((struct vchiq_pagelist_info *)bulk->remote_data,
--			      bulk->actual);
--}
--
--int vchiq_dump_platform_state(void *dump_context)
--{
--	char buf[80];
--	int len;
--
--	len = snprintf(buf, sizeof(buf),
--		"  Platform: 2835 (VC master)");
--	return vchiq_dump(dump_context, buf, len + 1);
--}
--
--/*
-- * Local functions
-- */
--
--static irqreturn_t
--vchiq_doorbell_irq(int irq, void *dev_id)
--{
--	struct vchiq_state *state = dev_id;
--	irqreturn_t ret = IRQ_NONE;
--	unsigned int status;
--
--	/* Read (and clear) the doorbell */
--	status = readl(g_regs + BELL0);
--
--	if (status & 0x4) {  /* Was the doorbell rung? */
--		remote_event_pollall(state);
--		ret = IRQ_HANDLED;
--	}
--
--	return ret;
--}
--
--static void
--cleanup_pagelistinfo(struct vchiq_pagelist_info *pagelistinfo)
--{
--	if (pagelistinfo->scatterlist_mapped) {
--		dma_unmap_sg(g_dma_dev, pagelistinfo->scatterlist,
--			     pagelistinfo->num_pages, pagelistinfo->dma_dir);
--	}
--
--	if (pagelistinfo->pages_need_release)
--		unpin_user_pages(pagelistinfo->pages, pagelistinfo->num_pages);
--
--	if (pagelistinfo->is_from_pool) {
--		dma_pool_free(g_dma_pool, pagelistinfo->pagelist,
--			      pagelistinfo->dma_addr);
--	} else {
--		dma_free_coherent(g_dev, pagelistinfo->pagelist_buffer_size,
--				  pagelistinfo->pagelist,
--				  pagelistinfo->dma_addr);
--	}
--}
--
--/* There is a potential problem with partial cache lines (pages?)
-- * at the ends of the block when reading. If the CPU accessed anything in
-- * the same line (page?) then it may have pulled old data into the cache,
-- * obscuring the new data underneath. We can solve this by transferring the
-- * partial cache lines separately, and allowing the ARM to copy into the
-- * cached area.
-- */
--
--static struct vchiq_pagelist_info *
--create_pagelist(char *buf, char __user *ubuf,
--		size_t count, unsigned short type)
--{
--	struct pagelist *pagelist;
--	struct vchiq_pagelist_info *pagelistinfo;
--	struct page **pages;
--	u32 *addrs;
--	unsigned int num_pages, offset, i, k;
--	int actual_pages;
--	bool is_from_pool;
--	size_t pagelist_size;
--	struct scatterlist *scatterlist, *sg;
--	int dma_buffers;
--	dma_addr_t dma_addr;
--
--	if (count >= INT_MAX - PAGE_SIZE)
--		return NULL;
--
--	if (buf)
--		offset = (uintptr_t)buf & (PAGE_SIZE - 1);
--	else
--		offset = (uintptr_t)ubuf & (PAGE_SIZE - 1);
--	num_pages = DIV_ROUND_UP(count + offset, PAGE_SIZE);
--
--	if (num_pages > (SIZE_MAX - sizeof(struct pagelist) -
--			 sizeof(struct vchiq_pagelist_info)) /
--			(sizeof(u32) + sizeof(pages[0]) +
--			 sizeof(struct scatterlist)))
--		return NULL;
--
--	pagelist_size = sizeof(struct pagelist) +
--			(num_pages * sizeof(u32)) +
--			(num_pages * sizeof(pages[0]) +
--			(num_pages * sizeof(struct scatterlist))) +
--			sizeof(struct vchiq_pagelist_info);
--
--	/* Allocate enough storage to hold the page pointers and the page
--	 * list
--	 */
--	if (pagelist_size > VCHIQ_DMA_POOL_SIZE) {
--		pagelist = dma_alloc_coherent(g_dev,
--					       pagelist_size,
--					       &dma_addr,
--					       GFP_KERNEL);
--		is_from_pool = false;
--	} else {
--		pagelist = dma_pool_alloc(g_dma_pool, GFP_KERNEL, &dma_addr);
--		is_from_pool = true;
--	}
--
--	vchiq_log_trace(vchiq_arm_log_level, "%s - %pK", __func__, pagelist);
--
--	if (!pagelist)
--		return NULL;
--
--	addrs		= pagelist->addrs;
--	pages		= (struct page **)(addrs + num_pages);
--	scatterlist	= (struct scatterlist *)(pages + num_pages);
--	pagelistinfo	= (struct vchiq_pagelist_info *)
--			  (scatterlist + num_pages);
--
--	pagelist->length = count;
--	pagelist->type = type;
--	pagelist->offset = offset;
--
--	/* Populate the fields of the pagelistinfo structure */
--	pagelistinfo->pagelist = pagelist;
--	pagelistinfo->pagelist_buffer_size = pagelist_size;
--	pagelistinfo->dma_addr = dma_addr;
--	pagelistinfo->is_from_pool = is_from_pool;
--	pagelistinfo->dma_dir =  (type == PAGELIST_WRITE) ?
--				  DMA_TO_DEVICE : DMA_FROM_DEVICE;
--	pagelistinfo->num_pages = num_pages;
--	pagelistinfo->pages_need_release = 0;
--	pagelistinfo->pages = pages;
--	pagelistinfo->scatterlist = scatterlist;
--	pagelistinfo->scatterlist_mapped = 0;
--
--	if (buf) {
--		unsigned long length = count;
--		unsigned int off = offset;
--
--		for (actual_pages = 0; actual_pages < num_pages;
--		     actual_pages++) {
--			struct page *pg =
--				vmalloc_to_page((buf +
--						 (actual_pages * PAGE_SIZE)));
--			size_t bytes = PAGE_SIZE - off;
--
--			if (!pg) {
--				cleanup_pagelistinfo(pagelistinfo);
--				return NULL;
--			}
--
--			if (bytes > length)
--				bytes = length;
--			pages[actual_pages] = pg;
--			length -= bytes;
--			off = 0;
--		}
--		/* do not try and release vmalloc pages */
--	} else {
--		actual_pages = pin_user_pages_fast(
--					  (unsigned long)ubuf & PAGE_MASK,
--					  num_pages,
--					  type == PAGELIST_READ,
--					  pages);
--
--		if (actual_pages != num_pages) {
--			vchiq_log_info(vchiq_arm_log_level,
--				       "%s - only %d/%d pages locked",
--				       __func__, actual_pages, num_pages);
--
--			/* This is probably due to the process being killed */
--			if (actual_pages > 0)
--				unpin_user_pages(pages, actual_pages);
--			cleanup_pagelistinfo(pagelistinfo);
--			return NULL;
--		}
--		 /* release user pages */
--		pagelistinfo->pages_need_release = 1;
--	}
--
--	/*
--	 * Initialize the scatterlist so that the magic cookie
--	 *  is filled if debugging is enabled
--	 */
--	sg_init_table(scatterlist, num_pages);
--	/* Now set the pages for each scatterlist */
--	for (i = 0; i < num_pages; i++)	{
--		unsigned int len = PAGE_SIZE - offset;
--
--		if (len > count)
--			len = count;
--		sg_set_page(scatterlist + i, pages[i], len, offset);
--		offset = 0;
--		count -= len;
--	}
--
--	dma_buffers = dma_map_sg(g_dma_dev,
--				 scatterlist,
--				 num_pages,
--				 pagelistinfo->dma_dir);
--
--	if (dma_buffers == 0) {
--		cleanup_pagelistinfo(pagelistinfo);
--		return NULL;
--	}
--
--	pagelistinfo->scatterlist_mapped = 1;
--
--	/* Combine adjacent blocks for performance */
--	k = 0;
--	if (g_use_36bit_addrs) {
--		for_each_sg(scatterlist, sg, dma_buffers, i) {
--			u32 len = sg_dma_len(sg);
--			u64 addr = sg_dma_address(sg);
--			u32 page_id = (u32)((addr >> 4) & ~0xff);
--			u32 sg_pages = (len + PAGE_SIZE - 1) >> PAGE_SHIFT;
--
--			/* Note: addrs is the address + page_count - 1
--			 * The firmware expects blocks after the first to be page-
--			 * aligned and a multiple of the page size
--			 */
--			WARN_ON(len == 0);
--			WARN_ON(i &&
--				(i != (dma_buffers - 1)) && (len & ~PAGE_MASK));
--			WARN_ON(i && (addr & ~PAGE_MASK));
--			WARN_ON(upper_32_bits(addr) > 0xf);
--			if (k > 0 &&
--			    ((addrs[k - 1] & ~0xff) +
--			     (((addrs[k - 1] & 0xff) + 1) << 8)
--			     == page_id)) {
--				u32 inc_pages = min(sg_pages,
--						    0xff - (addrs[k - 1] & 0xff));
--				addrs[k - 1] += inc_pages;
--				page_id += inc_pages << 8;
--				sg_pages -= inc_pages;
--			}
--			while (sg_pages) {
--				u32 inc_pages = min(sg_pages, 0x100u);
--				addrs[k++] = page_id | (inc_pages - 1);
--				page_id += inc_pages << 8;
--				sg_pages -= inc_pages;
--			}
--		}
--	} else {
--		for_each_sg(scatterlist, sg, dma_buffers, i) {
--			u32 len = sg_dma_len(sg);
--			u32 addr = sg_dma_address(sg);
--			u32 new_pages = (len + PAGE_SIZE - 1) >> PAGE_SHIFT;
--
--			/* Note: addrs is the address + page_count - 1
--			 * The firmware expects blocks after the first to be page-
--			 * aligned and a multiple of the page size
--			 */
--			WARN_ON(len == 0);
--			WARN_ON(i && (i != (dma_buffers - 1)) && (len & ~PAGE_MASK));
--			WARN_ON(i && (addr & ~PAGE_MASK));
--			if (k > 0 &&
--			    ((addrs[k - 1] & PAGE_MASK) +
--			     (((addrs[k - 1] & ~PAGE_MASK) + 1) << PAGE_SHIFT))
--			    == (addr & PAGE_MASK))
--				addrs[k - 1] += new_pages;
--			else
--				addrs[k++] = (addr & PAGE_MASK) | (new_pages - 1);
--		}
--	}
--
--	/* Partial cache lines (fragments) require special measures */
--	if ((type == PAGELIST_READ) &&
--		((pagelist->offset & (g_cache_line_size - 1)) ||
--		((pagelist->offset + pagelist->length) &
--		(g_cache_line_size - 1)))) {
--		char *fragments;
--
--		if (down_interruptible(&g_free_fragments_sema)) {
--			cleanup_pagelistinfo(pagelistinfo);
--			return NULL;
--		}
--
--		WARN_ON(!g_free_fragments);
--
--		down(&g_free_fragments_mutex);
--		fragments = g_free_fragments;
--		WARN_ON(!fragments);
--		g_free_fragments = *(char **) g_free_fragments;
--		up(&g_free_fragments_mutex);
--		pagelist->type = PAGELIST_READ_WITH_FRAGMENTS +
--			(fragments - g_fragments_base) / g_fragments_size;
--	}
--
--	return pagelistinfo;
--}
--
--static void
--free_pagelist(struct vchiq_pagelist_info *pagelistinfo,
--	      int actual)
--{
--	struct pagelist *pagelist = pagelistinfo->pagelist;
--	struct page **pages = pagelistinfo->pages;
--	unsigned int num_pages = pagelistinfo->num_pages;
--
--	vchiq_log_trace(vchiq_arm_log_level, "%s - %pK, %d",
--			__func__, pagelistinfo->pagelist, actual);
--
--	/*
--	 * NOTE: dma_unmap_sg must be called before the
--	 * cpu can touch any of the data/pages.
--	 */
--	dma_unmap_sg(g_dma_dev, pagelistinfo->scatterlist,
--		     pagelistinfo->num_pages, pagelistinfo->dma_dir);
--	pagelistinfo->scatterlist_mapped = 0;
--
--	/* Deal with any partial cache lines (fragments) */
--	if (pagelist->type >= PAGELIST_READ_WITH_FRAGMENTS) {
--		char *fragments = g_fragments_base +
--			(pagelist->type - PAGELIST_READ_WITH_FRAGMENTS) *
--			g_fragments_size;
--		int head_bytes, tail_bytes;
--
--		head_bytes = (g_cache_line_size - pagelist->offset) &
--			(g_cache_line_size - 1);
--		tail_bytes = (pagelist->offset + actual) &
--			(g_cache_line_size - 1);
--
--		if ((actual >= 0) && (head_bytes != 0)) {
--			if (head_bytes > actual)
--				head_bytes = actual;
--
--			memcpy((char *)kmap(pages[0]) +
--				pagelist->offset,
--				fragments,
--				head_bytes);
--			kunmap(pages[0]);
--		}
--		if ((actual >= 0) && (head_bytes < actual) &&
--			(tail_bytes != 0)) {
--			memcpy((char *)kmap(pages[num_pages - 1]) +
--				((pagelist->offset + actual) &
--				(PAGE_SIZE - 1) & ~(g_cache_line_size - 1)),
--				fragments + g_cache_line_size,
--				tail_bytes);
--			kunmap(pages[num_pages - 1]);
--		}
--
--		down(&g_free_fragments_mutex);
--		*(char **)fragments = g_free_fragments;
--		g_free_fragments = fragments;
--		up(&g_free_fragments_mutex);
--		up(&g_free_fragments_sema);
--	}
--
--	/* Need to mark all the pages dirty. */
--	if (pagelist->type != PAGELIST_WRITE &&
--	    pagelistinfo->pages_need_release) {
--		unsigned int i;
--
--		for (i = 0; i < num_pages; i++)
--			set_page_dirty(pages[i]);
--	}
--
--	cleanup_pagelistinfo(pagelistinfo);
--}
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-index 06a19d6e2674..6e082ab29c1f 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-@@ -25,15 +25,32 @@
- #include <linux/rcupdate.h>
- #include <linux/delay.h>
- #include <linux/slab.h>
-+#include <linux/interrupt.h>
-+#include <linux/dmapool.h>
-+#include <linux/uaccess.h>
- #include <soc/bcm2835/raspberrypi-firmware.h>
- 
- #include "vchiq_core.h"
- #include "vchiq_ioctl.h"
- #include "vchiq_arm.h"
- #include "vchiq_debugfs.h"
-+#include "vchiq_connected.h"
-+#include "vchiq_pagelist.h"
- 
- #define DEVICE_NAME "vchiq"
- 
-+#define TOTAL_SLOTS (VCHIQ_SLOT_ZERO_SLOTS + 2 * 32)
-+
-+#define MAX_FRAGMENTS (VCHIQ_NUM_CURRENT_BULKS * 2)
-+
-+#define VCHIQ_PLATFORM_FRAGMENTS_OFFSET_IDX 0
-+#define VCHIQ_PLATFORM_FRAGMENTS_COUNT_IDX  1
-+
-+#define BELL0	0x00
-+#define BELL2	0x08
-+
-+#define VCHIQ_DMA_POOL_SIZE PAGE_SIZE
-+
- /* Override the default prefix, which would be vchiq_arm (from the filename) */
- #undef MODULE_PARAM_PREFIX
- #define MODULE_PARAM_PREFIX DEVICE_NAME "."
-@@ -67,10 +84,628 @@ static struct vchiq_drvdata bcm2711_drvdata = {
- 	.use_36bit_addrs = true,
- };
- 
-+struct vchiq_2835_state {
-+	int inited;
-+	struct vchiq_arm_state arm_state;
-+};
-+
-+struct vchiq_pagelist_info {
-+	struct pagelist *pagelist;
-+	size_t pagelist_buffer_size;
-+	dma_addr_t dma_addr;
-+	bool is_from_pool;
-+	enum dma_data_direction dma_dir;
-+	unsigned int num_pages;
-+	unsigned int pages_need_release;
-+	struct page **pages;
-+	struct scatterlist *scatterlist;
-+	unsigned int scatterlist_mapped;
-+};
-+
-+static void __iomem *g_regs;
-+/* This value is the size of the L2 cache lines as understood by the
-+ * VPU firmware, which determines the required alignment of the
-+ * offsets/sizes in pagelists.
-+ *
-+ * Modern VPU firmware looks for a DT "cache-line-size" property in
-+ * the VCHIQ node and will overwrite it with the actual L2 cache size,
-+ * which the kernel must then respect.  That property was rejected
-+ * upstream, so we have to use the VPU firmware's compatibility value
-+ * of 32.
-+ */
-+static unsigned int g_cache_line_size = 32;
-+static struct dma_pool *g_dma_pool;
-+static unsigned int g_use_36bit_addrs = 0;
-+static unsigned int g_fragments_size;
-+static char *g_fragments_base;
-+static char *g_free_fragments;
-+static struct semaphore g_free_fragments_sema;
-+static struct device *g_dev;
-+static struct device *g_dma_dev;
-+
-+static DEFINE_SEMAPHORE(g_free_fragments_mutex);
-+
-+static irqreturn_t
-+vchiq_doorbell_irq(int irq, void *dev_id);
-+
-+static struct vchiq_pagelist_info *
-+create_pagelist(char *buf, char __user *ubuf, size_t count, unsigned short type);
-+
-+static void
-+free_pagelist(struct vchiq_pagelist_info *pagelistinfo,
-+	      int actual);
-+
- static enum vchiq_status
- vchiq_blocking_bulk_transfer(unsigned int handle, void *data,
- 	unsigned int size, enum vchiq_bulk_dir dir);
- 
-+int vchiq_platform_init(struct platform_device *pdev, struct vchiq_state *state)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device *dma_dev = NULL;
-+	struct vchiq_drvdata *drvdata = platform_get_drvdata(pdev);
-+	struct rpi_firmware *fw = drvdata->fw;
-+	struct vchiq_slot_zero *vchiq_slot_zero;
-+	void *slot_mem;
-+	dma_addr_t slot_phys;
-+	u32 channelbase;
-+	int slot_mem_size, frag_mem_size;
-+	int err, irq, i;
-+
-+	/*
-+	 * VCHI messages between the CPU and firmware use
-+	 * 32-bit bus addresses.
-+	 */
-+	err = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
-+
-+	if (err < 0)
-+		return err;
-+
-+	g_cache_line_size = drvdata->cache_line_size;
-+	g_fragments_size = 2 * g_cache_line_size;
-+
-+	if (drvdata->use_36bit_addrs) {
-+		struct device_node *dma_node =
-+			of_find_compatible_node(NULL, NULL, "brcm,bcm2711-dma");
-+
-+		if (dma_node) {
-+			struct platform_device *pdev;
-+
-+			pdev = of_find_device_by_node(dma_node);
-+			if (pdev)
-+				dma_dev = &pdev->dev;
-+			of_node_put(dma_node);
-+			g_use_36bit_addrs = true;
-+		} else {
-+			dev_err(dev, "40-bit DMA controller not found\n");
-+			return -EINVAL;
-+		}
-+	}
-+
-+	/* Allocate space for the channels in coherent memory */
-+	slot_mem_size = PAGE_ALIGN(TOTAL_SLOTS * VCHIQ_SLOT_SIZE);
-+	frag_mem_size = PAGE_ALIGN(g_fragments_size * MAX_FRAGMENTS);
-+
-+	slot_mem = dmam_alloc_coherent(dev, slot_mem_size + frag_mem_size,
-+				       &slot_phys, GFP_KERNEL);
-+	if (!slot_mem) {
-+		dev_err(dev, "could not allocate DMA memory\n");
-+		return -ENOMEM;
-+	}
-+
-+	WARN_ON(((unsigned long)slot_mem & (PAGE_SIZE - 1)) != 0);
-+	channelbase = slot_phys;
-+
-+	vchiq_slot_zero = vchiq_init_slots(slot_mem, slot_mem_size);
-+	if (!vchiq_slot_zero)
-+		return -EINVAL;
-+
-+	vchiq_slot_zero->platform_data[VCHIQ_PLATFORM_FRAGMENTS_OFFSET_IDX] =
-+		channelbase + slot_mem_size;
-+	vchiq_slot_zero->platform_data[VCHIQ_PLATFORM_FRAGMENTS_COUNT_IDX] =
-+		MAX_FRAGMENTS;
-+
-+	g_fragments_base = (char *)slot_mem + slot_mem_size;
-+
-+	g_free_fragments = g_fragments_base;
-+	for (i = 0; i < (MAX_FRAGMENTS - 1); i++) {
-+		*(char **)&g_fragments_base[i*g_fragments_size] =
-+			&g_fragments_base[(i + 1)*g_fragments_size];
-+	}
-+	*(char **)&g_fragments_base[i * g_fragments_size] = NULL;
-+	sema_init(&g_free_fragments_sema, MAX_FRAGMENTS);
-+
-+	if (vchiq_init_state(state, vchiq_slot_zero) != VCHIQ_SUCCESS)
-+		return -EINVAL;
-+
-+	g_regs = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(g_regs))
-+		return PTR_ERR(g_regs);
-+
-+	irq = platform_get_irq(pdev, 0);
-+	if (irq <= 0)
-+		return irq;
-+
-+	err = devm_request_irq(dev, irq, vchiq_doorbell_irq, IRQF_IRQPOLL,
-+			       "VCHIQ doorbell", state);
-+	if (err) {
-+		dev_err(dev, "failed to register irq=%d\n", irq);
-+		return err;
-+	}
-+
-+	/* Send the base address of the slots to VideoCore */
-+	err = rpi_firmware_property(fw, RPI_FIRMWARE_VCHIQ_INIT,
-+				    &channelbase, sizeof(channelbase));
-+	if (err || channelbase) {
-+		dev_err(dev, "failed to set channelbase\n");
-+		return err ? : -ENXIO;
-+	}
-+
-+	g_dev = dev;
-+	g_dma_dev = dma_dev ?: dev;
-+	g_dma_pool = dmam_pool_create("vchiq_scatter_pool", dev,
-+				      VCHIQ_DMA_POOL_SIZE, g_cache_line_size,
-+				      0);
-+	if (!g_dma_pool) {
-+		dev_err(dev, "failed to create dma pool");
-+		return -ENOMEM;
-+	}
-+
-+	vchiq_log_info(vchiq_arm_log_level,
-+		"vchiq_init - done (slots %pK, phys %pad)",
-+		vchiq_slot_zero, &slot_phys);
-+
-+	vchiq_call_connected_callbacks();
-+
-+	return 0;
-+}
-+
-+enum vchiq_status
-+vchiq_platform_init_state(struct vchiq_state *state)
-+{
-+	enum vchiq_status status = VCHIQ_SUCCESS;
-+	struct vchiq_2835_state *platform_state;
-+
-+	state->platform_state = kzalloc(sizeof(*platform_state), GFP_KERNEL);
-+	if (!state->platform_state)
-+		return VCHIQ_ERROR;
-+
-+	platform_state = (struct vchiq_2835_state *)state->platform_state;
-+
-+	platform_state->inited = 1;
-+	status = vchiq_arm_init_state(state, &platform_state->arm_state);
-+
-+	if (status != VCHIQ_SUCCESS)
-+		platform_state->inited = 0;
-+
-+	return status;
-+}
-+
-+struct vchiq_arm_state*
-+vchiq_platform_get_arm_state(struct vchiq_state *state)
-+{
-+	struct vchiq_2835_state *platform_state;
-+
-+	platform_state   = (struct vchiq_2835_state *)state->platform_state;
-+
-+	WARN_ON_ONCE(!platform_state->inited);
-+
-+	return &platform_state->arm_state;
-+}
-+
-+void
-+remote_event_signal(struct remote_event *event)
-+{
-+	wmb();
-+
-+	event->fired = 1;
-+
-+	dsb(sy);         /* data barrier operation */
-+
-+	if (event->armed)
-+		writel(0, g_regs + BELL2); /* trigger vc interrupt */
-+}
-+
-+enum vchiq_status
-+vchiq_prepare_bulk_data(struct vchiq_bulk *bulk, void *offset,
-+			void __user *uoffset, int size, int dir)
-+{
-+	struct vchiq_pagelist_info *pagelistinfo;
-+
-+	pagelistinfo = create_pagelist(offset, uoffset, size,
-+				       (dir == VCHIQ_BULK_RECEIVE)
-+				       ? PAGELIST_READ
-+				       : PAGELIST_WRITE);
-+
-+	if (!pagelistinfo)
-+		return VCHIQ_ERROR;
-+
-+	bulk->data = pagelistinfo->dma_addr;
-+
-+	/*
-+	 * Store the pagelistinfo address in remote_data,
-+	 * which isn't used by the slave.
-+	 */
-+	bulk->remote_data = pagelistinfo;
-+
-+	return VCHIQ_SUCCESS;
-+}
-+
-+void
-+vchiq_complete_bulk(struct vchiq_bulk *bulk)
-+{
-+	if (bulk && bulk->remote_data && bulk->actual)
-+		free_pagelist((struct vchiq_pagelist_info *)bulk->remote_data,
-+			      bulk->actual);
-+}
-+
-+int vchiq_dump_platform_state(void *dump_context)
-+{
-+	char buf[80];
-+	int len;
-+
-+	len = snprintf(buf, sizeof(buf),
-+		"  Platform: 2835 (VC master)");
-+	return vchiq_dump(dump_context, buf, len + 1);
-+}
-+
-+/*
-+ * Local functions
-+ */
-+
-+static irqreturn_t
-+vchiq_doorbell_irq(int irq, void *dev_id)
-+{
-+	struct vchiq_state *state = dev_id;
-+	irqreturn_t ret = IRQ_NONE;
-+	unsigned int status;
-+
-+	/* Read (and clear) the doorbell */
-+	status = readl(g_regs + BELL0);
-+
-+	if (status & 0x4) {  /* Was the doorbell rung? */
-+		remote_event_pollall(state);
-+		ret = IRQ_HANDLED;
-+	}
-+
-+	return ret;
-+}
-+
-+static void
-+cleanup_pagelistinfo(struct vchiq_pagelist_info *pagelistinfo)
-+{
-+	if (pagelistinfo->scatterlist_mapped) {
-+		dma_unmap_sg(g_dma_dev, pagelistinfo->scatterlist,
-+			     pagelistinfo->num_pages, pagelistinfo->dma_dir);
-+	}
-+
-+	if (pagelistinfo->pages_need_release)
-+		unpin_user_pages(pagelistinfo->pages, pagelistinfo->num_pages);
-+
-+	if (pagelistinfo->is_from_pool) {
-+		dma_pool_free(g_dma_pool, pagelistinfo->pagelist,
-+			      pagelistinfo->dma_addr);
-+	} else {
-+		dma_free_coherent(g_dev, pagelistinfo->pagelist_buffer_size,
-+				  pagelistinfo->pagelist,
-+				  pagelistinfo->dma_addr);
-+	}
-+}
-+
-+/* There is a potential problem with partial cache lines (pages?)
-+ * at the ends of the block when reading. If the CPU accessed anything in
-+ * the same line (page?) then it may have pulled old data into the cache,
-+ * obscuring the new data underneath. We can solve this by transferring the
-+ * partial cache lines separately, and allowing the ARM to copy into the
-+ * cached area.
-+ */
-+
-+static struct vchiq_pagelist_info *
-+create_pagelist(char *buf, char __user *ubuf,
-+		size_t count, unsigned short type)
-+{
-+	struct pagelist *pagelist;
-+	struct vchiq_pagelist_info *pagelistinfo;
-+	struct page **pages;
-+	u32 *addrs;
-+	unsigned int num_pages, offset, i, k;
-+	int actual_pages;
-+	bool is_from_pool;
-+	size_t pagelist_size;
-+	struct scatterlist *scatterlist, *sg;
-+	int dma_buffers;
-+	dma_addr_t dma_addr;
-+
-+	if (count >= INT_MAX - PAGE_SIZE)
-+		return NULL;
-+
-+	if (buf)
-+		offset = (uintptr_t)buf & (PAGE_SIZE - 1);
-+	else
-+		offset = (uintptr_t)ubuf & (PAGE_SIZE - 1);
-+	num_pages = DIV_ROUND_UP(count + offset, PAGE_SIZE);
-+
-+	if (num_pages > (SIZE_MAX - sizeof(struct pagelist) -
-+			 sizeof(struct vchiq_pagelist_info)) /
-+			(sizeof(u32) + sizeof(pages[0]) +
-+			 sizeof(struct scatterlist)))
-+		return NULL;
-+
-+	pagelist_size = sizeof(struct pagelist) +
-+			(num_pages * sizeof(u32)) +
-+			(num_pages * sizeof(pages[0]) +
-+			(num_pages * sizeof(struct scatterlist))) +
-+			sizeof(struct vchiq_pagelist_info);
-+
-+	/* Allocate enough storage to hold the page pointers and the page
-+	 * list
-+	 */
-+	if (pagelist_size > VCHIQ_DMA_POOL_SIZE) {
-+		pagelist = dma_alloc_coherent(g_dev,
-+					       pagelist_size,
-+					       &dma_addr,
-+					       GFP_KERNEL);
-+		is_from_pool = false;
-+	} else {
-+		pagelist = dma_pool_alloc(g_dma_pool, GFP_KERNEL, &dma_addr);
-+		is_from_pool = true;
-+	}
-+
-+	vchiq_log_trace(vchiq_arm_log_level, "%s - %pK", __func__, pagelist);
-+
-+	if (!pagelist)
-+		return NULL;
-+
-+	addrs		= pagelist->addrs;
-+	pages		= (struct page **)(addrs + num_pages);
-+	scatterlist	= (struct scatterlist *)(pages + num_pages);
-+	pagelistinfo	= (struct vchiq_pagelist_info *)
-+			  (scatterlist + num_pages);
-+
-+	pagelist->length = count;
-+	pagelist->type = type;
-+	pagelist->offset = offset;
-+
-+	/* Populate the fields of the pagelistinfo structure */
-+	pagelistinfo->pagelist = pagelist;
-+	pagelistinfo->pagelist_buffer_size = pagelist_size;
-+	pagelistinfo->dma_addr = dma_addr;
-+	pagelistinfo->is_from_pool = is_from_pool;
-+	pagelistinfo->dma_dir =  (type == PAGELIST_WRITE) ?
-+				  DMA_TO_DEVICE : DMA_FROM_DEVICE;
-+	pagelistinfo->num_pages = num_pages;
-+	pagelistinfo->pages_need_release = 0;
-+	pagelistinfo->pages = pages;
-+	pagelistinfo->scatterlist = scatterlist;
-+	pagelistinfo->scatterlist_mapped = 0;
-+
-+	if (buf) {
-+		unsigned long length = count;
-+		unsigned int off = offset;
-+
-+		for (actual_pages = 0; actual_pages < num_pages;
-+		     actual_pages++) {
-+			struct page *pg =
-+				vmalloc_to_page((buf +
-+						 (actual_pages * PAGE_SIZE)));
-+			size_t bytes = PAGE_SIZE - off;
-+
-+			if (!pg) {
-+				cleanup_pagelistinfo(pagelistinfo);
-+				return NULL;
-+			}
-+
-+			if (bytes > length)
-+				bytes = length;
-+			pages[actual_pages] = pg;
-+			length -= bytes;
-+			off = 0;
-+		}
-+		/* do not try and release vmalloc pages */
-+	} else {
-+		actual_pages = pin_user_pages_fast(
-+					  (unsigned long)ubuf & PAGE_MASK,
-+					  num_pages,
-+					  type == PAGELIST_READ,
-+					  pages);
-+
-+		if (actual_pages != num_pages) {
-+			vchiq_log_info(vchiq_arm_log_level,
-+				       "%s - only %d/%d pages locked",
-+				       __func__, actual_pages, num_pages);
-+
-+			/* This is probably due to the process being killed */
-+			if (actual_pages > 0)
-+				unpin_user_pages(pages, actual_pages);
-+			cleanup_pagelistinfo(pagelistinfo);
-+			return NULL;
-+		}
-+		 /* release user pages */
-+		pagelistinfo->pages_need_release = 1;
-+	}
-+
-+	/*
-+	 * Initialize the scatterlist so that the magic cookie
-+	 *  is filled if debugging is enabled
-+	 */
-+	sg_init_table(scatterlist, num_pages);
-+	/* Now set the pages for each scatterlist */
-+	for (i = 0; i < num_pages; i++)	{
-+		unsigned int len = PAGE_SIZE - offset;
-+
-+		if (len > count)
-+			len = count;
-+		sg_set_page(scatterlist + i, pages[i], len, offset);
-+		offset = 0;
-+		count -= len;
-+	}
-+
-+	dma_buffers = dma_map_sg(g_dma_dev,
-+				 scatterlist,
-+				 num_pages,
-+				 pagelistinfo->dma_dir);
-+
-+	if (dma_buffers == 0) {
-+		cleanup_pagelistinfo(pagelistinfo);
-+		return NULL;
-+	}
-+
-+	pagelistinfo->scatterlist_mapped = 1;
-+
-+	/* Combine adjacent blocks for performance */
-+	k = 0;
-+	if (g_use_36bit_addrs) {
-+		for_each_sg(scatterlist, sg, dma_buffers, i) {
-+			u32 len = sg_dma_len(sg);
-+			u64 addr = sg_dma_address(sg);
-+			u32 page_id = (u32)((addr >> 4) & ~0xff);
-+			u32 sg_pages = (len + PAGE_SIZE - 1) >> PAGE_SHIFT;
-+
-+			/* Note: addrs is the address + page_count - 1
-+			 * The firmware expects blocks after the first to be page-
-+			 * aligned and a multiple of the page size
-+			 */
-+			WARN_ON(len == 0);
-+			WARN_ON(i &&
-+				(i != (dma_buffers - 1)) && (len & ~PAGE_MASK));
-+			WARN_ON(i && (addr & ~PAGE_MASK));
-+			WARN_ON(upper_32_bits(addr) > 0xf);
-+			if (k > 0 &&
-+			    ((addrs[k - 1] & ~0xff) +
-+			     (((addrs[k - 1] & 0xff) + 1) << 8)
-+			     == page_id)) {
-+				u32 inc_pages = min(sg_pages,
-+						    0xff - (addrs[k - 1] & 0xff));
-+				addrs[k - 1] += inc_pages;
-+				page_id += inc_pages << 8;
-+				sg_pages -= inc_pages;
-+			}
-+			while (sg_pages) {
-+				u32 inc_pages = min(sg_pages, 0x100u);
-+				addrs[k++] = page_id | (inc_pages - 1);
-+				page_id += inc_pages << 8;
-+				sg_pages -= inc_pages;
-+			}
-+		}
-+	} else {
-+		for_each_sg(scatterlist, sg, dma_buffers, i) {
-+			u32 len = sg_dma_len(sg);
-+			u32 addr = sg_dma_address(sg);
-+			u32 new_pages = (len + PAGE_SIZE - 1) >> PAGE_SHIFT;
-+
-+			/* Note: addrs is the address + page_count - 1
-+			 * The firmware expects blocks after the first to be page-
-+			 * aligned and a multiple of the page size
-+			 */
-+			WARN_ON(len == 0);
-+			WARN_ON(i && (i != (dma_buffers - 1)) && (len & ~PAGE_MASK));
-+			WARN_ON(i && (addr & ~PAGE_MASK));
-+			if (k > 0 &&
-+			    ((addrs[k - 1] & PAGE_MASK) +
-+			     (((addrs[k - 1] & ~PAGE_MASK) + 1) << PAGE_SHIFT))
-+			    == (addr & PAGE_MASK))
-+				addrs[k - 1] += new_pages;
-+			else
-+				addrs[k++] = (addr & PAGE_MASK) | (new_pages - 1);
-+		}
-+	}
-+
-+	/* Partial cache lines (fragments) require special measures */
-+	if ((type == PAGELIST_READ) &&
-+		((pagelist->offset & (g_cache_line_size - 1)) ||
-+		((pagelist->offset + pagelist->length) &
-+		(g_cache_line_size - 1)))) {
-+		char *fragments;
-+
-+		if (down_interruptible(&g_free_fragments_sema)) {
-+			cleanup_pagelistinfo(pagelistinfo);
-+			return NULL;
-+		}
-+
-+		WARN_ON(!g_free_fragments);
-+
-+		down(&g_free_fragments_mutex);
-+		fragments = g_free_fragments;
-+		WARN_ON(!fragments);
-+		g_free_fragments = *(char **) g_free_fragments;
-+		up(&g_free_fragments_mutex);
-+		pagelist->type = PAGELIST_READ_WITH_FRAGMENTS +
-+			(fragments - g_fragments_base) / g_fragments_size;
-+	}
-+
-+	return pagelistinfo;
-+}
-+
-+static void
-+free_pagelist(struct vchiq_pagelist_info *pagelistinfo,
-+	      int actual)
-+{
-+	struct pagelist *pagelist = pagelistinfo->pagelist;
-+	struct page **pages = pagelistinfo->pages;
-+	unsigned int num_pages = pagelistinfo->num_pages;
-+
-+	vchiq_log_trace(vchiq_arm_log_level, "%s - %pK, %d",
-+			__func__, pagelistinfo->pagelist, actual);
-+
-+	/*
-+	 * NOTE: dma_unmap_sg must be called before the
-+	 * cpu can touch any of the data/pages.
-+	 */
-+	dma_unmap_sg(g_dma_dev, pagelistinfo->scatterlist,
-+		     pagelistinfo->num_pages, pagelistinfo->dma_dir);
-+	pagelistinfo->scatterlist_mapped = 0;
-+
-+	/* Deal with any partial cache lines (fragments) */
-+	if (pagelist->type >= PAGELIST_READ_WITH_FRAGMENTS) {
-+		char *fragments = g_fragments_base +
-+			(pagelist->type - PAGELIST_READ_WITH_FRAGMENTS) *
-+			g_fragments_size;
-+		int head_bytes, tail_bytes;
-+
-+		head_bytes = (g_cache_line_size - pagelist->offset) &
-+			(g_cache_line_size - 1);
-+		tail_bytes = (pagelist->offset + actual) &
-+			(g_cache_line_size - 1);
-+
-+		if ((actual >= 0) && (head_bytes != 0)) {
-+			if (head_bytes > actual)
-+				head_bytes = actual;
-+
-+			memcpy((char *)kmap(pages[0]) +
-+				pagelist->offset,
-+				fragments,
-+				head_bytes);
-+			kunmap(pages[0]);
-+		}
-+		if ((actual >= 0) && (head_bytes < actual) &&
-+			(tail_bytes != 0)) {
-+			memcpy((char *)kmap(pages[num_pages - 1]) +
-+				((pagelist->offset + actual) &
-+				(PAGE_SIZE - 1) & ~(g_cache_line_size - 1)),
-+				fragments + g_cache_line_size,
-+				tail_bytes);
-+			kunmap(pages[num_pages - 1]);
-+		}
-+
-+		down(&g_free_fragments_mutex);
-+		*(char **)fragments = g_free_fragments;
-+		g_free_fragments = fragments;
-+		up(&g_free_fragments_mutex);
-+		up(&g_free_fragments_sema);
-+	}
-+
-+	/* Need to mark all the pages dirty. */
-+	if (pagelist->type != PAGELIST_WRITE &&
-+	    pagelistinfo->pages_need_release) {
-+		unsigned int i;
-+
-+		for (i = 0; i < num_pages; i++)
-+			set_page_dirty(pages[i]);
-+	}
-+
-+	cleanup_pagelistinfo(pagelistinfo);
-+}
-+
- #define VCHIQ_INIT_RETRIES 10
- enum vchiq_status vchiq_initialise(struct vchiq_instance **instance_out)
- {
--- 
-2.25.1
-
+On 6/11/2021 3:22 PM, Vidya Sagar wrote:
+> Hi Kishon,
+> Apologies for bringup it up this late.
+> I'm wondering if there was any issue which this patch tried to address?
+> Actually, "The pci_epc_ops is not intended to be invoked from interrupt 
+> context" isn't true in case of Tegra194. We do call 
+> dw_pcie_ep_init_notify() API from threaded irq service routine and it 
+> eventually calls mutext_lock() of pci_epc_get_features() which is 
+> reusulting in the following warning log.
+> BUG: sleeping function called from invalid context at 
+> kernel/locking/mutex.c:
+> Would like hear your comments on it.
+> 
+> Thanks,
+> Vidya Sagar
+> 
+> On 2/12/2020 4:55 PM, Kishon Vijay Abraham I wrote:
+>> External email: Use caution opening links or attachments
+>>
+>>
+>> The pci_epc_ops is not intended to be invoked from interrupt context.
+>> Hence replace spin_lock_irqsave and spin_unlock_irqrestore with
+>> mutex_lock and mutex_unlock respectively.
+>>
+>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+>> ---
+>>   drivers/pci/endpoint/pci-epc-core.c | 82 +++++++++++------------------
+>>   include/linux/pci-epc.h             |  6 +--
+>>   2 files changed, 34 insertions(+), 54 deletions(-)
+>>
+>> diff --git a/drivers/pci/endpoint/pci-epc-core.c 
+>> b/drivers/pci/endpoint/pci-epc-core.c
+>> index 2f6436599fcb..e51a12ed85bb 100644
+>> --- a/drivers/pci/endpoint/pci-epc-core.c
+>> +++ b/drivers/pci/endpoint/pci-epc-core.c
+>> @@ -120,7 +120,6 @@ const struct pci_epc_features 
+>> *pci_epc_get_features(struct pci_epc *epc,
+>>                                                      u8 func_no)
+>>   {
+>>          const struct pci_epc_features *epc_features;
+>> -       unsigned long flags;
+>>
+>>          if (IS_ERR_OR_NULL(epc) || func_no >= epc->max_functions)
+>>                  return NULL;
+>> @@ -128,9 +127,9 @@ const struct pci_epc_features 
+>> *pci_epc_get_features(struct pci_epc *epc,
+>>          if (!epc->ops->get_features)
+>>                  return NULL;
+>>
+>> -       spin_lock_irqsave(&epc->lock, flags);
+>> +       mutex_lock(&epc->lock);
+>>          epc_features = epc->ops->get_features(epc, func_no);
+>> -       spin_unlock_irqrestore(&epc->lock, flags);
+>> +       mutex_unlock(&epc->lock);
+>>
+>>          return epc_features;
+>>   }
+>> @@ -144,14 +143,12 @@ EXPORT_SYMBOL_GPL(pci_epc_get_features);
+>>    */
+>>   void pci_epc_stop(struct pci_epc *epc)
+>>   {
+>> -       unsigned long flags;
+>> -
+>>          if (IS_ERR(epc) || !epc->ops->stop)
+>>                  return;
+>>
+>> -       spin_lock_irqsave(&epc->lock, flags);
+>> +       mutex_lock(&epc->lock);
+>>          epc->ops->stop(epc);
+>> -       spin_unlock_irqrestore(&epc->lock, flags);
+>> +       mutex_unlock(&epc->lock);
+>>   }
+>>   EXPORT_SYMBOL_GPL(pci_epc_stop);
+>>
+>> @@ -164,7 +161,6 @@ EXPORT_SYMBOL_GPL(pci_epc_stop);
+>>   int pci_epc_start(struct pci_epc *epc)
+>>   {
+>>          int ret;
+>> -       unsigned long flags;
+>>
+>>          if (IS_ERR(epc))
+>>                  return -EINVAL;
+>> @@ -172,9 +168,9 @@ int pci_epc_start(struct pci_epc *epc)
+>>          if (!epc->ops->start)
+>>                  return 0;
+>>
+>> -       spin_lock_irqsave(&epc->lock, flags);
+>> +       mutex_lock(&epc->lock);
+>>          ret = epc->ops->start(epc);
+>> -       spin_unlock_irqrestore(&epc->lock, flags);
+>> +       mutex_unlock(&epc->lock);
+>>
+>>          return ret;
+>>   }
+>> @@ -193,7 +189,6 @@ int pci_epc_raise_irq(struct pci_epc *epc, u8 
+>> func_no,
+>>                        enum pci_epc_irq_type type, u16 interrupt_num)
+>>   {
+>>          int ret;
+>> -       unsigned long flags;
+>>
+>>          if (IS_ERR_OR_NULL(epc) || func_no >= epc->max_functions)
+>>                  return -EINVAL;
+>> @@ -201,9 +196,9 @@ int pci_epc_raise_irq(struct pci_epc *epc, u8 
+>> func_no,
+>>          if (!epc->ops->raise_irq)
+>>                  return 0;
+>>
+>> -       spin_lock_irqsave(&epc->lock, flags);
+>> +       mutex_lock(&epc->lock);
+>>          ret = epc->ops->raise_irq(epc, func_no, type, interrupt_num);
+>> -       spin_unlock_irqrestore(&epc->lock, flags);
+>> +       mutex_unlock(&epc->lock);
+>>
+>>          return ret;
+>>   }
+>> @@ -219,7 +214,6 @@ EXPORT_SYMBOL_GPL(pci_epc_raise_irq);
+>>   int pci_epc_get_msi(struct pci_epc *epc, u8 func_no)
+>>   {
+>>          int interrupt;
+>> -       unsigned long flags;
+>>
+>>          if (IS_ERR_OR_NULL(epc) || func_no >= epc->max_functions)
+>>                  return 0;
+>> @@ -227,9 +221,9 @@ int pci_epc_get_msi(struct pci_epc *epc, u8 func_no)
+>>          if (!epc->ops->get_msi)
+>>                  return 0;
+>>
+>> -       spin_lock_irqsave(&epc->lock, flags);
+>> +       mutex_lock(&epc->lock);
+>>          interrupt = epc->ops->get_msi(epc, func_no);
+>> -       spin_unlock_irqrestore(&epc->lock, flags);
+>> +       mutex_unlock(&epc->lock);
+>>
+>>          if (interrupt < 0)
+>>                  return 0;
+>> @@ -252,7 +246,6 @@ int pci_epc_set_msi(struct pci_epc *epc, u8 
+>> func_no, u8 interrupts)
+>>   {
+>>          int ret;
+>>          u8 encode_int;
+>> -       unsigned long flags;
+>>
+>>          if (IS_ERR_OR_NULL(epc) || func_no >= epc->max_functions ||
+>>              interrupts > 32)
+>> @@ -263,9 +256,9 @@ int pci_epc_set_msi(struct pci_epc *epc, u8 
+>> func_no, u8 interrupts)
+>>
+>>          encode_int = order_base_2(interrupts);
+>>
+>> -       spin_lock_irqsave(&epc->lock, flags);
+>> +       mutex_lock(&epc->lock);
+>>          ret = epc->ops->set_msi(epc, func_no, encode_int);
+>> -       spin_unlock_irqrestore(&epc->lock, flags);
+>> +       mutex_unlock(&epc->lock);
+>>
+>>          return ret;
+>>   }
+>> @@ -281,7 +274,6 @@ EXPORT_SYMBOL_GPL(pci_epc_set_msi);
+>>   int pci_epc_get_msix(struct pci_epc *epc, u8 func_no)
+>>   {
+>>          int interrupt;
+>> -       unsigned long flags;
+>>
+>>          if (IS_ERR_OR_NULL(epc) || func_no >= epc->max_functions)
+>>                  return 0;
+>> @@ -289,9 +281,9 @@ int pci_epc_get_msix(struct pci_epc *epc, u8 func_no)
+>>          if (!epc->ops->get_msix)
+>>                  return 0;
+>>
+>> -       spin_lock_irqsave(&epc->lock, flags);
+>> +       mutex_lock(&epc->lock);
+>>          interrupt = epc->ops->get_msix(epc, func_no);
+>> -       spin_unlock_irqrestore(&epc->lock, flags);
+>> +       mutex_unlock(&epc->lock);
+>>
+>>          if (interrupt < 0)
+>>                  return 0;
+>> @@ -311,7 +303,6 @@ EXPORT_SYMBOL_GPL(pci_epc_get_msix);
+>>   int pci_epc_set_msix(struct pci_epc *epc, u8 func_no, u16 interrupts)
+>>   {
+>>          int ret;
+>> -       unsigned long flags;
+>>
+>>          if (IS_ERR_OR_NULL(epc) || func_no >= epc->max_functions ||
+>>              interrupts < 1 || interrupts > 2048)
+>> @@ -320,9 +311,9 @@ int pci_epc_set_msix(struct pci_epc *epc, u8 
+>> func_no, u16 interrupts)
+>>          if (!epc->ops->set_msix)
+>>                  return 0;
+>>
+>> -       spin_lock_irqsave(&epc->lock, flags);
+>> +       mutex_lock(&epc->lock);
+>>          ret = epc->ops->set_msix(epc, func_no, interrupts - 1);
+>> -       spin_unlock_irqrestore(&epc->lock, flags);
+>> +       mutex_unlock(&epc->lock);
+>>
+>>          return ret;
+>>   }
+>> @@ -339,17 +330,15 @@ EXPORT_SYMBOL_GPL(pci_epc_set_msix);
+>>   void pci_epc_unmap_addr(struct pci_epc *epc, u8 func_no,
+>>                          phys_addr_t phys_addr)
+>>   {
+>> -       unsigned long flags;
+>> -
+>>          if (IS_ERR_OR_NULL(epc) || func_no >= epc->max_functions)
+>>                  return;
+>>
+>>          if (!epc->ops->unmap_addr)
+>>                  return;
+>>
+>> -       spin_lock_irqsave(&epc->lock, flags);
+>> +       mutex_lock(&epc->lock);
+>>          epc->ops->unmap_addr(epc, func_no, phys_addr);
+>> -       spin_unlock_irqrestore(&epc->lock, flags);
+>> +       mutex_unlock(&epc->lock);
+>>   }
+>>   EXPORT_SYMBOL_GPL(pci_epc_unmap_addr);
+>>
+>> @@ -367,7 +356,6 @@ int pci_epc_map_addr(struct pci_epc *epc, u8 func_no,
+>>                       phys_addr_t phys_addr, u64 pci_addr, size_t size)
+>>   {
+>>          int ret;
+>> -       unsigned long flags;
+>>
+>>          if (IS_ERR_OR_NULL(epc) || func_no >= epc->max_functions)
+>>                  return -EINVAL;
+>> @@ -375,9 +363,9 @@ int pci_epc_map_addr(struct pci_epc *epc, u8 func_no,
+>>          if (!epc->ops->map_addr)
+>>                  return 0;
+>>
+>> -       spin_lock_irqsave(&epc->lock, flags);
+>> +       mutex_lock(&epc->lock);
+>>          ret = epc->ops->map_addr(epc, func_no, phys_addr, pci_addr, 
+>> size);
+>> -       spin_unlock_irqrestore(&epc->lock, flags);
+>> +       mutex_unlock(&epc->lock);
+>>
+>>          return ret;
+>>   }
+>> @@ -394,8 +382,6 @@ EXPORT_SYMBOL_GPL(pci_epc_map_addr);
+>>   void pci_epc_clear_bar(struct pci_epc *epc, u8 func_no,
+>>                         struct pci_epf_bar *epf_bar)
+>>   {
+>> -       unsigned long flags;
+>> -
+>>          if (IS_ERR_OR_NULL(epc) || func_no >= epc->max_functions ||
+>>              (epf_bar->barno == BAR_5 &&
+>>               epf_bar->flags & PCI_BASE_ADDRESS_MEM_TYPE_64))
+>> @@ -404,9 +390,9 @@ void pci_epc_clear_bar(struct pci_epc *epc, u8 
+>> func_no,
+>>          if (!epc->ops->clear_bar)
+>>                  return;
+>>
+>> -       spin_lock_irqsave(&epc->lock, flags);
+>> +       mutex_lock(&epc->lock);
+>>          epc->ops->clear_bar(epc, func_no, epf_bar);
+>> -       spin_unlock_irqrestore(&epc->lock, flags);
+>> +       mutex_unlock(&epc->lock);
+>>   }
+>>   EXPORT_SYMBOL_GPL(pci_epc_clear_bar);
+>>
+>> @@ -422,7 +408,6 @@ int pci_epc_set_bar(struct pci_epc *epc, u8 func_no,
+>>                      struct pci_epf_bar *epf_bar)
+>>   {
+>>          int ret;
+>> -       unsigned long irq_flags;
+>>          int flags = epf_bar->flags;
+>>
+>>          if (IS_ERR_OR_NULL(epc) || func_no >= epc->max_functions ||
+>> @@ -437,9 +422,9 @@ int pci_epc_set_bar(struct pci_epc *epc, u8 func_no,
+>>          if (!epc->ops->set_bar)
+>>                  return 0;
+>>
+>> -       spin_lock_irqsave(&epc->lock, irq_flags);
+>> +       mutex_lock(&epc->lock);
+>>          ret = epc->ops->set_bar(epc, func_no, epf_bar);
+>> -       spin_unlock_irqrestore(&epc->lock, irq_flags);
+>> +       mutex_unlock(&epc->lock);
+>>
+>>          return ret;
+>>   }
+>> @@ -460,7 +445,6 @@ int pci_epc_write_header(struct pci_epc *epc, u8 
+>> func_no,
+>>                           struct pci_epf_header *header)
+>>   {
+>>          int ret;
+>> -       unsigned long flags;
+>>
+>>          if (IS_ERR_OR_NULL(epc) || func_no >= epc->max_functions)
+>>                  return -EINVAL;
+>> @@ -468,9 +452,9 @@ int pci_epc_write_header(struct pci_epc *epc, u8 
+>> func_no,
+>>          if (!epc->ops->write_header)
+>>                  return 0;
+>>
+>> -       spin_lock_irqsave(&epc->lock, flags);
+>> +       mutex_lock(&epc->lock);
+>>          ret = epc->ops->write_header(epc, func_no, header);
+>> -       spin_unlock_irqrestore(&epc->lock, flags);
+>> +       mutex_unlock(&epc->lock);
+>>
+>>          return ret;
+>>   }
+>> @@ -487,8 +471,6 @@ EXPORT_SYMBOL_GPL(pci_epc_write_header);
+>>    */
+>>   int pci_epc_add_epf(struct pci_epc *epc, struct pci_epf *epf)
+>>   {
+>> -       unsigned long flags;
+>> -
+>>          if (epf->epc)
+>>                  return -EBUSY;
+>>
+>> @@ -500,9 +482,9 @@ int pci_epc_add_epf(struct pci_epc *epc, struct 
+>> pci_epf *epf)
+>>
+>>          epf->epc = epc;
+>>
+>> -       spin_lock_irqsave(&epc->lock, flags);
+>> +       mutex_lock(&epc->lock);
+>>          list_add_tail(&epf->list, &epc->pci_epf);
+>> -       spin_unlock_irqrestore(&epc->lock, flags);
+>> +       mutex_unlock(&epc->lock);
+>>
+>>          return 0;
+>>   }
+>> @@ -517,15 +499,13 @@ EXPORT_SYMBOL_GPL(pci_epc_add_epf);
+>>    */
+>>   void pci_epc_remove_epf(struct pci_epc *epc, struct pci_epf *epf)
+>>   {
+>> -       unsigned long flags;
+>> -
+>>          if (!epc || IS_ERR(epc) || !epf)
+>>                  return;
+>>
+>> -       spin_lock_irqsave(&epc->lock, flags);
+>> +       mutex_lock(&epc->lock);
+>>          list_del(&epf->list);
+>>          epf->epc = NULL;
+>> -       spin_unlock_irqrestore(&epc->lock, flags);
+>> +       mutex_unlock(&epc->lock);
+>>   }
+>>   EXPORT_SYMBOL_GPL(pci_epc_remove_epf);
+>>
+>> @@ -604,7 +584,7 @@ __pci_epc_create(struct device *dev, const struct 
+>> pci_epc_ops *ops,
+>>                  goto err_ret;
+>>          }
+>>
+>> -       spin_lock_init(&epc->lock);
+>> +       mutex_init(&epc->lock);
+>>          INIT_LIST_HEAD(&epc->pci_epf);
+>>          ATOMIC_INIT_NOTIFIER_HEAD(&epc->notifier);
+>>
+>> diff --git a/include/linux/pci-epc.h b/include/linux/pci-epc.h
+>> index 36644ccd32ac..9dd60f2e9705 100644
+>> --- a/include/linux/pci-epc.h
+>> +++ b/include/linux/pci-epc.h
+>> @@ -88,7 +88,7 @@ struct pci_epc_mem {
+>>    * @mem: address space of the endpoint controller
+>>    * @max_functions: max number of functions that can be configured in 
+>> this EPC
+>>    * @group: configfs group representing the PCI EPC device
+>> - * @lock: spinlock to protect pci_epc ops
+>> + * @lock: mutex to protect pci_epc ops
+>>    * @notifier: used to notify EPF of any EPC events (like linkup)
+>>    */
+>>   struct pci_epc {
+>> @@ -98,8 +98,8 @@ struct pci_epc {
+>>          struct pci_epc_mem              *mem;
+>>          u8                              max_functions;
+>>          struct config_group             *group;
+>> -       /* spinlock to protect against concurrent access of EP 
+>> controller */
+>> -       spinlock_t                      lock;
+>> +       /* mutex to protect against concurrent access of EP controller */
+>> +       struct mutex                    lock;
+>>          struct atomic_notifier_head     notifier;
+>>   };
+>>
+>> -- 
+>> 2.17.1
+>>
