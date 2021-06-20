@@ -2,68 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDA83ADDEF
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 12:13:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 018523ADE04
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 13:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbhFTKPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 06:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53062 "EHLO
+        id S229606AbhFTLHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 07:07:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbhFTKPn (ORCPT
+        with ESMTP id S229516AbhFTLG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 06:15:43 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA76C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 03:13:29 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id g4so8243317pjk.0
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 03:13:29 -0700 (PDT)
+        Sun, 20 Jun 2021 07:06:57 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AACA2C061574;
+        Sun, 20 Jun 2021 04:04:45 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id y21so1124004plb.4;
+        Sun, 20 Jun 2021 04:04:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anisinha-ca.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=np6ohhXBWtPY12jb8/5kaMcgPuhRLshpNxAS67+N7Js=;
-        b=UjlanYdGOEAzXUILZffrYi8CMxiNrpzByTGgTcyQfHhBMBZGGCwzu1nAsl4SqS9Fy6
-         OKeXbZEDtlFYSL1t/EZrRV8KQUia6qFu7yicOtep8+KWQZI5cF49sFe+p8qiO64r9eAS
-         bL92KohRPoFHaLuLe6pzjbPeEP3OTRNnen2RPtICqzY0HlvlELh3cZRwah4k4moO3/N3
-         v9ZFbi5U8pwWkWFwwuaahTJIxTDpjmZrl4tsJxh3f/9raDSrSzVYB/UPWvurgiUyE1/q
-         YUWEXVvVxU1J20ogJuqLicdh0fpbllAfF6smHE3aKfuaP3H05+EJRup48M6aPSfHDTOO
-         DQjw==
+        bh=Hm+xu31YRuYg61DzdJ+EG1Au10NDFoDqRdnK9sTUPfw=;
+        b=gu5JKG5yi/doY7lZWTE2Go+m3li0+jak/AiaAanXeKdr9PsGmqWvJzTUW6eEuSdAXt
+         4e8xbUF6d8v0PAXVd8XZMotbhNJtQ+usKw1KhNpiIKxy+JDHULy5I9lXi2PeQWutaNHq
+         4M3giA+mCO4tUwh9UvxdoSaMEPLy/Z5ftv/7G1oOb7hD2Q+JxZDW8YFVFozDs1MXrIVs
+         RUpHOm1akIpKZToSJizcvQDV4iZg1iDX3qFyrvwiMgD6LicLJA3pxiBM5v+WD2DRtifW
+         KuHSBhCzYCcAm9u0pLHyfFCB0EREsqriqYWezsXySejtSZ7Ziv0zx0HmeUjkASVTKTDW
+         ZKDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=np6ohhXBWtPY12jb8/5kaMcgPuhRLshpNxAS67+N7Js=;
-        b=f6cCQuL4C6B8Z9HYYtDaPjVljQXKDmiP/f1lhFyPCfauWfZg+Xjc8V/ftX1afPkG9+
-         FTF1AWqRj63mjz+RuPqm/Ak2ncHEz/C63daxKVsAMNPd0SYtSkYeiEqGUivntdOIJNlC
-         n2iKGfJCXOISIlChT3o9WYTTMmeLqcJr7qoH7b529cnjZsQfoxZ2wuwKX0BP7cgS8mVz
-         3uh0naklrZ8h4LQyp+jBwYYaYuSFX6UVWYzKP6pXgwuSygVFjy9fsDjdIA7pBf4ff+tr
-         Bmxv4OTNo25AS73la59PlnDSjEosVre7hfnrMapng+dXUBIVuyAzaRxdTmaL+s2mS7pG
-         8C3Q==
-X-Gm-Message-State: AOAM530uaqCY8e2aG+9VsaPN/DLei+i+0y3c8jZ8CTvP9IutAmDchael
-        NZektQ4ZhB2JO8ZjGTrWg3hpRPS0DlyWVwaO
-X-Google-Smtp-Source: ABdhPJxcvrd8xNYNNkTT33cBIKQ6cqHMdAOO6qALpC+kDzWn3rpPEDAACMgDPX6PSsdSbuRzb3WlLQ==
-X-Received: by 2002:a17:90b:78e:: with SMTP id l14mr21296452pjz.110.1624184007678;
-        Sun, 20 Jun 2021 03:13:27 -0700 (PDT)
-Received: from anisinha-lenovo.ba.nuagenetworks.net ([115.96.112.22])
-        by smtp.googlemail.com with ESMTPSA id c25sm12151575pfo.130.2021.06.20.03.13.22
+        bh=Hm+xu31YRuYg61DzdJ+EG1Au10NDFoDqRdnK9sTUPfw=;
+        b=LVv27r9I685pitSqYzuOwee8UaESqLwUdo5kXTGpPEccpGcyW95km6SH4vIpM2pRvS
+         PuvkADBRZat4OPZJ102Pm+0c7c9ZrWQdCqMpTQ5rKM/+JxP5faRYRDKLDH+Ah3WmWSFx
+         Z1eDXv3ZG+d6VvAjPMU+jkntOAVYir7RoDLJBOs4wONmHV0HU1bNbos1wtaHbx/LKRi6
+         HHTVC6yY0yqqSQRhE4RA9zt5UWxW72na0rKtunuBQV9I7PD7Fzuq4pPhhNPjDqwNsmTJ
+         6/YeA13pyA4gxN2QQ5tVWFT6K7yDLChqr2Eagn5YMYk4ktrjrj2AK7spvOrM1U/8gj0W
+         Oyqg==
+X-Gm-Message-State: AOAM533CQnda6qlIrKAeGSIDTFFXrhOQC0P7P9co8ceEBxoQleaqY9NU
+        37+6JHEn7AQpLU+XkROvcAA=
+X-Google-Smtp-Source: ABdhPJyq3fgBPGP6rV2rxyDZ2CNUL6a6yAbLjE1a5ZFjAfpqVganmSwJGWtMN3CWWaPUKN0nG+j2qg==
+X-Received: by 2002:a17:902:720c:b029:11e:787d:407e with SMTP id ba12-20020a170902720cb029011e787d407emr13272957plb.31.1624187085036;
+        Sun, 20 Jun 2021 04:04:45 -0700 (PDT)
+Received: from localhost.localdomain ([118.200.190.93])
+        by smtp.gmail.com with ESMTPSA id h22sm2644876pfc.21.2021.06.20.04.04.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Jun 2021 03:13:27 -0700 (PDT)
-From:   Ani Sinha <ani@anisinha.ca>
-To:     linux-kernel@vger.kernel.org
-Cc:     anirban.sinha@nokia.com, Ani Sinha <ani@anisinha.ca>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH v3] Add kernel logs when sched clock unstable and NO_HZ_FULL is not possible
-Date:   Sun, 20 Jun 2021 15:43:12 +0530
-Message-Id: <20210620101312.1757363-1-ani@anisinha.ca>
+        Sun, 20 Jun 2021 04:04:44 -0700 (PDT)
+From:   Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch,
+        sumit.semwal@linaro.org, christian.koenig@amd.com
+Cc:     Desmond Cheong Zhi Xi <desmondcheongzx@gmail.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org,
+        skhan@linuxfoundation.org, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        emil.l.velikov@gmail.com
+Subject: [PATCH v3 0/2] drm: address potential UAF bugs with drm_master ptrs
+Date:   Sun, 20 Jun 2021 19:03:25 +0800
+Message-Id: <20210620110327.4964-1-desmondcheongzx@gmail.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -71,69 +68,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 4f49b90abb4aca ("sched-clock: Migrate to use new tick
-dependency mask model") had also removed the kernel warning
-message informing the user that it was not possible to turn
-on NO_HZ_FULL. Adding back that log message here. It is
-unhelpful when the kernel turns off NO_HZ_FULL silently
-without informing anyone.
-Also added a kernel log when sched clock is marked as unstable.
+This patch series addresses potential use-after-free errors when dereferencing pointers to struct drm_master. These were identified after one such bug was caught by Syzbot in drm_getunique():
+https://syzkaller.appspot.com/bug?id=148d2f1dfac64af52ffd27b661981a540724f803
 
-Signed-off-by: Ani Sinha <ani@anisinha.ca>
----
- kernel/sched/clock.c     |  5 ++++-
- kernel/time/tick-sched.c | 14 +++++++++++---
- 2 files changed, 15 insertions(+), 4 deletions(-)
+The series is broken up into two patches:
 
-changelog:
-v1: original patch
-v2: updated log message to make it non specific to sched clock. Also
-    added another log when sched clock is marked as unstable.
-v3: a bugfix to v2.
+1. Implement a locked version of drm_is_current_master() function that's used within drm_auth.c.
 
-diff --git a/kernel/sched/clock.c b/kernel/sched/clock.c
-index c2b2859ddd82..9f9fe658f8a5 100644
---- a/kernel/sched/clock.c
-+++ b/kernel/sched/clock.c
-@@ -192,8 +192,11 @@ void clear_sched_clock_stable(void)
- 
- 	smp_mb(); /* matches sched_clock_init_late() */
- 
--	if (static_key_count(&sched_clock_running.key) == 2)
-+	if (static_key_count(&sched_clock_running.key) == 2) {
-+		WARN_ONCE(sched_clock_stable(),
-+			  "sched clock is now marked unstable.");
- 		__clear_sched_clock_stable();
-+	}
- }
- 
- static void __sched_clock_gtod_offset(void)
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 828b091501ca..6e583aa2d160 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -937,10 +937,18 @@ static void tick_nohz_full_update_tick(struct tick_sched *ts)
- 	if (!ts->tick_stopped && ts->nohz_mode == NOHZ_MODE_INACTIVE)
- 		return;
- 
--	if (can_stop_full_tick(cpu, ts))
-+	if (can_stop_full_tick(cpu, ts)) {
- 		tick_nohz_stop_sched_tick(ts, cpu);
--	else if (ts->tick_stopped)
--		tick_nohz_restart_sched_tick(ts, ktime_get());
-+	} else {
-+		/*
-+		 * Don't allow the user to think they can get
-+		 * full NO_HZ with this machine.
-+		 */
-+		WARN_ONCE(tick_nohz_full_running,
-+			  "NO_HZ_FULL will not work for the current system.");
-+		if (ts->tick_stopped)
-+			tick_nohz_restart_sched_tick(ts, ktime_get());
-+	}
- #endif
- }
- 
+2. Identify areas in drm_lease.c where pointers to struct drm_master are dereferenced, and ensure that the master pointers are not freed during use.
+
+Changes in v2 -> v3:
+- Patch 1: Move the definition of drm_is_current_master and the _locked version higher up in drm_auth.c to avoid needing a forward declaration of drm_is_current_master_locked. As suggested by Daniel Vetter.
+
+- Patch 2: Instead of leaking drm_device.master_mutex into drm_lease.c to protect drm_master pointers, add a new drm_file_get_master() function that returns drm_file->master while increasing its reference count, to prevent drm_file->master from being freed. As suggested by Daniel Vetter.
+
+Changes in v1 -> v2:
+- Patch 2: Move the lock and assignment before the DRM_DEBUG_LEASE in drm_mode_get_lease_ioctl, as suggested by Emil Velikov.
+
+Desmond Cheong Zhi Xi (2):
+  drm: add a locked version of drm_is_current_master
+  drm: protect drm_master pointers in drm_lease.c
+
+ drivers/gpu/drm/drm_auth.c  | 73 +++++++++++++++++++++++++++----------
+ drivers/gpu/drm/drm_lease.c | 57 ++++++++++++++++++++---------
+ include/drm/drm_auth.h      |  1 +
+ include/drm/drm_file.h      | 15 ++++++--
+ 4 files changed, 107 insertions(+), 39 deletions(-)
+
 -- 
 2.25.1
 
