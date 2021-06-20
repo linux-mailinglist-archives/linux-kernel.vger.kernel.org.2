@@ -2,225 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9723ADFD4
+	by mail.lfdr.de (Postfix) with ESMTP id E5F5B3ADFD6
 	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 21:05:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229901AbhFTSpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 14:45:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbhFTSpJ (ORCPT
+        id S229945AbhFTTHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 15:07:30 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:60986 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229877AbhFTTH3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 14:45:09 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B37E9C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 11:42:56 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0DBBC29A;
-        Sun, 20 Jun 2021 20:42:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1624214572;
-        bh=LvZUAWriaHo0DLhtpKAS8zjZlU61JfwBr4YsVCduvp0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eYEWXoT04QXZicjMCUCevkExmAFrVN4JnMkaQ5+Zir0y2fe4MuETM81UxzuiTYpe3
-         Q8g3f2cz4UNOrA6w4yaD9AWVuj0emuoeQ7xJym9swYSNAhxc3r4mTjmbVchUq7riK4
-         p7EKcJMLYggmlmTGt4ccHKG/zzx7nnilsgq35UO4=
-Date:   Sun, 20 Jun 2021 21:42:26 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Dave Stevenson <dave.stevenson@raspberrypi.com>
-Cc:     Maxime Ripard <maxime@cerno.tech>, Marek Vasut <marex@denx.de>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Eric Anholt <eric@anholt.net>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        Phil Elwell <phil@raspberrypi.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] drm/vc4: dsi: Only register our component once a DSI
- device is attached
-Message-ID: <YM+MEsKjdkYAVI5X@pendragon.ideasonboard.com>
-References: <20200707101912.571531-1-maxime@cerno.tech>
- <YM6dgVb12oITNfc0@pendragon.ideasonboard.com>
- <CAPY8ntC+hzmfrJwWW0ytNdHSXruMKMi7N3K6tdJbp9gDBbJ3Qw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAPY8ntC+hzmfrJwWW0ytNdHSXruMKMi7N3K6tdJbp9gDBbJ3Qw@mail.gmail.com>
+        Sun, 20 Jun 2021 15:07:29 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:53240 helo=localhost)
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1lv2kt-0004Eq-BU; Sun, 20 Jun 2021 15:05:15 -0400
+Date:   Sun, 20 Jun 2021 15:05:14 -0400
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Olivier Langlois <olivier@trillion01.com>
+Message-Id: <e4614f9442d971016f47d69fbcba226f758377a8.1624215754.git.olivier@trillion01.com>
+Subject: [PATCH v2] io_uring: reduce latency by reissueing the operation
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dave,
+It is quite frequent that when an operation fails and returns EAGAIN,
+the data becomes available between that failure and the call to
+vfs_poll() done by io_arm_poll_handler().
 
-On Sun, Jun 20, 2021 at 03:29:03PM +0100, Dave Stevenson wrote:
-> On Sun, 20 Jun 2021 at 04:26, Laurent Pinchart wrote:
-> >
-> > Hi Maxime,
-> >
-> > I'm testing this, and I'm afraid it causes an issue with all the
-> > I2C-controlled bridges. I'm focussing on the newly merged ti-sn65dsi83
-> > driver at the moment, but other are affected the same way.
-> >
-> > With this patch, the DSI component is only added when the DSI device is
-> > attached to the host with mipi_dsi_attach(). In the ti-sn65dsi83 driver,
-> > this happens in the bridge attach callback, which is called when the
-> > bridge is attached by a call to drm_bridge_attach() in vc4_dsi_bind().
-> > This creates a circular dependency, and the DRM/KMS device is never
-> > created.
-> >
-> > How should this be solved ? Dave, I think you have shown an interest in
-> > the sn65dsi83 recently, any help would be appreciated. On a side note,
-> > I've tested the ti-sn65dsi83 driver on a v5.10 RPi kernel, without much
-> > success (on top of commit e1499baa0b0c I get a very weird frame rate -
-> > 147 fps of 99 fps instead of 60 fps - and nothing on the screen, and on
-> > top of the latest v5.10 RPi branch, I get lock-related warnings at every
-> > page flip), which is why I tried v5.12 and noticed this patch. Is it
-> > worth trying to bring up the display on the v5.10 RPi kernel in parallel
-> > to fixing the issue introduced in this patch, or is DSI known to be
-> > broken there ?
-> 
-> I've been looking at SN65DSI83/4, but as I don't have any hardware
-> I've largely been suggesting things to try to those on the forums who
-> do [1].
-> 
-> My branch at https://github.com/6by9/linux/tree/rpi-5.10.y-sn65dsi8x-marek
-> is the latest one I've worked on. It's rpi-5.10.y with Marek's driver
-> cherry-picked, and an overlay and simple-panel definition by others.
-> It also has a rework for vc4_dsi to use pm_runtime, instead of
-> breaking up the DSI bridge chain (which is flawed as it never calls
-> the bridge mode_set or mode_valid functions which sn65dsi83 relies
-> on).
-> 
-> I ran it on Friday in the lab and encountered an issue with vc4_dsi
-> should vc4_dsi_encoder_mode_fixup wish for a divider of 7 (required
-> for this 800x1280 panel over 4 lanes) where it resulted in an invalid
-> mode configuration. That resulted in patch [2] which then gave me
-> sensible numbers.
-> 
-> That branch with dtoverlay=vc4-kms-v3d and
-> dtoverlay=vc4-kms-dsi-ti-sn65dsi83 created all the expected devices,
-> and everything came up normally.
-> It was a busy day, but I think I even stuck a scope on the clock lanes
-> at that point and confirmed that they were at the link frequency
-> expected.
+Detecting the situation and reissuing the operation is much faster
+than going ahead and push the operation to the io-wq.
 
-Thanks, I'll test your branch and will report the results.
+Signed-off-by: Olivier Langlois <olivier@trillion01.com>
+---
+ fs/io_uring.c | 26 +++++++++++++++++---------
+ 1 file changed, 17 insertions(+), 9 deletions(-)
 
-> Coming back to this patch though, it isn't in 5.10 so I'm not seeing
-> the issues. As to the exact ordering of attaches, I can't claim
-> sufficient knowledge on that front.
-> I can try a cherry-pick of this patch to see what goes on, but it
-> won't be for a day or two.
-
-Let's see if Maxime has an opinion :-)
-
-> [1] Largely https://www.raspberrypi.org/forums/viewtopic.php?f=44&t=305690,
-> but ignore about the first 5 pages of the thread as different driver
-> versions were floating about. Most stuff after that is based on
-> Marek's driver.
-> [2] https://github.com/6by9/linux/commit/c3c774136a1e946109048711d16974be8d520aaa
-> 
-> > On Tue, Jul 07, 2020 at 12:19:12PM +0200, Maxime Ripard wrote:
-> > > If the DSI driver is the last to probe, component_add will try to run all
-> > > the bind callbacks straight away and return the error code.
-> > >
-> > > However, since we depend on a power domain, we're pretty much guaranteed to
-> > > be in that case on the BCM2711, and are just lucky on the previous SoCs
-> > > since the v3d also depends on that power domain and is further in the probe
-> > > order.
-> > >
-> > > In that case, the DSI host will not stick around in the system: the DSI
-> > > bind callback will be executed, will not find any DSI device attached and
-> > > will return EPROBE_DEFER, and we will then remove the DSI host and ask to
-> > > be probed later on.
-> > >
-> > > But since that host doesn't stick around, DSI devices like the RaspberryPi
-> > > touchscreen whose probe is not linked to the DSI host (unlike the usual DSI
-> > > devices that will be probed through the call to mipi_dsi_host_register)
-> > > cannot attach to the DSI host, and we thus end up in a situation where the
-> > > DSI host cannot probe because the panel hasn't probed yet, and the panel
-> > > cannot probe because the DSI host hasn't yet.
-> > >
-> > > In order to break this cycle, let's wait until there's a DSI device that
-> > > attaches to the DSI host to register the component and allow to progress
-> > > further.
-> > >
-> > > Suggested-by: Andrzej Hajda <a.hajda@samsung.com>
-> > > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> > > ---
-> > >  drivers/gpu/drm/vc4/vc4_dsi.c | 25 ++++++++-----------------
-> > >  1 file changed, 8 insertions(+), 17 deletions(-)
-> > >
-> > > diff --git a/drivers/gpu/drm/vc4/vc4_dsi.c b/drivers/gpu/drm/vc4/vc4_dsi.c
-> > > index eaf276978ee7..19aab4e7e209 100644
-> > > --- a/drivers/gpu/drm/vc4/vc4_dsi.c
-> > > +++ b/drivers/gpu/drm/vc4/vc4_dsi.c
-> > > @@ -1246,10 +1246,12 @@ static ssize_t vc4_dsi_host_transfer(struct mipi_dsi_host *host,
-> > >       return ret;
-> > >  }
-> > >
-> > > +static const struct component_ops vc4_dsi_ops;
-> > >  static int vc4_dsi_host_attach(struct mipi_dsi_host *host,
-> > >                              struct mipi_dsi_device *device)
-> > >  {
-> > >       struct vc4_dsi *dsi = host_to_dsi(host);
-> > > +     int ret;
-> > >
-> > >       dsi->lanes = device->lanes;
-> > >       dsi->channel = device->channel;
-> > > @@ -1284,6 +1286,12 @@ static int vc4_dsi_host_attach(struct mipi_dsi_host *host,
-> > >               return 0;
-> > >       }
-> > >
-> > > +     ret = component_add(&dsi->pdev->dev, &vc4_dsi_ops);
-> > > +     if (ret) {
-> > > +             mipi_dsi_host_unregister(&dsi->dsi_host);
-> > > +             return ret;
-> > > +     }
-> > > +
-> > >       return 0;
-> > >  }
-> > >
-> > > @@ -1662,7 +1670,6 @@ static int vc4_dsi_dev_probe(struct platform_device *pdev)
-> > >  {
-> > >       struct device *dev = &pdev->dev;
-> > >       struct vc4_dsi *dsi;
-> > > -     int ret;
-> > >
-> > >       dsi = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
-> > >       if (!dsi)
-> > > @@ -1670,26 +1677,10 @@ static int vc4_dsi_dev_probe(struct platform_device *pdev)
-> > >       dev_set_drvdata(dev, dsi);
-> > >
-> > >       dsi->pdev = pdev;
-> > > -
-> > > -     /* Note, the initialization sequence for DSI and panels is
-> > > -      * tricky.  The component bind above won't get past its
-> > > -      * -EPROBE_DEFER until the panel/bridge probes.  The
-> > > -      * panel/bridge will return -EPROBE_DEFER until it has a
-> > > -      * mipi_dsi_host to register its device to.  So, we register
-> > > -      * the host during pdev probe time, so vc4 as a whole can then
-> > > -      * -EPROBE_DEFER its component bind process until the panel
-> > > -      * successfully attaches.
-> > > -      */
-> > >       dsi->dsi_host.ops = &vc4_dsi_host_ops;
-> > >       dsi->dsi_host.dev = dev;
-> > >       mipi_dsi_host_register(&dsi->dsi_host);
-> > >
-> > > -     ret = component_add(&pdev->dev, &vc4_dsi_ops);
-> > > -     if (ret) {
-> > > -             mipi_dsi_host_unregister(&dsi->dsi_host);
-> > > -             return ret;
-> > > -     }
-> > > -
-> > >       return 0;
-> > >  }
-> > >
-
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index fa8794c61af7..6e037304429a 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -5143,7 +5143,10 @@ static __poll_t __io_arm_poll_handler(struct io_kiocb *req,
+ 	return mask;
+ }
+ 
+-static bool io_arm_poll_handler(struct io_kiocb *req)
++#define IO_ARM_POLL_OK    0
++#define IO_ARM_POLL_ERR   1
++#define IO_ARM_POLL_READY 2
++static int io_arm_poll_handler(struct io_kiocb *req)
+ {
+ 	const struct io_op_def *def = &io_op_defs[req->opcode];
+ 	struct io_ring_ctx *ctx = req->ctx;
+@@ -5153,22 +5156,22 @@ static bool io_arm_poll_handler(struct io_kiocb *req)
+ 	int rw;
+ 
+ 	if (!req->file || !file_can_poll(req->file))
+-		return false;
++		return IO_ARM_POLL_ERR;
+ 	if (req->flags & REQ_F_POLLED)
+-		return false;
++		return IO_ARM_POLL_ERR;
+ 	if (def->pollin)
+ 		rw = READ;
+ 	else if (def->pollout)
+ 		rw = WRITE;
+ 	else
+-		return false;
++		return IO_ARM_POLL_ERR;
+ 	/* if we can't nonblock try, then no point in arming a poll handler */
+ 	if (!io_file_supports_async(req, rw))
+-		return false;
++		return IO_ARM_POLL_ERR;
+ 
+ 	apoll = kmalloc(sizeof(*apoll), GFP_ATOMIC);
+ 	if (unlikely(!apoll))
+-		return false;
++		return IO_ARM_POLL_ERR;
+ 	apoll->double_poll = NULL;
+ 
+ 	req->flags |= REQ_F_POLLED;
+@@ -5194,12 +5197,12 @@ static bool io_arm_poll_handler(struct io_kiocb *req)
+ 	if (ret || ipt.error) {
+ 		io_poll_remove_double(req);
+ 		spin_unlock_irq(&ctx->completion_lock);
+-		return false;
++		return ret?IO_ARM_POLL_READY:IO_ARM_POLL_ERR;
+ 	}
+ 	spin_unlock_irq(&ctx->completion_lock);
+ 	trace_io_uring_poll_arm(ctx, req->opcode, req->user_data, mask,
+ 					apoll->poll.events);
+-	return true;
++	return IO_ARM_POLL_OK;
+ }
+ 
+ static bool __io_poll_remove_one(struct io_kiocb *req,
+@@ -6416,6 +6419,7 @@ static void __io_queue_sqe(struct io_kiocb *req)
+ 	struct io_kiocb *linked_timeout = io_prep_linked_timeout(req);
+ 	int ret;
+ 
++issue_sqe:
+ 	ret = io_issue_sqe(req, IO_URING_F_NONBLOCK|IO_URING_F_COMPLETE_DEFER);
+ 
+ 	/*
+@@ -6435,12 +6439,16 @@ static void __io_queue_sqe(struct io_kiocb *req)
+ 			io_put_req(req);
+ 		}
+ 	} else if (ret == -EAGAIN && !(req->flags & REQ_F_NOWAIT)) {
+-		if (!io_arm_poll_handler(req)) {
++		switch (io_arm_poll_handler(req)) {
++		case IO_ARM_POLL_READY:
++			goto issue_sqe;
++		case IO_ARM_POLL_ERR:
+ 			/*
+ 			 * Queued up for async execution, worker will release
+ 			 * submit reference when the iocb is actually submitted.
+ 			 */
+ 			io_queue_async_work(req);
++			break;
+ 		}
+ 	} else {
+ 		io_req_complete_failed(req, ret);
 -- 
-Regards,
+2.32.0
 
-Laurent Pinchart
