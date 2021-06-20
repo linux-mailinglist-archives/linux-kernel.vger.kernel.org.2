@@ -2,103 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE843ADDB5
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 10:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D0563ADDBB
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 10:16:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229618AbhFTILg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 04:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54648 "EHLO
+        id S229554AbhFTISu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 04:18:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbhFTILZ (ORCPT
+        with ESMTP id S229489AbhFTISr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 04:11:25 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14998C06175F
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 01:09:12 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id t7so14548320edd.5
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 01:09:12 -0700 (PDT)
+        Sun, 20 Jun 2021 04:18:47 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E98C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 01:16:34 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id v7so11543014pgl.2
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 01:16:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sjSERqxDFGCyYrNN/qxA0ZiGx1EeVNWA0j1N532j0OQ=;
-        b=O2mTGoMFVrnU3bwMOM112hgs3Z+LFM4ZVxbnAnn0MS6irjyF75/GvO5dfdLXAua/jf
-         Xr9hkcbrhzoJeXx749WGZo5lY1lvdo6hJxC4KFtzwB3jn1rRG7394JGVBvd0Ob/gP29q
-         a47ABW2L/YWjZLpn8qksbTNjdDK2Sx1CAVTfSy9CedEO1bOiy1EXeBESvHoVdA4N6qK6
-         XkfOlaniy9s4/al3V9Uk7xVW+8qhPb4i3Vm77HwnS4TAGg97oj4vJcU7qPGsWdNNr42U
-         7lcG6SaugtzlbgSzIq8V+B9eXVuT+24QuimRe1JDeLCLqVDFQ4nZyLGgsg6Sb7ivd1LT
-         24tw==
+        d=anisinha-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gEZn7B7dNvlhapHIK+/JpNKbE7yEjAepUUZv/RPCREM=;
+        b=IVY29bbrCl/6ClPEJutmFJrLSnG2g8NJ5V1+pWRnMnxgK5DutS/JB442LDIB+u/oUM
+         SQ1XCZdrEPyvZXu+Z2h/Sgy8JVHP7CDlPymDRIhfwXEUgdYw1zhyzFxg062T+imukr11
+         bmtanCPhfL31+KppT4SlvGiQ+yVKuXaAxpPjMz2A97+wGn8JlHqnDQfPweMwd3Vpezww
+         mwf/Yr2rrlzb4e3QzrTknRbuCifSjEAvBwLvtnJ3ItbWV5zBnGQqRxPwWxuJMcJwdc4Z
+         c6Zw1IWSzEleHdjCrOqLI1Bz1P++ifZaeU1NRq2KpKneb+FNU5RyFBXO6WWZPLOJoRXz
+         1Xfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sjSERqxDFGCyYrNN/qxA0ZiGx1EeVNWA0j1N532j0OQ=;
-        b=cGaFDHpM7BQVW4hpjt07lDb3VdUHRFaKKauQ7QJmeA6B38oirOI/RtBAzOU8j6XBiv
-         mp3WWhKgKg9Y3mDz6N6/kXpHKc6FZ3PN4xvz4fgvebt+tS1haSLQL7/sPc0YdXRUCIqw
-         DyTaUZru9Av+0Ca+DoIGUVX138vEH3hd9WkcT666KJ5t1b3wc11KiQkDS8YHimX7e9Wf
-         iNAGm5xEKk9ZET4D2d0p7VWYTeXBVLwcc634MZz1yFyCAZnDU/K5VgD2bEaB5Zjvn1sp
-         ctj3JDkuRzLC5ebikr2JnjaCFEVKdhGAPqQPcHDNHujWY7kw/By/OWCkMkiIBInTCPAI
-         V/Fg==
-X-Gm-Message-State: AOAM5306dTKqNxYlS04uKt/a9gl3PbdsljH09p1bQVwjErqP0fe2p796
-        RG5rZB33ngAq/GPV8XEkHQgIg/PavPtvQOA1kKT9
-X-Google-Smtp-Source: ABdhPJxRZvXKUEReti5s+grcd26OnOp3TX95hRrWOLTxyIX7eH6LObWJfBvB5fJdxksmCiFp5/LqjsTtg64W+ZisT2k=
-X-Received: by 2002:a05:6402:946:: with SMTP id h6mr14509058edz.261.1624176549643;
- Sun, 20 Jun 2021 01:09:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210618233023.1360185-1-ndesaulniers@google.com> <202106181945.AC10BF38ED@keescook>
-In-Reply-To: <202106181945.AC10BF38ED@keescook>
-From:   Bill Wendling <morbo@google.com>
-Date:   Sun, 20 Jun 2021 01:08:58 -0700
-Message-ID: <CAGG=3QXcn0QMGj0AB9N2cSHHGpCmYWg-3Wq8M1jLM2AehEWh5A@mail.gmail.com>
-Subject: Re: [PATCH 0/2] no_profile fn attr and Kconfig for GCOV+PGO
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gEZn7B7dNvlhapHIK+/JpNKbE7yEjAepUUZv/RPCREM=;
+        b=NSeA2NJYn9+IthEI+6V23QcQNMxHhcFJ3IcRkBFv+o3e7XpaOW1bf4hCRTUn8dBXwY
+         uV23ab0vE70uxPIOis/50f24Nw0Et8wRUW8yt/qgJSYQz3DjOiwJbCHemow1wE+jG536
+         sIupWEtjeVGGVMYzKjT7vCZF8TEf3/kL9qsqaXM4+j39PO8gtdBrEDEuaesyoCiIIBFK
+         3stIMF92AVJ2//hSR1lxWV+CAahpFdow2CdipvPICuPkYATy2HcwCgHAixMK29awJUBd
+         flYZ6p4a68+6gCtEJdjkklv/0labfLf6mmZRuz/xQAxuWnsf3yTYRIk5eYVyJuPs31wi
+         q5Mg==
+X-Gm-Message-State: AOAM531hLjXXI04vByfpK1osFSe2SlVAkuwuFVMemtZQFB4p2dMH74XG
+        S6Gkqwj6kFY0ACzjAkIPr5UOVm3Jo5kS1SVm
+X-Google-Smtp-Source: ABdhPJz1oDKdmRIsB2aRZg+Yb8jma2/4nJ6TRfkSVNdToWvpg+tfKJZOl9RhRODqym7/Nmtbn685Hw==
+X-Received: by 2002:a63:e316:: with SMTP id f22mr18201551pgh.100.1624176993150;
+        Sun, 20 Jun 2021 01:16:33 -0700 (PDT)
+Received: from anisinha-lenovo.ba.nuagenetworks.net ([115.96.112.22])
+        by smtp.googlemail.com with ESMTPSA id co18sm3229628pjb.37.2021.06.20.01.16.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Jun 2021 01:16:32 -0700 (PDT)
+From:   Ani Sinha <ani@anisinha.ca>
+To:     linux-kernel@vger.kernel.org
+Cc:     anirban.sinha@nokia.com, Ani Sinha <ani@anisinha.ca>,
+        Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Bill Wendling <wcw@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Martin Liska <mliska@suse.cz>,
-        Marco Elver <elver@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Fangrui Song <maskray@google.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>, johannes.berg@intel.com,
-        linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH V2] Add kernel logs when sched clock unstable and NO_HZ_FULL is not possible
+Date:   Sun, 20 Jun 2021 13:46:04 +0530
+Message-Id: <20210620081604.1754127-1-ani@anisinha.ca>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 7:45 PM Kees Cook <keescook@chromium.org> wrote:
->
-> On Fri, Jun 18, 2021 at 04:30:21PM -0700, Nick Desaulniers wrote:
-> > When we say noinstr, we mean noinstr.  GCOV and PGO can both instrument
-> > functions. Add a new function annotation __no_profile that expands to
-> > __attribute__((__no_profile__)) and Kconfig value
-> > CC_HAS_NO_PROFILE_FN_ATTR.
-> >
-> > Base is
-> > https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/log/?h=for-next/clang/pgo.
-> >
-> > Nick Desaulniers (2):
-> >   compiler_attributes.h: define __no_profile, add to noinstr
-> >   Kconfig: CC_HAS_NO_PROFILE_FN_ATTR, depend on for GCOV and PGO
->
-> Oh, awesome! Thanks for the fast work on this. If there are no objections,
-> I'll apply this in front of the PGO series and put it in -next.
->
-That works for me! Thanks, Nick and Kees!
+Commit 4f49b90abb4aca ("sched-clock: Migrate to use new tick
+dependency mask model") had also removed the kernel warning
+message informing the user that it was not possible to turn
+on NO_HZ_FULL. Adding back that log message here. It is
+unhelpful when the kernel turns off NO_HZ_FULL silently
+without informing anyone.
+Also added a kernel log when sched clock is marked as unstable.
 
--bw
+Signed-off-by: Ani Sinha <ani@anisinha.ca>
+---
+ kernel/sched/clock.c     |  5 ++++-
+ kernel/time/tick-sched.c | 14 +++++++++++---
+ 2 files changed, 15 insertions(+), 4 deletions(-)
+
+changelog:
+v1: original patch
+v2: updated log message to make it non specific to sched clock. Also
+    added another log when sched clock is marked as unstable.
+ 
+diff --git a/kernel/sched/clock.c b/kernel/sched/clock.c
+index c2b2859ddd82..49f8c68faf56 100644
+--- a/kernel/sched/clock.c
++++ b/kernel/sched/clock.c
+@@ -192,8 +192,11 @@ void clear_sched_clock_stable(void)
+ 
+ 	smp_mb(); /* matches sched_clock_init_late() */
+ 
+-	if (static_key_count(&sched_clock_running.key) == 2)
++	if (static_key_count(&sched_clock_running.key) == 2) {
+ 		__clear_sched_clock_stable();
++		WARN_ONCE(sched_clock_stable(),
++			  "sched clock is now marked unstable.");
++	}
+ }
+ 
+ static void __sched_clock_gtod_offset(void)
+diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+index 828b091501ca..6e583aa2d160 100644
+--- a/kernel/time/tick-sched.c
++++ b/kernel/time/tick-sched.c
+@@ -937,10 +937,18 @@ static void tick_nohz_full_update_tick(struct tick_sched *ts)
+ 	if (!ts->tick_stopped && ts->nohz_mode == NOHZ_MODE_INACTIVE)
+ 		return;
+ 
+-	if (can_stop_full_tick(cpu, ts))
++	if (can_stop_full_tick(cpu, ts)) {
+ 		tick_nohz_stop_sched_tick(ts, cpu);
+-	else if (ts->tick_stopped)
+-		tick_nohz_restart_sched_tick(ts, ktime_get());
++	} else {
++		/*
++		 * Don't allow the user to think they can get
++		 * full NO_HZ with this machine.
++		 */
++		WARN_ONCE(tick_nohz_full_running,
++			  "NO_HZ_FULL will not work for the current system.");
++		if (ts->tick_stopped)
++			tick_nohz_restart_sched_tick(ts, ktime_get());
++	}
+ #endif
+ }
+ 
+-- 
+2.25.1
+
