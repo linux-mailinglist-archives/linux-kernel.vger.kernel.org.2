@@ -2,98 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A1183ADF28
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 17:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 118BA3ADF2F
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 17:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbhFTPJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 11:09:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59996 "EHLO
+        id S230006AbhFTP0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 11:26:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbhFTPJM (ORCPT
+        with ESMTP id S229658AbhFTP0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 11:09:12 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23BA9C061574;
-        Sun, 20 Jun 2021 08:06:58 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id g20so24374191ejt.0;
-        Sun, 20 Jun 2021 08:06:58 -0700 (PDT)
+        Sun, 20 Jun 2021 11:26:39 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D163C061574;
+        Sun, 20 Jun 2021 08:24:26 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id k6so11704715pfk.12;
+        Sun, 20 Jun 2021 08:24:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=P2AK+78NOmAotKycIJqTLWlqFD+iRxStrWhoKZNh9bY=;
-        b=KeVgAeKq3q1+NgGkb/Za1+JWcdVPPRDZN2FtTSDe5ELF6z1RybxbtZ+/a+6ilJe4Nt
-         X1+kDnfj7TkfXBXZgmKAUkeTHKL5/UF6azuchUQKnDp++1BYOarRlrMOYInvqtL36lVX
-         OEIZ344FPWdiq2KAaqmFZbSd/B81axIKNU94ENyQG7xJQQn1v9BbTNprUpKDZlUZAwoI
-         LZfjSkkUZNuywmV4tx5OLxXb0d+0cO5ONDPoEPuc/EvUeFKUy8BPBhUbaBnnw+cWvlvg
-         rfPkjOfxZoSMdhQF5KPOzp31DczJ159VECSOq2buOQJK+rsp4b4p8ZEEVAlZgqhFPApD
-         y9UQ==
+        h=from:to:cc:subject:date:message-id;
+        bh=kEdRMmvFH+OJ/tXM4maq3qoIg5+rcFsm9j8kAcdNT04=;
+        b=uiGL5sPW1xNVc0DKXMeTFkU1MvuVa3g+9Y0tLLoCE5QxLzn1VjoVNEBIY/WiQqsuZu
+         ATjuVJdSbrgEkv/z8tD8sQ7G0z9CUF/O7/oikaFDnzbBVh99BMYloIZs01VkKfUvzim1
+         bZnqnIIoYjESGz0ZcnhxtSPUJtPh5mow0NuCBW4mLg2z2UAdrP2J949Frnrs79RvV2CZ
+         1pIuZBccHOM25U9j8gPBiSwP8TSK/BoD4uNoERhDnLTdjFD4op0mh1pFqPGA83Tkqr7D
+         jG0co58cgP4/dH8APEaV61D08wY4uHF7ww1/7vBEUsGsVPFuQxXfQyklL7J0MWo+lWeF
+         YFQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=P2AK+78NOmAotKycIJqTLWlqFD+iRxStrWhoKZNh9bY=;
-        b=DhVw11P6Zdz1ANRFelIsDtLIppa7YSWKhMQkXHyN7ErN6jS+NoLq7WI2wj0deFCioJ
-         K4z+fmV0aYVafF8dsyP+D3rko47NNCa6S2nD1hP0e0XeTAzgIMKTGlT80MuONqte+y/j
-         XdMgXq39UQdnBFmq4qfCU6JwSNy9ACimeeY9SXWRMyOUEpXfEhm6WDhDYEQLC+nRVXdj
-         o0jjmtwWbSCnxPUrY+pnp/5Cfv8pSSWEQ+BFQoIciieQ1IMOuPARihzlriOJJDb/XXKJ
-         BFlSrWRNhIr5F7RaX3c9EpvpbEHb8fAubV673jGK5yY2BaY1fJYpi4hwwrnSQO/0C/b7
-         /OQg==
-X-Gm-Message-State: AOAM5335crmBSEnmQtGeAr7nJi+6PmGDTvRwfMMd2yqUzjfSQogOdE8M
-        4OXOENU6ZwZ36FD/W6R8ELNbf99oSrI=
-X-Google-Smtp-Source: ABdhPJxp3uFNpsjVvAw4XpbdE1vTRryQ9LxxWksCBl4cma1MUSk+IzG7mBZPWMhUI/9pPNMObe2ruw==
-X-Received: by 2002:a17:906:6b8a:: with SMTP id l10mr20092802ejr.125.1624201616468;
-        Sun, 20 Jun 2021 08:06:56 -0700 (PDT)
-Received: from [10.21.182.79] ([212.23.236.67])
-        by smtp.gmail.com with ESMTPSA id de24sm3688869ejc.78.2021.06.20.08.06.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 20 Jun 2021 08:06:56 -0700 (PDT)
-Subject: Re: [PATCH] mlx4_core: Remove trailing semicolon in macros
-To:     Huilong Deng <denghuilong@cdjrlc.com>, yishaih@nvidia.com
-Cc:     linux-rdma@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210620143624.51150-1-denghuilong@cdjrlc.com>
-From:   Tariq Toukan <ttoukan.linux@gmail.com>
-Message-ID: <9bdb1fd3-8a48-a9aa-8775-7e07dac8d56c@gmail.com>
-Date:   Sun, 20 Jun 2021 18:06:53 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
-MIME-Version: 1.0
-In-Reply-To: <20210620143624.51150-1-denghuilong@cdjrlc.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=kEdRMmvFH+OJ/tXM4maq3qoIg5+rcFsm9j8kAcdNT04=;
+        b=e7x08MK5f5mgd3l04Fhrgp9dixvU9qzjoJ4q8wtxZ559r0byPsrYDPJJJegQPBtijD
+         5V7ZD/J3cNKYUbL5talVEDw/RpB9aKyPYxOu3P7Td0/Z5v4MP9Vb1auP1GxV3pXTZdqV
+         MX0+tsjY0sqAwNYi+0NtybwWPLGeAx3me6VWsC5x7Q11gllYOA00wVz8hxKZI6Pq9ZW1
+         Uq+nmpZRQ+xqLmxZN4qj9B7WItQAm3UVybMy25tIp0ol9ah92zdmWgJ/QjguniehcV/m
+         PChYyQot58QX5rTJaHpE1P9KEo17vKQOBFC5UiDBOCJmzOlN2XUVspXDosk0rAc1atw8
+         7sVA==
+X-Gm-Message-State: AOAM53368XdvBY3J+jQXhnID9I13Jy2hy2mnMNjOHF+vWRErBQ39fINt
+        l441TUjULsl8JvyQwwxBZQ==
+X-Google-Smtp-Source: ABdhPJzi1pYMw/8I/QMvMyOajCq9OhdLw644fzUknVW19uYupI+RQidYX2sWlPRp0FAagAaX4J4SYw==
+X-Received: by 2002:a63:491d:: with SMTP id w29mr19672704pga.86.1624202666115;
+        Sun, 20 Jun 2021 08:24:26 -0700 (PDT)
+Received: from vultr.guest ([107.191.53.97])
+        by smtp.gmail.com with ESMTPSA id a15sm13250356pfl.100.2021.06.20.08.24.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 20 Jun 2021 08:24:25 -0700 (PDT)
+From:   Zheyu Ma <zheyuma97@gmail.com>
+To:     3chas3@gmail.com
+Cc:     linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Zheyu Ma <zheyuma97@gmail.com>
+Subject: [PATCH 0/2] atm: nicstar: fix two bugs about error handling
+Date:   Sun, 20 Jun 2021 15:24:13 +0000
+Message-Id: <1624202655-6766-1-git-send-email-zheyuma97@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Zheyu Ma (2):
+  atm: nicstar: use 'dma_free_coherent' instead of 'kfree'
+  atm: nicstar: register the interrupt handler in the right place
 
+ drivers/atm/nicstar.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-On 6/20/2021 5:36 PM, Huilong Deng wrote:
-> Macros should not use a trailing semicolon.
-> 
-> Signed-off-by: Huilong Deng <denghuilong@cdjrlc.com>
-> ---
->   include/linux/mlx4/doorbell.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/mlx4/doorbell.h b/include/linux/mlx4/doorbell.h
-> index f31bba270aa2..e3ecaa4f00fa 100644
-> --- a/include/linux/mlx4/doorbell.h
-> +++ b/include/linux/mlx4/doorbell.h
-> @@ -66,7 +66,7 @@ static inline void mlx4_write64(__be32 val[2], void __iomem *dest,
->    * MMIO writes.
->    */
->   
-> -#define MLX4_DECLARE_DOORBELL_LOCK(name) spinlock_t name;
-> +#define MLX4_DECLARE_DOORBELL_LOCK(name) spinlock_t name
->   #define MLX4_INIT_DOORBELL_LOCK(ptr)     spin_lock_init(ptr)
->   #define MLX4_GET_DOORBELL_LOCK(ptr)      (ptr)
->   
-> 
+-- 
+2.17.6
 
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-
-Thanks,
-Tariq
