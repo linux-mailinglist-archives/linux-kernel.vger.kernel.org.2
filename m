@@ -2,120 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55BC63ADE40
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 14:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A103ADE41
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 14:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229604AbhFTMD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 08:03:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48018 "EHLO
+        id S229631AbhFTMDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 08:03:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbhFTMDY (ORCPT
+        with ESMTP id S229591AbhFTMDZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 08:03:24 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD30AC061574;
-        Sun, 20 Jun 2021 05:01:07 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id m18so16275930wrv.2;
-        Sun, 20 Jun 2021 05:01:06 -0700 (PDT)
+        Sun, 20 Jun 2021 08:03:25 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E43BDC061756
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 05:01:09 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id f10so4902150plg.0
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 05:01:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=4RUYewpS29ETOvUxb+NczxmZJGUDZdUQNsR1o2uZhLQ=;
-        b=a4P03FHp/G5xoH/Qz+baVm74UVa5M2x393f/xxz/Aeji9liEJZnnCG39pO0nPjrNQ1
-         HL3TmGiPA7XDoH0uoVV/DUgDy7U0nWt491sUtZ0hsx9qgVmINZoB1+D+vFicZhrYrt3G
-         ExMC927QkRbueiCv0xGLzMejZN1TuQAYsTfM3OghISZ1Cu4pF0CNVGbcuSUSVLSuTy8T
-         A8RG+xhbcC1LfC3GAH1Vydmryz5MJv33dhN05yu2vB5e+IvCDibqO/z5EuhDP+HUTzC1
-         tCVx6rZ4PtH0DQyDYHhOKtmBK6ek4sthmHWdnlSijDtqLFXyDk7eHqq1NPSXLQiHl5Yw
-         fBJA==
+        bh=6RZ0t+nLN/zgwczUvk1xBr9Y/vtc658j2K3feiC0sNo=;
+        b=tvDau5NQHMgBjXtOi7u5ORM6VPuv3odxHKJVjJrovv+8UHr8iEWC3eynFLeG3eMACG
+         YThJzEn5kf2v4OqYYn6pWDFqh7HRqFMRqI/465tgrgk6GHaBh4ui0NhMaUfzO8hlAXGx
+         9fNwsPC9MhMKKs/R4nAk8nDAR99TARH39Kx9ZJyoeO+BoSUVBsoHzRRsKiLrE5jzznM0
+         Ud2XqNdMok1U9czZknWSXU9xVCfkCDWjbmlRS6ouIb/lm9CAv2BEGclVpFe8ni8mXvLt
+         EipLBxOkfb9bCKm0UbcGCl1TDg1JVQoSAldRcPfO0aAP5vqBzz5ApIaDlMG5713K8xTg
+         Rwgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=4RUYewpS29ETOvUxb+NczxmZJGUDZdUQNsR1o2uZhLQ=;
-        b=HQyPzblhG4y8+EH1RwCfDH5FpNk3nnpBoDIRItuh6/PkQcRIidy7eHVfGlFfOf/xq0
-         cEBv7c5f4FdZC5Y2U9slyHTzDU9M4nPh14YEFKFhmZ/J3fpVMCYHRz+D8Mxic1eRQ4NQ
-         wklDud7Pc1VmBxulqJRYtfZO8LUC94KAPP139v41JHbfpfLDsP3/ttDwY1ooke3t3j1y
-         dhu/K2Teu4GOyFJZcP4d5xbRs42H3afb6d+vceOiJVpEjnPYl3RW1ITzjEtTIYsJrs4U
-         Ai+t8mKZODadBevSobDYn/boWqtuaFW7c6n1uJI04tRNCldwvyESHE7pE2BjskwsdLCB
-         Pzbw==
-X-Gm-Message-State: AOAM533b7RqFHtIA9KKtJbl8nnVwTiS3KeR5s9g13x48AHLWhlXawV3o
-        jN6yfOHtsQy1omeCfwq+UZ0=
-X-Google-Smtp-Source: ABdhPJxn24sxYO+VPoCxfseNeeXud7waSRMknBi4iozf/4cYOfphYDXBrvmRU+m/a5xEXz7qB/LnpA==
-X-Received: by 2002:a5d:538c:: with SMTP id d12mr22500253wrv.116.1624190465604;
-        Sun, 20 Jun 2021 05:01:05 -0700 (PDT)
-Received: from allarkin.tlv.csb ([176.230.197.133])
-        by smtp.googlemail.com with ESMTPSA id j34sm12640807wms.7.2021.06.20.05.01.04
+        bh=6RZ0t+nLN/zgwczUvk1xBr9Y/vtc658j2K3feiC0sNo=;
+        b=cJQTt6vzp4PwMnJOLV+a9099YmEG8wbKF2fK32D8J88+HyHOo/JQXUNbWq2N4WLL5U
+         uoX9gOqZQvqeAZmjU0fxI0eUHp2Vxx9VELlf1gZGUQBv9e5p2DPLiBI+BJftUajA7Yu6
+         FW0Pglf3IMQaXhCW6D6sp8x7c4VCzbK20YVYUI7jGIwDN8vWTeyr1AOfaCwPCPK2GlRe
+         L8X0x2LglLJrkQsQUN+/EDGYxcpDhltvNBxGbWg4HnOdyoWA+k8Jwyq5sUWg/H4sIgk2
+         CduIcJigsc04+RkTpCBgai50rt3Gh8tIwsHuw/PTIKLKF4jQkTD2jWt/rGjhkYrJ5kHi
+         6Pdw==
+X-Gm-Message-State: AOAM531cPJtkSarWHmux5Jg8szl2xz4TJ78TD/zIBQ73vUIqzPyJ9lYd
+        0vXi15aWb7O05SKgDIceL2w=
+X-Google-Smtp-Source: ABdhPJwruwTRhScqZpEyG4BVAu40s7oKqSw2bbKGu2EIdq8sgtyU+3LoY1ROsiZ+/4RM9EZGZo+hXg==
+X-Received: by 2002:a17:90b:4b49:: with SMTP id mi9mr20849030pjb.187.1624190469012;
+        Sun, 20 Jun 2021 05:01:09 -0700 (PDT)
+Received: from localhost.localdomain.localdomain (n058152081086.netvigator.com. [58.152.81.86])
+        by smtp.gmail.com with ESMTPSA id z18sm9899893pfq.196.2021.06.20.05.01.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Jun 2021 05:01:05 -0700 (PDT)
-From:   Alexander Larkin <avlarkin82@gmail.com>
-To:     dmitry.torokhov@gmail.com, dan.carpenter@oracle.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        security@kernel.org
-Cc:     Alexander Larkin <avlarkin82@gmail.com>,
-        Murray McAllister <murray.mcallister@gmail.com>
-Subject: [PATCH]     Input: joydev - prevent potential write out of bounds in ioctl
-Date:   Sun, 20 Jun 2021 15:00:30 +0300
-Message-Id: <20210620120030.1513655-1-avlarkin82@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Sun, 20 Jun 2021 05:01:08 -0700 (PDT)
+From:   Jeff Xie <chongguiguzi@gmail.com>
+X-Google-Original-From: Jeff Xie <huan.xie@suse.com>
+To:     oleg@redhat.com
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        caou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, chongguiguzi@gmail.com,
+        huan.xie@suse.com
+Subject: [PATCH] riscv: ptrace: add argn syntax
+Date:   Sun, 20 Jun 2021 20:01:51 +0800
+Message-Id: <20210620120151.17860-1-huan.xie@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-    The problem is that the check of user input values that is just
-    before the fixed line of code is for the part of first values
-    (before len or before len/2), but then the usage of all the values
-    including i >= len (or i >= len/2) could be.
-    Since the resulted array of values inited by default with some
-    good values, the fix is to ignore out of bounds values and
-    just to use only correct input values by user.
-    Originally detected by Murray with this simple poc
-    (If you run the following as an unprivileged user on a default install
-     it will instantly panic the system:
+This enables ftrace kprobe events to access kernel function
+arguments via $argN syntax.
 
-int main(void) {
-	int fd, ret;
-	unsigned int buffer[10000];
-
-	fd = open("/dev/input/js0", O_RDONLY);
-	if (fd == -1)
-		printf("Error opening file\n");
-
-	ret = ioctl(fd, JSIOCSBTNMAP & ~IOCSIZE_MASK, &buffer);
-	printf("%d\n", ret);
-}
-
-Fixes: 182d679b2298 ("Input: joydev - prevent potential read overflow in ioctl")
-Reported-by: Murray McAllister <murray.mcallister@gmail.com>
-Signed-off-by: Alexander Larkin <avlarkin82@gmail.com>
+Signed-off-by: Jeff Xie <huan.xie@suse.com>
 ---
- drivers/input/joydev.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/riscv/Kconfig              |  1 +
+ arch/riscv/include/asm/ptrace.h | 31 +++++++++++++++++++++++++++++++
+ 2 files changed, 32 insertions(+)
 
-diff --git a/drivers/input/joydev.c b/drivers/input/joydev.c
-index da8963a9f044..1aa067d4a3e8 100644
---- a/drivers/input/joydev.c
-+++ b/drivers/input/joydev.c
-@@ -464,7 +464,7 @@ static int joydev_handle_JSIOCSAXMAP(struct joydev *joydev,
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 18ec0f9bb8d5..f9246a7d0a31 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -88,6 +88,7 @@ config RISCV
+ 	select HAVE_PERF_REGS
+ 	select HAVE_PERF_USER_STACK_DUMP
+ 	select HAVE_REGS_AND_STACK_ACCESS_API
++	select HAVE_FUNCTION_ARG_ACCESS_API
+ 	select HAVE_STACKPROTECTOR
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select IRQ_DOMAIN
+diff --git a/arch/riscv/include/asm/ptrace.h b/arch/riscv/include/asm/ptrace.h
+index 09ad4e923510..fdb59ee405ee 100644
+--- a/arch/riscv/include/asm/ptrace.h
++++ b/arch/riscv/include/asm/ptrace.h
+@@ -141,6 +141,37 @@ static inline unsigned long regs_get_register(struct pt_regs *regs,
  
- 	memcpy(joydev->abspam, abspam, len);
+ 	return *(unsigned long *)((unsigned long)regs + offset);
+ }
++
++/**
++ * regs_get_kernel_argument() - get Nth function argument in kernel
++ * @regs:       pt_regs of that context
++ * @n:          function argument number (start from 0)
++ *
++ * regs_get_argument() returns @n th argument of the function call.
++ *
++ * Note you can get the parameter correctly if the function has no
++ * more than eight arguments.
++ */
++static inline unsigned long regs_get_kernel_argument(struct pt_regs *regs,
++						unsigned int n)
++{
++#define NR_REG_ARGUMENTS 8
++	static const unsigned int argument_offs[] = {
++		offsetof(struct pt_regs, a0),
++		offsetof(struct pt_regs, a1),
++		offsetof(struct pt_regs, a2),
++		offsetof(struct pt_regs, a3),
++		offsetof(struct pt_regs, a4),
++		offsetof(struct pt_regs, a5),
++		offsetof(struct pt_regs, a6),
++		offsetof(struct pt_regs, a7),
++	};
++
++	if (n < NR_REG_ARGUMENTS)
++		return regs_get_register(regs, argument_offs[n]);
++	return 0;
++}
++
+ #endif /* __ASSEMBLY__ */
  
--	for (i = 0; i < joydev->nabs; i++)
-+	for (i = 0; i < len && i < joydev->nabs; i++)
- 		joydev->absmap[joydev->abspam[i]] = i;
- 
-  out:
-@@ -498,7 +498,7 @@ static int joydev_handle_JSIOCSBTNMAP(struct joydev *joydev,
- 
- 	memcpy(joydev->keypam, keypam, len);
- 
--	for (i = 0; i < joydev->nkey; i++)
-+	for (i = 0; i < (len / 2) && i < joydev->nkey; i++)
- 		joydev->keymap[keypam[i] - BTN_MISC] = i;
- 
-  out:
+ #endif /* _ASM_RISCV_PTRACE_H */
 -- 
-2.27.0
+2.26.2
 
