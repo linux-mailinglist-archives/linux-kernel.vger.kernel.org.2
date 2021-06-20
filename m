@@ -2,90 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 616703ADD43
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 07:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAB1A3ADD46
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 07:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbhFTFhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 01:37:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49974 "EHLO
+        id S229581AbhFTFnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 01:43:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229469AbhFTFhp (ORCPT
+        with ESMTP id S229469AbhFTFmz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 01:37:45 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 764D5C061574;
-        Sat, 19 Jun 2021 22:35:32 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id t9so11342782pgn.4;
-        Sat, 19 Jun 2021 22:35:32 -0700 (PDT)
+        Sun, 20 Jun 2021 01:42:55 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 576B4C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 22:40:43 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id r16so20150828ljk.9
+        for <linux-kernel@vger.kernel.org>; Sat, 19 Jun 2021 22:40:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pxjfMrty8dM/qfDv6FJcgTV6itFfbDFw/iZ8LFErne4=;
-        b=LDGuu/KX2GxsFfrk/kngVFCLvDNk65jZyaEEjdG7wS8eJ9bKOnheBgPXKCrxJ2HEDe
-         HsX7LoFMeedywTHZbPIZ7moc05uX5jf4/NFsSmOCZLwbYacT0Y+th1xYkfpRhQ4F1LQB
-         JiIZty+CL5oE/TzExBfOdFMGELTPrEuznBfBBaN8y0Yca7yHbwDbB+satdvyP9E20Iwb
-         hCk++VYbETyQci9fjTNmDzZPFblGIQv+PpBx29LaVuboGgn9ZUiYM6TPFB3Ay0b0SkXA
-         O+Tn5Ai4pSpsfPF4H0ehKvQEcezjLtPLSRcNjEcIwVTsogiP9tE+167lFlP5yC240ghT
-         BNKQ==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=kod/UNIt91aPIUpImt44CWWa4ugThLpApxbuRLL0+7M=;
+        b=HxQmiAwolvOOCAFhZH4PveJiF99ozmwNPXW17rsO1vMb1y0ZQ603tVOzKjw00NvzZa
+         2LM9zAnAfOXXvZdr9xsP9rYCNe0pri0CvlAv128Lkf/xPrYpSabohnMo97Rekvmf7CR2
+         bUb2feK6qchwNWAahoXkCY6W8OVBp78JfuMhnzgbHYDyxpSY1TnPMdfwxhb4UEVcSgp2
+         tvik6eUxl1gHRBUgvOAJzFblKOiYDTVKO6NsdqGJ+d25vpmBl1oRrZrL9/8znkmoIq2d
+         FXWNpFV2arRn9BkpyfcTIM3+kBUfnoMkz01jcg0O6rvXA7pKI+kvxwgik+87Qc3RuIiI
+         PySA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pxjfMrty8dM/qfDv6FJcgTV6itFfbDFw/iZ8LFErne4=;
-        b=g6e2+O6CYZOMQ50J1PxOkOP9lftNgDTZm9R/oLXGCZlZbwtPr8eyoWTW7Jpa/9X7Vl
-         SxuPyIPww5b6ekzOmXdIhx4i1o3LkLT6XsnX/+masW+wVvrHLYcna3uuFSHiL3reGGdY
-         hjfmHAH95RrMvzispWJyzCD3fOL+d8avGJ+lM6OwGlthMgDvijqE1/IiDXbnOfuBRLLh
-         VhDk8IEMXicGxQsAYOemhsyTcyigJZKRoJISvZjA86L8ANkvoJO8VQ6BMA/p9rDZKZmY
-         jD7t8U4y8FeDpOR8dvyN31+w59mQyfIZmhkImAXZ++QvbGzHR1GX9wyc0MsopB9KUt40
-         WkCQ==
-X-Gm-Message-State: AOAM532RCx0Hvtqf16Kul8vqho7H342xG/PsGtndMQfeH4iLYSwZdjsW
-        R9s8hHD3ktw3S/32+KiQjnQ=
-X-Google-Smtp-Source: ABdhPJyZgHZKtGRvHGNVV0nEsJz22HkT7RCEKPlCAR1XxaABLYgGrVDQaEBFMjDqGVe8tgnbJbwUwA==
-X-Received: by 2002:a63:6884:: with SMTP id d126mr18233414pgc.368.1624167331798;
-        Sat, 19 Jun 2021 22:35:31 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:b83e:d8b6:9f4f:2be2])
-        by smtp.gmail.com with ESMTPSA id b18sm545349pft.1.2021.06.19.22.35.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Jun 2021 22:35:30 -0700 (PDT)
-Date:   Sat, 19 Jun 2021 22:35:28 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Yizhuo Zhai <yzhai003@ucr.edu>,
-        Anthony Kim <anthony.kim@hideep.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Input: hideep - fix the uninitialized use in
- hideep_nvm_unlock()
-Message-ID: <YM7ToLeaDajmBiwi@google.com>
-References: <CABvMjLRxy1yqXUOWqTTeq=UOsLtuPAyOSCi4SPgcbAqjMuWCCg@mail.gmail.com>
- <YM7NzYgEl8NhU36H@google.com>
- <YM7RkI8fvpkfwAGA@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=kod/UNIt91aPIUpImt44CWWa4ugThLpApxbuRLL0+7M=;
+        b=hpXAYcJznSXwDkhm6KQhYW6D21oPxM+UeYrxQAyO7aPly6wc0uqQlzFtXQs7ZIIl5k
+         uo+dkbXy1wCfDhuctc0UOgHzLmh/Hqinsbpz3zlziggkWiFrjOLsxrNjO+kNenOH2K1m
+         qfeMoM3h7dgHEyulNmaelDS5fOWmUQmrM6Ex4gH5O9IkrMeLPHeQi9h47VDx13q16+B2
+         64LlAaM8hwdZWO8+ERJEGvsH6jGBa0j49zR1JN2gIri72XiT6WGX0GxQKlYU/DVK9cqj
+         BVsZ+DE2Thscw02ayKowbKPnj18t0ifCvJ8aaKT5HTre185DGYG87HWBOMOIqlwc40/M
+         SiWA==
+X-Gm-Message-State: AOAM533aOXjBcE/d6h3R5MsfU08+LAGbEEvlKor3B85F+eWwrqMmarST
+        FjQw//0wgglMyMibhDses6JcSKl5kKzxAv465VeuvQ==
+X-Google-Smtp-Source: ABdhPJyuEwk4Qge8Qj6DCnv4dmfDyubmVhvY95dEz+TwKadvaYxzLyNUpHpB9dr7F4QezXWVF7bT0AgZsWjPSTi4O6g=
+X-Received: by 2002:a2e:9152:: with SMTP id q18mr16368345ljg.493.1624167641761;
+ Sat, 19 Jun 2021 22:40:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YM7RkI8fvpkfwAGA@google.com>
+References: <20210617071027.60278-1-hexin.op@bytedance.com> <CAE-0n51T9ZGADCk6LaKJdnQwPvMCawSvjwUP+AF0hFohAFom0A@mail.gmail.com>
+In-Reply-To: <CAE-0n51T9ZGADCk6LaKJdnQwPvMCawSvjwUP+AF0hFohAFom0A@mail.gmail.com>
+From:   =?UTF-8?B?5L2V6ZGr?= <hexin.op@bytedance.com>
+Date:   Sun, 20 Jun 2021 13:40:30 +0800
+Message-ID: <CACKzwjkjO6mbzx4wB_JzaP=qumw=LOpGjfDiUyLJyz1TVeUkGA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] debugobjects: add missing empty function debug_object_active_state()
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Kees Cook <keescook@chromium.org>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 19, 2021 at 10:26:40PM -0700, Dmitry Torokhov wrote:
-> On Sat, Jun 19, 2021 at 10:10:37PM -0700, Dmitry Torokhov wrote:
-> > On Wed, Jun 16, 2021 at 03:48:51PM -0700, Yizhuo Zhai wrote:
-> > > Inside function hideep_nvm_unlock(), variable "unmask_code" could
-> > > be uninitialized if hideep_pgm_r_reg() returns error, however, it
-> > > is used in the later if statement after an "and" operation, which
-> > > is potentially unsafe.
-> > 
-> > I think this is pretty sensible, but let's see if the original author
-> > has some comments...
-> 
-> I guess not. Oh well...
-> 
-> Applied, thank you.
+Stephen Boyd <swboyd@chromium.org> =E4=BA=8E2021=E5=B9=B46=E6=9C=8819=E6=97=
+=A5=E5=91=A8=E5=85=AD =E4=B8=8B=E5=8D=881:03=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Quoting Xin He (2021-06-17 00:10:27)
+> > All other functions are defined for when CONFIG_DEBUG_OBJECTS
+> > is not set.
+> >
+> > Signed-off-by: Xin He <hexin.op@bytedance.com>
+> > ---
+> >  include/linux/debugobjects.h | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >
+> > diff --git a/include/linux/debugobjects.h b/include/linux/debugobjects.=
+h
+> > index 8d2dde23e9fb..af0d73d8d29b 100644
+> > --- a/include/linux/debugobjects.h
+> > +++ b/include/linux/debugobjects.h
+> > @@ -99,6 +99,9 @@ static inline void
+> >  debug_object_free      (void *addr, const struct debug_obj_descr *desc=
+r) { }
+> >  static inline void
+> >  debug_object_assert_init(void *addr, const struct debug_obj_descr *des=
+cr) { }
+> > +static inline void
+> > +debug_object_active_state(void *addr, const struct debug_obj_descr *de=
+scr,
+> > +                         unsigned int expect, unsigned int next) { }
+>
+> I suppose it's a landmine that may go off at some point, but this isn't
+> fixing anything that's broken at the moment, correct?
 
-Note that I had to make some changes to make it compile. Please next
-time try building your changes before posting them,
+Yes, you are rigth.
 
 Thanks.
 
--- 
-Dmitry
+>
+> >
+> >  static inline void debug_objects_early_init(void) { }
+> >  static inline void debug_objects_mem_init(void) { }
