@@ -2,115 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3AB63ADC63
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 04:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEDFC3ADC66
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 05:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhFTCzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 19 Jun 2021 22:55:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229591AbhFTCzB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 19 Jun 2021 22:55:01 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD74C061574;
-        Sat, 19 Jun 2021 19:52:48 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id v12so6666032plo.10;
-        Sat, 19 Jun 2021 19:52:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4gE1UXUdRdz6eukgpcCvaOI9F8pK5g/stV5KV8OaApU=;
-        b=TZQTIJ1ytVDHkDfWlg4L3uBz1a7EY5wQemSUrR2I5IeKC4X5hesgbUSWZdl4rcn43R
-         db5IF3TU0yFnGMxBtpYjqxRO75yQ8g1aIs5AkdHV/CF9cgtVd/r5mgIe9Dv2rhEf94LD
-         QKDjQS+hQ+wEqO0C74reQrmVSE65fcgQjPZo9Y5NUamcT9SOhl3jZmyZqwRW+ICTxYlB
-         Cl7+P2YOWGYevW9sg+n1lBKYlNJsh13bN80yHAZdFoQWasjagkJhmNkPsHcTrJfSGtp1
-         05eTWkzJ1N7j7/hCue1w1rDXmogtSyNr7EniVFJJj5x6XfwBW4Lu+Qac/ng13Fi7V/m8
-         F4Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4gE1UXUdRdz6eukgpcCvaOI9F8pK5g/stV5KV8OaApU=;
-        b=soYNd+j0sdj1HPezx2KNXArSFlnXcFxyQfQ/Q04GiuE+9BjK2MqKYM7mrZoyr+E3v6
-         kDkKl2C+q8ezq+PLR0/H+9YwKMiIOEfbNGunimzd4dyC4Uc5+kxR9ZHdIcx1uEq52zRF
-         L4TVnFBkObK5pDcoLc5WVnmQdxqg0BycpWdcvCxSMlT+5iFS3hnmXx/sGnRBR3Sn1/CM
-         xF7I1Z2c2ubCGDZZ3Bim+goOZ+MvR9w9CJPD2CxWK5GqgQZcjtrbqXZXy8z+mN91Y20c
-         qBPersZ4sawzRxU3ixqio3UzDgrTix7wu0S2Agu8EKsbgiMfLbHEIoYo/wrVGTq5FKtK
-         mimQ==
-X-Gm-Message-State: AOAM533nC1u0PjGUrxr9As7DLu1QfvelYpJC9ShLRxj2yCnFErMu7JyU
-        dsPvvj7y6lFUVAvoGMRUgYg=
-X-Google-Smtp-Source: ABdhPJxkc9vmvlV1CJKEN/lgkpGzYDW3T3HnXwQOf5gmy85CQ8Utm9IrFPkZW23YLSd5U/I/p8W+3Q==
-X-Received: by 2002:a17:90b:3142:: with SMTP id ip2mr29572306pjb.63.1624157568193;
-        Sat, 19 Jun 2021 19:52:48 -0700 (PDT)
-Received: from WRT-WX9.. ([141.164.41.4])
-        by smtp.gmail.com with ESMTPSA id p11sm11775548pfo.126.2021.06.19.19.52.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 19 Jun 2021 19:52:47 -0700 (PDT)
-From:   Changbin Du <changbin.du@gmail.com>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kici nski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Changbin Du <changbin.du@gmail.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: [RESEND PATCH v2] nsfs: warn if ns->ops is not provided
-Date:   Sun, 20 Jun 2021 10:52:38 +0800
-Message-Id: <20210620025238.2820-1-changbin.du@gmail.com>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S229756AbhFTDPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 19 Jun 2021 23:15:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229538AbhFTDPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 19 Jun 2021 23:15:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D68360FEE;
+        Sun, 20 Jun 2021 03:13:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624158821;
+        bh=3OedRV0Jb4/bcaLZQGAhpxa0h+tij6pqKNPN145wFtg=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=m3WsNOKtp4jzqtFNvkEnXwBWBKEaHq1iJpCoYAYuZw6FYV7bn3AV7q32UaFdZt9ju
+         SwlQWZ4a+j2W0ax0wWjN6wqrxqKxt8YuF+DH7sgu5fZkfkvLa9xDqiXrZH6CCXAYEP
+         qgAc/0v0I1wn244W/VeqOdSr3Yk246f84+NJ0lT1TJgcyg5g0EnhnpICv4jT0Ky4ce
+         cyXl+vSi+FyOrARAh5V0ewmxYFOpJLM5mcM1CYHR5duAoYV3NpQcGIGp0WgMb1zWau
+         ha2qnz17SVBOk3MXXgbCqdMBScID5M3ZjitD8ce4YcEWkY9kk5/cYiRD9n49+q4Z4f
+         nGj65fzUAkm+A==
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 1EB8B27C0054;
+        Sat, 19 Jun 2021 23:13:39 -0400 (EDT)
+Received: from imap21 ([10.202.2.71])
+  by compute2.internal (MEProxy); Sat, 19 Jun 2021 23:13:39 -0400
+X-ME-Sender: <xms:YbLOYCimAvyoy4uurVdUTa3BBg-RSz-BEADV38uBstDhCb5NnXP9aQ>
+    <xme:YbLOYDDLPtOLOWAkGz1fbVMiPRQoyWIbCYA1bQRcaRPMBTm-RYB1q5MePIGEevyMB
+    nQj_-kXpJpRMAaBXtc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeefiedgkeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgfgsehtqhertderreejnecuhfhrohhmpedftehn
+    ugihucfnuhhtohhmihhrshhkihdfuceolhhuthhosehkvghrnhgvlhdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepvdelheejjeevhfdutdeggefftdejtdffgeevteehvdfgjeeiveei
+    ueefveeuvdetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homheprghnugihodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduudeiudek
+    heeifedvqddvieefudeiiedtkedqlhhuthhopeepkhgvrhhnvghlrdhorhhgsehlihhnuh
+    igrdhluhhtohdruhhs
+X-ME-Proxy: <xmx:YbLOYKH76UMLika4uwQ9IaDQR8vP2GFOzj4CaUAWbVmhYxxOcduGpA>
+    <xmx:YbLOYLQ1Av4XTkjtmjDZFqWT7k_YkTmAouaKWOc4Uwl3I2NkzgRp_g>
+    <xmx:YbLOYPxZZPnyssfsUtWqUYIGG9azrOCpnchyNH9ScdqbuvYF9WEiyw>
+    <xmx:Y7LOYEpjxfFbIX8sfyS6wLZg7n7dG8HmlyunRTsTicW4tHvDuaUl4XkuQ6o>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 160A351C0060; Sat, 19 Jun 2021 23:13:37 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-526-gf020ecf851-fm-20210616.001-gf020ecf8
+Mime-Version: 1.0
+Message-Id: <444d7139-e47a-4831-93d0-8eb5b9680fdc@www.fastmail.com>
+In-Reply-To: <87bl81h3ih.ffs@nanos.tec.linutronix.de>
+References: <20210601065217.23540-1-jiangshanlai@gmail.com>
+ <20210601065217.23540-2-jiangshanlai@gmail.com>
+ <87bl81h3ih.ffs@nanos.tec.linutronix.de>
+Date:   Sat, 19 Jun 2021 20:13:15 -0700
+From:   "Andy Lutomirski" <luto@kernel.org>
+To:     "Thomas Gleixner" <tglx@linutronix.de>,
+        "Lai Jiangshan" <jiangshanlai@gmail.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>
+Cc:     "Steven Rostedt" <rostedt@goodmis.org>,
+        "Lai Jiangshan" <laijs@linux.alibaba.com>,
+        "Ingo Molnar" <mingo@redhat.com>, "Borislav Petkov" <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Juergen Gross" <jgross@suse.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "Al Viro" <viro@zeniv.linux.org.uk>,
+        "Arvind Sankar" <nivedita@alum.mit.edu>
+Subject: =?UTF-8?Q?Re:_[RFC_PATCH_1/4]_x86/entry/nmi:_Switch_to_the_entry_stack_b?=
+ =?UTF-8?Q?efore_switching_to_the_thread_stack?=
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We should not create inode for disabled namespace. A disabled namespace
-sets its ns->ops to NULL. Kernel could panic if we try to create a inode
-for such namespace.
 
-Here is an example oops in socket ioctl cmd SIOCGSKNS when NET_NS is
-disabled. Kernel panicked wherever nsfs trys to access ns->ops since the
-proc_ns_operations is not implemented in this case.
 
-[7.670023] Unable to handle kernel NULL pointer dereference at virtual address 00000010
-[7.670268] pgd = 32b54000
-[7.670544] [00000010] *pgd=00000000
-[7.671861] Internal error: Oops: 5 [#1] SMP ARM
-[7.672315] Modules linked in:
-[7.672918] CPU: 0 PID: 1 Comm: systemd Not tainted 5.13.0-rc3-00375-g6799d4f2da49 #16
-[7.673309] Hardware name: Generic DT based system
-[7.673642] PC is at nsfs_evict+0x24/0x30
-[7.674486] LR is at clear_inode+0x20/0x9c
+On Sat, Jun 19, 2021, at 3:51 PM, Thomas Gleixner wrote:
+> On Tue, Jun 01 2021 at 14:52, Lai Jiangshan wrote:
+> > From: Lai Jiangshan <laijs@linux.alibaba.com>
+> >
+> > Current kernel has no code to enforce data breakpoint not on the thr=
+ead
+> > stack.  If there is any data breakpoint on the top area of the threa=
+d
+> > stack, there might be problem.
+>=20
+> And because the kernel does not prevent data breakpoints on the thread=
 
-So let's print a warning for such unexpected request which to create the
-nsfs inode. The issue in networking will be fixed in another change.
+> stack we need to do more complicated things in the already horrible
+> entry code instead of just doing the obvious and preventing data
+> breakpoints on the thread stack?
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
-Cc: Cong Wang <xiyou.wangcong@gmail.com>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: David Laight <David.Laight@ACULAB.COM>
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
----
- fs/nsfs.c | 3 +++
- 1 file changed, 3 insertions(+)
+Preventing breakpoints on the thread stack is a bit messy: it=E2=80=99s =
+possible for a breakpoint to be set before the address in question is al=
+located for the thread stack.
 
-diff --git a/fs/nsfs.c b/fs/nsfs.c
-index 800c1d0eb0d0..a132827bddd5 100644
---- a/fs/nsfs.c
-+++ b/fs/nsfs.c
-@@ -62,6 +62,9 @@ static int __ns_get_path(struct path *path, struct ns_common *ns)
- 	struct inode *inode;
- 	unsigned long d;
- 
-+	if (WARN_ON_ONCE(!ns->ops))
-+		return -EINVAL;
-+
- 	rcu_read_lock();
- 	d = atomic_long_read(&ns->stashed);
- 	if (!d)
--- 
-2.30.2
+None of this is NMI-specific. #DB itself has the same problem.  We could=
+ plausibly solve it differently by disarming breakpoints in the entry as=
+m before switching stacks. I=E2=80=99m not sure how much I like that app=
+roach.
 
+>=20
+> Confused.
+>=20
+> Thanks,
+>=20
+>         tglx
+>=20
