@@ -2,81 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551303ADC84
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 06:17:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E48323ADCE5
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 06:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229541AbhFTESg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 00:18:36 -0400
-Received: from nautica.notk.org ([91.121.71.147]:40565 "EHLO nautica.notk.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229471AbhFTESe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 00:18:34 -0400
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id A7740C01D; Sun, 20 Jun 2021 06:16:21 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1624162581; bh=wUAkVBtqwfhJ7JoQkwq9bvrQXDVb65OWrBZQsHRhhGk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rw/Bq/90XsaB85pNFF1RD9+J7un4DGc7XizbsZd3aBHggPwXHshcIZWzugNdAKylH
-         Tr+EyWKWltslAGOurmYpNJ7Igielcp4xVj1aIGxCG9lp52WRZX5WzacKICABnQ0tX1
-         rPs+Tvu/CHR+1E1syZyn2ewaMjBJ3/2id9OFQFOSEHf7mct9MkPbVDDlAx2rU9iT2f
-         OPGFd5VQTspFNOeft9kvS/3T6nZMGUuzcKLD14AmJh3H2JYaLqCQHoZGb7qShNl+MD
-         mGAdag9jDPmKbZEHxtE7ttT2+5BoN19HiG8BKtpIlnYFBuq2kLvKyu5u47L1KaBBPv
-         VZp/ysmXm2LWw==
-X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
-X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
-        autolearn=unavailable version=3.3.2
-Received: from odin.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with ESMTPS id 2B37CC009;
-        Sun, 20 Jun 2021 06:16:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1624162581; bh=wUAkVBtqwfhJ7JoQkwq9bvrQXDVb65OWrBZQsHRhhGk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rw/Bq/90XsaB85pNFF1RD9+J7un4DGc7XizbsZd3aBHggPwXHshcIZWzugNdAKylH
-         Tr+EyWKWltslAGOurmYpNJ7Igielcp4xVj1aIGxCG9lp52WRZX5WzacKICABnQ0tX1
-         rPs+Tvu/CHR+1E1syZyn2ewaMjBJ3/2id9OFQFOSEHf7mct9MkPbVDDlAx2rU9iT2f
-         OPGFd5VQTspFNOeft9kvS/3T6nZMGUuzcKLD14AmJh3H2JYaLqCQHoZGb7qShNl+MD
-         mGAdag9jDPmKbZEHxtE7ttT2+5BoN19HiG8BKtpIlnYFBuq2kLvKyu5u47L1KaBBPv
-         VZp/ysmXm2LWw==
-Received: from localhost (odin.codewreck.org [local])
-        by odin.codewreck.org (OpenSMTPD) with ESMTPA id ed6bbf56;
-        Sun, 20 Jun 2021 04:16:15 +0000 (UTC)
-Date:   Sun, 20 Jun 2021 13:16:00 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Changbin Du <changbin.du@gmail.com>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Eric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        linux-kernel@vger.kernel.org, v9fs-developer@lists.sourceforge.net
-Subject: Re: [PATCH v3 0/3] 9p: add support for root file systems
-Message-ID: <YM7BAM5lK7NRVZ7n@codewreck.org>
-References: <20210606230922.77268-1-changbin.du@gmail.com>
- <YMcaEq95T+1GxZz2@localhost>
- <YMca+N0UiGNZ1lSm@codewreck.org>
- <YMcfKqbCq7ZWAyaO@localhost>
- <20210620033659.s7rohai7dzwpgjur@mail.google.com>
+        id S229590AbhFTEoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 00:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229471AbhFTEoE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Jun 2021 00:44:04 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0499C061574;
+        Sat, 19 Jun 2021 21:41:51 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id z1so2224782ils.0;
+        Sat, 19 Jun 2021 21:41:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Auirp+Jz2MDqf2r2ES/YFzAEpckdtisnPPAwXVaOT6I=;
+        b=bzIbyG1/szcELa5FlvFZ7lDJ7mZEJTyYKroe36+/wg/Z5p3ANQzmkY24pxniO1Idu3
+         EjahKNDs0VhsLKYv0+t1cslp0NY4q4z9WY3D/N8A4cC9UvPqdMLXPrDBvlBbSED9pKmn
+         xNFO4V28msXevDqg14MgaklKXAZ1BGAE8I4Zl83yBqqHQ+ivZviZbwK++4v8RSDZxdah
+         VVJgRpam0WSXArpDXO8YfPmGUl9osvajPPxowFk2QwW0/rfnWBPmz1MSFtjZPXMqW0eJ
+         ji2Qpj1Wf4ouw9YnmP/ScZABBWt+T/2WAyxfehBryEEM2TOg2JwhST29SHb8SZ09iJmY
+         8mhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Auirp+Jz2MDqf2r2ES/YFzAEpckdtisnPPAwXVaOT6I=;
+        b=jBFsYY3d3pT1vgkp7rAFHAIAuW3Mk69SkTkw8kovf7oHKgpue+Q3xoSx3zwX84l4Am
+         UaYoAC/PDRn47WqoZpPOpTNaGSbfaW6zsOTTdG/1BlN3vSFHVTeW32Aqy4N7TjTcp+c5
+         n/7zfRowgKjgwdTeGatu7KOZOQIObdPbUr1CVV23Rdb/Zhxj74AD7iiyZNcbQwODkqtA
+         PaGdKUvCz5RL0KL4z4a9fEGfZNB4dcns1RqZqbMViNyueBO6HzD/46URrPlr82EnqyXA
+         23LFMzq27S+ksNBju3cQwxOrhCYcY9IFz/ojvyJTF0CyxjHVKgi6VKt2OocMhsWvlDYY
+         J8kw==
+X-Gm-Message-State: AOAM533JGe3EeJI6RXQHTZpzfRpu/Apecu+lsWkVKEEYju9fVVP3GPPX
+        rGgT+N9FtjWJecdwFHZxEso=
+X-Google-Smtp-Source: ABdhPJwPKiHyEjmmMj3lbeEi4CF8atUFyNoVJMemXd3iNN7/nXzETZtHCd2Bo9jdzMrVhGZRtELi/w==
+X-Received: by 2002:a05:6e02:524:: with SMTP id h4mr5653046ils.255.1624164111172;
+        Sat, 19 Jun 2021 21:41:51 -0700 (PDT)
+Received: from localhost.localdomain (tunnel525895-pt.tunnel.tserv15.lax1.ipv6.he.net. [2001:470:c:1200::2])
+        by smtp.googlemail.com with ESMTPSA id a11sm7360909ioq.12.2021.06.19.21.41.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Jun 2021 21:41:50 -0700 (PDT)
+From:   Tianling Shen <cnsztl@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        Tianling Shen <cnsztl@gmail.com>,
+        Jensen Huang <jensenhuang@friendlyarm.com>,
+        Pavel Machek <pavel@ucw.cz>, Marty Jones <mj8263788@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] arm64: dts: rockchip: add EEPROM node for NanoPi R4S
+Date:   Sun, 20 Jun 2021 12:38:02 +0800
+Message-Id: <20210620043802.6580-1-cnsztl@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210620033659.s7rohai7dzwpgjur@mail.google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changbin Du wrote on Sun, Jun 20, 2021 at 11:36:59AM +0800:
-> The main problem is we lack a generic handing for non-block rootdev. I think
-> maybe we can unify all of above.
+NanoPi R4S has a EEPROM attached to the 2nd I2C bus (U92), which
+stores the MAC address.
 
-We're already going in that direction, please have a look at the threads
-on fsdevel:
-(new patch by Christoph)
-https://lore.kernel.org/linux-fsdevel/20210617153649.1886693-1-hch@lst.de/
+Changes in v3:
+- Added address-cells and size-cells
 
-(older threads I linked earlier)
-https://lore.kernel.org/linux-fsdevel/20210608153524.GB504497@redhat.com/
+Changes in v2:
+- Added the size of EEPROM
+- Added `mac-address` cell to pass the MAC address to kernel
+- Removed `read-only` property in EEPROM node
 
+Signed-off-by: Tianling Shen <cnsztl@gmail.com>
+---
+ .../boot/dts/rockchip/rk3399-nanopi-r4s.dts   | 20 +++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-I think it's getting there, Christoph should send a v2 addressing Vivek
-remarks that will likely get picked up.
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
+index cef4d18b599d..2813c4a0378d 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
+@@ -68,6 +68,26 @@
+ 	status = "disabled";
+ };
+ 
++&gmac {
++	nvmem-cells = <&mac_address>;
++	nvmem-cells-names = "mac-address";
++};
++
++&i2c2 {
++	eeprom@51 {
++		compatible = "microchip,24c02", "atmel,24c02";
++		reg = <0x51>;
++		pagesize = <16>;
++		size = <256>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++
++		mac_address: mac-address@fa {
++			reg = <0xfa 0x06>;
++		};
++	};
++};
++
+ &i2c4 {
+ 	status = "disabled";
+ };
 -- 
-Dominique
+2.17.1
+
