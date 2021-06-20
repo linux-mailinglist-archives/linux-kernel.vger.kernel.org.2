@@ -2,80 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0443ADE67
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 14:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9BD23ADE69
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 14:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbhFTM7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 08:59:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49068 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229806AbhFTM7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 08:59:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B284610CA;
-        Sun, 20 Jun 2021 12:56:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624193812;
-        bh=bWaVnm+peFovnHMu18RwWDuf3L6KT66p404kqB1aQyk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TPScjPmNxSr2YT2IvEKemKWAPgTymLvW3gbEPh9aW2ZDQXmS+k82sz2zrDcuaytnb
-         rBC/doh50rFtdR/0+XtqFzla7SsRmcePwtR4NVQiVI2wRrwkuwWUk0kIDbZt05YO5F
-         otWCj7/ZGl/i6yRPLueJR+I51Oeuxgq56ZCmvVnERBu1Jeagwv1QgR34hXDqEOxNdu
-         O6iNJDRiTJWoEmz1aHW0prY2qr0OlRq0QNb1oovA/uTymM1/lcCzexFgLxMUnazULL
-         cu779WiBhiZevR4pqBAFkWuaRwMKt4gDM2Qvxf18HUJcdLDB2FZzz4Jp24gFzRAGSJ
-         PJxgmE5aJyK0w==
-Date:   Sun, 20 Jun 2021 08:56:51 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Ondrej Jirman <megous@megous.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Maxime Ripard <maxime@cerno.tech>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Allwinner sunXi SoC support" 
-        <linux-sunxi@lists.linux.dev>
-Subject: Re: [PATCH AUTOSEL 5.4 07/15] drm/sun4i: dw-hdmi: Make HDMI PHY into
- a platform device
-Message-ID: <YM87E3tYj+awywpN@sashalap>
-References: <20210615154948.62711-1-sashal@kernel.org>
- <20210615154948.62711-7-sashal@kernel.org>
- <CAGETcx95bOAHiOm0MHqFWSbc8ONBPEzXbDyP82pO4B5o2QOX1A@mail.gmail.com>
+        id S229745AbhFTM70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 08:59:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229684AbhFTM7Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Jun 2021 08:59:25 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C379FC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 05:57:11 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id i4so3365236plt.12
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 05:57:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NEMvFyS18P5cftlbD6eQ1AwuZhrAFjZ8m++eEi7Zvp4=;
+        b=NB3Tnxdo9kDLe2Bi09gNLIU9WWb7jtpM3y2BQQznCYCVA9ylsjvzN4N179Ogz0A7BH
+         qDNnnE370C8YRZIOO0LWTSsiG/poEZ1VXlGO0pr+O5qiG1ZaUddPQ1D1klKRPY0UoxiT
+         zWwBa/xvCwufx3zpfzW1OtoXEA4tEhk0JvZHmTmNR7ZVtcPuwgNz8A6rhjiwax6qunId
+         3wJpFtLj+g2lOFuk2AsxdsBk1ABg3KvW4H0IqK2zButA7EuVgmoRWQC/q3xbXrh5NlfU
+         K6/5c0wHW090cAZqKdmZYeua13njLnzCqMCL+lSIMHmkVdea5WG190EyTrR+LlU+vsQ2
+         8Ovw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NEMvFyS18P5cftlbD6eQ1AwuZhrAFjZ8m++eEi7Zvp4=;
+        b=mDtT8dvYQvSwytfXtyFf8yjpF9AfBhQlqg9Y60z26Pc4ltvrbV48kAopGhFiZRUoGl
+         ocuD3Us159k96Fmr9LNY+ohJ9VV7KtPAfH0IJmrF0dKCPEKRrf1fb7ALDKApsPptG311
+         N00pZ95R32f1upzT93dZ/7JkMrTm6n1S5KWb0g2IYZNqFXWQf9z9fLP2JQRanL8VGE6L
+         FL9mx7IB/adDvwLg4nzXoNBJcz+8ZokeUw+CilhL8/GQwTrgdDsOT5kzYVN7vyPmUKTw
+         eLks+LaoEtHSZRbpnKXyL3AI/YfYtqrxqmef/0Vg7PP3kJz2fANhlshQ8UYSRxlshpoK
+         nzJQ==
+X-Gm-Message-State: AOAM533/iQeTymAijxWSwUm/CvqEcquV8cgYTZ8Hw9BvlO+Nt4Y5920h
+        0clAgv0Lpotga8e32ryBy5M=
+X-Google-Smtp-Source: ABdhPJxq2skko6hT7WAdZ8XJ4MFeYCt4USuct+irJN/hebx2+vSZZO8601KL5ql3Pmo1gN7RSlQ/TQ==
+X-Received: by 2002:a17:902:ac81:b029:122:1809:40e with SMTP id h1-20020a170902ac81b02901221809040emr9498905plr.79.1624193831403;
+        Sun, 20 Jun 2021 05:57:11 -0700 (PDT)
+Received: from ojas ([122.177.154.120])
+        by smtp.gmail.com with ESMTPSA id b1sm13215203pgb.91.2021.06.20.05.57.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Jun 2021 05:57:11 -0700 (PDT)
+Date:   Sun, 20 Jun 2021 18:27:01 +0530
+From:   Ojaswin Mujoo <ojaswin98@gmail.com>
+To:     nsaenz@kernel.org
+Cc:     gregkh@linuxfoundation.org, stefan.wahren@i2se.com, arnd@arndb.de,
+        dan.carpenter@oracle.com, phil@raspberrypi.com,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 4/5] staging: vchiq: Make creation of vchiq cdev optional
+Message-ID: <80d4ad6cb3129d7c6e7e66f3d358c6dea82c509b.1624185152.git.ojaswin98@gmail.com>
+References: <cover.1624185152.git.ojaswin98@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGETcx95bOAHiOm0MHqFWSbc8ONBPEzXbDyP82pO4B5o2QOX1A@mail.gmail.com>
+In-Reply-To: <cover.1624185152.git.ojaswin98@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 09:26:16AM -0700, Saravana Kannan wrote:
->On Tue, Jun 15, 2021 at 8:50 AM Sasha Levin <sashal@kernel.org> wrote:
->>
->> From: Saravana Kannan <saravanak@google.com>
->>
->> [ Upstream commit 9bf3797796f570b34438235a6a537df85832bdad ]
->>
->> On sunxi boards that use HDMI output, HDMI device probe keeps being
->> avoided indefinitely with these repeated messages in dmesg:
->>
->>   platform 1ee0000.hdmi: probe deferral - supplier 1ef0000.hdmi-phy
->>     not ready
->>
->> There's a fwnode_link being created with fw_devlink=on between hdmi
->> and hdmi-phy nodes, because both nodes have 'compatible' property set.
->>
->> Fw_devlink code assumes that nodes that have compatible property
->> set will also have a device associated with them by some driver
->> eventually. This is not the case with the current sun8i-hdmi
->> driver.
->>
->
->fw_devlink isn't present in 5.4 or earlier. So technically this patch
->isn't needed.
+Before this commit, vchiq cdev (/dev/vchiq) was always created during
+platform initialization. Introduce a new Kconfig option
+CONFIG_VCHIQ_CDEV which determines the cdev needs to be created or not.
+Also modify the predefined config files to have this option set to
+"yes".
 
-I'll drop it from <=5.4, thanks!
+Signed-off-by: Ojaswin Mujoo <ojaswin98@gmail.com>
+---
+ arch/arm/configs/bcm2709_defconfig                     |  1 +
+ arch/arm/configs/bcm2711_defconfig                     |  1 +
+ arch/arm/configs/bcmrpi_defconfig                      |  1 +
+ drivers/staging/vc04_services/Kconfig                  | 10 ++++++++++
+ drivers/staging/vc04_services/Makefile                 |  5 ++++-
+ .../vc04_services/interface/vchiq_arm/vchiq_arm.h      |  9 +++++++++
+ 6 files changed, 26 insertions(+), 1 deletion(-)
 
+diff --git a/arch/arm/configs/bcm2709_defconfig b/arch/arm/configs/bcm2709_defconfig
+index 7eb4418d7fea..444c80b97e2c 100644
+--- a/arch/arm/configs/bcm2709_defconfig
++++ b/arch/arm/configs/bcm2709_defconfig
+@@ -1314,6 +1314,7 @@ CONFIG_FB_TFT_UC1701=m
+ CONFIG_FB_TFT_UPD161704=m
+ CONFIG_FB_TFT_WATTEROTT=m
+ CONFIG_BCM2835_VCHIQ=y
++CONFIG_VCHIQ_CDEV=y
+ CONFIG_SND_BCM2835=m
+ CONFIG_VIDEO_BCM2835=m
+ CONFIG_VIDEO_CODEC_BCM2835=m
+diff --git a/arch/arm/configs/bcm2711_defconfig b/arch/arm/configs/bcm2711_defconfig
+index 299e4d95e4ca..f323fb7f29e2 100644
+--- a/arch/arm/configs/bcm2711_defconfig
++++ b/arch/arm/configs/bcm2711_defconfig
+@@ -1352,6 +1352,7 @@ CONFIG_FB_TFT_UC1701=m
+ CONFIG_FB_TFT_UPD161704=m
+ CONFIG_FB_TFT_WATTEROTT=m
+ CONFIG_BCM2835_VCHIQ=y
++CONFIG_VCHIQ_CDEV=y
+ CONFIG_SND_BCM2835=m
+ CONFIG_VIDEO_BCM2835=m
+ CONFIG_VIDEO_CODEC_BCM2835=m
+diff --git a/arch/arm/configs/bcmrpi_defconfig b/arch/arm/configs/bcmrpi_defconfig
+index e270865d89cc..92216ce77d11 100644
+--- a/arch/arm/configs/bcmrpi_defconfig
++++ b/arch/arm/configs/bcmrpi_defconfig
+@@ -1325,6 +1325,7 @@ CONFIG_FB_TFT_UC1701=m
+ CONFIG_FB_TFT_UPD161704=m
+ CONFIG_FB_TFT_WATTEROTT=m
+ CONFIG_BCM2835_VCHIQ=y
++CONFIG_VCHIQ_CDEV=y
+ CONFIG_SND_BCM2835=m
+ CONFIG_VIDEO_BCM2835=m
+ CONFIG_VIDEO_CODEC_BCM2835=m
+diff --git a/drivers/staging/vc04_services/Kconfig b/drivers/staging/vc04_services/Kconfig
+index 8b912617bfec..7c22554cdd20 100644
+--- a/drivers/staging/vc04_services/Kconfig
++++ b/drivers/staging/vc04_services/Kconfig
+@@ -19,6 +19,16 @@ config BCM2835_VCHIQ
+ 		Defaults to Y when the Broadcom Videocore services
+ 		are included in the build, N otherwise.
+ 
++if BCM2835_VCHIQ
++
++config VCHIQ_CDEV
++	bool "VCHIQ Character Driver"
++	help
++		Enable the creation of VCHIQ character driver to help
++		communicate with the Videocore platform.
++
++endif
++
+ source "drivers/staging/vc04_services/bcm2835-audio/Kconfig"
+ 
+ source "drivers/staging/vc04_services/bcm2835-camera/Kconfig"
+diff --git a/drivers/staging/vc04_services/Makefile b/drivers/staging/vc04_services/Makefile
+index 700cd62fe346..cc6371386a62 100644
+--- a/drivers/staging/vc04_services/Makefile
++++ b/drivers/staging/vc04_services/Makefile
+@@ -7,7 +7,10 @@ vchiq-objs := \
+    interface/vchiq_arm/vchiq_2835_arm.o \
+    interface/vchiq_arm/vchiq_debugfs.o \
+    interface/vchiq_arm/vchiq_connected.o \
+-   interface/vchiq_arm/vchiq_dev.o \
++
++ifdef CONFIG_VCHIQ_CDEV
++vchiq-objs += interface/vchiq_arm/vchiq_dev.o
++endif
+ 
+ obj-$(CONFIG_SND_BCM2835)		+= bcm2835-audio/
+ obj-$(CONFIG_VIDEO_BCM2835)		+= bcm2835-camera/
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.h
+index bc9af1a0c764..a99cca0cb23b 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.h
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.h
+@@ -172,12 +172,21 @@ vchiq_instance_get_trace(struct vchiq_instance *instance);
+ extern void
+ vchiq_instance_set_trace(struct vchiq_instance *instance, int trace);
+ 
++#if IS_ENABLED(CONFIG_VCHIQ_CDEV)
++
+ extern void
+ vchiq_deregister_chrdev(void);
+ 
+ extern int
+ vchiq_register_chrdev(struct device *parent);
+ 
++#else
++
++static inline void vchiq_deregister_chrdev(void) { }
++static inline int vchiq_register_chrdev(struct device *parent) { return 0; }
++
++#endif /* IS_ENABLED(CONFIG_VCHIQ_CDEV) */
++
+ extern enum vchiq_status
+ service_callback(enum vchiq_reason reason, struct vchiq_header *header,
+ 		 unsigned int handle, void *bulk_userdata);
 -- 
-Thanks,
-Sasha
+2.25.1
+
