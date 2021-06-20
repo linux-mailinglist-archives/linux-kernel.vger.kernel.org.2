@@ -2,144 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883A03ADCE3
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 06:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B88303ADD23
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 07:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229566AbhFTEny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 00:43:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38368 "EHLO
+        id S229579AbhFTFM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 01:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229471AbhFTEnw (ORCPT
+        with ESMTP id S229471AbhFTFMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 00:43:52 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63EC8C061574;
-        Sat, 19 Jun 2021 21:41:39 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id u11so9084763ljh.2;
-        Sat, 19 Jun 2021 21:41:39 -0700 (PDT)
+        Sun, 20 Jun 2021 01:12:55 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78948C061574;
+        Sat, 19 Jun 2021 22:10:42 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id g192so3373317pfb.6;
+        Sat, 19 Jun 2021 22:10:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eQIafI1N7mjXxp3LAVwoSKl9w56iiYhETX/yM5Qkk24=;
-        b=SVtK2CyTmyg1plwJNmyDeAbTqa3x5YAJ/WVA2TwgFQm9ZOIqdwtoclFf1yNjoMqz1a
-         Gg+RWjOjUGQZeuD05pPi3Y5fHALGeU8ncWQ710CMfETDltN+052a8ZPeuQqRfN3vja0o
-         zCMHGMqZ2YrFYYX3+bV/hjWyQ8EYK4EZWhlTAnCfJgAZWLJsBDcznTIRjebn0/vSyUwb
-         G3ItxLleyLDe9aoviS/xLP+QOcMgAH68KStEPMytOhsayf/L0vns7TTznMokJeqppyWg
-         OW4QYRmnOUWTvZKwf89mEqU4bcnsi8NnJZmBcbUQkEV+s0LIUQeDdIcoanjQ3tN4NzDP
-         EoSA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=I5tClPPDZRnDkEOu/F+8xEX/YXqIHz2F79PE0gg5zh4=;
+        b=MtMLWSBffpmYWXdy1aFfNrt54rZ1BPl6+nOjYCRvRdyVzXi7hEm1LxR2wyVBnJghak
+         duQfGBwPlYEYBal54TZmw2JiLYQRX/trqQno1GqaZ8Eyp3ZIqU7kpO13PjK9NzNxEsO+
+         TD+004uWdb8TpG9qwsQ8NJqIlcC7nEVnw67IdbNYJWh/fhzEhTZaXRSNn4AI7shdESaq
+         jxTYT28YnY8KpYxNNjax+5TVxFgKMnQwICZCUdCyYa/up+6eL5dlFHMG/SP9xuIwAYbz
+         ReXea+wfiycTjBrtcCapB6kNvv4cPT6iX3EELFfN7XMum8y7h49CGMcUWj2y1mjf09Wd
+         8lAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eQIafI1N7mjXxp3LAVwoSKl9w56iiYhETX/yM5Qkk24=;
-        b=rmsBqs1Oji0Btlu+48Okom4SxpZ0Aem7/I4atSFwD/bQc9LRwmYyhk83IK8/HLQdWw
-         7IblqrPpdwQP1dHnnFsgVFxAaJTkXdR/sV36Vx8iY8gFqgE5YNpWSjpIbbFbadmehF8p
-         EBa5XL03e/d5qJdNCzWiNw2N55EqbPGWxJbOKruuhhLdgc7JNENkAGq5au/gYoso6RYd
-         6KJe07BTqyRJZlUYfVqNp6NtVl/uSprg4QflaRZh/8w31NlGDp364GlzmbnoVIEC3gzP
-         oFF81WVqw/Ns40VH01+34KgUiAd5leoXyzttNsXc0bgezCJkeCgw2Wgw/U7lpanAmvjC
-         aupQ==
-X-Gm-Message-State: AOAM532vm6Mk+eHY4CdYGemv9NpRKOQT/4cK+yNgppt3rgFWFQYe8PfG
-        6opOcrdbevxzgDwlVnnrUCIKjvAK9MKkoNgt/B1909b6zc4=
-X-Google-Smtp-Source: ABdhPJz22ETIbOAUVHSeyZDBJygZsTtsDcL2NDGUCUqCaojgtaGjtPMi66K3pjkpKBqnER1/ZArOrSaU6Y3KYllI0k4=
-X-Received: by 2002:a05:651c:111:: with SMTP id a17mr16371960ljb.151.1624164095734;
- Sat, 19 Jun 2021 21:41:35 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=I5tClPPDZRnDkEOu/F+8xEX/YXqIHz2F79PE0gg5zh4=;
+        b=HBPdZtGGe9u5JvtWLYtTuKhrdVBbV60eyXtWD5/W44wmztMnr4X04liCmmDYT8MRE6
+         W7NqC3M+5c+ykyHxVJFO4wj4KnPo0JRjkLkrudGmPI+bVB5pg91mZYNjySzlzCf9UMbw
+         n/KDdcpaqCWFK6NSMvWMhxNrzu1eNvOmhnY28isRE8NrmkDLZMZjwODr7fYITH6Cycnw
+         RwCYBDrQZFcbxc6kNLR7lrNwrv6kn9ZYIMxTO/FVHF/HHwPJOay5AJccPyeUWNkOEMBF
+         WcVgKTfoUkiX5+yHMi534NH6XgqKipYV6DcvaaZVkf9JRxgS0uwy4h2gZOygDGOVPjBX
+         IzUg==
+X-Gm-Message-State: AOAM532Q2HRAnS1a6X0cvOJgvtU8sgFLxpTg0rUW2UrpBweE+j0hGK1C
+        s8bb5o1Qns5vVe0qfoPSdm0=
+X-Google-Smtp-Source: ABdhPJzC7uEu00EsJqQWNXT3WzUPKTMozPg72IxJ0U5aKi0L/yGlZ2s3cscHS8IcjejRFjyxNdgsxQ==
+X-Received: by 2002:a62:3344:0:b029:24c:735c:4546 with SMTP id z65-20020a6233440000b029024c735c4546mr13409159pfz.1.1624165840850;
+        Sat, 19 Jun 2021 22:10:40 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:b83e:d8b6:9f4f:2be2])
+        by smtp.gmail.com with ESMTPSA id g29sm12641222pgm.11.2021.06.19.22.10.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Jun 2021 22:10:39 -0700 (PDT)
+Date:   Sat, 19 Jun 2021 22:10:37 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Yizhuo Zhai <yzhai003@ucr.edu>,
+        Anthony Kim <anthony.kim@hideep.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: hideep - fix the uninitialized use in
+ hideep_nvm_unlock()
+Message-ID: <YM7NzYgEl8NhU36H@google.com>
+References: <CABvMjLRxy1yqXUOWqTTeq=UOsLtuPAyOSCi4SPgcbAqjMuWCCg@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210610091357.6780-1-cnsztl@gmail.com> <4448985.BddDVKsqQX@phil>
-In-Reply-To: <4448985.BddDVKsqQX@phil>
-From:   Tianling Shen <cnsztl@gmail.com>
-Date:   Sun, 20 Jun 2021 12:41:23 +0800
-Message-ID: <CAOP2_TgO98D5T8TfYNjKzD3cZR1Hcp9=RYS56_WKtta_GZ85-g@mail.gmail.com>
-Subject: Re: [PATCH v2] arm64: dts: rockchip: add EEPROM node for NanoPi R4S
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     Rob Herring <robh+dt@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Marty Jones <mj8263788@gmail.com>,
-        Jensen Huang <jensenhuang@friendlyarm.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABvMjLRxy1yqXUOWqTTeq=UOsLtuPAyOSCi4SPgcbAqjMuWCCg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heiko,
+On Wed, Jun 16, 2021 at 03:48:51PM -0700, Yizhuo Zhai wrote:
+> Inside function hideep_nvm_unlock(), variable "unmask_code" could
+> be uninitialized if hideep_pgm_r_reg() returns error, however, it
+> is used in the later if statement after an "and" operation, which
+> is potentially unsafe.
 
-On Sun, Jun 20, 2021 at 6:11 AM Heiko Stuebner <heiko@sntech.de> wrote:
->
-> Hi,
->
-> Am Donnerstag, 10. Juni 2021, 11:13:57 CEST schrieb Tianling Shen:
-> > NanoPi R4S has a EEPROM attached to the 2nd I2C bus (U92), which
-> > stores the MAC address.
-> >
-> > Changes in v2:
-> > - Added the size of EEPROM
-> > - Added `mac-address` cell to pass the MAC address to kernel
-> > - Removed `read-only` property in EEPROM node
-> >
-> > Signed-off-by: Tianling Shen <cnsztl@gmail.com>
->
-> this produces errors when building the dtb:
->   DTC     arch/arm64/boot/dts/rockchip/rk3399-rock-pi-4a.dtb
-> ../arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts:84.4-22: Warning (reg_format): /i2c@ff120000/eeprom@51/mac-address@fa:reg: property has invalid length (8 bytes) (#address-cells == 2, #size-cells == 1)
-> arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dtb: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
-> arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dtb: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
-> arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dtb: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
-> ../arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts:83.31-85.5: Warning (avoid_default_addr_size): /i2c@ff120000/eeprom@51/mac-address@fa: Relying on default #address-cells value
-> ../arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts:83.31-85.5: Warning (avoid_default_addr_size): /i2c@ff120000/eeprom@51/mac-address@fa: Relying on default #size-cells value
->
-> in the eeprom node you'll need to define #address-cells and #size-cells
-> for this to work.
+I think this is pretty sensible, but let's see if the original author
+has some comments...
 
-Thanks for pointing this out, added in v3.
+> 
+> Signed-off-by: Yizhuo <yzhai003@ucr.edu>
+> ---
+>  drivers/input/touchscreen/hideep.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/input/touchscreen/hideep.c
+> b/drivers/input/touchscreen/hideep.c
+> index ddad4a82a5e5..f860a815b603 100644
+> --- a/drivers/input/touchscreen/hideep.c
+> +++ b/drivers/input/touchscreen/hideep.c
+> @@ -364,9 +364,13 @@ static int hideep_enter_pgm(struct hideep_ts *ts)
+>  static void hideep_nvm_unlock(struct hideep_ts *ts)
+>  {
+>         u32 unmask_code;
+> +       int ret;
+> 
+>         hideep_pgm_w_reg(ts, HIDEEP_FLASH_CFG, HIDEEP_NVM_SFR_RPAGE);
+> -       hideep_pgm_r_reg(ts, 0x0000000C, &unmask_code);
+> +       ret = hideep_pgm_r_reg(ts, 0x0000000C, &unmask_code);
+> +       if (ret)
+> +               return ret;
+> +
+>         hideep_pgm_w_reg(ts, HIDEEP_FLASH_CFG, HIDEEP_NVM_DEFAULT_PAGE);
+> 
+>         /* make it unprotected code */
+> @@ -462,7 +466,9 @@ static int hideep_program_nvm(struct hideep_ts *ts,
+>         u32 addr = 0;
+>         int error;
+> 
+> -       hideep_nvm_unlock(ts);
+> +       error = hideep_nvm_unlock(ts);
+> +       if (error)
+> +               return error;
+> 
+>         while (ucode_len > 0) {
+>                 xfer_len = min_t(size_t, ucode_len, HIDEEP_NVM_PAGE_SIZE);
+> -- 
+> 2.17.1
 
-Thanks,
-Tianling.
-
->
-> Thanks
-> Heiko
->
->
-> > ---
-> >  .../boot/dts/rockchip/rk3399-nanopi-r4s.dts    | 18 ++++++++++++++++++
-> >  1 file changed, 18 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> > index cef4d18b599d..50d3b11eb925 100644
-> > --- a/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> > +++ b/arch/arm64/boot/dts/rockchip/rk3399-nanopi-r4s.dts
-> > @@ -68,6 +68,24 @@
-> >       status = "disabled";
-> >  };
-> >
-> > +&gmac {
-> > +     nvmem-cells = <&mac_address>;
-> > +     nvmem-cells-names = "mac-address";
-> > +};
-> > +
-> > +&i2c2 {
-> > +     eeprom@51 {
-> > +             compatible = "microchip,24c02", "atmel,24c02";
-> > +             reg = <0x51>;
-> > +             pagesize = <16>;
-> > +             size = <256>;
-> > +
-> > +             mac_address: mac-address@fa {
-> > +                     reg = <0xfa 0x06>;
-> > +             };
-> > +     };
-> > +};
-> > +
-> >  &i2c4 {
-> >       status = "disabled";
-> >  };
-> >
->
->
->
->
+-- 
+Dmitry
