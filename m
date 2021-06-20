@@ -2,324 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 700893ADEF1
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 15:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8890D3ADF0A
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 16:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229627AbhFTN4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 09:56:50 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:56751 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbhFTN4s (ORCPT
+        id S229654AbhFTObf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 10:31:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhFTObd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 09:56:48 -0400
-Received: from fsav313.sakura.ne.jp (fsav313.sakura.ne.jp [153.120.85.144])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 15KDsXeT045516;
-        Sun, 20 Jun 2021 22:54:33 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav313.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav313.sakura.ne.jp);
- Sun, 20 Jun 2021 22:54:33 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav313.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 15KDsXLG045511
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sun, 20 Jun 2021 22:54:33 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [PATCH v2] block: genhd: don't call probe function with
- major_names_lock held
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, hch@infradead.org,
-        axboe@kernel.dk, desmondcheongzx@gmail.com,
-        linux-block@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-        miquel.raynal@bootlin.com, richard@nod.at,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        syzbot+6a8a0d93c91e8fbf2e80@syzkaller.appspotmail.com,
-        vigneshr@ti.com
-References: <f790f8fb-5758-ea4e-a527-0ee4af82dd44@i-love.sakura.ne.jp>
- <YM2STfTN5AupWlSa@kroah.com> <20210620024403.820-1-hdanton@sina.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <24b7c3a9-e10a-f983-9fde-1ae66b0bc6b0@i-love.sakura.ne.jp>
-Date:   Sun, 20 Jun 2021 22:54:20 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Sun, 20 Jun 2021 10:31:33 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA733C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 07:29:20 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id v20-20020a05600c2154b02901dcefb16af0so1366774wml.5
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 07:29:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UaZFNuj1O/NYbAadi023WB7PHzorR9ng9Ol+jKOeGsk=;
+        b=Gnhizufn9jrPCX1RwZWU28OPnl/VYBREN9SZ8eeQeOELXn0tTZHAyPjClVna7+zdnh
+         lDilGeMPdtEJIPJxxbFLt6bZgChnjeiejesQczFSAb/0aWhsVu7BkttzMjtQhR4cWwAD
+         8KTEGGm60Otb34Wir8yuucmucsqLuSrVFex/Vzm9nIs8F2T9kISl0ANg8p/GXwZpEY7Q
+         Soxh2QQGrt0RA5uNtPbA0XTcoaqTxGEMMoigHQvJLfHGXDXuoeNlimIQlrL6CUo8xAGy
+         Bc7wYIBAH3eGmpbkU11ZLe6BzHaBIaOJjTS+LsSFUmAj/tzi+L4iRUeB0UmDYk1owD9L
+         lZYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UaZFNuj1O/NYbAadi023WB7PHzorR9ng9Ol+jKOeGsk=;
+        b=NArTz3a1dP8ctZc1+sELGx22IhN1c7U1TFbyaS008FhinIUeiAtvatXKFJpzyEthOU
+         xDoVzH5VZzjEMrlsPFevBBw1Rpus1j393SLXgxtqAxnSc1zzybTsr9LUhu93HEOA+MUO
+         99y9ta7w2V7tuX4vUzf3Iwrgg+hc9H4p4xycfJvyPJsBQqGHQbvC1qu1tJZBu1P3RoDS
+         NueDFxKrec0AZ/hj0pzEpbJAdTjQW4g7qmhY9iqDqdwN8XeV9Ie4tE8vFqDtvcp8WQcB
+         L9oK4duXTX63x43+szhWTzB48uv4zu7oHIXJWmSblLd+9Ft29TsTponF2o/1BWn10KpS
+         2MrQ==
+X-Gm-Message-State: AOAM533YAZsKrg4Nq+FFLiGqFsPQs/pTWIs3XcvcSy2BPzrTXpfYrVu7
+        QcKa9J8XrlmWFp/AFRJhOsDE6/pE4Ucw939c4/JEgw==
+X-Google-Smtp-Source: ABdhPJy0A4VSpP0+ABfVUuiOeP3wbNej0RcZyRBtaiErIeXcnve32sGeSVOuZQp7P2kQviVfdHroARBzW3ygQmOFd00=
+X-Received: by 2002:a7b:c24f:: with SMTP id b15mr5112879wmj.96.1624199359566;
+ Sun, 20 Jun 2021 07:29:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210620024403.820-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200707101912.571531-1-maxime@cerno.tech> <YM6dgVb12oITNfc0@pendragon.ideasonboard.com>
+In-Reply-To: <YM6dgVb12oITNfc0@pendragon.ideasonboard.com>
+From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date:   Sun, 20 Jun 2021 15:29:03 +0100
+Message-ID: <CAPY8ntC+hzmfrJwWW0ytNdHSXruMKMi7N3K6tdJbp9gDBbJ3Qw@mail.gmail.com>
+Subject: Re: [PATCH] drm/vc4: dsi: Only register our component once a DSI
+ device is attached
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Maxime Ripard <maxime@cerno.tech>, Marek Vasut <marex@denx.de>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Eric Anholt <eric@anholt.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Phil Elwell <phil@raspberrypi.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/06/20 11:44, Hillf Danton wrote:
-> Good craft in regard to triggering the ABBA deadlock, but curious why not
-> move unregister_blkdev out of and before loop_ctl_mutex, given it will also
-> serialise with the prober.
-> 
+Hi Laurent
 
-Well, something like this untested diff?
+On Sun, 20 Jun 2021 at 04:26, Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Maxime,
+>
+> I'm testing this, and I'm afraid it causes an issue with all the
+> I2C-controlled bridges. I'm focussing on the newly merged ti-sn65dsi83
+> driver at the moment, but other are affected the same way.
+>
+> With this patch, the DSI component is only added when the DSI device is
+> attached to the host with mipi_dsi_attach(). In the ti-sn65dsi83 driver,
+> this happens in the bridge attach callback, which is called when the
+> bridge is attached by a call to drm_bridge_attach() in vc4_dsi_bind().
+> This creates a circular dependency, and the DRM/KMS device is never
+> created.
+>
+> How should this be solved ? Dave, I think you have shown an interest in
+> the sn65dsi83 recently, any help would be appreciated. On a side note,
+> I've tested the ti-sn65dsi83 driver on a v5.10 RPi kernel, without much
+> success (on top of commit e1499baa0b0c I get a very weird frame rate -
+> 147 fps of 99 fps instead of 60 fps - and nothing on the screen, and on
+> top of the latest v5.10 RPi branch, I get lock-related warnings at every
+> page flip), which is why I tried v5.12 and noticed this patch. Is it
+> worth trying to bring up the display on the v5.10 RPi kernel in parallel
+> to fixing the issue introduced in this patch, or is DSI known to be
+> broken there ?
 
-Call unregister_blkdev() as soon as __exit function starts, for calling
-probe function after cleanup started will be unexpected for __exit function.
+I've been looking at SN65DSI83/4, but as I don't have any hardware
+I've largely been suggesting things to try to those on the forums who
+do [1].
 
-Keep probe function no-op until __init function ends, for probe function
-might be called as soon as __register_blkdev() succeeded but calling probe
-function before setup completes will be unexpected for __init function.
+My branch at https://github.com/6by9/linux/tree/rpi-5.10.y-sn65dsi8x-marek
+is the latest one I've worked on. It's rpi-5.10.y with Marek's driver
+cherry-picked, and an overlay and simple-panel definition by others.
+It also has a rework for vc4_dsi to use pm_runtime, instead of
+breaking up the DSI bridge chain (which is flawed as it never calls
+the bridge mode_set or mode_valid functions which sn65dsi83 relies
+on).
 
- drivers/block/ataflop.c |    6 +++++-
- drivers/block/brd.c     |    8 ++++++--
- drivers/block/floppy.c  |    4 ++++
- drivers/block/loop.c    |    4 ++--
- drivers/ide/ide-probe.c |    8 +++++++-
- drivers/md/md.c         |    5 +++++
- drivers/scsi/sd.c       |   10 +---------
- 7 files changed, 30 insertions(+), 15 deletions(-)
+I ran it on Friday in the lab and encountered an issue with vc4_dsi
+should vc4_dsi_encoder_mode_fixup wish for a divider of 7 (required
+for this 800x1280 panel over 4 lanes) where it resulted in an invalid
+mode configuration. That resulted in patch [2] which then gave me
+sensible numbers.
 
-diff --git a/drivers/block/ataflop.c b/drivers/block/ataflop.c
-index d601e49f80e0..3681e8c493b1 100644
---- a/drivers/block/ataflop.c
-+++ b/drivers/block/ataflop.c
-@@ -1995,6 +1995,7 @@ static int ataflop_alloc_disk(unsigned int drive, unsigned int type)
- }
- 
- static DEFINE_MUTEX(ataflop_probe_lock);
-+static bool module_initialize_completed;
- 
- static void ataflop_probe(dev_t dev)
- {
-@@ -2006,6 +2007,8 @@ static void ataflop_probe(dev_t dev)
- 
- 	if (drive >= FD_MAX_UNITS || type >= NUM_DISK_MINORS)
- 		return;
-+	if (!module_initialize_completed)
-+		return;
- 	mutex_lock(&ataflop_probe_lock);
- 	if (!unit[drive].disk[type]) {
- 		if (ataflop_alloc_disk(drive, type) == 0)
-@@ -2080,6 +2083,7 @@ static int __init atari_floppy_init (void)
- 	       UseTrackbuffer ? "" : "no ");
- 	config_types();
- 
-+	module_initialize_completed = true;
- 	return 0;
- 
- err:
-@@ -2138,6 +2142,7 @@ static void __exit atari_floppy_exit(void)
- {
- 	int i, type;
- 
-+	unregister_blkdev(FLOPPY_MAJOR, "fd");
- 	for (i = 0; i < FD_MAX_UNITS; i++) {
- 		for (type = 0; type < NUM_DISK_MINORS; type++) {
- 			if (!unit[i].disk[type])
-@@ -2148,7 +2153,6 @@ static void __exit atari_floppy_exit(void)
- 		}
- 		blk_mq_free_tag_set(&unit[i].tag_set);
- 	}
--	unregister_blkdev(FLOPPY_MAJOR, "fd");
- 
- 	del_timer_sync(&fd_timer);
- 	atari_stram_free( DMABuffer );
-diff --git a/drivers/block/brd.c b/drivers/block/brd.c
-index 7562cf30b14e..91a10c938e65 100644
---- a/drivers/block/brd.c
-+++ b/drivers/block/brd.c
-@@ -371,6 +371,7 @@ __setup("ramdisk_size=", ramdisk_size);
- static LIST_HEAD(brd_devices);
- static DEFINE_MUTEX(brd_devices_mutex);
- static struct dentry *brd_debugfs_dir;
-+static bool module_initialize_completed;
- 
- static struct brd_device *brd_alloc(int i)
- {
-@@ -439,6 +440,8 @@ static void brd_probe(dev_t dev)
- 	struct brd_device *brd;
- 	int i = MINOR(dev) / max_part;
- 
-+	if (!module_initialize_completed)
-+		return;
- 	mutex_lock(&brd_devices_mutex);
- 	list_for_each_entry(brd, &brd_devices, brd_list) {
- 		if (brd->brd_number == i)
-@@ -530,6 +533,7 @@ static int __init brd_init(void)
- 	mutex_unlock(&brd_devices_mutex);
- 
- 	pr_info("brd: module loaded\n");
-+	module_initialize_completed = true;
- 	return 0;
- 
- out_free:
-@@ -550,13 +554,13 @@ static void __exit brd_exit(void)
- {
- 	struct brd_device *brd, *next;
- 
-+	unregister_blkdev(RAMDISK_MAJOR, "ramdisk");
-+
- 	debugfs_remove_recursive(brd_debugfs_dir);
- 
- 	list_for_each_entry_safe(brd, next, &brd_devices, brd_list)
- 		brd_del_one(brd);
- 
--	unregister_blkdev(RAMDISK_MAJOR, "ramdisk");
--
- 	pr_info("brd: module unloaded\n");
- }
- 
-diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
-index 8a9d22207c59..37b8e53c183d 100644
---- a/drivers/block/floppy.c
-+++ b/drivers/block/floppy.c
-@@ -4523,6 +4523,7 @@ static int floppy_alloc_disk(unsigned int drive, unsigned int type)
- }
- 
- static DEFINE_MUTEX(floppy_probe_lock);
-+static bool module_initialize_completed;
- 
- static void floppy_probe(dev_t dev)
- {
-@@ -4533,6 +4534,8 @@ static void floppy_probe(dev_t dev)
- 	    type >= ARRAY_SIZE(floppy_type))
- 		return;
- 
-+	if (!module_initialize_completed)
-+		return;
- 	mutex_lock(&floppy_probe_lock);
- 	if (!disks[drive][type]) {
- 		if (floppy_alloc_disk(drive, type) == 0)
-@@ -4705,6 +4708,7 @@ static int __init do_floppy_init(void)
- 				NULL);
- 	}
- 
-+	module_initialize_completed = true;
- 	return 0;
- 
- out_remove_drives:
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index 76e12f3482a9..08aef61ab791 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -2386,13 +2386,13 @@ static int loop_exit_cb(int id, void *ptr, void *data)
- 
- static void __exit loop_exit(void)
- {
-+	unregister_blkdev(LOOP_MAJOR, "loop");
-+
- 	mutex_lock(&loop_ctl_mutex);
- 
- 	idr_for_each(&loop_index_idr, &loop_exit_cb, NULL);
- 	idr_destroy(&loop_index_idr);
- 
--	unregister_blkdev(LOOP_MAJOR, "loop");
--
- 	misc_deregister(&loop_misc);
- 
- 	mutex_unlock(&loop_ctl_mutex);
-diff --git a/drivers/ide/ide-probe.c b/drivers/ide/ide-probe.c
-index aefd74c0d862..8c71356cdcfe 100644
---- a/drivers/ide/ide-probe.c
-+++ b/drivers/ide/ide-probe.c
-@@ -40,6 +40,8 @@
- #include <linux/uaccess.h>
- #include <asm/io.h>
- 
-+static bool module_initialize_completed;
-+
- /**
-  *	generic_id		-	add a generic drive id
-  *	@drive:	drive to make an ID block for
-@@ -904,6 +906,8 @@ static int init_irq (ide_hwif_t *hwif)
- 
- static void ata_probe(dev_t dev)
- {
-+	if (!module_initialize_completed)
-+		return;
- 	request_module("ide-disk");
- 	request_module("ide-cd");
- 	request_module("ide-tape");
-@@ -1475,6 +1479,8 @@ int ide_host_register(struct ide_host *host, const struct ide_port_info *d,
- 		}
- 	}
- 
-+	if (j)
-+		module_initialize_completed = true;
- 	return j ? 0 : -1;
- }
- EXPORT_SYMBOL_GPL(ide_host_register);
-@@ -1539,6 +1545,7 @@ EXPORT_SYMBOL_GPL(ide_port_unregister_devices);
- 
- static void ide_unregister(ide_hwif_t *hwif)
- {
-+	unregister_blkdev(hwif->major, hwif->name);
- 	mutex_lock(&ide_cfg_mtx);
- 
- 	if (hwif->present) {
-@@ -1559,7 +1566,6 @@ static void ide_unregister(ide_hwif_t *hwif)
- 	 * Remove us from the kernel's knowledge
- 	 */
- 	kfree(hwif->sg_table);
--	unregister_blkdev(hwif->major, hwif->name);
- 
- 	ide_release_dma_engine(hwif);
- 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 49f897fbb89b..6603900062bc 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -68,6 +68,8 @@
- #include "md-bitmap.h"
- #include "md-cluster.h"
- 
-+static bool module_initialize_completed;
-+
- /* pers_list is a list of registered personalities protected
-  * by pers_lock.
-  * pers_lock does extra service to protect accesses to
-@@ -5776,6 +5778,8 @@ static void md_probe(dev_t dev)
- {
- 	if (MAJOR(dev) == MD_MAJOR && MINOR(dev) >= 512)
- 		return;
-+	if (!module_initialize_completed)
-+		return;
- 	if (create_on_open)
- 		md_alloc(dev, NULL);
- }
-@@ -9590,6 +9594,7 @@ static int __init md_init(void)
- 	raid_table_header = register_sysctl_table(raid_root_table);
- 
- 	md_geninit();
-+	module_initialize_completed = true;
- 	return 0;
- 
- err_mdp:
-diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index cb3c37d1e009..4fc8f4db2ccf 100644
---- a/drivers/scsi/sd.c
-+++ b/drivers/scsi/sd.c
-@@ -629,14 +629,6 @@ static struct scsi_driver sd_template = {
- 	.eh_reset		= sd_eh_reset,
- };
- 
--/*
-- * Don't request a new module, as that could deadlock in multipath
-- * environment.
-- */
--static void sd_default_probe(dev_t devt)
--{
--}
--
- /*
-  * Device no to disk mapping:
-  * 
-@@ -3715,7 +3707,7 @@ static int __init init_sd(void)
- 	SCSI_LOG_HLQUEUE(3, printk("init_sd: sd driver entry point\n"));
- 
- 	for (i = 0; i < SD_MAJORS; i++) {
--		if (__register_blkdev(sd_major(i), "sd", sd_default_probe))
-+		if (register_blkdev(sd_major(i), "sd"))
- 			continue;
- 		majors++;
- 	}
+That branch with dtoverlay=vc4-kms-v3d and
+dtoverlay=vc4-kms-dsi-ti-sn65dsi83 created all the expected devices,
+and everything came up normally.
+It was a busy day, but I think I even stuck a scope on the clock lanes
+at that point and confirmed that they were at the link frequency
+expected.
 
+
+Coming back to this patch though, it isn't in 5.10 so I'm not seeing
+the issues. As to the exact ordering of attaches, I can't claim
+sufficient knowledge on that front.
+I can try a cherry-pick of this patch to see what goes on, but it
+won't be for a day or two.
+
+Hope that helps
+  Dave
+
+[1] Largely https://www.raspberrypi.org/forums/viewtopic.php?f=44&t=305690,
+but ignore about the first 5 pages of the thread as different driver
+versions were floating about. Most stuff after that is based on
+Marek's driver.
+[2] https://github.com/6by9/linux/commit/c3c774136a1e946109048711d16974be8d520aaa
+
+> On Tue, Jul 07, 2020 at 12:19:12PM +0200, Maxime Ripard wrote:
+> > If the DSI driver is the last to probe, component_add will try to run all
+> > the bind callbacks straight away and return the error code.
+> >
+> > However, since we depend on a power domain, we're pretty much guaranteed to
+> > be in that case on the BCM2711, and are just lucky on the previous SoCs
+> > since the v3d also depends on that power domain and is further in the probe
+> > order.
+> >
+> > In that case, the DSI host will not stick around in the system: the DSI
+> > bind callback will be executed, will not find any DSI device attached and
+> > will return EPROBE_DEFER, and we will then remove the DSI host and ask to
+> > be probed later on.
+> >
+> > But since that host doesn't stick around, DSI devices like the RaspberryPi
+> > touchscreen whose probe is not linked to the DSI host (unlike the usual DSI
+> > devices that will be probed through the call to mipi_dsi_host_register)
+> > cannot attach to the DSI host, and we thus end up in a situation where the
+> > DSI host cannot probe because the panel hasn't probed yet, and the panel
+> > cannot probe because the DSI host hasn't yet.
+> >
+> > In order to break this cycle, let's wait until there's a DSI device that
+> > attaches to the DSI host to register the component and allow to progress
+> > further.
+> >
+> > Suggested-by: Andrzej Hajda <a.hajda@samsung.com>
+> > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+> > ---
+> >  drivers/gpu/drm/vc4/vc4_dsi.c | 25 ++++++++-----------------
+> >  1 file changed, 8 insertions(+), 17 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/vc4/vc4_dsi.c b/drivers/gpu/drm/vc4/vc4_dsi.c
+> > index eaf276978ee7..19aab4e7e209 100644
+> > --- a/drivers/gpu/drm/vc4/vc4_dsi.c
+> > +++ b/drivers/gpu/drm/vc4/vc4_dsi.c
+> > @@ -1246,10 +1246,12 @@ static ssize_t vc4_dsi_host_transfer(struct mipi_dsi_host *host,
+> >       return ret;
+> >  }
+> >
+> > +static const struct component_ops vc4_dsi_ops;
+> >  static int vc4_dsi_host_attach(struct mipi_dsi_host *host,
+> >                              struct mipi_dsi_device *device)
+> >  {
+> >       struct vc4_dsi *dsi = host_to_dsi(host);
+> > +     int ret;
+> >
+> >       dsi->lanes = device->lanes;
+> >       dsi->channel = device->channel;
+> > @@ -1284,6 +1286,12 @@ static int vc4_dsi_host_attach(struct mipi_dsi_host *host,
+> >               return 0;
+> >       }
+> >
+> > +     ret = component_add(&dsi->pdev->dev, &vc4_dsi_ops);
+> > +     if (ret) {
+> > +             mipi_dsi_host_unregister(&dsi->dsi_host);
+> > +             return ret;
+> > +     }
+> > +
+> >       return 0;
+> >  }
+> >
+> > @@ -1662,7 +1670,6 @@ static int vc4_dsi_dev_probe(struct platform_device *pdev)
+> >  {
+> >       struct device *dev = &pdev->dev;
+> >       struct vc4_dsi *dsi;
+> > -     int ret;
+> >
+> >       dsi = devm_kzalloc(dev, sizeof(*dsi), GFP_KERNEL);
+> >       if (!dsi)
+> > @@ -1670,26 +1677,10 @@ static int vc4_dsi_dev_probe(struct platform_device *pdev)
+> >       dev_set_drvdata(dev, dsi);
+> >
+> >       dsi->pdev = pdev;
+> > -
+> > -     /* Note, the initialization sequence for DSI and panels is
+> > -      * tricky.  The component bind above won't get past its
+> > -      * -EPROBE_DEFER until the panel/bridge probes.  The
+> > -      * panel/bridge will return -EPROBE_DEFER until it has a
+> > -      * mipi_dsi_host to register its device to.  So, we register
+> > -      * the host during pdev probe time, so vc4 as a whole can then
+> > -      * -EPROBE_DEFER its component bind process until the panel
+> > -      * successfully attaches.
+> > -      */
+> >       dsi->dsi_host.ops = &vc4_dsi_host_ops;
+> >       dsi->dsi_host.dev = dev;
+> >       mipi_dsi_host_register(&dsi->dsi_host);
+> >
+> > -     ret = component_add(&pdev->dev, &vc4_dsi_ops);
+> > -     if (ret) {
+> > -             mipi_dsi_host_unregister(&dsi->dsi_host);
+> > -             return ret;
+> > -     }
+> > -
+> >       return 0;
+> >  }
+> >
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
