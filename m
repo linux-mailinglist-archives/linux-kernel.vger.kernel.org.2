@@ -2,97 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464673AE029
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 22:13:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 881EA3AE02E
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 22:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhFTUPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 16:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41576 "EHLO
+        id S230021AbhFTUTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 16:19:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhFTUPg (ORCPT
+        with ESMTP id S229632AbhFTUTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 16:15:36 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF8BC061574;
-        Sun, 20 Jun 2021 13:13:23 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id n7so17203506wri.3;
-        Sun, 20 Jun 2021 13:13:23 -0700 (PDT)
+        Sun, 20 Jun 2021 16:19:33 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EAC9C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 13:17:20 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id s6so16075135edu.10
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 13:17:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Q0TVjI7Y60EXCArmgh8EI3LQcOPZyITFP4rjzjZVKWM=;
-        b=CJrORjdm50/3Jv33EaOW9JsuVx5Is9yTPsOtHy5dsiA2gdYOkFuCYWjP6tyIVxliY8
-         4F2rkTMJ2nfcfeED9fRW+lOrIApyfxUD9VmGmtbLrachi9UOG3u4hUH44foCZWLG4JIk
-         YngB0fDA16ouF0eI9REHaKHHdMyjNxR4qH8lbkW/GOh+En96PotdYuJPJaYlN/8pawtC
-         ZUpRxJI5ONL4Hxdg6OJ0oTlwedYM2jxXQ0OjMLsXNqWAThoT3FcPPNKHf3DmAV+ZubDw
-         vkRUTFwyBRsjnwszTRtE2d2ypR/edTdOojRgvO1MVdMmLejwoWG1/7Y15K5FvZ8HtRKO
-         iIww==
+        h=message-id:date:from:mime-version:to:subject;
+        bh=dT8fcyL9A6ybtS8EcT7yugQkO1tBzwr7fnKscj93snw=;
+        b=kZB41waVQIacvM4m2CzVqFLX0bDUe3oNaHBXPk+GBUTf8umnB/gd2g3GlCTxz/zYyZ
+         39vurFwehYIFAXJrJPoB+P/D8qgK58sMioPzVsFb6wfFJ9Hbjjv7/bUCyGmkljeNmz5x
+         Znp9RS8uG687boq9vkNtfLxh/NQYVzz8kqcxxsRFecixL7AOqRpWAUTTDN4W238QdWYd
+         YoPSC2iAjlOPubV1BrgBh1ZivTS4qV7zvLw7kWmNzh3dDCyDqPglE8Vb0rrFiHKKYNlp
+         M6gwBFhYvRpqnRp12HkDhPk/YRVpzvGAsdK+GuYpkBEzBFeHlcN6o84jCbLOzGSzS/fK
+         J4Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Q0TVjI7Y60EXCArmgh8EI3LQcOPZyITFP4rjzjZVKWM=;
-        b=Ikq2nfwoazdc7Ilfki8UNqS3TaxdWlTUuRIg4zWiQPes9J2RjiUUmw9pmCV+CIw907
-         F98dy5depK7SbSE74xxvNy0ZeYe4fmvML5lZ2qSwgUHcenbZBlIqQ1Q2cSILTfOPzyzY
-         2v2EPl7ZbsL75mtIaH6S0ZcWUJ86Aj89y1Yze8ZvV0oSptjx19quU9cJxmEHZrRTxkGU
-         qLVccGSp/qOC+ak1s9iPejSz2ILnXFzKSjheux93S/HNJWIP8fKv2/AxDHinCuML2opl
-         5huY2Nz9TuQqzpLdXDwacl+IG8HhPOZFbmL3wF1kPFFG7K+3UT2nElc8MDs3jwas0rhp
-         FMLg==
-X-Gm-Message-State: AOAM533gQoglbc+NCz+fh/SiyKonVqmsCevB6fqGYx1vWQt09TZyGsjl
-        GRytTO74s8o0mNxwMgHtuXlTdpsDQroNnw==
-X-Google-Smtp-Source: ABdhPJwp+Gj1B285qCokmFA/M82d1AgL0yCXG9NXFSUcdaotI5JNhgqirSDq1Vj2yfpPnds1bygPQQ==
-X-Received: by 2002:a5d:45c5:: with SMTP id b5mr2674953wrs.221.1624220001866;
-        Sun, 20 Jun 2021 13:13:21 -0700 (PDT)
-Received: from [192.168.8.197] ([185.69.145.72])
-        by smtp.gmail.com with ESMTPSA id q5sm15309786wmc.0.2021.06.20.13.13.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 20 Jun 2021 13:13:21 -0700 (PDT)
-Subject: Re: [PATCH v2 2/3] io_uring: minor clean up in trace events
- definition
-To:     Olivier Langlois <olivier@trillion01.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <60be7e31.1c69fb81.a8bfb.2e54SMTPIN_ADDED_MISSING@mx.google.com>
- <2752dcc1-9e56-ba31-54ea-d2363ecb6c93@gmail.com>
- <def5421f-a3ae-12fd-87a2-6e584f753127@kernel.dk>
- <20210615193532.6d7916d4@gandalf.local.home>
- <2ba15b09-2228-9a2a-3ac3-c471dd3fc912@kernel.dk>
- <3f5447bf02453a034f4eb71f092dd1d1455ec7ad.camel@trillion01.com>
- <237f71d5-ee6e-247c-c185-e4e6afbd317c@kernel.dk>
- <1cf91b2f760686678acfbefcc66309cd061986d5.camel@trillion01.com>
- <902fdad6-4011-07fc-ea0e-5bac4e34d7bc@kernel.dk>
- <473dbbd3376a085df4672a30f86fe8faf8f8254a.camel@trillion01.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <5d2d9a34-e070-877c-9b94-152f60ae4a2a@gmail.com>
-Date:   Sun, 20 Jun 2021 21:13:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:message-id:date:from:mime-version:to:subject;
+        bh=dT8fcyL9A6ybtS8EcT7yugQkO1tBzwr7fnKscj93snw=;
+        b=pyrDFGsB7ZcwKSx+RhtZ4ZDKyGpJlUiZo5f1+jjNy46bDRPtIam33psuW3djQNCDWU
+         b+niQlVz0vAhKlr5OeiT5AIyxFW59EDLvnk4NG4UFn3ZyH3PjIM8Tm9rA35XLYA0YyMF
+         VXaTFQQxwvJMuZL/ob/CqlgNn/qVF3wBaIfAQL9ovSY0F3vNnC83YrupcYjC5cZFcI0c
+         caVvuIUU5k6KzxJq34bwJlkQzmPApC0N04/dNAJtYS4u6GrYANrtWDG8b5Vba/Zl9lwq
+         7LEDcdWSZ4Vn6cVUt+gFR1CDsKpPEXcVCjxRnrJKf/P1MnM+ZKhdhjtXiPPkZ6rF++b3
+         dMnQ==
+X-Gm-Message-State: AOAM533mjs3yGi10kr2G4E2E+G/Psav+5YWNRaHi5R3pyYoDmK29r8KS
+        iIqzOJn8nmcyCW7vp4T8nGBdsUEDUe0bEQ==
+X-Google-Smtp-Source: ABdhPJwObZTogcwAKhaLSmw3ciYWWS8EY8o7qZVY972loN/IeoN/dRaRZpVg3ZQ2vUbr2WZHXXQuNA==
+X-Received: by 2002:aa7:ce8b:: with SMTP id y11mr4196118edv.240.1624220238416;
+        Sun, 20 Jun 2021 13:17:18 -0700 (PDT)
+Received: from webmail.webmail.com ([196.170.97.201])
+        by smtp.gmail.com with ESMTPSA id ce26sm2215082ejc.4.2021.06.20.13.17.17
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Jun 2021 13:17:18 -0700 (PDT)
+Message-ID: <60cfa24e.1c69fb81.74baa.a98e@mx.google.com>
+Date:   Sun, 20 Jun 2021 13:17:18 -0700 (PDT)
+From:   "=?utf-8?b?TWF0dGhldyBBREU=?=" <matadtgtg10059@gmail.com>
+X-Google-Original-From: =?utf-8?b?TWF0dGhldyBBREU=?= <matthewadetg@gmail.com>
+Content-Type: multipart/mixed; boundary="===============6830315307303845448=="
 MIME-Version: 1.0
-In-Reply-To: <473dbbd3376a085df4672a30f86fe8faf8f8254a.camel@trillion01.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+To:     linux-kernel@vger.kernel.org
+X-Priority: 
+X-MSMail-Priority: 
+Subject: =?utf-8?b?WE8uLSBHT09EIFBST1BPU0FMIFRPIERJU0NVU1MgV0lUSCBZT1Ug?=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/20/21 8:15 PM, Olivier Langlois wrote:
->>
-> I found my problem. I had to add the option --thread to git format-
-> patch
-> 
-> as in:
-> $ git format-patch --thread -o ~/patches HEAD^
+--===============6830315307303845448==
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 
-fwiw, was always using
+Cg==
 
-$ git format-patch -n --thread=shallow --subject-prefix "PATCH" -o <path> --cover-letter HEAD~N..HEAD~0
-
-without --cover-letter if a single patch
-
--- 
-Pavel Begunkov
+--===============6830315307303845448==--
