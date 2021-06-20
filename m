@@ -2,78 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 408DC3AE051
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 22:33:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 572BD3AE055
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 22:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhFTUfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 16:35:50 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:37437 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbhFTUft (ORCPT
+        id S230186AbhFTUhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 16:37:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229897AbhFTUhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 16:35:49 -0400
-Received: (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 8C26E20006;
-        Sun, 20 Jun 2021 20:33:34 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Martin Fuzzey <martin.fuzzey@flowbird.group>,
-        Alessandro Zummo <a.zummo@towertech.it>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        linux-kernel@vger.kernel.org,
-        Amelie Delaunay <amelie.delaunay@st.com>,
-        linux-rtc@vger.kernel.org
-Subject: Re: [PATCH] rtc: stm32: Fix unbalanced clk_disable_unprepare() on probe error path
-Date:   Sun, 20 Jun 2021 22:33:25 +0200
-Message-Id: <162422118505.1090685.9982593447794632444.b4-ty@bootlin.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <1623087421-19722-1-git-send-email-martin.fuzzey@flowbird.group>
-References: <1623087421-19722-1-git-send-email-martin.fuzzey@flowbird.group>
+        Sun, 20 Jun 2021 16:37:48 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78721C061574;
+        Sun, 20 Jun 2021 13:35:34 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id f8so14805756lfu.6;
+        Sun, 20 Jun 2021 13:35:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=h7qy3vsXHdigHBzb/NyGdUZpvcQTxWroavq6cxrlgrU=;
+        b=Btk7qYK3cuIjJG70Wd/CdQyik6FRcf7NkbaeLKdXQ8EfUJVLVOJXJyVT0AfFFkZ5HX
+         KRthrLtmpbmtwnav53QuXUqfulOH0mZ0BhTI/IIVQs62u//haV0ZOnbLKk8fW/yRdiRd
+         dQbAFKoN+rCYZSvbxUN18b6RehqOr+Y1y+qLVpSPGsR9klV5ixxtp67axlZjyDVs11Hi
+         oDGd0Z9sYfz807Up17DrEfqedQLt30hKltSzgvhRzZj3st0kze7RDzHtLArKx5XgbqTe
+         saOuHrwYo4t2CcBEt585IbbPMam2DTv6SELZKsObgCLwzdgXqZ49xwW4fUna5e3s9+GZ
+         Xjjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=h7qy3vsXHdigHBzb/NyGdUZpvcQTxWroavq6cxrlgrU=;
+        b=kGpFAExK8u1Wk89usRfzMNYtjjYtL94kau8kfP57MiAz7GH+eL+V3peY9l5oMITq3f
+         FjPLyaBaFd9G9CyJlKICqoNbyITuDiwoVFGWg6F1zKFzyB0SbzOfuexIGIRR7XT3WHLF
+         AUOUT3WFqtOQ+TjF33xp76eGSnnrFsH/bLy9TuXgL7yRwLKXkHpMNlXz2EZP1tM7Emsn
+         ogQ44DD/wz8ECrcdDIEcpMpnxCXJFXzX4vbCwbnThn3/AqPS0Du2NmuevI6NSDnXauf2
+         Ja2ljb1U9IThDaMsJvwd5AWUGtsM2fMYMyBDSBQWs6gpD18dspqQ1gTTN/C4GFSMZ3aD
+         13MA==
+X-Gm-Message-State: AOAM533/BLjHjp/dwYp3eLlI+7w/Jwuj/eXrXQjnpyw6MVr9am57LxKF
+        0lCdhoaFN1lcKUvFkV/GsKxqninfT4E=
+X-Google-Smtp-Source: ABdhPJy2QDvhHZzX8bLZV5CJENS4/s2JkNM/+OmtNh27GCujgDHvSadOKkXf+/kSAVAiSAkMkq7kiw==
+X-Received: by 2002:a05:6512:3f8d:: with SMTP id x13mr11719547lfa.278.1624221332611;
+        Sun, 20 Jun 2021 13:35:32 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
+        by smtp.googlemail.com with ESMTPSA id g16sm1860932ljn.103.2021.06.20.13.35.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 20 Jun 2021 13:35:31 -0700 (PDT)
+Subject: Re: [PATCH v1 1/2] hwmon: Support set_trips() of thermal device ops
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+References: <20210620161223.16844-1-digetx@gmail.com>
+ <20210620161223.16844-2-digetx@gmail.com>
+ <20210620172329.GA3850372@roeck-us.net>
+ <1cb97f70-9fdd-e7d5-da73-dc5c42a53104@gmail.com>
+ <20210620192124.GA3853199@roeck-us.net>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <4d12b57c-3dbb-e290-3f82-eb30aefa7dd4@gmail.com>
+Date:   Sun, 20 Jun 2021 23:35:31 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210620192124.GA3853199@roeck-us.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 7 Jun 2021 19:36:40 +0200, Martin Fuzzey wrote:
-> The STM32MP1 RTC may have 2 clocks, the pclk and the rtc_ck.
+20.06.2021 22:21, Guenter Roeck пишет:
+> On Sun, Jun 20, 2021 at 08:38:27PM +0300, Dmitry Osipenko wrote:
+>> 20.06.2021 20:23, Guenter Roeck пишет:
+>>> On Sun, Jun 20, 2021 at 07:12:22PM +0300, Dmitry Osipenko wrote:
+>>>> Support set_trips() callback of thermal device ops. This allows HWMON
+>>>> device to operatively notify thermal core about temperature changes, which
+>>>> is very handy to have in a case where HWMON sensor is used by CPU thermal
+>>>> zone that performs passive cooling and emergency shutdown on overheat.
+>>>> Thermal core will be able to react faster to temperature changes.
+>>>>
+>>>
+>>> Why would this require a driver callback, and why can it not be handled
+>>> in the hwmon core alone ? The hwmon core could register a set_trip function
+>>> if the chip (driver) supports setting low and high limits, and it could
+>>> call the appropriate driver functions when hwmon_thermal_set_trips()
+>>> is called.
+>>
+>> I wasn't sure about what other hwmon drivers may need and want to do for
+>> programming of the trips, so decided to start with this variant. I'll
+>> prepare v2 since you're suggesting that the universal callback should
+>> work okay for all drivers, thanks.
 > 
-> If clk_prepare_enable() fails for the second clock (rtc_ck) we must only
-> call clk_disable_unprepare() for the first clock (pclk) but currently we
-> call it on both leading to a WARN:
-> 
-> [   15.629568] WARNING: CPU: 0 PID: 146 at drivers/clk/clk.c:958 clk_core_disable+0xb0/0xc8
-> [   15.637620] ck_rtc already disabled
-> [   15.663322] CPU: 0 PID: 146 Comm: systemd-udevd Not tainted 5.4.77-pknbsp-svn5759-atag-v5.4.77-204-gea4235203137-dirty #2413
-> [   15.674510] Hardware name: STM32 (Device Tree Support)
-> [   15.679658] [<c0111148>] (unwind_backtrace) from [<c010c0b8>] (show_stack+0x10/0x14)
-> [   15.687371] [<c010c0b8>] (show_stack) from [<c0ab3d28>] (dump_stack+0xc0/0xe0)
-> [   15.694574] [<c0ab3d28>] (dump_stack) from [<c012360c>] (__warn+0xc8/0xf0)
-> [   15.701428] [<c012360c>] (__warn) from [<c0123694>] (warn_slowpath_fmt+0x60/0x94)
-> [   15.708894] [<c0123694>] (warn_slowpath_fmt) from [<c053b518>] (clk_core_disable+0xb0/0xc8)
-> [   15.717230] [<c053b518>] (clk_core_disable) from [<c053c190>] (clk_core_disable_lock+0x18/0x24)
-> [   15.725924] [<c053c190>] (clk_core_disable_lock) from [<bf0adc44>] (stm32_rtc_probe+0x124/0x5e4 [rtc_stm32])
-> [   15.735739] [<bf0adc44>] (stm32_rtc_probe [rtc_stm32]) from [<c05f7d4c>] (platform_drv_probe+0x48/0x98)
-> [   15.745095] [<c05f7d4c>] (platform_drv_probe) from [<c05f5cec>] (really_probe+0x1f0/0x458)
-> [   15.753338] [<c05f5cec>] (really_probe) from [<c05f61c4>] (driver_probe_device+0x70/0x1c4)
-> [   15.761584] [<c05f61c4>] (driver_probe_device) from [<c05f6580>] (device_driver_attach+0x58/0x60)
-> [   15.770439] [<c05f6580>] (device_driver_attach) from [<c05f6654>] (__driver_attach+0xcc/0x170)
-> [   15.779032] [<c05f6654>] (__driver_attach) from [<c05f40d8>] (bus_for_each_dev+0x58/0x7c)
-> [   15.787191] [<c05f40d8>] (bus_for_each_dev) from [<c05f4ffc>] (bus_add_driver+0xdc/0x1f8)
-> [   15.795352] [<c05f4ffc>] (bus_add_driver) from [<c05f6ed8>] (driver_register+0x7c/0x110)
-> [   15.803425] [<c05f6ed8>] (driver_register) from [<c01027bc>] (do_one_initcall+0x70/0x1b8)
-> [   15.811588] [<c01027bc>] (do_one_initcall) from [<c01a1094>] (do_init_module+0x58/0x1f8)
-> [   15.819660] [<c01a1094>] (do_init_module) from [<c01a0074>] (load_module+0x1e58/0x23c8)
-> [   15.827646] [<c01a0074>] (load_module) from [<c01a0860>] (sys_finit_module+0xa0/0xd4)
-> [   15.835459] [<c01a0860>] (sys_finit_module) from [<c01011e0>] (__sys_trace_return+0x0/0x20)
+> It will require some checks during probe to make sure that writeable limits
+> exist, but that is still better than per-driver code. If for whatever
+> reason some platform expects a different set of registers (say,
+> critical limits instead of warning limits to attach to trip points),
+> or if some platform expects that limits are _not_ used as trip points,
+> that would not be driver but platform specific. You would not be able
+> to address that on driver level with a single callback either (after all,
+> lm90 compatible chips support up to three sets of limits).
+> That means you already made an implementation specific choice with your
+> code, by selecting one of those three sets of limits to act as trip
+> points, and by making trip point support mandatory for all lm90 compatible
+> chips. If we need to make that configurable, we'll need a better solution
+> than a single driver callback, and that solution may as well be generic
+> and driver independent.
 
-Applied, thanks!
+Thank you for the clarification! If device makes a special use of lm90,
+then very likely that it won't attach sensor to thermal zone. At least
+all devices supported by mainline kernel should be okay here.
 
-[1/1] rtc: stm32: Fix unbalanced clk_disable_unprepare() on probe error path
-      commit: 950ac33dbe6ff656a623d862022f0762ec061ba7
+I think other sensors should be in a similar position. If a more complex
+solution will be needed, then indeed hwmon API could be improved
+further. The thermal device is created only for hwmon sensors that are
+attached to thermal zone in a device-tree, so the scope of potentially
+affected device should be small. Seems lm90 is actually the only hwmon
+sensor that is used by thermal zones today.
 
-Best regards,
--- 
-Alexandre Belloni <alexandre.belloni@bootlin.com>
+AFAICS, all drivers return -EOPNOTSUPP if limits can't be changed, so we
+could equal this error code to success in a case of set_trips(). The
+set_trips() is very optional, if driver can't set limits, then the trips
+won't trigger and thermal core will continue to work like set_trips()
+wasn't hooked up. I'll implement this in v2.
