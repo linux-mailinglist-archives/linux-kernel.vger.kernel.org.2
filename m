@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C5003ADFBD
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 19:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1747B3ADFBE
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 19:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229943AbhFTR4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 13:56:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39540 "EHLO
+        id S230410AbhFTR45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 13:56:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbhFTRzv (ORCPT
+        with ESMTP id S230107AbhFTRzx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 13:55:51 -0400
+        Sun, 20 Jun 2021 13:55:53 -0400
 Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37404C061756;
-        Sun, 20 Jun 2021 10:53:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7973FC06175F;
+        Sun, 20 Jun 2021 10:53:39 -0700 (PDT)
 Received: from dslb-084-059-235-131.084.059.pools.vodafone-ip.de ([84.59.235.131] helo=martin-debian-2.paytec.ch)
         by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.89)
         (envelope-from <martin@kaiser.cx>)
-        id 1lv1dY-00012S-3q; Sun, 20 Jun 2021 19:53:36 +0200
+        id 1lv1dZ-00012S-9U; Sun, 20 Jun 2021 19:53:37 +0200
 From:   Martin Kaiser <martin@kaiser.cx>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
         linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH 12/13] staging: rtl8188eu: remove sdio defines
-Date:   Sun, 20 Jun 2021 19:53:00 +0200
-Message-Id: <20210620175301.14988-12-martin@kaiser.cx>
+Subject: [PATCH 13/13] staging: rtl8188eu: remove more unused defines
+Date:   Sun, 20 Jun 2021 19:53:01 +0200
+Message-Id: <20210620175301.14988-13-martin@kaiser.cx>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210620175301.14988-1-martin@kaiser.cx>
 References: <20210620175301.14988-1-martin@kaiser.cx>
@@ -36,160 +36,249 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove sdio defines which are not used by this driver.
+Remove some defines for register addresses and bits which obviously
+refer to chipsets other than rtl8188eu.
 
 Signed-off-by: Martin Kaiser <martin@kaiser.cx>
 ---
- .../staging/rtl8188eu/include/rtl8188e_spec.h | 136 ------------------
- 1 file changed, 136 deletions(-)
+ .../staging/rtl8188eu/include/rtl8188e_spec.h | 148 +-----------------
+ 1 file changed, 1 insertion(+), 147 deletions(-)
 
 diff --git a/drivers/staging/rtl8188eu/include/rtl8188e_spec.h b/drivers/staging/rtl8188eu/include/rtl8188e_spec.h
-index 55cce1f6bd77..94baea8bc068 100644
+index 94baea8bc068..fe0871bbb95f 100644
 --- a/drivers/staging/rtl8188eu/include/rtl8188e_spec.h
 +++ b/drivers/staging/rtl8188eu/include/rtl8188e_spec.h
-@@ -1089,142 +1089,6 @@ So the following defines for 92C is not entire!!!!!!
- #define SCR_TXBCUSEDK		BIT(6)	/* Force Tx Bcast pkt Use Default Key */
- #define SCR_RXBCUSEDK		BIT(7)	/* Force Rx Bcast pkt Use Default Key */
+@@ -7,15 +7,8 @@
+ #ifndef __RTL8188E_SPEC_H__
+ #define __RTL8188E_SPEC_H__
  
--/*	RTL8188E SDIO Configuration */
+-/*        8192C Register offset definition */
 -
--/*  I/O bus domain address mapping */
--#define SDIO_LOCAL_BASE			0x10250000
--#define WLAN_IOREG_BASE			0x10260000
--#define FIRMWARE_FIFO_BASE		0x10270000
--#define TX_HIQ_BASE			0x10310000
--#define TX_MIQ_BASE			0x10320000
--#define TX_LOQ_BASE			0x10330000
--#define RX_RX0FF_BASE			0x10340000
+-#define		HAL_PS_TIMER_INT_DELAY	50	/*   50 microseconds */
+-#define		HAL_92C_NAV_UPPER_UNIT	128	/*  micro-second */
 -
--/*  SDIO host local register space mapping. */
--#define SDIO_LOCAL_MSK			0x0FFF
--#define WLAN_IOREG_MSK			0x7FFF
--#define WLAN_FIFO_MSK			0x1FFF	/*  Aggregation Length[12:0] */
--#define WLAN_RX0FF_MSK			0x0003
+-#define MAC_ADDR_LEN			6
+ /*  8188E PKT_BUFF_ACCESS_CTRL value */
+ #define TXPKT_BUF_SELECT		0x69
+-#define RXPKT_BUF_SELECT		0xA5
+ #define DISABLE_TRXPKT_BUF_ACCESS	0x0
+ 
+ /*	0x0000h ~ 0x00FFh	System Configuration */
+@@ -52,19 +45,7 @@
+ #define REG_FSISR			0x0054
+ #define REG_HSIMR			0x0058
+ #define REG_HSISR			0x005c
+-#define REG_GPIO_PIN_CTRL_2		0x0060 /*  RTL8723 WIFI/BT/GPS
+-						* Multi-Function GPIO Pin Control.
+-						*/
+-#define REG_GPIO_IO_SEL_2		0x0062 /*  RTL8723 WIFI/BT/GPS
+-						* Multi-Function GPIO Select.
+-						*/
+ #define REG_BB_PAD_CTRL			0x0064
+-#define REG_MULTI_FUNC_CTRL		0x0068 /*  RTL8723 WIFI/BT/GPS
+-						* Multi-Function control source.
+-						*/
+-#define REG_GPIO_OUTPUT			0x006c
+-#define REG_AFE_XTAL_CTRL_EXT		0x0078 /* RTL8188E */
+-#define REG_XCK_OUT_CTRL		0x007c /* RTL8188E */
+ #define REG_MCUFWDL			0x0080
+ #define REG_WOL_EVENT			0x0081 /* RTL8188E */
+ #define REG_MCUTSTCFG			0x0084
+@@ -172,9 +153,6 @@
+ #define	REG_PCIE_HCPWM			0x0363	/* PCIe CPWM */
+ #define	REG_WATCH_DOG			0x0368
+ 
+-/*  RTL8723 series ------------------------------ */
+-#define	REG_PCIE_HISR			0x03A0
 -
--/*  Without ref to the SDIO Device ID */
--#define SDIO_WITHOUT_REF_DEVICE_ID	0
--#define SDIO_LOCAL_DEVICE_ID		0	/*  0b[16], 000b[15:13] */
--#define WLAN_TX_HIQ_DEVICE_ID		4	/*  0b[16], 100b[15:13] */
--#define WLAN_TX_MIQ_DEVICE_ID		5	/*  0b[16], 101b[15:13] */
--#define WLAN_TX_LOQ_DEVICE_ID		6	/*  0b[16], 110b[15:13] */
--#define WLAN_RX0FF_DEVICE_ID		7	/*  0b[16], 111b[15:13] */
--#define WLAN_IOREG_DEVICE_ID		8	/*  1b[16] */
+ /*  spec version 11 */
+ /*	0x0400h ~ 0x047Fh	Protocol Configuration */
+ #define REG_VOQ_INFORMATION		0x0400
+@@ -459,34 +437,6 @@
+ #define	GPIO_IO_SEL			(REG_GPIO_PIN_CTRL + 2)
+ #define	GPIO_MOD			(REG_GPIO_PIN_CTRL + 3)
+ 
+-/* 8723/8188E Host System Interrupt Mask Register (offset 0x58, 32 byte) */
+-#define	HSIMR_GPIO12_0_INT_EN		BIT(0)
+-#define	HSIMR_SPS_OCP_INT_EN		BIT(5)
+-#define	HSIMR_RON_INT_EN		BIT(6)
+-#define	HSIMR_PDN_INT_EN		BIT(7)
+-#define	HSIMR_GPIO9_INT_EN		BIT(25)
 -
--/*  SDIO Tx Free Page Index */
--#define HI_QUEUE_IDX			0
--#define MID_QUEUE_IDX			1
--#define LOW_QUEUE_IDX			2
--#define PUBLIC_QUEUE_IDX		3
+-/* 8723/8188E Host System Interrupt Status Register (offset 0x5C, 32 byte) */
+-#define	HSISR_GPIO12_0_INT		BIT(0)
+-#define	HSISR_SPS_OCP_INT		BIT(5)
+-#define	HSISR_RON_INT_EN		BIT(6)
+-#define	HSISR_PDNINT			BIT(7)
+-#define	HSISR_GPIO9_INT			BIT(25)
 -
--#define SDIO_MAX_TX_QUEUE		3	/*  HIQ, MIQ and LOQ */
--#define SDIO_MAX_RX_QUEUE		1
+-/*   8192C (MSR) Media Status Register	(Offset 0x4C, 8 bits) */
+-/*
+- * Network Type
+- * 00: No link
+- * 01: Link in ad hoc network
+- * 10: Link in infrastructure network
+- * 11: AP mode
+- * Default: 00b.
+- */
+-#define	MSR_NOLINK			0x00
+-#define	MSR_ADHOC			0x01
+-#define	MSR_INFRA			0x02
+-#define	MSR_AP				0x03
 -
--/*  SDIO Tx Control */
--#define SDIO_REG_TX_CTRL		0x0000
--/*  SDIO Host Interrupt Mask */
--#define SDIO_REG_HIMR			0x0014
--/*  SDIO Host Interrupt Service Routine */
--#define SDIO_REG_HISR			0x0018
--/*  HCI Current Power Mode */
--#define SDIO_REG_HCPWM			0x0019
--/*  RXDMA Request Length */
--#define SDIO_REG_RX0_REQ_LEN		0x001C
--/*  Free Tx Buffer Page */
--#define SDIO_REG_FREE_TXPG		0x0020
--/*  HCI Current Power Mode 1 */
--#define SDIO_REG_HCPWM1			0x0024
--/*  HCI Current Power Mode 2 */
--#define SDIO_REG_HCPWM2			0x0026
--/*  HTSF Informaion */
--#define SDIO_REG_HTSFR_INFO		0x0030
--/*  HCI Request Power Mode 1 */
--#define SDIO_REG_HRPWM1			0x0080
--/*  HCI Request Power Mode 2 */
--#define SDIO_REG_HRPWM2			0x0082
--/*  HCI Power Save Clock */
--#define SDIO_REG_HPS_CLKR		0x0084
--/*  SDIO HCI Suspend Control */
--#define SDIO_REG_HSUS_CTRL		0x0086
--/*  SDIO Host Extension Interrupt Mask Always */
--#define SDIO_REG_HIMR_ON		0x0090
--/*  SDIO Host Extension Interrupt Status Always */
--#define SDIO_REG_HISR_ON		0x0091
+ /*   88EU (MSR) Media Status Register	(Offset 0x4C, 8 bits) */
+ #define	USB_INTR_CONTENT_C2H_OFFSET	0
+ #define	USB_INTR_CONTENT_CPWM1_OFFSET	16
+@@ -505,34 +455,6 @@
+ #define CMD_EFUSE_PATCH_ERR		BIT(6)
+ #define CMD_IOCONFIG_ERR		BIT(7)
+ 
+-/*  6. Adaptive Control Registers  (Offset: 0x0160 - 0x01CF) */
+-/*  8192C Response Rate Set Register	(offset 0x181, 24bits) */
+-#define	RRSR_1M				BIT(0)
+-#define	RRSR_2M				BIT(1)
+-#define	RRSR_5_5M			BIT(2)
+-#define	RRSR_11M			BIT(3)
+-#define	RRSR_6M				BIT(4)
+-#define	RRSR_9M				BIT(5)
+-#define	RRSR_12M			BIT(6)
+-#define	RRSR_18M			BIT(7)
+-#define	RRSR_24M			BIT(8)
+-#define	RRSR_36M			BIT(9)
+-#define	RRSR_48M			BIT(10)
+-#define	RRSR_54M			BIT(11)
+-#define	RRSR_MCS0			BIT(12)
+-#define	RRSR_MCS1			BIT(13)
+-#define	RRSR_MCS2			BIT(14)
+-#define	RRSR_MCS3			BIT(15)
+-#define	RRSR_MCS4			BIT(16)
+-#define	RRSR_MCS5			BIT(17)
+-#define	RRSR_MCS6			BIT(18)
+-#define	RRSR_MCS7			BIT(19)
 -
--#define SDIO_HIMR_DISABLED			0
+-/*  8192C Response Rate Set Register	(offset 0x1BF, 8bits) */
+-/*  WOL bit information */
+-#define	HAL92C_WOL_PTK_UPDATE_EVENT	BIT(0)
+-#define	HAL92C_WOL_GTK_UPDATE_EVENT	BIT(1)
 -
--/*  RTL8188E SDIO Host Interrupt Mask Register */
--#define SDIO_HIMR_RX_REQUEST_MSK		BIT(0)
--#define SDIO_HIMR_AVAL_MSK			BIT(1)
--#define SDIO_HIMR_TXERR_MSK			BIT(2)
--#define SDIO_HIMR_RXERR_MSK			BIT(3)
--#define SDIO_HIMR_TXFOVW_MSK			BIT(4)
--#define SDIO_HIMR_RXFOVW_MSK			BIT(5)
--#define SDIO_HIMR_TXBCNOK_MSK			BIT(6)
--#define SDIO_HIMR_TXBCNERR_MSK			BIT(7)
--#define SDIO_HIMR_BCNERLY_INT_MSK		BIT(16)
--#define SDIO_HIMR_C2HCMD_MSK			BIT(17)
--#define SDIO_HIMR_CPWM1_MSK			BIT(18)
--#define SDIO_HIMR_CPWM2_MSK			BIT(19)
--#define SDIO_HIMR_HSISR_IND_MSK			BIT(20)
--#define SDIO_HIMR_GTINT3_IND_MSK		BIT(21)
--#define SDIO_HIMR_GTINT4_IND_MSK		BIT(22)
--#define SDIO_HIMR_PSTIMEOUT_MSK			BIT(23)
--#define SDIO_HIMR_OCPINT_MSK			BIT(24)
--#define SDIO_HIMR_ATIMEND_MSK			BIT(25)
--#define SDIO_HIMR_ATIMEND_E_MSK			BIT(26)
--#define SDIO_HIMR_CTWEND_MSK			BIT(27)
+ /*        8192C BW_OPMODE bits		(Offset 0x203, 8bit) */
+ #define	BW_OPMODE_20MHZ			BIT(2)
+ #define	BW_OPMODE_5G			BIT(1)
+@@ -565,12 +487,6 @@
+ #define	SCR_TxSecEnable			0x02
+ #define	SCR_RxSecEnable			0x04
+ 
+-/*  10. Power Save Control Registers	 (Offset: 0x0260 - 0x02DF) */
+-#define	WOW_PMEN			BIT(0) /*  Power management Enable. */
+-#define	WOW_WOMEN			BIT(1) /*  WoW function on or off. */
+-#define	WOW_MAGIC			BIT(2) /*  Magic packet */
+-#define	WOW_UWF				BIT(3) /*  Unicast Wakeup frame. */
 -
--/* RTL8188E SDIO Specific */
--#define	SDIO_HIMR_MCU_ERR_MSK			BIT(28)
--#define	SDIO_HIMR_TSF_BIT32_TOGGLE_MSK		BIT(29)
--
--/*  SDIO Host Interrupt Service Routine */
--#define SDIO_HISR_RX_REQUEST			BIT(0)
--#define SDIO_HISR_AVAL				BIT(1)
--#define SDIO_HISR_TXERR				BIT(2)
--#define SDIO_HISR_RXERR				BIT(3)
--#define SDIO_HISR_TXFOVW			BIT(4)
--#define SDIO_HISR_RXFOVW			BIT(5)
--#define SDIO_HISR_TXBCNOK			BIT(6)
--#define SDIO_HISR_TXBCNERR			BIT(7)
--#define SDIO_HISR_BCNERLY_INT			BIT(16)
--#define SDIO_HISR_C2HCMD			BIT(17)
--#define SDIO_HISR_CPWM1				BIT(18)
--#define SDIO_HISR_CPWM2				BIT(19)
--#define SDIO_HISR_HSISR_IND			BIT(20)
--#define SDIO_HISR_GTINT3_IND			BIT(21)
--#define SDIO_HISR_GTINT4_IND			BIT(22)
--#define SDIO_HISR_PSTIME			BIT(23)
--#define SDIO_HISR_OCPINT			BIT(24)
--#define SDIO_HISR_ATIMEND			BIT(25)
--#define SDIO_HISR_ATIMEND_E			BIT(26)
--#define SDIO_HISR_CTWEND			BIT(27)
--
--/* RTL8188E SDIO Specific */
--#define	SDIO_HISR_MCU_ERR			BIT(28)
--#define	SDIO_HISR_TSF_BIT32_TOGGLE		BIT(29)
--
--#define MASK_SDIO_HISR_CLEAR				\
--	(SDIO_HISR_TXERR | SDIO_HISR_RXERR | SDIO_HISR_TXFOVW |\
--	 SDIO_HISR_RXFOVW | SDIO_HISR_TXBCNOK | SDIO_HISR_TXBCNERR |\
--	 SDIO_HISR_C2HCMD | SDIO_HISR_CPWM1 | SDIO_HISR_CPWM2 |\
--	 SDIO_HISR_HSISR_IND | SDIO_HISR_GTINT3_IND | SDIO_HISR_GTINT4_IND |\
--	 SDIO_HISR_PSTIMEOUT | SDIO_HISR_OCPINT)
--
--/*  SDIO HCI Suspend Control Register */
--#define HCI_RESUME_PWR_RDY		BIT(1)
--#define HCI_SUS_CTRL			BIT(0)
--
--/*  SDIO Tx FIFO related */
--/*  The number of Tx FIFO free page */
--#define SDIO_TX_FREE_PG_QUEUE			4
--#define SDIO_TX_FIFO_PAGE_SZ			128
--
+ /*  12. Host Interrupt Status Registers	 (Offset: 0x0300 - 0x030F) */
+ /*        8188 IMR/ISR bits */
+ #define	IMR_DISABLED_88E		0x0
+@@ -648,21 +564,6 @@ So the following defines for 92C is not entire!!!!!!
+  * 0x0600h ~ 0x07FFh   WMAC Configuration (512 Bytes)
+  * 0x2000h ~ 0x3FFFh   8051 FW Download Region (8196 Bytes)
+  */
+-/*		 8192C (TXPAUSE) transmission pause (Offset 0x522, 8 bits) */
+-/*  Note:
+- *	The bits of stopping AC(VO/VI/BE/BK) queue in datasheet
+- *	RTL8192S/RTL8192C are wrong,
+- *	the correct arragement is VO - Bit0, VI - Bit1, BE - Bit2,
+- *	and BK - Bit3.
+- *	8723 and 88E may be not correct either in the earlier version.
+- */
+-#define		StopBecon			BIT(6)
+-#define		StopHigh			BIT(5)
+-#define		StopMgt				BIT(4)
+-#define		StopBK				BIT(3)
+-#define		StopBE				BIT(2)
+-#define		StopVI				BIT(1)
+-#define		StopVO				BIT(0)
+ 
+ /*        8192C (RCR) Receive Configuration Register(Offset 0x608, 32 bits) */
+ #define	RCR_APPFCS		BIT(31)	/* WMAC append FCS after payload */
+@@ -695,14 +596,8 @@ So the following defines for 92C is not entire!!!!!!
+ #define	RCR_FIFO_OFFSET		13
+ 
  /*	0xFE00h ~ 0xFE55h	USB Configuration */
+-#define REG_USB_INFO			0xFE17
+-#define REG_USB_SPECIAL_OPTION		0xFE55
+-#define REG_USB_DMA_AGG_TO		0xFE5B
+-#define REG_USB_AGG_TO			0xFE5C
+-#define REG_USB_AGG_TH			0xFE5D
+-
+ #define REG_USB_HRPWM			0xFE58
+-#define REG_USB_HCPWM			0xFE57
++
+ /*        8192C Register Bit and Content definition */
+ /*	0x0000h ~ 0x00FFh	System Configuration */
  
- /* 2 USB Information (0xFE17) */
+@@ -1140,14 +1035,6 @@ So the following defines for 92C is not entire!!!!!!
+ /*  GPS function enable */
+ #define	GPS_FUNC_EN				BIT(22)
+ 
+-/* 3 REG_LIFECTRL_CTRL */
+-#define	HAL92C_EN_PKT_LIFE_TIME_BK		BIT(3)
+-#define	HAL92C_EN_PKT_LIFE_TIME_BE		BIT(2)
+-#define	HAL92C_EN_PKT_LIFE_TIME_VI		BIT(1)
+-#define	HAL92C_EN_PKT_LIFE_TIME_VO		BIT(0)
+-
+-#define	HAL92C_MSDU_LIFE_TIME_UNIT		128	/*  in us */
+-
+ /*  General definitions */
+ #define LAST_ENTRY_OF_TX_PKT_BUFFER		176 /*  22k 22528 bytes */
+ 
+@@ -1173,48 +1060,15 @@ So the following defines for 92C is not entire!!!!!!
+ #define	EEPROM_CUSTOMERID_88E			0xC5
+ #define	EEPROM_RF_ANTENNA_OPT_88E		0xC9
+ 
+-/*  RTL88EE */
+-#define	EEPROM_MAC_ADDR_88EE			0xD0
+-#define	EEPROM_VID_88EE				0xD6
+-#define	EEPROM_DID_88EE				0xD8
+-#define	EEPROM_SVID_88EE			0xDA
+-#define	EEPROM_SMID_88EE			0xDC
+-
+ /* RTL88EU */
+ #define	EEPROM_MAC_ADDR_88EU			0xD7
+ #define	EEPROM_VID_88EU				0xD0
+ #define	EEPROM_PID_88EU				0xD2
+ #define EEPROM_USB_OPTIONAL_FUNCTION0		0xD4
+ 
+-/*  RTL88ES */
+-#define	EEPROM_MAC_ADDR_88ES			0x11A
+-
+ /*		EEPROM/Efuse Value Type */
+ #define EETYPE_TX_PWR				0x0
+ 
+-/*  Default Value for EEPROM or EFUSE!!! */
+-#define EEPROM_Default_TSSI			0x0
+-#define EEPROM_Default_TxPowerDiff		0x0
+-#define EEPROM_Default_CrystalCap		0x5
+-/*  Default: 2X2, RTL8192CE(QFPN68) */
+-#define EEPROM_Default_BoardType		0x02
+-#define EEPROM_Default_TxPower			0x1010
+-#define EEPROM_Default_HT2T_TxPwr		0x10
+-
+-#define EEPROM_Default_LegacyHTTxPowerDiff	0x3
+-#define EEPROM_Default_ThermalMeter		0x12
+-
+-#define EEPROM_Default_AntTxPowerDiff		0x0
+-#define EEPROM_Default_TxPwDiff_CrystalCap	0x5
+-#define EEPROM_Default_TxPowerLevel		0x2A
+-
+-#define EEPROM_Default_HT40_2SDiff		0x0
+-/*  HT20<->40 default Tx Power Index Difference */
+-#define EEPROM_Default_HT20_Diff		2
+-#define EEPROM_Default_LegacyHTTxPowerDiff	0x3
+-#define EEPROM_Default_HT40_PwrMaxOffset	0
+-#define EEPROM_Default_HT20_PwrMaxOffset	0
+-
+ #define EEPROM_Default_CrystalCap_88E		0x20
+ #define	EEPROM_Default_ThermalMeter_88E		0x18
+ 
 -- 
 2.20.1
 
