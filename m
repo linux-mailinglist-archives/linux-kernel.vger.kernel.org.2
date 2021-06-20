@@ -2,92 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF073ADE3B
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 13:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55BC63ADE40
+	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 14:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229684AbhFTLwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 07:52:30 -0400
-Received: from isilmar-4.linta.de ([136.243.71.142]:36438 "EHLO
-        isilmar-4.linta.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbhFTLwZ (ORCPT
+        id S229604AbhFTMD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 08:03:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229581AbhFTMDY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 07:52:25 -0400
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-X-isilmar-external: YES
-Received: from owl.dominikbrodowski.net (owl.brodo.linta [10.2.0.111])
-        by isilmar-4.linta.de (Postfix) with ESMTPSA id 80B532000AC;
-        Sun, 20 Jun 2021 11:50:09 +0000 (UTC)
-Received: by owl.dominikbrodowski.net (Postfix, from userid 1000)
-        id 7F28E804D5; Sun, 20 Jun 2021 13:49:55 +0200 (CEST)
-Date:   Sun, 20 Jun 2021 13:49:55 +0200
-From:   Dominik Brodowski <linux@dominikbrodowski.net>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>
-Subject: Re: v5.13-rcX regression - NULL pointer dereference - MFD and
- software node API
-Message-ID: <YM8rY5hi+zuAekg+@owl.dominikbrodowski.net>
-References: <YM77uq51jmDC/rHt@owl.dominikbrodowski.net>
- <CAHp75VfP2h_aLVR9cgfXWHmqNbUZg-KZj2UwMs6dAkbS5eSghg@mail.gmail.com>
+        Sun, 20 Jun 2021 08:03:24 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD30AC061574;
+        Sun, 20 Jun 2021 05:01:07 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id m18so16275930wrv.2;
+        Sun, 20 Jun 2021 05:01:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4RUYewpS29ETOvUxb+NczxmZJGUDZdUQNsR1o2uZhLQ=;
+        b=a4P03FHp/G5xoH/Qz+baVm74UVa5M2x393f/xxz/Aeji9liEJZnnCG39pO0nPjrNQ1
+         HL3TmGiPA7XDoH0uoVV/DUgDy7U0nWt491sUtZ0hsx9qgVmINZoB1+D+vFicZhrYrt3G
+         ExMC927QkRbueiCv0xGLzMejZN1TuQAYsTfM3OghISZ1Cu4pF0CNVGbcuSUSVLSuTy8T
+         A8RG+xhbcC1LfC3GAH1Vydmryz5MJv33dhN05yu2vB5e+IvCDibqO/z5EuhDP+HUTzC1
+         tCVx6rZ4PtH0DQyDYHhOKtmBK6ek4sthmHWdnlSijDtqLFXyDk7eHqq1NPSXLQiHl5Yw
+         fBJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4RUYewpS29ETOvUxb+NczxmZJGUDZdUQNsR1o2uZhLQ=;
+        b=HQyPzblhG4y8+EH1RwCfDH5FpNk3nnpBoDIRItuh6/PkQcRIidy7eHVfGlFfOf/xq0
+         cEBv7c5f4FdZC5Y2U9slyHTzDU9M4nPh14YEFKFhmZ/J3fpVMCYHRz+D8Mxic1eRQ4NQ
+         wklDud7Pc1VmBxulqJRYtfZO8LUC94KAPP139v41JHbfpfLDsP3/ttDwY1ooke3t3j1y
+         dhu/K2Teu4GOyFJZcP4d5xbRs42H3afb6d+vceOiJVpEjnPYl3RW1ITzjEtTIYsJrs4U
+         Ai+t8mKZODadBevSobDYn/boWqtuaFW7c6n1uJI04tRNCldwvyESHE7pE2BjskwsdLCB
+         Pzbw==
+X-Gm-Message-State: AOAM533b7RqFHtIA9KKtJbl8nnVwTiS3KeR5s9g13x48AHLWhlXawV3o
+        jN6yfOHtsQy1omeCfwq+UZ0=
+X-Google-Smtp-Source: ABdhPJxn24sxYO+VPoCxfseNeeXud7waSRMknBi4iozf/4cYOfphYDXBrvmRU+m/a5xEXz7qB/LnpA==
+X-Received: by 2002:a5d:538c:: with SMTP id d12mr22500253wrv.116.1624190465604;
+        Sun, 20 Jun 2021 05:01:05 -0700 (PDT)
+Received: from allarkin.tlv.csb ([176.230.197.133])
+        by smtp.googlemail.com with ESMTPSA id j34sm12640807wms.7.2021.06.20.05.01.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Jun 2021 05:01:05 -0700 (PDT)
+From:   Alexander Larkin <avlarkin82@gmail.com>
+To:     dmitry.torokhov@gmail.com, dan.carpenter@oracle.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        security@kernel.org
+Cc:     Alexander Larkin <avlarkin82@gmail.com>,
+        Murray McAllister <murray.mcallister@gmail.com>
+Subject: [PATCH]     Input: joydev - prevent potential write out of bounds in ioctl
+Date:   Sun, 20 Jun 2021 15:00:30 +0300
+Message-Id: <20210620120030.1513655-1-avlarkin82@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VfP2h_aLVR9cgfXWHmqNbUZg-KZj2UwMs6dAkbS5eSghg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Sun, Jun 20, 2021 at 02:19:44PM +0300 schrieb Andy Shevchenko:
-> On Sun, Jun 20, 2021 at 11:36 AM Dominik Brodowski
-> <linux@dominikbrodowski.net> wrote:
-> >
-> > Over a month ago, Andy Shevchenko reported and fixed a NULL pointer
-> > dereference issue introduced by commit
-> >         42e59982917a ("mfd: core: Add support for software nodes")
-> > in v5.13-rc1:
-> >         https://lore.kernel.org/lkml/20210510141552.57045-1-andriy.shevchenko@linux.intel.com/
-> >
-> > A bisect shows that it is indeed commit 42e59982917a which causes boot to
-> > fail due to a NULL pointer dereference on my work laptop,
-> 
-> Can you, please, be more specific? E.g. where may I find the ACPI dump
-> of your laptop, along with other information?
-> What you may prepare is (all run under root user)
-> 1. `acpidump -o laptop-$MODEL.dat` (the *.dat file)
-> 2. `grep -H 15 /sys/bus/acpi/devices/*/status`
-> 3. `dmesg`
-> 4. `cat /proc/iomem /proc/ioport`
-> 5. `lspci -nk -vv`
-> 
-> (#2 and #3 are interesting to have in working and non-working cases)
-> 
-> Perhaps a bug on the kernel bugzilla would be a good container for all these.
-> 
-> Also it's not clear what exactly an Oops you have (I don't believe
-> it's the same).
+    The problem is that the check of user input values that is just
+    before the fixed line of code is for the part of first values
+    (before len or before len/2), but then the usage of all the values
+    including i >= len (or i >= len/2) could be.
+    Since the resulted array of values inited by default with some
+    good values, the fix is to ignore out of bounds values and
+    just to use only correct input values by user.
+    Originally detected by Murray with this simple poc
+    (If you run the following as an unprivileged user on a default install
+     it will instantly panic the system:
 
-Thanks for taking a look at this issue. As it's actually a panic during
-boot which triggers before initramfs is ready, I can only provide the data
-for the "working case", i.e. with the patch causing the regression already
-reverted:
+int main(void) {
+	int fd, ret;
+	unsigned int buffer[10000];
 
-	https://bugzilla.kernel.org/show_bug.cgi?id=213511
+	fd = open("/dev/input/js0", O_RDONLY);
+	if (fd == -1)
+		printf("Error opening file\n");
 
-With commit 42e59982917a reverted, the system works just fine.
+	ret = ioctl(fd, JSIOCSBTNMAP & ~IOCSIZE_MASK, &buffer);
+	printf("%d\n", ret);
+}
 
-> > In my opinion, it is unfortunate that although it has been known for over a
-> > month that commit 42e59982917a is broken, the bugfix (though probably not
-> > far-reaching enough) has not yet progressed upstream.
-> 
-> Which sounds like a narrow scope of the issue and supports the theory
-> of buggy tables. It may also be possible that some driver
+Fixes: 182d679b2298 ("Input: joydev - prevent potential read overflow in ioctl")
+Reported-by: Murray McAllister <murray.mcallister@gmail.com>
+Signed-off-by: Alexander Larkin <avlarkin82@gmail.com>
+---
+ drivers/input/joydev.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-... still, it's a regression, with a clear "git bisect" result :-(
+diff --git a/drivers/input/joydev.c b/drivers/input/joydev.c
+index da8963a9f044..1aa067d4a3e8 100644
+--- a/drivers/input/joydev.c
++++ b/drivers/input/joydev.c
+@@ -464,7 +464,7 @@ static int joydev_handle_JSIOCSAXMAP(struct joydev *joydev,
+ 
+ 	memcpy(joydev->abspam, abspam, len);
+ 
+-	for (i = 0; i < joydev->nabs; i++)
++	for (i = 0; i < len && i < joydev->nabs; i++)
+ 		joydev->absmap[joydev->abspam[i]] = i;
+ 
+  out:
+@@ -498,7 +498,7 @@ static int joydev_handle_JSIOCSBTNMAP(struct joydev *joydev,
+ 
+ 	memcpy(joydev->keypam, keypam, len);
+ 
+-	for (i = 0; i < joydev->nkey; i++)
++	for (i = 0; i < (len / 2) && i < joydev->nkey; i++)
+ 		joydev->keymap[keypam[i] - BTN_MISC] = i;
+ 
+  out:
+-- 
+2.27.0
 
-Thanks,
-	Dominik
