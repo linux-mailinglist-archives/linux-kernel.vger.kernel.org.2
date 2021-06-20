@@ -2,90 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C84DA3AE0CB
-	for <lists+linux-kernel@lfdr.de>; Sun, 20 Jun 2021 23:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 649E53AE0D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 00:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhFTV5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 17:57:48 -0400
-Received: from ozlabs.org ([203.11.71.1]:48519 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229708AbhFTV5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 17:57:47 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G7RKq57Bwz9sVp;
-        Mon, 21 Jun 2021 07:55:27 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624226132;
-        bh=tdHZKt3n8QMhM7P+AhMaV6aoHvRWZ3MqYrGNEHyCAWg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JCEjcAiOxAMTbXM3XkS29q1DyvKDerVqg4nI7N1AOLBLHKUIRm4/PQGtuUhqvSRQJ
-         Btr/+YTsFdO8GkLTjIJXDxxP2BKFkoqL56S0NOgxr6TyxIQ0c/eyoYaiYorm1wT5j3
-         lfQWjF+A8gnKzXfl2bnNb8Rv2ceZ3vw8pVoXD06hkthj0vc7EERNBdZy7yb+5XLXk/
-         r9sWFQJqRMD+LuPEveUqLqSk8X6wJ4vNffP5wV5zANN5kH9EV3b3H9XY64+fVw7iqm
-         sWKT0E4ya1DOgIEznXNTUTClG+C0z95amzrBtJKENkgE9NzkCteGRUY0Hj3ek+jGTo
-         X8DNFNOqF6WuA==
-Date:   Mon, 21 Jun 2021 07:55:25 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH 1/4] perf test: Fix non-bash issue with stat bpf
- counters
-Message-ID: <20210621075525.128b476f@canb.auug.org.au>
-In-Reply-To: <20210617184216.2075588-1-irogers@google.com>
-References: <20210617184216.2075588-1-irogers@google.com>
+        id S229915AbhFTWGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 18:06:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229708AbhFTWGs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Jun 2021 18:06:48 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6B9C061574;
+        Sun, 20 Jun 2021 15:04:34 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id j10so2379768wms.1;
+        Sun, 20 Jun 2021 15:04:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=IzSrXtewhYOqMs5Tmqsg/YnrWWFNYZxCwJglCPlyEcQ=;
+        b=VFUwAg2m/asIbeklfVIQjvhqGwRsKVtAWRcvaMd48Q8aBx4RiATc7r4Qjm8r2y8y6z
+         6xLgEmZ++QkW8BSGzVeIK8TnIoYk2qEZU0+lCbfGwHga9ddWe++EGqgVbbDYMZT26yvX
+         oJegg5nOjmxjggxynRe22HVPL6JleYXLRnSlDc3Be44AnXWrYBfmcjJITq9N6ZPdSilR
+         xQm7he7pB0VNpHaUJ0436v8EtwKGfcjndfkTL95LNEygI5h86Qcmmk1Sh1OlMZqItg/+
+         IsRXVr4BaGONNZ71lrRfVR6JbYvvR+XxA90OWvgPCD80ERr87GicuqXhpTZP/JMHi7g1
+         +egg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IzSrXtewhYOqMs5Tmqsg/YnrWWFNYZxCwJglCPlyEcQ=;
+        b=sXbbimrVhiZc218lW/tnR4h2dQNTt3E/XElezcTJk2sydIfIZcDf7kRItCZwPSezK2
+         8uLYjFu9Js4YQVCo2kTc3KlhIluCSwt4SoucxixKKPOfEoMQTPIQjftmnfyd2KcHqd+o
+         Ci9tzHra68C0gzGPhldnrns6dsh8e3/kJyLnjkghWyq2aYSUkivj5FEtvg5SCeZ4WS+M
+         Ta+MSnimQuH7qn9DVZ17ThoNwBRsvKj1KEFJIINmPpVghKItQSpQl/R4ESjXIi3EfoLE
+         GoGSOryZw/n71xs0c5XOtRCls+xeJ+R3Ih2Tm/b7ylJ11YABG3blTFvDaOkJYvTikoWN
+         LdLw==
+X-Gm-Message-State: AOAM533rPkFK/F6nI1zftC+NP3lj3YA4np/TZ4H6XpQy8Foa4jO0VI6o
+        stJ5McHlMh9N4oXGtKZvivAee2r5hM36Zg==
+X-Google-Smtp-Source: ABdhPJwY8lehgQ0mgPB34QAthz5fprB4rEyyoDzUlsrKbDQGlrNwF01QasukEuX2SoznxHjRCFL3WQ==
+X-Received: by 2002:a1c:98c9:: with SMTP id a192mr23861458wme.66.1624226669856;
+        Sun, 20 Jun 2021 15:04:29 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.132.93])
+        by smtp.gmail.com with ESMTPSA id j18sm15639711wrw.30.2021.06.20.15.04.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 20 Jun 2021 15:04:29 -0700 (PDT)
+Subject: Re: [PATCH] io_uring: reduce latency by reissueing the operation
+To:     Olivier Langlois <olivier@trillion01.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <60c13bec.1c69fb81.73967.f06dSMTPIN_ADDED_MISSING@mx.google.com>
+ <84e42313-d738-fb19-c398-08a4ed0e0d9c@gmail.com>
+ <4b5644bff43e072a98a19d7a5ca36bb5e11497ec.camel@trillion01.com>
+ <a7d6f2fd-b59e-e6fa-475a-23962d45b6fa@gmail.com>
+ <9938f22a0bb09f344fa5c9c5c1b91f0d12e7566f.camel@trillion01.com>
+ <a12e218a-518d-1dac-5e8c-d9784c9850b0@gmail.com>
+ <b0a8c92cffb3dc1b48b081e5e19b016fee4c6511.camel@trillion01.com>
+ <7d9a481b-ae8c-873e-5c61-ab0a57243905@gmail.com>
+ <f511d34b1a1ae5f76c9c4ba1ab87bbf15046a588.camel@trillion01.com>
+ <bc6d5e7b-fc63-827f-078b-b3423da0e5f7@gmail.com>
+ <be356f5f0e951a3b5a76b9369ed7715393e12a15.camel@trillion01.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <0c71b2fb-0068-888c-7112-e352633636f9@gmail.com>
+Date:   Sun, 20 Jun 2021 23:04:15 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/zoZrJw/m85R1sYwgf=Mbt_b";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <be356f5f0e951a3b5a76b9369ed7715393e12a15.camel@trillion01.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/zoZrJw/m85R1sYwgf=Mbt_b
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 6/20/21 10:31 PM, Olivier Langlois wrote:
+> On Sun, 2021-06-20 at 21:55 +0100, Pavel Begunkov wrote:
+[...]
+>>> creating a new worker is for sure not free but I would remove that
+>>> cause from the suspect list as in my scenario, it was a one-shot
+>>> event.
+>>
+>> Not sure what you mean, but speculating, io-wq may have not
+>> optimal policy for recycling worker threads leading to
+>> recreating/removing more than needed. Depends on bugs, use
+>> cases and so on.
+> 
+> Since that I absolutely don't use the async workers feature I was
+> obsessed about the fact that I was seeing a io worker created. This is
+> root of why I ended up writing the patch.
+> 
+> My understanding of how io worker life scope are managed, it is that
+> one remains present once created.
 
-Hi Ian,
+There was one(?) worker as such, and others should be able
+to eventually die off if there is nothing to do. Something
+may have changed after recent changes, I should update myself
+on that
 
-On Thu, 17 Jun 2021 11:42:13 -0700 Ian Rogers <irogers@google.com> wrote:
->
-> $(( .. )) is a bash feature but the test's interpreter is !/bin/sh,
-> switch the code to use expr.
+> In my scenario, once that single persistent io worker thread is
+> created, no others are ever created. So this is a one shot cost. I was
 
-The $(( .. )) syntax is specified in POSIX (see
-https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#t=
-ag_18_06_04),
-so unless this caused an actual problem, this change is unnecessary.
+Good to know, that's for confirming.
 
---=20
-Cheers,
-Stephen Rothwell
 
---Sig_/zoZrJw/m85R1sYwgf=Mbt_b
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+> prepared to eliminate the first measurement to be as fair as possible
+> and not pollute the async performance result with a one time only
+> thread creation cost but to my surprise... The thread creation cost was
+> not visible in the first measurement time...
+> 
+> From that, maybe this is an erroneous shortcut, I do not feel that
+> thread creation is the bottleneck.
+>>
+>>> First measurement was even not significantly higher than all the
+>>> other
+>>> measurements.
+>>
+>> You get a huge max for io-wq case. Obviously nothing can be
+>> said just because of max. We'd need latency distribution
+>> and probably longer runs, but I'm still curious where it's
+>> coming from. Just keeping an eye in general
+> 
+> Maybe it is scheduling...
+> 
+> I'll keep this mystery in the back of my mind in case that I would end
+> up with a way to find out where the time is spend...
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDPuU0ACgkQAVBC80lX
-0Gz49wgAmStmGqWpOagN6Ov5tTwdPk1XiTOzF7QnzPkIrSsrlb14wdiartR9A9Yi
-L/xFGhRz7nlGZu2Rgsq1CVKA9maLkFpUJN5qjGVRlmBi1o6xDNhfvSoenHY6J4sI
-+yUEboS8gH3C3OpSlVSj6HhGlfUFrXDjCHSaoZVZZ+S7cwP8PnaN02IkXouYbGES
-fJuBjgzbxxIChC6YFa4Ws9YGlQfNAJsqok9W+mUuT2dfIj3Ymns7GzNqnxmtUTXk
-+pttH+/Y1kwPca3MljuMfBxQaKWD+ogdJwOVOWnIL4DLellxoMamJ9Yg2oOBQPZe
-DjM7fviURinAyv98w8kmMniXyIrZCA==
-=0kaQ
------END PGP SIGNATURE-----
-
---Sig_/zoZrJw/m85R1sYwgf=Mbt_b--
+-- 
+Pavel Begunkov
