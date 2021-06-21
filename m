@@ -2,80 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3430D3AE707
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:27:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E9C33AE727
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229747AbhFUK37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 06:29:59 -0400
-Received: from mout.kundenserver.de ([212.227.126.130]:33897 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFUK36 (ORCPT
+        id S229837AbhFUKcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 06:32:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229661AbhFUKcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 06:29:58 -0400
-Received: from [192.168.1.155] ([95.118.106.223]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1Mk0FM-1lXAgQ15NA-00kNZY; Mon, 21 Jun 2021 12:27:42 +0200
-Subject: Re: LockDown that allows read of /dev/mem ?
-To:     "David F." <df7729@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <CAGRSmLvaZ7av7ne-XKfZGrij1x9i5v1aH=t0ufL=Ad1193G0vA@mail.gmail.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <99e0ef5a-156f-c8e5-cfc3-7c50e5e15a98@metux.net>
-Date:   Mon, 21 Jun 2021 12:27:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 21 Jun 2021 06:32:18 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A20FFC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 03:30:03 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id y7so18948758wrh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 03:30:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/Fq+dWhO9SHsHsMwwaVEqert5MWEft+vHWC2Ak/+Drc=;
+        b=aUDW2XxVWADlHQ2ZicvYAcn3d76aaNxkdus6VXFkzQAvCba90Z+MU+L7e2L/2xPNW3
+         d1oY2qaG0V0swBkIIWjxbqbT3JcHZsFAgso0qcfNO15ozJjy2OsBo2Ka6rVoSEd6Nk3z
+         JCt+xzF2QuypB3pqznBDmA7yEL4jMe2dO0GG65o8N857HhcW1oZGoQiJ3CdG40xYqNwI
+         PA11Jo3lPAKu2vd6U5Vw1aoY4tgipmsaptT2if/tKGs586e+dXZKi9oA/mHFnzgnoZee
+         oQaxX/KN51qb8qzxSy1nxH+Ol8zcWaJ+3+d1vS+6wr6N26Iife37OKQBxW2yuAaiP06y
+         npfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=/Fq+dWhO9SHsHsMwwaVEqert5MWEft+vHWC2Ak/+Drc=;
+        b=S5/EfgG5yzdHMsKVPOh0Tkax/EGv/tagnjLcWZwMYuKAieQ7tecIDjcxxiE+HoGTlV
+         ydiKQriFR+v8oS9vRmyPr0DlnAer0AnmGDIjm75stZRgSMyn/Ae0dtCACgEWV8dHHAIa
+         CuvkjH/5w7ZTrGnZcilfiI+dY0X70vRQp6QVrp9v1BTUgCGgzNJo8iba5PV+3sW6AOQ4
+         eX1nU+BX8+3pekXuKuG5ZazrfY1kBLI+jjKv4TxZ0wwTlQTvZ5AzgLtiQLmUec8Zv4op
+         QBuQ6JuJPRMULQV7sfycc0OmkeIobLLkCEmtZwru6VLKYpU1v+41Nney2ba1DobxrieN
+         G2VQ==
+X-Gm-Message-State: AOAM533kOuUraU0AvB0Nq2thTjuEOdH4W+qL5y2xv8UNfyNmG7FA0gl2
+        yTu2rUVdDmKdQ9bDNsrjUMOOlg==
+X-Google-Smtp-Source: ABdhPJzgIlGmFfDtfd0f6edNI3fVVXZ96zvuMdiQmFgSQaputhlMltjoUpGsdFln9a58bYBqEzeX1A==
+X-Received: by 2002:adf:e551:: with SMTP id z17mr27282825wrm.320.1624271402245;
+        Mon, 21 Jun 2021 03:30:02 -0700 (PDT)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id i9sm14127381wrn.13.2021.06.21.03.30.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 21 Jun 2021 03:30:01 -0700 (PDT)
+Subject: Re: [PATCH] regmap: move readable check before accessing regcache.
+To:     Mark Brown <broonie@kernel.org>
+Cc:     srivasam@codeaurora.org, rafael@kernel.org,
+        dp@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Marek Szyprowski <m.szyprowski@samsung.com>
+References: <20210618113558.10046-1-srinivas.kandagatla@linaro.org>
+ <20210618115104.GB4920@sirena.org.uk>
+ <666da41f-173e-152d-84e5-e9b32baa60da@linaro.org>
+ <20210618154836.GC4920@sirena.org.uk>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <6eca27bf-5696-3ffc-24a5-5a58407f6e93@linaro.org>
+Date:   Mon, 21 Jun 2021 11:30:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAGRSmLvaZ7av7ne-XKfZGrij1x9i5v1aH=t0ufL=Ad1193G0vA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:nFO2JBTQkP3ieWeKK9VmghH2rracDNY2weGmzNK0fCv8dWxYQX1
- K4O7XWfwVhL9jYpqqJLA1rFPizFzbciFwPirF57elEdYewqexyY21oEBndh9dTOt6BKdKLA
- kcmZz2agy7BX9GiyVok0nCqbDX4Pp7eIFJD7pACHJ/zXvXdA+9WAkTkQa6DNK/EyeipwsdB
- qv+YVFdx6IEi6On/UN2Ag==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:UngH/ZoRFMs=:dvlpNgLi+yj4/FnZq7aihR
- XTKDpQrzhe/aBZ7vKGO0+6K74wmoQsy+247m0JVlsUVXNCnZQNb4bT40NA0SqlqccjCdyiwql
- AwxBy5K3X7vkabOmzluvbbbh8Uw6uV2aaVIaoGk7vfGesNwp14EMgWRxhxGR4S0VEuMyfnu8P
- 6qptTlrGYGsdj0lXHcRwBVHhsCEmoUwh/rdTSb6eHc2vnHIfIzKVyGFXYd5hgg59rogh9JmX5
- 3JUntoWBoV1+0mxoC4ew2Tgw4G/h6NoO9NHuDbgZJ83cuIWqqH6mai7A52Xhc4amjmtyqha1o
- DhsfD7sVeBBzzOLpNaQ0aa1nH/n+EUs13SqbbkOcrwMpEa54HX0B5yJVf/tZ3/KxCLZ4PaFdp
- xEW8J4Sk0zQ2S7OnwjchhSVLVIHBT2NFFIIyWjpgvyKj65MpiDE0h9fVm4qyorSCkywAwro0K
- tAnHgB+cc8yZZkaYDWzXtTwf+W7TIGBEl8REb5652hUxvdIgoezAwAcMvAcbTsoVZZIcL50zt
- owTeICkJlT3fVJypa9GF9w=
+In-Reply-To: <20210618154836.GC4920@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.06.21 01:55, David F. wrote:
+Thanks Mark for your inputs,
 
-> I'm finding that LockDown Integrity prevents blocks things like mdadm,
-> Xvesa, and a couple of my specialized tools.    There should be an
-> option to allow /dev/mem read access.  Is there?  There are no secrets
-> to the boot disk booted environment it's all root.
+On 18/06/2021 16:48, Mark Brown wrote:
+> On Fri, Jun 18, 2021 at 01:29:50PM +0100, Srinivas Kandagatla wrote:
+>> On 18/06/2021 12:51, Mark Brown wrote:
+> 
+>>> Why will use of regmap_update_bits() mean that a driver will never
+>>> notice a write failure?  Shouldn't remgap_update_bits() be fixed to
+>>> report any errors it isn't reporting, or the driver fixed to check
+> 
+>> usecase is performing regmap_update_bits() on a *write-only* registers.
+> 
+>> _regmap_update_bits() checks _regmap_read() return value before bailing out.
+>> In non cache path we have this regmap_readable() check however in cached
+>> patch we do not have this check, so _regmap_read() will return success in
+>> this case so regmap_update_bits() never reports any error.
+> 
+>> driver in question does check the return value.
+> 
+> OK, so everything is working fine then - what's the problem?  The value
 
-Looks like conflict of goals. lockdown is used in scenarios where one
-really doesn't take any chance that code running w/ root privileges can
-do such things (there's a lot of security critical information one can
-learn from reading the raw memory).
+How can this be working fine?
 
-I wonder what your actual use case is.
+In this particular setup the register is marked as write only and is not 
+readable. Should it really store value in cache at the first instance?
 
-* why are you using lockdown and also running everything as root ?
-* why are you still using the old Xvesa instead of using KMS or
-  framebuffer device ?
-* why does mdadm want to access /dev/mem ?
+Also on the other note, if we mark the same regmap as uncached this 
+usecase will fail straightaway with -EIO, so why is the behavior 
+different in regcache path?
 
+Shouldn't the regcache path check if the register is readable before 
+trying to cache the value?
 
+> in the register is cached, the read returns that cached value and then
+> the relevant bits are updated and the new value written out to both the
+> cache and the hardware.  No part of that sounds like a problem to me.
+> 
+>>> error codes?  I really don't understand the issue you're trying to
+>>> report - what is "the right thing" and what makes you believe that a
+>>> driver can't do an _update_bits() on a write only but cached register?
+>>> Can you specify in concrete terms what the problem is.
+> 
+>> So one of recent patch ("ASoC: qcom: Fix for DMA interrupt clear reg
+>> overwriting) https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=next-20210618&id=da0363f7bfd3c32f8d5918e40bfddb9905c86ee1
+>>
+>> broke audio on DragonBoard 410c.
+> 
+>> This patch simply converts writes to regmap_update_bits for that particular
+>> dma channel. The register that its updating is IRQ_CLEAR register which is
+>> software "WRITE-ONLY" and Hardware read-only register.
+> 
+> So the driver is buggy then, the register is clearly volatile and can't
+> be cached, and it sounds like it's unsafe to use _update_bits() on it.
+> The register is clearly not write only since it can be read and it's
+> volatile since the readback value does not reflect what was written (and
+> presumably can change),.  Even without that it's buggy to use
+> _update_bits() here since the device needs the write to happen
+> regardless of the value that is read back, with the register marked as
+> volatile that will still potentially fail if the readback value happens
+> to be the same as whatever bits the driver is trying to set.
 
---mtx
+ From "APQ8016E Technical Reference Manual" 
+https://developer.qualcomm.com/qfile/28813/lm80-p0436-7_f_410e_proc_apq8016e_device_spec.pdf
 
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Section: 4.5.9.6.19
+this register LPASS_LPAIF_IRQ_CLEARa is clearly marked with Type: W
+
+with this description:
+"Writing a 1 to a bit in this register clears the latched interrupt event
+
+So am not 100% sure if we read this we will get anything real from the 
+register. I always get zeros if I do that.
+
+Should this behavior treated as volatile?
+
+If we mark this register as volatile and make it readable then it would 
+work but that just sounds like a hack to avoid cache.
+
+Am sure other hardware platforms have similar write-only registers, how 
+do they handle regmap_update_bits case if they have regcache enabled?
+
+thanks,
+srini
