@@ -2,106 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B263AE863
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 13:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2DC3AE865
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 13:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhFULww convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Jun 2021 07:52:52 -0400
-Received: from mga06.intel.com ([134.134.136.31]:11441 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229640AbhFULwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 07:52:51 -0400
-IronPort-SDR: nOubQCdixf+UuiFa9dFdQfK7dg2JVt6UFXzje2LuVbRbtlkzwdFNIlFd9XVRWUkDAHi83KHG0B
- VboIU0csMs/Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,10021"; a="267966300"
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208";a="267966300"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 04:50:37 -0700
-IronPort-SDR: NYL4P8Nmut2ZfafhCs9t0/cueIMeXHLUvGX7qR+dr/+vYiI1enn7cvSV/rY40ijOmiIb/x6LVK
- yKjNGlIVS7vw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208";a="453855175"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by fmsmga008.fm.intel.com with ESMTP; 21 Jun 2021 04:50:37 -0700
-Received: from shsmsx601.ccr.corp.intel.com (10.109.6.141) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Mon, 21 Jun 2021 04:50:35 -0700
-Received: from shsmsx601.ccr.corp.intel.com (10.109.6.141) by
- SHSMSX601.ccr.corp.intel.com (10.109.6.141) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Mon, 21 Jun 2021 19:50:33 +0800
-Received: from shsmsx601.ccr.corp.intel.com ([10.109.6.141]) by
- SHSMSX601.ccr.corp.intel.com ([10.109.6.141]) with mapi id 15.01.2242.008;
- Mon, 21 Jun 2021 19:50:33 +0800
-From:   "Xu, Pengfei" <pengfei.xu@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Hansen, Dave" <dave.hansen@intel.com>,
-        "Yu, Yu-cheng" <yu-cheng.yu@intel.com>,
-        "Su, Heng" <heng.su@intel.com>, "Du, Julie" <julie.du@intel.com>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
-        "Brown, Len" <len.brown@intel.com>,
-        "Li, Philip" <philip.li@intel.com>,
-        "Xu, Pengfei" <pengfei.xu@intel.com>
-Subject: Re: Tested x86 FPU fixes and found "Bad FPU state" issue
-Thread-Topic: Tested x86 FPU fixes and found "Bad FPU state" issue
-Thread-Index: AddmOqPgT2Ohj/1gSo2GGOOxmvEmHQACF8iAABSENgA=
-Date:   Mon, 21 Jun 2021 11:50:33 +0000
-Message-ID: <72e37a644f474a3888ff96833213558d@intel.com>
-References: <9e6f363f138e4d05b368f4428399466b@intel.com>
- <87pmwffruk.ffs@nanos.tec.linutronix.de>
-In-Reply-To: <87pmwffruk.ffs@nanos.tec.linutronix.de>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-ms-exchange-imapappendstamp: SHSMSX601.ccr.corp.intel.com (15.01.2242.005)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [10.239.127.36]
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <A2C799789F2CE944A6D86C475548A254@intel.com>
-Content-Transfer-Encoding: 8BIT
+        id S229949AbhFULxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 07:53:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30382 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229623AbhFULxF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 07:53:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624276251;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9KrUT04ET7j9PxJUik4TN78ZN7Dz6iXoztaQ6uI00AE=;
+        b=WZ14MuBfGzxosqcVhgTXAvvP3XWrSKX8Gz47B485soWYLXla2MY1zNAb2oryD1XlDq1KJ6
+        1XPmkGPQukVTP4d6QwGG4mSQUus9+7Bvr0HWAp2aaeX79xSABV1b/W9xJmfxlKMAfdHlGo
+        YLzVmlkpHE3yPW0UHWNkDY9yJad0yTk=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460--HrMB2i6Nrm-ddlWil24Fg-1; Mon, 21 Jun 2021 07:50:50 -0400
+X-MC-Unique: -HrMB2i6Nrm-ddlWil24Fg-1
+Received: by mail-ej1-f71.google.com with SMTP id j26-20020a170906411ab02904774cb499f8so3861738ejk.6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 04:50:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9KrUT04ET7j9PxJUik4TN78ZN7Dz6iXoztaQ6uI00AE=;
+        b=SQGyfWD9Odd1vW+qQsqWkc5bWfMEE/IplFto3yq9/ek7FzuS+Nj71WF3kiR6As4dK+
+         2jOmVmNHt0oqW6RAqUcnlHrbl4C61SaGToJZC9sCmaoN+NC+dy7x4SYubuVuxT9eIrTU
+         jAiadERNFiahju7QTbVyaXOiuBDoFLdT8O1WT7O7s7PeI4jDTdSoZEgbPMn46X+PI//s
+         ZtBIx3FRlJGxJhGfSKqqxMOYL2V445RngkN+Z4sIUsiRR1p1gRxsNyOguKn3plZCYcQ9
+         KKYFgTPTqyH6jVS4luR19zjjgvOGsTt1AJ500vzFOrXDqzoRwJELpyQTG4MoJJ0JiYs5
+         4ppw==
+X-Gm-Message-State: AOAM530xQUeNOGaGuQ56c7oI06q7f7opSLUEoAcR989oh5/z+HoBMYL5
+        Abu9qIQg2ywttZC+U0qym+QX2YquSrPT+TH/MQsdbHxEFNsFHzTsVcFQd5CHMOuRtBaTrMCQNkU
+        W72tranw57HmZIMbiWnKE19UCLBJ7/Yu3eAMHNrAM5FjS1azUxvv8cdyVS5ZNQ1OcJASnF5WNDU
+        c=
+X-Received: by 2002:aa7:dccb:: with SMTP id w11mr20386560edu.96.1624276248930;
+        Mon, 21 Jun 2021 04:50:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxSjuxC/PSf0i5LWbsHxybj9qFxn7JBf807PcTs7lndnICmXQsULopHSpuAfZ1OwRldiHnC6A==
+X-Received: by 2002:aa7:dccb:: with SMTP id w11mr20386518edu.96.1624276248722;
+        Mon, 21 Jun 2021 04:50:48 -0700 (PDT)
+Received: from x1.bristot.me (host-79-23-205-114.retail.telecomitalia.it. [79.23.205.114])
+        by smtp.gmail.com with ESMTPSA id r17sm10360218edt.33.2021.06.21.04.50.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 04:50:48 -0700 (PDT)
+Subject: Re: [PATCH V4 06/12] trace: Add a generic function to read/write u64
+ values from tracefs
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Phil Auld <pauld@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Kate Carcia <kcarcia@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Clark Willaims <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1623746916.git.bristot@redhat.com>
+ <681a2fb508b3dad2979ac705c3df633f14abb9b2.1623746916.git.bristot@redhat.com>
+ <20210618125651.7de04840@oasis.local.home>
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+Message-ID: <1a8ccc87-6f04-7918-65ad-76c0cf13af07@redhat.com>
+Date:   Mon, 21 Jun 2021 13:50:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <20210618125651.7de04840@oasis.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
-  Thanks for your update!
-  And I tried new fpu branch with last commit:
-  b4c5dbb182058b2bd176fce77a4aea64494bf781
-  I verified this issue was fixed.
-  I will keep testing new FPU branch kernel.
+On 6/18/21 6:56 PM, Steven Rostedt wrote:
+>> +        return simple_read_from_buffer(ubuf, cnt, ppos, buf, len);
+> Egad, this entire patch is filled with whitespace issues!
+> 
+> Please check your other patches too.
 
-  Thanks!
-  BR.
+<talking to myself>
+daniel daniel daniel.... after all these years...
+</talking to myself>
 
-On 2021-06-21 at 12:13:23 +0200, Thomas Gleixner wrote:
-> Pengfei!
+Sorry... it was only in this patch.
+
+>> +}
+>> +
 > 
-> On Mon, Jun 21 2021 at 01:31, Pengfei Xu wrote:
-> > This "Bad FPU state" issue was found in 20210619 FPU branch kernel:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git
-> > branch: origin/x86/fpu
-> > last commit:
-> > "
-> > commit 2299e66e766a7cdca8aafc36b59ada8782d26233
-> > ...
-> > x86/fpu/signal: Let xrstor handle the features to init
-> > "
+>> +
+>> +#define ULL_STR_SIZE		22	/* 20 digits max */
+> Nit. I'd make this 24, just to be integer aligned. I mean, it's used as:
 > 
-> Thanks for testing and reporting!
 > 
-> I found the issue and updated the branch. New head commit is
+> trace_min_max_read(struct file *filp, char __user *ubuf, size_t cnt,
+> 		      loff_t *ppos)
+> {
+> 	struct trace_min_max_param *param = filp->private_data;
+> 	char buf[ULL_STR_SIZE];
+> 	u64 val;
+> 	int len;
 > 
->   b4c5dbb18205 ("x86/fpu/signal: Let xrstor handle the features to init")
+> Probably should reverse the above as well, that way if you do have
+> ULL_STR_SIZE as 24, then the int len, will fit right in before the u64
+> val. Although, I think compilers are free to optimize that too :-/
+
+I will do that!
+
+-- Daniel
+
+> -- Steve
 > 
-> Thanks,
-> 
->         tglx
+
