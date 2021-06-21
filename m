@@ -2,161 +2,412 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 002173AF9C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E5E3AF9CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:52:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232123AbhFUXyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 19:54:52 -0400
-Received: from mail-bn8nam12on2063.outbound.protection.outlook.com ([40.107.237.63]:22400
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231975AbhFUXys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 19:54:48 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Bx5aNycB9MMUbZXKEBviu3bpGm4TGfEbigf1eC5NtTyGMA3qsNyDXXLMdsLcbF1Ae/DrX4O0Dfvvao6YuAZrMFqReaHo/yrJrjzzn+uRtEC1txE5AxtOfRkFofVE3YYHCOprTjcfLGej2fezkCRaHhMEzWfDgdUhN2oFRtkX90KSah+NWLdF183ocGSiihFzlQtfoU3XMFQ4Sp1fxOSRNemWXqQeu//R/XGyagA+wymkTl5ZAFcpkG9mtj4GYHprWCMqSCJBgebuHBEnlmq/M3xMFpAeLZbc/FPYkHHg6svaWBDcFinl07GFNmHc4ZCcf5tebQf22Y4Jt7oI2f9A8Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=plHilSCnXyIO3yolpaOb8qIFV8R+gL77+ThFFzTgPPc=;
- b=PdXxm5W9O/VoAiNG+HbTpOHYdPjPHEbdOs10nrU1IEkssbJJQyYzyptKUooEO9mP6hds1uHfzfzpK5nLoW/LUG5qE9o9KkPZBrqqH/icjcBuFdIzAQHLwNoLcLSiZUD6WLqbBaQrajkZD5myO8+xEyzigyRiNP2H1ShEH64KO3h6lHZy9uaJ6xtHMbt554gtXYkEopdOuzt/iMQPP8ezwEcg/J1W3VHw1f3gbfmH628SruAtQCnDMdfngRX18ZLEfsVbkrKTccnkUbngi20yTGLJknKdE3bMCDob6TdZQwtcSWyd5dOi0U97E3mEq3LYs+m2fC+49Qe4pRCyYFeAZw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=plHilSCnXyIO3yolpaOb8qIFV8R+gL77+ThFFzTgPPc=;
- b=YaWs4tNrXzY1dRM4bsid+WpsWLAWjMnkolOuPaiz/woBtHmYfyi5K0rBcOJeS4UrtKJjtoY8hurzk/4PPsNgl8BMx1Ml5hSYhFPy+uoSP9jrd1bRNT1WSpX9Yox+JGf2w8DjnQd0QhX1a3ZWiGS8zAmHoQvdP3wZbb22EP9UthEcAv85j6jaBsl0z64+xmlYT0dAFgwIl4DVteqJeOGQH1jNb+R68cH7z911TMtxo6xw3EABfnnWTvJu2fVNBNiC0MuS8D6Fs1X3vu0BQcE14HT2I1sKYyPwDml4c8ujqdb6h4nssqqZSfMT8OmPCiyCDZF0nr0SoHsaeI70jlfXrQ==
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5095.namprd12.prod.outlook.com (2603:10b6:208:31b::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.15; Mon, 21 Jun
- 2021 23:52:30 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4242.023; Mon, 21 Jun 2021
- 23:52:30 +0000
-Date:   Mon, 21 Jun 2021 20:52:29 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Leon Romanovsky <leon@kernel.org>
-Cc:     Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jack Wang <jinpu.wang@ionos.com>,
-        Lijun Ou <oulijun@huawei.com>, linux-kernel@vger.kernel.org,
-        linux-rdma@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
-        "Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Weihang Li <liweihang@huawei.com>
-Subject: Re: [PATCH rdma-next v2] RDMA: Fix kernel-doc warnings about wrong
- comment
-Message-ID: <20210621235229.GA2374294@nvidia.com>
-References: <e57d5f4ddd08b7a19934635b44d6d632841b9ba7.1623823612.git.leonro@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e57d5f4ddd08b7a19934635b44d6d632841b9ba7.1623823612.git.leonro@nvidia.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL0PR1501CA0002.namprd15.prod.outlook.com
- (2603:10b6:207:17::15) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S232229AbhFUXzH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Jun 2021 19:55:07 -0400
+Received: from mail-lf1-f45.google.com ([209.85.167.45]:45778 "EHLO
+        mail-lf1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231975AbhFUXzG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 19:55:06 -0400
+Received: by mail-lf1-f45.google.com with SMTP id h15so14403589lfv.12;
+        Mon, 21 Jun 2021 16:52:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gM1NbWrrOsqRjUDgYgaF83U/I/mSj3Z9D72CMu8OqMg=;
+        b=De9ehrrTf4PqBCAyaREYd83aKzNsoVZ8ptnlZOu2me+/HQYrVxSJRK+oedNM48TfVk
+         z/ocolNkLUy5/ZNaW4HYi6ThjbtTdrrQkC4BFLR6Bdtx2CkpXWIrOHe3WIMPl+3Hw0P4
+         PtFku29q6zOhlavkDs5SFAPpwszT0K2Rvyf5RKwJYxx9encw4gG1iNPf2UbM+HOLVBiJ
+         usQ/tOW4HlWn/7KKrLH75pMJh9Fzzx1dPFcYfDatLMg6NopPmtBbojy/qu7Nix1mt9VJ
+         3xKp8eEievehZzm2gGi9RY6hmkYQGd2/9SQkfWjnaTB+Xb4Z4k34H7ESlx5/ptfoWvHD
+         zvrg==
+X-Gm-Message-State: AOAM532pDUyAy5J6DUq0FIu7AZ7Cn/0vlSdVTUZbXuUbTw1bAi/tdtY6
+        rbxuf2jbjzF8xJV6Zq/xo1LVl6ce1dQIlumrjs4=
+X-Google-Smtp-Source: ABdhPJyY9IaX5smHbLkInGa5Y1jq0LaYdjkSOHXVOXYe4GI/+cfpLvNVUvUGJqzWAzV5RCDU/Ww5aEnjdDwT+lraXhM=
+X-Received: by 2002:a05:6512:4c3:: with SMTP id w3mr608746lfq.594.1624319568990;
+ Mon, 21 Jun 2021 16:52:48 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL0PR1501CA0002.namprd15.prod.outlook.com (2603:10b6:207:17::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19 via Frontend Transport; Mon, 21 Jun 2021 23:52:30 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lvTiP-009xfc-Jl; Mon, 21 Jun 2021 20:52:29 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8e2cc442-2fb8-4808-4199-08d9350fa1b7
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5095:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB5095870E910565D72D52BDE1C20A9@BL1PR12MB5095.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: hcaAH7VtAx/pSSGhbGR3fTCe2BbPPYzfPr8yzsWd+CF9wwK91XUDpns7+laQmyMkh0XL/LeADbh1jLVyN82ZyI78PyO/1/x8e552LVwyRweYb9sru+RhaKGQU7lOhqNkYLe889BKMMY6KrFDKo+793P5Ze2hgHmbL21AAT+vJHEsvtUtRs4FT25W/mY4oCEKTl0LGt52TPENztUDtTv/XrWjeqxC466YUT+eDXm7ANFnMFLbRuKeLPUkS/IcYzPJrn7PhKPc9rFDnmlGuNcXJZ2/P+eoR3uttsOPfS8/1qgkvGmk6V9bFTZEhZHMzPGAazL0v0JPOZ8f2GU1yQvksO31uKKFnGl2xF3zYARLsZVxtdIniRlGCcVgw2MGB3aqCUbKDivSQLbRkOgkUojyhla+QhmspDlvj5qlJ6Bolul/UQPI+SBNPNWErEmQ2rVl69zzDBTgB1u3B+z+2ncp9YSbbzAIPVDTlf9ATIrM53JPip/v07zz1HiUra7j8ws2JY85nBgV4W84AFAvJAW17hgZRONXzu81Vg6vwnnYfW3Hi8eaG7s2a+K9NKkP1XEn8PXy69S/FIWyNNbdD83jlmoFWTOKpdoUO5i+apBEQl9xGOY0VKAqDyg8Xdjh6YZVQz9tXiIn2OUlNLKaGM95kaZBQXNyiAlJDU8SFGafE3OzDE1e8mTQsWU6UpKBVGQW/5yvXYitJXlZT4tA/wJ06etVCenREmw7wk8qfoariQ1BCtE1qbDXrJd+MEzRfmVJ4SbGcmGNjFr1h3DVo5xlbw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39860400002)(376002)(366004)(396003)(136003)(1076003)(8676002)(26005)(966005)(6916009)(2906002)(7416002)(66556008)(2616005)(4326008)(316002)(478600001)(9786002)(36756003)(33656002)(66476007)(66946007)(8936002)(38100700002)(186003)(426003)(54906003)(9746002)(83380400001)(5660300002)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WjBkZsnY5ihfdlqyBfYqrMF41USGkDZDm6nGDdjr3z6tWa3G7ZF0VhmWFXWc?=
- =?us-ascii?Q?ukw9JTXZhkUGFeV4S7/PKDjQpNzQ62CsPPDem9GxOMdqZ+HaHiYNYkVc0QUf?=
- =?us-ascii?Q?KfKQoicaBeXsHTlBt/9e5hyGbBt6AN4JFfUXMd0KdbDXDGh37aiALzXinKJZ?=
- =?us-ascii?Q?1TMoe7GVw9G8T3z4YQOsRe2sbA9DSONRDpLgz1CuEb9freawvdmDdWndkWQx?=
- =?us-ascii?Q?AsLjbKCIvM4r4lPz3PH3J5EyCPCm14+k6LFw75rDGLKkxvE55GfwOHyPnONx?=
- =?us-ascii?Q?3XBqNWEgRGyf1I3FkwlDsZAvtBED3HPkvHNeqFzhPt8ng58nn5ekBQnGQsM/?=
- =?us-ascii?Q?WUjdV/pL/VrOglVmCDdT7ucimKegE626Kowh2x5IxxM3pT5VVqBy3a2xAmoX?=
- =?us-ascii?Q?dZnRES2HGoW07ENRZT0lNB4Gg7ahqxd4PcKdxhQNR90y5IGAdiJpJGs5FGhG?=
- =?us-ascii?Q?1tAbJR9sR4uoL3t9czEN+3SWtjqc9Qp7dFvZF1+DmajAP0yZX7FXwfNCx8a2?=
- =?us-ascii?Q?UUub4Y33gHcyB38aweOJ2BX1lagHLFcw1vg8iGILNAiXcd1OF8gwDS+2MyGh?=
- =?us-ascii?Q?Vb5IrNDFlynamOMke4CjskcXgG47fbfSassBbXdcYeH57F2PF+CKVJDLkqP3?=
- =?us-ascii?Q?eRBkvkd3WRB9lNkTn2GDqOkWOPDZWkvpvhgtg0eJ1FrTYZb8CvNiKUGok6xw?=
- =?us-ascii?Q?cka9zU71H20Cg+3uBsQzlBmxMYXwKf/i1Cmc/u+zo57cq68CPoTjiQDokKOM?=
- =?us-ascii?Q?dpyYEpjdJpoyP3v/MHxQw5hl8HLOcjhSS6uakzr3n+naVh922PCm5DoTzaHp?=
- =?us-ascii?Q?JBD8XfZhtN7dBhq7Pm5fn6Mrgf5h8EOmyRH2GwvuqMf1EU5hjZdZzSpYmS4H?=
- =?us-ascii?Q?RLQKqBJwPOhPTRsj8At7xvKsdYMpxv/ihEfVTTTMKOWqdTCPZARHWfpPCDUg?=
- =?us-ascii?Q?xH/7kshc9vUlNVJtKna7PWYjQ9AIUL3mAZBQXKAjgoQmQvzQ42s8GGr/exMm?=
- =?us-ascii?Q?S7hSaOu9d66Il3G1SHi3TAa6kmhOOzgmlKwxPMKL0LskdBgDeqKX86QDuOzI?=
- =?us-ascii?Q?3Rpe0W2C53epUDOLyFIRM74hU2uOi46hvWP3+2ijjl2tnS2HAzbHbksmhnoV?=
- =?us-ascii?Q?17BIrwsBXhRW50SoXBHsiyWPFJpRLu3YMMXiCbn2L++oW9vIm+aTqxbpkNbn?=
- =?us-ascii?Q?lNpbHj2eexSM4TU0Na6SP6gbnS/O/xB3s2CLZrXZU+/QSSAvn+BBh5doAGJk?=
- =?us-ascii?Q?hwRE1/4q/ZqGdWHpHlkrYHWmZknGBgrSyVGu2ZhdURG7SM8KjP05gZtgVqKh?=
- =?us-ascii?Q?YidO5mWvnWilk2Byrr4XTgZm?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8e2cc442-2fb8-4808-4199-08d9350fa1b7
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2021 23:52:30.4544
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Y5fA/0S2g/PQ59VrPX18XrUSN7FZiFJ8gyccIcKSmrFWLUn0a9fJqlpIAdWMFRAa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5095
+References: <20210603151550.140727-1-mailhol.vincent@wanadoo.fr>
+ <20210603151550.140727-3-mailhol.vincent@wanadoo.fr> <20210618093424.xohvsqaaq5qf2bjn@pengutronix.de>
+ <CAMZ6RqJn5z-9PfkcJdiS6aG+qCPnifXDwH26ZEwo8-=id=TXbw@mail.gmail.com>
+ <CAMZ6RqKrPQkPy-dAiQjAB4aKnqeaNx+L-cro8F_mc2VPgOD4Jw@mail.gmail.com>
+ <20210618124447.47cy7hyqp53d4tjh@pengutronix.de> <CAMZ6RqJCZB6Q79JYfxD7PGboPwMndDQRKsuUEk5Q34fj2vOcYg@mail.gmail.com>
+ <e90cbad2467e2ef42db1e4a14ecdfd8c512965ea.camel@esd.eu> <CAMZ6RqJphchOBFudyuVcN+imnCgCBu7P6yAaNhjzJypGKCQFpA@mail.gmail.com>
+ <094d8a2eab2177e5a5143f96cf745b26897e1793.camel@esd.eu>
+In-Reply-To: <094d8a2eab2177e5a5143f96cf745b26897e1793.camel@esd.eu>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Tue, 22 Jun 2021 08:52:42 +0900
+Message-ID: <CAMZ6RqKt-GVeD4ERmrqaoPZf8Zi7haeji_Br7s2MLSpJo+pDhw@mail.gmail.com>
+Subject: Re: CAN-FD Transmitter Delay Compensation (TDC) on mcp2518fd
+To:     =?UTF-8?Q?Stefan_M=C3=A4tje?= <Stefan.Maetje@esd.eu>
+Cc:     "thomas.kopp@microchip.com" <thomas.kopp@microchip.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+        "socketcan@hartkopp.net" <socketcan@hartkopp.net>,
+        "mkl@pengutronix.de" <mkl@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 09:09:47AM +0300, Leon Romanovsky wrote:
-> From: Leon Romanovsky <leonro@nvidia.com>
-> 
-> Compilation with W=1 produces warnings similar to the below.
-> 
->   drivers/infiniband/ulp/ipoib/ipoib_main.c:320: warning: This comment
-> 	starts with '/**', but isn't a kernel-doc comment. Refer
-> 	Documentation/doc-guide/kernel-doc.rst
-> 
-> All such occurrences were found with the following one line
->  git grep -A 1 "\/\*\*" drivers/infiniband/
-> 
-> Reviewed-by: Jack Wang <jinpu.wang@ionos.com> #rtrs
-> Reviewed-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-> Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  Changelog:
->  v1 https://lore.kernel.org/lkml/8b40bbff098247962af5a7b35d47b2e964daa523.1622726066.git.leonro@nvidia.com
->  * Found two extra places in hns_roce_hem.c
->  * Added Dennis's ROB
->  v0 https://lore.kernel.org/lkml/635def71048cbffe76e2dd324cf420d8a465ee9d.1622460676.git.leonro@nvidia.com:
->  * Rebased to drop i40iw
->  * Added Jack's ROB
-> ---
->  drivers/infiniband/core/iwpm_util.h       | 2 +-
->  drivers/infiniband/core/roce_gid_mgmt.c   | 5 +++--
->  drivers/infiniband/hw/hfi1/chip.c         | 4 ++--
->  drivers/infiniband/hw/hfi1/file_ops.c     | 6 +++---
->  drivers/infiniband/hw/hfi1/hfi.h          | 2 +-
->  drivers/infiniband/hw/hfi1/init.c         | 4 ++--
->  drivers/infiniband/hw/hfi1/pio.c          | 2 +-
->  drivers/infiniband/hw/hns/hns_roce_hem.c  | 4 ++--
->  drivers/infiniband/sw/rdmavt/mr.c         | 4 ++--
->  drivers/infiniband/sw/rdmavt/qp.c         | 3 ++-
->  drivers/infiniband/sw/rdmavt/vt.c         | 4 ++--
->  drivers/infiniband/ulp/ipoib/ipoib_main.c | 7 ++++---
->  drivers/infiniband/ulp/iser/iser_verbs.c  | 2 +-
->  drivers/infiniband/ulp/isert/ib_isert.c   | 4 ++--
->  drivers/infiniband/ulp/rtrs/rtrs-clt.c    | 4 ++--
->  drivers/infiniband/ulp/rtrs/rtrs-srv.c    | 2 +-
->  16 files changed, 31 insertions(+), 28 deletions(-)
+Le mar. 22 juin 2021 à 03:42, Stefan Mätje <Stefan.Maetje@esd.eu> a écrit :
+>
+> Am Samstag, den 19.06.2021, 21:34 +0900 schrieb Vincent MAILHOL:
+> > On Sat. 19 Jun 2021 à 00:55, Stefan Mätje <Stefan.Maetje@esd.eu> wrote:
+> > > Am Freitag, den 18.06.2021, 23:27 +0900 schrieb Vincent MAILHOL:
+> > > > On Fri. 18 Jun 2021 at 21:44, Marc Kleine-Budde <mkl@pengutronix.de>
+> > > > wrote:
+> > > > > On 18.06.2021 20:17:51, Vincent MAILHOL wrote:
+> > > > > > > > I just noticed in the mcp2518fd data sheet:
+> > > > > > > >
+> > > > > > > > > bit 14-8 TDCO[6:0]: Transmitter Delay Compensation Offset bits;
+> > > > > > > > > Secondary Sample Point (SSP) Two’s complement; offset can be
+> > > > > > > > > positive,
+> > > > > > > > > zero, or negative.
+> > > > > > > > >
+> > > > > > > > > 011 1111 = 63 x TSYSCLK
+> > > > > > > > > ...
+> > > > > > > > > 000 0000 = 0 x TSYSCLK
+> > > > > > > > > ...
+> > > > > > > > > 111 1111 = –64 x TSYSCLK
+> > > > > > > >
+> > > > > > > > Have you takes this into account?
+> > > > > > >
+> > > > > > > I have not. And I fail to understand what would be the physical
+> > > > > > > meaning if TDCO is zero or negative.
+> > > > >
+> > > > > The mcp25xxfd family data sheet says:
+> > > > >
+> > > > > > SSP = TDCV + TDCO
+> > > > > > > TDCV indicates the position of the bit start on the RX pin.
+> > > > >
+> > > > > If I understand correctly in automatic mode TDCV is measured by the CAN
+> > > > > controller and reflects the transceiver delay.
+> > > >
+> > > > Yes. I phrased it poorly but this is what I wanted to say. It is
+> > > > the delay to propagate from the TX pin to the RX pin.
+> > > >
+> > > > If TDCO = 0 then SSP = TDCV + 0 = TDCV thus the measurement
+> > > > occurs at the bit start on the RX pin.
+> > > >
+> > > > > I don't know why you want
+> > > > > to subtract a time from that....
+> > > > >
+> > > > > The rest of the relevant registers:
+> > > > >
+> > > > > > TDCMOD[1:0]: Transmitter Delay Compensation Mode bits; Secondary
+> > > > > > Sample
+> > > > > > Point (SSP)
+> > > > > > 10-11 = Auto; measure delay and add TDCO.
+> > > > > > 01 = Manual; Do not measure, use TDCV + TDCO from register
+> > > > > > 00 = TDC Disabled
+> > > > > >
+> > > > > > TDCO[6:0]: Transmitter Delay Compensation Offset bits; Secondary
+> > > > > > Sample
+> > > > > > Point (SSP)
+> > > > > > Two’s complement; offset can be positive, zero, or negative.
+> > > > > > 011 1111 = 63 x TSYSCLK
+> > > > > > ...
+> > > > > > 000 0000 = 0 x TSYSCLK
+> > > > > > ...
+> > > > > > 111 1111 = –64 x TSYSCLK
+> > > > > >
+> > > > > > TDCV[5:0]: Transmitter Delay Compensation Value bits; Secondary Sample
+> > > > > > Point (SSP)
+> > > > > > 11 1111 = 63 x TSYSCLK
+> > > > > > ...
+> > > > > > 00 0000 = 0 x TSYSCLK
+> > > >
+> > > > Aside from the negative TDCO, the rest is standard stuff. We can
+> > > > note the absence of the TDCF but that's not a blocker.
+> > > >
+> > > > > > > If TDCO is zero, the measurement occurs on the bit start when all
+> > > > > > > the ringing occurs. That is a really bad choice to do the
+> > > > > > > measurement. If it is negative, it means that you are measuring the
+> > > > > > > previous bit o_O !?
+> > > > >
+> > > > > I don't know...
+> > > > >
+> > > > > > > Maybe I am missing something but I just do not get it.
+> > > > > > >
+> > > > > > > I believe you started to implement the mcp2518fd.
+> > > > >
+> > > > > No I've just looked into the register description.
+> > > >
+> > > > OK. For your information, the ETAS ES58x FD devices do not allow
+> > > > the use of manual mode for TDCV. The microcontroller from
+> > > > Microchip supports it but ETAS firmware only exposes the
+> > > > automatic TDCV mode. So it can not be used to test what would
+> > > > occur if SSP = 0.
+> > > >
+> > > > I will prepare a patch to allow zero value for both TDCV and
+> > > > TDCO (I am a bit sad because I prefer the current design, but if
+> > > > ISO allows it, I feel like I have no choice).  However, I refuse
+> > > > to allow the negative TDCO value unless someone is able to
+> > > > explain the rationale.
+> > >
+> > > Hi,
+> > >
+> > > perhaps I can shed some light on the idea why it is a good idea to allow
+> > > negative TDC offset values. Therefore I would describe the TDC register
+> > > interface of the ESDACC CAN-FD controller of our company (see
+> > > https://esd.eu/en/products/esdacc).
+> >
+> > Thanks for joining the conversation. I am happy to receive help
+> > from more experts!
+> >
+> > > Register description of TDC-CAN-FD register (reserved bits not shown):
+> > >
+> > > bits [5..0], RO: TDC Measured (TDCmeas)
+> > >         Currently measured TDC value, needs baudrate to be set and CAN
+> > > traffic
+> > >
+> > > bits [21..16], R/W: TDC offset (TDCoffs)
+> > >         Depending on the selected mode (see TDC mode)
+> > >         - Auto TDC, automatic mode (default)
+> > >                 signed offset onto measured TDC (TDCeff = TDCmeas +
+> > > TDCoffs),
+> > >                 interpreted as 6-bit two's complement value
+> > >         - Manual TDC
+> > >                 absolute unsigned offset (TDCeff = TDCoffs),
+> > >                 interpreted as 6-bit unsigned value
+> > >         - Other modes
+> > >                 ignored
+> > >         In either case TDC offset is a number of CAN clock cycles.
+> > >
+> > > bits [31..30], R/W: TDC mode
+> > >         00 = Auto TDC
+> > >         01 = Manual TDC
+> > >         10 = reserved
+> > >         11 = TDC off
+> >
+> > First remark is that you use different naming than what I
+> > witnessed so far in other datasheets. Let me try to give the
+> > equivalences between your device and the struct can_tdc which I
+> > proposed in my patches.
+> >
+> > The Left members are ESDACC CAN-FD registers, the right members
+> > are variables from Socket CAN.
+> >
+> > ** Auto TDC **
+> > TDCoffs = struct can_tdc::tdco
+> >
+> > ** Manual TDC **
+> > TDCoffs = struct can_tdc::tdcv + struct can_tdc::tdco
+> >
+> > In both cases, TDCeff corresponds to the SSP position.
+>
+> TDCeff is not the SSP position in our implementation. see below.
+>
+> >
+> > > So in automatic mode the goal is to be able to move the real sample point
+> > > forward and(!) backward from the measured transmitter delay. Therefore the
+> > > TDCoffs is interpreted as 6-bit two's complement value to make negative
+> > > offsets
+> > > possible and to decrease the effective (used) TDCeff below the measured
+> > > value
+> > > TDCmeas.
+> > >
+> > > As far as I have understood our FPGA guy the TDCmeas value is the number of
+> > > clock cycles counted from the start of transmitting a dominant bit until the
+> > > dominant state reaches the RX pin.
+> >
+> > Your definition of TDCmeas is consistent with the definition of
+> > TDCV in socket CAN.
+> >
+> > What I miss to understand is what does it mean to subtract from
+> > that TDCmeas/TDCV value. If you subtract from it, it means that
+> > TDCeff/SSP is sampled before the signal reaches the RX
+> > pin. Correct?
+> >
+> > > During the data phase the sample point is controlled by the tseg values set
+> > > for
+> > > the data phase but is moved additionally by the number of clocks specified
+> > > by
+> > > TDCeff (or SSP in the mcp2518fd case).
+> >
+> > Here I do not follow you. The SSP, as specified in ISO 11898-1
+> > is "specified by its distance from the start of the bit
+> > time". Either you do not use TDC and the measurement is done on
+> > the SP according to the tseg values, either you do use TDC and
+> > the measurement is done on the SSP according to the TDC
+> > values. There is no mention of mixing the tseg and tdc values.
+> >
+> > P.S.: don't hesitate to invite your FPGA guy to this thread!
+>
+> I would like to do but he left off for holidays this weekend. So what I tell
+> here should be taken with a grain of salt.
+>
+> I've had a look at the ISO specificaton and the chapter on Transmitter delay
+> compensation. It was not aware of the exact definition of SSP in the ISO spec.
+> But I can explain our implementation and the relation to the ISO spec.
+>
+> In our implementation during transmit our RX-state machine runs skewed later by
+> TDCeff timequanta than the TX-state machine. This leads to the timing effects
+> described below.
+>
+> For this discussion I would define SPO (Sample Point Offset) as sum of time
+> quanta of Sync Segment, Prop_Segment and Phase1 segment set for the data phase,
+> i. e. the time quanta till Sample Point in the data phase.
 
-Applied to for-next, thanks
+FYI, the sample point is already available in Socket CAN but it
+is expressed in tenth of percent. You can simply convert it back
+to time quanta doing:
+|        u32 sample_point_in_tq = can_bit_time(dbt) * dbt->sample_point / 1000;
 
-Jason
+(which is a formula I already used to calculate TDCO:
+https://elixir.bootlin.com/linux/v5.13-rc6/source/drivers/net/can/dev/bittiming.c#L194)
+
+> Bittiming for a single bit in the data phase
+>
+>
+>   |<-------- SPO ---------->|
+>   |                                   |
+> --+-----------------------------------+-- TX-Bit
+>    \                        ^
+>     \
+>      \
+>       \
+>        \
+>         \
+>          \
+>   |<---->| TDCmeas
+>           \
+>            \
+>             \
+>          |<->| TDCoffs
+>              |
+>   |<-------->| TDCeff
+>              |<-------- SPO ---------->|
+>              |                                   |
+>            --+-----------------------------------+-- RX-Bit
+>                                        ^
+>   |<------------ SSP ----------------->|
+>
+>
+> The sketch should show the timing relations between transmitted and received
+> bits. You see in our implementation the SSP is calculated as the sum of TDCeff
+> and SPO where in turn TDCeff is the sum of TDCmeas and TDCoffs:
+>
+> SSP = TDCeff + SPO      and TDCeff = TDCmeas + TDCoffs ==>
+>
+> SSP = TDCmeas + TDCoffs + SPO
+>
+> Where (all in time quanta)
+> TDCmeas = measured TDC delay like TDCV from Microchip data sheet
+> TDCoffs = our ESDACC register value for the TDC offset
+> SPO     = offset to data phase sample point as defined before
+>
+> In comparision to the ISO spec the SSP offset "SSPO" from figure 24 would then
+> be for our implementation:
+>
+> SSPO = TDCoffs + SPO
+>
+> And from your description your are thinking to implement the SSPO to be struct
+> can_tdc::tdco.
+>
+> If you take "our" formula for SSPO into account you can see that a negative
+> TDCoffs can be of use because it is always offsetted by SPO. And you're right
+> that a SSPO less than zero would sample the line before the bit has arrived.
+>
+> I think the reason for this kind of implementation was that if you enable
+> automatic mode and set TDCoffs to zero it does basically "the right thing". That
+> is TDCoffs is independent from the settings done for segments in the data phase
+> because the resulting sample point offset (SPO) is cared for automatically.
+
+Thank you. What you are saying makes sense. To me, there is only
+one thing that is a bit strange in your sketch: the TDCmeas/TDCV
+does not indicate the beginning of the RX-bit.
+
+I tried to modify your sketch with my vision.
+
+  |<-------- SPO ---------->|
+  |                                   |
+--+-----------------------------------+-- TX-Bit
+   \                        ^
+    \
+     \
+      \
+       \
+        \
+         \
+          \
+           \
+            \
+|<---------->| TDCmeas (by definition, TDCmeas/TDCV is the measured delay,
+             |          i.e. it indicates the beginning of the RX-bit)
+             |
+             |<-------- SPO ---------->|
+             |                         |<->| TDCoffs (might be negative)
+             |<--------------------------->| TDCeff = SPO + TDCoffs
+             |                                   |
+           --+-----------------------------------+-- RX-Bit
+                                           ^
+|<---------------- SSP ------------------->|
+
+The above is still consistent with your formulas for ESDACC CAN-FD:
+
+SSP = TDCmeas + TDCeff
+    = TDCmeas + SPO + TDCoffs
+
+And this is how to use Socket CAN variables to calculates yours:
+
+SPO = can_bit_time(&priv->data_bittiming) *
+      priv->data_bittiming.sample_point / 1000;
+
+TDCoffs = priv->tdc.tdco - SPO
+
+So here, Socket CAN's TDCO is indeed an absolute value because it
+is an offset on TDCmeas/TDCV whereas in your implementation,
+TDCoffs is a relative value because it is an offset on
+TDCmeas/TDCV + TDCeff.
+
+> To understand the TDC configuration opportunities of the MPC2518FD more
+> thoroughly I've looked at its reference manual
+>
+>
+> https://ww1.microchip.com/downloads/en/DeviceDoc/MCP25XXFD-CAN-FD-Controller-Module-Family-Reference-Manual-DS20005678E.pdf
+>
+> and also had a look at some example bittiming calculations done with
+>
+> https://ww1.microchip.com/downloads/en/DeviceDoc/MCP2517FD%20Bit%20Time%20Calculations%20-%20UG.xlsx
+>
+> These documents are linked here:
+> https://www.microchip.com/wwwproducts/en/MCP2518FD
+>
+> In the Excel calculation sheet the TDCO is calculated as
+> TDCO = (DPRSEG + DPH1SEG) * DBRP
+> which makes it  also dependend from the data phase prescaler. This means that
+> the recommended initial TDCO (which really seems to be SSPO in their
+> implementation) depends on (DPRSEG + DPH1SEG) which is basically the SPO as
+> defined for our implementation.
+>
+> But this also means for a user that when setting TDCO via struct can_tdc::tdco
+> the full configuration of the data bitrate must be known. Additionally changing
+> the data bitrate sample point will make the TDC settings unsuitable for the the
+> new data bitrate setting.
+>
+> What this means on how to implement a nice user interface to these parameters I
+> don't know at the moment.
+
+This should not be an issue. In the interface I am writing, I am
+forcing the user to provide both the data bitrate and the TDC
+settings at the same time.
+
+Long story short, I now understand that negative TDCO thing (and
+thanks again for your long write-up). It is just that the
+calculation is done differently. I am thinking of continuing to
+use an unsigned TDCO in the socket CAN implementation and maybe
+provide an helper function: can_tdc_get_relative_tdco() that will
+return the signed TDCO needed for the ESDACC and the
+MPC2518FD (and probably other controllers as well).
+
+
+Yours sincerely,
+Vincent
