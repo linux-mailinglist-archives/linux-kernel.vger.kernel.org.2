@@ -2,357 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 563383AE90A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A353AE90F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:29:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229837AbhFUMaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 08:30:06 -0400
-Received: from mx12.kaspersky-labs.com ([91.103.66.155]:51276 "EHLO
-        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229651AbhFUMaE (ORCPT
+        id S229876AbhFUMbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 08:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229699AbhFUMbO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 08:30:04 -0400
-Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay12.kaspersky-labs.com (Postfix) with ESMTP id B879A76350;
-        Mon, 21 Jun 2021 15:27:47 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail202102; t=1624278467;
-        bh=RqGHixMXSbuv9LW6i7BRGxThDmgvkwrZO3U6ObcynLE=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
-        b=u1YQH+i9YbY1bpDDFCXZOlfx75BW2qYadYG8o9URI37x86DWaRJpFdWjphkjWUWiw
-         dpIYb2vSwVogd2y+c/9Yw0Wj40FbJT2vYM1sooySIE2uZ2/pKa6pW8TQVr/Mh9p4XM
-         Pi+9Xo1cFGZjV23gqqcS7hwNG2n7kGVpI2k/O272JQyNBADBRIbyDKm6z40jTHl5Ag
-         szmX5T4VQ3z69HJ1/LK45rgId41aH7XzNjahCuizmRwUWBCceNeqs1xIFR1vJrzfoo
-         ITTWcYjB5azd1C4X/iVvWmFs/LbdMGDw76BwKvGFSzs9T/iyJgtTzt3sx9/VFX9h67
-         0daKz3XWaPgsg==
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id D19B776342;
-        Mon, 21 Jun 2021 15:27:45 +0300 (MSK)
-Received: from [10.16.171.77] (10.64.68.129) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Mon, 21
- Jun 2021 15:27:45 +0300
-Subject: Re: [MASSMAIL KLMS] Re: [PATCH v11 11/18] virtio/vsock: dequeue
- callback for SOCK_SEQPACKET
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-References: <20210611110744.3650456-1-arseny.krasnov@kaspersky.com>
- <20210611111241.3652274-1-arseny.krasnov@kaspersky.com>
- <20210618134423.mksgnbmchmow4sgh@steredhat.lan>
- <bb323125-f802-1d16-7530-6e4f4abb00a6@kaspersky.com>
- <20210618155555.j5p4v6j5gk2dboj3@steredhat.lan>
- <650673dc-8b29-657e-5bbd-2cc974628ec9@kaspersky.com>
- <20210618162509.yppkajmvcbzvidy4@steredhat.lan>
- <31f58b17-02e6-4246-5ad8-7e8d7892ecb7@kaspersky.com>
- <b27d3fd1-fa8a-97ff-9035-cf3f525d5866@kaspersky.com>
- <20210621102320.4uaqaee74yynnn2q@steredhat>
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Message-ID: <770f1afe-4ced-e080-769e-959a2ea61281@kaspersky.com>
-Date:   Mon, 21 Jun 2021 15:27:44 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 21 Jun 2021 08:31:14 -0400
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C708DC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 05:28:59 -0700 (PDT)
+Received: by mail-ot1-x32c.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so17538664otl.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 05:28:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HHQC6lOkJEn8B4ZK4mW/HBR6aX7M4uga90R1ZErZgKw=;
+        b=Td38oUyS/9/MPrT4jo5WsEx4w0MWOF/8bM1XyUzvOBwwzScRQorv0t2fw+zHCf7ir0
+         h8zpP6oNobDqmDV0rX43vwv23S4wvsx20o1++gTR06+eOXnxOdhaB+3kQbyaZz/2S0tV
+         GQVwEXVWhC4IEfs607x4fPCPD20Mejq78fTdQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HHQC6lOkJEn8B4ZK4mW/HBR6aX7M4uga90R1ZErZgKw=;
+        b=an+PLT7uy98BR1y563dZJezYprGEqKttccUG1tvmaQ9Lff9Dik5gOaGyN7GAVcksE/
+         d7wiDnG6coRHRfd/c+3GiMG9tiyJ4qbLy46wWBWmRpJ3FQbSeTGWxQE6PeXdcBm4z3M1
+         guJ85egov2mmwY+BKeSy4Rd16+jlnBIv50TAjzmdSbi8yXTnR9ZzLurMJMQKw04be+Tv
+         advWeA6bzqs8dX2EfrXikr0eovLCp/2RNnsuoMTS/rfSaTRViDTnw2ytP1MRMNas3GJA
+         9/sQ98yW/cM06B2jWrdmvQe6TqdeDyw3jNcNVwElYyyVJabkS5/Km7F1Cf/3JtCpNfWq
+         JfHQ==
+X-Gm-Message-State: AOAM531jivx7sU2QlOlKHFFPlHy7cxwBFj0+r0kA2JrLd6oFqz6pkGDC
+        89NJ0RaSr/NPuN+Nku0xkY/UJ26jbEUlPBvgzcriUg==
+X-Google-Smtp-Source: ABdhPJwD0i9Zn4q4SoQulAg+xyZR3j3c5+btpLl6Z1t9xWUhyH1ThXXNgyVXCPxYSRcrINNnl8lEcpNTDGpjBNUKKJE=
+X-Received: by 2002:a9d:12eb:: with SMTP id g98mr20269296otg.303.1624278539116;
+ Mon, 21 Jun 2021 05:28:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210621102320.4uaqaee74yynnn2q@steredhat>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.64.68.129]
-X-ClientProxiedBy: hqmailmbx3.avp.ru (10.64.67.243) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 06/21/2021 12:08:25
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 164502 [Jun 21 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
-X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: kaspersky.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;lore.kernel.org:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 06/21/2021 12:12:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 21.06.2021 11:41:00
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/06/21 10:51:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/06/21 10:36:00 #16775443
-X-KLMS-AntiVirus-Status: Clean, skipped
+References: <20210618123615.11456-1-ogabbay@kernel.org>
+In-Reply-To: <20210618123615.11456-1-ogabbay@kernel.org>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Mon, 21 Jun 2021 14:28:48 +0200
+Message-ID: <CAKMK7uFOfoxbD2Z5mb-qHFnUe5rObGKQ6Ygh--HSH9M=9bziGg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] habanalabs: define uAPI to export FD for DMA-BUF
+To:     Oded Gabbay <ogabbay@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Doug Ledford <dledford@redhat.com>,
+        "airlied@gmail.com" <airlied@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Tomer Tayar <ttayar@habana.ai>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 21.06.2021 13:23, Stefano Garzarella wrote:
-> On Mon, Jun 21, 2021 at 09:55:13AM +0300, Arseny Krasnov wrote:
->> On 18.06.2021 19:26, Arseny Krasnov wrote:
->>> On 18.06.2021 19:25, Stefano Garzarella wrote:
->>>> On Fri, Jun 18, 2021 at 07:08:30PM +0300, Arseny Krasnov wrote:
->>>>> On 18.06.2021 18:55, Stefano Garzarella wrote:
->>>>>> On Fri, Jun 18, 2021 at 06:04:37PM +0300, Arseny Krasnov wrote:
->>>>>>> On 18.06.2021 16:44, Stefano Garzarella wrote:
->>>>>>>> Hi Arseny,
->>>>>>>> the series looks great, I have just a question below about
->>>>>>>> seqpacket_dequeue.
->>>>>>>>
->>>>>>>> I also sent a couple a simple fixes, it would be great if you can review
->>>>>>>> them:
->>>>>>>> https://lore.kernel.org/netdev/20210618133526.300347-1-sgarzare@redhat.com/
->>>>>>>>
->>>>>>>>
->>>>>>>> On Fri, Jun 11, 2021 at 02:12:38PM +0300, Arseny Krasnov wrote:
->>>>>>>>> Callback fetches RW packets from rx queue of socket until whole record
->>>>>>>>> is copied(if user's buffer is full, user is not woken up). This is done
->>>>>>>>> to not stall sender, because if we wake up user and it leaves syscall,
->>>>>>>>> nobody will send credit update for rest of record, and sender will wait
->>>>>>>>> for next enter of read syscall at receiver's side. So if user buffer is
->>>>>>>>> full, we just send credit update and drop data.
->>>>>>>>>
->>>>>>>>> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->>>>>>>>> ---
->>>>>>>>> v10 -> v11:
->>>>>>>>> 1) 'msg_count' field added to count current number of EORs.
->>>>>>>>> 2) 'msg_ready' argument removed from callback.
->>>>>>>>> 3) If 'memcpy_to_msg()' failed during copy loop, there will be
->>>>>>>>>    no next attempts to copy data, rest of record will be freed.
->>>>>>>>>
->>>>>>>>> include/linux/virtio_vsock.h            |  5 ++
->>>>>>>>> net/vmw_vsock/virtio_transport_common.c | 84 +++++++++++++++++++++++++
->>>>>>>>> 2 files changed, 89 insertions(+)
->>>>>>>>>
->>>>>>>>> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
->>>>>>>>> index dc636b727179..1d9a302cb91d 100644
->>>>>>>>> --- a/include/linux/virtio_vsock.h
->>>>>>>>> +++ b/include/linux/virtio_vsock.h
->>>>>>>>> @@ -36,6 +36,7 @@ struct virtio_vsock_sock {
->>>>>>>>> 	u32 rx_bytes;
->>>>>>>>> 	u32 buf_alloc;
->>>>>>>>> 	struct list_head rx_queue;
->>>>>>>>> +	u32 msg_count;
->>>>>>>>> };
->>>>>>>>>
->>>>>>>>> struct virtio_vsock_pkt {
->>>>>>>>> @@ -80,6 +81,10 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
->>>>>>>>> 			       struct msghdr *msg,
->>>>>>>>> 			       size_t len, int flags);
->>>>>>>>>
->>>>>>>>> +ssize_t
->>>>>>>>> +virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
->>>>>>>>> +				   struct msghdr *msg,
->>>>>>>>> +				   int flags);
->>>>>>>>> s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
->>>>>>>>> s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
->>>>>>>>>
->>>>>>>>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->>>>>>>>> index ad0d34d41444..1e1df19ec164 100644
->>>>>>>>> --- a/net/vmw_vsock/virtio_transport_common.c
->>>>>>>>> +++ b/net/vmw_vsock/virtio_transport_common.c
->>>>>>>>> @@ -393,6 +393,78 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
->>>>>>>>> 	return err;
->>>>>>>>> }
->>>>>>>>>
->>>>>>>>> +static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
->>>>>>>>> +						 struct msghdr *msg,
->>>>>>>>> +						 int flags)
->>>>>>>>> +{
->>>>>>>>> +	struct virtio_vsock_sock *vvs = vsk->trans;
->>>>>>>>> +	struct virtio_vsock_pkt *pkt;
->>>>>>>>> +	int dequeued_len = 0;
->>>>>>>>> +	size_t user_buf_len = msg_data_left(msg);
->>>>>>>>> +	bool copy_failed = false;
->>>>>>>>> +	bool msg_ready = false;
->>>>>>>>> +
->>>>>>>>> +	spin_lock_bh(&vvs->rx_lock);
->>>>>>>>> +
->>>>>>>>> +	if (vvs->msg_count == 0) {
->>>>>>>>> +		spin_unlock_bh(&vvs->rx_lock);
->>>>>>>>> +		return 0;
->>>>>>>>> +	}
->>>>>>>>> +
->>>>>>>>> +	while (!msg_ready) {
->>>>>>>>> +		pkt = list_first_entry(&vvs->rx_queue, struct virtio_vsock_pkt, list);
->>>>>>>>> +
->>>>>>>>> +		if (!copy_failed) {
->>>>>>>>> +			size_t pkt_len;
->>>>>>>>> +			size_t bytes_to_copy;
->>>>>>>>> +
->>>>>>>>> +			pkt_len = (size_t)le32_to_cpu(pkt->hdr.len);
->>>>>>>>> +			bytes_to_copy = min(user_buf_len, pkt_len);
->>>>>>>>> +
->>>>>>>>> +			if (bytes_to_copy) {
->>>>>>>>> +				int err;
->>>>>>>>> +
->>>>>>>>> +				/* sk_lock is held by caller so no one else can dequeue.
->>>>>>>>> +				 * Unlock rx_lock since memcpy_to_msg() may sleep.
->>>>>>>>> +				 */
->>>>>>>>> +				spin_unlock_bh(&vvs->rx_lock);
->>>>>>>>> +
->>>>>>>>> +				err = memcpy_to_msg(msg, pkt->buf, bytes_to_copy);
->>>>>>>>> +				if (err) {
->>>>>>>>> +					/* Copy of message failed, set flag to skip
->>>>>>>>> +					 * copy path for rest of fragments. Rest of
->>>>>>>>> +					 * fragments will be freed without copy.
->>>>>>>>> +					 */
->>>>>>>>> +					copy_failed = true;
->>>>>>>>> +					dequeued_len = err;
->>>>>>>> If we fail to copy the message we will discard the entire packet.
->>>>>>>> Is it acceptable for the user point of view, or we should leave the
->>>>>>>> packet in the queue and the user can retry, maybe with a different
->>>>>>>> buffer?
->>>>>>>>
->>>>>>>> Then we can remove the packets only when we successfully copied all the
->>>>>>>> fragments.
->>>>>>>>
->>>>>>>> I'm not sure make sense, maybe better to check also other
->>>>>>>> implementations :-)
->>>>>>>>
->>>>>>>> Thanks,
->>>>>>>> Stefano
->>>>>>> Understand, i'll check it on weekend, anyway I think it is
->>>>>>> not critical for implementation.
->>>>>> Yep, I agree.
->>>>>>
->>>>>>> I have another question: may be it is useful to research for
->>>>>>> approach where packets are not queued until whole message
->>>>>>> is received, but copied to user's buffer thus freeing memory.
->>>>>>> (like previous implementation, of course with solution of problem
->>>>>>> where part of message still in queue, while reader was woken
->>>>>>> by timeout or signal).
->>>>>>>
->>>>>>> I think it is better, because  in current version, sender may set
->>>>>>> 'peer_alloc_buf' to  for example 1MB, so at receiver we get
->>>>>>> 1MB of 'kmalloc()' memory allocated, while having user's buffer
->>>>>>> to copy data there or drop it(if user's buffer is full). This way
->>>>>>> won't change spec(e.g. no message id or SEQ_BEGIN will be added).
->>>>>>>
->>>>>>> What do You think?
->>>>>> Yep, I see your point and it would be great, but I think the main issues
->>>>>> to fix is how to handle a signal while we are waiting other fragments
->>>>>> since the other peer can take unspecified time to send them.
->>>>> What about transport callback, something like 'seqpacket_drain()' or
->>>>>
->>>>> 'seqpacket_drop_curr()' - when we got signal or timeout, notify transport
->>>>>
->>>>> to drop current message. In virtio case this will set special flag in transport,
->>>>>
->>>>> so on next dequeue, this flag is checked and if it is set - we drop all packets
->>>>>
->>>>> until EOR found. Then we can copy untouched new record.
->>>>>
->>>> But in this way, we will lose the entire message.
->>>>
->>>> Is it acceptable for seqpacket?
->>>>
->>>> Stefano
->>> Hm, i'll check it. At least for unix domain sockets - it supports SEQPACKET
->> Hello, i've checked AF_UNIX and AF_AX25 SEQPACKET implementations,
-> Great! Thanks for checking!
+On Fri, Jun 18, 2021 at 2:36 PM Oded Gabbay <ogabbay@kernel.org> wrote:
+> User process might want to share the device memory with another
+> driver/device, and to allow it to access it over PCIe (P2P).
 >
->> in both cases:
->>
->> 1) Datagram is dequeued first, then copied to user's buffer.
->>
->> 2) Datagram is also freed when copying to user's buffer fail
->>
->> (it is not reinserted back).
->>
->>
->> But, in case of virtio vsock, i've got the following concern in
->> this approach: in cases of AF_UNIX or AF_AX25 there is maximum
->>
->> datagram size, strictly limited by spec, so no 'setsockopt()' call allows
->>
->> to exceed this. Also these limits are significantly smaller that current
->>
->> amounts of RAM. But, in our case, there is no such limit: peer could
->>
->> say 'i want to use 100MB datagram', and receiver just answer 'ok',
-> The receiver sets the limit of its receive buffer and tells the 
-> transmitter that it should not exceed it. The default should be 256 KB, 
-> so IIUC this scenario can happen only if the receiver do a 
-> 'setsockopt()' increasing the limit to 100MB. Right?
+> To enable this, we utilize the dma-buf mechanism and add a dma-buf
+> exporter support, so the other driver can import the device memory and
+> access it.
 >
-> Maybe we should limit it.
-
-Yes, sorry, i meant this. Two peers want's to transmit 100mb message.
-
-Receiver calls 'setsockopt()' and got 100mb of kmalloc() memory.
-
-May be, from point of view of these two peers its ok. But for whole system
-
-- i'm not sure. And limit - it is interesting question, what value to use as limit?
-
+> The device memory is allocated using our existing allocation uAPI,
+> where the user will get a handle that represents the allocation.
 >
->>  as there is just variable assignment to setup new limit. Now, consider
->>
->> that there will be 10 peers, 100MB each(no one limit such request,
->>
->> because each socket doesn't know about each other). I think we get
->>
->> out-of-service in this case - all kmalloc() memory will be wasted for
->>
->> pending record.
->>
->>
->> I still think, that approach when we copy data from packet to user's
->>
->> buffer without waiting EOR is better.
-> Okay, in this way we can remove the receive buffer limit and maybe if we 
-> receive a signal, we can set MSG_TRUNC, return the partially received 
-> packet to the user, but we must free any next fragments.
+> The user will then need to call the new
+> uAPI (HL_MEM_OP_EXPORT_DMABUF_FD) and give the handle as a parameter.
 >
-> So, as you proposed, we need a `seqpacket_drop()` to tell to the 
-> transport that if we were copying an uncompleted message, then it should 
-> delete the queued fragments and any others until the next EOR.
+> The driver will return a FD that represents the DMA-BUF object that
+> was created to match that allocation.
+>
+> Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+> Reviewed-by: Tomer Tayar <ttayar@habana.ai>
 
-Ok, i'll prepare RFC patch for this approach, i think it will be
+Mission acomplished, we've gone full circle, and the totally-not-a-gpu
+driver is now trying to use gpu infrastructure. And seems to have
+gained vram meanwhile too. Next up is going to be synchronization
+using dma_fence so you can pass buffers back&forth without stalls
+among drivers.
 
-significantly smaller than merged patchset.
+Bonus points for this being at v3 before it shows up on dri-devel and
+cc's dma-buf folks properly (not quite all, I added the missing
+people).
 
+I think we roughly have two options here
+
+a) Greg continues to piss off dri-devel folks while trying to look
+cute&cuddly and steadfastly claiming that this accelator doesn't work
+like any of the other accelerator drivers we have in drivers/gpu/drm.
+All while the driver ever more looks like one of these other accel
+drivers.
+
+b) We finally do what we should have done years back and treat this as
+a proper driver submission and review it on dri-devel instead of
+sneaking it in through other channels because the merge criteria
+dri-devel has are too onerous and people who don't have experience
+with accel stacks for the past 20 years or so don't like them.
+
+"But this probably means a new driver and big disruption!"
+
+Not my problem, I'm not the dude who has to come up with an excuse for
+this because I didn't merge the driver in the first place. I do get to
+throw a "we all told you so" in though, but that's not helping.
+
+Also I'm wondering which is the other driver that we share buffers
+with. The gaudi stuff doesn't have real struct pages as backing
+storage, it only fills out the dma_addr_t. That tends to blow up with
+other drivers, and the only place where this is guaranteed to work is
+if you have a dynamic importer which sets the allow_peer2peer flag.
+Adding maintainers from other subsystems who might want to chime in
+here. So even aside of the big question as-is this is broken.
+
+Currently only 2 drivers set allow_peer2peer, so those are the only
+ones who can consume these buffers from device memory. Pinging those
+folks specifically.
+
+Doug/Jason from infiniband: Should we add linux-rdma to the dma-buf
+wildcard match so that you can catch these next time around too? At
+least when people use scripts/get_maintainers.pl correctly. All the
+other subsystems using dma-buf are on there already (dri-devel,
+linux-media and linaro-mm-sig for android/arm embedded stuff).
+
+Cheers, Daniel
+
+
+
+> ---
+>  include/uapi/misc/habanalabs.h | 28 +++++++++++++++++++++++++++-
+>  1 file changed, 27 insertions(+), 1 deletion(-)
 >
->>
->> Also i'll rebase QEMU patch today or tomorrow.
-> Great, please CC me, this is something high priority to test 
-> SOCK_SEQPACKET with a guest.
-Ack
+> diff --git a/include/uapi/misc/habanalabs.h b/include/uapi/misc/habanalabs.h
+> index a47a731e4527..aa3d8e0ba060 100644
+> --- a/include/uapi/misc/habanalabs.h
+> +++ b/include/uapi/misc/habanalabs.h
+> @@ -808,6 +808,10 @@ union hl_wait_cs_args {
+>  #define HL_MEM_OP_UNMAP                        3
+>  /* Opcode to map a hw block */
+>  #define HL_MEM_OP_MAP_BLOCK            4
+> +/* Opcode to create DMA-BUF object for an existing device memory allocation
+> + * and to export an FD of that DMA-BUF back to the caller
+> + */
+> +#define HL_MEM_OP_EXPORT_DMABUF_FD     5
 >
->>
->> What do You Think?
-> I'm fine with both, but I slightly prefer the approach we implemented 
-> because it's easier to handle.
+>  /* Memory flags */
+>  #define HL_MEM_CONTIGUOUS      0x1
+> @@ -878,11 +882,26 @@ struct hl_mem_in {
+>                         /* Virtual address returned from HL_MEM_OP_MAP */
+>                         __u64 device_virt_addr;
+>                 } unmap;
+> +
+> +               /* HL_MEM_OP_EXPORT_DMABUF_FD */
+> +               struct {
+> +                       /* Handle returned from HL_MEM_OP_ALLOC. In Gaudi,
+> +                        * where we don't have MMU for the device memory, the
+> +                        * driver expects a physical address (instead of
+> +                        * a handle) in the device memory space.
+> +                        */
+> +                       __u64 handle;
+> +                       /* Size of memory allocation. Relevant only for GAUDI */
+> +                       __u64 mem_size;
+> +               } export_dmabuf_fd;
+>         };
 >
-> Thanks,
-> Stefano
+>         /* HL_MEM_OP_* */
+>         __u32 op;
+> -       /* HL_MEM_* flags */
+> +       /* HL_MEM_* flags.
+> +        * For the HL_MEM_OP_EXPORT_DMABUF_FD opcode, this field holds the
+> +        * DMA-BUF file/FD flags.
+> +        */
+>         __u32 flags;
+>         /* Context ID - Currently not in use */
+>         __u32 ctx_id;
+> @@ -919,6 +938,13 @@ struct hl_mem_out {
 >
+>                         __u32 pad;
+>                 };
+> +
+> +               /* Returned in HL_MEM_OP_EXPORT_DMABUF_FD. Represents the
+> +                * DMA-BUF object that was created to describe a memory
+> +                * allocation on the device's memory space. The FD should be
+> +                * passed to the importer driver
+> +                */
+> +               __u64 fd;
+>         };
+>  };
 >
+> --
+> 2.25.1
+>
+
+
+--
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
