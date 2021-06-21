@@ -2,148 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D114F3AF4E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB2E33AF4F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232137AbhFUSXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:23:30 -0400
-Received: from mout.kundenserver.de ([212.227.126.134]:60917 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231370AbhFUSXP (ORCPT
+        id S231906AbhFUSZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:25:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232208AbhFUSYv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:23:15 -0400
-Received: from [192.168.1.155] ([95.118.106.223]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1M6URd-1ltRf50Vq5-006z5z; Mon, 21 Jun 2021 20:20:30 +0200
-Subject: Re: [PATCH v1] proc: Implement /proc/self/meminfo
-To:     Shakeel Butt <shakeelb@google.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux.dev>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Chris Down <chris@chrisdown.name>,
-        Cgroups <cgroups@vger.kernel.org>
-References: <ac070cd90c0d45b7a554366f235262fa5c566435.1622716926.git.legion@kernel.org>
- <20210615113222.edzkaqfvrris4nth@wittgenstein>
- <20210615124715.nzd5we5tl7xc2n2p@example.org>
- <CALvZod7po_fK9JpcUNVrN6PyyP9k=hdcyRfZmHjSVE5r_8Laqw@mail.gmail.com>
- <87zgvpg4wt.fsf@disp2133>
- <CALvZod70DNiWF-jTUHp6pOVtVX9pzdvYXaQ1At3GHtdKD=iTwQ@mail.gmail.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <d1eb12ec-8e6a-11c1-ea0a-b36dcf354d16@metux.net>
-Date:   Mon, 21 Jun 2021 20:20:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 21 Jun 2021 14:24:51 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43414C0617A8
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:22:18 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id u13so12425952lfk.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:22:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IajW38MHwcZeFZ73RMsHWpIwYjHEkpzka+be7I9DYGw=;
+        b=NETQKlp2p/nx7Y4sEEKvaKEH1uY4lK4td2BanaBafpbIXQIoGCzZOVksCtCyBi0VP3
+         qRBlFwn+/Gx64DwKfV6NuuTCgy11IKhJtBRHJHw+NoWp0PJjx8aDjqdJFAwf9hft86AO
+         tM+eFryc9hg5P7s+JFPGb7KXNkWf2tAxPxGRd/m7XfVYQieeWwYduJvFlHV+Nw7tYrSK
+         TR7ASMVIAhHu/b18LiZkQowPpkyKElDbsSPdJWQAbQAz8k6TgY6ow6aUYfklevRk480m
+         IgM7lrbwBJYVeinVQVxmiqJNSdgdYBCq164ARz658xez/ZLzpWtYGOtahVCWU0BR2cPi
+         xw+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IajW38MHwcZeFZ73RMsHWpIwYjHEkpzka+be7I9DYGw=;
+        b=nsL6k7wViEHaVPUCGYIcr/jKVhH+25eUc2YpM+4DUllVmdAnOMU9Z3KFDo1CUz4RjV
+         KJXEi0C5UrH4liWxbWXHChQBJHhK8d2zjr03KjnBXsgtvhFKS1/zaJpTiIrwTmPx72qt
+         k3qvcsjHh40IhjBfueCd/ErjlvploMMbw4Yc6jvpUgq+4vikdQH4LhZxqVQDaeelgIlw
+         lX1qLkhX9GSzOMXXd+5QUvx5eUQPiAzwdBM/n658HNsQyDEAEMNMUmcbYRv0SVF2GxmR
+         OBS+K/0rrSlg97lCXMA3hz01HfkbNtH5hzc15/eZYe3JJPGzLlqrNMQZbUQylZk0AYNZ
+         f4nw==
+X-Gm-Message-State: AOAM530lhcP7jwkRsBzRurDRDv5XHm8CwVXjcN0xrSSOmPIp1FUPpyun
+        C3GA+m2sWcypkxOfPAheIkUf4GkToejkYLNVHoY5HA==
+X-Google-Smtp-Source: ABdhPJwAM5RogoKB8aKV80+ZqYeBJUe7aVtjqMzminyyF7Q8neU/nFcivKvW7w+tSb+5Cahp27NLgUCLAWLfrcrGZCI=
+X-Received: by 2002:ac2:4438:: with SMTP id w24mr3339709lfl.73.1624299736217;
+ Mon, 21 Jun 2021 11:22:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CALvZod70DNiWF-jTUHp6pOVtVX9pzdvYXaQ1At3GHtdKD=iTwQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:KY5lFpctxJysfXmhr3/0X4zPaX01gE0qcAW6kk87sRpyKEYXmIY
- +ioYSFHPqsL79BjDqd51LuP8noghOU0I9UrvywQknlRF+T8gQUcJA/9N83NxVwLnT5sVvPa
- 30JyPuBrqYb+mmoKIv6LxCoRHdFreiuYJqn1pfZrZUksad7kcd2my/Uz+pzDMWLULmfuWXk
- xVp+EcUhYxfrvdhV1WeDQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Y6Z7D6wns+k=:dLaF925qRKNlyiRknu3bK0
- HvCcCi7AixtiNj4exjyjcGLOHeCbSoibsN+zPViJ1fWok5J8zKwgogQkBy9zBZpmitM9UJA/p
- 6GZ+YuBinrXPHIUmq3QAjoVJwIlHBmenMh9lbF1AWExg7cSuR09dxhZCc6TCLtDm+qEdCz46D
- SVxFrhxqAdR5wt5X3o85zt+ObpE5fYQhvZfy5fxUzt+MGOsbabAAeZzzJsmtO1N4j6Aw6B7LP
- hBIl+hFDQkfuQse7XzM2ujo0QipO51QzHPDLWngzbjv8aRZyvCKD8EEz56ob2uxHEwcjyiYDm
- MPFkFhmgejWCBfBocnAUGrDxk/hVpqUiAGAxLAMdqGCnTm4YNGTJu06osh81ePI+7br+HxYh6
- pqyhYsy0+vKNqNN8oRSInY+sYGDj5afnKpdM4UN0TRCAZtOU/bKzsGuUbyqX/5RjTlZzCfkuv
- AEwvjmNH2FveEOPw0VHnfrxOs3qRQDr7nWnR8yeMp7HMaWQ45ZBZJmMiwQW3Z+b9P8kIKKGFl
- sdoQfOQGu3fgPHuzGQfkg8=
+References: <20210618233023.1360185-1-ndesaulniers@google.com>
+ <20210618233023.1360185-3-ndesaulniers@google.com> <CANpmjNNK-iYXucjz7Degh1kJPF_Z_=8+2vNLtUW17x0UnfgtPg@mail.gmail.com>
+In-Reply-To: <CANpmjNNK-iYXucjz7Degh1kJPF_Z_=8+2vNLtUW17x0UnfgtPg@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 21 Jun 2021 11:22:05 -0700
+Message-ID: <CAKwvOdmxGt6nAj+dDZEPdQtXNbYb8N6y3XwoCvCD+Qazskh7zw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] Kconfig: CC_HAS_NO_PROFILE_FN_ATTR, depend on for
+ GCOV and PGO
+To:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Bill Wendling <wcw@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, Martin Liska <mliska@suse.cz>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Fangrui Song <maskray@google.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        linux-toolchains@vger.kernel.org, Marco Elver <elver@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.06.21 01:38, Shakeel Butt wrote:
+On Fri, Jun 18, 2021 at 11:23 PM Marco Elver <elver@google.com> wrote:
+>
+> On Sat, 19 Jun 2021 at 01:30, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> >
+> > We don't want compiler instrumentation to touch noinstr functions, which
+> > are annotated with the no_profile function attribute. Add a Kconfig test
+> > for this and make PGO and GCOV depend on it.
+> >
+> > Cc: Masahiro Yamada <masahiroy@kernel.org>
+> > Cc: Peter Oberparleiter <oberpar@linux.ibm.com>
+> > Link: https://lore.kernel.org/lkml/YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net/
+> > Link: https://lore.kernel.org/lkml/YMcssV%2Fn5IBGv4f0@hirez.programming.kicks-ass.net/
+> > Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> > ---
+> >  init/Kconfig        | 3 +++
+> >  kernel/gcov/Kconfig | 1 +
+> >  kernel/pgo/Kconfig  | 3 ++-
+> >  3 files changed, 6 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/init/Kconfig b/init/Kconfig
+> > index 1ea12c64e4c9..540f862b40c6 100644
+> > --- a/init/Kconfig
+> > +++ b/init/Kconfig
+> > @@ -83,6 +83,9 @@ config TOOLS_SUPPORT_RELR
+> >  config CC_HAS_ASM_INLINE
+> >         def_bool $(success,echo 'void foo(void) { asm inline (""); }' | $(CC) -x c - -c -o /dev/null)
+> >
+> > +config CC_HAS_NO_PROFILE_FN_ATTR
+> > +       def_bool $(success,echo '__attribute__((no_profile)) int x();' | $(CC) -x c - -c -o /dev/null -Werror)
+> > +
+> >  config CONSTRUCTORS
+> >         bool
+> >
+> > diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
+> > index 58f87a3092f3..19facd4289cd 100644
+> > --- a/kernel/gcov/Kconfig
+> > +++ b/kernel/gcov/Kconfig
+> > @@ -5,6 +5,7 @@ config GCOV_KERNEL
+> >         bool "Enable gcov-based kernel profiling"
+> >         depends on DEBUG_FS
+> >         depends on !CC_IS_CLANG || CLANG_VERSION >= 110000
+> > +       depends on !X86 || (X86 && CC_HAS_NO_PROFILE_FN_ATTR)
+>
+> [+Cc Mark]
+>
+> arm64 is also starting to rely on noinstr working properly.
 
-> Nowadays, I don't think MemAvailable giving "amount of memory that can
-> be allocated without triggering swapping" is even roughly accurate.
-> Actually IMO "without triggering swap" is not something an application
-> should concern itself with where refaults from some swap types
-> (zswap/swap-on-zram) are much faster than refaults from disk.
+Sure,
+Will, Catalin, other arm64 folks:
+Any thoughts on requiring GCC 7.1+/Clang 13.0+ for GCOV support?  That
+way we can better guarantee that GCOV (and eventually, PGO) don't
+touch noinstr functions?
 
-If we're talking about things like database workloads, there IMHO isn't
-anything really better than doing measurements with the actual loads
-and tuning incrementally.
+If that's ok, I'll add modify the above like:
 
-But: what is the actual optimization goal, why an application might
-want to know where swapping begins ? Computing performance ? Caching +
-IO Latency or throughput ? Network traffic (e.g. w/ iscsi) ? Power
-consumption ?
++ depends on !ARM64 || (ARM64 && CC_HAS_NO_PROFILE_FN_ATTR)
 
->> I do know that hiding the implementation details and providing userspace
->> with information it can directly use seems like the programming model
->> that needs to be explored.  Most programs should not care if they are in
->> a memory cgroup, etc.  Programs, load management systems, and even
->> balloon drivers have a legitimately interest in how much additional load
->> can be placed on a systems memory.
+to the above hunk in v2.  Oh, looks like arch/s390 also uses noinstr.
+Same question applies then:
 
-What kind of load exactly ? CPU ? disk IO ? network ?
++ depends on !S390 || (S390 && CC_HAS_NO_PROFILE_FN_ATTR)
 
-> How much additional load can be placed on a system *until what*. I
-> think we should focus more on the "until" part to make the problem
-> more tractable.
+Or, we could just do
 
-ACK. The interesting question is what to do in that case.
++ depends on CC_HAS_NO_PROFILE_FN_ATTR
 
-An obvious move by an database system could be eg. filling only so much
-caches as there's spare physical RAM, in order to avoid useless swapping
-(since we'd potentiall produce more IO load when a cache is written
-out to swap, instead of just discarding it)
+Though that will penalize architectures not using noinstr, that still
+would like to use GCOV with versions of GCC older than 7.1.  Perhaps
+there are no such such users, or they should consider upgrading their
+tools to we can stick with the simpler Kconfig? Thoughts?
 
-But, this also depends ...
-
-#1: the application doesn't know the actual performance of the swap
-device, eg. the already mentioned zswap+friends, or some fast nvmem
-for swap vs disk for storage.
-
-#2: caches might also be implemented indirectly by mmap()ing the storage
-file/device and so using the kernel's cache here. in that case, the
-kernel would automatically discard the pages w/o going to swap. of
-course that only works if the cache is nothing but copying pages from
-storage into ram.
-
-A completely different scenario would be load management on a cluster
-like k8s. Here we usually care of cluster performance (dont care about
-individual nodes so muck), but wanna prevent individual nodes from being
-overloaded. Since we usually don't know much about the indivdual
-workload, we probably don't have much other chance than contigous
-monitoring and acting when a node is getting too busy - or trying to
-balance when new workloads are started, on current system load (and
-other metrics). In that case, I don't see where this new proc file
-should be of much help.
-
-> Second, is the reactive approach acceptable? Instead of an upfront
-> number representing the room for growth, how about just grow and
-> backoff when some event (oom or stall) which we want to avoid is about
-> to happen? This is achievable today for oom and stall with PSI and
-> memory.high and it avoids the hard problem of reliably estimating the
-> reclaimable memory.
-
-I tend to believe that for certain use cases it would be helpful if an
-application gets notified if some of its pages are soon getting swapped
-out due memory pressure. Then it could decide on its own which whether
-it should drop certain caches in order to prevent swapping.
+>
+> This should probably be a 'select ARCH_HAS_GCOV_PROFILE_ALL if
+> CC_HAS_NO_PROFILE_FN_ATTR' in the relevant arch/../Kconfig.
+>
+> Alternatively, using:
+> https://lkml.kernel.org/r/YMcssV/n5IBGv4f0@hirez.programming.kicks-ass.net
+>
+> But I'd probably not overcomplicate things at this point and just use
+> ARCH_HAS_GCOV_PROFILE_ALL, because GCOV seems to be a) rarely used,
+> and b) if someone decides to selectively instrument stuff like entry
+> code, we can just say it's user error.
+>
+>
+> >         select CONSTRUCTORS
+> >         default n
+> >         help
+> > diff --git a/kernel/pgo/Kconfig b/kernel/pgo/Kconfig
+> > index d2053df1111c..26f75ac4c6c1 100644
+> > --- a/kernel/pgo/Kconfig
+> > +++ b/kernel/pgo/Kconfig
+> > @@ -8,7 +8,8 @@ config PGO_CLANG
+> >         bool "Enable clang's PGO-based kernel profiling"
+> >         depends on DEBUG_FS
+> >         depends on ARCH_SUPPORTS_PGO_CLANG
+> > -       depends on CC_IS_CLANG && CLANG_VERSION >= 120000
+> > +       depends on CC_IS_CLANG
+> > +       depends on CC_HAS_NO_PROFILE_FN_ATTR
+> >         help
+> >           This option enables clang's PGO (Profile Guided Optimization) based
+> >           code profiling to better optimize the kernel.
+> > --
+> > 2.32.0.288.g62a8d224e6-goog
+> >
 
 
---mtx
 
 -- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+Thanks,
+~Nick Desaulniers
