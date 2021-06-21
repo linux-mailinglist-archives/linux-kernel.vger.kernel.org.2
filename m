@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0506D3AF0C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9163AF0A7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233264AbhFUQwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:52:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38048 "EHLO mail.kernel.org"
+        id S232242AbhFUQvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:51:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232424AbhFUQrh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:47:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B560613F6;
-        Mon, 21 Jun 2021 16:33:31 +0000 (UTC)
+        id S231831AbhFUQrn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:47:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BF2061455;
+        Mon, 21 Jun 2021 16:33:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624293211;
-        bh=mzFB7BJnOi3qQUbcanvJmanEMO/M7hOK+kOcLMJVZUo=;
+        s=korg; t=1624293214;
+        bh=MRDSB7rhHlkBX0jrG6+LA/MMI6OOLjy29jH3CybOzAA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RyE1PR+AwbZJskbNjTjICTZid58VkDnXLd1wyGhpreB+QBikyzZy0K6PojYuG9Tk5
-         q8Vgb9TDaeyt/miz6gVQWjcp6EmTnjYmkrKhOsXUKkkz0Zgmx7zwTi1g1FQjjfJ3YG
-         Fs/99xecdresh8G/INWTAVqI/5r8BHPPfOJ0WtQY=
+        b=Sp48BZjYv0S9C0h4fq4GiL+YWlDD4XAAkpqv0QQSc7criRWaGabqTrZKaMImRZS/4
+         zye84CGmq/+t+jDQWl/bz3dObzNecnijy3rsxP+ZTz2ZejX0ILuhrNgtADoGA1eb51
+         ROgCAWdnk322V3c77ebRY7CpOebUlOOjy20yvp9M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Fan Du <fan.du@intel.com>, Dave Hansen <dave.hansen@intel.com>,
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
         Borislav Petkov <bp@suse.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>
-Subject: [PATCH 5.12 140/178] x86/mm: Avoid truncating memblocks for SGX memory
-Date:   Mon, 21 Jun 2021 18:15:54 +0200
-Message-Id: <20210621154927.539481178@linuxfoundation.org>
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Rik van Riel <riel@surriel.com>
+Subject: [PATCH 5.12 141/178] x86/process: Check PF_KTHREAD and not current->mm for kernel threads
+Date:   Mon, 21 Jun 2021 18:15:55 +0200
+Message-Id: <20210621154927.572331008@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210621154921.212599475@linuxfoundation.org>
 References: <20210621154921.212599475@linuxfoundation.org>
@@ -43,95 +41,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fan Du <fan.du@intel.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-commit 28e5e44aa3f4e0e0370864ed008fb5e2d85f4dc8 upstream.
+commit 12f7764ac61200e32c916f038bdc08f884b0b604 upstream.
 
-tl;dr:
+switch_fpu_finish() checks current->mm as indicator for kernel threads.
+That's wrong because kernel threads can temporarily use a mm of a user
+process via kthread_use_mm().
 
-Several SGX users reported seeing the following message on NUMA systems:
+Check the task flags for PF_KTHREAD instead.
 
-  sgx: [Firmware Bug]: Unable to map EPC section to online node. Fallback to the NUMA node 0.
-
-This turned out to be the memblock code mistakenly throwing away SGX
-memory.
-
-=== Full Changelog ===
-
-The 'max_pfn' variable represents the highest known RAM address.  It can
-be used, for instance, to quickly determine for which physical addresses
-there is mem_map[] space allocated.  The numa_meminfo code makes an
-effort to throw out ("trim") all memory blocks which are above 'max_pfn'.
-
-SGX memory is not considered RAM (it is marked as "Reserved" in the
-e820) and is not taken into account by max_pfn. Despite this, SGX memory
-areas have NUMA affinity and are enumerated in the ACPI SRAT table. The
-existing SGX code uses the numa_meminfo mechanism to look up the NUMA
-affinity for its memory areas.
-
-In cases where SGX memory was above max_pfn (usually just the one EPC
-section in the last highest NUMA node), the numa_memblock is truncated
-at 'max_pfn', which is below the SGX memory.  When the SGX code tries to
-look up the affinity of this memory, it fails and produces an error message:
-
-  sgx: [Firmware Bug]: Unable to map EPC section to online node. Fallback to the NUMA node 0.
-
-and assigns the memory to NUMA node 0.
-
-Instead of silently truncating the memory block at 'max_pfn' and
-dropping the SGX memory, add the truncated portion to
-'numa_reserved_meminfo'.  This allows the SGX code to later determine
-the NUMA affinity of its 'Reserved' area.
-
-Before, numa_meminfo looked like this (from 'crash'):
-
-  blk = { start =          0x0, end = 0x2080000000, nid = 0x0 }
-        { start = 0x2080000000, end = 0x4000000000, nid = 0x1 }
-
-numa_reserved_meminfo is empty.
-
-With this, numa_meminfo looks like this:
-
-  blk = { start =          0x0, end = 0x2080000000, nid = 0x0 }
-        { start = 0x2080000000, end = 0x4000000000, nid = 0x1 }
-
-and numa_reserved_meminfo has an entry for node 1's SGX memory:
-
-  blk =  { start = 0x4000000000, end = 0x4080000000, nid = 0x1 }
-
- [ daveh: completely rewrote/reworked changelog ]
-
-Fixes: 5d30f92e7631 ("x86/NUMA: Provide a range-to-target_node lookup facility")
-Reported-by: Reinette Chatre <reinette.chatre@intel.com>
-Signed-off-by: Fan Du <fan.du@intel.com>
-Signed-off-by: Dave Hansen <dave.hansen@intel.com>
+Fixes: 0cecca9d03c9 ("x86/fpu: Eager switch PKRU state")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Reviewed-by: Dave Hansen <dave.hansen@intel.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lkml.kernel.org/r/20210617194657.0A99CB22@viggo.jf.intel.com
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+Acked-by: Rik van Riel <riel@surriel.com>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/20210608144345.912645927@linutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/mm/numa.c |    8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/fpu/internal.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/mm/numa.c
-+++ b/arch/x86/mm/numa.c
-@@ -254,7 +254,13 @@ int __init numa_cleanup_meminfo(struct n
- 
- 		/* make sure all non-reserved blocks are inside the limits */
- 		bi->start = max(bi->start, low);
--		bi->end = min(bi->end, high);
-+
-+		/* preserve info for non-RAM areas above 'max_pfn': */
-+		if (bi->end > high) {
-+			numa_add_memblk_to(bi->nid, high, bi->end,
-+					   &numa_reserved_meminfo);
-+			bi->end = high;
-+		}
- 
- 		/* and there's no empty block */
- 		if (bi->start >= bi->end)
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -578,7 +578,7 @@ static inline void switch_fpu_finish(str
+ 	 * PKRU state is switched eagerly because it needs to be valid before we
+ 	 * return to userland e.g. for a copy_to_user() operation.
+ 	 */
+-	if (current->mm) {
++	if (!(current->flags & PF_KTHREAD)) {
+ 		pk = get_xsave_addr(&new_fpu->state.xsave, XFEATURE_PKRU);
+ 		if (pk)
+ 			pkru_val = pk->pkru;
 
 
