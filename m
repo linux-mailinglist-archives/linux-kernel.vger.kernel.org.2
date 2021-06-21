@@ -2,113 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9503AE58D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 346003AE586
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230455AbhFUJFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:05:25 -0400
-Received: from lucky1.263xmail.com ([211.157.147.131]:33868 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230438AbhFUJFV (ORCPT
+        id S230329AbhFUJFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:05:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40496 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230334AbhFUJFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:05:21 -0400
-Received: from localhost (unknown [192.168.167.16])
-        by lucky1.263xmail.com (Postfix) with ESMTP id A28DDBC166;
-        Mon, 21 Jun 2021 17:02:07 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED4: 1
-X-SKE-CHECKED: 1
-X-ANTISPAM-LEVEL: 2
-Received: from localhost.localdomain (unknown [58.22.7.114])
-        by smtp.263.net (postfix) whith ESMTP id P24132T140365920110336S1624266124971825_;
-        Mon, 21 Jun 2021 17:02:07 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <61ed4f045c5592a5d6d821a91bb08054>
-X-RL-SENDER: jon.lin@rock-chips.com
-X-SENDER: jon.lin@rock-chips.com
-X-LOGIN-NAME: jon.lin@rock-chips.com
-X-FST-TO: broonie@kernel.org
-X-RCPT-COUNT: 9
-X-SENDER-IP: 58.22.7.114
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   Jon Lin <jon.lin@rock-chips.com>
-To:     broonie@kernel.org
-Cc:     jon.lin@rock-chips.com, heiko@sntech.de, robh+dt@kernel.org,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v9 6/6] spi: rockchip: Support SPI_CS_HIGH
-Date:   Mon, 21 Jun 2021 17:02:03 +0800
-Message-Id: <20210621090203.10504-2-jon.lin@rock-chips.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210621090203.10504-1-jon.lin@rock-chips.com>
-References: <20210621085824.10081-1-jon.lin@rock-chips.com>
- <20210621090203.10504-1-jon.lin@rock-chips.com>
+        Mon, 21 Jun 2021 05:05:05 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A8DC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:02:25 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id d16so21464059lfn.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:02:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Nq3WNLZDD5TUkqUq2T7xdTTFqt8QZMxPPek1GdjMl5o=;
+        b=M6jGMhTNj9uXP03+2FLYoJLxmCiNYeikOTKx0N7ZrSDZyxsqQdxOC7rkXs54sDRIdm
+         yoIJJG3F8BL77ZJ4/2ZkgOiO5HNRyaucEN8krsvqMkgPOpX981SQ5CFKXHbf0vxDoLrw
+         3s4gxG6ELt5enw3rmAJ1aVHwLGjDDkuZ1xiSk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Nq3WNLZDD5TUkqUq2T7xdTTFqt8QZMxPPek1GdjMl5o=;
+        b=LqOFA8mW84aY4cA468f1IoVxPON8fVX9Hkyi4SCQFo2NJsKn2aQV9msCElD0xBowF/
+         KW2rX8F2N5ynDwJYJHfDCw/MUb6IetHzFP9R1VU+ts5iH4teMCrI347lD+MM3tmXZovU
+         2btb680eodULTSYu7Yy7D5Uw0tNGd4d8xJFjkvRUQF3hjGLHn716b2b8cT8DuGC2Dt32
+         GhGorynxn9g7iofHUDd0nPxrPvpucNdG8hFlMZJwgOGLLa2/qP5cfjzACvkbsgkDDMrb
+         pZ2lnM29AsMxTCid+Qf6u3gUvhXJrv7SboTVmPu7ifHx8JEeSjUIKg3/4Lr3+PDzkVPK
+         DLIg==
+X-Gm-Message-State: AOAM5312eVvDzsswEYUCy+82Ot67TqxFTpjLrWKkhnGPsULU8ZdEKTtd
+        OiDH9pdI+OmgaeUNj4lJZAy0yiZUQ8rn4cbZ+2nDYw==
+X-Google-Smtp-Source: ABdhPJxcORZTI+CnqMEeMcoOmhmNiHs5AdCZXgv+zwbf1dsl255ey/bFramLzM3YYgdZiwH9G8yDYATX/pAuIwxRkWc=
+X-Received: by 2002:a19:ae0b:: with SMTP id f11mr3223902lfc.13.1624266143342;
+ Mon, 21 Jun 2021 02:02:23 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210618105526.265003-1-zenczykowski@gmail.com>
+ <CACAyw99k4ZhePBcRJzJn37rvGKnPHEgE3z8Y-47iYKQO2nqFpQ@mail.gmail.com> <CANP3RGdrpb+KiD+a29zTSU3LKR8Qo6aFdo4QseRvPdNhZ_AOJw@mail.gmail.com>
+In-Reply-To: <CANP3RGdrpb+KiD+a29zTSU3LKR8Qo6aFdo4QseRvPdNhZ_AOJw@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Mon, 21 Jun 2021 10:02:12 +0100
+Message-ID: <CACAyw9948drqRE=0tC=5OrdX=nOVR3JSPScXrkdAv+kGD_P3ZA@mail.gmail.com>
+Subject: Re: [PATCH bpf] Revert "bpf: program: Refuse non-O_RDWR flags in BPF_OBJ_GET"
+To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Linux Network Development Mailing List 
+        <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Greg Kroah-Hartman <gregkh@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-1.Add standard spi-cs-high support
-2.Refer to spi-controller.yaml for details
+On Fri, 18 Jun 2021 at 19:30, Maciej =C5=BBenczykowski
+<zenczykowski@gmail.com> wrote:
+>
+> On Fri, Jun 18, 2021 at 4:55 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+> >
+> > On Fri, 18 Jun 2021 at 11:55, Maciej =C5=BBenczykowski
+> > <zenczykowski@gmail.com> wrote:
+> > >
+> > > This reverts commit d37300ed182131f1757895a62e556332857417e5.
+> > >
+> > > This breaks Android userspace which expects to be able to
+> > > fetch programs with just read permissions.
+> >
+> > Sorry about this! I'll defer to the maintainers what to do here.
+> > Reverting leaves us with a gaping hole for access control of pinned
+> > programs.
+>
+> Not sure what hole you're referring to.  Could you provide more details/e=
+xplanation?
+>
+> It seems perfectly reasonable to be able to get a program with just read =
+privs.
+> After all, you're not modifying it, just using it.
 
-Signed-off-by: Jon Lin <jon.lin@rock-chips.com>
----
+Agreed, if that was what the kernel is doing. What you get with
+BPF_F_RDONLY is a fully read-write fd, since the rest of the BPF
+subsystem doesn't check program fd flags. Hence my fix to only allow
+O_RDWR, which matches what the kernel actually does. Otherwise any
+user with read-only access can get a R/W fd.
 
-Changes in v9: None
-Changes in v8: None
-Changes in v7: None
-Changes in v6: None
-Changes in v5: None
-Changes in v4: None
-Changes in v3: None
+> AFAIK there is no way to modify a program after it was loaded, has this c=
+hanged?
 
- drivers/spi/spi-rockchip.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+You can't modify the program, but you can detach it, for example. Any
+program related bpf command that takes a program fd basically.
 
-diff --git a/drivers/spi/spi-rockchip.c b/drivers/spi/spi-rockchip.c
-index fbd750b1d28e..35d373276cc9 100644
---- a/drivers/spi/spi-rockchip.c
-+++ b/drivers/spi/spi-rockchip.c
-@@ -107,6 +107,8 @@
- #define CR0_OPM_MASTER				0x0
- #define CR0_OPM_SLAVE				0x1
- 
-+#define CR0_SOI_OFFSET				23
-+
- #define CR0_MTM_OFFSET				0x21
- 
- /* Bit fields in SER, 2bit */
-@@ -236,7 +238,7 @@ static void rockchip_spi_set_cs(struct spi_device *spi, bool enable)
- {
- 	struct spi_controller *ctlr = spi->controller;
- 	struct rockchip_spi *rs = spi_controller_get_devdata(ctlr);
--	bool cs_asserted = !enable;
-+	bool cs_asserted = spi->mode & SPI_CS_HIGH ? enable : !enable;
- 
- 	/* Return immediately for no-op */
- 	if (cs_asserted == rs->cs_asserted[spi->chip_select])
-@@ -507,6 +509,8 @@ static int rockchip_spi_config(struct rockchip_spi *rs,
- 	cr0 |= (spi->mode & 0x3U) << CR0_SCPH_OFFSET;
- 	if (spi->mode & SPI_LSB_FIRST)
- 		cr0 |= CR0_FBM_LSB << CR0_FBM_OFFSET;
-+	if (spi->mode & SPI_CS_HIGH)
-+		cr0 |= BIT(spi->chip_select) << CR0_SOI_OFFSET;
- 
- 	if (xfer->rx_buf && xfer->tx_buf)
- 		cr0 |= CR0_XFM_TR << CR0_XFM_OFFSET;
-@@ -743,7 +747,7 @@ static int rockchip_spi_probe(struct platform_device *pdev)
- 
- 	ctlr->auto_runtime_pm = true;
- 	ctlr->bus_num = pdev->id;
--	ctlr->mode_bits = SPI_CPOL | SPI_CPHA | SPI_LOOP | SPI_LSB_FIRST;
-+	ctlr->mode_bits = SPI_CPOL | SPI_CPHA | SPI_LOOP | SPI_LSB_FIRST | SPI_CS_HIGH;
- 	if (slave_mode) {
- 		ctlr->mode_bits |= SPI_NO_CS;
- 		ctlr->slave_abort = rockchip_spi_slave_abort;
--- 
-2.17.1
+> if so, the checks should be on the modifications not the fd fetch.
 
+True, unfortunately that code doesn't exist. It's also not
+straightforward to write and probably impossible to backport.
 
+> I guess one could argue fetching with write only privs doesn't make sense=
+?
+>
+> Anyway... userspace is broken... so revert is the answer.
+>
+> In Android the process loading/pinning bpf maps/programs is a different
+> process (the 'bpfloader') to the users (which are far less privileged)
 
+If the revert happens you need to make sure that all of your pinned
+state is only readable by the bpfloader user. And everybody else,
+realistically.
+
+--=20
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
+
+www.cloudflare.com
