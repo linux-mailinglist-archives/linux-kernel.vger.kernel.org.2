@@ -2,140 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7733AE2D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 07:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF0F3AE2D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 07:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229695AbhFUFkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 01:40:21 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:41770 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbhFUFkR (ORCPT
+        id S229707AbhFUFiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 01:38:50 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:53145 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhFUFit (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 01:40:17 -0400
-Received: from epcas3p4.samsung.com (unknown [182.195.41.22])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210621053802epoutp021e81d28bf7d8ec85ce37378b308fd3b7~Kgkzd-qf51837018370epoutp029
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 05:38:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210621053802epoutp021e81d28bf7d8ec85ce37378b308fd3b7~Kgkzd-qf51837018370epoutp029
+        Mon, 21 Jun 2021 01:38:49 -0400
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210621053633epoutp0181c2cee4457e6fb13008a0ac7b22f66a~KgjhH3_Wb0918409184epoutp01L
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 05:36:33 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210621053633epoutp0181c2cee4457e6fb13008a0ac7b22f66a~KgjhH3_Wb0918409184epoutp01L
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1624253882;
-        bh=/JNeiseTrnaIKRNZL2o3iW/AjK3zc5cFVTM3H9aTY6Y=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=kCJhMFpR1mJrFbM44r7zgOX2MjOAxLkAAw2pcTnoQ0fVYC3Rg97/6Ny37/sPKULuh
-         x25doBRHK4CN4Nhwk5ips6zpoMWtI2cURuY1NI5WssL4WpREGYLUNRz0uxFyaB8D7p
-         Gfe9Ri5BVqZEooI0l4wU8t2eD1SOMU9fNBUlkZWQ=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas3p2.samsung.com (KnoxPortal) with ESMTP id
-        20210621053801epcas3p2c88967920c133151263d26de4cab2136~Kgky2e-452419524195epcas3p26;
-        Mon, 21 Jun 2021 05:38:01 +0000 (GMT)
-Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp2.localdomain
-        (Postfix) with ESMTP id 4G7dbY43sDz4x9Q0; Mon, 21 Jun 2021 05:38:01 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: RE: [PATCH v11 08/12] scsi: ufshpb: Add "Cold" regions timer
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <avi.shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        Avri Altman <avri.altman@wdc.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <20210616112800.52963-9-avri.altman@wdc.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <1891546521.01624253881548.JavaMail.epsvc@epcpadp4>
-Date:   Mon, 21 Jun 2021 14:17:33 +0900
-X-CMS-MailID: 20210621051733epcms2p1dd6b54d0142845e865285385dda43a43
-Content-Transfer-Encoding: 7bit
+        s=mail20170921; t=1624253793;
+        bh=0PLR6M50yiRdMI4Vr9g6B/Mq+cV1i9BidWEN60U5MmM=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=kZ3b73Q2XoNjFX+Ayo+09HowV71kGYiYkrQekD6O/4MCp7uw+zXfJKvY7MvVo1HeN
+         vYwMbgE0k3FrJmhHEh6FIvHg8H55byD/GCii5g6JEMRotxDhROOPri5jWzI8wglb4I
+         t47x4jHigZcPGtXSYAxIfL/L6wO86V//0UDnTthI=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+        20210621053633epcas5p29aebe7aa9f5ae95af2009098a6434163~KgjgkpQ0e2583525835epcas5p2b;
+        Mon, 21 Jun 2021 05:36:33 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        E4.1E.09452.16520D06; Mon, 21 Jun 2021 14:36:33 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210621052648epcas5p3cbacaee0cccd663805a27056c6137356~Kga-_e8oP2593125931epcas5p3x;
+        Mon, 21 Jun 2021 05:26:48 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210621052648epsmtrp127ff6ada70782f09379c23a531f03b40~Kga-9ox020352403524epsmtrp1J;
+        Mon, 21 Jun 2021 05:26:48 +0000 (GMT)
+X-AuditID: b6c32a4b-429ff700000024ec-ed-60d02561441f
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        3E.08.08394.81320D06; Mon, 21 Jun 2021 14:26:48 +0900 (KST)
+Received: from mshams01 (unknown [107.122.12.94]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210621052646epsmtip168d181e4f721be5f7428ca887d4ae298~Kga_beFNs3221732217epsmtip1W;
+        Mon, 21 Jun 2021 05:26:46 +0000 (GMT)
+From:   "M Tamseel Shams" <m.shams@samsung.com>
+To:     <kgene@kernel.org>, <krzk@kernel.org>,
+        <gregkh@linuxfoundation.org>, <jslaby@suse.com>
+Cc:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alim.akhtar@samsung.com>, <ajaykumar.rs@samsung.com>
+In-Reply-To: <20210621044757.40046-1-m.shams@samsung.com>
+Subject: RE: [PATCH v4] serial: samsung: change to platform_get_irq_optional
+Date:   Mon, 21 Jun 2021 10:56:45 +0530
+Message-ID: <000801d7665e$08424a00$18c6de00$@samsung.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQLrt4vOvQgF3TDEnmyTfCXOmtgdwgF+I3k8qOlbpbA=
+Content-Language: en-us
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrCKsWRmVeSWpSXmKPExsWy7bCmhm6i6oUEg5ltPBYH3h9ksXgwbxub
+        RfPi9WwWUzZ8YLLof/ya2eL8+Q3sFpseX2O1uLxrDpvFjPP7mCzOLO5ld+Dy2LSqk81j/9w1
+        7B6bl9R79G1ZxeixfstVFo/Pm+QC2KK4bFJSczLLUov07RK4Mk6cnMBWsIK/YtWdV2wNjO94
+        uhg5OSQETCT+P7rH0sXIxSEksJtR4uG0qawQzidGibYzV5ggnG+MEm++bmGEaXmy4S4LiC0k
+        sJdRovG0B0TRM0aJjvYtzCAJNgFdiUkH28BsEYEYiZVrPoNNYhY4wyjxePFkJpAEp4ClxL4r
+        R9lAbGEBH4kXz6aC2SwCqhI/JjeD2bxANVOa5jNB2IISJ2c+AdvMLKAtsWzha2aIixQkfj5d
+        xgqxzEpi/8rzjBA14hIvjx5hB1ksIbCWQ2LOhidQL7hIHF94gAnCFpZ4dXwLO4QtJfGyvw3K
+        zpeYP28V1IIKiZUX3kDZ9hIHrswBOoIDaIGmxPpd+hBhWYmpp9YxQezlk+j9/QRqPK/Ejnkw
+        tqLE/939UOPFJd6tmMI6gVFpFpLXZiF5bRaSF2YhbFvAyLKKUTK1oDg3PbXYtMA4L7Vcrzgx
+        t7g0L10vOT93EyM4YWl572B89OCD3iFGJg7GQ4wSHMxKIrycmWcShHhTEiurUovy44tKc1KL
+        DzFKc7AoifMuZT+UICSQnliSmp2aWpBaBJNl4uCUamCqzdznYK7T9tlO9evrbt3LMrVpu3Iu
+        Wv+N7TJLOnvrqqGCRzH/RBEOeeZHZ2cdEJkozfD5W3rg0U8BenWRVTNzEuQOrBY+4K91YpZE
+        671/gRlxS3fHdz1vTj+Yd0juFP/b8uNXb0/Lj9da5OFgK7en0VXr/0Q7abvn2WIFF/QDtCZX
+        t1xmep1ffMxK7Ry7SZSazYJZ8X76fQuTypnC229whUx/+ZY56Jq/72mOygjfQyW+YULL/Csm
+        SwiIaPH2CO3K2x6dKZWw1zN12u2VciZuTw/HeNiK71u+aPVXnXchrg4Ru0sZJ5eKVKqXPZ2z
+        mEPd7YNM/YK8mU+c+edMYtdqWnN/uZKb7pte1i+blViKMxINtZiLihMBdaz9j8cDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBIsWRmVeSWpSXmKPExsWy7bCSnK6E8oUEgwOTJSwOvD/IYvFg3jY2
+        i+bF69kspmz4wGTR//g1s8X58xvYLTY9vsZqcXnXHDaLGef3MVmcWdzL7sDlsWlVJ5vH/rlr
+        2D02L6n36NuyitFj/ZarLB6fN8kFsEVx2aSk5mSWpRbp2yVwZUz68oep4A9fRc/uC2wNjPt4
+        uhg5OSQETCSebLjL0sXIxSEksJtRomHzbXaIhLjEtF/7GSFsYYmV/56zQxQ9YZQ4teM8WBGb
+        gK7EpINtzCC2iECCxJeTMxlBipgFLjBKdB+9AdXRxSjxfudlsFGcApYS+64cZQOxhQV8JF48
+        mwpmswioSvyY3Axm8wLVTGmazwRhC0qcnPmEBcRmFtCW6H3YyghjL1v4mhniPAWJn0+XsUJc
+        YSWxf+V5qBpxiZdHj7BPYBSehWTULCSjZiEZNQtJywJGllWMkqkFxbnpucWGBYZ5qeV6xYm5
+        xaV56XrJ+bmbGMGRp6W5g3H7qg96hxiZOBgPMUpwMCuJ8HJmnkkQ4k1JrKxKLcqPLyrNSS0+
+        xCjNwaIkznuh62S8kEB6YklqdmpqQWoRTJaJg1OqgUmJ/bmv6bYas7gw1uOPD32LPPa7xDBj
+        0Yts7533q1ZtirolbZc+//csoXCBjZWCS19/2XLpRIDOhVk1UUJ6Cod9Fz3VNum0fbBw5az3
+        XRfrrE+uVo5g3jut7E3uZvmXd0/517yZyKbaPN3o1a3eEK37u+N1ttm/SthUbL/r3bRYnfqZ
+        385/W38v/31jS8VK6W+TOMUON3w+PzvDVU5nfqepdbjIBlWzFNGdb8KXXZTher6+dt93TvXv
+        su90OCIsprvM5asQTxUOc+XicWf7Um+f8I/t+PF5V3NOfpj9ZMK0K1Lr+2u5D15eqdF9UfyQ
+        /TPruR5LZwocer7Sas6XK/NWv4l9yd+izSJ26LjilsSPSizFGYmGWsxFxYkAVgQfPisDAAA=
+X-CMS-MailID: 20210621052648epcas5p3cbacaee0cccd663805a27056c6137356
+X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210616112925epcas2p1267d33aee5fa552333a0503207e262f2
-References: <20210616112800.52963-9-avri.altman@wdc.com>
-        <20210616112800.52963-1-avri.altman@wdc.com>
-        <CGME20210616112925epcas2p1267d33aee5fa552333a0503207e262f2@epcms2p1>
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20210621044400epcas5p40368077e77d2da219db8f890dfd69f7c
+References: <CGME20210621044400epcas5p40368077e77d2da219db8f890dfd69f7c@epcas5p4.samsung.com>
+        <20210621044757.40046-1-m.shams@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Avri,
 
->diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
->index 39b86e8b2eee..cf719831adb3 100644
->--- a/drivers/scsi/ufs/ufshpb.c
->+++ b/drivers/scsi/ufs/ufshpb.c
 
-...
+> -----Original Message-----
+> From: Tamseel Shams <m.shams=40samsung.com>
+> Sent: Monday, June 21, 2021 10:18 AM
+> To: kgene=40kernel.org; krzk=40kernel.org; gregkh=40linuxfoundation.org;
+> jslaby=40suse.com
+> Cc: linux-arm-kernel=40lists.infradead.org; linux-samsung-soc=40vger.kern=
+el.org;
+> linux-serial=40vger.kernel.org; linux-kernel=40vger.kernel.org;
+> alim.akhtar=40samsung.com; ajaykumar.rs=40samsung.com; Tamseel Shams
+> <m.shams=40samsung.com>
+> Subject: =5BPATCH v4=5D serial: samsung: change to platform_get_irq_optio=
+nal
+>=20
+> In few older Samsung SoCs like s3c2410, s3c2412 and s3c2440, UART IP is h=
+aving
+> 2 interrupt lines.
+> However, in other SoCs like s3c6400, s5pv210, exynos5433, and exynos4210
+> UART is having only 1 interrupt line. Due to this, =22platform_get_irq(pl=
+atdev, 1)=22
+> call in the driver gives the following false-positive error:
+> =22IRQ index 1 not found=22 on recent platforms.
+>=20
+> This patch replaces the platform_get_irq() call with
+> platform_get_irq_optional() and hence avoiding the false-positive error.
+>=20
+> Signed-off-by: Tamseel Shams <m.shams=40samsung.com>
+> ---
+> Commit message is changed.
+> Addressed Krzysztof's previous comment.
+>=20
+>  drivers/tty/serial/samsung_tty.c =7C 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsun=
+g_tty.c
+> index 6ef614d8648c..c44582011b9b 100644
+> --- a/drivers/tty/serial/samsung_tty.c
+> +++ b/drivers/tty/serial/samsung_tty.c
+> =40=40 -1911,7 +1911,7 =40=40 static int s3c24xx_serial_init_port(struct
+> s3c24xx_uart_port *ourport,
+>  		ourport->tx_irq =3D ret + 1;
+>  	=7D
+>=20
+> -	ret =3D platform_get_irq(platdev, 1);
+> +	ret =3D platform_get_irq_optional(platdev, 1);
+>  	if (ret > 0)
+>  		ourport->tx_irq =3D ret;
+>  	/*
+> --
+>=20
 
->+static void ufshpb_read_to_handler(struct work_struct *work)
->+{
->+        struct ufshpb_lu *hpb = container_of(work, struct ufshpb_lu,
->+                                             ufshpb_read_to_work.work);
->+        struct victim_select_info *lru_info = &hpb->lru_info;
->+        struct ufshpb_region *rgn, *next_rgn;
->+        unsigned long flags;
->+        LIST_HEAD(expired_list);
->+
->+        if (test_and_set_bit(TIMEOUT_WORK_RUNNING, &hpb->work_data_bits))
->+                return;
->+
->+        spin_lock_irqsave(&hpb->rgn_state_lock, flags);
->+
->+        list_for_each_entry_safe(rgn, next_rgn, &lru_info->lh_lru_rgn,
->+                                 list_lru_rgn) {
->+                bool timedout = ktime_after(ktime_get(), rgn->read_timeout);
->+
->+                if (timedout) {
->+                        rgn->read_timeout_expiries--;
->+                        if (is_rgn_dirty(rgn) ||
->+                            rgn->read_timeout_expiries == 0)
->+                                list_add(&rgn->list_expired_rgn, &expired_list);
+Please ignore this patch.
+Sorry for the spam.
 
-Why we need additional expired_list for updating inactive information?
-And I think "rgn->list_lru_rgn" should be deleted when it is expired.
+Thanks & Regards,
+Tamseel Shams
 
->+                        else
->+                                rgn->read_timeout = ktime_add_ms(ktime_get(),
->+                                                         READ_TO_MS);
->+                }
->+        }
->+
->+        spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
->+
->+        list_for_each_entry_safe(rgn, next_rgn, &expired_list,
->+                                 list_expired_rgn) {
->+                list_del_init(&rgn->list_expired_rgn);
->+                spin_lock_irqsave(&hpb->rsp_list_lock, flags);
->+                ufshpb_update_inactive_info(hpb, rgn->rgn_idx);
->+                spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
->+        }
->+
->+        ufshpb_kick_map_work(hpb);
->+
->+        clear_bit(TIMEOUT_WORK_RUNNING, &hpb->work_data_bits);
->+
->+        schedule_delayed_work(&hpb->ufshpb_read_to_work,
->+                              msecs_to_jiffies(POLLING_INTERVAL_MS));
->+}
->+
 
-Thanks,
-Daejun
