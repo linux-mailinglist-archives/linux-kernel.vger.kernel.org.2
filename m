@@ -2,125 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6CA3AF81A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:54:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F250E3AF81E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:54:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhFUV4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 17:56:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230263AbhFUV4h (ORCPT
+        id S231931AbhFUV4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 17:56:44 -0400
+Received: from mail109.syd.optusnet.com.au ([211.29.132.80]:57062 "EHLO
+        mail109.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231892AbhFUV4j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 17:56:37 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1354C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:54:22 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id 69so9317725plc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:54:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=APrF3kvRTyjTvlbhavoz/NkerS2/l6ATaVJxi4ziIkE=;
-        b=c/iQ6N1/0xiTEXFHfm3yDb5q2rZQvjSZGTECVNdCQoc1vKa7GpPnDDA656In2fgnJ7
-         wxVTQTIZq1F4m8rBegWJvFNY+u9DKwKmI6Z4ALPnsSdhpwtt2yTsYR3qsr5WGtBlh6Tl
-         FFN7C52IIJbWFmbWgQXpfQ1BcYGX0GTB6Nero=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=APrF3kvRTyjTvlbhavoz/NkerS2/l6ATaVJxi4ziIkE=;
-        b=CBlllHOJT5Axv/uV+DOTbgy7kM5zKlbTKehPYYrDe/bE77DKeIzGq/AlRRsVO/531x
-         VWGEyp8PcRzouVVOVBGwdi+yrndahKFssVTW4FSvrL7S1Nyqlyih0IuauBMB8rh4uU0c
-         1LZtWhCuGjOrl9SjXAERtpoIfaRWxWcAF29Oc9S6hL0vX7SSUqBWYjbBiVwzoOMaAie1
-         xlGNNabFmAOJbzlfBRIa+LUf/AoXfhC0dx5LMNEObxq8Q0Pl5m8OPNUdH8vrj3aCGgEZ
-         KMiY8XVdex/zELlOxaDYHvLI7IR4rQIhRBV+pMuobSOEtBMf5Xc5CZcaiNdTniKvo9uC
-         r10Q==
-X-Gm-Message-State: AOAM531FAWuviC7K7zSqsZdf3o88xrEnmb+Vmpzqf3DQn/yICQM7QhRu
-        uNcQNTFlmk3WUeLOBksLutAKIw==
-X-Google-Smtp-Source: ABdhPJwL6RAoEZ6YFjBRXK/2kBquU1M6qjK79nhcn7Pkp8heQObszg3SzvqzImjSE8Zvmh9cGvOwkw==
-X-Received: by 2002:a17:902:b409:b029:114:afa6:7f4a with SMTP id x9-20020a170902b409b0290114afa67f4amr19787048plr.56.1624312462342;
-        Mon, 21 Jun 2021 14:54:22 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v129sm7166195pfc.71.2021.06.21.14.54.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 14:54:21 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     "David S . Miller" <davem@davemloft.net>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        hariprasad <hkelam@marvell.com>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH] octeontx2-af: Avoid field-overflowing memcpy()
-Date:   Mon, 21 Jun 2021 14:54:19 -0700
-Message-Id: <20210621215419.1407886-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        Mon, 21 Jun 2021 17:56:39 -0400
+Received: from dread.disaster.area (pa49-179-138-183.pa.nsw.optusnet.com.au [49.179.138.183])
+        by mail109.syd.optusnet.com.au (Postfix) with ESMTPS id 7F0F769A25;
+        Tue, 22 Jun 2021 07:54:21 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1lvRs4-00FT5X-0x; Tue, 22 Jun 2021 07:54:20 +1000
+Date:   Tue, 22 Jun 2021 07:54:20 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>, linux-xfs@vger.kernel.org,
+        Allison Henderson <allison.henderson@oracle.com>,
+        Chandan Babu R <chandanrlinux@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commits in the xfs tree
+Message-ID: <20210621215420.GW664593@dread.disaster.area>
+References: <20210621082656.59cae0d8@canb.auug.org.au>
+ <20210621171208.GD3619569@locust>
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=b17b800f29ea6e6ad1b30b0c2ecbb7df53d261dd; i=11l6vH6fAxI3yJ0jzd3eaE2f+yyEs0bXJk1UH8s59xw=; m=9pzQoBWf6cgaZyB52H8V+Tt7PyeU+Nsu+QkJXmVQ/Sk=; p=6bBIi/RIyCcdYNjz3LFf9VU0AE7+w5vEKRR5cY+Qht0=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmDRCosACgkQiXL039xtwCbRrg/+OrW nyJ8YIB/UpRzbZHxWA1oSiqwjP9z2JIe4sFxhNYEzQrqrhKzi1Wduovg6z6UoQ98al9pa8mfMwkjS 2gQ9lxesJzFgYTdsOB7UVXQyu+r0s17xVgeYeDvWX0/0yjvfpNTUf1PA4kSp1lqTF7CSqWwK5yIwu +zJSgDk0l3HdCKPHtTo7t0lwVho45jKnsdJEBs8CBQO9zaD2hBEOawGopmQas7Xn80Bz+fb99wkwx UqwqrtYkDzUO11LGmRMcDa8ivU0hxVOBWC4wfrfU6Bev4vJPBTPPzdygjjTuFWGkf9Xjs7GQt8BRC YTu6aeWcfIvy2ESE1PRimwwnf/G+8o5EsbxNtmqdXeklc/oEecB9MjOChPz9dGoSxRbTzr2BlNsBI mXH6BKETE3e+qY5tSJ9pouJcuCMafSgsCjUXkzHgDeNJ/y+SJYBuoBRgvrihhPBkC7SFmo6/+24M8 rnBLcakwmw5wOZ5XU+z1B5gOxvtX1nTCEnDLjmaof1Mu6k1CDAtG5cAIKKQlx10VImJ4MZpEXFPho MOFmBdH6eADBk1Jla7W281yJqT/oc/ZpPU54sMbEja+sH9zhfciaDszw7cnxOKEUNfSXPTgL+8bk+ wX63AgUI+31sLhulhNQ/GrfbI0qhxRKTqCseaEDKuOhiXPxnf8Odo/5UMnzbeGes=
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621171208.GD3619569@locust>
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0
+        a=MnllW2CieawZLw/OcHE/Ng==:117 a=MnllW2CieawZLw/OcHE/Ng==:17
+        a=kj9zAlcOel0A:10 a=r6YtysWOX24A:10 a=VwQbUJbxAAAA:8 a=20KFwNOVAAAA:8
+        a=7-415B0cAAAA:8 a=g2HnxoYCFMbJFGFYHRMA:9 a=CjuIK1q_8ugA:10
+        a=DiKeHqHhRZ4A:10 a=AjGcO6oz07-iQ99wixmX:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field bounds checking for memcpy(), memmove(), and memset(), avoid
-intentionally writing across neighboring fields.
+On Mon, Jun 21, 2021 at 10:12:08AM -0700, Darrick J. Wong wrote:
+> On Mon, Jun 21, 2021 at 08:26:56AM +1000, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > Commits
+> > 
+> >   742140d2a486 ("xfs: xfs_log_force_lsn isn't passed a LSN")
+> >   e30fbb337045 ("xfs: Fix CIL throttle hang when CIL space used going backwards")
+> >   feb616896031 ("xfs: journal IO cache flush reductions")
+> >   6a5c6f5ef0a4 ("xfs: remove need_start_rec parameter from xlog_write()")
+> >   d7693a7f4ef9 ("xfs: CIL checkpoint flushes caches unconditionally")
+> >   e45cc747a6fd ("xfs: async blkdev cache flush")
+> >   9b845604a4d5 ("xfs: remove xfs_blkdev_issue_flush")
+> >   25f25648e57c ("xfs: separate CIL commit record IO")
+> >   a6a65fef5ef8 ("xfs: log stripe roundoff is a property of the log")
+> > 
+> > are missing a Signed-off-by from their committers.
+> 
+> <sigh> Ok, I'll rebase the branch again to fix the paperwork errors.
+> 
+> For future reference, if I want to continue accepting pull requests from
+> other XFS developers, what are the applicable standards for adding the
+> tree maintainer's (aka my) S-o-B tags?  I can't add my own S-o-Bs after
+> the fact without rewriting the branch history and changing the commit
+> ids (which would lose the signed tag), so I guess that means the person
+> sending the pull request has to add my S-o-B for me?  Which also doesn't
+> make sense?
 
-To avoid having memcpy() think a u64 "prof" is being written beyond,
-adjust the prof member type by adding struct nix_bandprof_s to the union
-to match the other structs. This silences the following future warning:
+None of those things. If there's a problem with a branch, you drop
+the entire branch and ask the submitter to reformulate the branch
+with a new tag and send a new pull request.
 
-In file included from ./include/linux/string.h:253,
-                 from ./include/linux/bitmap.h:10,
-                 from ./include/linux/cpumask.h:12,
-                 from ./arch/x86/include/asm/cpumask.h:5,
-                 from ./arch/x86/include/asm/msr.h:11,
-                 from ./arch/x86/include/asm/processor.h:22,
-                 from ./arch/x86/include/asm/timex.h:5,
-                 from ./include/linux/timex.h:65,
-                 from ./include/linux/time32.h:13,
-                 from ./include/linux/time.h:60,
-                 from ./include/linux/stat.h:19,
-                 from ./include/linux/module.h:13,
-                 from drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c:11:
-In function '__fortify_memcpy_chk',
-    inlined from '__fortify_memcpy' at ./include/linux/fortify-string.h:310:2,
-    inlined from 'rvu_nix_blk_aq_enq_inst' at drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c:910:5:
-./include/linux/fortify-string.h:268:4: warning: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); please use struct_group() [-Wattribute-warning]
-  268 |    __write_overflow_field();
-      |    ^~~~~~~~~~~~~~~~~~~~~~~~
+So I think the problem here is that you did, in fact, rewrite these
+commits. e.g the commit I have in front of me:
 
-drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c:
-...
-                        else if (req->ctype == NIX_AQ_CTYPE_BANDPROF)
-                                memcpy(&rsp->prof, ctx,
-                                       sizeof(struct nix_bandprof_s));
-...
+https://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git/commit/?h=for-next&id=25f25648e57c793b4b18b010eac18a4e2f2b3050
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/net/ethernet/marvell/octeontx2/af/mbox.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Shows that it was committed at:
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-index 7d7dfa8d8a3f..770d86262838 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
-@@ -746,7 +746,7 @@ struct nix_aq_enq_rsp {
- 		struct nix_cq_ctx_s cq;
- 		struct nix_rsse_s   rss;
- 		struct nix_rx_mce_s mce;
--		u64 prof;
-+		struct nix_bandprof_s prof;
- 	};
- };
- 
+author		Dave Chinner <dchinner@redhat.com>	2021-06-18 08:21:48 -0700
+committer	Darrick J. Wong <djwong@kernel.org>	2021-06-18 08:24:23 -0700
+
+But in my original branch used for the pull request:
+
+author		Dave Chinner <dchinner@redhat.com>	2021-06-03 14:57:24 +1000
+committer	Dave Chinner <david@fromorbit.com>	2021-06-03 14:57:24 +1000
+
+And that is what the script is complaining about.
+
+AFAICT, based on the lack of a merge commit in the tree, is that you
+rebased the commits out of the branch I originally asked you to pull
+from. That resulted in them being rewritten in order into your tree
+which meant you are now the committer, not me.
+
+IOWs, if you do anything other than a direct merge of a signed tag,
+you need to add your own SOB because you are creating new commits
+rather than merging stable commit history from another branch.
+
+I was going to ask you to revert the entire merge and then *maybe*
+asking you to pull a smaller, tested branch with none of the
+problems in it. That would have given you a clean merge and wouldn't
+have lost the signed tag or the description text in the tag, but...
+
+Hindsight says "talk about the plan first as it will save everyone a
+lot of unnecessary work".
+
+Cheers,
+
+Dave.
 -- 
-2.30.2
-
+Dave Chinner
+david@fromorbit.com
