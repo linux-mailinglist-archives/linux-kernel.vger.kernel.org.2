@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4803AF082
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:49:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6DE3AEEF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233712AbhFUQuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:50:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37576 "EHLO mail.kernel.org"
+        id S232330AbhFUQdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:33:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234037AbhFUQqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:46:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 735A4613B1;
-        Mon, 21 Jun 2021 16:33:06 +0000 (UTC)
+        id S231636AbhFUQaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:30:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F1DB1613F9;
+        Mon, 21 Jun 2021 16:25:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624293187;
-        bh=nGOf27RMGsJa6chr7glk2gXKh75BH+v6kU7jTmObYQA=;
+        s=korg; t=1624292703;
+        bh=DwaduLBUarpPFjUZGNZPYa6zqcD6k3NaZkMshJsPlpA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=x0o0bigu5dRQc5gUplb4MtOo9M8eqp4n9eMDy2V7OXPw4wDSShiesSbCU5KGKhv6X
-         ct8I+S1a/3a+WF1ZmySxkeXhyphaW+ldpkD226l30skXr6a5EmGs5xIh2K45iFpi/v
-         35q4pZjE8c8NCnOIBVCM48Qrg/HBUJElzRqfGPpo=
+        b=yryAREZCJ7Zs7ZUPncKURZlXVeosRXft3+EtBztOQbk4I2FvPa0aajcmRkQwyjcNw
+         r4kOcHH97/QefkbqQ1dLUw1wbCcJPJeNh9/5YtsOkJnx+9wUPLHVuLDjeEmRAy1/D2
+         s4uQkdX4WzFcOLYzCMyD24iNlYVnTVawSZ/XLRZc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, zpershuai <zpershuai@gmail.com>,
+        stable@vger.kernel.org, ChiYuan Huang <cy_huang@richtek.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 097/178] spi: spi-zynq-qspi: Fix some wrong goto jumps & missing error code
+Subject: [PATCH 5.10 081/146] regulator: rtmv20: Fix to make regcache value first reading back from HW
 Date:   Mon, 21 Jun 2021 18:15:11 +0200
-Message-Id: <20210621154926.058249344@linuxfoundation.org>
+Message-Id: <20210621154916.138915879@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621154921.212599475@linuxfoundation.org>
-References: <20210621154921.212599475@linuxfoundation.org>
+In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
+References: <20210621154911.244649123@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zpershuai <zpershuai@gmail.com>
+From: ChiYuan Huang <cy_huang@richtek.com>
 
-[ Upstream commit f131767eefc47de2f8afb7950cdea78397997d66 ]
+[ Upstream commit 46639a5e684edd0b80ae9dff220f193feb356277 ]
 
-In zynq_qspi_probe function, when enable the device clock is done,
-the return of all the functions should goto the clk_dis_all label.
+- Fix to make regcache value first reading back from HW.
 
-If num_cs is not right then this should return a negative error
-code but currently it returns success.
-
-Signed-off-by: zpershuai <zpershuai@gmail.com>
-Link: https://lore.kernel.org/r/1622110857-21812-1-git-send-email-zpershuai@gmail.com
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+Link: https://lore.kernel.org/r/1622542155-6373-1-git-send-email-u0084500@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-zynq-qspi.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/regulator/rtmv20-regulator.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/spi/spi-zynq-qspi.c b/drivers/spi/spi-zynq-qspi.c
-index 2765289028fa..68193db8b2e3 100644
---- a/drivers/spi/spi-zynq-qspi.c
-+++ b/drivers/spi/spi-zynq-qspi.c
-@@ -678,14 +678,14 @@ static int zynq_qspi_probe(struct platform_device *pdev)
- 	xqspi->irq = platform_get_irq(pdev, 0);
- 	if (xqspi->irq <= 0) {
- 		ret = -ENXIO;
--		goto remove_master;
-+		goto clk_dis_all;
- 	}
- 	ret = devm_request_irq(&pdev->dev, xqspi->irq, zynq_qspi_irq,
- 			       0, pdev->name, xqspi);
- 	if (ret != 0) {
- 		ret = -ENXIO;
- 		dev_err(&pdev->dev, "request_irq failed\n");
--		goto remove_master;
-+		goto clk_dis_all;
- 	}
+diff --git a/drivers/regulator/rtmv20-regulator.c b/drivers/regulator/rtmv20-regulator.c
+index 5adc552dffd5..4bca64de0f67 100644
+--- a/drivers/regulator/rtmv20-regulator.c
++++ b/drivers/regulator/rtmv20-regulator.c
+@@ -27,6 +27,7 @@
+ #define RTMV20_REG_LDIRQ	0x30
+ #define RTMV20_REG_LDSTAT	0x40
+ #define RTMV20_REG_LDMASK	0x50
++#define RTMV20_MAX_REGS		(RTMV20_REG_LDMASK + 1)
  
- 	ret = of_property_read_u32(np, "num-cs",
-@@ -693,8 +693,9 @@ static int zynq_qspi_probe(struct platform_device *pdev)
- 	if (ret < 0) {
- 		ctlr->num_chipselect = 1;
- 	} else if (num_cs > ZYNQ_QSPI_MAX_NUM_CS) {
-+		ret = -EINVAL;
- 		dev_err(&pdev->dev, "only 2 chip selects are available\n");
--		goto remove_master;
-+		goto clk_dis_all;
- 	} else {
- 		ctlr->num_chipselect = num_cs;
- 	}
+ #define RTMV20_VID_MASK		GENMASK(7, 4)
+ #define RICHTEK_VID		0x80
+@@ -313,6 +314,7 @@ static const struct regmap_config rtmv20_regmap_config = {
+ 	.val_bits = 8,
+ 	.cache_type = REGCACHE_RBTREE,
+ 	.max_register = RTMV20_REG_LDMASK,
++	.num_reg_defaults_raw = RTMV20_MAX_REGS,
+ 
+ 	.writeable_reg = rtmv20_is_accessible_reg,
+ 	.readable_reg = rtmv20_is_accessible_reg,
 -- 
 2.30.2
 
