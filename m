@@ -2,202 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2E33AF4F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5193AF4FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:23:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231906AbhFUSZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:25:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54784 "EHLO
+        id S232033AbhFUSZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:25:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232208AbhFUSYv (ORCPT
+        with ESMTP id S231803AbhFUSZJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:24:51 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43414C0617A8
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:22:18 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id u13so12425952lfk.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:22:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IajW38MHwcZeFZ73RMsHWpIwYjHEkpzka+be7I9DYGw=;
-        b=NETQKlp2p/nx7Y4sEEKvaKEH1uY4lK4td2BanaBafpbIXQIoGCzZOVksCtCyBi0VP3
-         qRBlFwn+/Gx64DwKfV6NuuTCgy11IKhJtBRHJHw+NoWp0PJjx8aDjqdJFAwf9hft86AO
-         tM+eFryc9hg5P7s+JFPGb7KXNkWf2tAxPxGRd/m7XfVYQieeWwYduJvFlHV+Nw7tYrSK
-         TR7ASMVIAhHu/b18LiZkQowPpkyKElDbsSPdJWQAbQAz8k6TgY6ow6aUYfklevRk480m
-         IgM7lrbwBJYVeinVQVxmiqJNSdgdYBCq164ARz658xez/ZLzpWtYGOtahVCWU0BR2cPi
-         xw+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IajW38MHwcZeFZ73RMsHWpIwYjHEkpzka+be7I9DYGw=;
-        b=nsL6k7wViEHaVPUCGYIcr/jKVhH+25eUc2YpM+4DUllVmdAnOMU9Z3KFDo1CUz4RjV
-         KJXEi0C5UrH4liWxbWXHChQBJHhK8d2zjr03KjnBXsgtvhFKS1/zaJpTiIrwTmPx72qt
-         k3qvcsjHh40IhjBfueCd/ErjlvploMMbw4Yc6jvpUgq+4vikdQH4LhZxqVQDaeelgIlw
-         lX1qLkhX9GSzOMXXd+5QUvx5eUQPiAzwdBM/n658HNsQyDEAEMNMUmcbYRv0SVF2GxmR
-         OBS+K/0rrSlg97lCXMA3hz01HfkbNtH5hzc15/eZYe3JJPGzLlqrNMQZbUQylZk0AYNZ
-         f4nw==
-X-Gm-Message-State: AOAM530lhcP7jwkRsBzRurDRDv5XHm8CwVXjcN0xrSSOmPIp1FUPpyun
-        C3GA+m2sWcypkxOfPAheIkUf4GkToejkYLNVHoY5HA==
-X-Google-Smtp-Source: ABdhPJwAM5RogoKB8aKV80+ZqYeBJUe7aVtjqMzminyyF7Q8neU/nFcivKvW7w+tSb+5Cahp27NLgUCLAWLfrcrGZCI=
-X-Received: by 2002:ac2:4438:: with SMTP id w24mr3339709lfl.73.1624299736217;
- Mon, 21 Jun 2021 11:22:16 -0700 (PDT)
+        Mon, 21 Jun 2021 14:25:09 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4540C061574;
+        Mon, 21 Jun 2021 11:22:54 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6725A5E17;
+        Mon, 21 Jun 2021 20:22:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1624299772;
+        bh=B1hshC97pO+3kI/cTa6a+7piw5qtRoHK8S+RKnL0igM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=C2mx3gUm+ombWTc95lt8BfRA+wZZLxWWqZZw9KFkDGW+Ye6txj68Lbo64VULEEuA3
+         IDyhTBqBRX84YdkwnzoDTuriqXVjPF1DanNmtF7RlDhSumcs+R5NPikhh+SakMqA/t
+         0o1SyqYn6APMM1/8KCPLDvtZwhUGb8nt6xhGQXUs=
+Date:   Mon, 21 Jun 2021 21:22:26 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] media: uvc: limit max bandwidth for HDMI capture
+Message-ID: <YNDY4iesZGF+7Cr0@pendragon.ideasonboard.com>
+References: <b791d5874c83663505cbd4f74907ac38d00bb727.1612206534.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-References: <20210618233023.1360185-1-ndesaulniers@google.com>
- <20210618233023.1360185-3-ndesaulniers@google.com> <CANpmjNNK-iYXucjz7Degh1kJPF_Z_=8+2vNLtUW17x0UnfgtPg@mail.gmail.com>
-In-Reply-To: <CANpmjNNK-iYXucjz7Degh1kJPF_Z_=8+2vNLtUW17x0UnfgtPg@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 21 Jun 2021 11:22:05 -0700
-Message-ID: <CAKwvOdmxGt6nAj+dDZEPdQtXNbYb8N6y3XwoCvCD+Qazskh7zw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] Kconfig: CC_HAS_NO_PROFILE_FN_ATTR, depend on for
- GCOV and PGO
-To:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Bill Wendling <wcw@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Martin Liska <mliska@suse.cz>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Fangrui Song <maskray@google.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        linux-toolchains@vger.kernel.org, Marco Elver <elver@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <b791d5874c83663505cbd4f74907ac38d00bb727.1612206534.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 11:23 PM Marco Elver <elver@google.com> wrote:
->
-> On Sat, 19 Jun 2021 at 01:30, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> >
-> > We don't want compiler instrumentation to touch noinstr functions, which
-> > are annotated with the no_profile function attribute. Add a Kconfig test
-> > for this and make PGO and GCOV depend on it.
-> >
-> > Cc: Masahiro Yamada <masahiroy@kernel.org>
-> > Cc: Peter Oberparleiter <oberpar@linux.ibm.com>
-> > Link: https://lore.kernel.org/lkml/YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net/
-> > Link: https://lore.kernel.org/lkml/YMcssV%2Fn5IBGv4f0@hirez.programming.kicks-ass.net/
-> > Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > ---
-> >  init/Kconfig        | 3 +++
-> >  kernel/gcov/Kconfig | 1 +
-> >  kernel/pgo/Kconfig  | 3 ++-
-> >  3 files changed, 6 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/init/Kconfig b/init/Kconfig
-> > index 1ea12c64e4c9..540f862b40c6 100644
-> > --- a/init/Kconfig
-> > +++ b/init/Kconfig
-> > @@ -83,6 +83,9 @@ config TOOLS_SUPPORT_RELR
-> >  config CC_HAS_ASM_INLINE
-> >         def_bool $(success,echo 'void foo(void) { asm inline (""); }' | $(CC) -x c - -c -o /dev/null)
-> >
-> > +config CC_HAS_NO_PROFILE_FN_ATTR
-> > +       def_bool $(success,echo '__attribute__((no_profile)) int x();' | $(CC) -x c - -c -o /dev/null -Werror)
-> > +
-> >  config CONSTRUCTORS
-> >         bool
-> >
-> > diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
-> > index 58f87a3092f3..19facd4289cd 100644
-> > --- a/kernel/gcov/Kconfig
-> > +++ b/kernel/gcov/Kconfig
-> > @@ -5,6 +5,7 @@ config GCOV_KERNEL
-> >         bool "Enable gcov-based kernel profiling"
-> >         depends on DEBUG_FS
-> >         depends on !CC_IS_CLANG || CLANG_VERSION >= 110000
-> > +       depends on !X86 || (X86 && CC_HAS_NO_PROFILE_FN_ATTR)
->
-> [+Cc Mark]
->
-> arm64 is also starting to rely on noinstr working properly.
+Hi Mauro,
 
-Sure,
-Will, Catalin, other arm64 folks:
-Any thoughts on requiring GCC 7.1+/Clang 13.0+ for GCOV support?  That
-way we can better guarantee that GCOV (and eventually, PGO) don't
-touch noinstr functions?
+Thank you for the patch.
 
-If that's ok, I'll add modify the above like:
+On Mon, Feb 01, 2021 at 08:08:59PM +0100, Mauro Carvalho Chehab wrote:
+> This device:
+>         534d:2109 MacroSilicon
+> 
+> Announces that it supports several frame intervals for
+> their resolutions for MJPEG compression:
+> 
+>         VideoStreaming Interface Descriptor:
+>         bLength                            46
+>         bDescriptorType                    36
+>         bDescriptorSubtype                  7 (FRAME_MJPEG)
+>         bFrameIndex                         1
+>         bmCapabilities                   0x00
+>           Still image unsupported
+>         wWidth                           1920
+>         wHeight                          1080
+>         dwMinBitRate                   768000
+>         dwMaxBitRate                196608000
+>         dwMaxVideoFrameBufferSize     4147200
+>         dwDefaultFrameInterval         166666
+>         bFrameIntervalType                  5
+>         dwFrameInterval( 0)            166666
+>         dwFrameInterval( 1)            333333
+>         dwFrameInterval( 2)            400000
+>         dwFrameInterval( 3)            500000
+>         dwFrameInterval( 4)           1000000
+> 
+> However, the highest frame interval (166666), which means 60 fps
+> is not supported. For such resolution, the maximum interval
+> is, instead 333333 (30 fps).
 
-+ depends on !ARM64 || (ARM64 && CC_HAS_NO_PROFILE_FN_ATTR)
+What happens if you try to select it ?
 
-to the above hunk in v2.  Oh, looks like arch/s390 also uses noinstr.
-Same question applies then:
+> The last format that supports such frame interval is 1280x720.
+> 
+> Add a quirk to estimate a raw bandwidth, by doing:
+>         width * height * framerate
+> E. g.:
+>         1920 * 1080 * 30 = 62208000
+> 
+> if the bandwidth is greater than such threshold, get
+> the next value from the dwFrameInterval.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/media/usb/uvc/uvc_driver.c | 15 +++++++++++++++
+>  drivers/media/usb/uvc/uvc_video.c  | 26 +++++++++++++++++++++++---
+>  drivers/media/usb/uvc/uvcvideo.h   |  2 ++
+>  3 files changed, 40 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+> index 1abc122a0977..c83a329f6527 100644
+> --- a/drivers/media/usb/uvc/uvc_driver.c
+> +++ b/drivers/media/usb/uvc/uvc_driver.c
+> @@ -2339,6 +2339,7 @@ static int uvc_probe(struct usb_interface *intf,
+>  	dev->info = info ? info : &uvc_quirk_none;
+>  	dev->quirks = uvc_quirks_param == -1
+>  		    ? dev->info->quirks : uvc_quirks_param;
+> +	dev->max_bandwidth = dev->info->max_bandwidth;
+>  
+>  	if (id->idVendor && id->idProduct)
+>  		uvc_dbg(dev, PROBE, "Probing known UVC device %s (%04x:%04x)\n",
+> @@ -2615,6 +2616,11 @@ static const struct uvc_device_info uvc_quirk_fix_bandwidth = {
+>  	.quirks = UVC_QUIRK_FIX_BANDWIDTH,
+>  };
+>  
+> +static const struct uvc_device_info uvc_quirk_fix_bw_622 = {
+> +	.quirks = UVC_QUIRK_FIX_BANDWIDTH,
+> +	.max_bandwidth = 62208000,
+> +};
+> +
+>  static const struct uvc_device_info uvc_quirk_probe_def = {
+>  	.quirks = UVC_QUIRK_PROBE_DEF,
+>  };
+> @@ -2830,6 +2836,15 @@ static const struct usb_device_id uvc_ids[] = {
+>  	  .bInterfaceSubClass	= 1,
+>  	  .bInterfaceProtocol	= 0,
+>  	  .driver_info		= (kernel_ulong_t)&uvc_quirk_fix_bandwidth },
+> +	/* MacroSilicon HDMI capture */
+> +	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
+> +				| USB_DEVICE_ID_MATCH_INT_INFO,
+> +	  .idVendor		= 0x534d,
+> +	  .idProduct		= 0x2109,
+> +	  .bInterfaceClass	= USB_CLASS_VIDEO,
+> +	  .bInterfaceSubClass	= 1,
+> +	  .bInterfaceProtocol	= 0,
+> +	  .driver_info		= (kernel_ulong_t)&uvc_quirk_fix_bw_622 },
+>  	/* Genesys Logic USB 2.0 PC Camera */
+>  	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
+>  				| USB_DEVICE_ID_MATCH_INT_INFO,
+> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+> index f2f565281e63..4afc1fbe0801 100644
+> --- a/drivers/media/usb/uvc/uvc_video.c
+> +++ b/drivers/media/usb/uvc/uvc_video.c
+> @@ -162,9 +162,29 @@ static void uvc_fixup_video_ctrl(struct uvc_streaming *stream,
+>  	if ((ctrl->dwMaxPayloadTransferSize & 0xffff0000) == 0xffff0000)
+>  		ctrl->dwMaxPayloadTransferSize &= ~0xffff0000;
+>  
+> -	if (!(format->flags & UVC_FMT_FLAG_COMPRESSED) &&
+> -	    stream->dev->quirks & UVC_QUIRK_FIX_BANDWIDTH &&
+> -	    stream->intf->num_altsetting > 1) {
+> +
+> +	if (!(stream->dev->quirks & UVC_QUIRK_FIX_BANDWIDTH))
+> +		return;
+> +
+> +	/* Handle UVC_QUIRK_FIX_BANDWIDTH */
+> +
+> +	if (format->flags & UVC_FMT_FLAG_COMPRESSED &&
+> +	    stream->dev->max_bandwidth && frame->bFrameIntervalType) {
+> +		u32 bandwidth;
+> +
+> +		for (i = 0; i < frame->bFrameIntervalType - 1; ++i) {
 
-+ depends on !S390 || (S390 && CC_HAS_NO_PROFILE_FN_ATTR)
+Why - 1 ?
 
-Or, we could just do
+> +			bandwidth = frame->wWidth * frame->wHeight;
+> +			bandwidth *= 10000000 / frame->dwFrameInterval[i];
+> +
+> +			if (bandwidth <= stream->dev->max_bandwidth)
+> +				break;
+> +		}
+> +
+> +		ctrl->dwFrameInterval = frame->dwFrameInterval[i];
 
-+ depends on CC_HAS_NO_PROFILE_FN_ATTR
+This doesn't seem correct, you're selecting the first frame internal
+below the bandwidth limit, even if the user explicitly requests a lower
+frame rate.
 
-Though that will penalize architectures not using noinstr, that still
-would like to use GCOV with versions of GCC older than 7.1.  Perhaps
-there are no such such users, or they should consider upgrading their
-tools to we can stick with the simpler Kconfig? Thoughts?
+> +		return;
+> +	}
+> +
+> +	if (stream->intf->num_altsetting > 1) {
 
->
-> This should probably be a 'select ARCH_HAS_GCOV_PROFILE_ALL if
-> CC_HAS_NO_PROFILE_FN_ATTR' in the relevant arch/../Kconfig.
->
-> Alternatively, using:
-> https://lkml.kernel.org/r/YMcssV/n5IBGv4f0@hirez.programming.kicks-ass.net
->
-> But I'd probably not overcomplicate things at this point and just use
-> ARCH_HAS_GCOV_PROFILE_ALL, because GCOV seems to be a) rarely used,
-> and b) if someone decides to selectively instrument stuff like entry
-> code, we can just say it's user error.
->
->
-> >         select CONSTRUCTORS
-> >         default n
-> >         help
-> > diff --git a/kernel/pgo/Kconfig b/kernel/pgo/Kconfig
-> > index d2053df1111c..26f75ac4c6c1 100644
-> > --- a/kernel/pgo/Kconfig
-> > +++ b/kernel/pgo/Kconfig
-> > @@ -8,7 +8,8 @@ config PGO_CLANG
-> >         bool "Enable clang's PGO-based kernel profiling"
-> >         depends on DEBUG_FS
-> >         depends on ARCH_SUPPORTS_PGO_CLANG
-> > -       depends on CC_IS_CLANG && CLANG_VERSION >= 120000
-> > +       depends on CC_IS_CLANG
-> > +       depends on CC_HAS_NO_PROFILE_FN_ATTR
-> >         help
-> >           This option enables clang's PGO (Profile Guided Optimization) based
-> >           code profiling to better optimize the kernel.
-> > --
-> > 2.32.0.288.g62a8d224e6-goog
-> >
+There's an incorrect change in logic here. Before the patch this code
+would run only for !UVC_FMT_FLAG_COMPRESSED, while with the patch, it will
+run if UVC_FMT_FLAG_COMPRESSED && !(stream->dev->max_bandwidth &&
+frame->bFrameIntervalType).
 
+>  		u32 interval;
+>  		u32 bandwidth;
+>  
+> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+> index 97df5ecd66c9..b44e0cd4c826 100644
+> --- a/drivers/media/usb/uvc/uvcvideo.h
+> +++ b/drivers/media/usb/uvc/uvcvideo.h
+> @@ -658,6 +658,7 @@ static inline u32 uvc_urb_index(const struct uvc_urb *uvc_urb)
+>  
+>  struct uvc_device_info {
+>  	u32	quirks;
+> +	u32	max_bandwidth;
+>  	u32	meta_format;
+>  	u16	uvc_version;
+>  };
+> @@ -667,6 +668,7 @@ struct uvc_device {
+>  	struct usb_interface *intf;
+>  	unsigned long warnings;
+>  	u32 quirks;
+> +	u32 max_bandwidth;
 
+uvc_device has a uvc_device_info pointer, there's no need to copy the
+field here.
+
+>  	int intfnum;
+>  	char name[32];
+>  
 
 -- 
-Thanks,
-~Nick Desaulniers
+Regards,
+
+Laurent Pinchart
