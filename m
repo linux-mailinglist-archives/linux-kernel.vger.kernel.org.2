@@ -2,113 +2,372 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7867D3AF988
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2682D3AF984
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232115AbhFUXjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 19:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232064AbhFUXjH (ORCPT
+        id S232001AbhFUXi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 19:38:57 -0400
+Received: from mail-pg1-f174.google.com ([209.85.215.174]:42629 "EHLO
+        mail-pg1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231823AbhFUXi4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 19:39:07 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1C9C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:36:52 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id z22so27514641ljh.8
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:36:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fqBMFMkh+3vsj4PE2zy4sOG9Di6zkfuPgmZeKyRMggk=;
-        b=FwTzGNcpDtlrI1kY0RIGO3zETGbXVETw5XVSJFPsLGj6Xz/SJV56ObDVCGf2pDuQ1Z
-         igDUi27LyzA/lOjip7sVylirPYT+bZ/hF+sKh406iS7GyB+Vq1L8K8GDXIUSy1RHLXYZ
-         859pKuXlceGLPjaK41xP26kUTIY685CWI4qnY=
+        Mon, 21 Jun 2021 19:38:56 -0400
+Received: by mail-pg1-f174.google.com with SMTP id d12so875843pgd.9;
+        Mon, 21 Jun 2021 16:36:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fqBMFMkh+3vsj4PE2zy4sOG9Di6zkfuPgmZeKyRMggk=;
-        b=TBh78ux4wJm/6qOfEPo1/WGChxFd9Mvuyhooe/buanL8Sr4qCHZVJ9a0ybhkXnFbKM
-         axJLHTsuGJp5Wb8tzXxXwV9XZnEzOiUJX6PO8lpJOQEGnqbaYL/xYsnL/RDdWoe4yQ47
-         Q/F+HNEztWxSuEalCWqCG1b4fxZLPOxVmHZDvGAP47VsryzM5YN1L8GeIqU3sL/ZO2St
-         XjCQCdxAsB53vFNy45MTWiRAbgHZwHuAnMg84gomcfoai7AwJwYF4fb2fOI1WMZSAjuA
-         BPF/g2t1WS/c57Dc6aOvSSsefbfKDT7sHzIRl0FlIZmIgCVWJhb0UX38aU7ltl9I7y4Y
-         TmMw==
-X-Gm-Message-State: AOAM531wdqo/dwnwPRk3cfm9/jwkBPqDbMcUgbiQbnSlWkgXuxx9/sJa
-        XcY+Lc3bOFK3LMb74a24zGynYWZbLIwnaoboV14=
-X-Google-Smtp-Source: ABdhPJxkLdiOZqQYGGZnNJ/sVJs7Y1drq5Yx5vQB0nDd0yQ0Do4lW3EJ9snncIHu8Nzi5CmlHZJflA==
-X-Received: by 2002:a05:651c:33c:: with SMTP id b28mr555295ljp.489.1624318610258;
-        Mon, 21 Jun 2021 16:36:50 -0700 (PDT)
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
-        by smtp.gmail.com with ESMTPSA id b13sm789782lfv.89.2021.06.21.16.36.49
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=xw9N57mjNLhy6LOKnWR9OcMhfnw13odoA16qwvYYOlc=;
+        b=LRd2McF8uk1gkzKw8SpQEtfcgZ4gsExZq1hXQ15VGKSreHjsarqFSlfaJApVRVV4pF
+         XJKCfzN7UAL/UcLPrzllnPoGhK12U9dX6RP/6TAOGNKdpndJgs/bvZiXneL/YCFwoasE
+         roE3y0TbZJpDH51Z3pRXFyuH+j3x4SJA8SuRTvEETgGvIJxweckEtKHM1Aqvw/+RAkJP
+         UAQsJW3MfyCDlVw8IsJx36fBfyvJSmWvi8sG6Q8rWSycZV6VGdXQOM/mP+rOTRo9YrON
+         RUXOPMIAbun2FjZnSxEPfrztvOXSJKAPdXym2ah+o4EpCDjDVoVUehraX1WFp3L8JVq/
+         U0XA==
+X-Gm-Message-State: AOAM5302qV17jl6rYdMlyyGaVW01PllhZZNqOgiWutvH02qXpwhvApWk
+        htR59aXPN8xOEDtpuFW2x9c=
+X-Google-Smtp-Source: ABdhPJztWIGgcG1nTEVgyY54vge0thQWo3ZFCRVaILjF7BwzoJlGCs5Wh7QWrWa87Tr/onutrw/ADA==
+X-Received: by 2002:a63:ae01:: with SMTP id q1mr893892pgf.216.1624318599940;
+        Mon, 21 Jun 2021 16:36:39 -0700 (PDT)
+Received: from localhost ([173.239.198.97])
+        by smtp.gmail.com with ESMTPSA id b194sm2306928pfb.11.2021.06.21.16.36.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 16:36:49 -0700 (PDT)
-Received: by mail-lj1-f175.google.com with SMTP id r16so27543217ljk.9
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:36:49 -0700 (PDT)
-X-Received: by 2002:a2e:22c4:: with SMTP id i187mr544552lji.251.1624318609289;
- Mon, 21 Jun 2021 16:36:49 -0700 (PDT)
+        Mon, 21 Jun 2021 16:36:39 -0700 (PDT)
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     minchan@kernel.org, gregkh@linuxfoundation.org, jeyu@kernel.org,
+        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com
+Cc:     mcgrof@kernel.org, axboe@kernel.dk, mbenes@suse.com,
+        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
+        jikos@kernel.org, rostedt@goodmis.org, peterz@infradead.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 2/3] zram: fix deadlock with sysfs attribute usage and driver removal
+Date:   Mon, 21 Jun 2021 16:36:34 -0700
+Message-Id: <20210621233634.595649-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210621233013.562641-1-mcgrof@kernel.org>
+References: <20210621233013.562641-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-References: <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
- <87eed4v2dc.fsf@disp2133> <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
- <87fsxjorgs.fsf@disp2133> <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
- <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk> <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
- <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
- <YNDsYk6kbisbNy3I@zeniv-ca.linux.org.uk> <CAHk-=wh82uJ5Poqby3brn-D7xWbCMnGv-JnwfO0tuRfCvsVgXA@mail.gmail.com>
- <YNEfXhi80e/VXgc9@zeniv-ca.linux.org.uk>
-In-Reply-To: <YNEfXhi80e/VXgc9@zeniv-ca.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 21 Jun 2021 16:36:33 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjtagi3g5thA-T8ooM8AXcy3brdHzugCPU0itdbpDYH_A@mail.gmail.com>
-Message-ID: <CAHk-=wjtagi3g5thA-T8ooM8AXcy3brdHzugCPU0itdbpDYH_A@mail.gmail.com>
-Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 4:23 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
->         How would it help e.g. oopsen on the way out of timer interrupts?
-> IMO we simply shouldn't allow ptrace access if the tracee is in that kind
-> of state, on any architecture...
+When sysfs attributes use a lock also used on driver removal we can
+potentially deadlock. This happens when for instance a sysfs file on
+a driver is used, then at the same time we have driver removal trigger.
+The driver removal code holds a lock, and then the sysfs file entry waits
+for the same lock. While holding the lock the driver removal tries to
+remove the sysfs entries, but these cannot be removed yet as one is
+waiting for a lock. This won't complete as the lock is already held.
+Likewise module removal cannot complete, and so we deadlock.
 
-Yeah no, we can't do the "wait for ptrace" when the exit is due to an
-oops. Although honestly, we have other cases like that where do_exit()
-isn't 100% robust if you kill something in an interrupt. Like all the
-locks it leaves locked etc.
+To fix this we just *try* to get a refcount to the module when a shared
+lock is used, prior to mucking with a sysfs attribute. If this fails we
+just give up right away.
 
-So do_exit() from a timer interrupt is going to cause problems
-regardless. I agree it's probably a good idea to try to avoid causing
-even more with the odd ptrace thing, but I don't think ptrace_event is
-some really "fundamental" problem at that point - it's just one detail
-among many many.
+We use a try method as a full lock means we'd then make our sysfs attributes
+busy us out from possible module removal, and so userspace could force denying
+module removal, a silly form of "DOS" against module removal. A try lock on
+the module removal ensures we give priority to module removal and interacting
+with sysfs attributes only comes second. Using a full lock could mean for
+instance that if you don't stop poking at sysfs files you cannot remove a
+module.
 
-So I was more thinking of the debug patch for m68k to catch all the
-_regular_ cases, and all the other random cases of ptrace_event() or
-ptrace_notify().
+This deadlock was first reported with the zram driver, a sketch of how
+this can happen follows:
 
-Although maybe we've really caught them all. The exit case was clearly
-missing, and the thread fork case was scrogged. There are patches for
-the known problems. The patches I really don't like are the
-verification ones to find any unknown ones..
+CPU A                              CPU B
+                                   whatever_store()
+module_unload
+  mutex_lock(foo)
+                                   mutex_lock(foo)
+   del_gendisk(zram->disk);
+     device_del()
+       device_remove_groups()
 
-            Linus
+In this situation whatever_store() is waiting for the mutex foo to
+become unlocked, but that won't happen until module removal is complete.
+But module removal won't complete until the syfs file being poked completes
+which is waiting for a lock already held.
+
+This is a generic kernel issue with sysfs files which use any lock also
+used on module removal. Different generic solutions have been proposed.
+One approach proposed is by directly by augmenting attributes with module
+information [0]. This patch implements a solution by adding macros with
+the prefix MODULE_DEVICE_ATTR_*() which accomplish the same. Until we
+don't have a generic agreed upon solution for this shared between drivers,
+we must implement a fix for this on each driver.
+
+We make zram use the new MODULE_DEVICE_ATTR_*() helpers, and completely
+open code the solution for class attributes as there are only a few of
+those.
+
+This issue can be reproduced easily on the zram driver as follows:
+
+Loop 1 on one terminal:
+
+while true;
+	do modprobe zram;
+	modprobe -r zram;
+done
+
+Loop 2 on a second terminal:
+while true; do
+	echo 1024 >  /sys/block/zram0/disksize;
+	echo 1 > /sys/block/zram0/reset;
+done
+
+Without this patch we end up in a deadlock, and the following
+stack trace is produced which hints to us what the issue was:
+
+INFO: task bash:888 blocked for more than 120 seconds.
+      Tainted: G            E 5.12.0-rc1-next-20210304+ #4
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:bash            state:D stack:    0 pid:  888 ppid: 887 flags:0x00000004
+Call Trace:
+ __schedule+0x2e4/0x900
+ schedule+0x46/0xb0
+ schedule_preempt_disabled+0xa/0x10
+ __mutex_lock.constprop.0+0x2c3/0x490
+ ? _kstrtoull+0x35/0xd0
+ reset_store+0x6c/0x160 [zram]
+ kernfs_fop_write_iter+0x124/0x1b0
+ new_sync_write+0x11c/0x1b0
+ vfs_write+0x1c2/0x260
+ ksys_write+0x5f/0xe0
+ do_syscall_64+0x33/0x80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f34f2c3df33
+RSP: 002b:00007ffe751df6e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007f34f2c3df33
+RDX: 0000000000000002 RSI: 0000561ccb06ec10 RDI: 0000000000000001
+RBP: 0000561ccb06ec10 R08: 000000000000000a R09: 0000000000000001
+R10: 0000561ccb157590 R11: 0000000000000246 R12: 0000000000000002
+R13: 00007f34f2d0e6a0 R14: 0000000000000002 R15: 00007f34f2d0e8a0
+INFO: task modprobe:1104 can't die for more than 120 seconds.
+task:modprobe        state:D stack:    0 pid: 1104 ppid: 916 flags:0x00004004
+Call Trace:
+ __schedule+0x2e4/0x900
+ schedule+0x46/0xb0
+ __kernfs_remove.part.0+0x228/0x2b0
+ ? finish_wait+0x80/0x80
+ kernfs_remove_by_name_ns+0x50/0x90
+ remove_files+0x2b/0x60
+ sysfs_remove_group+0x38/0x80
+ sysfs_remove_groups+0x29/0x40
+ device_remove_attrs+0x4a/0x80
+ device_del+0x183/0x3e0
+ ? mutex_lock+0xe/0x30
+ del_gendisk+0x27a/0x2d0
+ zram_remove+0x8a/0xb0 [zram]
+ ? hot_remove_store+0xf0/0xf0 [zram]
+ zram_remove_cb+0xd/0x10 [zram]
+ idr_for_each+0x5e/0xd0
+ destroy_devices+0x39/0x6f [zram]
+ __do_sys_delete_module+0x190/0x2a0
+ do_syscall_64+0x33/0x80
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x7f32adf727d7
+RSP: 002b:00007ffc08bb38a8 EFLAGS: 00000206 ORIG_RAX: 00000000000000b0
+RAX: ffffffffffffffda RBX: 000055eea23cbb10 RCX: 00007f32adf727d7
+RDX: 0000000000000000 RSI: 0000000000000800 RDI: 000055eea23cbb78
+RBP: 000055eea23cbb10 R08: 0000000000000000 R09: 0000000000000000
+R10: 00007f32adfe5ac0 R11: 0000000000000206 R12: 000055eea23cbb78
+R13: 0000000000000000 R14: 0000000000000000 R15: 000055eea23cbc20
+
+[0] https://lkml.kernel.org/r/20210401235925.GR4332@42.do-not-panic.com
+
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+---
+ drivers/block/zram/zram_drv.c | 80 ++++++++++++++++++++---------------
+ drivers/block/zram/zram_drv.h | 40 ++++++++++++++++++
+ 2 files changed, 85 insertions(+), 35 deletions(-)
+
+diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+index 431b60cd85c1..21d66415aa91 100644
+--- a/drivers/block/zram/zram_drv.c
++++ b/drivers/block/zram/zram_drv.c
+@@ -1134,12 +1134,12 @@ static ssize_t debug_stat_show(struct device *dev,
+ 	return ret;
+ }
+ 
+-static DEVICE_ATTR_RO(io_stat);
+-static DEVICE_ATTR_RO(mm_stat);
++MODULE_DEVICE_ATTR_RO(io_stat);
++MODULE_DEVICE_ATTR_RO(mm_stat);
+ #ifdef CONFIG_ZRAM_WRITEBACK
+-static DEVICE_ATTR_RO(bd_stat);
++MODULE_DEVICE_ATTR_RO(bd_stat);
+ #endif
+-static DEVICE_ATTR_RO(debug_stat);
++MODULE_DEVICE_ATTR_RO(debug_stat);
+ 
+ static void zram_meta_free(struct zram *zram, u64 disksize)
+ {
+@@ -1861,44 +1861,44 @@ static const struct block_device_operations zram_wb_devops = {
+ 	.owner = THIS_MODULE
+ };
+ 
+-static DEVICE_ATTR_WO(compact);
+-static DEVICE_ATTR_RW(disksize);
+-static DEVICE_ATTR_RO(initstate);
+-static DEVICE_ATTR_WO(reset);
+-static DEVICE_ATTR_WO(mem_limit);
+-static DEVICE_ATTR_WO(mem_used_max);
+-static DEVICE_ATTR_WO(idle);
+-static DEVICE_ATTR_RW(max_comp_streams);
+-static DEVICE_ATTR_RW(comp_algorithm);
++MODULE_DEVICE_ATTR_WO(compact);
++MODULE_DEVICE_ATTR_RW(disksize);
++MODULE_DEVICE_ATTR_RO(initstate);
++MODULE_DEVICE_ATTR_WO(reset);
++MODULE_DEVICE_ATTR_WO(mem_limit);
++MODULE_DEVICE_ATTR_WO(mem_used_max);
++MODULE_DEVICE_ATTR_WO(idle);
++MODULE_DEVICE_ATTR_RW(max_comp_streams);
++MODULE_DEVICE_ATTR_RW(comp_algorithm);
+ #ifdef CONFIG_ZRAM_WRITEBACK
+-static DEVICE_ATTR_RW(backing_dev);
+-static DEVICE_ATTR_WO(writeback);
+-static DEVICE_ATTR_RW(writeback_limit);
+-static DEVICE_ATTR_RW(writeback_limit_enable);
++MODULE_DEVICE_ATTR_RW(backing_dev);
++MODULE_DEVICE_ATTR_WO(writeback);
++MODULE_DEVICE_ATTR_RW(writeback_limit);
++MODULE_DEVICE_ATTR_RW(writeback_limit_enable);
+ #endif
+ 
+ static struct attribute *zram_disk_attrs[] = {
+-	&dev_attr_disksize.attr,
+-	&dev_attr_initstate.attr,
+-	&dev_attr_reset.attr,
+-	&dev_attr_compact.attr,
+-	&dev_attr_mem_limit.attr,
+-	&dev_attr_mem_used_max.attr,
+-	&dev_attr_idle.attr,
+-	&dev_attr_max_comp_streams.attr,
+-	&dev_attr_comp_algorithm.attr,
++	&dev_attr_module_disksize.attr,
++	&dev_attr_module_initstate.attr,
++	&dev_attr_module_reset.attr,
++	&dev_attr_module_compact.attr,
++	&dev_attr_module_mem_limit.attr,
++	&dev_attr_module_mem_used_max.attr,
++	&dev_attr_module_idle.attr,
++	&dev_attr_module_max_comp_streams.attr,
++	&dev_attr_module_comp_algorithm.attr,
+ #ifdef CONFIG_ZRAM_WRITEBACK
+-	&dev_attr_backing_dev.attr,
+-	&dev_attr_writeback.attr,
+-	&dev_attr_writeback_limit.attr,
+-	&dev_attr_writeback_limit_enable.attr,
++	&dev_attr_module_backing_dev.attr,
++	&dev_attr_module_writeback.attr,
++	&dev_attr_module_writeback_limit.attr,
++	&dev_attr_module_writeback_limit_enable.attr,
+ #endif
+-	&dev_attr_io_stat.attr,
+-	&dev_attr_mm_stat.attr,
++	&dev_attr_module_io_stat.attr,
++	&dev_attr_module_mm_stat.attr,
+ #ifdef CONFIG_ZRAM_WRITEBACK
+-	&dev_attr_bd_stat.attr,
++	&dev_attr_module_bd_stat.attr,
+ #endif
+-	&dev_attr_debug_stat.attr,
++	&dev_attr_module_debug_stat.attr,
+ 	NULL,
+ };
+ 
+@@ -2048,13 +2048,19 @@ static ssize_t hot_add_show(struct class *class,
+ {
+ 	int ret;
+ 
++	if (!try_module_get(THIS_MODULE))
++		return -ENODEV;
++
+ 	mutex_lock(&zram_index_mutex);
+ 	if (!zram_up) {
+ 		mutex_unlock(&zram_index_mutex);
+-		return -ENODEV;
++		ret = -ENODEV;
++		goto out;
+ 	}
+ 	ret = zram_add();
++out:
+ 	mutex_unlock(&zram_index_mutex);
++	module_put(THIS_MODULE);
+ 
+ 	if (ret < 0)
+ 		return ret;
+@@ -2078,6 +2084,9 @@ static ssize_t hot_remove_store(struct class *class,
+ 	if (dev_id < 0)
+ 		return -EINVAL;
+ 
++	if (!try_module_get(THIS_MODULE))
++		return -ENODEV;
++
+ 	mutex_lock(&zram_index_mutex);
+ 
+ 	if (!zram_up) {
+@@ -2096,6 +2105,7 @@ static ssize_t hot_remove_store(struct class *class,
+ 
+ out:
+ 	mutex_unlock(&zram_index_mutex);
++	module_put(THIS_MODULE);
+ 	return ret ? ret : count;
+ }
+ static CLASS_ATTR_WO(hot_remove);
+diff --git a/drivers/block/zram/zram_drv.h b/drivers/block/zram/zram_drv.h
+index 419a7e8281ee..026eb8d41327 100644
+--- a/drivers/block/zram/zram_drv.h
++++ b/drivers/block/zram/zram_drv.h
+@@ -126,4 +126,44 @@ struct zram {
+ 	struct dentry *debugfs_dir;
+ #endif
+ };
++
++#define MODULE_DEVICE_ATTR_FUNC_STORE(_name) \
++static ssize_t module_ ## _name ## _store(struct device *dev, \
++				   struct device_attribute *attr, \
++				   const char *buf, size_t len) \
++{ \
++	ssize_t __ret; \
++	if (!try_module_get(THIS_MODULE)) \
++		return -ENODEV; \
++	__ret = _name ## _store(dev, attr, buf, len); \
++	module_put(THIS_MODULE); \
++	return __ret; \
++}
++
++#define MODULE_DEVICE_ATTR_FUNC_SHOW(_name) \
++static ssize_t module_ ## _name ## _show(struct device *dev, \
++					 struct device_attribute *attr, \
++					 char *buf) \
++{ \
++	ssize_t __ret; \
++	if (!try_module_get(THIS_MODULE)) \
++		return -ENODEV; \
++	__ret = _name ## _show(dev, attr, buf); \
++	module_put(THIS_MODULE); \
++	return __ret; \
++}
++
++#define MODULE_DEVICE_ATTR_WO(_name) \
++MODULE_DEVICE_ATTR_FUNC_STORE(_name); \
++static DEVICE_ATTR_WO(module_ ## _name)
++
++#define MODULE_DEVICE_ATTR_RW(_name) \
++MODULE_DEVICE_ATTR_FUNC_STORE(_name); \
++MODULE_DEVICE_ATTR_FUNC_SHOW(_name); \
++static DEVICE_ATTR_RW(module_ ## _name)
++
++#define MODULE_DEVICE_ATTR_RO(_name) \
++MODULE_DEVICE_ATTR_FUNC_SHOW(_name); \
++static DEVICE_ATTR_RO(module_ ## _name)
++
+ #endif
+-- 
+2.30.2
+
