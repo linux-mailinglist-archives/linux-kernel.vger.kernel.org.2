@@ -2,114 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 914213AF65C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 21:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302A63AF666
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 21:45:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231429AbhFUTqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 15:46:44 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:48058 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230222AbhFUTqn (ORCPT
+        id S231613AbhFUTsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 15:48:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230347AbhFUTsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 15:46:43 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id EF5AC2198C;
-        Mon, 21 Jun 2021 19:44:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624304667; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IQClZieg0qeNhuMkHg13xw52Xckq8RJN25aLLhxO+8M=;
-        b=ChJU6j/vr85ZCAgq1I2DgyQov2mjA/FWzPNLlz8r40SgrFV7JaJ0kW0rir/MQ47Yzai8Z5
-        hG5w5d4DnmMc+qX6lChVkn8Z0hxPZrbjNKiqTupUglSFZ4mq6GBqgDzxsDKl6iF1hPJrCr
-        Z5AQiCjg23U/qQtfYCR87iNN+Uet/Hk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624304667;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IQClZieg0qeNhuMkHg13xw52Xckq8RJN25aLLhxO+8M=;
-        b=wYhZOQLO8OpChDP7WxfY43iogxj7jIjd+cem5Ka+RGKrR8SHPNZTLDoW/Ui0g9F8yVJJUE
-        CnHFkBpO/GkDIiAw==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id D8084118DD;
-        Mon, 21 Jun 2021 19:44:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624304667; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IQClZieg0qeNhuMkHg13xw52Xckq8RJN25aLLhxO+8M=;
-        b=ChJU6j/vr85ZCAgq1I2DgyQov2mjA/FWzPNLlz8r40SgrFV7JaJ0kW0rir/MQ47Yzai8Z5
-        hG5w5d4DnmMc+qX6lChVkn8Z0hxPZrbjNKiqTupUglSFZ4mq6GBqgDzxsDKl6iF1hPJrCr
-        Z5AQiCjg23U/qQtfYCR87iNN+Uet/Hk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624304667;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IQClZieg0qeNhuMkHg13xw52Xckq8RJN25aLLhxO+8M=;
-        b=wYhZOQLO8OpChDP7WxfY43iogxj7jIjd+cem5Ka+RGKrR8SHPNZTLDoW/Ui0g9F8yVJJUE
-        CnHFkBpO/GkDIiAw==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id lw7FMxvs0GBdAQAALh3uQQ
-        (envelope-from <bp@suse.de>); Mon, 21 Jun 2021 19:44:27 +0000
-Date:   Mon, 21 Jun 2021 21:44:22 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V3 28/66] x86/fpu: Rename copy_user_to_xregs() and
- copy_xregs_to_user()
-Message-ID: <YNDsFsdywrXyhT+H@zn.tnic>
-References: <20210618141823.161158090@linutronix.de>
- <20210618143447.575056756@linutronix.de>
+        Mon, 21 Jun 2021 15:48:07 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25738C061574;
+        Mon, 21 Jun 2021 12:45:53 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvPrW-00AwOu-3b; Mon, 21 Jun 2021 19:45:38 +0000
+Date:   Mon, 21 Jun 2021 19:45:38 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+Message-ID: <YNDsYk6kbisbNy3I@zeniv-ca.linux.org.uk>
+References: <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+ <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+ <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+ <87eed4v2dc.fsf@disp2133>
+ <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+ <87fsxjorgs.fsf@disp2133>
+ <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+ <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
+ <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
+ <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210618143447.575056756@linutronix.de>
+In-Reply-To: <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 04:18:51PM +0200, Thomas Gleixner wrote:
-> The function names for xsave[s]/xrstor[s] operations are horribly named and
-> a permanent source of confusion.
+On Mon, Jun 21, 2021 at 12:22:06PM -0700, Linus Torvalds wrote:
+> On Mon, Jun 21, 2021 at 11:59 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> >
+> >         There's a large mess around do_exit() - we have a bunch of
+> > callers all over arch/*; if nothing else, I very much doubt that really
+> > want to let tracer play with a thread in the middle of die_if_kernel()
+> > or similar.
 > 
-> Rename:
-> 	copy_xregs_to_user() to xsave_to_user_sigframe()
-> 	copy_user_to_xregs() to xrstor_from_user_sigframe()
+> Right you are.
 > 
-> so it's entirely clear what this is about. This is also a clear indicator
-> of the potentially different storage format because this is user ABI and
-> cannot use compacted format.
+> I'm really beginning to hate ptrace_{event,notify}() and those
+> PTRACE_EVENT_xyz things.
 > 
-> No functional change.
+> I don't even know what uses them, honestly. How very annoying.
 > 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  arch/x86/include/asm/fpu/internal.h |    4 ++--
->  arch/x86/kernel/fpu/signal.c        |    4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
+> I guess it's easy enough (famous last words) to move the
+> ptrace_event() call out of do_exit() and into the actual
+> exit/exit_group system calls, and the signal handling path. The paths
+> that actually have proper pt_regs.
+> 
+> Looks like sys_exit() and do_group_exit() would be the two places to
+> do it (do_group_exit() would handle the signal case and
+> sys_group_exit()).
 
-Reviewed-by: Borislav Petkov <bp@suse.de>
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Maybe...  I'm digging through that pile right now, will follow up when
+I get a reasonably complete picture.  In the meanwhile, do kernel/kthread.c
+uses look even remotely sane?  Intentional - sure, but it really looks
+wrong to use thread exit code as communication channel there...
