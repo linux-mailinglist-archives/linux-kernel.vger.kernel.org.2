@@ -2,118 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F38C13AE8FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:21:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 117963AE902
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229837AbhFUMYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 08:24:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22271 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229621AbhFUMYI (ORCPT
+        id S229904AbhFUMYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 08:24:53 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:7424 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229623AbhFUMYv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 08:24:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624278113;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VhDAKKgaNDrSL7iSXcPu9LD5gECJffFFHIw26sWyyR0=;
-        b=EB4NhdvXbk8MaJC3Ss43fjYmDXmrttqEckL9cR3UI7uIFA+MbJB/aozcYf5ov0MNhgMQU+
-        8QAvaYBRvJJoZOFFIsqomdD4UuWwHM3qVSceOegL/1ssg3k+MELf8c+KG9MnOzcKVlTHnB
-        sB0x1zl6wqI4xTjKvGk2jD2Z2qrMVko=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-111-aOPc2N2jORq-EB6JczOgeg-1; Mon, 21 Jun 2021 08:21:52 -0400
-X-MC-Unique: aOPc2N2jORq-EB6JczOgeg-1
-Received: by mail-wm1-f71.google.com with SMTP id w186-20020a1cdfc30000b02901ced88b501dso5768468wmg.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 05:21:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=VhDAKKgaNDrSL7iSXcPu9LD5gECJffFFHIw26sWyyR0=;
-        b=eGov7Ed34O+ZSTdWctpauNtmr4H2zkv9t/AEec9ufZlMaRZfsc3Qn14RUvJ5vtDC4u
-         N/XB2Px6ev9lvPEJX0OncgrEOFuY3sl048GzO6Pgvj51wqHWXobrb2rwAtXNImZEDBPl
-         XD8Zn8m+tfaAGnbdI07lTmfBQz4yBkpldKvSvPO9BxmRJq3jKlUm+VUTSLEGwhLjcnHQ
-         y65EBqyzzlR0fyWixflAYYvZROAvuZIxV27mU9ZXTVhoJ0CIysevnzvqhKo/U5Pr2Qi6
-         sFgbh+xKtARYTs/ELb+25V/9Lod1Z9aXDwfHkCUVPOAd5BICLd4/w1mz4brb/nHmY3sI
-         idNQ==
-X-Gm-Message-State: AOAM533F03w53vez1kPkS/s+jrd62MqZAWfdDA1hGiv9X/w+6jgBadHj
-        AMQApdectM58VvNuAaLKzWWHjYn+qMhb5xEd+ACaBAv+D4u/xo9JQ2Ce51TJk65+yP/FSkmUIb7
-        Qkeupxkez00Nsc3e2VfWrVRYV
-X-Received: by 2002:a7b:ce8e:: with SMTP id q14mr12106037wmj.33.1624278110436;
-        Mon, 21 Jun 2021 05:21:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxFLQpGIAVfisiyTY6nyCXRe3QRWDsB4/y9R3ja660K2K9yyGgRerGQ+R2pQj2G1e1aEWhFSw==
-X-Received: by 2002:a7b:ce8e:: with SMTP id q14mr12106002wmj.33.1624278110220;
-        Mon, 21 Jun 2021 05:21:50 -0700 (PDT)
-Received: from [192.168.43.95] ([37.173.110.237])
-        by smtp.gmail.com with ESMTPSA id l23sm16824154wmc.5.2021.06.21.05.21.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 05:21:49 -0700 (PDT)
-Reply-To: eric.auger@redhat.com
-Subject: Re: [PATCH] KVM: arm/arm64: Fix KVM_VGIC_V3_ADDR_TYPE_REDIST read
-To:     eric.auger.pro@gmail.com, stable@vger.kernel.org, maz@kernel.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu
-References: <20210621121839.792649-1-eric.auger@redhat.com>
-From:   Eric Auger <eric.auger@redhat.com>
-Message-ID: <f8e6aab9-651c-9ef1-2621-6d61374704cc@redhat.com>
-Date:   Mon, 21 Jun 2021 14:21:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <20210621121839.792649-1-eric.auger@redhat.com>
-Content-Type: text/plain; charset=utf-8
+        Mon, 21 Jun 2021 08:24:51 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15LC4NTl052750;
+        Mon, 21 Jun 2021 08:22:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=IYERda7V9jupEutV03ty9nGHGJaU/FjhK4q2mqcW/nk=;
+ b=MgTTupRBljhMWIG7g6hsrosN/yn7I5rApcFPMOsZ9WYsK15hMWbx3h4xIGJC0AJF/GA+
+ b6hnm/+I4mMT9zjqE9lI4Tk+J7uhxkkfWc0SxCoWnBg5+WXdVqfb/BxsfUalhOQCZUXT
+ XQ3quk4qG3lQIVhdgAGZt96DFySC60l30Zyzs6EipoLm7FJfRSi3FD6NxOx33hAIBgEO
+ UGw5PB/mU769wHCSBmk/SYEDXw/GPv4c1+32ctMmel3erzFCeK9FYDXt1qyqXBLV2Q7y
+ 6/MD/Gu5dCU17dc3r6rxTIsy0c4pft6eBDfzbZRskfFDpofwAPXzWzapNqngCR53qC8Z zg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39atbxgs4w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 08:22:25 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15LC6TmD069897;
+        Mon, 21 Jun 2021 08:22:25 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39atbxgs40-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 08:22:25 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15LCDE8r019771;
+        Mon, 21 Jun 2021 12:22:23 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma02fra.de.ibm.com with ESMTP id 3998788g25-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 12:22:23 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15LCMKBG16974082
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Jun 2021 12:22:20 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BADFE42049;
+        Mon, 21 Jun 2021 12:22:20 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C7A9E42045;
+        Mon, 21 Jun 2021 12:22:18 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.107.100])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 21 Jun 2021 12:22:18 +0000 (GMT)
+Message-ID: <073e829709dcbfb19244b1b1df2c39461297f337.camel@linux.ibm.com>
+Subject: Re: [PATCH] evm: Check xattr size misalignment between kernel and
+ user
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>, paul@paul-moore.com,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        stefanb@linux.ibm.com
+Cc:     linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, selinux@vger.kernel.org
+Date:   Mon, 21 Jun 2021 08:22:17 -0400
+In-Reply-To: <20210621093923.1456675-1-roberto.sassu@huawei.com>
+References: <20210621093923.1456675-1-roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: LWDLUyTVs_Qs2YEhYrKeYB2iivM6QOQX
+X-Proofpoint-ORIG-GUID: EzZM2YeLBFkhysI5Xpsv8iDCVisCwiRL
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-21_05:2021-06-21,2021-06-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ clxscore=1015 malwarescore=0 mlxlogscore=999 suspectscore=0
+ priorityscore=1501 bulkscore=0 adultscore=0 phishscore=0
+ lowpriorityscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2106210072
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, 2021-06-21 at 11:39 +0200, Roberto Sassu wrote:
+> The kernel and the user obtain an xattr value in two different ways:
+> 
+> kernel (EVM): uses vfs_getxattr_alloc() which obtains the xattr value from
+>               the filesystem handler (raw value);
+> 
+> user (ima-evm-utils): uses vfs_getxattr() which obtains the xattr value
+>                       from the LSMs (normalized value).
+> 
+> Normally, this does not have an impact unless security.selinux is set with
+> setfattr, with a value not terminated by '\0' (this is not the recommended
+> way, security.selinux should be set with the appropriate tools such as
+> chcon and restorecon).
+> 
+> In this case, the kernel and the user see two different xattr values: the
+> former sees the xattr value without '\0' (raw value), the latter sees the
+> value with '\0' (value normalized by SELinux).
+> 
+> This could result in two different verification outcomes from EVM and
+> ima-evm-utils, if a signature was calculated with a security.selinux value
+> terminated by '\0' and the value set in the filesystem is not terminated by
+> '\0'. The former would report verification failure due to the missing '\0',
+> while the latter would report verification success (because it gets the
+> normalized value with '\0').
+> 
+> This patch mitigates this issue by comparing in evm_calc_hmac_or_hash() the
+> size of the xattr returned by the two xattr functions and by warning the
+> user if there is a misalignment.
 
-On 6/21/21 2:18 PM, Eric Auger wrote:
-> When reading the base address of the a REDIST region
-> through KVM_VGIC_V3_ADDR_TYPE_REDIST we expect the
-> redistributor region list to be populated with a single
-> element.
->
-> However list_first_entry() expects the list to be non empty.
-> Instead we should use list_first_entry_or_null which effectively
-> returns NULL if the list is empty.
->
-> Fixes: dbd9733ab674 ("KVM: arm/arm64: Replace the single rdist region by a list")
-> Cc: <Stable@vger.kernel.org> # v4.19
-> Signed-off-by: Eric Auger <eric.auger@redhat.com>
-> Reported-by: Gavin Shan <gshan@redhat.com>
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> Link: https://lore.kernel.org/r/20210412150034.29185-1-eric.auger@redhat.com
+Instead of "misalignment" how about using the word "discrepancy" here
+and in the Subject line?
 
-Maybe I should I prefixed the patch with [stable-4.19]. This is already
-on master and in various stable but did not apply on 4.19
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Suggested-by: Mimi Zohar <zohar@linux.ibm.com>
 
-Thanks
-
-Eric
-> ---
->  virt/kvm/arm/vgic/vgic-kvm-device.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/virt/kvm/arm/vgic/vgic-kvm-device.c b/virt/kvm/arm/vgic/vgic-kvm-device.c
-> index 6ada2432e37c..71d92096776e 100644
-> --- a/virt/kvm/arm/vgic/vgic-kvm-device.c
-> +++ b/virt/kvm/arm/vgic/vgic-kvm-device.c
-> @@ -95,8 +95,8 @@ int kvm_vgic_addr(struct kvm *kvm, unsigned long type, u64 *addr, bool write)
->  			r = vgic_v3_set_redist_base(kvm, 0, *addr, 0);
->  			goto out;
->  		}
-> -		rdreg = list_first_entry(&vgic->rd_regions,
-> -					 struct vgic_redist_region, list);
-> +		rdreg = list_first_entry_or_null(&vgic->rd_regions,
-> +						 struct vgic_redist_region, list);
->  		if (!rdreg)
->  			addr_ptr = &undef_value;
->  		else
+Otherwise, 
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 
