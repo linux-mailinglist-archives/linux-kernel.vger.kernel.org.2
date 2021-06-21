@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 917563AF9E5
+	by mail.lfdr.de (Postfix) with ESMTP id DA2D13AF9E6
 	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232399AbhFUXzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 19:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45334 "EHLO
+        id S232421AbhFUXzh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 19:55:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232290AbhFUXz3 (ORCPT
+        with ESMTP id S232350AbhFUXzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 19:55:29 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFBF7C0617AF
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:53:13 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id f10so7314468plg.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:53:13 -0700 (PDT)
+        Mon, 21 Jun 2021 19:55:31 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99A8DC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:53:15 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id b3so1792655plg.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:53:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=KLTgOAPTL/hdLPXehUk7jin9tlU4DA3I5amBsr+XFlI=;
-        b=IakNO8AV5d2AjRngN+nO9dr4scVOZ/i0GXGfPwpIa86ahW3Gx5lGZr/Qvp7nX9QLEF
-         ah2PHyMzxecYm5jvWAhtwLlNrNpFAqJF7xOfwTdlDZQDqN2rtdNZFIoQTtMU1ur4ZApC
-         7UbMpvJg4P3n/t96Z0aCStxGsE3he4J8bRing=
+        bh=1hap5rrkK42QaF5phRIGliKevrZCv+fxjBjTLJ/pE7w=;
+        b=SaTkql2WXjMyJO6whWG9JyCnglGg6faOh30E8Lhu9SgvFGWDGvulc9SplCY+Wx4hJB
+         DCYHUv1GwmTka12BMkZes72rKui1uDoY0LzvsieTa2ZmIrnL4mVCj5E9Nvn0LnsgSd9a
+         klTw+FraV7UJBMyr3e/hUg0h10KaCLpg93/bc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=KLTgOAPTL/hdLPXehUk7jin9tlU4DA3I5amBsr+XFlI=;
-        b=OEFGSTI/Hgh9R7E3NXiYXAwXZ6j8z1BxY/FSIY8rZnFGt+U91Z3ziXMFdvwKRHgHnK
-         xco/sw6hc7165gIYO807gu1kyZzf9sPnJzvZivZJluOkEfjFv2RuPI0HHXf7hganVkZN
-         Re9Lfj6fB6o2awH/UIDIpKmiNiF4YX5Kr/tTd1ksrHJ43J9HTQCs8uJi2ks39UnPMxwz
-         iqgZ1VcmmBpk/flLMHEbljuyw0V/tQJw3pT5GcpjHWEkbOVQ2p3Ama/uvXfDvKchwYUu
-         nOEQRx6OFz/D+gfxqcOvdqFoqcWxFbavTvPk/xg2uG2FcKfsFM+Nte9OMkSxNxnfkUWq
-         IzwQ==
-X-Gm-Message-State: AOAM53358lZV0N4vkPUoCfxfagmRn1ajNW4CLdfEX/5ZH1mGqbDuWncC
-        j2MfHcUZAz5xLAi31XKS5Ef/8Q==
-X-Google-Smtp-Source: ABdhPJwRWBAs+yleFm5GhcTuxr1KlXgWqhCk+RoJTuTTOnsjL0UiSKVoBvEouzqIK5zI5rTU5FaO7A==
-X-Received: by 2002:a17:90a:be03:: with SMTP id a3mr611377pjs.43.1624319593246;
-        Mon, 21 Jun 2021 16:53:13 -0700 (PDT)
+        bh=1hap5rrkK42QaF5phRIGliKevrZCv+fxjBjTLJ/pE7w=;
+        b=FDYNczijhfiUYK/e9CiNEFW/WStlABAycIClIFRRCxWubWWr4BMfW9BtFAtaA025Wj
+         JUdin1y3YTJFCCDS32xlrbWlvi6GHC5egkd4iFN60bXP7I7S5xur21VZGIQ0pS2Wbjla
+         xxF+UA0w7ememrQpw6rrVyLG4jAiZlmX09TstVEhS6LkixuuB95mIuvOgia9rYX6wxqx
+         gEO5qAgBm2opKCfMVkMT9xHUp8m9nzGF3xRT6C7KZgephOdKfQXBYpS3pF3DIXjL8Te2
+         83cPd9MpaPQETbh6wq48eRfPiD/nGl9A0m1+DbAILFxZSlbvZUPxbXUZw7qAJYVd9vMl
+         AiPA==
+X-Gm-Message-State: AOAM533qD660mkqHiodrAsrxQqptLWftM7ujogp2jG6vb0Ubtne54E+b
+        Bc/2TXuyDtcFRSc47PlsuhcZUw==
+X-Google-Smtp-Source: ABdhPJwXH5vi0Xs9ZIXNanUJNzJ2JIBdTlSTrxUumm5ORFc6vCcYGBtgB9XO+d3fthNCPEvr8XR/lA==
+X-Received: by 2002:a17:90a:6be6:: with SMTP id w93mr598015pjj.171.1624319595138;
+        Mon, 21 Jun 2021 16:53:15 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:bdc1:a4b1:b06e:91d1])
-        by smtp.gmail.com with ESMTPSA id s27sm4339663pfg.169.2021.06.21.16.53.10
+        by smtp.gmail.com with ESMTPSA id s27sm4339663pfg.169.2021.06.21.16.53.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 16:53:12 -0700 (PDT)
+        Mon, 21 Jun 2021 16:53:14 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     gregkh@linuxfoundation.org, rafael@kernel.org,
         rafael.j.wysocki@intel.com, will@kernel.org, robin.murphy@arm.com,
@@ -57,14 +57,10 @@ Cc:     robdclark@chromium.org, linux-arm-msm@vger.kernel.org,
         saiprakash.ranjan@codeaurora.org, linux-mmc@vger.kernel.org,
         vbadigan@codeaurora.org, rajatja@google.com, saravanak@google.com,
         joel@joelfernandes.org, Douglas Anderson <dianders@chromium.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/6] drivers: base: Add bits to struct device to control iommu strictness
-Date:   Mon, 21 Jun 2021 16:52:44 -0700
-Message-Id: <20210621165230.2.Icfe7cbb2cc86a38dde0ee5ba240e0580a0ec9596@changeid>
+Subject: [PATCH 3/6] PCI: Indicate that we want to force strict DMA for untrusted devices
+Date:   Mon, 21 Jun 2021 16:52:45 -0700
+Message-Id: <20210621165230.3.I7accc008905590bb2b46f40f91a4aeda5b378007@changeid>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
 In-Reply-To: <20210621235248.2521620-1-dianders@chromium.org>
 References: <20210621235248.2521620-1-dianders@chromium.org>
@@ -74,66 +70,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-How to control the "strictness" of an IOMMU is a bit of a mess right
-now. As far as I can tell, right now:
-* You can set the default to "non-strict" and some devices (right now,
-  only PCI devices) can request to run in "strict" mode.
-* You can set the default to "strict" and no devices in the system are
-  allowed to run as "non-strict".
+At the moment the generic IOMMU framework reaches into the PCIe device
+to check the "untrusted" state and uses this information to figure out
+if it should be running the IOMMU in strict or non-strict mode. Let's
+instead set the new boolean in "struct device" to indicate when we
+want forced strictness.
 
-I believe this needs to be improved a bit. Specifically:
-* We should be able to default to "strict" mode but let devices that
-  claim to be fairly low risk request that they be run in "non-strict"
-  mode.
-* We should allow devices outside of PCIe to request "strict" mode if
-  the system default is "non-strict".
-
-I believe the correct way to do this is two bits in "struct
-device". One allows a device to force things to "strict" mode and the
-other allows a device to _request_ "non-strict" mode. The asymmetry
-here is on purpose. Generally if anything in the system makes a
-request for strictness of something then we want it strict. Thus
-drivers can only request (but not force) non-strictness.
-
-It's expected that the strictness fields can be filled in by the bus
-code like in the patch ("PCI: Indicate that we want to force strict
-DMA for untrusted devices") or by using the new pre_probe concept
-introduced in the patch ("drivers: base: Add the concept of
-"pre_probe" to drivers").
+NOTE: we still continue to set the "untrusted" bit in PCIe since that
+apparently is used for more than just IOMMU strictness. It probably
+makes sense for a later patchset to clarify all of the other needs we
+have for "untrusted" PCIe devices (perhaps add more booleans into the
+"struct device") so we can fully eliminate the need for the IOMMU
+framework to reach into a PCIe device.
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
 
- include/linux/device.h | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/pci/probe.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/device.h b/include/linux/device.h
-index f1a00040fa53..c1b985e10c47 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -449,6 +449,15 @@ struct dev_links_info {
-  *		and optionall (if the coherent mask is large enough) also
-  *		for dma allocations.  This flag is managed by the dma ops
-  *		instance from ->dma_supported.
-+ * @force_strict_iommu: If set to %true then we should force this device to
-+ *			iommu.strict regardless of the other defaults in the
-+ *			system. Only has an effect if an IOMMU is in place.
-+ * @request_non_strict_iommu: If set to %true and there are no other known
-+ *			      reasons to make the iommu.strict for this device,
-+ *			      then default to non-strict mode. This implies
-+ *			      some belief that the DMA master for this device
-+ *			      won't abuse the DMA path to compromise the kernel.
-+ *			      Only has an effect if an IOMMU is in place.
-  *
-  * At the lowest level, every device in a Linux system is represented by an
-  * instance of struct device. The device structure contains the information
-@@ -557,6 +566,8 @@ struct device {
- #ifdef CONFIG_DMA_OPS_BYPASS
- 	bool			dma_ops_bypass : 1;
- #endif
-+	bool			force_strict_iommu:1;
-+	bool			request_non_strict_iommu:1;
- };
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 275204646c68..8d81f0fb3e50 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -1572,8 +1572,10 @@ static void set_pcie_untrusted(struct pci_dev *dev)
+ 	 * untrusted as well.
+ 	 */
+ 	parent = pci_upstream_bridge(dev);
+-	if (parent && (parent->untrusted || parent->external_facing))
++	if (parent && (parent->untrusted || parent->external_facing)) {
+ 		dev->untrusted = true;
++		dev->dev.force_strict_iommu = true;
++	}
+ }
  
  /**
 -- 
