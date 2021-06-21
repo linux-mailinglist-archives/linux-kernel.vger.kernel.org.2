@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA093AE5D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09FD13AE5D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbhFUJWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:22:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44524 "EHLO
+        id S230430AbhFUJWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:22:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230302AbhFUJW3 (ORCPT
+        with ESMTP id S230392AbhFUJWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:22:29 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A8CC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:20:15 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id g192so5481503pfb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:20:15 -0700 (PDT)
+        Mon, 21 Jun 2021 05:22:32 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A10FC061760
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:20:18 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id pf4-20020a17090b1d84b029016f6699c3f2so4865388pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:20:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=h+Pr0hB3aQxiWpb5eCV/aiPVZfCXjZdbK/uF+fA2suE=;
-        b=GzDORQUQfU4EyaIz84r9ofxl7S2qiMUmnL8adgMAMRlSCje4XuoLkb9AZt5+OZ/uYc
-         bdmFmBbJfOOzTSdfwKiThKNfnYfOjUzcgK0E1v1AHbdJxj8yDUAmT/WcHTgZF5V86eaW
-         IOmErKVtiXIbnK72LGtHfyBwiLysLsLxXc0MfVqxq9qm/mlS5bUsh24zUD08THTH36H0
-         7lBFyItmFb6sudEMOE4c8N6ae5aX1P0TbHDDmPPZdn5KYMBx5RczSegJQAcVOZyMWfGg
-         vGNdwbIlfXD/vcmiDSuJsLaxrDRF+VXQsFrVUwIzFWJfHeRnc3YnWU0PCpSzn6OM8NwF
-         B5ZQ==
+        bh=bMx8BP4MqYPHp6/XglTQi8htgyQDCyPm2g5UMRM0MZY=;
+        b=iCa0Ce9ts0oLs1Mc9I319xqPvIhFbThuzm0+AGoxvFz9bQyewJwTrt4krfZCsdkkqx
+         JO+qWXwVx0iN4KfJKWFJybLmNSQNxsfTE+nQwBiYEs8I2arWPeh+G5Gib7c3gvT4q/5K
+         904OQ/JWYo+pzpGkZdotKSxGhLMhlnSsiDyQr+0vcT7wtpHgV7RU6AS+Dig6V+09zkYp
+         z2FAbjA8K73lHkH9LrHCID0QW2Na37AMrEhJP7x1eD9poBMPDD+/AK9/SVXopCgYYZy5
+         Bz5Vq8iwJLT3MQYDRGod0IDUKhR2LiHYeU/ej8Au/8vu04VKFsNBmMHVinY6Qf46yNX9
+         gwlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=h+Pr0hB3aQxiWpb5eCV/aiPVZfCXjZdbK/uF+fA2suE=;
-        b=VCJUPoLe/AzyoYD3oB/GLXLHdlFJ8qaoFErl14M/NU57rLplGCFR+wh5j9JTCw7z9M
-         fACYKaWS8/4c3hZ1vrAcc+6u3ETeSNeB2apF6wSqaeKVL5zXoZWBDhto7CcaJJjA+ETZ
-         Iptxdmlz0U8UhJgFvqsgWRdyXkSPK4pg6tXwDzKahMN2l5veZGBMQqmPrjxkBQJIe4Fo
-         g7546Vkjj4Tvt1hyfy1hRREVLAYXZjFgHUUWWGy8ORgPsQgBqhTHkXCsEW+u9G/jrwvd
-         jCv4n1ilNp6DAjWWzml1qCkkuYj0yfBpMRVlJgjvkdKP4s9bksBRQ1aNgug/IEJNPwdj
-         LAtQ==
-X-Gm-Message-State: AOAM533n1ZUtMZovyn0hSjLFkpCsT56lYDnY9iI+V5N6DVgwesBEcBB8
-        mAcNsb9pGXjNOX0tozFhYHaAxw==
-X-Google-Smtp-Source: ABdhPJztGqVoSVeigfrMYYjeWjpM2W5IxlGJLJaOWvr+uIBpPJEwCRmMsMAJm6R+YxhzlWO4jag9lw==
-X-Received: by 2002:a63:36c1:: with SMTP id d184mr23133582pga.47.1624267215148;
-        Mon, 21 Jun 2021 02:20:15 -0700 (PDT)
+        bh=bMx8BP4MqYPHp6/XglTQi8htgyQDCyPm2g5UMRM0MZY=;
+        b=SE0N1TD5lXMCVagy6+Hn6Za1El4lvGHb9qsNtZM2wI5Qea6kNuUkJ7bum8n04WDdmV
+         bHuaJjl9MjgcCF83TPwa9dXaIGjMAb/uZguxbwFv4+EccD5X9Pbj2wdyE2v03fwwjkzV
+         r2pk8i5uTlISWwP5Sr5tANGoAtG07IfExB7mfhREJxqLsTAXc+zerWDWRqyZ7vDHOwpy
+         SlzXfnnZpeM6wt1RS5rMW4e1pan3t7F5vJQi16KsuuOfkg/DZ3rDKIy6IHKaxtH2x31u
+         olsTIj5BI/EAu67SzAhi3PppSWzC58pySXEHNHV1c+OeGucIr2Q1piKenCoHM4IXgAT2
+         IPfg==
+X-Gm-Message-State: AOAM533Nwvo3+4BkWKEkGcN8msQYOiomM6tTKB+DZH5YJ5CXZ0zMFQUP
+        vkN5azy3eNkZamx+2UwvCfM4Bg==
+X-Google-Smtp-Source: ABdhPJzhuDmtMjVj9kZ5lFUaIFm9JahAOkD6rmg5jT5d9hhytkaKJ90FW2fH2r7D8iX8l2qz/1Fn5Q==
+X-Received: by 2002:a17:90b:1881:: with SMTP id mn1mr2569667pjb.225.1624267217999;
+        Mon, 21 Jun 2021 02:20:17 -0700 (PDT)
 Received: from localhost ([136.185.134.182])
-        by smtp.gmail.com with ESMTPSA id c18sm1521186pfo.143.2021.06.21.02.20.14
+        by smtp.gmail.com with ESMTPSA id u24sm15712153pfm.200.2021.06.21.02.20.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 02:20:14 -0700 (PDT)
+        Mon, 21 Jun 2021 02:20:17 -0700 (PDT)
 From:   Viresh Kumar <viresh.kumar@linaro.org>
 To:     Rafael Wysocki <rjw@rjwysocki.net>,
         Ionela Voinescu <ionela.voinescu@arm.com>,
@@ -55,11 +55,10 @@ To:     Rafael Wysocki <rjw@rjwysocki.net>,
 Cc:     linux-pm@vger.kernel.org,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Qian Cai <quic_qiancai@quicinc.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH V3 1/4] cpufreq: cppc: Fix potential memleak in cppc_cpufreq_cpu_init
-Date:   Mon, 21 Jun 2021 14:49:34 +0530
-Message-Id: <579689469ed8a7dfd68dcbb41e9191472799a326.1624266901.git.viresh.kumar@linaro.org>
+Subject: [PATCH V3 2/4] cpufreq: cppc: Pass structure instance by reference
+Date:   Mon, 21 Jun 2021 14:49:35 +0530
+Message-Id: <b910f89cf11f6916319f9a2fb48d9146005318b1.1624266901.git.viresh.kumar@linaro.org>
 X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
 In-Reply-To: <cover.1624266901.git.viresh.kumar@linaro.org>
 References: <cover.1624266901.git.viresh.kumar@linaro.org>
@@ -69,81 +68,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's a classic example of memleak, we allocate something, we fail and
-never free the resources.
+Don't pass structure instance by value, pass it by reference instead.
 
-Make sure we free all resources on policy ->init() failures.
-
-Fixes: a28b2bfc099c ("cppc_cpufreq: replace per-cpu data array with a list")
 Tested-by: Vincent Guittot <vincent.guittot@linaro.org>
 Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 ---
- drivers/cpufreq/cppc_cpufreq.c | 30 ++++++++++++++++++++----------
- 1 file changed, 20 insertions(+), 10 deletions(-)
+ drivers/cpufreq/cppc_cpufreq.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-index be4f62e2c5f1..35b8ae66d1fb 100644
+index 35b8ae66d1fb..490175d65082 100644
 --- a/drivers/cpufreq/cppc_cpufreq.c
 +++ b/drivers/cpufreq/cppc_cpufreq.c
-@@ -256,6 +256,16 @@ static struct cppc_cpudata *cppc_cpufreq_get_cpu_data(unsigned int cpu)
- 	return NULL;
+@@ -373,18 +373,18 @@ static inline u64 get_delta(u64 t1, u64 t0)
  }
  
-+static void cppc_cpufreq_put_cpu_data(struct cpufreq_policy *policy)
-+{
-+	struct cppc_cpudata *cpu_data = policy->driver_data;
-+
-+	list_del(&cpu_data->node);
-+	free_cpumask_var(cpu_data->shared_cpu_map);
-+	kfree(cpu_data);
-+	policy->driver_data = NULL;
-+}
-+
- static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
+ static int cppc_get_rate_from_fbctrs(struct cppc_cpudata *cpu_data,
+-				     struct cppc_perf_fb_ctrs fb_ctrs_t0,
+-				     struct cppc_perf_fb_ctrs fb_ctrs_t1)
++				     struct cppc_perf_fb_ctrs *fb_ctrs_t0,
++				     struct cppc_perf_fb_ctrs *fb_ctrs_t1)
  {
- 	unsigned int cpu = policy->cpu;
-@@ -309,7 +319,8 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 	default:
- 		pr_debug("Unsupported CPU co-ord type: %d\n",
- 			 policy->shared_type);
--		return -EFAULT;
-+		ret = -EFAULT;
-+		goto out;
- 	}
+ 	u64 delta_reference, delta_delivered;
+ 	u64 reference_perf, delivered_perf;
  
- 	/*
-@@ -324,10 +335,14 @@ static int cppc_cpufreq_cpu_init(struct cpufreq_policy *policy)
- 	cpu_data->perf_ctrls.desired_perf =  caps->highest_perf;
+-	reference_perf = fb_ctrs_t0.reference_perf;
++	reference_perf = fb_ctrs_t0->reference_perf;
  
- 	ret = cppc_set_perf(cpu, &cpu_data->perf_ctrls);
--	if (ret)
--		pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
--			 caps->highest_perf, cpu, ret);
-+	if (!ret)
-+		return 0;
+-	delta_reference = get_delta(fb_ctrs_t1.reference,
+-				    fb_ctrs_t0.reference);
+-	delta_delivered = get_delta(fb_ctrs_t1.delivered,
+-				    fb_ctrs_t0.delivered);
++	delta_reference = get_delta(fb_ctrs_t1->reference,
++				    fb_ctrs_t0->reference);
++	delta_delivered = get_delta(fb_ctrs_t1->delivered,
++				    fb_ctrs_t0->delivered);
  
-+	pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
-+		 caps->highest_perf, cpu, ret);
-+
-+out:
-+	cppc_cpufreq_put_cpu_data(policy);
- 	return ret;
+ 	/* Check to avoid divide-by zero */
+ 	if (delta_reference || delta_delivered)
+@@ -415,7 +415,7 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpu)
+ 	if (ret)
+ 		return ret;
+ 
+-	return cppc_get_rate_from_fbctrs(cpu_data, fb_ctrs_t0, fb_ctrs_t1);
++	return cppc_get_rate_from_fbctrs(cpu_data, &fb_ctrs_t0, &fb_ctrs_t1);
  }
  
-@@ -345,12 +360,7 @@ static int cppc_cpufreq_cpu_exit(struct cpufreq_policy *policy)
- 		pr_debug("Err setting perf value:%d on CPU:%d. ret:%d\n",
- 			 caps->lowest_perf, cpu, ret);
- 
--	/* Remove CPU node from list and free driver data for policy */
--	free_cpumask_var(cpu_data->shared_cpu_map);
--	list_del(&cpu_data->node);
--	kfree(policy->driver_data);
--	policy->driver_data = NULL;
--
-+	cppc_cpufreq_put_cpu_data(policy);
- 	return 0;
- }
- 
+ static int cppc_cpufreq_set_boost(struct cpufreq_policy *policy, int state)
 -- 
 2.31.1.272.g89b43f80a514
 
