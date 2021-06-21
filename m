@@ -2,113 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B5AB3AF816
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42713AF819
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:53:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230499AbhFUVyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 17:54:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46172 "EHLO mail.kernel.org"
+        id S231864AbhFUV4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 17:56:03 -0400
+Received: from mga03.intel.com ([134.134.136.65]:54165 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232230AbhFUVyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 17:54:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F1B4611BD;
-        Mon, 21 Jun 2021 21:52:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624312320;
-        bh=ds7UMwrOUNRvkNN7isE4QPwQ9nMNx6ibI6CSTClrAo4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eTgk1e1JPpBNmU3pXlISS52zzuFJyrsKZ2z7FTRJTYyIcttBDmY0zxsODWCUkTZig
-         /VgHyE7t+Bdb+VG5ajnWBuLAv92xtMZlAYnkp4cqUCiPPRrYksRXt2OBLhpfVFdAxY
-         WzzgWtOPzMoJKrzcmRCvgqu21mmKHHm+bSeJBHXkNSQNFnQpRE9fKsMpD/6o/XHxTO
-         O+2FIHSG3fZm7M4FE5lxnRcYi3KrstrsI9be0YcN67+ohrtu+WJTwAnqh8XMQFX2Lv
-         I/VgxU+UM7DhCCglcRfak7uBCnLD2abHtqipdx4LeMzQj1GI+0sjp5KZJ8Ic6nIWE1
-         NRdQTGm6D23jA==
-Date:   Mon, 21 Jun 2021 14:51:59 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
-        Allison Henderson <allison.henderson@oracle.com>,
-        Chandan Babu R <chandanrlinux@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Signed-off-by missing for commits in the xfs tree
-Message-ID: <20210621215159.GE3619569@locust>
-References: <20210621082656.59cae0d8@canb.auug.org.au>
- <20210621171208.GD3619569@locust>
- <20210622072719.1d312bf0@canb.auug.org.au>
+        id S230263AbhFUV4B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 17:56:01 -0400
+IronPort-SDR: jzaJHtAeTe+kaGeo7Jzl5o4zqAAHrXzwajs+wZjy8ppAUQPkyX8lgAmeM6UOfMSQYLkXoTbu5R
+ 1ZLPZlj818Ig==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="206979733"
+X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
+   d="scan'208";a="206979733"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 14:53:46 -0700
+IronPort-SDR: 9JkbAif2JeIyDUqy/2ZLO+refLXJf8h7ahP9j11N0Jn1J2BUVQjqmNQsUOyH8RbkBWrnwkd0lQ
+ az63/pUT1kJg==
+X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
+   d="scan'208";a="454029184"
+Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 14:53:45 -0700
+Date:   Mon, 21 Jun 2021 21:53:39 +0000
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch V3 00/66] x86/fpu: Spring cleaning and PKRU sanitizing
+Message-ID: <YNEKYysw6/fUgZrL@otcwcpicx3.sc.intel.com>
+References: <20210618141823.161158090@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210622072719.1d312bf0@canb.auug.org.au>
+In-Reply-To: <20210618141823.161158090@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 07:27:19AM +1000, Stephen Rothwell wrote:
-> Hi Darrick,
+Hi, X86 maintainers,
+
+On Fri, Jun 18, 2021 at 04:18:23PM +0200, Thomas Gleixner wrote:
+> The main parts of this series are:
 > 
-> On Mon, 21 Jun 2021 10:12:08 -0700 "Darrick J. Wong" <djwong@kernel.org> wrote:
-> >
-> > On Mon, Jun 21, 2021 at 08:26:56AM +1000, Stephen Rothwell wrote:
-> > > 
-> > > Commits
-> > > 
-> > >   742140d2a486 ("xfs: xfs_log_force_lsn isn't passed a LSN")
-> > >   e30fbb337045 ("xfs: Fix CIL throttle hang when CIL space used going backwards")
-> > >   feb616896031 ("xfs: journal IO cache flush reductions")
-> > >   6a5c6f5ef0a4 ("xfs: remove need_start_rec parameter from xlog_write()")
-> > >   d7693a7f4ef9 ("xfs: CIL checkpoint flushes caches unconditionally")
-> > >   e45cc747a6fd ("xfs: async blkdev cache flush")
-> > >   9b845604a4d5 ("xfs: remove xfs_blkdev_issue_flush")
-> > >   25f25648e57c ("xfs: separate CIL commit record IO")
-> > >   a6a65fef5ef8 ("xfs: log stripe roundoff is a property of the log")
-> > > 
-> > > are missing a Signed-off-by from their committers.  
-> > 
-> > <sigh> Ok, I'll rebase the branch again to fix the paperwork errors.
-> > 
-> > For future reference, if I want to continue accepting pull requests from
-> > other XFS developers, what are the applicable standards for adding the
-> > tree maintainer's (aka my) S-o-B tags?  I can't add my own S-o-Bs after
-> > the fact without rewriting the branch history and changing the commit
-> > ids (which would lose the signed tag), so I guess that means the person
-> > sending the pull request has to add my S-o-B for me?  Which also doesn't
-> > make sense?
-> 
-> If you want to take a pull request, then use "git pull" (or "git fetch"
-> followed by "git merge") which will create a merge commit committed by
-> you.  The above commits were applied to your tree by you as patches (or
-> rebased) and so need your sign off.  The commits in a branch that you
-> just merge into your tree only need the SOBs for their author(s) and
-> committer.
+>   - Yet more bug fixes
+...
+> and is also available via git:
+>   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git x86/fpu
+...
+> Changes vs. V2:
+...
 
-I was about to point out all the complaints about when I actually /did/
-merge Dave's branch, but I realized that those complaints were actually
-because he wasn't consistently signing patches with the same email
-address.
+After reverting the disabling PASID patch, resolving one PKRU conflict, and
+porting the latest internal IDXD patches to this series, I can run stress
+PASID context switch tests on this series (and v2 as well). I don't see any
+issue for PASID context switch.
 
-Um... do you know if there's a commit hook or something that all of us
-can add to spot-check all this stuff?  I would really like to spend my
-worry beans on about algorithms and code design, not worrying about how
-many signature rules can be bent before LT starts refusing pull requests.
+Also thank you very much for moving the PASID feature forward.
 
-> If you then rebase your tree (with merge commits in it), you need to
-> use "git rebase -r" to preserve the merge commits.  alternatively, you
-> can rebase the commits you applied as patches and then redo the
-> pulls/merges manually.  You generally should not rebase other's work.
-> 
-> Of course, you should not really rebase a published tree at all (unless
-> vitally necessary) - see Documentation/maintainer/rebasing-and-merging.rst
-
-Heh.  That ship has sailed, unfortunately.  If we /really/ care about
-maintainers adding their own SoB tags to non-merge commits then I /have/
-to rebase.
-
---D
-
-> 
-> -- 
-> Cheers,
-> Stephen Rothwell
-
-
+-Fenghua
