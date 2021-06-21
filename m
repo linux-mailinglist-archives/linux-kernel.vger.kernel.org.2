@@ -2,185 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F15C3AF7F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818753AF7F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231803AbhFUVtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 17:49:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24517 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232173AbhFUVtY (ORCPT
+        id S232156AbhFUVtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 17:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44982 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232248AbhFUVt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 17:49:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624312028;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EPGq6buGb7ejt5zPN/7ICG1K/mOBpwuloXcDHzUu2+U=;
-        b=Tjb2xqciMs2xbndR7eZdwNXvAw4F2fVCAB7KQS54Ogu1mfbQfpIzaa4ATGbd6yfRuSfBs1
-        EAlJF+rFwVgQPLHmukO1S2yG1CyJarb7FLxmoCPuCa+zdo6TkYo3CcE2dHKa2bicOovH/q
-        7UIS7nIPJ3Qa/tVL+/hNGfolpoD7FjY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-303-1JTlQtHNMW6iY_oE3SQIiQ-1; Mon, 21 Jun 2021 17:47:07 -0400
-X-MC-Unique: 1JTlQtHNMW6iY_oE3SQIiQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CE954800C78;
-        Mon, 21 Jun 2021 21:47:05 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4752019D7C;
-        Mon, 21 Jun 2021 21:46:59 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH 10/12] fscache: Fix cookie key hashing
-From:   David Howells <dhowells@redhat.com>
-To:     linux-cachefs@redhat.com
-Cc:     dhowells@redhat.com, Anna Schumaker <anna.schumaker@netapp.com>,
-        Steve French <sfrench@samba.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Jeff Layton <jlayton@redhat.com>,
-        David Wysochanski <dwysocha@redhat.com>,
-        linux-afs@lists.infradead.org, linux-nfs@vger.kernel.org,
-        linux-cifs@vger.kernel.org, ceph-devel@vger.kernel.org,
-        v9fs-developer@lists.sourceforge.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 21 Jun 2021 22:46:58 +0100
-Message-ID: <162431201844.2908479.8293647220901514696.stgit@warthog.procyon.org.uk>
-In-Reply-To: <162431188431.2908479.14031376932042135080.stgit@warthog.procyon.org.uk>
-References: <162431188431.2908479.14031376932042135080.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Mon, 21 Jun 2021 17:49:28 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45603C061574;
+        Mon, 21 Jun 2021 14:47:12 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id y21so3447311plb.4;
+        Mon, 21 Jun 2021 14:47:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UjNYybjriSaiaPFdhHa4SDxjkkYU7938Mu34wZbwP54=;
+        b=VbIMdRAjGVcJXQux/m1jlNbeupCJziTFLwgyJI16HnqejqxNMX7Qm+RkmN1A6IDj7F
+         d8EGuFBrAL0pOIc+kjJkZzK/WP0qEXAuFssyi8JLaUl4BAw4rVAzBV/EBO1IWtxlARxD
+         utbzrg2qfIvJ5xViWev+SggBLS1bj700yamCI7OQ+qnfaZOv4/paR4E9uQK8cpsNYGjg
+         OSOdNFZj07hs3aPbaoTWMvrcVtLwIW1DPzdKAgnmHRrxsk62Xlm7USZjYOu15s3nqKZP
+         yhSr90ihFmGamU+gNXNpJk7wlz0Qh5wj4honOyDZY3D6H1Fbq09dbRADtaQSXeGys4Sm
+         0S3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UjNYybjriSaiaPFdhHa4SDxjkkYU7938Mu34wZbwP54=;
+        b=Tb6LWoWyR6NdBXIEkXMB7FY7SPJPt0oITLcOF04RLVcVP0iDe1+UA+IY54IC2cDVlR
+         l9fckLQddwdXBGePUreeCxXgMrnaJljNhOA9TX4NQkHKcddv11c/JU8g9WeL9JhbvuHQ
+         38e00wQeHxQysZO1m+3NeznVIVGeEJWJU1Qeb/ZgJvH1eRK3lfNJPDpHnEes94t33rdY
+         X0U5RZh6Bj2rrewixWklsE2tA/beof6IGmWmuYTLD/IoFWXh+KdkEOurzwIrqnRBxLcu
+         ipdrgnd+vAgaq/6YHlmq+dDpmaTfhdleBCbTWFBJN2n2Yj5Bzljel9RhQ1qeee7mb/df
+         X6KA==
+X-Gm-Message-State: AOAM533FwqRa+8RPdDlaWBIa55qluzJgJt3F0wMzbLYhyLSiQqYtm4XV
+        rrdp+T72To5k4y829bWuwgo=
+X-Google-Smtp-Source: ABdhPJzt6vw3hevQmRaCEgHZbbis3Hnqcn//YXBeuM34oZeIvBr3lOtzbDSgHl+wR3Uxx0ed9skjwQ==
+X-Received: by 2002:a17:90a:7641:: with SMTP id s1mr293233pjl.185.1624312031758;
+        Mon, 21 Jun 2021 14:47:11 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id q27sm6841710pfg.63.2021.06.21.14.47.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 14:47:11 -0700 (PDT)
+Subject: Re: [PATCH] net: bcmgenet: Fix attaching to PYH failed on RPi 4B
+To:     Stefan Wahren <stefan.wahren@i2se.com>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Jian-Hong Pan <jhp@endlessos.org>,
+        Doug Berger <opendmb@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux@endlessos.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org
+References: <20210621103310.186334-1-jhp@endlessos.org>
+ <YNCPcmEPuwdwoLto@lunn.ch> <35f4baae-a6e1-c87d-279c-74f8c18bb5d1@gmail.com>
+ <CALeDE9MjRLjTQ1R2nw_rnXsCXKHLMx8XqvG881xgqKz2aJRGfA@mail.gmail.com>
+ <9c0ae9ad-0162-42d9-c4f8-f98f6333b45a@i2se.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <745e7a21-d189-39d7-504a-bdae58cfb8ad@gmail.com>
+Date:   Mon, 21 Jun 2021 14:47:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <9c0ae9ad-0162-42d9-c4f8-f98f6333b45a@i2se.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current hash algorithm used for hashing cookie keys is really bad,
-producing almost no dispersion (after a test kernel build, ~30000 files
-were split over just 18 out of the 32768 hash buckets).
+On 6/21/21 1:15 PM, Stefan Wahren wrote:
+> Am 21.06.21 um 18:56 schrieb Peter Robinson:
+>> On Mon, Jun 21, 2021 at 5:39 PM Florian Fainelli <f.fainelli@gmail.com> wrote:
+>>> On 6/21/21 6:09 AM, Andrew Lunn wrote:
+>>>> On Mon, Jun 21, 2021 at 06:33:11PM +0800, Jian-Hong Pan wrote:
+>>>>> The Broadcom UniMAC MDIO bus comes too late. So, GENET cannot find the
+>>>>> ethernet PHY on UniMAC MDIO bus. This leads GENET fail to attach the
+>>>>> PHY.
+>>>>>
+>>>>> bcmgenet fd580000.ethernet: GENET 5.0 EPHY: 0x0000
+>>>>> ...
+>>>>> could not attach to PHY
+>>>>> bcmgenet fd580000.ethernet eth0: failed to connect to PHY
+>>>>> uart-pl011 fe201000.serial: no DMA platform data
+>>>>> libphy: bcmgenet MII bus: probed
+>>>>> ...
+>>>>> unimac-mdio unimac-mdio.-19: Broadcom UniMAC MDIO bus
+>>>>>
+>>>>> This patch makes GENET try to connect the PHY up to 3 times. Also, waits
+>>>>> a while between each time for mdio-bcm-unimac module's loading and
+>>>>> probing.
+>>>> Don't loop. Return -EPROBE_DEFER. The driver core will then probed the
+>>>> driver again later, by which time, the MDIO bus driver should of
+>>>> probed.
+>>> This is unlikely to work because GENET register the mdio-bcm-unimac
+>>> platform device so we will likely run into a chicken and egg problem,
+>>> though surprisingly I have not seen this on STB platforms where GENET is
+>>> used, I will try building everything as a module like you do. Can you
+>>> see if the following helps:
+>> For reference we have mdio_bcm_unimac/genet both built as modules in
+>> Fedora and I've not seen this issue reported using vanilla upstream
+>> kernels if that's a useful reference point.
+> 
+> I was also unable to reproduce this issue, but it seems to be a known
+> issue [1], [2].
+> 
+> Jian-Hong opened an issue in my Github repo [3], but before the issue
+> was narrowed down, he decided to send this workaround.
 
-Borrow the full_name_hash() hash function into fscache to do the hashing
-for cookie keys and, in the future, volume keys.
+The comment about changing the phy-mode property is not quite making
+sense to me, except if that means that in one case the Broadcom PHY
+driver is used and in the other case the Generic PHY driver is used.
 
-I don't want to use full_name_hash() as-is because I want the hash value to
-be consistent across arches and over time as the hash value produced may
-get used on disk.
-
-I can also optimise parts of it away as the key will always be a padded
-array of aligned 32-bit words.
-
-Signed-off-by: David Howells <dhowells@redhat.com>
----
-
- fs/fscache/cookie.c   |   14 +-------------
- fs/fscache/internal.h |    2 ++
- fs/fscache/main.c     |   39 +++++++++++++++++++++++++++++++++++++++
- 3 files changed, 42 insertions(+), 13 deletions(-)
-
-diff --git a/fs/fscache/cookie.c b/fs/fscache/cookie.c
-index ec9bce33085f..2558814193e9 100644
---- a/fs/fscache/cookie.c
-+++ b/fs/fscache/cookie.c
-@@ -87,10 +87,8 @@ void fscache_free_cookie(struct fscache_cookie *cookie)
- static int fscache_set_key(struct fscache_cookie *cookie,
- 			   const void *index_key, size_t index_key_len)
- {
--	unsigned long long h;
- 	u32 *buf;
- 	int bufs;
--	int i;
- 
- 	bufs = DIV_ROUND_UP(index_key_len, sizeof(*buf));
- 
-@@ -104,17 +102,7 @@ static int fscache_set_key(struct fscache_cookie *cookie,
- 	}
- 
- 	memcpy(buf, index_key, index_key_len);
--
--	/* Calculate a hash and combine this with the length in the first word
--	 * or first half word
--	 */
--	h = (unsigned long)cookie->parent;
--	h += index_key_len + cookie->type;
--
--	for (i = 0; i < bufs; i++)
--		h += buf[i];
--
--	cookie->key_hash = h ^ (h >> 32);
-+	cookie->key_hash = fscache_hash(0, buf, bufs);
- 	return 0;
- }
- 
-diff --git a/fs/fscache/internal.h b/fs/fscache/internal.h
-index 200082cafdda..a49136c63e4b 100644
---- a/fs/fscache/internal.h
-+++ b/fs/fscache/internal.h
-@@ -74,6 +74,8 @@ extern struct workqueue_struct *fscache_object_wq;
- extern struct workqueue_struct *fscache_op_wq;
- DECLARE_PER_CPU(wait_queue_head_t, fscache_object_cong_wait);
- 
-+extern unsigned int fscache_hash(unsigned int salt, unsigned int *data, unsigned int n);
-+
- static inline bool fscache_object_congested(void)
- {
- 	return workqueue_congested(WORK_CPU_UNBOUND, fscache_object_wq);
-diff --git a/fs/fscache/main.c b/fs/fscache/main.c
-index c1e6cc9091aa..4207f98e405f 100644
---- a/fs/fscache/main.c
-+++ b/fs/fscache/main.c
-@@ -93,6 +93,45 @@ static struct ctl_table fscache_sysctls_root[] = {
- };
- #endif
- 
-+/*
-+ * Mixing scores (in bits) for (7,20):
-+ * Input delta: 1-bit      2-bit
-+ * 1 round:     330.3     9201.6
-+ * 2 rounds:   1246.4    25475.4
-+ * 3 rounds:   1907.1    31295.1
-+ * 4 rounds:   2042.3    31718.6
-+ * Perfect:    2048      31744
-+ *            (32*64)   (32*31/2 * 64)
-+ */
-+#define HASH_MIX(x, y, a)	\
-+	(	x ^= (a),	\
-+	y ^= x,	x = rol32(x, 7),\
-+	x += y,	y = rol32(y,20),\
-+	y *= 9			)
-+
-+static inline unsigned int fold_hash(unsigned long x, unsigned long y)
-+{
-+	/* Use arch-optimized multiply if one exists */
-+	return __hash_32(y ^ __hash_32(x));
-+}
-+
-+/*
-+ * Generate a hash.  This is derived from full_name_hash(), but we want to be
-+ * sure it is arch independent and that it doesn't change as bits of the
-+ * computed hash value might appear on disk.  The caller also guarantees that
-+ * the hashed data will be a series of aligned 32-bit words.
-+ */
-+unsigned int fscache_hash(unsigned int salt, unsigned int *data, unsigned int n)
-+{
-+	unsigned int a, x = 0, y = salt;
-+
-+	for (; n; n--) {
-+		a = *data++;
-+		HASH_MIX(x, y, a);
-+	}
-+	return fold_hash(x, y);
-+}
-+
- /*
-  * initialise the fs caching module
-  */
-
-
+What is not clear to me from the debugging that has been done so far is
+whether the mdio-bcm-unimac MDIO controller was not loaded at the time
+of_phy_connect() was trying to identify the PHY device.
+--
+Florian
