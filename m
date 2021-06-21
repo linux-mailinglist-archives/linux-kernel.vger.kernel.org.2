@@ -2,145 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4393AED59
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E62F33AED5E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231164AbhFUQT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:19:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230397AbhFUQTQ (ORCPT
+        id S231239AbhFUQTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:19:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53320 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230367AbhFUQTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:19:16 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB22DC061766
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:17:01 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so310874pjo.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:17:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jaMOGou8OIStnzpQhBsWDMF6mgMEtciN1TT+obUCwVM=;
-        b=raHg184lpq5hdxIZOUa03J5hGpLnbvUlGC2AgkvFIevmfG0vvWey3+vzFt+MzOCfE8
-         70cyFg26xCYHEZTHJXjKmjIR8BwCJrNNcBx1zQGXWmgweNjZuub8kDDwgNQpa4TrvPMV
-         5lpXxwbGDwUIEmaGE0tnuuHsPsEkagjv3WOLQIYN0kdMSVPl9Xe/i6G82ZtfUO7yE4dB
-         7dGBpfpmFXKd4NeArvqOoEPRnWNcGQomKUD4otXtxumln8J8N6luPu5KUm8oTRMYOjK5
-         1p7bZ10qmSBfIqXRUUKPQxaY7xyYn4QuTbtJGID6c1+Ov/jMWqmqWJqG11+R8z9qpTMu
-         x8pA==
+        Mon, 21 Jun 2021 12:19:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624292225;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1lxNM0QUCMLo1E6bAwNt8D/Sfkwf585U1gKeMbqY/jk=;
+        b=Z6/LIlNtumsr3gIVaIpIBiKYj9oegPRSRfkwTKvCR5u8hrc2VE0hHuiKnoT0lLu2Wg765P
+        lDNlSJoDPuC5DqDDe3wkkZ9Soa/qs7ie2svhYK2uqcD3Zcj9RwNLMnIl1DLdWxxa5dKbuK
+        T40oFiMHJmhSIkUgsJOpId8Sbsa4gNI=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-512-Q_vQb9dNN5uuiXanQ53f_g-1; Mon, 21 Jun 2021 12:16:53 -0400
+X-MC-Unique: Q_vQb9dNN5uuiXanQ53f_g-1
+Received: by mail-qv1-f71.google.com with SMTP id ez18-20020ad459120000b029020e62abfcbdso5911764qvb.16
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:16:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jaMOGou8OIStnzpQhBsWDMF6mgMEtciN1TT+obUCwVM=;
-        b=QCuUM9wlCd8TjEN4rldYRd9owX+5H/8lz9mdGV+LVB+sVjlMow8IkJEGrNVA9EWr8z
-         /GgNa/gdrY2QVdvetBv4ngDR8snVZqtlAiM+Q8I/X872zQ45NnIWQm2r+IGoRXGS55ls
-         Gs5rJwWPNmN7dDHgQ+hEKIVbZNoDrGQXPjWUhExMOx8VxuZyKWIUkUW8IWUxItf5pWrm
-         y9a6DA6D9f3sJAiA1SJI80uIzxZQwY4oAbXywZ8mmpKTg7T5g0UJSD8SNlcOYf/GxZpX
-         1aEXnqpJ8DtDgLmfc4P/b5ouW/qLRMtV6PQuu7WEKQOXpswIdoW2CuyTCcCioMHH/uaA
-         5KzQ==
-X-Gm-Message-State: AOAM533KX88e2/BW4GDFa3Um8KbTaBY27b9Rh3lGYYG1IjgeGtHEewMY
-        +wJOy+NOwVtUFFDc0FmL+vZK
-X-Google-Smtp-Source: ABdhPJynJqEM4LRtZGuRfZbJP3V1HEZ/MDJno6HiGK0ooXodFsKHCtoZFTs9J43IxQXPU4yx+xxcyg==
-X-Received: by 2002:a17:90b:b03:: with SMTP id bf3mr39349905pjb.47.1624292221286;
-        Mon, 21 Jun 2021 09:17:01 -0700 (PDT)
-Received: from localhost.localdomain ([120.138.13.116])
-        by smtp.gmail.com with ESMTPSA id k88sm10734730pjk.15.2021.06.21.09.16.57
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1lxNM0QUCMLo1E6bAwNt8D/Sfkwf585U1gKeMbqY/jk=;
+        b=OGxCCNcQLZJjzYDTX935Tlsy6NkWoKF2cc9aEZU0yVnElvlNt0awKciKttv6YBZD0/
+         JxUHma6WminKmzIFuM40WMKA0/UxL/AeJi3jGJvU5u/FL8iGtdqeT8Ov2s6yLTuWyDmk
+         72vRNBvcI5AjxutigJJK7jWGTXOQseMGeVywKbRQoYwB4hkUe1MFmx5KMuM+9LWvH8nG
+         2bFI7nmmi7YOIjwxd7Vk9oNNL/WS4Kgv0Wu8EkGQbeYY99O+g+yGImbnMQZUwY0qfBRy
+         XhosThEZWi/2dL2UPUAwWFVnBn3LvSTQh5ph7zlE8z0wG/vPJ3ibq5m4D7xWua+ttdHj
+         JUXQ==
+X-Gm-Message-State: AOAM533v3aV0kw/471UpFWk44bDrXLpRzL9ACBmTQwjQh+GvKqXE67ae
+        tbiJgugV9QJlqhGMg+AWFqdYWJOiF73OBK3YjmIjzZQmLasQ6ApJFPhCQrvOtTv4VMLg2/FJ9T1
+        PE1dMANUTZZ0K8blO0/8fMFjg
+X-Received: by 2002:a05:6214:2a8a:: with SMTP id jr10mr21094079qvb.50.1624292212835;
+        Mon, 21 Jun 2021 09:16:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyr8NyDm41sDPcWGbbW3nH7HmA5CPGjpBNBrdzq7EcUuinbByU3GhTpe5HQQ9rYId+u5U//BA==
+X-Received: by 2002:a05:6214:2a8a:: with SMTP id jr10mr21094050qvb.50.1624292212565;
+        Mon, 21 Jun 2021 09:16:52 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-65-184-144-111-238.dsl.bell.ca. [184.144.111.238])
+        by smtp.gmail.com with ESMTPSA id f11sm10131487qka.55.2021.06.21.09.16.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 09:17:00 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org,
-        ULRICH Thomas <thomas.ulrich@thalesgroup.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 8/8] bus: mhi: pci_generic: Add Cinterion MV31-W PCIe to MHI
-Date:   Mon, 21 Jun 2021 21:46:16 +0530
-Message-Id: <20210621161616.77524-9-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210621161616.77524-1-manivannan.sadhasivam@linaro.org>
-References: <20210621161616.77524-1-manivannan.sadhasivam@linaro.org>
+        Mon, 21 Jun 2021 09:16:52 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 12:16:50 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Alistair Popple <apopple@nvidia.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: [PATCH v3 08/27] mm: Introduce zap_details.zap_flags
+Message-ID: <YNC7csnnSWXz6xvJ@t490s>
+References: <20210527201927.29586-1-peterx@redhat.com>
+ <20210527202130.30840-1-peterx@redhat.com>
+ <5845701.Ud2vPSPtVx@nvdebian>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <5845701.Ud2vPSPtVx@nvdebian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ULRICH Thomas <thomas.ulrich@thalesgroup.com>
+On Mon, Jun 21, 2021 at 10:09:00PM +1000, Alistair Popple wrote:
+> On Friday, 28 May 2021 6:21:30 AM AEST Peter Xu wrote:
+> > Instead of trying to introduce one variable for every new zap_details fields,
+> > let's introduce a flag so that it can start to encode true/false informations.
+> > 
+> > Let's start to use this flag first to clean up the only check_mapping variable.
+> > Firstly, the name "check_mapping" implies this is a "boolean", but actually it
+> > stores the mapping inside, just in a way that it won't be set if we don't want
+> > to check the mapping.
+> > 
+> > To make things clearer, introduce the 1st zap flag ZAP_FLAG_CHECK_MAPPING, so
+> > that we only check against the mapping if this bit set.  At the same time, we
+> > can rename check_mapping into zap_mapping and set it always.
+> > 
+> > Since at it, introduce another helper zap_check_mapping_skip() and use it in
+> > zap_pte_range() properly.
+> > 
+> > Some old comments have been removed in zap_pte_range() because they're
+> > duplicated, and since now we're with ZAP_FLAG_CHECK_MAPPING flag, it'll be very
+> > easy to grep this information by simply grepping the flag.
+> > 
+> > It'll also make life easier when we want to e.g. pass in zap_flags into the
+> > callers like unmap_mapping_pages() (instead of adding new booleans besides the
+> > even_cows parameter).
+> > 
+> > Signed-off-by: Peter Xu <peterx@redhat.com>
+> > ---
+> >  include/linux/mm.h | 19 ++++++++++++++++++-
+> >  mm/memory.c        | 31 ++++++++-----------------------
+> >  2 files changed, 26 insertions(+), 24 deletions(-)
+> > 
+> > diff --git a/include/linux/mm.h b/include/linux/mm.h
+> > index db155be8e66c..52d3ef2ed753 100644
+> > --- a/include/linux/mm.h
+> > +++ b/include/linux/mm.h
+> > @@ -1721,13 +1721,30 @@ static inline bool can_do_mlock(void) { return false; }
+> >  extern int user_shm_lock(size_t, struct user_struct *);
+> >  extern void user_shm_unlock(size_t, struct user_struct *);
+> >  
+> > +/* Whether to check page->mapping when zapping */
+> > +#define  ZAP_FLAG_CHECK_MAPPING             BIT(0)
+> > +
+> >  /*
+> >   * Parameter block passed down to zap_pte_range in exceptional cases.
+> >   */
+> >  struct zap_details {
+> > -	struct address_space *check_mapping;	/* Check page->mapping if set */
+> > +	struct address_space *zap_mapping;
+> > +	unsigned long zap_flags;
+> >  };
+> >  
+> > +/* Return true if skip zapping this page, false otherwise */
+> > +static inline bool
+> > +zap_check_mapping_skip(struct zap_details *details, struct page *page)
+> > +{
+> > +	if (!details || !page)
+> > +		return false;
+> > +
+> > +	if (!(details->zap_flags & ZAP_FLAG_CHECK_MAPPING))
+> > +		return false;
 
-This patch adds VendorID/ProductID and MBIM Channel Definitions for
-M.2 Modem Card (PCIe Variant) to MHI PCI generic controller driver.
+[1]
 
-Cinterion MV31-W (by Thales)
-Additional information on such Modem Card (USB or PCIe variant) is
-available at:
-https://www.thalesgroup.com/en/markets/digital-identity-and-security/iot/iot-connectivity/products/iot-products/mv31-w-ultra-high
+> > +
+> > +	return details->zap_mapping != page_rmapping(page);
+> 
+> I doubt this matters in practice, but there is a slight behaviour change
+> here that might be worth checking. Previously this check was equivalent
+> to:
+> 
+> details->zap_mapping && details->zap_mapping != page_rmapping(page)
 
-Signed-off-by: ULRICH Thomas <thomas.ulrich@thalesgroup.com>
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Link: https://lore.kernel.org/r/PAZP264MB284690134DA010698E6B3BDDE60A9@PAZP264MB2846.FRAP264.PROD.OUTLOOK.COM
-[mani: fixed the subject, whitespace, and added sideband_wake field]
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/bus/mhi/pci_generic.c | 37 +++++++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
+Yes; IMHO "details->zap_mapping" is just replaced by the check at [1].
 
-diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
-index eb9263bd1bd8..1773cb3173bc 100644
---- a/drivers/bus/mhi/pci_generic.c
-+++ b/drivers/bus/mhi/pci_generic.c
-@@ -350,6 +350,40 @@ static const struct mhi_pci_dev_info mhi_foxconn_sdx55_info = {
- 	.sideband_wake = false
- };
- 
-+static const struct mhi_channel_config mhi_mv31_channels[] = {
-+	MHI_CHANNEL_CONFIG_UL(0, "LOOPBACK", 64, 0),
-+	MHI_CHANNEL_CONFIG_DL(1, "LOOPBACK", 64, 0),
-+	/* MBIM Control Channel */
-+	MHI_CHANNEL_CONFIG_UL(12, "MBIM", 64, 0),
-+	MHI_CHANNEL_CONFIG_DL(13, "MBIM", 64, 0),
-+	/* MBIM Data Channel */
-+	MHI_CHANNEL_CONFIG_HW_UL(100, "IP_HW0_MBIM", 512, 2),
-+	MHI_CHANNEL_CONFIG_HW_DL(101, "IP_HW0_MBIM", 512, 3),
-+};
-+
-+static struct mhi_event_config mhi_mv31_events[] = {
-+	MHI_EVENT_CONFIG_CTRL(0, 256),
-+	MHI_EVENT_CONFIG_DATA(1, 256),
-+	MHI_EVENT_CONFIG_HW_DATA(2, 1024, 100),
-+	MHI_EVENT_CONFIG_HW_DATA(3, 1024, 101)
-+};
-+
-+static const struct mhi_controller_config modem_mv31_config = {
-+	.max_channels = 128,
-+	.timeout_ms = 20000,
-+	.num_channels = ARRAY_SIZE(mhi_mv31_channels),
-+	.ch_cfg = mhi_mv31_channels,
-+	.num_events = ARRAY_SIZE(mhi_mv31_events),
-+	.event_cfg = mhi_mv31_events,
-+};
-+
-+static const struct mhi_pci_dev_info mhi_mv31_info = {
-+	.name = "cinterion-mv31",
-+	.config = &modem_mv31_config,
-+	.bar_num = MHI_PCI_DEFAULT_BAR_NUM,
-+	.dma_data_width = 32
-+};
-+
- static const struct pci_device_id mhi_pci_id_table[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_QCOM, 0x0306),
- 		.driver_data = (kernel_ulong_t) &mhi_qcom_sdx55_info },
-@@ -370,6 +404,9 @@ static const struct pci_device_id mhi_pci_id_table[] = {
- 	/* DW5930e (sdx55), Non-eSIM, It's also T99W175 */
- 	{ PCI_DEVICE(PCI_VENDOR_ID_FOXCONN, 0xe0b1),
- 		.driver_data = (kernel_ulong_t) &mhi_foxconn_sdx55_info },
-+	/* MV31-W (Cinterion) */
-+	{ PCI_DEVICE(0x1269, 0x00b3),
-+		.driver_data = (kernel_ulong_t) &mhi_mv31_info },
- 	{  }
- };
- MODULE_DEVICE_TABLE(pci, mhi_pci_id_table);
+For example, there's only one real user of this mapping check, which is
+unmap_mapping_pages() below [2].
+
+With the old code, we have:
+
+    details.check_mapping = even_cows ? NULL : mapping;
+
+So "details->zap_mapping" is only true if "!even_cows".
+
+With the new code, we'll have:
+
+    if (!even_cows)
+        details.zap_flags |= ZAP_FLAG_CHECK_MAPPING;
+
+So ZAP_FLAG_CHECK_MAPPING is only set if "!even_cows", while that's what we
+check exactly at [1].
+
+> 
+> Otherwise I think this looks good.
+> 
+> > +}
+> > +
+> >  struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
+> >  			     pte_t pte);
+> >  struct page *vm_normal_page_pmd(struct vm_area_struct *vma, unsigned long addr,
+> > diff --git a/mm/memory.c b/mm/memory.c
+> > index 27cf8a6375c6..c9dc4e9e05b5 100644
+> > --- a/mm/memory.c
+> > +++ b/mm/memory.c
+> > @@ -1330,16 +1330,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+> >  			struct page *page;
+> >  
+> >  			page = vm_normal_page(vma, addr, ptent);
+> > -			if (unlikely(details) && page) {
+> > -				/*
+> > -				 * unmap_shared_mapping_pages() wants to
+> > -				 * invalidate cache without truncating:
+> > -				 * unmap shared but keep private pages.
+> > -				 */
+> > -				if (details->check_mapping &&
+> > -				    details->check_mapping != page_rmapping(page))
+> > -					continue;
+> > -			}
+> > +			if (unlikely(zap_check_mapping_skip(details, page)))
+> > +				continue;
+> >  			ptent = ptep_get_and_clear_full(mm, addr, pte,
+> >  							tlb->fullmm);
+> >  			tlb_remove_tlb_entry(tlb, pte, addr);
+> > @@ -1372,17 +1364,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+> >  		    is_device_exclusive_entry(entry)) {
+> >  			struct page *page = pfn_swap_entry_to_page(entry);
+> >  
+> > -			if (unlikely(details && details->check_mapping)) {
+> > -				/*
+> > -				 * unmap_shared_mapping_pages() wants to
+> > -				 * invalidate cache without truncating:
+> > -				 * unmap shared but keep private pages.
+> > -				 */
+> > -				if (details->check_mapping !=
+> > -				    page_rmapping(page))
+> > -					continue;
+> > -			}
+> > -
+> > +			if (unlikely(zap_check_mapping_skip(details, page)))
+> > +				continue;
+> >  			pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+> >  			rss[mm_counter(page)]--;
+> >  
+> > @@ -3345,9 +3328,11 @@ void unmap_mapping_pages(struct address_space *mapping, pgoff_t start,
+> >  		pgoff_t nr, bool even_cows)
+> >  {
+> >  	pgoff_t	first_index = start, last_index = start + nr - 1;
+> > -	struct zap_details details = { };
+> > +	struct zap_details details = { .zap_mapping = mapping };
+> > +
+> > +	if (!even_cows)
+> > +		details.zap_flags |= ZAP_FLAG_CHECK_MAPPING;
+> >  
+> > -	details.check_mapping = even_cows ? NULL : mapping;
+
+[2]
+
+> >  	if (last_index < first_index)
+> >  		last_index = ULONG_MAX;
+
+Thanks,
+
 -- 
-2.25.1
+Peter Xu
 
