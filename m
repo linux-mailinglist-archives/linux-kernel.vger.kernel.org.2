@@ -2,198 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 327123AE620
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 004923AE624
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229837AbhFUJiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:38:17 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:60944 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229618AbhFUJiQ (ORCPT
+        id S230175AbhFUJjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:39:41 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:40804 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230157AbhFUJjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:38:16 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15L9V95k004978;
-        Mon, 21 Jun 2021 11:35:59 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : from : to
- : cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=cEKfFG+DvVlEzva9JAEDZw+BFhMbND+iXMTgwIbDSvY=;
- b=NbIkgOsWnZyN7hP4zE1bCsj7r8ck8dLuDDY/L+SshVxz07AWPlIEy5jMsvTtwgHUkLLg
- 7RFHA0+6WjQPlv7lLA+F6nS3nJ+1Xbu0yG1pBoE9MKIAWl94IFCVwaiqqpXT+/66+Ncf
- r4kEZ2M+LO7oKua4PHuGe08M8LQQ43qtmQq3juB6yW8IU3xlwzBxBooPXTVCr+DVX+ee
- jZU9N+nQhtm4nJ599tE3av0zEA0MWwXpyF+Vge9GgnYFEThMRcPzUxVNcx5Da8tLzteq
- d/Xbb0a9nRUtGqIOBx16Lk1oyVtI/BG0yuZU6bOHUxLXPT/k7WVfKiOLpCpGA97dxlcM Qw== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 39a5bhcet0-1
+        Mon, 21 Jun 2021 05:39:35 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15L9XqwC105046;
+        Mon, 21 Jun 2021 05:36:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : cc : references : in-reply-to : mime-version : message-id :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=4ZEyiBsbMbK1xEA4DpKUJ+TBbAvfCUs1ViNugB8goc0=;
+ b=L/APn20XlVkCqViWjr2G7rUk6gwh4bzGrjl3dwluunEj8XCNQGrZj/c6wM1Ci2pN1GAv
+ 4WjAWWg8EQbU+wIXzCZGt+E3rm+9YuGH2Dab9dl3DhFR2gzT2Ycm/zXr2GJ8b66Bh/tQ
+ iClc4Xb/QwWuSMhl+uYgbWFV8s3LiTpHhrEiozlRoVScueT0dDcl7KUDRnfgUTQww0Lq
+ N/d84eTAWo7Dgtq47oOfccOf+VtOuS8nwSbm+GF9JVu/6IiC+3+KAi9pdALDBVRoP2Hq
+ lprFY1QJci76hExmQTDQK/AMInyGFqzj6TbMddYFqEUyy65jeks7Ci74TsnXY+sh1onL nA== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39aqh81e3m-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Jun 2021 11:35:58 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C700110002A;
-        Mon, 21 Jun 2021 11:35:57 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3035321CA90;
-        Mon, 21 Jun 2021 11:35:57 +0200 (CEST)
-Received: from lmecxl0889.lme.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 21 Jun
- 2021 11:35:56 +0200
-Subject: Re: [PATCH 1/4] rpmsg: ctrl: Introduce RPMSG_CREATE_DEV_IOCTL
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20210604091406.15901-1-arnaud.pouliquen@foss.st.com>
- <20210604091406.15901-2-arnaud.pouliquen@foss.st.com>
- <20210615175334.GD604521@p14s>
- <1645a516-1d83-27bd-e9ed-c78a18bf4c52@foss.st.com>
-Message-ID: <adec5564-e38a-b50b-3216-255fd931a966@foss.st.com>
-Date:   Mon, 21 Jun 2021 11:35:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 21 Jun 2021 05:36:31 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15L9XSkk023046;
+        Mon, 21 Jun 2021 09:36:29 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 3997uh8swr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 09:36:29 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15L9aRI933751526
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Jun 2021 09:36:27 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EDB86A405F;
+        Mon, 21 Jun 2021 09:36:26 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 75229A4054;
+        Mon, 21 Jun 2021 09:36:26 +0000 (GMT)
+Received: from localhost (unknown [9.85.73.168])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 21 Jun 2021 09:36:26 +0000 (GMT)
+Date:   Mon, 21 Jun 2021 15:06:24 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Subject: Re: [PATCH] kprobes: Print an error if probe is rejected
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>, acme@kernel.org
+References: <20210610085617.1590138-1-naveen.n.rao@linux.vnet.ibm.com>
+        <20210610191643.d24e7d56d102567070fe8386@kernel.org>
+        <1623419180.o4u5xf72jm.naveen@linux.ibm.com>
+        <20210611154021.008537b0@gandalf.local.home>
+        <1623684632.0k2j6ky7k3.naveen@linux.ibm.com>
+        <20210619011516.dadbd24e27996bae62fd288f@kernel.org>
+In-Reply-To: <20210619011516.dadbd24e27996bae62fd288f@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <1645a516-1d83-27bd-e9ed-c78a18bf4c52@foss.st.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
- (10.75.127.6)
+User-Agent: astroid/v0.15-23-gcdc62b30
+ (https://github.com/astroidmail/astroid)
+Message-Id: <1624266910.z97eue1i84.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 2EEMzyilULTXk8SqlGrIbdodLq2zblMw
+X-Proofpoint-GUID: 2EEMzyilULTXk8SqlGrIbdodLq2zblMw
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
  definitions=2021-06-21_03:2021-06-20,2021-06-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 adultscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
+ spamscore=0 mlxscore=0 bulkscore=0 priorityscore=1501 clxscore=1015
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106210055
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Masami,
+
+Masami Hiramatsu wrote:
+> Hi Naveen,
+>=20
+> On Mon, 14 Jun 2021 21:00:52 +0530
+> "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
+>=20
+>> Steven Rostedt wrote:
+>> > On Fri, 11 Jun 2021 19:25:38 +0530
+>> > "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
+>> >=20
+>> >> We also have perf_event_open() as an interface to add probes, and I=20
+>> >> don't think it would be helpful to require all tools to utilize the=20
+>> >> error log from tracefs for this purpose.
+>> >=20
+>> > The there should be a perf interface to read the errors. I agree with
+>> > Masami. Let's not have console logs for probe errors.
+>>=20
+>> Ok, understood.
+>=20
+> Will you update this?
+
+Not sure if you are asking about error logging with perf_event_open(),=20
+or about reading error_log from tracefs.
+
+For perf_event_open(), I think we will just need to return the error=20
+code, and interpret the return value in userspace. I don't think there=20
+is any other way to pass error log or strings back from the kernel.
+
+I will update this series to return the correct return value as=20
+suggested.
 
 
-On 6/16/21 10:12 AM, Arnaud POULIQUEN wrote:
-> Hello Mathieu,
-> 
-> On 6/15/21 7:53 PM, Mathieu Poirier wrote:
->> On Fri, Jun 04, 2021 at 11:14:03AM +0200, Arnaud Pouliquen wrote:
->>> Implement the RPMSG_CREATE_DEV_IOCTL to allow the user application to
->>> initiate a communication through a new rpmsg channel.
->>> This Ioctl can be used to instantiate a local rpmsg device.
->>> Depending on the back-end implementation, the associated rpmsg driver is
->>> probed and a NS announcement can be sent to the remote processor.
->>>
->>> Suggested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
->>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->>> ---
->>>  drivers/rpmsg/rpmsg_ctrl.c | 30 ++++++++++++++++++++++++++----
->>>  include/uapi/linux/rpmsg.h |  5 +++++
->>>  2 files changed, 31 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
->>> index eeb1708548c1..4aa962df3661 100644
->>> --- a/drivers/rpmsg/rpmsg_ctrl.c
->>> +++ b/drivers/rpmsg/rpmsg_ctrl.c
->>> @@ -23,6 +23,7 @@
->>>  #include <uapi/linux/rpmsg.h>
->>>  
->>>  #include "rpmsg_char.h"
->>> +#include "rpmsg_internal.h"
->>>  
->>>  static dev_t rpmsg_major;
->>>  
->>> @@ -37,11 +38,13 @@ static DEFINE_IDA(rpmsg_minor_ida);
->>>   * @rpdev:	underlaying rpmsg device
->>>   * @cdev:	cdev for the ctrl device
->>>   * @dev:	device for the ctrl device
->>> + * @ctrl_lock:	serialize the ioctrls.
->>>   */
->>>  struct rpmsg_ctrldev {
->>>  	struct rpmsg_device *rpdev;
->>>  	struct cdev cdev;
->>>  	struct device dev;
->>> +	struct mutex ctrl_lock;
->>>  };
->>>  
->>>  static int rpmsg_ctrldev_open(struct inode *inode, struct file *filp)
->>> @@ -70,9 +73,8 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
->>>  	void __user *argp = (void __user *)arg;
->>>  	struct rpmsg_endpoint_info eptinfo;
->>>  	struct rpmsg_channel_info chinfo;
->>> -
->>> -	if (cmd != RPMSG_CREATE_EPT_IOCTL)
->>> -		return -EINVAL;
->>> +	struct rpmsg_device *rpdev;
->>> +	int ret = 0;
->>>  
->>>  	if (copy_from_user(&eptinfo, argp, sizeof(eptinfo)))
->>>  		return -EFAULT;
->>> @@ -82,7 +84,26 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
->>>  	chinfo.src = eptinfo.src;
->>>  	chinfo.dst = eptinfo.dst;
->>>  
->>> -	return rpmsg_chrdev_eptdev_create(ctrldev->rpdev, &ctrldev->dev, chinfo);
->>> +	mutex_lock(&ctrldev->ctrl_lock);
->>
->> Do we need a lock here?  I thought the character device layer would guarantee
->> accesses on a file handler would be atomic...  Am I wrong?
->>
-> 
-> It is a good point! from my understanding, using "unlocked_ioctl" ops, the
-> driver has to handle is own atomic protection.
-> I will try to hack the code to verify this.
+Thanks,
+Naveen
 
-I confirm without lock there is no atomic access, re-entrance is possible in
-rpmsg_ctrldev_ioctl. Keeping lock to serialize the controls seems safer to me to
-avoid race condition.
-
-Regards
-Arnaud
-
-> 
-> Thanks,
-> Arnaud
-> 
->>> +	switch (cmd) {
->>> +	case RPMSG_CREATE_EPT_IOCTL:
->>> +		ret = rpmsg_chrdev_eptdev_create(ctrldev->rpdev, &ctrldev->dev, chinfo);
->>> +		break;
->>> +
->>> +	case RPMSG_CREATE_DEV_IOCTL:
->>> +		rpdev = rpmsg_create_channel(ctrldev->rpdev, &chinfo);
->>> +		if (!rpdev) {
->>> +			dev_err(&ctrldev->dev, "failed to create %s channel\n", chinfo.name);
->>> +			ret = -ENXIO;
->>> +		}
->>> +		break;
->>> +
->>> +	default:
->>> +		ret = -EINVAL;
->>> +	}
->>> +	mutex_unlock(&ctrldev->ctrl_lock);
->>> +
->>> +	return ret;
->>>  };
->>>  
->>>  static const struct file_operations rpmsg_ctrldev_fops = {
->>> @@ -119,6 +140,7 @@ static int rpmsg_ctrldev_probe(struct rpmsg_device *rpdev)
->>>  	device_initialize(dev);
->>>  	dev->parent = &rpdev->dev;
->>>  
->>> +	mutex_init(&ctrldev->ctrl_lock);
->>>  	cdev_init(&ctrldev->cdev, &rpmsg_ctrldev_fops);
->>>  	ctrldev->cdev.owner = THIS_MODULE;
->>>  
->>> diff --git a/include/uapi/linux/rpmsg.h b/include/uapi/linux/rpmsg.h
->>> index f5ca8740f3fb..f9d5a74e7801 100644
->>> --- a/include/uapi/linux/rpmsg.h
->>> +++ b/include/uapi/linux/rpmsg.h
->>> @@ -33,4 +33,9 @@ struct rpmsg_endpoint_info {
->>>   */
->>>  #define RPMSG_DESTROY_EPT_IOCTL	_IO(0xb5, 0x2)
->>>  
->>> +/**
->>> + * Instantiate a rpmsg service device.
->>> + */
->>> +#define RPMSG_CREATE_DEV_IOCTL	_IOW(0xb5, 0x3, struct rpmsg_endpoint_info)
->>> +
->>>  #endif
->>> -- 
->>> 2.17.1
->>>
