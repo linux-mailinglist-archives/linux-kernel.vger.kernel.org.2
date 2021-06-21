@@ -2,485 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF963AE8B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:04:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7793AE8B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230354AbhFUMHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 08:07:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230436AbhFUMGx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 08:06:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77E04C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 05:04:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=RnMXf4wN3pAPS/c+om2cdvtDY/gkdx5mVmwXT1Q1Mi8=; b=hVRhzOk1Omchs9Bk5nY2153XDp
-        I+9+JyLXRr8B7DxgDNYkcHeyMO+2Tc0abcXs66U6R/qbh4yexYu4CyLxCiqguIzLfsEWeiVGPD37x
-        nWbGAqDDV/vV4teOYMplZZLE5y67YYTc3+AGXkPTpDrmbl6zv/ZHsSO/1P9svxcovaD5qwRZp1V3C
-        e0Y9aSUT43JHVtuWBEfETk62UmC31AoovB/aWF8deih3xvJDiDnbTBs9eQcoF0HvRkqRS6eRsOmTQ
-        ugi5YVAOTNIv/ex63fkOAJvAbH9qzIKZCKAXksdfwjmanygx/2SpelQtIBb6uu7nRpQ0SjPumjWIf
-        vrHnXJDQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvIdm-00D3if-44; Mon, 21 Jun 2021 12:03:06 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BD3DA3005E3;
-        Mon, 21 Jun 2021 14:02:39 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 5C974235EE390; Mon, 21 Jun 2021 14:02:39 +0200 (CEST)
-Message-ID: <20210621120121.812129206@infradead.org>
-User-Agent: quilt/0.66
-Date:   Mon, 21 Jun 2021 13:12:51 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     jpoimboe@redhat.com, tglx@linutronix.de
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        joro@8bytes.org, boris.ostrovsky@oracle.com, jgross@suse.com,
-        x86@kernel.org, mbenes@suse.com
-Subject: [RFC][PATCH 18/18] objtool: Support pv_opsindirect calls for noinstr
-References: <20210621111233.344964031@infradead.org>
+        id S229888AbhFUMHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 08:07:32 -0400
+Received: from mail-co1nam11on2085.outbound.protection.outlook.com ([40.107.220.85]:62101
+        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229710AbhFUMH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 08:07:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=kMbjb1rDFMjG5s845uD/jbZweSY8SHgwyOY4+2MdGxYr+jPmlwm4QFFapaIP3fdD2wLhW7FO9vtjyWD3eBiZCaBOLDIzblIBTF73HrATSzpBxUV+wuzpP43tM+FYmh4+0Fpg176PreDusv1P1UW6AG+lIwX+ThpKsMnRHDOKsGch4HHKxG8mJAnE1XrFeW7M/PV2aMG0CzNNWEp2cyKPvlCe5GcVRGqbanEQ0eT0AzBTODBNxirEbFMaPUtzzQq1F8TnNewxfVXiSo+PDtNxrclLLx9wvmJTQzdRPT5m9U3IAiSH7MQV9yCH23aJsP4lDfL4wtlTzfg/eHwpzBMsaQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NnV0ZHlVBGPc6TlbRPbVUDuEpaLVRSqa7O5ZieSx3EA=;
+ b=jgXkAYxMd7DoI1MiJTXmr3/36lK8lcJ6AWvpRbwCrVb0vpAt2xsX3vWNrvKyAYTIzVBf4s7z/PqW+vw+UhYObwTQhWyCMVIgrFmPndZOVFUqvvapFXAzhevd+Rpjq8LleK66YuW2Lb8XMwADKoXmo4JETONVqGAluXrMeU0H4KBo+Dxt0ROqpH8722Z1o/E66sU9yKeJB6saA6QvAHDyY0aTmSZllyFj2tlCagrMVQt7dewuzfVu3AoTispPH48IhgglRNEvKszqyweE8ZqRQncfipWkaaHMUDH35O8o8oQk7VL2W7l0Upjjmvd1/X3Vb+v8PcXAw2jAzdKY11/fSQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=lists.infradead.org
+ smtp.mailfrom=xilinx.com; dmarc=pass (p=none sp=none pct=100) action=none
+ header.from=xilinx.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NnV0ZHlVBGPc6TlbRPbVUDuEpaLVRSqa7O5ZieSx3EA=;
+ b=kAGIqWDwY1z1egGJ+ocbt2evx6nYgu9Hsx7g2PUfcrcqvrWPMRLWEu69Byk6JFTTu7LqpIxtlz1CctEn/yIv+YVgLUbRy+2aJa0vM6eOildV67nmd5+uRtsgjkEiPRMHbrAhrSC/TFJab39PBiG7AN/W+PHfblSKFD7kOz8y0kY=
+Received: from SA0PR11CA0097.namprd11.prod.outlook.com (2603:10b6:806:d1::12)
+ by BN6PR02MB2818.namprd02.prod.outlook.com (2603:10b6:404:fd::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Mon, 21 Jun
+ 2021 12:05:12 +0000
+Received: from SN1NAM02FT0061.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:806:d1:cafe::23) by SA0PR11CA0097.outlook.office365.com
+ (2603:10b6:806:d1::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21 via Frontend
+ Transport; Mon, 21 Jun 2021 12:05:12 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=pass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT0061.mail.protection.outlook.com (10.97.4.250) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4242.16 via Frontend Transport; Mon, 21 Jun 2021 12:05:11 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 21 Jun 2021 05:05:06 -0700
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Mon, 21 Jun 2021 05:05:06 -0700
+Envelope-to: linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ zou_wei@huawei.com
+Received: from [172.30.17.109] (port=50770)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1lvIbO-0004pa-9S; Mon, 21 Jun 2021 05:00:30 -0700
+Subject: Re: [PATCH 6/6] driver: soc: xilinx: register for power events in
+ zynqmp power driver
+To:     Abhyuday Godhasara <abhyuday.godhasara@xilinx.com>,
+        <michal.simek@xilinx.com>
+CC:     <rajan.vaja@xilinx.com>, <manish.narani@xilinx.com>,
+        <zou_wei@huawei.com>, <amit.sunil.dhamne@xilinx.com>,
+        <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        <wendy.liang@xilinx.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <1622217566-1856-1-git-send-email-abhyuday.godhasara@xilinx.com>
+ <1622217566-1856-7-git-send-email-abhyuday.godhasara@xilinx.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <a1f6c4b7-34a0-ac16-3091-854394c5ad24@xilinx.com>
+Date:   Mon, 21 Jun 2021 14:00:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <1622217566-1856-7-git-send-email-abhyuday.godhasara@xilinx.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b23cb631-3275-4af3-acd7-08d934acd274
+X-MS-TrafficTypeDiagnostic: BN6PR02MB2818:
+X-Microsoft-Antispam-PRVS: <BN6PR02MB2818725220C0CA1064E39E07C60A9@BN6PR02MB2818.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Loaqpm+xhR85WO78WD3YN8TIVZAOCzOQ9scZ9ytpRosewItea1I3wOoTemjjKhpugOADwRNILe+giIjEpikEiURRZThKkuWhmjqCBk7b0bB8f82Kmo5BmTTgjYHUCRUfwipsqaG0AnxzVIAWwFNGon8x9kNc/F2DSzT945omphZIraRwxOrbDGhWJiRJhp2HQkhdPQrN55/F/wqePMGUv8v/Ma8zwj/+Eo3xHLV1VJE6Mj/WmhtsLzmIFRlbQHEFvqq5U8LngoavueR0Te5yNwUCCFD2OxphIxekv0AUaKvri7BZGi7BbWUHKuLP4IK4OkMzC6AGJXwwGCAuvKBkwbf2yE1sclqon1IzgV2qa/ec9ZyyVh0erz+yH6cJXGcP8nCD78BWyKZh3WkfvmYdIjsh3pxr0KFjdA/p34YhwvUaCrUup2mi0NjQYg2RCDgvKnD+6lPxrXThMbQvrEyjDC7TZy5ebXIT4jXWUOiCEdzpkuNv3/ilaUucusLO/K8rtEI2e1mwOvnHzn4E/rJTbKTwySMA1wurTaieBxFw05MP9bPxTaiBM7ORpBEc0suQx7VHlhabtnKMmbouiKadSxYdpzY55HElZINabu0MnvgMRmK6yI53Qk36Cg3xdseGzQ+RkWuSIqLUfYegGX/rHv3RwL7FTHYiB60phIxp1/zgJ8L0i5MoPDF39hzYJmNA/DUr+mPFYuuTnt7qtKXAiw==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(396003)(136003)(39850400004)(376002)(346002)(46966006)(36840700001)(8936002)(36756003)(4326008)(83380400001)(31686004)(2616005)(336012)(8676002)(26005)(478600001)(70206006)(82740400003)(426003)(186003)(82310400003)(70586007)(47076005)(7636003)(316002)(5660300002)(36906005)(44832011)(9786002)(6666004)(53546011)(110136005)(36860700001)(2906002)(54906003)(356005)(31696002)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2021 12:05:11.8617
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b23cb631-3275-4af3-acd7-08d934acd274
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0061.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR02MB2818
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Normally objtool will now follow indirect calls; there is no need.
-
-However, this becomes a problem with noinstr validation; if there's an
-indirect call from noinstr code, we very much need to know it is to
-another noinstr function. Luckily there aren't many indirect calls in
-entry code with the obvious exception of paravirt. As such, noinstr
-validation didn't work with paravirt kernels.
-
-In order to track pv_ops[] call targets, objtool reads the static
-pv_ops[] tables as well as direct assignments to the pv_ops[] array,
-provided the compiler makes them a single instruction like:
-
-  bf87:       48 c7 05 00 00 00 00 00 00 00 00        movq   $0x0,0x0(%rip)
-    bf92 <xen_init_spinlocks+0x5f>
-    bf8a: R_X86_64_PC32     pv_ops+0x268
-
-There are, as of yet, no warnings for when this goes wrong :/
-
-Using the functions found with the above means, all pv_ops[] calls are
-now subject to noinstr validation.
-
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- lib/Kconfig.debug                       |    2 
- tools/objtool/arch/x86/decode.c         |   34 ++++++-
- tools/objtool/check.c                   |  151 +++++++++++++++++++++++++++++---
- tools/objtool/include/objtool/arch.h    |    2 
- tools/objtool/include/objtool/elf.h     |    1 
- tools/objtool/include/objtool/objtool.h |    9 +
- tools/objtool/objtool.c                 |   22 ++++
- 7 files changed, 208 insertions(+), 13 deletions(-)
-
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -445,7 +445,7 @@ config STACK_VALIDATION
- 
- config VMLINUX_VALIDATION
- 	bool
--	depends on STACK_VALIDATION && DEBUG_ENTRY && !PARAVIRT
-+	depends on STACK_VALIDATION && DEBUG_ENTRY
- 	default y
- 
- config VMLINUX_MAP
---- a/tools/objtool/arch/x86/decode.c
-+++ b/tools/objtool/arch/x86/decode.c
-@@ -20,6 +20,7 @@
- #include <objtool/arch.h>
- #include <objtool/warn.h>
- #include <objtool/endianness.h>
-+#include <objtool/builtin.h>
- #include <arch/elf.h>
- 
- static int is_x86_64(const struct elf *elf)
-@@ -102,12 +103,13 @@ unsigned long arch_jump_destination(stru
- #define rm_is_mem(reg)	(mod_is_mem() && !is_RIP() && rm_is(reg))
- #define rm_is_reg(reg)	(mod_is_reg() && modrm_rm == (reg))
- 
--int arch_decode_instruction(const struct elf *elf, const struct section *sec,
-+int arch_decode_instruction(struct objtool_file *file, const struct section *sec,
- 			    unsigned long offset, unsigned int maxlen,
- 			    unsigned int *len, enum insn_type *type,
- 			    unsigned long *immediate,
- 			    struct list_head *ops_list)
- {
-+	const struct elf *elf = file->elf;
- 	struct insn insn;
- 	int x86_64, ret;
- 	unsigned char op1, op2,
-@@ -544,6 +546,36 @@ int arch_decode_instruction(const struct
- 		*type = INSN_RETURN;
- 		break;
- 
-+	case 0xc7: /* mov imm, r/m */
-+		if (!noinstr)
-+			break;
-+
-+		if (insn.length == 3+4+4 && !strncmp(sec->name, ".init.text", 10)) {
-+			struct reloc *immr, *disp;
-+			struct symbol *func;
-+			int idx;
-+
-+			immr = find_reloc_by_dest(elf, (void *)sec, offset+3);
-+			disp = find_reloc_by_dest(elf, (void *)sec, offset+7);
-+
-+			if (!immr || strcmp(immr->sym->name, "pv_ops"))
-+				break;
-+
-+			idx = (immr->addend + 8) / sizeof(void *);
-+
-+			func = disp->sym;
-+			if (disp->sym->type == STT_SECTION)
-+				func = find_symbol_by_offset(disp->sym->sec, disp->addend);
-+			if (!func) {
-+				WARN("no func for pv_ops[]");
-+				return -1;
-+			}
-+
-+			objtool_pv_add(file, idx, func);
-+		}
-+
-+		break;
-+
- 	case 0xcf: /* iret */
- 		/*
- 		 * Handle sync_core(), which has an IRET to self.
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -306,7 +306,7 @@ static int decode_instructions(struct ob
- 			insn->sec = sec;
- 			insn->offset = offset;
- 
--			ret = arch_decode_instruction(file->elf, sec, offset,
-+			ret = arch_decode_instruction(file, sec, offset,
- 						      sec->len - offset,
- 						      &insn->len, &insn->type,
- 						      &insn->immediate,
-@@ -344,6 +344,82 @@ static int decode_instructions(struct ob
- 	return ret;
- }
- 
-+/*
-+ * Read the pv_ops[] .data table to find the static initialized values.
-+ */
-+static int add_pv_ops(struct objtool_file *file, const char *symname)
-+{
-+	struct symbol *sym, *func;
-+	unsigned long off, end;
-+	struct reloc *rel;
-+	int idx;
-+
-+	sym = find_symbol_by_name(file->elf, symname);
-+	if (!sym)
-+		return 0;
-+
-+	off = sym->offset;
-+	end = off + sym->len;
-+	for (;;) {
-+		rel = find_reloc_by_dest_range(file->elf, sym->sec, off, end - off);
-+		if (!rel)
-+			break;
-+
-+		func = rel->sym;
-+		if (func->type == STT_SECTION)
-+			func = find_symbol_by_offset(rel->sym->sec, rel->addend);
-+
-+		idx = (rel->offset - sym->offset) / sizeof(unsigned long);
-+
-+		objtool_pv_add(file, idx, func);
-+
-+		off = rel->offset + 1;
-+		if (off > end)
-+			break;
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * Allocate and initialize file->pv_ops[].
-+ */
-+static int init_pv_ops(struct objtool_file *file)
-+{
-+	static const char *pv_ops_tables[] = {
-+		"pv_ops",
-+		"xen_cpu_ops",
-+		"xen_irq_ops",
-+		"xen_mmu_ops",
-+		NULL,
-+	};
-+	const char *pv_ops;
-+	struct symbol *sym;
-+	int idx, nr;
-+
-+	if (!noinstr)
-+		return 0;
-+
-+	file->pv_ops = NULL;
-+
-+	sym = find_symbol_by_name(file->elf, "pv_ops");
-+	if (!sym)
-+		return 0;
-+
-+	nr = sym->len / sizeof(unsigned long);
-+	file->pv_ops = calloc(sizeof(struct pv_state), nr);
-+	if (!file->pv_ops)
-+		return -1;
-+
-+	for (idx = 0; idx < nr; idx++)
-+		INIT_LIST_HEAD(&file->pv_ops[idx].targets);
-+
-+	for (idx = 0; (pv_ops = pv_ops_tables[idx]); idx++)
-+		add_pv_ops(file, pv_ops);
-+
-+	return 0;
-+}
-+
- static struct instruction *find_last_insn(struct objtool_file *file,
- 					  struct section *sec)
- {
-@@ -817,6 +893,9 @@ static struct reloc *insn_reloc(struct o
- 		return NULL;
- 
- 	if (!insn->reloc) {
-+		if (!file)
-+			return NULL;
-+
- 		insn->reloc = find_reloc_by_dest_range(file->elf, insn->sec,
- 						       insn->offset, insn->len);
- 		if (!insn->reloc) {
-@@ -1791,6 +1870,10 @@ static int decode_sections(struct objtoo
- 
- 	mark_rodata(file);
- 
-+	ret = init_pv_ops(file);
-+	if (ret)
-+		return ret;
-+
- 	ret = decode_instructions(file);
- 	if (ret)
- 		return ret;
-@@ -2562,20 +2645,64 @@ static inline bool func_uaccess_safe(str
- 
- static inline const char *call_dest_name(struct instruction *insn)
- {
-+	static char pvname[16];
-+	struct reloc *rel;
-+	int idx;
-+
- 	if (insn->call_dest)
- 		return insn->call_dest->name;
- 
-+	rel = insn_reloc(NULL, insn);
-+	if (rel && !strcmp(rel->sym->name, "pv_ops")) {
-+		idx = (rel->addend / sizeof(void *));
-+		snprintf(pvname, sizeof(pvname), "pv_ops[%d]", idx);
-+		return pvname;
-+	}
-+
- 	return "{dynamic}";
- }
- 
--static inline bool noinstr_call_dest(struct symbol *func)
-+static bool pv_call_dest(struct objtool_file *file, struct instruction *insn)
-+{
-+	struct symbol *target;
-+	struct reloc *rel;
-+	int idx;
-+
-+	rel = insn_reloc(file, insn);
-+	if (!rel || strcmp(rel->sym->name, "pv_ops"))
-+		return false;
-+
-+	idx = (arch_dest_reloc_offset(rel->addend) / sizeof(void *));
-+
-+	if (file->pv_ops[idx].clean)
-+		return true;
-+
-+	file->pv_ops[idx].clean = true;
-+
-+	list_for_each_entry(target, &file->pv_ops[idx].targets, pv_target) {
-+		if (!target->sec->noinstr) {
-+			WARN("pv_ops[%d]: %s", idx, target->name);
-+			file->pv_ops[idx].clean = false;
-+		}
-+	}
-+
-+	return file->pv_ops[idx].clean;
-+}
-+
-+static inline bool noinstr_call_dest(struct objtool_file *file,
-+				     struct instruction *insn,
-+				     struct symbol *func)
- {
- 	/*
- 	 * We can't deal with indirect function calls at present;
- 	 * assume they're instrumented.
- 	 */
--	if (!func)
-+	if (!func) {
-+		if (file->pv_ops)
-+			return pv_call_dest(file, insn);
-+
- 		return false;
-+	}
- 
- 	/*
- 	 * If the symbol is from a noinstr section; we good.
-@@ -2594,10 +2721,12 @@ static inline bool noinstr_call_dest(str
- 	return false;
- }
- 
--static int validate_call(struct instruction *insn, struct insn_state *state)
-+static int validate_call(struct objtool_file *file,
-+			 struct instruction *insn,
-+			 struct insn_state *state)
- {
- 	if (state->noinstr && state->instr <= 0 &&
--	    !noinstr_call_dest(insn->call_dest)) {
-+	    !noinstr_call_dest(file, insn, insn->call_dest)) {
- 		WARN_FUNC("call to %s() leaves .noinstr.text section",
- 				insn->sec, insn->offset, call_dest_name(insn));
- 		return 1;
-@@ -2618,7 +2747,9 @@ static int validate_call(struct instruct
- 	return 0;
- }
- 
--static int validate_sibling_call(struct instruction *insn, struct insn_state *state)
-+static int validate_sibling_call(struct objtool_file *file,
-+				 struct instruction *insn,
-+				 struct insn_state *state)
- {
- 	if (has_modified_stack_frame(insn, state)) {
- 		WARN_FUNC("sibling call from callable instruction with modified stack frame",
-@@ -2626,7 +2757,7 @@ static int validate_sibling_call(struct
- 		return 1;
- 	}
- 
--	return validate_call(insn, state);
-+	return validate_call(file, insn, state);
- }
- 
- static int validate_return(struct symbol *func, struct instruction *insn, struct insn_state *state)
-@@ -2769,7 +2900,7 @@ static int validate_branch(struct objtoo
- 
- 		case INSN_CALL:
- 		case INSN_CALL_DYNAMIC:
--			ret = validate_call(insn, &state);
-+			ret = validate_call(file, insn, &state);
- 			if (ret)
- 				return ret;
- 
-@@ -2788,7 +2919,7 @@ static int validate_branch(struct objtoo
- 		case INSN_JUMP_CONDITIONAL:
- 		case INSN_JUMP_UNCONDITIONAL:
- 			if (is_sibling_call(insn)) {
--				ret = validate_sibling_call(insn, &state);
-+				ret = validate_sibling_call(file, insn, &state);
- 				if (ret)
- 					return ret;
- 
-@@ -2810,7 +2941,7 @@ static int validate_branch(struct objtoo
- 		case INSN_JUMP_DYNAMIC:
- 		case INSN_JUMP_DYNAMIC_CONDITIONAL:
- 			if (is_sibling_call(insn)) {
--				ret = validate_sibling_call(insn, &state);
-+				ret = validate_sibling_call(file, insn, &state);
- 				if (ret)
- 					return ret;
- 			}
---- a/tools/objtool/include/objtool/arch.h
-+++ b/tools/objtool/include/objtool/arch.h
-@@ -69,7 +69,7 @@ struct instruction;
- 
- void arch_initial_func_cfi_state(struct cfi_init_state *state);
- 
--int arch_decode_instruction(const struct elf *elf, const struct section *sec,
-+int arch_decode_instruction(struct objtool_file *file, const struct section *sec,
- 			    unsigned long offset, unsigned int maxlen,
- 			    unsigned int *len, enum insn_type *type,
- 			    unsigned long *immediate,
---- a/tools/objtool/include/objtool/elf.h
-+++ b/tools/objtool/include/objtool/elf.h
-@@ -57,6 +57,7 @@ struct symbol {
- 	struct symbol *pfunc, *cfunc, *alias;
- 	bool uaccess_safe;
- 	bool static_call_tramp;
-+	struct list_head pv_target;
- };
- 
- struct reloc {
---- a/tools/objtool/include/objtool/objtool.h
-+++ b/tools/objtool/include/objtool/objtool.h
-@@ -14,6 +14,11 @@
- 
- #define __weak __attribute__((weak))
- 
-+struct pv_state {
-+	bool clean;
-+	struct list_head targets;
-+};
-+
- struct objtool_file {
- 	struct elf *elf;
- 	struct list_head insn_list;
-@@ -25,10 +30,14 @@ struct objtool_file {
- 
- 	unsigned long jl_short, jl_long;
- 	unsigned long jl_nop_short, jl_nop_long;
-+
-+	struct pv_state *pv_ops;
- };
- 
- struct objtool_file *objtool_open_read(const char *_objname);
- 
-+void objtool_pv_add(struct objtool_file *file, int idx, struct symbol *func);
-+
- int check(struct objtool_file *file);
- int orc_dump(const char *objname);
- int orc_create(struct objtool_file *file);
---- a/tools/objtool/objtool.c
-+++ b/tools/objtool/objtool.c
-@@ -135,6 +135,28 @@ struct objtool_file *objtool_open_read(c
- 	return &file;
- }
- 
-+void objtool_pv_add(struct objtool_file *f, int idx, struct symbol *func)
-+{
-+	if (!noinstr)
-+		return;
-+
-+	if (!f->pv_ops) {
-+		WARN("paravirt confusion");
-+		return;
-+	}
-+
-+	/*
-+	 * These functions will be patched into native code,
-+	 * see paravirt_patch().
-+	 */
-+	if (!strcmp(func->name, "_paravirt_nop") ||
-+	    !strcmp(func->name, "_paravirt_ident_64"))
-+		return;
-+
-+	list_add(&func->pv_target, &f->pv_ops[idx].targets);
-+	f->pv_ops[idx].clean = false;
-+}
-+
- static void cmd_usage(void)
- {
- 	unsigned int i, longest = 0;
 
 
+On 5/28/21 5:59 PM, Abhyuday Godhasara wrote:
+> With Xilinx Event Management driver, all types of events like power and
+> error gets handled from single place as part of event management driver.
+> 
+> So power events(SUSPEND_POWER_REQUEST and SUSPEND_SYSTEM_SHUTDOWN)
+> also gets handled by event management driver instead of zynqmp_power
+> driver.
+> 
+> zynqmp-power driver use event management driver and provide callback
+> function for Suspend and shutdown handler, which will be called by event
+> management driver when respective event is arrived.
+> 
+> If event management driver is not available than use ipi-mailbox rx channel
+> or IPI interrupt IRQ handler for power events (suspend/shutdown) same as
+> current zynqmp-power driver.
+> 
+> Signed-off-by: Rajan Vaja <rajan.vaja@xilinx.com>
+> Signed-off-by: Abhyuday Godhasara <abhyuday.godhasara@xilinx.com>
+> ---
+>  drivers/soc/xilinx/zynqmp_power.c | 48 ++++++++++++++++++++++++++++++++++++++-
+>  1 file changed, 47 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soc/xilinx/zynqmp_power.c b/drivers/soc/xilinx/zynqmp_power.c
+> index 76478fe..fe7be17 100644
+> --- a/drivers/soc/xilinx/zynqmp_power.c
+> +++ b/drivers/soc/xilinx/zynqmp_power.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/suspend.h>
+>  
+>  #include <linux/firmware/xlnx-zynqmp.h>
+> +#include <linux/firmware/xlnx-event-manager.h>
+>  #include <linux/mailbox/zynqmp-ipi-message.h>
+>  
+>  /**
+> @@ -30,6 +31,7 @@ struct zynqmp_pm_work_struct {
+>  
+>  static struct zynqmp_pm_work_struct *zynqmp_pm_init_suspend_work;
+>  static struct mbox_chan *rx_chan;
+> +static bool event_registered;
+>  
+>  enum pm_suspend_mode {
+>  	PM_SUSPEND_MODE_FIRST = 0,
+> @@ -51,6 +53,19 @@ static void zynqmp_pm_get_callback_data(u32 *buf)
+>  	zynqmp_pm_invoke_fn(GET_CALLBACK_DATA, 0, 0, 0, 0, buf);
+>  }
+>  
+> +static void suspend_event_callback(const u32 *payload, void *data)
+> +{
+> +	/* First element is callback API ID, others are callback arguments */
+> +	if (work_pending(&zynqmp_pm_init_suspend_work->callback_work))
+> +		return;
+> +
+> +	/* Copy callback arguments into work's structure */
+> +	memcpy(zynqmp_pm_init_suspend_work->args, &payload[1],
+> +	       sizeof(zynqmp_pm_init_suspend_work->args));
+> +
+> +	queue_work(system_unbound_wq, &zynqmp_pm_init_suspend_work->callback_work);
+> +}
+> +
+>  static irqreturn_t zynqmp_pm_isr(int irq, void *data)
+>  {
+>  	u32 payload[CB_PAYLOAD_SIZE];
+> @@ -179,7 +194,32 @@ static int zynqmp_pm_probe(struct platform_device *pdev)
+>  	if (pm_api_version < ZYNQMP_PM_VERSION)
+>  		return -ENODEV;
+>  
+> -	if (of_find_property(pdev->dev.of_node, "mboxes", NULL)) {
+> +	/*
+> +	 * First try to use Xilinx Event Manager by registering suspend_event_callback
+> +	 * for suspend/shutdown event.
+> +	 * If xlnx_register_event() returns -EACCES (Xilinx Event Manager
+> +	 * is not available to use) or -ENODEV(Xilinx Event Manager not compiled),
+> +	 * then use ipi-mailbox or interrupt method.
+> +	 */
+> +	ret = xlnx_register_event(PM_INIT_SUSPEND_CB, 0, 0, false,
+> +				  suspend_event_callback, NULL);
+> +	if (!ret) {
+> +		zynqmp_pm_init_suspend_work = devm_kzalloc(&pdev->dev,
+> +							   sizeof(struct zynqmp_pm_work_struct),
+> +							   GFP_KERNEL);
+> +		if (!zynqmp_pm_init_suspend_work) {
+> +			xlnx_unregister_event(PM_INIT_SUSPEND_CB, 0, 0,
+> +					      suspend_event_callback);
+> +			return -ENOMEM;
+> +		}
+> +		event_registered = true;
+> +
+> +		INIT_WORK(&zynqmp_pm_init_suspend_work->callback_work,
+> +			  zynqmp_pm_init_suspend_work_fn);
+> +	} else if (ret != -EACCES && ret != -ENODEV) {
+> +		dev_err(&pdev->dev, "Failed to Register with Xilinx Event manager %d\n", ret);
+> +		return ret;
+> +	} else if (of_find_property(pdev->dev.of_node, "mboxes", NULL)) {
+>  		zynqmp_pm_init_suspend_work =
+>  			devm_kzalloc(&pdev->dev,
+>  				     sizeof(struct zynqmp_pm_work_struct),
+> @@ -223,6 +263,10 @@ static int zynqmp_pm_probe(struct platform_device *pdev)
+>  
+>  	ret = sysfs_create_file(&pdev->dev.kobj, &dev_attr_suspend_mode.attr);
+>  	if (ret) {
+> +		if (event_registered) {
+> +			xlnx_unregister_event(PM_INIT_SUSPEND_CB, 0, 0, suspend_event_callback);
+> +			event_registered = false;
+> +		}
+>  		dev_err(&pdev->dev, "unable to create sysfs interface\n");
+>  		return ret;
+>  	}
+> @@ -233,6 +277,8 @@ static int zynqmp_pm_probe(struct platform_device *pdev)
+>  static int zynqmp_pm_remove(struct platform_device *pdev)
+>  {
+>  	sysfs_remove_file(&pdev->dev.kobj, &dev_attr_suspend_mode.attr);
+> +	if (event_registered)
+> +		xlnx_unregister_event(PM_INIT_SUSPEND_CB, 0, 0, suspend_event_callback);
+>  
+>  	if (!rx_chan)
+>  		mbox_free_channel(rx_chan);
+> 
+
+Acked-by: Michal Simek <michal.simek@xilinx.com>
+
+Thanks,
+Michal
