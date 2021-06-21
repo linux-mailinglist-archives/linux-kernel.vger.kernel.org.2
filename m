@@ -2,310 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8433AF1D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:24:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 353073AF1D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231216AbhFUR0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 13:26:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42168 "EHLO
+        id S231295AbhFUR1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 13:27:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230332AbhFUR0r (ORCPT
+        with ESMTP id S231252AbhFUR1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 13:26:47 -0400
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A4A0C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:24:31 -0700 (PDT)
-Received: by mail-oi1-x22a.google.com with SMTP id w1so7487889oie.13
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:24:31 -0700 (PDT)
+        Mon, 21 Jun 2021 13:27:15 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAC86C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:25:00 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id s6so20001088edu.10
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:25:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=amarulasolutions.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=xKmGjgLsgWsFBaBePs7cjUDuoclC/CKZFAJTnQ9AJMs=;
-        b=JlwDd3p+9HGTZoM82mSEcGnLlu8sxR3GFo+ou3kNhT/FgSBJWjVVZksAYHD9snLqOW
-         t4C02M5/JrwhTMk0Ev8rvYIabC2Kk6bjAVy059EXiCL2dezvvxDtrmkWTkGi4vCDbWf9
-         10M+9Rvbtotts+rFzzKWY3IdBrJcr3HgL6eIb2GLAnjpqwz7X6bKHUWsDLSykTY/APoy
-         GOJfjWZqf5htG0uaZNLWmE56Sbo4iGBftsw6p6kURUVn2AaOcKkjBpADwWPqaN1VoU1l
-         d6j9JDM00UGUKbyIhm34TdmSz7EmZ733coZcUYgYB3DhkA2ErfjYDiAm4Ta/fblght9t
-         cE8Q==
+        bh=yksK4X6+8Tdxbx2WrBBGvKC5wDVLn6otjnHQDHKi3Sk=;
+        b=IiEneIKmdV6rzCyUDCUZ6Zz+Anyk4Ca/JUYBnztStiSJgUYyfNTFXU3TbPDrV0Q2lE
+         ofxI/KyIeTZYdwiY/ko9mI9iTripS/CuqRRlfBc1B9MC7UwngZKHhu6SFMEM9w9zXA3t
+         XxuQIoodnqnKEPvub7DzFx2zKO72bc8NoCkKU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xKmGjgLsgWsFBaBePs7cjUDuoclC/CKZFAJTnQ9AJMs=;
-        b=UXdchLB97u9mmDeZoIjJC3Gg9+XjrqtzlzNjOMD1G3BslhHkpfWk+Jjv4Qf3KQ/eu8
-         wl/FPKpKUTMgXGNyz0VRClFThZjtwTBqe53E0uHRs+W4QW8LqaFDz77L22qgLL0y7tpq
-         k9FC9kZY/JBOLPDPQnwUK0uJ6Jwi9rQgO6nk4+cFBsW1GhDJ/6VUMWZNWtqvlV3Cnmwo
-         sVHdZP+2LUNMohTszDYAmOSKegBokB3gzycxoWUiWBigtTuTxWrT43JdjY+MKxEEZmq/
-         VntlcWcu+wyg4L15XdOfbdl9Dl3PnE9Qb4YH1S/i1ZffqTViMpOsrCm3GhtoiIG/k98J
-         VDzg==
-X-Gm-Message-State: AOAM532ni1JKvDYvMzbybkn/zrpki8qZvyDuESpmKoQQnXXcO0hF8Zz4
-        9RN7Opluo7gbyLr+OhsaP48Tp1puWsvyOjqD6NNEXg==
-X-Google-Smtp-Source: ABdhPJwwgSJtHVHbFJBIgtqJtkqt3r/pism6TPjHvnMbCkspkHQPBTtNGkFsBzAo/tU1Xi57+G30U2wnqoV1LIX+Saw=
-X-Received: by 2002:aca:e0d6:: with SMTP id x205mr17923656oig.109.1624296271029;
- Mon, 21 Jun 2021 10:24:31 -0700 (PDT)
+        bh=yksK4X6+8Tdxbx2WrBBGvKC5wDVLn6otjnHQDHKi3Sk=;
+        b=Xoy7CdDnTTYtf4i8EBLquGqoaP+qQMUcQ+++Pv5Q3sX2PwMY8RaYrywShcPpMDUtar
+         /narWviLlbm98/e47l2g21sUMUME0vuUIdHiifR2Q/Eve6BP1GHgHhBH8DAo1Kd5FIEl
+         G5GTxftfy2SXkpOTCL/W71e7SS/d3bFM40//ajrWnfqzqnDFovp7kLrlokciKId153O4
+         l5F2iv0DX69SOoYAMKjgyLaJf5TSjvK9vkqUGEbX1cVTMygbEsAFLzMsK8CQ3P3XWBnE
+         uUGmyFtjD6ttJo6FwZGjmr9/BaVZ+jWfWMTpjnbs7fkV3GJ0pd2AnUhnRUAMDWyULBZx
+         AWnQ==
+X-Gm-Message-State: AOAM530oyNRgIepKoF2LTPaKt8HKpKv200WNQQE5igaP9jSE2s+Bwimx
+        SqweT6XNftfIwFHjL4u/IGMKYeAs3IMWNNtQwjWE+Q==
+X-Google-Smtp-Source: ABdhPJzOboYh8r/aQbmljjT5nT9gx0qmH5HAkiGD+ULcGDhY8NM8PMJbcJ4AN2GbG4wEzg8xca9IIEVZ9c2OyY2UxDk=
+X-Received: by 2002:a05:6402:4408:: with SMTP id y8mr5483279eda.55.1624296299381;
+ Mon, 21 Jun 2021 10:24:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210609232501.171257-1-jiang.wang@bytedance.com>
- <20210609232501.171257-2-jiang.wang@bytedance.com> <20210618093951.g32htj3rsu2koqi5@steredhat.lan>
-In-Reply-To: <20210618093951.g32htj3rsu2koqi5@steredhat.lan>
-From:   "Jiang Wang ." <jiang.wang@bytedance.com>
-Date:   Mon, 21 Jun 2021 10:24:20 -0700
-Message-ID: <CAP_N_Z-vom-8=Otjtt9wndP8KLDvy7KxQg20g4=65Y4d8N7CmA@mail.gmail.com>
-Subject: Re: [External] Re: [RFC v1 1/6] virtio/vsock: add VIRTIO_VSOCK_F_DGRAM
- feature bit
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        cong.wang@bytedance.com,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Yongji Xie <xieyongji@bytedance.com>,
-        =?UTF-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org
+References: <20200707101912.571531-1-maxime@cerno.tech> <YM6dgVb12oITNfc0@pendragon.ideasonboard.com>
+ <CAPY8ntC+hzmfrJwWW0ytNdHSXruMKMi7N3K6tdJbp9gDBbJ3Qw@mail.gmail.com>
+ <YM+MEsKjdkYAVI5X@pendragon.ideasonboard.com> <YM/FwVkkQXX8VrzV@pendragon.ideasonboard.com>
+ <CAPY8ntCbzFkbM5fZmo3RVw5okQkVKFcR8TCHOo+xkW7wNk8MQA@mail.gmail.com>
+ <YNCMbw6B6OL4Gho3@pendragon.ideasonboard.com> <CAMty3ZCsa+=vyqT3S1mjAYH2g57O8_BPciQ-dE4+qTsHWCwSDA@mail.gmail.com>
+ <YNCesxIe8cgncnxq@pendragon.ideasonboard.com>
+In-Reply-To: <YNCesxIe8cgncnxq@pendragon.ideasonboard.com>
+From:   Jagan Teki <jagan@amarulasolutions.com>
+Date:   Mon, 21 Jun 2021 22:54:48 +0530
+Message-ID: <CAMty3ZBim5nnPKNUy3i4aRxFWK29o-=VaW_aMUmqNZJ8Dn2kKQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/vc4: dsi: Only register our component once a DSI
+ device is attached
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Marek Vasut <marex@denx.de>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Eric Anholt <eric@anholt.net>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Maxime Ripard <maxime@cerno.tech>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-rpi-kernel@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 2:40 AM Stefano Garzarella <sgarzare@redhat.com> wrote:
->
-> On Wed, Jun 09, 2021 at 11:24:53PM +0000, Jiang Wang wrote:
-> >When this feature is enabled, allocate 5 queues,
-> >otherwise, allocate 3 queues to be compatible with
-> >old QEMU versions.
-> >
-> >Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
-> >---
-> > drivers/vhost/vsock.c             |  3 +-
-> > include/linux/virtio_vsock.h      |  9 +++++
-> > include/uapi/linux/virtio_vsock.h |  3 ++
-> > net/vmw_vsock/virtio_transport.c  | 73 +++++++++++++++++++++++++++++++++++----
-> > 4 files changed, 80 insertions(+), 8 deletions(-)
-> >
-> >diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
-> >index 5e78fb719602..81d064601093 100644
-> >--- a/drivers/vhost/vsock.c
-> >+++ b/drivers/vhost/vsock.c
-> >@@ -31,7 +31,8 @@
-> >
-> > enum {
-> >       VHOST_VSOCK_FEATURES = VHOST_FEATURES |
-> >-                             (1ULL << VIRTIO_F_ACCESS_PLATFORM)
-> >+                             (1ULL << VIRTIO_F_ACCESS_PLATFORM) |
-> >+                             (1ULL << VIRTIO_VSOCK_F_DGRAM)
-> > };
-> >
-> > enum {
-> >diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
-> >index dc636b727179..ba3189ed9345 100644
-> >--- a/include/linux/virtio_vsock.h
-> >+++ b/include/linux/virtio_vsock.h
-> >@@ -18,6 +18,15 @@ enum {
-> >       VSOCK_VQ_MAX    = 3,
-> > };
-> >
-> >+enum {
-> >+      VSOCK_VQ_STREAM_RX     = 0, /* for host to guest data */
-> >+      VSOCK_VQ_STREAM_TX     = 1, /* for guest to host data */
-> >+      VSOCK_VQ_DGRAM_RX       = 2,
-> >+      VSOCK_VQ_DGRAM_TX       = 3,
-> >+      VSOCK_VQ_EX_EVENT       = 4,
-> >+      VSOCK_VQ_EX_MAX         = 5,
-> >+};
-> >+
-> > /* Per-socket state (accessed via vsk->trans) */
-> > struct virtio_vsock_sock {
-> >       struct vsock_sock *vsk;
-> >diff --git a/include/uapi/linux/virtio_vsock.h b/include/uapi/linux/virtio_vsock.h
-> >index 1d57ed3d84d2..b56614dff1c9 100644
-> >--- a/include/uapi/linux/virtio_vsock.h
-> >+++ b/include/uapi/linux/virtio_vsock.h
-> >@@ -38,6 +38,9 @@
-> > #include <linux/virtio_ids.h>
-> > #include <linux/virtio_config.h>
-> >
-> >+/* The feature bitmap for virtio net */
-> >+#define VIRTIO_VSOCK_F_DGRAM  0       /* Host support dgram vsock */
-> >+
-> > struct virtio_vsock_config {
-> >       __le64 guest_cid;
-> > } __attribute__((packed));
-> >diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
-> >index 2700a63ab095..7dcb8db23305 100644
-> >--- a/net/vmw_vsock/virtio_transport.c
-> >+++ b/net/vmw_vsock/virtio_transport.c
-> >@@ -27,7 +27,8 @@ static DEFINE_MUTEX(the_virtio_vsock_mutex); /* protects the_virtio_vsock */
-> >
-> > struct virtio_vsock {
-> >       struct virtio_device *vdev;
-> >-      struct virtqueue *vqs[VSOCK_VQ_MAX];
-> >+      struct virtqueue **vqs;
-> >+      bool has_dgram;
-> >
-> >       /* Virtqueue processing is deferred to a workqueue */
-> >       struct work_struct tx_work;
-> >@@ -333,7 +334,10 @@ static int virtio_vsock_event_fill_one(struct virtio_vsock *vsock,
-> >       struct scatterlist sg;
-> >       struct virtqueue *vq;
-> >
-> >-      vq = vsock->vqs[VSOCK_VQ_EVENT];
-> >+      if (vsock->has_dgram)
-> >+              vq = vsock->vqs[VSOCK_VQ_EX_EVENT];
-> >+      else
-> >+              vq = vsock->vqs[VSOCK_VQ_EVENT];
-> >
-> >       sg_init_one(&sg, event, sizeof(*event));
-> >
-> >@@ -351,7 +355,10 @@ static void virtio_vsock_event_fill(struct virtio_vsock *vsock)
-> >               virtio_vsock_event_fill_one(vsock, event);
-> >       }
-> >
-> >-      virtqueue_kick(vsock->vqs[VSOCK_VQ_EVENT]);
-> >+      if (vsock->has_dgram)
-> >+              virtqueue_kick(vsock->vqs[VSOCK_VQ_EX_EVENT]);
-> >+      else
-> >+              virtqueue_kick(vsock->vqs[VSOCK_VQ_EVENT]);
-> > }
-> >
-> > static void virtio_vsock_reset_sock(struct sock *sk)
-> >@@ -391,7 +398,10 @@ static void virtio_transport_event_work(struct work_struct *work)
-> >               container_of(work, struct virtio_vsock, event_work);
-> >       struct virtqueue *vq;
-> >
-> >-      vq = vsock->vqs[VSOCK_VQ_EVENT];
-> >+      if (vsock->has_dgram)
-> >+              vq = vsock->vqs[VSOCK_VQ_EX_EVENT];
-> >+      else
-> >+              vq = vsock->vqs[VSOCK_VQ_EVENT];
-> >
-> >       mutex_lock(&vsock->event_lock);
-> >
-> >@@ -411,7 +421,10 @@ static void virtio_transport_event_work(struct work_struct *work)
-> >               }
-> >       } while (!virtqueue_enable_cb(vq));
-> >
-> >-      virtqueue_kick(vsock->vqs[VSOCK_VQ_EVENT]);
-> >+      if (vsock->has_dgram)
-> >+              virtqueue_kick(vsock->vqs[VSOCK_VQ_EX_EVENT]);
-> >+      else
-> >+              virtqueue_kick(vsock->vqs[VSOCK_VQ_EVENT]);
-> > out:
-> >       mutex_unlock(&vsock->event_lock);
-> > }
-> >@@ -434,6 +447,10 @@ static void virtio_vsock_tx_done(struct virtqueue *vq)
-> >       queue_work(virtio_vsock_workqueue, &vsock->tx_work);
-> > }
-> >
-> >+static void virtio_vsock_dgram_tx_done(struct virtqueue *vq)
-> >+{
-> >+}
-> >+
-> > static void virtio_vsock_rx_done(struct virtqueue *vq)
-> > {
-> >       struct virtio_vsock *vsock = vq->vdev->priv;
-> >@@ -443,6 +460,10 @@ static void virtio_vsock_rx_done(struct virtqueue *vq)
-> >       queue_work(virtio_vsock_workqueue, &vsock->rx_work);
-> > }
-> >
-> >+static void virtio_vsock_dgram_rx_done(struct virtqueue *vq)
-> >+{
-> >+}
-> >+
-> > static struct virtio_transport virtio_transport = {
-> >       .transport = {
-> >               .module                   = THIS_MODULE,
-> >@@ -545,13 +566,29 @@ static int virtio_vsock_probe(struct virtio_device *vdev)
-> >               virtio_vsock_tx_done,
-> >               virtio_vsock_event_done,
-> >       };
-> >+      vq_callback_t *ex_callbacks[] = {
->
-> 'ex' is not clear, maybe better 'dgram'?
->
-sure.
+Hi Laurent,
 
-> What happen if F_DGRAM is negotiated, but not F_STREAM?
+On Mon, Jun 21, 2021 at 7:44 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
 >
-Hmm. In my mind, F_STREAM is always negotiated. Do we want to add
-support when F_STREAM is not negotiated?
+> Hi Jagan,
+>
+> On Mon, Jun 21, 2021 at 07:41:07PM +0530, Jagan Teki wrote:
+> > On Mon, Jun 21, 2021 at 6:26 PM Laurent Pinchart wrote:
+> > > On Mon, Jun 21, 2021 at 12:49:14PM +0100, Dave Stevenson wrote:
+> > > > On Sun, 20 Jun 2021 at 23:49, Laurent Pinchart wrote:
+> > > > > On Sun, Jun 20, 2021 at 09:42:27PM +0300, Laurent Pinchart wrote:
+> > > > > > On Sun, Jun 20, 2021 at 03:29:03PM +0100, Dave Stevenson wrote:
+> > > > > > > On Sun, 20 Jun 2021 at 04:26, Laurent Pinchart wrote:
+> > > > > > > >
+> > > > > > > > Hi Maxime,
+> > > > > > > >
+> > > > > > > > I'm testing this, and I'm afraid it causes an issue with all the
+> > > > > > > > I2C-controlled bridges. I'm focussing on the newly merged ti-sn65dsi83
+> > > > > > > > driver at the moment, but other are affected the same way.
+> > > > > > > >
+> > > > > > > > With this patch, the DSI component is only added when the DSI device is
+> > > > > > > > attached to the host with mipi_dsi_attach(). In the ti-sn65dsi83 driver,
+> > > > > > > > this happens in the bridge attach callback, which is called when the
+> > > > > > > > bridge is attached by a call to drm_bridge_attach() in vc4_dsi_bind().
+> > > > > > > > This creates a circular dependency, and the DRM/KMS device is never
+> > > > > > > > created.
+> > > > > > > >
+> > > > > > > > How should this be solved ? Dave, I think you have shown an interest in
+> > > > > > > > the sn65dsi83 recently, any help would be appreciated. On a side note,
+> > > > > > > > I've tested the ti-sn65dsi83 driver on a v5.10 RPi kernel, without much
+> > > > > > > > success (on top of commit e1499baa0b0c I get a very weird frame rate -
+> > > > > > > > 147 fps of 99 fps instead of 60 fps - and nothing on the screen, and on
+> > > > > > > > top of the latest v5.10 RPi branch, I get lock-related warnings at every
+> > > > > > > > page flip), which is why I tried v5.12 and noticed this patch. Is it
+> > > > > > > > worth trying to bring up the display on the v5.10 RPi kernel in parallel
+> > > > > > > > to fixing the issue introduced in this patch, or is DSI known to be
+> > > > > > > > broken there ?
+> > > > > > >
+> > > > > > > I've been looking at SN65DSI83/4, but as I don't have any hardware
+> > > > > > > I've largely been suggesting things to try to those on the forums who
+> > > > > > > do [1].
+> > > > > > >
+> > > > > > > My branch at https://github.com/6by9/linux/tree/rpi-5.10.y-sn65dsi8x-marek
+> > > > > > > is the latest one I've worked on. It's rpi-5.10.y with Marek's driver
+> > > > > > > cherry-picked, and an overlay and simple-panel definition by others.
+> > > > > > > It also has a rework for vc4_dsi to use pm_runtime, instead of
+> > > > > > > breaking up the DSI bridge chain (which is flawed as it never calls
+> > > > > > > the bridge mode_set or mode_valid functions which sn65dsi83 relies
+> > > > > > > on).
+> > > > > > >
+> > > > > > > I ran it on Friday in the lab and encountered an issue with vc4_dsi
+> > > > > > > should vc4_dsi_encoder_mode_fixup wish for a divider of 7 (required
+> > > > > > > for this 800x1280 panel over 4 lanes) where it resulted in an invalid
+> > > > > > > mode configuration. That resulted in patch [2] which then gave me
+> > > > > > > sensible numbers.
+> > > > > > >
+> > > > > > > That branch with dtoverlay=vc4-kms-v3d and
+> > > > > > > dtoverlay=vc4-kms-dsi-ti-sn65dsi83 created all the expected devices,
+> > > > > > > and everything came up normally.
+> > > > > > > It was a busy day, but I think I even stuck a scope on the clock lanes
+> > > > > > > at that point and confirmed that they were at the link frequency
+> > > > > > > expected.
+> > > > > >
+> > > > > > Thanks, I'll test your branch and will report the results.
+> > > > >
+> > > > > I had to apply the following diff to work around a crash:
+> > > > >
+> > > > > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi83.c b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
+> > > > > index 55b6c53207f5..647426aa793a 100644
+> > > > > --- a/drivers/gpu/drm/bridge/ti-sn65dsi83.c
+> > > > > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
+> > > > > @@ -525,6 +525,9 @@ static bool sn65dsi83_mode_fixup(struct drm_bridge *bridge,
+> > > > >
+> > > > >         /* The DSI format is always RGB888_1X24 */
+> > > > >         list_for_each_entry(connector, &ddev->mode_config.connector_list, head) {
+> > > > > +               if (!connector->display_info.bus_formats)
+> > > > > +                       continue;
+> > > > > +
+> > > > >                 switch (connector->display_info.bus_formats[0]) {
+> > > > >                 case MEDIA_BUS_FMT_RGB666_1X7X3_SPWG:
+> > > > >                         ctx->lvds_format_24bpp = false;
+> > > > >
+> > > > > connector->display_info.bus_formats is NULL for the HDMI connectors, as
+> > > > > I have nothing connected to them, as well as for the writeback
+> > > > > connector.
+> > > >
+> > > > I'm now confused as to what I'm doing as my branch appears NOT to have
+> > > > Marek's latest version of the driver as it doesn't have
+> > > > sn65dsi83_mode_fixup.
+> > > > I need to have another look at what's going on - I think I've got
+> > > > branches confused when switching between machines :-( Remaking that
+> > > > branch now.
+> > > >
+> > > > I do see that Marek has sent another patch around
+> > > > sn65dsi83_mode_fixup, but it'll still dereference
+> > > > connector->display_info.bus_formats[0] on all connectors. Shouldn't it
+> > > > only be switching on the one connector that is connected to this
+> > > > bridge, not HDMI or writeback connectors? I'm not totally clear on
+> > > > which connectors are in that list.
+> > > > https://patchwork.freedesktop.org/patch/440175/
+> > >
+> > > The following series should fix the issue:
+> > >
+> > > [PATCH] drm/bridge: ti-sn65dsi83: Replace connector format patching with atomic_get_input_bus_fmts
+> > > [PATCH 0/5] ti-sn65dsi83: Finalize transition to atomic operations
+> >
+> > Look like DSI on STM32MP1 seems broken even with these on top of
+> > drm-misc/drm-misc-next , anything broken on the tree?
+>
+> No idea, I don't have a functional display on my RPi CM4 device yet, so
+> I can't tell :-)
 
-> >+              virtio_vsock_rx_done,
-> >+              virtio_vsock_tx_done,
-> >+              virtio_vsock_dgram_rx_done,
-> >+              virtio_vsock_dgram_tx_done,
-> >+              virtio_vsock_event_done,
-> >+      };
-> >+
-> >       static const char * const names[] = {
-> >               "rx",
-> >               "tx",
-> >               "event",
-> >       };
-> >+      static const char * const ex_names[] = {
-> >+              "rx",
-> >+              "tx",
-> >+              "dgram_rx",
-> >+              "dgram_tx",
-> >+              "event",
-> >+      };
-> >+
-> >       struct virtio_vsock *vsock = NULL;
-> >-      int ret;
-> >+      int ret, max_vq;
-> >
-> >       ret = mutex_lock_interruptible(&the_virtio_vsock_mutex);
-> >       if (ret)
-> >@@ -572,9 +609,30 @@ static int virtio_vsock_probe(struct virtio_device *vdev)
-> >
-> >       vsock->vdev = vdev;
-> >
-> >-      ret = virtio_find_vqs(vsock->vdev, VSOCK_VQ_MAX,
-> >+      if (virtio_has_feature(vdev, VIRTIO_VSOCK_F_DGRAM))
-> >+              vsock->has_dgram = true;
-> >+
-> >+      if (vsock->has_dgram)
-> >+              max_vq = VSOCK_VQ_EX_MAX;
-> >+      else
-> >+              max_vq = VSOCK_VQ_MAX;
-> >+
-> >+      vsock->vqs = kmalloc_array(max_vq, sizeof(struct virtqueue *), GFP_KERNEL);
-> >+      if (!vsock->vqs) {
-> >+              ret = -ENOMEM;
-> >+              goto out;
-> >+      }
-> >+
-> >+      if (vsock->has_dgram) {
-> >+              ret = virtio_find_vqs(vsock->vdev, max_vq,
-> >+                            vsock->vqs, ex_callbacks, ex_names,
-> >+                            NULL);
-> >+      } else {
-> >+              ret = virtio_find_vqs(vsock->vdev, max_vq,
-> >                             vsock->vqs, callbacks, names,
-> >                             NULL);
-> >+      }
-> >+
-> >       if (ret < 0)
-> >               goto out;
-> >
-> >@@ -695,6 +753,7 @@ static struct virtio_device_id id_table[] = {
-> > };
-> >
-> > static unsigned int features[] = {
-> >+      VIRTIO_VSOCK_F_DGRAM,
-> > };
-> >
-> > static struct virtio_driver virtio_vsock_driver = {
-> >--
-> >2.11.0
-> >
->
+Look like FB circular dependency patch f611b1e7624c causing the issue.
+Maxime is also mentioned same it seems in other response.
+
+Jagan.
