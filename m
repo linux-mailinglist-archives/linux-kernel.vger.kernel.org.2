@@ -2,102 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B9F3AF77E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:34:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7D53AF77F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231615AbhFUVgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 17:36:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41972 "EHLO
+        id S231217AbhFUVhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 17:37:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231249AbhFUVgi (ORCPT
+        with ESMTP id S231249AbhFUVha (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 17:36:38 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5592C061574;
-        Mon, 21 Jun 2021 14:34:22 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id u2so1812387qvp.13;
-        Mon, 21 Jun 2021 14:34:22 -0700 (PDT)
+        Mon, 21 Jun 2021 17:37:30 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC69DC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:35:14 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id g4so10785536pjk.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:35:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=d3c9VDld9cVll7jiOE4VaogdRPw6AneLM9bO2IMc2sk=;
-        b=p3Z4oBwaAf/CzqFKoFIM1M8KmY7Wg7f2bqib/s4ROzYjlXDlqA2rz0QR5ZEx6T24dY
-         vVydPJdvK1u1wwF+3pG/LB+K26EdnKi4YKQ+2vZN5lG40wdLdgNmlvlrlW8hhEyvrROo
-         okXNlwoArj2NCzH6BAYUge9UF0rv3tk+YTX7bgutc12+FW4JiELD81lKx7lgQsyCZtu8
-         F+5VYTsVjvuuwXQ+1hOOJTaVOpyJzHlvXH6CieHCPUcMM/CkE72pjOcQtBP/7EGn0am9
-         sOtj05167/GWBgvUDxGuGnTp7oumSo5/CKSny7oiTk0wl/NyOAGxyx0SvnHPVuhY+HPb
-         nh7A==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UDidmCZxhroQ+TOCX79nOJNfPKJOGFSjcIs3K19hLp8=;
+        b=UKzXohh/1StZBHDI4g+MalYUrKYsPNiqfF19dWdrEZWlbsMxHYiLQZgLy4EXhUuWXR
+         M+dVug9hbGLGGAL1TsjAV2lS3Xn1aEk8CKPpyb8zBB/H/ZMu0XR6EhXJwCYlO4Hs6EVq
+         8esrQr3Bd6IvJ34m0TFKXLP/ytkY9pj/UA2nQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=d3c9VDld9cVll7jiOE4VaogdRPw6AneLM9bO2IMc2sk=;
-        b=qZC6P7h47vCtJilffL8dGMpdx3xSg/TLfq0l2sW7DEzPosDfNZgpD01P10ri1cAzOc
-         bYeiBYbyF5Q0uYBhV+8YxJMrykvCLgx5c6oBH16i87cUxz9p48ryJNfZNuhDxvMAd03/
-         LIA+1JNXArnCrQHxcjytayn4HWwiYs9/xZaqdFjAlxA/KGAMShjkjz0Kd3NuF+IRxhgF
-         Zs7IPShEjpOLr/BQTHL7N9DpOvdhz1PJbl+xiKccAhTzxaKHAhzs+boFcpvHh9frBtnu
-         NxBM58bRtobVdhz1Ow6XQ2Mee9nIBUE+tgn+bdpqodlFGqAUzc8ZLXS4Ng7jNKdHt8bV
-         QVig==
-X-Gm-Message-State: AOAM532qB00+ipwjsSeEbOUxgEloKgxmzOogRuOZXrJBLDhWum9a+rRa
-        MoS0RHZz1IlZVvTQbJKEQoA=
-X-Google-Smtp-Source: ABdhPJyCWCfKmaUbhmrlNJ383qFx661DD98xr7rhC6QmgPxeKOjV5GXLx1pVQN95O1tQew7FlRzhJQ==
-X-Received: by 2002:a0c:e912:: with SMTP id a18mr18884264qvo.39.1624311261786;
-        Mon, 21 Jun 2021 14:34:21 -0700 (PDT)
-Received: from localhost ([207.98.216.60])
-        by smtp.gmail.com with ESMTPSA id h17sm237580qtk.23.2021.06.21.14.34.21
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UDidmCZxhroQ+TOCX79nOJNfPKJOGFSjcIs3K19hLp8=;
+        b=t/JERyCVvInBkD5MTCFuLREa2Pl4clI2ywqajOqoD+ASok6wMAJQhnfnpfeEzseALA
+         xb1WmAbQBey3Bsh+oIJBTjUbZLR08sT3aRLM3Ua2H1/mWfk3WiYfWh3yRdwm4InxEeOG
+         6v0+k8Tp9Yg8NGqUyOjZRFO/RPMUoft72x7bsOm8Ch9qFtvFVz+46gNNzYDolIgvfDQu
+         /XCNJMXSyCGO+MAqYRWIbIBDkeVOYckzl5v+3fG1XO3kU6o+MRV9VJWRKMvu3cCrOhn7
+         JJ2Ka9re4K1q5h2r21EDPIyATzDD3+nMI0DYl+Xu8ZtkVlDaUE30pQr2MiarxJa4xHHR
+         3tDw==
+X-Gm-Message-State: AOAM532y8ZDmu1ZmjlotOMaesEbjOEWL4RS/UBHACaa73RZt2EyTdq3l
+        unZUjZ+dLpSGjKSqQ2IyRE7GdQ==
+X-Google-Smtp-Source: ABdhPJySc3RO6aQntY+AiU2uAIVn9+bZL0/etrX7035KzHaNrh5bI1NZpIt1xweDPjKFhM6dFtEERg==
+X-Received: by 2002:a17:90a:e98f:: with SMTP id v15mr133613pjy.144.1624311314348;
+        Mon, 21 Jun 2021 14:35:14 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id k9sm17811211pgq.27.2021.06.21.14.35.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 14:34:21 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 14:34:19 -0700
-From:   Yury Norov <yury.norov@gmail.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jean Delvare <jdelvare@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Marc Zyngier <maz@kernel.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Alexey Klimov <aklimov@redhat.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, etnaviv@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH 3/3] Replace for_each_*_bit_from() with for_each_*_bit()
- where appropriate
-Message-ID: <YNEF2w/bTLWIG8M2@yury-ThinkPad>
-References: <20210618195735.55933-1-yury.norov@gmail.com>
- <20210618195735.55933-4-yury.norov@gmail.com>
- <20210621201711.GA631547@roeck-us.net>
+        Mon, 21 Jun 2021 14:35:13 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     "David S . Miller" <davem@davemloft.net>
+Cc:     Kees Cook <keescook@chromium.org>, Dany Madden <drt@linux.ibm.com>,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
+        Thomas Falcon <tlfalcon@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] ibmvnic: Use strscpy() instead of strncpy()
+Date:   Mon, 21 Jun 2021 14:35:09 -0700
+Message-Id: <20210621213509.1404256-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621201711.GA631547@roeck-us.net>
+X-Patch-Hashes: v=1; h=sha256; g=9d7d233a23aa862fcc6a92c72955f66ab680a7cf; i=2MSGt3s6JKlmLqc/7MhI8MosbesWNfHpXt3ZKIs5Ui0=; m=73OdtUon7HnZ7lwINUsDE2u3rLyNTedCFDxqqnCnH0U=; p=3HCUEwDxbB6Mvm9EsCUsGy6FDmIED+nO7uTZDX2jFb4=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmDRBg0ACgkQiXL039xtwCYm1hAAn8z zKGC+z3/HykUm/wR8tpn/0aihvrjXOE/pNGc82OUB9sRdy3xFtnvDq7A/jcfeK5kwd4zBM6kXwNzB hM8KxnDiM88KuS4hLn61XmYxNC7V6L5moz2ZX5SZrvv0xsM9gZUxe6frtJoocA4jHfKeR5g0picxr 4UBq2Wf+VhkKayMKHHYMEAq/2PvJb5hDt/xCV0SMyKx00OPatExs2CZtCbpjmCcQSSGdiufea830i Zi3jIfzppQecp3bIq8fXUC0hzIjbYa6KUMJoWOA7SrBAiupg+msTYzA1UvWScPZJE7XtObX9bE4Cf K3u5t+0yC8wx0Cjl/0H+QRMVd7iZV2c+FS67Ynwc6eC8NQj2eOE89pg9VBEj0gOqJjkWu7UHzmt62 SAXNfDGiqs9pmSsrYuAVJV6qsgEPK7f2qzbndwBGL3gqE4uRoV2k5E7f2jnrKGyje3LnVZGAR8Fx9 tlX3OuqdEB05ejAW5Ay60gUCa3I14flW6fTJwQdHM9zfpSxwMPNuy9apw0tb8BJTCUlTe5fan6HA4 QSM3EcAu5rSIcgiXiqrDR4AMldjPbKuvtczjKve7Z9KCH7IX1EaTOalWwNH6F6392Sm1X/y0TEMPO TB9Mi0LVgyXEfzTKoyyXC7lU49OAulgfZrJe+DU7iiAUhNw+8b75S3j73KGOv46g=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 01:17:11PM -0700, Guenter Roeck wrote:
-> On Fri, Jun 18, 2021 at 12:57:35PM -0700, Yury Norov wrote:
-> > A couple of kernel functions call for_each_*_bit_from() with start
-> > bit equal to 0. Replace them with for_each_*_bit().
-> > 
-> > No functional changes, but might improve on readability.
-> > 
-> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> > ---
-> >  arch/x86/kernel/apic/vector.c         | 4 ++--
-> >  drivers/gpu/drm/etnaviv/etnaviv_gpu.c | 4 ++--
-> >  drivers/hwmon/ltc2992.c               | 3 +--
-> 
-> This should be three different patches, one per subsystem.
+Since these strings are expected to be NUL-terminated and the buffers
+are exactly sized (in vnic_client_data_len()) with no padding, strncpy()
+can be safely replaced with strscpy() here, as strncpy() on
+NUL-terminated string is considered deprecated[1]. This has the
+side-effect of silencing a -Warray-bounds warning due to the compiler
+being confused about the vlcd incrementing:
 
-It was discussed recently.
-https://lore.kernel.org/linux-arch/20210614180706.1e8564854bfed648dd4c039b@linux-foundation.org/
+In file included from ./include/linux/string.h:253,
+                 from ./include/linux/bitmap.h:10,
+                 from ./include/linux/cpumask.h:12,
+                 from ./include/linux/mm_types_task.h:14,
+                 from ./include/linux/mm_types.h:5,
+                 from ./include/linux/buildid.h:5,
+                 from ./include/linux/module.h:14,
+                 from drivers/net/ethernet/ibm/ibmvnic.c:35:
+In function '__fortify_strncpy',
+    inlined from 'vnic_add_client_data' at drivers/net/ethernet/ibm/ibmvnic.c:3919:2:
+./include/linux/fortify-string.h:39:30: warning: '__builtin_strncpy' offset 12 from the object at 'v
+lcd' is out of the bounds of referenced subobject 'name' with type 'char[]' at offset 12 [-Warray-bo
+unds]
+   39 | #define __underlying_strncpy __builtin_strncpy
+      |                              ^
+./include/linux/fortify-string.h:51:9: note: in expansion of macro '__underlying_strncpy'
+   51 |  return __underlying_strncpy(p, q, size);
+      |         ^~~~~~~~~~~~~~~~~~~~
+drivers/net/ethernet/ibm/ibmvnic.c: In function 'vnic_add_client_data':
+drivers/net/ethernet/ibm/ibmvnic.c:3883:7: note: subobject 'name' declared here
+ 3883 |  char name[];
+      |       ^~~~
+
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+
+Cc: Dany Madden <drt@linux.ibm.com>
+Cc: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
+Cc: Thomas Falcon <tlfalcon@linux.ibm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/net/ethernet/ibm/ibmvnic.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
+index 2d8804ebdf96..adb0d5ca9ff1 100644
+--- a/drivers/net/ethernet/ibm/ibmvnic.c
++++ b/drivers/net/ethernet/ibm/ibmvnic.c
+@@ -3909,21 +3909,21 @@ static void vnic_add_client_data(struct ibmvnic_adapter *adapter,
+ 	vlcd->type = 1;
+ 	len = strlen(os_name) + 1;
+ 	vlcd->len = cpu_to_be16(len);
+-	strncpy(vlcd->name, os_name, len);
++	strscpy(vlcd->name, os_name, len);
+ 	vlcd = (struct vnic_login_client_data *)(vlcd->name + len);
+ 
+ 	/* Type 2 - LPAR name */
+ 	vlcd->type = 2;
+ 	len = strlen(utsname()->nodename) + 1;
+ 	vlcd->len = cpu_to_be16(len);
+-	strncpy(vlcd->name, utsname()->nodename, len);
++	strscpy(vlcd->name, utsname()->nodename, len);
+ 	vlcd = (struct vnic_login_client_data *)(vlcd->name + len);
+ 
+ 	/* Type 3 - device name */
+ 	vlcd->type = 3;
+ 	len = strlen(adapter->netdev->name) + 1;
+ 	vlcd->len = cpu_to_be16(len);
+-	strncpy(vlcd->name, adapter->netdev->name, len);
++	strscpy(vlcd->name, adapter->netdev->name, len);
+ }
+ 
+ static int send_login(struct ibmvnic_adapter *adapter)
+-- 
+2.30.2
+
