@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FBB83AF076
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05B703AEEF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:33:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233335AbhFUQte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:49:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38048 "EHLO mail.kernel.org"
+        id S232562AbhFUQeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:34:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233831AbhFUQpf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:45:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 21B0E61369;
-        Mon, 21 Jun 2021 16:32:36 +0000 (UTC)
+        id S232274AbhFUQbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:31:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D1B9861352;
+        Mon, 21 Jun 2021 16:25:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624293157;
-        bh=l+y3EfbZGUT0PhyUh4Dy88/m/60AmB8eIKoRxFtmZ1E=;
+        s=korg; t=1624292717;
+        bh=7D5+Z7yqnTuz20Rw2xK/398Z00a3m+DNXkDvvgn3+nQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2qn7+w/ReTTz9aue9Mn8xjplqUrpuV0qonZAsokN5UXILwR6IO0vCgayJc4fxYHWQ
-         Olnw9S/hG+KdJvI2k0i5+Dq2Z5e+aegM+ziiLcropiIzLc/6zoFrMkTGSBsuPPi+LA
-         MO1m+bh1enBJt22E7dbLh5s2yRlEVVii2CAAg5yI=
+        b=lgm4c3GgHNIji1LnnBIgYqKF6ODHLYW1075kOl4KTZR2s9u1MBhb3O3VpbNtVFdk6
+         6Rk6dWOVdday2FNEm8PAxOcHy4rWTBrLXgcI0ael8KFsoT41O7JVsBT90C0s+Rpbvm
+         J1ZGCn2TvOwrJtZWRVNdsxw7OWEhHySoxqWOYe7Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hillf Danton <hdanton@sina.com>,
-        syzbot+220c1a29987a9a490903@syzkaller.appspotmail.com,
-        syzbot+45199c1b73b4013525cf@syzkaller.appspotmail.com,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.12 119/178] can: j1939: fix Use-after-Free, hold skb ref while in use
+        stable@vger.kernel.org, Breno Lima <breno.lima@nxp.com>,
+        Jun Li <jun.li@nxp.com>, Peter Chen <peter.chen@kernel.org>
+Subject: [PATCH 5.10 103/146] usb: chipidea: imx: Fix Battery Charger 1.2 CDP detection
 Date:   Mon, 21 Jun 2021 18:15:33 +0200
-Message-Id: <20210621154926.825722598@linuxfoundation.org>
+Message-Id: <20210621154917.797476453@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621154921.212599475@linuxfoundation.org>
-References: <20210621154921.212599475@linuxfoundation.org>
+In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
+References: <20210621154911.244649123@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,201 +39,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oleksij Rempel <o.rempel@pengutronix.de>
+From: Breno Lima <breno.lima@nxp.com>
 
-commit 2030043e616cab40f510299f09b636285e0a3678 upstream.
+commit c6d580d96f140596d69220f60ce0cfbea4ee5c0f upstream.
 
-This patch fixes a Use-after-Free found by the syzbot.
+i.MX8MM cannot detect certain CDP USB HUBs. usbmisc_imx.c driver is not
+following CDP timing requirements defined by USB BC 1.2 specification
+and section 3.2.4 Detection Timing CDP.
 
-The problem is that a skb is taken from the per-session skb queue,
-without incrementing the ref count. This leads to a Use-after-Free if
-the skb is taken concurrently from the session queue due to a CTS.
+During Primary Detection the i.MX device should turn on VDP_SRC and
+IDM_SINK for a minimum of 40ms (TVDPSRC_ON). After a time of TVDPSRC_ON,
+the i.MX is allowed to check the status of the D- line. Current
+implementation is waiting between 1ms and 2ms, and certain BC 1.2
+complaint USB HUBs cannot be detected. Increase delay to 40ms allowing
+enough time for primary detection.
 
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Link: https://lore.kernel.org/r/20210521115720.7533-1-o.rempel@pengutronix.de
-Cc: Hillf Danton <hdanton@sina.com>
-Cc: linux-stable <stable@vger.kernel.org>
-Reported-by: syzbot+220c1a29987a9a490903@syzkaller.appspotmail.com
-Reported-by: syzbot+45199c1b73b4013525cf@syzkaller.appspotmail.com
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+During secondary detection the i.MX is required to disable VDP_SRC and
+IDM_SNK, and enable VDM_SRC and IDP_SINK for at least 40ms (TVDMSRC_ON).
+
+Current implementation is not disabling VDP_SRC and IDM_SNK, introduce
+disable sequence in imx7d_charger_secondary_detection() function.
+
+VDM_SRC and IDP_SINK should be enabled for at least 40ms (TVDMSRC_ON).
+Increase delay allowing enough time for detection.
+
+Cc: <stable@vger.kernel.org>
+Fixes: 746f316b753a ("usb: chipidea: introduce imx7d USB charger detection")
+Signed-off-by: Breno Lima <breno.lima@nxp.com>
+Signed-off-by: Jun Li <jun.li@nxp.com>
+Link: https://lore.kernel.org/r/20210614175013.495808-1-breno.lima@nxp.com
+Signed-off-by: Peter Chen <peter.chen@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/can/j1939/transport.c |   54 ++++++++++++++++++++++++++++++++++------------
- 1 file changed, 40 insertions(+), 14 deletions(-)
+ drivers/usb/chipidea/usbmisc_imx.c |   16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -330,6 +330,9 @@ static void j1939_session_skb_drop_old(s
+--- a/drivers/usb/chipidea/usbmisc_imx.c
++++ b/drivers/usb/chipidea/usbmisc_imx.c
+@@ -686,6 +686,16 @@ static int imx7d_charger_secondary_detec
+ 	int val;
+ 	unsigned long flags;
  
- 	if ((do_skcb->offset + do_skb->len) < offset_start) {
- 		__skb_unlink(do_skb, &session->skb_queue);
-+		/* drop ref taken in j1939_session_skb_queue() */
-+		skb_unref(do_skb);
++	/* Clear VDATSRCENB0 to disable VDP_SRC and IDM_SNK required by BC 1.2 spec */
++	spin_lock_irqsave(&usbmisc->lock, flags);
++	val = readl(usbmisc->base + MX7D_USB_OTG_PHY_CFG2);
++	val &= ~MX7D_USB_OTG_PHY_CFG2_CHRG_VDATSRCENB0;
++	writel(val, usbmisc->base + MX7D_USB_OTG_PHY_CFG2);
++	spin_unlock_irqrestore(&usbmisc->lock, flags);
 +
- 		kfree_skb(do_skb);
- 	}
- 	spin_unlock_irqrestore(&session->skb_queue.lock, flags);
-@@ -349,12 +352,13 @@ void j1939_session_skb_queue(struct j193
- 
- 	skcb->flags |= J1939_ECU_LOCAL_SRC;
- 
-+	skb_get(skb);
- 	skb_queue_tail(&session->skb_queue, skb);
- }
- 
- static struct
--sk_buff *j1939_session_skb_find_by_offset(struct j1939_session *session,
--					  unsigned int offset_start)
-+sk_buff *j1939_session_skb_get_by_offset(struct j1939_session *session,
-+					 unsigned int offset_start)
- {
- 	struct j1939_priv *priv = session->priv;
- 	struct j1939_sk_buff_cb *do_skcb;
-@@ -371,6 +375,10 @@ sk_buff *j1939_session_skb_find_by_offse
- 			skb = do_skb;
- 		}
- 	}
++	/* TVDMSRC_DIS */
++	msleep(20);
 +
-+	if (skb)
-+		skb_get(skb);
-+
- 	spin_unlock_irqrestore(&session->skb_queue.lock, flags);
+ 	/* VDM_SRC is connected to D- and IDP_SINK is connected to D+ */
+ 	spin_lock_irqsave(&usbmisc->lock, flags);
+ 	val = readl(usbmisc->base + MX7D_USB_OTG_PHY_CFG2);
+@@ -695,7 +705,8 @@ static int imx7d_charger_secondary_detec
+ 				usbmisc->base + MX7D_USB_OTG_PHY_CFG2);
+ 	spin_unlock_irqrestore(&usbmisc->lock, flags);
  
- 	if (!skb)
-@@ -381,12 +389,12 @@ sk_buff *j1939_session_skb_find_by_offse
- 	return skb;
- }
+-	usleep_range(1000, 2000);
++	/* TVDMSRC_ON */
++	msleep(40);
  
--static struct sk_buff *j1939_session_skb_find(struct j1939_session *session)
-+static struct sk_buff *j1939_session_skb_get(struct j1939_session *session)
- {
- 	unsigned int offset_start;
+ 	/*
+ 	 * Per BC 1.2, check voltage of D+:
+@@ -798,7 +809,8 @@ static int imx7d_charger_primary_detecti
+ 				usbmisc->base + MX7D_USB_OTG_PHY_CFG2);
+ 	spin_unlock_irqrestore(&usbmisc->lock, flags);
  
- 	offset_start = session->pkt.dpo * 7;
--	return j1939_session_skb_find_by_offset(session, offset_start);
-+	return j1939_session_skb_get_by_offset(session, offset_start);
- }
+-	usleep_range(1000, 2000);
++	/* TVDPSRC_ON */
++	msleep(40);
  
- /* see if we are receiver
-@@ -776,7 +784,7 @@ static int j1939_session_tx_dat(struct j
- 	int ret = 0;
- 	u8 dat[8];
- 
--	se_skb = j1939_session_skb_find_by_offset(session, session->pkt.tx * 7);
-+	se_skb = j1939_session_skb_get_by_offset(session, session->pkt.tx * 7);
- 	if (!se_skb)
- 		return -ENOBUFS;
- 
-@@ -801,7 +809,8 @@ static int j1939_session_tx_dat(struct j
- 			netdev_err_once(priv->ndev,
- 					"%s: 0x%p: requested data outside of queued buffer: offset %i, len %i, pkt.tx: %i\n",
- 					__func__, session, skcb->offset, se_skb->len , session->pkt.tx);
--			return -EOVERFLOW;
-+			ret = -EOVERFLOW;
-+			goto out_free;
- 		}
- 
- 		if (!len) {
-@@ -835,6 +844,12 @@ static int j1939_session_tx_dat(struct j
- 	if (pkt_done)
- 		j1939_tp_set_rxtimeout(session, 250);
- 
-+ out_free:
-+	if (ret)
-+		kfree_skb(se_skb);
-+	else
-+		consume_skb(se_skb);
-+
- 	return ret;
- }
- 
-@@ -1007,7 +1022,7 @@ static int j1939_xtp_txnext_receiver(str
- static int j1939_simple_txnext(struct j1939_session *session)
- {
- 	struct j1939_priv *priv = session->priv;
--	struct sk_buff *se_skb = j1939_session_skb_find(session);
-+	struct sk_buff *se_skb = j1939_session_skb_get(session);
- 	struct sk_buff *skb;
- 	int ret;
- 
-@@ -1015,8 +1030,10 @@ static int j1939_simple_txnext(struct j1
- 		return 0;
- 
- 	skb = skb_clone(se_skb, GFP_ATOMIC);
--	if (!skb)
--		return -ENOMEM;
-+	if (!skb) {
-+		ret = -ENOMEM;
-+		goto out_free;
-+	}
- 
- 	can_skb_set_owner(skb, se_skb->sk);
- 
-@@ -1024,12 +1041,18 @@ static int j1939_simple_txnext(struct j1
- 
- 	ret = j1939_send_one(priv, skb);
- 	if (ret)
--		return ret;
-+		goto out_free;
- 
- 	j1939_sk_errqueue(session, J1939_ERRQUEUE_SCHED);
- 	j1939_sk_queue_activate_next(session);
- 
--	return 0;
-+ out_free:
-+	if (ret)
-+		kfree_skb(se_skb);
-+	else
-+		consume_skb(se_skb);
-+
-+	return ret;
- }
- 
- static bool j1939_session_deactivate_locked(struct j1939_session *session)
-@@ -1170,9 +1193,10 @@ static void j1939_session_completed(stru
- 	struct sk_buff *skb;
- 
- 	if (!session->transmission) {
--		skb = j1939_session_skb_find(session);
-+		skb = j1939_session_skb_get(session);
- 		/* distribute among j1939 receivers */
- 		j1939_sk_recv(session->priv, skb);
-+		consume_skb(skb);
- 	}
- 
- 	j1939_session_deactivate_activate_next(session);
-@@ -1744,7 +1768,7 @@ static void j1939_xtp_rx_dat_one(struct
- {
- 	struct j1939_priv *priv = session->priv;
- 	struct j1939_sk_buff_cb *skcb;
--	struct sk_buff *se_skb;
-+	struct sk_buff *se_skb = NULL;
- 	const u8 *dat;
- 	u8 *tpdat;
- 	int offset;
-@@ -1786,7 +1810,7 @@ static void j1939_xtp_rx_dat_one(struct
- 		goto out_session_cancel;
- 	}
- 
--	se_skb = j1939_session_skb_find_by_offset(session, packet * 7);
-+	se_skb = j1939_session_skb_get_by_offset(session, packet * 7);
- 	if (!se_skb) {
- 		netdev_warn(priv->ndev, "%s: 0x%p: no skb found\n", __func__,
- 			    session);
-@@ -1848,11 +1872,13 @@ static void j1939_xtp_rx_dat_one(struct
- 		j1939_tp_set_rxtimeout(session, 250);
- 	}
- 	session->last_cmd = 0xff;
-+	consume_skb(se_skb);
- 	j1939_session_put(session);
- 
- 	return;
- 
-  out_session_cancel:
-+	kfree_skb(se_skb);
- 	j1939_session_timers_cancel(session);
- 	j1939_session_cancel(session, J1939_XTP_ABORT_FAULT);
- 	j1939_session_put(session);
+ 	/* Check if D- is less than VDAT_REF to determine an SDP per BC 1.2 */
+ 	val = readl(usbmisc->base + MX7D_USB_OTG_PHY_STATUS);
 
 
