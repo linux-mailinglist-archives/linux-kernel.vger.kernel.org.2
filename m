@@ -2,138 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F353AE208
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 06:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 019CE3AE20A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 06:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229641AbhFUEHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 00:07:40 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:57491 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbhFUEEW (ORCPT
+        id S229736AbhFUEIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 00:08:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229506AbhFUEHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 00:04:22 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624248099; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=gkrITEleuMWfHYFVxXi8Ks0XBVcCGvg8UG3qlvDGPi8=; b=V7GxXw4YEplL1288wERAhSdhX4kobE93+wqxm/kuQ5XqGLSDrLZjyc8rWNvngPwdS7oKa4+U
- O/rgUrfTUHjRkaT50hfubG9mfMV8vAAIp4GnfPeMMMHLdlaU1rdw/gg9eh7E56L2jUDcIdLo
- WHVpfyQ73DIoHiPMtmEvKy9YVJo=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60d00f0ee570c056199e85d4 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 21 Jun 2021 04:01:18
- GMT
-Sender: faiyazm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4071EC4338A; Mon, 21 Jun 2021 04:01:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from faiyazm-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: faiyazm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5A66EC433F1;
-        Mon, 21 Jun 2021 04:01:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 5A66EC433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
-From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
-To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org, greg@kroah.com,
-        glittao@gmail.com, andy.shevchenko@gmail.com
-Cc:     vinmenon@codeaurora.org, catalin.marinas@arm.com,
-        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        Faiyaz Mohammed <faiyazm@codeaurora.org>
-Subject: [PATCH v2] mm: slub: fix the leak of alloc/free traces debugfs interface
-Date:   Mon, 21 Jun 2021 09:31:00 +0530
-Message-Id: <1624248060-30286-1-git-send-email-faiyazm@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Mon, 21 Jun 2021 00:07:43 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F5BC061574;
+        Sun, 20 Jun 2021 21:03:16 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id s19so7305737ilj.1;
+        Sun, 20 Jun 2021 21:03:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p5UDpfgo5AOHCaX0JpdGKP9xzPLEPt9T/y03N0fRCY4=;
+        b=OKkVl4teqRhhXxqcimH2zxCDycQ76+S+dawezbfPtGtQUIrXeRuMaw78L5ZOypI8y1
+         KgtSCVVuPK9I5pqB1q/ynBzH7aPG9I78ws77f/v1q715UgUgrr0zstQavSOSTakJx322
+         wsEuWo3CwxFClq6+7AKBZVryXHa7bJYlQTt1duwXNCzFZN/N8z8+Wi8BOiE31tiknNf+
+         g2fgYLOXJHx1Uf158iLhT+jKun7/xVdocu03oDdt/L+whV2N5phxxxSRtQFtjVm9Stad
+         PCHJDSF3ZVHjty0cCkAMG7MOYZjo3SWLufz9117JFWoOjpeNHo60UTuj2JD5pFdCs06u
+         +o3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p5UDpfgo5AOHCaX0JpdGKP9xzPLEPt9T/y03N0fRCY4=;
+        b=UVNoDwwN1vgxjjuFLaO976t7CF7X1Y1XzGNAsolHYFlyum97A5DQB+sYh0tdb28QhP
+         mi0FMCC/cDseh87t2YXhJtZLQiskqjDWiz+987PZp9ioODYtNnsEE7dRhiss6qcixRr+
+         WjZkZraqhleH0oDtEmnfXolJsFesJeUsOqX1F+RL94PPLJpFKivkZwIcwsmwtenf/PJy
+         H4musJIStl4xiuMOpW9zZpaDlLeL6y6ym1MShIaVGH6tD3ytboXa3q+lJ3EMVEK6+Vy7
+         Q1Pl1V5hfDP9MVWVNWKfArhmuhJ7uvlBsm0/h6AyYm8TAFBgnCRP7d/OsFCJh8Ng0yhj
+         VWIA==
+X-Gm-Message-State: AOAM533/wCAKgJxmv7q9XprpxWt2eKUrjPWCvMSfqZxjK6qbhZGlkjhZ
+        WWB0kF/71xu/RcxEogCGlr6GB0ar7XfuC5IUDsPvDMW+E2o=
+X-Google-Smtp-Source: ABdhPJx82zEJKWuu/YOeqVSNgybYGrfy6xikBlOfVE8L1pPAKxWlvZZIJ3ln8yeS4PYziDhMe4H5MjQaPpgPMoHKotw=
+X-Received: by 2002:a05:6e02:1d97:: with SMTP id h23mr3880075ila.108.1624248195557;
+ Sun, 20 Jun 2021 21:03:15 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210612094631.89980-1-martin.botka@somainline.org> <20210612094631.89980-3-martin.botka@somainline.org>
+In-Reply-To: <20210612094631.89980-3-martin.botka@somainline.org>
+From:   Jassi Brar <jassisinghbrar@gmail.com>
+Date:   Sun, 20 Jun 2021 23:03:04 -0500
+Message-ID: <CABb+yY3BYYC2na8EFunEeu0XCfLXrUQon=hF3q5p=+FUoigoyw@mail.gmail.com>
+Subject: Re: [PATCH V3 3/3] mailbox: qcom-apcs: Add SM6125 compatible
+To:     Martin Botka <martin.botka@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        konrad.dybcio@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the leak of alloc/free traces debugfs interface, reported
-by kmemleak like below,
+On Sat, Jun 12, 2021 at 4:46 AM Martin Botka
+<martin.botka@somainline.org> wrote:
+>
+> This commit adds compatible for the SM6125 SoC
+>
+> Signed-off-by: Martin Botka <martin.botka@somainline.org>
+> ---
+> Changes in V2:
+> None
+> Changes in V3:
+> Change compatible to apcs-hmss-global
+>  drivers/mailbox/qcom-apcs-ipc-mailbox.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/mailbox/qcom-apcs-ipc-mailbox.c b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
+> index f25324d03842..f24c5ad8d658 100644
+> --- a/drivers/mailbox/qcom-apcs-ipc-mailbox.c
+> +++ b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
+> @@ -57,6 +57,10 @@ static const struct qcom_apcs_ipc_data sdm660_apcs_data = {
+>         .offset = 8, .clk_name = NULL
+>  };
+>
+> +static const struct qcom_apcs_ipc_data sm6125_apcs_data = {
+> +       .offset = 8, .clk_name = NULL
+> +};
+> +
+>  static const struct qcom_apcs_ipc_data apps_shared_apcs_data = {
+>         .offset = 12, .clk_name = NULL
+>  };
+> @@ -166,6 +170,7 @@ static const struct of_device_id qcom_apcs_ipc_of_match[] = {
+>         { .compatible = "qcom,sc8180x-apss-shared", .data = &apps_shared_apcs_data },
+>         { .compatible = "qcom,sdm660-apcs-hmss-global", .data = &sdm660_apcs_data },
+>         { .compatible = "qcom,sdm845-apss-shared", .data = &apps_shared_apcs_data },
+> +       { .compatible = "qcom,sm6125-apcs-hmss-global", .data = &sm6125_apcs_data },
+>         { .compatible = "qcom,sm8150-apss-shared", .data = &apps_shared_apcs_data },
+>         { .compatible = "qcom,sdx55-apcs-gcc", .data = &sdx55_apcs_data },
+>         {}
+>
+These all are basically different names for the same controller.
+The 'offset' is a configuration parameter and the 'clock', when NULL,
+is basically some "always-on" clock.
+I am sure we wouldn't be doing it, if the controller was third-party.
 
-unreferenced object 0xffff00091ae1b540 (size 64):
-  comm "lsbug", pid 1607, jiffies 4294958291 (age 1476.340s)
-  hex dump (first 32 bytes):
-    02 00 00 00 00 00 00 00 6b 6b 6b 6b 6b 6b 6b 6b  ........kkkkkkkk
-    6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b 6b  kkkkkkkkkkkkkkkk
-  backtrace:
-    [<ffff8000106b06b8>] slab_post_alloc_hook+0xa0/0x418
-    [<ffff8000106b5c7c>] kmem_cache_alloc_trace+0x1e4/0x378
-    [<ffff8000106b5e40>] slab_debugfs_start+0x30/0x50
-    slab_debugfs_start at mm/slub.c:5831
-    [<ffff8000107b3dbc>] seq_read_iter+0x214/0xd50
-    [<ffff8000107b4b84>] seq_read+0x28c/0x418
-    [<ffff8000109560b4>] full_proxy_read+0xdc/0x148
-    [<ffff800010738f24>] vfs_read+0x104/0x340
-    [<ffff800010739ee0>] ksys_read+0xf8/0x1e0
-    [<ffff80001073a03c>] __arm64_sys_read+0x74/0xa8
-
-Fixes: 3589836402ca ("mm: slub: move sysfs slab alloc/free interfaces to debugfs")
-Link: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/mm/slub.c?h=next-20210617&id=84a2bdb1b458fc968d6d9e07dab388dc679bd747
-Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
----
-v2 changes:
-	- Updated the comparison in slab_debugfs_next().
-
-v1 changes:
-	- https://lore.kernel.org/linux-mm/1624019875-611-1-git-send-email-faiyazm@codeaurora.org/
-
- mm/slub.c | 20 ++++++--------------
- 1 file changed, 6 insertions(+), 14 deletions(-)
-
-diff --git a/mm/slub.c b/mm/slub.c
-index fcb0c50..971d61d 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -5785,31 +5785,23 @@ static int slab_debugfs_show(struct seq_file *seq, void *v)
- 
- static void slab_debugfs_stop(struct seq_file *seq, void *v)
- {
--	kfree(v);
- }
- 
- static void *slab_debugfs_next(struct seq_file *seq, void *v, loff_t *ppos)
- {
--	loff_t *spos = v;
- 	struct loc_track *t = seq->private;
- 
--	if (*ppos < t->count) {
--		*ppos = ++*spos;
--		return spos;
--	}
--	*ppos = ++*spos;
-+	v = ppos;
-+	++*ppos;
-+	if (*ppos <= t->count)
-+		return v;
-+
- 	return NULL;
- }
- 
- static void *slab_debugfs_start(struct seq_file *seq, loff_t *ppos)
- {
--	loff_t *spos = kmalloc(sizeof(loff_t), GFP_KERNEL);
--
--	if (!spos)
--		return NULL;
--
--	*spos = *ppos;
--	return spos;
-+	return ppos;
- }
- 
- static const struct seq_operations slab_debugfs_sops = {
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
-
+-Jassi
