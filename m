@@ -2,188 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF4793AEB1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 804283AEB59
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230252AbhFUOX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 10:23:59 -0400
-Received: from mta-02.yadro.com ([89.207.88.252]:43676 "EHLO mta-01.yadro.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230040AbhFUOXy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 10:23:54 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mta-01.yadro.com (Postfix) with ESMTP id B2B4F4122E;
-        Mon, 21 Jun 2021 14:21:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
-        content-type:content-type:content-transfer-encoding:mime-version
-        :references:in-reply-to:x-mailer:message-id:date:date:subject
-        :subject:from:from:received:received:received; s=mta-01; t=
-        1624285297; x=1626099698; bh=aZUQMSeQVxkEk5K5CGmu8gXWFN9tBVMUg79
-        1PIjl7JM=; b=htjN5tcykgHkV8S7wvyv5PeGqcRc0dH1E00Fs2F3Q4bZ9bTDRXC
-        3Ni0e9eSXH593dtfNyGLUnDcM7Z6TFmKGg12tTc78XGVHYB/Scy9Hs8gVm4D2UMM
-        SadLfFZ3ZnVmFDg/KZEc2KBdzIygLK/BAvvFQTaZlRC4qLXVt4q46xXA=
-X-Virus-Scanned: amavisd-new at yadro.com
-Received: from mta-01.yadro.com ([127.0.0.1])
-        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id wy78HW9wrxfC; Mon, 21 Jun 2021 17:21:37 +0300 (MSK)
-Received: from T-EXCH-03.corp.yadro.com (t-exch-03.corp.yadro.com [172.17.100.103])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mta-01.yadro.com (Postfix) with ESMTPS id CB2C541287;
-        Mon, 21 Jun 2021 17:21:36 +0300 (MSK)
-Received: from localhost.yadro.com (10.199.0.93) by T-EXCH-03.corp.yadro.com
- (172.17.100.103) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Mon, 21
- Jun 2021 17:21:36 +0300
-From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-CC:     Ivan Mikhaylov <i.mikhaylov@yadro.com>,
-        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
-Subject: [PATCH v2 2/2] iio: proximity: vcnl3020: add threshold options
-Date:   Mon, 21 Jun 2021 17:30:51 +0300
-Message-ID: <20210621143051.200800-3-i.mikhaylov@yadro.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210621143051.200800-1-i.mikhaylov@yadro.com>
-References: <20210621143051.200800-1-i.mikhaylov@yadro.com>
+        id S229968AbhFUOet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 10:34:49 -0400
+Received: from mga18.intel.com ([134.134.136.126]:23931 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229747AbhFUOem (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 10:34:42 -0400
+IronPort-SDR: uKDcpUG8rmEejBglAC+D+ZplvlyaVUqP6/CH5vYAf1IjkRn1S+1oOCRAFskCk0PQyKPBygWiVe
+ DDRmzxdo478A==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="194166731"
+X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
+   d="scan'208";a="194166731"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 07:32:27 -0700
+IronPort-SDR: cfhxQQ5ewZfVr+5/hQUnHw/3u4dWOLVNI2UCwgbLVYWO71pF34FtHl/G+gqIyXbe9r1OMtNXqN
+ 293YgkrRky2w==
+X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
+   d="scan'208";a="486509598"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.211.249]) ([10.254.211.249])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 07:32:23 -0700
+Cc:     baolu.lu@linux.intel.com, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linuxarm@huawei.com,
+        thunder.leizhen@huawei.com, chenxiang66@hisilicon.com,
+        linux-doc@vger.kernel.org
+To:     Robin Murphy <robin.murphy@arm.com>,
+        John Garry <john.garry@huawei.com>, joro@8bytes.org,
+        will@kernel.org, dwmw2@infradead.org, corbet@lwn.net
+References: <1624016058-189713-1-git-send-email-john.garry@huawei.com>
+ <1624016058-189713-7-git-send-email-john.garry@huawei.com>
+ <c062ef9e-c106-4218-ba2a-c94fdcb6d955@linux.intel.com>
+ <60bdd7c3-d73e-c005-ddf7-069bc5065bce@huawei.com>
+ <855dd109-1449-7bc6-3d25-7ffeeeffa82a@linux.intel.com>
+ <fc52069d-46c5-5ca5-1b44-2fa7cf287d5a@huawei.com>
+ <2330bb52-1768-5122-9378-7923034c82bd@arm.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: [PATCH v14 6/6] iommu: Remove mode argument from
+ iommu_set_dma_strict()
+Message-ID: <5564e4b7-99af-c357-594a-1a6efe0c1464@linux.intel.com>
+Date:   Mon, 21 Jun 2021 22:32:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
+In-Reply-To: <2330bb52-1768-5122-9378-7923034c82bd@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.199.0.93]
-X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
- T-EXCH-03.corp.yadro.com (172.17.100.103)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the low/high threshold options.
+Hi Robin,
 
-Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
----
- drivers/iio/proximity/vcnl3020.c | 95 ++++++++++++++++++++++++++++++++
- 1 file changed, 95 insertions(+)
+On 2021/6/21 19:59, Robin Murphy wrote:
+> On 2021-06-21 11:34, John Garry wrote:
+>> On 21/06/2021 11:00, Lu Baolu wrote:
+>>>> void iommu_set_dma_strict(bool force)
+>>>> {
+>>>>           if (force == true)
+>>>>          iommu_dma_strict = true;
+>>>>      else if (!(iommu_cmd_line & IOMMU_CMD_LINE_STRICT))
+>>>>          iommu_dma_strict = true;
+>>>> }
+>>>>
+>>>> So we would use iommu_set_dma_strict(true) for a) and b), but 
+>>>> iommu_set_dma_strict(false) for c).
+>>>
+>>> Yes. We need to distinguish the "must" and "nice-to-have" cases of
+>>> setting strict mode.
+>>>
+>>>>
+>>>> Then I am not sure what you want to do with the accompanying print 
+>>>> for c). It was:
+>>>> "IOMMU batching is disabled due to virtualization"
+>>>>
+>>>> And now is from this series:
+>>>> "IOMMU batching disallowed due to virtualization"
+>>>>
+>>>> Using iommu_get_dma_strict(domain) is not appropriate here to know 
+>>>> the current mode (so we know whether to print).
+>>>>
+>>>> Note that this change would mean that the current series would 
+>>>> require non-trivial rework, which would be unfortunate so late in 
+>>>> the cycle.
+>>>
+>>> This patch series looks good to me and I have added by reviewed-by.
+>>> Probably we could make another patch series to improve it so that the
+>>> kernel optimization should not override the user setting.
+>>
+>> On a personal level I would be happy with that approach, but I think 
+>> it's better to not start changing things right away in a follow-up 
+>> series.
+>>
+>> So how about we add this patch (which replaces 6/6 "iommu: Remove mode 
+>> argument from iommu_set_dma_strict()")?
+>>
+>> Robin, any opinion?
+> 
+> For me it boils down to whether there are any realistic workloads where 
+> non-strict mode *would* still perform better under virtualisation. The 
 
-diff --git a/drivers/iio/proximity/vcnl3020.c b/drivers/iio/proximity/vcnl3020.c
-index 2e65127d5359..f3320de014e4 100644
---- a/drivers/iio/proximity/vcnl3020.c
-+++ b/drivers/iio/proximity/vcnl3020.c
-@@ -255,6 +255,91 @@ static bool vcnl3020_is_thr_enabled(struct vcnl3020_data *data)
- 	return !!(icr & VCNL_ICR_THRES_EN);
- }
- 
-+static int vcnl3020_read_event(struct iio_dev *indio_dev,
-+			       const struct iio_chan_spec *chan,
-+			       enum iio_event_type type,
-+			       enum iio_event_direction dir,
-+			       enum iio_event_info info,
-+			       int *val, int *val2)
-+{
-+	int rc;
-+	struct vcnl3020_data *data = iio_priv(indio_dev);
-+	__be16 res;
-+
-+	switch (info) {
-+	case IIO_EV_INFO_VALUE:
-+		switch (dir) {
-+		case IIO_EV_DIR_RISING:
-+			rc = regmap_bulk_read(data->regmap, VCNL_PS_HI_THR_HI,
-+					      &res, sizeof(res));
-+			if (rc < 0)
-+				return rc;
-+			*val = be16_to_cpu(res);
-+			return IIO_VAL_INT;
-+		case IIO_EV_DIR_FALLING:
-+			rc = regmap_bulk_read(data->regmap, VCNL_PS_LO_THR_HI,
-+					      &res, sizeof(res));
-+			if (rc < 0)
-+				return rc;
-+			*val = be16_to_cpu(res);
-+			return IIO_VAL_INT;
-+		default:
-+			return -EINVAL;
-+		}
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int vcnl3020_write_event(struct iio_dev *indio_dev,
-+				const struct iio_chan_spec *chan,
-+				enum iio_event_type type,
-+				enum iio_event_direction dir,
-+				enum iio_event_info info,
-+				int val, int val2)
-+{
-+	int rc;
-+	__be16 buf;
-+	struct vcnl3020_data *data = iio_priv(indio_dev);
-+
-+	rc = iio_device_claim_direct_mode(indio_dev);
-+	if (rc)
-+		return rc;
-+
-+	switch (info) {
-+	case IIO_EV_INFO_VALUE:
-+		switch (dir) {
-+		case IIO_EV_DIR_RISING:
-+			/* 16 bit word/ low * high */
-+			buf = cpu_to_be16(val);
-+			rc = regmap_bulk_write(data->regmap, VCNL_PS_HI_THR_HI,
-+					       &buf, sizeof(buf));
-+			if (rc < 0)
-+				goto out_release_direct_mode;
-+			rc = IIO_VAL_INT;
-+			goto out_release_direct_mode;
-+		case IIO_EV_DIR_FALLING:
-+			buf = cpu_to_be16(val);
-+			rc = regmap_bulk_write(data->regmap, VCNL_PS_LO_THR_HI,
-+					       &buf, sizeof(buf));
-+			if (rc < 0)
-+				goto out_release_direct_mode;
-+			rc = IIO_VAL_INT;
-+			goto out_release_direct_mode;
-+		default:
-+			rc = -EINVAL;
-+			goto out_release_direct_mode;
-+		}
-+	default:
-+		rc = -EINVAL;
-+		goto out_release_direct_mode;
-+	}
-+out_release_direct_mode:
-+	iio_device_release_direct_mode(indio_dev);
-+
-+	return rc;
-+}
-+
- static int vcnl3020_enable_periodic(struct iio_dev *indio_dev,
- 				    struct vcnl3020_data *data)
- {
-@@ -356,6 +441,14 @@ static int vcnl3020_read_event_config(struct iio_dev *indio_dev,
- 
- static const struct iio_event_spec vcnl3020_event_spec[] = {
- 	{
-+		.type = IIO_EV_TYPE_THRESH,
-+		.dir = IIO_EV_DIR_RISING,
-+		.mask_separate = BIT(IIO_EV_INFO_VALUE),
-+	}, {
-+		.type = IIO_EV_TYPE_THRESH,
-+		.dir = IIO_EV_DIR_FALLING,
-+		.mask_separate = BIT(IIO_EV_INFO_VALUE),
-+	}, {
- 		.type = IIO_EV_TYPE_THRESH,
- 		.dir = IIO_EV_DIR_EITHER,
- 		.mask_separate = BIT(IIO_EV_INFO_ENABLE),
-@@ -445,6 +538,8 @@ static const struct iio_info vcnl3020_info = {
- 	.read_raw = vcnl3020_read_raw,
- 	.write_raw = vcnl3020_write_raw,
- 	.read_avail = vcnl3020_read_avail,
-+	.read_event_value = vcnl3020_read_event,
-+	.write_event_value = vcnl3020_write_event,
- 	.read_event_config = vcnl3020_read_event_config,
- 	.write_event_config = vcnl3020_write_event_config,
- };
--- 
-2.31.1
+At present, we see that strict mode has better performance in the
+virtualization environment because it will make the shadow page table
+management more efficient. When the hardware supports nested
+translation, we may have to re-evaluate this since there's no need for
+a shadowing page table anymore.
+
+> only reason for the user to explicitly pass "iommu.strict=0" is because 
+> they expect it to increase unmap performance; if it's only ever going to 
+> lead to an unexpected performance loss, I don't see any value in 
+> overriding the kernel's decision purely for the sake of subservience.
+> 
+> If there *are* certain valid cases for allowing it for people who really 
+> know what they're doing, then we should arguably also log a counterpart 
+> message to say "we're honouring your override but beware it may have the 
+> opposite effect to what you expect" for the benefit of other users who 
+> assume it's a generic go-faster knob. At that point it starts getting 
+> non-trivial enough that I'd want to know for sure it's worthwhile.
+> 
+> The other reason this might be better to revisit later is that an AMD 
+> equivalent is still in flight[1], and there might be more that can 
+> eventually be factored out. I think both series are pretty much good to 
+> merge for 5.14, but time's already tight to sort out the conflicts which 
+> exist as-is, without making them any worse.
+
+Agreed. We could revisit it later.
+
+Best regards,
+baolu
+
 
