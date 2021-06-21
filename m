@@ -2,92 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88BA03AE8AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:04:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCCB3AE8BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230523AbhFUMGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 08:06:31 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.84]:36278 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230308AbhFUMGO (ORCPT
+        id S229876AbhFUMIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 08:08:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54034 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFUMH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 08:06:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1624277028;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=c+nIPTLbwTwv3NgxdRJeapby6BUJ8czrRYkdGY5Q3eI=;
-    b=q7OLoipFGcqxGrst+eo6N4qwdbA5vaODusqvon3o3OHTLL09QXjUHCcLhvA0yy1Eew
-    q56bg7lRO3cDXNEYztxCRguWQPoNT6LdEQKVKG8ScREld7EuveH/yIPMBxbUhGczMvg+
-    MyrH3ZqQZljesRMkxGqQ+6gv3J1yrlPEDSpxiKwvcBq1PhGmDR0crLppjzeFl1IKgFWC
-    2v4H0XYYf/kGfZIR2jtx1ylW0sXQxoZj4fMeArRPMdRhM4imWtUsSzhONYisvLvCYrO9
-    aKNv76QEU4q036duWmLmauYoqKqSX7Hq+VNKhBPuo9STjputQp4ZoXsXoCxPoUdQFAz/
-    rx/w==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j5IczAb4o="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.27.3 DYNA|AUTH)
-    with ESMTPSA id 000885x5LC3lI14
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 21 Jun 2021 14:03:47 +0200 (CEST)
-Date:   Mon, 21 Jun 2021 14:03:46 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
-        daniel.lezcano@linaro.org, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com,
-        jamipkettunen@somainline.org, ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v5 2/3] soc: qcom: spm: Implement support for SAWv4.1,
- SDM630/660 L2 AVS
-Message-ID: <YNCAIr3BGB1J+wpe@gerhold.net>
-References: <20210618225620.623359-1-angelogioacchino.delregno@somainline.org>
- <20210618225620.623359-3-angelogioacchino.delregno@somainline.org>
+        Mon, 21 Jun 2021 08:07:59 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1BC6C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 05:05:44 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id r5so29824650lfr.5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 05:05:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=jYDncvORmzd5e5fXA1auwQJnxSuJ8MfUvv0XD0iPqS4=;
+        b=uHONv/es6xb41PpyPYhMkXZFI9wFXIzSZQQ6OdTgzDZ0/0RE6TFUmthTGW2AEucsLN
+         JOW0GKx5MoCi49GkrwiGyGRauwPUuW2TNWh+GzfNWaIfJ9slg1WCapIU17DyIBEsjBx1
+         6uYL3zPiMHdkqimQ4+h7JhDZKXgosi0I/FxBDYW+7eBNJ2hefNI6W6OwVYhnle6asNoY
+         tmrP51bwNG54PSKlHS+2bnEHJ0kDwls6nPlHMwiwwAKR7cyjJx7qUB76+hPymTShn/4e
+         FQtiyVZYwD1swPYp4KLSodtj6w9QENIIPqoIacAzqj1RE9vUATcA8T8g7Si2oJ3sJHSO
+         +53A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jYDncvORmzd5e5fXA1auwQJnxSuJ8MfUvv0XD0iPqS4=;
+        b=G5y+57/dIVtlKHff7bdacWGtQyt1QlohbhSOSl7lDjS3wo/qx19vvRVh58mBdwD7iM
+         LTbFzJPp5ETb/NNHaUjMCz7zSxLFbKTTRqRkySeMQSpvRt150RU/JMerHI3shW8QBHfS
+         nyMZcSxFL44bcKvJdbYxIwq2LPm/GiZT8rB3JjX+QciMvJJ/Ab3lwLqHr1cOhxWH87oi
+         Lz79f5nkrYPKA0BWLa6Kk9MKJbJPKUYCn3+RgUBuuEAMMUMOyAC0JUYJSRauQvx4mZxl
+         j4uNNxK2uJI9h0xMdlX4SxIxSMta3F1uZfAn/tki0Ewylur1eTbvm1c/82tKTkB+dS+7
+         ueww==
+X-Gm-Message-State: AOAM5321GAtqP/YOklzZczDyiV/O10hHNu0RJ/aHKhpIm4OQubKiUN5N
+        0HxHeiz5d8qtKgCu0OwDOJ7QWz8jz4s=
+X-Google-Smtp-Source: ABdhPJzOReNuf/i0DuPYDUXxPDdtD8UQ4GZ5NludJvFxaHVLhNw8ePVoqBp4FPAWBJJ5GQaZIt9SYw==
+X-Received: by 2002:ac2:5581:: with SMTP id v1mr9008597lfg.414.1624277143054;
+        Mon, 21 Jun 2021 05:05:43 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
+        by smtp.googlemail.com with ESMTPSA id t3sm1857488lfl.78.2021.06.21.05.05.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 05:05:42 -0700 (PDT)
+Subject: Re: [PATCH v1] regulator: core: Add stubs for driver API
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Thierry Reding <treding@nvidia.com>, linux-kernel@vger.kernel.org
+References: <20210619124052.1354-1-digetx@gmail.com>
+ <20210621114659.GE4094@sirena.org.uk>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <5dd6145f-046f-9ed5-9f8c-58cf096287ab@gmail.com>
+Date:   Mon, 21 Jun 2021 15:04:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210618225620.623359-3-angelogioacchino.delregno@somainline.org>
+In-Reply-To: <20210621114659.GE4094@sirena.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 19, 2021 at 12:56:19AM +0200, AngeloGioacchino Del Regno wrote:
-> Implement the support for SAW v4.1, used in at least MSM8998,
-> SDM630, SDM660 and APQ variants and, while at it, also add the
-> configuration for the SDM630/660 Silver and Gold cluster L2
-> Adaptive Voltage Scaler: this is also one of the prerequisites
-> to allow the OSM controller to perform DCVS.
+21.06.2021 14:46, Mark Brown пишет:
+> On Sat, Jun 19, 2021 at 03:40:52PM +0300, Dmitry Osipenko wrote:
 > 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> ---
->  drivers/soc/qcom/spm.c | 28 +++++++++++++++++++++++++++-
->  include/soc/qcom/spm.h |  4 +++-
->  2 files changed, 30 insertions(+), 2 deletions(-)
+>> +static inline struct regulator_dev *
+>> +regulator_register(const struct regulator_desc *regulator_desc,
+>> +		   const struct regulator_config *config)
 > 
-> diff --git a/drivers/soc/qcom/spm.c b/drivers/soc/qcom/spm.c
-> [...]
->  static const struct of_device_id spm_match_table[] = {
-> +	{ .compatible = "qcom,sdm660-gold-saw2-v4.1-l2",
-> +	  .data = &spm_reg_660_gold_l2 },
-> +	{ .compatible = "qcom,sdm660-silver-saw2-v4.1-l2",
-> +	  .data = &spm_reg_660_silver_l2 },
+> Why would something be registering a regulator device without a
+> dependency on the regulator API?
+> 
 
-I think we need some dt-bindings patches for these? :)
+For example if regulator device registration is optional in the code. We
+don't have such cases in the kernel today, but I decided that it will be
+cleaner to add stubs for the whole API.
 
-Also, like I mentioned on v4 I still think a short comment in commit
-message or file with the reason why you don't want the change qcom did
-in [1] would be appropriate here. You can just use what you
-already mentioned in your reply in v4 (the random lockups).
+The point of these stubs is to fix the new compile-testing problem of
+Tegra regulator coupler drivers. The drivers indeed don't depend on the
+regulator-driver API since the regulator-consumer API provides all the
+necessary stubs, but now drivers use the regulator-driver API too. The
+dependency should reduce the compile-testing scope, IIUC.
 
-Because otherwise it's not obvious why someone else shouldn't "make this
-consistent with qcom's values" sometime later and then suddenly you get
-the random lockups again.
-
-Thanks,
-Stephan
+If you think that it will be better to add the dependency to the coupler
+drivers, then let's do it.
