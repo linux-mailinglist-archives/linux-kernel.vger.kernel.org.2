@@ -2,277 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B9543AF36A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F4D3AF38E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233239AbhFUSBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:01:12 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:58254 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233161AbhFUR6b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 13:58:31 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 654F75E17;
-        Mon, 21 Jun 2021 19:56:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1624298174;
-        bh=xTAY6XehRVOvS40XWKwQ0ZxduxmilFWHgm+B43wpOtk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LfWdClqW2kQ6uB7QoP6STkQ08ylCf9woPfaGaApNrjNI6NChKCGJenjYRIPetky1q
-         JKwS5IDWB0LO3DvoiZU03U6xpabHxbwPjne9FRGYCZgyhptOLomgX7XSSO+u9YzUiY
-         d6WEo81pq6a8aUgM+XvgzDhTE2t7Dw2Nxe2Gc7R0=
-Date:   Mon, 21 Jun 2021 20:55:48 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Peng Fan <peng.fan@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Tomasz Figa <t.figa@samsung.com>,
-        Fancy Fang <chen.fang@nxp.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
-        linux-amarula@amarulasolutions.com,
-        Anthony Brandon <anthony@amarulasolutions.com>,
-        Francis Laniel <francis.laniel@amarulasolutions.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Milco Pratesi <milco.pratesi@engicam.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [RFC PATCH 1/9] dt-bindings: display: bridge: Add Samsung SEC
- MIPI DSIM bindings
-Message-ID: <YNDSpAJdI3OKugSL@pendragon.ideasonboard.com>
-References: <20210621072424.111733-1-jagan@amarulasolutions.com>
- <20210621072424.111733-2-jagan@amarulasolutions.com>
+        id S233328AbhFUSCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:02:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39596 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232064AbhFUSAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 14:00:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42DFC6137D;
+        Mon, 21 Jun 2021 17:54:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624298064;
+        bh=nVcg9KpDetKdIwCLpjQNOQqeestfcqBo/bZqwkmON2M=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=bQFfzS5BuHbhU24ea9CzVOAtjEJGz42IaRbHvtSlBwXXGFHFEWRwZ16ZJeV63F3Z3
+         ZdMfXv7EIwmi3MHhwTmUcYnxrtVbae+SVsnI9t5tMdEu6f5ekkjnR8E3J1Qx49K0ca
+         bytW/6DHjfupkFDRb9l8thZznNScwvM+n2uvKvh2RcJXsv4FhkrL2+WBsMQVbqe7BV
+         JQhxfJLydz0vuyBGzjQrfAECjLMcxhj0MsSl4ZxZfOOSEShS0TuSux5OSe07MK9ygC
+         AjMPV2M0fgXwCG4qyIkKWrAbc7G+yksDjO9SxV0WiDIgJY6wd+toGJULKwRpYY04iA
+         j1kfpyz2xUDQA==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 13/26] inet: annotate date races around sk->sk_txhash
+Date:   Mon, 21 Jun 2021 13:53:46 -0400
+Message-Id: <20210621175400.735800-13-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210621175400.735800-1-sashal@kernel.org>
+References: <20210621175400.735800-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210621072424.111733-2-jagan@amarulasolutions.com>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jagan,
+From: Eric Dumazet <edumazet@google.com>
 
-Thank you for the patch.
+[ Upstream commit b71eaed8c04f72a919a9c44e83e4ee254e69e7f3 ]
 
-On Mon, Jun 21, 2021 at 12:54:16PM +0530, Jagan Teki wrote:
-> Samsung SEC MIPI DSIM Bridge controller is MIPI DSI bridge
-> available in NXP's i.MX8M Mini and Nano Processors.
-> 
-> Add dt-bingings for it.
-> 
-> Cc: Andrzej Hajda <a.hajda@samsung.com>
-> Cc: Neil Armstrong <narmstrong@baylibre.com>
-> Cc: Robert Foss <robert.foss@linaro.org>
-> Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
->  .../display/bridge/samsung,sec-dsim.yaml      | 184 ++++++++++++++++++
->  1 file changed, 184 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/samsung,sec-dsim.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/display/bridge/samsung,sec-dsim.yaml b/Documentation/devicetree/bindings/display/bridge/samsung,sec-dsim.yaml
-> new file mode 100644
-> index 000000000000..32f67f313dfd
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/bridge/samsung,sec-dsim.yaml
-> @@ -0,0 +1,184 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/bridge/samsung,sec-dsim.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Samsung SEC MIPI DSIM Bridge controller on i.MX8M Mini and Nano SoCs
-> +
-> +maintainers:
-> +  - Jagan Teki <jagan@amarulasolutions.com>
-> +
-> +description: |
-> +  NWL MIPI-DSI host controller found on i.MX8 platforms. This is a dsi bridge for
-> +  the SOCs NWL MIPI-DSI host controller.
-> +
-> +allOf:
-> +  - $ref: ../dsi-controller.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - fsl,imx8mm-sec-dsim
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  '#address-cells':
-> +    const: 1
-> +
-> +  '#size-cells':
-> +    const: 0
-> +
-> +  assigned-clock-parents: true
-> +  assigned-clock-rates: true
-> +  assigned-clocks: true
-> +
-> +  clocks:
-> +    items:
-> +      - description: DSI bus clock
-> +      - description: PHY_REF clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: bus
-> +      - const: phy_ref
-> +
-> +  phys:
-> +    maxItems: 1
-> +    description: phandle to the phy module representing the DPHY
-> +
-> +  phy-names:
-> +    items:
-> +      - const: dphy
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +    description: phandle to the associated power domain
-> +
-> +  samsung,burst-clock-frequency:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      DSIM high speed burst mode frequency.
-> +
-> +  samsung,esc-clock-frequency:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      DSIM escape mode frequency.
-> +
-> +  samsung,pll-clock-frequency:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      DSIM oscillator clock frequency.
+UDP sendmsg() path can be lockless, it is possible for another
+thread to re-connect an change sk->sk_txhash under us.
 
-Why do you need those three properties ? They look like configuration
-information to me, not system description. If they are needed, their
-description needs to explain how to set them. Looking at the three
-descriptions above I have no idea what to select for those frequencies.
+There is no serious impact, but we can use READ_ONCE()/WRITE_ONCE()
+pair to document the race.
 
-> +
-> +  ports:
-> +    $ref: /schemas/graph.yaml#/properties/ports
-> +
-> +    properties:
-> +      port@0:
-> +        $ref: /schemas/graph.yaml#/$defs/port-base
-> +        description:
-> +          Input port node to receive pixel data from the
-> +          display controller. Exactly one endpoint must be
-> +          specified.
-> +        properties:
-> +          endpoint@0:
-> +            $ref: /schemas/graph.yaml#/properties/endpoint
-> +            description: sub-node describing the input from LCDIF
-> +
-> +          endpoint@1:
-> +            $ref: /schemas/graph.yaml#/properties/endpoint
-> +            description: sub-node describing the input from DCSS
-> +
-> +        oneOf:
-> +          - required:
-> +              - endpoint@0
-> +          - required:
-> +              - endpoint@1
-> +
-> +        unevaluatedProperties: false
-> +
-> +      port@1:
-> +        $ref: /schemas/graph.yaml#/properties/port
-> +        description:
-> +          DSI output port node to the panel or the next bridge
-> +          in the chain
-> +
-> +    required:
-> +      - port@0
-> +      - port@1
-> +
-> +required:
-> +  - '#address-cells'
-> +  - '#size-cells'
-> +  - clock-names
-> +  - clocks
-> +  - compatible
-> +  - interrupts
-> +  - phy-names
-> +  - phys
-> +  - ports
-> +  - reg
-> +  - samsung,burst-clock-frequency
-> +  - samsung,esc-clock-frequency
-> +  - samsung,pll-clock-frequency
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/imx8mm-clock.h>
-> +    #include <dt-bindings/power/imx8mm-power.h>
-> +    #include <dt-bindings/gpio/gpio.h>
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +    dsi: dsi@32e10000 {
-> +      compatible = "fsl,imx8mm-sec-dsim";
-> +      reg = <0x32e10000 0xa0>;
-> +      clocks = <&clk IMX8MM_CLK_DSI_CORE>,
-> +               <&clk IMX8MM_CLK_DSI_PHY_REF>;
-> +      clock-names = "bus", "phy_ref";
-> +      assigned-clocks = <&clk IMX8MM_CLK_DSI_CORE>,
-> +                        <&clk IMX8MM_VIDEO_PLL1_OUT>,
-> +                        <&clk IMX8MM_CLK_DSI_PHY_REF>;
-> +      assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_266M>,
-> +                               <&clk IMX8MM_VIDEO_PLL1_BYPASS>,
-> +                               <&clk IMX8MM_VIDEO_PLL1_OUT>;
-> +      assigned-clock-rates = <266000000>, <594000000>, <27000000>;
-> +      interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
-> +      phys = <&dphy>;
-> +      phy-names = "dphy";
-> +      power-domains = <&dispmix_blk_ctl IMX8MM_BLK_CTL_PD_DISPMIX_MIPI_DSI>;
-> +      samsung,burst-clock-frequency = <891000000>;
-> +      samsung,esc-clock-frequency = <54000000>;
-> +      samsung,pll-clock-frequency = <27000000>;
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      ports {
-> +        #address-cells = <1>;
-> +        #size-cells = <0>;
-> +
-> +        port@0 {
-> +          reg = <0>;
-> +          #size-cells = <0>;
-> +          #address-cells = <1>;
-> +
-> +          dsi_in_lcdif: endpoint@0 {
-> +            reg = <0>;
-> +            remote-endpoint = <&lcdif_out_dsi>;
-> +          };
-> +        };
-> +
-> +        port@1 {
-> +          reg = <1>;
-> +
-> +          dsi_out_panel: endpoint {
-> +            remote-endpoint = <&panel_in_dsi>;
-> +          };
-> +        };
-> +      };
-> +    };
+BUG: KCSAN: data-race in __ip4_datagram_connect / skb_set_owner_w
 
+write to 0xffff88813397920c of 4 bytes by task 30997 on cpu 1:
+ sk_set_txhash include/net/sock.h:1937 [inline]
+ __ip4_datagram_connect+0x69e/0x710 net/ipv4/datagram.c:75
+ __ip6_datagram_connect+0x551/0x840 net/ipv6/datagram.c:189
+ ip6_datagram_connect+0x2a/0x40 net/ipv6/datagram.c:272
+ inet_dgram_connect+0xfd/0x180 net/ipv4/af_inet.c:580
+ __sys_connect_file net/socket.c:1837 [inline]
+ __sys_connect+0x245/0x280 net/socket.c:1854
+ __do_sys_connect net/socket.c:1864 [inline]
+ __se_sys_connect net/socket.c:1861 [inline]
+ __x64_sys_connect+0x3d/0x50 net/socket.c:1861
+ do_syscall_64+0x4a/0x90 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+read to 0xffff88813397920c of 4 bytes by task 31039 on cpu 0:
+ skb_set_hash_from_sk include/net/sock.h:2211 [inline]
+ skb_set_owner_w+0x118/0x220 net/core/sock.c:2101
+ sock_alloc_send_pskb+0x452/0x4e0 net/core/sock.c:2359
+ sock_alloc_send_skb+0x2d/0x40 net/core/sock.c:2373
+ __ip6_append_data+0x1743/0x21a0 net/ipv6/ip6_output.c:1621
+ ip6_make_skb+0x258/0x420 net/ipv6/ip6_output.c:1983
+ udpv6_sendmsg+0x160a/0x16b0 net/ipv6/udp.c:1527
+ inet6_sendmsg+0x5f/0x80 net/ipv6/af_inet6.c:642
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0x360/0x4d0 net/socket.c:2350
+ ___sys_sendmsg net/socket.c:2404 [inline]
+ __sys_sendmmsg+0x315/0x4b0 net/socket.c:2490
+ __do_sys_sendmmsg net/socket.c:2519 [inline]
+ __se_sys_sendmmsg net/socket.c:2516 [inline]
+ __x64_sys_sendmmsg+0x53/0x60 net/socket.c:2516
+ do_syscall_64+0x4a/0x90 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+value changed: 0xbca3c43d -> 0xfdb309e0
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 0 PID: 31039 Comm: syz-executor.2 Not tainted 5.13.0-rc3-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ include/net/sock.h | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/include/net/sock.h b/include/net/sock.h
+index a0728f24ecc5..d3dd89b6e2cb 100644
+--- a/include/net/sock.h
++++ b/include/net/sock.h
+@@ -1860,7 +1860,8 @@ static inline u32 net_tx_rndhash(void)
+ 
+ static inline void sk_set_txhash(struct sock *sk)
+ {
+-	sk->sk_txhash = net_tx_rndhash();
++	/* This pairs with READ_ONCE() in skb_set_hash_from_sk() */
++	WRITE_ONCE(sk->sk_txhash, net_tx_rndhash());
+ }
+ 
+ static inline void sk_rethink_txhash(struct sock *sk)
+@@ -2125,9 +2126,12 @@ static inline void sock_poll_wait(struct file *filp, struct socket *sock,
+ 
+ static inline void skb_set_hash_from_sk(struct sk_buff *skb, struct sock *sk)
+ {
+-	if (sk->sk_txhash) {
++	/* This pairs with WRITE_ONCE() in sk_set_txhash() */
++	u32 txhash = READ_ONCE(sk->sk_txhash);
++
++	if (txhash) {
+ 		skb->l4_hash = 1;
+-		skb->hash = sk->sk_txhash;
++		skb->hash = txhash;
+ 	}
+ }
+ 
 -- 
-Regards,
+2.30.2
 
-Laurent Pinchart
