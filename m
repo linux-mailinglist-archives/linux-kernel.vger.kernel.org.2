@@ -2,94 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D92F53AE7B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 594D53AE7BE
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbhFUK6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 06:58:43 -0400
-Received: from szxga08-in.huawei.com ([45.249.212.255]:8285 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbhFUK6l (ORCPT
+        id S230251AbhFUK7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 06:59:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhFUK7h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 06:58:41 -0400
-Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G7mY12xzcz1BQ01;
-        Mon, 21 Jun 2021 18:51:17 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 21 Jun 2021 18:56:25 +0800
-Received: from [127.0.0.1] (10.174.179.0) by dggpemm500006.china.huawei.com
- (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 21 Jun
- 2021 18:56:24 +0800
-Subject: Re: Please don't waste maintainers' time on your KPI grabbing patches
- (AKA, don't be a KPI jerk)
-To:     Qu Wenruo <wqu@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <e78add0a-8211-86c3-7032-6d851c30f614@suse.com>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <0a9ae22c-44a0-6239-f61a-fa516f2a0de6@huawei.com>
-Date:   Mon, 21 Jun 2021 18:56:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Mon, 21 Jun 2021 06:59:37 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92417C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 03:57:23 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id n23so10192668wms.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 03:57:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=clF9wEFSrz/v2WVCRdc6dS5IP9XeQy5WQHIia05IgYQ=;
+        b=KPtNjFRCb/EW9vegJsEI18s4uWG03qNGQbL7vvggXIxX46EGXTONi8d2khNA64emoN
+         hIzoQr7FlbuhqQoFzhTdnXbDR9WOGlT+doWPdYWc6yoDM1mm0YICATMaPH7mlwKIPjgb
+         QBBjkRE37ABX4dYD7a0j2HsIiLv/HuZWiT5zzQ+YW6EzUqfBiMOtUUDsbSuY1trRuMpn
+         SdSKUdSnBiLYTNeg9VhTpAKeh3ENA3A2qVs9GzpZXmhR6IBSctdzmyF1PbmyqlZXwHMy
+         6jFbJl2IpvZDpy+feDWvf+mpn2kUkcHngD6vOzZ4r4NPO/P0Xzc/UTovWgaswE2Tu8QH
+         goug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=clF9wEFSrz/v2WVCRdc6dS5IP9XeQy5WQHIia05IgYQ=;
+        b=oQ3OiIivvzgj8KlGnDw1qJziGfIGgWyTDksJ8Worr0vXgXDLhK8YLnPOpeccsAFr3+
+         ZD77Gl6o4AVv9Awp8/81tUL0Id95ppX0IEm/GbzOeESnCCLiE/6Lk3lsA8vKUoeQ9thU
+         Mj9Xe9q0YxDJwAqPYMZJUWNpLtOC284pYd8K9fhL0tgVBchKv6VragZEne3L5O/dPCiE
+         tXdj9DLMT2fQ43eCtTn27QoCYKx9d8wBrDXDEO4E94x8e4XobFa4BD8mARyXNDg+Mchb
+         PNjj/em37a9SVx/EqJGF+Fjunt8VRywsW7VfamYDpPDAd5zKYtjSCVtVn6CEQv2garYA
+         5EgQ==
+X-Gm-Message-State: AOAM5303b7KHxaya7MK8QXv1vepJ7HGudVka3uWWFwgNSBi9UbL6bpet
+        DjFO83hVW93E6iDPLSWF/MW7PA==
+X-Google-Smtp-Source: ABdhPJwk3Ok2JGqa/Wa4XglAtz7paDODsUtTzPHCd18DJieYnxwpV+x0Idh2IrvYbDJ3CiPx2MSqMw==
+X-Received: by 2002:a05:600c:3ba0:: with SMTP id n32mr26530846wms.107.1624273042055;
+        Mon, 21 Jun 2021 03:57:22 -0700 (PDT)
+Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
+        by smtp.gmail.com with ESMTPSA id p13sm16352891wrt.89.2021.06.21.03.57.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 03:57:21 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 10:57:18 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
+        vincent.guittot@linaro.org, qais.yousef@arm.com,
+        rickyiu@google.com, wvw@google.com, patrick.bellasi@matbug.net,
+        xuewen.yan94@gmail.com, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v2 1/3] sched: Fix UCLAMP_FLAG_IDLE setting
+Message-ID: <YNBwjnRbQrWiG57/@google.com>
+References: <20210610151306.1789549-1-qperret@google.com>
+ <20210610151306.1789549-2-qperret@google.com>
+ <YMJiaO0IN2pN/EYY@hirez.programming.kicks-ass.net>
+ <YMMP9uqcCeDlt95F@google.com>
+ <23e44dd5-5229-ac16-5801-3b74f013b7f3@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <e78add0a-8211-86c3-7032-6d851c30f614@suse.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.0]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <23e44dd5-5229-ac16-5801-3b74f013b7f3@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Qu:
+Hi Dietmar,
 
-My contributions to the kernel in the past have mainly been on optimizing the performance of the ARM64 SMMU driver,
-including the iova optimization, strict mode optimization, and the lazy mode optimization. Also working on the
-development of some ARM SoC drivers.
+On Thursday 17 Jun 2021 at 17:27:56 (+0200), Dietmar Eggemann wrote:
+> On 11/06/2021 09:25, Quentin Perret wrote:
+> > On Thursday 10 Jun 2021 at 21:05:12 (+0200), Peter Zijlstra wrote:
+> >> On Thu, Jun 10, 2021 at 03:13:04PM +0000, Quentin Perret wrote:
+> >>> The UCLAMP_FLAG_IDLE flag is set on a runqueue when dequeueing the last
+> >>> active task to maintain the last uclamp.max and prevent blocked util
+> >>> from suddenly becoming visible.
+> >>>
+> >>> However, there is an asymmetry in how the flag is set and cleared which
+> >>> can lead to having the flag set whilst there are active tasks on the rq.
+> >>> Specifically, the flag is cleared in the uclamp_rq_inc() path, which is
+> >>> called at enqueue time, but set in uclamp_rq_dec_id() which is called
+> >>> both when dequeueing a task _and_ in the update_uclamp_active() path. As
+> >>> a result, when both uclamp_rq_{dec,ind}_id() are called from
+> >>> update_uclamp_active(), the flag ends up being set but not cleared,
+> >>> hence leaving the runqueue in a broken state.
+> >>>
+> >>> Fix this by setting the flag in the uclamp_rq_inc_id() path to ensure
+> >>> things remain symmetrical.
+> >>
+> >> The code you moved is neither in uclamp_rq_inc_id(), although
+> >> uclamp_idle_reset() is called from there
+> > 
+> > Yep, that is what I was trying to say.
+> > 
+> >> nor does it _set_ the flag.
+> > 
+> > Ahem. That I don't have a good excuse for ...
+> 
+> (A) dequeue -> set
+> 
+> (1) dequeue_task() -> uclamp_rq_dec() ->
+> 
+> (2) cpu_util_update_eff() -> ... -> uclamp_update_active() ->
+> 
+> uclamp_rq_dec_id()
+> 
+>     uclamp_rq_max_value()
+> 
+>         /* No tasks -- default clamp values */
+>         uclamp_idle_value() {
+> 
+>             if (clamp_id == UCLAMP_MAX)
+>                 rq->uclamp_flags |= UCLAMP_FLAG_IDLE;  <-- set
+>         }
+> 
+> ---
+> 
+> (B) enqueue -> clear
+> 
+> (1) enqueue_task() ->
+> 
+> uclamp_rq_inc() {
+> 
+> (2) cpu_util_update_eff() -> ... -> uclamp_update_active() ->
+> 
+>     uclamp_rq_inc_id() {
+> 
+>         uclamp_idle_reset() {
+>     						     <-- new clear
+>        }                                                     ^
+>     }                                                        |
+>                                                              |
+>     if (rq->uclamp_flags & UCLAMP_FLAG_IDLE)                 |
+>         rq->uclamp_flags &= ~UCLAMP_FLAG_IDLE;       <-- old clear
+> }
+> 
+> ---
+> 
+> uclamp_update_active()
+> 
+>     if (p->uclamp[clamp_id].active) {
+>         uclamp_rq_dec_id()            <-- (A2)
+> 	uclamp_rq_inc_id()            <-- (B2)
+>     }
+> 
+> Is this existing asymmetry in setting the flag but not clearing it in
+> uclamp_update_active() the only issue this patch fixes?
 
-When time and effort is allowed, I also contribute to other modules of Linux kernel, trying to find something can be
-improved, and some cleanup work is being done.
+I think this is the root of the problem, but it can have odd symptoms.
+In a bad case that can lead to hitting the WARN in uclamp_rq_dec_id
+(which is how we've found the bug in the first place).
 
-In the future, I will continue to make more and more important contributions to the Linux community.
+I'll try and repost this with a correct commit message soon -- still
+fighting with my inbox right now.
 
-Thanks.
-Zhen
-
-On 2021/6/18 14:31, Qu Wenruo wrote:
-> Hi Leizhen, and guys in the mail list,
-> 
-> Recently I find one patch removing a debug OOM error message from btrfs selftest.
-> 
-> It's nothing special, some small cleanup work from some kernel newbie.
-> 
-> But the mail address makes me cautious, "@huawei.com".
-> 
-> The last time we got some similar patches from the same company, doing something harmless "cleanup". But those "fixes" are also useless.
-> 
-> This makes me wonder, what is really going on here.
-> 
-> After some quick search, more and more oom error message "cleanup" patches just show up, even some misspell fixes.
-> 
-> 
-> It's OK for first-time/student developers to submit such patches, and I really hope such patches would make them become a long term contributor.
-> In fact, I started my kernel contribution exactly by doing such "cleanups".
-> 
-> But what you guys are doing is really KPI grabbing, I have already see several maintainers arguing with you on such "cleanups", and you're always defending yourself to try to get those patches merged.
-> 
-> You're sending the patch representing your company, by doing this you're really just damaging the already broken reputation.
-> 
-> Please stop this KPI grabbing behavior, and do real contribution to fix the damaged reputation.
-> 
-> Thanks,
-> Qu
-> 
-> 
-> .
-> 
-
+Thanks,
+Quentin
