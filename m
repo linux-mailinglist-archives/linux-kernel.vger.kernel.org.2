@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6DE3AEEF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BF23AF088
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232330AbhFUQdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:33:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48572 "EHLO mail.kernel.org"
+        id S231627AbhFUQuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:50:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231636AbhFUQaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:30:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1DB1613F9;
-        Mon, 21 Jun 2021 16:25:02 +0000 (UTC)
+        id S234027AbhFUQqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:46:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E8E2613B2;
+        Mon, 21 Jun 2021 16:33:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292703;
-        bh=DwaduLBUarpPFjUZGNZPYa6zqcD6k3NaZkMshJsPlpA=;
+        s=korg; t=1624293189;
+        bh=6FbYkhJMn2N0WyVHtkjTZp2t6XKY0Cc1Iu8MvkMCgdY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yryAREZCJ7Zs7ZUPncKURZlXVeosRXft3+EtBztOQbk4I2FvPa0aajcmRkQwyjcNw
-         r4kOcHH97/QefkbqQ1dLUw1wbCcJPJeNh9/5YtsOkJnx+9wUPLHVuLDjeEmRAy1/D2
-         s4uQkdX4WzFcOLYzCMyD24iNlYVnTVawSZ/XLRZc=
+        b=xx5I5ghLDnzSTHcI6wAi8TJymUF4mdfZP4/2vlqrB3jm/CIBMu+ytKCz5UXLSMGLB
+         OJvla+GwaQXH/wGuhvth5E5PfHi5YFU28VUQzz+SqPix378qEt+ikGtRmi/eT4tBaW
+         p3XdHYpz7Semkxh25YQU3kz4FS9R/5dHoA+uNoXk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, ChiYuan Huang <cy_huang@richtek.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 081/146] regulator: rtmv20: Fix to make regcache value first reading back from HW
-Date:   Mon, 21 Jun 2021 18:15:11 +0200
-Message-Id: <20210621154916.138915879@linuxfoundation.org>
+Subject: [PATCH 5.12 098/178] sched/pelt: Ensure that *_sum is always synced with *_avg
+Date:   Mon, 21 Jun 2021 18:15:12 +0200
+Message-Id: <20210621154926.100007082@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
-References: <20210621154911.244649123@linuxfoundation.org>
+In-Reply-To: <20210621154921.212599475@linuxfoundation.org>
+References: <20210621154921.212599475@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,40 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ChiYuan Huang <cy_huang@richtek.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
 
-[ Upstream commit 46639a5e684edd0b80ae9dff220f193feb356277 ]
+[ Upstream commit fcf6631f3736985ec89bdd76392d3c7bfb60119f ]
 
-- Fix to make regcache value first reading back from HW.
+Rounding in PELT calculation happening when entities are attached/detached
+of a cfs_rq can result into situations where util/runnable_avg is not null
+but util/runnable_sum is. This is normally not possible so we need to
+ensure that util/runnable_sum stays synced with util/runnable_avg.
 
-Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
-Link: https://lore.kernel.org/r/1622542155-6373-1-git-send-email-u0084500@gmail.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+detach_entity_load_avg() is the last place where we don't sync
+util/runnable_sum with util/runnbale_avg when moving some sched_entities
+
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210601085832.12626-1-vincent.guittot@linaro.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/rtmv20-regulator.c | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/sched/fair.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/regulator/rtmv20-regulator.c b/drivers/regulator/rtmv20-regulator.c
-index 5adc552dffd5..4bca64de0f67 100644
---- a/drivers/regulator/rtmv20-regulator.c
-+++ b/drivers/regulator/rtmv20-regulator.c
-@@ -27,6 +27,7 @@
- #define RTMV20_REG_LDIRQ	0x30
- #define RTMV20_REG_LDSTAT	0x40
- #define RTMV20_REG_LDMASK	0x50
-+#define RTMV20_MAX_REGS		(RTMV20_REG_LDMASK + 1)
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 487312a5ceab..47fcc3fe9dc5 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3760,11 +3760,17 @@ static void attach_entity_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *s
+  */
+ static void detach_entity_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *se)
+ {
++	/*
++	 * cfs_rq->avg.period_contrib can be used for both cfs_rq and se.
++	 * See ___update_load_avg() for details.
++	 */
++	u32 divider = get_pelt_divider(&cfs_rq->avg);
++
+ 	dequeue_load_avg(cfs_rq, se);
+ 	sub_positive(&cfs_rq->avg.util_avg, se->avg.util_avg);
+-	sub_positive(&cfs_rq->avg.util_sum, se->avg.util_sum);
++	cfs_rq->avg.util_sum = cfs_rq->avg.util_avg * divider;
+ 	sub_positive(&cfs_rq->avg.runnable_avg, se->avg.runnable_avg);
+-	sub_positive(&cfs_rq->avg.runnable_sum, se->avg.runnable_sum);
++	cfs_rq->avg.runnable_sum = cfs_rq->avg.runnable_avg * divider;
  
- #define RTMV20_VID_MASK		GENMASK(7, 4)
- #define RICHTEK_VID		0x80
-@@ -313,6 +314,7 @@ static const struct regmap_config rtmv20_regmap_config = {
- 	.val_bits = 8,
- 	.cache_type = REGCACHE_RBTREE,
- 	.max_register = RTMV20_REG_LDMASK,
-+	.num_reg_defaults_raw = RTMV20_MAX_REGS,
+ 	add_tg_cfs_propagate(cfs_rq, -se->avg.load_sum);
  
- 	.writeable_reg = rtmv20_is_accessible_reg,
- 	.readable_reg = rtmv20_is_accessible_reg,
 -- 
 2.30.2
 
