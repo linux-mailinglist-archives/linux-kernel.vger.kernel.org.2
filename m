@@ -2,119 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC623AF92F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC6563AF937
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbhFUXWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 19:22:13 -0400
-Received: from mail-pj1-f50.google.com ([209.85.216.50]:42866 "EHLO
-        mail-pj1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230438AbhFUXWM (ORCPT
+        id S231775AbhFUXXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 19:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230433AbhFUXX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 19:22:12 -0400
-Received: by mail-pj1-f50.google.com with SMTP id 13-20020a17090a08cdb029016eed209ca4so993676pjn.1;
-        Mon, 21 Jun 2021 16:19:57 -0700 (PDT)
+        Mon, 21 Jun 2021 19:23:26 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2561C061574;
+        Mon, 21 Jun 2021 16:21:10 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id nd37so31492648ejc.3;
+        Mon, 21 Jun 2021 16:21:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bvNRa2gJMadrwpWUHCgoy6Vvwmw5JFgV6YHJVnof4UY=;
+        b=K55Lr8dRfezXs/6tkd6/7bZroguXaa1ZWxACHdhXOflq9Ln0x1RIfzuY5p/5H4/qfd
+         xX6bwHQIygvw/R8Zq3QrVSX5sqUJIPP8majh+GsuseemuNfLEvRZPjfAXCc03ZkTBLi5
+         cg567WfLKbo5eyIYe2wTytsRsoon2h52M+YWwKcB2GmT1ht4COZ2sNSNRjwrvJJbJjHz
+         vFtWBkyGoWNiWi2G3H4U1j6pcccnoD5SOSxdaz2VhYrnFujqcNnHWcS9I1KIzShzYU2C
+         UllRXCpesUmkBOzHcQglZ3Z7QbgZVElGjG9DEhLXpm3bqXUUmm7/3KXaRGmAD9jj5evo
+         0Djg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=r3PT3lnzh99ay3MnNT5OKpjH6BWO1Q/7C6HJoY6qJKo=;
-        b=B79Jq2F/siMNRZduCWz8DjTRUW1H/gdufykJI/TtwId6hlghKEDzlkc0xukHqCIECG
-         BLyC36bgJXlwazkhX2WpwE36QEz1s5GHQs8m5xr2Ic5o3stQV1vj7Gl7NKMGwSLK07Q/
-         LrQHCx7x3kv0qfNYQ69hJNpGIAzyQlLWK0FwJSwr/L1OXHP2hO8bShPwg/aQ9E6kYhba
-         pvBcSmEsAPFsGGPx1XROdR2tBJfDCj1N64s/xJHlKijIpIw7uW9HMXfgdwq1tLusihQP
-         1m3OGgq2FlWgvKbu5cWrsYAMaTFCPzKAetawPvXNuKFvrnXPBTHCcZW4jcDrnj8wsHU9
-         vBNA==
-X-Gm-Message-State: AOAM533ssnuGvUco2Wfj18z+xeRn8N0DIOdD6QbYItqgPiVFEHezbegm
-        im4ZZwHzSluGnnYWyYvreo0=
-X-Google-Smtp-Source: ABdhPJwRTsVMS8ul709iRt+SzdpE0zd8262zVIB5j0foVsZXxPpfbVj4EDFVT05bbeEMRnDmjCB2xA==
-X-Received: by 2002:a17:90a:1a:: with SMTP id 26mr633912pja.187.1624317596631;
-        Mon, 21 Jun 2021 16:19:56 -0700 (PDT)
-Received: from garbanzo ([173.239.198.97])
-        by smtp.gmail.com with ESMTPSA id u23sm19889644pgk.38.2021.06.21.16.19.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 16:19:55 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 16:19:52 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jessica Yu <jeyu@kernel.org>
-Cc:     Minchan Kim <minchan@kernel.org>, Hannes Reinecke <hare@suse.de>,
-        Douglas Gilbert <dgilbert@interlog.com>, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
-        mbenes@suse.com, jpoimboe@redhat.com, tglx@linutronix.de,
-        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
-        peterz@infradead.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>
-Subject: Re: [PATCH v2 0/4] zram: fix few sysfs races
-Message-ID: <20210621231952.kjrtc47hhdd3xybf@garbanzo>
-References: <20210423011108.11988-1-mcgrof@kernel.org>
- <YKVwZVcbZBNXUpKm@google.com>
- <20210519202023.GU4332@42.do-not-panic.com>
- <YKgRsCzwp2O2mYcp@kroah.com>
- <20210521201618.GX4332@42.do-not-panic.com>
- <YKgbzO0AkYN4J7Ye@kroah.com>
- <20210521210817.GY4332@42.do-not-panic.com>
- <YKi3UpQm0HUxJi87@kroah.com>
- <20210525011607.GG4332@42.do-not-panic.com>
- <YKyqJsvds9eH3IZ7@kroah.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bvNRa2gJMadrwpWUHCgoy6Vvwmw5JFgV6YHJVnof4UY=;
+        b=RqaZyOrWM/SCrq/GhvS7vFAs96b82Eg/dRd9XolLJI0KkOYAmH/yXA1FfGL6wGhjKz
+         qc8pjFThq+dHwKJh2Oj01kArMVZnCCsfoPWgceznZkwVCXuO6E+H7V3o6yFNltGpnWXp
+         5F9tTstyzHR37XoD1b0jjbm6QudzDW/RtvjIPVi/KkDAlGePY59nLBaeaQT5aZTmEqMg
+         BRoerItcx0UsuL+AWqRR+A6PppWon0SX2HrtHij04DoVTe+FJKb1OZhDIuNlBroDDZtv
+         7OmoIvInPctztpKtqQT6srEmlOGVg2nXQSrARREt13mjeADd6/kn557lE4lz80XORq0r
+         GBIg==
+X-Gm-Message-State: AOAM532D0S7bwFsQy8QQqXP3PiKYpId5CMHy5QAT5F6Ttq7jvx6uaslh
+        0eHFxy/Okul0qavFZNUPykA48rSoWGj9M5e3SkjE0/E=
+X-Google-Smtp-Source: ABdhPJzomr+QTqzYalxkqsoDal4ajblzyiEEjruPxcg/z0sYtV56VK/iF61A9k9H9Wu7glclneoT9wbweJFa0jzDvOs=
+X-Received: by 2002:a17:906:9419:: with SMTP id q25mr564726ejx.341.1624317669443;
+ Mon, 21 Jun 2021 16:21:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKyqJsvds9eH3IZ7@kroah.com>
+References: <20210621084216.3c477f94@canb.auug.org.au> <456f4183-aa2e-b714-e681-819485f222a1@seco.com>
+ <20210622070617.19517119@elm.ozlabs.ibm.com>
+In-Reply-To: <20210622070617.19517119@elm.ozlabs.ibm.com>
+From:   Rob Herring <robherring2@gmail.com>
+Date:   Mon, 21 Jun 2021 17:20:58 -0600
+Message-ID: <CAL_Jsq+6gM5U2yALJfaE+GUeivPnAwUOTy65=2M1s8NLZMRD9w@mail.gmail.com>
+Subject: Re: linux-next: Fixes tag needs some work in the devicetree tree
+To:     Stephen Rothwell <sfr@rothwell.id.au>,
+        Sean Anderson <sean.anderson@seco.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 25, 2021 at 09:41:26AM +0200, Greg Kroah-Hartman wrote:
-> On Tue, May 25, 2021 at 01:16:07AM +0000, Luis Chamberlain wrote:
-> > Live patching needs to lock code ;) and hey it works ;)
-> 
-> Live patching is vodoo magic.  But it just "adds" code paths, and later,
-> when it feels all is good, then it can remove stuff (if it even does,
-> I do not remember).  Adding is easy, removing is hard.
-
-I didn't say it was easy. I meant that we support it and we can consider
-its support as well.
-
-> > Addressing the kobject refecount here should in theory address most
-> > deadlocks (what my third patch addresses) as well becuase, as you imply,
-> > our protection of the kobject should prevent removal, but that's not
-> > always the case. I think you're failing to consider a shared global
-> > driver lock, which can be used on sysfs files, which in turn have
-> > *nothing* kref'd. And so the module removal can still try to nuke sysfs
-> > files, if those sysfs files like to mess with the shared global driver
-> > lock.
-> 
-> If any driver has that kind of crud, they deserve the nightmare that
-> would happen if it interacts this way.  Don't worry about that, it's not
-> a pattern that anyone should be using.
+On Mon, Jun 21, 2021 at 3:06 PM Stephen Rothwell <sfr@rothwell.id.au> wrote:
 >
-> And again, if the code and data is still there, the lock is ok to grab,
-> there should not be a problem.  If so, we can fix the driver.
+> Hi Sean,
+>
+> On Mon, 21 Jun 2021 10:38:32 -0400 Sean Anderson <sean.anderson@seco.com> wrote:
+> >
+> > On 6/20/21 6:42 PM, Stephen Rothwell wrote:
+> > >
+> > > In commit
+> > >
+> > >    f92f2726e3dd ("dt-bindings: clk: vc5: Fix example")
+> > >
+> > > Fixes tag
+> > >
+> > >    Fixes: 766e1b8608bf ("dt-bindings: clk: versaclock5: convert to yaml")
+> > >
+> > > has these problem(s):
+> > >
+> > >    - Target SHA1 does not exist
+> > >
+> > > Maybe you meant
+> > >
+> > > Fixes: 45c940184b50 ("dt-bindings: clk: versaclock5: convert to yaml")
+> >
+> > Ah, yes I do. Should I submit a v2?
+>
+> Thats up to Rob, really.
 
-I went back to the drawing board with this in mind. But a few things to
-note:
+I've fixed it up.
 
-The issue of the deadlock does not imply a lock has to be global. So long
-as the rmmod path uses a lock which is also used by sysfs files, you can end
-up in a deadlock.
-
-Despite this, I tried to remove the global lock on the zram driver, however it
-just doesn't seem right to remove it, its being used to help protect a
-generic state machine and a global lock seems perfectly reasonable for the
-driver.
-
-If you still believe the global is not needed, let me know what you come
-up with as an alternative. I just can't find a clean way to do away with
-that, *and*, I still also think this pattern might be prevalent in the
-kernel in different places. I am not sure we can set as generic rule:
-
-  "Thou Shalt Not use the same lock on rmmod and sysfs files"
-
-I'm moving forward in my v3 series by keeping it and instead now
-providing module device attribute wrappers. The idea with this is,
-that if we are not yet sure what to do yet, we can at least have
-drivers integrate these helpers as well when and if they find they need
-a similar solution.
-
-  Luis
+Rob
