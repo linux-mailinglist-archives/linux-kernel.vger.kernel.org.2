@@ -2,145 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEB963AF604
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 21:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA593AF615
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 21:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbhFUTYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 15:24:33 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:46960 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbhFUTYb (ORCPT
+        id S231238AbhFUT1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 15:27:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230397AbhFUT06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 15:24:31 -0400
-Received: from [173.237.58.148] (port=33322 helo=localhost)
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1lvPUt-0006Dz-Lh; Mon, 21 Jun 2021 15:22:15 -0400
-Date:   Mon, 21 Jun 2021 12:22:13 -0700
-Message-Id: <4deda7761d61c189f4e2581828f852c8a1acb723.1624303174.git.olivier@trillion01.com>
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Olivier Langlois <olivier@trillion01.com>
-Subject: [PATCH v3] io_uring: reduce latency by reissueing the operation
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+        Mon, 21 Jun 2021 15:26:58 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7913BC061756;
+        Mon, 21 Jun 2021 12:24:44 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id w23-20020a9d5a970000b02903d0ef989477so18803522oth.9;
+        Mon, 21 Jun 2021 12:24:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dBJ5d1VMITTeIiGdzPkAixCEDqtOI+Of2asfGh+UAZ4=;
+        b=poWdRMlEM2ZoLHlzus9H+sJm2Gyv4Ad5UYLCdoksxIn2aeAMLa+dKaekWP8LifxgyJ
+         n2jVVjTuonYLSxe3ETtsIuLK6gvACWCDRPmuF5tYeQjeJRX7OY/u7vWBpL0kZJzHl5sj
+         Ny/XMZJGPL6fogHwoJFWsiHZjsbH13H9+wxt/q/eKq5DtLZntN4WMvAkk8EZkafocBEK
+         6xqocdwV6n4EqRoI+ZBfp3axIcf4mR5Wn6oTb26BEs3yq9YTXbI3ZeEuQkoD5A+xRhEy
+         Pckce+Y9OeKX2dihb865SJYvyNOs4TOMg3c3iU7fvPH++FHzFI5BYoTOBQOjmtC3BaTY
+         AZFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dBJ5d1VMITTeIiGdzPkAixCEDqtOI+Of2asfGh+UAZ4=;
+        b=Z6TcuANUJds16hTi8hffR8eVoxSYOIdorTOVAbVhPCLkRydNfApPbN9mHaU7J5vqaK
+         HfI67UOliHEvqeaglP6/4ndtXqAz/c4/pgu+/UVaJMnM+mC4gk8YMcrOiCpXe2uZMNbs
+         zLswkXMm135/eCoC1WHCquIaUa9C8zGO5Nqydds8QaZR1HB5EYJ8z8GY/S2c5L1XtlXM
+         CDrVfHxB3uItyyBfg8SS5IgD9iIpi1ronHwg5AI1EjjQFVMLkr0NAEvszmLkaRXrx3mg
+         bcfeW0gkbJllQQQzCoVfMljcvtnJA51O1bHJOXG2jPbcbZe/falexQnPp2vbu53yz9W0
+         LNUg==
+X-Gm-Message-State: AOAM533krmmjlEmIcP4Xtps9U6+5mR4rAaO4zjtzTGRO/qp2UEZNfFu4
+        JGSGXM7dcJhENC7/cmNmzwX9rxvS8vJV1tWMDEU=
+X-Google-Smtp-Source: ABdhPJxgnG68naVmqaj9VbYQpqtCzzRUWIKZ1A7mHfJtyBXgRWCjJn597bAS85CrpNuYd9PVyrIs804CEiOHGbIXZSQ=
+X-Received: by 2002:a9d:542:: with SMTP id 60mr12808otw.143.1624303483767;
+ Mon, 21 Jun 2021 12:24:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210618123615.11456-1-ogabbay@kernel.org> <CAKMK7uFOfoxbD2Z5mb-qHFnUe5rObGKQ6Ygh--HSH9M=9bziGg@mail.gmail.com>
+ <YNCN0ulL6DQiRJaB@kroah.com> <20210621141217.GE1096940@ziepe.ca>
+ <CAFCwf10KvCh0zfHEHqYR-Na6KJh4j+9i-6+==QaMdHHpLH1yEA@mail.gmail.com>
+ <20210621175511.GI1096940@ziepe.ca> <CAKMK7uEO1_B59DtM7N2g7kkH7pYtLM_WAkn+0f3FU3ps=XEjZQ@mail.gmail.com>
+In-Reply-To: <CAKMK7uEO1_B59DtM7N2g7kkH7pYtLM_WAkn+0f3FU3ps=XEjZQ@mail.gmail.com>
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+Date:   Mon, 21 Jun 2021 22:24:16 +0300
+Message-ID: <CAFCwf11jOnewkbLuxUESswCJpyo7C0ovZj80UrnwUOZkPv2JYQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] habanalabs: define uAPI to export FD for DMA-BUF
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Doug Ledford <dledford@redhat.com>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Tomer Tayar <ttayar@habana.ai>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is quite frequent that when an operation fails and returns EAGAIN,
-the data becomes available between that failure and the call to
-vfs_poll() done by io_arm_poll_handler().
+On Mon, Jun 21, 2021 at 9:27 PM Daniel Vetter <daniel.vetter@ffwll.ch> wrote:
+>
+> On Mon, Jun 21, 2021 at 7:55 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > On Mon, Jun 21, 2021 at 07:26:14PM +0300, Oded Gabbay wrote:
+> > > On Mon, Jun 21, 2021 at 5:12 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > > >
+> > > > On Mon, Jun 21, 2021 at 03:02:10PM +0200, Greg KH wrote:
+> > > > > On Mon, Jun 21, 2021 at 02:28:48PM +0200, Daniel Vetter wrote:
+> > > >
+> > > > > > Also I'm wondering which is the other driver that we share buffers
+> > > > > > with. The gaudi stuff doesn't have real struct pages as backing
+> > > > > > storage, it only fills out the dma_addr_t. That tends to blow up with
+> > > > > > other drivers, and the only place where this is guaranteed to work is
+> > > > > > if you have a dynamic importer which sets the allow_peer2peer flag.
+> > > > > > Adding maintainers from other subsystems who might want to chime in
+> > > > > > here. So even aside of the big question as-is this is broken.
+> > > > >
+> > > > > From what I can tell this driver is sending the buffers to other
+> > > > > instances of the same hardware,
+> > > >
+> > > > A dmabuf is consumed by something else in the kernel calling
+> > > > dma_buf_map_attachment() on the FD.
+> > > >
+> > > > What is the other side of this? I don't see any
+> > > > dma_buf_map_attachment() calls in drivers/misc, or added in this patch
+> > > > set.
+> > >
+> > > This patch-set is only to enable the support for the exporter side.
+> > > The "other side" is any generic RDMA networking device that will want
+> > > to perform p2p communication over PCIe with our GAUDI accelerator.
+> > > An example is indeed the mlnx5 card which has already integrated
+> > > support for being an "importer".
+> >
+> > It raises the question of how you are testing this if you aren't using
+> > it with the only intree driver: mlx5.
+>
+> For p2p dma-buf there's also amdgpu as a possible in-tree candiate
+> driver, that's why I added amdgpu folks. Otoh I'm not aware of AI+GPU
+> combos being much in use, at least with upstream gpu drivers (nvidia
+> blob is a different story ofc, but I don't care what they do in their
+> own world).
+> -Daniel
+> --
+We have/are doing three things:
+1. I wrote a simple "importer" driver that emulates an RDMA driver. It
+calls all the IB_UMEM_DMABUF functions, same as the mlnx5 driver does.
+And instead of using h/w, it accesses the bar directly. We wrote
+several tests that emulated the real application. i.e. asking the
+habanalabs driver to create dma-buf object and export its FD back to
+userspace. Then the userspace sends the FD to the "importer" driver,
+which attaches to it, get the SG list and accesses the memory on the
+GAUDI device. This gave me the confidence that how we integrated the
+exporter is basically correct/working.
 
-Detecting the situation and reissuing the operation is much faster
-than going ahead and push the operation to the io-wq.
+2. We are trying to do a POC with a MLNX card we have, WIP.
 
-Signed-off-by: Olivier Langlois <olivier@trillion01.com>
----
- fs/io_uring.c | 31 ++++++++++++++++++++++---------
- 1 file changed, 22 insertions(+), 9 deletions(-)
+3. We are working with another 3rd party RDMA device that its driver
+is now adding support for being an "importer". also WIP
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index fc8637f591a6..5efa67c2f974 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -5152,7 +5152,13 @@ static __poll_t __io_arm_poll_handler(struct io_kiocb *req,
- 	return mask;
- }
- 
--static bool io_arm_poll_handler(struct io_kiocb *req)
-+enum {
-+	IO_APOLL_OK,
-+	IO_APOLL_ABORTED,
-+	IO_APOLL_READY
-+};
-+
-+static int io_arm_poll_handler(struct io_kiocb *req)
- {
- 	const struct io_op_def *def = &io_op_defs[req->opcode];
- 	struct io_ring_ctx *ctx = req->ctx;
-@@ -5162,22 +5168,22 @@ static bool io_arm_poll_handler(struct io_kiocb *req)
- 	int rw;
- 
- 	if (!req->file || !file_can_poll(req->file))
--		return false;
-+		return IO_APOLL_ABORTED;
- 	if (req->flags & REQ_F_POLLED)
--		return false;
-+		return IO_APOLL_ABORTED;
- 	if (def->pollin)
- 		rw = READ;
- 	else if (def->pollout)
- 		rw = WRITE;
- 	else
--		return false;
-+		return IO_APOLL_ABORTED;
- 	/* if we can't nonblock try, then no point in arming a poll handler */
- 	if (!io_file_supports_async(req, rw))
--		return false;
-+		return IO_APOLL_ABORTED;
- 
- 	apoll = kmalloc(sizeof(*apoll), GFP_ATOMIC);
- 	if (unlikely(!apoll))
--		return false;
-+		return IO_APOLL_ABORTED;
- 	apoll->double_poll = NULL;
- 
- 	req->flags |= REQ_F_POLLED;
-@@ -5203,12 +5209,14 @@ static bool io_arm_poll_handler(struct io_kiocb *req)
- 	if (ret || ipt.error) {
- 		io_poll_remove_double(req);
- 		spin_unlock_irq(&ctx->completion_lock);
--		return false;
-+		if (ret)
-+			return IO_APOLL_READY;
-+		return IO_APOLL_ABORTED;
- 	}
- 	spin_unlock_irq(&ctx->completion_lock);
- 	trace_io_uring_poll_arm(ctx, req, req->opcode, req->user_data,
- 				mask, apoll->poll.events);
--	return true;
-+	return IO_APOLL_OK;
- }
- 
- static bool __io_poll_remove_one(struct io_kiocb *req,
-@@ -6437,6 +6445,7 @@ static void __io_queue_sqe(struct io_kiocb *req)
- 	struct io_kiocb *linked_timeout = io_prep_linked_timeout(req);
- 	int ret;
- 
-+issue_sqe:
- 	ret = io_issue_sqe(req, IO_URING_F_NONBLOCK|IO_URING_F_COMPLETE_DEFER);
- 
- 	/*
-@@ -6456,12 +6465,16 @@ static void __io_queue_sqe(struct io_kiocb *req)
- 			io_put_req(req);
- 		}
- 	} else if (ret == -EAGAIN && !(req->flags & REQ_F_NOWAIT)) {
--		if (!io_arm_poll_handler(req)) {
-+		switch (io_arm_poll_handler(req)) {
-+		case IO_APOLL_READY:
-+			goto issue_sqe;
-+		case IO_APOLL_ABORTED:
- 			/*
- 			 * Queued up for async execution, worker will release
- 			 * submit reference when the iocb is actually submitted.
- 			 */
- 			io_queue_async_work(req);
-+			break;
- 		}
- 	} else {
- 		io_req_complete_failed(req, ret);
--- 
-2.32.0
+In both points 2&3 We haven't yet reached the actual stage of checking
+this feature.
 
+Another thing I want to emphasize is that we are doing p2p only
+through the export/import of the FD. We do *not* allow the user to
+mmap the dma-buf as we do not support direct IO. So there is no access
+to these pages through the userspace.
+
+Thanks,
+Oded
