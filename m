@@ -2,142 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B423AF8E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE6AB3AF8E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbhFUXCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 19:02:43 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:35034 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230130AbhFUXCm (ORCPT
+        id S230325AbhFUXFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 19:05:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229940AbhFUXFN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 19:02:42 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B8B4A21982;
-        Mon, 21 Jun 2021 23:00:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624316426; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3K1dlxw4pZvRNkxBYF/NpgqSiBM3SAEbx0za59H56/k=;
-        b=n2Hp1pIBWqAWsVuaHfL1R929W0T3OlFhTzQd0px/Ybu3g8OQVoAXrtjWZ26ZkQ64IrDQw+
-        7pLHL26PksO3wqy3MVgYedlgg7T8IwrmURMWrlp/gC1Fzy2jU4cba2HW9v7D1MneZWn5xm
-        lrdDDG0xAqXCmWmu/FZs936M6Hdp0fo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624316426;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3K1dlxw4pZvRNkxBYF/NpgqSiBM3SAEbx0za59H56/k=;
-        b=0P2BYq1yzEM+7Q7NjUuKabZdgB5DEa8UMiv1Ob836pCwTv7YvKo9T9/5P8Hkd9/+udCrKB
-        q+RiCzxoN+UQ3ICw==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 9CAC6118DD;
-        Mon, 21 Jun 2021 23:00:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624316426; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3K1dlxw4pZvRNkxBYF/NpgqSiBM3SAEbx0za59H56/k=;
-        b=n2Hp1pIBWqAWsVuaHfL1R929W0T3OlFhTzQd0px/Ybu3g8OQVoAXrtjWZ26ZkQ64IrDQw+
-        7pLHL26PksO3wqy3MVgYedlgg7T8IwrmURMWrlp/gC1Fzy2jU4cba2HW9v7D1MneZWn5xm
-        lrdDDG0xAqXCmWmu/FZs936M6Hdp0fo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624316426;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3K1dlxw4pZvRNkxBYF/NpgqSiBM3SAEbx0za59H56/k=;
-        b=0P2BYq1yzEM+7Q7NjUuKabZdgB5DEa8UMiv1Ob836pCwTv7YvKo9T9/5P8Hkd9/+udCrKB
-        q+RiCzxoN+UQ3ICw==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id +KezJQoa0WBPRQAALh3uQQ
-        (envelope-from <bp@suse.de>); Mon, 21 Jun 2021 23:00:26 +0000
-Date:   Tue, 22 Jun 2021 01:00:14 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Mon, 21 Jun 2021 19:05:13 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDFFBC061574;
+        Mon, 21 Jun 2021 16:02:57 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id d11so19035632wrm.0;
+        Mon, 21 Jun 2021 16:02:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gCG6H7GuL0YCs68rOtAhGiPNk+jNUbnfrlm8YFS4cH0=;
+        b=B2895UjxZZOVMW3o6YZas7ftFhr5xzWNp34dcyqq3kFi6XVfz61XS/hs2m45T1Nnos
+         NlCAqZfyn5u0ARpo7iVa6O6JsdkI1ZFDqsvNITqT+z9G8cBq8OTCfI5mi1wXMIM+hU/u
+         H4UMNzUJv12ZUKw/b4b1XXEQHaI2zUDt4cxwub/oNts22FEbAH/XxwniwMmZAg0nl13v
+         VVScN17r5Axdl8w8afP0DV6bG0URQlUOQMtScN4E61aAkhfPWuQoHZ4IrFYGCzhmf1+s
+         ZaR9UWBH5tsr7To85gJMzno3CZiR6sNf/78DgKSg5vzYHdbQns8mDXyJyMZvu4sCtWfR
+         IDcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gCG6H7GuL0YCs68rOtAhGiPNk+jNUbnfrlm8YFS4cH0=;
+        b=NMzpSV5S4DqKbOy6JRsoGrnjEZRdK9qKEwaB2UAPdIorfZrpdnHGGx/H039cJcBnbw
+         BGWfuN4lIhglHtusf/8OMGpMy4IYqclS5ghcX68YoqIMhl64CHBZOx73r0dAmB8u8nBl
+         lX5Swk/vI+YApiGOqWT+b1Z4IAOvXHlm5xREIdEjatbk/HrJpDznsWej6vPsRI0ItZP3
+         iBoCEBzd+dzNcT1LXjvW7MwzyXzfRqCHIJWZ1DZEJ6ljEsUu2xI2L+Kh74n0TJc0azAI
+         grlt4c6mLysFE5KOgdQh2UIaTFMT/FXdrjiuxwzwtnWxmjkHsbnL12uI+cKObq/aUeAd
+         Xl8Q==
+X-Gm-Message-State: AOAM532V8V7C9AER4cwEPCQsa+2+RUfUMEu3H8PGieaI6mERReoootM6
+        7uljA/siPDiFYP6ZM9ug6VM=
+X-Google-Smtp-Source: ABdhPJwmcYtNHdapPFg+UvGZ7Q8yBaYQidWv2LToZq0EwmH4Kpl/+Wt+Ds/u4E2q7MBpCkRQ3eX+2g==
+X-Received: by 2002:a5d:5987:: with SMTP id n7mr903268wri.293.1624316576571;
+        Mon, 21 Jun 2021 16:02:56 -0700 (PDT)
+Received: from honeypot.. ([151.29.45.200])
+        by smtp.googlemail.com with ESMTPSA id r4sm20179517wre.84.2021.06.21.16.02.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 16:02:56 -0700 (PDT)
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V3 29/66] x86/fpu: Rename fxregs related copy functions
-Message-ID: <YNEZ/qksqvjgmJLZ@zn.tnic>
-References: <20210618141823.161158090@linutronix.de>
- <20210618143447.676670973@linutronix.de>
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Martin Liska <mliska@suse.cz>,
+        Jason Yan <yanaijie@huawei.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] perf annotate: allow 's' on source code lines
+Date:   Tue, 22 Jun 2021 01:00:47 +0200
+Message-Id: <20210621230047.211430-1-rickyman7@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210618143447.676670973@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 04:18:52PM +0200, Thomas Gleixner wrote:
-> The function names for fxsave/fxrstor operations are horribly named and
-> a permanent source of confusion.
-> 
-> Rename:
-> 	copy_fxregs_to_kernel() to fxsave()
-> 	copy_kernel_to_fxregs() to fxrstor()
-> 	copy_fxregs_to_user() to fxsave_to_user_sigframe()
-> 	copy_user_to_fxregs() to fxrstor_from_user_sigframe()
-> 
-> so it's clear what these are doing. All these functions are really low
-> level wrappers around the equaly named instructions, so mapping to the
-> documentation is just natural.
-> 
-> While at it replace the static_cpu_has(X86_FEATURE_FXSR) with use_fxsr() to
-> be consistent with the rest of the code.
+In perf annotate, when 's' is pressed on a line containing
+source code, it shows the message "Only available for assembly
+lines".
+This patch gets rid of the error, moving the cursr to the next
+available asm line (or the closest previous one if no asm line
+is found moving forwards), before hiding source code lines.
 
-I think you mean with this...
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+---
+ tools/perf/ui/browsers/annotate.c | 28 +++++++++++++++++++++++++---
+ 1 file changed, 25 insertions(+), 3 deletions(-)
 
-> --- a/arch/x86/kernel/fpu/core.c
-> +++ b/arch/x86/kernel/fpu/core.c
-> @@ -107,7 +107,7 @@ int copy_fpregs_to_fpstate(struct fpu *f
->  	}
->  
->  	if (likely(use_fxsr())) {
-> -		copy_fxregs_to_kernel(fpu);
-> +		fxsave(&fpu->state.fxsave);
->  		return 1;
->  	}
->  
-> @@ -360,7 +360,7 @@ static inline void copy_init_fpstate_to_
->  	if (use_xsave())
->  		os_xrstor(&init_fpstate.xsave, features_mask);
->  	else if (static_cpu_has(X86_FEATURE_FXSR))
-> -		copy_kernel_to_fxregs(&init_fpstate.fxsave);
-> +		fxrstor(&init_fpstate.fxsave);
->  	else
->  		copy_kernel_to_fregs(&init_fpstate.fsave);
->  
-
-... this else if branch here. IOW, it should be:
-
-	...
-	else if (use_fxsr())
-		fxrstor(&init_fpstate.fxsave);
-
-		...
-
-
-Gnight!
-
+diff --git a/tools/perf/ui/browsers/annotate.c b/tools/perf/ui/browsers/annotate.c
+index ad0a70f0edaf..eb94d20d0d13 100644
+--- a/tools/perf/ui/browsers/annotate.c
++++ b/tools/perf/ui/browsers/annotate.c
+@@ -343,6 +343,29 @@ static void annotate_browser__calc_percent(struct annotate_browser *browser,
+ 	browser->curr_hot = rb_last(&browser->entries);
+ }
+ 
++static struct annotation_line *annotate_browser__find_next_asm_line(
++					struct annotate_browser *browser,
++					struct annotation_line *al)
++{
++	struct annotation_line *it = al;
++
++	/* find next asm line */
++	list_for_each_entry_continue(it, browser->b.top, node) {
++		if (it->idx_asm >= 0)
++			return it;
++	}
++
++	/* no asm line found forwards, try backwards */
++	it = al;
++	list_for_each_entry_continue_reverse(it, browser->b.top, node) {
++		if (it->idx_asm >= 0)
++			return it;
++	}
++
++	/* There are no asm lines */
++	return al;
++}
++
+ static bool annotate_browser__toggle_source(struct annotate_browser *browser)
+ {
+ 	struct annotation *notes = browser__annotation(&browser->b);
+@@ -363,9 +386,8 @@ static bool annotate_browser__toggle_source(struct annotate_browser *browser)
+ 		browser->b.index = al->idx;
+ 	} else {
+ 		if (al->idx_asm < 0) {
+-			ui_helpline__puts("Only available for assembly lines.");
+-			browser->b.seek(&browser->b, -offset, SEEK_CUR);
+-			return false;
++			/* move cursor to next asm line */
++			al = annotate_browser__find_next_asm_line(browser, al);
+ 		}
+ 
+ 		if (al->idx_asm < offset)
 -- 
-Regards/Gruss,
-    Boris.
+2.31.1
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
