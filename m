@@ -2,130 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92EF53AE736
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D25923AE759
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbhFUKiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 06:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbhFUKiH (ORCPT
+        id S230463AbhFUKnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 06:43:08 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3292 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229621AbhFUKnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 06:38:07 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10144C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 03:35:52 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id h16so9704969pjv.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 03:35:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qACWu+bnbyPKnWsJHtA+hAZdpnvZk5bHIEy1Pug1Wwg=;
-        b=AgvtY9XFqTFRZZMKYLON5qKVKzGP/iBwCiNh2pmuTSvbMRH6lrQt7MwjVsStzRgDh6
-         40lvAhPLLEJQ174u7dpwDasEbgJbSVrCy10X4Dyw70FG5vwWiMZJi8CM9H3A/g3Y4Q9l
-         1bW3hcQVsOS/xN4MGlUfO2tc1jKpdYv+89m1dmk3ZgqnYHvUOqvVqR/la5SjNs0ELTXb
-         dKESFFgD4IaKZ3V9c0mwpIm7v66ECYTc/pR9Ce3ThbQmMSywCBbuxt88w+qgjey3npho
-         j0+WEMpRTo/IdF+j6EOC0CX5Ao450J3k93rfEi6nMg4c+wAUWubaXRwiur9rgAeFAOje
-         6nXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=qACWu+bnbyPKnWsJHtA+hAZdpnvZk5bHIEy1Pug1Wwg=;
-        b=RYsy20FwOb3EE0WFq4dptYuyv31+RcaWgGPigUKj7Ecnoi9JKtPE6Ur8xx4M0ahATv
-         9pRTW37TH/fmRc1MOphYtR7wxDuICSkW6k0J6ccioDY3IGaAQHSRcXn8Ot5g2t3SoIFb
-         OC+u52tU4gYC9WDjVyfn1OQgaTcim33Lcx+d+5oaXg4MWtJAfNHCruNv4lWptYIDMYLx
-         q5j6+UKLtO/u87IMfEsvmtp8BxtRc+Qq0xFk2jmIK3ACiv82mm1YMridMGlQrQupQ0U/
-         IiNy26EZ0VT/uVJ9yfJTG7ifNS3s9c/oP+4bVUnEwsSatpzoSKlBSP8oMgiLZxpeexa/
-         OgaQ==
-X-Gm-Message-State: AOAM533GepPs/LfUhnXRzCJ41fATLIQplDs2NnssqQ1BaYKtH0xb31A5
-        pLreHn7MfD10KN0zr0o4+ASIsQ==
-X-Google-Smtp-Source: ABdhPJy27XwELFM11vFHrYq2LlRolxIXcisWCpcDRW+HzajDIMyFYbCd/wcPAeJ7UNsVnqQN59lsuA==
-X-Received: by 2002:a17:90a:7381:: with SMTP id j1mr14004550pjg.29.1624271751494;
-        Mon, 21 Jun 2021 03:35:51 -0700 (PDT)
-Received: from starnight.local ([150.116.242.79])
-        by smtp.googlemail.com with ESMTPSA id ml5sm1124159pjb.3.2021.06.21.03.35.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 03:35:51 -0700 (PDT)
-From:   Jian-Hong Pan <jhp@endlessos.org>
-To:     Doug Berger <opendmb@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>
-Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux@endlessos.org,
-        linux-rpi-kernel@lists.infradead.org,
-        Jian-Hong Pan <jhp@endlessos.org>
-Subject: [PATCH] net: bcmgenet: Fix attaching to PYH failed on RPi 4B
-Date:   Mon, 21 Jun 2021 18:33:11 +0800
-Message-Id: <20210621103310.186334-1-jhp@endlessos.org>
-X-Mailer: git-send-email 2.32.0
+        Mon, 21 Jun 2021 06:43:06 -0400
+Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G7m1Y3Tzgz6H7vX;
+        Mon, 21 Jun 2021 18:27:29 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 21 Jun 2021 12:40:50 +0200
+Received: from [10.47.93.67] (10.47.93.67) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 21 Jun
+ 2021 11:40:49 +0100
+Subject: Re: [PATCH v14 6/6] iommu: Remove mode argument from
+ iommu_set_dma_strict()
+To:     Lu Baolu <baolu.lu@linux.intel.com>, <joro@8bytes.org>,
+        <will@kernel.org>, <dwmw2@infradead.org>, <robin.murphy@arm.com>,
+        <corbet@lwn.net>
+CC:     <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
+        <linuxarm@huawei.com>, <thunder.leizhen@huawei.com>,
+        <chenxiang66@hisilicon.com>, <linux-doc@vger.kernel.org>
+References: <1624016058-189713-1-git-send-email-john.garry@huawei.com>
+ <1624016058-189713-7-git-send-email-john.garry@huawei.com>
+ <c062ef9e-c106-4218-ba2a-c94fdcb6d955@linux.intel.com>
+ <60bdd7c3-d73e-c005-ddf7-069bc5065bce@huawei.com>
+ <855dd109-1449-7bc6-3d25-7ffeeeffa82a@linux.intel.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <fc52069d-46c5-5ca5-1b44-2fa7cf287d5a@huawei.com>
+Date:   Mon, 21 Jun 2021 11:34:25 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
+In-Reply-To: <855dd109-1449-7bc6-3d25-7ffeeeffa82a@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.93.67]
+X-ClientProxiedBy: lhreml747-chm.china.huawei.com (10.201.108.197) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Broadcom UniMAC MDIO bus comes too late. So, GENET cannot find the
-ethernet PHY on UniMAC MDIO bus. This leads GENET fail to attach the
-PHY.
+On 21/06/2021 11:00, Lu Baolu wrote:
+>> void iommu_set_dma_strict(bool force)
+>> {
+>>           if (force == true)
+>>          iommu_dma_strict = true;
+>>      else if (!(iommu_cmd_line & IOMMU_CMD_LINE_STRICT))
+>>          iommu_dma_strict = true;
+>> }
+>>
+>> So we would use iommu_set_dma_strict(true) for a) and b), but 
+>> iommu_set_dma_strict(false) for c).
+> 
+> Yes. We need to distinguish the "must" and "nice-to-have" cases of
+> setting strict mode.
+> 
+>>
+>> Then I am not sure what you want to do with the accompanying print for 
+>> c). It was:
+>> "IOMMU batching is disabled due to virtualization"
+>>
+>> And now is from this series:
+>> "IOMMU batching disallowed due to virtualization"
+>>
+>> Using iommu_get_dma_strict(domain) is not appropriate here to know the 
+>> current mode (so we know whether to print).
+>>
+>> Note that this change would mean that the current series would require 
+>> non-trivial rework, which would be unfortunate so late in the cycle.
+> 
+> This patch series looks good to me and I have added by reviewed-by.
+> Probably we could make another patch series to improve it so that the
+> kernel optimization should not override the user setting.
 
-bcmgenet fd580000.ethernet: GENET 5.0 EPHY: 0x0000
-...
-could not attach to PHY
-bcmgenet fd580000.ethernet eth0: failed to connect to PHY
-uart-pl011 fe201000.serial: no DMA platform data
-libphy: bcmgenet MII bus: probed
-...
-unimac-mdio unimac-mdio.-19: Broadcom UniMAC MDIO bus
+On a personal level I would be happy with that approach, but I think 
+it's better to not start changing things right away in a follow-up series.
 
-This patch makes GENET try to connect the PHY up to 3 times. Also, waits
-a while between each time for mdio-bcm-unimac module's loading and
-probing.
+So how about we add this patch (which replaces 6/6 "iommu: Remove mode 
+argument from iommu_set_dma_strict()")?
 
-Buglink: https://bugzilla.kernel.org/show_bug.cgi?id=213485
-Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
----
- drivers/net/ethernet/broadcom/genet/bcmmii.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+Robin, any opinion?
 
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmmii.c b/drivers/net/ethernet/broadcom/genet/bcmmii.c
-index 5335244e4577..64f244471fd3 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmmii.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmmii.c
-@@ -289,6 +289,7 @@ int bcmgenet_mii_probe(struct net_device *dev)
- 	struct phy_device *phydev;
- 	u32 phy_flags = 0;
- 	int ret;
-+	int i;
- 
- 	/* Communicate the integrated PHY revision */
- 	if (priv->internal_phy)
-@@ -301,8 +302,22 @@ int bcmgenet_mii_probe(struct net_device *dev)
- 	priv->old_pause = -1;
- 
- 	if (dn) {
--		phydev = of_phy_connect(dev, priv->phy_dn, bcmgenet_mii_setup,
--					phy_flags, priv->phy_interface);
-+		/* Try to connect the PHY on UniMAC DMIO bus up to 3 times.
-+		 * Wait a while between each time for mdio-bcm-unimac module's
-+		 * loading and probing.
-+		 */
-+		phydev = NULL;
-+		for (i = 1; i < 4 && !phydev; i++) {
-+			netdev_info(dev,
-+				    "connect %s on UniMAC MDIO bus %d time",
-+				    priv->phy_dn->full_name, i);
-+			phydev = of_phy_connect(dev, priv->phy_dn,
-+						bcmgenet_mii_setup,
-+						phy_flags, priv->phy_interface);
-+			if (!phydev && i < 3)
-+				msleep(500);
-+		}
-+
- 		if (!phydev) {
- 			pr_err("could not attach to PHY\n");
- 			return -ENODEV;
+------->8---------
+
+[PATCH] iommu/vt-d: Make "iommu.strict" override batching due to
+  virtualization
+
+As a change in policy, make iommu.strict cmdline argument override 
+whether we disable batching due to virtualization.
+
+The API of iommu_set_dma_strict() is changed to accept a "force" 
+argument, which means that we always set iommu_dma_strict true, 
+regardless of whether we already set via cmdline. Also return a boolean, 
+to tell whether iommu_dma_strict was set or not.
+
+Note that in all pre-existing callsites of iommu_set_dma_strict(), 
+argument strict was true, so this argument is dropped.
+
+Signed-off-by: John Garry <john.garry@huawei.com>
+
+diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+index 06666f9d8116..e8d65239b359 100644
+--- a/drivers/iommu/intel/iommu.c
++++ b/drivers/iommu/intel/iommu.c
+@@ -4380,10 +4380,8 @@ int __init intel_iommu_init(void)
+  		 * is likely to be much lower than the overhead of synchronizing
+  		 * the virtual and physical IOMMU page-tables.
+  		 */
+-		if (cap_caching_mode(iommu->cap)) {
++		if (cap_caching_mode(iommu->cap) && iommu_set_dma_strict(false))
+  			pr_info_once("IOMMU batching disallowed due to virtualization\n");
+-			iommu_set_dma_strict(true);
+-		}
+  		iommu_device_sysfs_add(&iommu->iommu, NULL,
+  				       intel_iommu_groups,
+  				       "%s", iommu->name);
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 60b1ec42e73b..1434bee64af3 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -349,10 +349,14 @@ static int __init iommu_dma_setup(char *str)
+  }
+  early_param("iommu.strict", iommu_dma_setup);
+
+-void iommu_set_dma_strict(bool strict)
++/* Return true if we set iommu_dma_strict */
++bool iommu_set_dma_strict(bool force)
+  {
+-	if (strict || !(iommu_cmd_line & IOMMU_CMD_LINE_STRICT))
+-		iommu_dma_strict = strict;
++	if (force || !(iommu_cmd_line & IOMMU_CMD_LINE_STRICT)) {
++		iommu_dma_strict = true;
++		return true;
++	}
++	return false;
+  }
+
+  bool iommu_get_dma_strict(struct iommu_domain *domain)
+diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+index 32d448050bf7..f17b20234296 100644
+--- a/include/linux/iommu.h
++++ b/include/linux/iommu.h
+@@ -476,7 +476,7 @@ int iommu_enable_nesting(struct iommu_domain *domain);
+  int iommu_set_pgtable_quirks(struct iommu_domain *domain,
+  		unsigned long quirks);
+
+-void iommu_set_dma_strict(bool val);
++bool iommu_set_dma_strict(bool force);
+  bool iommu_get_dma_strict(struct iommu_domain *domain);
+
+  extern int report_iommu_fault(struct iommu_domain *domain, struct 
+device *dev,
 -- 
-2.32.0
-
+2.26.2
