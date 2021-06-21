@@ -2,93 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4093AEACC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CACAB3AEACA
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:10:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhFUOND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 10:13:03 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:59756 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229736AbhFUONA (ORCPT
+        id S229890AbhFUOM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 10:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229736AbhFUOMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 10:13:00 -0400
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15LE8HDr026284;
-        Mon, 21 Jun 2021 14:10:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=K9k3g/KXhuuJFyN8zef+KDQYsO6LeNTUi5TxPfegZz4=;
- b=hvnFga7sjr1SDtgv/rXrNHncgYXeHFHsTXi6Zhg+sd+9jYvaVxVmLbxdOsIzft6ghpLg
- 8HjtOeYX1GfDXrQYEYR8hTUCJXumyDAeBCRsMG84fATQ4/XqTUHBWAVKTjXscjIcxCjp
- OrGkv7HgZN3c38QOtjVYefW2ur/idwMLoSTJ+T6+s6GJY3VSlrAy5Tft8OQbwQxZNh/9
- WUIcEG/3TnZEZ7gul+Ct0jMXMv6AYP5bbGyWg48IsJU11pL6kJu6r4ReG5PGqcc8NmrV
- 1mJg09BT6W5vLX0wvcocXv978Yf5UVFywfBIQALzjcWzW+kw3usDToPT7c69IN3P2soH AQ== 
-Received: from oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39a68y1rgm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 21 Jun 2021 14:10:38 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15LE9j9r149881;
-        Mon, 21 Jun 2021 14:10:37 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 3998d5wmhh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 21 Jun 2021 14:10:37 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15LEA4Kc151016;
-        Mon, 21 Jun 2021 14:10:37 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 3998d5wmgs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 21 Jun 2021 14:10:37 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0121.oracle.com (8.14.4/8.14.4) with ESMTP id 15LEAZYk026765;
-        Mon, 21 Jun 2021 14:10:35 GMT
-Received: from kadam (/102.222.70.252)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 21 Jun 2021 07:10:34 -0700
-Date:   Mon, 21 Jun 2021 17:10:27 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     linux-staging@lists.linux.dev, netdev@vger.kernel.org,
-        Benjamin Poirier <benjamin.poirier@gmail.com>,
-        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Manish Chopra <manishc@marvell.com>,
-        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
-        <GR-Linux-NIC-Dev@marvell.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC 01/19] staging: qlge: fix incorrect truesize accounting
-Message-ID: <20210621141027.GJ1861@kadam>
-References: <20210621134902.83587-1-coiby.xu@gmail.com>
- <20210621134902.83587-2-coiby.xu@gmail.com>
+        Mon, 21 Jun 2021 10:12:55 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52469C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:10:38 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id y7so19765424wrh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:10:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AGlV2MD6otn2QQN/+YuOax/yo3OPIlMQZ3cJytPNMxk=;
+        b=dxIdwiUMehn6sA5E239voC+h18YFW+FN8JYbk25dQdz3MmrWeISh71T/6F/prqU6Yd
+         PEFjzOn86SLmtfjabSAUl8gxsEiYQXRaC/IUMf3ZMnotC/iO7EjQQo9XmMTb3DkOrA7H
+         69+3iL0eMuT86aKepTsRZXvhrg/tP8rSDhZEo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=AGlV2MD6otn2QQN/+YuOax/yo3OPIlMQZ3cJytPNMxk=;
+        b=YOlkVjNWkuC+3mppWmKzaOc849xrUURex3o1VzcUPyWIB3ZsXhWvyx0/PC95udSVVK
+         uWFmrtVzdIOXCnY73ADpdy+Ov8HihjhqEDnvp0sHv0pBjhoxdqPcdhb0q8xWvKsvz5lJ
+         X//7STtq2VSgeqJvxIZigE52Dmb4wrKis5ODxAT0kwtxyGelJll36flXW2b2imY5d6/u
+         YAniZo0oljKQIgJopIvYK663Fl1DLZ9UxqUKslEDNx5IAuDKgRiDvwaQqHGr2PHZpqws
+         iDtwRCB4FiFj0Y9r6zPEFauT1KhCkFhPRui9xqePOFAcXug/vxbLiXdQQ1klOrAhMZba
+         OgYw==
+X-Gm-Message-State: AOAM533Jsnp6wZEE29YJsX0QGXJjF4qK5wwohQiHX1KAa61X6atLV5Jm
+        3UCwErKGGti1PHiIh8hS841zmA==
+X-Google-Smtp-Source: ABdhPJx5OqTU3rT2HYNagde8SKe39dhIr0kjKox8JE94Ej/JAxsw9e4p7LE3RW3Rig5FzCstV1cfEQ==
+X-Received: by 2002:adf:f592:: with SMTP id f18mr14083074wro.81.1624284636881;
+        Mon, 21 Jun 2021 07:10:36 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id f12sm21491418wru.81.2021.06.21.07.10.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 07:10:36 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 16:10:34 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Matthew Auld <matthew.william.auld@gmail.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: drm/i915: __GFP_RETRY_MAYFAIL allocations in stable kernels
+Message-ID: <YNCd2m9yvaUhR9MN@phenom.ffwll.local>
+Mail-Followup-To: Matthew Auld <matthew.william.auld@gmail.com>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        kernel list <linux-kernel@vger.kernel.org>
+References: <YMdPcWZi4x7vnCxI@google.com>
+ <YMuGGqs4cDotxuKO@phenom.ffwll.local>
+ <CAM0jSHMYk3GeZTP7FQ8z2H02GfCcJsUeNwbzH3GLdRVxvMzqDg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210621134902.83587-2-coiby.xu@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: B_qUZsMMkgZVgh812UNKgPfPTPQunNUL
-X-Proofpoint-GUID: B_qUZsMMkgZVgh812UNKgPfPTPQunNUL
+In-Reply-To: <CAM0jSHMYk3GeZTP7FQ8z2H02GfCcJsUeNwbzH3GLdRVxvMzqDg@mail.gmail.com>
+X-Operating-System: Linux phenom 5.10.0-7-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 09:48:44PM +0800, Coiby Xu wrote:
-> Commit 7c734359d3504c869132166d159c7f0649f0ab34 ("qlge: Size RX buffers
-> based on MTU") introduced page_chunk structure. We should add
-> qdev->lbq_buf_size to skb->truesize after __skb_fill_page_desc.
+On Fri, Jun 18, 2021 at 04:46:24PM +0100, Matthew Auld wrote:
+> On Thu, 17 Jun 2021 at 18:27, Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> > On Mon, Jun 14, 2021 at 09:45:37PM +0900, Sergey Senozhatsky wrote:
+> > > Hi,
+> > >
+> > > We are observing some user-space crashes (sigabort, segfaults etc.)
+> > > under moderate memory pressure (pretty far from severe pressure) which
+> > > have one thing in common - restrictive GFP mask in setup_scratch_page().
+> > >
+> > > For instance, (stable 4.19) drivers/gpu/drm/i915/i915_gem_gtt.c
+> > >
+> > > (trimmed down version)
+> > >
+> > > static int gen8_init_scratch(struct i915_address_space *vm)
+> > > {
+> > >         setup_scratch_page(vm, __GFP_HIGHMEM);
+> > >
+> > >         vm->scratch_pt = alloc_pt(vm);
+> > >         vm->scratch_pd = alloc_pd(vm);
+> > >         if (use_4lvl(vm)) {
+> > >                 vm->scratch_pdp = alloc_pdp(vm);
+> > >         }
+> > > }
+> > >
+> > > gen8_init_scratch() function puts a rather inconsistent restrictions on mm.
+> > >
+> > > Looking at it line by line:
+> > >
+> > > setup_scratch_page() uses very restrictive gfp mask:
+> > >       __GFP_HIGHMEM | __GFP_ZERO | __GFP_RETRY_MAYFAIL
+> > >
+> > > it doesn't try to reclaim anything and fails almost immediately.
+> > >
+> > > alloc_pt() - uses more permissive gfp mask:
+> > >       GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN
+> > >
+> > > alloc_pd() - likewise:
+> > >       GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN
+> > >
+> > > alloc_pdp() - very permissive gfp mask:
+> > >       GFP_KERNEL
+> > >
+> > >
+> > > So can all allocations in gen8_init_scratch() use
+> > >       GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN
+> >
+> > Yeah that looks all fairly broken tbh. The only thing I didn't know was
+> > that GFP_DMA32 wasn't a full gfp mask with reclaim bits set as needed. I
+> > guess it would be clearer if we use GFP_KERNEL | __GFP_DMA32 for these.
+> >
+> > The commit that introduced a lot of this, including I915_GFP_ALLOW_FAIL
+> > seems to be
+> >
+> > commit 1abb70f5955d1a9021f96359a2c6502ca569b68d
+> > Author: Chris Wilson <chris@chris-wilson.co.uk>
+> > Date:   Tue May 22 09:36:43 2018 +0100
+> >
+> >     drm/i915/gtt: Allow pagedirectory allocations to fail
+> >
+> > which used a selftest as justification, not real world workloads, so looks
+> > rather dubious.
+> >
+> > Adding Matt Auld to this thread, maybe he has ideas.
 > 
+> The latest code is quite different, but for both scratch and the
+> various paging structures it's now sharing the same GFP
+> flags(I915_GFP_ALLOW_FAIL). And for the actual backing page, which is
+> now a GEM object, we use i915_gem_object_get_pages_internal().
+> 
+> Not sure why scratch wants to be different, and I don't recall
+> anything funny. At first I thought it might have been related to
+> needing only one scratch page/directory etc which was then shared
+> between different VMs, but I don't think we had read-only support in
+> the driver at that point, so can't be that. But I guess once we did
+> add that seeing failures in init_scratch() was very unlikely, at least
+> until gen11+ arrived which then broke read-only support in the HW.
 
-Add a Fixes tag.
+If there is something, then shmem get_pages has some reason to use
+__GFP_RETRY_MAYFAIL - at least way back when dev->struct_mutex was still
+everywhere we had some paths to directly reclaim gem bo when the
+allocations failed.
 
-The runtime impact of this is just that ethtool will report things
-incorrectly, right?  It's not 100% from the commit message.  Could you
-please edit the commit message so that an ignoramous like myself can
-understand it?
+But I think that all disappeared, so all the reasons for MAYFAIL have gone
+away - if there's no fallback or call to our own shrinker or anything like
+that, then we must rely on core mm to try really hard to find the memory
+we want.
 
-Why is this an RFC instead of just a normal patch which we can apply?
+This all goes back to
 
-regards,
-dan carpenter
+commit 07f73f6912667621276b002e33844ef283d98203
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Mon Sep 14 16:50:30 2009 +0100
 
+    drm/i915: Improve behaviour under memory pressure
+
+but with a lot of detours and confusion going on (__GFP_NORETRY wasn't
+actually what we wanted, which is why __GFP_RETRY_MAYFAIL now exists).
+-Daniel
+
+> 
+> >
+> > Thanks, Daniel
+> >
+> > > ?
+> > >
+> > > E.g.
+> > >
+> > > ---
+> > > diff --git a/drivers/gpu/drm/i915/i915_gem_gtt.c b/drivers/gpu/drm/i915/i915_gem_gtt.c
+> > > index a12430187108..e862680b9c93 100644
+> > > --- a/drivers/gpu/drm/i915/i915_gem_gtt.c
+> > > +++ b/drivers/gpu/drm/i915/i915_gem_gtt.c
+> > > @@ -792,7 +792,7 @@ alloc_pdp(struct i915_address_space *vm)
+> > >
+> > >         GEM_BUG_ON(!use_4lvl(vm));
+> > >
+> > > -       pdp = kzalloc(sizeof(*pdp), GFP_KERNEL);
+> > > +       pdp = kzalloc(sizeof(*pdp), I915_GFP_ALLOW_FAIL);
+> > >         if (!pdp)
+> > >                 return ERR_PTR(-ENOMEM);
+> > >
+> > > @@ -1262,7 +1262,7 @@ static int gen8_init_scratch(struct i915_address_space *vm)
+> > >  {
+> > >         int ret;
+> > >
+> > > -       ret = setup_scratch_page(vm, __GFP_HIGHMEM);
+> > > +       ret = setup_scratch_page(vm, GFP_KERNEL | __GFP_HIGHMEM);
+> > >         if (ret)
+> > >                 return ret;
+> > >
+> > > @@ -1972,7 +1972,7 @@ static int gen6_ppgtt_init_scratch(struct gen6_hw_ppgtt *ppgtt)
+> > >         u32 pde;
+> > >         int ret;
+> > >
+> > > -       ret = setup_scratch_page(vm, __GFP_HIGHMEM);
+> > > +       ret = setup_scratch_page(vm, GFP_KERNEL | __GFP_HIGHMEM);
+> > >         if (ret)
+> > >                 return ret;
+> > >
+> > > @@ -3078,7 +3078,7 @@ static int ggtt_probe_common(struct i915_ggtt *ggtt, u64 size)
+> > >                 return -ENOMEM;
+> > >         }
+> > >
+> > > -       ret = setup_scratch_page(&ggtt->vm, GFP_DMA32);
+> > > +       ret = setup_scratch_page(&ggtt->vm, GFP_KERNEL | GFP_DMA32);
+> > >         if (ret) {
+> > >                 DRM_ERROR("Scratch setup failed\n");
+> > >                 /* iounmap will also get called at remove, but meh */
+> > > ---
+> > >
+> > >
+> > >
+> > > It's quite similar on stable 5.4 - setup_scratch_page() uses restrictive
+> > > gfp mask again.
+> > >
+> > > ---
+> > > diff --git a/drivers/gpu/drm/i915/i915_gem_gtt.c b/drivers/gpu/drm/i915/i915_gem_gtt.c
+> > > index f614646ed3f9..99d78b1052df 100644
+> > > --- a/drivers/gpu/drm/i915/i915_gem_gtt.c
+> > > +++ b/drivers/gpu/drm/i915/i915_gem_gtt.c
+> > > @@ -1378,7 +1378,7 @@ static int gen8_init_scratch(struct i915_address_space *vm)
+> > >                 return 0;
+> > >         }
+> > >
+> > > -       ret = setup_scratch_page(vm, __GFP_HIGHMEM);
+> > > +       ret = setup_scratch_page(vm, GFP_KERNEL | __GFP_HIGHMEM);
+> > >         if (ret)
+> > >                 return ret;
+> > >
+> > > @@ -1753,7 +1753,7 @@ static int gen6_ppgtt_init_scratch(struct gen6_ppgtt *ppgtt)
+> > >         struct i915_page_directory * const pd = ppgtt->base.pd;
+> > >         int ret;
+> > >
+> > > -       ret = setup_scratch_page(vm, __GFP_HIGHMEM);
+> > > +       ret = setup_scratch_page(vm, GFP_KERNEL | __GFP_HIGHMEM);
+> > >         if (ret)
+> > >                 return ret;
+> > >
+> > > @@ -2860,7 +2860,7 @@ static int ggtt_probe_common(struct i915_ggtt *ggtt, u64 size)
+> > >                 return -ENOMEM;
+> > >         }
+> > >
+> > > -       ret = setup_scratch_page(&ggtt->vm, GFP_DMA32);
+> > > +       ret = setup_scratch_page(&ggtt->vm, GFP_KERNEL | GFP_DMA32);
+> > >         if (ret) {
+> > >                 DRM_ERROR("Scratch setup failed\n");
+> > >                 /* iounmap will also get called at remove, but meh */
+> > > ---
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > http://blog.ffwll.ch
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
