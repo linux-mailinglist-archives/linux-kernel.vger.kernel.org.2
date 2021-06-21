@@ -2,182 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7147B3AF892
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 00:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5221C3AF894
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 00:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232501AbhFUWe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 18:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55188 "EHLO
+        id S232260AbhFUWer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 18:34:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232342AbhFUWeJ (ORCPT
+        with ESMTP id S232351AbhFUWed (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 18:34:09 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C249C061224
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 15:31:51 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id h15so14158564lfv.12
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 15:31:51 -0700 (PDT)
+        Mon, 21 Jun 2021 18:34:33 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83DAEC061756;
+        Mon, 21 Jun 2021 15:32:16 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso599011wmc.1;
+        Mon, 21 Jun 2021 15:32:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6CNpdcs1A6Q97e0oT9ww9wqzNC5IQArK/FZR7yxSl3Q=;
-        b=Yb6TbXKOmrz4ik8ZOHs5A5XBs/DumXbi/piHmfu4F6taHqLktXZ23ufzbl5R2xUvuI
-         bbFWP6u8lvtFl5BQPtJKSDrUN+tXCWaULLkACjOWYoKYiD+b5nXWqiPz/EEySRYHf8vb
-         1MPdLXmHA9IHuYpJHIoEpP3abBeh2NdEHp3e9vs9q8g04vH+YNPagCVd9C7zxh81lHNs
-         IGd5wfJ18zOeNytbtygNpSLVNmT7mEP5w38StMYaGH4FGDYonQyRo1jv+ukp6t7u6XO9
-         j98Vq0syVYhH9XX9rlNtuYDD431x3lhrGyw4qnsPCAShK18DLGicrmM/pBzjX9W8PJ3Y
-         djdA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=D0MoxjXV9Jy8caVcI/fteljqOT1UWv9StnseuzGm+HU=;
+        b=M2Lp+uK85bR2WTxlYccVrufOGrMNB5J/hO5b0Vle2OXQISXTCgrPUCmfadVdFk1aeC
+         4X8wPXX9IaJXrBc+u7hZcQzKoBbmk0kEouZu1b8ZGLIAj6ZDL5d6ha00Z343pcz64WlI
+         5LQwV2QiMU+6qG/z6S2bq8WJQbtRcwNHXJOHzYFUkcOwxteVF0ygguyZnb6n+L9V6Ui7
+         8T5jEZkebZUq2J6ncuQAQRC9WBh3E8ZonJL0Wut1A+6HfIfpHRFwCsbm7/3fp1HNyEOd
+         tZoy7QuwqpXxWsuOUEbcYR21EhpHFlhdaWP58HLpX4gOPdJ31adiSkhLdKw74BpUQNhK
+         zgJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6CNpdcs1A6Q97e0oT9ww9wqzNC5IQArK/FZR7yxSl3Q=;
-        b=fW9v8FS7FyHcuRH3sGVW3gVdA3771HwCKEC+B+ipUqXg3VNQTWuyqaGprdBjDRxdYu
-         HKvThSYfs5IXpBG9TGWIFMnwaH1sQqgdpGV8LrGtThhCNL7PtD15zpCYnKZyQoYyfqqh
-         yzSeuG7jFWbQ13I0oLyqoYLLhkQ159LVcnuodHwKvu0d2+D3JvwZ1YCiZwpiL/B+mLym
-         CUOB9EiFFIrufx/H0G5AUOLjVTjBumA6f9KRzluQEK8NJ/P7G+x8lD5CBQRXI7OJ303w
-         5syB/u8zhkkpyVP7cJSTUjGUABDRpS7Mzd8ll+5zNK6UoVNdI5wLMKo8QwBuLoSJmCDH
-         r6rQ==
-X-Gm-Message-State: AOAM532Scfl2Oxswlye0FLK0q2wE5GkdqEl2SWVEq+hMTDMsjtV511oe
-        ytzEoBdPS5U70iFvzmNJJGpCIA==
-X-Google-Smtp-Source: ABdhPJwTFKSbeUTuMEj4DnuloUpJ21c6vHK4ANx0ppM/zd6NzQF+6R8ZQwFFhxJHw335M78DjZvF8A==
-X-Received: by 2002:ac2:533c:: with SMTP id f28mr419456lfh.268.1624314709764;
-        Mon, 21 Jun 2021 15:31:49 -0700 (PDT)
-Received: from eriador.lan ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id b10sm2516025ljf.72.2021.06.21.15.31.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 15:31:49 -0700 (PDT)
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org
-Subject: [PATCH v3 7/7] arm64: dts: qcom: qrb5165-rb5: add QCA6391 WiFi+BT SoC
-Date:   Tue, 22 Jun 2021 01:31:41 +0300
-Message-Id: <20210621223141.1638189-8-dmitry.baryshkov@linaro.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210621223141.1638189-1-dmitry.baryshkov@linaro.org>
-References: <20210621223141.1638189-1-dmitry.baryshkov@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=D0MoxjXV9Jy8caVcI/fteljqOT1UWv9StnseuzGm+HU=;
+        b=Jyp/XN7PdnuamsasnIb1X1uN7WzIvdEARAjS7wyHnos9ACsyXiQHIMW7sHVo+97/Mj
+         1zwW0yqcub38e0ZLC2G3hI25jps+J1wSecereLnFWd5ZFYub5aJrDl7MYM3RVV1k9g7s
+         +Zo/DrsSf4fi5F3aA6bF67cM+fdMMRrrfTVVDSE8kHgtrzVCQsFrxgU338k9F1a9CMBK
+         uFnLFQR0rmGAmpUk12f5NyT3RVtw0OIvIhPavIhkiw+QttKDeNdjosUVGBxa6J9PC3Ej
+         J5OAO73cBFjLym1KJLCtOX4hWel+m+tO8tfpOQNnAg6dCCRqrpIZbd5H2IYyBJcHKZji
+         8Umw==
+X-Gm-Message-State: AOAM532/VR9OS9x0Nn/np2vft7tr7+pzQDIHqT/P3ZP/PqsBUaOh0yGS
+        MXs3audppUnLLbmd5iUwmgrp/6FyEdU=
+X-Google-Smtp-Source: ABdhPJzqvt3mQhAxzVYmsQmt7bf1sFLMv+bw9tN9BXLDlZ+jCSq/Zc58Qq/aU/4lj3KCEsxfUOv7Xw==
+X-Received: by 2002:a1c:ac87:: with SMTP id v129mr867487wme.45.1624314735195;
+        Mon, 21 Jun 2021 15:32:15 -0700 (PDT)
+Received: from [192.168.1.211] ([2.29.20.116])
+        by smtp.gmail.com with ESMTPSA id p5sm20534055wrd.25.2021.06.21.15.32.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 15:32:14 -0700 (PDT)
+Subject: Re: [PATCH v2 2/8] platform/x86: intel_skl_int3472: Free ACPI device
+ resources after use
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Cc:     Mark Gross <mgross@linux.intel.com>
+References: <20210618125516.53510-1-andriy.shevchenko@linux.intel.com>
+ <20210618125516.53510-2-andriy.shevchenko@linux.intel.com>
+From:   Daniel Scally <djrscally@gmail.com>
+Message-ID: <d5bbf80a-36b1-fd29-dbdb-ae47e06b0c7b@gmail.com>
+Date:   Mon, 21 Jun 2021 23:32:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210618125516.53510-2-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Describe the onboard WiFi+BT SoC QCA6391. It is connected to uart6 to
-provide Bluetooth functionality (QCA) and to PCIe to provide WiFi
-(ath11k). A separate power sequencer device node is used to describe
-on-SoC power management unit common to both WiFi and BT parts.
+Hi Andy
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 56 ++++++++++++++++++++++++
- 1 file changed, 56 insertions(+)
+On 18/06/2021 13:55, Andy Shevchenko wrote:
+> We may free ACPI device resources immediately after use.
+> Refactor skl_int3472_parse_crs() accordingly.
+>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-index 5f41de20aa22..f968208b1947 100644
---- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-+++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-@@ -20,6 +20,7 @@ / {
- 
- 	aliases {
- 		serial0 = &uart12;
-+		serial1 = &uart6;
- 		sdhc2 = &sdhc_2;
- 	};
- 
-@@ -223,6 +224,28 @@ vreg_s4a_1p8: vreg-s4a-1p8 {
- 		regulator-max-microvolt = <1800000>;
- 		regulator-always-on;
- 	};
-+
-+	qca6391: qca6391 {
-+		compatible = "qcom,qca6390";
-+
-+		vddaon-supply = <&vreg_s6a_0p95>;
-+		vddpmu-supply = <&vreg_s2f_0p95>;
-+		vddrfa1-supply = <&vreg_s2f_0p95>;
-+		vddrfa2-supply = <&vreg_s8c_1p3>;
-+		vddrfa3-supply = <&vreg_s5a_1p9>;
-+		vddpcie1-supply = <&vreg_s8c_1p3>;
-+		vddpcie2-supply = <&vreg_s5a_1p9>;
-+		vddio-supply = <&vreg_s4a_1p8>;
-+	};
-+
-+	vreg_wlan: vreg-wlan {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vreg-wlan";
-+
-+		vin-supply = <&qca6391>;
-+		gpio = <&tlmm 20 GPIO_ACTIVE_LOW>;
-+		enable-active-high;
-+	};
- };
- 
- &adsp {
-@@ -668,6 +691,8 @@ &pcie0 {
- 	wake-gpio = <&tlmm 81 GPIO_ACTIVE_HIGH>;
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pcie0_default_state>;
-+
-+	vddpe-3v3-supply = <&vreg_wlan>;
- };
- 
- &pcie0_phy {
-@@ -811,6 +836,26 @@ lt9611_rst_pin: lt9611-rst-pin {
- 	};
- };
- 
-+&qup_uart6_default {
-+	ctsrx {
-+		pins = "gpio16", "gpio19";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
-+	rts {
-+		pins = "gpio17";
-+		drive-strength = <2>;
-+		bias-disable;
-+	};
-+
-+	tx {
-+		pins = "gpio18";
-+		drive-strength = <2>;
-+		bias-pull-up;
-+	};
-+};
-+
- &qupv3_id_0 {
- 	status = "okay";
- };
-@@ -1275,6 +1320,17 @@ sdc2_card_det_n: sd-card-det-n {
- 	};
- };
- 
-+&uart6 {
-+	status = "okay";
-+	bluetooth {
-+		compatible = "qcom,qca6390-bt";
-+		vin-supply = <&qca6391>;
-+		clocks = <&sleep_clk>;
-+
-+		enable-gpios = <&tlmm 21 GPIO_ACTIVE_HIGH>;
-+	};
-+};
-+
- &uart12 {
- 	status = "okay";
- };
--- 
-2.30.2
+Sorry, only just got round to these:
 
+
+Reviewed-by: Daniel Scally <djrscally@gmail.com>
+
+Tested-by: Daniel Scally <djrscally@gmail.com>
+
+> ---
+> v2: new patch
+>  .../x86/intel-int3472/intel_skl_int3472_discrete.c  | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c b/drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c
+> index 8c18dbff1c43..48a00a1f4fb6 100644
+> --- a/drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c
+> +++ b/drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c
+> @@ -308,8 +308,10 @@ static int skl_int3472_parse_crs(struct int3472_discrete_device *int3472)
+>  	ret = acpi_dev_get_resources(int3472->adev, &resource_list,
+>  				     skl_int3472_handle_gpio_resources,
+>  				     int3472);
+> -	if (ret)
+> -		goto out_free_res_list;
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	acpi_dev_free_resource_list(&resource_list);
+>  
+>  	/*
+>  	 * If we find no clock enable GPIO pin then the privacy LED won't work.
+> @@ -319,7 +321,7 @@ static int skl_int3472_parse_crs(struct int3472_discrete_device *int3472)
+>  	if (int3472->clock.ena_gpio) {
+>  		ret = skl_int3472_register_clock(int3472);
+>  		if (ret)
+> -			goto out_free_res_list;
+> +			return ret;
+>  	} else {
+>  		if (int3472->clock.led_gpio)
+>  			dev_warn(int3472->dev,
+> @@ -329,10 +331,7 @@ static int skl_int3472_parse_crs(struct int3472_discrete_device *int3472)
+>  	int3472->gpios.dev_id = int3472->sensor_name;
+>  	gpiod_add_lookup_table(&int3472->gpios);
+>  
+> -out_free_res_list:
+> -	acpi_dev_free_resource_list(&resource_list);
+> -
+> -	return ret;
+> +	return 0;
+>  }
+>  
+>  int skl_int3472_discrete_probe(struct platform_device *pdev)
