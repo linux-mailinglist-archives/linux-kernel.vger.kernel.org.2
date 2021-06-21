@@ -2,231 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 760A53AF23A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:44:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08F913AF237
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231654AbhFURqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 13:46:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46850 "EHLO
+        id S231549AbhFURpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 13:45:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231138AbhFURqO (ORCPT
+        with ESMTP id S231138AbhFURpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 13:46:14 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6F3C061574;
-        Mon, 21 Jun 2021 10:43:58 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id i4so5280299plt.12;
-        Mon, 21 Jun 2021 10:43:58 -0700 (PDT)
+        Mon, 21 Jun 2021 13:45:51 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7097EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:43:35 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id w13so4462970wmc.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:43:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=T3D8UK1gOfFX+dIRRDU1M/FRUJLxaVbvp2i5V6ZSH0I=;
-        b=csDCzyeLDt//0q65Pr3MMBhIUfQs0CYWjquByITpiVEIcI4G+b/hUIhI3yKCa2WePd
-         XPHBCf1IQ9yGs7xBrFo1Py95qkbSL2elHkewLGXbBWrmDRQ4QF7TiRnSjv3bqtyJ7qYV
-         5yh2SMJr5u4Vux8yK9QJpOZwlHoIuknBYrv2cfaV5ihEseAMeHIn2q1vrj99+uyfwL2R
-         eaZZEBEf2z/0aE1iR6dKNeoXxDFgUrJSyDzDY+dqpIJ1nG3zIi58gWB/Be6kh5h1D0ms
-         qzasvpXq08y0Z9klwA57JO3fyveTZkpzQR7cgz8dTWKZotVkijR8p+Q90Msm/dlEwouQ
-         Ab7Q==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=O8BbUOWDuMnupwNJGCw6qe3Mkxo3Jr+EdIaiPVN/4iU=;
+        b=t18qvMKnFXZwUBJlJCyo4Ja7RgC3iUVQ7Jjowv7/kqLuk2VsKvrhz/oQ98yI4aeqIT
+         rkHQUmoV+qrb2son47+6xskS93hnBEpjDbQepwmEqzHvlXaOwzAlBfe/uG5i1n42XTMk
+         q5opI0tTc335cNQyhnhigAqPmjCWQGbhcf6gNufrh+1dJ9Id3HmIZJIwjV6qKM/sClYm
+         YSFCWAqzOjrPTdeb7RZX+C/2kL1D1pF/PhxmhdlI8dyta/xtEIFFmlwC1M2AaAZHbUso
+         yuq88aFkJiqpySBeCnT7dZlthziY0ttvEJWq2TquqyrwH8rahJyp+cf+djzqA59Dabnf
+         EBFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=T3D8UK1gOfFX+dIRRDU1M/FRUJLxaVbvp2i5V6ZSH0I=;
-        b=nfEJ8xbWla/JWCNRHnChETpuoeXk0ePCxFLMyvBmTNg7wcXmuCJKkBDB5KnqIpXrx/
-         tNMdgl2MANq+njXd1J5k84VXdw9ApOp412rJHLcIPNtKnZ147Hof+mBwlB58Wh6X7rAW
-         ZNDCeIJMNMBpsx6mAH36GV9QSw+kXpPLr3EegMdg6s7Aeljgk11oDybzBXrzwbVwWjEW
-         51MJsC2fweGjYpT5lvJhUr93mKc9ZtP3z2piMGBLit8wXnRGJTom3NXjtqIJIm5PPaFr
-         x+BEWbQ56L/7mEqYyz8L0s9pcjeoW9a1+8yu8d3OMQ9enlCTuD9BB41bSlPWty+UHN5z
-         0Piw==
-X-Gm-Message-State: AOAM533gk/O+ZbROZqQW9hAeYh3xHZ+KEqd6wvUwiYVoXgVOhwOy22ch
-        hvdX1ODutr7smOIMCBflLcZuoz3l9cfgMAN82nc=
-X-Google-Smtp-Source: ABdhPJwC5Xjlye0MYX3gpukX12I4fnYwkUQ3eEdBjwS/AAgNYGE1WDCwOBcW5s75KMsf/fhybYG1yWZCTJ1sZu14GZ8=
-X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr40103459pja.181.1624297438238;
- Mon, 21 Jun 2021 10:43:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210325122832.119147-1-sandberg@mailfence.com>
- <20210621172053.107045-1-maukka@ext.kapsi.fi> <20210621172053.107045-3-maukka@ext.kapsi.fi>
-In-Reply-To: <20210621172053.107045-3-maukka@ext.kapsi.fi>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 21 Jun 2021 20:43:21 +0300
-Message-ID: <CAHp75VcjGpveAHNAW7Xf7d_Zf6LGSSyD6+qBiF9xxvb+EKs3tg@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] gpio: gpio-cascade: add generic GPIO cascade
-To:     Mauri Sandberg <maukka@ext.kapsi.fi>
-Cc:     Mauri Sandberg <sandberg@mailfence.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Drew Fustini <drew@beagleboard.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=O8BbUOWDuMnupwNJGCw6qe3Mkxo3Jr+EdIaiPVN/4iU=;
+        b=ayaXOIw+MOiCfn6+ZcA9BlHNFaYv5HBnlIX9spswS03cTH/DhHtiuuVp7HnYVReqWw
+         ltXnmKKyNkSNw8Teq3yvsSNr2f15xMvCp2d5bn//jiUecfiI9KeE+n814atBg5JCFepi
+         Ax4BRwKZs2NmVjKLo0+SLb80pNGS6kaC6aXi3ZL08agt/7V8zB1lGoYNs/s/hLYU4Mt3
+         kqKZ/Z+pbHwr2PwdLsPFJEpWLWBs8iYigDrMf0paeQq5OPxaMPW8AQ0Y0DRf2snxtpGS
+         Jwwkx/pF88v22wKSE3xwSCTXaECvmdoOLkn/g7VHdMMy5ledD9lOchUXGUWmhI3Os3bi
+         q39Q==
+X-Gm-Message-State: AOAM531qVawU9alFz8Q4RRew9gD/bA5PVsJ0HnsgQKbY9JYK6rC/41wO
+        7tQ1HLtwyDRpKR3UgCrq7F2rzQ==
+X-Google-Smtp-Source: ABdhPJyV6vogB1+GtgXX60lrBR/tbEANj6coZgCSHcoBw/qqcGLCxtSBep+p29EVapAozxvXpTa/+A==
+X-Received: by 2002:a7b:cd99:: with SMTP id y25mr5764723wmj.111.1624297414051;
+        Mon, 21 Jun 2021 10:43:34 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:f:6020:7073:a754:9f82:97c1])
+        by smtp.gmail.com with ESMTPSA id b9sm2174878wrt.55.2021.06.21.10.43.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 10:43:33 -0700 (PDT)
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
+        odin@uged.al, sachinp@linux.vnet.ibm.com, riel@surriel.com
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>
+Subject: [PATCH] sched/fair: Ensure that the cfs parent is added after unthrottling
+Date:   Mon, 21 Jun 2021 19:43:30 +0200
+Message-Id: <20210621174330.11258-1-vincent.guittot@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 8:25 PM Mauri Sandberg <maukka@ext.kapsi.fi> wrote:
->
-> Adds support for a building cascades of GPIO lines. That is, it allows
+From: Rik van Riel <riel@surriel.com>
 
-for building
+Ensure that a cfs will be in the list whenever one of its child is also
+in the list.
 
-> setups when there is one upstream line and multiple cascaded lines, out
-> of which one can be chosen at a time. The status of the upstream line
-> can be conveyd to the selected cascaded line or, vice versa, the status
+A warning on rq->tmp_alone_branch != &rq->leaf_cfs_rq_list has been
+reported while running LTP test cfs_bandwidth01.
 
-conveyed
+Odin found the root cause:
 
-> of the cascaded line can be conveyed to the upstream line.
->
-> A gpio-mux is being used to select, which cascaded GPIO line is being
-> used at any given time.
->
-> At the moment only input direction is supported. In future it should be
-> possible to add support for output direction, too.
+$ tree /sys/fs/cgroup/ltp/ -d --charset=ascii
+/sys/fs/cgroup/ltp/
+|-- drain
+`-- test-6851
+    `-- level2
+        |-- level3a
+        |   |-- worker1
+        |   `-- worker2
+        `-- level3b
+            `-- worker3
 
-Since in parallel there is a discussion about the virtio-gpio
-interface, how will this work with it?
+Timeline (ish):
+- worker3 gets throttled
+- level3b is decayed, since it has no more load
+- level2 get throttled
+- worker3 get unthrottled
+- level2 get unthrottled
+  - worker3 is added to list
+  - level3b is not added to list, since nr_running==0 and is decayed
 
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + *  A generic GPIO cascade driver
-> + *
-> + *  Copyright (C) 2021 Mauri Sandberg <maukka@ext.kapsi.fi>
-> + *
-> + * This allows building cascades of GPIO lines in a manner illustrated
-> + * below:
-> + *
-> + *                 /|---- Cascaded GPIO line 0
-> + *  Upstream      | |---- Cascaded GPIO line 1
-> + *  GPIO line ----+ | .
-> + *                | | .
-> + *                 \|---- Cascaded GPIO line n
-> + *
-> + * A gpio-mux is being used to select, which cascaded line is being
-> + * addressed at any given time.
-> + *
-> + * At the moment only input mode is supported due to lack of means for
-> + * testing output functionality. At least theoretically output should be
-> + * possible with an open drain constructions.
-> + */
+Fixes: a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to list on unthrottle")
+Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+Signed-off-by: Rik van Riel <riel@surriel.com>
+Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
+[Rebased and updated to fix for the reported warning]
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Acked-by: Odin Ugedal <odin@uged.al>
+Tested-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+---
 
-...
+ kernel/sched/fair.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-> +static int gpio_cascade_get_value(struct gpio_chip *gc, unsigned int off=
-set)
-> +{
-> +       struct gpio_cascade *cas;
-> +       int ret;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 7b8990fd4896..8cc27b847ad8 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3255,6 +3255,31 @@ static inline void cfs_rq_util_change(struct cfs_rq *cfs_rq, int flags)
+ 
+ #ifdef CONFIG_SMP
+ #ifdef CONFIG_FAIR_GROUP_SCHED
++/*
++ * Because list_add_leaf_cfs_rq always places a child cfs_rq on the list
++ * immediately before a parent cfs_rq, and cfs_rqs are removed from the list
++ * bottom-up, we only have to test whether the cfs_rq before us on the list
++ * is our child.
++ * If cfs_rq is not on the list, test whether a child needs its to be added to
++ * connect a branch to the tree  * (see list_add_leaf_cfs_rq() for details).
++ */
++static inline bool child_cfs_rq_on_list(struct cfs_rq *cfs_rq)
++{
++	struct cfs_rq *prev_cfs_rq;
++	struct list_head *prev;
++
++	if (cfs_rq->on_list) {
++		prev = cfs_rq->leaf_cfs_rq_list.prev;
++	} else {
++		struct rq *rq = rq_of(cfs_rq);
++
++		prev = rq->tmp_alone_branch;
++	}
++
++	prev_cfs_rq = container_of(prev, struct cfs_rq, leaf_cfs_rq_list);
++
++	return (prev_cfs_rq->tg->parent == cfs_rq->tg);
++}
+ 
+ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+ {
+@@ -3270,6 +3295,9 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+ 	if (cfs_rq->avg.runnable_sum)
+ 		return false;
+ 
++	if (child_cfs_rq_on_list(cfs_rq))
++		return false;
++
+ 	/*
+ 	 * _avg must be null when _sum are null because _avg = _sum / divider
+ 	 * Make sure that rounding and/or propagation of PELT values never
+-- 
+2.17.1
 
-> +       cas =3D chip_to_cascade(gc);
-
-Doing this in the definition block above will save a LOC.
-
-> +       ret =3D mux_control_select(cas->mux_control, offset);
-> +       if (ret)
-> +               return ret;
-> +
-> +       ret =3D gpiod_get_value(cas->upstream_line);
-> +       mux_control_deselect(cas->mux_control);
-> +       return ret;
-> +}
-
-...
-
-> +       struct device_node *np =3D pdev->dev.of_node;
-
-Nope, see below.
-
-...
-
-> +       cas =3D devm_kzalloc(dev, sizeof(struct gpio_cascade), GFP_KERNEL=
-);
-
-sizeof(*cas)
-
-> +       if (cas =3D=3D NULL)
-
-if (!cas)
-
-> +               return -ENOMEM;
-
-...
-
-> +       mc =3D devm_mux_control_get(dev, NULL);
-> +       if (IS_ERR(mc)) {
-> +               err =3D (int) PTR_ERR(mc);
-> +               if (err !=3D -EPROBE_DEFER)
-> +                       dev_err(dev, "unable to get mux-control: %d\n", e=
-rr);
-> +               return err;
-
-Oh l=C3=A0 l=C3=A0! No, the explicit castings are bad. besides the fact tha=
-t all
-above can be replaced by
-
-  return dev_err_probe(...);
-
-> +       }
-> +
-> +       cas->mux_control =3D mc;
-> +       upstream =3D devm_gpiod_get(dev, "upstream",  GPIOD_IN);
-> +       if (IS_ERR(upstream)) {
-
-> +               err =3D (int) PTR_ERR(upstream);
-> +               dev_err(dev, "unable to claim upstream GPIO line: %d\n", =
-err);
-
-No castings. Use proper printf() specifiers.
-
-> +               return err;
-> +       }
-
-...
-
-> +       gc->of_node =3D np;
-
-This should be guarded by CONFIG_OF_GPIO.
-And no need to use the np temporary variable for one use like this.
-
-...
-
-> +       err =3D gpiochip_add(&cas->gpio_chip);
-
-Why not the devm variant?
-
-> +       if (err) {
-> +               dev_err(dev, "unable to add gpio chip, err=3D%d\n", err);
-> +               return err;
-> +       }
-
-...
-
-> +       dev_info(dev, "registered %u cascaded GPIO lines\n", gc->ngpio);
-
-No, we don't pollute logs when everything is fine.
-
-...
-
-> +static const struct of_device_id gpio_cascade_id[] =3D {
-> +       {
-> +               .compatible =3D "gpio-cascade",
-
-> +               .data =3D NULL,
-
-Redundant.
-
-> +       },
-
-All above may consume only a single LOC.
-
-> +       { /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, gpio_cascade_id);
-
---=20
-With Best Regards,
-Andy Shevchenko
