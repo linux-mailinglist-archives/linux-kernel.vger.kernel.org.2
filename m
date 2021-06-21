@@ -2,166 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 174103AF85E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 00:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 749EB3AF864
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 00:22:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231797AbhFUWWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 18:22:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52370 "EHLO
+        id S232021AbhFUWZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 18:25:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbhFUWWP (ORCPT
+        with ESMTP id S229789AbhFUWZG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 18:22:15 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A40C061574;
-        Mon, 21 Jun 2021 15:20:00 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id e22so9118353pgv.10;
-        Mon, 21 Jun 2021 15:20:00 -0700 (PDT)
+        Mon, 21 Jun 2021 18:25:06 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB47C061574;
+        Mon, 21 Jun 2021 15:22:51 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id b3so11075582wrm.6;
+        Mon, 21 Jun 2021 15:22:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=FcXnNZ9U3EXOCeDJdHA00lEKEfxkroafndXnf6d9J+M=;
-        b=q8eAfI8djd1odX+ack4WkrTxvAPnRtt9GALTIomTBkPuP/qCohno/Yf+ohoU4Rcyr/
-         nGp4e9Yy06jCDWOIhDH2xirC2XC9o/JqlRqcCVmFLGXmaJ9mQD6hjWVD6oGeBJ3XxDw/
-         JZsZvN03EtNx+YO7/IUNnH425LlS28ramk9XmNaVVjEe1jMY6rRW23SghLkLrIA2kVfS
-         GDKimQdwGhv/RkmKel8OSiG7yQj3vAqcdXYc883hvn7a8uHRpBX4ihRhvDMdWgtyuQVp
-         4By5uGzAjMTouBR5nlul0RwmPb5KYHFv5N/bVgBkYY7+uCjsvD1PPukzV69TcYrOzYR7
-         43FA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LYaZ+b8NJ+/BUcNW71lTDH1EznpA/+87PIfC9PBqpI0=;
+        b=AYpCBItpYllNc4vPjzGAOBkuAqXtDRQvwkaF25IVLWrmUn7GSRSuiIDRKZFRzBiL8N
+         xnlcEYU6tkpoJFMMqczrxkHHWI3zEMG2D4IfyQWeahNU3RWp8swl+26C6rI+bsHaBrA4
+         Ue+qnSZcnvTNL87Dhk8OlKDaoVi67U7foJNpX18bYw214/3VdYc9shbf23Nj0hele5ak
+         8WNxTnZbvxL58UAqqIchR3Pp7DqOS+HZlQaj9nUQtuZMfzK7HM2TQbl4nrPZGX4JcP3W
+         nJGIc5d1VzwLdWV2IQboTH6ye7v9CS2vrk+6pKVhxp2Ze5BuiKZ6FvM5q4ilHcWXHOX0
+         TLrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=FcXnNZ9U3EXOCeDJdHA00lEKEfxkroafndXnf6d9J+M=;
-        b=NAGvpC552wqPgc6zG+l0UXYdOIayucdqOpG8xg7oy3mA6Iws8v/3ULYsybcpBKcfM6
-         HlKEIkP5ktL3KshCcnomOwclE0DNLXqkFNxT34T8fIhxqkNzOrf86PJukK1BJ4Xhtr1E
-         /H4aZl+jSLlNcr9fp9Q5Q+3VBuOTRdv8TovVgI3iIj4/bqPylmF+RJP1sTzb7/gthoCa
-         ifvBq+LkR/FJCyBjZjiLbr8ztKgUW+VO1Sk/PDIBm8X2SdIa8I6gurYXIscGA1mR+ma2
-         YUOAEAj0mJGIxDNbhDvngwHh+NWAnHDMezfAenPVvG+Hgg2xZmDIH1yV1+YNVNsHS1kn
-         8b+w==
-X-Gm-Message-State: AOAM533rPKLYBYbYya4wR9Xac3wOzny7/EEa3WolGQQehtIRhywkBvtw
-        nkecPFnCBoMBLL1JyTA/288=
-X-Google-Smtp-Source: ABdhPJxQnHUKT5ex8AB9nf9Voy7H5noXmNmRnVyAjMRubzPWJRMNDYW35WDgr9JtYz7SxfLZVhXc2g==
-X-Received: by 2002:a63:ff1f:: with SMTP id k31mr616678pgi.315.1624313999503;
-        Mon, 21 Jun 2021 15:19:59 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:a276:c46e:ab3a:dce2])
-        by smtp.gmail.com with ESMTPSA id lt14sm49661pjb.47.2021.06.21.15.19.58
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LYaZ+b8NJ+/BUcNW71lTDH1EznpA/+87PIfC9PBqpI0=;
+        b=G4W0plAUZ804iswYAVGL8R22jRzr/sHJn0lEVSSy9kebblOS384dugLHyERgCV1lYQ
+         HNrX28bDLTNDpaY0yVwp1sVgr4sNiFJ6gZGQtiOjwcJd5KZtzzF4oASXY+UPzUncZS/y
+         pB3/TzxJ8veCvgCxPRLyMYigMpUZbpoqbybSfsrqvj6pdr5TPzCYyXzP/qTeUH3282Xv
+         WgrGn3jNiwwsVP3BXxjrsZbhqCPTiYkzceQQN7FT965dHXXzXKLVsZvKrQ0y03GHWgw6
+         vtoAoLruppfqbl4U1M9Gckw/E7QBNR0Fvy/eiCNg3zLiy5LcPBr/IZXSRTNmVO8PAPY9
+         pYRQ==
+X-Gm-Message-State: AOAM532kYQ1jU6LCs2lR2gQuCYnpkwgFzprknS+7KU8BKS7VbuxNq3VJ
+        6rY6E7d37RM9t72smbDE1s0=
+X-Google-Smtp-Source: ABdhPJz361sag9DJGJdNFJZ1+23wFp5IMXZkRy0UsVz1Vj1eRiWQZFJNJ+9i/m7GwZi29PniVRGiQw==
+X-Received: by 2002:adf:a1c8:: with SMTP id v8mr780453wrv.300.1624314170236;
+        Mon, 21 Jun 2021 15:22:50 -0700 (PDT)
+Received: from honeypot.. ([151.29.45.200])
+        by smtp.googlemail.com with ESMTPSA id m23sm584830wms.2.2021.06.21.15.22.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 15:19:58 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 15:19:56 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        Mon, 21 Jun 2021 15:22:49 -0700 (PDT)
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Remi Bernon <rbernon@codeweavers.com>,
+        Fabian Hemmer <copy@copy.sh>, linux-perf-users@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] ACPI: PM: postpone bringing devices to D0 unless we need them
-Message-ID: <YNEQjAzq6iWNgnBc@google.com>
+Subject: [PATCH] perf top: fix overflow in elf_sec__is_text
+Date:   Tue, 22 Jun 2021 00:21:08 +0200
+Message-Id: <20210621222108.196219-1-rickyman7@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently ACPI power domain brings devices into D0 state in the "resume
-early" phase. Normally this does not cause any issues, as powering up
-happens quickly. However there are peripherals that have certain timing
-requirements for powering on, for example some models of Elan
-touchscreens need 300msec after powering up/releasing reset line before
-they can accept commands from the host. Such devices will dominate
-the time spent in early resume phase and cause increase in overall
-resume time as we wait for early resume to complete before we can
-proceed to the normal resume stage.
+ASan reports a heap-buffer-overflow in elf_sec__is_text when using perf-top.
+The bug is caused by the fact that secstrs is built from runtime_ss, while
+shdr is built from syms_ss if shdr.sh_type != SHT_NOBITS. Therefore, they
+point to two different ELF files.
 
-There are ways for a driver to indicate that it can tolerate device
-being in the low power mode and that it knows how to power the device
-back up when resuming, bit that requires changes to individual drivers
-that may not really care about details of ACPI controlled power
-management.
+This patch renames secstrs to secstrs_run and adds secstrs_sym, so that
+the correct secstrs is chosen depending on shdr.sh_type.
 
-This change attempts to solve this issue at ACPI power domain level, by
-postponing powering up device until we get to the normal resume stage,
-unless there is early resume handler defined for the device, or device
-does not declare any resume handlers, in which case we continue powering
-up such devices early. This allows us to shave off several hundred
-milliseconds of resume time on affected systems.
+$ ASAN_OPTIONS=abort_on_error=1:disable_coredump=0:unmap_shadow_on_exit=1 ./perf top
+=================================================================
+==363148==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x61300009add6 at pc 0x00000049875c bp 0x7f4f56446440 sp 0x7f4f56445bf0
+READ of size 1 at 0x61300009add6 thread T6
+    #0 0x49875b in StrstrCheck(void*, char*, char const*, char const*) (/home/user/linux/tools/perf/perf+0x49875b)
+    #1 0x4d13a2 in strstr (/home/user/linux/tools/perf/perf+0x4d13a2)
+    #2 0xacae36 in elf_sec__is_text /home/user/linux/tools/perf/util/symbol-elf.c:176:9
+    #3 0xac3ec9 in elf_sec__filter /home/user/linux/tools/perf/util/symbol-elf.c:187:9
+    #4 0xac2c3d in dso__load_sym /home/user/linux/tools/perf/util/symbol-elf.c:1254:20
+    #5 0x883981 in dso__load /home/user/linux/tools/perf/util/symbol.c:1897:9
+    #6 0x8e6248 in map__load /home/user/linux/tools/perf/util/map.c:332:7
+    #7 0x8e66e5 in map__find_symbol /home/user/linux/tools/perf/util/map.c:366:6
+    #8 0x7f8278 in machine__resolve /home/user/linux/tools/perf/util/event.c:707:13
+    #9 0x5f3d1a in perf_event__process_sample /home/user/linux/tools/perf/builtin-top.c:773:6
+    #10 0x5f30e4 in deliver_event /home/user/linux/tools/perf/builtin-top.c:1197:3
+    #11 0x908a72 in do_flush /home/user/linux/tools/perf/util/ordered-events.c:244:9
+    #12 0x905fae in __ordered_events__flush /home/user/linux/tools/perf/util/ordered-events.c:323:8
+    #13 0x9058db in ordered_events__flush /home/user/linux/tools/perf/util/ordered-events.c:341:9
+    #14 0x5f19b1 in process_thread /home/user/linux/tools/perf/builtin-top.c:1109:7
+    #15 0x7f4f6a21a298 in start_thread /usr/src/debug/glibc-2.33-16.fc34.x86_64/nptl/pthread_create.c:481:8
+    #16 0x7f4f697d0352 in clone ../sysdeps/unix/sysv/linux/x86_64/clone.S:95
 
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+0x61300009add6 is located 10 bytes to the right of 332-byte region [0x61300009ac80,0x61300009adcc)
+allocated by thread T6 here:
+    #0 0x4f3f7f in malloc (/home/user/linux/tools/perf/perf+0x4f3f7f)
+    #1 0x7f4f6a0a88d9  (/lib64/libelf.so.1+0xa8d9)
+
+Thread T6 created by T0 here:
+    #0 0x464856 in pthread_create (/home/user/linux/tools/perf/perf+0x464856)
+    #1 0x5f06e0 in __cmd_top /home/user/linux/tools/perf/builtin-top.c:1309:6
+    #2 0x5ef19f in cmd_top /home/user/linux/tools/perf/builtin-top.c:1762:11
+    #3 0x7b28c0 in run_builtin /home/user/linux/tools/perf/perf.c:313:11
+    #4 0x7b119f in handle_internal_command /home/user/linux/tools/perf/perf.c:365:8
+    #5 0x7b2423 in run_argv /home/user/linux/tools/perf/perf.c:409:2
+    #6 0x7b0c19 in main /home/user/linux/tools/perf/perf.c:539:3
+    #7 0x7f4f696f7b74 in __libc_start_main /usr/src/debug/glibc-2.33-16.fc34.x86_64/csu/../csu/libc-start.c:332:16
+
+SUMMARY: AddressSanitizer: heap-buffer-overflow (/home/user/linux/tools/perf/perf+0x49875b) in StrstrCheck(void*, char*, char const*, char const*)
+Shadow bytes around the buggy address:
+  0x0c268000b560: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c268000b570: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c268000b580: fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c268000b590: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0c268000b5a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+=>0x0c268000b5b0: 00 00 00 00 00 00 00 00 00 04[fa]fa fa fa fa fa
+  0x0c268000b5c0: fa fa fa fa fa fa fa fa 00 00 00 00 00 00 00 00
+  0x0c268000b5d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0c268000b5e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  0x0c268000b5f0: 07 fa fa fa fa fa fa fa fa fa fa fa fa fa fa fa
+  0x0c268000b600: fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd fd
+Shadow byte legend (one shadow byte represents 8 application bytes):
+  Addressable:           00
+  Partially addressable: 01 02 03 04 05 06 07
+  Heap left redzone:       fa
+  Freed heap region:       fd
+  Stack left redzone:      f1
+  Stack mid redzone:       f2
+  Stack right redzone:     f3
+  Stack after return:      f5
+  Stack use after scope:   f8
+  Global redzone:          f9
+  Global init order:       f6
+  Poisoned by user:        f7
+  Container overflow:      fc
+  Array cookie:            ac
+  Intra object redzone:    bb
+  ASan internal:           fe
+  Left alloca redzone:     ca
+  Right alloca redzone:    cb
+  Shadow gap:              cc
+==363148==ABORTING
+
+Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+Suggested-by: Jiri Slaby <jirislaby@kernel.org>
 ---
- drivers/acpi/device_pm.c | 46 +++++++++++++++++++++++++++++++++++-----
- 1 file changed, 41 insertions(+), 5 deletions(-)
+ tools/perf/util/symbol-elf.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
-index 096153761ebc..00b412ccb2e0 100644
---- a/drivers/acpi/device_pm.c
-+++ b/drivers/acpi/device_pm.c
-@@ -1131,17 +1131,52 @@ static int acpi_subsys_resume_noirq(struct device *dev)
-  *
-  * Use ACPI to put the given device into the full-power state and carry out the
-  * generic early resume procedure for it during system transition into the
-- * working state.
-+ * working state, but only do that if device either defines early resume
-+ * handler, or does not define power operations at all. Otherwise powering up
-+ * of the device is postponed to the normal resume phase.
-  */
- static int acpi_subsys_resume_early(struct device *dev)
- {
-+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
-+	struct acpi_device *adev = ACPI_COMPANION(dev);
- 	int ret;
+diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
+index 4c56aa837434..7a6e38bf87b0 100644
+--- a/tools/perf/util/symbol-elf.c
++++ b/tools/perf/util/symbol-elf.c
+@@ -1081,7 +1081,7 @@ int dso__load_sym(struct dso *dso, struct map *map, struct symsrc *syms_ss,
+ 	struct maps *kmaps = kmap ? map__kmaps(map) : NULL;
+ 	struct map *curr_map = map;
+ 	struct dso *curr_dso = dso;
+-	Elf_Data *symstrs, *secstrs;
++	Elf_Data *symstrs, *secstrs, *secstrs_run, *secstrs_sym;
+ 	uint32_t nr_syms;
+ 	int err = -1;
+ 	uint32_t idx;
+@@ -1150,8 +1150,16 @@ int dso__load_sym(struct dso *dso, struct map *map, struct symsrc *syms_ss,
+ 	if (sec_strndx == NULL)
+ 		goto out_elf_end;
  
--	if (dev_pm_skip_resume(dev))
--		return 0;
-+	if (dev_pm_skip_resume(dev)) {
-+		ret = 0;
-+	} else if (!pm || pm->resume_early) {
-+		ret = acpi_dev_resume(dev);
-+		if (!ret)
-+			ret = pm_generic_resume_early(dev);
-+	} else {
-+		if (adev)
-+			acpi_device_wakeup_disable(adev);
+-	secstrs = elf_getdata(sec_strndx, NULL);
+-	if (secstrs == NULL)
++	secstrs_run = elf_getdata(sec_strndx, NULL);
++	if (secstrs_run == NULL)
++		goto out_elf_end;
 +
-+		dev_dbg(dev, "postponing D0 transition to normal resume stage\n");
-+		ret = 0;
-+	}
++	sec_strndx = elf_getscn(elf, ehdr.e_shstrndx);
++	if (sec_strndx == NULL)
++		goto out_elf_end;
 +
-+	return ret;
-+}
-+
-+/**
-+ * acpi_subsys_resume - Resume device using ACPI.
-+ * @dev: Device to Resume.
-+ *
-+ * Use ACPI to put the given device into the full-power state if it has not been
-+ * powered up during early resume phase, and carry out the generic resume
-+ * procedure for it during system transition into the working state.
-+ */
-+static int acpi_subsys_resume(struct device *dev)
-+{
-+	const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
-+	int ret = 0;
-+
-+	if (!dev_pm_skip_resume(dev) && pm && !pm->resume_early) {
-+		dev_dbg(dev, "executing postponed D0 transition\n");
-+		ret = acpi_dev_resume(dev);
-+	}
++	secstrs_sym = elf_getdata(sec_strndx, NULL);
++	if (secstrs_sym == NULL)
+ 		goto out_elf_end;
  
--	ret = acpi_dev_resume(dev);
--	return ret ? ret : pm_generic_resume_early(dev);
-+	return ret ? ret : pm_generic_resume(dev);
- }
+ 	nr_syms = shdr.sh_size / shdr.sh_entsize;
+@@ -1237,6 +1245,8 @@ int dso__load_sym(struct dso *dso, struct map *map, struct symsrc *syms_ss,
  
- /**
-@@ -1236,6 +1271,7 @@ static struct dev_pm_domain acpi_general_pm_domain = {
- 		.prepare = acpi_subsys_prepare,
- 		.complete = acpi_subsys_complete,
- 		.suspend = acpi_subsys_suspend,
-+		.resume = acpi_subsys_resume,
- 		.suspend_late = acpi_subsys_suspend_late,
- 		.suspend_noirq = acpi_subsys_suspend_noirq,
- 		.resume_noirq = acpi_subsys_resume_noirq,
+ 		gelf_getshdr(sec, &shdr);
+ 
++		secstrs = secstrs_sym;
++
+ 		/*
+ 		 * We have to fallback to runtime when syms' section header has
+ 		 * NOBITS set. NOBITS results in file offset (sh_offset) not
+@@ -1249,6 +1259,7 @@ int dso__load_sym(struct dso *dso, struct map *map, struct symsrc *syms_ss,
+ 				goto out_elf_end;
+ 
+ 			gelf_getshdr(sec, &shdr);
++			secstrs = secstrs_run;
+ 		}
+ 
+ 		if (is_label && !elf_sec__filter(&shdr, secstrs))
 -- 
-2.32.0.288.g62a8d224e6-goog
+2.23.0
 
-
--- 
-Dmitry
