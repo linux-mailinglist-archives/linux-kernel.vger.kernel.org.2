@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 595C23AE40C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 09:24:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8395D3AE411
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 09:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbhFUH0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 03:26:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46602 "EHLO
+        id S230308AbhFUH1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 03:27:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230075AbhFUH0x (ORCPT
+        with ESMTP id S230269AbhFUH1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 03:26:53 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D260C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 00:24:39 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id v7so13440697pgl.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 00:24:39 -0700 (PDT)
+        Mon, 21 Jun 2021 03:27:01 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E87EC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 00:24:47 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id s17-20020a17090a8811b029016e89654f93so12038770pjn.1
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 00:24:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=amarulasolutions.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4Mz90SrmvetiiKOz2FA2/q5WPVb/5Mateql9uC1osYI=;
-        b=LH6roB4QN50Ss3fd6q+CBK16FfSLRV/++biPwO3AeQTv8PFz5YsC987Yl5PrPtbQUR
-         grYaD4IXKWdJJOg4dF6BckzRXAb951oI2Olp611oMhF3JgfviD5I5Jhy/q+gsRLvIMqk
-         koZVmpZYLZherETZSArj4lMgsAiX7fGYNfJ8E=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=aJX1UFosdGgtQiivB9jicucdS1I6wv967TxVmwHSdxs=;
+        b=V71Ch/PoqunpqXNk2/DoavvTbggIYZldcnabdHtFy1UiLBMjHIrOmIoMNQxCaDTm5c
+         +3KxqNIZZO+knQOcz1JRXGFCJJ438OjCADQ9pTf4aNCbVuVny8KyLPLlAqTazVySGaN/
+         EwK0UGohgNug02bYbuADf0FVuQWHASoWe/MjM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4Mz90SrmvetiiKOz2FA2/q5WPVb/5Mateql9uC1osYI=;
-        b=i/mXKIFunxAnC+UTeEmPO1yiZZAX7+vvh6rQvo2vM68AdqGB1xFKFz19zDrnS+6SlM
-         0fxUoyb+avKH94HKpPy+ihdiz2vAhmY2Zlppg4NM+SmNbzq1PlyWJdXkyNxq+HQoGdyx
-         0SgNB6PvV8kWLXrWQXr0nsASBFloj6gJCGeJgflGvYKHdPR2r8P9gdcH5IxnytSfx1Rs
-         BfZnOMrn6rHZ+kXSTrfkGUsj0QUk4yrRNbkrR5WF8lNuPT1wRtVFNiU48wfrIYmCyLiN
-         46J2b600Fpt0jf8OYySQGQwk9ibyXMJrv5rtK2bNO77Mscni/5y2EnxPt2h/NQ6GxICZ
-         I+Jw==
-X-Gm-Message-State: AOAM530GXC791462wI+cJSnn7c2uPatXDX6dbv/0xc2bVa4w1/P9S7Ws
-        6yd2k3a9TxN0P+7dJHV3swzurg==
-X-Google-Smtp-Source: ABdhPJxiCxvGt4Lvg95BHdbOmEwOZrpqM6XZznMkEdEE3H9U0aYNeyTH/9EQGYu7BduM/FJvQrX1Kg==
-X-Received: by 2002:a63:ef04:: with SMTP id u4mr22267854pgh.429.1624260278855;
-        Mon, 21 Jun 2021 00:24:38 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=aJX1UFosdGgtQiivB9jicucdS1I6wv967TxVmwHSdxs=;
+        b=PzGRnAjJZ7iEDDa+6Mx4Or/E59m8c5NGFwKNitbz+gTQehSKFsozZIfJ24lcAtExJd
+         AsQ7PdYr7WWGhmU7xZfcJ+sJP3eVasCz4y7ZbKTs4PEbmzK4iQk18+dEW0+Wa9jaVBDy
+         m/NRq/RZKn/On1lJ59L9vCITv3txCzUKhfvAJAIJvooaohuw1mSLkLLFvFjnfEBog8Kq
+         I9ht6qgNGpx3DPNEurzOfgExvVhN1kKwoKCsgVTvykXpFpBwrNVLNkLB7NGHuJp7s0X+
+         gR1JVM74EyOeWAabWalhMhXPZpbebRjDord5r3A9QjVNSbVEcbyeo3jRejbI/UTLZ4hw
+         sPGA==
+X-Gm-Message-State: AOAM531rcwOauJVRwITdScixoqcRUu6x/9bwoV9SXEXweNlrlaVRb6Re
+        UqAtZrlcw+w12zZtuRXxDPT74A==
+X-Google-Smtp-Source: ABdhPJwU1bWmmohuzHzeMlHexUvRRwFgo3iijG24rag/pcc6xo/yhAOBfU/HkQeeafJbe9suXTD2cA==
+X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr37357200pja.181.1624260286358;
+        Mon, 21 Jun 2021 00:24:46 -0700 (PDT)
 Received: from localhost.localdomain ([2405:201:c00a:a884:139:e97f:a55d:7f66])
-        by smtp.gmail.com with ESMTPSA id 21sm13951294pfh.103.2021.06.21.00.24.32
+        by smtp.gmail.com with ESMTPSA id 21sm13951294pfh.103.2021.06.21.00.24.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 00:24:38 -0700 (PDT)
+        Mon, 21 Jun 2021 00:24:45 -0700 (PDT)
 From:   Jagan Teki <jagan@amarulasolutions.com>
 To:     Peng Fan <peng.fan@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
@@ -58,80 +58,230 @@ Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Francis Laniel <francis.laniel@amarulasolutions.com>,
         Matteo Lisi <matteo.lisi@engicam.com>,
         Milco Pratesi <milco.pratesi@engicam.com>,
-        Jagan Teki <jagan@amarulasolutions.com>
-Subject: [RFC PATCH 0/9] arm64: imx8mm: Add MIPI DSI support
-Date:   Mon, 21 Jun 2021 12:54:15 +0530
-Message-Id: <20210621072424.111733-1-jagan@amarulasolutions.com>
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Rob Herring <robh+dt@kernel.org>
+Subject: [RFC PATCH 1/9] dt-bindings: display: bridge: Add Samsung SEC MIPI DSIM bindings
+Date:   Mon, 21 Jun 2021 12:54:16 +0530
+Message-Id: <20210621072424.111733-2-jagan@amarulasolutions.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210621072424.111733-1-jagan@amarulasolutions.com>
+References: <20210621072424.111733-1-jagan@amarulasolutions.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series support MIPI DSI on i.MX8MM.
+Samsung SEC MIPI DSIM Bridge controller is MIPI DSI bridge
+available in NXP's i.MX8M Mini and Nano Processors.
 
-It worked directly with existing mxsfb driver but the SEC DSIM
-timings has to be validate and tested through all platforms, 
-ie reason I'm sending it as RFC.
+Add dt-bingings for it.
 
-Tested on Engicam i.Core MX8M Mini SoM.
-
-patch 1: dt-bindings for SEC MIPI DSIM
-
-patch 2: SEC MIPI DSIM bridge driver
-
-patch 3: dt-bindings for SEC DSIM DPHY
-
-patch 4: SEC DSIM DPHY driver
-
-patch 5: MIPI DPHY reset enable in blk-ctl
-
-patch 6: display mix blk ctl node
-
-patch 7: eLCDIF node
-
-patch 8: MIPI DSI pipeline nodes
-
-patch 9: Enable LVDS panel on EDIMM2.2
-
-Note:
-- all these patches on top of Peng Fan's blk-ctl driver.
-- anyone interest, please have a look on this repo
-  https://github.com/openedev/linux/commits/imx8mm
-
-Any inputs?
-Jagan.
-
-Jagan Teki (9):
-  dt-bindings: display: bridge: Add Samsung SEC MIPI DSIM bindings
-  drm: bridge: Add Samsung SEC MIPI DSIM bridge driver
-  dt-bindings: phy: Add SEC DSIM DPHY bindings
-  phy: samsung: Add SEC DSIM DPHY driver
-  soc: imx8mm: blk-ctl: Add MIPI DPHY reset enable
-  arm64: dts: imx8mm: Add display mix blk ctl
-  arm64: dts: imx8mm: Add eLCDIF node support
-  arm64: dts: imx8mm: Add MIPI DSI pipeline
-  arm64: dts: imx8mm-icore: Enable LVDS panel for EDIMM2.2
-
- .../display/bridge/samsung,sec-dsim.yaml      |  184 ++
- .../bindings/phy/samsung,sec-dsim-dphy.yaml   |   56 +
- .../freescale/imx8mm-icore-mx8mm-edimm2.2.dts |   90 +
- arch/arm64/boot/dts/freescale/imx8mm.dtsi     |  104 ++
- drivers/gpu/drm/bridge/Kconfig                |   15 +
- drivers/gpu/drm/bridge/Makefile               |    1 +
- drivers/gpu/drm/bridge/sec-dsim.c             | 1535 +++++++++++++++++
- drivers/phy/samsung/Kconfig                   |    9 +
- drivers/phy/samsung/Makefile                  |    1 +
- drivers/phy/samsung/phy-sec-dsim-dphy.c       |  236 +++
- drivers/soc/imx/blk-ctl-imx8mm.c              |    4 +
- include/dt-bindings/power/imx8mm-power.h      |    5 +-
- 12 files changed, 2238 insertions(+), 2 deletions(-)
+Cc: Andrzej Hajda <a.hajda@samsung.com>
+Cc: Neil Armstrong <narmstrong@baylibre.com>
+Cc: Robert Foss <robert.foss@linaro.org>
+Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+---
+ .../display/bridge/samsung,sec-dsim.yaml      | 184 ++++++++++++++++++
+ 1 file changed, 184 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/display/bridge/samsung,sec-dsim.yaml
- create mode 100644 Documentation/devicetree/bindings/phy/samsung,sec-dsim-dphy.yaml
- create mode 100644 drivers/gpu/drm/bridge/sec-dsim.c
- create mode 100644 drivers/phy/samsung/phy-sec-dsim-dphy.c
 
+diff --git a/Documentation/devicetree/bindings/display/bridge/samsung,sec-dsim.yaml b/Documentation/devicetree/bindings/display/bridge/samsung,sec-dsim.yaml
+new file mode 100644
+index 000000000000..32f67f313dfd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/bridge/samsung,sec-dsim.yaml
+@@ -0,0 +1,184 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/bridge/samsung,sec-dsim.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Samsung SEC MIPI DSIM Bridge controller on i.MX8M Mini and Nano SoCs
++
++maintainers:
++  - Jagan Teki <jagan@amarulasolutions.com>
++
++description: |
++  NWL MIPI-DSI host controller found on i.MX8 platforms. This is a dsi bridge for
++  the SOCs NWL MIPI-DSI host controller.
++
++allOf:
++  - $ref: ../dsi-controller.yaml#
++
++properties:
++  compatible:
++    enum:
++      - fsl,imx8mm-sec-dsim
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++  assigned-clock-parents: true
++  assigned-clock-rates: true
++  assigned-clocks: true
++
++  clocks:
++    items:
++      - description: DSI bus clock
++      - description: PHY_REF clock
++
++  clock-names:
++    items:
++      - const: bus
++      - const: phy_ref
++
++  phys:
++    maxItems: 1
++    description: phandle to the phy module representing the DPHY
++
++  phy-names:
++    items:
++      - const: dphy
++
++  power-domains:
++    maxItems: 1
++    description: phandle to the associated power domain
++
++  samsung,burst-clock-frequency:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      DSIM high speed burst mode frequency.
++
++  samsung,esc-clock-frequency:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      DSIM escape mode frequency.
++
++  samsung,pll-clock-frequency:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      DSIM oscillator clock frequency.
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++
++    properties:
++      port@0:
++        $ref: /schemas/graph.yaml#/$defs/port-base
++        description:
++          Input port node to receive pixel data from the
++          display controller. Exactly one endpoint must be
++          specified.
++        properties:
++          endpoint@0:
++            $ref: /schemas/graph.yaml#/properties/endpoint
++            description: sub-node describing the input from LCDIF
++
++          endpoint@1:
++            $ref: /schemas/graph.yaml#/properties/endpoint
++            description: sub-node describing the input from DCSS
++
++        oneOf:
++          - required:
++              - endpoint@0
++          - required:
++              - endpoint@1
++
++        unevaluatedProperties: false
++
++      port@1:
++        $ref: /schemas/graph.yaml#/properties/port
++        description:
++          DSI output port node to the panel or the next bridge
++          in the chain
++
++    required:
++      - port@0
++      - port@1
++
++required:
++  - '#address-cells'
++  - '#size-cells'
++  - clock-names
++  - clocks
++  - compatible
++  - interrupts
++  - phy-names
++  - phys
++  - ports
++  - reg
++  - samsung,burst-clock-frequency
++  - samsung,esc-clock-frequency
++  - samsung,pll-clock-frequency
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/imx8mm-clock.h>
++    #include <dt-bindings/power/imx8mm-power.h>
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++
++    dsi: dsi@32e10000 {
++      compatible = "fsl,imx8mm-sec-dsim";
++      reg = <0x32e10000 0xa0>;
++      clocks = <&clk IMX8MM_CLK_DSI_CORE>,
++               <&clk IMX8MM_CLK_DSI_PHY_REF>;
++      clock-names = "bus", "phy_ref";
++      assigned-clocks = <&clk IMX8MM_CLK_DSI_CORE>,
++                        <&clk IMX8MM_VIDEO_PLL1_OUT>,
++                        <&clk IMX8MM_CLK_DSI_PHY_REF>;
++      assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_266M>,
++                               <&clk IMX8MM_VIDEO_PLL1_BYPASS>,
++                               <&clk IMX8MM_VIDEO_PLL1_OUT>;
++      assigned-clock-rates = <266000000>, <594000000>, <27000000>;
++      interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
++      phys = <&dphy>;
++      phy-names = "dphy";
++      power-domains = <&dispmix_blk_ctl IMX8MM_BLK_CTL_PD_DISPMIX_MIPI_DSI>;
++      samsung,burst-clock-frequency = <891000000>;
++      samsung,esc-clock-frequency = <54000000>;
++      samsung,pll-clock-frequency = <27000000>;
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      ports {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        port@0 {
++          reg = <0>;
++          #size-cells = <0>;
++          #address-cells = <1>;
++
++          dsi_in_lcdif: endpoint@0 {
++            reg = <0>;
++            remote-endpoint = <&lcdif_out_dsi>;
++          };
++        };
++
++        port@1 {
++          reg = <1>;
++
++          dsi_out_panel: endpoint {
++            remote-endpoint = <&panel_in_dsi>;
++          };
++        };
++      };
++    };
 -- 
 2.25.1
 
