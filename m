@@ -2,109 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 317303AF131
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 029403AF05F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbhFURDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 13:03:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35842 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232035AbhFURCu (ORCPT
+        id S232191AbhFUQse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:48:34 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3297 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233316AbhFUQn5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 13:02:50 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56BCDC0A888B
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:33:22 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id g24so10293179pji.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:33:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RfuZmFTIa+BiKpP9D0IXA33fRGcBiajcpX+BWebyFZw=;
-        b=mDzJgNZcryGHFACHFEDHgkTmlIYQ/uZ4s01IIQTfG0d33to/CCfw1fwmh5sUn1rYjF
-         G/YRtL9q75MzrMaZqzgAmXP0RPJFRmneElRZiNX+dDJqiJsu/tp9TrCT8uNNge1Vq3Gt
-         F7xIbG2WdbCTb+k5CtoLC3Zu7/sS9NZ163zmw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RfuZmFTIa+BiKpP9D0IXA33fRGcBiajcpX+BWebyFZw=;
-        b=Qkz/ZGAWuvmmtUJwu6sInVrLlfC4U/mnDoqrFEnGWmMCzXmOuZPuPSpgtgWtZ3+I5y
-         xwpw6QQHqWcp0sWO+90s/mQL+/RxyuFhOfDsIW4g6AqWYKRSXhnqL572e4yEXZd9rSB/
-         PS/lXZ8wE7jgLNUiJ48GPvpMK3FYjcOq0LL0FWwqKeo7RsrB/F8GcQfxmOgC2HWUju+N
-         LQlZ3LNoZEyOZiy9m8bsg5PrG4j4fBBleMSt25zLZbQ0fi5nVAaIUJ6wNh7Dxuvdszg1
-         b+a7U2Jh73uenU9OtfYRNMyx9g0N1hAqjgwGYVz0Pn4k+n8gpxuvzkOTp5UhdSixNARt
-         NJaQ==
-X-Gm-Message-State: AOAM531LoYHwpq6LJ2UqKUNEqgbyhLWDm+4nUvSBcsoCiA3d6eQCm48u
-        jeL7bRuc8+JBbW5VxJsZfultxg==
-X-Google-Smtp-Source: ABdhPJyecCMpcNv4WWa9XLQ4xt+7SYjSI34gpgBHcc3fgq11CMS9BCdQ4yBSGWL8tcElRKvvq8qFEg==
-X-Received: by 2002:a17:90a:8d08:: with SMTP id c8mr21813735pjo.177.1624293201955;
-        Mon, 21 Jun 2021 09:33:21 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:9f0f:4fd2:adeb:6f55])
-        by smtp.gmail.com with UTF8SMTPSA id u23sm19400322pgk.38.2021.06.21.09.33.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 09:33:21 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 09:33:19 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Odelu Kukatla <okukatla@codeaurora.org>
-Cc:     georgi.djakov@linaro.org, bjorn.andersson@linaro.org,
-        evgreen@google.com, Georgi Djakov <djakov@kernel.org>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sboyd@kernel.org, mdtipton@codeaurora.org, sibis@codeaurora.org,
-        saravanak@google.com, seansw@qti.qualcomm.com, elder@linaro.org,
-        linux-arm-msm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
-Subject: Re: [PATCH] interconnect: Aggregate bandwidth votes for unused nodes
- in sync_state()
-Message-ID: <YNC/T4gpCh/QAkCU@google.com>
-References: <1624122509-17508-1-git-send-email-okukatla@codeaurora.org>
+        Mon, 21 Jun 2021 12:43:57 -0400
+Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G7w5p2wfjz6L7cg;
+        Tue, 22 Jun 2021 00:31:42 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 21 Jun 2021 18:41:39 +0200
+Received: from localhost.localdomain (10.69.192.58) by
+ lhreml724-chm.china.huawei.com (10.201.108.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 21 Jun 2021 17:41:36 +0100
+From:   John Garry <john.garry@huawei.com>
+To:     <will@kernel.org>, <robin.murphy@arm.com>
+CC:     <joro@8bytes.org>, <linux-arm-kernel@lists.infradead.org>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, John Garry <john.garry@huawei.com>
+Subject: [PATCH] iommu/arm-smmu-v3: Remove some unneeded init in arm_smmu_cmdq_issue_cmdlist()
+Date:   Tue, 22 Jun 2021 00:36:34 +0800
+Message-ID: <1624293394-202509-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1624122509-17508-1-git-send-email-okukatla@codeaurora.org>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 19, 2021 at 10:38:29PM +0530, Odelu Kukatla wrote:
-> When removing the initial bandwidth votes in sync_state(), make sure
-> to call the aggregate() function for nodes which don't have any
-> clients yet. aggregate_requests() does not invoke aggregate()
-> for unused nodes.
-> 
-> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
+Members of struct "llq" will be zero-inited, apart from member max_n_shift.
+But we write llq.val straight after the init, so it was pointless to zero
+init those other members. As such, separately init member max_n_shift
+only.
 
-It seems this should have a 'Fixes' tag for b1d681d8d324 ("interconnect:
-Add sync state support")', to make sure the change makes it into the
-stable trees.
+In addition, struct "head" is initialised to "llq" only so that member
+max_n_shift is set. But that member is never referenced for "head", so
+remove any init there.
 
-> ---
->  drivers/interconnect/core.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
-> index 8a1e70e..1d9a00a 100644
-> --- a/drivers/interconnect/core.c
-> +++ b/drivers/interconnect/core.c
-> @@ -1106,7 +1106,16 @@ void icc_sync_state(struct device *dev)
->  		dev_dbg(p->dev, "interconnect provider is in synced state\n");
->  		list_for_each_entry(n, &p->nodes, node_list) {
->  			if (n->init_avg || n->init_peak) {
-> -				aggregate_requests(n);
-> +				if (hlist_empty(&n->req_list)) {
+Removing these initializations is seen as a small performance optimisation,
+as this code is (very) hot path.
 
-nit: consider handling the common case in the 'if' branch and the exception of
-the initial votes in 'else'.
+Signed-off-by: John Garry <john.garry@huawei.com>
 
-> +					if (p->pre_aggregate)
-> +						p->pre_aggregate(n);
-> +
-> +					p->aggregate(n, 0, 0, 0, &n->avg_bw,
-> +						&n->peak_bw);
-> +				} else {
-> +					aggregate_requests(n);
-> +				}
-> +
->  				p->set(n, n);
->  			}
->  		}
+diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+index 54b2f27b81d4..8a8ad49bb7fd 100644
+--- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
++++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+@@ -727,11 +727,11 @@ static int arm_smmu_cmdq_issue_cmdlist(struct arm_smmu_device *smmu,
+ 	unsigned long flags;
+ 	bool owner;
+ 	struct arm_smmu_cmdq *cmdq = &smmu->cmdq;
+-	struct arm_smmu_ll_queue llq = {
+-		.max_n_shift = cmdq->q.llq.max_n_shift,
+-	}, head = llq;
++	struct arm_smmu_ll_queue llq, head;
+ 	int ret = 0;
+ 
++	llq.max_n_shift = cmdq->q.llq.max_n_shift;
++
+ 	/* 1. Allocate some space in the queue */
+ 	local_irq_save(flags);
+ 	llq.val = READ_ONCE(cmdq->q.llq.val);
+-- 
+2.26.2
+
