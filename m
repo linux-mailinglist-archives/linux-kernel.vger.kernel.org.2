@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A15DC3AEDBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40AC3AEDCF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:21:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231707AbhFUQWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:22:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42214 "EHLO mail.kernel.org"
+        id S231812AbhFUQXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:23:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231697AbhFUQVO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:21:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B8D461351;
-        Mon, 21 Jun 2021 16:18:55 +0000 (UTC)
+        id S231815AbhFUQVr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:21:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91A166120D;
+        Mon, 21 Jun 2021 16:19:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292336;
-        bh=RFB042bcX/DPn83t5Dgqy/pme1S1QtyqarEQjOxVpng=;
+        s=korg; t=1624292366;
+        bh=eTN+BlV+f0iQcq7YZMIiD7nRsr9dem6v+4GLnTTvicY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jASoRYjt+MmyCMiMeAG4zVlFjU2ycDDIiy7cZnezZG4c0x4uPRAOlbZYCNj41GblK
-         gc5YtC1uX7mozivPafLVCKvLDswgB8ADYID3tp7guIbX/+wDdi0FFdi1Xm4LnGnPea
-         sAxtE366Xz6jtqjd5ra6F6Kzq1oISZhpK9E1HluA=
+        b=ryRoHM3gE4uuYKU4ZyJGxxHQN9Y5V8K+nGpLln0pc6oQEt5tBoxd9B65lxZSAfygB
+         jJ6jac6RJBjE/oPqTTHBrO40vM4uNz9SO+4Z2eZLk+WOnSzpfNJua1NbsDisJJkdD+
+         TPPlSVuQYYufi8FTewZye700K/WeWD+PXrCsuvzE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        stable@vger.kernel.org, Linyu Yuan <linyyuan@codeaurora.org>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 36/90] net: hamradio: fix memory leak in mkiss_close
-Date:   Mon, 21 Jun 2021 18:15:11 +0200
-Message-Id: <20210621154905.348731123@linuxfoundation.org>
+Subject: [PATCH 5.4 37/90] net: cdc_eem: fix tx fixup skb leak
+Date:   Mon, 21 Jun 2021 18:15:12 +0200
+Message-Id: <20210621154905.379031652@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210621154904.159672728@linuxfoundation.org>
 References: <20210621154904.159672728@linuxfoundation.org>
@@ -40,110 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Linyu Yuan <linyyuan@codeaurora.org>
 
-[ Upstream commit 7edcc682301492380fbdd604b4516af5ae667a13 ]
+[ Upstream commit c3b26fdf1b32f91c7a3bc743384b4a298ab53ad7 ]
 
-My local syzbot instance hit memory leak in
-mkiss_open()[1]. The problem was in missing
-free_netdev() in mkiss_close().
+when usbnet transmit a skb, eem fixup it in eem_tx_fixup(),
+if skb_copy_expand() failed, it return NULL,
+usbnet_start_xmit() will have no chance to free original skb.
 
-In mkiss_open() netdevice is allocated and then
-registered, but in mkiss_close() netdevice was
-only unregistered, but not freed.
+fix it by free orginal skb in eem_tx_fixup() first,
+then check skb clone status, if failed, return NULL to usbnet.
 
-Fail log:
-
-BUG: memory leak
-unreferenced object 0xffff8880281ba000 (size 4096):
-  comm "syz-executor.1", pid 11443, jiffies 4295046091 (age 17.660s)
-  hex dump (first 32 bytes):
-    61 78 30 00 00 00 00 00 00 00 00 00 00 00 00 00  ax0.............
-    00 27 fa 2a 80 88 ff ff 00 00 00 00 00 00 00 00  .'.*............
-  backtrace:
-    [<ffffffff81a27201>] kvmalloc_node+0x61/0xf0
-    [<ffffffff8706e7e8>] alloc_netdev_mqs+0x98/0xe80
-    [<ffffffff84e64192>] mkiss_open+0xb2/0x6f0 [1]
-    [<ffffffff842355db>] tty_ldisc_open+0x9b/0x110
-    [<ffffffff84236488>] tty_set_ldisc+0x2e8/0x670
-    [<ffffffff8421f7f3>] tty_ioctl+0xda3/0x1440
-    [<ffffffff81c9f273>] __x64_sys_ioctl+0x193/0x200
-    [<ffffffff8911263a>] do_syscall_64+0x3a/0xb0
-    [<ffffffff89200068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff8880141a9a00 (size 96):
-  comm "syz-executor.1", pid 11443, jiffies 4295046091 (age 17.660s)
-  hex dump (first 32 bytes):
-    e8 a2 1b 28 80 88 ff ff e8 a2 1b 28 80 88 ff ff  ...(.......(....
-    98 92 9c aa b0 40 02 00 00 00 00 00 00 00 00 00  .....@..........
-  backtrace:
-    [<ffffffff8709f68b>] __hw_addr_create_ex+0x5b/0x310
-    [<ffffffff8709fb38>] __hw_addr_add_ex+0x1f8/0x2b0
-    [<ffffffff870a0c7b>] dev_addr_init+0x10b/0x1f0
-    [<ffffffff8706e88b>] alloc_netdev_mqs+0x13b/0xe80
-    [<ffffffff84e64192>] mkiss_open+0xb2/0x6f0 [1]
-    [<ffffffff842355db>] tty_ldisc_open+0x9b/0x110
-    [<ffffffff84236488>] tty_set_ldisc+0x2e8/0x670
-    [<ffffffff8421f7f3>] tty_ioctl+0xda3/0x1440
-    [<ffffffff81c9f273>] __x64_sys_ioctl+0x193/0x200
-    [<ffffffff8911263a>] do_syscall_64+0x3a/0xb0
-    [<ffffffff89200068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff8880219bfc00 (size 512):
-  comm "syz-executor.1", pid 11443, jiffies 4295046091 (age 17.660s)
-  hex dump (first 32 bytes):
-    00 a0 1b 28 80 88 ff ff 80 8f b1 8d ff ff ff ff  ...(............
-    80 8f b1 8d ff ff ff ff 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81a27201>] kvmalloc_node+0x61/0xf0
-    [<ffffffff8706eec7>] alloc_netdev_mqs+0x777/0xe80
-    [<ffffffff84e64192>] mkiss_open+0xb2/0x6f0 [1]
-    [<ffffffff842355db>] tty_ldisc_open+0x9b/0x110
-    [<ffffffff84236488>] tty_set_ldisc+0x2e8/0x670
-    [<ffffffff8421f7f3>] tty_ioctl+0xda3/0x1440
-    [<ffffffff81c9f273>] __x64_sys_ioctl+0x193/0x200
-    [<ffffffff8911263a>] do_syscall_64+0x3a/0xb0
-    [<ffffffff89200068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-BUG: memory leak
-unreferenced object 0xffff888029b2b200 (size 256):
-  comm "syz-executor.1", pid 11443, jiffies 4295046091 (age 17.660s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81a27201>] kvmalloc_node+0x61/0xf0
-    [<ffffffff8706f062>] alloc_netdev_mqs+0x912/0xe80
-    [<ffffffff84e64192>] mkiss_open+0xb2/0x6f0 [1]
-    [<ffffffff842355db>] tty_ldisc_open+0x9b/0x110
-    [<ffffffff84236488>] tty_set_ldisc+0x2e8/0x670
-    [<ffffffff8421f7f3>] tty_ioctl+0xda3/0x1440
-    [<ffffffff81c9f273>] __x64_sys_ioctl+0x193/0x200
-    [<ffffffff8911263a>] do_syscall_64+0x3a/0xb0
-    [<ffffffff89200068>] entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Fixes: 815f62bf7427 ("[PATCH] SMP rewrite of mkiss")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Fixes: 9f722c0978b0 ("usbnet: CDC EEM support (v5)")
+Signed-off-by: Linyu Yuan <linyyuan@codeaurora.org>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/hamradio/mkiss.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/usb/cdc_eem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/hamradio/mkiss.c b/drivers/net/hamradio/mkiss.c
-index deef14215110..352f9e75954c 100644
---- a/drivers/net/hamradio/mkiss.c
-+++ b/drivers/net/hamradio/mkiss.c
-@@ -800,6 +800,7 @@ static void mkiss_close(struct tty_struct *tty)
- 	ax->tty = NULL;
+diff --git a/drivers/net/usb/cdc_eem.c b/drivers/net/usb/cdc_eem.c
+index 0eeec80bec31..e4a570366646 100644
+--- a/drivers/net/usb/cdc_eem.c
++++ b/drivers/net/usb/cdc_eem.c
+@@ -123,10 +123,10 @@ static struct sk_buff *eem_tx_fixup(struct usbnet *dev, struct sk_buff *skb,
+ 	}
  
- 	unregister_netdev(ax->dev);
-+	free_netdev(ax->dev);
- }
+ 	skb2 = skb_copy_expand(skb, EEM_HEAD, ETH_FCS_LEN + padlen, flags);
++	dev_kfree_skb_any(skb);
+ 	if (!skb2)
+ 		return NULL;
  
- /* Perform I/O control on an active ax25 channel. */
+-	dev_kfree_skb_any(skb);
+ 	skb = skb2;
+ 
+ done:
 -- 
 2.30.2
 
