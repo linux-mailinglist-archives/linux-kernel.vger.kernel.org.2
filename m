@@ -2,79 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6453AECE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:56:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD9683AECE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhFUP6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 11:58:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbhFUP6L (ORCPT
+        id S230056AbhFUP7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 11:59:35 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:45106 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230204AbhFUP7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 11:58:11 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A81AAC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 08:55:57 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id o5so14593765iob.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 08:55:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=xoGOR6bNmxcId/Ee4H0L3QqG5xTZcJdVQzkm9X75obA=;
-        b=cLyyjm85xcRaukag+4YfWF05RrRrM5THsTgk3lgojaD9eyyXlB02Y878yEtdIDexBH
-         C9PMEfIV9i0GgVpmn6kvkkXhw0pXGt+Altx9T7p620NH3gaf2/+R8ymXrc5WnPbPFEdl
-         yQIDceu8yNer6gLKy2Q+WZGWv9IbYztvTy9LPqzy53df3Yiwj+Wilr1OPQScNkq6mHFG
-         n/E8xwAKpsjkvV/Q70gd5/TwWf4oppLGjPYzeDeqljmbME4JtiSw0x5nyNgmdUyjrGgm
-         1HwWn7I3kcBILp5LbsStc8bjJ7sUildTpo6PbCJA5+6OadcY7PQ4YLv+QIqhTRFYzxy7
-         NnNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xoGOR6bNmxcId/Ee4H0L3QqG5xTZcJdVQzkm9X75obA=;
-        b=lsF9TLgcBxoMYlBszgfKiiUUQhzn+ahlyCXrCSpJbJBIeQ2/AyeRACoGW5YseCcHrV
-         wgJOosTErJcCIHrnLmWPpjqoytIHDNdnFwFlXdMv4auHFmRLrnaTnS0vcJ3tHTvaDfV2
-         7pgNnH1F3XCzobB5Awy92wAxusnScqyacQ7HmZS1gJvFUv+mHa87oeq+MS0Vb0Ou8WGD
-         MjdazdxX97Yw+d9vXHtELSZ7BjtrTrVKnJxBFsPSZNg/dlcPjkEa4Z5lNTa0l8r57Cj2
-         NcNke5vWvs31mvDceqDThiX7J9Wl4a4Wd6Q0b+Yby+HD0GiR4KDSV0pHx/Y89Ev12mUJ
-         kKlA==
-X-Gm-Message-State: AOAM531xmsRGfXjtyAGCoepvlrVxMDwgO4c5DHn5nmrfIor10/emsS6+
-        0tw84aE235xWmTilZVJa35WB7g==
-X-Google-Smtp-Source: ABdhPJyjeB+QKOUeOmsHQDOPSMxVdqE8D40OUJJzhCP0YyuywJf0TJyUhYLoz9IlAS5JaNIltvUcfw==
-X-Received: by 2002:a5d:9059:: with SMTP id v25mr20266419ioq.113.1624290957096;
-        Mon, 21 Jun 2021 08:55:57 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id x9sm10378909iol.2.2021.06.21.08.55.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 08:55:56 -0700 (PDT)
-Subject: Re: [PATCH] block: Include mm_types.h instead of mm.h
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Ming Lei <ming.lei@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org
-References: <20210621122407.3116975-1-willy@infradead.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <490a7c73-74ce-6a17-b16d-629d433d0de1@kernel.dk>
-Date:   Mon, 21 Jun 2021 09:55:55 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 21 Jun 2021 11:59:34 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15LFX6dO191314;
+        Mon, 21 Jun 2021 11:57:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=WBFi8baW0KdalP6xDuyxPaggXWABzdhRnlZ7Z5xwJmY=;
+ b=XGuGnGKgsxzB2l4Sn/+uRRsZOOI6ebATqHCcMhTd3Q/Bkpo6zylAI8Vp0xVPpu2O3JwO
+ sGC+7f+hkRpJmjmpTkoQqWaZwuyu/Yi0i1KfwbEKqijVqWn6G34qekG22q6R1Mu0PUnW
+ WRL132eQqs19rZOOq4o+ctQhRiCdSESqy2I54KvTy+wmagtU+84O7uxe5OvUrbayAk3j
+ HR/gGzm8FtcJms5cnKS1TBTaFqWTUR3MxVsIhiHE4sx0xpiN9Jbcdz2nmL2LdDf4EUPc
+ ArDwY4Cx+fvWfCmRFjkI/W8bnVT/4YiDVxpoNQm7IbwkR9dg7d2vnHr+eTCPeVtw635J Vg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39aufe5bev-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 11:57:17 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15LFY4Bb195112;
+        Mon, 21 Jun 2021 11:57:17 -0400
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39aufe5beb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 11:57:17 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15LFqQYT022857;
+        Mon, 21 Jun 2021 15:57:16 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma03wdc.us.ibm.com with ESMTP id 3998790fc2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 15:57:16 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15LFvFaV24838438
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Jun 2021 15:57:15 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BFF772805A;
+        Mon, 21 Jun 2021 15:57:15 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 49B7228059;
+        Mon, 21 Jun 2021 15:57:15 +0000 (GMT)
+Received: from cpe-172-100-179-72.stny.res.rr.com.com (unknown [9.85.128.252])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon, 21 Jun 2021 15:57:15 +0000 (GMT)
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com
+Subject: [PATCH v6 0/2] s390/vfio-ap: fix memory leak in mdev remove callback
+Date:   Mon, 21 Jun 2021 11:57:12 -0400
+Message-Id: <20210621155714.1198545-1-akrowiak@linux.ibm.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210621122407.3116975-1-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: xuMBTNm57KW6SrOWR-ZpfYYFPYEwnikE
+X-Proofpoint-ORIG-GUID: C9yyjcFEcWrCSPZcJGBBR-rsmzPZFPGl
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-21_06:2021-06-21,2021-06-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
+ bulkscore=1 malwarescore=0 impostorscore=0 clxscore=1015
+ priorityscore=1501 suspectscore=0 mlxscore=0 adultscore=0
+ lowpriorityscore=1 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2106210092
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/21/21 6:24 AM, Matthew Wilcox (Oracle) wrote:
-> There's no need to include all of mm.h in bvec.h.  It only needs a few
-> things like the definition of struct page, PAGE_SIZE, PAGE_MASK and so
-> on, all of which are provided by mm_types.h.
+The mdev remove callback for the vfio_ap device driver bails out with
+-EBUSY if the mdev is in use by a KVM guest. The intended purpose was
+to prevent the mdev from being removed while in use; however, returning a
+non-zero rc does not prevent removal of the mdev. Consequently, the memory
+for the resources allocated when the mdev was created are leaked. 
 
-Applied, thanks.
+To fix this issue:
+
+* The remove callback will not terminate with -EBUSY when the mdev is in
+  use by a KVM guest.
+  
+* The memory for the resources allocated when the mdev was created will
+  be freed.
+  
+* Since the struct ap_matrix_mdev now gets freed while the guest is
+  is still running, we need to ensure that the pointer to the function
+  that handles interception of the PQAP instruction executed on the guest
+  is not accessed while it is being set to NULL. To prevent this, a r/w
+  lock is introduced that protects the function pointer.
+  
+Change log:
+v5 -> v6:
+--------
+* Replaced struct kvm_s390_module_hook with function pointer
+  int (*crypto_hook)(struct kvm_vcpu *vcpu) 
+
+Tony Krowiak (2):
+  s390/vfio-ap: clean up mdev resources when remove callback invoked
+  s390/vfio-ap: r/w lock for PQAP interception handler function pointer
+
+ arch/s390/include/asm/kvm_host.h      |  8 +++----
+ arch/s390/kvm/kvm-s390.c              |  1 +
+ arch/s390/kvm/priv.c                  | 10 ++++----
+ drivers/s390/crypto/vfio_ap_ops.c     | 33 ++++++++++++++-------------
+ drivers/s390/crypto/vfio_ap_private.h |  2 +-
+ 5 files changed, 28 insertions(+), 26 deletions(-)
 
 -- 
-Jens Axboe
+2.30.2
 
