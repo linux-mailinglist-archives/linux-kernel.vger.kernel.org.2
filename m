@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD9E3AE3F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 09:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A6FD3AE3FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 09:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbhFUHSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 03:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44672 "EHLO
+        id S230071AbhFUHXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 03:23:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbhFUHSR (ORCPT
+        with ESMTP id S229597AbhFUHXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 03:18:17 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA65DC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 00:16:03 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id nd37so27071276ejc.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 00:16:03 -0700 (PDT)
+        Mon, 21 Jun 2021 03:23:04 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF7FCC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 00:20:50 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id hq39so14640ejc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 00:20:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=VE3Ea4BPCkopgR+SceHAr1CcKWEjirXXxv6I5VlDKz0=;
-        b=qbSM3/qKaTaSN0EQ3YLpVscDDK+ngUMX3KIPIhHAP2PDiU8+Wf/6ujNs24RvtsqRUp
-         4Y5NmxXeJLO5c6sx2iIU8Tm6wuXCC0njxNS68hxYMn37lIUiZLtPxhfw4f8mUi/yYLrC
-         fpt0OPlfU7LlZt4Gp1eVkJAUp707ANoNxcyseCOSyJUKlCsRZFMusrUL1cdm8j7RU7bF
-         A+sutLhNIfN/oLkQvp82MU7wZ1kIVsbV2Gk4TbwwBGJe6t2deLkDm4DAS6i1ctjn1b5W
-         BKh/mU1llpRav2+8kIaYKmFkL5/8VW9fKdyzvm/JTqw3L+BpY6hqOkfIKqJRqLkLpCZr
-         DjCA==
+        bh=c+vUa1UJEeV1Fh7yDKg8NRJV7NdKihQmk+VqSoLdyls=;
+        b=IBCbfCu2aVToYUBGsB3mk6ZzTcO1+EH5TzeGBu+qs+lR9jet/M56aMR+DLm1aCA4/r
+         3VWDQgWXSF9EUqg2A90ImiN2xJ+8xZF6rdEkCdLdse1n8hYDW4BOrh/R3uL6DsbjA5PI
+         WYX9Tn9Vk47w+EPDC25Qi86hSBgpxl++WfnKHYU83gX066L6gS2NRYTl5S5C2m3uVlKJ
+         7J8+ni7Lycj/x1Aml4Nm7ZQrNJ6fRsY5eoxnhhMLu4wwfF4dFq5Ou5vqr0SQqeufYvXH
+         WalN4szoBpN/ZsA0gPEgViHEihMW5wjbH2r2YsdC6kFBrhI9EV6oHKYFdx0wmvXYdT39
+         qFvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=VE3Ea4BPCkopgR+SceHAr1CcKWEjirXXxv6I5VlDKz0=;
-        b=fKLAkXW0z4XRNmo2iM378ooCTqlasuu1COK0MK7lsAuhB6YpGQqDaZBiF34fMr+c0+
-         8YFRLEeZa8UMwWcoSXrwqV2lEbSigpYrwvCbASWTd996MpiDel55Vd7Dh9uIzpaDJwTT
-         jgldqwNbNzhp/6+mxOp5qJ+PmlaO/58lSNFZuhh8HsvL9i5h9pYVKQt0w+S/ff1zN6wL
-         8YSY8a3Ptwmi7tZpkEcJiz10mmrmBnMAlz+9tthP67a+YCKuBqmWT62hyIonfsLfIc/L
-         j8LzxFd/4+/V48iz2n8QDKDiiPpvHLri2O0Av/aWrgePv+efGA42tDSnbRBOv+VtnHOo
-         oQUg==
-X-Gm-Message-State: AOAM530+PQP4Y8SZOu7U6qDAlDIH4cnOeFAcsFk8lB9HgTE4HzcWRShj
-        BlqwmtDZdCMYmf/eCenHwDHIPGe8VqQ3TfnCbIk=
-X-Google-Smtp-Source: ABdhPJwlhXn1ZUS4AdM5ajJYAe3cfRVYfAgGzqYz3WTPupXpBrrnVxTMG5QmLY1S1tVt2GhIwlmiJFWoIa91wRifW6I=
-X-Received: by 2002:a17:907:7789:: with SMTP id ky9mr6329024ejc.191.1624259762466;
- Mon, 21 Jun 2021 00:16:02 -0700 (PDT)
+        bh=c+vUa1UJEeV1Fh7yDKg8NRJV7NdKihQmk+VqSoLdyls=;
+        b=gYU1a+bqwhYn3v7k0zkIZc4deIAkRKiiezTkGGGiAdcvyZZoGVcq7lBo/NLJy+n6h4
+         Q0OnOUoYL8zzmuTyI6ZV5NrtO5oPouxj9Hk28nNvp0N5RqvwtrgfGZEIpmxCpVt/3aRM
+         FscYlTusomgzGl+lCsIKsze1tW3zV3u2xoLKJ/Kxwzr3qF0jQqqpYKY5l847pHaTW1PD
+         Ou+irTAlLjyAiy+dLNqEL/VB96t+4MCJL7XG4+93n9wwzQSz/5WFDmK/WzokPhFAjSwK
+         bKLPWZmU6YIuHkH/L9Xx9iGgJquccMrQziNL16krakmPyrVE1FEQqVAk1CwspDnlCWXr
+         3jkQ==
+X-Gm-Message-State: AOAM532JEOjbGnWyItMBHcBZyo56Eq/WvJZWT4v2Xqu2n47j5z8Lbj3L
+        6fvznty17AHxViAl6u5IYj2XQ6yKaWI7Lnpux5s=
+X-Google-Smtp-Source: ABdhPJwqVaVz7oYbyjo8YPm/cHzc9kY/RLwkhcnBJ0YDnWvcOUPBi2NcPjXu7d1xZVjKLJI0/io3de4kP7XnO6l0spY=
+X-Received: by 2002:a17:907:2625:: with SMTP id aq5mr7670564ejc.373.1624260048564;
+ Mon, 21 Jun 2021 00:20:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210617194154.2397-1-linux.amoon@gmail.com> <20210617194154.2397-7-linux.amoon@gmail.com>
- <CAFBinCCE+6G7QtDoxfbcZVVRf-MDX-epSo=_k_PJZgWX+_Whvg@mail.gmail.com>
- <CANAwSgRqixugUr-t2OheLBVwD=EOkaLqxnGkT-Bx=p_A4Nyr8Q@mail.gmail.com> <CAFBinCALsnpbJGEb4LBLd_jy3E8fOZAQaacz-P7ijfkeyYg2dA@mail.gmail.com>
-In-Reply-To: <CAFBinCALsnpbJGEb4LBLd_jy3E8fOZAQaacz-P7ijfkeyYg2dA@mail.gmail.com>
+References: <20210617194154.2397-1-linux.amoon@gmail.com> <20210617194154.2397-5-linux.amoon@gmail.com>
+ <CAFBinCB1rrmJ5=M0tSGS_47BarFcrs2Kz5qFzrHw8+OEYxX3DA@mail.gmail.com>
+ <CANAwSgQVgKUoTpfaJyfxdphqc6M=Oq6jj5zZ7An9St7PdzQHYA@mail.gmail.com> <CAFBinCDpQybqD96CCMBDKYUXEYCABr0QMfxFH1AWrXP12UxxMg@mail.gmail.com>
+In-Reply-To: <CAFBinCDpQybqD96CCMBDKYUXEYCABr0QMfxFH1AWrXP12UxxMg@mail.gmail.com>
 From:   Anand Moon <linux.amoon@gmail.com>
-Date:   Mon, 21 Jun 2021 12:45:51 +0530
-Message-ID: <CANAwSgRABOyWYJPrrw64Wa6j2D94T4tybn7MHGCTbBowt7UncA@mail.gmail.com>
-Subject: Re: [RFCv1 6/8] phy: amlogic: meson8b-usb2: Use phy reset callback function
+Date:   Mon, 21 Jun 2021 12:50:37 +0530
+Message-ID: <CANAwSgTd1zq_gHbVZesLY=e3DRRGgn_o5omuDo9Lub4FavOtbQ@mail.gmail.com>
+Subject: Re: [RFCv1 4/8] phy: amlogic: meson8b-usb2: Use phy set_mode callback function
 To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>,
@@ -69,101 +69,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin
+Hi Martin,
 
-Thanks for your review comments.
-
-On Sat, 19 Jun 2021 at 01:36, Martin Blumenstingl
+On Sat, 19 Jun 2021 at 01:31, Martin Blumenstingl
 <martin.blumenstingl@googlemail.com> wrote:
 >
 > Hi Anand,
 >
-> On Fri, Jun 18, 2021 at 5:33 PM Anand Moon <linux.amoon@gmail.com> wrote:
+> On Fri, Jun 18, 2021 at 3:19 PM Anand Moon <linux.amoon@gmail.com> wrote:
 > [...]
-> > > For shared resets (like the one we have here) reset_control_reset will
-> > > only trigger the reset line once until all drivers using that reset
-> > > line are unloaded.
-> > > So effectively this new phy_ops.reset callback will be a no-op.
+> > > I suggest dropping this patch until we know for sure if and which
+> > > registers need to be updated based on the DR mode.
 > >
-> > I know his register is shared between two USB IPs,
-> > but I have not observed any issues.
-> have you checked at which point we're then actually triggering the reset?
-> I assume that you will find that the reset is only triggered for the
-> very first power_on/init call - which makes this patch effectively a
-> no-op (yes, we're calling reset_control_reset then, but that doesn't
-> mean that a reset is triggered on hardware level - see
-> drivers/reset/core.c at around line 346).
+> > Yes, I have observed this, Can you give these small changes a try?
+> > With the below changes, I got the  PHY_MODE_USB_DEVICE support working.
+> first of all: sorry that I have not linked my source of information previously:
+> - Meson8b: [0]
+> - Meson8 and Meson8m2: [1]
 >
-Ok Thanks for the inputs. got your point.
-
-I was also looking into Amlogic source code for reset. (aml_cbus_update_bits)
-[0] https://github.com/khadas/linux/blob/khadas-vims-4.9.y/drivers/amlogic/usb/phy/phy-aml-new-usb.c
-is there some feature to iomap the USB with cbus?
-
+> Unfortunately I don't have any datasheet or "better documentation" of
+> how the registers should be programmed.
+> This is why I am a bit defensive when I am asked to change something
+> there - as I simply have no way of knowing if the changes are good or
+> not. I can only tell whether they're "identical" or "different" from
+> what the vendor kernel does.
+>
 > [...]
-> > > > -       priv->reset = devm_reset_control_get_optional_shared(&pdev->dev, NULL);
-> > > > +       priv->reset = devm_reset_control_get_optional_shared(&pdev->dev, "phy");
-> > > I think this breaks compatibility with existing .dtbs and our
-> > > dt-bindings (as we're not documenting a "reset-names" property).
-> > > What is the goal of this one?
-> > >
-> >
-> > OK, If we pass NULL over here there is the possibility
-> > USB phy will not get registered.
-> I don't understand why - with NULL everything is working fine for me.
-> Also no matter which name you give to the reset line (in reset-names),
-> it will be the same reset line in all cases. If it's the same reset
-> line before and after: why is this needed?
+> > +       case PHY_MODE_USB_DEVICE:
+> > +       case PHY_MODE_USB_OTG:
+> > +               regmap_update_bits(priv->regmap, REG_ADP_BC,
+> > +                                  REG_ADP_BC_DCD_ENABLE,
+> > +                                  REG_ADP_BC_DCD_ENABLE);
+> > +
+> > +               udelay(ACA_ENABLE_COMPLETE_TIME);
+> > +
+> > +               regmap_read(priv->regmap, REG_ADP_BC, &reg);
+> > +               if (reg & REG_ADP_BC_ACA_PIN_FLOAT) {
+> > +                       dev_warn(&phy->dev, "USB ID detect failed!\n");
+> > +                       return -EINVAL;
+> > +               }
+> > +               regmap_update_bits(priv->regmap, REG_ADP_BC,
+> > +                                  REG_ADP_BC_ID_PULLUP, REG_ADP_BC_ID_PULLUP);
+> > +               break;
+> According to the vendor kernel this should only be applied to
+> "host-only" USB_PORT_IDX_B (which is usb1 in the mainline .dtsi).
+> Based on that I think it's not correct to apply this for DEVICE and OTG modes.
 >
-I need to investigate this reset feature. With my setup with current changes
-after I update the below.
--       priv->reset = devm_reset_control_get_optional_shared(&pdev->dev, "phy");
-+       priv->reset = devm_reset_control_get_optional_shared(&pdev->dev, NULL);
-        if (PTR_ERR(priv->reset) == -EPROBE_DEFER)
-                return PTR_ERR(priv->reset);
+> The vendor kernel does not configure REG_ADP_BC_ID_PULLUP anywhere.
+> Also DCD_ENABLE is only ever set to 0 (while you are enabling it now), see [2].
+>
+> As mentioned before: all I can say about this patch is that it
+> programs the registers differently than the vendor kernel does.
+> From your description I am not sure if you are now getting different
+> behavior on Odroid-C1 with this patch (compared to what we had
+> before).
+>
 
-Reset will break the USB initialization, see below output.
+In order to enable USB phy we probably need to do a little bit
+differently than the vendor kernel.
+Yes I have observed many configuration parameters are missing.
 
-[    1.265403] dwc2 c9040000.usb: mapped PA c9040000 to VA (ptrval)
-[    1.265540] dwc2 c9040000.usb: Looking up vusb_d-supply from device tree
-[    1.265554] dwc2 c9040000.usb: Looking up vusb_d-supply property in
-node /soc/usb@c9040000 failed
-[    1.265585] dwc2 c9040000.usb: supply vusb_d not found, using dummy regulator
-[    1.265717] dwc2 c9040000.usb: Looking up vusb_a-supply from device tree
-[    1.265730] dwc2 c9040000.usb: Looking up vusb_a-supply property in
-node /soc/usb@c9040000 failed
-[    1.265752] dwc2 c9040000.usb: supply vusb_a not found, using dummy regulator
-[    1.265812] dwc2 c9040000.usb: registering common handler for irq35
-[    1.265867] dwc2 c9040000.usb: Looking up vbus-supply from device tree
-[    1.265880] dwc2 c9040000.usb: Looking up vbus-supply property in
-node /soc/usb@c9040000 failed
-[    1.267066] dwc2 c9040000.usb: Core Release: 3.10a (snpsid=4f54310a)
-[    1.270983] dwc2 c9040000.usb: dwc2_core_reset: HANG! Soft Reset
-timeout GRSTCTL_CSFTRST
-[    1.271319] dwc2: probe of c9040000.usb failed with error -16
-[    1.273296] dwc2 c90c0000.usb: mapped PA c90c0000 to VA (ptrval)
-[    1.273426] dwc2 c90c0000.usb: Looking up vusb_d-supply from device tree
-[    1.273440] dwc2 c90c0000.usb: Looking up vusb_d-supply property in
-node /soc/usb@c90c0000 failed
-[    1.273471] dwc2 c90c0000.usb: supply vusb_d not found, using dummy regulator
-[    1.273607] dwc2 c90c0000.usb: Looking up vusb_a-supply from device tree
-[    1.273621] dwc2 c90c0000.usb: Looking up vusb_a-supply property in
-node /soc/usb@c90c0000 failed
-[    1.273641] dwc2 c90c0000.usb: supply vusb_a not found, using dummy regulator
-[    1.273700] dwc2 c90c0000.usb: registering common handler for irq36
-[    1.273750] dwc2 c90c0000.usb: Looking up vbus-supply from device tree
-[    1.273762] dwc2 c90c0000.usb: Looking up vbus-supply property in
-node /soc/usb@c90c0000 failed
-[    1.274966] dwc2 c90c0000.usb: Core Release: 3.10a (snpsid=4f54310a)
-[    1.278888] dwc2 c90c0000.usb: dwc2_core_reset: HANG! Soft Reset
-timeout GRSTCTL_CSFTRST
-[    1.279224] dwc2: probe of c90c0000.usb failed with error -16
+OTG port on Odroid C1+ and Odroid C2 server two purposes
+1 > It could act as USB host port.
+2 > It could be used as USB power on the devices, just like Raspberry pi.
+      What I meant is we need some driver code to protect the power to SbC.
 
+So depending on the mode, it gets configured host mode or PCD mode,
+I am not completely sure right now.
+So I saw your work on extcon, that's the reason I would like to void
+any changes PHY right now.
 
+I observe some failures like below.
+[    6.013859] dwc2 c9000000.usb: DWC OTG HCD URB Dequeue
+[    6.013897] dwc2 c9000000.usb: Called usb_hcd_giveback_urb()
+[    6.013902] dwc2 c9000000.usb:   urb->status = -115
+
+Still investigating this issue,
 
 >
 > Best regards,
 > Martin
+>
+Yes, I will go through the features for debugging in the future.
+>
+> [0] https://github.com/endlessm/linux-meson/blob/03393bb8e8478626e03ee93b0a2a225d6de242b5/arch/arm/mach-meson8b/usbclock.c#L120
+> [1] https://github.com/endlessm/linux-meson/blob/03393bb8e8478626e03ee93b0a2a225d6de242b5/arch/arm/mach-meson8/usbclock.c#L120
+> [2] https://github.com/endlessm/linux-meson/blob/d6e13c220931110fe676ede6da69fc61a7cb04b6/drivers/amlogic/usb/dwc_otg/310/dwc_otg_pcd.c#L71
 
 Thanks
 -Anand
