@@ -2,235 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8079F3AF89D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 00:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45EA33AF8A1
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 00:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232151AbhFUWjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 18:39:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231446AbhFUWjd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 18:39:33 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F37C061574;
-        Mon, 21 Jun 2021 15:37:17 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id e22so17808272wrc.1;
-        Mon, 21 Jun 2021 15:37:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=GD/DgAs0LBcRPf92Bu3f3Hvck0WeokFUp2YgSU/5KTo=;
-        b=mQHkD8Fcg0ErH+q79l3MoD1GSvgSInruB1kxlleTY5rZ8sx8vR1H9IfT+ntMWgr5ZZ
-         Po55tMN5CyThLPdipG/5bkVlQqy/3fQtZcYkO4PQqmbh3H6XtkNA3iq3oTOmY0Kb3vPr
-         +nwKeOIPStmESBhY1bll9/GlnfUM7QiiPZofJHbzjBOL5OMddQfJ8T8ZXHgpzfLGeQV/
-         dFEV4HBmivqElsrIoJfkafjcJoNCu4lKFtl3rOhto8wkfwEBrzKlmdnUoRgVr+Y3l2BC
-         uhG0galyUASeVzqAioVpHlWKYOHtI8y15Dh70t2fvhSY4XQb+LaM+RFVfm/XXVEgs8qi
-         JYSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=GD/DgAs0LBcRPf92Bu3f3Hvck0WeokFUp2YgSU/5KTo=;
-        b=bQMnal8G6hGoe/JMBMK4lp6hd/qiEPd5tGQlKV7tfubtCqcHjQVg5TaxwKm44Gm0d/
-         Mpsk8ae1L6ILNNogAbLpFdZP3YGxspBqQwET3EMsBvQA7pQ1eagxezuVba51WcyYeTal
-         niv1c4ARyCpYK6+duhYrtsZ0clhiFgoWeC0SmOMBA7ror7cdaznYY5+FYToN3tnTjQ/X
-         p2qfBG2ghMKbqAfgTrRICxWF/dpBO+xbGWBtwvezq6zhzsQLOSLVaL4flK9QjgLb9jbg
-         l0Pxh+vz2AKxqEPX1ykLidknsoNTfcyYH3HdCwgQKkIEXvryWAfcg690Z5qQiklFmtYm
-         iNog==
-X-Gm-Message-State: AOAM530pXufNabuzbqWtjGQo1pgUW4O4MCfidR6Yh3P+8lTSNc2ZF+ak
-        PchvEm+YSCwL1R667VwhaoY=
-X-Google-Smtp-Source: ABdhPJz51JzPUciloR/ROzGa7XzIKIvL9495CeIUC0bL0jnpv2DpXGP91QDOJkLA0XHo2n+5gzatKQ==
-X-Received: by 2002:adf:f94c:: with SMTP id q12mr795576wrr.417.1624315035746;
-        Mon, 21 Jun 2021 15:37:15 -0700 (PDT)
-Received: from [192.168.1.211] ([2.29.20.116])
-        by smtp.gmail.com with ESMTPSA id f13sm19475624wrt.86.2021.06.21.15.37.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 15:37:15 -0700 (PDT)
-Subject: Re: [PATCH v2 4/8] platform/x86: intel_skl_int3472: Use ACPI GPIO
- resource directly
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Cc:     Mark Gross <mgross@linux.intel.com>
-References: <20210618125516.53510-1-andriy.shevchenko@linux.intel.com>
- <20210618125516.53510-4-andriy.shevchenko@linux.intel.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <a9493e7a-5cde-085a-145b-56d246dd0bcc@gmail.com>
-Date:   Mon, 21 Jun 2021 23:37:14 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232227AbhFUWjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 18:39:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231446AbhFUWjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 18:39:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E92736113E;
+        Mon, 21 Jun 2021 22:37:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624315055;
+        bh=x/0sgkn0wKEMEG5kTX8dj7wK/3UEWacXQit3uuR9AyY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=WB8FiOoDjooEJzFQaRSRJHFjDjppQsef2BfHMkPpZvb36nE9bp3RXzXhW9hGeQiAq
+         PAAnul7AbmL94zXlnvgumHRHgTjXz06TjUoEpNIIN8EgvU2GebsoxZxY2MAm+Bt+DQ
+         Fg5ocitU5dT3fx066VqcTRgZKK/LD6AONdAf6vf5ZWVuvSMc+ZOeqzeA5P2wxiC4P6
+         8dhI0j6Bhi9J4PtLW/386nfmXo3J17dMwCvqQseSD3Ojk9u2HtxB9nv6OXTnMBygS4
+         VlsI3OtlguuJWazTysdBwM0YZPrGuKCrFJy9dgBO69ju7jVb06hmwLdgS4dQRxHoj0
+         rOfunRZkSykVg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id AD6F05C052D; Mon, 21 Jun 2021 15:37:34 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 15:37:34 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     syzbot <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com>
+Cc:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
+        axboe@kernel.dk, bpf@vger.kernel.org, christian@brauner.io,
+        daniel@iogearbox.net, dvyukov@google.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, john.fastabend@gmail.com,
+        josh@joshtriplett.org, kafai@fb.com, kpsingh@kernel.org,
+        linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+        netdev@vger.kernel.org, peterz@infradead.org, rcu@vger.kernel.org,
+        rostedt@goodmis.org, shakeelb@google.com, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yanfei.xu@windriver.com,
+        yhs@fb.com
+Subject: Re: [syzbot] KASAN: use-after-free Read in
+ check_all_holdout_tasks_trace
+Message-ID: <20210621223734.GV4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <000000000000f034fc05c2da6617@google.com>
+ <00000000000022183205c5106739@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210618125516.53510-4-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00000000000022183205c5106739@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/06/2021 13:55, Andy Shevchenko wrote:
-> When we call acpi_gpio_get_io_resource(), the output will be
-> the pointer to the ACPI GPIO resource. Use it directly instead of
-> dereferencing the generic resource.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Fri, Jun 18, 2021 at 01:45:23PM -0700, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    0c38740c selftests/bpf: Fix ringbuf test fetching map FD
+> git tree:       bpf-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=128a7e34300000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=a6380da8984033f1
+> dashboard link: https://syzkaller.appspot.com/bug?extid=7b2b13f4943374609532
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1264c2d7d00000
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com
 
+This looks like a bug that Xu Yanfei located a few weeks back.
 
-This is much better, thanks.
+Do these commits from -rcu help?
 
+6a04a59eacbd ("rcu-tasks: Don't delete holdouts within trc_inspect_reader()"
+dd5da0a9140e ("rcu-tasks: Don't delete holdouts within trc_wait_for_one_reader()")
 
-Reviewed-by: Daniel Scally <djrscally@gmail.com>
+On any interaction with the HEAD commit above I must defer to Andrii.
 
-Tested-by: Daniel Scally <djrscally@gmail.com>
+							Thanx, Paul
 
-
-> ---
-> v2: new patch
->  .../intel_skl_int3472_clk_and_regulator.c     |  7 ++---
->  .../intel-int3472/intel_skl_int3472_common.h  |  2 +-
->  .../intel_skl_int3472_discrete.c              | 28 +++++++++----------
->  3 files changed, 17 insertions(+), 20 deletions(-)
->
-> diff --git a/drivers/platform/x86/intel-int3472/intel_skl_int3472_clk_and_regulator.c b/drivers/platform/x86/intel-int3472/intel_skl_int3472_clk_and_regulator.c
-> index ceee860e2c07..49ea1e86c193 100644
-> --- a/drivers/platform/x86/intel-int3472/intel_skl_int3472_clk_and_regulator.c
-> +++ b/drivers/platform/x86/intel-int3472/intel_skl_int3472_clk_and_regulator.c
-> @@ -131,10 +131,10 @@ int skl_int3472_register_clock(struct int3472_discrete_device *int3472)
->  }
->  
->  int skl_int3472_register_regulator(struct int3472_discrete_device *int3472,
-> -				   struct acpi_resource *ares)
-> +				   struct acpi_resource_gpio *agpio)
->  {
-> -	char *path = ares->data.gpio.resource_source.string_ptr;
->  	const struct int3472_sensor_config *sensor_config;
-> +	char *path = agpio->resource_source.string_ptr;
->  	struct regulator_consumer_supply supply_map;
->  	struct regulator_init_data init_data = { };
->  	struct regulator_config cfg = { };
-> @@ -168,8 +168,7 @@ int skl_int3472_register_regulator(struct int3472_discrete_device *int3472,
->  						int3472->regulator.supply_name,
->  						&int3472_gpio_regulator_ops);
->  
-> -	int3472->regulator.gpio = acpi_get_and_request_gpiod(path,
-> -							     ares->data.gpio.pin_table[0],
-> +	int3472->regulator.gpio = acpi_get_and_request_gpiod(path, agpio->pin_table[0],
->  							     "int3472,regulator");
->  	if (IS_ERR(int3472->regulator.gpio)) {
->  		dev_err(int3472->dev, "Failed to get regulator GPIO line\n");
-> diff --git a/drivers/platform/x86/intel-int3472/intel_skl_int3472_common.h b/drivers/platform/x86/intel-int3472/intel_skl_int3472_common.h
-> index 6fdf78584219..765e01ec1604 100644
-> --- a/drivers/platform/x86/intel-int3472/intel_skl_int3472_common.h
-> +++ b/drivers/platform/x86/intel-int3472/intel_skl_int3472_common.h
-> @@ -113,6 +113,6 @@ union acpi_object *skl_int3472_get_acpi_buffer(struct acpi_device *adev,
->  int skl_int3472_fill_cldb(struct acpi_device *adev, struct int3472_cldb *cldb);
->  int skl_int3472_register_clock(struct int3472_discrete_device *int3472);
->  int skl_int3472_register_regulator(struct int3472_discrete_device *int3472,
-> -				   struct acpi_resource *ares);
-> +				   struct acpi_resource_gpio *agpio);
->  
->  #endif
-> diff --git a/drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c b/drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c
-> index 48a00a1f4fb6..fd681d2a73fe 100644
-> --- a/drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c
-> +++ b/drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c
-> @@ -103,11 +103,11 @@ skl_int3472_get_sensor_module_config(struct int3472_discrete_device *int3472)
->  }
->  
->  static int skl_int3472_map_gpio_to_sensor(struct int3472_discrete_device *int3472,
-> -					  struct acpi_resource *ares,
-> +					  struct acpi_resource_gpio *agpio,
->  					  const char *func, u32 polarity)
->  {
-> -	char *path = ares->data.gpio.resource_source.string_ptr;
->  	const struct int3472_sensor_config *sensor_config;
-> +	char *path = agpio->resource_source.string_ptr;
->  	struct gpiod_lookup *table_entry;
->  	struct acpi_device *adev;
->  	acpi_handle handle;
-> @@ -145,7 +145,7 @@ static int skl_int3472_map_gpio_to_sensor(struct int3472_discrete_device *int347
->  
->  	table_entry = &int3472->gpios.table[int3472->n_sensor_gpios];
->  	table_entry->key = acpi_dev_name(adev);
-> -	table_entry->chip_hwnum = ares->data.gpio.pin_table[0];
-> +	table_entry->chip_hwnum = agpio->pin_table[0];
->  	table_entry->con_id = func;
->  	table_entry->idx = 0;
->  	table_entry->flags = polarity;
-> @@ -156,23 +156,22 @@ static int skl_int3472_map_gpio_to_sensor(struct int3472_discrete_device *int347
->  }
->  
->  static int skl_int3472_map_gpio_to_clk(struct int3472_discrete_device *int3472,
-> -				       struct acpi_resource *ares, u8 type)
-> +				       struct acpi_resource_gpio *agpio, u8 type)
->  {
-> -	char *path = ares->data.gpio.resource_source.string_ptr;
-> +	char *path = agpio->resource_source.string_ptr;
-> +	u16 pin = agpio->pin_table[0];
->  	struct gpio_desc *gpio;
->  
->  	switch (type) {
->  	case INT3472_GPIO_TYPE_CLK_ENABLE:
-> -		gpio = acpi_get_and_request_gpiod(path, ares->data.gpio.pin_table[0],
-> -						  "int3472,clk-enable");
-> +		gpio = acpi_get_and_request_gpiod(path, pin, "int3472,clk-enable");
->  		if (IS_ERR(gpio))
->  			return (PTR_ERR(gpio));
->  
->  		int3472->clock.ena_gpio = gpio;
->  		break;
->  	case INT3472_GPIO_TYPE_PRIVACY_LED:
-> -		gpio = acpi_get_and_request_gpiod(path, ares->data.gpio.pin_table[0],
-> -						  "int3472,privacy-led");
-> +		gpio = acpi_get_and_request_gpiod(path, pin, "int3472,privacy-led");
->  		if (IS_ERR(gpio))
->  			return (PTR_ERR(gpio));
->  
-> @@ -242,7 +241,7 @@ static int skl_int3472_handle_gpio_resources(struct acpi_resource *ares,
->  
->  	if (!obj) {
->  		dev_warn(int3472->dev, "No _DSM entry for GPIO pin %u\n",
-> -			 ares->data.gpio.pin_table[0]);
-> +			 agpio->pin_table[0]);
->  		return 1;
->  	}
->  
-> @@ -250,15 +249,14 @@ static int skl_int3472_handle_gpio_resources(struct acpi_resource *ares,
->  
->  	switch (type) {
->  	case INT3472_GPIO_TYPE_RESET:
-> -		ret = skl_int3472_map_gpio_to_sensor(int3472, ares, "reset",
-> +		ret = skl_int3472_map_gpio_to_sensor(int3472, agpio, "reset",
->  						     GPIO_ACTIVE_LOW);
->  		if (ret)
->  			err_msg = "Failed to map reset pin to sensor\n";
->  
->  		break;
->  	case INT3472_GPIO_TYPE_POWERDOWN:
-> -		ret = skl_int3472_map_gpio_to_sensor(int3472, ares,
-> -						     "powerdown",
-> +		ret = skl_int3472_map_gpio_to_sensor(int3472, agpio, "powerdown",
->  						     GPIO_ACTIVE_LOW);
->  		if (ret)
->  			err_msg = "Failed to map powerdown pin to sensor\n";
-> @@ -266,13 +264,13 @@ static int skl_int3472_handle_gpio_resources(struct acpi_resource *ares,
->  		break;
->  	case INT3472_GPIO_TYPE_CLK_ENABLE:
->  	case INT3472_GPIO_TYPE_PRIVACY_LED:
-> -		ret = skl_int3472_map_gpio_to_clk(int3472, ares, type);
-> +		ret = skl_int3472_map_gpio_to_clk(int3472, agpio, type);
->  		if (ret)
->  			err_msg = "Failed to map GPIO to clock\n";
->  
->  		break;
->  	case INT3472_GPIO_TYPE_POWER_ENABLE:
-> -		ret = skl_int3472_register_regulator(int3472, ares);
-> +		ret = skl_int3472_register_regulator(int3472, agpio);
->  		if (ret)
->  			err_msg = "Failed to map regulator to sensor\n";
->  
+> ==================================================================
+> BUG: KASAN: use-after-free in check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
+> Read of size 1 at addr ffff8880294cbc9c by task rcu_tasks_trace/12
+> 
+> CPU: 0 PID: 12 Comm: rcu_tasks_trace Not tainted 5.13.0-rc3-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+>  print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:233
+>  __kasan_report mm/kasan/report.c:419 [inline]
+>  kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:436
+>  check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
+>  rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
+>  rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
+>  kthread+0x3b1/0x4a0 kernel/kthread.c:313
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> 
+> Allocated by task 8499:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_set_track mm/kasan/common.c:46 [inline]
+>  set_alloc_info mm/kasan/common.c:428 [inline]
+>  __kasan_slab_alloc+0x84/0xa0 mm/kasan/common.c:461
+>  kasan_slab_alloc include/linux/kasan.h:236 [inline]
+>  slab_post_alloc_hook mm/slab.h:524 [inline]
+>  slab_alloc_node mm/slub.c:2913 [inline]
+>  kmem_cache_alloc_node+0x269/0x3e0 mm/slub.c:2949
+>  alloc_task_struct_node kernel/fork.c:171 [inline]
+>  dup_task_struct kernel/fork.c:865 [inline]
+>  copy_process+0x5c8/0x7120 kernel/fork.c:1947
+>  kernel_clone+0xe7/0xab0 kernel/fork.c:2503
+>  __do_sys_clone+0xc8/0x110 kernel/fork.c:2620
+>  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Freed by task 12:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+>  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
+>  ____kasan_slab_free mm/kasan/common.c:360 [inline]
+>  ____kasan_slab_free mm/kasan/common.c:325 [inline]
+>  __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:368
+>  kasan_slab_free include/linux/kasan.h:212 [inline]
+>  slab_free_hook mm/slub.c:1582 [inline]
+>  slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1607
+>  slab_free mm/slub.c:3167 [inline]
+>  kmem_cache_free+0x8a/0x740 mm/slub.c:3183
+>  __put_task_struct+0x26f/0x400 kernel/fork.c:747
+>  trc_wait_for_one_reader kernel/rcu/tasks.h:935 [inline]
+>  check_all_holdout_tasks_trace+0x179/0x420 kernel/rcu/tasks.h:1081
+>  rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
+>  rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
+>  kthread+0x3b1/0x4a0 kernel/kthread.c:313
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> 
+> Last potentially related work creation:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+>  __call_rcu kernel/rcu/tree.c:3038 [inline]
+>  call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
+>  put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
+>  release_task+0xca1/0x1690 kernel/exit.c:226
+>  wait_task_zombie kernel/exit.c:1108 [inline]
+>  wait_consider_task+0x2fb5/0x3b40 kernel/exit.c:1335
+>  do_wait_thread kernel/exit.c:1398 [inline]
+>  do_wait+0x724/0xd40 kernel/exit.c:1515
+>  kernel_wait4+0x14c/0x260 kernel/exit.c:1678
+>  __do_sys_wait4+0x13f/0x150 kernel/exit.c:1706
+>  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> Second to last potentially related work creation:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+>  __call_rcu kernel/rcu/tree.c:3038 [inline]
+>  call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
+>  put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
+>  release_task+0xca1/0x1690 kernel/exit.c:226
+>  wait_task_zombie kernel/exit.c:1108 [inline]
+>  wait_consider_task+0x2fb5/0x3b40 kernel/exit.c:1335
+>  do_wait_thread kernel/exit.c:1398 [inline]
+>  do_wait+0x724/0xd40 kernel/exit.c:1515
+>  kernel_wait4+0x14c/0x260 kernel/exit.c:1678
+>  __do_sys_wait4+0x13f/0x150 kernel/exit.c:1706
+>  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> 
+> The buggy address belongs to the object at ffff8880294cb880
+>  which belongs to the cache task_struct of size 6976
+> The buggy address is located 1052 bytes inside of
+>  6976-byte region [ffff8880294cb880, ffff8880294cd3c0)
+> The buggy address belongs to the page:
+> page:ffffea0000a53200 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x294c8
+> head:ffffea0000a53200 order:3 compound_mapcount:0 compound_pincount:0
+> flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+> raw: 00fff00000010200 ffffea00008d6400 0000000200000002 ffff888140005140
+> raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
+> page dumped because: kasan: bad access detected
+> page_owner tracks the page as allocated
+> page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 2, ts 15187628853, free_ts 0
+>  prep_new_page mm/page_alloc.c:2358 [inline]
+>  get_page_from_freelist+0x1034/0x2bf0 mm/page_alloc.c:3994
+>  __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5200
+>  alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
+>  alloc_slab_page mm/slub.c:1645 [inline]
+>  allocate_slab+0x32e/0x4c0 mm/slub.c:1785
+>  new_slab mm/slub.c:1848 [inline]
+>  new_slab_objects mm/slub.c:2594 [inline]
+>  ___slab_alloc+0x4a1/0x810 mm/slub.c:2757
+>  __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2797
+>  slab_alloc_node mm/slub.c:2879 [inline]
+>  kmem_cache_alloc_node+0x12f/0x3e0 mm/slub.c:2949
+>  alloc_task_struct_node kernel/fork.c:171 [inline]
+>  dup_task_struct kernel/fork.c:865 [inline]
+>  copy_process+0x5c8/0x7120 kernel/fork.c:1947
+>  kernel_clone+0xe7/0xab0 kernel/fork.c:2503
+>  kernel_thread+0xb5/0xf0 kernel/fork.c:2555
+>  create_kthread kernel/kthread.c:336 [inline]
+>  kthreadd+0x52a/0x790 kernel/kthread.c:679
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> page_owner free stack trace missing
+> 
+> Memory state around the buggy address:
+>  ffff8880294cbb80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>  ffff8880294cbc00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> >ffff8880294cbc80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>                             ^
+>  ffff8880294cbd00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>  ffff8880294cbd80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> ==================================================================
+> 
