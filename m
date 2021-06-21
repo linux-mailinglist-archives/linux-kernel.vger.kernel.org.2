@@ -2,165 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF0F3AE2D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 07:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 451743AE2CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 07:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhFUFiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 01:38:50 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:53145 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbhFUFit (ORCPT
+        id S229765AbhFUFeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 01:34:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229661AbhFUFeY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 01:38:49 -0400
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210621053633epoutp0181c2cee4457e6fb13008a0ac7b22f66a~KgjhH3_Wb0918409184epoutp01L
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 05:36:33 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210621053633epoutp0181c2cee4457e6fb13008a0ac7b22f66a~KgjhH3_Wb0918409184epoutp01L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1624253793;
-        bh=0PLR6M50yiRdMI4Vr9g6B/Mq+cV1i9BidWEN60U5MmM=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=kZ3b73Q2XoNjFX+Ayo+09HowV71kGYiYkrQekD6O/4MCp7uw+zXfJKvY7MvVo1HeN
-         vYwMbgE0k3FrJmhHEh6FIvHg8H55byD/GCii5g6JEMRotxDhROOPri5jWzI8wglb4I
-         t47x4jHigZcPGtXSYAxIfL/L6wO86V//0UDnTthI=
-Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-        20210621053633epcas5p29aebe7aa9f5ae95af2009098a6434163~KgjgkpQ0e2583525835epcas5p2b;
-        Mon, 21 Jun 2021 05:36:33 +0000 (GMT)
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        E4.1E.09452.16520D06; Mon, 21 Jun 2021 14:36:33 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210621052648epcas5p3cbacaee0cccd663805a27056c6137356~Kga-_e8oP2593125931epcas5p3x;
-        Mon, 21 Jun 2021 05:26:48 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210621052648epsmtrp127ff6ada70782f09379c23a531f03b40~Kga-9ox020352403524epsmtrp1J;
-        Mon, 21 Jun 2021 05:26:48 +0000 (GMT)
-X-AuditID: b6c32a4b-429ff700000024ec-ed-60d02561441f
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        3E.08.08394.81320D06; Mon, 21 Jun 2021 14:26:48 +0900 (KST)
-Received: from mshams01 (unknown [107.122.12.94]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210621052646epsmtip168d181e4f721be5f7428ca887d4ae298~Kga_beFNs3221732217epsmtip1W;
-        Mon, 21 Jun 2021 05:26:46 +0000 (GMT)
-From:   "M Tamseel Shams" <m.shams@samsung.com>
-To:     <kgene@kernel.org>, <krzk@kernel.org>,
-        <gregkh@linuxfoundation.org>, <jslaby@suse.com>
-Cc:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>,
-        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alim.akhtar@samsung.com>, <ajaykumar.rs@samsung.com>
-In-Reply-To: <20210621044757.40046-1-m.shams@samsung.com>
-Subject: RE: [PATCH v4] serial: samsung: change to platform_get_irq_optional
-Date:   Mon, 21 Jun 2021 10:56:45 +0530
-Message-ID: <000801d7665e$08424a00$18c6de00$@samsung.com>
+        Mon, 21 Jun 2021 01:34:24 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B7AC061574;
+        Sun, 20 Jun 2021 22:32:10 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id bb20so5069232pjb.3;
+        Sun, 20 Jun 2021 22:32:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=9Dkwdn9F1dEc6drYZVBte1PeX9pW02/5PpZNItAMxjk=;
+        b=Y4L2y3K3dfO+HYNLCDmxWRT5BGc+Vi55FMc3yMUdMMQ2ihq3gxg11Fo+Koz8vtK6cG
+         SCzCSD+1O1t+CyxHu1Li7k4yigOcEIp4+qatZ/lnJzE0EROxC97pKhCP/j+Rti0AV5ry
+         hXkJMzFvG1cnDevCojrDkvv4eXrGCi1ym1WVvpSACsjgHqiVBVVWedhdZHtTvYxWn/tw
+         tZCEihRNAmysmh8Y4gGq65t/duk7yMAqTD1YVDJEPepl5476vXhwfwclHEWjZJGcPUEO
+         PIZcRwol19+Kinf/fttz0ZzXckDPOi0hUvaCXhyAknS0C8B5fUGb5fFJMKLiHkX9QDsT
+         6Tvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=9Dkwdn9F1dEc6drYZVBte1PeX9pW02/5PpZNItAMxjk=;
+        b=d+e7lzudtawkE0pc3otQtw02srQWKLZO1gzu9m5jpXg/VKNMRFuVuWXPGY4MT2f4/1
+         lJubY8GS7+PW4jkzDNS092+ydsxyI2f8mkfspPXNDgQZgLanuuHFT6iCfYZoOUd6E8zB
+         77jhJmUF1RdfkKACLU4vJGNiZCJ6VP9m74kbT5OjwxPsl4oG9BlYheUCyzFFfIjh7k7X
+         RW1Ep/vz1l3BFCVK/V2dakXPd7EBv2PRAOdql53miHG9S4RV9nDdK2VBtWC6wWi6xxXZ
+         avXJP8Y2bRdwHVRcGXP950NXW+rEriFnaF7NWNjPa18nXLXjEGGJU9SxcOnJxIbPlex0
+         Vwgg==
+X-Gm-Message-State: AOAM533e50h8jAaFnYkSX9fWJ0u1M8XukcDDwkHOb22UuY6O6f/X1CbO
+        WW493Op5VKmF4AX3U2c9jNY=
+X-Google-Smtp-Source: ABdhPJy6ShNBj/4lp9QqO0nZz6uf/JEyPKhJ050z5jPNoXLIznjBgPf40kkZYXgRSJtsG/8KPUxspA==
+X-Received: by 2002:a17:90a:6392:: with SMTP id f18mr25399433pjj.136.1624253529536;
+        Sun, 20 Jun 2021 22:32:09 -0700 (PDT)
+Received: from [10.1.1.25] (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
+        by smtp.gmail.com with ESMTPSA id x21sm2312621pfu.211.2021.06.20.22.32.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 20 Jun 2021 22:32:09 -0700 (PDT)
+Subject: Re: [PATCH 1/2] alpha/ptrace: Record and handle the absence of
+ switch_stack
+To:     Al Viro <viro@zeniv.linux.org.uk>
+References: <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+ <87fsxjorgs.fsf@disp2133> <87zgvqor7d.fsf_-_@disp2133>
+ <CAHk-=wir2P6h+HKtswPEGDh+GKLMM6_h8aovpMcUHyQv2zJ5Og@mail.gmail.com>
+ <87mtrpg47k.fsf@disp2133> <87pmwlek8d.fsf_-_@disp2133>
+ <87k0mtek4n.fsf_-_@disp2133> <393c37de-5edf-effc-3d06-d7e63f34a317@gmail.com>
+ <CAHk-=wip8KgrNUcU68wsLZqbWV+3NWg9kqqQwygHGAA8-xOwMA@mail.gmail.com>
+ <60c0fe00-b966-6385-d348-f6dd45277113@gmail.com>
+ <YNALIY2vhvzKi+Sy@zeniv-ca.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <f0be8f95-e4ab-960f-19fa-ab60fd958552@gmail.com>
+Date:   Mon, 21 Jun 2021 17:31:58 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQLrt4vOvQgF3TDEnmyTfCXOmtgdwgF+I3k8qOlbpbA=
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrCKsWRmVeSWpSXmKPExsWy7bCmhm6i6oUEg5ltPBYH3h9ksXgwbxub
-        RfPi9WwWUzZ8YLLof/ya2eL8+Q3sFpseX2O1uLxrDpvFjPP7mCzOLO5ld+Dy2LSqk81j/9w1
-        7B6bl9R79G1ZxeixfstVFo/Pm+QC2KK4bFJSczLLUov07RK4Mk6cnMBWsIK/YtWdV2wNjO94
-        uhg5OSQETCT+P7rH0sXIxSEksJtR4uG0qawQzidGibYzV5ggnG+MEm++bmGEaXmy4S4LiC0k
-        sJdRovG0B0TRM0aJjvYtzCAJNgFdiUkH28BsEYEYiZVrPoNNYhY4wyjxePFkJpAEp4ClxL4r
-        R9lAbGEBH4kXz6aC2SwCqhI/JjeD2bxANVOa5jNB2IISJ2c+AdvMLKAtsWzha2aIixQkfj5d
-        xgqxzEpi/8rzjBA14hIvjx5hB1ksIbCWQ2LOhidQL7hIHF94gAnCFpZ4dXwLO4QtJfGyvw3K
-        zpeYP28V1IIKiZUX3kDZ9hIHrswBOoIDaIGmxPpd+hBhWYmpp9YxQezlk+j9/QRqPK/Ejnkw
-        tqLE/939UOPFJd6tmMI6gVFpFpLXZiF5bRaSF2YhbFvAyLKKUTK1oDg3PbXYtMA4L7Vcrzgx
-        t7g0L10vOT93EyM4YWl572B89OCD3iFGJg7GQ4wSHMxKIrycmWcShHhTEiurUovy44tKc1KL
-        DzFKc7AoifMuZT+UICSQnliSmp2aWpBaBJNl4uCUamCqzdznYK7T9tlO9evrbt3LMrVpu3Iu
-        Wv+N7TJLOnvrqqGCRzH/RBEOeeZHZ2cdEJkozfD5W3rg0U8BenWRVTNzEuQOrBY+4K91YpZE
-        671/gRlxS3fHdz1vTj+Yd0juFP/b8uNXb0/Lj9da5OFgK7en0VXr/0Q7abvn2WIFF/QDtCZX
-        t1xmep1ffMxK7Ry7SZSazYJZ8X76fQuTypnC229whUx/+ZY56Jq/72mOygjfQyW+YULL/Csm
-        SwiIaPH2CO3K2x6dKZWw1zN12u2VciZuTw/HeNiK71u+aPVXnXchrg4Ru0sZJ5eKVKqXPZ2z
-        mEPd7YNM/YK8mU+c+edMYtdqWnN/uZKb7pte1i+blViKMxINtZiLihMBdaz9j8cDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBIsWRmVeSWpSXmKPExsWy7bCSnK6E8oUEgwOTJSwOvD/IYvFg3jY2
-        i+bF69kspmz4wGTR//g1s8X58xvYLTY9vsZqcXnXHDaLGef3MVmcWdzL7sDlsWlVJ5vH/rlr
-        2D02L6n36NuyitFj/ZarLB6fN8kFsEVx2aSk5mSWpRbp2yVwZUz68oep4A9fRc/uC2wNjPt4
-        uhg5OSQETCSebLjL0sXIxSEksJtRomHzbXaIhLjEtF/7GSFsYYmV/56zQxQ9YZQ4teM8WBGb
-        gK7EpINtzCC2iECCxJeTMxlBipgFLjBKdB+9AdXRxSjxfudlsFGcApYS+64cZQOxhQV8JF48
-        mwpmswioSvyY3Axm8wLVTGmazwRhC0qcnPmEBcRmFtCW6H3YyghjL1v4mhniPAWJn0+XsUJc
-        YSWxf+V5qBpxiZdHj7BPYBSehWTULCSjZiEZNQtJywJGllWMkqkFxbnpucWGBYZ5qeV6xYm5
-        xaV56XrJ+bmbGMGRp6W5g3H7qg96hxiZOBgPMUpwMCuJ8HJmnkkQ4k1JrKxKLcqPLyrNSS0+
-        xCjNwaIkznuh62S8kEB6YklqdmpqQWoRTJaJg1OqgUmJ/bmv6bYas7gw1uOPD32LPPa7xDBj
-        0Yts7533q1ZtirolbZc+//csoXCBjZWCS19/2XLpRIDOhVk1UUJ6Cod9Fz3VNum0fbBw5az3
-        XRfrrE+uVo5g3jut7E3uZvmXd0/517yZyKbaPN3o1a3eEK37u+N1ttm/SthUbL/r3bRYnfqZ
-        385/W38v/31jS8VK6W+TOMUON3w+PzvDVU5nfqepdbjIBlWzFNGdb8KXXZTher6+dt93TvXv
-        su90OCIsprvM5asQTxUOc+XicWf7Um+f8I/t+PF5V3NOfpj9ZMK0K1Lr+2u5D15eqdF9UfyQ
-        /TPruR5LZwocer7Sas6XK/NWv4l9yd+izSJ26LjilsSPSizFGYmGWsxFxYkAVgQfPisDAAA=
-X-CMS-MailID: 20210621052648epcas5p3cbacaee0cccd663805a27056c6137356
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20210621044400epcas5p40368077e77d2da219db8f890dfd69f7c
-References: <CGME20210621044400epcas5p40368077e77d2da219db8f890dfd69f7c@epcas5p4.samsung.com>
-        <20210621044757.40046-1-m.shams@samsung.com>
+In-Reply-To: <YNALIY2vhvzKi+Sy@zeniv-ca.linux.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Al,
+
+Am 21.06.2021 um 15:44 schrieb Al Viro:
+> On Mon, Jun 21, 2021 at 03:18:35PM +1200, Michael Schmitz wrote:
+>
+>> This is what I get from WARN_ONCE:
+>>
+>> ------------[ cut here ]------------
+>> WARNING: CPU: 0 PID: 1177 at arch/m68k/kernel/ptrace.c:91 get_reg+0x90/0xb8
+>> Modules linked in:
+>> CPU: 0 PID: 1177 Comm: strace Not tainted 5.13.0-rc1-atari-fpuemu-exitfix+
+>> #1146
+>> Stack from 014b7f04:
+>>         014b7f04 00336401 00336401 000278f0 0032c015 0000005b 00000005
+>> 0002795a
+>>         0032c015 0000005b 0000338c 00000009 00000000 00000000 ffffffe4
+>> 00000005
+>>         00000003 00000014 00000003 00000014 efc2b90c 0000338c 0032c015
+>> 0000005b
+>>         00000009 00000000 efc2b908 00912540 efc2b908 000034cc 00912540
+>> 00000005
+>>         00000000 efc2b908 00000003 00912540 8000110c c010b0a4 efc2b90c
+>> 0002d1d8
+>>         00912540 00000003 00000014 efc2b908 0000049a 00000014 efc2b908
+>> 800acaa8
+>> Call Trace: [<000278f0>] __warn+0x9e/0xb4
+>>  [<0002795a>] warn_slowpath_fmt+0x54/0x62
+>>  [<0000338c>] get_reg+0x90/0xb8
+>>  [<0000338c>] get_reg+0x90/0xb8
+>>  [<000034cc>] arch_ptrace+0x7e/0x250
+>>  [<0002d1d8>] sys_ptrace+0x232/0x2f8
+>>  [<00002ab6>] syscall+0x8/0xc
+>>  [<0000c00b>] lower+0x7/0x20
+>>
+>> ---[ end trace ee4be53b94695793 ]---
+>>
+>> Syscall numbers are actually 90 and 192 - sys_old_mmap and sys_mmap2 on
+>> m68k. Used the calculator on my Ubuntu desktop, that appears to be a little
+>> confused about hex to decimal conversions.
+>>
+>> I hope that makes more sense?
+>
+> Not really; what is the condition you are checking?  The interesting trace
+
+The check in get_reg() is:
 
 
-> -----Original Message-----
-> From: Tamseel Shams <m.shams=40samsung.com>
-> Sent: Monday, June 21, 2021 10:18 AM
-> To: kgene=40kernel.org; krzk=40kernel.org; gregkh=40linuxfoundation.org;
-> jslaby=40suse.com
-> Cc: linux-arm-kernel=40lists.infradead.org; linux-samsung-soc=40vger.kern=
-el.org;
-> linux-serial=40vger.kernel.org; linux-kernel=40vger.kernel.org;
-> alim.akhtar=40samsung.com; ajaykumar.rs=40samsung.com; Tamseel Shams
-> <m.shams=40samsung.com>
-> Subject: =5BPATCH v4=5D serial: samsung: change to platform_get_irq_optio=
-nal
->=20
-> In few older Samsung SoCs like s3c2410, s3c2412 and s3c2440, UART IP is h=
-aving
-> 2 interrupt lines.
-> However, in other SoCs like s3c6400, s5pv210, exynos5433, and exynos4210
-> UART is having only 1 interrupt line. Due to this, =22platform_get_irq(pl=
-atdev, 1)=22
-> call in the driver gives the following false-positive error:
-> =22IRQ index 1 not found=22 on recent platforms.
->=20
-> This patch replaces the platform_get_irq() call with
-> platform_get_irq_optional() and hence avoiding the false-positive error.
->=20
-> Signed-off-by: Tamseel Shams <m.shams=40samsung.com>
-> ---
-> Commit message is changed.
-> Addressed Krzysztof's previous comment.
->=20
->  drivers/tty/serial/samsung_tty.c =7C 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsun=
-g_tty.c
-> index 6ef614d8648c..c44582011b9b 100644
-> --- a/drivers/tty/serial/samsung_tty.c
-> +++ b/drivers/tty/serial/samsung_tty.c
-> =40=40 -1911,7 +1911,7 =40=40 static int s3c24xx_serial_init_port(struct
-> s3c24xx_uart_port *ourport,
->  		ourport->tx_irq =3D ret + 1;
->  	=7D
->=20
-> -	ret =3D platform_get_irq(platdev, 1);
-> +	ret =3D platform_get_irq_optional(platdev, 1);
->  	if (ret > 0)
->  		ourport->tx_irq =3D ret;
->  	/*
-> --
->=20
-
-Please ignore this patch.
-Sorry for the spam.
-
-Thanks & Regards,
-Tamseel Shams
+            if (WARN_ON_ONCE((off < PT_REG(d1)) &&
+               test_ti_thread_status(task_thread_info(task),TIS_TRACING)
+                    && !test_ti_thread_status(task_thread_info(task),
+                                         TIS_ALLREGS_SAVED))) {
+                    unsigned long *addr_d0;
+                    addr_d0 = (unsigned long *)(task->thread.esp0 + 
+regoff[16]);
+                    pr_err("get_reg with incomplete stack, regno %d offs 
+%d orig_d0 %lx\n", regno, off, *addr_d0);
+                    return 0;
+            }
 
 
+> is not that with get_reg() - it's that of the process being traced.  You
+> are not accessing the stack of caller of ptrace(2) here, so you want to
+> know that SAVE_SWITCH_STACK had been done by the tracee, not tracer.
+>
+> And if that had been strace ls, you have TIF_SYSCALL_TRACE set for ls, so
+> 	* ls hits system_call
+> 	* notices TIF_SYSCALL_TRACE and goes to do_trace_entry
+> 	* does SAVE_SWITCH_STACK there
+
+... and sets both the new TIS_TRACING and TIS_ALLREGS_SAVED flags in the 
+thread_info->status field (now that I've corrected my patch).
+
+> 	* calls syscall_trace(), which calls ptrace_notify()
+> 	* ptrace_notify() calls ptrace_do_notify(), which calls ptrace_stop()
+> 	* ptrace_stop() arranges for tracer to be woken up and gives CPU up,
+> with TASK_TRACED as process state.
+
+Thanks for explaining! So in order to get a trace for the process being 
+traced, I would have to check the TIS_ALLREGS_SAVED in ptrace_stop()?
+
+> That's the callchain in ls, and switch_stack accessed by get_reg() from
+> strace is the one on ls(1) stack created by SAVE_SWITCH_STACK.
+
+So testing for TIS_ALLREGS_SAVED in get_reg() (called by the tracer, but 
+with the tracee's task struct passed to arch_ptrace()) does check that 
+SAVE_SWITCH_STACK was done before the syscall in the tracee, right?
+
+Anyway, I'd missed setting the flags for some crucial SAVE_SWITCH_STACK 
+operations in my woefully incomplete patch. With that corrected, there's 
+no more warning from mmap. I'll try with a more recent version of strace 
+and gdb once I've updated my test image.
+
+Cheers,
+
+	Michael
