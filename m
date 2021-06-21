@@ -2,133 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DB063AF4FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 590C53AF507
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:25:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231807AbhFUS0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:26:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231194AbhFUS0l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:26:41 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E67C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:24:25 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id d12so297143pgd.9
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:24:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8srstiN/1QZXwDTulF83V5rnWY0uXObxwuHnse4sC/A=;
-        b=mbdRjmeqpU09zwARWs6VBWCsKthtt1ciZ7/sKECb+LXhO/trEQk1wiQ8V1CZ0EV2Jm
-         ZlEkgW0zlljp2e/FgFuPRW9rdjI05xum01p50e9bFYSmMCNHbE5kQqAAo8oW420leycF
-         l0vqb2QcSakmgDG0XDSPywc8AdQoRSaV2MRpsf1z/7e/SYs0HhYtYQWrwQE/QE4PjipG
-         c4TpQZj3g/Yj1i5YmfIbNfvRTE4EkwYphVE25FDEvIvwz2vNVjsu4RuTd9AcI1aE94qc
-         6y/mckyWvHWNGxtF6OvgOWOlNbuvcJGnmCcaDgeccujmVJiAIXsJrfar32C9U2x7wAJX
-         6Gqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8srstiN/1QZXwDTulF83V5rnWY0uXObxwuHnse4sC/A=;
-        b=n/KfSlDKASNnDOQL5hVa74WMyrjR0YUyQRiJouDX7zyc5y0kwfyl7llfOVYgKG75gg
-         k5HsOGHOWsOSgfcKYA5BouMfMLxh9VbP7noU8qnKB8nH66Y9uokIdcXEZmKF75Lr8e2o
-         Pp8dneuQeJT+a1D63LL0KMtMsQIm3Cs2PJqaaJR/2QmqB0M6d2A5wiIAJ65R7P7xa0AC
-         8Gsp2uty1GFE6zIkU0wKkRsPECUrzID4Yfw2oPT3TVo2uF8tdqkWq4sbIrJQ1lY4HbqA
-         +qgjYYOXfxX/J4d8unIHJbDSuVRyI9DkLSftNl+6V9v2141kRvM8j56xIJT00Lit+sQa
-         rX0g==
-X-Gm-Message-State: AOAM5325U8zg39LfPNTNzOpmigIGtjQgVGl4HkfAoogeg8VEjWyP3DFZ
-        KUvnvYNBrqpSbdAJZlWdwXxN/w==
-X-Google-Smtp-Source: ABdhPJwsKW/VhOsBp1lMcO0miiGnEaYNCbevivBl7JAn5W5XepPB84CTUFkwR3IV2ygsBGL4tRrmSA==
-X-Received: by 2002:a63:1143:: with SMTP id 3mr25502463pgr.166.1624299865199;
-        Mon, 21 Jun 2021 11:24:25 -0700 (PDT)
-Received: from google.com ([2620:15c:2ce:200:33e1:52f0:4159:6ed])
-        by smtp.gmail.com with ESMTPSA id b18sm4756953pft.1.2021.06.21.11.24.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 11:24:24 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 11:24:18 -0700
-From:   Fangrui Song <maskray@google.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Bill Wendling <wcw@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
+        id S231901AbhFUS2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:28:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231740AbhFUS2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 14:28:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EDD606054E;
+        Mon, 21 Jun 2021 18:25:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624299950;
+        bh=xDbIiO2U9PPPDA8IGdGJB0YSQtthnxnEYlLcPl6LzZk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=GkIXifskbHUdNDMnLgqEC7yGxDgDNaOjFv4ijENR4xtQgB4IlqFLUhws3uDzaHCAe
+         oe754NLbUUOcWj8kGxvcSm+XpWorxq6SUN6Ee14MNuAeX2JFP60a2iqEb+t//jGEEs
+         exv5CxQf4pNUkVEwnLYWX7hYx/jD90o5aq2EYafYxfmvu+gl5Wpo47O7L067tHUti2
+         85BH/cU89909Y7F8tI3r/ezdg6IUWHAyX1Y3QP47u0VdMtFy7G5y/YPtgSLbXOLNTC
+         M7C78CmwvzltAta+/dJw/R5UIFidoUHlvBzsIGbsb/aex5Cd8wbwxxomH7JrUuoryt
+         V8fro9fatTHoQ==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Paul Mackerras <paulus@ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
         Nathan Chancellor <nathan@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Martin Liska <mliska@suse.cz>,
-        Marco Elver <elver@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH 1/2] compiler_attributes.h: define __no_profile, add to
- noinstr
-Message-ID: <20210621182418.57qbumtovysrlkwy@google.com>
-References: <20210618233023.1360185-1-ndesaulniers@google.com>
- <20210618233023.1360185-2-ndesaulniers@google.com>
- <CANiq72kjyiAQn2+ijZKFo7SY3z+dCV6fGXYP1O_Mq7Ui3EqSzQ@mail.gmail.com>
- <CANiq72nbbqeD2dv3z0y3rN-_kdnh=9-pD7oSyWUfaG8oJ2y_8A@mail.gmail.com>
- <CAKwvOd=B6LV9rZmtPacfz_F10jj1wrovoGu8yvdOqKZ69-T6mQ@mail.gmail.com>
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] KVM: PPC: Book3S HV: Workaround high stack usage with clang
+Date:   Mon, 21 Jun 2021 11:24:40 -0700
+Message-Id: <20210621182440.990242-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.32.0.93.g670b81a890
+In-Reply-To: <YNDUEoanTqvayZ5P@archlinux-ax161>
+References: <YNDUEoanTqvayZ5P@archlinux-ax161>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAKwvOd=B6LV9rZmtPacfz_F10jj1wrovoGu8yvdOqKZ69-T6mQ@mail.gmail.com>
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-21, Nick Desaulniers wrote:
->On Sat, Jun 19, 2021 at 4:32 AM Miguel Ojeda
-><miguel.ojeda.sandonis@gmail.com> wrote:
->>
->> On Sat, Jun 19, 2021 at 1:26 PM Miguel Ojeda
->> <miguel.ojeda.sandonis@gmail.com> wrote:
->> >
->> > I am not sure if it is best or not to have the GCC link in order to be
->> > consistent with the rest of the links (they are for the docs only). Do
->> > we know if GCC going to implement it soon?
->>
->> i.e. if GCC does not implement it yet we use elsewhere this kind of
->> marker instead:
->>
->>      * Optional: not supported by gcc
->>
->> The first of its kind, normally it is clang/icc there ;-)
->
->:^) GCC does have an attribute since GCC 7.1 for this.
->https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80223#c11
->I'm moving Clang over to use that in
->https://reviews.llvm.org/D104658
->Once that lands, I'll send a v2 (without carrying any reviewed by tags).
+LLVM does not emit optimal byteswap assembly, which results in high
+stack usage in kvmhv_enter_nested_guest() due to the inlining of
+byteswap_pt_regs(). With LLVM 12.0.0:
 
-Thanks! __attribute__((no_profile_instrument_function)) looks good to me.
+arch/powerpc/kvm/book3s_hv_nested.c:289:6: error: stack frame size of
+2512 bytes in function 'kvmhv_enter_nested_guest' [-Werror,-Wframe-larger-than=]
+long kvmhv_enter_nested_guest(struct kvm_vcpu *vcpu)
+     ^
+1 error generated.
 
-Also a reminder that __GCC4_has_attribute___no_profile in v1 misses two
-underscores. v2 no_profile_instrument_function may need to fix this.
+While this gets fixed in LLVM, mark byteswap_pt_regs() as
+noinline_for_stack so that it does not get inlined and break the build
+due to -Werror by default in arch/powerpc/. Not inlining saves
+approximately 800 bytes with LLVM 12.0.0:
 
+arch/powerpc/kvm/book3s_hv_nested.c:290:6: warning: stack frame size of
+1728 bytes in function 'kvmhv_enter_nested_guest' [-Wframe-larger-than=]
+long kvmhv_enter_nested_guest(struct kvm_vcpu *vcpu)
+     ^
+1 warning generated.
 
-Reviewed-by: Fangrui Song <maskray@google.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1292
+Link: https://bugs.llvm.org/show_bug.cgi?id=49610
+Link: https://lore.kernel.org/r/202104031853.vDT0Qjqj-lkp@intel.com/
+Link: https://gist.github.com/ba710e3703bf45043a31e2806c843ffd
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ arch/powerpc/kvm/book3s_hv_nested.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
->>
->> We could nevertheless have the link there, something like:
->>
->>     * Optional: not supported by GCC
->>                 https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80223
->
->-- 
->Thanks,
->~Nick Desaulniers
+diff --git a/arch/powerpc/kvm/book3s_hv_nested.c b/arch/powerpc/kvm/book3s_hv_nested.c
+index 60724f674421..1b3ff0af1264 100644
+--- a/arch/powerpc/kvm/book3s_hv_nested.c
++++ b/arch/powerpc/kvm/book3s_hv_nested.c
+@@ -53,7 +53,8 @@ void kvmhv_save_hv_regs(struct kvm_vcpu *vcpu, struct hv_guest_state *hr)
+ 	hr->dawrx1 = vcpu->arch.dawrx1;
+ }
+ 
+-static void byteswap_pt_regs(struct pt_regs *regs)
++/* Use noinline_for_stack due to https://bugs.llvm.org/show_bug.cgi?id=49610 */
++static noinline_for_stack void byteswap_pt_regs(struct pt_regs *regs)
+ {
+ 	unsigned long *addr = (unsigned long *) regs;
+ 
+
+base-commit: 4a21192e2796c3338c4b0083b494a84a61311aaf
+-- 
+2.32.0.93.g670b81a890
+
