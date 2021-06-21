@@ -2,351 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 121973AF688
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 21:58:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 554713AF690
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 22:04:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231796AbhFUUBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 16:01:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
+        id S231706AbhFUUGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 16:06:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230367AbhFUUA7 (ORCPT
+        with ESMTP id S230367AbhFUUGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 16:00:59 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5726C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 12:58:43 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id df12so18138176edb.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 12:58:43 -0700 (PDT)
+        Mon, 21 Jun 2021 16:06:22 -0400
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4537FC061574;
+        Mon, 21 Jun 2021 13:04:08 -0700 (PDT)
+Received: by mail-il1-x130.google.com with SMTP id u2so6142370ilk.7;
+        Mon, 21 Jun 2021 13:04:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=5nJUpHP+AKihPa1AMQgTqjUmqOCaeDAFIm1TGWnbwME=;
-        b=f2AfD7kVvkp/LYrP9U6dcQrH5JC0xZ0UeBZ4N3IHgdBydSm4s7fU8F5c8D+ra3kB72
-         JpUOZ1pV3Um2om0Egl3SFMr7g4mCO6+vKbom/4KFblyiXwBVlVwE8fCyTr/b3wkSIPlV
-         hqi1PUBNinrL8W7L9eXfdrzo8KT8fuoOSFm/IQWZAA/ojnayzB2nc9T2OGvOOhawRKkX
-         eOrQluipaqH+TiT8/F1T9Yj2RT2LVRXelPTCH7FaUIo36Mhqb0810R0dZjBGAIJ5SNTm
-         qsJPUeZ1LKHiQZM4TFcC5Sq9Uj8ulziU+IAxguA3yvPmLBFqOem9LBuHWOmwGXKeCpf0
-         1jgA==
+        bh=oA+i7cyjpo0snGDbQFSo3up3eY3Q0ygdCA7tM5B6xdw=;
+        b=Gmd5CVayHLlJ/ntmxBSN0XIQGAbesIBlcKHcago/BzdgI4ecmMBFXxDoyWtkMRQgk+
+         5sh5ecBmpK1H/BLQZjnKdIKX63TJdJ7s3cwCl/kbQ5kVKSsIz2B7cSN63Y0szv7MfURn
+         hmxBbiWcpW/lWJP8P+g+2aro8Wbbv18a/TKFhLJ3KlHzqP1n77RPspJK51x8Yx56QfHe
+         0KSpJM22s17fwvAUZfoxxVg90qxWaEYPn7LXSsvU2dDjfV0RcXRe0e1BKwsiUFeM74I7
+         Ah0arY3eX4zdZOT7dVZZfJyGlxThYkYtSz4+kq3q+kOrQX7FwAJYFoXjaAQRCa/dc4Rj
+         G30g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=5nJUpHP+AKihPa1AMQgTqjUmqOCaeDAFIm1TGWnbwME=;
-        b=Rw6V8l5CJH6dRQGMdfA5jaUJy5UnfTzBK0EIxM2iK9ZVsGAcuIQImEsN5OO+TOUPi5
-         9D/Z0bKOjNsdLE0UeN0iWcQDiwTcQMxoQFWf+GHMdWOV6cSxX9BrGdqpFXilUAvuQ8k3
-         NElgcjYD24On2OV4SVR3te3zrqD58bXyDA6vZ0g4Zv7serhg7oWMCjPq2C3XuSnW3euO
-         ENvfYT6Te8AyZAOI7B1N3lejAg/sm2Bu8GcV+8BPcl/nnwyLLY2TWb2aS+lekh0Cf7tT
-         lM0Laf45SDUJ6thN4NZQEuSvcm5OjejutC59G32D6fVV5qxU0nli8mlQV5jJpfCRZe9R
-         hy0w==
-X-Gm-Message-State: AOAM530A4N8vOHWmcrgr5/n782P1vqzffUEunINmC8PU9zpixHctUJN4
-        GBtOKeYTChitwDtFhcUQR8iONrONNVt862ZrLoI=
-X-Google-Smtp-Source: ABdhPJyaXn1GqbXRnk1Zz2C9ltvZcEDBV6SE7Tc2YfENQCzZKQ6stR79fUH5YB9RgypEkpqHa/SrhplG+VD2RCTH5fo=
-X-Received: by 2002:a05:6402:42d2:: with SMTP id i18mr117206edc.168.1624305522539;
- Mon, 21 Jun 2021 12:58:42 -0700 (PDT)
+        bh=oA+i7cyjpo0snGDbQFSo3up3eY3Q0ygdCA7tM5B6xdw=;
+        b=ibTMXgYVuEhoRFYnYAQLw80oXtqk9PKhyziZw6pM7vAI1KT2LQVgEmg5gidPjrRy/a
+         hdhQCHiGu/FTXO0I3Y3bAAghdH/s4Ejm2E342rocLVQ/+IQrFhmdTk4c9vm5w9t9z642
+         Y7lCvJ1Rhzr1YWLdaN1GJ8pPfy31sne8mYJMM+6J8ZQbp3/rwVYmI9N+AEWuegHgIouX
+         M1vrBR8Vohx43X6erPBUK+WzbOkrVk6S3Uow7pRHsecBC9DPtFBvbk/mhtV3jEfSvlp2
+         OZcXBv5Xpe/nOeRsuZNeoA7AQ5AuyHLhYUC1vMtLJlgwZ+7Y7SJFGPDbDTOmkczVvXMw
+         zEEA==
+X-Gm-Message-State: AOAM5314mEnzhIa7heGDyshu3QHIQFs563YCN8F2tJccDer1Jyde+PuQ
+        qZTfXFsfZv3EyFb6w4qwXY9lGF+JHrAeQhygd98=
+X-Google-Smtp-Source: ABdhPJzH65UFNyt41ipMYT/6WP4zzWtJR9CDsqrOFrHMWwnfW+zU8sPbxzcGJsAJDwvYkz+FqyQsWoVd5Yh6MfFShxg=
+X-Received: by 2002:a92:b30b:: with SMTP id p11mr18089430ilh.114.1624305847680;
+ Mon, 21 Jun 2021 13:04:07 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210618061537.434999-1-ying.huang@intel.com> <20210618061537.434999-6-ying.huang@intel.com>
- <88CFDFA7-70E1-4C26-B9CF-7A0CEFEB035A@nvidia.com> <874kdupab0.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <874kdupab0.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 21 Jun 2021 12:58:30 -0700
-Message-ID: <CAHbLzkoOYoMuDQx7rBG0-9BrpczAbuE5_-HNLrr_Jn=ttc2kkg@mail.gmail.com>
-Subject: Re: [PATCH -V8 05/10] mm/migrate: demote pages during reclaim
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>, Wei Xu <weixugc@google.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Rientjes <rientjes@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        osalvador <osalvador@suse.de>, Minchan Kim <minchan@kernel.org>
+References: <20210619140948.98712-1-paolo.valente@linaro.org> <3533087.dJKXTdksHR@spock>
+In-Reply-To: <3533087.dJKXTdksHR@spock>
+From:   =?UTF-8?Q?Piotr_G=C3=B3rski?= <lucjan.lucjanov@gmail.com>
+Date:   Mon, 21 Jun 2021 22:03:56 +0200
+Message-ID: <CAL2Yj0QVe9PYTSmt2s294DS=P-UPTbGFC91fLLJnu15jQNCO5w@mail.gmail.com>
+Subject: Re: [PATCH FIXES/IMPROVEMENTS 0/7] block, bfq: preserve control,
+ boost throughput, fix bugs
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        linux-block@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        mariottiluca1@hotmail.it,
+        =?UTF-8?Q?Holger_Hoffst=C3=A4tte?= <holger@applied-asynchrony.com>,
+        pedroni.pietro.96@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 19, 2021 at 12:45 AM Huang, Ying <ying.huang@intel.com> wrote:
->
-> Zi Yan <ziy@nvidia.com> writes:
->
-> > On 18 Jun 2021, at 2:15, Huang Ying wrote:
-> >
-> >> From: Dave Hansen <dave.hansen@linux.intel.com>
-> >>
-> >> This is mostly derived from a patch from Yang Shi:
-> >>
-> >>      https://lore.kernel.org/linux-mm/1560468577-101178-10-git-send-em=
-ail-yang.shi@linux.alibaba.com/
-> >>
-> >> Add code to the reclaim path (shrink_page_list()) to "demote" data
-> >> to another NUMA node instead of discarding the data.  This always
-> >> avoids the cost of I/O needed to read the page back in and sometimes
-> >> avoids the writeout cost when the pagee is dirty.
-> >>
-> >> A second pass through shrink_page_list() will be made if any demotions
-> >> fail.  This essentally falls back to normal reclaim behavior in the
-> >> case that demotions fail.  Previous versions of this patch may have
-> >> simply failed to reclaim pages which were eligible for demotion but
-> >> were unable to be demoted in practice.
-> >>
-> >> Note: This just adds the start of infratructure for migration. It is
-> >> actually disabled next to the FIXME in migrate_demote_page_ok().
-> >>
-> >> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> >> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-> >> Cc: Michal Hocko <mhocko@suse.com>
-> >> Cc: Wei Xu <weixugc@google.com>
-> >> Cc: Yang Shi <yang.shi@linux.alibaba.com>
-> >> Cc: David Rientjes <rientjes@google.com>
-> >> Cc: Dan Williams <dan.j.williams@intel.com>
-> >> Cc: osalvador <osalvador@suse.de>
-> >>
-> >> --
-> >> changes from 20210122:
-> >>  * move from GFP_HIGHUSER -> GFP_HIGHUSER_MOVABLE (Ying)
-> >>
-> >> changes from 202010:
-> >>  * add MR_NUMA_MISPLACED to trace MIGRATE_REASON define
-> >>  * make migrate_demote_page_ok() static, remove 'sc' arg until
-> >>    later patch
-> >>  * remove unnecessary alloc_demote_page() hugetlb warning
-> >>  * Simplify alloc_demote_page() gfp mask.  Depend on
-> >>    __GFP_NORETRY to make it lightweight instead of fancier
-> >>    stuff like leaving out __GFP_IO/FS.
-> >>  * Allocate migration page with alloc_migration_target()
-> >>    instead of allocating directly.
-> >> changes from 20200730:
-> >>  * Add another pass through shrink_page_list() when demotion
-> >>    fails.
-> >> changes from 20210302:
-> >>  * Use __GFP_THISNODE and revise the comment explaining the
-> >>    GFP mask constructionn
-> >> ---
-> >>  include/linux/migrate.h        |  9 ++++
-> >>  include/trace/events/migrate.h |  3 +-
-> >>  mm/vmscan.c                    | 83 +++++++++++++++++++++++++++++++++=
-+
-> >>  3 files changed, 94 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/include/linux/migrate.h b/include/linux/migrate.h
-> >> index 4a49bb358787..42952cbe452b 100644
-> >> --- a/include/linux/migrate.h
-> >> +++ b/include/linux/migrate.h
-> >> @@ -28,6 +28,7 @@ enum migrate_reason {
-> >>      MR_NUMA_MISPLACED,
-> >>      MR_CONTIG_RANGE,
-> >>      MR_LONGTERM_PIN,
-> >> +    MR_DEMOTION,
-> >>      MR_TYPES
-> >>  };
-> >>
-> >> @@ -191,6 +192,14 @@ struct migrate_vma {
-> >>  int migrate_vma_setup(struct migrate_vma *args);
-> >>  void migrate_vma_pages(struct migrate_vma *migrate);
-> >>  void migrate_vma_finalize(struct migrate_vma *migrate);
-> >> +int next_demotion_node(int node);
-> >> +
-> >> +#else /* CONFIG_MIGRATION disabled: */
-> >> +
-> >> +static inline int next_demotion_node(int node)
-> >> +{
-> >> +    return NUMA_NO_NODE;
-> >> +}
-> >>
-> >>  #endif /* CONFIG_MIGRATION */
-> >>
-> >> diff --git a/include/trace/events/migrate.h b/include/trace/events/mig=
-rate.h
-> >> index 9fb2a3bbcdfb..779f3fad9ecd 100644
-> >> --- a/include/trace/events/migrate.h
-> >> +++ b/include/trace/events/migrate.h
-> >> @@ -21,7 +21,8 @@
-> >>      EM( MR_MEMPOLICY_MBIND, "mempolicy_mbind")              \
-> >>      EM( MR_NUMA_MISPLACED,  "numa_misplaced")               \
-> >>      EM( MR_CONTIG_RANGE,    "contig_range")                 \
-> >> -    EMe(MR_LONGTERM_PIN,    "longterm_pin")
-> >> +    EM( MR_LONGTERM_PIN,    "longterm_pin")                 \
-> >> +    EMe(MR_DEMOTION,        "demotion")
-> >>
-> >>  /*
-> >>   * First define the enums in the above macros to be exported to users=
-pace
-> >> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> >> index 5199b9696bab..ddda32031f0c 100644
-> >> --- a/mm/vmscan.c
-> >> +++ b/mm/vmscan.c
-> >> @@ -41,6 +41,7 @@
-> >>  #include <linux/kthread.h>
-> >>  #include <linux/freezer.h>
-> >>  #include <linux/memcontrol.h>
-> >> +#include <linux/migrate.h>
-> >>  #include <linux/delayacct.h>
-> >>  #include <linux/sysctl.h>
-> >>  #include <linux/oom.h>
-> >> @@ -1231,6 +1232,23 @@ static enum page_references page_check_referenc=
-es(struct page *page,
-> >>      return PAGEREF_RECLAIM;
-> >>  }
-> >>
-> >> +static bool migrate_demote_page_ok(struct page *page)
-> >> +{
-> >> +    int next_nid =3D next_demotion_node(page_to_nid(page));
-> >> +
-> >> +    VM_BUG_ON_PAGE(!PageLocked(page), page);
-> >> +    VM_BUG_ON_PAGE(PageHuge(page), page);
-> >> +    VM_BUG_ON_PAGE(PageLRU(page), page);
-> >> +
-> >> +    if (next_nid =3D=3D NUMA_NO_NODE)
-> >> +            return false;
-> >> +    if (PageTransHuge(page) && !thp_migration_supported())
-> >> +            return false;
-> >> +
-> >> +    // FIXME: actually enable this later in the series
-> >> +    return false;
-> >> +}
-> >> +
-> >>  /* Check if a page is dirty or under writeback */
-> >>  static void page_check_dirty_writeback(struct page *page,
-> >>                                     bool *dirty, bool *writeback)
-> >> @@ -1261,6 +1279,47 @@ static void page_check_dirty_writeback(struct p=
-age *page,
-> >>              mapping->a_ops->is_dirty_writeback(page, dirty, writeback=
-);
-> >>  }
-> >>
-> >> +static struct page *alloc_demote_page(struct page *page, unsigned lon=
-g node)
-> >> +{
-> >> +    struct migration_target_control mtc =3D {
-> >> +            /*
-> >> +             * Allocate from 'node', or fail the quickly and quietly.
-> >> +             * When this happens, 'page; will likely just be discarde=
-d
-> >> +             * instead of migrated.
-> >> +             */
-> >> +            .gfp_mask =3D (GFP_HIGHUSER_MOVABLE & ~__GFP_RECLAIM) |
-> >> +                        __GFP_THISNODE  | __GFP_NOWARN |
-> >> +                        __GFP_NOMEMALLOC | GFP_NOWAIT,
-> >> +            .nid =3D node
-> >> +    };
-> >> +
-> >> +    return alloc_migration_target(page, (unsigned long)&mtc);
-> >> +}
-> >> +
-> >> +/*
-> >> + * Take pages on @demote_list and attempt to demote them to
-> >> + * another node.  Pages which are not demoted are left on
-> >> + * @demote_pages.
-> >> + */
-> >> +static unsigned int demote_page_list(struct list_head *demote_pages,
-> >> +                                 struct pglist_data *pgdat,
-> >> +                                 struct scan_control *sc)
-> >> +{
-> >> +    int target_nid =3D next_demotion_node(pgdat->node_id);
-> >> +    unsigned int nr_succeeded =3D 0;
-> >> +    int err;
-> >> +
-> >> +    if (list_empty(demote_pages))
-> >> +            return 0;
-> >> +
-> >> +    /* Demotion ignores all cpuset and mempolicy settings */
-> >> +    err =3D migrate_pages(demote_pages, alloc_demote_page, NULL,
-> >> +                        target_nid, MIGRATE_ASYNC, MR_DEMOTION,
-> >> +                        &nr_succeeded);
-> >> +
-> >> +    return nr_succeeded;
-> >> +}
-> >> +
-> >>  /*
-> >>   * shrink_page_list() returns the number of reclaimed pages
-> >>   */
-> >> @@ -1272,12 +1331,15 @@ static unsigned int shrink_page_list(struct li=
-st_head *page_list,
-> >>  {
-> >>      LIST_HEAD(ret_pages);
-> >>      LIST_HEAD(free_pages);
-> >> +    LIST_HEAD(demote_pages);
-> >>      unsigned int nr_reclaimed =3D 0;
-> >>      unsigned int pgactivate =3D 0;
-> >> +    bool do_demote_pass =3D true;
-> >>
-> >>      memset(stat, 0, sizeof(*stat));
-> >>      cond_resched();
-> >>
-> >> +retry:
-> >>      while (!list_empty(page_list)) {
-> >>              struct address_space *mapping;
-> >>              struct page *page;
-> >> @@ -1426,6 +1488,16 @@ static unsigned int shrink_page_list(struct lis=
-t_head *page_list,
-> >>                      ; /* try to reclaim the page below */
-> >>              }
-> >>
-> >> +            /*
-> >> +             * Before reclaiming the page, try to relocate
-> >> +             * its contents to another node.
-> >> +             */
-> >> +            if (do_demote_pass && migrate_demote_page_ok(page)) {
-> >> +                    list_add(&page->lru, &demote_pages);
-> >> +                    unlock_page(page);
-> >> +                    continue;
-> >> +            }
-> >> +
-> >>              /*
-> >>               * Anonymous process memory has backing store?
-> >>               * Try to allocate it some swap space here.
-> >> @@ -1676,6 +1748,17 @@ static unsigned int shrink_page_list(struct lis=
-t_head *page_list,
-> >>              list_add(&page->lru, &ret_pages);
-> >>              VM_BUG_ON_PAGE(PageLRU(page) || PageUnevictable(page), pa=
-ge);
-> >>      }
-> >> +    /* 'page_list' is always empty here */
-> >> +
-> >> +    /* Migrate pages selected for demotion */
-> >> +    nr_reclaimed +=3D demote_page_list(&demote_pages, pgdat, sc);
-> >> +    /* Pages that could not be demoted are still in @demote_pages */
-> >> +    if (!list_empty(&demote_pages)) {
-> >> +            /* Pages which failed to demoted go back on @page_list fo=
-r retry: */
-> >> +            list_splice_init(&demote_pages, page_list);
-> >> +            do_demote_pass =3D false;
-> >> +            goto retry;
-> >> +    }
-> >>
-> >>      pgactivate =3D stat->nr_activate[0] + stat->nr_activate[1];
-> >>
-> >> --
-> >> 2.30.2
-> >
-> > shrink_page_list() is also used by reclaim_pages(), which is called by
-> > madvise(MADV_PAGEOUT). This patch changes the semantics of madvise(MADV=
-_PAGEOUT)
-> > from =E2=80=9Creclaim a given range of pages=E2=80=9D to migrate the gi=
-ven pages to lower
-> > tier memory or reclaim them if the migration fails. You might want to c=
-heck
-> > the caller of shrink_page_list() to avoid changing madvise(MADV_PAGEOUT=
-)
-> > semantics.
->
-> Thanks for pointing this out!
->
-> Literally, PAGEOUT means writing the page to the disk instead of
-> migrating pages to the lower tier.  So it seems reasonable to make it
-> keep the original behavior instead of demoting even if in the tiered
-> memory system.
->
-> If nobody objects, I will change this in the next version.
+I have tested this with myself and this error does not occur with me
+and I have not noticed any regressions. I have applied almost exactly
+the same patches as Oleksandr.
 
-I don't have a strong opinion on this. But I just thought why not let
-PAGEOUT do demotion if tier'ed memory is available and the "migration
-in lieu of discard" behavior is opt'ed in by a knob and we keep the
-consistency between passive reclaim and proactive reclaim.
-
+pon., 21 cze 2021 o 21:55 Oleksandr Natalenko
+<oleksandr@natalenko.name> napisa=C5=82(a):
 >
-> Best Regards,
-> Huang, Ying
+> Hello.
+>
+> On sobota 19. =C4=8Dervna 2021 16:09:41 CEST Paolo Valente wrote:
+> > Hi Jens,
+> > this series contains an already proposed patch by Luca, plus six new
+> > patches. The goals of these patches are summarized in the subject of
+> > this cover letter. I'm including Luca's patch here, because it enabled
+> > the actual use of stable merge, and, as such, triggered an otherwise
+> > silent bug. This series contains also the fix for that bug ("block,
+> > bfq: avoid delayed merge of async queues"), tested by Holger [1].
+> >
+> > Thanks,
+> > Paolo
+> >
+> > [1] https://lkml.org/lkml/2021/5/18/384
+> >
+> > Luca Mariotti (1):
+> >   block, bfq: fix delayed stable merge check
+> >
+> > Paolo Valente (5):
+> >   block, bfq: let also stably merged queues enjoy weight raising
+> >   block, bfq: consider also creation time in delayed stable merge
+> >   block, bfq: avoid delayed merge of async queues
+> >   block, bfq: check waker only for queues with no in-flight I/O
+> >   block, bfq: reset waker pointer with shared queues
+> >
+> > Pietro Pedroni (1):
+> >   block, bfq: boost throughput by extending queue-merging times
+> >
+> >  block/bfq-iosched.c | 68 +++++++++++++++++++++++++++++++++++----------
+> >  1 file changed, 53 insertions(+), 15 deletions(-)
+> >
+> > --
+> > 2.20.1
+>
+> Not sure everything goes fine here. After applying this series on top of =
+the
+> latest stable 5.12 kernel I got this:
+>
+> ```
+> [16730.963248] kernel BUG at block/elevator.c:236!
+> [16730.963254] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+> [16730.963257] CPU: 11 PID: 109170 Comm: kworker/u64:5 Tainted: G        =
+W
+> 5.12.0-pf7 #1
+> [16730.963260] Hardware name: ASUS System Product Name/Pro WS X570-ACE, B=
+IOS
+> 3601 05/26/2021
+> [16730.963263] Workqueue: dm-thin do_worker [dm_thin_pool]
+> [16730.963270] RIP: 0010:elv_rqhash_find+0xcc/0xd0
+> [16730.963274] Code: 41 89 f0 81 e2 00 40 06 00 41 81 e0 1a 00 04 00 44 0=
+9 c2
+> 75 a9 be 09 00 00 00 c4 e2 4b f7 50 28 48 03 50 30 48 39 fa 75 c6 c3 <0f>=
+ 0b
+> 66 90 0f 1f 44 00 00 41 56 41 55 41 54 55 53 48 8b 47 68 48
+> [16730.963276] RSP: 0018:ffffa558d13b7af8 EFLAGS: 00010046
+> [16730.963279] RAX: ffff8a0007782d00 RBX: ffff8a0014b93000 RCX: ffffa558d=
+13b7b78
+> [16730.963281] RDX: ffff8a0014b93000 RSI: 0000000000063082 RDI: 000000001=
+e0fdc00
+> [16730.963283] RBP: ffff8a000731c770 R08: ffff8a000731c770 R09: fffffff0f=
+fffddfb
+> [16730.963284] R10: 0000000000000000 R11: 0000000000000400 R12: ffff8a033=
+0365c00
+> [16730.963286] R13: ffffa558d13b7b30 R14: 0000000000000000 R15: ffff8a021=
+2fc4000
+> [16730.963288] FS:  0000000000000000(0000) GS:ffff8a070ecc0000(0000) knlG=
+S:
+> 0000000000000000
+> [16730.963290] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [16730.963292] CR2: 00007f1514d90f4c CR3: 0000000315952000 CR4:
+> 0000000000350ee0
+> [16730.963294] Call Trace:
+> [16730.963297]  elv_merge+0x96/0x120
+> [16730.963300]  blk_mq_sched_try_merge+0x3e/0x370
+> [16730.963303]  bfq_bio_merge+0xd3/0x130
+> [16730.963306]  blk_mq_submit_bio+0x11e/0x6c0
+> [16730.963309]  submit_bio_noacct+0x457/0x530
+> [16730.963312]  raid10_unplug+0x13f/0x1a0 [raid10]
+> [16730.963316]  blk_flush_plug_list+0xa9/0x110
+> [16730.963319]  blk_finish_plug+0x21/0x30
+> [16730.963322]  process_prepared_discard_passdown_pt1+0x204/0x2d0
+> [dm_thin_pool]
+> [16730.963327]  do_worker+0x18e/0xce0 [dm_thin_pool]
+> [16730.963335]  process_one_work+0x217/0x3e0
+> [16730.963338]  worker_thread+0x4d/0x470
+> [16730.963343]  kthread+0x182/0x1b0
+> [16730.963349]  ret_from_fork+0x22/0x30
+> =E2=80=A6
+> [16730.963419] ---[ end trace dd7e037f2028257b ]---
+> [16730.963524] RIP: 0010:elv_rqhash_find+0xcc/0xd0
+> =E2=80=A6
+> [16730.963547] note: kworker/u64:5[109170] exited with preempt_count 1
+> [16747.948467] [drm:amdgpu_dm_atomic_commit_tail [amdgpu]] *ERROR* Waitin=
+g for
+> fences timed out!
+> ```
+>
+> Which is:
+>
+> ```
+> 229 struct request *elv_rqhash_find(struct request_queue *q, sector_t off=
+set)
+> 230 {
+> =E2=80=A6
+> 235     hash_for_each_possible_safe(e->hash, rq, next, hash, offset) {
+> 236         BUG_ON(!ELV_ON_HASH(rq));
+> =E2=80=A6
+> ```
+>
+> Yes, I carry some extra patches besides this series (the list is against =
+v5.12
+> GA):
+>
+> ```
+> block, bfq: reset waker pointer with shared queues
+> block, bfq: check waker only for queues with no in-flight I/O
+> block, bfq: avoid delayed merge of async queues
+> block, bfq: boost throughput by extending queue-merging times
+> block, bfq: consider also creation time in delayed stable merge
+> block, bfq: fix delayed stable merge check
+> block, bfq: let also stably merged queues enjoy weight raising
+> block: Do not pull requests from the scheduler when we cannot dispatch th=
+em
+> blk: Fix lock inversion between ioc lock and bfqd lock
+> bfq: Remove merged request already in bfq_requests_merged()
+> block, bfq: avoid circular stable merges
+> bfq: remove unnecessary BFQ_DEFAULT_GRP_IOPRIO
+> bfq: reset entity->prio_changed in bfq_init_entity()
+> bfq: optimize the calculation of bfq_weight_to_ioprio()
+> bfq: remove unnecessary initialization logic
+> bfq: keep the minimun bandwidth for CLASS_BE
+> bfq: limit the IO depth of CLASS_IDLE to 1
+> bfq: convert the type of bfq_group.bfqd to bfq_data*
+> bfq: introduce bfq_entity_to_bfqg helper method
+> bfq/mq-deadline: remove redundant check for passthrough request
+> blk-mq: bypass IO scheduler's limit_depth for passthrough request
+> block,bfq: fix the timeout calculation in bfq_bfqq_charge_time
+> block, bfq: merge bursts of newly-created queues
+> block, bfq: keep shared queues out of the waker mechanism
+> block, bfq: fix weight-raising resume with !low_latency
+> block, bfq: make shared queues inherit wakers
+> block, bfq: put reqs of waker and woken in dispatch list
+> block, bfq: always inject I/O of queues blocked by wakers
+> ```
+>
+> but nothing from there triggered this for quite some time.
+>
+> Paolo, what do you think?
+>
+> --
+> Oleksandr Natalenko (post-factum)
+>
 >
