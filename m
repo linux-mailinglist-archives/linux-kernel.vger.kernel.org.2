@@ -2,130 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 953583AEA07
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:27:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC5C3AEA0F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:29:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbhFUN3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 09:29:14 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:51464 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbhFUN3N (ORCPT
+        id S230082AbhFUNbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 09:31:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229876AbhFUNbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 09:29:13 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 7B1D721A66;
-        Mon, 21 Jun 2021 13:26:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624282018; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tw+/KDvuUvNoiL44wKibOxR7zrMDcKrfnPx4W5yXglg=;
-        b=VvaMZFSj1BoxILy7bVguOw5sRWDAHebmFfGwnFONMAOUeUr9A2PsDr7jBuYvd60cCL8bfl
-        8ginDWjfP3sNYZ5+7BCRu5L5zZkg64nXaokFLSHVFWVm4KRa/AXWzprW4uGbgTGFLwMiKZ
-        WBwhbs+MlPWoOWuwOamQyxASUcx8Mlk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624282018;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tw+/KDvuUvNoiL44wKibOxR7zrMDcKrfnPx4W5yXglg=;
-        b=GqmVe+tKzyAeprqLKxqdie0VE4K2ymyY2QK2eFoOvaUpVIW8rxDCPaEZr+4Rmj85Y7QjaN
-        MeTyhFAsY4CWZYDg==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 6603A118DD;
-        Mon, 21 Jun 2021 13:26:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624282018; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tw+/KDvuUvNoiL44wKibOxR7zrMDcKrfnPx4W5yXglg=;
-        b=VvaMZFSj1BoxILy7bVguOw5sRWDAHebmFfGwnFONMAOUeUr9A2PsDr7jBuYvd60cCL8bfl
-        8ginDWjfP3sNYZ5+7BCRu5L5zZkg64nXaokFLSHVFWVm4KRa/AXWzprW4uGbgTGFLwMiKZ
-        WBwhbs+MlPWoOWuwOamQyxASUcx8Mlk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624282018;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tw+/KDvuUvNoiL44wKibOxR7zrMDcKrfnPx4W5yXglg=;
-        b=GqmVe+tKzyAeprqLKxqdie0VE4K2ymyY2QK2eFoOvaUpVIW8rxDCPaEZr+4Rmj85Y7QjaN
-        MeTyhFAsY4CWZYDg==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id mIIVGaKT0GDfTwAALh3uQQ
-        (envelope-from <bp@suse.de>); Mon, 21 Jun 2021 13:26:58 +0000
-Date:   Mon, 21 Jun 2021 15:26:45 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V3 21/66] x86/fpu/regset: Move fpu__read_begin() into
- regset
-Message-ID: <YNCTlXp5vbYfEQiL@zn.tnic>
-References: <20210618141823.161158090@linutronix.de>
- <20210618143446.797089970@linutronix.de>
+        Mon, 21 Jun 2021 09:31:00 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F1DC061574;
+        Mon, 21 Jun 2021 06:28:46 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A918D4C2C;
+        Mon, 21 Jun 2021 15:28:43 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1624282123;
+        bh=J4z112JuKdJWKmcJ0RQBiB0ZWAMM+vP5EbTFkOHaTPE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SyT4dwT9K/cJKNPWFuY7LwQhhDKtmrFcrMSGeCojfpvI6ndAkwz+rykCZZbJeNyVM
+         N9MZ42aFxRTEyo+SJBT1E3EooJvj+a7oMwAaXcObssKulHvXrDJdxQSkrm3yhyNzut
+         hi+n3sGUJWO+3eVIbuOO1CfJKRYNdF3XAWOcUZCU=
+Date:   Mon, 21 Jun 2021 16:28:17 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2] media: uvc: don't do DMA on stack
+Message-ID: <YNCT8a8jFYM96p9u@pendragon.ideasonboard.com>
+References: <aaa1b65bf2b6c1a2da79b44fe7ada63f697ac32e.1624281807.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210618143446.797089970@linutronix.de>
+In-Reply-To: <aaa1b65bf2b6c1a2da79b44fe7ada63f697ac32e.1624281807.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 04:18:44PM +0200, Thomas Gleixner wrote:
-> The function can only be used from the regset get() callbacks safely. So
-> there is no reason to have it globaly exposed.
+Hi Mauro,
 
-"globally"
+Thank you for the patch.
 
+On Mon, Jun 21, 2021 at 03:23:35PM +0200, Mauro Carvalho Chehab wrote:
+> As warned by smatch:
+> 	drivers/media/usb/uvc/uvc_v4l2.c:911 uvc_ioctl_g_input() error: doing dma on the stack (&i)
+> 	drivers/media/usb/uvc/uvc_v4l2.c:943 uvc_ioctl_s_input() error: doing dma on the stack (&i)
 > 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> those two functions call uvc_query_ctrl passing a pointer to
+> a data at the DMA stack. those are used to send URBs via
+> usb_control_msg(). Using DMA stack is not supported and should
+> not work anymore on modern Linux versions.
+> 
+> So, use a temporary buffer, allocated together with
+> struct uvc_video_chain.
+
+The second part of the sentence isn't correct anymore.
+
+> Cc: stable@vger.kernel.org	# Kernel 4.9 and upper
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 > ---
->  arch/x86/include/asm/fpu/internal.h |    1 -
->  arch/x86/kernel/fpu/core.c          |   20 --------------------
->  arch/x86/kernel/fpu/regset.c        |   22 +++++++++++++++++++---
->  3 files changed, 19 insertions(+), 24 deletions(-)
+>  drivers/media/usb/uvc/uvc_v4l2.c | 26 ++++++++++++++++++--------
+>  1 file changed, 18 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
+> index 252136cc885c..d680ae8a5f87 100644
+> --- a/drivers/media/usb/uvc/uvc_v4l2.c
+> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
+> @@ -899,8 +899,8 @@ static int uvc_ioctl_g_input(struct file *file, void *fh, unsigned int *input)
+>  {
+>  	struct uvc_fh *handle = fh;
+>  	struct uvc_video_chain *chain = handle->chain;
+> +	char *buf;
 
-...
+I'd make this
 
-> --- a/arch/x86/kernel/fpu/regset.c
-> +++ b/arch/x86/kernel/fpu/regset.c
-> @@ -28,6 +28,22 @@ int regset_xregset_fpregs_active(struct
+	u8 *buf;
+
+as the selector value is unsigned.
+
+>  	int ret;
+> -	u8 i;
+>  
+>  	if (chain->selector == NULL ||
+>  	    (chain->dev->quirks & UVC_QUIRK_IGNORE_SELECTOR_UNIT)) {
+> @@ -908,13 +908,18 @@ static int uvc_ioctl_g_input(struct file *file, void *fh, unsigned int *input)
 >  		return 0;
+>  	}
+>  
+> +	buf = kmalloc(1, GFP_KERNEL);
+
+MIssing error check.
+
+> +
+>  	ret = uvc_query_ctrl(chain->dev, UVC_GET_CUR, chain->selector->id,
+>  			     chain->dev->intfnum,  UVC_SU_INPUT_SELECT_CONTROL,
+> -			     &i, 1);
+> +			     buf, 1);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	*input = i - 1;
+> +	*input = *buf;
+> +
+> +	kfree(buf);
+> +
+>  	return 0;
 >  }
 >  
-> +/*
-> + * The regset get() functions are invoked from:
-> + *
-> + *   - coredump to dump the current task's fpstate. If the current task
-> + *     owns the FPU then the memory state has to be synchronized and the
-> + *     FPU register state preserved. Otherwise fpstate is already in sync.
-> + *
-> + *   - ptrace to dump fpstate of a stopped task, in which case the register
-									^
+> @@ -922,8 +927,8 @@ static int uvc_ioctl_s_input(struct file *file, void *fh, unsigned int input)
+>  {
+>  	struct uvc_fh *handle = fh;
+>  	struct uvc_video_chain *chain = handle->chain;
+> +	char *buf;
 
-"registers"
+u8 * here too.
 
-With that:
+>  	int ret;
+> -	u32 i;
+>  
+>  	ret = uvc_acquire_privileges(handle);
+>  	if (ret < 0)
+> @@ -939,10 +944,15 @@ static int uvc_ioctl_s_input(struct file *file, void *fh, unsigned int input)
+>  	if (input >= chain->selector->bNrInPins)
+>  		return -EINVAL;
+>  
+> -	i = input + 1;
+> -	return uvc_query_ctrl(chain->dev, UVC_SET_CUR, chain->selector->id,
+> -			      chain->dev->intfnum, UVC_SU_INPUT_SELECT_CONTROL,
+> -			      &i, 1);
+> +	buf = kmalloc(1, GFP_KERNEL);
 
-Reviewed-by: Borislav Petkov <bp@suse.de>
+And missing error check.
+
+> +
+> +	*buf = input + 1;
+> +	ret = uvc_query_ctrl(chain->dev, UVC_SET_CUR, chain->selector->id,
+> +			     chain->dev->intfnum, UVC_SU_INPUT_SELECT_CONTROL,
+> +			     buf, 1);
+> +	kfree(buf);
+> +
+> +	return ret;
+>  }
+>  
+>  static int uvc_ioctl_queryctrl(struct file *file, void *fh,
 
 -- 
-Regards/Gruss,
-    Boris.
+Regards,
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Laurent Pinchart
