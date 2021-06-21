@@ -2,123 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C7E3AE501
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D793AE508
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhFUIiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 04:38:00 -0400
-Received: from mailout1.secunet.com ([62.96.220.44]:57814 "EHLO
-        mailout1.secunet.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbhFUIh7 (ORCPT
+        id S230268AbhFUIio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 04:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229890AbhFUIin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 04:37:59 -0400
-Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
-        by mailout1.secunet.com (Postfix) with ESMTP id BAFED80004E;
-        Mon, 21 Jun 2021 10:35:39 +0200 (CEST)
-Received: from mbx-essen-01.secunet.de (10.53.40.197) by
- cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 21 Jun 2021 10:35:39 +0200
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
- (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 21 Jun
- 2021 10:35:39 +0200
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-        id 249D031803E8; Mon, 21 Jun 2021 10:35:39 +0200 (CEST)
-Date:   Mon, 21 Jun 2021 10:35:39 +0200
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     Ondrej Mosnacek <omosnace@redhat.com>
-CC:     <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Herbert Xu" <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Paul Moore <paul@paul-moore.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        <selinux@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <x86@kernel.org>, <linux-acpi@vger.kernel.org>,
-        <linux-cxl@vger.kernel.org>, <linux-efi@vger.kernel.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-pm@vger.kernel.org>, <linux-serial@vger.kernel.org>,
-        <bpf@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <kexec@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        Casey Schaufler <casey@schaufler-ca.com>
-Subject: Re: [PATCH v3] lockdown,selinux: fix wrong subject in some SELinux
- lockdown checks
-Message-ID: <20210621083539.GY40979@gauss3.secunet.de>
-References: <20210616085118.1141101-1-omosnace@redhat.com>
+        Mon, 21 Jun 2021 04:38:43 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F9AC061574;
+        Mon, 21 Jun 2021 01:36:29 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 08:36:26 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624264587;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eyBXpYH5u7fn8fJ8hrFdUCX8ICkIoQ0HYrBRNu3xLXY=;
+        b=znXYcMkPsdyCnX50whZbFP2HOVWAsi/Ou1vjrXUDzizDjOhX2GzaXSrWFnc7/1W0gWvqT8
+        FL9bCF2QN6QAqXmGIp5nZP7qrjAwYf81NVT6V3mFXlFfSVfVvm6KDrLW2HCRp1qxRTWUAq
+        2kdl8O6nKUE/WZYszV5HiGBWZy0l2qCxFhwecHUGSLetlt8taFcmc97DOz9hKMik0DdwjT
+        Gzld+EmRn9jVLEfbhiLKEUTskj3VIForG2VpMO7Y5jKrVetDPGF83E+Hm+b78yOUSJaB/0
+        ZjWv89IIPjSpBo2igfYdFvx6VdHQjjsIJjDFWt19mO3C+5Sw2kPjeUi+9y6y3Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624264587;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eyBXpYH5u7fn8fJ8hrFdUCX8ICkIoQ0HYrBRNu3xLXY=;
+        b=hU2mMOT+n/AWpjrwvpDqZ/DqwOTuWhKvwVkZmKZv6UtFft9PGlVeajHlh5TL2l9YOTHqeU
+        s6THK4ltZsx9OvDg==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: smp/urgent] cpu/hotplug: Cure the cpusets trainwreck
+Cc:     Alexey Klimov <aklimov@redhat.com>,
+        Joshua Baker <jobaker@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <87tuowcnv3.ffs@nanos.tec.linutronix.de>
+References: <87tuowcnv3.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210616085118.1141101-1-omosnace@redhat.com>
-X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
- mbx-essen-01.secunet.de (10.53.40.197)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+Message-ID: <162426458610.395.17502837087837120048.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 16, 2021 at 10:51:18AM +0200, Ondrej Mosnacek wrote:
-> Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
-> lockdown") added an implementation of the locked_down LSM hook to
-> SELinux, with the aim to restrict which domains are allowed to perform
-> operations that would breach lockdown.
-> 
-> However, in several places the security_locked_down() hook is called in
-> situations where the current task isn't doing any action that would
-> directly breach lockdown, leading to SELinux checks that are basically
-> bogus.
-> 
-> To fix this, add an explicit struct cred pointer argument to
-> security_lockdown() and define NULL as a special value to pass instead
-> of current_cred() in such situations. LSMs that take the subject
-> credentials into account can then fall back to some default or ignore
-> such calls altogether. In the SELinux lockdown hook implementation, use
-> SECINITSID_KERNEL in case the cred argument is NULL.
-> 
-> Most of the callers are updated to pass current_cred() as the cred
-> pointer, thus maintaining the same behavior. The following callers are
-> modified to pass NULL as the cred pointer instead:
-> 1. arch/powerpc/xmon/xmon.c
->      Seems to be some interactive debugging facility. It appears that
->      the lockdown hook is called from interrupt context here, so it
->      should be more appropriate to request a global lockdown decision.
-> 2. fs/tracefs/inode.c:tracefs_create_file()
->      Here the call is used to prevent creating new tracefs entries when
->      the kernel is locked down. Assumes that locking down is one-way -
->      i.e. if the hook returns non-zero once, it will never return zero
->      again, thus no point in creating these files. Also, the hook is
->      often called by a module's init function when it is loaded by
->      userspace, where it doesn't make much sense to do a check against
->      the current task's creds, since the task itself doesn't actually
->      use the tracing functionality (i.e. doesn't breach lockdown), just
->      indirectly makes some new tracepoints available to whoever is
->      authorized to use them.
-> 3. net/xfrm/xfrm_user.c:copy_to_user_*()
->      Here a cryptographic secret is redacted based on the value returned
->      from the hook. There are two possible actions that may lead here:
->      a) A netlink message XFRM_MSG_GETSA with NLM_F_DUMP set - here the
->         task context is relevant, since the dumped data is sent back to
->         the current task.
->      b) When adding/deleting/updating an SA via XFRM_MSG_xxxSA, the
->         dumped SA is broadcasted to tasks subscribed to XFRM events -
->         here the current task context is not relevant as it doesn't
->         represent the tasks that could potentially see the secret.
->      It doesn't seem worth it to try to keep using the current task's
->      context in the a) case, since the eventual data leak can be
->      circumvented anyway via b), plus there is no way for the task to
->      indicate that it doesn't care about the actual key value, so the
->      check could generate a lot of "false alert" denials with SELinux.
->      Thus, let's pass NULL instead of current_cred() here faute de
->      mieux.
-> 
-> Improvements-suggested-by: Casey Schaufler <casey@schaufler-ca.com>
-> Improvements-suggested-by: Paul Moore <paul@paul-moore.com>
-> Fixes: 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
-> Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+The following commit has been merged into the smp/urgent branch of tip:
 
-For the xfrm part:
+Commit-ID:     b22afcdf04c96ca58327784e280e10288cfd3303
+Gitweb:        https://git.kernel.org/tip/b22afcdf04c96ca58327784e280e10288cfd3303
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Sat, 27 Mar 2021 22:01:36 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Mon, 21 Jun 2021 10:31:06 +02:00
 
-Acked-by: Steffen Klassert <steffen.klassert@secunet.com>
+cpu/hotplug: Cure the cpusets trainwreck
 
+Alexey and Joshua tried to solve a cpusets related hotplug problem which is
+user space visible and results in unexpected behaviour for some time after
+a CPU has been plugged in and the corresponding uevent was delivered.
+
+cpusets delegate the hotplug work (rebuilding cpumasks etc.) to a
+workqueue. This is done because the cpusets code has already a lock
+nesting of cgroups_mutex -> cpu_hotplug_lock. A synchronous callback or
+waiting for the work to finish with cpu_hotplug_lock held can and will
+deadlock because that results in the reverse lock order.
+
+As a consequence the uevent can be delivered before cpusets have consistent
+state which means that a user space invocation of sched_setaffinity() to
+move a task to the plugged CPU fails up to the point where the scheduled
+work has been processed.
+
+The same is true for CPU unplug, but that does not create user observable
+failure (yet).
+
+It's still inconsistent to claim that an operation is finished before it
+actually is and that's the real issue at hand. uevents just make it
+reliably observable.
+
+Obviously the problem should be fixed in cpusets/cgroups, but untangling
+that is pretty much impossible because according to the changelog of the
+commit which introduced this 8 years ago:
+
+ 3a5a6d0c2b03("cpuset: don't nest cgroup_mutex inside get_online_cpus()")
+
+the lock order cgroups_mutex -> cpu_hotplug_lock is a design decision and
+the whole code is built around that.
+
+So bite the bullet and invoke the relevant cpuset function, which waits for
+the work to finish, in _cpu_up/down() after dropping cpu_hotplug_lock and
+only when tasks are not frozen by suspend/hibernate because that would
+obviously wait forever.
+
+Waiting there with cpu_add_remove_lock, which is protecting the present
+and possible CPU maps, held is not a problem at all because neither work
+queues nor cpusets/cgroups have any lockchains related to that lock.
+
+Waiting in the hotplug machinery is not problematic either because there
+are already state callbacks which wait for hardware queues to drain. It
+makes the operations slightly slower, but hotplug is slow anyway.
+
+This ensures that state is consistent before returning from a hotplug
+up/down operation. It's still inconsistent during the operation, but that's
+a different story.
+
+Add a large comment which explains why this is done and why this is not a
+dump ground for the hack of the day to work around half thought out locking
+schemes. Document also the implications vs. hotplug operations and
+serialization or the lack of it.
+
+Thanks to Alexy and Joshua for analyzing why this temporary
+sched_setaffinity() failure happened.
+
+Fixes: 3a5a6d0c2b03("cpuset: don't nest cgroup_mutex inside get_online_cpus()")
+Reported-by: Alexey Klimov <aklimov@redhat.com>
+Reported-by: Joshua Baker <jobaker@redhat.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Alexey Klimov <aklimov@redhat.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/87tuowcnv3.ffs@nanos.tec.linutronix.de
+---
+ kernel/cpu.c | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
+
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index e538518..d2e1692 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -32,6 +32,7 @@
+ #include <linux/relay.h>
+ #include <linux/slab.h>
+ #include <linux/percpu-rwsem.h>
++#include <linux/cpuset.h>
+ 
+ #include <trace/events/power.h>
+ #define CREATE_TRACE_POINTS
+@@ -873,6 +874,52 @@ void __init cpuhp_threads_init(void)
+ 	kthread_unpark(this_cpu_read(cpuhp_state.thread));
+ }
+ 
++/*
++ *
++ * Serialize hotplug trainwrecks outside of the cpu_hotplug_lock
++ * protected region.
++ *
++ * The operation is still serialized against concurrent CPU hotplug via
++ * cpu_add_remove_lock, i.e. CPU map protection.  But it is _not_
++ * serialized against other hotplug related activity like adding or
++ * removing of state callbacks and state instances, which invoke either the
++ * startup or the teardown callback of the affected state.
++ *
++ * This is required for subsystems which are unfixable vs. CPU hotplug and
++ * evade lock inversion problems by scheduling work which has to be
++ * completed _before_ cpu_up()/_cpu_down() returns.
++ *
++ * Don't even think about adding anything to this for any new code or even
++ * drivers. It's only purpose is to keep existing lock order trainwrecks
++ * working.
++ *
++ * For cpu_down() there might be valid reasons to finish cleanups which are
++ * not required to be done under cpu_hotplug_lock, but that's a different
++ * story and would be not invoked via this.
++ */
++static void cpu_up_down_serialize_trainwrecks(bool tasks_frozen)
++{
++	/*
++	 * cpusets delegate hotplug operations to a worker to "solve" the
++	 * lock order problems. Wait for the worker, but only if tasks are
++	 * _not_ frozen (suspend, hibernate) as that would wait forever.
++	 *
++	 * The wait is required because otherwise the hotplug operation
++	 * returns with inconsistent state, which could even be observed in
++	 * user space when a new CPU is brought up. The CPU plug uevent
++	 * would be delivered and user space reacting on it would fail to
++	 * move tasks to the newly plugged CPU up to the point where the
++	 * work has finished because up to that point the newly plugged CPU
++	 * is not assignable in cpusets/cgroups. On unplug that's not
++	 * necessarily a visible issue, but it is still inconsistent state,
++	 * which is the real problem which needs to be "fixed". This can't
++	 * prevent the transient state between scheduling the work and
++	 * returning from waiting for it.
++	 */
++	if (!tasks_frozen)
++		cpuset_wait_for_hotplug();
++}
++
+ #ifdef CONFIG_HOTPLUG_CPU
+ #ifndef arch_clear_mm_cpumask_cpu
+ #define arch_clear_mm_cpumask_cpu(cpu, mm) cpumask_clear_cpu(cpu, mm_cpumask(mm))
+@@ -1108,6 +1155,7 @@ out:
+ 	 */
+ 	lockup_detector_cleanup();
+ 	arch_smt_update();
++	cpu_up_down_serialize_trainwrecks(tasks_frozen);
+ 	return ret;
+ }
+ 
+@@ -1302,6 +1350,7 @@ static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
+ out:
+ 	cpus_write_unlock();
+ 	arch_smt_update();
++	cpu_up_down_serialize_trainwrecks(tasks_frozen);
+ 	return ret;
+ }
+ 
