@@ -2,104 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1778A3AF2E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF933AF36D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231868AbhFUR5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 13:57:54 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:45968 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231961AbhFURzr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 13:55:47 -0400
-Date:   Mon, 21 Jun 2021 17:53:29 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624298011;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YH3f6MBaqyU4MYEEOYfekfCSOLt9UeEUXfvYCYqWqdI=;
-        b=Y9qft6Mb00Mx+3gU6XUCpwxkF8t2cTyw3gzAPgmJISxilvS78kkuyHt56vaZVMgaDz9lgg
-        WuDyqMRaQctRL/5HJf4fAZ/awNd64L43v0aFRluduAkdU0GpSX06bHUwfcLkynHpZpdOmk
-        jgfFoc9AdJCz3yJK9wQEDHgtWhi2rYH0Vq9/HLkHsFeBm/LFO0w2R+VADi2aPmZR4bybJT
-        vczUV5P1PggmMlck5dgrzFIQrXi6NPmj+CwPMxr7H+75jL3zgHt7ICPiqDvgGoDoLvNiZU
-        u8G6RPzu6T3Q/J7//OhT7l3kICvB7+ndaQkwOw+5eEwpf3BRBMubaYiM+tTPVw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624298011;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YH3f6MBaqyU4MYEEOYfekfCSOLt9UeEUXfvYCYqWqdI=;
-        b=+NIRJTGY520NQltVup6Qt4/rKcc09Mc41xilWDXPLeXCEmGDDUUQSyV3fDr4Ybkx4lz05+
-        bEMr3a5nuhWV51CA==
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: objtool/urgent] objtool/x86: Ignore __x86_indirect_alt_* symbols
-Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <YNCgxwLBiK9wclYJ@hirez.programming.kicks-ass.net>
-References: <YNCgxwLBiK9wclYJ@hirez.programming.kicks-ass.net>
+        id S233585AbhFUSBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:01:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39084 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233167AbhFUR6P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 13:58:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B396E61289;
+        Mon, 21 Jun 2021 17:54:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624298042;
+        bh=C3zD+YGqJM3yC94ihyfLYGL7l36I0vVTfiurb62Ssqg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=CHLCiODYBeDHfwVzJl4b+yccK19tei2kxIpUSEZ8LxpoDQUgDeyqHqItvVhIe4gQp
+         7C0czEwWuT8ZD06WBl779r+raI4u7R7Px5bPwcx/dz6xNW82v6DghIoF82ii+EdpEC
+         FAqd92oLtL1Md4lwon8hjvv9dS2wlngDfh2TfZNoT8gobcq3RSKHs1rJc6li79OB0O
+         ERDKQmI3+Mcc9ye3Tu+1PbLAJ498fMFyEd4vFZtXlqBklAoHuponj4LWIT9UWovInn
+         c1H2tPl0I65CI6+l4rNuZgg+XTePnwCFfiOFHR2ocTCfrpnRrdOtl1mBJuwhPMLsXu
+         24m108hmBoSqQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Yu Kuai <yukuai3@huawei.com>, Hulk Robot <hulkci@huawei.com>,
+        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.4 01/26] dmaengine: zynqmp_dma: Fix PM reference leak in zynqmp_dma_alloc_chan_resourc()
+Date:   Mon, 21 Jun 2021 13:53:34 -0400
+Message-Id: <20210621175400.735800-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Message-ID: <162429800985.395.5319249290550367396.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the objtool/urgent branch of tip:
+From: Yu Kuai <yukuai3@huawei.com>
 
-Commit-ID:     31197d3a0f1caeb60fb01f6755e28347e4f44037
-Gitweb:        https://git.kernel.org/tip/31197d3a0f1caeb60fb01f6755e28347e4f44037
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Mon, 21 Jun 2021 16:13:55 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Mon, 21 Jun 2021 17:26:57 +02:00
+[ Upstream commit 8982d48af36d2562c0f904736b0fc80efc9f2532 ]
 
-objtool/x86: Ignore __x86_indirect_alt_* symbols
+pm_runtime_get_sync will increment pm usage counter even it failed.
+Forgetting to putting operation will result in reference leak here.
+Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+counter balanced.
 
-Because the __x86_indirect_alt* symbols are just that, objtool will
-try and validate them as regular symbols, instead of the alternative
-replacements that they are.
-
-This goes sideways for FRAME_POINTER=y builds; which generate a fair
-amount of warnings.
-
-Fixes: 9bc0bb50727c ("objtool/x86: Rewrite retpoline thunk calls")
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/YNCgxwLBiK9wclYJ@hirez.programming.kicks-ass.net
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Link: https://lore.kernel.org/r/20210517081826.1564698-4-yukuai3@huawei.com
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/lib/retpoline.S | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/dma/xilinx/zynqmp_dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
-index 4d32cb0..ec9922c 100644
---- a/arch/x86/lib/retpoline.S
-+++ b/arch/x86/lib/retpoline.S
-@@ -58,12 +58,16 @@ SYM_FUNC_START_NOALIGN(__x86_indirect_alt_call_\reg)
- 2:	.skip	5-(2b-1b), 0x90
- SYM_FUNC_END(__x86_indirect_alt_call_\reg)
+diff --git a/drivers/dma/xilinx/zynqmp_dma.c b/drivers/dma/xilinx/zynqmp_dma.c
+index d47749a35863..84009c5e0f33 100644
+--- a/drivers/dma/xilinx/zynqmp_dma.c
++++ b/drivers/dma/xilinx/zynqmp_dma.c
+@@ -467,7 +467,7 @@ static int zynqmp_dma_alloc_chan_resources(struct dma_chan *dchan)
+ 	struct zynqmp_dma_desc_sw *desc;
+ 	int i, ret;
  
-+STACK_FRAME_NON_STANDARD(__x86_indirect_alt_call_\reg)
-+
- SYM_FUNC_START_NOALIGN(__x86_indirect_alt_jmp_\reg)
- 	ANNOTATE_RETPOLINE_SAFE
- 1:	jmp	*%\reg
- 2:	.skip	5-(2b-1b), 0x90
- SYM_FUNC_END(__x86_indirect_alt_jmp_\reg)
+-	ret = pm_runtime_get_sync(chan->dev);
++	ret = pm_runtime_resume_and_get(chan->dev);
+ 	if (ret < 0)
+ 		return ret;
  
-+STACK_FRAME_NON_STANDARD(__x86_indirect_alt_jmp_\reg)
-+
- .endm
- 
- /*
+-- 
+2.30.2
+
