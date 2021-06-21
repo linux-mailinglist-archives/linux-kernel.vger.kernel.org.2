@@ -2,129 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 174413AF4F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D114F3AF4E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231978AbhFUSYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232658AbhFUSYR (ORCPT
+        id S232137AbhFUSXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:23:30 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:60917 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231370AbhFUSXP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:24:17 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74090C08ED80
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:16:20 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id j21-20020a05600c1c15b02901dde2accccbso611361wms.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:16:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Dd7yghOb0KNJkV2ROTjPZJ2i5uavd4KwAo4JP7s9Uh4=;
-        b=w61EAA0A3s4UHdfZm6Cdy9t0YpMXsR6CAczSZck9nS7ZwFdyqzrWbMH21/DW3jImTr
-         hoi6+c7c/NmoJfWGhND4aW3DMdswUPlIc7a47ztiTFcLye0OGJPz2oRjk4hlBlFJ3gB+
-         CyaKGe6jOr9QpaiEbeG5LHSj0Qzyhm6rw7UX4VKrrj/C/hUkhwYJfyOXJDJNeySTAX2x
-         aiNRLRID/oOSgqSm3An+3A10KsWQoKaP9YJYE6BoUD8lA5TuxNH7P84xPjoJDo4baeSG
-         UrU33E4EIDPWSGpkg+tkei9Hto7DLO8lllcbmvRccFzi6DFfZ4q6quxVwFLEnsz3F964
-         92SA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Dd7yghOb0KNJkV2ROTjPZJ2i5uavd4KwAo4JP7s9Uh4=;
-        b=JLP7ENBrYgesah1CrNkjWPoVa8TC1IuhOrj7i37MeIFksCzJuswlTYInzyUAm8SZnE
-         UUSqtfrU+XIesBSGsbszlWpO69Ng6cVOZybqD8dl4GYL+6i72yE3D/bkQV2dI5b4j64z
-         l1gMuy87gO/HE0nreO+FSpRHOWfsjIejgi8EoiLwK8XMUf5t4bcyKXSOszNmdwERZfTd
-         kz1Qpymb0Urg4xBdRP3qg+chrLP8kwLW9vG2Mj6OHDMoiTUK4t0k6D0vVs+amcZYTexk
-         otberFLk08UmHGnU+UFjY9XeKOp5zRFEi7zYh1O4qqmeXBDEw2sd/mzLPUP4VNoy3zAQ
-         QJ+w==
-X-Gm-Message-State: AOAM532753Kkre6Tx51wIEMPEOIWocNUVI/t1w97g/PFUmCGiarWUoVY
-        QxQHL0R6qExyXTx9RmdQoWhu2Gllk8xMfQJn
-X-Google-Smtp-Source: ABdhPJymWO6g7B4/Tw6wptEln54bwiSLpf+aSuu7iq6H5LmqimOmS9x6mO6ce2Y+yPGS6N1HWh4WDw==
-X-Received: by 2002:a7b:cc84:: with SMTP id p4mr6083148wma.2.1624299378412;
-        Mon, 21 Jun 2021 11:16:18 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:5ebd:8bd9:d549:4211? ([2a01:e34:ed2f:f020:5ebd:8bd9:d549:4211])
-        by smtp.googlemail.com with ESMTPSA id k2sm18206405wrw.93.2021.06.21.11.16.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 11:16:17 -0700 (PDT)
-Subject: Re: [PATCH v4 0/6] Add driver for NVIDIA Tegra30 SoC Thermal sensor
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
-        Maxim Schwalm <maxim.schwalm@gmail.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Ihor Didenko <tailormoon@rambler.ru>,
-        Ion Agorria <ion@agorria.com>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Peter Geis <pgwipeout@gmail.com>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-References: <20210616190417.32214-1-digetx@gmail.com>
- <e1e3816a-ddf4-be13-0410-0b929f3be60b@linaro.org>
- <cdc3d6fe-f2a8-d50c-af11-98ab4f72b713@gmail.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <1f938d62-aeac-325f-4735-80cccfd529c2@linaro.org>
-Date:   Mon, 21 Jun 2021 20:16:16 +0200
+        Mon, 21 Jun 2021 14:23:15 -0400
+Received: from [192.168.1.155] ([95.118.106.223]) by mrelayeu.kundenserver.de
+ (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1M6URd-1ltRf50Vq5-006z5z; Mon, 21 Jun 2021 20:20:30 +0200
+Subject: Re: [PATCH v1] proc: Implement /proc/self/meminfo
+To:     Shakeel Butt <shakeelb@google.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Alexey Gladkov <legion@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux.dev>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Chris Down <chris@chrisdown.name>,
+        Cgroups <cgroups@vger.kernel.org>
+References: <ac070cd90c0d45b7a554366f235262fa5c566435.1622716926.git.legion@kernel.org>
+ <20210615113222.edzkaqfvrris4nth@wittgenstein>
+ <20210615124715.nzd5we5tl7xc2n2p@example.org>
+ <CALvZod7po_fK9JpcUNVrN6PyyP9k=hdcyRfZmHjSVE5r_8Laqw@mail.gmail.com>
+ <87zgvpg4wt.fsf@disp2133>
+ <CALvZod70DNiWF-jTUHp6pOVtVX9pzdvYXaQ1At3GHtdKD=iTwQ@mail.gmail.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <d1eb12ec-8e6a-11c1-ea0a-b36dcf354d16@metux.net>
+Date:   Mon, 21 Jun 2021 20:20:28 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <cdc3d6fe-f2a8-d50c-af11-98ab4f72b713@gmail.com>
+In-Reply-To: <CALvZod70DNiWF-jTUHp6pOVtVX9pzdvYXaQ1At3GHtdKD=iTwQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Language: tl
 Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:KY5lFpctxJysfXmhr3/0X4zPaX01gE0qcAW6kk87sRpyKEYXmIY
+ +ioYSFHPqsL79BjDqd51LuP8noghOU0I9UrvywQknlRF+T8gQUcJA/9N83NxVwLnT5sVvPa
+ 30JyPuBrqYb+mmoKIv6LxCoRHdFreiuYJqn1pfZrZUksad7kcd2my/Uz+pzDMWLULmfuWXk
+ xVp+EcUhYxfrvdhV1WeDQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Y6Z7D6wns+k=:dLaF925qRKNlyiRknu3bK0
+ HvCcCi7AixtiNj4exjyjcGLOHeCbSoibsN+zPViJ1fWok5J8zKwgogQkBy9zBZpmitM9UJA/p
+ 6GZ+YuBinrXPHIUmq3QAjoVJwIlHBmenMh9lbF1AWExg7cSuR09dxhZCc6TCLtDm+qEdCz46D
+ SVxFrhxqAdR5wt5X3o85zt+ObpE5fYQhvZfy5fxUzt+MGOsbabAAeZzzJsmtO1N4j6Aw6B7LP
+ hBIl+hFDQkfuQse7XzM2ujo0QipO51QzHPDLWngzbjv8aRZyvCKD8EEz56ob2uxHEwcjyiYDm
+ MPFkFhmgejWCBfBocnAUGrDxk/hVpqUiAGAxLAMdqGCnTm4YNGTJu06osh81ePI+7br+HxYh6
+ pqyhYsy0+vKNqNN8oRSInY+sYGDj5afnKpdM4UN0TRCAZtOU/bKzsGuUbyqX/5RjTlZzCfkuv
+ AEwvjmNH2FveEOPw0VHnfrxOs3qRQDr7nWnR8yeMp7HMaWQ45ZBZJmMiwQW3Z+b9P8kIKKGFl
+ sdoQfOQGu3fgPHuzGQfkg8=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/06/2021 19:26, Dmitry Osipenko wrote:
-> 21.06.2021 20:13, Daniel Lezcano пишет:
->>
->> Hi Dmitry,
->>
->> I compiled the your series and got these unresolved.
->>
->> arm-linux-gnueabi-ld: drivers/thermal/tegra/soctherm-fuse.o: in function
->> `tegra_calc_shared_calib':
->> soctherm-fuse.c:(.text+0x60): undefined reference to `tegra_fuse_readl'
->> arm-linux-gnueabi-ld: soctherm-fuse.c:(.text+0xf0): undefined reference
->> to `tegra_fuse_readl'
->> arm-linux-gnueabi-ld: drivers/thermal/tegra/soctherm-fuse.o: in function
->> `tegra_calc_tsensor_calib':
->> soctherm-fuse.c:(.text+0x144): undefined reference to `tegra_fuse_readl'
->> arm-linux-gnueabi-ld: drivers/thermal/tegra/tegra30-tsensor.o: in
->> function `tegra_tsensor_fuse_read_spare':
->> tegra30-tsensor.c:(.text+0x364): undefined reference to `tegra_fuse_readl'
->> arm-linux-gnueabi-ld: drivers/thermal/tegra/tegra30-tsensor.o: in
->> function `tegra_tsensor_probe':
->> tegra30-tsensor.c:(.text+0x874): undefined reference to `tegra_fuse_readl'
->> arm-linux-gnueabi-ld:
->> drivers/thermal/tegra/tegra30-tsensor.o:tegra30-tsensor.c:(.text+0x904):
->> more undefined references to `tegra_fuse_readl' follow
->> make[1]: *** [/home/dlezcano/Work/src/linux/Makefile:1196: vmlinux] Error 1
->> make: *** [/home/dlezcano/Work/src/linux/Makefile:215: __sub-make] Error 2
-> 
-> The missing stub was added by [1]. I guess you could take [2] for the
-> base since Thierry already sent out PR for 5.14, or we could defer the
-> "thermal/drivers/tegra: Correct compile-testing of drivers" patch till
-> the next kernel version. Please choose whatever is easier for you.
+On 19.06.21 01:38, Shakeel Butt wrote:
 
-I would like to prevent to have more patches floating around. As we are
-close the to the merge window, I think we can live with the missing
-stubs ATM. But in the future, provide an immutable branch with the
-fixes, so we can share it and prevent these issues.
+> Nowadays, I don't think MemAvailable giving "amount of memory that can
+> be allocated without triggering swapping" is even roughly accurate.
+> Actually IMO "without triggering swap" is not something an application
+> should concern itself with where refaults from some swap types
+> (zswap/swap-on-zram) are much faster than refaults from disk.
 
-  -- Daniel
+If we're talking about things like database workloads, there IMHO isn't
+anything really better than doing measurements with the actual loads
+and tuning incrementally.
+
+But: what is the actual optimization goal, why an application might
+want to know where swapping begins ? Computing performance ? Caching +
+IO Latency or throughput ? Network traffic (e.g. w/ iscsi) ? Power
+consumption ?
+
+>> I do know that hiding the implementation details and providing userspace
+>> with information it can directly use seems like the programming model
+>> that needs to be explored.  Most programs should not care if they are in
+>> a memory cgroup, etc.  Programs, load management systems, and even
+>> balloon drivers have a legitimately interest in how much additional load
+>> can be placed on a systems memory.
+
+What kind of load exactly ? CPU ? disk IO ? network ?
+
+> How much additional load can be placed on a system *until what*. I
+> think we should focus more on the "until" part to make the problem
+> more tractable.
+
+ACK. The interesting question is what to do in that case.
+
+An obvious move by an database system could be eg. filling only so much
+caches as there's spare physical RAM, in order to avoid useless swapping
+(since we'd potentiall produce more IO load when a cache is written
+out to swap, instead of just discarding it)
+
+But, this also depends ...
+
+#1: the application doesn't know the actual performance of the swap
+device, eg. the already mentioned zswap+friends, or some fast nvmem
+for swap vs disk for storage.
+
+#2: caches might also be implemented indirectly by mmap()ing the storage
+file/device and so using the kernel's cache here. in that case, the
+kernel would automatically discard the pages w/o going to swap. of
+course that only works if the cache is nothing but copying pages from
+storage into ram.
+
+A completely different scenario would be load management on a cluster
+like k8s. Here we usually care of cluster performance (dont care about
+individual nodes so muck), but wanna prevent individual nodes from being
+overloaded. Since we usually don't know much about the indivdual
+workload, we probably don't have much other chance than contigous
+monitoring and acting when a node is getting too busy - or trying to
+balance when new workloads are started, on current system load (and
+other metrics). In that case, I don't see where this new proc file
+should be of much help.
+
+> Second, is the reactive approach acceptable? Instead of an upfront
+> number representing the room for growth, how about just grow and
+> backoff when some event (oom or stall) which we want to avoid is about
+> to happen? This is achievable today for oom and stall with PSI and
+> memory.high and it avoids the hard problem of reliably estimating the
+> reclaimable memory.
+
+I tend to believe that for certain use cases it would be helpful if an
+application gets notified if some of its pages are soon getting swapped
+out due memory pressure. Then it could decide on its own which whether
+it should drop certain caches in order to prevent swapping.
 
 
+--mtx
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
