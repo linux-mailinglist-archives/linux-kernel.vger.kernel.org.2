@@ -2,183 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9953AE67A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD543AE67D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:51:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229908AbhFUJwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:52:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56200 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229576AbhFUJwF (ORCPT
+        id S229888AbhFUJxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:53:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFUJxP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:52:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624268991;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KBZu4NLiDdqn7q2pI7+EJJkI7zuo342OmsDKXMlyxd4=;
-        b=SdNBOK8pUry/yU7Uc1lzwwxd2pPncQsJfTPk5jq+Q+L7pE08Lzj0xGHiIG4GYOuX8DkCje
-        MQ5gSLdHBsCc9C1gUAPefOcG0YLDaGnAg88g6r0Wb+4WaQafl5JjN8TgP2pes9fb+mQmEt
-        z8pa/1l9zKEgHRLEul1qHA+A1+bkLow=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-134-hKfJCt7lNeCkqZ9OOofkLw-1; Mon, 21 Jun 2021 05:49:49 -0400
-X-MC-Unique: hKfJCt7lNeCkqZ9OOofkLw-1
-Received: by mail-ed1-f71.google.com with SMTP id ee28-20020a056402291cb0290394a9a0bfaeso2030739edb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:49:49 -0700 (PDT)
+        Mon, 21 Jun 2021 05:53:15 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AC4DC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:51:00 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id x24so29132821lfr.10
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:51:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=XXYvdNEWj/MGYTvITgwucVOE3a8z0n3hUXB9ArNi2L4=;
+        b=sHVP3zPmgKC74+TAXz0sjDq/I+KEsZzxe4ir2EdYX+2ZFPYhljExDY9dSIqlCO2Ijm
+         joMeBW+Q0vKPNayV6ZNHAQu8ZSBdc3PFQG+9gPhsyEVkjGTiWk51TkzMIo7iCB8H0OHH
+         /LefYTxoYup225X73P95BkM3ma6FDfK/60l7M+3zS6xjZ+Rdk31HvvJlRfPMPsMfUMQY
+         3qppAaGKtsLuyulZTwCaR73fIZjz3RaAjY222O2opoRi30uHroTv6b5Svk1sc66VOrKo
+         B+e1iylEVChof49Pfef5Y0O6iMJcggLmMPIoJINKjvEpWpxTfA5/aA87vcU2txnGKPd1
+         TR6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KBZu4NLiDdqn7q2pI7+EJJkI7zuo342OmsDKXMlyxd4=;
-        b=ZbWbN88TXwXgPSCNG4kSwabVMe1XJ+Y4919yqThd6qTqOn6T7fB2FWO69fG6ht+VcG
-         FN0Qgfm14wvNdK6vjas3f3nJM5asKNFYGRlM0TSZ+bHknMcO0DEsmJGoaKv8WicQcz6/
-         Jw6zQkuwHc3Q4wkE45QEJndY93ApJ/9HJVOrzgx1S9mjVVzisLmLcPZ6/i+xPoBO/1Zy
-         9e9gpgZI/ERnAlhhxCVninKu/b7jZXBB/1nqW8Jm5ZmV1YAvcoyiDe4M1zbSyB4klCo4
-         o4mDuLezgnsfDebh4tXelg2/2IsUsDI25gan3odlJkfPydzWnglpKE+Rp1SZFImjK5n8
-         /xPA==
-X-Gm-Message-State: AOAM530f2za1r8q+rxVT8w3gkxAER9xlME6bKNsXxb8Q4rUuM6izCxcy
-        1lRC7TbyZ75qus+Mg7Dj2FDw6Z9lwdp4JSFhiXyFDwvuPodIybprOITEd53jj2BLGeIXaHU3UKy
-        zhS7mG7YFNRWckBI4TTIj//0s16nwoDgPUt+oE2wRLT6Ez20debsSr9/8V3Gl8h7j90t8S6hRRx
-        9R
-X-Received: by 2002:a17:906:3ed0:: with SMTP id d16mr23232089ejj.16.1624268988484;
-        Mon, 21 Jun 2021 02:49:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyqOBmbDpon6R/Zi2+R474B5WDTe8Yr2efocLiCmMJFCbfj+k8sVeLGbz62b+i7S4UzrwwZog==
-X-Received: by 2002:a17:906:3ed0:: with SMTP id d16mr23232074ejj.16.1624268988274;
-        Mon, 21 Jun 2021 02:49:48 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id ml14sm464735ejb.27.2021.06.21.02.49.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 02:49:47 -0700 (PDT)
-Subject: Re: [PATCH 00/18] staging: rtl8723bs: remove 5Ghz code
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>, gregkh@linuxfoundation.org
-Cc:     Larry.Finger@lwfinger.net, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <cover.1624099125.git.fabioaiuto83@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <6cafb0fc-7a53-cc56-a67b-4fb82d5130ea@redhat.com>
-Date:   Mon, 21 Jun 2021 11:49:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=XXYvdNEWj/MGYTvITgwucVOE3a8z0n3hUXB9ArNi2L4=;
+        b=UszaB5rKC6V2vl61/a7RWIZQOpydKtSpdbB4p3XAJiOqdMMsJ0xm3W4p1bKZyu3p0U
+         6dkHl8SPOOD5O6XKn9JIOfVhI1Hu1JTMIWc9va8IwyWpWJhoMuSXoqmDD7W5/Fn04zjc
+         eHDwU8hfLyeGF9hnnaN/cz2Rs+C/vVAnZ+cyE0Z4Kgqo6mmwKI1XMXtjv9iMY36UPa8k
+         TVcnLTYe090FZzhLsNIr3vo9co1wMCYrZCLfH+oZy8atgdZ6UJBnj7/pg8MlY5FKiW/b
+         85ny3xImjCt/VZ/AySNXxEpitDLZaoR0q+1dOaJ/1l/1lCg5MpyZjV2quSmLoY9hLS08
+         /cSg==
+X-Gm-Message-State: AOAM530b7A7UyjiPttp7kQlCEW65jpMxwrcW1s47Eh/dQPSdl87XsMib
+        sz1PhD9KRjM1s5mnr1N9S/LCFVa+GVBOD8XY49LJUQ==
+X-Google-Smtp-Source: ABdhPJyZ4ojzs4lKFe02BGMii8d3Kipd14Dac5QKr1UyEd+fYviMLZSMHEAtRc42sK1dMmN2gxpL3tp2K9Mi32GG4nk=
+X-Received: by 2002:a05:6512:3483:: with SMTP id v3mr13765211lfr.154.1624269058666;
+ Mon, 21 Jun 2021 02:50:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <cover.1624099125.git.fabioaiuto83@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <9D4A658A-5F77-4C33-904A-126E6052B205@linux.vnet.ibm.com> <CAFpoUr3g5t3Z0BtW4-jnYomc3cdY=V5=Zt94-C+fHOjGWa107w@mail.gmail.com>
+In-Reply-To: <CAFpoUr3g5t3Z0BtW4-jnYomc3cdY=V5=Zt94-C+fHOjGWa107w@mail.gmail.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 21 Jun 2021 11:50:47 +0200
+Message-ID: <CAKfTPtC=aXasuSNvn+A3152-4xoOTWROhJpZAVq6RLh1Hacpng@mail.gmail.com>
+Subject: Re: [powerpc][5.13.0-rc7] Kernel warning (kernel/sched/fair.c:401)
+ while running LTP tests
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Sachin Sant <sachinp@linux.vnet.ibm.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabio,
+On Mon, 21 Jun 2021 at 11:39, Odin Ugedal <odin@uged.al> wrote:
+>
+> man. 21. jun. 2021 kl. 08:33 skrev Sachin Sant <sachinp@linux.vnet.ibm.co=
+m>:
+> >
+> > While running LTP tests (cfs_bandwidth01) against 5.13.0-rc7 kernel on =
+a powerpc box
+> > following warning is seen
+> >
+> > [ 6611.331827] ------------[ cut here ]------------
+> > [ 6611.331855] rq->tmp_alone_branch !=3D &rq->leaf_cfs_rq_list
+> > [ 6611.331862] WARNING: CPU: 8 PID: 0 at kernel/sched/fair.c:401 unthro=
+ttle_cfs_rq+0x4cc/0x590
+> > [ 6611.331883] Modules linked in: nfsv3 nfs_acl nfs lockd grace fscache=
+ netfs tun brd overlay vfat fat btrfs blake2b_generic xor zstd_compress rai=
+d6_pq xfs loop sctp ip6_udp_tunnel udp_tunnel libcrc32c dm_mod bonding rfki=
+ll sunrpc pseries_rng xts vmx_crypto sch_fq_codel ip_tables ext4 mbcache jb=
+d2 sd_mod t10_pi sg ibmvscsi ibmveth scsi_transport_srp fuse [last unloaded=
+: init_module]
+> > [ 6611.331957] CPU: 8 PID: 0 Comm: swapper/8 Tainted: G           OE   =
+  5.13.0-rc6-gcba5e97280f5 #1
+> > [ 6611.331968] NIP:  c0000000001b7aac LR: c0000000001b7aa8 CTR: c000000=
+000722d30
+> > [ 6611.331976] REGS: c00000000274f3a0 TRAP: 0700   Tainted: G          =
+ OE      (5.13.0-rc6-gcba5e97280f5)
+> > [ 6611.331985] MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 48000=
+224  XER: 00000005
+> > [ 6611.332002] CFAR: c00000000014ca20 IRQMASK: 1
+> > [ 6611.332002] GPR00: c0000000001b7aa8 c00000000274f640 c000000001abaf0=
+0 000000000000002d
+> > [ 6611.332002] GPR04: 00000000ffff7fff c00000000274f300 000000000000002=
+7 c000000efdb07e08
+> > [ 6611.332002] GPR08: 0000000000000023 0000000000000001 000000000000002=
+7 c000000001976680
+> > [ 6611.332002] GPR12: 0000000000000000 c000000effc0be80 c000000ef07b3f9=
+0 000000001eefe200
+> > [ 6611.332002] GPR16: 0000000000000000 0000000000000000 000000000000000=
+0 0000000000000000
+> > [ 6611.332002] GPR20: 0000000000000001 c000000000fa6c08 c000000000fa603=
+0 0000000000000001
+> > [ 6611.332002] GPR24: 0000000000000000 0000000000000000 c000000efde1238=
+0 0000000000000001
+> > [ 6611.332002] GPR28: 0000000000000001 0000000000000000 c000000efde1240=
+0 0000000000000000
+> > [ 6611.332094] NIP [c0000000001b7aac] unthrottle_cfs_rq+0x4cc/0x590
+> > [ 6611.332104] LR [c0000000001b7aa8] unthrottle_cfs_rq+0x4c8/0x590
+> > [ 6611.332113] Call Trace:
+> > [ 6611.332116] [c00000000274f640] [c0000000001b7aa8] unthrottle_cfs_rq+=
+0x4c8/0x590 (unreliable)
+> > [ 6611.332128] [c00000000274f6e0] [c0000000001b7e38] distribute_cfs_run=
+time+0x1d8/0x280
+> > [ 6611.332139] [c00000000274f7b0] [c0000000001b81d0] sched_cfs_period_t=
+imer+0x140/0x330
+> > [ 6611.332149] [c00000000274f870] [c00000000022a03c] __hrtimer_run_queu=
+es+0x17c/0x380
+> > [ 6611.332158] [c00000000274f8f0] [c00000000022ac68] hrtimer_interrupt+=
+0x128/0x2f0
+> > [ 6611.332168] [c00000000274f9a0] [c00000000002940c] timer_interrupt+0x=
+13c/0x370
+> > [ 6611.332179] [c00000000274fa00] [c000000000009c04] decrementer_common=
+_virt+0x1a4/0x1b0
+> > [ 6611.332189] --- interrupt: 900 at plpar_hcall_norets_notrace+0x18/0x=
+24
+> > [ 6611.332199] NIP:  c0000000000f6af8 LR: c000000000a05f68 CTR: 0000000=
+000000000
+> > [ 6611.332206] REGS: c00000000274fa70 TRAP: 0900   Tainted: G          =
+ OE      (5.13.0-rc6-gcba5e97280f5)
+> > [ 6611.332214] MSR:  800000000280b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>=
+  CR: 28000224  XER: 00000000
+> > [ 6611.332234] CFAR: 0000000000000c00 IRQMASK: 0
+> > [ 6611.332234] GPR00: 0000000000000000 c00000000274fd10 c000000001abaf0=
+0 0000000000000000
+> > [ 6611.332234] GPR04: 00000000000000c0 0000000000000080 0001a91c68b80fa=
+1 00000000000003dc
+> > [ 6611.332234] GPR08: 000000000001f400 0000000000000001 000000000000000=
+0 0000000000000000
+> > [ 6611.332234] GPR12: 0000000000000000 c000000effc0be80 c000000ef07b3f9=
+0 000000001eefe200
+> > [ 6611.332234] GPR16: 0000000000000000 0000000000000000 000000000000000=
+0 0000000000000000
+> > [ 6611.332234] GPR20: 0000000000000001 0000000000000002 000000000000001=
+0 c0000000019fe2f8
+> > [ 6611.332234] GPR24: 0000000000000001 00000603517d757e 000000000000000=
+0 0000000000000000
+> > [ 6611.332234] GPR28: 0000000000000001 0000000000000000 c000000001231f9=
+0 c000000001231f98
+> > [ 6611.332323] NIP [c0000000000f6af8] plpar_hcall_norets_notrace+0x18/0=
+x24
+> > [ 6611.332332] LR [c000000000a05f68] check_and_cede_processor+0x48/0x60
+> > [ 6611.332340] --- interrupt: 900
+> > [ 6611.332345] [c00000000274fd10] [c000000efdb92380] 0xc000000efdb92380=
+ (unreliable)
+> > [ 6611.332355] [c00000000274fd70] [c000000000a063bc] dedicated_cede_loo=
+p+0x9c/0x1b0
+> > [ 6611.332364] [c00000000274fdc0] [c000000000a02b04] cpuidle_enter_stat=
+e+0x2e4/0x4e0
+> > [ 6611.332375] [c00000000274fe20] [c000000000a02da0] cpuidle_enter+0x50=
+/0x70
+> > [ 6611.332385] [c00000000274fe60] [c0000000001a883c] call_cpuidle+0x4c/=
+0x80
+> > [ 6611.332393] [c00000000274fe80] [c0000000001a8ee0] do_idle+0x380/0x3e=
+0
+> > [ 6611.332402] [c00000000274ff00] [c0000000001a91bc] cpu_startup_entry+=
+0x3c/0x40
+> > [ 6611.332411] [c00000000274ff30] [c000000000063ff8] start_secondary+0x=
+298/0x2b0
+> > [ 6611.332421] [c00000000274ff90] [c00000000000c754] start_secondary_pr=
+olog+0x10/0x14
+> > [ 6611.332430] Instruction dump:
+> > [ 6611.332435] 4bfffc44 3d22fff6 8929f328 2f890000 409efea4 39200001 3d=
+42fff6 3c62ff4f
+> > [ 6611.332451] 3863bcd8 992af328 4bf94f15 60000000 <0fe00000> 4bfffe80 =
+7f6407b4 7f43d378
+> > [ 6611.332466] ---[ end trace 1346f865cd1cae91 ]=E2=80=94
+> >
+> > 5.13.0-rc6 was good. Bisect points to following patch
+> >
+> > commit a7b359fc6a37
+> > sched/fair: Correctly insert cfs_rq's to list on unthrottle
+> >
+> > The test runs to completion(without this warning) if the patch is rever=
+ted.
+> >
+> > Thanks
+> > -Sachin
+> >
+>
+> Hi,
+>
+> Thanks for the report! I have a theory about what is possibly causing
+> this, so I will try to reproduce it and see if my assumptions are
+> correct.
 
-On 6/19/21 12:47 PM, Fabio Aiuto wrote:
-> This patch series removes all occurences of 5Ghz code over the
-> driver as required from driver's TODO list:
-> 
-> 	- find and remove remaining code valid only for 5 GHz.
-> 	  most of the obvious one have been removed, but things
-> 	  like channel > 14 still exist.
-> 
-> rtl8723bs work on 2.4Ghz band and supports 802.11bgn standards.
-> So all code related to 802.11a/ac standard is removed, as well
-> as code related to channel numbers above 14.
-> 
-> VHT code is deleted as well, for it's related to 802.11ac.
-> 
-> Comments are fixed accordingly and many unused variables are
-> deleted.
-> 
-> Every single patch of this series has been tested on a
-> Lenovo Ideapad MIIX 300-10IBY except for the last one,
-> for obvious reason (it deletes just the TODO item).
+This means that a child's load was not null and it was inserted
+whereas parent's load was null. This should not happen unless the
+propagation failed somewhere
 
-Thank you for your work on this. I've replied to 3 of
-the patches with some comments. The rest of the series
-looks ok to me (based on a quick scan of the patches).
-
-Regards,
-
-Hans
-
-
-
-> 
-> So:
-> 
-> Tested-by: Fabio Auto <fabioaiuto83@gmail.com>
-> 
-> Fabio Aiuto (18):
->   staging: rtl8723bs: remove all 5Ghz network types
->   staging: rtl8723bs: remove code related to unsupported channel
->     bandwidth
->   staging: rtl8723bs: remove unused enum items related to channel
->     bonding
->   staging: rtl8723bs: rename enum items related to channel bonding
->   staging: rtl8723bs: remove 5Ghz field in struct registry_priv
->   staging: rtl8723bs: remove struct rt_channel_plan_5g
->   staging: rtl8723bs: remove all branchings between 2.4Ghz and 5Ghz band
->     types
->   staging: rtl8723bs: beautify prototypes in include/hal_com_phycfg.h
->   staging: rtl8723bs: remove 5Ghz code related to channel plan
->     definition
->   staging: rtl8723bs: remove some unused 5Ghz macro definitions
->   staging: rtl8723bs: remove 5Ghz code related to RF power calibration
->   staging: rtl8723bs: remove VHT dead code
->   staging: rtl8723bs: remove unused ODM_CMNINFO_BOARD_TYPE enum item
->   staging: rtl8723bs: fix macro value for 2.4Ghz only device
->   staging: rtl8723bs: remove register initializations tied to 802.11ac
->     standard
->   staging: rtl8723bs: remove obsolete 5Ghz comments
->   staging: rtl8723bs: fix check allowing 5Ghz settings
->   staging: rtl8723bs: remove item from TODO list
-> 
->  drivers/staging/rtl8723bs/TODO                |    2 -
->  drivers/staging/rtl8723bs/core/rtw_ap.c       |   10 +-
->  .../staging/rtl8723bs/core/rtw_ieee80211.c    |   22 +-
->  drivers/staging/rtl8723bs/core/rtw_mlme.c     |   10 -
->  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c |  328 ++---
->  .../staging/rtl8723bs/core/rtw_wlan_util.c    |   29 +-
->  drivers/staging/rtl8723bs/core/rtw_xmit.c     |    5 +-
->  .../staging/rtl8723bs/hal/HalBtc8723b1Ant.c   |    4 +-
->  .../staging/rtl8723bs/hal/HalBtc8723b2Ant.c   |    5 +-
->  drivers/staging/rtl8723bs/hal/HalBtcOutSrc.h  |    1 -
->  .../staging/rtl8723bs/hal/HalHWImg8723B_BB.c  |   17 +-
->  .../staging/rtl8723bs/hal/HalHWImg8723B_RF.c  |  595 ++++-----
->  .../staging/rtl8723bs/hal/HalPhyRf_8723B.c    |   19 +-
->  drivers/staging/rtl8723bs/hal/hal_btcoex.c    |    4 -
->  drivers/staging/rtl8723bs/hal/hal_com.c       |  241 ----
->  .../staging/rtl8723bs/hal/hal_com_phycfg.c    | 1059 +++--------------
->  drivers/staging/rtl8723bs/hal/odm.c           |   50 -
->  drivers/staging/rtl8723bs/hal/odm.h           |   42 +-
->  drivers/staging/rtl8723bs/hal/odm_DIG.c       |    2 -
->  .../rtl8723bs/hal/odm_EdcaTurboCheck.c        |    4 +-
->  .../rtl8723bs/hal/odm_RegConfig8723B.c        |    5 +-
->  .../rtl8723bs/hal/odm_RegConfig8723B.h        |    2 -
->  drivers/staging/rtl8723bs/hal/rtl8723b_dm.c   |    1 -
->  .../staging/rtl8723bs/hal/rtl8723b_hal_init.c |   53 +-
->  .../staging/rtl8723bs/hal/rtl8723b_phycfg.c   |   43 +-
->  drivers/staging/rtl8723bs/hal/sdio_halinit.c  |    5 -
->  .../rtl8723bs/include/Hal8192CPhyReg.h        |    2 -
->  drivers/staging/rtl8723bs/include/drv_types.h |   10 +-
->  drivers/staging/rtl8723bs/include/hal_com.h   |   62 +-
->  .../rtl8723bs/include/hal_com_phycfg.h        |  198 +--
->  .../staging/rtl8723bs/include/hal_com_reg.h   |    1 -
->  drivers/staging/rtl8723bs/include/hal_data.h  |   40 +-
->  drivers/staging/rtl8723bs/include/hal_pg.h    |    2 -
->  drivers/staging/rtl8723bs/include/hal_phy.h   |   10 -
->  drivers/staging/rtl8723bs/include/ieee80211.h |   67 +-
->  .../staging/rtl8723bs/include/rtl8723b_xmit.h |   21 -
->  drivers/staging/rtl8723bs/include/rtw_ht.h    |    4 -
->  .../staging/rtl8723bs/include/rtw_mlme_ext.h  |   52 +-
->  drivers/staging/rtl8723bs/include/rtw_rf.h    |   33 +-
->  drivers/staging/rtl8723bs/include/wifi.h      |    1 -
->  .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c |    4 -
->  .../staging/rtl8723bs/os_dep/ioctl_linux.c    |    8 +-
->  drivers/staging/rtl8723bs/os_dep/os_intfs.c   |   13 +-
->  drivers/staging/rtl8723bs/os_dep/wifi_regd.c  |    4 -
->  44 files changed, 640 insertions(+), 2450 deletions(-)
-> 
-
+>
+>
+> Odin
