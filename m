@@ -2,92 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE94B3AED16
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 886E53AED11
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhFUQHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:07:43 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:58721 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230269AbhFUQHm (ORCPT
+        id S230252AbhFUQHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:07:39 -0400
+Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:36891 "EHLO
+        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230056AbhFUQHi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:07:42 -0400
-Received: from [192.168.1.155] ([95.118.106.223]) by mrelayeu.kundenserver.de
- (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1MZkYx-1lk6xC1s2h-00WmrM; Mon, 21 Jun 2021 18:05:13 +0200
-Subject: Re: [PATH 0/4] [RFC] Support virtual DRM
-To:     Tomohito Esaki <etom@igel.co.jp>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Cc:     dri-devlel@lists.freedesktop.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20210621062742.26073-1-etom@igel.co.jp>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <7cde82a9-c60c-e527-eeac-eaad0c5842a1@metux.net>
-Date:   Mon, 21 Jun 2021 18:05:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 21 Jun 2021 12:07:38 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.west.internal (Postfix) with ESMTP id 544A3F56;
+        Mon, 21 Jun 2021 12:05:22 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 21 Jun 2021 12:05:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=mk/4kwLPhTfsKcH2zkenuopbQbh
+        op/13kYsslt3x4vY=; b=AYfr9ZOffNiNISOObHr0YS5YkkIoCZLQXa0/oHvnm3t
+        GdAk10jZV2zCySg6d5zCXK7sW5i74C4XIPbRGFrXOu1i67Bm/qSRh+QZ1VYDW0in
+        a28Lzgao/Tl/ESqZMOU+rUezuyK76qgqJwUywrWkAaacacNpXlgYO5wlS0c1EBfp
+        WO/wh1lH19miMZOSpMAcPwh53fIajVSL9X+8IPXa1gICitinXNSNIfMDA+KAbaev
+        4iQp6B+5PGG9ud2cg9szLxSu2S3NuuvLZQdAAj+fuNaCOLZQIyj62biLZf7HrPRK
+        +oFTFuCd/94YqnYCncoZrT8fsRbCzbdlSCH7x5IK2Rw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=mk/4kw
+        LPhTfsKcH2zkenuopbQbhop/13kYsslt3x4vY=; b=b3oRSHWtUMSypuCY9rAQFU
+        2G5xiwO+oOIod5C4P8s0MSHefZGm0z/zcAeCW//xxGrHyWb311hr14laj7uVAVuR
+        gcmoXCNQuxSvUsEMLdMR1X/QaUjYingdPANd3LWxetROyOpq8Yhougya2md8TjGT
+        gLQ2sLzQFPPTX6XGhTWTIdgagh8TxE6/VIhSV3ouXeGBmAy/ourFjgIC+E8oQRyb
+        QEk3ON1+4GzAAirqEktUnKOwMHP6f4klWuJZ22T2C29FCekfcsTrxbQLGuUTPTHp
+        TY/1lrZ29RSoxHx1P3RIj3a05mMaxLc7h6m9RqDs+Qce0Exe+KByEeMTnhEORjhw
+        ==
+X-ME-Sender: <xms:wLjQYLENw3sSIaErRayL_1j8tauSOWfaWMr9e73yDA1xSAomzu0Jzw>
+    <xme:wLjQYIX2e1UTboczR6DJdBrVHqorjdYsFWZXwwhOF9781ut5GPMtSUTMLvgn7duiD
+    HkU6Umgivt1FZX44Uk>
+X-ME-Received: <xmr:wLjQYNLMP1UN5pW3RAkgu5IKnR7fVtB5wm-UrX4Piq-_vOFjiW_GOdwpRd5It9fucUssWVBhTpPWpZ65I8R6p1sIcUARX_uDzW3F>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeefledgleekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepveevfeffudeviedtgeethffhteeuffetfeffvdehvedvheetteehvdelfffg
+    jedvnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:wLjQYJFNqtDGvgSUAvpYLk5PslNnmLgROrsmimtQN4bQui7nkcYLEQ>
+    <xmx:wLjQYBURI1aTKJEixiG4X_PeupyV9vEmI3lqj2utRzSmdHOxpAC-kg>
+    <xmx:wLjQYEPAiaSLZ9LDAEEX3aTA8gNIWJ6tyYoFIwOekyaegeOSz93aqw>
+    <xmx:wbjQYMNpbFcH8uRIqzdBRzlrduslc94ugdGSNap40QkRrbGqGpslY5lO4JM>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 21 Jun 2021 12:05:19 -0400 (EDT)
+Date:   Mon, 21 Jun 2021 18:05:17 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Marek Vasut <marex@denx.de>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Eric Anholt <eric@anholt.net>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Phil Elwell <phil@raspberrypi.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] drm/vc4: dsi: Only register our component once a DSI
+ device is attached
+Message-ID: <20210621160517.5fptdj4tkbzgqn76@gilmour>
+References: <20200707101912.571531-1-maxime@cerno.tech>
+ <YM6dgVb12oITNfc0@pendragon.ideasonboard.com>
 MIME-Version: 1.0
-In-Reply-To: <20210621062742.26073-1-etom@igel.co.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:ZbI1RWxgocInH9UAHR6iDpdy/HJfu+bSz9Z2X6RE6gibrXly73l
- jgZ0HUAoSMsj7eoB5ficazIKQQImXBnqqX2nwA5iCta+OFxwBSPp+g3pewEOIcOyXuIuow8
- 014MAuba7Mrjwdeg9uyraO9/kmwtPM9bgTed9LHI0YvjIEILWKw2mbLTS+TKbsirguCmb1l
- Pc7g9+dSHBO6o7BUd964w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9n13vlzoNqk=:aRYaqiT6BrZI+UguW1PoVs
- uKEvRY4VdRhJ1AGsObSRE0Zio4gd5xjOcoZp8/i3dgG9mTVi1BaP4Hr3hl2kYHzyiWnU3h7lq
- f3vuhAIWUEmLCcUvTjpmis93jBwALK+Cy4+iwe54TuXQgWy3RkMwzaNOW2vfNLuRR2V81G+MW
- wJqjlRYzpj0PPgbUPbxv2tuGB3t8+Bw7P3FUOBx/t5PITs9rIl9In/EJ7b6BXUD7/8CyHT0H5
- 8CAEQvPZBolbeQB2Fw03q47wkUlSNUhbyR2Y9zqfTwiPhXKAPQ3EWmkEJNlC/L4ohbVYQdWFt
- dq2thHVhGplX2hxpFXV66AHWvqa4XlQY3XBSfID9NzEgBOFCzrSQ6r13gdRoJtmLGp7ioGsfJ
- X3WJLozX3qXwyPr+5shDb5FE3XFfWv53mbXRC1dGlAOeVD4+w3QQnPoaQEf0NB1MIWP85UgNT
- 4HtMcAcK1u/txzMFb2mNGcSrUBn25NaH7N32DK/f0anyPmd6sZLrEEC3n7MQSfvlK1d2lOIWx
- kcFLj+HgeTtJuk6HyEnm2Y=
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="3ksxvmnjsmsf76mt"
+Content-Disposition: inline
+In-Reply-To: <YM6dgVb12oITNfc0@pendragon.ideasonboard.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.06.21 08:27, Tomohito Esaki wrote:
 
-Hi,
+--3ksxvmnjsmsf76mt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Virtual DRM splits the overlay planes of a display controller into multiple
-> virtual devices to allow each plane to be accessed by each process.
-> 
-> This makes it possible to overlay images output from multiple processes on a
-> display. For example, one process displays the camera image without compositor
-> while another process overlays the UI.
+Hi Laurent,
 
-Are you attempting to create an simple in-kernel compositor ?
+On Sun, Jun 20, 2021 at 04:44:33AM +0300, Laurent Pinchart wrote:
+> Hi Maxime,
+>=20
+> I'm testing this, and I'm afraid it causes an issue with all the
+> I2C-controlled bridges. I'm focussing on the newly merged ti-sn65dsi83
+> driver at the moment, but other are affected the same way.
+>=20
+> With this patch, the DSI component is only added when the DSI device is
+> attached to the host with mipi_dsi_attach(). In the ti-sn65dsi83 driver,
+> this happens in the bridge attach callback, which is called when the
+> bridge is attached by a call to drm_bridge_attach() in vc4_dsi_bind().
+> This creates a circular dependency, and the DRM/KMS device is never
+> created.
 
-I don't think that's not the way to go, at least not by touching each
-single display driver, and not hardcoding the planes in DT.
+We discussed it on IRC, but it makes more sense here.
 
-What's the actual use case you're doing that for ? Why not using some
-userland compositor ?
+The thing is, that patch is fixing a circular dependency we discussed
+with Andrzej a year ago:
 
-If you really wanna build a kernel compositor, it should be completely
-independent of hw drivers. (well, almost - in case of gpus shall be
-used, the commands obviously need to be dispatched the actual driver)
+https://lore.kernel.org/dri-devel/20200630132711.ezywhvoiuv3swo57@gilmour.l=
+an/
 
+It seems like we have to choose between having the panels or bridges
+working :/
 
---mtx
+Maxime
 
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
+--3ksxvmnjsmsf76mt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYNC4vQAKCRDj7w1vZxhR
+xSLcAQDaSnT7X8iy3Cv8nH20JGeb14FgJH4/UPGtXb8fCwZc6AEAr6FM5zAXAEqf
+xgklsDB05uespz3Ze/lYNgKOG6bY3Q4=
+=1NSQ
+-----END PGP SIGNATURE-----
+
+--3ksxvmnjsmsf76mt--
