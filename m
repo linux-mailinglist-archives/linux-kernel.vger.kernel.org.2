@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E823AF0EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D06123AEF98
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233314AbhFUQyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:54:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41416 "EHLO mail.kernel.org"
+        id S233006AbhFUQjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:39:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56020 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233538AbhFUQtz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:49:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 788E661466;
-        Mon, 21 Jun 2021 16:34:51 +0000 (UTC)
+        id S232901AbhFUQew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:34:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DC3F76120D;
+        Mon, 21 Jun 2021 16:27:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624293291;
-        bh=ztOFQtRDJh1fFvx2oSEzVnYkyu7Wjyefhrj19t49ZjQ=;
+        s=korg; t=1624292840;
+        bh=dqoV1TNWUCbUUOS9goSmit/ypve9i2to0VkDscJk+cY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QZ3cj8484wOEQi2V4G2ty6mBoiAuMfQ9U5R5btDc6nqrbOQsAJ7zXM8Fr2EW2kVvj
-         tTXOAj6sUy4D6nISxc/3vXc/eMNrPSZLOJsPOnudubh9bGA6dAtSvneXo/u7QJKYsL
-         dOM6LPC8L8eUHzNoatnkam6EG3AJOOH+iFdR8Y/4=
+        b=Xiv3Y5mXsMzYQHBaZ0sZ41VbNrTQ9m07hlS/+zGJhn3+DSTgXfpct+AX+GU89dKgC
+         oWDuPzV71UtnwOxE4Urk06LlL+zgrR8flywkx6i/BV3AE8QPVcNj89AXofyCaM5N2Y
+         uDDDk+Ez1g8unfTOpFc2etimrIUV2kyJ/+aUa1wE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wanpeng Li <wanpengli@tencent.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.12 136/178] KVM: X86: Fix x86_emulator slab cache leak
-Date:   Mon, 21 Jun 2021 18:15:50 +0200
-Message-Id: <20210621154927.405045365@linuxfoundation.org>
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Rik van Riel <riel@surriel.com>,
+        Babu Moger <babu.moger@amd.com>
+Subject: [PATCH 5.10 121/146] x86/pkru: Write hardware init value to PKRU when xstate is init
+Date:   Mon, 21 Jun 2021 18:15:51 +0200
+Message-Id: <20210621154919.059747068@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621154921.212599475@linuxfoundation.org>
-References: <20210621154921.212599475@linuxfoundation.org>
+In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
+References: <20210621154911.244649123@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,40 +42,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-commit dfdc0a714d241bfbf951886c373cd1ae463fcc25 upstream.
+commit 510b80a6a0f1a0d114c6e33bcea64747d127973c upstream.
 
-Commit c9b8b07cded58 (KVM: x86: Dynamically allocate per-vCPU emulation context)
-tries to allocate per-vCPU emulation context dynamically, however, the
-x86_emulator slab cache is still exiting after the kvm module is unload
-as below after destroying the VM and unloading the kvm module.
+When user space brings PKRU into init state, then the kernel handling is
+broken:
 
-grep x86_emulator /proc/slabinfo
-x86_emulator          36     36   2672   12    8 : tunables    0    0    0 : slabdata      3      3      0
+  T1 user space
+     xsave(state)
+     state.header.xfeatures &= ~XFEATURE_MASK_PKRU;
+     xrstor(state)
 
-This patch fixes this slab cache leak by destroying the x86_emulator slab cache
-when the kvm module is unloaded.
+  T1 -> kernel
+     schedule()
+       XSAVE(S) -> T1->xsave.header.xfeatures[PKRU] == 0
+       T1->flags |= TIF_NEED_FPU_LOAD;
 
-Fixes: c9b8b07cded58 (KVM: x86: Dynamically allocate per-vCPU emulation context)
+       wrpkru();
+
+     schedule()
+       ...
+       pk = get_xsave_addr(&T1->fpu->state.xsave, XFEATURE_PKRU);
+       if (pk)
+	 wrpkru(pk->pkru);
+       else
+	 wrpkru(DEFAULT_PKRU);
+
+Because the xfeatures bit is 0 and therefore the value in the xsave
+storage is not valid, get_xsave_addr() returns NULL and switch_to()
+writes the default PKRU. -> FAIL #1!
+
+So that wrecks any copy_to/from_user() on the way back to user space
+which hits memory which is protected by the default PKRU value.
+
+Assumed that this does not fail (pure luck) then T1 goes back to user
+space and because TIF_NEED_FPU_LOAD is set it ends up in
+
+  switch_fpu_return()
+      __fpregs_load_activate()
+        if (!fpregs_state_valid()) {
+  	 load_XSTATE_from_task();
+        }
+
+But if nothing touched the FPU between T1 scheduling out and back in,
+then the fpregs_state is still valid which means switch_fpu_return()
+does nothing and just clears TIF_NEED_FPU_LOAD. Back to user space with
+DEFAULT_PKRU loaded. -> FAIL #2!
+
+The fix is simple: if get_xsave_addr() returns NULL then set the
+PKRU value to 0 instead of the restrictive default PKRU value in
+init_pkru_value.
+
+ [ bp: Massage in minor nitpicks from folks. ]
+
+Fixes: 0cecca9d03c9 ("x86/fpu: Eager switch PKRU state")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
+Acked-by: Rik van Riel <riel@surriel.com>
+Tested-by: Babu Moger <babu.moger@amd.com>
 Cc: stable@vger.kernel.org
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
-Message-Id: <1623387573-5969-1-git-send-email-wanpengli@tencent.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Link: https://lkml.kernel.org/r/20210608144346.045616965@linutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kvm/x86.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/include/asm/fpu/internal.h |   11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -8150,6 +8150,7 @@ void kvm_arch_exit(void)
- 	kvm_x86_ops.hardware_enable = NULL;
- 	kvm_mmu_module_exit();
- 	free_percpu(user_return_msrs);
-+	kmem_cache_destroy(x86_emulator_cache);
- 	kmem_cache_destroy(x86_fpu_cache);
- #ifdef CONFIG_KVM_XEN
- 	static_key_deferred_flush(&kvm_xen_enabled);
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -579,9 +579,16 @@ static inline void switch_fpu_finish(str
+ 	 * return to userland e.g. for a copy_to_user() operation.
+ 	 */
+ 	if (!(current->flags & PF_KTHREAD)) {
++		/*
++		 * If the PKRU bit in xsave.header.xfeatures is not set,
++		 * then the PKRU component was in init state, which means
++		 * XRSTOR will set PKRU to 0. If the bit is not set then
++		 * get_xsave_addr() will return NULL because the PKRU value
++		 * in memory is not valid. This means pkru_val has to be
++		 * set to 0 and not to init_pkru_value.
++		 */
+ 		pk = get_xsave_addr(&new_fpu->state.xsave, XFEATURE_PKRU);
+-		if (pk)
+-			pkru_val = pk->pkru;
++		pkru_val = pk ? pk->pkru : 0;
+ 	}
+ 	__write_pkru(pkru_val);
+ }
 
 
