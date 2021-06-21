@@ -2,195 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D2563AE2B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 07:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 045B43AE2BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 07:25:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229695AbhFUFZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 01:25:30 -0400
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:17990 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229487AbhFUFZ3 (ORCPT
+        id S229708AbhFUF13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 01:27:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48178 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229486AbhFUF11 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 01:25:29 -0400
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15L5GX9N017829;
-        Sun, 20 Jun 2021 22:23:13 -0700
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-0016f401.pphosted.com with ESMTP id 399g3qn7kw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 20 Jun 2021 22:23:12 -0700
-Received: from m0045851.ppops.net (m0045851.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15L5IDL9020280;
-        Sun, 20 Jun 2021 22:23:11 -0700
-Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2174.outbound.protection.outlook.com [104.47.57.174])
-        by mx0b-0016f401.pphosted.com with ESMTP id 399g3qn7kt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 20 Jun 2021 22:23:11 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iUGQox4f9VGubJlFwiLCSWSrq0Wb3IZH+hMSsklPR7SINvr52BRp/e67Net6fiBTO8swrfLJoW559lMCaL9ddCYecsjLEkXYzh/DOVaA6Xw5E6PLuAvVu1yJcjGkIj2Lu8sj4qN2muD3F/ViVr4NaZ+ZVsAHwuhLe72GytJlDWoKbmMBBrv2WlvadN3S3Tt1Hkjw5/Ehku5derL9PBUw/rz4uM7MZq8FPQyuoVbMw+60hzPj9UkM+eN+u2kCgWpICe/ynCA0hft40z0aExfU3cJcQs6oKy++5xfg5oXNOhFOV4XlJ6ok6tPeHduceIKpQMNKrIVhigNFmO7YnleJaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DT6sTws+zXkrGccPzPoqP92gtbXJGgtRHL5BXoZjXkQ=;
- b=LPw+U9fvmNuIEzhTSgp/OTyBddmss/6sS2423/evsuYxLF4sShvCdvXRsp2An98SzyT2oiBYRzkEfZSg6BkOD3F9cLXm6lPQDVINLqRHMSITqZVOlBbgtILt/pi+nb4+l8mETRhNjsBnOvJsRF8fXJrzR4VYqN+z0OtNtszsT+gYWrtgG6akqs3UCttURrb2SkkGXON5QzVrNslQo5OOeAUHgKOGJcLSUhyiLSA4ZlQu9AzpX3pBZ/THSywP3MkCWJ+DCqK9MvvxPfONER98c/jL9SOAOmCPOW8yy/Fs04msabReO7MBLSbukASuTzUCx/MIN7y4bIgLyNj4/VeOZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
+        Mon, 21 Jun 2021 01:27:27 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6EF8C061574;
+        Sun, 20 Jun 2021 22:25:12 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id t19-20020a17090ae513b029016f66a73701so4510053pjy.3;
+        Sun, 20 Jun 2021 22:25:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DT6sTws+zXkrGccPzPoqP92gtbXJGgtRHL5BXoZjXkQ=;
- b=NkWx1swgm+8rlV1NUP32oFXM98CQJyOBG1O7Bu3YiJJnPNv53m3OoHSKv5YlOvgWZgjDcDjVUFa27Cvwyrzu0MySmNXJyNImferUoODFz96EYEx1bEYgzjoOS9Qtv+V2b1OarshcrA9UMUdMVmsP9y3/sYWVMN2VJ0/FSYX2pus=
-Received: from DM6PR18MB3034.namprd18.prod.outlook.com (2603:10b6:5:18c::32)
- by DM6PR18MB3035.namprd18.prod.outlook.com (2603:10b6:5:185::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Mon, 21 Jun
- 2021 05:23:10 +0000
-Received: from DM6PR18MB3034.namprd18.prod.outlook.com
- ([fe80::b012:643f:6fd6:350a]) by DM6PR18MB3034.namprd18.prod.outlook.com
- ([fe80::b012:643f:6fd6:350a%3]) with mapi id 15.20.4242.023; Mon, 21 Jun 2021
- 05:23:10 +0000
-From:   Saurav Kashyap <skashyap@marvell.com>
-To:     SeongJae Park <sj38.park@gmail.com>
-CC:     Javed Hasan <jhasan@marvell.com>,
-        GR-QLogic-Storage-Upstream <GR-QLogic-Storage-Upstream@marvell.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "himanshu.madhani@oracle.com" <himanshu.madhani@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        SeongJae Park <sjpark@amazon.de>
-Subject: RE: [EXT] [PATCH] scsi: bnx2fc: Remove meaningless
- 'bnx2fc_abts_cleanup()' return value assignment
-Thread-Topic: [EXT] [PATCH] scsi: bnx2fc: Remove meaningless
- 'bnx2fc_abts_cleanup()' return value assignment
-Thread-Index: AQHXZGFW/m6s108dKEO3/NZ6aDBFWasd8fYQ
-Date:   Mon, 21 Jun 2021 05:23:10 +0000
-Message-ID: <DM6PR18MB30345324649F1B1E05082970D20A9@DM6PR18MB3034.namprd18.prod.outlook.com>
-References: <20210618164514.6299-1-sj38.park@gmail.com>
-In-Reply-To: <20210618164514.6299-1-sj38.park@gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=marvell.com;
-x-originating-ip: [103.82.96.51]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e881f63a-cef9-4243-77ea-08d93474a8de
-x-ms-traffictypediagnostic: DM6PR18MB3035:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR18MB303517ABECC4D38DD937A509D20A9@DM6PR18MB3035.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1201;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: J52OXRP73UF6qKC+5mfrS4duxRctsQ3Ni4x81Bg1JhO/+C+ZDfZb+VAe2BNP1Ruc9zLutKEavo/P+zLnA5RGgawYlixhYlnU0GR5BgqIZwyS+AFkcSiKZYgceqDEjgDvTGsjyhLDSubgCZAGpwQdgi7t89MqbhK6I78YcotuEucRrfdlIQZta2J1tV2/FgFzW8am2XDR+47Kqcvex2E0qwMuma6zkWeqabFsU8U0ReqK+YgjdA7NSi4TL34si5nrGhGuN9gzZnjfrDb9Qf9OP2jPeLfEXwX1AcMW0Ohq/rWLDeYZ37kPrnSx6smrKPPVw+dPBpzA91aVih3695gK+pcxYsVFSkG+OKuS7iuK9nYtG0ijlJFGiwTxV9DW308A74Uc8b7Z/bpvYKtSV9DIiR0CN77hg4ifPA6hTopkk8fy0jQZTxz2V4AEvVyViNBxztwTkuDFY5PQVmyQIGU41TrF8S3n0wGsKcfZ+poANuWVaIGmzgrbaCfz1LJdKF1Q2WGr9tWuBFqVLHn8KrJu4dAiR+tdwGNiv8WikjPbtqp4Bku2rQd8qrxcgwskZLVi+09WFHQt69q7MwO2fIRfW2BKpj7NxAtTMqsvEihYCLY=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR18MB3034.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(366004)(39860400002)(376002)(8676002)(8936002)(55016002)(6506007)(478600001)(4326008)(186003)(9686003)(33656002)(53546011)(26005)(83380400001)(76116006)(66556008)(71200400001)(6916009)(52536014)(38100700002)(86362001)(54906003)(7696005)(66946007)(66476007)(2906002)(66446008)(122000001)(64756008)(316002)(5660300002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?5Kh2aNon/I8JbzdDKfXXha3wdXbF3XfTjxtwdOI+rG/kpErHLTZpyxxqg6Nm?=
- =?us-ascii?Q?DNF3OPBbBRUiZtw/Qf1DvcQYZx0tLvU5toOX3hclyhOr+akM23z6161JIzbX?=
- =?us-ascii?Q?iL7cN8oDcI/SYtvu5HWZWSu8pe8+mOxEJ4oHOkw0w03zGRtSnOPLouWxHkUJ?=
- =?us-ascii?Q?o00o0Tc8D6yGFw+tL1rCW7AH7j1G77obl+EXINLKjCBMdevTkz5q+hTQX7jX?=
- =?us-ascii?Q?jVbwyaix3Jw7H30iuq7Rv04IhPH9B96BCK27tjn6aJHHK/HWytMqJVpupYhK?=
- =?us-ascii?Q?ag6tV2TiI7pYlA5EipgHDvMiU4KLso9oOAqO4gUqR8mwrKKzGqa0uLG75W4s?=
- =?us-ascii?Q?/VunYZ7WMXqjkXxyreC5mBOdWFYmOL8U9S7SidwxB2TJfRvMkSGrT0WimQLl?=
- =?us-ascii?Q?rfCKwr0OXnvd7EoWCA4d9CKMl8P/uVd0if6OQ8vKKmGFKRguiYyCcc7cO/Ck?=
- =?us-ascii?Q?Qnuax3w/yX6QcwObmLDZ1oMwXhNwwxC2S4rKj+rfVSQjt4q0ViIIkleAzfiH?=
- =?us-ascii?Q?Q/HJB9z7Ev95DkbsZppL2OXoDQCMloACssh2RDWMbs6NOd2BpBhbQHTadCK9?=
- =?us-ascii?Q?YaOLpYsmaSw6wmcQ2RU+OU+yJKSiC4dNsKg5SBXE2yAfE9HAM1FcBM7lP7tT?=
- =?us-ascii?Q?lBzrVET5P+Vbv1bSDASjVOTWH1rvhrPOGOcsZNoDTuGZu3FaUkV02qXK+Vc8?=
- =?us-ascii?Q?LXKk6g3Zy2y45Tj0esqlaW4JnNRqB1N+h3agUScxRXY2/QoL9o+eX8aFkMgo?=
- =?us-ascii?Q?TnM5AUsGKjdxBIIFGVeqeD8uh3GnhJU2RVFaVNzGyBh2MCS94cCsve+NOMEL?=
- =?us-ascii?Q?IU9DqdXfMyuMCm9mv4yLKDjzwDVyhsLp671xTfu7Q/FjjAyg2/OtS2FUd2pX?=
- =?us-ascii?Q?OA3sLj8ssUdYmU4+6X/5vDc2+pcSxNk+I4xKqroHJufqf38sukR2/ym3NHXu?=
- =?us-ascii?Q?8ttk6iV7/2BMgQKaMU982Kw7ET+ngecb5K96ilzGoTCgz/tOgVv3tFo14cWV?=
- =?us-ascii?Q?CNSXHM8PA2i+vMniIsg/Pqfjt8PYnzT0CeQIxW8+VzWgcUSuuvYec8+ggiYk?=
- =?us-ascii?Q?4HBvr+zgDn56N0D8a9/JDDJtLilWd9JaVb4DJsWvZZgWgYxx7ACWAbQ6p3Xh?=
- =?us-ascii?Q?JKVmx9QteHhOcBfTPOtencMfzQdh/Cmf40vej7nGVPimgzH2c6lZIUBFamKp?=
- =?us-ascii?Q?88PECaaTGmcb8J6tbIRUOT77yXgAu6f0xjtPDOcSino+pTi79zA587t+LtuJ?=
- =?us-ascii?Q?uF2w/M2jQAnmHpU1ShPaVNteeTO7fujAhADY1ErBwxjVQetY5g4/EKnMrhF/?=
- =?us-ascii?Q?LIQ=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1qVAoYNk5ZopylsEj2qCzbf543VF7z7ZlB5UYvXcDuI=;
+        b=o8cXAWOYVtQerhlY9qg+MFlJo6FPNgDQscSbfLfanhgNNooHFb1DOPVyw9XR3LCRPq
+         dFKL4xFyDp6SUGi/7EcgmyHWs45UEVR0VJQd/PnM+K5AwVDOc5Bd1/i3QKVy4uQjxugO
+         QDY45KOfVk+ySEbwdtJSdjXNC2v7cJT7QgMoi3w9/03MHePlzt22jT/I1MfcD6n7jlch
+         Ei7QEEUrl1XJO3I/Hk2GfxRXlNygIYlEHqoW6qH/5vM5FEIUfwMo5PKrf80c4wtzsQEu
+         vjU95k9JBjWiMpT5tMfdhXMKlne6HdPlkpPxpPKYFTeChbfB/ZHRQfPdJCOBYRYBm3jb
+         4JVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1qVAoYNk5ZopylsEj2qCzbf543VF7z7ZlB5UYvXcDuI=;
+        b=UeZ3we64/69R03o3pFX43YQQoU+88hrVaXKHCbeDyIsBGyPs4Wkmxoiex0uCz2hiyB
+         deavNBR+zurtU5nFK9Mgec3ZADGtYODY24RyCbD/cPxHho2uN9GlkORkqbwyzdYhjskQ
+         BOcdPOU4BPSFuQguPdfu76UlLdGb8QeNhcsGgbn9XqbSFbpTKREJwY56cXZeA++jB2N6
+         ivXBsRG/cNFV7E6AgdzNF9wlFRxLsRaDgKT8LE4VV1v+8dOswlvzzzIMyexTY6jxaCIV
+         mlo2Ae/GlzpYXn1mJBVJczuPjNVG6RUdGuhj5XdaVZ+HEpQ/11WW8KKd70hCeb1Dp1Nq
+         utWA==
+X-Gm-Message-State: AOAM532fu+vK/BWBAramedvpkooweTIygn+bh3P4xRnrWKT6Gq+32FDw
+        jvgT+fZHb7lQ4FVmcWQpNl2csDO4yAM=
+X-Google-Smtp-Source: ABdhPJzJJGTDm3OMi6Ry4Jn28iYe9McE/TLPRyz1L+rmBGOn7vyxdANL/JSPvMEwwzjTlmgXVx2iGg==
+X-Received: by 2002:a17:902:d909:b029:11b:870f:ddad with SMTP id c9-20020a170902d909b029011b870fddadmr16374023plz.81.1624253112211;
+        Sun, 20 Jun 2021 22:25:12 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:df5a:b40e:40c9:a3e7])
+        by smtp.gmail.com with ESMTPSA id w123sm13835706pfb.109.2021.06.20.22.25.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Jun 2021 22:25:11 -0700 (PDT)
+Date:   Sun, 20 Jun 2021 22:25:08 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Alexander Larkin <avlarkin82@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-input@vger.kernel.org, lkml <linux-kernel@vger.kernel.org>,
+        Security Officers <security@kernel.org>,
+        Murray McAllister <murray.mcallister@gmail.com>
+Subject: Re: [PATCH] Input: joydev - prevent potential write out of bounds in
+ ioctl
+Message-ID: <YNAitJfOpoBkFitU@google.com>
+References: <20210620120030.1513655-1-avlarkin82@gmail.com>
+ <CAADWXX-fpcPh+jGX7=Hbkqr7yhwzbUT915NBBzqHGecFVbxmzw@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: marvell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR18MB3034.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e881f63a-cef9-4243-77ea-08d93474a8de
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jun 2021 05:23:10.2179
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: x2aDj9cHqpj5fkIqbScMPNQBgZF10T+O8JvctTTAsqrZgxXBqNICZrSpWQETjOWhTh2+3qVtwd0yAWx7z8E+ew==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR18MB3035
-X-Proofpoint-GUID: eABGIRwQPbsFBudGMlv_oM8ilsb_Teki
-X-Proofpoint-ORIG-GUID: sS9PNEQGuNlnOJqr05dX7IiEDNf6bQbo
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-21_01:2021-06-20,2021-06-21 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADWXX-fpcPh+jGX7=Hbkqr7yhwzbUT915NBBzqHGecFVbxmzw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi SeongJae,
+On Sun, Jun 20, 2021 at 09:37:47AM -0700, Linus Torvalds wrote:
+> On Sun, Jun 20, 2021 at 5:01 AM Alexander Larkin <avlarkin82@gmail.com> wrote:
+> >
+> >     The problem is that the check of user input values that is just
+> >     before the fixed line of code is for the part of first values
+> >     (before len or before len/2), but then the usage of all the values
+> >     including i >= len (or i >= len/2) could be.
+> 
+> No, I think the problem is simpler than that.
+> 
+> > -       for (i = 0; i < joydev->nabs; i++)
+> > +       for (i = 0; i < len && i < joydev->nabs; i++)
+> >                 joydev->absmap[joydev->abspam[i]] = i;
+> 
+> This part is unnecessary - all values of "joydev->abspam[i]" have been
+> validated (either they are the old ones, or the new ones that we just
+> validated).
+> 
+> >         memcpy(joydev->keypam, keypam, len);
+> >
+> > -       for (i = 0; i < joydev->nkey; i++)
+> > +       for (i = 0; i < (len / 2) && i < joydev->nkey; i++)
+> >                 joydev->keymap[keypam[i] - BTN_MISC] = i;
+> 
+> The problem here is not that we walk past "len/2", but that the code
+> *should* have used
+> 
+>         joydev->keymap[joydev->keypam[i] - BTN_MISC] = i;
+> 
+> (note the "keypam[1]" vs "joydev->keypam[i]").
+> 
+> And the reason it *should* walk the whole "joydev->nkey" is that if
+> there are later cases with the same keypam value, the later ones
+> should override the previous ones (well, that "should" is more a
+> "traditionally have").
 
-> -----Original Message-----
-> From: SeongJae Park <sj38.park@gmail.com>
-> Sent: Friday, June 18, 2021 10:15 PM
-> To: Saurav Kashyap <skashyap@marvell.com>
-> Cc: Javed Hasan <jhasan@marvell.com>; GR-QLogic-Storage-Upstream <GR-
-> QLogic-Storage-Upstream@marvell.com>; jejb@linux.ibm.com;
-> martin.petersen@oracle.com; himanshu.madhani@oracle.com; linux-
-> scsi@vger.kernel.org; linux-kernel@vger.kernel.org; SeongJae Park
-> <sjpark@amazon.de>
-> Subject: [EXT] [PATCH] scsi: bnx2fc: Remove meaningless
-> 'bnx2fc_abts_cleanup()' return value assignment
->=20
-> External Email
->=20
-> ----------------------------------------------------------------------
-> From: SeongJae Park <sjpark@amazon.de>
->=20
-> Commit 122c81c563b0 ("scsi: bnx2fc: Return failure if io_req is already
-> in ABTS processing") made 'bnx2fc_eh_abort()' to return 'FAILED'
-> when 'io_req' is alrady in ABTS processing, regardless of the return
-> value of 'bnx2fc_abts_cleanup()'.  But, it left the assignment of the
-> return value of 'bnx2fc_abts_cleanup()' to 'rc', which is meaningless
-> now.  This commit removes it.
->=20
-> This issue was discovered and resolved using Coverity Static Analysis
-> Security Testing (SAST) by Synopsys, Inc.
->=20
-> Fixes: 122c81c563b0 ("scsi: bnx2fc: Return failure if io_req is already i=
-n ABTS
-> processing")
-> Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> ---
->  drivers/scsi/bnx2fc/bnx2fc_io.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/scsi/bnx2fc/bnx2fc_io.c b/drivers/scsi/bnx2fc/bnx2fc=
-_io.c
-> index ed300a279a38..f2996a9b2f63 100644
-> --- a/drivers/scsi/bnx2fc/bnx2fc_io.c
-> +++ b/drivers/scsi/bnx2fc/bnx2fc_io.c
-> @@ -1213,7 +1213,7 @@ int bnx2fc_eh_abort(struct scsi_cmnd *sc_cmd)
->  		 * cleanup the command and return that I/O was successfully
->  		 * aborted.
->  		 */
-> -		rc =3D bnx2fc_abts_cleanup(io_req);
-> +		bnx2fc_abts_cleanup(io_req);
->  		/* This only occurs when an task abort was requested while
-> ABTS
->  		   is in progress.  Setting the IO_CLEANUP flag will skip the
->  		   RRQ process in the case when the fw generated SCSI_CMD
-> cmpl
+Yes, we can discuss whether "short" ioctl should clear out the part of
+map that is not supplied by the call, but given that I consider joydev
+legacy my preference would be to leave this as it was.
 
-Acked-by: Saurav Kashyap <skashyap@marvell.com>
+> 
+> So I think the right patch is this one-liner
+> 
+>   diff --git a/drivers/input/joydev.c b/drivers/input/joydev.c
+>   index da8963a9f044..947d440a3be6 100644
+>   --- a/drivers/input/joydev.c
+>   +++ b/drivers/input/joydev.c
+>   @@ -499,7 +499,7 @@ static int joydev_handle_JSIOCSBTNMAP(struct
+> joydev *joydev,
+>         memcpy(joydev->keypam, keypam, len);
+> 
+>         for (i = 0; i < joydev->nkey; i++)
+>   -             joydev->keymap[keypam[i] - BTN_MISC] = i;
+>   +             joydev->keymap[joydev->keypam[i] - BTN_MISC] = i;
+> 
+>     out:
+>         kfree(keypam);
+> 
+> (whitespace-damaged, I would like Dmitry to think about it rather than
+> apply this mindlessly.
+> 
+> Dmitry?
 
-Thanks,
-~Saurav=20
-> --
-> 2.17.1
+Yes, this makes sense to me and it is safe as joydev->keypam is
+guaranteed to be the right size.
+
+Are you going to reformat this and resend or should I?
 
 
+Thanks.
+
+-- 
+Dmitry
