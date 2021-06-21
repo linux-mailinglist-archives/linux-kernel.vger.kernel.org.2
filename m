@@ -2,152 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A64B3AE33C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 08:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E373AE33F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 08:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbhFUGcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 02:32:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34272 "EHLO
+        id S229968AbhFUGdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 02:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230351AbhFUGcD (ORCPT
+        with ESMTP id S229641AbhFUGdA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 02:32:03 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 556C0C061768
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 23:29:48 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id m17so4787426plx.7
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 23:29:48 -0700 (PDT)
+        Mon, 21 Jun 2021 02:33:00 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B92B4C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 23:30:45 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id i34so7702015pgl.9
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 23:30:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=igel-co-jp.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MByV6cpfz5xYL+DMP3l1hiWnj/Gzo6aYK3LpWdzWngw=;
-        b=INBgOxS5FqMrlNPVd6fydqECStt/0aXOX0ms8c86Xm9H5Czt0SAQViPwSHhxqBbA6L
-         qRcQJRg1tLpFi1jd3YRlM9TPQAZEe9vlHLhIUZG2/tofLM97F6HSJ+0V8vqo94igM0QH
-         Ve8BQkLBbpytMccLcNA83ZAOnFZ+Me8pWT90vJexeneqr1mlK5lFROQo4VxlAEaL/0z8
-         renQqq6zpBQB/+AYALWZ0i2wq0qJiZfNmj1jhfTdYDUTyUEd2UWY4AglxcN1qo03oekA
-         YqZftYh5Yp6gT59Hg90rmIGFE1TTTFn7I2zjPlvTg7dVjOBkzngLkwHezWdFVpAckuai
-         8vtQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=egG/8H8k1FIQW1eeP8u9B+Da2dJJKlM4jubC6uROXf4=;
+        b=Q268DNz62F71wMS4Cplm3HgJH77oJpCtCLVEFdjsVgw8Q1RRrPvRZd+OS7BVG5+eMZ
+         qs9vnqGHq//kDH1NJYIeEzCdJrWiC2ZV8Osvw/M7BWqGL3sfWPJtk5nMKDwsTbfOF5E6
+         3/DiehMMFA0YSuyjzUp2JnfB+eeTj/6kzqTcs/QhfYjpUet583JRckUysgMrqb139Op3
+         oOf/xwirMU4zHccBlgBDKQHfABfqbp9mT43JYrflCSi1/Hp+UnGq1vrHK+fBu8pAVBOK
+         d8dNnSQfExUsNd/V+xuifjTvoX9TOOwDbOnUEJk5m8HWyXyXNozYzMBzW/UCy4J9Hh4j
+         v0KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MByV6cpfz5xYL+DMP3l1hiWnj/Gzo6aYK3LpWdzWngw=;
-        b=bzKJklAotUYXaau4J7tAFpwS2DxqrF4NBM3cuNEoz9Ej2zW+Rs0PVvTGPW2kHfPDLB
-         hF9CnDfIqx4PwxmAESYojpBwiZdNlpvIe29Hetj2XVcq5OaenSxSh2NRwUfAvYihCPl1
-         xcDTkHvwY8GnSFMnkxckyHTJP10e+bq2KP+swx1RSqa9hH6/3ZHhvQhb5hd8kJKlYAOl
-         2bcjfvg15E92H+gndoAym3jWUtwh71qNbylUOSeKP6JGnzMDkFyyahBZN61PU3EsjcHL
-         ZTZ1KFY/alLCFz8to8H/kzenJ/WMdHxVLE7540Kl6tt48f2Ty/W6XXvopLVrEN0jrxMI
-         TY8A==
-X-Gm-Message-State: AOAM533U2t1E3We7HhQ/5QroOEJQPrxh7hBFAVt7aSw/WE54F7N3sxt5
-        h1QmIXRGQJXonJ+WDYoQOj7WSGiS3f4KnMUJ
-X-Google-Smtp-Source: ABdhPJxHNpA+XwXUTcAq7QFgOE6z6xDf29WT9IIQdU5CA8Phncg6Mo0Y0WvZ8pH33A0XVv1phS5WIg==
-X-Received: by 2002:a17:90a:ab96:: with SMTP id n22mr25432272pjq.92.1624256987850;
-        Sun, 20 Jun 2021 23:29:47 -0700 (PDT)
-Received: from localhost.localdomain ([240b:10:c9a0:ca00:61b8:26ec:dc30:8823])
-        by smtp.gmail.com with ESMTPSA id j19sm15266018pgm.44.2021.06.20.23.29.44
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=egG/8H8k1FIQW1eeP8u9B+Da2dJJKlM4jubC6uROXf4=;
+        b=YOAcP3d3t5vNv87sVh+SVn1XP4zxawhgotGLbkSANE4maj/+8C2u48iOFQ8H4mVNcr
+         /nC8PtXjy+eMfmGTZ0kCjCZWwx5n7xfQ1ISx31CtRGKWf01qVMmIZkv8k8lPNbULiUi1
+         TOSMnRvFHibJZ90QklGsSTmYqbJtP1EMX44SHLpRrSzbbNh96oG6XIBWe+iPj3QgGt2O
+         UDhBbTNtKW2W6Sse6MZy53l8Q79xx2LqwvlvSLtofZ8iXjhEgy5Aqat6EsTqpFPfeqDV
+         PNo+jFxj1izqsyQORz5EPvm7FgWcNWZpIv8PgdhwgVRGZ9PyybfSAnQigiTJo0jlv16I
+         j8nQ==
+X-Gm-Message-State: AOAM531ujo6uii40szycDTqCuVOz3S+z46+gumuHe8Z0oecLU2F+Rnbh
+        Mna1zhmGEqUB630MeZ6byRa4X+IKgiAGBw==
+X-Google-Smtp-Source: ABdhPJwle2Tq0PtDoSd6aweAGamJgaSsOaUr1UD99o9QXjLQP8PnWQSHjzThpZ8XFX4q2BIY9TCayg==
+X-Received: by 2002:a63:d213:: with SMTP id a19mr22527683pgg.28.1624257045137;
+        Sun, 20 Jun 2021 23:30:45 -0700 (PDT)
+Received: from gmail.com (36-229-229-123.dynamic-ip.hinet.net. [36.229.229.123])
+        by smtp.gmail.com with ESMTPSA id q4sm16025356pgg.0.2021.06.20.23.30.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Jun 2021 23:29:47 -0700 (PDT)
-From:   Tomohito Esaki <etom@igel.co.jp>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Cc:     dri-devlel@lists.freedesktop.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-doc@vger.kernel.org,
-        Tomohito Esaki <etom@igel.co.jp>
-Subject: [PATH 4/4] doc-rst: Add virtual DRM documentation
-Date:   Mon, 21 Jun 2021 15:27:42 +0900
-Message-Id: <20210621062742.26073-5-etom@igel.co.jp>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210621062742.26073-1-etom@igel.co.jp>
-References: <20210621062742.26073-1-etom@igel.co.jp>
+        Sun, 20 Jun 2021 23:30:44 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 14:30:41 +0800
+From:   Jhih-Ming Huang <fbihjmeric@gmail.com>
+To:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [fbihjmeric@gmail.com: Re:
+ drivers/staging/rtl8723bs/core/rtw_security.c:95:9: warning: variable 'crc'
+ set but not used]
+Message-ID: <20210621063041.v4u35pxgglgwn2go@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Tomohito Esaki <etom@igel.co.jp>
----
- Documentation/gpu/drivers.rst |  1 +
- Documentation/gpu/vdrm.rst    | 51 +++++++++++++++++++++++++++++++++++
- 2 files changed, 52 insertions(+)
- create mode 100644 Documentation/gpu/vdrm.rst
+On Sat, Jun 19, 2021 at 6:27 PM kernel test robot <lkp@intel.com> wrote:
+>
+> tree:   https://github.com/0day-ci/linux/commits/UPDATE-20210619-155350/Jhih-Ming-Huang/rtw_security-fix-cast-to-restricted-__le32/20210616-131056
+> head:   ed0359e3fa64928e48021387a694f211bc840ff7
+> commit: ed0359e3fa64928e48021387a694f211bc840ff7 rtw_security: fix cast to restricted __le32
+> date:   3 hours ago
+> config: sh-allmodconfig (attached as .config)
+> compiler: sh4-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://github.com/0day-ci/linux/commit/ed0359e3fa64928e48021387a694f211bc840ff7
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review UPDATE-20210619-155350/Jhih-Ming-Huang/rtw_security-fix-cast-to-restricted-__le32/20210616-131056
+>         git checkout ed0359e3fa64928e48021387a694f211bc840ff7
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=sh
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All warnings (new ones prefixed by >>):
+>
+>    drivers/staging/rtl8723bs/core/rtw_security.c: In function 'rtw_wep_decrypt':
+> >> drivers/staging/rtl8723bs/core/rtw_security.c:95:9: warning: variable 'crc' set but not used [-Wunused-but-set-variable]
+>       95 |  __le32 crc;
+>          |         ^~~
+>
+> Kconfig warnings: (for reference only)
+>    WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
+>    Depends on SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC && HAS_DMA
+>    Selected by
+>    - SND_ATMEL_SOC_SSC && SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC
+>    - SND_ATMEL_SOC_SSC_PDC && SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC && ATMEL_SSC
+>
+>
+> vim +/crc +95 drivers/staging/rtl8723bs/core/rtw_security.c
+>
+>     91
+>     92  void rtw_wep_decrypt(struct adapter  *padapter, u8 *precvframe)
+>     93  {
+>     94          /*  exclude ICV */
+>   > 95          __le32 crc;
+>     96          signed int      length;
+>     97          u32 keylength;
+>     98          u8 *pframe, *payload, *iv, wepkey[16];
+>     99          u8  keyindex;
+>    100          struct  rx_pkt_attrib    *prxattrib = &(((union recv_frame *)precvframe)->u.hdr.attrib);
+>    101          struct  security_priv *psecuritypriv = &padapter->securitypriv;
+>    102          struct arc4_ctx *ctx = &psecuritypriv->recv_arc4_ctx;
+>    103
+>    104          pframe = (unsigned char *)((union recv_frame *)precvframe)->u.hdr.rx_data;
+>    105
+>    106          /* start to decrypt recvframe */
+>    107          if ((prxattrib->encrypt == _WEP40_) || (prxattrib->encrypt == _WEP104_)) {
+>    108                  iv = pframe+prxattrib->hdrlen;
+>    109                  /* keyindex =(iv[3]&0x3); */
+>    110                  keyindex = prxattrib->key_index;
+>    111                  keylength = psecuritypriv->dot11DefKeylen[keyindex];
+>    112                  memcpy(&wepkey[0], iv, 3);
+>    113                  /* memcpy(&wepkey[3], &psecuritypriv->dot11DefKey[psecuritypriv->dot11PrivacyKeyIndex].skey[0], keylength); */
+>    114                  memcpy(&wepkey[3], &psecuritypriv->dot11DefKey[keyindex].skey[0], keylength);
+>    115                  length = ((union recv_frame *)precvframe)->u.hdr.len-prxattrib->hdrlen-prxattrib->iv_len;
+>    116
+>    117                  payload = pframe+prxattrib->iv_len+prxattrib->hdrlen;
+>    118
+>    119                  /* decrypt payload include icv */
+>    120                  arc4_setkey(ctx, wepkey, 3 + keylength);
+>    121                  arc4_crypt(ctx, payload, payload,  length);
+>    122
+>    123                  /* calculate icv and compare the icv */
+>    124                  crc = cpu_to_le32(~crc32_le(~0, payload, length - 4));
+>    125
+>    126          }
+>    127  }
+>    128
+>
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-diff --git a/Documentation/gpu/drivers.rst b/Documentation/gpu/drivers.rst
-index b4a0ed3ca961..bad0226de972 100644
---- a/Documentation/gpu/drivers.rst
-+++ b/Documentation/gpu/drivers.rst
-@@ -19,6 +19,7 @@ GPU Driver Documentation
-    xen-front
-    afbc
-    komeda-kms
-+   vdrm
- 
- .. only::  subproject and html
- 
-diff --git a/Documentation/gpu/vdrm.rst b/Documentation/gpu/vdrm.rst
-new file mode 100644
-index 000000000000..2ab1699c2f42
---- /dev/null
-+++ b/Documentation/gpu/vdrm.rst
-@@ -0,0 +1,51 @@
-+=============================
-+ drm/vdrm virtual DRM driver
-+=============================
-+
-+Virtual DRM splits the overlay planes of a display controller into multiple
-+virtual devices to allow each plane to be accessed by each process.
-+
-+This makes it possible to overlay images output from multiple processes on a
-+display. For example, one process displays the camera image without compositor
-+while another process overlays the UI.
-+
-+The virtual DRM creates standalone virtual device and make DRM planes from a
-+master device (e.g. card0) accessible via one or more virtual device. However,
-+these plane are no longer accessible from the original device.
-+Each virtual device (and plane) can be accessed via a separate device file.
-+
-+The virtual DRM driver doesn't directly control the display hardware and has
-+no access to the physical bus. Instead, the virtual DRM driver issues requests
-+to the standard DRM device driver ("master" driver) when the hardware needs to
-+be controlled. The master driver is modified to notify the virtual DRM driver
-+of interrupt events from the display hardware.
-+
-+Plane position and size
-+=======================
-+The initial position, size and z-position of the plane used in virtual DRM is
-+specified in the device tree. The position and size of the planes are set as
-+properties and can be updated. The name of each property is as
-+follows:
-+* vdrm_offset_x: x-coordinate of the left-top of the plane on the screen
-+* vdrm_offset_y: y-coordinate of the left-top of the plane on the screen
-+* vdrm_width: width of the plane
-+* vdrm_height: height of the plane
-+
-+Virtual DRM Functions Reference
-+===============================
-+
-+.. kernel-doc:: drivers/gpu/drm/vdrm/vdrm_api.h
-+    :internal:
-+
-+.. kernel-doc:: drivers/gpu/drm/vdrm/vdrm_drv.c
-+    :export:
-+
-+Driver limitations
-+==================
-+1. Each virtual DRM device only supports one plane per CRTC.
-+
-+2. Virtual DRM doesn't support hot plug connector.
-+
-+3. If virtual DRM has multiple CRTCs, the initial position and size of the
-+   virtual DRM planes is the same for all planes, since they cannot be set
-+   for each plane in the device tree.
--- 
-2.25.1
+This warning was introduced by my pull request,
+but I am fixing the sparse warning and the unused variable was
+declared in the previous commit.
+The original author did not compare the crc and payload in
+rtw_wep_decrypt, so the variable 'crc' was set but not used.
 
+Should I fix this in my pull request?
+
+thanks.
+
+--jmhuang
