@@ -2,147 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0FC73AE73E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD283AE744
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229747AbhFUKkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 06:40:18 -0400
-Received: from mga17.intel.com ([192.55.52.151]:19756 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229621AbhFUKkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 06:40:16 -0400
-IronPort-SDR: /x0XUXdtXMdcSu63aD7ZMFmhueVPM1Q/5hgfRDdvlL5961p69G3OZw6QGijX67l1Vc7JQPF+Gg
- q0sPLKwAdu0g==
-X-IronPort-AV: E=McAfee;i="6200,9189,10021"; a="187192984"
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208,223";a="187192984"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 03:38:02 -0700
-IronPort-SDR: sy5gDF9Gq5G92YANc7zNj+jUlB3Edt4JFFqBdQFsjpaoFCvuk9Hyv1liJZ7AvXfyiSc2RT7TVC
- xsiz7CaxDKVg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208,223";a="556202435"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 21 Jun 2021 03:37:59 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 21 Jun 2021 13:37:59 +0300
-Date:   Mon, 21 Jun 2021 13:37:59 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Dominik Brodowski <linux@dominikbrodowski.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: v5.13-rcX regression - NULL pointer dereference - MFD and
- software node API
-Message-ID: <YNBsB6zIo4A4vD4w@kuha.fi.intel.com>
-References: <YM77uq51jmDC/rHt@owl.dominikbrodowski.net>
- <CAHp75VfP2h_aLVR9cgfXWHmqNbUZg-KZj2UwMs6dAkbS5eSghg@mail.gmail.com>
- <YM8rY5hi+zuAekg+@owl.dominikbrodowski.net>
- <CAHp75VdSyM7JdGDhdo5t+FbmouEA7ZSOwGAtSwSRD8vTwTc+LA@mail.gmail.com>
- <CAHp75Ve=j+u-9TF0az3o82wOyzixCezkgOm=yUHh37JS_Awiig@mail.gmail.com>
- <YNBU3Jjme1lQ3MdV@owl.dominikbrodowski.net>
- <YNBjJnxrXaWmfUqo@smile.fi.intel.com>
+        id S230076AbhFUKlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 06:41:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229804AbhFUKlD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 06:41:03 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 163F6C061574;
+        Mon, 21 Jun 2021 03:38:48 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id q64so22784285qke.7;
+        Mon, 21 Jun 2021 03:38:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wqPsiTjn3y34NIB0txQqm3bYJeUD7nTZah6VlYwyDvw=;
+        b=fRNs9Zi/uOSEbURx7ABqOmbwARWVSC+180v2trvI2kOex9/oQ27tA0DkbHuk3l/EHt
+         r//uDv/OPjfvnvcl8/dFZ3QfK6gEN0y0nLKvZLKZ8hS8PphiXnrBifC3jcKEbJN9dOrX
+         Hm4tNTwPjkywwVmCYRVRGOureCrWwDxE7WqELo2Cdm5S0AthAAw8ECaC9hhJBbhhLmLI
+         DqnCS3chMhsJtkV7RWtdhL7Y0+UKX+K3nrI+VR52LJ0+Xf3Cjl0mWp9pa0/FuSGhBmDN
+         OyVyZSHLKKrjdrEmf91VX+aSa2i30vuP2SK+miGkxHbn7G4pRazjjgPrxRKlBF7cvc8m
+         fLyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wqPsiTjn3y34NIB0txQqm3bYJeUD7nTZah6VlYwyDvw=;
+        b=SUpBHuVSOxtJMKPLHNOgDXg/KV6s7b+lmmtsX0Fb3jPib6stDExrO1zmtGlVM3QKfj
+         xaoNUXBe7Z5cm5kL7SqYbf7DU0+y8QcB40xiqVaEE/LA+Do5We/n9hC+8Kv3bAgwzAW4
+         LfubmTMdpEmuXQhITMOnuKTVGlL8NSBIjxmeKCB42akGhFuSk2azh0rFKEkPdIlV2/0o
+         p1yb72Kk676Xtkhgox1UpRmTsbcynLwtVsE2VSKdxtVdvWPkRq8B9JgrKdgKNKnTKwOI
+         q4GxNN3t+TOTtmHzgtIkDK+ThMSGd0p2Jsp7kDLUukqM0g6AQfrV1dC8EUv4kbFtzy2L
+         tHYg==
+X-Gm-Message-State: AOAM530RKyjEMCTitGCwdbl4S16TX0Lv2pyjwopZ61+ZkK+KXVaKI3qC
+        NBfAbYwYy/YUV3GE9VpcMeM=
+X-Google-Smtp-Source: ABdhPJzEHDMzYkCX84hBARARNxsv87s7p5D0N2hRoR9/criB4+J8tMwOUsEUpQgnAGCQc4MHl9Unog==
+X-Received: by 2002:a37:46c2:: with SMTP id t185mr20561684qka.466.1624271927300;
+        Mon, 21 Jun 2021 03:38:47 -0700 (PDT)
+Received: from localhost.localdomain (email.nillco.net. [139.177.202.100])
+        by smtp.gmail.com with ESMTPSA id q25sm2149031qkm.33.2021.06.21.03.38.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 03:38:46 -0700 (PDT)
+From:   Rong Zhang <ulin0208@gmail.com>
+To:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, jmorris@namei.org,
+        yoshfuji@linux-ipv6.org, kaber@trash.net
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rong Zhang <ulin0208@gmail.com>
+Subject: [PATCH] tcp: fix ipv6 tproxy doesn't work on kernel 4.4.x
+Date:   Mon, 21 Jun 2021 18:38:29 +0800
+Message-Id: <20210621103829.506112-1-ulin0208@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="td8fQmGGYj1nswxy"
-Content-Disposition: inline
-In-Reply-To: <YNBjJnxrXaWmfUqo@smile.fi.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Not only in tcp_v4_init_req() but also in tcp_v6_init_req()
+need to initialize no_srccheck, otherwise ipv6 tproxy doesn't work.
+So move it before init_req().
 
---td8fQmGGYj1nswxy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jun 21, 2021 at 01:00:06PM +0300, Andy Shevchenko wrote:
-> Can you, please, attach this to the bug report?
-> 
-> Long story here is that the device creation fails but we already have added
-> swnode to it. Meanwhile, device itself is not completely instantiated (yet)
-> and dev_name(dev) is NULL. The software_node_notify() is called with such
-> device and Oopses in the following line
-> 
-> 	sysfs_remove_link(&swnode->kobj, dev_name(dev));
-> 
-> My patch fixes another issue that might happen before this and in the code
-> that retrieves swnode itself in the device_remove_software_node().
-> 
-> Of course my patch won't fix this issue.
-> 
-> I have heard that Heikki is looking how to fix the issue in your case and
-> potentially in any other cases where device_add_software_node() is called
-> against not formed object instance.
-
-Dominik, can you test the attached patch to confirm if this really is
-the case.
-
-thanks,
-
--- 
-heikki
-
---td8fQmGGYj1nswxy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0001-software-node-Handle-software-node-injection-to-an-e.patch"
-
-From 0cddd29f5d5d41d1b7fa38b0f927f4e755a1bcd0 Mon Sep 17 00:00:00 2001
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Date: Mon, 21 Jun 2021 13:31:51 +0300
-Subject: [PATCH] software node: Handle software node injection to an existing
- device properly
-
-Interim, work-in-progress.
-
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Rong Zhang <ulin0208@gmail.com>
 ---
- drivers/base/swnode.c | 16 ++++++++++++----
- 1 file changed, 12 insertions(+), 4 deletions(-)
+ net/ipv4/tcp_input.c | 1 +
+ net/ipv4/tcp_ipv4.c  | 1 -
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-index 3cc11b813f28c..33c8f31dbab4f 100644
---- a/drivers/base/swnode.c
-+++ b/drivers/base/swnode.c
-@@ -1045,7 +1045,15 @@ int device_add_software_node(struct device *dev, const struct software_node *nod
- 	}
+diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+index 0919183b003f..e2bfcb30564d 100644
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -6360,6 +6360,7 @@ int tcp_conn_request(struct request_sock_ops *rsk_ops,
  
- 	set_secondary_fwnode(dev, &swnode->fwnode);
--	software_node_notify(dev, KOBJ_ADD);
-+
-+	/*
-+	 * In some special cases the software node has to be injected to an
-+	 * already existing device. In these cases software_node_node() has to
-+	 * be called separate from here. Using the device name here to check was
-+	 * the device already added or not.
-+	 */
-+	if (dev_name(dev))
-+		software_node_notify(dev, KOBJ_ADD);
+ 	tmp_opt.tstamp_ok = tmp_opt.saw_tstamp;
+ 	tcp_openreq_init(req, &tmp_opt, skb, sk);
++	inet_rsk(req)->no_srccheck = inet_sk(sk)->transparent;
  
- 	return 0;
+ 	/* Note: tcp_v6_init_req() might override ir_iif for link locals */
+ 	inet_rsk(req)->ir_iif = sk->sk_bound_dev_if;
+diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+index 3826745a160e..91c7a76f3bb3 100644
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -1206,7 +1206,6 @@ static void tcp_v4_init_req(struct request_sock *req,
+ 
+ 	sk_rcv_saddr_set(req_to_sk(req), ip_hdr(skb)->daddr);
+ 	sk_daddr_set(req_to_sk(req), ip_hdr(skb)->saddr);
+-	ireq->no_srccheck = inet_sk(sk_listener)->transparent;
+ 	RCU_INIT_POINTER(ireq->ireq_opt, tcp_v4_save_options(skb));
  }
-@@ -1065,7 +1073,8 @@ void device_remove_software_node(struct device *dev)
- 	if (!swnode)
- 		return;
- 
--	software_node_notify(dev, KOBJ_REMOVE);
-+	if (dev_name(dev))
-+		software_node_notify(dev, KOBJ_REMOVE);
- 	set_secondary_fwnode(dev, NULL);
- 	kobject_put(&swnode->kobj);
- }
-@@ -1119,8 +1128,7 @@ int software_node_notify(struct device *dev, unsigned long action)
- 
- 	switch (action) {
- 	case KOBJ_ADD:
--		ret = sysfs_create_link_nowarn(&dev->kobj, &swnode->kobj,
--					       "software_node");
-+		ret = sysfs_create_link(&dev->kobj, &swnode->kobj, "software_node");
- 		if (ret)
- 			break;
  
 -- 
-2.30.2
+2.32.0
 
-
---td8fQmGGYj1nswxy--
