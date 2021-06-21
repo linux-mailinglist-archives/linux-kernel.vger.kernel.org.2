@@ -2,124 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8203AEB39
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A6D3AEB3C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230236AbhFUO3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 10:29:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229904AbhFUO3W (ORCPT
+        id S230076AbhFUOaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 10:30:03 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:55276 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229789AbhFUOaC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 10:29:22 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22462C061574;
-        Mon, 21 Jun 2021 07:27:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MMc2KGdoutHfZtgfbYoRfjF4kYXtJrSnb/pfXowYFuM=; b=a7IMFKTTLtH6QzE9oeMOnqWREB
-        k74qpt9XqgIAsd8S9v9Ne2UShz2hSFYEGNbPUZtSwlg+cIk8tvrsOyP3mi08RLF+ZMj62OG1F9+Pw
-        gaZfMY5/ziFDUMvDSiNQbxCElDxzlJ2zoObDofYFLCNtlPs+d2JeEYWboNKhJBP0sw3nMOecTf5sN
-        qBJ3hi+T4QI/DgkLXEzsg5FZspWeU9g1Vh6c3WyJCA0rin+yrt/aImCiv373zIVGxKTlNTLV2eS4w
-        vF3yy0w1zUvMUi8wRFYqbH8xoYyX6W3wpoTGoKnu9clF8lCNq0Yo86bQOCpOhXV75gOxYMj2R5CT7
-        3I3pdb6g==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvKsh-00DB4u-Dk; Mon, 21 Jun 2021 14:26:38 +0000
-Date:   Mon, 21 Jun 2021 15:26:31 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Bin Meng <bmeng.cn@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v3 1/3] riscv: optimized memcpy
-Message-ID: <YNChl0tkofSGzvIX@infradead.org>
-References: <20210617152754.17960-1-mcroce@linux.microsoft.com>
- <20210617152754.17960-2-mcroce@linux.microsoft.com>
+        Mon, 21 Jun 2021 10:30:02 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7B6B75D6B;
+        Mon, 21 Jun 2021 16:27:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1624285667;
+        bh=7L3oTmVXoz7x5fNyzOZRs2Vf9NqEwqMSuOKnDXVsMC8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Tyjk+gjuggWCdEMcb3SdTePBeyfnl9wB2zuMp1n6UwdfzD7Q0aPq+9XyTstU3ggkJ
+         15Zl1dq9LzahQwviLSPMXAnCWiYRRSUe7ddcUqJsqJ99YbdY7U5Z+JY+KK4R9JVvv6
+         6mX79t4+O1EN1slk1Xg1UeOy5nTkfHkQ9sxLLI/o=
+Date:   Mon, 21 Jun 2021 17:27:21 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Stefan =?utf-8?Q?Riedm=C3=BCller?= <S.Riedmueller@phytec.de>
+Cc:     "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "sam@ravnborg.org" <sam@ravnborg.org>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] drm/panel: Add connector_type and bus_format for AUO
+ G104SN02 V2 panel
+Message-ID: <YNChySKddg/JsMZv@pendragon.ideasonboard.com>
+References: <20210415091616.53415-1-s.riedmueller@phytec.de>
+ <57bf547d95ba84f72d0f9da0e687fbe71311e5b8.camel@phytec.de>
+ <5942e9c67f7d50737536613b80a2cb42a3615b3d.camel@phytec.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210617152754.17960-2-mcroce@linux.microsoft.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5942e9c67f7d50737536613b80a2cb42a3615b3d.camel@phytec.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 05:27:52PM +0200, Matteo Croce wrote:
-> +extern void *memcpy(void *dest, const void *src, size_t count);
-> +extern void *__memcpy(void *dest, const void *src, size_t count);
+Hi Stefan,
 
-No need for externs.
+Thank you for the patch.
 
-> +++ b/arch/riscv/lib/string.c
+On Mon, Jun 21, 2021 at 08:22:10AM +0000, Stefan Riedmüller wrote:
+> Hi,
+> 
+> another gentle ping.
 
-Nothing in her looks RISC-V specific.  Why doesn't this go into lib/ so
-that other architectures can use it as well.
+Sorry for the delay, I have way too little bandwidth these days :-S
 
-> +#include <linux/module.h>
+> Also adding Laurent Pinchart to CC.
+>
+> On Wed, 2021-05-26 at 07:34 +0000, Stefan Riedmüller wrote:
+> > On Thu, 2021-04-15 at 11:16 +0200, Stefan Riedmueller wrote:
+> > > The AUO G104SN02 V2 is an LVDS display which supports 6 and 8 bpc PSWG.
+> > > Add the corresponding connector type and 8 bpc as default bus_format.
+> > > 
+> > > Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
 
-I think you only need export.h.
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 
-> +void *__memcpy(void *dest, const void *src, size_t count)
-> +{
-> +	const int bytes_long = BITS_PER_LONG / 8;
-> +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-> +	const int mask = bytes_long - 1;
-> +	const int distance = (src - dest) & mask;
-> +#endif
-> +	union const_types s = { .u8 = src };
-> +	union types d = { .u8 = dest };
-> +
-> +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
-> +	if (count < MIN_THRESHOLD)
+It will be interesting to add support for the 6bpp mode at some point (I
+assume through a custom DT property that reports the state of the
+panel's SEL68 pin, as it should be strapped in most cases).
 
-Using IS_ENABLED we can avoid a lot of the mess in this
-function.
+> > > ---
+> > >  drivers/gpu/drm/panel/panel-simple.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > > 
+> > > diff --git a/drivers/gpu/drm/panel/panel-simple.c
+> > > b/drivers/gpu/drm/panel/panel-simple.c
+> > > index 4e2dad314c79..44583d0ed902 100644
+> > > --- a/drivers/gpu/drm/panel/panel-simple.c
+> > > +++ b/drivers/gpu/drm/panel/panel-simple.c
+> > > @@ -1098,6 +1098,8 @@ static const struct panel_desc auo_g104sn02 = {
+> > >  		.width = 211,
+> > >  		.height = 158,
+> > >  	},
+> > > +	.bus_format = MEDIA_BUS_FMT_RGB888_1X7X4_SPWG,
+> > > +	.connector_type = DRM_MODE_CONNECTOR_LVDS,
+> > >  };
+> > >  
+> > >  static const struct drm_display_mode auo_g121ean01_mode = {
 
-	int distance = 0;
+-- 
+Regards,
 
-	if (!IS_ENABLED(CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS)) {
-		if (count < MIN_THRESHOLD)
-			goto copy_remainder;
-
-		/* copy a byte at time until destination is aligned */
-		for (; count && d.uptr & mask; count--)
-			*d.u8++ = *s.u8++;
-		distance = (src - dest) & mask;
-	}
-
-	if (distance) {
-		...
-
-> +		/* 32/64 bit wide copy from s to d.
-> +		 * d is aligned now but s is not, so read s alignment wise,
-> +		 * and do proper shift to get the right value.
-> +		 * Works only on Little Endian machines.
-> +		 */
-
-Normal kernel comment style always start with a:
-
-		/*
-
-
-> +		for (next = s.ulong[0]; count >= bytes_long + mask; count -= bytes_long) {
-
-Please avoid the pointlessly overlong line.  And (just as a matter of
-personal preference) I find for loop that don't actually use a single
-iterator rather confusing.  Wjy not simply:
-
-		next = s.ulong[0];
-		while (count >= bytes_long + mask) {
-			...
-			count -= bytes_long;
-		}
+Laurent Pinchart
