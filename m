@@ -2,82 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B753AE47F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D993AE48B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhFUIDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 04:03:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51398 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229618AbhFUIDh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 04:03:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B5F961156;
-        Mon, 21 Jun 2021 08:01:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624262483;
-        bh=xkIVlbEuJDCy/58h9s+rXKkCBkl+0cKos+yjyqiA2ks=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u2g8JzKD4v4BtPFaM377n22YOz19qDW8FDr/F6xVWyQRWzCgygQYMyg2ToGzRI8EU
-         F+y+BRT0TzfXol6Be0CqTpJ2Ug5vR+2GX3SPKM36A8yGVoqtoHi1Ab4nqfBBF2Xn00
-         t1Iv53NuBY0HAIj1hIbMHjJz/NaXQ4HZOHQ1TPdqGosS6/c/dZKDRUJMwEh7CT1R89
-         awvM/3rgZ2BNiCGuZ7AQLyAelNCYbPafo6JHOFLxnrmwUszf30dhVra0yrnAfUg1ZS
-         kByFHj5hDrRnB+FYupkp4/Epz+uTj6N7x1U8lSSdIlplOZdDT/Xl72oGga+5K5/F+y
-         EjUbrIZ3Fp8Jw==
-Date:   Mon, 21 Jun 2021 11:01:20 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Nitesh Narayan Lal <nitesh@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-pci@vger.kernel.org,
-        tglx@linutronix.de, jesse.brandeburg@intel.com,
-        robin.murphy@arm.com, mtosatti@redhat.com, mingo@kernel.org,
-        jbrandeb@kernel.org, frederic@kernel.org, juri.lelli@redhat.com,
-        abelits@marvell.com, bhelgaas@google.com, rostedt@goodmis.org,
-        peterz@infradead.org, davem@davemloft.net,
-        akpm@linux-foundation.org, sfr@canb.auug.org.au,
-        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
-        chris.friesen@windriver.com, maz@kernel.org, nhorman@tuxdriver.com,
-        pjwaskiewicz@gmail.com, sassmann@redhat.com, thenzl@redhat.com,
-        kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
-        shivasharan.srikanteshwara@broadcom.com,
-        sathya.prakash@broadcom.com, sreekanth.reddy@broadcom.com,
-        suganath-prabu.subramani@broadcom.com, james.smart@broadcom.com,
-        dick.kennedy@broadcom.com, jkc@redhat.com, faisal.latif@intel.com,
-        shiraz.saleem@intel.com, tariqt@nvidia.com, ahleihel@redhat.com,
-        kheib@redhat.com, borisp@nvidia.com, saeedm@nvidia.com,
-        benve@cisco.com, govind@gmx.com, jassisinghbrar@gmail.com,
-        luobin9@huawei.com, ajit.khaparde@broadcom.com,
-        sriharsha.basavapatna@broadcom.com, somnath.kotur@broadcom.com,
-        nilal@redhat.com
-Subject: Re: [PATCH v1 13/14] net/mlx5: Use irq_update_affinity_hint
-Message-ID: <YNBHUMRqc+s0JesY@unreal>
-References: <20210617182242.8637-1-nitesh@redhat.com>
- <20210617182242.8637-14-nitesh@redhat.com>
+        id S229984AbhFUIHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 04:07:35 -0400
+Received: from mail-m17639.qiye.163.com ([59.111.176.39]:63310 "EHLO
+        mail-m17639.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229804AbhFUIHb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 04:07:31 -0400
+DKIM-Signature: a=rsa-sha256;
+        b=iQ08HtD1Ww+Y7Ub7N/2dhEwLyH9fcjisnG306k28qYY0r3W+bDfcA9p8+V6HiLya7XyT7veUqH8Yw221f8PdkUkXhSi/dk7Eofqtl4nSQSEx0ldQe2vlhXfZNriXOXik/3YJx8Zs8ws2YUfnA7YUnxEdkieZ7Andh9pUUfHCiCE=;
+        s=default; c=relaxed/relaxed; d=vivo.com; v=1;
+        bh=RQwbyqHpijFkdqtQEMeYjob4O05U7NCN/vkk1R8SfSo=;
+        h=date:mime-version:subject:message-id:from;
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.232])
+        by mail-m17639.qiye.163.com (Hmail) with ESMTPA id F1F313800DF;
+        Mon, 21 Jun 2021 16:05:14 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
+To:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
+Cc:     Wang Qing <wangqing@vivo.com>
+Subject: [PATCH RFC] hrtimer: support hrtimer suspend when CPU suspend
+Date:   Mon, 21 Jun 2021 16:04:36 +0800
+Message-Id: <1624262676-27548-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210617182242.8637-14-nitesh@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQ05ISlYeTE1DTE5LTElITk5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKTFVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NjY6FBw4CD9LFDgSKj02CAhP
+        OB1PFCJVSlVKTUlPSU1JTEpOT0tCVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISVlXWQgBWUFJSk9CNwY+
+X-HM-Tid: 0a7a2d9a26d4d994kuwsf1f313800df
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 02:22:41PM -0400, Nitesh Narayan Lal wrote:
-> The driver uses irq_set_affinity_hint() to update the affinity_hint mask
-> that is consumed by the userspace to distribute the interrupts. However,
-> under the hood irq_set_affinity_hint() also applies the provided cpumask
-> (if not NULL) as the affinity for the given interrupt which is an
-> undocumented side effect.
-> 
-> To remove this side effect irq_set_affinity_hint() has been marked
-> as deprecated and new interfaces have been introduced. Hence, replace the
-> irq_set_affinity_hint() with the new interface irq_update_affinity_hint()
-> that only updates the affinity_hint pointer.
-> 
-> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
-> ---
->  drivers/net/ethernet/mellanox/mlx5/core/pci_irq.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
+When the CPU suspend, in order to achieve a more power-saving effect,
+it is hoped that the CPU sleeps as long as possible, but the timer is an 
+important reason for the CPU to wake up. 
 
-Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+In some cases, when the CPU suspend, the timer doesn’t have to work either,
+such as watchdog hrtimer. The maximum suspend time of the CPU is 4s if enable
+lockup detector, which is unacceptable on some products, and in fact, watchdog
+timer can suspend when the cpu suspend.
+
+This is a patch for comments, I'm not sure if there any ill-considerations. 
+If this feature is really needed, I will continue to develop.
+
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ include/linux/hrtimer.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/include/linux/hrtimer.h b/include/linux/hrtimer.h
+index bb5e7b0..6d8e4f3
+--- a/include/linux/hrtimer.h
++++ b/include/linux/hrtimer.h
+@@ -112,6 +112,7 @@ enum hrtimer_restart {
+  * @is_soft:	Set if hrtimer will be expired in soft interrupt context.
+  * @is_hard:	Set if hrtimer will be expired in hard interrupt context
+  *		even on RT.
++ * @allow_suspend:	Set if hrtimer will suspend when CPU suspend
+  *
+  * The hrtimer structure must be initialized by hrtimer_init()
+  */
+@@ -124,6 +125,7 @@ struct hrtimer {
+ 	u8				is_rel;
+ 	u8				is_soft;
+ 	u8				is_hard;
++	u8				allow_suspend;
+ };
+ 
+ /**
+-- 
+2.7.4
+
