@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 115573AED97
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 472193AED98
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231691AbhFUQVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:21:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39908 "EHLO mail.kernel.org"
+        id S231703AbhFUQVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:21:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231536AbhFUQU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:20:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6960B6128A;
-        Mon, 21 Jun 2021 16:18:13 +0000 (UTC)
+        id S231241AbhFUQUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:20:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D4B76128C;
+        Mon, 21 Jun 2021 16:18:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292293;
-        bh=QCo9LUr1jp2cGyDlX+ktQS2q+vgJ6CS/qTUdVpASKTY=;
+        s=korg; t=1624292296;
+        bh=PgeybcR5/3rWgz56CukUtDj76KmnHclADzesJwChB7M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qtc8RBIa7p8sjpRgBIziCEz2dtkA5Ei+wRzahP35DGb/uZtg4Uet7Sn7Yzc5GvNPm
-         b4MCR5SLM2a5qKZFuBoaRRO+/bRbs72V0j2vlgcSESGKPhQ/86P+c+2QyEwkiZIbMP
-         mSnPmSabqPKwyFdLJyyUPaRPWRxU1utBXtWZ0ua0=
+        b=dcQoktYx+CbOmDJV/hkRM7vd1W1g/Fhg/xa3o8utFuFgleg0svtSj01AOKFMPXc7R
+         2wHnH4oaYoPMVcPzK74YvR6v2iQAFCM3yu1vhuMm5OXbrG06+cHGU9Gyfvpqa+B7+L
+         lvneQZmcXimP+qsKVumVGq0A7FNnMRVeULcPwIVk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jim Mattson <jmattson@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        syzbot+c0b807de416427ff3dd1@syzkaller.appspotmail.com,
+        Sven Eckelmann <sven@narfation.org>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 06/90] kvm: LAPIC: Restore guard to prevent illegal APIC register access
-Date:   Mon, 21 Jun 2021 18:14:41 +0200
-Message-Id: <20210621154904.367716440@linuxfoundation.org>
+Subject: [PATCH 5.4 07/90] batman-adv: Avoid WARN_ON timing related checks
+Date:   Mon, 21 Jun 2021 18:14:42 +0200
+Message-Id: <20210621154904.398921473@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210621154904.159672728@linuxfoundation.org>
 References: <20210621154904.159672728@linuxfoundation.org>
@@ -41,41 +43,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jim Mattson <jmattson@google.com>
+From: Sven Eckelmann <sven@narfation.org>
 
-[ Upstream commit 218bf772bddd221489c38dde6ef8e917131161f6 ]
+[ Upstream commit 9f460ae31c4435fd022c443a6029352217a16ac1 ]
 
-Per the SDM, "any access that touches bytes 4 through 15 of an APIC
-register may cause undefined behavior and must not be executed."
-Worse, such an access in kvm_lapic_reg_read can result in a leak of
-kernel stack contents. Prior to commit 01402cf81051 ("kvm: LAPIC:
-write down valid APIC registers"), such an access was explicitly
-disallowed. Restore the guard that was removed in that commit.
+The soft/batadv interface for a queued OGM can be changed during the time
+the OGM was queued for transmission and when the OGM is actually
+transmitted by the worker.
 
-Fixes: 01402cf81051 ("kvm: LAPIC: write down valid APIC registers")
-Signed-off-by: Jim Mattson <jmattson@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Message-Id: <20210602205224.3189316-1-jmattson@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+But WARN_ON must be used to denote kernel bugs and not to print simple
+warnings. A warning can simply be printed using pr_warn.
+
+Reported-by: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Reported-by: syzbot+c0b807de416427ff3dd1@syzkaller.appspotmail.com
+Fixes: ef0a937f7a14 ("batman-adv: consider outgoing interface in OGM sending")
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/lapic.c | 3 +++
- 1 file changed, 3 insertions(+)
+ net/batman-adv/bat_iv_ogm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 3f6b866c644d..eea2d6f10f59 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -1332,6 +1332,9 @@ int kvm_lapic_reg_read(struct kvm_lapic *apic, u32 offset, int len,
- 	if (!apic_x2apic_mode(apic))
- 		valid_reg_mask |= APIC_REG_MASK(APIC_ARBPRI);
+diff --git a/net/batman-adv/bat_iv_ogm.c b/net/batman-adv/bat_iv_ogm.c
+index d88a4de02237..8be8a1feca84 100644
+--- a/net/batman-adv/bat_iv_ogm.c
++++ b/net/batman-adv/bat_iv_ogm.c
+@@ -409,8 +409,10 @@ static void batadv_iv_ogm_emit(struct batadv_forw_packet *forw_packet)
+ 	if (WARN_ON(!forw_packet->if_outgoing))
+ 		return;
  
-+	if (alignment + len > 4)
-+		return 1;
-+
- 	if (offset > 0x3f0 || !(valid_reg_mask & APIC_REG_MASK(offset)))
- 		return 1;
+-	if (WARN_ON(forw_packet->if_outgoing->soft_iface != soft_iface))
++	if (forw_packet->if_outgoing->soft_iface != soft_iface) {
++		pr_warn("%s: soft interface switch for queued OGM\n", __func__);
+ 		return;
++	}
  
+ 	if (forw_packet->if_incoming->if_status != BATADV_IF_ACTIVE)
+ 		return;
 -- 
 2.30.2
 
