@@ -2,96 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4053AF5E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 21:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EB1C3AF5F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 21:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbhFUTS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 15:18:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39520 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbhFUTSz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 15:18:55 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C6BC061574;
-        Mon, 21 Jun 2021 12:16:40 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id h4so3426094pgp.5;
-        Mon, 21 Jun 2021 12:16:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Zt/GPgC7zXhSZxJ3I3ql8E+KcIIkQFY3WfRusDWFKW4=;
-        b=I3ob0m51apj4aZ9Yl40Jwo7+yfUsxrLZZh+sVpURIYa0C5lrDEyagNy/qhTvweD0Hg
-         t1aff8ifNjAXmUZ/21cwzrhKAC3yuLAmZNYoBQUzNpIF+kTQ3iOQqx0KvKpWEJLMD86w
-         IaqVZPYDIpYtmTaMf8pNVkMQoEPN0/6SmQZadFG5nUeJBoi+vku7xugpGTWwKPwRtdBR
-         5QxjCW3Fwz9tY26A12t7aF1rYSIy1mh6gTyKfiYDNpHf0pMwk1vQvuljrrmTLti4QUD9
-         DGJJ7tdeMTK/PRKzcWL0fZwG9SCVUlZbSFqPU67Rm9Zb5GZQ4cH3LTNGMD2txukwWDK0
-         xtcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Zt/GPgC7zXhSZxJ3I3ql8E+KcIIkQFY3WfRusDWFKW4=;
-        b=azF09cdICJ+/43VtgFXW/ngIW+SP0cUjxUvOLmQv0nYrVd/pV+K5w3Vy//F0FjjOgf
-         VELQb9OiKWE4Ef+cyjxd2S8CnvO37iWUYZaR0JFsqKK8WpWsHvkiCtrR275m6FXVgvWw
-         xLYFembRUCxFbOb+eT5agiDVfoEsLM3o4kauPEeJmBXronAfYNSZTggqrHb361//UXjb
-         JyhLfdm69y0DJIgG5a0cYtR72E+Rt9RqgqcfHfJkjOkxNRlf+1i6d535DhbsWA+JI5uB
-         HFa/YT/0H5BIlTI1lelfLIO4kG64G0O0FSQafJoH9h/fROlSk7p420mSLNzxIgqS0xLy
-         1gsQ==
-X-Gm-Message-State: AOAM532J4uG42WB7cq5QGjeY8YmrmbcnTumAACs8BIbF1xfyfTnxVO2q
-        7BpNiMMhl4YtNc20LwmtrYud3HANYWs=
-X-Google-Smtp-Source: ABdhPJwDKkGXn6QbAkpNpNSx5Gj5iFrYgh2idOAMWCmXrv9SPAtOMpavPLfLaJ5HSMfnPn7qBJYONA==
-X-Received: by 2002:aa7:8058:0:b029:2e9:ee0e:b106 with SMTP id y24-20020aa780580000b02902e9ee0eb106mr21248704pfm.4.1624302999974;
-        Mon, 21 Jun 2021 12:16:39 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id j4sm7960pjv.7.2021.06.21.12.16.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 12:16:39 -0700 (PDT)
-Subject: Re: [PATCH 5.4 00/90] 5.4.128-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210621154904.159672728@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <02601ffa-1417-73e2-0608-3eb94fa0e3a7@gmail.com>
-Date:   Mon, 21 Jun 2021 12:16:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231468AbhFUTWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 15:22:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50208 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230170AbhFUTWS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 15:22:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id E0A2A6124B;
+        Mon, 21 Jun 2021 19:20:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624303203;
+        bh=rbIAIkh5Z2rgwm5eiA/O4v7S9czd026nZP+YQn3l7do=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Y7eT8lcTkf3giSoLd2tNH+wLQ8GrUxXGnTpftHgOrLKHlKMIn7wHAiVC5dERwzUoI
+         kdUjNe0z/3srBT5dioex2rMSmgJQKt3VnvfwL6undypJyoYKG7CkRLw+VIjbjeUgd5
+         az/jukbDdlpk6tYWWPgW/I8bCUQ33akOKIeE49xN2EKoaIn0Ayv+0f4cTMrvdbqybl
+         LT2S+YZ4+9LqDpkP+l/BlbwSXXr+Auv/s7XXJOii5a844IdBC0/MOz9md4gejpkj2P
+         Pc+9B4KcCJtyu+TCCWAcMNFeSh5FjIgl9n2JthGZUTA5PvHC0ykPD+yiHehoh8/evc
+         emfWPI9a0l/Ow==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id D47166094F;
+        Mon, 21 Jun 2021 19:20:03 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20210621154904.159672728@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] hv_netvsc: Set needed_headroom according to VF
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162430320386.6988.2279267883191096562.git-patchwork-notify@kernel.org>
+Date:   Mon, 21 Jun 2021 19:20:03 +0000
+References: <1624044939-10310-1-git-send-email-haiyangz@microsoft.com>
+In-Reply-To: <1624044939-10310-1-git-send-email-haiyangz@microsoft.com>
+To:     Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        kys@microsoft.com, sthemmin@microsoft.com, olaf@aepfle.de,
+        vkuznets@redhat.com, davem@davemloft.net,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/21/21 9:14 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.128 release.
-> There are 90 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 23 Jun 2021 15:48:46 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.128-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Hello:
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+This patch was applied to netdev/net.git (refs/heads/master):
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+On Fri, 18 Jun 2021 12:35:39 -0700 you wrote:
+> Set needed_headroom according to VF if VF needs a bigger
+> headroom.
+> 
+> Signed-off-by: Haiyang Zhang <haiyangz@microsoft.com>
+> ---
+>  drivers/net/hyperv/netvsc_drv.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+
+Here is the summary with links:
+  - [net-next] hv_netvsc: Set needed_headroom according to VF
+    https://git.kernel.org/netdev/net/c/536ba2e06d1a
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
