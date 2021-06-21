@@ -2,281 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CACAB3AEACA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:10:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA66F3AEAD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:11:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbhFUOM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 10:12:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhFUOMz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 10:12:55 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52469C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:10:38 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id y7so19765424wrh.7
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:10:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AGlV2MD6otn2QQN/+YuOax/yo3OPIlMQZ3cJytPNMxk=;
-        b=dxIdwiUMehn6sA5E239voC+h18YFW+FN8JYbk25dQdz3MmrWeISh71T/6F/prqU6Yd
-         PEFjzOn86SLmtfjabSAUl8gxsEiYQXRaC/IUMf3ZMnotC/iO7EjQQo9XmMTb3DkOrA7H
-         69+3iL0eMuT86aKepTsRZXvhrg/tP8rSDhZEo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=AGlV2MD6otn2QQN/+YuOax/yo3OPIlMQZ3cJytPNMxk=;
-        b=YOlkVjNWkuC+3mppWmKzaOc849xrUURex3o1VzcUPyWIB3ZsXhWvyx0/PC95udSVVK
-         uWFmrtVzdIOXCnY73ADpdy+Ov8HihjhqEDnvp0sHv0pBjhoxdqPcdhb0q8xWvKsvz5lJ
-         X//7STtq2VSgeqJvxIZigE52Dmb4wrKis5ODxAT0kwtxyGelJll36flXW2b2imY5d6/u
-         YAniZo0oljKQIgJopIvYK663Fl1DLZ9UxqUKslEDNx5IAuDKgRiDvwaQqHGr2PHZpqws
-         iDtwRCB4FiFj0Y9r6zPEFauT1KhCkFhPRui9xqePOFAcXug/vxbLiXdQQ1klOrAhMZba
-         OgYw==
-X-Gm-Message-State: AOAM533Jsnp6wZEE29YJsX0QGXJjF4qK5wwohQiHX1KAa61X6atLV5Jm
-        3UCwErKGGti1PHiIh8hS841zmA==
-X-Google-Smtp-Source: ABdhPJx5OqTU3rT2HYNagde8SKe39dhIr0kjKox8JE94Ej/JAxsw9e4p7LE3RW3Rig5FzCstV1cfEQ==
-X-Received: by 2002:adf:f592:: with SMTP id f18mr14083074wro.81.1624284636881;
-        Mon, 21 Jun 2021 07:10:36 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id f12sm21491418wru.81.2021.06.21.07.10.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 07:10:36 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 16:10:34 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Matthew Auld <matthew.william.auld@gmail.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: drm/i915: __GFP_RETRY_MAYFAIL allocations in stable kernels
-Message-ID: <YNCd2m9yvaUhR9MN@phenom.ffwll.local>
-Mail-Followup-To: Matthew Auld <matthew.william.auld@gmail.com>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        ML dri-devel <dri-devel@lists.freedesktop.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-References: <YMdPcWZi4x7vnCxI@google.com>
- <YMuGGqs4cDotxuKO@phenom.ffwll.local>
- <CAM0jSHMYk3GeZTP7FQ8z2H02GfCcJsUeNwbzH3GLdRVxvMzqDg@mail.gmail.com>
+        id S230204AbhFUONd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 10:13:33 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:50473 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230205AbhFUONb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 10:13:31 -0400
+Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
+        by localhost (Postfix) with ESMTP id 4G7rzl1TYPzBDBX;
+        Mon, 21 Jun 2021 16:11:15 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 5rSJmp-MP7YS; Mon, 21 Jun 2021 16:11:15 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4G7rzl0PmszBDBM;
+        Mon, 21 Jun 2021 16:11:15 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id C90BC8B7A3;
+        Mon, 21 Jun 2021 16:11:14 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id NPGP5zm3RQSE; Mon, 21 Jun 2021 16:11:14 +0200 (CEST)
+Received: from [172.25.230.102] (po15451.idsi0.si.c-s.fr [172.25.230.102])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6258B8B78E;
+        Mon, 21 Jun 2021 16:11:14 +0200 (CEST)
+Subject: Re: [PATCH for 4.16 v7 02/11] powerpc: membarrier: Skip memory
+ barrier in switch_mm()
+To:     Segher Boessenkool <segher@kernel.crashing.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        maged michael <maged.michael@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Dave Watson <davejwatson@fb.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrew Hunter <ahh@google.com>, David Sehr <sehr@google.com>,
+        Paul Mackerras <paulus@samba.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        linux-arch <linux-arch@vger.kernel.org>, x86 <x86@kernel.org>,
+        "Russell King, ARM Linux" <linux@armlinux.org.uk>,
+        Greg Hackmann <ghackmann@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Paul <paulmck@linux.vnet.ibm.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Avi Kivity <avi@scylladb.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-api <linux-api@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+References: <20180129202020.8515-1-mathieu.desnoyers@efficios.com>
+ <20180129202020.8515-3-mathieu.desnoyers@efficios.com>
+ <8b200dd5-f37b-b208-82fb-2775df7bcd49@csgroup.eu>
+ <2077369633.12794.1624037192994.JavaMail.zimbra@efficios.com>
+ <4d2026cc-28e1-7781-fc95-e6160bd8db86@csgroup.eu>
+ <20210619150202.GZ5077@gate.crashing.org>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <52451ce4-3eb2-e14b-81a9-99da2c0a2328@csgroup.eu>
+Date:   Mon, 21 Jun 2021 16:11:04 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAM0jSHMYk3GeZTP7FQ8z2H02GfCcJsUeNwbzH3GLdRVxvMzqDg@mail.gmail.com>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+In-Reply-To: <20210619150202.GZ5077@gate.crashing.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 04:46:24PM +0100, Matthew Auld wrote:
-> On Thu, 17 Jun 2021 at 18:27, Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Mon, Jun 14, 2021 at 09:45:37PM +0900, Sergey Senozhatsky wrote:
-> > > Hi,
-> > >
-> > > We are observing some user-space crashes (sigabort, segfaults etc.)
-> > > under moderate memory pressure (pretty far from severe pressure) which
-> > > have one thing in common - restrictive GFP mask in setup_scratch_page().
-> > >
-> > > For instance, (stable 4.19) drivers/gpu/drm/i915/i915_gem_gtt.c
-> > >
-> > > (trimmed down version)
-> > >
-> > > static int gen8_init_scratch(struct i915_address_space *vm)
-> > > {
-> > >         setup_scratch_page(vm, __GFP_HIGHMEM);
-> > >
-> > >         vm->scratch_pt = alloc_pt(vm);
-> > >         vm->scratch_pd = alloc_pd(vm);
-> > >         if (use_4lvl(vm)) {
-> > >                 vm->scratch_pdp = alloc_pdp(vm);
-> > >         }
-> > > }
-> > >
-> > > gen8_init_scratch() function puts a rather inconsistent restrictions on mm.
-> > >
-> > > Looking at it line by line:
-> > >
-> > > setup_scratch_page() uses very restrictive gfp mask:
-> > >       __GFP_HIGHMEM | __GFP_ZERO | __GFP_RETRY_MAYFAIL
-> > >
-> > > it doesn't try to reclaim anything and fails almost immediately.
-> > >
-> > > alloc_pt() - uses more permissive gfp mask:
-> > >       GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN
-> > >
-> > > alloc_pd() - likewise:
-> > >       GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN
-> > >
-> > > alloc_pdp() - very permissive gfp mask:
-> > >       GFP_KERNEL
-> > >
-> > >
-> > > So can all allocations in gen8_init_scratch() use
-> > >       GFP_KERNEL | __GFP_RETRY_MAYFAIL | __GFP_NOWARN
-> >
-> > Yeah that looks all fairly broken tbh. The only thing I didn't know was
-> > that GFP_DMA32 wasn't a full gfp mask with reclaim bits set as needed. I
-> > guess it would be clearer if we use GFP_KERNEL | __GFP_DMA32 for these.
-> >
-> > The commit that introduced a lot of this, including I915_GFP_ALLOW_FAIL
-> > seems to be
-> >
-> > commit 1abb70f5955d1a9021f96359a2c6502ca569b68d
-> > Author: Chris Wilson <chris@chris-wilson.co.uk>
-> > Date:   Tue May 22 09:36:43 2018 +0100
-> >
-> >     drm/i915/gtt: Allow pagedirectory allocations to fail
-> >
-> > which used a selftest as justification, not real world workloads, so looks
-> > rather dubious.
-> >
-> > Adding Matt Auld to this thread, maybe he has ideas.
+
+
+Le 19/06/2021 à 17:02, Segher Boessenkool a écrit :
+> On Sat, Jun 19, 2021 at 11:35:34AM +0200, Christophe Leroy wrote:
+>>
+>>
+>> Le 18/06/2021 à 19:26, Mathieu Desnoyers a écrit :
+>>> ----- On Jun 18, 2021, at 1:13 PM, Christophe Leroy
+>>> christophe.leroy@csgroup.eu wrote:
+>>> [...]
+>>>>
+>>>> I don't understand all that complexity to just replace a simple
+>>>> 'smp_mb__after_unlock_lock()'.
+>>>>
+>>>> #define smp_mb__after_unlock_lock()	smp_mb()
+>>>> #define smp_mb()	barrier()
+>>>> # define barrier() __asm__ __volatile__("": : :"memory")
+>>>>
+>>>>
+>>>> Am I missing some subtility ?
+>>>
+>>> On powerpc CONFIG_SMP, smp_mb() is actually defined as:
+>>>
+>>> #define smp_mb()        __smp_mb()
+>>> #define __smp_mb()      mb()
+>>> #define mb()   __asm__ __volatile__ ("sync" : : : "memory")
+>>>
+>>> So the original motivation here was to skip a "sync" instruction whenever
+>>> switching between threads which are part of the same process. But based on
+>>> recent discussions, I suspect my implementation may be inaccurately doing
+>>> so though.
+>>>
+>>
+>> I see.
+>>
+>> Then, if you think a 'sync' is a concern, shouldn't we try and remove the
+>> forest of 'sync' in the I/O accessors ?
+>>
+>> I can't really understand why we need all those 'sync' and 'isync' and
+>> 'twi' around the accesses whereas I/O memory is usually mapped as 'Guarded'
+>> so memory access ordering is already garantied.
+>>
+>> I'm sure we'll save a lot with that.
 > 
-> The latest code is quite different, but for both scratch and the
-> various paging structures it's now sharing the same GFP
-> flags(I915_GFP_ALLOW_FAIL). And for the actual backing page, which is
-> now a GEM object, we use i915_gem_object_get_pages_internal().
+> The point of the twi in the I/O accessors was to make things easier to
+> debug if the accesses fail: for the twi insn to complete the load will
+> have to have completed as well.  On a correctly working system you never
+> should need this (until something fails ;-) )
 > 
-> Not sure why scratch wants to be different, and I don't recall
-> anything funny. At first I thought it might have been related to
-> needing only one scratch page/directory etc which was then shared
-> between different VMs, but I don't think we had read-only support in
-> the driver at that point, so can't be that. But I guess once we did
-> add that seeing failures in init_scratch() was very unlikely, at least
-> until gen11+ arrived which then broke read-only support in the HW.
-
-If there is something, then shmem get_pages has some reason to use
-__GFP_RETRY_MAYFAIL - at least way back when dev->struct_mutex was still
-everywhere we had some paths to directly reclaim gem bo when the
-allocations failed.
-
-But I think that all disappeared, so all the reasons for MAYFAIL have gone
-away - if there's no fallback or call to our own shrinker or anything like
-that, then we must rely on core mm to try really hard to find the memory
-we want.
-
-This all goes back to
-
-commit 07f73f6912667621276b002e33844ef283d98203
-Author: Chris Wilson <chris@chris-wilson.co.uk>
-Date:   Mon Sep 14 16:50:30 2009 +0100
-
-    drm/i915: Improve behaviour under memory pressure
-
-but with a lot of detours and confusion going on (__GFP_NORETRY wasn't
-actually what we wanted, which is why __GFP_RETRY_MAYFAIL now exists).
--Daniel
-
+> Without the twi you might need to enforce ordering in some cases still.
+> The twi is a very heavy hammer, but some of that that gives us is no
+> doubt actually needed.
 > 
-> >
-> > Thanks, Daniel
-> >
-> > > ?
-> > >
-> > > E.g.
-> > >
-> > > ---
-> > > diff --git a/drivers/gpu/drm/i915/i915_gem_gtt.c b/drivers/gpu/drm/i915/i915_gem_gtt.c
-> > > index a12430187108..e862680b9c93 100644
-> > > --- a/drivers/gpu/drm/i915/i915_gem_gtt.c
-> > > +++ b/drivers/gpu/drm/i915/i915_gem_gtt.c
-> > > @@ -792,7 +792,7 @@ alloc_pdp(struct i915_address_space *vm)
-> > >
-> > >         GEM_BUG_ON(!use_4lvl(vm));
-> > >
-> > > -       pdp = kzalloc(sizeof(*pdp), GFP_KERNEL);
-> > > +       pdp = kzalloc(sizeof(*pdp), I915_GFP_ALLOW_FAIL);
-> > >         if (!pdp)
-> > >                 return ERR_PTR(-ENOMEM);
-> > >
-> > > @@ -1262,7 +1262,7 @@ static int gen8_init_scratch(struct i915_address_space *vm)
-> > >  {
-> > >         int ret;
-> > >
-> > > -       ret = setup_scratch_page(vm, __GFP_HIGHMEM);
-> > > +       ret = setup_scratch_page(vm, GFP_KERNEL | __GFP_HIGHMEM);
-> > >         if (ret)
-> > >                 return ret;
-> > >
-> > > @@ -1972,7 +1972,7 @@ static int gen6_ppgtt_init_scratch(struct gen6_hw_ppgtt *ppgtt)
-> > >         u32 pde;
-> > >         int ret;
-> > >
-> > > -       ret = setup_scratch_page(vm, __GFP_HIGHMEM);
-> > > +       ret = setup_scratch_page(vm, GFP_KERNEL | __GFP_HIGHMEM);
-> > >         if (ret)
-> > >                 return ret;
-> > >
-> > > @@ -3078,7 +3078,7 @@ static int ggtt_probe_common(struct i915_ggtt *ggtt, u64 size)
-> > >                 return -ENOMEM;
-> > >         }
-> > >
-> > > -       ret = setup_scratch_page(&ggtt->vm, GFP_DMA32);
-> > > +       ret = setup_scratch_page(&ggtt->vm, GFP_KERNEL | GFP_DMA32);
-> > >         if (ret) {
-> > >                 DRM_ERROR("Scratch setup failed\n");
-> > >                 /* iounmap will also get called at remove, but meh */
-> > > ---
-> > >
-> > >
-> > >
-> > > It's quite similar on stable 5.4 - setup_scratch_page() uses restrictive
-> > > gfp mask again.
-> > >
-> > > ---
-> > > diff --git a/drivers/gpu/drm/i915/i915_gem_gtt.c b/drivers/gpu/drm/i915/i915_gem_gtt.c
-> > > index f614646ed3f9..99d78b1052df 100644
-> > > --- a/drivers/gpu/drm/i915/i915_gem_gtt.c
-> > > +++ b/drivers/gpu/drm/i915/i915_gem_gtt.c
-> > > @@ -1378,7 +1378,7 @@ static int gen8_init_scratch(struct i915_address_space *vm)
-> > >                 return 0;
-> > >         }
-> > >
-> > > -       ret = setup_scratch_page(vm, __GFP_HIGHMEM);
-> > > +       ret = setup_scratch_page(vm, GFP_KERNEL | __GFP_HIGHMEM);
-> > >         if (ret)
-> > >                 return ret;
-> > >
-> > > @@ -1753,7 +1753,7 @@ static int gen6_ppgtt_init_scratch(struct gen6_ppgtt *ppgtt)
-> > >         struct i915_page_directory * const pd = ppgtt->base.pd;
-> > >         int ret;
-> > >
-> > > -       ret = setup_scratch_page(vm, __GFP_HIGHMEM);
-> > > +       ret = setup_scratch_page(vm, GFP_KERNEL | __GFP_HIGHMEM);
-> > >         if (ret)
-> > >                 return ret;
-> > >
-> > > @@ -2860,7 +2860,7 @@ static int ggtt_probe_common(struct i915_ggtt *ggtt, u64 size)
-> > >                 return -ENOMEM;
-> > >         }
-> > >
-> > > -       ret = setup_scratch_page(&ggtt->vm, GFP_DMA32);
-> > > +       ret = setup_scratch_page(&ggtt->vm, GFP_KERNEL | GFP_DMA32);
-> > >         if (ret) {
-> > >                 DRM_ERROR("Scratch setup failed\n");
-> > >                 /* iounmap will also get called at remove, but meh */
-> > > ---
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
 
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Well, I've always been quite perplex about that. According to the documentation of the 8xx, if a bus 
+error or something happens on an I/O access, the exception will be accounted on the instruction 
+which does the access. But based on the following function, I understand that some version of 
+powerpc do generate the trap on the instruction which was being executed at the time the I/O access 
+failed, not the instruction that does the access itself ?
+
+/*
+  * I/O accesses can cause machine checks on powermacs.
+  * Check if the NIP corresponds to the address of a sync
+  * instruction for which there is an entry in the exception
+  * table.
+  *  -- paulus.
+  */
+static inline int check_io_access(struct pt_regs *regs)
+{
+#ifdef CONFIG_PPC32
+	unsigned long msr = regs->msr;
+	const struct exception_table_entry *entry;
+	unsigned int *nip = (unsigned int *)regs->nip;
+
+	if (((msr & 0xffff0000) == 0 || (msr & (0x80000 | 0x40000)))
+	    && (entry = search_exception_tables(regs->nip)) != NULL) {
+		/*
+		 * Check that it's a sync instruction, or somewhere
+		 * in the twi; isync; nop sequence that inb/inw/inl uses.
+		 * As the address is in the exception table
+		 * we should be able to read the instr there.
+		 * For the debug message, we look at the preceding
+		 * load or store.
+		 */
+		if (*nip == PPC_INST_NOP)
+			nip -= 2;
+		else if (*nip == PPC_INST_ISYNC)
+			--nip;
+		if (*nip == PPC_INST_SYNC || (*nip >> 26) == OP_TRAP) {
+			unsigned int rb;
+
+			--nip;
+			rb = (*nip >> 11) & 0x1f;
+			printk(KERN_DEBUG "%s bad port %lx at %p\n",
+			       (*nip & 0x100)? "OUT to": "IN from",
+			       regs->gpr[rb] - _IO_BASE, nip);
+			regs->msr |= MSR_RI;
+			regs->nip = extable_fixup(entry);
+			return 1;
+		}
+	}
+#endif /* CONFIG_PPC32 */
+	return 0;
+}
+
+Am I right ?
+
+It is not only the twi which bother's me in the I/O accessors but also the sync/isync and stuff.
+
+A write typically is
+
+	sync
+	stw
+
+A read is
+
+	sync
+	lwz
+	twi
+	isync
+
+Taking into account that HW ordering is garanteed by the fact that __iomem is guarded, isn't the 
+'memory' clobber enough as a barrier ?
+
+Thanks
+Christophe
