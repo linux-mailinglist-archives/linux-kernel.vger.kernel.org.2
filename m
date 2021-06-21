@@ -2,86 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E449F3AF74E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2DA3AF755
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:22:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbhFUVUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 17:20:53 -0400
-Received: from mga01.intel.com ([192.55.52.88]:28896 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229890AbhFUVUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 17:20:50 -0400
-IronPort-SDR: GNrydWMuiPlDIdfKTwa7xq/nobOAqPSeETizp407JHiV93lJ7CcFwsrCwn3rcSEs8V2CawZtIr
- e3t/2spVI9UQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="228487278"
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208";a="228487278"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 14:18:36 -0700
-IronPort-SDR: iURLcX2X/l1I+WenSKlRwrlBmsndlHc0zgVDKu/bxMZJX0OSYHjJNZaxrLP1w5ffUGiDtgQ3Pw
- fdwOYhqGAPEw==
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208";a="423082471"
-Received: from bhooglan-mobl1.amr.corp.intel.com (HELO [10.255.228.227]) ([10.255.228.227])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 14:18:35 -0700
-Subject: Re: [PATCH] selftests/sgx: remove checks for file execute permissions
-To:     Reinette Chatre <reinette.chatre@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, tim.gardner@canonical.com,
-        jarkko@kernel.org, shuah@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-References: <20210621190556.4B5DCBB1@viggo.jf.intel.com>
- <121f7215-f11d-2533-b736-9f18516c3220@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <1f46324e-2cbe-f4a7-65d5-24b22a8b36b1@intel.com>
-Date:   Mon, 21 Jun 2021 14:18:33 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231352AbhFUVYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 17:24:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229890AbhFUVYl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 17:24:41 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11FC9C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:22:26 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id f2so21171395wri.11
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:22:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iuK/xSPhwyBQGwsFKjmihX2lWYavkv0/y3oH/Sh/Bbg=;
+        b=RnufykAv6h3iF+MDiAa42Gzb1IKBtCAOWz2KeQfNLDy7MGDAKVKRPAB41CMtH9Z50I
+         dr0MhHNvD3cgHhQgI0yOcykLef/rN8/6g//ASBYvFrl5+ZojjhB0pai4JNMj5KC/WsCM
+         w/3rmw+0TT+8CCYV19YaDZiFrQOdwSM2JN38niyUu1xU2+WYoP0FP8wcqgbng9jJPftN
+         zCr0frfYAML3iX2eKkpKN//bFQHY6ZtYfmkc5Tpk+Ts2YfzbERyyZBGfc5XK5qeIlH3z
+         tz4iniX8v23G3ZbrlbxZfm1C9/Mht9AwErWbXA17SEAEMEy34LACEkSGQGiWh8iO6meH
+         HXbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iuK/xSPhwyBQGwsFKjmihX2lWYavkv0/y3oH/Sh/Bbg=;
+        b=i3k0wRYKVCZZaK/nrlFnvCHvBA7ZsQfCNYd9y4dqDgr/jFFSa46MBWewQT4T8n4j2+
+         BZUz8QT0e8SOsf7OH+og/N74P7Hetjd3Fr5lrbPUDN2AALSND6ZFN2waWm2oef/L45GU
+         dSBDM/AyLGszcAEarp3oXNHm2SY5Cgi/BJodgBUYzL9iTwfEu0DR8Bt5/bEFBfoLmHlX
+         2+WVkSEr97rzoLTNCw/lSgCRDQ0iyVmEjheUV3np8ZkowvqpQL7ycSTnxHtO0MbDoFK1
+         x3SgRk9H46SmXTe4c7NkTeGXHhKYNU001SUAPB5eHHURnBa1pZhm0EQzQwme5Zh38toA
+         PxrQ==
+X-Gm-Message-State: AOAM531srl/F1q+z6KEOVYKxl+CavP+Zp5xwi4KX3FvERUCXgDo+ZGxk
+        1CbsAipQDhiLPR4l4iDcEqfiMg==
+X-Google-Smtp-Source: ABdhPJylQwn1qeOJE2/5+536pqceWFhmpUoDIF1i6sW38IsRYlksq3UKTXXlSX4AXobtLZ0BzFAOdQ==
+X-Received: by 2002:adf:e652:: with SMTP id b18mr473252wrn.379.1624310544364;
+        Mon, 21 Jun 2021 14:22:24 -0700 (PDT)
+Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id i6sm13278123wro.12.2021.06.21.14.22.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 14:22:23 -0700 (PDT)
+Subject: Re: [PATCH v3 22/23] powerpc/vdso: Migrate native signals to generic
+ vdso_base
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linux-kernel@vger.kernel.org
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will@kernel.org>, x86@kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+References: <20210611180242.711399-1-dima@arista.com>
+ <20210611180242.711399-23-dima@arista.com>
+ <1678c131-98e3-2d5c-7cf1-0dcb985d67bb@csgroup.eu>
+ <fe44b73c-b2ca-4719-26f9-76f085d4d330@csgroup.eu>
+From:   Dmitry Safonov <dima@arista.com>
+Message-ID: <6cfdf043-b853-8559-f3f7-f52f46dc50e6@arista.com>
+Date:   Mon, 21 Jun 2021 22:22:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <121f7215-f11d-2533-b736-9f18516c3220@intel.com>
+In-Reply-To: <fe44b73c-b2ca-4719-26f9-76f085d4d330@csgroup.eu>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -89,18 +88,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/21/21 2:08 PM, Reinette Chatre wrote:
-> 
-> Thank you very much for fixing this. With this applied the SGX tests are
-> able to run again on my system.
-> 
-> Tested-by: Reinette Chatre <reinette.chatre@intel.com>
-> 
-> I think it is missing a "Signed-off-by".
+Hi Chirstophe,
 
-Right you are.  I think I've done this twice in a row for one-off
-patches.  Sheesh.
+On 6/17/21 8:34 AM, Christophe Leroy wrote:
+> 
+> 
+> Le 17/06/2021 à 08:36, Christophe Leroy a écrit :
+>>
+>>
+>> Le 11/06/2021 à 20:02, Dmitry Safonov a écrit :
+>>> Generic way to track the land vma area.
+>>> Stat speaks for itself.
+>>>
+>>> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+>>> Cc: Michael Ellerman <mpe@ellerman.id.au>
+>>> Cc: Paul Mackerras <paulus@samba.org>
+>>> Signed-off-by: Dmitry Safonov <dima@arista.com>
+>>
+>>
+>> Build failure:
+>>
+>>    CC      arch/powerpc/kernel/asm-offsets.s
+>> In file included from ./include/linux/mmzone.h:21,
+>>                   from ./include/linux/gfp.h:6,
+>>                   from ./include/linux/xarray.h:14,
+>>                   from ./include/linux/radix-tree.h:19,
+>>                   from ./include/linux/fs.h:15,
+>>                   from ./include/linux/compat.h:17,
+>>                   from arch/powerpc/kernel/asm-offsets.c:14:
+>> ./include/linux/mm_types.h: In function 'init_vdso_base':
+>> ./include/linux/mm_types.h:522:28: error: 'TASK_SIZE_MAX' undeclared
+>> (first use in this function); did you mean 'XATTR_SIZE_MAX'?
+>>    522 | #define UNMAPPED_VDSO_BASE TASK_SIZE_MAX
+>>        |                            ^~~~~~~~~~~~~
+>> ./include/linux/mm_types.h:627:40: note: in expansion of macro
+>> 'UNMAPPED_VDSO_BASE'
+>>    627 |         mm->vdso_base = (void __user *)UNMAPPED_VDSO_BASE;
+>>        |                                        ^~~~~~~~~~~~~~~~~~
+>> ./include/linux/mm_types.h:522:28: note: each undeclared identifier is
+>> reported only once for each function it appears in
+>>    522 | #define UNMAPPED_VDSO_BASE TASK_SIZE_MAX
+>>        |                            ^~~~~~~~~~~~~
+>> ./include/linux/mm_types.h:627:40: note: in expansion of macro
+>> 'UNMAPPED_VDSO_BASE'
+>>    627 |         mm->vdso_base = (void __user *)UNMAPPED_VDSO_BASE;
+>>        |                                        ^~~~~~~~~~~~~~~~~~
+>> make[2]: *** [arch/powerpc/kernel/asm-offsets.s] Error 1
+>> make[1]: *** [prepare0] Error 2
+>> make: *** [__sub-make] Error 2
+>>
+> 
+> Fixed by moving TASK_SIZE_MAX into asm/task_size_32.h and
+> asm/task_size_64.h
+> 
+> diff --git a/arch/powerpc/include/asm/task_size_32.h
+> b/arch/powerpc/include/asm/task_size_32.h
+> index de7290ee770f..03af9e6bb5cd 100644
+> --- a/arch/powerpc/include/asm/task_size_32.h
+> +++ b/arch/powerpc/include/asm/task_size_32.h
+> @@ -7,6 +7,7 @@
+>  #endif
+> 
+>  #define TASK_SIZE (CONFIG_TASK_SIZE)
+> +#define TASK_SIZE_MAX        TASK_SIZE
+> 
+>  /*
+>   * This decides where the kernel will search for a free chunk of vm
+> space during
+> diff --git a/arch/powerpc/include/asm/task_size_64.h
+> b/arch/powerpc/include/asm/task_size_64.h
+> index c993482237ed..bfdb98c0ef43 100644
+> --- a/arch/powerpc/include/asm/task_size_64.h
+> +++ b/arch/powerpc/include/asm/task_size_64.h
+> @@ -49,6 +49,7 @@
+>                          TASK_SIZE_USER64)
+> 
+>  #define TASK_SIZE TASK_SIZE_OF(current)
+> +#define TASK_SIZE_MAX        TASK_SIZE_USER64
+> 
+>  #define TASK_UNMAPPED_BASE_USER32 (PAGE_ALIGN(TASK_SIZE_USER32 / 4))
+>  #define TASK_UNMAPPED_BASE_USER64 (PAGE_ALIGN(DEFAULT_MAP_WINDOW_USER64
+> / 4))
+> diff --git a/arch/powerpc/include/asm/uaccess.h
+> b/arch/powerpc/include/asm/uaccess.h
+> index 22c79ab40006..5823140d39f1 100644
+> --- a/arch/powerpc/include/asm/uaccess.h
+> +++ b/arch/powerpc/include/asm/uaccess.h
+> @@ -8,13 +8,6 @@
+>  #include <asm/extable.h>
+>  #include <asm/kup.h>
+> 
+> -#ifdef __powerpc64__
+> -/* We use TASK_SIZE_USER64 as TASK_SIZE is not constant */
+> -#define TASK_SIZE_MAX        TASK_SIZE_USER64
+> -#else
+> -#define TASK_SIZE_MAX        TASK_SIZE
+> -#endif
+> -
+>  static inline bool __access_ok(unsigned long addr, unsigned long size)
+>  {
+>      return addr < TASK_SIZE_MAX && size <= TASK_SIZE_MAX - addr;
 
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 
-If anyone wants a resend with this included, please let me know.
+Thanks, that's very helpful!
+
+-- 
+          Dmitry
