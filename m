@@ -2,446 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83EB43AED9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:19:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C97F3AED36
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:14:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231743AbhFUQVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:21:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41362 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231626AbhFUQUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:20:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2085E61289;
-        Mon, 21 Jun 2021 16:18:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292304;
-        bh=BbFSm4JzqmK+TK7i16hO+2cwhfppUTmx4P3jXNchskg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=K/zpqQn6fkYwe29nyxFitMRePGFvBPYWb7d9wNe0VFJ30/ijShVrvyzqXeQALKnb5
-         usSdUx9jdT7zGbXisTmkC5f4CrK4051TnIoGeZAGScLS7eP8uZLYHeKCzkS+C12ldB
-         S+yFMa7lp6VaFbFTFi1yXHKMeWH/aT8cLzJAJ4sw=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 5.4 00/90] 5.4.128-rc1 review
-Date:   Mon, 21 Jun 2021 18:14:35 +0200
-Message-Id: <20210621154904.159672728@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
+        id S230204AbhFUQQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:16:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23465 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229789AbhFUQQz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:16:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624292080;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=G817IJLoTEYUuE/9RZvRi1mEhIu8nStp2ksiuR5OOGA=;
+        b=C2B2OfccH9C6WJLDVCZzDzYtphAmJM5FpHYr4Ni2OEplI6q40U3KcfBtYgsDtr4zK/m1xg
+        PY1b9Idi3Cobytnlhd53u+HPYkdgMmZ/wyVpHUzV6wOVkskEejkpAPPPLcVs1d4853m7tD
+        Et5hzEa0J0ndaDJs0UyuFrjx07nbf5o=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-533-uXH7lJBzOqedVExIlIzpjw-1; Mon, 21 Jun 2021 12:14:39 -0400
+X-MC-Unique: uXH7lJBzOqedVExIlIzpjw-1
+Received: by mail-ed1-f69.google.com with SMTP id p23-20020aa7cc970000b02903948bc39fd5so5934520edt.13
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:14:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=G817IJLoTEYUuE/9RZvRi1mEhIu8nStp2ksiuR5OOGA=;
+        b=YPaVucmZfr/4y5c9pTLAfEhDHvEewyGw7m3J+9cfmvBIRHhmazu4K2WpMvdi/F5dBG
+         k0QTrS//9MtyheYk8MLFB+Q667z8j49DgRjweQi7XaWNfw5VHHBBOHyeMDnN1o+q/yOR
+         HCEoUFpZimIIj9PaZ+8ihT0k9h2R0No3It9nngpivnIMokkpeWo7KBvWUmW/R36LC2uu
+         O86Ysn4X0oAlSU46NFyqBPb/ZZ1LbW9mDoFrSKj7F2FpZewwvweq2tMOurTCFck7yErR
+         /seI6wDZ7DrkvlVdQumEvMRCQMYUnZVvdHUxAhIUtYoGpN1td0t6qn3QxQLGOtP2Zmls
+         zfyg==
+X-Gm-Message-State: AOAM530ijd3rLT1OXkMs4TEmHD3js+SyG44evzoQOb6qqEWgXCfmreQu
+        GuSQwc0YUyes9hkFAneODBxUMNA5xNTIy4C2RGdLXGtcEwQlWE+otOJP7HM/3erR9d99roPyXd4
+        KoR7AhE4Ed1gJgsMI6s6kyPe52r9jpeOfbabR39XDBIx3SXdxTGmq0olE6SUDNoDhgTbqxbnU9R
+        E=
+X-Received: by 2002:a17:906:1806:: with SMTP id v6mr25386700eje.454.1624292077982;
+        Mon, 21 Jun 2021 09:14:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz27MBznOXPqaISYzA2hEKAT6acpypZ5IVecmksOYSopF0Gsp3VTsfqkrPS8N7V8T56x7UykQ==
+X-Received: by 2002:a17:906:1806:: with SMTP id v6mr25386670eje.454.1624292077790;
+        Mon, 21 Jun 2021 09:14:37 -0700 (PDT)
+Received: from x1.bristot.me (host-79-23-205-114.retail.telecomitalia.it. [79.23.205.114])
+        by smtp.gmail.com with ESMTPSA id x9sm5155238ejc.37.2021.06.21.09.14.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 09:14:37 -0700 (PDT)
+Subject: Re: [PATCH V4 05/12] trace/hwlat: Support hotplug operations
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Phil Auld <pauld@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Kate Carcia <kcarcia@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Clark Willaims <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1623746916.git.bristot@redhat.com>
+ <8899f8a8bec38bc600f7a2c61bc6ca664aa7beeb.1623746916.git.bristot@redhat.com>
+ <20210618124503.388fe4d4@oasis.local.home>
+ <20210618150020.689439d4@oasis.local.home>
+ <c4b86b0e-b45d-3039-f49c-0dc53e1adcbd@redhat.com>
+ <20210621112528.12aee665@oasis.local.home>
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+Message-ID: <c87c24bd-253c-a645-1f29-83c558d8d4c5@redhat.com>
+Date:   Mon, 21 Jun 2021 18:14:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.128-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.4.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.4.128-rc1
-X-KernelTest-Deadline: 2021-06-23T15:49+00:00
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210621112528.12aee665@oasis.local.home>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 5.4.128 release.
-There are 90 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
-
-Responses should be made by Wed, 23 Jun 2021 15:48:46 +0000.
-Anything received after that time might be too late.
-
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.128-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-and the diffstat can be found below.
-
-thanks,
-
-greg k-h
-
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 5.4.128-rc1
-
-Peter Chen <peter.chen@kernel.org>
-    usb: dwc3: core: fix kernel panic when do reboot
-
-Jack Pham <jackp@codeaurora.org>
-    usb: dwc3: debugfs: Add and remove endpoint dirs dynamically
-
-Tony Lindgren <tony@atomide.com>
-    clocksource/drivers/timer-ti-dm: Handle dra7 timer wrap errata i940
-
-Tony Lindgren <tony@atomide.com>
-    clocksource/drivers/timer-ti-dm: Prepare to handle dra7 timer wrap issue
-
-Tony Lindgren <tony@atomide.com>
-    clocksource/drivers/timer-ti-dm: Add clockevent and clocksource support
-
-afzal mohammed <afzal.mohd.ma@gmail.com>
-    ARM: OMAP: replace setup_irq() by request_irq()
-
-Eric Auger <eric.auger@redhat.com>
-    KVM: arm/arm64: Fix KVM_VGIC_V3_ADDR_TYPE_REDIST read
-
-Arnaldo Carvalho de Melo <acme@redhat.com>
-    tools headers UAPI: Sync linux/in.h copy with the kernel sources
-
-Fugang Duan <fugang.duan@nxp.com>
-    net: fec_ptp: add clock rate zero check
-
-Joakim Zhang <qiangqing.zhang@nxp.com>
-    net: stmmac: disable clocks in stmmac_remove_config_dt()
-
-Andrew Morton <akpm@linux-foundation.org>
-    mm/slub.c: include swab.h
-
-Kees Cook <keescook@chromium.org>
-    mm/slub: fix redzoning for small allocations
-
-Kees Cook <keescook@chromium.org>
-    mm/slub: clarify verification reporting
-
-Nikolay Aleksandrov <nikolay@nvidia.com>
-    net: bridge: fix vlan tunnel dst refcnt when egressing
-
-Nikolay Aleksandrov <nikolay@nvidia.com>
-    net: bridge: fix vlan tunnel dst null pointer dereference
-
-Esben Haabendal <esben@geanix.com>
-    net: ll_temac: Fix TX BD buffer overwrite
-
-Esben Haabendal <esben@geanix.com>
-    net: ll_temac: Make sure to free skb when it is completely used
-
-Yifan Zhang <yifan1.zhang@amd.com>
-    drm/amdgpu/gfx9: fix the doorbell missing when in CGPG issue.
-
-Yifan Zhang <yifan1.zhang@amd.com>
-    drm/amdgpu/gfx10: enlarge CP_MEC_DOORBELL_RANGE_UPPER to cover full doorbell.
-
-Avraham Stern <avraham.stern@intel.com>
-    cfg80211: avoid double free of PMSR request
-
-Johannes Berg <johannes.berg@intel.com>
-    cfg80211: make certificate generation more robust
-
-Bumyong Lee <bumyong.lee@samsung.com>
-    dmaengine: pl330: fix wrong usage of spinlock flags in dma_cyclc
-
-Thomas Gleixner <tglx@linutronix.de>
-    x86/fpu: Reset state for all signal restore failures
-
-Thomas Gleixner <tglx@linutronix.de>
-    x86/pkru: Write hardware init value to PKRU when xstate is init
-
-Thomas Gleixner <tglx@linutronix.de>
-    x86/process: Check PF_KTHREAD and not current->mm for kernel threads
-
-Vineet Gupta <vgupta@synopsys.com>
-    ARCv2: save ABI registers across signal handling
-
-Sean Christopherson <seanjc@google.com>
-    KVM: x86: Immediately reset the MMU context when the SMM flag is cleared
-
-Chiqijun <chiqijun@huawei.com>
-    PCI: Work around Huawei Intelligent NIC VF FLR erratum
-
-Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-    PCI: Add ACS quirk for Broadcom BCM57414 NIC
-
-Pali Rohár <pali@kernel.org>
-    PCI: aardvark: Fix kernel panic during PIO transfer
-
-Remi Pommarel <repk@triplefau.lt>
-    PCI: aardvark: Don't rely on jiffies while holding spinlock
-
-Shanker Donthineni <sdonthineni@nvidia.com>
-    PCI: Mark some NVIDIA GPUs to avoid bus reset
-
-Antti Järvinen <antti.jarvinen@gmail.com>
-    PCI: Mark TI C667X to avoid bus reset
-
-Steven Rostedt (VMware) <rostedt@goodmis.org>
-    tracing: Do no increment trace_clock_global() by one
-
-Steven Rostedt (VMware) <rostedt@goodmis.org>
-    tracing: Do not stop recording comms if the trace file is being read
-
-Steven Rostedt (VMware) <rostedt@goodmis.org>
-    tracing: Do not stop recording cmdlines when tracing is off
-
-Andrew Lunn <andrew@lunn.ch>
-    usb: core: hub: Disable autosuspend for Cypress CY7C65632
-
-Pavel Skripkin <paskripkin@gmail.com>
-    can: mcba_usb: fix memory leak in mcba_usb
-
-Oleksij Rempel <linux@rempel-privat.de>
-    can: j1939: fix Use-after-Free, hold skb ref while in use
-
-Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-    can: bcm/raw/isotp: use per module netdevice notifier
-
-Norbert Slusarek <nslusarek@gmx.net>
-    can: bcm: fix infoleak in struct bcm_msg_head
-
-Odin Ugedal <odin@uged.al>
-    sched/fair: Correctly insert cfs_rq's to list on unthrottle
-
-Riwen Lu <luriwen@kylinos.cn>
-    hwmon: (scpi-hwmon) shows the negative temperature properly
-
-Chen Li <chenli@uniontech.com>
-    radeon: use memcpy_to/fromio for UVD fw upload
-
-Sergio Paracuellos <sergio.paracuellos@gmail.com>
-    pinctrl: ralink: rt2880: avoid to error in calls is pin is already enabled
-
-Patrice Chotard <patrice.chotard@foss.st.com>
-    spi: stm32-qspi: Always wait BUSY bit to be cleared in stm32_qspi_wait_cmd()
-
-Jack Yu <jack.yu@realtek.com>
-    ASoC: rt5659: Fix the lost powers for the HDA header
-
-Axel Lin <axel.lin@ingics.com>
-    regulator: bd70528: Fix off-by-one for buck123 .n_voltages setting
-
-Pavel Skripkin <paskripkin@gmail.com>
-    net: ethernet: fix potential use-after-free in ec_bhf_remove
-
-Toke Høiland-Jørgensen <toke@redhat.com>
-    icmp: don't send out ICMP messages with a source address of 0.0.0.0
-
-Somnath Kotur <somnath.kotur@broadcom.com>
-    bnxt_en: Call bnxt_ethtool_free() in bnxt_init_one() error path
-
-Michael Chan <michael.chan@broadcom.com>
-    bnxt_en: Rediscover PHY capabilities after firmware reset
-
-Pavel Machek <pavel@denx.de>
-    cxgb4: fix wrong shift.
-
-Linyu Yuan <linyyuan@codeaurora.org>
-    net: cdc_eem: fix tx fixup skb leak
-
-Pavel Skripkin <paskripkin@gmail.com>
-    net: hamradio: fix memory leak in mkiss_close
-
-Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-    be2net: Fix an error handling path in 'be_probe()'
-
-Eric Dumazet <edumazet@google.com>
-    net/af_unix: fix a data-race in unix_dgram_sendmsg / unix_release_sock
-
-Chengyang Fan <cy.fan@huawei.com>
-    net: ipv4: fix memory leak in ip_mc_add1_src
-
-Joakim Zhang <qiangqing.zhang@nxp.com>
-    net: fec_ptp: fix issue caused by refactor the fec_devtype
-
-Dongliang Mu <mudongliangabcd@gmail.com>
-    net: usb: fix possible use-after-free in smsc75xx_bind
-
-Aleksander Jan Bajkowski <olek2@wp.pl>
-    lantiq: net: fix duplicated skb in rx descriptor ring
-
-Maciej Żenczykowski <maze@google.com>
-    net: cdc_ncm: switch to eth%d interface naming
-
-Jakub Kicinski <kuba@kernel.org>
-    ptp: improve max_adj check against unreasonable values
-
-Pavel Skripkin <paskripkin@gmail.com>
-    net: qrtr: fix OOB Read in qrtr_endpoint_post
-
-Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-    netxen_nic: Fix an error handling path in 'netxen_nic_probe()'
-
-Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-    qlcnic: Fix an error handling path in 'qlcnic_probe()'
-
-Changbin Du <changbin.du@intel.com>
-    net: make get_net_ns return error if NET_NS is disabled
-
-Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-    net: stmmac: dwmac1000: Fix extended MAC address registers definition
-
-Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-    alx: Fix an error handling path in 'alx_probe()'
-
-Maxim Mikityanskiy <maximmi@nvidia.com>
-    sch_cake: Fix out of bounds when parsing TCP options and header
-
-Maxim Mikityanskiy <maximmi@nvidia.com>
-    netfilter: synproxy: Fix out of bounds when parsing TCP options
-
-Aya Levin <ayal@nvidia.com>
-    net/mlx5e: Block offload of outer header csum for UDP tunnels
-
-Davide Caratti <dcaratti@redhat.com>
-    net/mlx5e: allow TSO on VXLAN over VLAN topologies
-
-Maor Gottlieb <maorg@nvidia.com>
-    net/mlx5: Consider RoCE cap before init RDMA resources
-
-Dima Chumak <dchumak@nvidia.com>
-    net/mlx5e: Fix page reclaim for dead peer hairpin
-
-Huy Nguyen <huyn@nvidia.com>
-    net/mlx5e: Remove dependency in IPsec initialization flows
-
-Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
-    net/sched: act_ct: handle DNAT tuple collision
-
-Ido Schimmel <idosch@nvidia.com>
-    rtnetlink: Fix regression in bridge VLAN configuration
-
-Paolo Abeni <pabeni@redhat.com>
-    udp: fix race between close() and udp_abort()
-
-Aleksander Jan Bajkowski <olek2@wp.pl>
-    net: lantiq: disable interrupt before sheduling NAPI
-
-Pavel Skripkin <paskripkin@gmail.com>
-    net: rds: fix memory leak in rds_recvmsg
-
-Nicolas Dichtel <nicolas.dichtel@6wind.com>
-    vrf: fix maximum MTU
-
-Nanyong Sun <sunnanyong@huawei.com>
-    net: ipv4: fix memory leak in netlbl_cipsov4_add_std
-
-Sven Eckelmann <sven@narfation.org>
-    batman-adv: Avoid WARN_ON timing related checks
-
-Jim Mattson <jmattson@google.com>
-    kvm: LAPIC: Restore guard to prevent illegal APIC register access
-
-yangerkun <yangerkun@huawei.com>
-    mm/memory-failure: make sure wait for page writeback in memory_failure
-
-Dan Carpenter <dan.carpenter@oracle.com>
-    afs: Fix an IS_ERR() vs NULL check
-
-Yang Yingliang <yangyingliang@huawei.com>
-    dmaengine: stedma40: add missing iounmap() on error in d40_probe()
-
-Randy Dunlap <rdunlap@infradead.org>
-    dmaengine: QCOM_HIDMA_MGMT depends on HAS_IOMEM
-
-Randy Dunlap <rdunlap@infradead.org>
-    dmaengine: ALTERA_MSGDMA depends on HAS_IOMEM
-
-
--------------
-
-Diffstat:
-
- Documentation/vm/slub.rst                          |  10 +-
- Makefile                                           |   4 +-
- arch/arc/include/uapi/asm/sigcontext.h             |   1 +
- arch/arc/kernel/signal.c                           |  43 +++++
- arch/arm/boot/dts/dra7-l4.dtsi                     |   4 +-
- arch/arm/boot/dts/dra7.dtsi                        |  20 +++
- arch/arm/mach-omap1/pm.c                           |  13 +-
- arch/arm/mach-omap1/time.c                         |  10 +-
- arch/arm/mach-omap1/timer32k.c                     |  10 +-
- arch/arm/mach-omap2/board-generic.c                |   4 +-
- arch/arm/mach-omap2/timer.c                        | 181 ++++++++++++++-------
- arch/x86/include/asm/fpu/internal.h                |  13 +-
- arch/x86/kernel/fpu/signal.c                       |  26 +--
- arch/x86/kvm/lapic.c                               |   3 +
- arch/x86/kvm/x86.c                                 |   5 +-
- drivers/clk/ti/clk-7xx.c                           |   1 +
- drivers/dma/Kconfig                                |   1 +
- drivers/dma/pl330.c                                |   6 +-
- drivers/dma/qcom/Kconfig                           |   1 +
- drivers/dma/ste_dma40.c                            |   3 +
- drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c             |   6 +-
- drivers/gpu/drm/amd/amdgpu/gfx_v9_0.c              |   6 +-
- drivers/gpu/drm/radeon/radeon_uvd.c                |   4 +-
- drivers/hwmon/scpi-hwmon.c                         |   9 +
- drivers/net/can/usb/mcba_usb.c                     |  17 +-
- drivers/net/ethernet/atheros/alx/main.c            |   1 +
- drivers/net/ethernet/broadcom/bnxt/bnxt.c          |   6 +
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c  |   2 +-
- drivers/net/ethernet/ec_bhf.c                      |   4 +-
- drivers/net/ethernet/emulex/benet/be_main.c        |   1 +
- drivers/net/ethernet/freescale/fec_ptp.c           |   8 +-
- drivers/net/ethernet/lantiq_xrx200.c               |   5 +-
- .../ethernet/mellanox/mlx5/core/en_accel/ipsec.c   |   3 -
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |   8 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_tc.c    |   2 +-
- drivers/net/ethernet/mellanox/mlx5/core/rdma.c     |   3 +
- drivers/net/ethernet/mellanox/mlx5/core/transobj.c |  30 +++-
- .../net/ethernet/qlogic/netxen/netxen_nic_main.c   |   2 +
- drivers/net/ethernet/qlogic/qlcnic/qlcnic_main.c   |   1 +
- drivers/net/ethernet/stmicro/stmmac/dwmac1000.h    |   8 +-
- .../net/ethernet/stmicro/stmmac/stmmac_platform.c  |   2 +
- drivers/net/ethernet/xilinx/ll_temac_main.c        |   8 +-
- drivers/net/hamradio/mkiss.c                       |   1 +
- drivers/net/usb/cdc_eem.c                          |   2 +-
- drivers/net/usb/cdc_ncm.c                          |   2 +-
- drivers/net/usb/smsc75xx.c                         |  10 +-
- drivers/net/vrf.c                                  |   6 +-
- drivers/pci/controller/pci-aardvark.c              |  59 +++++--
- drivers/pci/quirks.c                               |  89 ++++++++++
- drivers/ptp/ptp_clock.c                            |   6 +-
- drivers/spi/spi-stm32-qspi.c                       |   5 +-
- drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c    |   2 +-
- drivers/usb/core/hub.c                             |   7 +
- drivers/usb/dwc3/core.c                            |   2 +-
- drivers/usb/dwc3/debug.h                           |   3 +
- drivers/usb/dwc3/debugfs.c                         |  21 +--
- drivers/usb/dwc3/gadget.c                          |   3 +
- fs/afs/main.c                                      |   4 +-
- include/linux/cpuhotplug.h                         |   1 +
- include/linux/mfd/rohm-bd70528.h                   |   4 +-
- include/linux/mlx5/transobj.h                      |   1 +
- include/linux/ptp_clock_kernel.h                   |   2 +-
- include/linux/socket.h                             |   2 -
- include/net/net_namespace.h                        |   7 +
- include/uapi/linux/in.h                            |   3 +
- kernel/sched/fair.c                                |  44 ++---
- kernel/trace/trace.c                               |  11 --
- kernel/trace/trace_clock.c                         |   6 +-
- mm/memory-failure.c                                |   7 +-
- mm/slab_common.c                                   |   3 +-
- mm/slub.c                                          |  23 +--
- net/batman-adv/bat_iv_ogm.c                        |   4 +-
- net/bridge/br_private.h                            |   4 +-
- net/bridge/br_vlan_tunnel.c                        |  38 +++--
- net/can/bcm.c                                      |  62 +++++--
- net/can/j1939/transport.c                          |  54 ++++--
- net/can/raw.c                                      |  62 +++++--
- net/core/net_namespace.c                           |  12 ++
- net/core/rtnetlink.c                               |   8 +-
- net/ipv4/cipso_ipv4.c                              |   1 +
- net/ipv4/icmp.c                                    |   7 +
- net/ipv4/igmp.c                                    |   1 +
- net/ipv4/udp.c                                     |  10 ++
- net/ipv6/udp.c                                     |   3 +
- net/netfilter/nf_synproxy_core.c                   |   5 +
- net/qrtr/qrtr.c                                    |   2 +-
- net/rds/recv.c                                     |   2 +-
- net/sched/act_ct.c                                 |  21 ++-
- net/sched/sch_cake.c                               |   6 +-
- net/socket.c                                       |  13 --
- net/unix/af_unix.c                                 |   7 +-
- net/wireless/Makefile                              |   2 +-
- net/wireless/pmsr.c                                |  16 +-
- sound/soc/codecs/rt5659.c                          |  26 ++-
- tools/include/uapi/linux/in.h                      |   3 +
- virt/kvm/arm/vgic/vgic-kvm-device.c                |   4 +-
- 96 files changed, 865 insertions(+), 339 deletions(-)
-
+On 6/21/21 5:25 PM, Steven Rostedt wrote:
+> On Mon, 21 Jun 2021 13:34:44 +0200
+> Daniel Bristot de Oliveira <bristot@redhat.com> wrote:
+> 
+>>> And of course, because get_online_cpus() is called within
+>>> trace_types_lock, doing this check is going to cause a lock inversion.
+>>>  
+>> Yep! I tried to take the trace_type_lock here, and got the lockdep info about
+>> this problem.
+>>
+>>> The only thing I could think of is to wake up a worker thread to do the
+>>> work. That is, this just wakes the worker thread, then the worker grabs
+>>> the trace_types_lock, iterates through the cpu mask of expect running
+>>> threads, and then starts or kills them depending on the hwlat_busy
+>>> value.  
+>> So, it will not wait for the kworker to run?
+> What wont wait?
+
+For example, at the shutdown, should the hotplug callback wait for the workqueue
+to run & kill the thread, or not?
+
+-- Daniel
+
+> -- Steve
+> 
 
