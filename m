@@ -2,127 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7CF3AEAAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 748763AEAB8
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbhFUOEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 10:04:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52374 "EHLO
+        id S230304AbhFUOHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 10:07:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhFUOEb (ORCPT
+        with ESMTP id S229790AbhFUOG6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 10:04:31 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30F4C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:02:15 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id n20so19108921edv.8
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:02:15 -0700 (PDT)
+        Mon, 21 Jun 2021 10:06:58 -0400
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0863C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:04:43 -0700 (PDT)
+Received: by mail-qk1-x72b.google.com with SMTP id c138so30721998qkg.5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:04:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CpIxGlR3fPNuk0vQbtg5MYpb/zfRP+iuV/F0H7hG2gc=;
-        b=IGiY8vpOnvIl++Bqc3unTTmqd/bvatfpNEL1UnPBI8/bjdsfSz1UO0j/Xg+qp/BAW5
-         sD9sGWimiEqGGhHCTyFovCk/Rvgk8LD04fMRNc2U6iTCvOc0qLiot6A+g/W5vSchEbaS
-         af93R8ur1IDvsTXDwd5u4Gjc/oTJSL0U0B1Es90m35+T6aICRIr44zKaognegA92e7K4
-         0jXxWUyJqDQXTKF/h52CEd8ZIzPRdofW+bWHe9mLfqDeOhuNtXQvm0B953MFbe3sHEy0
-         MqLHNHiXg/t/8UPxUkMszzFjt/7wjiyPfIpAeTslaTMaF2e9QJCkydBRv4V9S1vRF4P+
-         H+UQ==
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=u1X7Cpa4D/S7QoW2bbI1iaCX5CSBd0Mm5781yWNnuBQ=;
+        b=hP5HE5VcqmklMdBX1AqbXS5mNHCUEcaadxyUtu03tVApOSRUZKkKCJIPf9u6BuZwMU
+         y2CvoPFeuM6I46qhZ00FuUZwUXzRFa9y3gYha8CrV77LGcbtC6eqo0bC8ujxCEVT1wEu
+         94WGYby+GRstu78enn43oKmu+c5Xu+EFnST6qqwijxtw7L0DMYp0QFPxZnukpRi5r5it
+         QLY7LlVhka4DdCLPrw+/aWr82NLeYBH09MGZlH3eYjiSE1NqXonyFGAXBrTVNpfECK18
+         sDe27z9ausQ2vbtP2JxQcaOl4xNLYh8PPU0dRtkXbYp5UisE5mzQu3AApXk1Dmw0lf3q
+         PU2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CpIxGlR3fPNuk0vQbtg5MYpb/zfRP+iuV/F0H7hG2gc=;
-        b=ITGtnViii0wUHi4Fm0DugIXXamM/2YdS64FwbqB7085nFkXbGVJnZkxlozs/8wQtV7
-         uzsb331xQt3NdcZpId8zOlychIhaVkjBOlgT5k0xh0nmM/hPimljtOCJs4Vi7YHMsyqR
-         5alYJ4RfnN6kHANJ110e+aThYzOAIf+I/V2X164Dwf3oKfnEteHYCGvxlsQh8s0YfG+x
-         I76lDKqhoB9L2lF2waIz/rnwKSF+V+BLjEIDXoKKsOCPY5Y/7doDUPhJcu5f/QFWhpD6
-         HakgEAzhsoYT0QFXx+lXoZRtCcSvNII6X/BZmog94kjOFecWfaTpraY1AaRqM+pji1Dk
-         9vbQ==
-X-Gm-Message-State: AOAM533dzbwKBEB4sX9ZhgF+O/no4YyWBA0ODJnxzODySCImBkzU73GD
-        VmpOZFIsUwanOnC4hXcf6Vv+Z96wnQK9FIc7rpk=
-X-Google-Smtp-Source: ABdhPJzTddfM+oN2NrOlwEmgJHcpqzRqYOSQYB76NSL/uIY5o8UUs/jc+Txgb3iekDv9INwyaASNg7S96cj67Kq9hE8=
-X-Received: by 2002:aa7:c7c6:: with SMTP id o6mr5265257eds.228.1624284133308;
- Mon, 21 Jun 2021 07:02:13 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=u1X7Cpa4D/S7QoW2bbI1iaCX5CSBd0Mm5781yWNnuBQ=;
+        b=RMn9vzEGKvH6EJf+VXQLEmrsS2b51PWnmsrekAs8zarxod0fSrt2DzqIhxA4mN9u1C
+         pwjCcXdvjG0N3a3j6S5HXtYE8Fd/NY8FopLKoXUOkc7tQLQf2/5SmqevH7cAcH/XlTwr
+         O1zx/y7GSXimDuXy41FqJOv6SVE00MHq/EbZPYc1vnbbWLW3zF0rQmhJTk92aLKlOUAX
+         KaudkoPcTMz2z3T2HIfRvXB3i/qIjXNpPdrMWa3jA8mqvByxHo5N28EVKGm+NHL+w+e2
+         DNyQAmrB00rvbRmOQ5syBzsnMuoAS7zrvkw55nk5i77+o3MMlx9g89N4coJNRFVwxRug
+         zMEw==
+X-Gm-Message-State: AOAM530CCsaRrCS+vXakQK3329o9nVZLjzxvAU1SzkZD2HFCZFh8Mq+7
+        W6X9OIJsWvC17tpHQ+F780vl0AvULAZ8xg==
+X-Google-Smtp-Source: ABdhPJwPY8AVx3BmkIMaEV3qpcSJtGcIY8InamUwYhLCgoTa1H0ZAPHiESQwfa06qhEmDmgO/juUhQ==
+X-Received: by 2002:a37:7987:: with SMTP id u129mr5928820qkc.338.1624284282909;
+        Mon, 21 Jun 2021 07:04:42 -0700 (PDT)
+Received: from [192.168.1.171] (bras-base-kntaon1617w-grc-24-174-92-115-23.dsl.bell.ca. [174.92.115.23])
+        by smtp.googlemail.com with ESMTPSA id s23sm10889299qtq.2.2021.06.21.07.04.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 07:04:42 -0700 (PDT)
+Subject: Re: [PATCH net-next] net/sched: cls_flower: fix resetting of ether
+ proto mask
+To:     Boris Sukholitko <boris.sukholitko@broadcom.com>,
+        Vladimir Oltean <olteanv@gmail.com>
+Cc:     Vadym Kochan <vadym.kochan@plvision.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Serhiy Boiko <serhiy.boiko@plvision.eu>,
+        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jiri@resnulli.us, idosch@idosch.org, ilya.lifshits@broadcom.com
+References: <20210617161435.8853-1-vadym.kochan@plvision.eu>
+ <20210617164155.li3fct6ad45a6j7h@skbuf>
+ <20210617195102.h3bg6khvaogc2vwh@skbuf> <20210621083037.GA9665@builder>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+Message-ID: <f18e6fee-8724-b246-adf9-53cc47f9520b@mojatatu.com>
+Date:   Mon, 21 Jun 2021 10:04:41 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-References: <20210621051152.305224-1-gshan@redhat.com>
-In-Reply-To: <20210621051152.305224-1-gshan@redhat.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Mon, 21 Jun 2021 07:02:02 -0700
-Message-ID: <CAKgT0Uf3UwhdFX93YrkiB8yk6v3syqUrdbu720ECqv1ak_H_FA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] mm/page_reporting: Make page reporting work on arm64
- with 64KB page size
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, shan.gavin@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210621083037.GA9665@builder>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So the question I would have is what is the use case for this? It
-seems like you don't have to deal with the guest native page size
-issues since you are willing to break up what would otherwise be THP
-pages on the guest, and the fact that you are willing to go down to
-2MB pages which happens to align with the host THP page size for x86
-makes me wonder if that is actually the environment you are running
-in.
+On 2021-06-21 4:32 a.m., Boris Sukholitko wrote:
+> On Thu, Jun 17, 2021 at 10:51:02PM +0300, Vladimir Oltean wrote:
+>> On Thu, Jun 17, 2021 at 07:41:55PM +0300, Vladimir Oltean wrote:
+>>> On Thu, Jun 17, 2021 at 07:14:35PM +0300, Vadym Kochan wrote:
+> 
+> [snip excellent problem analysis]
+> 
+>> So maybe it is the flow dissector we need to fix, to make it give us an
+>> additional pure EtherType if asked for, make tc-flower use that
+>> dissector key instead, and then revert Jamal's user space patch, and we
+>> should all install our tc filters as:
+>>
+>> tc filter add dev sw1p0 ingress handle 11 protocol all flower eth_type 0x8864 skip_hw action drop
+>>
+>> ?
+> 
+> I like this solution. To be more explicit, the plan becomes:
+> 
+> 1. Add FLOW_DISSECTOR_KEY_ETH_TYPE and struct flow_dissector_key_eth_type.
+> 2. Have skb flow dissector use it.
+> 3. Userspace does not set TCA_FLOWER_KEY_ETH_TYPE automagically
+>     anymore. cls_flower takes basic.n_proto from struct tcf_proto.
+> 4. Add eth_type to the userspace and use it to set TCA_FLOWER_KEY_ETH_TYPE
+> 5. Existence of TCA_FLOWER_KEY_ETH_TYPE triggers new eth_type dissector.
+> 
+> IMHO this neatly solves non-vlan protocol match case.
+> 
+> What should we do with the VLANs then? Should we have vlan_pure_ethtype
+> and cvlan_pure_ethtype as additional keys?
+> 
 
-Rather than having the guest control this it might make sense to look
-at adding an interface so that the page_reporting_register function
-and the page_reporting_dev_info struct could be used to report and
-configure the minimum page size that the host can support for the page
-reporting. With that the host could then guarantee that it isn't going
-to hurt performance by splitting pages on the host and risk hurting
-the virtualization performance.
+I didnt see the original patch you sent until after it was applied
+and the cursory 30 second glance didnt say much to me.
 
-Also you would benefit by looking into the callers of
-page_reporting_register as there are more than just the virtio balloon
-that are consuming it. Odds are HyperV won't care about an ARM64
-architecture, but your change would essentially disable it outright
-which is why I think this might be better to address via the consumers
-of page reporting rather than trying to address it in page reporting
-itself.
+Vlans unfortunately are a speacial beast: You will have to retrieve
+the proto differently.
 
-Thanks,
+Q: Was this always broken? Example look at Toke's change here:
+commit d7bf2ebebc2bd61ab95e2a8e33541ef282f303d4
 
-- Alex
-
-On Sun, Jun 20, 2021 at 8:11 PM Gavin Shan <gshan@redhat.com> wrote:
->
-> The page reporting threshold is currently equal to @pageblock_order, which
-> is 13 and 512MB on arm64 with 64KB base page size selected. The page
-> reporting won't be triggered if the freeing page can't come up with a free
-> area like that huge. The condition is hard to be met, especially when the
-> system memory becomes fragmented.
->
-> This series intends to solve the issue by having page reporting threshold
-> as 5 (2MB) on arm64 with 64KB base page size. The patches are organized as:
->
->    PATCH[1/3] introduces variable (@page_reporting_order) to replace original
->               macro (PAGE_REPORTING_MIN_ORDER). It's also exported so that it
->               can be adjusted at runtime.
->    PATCH[2/3] renames PAGE_REPORTING_MIN_ORDER with PAGE_REPORTING_ORDER and
->               allows architecture to specify its own version.
->    PATCH[3/3] defines PAGE_REPORTING_ORDER to 5, corresponding to 2MB in size,
->               on arm64 when 64KB base page size is selected. It's still same
->               as to @pageblock_order for other architectures and cases.
->
-> Gavin Shan (3):
->   mm/page_reporting: Allow to set reporting order
->   mm/page_reporting: Allow architecture to select reporting order
->   arm64: mm: Specify smaller page reporting order
->
->  Documentation/admin-guide/kernel-parameters.txt |  6 ++++++
->  arch/arm64/include/asm/page.h                   | 13 +++++++++++++
->  mm/page_reporting.c                             |  8 ++++++--
->  mm/page_reporting.h                             | 10 +++++++---
->  4 files changed, 32 insertions(+), 5 deletions(-)
->
-> --
-> 2.23.0
->
+cheers,
+jamal
