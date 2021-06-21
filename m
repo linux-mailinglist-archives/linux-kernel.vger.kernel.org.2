@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F39B13AF884
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 00:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E133AF87B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 00:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232371AbhFUWeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 18:34:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55172 "EHLO
+        id S232268AbhFUWeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 18:34:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232073AbhFUWeB (ORCPT
+        with ESMTP id S232056AbhFUWeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 18:34:01 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC9E3C061767
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 15:31:46 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id x24so32692889lfr.10
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 15:31:46 -0700 (PDT)
+        Mon, 21 Jun 2021 18:34:03 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0519C061787
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 15:31:47 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id r5so32768372lfr.5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 15:31:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=wWkLC+6IHo1LkiZQZtpwJkfJ4H3Gk2cOkMI7a3h8YO8=;
-        b=AHJoQMSyw2F26sqRP070Z2DonSPoTif5Q8B2lrDRcKW5F1+eFXYk4G946n7T7XovwA
-         HWzV6sHthnzp2WCvluiMwRQVU7N3PtyOt3lBX6SgjbPvYtoo4fiMlBcMnKum4WwDaI+p
-         mFwAxgmEFRw9yZ6eP43t1a+EfWr/ttIxBCOrWwMbwVSh45YzlalARMd5D6Rxu58jij/y
-         SMxp+75C/iJgqwx3HpSkseiqqbXWRWiQzCbfEN4KONNn0+tzR0NjTnUF1Y9KVSqiuQAz
-         cO3+Voo+knC88V8IQQ97O+xQkgTEf+SGHeruwkZ1mD9CYv9CvNlWMWyCFLPpV5J+m2+L
-         +cVA==
+        bh=QHx4lPVuLgrkbYf8vHia5iLzhseB4SWEXJbfsdqWkv8=;
+        b=TU2PbbIf7czYnoGY2jhObwIuRV669cWODpa4obBiKhfbq+paEHe2fDx2tBXoZgmMuu
+         isGcF8UFk50IbKCENjFiRFImY/cJ/sj2EqAgJbyjBD8JRs95N/KOn866SynmbnBWaYq6
+         Ssos/lcKbUBntpLuCFSyikx6gvGjjqq5xx/Bmr1eNPs8CQwpisQkgSagxODUeJGa8gDW
+         56Idk1jWqOmAgu93x/e/SDVGezVpMyUIROCJOn8jazqIDfmqs4um27iLdcPwoH59wcTi
+         tRosi115cReiQ4P3j7Xg9i//rJxWVh+RRuwDztOud/SaG692S/pdrjXeEv6JTY9Pm/Ob
+         p0fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=wWkLC+6IHo1LkiZQZtpwJkfJ4H3Gk2cOkMI7a3h8YO8=;
-        b=DS95ncXdzfXznPnhxOUWgN35MK6GP4g9c9IwNJ3xBWpIPZ4qQdBMy5JP7DiAmry/L9
-         TpSaSPotvuRxd03rMklsXL0j9jzmbvB9s1rl4pgrr5mwrIJ2rRD+09BVZrI0P3wx7P47
-         RAjp+fZSRSiz4QyE5PbcGGQrMmBQ0rowq1ezh+edVHtqACt3ex6oS31VQgOhs6qdcRii
-         A40JR+Jk8vzk7jBHtFS89Xo+psckEMq+3UM/R6+AA+x3uTHbjxEsNnrahFggRufMmtfc
-         vUhrKs0rj8OWctgNtaxXauyA0WPyth6TxgkwvHLhgSSapm7FMQeQq+TK+zd6DxggJVO1
-         bUKA==
-X-Gm-Message-State: AOAM531vDu/ZFvCgvX9/Rr1RsYiatBGlwXqRtZZscCsTy7eSoMy/hJyR
-        8amv9bnmcJ4lWVPNcuwQ5D7zEg==
-X-Google-Smtp-Source: ABdhPJxNpj4TgpZnpnlnxK/ZfqRpJ5ypI+6K9fjZQ0FuhIKOSIAj00srWAvfDxSh7VPDODP1pi+Ikg==
-X-Received: by 2002:a19:ad44:: with SMTP id s4mr363796lfd.563.1624314705160;
+        bh=QHx4lPVuLgrkbYf8vHia5iLzhseB4SWEXJbfsdqWkv8=;
+        b=GsWH8S1syjDWIDJgR4h2HBbSzckzhEV7+jqZ9z5rbWJjKhvUjUC6rbyrFQ0M2jeRVX
+         LGPL4J7dVot1F8gyUk3oxx6HIKHApNpWUPdRUWqrPO4wDEgW8KcUd45evc61TWRHn628
+         pxh49V1JqUICYxRczEHSY4JHz+LHt8PHo4wvDScv7Is05pVHF5PnID8jmeQ3rIG6GgYA
+         QjyfceVFGR/DdElR9ZUy6sdXZooogn3La5c9QaD2v4rFC476IvBTl68WIOfhEHoxHm4m
+         PRL0Ja17zXjrgMfB94vMvcaxkiEkkB06JeZEssGyLq6BPof/Y2PWz2gLkmIh7hHqIfY4
+         igCQ==
+X-Gm-Message-State: AOAM532Lv6MVVAHcHiG4i8nSdIFwda1NwZIWdo7p1Mbua2AtY4iLOvOy
+        ilEJHAME91F+gTqgWhli425CrQ==
+X-Google-Smtp-Source: ABdhPJxnA3LhLY66TfvahxeoPfG2LD8ALEpGrQB5AxrwAtExTQuaM7dYLOWAT1jp624hkIeoUqMYmg==
+X-Received: by 2002:ac2:4d81:: with SMTP id g1mr381309lfe.319.1624314705927;
         Mon, 21 Jun 2021 15:31:45 -0700 (PDT)
 Received: from eriador.lan ([37.153.55.125])
-        by smtp.gmail.com with ESMTPSA id b10sm2516025ljf.72.2021.06.21.15.31.44
+        by smtp.gmail.com with ESMTPSA id b10sm2516025ljf.72.2021.06.21.15.31.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 15:31:44 -0700 (PDT)
+        Mon, 21 Jun 2021 15:31:45 -0700 (PDT)
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -61,9 +61,9 @@ Cc:     linux-arm-msm@vger.kernel.org,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-bluetooth@vger.kernel.org
-Subject: [PATCH v3 1/7] dt-bindings: regulator: qcom,qca6390: add binding for QCA6390 device
-Date:   Tue, 22 Jun 2021 01:31:35 +0300
-Message-Id: <20210621223141.1638189-2-dmitry.baryshkov@linaro.org>
+Subject: [PATCH v3 2/7] regulator: qca6390: add support for QCA639x powerup sequence
+Date:   Tue, 22 Jun 2021 01:31:36 +0300
+Message-Id: <20210621223141.1638189-3-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210621223141.1638189-1-dmitry.baryshkov@linaro.org>
 References: <20210621223141.1638189-1-dmitry.baryshkov@linaro.org>
@@ -74,92 +74,217 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Qualcomm QCA6390/1 is a family of WiFi + Bluetooth SoCs, with BT part
-being controlled through the UART and WiFi being present on PCIe bus.
-Both blocks share common power sources. Add binding to describe power
-sequencing required to power up this device.
+being controlled through the UART and WiFi being present on PCIe
+bus. Both blocks share common power sources. Add device driver handling
+power sequencing of QCA6390/1.
 
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
- .../bindings/regulator/qcom,qca6390.yaml      | 70 +++++++++++++++++++
- 1 file changed, 70 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/regulator/qcom,qca6390.yaml
+ drivers/regulator/Kconfig        |  13 +++
+ drivers/regulator/Makefile       |   1 +
+ drivers/regulator/qcom-qca639x.c | 157 +++++++++++++++++++++++++++++++
+ 3 files changed, 171 insertions(+)
+ create mode 100644 drivers/regulator/qcom-qca639x.c
 
-diff --git a/Documentation/devicetree/bindings/regulator/qcom,qca6390.yaml b/Documentation/devicetree/bindings/regulator/qcom,qca6390.yaml
+diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
+index 3e7a38525cb3..7a560cddea7a 100644
+--- a/drivers/regulator/Kconfig
++++ b/drivers/regulator/Kconfig
+@@ -909,6 +909,19 @@ config REGULATOR_PWM
+ 	  This driver supports PWM controlled voltage regulators. PWM
+ 	  duty cycle can increase or decrease the voltage.
+ 
++config REGULATOR_QCOM_QCA639X
++	tristate "Qualcomm QCA639x WiFi/Bluetooth module support"
++	help
++	  If you say yes to this option, support will be included for Qualcomm
++	  QCA639x family of WiFi and Bluetooth SoCs. Note, this driver supports
++	  only power control for this SoC, you still have to enable individual
++	  Bluetooth and WiFi drivers. This driver is only necessary on ARM
++	  platforms with this chip. PCIe cards handle power sequencing on their
++	  own.
++
++	  Say M here if you want to include support for QCA639x chips as a
++	  module. This will build a module called "qcom-qca639x".
++
+ config REGULATOR_QCOM_RPM
+ 	tristate "Qualcomm RPM regulator driver"
+ 	depends on MFD_QCOM_RPM
+diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
+index 580b015296ea..129c2110b78d 100644
+--- a/drivers/regulator/Makefile
++++ b/drivers/regulator/Makefile
+@@ -99,6 +99,7 @@ obj-$(CONFIG_REGULATOR_MT6380)	+= mt6380-regulator.o
+ obj-$(CONFIG_REGULATOR_MT6397)	+= mt6397-regulator.o
+ obj-$(CONFIG_REGULATOR_MTK_DVFSRC) += mtk-dvfsrc-regulator.o
+ obj-$(CONFIG_REGULATOR_QCOM_LABIBB) += qcom-labibb-regulator.o
++obj-$(CONFIG_REGULATOR_QCOM_QCA639X) += qcom-qca639x.o
+ obj-$(CONFIG_REGULATOR_QCOM_RPM) += qcom_rpm-regulator.o
+ obj-$(CONFIG_REGULATOR_QCOM_RPMH) += qcom-rpmh-regulator.o
+ obj-$(CONFIG_REGULATOR_QCOM_SMD_RPM) += qcom_smd-regulator.o
+diff --git a/drivers/regulator/qcom-qca639x.c b/drivers/regulator/qcom-qca639x.c
 new file mode 100644
-index 000000000000..35315c521041
+index 000000000000..a2c78c0f8baa
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/qcom,qca6390.yaml
-@@ -0,0 +1,70 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/regulator/qcom,qca6390.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++++ b/drivers/regulator/qcom-qca639x.c
+@@ -0,0 +1,157 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (c) 2021, Linaro Limited
++ */
++#include <linux/delay.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++#include <linux/regulator/consumer.h>
++#include <linux/regulator/driver.h>
++#include <linux/regulator/of_regulator.h>
++#include <linux/slab.h>
 +
-+title: Qualcomm QCA6390 WiFi + Bluetoot SoC bindings
++#define MAX_NUM_REGULATORS	8
 +
-+maintainers:
-+  - Andy Gross <agross@kernel.org>
-+  - Bjorn Andersson <bjorn.andersson@linaro.org>
++static struct vreg {
++	const char *name;
++	unsigned int load_uA;
++} vregs[MAX_NUM_REGULATORS] = {
++	/* 2.0 V */
++	{ "vddpcie2", 15000 },
++	{ "vddrfa3", 400000 },
 +
-+description: |
-+  This binding describes thes Qualcomm QCA6390 or QCA6391 power supplies and
-+  enablement pins.
++	/* 0.95 V */
++	{ "vddaon", 100000 },
++	{ "vddpmu", 1250000 },
++	{ "vddrfa1", 200000 },
 +
-+properties:
-+  compatible:
-+    const: qcom,qca6390
++	/* 1.35 V */
++	{ "vddrfa2", 400000 },
++	{ "vddpcie1", 35000 },
 +
-+  vddaon-supply:
-+    description:
-+      0.95V always-on LDO power input
++	/* 1.8 V */
++	{ "vddio", 20000 },
++};
 +
-+  vddpmu-supply:
-+    description:
-+      0.95V LDO power input to PMU
++struct qca6390_data {
++	struct device *dev;
++	struct regulator_bulk_data regulators[MAX_NUM_REGULATORS];
++	size_t num_vregs;
 +
-+  vddrfa1-supply:
-+    description:
-+      0.95V LDO power input to RFA
++	struct regulator_desc desc;
++	struct regulator_dev *regulator_dev;
++	unsigned int enable_counter;
++};
 +
-+  vddrfa2-supply:
-+    description:
-+      1.25V LDO power input to RFA
++#define domain_to_data(domain) container_of(domain, struct qca6390_data, pd)
 +
-+  vddrfa3-supply:
-+    description:
-+      2V LDO power input to RFA
++static int qca6390_enable(struct regulator_dev *rdev)
++{
++	struct qca6390_data *data = rdev_get_drvdata(rdev);
++	int ret;
 +
-+  vddpcie1-supply:
-+    description:
-+      1.25V LDO power input to PCIe part
++	ret = regulator_bulk_enable(data->num_vregs, data->regulators);
++	if (ret) {
++		dev_err(data->dev, "Failed to enable regulators");
++		return ret;
++	}
 +
-+  vddpcie2-supply:
-+    description:
-+      2V LDO power input to PCIe part
++	/* Wait for 1ms before toggling enable pins. */
++	usleep_range(1000, 2000);
 +
-+  vddio-supply:
-+    description:
-+      1.8V VIO input
++	data->enable_counter++;
 +
-+additionalProperties: false
++	return 0;
++}
 +
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    qca6390: qca6390 {
-+      compatible = "qcom,qca6390";
++static int qca6390_disable(struct regulator_dev *rdev)
++{
++	struct qca6390_data *data = rdev_get_drvdata(rdev);
 +
-+      vddaon-supply = <&vreg_s6a_0p95>;
-+      vddpmu-supply = <&vreg_s2f_0p95>;
-+      vddrfa1-supply = <&vreg_s2f_0p95>;
-+      vddrfa2-supply = <&vreg_s8c_1p3>;
-+      vddrfa3-supply = <&vreg_s5a_1p9>;
-+      vddpcie1-supply = <&vreg_s8c_1p3>;
-+      vddpcie2-supply = <&vreg_s5a_1p9>;
-+      vddio-supply = <&vreg_s4a_1p8>;
-+    };
-+...
++	regulator_bulk_disable(data->num_vregs, data->regulators);
++
++	data->enable_counter--;
++
++	return 0;
++}
++
++static int qca6390_is_enabled(struct regulator_dev *rdev)
++{
++	struct qca6390_data *data = rdev_get_drvdata(rdev);
++
++	return data->enable_counter > 0;
++}
++
++static const struct regulator_ops qca6390_ops = {
++	.enable = qca6390_enable,
++	.disable = qca6390_disable,
++	.is_enabled = qca6390_is_enabled,
++};
++
++static int qca6390_probe(struct platform_device *pdev)
++{
++	struct qca6390_data *data;
++	struct device *dev = &pdev->dev;
++	struct regulator_config cfg = { };
++	int i, ret;
++
++	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
++
++	data->dev = dev;
++	data->num_vregs = ARRAY_SIZE(vregs);
++
++	for (i = 0; i < data->num_vregs; i++)
++		data->regulators[i].supply = vregs[i].name;
++
++	ret = devm_regulator_bulk_get(dev, data->num_vregs, data->regulators);
++	if (ret < 0)
++		return ret;
++
++	for (i = 0; i < data->num_vregs; i++) {
++		ret = regulator_set_load(data->regulators[i].consumer, vregs[i].load_uA);
++		if (ret)
++			return ret;
++	}
++
++	data->desc.name = devm_kstrdup(dev, dev_name(dev), GFP_KERNEL);
++	if (!data->desc.name)
++		return -ENOMEM;
++
++	data->desc.type = REGULATOR_VOLTAGE;
++	data->desc.owner = THIS_MODULE;
++	data->desc.ops = &qca6390_ops;
++
++	cfg.dev = dev;
++	cfg.of_node = dev->of_node;
++	cfg.driver_data = data;
++	cfg.init_data = of_get_regulator_init_data(dev, dev->of_node, &data->desc);
++
++	data->regulator_dev = devm_regulator_register(dev, &data->desc, &cfg);
++	if (IS_ERR(data->regulator_dev)) {
++		ret = PTR_ERR(data->regulator_dev);
++		return ret;
++	}
++
++	platform_set_drvdata(pdev, data);
++
++	return 0;
++}
++
++static const struct of_device_id qca6390_of_match[] = {
++	{ .compatible = "qcom,qca6390" },
++};
++
++static struct platform_driver qca6390_driver = {
++	.probe = qca6390_probe,
++	.driver = {
++		.name = "qca6390",
++		.of_match_table = qca6390_of_match,
++	},
++};
++
++module_platform_driver(qca6390_driver);
++MODULE_AUTHOR("Dmitry Baryshkov <dmitry.baryshkov@linaro.org>");
++MODULE_DESCRIPTION("Power control for Qualcomm QCA6390/1 BT/WiFi chip");
++MODULE_LICENSE("GPL v2");
 -- 
 2.30.2
 
