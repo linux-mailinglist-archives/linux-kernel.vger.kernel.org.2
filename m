@@ -2,323 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88BAC3AF175
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9AB03AF178
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230451AbhFURLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 13:11:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbhFURLu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 13:11:50 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFC2C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:09:35 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id a11so18340561lfg.11
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:09:35 -0700 (PDT)
+        id S231260AbhFURLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 13:11:55 -0400
+Received: from mail-dm6nam12on2075.outbound.protection.outlook.com ([40.107.243.75]:52182
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230059AbhFURLw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 13:11:52 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EW8EgB1Pqa0y5v2USpEg+cC6q2YDztMS+m3l7EE+4+afud1GJ4rvz6Ecvw4YrejeHBej3WLbzkqvSlVyuibJ9c5szYE4CXOV5/svGr42B4BqPXzyLfDQ00Jdr2IR214rp5KIKVnoJbik/DYgwTZyHWqbburjm4uOa0GwEqNu2XDMz45Hifud4GYU1HiN+TRZbDV0rtx/CN6zjsAy9WLJok9LF5PbXEaR1nbj475K+2foZ9pGNeOVW/QvoxaoRxaWI/ZtzxE5f83f+EtxjZNmzxY8FiNBZBIJLzRMGvkxpnZLdAfdXf5X974sY0oWl9F2/kGdCMotyBQ86F8mAO6cgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Llv05ZLZqkhZARm5moLHUgb8N7/B+OHut3MOSKrHTRw=;
+ b=LLAjENvMYIg0F1ce0BUmf2/MS/NH1gC8YoxRGhPtOOg9798yntiA+XMYwLyOvp+/Fy8YsHxyMeqeEYXgZAOd52v0knF9vrSePXSt7VVvCVN2vxV5CfH4C+hq8U92B3cKpTjXZ52KqERGLSKfusBrf24cGehan28MiJh2CoKWirbzCTY3kilbvmJQyzu1TaWVMoUCZIOQcDmB/cDFbikG8CsuvaF0aD43NWpuhwhEWY893tWRnkiS31/yTQWLGy+i+zHv2u4h27DrvxQ/Vv/OOk46mvNLSBZzfE7dCBgdpB28fWjcBSMiOTEfOfgHhXdBd5/NjFt1zKcFXPIta/TIww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
+ dkim=pass header.d=xilinx.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=JMmJSnD3/U06oRXyz4Yq2FrOHrZ2wymLSXBpDyNdQf4=;
-        b=aFqvERbpM65QMOZG73UxuyPU5BkWbgA6kPF7nHf1gV5+iXHLclPP1EhgyQ107LXd5S
-         NUQXitx+NmH1uQmHhIQMXR5QCqe2pgCwYKKtirrgXFzvBTczXJj9ZCEUrxjLIqiQ0ENc
-         A1N7mmMLbJlnx37d+NFWaICbnHcEksER084HMoAdEtfgAD1VnBerjvYMZkaa328yyJLe
-         L0eCEcl6qoCTSVTNUydjIYekUiexQakrVSnpu83mXxXHRpRRcXh6EHc/KYcZXSDk1AjI
-         9kKOVBUFp8ENP6DFkc8gGSXB93vXya4NGiY+1Dm9n39nULcIXXa699QNVB+gyNy4e/VP
-         j/kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=JMmJSnD3/U06oRXyz4Yq2FrOHrZ2wymLSXBpDyNdQf4=;
-        b=NMvkCjXpbPUBldNzM0kBODH4VSzM1ZasFoHDsql32ugoZtS/Xp9K9IE30E45ri63BM
-         JH9HuFw8nXwm1gT4o1NWs8txUTywLyeP/rA5dNS7kNGmdzf1I3GlQc0XZaZkTvP2j/Nc
-         ANgqeAHdJ1zCcJOoFdhOm4Bf/do1WfZtUSoxd2MVP2y1NVPpNf1Q2r4nhWYTm8f3fF0/
-         HpmPiJJdXNJW7jvwDPOCXxXh0msZ2vIqrzwn3XMshzhNdMK5nCd1FtUh8VCGYtEeorr2
-         4j2wDtlVXCifY3VXOWvcQaHEp1sgJmL/N93eAQpTGH3u4XtERyGJ8QIX6fEBRVfxLFsG
-         G3KQ==
-X-Gm-Message-State: AOAM532M+pKoxy7lWea9MJs0IprQF9U3CeK3FklxvzTl6d68r0X/dbAx
-        6g4lpGGS8fVGwOKDHaGOeQ76NHNOirKeINMdyxe7JA==
-X-Google-Smtp-Source: ABdhPJyOnr0zQi9vvzYptYp8H0VJaVlnE+4dVZh/0b5F7SZjB71oomO/BvKD8ADCWcUpJW4wRui9yP+564St5QvBCVc=
-X-Received: by 2002:ac2:5088:: with SMTP id f8mr9295030lfm.233.1624295373872;
- Mon, 21 Jun 2021 10:09:33 -0700 (PDT)
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Llv05ZLZqkhZARm5moLHUgb8N7/B+OHut3MOSKrHTRw=;
+ b=ZPh5YVKL8ksGKvY00fnNtt8L/pWfMIYdGz6JLMfIkO573yq6U7jQYnYp9OxUBnUvKG0IQrJABilw/XfNeMM2rt8TRlWUEqKGyqEbZ/C3cJA53lunJKzMz8/I38xPipfY9gvqqz6g6q/qi7mkzijblmltX3bOXvMsC1ldzb4MV8s=
+Received: from PH0PR02MB7640.namprd02.prod.outlook.com (2603:10b6:510:4e::24)
+ by PH0PR02MB7733.namprd02.prod.outlook.com (2603:10b6:510:4c::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Mon, 21 Jun
+ 2021 17:09:32 +0000
+Received: from PH0PR02MB7640.namprd02.prod.outlook.com
+ ([fe80::1c8a:2a13:6c57:4a3]) by PH0PR02MB7640.namprd02.prod.outlook.com
+ ([fe80::1c8a:2a13:6c57:4a3%8]) with mapi id 15.20.4242.023; Mon, 21 Jun 2021
+ 17:09:32 +0000
+From:   Piyush Mehta <piyushm@xilinx.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        git <git@xilinx.com>, Srinivas Goud <sgoud@xilinx.com>,
+        Michal Simek <michals@xilinx.com>
+Subject: RE: [PATCH 2/2] gpio: modepin: Add driver support for modepin GPIO
+ controller
+Thread-Topic: [PATCH 2/2] gpio: modepin: Add driver support for modepin GPIO
+ controller
+Thread-Index: AQHXYb1lJfCxO5tPuU+yMn2AjLrheKsZiW2AgAUudAA=
+Date:   Mon, 21 Jun 2021 17:09:31 +0000
+Message-ID: <PH0PR02MB76400D00A4DA42FE1D72C1FAD40A9@PH0PR02MB7640.namprd02.prod.outlook.com>
+References: <20210615080553.2021061-1-piyush.mehta@xilinx.com>
+ <20210615080553.2021061-3-piyush.mehta@xilinx.com>
+ <CACRpkdYv6yosZ1KJazrMzaizpYz-cv-y4LcCqHm+Q94jva8sAA@mail.gmail.com>
+In-Reply-To: <CACRpkdYv6yosZ1KJazrMzaizpYz-cv-y4LcCqHm+Q94jva8sAA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-TNEF-Correlator: 
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=xilinx.com;
+x-originating-ip: [60.243.150.129]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d4b3768a-d0e3-4111-d1c3-08d934d75665
+x-ms-traffictypediagnostic: PH0PR02MB7733:
+x-ld-processed: 657af505-d5df-48d0-8300-c31994686c5c,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR02MB77334E7B176D7B4743AD98D9D40A9@PH0PR02MB7733.namprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:551;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: uisEqiQNHVAwGYPZ1Th45uqvpozuTUUXC5D6JCHmv3rJULUfjHdGvRpaBuWcU/TgMl8SPgyHhjGWC3jYMa1fZZ32ZIwg4W4oYyHe0KP79Wyw/Og4KSIldb60fOs74SXpAE1vy1bTfPZo7r1kaOW4O8gThiFi0FaZwGXHL1y8FYXzp8dtFVI/vUGt30RluHzQPKCh1SvW18hzmdS3WT4KXEGWrXYIShLfkiDKMUSDOImXpdG0DwnjTl1075OFRTg3dLawcwi9lc37r7rWiOSjRHg5Fozy2yjVEXdtBB6DMbKDeX3p/6rQXKzPKo5u4HkFw2G2OUEKSWIptHaVUslez7TS+dWxoSfmmQF2cx2LBomtk+9TINMcYFilU3FoyW3SwEx7NxmEKv7N7/5Iho7e7/hCt+zr+kcUc1Ir81B0UPT04XNZ48DIHrLqjyVFLT3YO3TaByh7jYkheZNeWplN7qlkkG2rL2o3fVx/BFT2fL9wgTo/WEvAfmPZZc7Ik1W7gKH34RjAYToT3Fo/UuVFUzj2zZxjlZBjphG+ZPhMLTLldNZ84w6igqVsHWlKGUFV2dFWWhbqgkdDFNZdEHaau6jbs9dPHyVvrvpVmdr3O2Y=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR02MB7640.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(136003)(366004)(376002)(396003)(346002)(33656002)(64756008)(66556008)(66476007)(4326008)(8676002)(316002)(6916009)(66446008)(55016002)(478600001)(76116006)(5660300002)(54906003)(83380400001)(66946007)(107886003)(52536014)(86362001)(9686003)(7696005)(186003)(26005)(6506007)(53546011)(8936002)(2906002)(38100700002)(122000001)(71200400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?OEdlNnJmZGViQUZoejNrYUg5bC9RR2FvZUhkV1YrY1ZKOFMzekRHZ1FrZ01p?=
+ =?utf-8?B?MklCZ2MvWkZkUGNJUTF2dXNBWmdtb1pHUHBNL0l6ZEpXbUJwS3RLMEp0Y2gv?=
+ =?utf-8?B?Vi9oVGlDYmIyNzUxQXlZTm5GeTVSSkdWTjJsdjNzUlRTNzVSclA2K1BqWkVP?=
+ =?utf-8?B?RU9QbURuQnRkRUMvcFNQblBzRzViZE9BMnJHUlJVdWpqaStPUWJJOVhSTFBN?=
+ =?utf-8?B?bGc5SFdjSzZKODB6bFBCU3FZaE5Mb3RORy8wcURkTzBlS3hKeTQyUklRTDJ5?=
+ =?utf-8?B?M1NGZzRZandUY3JwZlF5Q2xlMDBGMWc2K3hhbWtxVEVoditOS3BaYTl5Zncz?=
+ =?utf-8?B?RXRZZG5FN3dtUXd3WUJKdWxuVWxaOGdLY0lVcHdwN2dyeENDMkprQzNBZEpL?=
+ =?utf-8?B?Wm45N1RNMGZkdEtkTUJwbE1wa3p2SDlyOGhGWGE4ZERkK1dkSGhUWURWblFr?=
+ =?utf-8?B?b2hlcmlXTXB6amg0bmNkMlIreVg0NmdXdHNOWkFKUXAzTzJ1Zi9KaEYrdW5N?=
+ =?utf-8?B?aGZCQkdFQTZEc3B6S1E1RnBncUhzRUtlRmx6NndUWEZPWkNuNXRrQk5rV3JW?=
+ =?utf-8?B?ZTRUT2p2aVRjcUF4WTdCc2d5UTRudzRxbXNaeXppYVBFUUU2WjJxUXU5ZWMz?=
+ =?utf-8?B?bUd3V200RUs0c2RWVmY0Skk5eTVGYzBWTndPRVQzbEIvYkFVVW1LR2paaFZI?=
+ =?utf-8?B?cUE2WXJ0YjdPdDUxaXZpQitrOEFkQm5NNjU3MjluNjF1aFhGeFBFd3lWWXRp?=
+ =?utf-8?B?SGhzMVZWc0hubTZJc3pkcU52NE5CVnVvTVlLUE9oc29IdUMva1NhNnh1T2JE?=
+ =?utf-8?B?TFFZM0daOTQvSWhKcGVnOGJVS1FObkcrcFVOY2hNcHlKYmxrUjlmMUZpTkY3?=
+ =?utf-8?B?Zi96MEJZSndDTExFbXB5Q21mQnNoeUxZU0hBcmNwZjE1OEF6bUhoQVJORFFL?=
+ =?utf-8?B?aUwwQStsUFdjQmgzODNwSHdKQ0o1UitVMDNIem9XZVlRQjd2UlZhMjNESVFD?=
+ =?utf-8?B?cUMxWTFmQjYxOVhsRGJQWTgyVzVXT0l0a1FWSHcwNGZZK1F3TklVZG5pQ2ZK?=
+ =?utf-8?B?LytZRjAydlQxTFR2RU80Wk1KaExEZGNMaTNxbGlpL1Q2MjZnaFlKZVVIYVlk?=
+ =?utf-8?B?OHpnNWxjY2Z0bjV1Lzl0cnp4Mnh5SHpmY0FLaDNKcklnS09ZVXFsR3ltMndU?=
+ =?utf-8?B?bCtrRFZuU0VCdTF3Rm5aMndtNlRDeVQvVURKbTBGcDlmTWZlYWVYZVByVXkw?=
+ =?utf-8?B?L0tsL2h6OWFBc1Q3NTM2UE5oUkIweGQwbkY3OUtOYlo1V2JJa1BYQ2VCeWFi?=
+ =?utf-8?B?Y3o3T3Q3c2VKckxGNGxJbkhJdHJsNlZpSG5KSkh5ZUlHMW1YZDN0YXlzQUxs?=
+ =?utf-8?B?cHdaV1lFZDl5RlFyWnFXR1pNUlIyb0QxK0FIZWkwUzF5Vkl4MGcrVTdja2k3?=
+ =?utf-8?B?Mk11ZlFFRk5RNTc4VG10ZjFBWjYxUml6bHQ0dm5Lb0IyS2dqbWR2U2g1MC9x?=
+ =?utf-8?B?NFhuaEFMWHF6bmtwYVo1bWRuNG9XUmE2cUlkRmM5VVFIRXRwZ0RxYVRTblFL?=
+ =?utf-8?B?NTY5RXI3SWJNcDVyQ2c2VWJ6dzdJNHh2WGF0em5OQkxoQmF3dE5FUjl1SDNK?=
+ =?utf-8?B?QmlpUlR0ZGoydkpGTHNkeFhqc3ZneS9pVFF4cUpOMTJpRGZtbEVxMXREUVRO?=
+ =?utf-8?B?Rk9ya2FZTlhvWlVUQWhLSWR0WGs3dVJuWlFDV1FXa2tUQ2FHdE16ZXllNFV2?=
+ =?utf-8?Q?FTtBl6NUzzXIpm8SNQfQTms6lCjdaGHgnqJGMvl?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <9D4A658A-5F77-4C33-904A-126E6052B205@linux.vnet.ibm.com>
- <CAFpoUr3g5t3Z0BtW4-jnYomc3cdY=V5=Zt94-C+fHOjGWa107w@mail.gmail.com>
- <CAKfTPtC=aXasuSNvn+A3152-4xoOTWROhJpZAVq6RLh1Hacpng@mail.gmail.com>
- <CAFpoUr2o2PVPOx+AvatjjUvqPTyNKE3C6oXejyU3HVMmtCnzvQ@mail.gmail.com>
- <6D1F875D-58E9-4A55-B0C3-21D5F31EDB76@linux.vnet.ibm.com> <CAFpoUr0iWFTq2grtnX_EH6KnZLZQCg1o6_yv1gfDK8WdbHmUCA@mail.gmail.com>
- <CAFpoUr3Wy9raHx+Dc0S8TB_Xi=E+Epsh_pA3DEFZP4eKf7s07A@mail.gmail.com> <20210621162243.GA29874@vingu-book>
-In-Reply-To: <20210621162243.GA29874@vingu-book>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 21 Jun 2021 19:09:22 +0200
-Message-ID: <CAKfTPtACzzoGhDFW0bTGgZRPB=3LR6kSwuUOrcKDFTAJ7BhTFQ@mail.gmail.com>
-Subject: Re: [powerpc][5.13.0-rc7] Kernel warning (kernel/sched/fair.c:401)
- while running LTP tests
-To:     Sachin Sant <sachinp@linux.vnet.ibm.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Odin Ugedal <odin@uged.al>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR02MB7640.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d4b3768a-d0e3-4111-d1c3-08d934d75665
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jun 2021 17:09:32.0159
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: PBx+uOrvEuwtuXdnxlC8GooQyB6OU57OrMmnvPE63BExN5SbMLqVznXrWZphpd9Dymi0TbfQ34J8jxgTi8eSEA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR02MB7733
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sacha
-
-On Mon, 21 Jun 2021 at 18:22, Vincent Guittot
-<vincent.guittot@linaro.org> wrote:
->
-> Le lundi 21 juin 2021 =C3=A0 14:42:23 (+0200), Odin Ugedal a =C3=A9crit :
-> > Hi,
-> >
-> > Did some more research, and it looks like this is what happens:
-> >
-> > $ tree /sys/fs/cgroup/ltp/ -d --charset=3Dascii
-> > /sys/fs/cgroup/ltp/
-> > |-- drain
-> > `-- test-6851
-> >     `-- level2
-> >         |-- level3a
-> >         |   |-- worker1
-> >         |   `-- worker2
-> >         `-- level3b
-> >             `-- worker3
-> >
-> > Timeline (ish):
-> > - worker3 gets throttled
-> > - level3b is decayed, since it has no more load
-> > - level2 get throttled
-> > - worker3 get unthrottled
-> > - level2 get unthrottled
-> >   - worker3 is added to list
-> >   - level3b is not added to list, since nr_running=3D=3D0 and is decaye=
-d
-> >
-> >
-> > The attached diff (based on
-> > https://lore.kernel.org/lkml/20210518125202.78658-3-odin@uged.al/)
-> > fixes the issue for me. Not the most elegant solution, but the
-> > simplest one as of now, and to show what is wrong.
-> >
-> > Any thoughts Vincent?
->
->
-> I would prefer that we use the reason of adding the cfs in the list inste=
-ad.
->
-> Something like the below should also fixed the problem. It is based on a
-> proposal I made to Rik sometimes ago when he tried to flatten the rq:
-> https://lore.kernel.org/lkml/20190906191237.27006-6-riel@surriel.com/
->
-> This will ensure that a cfs is added in the list whenever one of its  chi=
-ld
-> is still in the list.
-
-Could you confirm that this patch fixes the problem for you too ?
-
->
-> ---
->  kernel/sched/fair.c | 28 ++++++++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index ea7de54cb022..e751061a9449 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -3272,6 +3272,31 @@ static inline void cfs_rq_util_change(struct cfs_r=
-q *cfs_rq, int flags)
->
->  #ifdef CONFIG_SMP
->  #ifdef CONFIG_FAIR_GROUP_SCHED
-> +/*
-> + * Because list_add_leaf_cfs_rq always places a child cfs_rq on the list
-> + * immediately before a parent cfs_rq, and cfs_rqs are removed from the =
-list
-> + * bottom-up, we only have to test whether the cfs_rq before us on the l=
-ist
-> + * is our child.
-> + * If cfs_rq is not on the list, test wether a child needs its to be add=
-ed to
-> + * connect a branch to the tree  * (see list_add_leaf_cfs_rq() for detai=
-ls).
-> + */
-> +static inline bool child_cfs_rq_on_list(struct cfs_rq *cfs_rq)
-> +{
-> +       struct cfs_rq *prev_cfs_rq;
-> +       struct list_head *prev;
-> +
-> +       if (cfs_rq->on_list) {
-> +               prev =3D cfs_rq->leaf_cfs_rq_list.prev;
-> +       } else {
-> +               struct rq *rq =3D rq_of(cfs_rq);
-> +
-> +               prev =3D rq->tmp_alone_branch;
-> +       }
-> +
-> +       prev_cfs_rq =3D container_of(prev, struct cfs_rq, leaf_cfs_rq_lis=
-t);
-> +
-> +       return (prev_cfs_rq->tg->parent =3D=3D cfs_rq->tg);
-> +}
->
->  static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
->  {
-> @@ -3287,6 +3312,9 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq =
-*cfs_rq)
->         if (cfs_rq->avg.runnable_sum)
->                 return false;
->
-> +       if (child_cfs_rq_on_list(cfs_rq))
-> +               return false;
-> +
->         return true;
->  }
->
-> --
-> 2.17.1
->
->
->
-> >
-> > Thanks
-> > Odin
-> >
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index bfaa6e1f6067..aa32e9c29efd 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -376,7 +376,8 @@ static inline bool list_add_leaf_cfs_rq(struct
-> > cfs_rq *cfs_rq)
-> >         return false;
-> >  }
-> >
-> > -static inline void list_del_leaf_cfs_rq(struct cfs_rq *cfs_rq)
-> > +/* Returns 1 if cfs_rq was present in the list and removed */
-> > +static inline bool list_del_leaf_cfs_rq(struct cfs_rq *cfs_rq)
-> >  {
-> >         if (cfs_rq->on_list) {
-> >                 struct rq *rq =3D rq_of(cfs_rq);
-> > @@ -393,7 +394,9 @@ static inline void list_del_leaf_cfs_rq(struct
-> > cfs_rq *cfs_rq)
-> >
-> >                 list_del_rcu(&cfs_rq->leaf_cfs_rq_list);
-> >                 cfs_rq->on_list =3D 0;
-> > +               return 1;
-> >         }
-> > +       return 0;
-> >  }
-> >
-> >  static inline void assert_list_leaf_cfs_rq(struct rq *rq)
-> > @@ -3298,24 +3301,6 @@ static inline void cfs_rq_util_change(struct
-> > cfs_rq *cfs_rq, int flags)
-> >
-> >  #ifdef CONFIG_SMP
-> >  #ifdef CONFIG_FAIR_GROUP_SCHED
-> > -
-> > -static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
-> > -{
-> > -       if (cfs_rq->load.weight)
-> > -               return false;
-> > -
-> > -       if (cfs_rq->avg.load_sum)
-> > -               return false;
-> > -
-> > -       if (cfs_rq->avg.util_sum)
-> > -               return false;
-> > -
-> > -       if (cfs_rq->avg.runnable_sum)
-> > -               return false;
-> > -
-> > -       return true;
-> > -}
-> > -
-> >  /**
-> >   * update_tg_load_avg - update the tg's load avg
-> >   * @cfs_rq: the cfs_rq whose avg changed
-> > @@ -4109,11 +4094,6 @@ static inline void update_misfit_status(struct
-> > task_struct *p, struct rq *rq)
-> >
-> >  #else /* CONFIG_SMP */
-> >
-> > -static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
-> > -{
-> > -       return true;
-> > -}
-> > -
-> >  #define UPDATE_TG      0x0
-> >  #define SKIP_AGE_LOAD  0x0
-> >  #define DO_ATTACH      0x0
-> > @@ -4771,10 +4751,11 @@ static int tg_unthrottle_up(struct task_group
-> > *tg, void *data)
-> >         if (!cfs_rq->throttle_count) {
-> >                 cfs_rq->throttled_clock_task_time +=3D rq_clock_task(rq=
-) -
-> >                                              cfs_rq->throttled_clock_ta=
-sk;
-> > -
-> > -               /* Add cfs_rq with load or one or more already running
-> > entities to the list */
-> > -               if (!cfs_rq_is_decayed(cfs_rq) || cfs_rq->nr_running)
-> > +               if (cfs_rq->insert_on_unthrottle) {
-> >                         list_add_leaf_cfs_rq(cfs_rq);
-> > +                       if (tg->parent)
-> > +
-> > tg->parent->cfs_rq[cpu_of(rq)]->insert_on_unthrottle =3D true;
-> > +                       }
-> >         }
-> >
-> >         return 0;
-> > @@ -4788,7 +4769,7 @@ static int tg_throttle_down(struct task_group
-> > *tg, void *data)
-> >         /* group is entering throttled state, stop time */
-> >         if (!cfs_rq->throttle_count) {
-> >                 cfs_rq->throttled_clock_task =3D rq_clock_task(rq);
-> > -               list_del_leaf_cfs_rq(cfs_rq);
-> > +               cfs_rq->insert_on_unthrottle =3D list_del_leaf_cfs_rq(c=
-fs_rq);
-> >         }
-> >         cfs_rq->throttle_count++;
-> >
-> > @@ -8019,6 +8000,23 @@ static bool __update_blocked_others(struct rq
-> > *rq, bool *done)
-> >
-> >  #ifdef CONFIG_FAIR_GROUP_SCHED
-> >
-> > +static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
-> > +{
-> > +       if (cfs_rq->load.weight)
-> > +               return false;
-> > +
-> > +       if (cfs_rq->avg.load_sum)
-> > +               return false;
-> > +
-> > +       if (cfs_rq->avg.util_sum)
-> > +               return false;
-> > +
-> > +       if (cfs_rq->avg.runnable_sum)
-> > +               return false;
-> > +
-> > +       return true;
-> > +}
-> > +
-> >  static bool __update_blocked_fair(struct rq *rq, bool *done)
-> >  {
-> >         struct cfs_rq *cfs_rq, *pos;
-> > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> > index a189bec13729..12a707d99ee6 100644
-> > --- a/kernel/sched/sched.h
-> > +++ b/kernel/sched/sched.h
-> > @@ -602,6 +602,7 @@ struct cfs_rq {
-> >         u64                     throttled_clock_task_time;
-> >         int                     throttled;
-> >         int                     throttle_count;
-> > +       int                     insert_on_unthrottle;
-> >         struct list_head        throttled_list;
-> >  #endif /* CONFIG_CFS_BANDWIDTH */
-> >  #endif /* CONFIG_FAIR_GROUP_SCHED */
+SGVsbG8gTGludXMsDQoNClRoYW5rcyBmb3IgdGhlIHJldmlldyBjb21tZW50cy4NCldlIHdpbGwg
+YWRkcmVzcyBhbGwgdGhlIHJldmlld3MgaW4gdGhlIG5leHQgdmVyc2lvbi4NCg0KUmVnYXJkcywN
+ClBpeXVzaCBNZWh0YQ0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogTGludXMg
+V2FsbGVpaiA8bGludXMud2FsbGVpakBsaW5hcm8ub3JnPiANClNlbnQ6IEZyaWRheSwgSnVuZSAx
+OCwgMjAyMSAzOjE0IFBNDQpUbzogUGl5dXNoIE1laHRhIDxwaXl1c2htQHhpbGlueC5jb20+DQpD
+YzogQmFydG9zeiBHb2xhc3pld3NraSA8YmdvbGFzemV3c2tpQGJheWxpYnJlLmNvbT47IFJvYiBI
+ZXJyaW5nIDxyb2JoK2R0QGtlcm5lbC5vcmc+OyBvcGVuIGxpc3Q6R1BJTyBTVUJTWVNURU0gPGxp
+bnV4LWdwaW9Admdlci5rZXJuZWwub3JnPjsgb3BlbiBsaXN0Ok9QRU4gRklSTVdBUkUgQU5EIEZM
+QVRURU5FRCBERVZJQ0UgVFJFRSBCSU5ESU5HUyA8ZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmc+
+OyBsaW51eC1rZXJuZWwgPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+OyBMaW51eCBBUk0g
+PGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZz47IGdpdCA8Z2l0QHhpbGlueC5j
+b20+OyBTcmluaXZhcyBHb3VkIDxzZ291ZEB4aWxpbnguY29tPjsgTWljaGFsIFNpbWVrIDxtaWNo
+YWxzQHhpbGlueC5jb20+DQpTdWJqZWN0OiBSZTogW1BBVENIIDIvMl0gZ3BpbzogbW9kZXBpbjog
+QWRkIGRyaXZlciBzdXBwb3J0IGZvciBtb2RlcGluIEdQSU8gY29udHJvbGxlcg0KDQpIaSBQaXl1
+c2ghDQoNCnRoYW5rcyBmb3IgeW91ciBwYXRjaCENCg0KT24gVHVlLCBKdW4gMTUsIDIwMjEgYXQg
+MTA6MDYgQU0gUGl5dXNoIE1laHRhIDxwaXl1c2gubWVodGFAeGlsaW54LmNvbT4gd3JvdGU6DQoN
+Cj4gVGhpcyBwYXRjaCBhZGRzIHN1cHBvcnQgZm9yIHRoZSBtb2RlIHBpbiBHUElPIGNvbnRyb2xs
+ZXIuIEdQSU8gTW9kZXBpbiANCj4gZHJpdmVyIHNldCBhbmQgZ2V0IHRoZSB2YWx1ZSBhbmQgc3Rh
+dHVzIG9mIHRoZSBQU19NT0RFIHBpbiwgYmFzZWQgb24gDQo+IGRldmljZS10cmVlIHBpbiBjb25m
+aWd1cmF0aW9uLiBUaGVzZSA0LWJpdHMgYm9vdC1tb2RlIHBpbnMgYXJlIA0KPiBkZWRpY2F0ZWQg
+Y29uZmlndXJhYmxlIGFzIGlucHV0L291dHB1dC4gQWZ0ZXIgdGhlIHN0YWJpbGl6YXRpb24gb2Yg
+dGhlIA0KPiBzeXN0ZW0sIHRoZXNlIG1vZGUgcGlucyBhcmUgc2FtcGxlZC4NCj4NCj4gU2lnbmVk
+LW9mZi1ieTogUGl5dXNoIE1laHRhIDxwaXl1c2gubWVodGFAeGlsaW54LmNvbT4NCg0KT0ssIHNv
+dW5kcyBpbnRlcmVzdGluZyENCg0KPiArI2luY2x1ZGUgPGxpbnV4L3NsYWIuaD4NCg0KSSB0aGlu
+ayBJIHNhdyBzb21ld2hlcmUgdGhhdCB0aGlzIGlzIG5vdCBuZWVkZWQgYW55bW9yZSwgY2hlY2sg
+aWYgeW91IG5lZWQgaXQuDQoNCj4gKyNkZWZpbmUgR0VUX09VVEVOX1BJTihwaW4pICAgICAgICAg
+ICAgICgxVSA8PCAocGluKSkNCg0KRGVsZXRlIHRoaXMgbWFjcm8gYW5kIGp1c3QgdXNlIEJJVChw
+aW4pIGlubGluZS4NCiNpbmNsdWRlIDxsaW51eC9iaXRzLmg+DQoNCj4gK3N0YXRpYyBpbnQgbW9k
+ZXBpbl9ncGlvX2dldF92YWx1ZShzdHJ1Y3QgZ3Bpb19jaGlwICpjaGlwLCB1bnNpZ25lZCANCj4g
+K2ludCBwaW4pIHsNCj4gKyAgICAgICB1MzIgb3V0X2VuOw0KPiArICAgICAgIHUzMiByZWd2YWwg
+PSAwOw0KPiArICAgICAgIGludCByZXQ7DQo+ICsNCj4gKyAgICAgICBvdXRfZW4gPSBHRVRfT1VU
+RU5fUElOKHBpbik7DQoNCkRyb3AgdGhpcyBhbmQgb3V0X2VuDQoNCj4gKyAgICAgICByZXQgPSB6
+eW5xbXBfcG1fYm9vdG1vZGVfcmVhZCgmcmVndmFsKTsNCj4gKyAgICAgICBpZiAocmV0KSB7DQo+
+ICsgICAgICAgICAgICAgICBwcl9lcnIoIm1vZGVwaW46IGdldCB2YWx1ZSBlcnIgJWRcbiIsIHJl
+dCk7DQo+ICsgICAgICAgICAgICAgICByZXR1cm4gcmV0Ow0KPiArICAgICAgIH0NCj4gKw0KPiAr
+ICAgICAgIHJldHVybiAob3V0X2VuICYgKHJlZ3ZhbCA+PiA4VSkpID8gMSA6IDA7DQoNCnJldHVy
+biAhIShyZWd2YWwgJiBCSVQocGluICsgOCkpOw0KDQpzaG91bGQgd29yayBhbmQgaXMgZWFzaWVy
+IHRvIHJlYWQgSU1PLiBXZSBqdXN0IGNoZWNrIHRoZSByaWdodCBiaXQgaW1tZWRpYXRlbHkuDQoN
+Cj4gK3N0YXRpYyB2b2lkIG1vZGVwaW5fZ3Bpb19zZXRfdmFsdWUoc3RydWN0IGdwaW9fY2hpcCAq
+Y2hpcCwgdW5zaWduZWQgaW50IHBpbiwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBpbnQgc3RhdGUpIHsNCj4gKyAgICAgICB1MzIgb3V0X2VuOw0KPiArICAgICAgIHUzMiBi
+b290cGluX3ZhbCA9IDA7DQo+ICsgICAgICAgaW50IHJldDsNCj4gKw0KPiArICAgICAgIG91dF9l
+biA9IEdFVF9PVVRFTl9QSU4ocGluKTsNCg0KU2tpcCB0aGlzIGhlbHBlciB2YXJpYWJsZS4NCg0K
+PiArICAgICAgIHN0YXRlID0gc3RhdGUgIT0gMCA/IG91dF9lbiA6IDA7DQoNClVoIHRoYXQgaXMg
+cmVhbGx5IGhhcmQgdG8gcmVhZCBhbmQgbW9kaWZpZWQgYSBwYXJhbWV0ZXIuIFNraXAgdGhhdCB0
+b28uDQoNCj4gKyAgICAgICBib290cGluX3ZhbCA9IChzdGF0ZSA8PCAoOFUpKSB8IG91dF9lbjsN
+Cg0KV2hhdCB5b3Ugd2FudCBpcyBtYXNrIGFuZCBzZXQuDQoNCmJvb3RwaW5fdmFsID0gQklUKHBp
+biArIDgpOw0KDQo+ICsgICAgICAgLyogQ29uZmlndXJlIGJvb3RwaW4gdmFsdWUgKi8NCj4gKyAg
+ICAgICByZXQgPSB6eW5xbXBfcG1fYm9vdG1vZGVfd3JpdGUoYm9vdHBpbl92YWwpOw0KDQpUaGlz
+IGp1c3QgbG9va3Mgd2VpcmQuDQoNCldoeSBhcmUgeW91IG5vdCByZWFkaW5nIHRoZSB2YWx1ZSBm
+aXJzdCBzaW5jZSB5b3UgYXJlIHVzaW5nIHJlYWQvbW9kaWZ5L3dyaXRlPw0KDQpJICp0aGluayog
+eW91IHdhbnQgdG8gZG8gdGhpczoNCg0KcmV0ID0genlucW1wX3BtX2Jvb3Rtb2RlX3JlYWQoJnZh
+bCk7DQppZiAocmV0KQ0KICAgLyogZXJyb3IgaGFuZGxpbmcgKi8NCmlmIChzdGF0ZSkNCiAgICB2
+YWwgfD0gQklUKHBpbiArIDgpOw0KZWxzZQ0KICAgIHZhbCAmPSB+QklUKHBpbiArIDgpOw0KcmV0
+ID0genlucW1wX3BtX2Jvb3Rtb2RlX3dyaXRlKHZhbCk7DQppZiAocmV0KQ0KICAgLyogZXJyb3Ig
+aGFuZGxpbmcgKi8NCg0KPiArLyoNCj4gKyAqIG1vZGVwaW5fZ3Bpb19kaXJfaW4gLSBTZXQgdGhl
+IGRpcmVjdGlvbiBvZiB0aGUgc3BlY2lmaWVkIEdQSU8gcGluIGFzIGlucHV0DQo+ICsgKiBAY2hp
+cDogICAgICBncGlvX2NoaXAgaW5zdGFuY2UgdG8gYmUgd29ya2VkIG9uDQo+ICsgKiBAcGluOiAg
+ICAgICBncGlvIHBpbiBudW1iZXIgd2l0aGluIHRoZSBkZXZpY2UNCj4gKyAqDQo+ICsgKiBSZXR1
+cm46IDAgYWx3YXlzDQo+ICsgKi8NCj4gK3N0YXRpYyBpbnQgbW9kZXBpbl9ncGlvX2Rpcl9pbihz
+dHJ1Y3QgZ3Bpb19jaGlwICpjaGlwLCB1bnNpZ25lZCBpbnQgDQo+ICtwaW4pIHsNCj4gKyAgICAg
+ICByZXR1cm4gMDsNCj4gK30NCg0KSSB0aGluayB5b3Ugc2FpZCB0aGlzIHdhcyBjb25maWd1cmFi
+bGUgaW4gdGhlIGNvbW1pdCBtZXNzYWdlLg0KDQpVc2UgdGhlIGRlZmluZSBHUElPX0xJTkVfRElS
+RUNUSU9OX09VVCByYXRoZXIgdGhhbiAwLg0KDQo+ICtzdGF0aWMgaW50IG1vZGVwaW5fZ3Bpb19k
+aXJfb3V0KHN0cnVjdCBncGlvX2NoaXAgKmNoaXAsIHVuc2lnbmVkIGludCBwaW4sDQo+ICsgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgaW50IHN0YXRlKSB7DQo+ICsgICAgICAgcmV0dXJu
+IDA7DQo+ICt9DQoNCkNvbmZpZ3VyYWJsZT8NCg0KPiArICAgICAgIHN0YXR1cyA9IGRldm1fZ3Bp
+b2NoaXBfYWRkX2RhdGEoJnBkZXYtPmRldiwgY2hpcCwgY2hpcCk7DQo+ICsgICAgICAgaWYgKHN0
+YXR1cykNCj4gKyAgICAgICAgICAgICAgIGRldl9lcnJfcHJvYmUoJnBkZXYtPmRldiwgc3RhdHVz
+LA0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAiRmFpbGVkIHRvIGFkZCBHUElPIGNo
+aXBcbiIpOw0KDQpqdXN0IHJldHVybiBkZXZfZXJyX3Byb2JlKC4uLikNCg0KWW91cnMsDQpMaW51
+cyBXYWxsZWlqDQo=
