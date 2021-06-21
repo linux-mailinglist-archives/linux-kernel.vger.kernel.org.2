@@ -2,150 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6263AF1F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBA53AF1F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:27:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231531AbhFUR3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 13:29:33 -0400
-Received: from mail-bn8nam11on2040.outbound.protection.outlook.com ([40.107.236.40]:37889
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230239AbhFUR3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 13:29:32 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=beCRsHuf6si3QTXspPO5Zvbn/7cWzGcrtzR+TYvzYm6jPIvoGnhZoMb9uTCgQlAAJ6xuJv4PY1lEXDqs4e4OZ/OsCudLnK4RcKS3rv2jvMEllWexB55HVnJy39EGlL+4TSLq7x00/S3DVDl4Lexf2rv+J5xCNE3b3tNzyd4Ui15hl8eO1MMWrcrgAyLqYEOp6sifz4M5QNLQkAEuHAmaOhoH9NbIt5Y5f9rui6jAPVvL1P61iB4+R8VyPoYymggSKh90ywauMZU2rkaE573QrK/HYydJ5AgUQR2jVzbwA9Q+ParySZyXORvHvDz4bit5umDYS6tJygzrYzDAX+ryJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rMPIDy3Vs/Qqf4vwGtcizxdK89fYbrLHsl5mYj/ZV2c=;
- b=AVO/RwbBCvlhX+7VMNAY5uzgpF7dxC4k59e30eoA2dbNorw/YsN2pwm8o27qBj6PF3x1TaJr2L5fXmUJBAcyro+qcVSOWRnYoe9NTbaPgCceQtE84HayaQUl6Gar7buBuYl0FBS8dVajOSrM1ZYfLWgYoxQVkdvG+DQuP+c+5XjzSAmMkPCS0PID+kAEbjseo8+HNfG5nTXj9c9atI/SQZFyBJUvHCEImJ2uwhZLK5OT1w53q6uXz32pHLdfeWBwJ54DYzZWfbISeqBZaDgRm/4k7eShyeyD/qM4VbGDXspsf3mQn8/YcCgPOij0SxGXQTASeL5rjyLgCD4AsoWtTg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rMPIDy3Vs/Qqf4vwGtcizxdK89fYbrLHsl5mYj/ZV2c=;
- b=RGiI06zjDfQtLq+UyktUaMCVgnynVF/gCr2wKhDx6goPDJT/v+V2ao6C7fUmrdvmYvP6rHbYU1dn9eGyoCs0DphX0OX2ThGgOILGpZ8wPE1vqm+sBFIW1/qMv4LYbXDMrq2CqjX7zCwSixseeBAFRNT1cLuHVrftr3+pIJtLiuFOu7sdi5luHV1gYOWdxz7CMosp2JsPvFwzMriBTmUT9eSVr6fMy37GRIK7XKifv+hYSz6bnggNZ6Kt9yJSXy7Hl+yY7zHoJWhCaCZJ6rG1HKYty/X/qR25oLjU2+1gSFuwDc6Wrl/CcIbAcqe2yEdU0dhzqVS5vMz2DnzfdylYBA==
-Authentication-Results: de.ibm.com; dkim=none (message not signed)
- header.d=none;de.ibm.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL0PR12MB5539.namprd12.prod.outlook.com (2603:10b6:208:1c3::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18; Mon, 21 Jun
- 2021 17:27:16 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4242.023; Mon, 21 Jun 2021
- 17:27:16 +0000
-Date:   Mon, 21 Jun 2021 14:27:14 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christian Borntraeger <borntraeger@de.ibm.com>
-Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com, Vasily Gorbik <gor@linux.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 1/2] s390/vfio-ap: clean up mdev resources when remove
- callback invoked
-Message-ID: <20210621172714.GS1002214@nvidia.com>
-References: <20210621155714.1198545-1-akrowiak@linux.ibm.com>
- <20210621155714.1198545-2-akrowiak@linux.ibm.com>
- <e809be5b-0b24-34dc-1eae-82b58dc54545@de.ibm.com>
+        id S231563AbhFUR3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 13:29:52 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.53]:24017 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230239AbhFUR3v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 13:29:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1624296453;
+    s=strato-dkim-0002; d=gerhold.net;
+    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+    From:Subject:Sender;
+    bh=hsoDzzu1giOUqa3P8ZG9xhIVsUbaKTxcoPkDydr9XUE=;
+    b=GG0/r58gjUrXQfLQIh12mBCr+dpsIrAbC+/V2pwvptkCAvfby4flylTQQj15jaUYt/
+    93NNO47vgyKw0PMhKQKhBqD0AenTUSpDWmtMAW1nOxvBHf9LR5IU+hSmvQIRgIoU+Mlk
+    0s579J5DuCP64Esn1aR0FSjb7rYd1KgV2sN0JgQm/jmubIXjOLtra/+1XD3YLlPk9ApL
+    v16iiviubTuATS1xaGW6lZH79B7y0s7sVi4TffpkP9qUybH8/CJO6Avps9iq4vRobj3A
+    BwGMloy5ZkElP8NDpap7r1LVDEkSHbYN5rAXcoleYWuo8mdC5FEOLkqXXF/2vQAwBYR6
+    6IwA==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8f7Ic/Baoo="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+    by smtp.strato.de (RZmta 47.27.3 DYNA|AUTH)
+    with ESMTPSA id 000885x5LHRWLZF
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 21 Jun 2021 19:27:32 +0200 (CEST)
+Date:   Mon, 21 Jun 2021 19:27:27 +0200
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        daniel.lezcano@linaro.org, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com,
+        jamipkettunen@somainline.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v5 1/3] cpuidle: qcom_spm: Detach state machine from main
+ SPM handling
+Message-ID: <YNDL/yLanerZ4hM9@gerhold.net>
+References: <20210618225620.623359-1-angelogioacchino.delregno@somainline.org>
+ <20210618225620.623359-2-angelogioacchino.delregno@somainline.org>
+ <YNB92Dkx5MNg64m+@gerhold.net>
+ <08c80c7d-638f-23e9-e580-bced3648a635@somainline.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e809be5b-0b24-34dc-1eae-82b58dc54545@de.ibm.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR03CA0029.namprd03.prod.outlook.com
- (2603:10b6:208:23a::34) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR03CA0029.namprd03.prod.outlook.com (2603:10b6:208:23a::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend Transport; Mon, 21 Jun 2021 17:27:16 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lvNha-009kD8-L2; Mon, 21 Jun 2021 14:27:14 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0bbdb480-3d1f-4303-b4e4-08d934d9d096
-X-MS-TrafficTypeDiagnostic: BL0PR12MB5539:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB5539C63AF9AAA5F18F20CE60C20A9@BL0PR12MB5539.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zGT1khjMNrQki38nogeyfBXAfwQoUCK//NoGyvP9C5H8+mHXXF5hzf+njMPokG0vECJROKtOY7yykHmVgZq6YRgXFhb1KXqMEAQWf5Trovu6Y+Lm4LZtCV8G0IaDZ5JBGgny9IIpCn2h23cLeSddG8U1g20Gvph77pyIITifD/VepdLN/SBYrr/jfFYYvyfkUJhkwHDEFKrGUNd1Ee5IQ0TH1MNWPx5CMC0n+Oo74ykTW3IElzrTIpMDJjuzCq7CjaNbYFR8xD/kHLXvY1Z6e+GchpXbVkuoOxUlJ+4AR0Lt4t5gbNKxiQcR/Equcxn4Uo2dKxbJTR88VaIfjgdUqynhMOWDoUExoYPxemeQnnKdPZsgL+A74sGsGQy+d4bM7T3q57ZLJRk/yYqscfGC647JUgmyMfZriiJDsZjqW0irlWlHgazSYkC/k8aDiMMkEeeTbQVukvqhtWhktuPLa8oddmFNoh71q2owLtX4QG/50nJIqAqLO2FTmS3d3fD+i8o2SxLZ0Lk+uNKHOhdFO2MDbGkf6weTuGMfePSAAvvw6s09T93n9Bzzz+d7pNkmC8vKISJMox3dVe6VEoRxhuTE1MSJ9x4MD/1N4zt3aijb407uoVFlNRdhDvzzzzOhJIX/QwNehBcWxapvYZk4P1qQzmN08iAUNx/oWWNZ1Lbdb4Rqu3VZ+eJjPfIwGLxb4sYG81nmOIv7I6nSyjKDGTr+OotEd5vCkLBgUvDsqcg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(396003)(346002)(136003)(376002)(8936002)(2616005)(54906003)(86362001)(966005)(7416002)(33656002)(5660300002)(316002)(186003)(53546011)(4326008)(83380400001)(8676002)(478600001)(1076003)(66946007)(6916009)(66556008)(26005)(9746002)(426003)(2906002)(9786002)(38100700002)(36756003)(66476007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?KmZhHyVsD49Fhj2nzDSYsUK1YpNlxG4AZ/LMVAvBMGejOYjwt5uw0COWPXOI?=
- =?us-ascii?Q?XfIY4/Ib3OWY4bkr4EMGGUnUAloDKubySY8/QLmjQBBxUL/hHuu/9SA0Kzts?=
- =?us-ascii?Q?x+UljE51ohlqYE+4fD2KR9wMdS/qgsbkuCkH7dBsW61YCCfMqvo/BIC6/jzQ?=
- =?us-ascii?Q?xEFFs/f25GBylxp2x4Rx59gYk6gBc1BhW+n/y0gJdPqCEgRfSJ/4xZnOBNHM?=
- =?us-ascii?Q?c4qM1rrHj/5lOdrKVODlOWM7887bRbOlfVpVYIHTIl+fSEt9fqw0+el1xUKY?=
- =?us-ascii?Q?nXT10kDcfqsORPYBVKbauEXDBbIryLKYrPaKHRNcr6w24SNYoWIfFVRRIF4j?=
- =?us-ascii?Q?9/oJdaRPDcrYWS0n6vfRE/ZtkdubZNCzeE546T9ZkfmZLWLe2WDYx6V1aAMn?=
- =?us-ascii?Q?Nrgi5KrBMKg8hpFV6zsYR/JAo3NQJ8hQGdLkVxXedT2Taq7c/q4k9qdSf1M7?=
- =?us-ascii?Q?f7Qg8/yU7Rd2SoEr8jac9VlLYwR2C4EAZI8fR/lensJBWvnVQHxwlq2i3bI7?=
- =?us-ascii?Q?cJUv7Vu0AouoihnB3cg2ggN9UlKO4XL1s2E7VApzrfwsQPn4DprxkY76Qtz0?=
- =?us-ascii?Q?e30ftTg+FVFNTqBFWZd+WLST7owdUV1J71PjVdPsVPMeZLSfoluZkMn1LVSc?=
- =?us-ascii?Q?UQ72PA7j+K2nLLrhM7pUxUO2vlh4DQcejlJfhqZyULCOFRP9ZSWL+c6z85/Y?=
- =?us-ascii?Q?WyZ8b6kKWDjxLBhxkMd2zPh2xVcqYvDzfvZEAZBz2ncnAhkUBSLm5Gt++vzf?=
- =?us-ascii?Q?jVqAUwydx4A/GKEL80itzTOPO9e94bbOa/iZaPpBRz2hPQRPO7Gxh891TsQG?=
- =?us-ascii?Q?h6PaIIJ8uYjNMFBJCb4JUWKoPvtUyitIVcWsuI5UYZ3XKy0GdnKJyPBkWze7?=
- =?us-ascii?Q?MggW3YNmWDO67daoj0Xo2dYvwQaNmpFSrT3fXtZ+IJOwGLcY/wVNMWDXzezI?=
- =?us-ascii?Q?Ylc2aji/L7vNmG30r0A0hDjm25ne+UXHiiIKnYgkj2g8PUHqWkofEyrqbsES?=
- =?us-ascii?Q?c6LaZmzHV1vsrq0UerZOc5BCQ1sNl/3I5Ry/5Mwi7szbVsyJUckTyuz9WWgi?=
- =?us-ascii?Q?MuYEfCcobUrVRM/Y6VYTv/b/FceFsQj9ZjLyp+7sK62xs9vPv0Ypo5RSOmLJ?=
- =?us-ascii?Q?6867TC3lAwXwGSV0jbzg7Sf0ZzhSOV0dg3feSGh2LPjbOtPtSOnjlDk6KGzo?=
- =?us-ascii?Q?+2cvdFcSbxVCa50Dt+ohUdKXPrCCFEMMlZelVZXeM0RkwfkKiqdNDReEOdgv?=
- =?us-ascii?Q?Mn6Wn29a1OBzPhzS1rGnKqqGKlo9M8YbN61MNcNNnQQptf3FoaQJIIF2ycp/?=
- =?us-ascii?Q?6uYtgCTd7KO5oUdxI82swSCp?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0bbdb480-3d1f-4303-b4e4-08d934d9d096
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2021 17:27:16.7784
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rQt1Ws3fUktRWKteGSP599lLl6OcKk/I2xL4/ZdrGMmgfcT0msiF2oqOew71C6SP
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5539
+In-Reply-To: <08c80c7d-638f-23e9-e580-bced3648a635@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 06:04:54PM +0200, Christian Borntraeger wrote:
-> 
-> 
-> On 21.06.21 17:57, Tony Krowiak wrote:
-> > The mdev remove callback for the vfio_ap device driver bails out with
-> > -EBUSY if the mdev is in use by a KVM guest (i.e., the KVM pointer in the
-> > struct ap_matrix_mdev is not NULL). The intended purpose was
-> > to prevent the mdev from being removed while in use. There are two
-> > problems with this scenario:
+On Mon, Jun 21, 2021 at 06:12:06PM +0200, AngeloGioacchino Del Regno wrote:
+> Il 21/06/21 13:54, Stephan Gerhold ha scritto:
+> > On Sat, Jun 19, 2021 at 12:56:18AM +0200, AngeloGioacchino Del Regno wrote:
+> > > In commit a871be6b8eee ("cpuidle: Convert Qualcomm SPM driver to a generic
+> > > CPUidle driver") the SPM driver has been converted to a
+> > > generic CPUidle driver: that was mainly made to simplify the
+> > > driver and that was a great accomplishment;
+> > > Though, it was ignored that the SPM driver is not used only
+> > > on the ARM architecture.
+> > > 
 > > 
-> > 1. Returning a non-zero return code from the remove callback does not
-> >     prevent the removal of the mdev.
+> > Can you please reword this sentence like I suggested in v4? The way you
+> > write it at the moment it sounds like this fixes a regression, but
+> > actually it extends the driver to cover more use cases.
 > > 
-> > 2. The KVM pointer in the struct ap_matrix_mdev will always be NULL because
-> >     the remove callback will not get invoked until the mdev fd is closed.
-> >     When the mdev fd is closed, the mdev release callback is invoked and
-> >     clears the KVM pointer from the struct ap_matrix_mdev.
-> > 
-> > Let's go ahead and remove the check for KVM in the remove callback and
-> > allow the cleanup of mdev resources to proceed.
-> > 
-> > Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
-> > Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> > Cc: stable@vger.kernel.org
 > 
-> This one is already queued on
+> I don't see any regression implied: I'm explaining the reason of this
+> change just one line after that and .. besides that, I haven't put any
+> "Fixes:" tag to this commit.
+> When you fix regressions, bad behavior, or anything else relative to a
+> patch, you add that tag to say that you're fixing something.
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git/log/?h=fixes
+> Moreover, I can't see anything wrong in the description for this change,
+> nor anything to clarify about it and that as long as you read it in full
 > 
-> Jason. Do you want this in stable? Then we should write a mail after
-> merging.
 
-It is fine as is, we are already at rc7, so long as it goes to some
-tree for this merge window
+I don't really want to get into a long discussion about a single
+sentence here but the sentence just doesn't make any sense to me:
 
-Jason
+  1. You say that I "ignored" something in my commit, which isn't the case.
+  2. The mainline "SPM driver" *is* only used on ARM*32* at the moment.
+     (This is something you want to change in this patch series!)
+
+To me that sentence suggests the "SPM driver" already had support for
+ARM64/your use case and I *deliberately* ignored that while converting
+the driver to a direct CPU Idle driver.
+
+I'm merely suggesting making the situation a bit more clear by replacing
+
+> > > Though, it was ignored that the SPM driver is not used only
+> > > on the ARM architecture.
+
+with something like:
+"However, on newer ARM64 SoCs the SPM hardware is used for purposes
+other than CPUIdle."
+
+> > > In preparation for the enablement of SPM features on AArch64/ARM64,
+> > > split the cpuidle-qcom-spm driver in two: the CPUIdle related
+> > > state machine (currently used only on ARM SoCs) stays there, while
+> > > the SPM communication handling lands back in soc/qcom/spm.c and
+> > > also making sure to not discard the simplifications that were
+> > > introduced in the aforementioned commit.
+> > > 
+> > > Since now the "two drivers" are split, the SCM dependency in the
+> > > main SPM handling is gone and for this reason it was also possible
+> > > to move the SPM initialization early: this will also make sure that
+> > > whenever the SAW CPUIdle driver is getting initialized, the SPM
+> > > driver will be ready to do the job.
+> > > 
+> > > Please note that the anticipation of the SPM initialization was
+> > > also done to optimize the boot times on platforms that have their
+> > > CPU/L2 idle states managed by other means (such as PSCI), while
+> > > needing SAW initialization for other purposes, like AVS control.
+> > > 
+> > > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> > > ---
+> > >   drivers/cpuidle/Kconfig.arm        |   1 +
+> > >   drivers/cpuidle/cpuidle-qcom-spm.c | 295 ++++++-----------------------
+> > >   drivers/soc/qcom/Kconfig           |   9 +
+> > >   drivers/soc/qcom/Makefile          |   1 +
+> > >   drivers/soc/qcom/spm.c             | 198 +++++++++++++++++++
+> > >   include/soc/qcom/spm.h             |  43 +++++
+> > >   6 files changed, 311 insertions(+), 236 deletions(-)
+> > >   create mode 100644 drivers/soc/qcom/spm.c
+> > >   create mode 100644 include/soc/qcom/spm.h
+> > > 
+> > > [...]
+> > > diff --git a/include/soc/qcom/spm.h b/include/soc/qcom/spm.h
+> > > new file mode 100644
+> > > index 000000000000..719c604a8402
+> > > --- /dev/null
+> > > +++ b/include/soc/qcom/spm.h
+> > > @@ -0,0 +1,43 @@
+> > > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > > +/*
+> > > + * Copyright (c) 2011-2014, The Linux Foundation. All rights reserved.
+> > > + * Copyright (c) 2014,2015, Linaro Ltd.
+> > > + * Copyright (C) 2021, AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> > > + */
+> > > +
+> > > +#ifndef __SPM_H__
+> > > +#define __SPM_H__
+> > > +
+> > > +#include <linux/cpuidle.h>
+> > > +
+> > > +#define MAX_PMIC_DATA		2
+> > > +#define MAX_SEQ_DATA		64
+> > > +
+> > > +enum pm_sleep_mode {
+> > > +	PM_SLEEP_MODE_STBY,
+> > > +	PM_SLEEP_MODE_RET,
+> > > +	PM_SLEEP_MODE_SPC,
+> > > +	PM_SLEEP_MODE_PC,
+> > > +	PM_SLEEP_MODE_NR,
+> > > +};
+> > > +
+> > > +struct spm_reg_data {
+> > > +	const u8 *reg_offset;
+> > > +	u32 spm_cfg;
+> > > +	u32 spm_dly;
+> > > +	u32 pmic_dly;
+> > > +	u32 pmic_data[MAX_PMIC_DATA];
+> > > +	u8 seq[MAX_SEQ_DATA];
+> > > +	u8 start_index[PM_SLEEP_MODE_NR];
+> > > +};
+> > > +
+> > > +struct spm_driver_data {
+> > > +	struct cpuidle_driver cpuidle_driver;
+> > 
+> > Given that the SPM hardware seems to have several different uses,
+> > not just CPUidle, wouldn't it be better to allocate the memory for the
+> > cpuidle_driver from cpuidle-qcom-spm.c? Just devm_kzalloc() something
+> > like:
+> > 
+> > struct spm_cpuidle_driver {
+> > 	struct cpuidle_driver cpuidle_driver;
+> > 	struct spm_driver_data *spm;
+> > };
+> > 
+> > in cpuidle-qcom-spm.c.
+> > 
+> > And then there wouldn't be a need to have the implementation details of
+> > the SPM driver in the spm.h header, all that cpuidle-qcom-spm needs is
+> > 
+> > struct spm_driver_data;
+> > 
+> > enum pm_sleep_mode {
+> > 	PM_SLEEP_MODE_STBY,
+> > 	PM_SLEEP_MODE_RET,
+> > 	PM_SLEEP_MODE_SPC,
+> > 	PM_SLEEP_MODE_PC,
+> > 	PM_SLEEP_MODE_NR,
+> > };
+> > 
+> > void spm_set_low_power_mode(struct spm_driver_data *drv,
+> > 			    enum pm_sleep_mode mode);
+> > 
+> > Everything else can remain private to the spm.c driver,
+> > like it was before.
+> > 
+> 
+> I don't completely dislike the approach but I honestly think that this
+> would put some cognitive strain: having a header included in two files
+> using "things" defined in there gives people an easy path to follow
+> when looking at one of the two files.
+> 
+
+OK, I guess this is personal preference. I don't really mind if you keep
+the structs defined in the shared header...
+
+> Regarding the addition of that one more structure... I am seriously
+> undecided on the matter: wasting this kind of amount of memory on a
+> ARM64 platform (usually having more than 1GB RAM) is completely
+> unnoticeable but, on the other hand, it's still a waste of memory,
+> even if it's minimal that much.
+> 
+
+In my opinion it also makes the two drivers better separated.
+The SPM driver manages the SPM hardware and provides functionality to
+configure it. The CPU idle driver makes use of that functionality
+to implement the CPU idle use case. This does not require the SPM driver
+to know how exactly the CPU idle driver looks.
+
+Stephan
