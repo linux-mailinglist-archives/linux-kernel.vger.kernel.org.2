@@ -2,95 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F19E43AF768
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A94853AF770
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231567AbhFUVdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 17:33:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41192 "EHLO
+        id S231500AbhFUVfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 17:35:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230006AbhFUVdV (ORCPT
+        with ESMTP id S229790AbhFUVf3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 17:33:21 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3AAC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:31:05 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id f2so21189902wri.11
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:31:05 -0700 (PDT)
+        Mon, 21 Jun 2021 17:35:29 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BD71C061574;
+        Mon, 21 Jun 2021 14:33:14 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id x24so32490758lfr.10;
+        Mon, 21 Jun 2021 14:33:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=THl/cfEqtiF8bpjYHQsI8F0jcqmB+ceOTFq/vSn409U=;
-        b=JIArUMB/41VU5fe54U9ul6f6d/bvkUmB5dvPIC/oBkwF/qJJ7jLjsshY52MmMmV0cP
-         4hQYxdfx9H5t2clz8/Rpq+p3koezpWk00PirVK7oKeWeOwjVxGwzUZAzme0CxKolMemo
-         Qz9Qo9QRjMy1cCLjYn2z54HkZoHe2BuN+/RbjXCkrIXVoIEpHj/kvcTp1D0OJN/5UZgi
-         NbyR+NPsy13zY/ghu94jxECNDtjP7iFI6z8f6ZY7uGqafux3cXvggShlMh2H/7Fw9eHS
-         TfZynOeOxukgAfItfX6V7Guj2xRsIRRwuO/aJfQqOj0r8zQMwfDFFYHWKuM+TGGFlqOj
-         fxUA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=579gLtrKmj9LeHVTUb5CxdaKhIK6jXKOT58NWZYvBoQ=;
+        b=Uo5Xt/Y/awxh0fplVC4cZ9jtNRkmDEEya5SASjoOKICTZCafHM6c+iqKcL+D87QRmT
+         J4g6XbCO+pLZOcKU/BV7Yuhc+JNeSZvB68KPXdiyZXieKCnrY4WjjFrYUnnb8PwL6t7Z
+         pudoSDLJK6J8AATEHIUFcxL4fDINM5N0jBWtS131Rn0u+RWCEOJKd5sVgMMGxIrMz/a2
+         jLK6LqBiTAP7FZJyhbguH08qOdokn/FR4voDBCuFE3yE+5qycWHpchFwcoWIXeFwVGNT
+         Be4dFFUCJ7maZ+C/1RNlYsCenaDO7LKHOUHQPr1u6Ba4yxfTXcRRbhc9TYhRtJwCqTW0
+         sqog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=THl/cfEqtiF8bpjYHQsI8F0jcqmB+ceOTFq/vSn409U=;
-        b=O14qGBOUZTj5vHr5kGndg7YLe7SShSYSmCIdcArjI792DKm90Q0TV+xV1xCwxqlfDo
-         85IK6dpqg1C69LnT5ynGGzv4DY2AMLZzXF0YBqXJNGh/WJplZELi8qfoR6x7f7dtoM4b
-         bRv+aXyrdUSmVZ4RLyAujH979UTtGniubjxrvBnxZFRHZEElYXAQTMuTNnS7D0bwGzwL
-         GCjkMKzPk3mdhYYyvfYWQN1eeqlENJtG2jzy3GlY1vg7h/T3nBxA29dtJWylN8ESGwUd
-         WE/MOuqL0wxtbEnoEnCAfcfE0udaoiGpX8lGJZKePCfe12tdVKlPtI5ouhtOwsqkLIfS
-         OKqQ==
-X-Gm-Message-State: AOAM530kcEaUQjKCgZL1yZjaRY33VLQV2uqn07yE6YAxM45/e5oxT+Zb
-        +cOhxmQ6l0CAzHoby24ghGYtIs1hbzQkY/UtrtBpCg==
-X-Google-Smtp-Source: ABdhPJzZa6mY8h9+/DaGpxq4qInMWB2iX+FC8oHrztFc+KztQPVgXbt+vWv67DZfCPEWQTneivyVYbeiw9eU7Vi68dw=
-X-Received: by 2002:adf:f30d:: with SMTP id i13mr536208wro.119.1624311064037;
- Mon, 21 Jun 2021 14:31:04 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=579gLtrKmj9LeHVTUb5CxdaKhIK6jXKOT58NWZYvBoQ=;
+        b=sUigXSN/4DxopnJfd69z8+kSA6PsHbf5rCuYdzEVx421sSX3TfS6Cz4avj4QYN9djv
+         e5g4yvwVIF7i0mNRuJyCOumJWW5TAME7Tqz1921NSgOZHh0yqbsELQcQqrBf2baiiRG3
+         qYY+06D4l3BqhU8eYaWgsD7bywgDj67/q7KI7RJ+wljEcpDuemAX65r5mMnhEVONxlCI
+         jyo4Tp7jvsB17qrC1brcVBBpwCMza+jv/318/7HgbqhMl0dfibaIpbGt0oFbZjRAU1GJ
+         YuHRbmdNnsJaivTvbazqQBgrIkRbGTgvvWJSFLNfJDD59AQhWNHSfRoDpI7w0ImeDACB
+         eHIg==
+X-Gm-Message-State: AOAM533DwhGRhxyJD9Y2X/84xE+EPuWKIg8de7k3z5380qNeI128e3kB
+        df4uNQsdpUL160mhnrs396A=
+X-Google-Smtp-Source: ABdhPJwR3j/Y4cDfcsMfqkIiQuh1LJxYxDkY0r9F8r6Rj/MRpyhGvROEAmqQeVMK2HS71xkAmKmLew==
+X-Received: by 2002:ac2:428d:: with SMTP id m13mr248778lfh.236.1624311192392;
+        Mon, 21 Jun 2021 14:33:12 -0700 (PDT)
+Received: from localhost.localdomain (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
+        by smtp.gmail.com with ESMTPSA id u10sm1074722lfg.240.2021.06.21.14.33.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 14:33:12 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-hwmon@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: [PATCH v4 0/2] Support temperature trips by HWMON core and LM90 driver
+Date:   Tue, 22 Jun 2021 00:31:51 +0300
+Message-Id: <20210621213153.28247-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210617184216.2075588-1-irogers@google.com> <20210621075525.128b476f@canb.auug.org.au>
-In-Reply-To: <20210621075525.128b476f@canb.auug.org.au>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 21 Jun 2021 14:30:52 -0700
-Message-ID: <CAP-5=fXXomqjVv4bvqhCOGPD3Q4gfCh2eya07NyBksGbkNjxMQ@mail.gmail.com>
-Subject: Re: [PATCH 1/4] perf test: Fix non-bash issue with stat bpf counters
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 20, 2021 at 2:55 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
->
-> Hi Ian,
->
-> On Thu, 17 Jun 2021 11:42:13 -0700 Ian Rogers <irogers@google.com> wrote:
-> >
-> > $(( .. )) is a bash feature but the test's interpreter is !/bin/sh,
-> > switch the code to use expr.
->
-> The $(( .. )) syntax is specified in POSIX (see
-> https://pubs.opengroup.org/onlinepubs/9699919799/utilities/V3_chap02.html#tag_18_06_04),
-> so unless this caused an actual problem, this change is unnecessary.
+Hi,
 
-Agreed. The issue I was seeing was:
+It's typical for embedded devices to use LM90-compatible sensor for
+monitoring of CPU core and skin temperatures. The sensor is often
+used by thermal zone that performs passive cooling and emergency
+shutdown on overheat, hence it's more optimal to use interrupt for
+a faster notification about temperature changes. Thermal framework
+provides set_trips() callback for programming of temperature trips,
+let's support it by HWMON.
 
-./tests/shell/stat_bpf_counters.sh: line 14: <not + <not / 10 : syntax
-error: operand expected (error token is "<not + <not / 10 ")
+Changelog:
 
-but that syntax error is caused by running the test within a
-hypervisor. I'll resend the patch set with this one dropped.
+v4: - Extended commit message of the set_trips() patch, saying that
+      it has no effect on sensors that can't set trips. This was
+      suggested by Guenter Roeck.
 
-Thanks,
-Ian
+    - The channels are now iterated starting from 0 instead of 1 in the
+      set_trips() callback. This was suggested by Guenter Roeck.
 
-> --
-> Cheers,
-> Stephen Rothwell
+    - Moved out declaration of the err variable into the upper scope of
+      set_trips(), like it was suggested by Guenter Roeck. The checkpatch
+      normally warns about missing empty line after a declaration, but it
+      couldn't detect this case here.
+
+    - Replaced the err < 0 comparisons with err != 0, since write callback
+      of the chip ops isn't supposed to return positive values. This was
+      suggested by Guenter Roeck.
+
+v3: - Improved patch that fixes integer overflows by fixing the hysteresis
+      underflow and improving the commit message, telling that min/max/crit
+      fixes are only related to the LM99 sensor. Thanks to Guenter Roeck
+      for the suggestion.
+
+v2: - Reworked set_trips() by making it generic. Now callback invokes
+      the min/max temperature write method directly, instead of using
+      additional new hwmon callback. This was suggested by Guenter Roeck.
+
+    - Added new patch that fixes integer overflows in the LM90 driver.
+      The fixes are necessary for supporting set_trips().
+
+Dmitry Osipenko (2):
+  hwmon: (lm90) Prevent integer underflows of temperature calculations
+  hwmon: Support set_trips() of thermal device ops
+
+ drivers/hwmon/hwmon.c | 33 +++++++++++++++++++++++++++++++++
+ drivers/hwmon/lm90.c  |  9 +++++++++
+ 2 files changed, 42 insertions(+)
+
+-- 
+2.30.2
+
