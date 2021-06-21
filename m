@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099AC3AED9A
+	by mail.lfdr.de (Postfix) with ESMTP id BDCB23AED9C
 	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231720AbhFUQVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:21:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40508 "EHLO mail.kernel.org"
+        id S231613AbhFUQVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:21:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231599AbhFUQUe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:20:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E0BE261164;
-        Mon, 21 Jun 2021 16:18:18 +0000 (UTC)
+        id S231187AbhFUQUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:20:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8DC466120D;
+        Mon, 21 Jun 2021 16:18:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292299;
-        bh=PsjJviM46/l2xKzXncOj/ke7SURkgNzpCy8Sw568qdA=;
+        s=korg; t=1624292302;
+        bh=S2UQk54HFfn5PSjF8S6vVK6jiRYW6CvUJhKgb+c36QE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kGw9dYf93lkT9YviSD7PT2NYVhfLYPyDbUjJ0L6hLu9d+TndkpMDbVip8Azu2GFrb
-         3WqqObGumH4KRlKIpBVfp6LCi1vkqKgcW2H504QhU+KfGlGHFKvhdjfr86FAw/bqV/
-         fNQf1RAP3aetY1IX8Awo0jBgOGuOft0gyK3sdSV0=
+        b=1YHaJaZP6nO6wM1gu+LnsBFkshZ61/Kkf2deJaauSKINF8CcCYvXfSUK4yxf0Udes
+         6POgZuTMsI904GAleMCY3m2CP3RaPd3LB2TlUzcdi2a49WGasnWIJvmTvEWZ/X8F8H
+         lX/JDexnaO0hxHv+WwdecU/E6jrSQ4yB4rWqeUB0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Nanyong Sun <sunnanyong@huawei.com>,
-        Paul Moore <paul@paul-moore.com>,
+        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
+        Nicolas Dichtel <nicolas.dichtel@6wind.com>,
+        David Ahern <dsahern@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 08/90] net: ipv4: fix memory leak in netlbl_cipsov4_add_std
-Date:   Mon, 21 Jun 2021 18:14:43 +0200
-Message-Id: <20210621154904.431261957@linuxfoundation.org>
+Subject: [PATCH 5.4 09/90] vrf: fix maximum MTU
+Date:   Mon, 21 Jun 2021 18:14:44 +0200
+Message-Id: <20210621154904.463052056@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210621154904.159672728@linuxfoundation.org>
 References: <20210621154904.159672728@linuxfoundation.org>
@@ -42,64 +42,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nanyong Sun <sunnanyong@huawei.com>
+From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
 
-[ Upstream commit d612c3f3fae221e7ea736d196581c2217304bbbc ]
+[ Upstream commit 9bb392f62447d73cc7dd7562413a2cd9104c82f8 ]
 
-Reported by syzkaller:
-BUG: memory leak
-unreferenced object 0xffff888105df7000 (size 64):
-comm "syz-executor842", pid 360, jiffies 4294824824 (age 22.546s)
-hex dump (first 32 bytes):
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
-backtrace:
-[<00000000e67ed558>] kmalloc include/linux/slab.h:590 [inline]
-[<00000000e67ed558>] kzalloc include/linux/slab.h:720 [inline]
-[<00000000e67ed558>] netlbl_cipsov4_add_std net/netlabel/netlabel_cipso_v4.c:145 [inline]
-[<00000000e67ed558>] netlbl_cipsov4_add+0x390/0x2340 net/netlabel/netlabel_cipso_v4.c:416
-[<0000000006040154>] genl_family_rcv_msg_doit.isra.0+0x20e/0x320 net/netlink/genetlink.c:739
-[<00000000204d7a1c>] genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
-[<00000000204d7a1c>] genl_rcv_msg+0x2bf/0x4f0 net/netlink/genetlink.c:800
-[<00000000c0d6a995>] netlink_rcv_skb+0x134/0x3d0 net/netlink/af_netlink.c:2504
-[<00000000d78b9d2c>] genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
-[<000000009733081b>] netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
-[<000000009733081b>] netlink_unicast+0x4a0/0x6a0 net/netlink/af_netlink.c:1340
-[<00000000d5fd43b8>] netlink_sendmsg+0x789/0xc70 net/netlink/af_netlink.c:1929
-[<000000000a2d1e40>] sock_sendmsg_nosec net/socket.c:654 [inline]
-[<000000000a2d1e40>] sock_sendmsg+0x139/0x170 net/socket.c:674
-[<00000000321d1969>] ____sys_sendmsg+0x658/0x7d0 net/socket.c:2350
-[<00000000964e16bc>] ___sys_sendmsg+0xf8/0x170 net/socket.c:2404
-[<000000001615e288>] __sys_sendmsg+0xd3/0x190 net/socket.c:2433
-[<000000004ee8b6a5>] do_syscall_64+0x37/0x90 arch/x86/entry/common.c:47
-[<00000000171c7cee>] entry_SYSCALL_64_after_hwframe+0x44/0xae
+My initial goal was to fix the default MTU, which is set to 65536, ie above
+the maximum defined in the driver: 65535 (ETH_MAX_MTU).
 
-The memory of doi_def->map.std pointing is allocated in
-netlbl_cipsov4_add_std, but no place has freed it. It should be
-freed in cipso_v4_doi_free which frees the cipso DOI resource.
+In fact, it's seems more consistent, wrt min_mtu, to set the max_mtu to
+IP6_MAX_MTU (65535 + sizeof(struct ipv6hdr)) and use it by default.
 
-Fixes: 96cb8e3313c7a ("[NetLabel]: CIPSOv4 and Unlabeled packet integration")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Nanyong Sun <sunnanyong@huawei.com>
-Acked-by: Paul Moore <paul@paul-moore.com>
+Let's also, for consistency, set the mtu in vrf_setup(). This function
+calls ether_setup(), which set the mtu to 1500. Thus, the whole mtu config
+is done in the same function.
+
+Before the patch:
+$ ip link add blue type vrf table 1234
+$ ip link list blue
+9: blue: <NOARP,MASTER> mtu 65536 qdisc noop state DOWN mode DEFAULT group default qlen 1000
+    link/ether fa:f5:27:70:24:2a brd ff:ff:ff:ff:ff:ff
+$ ip link set dev blue mtu 65535
+$ ip link set dev blue mtu 65536
+Error: mtu greater than device maximum.
+
+Fixes: 5055376a3b44 ("net: vrf: Fix ping failed when vrf mtu is set to 0")
+CC: Miaohe Lin <linmiaohe@huawei.com>
+Signed-off-by: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Reviewed-by: David Ahern <dsahern@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/cipso_ipv4.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/vrf.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/net/ipv4/cipso_ipv4.c b/net/ipv4/cipso_ipv4.c
-index e290a0c9e928..c1ac802d6894 100644
---- a/net/ipv4/cipso_ipv4.c
-+++ b/net/ipv4/cipso_ipv4.c
-@@ -472,6 +472,7 @@ void cipso_v4_doi_free(struct cipso_v4_doi *doi_def)
- 		kfree(doi_def->map.std->lvl.local);
- 		kfree(doi_def->map.std->cat.cipso);
- 		kfree(doi_def->map.std->cat.local);
-+		kfree(doi_def->map.std);
- 		break;
- 	}
- 	kfree(doi_def);
+diff --git a/drivers/net/vrf.c b/drivers/net/vrf.c
+index 14dfb9278345..1267786d2931 100644
+--- a/drivers/net/vrf.c
++++ b/drivers/net/vrf.c
+@@ -908,9 +908,6 @@ static int vrf_dev_init(struct net_device *dev)
+ 
+ 	dev->flags = IFF_MASTER | IFF_NOARP;
+ 
+-	/* MTU is irrelevant for VRF device; set to 64k similar to lo */
+-	dev->mtu = 64 * 1024;
+-
+ 	/* similarly, oper state is irrelevant; set to up to avoid confusion */
+ 	dev->operstate = IF_OPER_UP;
+ 	return 0;
+@@ -1343,7 +1340,8 @@ static void vrf_setup(struct net_device *dev)
+ 	 * which breaks networking.
+ 	 */
+ 	dev->min_mtu = IPV6_MIN_MTU;
+-	dev->max_mtu = ETH_MAX_MTU;
++	dev->max_mtu = IP6_MAX_MTU;
++	dev->mtu = dev->max_mtu;
+ }
+ 
+ static int vrf_validate(struct nlattr *tb[], struct nlattr *data[],
 -- 
 2.30.2
 
