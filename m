@@ -2,127 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF8903AE9FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 953583AEA07
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:27:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230021AbhFUN2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 09:28:11 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:49788 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229708AbhFUN2J (ORCPT
+        id S230031AbhFUN3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 09:29:14 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51464 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229789AbhFUN3N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 09:28:09 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15LD40dU034007;
-        Mon, 21 Jun 2021 09:25:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=hqFx3xpS6aZ8X/y5N6zKbrcRBhuvPaEnZk+43JmXGQg=;
- b=c08qRUidjPVVkF3rA0OgQOHkTSOLo2rWmIHYkwJjzMUT4s9m5rHjWWlcRGiCZ3HMRN4u
- PItFaQUPN02VUru4ZFhFv1UqeOVLj1Z/eOmOpdpZTNsXPNvd8GgOxnFZ0Cw3c2g7oSol
- q+A/mPhozVeRL/R4Le3OxxPuPzsEXVWuDOR/yh35MCGx32n7LakHv0w0xpV3qqdmj0is
- 7rFSBj9G17QFowCl6/HgjkMMQgJcktwpk8FXHSp1H9h+cWFiagEmbsgZHFoNDOCPdzwP
- DV/MgEAPJbq7dZEHMN8LcJ2842Zm3joQOrWFAxOtOpVDBFve1Q5Ntg1sUPQ4KCpJE2ST aQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39at103j23-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Jun 2021 09:25:50 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15LD4uN7040446;
-        Mon, 21 Jun 2021 09:25:49 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39at103hy2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Jun 2021 09:25:49 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15LD76lI004957;
-        Mon, 21 Jun 2021 13:25:45 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 3998788wun-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 21 Jun 2021 13:25:45 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15LDPhTA23920928
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 21 Jun 2021 13:25:43 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4B115A4040;
-        Mon, 21 Jun 2021 13:25:43 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 25166A4055;
-        Mon, 21 Jun 2021 13:25:41 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.107.100])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon, 21 Jun 2021 13:25:40 +0000 (GMT)
-Message-ID: <46ce17543ea05839467fab8865826a0492e8632b.camel@linux.ibm.com>
-Subject: Re: [PATCH v2] evm: Check xattr size discrepancy between kernel and
- user
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>, paul@paul-moore.com,
-        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
-        stefanb@linux.ibm.com
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, selinux@vger.kernel.org
-Date:   Mon, 21 Jun 2021 09:25:40 -0400
-In-Reply-To: <20210621122912.1472470-1-roberto.sassu@huawei.com>
-References: <20210621122912.1472470-1-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: gozS-3LOno6sEm8WACG_HJ6wV4y_7m1U
-X-Proofpoint-GUID: YVs83M9VRHzuHxTHHIXgjLXdPa8FQMCR
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Mon, 21 Jun 2021 09:29:13 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 7B1D721A66;
+        Mon, 21 Jun 2021 13:26:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624282018; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tw+/KDvuUvNoiL44wKibOxR7zrMDcKrfnPx4W5yXglg=;
+        b=VvaMZFSj1BoxILy7bVguOw5sRWDAHebmFfGwnFONMAOUeUr9A2PsDr7jBuYvd60cCL8bfl
+        8ginDWjfP3sNYZ5+7BCRu5L5zZkg64nXaokFLSHVFWVm4KRa/AXWzprW4uGbgTGFLwMiKZ
+        WBwhbs+MlPWoOWuwOamQyxASUcx8Mlk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624282018;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tw+/KDvuUvNoiL44wKibOxR7zrMDcKrfnPx4W5yXglg=;
+        b=GqmVe+tKzyAeprqLKxqdie0VE4K2ymyY2QK2eFoOvaUpVIW8rxDCPaEZr+4Rmj85Y7QjaN
+        MeTyhFAsY4CWZYDg==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 6603A118DD;
+        Mon, 21 Jun 2021 13:26:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624282018; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tw+/KDvuUvNoiL44wKibOxR7zrMDcKrfnPx4W5yXglg=;
+        b=VvaMZFSj1BoxILy7bVguOw5sRWDAHebmFfGwnFONMAOUeUr9A2PsDr7jBuYvd60cCL8bfl
+        8ginDWjfP3sNYZ5+7BCRu5L5zZkg64nXaokFLSHVFWVm4KRa/AXWzprW4uGbgTGFLwMiKZ
+        WBwhbs+MlPWoOWuwOamQyxASUcx8Mlk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624282018;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=tw+/KDvuUvNoiL44wKibOxR7zrMDcKrfnPx4W5yXglg=;
+        b=GqmVe+tKzyAeprqLKxqdie0VE4K2ymyY2QK2eFoOvaUpVIW8rxDCPaEZr+4Rmj85Y7QjaN
+        MeTyhFAsY4CWZYDg==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id mIIVGaKT0GDfTwAALh3uQQ
+        (envelope-from <bp@suse.de>); Mon, 21 Jun 2021 13:26:58 +0000
+Date:   Mon, 21 Jun 2021 15:26:45 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch V3 21/66] x86/fpu/regset: Move fpu__read_begin() into
+ regset
+Message-ID: <YNCTlXp5vbYfEQiL@zn.tnic>
+References: <20210618141823.161158090@linutronix.de>
+ <20210618143446.797089970@linutronix.de>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-21_06:2021-06-21,2021-06-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- bulkscore=0 mlxscore=0 priorityscore=1501 malwarescore=0 clxscore=1015
- phishscore=0 lowpriorityscore=0 adultscore=0 impostorscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106210078
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210618143446.797089970@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-06-21 at 14:29 +0200, Roberto Sassu wrote:
-> The kernel and the user obtain an xattr value in two different ways:
-> 
-> kernel (EVM): uses vfs_getxattr_alloc() which obtains the xattr value from
->               the filesystem handler (raw value);
-> 
-> user (ima-evm-utils): uses vfs_getxattr() which obtains the xattr value
->                       from the LSMs (normalized value).
-> 
-> Normally, this does not have an impact unless security.selinux is set with
-> setfattr, with a value not terminated by '\0' (this is not the recommended
-> way, security.selinux should be set with the appropriate tools such as
-> chcon and restorecon).
-> 
-> In this case, the kernel and the user see two different xattr values: the
-> former sees the xattr value without '\0' (raw value), the latter sees the
-> value with '\0' (value normalized by SELinux).
-> 
-> This could result in two different verification outcomes from EVM and
-> ima-evm-utils, if a signature was calculated with a security.selinux value
-> terminated by '\0' and the value set in the filesystem is not terminated by
-> '\0'. The former would report verification failure due to the missing '\0',
-> while the latter would report verification success (because it gets the
-> normalized value with '\0').
-> 
-> This patch mitigates this issue by comparing in evm_calc_hmac_or_hash() the
-> size of the xattr returned by the two xattr functions and by warning the
-> user if there is a discrepancy.
-> 
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> Suggested-by: Mimi Zohar <zohar@linux.ibm.com>
+On Fri, Jun 18, 2021 at 04:18:44PM +0200, Thomas Gleixner wrote:
+> The function can only be used from the regset get() callbacks safely. So
+> there is no reason to have it globaly exposed.
 
-Thanks, Roberto.
+"globally"
 
-Applied to: git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-
-integrity.git next-integrity-testing branch.
+> 
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  arch/x86/include/asm/fpu/internal.h |    1 -
+>  arch/x86/kernel/fpu/core.c          |   20 --------------------
+>  arch/x86/kernel/fpu/regset.c        |   22 +++++++++++++++++++---
+>  3 files changed, 19 insertions(+), 24 deletions(-)
 
-Mimi
+...
 
+> --- a/arch/x86/kernel/fpu/regset.c
+> +++ b/arch/x86/kernel/fpu/regset.c
+> @@ -28,6 +28,22 @@ int regset_xregset_fpregs_active(struct
+>  		return 0;
+>  }
+>  
+> +/*
+> + * The regset get() functions are invoked from:
+> + *
+> + *   - coredump to dump the current task's fpstate. If the current task
+> + *     owns the FPU then the memory state has to be synchronized and the
+> + *     FPU register state preserved. Otherwise fpstate is already in sync.
+> + *
+> + *   - ptrace to dump fpstate of a stopped task, in which case the register
+									^
+
+"registers"
+
+With that:
+
+Reviewed-by: Borislav Petkov <bp@suse.de>
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
