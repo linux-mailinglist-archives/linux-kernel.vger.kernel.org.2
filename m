@@ -2,87 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E783AEBA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 470933AEBAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbhFUOs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 10:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34430 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbhFUOsy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 10:48:54 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41B2CC061574;
-        Mon, 21 Jun 2021 07:46:40 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvLC9-00ArRc-HB; Mon, 21 Jun 2021 14:46:37 +0000
-Date:   Mon, 21 Jun 2021 14:46:37 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Vivek Goyal <vgoyal@redhat.com>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, virtio-fs@redhat.com
-Subject: Re: [PATCH 1/2] init: split get_fs_names
-Message-ID: <YNCmTSTcubslmj7k@zeniv-ca.linux.org.uk>
-References: <20210621062657.3641879-1-hch@lst.de>
- <20210621062657.3641879-2-hch@lst.de>
+        id S230057AbhFUOtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 10:49:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:35726 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229747AbhFUOtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 10:49:20 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 35629D6E;
+        Mon, 21 Jun 2021 07:47:06 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BCBE43F694;
+        Mon, 21 Jun 2021 07:47:04 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 15:47:02 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Sandor Bodo-Merle <sbodomerle@gmail.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Marc Zyngier <maz@kernel.org>
+Subject: Re: [PATCH 2/2] PCI: iproc: Support multi-MSI only on uniprocessor
+ kernel
+Message-ID: <20210621144702.GD27516@lpieralisi>
+References: <20210606123044.31250-1-sbodomerle@gmail.com>
+ <20210606123044.31250-2-sbodomerle@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210621062657.3641879-2-hch@lst.de>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20210606123044.31250-2-sbodomerle@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 08:26:56AM +0200, Christoph Hellwig wrote:
-> Split get_fs_names into one function that splits up the command line
-> argument, and one that gets the list of all registered file systems.
+On Sun, Jun 06, 2021 at 02:30:44PM +0200, Sandor Bodo-Merle wrote:
+> The interrupt affinity scheme used by this driver is incompatible with
+> multi-MSI as it implies moving the doorbell address to that of another MSI
+> group.  This isn't possible for multi-MSI, as all the MSIs must have the
+> same doorbell address. As such it is restricted to systems with a single
+> CPU.
+> 
+> Fixes: fc54bae28818 ("PCI: iproc: Allow allocation of multiple MSIs")
+> Reported-by: Marc Zyngier <maz@kernel.org>
+> Signed-off-by: Sandor Bodo-Merle <sbodomerle@gmail.com>
+> ---
+>  drivers/pci/controller/pcie-iproc-msi.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
 
-> +static void __init get_all_fs_names(char *page)
-> +{
-> +	int len = get_filesystem_list(page);
-> +	char *s = page, *p, *next;
+Can you just resend the series with the very minor changes requested
+fixed please ?
+
+Please carry/apply the review tags as well.
+
+Thanks,
+Lorenzo
+
+> diff --git a/drivers/pci/controller/pcie-iproc-msi.c b/drivers/pci/controller/pcie-iproc-msi.c
+> index 557d93dcb3bc..81b4effeb130 100644
+> --- a/drivers/pci/controller/pcie-iproc-msi.c
+> +++ b/drivers/pci/controller/pcie-iproc-msi.c
+> @@ -171,7 +171,7 @@ static struct irq_chip iproc_msi_irq_chip = {
+>  
+>  static struct msi_domain_info iproc_msi_domain_info = {
+>  	.flags = MSI_FLAG_USE_DEF_DOM_OPS | MSI_FLAG_USE_DEF_CHIP_OPS |
+> -		MSI_FLAG_MULTI_PCI_MSI | MSI_FLAG_PCI_MSIX,
+> +		MSI_FLAG_PCI_MSIX,
+>  	.chip = &iproc_msi_irq_chip,
+>  };
+>  
+> @@ -250,6 +250,9 @@ static int iproc_msi_irq_domain_alloc(struct irq_domain *domain,
+>  	struct iproc_msi *msi = domain->host_data;
+>  	int hwirq, i;
+>  
+> +	if (msi->nr_cpus > 1 && nr_irqs > 1)
+> +		return -EINVAL;
 > +
-> +	page[len] = '\0';
-> +	for (p = page - 1; p; p = next) {
-> +		next = strchr(++p, '\n');
-> +		if (*p++ != '\t')
-> +			continue;
-> +		while ((*s++ = *p++) != '\n')
-> +			;
-> +		s[-1] = '\0';
->  	}
+>  	mutex_lock(&msi->bitmap_lock);
+>  
+>  	/*
+> @@ -540,6 +543,9 @@ int iproc_msi_init(struct iproc_pcie *pcie, struct device_node *node)
+>  	mutex_init(&msi->bitmap_lock);
+>  	msi->nr_cpus = num_possible_cpus();
+>  
+> +	if (msi->nr_cpus == 1)
+> +		iproc_msi_domain_info.flags |=  MSI_FLAG_MULTI_PCI_MSI;
 > +
->  	*s = '\0';
->  }
-
-TBH, I would rather take that one into fs/filesystems.c.  Rationale:
-get_filesystem_list(), for all its resemblance to /proc/filesystems
-contents, is used only by init/*.c and it's not a big deal to make
-it
-
-int __init get_filesystem_list(char *buf, bool is_dev)
-{
-	int f = is_dev ? FS_REQUIRES_DEV : 0;
-        int left = PAGE_SIZE, count = 0;
-        struct file_system_type *p;
-
-        read_lock(&file_systems_lock);
-	for (p = file_systems; p; p = p->next) {
-		if ((p->fs_flags & FS_REQUIRES_DEV) == f) {
-			size_t len = strlen(p->name) + 1;
-			if (len > left)
-				break;
-			memcpy(buf, p->name, len);
-			buf += len;
-			left -= len;
-			count++;
-		}
-	}
-        read_unlock(&file_systems_lock);
-	return count;
-}
-
-Generates NUL-separated list, returns the number of list elements,
-the second argument is "what kind do you want"...
+>  	msi->nr_irqs = of_irq_count(node);
+>  	if (!msi->nr_irqs) {
+>  		dev_err(pcie->dev, "found no MSI GIC interrupt\n");
+> -- 
+> 2.31.0
+> 
