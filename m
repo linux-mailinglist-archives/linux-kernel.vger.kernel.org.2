@@ -2,104 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C81283AE60C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:29:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 884F73AE612
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:31:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhFUJbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:31:55 -0400
-Received: from mga03.intel.com ([134.134.136.65]:61365 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229641AbhFUJbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:31:53 -0400
-IronPort-SDR: LXQOWgJ/mlYlUEDVJwRL7C16qmAHJgiCdKZ23+/cqtGklLGjzmP5dicC8VPQqCiYWBRzNLcVzd
- hEvYi+9PVaGw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10021"; a="206850143"
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208";a="206850143"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 02:29:38 -0700
-IronPort-SDR: KC3R/4G2ArhR9KURjfmKrolji4DpjaOi0FVZinQwAdqqOeEH+z7NxaJIuYxHaQBqQqs4xzsVgB
- JYTIJAQla1zw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208";a="405565750"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.79]) ([10.237.72.79])
-  by orsmga006.jf.intel.com with ESMTP; 21 Jun 2021 02:29:34 -0700
-Subject: Re: [PATCH] scsi: ufs: Refactor ufshcd_is_intr_aggr_allowed()
-To:     keosung.park@samsung.com, "joe@perches.com" <joe@perches.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        "satyat@google.com" <satyat@google.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <CGME20210621085158epcms2p46170ba48174547df00b9720dbc843110@epcms2p4>
- <1891546521.01624267081897.JavaMail.epsvc@epcpadp4>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <ed6d8c44-295e-aaa7-4b5f-7929c1c797d1@intel.com>
-Date:   Mon, 21 Jun 2021 12:29:58 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230071AbhFUJeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:34:10 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:33718 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229597AbhFUJeI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 05:34:08 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15L9VrYN009045;
+        Mon, 21 Jun 2021 04:31:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1624267913;
+        bh=iLXOHigeBfCtwhWP1up5+ZpOgMa0GIQ92inE02LlXek=;
+        h=From:To:CC:Subject:Date;
+        b=XPYj1GkW+wGv30cio/I830hdRmodkYeLd0iI4fJzANr25JvQFxHBe1HhYBq+l44dx
+         Qly1eagiBSU57YMAd1s21cwaYpOHwtl68hbj24L2zv8nLkusE85lwtIegap/7h58Iq
+         sV/uXNOsf8GaefP8smIfntu0luQ3/mzuVoNCzbhA=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15L9Vrwc012436
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 21 Jun 2021 04:31:53 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 21
+ Jun 2021 04:31:53 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 21 Jun 2021 04:31:53 -0500
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15L9Vi5w105998;
+        Mon, 21 Jun 2021 04:31:46 -0500
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Nishanth Menon <nm@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, <linux-spi@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3] dt-bindings: spi: omap-spi: Convert to json-schema
+Date:   Mon, 21 Jun 2021 14:58:58 +0530
+Message-ID: <20210621092900.951-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-In-Reply-To: <1891546521.01624267081897.JavaMail.epsvc@epcpadp4>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/06/21 11:51 am, Keoseong Park wrote:
-> Change conditional compilation to IS_ENABLED macro,
-> and simplify if else statement to return statement.
-> No functional change.
-> 
-> Signed-off-by: Keoseong Park <keosung.park@samsung.com>
-> ---
->  drivers/scsi/ufs/ufshcd.h | 17 ++++++++---------
->  1 file changed, 8 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-> index c98d540ac044..6d239a855753 100644
-> --- a/drivers/scsi/ufs/ufshcd.h
-> +++ b/drivers/scsi/ufs/ufshcd.h
-> @@ -893,16 +893,15 @@ static inline bool ufshcd_is_rpm_autosuspend_allowed(struct ufs_hba *hba)
->  
->  static inline bool ufshcd_is_intr_aggr_allowed(struct ufs_hba *hba)
->  {
-> -/* DWC UFS Core has the Interrupt aggregation feature but is not detectable*/
-> -#ifndef CONFIG_SCSI_UFS_DWC
-> -	if ((hba->caps & UFSHCD_CAP_INTR_AGGR) &&
-> -	    !(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR))
-> +	/*
-> +	 * DWC UFS Core has the Interrupt aggregation feature
-> +	 * but is not detectable.
-> +	 */
-> +	if (IS_ENABLED(CONFIG_SCSI_UFS_DWC))
+Convert omap-spi dt-binding documentation from txt to yaml format.
 
-Why is this needed?  It seems like you could just set UFSHCD_CAP_INTR_AGGR
-and clear UFSHCD_QUIRK_BROKEN_INTR_AGGR instead?
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+---
 
->  		return true;
-> -	else
-> -		return false;
-> -#else
-> -return true;
-> -#endif
-> +
-> +	return (hba->caps & UFSHCD_CAP_INTR_AGGR) &&
-> +		!(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR);
->  }
->  
->  static inline bool ufshcd_can_aggressive_pc(struct ufs_hba *hba)
-> 
+changes since v2:
+- added myself as the maintainer
+- added reference to spi-controller.yaml
+- removed properties already defined in spi-controller.yaml
+- removed unused labels in dt example
+- changed additionalProperties to unevaluatedProperties
+  as a reference is used
+
+changes since v1:
+- split the series according to their respective trees
+
+link to v1:
+https://lore.kernel.org/patchwork/project/lkml/list/?series=502255
+
+ .../devicetree/bindings/spi/omap-spi.txt      |  48 -------
+ .../devicetree/bindings/spi/omap-spi.yaml     | 117 ++++++++++++++++++
+ 2 files changed, 117 insertions(+), 48 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/spi/omap-spi.txt
+ create mode 100644 Documentation/devicetree/bindings/spi/omap-spi.yaml
+
+diff --git a/Documentation/devicetree/bindings/spi/omap-spi.txt b/Documentation/devicetree/bindings/spi/omap-spi.txt
+deleted file mode 100644
+index 487208c256c0..000000000000
+--- a/Documentation/devicetree/bindings/spi/omap-spi.txt
++++ /dev/null
+@@ -1,48 +0,0 @@
+-OMAP2+ McSPI device
+-
+-Required properties:
+-- compatible :
+-  - "ti,am654-mcspi" for AM654.
+-  - "ti,omap2-mcspi" for OMAP2 & OMAP3.
+-  - "ti,omap4-mcspi" for OMAP4+.
+-- ti,spi-num-cs : Number of chipselect supported  by the instance.
+-- ti,hwmods: Name of the hwmod associated to the McSPI
+-- ti,pindir-d0-out-d1-in: Select the D0 pin as output and D1 as
+-			  input. The default is D0 as input and
+-			  D1 as output.
+-
+-Optional properties:
+-- dmas: List of DMA specifiers with the controller specific format
+-	as described in the generic DMA client binding. A tx and rx
+-	specifier is required for each chip select.
+-- dma-names: List of DMA request names. These strings correspond
+-	1:1 with the DMA specifiers listed in dmas. The string naming
+-	is to be "rxN" and "txN" for RX and TX requests,
+-	respectively, where N equals the chip select number.
+-
+-Examples:
+-
+-[hwmod populated DMA resources]
+-
+-mcspi1: mcspi@1 {
+-    #address-cells = <1>;
+-    #size-cells = <0>;
+-    compatible = "ti,omap4-mcspi";
+-    ti,hwmods = "mcspi1";
+-    ti,spi-num-cs = <4>;
+-};
+-
+-[generic DMA request binding]
+-
+-mcspi1: mcspi@1 {
+-    #address-cells = <1>;
+-    #size-cells = <0>;
+-    compatible = "ti,omap4-mcspi";
+-    ti,hwmods = "mcspi1";
+-    ti,spi-num-cs = <2>;
+-    dmas = <&edma 42
+-	    &edma 43
+-	    &edma 44
+-	    &edma 45>;
+-    dma-names = "tx0", "rx0", "tx1", "rx1";
+-};
+diff --git a/Documentation/devicetree/bindings/spi/omap-spi.yaml b/Documentation/devicetree/bindings/spi/omap-spi.yaml
+new file mode 100644
+index 000000000000..e55538186cf6
+--- /dev/null
++++ b/Documentation/devicetree/bindings/spi/omap-spi.yaml
+@@ -0,0 +1,117 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/spi/omap-spi.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: SPI controller bindings for OMAP and K3 SoCs
++
++maintainers:
++  - Aswath Govindraju <a-govindraju@ti.com>
++
++allOf:
++  - $ref: spi-controller.yaml#
++
++properties:
++  compatible:
++    oneOf:
++      - items:
++          - enum:
++              - ti,am654-mcspi
++              - ti,am4372-mcspi
++          - const: ti,omap4-mcspi
++      - items:
++          - enum:
++              - ti,omap2-mcspi
++              - ti,omap4-mcspi
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  power-domains:
++    maxItems: 1
++
++  ti,spi-num-cs:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: Number of chipselect supported  by the instance.
++    minimum: 1
++    maximum: 4
++
++  ti,hwmods:
++    $ref: /schemas/types.yaml#/definitions/string
++    description:
++      Must be "mcspi<n>", n being the instance number (1-based).
++      This property is applicable only on legacy platforms mainly omap2/3
++      and ti81xx and should not be used on other platforms.
++    deprecated: true
++
++  ti,pindir-d0-out-d1-in:
++    description:
++      Select the D0 pin as output and D1 as input. The default is D0
++      as input and D1 as output.
++    type: boolean
++
++  dmas:
++    description:
++      List of DMA specifiers with the controller specific format as
++      described in the generic DMA client binding. A tx and rx
++      specifier is required for each chip select.
++    minItems: 1
++    maxItems: 8
++
++  dma-names:
++    description:
++      List of DMA request names. These strings correspond 1:1 with
++      the DMA sepecifiers listed in dmas. The string names is to be
++      "rxN" and "txN" for RX and TX requests, respectively. Where N
++      is the chip select number.
++    minItems: 1
++    maxItems: 8
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++unevaluatedProperties: false
++
++if:
++  properties:
++    compatible:
++      oneOf:
++        - const: ti,omap2-mcspi
++        - const: ti,omap4-mcspi
++
++then:
++  properties:
++    ti,hwmods:
++      items:
++        - pattern: "^mcspi([1-9])$"
++
++else:
++  properties:
++    ti,hwmods: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/soc/ti,sci_pm_domain.h>
++
++    spi@2100000 {
++      compatible = "ti,am654-mcspi","ti,omap4-mcspi";
++      reg = <0x2100000 0x400>;
++      interrupts = <GIC_SPI 184 IRQ_TYPE_LEVEL_HIGH>;
++      clocks = <&k3_clks 137 1>;
++      power-domains = <&k3_pds 137 TI_SCI_PD_EXCLUSIVE>;
++      #address-cells = <1>;
++      #size-cells = <0>;
++      dmas = <&main_udmap 0xc500>, <&main_udmap 0x4500>;
++      dma-names = "tx0", "rx0";
++    };
+-- 
+2.17.1
 
