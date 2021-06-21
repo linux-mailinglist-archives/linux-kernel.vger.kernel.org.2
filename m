@@ -2,80 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07FD63AEC7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C37B3AEC85
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:35:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbhFUPfh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 11:35:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59251 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230346AbhFUPf2 (ORCPT
+        id S230363AbhFUPhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 11:37:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45616 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230251AbhFUPhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 11:35:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624289592;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WcPOkG/uZ9akoELvnm75VfGTCa7/v/yG9GvmoQeB8L0=;
-        b=EF0bhyEW6Hf66FNlbCO4HdHe/8kJ8A8bi41okYSxHJQ+5RGD9KL5SDhn2Gd+k+XFcwcrDS
-        IH+8qnltzwc7JftmaJ14X9pzsT9glJYLMIuTvgenwlqF6EJ2eX1mgnDououKuGlyLqSuu6
-        Xy7zCC5zjbj2hDwTRQNtwSuXV4xU4d4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-468-uAYA_aCcPRaVDlRse1-mJg-1; Mon, 21 Jun 2021 11:33:10 -0400
-X-MC-Unique: uAYA_aCcPRaVDlRse1-mJg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E1F2218D6A35;
-        Mon, 21 Jun 2021 15:33:05 +0000 (UTC)
-Received: from localhost.localdomain (ovpn-112-119.ams2.redhat.com [10.36.112.119])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 11C5C2C00F;
-        Mon, 21 Jun 2021 15:33:03 +0000 (UTC)
-From:   =?UTF-8?q?=C3=8D=C3=B1igo=20Huguet?= <ihuguet@redhat.com>
-To:     ecree.xilinx@gmail.com, habetsm.xilinx@gmail.com,
-        davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ihuguet@redhat.com, ivecera@redhat.com
-Subject: [PATCH 4/4] sfc: avoid duplicated code in ef10_sriov
-Date:   Mon, 21 Jun 2021 17:32:38 +0200
-Message-Id: <20210621153238.13147-4-ihuguet@redhat.com>
-In-Reply-To: <20210621153238.13147-1-ihuguet@redhat.com>
-References: <20210621153238.13147-1-ihuguet@redhat.com>
+        Mon, 21 Jun 2021 11:37:16 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58CC4C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 08:35:01 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id r16so25826142ljk.9
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 08:35:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=j44+jGT4gaUeudY0gWel/YPb1b9YxVj2UqOwtpaKh2g=;
+        b=jNf9+hJQ1qI30RXI5/ROZhjy0PKG8Wcu1hnK8021pKFEboTdFenTyUe7YhW7//NqgX
+         2IN26mwtJYa6OcCnjmBbhOk85wSA5z+fKaygt0FhG5rx8g6rjoAyTB9L6e3VtZLCc525
+         lcuNfnr7aJ2Zphg9ZbK2SCO8deE0ZZz51naQlDN2G4TJ6bznUgwBJbcMS25Xoo5g+We4
+         bAj6P4qHPXxGMRclLulhXBHVIa3MX5SdK3vyxu5ofu+r1PtCjazGwfiySH6EZ2fdcOaj
+         Eg1GHN74deEB4WuM6U9fpfKydwbH2a2HFoCNyzD0D4iGPvUh9DPkV7N5sGw+a7pvuTFU
+         o+FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=j44+jGT4gaUeudY0gWel/YPb1b9YxVj2UqOwtpaKh2g=;
+        b=jBl7gOQ0D7eBizFzm3AUhti4p2BVcdXNahXKkUdkBykQkaAGt2I06QcYPqUVMtmLqV
+         HC3RN55+TnETuDgikYOCq5wDUE0bwxwyc0HeRKSZmGV2rgY8EmwiwuVYsO1lB3CXANha
+         xVGaVyYnpfLmyqTiL3QrWB10QXTVdxsYPW2UjjdBEIgLLMcHp+jMGgoA4rXcNlFCOF26
+         bzhAm2k/VRe9cNtRV1DIGOyAJ8fb+w4WRU5Bodbn9SuYLm95Hifnz/WphHDREy1X7lzB
+         nlwIDZOa5M0t42/Ys86FfG5SLKMMU5JjeGwtV9VpaNvF1sNZaEO56DSxYI4fbYcQEo31
+         S/EQ==
+X-Gm-Message-State: AOAM533tGzw8ksj0EnRlU672+rnjLb4h4IUlnrSO1rg1LKDgtYBOsEfb
+        a7ECbFZCk3AxIhxMeM+RQSx2dJfeEtQ=
+X-Google-Smtp-Source: ABdhPJx8bfyNhzvjmRju8kWhJlFDFr1BYGkxMbKT6MJbJWWQzPvl8N20pvwLNNK8EciGXYhg5qovyQ==
+X-Received: by 2002:a2e:a722:: with SMTP id s34mr21825380lje.104.1624289699398;
+        Mon, 21 Jun 2021 08:34:59 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
+        by smtp.googlemail.com with ESMTPSA id e12sm655705lfc.84.2021.06.21.08.34.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 08:34:59 -0700 (PDT)
+Subject: Re: [PATCH v1] regulator: core: Add stubs for driver API
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Thierry Reding <treding@nvidia.com>, linux-kernel@vger.kernel.org
+References: <20210619124052.1354-1-digetx@gmail.com>
+ <20210621114659.GE4094@sirena.org.uk>
+ <5dd6145f-046f-9ed5-9f8c-58cf096287ab@gmail.com>
+ <20210621123447.GH4094@sirena.org.uk>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <de8fe5dd-30d3-1ba1-66cd-1bb8b88f984c@gmail.com>
+Date:   Mon, 21 Jun 2021 18:33:46 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20210621123447.GH4094@sirena.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The fail path of efx_ef10_sriov_alloc_vf_vswitching is identical to the
-full content of efx_ef10_sriov_free_vf_vswitching, so replace it for a
-single call to efx_ef10_sriov_free_vf_vswitching.
+21.06.2021 15:34, Mark Brown пишет:
+> On Mon, Jun 21, 2021 at 03:04:30PM +0300, Dmitry Osipenko wrote:
+>> 21.06.2021 14:46, Mark Brown пишет:
+> 
+>>> Why would something be registering a regulator device without a
+>>> dependency on the regulator API?
+> 
+>> For example if regulator device registration is optional in the code. We
+>> don't have such cases in the kernel today, but I decided that it will be
+>> cleaner to add stubs for the whole API.
+> 
+> It doesn't strike me as the sort of thing that should be optional TBH.
+> It seems much more likely that not having the stub will catch silly
+> errors than that the stubs will make something work that should.
+> 
+>> If you think that it will be better to add the dependency to the coupler
+>> drivers, then let's do it.
+> 
+> For coupler drivers it's not clear what function they serve without the
+> regulator API being enabled.
+> 
 
-Signed-off-by: Íñigo Huguet <ihuguet@redhat.com>
----
- drivers/net/ethernet/sfc/ef10_sriov.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/sfc/ef10_sriov.c b/drivers/net/ethernet/sfc/ef10_sriov.c
-index f8f8fbe51ef8..752d6406f07e 100644
---- a/drivers/net/ethernet/sfc/ef10_sriov.c
-+++ b/drivers/net/ethernet/sfc/ef10_sriov.c
-@@ -206,9 +206,7 @@ static int efx_ef10_sriov_alloc_vf_vswitching(struct efx_nic *efx)
- 
- 	return 0;
- fail:
--	efx_ef10_sriov_free_vf_vports(efx);
--	kfree(nic_data->vf);
--	nic_data->vf = NULL;
-+	efx_ef10_sriov_free_vf_vswitching(efx);
- 	return rc;
- }
- 
--- 
-2.31.1
-
+I'll prepare patch to fix the Kconfig entry of the coupler drivers,
+thank you.
