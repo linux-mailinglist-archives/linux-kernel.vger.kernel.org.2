@@ -2,216 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 676E83AE5B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:12:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C883AE5B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbhFUJOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:14:49 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40480 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbhFUJOr (ORCPT
+        id S230335AbhFUJO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:14:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42814 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230334AbhFUJO5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:14:47 -0400
-Received: from mail-ed1-f71.google.com ([209.85.208.71])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lvFyq-000857-36
-        for linux-kernel@vger.kernel.org; Mon, 21 Jun 2021 09:12:32 +0000
-Received: by mail-ed1-f71.google.com with SMTP id f12-20020a056402150cb029038fdcfb6ea2so5602759edw.14
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:12:32 -0700 (PDT)
+        Mon, 21 Jun 2021 05:14:57 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D4EC06175F;
+        Mon, 21 Jun 2021 02:12:43 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id n12so4898274pgs.13;
+        Mon, 21 Jun 2021 02:12:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vNahs62Fmfx/BFehZDtgJGwFkVF24WzuhgTfY7ZDHBM=;
+        b=AxxQmzgqY38wRE8BMMgQrfHQ8Z8niCLeBXhdpVzeQ9HgZlCnNTTJ/HZbmyRN3S+2uj
+         WzpxnjokByOx1OLKi2Nm6wk3u1atDMyrdeWXcu4WxQRAW2630tLc6PJC6xmt74/dC0XP
+         jecQhlFDlEgt3X4z8JVduYlVRNHikJkSOraSf0nRO9vbf83omv5YZwoR9+eGYc1DpwnK
+         o27sRhAxOz+JZaLRZn4a/+o3HOOQZ3Vr4vzM1/1O32p3fjAUyl9v8Y86JDe+fv46WAos
+         uQRNrZX2+1lduaA8k1PpN/zjRIuPS2fNE/OnWb86FVBQr6ly1s0hycB+Z39CqEFEDvia
+         4fxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=OtPiQ6OO2TAsBjszsku45Z1ropnsh33Pp8/MGScgIYo=;
-        b=M+gpl9CZQTikc+nvHXgsiMO/LVArv04ajvk/i5xI+J/A4W4U4hZgz4PXuZ+p1aYwau
-         smj1OaEwQbwLvToRSoyQNn69EsUoi2cuX8132sg5UqkD+O9VOEVjQI9yNRIh6FGBUY5b
-         FTGqM1dUT4w9wPnHrPxrN9r5slH2c9ya++3vLnbi1sNQoixaMcNpglei7gsZX8PkQhNy
-         09TZW3oqu0ysPqE3A9RDP3Kw+dI9cCr6/FDKo+rvPwU4YDMd0kAbJnR6W3+TUEde+mGr
-         TwNosSJNgYxslyt3VeFklcG+UvbHghg5ZAN9XCx4byD2X/NJOoODKTqocOmvs6Gl5o2k
-         IHPw==
-X-Gm-Message-State: AOAM533xBbc6fHeNm6z6TefTNeFd+zFmLtYk61kx5qbOIGkRr4QesL0p
-        rjspBUrZSJ51qU8ZfFZy9waS3TOp1dvF9tobCYhZf9MlycGGx9p7vgqSgLtbACSIXt/Z7u21phU
-        1zi+PQBm8IUahb/Wv+LNTuugiV5QI3v+F085uqOJXrQ==
-X-Received: by 2002:aa7:d918:: with SMTP id a24mr20823931edr.235.1624266751824;
-        Mon, 21 Jun 2021 02:12:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwx35TuP3/cSWQbzdJJMY8jXV8k6q7uF2M0jTZBEo1Y1rV/AqfoC9y+u6ebe35GLSRbSnmTRg==
-X-Received: by 2002:aa7:d918:: with SMTP id a24mr20823912edr.235.1624266751658;
-        Mon, 21 Jun 2021 02:12:31 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id v26sm4608693ejk.70.2021.06.21.02.12.30
+        bh=vNahs62Fmfx/BFehZDtgJGwFkVF24WzuhgTfY7ZDHBM=;
+        b=FhIK1DcihmFsQzSnk4LEz5JDGqWc4M1WoNe0UalR81a0uZnjnbIQryYbQ2RIEB9Gps
+         aStg/iM9EuhGKT2/i76UMUeXlaYoBPnPBxRLrERdAsetWUh8Jujsco7tMPTf1SSjtEEB
+         tqqC1I0Wo+WO0KCcvSa+EnaI81oWnQczZKydfAUQSoX0XXKwhAleWFwS90dUIelotORs
+         FyGW2jh4zitcl/MqcB/0bzujojGKAhFYuS1JCRMxyC0GKFkd7Vqkt6QkNqGWV1bfvsxQ
+         uQLB/Bk4lH21VQhJ7PeKI+239cy3pH/GuYgFz0+RjMwtQEXyG0Y0sDhgECXauW1TijyU
+         KyLg==
+X-Gm-Message-State: AOAM530ctIPWCbe/APphMkHQIqPtN3HlxInmZkvPnPTw4BJAtU37/eAH
+        gtZuRAqhjBdsZJ4ymL62EW7S3feGqqtuGA==
+X-Google-Smtp-Source: ABdhPJySs0uYjwsomNdKtMjK07pIvmWmaGGZVRKqBy1Unvp5XR7gZNPq/3oyl0m7t54m0YVi1Pyesw==
+X-Received: by 2002:a63:1c0a:: with SMTP id c10mr22799984pgc.306.1624266762738;
+        Mon, 21 Jun 2021 02:12:42 -0700 (PDT)
+Received: from [172.28.99.179] ([119.28.155.243])
+        by smtp.gmail.com with ESMTPSA id v14sm16450326pgo.89.2021.06.21.02.12.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 02:12:31 -0700 (PDT)
-Subject: Re: [PATCH] serial: samsung: use dma_ops of DMA if attached
-To:     Tamseel Shams <m.shams@samsung.com>, kgene@kernel.org,
-        gregkh@linuxfoundation.org, jslaby@suse.com
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
-        ajaykumar.rs@samsung.com
-References: <CGME20210621044517epcas5p187affa518a18a3d019deb0c189cd8396@epcas5p1.samsung.com>
- <20210621044916.41564-1-m.shams@samsung.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <8935a448-04b7-91ce-203a-9f0d7e377052@canonical.com>
-Date:   Mon, 21 Jun 2021 11:12:30 +0200
+        Mon, 21 Jun 2021 02:12:42 -0700 (PDT)
+Subject: Re: [PATCH] Doc: correct the url of linux-next.
+To:     Zhou Yuheng <zzjzxq33@yeah.net>, alexs@kernel.org
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <4b28d69.493.17a2934b77b.Coremail.zzjzxq33@yeah.net>
+From:   Alex Shi <seakeel@gmail.com>
+Message-ID: <8d838343-1bcd-15e3-7033-8fa4c2768125@gmail.com>
+Date:   Mon, 21 Jun 2021 17:12:39 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210621044916.41564-1-m.shams@samsung.com>
+In-Reply-To: <4b28d69.493.17a2934b77b.Coremail.zzjzxq33@yeah.net>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Reviewed-by: Alex Shi <alexs@kernel.org>
 
-Thanks for the patch.
-
-On 21/06/2021 06:49, Tamseel Shams wrote:
-> When DMA is used for TX and RX by serial driver, it should
-> pass the DMA device pointer to DMA API instead of UART device
-> pointer.
-
-Hmmm, but why DMA device pointer should be used?
-
-> 
-> This patch is necessary to fix the SMMU page faults
-> which is observed when a DMA(with SMMU enabled) is attached
-> to UART for transfer.
-> 
-> Signed-off-by: Tamseel Shams <m.shams@samsung.com>
-> Signed-off-by: Ajay Kumar <ajaykumar.rs@samsung.com>
+On 6/20/21 7:35 PM, Zhou Yuheng wrote:
+> There was a full angle query in the url of linux-next.
+> Signed-off-by: Zhou Yuheng <zzjzxq33@yeah.net>
 > ---
->  drivers/tty/serial/samsung_tty.c | 60 +++++++++++++++++++++++++-------
->  1 file changed, 48 insertions(+), 12 deletions(-)
+>  Documentation/translations/zh_CN/process/howto.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
-> index b923683e6a25..5bdc7dd2a5e2 100644
-> --- a/drivers/tty/serial/samsung_tty.c
-> +++ b/drivers/tty/serial/samsung_tty.c
-> @@ -284,8 +284,13 @@ static void s3c24xx_serial_stop_tx(struct uart_port *port)
->  	struct s3c24xx_uart_dma *dma = ourport->dma;
->  	struct circ_buf *xmit = &port->state->xmit;
->  	struct dma_tx_state state;
-> +	struct device *dma_map_ops_dev = ourport->port.dev;
->  	int count;
+> diff --git a/Documentation/translations/zh_CN/process/howto.rst b/Documentation/translations/zh_CN/process/howto.rst
+> index ee3dee476..52c66461f 100644
+> --- a/Documentation/translations/zh_CN/process/howto.rst
+> +++ b/Documentation/translations/zh_CN/process/howto.rst
+> @@ -252,7 +252,7 @@ Linux-next 集成测试树
+>  在将子系统树的更新合并到主线树之前，需要对它们进行集成测试。为此，存在一个
+>  特殊的测试存储库，其中几乎每天都会提取所有子系统树：
 >  
-> +	/* Pick dma_ops of DMA device if DMA device is attached */
-
-You mention here and further comments "dma_ops". I don't see you
-changing the DMA ops, but the device. It's quite confusing. I think you
-meant a DMA device shall be passed to DMA API?
-
-Second question: you write that DMA devices should be used if DMA is
-attached and in the code you follow such pattern a lot:
-
-> +	if (dma && dma->tx_chan)
-> +		dma_map_ops_dev = dma->tx_chan->device->dev;
-> +
-
-Are you trying to say that if DMA is not attached, UART device should be
-used? If DMA is not attached, how are the DMA operations used then?
-
->  	if (!ourport->tx_enabled)
->  		return;
+> -        https://git.kernel.org/？p=linux/kernel/git/next/linux-next.git
+> +        https://git.kernel.org/?p=linux/kernel/git/next/linux-next.git
 >  
-> @@ -298,7 +303,7 @@ static void s3c24xx_serial_stop_tx(struct uart_port *port)
->  		dmaengine_pause(dma->tx_chan);
->  		dmaengine_tx_status(dma->tx_chan, dma->tx_cookie, &state);
->  		dmaengine_terminate_all(dma->tx_chan);
-> -		dma_sync_single_for_cpu(ourport->port.dev,
-> +		dma_sync_single_for_cpu(dma_map_ops_dev,
->  			dma->tx_transfer_addr, dma->tx_size, DMA_TO_DEVICE);
->  		async_tx_ack(dma->tx_desc);
->  		count = dma->tx_bytes_requested - state.residue;
-> @@ -324,15 +329,19 @@ static void s3c24xx_serial_tx_dma_complete(void *args)
->  	struct circ_buf *xmit = &port->state->xmit;
->  	struct s3c24xx_uart_dma *dma = ourport->dma;
->  	struct dma_tx_state state;
-> +	struct device *dma_map_ops_dev = ourport->port.dev;
->  	unsigned long flags;
->  	int count;
->  
-> +	/* Pick dma_ops of DMA device if DMA device is attached */
-> +	if (dma && dma->tx_chan)
-> +		dma_map_ops_dev = dma->tx_chan->device->dev;
->  
->  	dmaengine_tx_status(dma->tx_chan, dma->tx_cookie, &state);
->  	count = dma->tx_bytes_requested - state.residue;
->  	async_tx_ack(dma->tx_desc);
->  
-> -	dma_sync_single_for_cpu(ourport->port.dev, dma->tx_transfer_addr,
-> +	dma_sync_single_for_cpu(dma_map_ops_dev, dma->tx_transfer_addr,
->  				dma->tx_size, DMA_TO_DEVICE);
->  
->  	spin_lock_irqsave(&port->lock, flags);
-> @@ -408,7 +417,11 @@ static int s3c24xx_serial_start_tx_dma(struct s3c24xx_uart_port *ourport,
->  	struct uart_port *port = &ourport->port;
->  	struct circ_buf *xmit = &port->state->xmit;
->  	struct s3c24xx_uart_dma *dma = ourport->dma;
-> +	struct device *dma_map_ops_dev = ourport->port.dev;
->  
-> +	/* Pick dma_ops of DMA device if DMA device is attached */
-> +	if (dma && dma->tx_chan)
-> +		dma_map_ops_dev = dma->tx_chan->device->dev;
->  
->  	if (ourport->tx_mode != S3C24XX_TX_DMA)
->  		enable_tx_dma(ourport);
-> @@ -416,7 +429,7 @@ static int s3c24xx_serial_start_tx_dma(struct s3c24xx_uart_port *ourport,
->  	dma->tx_size = count & ~(dma_get_cache_alignment() - 1);
->  	dma->tx_transfer_addr = dma->tx_addr + xmit->tail;
->  
-> -	dma_sync_single_for_device(ourport->port.dev, dma->tx_transfer_addr,
-> +	dma_sync_single_for_device(dma_map_ops_dev, dma->tx_transfer_addr,
->  				dma->tx_size, DMA_TO_DEVICE);
->  
->  	dma->tx_desc = dmaengine_prep_slave_single(dma->tx_chan,
-> @@ -483,12 +496,17 @@ static void s3c24xx_uart_copy_rx_to_tty(struct s3c24xx_uart_port *ourport,
->  		struct tty_port *tty, int count)
->  {
->  	struct s3c24xx_uart_dma *dma = ourport->dma;
-> +	struct device *dma_map_ops_dev = ourport->port.dev;
->  	int copied;
->  
-> +	/* Pick dma_ops of DMA device if DMA device is attached */
-> +	if (dma && dma->rx_chan)
-> +		dma_map_ops_dev = dma->rx_chan->device->dev;
-> +
->  	if (!count)
->  		return;
->  
-> -	dma_sync_single_for_cpu(ourport->port.dev, dma->rx_addr,
-> +	dma_sync_single_for_cpu(dma_map_ops_dev, dma->rx_addr,
->  				dma->rx_size, DMA_FROM_DEVICE);
->  
->  	ourport->port.icount.rx += count;
-> @@ -600,8 +618,13 @@ static void s3c24xx_serial_rx_dma_complete(void *args)
->  static void s3c64xx_start_rx_dma(struct s3c24xx_uart_port *ourport)
->  {
->  	struct s3c24xx_uart_dma *dma = ourport->dma;
-> +	struct device *dma_map_ops_dev = ourport->port.dev;
->  
-> -	dma_sync_single_for_device(ourport->port.dev, dma->rx_addr,
-> +	/* Pick dma_ops of DMA device if DMA device is attached */
-> +	if (dma && dma->rx_chan)
-> +		dma_map_ops_dev = dma->rx_chan->device->dev;
-> +
-> +	dma_sync_single_for_device(dma_map_ops_dev, dma->rx_addr,
->  				dma->rx_size, DMA_FROM_DEVICE);
->  
->  	dma->rx_desc = dmaengine_prep_slave_single(dma->rx_chan,
-> @@ -983,6 +1006,7 @@ static int s3c24xx_serial_request_dma(struct s3c24xx_uart_port *p)
-
-Offset of hunks looks here significantly different than mainline. The
-patch should be based and tested mainline tree. Which one did you choose
-as base?
-
-Using my email address not from get_maintainers.pl also suggests that
-you don't use anything recent as a base.
-
-Best regards,
-Krzysztof
+>  通过这种方式，Linux-next 对下一个合并阶段将进入主线内核的内容给出了一个概要
+>  展望。非常欢冒险的测试者运行测试Linux-next。
+> 
