@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D2A3AEF72
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EE053AEF76
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231971AbhFUQit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:38:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56050 "EHLO mail.kernel.org"
+        id S231629AbhFUQjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:39:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232877AbhFUQev (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:34:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D6BB613F6;
-        Mon, 21 Jun 2021 16:27:14 +0000 (UTC)
+        id S232887AbhFUQew (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:34:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D8DE6141A;
+        Mon, 21 Jun 2021 16:27:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292835;
-        bh=MRDSB7rhHlkBX0jrG6+LA/MMI6OOLjy29jH3CybOzAA=;
+        s=korg; t=1624292837;
+        bh=Kx5gsh0tLRYTOoK4Dnww7+GDnHFfBKKOzu5ZzMlGyaE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sVmTX1abpJiy66dAdcpHnE/MXDFe14MfjVgUoF3CfNe3ovslifSeLivIJyKhZGCKz
-         VeUI+sP9KKr1LZAV6h+qQ0OFnGWuQOREyLLvf4v5t+XKjT/xz+5PKRsb+ObeIH51S5
-         BmcKO3Ufn2D2VZNqEfNccQo9mvjtWuVOClZLWGI8=
+        b=LM5dbctuWvNXC1jn+06U8FdeE9v23tnVbEpLuQT5gH/U9MmDbzu8jK07R3XptpGjD
+         lbeM9if3l+E+uXMW3fpxMHUr3/oul+TEyiq9Kz0Rar4MTqUJxvUHCVG/Kj5nK8AWvB
+         9JkHY5Ew9T7qG8+cJt5rP96dGE+1DIio8RYeDcPM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@suse.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Rik van Riel <riel@surriel.com>
-Subject: [PATCH 5.10 119/146] x86/process: Check PF_KTHREAD and not current->mm for kernel threads
-Date:   Mon, 21 Jun 2021 18:15:49 +0200
-Message-Id: <20210621154918.937006863@linuxfoundation.org>
+        stable@vger.kernel.org, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.10 120/146] x86/ioremap: Map EFI-reserved memory as encrypted for SEV
+Date:   Mon, 21 Jun 2021 18:15:50 +0200
+Message-Id: <20210621154919.000417060@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
 References: <20210621154911.244649123@linuxfoundation.org>
@@ -41,38 +40,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Tom Lendacky <thomas.lendacky@amd.com>
 
-commit 12f7764ac61200e32c916f038bdc08f884b0b604 upstream.
+commit 8d651ee9c71bb12fc0c8eb2786b66cbe5aa3e43b upstream.
 
-switch_fpu_finish() checks current->mm as indicator for kernel threads.
-That's wrong because kernel threads can temporarily use a mm of a user
-process via kthread_use_mm().
+Some drivers require memory that is marked as EFI boot services
+data. In order for this memory to not be re-used by the kernel
+after ExitBootServices(), efi_mem_reserve() is used to preserve it
+by inserting a new EFI memory descriptor and marking it with the
+EFI_MEMORY_RUNTIME attribute.
 
-Check the task flags for PF_KTHREAD instead.
+Under SEV, memory marked with the EFI_MEMORY_RUNTIME attribute needs to
+be mapped encrypted by Linux, otherwise the kernel might crash at boot
+like below:
 
-Fixes: 0cecca9d03c9 ("x86/fpu: Eager switch PKRU state")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+  EFI Variables Facility v0.08 2004-May-17
+  general protection fault, probably for non-canonical address 0x3597688770a868b2: 0000 [#1] SMP NOPTI
+  CPU: 13 PID: 1 Comm: swapper/0 Not tainted 5.12.4-2-default #1 openSUSE Tumbleweed
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+  RIP: 0010:efi_mokvar_entry_next
+  [...]
+  Call Trace:
+   efi_mokvar_sysfs_init
+   ? efi_mokvar_table_init
+   do_one_initcall
+   ? __kmalloc
+   kernel_init_freeable
+   ? rest_init
+   kernel_init
+   ret_from_fork
+
+Expand the __ioremap_check_other() function to additionally check for
+this other type of boot data reserved at runtime and indicate that it
+should be mapped encrypted for an SEV guest.
+
+ [ bp: Massage commit message. ]
+
+Fixes: 58c909022a5a ("efi: Support for MOK variable config table")
+Reported-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-Acked-by: Rik van Riel <riel@surriel.com>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/20210608144345.912645927@linutronix.de
+Tested-by: Joerg Roedel <jroedel@suse.de>
+Cc: <stable@vger.kernel.org> # 5.10+
+Link: https://lkml.kernel.org/r/20210608095439.12668-2-joro@8bytes.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/include/asm/fpu/internal.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/mm/ioremap.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -578,7 +578,7 @@ static inline void switch_fpu_finish(str
- 	 * PKRU state is switched eagerly because it needs to be valid before we
- 	 * return to userland e.g. for a copy_to_user() operation.
- 	 */
--	if (current->mm) {
-+	if (!(current->flags & PF_KTHREAD)) {
- 		pk = get_xsave_addr(&new_fpu->state.xsave, XFEATURE_PKRU);
- 		if (pk)
- 			pkru_val = pk->pkru;
+--- a/arch/x86/mm/ioremap.c
++++ b/arch/x86/mm/ioremap.c
+@@ -118,7 +118,9 @@ static void __ioremap_check_other(resour
+ 	if (!IS_ENABLED(CONFIG_EFI))
+ 		return;
+ 
+-	if (efi_mem_type(addr) == EFI_RUNTIME_SERVICES_DATA)
++	if (efi_mem_type(addr) == EFI_RUNTIME_SERVICES_DATA ||
++	    (efi_mem_type(addr) == EFI_BOOT_SERVICES_DATA &&
++	     efi_mem_attributes(addr) & EFI_MEMORY_RUNTIME))
+ 		desc->flags |= IORES_MAP_ENCRYPTED;
+ }
+ 
 
 
