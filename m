@@ -2,66 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A75BD3AF8EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B40243AF8EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230461AbhFUXG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 19:06:26 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:39080 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229940AbhFUXGZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 19:06:25 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1lvSxY-0000SO-3P; Tue, 22 Jun 2021 01:04:04 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>, linux-media@vger.kernel.org,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Alex Bee <knaerzche@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH v2 00/12] Add support for older Rockchip SoCs to V4L2 hantro and rkvdec drivers
-Date:   Tue, 22 Jun 2021 01:04:02 +0200
-Message-Id: <162431663480.82957.13969853774662992128.b4-ty@sntech.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210527154455.358869-1-knaerzche@gmail.com>
-References: <20210525152225.154302-1-knaerzche@gmail.com> <20210527154455.358869-1-knaerzche@gmail.com>
+        id S230521AbhFUXIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 19:08:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229915AbhFUXIR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 19:08:17 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CEF6C061574;
+        Mon, 21 Jun 2021 16:06:02 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvSyp-00AzNi-P9; Mon, 21 Jun 2021 23:05:23 +0000
+Date:   Mon, 21 Jun 2021 23:05:23 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+Message-ID: <YNEbM+B8Su7GDCSo@zeniv-ca.linux.org.uk>
+References: <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+ <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+ <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+ <87eed4v2dc.fsf@disp2133>
+ <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+ <87fsxjorgs.fsf@disp2133>
+ <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+ <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
+ <YNCfNWC1UMvuE5d5@zeniv-ca.linux.org.uk>
+ <87czsfi2kv.fsf@disp2133>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87czsfi2kv.fsf@disp2133>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 27 May 2021 17:44:43 +0200, Alex Bee wrote:
-> this series adds support for older Rockchip SoCs (RK3036, RK3066, RK3188
-> and RK322x) to the existing V4L2 video decoder/-encoder drivers - namely
-> hantro and rkvdec.
-> They can be used as-is or with very little modifications.
+On Mon, Jun 21, 2021 at 11:50:56AM -0500, Eric W. Biederman wrote:
+> Al Viro <viro@zeniv.linux.org.uk> writes:
 > 
-> In preparation to that patches 1,8 and 9 add power-controller support for
-> RK3036 and RK322x, since both drivers rely on pm. The drivers for them
-> exist already in the common Rockchip pm driver, they just haven't be added
-> to the device trees yet.
+> > On Mon, Jun 21, 2021 at 01:54:56PM +0000, Al Viro wrote:
+> >> On Tue, Jun 15, 2021 at 02:58:12PM -0700, Linus Torvalds wrote:
+> >> 
+> >> > And I think our horrible "kernel threads return to user space when
+> >> > done" is absolutely horrifically nasty. Maybe of the clever sort, but
+> >> > mostly of the historical horror sort.
+> >> 
+> >> How would you prefer to handle that, then?  Separate magical path from
+> >> kernel_execve() to switch to userland?  We used to have something of
+> >> that sort, and that had been a real horror...
+> >> 
+> >> As it is, it's "kernel thread is spawned at the point similar to
+> >> ret_from_fork(), runs the payload (which almost never returns) and
+> >> then proceeds out to userland, same way fork(2) would've done."
+> >> That way kernel_execve() doesn't have to do anything magical.
+> >> 
+> >> Al, digging through the old notes and current call graph...
+> >
+> > 	FWIW, the major assumption back then had been that get_signal(),
+> > signal_delivered() and all associated machinery (including coredumps)
+> > runs *only* from SIGPENDING/NOTIFY_SIGNAL handling.
+> >
+> > 	And "has complete registers on stack" is only a part of that;
+> > there was other fun stuff in the area ;-/  Do we want coredumps for
+> > those, and if we do, will the de_thread stuff work there?
 > 
-> [...]
+> Do we want coredumps from processes that use io_uring? yes
+> Exactly what we want from io_uring threads is less clear.  We can't
+> really give much that is meaningful beyond the thread ids of the
+> io_uring threads.
+> 
+> What problems do are you seeing beyond the missing registers on the
+> stack for kernel threads?
+> 
+> I don't immediately see the connection between coredumps and de_thread.
+> 
+> The function de_thread arranges for the fatal_signal_pending to be true,
+> and that should work just fine for io_uring threads.  The io_uring
+> threads process the fatal_signal with get_signal and then proceed to
+> exit eventually calling do_exit.
 
-Applied, thanks!
+I would like to see the testing in cases when the io-uring thread is
+the one getting hit by initial signal and when it's the normal one
+with associated io-uring ones.  The thread-collecting logics at least
+used to depend upon fairly subtle assumptions, and "kernel threads
+obviously can't show up as candidates" used to narrow the analysis
+down...
 
-[10/12] ARM: dts: rockchip: add vpu node for RK3036
-        commit: 9d34d4aa896d00d398d799caa839a1494ba7c018
-[11/12] ARM: dts: rockchip: add vpu nodes for RK3066 and RK3188
-        commit: db3fc8fa0fcfa481cd8087c2ee068d1d1988c3a2
-[12/12] ARM: dts: rockchip: add vpu and vdec node for RK322x
-        commit: 36e9534dfcb5b09b919d2831d6a19aa3856b95a1
+In any case, WTF would we allow reads or writes to *any* registers of
+such threads?  It's not as simple as "just return zeroes", BTW - the
+values allowed in special registers might have non-trivial constraints
+on them.  The same goes for coredump - we don't _have_ registers to
+dump for those, period.
 
-Best regards,
--- 
-Heiko Stuebner <heiko@sntech.de>
+Looks like the first things to do would be
+	* prohibit ptrace accessing any regsets of worker threads
+	* make coredump skip all register notes for those
+
+Note, BTW, that kernel_thread() and kernel_execve() do *NOT* step into
+ptrace_notify() - explicit CLONE_UNTRACED for the former and zero
+current->ptrace in the caller of the latter.  So fork and exec side
+has ptrace_event() crap limited to real syscalls.
+
+It's seccomp[1] and exit-related stuff that are messy...
+
+[1] "never trust somebody who introduces himself as Honest Joe and keeps
+carping on that all the time"; c.f. __secure_computing(), CONFIG_INTEGRITY,
+etc.
