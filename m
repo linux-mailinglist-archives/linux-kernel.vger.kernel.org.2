@@ -2,75 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4E03AE931
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95CAD3AE92D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbhFUMiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 08:38:08 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:48286 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229695AbhFUMiB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 08:38:01 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R541e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yaohuiwang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UdA8ykB_1624278944;
-Received: from localhost(mailfrom:yaohuiwang@linux.alibaba.com fp:SMTPD_---0UdA8ykB_1624278944)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 21 Jun 2021 20:35:44 +0800
-From:   Yaohui Wang <yaohuiwang@linux.alibaba.com>
-To:     dave.hansen@linux.intel.com, tglx@linutronix.de
-Cc:     luto@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, linux-kernel@vger.kernel.org,
-        luoben@linux.alibaba.com, yaohuiwang@linux.alibaba.com
-Subject: [PATCH v3 2/2] kernel/resource: fix boundary judgment issues in find_next_iomem_res() and __walk_iomem_res_desc()
-Date:   Mon, 21 Jun 2021 20:34:19 +0800
-Message-Id: <20210621123419.2976-3-yaohuiwang@linux.alibaba.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20210621123419.2976-1-yaohuiwang@linux.alibaba.com>
-References: <20210621123419.2976-1-yaohuiwang@linux.alibaba.com>
+        id S229940AbhFUMh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 08:37:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41404 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229707AbhFUMhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 08:37:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D5D260724;
+        Mon, 21 Jun 2021 12:35:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624278909;
+        bh=/dPp1ND781uk4HC3Khf8WVu2noGkvLSaWwiJMOBrZRA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nUFIKyPlk8yymXr+s415ipewyzmT6ZbsogqdxsXNp/fmsVEqMRFV/ePigFnAaPfyJ
+         KiIMGhS43TWip9ALGGnHZ0XhOv/j0TnHRYCuer62raCHJxukWcphLyDo0NcHH0k4pL
+         ej7ezgg2ME5MYrS7yhOwoA2Q8GwM9SLwL+emW0l0NXspYvhhpQk3NnrDwhiJiXieK6
+         5rv5wyjr77l/xSbZt1QuvtwB3FaxDirfSVKhKjxS8fEm5w0ySdiRPjy/Fx7TEwilOZ
+         tSBTNSU3TjxdLp9HT2X5Ekg1S2YBTX7TFPqLXz9k0/Qz8F0FwtwXOAWHwYLjHZTjzL
+         w+0T5YFmfVKfw==
+Date:   Mon, 21 Jun 2021 13:34:47 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <treding@nvidia.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] regulator: core: Add stubs for driver API
+Message-ID: <20210621123447.GH4094@sirena.org.uk>
+References: <20210619124052.1354-1-digetx@gmail.com>
+ <20210621114659.GE4094@sirena.org.uk>
+ <5dd6145f-046f-9ed5-9f8c-58cf096287ab@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="FUaywKC54iCcLzqT"
+Content-Disposition: inline
+In-Reply-To: <5dd6145f-046f-9ed5-9f8c-58cf096287ab@gmail.com>
+X-Cookie: I hate dying.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Memory resources are described with the start address and the inclusive
-end address, which means for a resource with 1 byte length the start
-address is the same as the end address.
 
-find_next_iomem_res() and __walk_iomem_res_desc() ignore resources with
-1 byte length, which prevents that ioremap_xxx(phys_addr, 1) is checked
-whether it touches non-ioremappable resources.
+--FUaywKC54iCcLzqT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 010a93bf97c7 (resource: Fix find_next_iomem_res() iteration issue)
-Fixes: b69c2e20f6e4 (resource: Clean it up a bit)
-Signed-off-by: Yahui Wang <yaohuiwang@linux.alibaba.com>
-Signed-off-by: Ben Luo <luoben@linux.alibaba.com>
----
- kernel/resource.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Mon, Jun 21, 2021 at 03:04:30PM +0300, Dmitry Osipenko wrote:
+> 21.06.2021 14:46, Mark Brown =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
 
-diff --git a/kernel/resource.c b/kernel/resource.c
-index ca9f5198a01f..31e371babfad 100644
---- a/kernel/resource.c
-+++ b/kernel/resource.c
-@@ -344,7 +344,7 @@ static int find_next_iomem_res(resource_size_t start, resource_size_t end,
- 	if (!res)
- 		return -EINVAL;
- 
--	if (start >= end)
-+	if (start > end)
- 		return -EINVAL;
- 
- 	read_lock(&resource_lock);
-@@ -392,7 +392,7 @@ static int __walk_iomem_res_desc(resource_size_t start, resource_size_t end,
- 	struct resource res;
- 	int ret = -EINVAL;
- 
--	while (start < end &&
-+	while (start <= end &&
- 	       !find_next_iomem_res(start, end, flags, desc, &res)) {
- 		ret = (*func)(&res, arg);
- 		if (ret)
--- 
-2.25.1
+> > Why would something be registering a regulator device without a
+> > dependency on the regulator API?
 
+> For example if regulator device registration is optional in the code. We
+> don't have such cases in the kernel today, but I decided that it will be
+> cleaner to add stubs for the whole API.
+
+It doesn't strike me as the sort of thing that should be optional TBH.
+It seems much more likely that not having the stub will catch silly
+errors than that the stubs will make something work that should.
+
+> If you think that it will be better to add the dependency to the coupler
+> drivers, then let's do it.
+
+For coupler drivers it's not clear what function they serve without the
+regulator API being enabled.
+
+--FUaywKC54iCcLzqT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDQh2YACgkQJNaLcl1U
+h9DNqgf9H2EO8XonlkE2W4Tm+DJqEVTbhNJDun/PgwBebP+peFh1le33KSyFVJbc
+Fw344+7FuxqC72pX7yYZt9x6DLA6rDTC38/0Td2HEq7SLY2hvyOwb3ncvwkHt2mk
+/u/JPrDRE5L8sV715JxEJlBif3MG+kpTwp0vfoxgadtmaE/vQ+sObbLeB7aGhAAC
+efEMqH4wCGZYY86ivfGcUM3EEj9LSQWBz9tLzTtSueHeHn5p84TOQOVhOAb6DUrv
+Ca39lUpzQlbd+Wvy7I+WwWOEJkt53kP4sUNdjaBlVfEkZWzKCLs9lLeJ3bPYDm40
+hoIf4P1rg2IVw/FUUwcNH22+RPUnpA==
+=Gxr0
+-----END PGP SIGNATURE-----
+
+--FUaywKC54iCcLzqT--
