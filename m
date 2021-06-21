@@ -2,98 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4684D3AF23C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D41C53AF241
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231663AbhFURqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 13:46:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231138AbhFURqm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 13:46:42 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A36C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:44:26 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id k8so26233643lja.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:44:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aj/0Z18KSrpkQcWAKnHj05+GfR0DaIVfgC0ovqanE2c=;
-        b=hTKeytdGalobGnv1mLXz9178COoRqwCgEE/ubFc97TESs4l1ETbGTi/LXWwSHW8ii7
-         cU1NcxgBwnSNSSWUGI+0LSLO/eA4skHJOAyy2fZxvgaDUE2kKpXUeFq7V5b34HYKHOnI
-         TsfOqqXpxOjB45tPERHc8HZ9x/0x2urKpZmdDFjmOHnTIzDvOBwe/rgvABgjv5qaLR/O
-         ByzDEPcf5lYiYqzPcNPzyCnIwtBSE6IaFn0tItgAEDTNFbtKqHPSF2zRWCYSRAJfI1ut
-         6seNasjRSFy7UCNfh8Ov01ynyt41Sclnq4cMIJyoVCx9rvyy9NrYgMxQtwhLOKhMEat+
-         cJWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aj/0Z18KSrpkQcWAKnHj05+GfR0DaIVfgC0ovqanE2c=;
-        b=LuCPmIKwPeB0GMuZssE+GvwuPTemCs4i4GUMPNi94YADw3oq5YdOIGPJ/a5DcyfFgW
-         j/AukxhpcvbUwHHhufqQG69YruvQmZJz8+pephnxfiXLdMeoaKAcly7WpnVpwbRQsgwI
-         WGKtNyeqJWCC63owZ58cOVWzwYzsPRdj7CJOojkEFbjIuCuqjCaSZQhi6Ufoh/RaYTVK
-         O4eWuKif/bSuij/ThBsV5MWpoLGN1XoWzWhDYW5KsDJwYqamaTqs6vBzHr8hlorUA/yt
-         E70V+WDN+DuX4yZibN1GkCyTV7lbsYvNPveFsM7ES3JfGU2thMn+rTQCLxjhsENd1IhO
-         ahFg==
-X-Gm-Message-State: AOAM5303y2GgsAqAYjqbQPf7OllZcbOMidJUIC81J2aGJq8MGOxfznZQ
-        9BCjznp+nPzVi6ve5x7TBEcOCRfNe//XzeciYEuuxQ==
-X-Google-Smtp-Source: ABdhPJwdQKs2XYfO12j9GxWLhfQ9o6XvL9JaTlE9K2yEhyTXPKP7lTIi01KFE2ZPpN2bcp+AVRGr823u8lFAqVeQG58=
-X-Received: by 2002:a2e:858a:: with SMTP id b10mr22329066lji.445.1624297464450;
- Mon, 21 Jun 2021 10:44:24 -0700 (PDT)
+        id S231444AbhFURsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 13:48:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36836 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230330AbhFURsy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 13:48:54 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A945A60041;
+        Mon, 21 Jun 2021 17:46:38 +0000 (UTC)
+Date:   Mon, 21 Jun 2021 13:46:36 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     Phil Auld <pauld@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Kate Carcia <kcarcia@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Clark Willaims <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V4 05/12] trace/hwlat: Support hotplug operations
+Message-ID: <20210621134636.5b332226@oasis.local.home>
+In-Reply-To: <c87c24bd-253c-a645-1f29-83c558d8d4c5@redhat.com>
+References: <cover.1623746916.git.bristot@redhat.com>
+        <8899f8a8bec38bc600f7a2c61bc6ca664aa7beeb.1623746916.git.bristot@redhat.com>
+        <20210618124503.388fe4d4@oasis.local.home>
+        <20210618150020.689439d4@oasis.local.home>
+        <c4b86b0e-b45d-3039-f49c-0dc53e1adcbd@redhat.com>
+        <20210621112528.12aee665@oasis.local.home>
+        <c87c24bd-253c-a645-1f29-83c558d8d4c5@redhat.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <9D4A658A-5F77-4C33-904A-126E6052B205@linux.vnet.ibm.com>
- <CAFpoUr3g5t3Z0BtW4-jnYomc3cdY=V5=Zt94-C+fHOjGWa107w@mail.gmail.com>
- <CAKfTPtC=aXasuSNvn+A3152-4xoOTWROhJpZAVq6RLh1Hacpng@mail.gmail.com>
- <CAFpoUr2o2PVPOx+AvatjjUvqPTyNKE3C6oXejyU3HVMmtCnzvQ@mail.gmail.com>
- <6D1F875D-58E9-4A55-B0C3-21D5F31EDB76@linux.vnet.ibm.com> <CAFpoUr0iWFTq2grtnX_EH6KnZLZQCg1o6_yv1gfDK8WdbHmUCA@mail.gmail.com>
- <CAFpoUr3Wy9raHx+Dc0S8TB_Xi=E+Epsh_pA3DEFZP4eKf7s07A@mail.gmail.com>
- <20210621162243.GA29874@vingu-book> <CAKfTPtACzzoGhDFW0bTGgZRPB=3LR6kSwuUOrcKDFTAJ7BhTFQ@mail.gmail.com>
- <14EEE4A4-B2B1-4D0C-B2F6-BDB7C11B05DE@linux.vnet.ibm.com>
-In-Reply-To: <14EEE4A4-B2B1-4D0C-B2F6-BDB7C11B05DE@linux.vnet.ibm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 21 Jun 2021 19:44:13 +0200
-Message-ID: <CAKfTPtCwqpHUxFdk0Q4dwL19Zn0_EhX7gQ8dwf=rsWHyxZVAVw@mail.gmail.com>
-Subject: Re: [powerpc][5.13.0-rc7] Kernel warning (kernel/sched/fair.c:401)
- while running LTP tests
-To:     Sachin Sant <sachinp@linux.vnet.ibm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, Odin Ugedal <odin@uged.al>,
-        linuxppc-dev@lists.ozlabs.org,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Jun 2021 at 19:32, Sachin Sant <sachinp@linux.vnet.ibm.com> wrote:
->
-> >>> Any thoughts Vincent?
-> >>
-> >>
-> >> I would prefer that we use the reason of adding the cfs in the list instead.
-> >>
-> >> Something like the below should also fixed the problem. It is based on a
-> >> proposal I made to Rik sometimes ago when he tried to flatten the rq:
-> >> https://lore.kernel.org/lkml/20190906191237.27006-6-riel@surriel.com/
-> >>
-> >> This will ensure that a cfs is added in the list whenever one of its  child
-> >> is still in the list.
-> >
-> > Could you confirm that this patch fixes the problem for you too ?
-> >
-> Thanks for the fix.
->
-> The patch fixes the reported problem. The test ran to completion without
-> any failure.
->
-> Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-> Tested-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+On Mon, 21 Jun 2021 18:14:36 +0200
+Daniel Bristot de Oliveira <bristot@redhat.com> wrote:
 
-Thanks
+> >> Yep! I tried to take the trace_type_lock here, and got the lockdep info about
+> >> this problem.
+> >>  
+> >>> The only thing I could think of is to wake up a worker thread to do the
+> >>> work. That is, this just wakes the worker thread, then the worker grabs
+> >>> the trace_types_lock, iterates through the cpu mask of expect running
+> >>> threads, and then starts or kills them depending on the hwlat_busy
+> >>> value.    
+> >> So, it will not wait for the kworker to run?  
+> > What wont wait?  
+> 
+> For example, at the shutdown, should the hotplug callback wait for the workqueue
+> to run & kill the thread, or not?
 
->
-> -Sachin
->
+Doing that won't help the deadlock situation.
+
+	CPU 1			CPU 2
+	-----			-----
+    Start shutdown
+    down online_cpus()
+
+			   mutex_lock(trace_types_lock);
+			   get_online_cpus()
+			   [BLOCK]
+
+    wake_up_thread;
+    [schedule worker]
+
+    mutex_lock(trace_types_lock);
+
+ [ DEADLOCK ]
+
+
+Make all access to save_cpumask and hwlat_per_cpu_data inside the
+get_online_cpus() protection. (like in move_to_next_cpu(),
+start_single_thread() expand the get_online_cpus()).
+
+Then in the cpu going down case, we can simply kill the thread and
+update the save_cpumask, as it will be protected by the
+get_online_cpus() code.
+
+That is, don't even check if hwlat_busy is set or not. Just simply do:
+
+
+CPU_DOWN:
+
+	stop_cpu_kthead(cpu);
+
+That will stop the kthread if it is running.  But we should update
+that function to also set per_cpu(hwlat_per_cpu_data).kthread = NULL;
+Like stop_single_kthread() does.
+
+But for CPU_UP, we should do the work via a worker thread.
+
+CPU_UP:
+	schedule_work_on(&update_kthreads, cpu);
+
+Which in the work function for that update_kthreads work queue:
+
+	mutex_lock(&trace_types_lock);
+	if (!hwlat_busy || hwlat_data.thread_mode != MODE_PER_CPU)
+		goto out_unlock;
+
+	get_online_cpus();
+	if (!this_cpu(hwlat_per_cpu_data).kthread)
+		start_per_cpu_kthread(smp_processor_id());
+	put_online_cpus();
+
+ out_unlock:
+	mutex_unlock(&trace_types_lock);
+
+Or something like that.
+
+-- Steve
