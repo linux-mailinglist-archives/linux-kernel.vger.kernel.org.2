@@ -2,120 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0ECE3AE4B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6CB43AE4B0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhFUIYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 04:24:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59418 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230229AbhFUIY3 (ORCPT
+        id S230137AbhFUIY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 04:24:27 -0400
+Received: from mickerik.phytec.de ([195.145.39.210]:49774 "EHLO
+        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229804AbhFUIYZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 04:24:29 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FF62C061760
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 01:22:15 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id k5so9499981pjj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 01:22:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Gqd3O4ne1dNUetj8IOBDVEDjIC1vEw62dq7UiJ0rgTM=;
-        b=P5DIJiYcaFv2PfJZNbczzivYyCCQ9u7w3i/vH90+0mTyRL8r0HLL2Pd7w/RbaVUAZG
-         ucSIEnU4YgKWml+P3z4z4Gc3qujHL7jSo/JfLdH1jGjlMXfQuZNoWbPF8gWWqly7PDSa
-         aFaROk04qJwKB56IRCweNyqXZCaqIPlAP9CI0u2tm3mxZNnw6exFVtzEOvUvaBXwBqxb
-         wu+hLeum0CH3GVeEAtUJ81WGcSMx8vXl7oEL3V1+mrQEaS/JtjL/5vYj5T+BtAzizdL4
-         toDaLFGkRDYIHX8yL7Dfdm7yUra6/gzzVOpQGabfKhy1gGKPie9uDp3UxOKTmuJIgiby
-         d1vA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Gqd3O4ne1dNUetj8IOBDVEDjIC1vEw62dq7UiJ0rgTM=;
-        b=oZfs5Le6Sge6bFwwqQeEzye1+6/B+uDxL83E4EDlTlJtamD+o5DcoQdJtT1J6x5km8
-         F/iYjddulw1nzHgQo9gfMS3D9ISZNW+YHqw9wmG7mN/nSEOaTZjdHor9AhFCB7dwlDeT
-         2GzsLmyEZYsmPFk2JmvPHO83qiiFFLwi6FoyleJyLLRbWJ5CPzTZBR6ScJO0bOBeUZhg
-         wvrE2CiMO0lib+GcXJ/usYyQs6T9jOfWYIM8rZLXI2uhqU9WLTZHHHEIw7hrjpsOYvpv
-         kDUkzMZbTU9hynCaKe8Lot/acFhQ61nVKy6yAQ+j+xfWsSFJeIzaTrInbYkhau4HfA8v
-         LRBg==
-X-Gm-Message-State: AOAM531wh7s4ljcVN0Vh/2gYAGvVLTSCXb3EENemAi2vpBEhdicsGd/7
-        sVGvuYU+qJPZ/AjBXIyDErzaavRil3p2zexAznG1IQ==
-X-Google-Smtp-Source: ABdhPJwm9dF6HvcKy6dVJDn+aQMg1MuHWfIcw7Np2YEgLInhtBmcV4IDOEML8eNuAt0mxQzlgpuCNXuEVLpBe/VG5ww=
-X-Received: by 2002:a17:90b:300c:: with SMTP id hg12mr28711402pjb.46.1624263734484;
- Mon, 21 Jun 2021 01:22:14 -0700 (PDT)
+        Mon, 21 Jun 2021 04:24:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1624263730; x=1626855730;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=j+xB7H9HGYdYGqce6ZAiCB34bLZKU7MahT3T7Ll1a8U=;
+        b=T5mYIaf5CpVKoca1J6Z3n2iopRZ2SHHQF/pjoVZYqrB472sChRXVMDfhu1RDb2Xs
+        nNnD6jhIRHE8O4Dhex1ZfK6mCO5bT/9undKc39TXdj59CPQPLIiGBsswEHoEgv2e
+        ZYEf/V80W0nf+Qy6cdK1F0UZ3sr+H3nvJwEn+uF5xWI=;
+X-AuditID: c39127d2-a77bc70000001c5e-0c-60d04c3223cd
+Received: from florix.phytec.de (florix.phytec.de [172.16.0.118])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 8B.D2.07262.23C40D06; Mon, 21 Jun 2021 10:22:10 +0200 (CEST)
+Received: from Berlix.phytec.de (172.16.0.117) by Florix.phytec.de
+ (172.16.0.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 21 Jun
+ 2021 10:22:10 +0200
+Received: from Berlix.phytec.de ([fe80::343f:7618:c7ce:97c9]) by
+ berlix.phytec.de ([fe80::343f:7618:c7ce:97c9%3]) with mapi id 15.01.2176.009;
+ Mon, 21 Jun 2021 10:22:10 +0200
+From:   =?utf-8?B?U3RlZmFuIFJpZWRtw7xsbGVy?= <S.Riedmueller@phytec.de>
+To:     "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "airlied@linux.ie" <airlied@linux.ie>,
+        "sam@ravnborg.org" <sam@ravnborg.org>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>
+CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "laurent.pinchart@ideasonboard.com" 
+        <laurent.pinchart@ideasonboard.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/3] drm/panel: Add connector_type and bus_format for AUO
+ G104SN02 V2 panel
+Thread-Topic: [PATCH 1/3] drm/panel: Add connector_type and bus_format for AUO
+ G104SN02 V2 panel
+Thread-Index: AQHXMdf+y0dS36bcQE6gcAvYiVq17ar1fdqAgCjp/gA=
+Date:   Mon, 21 Jun 2021 08:22:10 +0000
+Message-ID: <5942e9c67f7d50737536613b80a2cb42a3615b3d.camel@phytec.de>
+References: <20210415091616.53415-1-s.riedmueller@phytec.de>
+         <57bf547d95ba84f72d0f9da0e687fbe71311e5b8.camel@phytec.de>
+In-Reply-To: <57bf547d95ba84f72d0f9da0e687fbe71311e5b8.camel@phytec.de>
+Accept-Language: en-US, de-DE
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.16.0.116]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <C7A4566DCC146349A87FC4C76A0BC936@phytec.de>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210528161552.654907-1-leo.yan@linaro.org> <CAOYpmdEvkSZaei-_SWrUC4YJ7rOUOoOaxM7+qc6dw=P+b_ivgA@mail.gmail.com>
- <5cf3effb-fccc-9385-6328-6d1e2e5ccdf3@arm.com> <CAOYpmdE=pSaDGOm+4iCh611DXVD766eCr5dACQ+TgOnSO=4EOA@mail.gmail.com>
- <20210612032721.GB36748@leoy-ThinkPad-X240s>
-In-Reply-To: <20210612032721.GB36748@leoy-ThinkPad-X240s>
-From:   Denis Nikitin <denik@google.com>
-Date:   Sun, 20 Jun 2021 22:21:57 -1000
-Message-ID: <CAOYpmdGW0U9u7zW3G6jyhZA23Uk1kd5gT00e9+g4O=k=WybDGA@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] coresight: Fix for snapshot mode
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Suzuki K Poulose <Suzuki.Poulose@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Coresight ML <coresight@lists.linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPIsWRmVeSWpSXmKPExsWyRoChTNfI50KCwYbfxha9504yWfzfNpHZ
+        4srX92wWnROXsFtc3jWHzWLFz62MFj93zWNxYPfY+20Bi8fOWXfZPWZ3zGT12P7tAavH/e7j
+        TB5Lpl1l8/i8SS6APYrLJiU1J7MstUjfLoEr49LFG8wF53gqzh7ayd7AuISni5GTQ0LARGLd
+        6pVMXYxcHEICy5kkthzuY4dwHjJK9N6eAJXZxCjx6/48JpAWNgEXic9t39hAEiICGxglHu7e
+        wwriMAtcZpRoObidHaRKWCBR4vKhrywgtohAksTUh49ZIWwrictHtrOB2CwCqhINjzYAxTk4
+        eAXcJBq/Z4CEhQSqJJac7wcbwyngLjH7cRdYK6OArERnwzuwI5gFxCU2PfvOCvGDgMSSPeeZ
+        IWxRiZeP/0HFFSTaejqZQMYzC2hKrN+lD2FaSGy6oAkxRVFiSvdDsE28AoISJ2c+YZnAKD4L
+        yYJZCM2zEJpnIWmehaR5ASPrKkah3Mzk7NSizGy9gozKktRkvZTUTYzASD48Uf3SDsa+OR6H
+        GJk4GA8xSnAwK4nwcmaeSRDiTUmsrEotyo8vKs1JLT7EKM3BoiTOu4G3JExIID2xJDU7NbUg
+        tQgmy8TBKdXAKFbQHqJwrv3QfoXNy+V3nF22zp/5ReWrc/Xintp2/0+Y/7pc8NS2db72C81r
+        aTtEmbROzrvsnrPjlVpyUfXslSWWTvaR9lGWprHPu9n+nN54RL3XdNPsIu+ZonErF+eeFLsY
+        zcQ0Ly0vehWXuqLBVu0XEe0Kxxb5S7xT+GiqZeeyzs2pado2JZbijERDLeai4kQAvi9H/dIC
+        AAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leo,
-
-On Fri, Jun 11, 2021 at 5:27 PM Leo Yan <leo.yan@linaro.org> wrote:
->
-> On Fri, Jun 11, 2021 at 01:31:41AM -0700, Denis Nikitin wrote:
-> > Hi Suzuki,
-> >
-> > On Thu, Jun 10, 2021 at 9:04 AM Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
-> > >
-> > [...]
-> > >
-> > > Are you able to confirm if the patch 3 alone fixes the above issue ?
-> > > I am not convinced that Patch 1 is necessary.
-> > >
-> >
-> > Yes. "perf cs-etm: Remove callback cs_etm_find_snapshot()" alone fixes
-> > the issue.
->
-> Based on current testing result, we should give high priority for
-> patches 2 and 3.
->
-> The patch 1 is controversial for how to handle the trace data kept
-> in multiple AUX buffers; essentially it's up to how we understand the
-> snapshot definition.  I confirmed Intel-PT and CoreSight have the same
-> behaviour for capturing trace data from multiple AUX ring buffers when
-> snapshot occurs.
->
-> I'd like to leave patch 1/3 out, and resend it if we get conclusion.
-> At the meantime, @Denis, if you have observed any profiling result
-> (or profiling quality) difference caused by patch 1, the feedback would
-> be very valuable.
-
-
-I evaluated AutoFDO profiles with benchmarks but I was only focused
-on the system-wide mode. And as I understood patch 1 fixes the issue
-in non system-wide mode.
-Currently I'm OoO so I won't be able to do further evaluation.
-
-- Denis
-
->
->
-> Thanks a lot for Denis' testing and insight review from Suzuki!
->
-> Leo
+SGksDQoNCmFub3RoZXIgZ2VudGxlIHBpbmcuDQoNCkFsc28gYWRkaW5nIExhdXJlbnQgUGluY2hh
+cnQgdG8gQ0MuDQoNClJlZ2FyZHMsDQpTdGVmYW4NCg0KT24gV2VkLCAyMDIxLTA1LTI2IGF0IDA3
+OjM0ICswMDAwLCBTdGVmYW4gUmllZG3DvGxsZXIgd3JvdGU6DQo+IEhpLA0KPiANCj4gZ2VudGxl
+IHBpbmcgZm9yIHRoaXMgc21hbGwgc2VyaWVzLg0KPiANCj4gUmVnYXJkcywNCj4gU3RlZmFuDQo+
+IA0KPiBPbiBUaHUsIDIwMjEtMDQtMTUgYXQgMTE6MTYgKzAyMDAsIFN0ZWZhbiBSaWVkbXVlbGxl
+ciB3cm90ZToNCj4gPiBUaGUgQVVPIEcxMDRTTjAyIFYyIGlzIGFuIExWRFMgZGlzcGxheSB3aGlj
+aCBzdXBwb3J0cyA2IGFuZCA4IGJwYyBQU1dHLg0KPiA+IEFkZCB0aGUgY29ycmVzcG9uZGluZyBj
+b25uZWN0b3IgdHlwZSBhbmQgOCBicGMgYXMgZGVmYXVsdCBidXNfZm9ybWF0Lg0KPiA+IA0KPiA+
+IFNpZ25lZC1vZmYtYnk6IFN0ZWZhbiBSaWVkbXVlbGxlciA8cy5yaWVkbXVlbGxlckBwaHl0ZWMu
+ZGU+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvZ3B1L2RybS9wYW5lbC9wYW5lbC1zaW1wbGUuYyB8
+IDIgKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKQ0KPiA+IA0KPiA+IGRp
+ZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vcGFuZWwvcGFuZWwtc2ltcGxlLmMNCj4gPiBiL2Ry
+aXZlcnMvZ3B1L2RybS9wYW5lbC9wYW5lbC1zaW1wbGUuYw0KPiA+IGluZGV4IDRlMmRhZDMxNGM3
+OS4uNDQ1ODNkMGVkOTAyIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9wYW5lbC9w
+YW5lbC1zaW1wbGUuYw0KPiA+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9wYW5lbC9wYW5lbC1zaW1w
+bGUuYw0KPiA+IEBAIC0xMDk4LDYgKzEwOTgsOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHBhbmVs
+X2Rlc2MgYXVvX2cxMDRzbjAyID0gew0KPiA+ICAJCS53aWR0aCA9IDIxMSwNCj4gPiAgCQkuaGVp
+Z2h0ID0gMTU4LA0KPiA+ICAJfSwNCj4gPiArCS5idXNfZm9ybWF0ID0gTUVESUFfQlVTX0ZNVF9S
+R0I4ODhfMVg3WDRfU1BXRywNCj4gPiArCS5jb25uZWN0b3JfdHlwZSA9IERSTV9NT0RFX0NPTk5F
+Q1RPUl9MVkRTLA0KPiA+ICB9Ow0KPiA+ICANCj4gPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBkcm1f
+ZGlzcGxheV9tb2RlIGF1b19nMTIxZWFuMDFfbW9kZSA9IHsNCg==
