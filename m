@@ -2,75 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE4D3AF9A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:39:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9A73AF9A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231986AbhFUXmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 19:42:12 -0400
-Received: from mout.gmx.net ([212.227.15.19]:33131 "EHLO mout.gmx.net"
+        id S232119AbhFUXn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 19:43:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231975AbhFUXmJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 19:42:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1624318777;
-        bh=OGE3oB4yUbrx5ZDX2sA+NupWUNECZ+7KgCAJr6TiEsI=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=S1GbXPsSlDrw0cBLb0nTvlYFAXMXqYbC9amg6xZrm1t2+RbI5o34xZPTf4U6x71e9
-         yxBVgvFykB7Crwg+FkPMqG3qdxwYoZSydK4yY5tZ1OIrZpr4yCUbLdLKxxR82bPLSc
-         T86uhjWdogKQwVYJg1B8BjcSWFhrL5LGj3lSAV3g=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MfpOd-1lJxth3oev-00gGLl; Tue, 22
- Jun 2021 01:39:37 +0200
-Subject: Re: Please don't waste maintainers' time on your KPI grabbing patches
- (AKA, don't be a KPI jerk)
-To:     Christoph Hellwig <hch@infradead.org>, Qu Wenruo <wqu@suse.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-References: <e78add0a-8211-86c3-7032-6d851c30f614@suse.com>
- <YNCwIe33OOW9rxPU@infradead.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <99acef59-b448-d7b2-3e64-4056f78cac66@gmx.com>
-Date:   Tue, 22 Jun 2021 07:39:32 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S231486AbhFUXnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 19:43:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D72A611BD;
+        Mon, 21 Jun 2021 23:41:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624318900;
+        bh=Hjg6nyt/cyl6h5T5XaGtOqKiPNLoKh3rJA7tP4MqZ9w=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=aCin44TsfCj0ZM9GJ2p+p2ho7J4cgUB0AXPwdCaviFwUaAxksUgWB9nLo1t2+AUSv
+         s+xZ8QzmPSlpYD8pe/640JZ0jAQx2v6SfM4ODzadsH+/oIkYBMteNr7srMAcA5G9qx
+         +HwegxokVeKexqN4SdgAuvnFaof/gD8yIpMq2Y2Jm9mujDNzlVSWDSG2bukB2B1g+W
+         N2TQtpLFKyPOwCS/RuLZ0h4wYho9edV77tNgAo+4GmJjz4uLcDdM3yppRb1ciqequ7
+         ezchoDrHbj3+xF/XET3SO5Q10ZrsBZsKv64CZbMH5xuWqzTlNNjxWv2ANprsI/p35m
+         eHtD02xOLM7yg==
+Subject: Re: [PATCH v2 1/3] compiler_attributes.h: define __no_profile, add to
+ noinstr
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Bill Wendling <wcw@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
+        Martin Liska <mliska@suse.cz>, Marco Elver <elver@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Fangrui Song <maskray@google.com>, linux-doc@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        johannes.berg@intel.com, linux-toolchains@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Miguel Ojeda <ojeda@kernel.org>
+References: <20210621231822.2848305-1-ndesaulniers@google.com>
+ <20210621231822.2848305-2-ndesaulniers@google.com>
+From:   Nathan Chancellor <nathan@kernel.org>
+Message-ID: <6ca2bf5a-f0c3-b972-2313-f09c39b67e3b@kernel.org>
+Date:   Mon, 21 Jun 2021 16:41:37 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <YNCwIe33OOW9rxPU@infradead.org>
+In-Reply-To: <20210621231822.2848305-2-ndesaulniers@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:E/0/+uOKi58C+nRw4TZxBiH87W+2mvkM8QG70yyJkI3dTHlag60
- tNC2W1VGpB2LHEqlhGLW3N62ArS9HD4cwp+xWUWzRopblEwf7nvn5A1NhfEoadTdt79XyJX
- 8jH0tvwMgEoscSXiBKtR6S2LhlyRJPug090TomPkE+K3GKeD79Pz1lu2Krx6aKMSlz7HUme
- 5TScYlbvDgNGO8Ea+qolA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OI1DhBptqF8=:/cO8DyGeXeK85MJ7xsQdwX
- 7ur+Wdd1MonQK1QCA6EFti8sxZwM5jRUdIZAs4ajc6fhfPdQvLaW5PmaEYxxn6lGdCbINbn3S
- cNqg9ZT0kSEWgexheKj5D0mqgrnHL9fZEw860GI4jdAseri2uLWbIRureHuazyPu52SqXTN1V
- iifpWK+3fNAPolQE5YLxNFVkyTtyOGC4/ipyKhvgbx93OqD8yqUci5+BPXrQ/Ds5QOGdGNbaf
- kl+Cf70N1c204cVKeoytaY+YGmuEZ8xVJcrFuB6eLBiPAv4akssYcrXqtqwxs+kFHaG/GkpGo
- ptnvzeb2/LYNlbySOEQj5/cfYbb2pj5Xw64oM4uYrly6rUyg6sia9s//KDmuViYg+oK5CCcU6
- SiNEL9GJpk03SZ8C3jqaz50rDaZ4lIysvUE4eDf472qYb9NXp3WHvAi3cu8/r7rRhV0PIyyqx
- 9tkMYDbrpQgHklorQPK9s2fSjP+5ryDef75VoCO0g+G6UEYN49x0feN0JD/heteHRqrwz36dx
- OGxqA079yDm+UyRzoWAmqi+Lcc9Rp3mjdkLXAb+aM3kYAKKJR2rAEg5eSe+McX2g9+ATFPUcR
- Doc/vFVp6eqeqm4o4rLx7mwR0VXzHhbFiQouOj96sam8crFP4OJP1MNNekulXLNBPT6orrb1y
- wzW+3DbvoJDewbRi5KDscJSdRZ6KWFGrAN98bgKSP068Qyt17iLd76pdNP7q8lYdsX3drGoHQ
- j0zsMqmNUjE0cjaXQPcoVlUzvZXu8jgLmL1ccAmUTULp2Ul9OIBE11BPQQ0SPNHbTW3ORICQ4
- 9nbyCV/UE/5uavSw78EUXEIi151F4QmsO/QbyJ/LAaUSCYZhySG4hCleG4NbOR2k8+U66yQkH
- 9zw8S6TVD7piIcHX5ohroficKk3Jyeh4ErZLEAoaBsTQVxTht9oHb0Gx9W9PUTwkUusbk6XF3
- QtaGV733Vd7tIM+qLyB+qGnqg9b2Vafe/hwclQmd/4G26MDyq8Qa/a+T+aF/ahYCMwjDV1xNg
- bHVvABTvATzT3/pxxLo+TuRPqVvF0urQYuomTkNakokjPL3OwbyJoXXdpXbVaH/AWSEA9boiX
- 417n7RJ84ZjDURcWjiY6dky2SGg9W76CWVGnC562pF3KSw+l81B3SkPtQ==
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 6/21/2021 4:18 PM, 'Nick Desaulniers' via Clang Built Linux wrote:
+> noinstr implies that we would like the compiler to avoid instrumenting a
+> function.  Add support for the compiler attribute
+> no_profile_instrument_function to compiler_attributes.h, then add
+> __no_profile to the definition of noinstr.
+> 
+> Link: https://lore.kernel.org/lkml/20210614162018.GD68749@worktop.programming.kicks-ass.net/
+> Link: https://reviews.llvm.org/D104257
+> Link: https://reviews.llvm.org/D104475
+> Link: https://reviews.llvm.org/D104658
+> Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80223
+> Reviewed-by: Fangrui Song <maskray@google.com>
+> Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
 
-On 2021/6/21 =E4=B8=8B=E5=8D=8811:28, Christoph Hellwig wrote:
-> WTF is KPI?
->
-https://en.wikipedia.org/wiki/Performance_indicator
-
-Not something open-source contributors should really care.
+> ---
+> Changes V1 -> V2:
+> * s/no_profile/no_profile_instrument_function/
+> * fix trailing double underscore on GCC 4 define, as per Fangrui+Miguel.
+> * Pick up Fangrui + Miguel's reviewed-by tag.
+> * Add link to GCC's doc.
+> * Fix clang's doc format; will appear once clang-13 is released.
+> 
+>   include/linux/compiler_attributes.h | 13 +++++++++++++
+>   include/linux/compiler_types.h      |  2 +-
+>   2 files changed, 14 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
+> index c043b8d2b17b..225511b17223 100644
+> --- a/include/linux/compiler_attributes.h
+> +++ b/include/linux/compiler_attributes.h
+> @@ -33,6 +33,7 @@
+>   # define __GCC4_has_attribute___externally_visible__  1
+>   # define __GCC4_has_attribute___no_caller_saved_registers__ 0
+>   # define __GCC4_has_attribute___noclone__             1
+> +# define __GCC4_has_attribute___no_profile_instrument_function__ 0
+>   # define __GCC4_has_attribute___nonstring__           0
+>   # define __GCC4_has_attribute___no_sanitize_address__ (__GNUC_MINOR__ >= 8)
+>   # define __GCC4_has_attribute___no_sanitize_undefined__ (__GNUC_MINOR__ >= 9)
+> @@ -237,6 +238,18 @@
+>   # define __nonstring
+>   #endif
+>   
+> +/*
+> + * Optional: only supported since GCC >= 7.1, clang >= 13.0.
+> + *
+> + *      gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-no_005fprofile_005finstrument_005ffunction-function-attribute
+> + *    clang: https://clang.llvm.org/docs/AttributeReference.html#no-profile-instrument-function
+> + */
+> +#if __has_attribute(__no_profile_instrument_function__)
+> +# define __no_profile                  __attribute__((__no_profile_instrument_function__))
+> +#else
+> +# define __no_profile
+> +#endif
+> +
+>   /*
+>    *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-noreturn-function-attribute
+>    * clang: https://clang.llvm.org/docs/AttributeReference.html#noreturn
+> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> index d29bda7f6ebd..d509169860f1 100644
+> --- a/include/linux/compiler_types.h
+> +++ b/include/linux/compiler_types.h
+> @@ -210,7 +210,7 @@ struct ftrace_likely_data {
+>   /* Section for code which can't be instrumented at all */
+>   #define noinstr								\
+>   	noinline notrace __attribute((__section__(".noinstr.text")))	\
+> -	__no_kcsan __no_sanitize_address
+> +	__no_kcsan __no_sanitize_address __no_profile
+>   
+>   #endif /* __KERNEL__ */
+>   
+> 
