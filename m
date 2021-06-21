@@ -2,93 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D64723AE262
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 06:28:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC9523AE278
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 06:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229610AbhFUEaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 00:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbhFUEaP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 00:30:15 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A45D0C061574;
-        Sun, 20 Jun 2021 21:28:00 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id k5so14199955iow.12;
-        Sun, 20 Jun 2021 21:28:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0MgP2FoJxdPuUlg9LcJ6VubUkC3qqIfYKwFy41iCxes=;
-        b=vVSLiEfzVcC5BijDyzVg9pXbRQ9q1pDF/1quWG7roTgSlWci+6Iz5VqSKbMGpYzFyf
-         v40VueLxmmiIpoQmepUSLu0wcJHoMo/9klRYBInGxC8osy5i9MYjbdsN4hggkIMSaMHk
-         vDy6g+JxAAi/LGB2HOaY+Rp/ZfSAjHP/slMTSn10QTI1q7iaK4/2EOEUkA3vPS0iMew/
-         qMvLhTjU1XqP43k4qEmAqP/mJERYXs4BlGmEORRotfHWuWhWACSYCWzcZVpfosIDJ86o
-         sNcGzNRScqIRXqtoxvJggAv936E9m6easBObyDkP4tkVnaGKY+UI9fHlDgh6ZRWaIB4u
-         MZXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0MgP2FoJxdPuUlg9LcJ6VubUkC3qqIfYKwFy41iCxes=;
-        b=lxKdTNKkXuv1gNf77+6G5/SASDcfhUwucBgKhbxICuSv0U1f3pnoqE5Vu6J82HzGYC
-         LUwwp4LEV60wsI9bXLdJVkM7r6Ux1yJBvLXzR+Po0zzr/dKP9lZio9cQPLAPBlpL8QTU
-         zotFCBIXTwA9y/M/FgaASKygHIMb6UQBKNnGzysUnMXEOI4HttxwPYNIpf8PDzHkRy0v
-         s0PZSA62hs9APqcDFkZsvha8SB4hWYmSejl7oegLk5DykQMJAIWL0HZaQ+ZL7iaSL21s
-         wWt7u/zYlVou/OC61/oUGdrwsR/aC098TH+zPKa9xJfZa8BqVdHnQu2KnJVJa5gZ4KvM
-         48yg==
-X-Gm-Message-State: AOAM531xLpMQcLW3mAXaXVgxLsQ9imeajsBwoDWyu/YkibGiAr5AxOZw
-        OYiLWwpDZgBcYT4SYBUDA3W2uKu+U2OJc1xt4bODfQiPjZY=
-X-Google-Smtp-Source: ABdhPJxSURS5VrXfLnuPvV/0q93AXPToJ3aWlkTGxRe76/HsqbOO2dOv+8Tc6LmcDMfHDfWS55WpVPmiXJrzKW36u9k=
-X-Received: by 2002:a05:6638:2143:: with SMTP id z3mr16002819jaj.103.1624249680014;
- Sun, 20 Jun 2021 21:28:00 -0700 (PDT)
+        id S229597AbhFUEiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 00:38:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50466 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229441AbhFUEit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 00:38:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E32D76100B;
+        Mon, 21 Jun 2021 04:36:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624250195;
+        bh=GLB/Ss+fGkEW5XRiJrP+WIsTTmWHJUEvXYecRI+A+zU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=E29iI/9595aKLEZxqKyB/JV3uYkLMZJCqyShqYyOzF7gGwUqhsSO6NGQwT7Pk8hvp
+         +Qy2Sca5MIZhJgeb4p2Rr20sUoFo7/TgS/QbNat/DP4+QEyPCoyfgEsY+VWZtr7hYV
+         ewBStgVxfKFWEpXuThTrMhd5w4dyXXpfzS/T32A6/Fu2yuKVdo05H2YqeCYFXyxYV1
+         4htxOU6/7ieOvptwz2YowjsoLGeGI1kX/u0iwf9xe45amdgeZonKYbi82lAUvMGW6P
+         p9533otvBBO/l6j+P6zWXwpFFH7chrEypjHDo081arHxnvG1dOEhaUzamfD1WGbytK
+         +ddfwJtiObamA==
+Date:   Mon, 21 Jun 2021 10:06:31 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
+        Samuel Holland <samuel@sholland.org>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Ondrej Jirman <megous@megous.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        linux-phy@lists.infradead.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH v7 14/19] phy: sun4i-usb: Introduce port2 SIDDQ quirk
+Message-ID: <YNAXT5lYVcJ309zJ@vkoul-mobl>
+References: <20210615110636.23403-1-andre.przywara@arm.com>
+ <20210615110636.23403-15-andre.przywara@arm.com>
 MIME-Version: 1.0
-References: <20210503081334.17143-1-shawn.guo@linaro.org> <20210503081334.17143-3-shawn.guo@linaro.org>
- <20210523060009.GA29015@dragon>
-In-Reply-To: <20210523060009.GA29015@dragon>
-From:   Jassi Brar <jassisinghbrar@gmail.com>
-Date:   Sun, 20 Jun 2021 23:27:49 -0500
-Message-ID: <CABb+yY3CA+gvRJi7nyA4wxwP3-XtbfDhq51eP8Q+vL7TbMncUQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] mailbox: qcom: Add MSM8939 APCS support
-To:     Shawn Guo <shawn.guo@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sivaprakash Murugesan <sivaprak@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Benjamin Li <benl@squareup.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615110636.23403-15-andre.przywara@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 23, 2021 at 1:00 AM Shawn Guo <shawn.guo@linaro.org> wrote:
->
-> On Mon, May 03, 2021 at 04:13:34PM +0800, Shawn Guo wrote:
-> > MSM8939 has 3 APCS instances for Cluster0 (little cores), Cluster1 (big
-> > cores) and CCI (Cache Coherent Interconnect).  Although only APCS of
-> > Cluster0 and Cluster1 have IPC bits, each of 3 APCS has A53PLL clock
-> > control bits.  That said, we need to register 3 'qcom-apcs-msm8916-clk'
-> > devices to instantiate all 3 clocks.  Let's use PLATFORM_DEVID_AUTO
-> > rather than PLATFORM_DEVID_NONE for platform_device_register_data()
-> > call.  Otherwise, the second A53PLL clock registration will fail due
-> > to duplicate device name.
-> >
-> > [    0.519657] sysfs: cannot create duplicate filename '/bus/platform/devices/qcom-apcs-msm8916-clk'
-> > ...
-> > [    0.661158] qcom_apcs_ipc b111000.mailbox: failed to register APCS clk
-> >
-> > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
->
-> Hi Jassi,
->
-> Any comment on this patch?
->
-1)  I was not on the CC list, so I don't have this patch in my mbox.
-2)  Shouldn't this patch be broken into a fix and an enablement patch?
+On 15-06-21, 12:06, Andre Przywara wrote:
+> At least the Allwinner H616 SoC requires a weird quirk to make most
+> USB PHYs work: Only port2 works out of the box, but all other ports
+> need some help from this port2 to work correctly: The CLK_BUS_PHY2 and
+> RST_USB_PHY2 clock and reset need to be enabled, and the SIDDQ bit in
+> the PMU PHY control register needs to be cleared. For this register to
+> be accessible, CLK_BUS_ECHI2 needs to be ungated. Don't ask ....
+> 
+> Instead of disguising this as some generic feature, do exactly that
+> in our PHY init:
+> If the quirk bit is set, and we initialise a PHY other than PHY2, ungate
+> this one special clock, and clear the SIDDQ bit. We can pull in the
+> other required clocks via the DT.
+> 
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> ---
+>  drivers/phy/allwinner/phy-sun4i-usb.c | 59 +++++++++++++++++++++++++++
+>  1 file changed, 59 insertions(+)
+> 
+> diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
+> index 126ef74d013c..316ef5fca831 100644
+> --- a/drivers/phy/allwinner/phy-sun4i-usb.c
+> +++ b/drivers/phy/allwinner/phy-sun4i-usb.c
+> @@ -120,6 +120,7 @@ struct sun4i_usb_phy_cfg {
+>  	u8 phyctl_offset;
+>  	bool dedicated_clocks;
+>  	bool phy0_dual_route;
+> +	bool needs_phy2_siddq;
+>  	int missing_phys;
+>  };
+>  
+> @@ -289,6 +290,50 @@ static int sun4i_usb_phy_init(struct phy *_phy)
+>  		return ret;
+>  	}
+>  
+> +	/* Some PHYs on some SoCs need the help of PHY2 to work. */
+> +	if (data->cfg->needs_phy2_siddq && phy->index != 2) {
+> +		struct sun4i_usb_phy *phy2 = &data->phys[2];
+> +
+> +		ret = clk_prepare_enable(phy2->clk);
+> +		if (ret) {
+> +			reset_control_assert(phy->reset);
+> +			clk_disable_unprepare(phy->clk2);
+> +			clk_disable_unprepare(phy->clk);
+> +			return ret;
+> +		}
+> +
+> +		ret = reset_control_deassert(phy2->reset);
+> +		if (ret) {
+> +			clk_disable_unprepare(phy2->clk);
+> +			reset_control_assert(phy->reset);
+> +			clk_disable_unprepare(phy->clk2);
+> +			clk_disable_unprepare(phy->clk);
+> +			return ret;
+> +		}
 
-cheers.
+no delay between deassert and assert... ?
+
+
+-- 
+~Vinod
