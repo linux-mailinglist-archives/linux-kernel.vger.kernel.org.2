@@ -2,97 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB7EE3AEA14
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38EA53AEA17
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbhFUNeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 09:34:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27053 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229876AbhFUNeF (ORCPT
+        id S230121AbhFUNeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 09:34:20 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:48342 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230061AbhFUNeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 09:34:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624282311;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aRbSdl5QweonziFZCzKBkR/5y5FG2MCCkXcMH71sHgk=;
-        b=SATYe2U2ig8t36FKvCHnmcsolQEGFZ9k9zQEa1WUao0jSMYs11bXlw0EYS9OxfZoAYlgJE
-        K8eK1Spw3HNnyLHWEIPWAcEQoeioZ6L8SNlz91pm/T0h4MxJ/T/n10QtNVLy+T/qQLET16
-        w/N3XIjeuCpF4WT17Hcxb856LowRHjM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-429-AAHeQQqJNoWPyJst2qT77g-1; Mon, 21 Jun 2021 09:31:49 -0400
-X-MC-Unique: AAHeQQqJNoWPyJst2qT77g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1A6319057A6;
-        Mon, 21 Jun 2021 13:31:47 +0000 (UTC)
-Received: from localhost (ovpn-114-233.ams2.redhat.com [10.36.114.233])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 38D2419C46;
-        Mon, 21 Jun 2021 13:31:45 +0000 (UTC)
-Date:   Mon, 21 Jun 2021 14:31:44 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        virtio-fs@redhat.com, linux-kernel@vger.kernel.org,
-        Vivek Goyal <vgoyal@redhat.com>
-Subject: Re: [Virtio-fs] support booting of arbitrary non-blockdevice file
- systems v2
-Message-ID: <YNCUwHn0zfmDEWBN@stefanha-x1.localdomain>
-References: <20210621062657.3641879-1-hch@lst.de>
+        Mon, 21 Jun 2021 09:34:19 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id 1727E1F423D9
+From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+To:     Christoph Hellwig <hch@lst.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        Shuah Khan <shuah@kernel.org>, ~lkcamp/patches@lists.sr.ht,
+        nfraprado@collabora.com, leandro.ribeiro@collabora.com,
+        Vitor Massaru Iha <vitor@massaru.org>, lucmaga@gmail.com,
+        David Gow <davidgow@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        tales.aparecida@gmail.com,
+        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
+Subject: [PATCH v4 0/1] lib: Convert UUID runtime test to KUnit
+Date:   Mon, 21 Jun 2021 10:31:47 -0300
+Message-Id: <20210621133148.9226-1-andrealmeid@collabora.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="H1YdTb2mTDFGvvnD"
-Content-Disposition: inline
-In-Reply-To: <20210621062657.3641879-1-hch@lst.de>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---H1YdTb2mTDFGvvnD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This patch converts existing UUID runtime test to use KUnit framework.
 
-On Mon, Jun 21, 2021 at 08:26:55AM +0200, Christoph Hellwig wrote:
-> Hi all,
->=20
-> this series adds support to boot off arbitrary non-blockdevice root file
-> systems, based off an earlier patch from Vivek.
->=20
-> Chances since v1:
->  - don't try to mount every registered file system if none is specified
->  - fix various null pointer dereferences when certain kernel paramters are
->    not set
->  - general refactoring.
->=20
-> _______________________________________________
-> Virtio-fs mailing list
-> Virtio-fs@redhat.com
-> https://listman.redhat.com/mailman/listinfo/virtio-fs
->=20
+Below, there's a comparison between the old output format and the new
+one. Keep in mind that even if KUnit seems very verbose, this is the
+corner case where _every_ test has failed.
 
-Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
+* This is how the current output looks like in success:
 
---H1YdTb2mTDFGvvnD
-Content-Type: application/pgp-signature; name="signature.asc"
+  test_uuid: all 18 tests passed
 
------BEGIN PGP SIGNATURE-----
+* And when it fails:
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmDQlMAACgkQnKSrs4Gr
-c8ganQf/dsU6iKVjBTVUSkTJmH1WTbSid1kpQaMUGfq7OVc3uPC8blsmfBdRwlqv
-e8rCiAH7mdtjXCVYEKB4q7+m9Yf6cKMYnGJ/yd0hgEnSxFEhYhoBWpOdRx/mj5Sy
-JP1xUW110BheBPQrdD786/OHo0plrX7mKOvDA6txgn7sMAmrAtVyjd1dmqqbU/Nu
-mYEf5YDcrqpmHFk8H9LHjK471p6pWUeDNwe687dnRaxvONAmg2stGXihP9Ycd4PM
-avhMfaReTGAzo+ezyOEqtc6YTnKZrmU3TRcIg5MPpfR42yKGOIvazW6lKXpTiUmt
-C8FEVeGCoSRA/kNi4zse1bhi4KpeQw==
-=XrUf
------END PGP SIGNATURE-----
+  test_uuid: conversion test #1 failed on LE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+  test_uuid: cmp test #2 failed on LE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+  test_uuid: cmp test #2 actual data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+  test_uuid: conversion test #3 failed on BE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+  test_uuid: cmp test #4 failed on BE data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+  test_uuid: cmp test #4 actual data: 'c33f4995-3701-450e-9fbf-206a2e98e576'
+  test_uuid: conversion test #5 failed on LE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+  test_uuid: cmp test #6 failed on LE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+  test_uuid: cmp test #6 actual data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+  test_uuid: conversion test #7 failed on BE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+  test_uuid: cmp test #8 failed on BE data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+  test_uuid: cmp test #8 actual data: '64b4371c-77c1-48f9-8221-29f054fc023b'
+  test_uuid: conversion test #9 failed on LE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+  test_uuid: cmp test #10 failed on LE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+  test_uuid: cmp test #10 actual data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+  test_uuid: conversion test #11 failed on BE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+  test_uuid: cmp test #12 failed on BE data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+  test_uuid: cmp test #12 actual data: '0cb4ddff-a545-4401-9d06-688af53e7f84'
+  test_uuid: negative test #13 passed on wrong LE data: 'c33f4995-3701-450e-9fbf206a2e98e576 '
+  test_uuid: negative test #14 passed on wrong BE data: 'c33f4995-3701-450e-9fbf206a2e98e576 '
+  test_uuid: negative test #15 passed on wrong LE data: '64b4371c-77c1-48f9-8221-29f054XX023b'
+  test_uuid: negative test #16 passed on wrong BE data: '64b4371c-77c1-48f9-8221-29f054XX023b'
+  test_uuid: negative test #17 passed on wrong LE data: '0cb4ddff-a545-4401-9d06-688af53e'
+  test_uuid: negative test #18 passed on wrong BE data: '0cb4ddff-a545-4401-9d06-688af53e'
+  test_uuid: failed 18 out of 18 tests
 
---H1YdTb2mTDFGvvnD--
+
+* Now, here's how it looks like with KUnit:
+
+  ======== [PASSED] uuid ========
+  [PASSED] uuid_correct_be
+  [PASSED] uuid_correct_le
+  [PASSED] uuid_wrong_be
+  [PASSED] uuid_wrong_le
+
+* And if every test fail with KUnit:
+
+  ======== [FAILED] uuid ========
+  [FAILED] uuid_correct_be
+      # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
+      Expected uuid_parse(data->uuid, &be) == 1, but
+          uuid_parse(data->uuid, &be) == 0
+  
+  failed to parse 'c33f4995-3701-450e-9fbf-206a2e98e576'
+      # uuid_correct_be: not ok 1 - c33f4995-3701-450e-9fbf-206a2e98e576
+      # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
+      Expected uuid_parse(data->uuid, &be) == 1, but
+          uuid_parse(data->uuid, &be) == 0
+  
+  failed to parse '64b4371c-77c1-48f9-8221-29f054fc023b'
+      # uuid_correct_be: not ok 2 - 64b4371c-77c1-48f9-8221-29f054fc023b
+      # uuid_correct_be: ASSERTION FAILED at lib/test_uuid.c:57
+      Expected uuid_parse(data->uuid, &be) == 1, but
+          uuid_parse(data->uuid, &be) == 0
+  
+  failed to parse '0cb4ddff-a545-4401-9d06-688af53e7f84'
+      # uuid_correct_be: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e7f84
+      not ok 1 - uuid_correct_be
+  
+  [FAILED] uuid_correct_le
+      # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
+      Expected guid_parse(data->uuid, &le) == 1, but
+          guid_parse(data->uuid, &le) == 0
+  
+  failed to parse 'c33f4995-3701-450e-9fbf-206a2e98e576'
+      # uuid_correct_le: not ok 1 - c33f4995-3701-450e-9fbf-206a2e98e576
+      # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
+      Expected guid_parse(data->uuid, &le) == 1, but
+          guid_parse(data->uuid, &le) == 0
+  
+  failed to parse '64b4371c-77c1-48f9-8221-29f054fc023b'
+      # uuid_correct_le: not ok 2 - 64b4371c-77c1-48f9-8221-29f054fc023b
+      # uuid_correct_le: ASSERTION FAILED at lib/test_uuid.c:46
+      Expected guid_parse(data->uuid, &le) == 1, but
+          guid_parse(data->uuid, &le) == 0
+  
+  failed to parse '0cb4ddff-a545-4401-9d06-688af53e7f84'
+      # uuid_correct_le: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e7f84
+      not ok 2 - uuid_correct_le
+  
+  [FAILED] uuid_wrong_be
+      # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
+      Expected uuid_parse(*data, &be) == 0, but
+          uuid_parse(*data, &be) == -22
+  
+  parsing of 'c33f4995-3701-450e-9fbf206a2e98e576 ' should've failed
+      # uuid_wrong_be: not ok 1 - c33f4995-3701-450e-9fbf206a2e98e576
+      # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
+      Expected uuid_parse(*data, &be) == 0, but
+          uuid_parse(*data, &be) == -22
+  
+  parsing of '64b4371c-77c1-48f9-8221-29f054XX023b' should've failed
+      # uuid_wrong_be: not ok 2 - 64b4371c-77c1-48f9-8221-29f054XX023b
+      # uuid_wrong_be: ASSERTION FAILED at lib/test_uuid.c:77
+      Expected uuid_parse(*data, &be) == 0, but
+          uuid_parse(*data, &be) == -22
+  
+  parsing of '0cb4ddff-a545-4401-9d06-688af53e' should've failed
+      # uuid_wrong_be: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e
+      not ok 3 - uuid_wrong_be
+  
+  [FAILED] uuid_wrong_le
+      # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
+      Expected guid_parse(*data, &le) == 0, but
+          guid_parse(*data, &le) == -22
+  
+  parsing of 'c33f4995-3701-450e-9fbf206a2e98e576 ' should've failed
+      # uuid_wrong_le: not ok 1 - c33f4995-3701-450e-9fbf206a2e98e576
+      # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
+      Expected guid_parse(*data, &le) == 0, but
+          guid_parse(*data, &le) == -22
+  
+  parsing of '64b4371c-77c1-48f9-8221-29f054XX023b' should've failed
+      # uuid_wrong_le: not ok 2 - 64b4371c-77c1-48f9-8221-29f054XX023b
+      # uuid_wrong_le: ASSERTION FAILED at lib/test_uuid.c:68
+      Expected guid_parse(*data, &le) == 0, but
+          guid_parse(*data, &le) == -22
+  
+  parsing of '0cb4ddff-a545-4401-9d06-688af53e' should've failed
+      # uuid_wrong_le: not ok 3 - 0cb4ddff-a545-4401-9d06-688af53e
+      not ok 4 - uuid_wrong_le
+
+Changes from v3:
+ - Drop unnecessary casts and braces.
+ - Simplify Kconfig entry
+v3: https://lore.kernel.org/lkml/20210610163959.71634-1-andrealmeid@collabora.com/
+
+Changes from v2:
+ - Clarify in commit message the new test cases setup
+v2: https://lore.kernel.org/lkml/20210609233730.164082-1-andrealmeid@collabora.com/
+
+Changes from v1:
+ - Test suite name: uuid_test -> uuid
+ - Config name: TEST_UUID -> UUID_KUNIT_TEST
+ - Config entry in the Kconfig file left where it is
+ - Converted tests to use _MSG variant
+v1: https://lore.kernel.org/lkml/20210605215215.171165-1-andrealmeid@collabora.com/
+
+André Almeida (1):
+  lib: Convert UUID runtime test to KUnit
+
+ lib/Kconfig.debug |   8 ++-
+ lib/Makefile      |   2 +-
+ lib/test_uuid.c   | 137 +++++++++++++++++++---------------------------
+ 3 files changed, 64 insertions(+), 83 deletions(-)
+
+-- 
+2.31.1
 
