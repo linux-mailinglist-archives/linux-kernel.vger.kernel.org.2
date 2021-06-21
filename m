@@ -2,191 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B29A3AE5A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C473AE5AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbhFUJKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:10:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:59366 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229618AbhFUJKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:10:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2B7B91FB;
-        Mon, 21 Jun 2021 02:08:00 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 95C723F718;
-        Mon, 21 Jun 2021 02:07:57 -0700 (PDT)
-Subject: Re: [PATCH v16 3/7] KVM: arm64: Introduce MTE VM feature
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Andrew Jones <drjones@redhat.com>
-References: <20210618132826.54670-1-steven.price@arm.com>
- <20210618132826.54670-4-steven.price@arm.com> <87a6njd22b.wl-maz@kernel.org>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <566f272b-39e3-5da0-6b94-5f992a77adbe@arm.com>
-Date:   Mon, 21 Jun 2021 10:07:56 +0100
+        id S230268AbhFUJNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:13:40 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:40854 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229943AbhFUJNj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 05:13:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1624266684;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xJd+X/A94EI23dGd54cbNXHaDDEu78s3T1s4Aa+H7JQ=;
+        b=fjRQ1rs4tl/z5xiJpIkYuBiR0NW6pLX0WcePy47PvttDOVa9arVuh02TKkSY0Y/WMWx1HD
+        bjIgz0ad4MqJk7vHqklD8JqOGkQ/MQHJQRK/+lq93MVijQ0Q4O97Nj2uuSel/BOXtcJ2fV
+        g1n/VNXy5UdvjpChtryZcbniJOtZ2rI=
+Received: from EUR02-VE1-obe.outbound.protection.outlook.com
+ (mail-ve1eur02lp2054.outbound.protection.outlook.com [104.47.6.54]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-33-Opm7prn8NZ-E9NydaPACSQ-1; Mon, 21 Jun 2021 11:11:22 +0200
+X-MC-Unique: Opm7prn8NZ-E9NydaPACSQ-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SPv516DMUrJjGFS7m+Lg8EnTD/69me6HnhP4/CgMV2fUc93fO6suZMV8XscI6ApKa+YczO3Oo4Fy8GvgMbw7VHGqFhWxCC8JIx1pU/JUW/fGik69QnS2GcWw0GZ5enww9LhmoZOGAuM+mZ4fvvBE++YcSTOJeiRW31DoNsK5+BeOwP9Bml1uBd981wmiVgVm9xlBI6h6KrE9ZE74vigxyHfod+oK3G8i2NlARRVbu3e4uh4BW84beduF768+Op9PTOHjM8pXWgaPdzJuzDXknQ8v+/CONOEpXdN0ZW3RjtlOkTOVNy/iiDGlq+NM8MG7Dvis5fZmV5S+h/qH0PhIzw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O9jZdH8jTgE+br94viYiY+w/AnMq06FxtZWjsUUZ7Ys=;
+ b=gdUxMajyeRzcIMy5HAGVQssJYb9KxaqRVt/ePPgIEjHeaW45p1tXgyPk3p79kM9uYmeNK5RhYtIxs9kWnBI8ikGIbeJjfIDWx12g0JGvjTG5qmHw4654tRx2t20Yefn6q1tO0OYSRWiQq6FHJNCLRmdUb1/kwdwOo4O9zp3HAi9M6yNMuAODO559xpVbO3z29X/x4Cvjci7/iDKdntJtTQHHzZ3z4F/ZdQYF0U9TXivKr5jfs5k7rDKt0of6KFxvKWQagYUUMcF5ND0V5tbGbRQUSXLvs2jF8cdHxTFwV8vzyc8NKURTGL9dEsk08DgvLv0e1caeS3uoyJdHdbMp1Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
+Received: from AM0PR04MB5650.eurprd04.prod.outlook.com (2603:10a6:208:128::18)
+ by AM0PR04MB4995.eurprd04.prod.outlook.com (2603:10a6:208:c4::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.22; Mon, 21 Jun
+ 2021 09:11:21 +0000
+Received: from AM0PR04MB5650.eurprd04.prod.outlook.com
+ ([fe80::55a8:3faa:c572:5e98]) by AM0PR04MB5650.eurprd04.prod.outlook.com
+ ([fe80::55a8:3faa:c572:5e98%7]) with mapi id 15.20.4242.023; Mon, 21 Jun 2021
+ 09:11:20 +0000
+To:     Steffen Klassert <steffen.klassert@secunet.com>
+CC:     linux-kernel@vger.kernel.org,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        netdev@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Florian Westphal <fw@strlen.de>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        stable@vger.kernel.org
+References: <20210618141101.18168-1-varad.gautam@suse.com>
+ <20210621082949.GX40979@gauss3.secunet.de>
+From:   Varad Gautam <varad.gautam@suse.com>
+Subject: Re: [PATCH] xfrm: policy: Restructure RCU-read locking in
+ xfrm_sk_policy_lookup
+Message-ID: <f41d40cc-e474-1324-be0a-7beaf580c292@suse.com>
+Date:   Mon, 21 Jun 2021 11:11:18 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <87a6njd22b.wl-maz@kernel.org>
+In-Reply-To: <20210621082949.GX40979@gauss3.secunet.de>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [95.90.166.153]
+X-ClientProxiedBy: PR0P264CA0264.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100::36)
+ To AM0PR04MB5650.eurprd04.prod.outlook.com (2603:10a6:208:128::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.77.202] (95.90.166.153) by PR0P264CA0264.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.23 via Frontend Transport; Mon, 21 Jun 2021 09:11:19 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9973ff81-5a7d-4ea7-1587-08d9349488ba
+X-MS-TrafficTypeDiagnostic: AM0PR04MB4995:
+X-Microsoft-Antispam-PRVS: <AM0PR04MB4995AD3A885735B007FA13D7E00A9@AM0PR04MB4995.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7K2XesgQ73rW4ZqJg3cZdVH0yMmVOZVVD0JW72YhnuW9Kp669IO/lRI/YoucTr3+oCEHd3Bho8CRn87XxZkSFgbuB7QpNZit0qVt9FvkutlYxuRT9gsHSpwadgxYQcg9A+6H7PSA//2wDIs5J6zG3pWl0OZRXRxmH5nDSWkDYCP0mnWO0j54jTSM9pElrFsTWc1RbBOW+SeeUKzgDVU2LbwqBAFXuXZJ8HthguoZ7LGDJL2ZGCheepCvhAg1/c3zDHaW8UUS7u4MOIJlF5JbvGtWE2Y5sDSVRe8xdZKxMvHvm/MS/t+a1Eu7a72BWpIkRX/TZhemQXfRPfikwtbKAuww7tPwiFNcTjaJ2ADy96UsnwAVOdZ1z/EfWXATuTT8uyJUkefVd6jf0M9lYW5CoF9s3biDUrZW9Hyts4cPUuZxOCj6pva2JZa3BwWz0a4hPslICIJ1oJVPHTnQHJmIwdAN4buExgSE8SYDvoZL6K/MFEKmRRNAycwnJDPoyCwKD46iH1ZObcZy/teKycc3cL86sqtqjWcxR8hZUM63mK78zvaQTa/CMAWKBzhXS1C/2OZwmCew+tIS/9dGuyS01izw+Agt5xu9pKAtNq5zEEa6NWGdpVBE9PGWDcE03Kb7FkXt7URvp1qrk3fk+npgWM67OhAM+x8M6g2Dwq3Z9Vcq9A5g4tSVirfJW7MGL22W5ZVKPIxe2b9yto1hT71AsBffYzh5tiZSjqblxbgOZAoeGETDQK4MJoP1jtPohBov9WoGSXJ/KIYAO0EHfbTg/KHMyU/YKA7uucGo8Qdr45M=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5650.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(346002)(39850400004)(136003)(366004)(6916009)(31686004)(2906002)(8676002)(4326008)(7416002)(6486002)(478600001)(66574015)(8936002)(966005)(83380400001)(36756003)(956004)(5660300002)(53546011)(186003)(16526019)(26005)(54906003)(38100700002)(316002)(66556008)(16576012)(31696002)(2616005)(86362001)(66946007)(44832011)(66476007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?0IPDZj6vDCNY3upuKwKQ61ZSnwfUIu3I4hfrxeppXqmu8jSVCEq655C4ofwn?=
+ =?us-ascii?Q?L30BPnznKq1dAUHcTzvU1xBQLlWhVgnNUysAqVQjVbhAVgn+KUtJLUW84PpY?=
+ =?us-ascii?Q?FrE7ekc73fKQBmlN6+5/GUZeA9bC85+mcOmwE6L2VEYcrHXqdoN4dcxKiO2R?=
+ =?us-ascii?Q?75aT8/JfeRcslnX7726vvbvpG36ZC2KxxMJOvJh2YHoNml9eqB9eyyLX4ZR/?=
+ =?us-ascii?Q?6hRX8fvl4dUrWGsA3uXyT/rEKsGroM5HND0SGn8fU8YCTqAvTF77d3RuxLHB?=
+ =?us-ascii?Q?liHsv8DSnPfGt8wdhIaTB2lV+rYCXTzMjvHSu3lul4CWqQMX8q8+Xzm7tARn?=
+ =?us-ascii?Q?P4tQILPnLLXkdByqmjM/AB45cqNlc0fQoaeom9RA8Ehhg5zmIQpg84pce+AW?=
+ =?us-ascii?Q?6HQ9TYUf/tY/LFZsXX1iiGb0J669QQKQssQCoWL4xSN5GL0a3p5/QkKSkXkh?=
+ =?us-ascii?Q?P9ohz/GUYnmqoHbl4hInwNWAxqkNPwsgu0uI8IknbvhowKruspkM/+ZWAo5Y?=
+ =?us-ascii?Q?xc4dxqpw0iAPrQRl3EvparPexCxGxI2z7a2U5JLKIzqaa0ZeqPf1tJVvICT4?=
+ =?us-ascii?Q?/EDUdrv3Y9QSyOeD++VidpVNEp7Arpf2y98e+2TBvP5d3yM7o/x9bv9fP5Aj?=
+ =?us-ascii?Q?+Aay+7kwevP4RXpMBvX2OEr27lqL6PTPiKODLhFy26Y51O4Sx3qpnVEr9Wb8?=
+ =?us-ascii?Q?mqAPadI2mBuhCDY9o/SrapkKKxHu8K9CEE+WrHi8tYAq/tODy4XcMXaynoN5?=
+ =?us-ascii?Q?IX5HJuh8FZZ5Le+huRFdlilLnLHvLJkEfSf2jLcSQNrfHAFUJBiB1PHcO/Cj?=
+ =?us-ascii?Q?sHjxBK8ocBpSxnlFcFLLb2k+LFGXCNmEvvqwL1kLd/IH3HQvkfy9dfA3++oj?=
+ =?us-ascii?Q?g7A1YvMiwl6FDGNY0vzr83f7ToE35MfqV5bea+HZKsPeG2VcqM8uI/9F0nz0?=
+ =?us-ascii?Q?6sXqhRAD3ZxwxSzKAQp3P5ZjdsbLHKNnGxXPV5gmuthEk5KjdvIFwWEPQ5ph?=
+ =?us-ascii?Q?YA2aibPdTXZHAiG4DDlkNVIEbfMyS0fQV6DMxvJ/+aZEmXHfR7BcF2M7UC8+?=
+ =?us-ascii?Q?JvA1Y6VhSYcriGbX48/8BohxGEKE8XgpXQGhPcpNqUGCrxDKVFAw0OS0N742?=
+ =?us-ascii?Q?SwajDmRK/YgEygaKZcRbEEluQHT3xyG1FTsVpA8CYbA3QbkwvTKvddj8CcCy?=
+ =?us-ascii?Q?p/DGqgO2i8edg6DsQoESi/qnLuHoZddb3mryIVd9XPdgb1lB0WdPRMYMpON4?=
+ =?us-ascii?Q?ls9u91yoQa+isO+VB8LzOUSuWa4OJgtWqLfAFzWP/J/+qgPK6cfscCPt23Vo?=
+ =?us-ascii?Q?Rc/PRoj9CBAvgZ3muqJFwcCi?=
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9973ff81-5a7d-4ea7-1587-08d9349488ba
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5650.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2021 09:11:20.8843
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: x4ayeQec6Hoq7YSl2pnZXnffd/2T9pc13VTGqVwE7479QIbhlHXjx70x8yOid3YQHPEkwIxjcJ4osJ3OR3vrUw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB4995
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/06/2021 10:01, Marc Zyngier wrote:
-> On Fri, 18 Jun 2021 14:28:22 +0100,
-> Steven Price <steven.price@arm.com> wrote:
+On 6/21/21 10:29 AM, Steffen Klassert wrote:
+> On Fri, Jun 18, 2021 at 04:11:01PM +0200, Varad Gautam wrote:
+>> Commit "xfrm: policy: Read seqcount outside of rcu-read side in
+>> xfrm_policy_lookup_bytype" [Linked] resolved a locking bug in
+>> xfrm_policy_lookup_bytype that causes an RCU reader-writer deadlock on
+>> the mutex wrapped by xfrm_policy_hash_generation on PREEMPT_RT since
+>> 77cc278f7b20 ("xfrm: policy: Use sequence counters with associated
+>> lock").
 >>
->> Add a new VM feature 'KVM_ARM_CAP_MTE' which enables memory tagging
->> for a VM. This will expose the feature to the guest and automatically
->> tag memory pages touched by the VM as PG_mte_tagged (and clear the tag
->> storage) to ensure that the guest cannot see stale tags, and so that
->> the tags are correctly saved/restored across swap.
->>
->> Actually exposing the new capability to user space happens in a later
->> patch.
->>
->> Signed-off-by: Steven Price <steven.price@arm.com>
->> ---
->>  arch/arm64/include/asm/kvm_emulate.h |  3 ++
->>  arch/arm64/include/asm/kvm_host.h    |  3 ++
->>  arch/arm64/kvm/hyp/exception.c       |  3 +-
->>  arch/arm64/kvm/mmu.c                 | 62 +++++++++++++++++++++++++++-
->>  arch/arm64/kvm/sys_regs.c            |  7 ++++
->>  include/uapi/linux/kvm.h             |  1 +
->>  6 files changed, 77 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
->> index f612c090f2e4..6bf776c2399c 100644
->> --- a/arch/arm64/include/asm/kvm_emulate.h
->> +++ b/arch/arm64/include/asm/kvm_emulate.h
->> @@ -84,6 +84,9 @@ static inline void vcpu_reset_hcr(struct kvm_vcpu *vcpu)
->>  	if (cpus_have_const_cap(ARM64_MISMATCHED_CACHE_TYPE) ||
->>  	    vcpu_el1_is_32bit(vcpu))
->>  		vcpu->arch.hcr_el2 |= HCR_TID2;
->> +
->> +	if (kvm_has_mte(vcpu->kvm))
->> +		vcpu->arch.hcr_el2 |= HCR_ATA;
->>  }
->>  
->>  static inline unsigned long *vcpu_hcr(struct kvm_vcpu *vcpu)
->> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
->> index 7cd7d5c8c4bc..afaa5333f0e4 100644
->> --- a/arch/arm64/include/asm/kvm_host.h
->> +++ b/arch/arm64/include/asm/kvm_host.h
->> @@ -132,6 +132,8 @@ struct kvm_arch {
->>  
->>  	u8 pfr0_csv2;
->>  	u8 pfr0_csv3;
->> +	/* Memory Tagging Extension enabled for the guest */
->> +	bool mte_enabled;
->>  };
->>  
->>  struct kvm_vcpu_fault_info {
->> @@ -769,6 +771,7 @@ bool kvm_arm_vcpu_is_finalized(struct kvm_vcpu *vcpu);
->>  #define kvm_arm_vcpu_sve_finalized(vcpu) \
->>  	((vcpu)->arch.flags & KVM_ARM64_VCPU_SVE_FINALIZED)
->>  
->> +#define kvm_has_mte(kvm) (system_supports_mte() && (kvm)->arch.mte_enabled)
->>  #define kvm_vcpu_has_pmu(vcpu)					\
->>  	(test_bit(KVM_ARM_VCPU_PMU_V3, (vcpu)->arch.features))
->>  
->> diff --git a/arch/arm64/kvm/hyp/exception.c b/arch/arm64/kvm/hyp/exception.c
->> index 73629094f903..56426565600c 100644
->> --- a/arch/arm64/kvm/hyp/exception.c
->> +++ b/arch/arm64/kvm/hyp/exception.c
->> @@ -112,7 +112,8 @@ static void enter_exception64(struct kvm_vcpu *vcpu, unsigned long target_mode,
->>  	new |= (old & PSR_C_BIT);
->>  	new |= (old & PSR_V_BIT);
->>  
->> -	// TODO: TCO (if/when ARMv8.5-MemTag is exposed to guests)
->> +	if (kvm_has_mte(vcpu->kvm))
->> +		new |= PSR_TCO_BIT;
->>  
->>  	new |= (old & PSR_DIT_BIT);
->>  
->> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
->> index c5d1f3c87dbd..f5305b7561ad 100644
->> --- a/arch/arm64/kvm/mmu.c
->> +++ b/arch/arm64/kvm/mmu.c
->> @@ -822,6 +822,45 @@ transparent_hugepage_adjust(struct kvm_memory_slot *memslot,
->>  	return PAGE_SIZE;
->>  }
->>  
->> +/*
->> + * The page will be mapped in stage 2 as Normal Cacheable, so the VM will be
->> + * able to see the page's tags and therefore they must be initialised first. If
->> + * PG_mte_tagged is set, tags have already been initialised.
->> + *
->> + * The race in the test/set of the PG_mte_tagged flag is handled by:
->> + * - preventing VM_SHARED mappings in a memslot with MTE preventing two VMs
->> + *   racing to santise the same page
->> + * - mmap_lock protects between a VM faulting a page in and the VMM performing
->> + *   an mprotect() to add VM_MTE
->> + */
->> +static int sanitise_mte_tags(struct kvm *kvm, kvm_pfn_t pfn,
->> +			     unsigned long size)
->> +{
->> +	unsigned long i, nr_pages = size >> PAGE_SHIFT;
->> +	struct page *page;
->> +
->> +	if (!kvm_has_mte(kvm))
->> +		return 0;
->> +
->> +	/*
->> +	 * pfn_to_online_page() is used to reject ZONE_DEVICE pages
->> +	 * that may not support tags.
->> +	 */
->> +	page = pfn_to_online_page(pfn);
->> +
->> +	if (!page)
->> +		return -EFAULT;
->> +
->> +	for (i = 0; i < nr_pages; i++, page++) {
->> +		if (!test_bit(PG_mte_tagged, &page->flags)) {
->> +			mte_clear_page_tags(page_address(page));
->> +			set_bit(PG_mte_tagged, &page->flags);
->> +		}
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->>  static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->>  			  struct kvm_memory_slot *memslot, unsigned long hva,
->>  			  unsigned long fault_status)
->> @@ -971,8 +1010,16 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
->>  	if (writable)
->>  		prot |= KVM_PGTABLE_PROT_W;
->>  
->> -	if (fault_status != FSC_PERM && !device)
->> +	if (fault_status != FSC_PERM && !device) {
->> +		/* Check the VMM hasn't introduced a new VM_SHARED VMA */
->> +		if (kvm_has_mte(kvm) && vma->vm_flags & VM_SHARED)
->> +			return -EINVAL;
-> 
-> nit: I'd rather we return -EFAULT here. That's consistent with other
-> cases where we can't satisfy the mapping.
+>> However, xfrm_sk_policy_lookup can still reach xfrm_policy_lookup_bytype
+>> while holding rcu_read_lock(), as:
+>> xfrm_sk_policy_lookup()
+>>   rcu_read_lock()
+>>   security_xfrm_policy_lookup()
+>>     xfrm_policy_lookup()
+>=20
+> Hm, I don't see that call chain. security_xfrm_policy_lookup() calls
+> a hook with the name xfrm_policy_lookup. The only LSM that has
+> registered a function to that hook is selinux. It registers
+> selinux_xfrm_policy_lookup() and I don't see how we can call
+> xfrm_policy_lookup() from there.
+>=20
+> Did you actually trigger that bug?
+>=20
 
-Sure, and it would be even better if I dropped the lock (goto
-out_unlock) - I'll fix that too!
+Right, I misread the call chain - security_xfrm_policy_lookup does not reac=
+h
+xfrm_policy_lookup, making this patch unnecessary. The bug I have is:
 
-Thanks,
+T1, holding hash_resize_mutex and sleeping inside synchronize_rcu:
 
-Steve
+__schedule
+schedule
+schedule_timeout
+wait_for_completion
+__wait_rcu_gp
+synchronize_rcu
+xfrm_hash_resize
+
+And T2 producing RCU-stalls since it blocked on the mutex:
+
+__schedule
+schedule
+__rt_mutex_slowlock
+rt_mutex_slowlock_locked
+rt_mutex_slowlock
+xfrm_policy_lookup_bytype.constprop.77
+__xfrm_policy_check
+udpv6_queue_rcv_one_skb
+__udp6_lib_rcv
+ip6_protocol_deliver_rcu
+ip6_input_finish
+ip6_input
+ip6_mc_input
+ipv6_rcv
+__netif_receive_skb_one_core
+process_backlog
+net_rx_action
+__softirqentry_text_start
+__local_bh_enable_ip
+ip6_finish_output2
+ip6_output
+ip6_send_skb
+udp_v6_send_skb
+udpv6_sendmsg
+sock_sendmsg
+____sys_sendmsg
+___sys_sendmsg
+__sys_sendmsg
+do_syscall_64
+
+So, despite the patch here [1], there is another way to reach
+xfrm_policy_lookup_bytype within an RCU-read side - which on PREEMPT_RT wil=
+l
+deadlock with xfrm_hash_resize. Does softirq processing on RT happen within
+rcu_read_lock/unlock - this would explain the stalls.
+
+[1] https://lore.kernel.org/r/20210528160407.32127-1-varad.gautam@suse.com/
+
+Regards,
+Varad
+
+--=20
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5
+90409 N=C3=BCrnberg
+Germany
+
+HRB 36809, AG N=C3=BCrnberg
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
