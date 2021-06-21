@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C25823AEE90
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:27:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3A53AED65
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232141AbhFUQ34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:29:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48572 "EHLO mail.kernel.org"
+        id S231181AbhFUQTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:19:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231194AbhFUQ2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:28:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA774613D5;
-        Mon, 21 Jun 2021 16:23:14 +0000 (UTC)
+        id S231127AbhFUQT2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:19:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1312C611BD;
+        Mon, 21 Jun 2021 16:17:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292595;
-        bh=WljdLn6tRNJfLSvBbkYFZ/02+HzyG99SGElEelraxj8=;
+        s=korg; t=1624292233;
+        bh=ugoJC3wP4h9abBjTmplBKBMow6jxyx9uXeDiuZFMKYE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fLupuQ3DXKlo65rzHcfS9s0hx1wh8EUOoc3/Yf3+HWz7AcYRuBl8fqBu7gRsVZelf
-         rad5QlN2omY77WhOmYYEu30dDpT+awZweVM8TxpnP301wB8Tdzl5mDQAkShQuc8kef
-         im6VbdHUw/yLSwKhG+6OVpW5pG8e4dni2SXm2LHY=
+        b=qsTPyt6NzZi0+viWtjX10g5zruIShDIIVpaLUNs2rJ5O/So33NBeWeiIg0f1EuXG5
+         lK/yF3+jEnAuwoMqgKSL5dtEdeBG5fZjO3mgJ8OscJ4OdsazC3V3zpVoHsvgT8mx1C
+         iW94cYF3T9acAqZIrnZZ0DQk45F4aBUK/ex11YZY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Joakim Zhang <qiangqing.zhang@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Huy Nguyen <huyn@nvidia.com>,
+        Raed Salem <raeds@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 059/146] net: fec_ptp: fix issue caused by refactor the fec_devtype
-Date:   Mon, 21 Jun 2021 18:14:49 +0200
-Message-Id: <20210621154914.370644792@linuxfoundation.org>
+Subject: [PATCH 5.4 15/90] net/mlx5e: Remove dependency in IPsec initialization flows
+Date:   Mon, 21 Jun 2021 18:14:50 +0200
+Message-Id: <20210621154904.655800520@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
-References: <20210621154911.244649123@linuxfoundation.org>
+In-Reply-To: <20210621154904.159672728@linuxfoundation.org>
+References: <20210621154904.159672728@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +41,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: Huy Nguyen <huyn@nvidia.com>
 
-[ Upstream commit d23765646e71b43ed2b809930411ba5c0aadee7b ]
+[ Upstream commit 8ad893e516a77209a1818a2072d2027d87db809f ]
 
-Commit da722186f654 ("net: fec: set GPR bit on suspend by DT configuration.")
-refactor the fec_devtype, need adjust ptp driver accordingly.
+Currently, IPsec feature is disabled because mlx5e_build_nic_netdev
+is required to be called after mlx5e_ipsec_init. This requirement is
+invalid as mlx5e_build_nic_netdev and mlx5e_ipsec_init initialize
+independent resources.
 
-Fixes: da722186f654 ("net: fec: set GPR bit on suspend by DT configuration.")
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Remove ipsec pointer check in mlx5e_build_nic_netdev so that the
+two functions can be called at any order.
+
+Fixes: 547eede070eb ("net/mlx5e: IPSec, Innova IPSec offload infrastructure")
+Signed-off-by: Huy Nguyen <huyn@nvidia.com>
+Reviewed-by: Raed Salem <raeds@nvidia.com>
+Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/fec_ptp.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/freescale/fec_ptp.c b/drivers/net/ethernet/freescale/fec_ptp.c
-index 1753807cbf97..ce8e5555f3e0 100644
---- a/drivers/net/ethernet/freescale/fec_ptp.c
-+++ b/drivers/net/ethernet/freescale/fec_ptp.c
-@@ -215,15 +215,13 @@ static u64 fec_ptp_read(const struct cyclecounter *cc)
- {
- 	struct fec_enet_private *fep =
- 		container_of(cc, struct fec_enet_private, cc);
--	const struct platform_device_id *id_entry =
--		platform_get_device_id(fep->pdev);
- 	u32 tempval;
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
+index cf58c9637904..c467f5e981f6 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
+@@ -515,9 +515,6 @@ void mlx5e_ipsec_build_netdev(struct mlx5e_priv *priv)
+ 	struct mlx5_core_dev *mdev = priv->mdev;
+ 	struct net_device *netdev = priv->netdev;
  
- 	tempval = readl(fep->hwp + FEC_ATIME_CTRL);
- 	tempval |= FEC_T_CTRL_CAPTURE;
- 	writel(tempval, fep->hwp + FEC_ATIME_CTRL);
- 
--	if (id_entry->driver_data & FEC_QUIRK_BUG_CAPTURE)
-+	if (fep->quirks & FEC_QUIRK_BUG_CAPTURE)
- 		udelay(1);
- 
- 	return readl(fep->hwp + FEC_ATIME);
+-	if (!priv->ipsec)
+-		return;
+-
+ 	if (!(mlx5_accel_ipsec_device_caps(mdev) & MLX5_ACCEL_IPSEC_CAP_ESP) ||
+ 	    !MLX5_CAP_ETH(mdev, swp)) {
+ 		mlx5_core_dbg(mdev, "mlx5e: ESP and SWP offload not supported\n");
 -- 
 2.30.2
 
