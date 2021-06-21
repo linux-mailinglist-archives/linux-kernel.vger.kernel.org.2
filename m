@@ -2,204 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7746D3AE9D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E3D3AE9DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbhFUNQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 09:16:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41286 "EHLO
+        id S229890AbhFUNRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 09:17:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhFUNQL (ORCPT
+        with ESMTP id S229640AbhFUNRN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 09:16:11 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BA9DC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 06:13:53 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id b3so9361456wrm.6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 06:13:53 -0700 (PDT)
+        Mon, 21 Jun 2021 09:17:13 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7433C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 06:14:58 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id he7so28695776ejc.13
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 06:14:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2j5aqshvMmv3SFWLZl++fZj3Ut8b4ASWXCLeBWk+mKA=;
-        b=UT4A6/tyLrxmzFAtlnMFgnjpyeuVjy8i3JweZRE6JO0MkNe02kYE6YnkxEZXhYGMZ5
-         ZY+pplPGwLhnW7waLUJQ85CramDYgsSUEE6K9mdDWkc3q087EvJRuFSjbALch+GTZMCK
-         SsLoqSOGLvMQ2MkkFHtWTQuFKZP7/X0jwbQSvWcj6yBWf2ZD6HWrKhbKZ1XbF71NVI4A
-         szhoIqKRo5qUGZHZSfUzJqH/U1SQfqvEpSob8xfHEYapMXHk+1vJLvPXDgaNQGWwh1cb
-         lm4rw4kJv1l/365B/h6+rexzYQQ3gOjP0HhBnsI28i9h3gonHwQ5qhwWTF2VrlhXaJr1
-         pNFw==
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-transfer-encoding:content-language;
+        bh=g9KkfTDVm23JtZIvLIP9VLFqfjPUY5iB/GbhgG8cLMM=;
+        b=vTy8A+9nafnuDunjIDd4Kw5i54e18ysZG8ACwZUsHC3jhZQ5ykmqodZANlff/9K/l5
+         xHhB0j621x7dOKN0Js5v6xmOR+9bGcKIzX1sMSHtdYntVzjJTDTq0b2h8d/tKdYf7Gvo
+         k7F3zfdIojg1Pok3rAfeh3wNfoluqLAIL5V+mz0QCAO2VUfdzsxgqA+KsI1OSsWJuPqD
+         rHVp1803xMdQIOgP93s94eLvEq4dUTZzjmFj/LzxNr8OpSrqJXFyQx0kLafAyvh9MDt5
+         XNOzTKXk4cMGy32mArPZljWNUMxkZTOEPfSZIdmH35JOjaGXmEAhTGONM/gAc50yWADx
+         1UxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=2j5aqshvMmv3SFWLZl++fZj3Ut8b4ASWXCLeBWk+mKA=;
-        b=ZL3KSs12sQC9Eu4H41aQeFCxu+v4Vb9xLwGjcWQnDbWxxL180SWd9B/p/W0Eu1udfl
-         Zi901nE4jaT8qVBNXaOW6DrsA4xtrJT84faPzUdH9ZPgrS9XWAUCdPIbCQuy95nOfXUt
-         vGWQzGhwScu+S1WzbdQdLuHtBdRWzIxm4s1zBsOBXPmTDs362a1PO0puQ9TqQdGwG/w7
-         ia0DbsLHXMLEKM+H+TUHdlvENjuZ9oKZLiso8F1oagkriVemBPit15BxiqI2HSmmAsZW
-         J6P+wbmKMgm5oaFPu+jHycTauV/yoKfLTD31zQOJzGO/RkQhXhx9B9g8eK2o10fFO12L
-         Ubig==
-X-Gm-Message-State: AOAM530KVdVTysYsyUFSMIFdL5DXTHQG9I41BmdSgav9Fmv0p4gC7XZ7
-        c0ww+DAsqX+PgqaLUce1HojPjv47mUtt1vB8
-X-Google-Smtp-Source: ABdhPJxHYIboQGK0uRn5qPAdEup5HvcA17rhoedHpQq/bhwfl8l3cnFtHaT+ODFqG07ayJQaZD3qQw==
-X-Received: by 2002:a5d:6daf:: with SMTP id u15mr28295933wrs.400.1624281231767;
-        Mon, 21 Jun 2021 06:13:51 -0700 (PDT)
-Received: from localhost ([2a02:768:2307:40d6::648])
-        by smtp.gmail.com with ESMTPSA id y7sm13147550wma.22.2021.06.21.06.13.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 21 Jun 2021 06:13:51 -0700 (PDT)
-Sender: Michal Simek <monstr@monstr.eu>
-From:   Michal Simek <michal.simek@xilinx.com>
-To:     linux-kernel@vger.kernel.org, monstr@monstr.eu,
-        michal.simek@xilinx.com, git@xilinx.com
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
-        Quanyang Wang <quanyang.wang@windriver.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org
-Subject: [PATCH v2] clk: zynqmp: fix compile testing without ZYNQMP_FIRMWARE
-Date:   Mon, 21 Jun 2021 15:13:47 +0200
-Message-Id: <fdee3a286defb103aa07b5493b805d1987885165.1624281224.git.michal.simek@xilinx.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=g9KkfTDVm23JtZIvLIP9VLFqfjPUY5iB/GbhgG8cLMM=;
+        b=A5nPMxrfr4QOBpdH0OoMOmyADMjRagLBdADdTUvCSysFzusTaUBwSKMqNGTU6zxOiA
+         0DFouShFlW0RjFVwDTWImu6m+skJwNrOSpCYsi6+p8VDJNUbiw6FNuYocp6qHWh5glz+
+         m8poppbwP2suXBUhFhBwl/M5bRHQuNC9uYrqmcinJZ6PasLQYImFcp6jmZijBoHjmovG
+         7pjfAS8RINgXCRsUs/5Utij5kUMCzsmtkQtIAHpiZipAqpwxKc41pG4r2OtKhMb57w2l
+         xfRkrUshtMULdrrnIeCR1aRJG6uLevn7M/n4gSThuhwIV7oJUm/StXrnOkELmKjgImuI
+         vQFw==
+X-Gm-Message-State: AOAM531N6cWP61AWa88JM9uhxajweN8MXgbuTD8CxQEhepysPGKhY+5N
+        IHjajtM5/JyCqTFW3YY416bBdoP2KI8=
+X-Google-Smtp-Source: ABdhPJw7UOpkpVETkGgcEQ+88p7i7WZ6TCsGVEAzQBQYJbhzRbQ040X/+rhkp86UGkPgHVKCFhvTqg==
+X-Received: by 2002:a17:906:fcad:: with SMTP id qw13mr7684542ejb.209.1624281297327;
+        Mon, 21 Jun 2021 06:14:57 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:aae5:6e05:c:d69? ([2a02:908:1252:fb60:aae5:6e05:c:d69])
+        by smtp.gmail.com with ESMTPSA id q9sm10702070edv.31.2021.06.21.06.14.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 06:14:56 -0700 (PDT)
+Subject: Re: [PATCH] drm/radeon: delete useless function return values &
+ remove meaningless if(r) check code
+To:     Bernard Zhao <bernard@vivo.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210621130508.29511-1-bernard@vivo.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <626348b5-a3c5-4a86-ca9f-ec41cc82044d@gmail.com>
+Date:   Mon, 21 Jun 2021 15:14:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <20210621130508.29511-1-bernard@vivo.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Am 21.06.21 um 15:05 schrieb Bernard Zhao:
+> Function radeon_fence_driver_init always returns success,
+> the function type maybe coule be changed to void.
+> This patch first delete the check of the return
+> value of the function call radeon_fence_driver_init, then,
+> optimise the function declaration and function to void type.
+>
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
 
-When the firmware code is disabled, the incomplete error handling
-in the clk driver causes compile-time warnings:
+Reviewed-by: Christian König <christian.koenig@amd.com>
 
-drivers/clk/zynqmp/pll.c: In function 'zynqmp_pll_recalc_rate':
-drivers/clk/zynqmp/pll.c:147:29: error: 'fbdiv' is used uninitialized [-Werror=uninitialized]
-  147 |         rate =  parent_rate * fbdiv;
-      |                 ~~~~~~~~~~~~^~~~~~~
-In function 'zynqmp_pll_get_mode',
-    inlined from 'zynqmp_pll_recalc_rate' at drivers/clk/zynqmp/pll.c:148:6:
-drivers/clk/zynqmp/pll.c:61:27: error: 'ret_payload' is used uninitialized [-Werror=uninitialized]
-   61 |         return ret_payload[1];
-      |                ~~~~~~~~~~~^~~
-drivers/clk/zynqmp/pll.c: In function 'zynqmp_pll_recalc_rate':
-drivers/clk/zynqmp/pll.c:53:13: note: 'ret_payload' declared here
-   53 |         u32 ret_payload[PAYLOAD_ARG_CNT];
-      |             ^~~~~~~~~~~
-drivers/clk/zynqmp/clk-mux-zynqmp.c: In function 'zynqmp_clk_mux_get_parent':
-drivers/clk/zynqmp/clk-mux-zynqmp.c:57:16: error: 'val' is used uninitialized [-Werror=uninitialized]
-   57 |         return val;
-      |                ^~~
-
-As it was apparently intentional to support this for compile testing
-purposes, change the code to have just enough error handling for the
-compiler to not notice the remaining bugs.
-
-Fixes: 21f237534661 ("clk: zynqmp: Drop dependency on ARCH_ZYNQMP")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
----
-
-Changes in v2:
-Based on discussion here
-Link: https://lore.kernel.org/r/20210421134844.3297838-1-arnd@kernel.org
-I have updated error return value which I got from clock core based on
-error cases.
-
-zynqmp_clk_mux_get_parent() should return num_parents() as error defined in
-clk_core_get_parent_by_index() where num_parents is incorrect index.
-
-Extend zynqmp_pll_get_mode() with PLL_MODE_ERROR to handle error case.
-
-zynqmp_pll_recalc_rate() returns 0 because __clk_core_init() consider 0 as
-default rate. But maybe -1ul which was used by Arnd is also good option.
-
----
- drivers/clk/zynqmp/clk-mux-zynqmp.c | 10 ++++++++--
- drivers/clk/zynqmp/pll.c            | 15 ++++++++++-----
- 2 files changed, 18 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/clk/zynqmp/clk-mux-zynqmp.c b/drivers/clk/zynqmp/clk-mux-zynqmp.c
-index 06194149be83..d576c900dee0 100644
---- a/drivers/clk/zynqmp/clk-mux-zynqmp.c
-+++ b/drivers/clk/zynqmp/clk-mux-zynqmp.c
-@@ -38,7 +38,7 @@ struct zynqmp_clk_mux {
-  * zynqmp_clk_mux_get_parent() - Get parent of clock
-  * @hw:		handle between common and hardware-specific interfaces
-  *
-- * Return: Parent index
-+ * Return: Parent index on success or number of parents in case of error
-  */
- static u8 zynqmp_clk_mux_get_parent(struct clk_hw *hw)
- {
-@@ -50,9 +50,15 @@ static u8 zynqmp_clk_mux_get_parent(struct clk_hw *hw)
- 
- 	ret = zynqmp_pm_clock_getparent(clk_id, &val);
- 
--	if (ret)
-+	if (ret) {
- 		pr_warn_once("%s() getparent failed for clock: %s, ret = %d\n",
- 			     __func__, clk_name, ret);
-+		/*
-+		 * clk_core_get_parent_by_index() takes num_parents as incorrect
-+		 * index which is exactly what I want to return here
-+		 */
-+		return clk_hw_get_num_parents(hw);
-+	}
- 
- 	return val;
- }
-diff --git a/drivers/clk/zynqmp/pll.c b/drivers/clk/zynqmp/pll.c
-index abe6afbf3407..3fe4d21227d0 100644
---- a/drivers/clk/zynqmp/pll.c
-+++ b/drivers/clk/zynqmp/pll.c
-@@ -31,8 +31,9 @@ struct zynqmp_pll {
- #define PS_PLL_VCO_MAX 3000000000UL
- 
- enum pll_mode {
--	PLL_MODE_INT,
--	PLL_MODE_FRAC,
-+	PLL_MODE_INT = 0,
-+	PLL_MODE_FRAC = 1,
-+	PLL_MODE_ERROR = 2,
- };
- 
- #define FRAC_OFFSET 0x8
-@@ -54,9 +55,11 @@ static inline enum pll_mode zynqmp_pll_get_mode(struct clk_hw *hw)
- 	int ret;
- 
- 	ret = zynqmp_pm_get_pll_frac_mode(clk_id, ret_payload);
--	if (ret)
-+	if (ret) {
- 		pr_warn_once("%s() PLL get frac mode failed for %s, ret = %d\n",
- 			     __func__, clk_name, ret);
-+		return PLL_MODE_ERROR;
-+	}
- 
- 	return ret_payload[1];
- }
-@@ -126,7 +129,7 @@ static long zynqmp_pll_round_rate(struct clk_hw *hw, unsigned long rate,
-  * @hw:			Handle between common and hardware-specific interfaces
-  * @parent_rate:	Clock frequency of parent clock
-  *
-- * Return: Current clock frequency
-+ * Return: Current clock frequency or 0 in case of error
-  */
- static unsigned long zynqmp_pll_recalc_rate(struct clk_hw *hw,
- 					    unsigned long parent_rate)
-@@ -140,9 +143,11 @@ static unsigned long zynqmp_pll_recalc_rate(struct clk_hw *hw,
- 	int ret;
- 
- 	ret = zynqmp_pm_clock_getdivider(clk_id, &fbdiv);
--	if (ret)
-+	if (ret) {
- 		pr_warn_once("%s() get divider failed for %s, ret = %d\n",
- 			     __func__, clk_name, ret);
-+		return 0ul;
-+	}
- 
- 	rate =  parent_rate * fbdiv;
- 	if (zynqmp_pll_get_mode(hw) == PLL_MODE_FRAC) {
--- 
-2.32.0
+> ---
+>   drivers/gpu/drm/radeon/cik.c          | 4 +---
+>   drivers/gpu/drm/radeon/evergreen.c    | 4 +---
+>   drivers/gpu/drm/radeon/ni.c           | 4 +---
+>   drivers/gpu/drm/radeon/r100.c         | 4 +---
+>   drivers/gpu/drm/radeon/r300.c         | 4 +---
+>   drivers/gpu/drm/radeon/r420.c         | 5 +----
+>   drivers/gpu/drm/radeon/r520.c         | 4 +---
+>   drivers/gpu/drm/radeon/r600.c         | 4 +---
+>   drivers/gpu/drm/radeon/radeon.h       | 2 +-
+>   drivers/gpu/drm/radeon/radeon_fence.c | 5 +----
+>   drivers/gpu/drm/radeon/rs400.c        | 4 +---
+>   drivers/gpu/drm/radeon/rs600.c        | 4 +---
+>   drivers/gpu/drm/radeon/rs690.c        | 4 +---
+>   drivers/gpu/drm/radeon/rv515.c        | 4 +---
+>   drivers/gpu/drm/radeon/rv770.c        | 4 +---
+>   drivers/gpu/drm/radeon/si.c           | 4 +---
+>   16 files changed, 16 insertions(+), 48 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/radeon/cik.c b/drivers/gpu/drm/radeon/cik.c
+> index 42a8afa839cb..f6cf0b8fdd83 100644
+> --- a/drivers/gpu/drm/radeon/cik.c
+> +++ b/drivers/gpu/drm/radeon/cik.c
+> @@ -8584,9 +8584,7 @@ int cik_init(struct radeon_device *rdev)
+>   	radeon_get_clock_info(rdev->ddev);
+>   
+>   	/* Fence driver */
+> -	r = radeon_fence_driver_init(rdev);
+> -	if (r)
+> -		return r;
+> +	radeon_fence_driver_init(rdev);
+>   
+>   	/* initialize memory controller */
+>   	r = cik_mc_init(rdev);
+> diff --git a/drivers/gpu/drm/radeon/evergreen.c b/drivers/gpu/drm/radeon/evergreen.c
+> index 8e9e88bf1f43..36a888e1b179 100644
+> --- a/drivers/gpu/drm/radeon/evergreen.c
+> +++ b/drivers/gpu/drm/radeon/evergreen.c
+> @@ -5208,9 +5208,7 @@ int evergreen_init(struct radeon_device *rdev)
+>   	/* Initialize clocks */
+>   	radeon_get_clock_info(rdev->ddev);
+>   	/* Fence driver */
+> -	r = radeon_fence_driver_init(rdev);
+> -	if (r)
+> -		return r;
+> +	radeon_fence_driver_init(rdev);
+>   	/* initialize AGP */
+>   	if (rdev->flags & RADEON_IS_AGP) {
+>   		r = radeon_agp_init(rdev);
+> diff --git a/drivers/gpu/drm/radeon/ni.c b/drivers/gpu/drm/radeon/ni.c
+> index ab7bd3080217..4a364ca7a1be 100644
+> --- a/drivers/gpu/drm/radeon/ni.c
+> +++ b/drivers/gpu/drm/radeon/ni.c
+> @@ -2375,9 +2375,7 @@ int cayman_init(struct radeon_device *rdev)
+>   	/* Initialize clocks */
+>   	radeon_get_clock_info(rdev->ddev);
+>   	/* Fence driver */
+> -	r = radeon_fence_driver_init(rdev);
+> -	if (r)
+> -		return r;
+> +	radeon_fence_driver_init(rdev);
+>   	/* initialize memory controller */
+>   	r = evergreen_mc_init(rdev);
+>   	if (r)
+> diff --git a/drivers/gpu/drm/radeon/r100.c b/drivers/gpu/drm/radeon/r100.c
+> index fcfcaec25a9e..aa6800b0e198 100644
+> --- a/drivers/gpu/drm/radeon/r100.c
+> +++ b/drivers/gpu/drm/radeon/r100.c
+> @@ -4056,9 +4056,7 @@ int r100_init(struct radeon_device *rdev)
+>   	/* initialize VRAM */
+>   	r100_mc_init(rdev);
+>   	/* Fence driver */
+> -	r = radeon_fence_driver_init(rdev);
+> -	if (r)
+> -		return r;
+> +	radeon_fence_driver_init(rdev);
+>   	/* Memory manager */
+>   	r = radeon_bo_init(rdev);
+>   	if (r)
+> diff --git a/drivers/gpu/drm/radeon/r300.c b/drivers/gpu/drm/radeon/r300.c
+> index 92643dfdd8a8..621ff174dff3 100644
+> --- a/drivers/gpu/drm/radeon/r300.c
+> +++ b/drivers/gpu/drm/radeon/r300.c
+> @@ -1549,9 +1549,7 @@ int r300_init(struct radeon_device *rdev)
+>   	/* initialize memory controller */
+>   	r300_mc_init(rdev);
+>   	/* Fence driver */
+> -	r = radeon_fence_driver_init(rdev);
+> -	if (r)
+> -		return r;
+> +	radeon_fence_driver_init(rdev);
+>   	/* Memory manager */
+>   	r = radeon_bo_init(rdev);
+>   	if (r)
+> diff --git a/drivers/gpu/drm/radeon/r420.c b/drivers/gpu/drm/radeon/r420.c
+> index 1ed4407b91aa..7e6320e8c6a0 100644
+> --- a/drivers/gpu/drm/radeon/r420.c
+> +++ b/drivers/gpu/drm/radeon/r420.c
+> @@ -425,10 +425,7 @@ int r420_init(struct radeon_device *rdev)
+>   	r300_mc_init(rdev);
+>   	r420_debugfs(rdev);
+>   	/* Fence driver */
+> -	r = radeon_fence_driver_init(rdev);
+> -	if (r) {
+> -		return r;
+> -	}
+> +	radeon_fence_driver_init(rdev);
+>   	/* Memory manager */
+>   	r = radeon_bo_init(rdev);
+>   	if (r) {
+> diff --git a/drivers/gpu/drm/radeon/r520.c b/drivers/gpu/drm/radeon/r520.c
+> index fc78e64ae727..6cbcaa845192 100644
+> --- a/drivers/gpu/drm/radeon/r520.c
+> +++ b/drivers/gpu/drm/radeon/r520.c
+> @@ -299,9 +299,7 @@ int r520_init(struct radeon_device *rdev)
+>   	r520_mc_init(rdev);
+>   	rv515_debugfs(rdev);
+>   	/* Fence driver */
+> -	r = radeon_fence_driver_init(rdev);
+> -	if (r)
+> -		return r;
+> +	radeon_fence_driver_init(rdev);
+>   	/* Memory manager */
+>   	r = radeon_bo_init(rdev);
+>   	if (r)
+> diff --git a/drivers/gpu/drm/radeon/r600.c b/drivers/gpu/drm/radeon/r600.c
+> index 7444dc0e0c0e..ca3fcae2adb5 100644
+> --- a/drivers/gpu/drm/radeon/r600.c
+> +++ b/drivers/gpu/drm/radeon/r600.c
+> @@ -3282,9 +3282,7 @@ int r600_init(struct radeon_device *rdev)
+>   	/* Initialize clocks */
+>   	radeon_get_clock_info(rdev->ddev);
+>   	/* Fence driver */
+> -	r = radeon_fence_driver_init(rdev);
+> -	if (r)
+> -		return r;
+> +	radeon_fence_driver_init(rdev);
+>   	if (rdev->flags & RADEON_IS_AGP) {
+>   		r = radeon_agp_init(rdev);
+>   		if (r)
+> diff --git a/drivers/gpu/drm/radeon/radeon.h b/drivers/gpu/drm/radeon/radeon.h
+> index 56ed5634cebe..8a15f490a390 100644
+> --- a/drivers/gpu/drm/radeon/radeon.h
+> +++ b/drivers/gpu/drm/radeon/radeon.h
+> @@ -384,7 +384,7 @@ struct radeon_fence {
+>   };
+>   
+>   int radeon_fence_driver_start_ring(struct radeon_device *rdev, int ring);
+> -int radeon_fence_driver_init(struct radeon_device *rdev);
+> +void radeon_fence_driver_init(struct radeon_device *rdev);
+>   void radeon_fence_driver_fini(struct radeon_device *rdev);
+>   void radeon_fence_driver_force_completion(struct radeon_device *rdev, int ring);
+>   int radeon_fence_emit(struct radeon_device *rdev, struct radeon_fence **fence, int ring);
+> diff --git a/drivers/gpu/drm/radeon/radeon_fence.c b/drivers/gpu/drm/radeon/radeon_fence.c
+> index 0d8ef2368adf..b2ce642ca4fa 100644
+> --- a/drivers/gpu/drm/radeon/radeon_fence.c
+> +++ b/drivers/gpu/drm/radeon/radeon_fence.c
+> @@ -905,9 +905,8 @@ static void radeon_fence_driver_init_ring(struct radeon_device *rdev, int ring)
+>    * Not all asics have all rings, so each asic will only
+>    * start the fence driver on the rings it has using
+>    * radeon_fence_driver_start_ring().
+> - * Returns 0 for success.
+>    */
+> -int radeon_fence_driver_init(struct radeon_device *rdev)
+> +void radeon_fence_driver_init(struct radeon_device *rdev)
+>   {
+>   	int ring;
+>   
+> @@ -917,8 +916,6 @@ int radeon_fence_driver_init(struct radeon_device *rdev)
+>   	}
+>   
+>   	radeon_debugfs_fence_init(rdev);
+> -
+> -	return 0;
+>   }
+>   
+>   /**
+> diff --git a/drivers/gpu/drm/radeon/rs400.c b/drivers/gpu/drm/radeon/rs400.c
+> index 8423bcc3302b..6383f7a34bd8 100644
+> --- a/drivers/gpu/drm/radeon/rs400.c
+> +++ b/drivers/gpu/drm/radeon/rs400.c
+> @@ -555,9 +555,7 @@ int rs400_init(struct radeon_device *rdev)
+>   	/* initialize memory controller */
+>   	rs400_mc_init(rdev);
+>   	/* Fence driver */
+> -	r = radeon_fence_driver_init(rdev);
+> -	if (r)
+> -		return r;
+> +	radeon_fence_driver_init(rdev);
+>   	/* Memory manager */
+>   	r = radeon_bo_init(rdev);
+>   	if (r)
+> diff --git a/drivers/gpu/drm/radeon/rs600.c b/drivers/gpu/drm/radeon/rs600.c
+> index 5bf26058eec0..b2d22e25eee1 100644
+> --- a/drivers/gpu/drm/radeon/rs600.c
+> +++ b/drivers/gpu/drm/radeon/rs600.c
+> @@ -1132,9 +1132,7 @@ int rs600_init(struct radeon_device *rdev)
+>   	rs600_mc_init(rdev);
+>   	r100_debugfs_rbbm_init(rdev);
+>   	/* Fence driver */
+> -	r = radeon_fence_driver_init(rdev);
+> -	if (r)
+> -		return r;
+> +	radeon_fence_driver_init(rdev);
+>   	/* Memory manager */
+>   	r = radeon_bo_init(rdev);
+>   	if (r)
+> diff --git a/drivers/gpu/drm/radeon/rs690.c b/drivers/gpu/drm/radeon/rs690.c
+> index 7bc302a89232..14fb0819b8c1 100644
+> --- a/drivers/gpu/drm/radeon/rs690.c
+> +++ b/drivers/gpu/drm/radeon/rs690.c
+> @@ -850,9 +850,7 @@ int rs690_init(struct radeon_device *rdev)
+>   	rs690_mc_init(rdev);
+>   	rv515_debugfs(rdev);
+>   	/* Fence driver */
+> -	r = radeon_fence_driver_init(rdev);
+> -	if (r)
+> -		return r;
+> +	radeon_fence_driver_init(rdev);
+>   	/* Memory manager */
+>   	r = radeon_bo_init(rdev);
+>   	if (r)
+> diff --git a/drivers/gpu/drm/radeon/rv515.c b/drivers/gpu/drm/radeon/rv515.c
+> index 46a53dd38079..63fb06e8e2d7 100644
+> --- a/drivers/gpu/drm/radeon/rv515.c
+> +++ b/drivers/gpu/drm/radeon/rv515.c
+> @@ -648,9 +648,7 @@ int rv515_init(struct radeon_device *rdev)
+>   	rv515_mc_init(rdev);
+>   	rv515_debugfs(rdev);
+>   	/* Fence driver */
+> -	r = radeon_fence_driver_init(rdev);
+> -	if (r)
+> -		return r;
+> +	radeon_fence_driver_init(rdev);
+>   	/* Memory manager */
+>   	r = radeon_bo_init(rdev);
+>   	if (r)
+> diff --git a/drivers/gpu/drm/radeon/rv770.c b/drivers/gpu/drm/radeon/rv770.c
+> index 88e29ebaad46..74499307285b 100644
+> --- a/drivers/gpu/drm/radeon/rv770.c
+> +++ b/drivers/gpu/drm/radeon/rv770.c
+> @@ -1941,9 +1941,7 @@ int rv770_init(struct radeon_device *rdev)
+>   	/* Initialize clocks */
+>   	radeon_get_clock_info(rdev->ddev);
+>   	/* Fence driver */
+> -	r = radeon_fence_driver_init(rdev);
+> -	if (r)
+> -		return r;
+> +	radeon_fence_driver_init(rdev);
+>   	/* initialize AGP */
+>   	if (rdev->flags & RADEON_IS_AGP) {
+>   		r = radeon_agp_init(rdev);
+> diff --git a/drivers/gpu/drm/radeon/si.c b/drivers/gpu/drm/radeon/si.c
+> index d0e94b10e4c0..013e44ed0f39 100644
+> --- a/drivers/gpu/drm/radeon/si.c
+> +++ b/drivers/gpu/drm/radeon/si.c
+> @@ -6857,9 +6857,7 @@ int si_init(struct radeon_device *rdev)
+>   	radeon_get_clock_info(rdev->ddev);
+>   
+>   	/* Fence driver */
+> -	r = radeon_fence_driver_init(rdev);
+> -	if (r)
+> -		return r;
+> +	radeon_fence_driver_init(rdev);
+>   
+>   	/* initialize memory controller */
+>   	r = si_mc_init(rdev);
 
