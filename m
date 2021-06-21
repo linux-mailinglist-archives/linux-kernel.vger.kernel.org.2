@@ -2,304 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A8F3AE7E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 13:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED5A63AE7F1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 13:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230335AbhFULIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 07:08:21 -0400
-Received: from mail-eopbgr1300111.outbound.protection.outlook.com ([40.107.130.111]:14424
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
+        id S229837AbhFULOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 07:14:06 -0400
+Received: from mail-mw2nam10on2046.outbound.protection.outlook.com ([40.107.94.46]:34560
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229641AbhFULIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 07:08:20 -0400
+        id S229641AbhFULOF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 07:14:05 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nyv9UlckgBJu2vHaYRvqwvJmD1knOCG8z7U+YjAPnkAij3k6WYT70BQMb2w9JuWo7QkcaEYtQB4sD027ltVOI8L9jpuRbaws0t9oeD3mIwsIHxeZ+7cx50BVXofEWL6lMV2np4W1lHrkCs+9GEWfq5CXT0FCjLUr38HyNRErxDEZrxUeyHvoEB2YSDJkU4AEq7590a0EVqHL0JUsnMg3389Z/vRUwWltHJR5vv9XC8ocoguMf7U5VT+/DQlT/9I4lygR7S6M1Ks9kg4OQRx5jpbXXmh07Mxe/WBmTdl1qZAm2ZBCboM6dw4/572zZDeUS0HwXnzJ375HeVJZLhukCA==
+ b=Wrjq94/MVC0NxW9H3sruj5d2jgcygKc9NdcG3yGtDUlGAxOCmLEycjjg0Lky+B0BuPmjCROVzWR8ZvzUOwYq94HH27TwXSgVFMAAB9qWivupA1LytOWqPY5JCiZZH3H+ueTxFxTw7960qGsnGWONeeYY1TgnX2pKtxNhoQYcCTB8PPbK21/frdyW7r1IEM8pGghqb44fWKg1iFn3FN/SvLqFiBewmp7n/13B6DAUOc2BF67h2QAa0HLC1uEeDru2me4NGn7+5tcIBu6fN5QpyX6ETVV00DQEXkhLbqCXZu2AYUUsuiYMMYK/czKLmR7IIjTi3Vv7kDoe1/vJF4l1DA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G43rMo08T7LLFXQT4Hd0IfxxvNkM871nOX+oJi5DvQw=;
- b=h8RRGNTu4RBQfuh67z+IpRpQX9TY3ANd+NSButKMnOvqR8qM9K4QRc7YELc8TNqWopUwR/D9j0r2pS9d+EM7Ok3xjhNSRKKyQs7kPInDiwt8J7n8krrnNFSeZGpK5yrXeB2xSQv/EGLlD72/bhpLJmJXN25k44ovP1A7GqBivYW1M/U4Ko1PK++i4fyMrQSJB5QFWQNlacoVPgchDLrPGCBLqUNoIiQsL7pW5utaZj15Qbt58JHiBNw1cU96udMe2W+ugCFgtpr+0SotYAH0tLaynR/Pf/IM4JA0MEHKqtYbnYROTdv967bqQJxnkS02OX6mOYIiOOTrCIszPOzkYg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
- s=selector1;
+ bh=J/FH/SFoIWnvshKm3P0I5MgZn5ylC6y9EnMXADel+DE=;
+ b=K4H8mfzhAKcoTFfjci4LzXEqcQEvu6fE9Sd2kKOlGsCplILVDlvDdszvtShRsip5+JO5Dqa/SLaVnZ9z5c1YxyKlBmKCs/mIty0mmmvFqyI0wjlayVSVQNeBBVsgPwx0Rd32TOX+QfDisTZJRtb8CSpTmkpSRBVuDin5S8yLwl0GBQcAkvHuInTriiuX47Fvd16mS0ehiHN7fT7ijqAOqrrmfr2BqCnTIUPm6g+tgrgmpfoyw4Hw0wV78AUkOUhFa9u9sNI20py7M3L3ZTVjqPHlhF/E0rYvOVYWApSlwm9FX08LjgO4aFA8XpFpGYYNhlj3hzNrMnJFxd0Q6++Oig==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=lists.infradead.org
+ smtp.mailfrom=xilinx.com; dmarc=pass (p=none sp=none pct=100) action=none
+ header.from=xilinx.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=G43rMo08T7LLFXQT4Hd0IfxxvNkM871nOX+oJi5DvQw=;
- b=AJkrhn9zMHEES1lwTV840WHK654wr7i7BkELNSPNDNaTz0SHwyCog5UhZIUrgOr3nAA3T4NRe5fPImr5Nn3pfl8w7OGk4cMORSck9FasVhGww9BJZP28BaqA3r2KE7UyOmNWZwcopu3xkgfTmE4+Oil75MAmQ2/bUpf1DNUfG7FJg01pEsY1Bw3MT7CqzqeDAbvjJPgh16G11pP0kZTR3m80f4WSLL6EUBUgn5iM/U7t7eOSC67v3lT3xHe0Kr+gLOJ7bh5ia11UBSF/c4LuWyzAwhqmEBZcuoTZ01aCHMhwS3J7IIzvtdQec9RuqeQQ89SXUv8im5pmJwnOd1rYng==
-Received: from HK2PR06MB3300.apcprd06.prod.outlook.com (2603:1096:202:34::18)
- by HK0PR06MB2228.apcprd06.prod.outlook.com (2603:1096:203:4c::18) with
+ bh=J/FH/SFoIWnvshKm3P0I5MgZn5ylC6y9EnMXADel+DE=;
+ b=tjDMCL9snBlqBOUJvuRkcK6Yf/camRprl4GOYHVl8kNkJWgYboPHlcWA7AU9adMgkF28CurPXSl8s5jtNbeQuCbmbwG9X5Mk43tIcKZSEUTldJaXh5jdPpoo8agifv6/6bPZkxL0KcfnWPUN7uMNeBZdg3XkSuXmn308ODfDLVY=
+Received: from SA0PR11CA0090.namprd11.prod.outlook.com (2603:10b6:806:d2::35)
+ by CY4PR02MB2472.namprd02.prod.outlook.com (2603:10b6:903:70::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Mon, 21 Jun
- 2021 11:06:02 +0000
-Received: from HK2PR06MB3300.apcprd06.prod.outlook.com
- ([fe80::2952:8470:b8c0:c53c]) by HK2PR06MB3300.apcprd06.prod.outlook.com
- ([fe80::2952:8470:b8c0:c53c%6]) with mapi id 15.20.4242.023; Mon, 21 Jun 2021
- 11:06:02 +0000
-From:   Kuo-Hsiang Chou <kuohsiang_chou@aspeedtech.com>
-To:     Kuo-Hsiang Chou <kuohsiang_chou@aspeedtech.com>,
-        "tzimmermann@suse.de" <tzimmermann@suse.de>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "airlied@linux.ie" <airlied@linux.ie>,
-        "airlied@redhat.com" <airlied@redhat.com>,
-        Jenmin Yuan <jenmin_yuan@aspeedtech.com>,
-        Arc Sung <arc_sung@aspeedtech.com>
-Subject: RE: [PATCH v4] drm/ast: Disable fast reset after DRAM initial
-Thread-Topic: [PATCH v4] drm/ast: Disable fast reset after DRAM initial
-Thread-Index: AQHXQyMsjwUdIFIvXU2rGyYFr6xp2ar1jDMggCkAVcA=
-Date:   Mon, 21 Jun 2021 11:06:02 +0000
-Message-ID: <HK2PR06MB3300CDB7ADFA9108EEAE6FD08C0A9@HK2PR06MB3300.apcprd06.prod.outlook.com>
-References: <bbe8ccfd-7e73-e1e6-32a5-f08f71c4ed3f@suse.de>
- <20210507092708.39552-1-kuohsiang_chou@aspeedtech.com>
- <HK2PR06MB33004A57DA1F99AC77E8F2CD8C249@HK2PR06MB3300.apcprd06.prod.outlook.com>
-In-Reply-To: <HK2PR06MB33004A57DA1F99AC77E8F2CD8C249@HK2PR06MB3300.apcprd06.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: aspeedtech.com; dkim=none (message not signed)
- header.d=none;aspeedtech.com; dmarc=none action=none
- header.from=aspeedtech.com;
-x-originating-ip: [211.20.114.70]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fe958de1-c7f8-43a0-d9a1-08d934a48e9f
-x-ms-traffictypediagnostic: HK0PR06MB2228:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HK0PR06MB2228DDD3D5460B489FC568F58C0A9@HK0PR06MB2228.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Bhw2txa1ppDO68I0qITLAsYMOnSoAnjjVBbucVASsvVcpo/ZFy157lvSG8un9anSXox+OXoIqhaWRmVpcvJxJix2O8xVewZ6NejfMHlf2o+BcNjC0fGROh18rGlnGtBYBaKvdPLAae+yhaTBBoAqhDce0t9XIDUNvPg4LRowO5rXLAOcFTAVdKRixP/IeK/cpDwEPbOziuyeavA04NBZmCyMa6gM/UmzC86ng1/fDbxfcHpjojNar40xQQOV3kM3BY7qlJlwSVMq/wjurbTVqOsYMm9w2gwd88HkeVImniLP9wAIFPgJMSXdgeTRxTPp+SlM1WoBcr1cVuEhWOrFZ1vCkfaqUGDP0YIYdlYaLw/E3RVVW5TRsQNoQtT8Lf+XuetbDg/minJk02eCTLZtP4MCc+9PG1b3ldHmIQo+af0UmSHMq1dGnNFZLKLnvBcgGUzLBPGw9XLozIq+ojfrwbjz3bPzQNvxs+FW26qqDeXKi+wSVgmv+dr96evNifpB/HxolCsORVZXgU7daAu+ZcNR8WgyXSMckkJDhDkeFDsGLmOJTM5pEDW6vycFuyS3K/sLYI6NlMgUpooqqcaZ5+pNY/RdTjEg1uEEqtqzMDc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK2PR06MB3300.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(39840400004)(396003)(346002)(366004)(136003)(376002)(107886003)(83380400001)(478600001)(33656002)(8676002)(8936002)(55236004)(6506007)(53546011)(52536014)(86362001)(4326008)(186003)(26005)(55016002)(316002)(122000001)(66946007)(7696005)(71200400001)(66476007)(66556008)(66446008)(5660300002)(38100700002)(2906002)(64756008)(9686003)(110136005)(76116006)(54906003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?L87rvQtyOoYjcZXWcnxRFybP5El+2ywmMcXD4J+6Nvs3tjDUp4bopfMqMx1Z?=
- =?us-ascii?Q?P/mJ3I498wUOPeJZRdFlkfGDcIk/GsH8nevVai41f7lVHWEvpm2V0pJS9nch?=
- =?us-ascii?Q?vo4z1uyiBcf67ij2jM8CimTmMG6skS5zJHvW1fVM+bqnIadD7xnrJuwC1hLq?=
- =?us-ascii?Q?UMCMyruTSOJgliTeDF1fpDdHAKywBzw098C0wm+3l+N78vFzI7SW85oKJmw2?=
- =?us-ascii?Q?srtCwj7S4Y1pyrKcIBjSvlyiT/UjhQAFvx9PZ7M+OKeYwEHBBftL3QsoAB6T?=
- =?us-ascii?Q?9JnIt/u1B96R44O34sWfFLt+guE8tERcsY2mZq672b2T54gRLEd2gTsJZ8ta?=
- =?us-ascii?Q?jPyitH3NW58CheSkdbY8IZL1MSQ4XYIYRuUjf+eXefAtuQCm7Buv74Ils9P9?=
- =?us-ascii?Q?bPdlIZ8Mo+OYxOnfZpaMtBK/HFEzF/sJXMAeqvBB4yebVW6hDxOGGAm9XT6T?=
- =?us-ascii?Q?F5hpeZsVQMmGb0+X7ce0DOIohr26Vl6c2uuazadG4EdpDHuXKg0XN6cyc4Hk?=
- =?us-ascii?Q?hh3gl9VE6iP0hMJZB8NEqQI53TGtI5zk4IzmvxIJmZ4nIOD1GcxX8yixT+u7?=
- =?us-ascii?Q?C/qgGt84OuCcTQA99V08wTcDrkBAjlQ64NUleJdtctpofwTtHAnJZnCwwkcT?=
- =?us-ascii?Q?CdPP/Lgy0nRoGPMQ1D8uC9RAnTxmZdhPnpDYdzKC79U6gZNvzFAVvyZ58PDz?=
- =?us-ascii?Q?PdDHmszMY4BlppWTwtmNHZc2Z82CHw4tuxYNllOnvs9izdrQYFNrYvOhzENN?=
- =?us-ascii?Q?C0XUaVn3v3FCB5z0Gdgu15jLiNO4d0X+HgUTl8dQaBJABGl6Ml8+Vwklqv8y?=
- =?us-ascii?Q?5GnJ7CKIPglc9GDs0JRk87j0t35S/E7KA+DGyLbxiKvYrkrZy0PN1SkO4lif?=
- =?us-ascii?Q?0YwqU1aAIitrGhRy3y5vt4OOt8saMd6ci1PO7y7M5ndjyc32iF97PrWoXEpe?=
- =?us-ascii?Q?MNJA/cM9UdmweS9Qqo5wsW+Sz+s17FQfPSUvR2VCRFYoTEeJrPk2yH2pPRUn?=
- =?us-ascii?Q?gibQOpYV9hrjeipaHsKHxdUzSnxiQD2OcO+r2vSlNK8DMfosmYnMngO/4pve?=
- =?us-ascii?Q?m0fjh6xPZv0K0ZnazxN+kMceTyOdUxkQUkEKtyKadtD6AZp1Z2dE83mCamZT?=
- =?us-ascii?Q?ns56GQUYqx1JOyjhFO8PWI7+CKfC+68MTvSidyQnBEu/AfclmjrKvJzU/SB8?=
- =?us-ascii?Q?ES9inEetTNGzmk/U8NwbQzI2EDzB4QPEmVm18rpXlAKmu4VqqT8trQJ9gGm7?=
- =?us-ascii?Q?BBTkzuKwd3RqNrTY2Xp6ZRrHHFeKZRwVN1XMxXLkGDjYaH2nThU2RWyrgZsx?=
- =?us-ascii?Q?yoHjxiuMHKemGw8DQk5PUGfu?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.22; Mon, 21 Jun
+ 2021 11:11:49 +0000
+Received: from SN1NAM02FT0003.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:806:d2:cafe::a4) by SA0PR11CA0090.outlook.office365.com
+ (2603:10b6:806:d2::35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21 via Frontend
+ Transport; Mon, 21 Jun 2021 11:11:49 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; lists.infradead.org; dkim=none (message not signed)
+ header.d=none;lists.infradead.org; dmarc=pass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT0003.mail.protection.outlook.com (10.97.4.80) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4242.16 via Frontend Transport; Mon, 21 Jun 2021 11:11:49 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 21 Jun 2021 04:11:48 -0700
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Mon, 21 Jun 2021 04:11:48 -0700
+Envelope-to: linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ zou_wei@huawei.com
+Received: from [172.30.17.109] (port=46728)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1lvHqG-00021b-8m; Mon, 21 Jun 2021 04:11:48 -0700
+Subject: Re: [PATCH 2/6] firmware: xilinx: add macros of node ids for error
+ event
+To:     Abhyuday Godhasara <abhyuday.godhasara@xilinx.com>,
+        <michal.simek@xilinx.com>
+CC:     <rajan.vaja@xilinx.com>, <manish.narani@xilinx.com>,
+        <zou_wei@huawei.com>, <amit.sunil.dhamne@xilinx.com>,
+        <lakshmi.sai.krishna.potthuri@xilinx.com>,
+        <wendy.liang@xilinx.com>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <1622217566-1856-1-git-send-email-abhyuday.godhasara@xilinx.com>
+ <1622217566-1856-3-git-send-email-abhyuday.godhasara@xilinx.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <a4d6b733-0cfc-4624-e46f-6d8c89c252a2@xilinx.com>
+Date:   Mon, 21 Jun 2021 13:11:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK2PR06MB3300.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fe958de1-c7f8-43a0-d9a1-08d934a48e9f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jun 2021 11:06:02.0598
+In-Reply-To: <1622217566-1856-3-git-send-email-abhyuday.godhasara@xilinx.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: abf6dac0-b99e-4591-3b62-08d934a55dda
+X-MS-TrafficTypeDiagnostic: CY4PR02MB2472:
+X-Microsoft-Antispam-PRVS: <CY4PR02MB247257F5E0378819874C4252C60A9@CY4PR02MB2472.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: gRyQonzmN/i97x7eybGy7a7ErwsfU7YGoLfsqwpCuGkYXbCr0VdrXhnAtFeVxWohvpfgTlmylPRS8GkJAnR+uRTTMYLGnhXbz5D1bGftesi7sHrTxObTmX7vSac0z3SdxqsqmKKRq3c54wU0h1OwUBU+/x+d7KZBxba7EudRBE4KAFTJgAYHSd0OIo8fSNjQTw2z0eZF9ak6Z1piihrsy/542Isq6bqLiL0KXfe0uQCc608mvPV7HLYj9MXZbOdCifcSleKDW1w+nFkjtLy6dh5o8F3JJ5LxrJJziaaPwhGm9GvLijTslJCz5ZYclxWGlBIVtgjyW09EoCb3mj0yI30KP6t4PcerZVuaQE5c/tF1UzdHAcGLu9xqhcJVxXYQE6vQ4q0rIuQJWmmJ6HZzquDovOg2XXzoa56Vp5Edd3TbqJeVip2I5FyqYv014DHYScftMj/JpL4aOLYTkvurnSTMgLKFS0n3RcVU+bWtb+4PuOqPa9yVhTA9LSkTRxfOE8Kl7QTqYIZ4A3DQyTTmIgYz6XzP/n/+Z0dOfT5OtL+1gpUfovK+yCEw1TbcvAqRNnYu6kSqNlAhMFlDX3fWqITWOJPTKndXQqKEu5l8bTljqtKyglzWX67Hz+7jm4ggtoFrS9RdZ1DrZWiUGcLKJd1jNIG84bUehHwf4nZjZAWYaG9LXqfNe9uX9eP7/gNcstWzJTp/sx0GOG/8ocw2jA==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(39860400002)(396003)(376002)(346002)(136003)(46966006)(36840700001)(356005)(83380400001)(8676002)(82740400003)(31686004)(7636003)(9786002)(82310400003)(47076005)(2616005)(8936002)(36756003)(110136005)(426003)(44832011)(478600001)(70206006)(5660300002)(26005)(316002)(54906003)(336012)(36860700001)(36906005)(31696002)(53546011)(186003)(70586007)(6666004)(2906002)(4326008)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2021 11:11:49.7657
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3ge2e9E+yDV2pFvAlUxfNXXC4hcfysiOJ8b6Z+R+5SDINJeGO20KX4J9xBHlLszQrAP3l6TClK8RDYGOuCeVG7+fRgZANDd2KTs+mXqM8tc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2228
+X-MS-Exchange-CrossTenant-Network-Message-Id: abf6dac0-b99e-4591-3b62-08d934a55dda
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0003.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR02MB2472
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,=20
-
-May I know if I need to port this patch to the latest drm-misc-next again, =
-because the patch has send to review for a while.
-If the porting or any other thing can reduce your review effort, please ins=
-truct me. Thanks!
-
-Best Regards,
-	Kuo-Hsiang Chou
-
------Original Message-----
-From: dri-devel [mailto:dri-devel-bounces@lists.freedesktop.org] On Behalf =
-Of Kuo-Hsiang Chou
-Sent: Wednesday, May 26, 2021 6:24 PM
-To: tzimmermann@suse.de; dri-devel@lists.freedesktop.org; linux-kernel@vger=
-.kernel.org
-Subject: RE: [PATCH v4] drm/ast: Disable fast reset after DRAM initial
 
 
+On 5/28/21 5:59 PM, Abhyuday Godhasara wrote:
+> Add macros for the Node-Id of Error events.
+> 
+> Move supported api callback ids from zynqmp-power to zynqmp-firmware.
+> 
+> Signed-off-by: Rajan Vaja <rajan.vaja@xilinx.com>
+> Signed-off-by: Abhyuday Godhasara <abhyuday.godhasara@xilinx.com>
+> ---
+>  drivers/soc/xilinx/zynqmp_power.c    |  6 ------
+>  include/linux/firmware/xlnx-zynqmp.h | 13 +++++++++++++
+>  2 files changed, 13 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/soc/xilinx/zynqmp_power.c b/drivers/soc/xilinx/zynqmp_power.c
+> index c556623..76478fe 100644
+> --- a/drivers/soc/xilinx/zynqmp_power.c
+> +++ b/drivers/soc/xilinx/zynqmp_power.c
+> @@ -46,12 +46,6 @@ static const char *const suspend_modes[] = {
+>  
+>  static enum pm_suspend_mode suspend_mode = PM_SUSPEND_MODE_STD;
+>  
+> -enum pm_api_cb_id {
+> -	PM_INIT_SUSPEND_CB = 30,
+> -	PM_ACKNOWLEDGE_CB,
+> -	PM_NOTIFY_CB,
+> -};
+> -
+>  static void zynqmp_pm_get_callback_data(u32 *buf)
+>  {
+>  	zynqmp_pm_invoke_fn(GET_CALLBACK_DATA, 0, 0, 0, 0, buf);
+> diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
+> index 6557832..c715756 100644
+> --- a/include/linux/firmware/xlnx-zynqmp.h
+> +++ b/include/linux/firmware/xlnx-zynqmp.h
+> @@ -60,6 +60,19 @@
+>  #define XILINX_ZYNQMP_PM_FPGA_FULL	0x0U
+>  #define XILINX_ZYNQMP_PM_FPGA_PARTIAL	BIT(0)
+>  
+> +/*
+> + * Node IDs for the Error Events.
+> + */
+> +#define EVENT_ERROR_PMC_ERR1	(0x28100000U)
+> +#define EVENT_ERROR_PMC_ERR2	(0x28104000U)
+> +#define EVENT_ERROR_PSM_ERR1	(0x28108000U)
+> +#define EVENT_ERROR_PSM_ERR2	(0x2810C000U)
+> +
+> +enum pm_api_cb_id {
+> +	PM_INIT_SUSPEND_CB = 30,
 
------Original Message-----
-From: Kuo-Hsiang Chou=20
-Sent: Friday, May 07, 2021 5:27 PM
-To: tzimmermann@suse.de; dri-devel@lists.freedesktop.org; linux-kernel@vger=
-.kernel.org
-Cc: airlied@redhat.com; airlied@linux.ie; daniel@ffwll.ch; Jenmin Yuan <jen=
-min_yuan@aspeedtech.com>; Kuo-Hsiang Chou <kuohsiang_chou@aspeedtech.com>; =
-Arc Sung <arc_sung@aspeedtech.com>
-Subject: [PATCH v4] drm/ast: Disable fast reset after DRAM initial
+No information about why PM_ACKNOWLEDGE_CB was removed. Doing it via
+separate patch would be the best.
 
-Hi Thomas,
+M
 
-May I know if this patch has sth wrong. Or something I need to improve on i=
-t, I can fix it right now. Thanks!
-
-Regards,
-	Kuo-Hsiang Chou
-
-[Bug][AST2500]
-
-V1:
-When AST2500 acts as stand-alone VGA so that DRAM and DVO initialization ha=
-ve to be achieved by VGA driver with P2A (PCI to AHB) enabling.
-However, HW suggests disable Fast reset mode after DRAM initializaton, beca=
-use fast reset mode is mainly designed for ARM ICE debugger.
-Once Fast reset is checked as enabling, WDT (Watch Dog Timer) should be fir=
-st enabled to avoid system deadlock before disable fast reset mode.
-
-V2:
-Use to_pci_dev() to get revision of PCI configuration.
-
-V3:
-If SCU00 is not unlocked, just enter its password again.
-It is unnecessary to clear AHB lock condition and restore WDT default setti=
-ng again, before Fast-reset clearing.
-
-V4:
-repatch after "error : could not build fake ancestor" resolved.
-
-Signed-off-by: KuoHsiang Chou <kuohsiang_chou@aspeedtech.com>
----
- drivers/gpu/drm/ast/ast_drv.h  |  1 +
- drivers/gpu/drm/ast/ast_main.c |  4 ++
- drivers/gpu/drm/ast/ast_post.c | 68 +++++++++++++++++++++-------------
- 3 files changed, 47 insertions(+), 26 deletions(-)
-
-diff --git a/drivers/gpu/drm/ast/ast_drv.h b/drivers/gpu/drm/ast/ast_drv.h =
-index 911f9f414..5ebb5905d 100644
---- a/drivers/gpu/drm/ast/ast_drv.h
-+++ b/drivers/gpu/drm/ast/ast_drv.h
-@@ -346,6 +346,7 @@ bool ast_is_vga_enabled(struct drm_device *dev);  void =
-ast_post_gpu(struct drm_device *dev);
- u32 ast_mindwm(struct ast_private *ast, u32 r);  void ast_moutdwm(struct a=
-st_private *ast, u32 r, u32 v);
-+void ast_patch_ahb_2500(struct ast_private *ast);
- /* ast dp501 */
- void ast_set_dp501_video_output(struct drm_device *dev, u8 mode);  bool as=
-t_backup_fw(struct drm_device *dev, u8 *addr, u32 size); diff --git a/drive=
-rs/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_main.c index 2aff2e6cf.=
-.cfb56ea3a 100644
---- a/drivers/gpu/drm/ast/ast_main.c
-+++ b/drivers/gpu/drm/ast/ast_main.c
-@@ -97,6 +97,10 @@ static void ast_detect_config_mode(struct drm_device *de=
-v, u32 *scu_rev)
- 	jregd0 =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff);
- 	jregd1 =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd1, 0xff);
- 	if (!(jregd0 & 0x80) || !(jregd1 & 0x10)) {
-+		/* Patch AST2500 */
-+		if (((pdev->revision & 0xF0) =3D=3D 0x40) && ((jregd0 & 0xC0) =3D=3D 0))
-+			ast_patch_ahb_2500(ast);
-+
- 		/* Double check it's actually working */
- 		data =3D ast_read32(ast, 0xf004);
- 		if ((data !=3D 0xFFFFFFFF) && (data !=3D 0x00)) { diff --git a/drivers/g=
-pu/drm/ast/ast_post.c b/drivers/gpu/drm/ast/ast_post.c index 0607658dd..564=
-28798a 100644
---- a/drivers/gpu/drm/ast/ast_post.c
-+++ b/drivers/gpu/drm/ast/ast_post.c
-@@ -2028,6 +2028,30 @@ static bool ast_dram_init_2500(struct ast_private *a=
-st)
- 	return true;
- }
-
-+void ast_patch_ahb_2500(struct ast_private *ast) {
-+	u32	data;
-+
-+	/* Clear bus lock condition */
-+	ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
-+	ast_moutdwm(ast, 0x1e600084, 0x00010000);
-+	ast_moutdwm(ast, 0x1e600088, 0x00000000);
-+	ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
-+	data =3D ast_mindwm(ast, 0x1e6e2070);
-+	if (data & 0x08000000) {					/* check fast reset */
-+
-+		ast_moutdwm(ast, 0x1E785004, 0x00000010);
-+		ast_moutdwm(ast, 0x1E785008, 0x00004755);
-+		ast_moutdwm(ast, 0x1E78500c, 0x00000033);
-+		udelay(1000);
-+	}
-+	do {
-+		ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
-+		data =3D ast_mindwm(ast, 0x1e6e2000);
-+	}	while (data !=3D 1);
-+	ast_moutdwm(ast, 0x1e6e207c, 0x08000000);	/* clear fast reset */
-+}
-+
- void ast_post_chip_2500(struct drm_device *dev)  {
- 	struct ast_private *ast =3D to_ast_private(dev); @@ -2035,39 +2059,31 @@ =
-void ast_post_chip_2500(struct drm_device *dev)
- 	u8 reg;
-
- 	reg =3D ast_get_index_reg_mask(ast, AST_IO_CRTC_PORT, 0xd0, 0xff);
--	if ((reg & 0x80) =3D=3D 0) {/* vga only */
-+	if ((reg & 0xC0) =3D=3D 0) {/* vga only */
- 		/* Clear bus lock condition */
--		ast_moutdwm(ast, 0x1e600000, 0xAEED1A03);
--		ast_moutdwm(ast, 0x1e600084, 0x00010000);
--		ast_moutdwm(ast, 0x1e600088, 0x00000000);
--		ast_moutdwm(ast, 0x1e6e2000, 0x1688A8A8);
--		ast_write32(ast, 0xf004, 0x1e6e0000);
--		ast_write32(ast, 0xf000, 0x1);
--		ast_write32(ast, 0x12000, 0x1688a8a8);
--		while (ast_read32(ast, 0x12000) !=3D 0x1)
--			;
--
--		ast_write32(ast, 0x10000, 0xfc600309);
--		while (ast_read32(ast, 0x10000) !=3D 0x1)
--			;
-+		ast_patch_ahb_2500(ast);
-+
-+		/* Disable watchdog */
-+		ast_moutdwm(ast, 0x1E78502C, 0x00000000);
-+		ast_moutdwm(ast, 0x1E78504C, 0x00000000);
-+		/* Reset USB port */
-+		ast_moutdwm(ast, 0x1E6E2090, 0x20000000);
-+		ast_moutdwm(ast, 0x1E6E2094, 0x00004000);
-+		if (ast_mindwm(ast, 0x1E6E2070) & 0x00800000) {
-+			ast_moutdwm(ast, 0x1E6E207C, 0x00800000);
-+			mdelay(100);
-+			ast_moutdwm(ast, 0x1E6E2070, 0x00800000);
-+		}
-+		/* Modify eSPI reset pin */
-+		temp =3D ast_mindwm(ast, 0x1E6E2070);
-+		if (temp & 0x02000000)
-+			ast_moutdwm(ast, 0x1E6E207C, 0x00004000);
-
- 		/* Slow down CPU/AHB CLK in VGA only mode */
- 		temp =3D ast_read32(ast, 0x12008);
- 		temp |=3D 0x73;
- 		ast_write32(ast, 0x12008, temp);
-
--		/* Reset USB port to patch USB unknown device issue */
--		ast_moutdwm(ast, 0x1e6e2090, 0x20000000);
--		temp  =3D ast_mindwm(ast, 0x1e6e2094);
--		temp |=3D 0x00004000;
--		ast_moutdwm(ast, 0x1e6e2094, temp);
--		temp  =3D ast_mindwm(ast, 0x1e6e2070);
--		if (temp & 0x00800000) {
--			ast_moutdwm(ast, 0x1e6e207c, 0x00800000);
--			mdelay(100);
--			ast_moutdwm(ast, 0x1e6e2070, 0x00800000);
--		}
--
- 		if (!ast_dram_init_2500(ast))
- 			drm_err(dev, "DRAM init failed !\n");
-
---
-2.18.4
-
+> +	PM_NOTIFY_CB = 32,
+> +};
+> +
+>  enum pm_api_id {
+>  	PM_GET_API_VERSION = 1,
+>  	PM_REGISTER_NOTIFIER = 5,
+> 
