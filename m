@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADEB13AF203
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC1583AF209
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231656AbhFURdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 13:33:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43866 "EHLO
+        id S231657AbhFURdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 13:33:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231487AbhFURd3 (ORCPT
+        with ESMTP id S231387AbhFURdc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 13:33:29 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC32C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:31:14 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id r5so31543106lfr.5
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:31:14 -0700 (PDT)
+        Mon, 21 Jun 2021 13:33:32 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBE0C061768
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:31:17 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id d16so24026711lfn.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:31:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=semihalf-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7WvcmjpDE06toGMKX+zkAYwYDdzPn5oW9s8HRQs3izM=;
-        b=d8vh39N35Xd+//mob2LNSri4E6mTL19ceEvR0Ja7CJ06X/5iVoP6ktLh8u9X7pRrKU
-         Gy5dcTZKZAVY9sGOaM/iOvK1RiVEQ4q/9+TfAiXMaAerLrIvNN7XiiZgBUBvPEFx45Lv
-         xSIYmOsul0/nFNqao9KX/LhZWMZFFp2ifXn2Et6zb79eLdGPckwVN+EA/vYtAAlo18mz
-         EGMguggW0LWTW2Vc0do1PU5XgwbuPzMD88cTfL1qKe2UwMW95Q8M3SwT6/wl2mZNL7cg
-         X0CXHM543yM787B8qMFKjA9JOPAtukqFAzb4xidyMHiUSqN81M3Ak5tI+r/uPjAYNKhY
-         Qnug==
+        bh=nNpW+sLWCmrbUh1r/DSV8Y7jUML0YXJCEAVWQZMs+PY=;
+        b=WMeAwcgKrWkfyW/M19Kl6IEgSno6E56auNOFqg5/IEkeSNsSZwAu6+3YK3ehCZdnwu
+         NfRa+mJ2m/8SnC4B5yF7Rh+2uvMThmBj1ExsrzTu0oUIyxM8xcwVzkifmyzO4moc4fBE
+         Z0UQ1X6bilkW11743K8VP5nUxBKqFTS0ukAnvYRVLHimwFAuIKM3Vb4r+wepVDsSlP2D
+         kRc5GGez9jJ9Ww36a1jJg/3qRd9rLnnVcMYtTSuLASWnM+Kf/momVz2wXHY8il6xcrvn
+         KZ7UUHT8//N43PlxaG01Ek3Dj8Hmw8k9H+MQXg0CNU1jxjv3MyqDuWN5QqKfy4neTpQm
+         ftfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7WvcmjpDE06toGMKX+zkAYwYDdzPn5oW9s8HRQs3izM=;
-        b=Ym2T8Lvbpp9CbG9p/z6MXAiSE22TcBIM33rLXjmLjlhDRkyOmrbVGm4P0B2yfO25gn
-         1JHcOmygSfRxsWZ30u10LJ5xUXEKqZE3NbLVrvB0vCy71Xt3ugFiSxMR4He8cvKcjQL4
-         9cOb9js+i3u+WZA4zHmhmASyU0w5f86PSQM+gb38QsJfFRNLx72OSTxjzxJHBkyICvVC
-         t4mjHt1T1zS4LrNXchJ3eOlOszlmlnDoi4E/sDg6EDckRVJh/sRyosrUW6HfsSIyHvMm
-         WJnM+qn9eIIunsgvPqrSVtZRN9nBoHv0IflDPTre3/M+qBGWQY5qhgKqolBKEJdBI2/3
-         v/1Q==
-X-Gm-Message-State: AOAM531KMMWxGPOSvOMxdVkvIxFVvlLtRCUM1nHa+D1qo8XeGMq8sMoP
-        bYDTMPE00a3oMC7g99YbIqoL4Qd1r3dzGA==
-X-Google-Smtp-Source: ABdhPJydDuW3AiIFeVeMNwbF8EeqbIscjb6gfI6NA8Q4YopZOgj273y4uUemXN1TY84FSoprQbpAnQ==
-X-Received: by 2002:ac2:4c83:: with SMTP id d3mr14981121lfl.543.1624296673089;
-        Mon, 21 Jun 2021 10:31:13 -0700 (PDT)
+        bh=nNpW+sLWCmrbUh1r/DSV8Y7jUML0YXJCEAVWQZMs+PY=;
+        b=AwsnVFOODw+Xtyq5kwFfLyv+PIiJYtk4UhWrFL48ROwwGKHlFXf0GXKz/GyYirst5F
+         5yrWd19Fv5hxbg3BIdUi02GY+XjgDnC+7bm3kU7oL++Fp7IHVEOmdqkauPxVR7l/UouE
+         oTMzYuiGa8rGCppiv7nI83cWamVWDVIvF9KC/YzaByrg2Pv3jh9E/Q2wPp4Cz0EhTgJ7
+         Ms0Jrv6dTNm30WtEOokpqoIg8xfwJj6X2C1myTDIT9vTBfwCmq293IrTT2xot8loleIu
+         RZAVUXPhqQM4/KICyH+VTq7IIOZcmSWl6Sjf5Jjp2KdmjSx1sGM95Yzkh1Xeq67M34zU
+         Rw+w==
+X-Gm-Message-State: AOAM5323r62P80C++CL2eba7Gz6rLz/Lty4G30T05iPhpUaGUfnm6OTL
+        tprxeAuT5Vkd7gjflpPmCAoi15zGaMxqRQ==
+X-Google-Smtp-Source: ABdhPJz1hoTxm5sH6sxaZYFo4H8a1qR8SYrT7Bc5r7ocPtv7T7s8KW77JJHgMmWv26cK8kZPBgMseA==
+X-Received: by 2002:a05:6512:3e28:: with SMTP id i40mr3036126lfv.417.1624296674179;
+        Mon, 21 Jun 2021 10:31:14 -0700 (PDT)
 Received: from gilgamesh.lab.semihalf.net ([83.142.187.85])
-        by smtp.gmail.com with ESMTPSA id u11sm1926380lfs.257.2021.06.21.10.31.12
+        by smtp.gmail.com with ESMTPSA id u11sm1926380lfs.257.2021.06.21.10.31.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 10:31:12 -0700 (PDT)
+        Mon, 21 Jun 2021 10:31:13 -0700 (PDT)
 From:   Marcin Wojtas <mw@semihalf.com>
 To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux@armlinux.org.uk,
         jaz@semihalf.com, gjb@semihalf.com, upstream@semihalf.com,
         Samer.El-Haj-Mahmoud@arm.com, jon@solid-run.com, tn@semihalf.com,
         rjw@rjwysocki.net, lenb@kernel.org, Marcin Wojtas <mw@semihalf.com>
-Subject: [net-next: PATCH v3 2/6] net: mdiobus: Introduce fwnode_mdbiobus_register()
-Date:   Mon, 21 Jun 2021 19:30:24 +0200
-Message-Id: <20210621173028.3541424-3-mw@semihalf.com>
+Subject: [net-next: PATCH v3 3/6] net/fsl: switch to fwnode_mdiobus_register
+Date:   Mon, 21 Jun 2021 19:30:25 +0200
+Message-Id: <20210621173028.3541424-4-mw@semihalf.com>
 X-Mailer: git-send-email 2.29.0
 In-Reply-To: <20210621173028.3541424-1-mw@semihalf.com>
 References: <20210621173028.3541424-1-mw@semihalf.com>
@@ -66,89 +66,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch introduces a new helper function that
-wraps acpi_/of_ mdiobus_register() and allows its
-usage via common fwnode_ interface.
-
-Fall back to raw mdiobus_register() in case CONFIG_FWNODE_MDIO
-is not enabled, in order to satisfy compatibility
-in all future user drivers.
+Utilize the newly added helper routine
+for registering the MDIO bus via fwnode_
+interface.
 
 Signed-off-by: Marcin Wojtas <mw@semihalf.com>
 ---
- include/linux/fwnode_mdio.h    | 12 +++++++++++
- drivers/net/mdio/fwnode_mdio.c | 22 ++++++++++++++++++++
- 2 files changed, 34 insertions(+)
+ drivers/net/ethernet/freescale/xgmac_mdio.c | 11 ++---------
+ drivers/net/ethernet/freescale/Kconfig      |  4 +---
+ 2 files changed, 3 insertions(+), 12 deletions(-)
 
-diff --git a/include/linux/fwnode_mdio.h b/include/linux/fwnode_mdio.h
-index faf603c48c86..13d4ae8fee0a 100644
---- a/include/linux/fwnode_mdio.h
-+++ b/include/linux/fwnode_mdio.h
-@@ -16,6 +16,7 @@ int fwnode_mdiobus_phy_device_register(struct mii_bus *mdio,
- int fwnode_mdiobus_register_phy(struct mii_bus *bus,
- 				struct fwnode_handle *child, u32 addr);
- 
-+int fwnode_mdiobus_register(struct mii_bus *bus, struct fwnode_handle *fwnode);
- #else /* CONFIG_FWNODE_MDIO */
- int fwnode_mdiobus_phy_device_register(struct mii_bus *mdio,
- 				       struct phy_device *phy,
-@@ -30,6 +31,17 @@ static inline int fwnode_mdiobus_register_phy(struct mii_bus *bus,
- {
- 	return -EINVAL;
- }
-+
-+static inline int fwnode_mdiobus_register(struct mii_bus *bus,
-+					  struct fwnode_handle *fwnode)
-+{
-+	/*
-+	 * Fall back to mdiobus_register() function to register a bus.
-+	 * This way, we don't have to keep compat bits around in drivers.
-+	 */
-+
-+	return mdiobus_register(mdio);
-+}
- #endif
- 
- #endif /* __LINUX_FWNODE_MDIO_H */
-diff --git a/drivers/net/mdio/fwnode_mdio.c b/drivers/net/mdio/fwnode_mdio.c
-index 1becb1a731f6..ae0bf71a9932 100644
---- a/drivers/net/mdio/fwnode_mdio.c
-+++ b/drivers/net/mdio/fwnode_mdio.c
-@@ -7,8 +7,10 @@
+diff --git a/drivers/net/ethernet/freescale/xgmac_mdio.c b/drivers/net/ethernet/freescale/xgmac_mdio.c
+index 0b68852379da..2d99edc8a647 100644
+--- a/drivers/net/ethernet/freescale/xgmac_mdio.c
++++ b/drivers/net/ethernet/freescale/xgmac_mdio.c
+@@ -13,7 +13,7 @@
   */
  
  #include <linux/acpi.h>
-+#include <linux/acpi_mdio.h>
- #include <linux/fwnode_mdio.h>
- #include <linux/of.h>
-+#include <linux/of_mdio.h>
- #include <linux/phy.h>
+-#include <linux/acpi_mdio.h>
++#include <linux/fwnode_mdio.h>
+ #include <linux/interrupt.h>
+ #include <linux/kernel.h>
+ #include <linux/mdio.h>
+@@ -246,7 +246,6 @@ static int xgmac_mdio_read(struct mii_bus *bus, int phy_id, int regnum)
  
- MODULE_AUTHOR("Calvin Johnson <calvin.johnson@oss.nxp.com>");
-@@ -142,3 +144,23 @@ int fwnode_mdiobus_register_phy(struct mii_bus *bus,
- 	return 0;
- }
- EXPORT_SYMBOL(fwnode_mdiobus_register_phy);
-+
-+/**
-+ * fwnode_mdiobus_register - bring up all the PHYs on a given MDIO bus and
-+ *	attach them to it.
-+ * @bus: Target MDIO bus.
-+ * @fwnode: Pointer to fwnode of the MDIO controller.
-+ *
-+ * Return values are determined accordingly to acpi_/of_ mdiobus_register()
-+ * operation.
-+ */
-+int fwnode_mdiobus_register(struct mii_bus *bus, struct fwnode_handle *fwnode)
-+{
-+	if (is_acpi_node(fwnode))
-+		return acpi_mdiobus_register(bus, fwnode);
-+	else if (is_of_node(fwnode))
-+		return of_mdiobus_register(bus, to_of_node(fwnode));
-+	else
-+		return -EINVAL;
-+}
-+EXPORT_SYMBOL(fwnode_mdiobus_register);
+ static int xgmac_mdio_probe(struct platform_device *pdev)
+ {
+-	struct fwnode_handle *fwnode;
+ 	struct mdio_fsl_priv *priv;
+ 	struct resource *res;
+ 	struct mii_bus *bus;
+@@ -291,13 +290,7 @@ static int xgmac_mdio_probe(struct platform_device *pdev)
+ 	priv->has_a011043 = device_property_read_bool(&pdev->dev,
+ 						      "fsl,erratum-a011043");
+ 
+-	fwnode = pdev->dev.fwnode;
+-	if (is_of_node(fwnode))
+-		ret = of_mdiobus_register(bus, to_of_node(fwnode));
+-	else if (is_acpi_node(fwnode))
+-		ret = acpi_mdiobus_register(bus, fwnode);
+-	else
+-		ret = -EINVAL;
++	ret = fwnode_mdiobus_register(bus, pdev->dev.fwnode);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "cannot register MDIO bus\n");
+ 		goto err_registration;
+diff --git a/drivers/net/ethernet/freescale/Kconfig b/drivers/net/ethernet/freescale/Kconfig
+index 2d1abdd58fab..92a390576b88 100644
+--- a/drivers/net/ethernet/freescale/Kconfig
++++ b/drivers/net/ethernet/freescale/Kconfig
+@@ -67,9 +67,7 @@ config FSL_PQ_MDIO
+ 
+ config FSL_XGMAC_MDIO
+ 	tristate "Freescale XGMAC MDIO"
+-	select PHYLIB
+-	depends on OF
+-	select OF_MDIO
++	depends on FWNODE_MDIO
+ 	help
+ 	  This driver supports the MDIO bus on the Fman 10G Ethernet MACs, and
+ 	  on the FMan mEMAC (which supports both Clauses 22 and 45)
 -- 
 2.29.0
 
