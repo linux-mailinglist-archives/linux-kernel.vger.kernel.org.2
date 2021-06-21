@@ -2,151 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 560453AE297
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 07:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8850D3AE299
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 07:08:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbhFUFIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 01:08:35 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:36496 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbhFUFIe (ORCPT
+        id S229719AbhFUFKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 01:10:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229487AbhFUFKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 01:08:34 -0400
-Received: by mail-il1-f200.google.com with SMTP id v14-20020a922e0e0000b02901edade9dabeso10039304ile.3
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 22:06:20 -0700 (PDT)
+        Mon, 21 Jun 2021 01:10:18 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 341AAC061574;
+        Sun, 20 Jun 2021 22:08:04 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id y13so1755418plc.8;
+        Sun, 20 Jun 2021 22:08:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TnpsAxmufh915BSD9fnBr85SfXQ0FTkySU1azKoLJlo=;
+        b=G2bPAbjmU3rXSXhvS97FCY0yIZiOUkuubdnMIeZHLWwlfiL5tkL5DOyRQT48LBpSUF
+         cDpsZOBF9kAM/FGEMeOAbdLxpZn3FW9pCU5vi9YOEZ9ljA2zpIAeAv2KFUa3M1DHtnkU
+         HtBktxHxpXImqJLlXD08X1bJQNHW543XZ/gAPJmLC+JkNtLGkjmcg9qXdzzKgX1/D55j
+         6g26B2sbedDx0ispZXwjcW6hHACVgDcI/t6OldRXjTq98AuOP+W6Eu2cF37jZxuTpZgv
+         T5r9pe6D4o5QNWOsKjbolVrO7YP4Ye1mQpiPQmmLSjMno8E/DZ9hBynl7HVp+RUcdous
+         GIlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=9r48W4h0FyT5pPrVFAU7afHEN1fmEnBomvSChPTyeC0=;
-        b=cLUlr2JcyOUTuDPiD4bbPZoJf37ESM9CJN6aAWwTaq+A6mCXQvkZBmwnkOWZREvtLO
-         RRLhjSgfer7fsKZ+K3Xu1Xwk/694GqwyeovOQhS6pMA20q33HGrAJejAYonDZnM51ue3
-         nQ7tHPzr5eUvuSHcde1lxbjcDuipF8Oem2mZa1ihM9/Qo3Wi+b+aqB73QU05p8a25DnL
-         /bwjaauuWD9z3C59tS7oGaDNU3OEnawUwb4LBPzxFR4NACuoeKiqWGcD9VsWsggKGuKv
-         xklNbmc/ctafrr9St9M/zuNJKyCcL/Pu08mhumSvOpSRJPaJMReJyaRFQPWsbDvRID2v
-         E7Eg==
-X-Gm-Message-State: AOAM530AXM81USRSm+pVzLJbuTGb+bIbEJCo12MMbV3IC2OaJ1kYG52g
-        YK1v4kxJu1GXyEUYYMxYL0GlofWLkOWtddF2jfGrHH5fuNjP
-X-Google-Smtp-Source: ABdhPJwv/uTWAH4C9fRYwyTTxtTssd8nqg/nvTIQgYk4NyxfnInNGmcglaCb3KWWQGsmBVOtzrxbOZIMUspjgVMVIYRSoby5S2Fu
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TnpsAxmufh915BSD9fnBr85SfXQ0FTkySU1azKoLJlo=;
+        b=cbdobD+PI7Kwl08Pa5OUM8q8tayGGer7cbTM22HiTi5LgoepesRBKkxDGPrG3HMrfE
+         Nls69IHC14Fkoe6IO41X+DSqInnliY7vs8kk/1/5T1Bk5y8x9iV+42vEKOEnlLCOmVUK
+         Yfh0bK6Wpf9nBQQZbY+nEP2MdkY6J4voAf6IlcvuRw5ywDeSBfcKgEPNe8KMr3YW7LaM
+         hzCFo5YLcecN4khBWQHh+ILdnHHpeshnNg2T8WfZIk2Tne/lgH6x/5+Smep9cStI3Wvb
+         yxKF+PC108CHOQT6+mxBSIKyIMe37eQz2sEBqYFI28PWwR8zdZsT/Iiejj23PiszmAyy
+         OZ5g==
+X-Gm-Message-State: AOAM532jad83KRsb5wnFn/Nted1HiFA/Fmmv3X/7mk7kgszKiBaS+y4B
+        GCPAom1ecA8Z7g1mWyB8yCq2yl7rACQdV0Vd
+X-Google-Smtp-Source: ABdhPJwaXjO2k8WYN8MsXwpUlP/BEAapBKBNEjVPC48zRlO1JvXUDro2RDj0ZqlnfR1hG1GZ191CYQ==
+X-Received: by 2002:a17:902:6902:b029:106:50e3:b2db with SMTP id j2-20020a1709026902b029010650e3b2dbmr16114286plk.35.1624252083630;
+        Sun, 20 Jun 2021 22:08:03 -0700 (PDT)
+Received: from localhost.localdomain ([45.135.186.71])
+        by smtp.gmail.com with ESMTPSA id b5sm11808783pgh.41.2021.06.20.22.08.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Jun 2021 22:08:03 -0700 (PDT)
+From:   Dongliang Mu <mudongliangabcd@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] media: dvb-usb: break long strings in dvb_usb_device_init
+Date:   Mon, 21 Jun 2021 13:07:26 +0800
+Message-Id: <20210621050729.3898275-1-mudongliangabcd@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a6b:e60f:: with SMTP id g15mr18914004ioh.52.1624251980326;
- Sun, 20 Jun 2021 22:06:20 -0700 (PDT)
-Date:   Sun, 20 Jun 2021 22:06:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000502c1a05c53fa2e1@google.com>
-Subject: [syzbot] general protection fault in detach_extent_buffer_page
-From:   syzbot <syzbot+38cd5310bb0818ffc964@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    6b00bc63 Merge tag 'dmaengine-fix-5.13' of git://git.kerne..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1591a33fd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7ca96a2d153c74b0
-dashboard link: https://syzkaller.appspot.com/bug?extid=38cd5310bb0818ffc964
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+38cd5310bb0818ffc964@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc000000002a: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000150-0x0000000000000157]
-CPU: 1 PID: 10005 Comm: syz-fuzzer Not tainted 5.13.0-rc6-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-2 04/01/2014
-RIP: 0010:__lock_acquire+0xcf0/0x5230 kernel/locking/lockdep.c:4772
-Code: 3d 0e 41 bf 01 00 00 00 0f 86 8c 00 00 00 89 05 06 49 3d 0e e9 81 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f 85 82 2f 00 00 49 81 3e c0 b3 42 8f 0f 84 da f3 ff
-RSP: 0000:ffffc9000d27e9e0 EFLAGS: 00010002
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 000000000000002a RSI: 0000000000000001 RDI: 0000000000000001
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
-R10: fffffbfff1b92d2a R11: 0000000000000000 R12: ffff888017401c40
-R13: 0000000000000000 R14: 0000000000000150 R15: 0000000000000000
-FS:  000000c013afc090(0000) GS:ffff88802cb00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000009a67f0 CR3: 000000001b446000 CR4: 0000000000150ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- lock_acquire kernel/locking/lockdep.c:5512 [inline]
- lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5477
- __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
- _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
- spin_lock include/linux/spinlock.h:354 [inline]
- detach_extent_buffer_page+0x402/0xd20 fs/btrfs/extent_io.c:5446
- btrfs_release_extent_buffer_pages+0xf1/0x320 fs/btrfs/extent_io.c:5515
- release_extent_buffer+0x242/0x2b0 fs/btrfs/extent_io.c:5985
- try_release_extent_buffer+0x706/0x900 fs/btrfs/extent_io.c:7032
- btree_releasepage+0x1fe/0x310 fs/btrfs/disk-io.c:1023
- try_to_release_page+0x27b/0x3e0 mm/filemap.c:3856
- shrink_page_list+0x3cb6/0x6060 mm/vmscan.c:1599
- shrink_inactive_list+0x347/0xca0 mm/vmscan.c:2145
- shrink_list mm/vmscan.c:2367 [inline]
- shrink_lruvec+0x7f9/0x14f0 mm/vmscan.c:2662
- shrink_node_memcgs mm/vmscan.c:2850 [inline]
- shrink_node+0x868/0x1de0 mm/vmscan.c:2967
- shrink_zones mm/vmscan.c:3170 [inline]
- do_try_to_free_pages+0x388/0x14b0 mm/vmscan.c:3225
- try_to_free_pages+0x29f/0x750 mm/vmscan.c:3464
- __perform_reclaim mm/page_alloc.c:4430 [inline]
- __alloc_pages_direct_reclaim mm/page_alloc.c:4451 [inline]
- __alloc_pages_slowpath.constprop.0+0x84e/0x2140 mm/page_alloc.c:4855
- __alloc_pages+0x422/0x500 mm/page_alloc.c:5213
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
- __page_cache_alloc mm/filemap.c:1005 [inline]
- __page_cache_alloc+0x303/0x3a0 mm/filemap.c:990
- pagecache_get_page+0x38f/0x18d0 mm/filemap.c:1885
- filemap_fault+0x166c/0x25b0 mm/filemap.c:2992
- ext4_filemap_fault+0x87/0xc0 fs/ext4/inode.c:6194
- __do_fault+0x10d/0x4d0 mm/memory.c:3680
- do_read_fault mm/memory.c:3984 [inline]
- do_fault mm/memory.c:4112 [inline]
- handle_pte_fault mm/memory.c:4371 [inline]
- __handle_mm_fault+0x2c5f/0x52c0 mm/memory.c:4506
- handle_mm_fault+0x1bc/0x7e0 mm/memory.c:4604
- do_user_addr_fault+0x483/0x1210 arch/x86/mm/fault.c:1390
- handle_page_fault arch/x86/mm/fault.c:1475 [inline]
- exc_page_fault+0x9e/0x180 arch/x86/mm/fault.c:1531
- asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:577
-RIP: 0033:0x455709
-Code: 24 40 8b 44 24 60 85 c0 7d 1b c7 44 24 70 ff ff ff ff 48 c7 44 24 78 00 00 00 00 48 8b 6c 24 40 48 83 c4 48 c3 48 8b 4c 24 50 <39> 41 20 7e db 48 8d 51 27 48 63 c0 48 8d 04 82 48 8d 40 01 8b 00
-RSP: 002b:000000c00d74b848 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 000000000099b3a0 RCX: 0000000000a03f30
-RDX: 0000000000495e89 RSI: 0000000000495e89 RDI: 0000000000495f60
-RBP: 000000c00d74b888 R08: 00000000000005fe R09: 000000c00038a600
-R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000005608
-R13: 0000000000000200 R14: 000000000094b641 R15: 0000000000000000
-Modules linked in:
----[ end trace c2509809fbde7be8 ]---
-RIP: 0010:__lock_acquire+0xcf0/0x5230 kernel/locking/lockdep.c:4772
-Code: 3d 0e 41 bf 01 00 00 00 0f 86 8c 00 00 00 89 05 06 49 3d 0e e9 81 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 89 f2 48 c1 ea 03 <80> 3c 02 00 0f 85 82 2f 00 00 49 81 3e c0 b3 42 8f 0f 84 da f3 ff
-RSP: 0000:ffffc9000d27e9e0 EFLAGS: 00010002
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 000000000000002a RSI: 0000000000000001 RDI: 0000000000000001
-RBP: 0000000000000000 R08: 0000000000000001 R09: 0000000000000000
-R10: fffffbfff1b92d2a R11: 0000000000000000 R12: ffff888017401c40
-R13: 0000000000000000 R14: 0000000000000150 R15: 0000000000000000
-FS:  000000c013afc090(0000) GS:ffff88802cb00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000009a67f0 CR3: 000000001b446000 CR4: 0000000000150ee0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/media/usb/dvb-usb/dvb-usb-init.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/media/usb/dvb-usb/dvb-usb-init.c b/drivers/media/usb/dvb-usb/dvb-usb-init.c
+index 28e1fd64dd3c..edc477cedaa9 100644
+--- a/drivers/media/usb/dvb-usb/dvb-usb-init.c
++++ b/drivers/media/usb/dvb-usb/dvb-usb-init.c
+@@ -286,13 +286,15 @@ int dvb_usb_device_init(struct usb_interface *intf,
+ 
+ 	desc = dvb_usb_find_device(udev, &d->props, &cold);
+ 	if (!desc) {
+-		deb_err("something went very wrong, device was not found in current device list - let's see what comes next.\n");
++		deb_err("something went very wrong,
++			 device was not found in current device list.\n");
+ 		ret = -ENODEV;
+ 		goto error;
+ 	}
+ 
+ 	if (cold) {
+-		info("found a '%s' in cold state, will try to load a firmware", desc->name);
++		info("found a %s in cold state, will try to load a firmware",
++		     desc->name);
+ 		ret = dvb_usb_download_firmware(udev, props);
+ 		if (!props->no_reconnect || ret != 0)
+ 			goto error;
+@@ -314,7 +316,7 @@ int dvb_usb_device_init(struct usb_interface *intf,
+ 	if (du)
+ 		*du = d;
+ 
+-	info("%s successfully initialized and connected.", desc->name);
++	info("%s is successfully initialized and connected.", desc->name);
+ 	return 0;
+ 
+  error:
+-- 
+2.25.1
+
