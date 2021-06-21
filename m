@@ -2,88 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0FB3AF3E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:03:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C4E3AF412
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:04:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233947AbhFUSFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:05:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45148 "EHLO mail.kernel.org"
+        id S234408AbhFUSGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:06:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232227AbhFUSB5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:01:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DD97613E0;
-        Mon, 21 Jun 2021 17:54:56 +0000 (UTC)
+        id S232143AbhFUSC1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 14:02:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A9F661352;
+        Mon, 21 Jun 2021 17:55:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624298100;
-        bh=UU/I2PapTSxwR1LIaIk6Vnp1XdnWKTjXQ1G8zYGJvzI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=en9N5gy6gBuCpvej5Ad/8mxHyoGN70z2oNReVUnkY8VnSFJm0+PUj2SgLX68kmGmL
-         QIPKQhCTjPXcxmedF9o6csURuGrJpi3oq5NQHchzrxe7MqUt9SvZ6OyO9KbaJketTT
-         hKKTJj9JfDz+HA6mKkvbjolIFFt/h3icmj+3cBBArPmYmN4fcRvW7++izEStOn2xuy
-         Z7aYnoBw7w4TTQSyugZkvxOUY87DAs2yVI/tFx1jXFVbIkqTSOGp/BDAYvA1ptHDYA
-         X42RoCjPOxlqFoDN7Vr448w9vIAdy4d7jr76ZgjffLiVmkf3YooIe0ut3A6DeAjZLa
-         KJUt4rRlJtrjQ==
-Date:   Mon, 21 Jun 2021 18:54:53 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-kernel@vger.kernel.org, boqun.feng@gmail.com, bp@alien8.de,
-        catalin.marinas@arm.com, dvyukov@google.com, elver@google.com,
-        ink@jurassic.park.msu.ru, jonas@southpole.se,
-        juri.lelli@redhat.com, linux@armlinux.org.uk, luto@kernel.org,
-        mattst88@gmail.com, mingo@redhat.com, monstr@monstr.eu,
-        paulmck@kernel.org, peterz@infradead.org, rth@twiddle.net,
-        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
-        tglx@linutronix.de, vincent.guittot@linaro.org
-Subject: Re: [PATCH v2 0/9] thread_info: use helpers to snapshot thread flags
-Message-ID: <20210621175452.GB29713@willie-the-truck>
-References: <20210621090602.16883-1-mark.rutland@arm.com>
+        s=k20201202; t=1624298121;
+        bh=ZLPt8kxCyAWdk/ZTBZbdbecFoIKHELBBeps1J3oa41Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=e659sfzexlZQPeQbaoN2NMyRReTnQ8PSLWTAFG0qa8iuDfUW1/ZjyULEe6j3d//ro
+         xJQagIFKl6z4f1G/KtwSJmbXu1bY3Oze2P3GIFJJUEBAAiuZ5/qlYd0pvhprZTrviy
+         hjNApRpGr2pQtZgKCe3Rj5PnTStGMqW7SMxjzxr3vogjyBVliBEa1rpjPTHLN/E/8Y
+         hO8CEomPi172Imhr8N9sZ3ZPHbdFwwf7U8SBd3T/xKei47PAqXvNMAzOn+Qu3GRVH8
+         PY0b6yHj+U42mVbTVUg31zTR9bWPmNhvD1jfb1xMagn7bnyU049Vw2usNTTTnB3NVI
+         NyjqOHumEoOng==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Johannes Berg <johannes.berg@intel.com>,
+        syzbot+7716dbc401d9a437890d@syzkaller.appspotmail.com,
+        Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 01/13] mac80211: remove warning in ieee80211_get_sband()
+Date:   Mon, 21 Jun 2021 13:55:07 -0400
+Message-Id: <20210621175519.736255-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621090602.16883-1-mark.rutland@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 10:05:52AM +0100, Mark Rutland wrote:
-> As thread_info::flags scan be manipulated by remote threads, it is
-> necessary to use atomics or READ_ONCE() to ensure that code manipulates
-> a consistent snapshot, but we open-code plain accesses to
-> thread_info::flags across the kernel tree.
-> 
-> Generally we get away with this, but tools like KCSAN legitimately warn
-> that there is a data-race, and this is potentially fragile with compiler
-> optimizations, LTO, etc.
-> 
-> These patches introduce new helpers to snahpshot the thread flags, with
-> the intent being that these should replace all plain accesses.
-> 
-> Since v1 [1]:
-> * Drop RFC
-> * Make read_ti_thread_flags() __always_inline
-> * Clarify commit messages
-> * Fix typo in arm64 patch
-> * Accumulate Reviewed-by / Acked-by tags
-> * Drop powerpc patch to avoid potential conflicts (per [2])
-> 
-> [1] https://lore.kernel.org/r/20210609122001.18277-1-mark.rutland@arm.com
-> [2] https://lore.kernel.org/r/87k0mvtgeb.fsf@mpe.ellerman.id.au
-> 
-> Thanks,
-> Mark.
-> 
-> Mark Rutland (9):
->   thread_info: add helpers to snapshot thread flags
->   entry: snapshot thread flags
->   sched: snapshot thread flags
->   alpha: snapshot thread flags
->   arm: snapshot thread flags
->   arm64: snapshot thread flags
+From: Johannes Berg <johannes.berg@intel.com>
 
-FWIW, you have two identical arm64 patches in this series, just with a
-different subject. For the one you decide to keep:
+[ Upstream commit 0ee4d55534f82a0624701d0bb9fc2304d4529086 ]
 
-Acked-by: Will Deacon <will@kernel.org>
+Syzbot reports that it's possible to hit this from userspace,
+by trying to add a station before any other connection setup
+has been done. Instead of trying to catch this in some other
+way simply remove the warning, that will appropriately reject
+the call from userspace.
 
-Will
+Reported-by: syzbot+7716dbc401d9a437890d@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/r/20210517164715.f537da276d17.Id05f40ec8761d6a8cc2df87f1aa09c651988a586@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ net/mac80211/ieee80211_i.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/mac80211/ieee80211_i.h b/net/mac80211/ieee80211_i.h
+index 790c771e8108..0d4f7258b243 100644
+--- a/net/mac80211/ieee80211_i.h
++++ b/net/mac80211/ieee80211_i.h
+@@ -1393,7 +1393,7 @@ ieee80211_get_sband(struct ieee80211_sub_if_data *sdata)
+ 	rcu_read_lock();
+ 	chanctx_conf = rcu_dereference(sdata->vif.chanctx_conf);
+ 
+-	if (WARN_ON_ONCE(!chanctx_conf)) {
++	if (!chanctx_conf) {
+ 		rcu_read_unlock();
+ 		return NULL;
+ 	}
+-- 
+2.30.2
+
