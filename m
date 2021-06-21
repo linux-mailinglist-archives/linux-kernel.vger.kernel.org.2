@@ -2,298 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C95F3AE619
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 327123AE620
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:36:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhFUJeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:34:37 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:33776 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbhFUJee (ORCPT
+        id S229837AbhFUJiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:38:17 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:60944 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229618AbhFUJiQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:34:34 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15L9WJaj009185;
-        Mon, 21 Jun 2021 04:32:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1624267939;
-        bh=4I2/2eb8nZ0S8cBUZBu8V0VwmlPkUizPMMASelNMArs=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=pA625G/CNfc3Kz+RFgb04T6l6InYatEelIoDsHQzoSWPbezLssQKimxPFrNQ16kGd
-         xlE6yY+fvAA5g5O1xlx576SuIfynRuB88T9UGWlH8cM3qzXAhMvkHHgjs+S71Hd99Z
-         p5H035ORGZt/N9p2QjXmFG9FrlS9uFt4GzWuYdhY=
-Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15L9WJev014028
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 21 Jun 2021 04:32:19 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 21
- Jun 2021 04:32:19 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Mon, 21 Jun 2021 04:32:19 -0500
-Received: from [10.250.235.117] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15L9WF2l120911;
-        Mon, 21 Jun 2021 04:32:16 -0500
-Subject: Re: [PATCH v2] dt-bindings: spi: omap-spi: Convert to json-schema
-To:     Rob Herring <robh@kernel.org>
-CC:     Lokesh Vutla <lokeshvutla@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210608052010.15656-1-a-govindraju@ti.com>
- <20210618204505.GA2835349@robh.at.kernel.org>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <b7a661bc-69f4-4c90-c6db-a7ef84d43f65@ti.com>
-Date:   Mon, 21 Jun 2021 15:02:14 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 21 Jun 2021 05:38:16 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15L9V95k004978;
+        Mon, 21 Jun 2021 11:35:59 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : from : to
+ : cc : references : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=cEKfFG+DvVlEzva9JAEDZw+BFhMbND+iXMTgwIbDSvY=;
+ b=NbIkgOsWnZyN7hP4zE1bCsj7r8ck8dLuDDY/L+SshVxz07AWPlIEy5jMsvTtwgHUkLLg
+ 7RFHA0+6WjQPlv7lLA+F6nS3nJ+1Xbu0yG1pBoE9MKIAWl94IFCVwaiqqpXT+/66+Ncf
+ r4kEZ2M+LO7oKua4PHuGe08M8LQQ43qtmQq3juB6yW8IU3xlwzBxBooPXTVCr+DVX+ee
+ jZU9N+nQhtm4nJ599tE3av0zEA0MWwXpyF+Vge9GgnYFEThMRcPzUxVNcx5Da8tLzteq
+ d/Xbb0a9nRUtGqIOBx16Lk1oyVtI/BG0yuZU6bOHUxLXPT/k7WVfKiOLpCpGA97dxlcM Qw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 39a5bhcet0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 11:35:58 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C700110002A;
+        Mon, 21 Jun 2021 11:35:57 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 3035321CA90;
+        Mon, 21 Jun 2021 11:35:57 +0200 (CEST)
+Received: from lmecxl0889.lme.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 21 Jun
+ 2021 11:35:56 +0200
+Subject: Re: [PATCH 1/4] rpmsg: ctrl: Introduce RPMSG_CREATE_DEV_IOCTL
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20210604091406.15901-1-arnaud.pouliquen@foss.st.com>
+ <20210604091406.15901-2-arnaud.pouliquen@foss.st.com>
+ <20210615175334.GD604521@p14s>
+ <1645a516-1d83-27bd-e9ed-c78a18bf4c52@foss.st.com>
+Message-ID: <adec5564-e38a-b50b-3216-255fd931a966@foss.st.com>
+Date:   Mon, 21 Jun 2021 11:35:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210618204505.GA2835349@robh.at.kernel.org>
+In-Reply-To: <1645a516-1d83-27bd-e9ed-c78a18bf4c52@foss.st.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-21_03:2021-06-20,2021-06-21 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
 
-On 19/06/21 2:15 am, Rob Herring wrote:
-> On Tue, Jun 08, 2021 at 10:50:09AM +0530, Aswath Govindraju wrote:
->> Convert omap-spi dt-binding documentation from txt to yaml format.
->>
->> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
->> ---
->>
->> changes since v1:
->> - split the series according to their respective trees
->>
->> link to v1:
->> https://lore.kernel.org/patchwork/project/lkml/list/?series=502255
->>
->>  .../devicetree/bindings/spi/omap-spi.txt      |  48 -------
->>  .../devicetree/bindings/spi/omap-spi.yaml     | 126 ++++++++++++++++++
->>  2 files changed, 126 insertions(+), 48 deletions(-)
->>  delete mode 100644 Documentation/devicetree/bindings/spi/omap-spi.txt
->>  create mode 100644 Documentation/devicetree/bindings/spi/omap-spi.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/spi/omap-spi.txt b/Documentation/devicetree/bindings/spi/omap-spi.txt
->> deleted file mode 100644
->> index 487208c256c0..000000000000
->> --- a/Documentation/devicetree/bindings/spi/omap-spi.txt
->> +++ /dev/null
->> @@ -1,48 +0,0 @@
->> -OMAP2+ McSPI device
->> -
->> -Required properties:
->> -- compatible :
->> -  - "ti,am654-mcspi" for AM654.
->> -  - "ti,omap2-mcspi" for OMAP2 & OMAP3.
->> -  - "ti,omap4-mcspi" for OMAP4+.
->> -- ti,spi-num-cs : Number of chipselect supported  by the instance.
->> -- ti,hwmods: Name of the hwmod associated to the McSPI
->> -- ti,pindir-d0-out-d1-in: Select the D0 pin as output and D1 as
->> -			  input. The default is D0 as input and
->> -			  D1 as output.
->> -
->> -Optional properties:
->> -- dmas: List of DMA specifiers with the controller specific format
->> -	as described in the generic DMA client binding. A tx and rx
->> -	specifier is required for each chip select.
->> -- dma-names: List of DMA request names. These strings correspond
->> -	1:1 with the DMA specifiers listed in dmas. The string naming
->> -	is to be "rxN" and "txN" for RX and TX requests,
->> -	respectively, where N equals the chip select number.
->> -
->> -Examples:
->> -
->> -[hwmod populated DMA resources]
->> -
->> -mcspi1: mcspi@1 {
->> -    #address-cells = <1>;
->> -    #size-cells = <0>;
->> -    compatible = "ti,omap4-mcspi";
->> -    ti,hwmods = "mcspi1";
->> -    ti,spi-num-cs = <4>;
->> -};
->> -
->> -[generic DMA request binding]
->> -
->> -mcspi1: mcspi@1 {
->> -    #address-cells = <1>;
->> -    #size-cells = <0>;
->> -    compatible = "ti,omap4-mcspi";
->> -    ti,hwmods = "mcspi1";
->> -    ti,spi-num-cs = <2>;
->> -    dmas = <&edma 42
->> -	    &edma 43
->> -	    &edma 44
->> -	    &edma 45>;
->> -    dma-names = "tx0", "rx0", "tx1", "rx1";
->> -};
->> diff --git a/Documentation/devicetree/bindings/spi/omap-spi.yaml b/Documentation/devicetree/bindings/spi/omap-spi.yaml
->> new file mode 100644
->> index 000000000000..cd20704f2edc
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/spi/omap-spi.yaml
->> @@ -0,0 +1,126 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/spi/omap-spi.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: SPI controller bindings for OMAP and K3 SoCs
->> +
->> +maintainers:
->> +  - Mark Brown <broonie@kernel.org>
-> 
-> A TI person here please.
-> 
 
-Added myself as the reviewer in v3.
-
-Thank you for the review and comments. I have posted a respin(v3) of
-this patch after addressing all the comments.
-
-Thanks,
-Aswath
-
-> You need a ref to spi-controller.yaml
+On 6/16/21 10:12 AM, Arnaud POULIQUEN wrote:
+> Hello Mathieu,
 > 
->> +
->> +properties:
->> +  compatible:
->> +    oneOf:
->> +      - items:
->> +          - enum:
->> +              - ti,am654-mcspi
->> +              - ti,am4372-mcspi
->> +          - const: ti,omap4-mcspi
->> +      - items:
->> +          - enum:
->> +              - ti,omap2-mcspi
->> +              - ti,omap4-mcspi
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  interrupts:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    maxItems: 1
->> +
-> 
->> +  '#address-cells':
->> +    const: 1
->> +
->> +  '#size-cells':
->> +    const: 0
-> 
-> Don't need these, covered by spi-controller.yaml.
-> 
->> +
->> +  power-domains:
->> +    maxItems: 1
->> +
->> +  ti,spi-num-cs:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description: Number of chipselect supported  by the instance.
->> +    minimum: 1
->> +    maximum: 4
->> +
->> +  ti,hwmods:
->> +    $ref: /schemas/types.yaml#/definitions/string
->> +    description:
->> +      Must be "mcspi<n>", n being the instance number (1-based).
->> +      This property is applicable only on legacy platforms mainly omap2/3
->> +      and ti81xx and should not be used on other platforms.
->> +    deprecated: true
->> +
->> +  ti,pindir-d0-out-d1-in:
->> +    description:
->> +      Select the D0 pin as output and D1 as input. The default is D0
->> +      as input and D1 as output.
->> +    type: boolean
->> +
->> +  dmas:
->> +    description:
->> +      List of DMA specifiers with the controller specific format as
->> +      described in the generic DMA client binding. A tx and rx
->> +      specifier is required for each chip select.
->> +    minItems: 1
->> +    maxItems: 8
->> +
->> +  dma-names:
->> +    description:
->> +      List of DMA request names. These strings correspond 1:1 with
->> +      the DMA sepecifiers listed in dmas. The string names is to be
->> +      "rxN" and "txN" for RX and TX requests, respectively. Where N
->> +      is the chip select number.
->> +    minItems: 1
->> +    maxItems: 8
->> +
->> +patternProperties:
->> +  "@[0-9a-f]+$":
->> +    type: object
->> +    description:
->> +      Flash devices are defined as a sub-node of the spi controller
-> 
-> Covered by spi-controller.yaml.
-> 
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - interrupts
->> +
->> +additionalProperties: false
->> +
->> +if:
->> +  properties:
->> +    compatible:
->> +      oneOf:
->> +        - const: ti,omap2-mcspi
->> +        - const: ti,omap4-mcspi
->> +
->> +then:
->> +  properties:
->> +    ti,hwmods:
->> +      items:
->> +        - pattern: "^mcspi([1-9])$"
->> +
->> +else:
->> +  properties:
->> +    ti,hwmods: false
->> +
->> +examples:
->> +  - |
->> +    #include <dt-bindings/interrupt-controller/irq.h>
->> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
->> +    #include <dt-bindings/soc/ti,sci_pm_domain.h>
->> +
->> +    main_spi0: spi@2100000 {
-> 
-> Drop unused labels.
-> 
->> +      compatible = "ti,am654-mcspi","ti,omap4-mcspi";
->> +      reg = <0x2100000 0x400>;
->> +      interrupts = <GIC_SPI 184 IRQ_TYPE_LEVEL_HIGH>;
->> +      clocks = <&k3_clks 137 1>;
->> +      power-domains = <&k3_pds 137 TI_SCI_PD_EXCLUSIVE>;
->> +      #address-cells = <1>;
->> +      #size-cells = <0>;
->> +      dmas = <&main_udmap 0xc500>, <&main_udmap 0x4500>;
->> +      dma-names = "tx0", "rx0";
->> +    };
->> -- 
->> 2.17.1
+> On 6/15/21 7:53 PM, Mathieu Poirier wrote:
+>> On Fri, Jun 04, 2021 at 11:14:03AM +0200, Arnaud Pouliquen wrote:
+>>> Implement the RPMSG_CREATE_DEV_IOCTL to allow the user application to
+>>> initiate a communication through a new rpmsg channel.
+>>> This Ioctl can be used to instantiate a local rpmsg device.
+>>> Depending on the back-end implementation, the associated rpmsg driver is
+>>> probed and a NS announcement can be sent to the remote processor.
+>>>
+>>> Suggested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+>>> ---
+>>>  drivers/rpmsg/rpmsg_ctrl.c | 30 ++++++++++++++++++++++++++----
+>>>  include/uapi/linux/rpmsg.h |  5 +++++
+>>>  2 files changed, 31 insertions(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
+>>> index eeb1708548c1..4aa962df3661 100644
+>>> --- a/drivers/rpmsg/rpmsg_ctrl.c
+>>> +++ b/drivers/rpmsg/rpmsg_ctrl.c
+>>> @@ -23,6 +23,7 @@
+>>>  #include <uapi/linux/rpmsg.h>
+>>>  
+>>>  #include "rpmsg_char.h"
+>>> +#include "rpmsg_internal.h"
+>>>  
+>>>  static dev_t rpmsg_major;
+>>>  
+>>> @@ -37,11 +38,13 @@ static DEFINE_IDA(rpmsg_minor_ida);
+>>>   * @rpdev:	underlaying rpmsg device
+>>>   * @cdev:	cdev for the ctrl device
+>>>   * @dev:	device for the ctrl device
+>>> + * @ctrl_lock:	serialize the ioctrls.
+>>>   */
+>>>  struct rpmsg_ctrldev {
+>>>  	struct rpmsg_device *rpdev;
+>>>  	struct cdev cdev;
+>>>  	struct device dev;
+>>> +	struct mutex ctrl_lock;
+>>>  };
+>>>  
+>>>  static int rpmsg_ctrldev_open(struct inode *inode, struct file *filp)
+>>> @@ -70,9 +73,8 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
+>>>  	void __user *argp = (void __user *)arg;
+>>>  	struct rpmsg_endpoint_info eptinfo;
+>>>  	struct rpmsg_channel_info chinfo;
+>>> -
+>>> -	if (cmd != RPMSG_CREATE_EPT_IOCTL)
+>>> -		return -EINVAL;
+>>> +	struct rpmsg_device *rpdev;
+>>> +	int ret = 0;
+>>>  
+>>>  	if (copy_from_user(&eptinfo, argp, sizeof(eptinfo)))
+>>>  		return -EFAULT;
+>>> @@ -82,7 +84,26 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
+>>>  	chinfo.src = eptinfo.src;
+>>>  	chinfo.dst = eptinfo.dst;
+>>>  
+>>> -	return rpmsg_chrdev_eptdev_create(ctrldev->rpdev, &ctrldev->dev, chinfo);
+>>> +	mutex_lock(&ctrldev->ctrl_lock);
 >>
+>> Do we need a lock here?  I thought the character device layer would guarantee
+>> accesses on a file handler would be atomic...  Am I wrong?
 >>
+> 
+> It is a good point! from my understanding, using "unlocked_ioctl" ops, the
+> driver has to handle is own atomic protection.
+> I will try to hack the code to verify this.
 
+I confirm without lock there is no atomic access, re-entrance is possible in
+rpmsg_ctrldev_ioctl. Keeping lock to serialize the controls seems safer to me to
+avoid race condition.
+
+Regards
+Arnaud
+
+> 
+> Thanks,
+> Arnaud
+> 
+>>> +	switch (cmd) {
+>>> +	case RPMSG_CREATE_EPT_IOCTL:
+>>> +		ret = rpmsg_chrdev_eptdev_create(ctrldev->rpdev, &ctrldev->dev, chinfo);
+>>> +		break;
+>>> +
+>>> +	case RPMSG_CREATE_DEV_IOCTL:
+>>> +		rpdev = rpmsg_create_channel(ctrldev->rpdev, &chinfo);
+>>> +		if (!rpdev) {
+>>> +			dev_err(&ctrldev->dev, "failed to create %s channel\n", chinfo.name);
+>>> +			ret = -ENXIO;
+>>> +		}
+>>> +		break;
+>>> +
+>>> +	default:
+>>> +		ret = -EINVAL;
+>>> +	}
+>>> +	mutex_unlock(&ctrldev->ctrl_lock);
+>>> +
+>>> +	return ret;
+>>>  };
+>>>  
+>>>  static const struct file_operations rpmsg_ctrldev_fops = {
+>>> @@ -119,6 +140,7 @@ static int rpmsg_ctrldev_probe(struct rpmsg_device *rpdev)
+>>>  	device_initialize(dev);
+>>>  	dev->parent = &rpdev->dev;
+>>>  
+>>> +	mutex_init(&ctrldev->ctrl_lock);
+>>>  	cdev_init(&ctrldev->cdev, &rpmsg_ctrldev_fops);
+>>>  	ctrldev->cdev.owner = THIS_MODULE;
+>>>  
+>>> diff --git a/include/uapi/linux/rpmsg.h b/include/uapi/linux/rpmsg.h
+>>> index f5ca8740f3fb..f9d5a74e7801 100644
+>>> --- a/include/uapi/linux/rpmsg.h
+>>> +++ b/include/uapi/linux/rpmsg.h
+>>> @@ -33,4 +33,9 @@ struct rpmsg_endpoint_info {
+>>>   */
+>>>  #define RPMSG_DESTROY_EPT_IOCTL	_IO(0xb5, 0x2)
+>>>  
+>>> +/**
+>>> + * Instantiate a rpmsg service device.
+>>> + */
+>>> +#define RPMSG_CREATE_DEV_IOCTL	_IOW(0xb5, 0x3, struct rpmsg_endpoint_info)
+>>> +
+>>>  #endif
+>>> -- 
+>>> 2.17.1
+>>>
