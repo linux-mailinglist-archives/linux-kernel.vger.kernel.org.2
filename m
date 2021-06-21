@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D591E3AED45
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:16:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1794E3AED47
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230393AbhFUQTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:19:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55174 "EHLO
+        id S230444AbhFUQTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:19:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbhFUQS4 (ORCPT
+        with ESMTP id S230390AbhFUQTB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:18:56 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81A1AC061760
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:16:42 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id k5so10285829pjj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:16:42 -0700 (PDT)
+        Mon, 21 Jun 2021 12:19:01 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 911D2C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:16:46 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id 22-20020a17090a0c16b0290164a5354ad0so12929212pjs.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:16:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=VPrk83BZDsAH7WUMF1d2R72wMyUpeMl+U7nePSbVVRA=;
-        b=huDSOvIlbSyFl9E2MCyw66RCSWecg0r7QPcTGiCt0NK4S7jvku4/XR+MTXiBUCzC5D
-         XGj4uCnF5BujyrWbUXka34ykWiTdvqr9WO/vJBeUwh75OJ+aS1ROoNYCDs4a+U2YfPZz
-         2UqLN2zEd3Kozrmu/p0Lv0stjUyEGF77QmierNm8sgt3GAr6bCLnV9NODBT62uwVnU4w
-         J4I/ibufHSE8yw90Eri1Rpz7iXTXnBIvoXpWR+Kh107IAHREzrxjzPxvjtIXPsMoXtCW
-         KTpWsvnxx9+AXULJBY8gPv2ElINNGF1V/Oevr7pu2gA4A17hGafpqUwhtCTYnm5OtH+g
-         e+TQ==
+        bh=Z+dpVZyr8rPiOYKf459BLI0kqBiib0mNiwfzh7CH9DU=;
+        b=mA8N9nzD7ReO5CFSZR5qI2Ld6w+GIkI6nVZMrPi/0U+cy/PXg4kgXZtXjWP45xyZNx
+         CYbxHt4q1CQZwkZOCAkLoRiL5DUpY56ZMRV4ZkB6UD+fJzIJmUjy2rxEltaDVjXfYJdO
+         yt97b1VM8ZKUuLRt9tzuOJz4vUVAhselVhj8PoiFEgjtQzKv+kyem/q7/7TBhsj4HIM9
+         vO2xi4rxG9bKhWBjeUD5SxOE0qz1o+LwZ1RmhCtCeR9R5iIJFo5BzxOmHNOxzWOAJgOn
+         fw6wRGSBvFBRfIH4/YWLbsbti43ClJIBI2ocsJatl8cVn+K5by67fh1tvsC52G5gRYC+
+         F+vA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=VPrk83BZDsAH7WUMF1d2R72wMyUpeMl+U7nePSbVVRA=;
-        b=QgjCtws3rbuR0voRTjysf2Tz5CcaWkYya+vhcAGJE/b5BPWvxU8ffc06mF62lJNrwe
-         LRAdsxt9BTBYMLs5MWL0S/KstQEjOFA6k3QEXw/yIvNi/OA/WhCqj6m5wVO/IqCbVJna
-         DFH+s3yNhWnk6io+8dy4Z56CO+DMHoVlDlRxh8SIMayI+veuBOXY2FytIHX190CC3Q5Z
-         Wb6PXqzXVCpJyxJoXRN9Ku4+dGBMD2QKmsAs3UyyzFYRrobebDws0Q6tgZNxQXTOAjrD
-         BQMdujY2M7Wyuz26erimi0GwVcW/vt5zATUhbNnTgemZiFB1QxPW0bc66RvZw0W04HsS
-         fpBw==
-X-Gm-Message-State: AOAM5335emmDvhhmtY1lBxafjQdTR1q/xZ0QP6P4G1S/+dp4QdYPQaM+
-        9U0F59/bG9fracjHdi65A3M+
-X-Google-Smtp-Source: ABdhPJwGz3BRSZL+r+HThpxcq72wbUjc7FO3g6EMwm0YD9d2NABfB6OWr5M5R9yMSW/nwTuZydG6rQ==
-X-Received: by 2002:a17:90a:8c4:: with SMTP id 4mr38123055pjn.82.1624292202003;
-        Mon, 21 Jun 2021 09:16:42 -0700 (PDT)
+        bh=Z+dpVZyr8rPiOYKf459BLI0kqBiib0mNiwfzh7CH9DU=;
+        b=Cw3rBYjO7sSJOJDRo/bQWmUS2voAj8Tvz9Ojo6syxiLMfwfdm0mzFNzqklaxsRZ+NI
+         Jzv3cqkzvmsNCy0NtQm5vWtTdEeRcyE/uQ5rPk9KomlO/5Dte24TfCrRvOC6H/72zcAj
+         tiXJFJLE+oIY0KsQ/X5Nr61GptRnc4uVwbXF44L4e98kGgsr3yfNlb0K2Ed21T7D1XGs
+         TS+OdukY/pBLzVYNNJGsZYJgQZhMOXShFHdAzfWYjEFuZyHSNWO9MnwrRDuD6BlEONZl
+         kVHbJfRWmO3jc0BAu8ZLX1H2rZDP3ZJ2I3kYZU/K0V7clNUn2k+lzsdGuCGfsojIthFx
+         0T2A==
+X-Gm-Message-State: AOAM533Gevsbzar0pmDVlzIyyJwGEtH8SZ/HnIUPtDV49CmXB509nGld
+        bBBRKkTyNk5QojK7Fx1xz0qi
+X-Google-Smtp-Source: ABdhPJx/+btbutJsjHyOxTbc5sa9qxmH6cw04/AqDq5m9MXBNymrWaogeeMc88n+B6qgQUXaOM1L7Q==
+X-Received: by 2002:a17:90a:4101:: with SMTP id u1mr37854467pjf.59.1624292205991;
+        Mon, 21 Jun 2021 09:16:45 -0700 (PDT)
 Received: from localhost.localdomain ([120.138.13.116])
-        by smtp.gmail.com with ESMTPSA id k88sm10734730pjk.15.2021.06.21.09.16.38
+        by smtp.gmail.com with ESMTPSA id k88sm10734730pjk.15.2021.06.21.09.16.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 09:16:41 -0700 (PDT)
+        Mon, 21 Jun 2021 09:16:45 -0700 (PDT)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     hemantk@codeaurora.org, bbhatt@codeaurora.org,
         linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, Baochen Qiang <bqiang@codeaurora.org>,
-        stable@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH 3/8] bus: mhi: Wait for M2 state during system resume
-Date:   Mon, 21 Jun 2021 21:46:11 +0530
-Message-Id: <20210621161616.77524-4-manivannan.sadhasivam@linaro.org>
+        loic.poulain@linaro.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4/8] bus: mhi: Add inbound buffers allocation flag
+Date:   Mon, 21 Jun 2021 21:46:12 +0530
+Message-Id: <20210621161616.77524-5-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210621161616.77524-1-manivannan.sadhasivam@linaro.org>
 References: <20210621161616.77524-1-manivannan.sadhasivam@linaro.org>
@@ -67,68 +67,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Baochen Qiang <bqiang@codeaurora.org>
+From: Loic Poulain <loic.poulain@linaro.org>
 
-During system resume, MHI host triggers M3->M0 transition and then waits
-for target device to enter M0 state. Once done, the device queues a state
-change event into ctrl event ring and notifies MHI host by raising an
-interrupt, where a tasklet is scheduled to process this event. In most
-cases, the tasklet is served timely and wait operation succeeds.
+Currently, the MHI controller driver defines which channels should
+have their inbound buffers allocated and queued. But ideally, this is
+something that should be decided by the MHI device driver instead,
+which actually deals with that buffers.
 
-However, there are cases where CPU is busy and cannot serve this tasklet
-for some time. Once delay goes long enough, the device moves itself to M1
-state and also interrupts MHI host after inserting a new state change
-event to ctrl ring. Later when CPU finally has time to process the ring,
-there will be two events:
+Add a flag parameter to mhi_prepare_for_transfer allowing to specify
+if buffers have to be allocated and queued by the MHI stack.
 
-1. For M3->M0 event, which is the first event to be processed queued first.
-   The tasklet handler serves the event, updates device state to M0 and
-   wakes up the task.
+Keep auto_queue flag for now, but should be removed at some point.
 
-2. For M0->M1 event, which is processed later, the tasklet handler
-   triggers M1->M2 transition and updates device state to M2 directly,
-   then wakes up the MHI host (if it is still sleeping on this wait queue).
-
-Note that although MHI host has been woken up while processing the first
-event, it may still has no chance to run before the second event is
-processed. In other words, MHI host has to keep waiting till timeout
-causing the M0 state to be missed.
-
-kernel log here:
-...
-Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.911251] mhi 0000:06:00.0: Entered with PM state: M3, MHI state: M3
-Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.917762] mhi 0000:06:00.0: State change event to state: M0
-Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.917767] mhi 0000:06:00.0: State change event to state: M1
-Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4338.788231] mhi 0000:06:00.0: Did not enter M0 state, MHI state: M2, PM state: M2
-...
-
-Fix this issue by simply adding M2 as a valid state for resume.
-
-Tested-on: WCN6855 hw2.0 PCI WLAN.HSP.1.1-01720.1-QCAHSPSWPL_V1_V2_SILICONZ_LITE-1
-
-Cc: stable@vger.kernel.org
-Fixes: 0c6b20a1d720 ("bus: mhi: core: Add support for MHI suspend and resume")
-Signed-off-by: Baochen Qiang <bqiang@codeaurora.org>
+Signed-off-by: Loic Poulain <loic.poulain@linaro.org>
+Tested-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+Reviewed-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
 Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Link: https://lore.kernel.org/r/20210524040312.14409-1-bqiang@codeaurora.org
-[mani: slightly massaged the commit message]
+Acked-by: Jakub Kicinski <kuba@kernel.org>
+Link: https://lore.kernel.org/r/1621603519-16773-1-git-send-email-loic.poulain@linaro.org
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
- drivers/bus/mhi/core/pm.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/bus/mhi/core/internal.h  |  2 +-
+ drivers/bus/mhi/core/main.c      | 11 ++++++++---
+ drivers/net/mhi/net.c            |  2 +-
+ drivers/net/wwan/mhi_wwan_ctrl.c |  2 +-
+ include/linux/mhi.h              | 12 +++++++++++-
+ net/qrtr/mhi.c                   |  2 +-
+ 6 files changed, 23 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-index 704a5e225097..bbf6cd04861e 100644
---- a/drivers/bus/mhi/core/pm.c
-+++ b/drivers/bus/mhi/core/pm.c
-@@ -926,6 +926,7 @@ int mhi_pm_resume(struct mhi_controller *mhi_cntrl)
+diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
+index 5b9ea66b92dc..672052fe3b44 100644
+--- a/drivers/bus/mhi/core/internal.h
++++ b/drivers/bus/mhi/core/internal.h
+@@ -682,7 +682,7 @@ void mhi_rddm_prepare(struct mhi_controller *mhi_cntrl,
+ 		      struct image_info *img_info);
+ void mhi_fw_load_handler(struct mhi_controller *mhi_cntrl);
+ int mhi_prepare_channel(struct mhi_controller *mhi_cntrl,
+-			struct mhi_chan *mhi_chan);
++			struct mhi_chan *mhi_chan, enum mhi_chan_flags flags);
+ int mhi_init_chan_ctxt(struct mhi_controller *mhi_cntrl,
+ 		       struct mhi_chan *mhi_chan);
+ void mhi_deinit_chan_ctxt(struct mhi_controller *mhi_cntrl,
+diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+index ed07421c4870..8ac73f9e92a6 100644
+--- a/drivers/bus/mhi/core/main.c
++++ b/drivers/bus/mhi/core/main.c
+@@ -1428,7 +1428,8 @@ static void mhi_unprepare_channel(struct mhi_controller *mhi_cntrl,
+ }
  
- 	ret = wait_event_timeout(mhi_cntrl->state_event,
- 				 mhi_cntrl->dev_state == MHI_STATE_M0 ||
-+				 mhi_cntrl->dev_state == MHI_STATE_M2 ||
- 				 MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
- 				 msecs_to_jiffies(mhi_cntrl->timeout_ms));
+ int mhi_prepare_channel(struct mhi_controller *mhi_cntrl,
+-			struct mhi_chan *mhi_chan)
++			struct mhi_chan *mhi_chan,
++			enum mhi_chan_flags flags)
+ {
+ 	int ret = 0;
+ 	struct device *dev = &mhi_chan->mhi_dev->dev;
+@@ -1453,6 +1454,9 @@ int mhi_prepare_channel(struct mhi_controller *mhi_cntrl,
+ 	if (ret)
+ 		goto error_pm_state;
+ 
++	if (mhi_chan->dir == DMA_FROM_DEVICE)
++		mhi_chan->pre_alloc = !!(flags & MHI_CH_INBOUND_ALLOC_BUFS);
++
+ 	/* Pre-allocate buffer for xfer ring */
+ 	if (mhi_chan->pre_alloc) {
+ 		int nr_el = get_nr_avail_ring_elements(mhi_cntrl,
+@@ -1608,7 +1612,8 @@ void mhi_reset_chan(struct mhi_controller *mhi_cntrl, struct mhi_chan *mhi_chan)
+ }
+ 
+ /* Move channel to start state */
+-int mhi_prepare_for_transfer(struct mhi_device *mhi_dev)
++int mhi_prepare_for_transfer(struct mhi_device *mhi_dev,
++			     enum mhi_chan_flags flags)
+ {
+ 	int ret, dir;
+ 	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
+@@ -1619,7 +1624,7 @@ int mhi_prepare_for_transfer(struct mhi_device *mhi_dev)
+ 		if (!mhi_chan)
+ 			continue;
+ 
+-		ret = mhi_prepare_channel(mhi_cntrl, mhi_chan);
++		ret = mhi_prepare_channel(mhi_cntrl, mhi_chan, flags);
+ 		if (ret)
+ 			goto error_open_chan;
+ 	}
+diff --git a/drivers/net/mhi/net.c b/drivers/net/mhi/net.c
+index 0d8293a47a56..774e32960e09 100644
+--- a/drivers/net/mhi/net.c
++++ b/drivers/net/mhi/net.c
+@@ -327,7 +327,7 @@ static int mhi_net_probe(struct mhi_device *mhi_dev,
+ 	u64_stats_init(&mhi_netdev->stats.tx_syncp);
+ 
+ 	/* Start MHI channels */
+-	err = mhi_prepare_for_transfer(mhi_dev);
++	err = mhi_prepare_for_transfer(mhi_dev, 0);
+ 	if (err)
+ 		goto out_err;
+ 
+diff --git a/drivers/net/wwan/mhi_wwan_ctrl.c b/drivers/net/wwan/mhi_wwan_ctrl.c
+index 1bc6b69aa530..1e18420ce404 100644
+--- a/drivers/net/wwan/mhi_wwan_ctrl.c
++++ b/drivers/net/wwan/mhi_wwan_ctrl.c
+@@ -110,7 +110,7 @@ static int mhi_wwan_ctrl_start(struct wwan_port *port)
+ 	int ret;
+ 
+ 	/* Start mhi device's channel(s) */
+-	ret = mhi_prepare_for_transfer(mhiwwan->mhi_dev);
++	ret = mhi_prepare_for_transfer(mhiwwan->mhi_dev, 0);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+index 944aa3aa3035..86cea5256e3c 100644
+--- a/include/linux/mhi.h
++++ b/include/linux/mhi.h
+@@ -59,6 +59,14 @@ enum mhi_flags {
+ 	MHI_CHAIN = BIT(2),
+ };
+ 
++/**
++ * enum mhi_chan_flags - MHI channel flags
++ * @MHI_CH_INBOUND_ALLOC_BUFS: Automatically allocate and queue inbound buffers
++ */
++enum mhi_chan_flags {
++	MHI_CH_INBOUND_ALLOC_BUFS = BIT(0),
++};
++
+ /**
+  * enum mhi_device_type - Device types
+  * @MHI_DEVICE_XFER: Handles data transfer
+@@ -719,8 +727,10 @@ void mhi_device_put(struct mhi_device *mhi_dev);
+  *                            host and device execution environments match and
+  *                            channels are in a DISABLED state.
+  * @mhi_dev: Device associated with the channels
++ * @flags: MHI channel flags
+  */
+-int mhi_prepare_for_transfer(struct mhi_device *mhi_dev);
++int mhi_prepare_for_transfer(struct mhi_device *mhi_dev,
++			     enum mhi_chan_flags flags);
+ 
+ /**
+  * mhi_unprepare_from_transfer - Reset UL and DL channels for data transfer.
+diff --git a/net/qrtr/mhi.c b/net/qrtr/mhi.c
+index fa611678af05..29b4fa3b72ab 100644
+--- a/net/qrtr/mhi.c
++++ b/net/qrtr/mhi.c
+@@ -79,7 +79,7 @@ static int qcom_mhi_qrtr_probe(struct mhi_device *mhi_dev,
+ 	int rc;
+ 
+ 	/* start channels */
+-	rc = mhi_prepare_for_transfer(mhi_dev);
++	rc = mhi_prepare_for_transfer(mhi_dev, MHI_CH_INBOUND_ALLOC_BUFS);
+ 	if (rc)
+ 		return rc;
  
 -- 
 2.25.1
