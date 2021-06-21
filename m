@@ -2,161 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 521413AF977
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7867D3AF988
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:37:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231821AbhFUXiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 19:38:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41342 "EHLO
+        id S232115AbhFUXjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 19:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231268AbhFUXiE (ORCPT
+        with ESMTP id S232064AbhFUXjH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 19:38:04 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F09EC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:35:48 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id j11-20020a9d738b0000b02903ea3c02ded8so19475596otk.5
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:35:48 -0700 (PDT)
+        Mon, 21 Jun 2021 19:39:07 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1C9C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:36:52 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id z22so27514641ljh.8
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:36:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AXhLaNRlItV846H2J1h+pbbqWtyd8CdKwFzlrXFypk4=;
-        b=vvX+3l5Iko5F5wawiBO2oOulWbnrWs/EuReLSqZd2mbbkLKe8RelP36ZHfTveJH05P
-         QC/lDKAN69gONbAmSOO8q2KwLJS2E42g51BDbocUcWiFfI9KHbY/EerPwfVDZ9HwgsMg
-         GNZUTtFtY7DFeiwBBCUcgEv/n1BNNN9s9YONKr+m6lpXqKnfxI0d2Ygf3s8MAiJh8VKZ
-         qdnx3xfbV3KI/BuHNMHtSI+buAbTTGui6WBd8vdhtS2fJPNsQ7fYyiMyyp54cmF0vWkV
-         XSRGPl/dqom3nL5l7rF1ghp5Ru3KCEjcPqSC4DBqgRw6DjYMGXKVsVia22fnzsdSgpP6
-         iX+A==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fqBMFMkh+3vsj4PE2zy4sOG9Di6zkfuPgmZeKyRMggk=;
+        b=FwTzGNcpDtlrI1kY0RIGO3zETGbXVETw5XVSJFPsLGj6Xz/SJV56ObDVCGf2pDuQ1Z
+         igDUi27LyzA/lOjip7sVylirPYT+bZ/hF+sKh406iS7GyB+Vq1L8K8GDXIUSy1RHLXYZ
+         859pKuXlceGLPjaK41xP26kUTIY685CWI4qnY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AXhLaNRlItV846H2J1h+pbbqWtyd8CdKwFzlrXFypk4=;
-        b=aSzdMf/XeDdhNLWvrTOBaXV6+jNFhPT+Adju+ygGYa97zfL4rjBvhiGOntXFbc5URC
-         3sPrU76PIrIxcjmwmXUtspt9+Uv+Iv+dcTcn64bbFItRe3HDKfSyQrO0ceruSjgvT1Ur
-         HDXcWmijG4LI4B1Dlhx+e/dd7gT12qFaF++Zm6nv6gvJVeMsLTTmwTDWGa26GiNF3TSM
-         GnZwUurtBwY29ModPNnjD96rtw7eXn36tvRSvqhadb/d1hqDoDfwJljFPtveZfXEN69S
-         DY/pebYlkxTp4F/rRV0B9tV1nm85aAIJouLU+fWu/39cQgn+lnZMck30dV1dOp1NzUBF
-         mbzA==
-X-Gm-Message-State: AOAM533DW7dL3hIwVr435ZXepK2CZzaQr/n6hpRfBNFMMUZUr1XR4Hu5
-        MLH18o6x+XxXuKrHfe+mTLelew==
-X-Google-Smtp-Source: ABdhPJwbgQBwTmzxN8A2Pyo1XyUa/E+pwItXExwq/V3hdrGj2dPjnmw3yUMqCY8jNO69G8h7xQ7yRA==
-X-Received: by 2002:a05:6830:2244:: with SMTP id t4mr483428otd.336.1624318547911;
-        Mon, 21 Jun 2021 16:35:47 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 24sm2292069oiz.26.2021.06.21.16.35.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 16:35:47 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 18:35:44 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
-        Martin Botka <martin.botka@somainline.org>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        jamipkettunen@somainline.org, Andy Gross <agross@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V3 3/3] mailbox: qcom-apcs: Add SM6125 compatible
-Message-ID: <YNEiUMBqGAx1zLVX@yoga>
-References: <20210612094631.89980-1-martin.botka@somainline.org>
- <20210612094631.89980-3-martin.botka@somainline.org>
- <CABb+yY3BYYC2na8EFunEeu0XCfLXrUQon=hF3q5p=+FUoigoyw@mail.gmail.com>
- <CAL_JsqLWqtAtqLRF-MAnq80NMfD0a+CfWPv8JWjjNTJFgMjCxg@mail.gmail.com>
- <CABb+yY0sdSinTm788pMFrqEZ6QMC2OwCP7Kkto+pG9h1aGMzwQ@mail.gmail.com>
- <CAL_JsqKdoMwpL_tYC7VQRAG2AC5nR4diShMQCgDseObcgU+egQ@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fqBMFMkh+3vsj4PE2zy4sOG9Di6zkfuPgmZeKyRMggk=;
+        b=TBh78ux4wJm/6qOfEPo1/WGChxFd9Mvuyhooe/buanL8Sr4qCHZVJ9a0ybhkXnFbKM
+         axJLHTsuGJp5Wb8tzXxXwV9XZnEzOiUJX6PO8lpJOQEGnqbaYL/xYsnL/RDdWoe4yQ47
+         Q/F+HNEztWxSuEalCWqCG1b4fxZLPOxVmHZDvGAP47VsryzM5YN1L8GeIqU3sL/ZO2St
+         XjCQCdxAsB53vFNy45MTWiRAbgHZwHuAnMg84gomcfoai7AwJwYF4fb2fOI1WMZSAjuA
+         BPF/g2t1WS/c57Dc6aOvSSsefbfKDT7sHzIRl0FlIZmIgCVWJhb0UX38aU7ltl9I7y4Y
+         TmMw==
+X-Gm-Message-State: AOAM531wdqo/dwnwPRk3cfm9/jwkBPqDbMcUgbiQbnSlWkgXuxx9/sJa
+        XcY+Lc3bOFK3LMb74a24zGynYWZbLIwnaoboV14=
+X-Google-Smtp-Source: ABdhPJxkLdiOZqQYGGZnNJ/sVJs7Y1drq5Yx5vQB0nDd0yQ0Do4lW3EJ9snncIHu8Nzi5CmlHZJflA==
+X-Received: by 2002:a05:651c:33c:: with SMTP id b28mr555295ljp.489.1624318610258;
+        Mon, 21 Jun 2021 16:36:50 -0700 (PDT)
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com. [209.85.208.175])
+        by smtp.gmail.com with ESMTPSA id b13sm789782lfv.89.2021.06.21.16.36.49
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 16:36:49 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id r16so27543217ljk.9
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:36:49 -0700 (PDT)
+X-Received: by 2002:a2e:22c4:: with SMTP id i187mr544552lji.251.1624318609289;
+ Mon, 21 Jun 2021 16:36:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqKdoMwpL_tYC7VQRAG2AC5nR4diShMQCgDseObcgU+egQ@mail.gmail.com>
+References: <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+ <87eed4v2dc.fsf@disp2133> <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+ <87fsxjorgs.fsf@disp2133> <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+ <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk> <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
+ <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
+ <YNDsYk6kbisbNy3I@zeniv-ca.linux.org.uk> <CAHk-=wh82uJ5Poqby3brn-D7xWbCMnGv-JnwfO0tuRfCvsVgXA@mail.gmail.com>
+ <YNEfXhi80e/VXgc9@zeniv-ca.linux.org.uk>
+In-Reply-To: <YNEfXhi80e/VXgc9@zeniv-ca.linux.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Mon, 21 Jun 2021 16:36:33 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjtagi3g5thA-T8ooM8AXcy3brdHzugCPU0itdbpDYH_A@mail.gmail.com>
+Message-ID: <CAHk-=wjtagi3g5thA-T8ooM8AXcy3brdHzugCPU0itdbpDYH_A@mail.gmail.com>
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 21 Jun 18:19 CDT 2021, Rob Herring wrote:
+On Mon, Jun 21, 2021 at 4:23 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+>         How would it help e.g. oopsen on the way out of timer interrupts?
+> IMO we simply shouldn't allow ptrace access if the tracee is in that kind
+> of state, on any architecture...
 
-> On Mon, Jun 21, 2021 at 5:10 PM Jassi Brar <jassisinghbrar@gmail.com> wrote:
-> >
-> > On Mon, Jun 21, 2021 at 2:46 PM Rob Herring <robh+dt@kernel.org> wrote:
-> > >
-> > > On Sun, Jun 20, 2021 at 10:03 PM Jassi Brar <jassisinghbrar@gmail.com> wrote:
-> > > >
-> > > > On Sat, Jun 12, 2021 at 4:46 AM Martin Botka
-> > > > <martin.botka@somainline.org> wrote:
-> > > > >
-> > > > > This commit adds compatible for the SM6125 SoC
-> > > > >
-> > > > > Signed-off-by: Martin Botka <martin.botka@somainline.org>
-> > > > > ---
-> > > > > Changes in V2:
-> > > > > None
-> > > > > Changes in V3:
-> > > > > Change compatible to apcs-hmss-global
-> > > > >  drivers/mailbox/qcom-apcs-ipc-mailbox.c | 5 +++++
-> > > > >  1 file changed, 5 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/mailbox/qcom-apcs-ipc-mailbox.c b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-> > > > > index f25324d03842..f24c5ad8d658 100644
-> > > > > --- a/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-> > > > > +++ b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-> > > > > @@ -57,6 +57,10 @@ static const struct qcom_apcs_ipc_data sdm660_apcs_data = {
-> > > > >         .offset = 8, .clk_name = NULL
-> > > > >  };
-> > > > >
-> > > > > +static const struct qcom_apcs_ipc_data sm6125_apcs_data = {
-> > > > > +       .offset = 8, .clk_name = NULL
-> > > > > +};
-> > > > > +
-> > > > >  static const struct qcom_apcs_ipc_data apps_shared_apcs_data = {
-> > > > >         .offset = 12, .clk_name = NULL
-> > > > >  };
-> > > > > @@ -166,6 +170,7 @@ static const struct of_device_id qcom_apcs_ipc_of_match[] = {
-> > > > >         { .compatible = "qcom,sc8180x-apss-shared", .data = &apps_shared_apcs_data },
-> > > > >         { .compatible = "qcom,sdm660-apcs-hmss-global", .data = &sdm660_apcs_data },
-> > > > >         { .compatible = "qcom,sdm845-apss-shared", .data = &apps_shared_apcs_data },
-> > > > > +       { .compatible = "qcom,sm6125-apcs-hmss-global", .data = &sm6125_apcs_data },
-> > > > >         { .compatible = "qcom,sm8150-apss-shared", .data = &apps_shared_apcs_data },
-> > > > >         { .compatible = "qcom,sdx55-apcs-gcc", .data = &sdx55_apcs_data },
-> > > > >         {}
-> > > > >
-> > > > These all are basically different names for the same controller.
-> > > > The 'offset' is a configuration parameter and the 'clock', when NULL,
-> > > > is basically some "always-on" clock.
-> > > > I am sure we wouldn't be doing it, if the controller was third-party.
-> > >
-> > > If newer implementations are 'the same', then they should have a
-> > > fallback compatible to the existing one that is the same and no driver
-> > > change is needed. If the differences are board or instance (within an
-> > > SoC) specific, then a DT property would be appropriate.
-> > >
-> > The controllers (13 now) only differ by the 'offset' where the
-> > registers are mapped. Clock-name is a pure s/w artifact.
-> > So, maybe we could push all these in DT.
-> 
-> Why is 'reg' not used for the offset?
-> 
+Yeah no, we can't do the "wait for ptrace" when the exit is due to an
+oops. Although honestly, we have other cases like that where do_exit()
+isn't 100% robust if you kill something in an interrupt. Like all the
+locks it leaves locked etc.
 
-The DT node and its "reg" describes the whole IP block.
+So do_exit() from a timer interrupt is going to cause problems
+regardless. I agree it's probably a good idea to try to avoid causing
+even more with the odd ptrace thing, but I don't think ptrace_event is
+some really "fundamental" problem at that point - it's just one detail
+among many many.
 
-The particular register that we care of has, as you can see, moved
-around during the various platforms and some incarnations of this IP
-block provides controls for CPU-related clocks as well.
+So I was more thinking of the debug patch for m68k to catch all the
+_regular_ cases, and all the other random cases of ptrace_event() or
+ptrace_notify().
 
-We can certainly have the multiple compatible points to the same
-apcs_data, but I'm not able to spot a reasonable "catch-all compatible"
-given that I don't see any natural groupings.
+Although maybe we've really caught them all. The exit case was clearly
+missing, and the thread fork case was scrogged. There are patches for
+the known problems. The patches I really don't like are the
+verification ones to find any unknown ones..
 
-> In any case, we can't really get rid of the first 13 instances though...
-> 
-
-Right, we have the problem that we have DTBs out there that relies on
-these compatibles, but as Jassi requests we'd have to start describing
-the internal register layout in DT - which this binding purposefully
-avoids.
-
-Regards,
-Bjorn
+            Linus
