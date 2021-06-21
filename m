@@ -2,97 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A883AE4C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA013AE4CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:29:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhFUIaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 04:30:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:58344 "EHLO foss.arm.com"
+        id S230204AbhFUIcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 04:32:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229943AbhFUIaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 04:30:05 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 644EDD6E;
-        Mon, 21 Jun 2021 01:27:51 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B66793F718;
-        Mon, 21 Jun 2021 01:27:48 -0700 (PDT)
-Subject: Re: [PATCH v16 1/7] arm64: mte: Handle race when synchronising tags
-To:     Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Will Deacon <will@kernel.org>, James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Andrew Jones <drjones@redhat.com>
-References: <20210618132826.54670-1-steven.price@arm.com>
- <20210618132826.54670-2-steven.price@arm.com>
- <20210618144013.GE16116@arm.com>
- <3551d8ea9c9464e982d75acdd5f855b4@kernel.org>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <2437e23c-2871-765e-2637-7a6823d80a52@arm.com>
-Date:   Mon, 21 Jun 2021 09:27:47 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229618AbhFUIb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 04:31:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5868261183
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 08:29:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624264185;
+        bh=3k7UKLAzplWylccCBWjz7kXMM/herlyLZaHwytCXBXE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fENbtecuXfxTiz7RPH+9f4S8YpxmcBZol1rcmNfPb26+/uh/SRxCJJcnzISj0bvlN
+         8H7IASU54wrLZG84P7cvMi8lGU3pTEkDX4gEyepqJqB0QlzOqzhE2lSzYhCgvwhJST
+         z8KWdWiWTzgQPfxtInMgvnMxfSB7EQhLtLxFvEP/CJ9hc20IVQ7CW/hHsMfye89SWg
+         aAdZMtkoKR+H9F86ZBXuCthjiPxSgubLC7NDsbdxxZhwGxfXt5DXwlQRqY6jdjWIr2
+         YQ5jlF0lPdK7/6uwz+3mZ59mv6Qfh9trZFrkcMVMBZWird4L2EtHRPVy7jtYf5XsCu
+         D8dGxhBzEtSHw==
+Received: by mail-ed1-f47.google.com with SMTP id r7so17701071edv.12
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 01:29:45 -0700 (PDT)
+X-Gm-Message-State: AOAM533x+LcQ2NZ/4gu1unU1X2YB9f1eZa+8oM8MjAArLvpBVKUKF+lR
+        gWdd1m7MlNs8u+/UMT8ovCYg5Gyy8+8kLaoQ9g==
+X-Google-Smtp-Source: ABdhPJy99W+iUMmSVT+D20GJWXJQDvrweRWoVmNQ4hxYbGjBoj+VtBCmyu5vVrJXOxAqXXXmJvQFU6lq5QdPkA+ASs8=
+X-Received: by 2002:aa7:ce0c:: with SMTP id d12mr6504464edv.49.1624264183889;
+ Mon, 21 Jun 2021 01:29:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <3551d8ea9c9464e982d75acdd5f855b4@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210617103214.44217-1-jitao.shi@mediatek.com>
+In-Reply-To: <20210617103214.44217-1-jitao.shi@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Mon, 21 Jun 2021 16:29:30 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_9LkeWjz0zs19hvb_3AMxhytqmAk6H1jGS1VxDkQqFr5Q@mail.gmail.com>
+Message-ID: <CAAOTY_9LkeWjz0zs19hvb_3AMxhytqmAk6H1jGS1VxDkQqFr5Q@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/mediatek: force hsa hbp hfp packets multiple of
+ lanenum to avoid screen shift
+To:     Jitao Shi <jitao.shi@mediatek.com>
+Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        CK Hu <ck.hu@mediatek.com>, stonea168@163.com,
+        huijuan.xie@mediatek.com, Rex-BC Chen <rex-bc.chen@mediatek.com>,
+        shuijing.li@mediatek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/06/2021 16:42, Marc Zyngier wrote:
-> On 2021-06-18 15:40, Catalin Marinas wrote:
->> On Fri, Jun 18, 2021 at 02:28:20PM +0100, Steven Price wrote:
->>> mte_sync_tags() used test_and_set_bit() to set the PG_mte_tagged flag
->>> before restoring/zeroing the MTE tags. However if another thread were to
->>> race and attempt to sync the tags on the same page before the first
->>> thread had completed restoring/zeroing then it would see the flag is
->>> already set and continue without waiting. This would potentially expose
->>> the previous contents of the tags to user space, and cause any updates
->>> that user space makes before the restoring/zeroing has completed to
->>> potentially be lost.
->>>
->>> Since this code is run from atomic contexts we can't just lock the page
->>> during the process. Instead implement a new (global) spinlock to protect
->>> the mte_sync_page_tags() function.
->>>
->>> Fixes: 34bfeea4a9e9 ("arm64: mte: Clear the tags when a page is
->>> mapped in user-space with PROT_MTE")
->>> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
->>> Signed-off-by: Steven Price <steven.price@arm.com>
->>
->> Although I reviewed this patch, I think we should drop it from this
->> series and restart the discussion with the Chromium guys on what/if they
->> need PROT_MTE with MAP_SHARED. It currently breaks if you have two
->> PROT_MTE mappings but if they are ok with only one of the mappings being
->> PROT_MTE, I'm happy to just document it.
->>
->> Not sure whether subsequent patches depend on it though.
-> 
-> I'd certainly like it to be independent of the KVM series, specially
-> as this series is pretty explicit that this MTE lock is not required
-> for KVM.
+Hi, Jitao:
 
-Sure, since KVM no longer uses the lock we don't have the dependency -
-so I'll drop the first patch.
+Jitao Shi <jitao.shi@mediatek.com> =E6=96=BC 2021=E5=B9=B46=E6=9C=8817=E6=
+=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8B=E5=8D=886:32=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> The bridge chip "ANX7625" requires the packets on lanes to aligne at the =
+end,
+> or ANX7625 will shift the screen.
+>
+> Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_dsi.c | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediate=
+k/mtk_dsi.c
+> index ae403c67cbd9..4735e0092ffe 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> @@ -194,6 +194,8 @@ struct mtk_dsi {
+>         struct clk *hs_clk;
+>
+>         u32 data_rate;
+> +       /* force dsi line end without dsi_null data */
+> +       bool force_dsi_end_without_null;
+>
+>         unsigned long mode_flags;
+>         enum mipi_dsi_pixel_format format;
+> @@ -499,6 +501,13 @@ static void mtk_dsi_config_vdo_timing(struct mtk_dsi=
+ *dsi)
+>                 DRM_WARN("HFP + HBP less than d-phy, FPS will under 60Hz\=
+n");
+>         }
+>
+> +       if (dsi->force_dsi_end_without_null) {
+> +               horizontal_sync_active_byte =3D roundup(horizontal_sync_a=
+ctive_byte, dsi->lanes) - 2;
+> +               horizontal_frontporch_byte =3D roundup(horizontal_frontpo=
+rch_byte, dsi->lanes) - 2;
+> +               horizontal_backporch_byte =3D roundup(horizontal_backporc=
+h_byte, dsi->lanes) - 2;
+> +               horizontal_backporch_byte -=3D (vm->hactive * dsi_tmp_buf=
+_bpp + 2) % dsi->lanes;
+> +       }
+> +
+>         writel(horizontal_sync_active_byte, dsi->regs + DSI_HSA_WC);
+>         writel(horizontal_backporch_byte, dsi->regs + DSI_HBP_WC);
+>         writel(horizontal_frontporch_byte, dsi->regs + DSI_HFP_WC);
+> @@ -1095,6 +1104,10 @@ static int mtk_dsi_probe(struct platform_device *p=
+dev)
+>         dsi->bridge.of_node =3D dev->of_node;
+>         dsi->bridge.type =3D DRM_MODE_CONNECTOR_DSI;
+>
+> +       if (dsi->next_bridge)
+> +               dsi->force_dsi_end_without_null =3D of_property_read_bool=
+(dsi->next_bridge->of_node,
+> +                                                                       "=
+force_dsi_end_without_null");
 
-> This will require some rework of patch #2, I believe. And while we're
-> at it, a rebase on 5.13-rc4 wouldn't hurt, as both patches #3 and #5
-> conflict with it...
+This patch looks good to me, but I could not find
+"force_dsi_end_without_null" in binding document.
 
-Yeah there will be minor conflicts in patch #2 - but nothing major. I'll
-rebase as requested at the same time.
+Regards,
+Chun-Kuang.
 
-Thanks,
-
-Steve
+> +
+>         drm_bridge_add(&dsi->bridge);
+>
+>         ret =3D component_add(&pdev->dev, &mtk_dsi_component_ops);
+> --
+> 2.25.1
