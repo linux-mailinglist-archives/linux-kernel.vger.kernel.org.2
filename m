@@ -2,79 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F6A3AF523
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4296D3AF529
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232159AbhFUSfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231740AbhFUSfi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:35:38 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B676BC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:33:22 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id s19so10465884ioc.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:33:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=V9hTO10AkNz8NRDJWAaxrXe+AlagCaKGWm4tEECSYRg=;
-        b=yiXtXAzlb4wbA8t2j0hNxLCiK5efN1SEnHiBQzR7+K0B9zbyixWOKByBVG73D2piQP
-         2XeOBjk980BAYHfMfE8p72st1chv05CtjA8LtIgvTO6WluaOD0dNKKZEBsiy/aK51mBR
-         BdAVnVoxNJbmnW3ET99wtdr4bG+SHWw79Q6rdDssenLMXbZ9fWA7v4rVz/7jhJNnKYLz
-         MhCivhxFTJxq/3IRknpK8q677q5uKUlgZwlpvwdPdS4m8jDlLHOYkqLjTrnTE9DxK18p
-         25O3+dmct1dQh+MOnHpo1FTFxff/aFsqmi5/ULI1HwjJSRoX2IDaOf+dT0BDjGky5LRl
-         0rIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=V9hTO10AkNz8NRDJWAaxrXe+AlagCaKGWm4tEECSYRg=;
-        b=mtyz0U88H9mQgE5491aZ5m24AQyaLrDbrDB1TCjQ+xC49WuJt9CAMNRf6aS69w2qTS
-         0Tl6yZ9ibD7uJI9EboX5q/NZV4QMB7PTaVW03q0HNq4zpDZKq8J7g2WVshaUsJJinP8g
-         vMu1Z3mps1DRAJwUunufX7AwbcIMXlGSptPhsXZdY3VuLewxigVDN8NAnKC2hBHO3u6R
-         Lxw23CLFfVfSu29+nDI9htk1eEcMvobU9ZPy8ak+h+csmmpW0uBgYLWMR9xOqyAMVY74
-         BSnKHwMhL0tTraO6rnZjTT7xm2OzQlK5Owm21c/elL42T9Z1GoAUSUpC/DOoN7EzA6Yk
-         Jy/A==
-X-Gm-Message-State: AOAM530FQJWYMd0fk0eQUk1K0HGZOuwLG7Ep5Kx5bkbWJzthGZjn3s/u
-        K1YcciujbakEjq2oy/QOxGNuOg==
-X-Google-Smtp-Source: ABdhPJxHPtD+U7QA8wTOaOI9pyA4MlOVjpkqq7Pezj+/1WT2M8nspzMlMdHNi8VVzd3Uh3JQJGbBXA==
-X-Received: by 2002:a02:1988:: with SMTP id b130mr19249583jab.44.1624300402089;
-        Mon, 21 Jun 2021 11:33:22 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id l11sm9395611ios.8.2021.06.21.11.33.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 11:33:21 -0700 (PDT)
-Subject: Re: [PATCH] coccinelle: api: remove kobj_to_dev.cocci script
-To:     Keith Busch <kbusch@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     Christoph Hellwig <hch@lst.de>, Denis Efremov <efremov@linux.com>,
-        Julia Lawall <Julia.Lawall@inria.fr>
-References: <20210621174808.1489111-1-kbusch@kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <1587ee8a-c963-5004-cea4-19fe998a1cf4@kernel.dk>
-Date:   Mon, 21 Jun 2021 12:33:20 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232053AbhFUSjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:39:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36880 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231840AbhFUSjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 14:39:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A92D56109F;
+        Mon, 21 Jun 2021 18:37:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624300645;
+        bh=eTTlwDkeyO67L3bvqEkV/+MwTD0Ip0/Wv5AUnA1irB0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=dpgYbklE+Gu7BbGEB+vWxkEh6vJP7kSoxaLN9gbzCKaFYWrzk+s6qJBTy+7ubJZLv
+         Omy8HRg6tyTJ0cp/rlfcgO94fO747RrsuSTubk5GcYOCaezkNBx86ZqOtRR8JwgGAA
+         pHm4IXh9/vgcM1rNuueJPN39dXsELGPrPnFYGZ0hHAVlFBc+WjUlPYY3McJermwdGC
+         hLKPNkdUE3Pk0Ir+AsPeg8VgYx7oeZX2EYcRtgdq+qK7LdlJmxOn+C/elBbWtCxgsz
+         9KfbwdPS10/9VjupKZqFRtMnp7FZZgjNUDcY3D2W7ExWH9plXqEBXP9FAoQsjFY8CM
+         JvDQoOyMjp0GA==
+Date:   Mon, 21 Jun 2021 13:37:24 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     Shanker R Donthineni <sdonthineni@nvidia.com>,
+        alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Sinan Kaya <okaya@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v7 2/8] PCI: Add new array for keeping track of ordering
+ of reset methods
+Message-ID: <20210621183724.GA3291108@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <20210621174808.1489111-1-kbusch@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210621171518.vs4h4y6ag2benlwp@archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/21/21 11:48 AM, Keith Busch wrote:
-> Using kobj_to_dev() instead of container_of() is not universally
-> accepted among maintainers as an improvement. The warning leads to
-> repeated patch submissions that won't be accepted. Remove the script.
+On Mon, Jun 21, 2021 at 10:45:18PM +0530, Amey Narkhede wrote:
+> On 21/06/21 10:02AM, Shanker R Donthineni wrote:
+> > On 6/18/21 12:22 PM, Amey Narkhede wrote:
+> > > I wonder if this would be easier if dev->reset_methods[] contained
+> > > indices into pci_reset_fn_methods[], highest priority first, with the
+> > > priority being determined when dev->reset_methods[] is updated.  For
+> > > example:
+> > >
+> > >   const struct pci_reset_fn_method pci_reset_fn_methods[] = {
+> > >     { },                                                     # 0
+> > >     { &pci_dev_specific_reset, .name = "device_specific" },  # 1
+> > >     { &pci_dev_acpi_reset, .name = "acpi" },                 # 2
+> > >     { &pcie_reset_flr, .name = "flr" },                      # 3
+> > >     { &pci_af_flr, .name = "af_flr" },                       # 4
+> > >     { &pci_pm_reset, .name = "pm" },                         # 5
+> > >     { &pci_reset_bus_function, .name = "bus" },              # 6
+> > >   };
+> > >
+> > >   dev->reset_methods[] = [1, 2, 3, 4, 5, 6]
+> > >     means all reset methods are supported, in the default priority
+> > >     order
+> > >
+> > >   dev->reset_methods[] = [1, 0, 0, 0, 0, 0]
+> > >     means only pci_dev_specific_reset is supported
+> > >
+> > >   dev->reset_methods[] = [3, 5, 0, 0, 0, 0]
+> > >     means pcie_reset_flr and pci_pm_reset are supported, in that
+> > >     priority order
+> >
+> > What about keeping two bitmap fields 'resets_supported' and
+> > 'resets_enabled' in pci_dev object and mange it through sysfs and
+> > probe helper function. We can avoid two loops multiple paces and
+> > takes only 2Bytes of memory to keep track resets.
+> >
+> > resets_supported  ---> initialized during pci_dev setup
+> > resets_enabled ---> Exposed to userspace through sysfs by default set to resets_supported
+> >
+> > include/linux/pci.h:
+> > ------------------------
+> > /* Different types of PCI resets possible, lower number is higher priority */
+> > #define PCI_RESET_METHOD_DEVSPEC     0
+> > #define PCI_RESET_METHOD_ACPI            1
+> > #define PCI_RESET_METHOD_FLR              2
+> > #define PCI_RESET_METHOD_Af_FLR         3
+> > #define PCI_RESET_METHOD_PM               4
+> > #define PCI_RESET_METHOD_BUS             5
+> > #define PCI_RESET_METHOD_MAX            6
+> >
+> > struct pci_dev {
+> >     ...
+> >         u8              resets_supported;
+> >         u8              resets_enabled;
+> > };
+> >
+> > static inline bool pci_reset_supported(struct pci_dev *dev)
+> > {
+> >         return !!(dev->resets_supported);
+> > }
+> >
+> >
+> > drivers/pci/pci.c:
+> > --------------------
+> > const struct pci_reset_fn_method pci_reset_fn_methods[PCI_RESET_METHOD_MAX] = {
+> >         [PCI_RESET_METHOD_DEVSPEC] = { &pci_dev_specific_reset,
+> >                                                                    .name = "device_specific" },
+> >         [PCI_RESET_METHOD_ACPI] = { &pci_dev_acpi_reset, .name = "acpi" },
+> >         [PCI_RESET_METHOD_FLR] = { &pcie_reset_flr, .name = "flr" },
+> >         [PCI_RESET_METHOD_Af_FLR] = { &pci_af_flr, .name = "af_flr" },
+> >         [PCI_RESET_METHOD_PM] = { &pci_pm_reset, .name = "pm" },
+> >         [PCI_RESET_METHOD_BUS] = { &pci_reset_bus_function, .name = "bus" }
+> > };
+> >
+> >
+> > void pci_init_reset_methods(struct pci_dev *dev)
+> > {
+> >         int i, rc;
+> >
+> >         BUILD_BUG_ON(ARRAY_SIZE(pci_reset_fn_methods) != PCI_RESET_METHOD_MAX);
+> >         might_sleep();
+> >
+> >         for (i = 0; i < PCI_RESET_METHOD_MAX; i++) {
+> >                 rc = pci_reset_fn_methods[i].reset_fn(dev, PCI_RESET_PROBE);
+> >                 if (!rc)
+> >                         dev->resets_supported |= BIT(i);
+> >                 else if (rc != -ENOTTY)
+> >                         break;
+> >         }
+> >         dev->resets_enabled = dev->resets_supported;
+> > }
+> >
+> > int __pci_reset_function_locked(struct pci_dev *dev)
+> > {
+> >         int i, rc = -ENOTTY;
+> >
+> >         might_sleep();
+> >
+> >         for (i = 0; i < PCI_RESET_METHOD_MAX; i++) {
+> >                 if (dev->resets_enabled & BIT(i)) {
+> >                         rc = pci_reset_fn_methods[i].reset_fn(dev, 0);
+> >                         if (rc != -ENOTTY)
+> >                                 return rc;
+> >                 }
+> >         }
+> >
+> >         if (rc == -ENOTTY)
+> >                 pci_warn(dev, "No reset happened reason %s\n",
+> >                          !!dev->resets_supported ?
+> >                          "disabled by user" : "not supported");
+> >
+> >         return rc;
+> > }
+> >
+> > drivers/pci/pci-sysfs.c
+> > ----------------------------
+> > static ssize_t reset_method_store(struct device *dev,
+> >                                   struct device_attribute *attr,
+> >                                   const char *buf, size_t count)
+> > {
+> >         struct pci_dev *pdev = to_pci_dev(dev);
+> >         u8 resets_enabled = 0;
+> > ...
+> >         if (sysfs_streq(options, "default")) {
+> >                 pdev->resets_enabled = pdev->resets_supported;
+> >                 goto set_reset_methods;
+> >         }
+> >
+> >         while ((name = strsep(&options, ",")) != NULL) {
+> >                 if (sysfs_streq(name, ""))
+> >                         continue;
+> >                 name = strim(name);
+> >
+> >                 for (i = 0; i < PCI_RESET_METHOD_MAX; i++) {
+> >                         if ((pdev->resets_supported & BIT(i)) &&
+> >                             sysfs_streq(name, pci_reset_fn_methods[i].name)) {
+> >                                 resets_enabled |= BIT(i);
+> >                                 break;
+> >                         }
+> >                 }
+> > ...
+> >         }
+> >
+> > set_reset_methods:
+> >         kfree(options);
+> >         pdev->resets_enabled =  resets_enabled;
+> >         return count;
+> > }
+> >
+> > static ssize_t reset_method_show(struct device *dev,
+> >                                  struct device_attribute *attr,
+> >                                  char *buf)
+> > {
+> >         struct pci_dev *pdev = to_pci_dev(dev);
+> >         ssize_t len = 0;
+> >         int i;
+> >
+> >         for (i = 0; i < PCI_RESET_METHOD_MAX; i++) {
+> >                 if (pdev->resets_enabled & BIT(i))
+> >                         len += sysfs_emit_at(buf, len, "%s%s",
+> >                                              len ? "," : "",
+> >                                              pci_reset_fn_methods[i].name);
+> >         }
+> >         len += sysfs_emit_at(buf, len, len ? "\n" : "");
+> >
+> >         return len;
+> > }
+> >
+> Thank you for the idea.
+> Actually that would be coming full circle because Alex, Raphael and
+> I tried similar approach earlier while prototyping for v2 but this
+> implementation does look better than what I had at that time.
 
-Acked-by: Jens Axboe <axboe@kernel.dk>
-
--- 
-Jens Axboe
-
+I thought part of the point of this series was to allow the user to
+change the *order* of reset types.  I don't think we can control the
+ordering if we only keep a bit (or even two) per reset type.
