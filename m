@@ -2,362 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4273AE7D7
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 13:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F1C3AE7DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 13:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230415AbhFULFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 07:05:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27447 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230118AbhFULFK (ORCPT
+        id S229890AbhFULHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 07:07:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229641AbhFULHC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 07:05:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624273375;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=S/fs4NA9hBq3sv0aUCJZAVO4Uvbw06vcTspx/Tlar0M=;
-        b=EbqojWsKfcTwlFk1TJYem/kTJN+sMBrZ00pPB8+dFyJiqoqkhO7Fa2pTr2kNIaEEsVAO+k
-        aQ30rcYSFYeK22ZYKhLqrfu0iXGDXW+lFHKE4tiPNzVFtvMSBGN10KVlbWT2qybOsCvQoO
-        /ta4qMrYXnwc4QaoK1W8E8hBbCEQhpg=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-387-JeX4rrofNOKakE_jt5Xe5w-1; Mon, 21 Jun 2021 07:02:54 -0400
-X-MC-Unique: JeX4rrofNOKakE_jt5Xe5w-1
-Received: by mail-wr1-f71.google.com with SMTP id h104-20020adf90710000b029010de8455a3aso8283152wrh.12
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 04:02:53 -0700 (PDT)
+        Mon, 21 Jun 2021 07:07:02 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7823DC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 04:04:47 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id bj15so27597064qkb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 04:04:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=uged.al; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MvrUCOsjHnbRsvDmF+iBFiQ9cG1N/tBu4rO41BmsuJY=;
+        b=EVDUqdE4krKQLAljHqyXPZQniLMQSkWbBzl7Z/Cs0l3Bn1PzJy6LFgNfDcMbk2D+b8
+         OPkQIlKV+BmMRUmpg2y6h3SsLtxHE7gXQcRtnygho525ZpO2xoJyk+9xy6eYFAap6gnO
+         YZB603T9cFPlRiqSBOQuGiwehGNbeXZn9gBGFsO8FV68HXX5MpovfK9JdKaO/i8njNI7
+         tSb+TtGOpA8+A0BaB2xEVVt4m1UjK1iLH/hZN+W2fzeEWQGW4rrcO18YHEFIRuQL8Cvl
+         yAjq9mwVWIaP0R+xhO5g82PpXX7Yxx+1CbVcd7jLmZaFnyTgjcGEZQbFSjiARuE0YLXM
+         srgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=S/fs4NA9hBq3sv0aUCJZAVO4Uvbw06vcTspx/Tlar0M=;
-        b=Ys5A4L8L/J3DjHLCITrl0/5IxD4enuwBwRao32R3bMkX9IL4y7BXjBDOvrI2N6QKu7
-         /XwJiFa/zDz5KJeGxm/+1SodNIdS3v6uwVVmz+zAxAZ5wJIvmqzEfM235fyuL4isT72o
-         psqdAxRKu2tqnD/4poVvtLWnSZXgDLzQ1+COr3u6KsU1VKEFXyOR7bLvaWHoKPKVOhkI
-         ZIarIpbaghAIDmQf/7E6z9HzK3VUqMfPjyRqdIF/j1qRLB6KdgTe735xAvv7g4VfZOea
-         J/Q5ki+6UcztD3bpdy1aX8UGg/dZ4BjhFJL3elQL8xb3Rfu15P422KE7sy0aQLi1vVME
-         icoQ==
-X-Gm-Message-State: AOAM5321WdcwYjeUeHSR3elv5joOfVtqOEQFHhes1SSbpxclN+nBNpZR
-        Gfb1/fpybm/SgvJ/ATjzTdmluJWB6HWdmi/7uLsch3Jb8Vcr2G6mdYbSzqfBUPiQAxEA4dDQ4gV
-        yKXf3lZDO+SLnK6CmFKgE0YNz
-X-Received: by 2002:a05:6000:18ad:: with SMTP id b13mr27345049wri.134.1624273371898;
-        Mon, 21 Jun 2021 04:02:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzzkVqV1viJi7Qrd4Z3DtrHmkj5u3JUuXlAZM6gozPQhwey6zLefsMKRWt4WkOYBeDbppkfeQ==
-X-Received: by 2002:a05:6000:18ad:: with SMTP id b13mr27345018wri.134.1624273371641;
-        Mon, 21 Jun 2021 04:02:51 -0700 (PDT)
-Received: from dceara.remote.csb (i87195.upc-i.chello.nl. [62.195.87.195])
-        by smtp.gmail.com with ESMTPSA id o203sm1844541wmo.36.2021.06.21.04.02.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 04:02:51 -0700 (PDT)
-Subject: Re: [RFC net-next] openvswitch: add trace points
-To:     Aaron Conole <aconole@redhat.com>, netdev@vger.kernel.org
-Cc:     dev@openvswitch.org, Pravin B Shelar <pshelar@ovn.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        Eelco Chaudron <echaudro@redhat.com>,
-        Ilya Maximets <i.maximets@ovn.org>
-References: <20210527191532.376414-1-aconole@redhat.com>
-From:   Dumitru Ceara <dceara@redhat.com>
-Message-ID: <dad5068f-4ea2-d442-0645-9f5c16245ab6@redhat.com>
-Date:   Mon, 21 Jun 2021 13:02:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MvrUCOsjHnbRsvDmF+iBFiQ9cG1N/tBu4rO41BmsuJY=;
+        b=WnjKB8YgE6ATCsoUijTKWMlH/5H7lQazOdk3U+BVOs3E0HHmQtDlfMhRNUK4JM4wbu
+         llBPLP1ITWPyOgBeFXkQZDr2ZKmEXXICHkCRjeLkFTU5YhB65ql0wOUcCx4lvj3Uti4L
+         qAkiawcqD1ozlJZecpHxx9wvVp30ewA2adAFIgxj4mWGC7GhVxeCx4YndIsFCoRR570O
+         BuZ/Z2HksZMgSDcnKajZbKnt5C3qlfgSF5PxtmBhu4Jyg9EHtrLWM/gp727VedQJAsnC
+         YBHKywvBCO4DfVCWlMm/QeJRKAo2PTv0bbOcmvR3hl0aOIFLoLmgVRoIVaDuDV5U5f2D
+         KCmg==
+X-Gm-Message-State: AOAM532UkA2QrTrBxGoYKytm79jm6deljBhS8DzdnoRQdQjzcNvBa/Xk
+        Bf0RIgrwrCYjpYXwk2OfJ8hgb3EkJm+mwOAEpWv4FA==
+X-Google-Smtp-Source: ABdhPJw+Kzdc2fnjMLQc6URmG51WkagIptLPEULYF0eySLsniubrLBVZGqwOMMepHPn92rar4m3PR/TuvxrbFZHYsPY=
+X-Received: by 2002:a37:b3c5:: with SMTP id c188mr22800576qkf.242.1624273486637;
+ Mon, 21 Jun 2021 04:04:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210527191532.376414-1-aconole@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <9D4A658A-5F77-4C33-904A-126E6052B205@linux.vnet.ibm.com>
+ <CAFpoUr3g5t3Z0BtW4-jnYomc3cdY=V5=Zt94-C+fHOjGWa107w@mail.gmail.com>
+ <CAKfTPtC=aXasuSNvn+A3152-4xoOTWROhJpZAVq6RLh1Hacpng@mail.gmail.com>
+ <CAFpoUr2o2PVPOx+AvatjjUvqPTyNKE3C6oXejyU3HVMmtCnzvQ@mail.gmail.com> <6D1F875D-58E9-4A55-B0C3-21D5F31EDB76@linux.vnet.ibm.com>
+In-Reply-To: <6D1F875D-58E9-4A55-B0C3-21D5F31EDB76@linux.vnet.ibm.com>
+From:   Odin Ugedal <odin@uged.al>
+Date:   Mon, 21 Jun 2021 13:04:07 +0200
+Message-ID: <CAFpoUr0iWFTq2grtnX_EH6KnZLZQCg1o6_yv1gfDK8WdbHmUCA@mail.gmail.com>
+Subject: Re: [powerpc][5.13.0-rc7] Kernel warning (kernel/sched/fair.c:401)
+ while running LTP tests
+To:     Sachin Sant <sachinp@linux.vnet.ibm.com>
+Cc:     Odin Ugedal <odin@uged.al>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/27/21 9:15 PM, Aaron Conole wrote:
-> This makes openvswitch module use the event tracing framework
-> to log the upcall interface and action execution pipeline.  When
-> using openvswitch as the packet forwarding engine, some types of
-> debugging are made possible simply by using the ovs-vswitchd's
-> ofproto/trace command.  However, such a command has some
-> limitations:
-> 
->   1. When trying to trace packets that go through the CT action,
->      the state of the packet can't be determined, and probably
->      would be potentially wrong.
-> 
->   2. Deducing problem packets can sometimes be difficult as well
->      even if many of the flows are known
-> 
->   3. It's possible to use the openvswitch module even without
->      the ovs-vswitchd (although, not common use).
-> 
-> Introduce the event tracing points here to make it possible for
-> working through these problems in kernel space.  The style is
-> copied from the mac80211 driver-trace / trace code for
-> consistency.
-> 
-> Signed-off-by: Aaron Conole <aconole@redhat.com>
-> ---
+man. 21. jun. 2021 kl. 12:57 skrev Sachin Sant <sachinp@linux.vnet.ibm.com>:
+>
+> Unfortunately this does not help. I can still recreate the failure.
+>
+> Have attached the o/p from test run.
+>
+> Thanks
+> -Sachin
 
-Hi Aaron,
+Yes, thanks!
 
->  net/openvswitch/Makefile            |   3 +
->  net/openvswitch/actions.c           |   4 +
->  net/openvswitch/datapath.c          |   7 ++
->  net/openvswitch/openvswitch_trace.c |  10 ++
->  net/openvswitch/openvswitch_trace.h | 152 ++++++++++++++++++++++++++++
->  5 files changed, 176 insertions(+)
->  create mode 100644 net/openvswitch/openvswitch_trace.c
->  create mode 100644 net/openvswitch/openvswitch_trace.h
-> 
-> diff --git a/net/openvswitch/Makefile b/net/openvswitch/Makefile
-> index 41109c326f3a..28982630bef3 100644
-> --- a/net/openvswitch/Makefile
-> +++ b/net/openvswitch/Makefile
-> @@ -13,6 +13,7 @@ openvswitch-y := \
->  	flow_netlink.o \
->  	flow_table.o \
->  	meter.o \
-> +	openvswitch_trace.o \
->  	vport.o \
->  	vport-internal_dev.o \
->  	vport-netdev.o
-> @@ -24,3 +25,5 @@ endif
->  obj-$(CONFIG_OPENVSWITCH_VXLAN)+= vport-vxlan.o
->  obj-$(CONFIG_OPENVSWITCH_GENEVE)+= vport-geneve.o
->  obj-$(CONFIG_OPENVSWITCH_GRE)	+= vport-gre.o
-> +
-> +CFLAGS_openvswitch_trace.o = -I$(src)
-> diff --git a/net/openvswitch/actions.c b/net/openvswitch/actions.c
-> index d858ea580e43..62285453ca79 100644
-> --- a/net/openvswitch/actions.c
-> +++ b/net/openvswitch/actions.c
-> @@ -30,6 +30,7 @@
->  #include "conntrack.h"
->  #include "vport.h"
->  #include "flow_netlink.h"
-> +#include "openvswitch_trace.h"
->  
->  struct deferred_action {
->  	struct sk_buff *skb;
-> @@ -1242,6 +1243,9 @@ static int do_execute_actions(struct datapath *dp, struct sk_buff *skb,
->  	     a = nla_next(a, &rem)) {
->  		int err = 0;
->  
-> +		if (trace_openvswitch_probe_action_enabled())
-> +			trace_openvswitch_probe_action(dp, skb, key, a, rem);
-> +
->  		switch (nla_type(a)) {
->  		case OVS_ACTION_ATTR_OUTPUT: {
->  			int port = nla_get_u32(a);
-> diff --git a/net/openvswitch/datapath.c b/net/openvswitch/datapath.c
-> index 9d6ef6cb9b26..63f19a6ed472 100644
-> --- a/net/openvswitch/datapath.c
-> +++ b/net/openvswitch/datapath.c
-> @@ -43,6 +43,7 @@
->  #include "flow_table.h"
->  #include "flow_netlink.h"
->  #include "meter.h"
-> +#include "openvswitch_trace.h"
->  #include "vport-internal_dev.h"
->  #include "vport-netdev.h"
->  
-> @@ -275,6 +276,12 @@ int ovs_dp_upcall(struct datapath *dp, struct sk_buff *skb,
->  	struct dp_stats_percpu *stats;
->  	int err;
->  
-> +	if (trace_openvswitch_probe_userspace_enabled()) {
-> +		struct sw_flow_key ukey = *key;
-> +
-> +		trace_openvswitch_probe_userspace(dp, skb, &ukey, upcall_info);
-> +	}
-> +
->  	if (upcall_info->portid == 0) {
->  		err = -ENOTCONN;
->  		goto err;
-> diff --git a/net/openvswitch/openvswitch_trace.c b/net/openvswitch/openvswitch_trace.c
-> new file mode 100644
-> index 000000000000..62c5f7d6f023
-> --- /dev/null
-> +++ b/net/openvswitch/openvswitch_trace.c
-> @@ -0,0 +1,10 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* bug in tracepoint.h, it should include this */
-> +#include <linux/module.h>
-> +
-> +/* sparse isn't too happy with all macros... */
-> +#ifndef __CHECKER__
-> +#define CREATE_TRACE_POINTS
-> +#include "openvswitch_trace.h"
-> +
-> +#endif
-> diff --git a/net/openvswitch/openvswitch_trace.h b/net/openvswitch/openvswitch_trace.h
-> new file mode 100644
-> index 000000000000..1b350306f622
-> --- /dev/null
-> +++ b/net/openvswitch/openvswitch_trace.h
-> @@ -0,0 +1,152 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#undef TRACE_SYSTEM
-> +#define TRACE_SYSTEM openvswitch
-> +
-> +#if !defined(_TRACE_OPENVSWITCH_H) || defined(TRACE_HEADER_MULTI_READ)
-> +#define _TRACE_OPENVSWITCH_H
-> +
-> +#include <linux/tracepoint.h>
-> +
-> +#include "datapath.h"
-> +
-> +TRACE_EVENT(openvswitch_probe_action,
-> +
-> +	TP_PROTO(struct datapath *dp, struct sk_buff *skb,
-> +		 struct sw_flow_key *key, const struct nlattr *a, int rem),
-> +
-> +	TP_ARGS(dp, skb, key, a, rem),
-> +
-> +	TP_STRUCT__entry(
-> +		__field(	void *,		dpaddr			)
-> +		__string(	dp_name,	ovs_dp_name(dp)		)
-> +		__string(	dev_name,	skb->dev->name		)
-> +		__field(	void *,		skbaddr			)
-> +		__field(	unsigned int,	len			)
-> +		__field(	unsigned int,	data_len		)
-> +		__field(	unsigned int,	truesize		)
-> +		__field(	u8,		nr_frags		)
-> +		__field(	u16,		gso_size		)
-> +		__field(	u16,		gso_type		)
-> +		__field(	u32,		ovs_flow_hash		)
-> +		__field(	u32,		recirc_id		)
-> +		__field(	void *,		keyaddr			)
-> +		__field(	u16,		key_eth_type		)
-> +		__field(	u8,		key_ct_state		)
-> +		__field(	u8,		key_ct_orig_proto	)
+I am able to reproduce it locally now, so will keep looking to see if
+I find the cause. Thanks!
 
-I think tracing ct_zone would be useful too.
-
-> +		__field(	unsigned int,	flow_key_valid		)
-> +		__field(	u8,		action_type		)
-> +		__field(	unsigned int,	action_len		)
-> +		__field(	void *,		action_data		)
-> +		__field(	u8,		is_last			)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->dpaddr = dp;
-> +		__assign_str(dp_name, ovs_dp_name(dp));
-> +		__assign_str(dev_name, skb->dev->name);
-> +		__entry->skbaddr = skb;
-> +		__entry->len = skb->len;
-> +		__entry->data_len = skb->data_len;
-> +		__entry->truesize = skb->truesize;
-> +		__entry->nr_frags = skb_shinfo(skb)->nr_frags;
-> +		__entry->gso_size = skb_shinfo(skb)->gso_size;
-> +		__entry->gso_type = skb_shinfo(skb)->gso_type;
-> +		__entry->ovs_flow_hash = key->ovs_flow_hash;
-> +		__entry->recirc_id = key->recirc_id;
-> +		__entry->keyaddr = key;
-> +		__entry->key_eth_type = key->eth.type;
-> +		__entry->key_ct_state = key->ct_state;
-> +		__entry->key_ct_orig_proto = key->ct_orig_proto;
-> +		__entry->flow_key_valid = !(key->mac_proto & SW_FLOW_KEY_INVALID);
-> +		__entry->action_type = nla_type(a);
-> +		__entry->action_len = nla_len(a);
-> +		__entry->action_data = nla_data(a);
-> +		__entry->is_last = nla_is_last(a, rem);
-> +	),
-> +
-> +	TP_printk("dpaddr=%p dp_name=%s dev=%s skbaddr=%p len=%u data_len=%u truesize=%u nr_frags=%d gso_size=%d gso_type=%#x ovs_flow_hash=0x%08x recirc_id=0x%08x keyaddr=%p eth_type=0x%04x ct_state=%02x ct_orig_proto=%02x flow_key_valid=%d action_type=%u action_len=%u action_data=%p is_last=%d",
-> +		  __entry->dpaddr, __get_str(dp_name), __get_str(dev_name),
-> +		  __entry->skbaddr, __entry->len, __entry->data_len,
-> +		  __entry->truesize, __entry->nr_frags, __entry->gso_size,
-> +		  __entry->gso_type, __entry->ovs_flow_hash,
-> +		  __entry->recirc_id, __entry->keyaddr, __entry->key_eth_type,
-> +		  __entry->key_ct_state, __entry->key_ct_orig_proto,
-> +		  __entry->flow_key_valid,
-> +		  __entry->action_type, __entry->action_len,
-> +		  __entry->action_data, __entry->is_last)
-> +);
-> +
-> +TRACE_EVENT(openvswitch_probe_userspace,
-> +
-> +	TP_PROTO(struct datapath *dp, struct sk_buff *skb,
-> +		 struct sw_flow_key *key,
-> +		 const struct dp_upcall_info *upcall_info),
-> +
-> +	TP_ARGS(dp, skb, key, upcall_info),
-> +
-> +	TP_STRUCT__entry(
-> +		__field(	void *,		dpaddr			)
-> +		__string(	dp_name,	ovs_dp_name(dp)		)
-> +		__string(	dev_name,	skb->dev->name		)
-> +		__field(	void *,		skbaddr			)
-> +		__field(	unsigned int,	len			)
-> +		__field(	unsigned int,	data_len		)
-> +		__field(	unsigned int,	truesize		)
-> +		__field(	u8,		nr_frags		)
-> +		__field(	u16,		gso_size		)
-> +		__field(	u16,		gso_type		)
-> +		__field(	u32,		ovs_flow_hash		)
-> +		__field(	u32,		recirc_id		)
-> +		__field(	void *,		keyaddr			)
-> +		__field(	u16,		key_eth_type		)
-> +		__field(	u8,		key_ct_state		)
-> +		__field(	u8,		key_ct_orig_proto	)
-
-Same here.
-
-Thanks,
-Dumitru
-
-> +		__field(	unsigned int,	flow_key_valid		)
-> +		__field(	u8,		upcall_cmd		)
-> +		__field(	u32,		upcall_port		)
-> +		__field(	u16,		upcall_mru		)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->dpaddr = dp;
-> +		__assign_str(dp_name, ovs_dp_name(dp));
-> +		__assign_str(dev_name, skb->dev->name);
-> +		__entry->skbaddr = skb;
-> +		__entry->len = skb->len;
-> +		__entry->data_len = skb->data_len;
-> +		__entry->truesize = skb->truesize;
-> +		__entry->nr_frags = skb_shinfo(skb)->nr_frags;
-> +		__entry->gso_size = skb_shinfo(skb)->gso_size;
-> +		__entry->gso_type = skb_shinfo(skb)->gso_type;
-> +		__entry->ovs_flow_hash = key->ovs_flow_hash;
-> +		__entry->recirc_id = key->recirc_id;
-> +		__entry->keyaddr = key;
-> +		__entry->key_eth_type = key->eth.type;
-> +		__entry->key_ct_state = key->ct_state;
-> +		__entry->key_ct_orig_proto = key->ct_orig_proto;
-> +		__entry->flow_key_valid =  !(key->mac_proto & SW_FLOW_KEY_INVALID);
-> +		__entry->upcall_cmd = upcall_info->cmd;
-> +		__entry->upcall_port = upcall_info->portid;
-> +		__entry->upcall_mru = upcall_info->mru;
-> +	),
-> +
-> +	TP_printk("dpaddr=%p dp_name=%s dev=%s skbaddr=%p len=%u data_len=%u truesize=%u nr_frags=%d gso_size=%d gso_type=%#x ovs_flow_hash=0x%08x recirc_id=0x%08x keyaddr=%p eth_type=0x%04x ct_state=%02x ct_orig_proto=%02x flow_key_valid=%d upcall_cmd=%u upcall_port=%u upcall_mru=%u",
-> +		  __entry->dpaddr, __get_str(dp_name), __get_str(dev_name),
-> +		  __entry->skbaddr, __entry->len, __entry->data_len,
-> +		  __entry->truesize, __entry->nr_frags, __entry->gso_size,
-> +		  __entry->gso_type, __entry->ovs_flow_hash,
-> +		  __entry->recirc_id, __entry->keyaddr, __entry->key_eth_type,
-> +		  __entry->key_ct_state, __entry->key_ct_orig_proto,
-> +		  __entry->flow_key_valid,
-> +		  __entry->upcall_cmd, __entry->upcall_port,
-> +		  __entry->upcall_mru)
-> +);
-> +
-> +#endif /* _TRACE_OPENVSWITCH_H */
-> +
-> +/* This part must be outside protection */
-> +#undef TRACE_INCLUDE_PATH
-> +#define TRACE_INCLUDE_PATH .
-> +#undef TRACE_INCLUDE_FILE
-> +#define TRACE_INCLUDE_FILE openvswitch_trace
-> +#include <trace/define_trace.h>
-> 
-
+Odin
