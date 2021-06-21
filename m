@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71DF3AED5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 533BE3AEE8E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbhFUQTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:19:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39496 "EHLO mail.kernel.org"
+        id S232111AbhFUQ3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:29:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230377AbhFUQTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:19:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2FCF661206;
-        Mon, 21 Jun 2021 16:17:04 +0000 (UTC)
+        id S231635AbhFUQ2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:28:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 490C360231;
+        Mon, 21 Jun 2021 16:23:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292225;
-        bh=k0WV36dT9lZyfHJD4Y/YVwf5cWjOAhqINA5B4Zk/p6c=;
+        s=korg; t=1624292592;
+        bh=tQVdZcFxjbkS0neonPwjuVD2m4RLxCuAka41aGj1nLc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ksDmCe/7NNve4u2uohHmYR/tOiCUwuxlnlDrUeUy0I2/rHxfbcZDOHMbUuCKuCzTf
-         BbOnqc5quZF64er7NFwA3q35wkuVlG9pQj8UGujspuBhAKQbQM2e/eUOLcPszV9ybQ
-         QIZiBNJgAweUmtVs4RzCyLGrVNKplSo6EDpn8aV0=
+        b=WmJIzER2BK+J7BTKIaAOT+SfRXGJKWSsoA4U+grBRGPYEbPxiQKqMPhMsVH3dz6cQ
+         wQ5LyrWnRRtshpxPsx/7LGF4G8Czp0SIvpOD88k0JoG7S/vxjsaQ3wp0TJ2adGcrxI
+         qoHfSRWrhP/ogHk2o4YesE4gGxz7UI3tqrzECuac=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        stable@vger.kernel.org, Dongliang Mu <mudongliangabcd@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>,
-        Kaustubh Pandey <kapandey@codeaurora.org>
-Subject: [PATCH 5.4 12/90] udp: fix race between close() and udp_abort()
-Date:   Mon, 21 Jun 2021 18:14:47 +0200
-Message-Id: <20210621154904.561953223@linuxfoundation.org>
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 058/146] net: usb: fix possible use-after-free in smsc75xx_bind
+Date:   Mon, 21 Jun 2021 18:14:48 +0200
+Message-Id: <20210621154914.270525635@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621154904.159672728@linuxfoundation.org>
-References: <20210621154904.159672728@linuxfoundation.org>
+In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
+References: <20210621154911.244649123@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,75 +40,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Abeni <pabeni@redhat.com>
+From: Dongliang Mu <mudongliangabcd@gmail.com>
 
-[ Upstream commit a8b897c7bcd47f4147d066e22cc01d1026d7640e ]
+[ Upstream commit 56b786d86694e079d8aad9b314e015cd4ac02a3d ]
 
-Kaustubh reported and diagnosed a panic in udp_lib_lookup().
-The root cause is udp_abort() racing with close(). Both
-racing functions acquire the socket lock, but udp{v6}_destroy_sock()
-release it before performing destructive actions.
+The commit 46a8b29c6306 ("net: usb: fix memory leak in smsc75xx_bind")
+fails to clean up the work scheduled in smsc75xx_reset->
+smsc75xx_set_multicast, which leads to use-after-free if the work is
+scheduled to start after the deallocation. In addition, this patch
+also removes a dangling pointer - dev->data[0].
 
-We can't easily extend the socket lock scope to avoid the race,
-instead use the SOCK_DEAD flag to prevent udp_abort from doing
-any action when the critical race happens.
+This patch calls cancel_work_sync to cancel the scheduled work and set
+the dangling pointer to NULL.
 
-Diagnosed-and-tested-by: Kaustubh Pandey <kapandey@codeaurora.org>
-Fixes: 5d77dca82839 ("net: diag: support SOCK_DESTROY for UDP sockets")
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
+Fixes: 46a8b29c6306 ("net: usb: fix memory leak in smsc75xx_bind")
+Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv4/udp.c | 10 ++++++++++
- net/ipv6/udp.c |  3 +++
- 2 files changed, 13 insertions(+)
+ drivers/net/usb/smsc75xx.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-index 24841a9e9966..4644f86c932f 100644
---- a/net/ipv4/udp.c
-+++ b/net/ipv4/udp.c
-@@ -2511,6 +2511,9 @@ void udp_destroy_sock(struct sock *sk)
- {
- 	struct udp_sock *up = udp_sk(sk);
- 	bool slow = lock_sock_fast(sk);
-+
-+	/* protects from races with udp_abort() */
-+	sock_set_flag(sk, SOCK_DEAD);
- 	udp_flush_pending_frames(sk);
- 	unlock_sock_fast(sk, slow);
- 	if (static_branch_unlikely(&udp_encap_needed_key)) {
-@@ -2770,10 +2773,17 @@ int udp_abort(struct sock *sk, int err)
- {
- 	lock_sock(sk);
+diff --git a/drivers/net/usb/smsc75xx.c b/drivers/net/usb/smsc75xx.c
+index d44657b54d2b..378a12ae2d95 100644
+--- a/drivers/net/usb/smsc75xx.c
++++ b/drivers/net/usb/smsc75xx.c
+@@ -1483,7 +1483,7 @@ static int smsc75xx_bind(struct usbnet *dev, struct usb_interface *intf)
+ 	ret = smsc75xx_wait_ready(dev, 0);
+ 	if (ret < 0) {
+ 		netdev_warn(dev->net, "device not ready in smsc75xx_bind\n");
+-		goto err;
++		goto free_pdata;
+ 	}
  
-+	/* udp{v6}_destroy_sock() sets it under the sk lock, avoid racing
-+	 * with close()
-+	 */
-+	if (sock_flag(sk, SOCK_DEAD))
-+		goto out;
-+
- 	sk->sk_err = err;
- 	sk->sk_error_report(sk);
- 	__udp_disconnect(sk, 0);
+ 	smsc75xx_init_mac_address(dev);
+@@ -1492,7 +1492,7 @@ static int smsc75xx_bind(struct usbnet *dev, struct usb_interface *intf)
+ 	ret = smsc75xx_reset(dev);
+ 	if (ret < 0) {
+ 		netdev_warn(dev->net, "smsc75xx_reset error %d\n", ret);
+-		goto err;
++		goto cancel_work;
+ 	}
  
-+out:
- 	release_sock(sk);
- 
+ 	dev->net->netdev_ops = &smsc75xx_netdev_ops;
+@@ -1503,8 +1503,11 @@ static int smsc75xx_bind(struct usbnet *dev, struct usb_interface *intf)
+ 	dev->net->max_mtu = MAX_SINGLE_PACKET_SIZE;
  	return 0;
-diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
-index 6762430280f5..3c94b81bb459 100644
---- a/net/ipv6/udp.c
-+++ b/net/ipv6/udp.c
-@@ -1539,6 +1539,9 @@ void udpv6_destroy_sock(struct sock *sk)
- {
- 	struct udp_sock *up = udp_sk(sk);
- 	lock_sock(sk);
-+
-+	/* protects from races with udp_abort() */
-+	sock_set_flag(sk, SOCK_DEAD);
- 	udp_v6_flush_pending_frames(sk);
- 	release_sock(sk);
  
+-err:
++cancel_work:
++	cancel_work_sync(&pdata->set_multicast);
++free_pdata:
+ 	kfree(pdata);
++	dev->data[0] = 0;
+ 	return ret;
+ }
+ 
+@@ -1515,7 +1518,6 @@ static void smsc75xx_unbind(struct usbnet *dev, struct usb_interface *intf)
+ 		cancel_work_sync(&pdata->set_multicast);
+ 		netif_dbg(dev, ifdown, dev->net, "free pdata\n");
+ 		kfree(pdata);
+-		pdata = NULL;
+ 		dev->data[0] = 0;
+ 	}
+ }
 -- 
 2.30.2
 
