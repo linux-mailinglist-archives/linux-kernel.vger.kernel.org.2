@@ -2,92 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCCB3AE8BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D063AE8BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhFUMIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 08:08:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFUMH7 (ORCPT
+        id S229708AbhFUMHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 08:07:45 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:45178 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229890AbhFUMHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 08:07:59 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1BC6C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 05:05:44 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id r5so29824650lfr.5
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 05:05:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jYDncvORmzd5e5fXA1auwQJnxSuJ8MfUvv0XD0iPqS4=;
-        b=uHONv/es6xb41PpyPYhMkXZFI9wFXIzSZQQ6OdTgzDZ0/0RE6TFUmthTGW2AEucsLN
-         JOW0GKx5MoCi49GkrwiGyGRauwPUuW2TNWh+GzfNWaIfJ9slg1WCapIU17DyIBEsjBx1
-         6uYL3zPiMHdkqimQ4+h7JhDZKXgosi0I/FxBDYW+7eBNJ2hefNI6W6OwVYhnle6asNoY
-         tmrP51bwNG54PSKlHS+2bnEHJ0kDwls6nPlHMwiwwAKR7cyjJx7qUB76+hPymTShn/4e
-         FQtiyVZYwD1swPYp4KLSodtj6w9QENIIPqoIacAzqj1RE9vUATcA8T8g7Si2oJ3sJHSO
-         +53A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jYDncvORmzd5e5fXA1auwQJnxSuJ8MfUvv0XD0iPqS4=;
-        b=G5y+57/dIVtlKHff7bdacWGtQyt1QlohbhSOSl7lDjS3wo/qx19vvRVh58mBdwD7iM
-         LTbFzJPp5ETb/NNHaUjMCz7zSxLFbKTTRqRkySeMQSpvRt150RU/JMerHI3shW8QBHfS
-         nyMZcSxFL44bcKvJdbYxIwq2LPm/GiZT8rB3JjX+QciMvJJ/Ab3lwLqHr1cOhxWH87oi
-         Lz79f5nkrYPKA0BWLa6Kk9MKJbJPKUYCn3+RgUBuuEAMMUMOyAC0JUYJSRauQvx4mZxl
-         j4uNNxK2uJI9h0xMdlX4SxIxSMta3F1uZfAn/tki0Ewylur1eTbvm1c/82tKTkB+dS+7
-         ueww==
-X-Gm-Message-State: AOAM5321GAtqP/YOklzZczDyiV/O10hHNu0RJ/aHKhpIm4OQubKiUN5N
-        0HxHeiz5d8qtKgCu0OwDOJ7QWz8jz4s=
-X-Google-Smtp-Source: ABdhPJzOReNuf/i0DuPYDUXxPDdtD8UQ4GZ5NludJvFxaHVLhNw8ePVoqBp4FPAWBJJ5GQaZIt9SYw==
-X-Received: by 2002:ac2:5581:: with SMTP id v1mr9008597lfg.414.1624277143054;
-        Mon, 21 Jun 2021 05:05:43 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
-        by smtp.googlemail.com with ESMTPSA id t3sm1857488lfl.78.2021.06.21.05.05.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 05:05:42 -0700 (PDT)
-Subject: Re: [PATCH v1] regulator: core: Add stubs for driver API
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Thierry Reding <treding@nvidia.com>, linux-kernel@vger.kernel.org
-References: <20210619124052.1354-1-digetx@gmail.com>
- <20210621114659.GE4094@sirena.org.uk>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <5dd6145f-046f-9ed5-9f8c-58cf096287ab@gmail.com>
-Date:   Mon, 21 Jun 2021 15:04:30 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 21 Jun 2021 08:07:43 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AA31B21A2C;
+        Mon, 21 Jun 2021 12:05:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624277128; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xbaMfbL3qX1P1Vq1l4aN8Q68XfQmKAKQKhDEXhGLkoc=;
+        b=b0SbYNL8tpIZMNzDkB4N4aTEkyddmhJ1a++aE/+fp+FJJ0YjDRKAfBSomV5++OjiGEpTJ1
+        aeaBSqVXu017ymNeN+/TSFk8mwOJt9KkuGhmiYYc19CahEFIvUAuvKALuzi/msT/IloQLm
+        RAmqyiuJ9sv77KrC3bwlKUSfnbu5Oyc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624277128;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xbaMfbL3qX1P1Vq1l4aN8Q68XfQmKAKQKhDEXhGLkoc=;
+        b=uPE4splr8oyArOaNn/dWaSx9j6qt7pU/EpUyFVEAN5EzhPEsc6I0um3SHDdwEBGlri5c6E
+        OtZbzsB0y8WKsPDA==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 98DFC118DD;
+        Mon, 21 Jun 2021 12:05:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624277128; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xbaMfbL3qX1P1Vq1l4aN8Q68XfQmKAKQKhDEXhGLkoc=;
+        b=b0SbYNL8tpIZMNzDkB4N4aTEkyddmhJ1a++aE/+fp+FJJ0YjDRKAfBSomV5++OjiGEpTJ1
+        aeaBSqVXu017ymNeN+/TSFk8mwOJt9KkuGhmiYYc19CahEFIvUAuvKALuzi/msT/IloQLm
+        RAmqyiuJ9sv77KrC3bwlKUSfnbu5Oyc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624277128;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xbaMfbL3qX1P1Vq1l4aN8Q68XfQmKAKQKhDEXhGLkoc=;
+        b=uPE4splr8oyArOaNn/dWaSx9j6qt7pU/EpUyFVEAN5EzhPEsc6I0um3SHDdwEBGlri5c6E
+        OtZbzsB0y8WKsPDA==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id od5UJIiA0GAVIwAALh3uQQ
+        (envelope-from <bp@suse.de>); Mon, 21 Jun 2021 12:05:28 +0000
+Date:   Mon, 21 Jun 2021 14:05:16 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch V3 16/66] x86/fpu: Clean up fpregs_set()
+Message-ID: <YNCAfJAn1872g7Fv@zn.tnic>
+References: <20210618141823.161158090@linutronix.de>
+ <20210618143446.220042175@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210621114659.GE4094@sirena.org.uk>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210618143446.220042175@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-21.06.2021 14:46, Mark Brown пишет:
-> On Sat, Jun 19, 2021 at 03:40:52PM +0300, Dmitry Osipenko wrote:
+On Fri, Jun 18, 2021 at 04:18:39PM +0200, Thomas Gleixner wrote:
+> From: Andy Lutomirski <luto@kernel.org>
 > 
->> +static inline struct regulator_dev *
->> +regulator_register(const struct regulator_desc *regulator_desc,
->> +		   const struct regulator_config *config)
+> fpregs_set() has unnecessary complexity to support short or nonzero-offset
+> writes and to handle the case in which a copy from userspace overwrites
+> some of the target buffer and then fails.  Support for partial writes is
+> useless -- just require that the write have offset 0 and the correct size,
+> and copy into a temporary kernel buffer to avoid clobbering the state if
+> the user access fails.
 > 
-> Why would something be registering a regulator device without a
-> dependency on the regulator API?
-> 
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+> V2: New patch. Picked up from Andy
+> ---
+>  arch/x86/kernel/fpu/regset.c |   29 +++++++++++++++--------------
+>  1 file changed, 15 insertions(+), 14 deletions(-)
+> ---
+> --- a/arch/x86/kernel/fpu/regset.c
+> +++ b/arch/x86/kernel/fpu/regset.c
+> @@ -305,31 +305,32 @@ int fpregs_set(struct task_struct *targe
+>  	struct user_i387_ia32_struct env;
+>  	int ret;
+>  
+> -	fpu__prepare_write(fpu);
+> -	fpstate_sanitize_xstate(fpu);
+> +	/* No funny business with partial or oversized writes is permitted. */
+> +	if (pos != 0 || count != sizeof(struct user_i387_ia32_struct))
+> +		return -EINVAL;
+>  
+> -	if (!boot_cpu_has(X86_FEATURE_FPU))
+> +	if (!cpu_feature_enabled(X86_FEATURE_FPU))
+>  		return fpregs_soft_set(target, regset, pos, count, kbuf, ubuf);
+>  
+> -	if (!boot_cpu_has(X86_FEATURE_FXSR))
+> -		return user_regset_copyin(&pos, &count, &kbuf, &ubuf,
+> -					  &fpu->state.fsave, 0,
+> -					  -1);
+> +	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf, &env, 0, -1);
+> +	if (ret)
+> +		return ret;
+>  
+> -	if (pos > 0 || count < sizeof(env))
+> -		convert_from_fxsr(&env, target);
+> +	fpu__prepare_write(fpu);
+>  
+> -	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf, &env, 0, -1);
+> -	if (!ret)
+> +	if (cpu_feature_enabled(X86_FEATURE_FXSR))
+>  		convert_to_fxsr(&target->thread.fpu.state.fxsave, &env);
+> +	else
+> +		memcpy(&target->thread.fpu.state.fsave, &env, sizeof(env));
 
-For example if regulator device registration is optional in the code. We
-don't have such cases in the kernel today, but I decided that it will be
-cleaner to add stubs for the whole API.
+You have above in the prologue:
 
-The point of these stubs is to fix the new compile-testing problem of
-Tegra regulator coupler drivers. The drivers indeed don't depend on the
-regulator-driver API since the regulator-consumer API provides all the
-necessary stubs, but now drivers use the regulator-driver API too. The
-dependency should reduce the compile-testing scope, IIUC.
+	struct fpu *fpu = &target->thread.fpu;
 
-If you think that it will be better to add the dependency to the coupler
-drivers, then let's do it.
+so here you can just as well do:
+
+        if (cpu_feature_enabled(X86_FEATURE_FXSR))
+                convert_to_fxsr(&fpu->state.fxsave, &env);
+        else
+                memcpy(&fpu->state.fsave, &env, sizeof(env));
+
+asm is identical.
+
+With that:
+
+Reviewed-by: Borislav Petkov <bp@suse.de>
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
