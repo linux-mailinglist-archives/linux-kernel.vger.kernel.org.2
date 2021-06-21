@@ -2,195 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C465B3AE757
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B29FE3AE75E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230450AbhFUKme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 06:42:34 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:50459 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230402AbhFUKm3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 06:42:29 -0400
-X-UUID: 77330d8859ca4824a6c1e47e786aed45-20210621
-X-UUID: 77330d8859ca4824a6c1e47e786aed45-20210621
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <kewei.xu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 736838384; Mon, 21 Jun 2021 18:40:11 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 21 Jun 2021 18:40:09 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 21 Jun 2021 18:40:08 +0800
-From:   <kewei.xu@mediatek.com>
-To:     <wsa@the-dreams.de>
-CC:     <bbrezillon@kernel.org>, <matthias.bgg@gmail.com>,
-        <robh+dt@kernel.org>, <mark.rutland@arm.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
-        <qii.wang@mediatek.com>, <liguo.zhang@mediatek.com>,
-        <xinping.qian@mediatek.com>, <ot_daolong.zhu@mediatek.com>,
-        Kewei Xu <kewei.xu@mediatek.com>
-Subject: [PATCH V3 3/3] i2c: mediatek: Isolate speed setting via dts for special devices
-Date:   Mon, 21 Jun 2021 18:39:45 +0800
-Message-ID: <1624271985-23591-4-git-send-email-kewei.xu@mediatek.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1624271985-23591-1-git-send-email-kewei.xu@mediatek.com>
-References: <1624271985-23591-1-git-send-email-kewei.xu@mediatek.com>
+        id S230161AbhFUKnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 06:43:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37362 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230481AbhFUKnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 06:43:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8F5A61153;
+        Mon, 21 Jun 2021 10:41:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624272064;
+        bh=UbCcZm9yRxkuaU4xQLxn8nCsaydZD6ZzKtQxMT/YMLo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=i+U2tLKYUHdlHLeSjqpjrxf9kXOylOkCNYdCYAkIY4ljKQSACv7cVTNKIW0q5kLR+
+         Hqf9iMMu/c+w8m1ur2Lznh3zuJZMzGLMTDV+SgYNhI3U4ODLCccbuuzFuzHcg9wBFY
+         Z2MLwGijFyzv6NuaqHk9xi/h0didjoIO5avK0dtsoF3RpaIJaSRNjhVDza9u4YQOYI
+         mbiqlPI1Ndga2zg7wSTZJrFlxD5RLUC/9+atcXfZSpsoto3uDUiCwQzn/QTN+bb0En
+         NnPRnsW2raQmvQb5HZLiBmsYMqk0G+BPjpRj8by0uBu7YZNsur5m31IFeIENWtsjFH
+         6hZFEFPzI8YBQ==
+Date:   Mon, 21 Jun 2021 11:40:42 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Dmitry Osipenko <digetx@gmail.com>
+Subject: Re: [PATCH AUTOSEL 5.12 02/33] regulator: max77620: Silence deferred
+ probe error
+Message-ID: <20210621104042.GB4094@sirena.org.uk>
+References: <20210615154824.62044-1-sashal@kernel.org>
+ <20210615154824.62044-2-sashal@kernel.org>
+ <20210615155436.GM5149@sirena.org.uk>
+ <YM8633R356GXEwoR@sashalap>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5I6of5zJg18YgZEa"
+Content-Disposition: inline
+In-Reply-To: <YM8633R356GXEwoR@sashalap>
+X-Cookie: I hate dying.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kewei Xu <kewei.xu@mediatek.com>
 
-In the commit be5ce0e97cc7 ("i2c: mediatek: Add i2c ac-timing adjust
-support"), the I2C timing calculation has been revised to support
-ac-timing adjustment, however that will break on some I2C components.
-As a result we want to introduce a new setting "default-adjust-timing"
-so those components can choose to use the old (default) timing algorithm.
+--5I6of5zJg18YgZEa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Fixes: be5ce0e97cc7 ("i2c: mediatek: Add i2c ac-timing adjust support")
-Signed-off-by: Kewei Xu <kewei.xu@mediatek.com>
----
- drivers/i2c/busses/i2c-mt65xx.c | 75 ++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 71 insertions(+), 4 deletions(-)
+On Sun, Jun 20, 2021 at 08:55:59AM -0400, Sasha Levin wrote:
+> On Tue, Jun 15, 2021 at 04:54:36PM +0100, Mark Brown wrote:
+> > On Tue, Jun 15, 2021 at 11:47:53AM -0400, Sasha Levin wrote:
+> > > From: Dmitry Osipenko <digetx@gmail.com>
 
-diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
-index fe3cea7..486076f 100644
---- a/drivers/i2c/busses/i2c-mt65xx.c
-+++ b/drivers/i2c/busses/i2c-mt65xx.c
-@@ -65,6 +65,7 @@
- #define I2C_DMA_HARD_RST		0x0002
- #define I2C_DMA_HANDSHAKE_RST		0x0004
- 
-+#define I2C_DEFAULT_CLK_DIV		5
- #define MAX_SAMPLE_CNT_DIV		8
- #define MAX_STEP_CNT_DIV		64
- #define MAX_CLOCK_DIV			256
-@@ -249,6 +250,7 @@ struct mtk_i2c {
- 	struct clk *clk_arb;		/* Arbitrator clock for i2c */
- 	bool have_pmic;			/* can use i2c pins from PMIC */
- 	bool use_push_pull;		/* IO config push-pull mode */
-+	bool default_timing_adjust;	/* no timing adjust mode */
- 
- 	u16 irq_stat;			/* interrupt status */
- 	unsigned int clk_src_div;
-@@ -526,7 +528,11 @@ static void mtk_i2c_init_hw(struct mtk_i2c *i2c)
- 	else
- 		ext_conf_val = I2C_FS_START_CON;
- 
--	if (i2c->dev_comp->timing_adjust) {
-+	if (i2c->default_timing_adjust) {
-+		if (i2c->dev_comp->timing_adjust)
-+			mtk_i2c_writew(i2c, I2C_DEFAULT_CLK_DIV - 1,
-+				       OFFSET_CLOCK_DIV);
-+	} else if (i2c->dev_comp->timing_adjust) {
- 		ext_conf_val = i2c->ac_timing.ext;
- 		mtk_i2c_writew(i2c, i2c->ac_timing.inter_clk_div,
- 			       OFFSET_CLOCK_DIV);
-@@ -609,7 +615,7 @@ static int mtk_i2c_check_ac_timing(struct mtk_i2c *i2c,
- 	unsigned int sample_ns = div_u64(1000000000ULL * (sample_cnt + 1),
- 					 clk_src);
- 
--	if (!i2c->dev_comp->timing_adjust)
-+	if (i2c->default_timing_adjust || !i2c->dev_comp->timing_adjust)
- 		return 0;
- 
- 	if (i2c->dev_comp->ltiming_adjust)
-@@ -769,7 +775,63 @@ static int mtk_i2c_calculate_speed(struct mtk_i2c *i2c, unsigned int clk_src,
- 	return 0;
- }
- 
--static int mtk_i2c_set_speed(struct mtk_i2c *i2c, unsigned int parent_clk)
-+static int mtk_i2c_set_speed_default_timing(struct mtk_i2c *i2c, unsigned int parent_clk)
-+{
-+	unsigned int clk_src;
-+	unsigned int step_cnt;
-+	unsigned int sample_cnt;
-+	unsigned int l_step_cnt;
-+	unsigned int l_sample_cnt;
-+	unsigned int target_speed;
-+	int ret;
-+
-+	if (i2c->dev_comp->timing_adjust)
-+		i2c->clk_src_div *= I2C_DEFAULT_CLK_DIV;
-+
-+	clk_src = parent_clk / i2c->clk_src_div;
-+	target_speed = i2c->speed_hz;
-+
-+	if (target_speed > I2C_MAX_FAST_MODE_PLUS_FREQ) {
-+		/* Set master code speed register */
-+		ret = mtk_i2c_calculate_speed(i2c, clk_src, I2C_MAX_FAST_MODE_FREQ,
-+					      &l_step_cnt, &l_sample_cnt);
-+		if (ret < 0)
-+			return ret;
-+
-+		i2c->timing_reg = (l_sample_cnt << 8) | l_step_cnt;
-+
-+		/* Set the high speed mode register */
-+		ret = mtk_i2c_calculate_speed(i2c, clk_src, target_speed,
-+					      &step_cnt, &sample_cnt);
-+		if (ret < 0)
-+			return ret;
-+
-+		i2c->high_speed_reg = I2C_TIME_DEFAULT_VALUE |
-+			(sample_cnt << 12) | (step_cnt << 8);
-+
-+		if (i2c->dev_comp->ltiming_adjust)
-+			i2c->ltiming_reg = (l_sample_cnt << 6) | l_step_cnt |
-+					   (sample_cnt << 12) | (step_cnt << 9);
-+	} else {
-+		ret = mtk_i2c_calculate_speed(i2c, clk_src, target_speed,
-+					      &step_cnt, &sample_cnt);
-+		if (ret < 0)
-+			return ret;
-+
-+		i2c->timing_reg = (sample_cnt << 8) | step_cnt;
-+
-+		/* Disable the high speed transaction */
-+		i2c->high_speed_reg = I2C_TIME_CLR_VALUE;
-+
-+		if (i2c->dev_comp->ltiming_adjust)
-+			i2c->ltiming_reg = (sample_cnt << 6) | step_cnt;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mtk_i2c_set_speed_adjust_timing(struct mtk_i2c *i2c,
-+					   unsigned int parent_clk)
- {
- 	unsigned int clk_src;
- 	unsigned int step_cnt;
-@@ -1293,6 +1355,8 @@ static int mtk_i2c_parse_dt(struct device_node *np, struct mtk_i2c *i2c)
- 	i2c->have_pmic = of_property_read_bool(np, "mediatek,have-pmic");
- 	i2c->use_push_pull =
- 		of_property_read_bool(np, "mediatek,use-push-pull");
-+	i2c->default_timing_adjust =
-+		of_property_read_bool(np, "mediatek,default-timing-adjust");
- 
- 	i2c_parse_fw_timings(i2c->dev, &i2c->timing_info, true);
- 
-@@ -1372,7 +1436,10 @@ static int mtk_i2c_probe(struct platform_device *pdev)
- 
- 	strlcpy(i2c->adap.name, I2C_DRV_NAME, sizeof(i2c->adap.name));
- 
--	ret = mtk_i2c_set_speed(i2c, clk_get_rate(clk));
-+	if (i2c->default_timing_adjust)
-+		ret = mtk_i2c_set_speed_default_timing(i2c, clk_get_rate(clk));
-+	else
-+		ret = mtk_i2c_set_speed_adjust_timing(i2c, clk_get_rate(clk));
- 	if (ret) {
- 		dev_err(&pdev->dev, "Failed to set the speed.\n");
- 		return -EINVAL;
--- 
-1.9.1
+> > > One of previous changes to regulator core causes PMIC regulators to
+> > > re-probe until supply regulator is registered. Silence noisy error
+> > > message about the deferred probe.
 
+> > This really doesn't look like stable material...
+
+> Not strictly, but we usually take fixes to issues that can confuse users
+> or spam logs.
+
+I really don't think this is appropriate (and don't know that it's even
+relevant without the core change mentioned in the commit log).
+
+--5I6of5zJg18YgZEa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDQbKkACgkQJNaLcl1U
+h9BQTgf+KepvwkW0eqqj1vAPw0OMvyj5s0LXy/zfgoLXNI+n5VI3c+HTZpb/fxSj
+muFuWhx6qTO0OmTCeEc0M+oiMgkB9Is5VFJsps9wxGXhIemMu/rXEXeJkDt2G6UA
+3fJ6aXneDSfFJaPFcuYwBxHpyxgKn5NDFm8pbtXyXgFObatSwUhR3s5XQNAKTcCj
+a1rjmElXPT/o0GaucBXbvfnFewGa6h9XDd9d7mmhiRKz7IkTnEu2I1bsc7cMQCGR
+U5SO6tFE5nJJgg2yA4LAkVeWVYP0BvO6je8zeLouS6jAKLqiUotDdHrzRPt/dG7s
+fVM3PcefuLlRmUTNwKZ5WJWVUwqYYg==
+=yxVY
+-----END PGP SIGNATURE-----
+
+--5I6of5zJg18YgZEa--
