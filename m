@@ -2,58 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26CE93AEB5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B6B13AEB74
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbhFUOfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 10:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbhFUOfx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 10:35:53 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFA1C061574;
-        Mon, 21 Jun 2021 07:33:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=F3lPpurYTOvRvGy/EiNGokDSGvWu9C8CkAKgxWdkptM=; b=JRnJ3IO25Hmq7DYoX2Vbx5GJm/
-        fDNcGjm1ieffO6U3KLc98dBSlQTRtTQ55x31pSFyxfAokhhQ7vE9nvyCIZq++aGdo5NHtr+n+2I0i
-        R8FFBBgrXDEYyZ640A7gujeZp5dOrWbOEms1BoBpDdhou3eFSJr+UXl89qzJpgktHjV6NuMYOKJkt
-        njOkvD7wY+nCYNleInQdLfRLXttQBOFxsd06kH/mBaLzcV+W8ptJj8LXokD4oLFFp76KSmBG2g46P
-        DW/6g4w2xjDTU1InXc44QYx67lRJUR0CE6oARRzs4WBaAMxwRgSvs4UV3FBAtJE2e9XmGtsW7g0En
-        RD3lS9WQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvKym-00DBQ8-RJ; Mon, 21 Jun 2021 14:33:08 +0000
-Date:   Mon, 21 Jun 2021 15:32:48 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Matteo Croce <mcroce@linux.microsoft.com>
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Emil Renner Berthing <kernel@esmil.dk>,
-        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Bin Meng <bmeng.cn@gmail.com>,
-        David Laight <David.Laight@aculab.com>,
-        Guo Ren <guoren@kernel.org>
-Subject: Re: [PATCH v3 3/3] riscv: optimized memset
-Message-ID: <YNCjEGQa1UMf2P+X@infradead.org>
-References: <20210617152754.17960-1-mcroce@linux.microsoft.com>
- <20210617152754.17960-4-mcroce@linux.microsoft.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210617152754.17960-4-mcroce@linux.microsoft.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        id S230351AbhFUOgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 10:36:48 -0400
+Received: from mga01.intel.com ([192.55.52.88]:59087 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230263AbhFUOgq (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 10:36:46 -0400
+IronPort-SDR: 5Drgx41BqKZk8eou0q/ge+w6eyPcmg0wFk6Iq21miWP/e9/fTtcFlb6RH6Q6LP30eoJzR1Q34r
+ Ms4VkpyG/D6w==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="228402735"
+X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
+   d="scan'208";a="228402735"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 07:34:31 -0700
+IronPort-SDR: hcasAgX/2ESsy7gKRA0GCYF5+UkevKxcIkuLu6BU7EYaot6mCsjtESPqDMgY4hDDV0bPq44FJ3
+ 82inY1dvaBXg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
+   d="scan'208";a="641339485"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by fmsmga005.fm.intel.com with ESMTP; 21 Jun 2021 07:34:29 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH v2 1/3] libperf: Add perf_cpu_map__default_new()
+Date:   Mon, 21 Jun 2021 22:33:19 +0800
+Message-Id: <20210621143321.27451-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks nice, except IS_ENABLED would be useful here again, as well as
-a placement in lib/.
+The libperf already has a static function 'cpu_map__default_new()'.
+Add a new API perf_cpu_map__default_new() to export the function.
+
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+---
+ tools/lib/perf/cpumap.c              | 5 +++++
+ tools/lib/perf/include/perf/cpumap.h | 1 +
+ 2 files changed, 6 insertions(+)
+
+diff --git a/tools/lib/perf/cpumap.c b/tools/lib/perf/cpumap.c
+index ca0215047c32..51b6553912e0 100644
+--- a/tools/lib/perf/cpumap.c
++++ b/tools/lib/perf/cpumap.c
+@@ -68,6 +68,11 @@ static struct perf_cpu_map *cpu_map__default_new(void)
+ 	return cpus;
+ }
+ 
++struct perf_cpu_map *perf_cpu_map__default_new(void)
++{
++	return cpu_map__default_new();
++}
++
+ static int cmp_int(const void *a, const void *b)
+ {
+ 	return *(const int *)a - *(const int*)b;
+diff --git a/tools/lib/perf/include/perf/cpumap.h b/tools/lib/perf/include/perf/cpumap.h
+index 6a17ad730cbc..7c27766ea0bf 100644
+--- a/tools/lib/perf/include/perf/cpumap.h
++++ b/tools/lib/perf/include/perf/cpumap.h
+@@ -9,6 +9,7 @@
+ struct perf_cpu_map;
+ 
+ LIBPERF_API struct perf_cpu_map *perf_cpu_map__dummy_new(void);
++LIBPERF_API struct perf_cpu_map *perf_cpu_map__default_new(void);
+ LIBPERF_API struct perf_cpu_map *perf_cpu_map__new(const char *cpu_list);
+ LIBPERF_API struct perf_cpu_map *perf_cpu_map__read(FILE *file);
+ LIBPERF_API struct perf_cpu_map *perf_cpu_map__get(struct perf_cpu_map *map);
+-- 
+2.17.1
+
