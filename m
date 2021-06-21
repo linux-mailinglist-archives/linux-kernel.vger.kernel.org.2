@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 148593AF201
+	by mail.lfdr.de (Postfix) with ESMTP id ADEB13AF203
 	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231553AbhFURda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 13:33:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43862 "EHLO
+        id S231656AbhFURdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 13:33:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231426AbhFURd2 (ORCPT
+        with ESMTP id S231487AbhFURd3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 13:33:28 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD99FC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:31:13 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id t17so11310790lfq.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:31:13 -0700 (PDT)
+        Mon, 21 Jun 2021 13:33:29 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC32C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:31:14 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id r5so31543106lfr.5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:31:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=semihalf-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qc7XMJSCEk0yw0FDTagps7kkRL+MmOfndFLGM8KO6hA=;
-        b=bSRZALZ2YuEMo00vAXwANz3eqvyOTtEzGN39+ZqNKh4HVWmIbeY5zpeLUYpXimODlL
-         UOdba/ohNovpdlP2Gi8cToziF+jWG/7h6PDAsPWPhUZ3Yh4PPlevZ1htkJ27hmrXqqf3
-         egWIfzWeuug4Vj0gdt3Kcvkhz3VlJjuW5SapnzhTN3oX98S+cIwEhjGvaq4VySKmwW+n
-         UHDA9fQdVOTbGcwvpXnc+vzE0Yhf3JN5vascvnqiua7siO7pCElIRnINY0joOgsSZz7j
-         4du54n2gMzal2UcQZq5ECECUhq2B9qRmITTDQqKViXttXn73lrKbgn6LqVfc+cR8AeUq
-         iNwg==
+        bh=7WvcmjpDE06toGMKX+zkAYwYDdzPn5oW9s8HRQs3izM=;
+        b=d8vh39N35Xd+//mob2LNSri4E6mTL19ceEvR0Ja7CJ06X/5iVoP6ktLh8u9X7pRrKU
+         Gy5dcTZKZAVY9sGOaM/iOvK1RiVEQ4q/9+TfAiXMaAerLrIvNN7XiiZgBUBvPEFx45Lv
+         xSIYmOsul0/nFNqao9KX/LhZWMZFFp2ifXn2Et6zb79eLdGPckwVN+EA/vYtAAlo18mz
+         EGMguggW0LWTW2Vc0do1PU5XgwbuPzMD88cTfL1qKe2UwMW95Q8M3SwT6/wl2mZNL7cg
+         X0CXHM543yM787B8qMFKjA9JOPAtukqFAzb4xidyMHiUSqN81M3Ak5tI+r/uPjAYNKhY
+         Qnug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qc7XMJSCEk0yw0FDTagps7kkRL+MmOfndFLGM8KO6hA=;
-        b=SboE8WAPCvfgdvh1hNCVlr/F2onHNC8zO4T1LtH8IXLdsb1tf5MrZkerL/MPtSzsOT
-         8TxhNEx6f+fD0SMwxmGeNA5BtPiKBC5CKZ4QKLIYUVuOGcEATcxvs0nnvzW75IP9yKq7
-         /UnaHuMr2Hn3c5ohbvDNNbH4VpveQwlJiIM3OSGPjvkldCo7G9LMXcuN6EfQb6HmhUTE
-         kbQUhkJbhsDHZ4RZ4SGqN3O9OmEccCUhl/zwXtY//gHwX+WhYX1w6zFXXED3gCpKzqx4
-         zs4Jk7t3jPgAz0DLbrMZQf/CYwS3g+4zVZmMYYFk5dN62d1xDFpWjQInmOBCmi++Df0O
-         9U9Q==
-X-Gm-Message-State: AOAM533zEIU/HnMSUX8Pq8P9S8fxim5ir3ucA2Jbu+O0YU6pguM+vnuj
-        pMSBTKYNWfgTBJcfSZrCd2gYl3Fzgiu6HA==
-X-Google-Smtp-Source: ABdhPJxB08aNU1e3BQjbGaxHU2kJwPo/Sl5zRiBE+PXfnI5WOmB/eoR22Q27TpE4iT6xhTIb/lOIAQ==
-X-Received: by 2002:a05:6512:31cc:: with SMTP id j12mr15292327lfe.158.1624296672013;
-        Mon, 21 Jun 2021 10:31:12 -0700 (PDT)
+        bh=7WvcmjpDE06toGMKX+zkAYwYDdzPn5oW9s8HRQs3izM=;
+        b=Ym2T8Lvbpp9CbG9p/z6MXAiSE22TcBIM33rLXjmLjlhDRkyOmrbVGm4P0B2yfO25gn
+         1JHcOmygSfRxsWZ30u10LJ5xUXEKqZE3NbLVrvB0vCy71Xt3ugFiSxMR4He8cvKcjQL4
+         9cOb9js+i3u+WZA4zHmhmASyU0w5f86PSQM+gb38QsJfFRNLx72OSTxjzxJHBkyICvVC
+         t4mjHt1T1zS4LrNXchJ3eOlOszlmlnDoi4E/sDg6EDckRVJh/sRyosrUW6HfsSIyHvMm
+         WJnM+qn9eIIunsgvPqrSVtZRN9nBoHv0IflDPTre3/M+qBGWQY5qhgKqolBKEJdBI2/3
+         v/1Q==
+X-Gm-Message-State: AOAM531KMMWxGPOSvOMxdVkvIxFVvlLtRCUM1nHa+D1qo8XeGMq8sMoP
+        bYDTMPE00a3oMC7g99YbIqoL4Qd1r3dzGA==
+X-Google-Smtp-Source: ABdhPJydDuW3AiIFeVeMNwbF8EeqbIscjb6gfI6NA8Q4YopZOgj273y4uUemXN1TY84FSoprQbpAnQ==
+X-Received: by 2002:ac2:4c83:: with SMTP id d3mr14981121lfl.543.1624296673089;
+        Mon, 21 Jun 2021 10:31:13 -0700 (PDT)
 Received: from gilgamesh.lab.semihalf.net ([83.142.187.85])
-        by smtp.gmail.com with ESMTPSA id u11sm1926380lfs.257.2021.06.21.10.31.10
+        by smtp.gmail.com with ESMTPSA id u11sm1926380lfs.257.2021.06.21.10.31.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 10:31:11 -0700 (PDT)
+        Mon, 21 Jun 2021 10:31:12 -0700 (PDT)
 From:   Marcin Wojtas <mw@semihalf.com>
 To:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 Cc:     davem@davemloft.net, kuba@kernel.org, linux@armlinux.org.uk,
         jaz@semihalf.com, gjb@semihalf.com, upstream@semihalf.com,
         Samer.El-Haj-Mahmoud@arm.com, jon@solid-run.com, tn@semihalf.com,
         rjw@rjwysocki.net, lenb@kernel.org, Marcin Wojtas <mw@semihalf.com>
-Subject: [net-next: PATCH v3 1/6] Documentation: ACPI: DSD: describe additional MAC configuration
-Date:   Mon, 21 Jun 2021 19:30:23 +0200
-Message-Id: <20210621173028.3541424-2-mw@semihalf.com>
+Subject: [net-next: PATCH v3 2/6] net: mdiobus: Introduce fwnode_mdbiobus_register()
+Date:   Mon, 21 Jun 2021 19:30:24 +0200
+Message-Id: <20210621173028.3541424-3-mw@semihalf.com>
 X-Mailer: git-send-email 2.29.0
 In-Reply-To: <20210621173028.3541424-1-mw@semihalf.com>
 References: <20210621173028.3541424-1-mw@semihalf.com>
@@ -66,102 +66,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document additional MAC configuration modes which can be processed
-by the existing fwnode_ phylink helpers:
+This patch introduces a new helper function that
+wraps acpi_/of_ mdiobus_register() and allows its
+usage via common fwnode_ interface.
 
-* "managed" standard ACPI _DSD property [1]
-* "fixed-link" data-only subnode linked in the _DSD package via
-  generic mechanism of the hierarchical data extension [2]
-
-[1] https://www.uefi.org/sites/default/files/resources/_DSD-device-properties-UUID.pdf
-[2] https://github.com/UEFI/DSD-Guide/blob/main/dsd-guide.pdf
+Fall back to raw mdiobus_register() in case CONFIG_FWNODE_MDIO
+is not enabled, in order to satisfy compatibility
+in all future user drivers.
 
 Signed-off-by: Marcin Wojtas <mw@semihalf.com>
 ---
- Documentation/firmware-guide/acpi/dsd/phy.rst | 59 ++++++++++++++++++++
- 1 file changed, 59 insertions(+)
+ include/linux/fwnode_mdio.h    | 12 +++++++++++
+ drivers/net/mdio/fwnode_mdio.c | 22 ++++++++++++++++++++
+ 2 files changed, 34 insertions(+)
 
-diff --git a/Documentation/firmware-guide/acpi/dsd/phy.rst b/Documentation/firmware-guide/acpi/dsd/phy.rst
-index 0d49bad2ea9c..680ad179e5f9 100644
---- a/Documentation/firmware-guide/acpi/dsd/phy.rst
-+++ b/Documentation/firmware-guide/acpi/dsd/phy.rst
-@@ -50,6 +50,21 @@ phy-mode
- The "phy-mode" _DSD property is used to describe the connection to
- the PHY. The valid values for "phy-mode" are defined in [4].
+diff --git a/include/linux/fwnode_mdio.h b/include/linux/fwnode_mdio.h
+index faf603c48c86..13d4ae8fee0a 100644
+--- a/include/linux/fwnode_mdio.h
++++ b/include/linux/fwnode_mdio.h
+@@ -16,6 +16,7 @@ int fwnode_mdiobus_phy_device_register(struct mii_bus *mdio,
+ int fwnode_mdiobus_register_phy(struct mii_bus *bus,
+ 				struct fwnode_handle *child, u32 addr);
  
-+managed
-+-------
-+Optional property, which specifies the PHY management type.
-+The valid values for "managed" are defined in [4].
++int fwnode_mdiobus_register(struct mii_bus *bus, struct fwnode_handle *fwnode);
+ #else /* CONFIG_FWNODE_MDIO */
+ int fwnode_mdiobus_phy_device_register(struct mii_bus *mdio,
+ 				       struct phy_device *phy,
+@@ -30,6 +31,17 @@ static inline int fwnode_mdiobus_register_phy(struct mii_bus *bus,
+ {
+ 	return -EINVAL;
+ }
 +
-+fixed-link
-+----------
-+The "fixed-link" is described by a data-only subnode of the
-+MAC port, which is linked in the _DSD package via
-+hierarchical data extension (UUID dbb8e3e6-5886-4ba6-8795-1319f52a966b
-+in accordance with [5] "_DSD Implementation Guide" document).
-+The subnode should comprise a required property ("speed") and
-+possibly the optional ones - complete list of parameters and
-+their values are specified in [4].
++static inline int fwnode_mdiobus_register(struct mii_bus *bus,
++					  struct fwnode_handle *fwnode)
++{
++	/*
++	 * Fall back to mdiobus_register() function to register a bus.
++	 * This way, we don't have to keep compat bits around in drivers.
++	 */
 +
- The following ASL example illustrates the usage of these properties.
++	return mdiobus_register(mdio);
++}
+ #endif
  
- DSDT entry for MDIO node
-@@ -128,6 +143,48 @@ phy-mode and phy-handle are used as explained earlier.
- 	  })
- 	}
+ #endif /* __LINUX_FWNODE_MDIO_H */
+diff --git a/drivers/net/mdio/fwnode_mdio.c b/drivers/net/mdio/fwnode_mdio.c
+index 1becb1a731f6..ae0bf71a9932 100644
+--- a/drivers/net/mdio/fwnode_mdio.c
++++ b/drivers/net/mdio/fwnode_mdio.c
+@@ -7,8 +7,10 @@
+  */
  
-+MAC node example where "managed" property is specified.
-+-------------------------------------------------------
-+
-+.. code-block:: none
-+
-+	Scope(\_SB.PP21.ETH0)
-+	{
-+	  Name (_DSD, Package () {
-+	     ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-+		 Package () {
-+		     Package () {"phy-mode", "sgmii"},
-+		     Package () {"managed", "in-band-status"}
-+		 }
-+	   })
-+	}
-+
-+MAC node example with a "fixed-link" subnode.
-+---------------------------------------------
-+
-+.. code-block:: none
-+
-+	Scope(\_SB.PP21.ETH1)
-+	{
-+	  Name (_DSD, Package () {
-+	    ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-+		 Package () {
-+		     Package () {"phy-mode", "sgmii"},
-+		 },
-+	    ToUUID("dbb8e3e6-5886-4ba6-8795-1319f52a966b"),
-+		 Package () {
-+		     Package () {"fixed-link", "LNK0"}
-+		 }
-+	  })
-+	  Name (LNK0, Package(){ // Data-only subnode of port
-+	    ToUUID("daffd814-6eba-4d8c-8a91-bc9bbf4aa301"),
-+		 Package () {
-+		     Package () {"speed", 1000},
-+		     Package () {"full-duplex", 1}
-+		 }
-+	  })
-+	}
-+
- References
- ==========
+ #include <linux/acpi.h>
++#include <linux/acpi_mdio.h>
+ #include <linux/fwnode_mdio.h>
+ #include <linux/of.h>
++#include <linux/of_mdio.h>
+ #include <linux/phy.h>
  
-@@ -138,3 +195,5 @@ References
- [3] Documentation/firmware-guide/acpi/DSD-properties-rules.rst
- 
- [4] Documentation/devicetree/bindings/net/ethernet-controller.yaml
+ MODULE_AUTHOR("Calvin Johnson <calvin.johnson@oss.nxp.com>");
+@@ -142,3 +144,23 @@ int fwnode_mdiobus_register_phy(struct mii_bus *bus,
+ 	return 0;
+ }
+ EXPORT_SYMBOL(fwnode_mdiobus_register_phy);
 +
-+[5] https://github.com/UEFI/DSD-Guide/blob/main/dsd-guide.pdf
++/**
++ * fwnode_mdiobus_register - bring up all the PHYs on a given MDIO bus and
++ *	attach them to it.
++ * @bus: Target MDIO bus.
++ * @fwnode: Pointer to fwnode of the MDIO controller.
++ *
++ * Return values are determined accordingly to acpi_/of_ mdiobus_register()
++ * operation.
++ */
++int fwnode_mdiobus_register(struct mii_bus *bus, struct fwnode_handle *fwnode)
++{
++	if (is_acpi_node(fwnode))
++		return acpi_mdiobus_register(bus, fwnode);
++	else if (is_of_node(fwnode))
++		return of_mdiobus_register(bus, to_of_node(fwnode));
++	else
++		return -EINVAL;
++}
++EXPORT_SYMBOL(fwnode_mdiobus_register);
 -- 
 2.29.0
 
