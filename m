@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6EF13AEEC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:31:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E658D3AED83
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:18:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232106AbhFUQbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:31:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49790 "EHLO mail.kernel.org"
+        id S231386AbhFUQUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:20:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231843AbhFUQ2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:28:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B498613F0;
-        Mon, 21 Jun 2021 16:23:52 +0000 (UTC)
+        id S231248AbhFUQUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:20:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A66361289;
+        Mon, 21 Jun 2021 16:17:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292632;
-        bh=1BONI1phd+DeAmCBt/NRqb/agyoHz3Q7VTty+jAU2U4=;
+        s=korg; t=1624292270;
+        bh=dXoz8y2l5ilNqiLb4Stw0VTkhiHTcNOhwddVUpJemOo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u09nKt6AVQIZ4FeywZs5xFpyQqogA2GR8XatKNkoyqSpzTYJB10cj5yxeMhD3AgUf
-         Yzw0Cm8JJfOg9dvqvUPqs1iqowYVR78cCqpMP9QxhfyTTFEeb9MlSNu0a7N78PNj25
-         LjdqnhQXXXL3qoXCChdzf5f3prmhwIFQlxt5GCB8=
+        b=s/K+8F0Yjb0d0CWxtAQDtW5Yg+rIAhpRdBAzVPK85kxFATweDJ5maEz9rRz6y0AXP
+         xHu1G/lBD+kCkE6FL/5YIrJLZH5bG0OcwDxkc5IFiBHbFcQ3uaVNa4/dYsPR+IjZeq
+         bOmxCbPHc3DTJtFPAt9NXR2CCkITFcY67E5ljep8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Juliusz Chroboczek <jch@irif.fr>,
-        David Ahern <dsahern@kernel.org>,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 072/146] icmp: dont send out ICMP messages with a source address of 0.0.0.0
-Date:   Mon, 21 Jun 2021 18:15:02 +0200
-Message-Id: <20210621154915.442150884@linuxfoundation.org>
+Subject: [PATCH 5.4 28/90] ptp: improve max_adj check against unreasonable values
+Date:   Mon, 21 Jun 2021 18:15:03 +0200
+Message-Id: <20210621154905.071913255@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
-References: <20210621154911.244649123@linuxfoundation.org>
+In-Reply-To: <20210621154904.159672728@linuxfoundation.org>
+References: <20210621154904.159672728@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,95 +41,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+From: Jakub Kicinski <kuba@kernel.org>
 
-[ Upstream commit 321827477360934dc040e9d3c626bf1de6c3ab3c ]
+[ Upstream commit 475b92f932168a78da8109acd10bfb7578b8f2bb ]
 
-When constructing ICMP response messages, the kernel will try to pick a
-suitable source address for the outgoing packet. However, if no IPv4
-addresses are configured on the system at all, this will fail and we end up
-producing an ICMP message with a source address of 0.0.0.0. This can happen
-on a box routing IPv4 traffic via v6 nexthops, for instance.
+Scaled PPM conversion to PPB may (on 64bit systems) result
+in a value larger than s32 can hold (freq/scaled_ppm is a long).
+This means the kernel will not correctly reject unreasonably
+high ->freq values (e.g. > 4294967295ppb, 281474976645 scaled PPM).
 
-Since 0.0.0.0 is not generally routable on the internet, there's a good
-chance that such ICMP messages will never make it back to the sender of the
-original packet that the ICMP message was sent in response to. This, in
-turn, can create connectivity and PMTUd problems for senders. Fortunately,
-RFC7600 reserves a dummy address to be used as a source for ICMP
-messages (192.0.0.8/32), so let's teach the kernel to substitute that
-address as a last resort if the regular source address selection procedure
-fails.
+The conversion is equivalent to a division by ~66 (65.536),
+so the value of ppb is always smaller than ppm, but not small
+enough to assume narrowing the type from long -> s32 is okay.
 
-Below is a quick example reproducing this issue with network namespaces:
+Note that reasonable user space (e.g. ptp4l) will not use such
+high values, anyway, 4289046510ppb ~= 4.3x, so the fix is
+somewhat pedantic.
 
-ip netns add ns0
-ip l add type veth peer netns ns0
-ip l set dev veth0 up
-ip a add 10.0.0.1/24 dev veth0
-ip a add fc00:dead:cafe:42::1/64 dev veth0
-ip r add 10.1.0.0/24 via inet6 fc00:dead:cafe:42::2
-ip -n ns0 l set dev veth0 up
-ip -n ns0 a add fc00:dead:cafe:42::2/64 dev veth0
-ip -n ns0 r add 10.0.0.0/24 via inet6 fc00:dead:cafe:42::1
-ip netns exec ns0 sysctl -w net.ipv4.icmp_ratelimit=0
-ip netns exec ns0 sysctl -w net.ipv4.ip_forward=1
-tcpdump -tpni veth0 -c 2 icmp &
-ping -w 1 10.1.0.1 > /dev/null
-tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
-listening on veth0, link-type EN10MB (Ethernet), snapshot length 262144 bytes
-IP 10.0.0.1 > 10.1.0.1: ICMP echo request, id 29, seq 1, length 64
-IP 0.0.0.0 > 10.0.0.1: ICMP net 10.1.0.1 unreachable, length 92
-2 packets captured
-2 packets received by filter
-0 packets dropped by kernel
-
-With this patch the above capture changes to:
-IP 10.0.0.1 > 10.1.0.1: ICMP echo request, id 31127, seq 1, length 64
-IP 192.0.0.8 > 10.0.0.1: ICMP net 10.1.0.1 unreachable, length 92
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-by: Juliusz Chroboczek <jch@irif.fr>
-Reviewed-by: David Ahern <dsahern@kernel.org>
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Fixes: d39a743511cd ("ptp: validate the requested frequency adjustment.")
+Fixes: d94ba80ebbea ("ptp: Added a brand new class driver for ptp clocks.")
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Acked-by: Richard Cochran <richardcochran@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/uapi/linux/in.h | 3 +++
- net/ipv4/icmp.c         | 7 +++++++
- 2 files changed, 10 insertions(+)
+ drivers/ptp/ptp_clock.c          | 6 +++---
+ include/linux/ptp_clock_kernel.h | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/uapi/linux/in.h b/include/uapi/linux/in.h
-index 7d6687618d80..d1b327036ae4 100644
---- a/include/uapi/linux/in.h
-+++ b/include/uapi/linux/in.h
-@@ -289,6 +289,9 @@ struct sockaddr_in {
- /* Address indicating an error return. */
- #define	INADDR_NONE		((unsigned long int) 0xffffffff)
+diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
+index b84f16bbd6f2..eedf067ee8e3 100644
+--- a/drivers/ptp/ptp_clock.c
++++ b/drivers/ptp/ptp_clock.c
+@@ -63,7 +63,7 @@ static void enqueue_external_timestamp(struct timestamp_event_queue *queue,
+ 	spin_unlock_irqrestore(&queue->lock, flags);
+ }
  
-+/* Dummy address for src of ICMP replies if no real address is set (RFC7600). */
-+#define	INADDR_DUMMY		((unsigned long int) 0xc0000008)
-+
- /* Network number for local host loopback. */
- #define	IN_LOOPBACKNET		127
+-s32 scaled_ppm_to_ppb(long ppm)
++long scaled_ppm_to_ppb(long ppm)
+ {
+ 	/*
+ 	 * The 'freq' field in the 'struct timex' is in parts per
+@@ -80,7 +80,7 @@ s32 scaled_ppm_to_ppb(long ppm)
+ 	s64 ppb = 1 + ppm;
+ 	ppb *= 125;
+ 	ppb >>= 13;
+-	return (s32) ppb;
++	return (long) ppb;
+ }
+ EXPORT_SYMBOL(scaled_ppm_to_ppb);
  
-diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
-index ff3818333fcf..b71b836cc7d1 100644
---- a/net/ipv4/icmp.c
-+++ b/net/ipv4/icmp.c
-@@ -759,6 +759,13 @@ void __icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info,
- 		icmp_param.data_len = room;
- 	icmp_param.head_len = sizeof(struct icmphdr);
+@@ -138,7 +138,7 @@ static int ptp_clock_adjtime(struct posix_clock *pc, struct __kernel_timex *tx)
+ 		delta = ktime_to_ns(kt);
+ 		err = ops->adjtime(ops, delta);
+ 	} else if (tx->modes & ADJ_FREQUENCY) {
+-		s32 ppb = scaled_ppm_to_ppb(tx->freq);
++		long ppb = scaled_ppm_to_ppb(tx->freq);
+ 		if (ppb > ops->max_adj || ppb < -ops->max_adj)
+ 			return -ERANGE;
+ 		if (ops->adjfine)
+diff --git a/include/linux/ptp_clock_kernel.h b/include/linux/ptp_clock_kernel.h
+index 93cc4f1d444a..874f7e73ed01 100644
+--- a/include/linux/ptp_clock_kernel.h
++++ b/include/linux/ptp_clock_kernel.h
+@@ -218,7 +218,7 @@ extern int ptp_clock_index(struct ptp_clock *ptp);
+  * @ppm:    Parts per million, but with a 16 bit binary fractional field
+  */
  
-+	/* if we don't have a source address at this point, fall back to the
-+	 * dummy address instead of sending out a packet with a source address
-+	 * of 0.0.0.0
-+	 */
-+	if (!fl4.saddr)
-+		fl4.saddr = htonl(INADDR_DUMMY);
-+
- 	icmp_push_reply(&icmp_param, &fl4, &ipc, &rt);
- ende:
- 	ip_rt_put(rt);
+-extern s32 scaled_ppm_to_ppb(long ppm);
++extern long scaled_ppm_to_ppb(long ppm);
+ 
+ /**
+  * ptp_find_pin() - obtain the pin index of a given auxiliary function
 -- 
 2.30.2
 
