@@ -2,142 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 915453AE34F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 08:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C393AE35A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 08:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229887AbhFUGkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 02:40:37 -0400
-Received: from mail-eopbgr130071.outbound.protection.outlook.com ([40.107.13.71]:12257
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229576AbhFUGkf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 02:40:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KT5IlcrBryK6ZqDVn06PGj2H0BUGJxc5VXqYow9A9Txsr3MGOlOIUC0rJl5cFl0qHRa0KOUxn0rAV15nXRM3FGAHQPSKhtmwsJwGm1TsSzDSK9e/5m0zJTBRkcX6AksfE1NRAx9zp1XBEBflxq2CotnZJl8gS3QnnGnndHLjVLkPzOWTnaI17FruPGzpy0mju4CqYwqNiX2qzrkDckiodUNjPEgnzZt9dRsQ6VAfDFABr5khxzjxeb2Tnj4iezmQ+T3k2kI0igMIV7M4mJtTOJgITGff44d+uP0B4s0ZWAlve47JCFzxtAWIG2S8K87PRPrFF/0TrI/wcafUQE05Vg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OMMc66HhkXpdjbSKAJBP8FV7L6sHyQDGSvaWQHS79SQ=;
- b=GcrZKUZFyCPz8kxuSmG7p+pb9QKeR+JGCtA7nSjvu4Wb8kxAOCbPnc8iF77PWa1MqvVrprhzbcYWLCLJq/JCdt6GAoQ8ISvnAKvqyn9d4FyRBins53LRJ/dH/5my/zz9b0hsh38Tlz7iMNc7vZI8aNTL9St7UZo5rPCRT/QdFr902/k3WzJCPZ9aLJoA9b4e0yeLXed5faLDi4n9PTziukNnXEaA2dxo3wDm87SwjXjaUr9kgpU19akX8ovCNzS60BXt3VBpQykT9PTLp1hB/79hUufgfQU+UnWzLa2uvxHKJ5mMpy6AYW1X+s9vwkVQ09P7Ug4b8XOFXXsq9DGssw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OMMc66HhkXpdjbSKAJBP8FV7L6sHyQDGSvaWQHS79SQ=;
- b=sAMAatdkoTaLwfWSXyXyixy3si7E3OoEY5oykOGodSXJIq4AWw2ltUGhASOrhssoJRttl/8c86/zcngRJzcV2itm7tV+tcBewJcI5hlP1tjekjuGxU+1nwoZhi5wCIP89BLkHPJp9dzQT+X/R6oH7du5aScYFcNWmYud8iYnbT8=
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DB8PR04MB5882.eurprd04.prod.outlook.com (2603:10a6:10:ae::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Mon, 21 Jun
- 2021 06:38:18 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::f5e8:4886:3923:e92e]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::f5e8:4886:3923:e92e%8]) with mapi id 15.20.4242.023; Mon, 21 Jun 2021
- 06:38:18 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     "davem@davemloft.net" <davem@davemloft.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "frieder.schrempf@kontron.de" <frieder.schrempf@kontron.de>,
-        "andrew@lunn.ch" <andrew@lunn.ch>
-CC:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dl-linux-imx <linux-imx@nxp.com>
-Subject: RE: [PATCH V3 net-next 0/2] net: fec: fix TX bandwidth fluctuations
-Thread-Topic: [PATCH V3 net-next 0/2] net: fec: fix TX bandwidth fluctuations
-Thread-Index: AQHXZmaywcb6U2LegEus7RRO1D6RnaseAgsw
-Date:   Mon, 21 Jun 2021 06:38:18 +0000
-Message-ID: <DB8PR04MB6795E4B551230139EDD4B76DE60A9@DB8PR04MB6795.eurprd04.prod.outlook.com>
-References: <20210621062737.16896-1-qiangqing.zhang@nxp.com>
-In-Reply-To: <20210621062737.16896-1-qiangqing.zhang@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.71]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 8a7c10c6-6142-4621-4e34-08d9347f27ef
-x-ms-traffictypediagnostic: DB8PR04MB5882:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB8PR04MB5882375BECC6ABA662DF12DBE60A9@DB8PR04MB5882.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Xx5ybscGOtzY8sFIt+BSGQhFXkeRp/jHdTwx4ML+mDbHmp4PaHBadM6nua4cFLlzKbQHnk3TRDTiTxr9A01ku+9QlMo5wPSVyQTjlkNvaCRfkIC2Dv5ZI7oGbCv7tlHn9UyCnDxA9XLKLBAYBovYVcYQVx7UkaHtPITehsVBgsvVIf5dI8HietimZzZY3I/hEILNFOtgRqDWCpWrn6srXWqVbnMu7YiDsVV/C1Igfkh+jbYKQWLE6Ghl5qN6sXJMdYBNYXo17+0b6vcmwn1JJ+VbukyejD3uW23ZLFzXi7xKf4595ocJhkWKirExT3O42BHWaNEmVYna85e8wYZCodkAEnJ04NDBfN/ZtvrltDGlDr6KR8m3MQOmwNdBA8RTlrCPlkS7mgENv8iQv4Av9C81IQhZ/q/vdERVk1BTyu9FuztwltAeUn/ILzGhdPQ9fTwgxaXfC83XBXGqZHqHhuu9ovdW1syQQEl2csyRfE6gvqILD0ic4gMRcayv4HQ/XD4Rv9IJvWucZsC6vheWave1OB631B8k57pbJAuVHNKvm2IHB5LvWcj4AZIFVaZi3bTrCgwxIv/pS+bTkYl71ygBb0aLA/JWn0zHw6K01TToL7/a+tYN8g2qNudCotoz3m30A1siI+bK9WQcEh3LwgPGivSXSIlraBBtrrhQP5I7MqtWmSZsa9QU7YZjRpQNBD3V9MjAOzdxGVRgkSl6AvwdMunyR1u9blSUNhesGzg=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(366004)(346002)(39860400002)(136003)(83380400001)(4326008)(86362001)(9686003)(2906002)(76116006)(110136005)(316002)(7696005)(38100700002)(54906003)(5660300002)(55016002)(33656002)(122000001)(8676002)(66556008)(53546011)(478600001)(6506007)(64756008)(66476007)(52536014)(186003)(966005)(8936002)(66446008)(66946007)(26005)(71200400001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?gb2312?B?cUhtU0N1TlRPcXVqWHlET3A0NkU0a3ZDOFZlSlY0cWsxOXl4ZGZUZC95SWtF?=
- =?gb2312?B?VW94a0hrT2t0NDBuelVDamVxb1NhcFRmd3cyOTJpbTl1Zmg2ZjY0YjFPcFZY?=
- =?gb2312?B?UlpXSUpYeXN4M3I2SjlqL3ZabUZnRWU0MUFRcUdKdk1VblBtdEh5Mi9DeFB5?=
- =?gb2312?B?Mmo4YUYrcVJGcXVjSWN4dkNqV2JvaXZURzdyMkpnYlRxTzhNTDhwRnptTDFH?=
- =?gb2312?B?aTNXUU96UlFLMWNodm1OWWx1ek1uN0pIWDBNK005OHpCK1hiQVBBdWJ2Smoz?=
- =?gb2312?B?UnBIYWlwM2VJOFVhZmxhdmZnOHUrdkZGOUZScThvd0JQUWE3Y29nTjkzQnZB?=
- =?gb2312?B?VERnZ2lidTZpN0ZFaDhYVFZXbDZEVTNqMnBBSXBUczBLQ2pESUtPNmJvT0sx?=
- =?gb2312?B?SXdzSnlobDllM0RqUnNqcXJ4THZCMzkrUXlLWnRpZDNRdGhoZ3Y4ZGtNWFg3?=
- =?gb2312?B?TlpkbjlxbXhUQmlSME9SZ0htdVFjRHFhdjAyTWsyZEtzazJCVFhTOC9HMy9v?=
- =?gb2312?B?RUNNbitTQmJWOG5ZQ1pqejM2UncrT3F3S0pRV3h4ZEU1SEl6eEVDeUxBakl0?=
- =?gb2312?B?VWdKM3RrNERxV0NCckhzNGNRdzRIdHhRWVdRZkthR0JZRVE2L252QTdZUVQ5?=
- =?gb2312?B?N1Yvc3I2Y1BXalROcDQxdyt2MFM0a0JVOTFkMFpoTGJCQUF3a3E2dmJxUnBN?=
- =?gb2312?B?R1psd01IVkZkaHhTVHVoZHR5N0VqN2EyM1hxam9YZVFnRGFTZ2ZZRTNKWFlU?=
- =?gb2312?B?aTFpY0J3Mnpna0dMcWk3Si9vc2JKeURPMzdZYXNkRWxUMmtTMDZOUFM2RDBC?=
- =?gb2312?B?ZDhFK2xxV1AzOThkeTJHLzVCbHpsNTMybHIwdEJvalcrTWhJWkJUNUNZT1l3?=
- =?gb2312?B?MDdWUnVzOXdsdnpnTWZGSXZjTVg2aGZ4ejlHdkZjQWU2dmVJVGROd3lWOXp2?=
- =?gb2312?B?QlZZa0NkQngvWDdpc2NtdUx6Rjlkc2tTeFk2NlE0WXI3Q1V4WWdYQmpGTVNi?=
- =?gb2312?B?SDhsSFpiRzJSUE84OEtSRWpMMTZCYWNQVHZ4Ymk1Ymp4TjE0WVQ0emRROFVa?=
- =?gb2312?B?Zm5XckNSNFRuRmZlTkhJSnFhcmdwYjAybE9DbDFIdWx6OGNQTWlvZHovQWF0?=
- =?gb2312?B?bFpueWtyTitXU1BMdkdsaU1BTi84Q3FFSTdkcElVVlhZT1Y1UlRIUTBEeC9y?=
- =?gb2312?B?OVAzWFRaNG9Jek1zSjA3ZkI0ZU51RzN1UGpGYVRpeFlXYkdQSkNCcWJxWWJw?=
- =?gb2312?B?VndHNUVFWUVOdUVEbWlkTWkxQjVmNWFJK2RpN3JHb1BrY012SUtYWm5ZNG1B?=
- =?gb2312?B?eDJLNy93WlJyTks4TXdVMytwSjVCb1ZuM29ESUQxV1NpNGljWFJnRUhEWC9w?=
- =?gb2312?B?OU5FWTluNi9XNFgyYXdCUk1kU0g0MWNWWWRwenJ1Y3Y3elI1d2J2ZG4yNTcv?=
- =?gb2312?B?K0tNYW1QTTZ6ajE1ZEFleU9HZDdrY004dEpNUEs1Q084eXJGbE9pc3EyUXZS?=
- =?gb2312?B?aDdiZndGMmRYVXN3VWFiYS8ra1ltTGwwRnFoNHZuaThDdHpMNE5wTkk2K3hq?=
- =?gb2312?B?c1o1TU4zaFNubFhja1ZFdEZvc3ltY2VCK0N1OW5FQTFiWkFEQUpBeXJZeWE1?=
- =?gb2312?B?dldpYWNlNEF3VllyTU1rWTh4WDhPaVY4WXNRS1ZNRTdrd295RHdGT3Q0b1V6?=
- =?gb2312?B?d2hKWXBCa3RVOHhvTjRsbks2Mk5Lalh5d3V1YVM5a0tKSEJ0TDMrcHcxUWkr?=
- =?gb2312?Q?xff8mXP5Csy+6QFKkQ=3D?=
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+        id S229710AbhFUGpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 02:45:05 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:55224 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229576AbhFUGpE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 02:45:04 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0Ud4ur3D_1624257759;
+Received: from B-P7TQMD6M-0146.local(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0Ud4ur3D_1624257759)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 21 Jun 2021 14:42:41 +0800
+Date:   Mon, 21 Jun 2021 14:42:39 +0800
+From:   Gao Xiang <hsiangkao@linux.alibaba.com>
+To:     linux-nfs@vger.kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>
+Subject: Re: [RFC PATCH 2/1] nfs: NFSv3: fix SGID bit dropped when inheriting
+ ACLs
+Message-ID: <YNA03/Y3KxHYuoLu@B-P7TQMD6M-0146.local>
+References: <1623990055-222609-1-git-send-email-hsiangkao@linux.alibaba.com>
+ <1624007545-142045-1-git-send-email-hsiangkao@linux.alibaba.com>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8a7c10c6-6142-4621-4e34-08d9347f27ef
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jun 2021 06:38:18.3936
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: y7Mm00NPDod8nA300Yo7DcVw7yXmfbeFRXBv62/9rwfIuEOx3qhDeQ1O9NJMEc6CsbmgjHWfgladzsrToHH6vQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB5882
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1624007545-142045-1-git-send-email-hsiangkao@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEpvYWtpbSBaaGFuZyA8cWlh
-bmdxaW5nLnpoYW5nQG54cC5jb20+DQo+IFNlbnQ6IDIwMjHE6jbUwjIxyNUgMTQ6MjgNCj4gVG86
-IGRhdmVtQGRhdmVtbG9mdC5uZXQ7IGt1YmFAa2VybmVsLm9yZzsgZnJpZWRlci5zY2hyZW1wZkBr
-b250cm9uLmRlOw0KPiBhbmRyZXdAbHVubi5jaA0KPiBDYzogbmV0ZGV2QHZnZXIua2VybmVsLm9y
-ZzsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgZGwtbGludXgtaW14DQo+IDxsaW51eC1p
-bXhAbnhwLmNvbT4NCj4gU3ViamVjdDogW1BBVENIIFYzIG5ldC1uZXh0IDAvMl0gbmV0OiBmZWM6
-IGZpeCBUWCBiYW5kd2lkdGggZmx1Y3R1YXRpb25zDQo+IA0KPiBUaGlzIHBhdGNoIHNldCBpbnRl
-bmRzIHRvIGZpeCBUWCBiYW5kd2lkdGggZmx1Y3R1YXRpb25zLCBhbnkgZmVlZGJhY2sgd291bGQg
-YmUNCj4gYXBwcmVjaWF0ZWQuDQo+IA0KPiAtLS0NCj4gQ2hhbmdlTG9nczoNCj4gCVYxOiByZW1v
-dmUgUkZDIHRhZywgUkZDIGRpc2N1c3Npb25zIHBsZWFzZSB0dXJuIHRvIGJlbG93Og0KPiAJICAg
-IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvWUswQ2U1WXhSMldZYnJBb0BsdW5uLmNoL1Qv
-DQo+IAlWMjogY2hhbmdlIGZ1bmN0aW9ucyB0byBiZSBzdGF0aWMgaW4gdGhpcyBwYXRjaCBzZXQu
-IEFuZCBhZGQgdGhlDQo+IAl0LWIgdGFnLg0KPiAJVjM6IGZpeCBzcGFyc2Ugd2FyaW5pbmc6IG50
-b2hzKCktPmh0b25zKCkNCg0KSG9wZSB0aGlzIHNwYXJzZSBpc3N1ZSBoYXMgYmVlbiBmaXhlZCwg
-c2luY2UgSSBjYW4ndCB2ZXJpZmllZCBpdCBhdCBteSBzaWRlLg0KSSBmb2xsb3cgdGhlIHJlcHJv
-ZHVjZSBzdGVwcyBwcm92aWRlZCBieSBrZXJuZWwgdGVzdCByb2JvdCwgYnV0IGZhaWxlZCB0byBy
-ZXByb2R1Y2UsIHRoZXJlIGFyZSBtYW55IGVycm9ycyBjYXVzZWQgYnVpbGQgZmFpbHVyZSBhdCB0
-aGUgYmVnaW5uaW5nLg0KDQpCZXN0IFJlZ2FyZHMsDQpKb2FraW0gWmhhbmcNCj4gDQo+IEZ1Z2Fu
-ZyBEdWFuICgxKToNCj4gICBuZXQ6IGZlYzogYWRkIG5kb19zZWxlY3RfcXVldWUgdG8gZml4IFRY
-IGJhbmR3aWR0aCBmbHVjdHVhdGlvbnMNCj4gDQo+IEpvYWtpbSBaaGFuZyAoMSk6DQo+ICAgbmV0
-OiBmZWM6IGFkZCBGRUNfUVVJUktfSEFTX01VTFRJX1FVRVVFUyByZXByZXNlbnRzIGkuTVg2U1gg
-RU5FVCBJUA0KPiANCj4gIGRyaXZlcnMvbmV0L2V0aGVybmV0L2ZyZWVzY2FsZS9mZWMuaCAgICAg
-IHwgIDUgKysrDQo+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9mcmVlc2NhbGUvZmVjX21haW4uYyB8
-IDQzICsrKysrKysrKysrKysrKysrKysrLS0tDQo+ICAyIGZpbGVzIGNoYW5nZWQsIDQzIGluc2Vy
-dGlvbnMoKyksIDUgZGVsZXRpb25zKC0pDQo+IA0KPiAtLQ0KPiAyLjE3LjENCg0K
+( also +cc Andreas Gruenbacher )
+
+tested NFSv3 with -g quick in my environment:
+Vanilla:
+Failures: generic/258 generic/294 generic/444 generic/467 generic/477 generic/531
+
+Patched:
+Failures: generic/258 generic/294 generic/467 generic/477 generic/531
+
+It'd be much helpful to get some hints of this, am I missing something?
+Many thanks!
+
+Thanks,
+Gao Xiang
+
+On Fri, Jun 18, 2021 at 05:12:25PM +0800, Gao Xiang wrote:
+> generic/444 fails with NFSv3 as shown above, "
+>      QA output created by 444
+>      drwxrwsr-x
+>     -drwxrwsr-x
+>     +drwxrwxr-x
+> ", which tests "SGID inheritance with default ACLs" fs regression
+> and looks after the following commits:
+> 
+> a3bb2d558752 ("ext4: Don't clear SGID when inheriting ACLs")
+> 073931017b49 ("posix_acl: Clear SGID bit when setting file permissions")
+> 
+> commit 055ffbea0596 ("[PATCH] NFS: Fix handling of the umask when
+> an NFSv3 default acl is present.") sets acls explicitly when
+> when files are created in a directory that has a default ACL.
+> However, after commit a3bb2d558752 and 073931017b49, SGID can be
+> dropped if user is not member of the owning group with
+> set_posix_acl() called.
+> 
+> Since underlayfs will handle ACL inheritance when creating
+> files in a directory that has the default ACL and the umask is
+> supposed to be ignored for such case. Therefore, I think no need
+> to set acls explicitly (to avoid SGID bit cleared) but only apply
+> client umask if the default ACL of the parent directory doesn't
+> exist.
+> 
+> With this patch, generic/444 can pass now.
+> 
+> Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
+> Cc: Anna Schumaker <anna.schumaker@netapp.com>
+> Cc: Joseph Qi <joseph.qi@linux.alibaba.com>
+> Signed-off-by: Gao Xiang <hsiangkao@linux.alibaba.com>
+> ---
+> 
+> I didn't find the original discussion with Buck Huppmann <buchk@pobox.com>
+> about this topic mentioned in
+> https://lore.kernel.org/r/20050122203620.108564000@blunzn.suse.de/
+> 
+> and it's just a rough thought about this issue...
+> 
+>  fs/nfs/nfs3proc.c | 43 ++++++++++++++++---------------------------
+>  1 file changed, 16 insertions(+), 27 deletions(-)
+> 
+> diff --git a/fs/nfs/nfs3proc.c b/fs/nfs/nfs3proc.c
+> index 2299446b3b89..a5676be676be 100644
+> --- a/fs/nfs/nfs3proc.c
+> +++ b/fs/nfs/nfs3proc.c
+> @@ -339,7 +339,7 @@ static void nfs3_free_createdata(struct nfs3_createdata *data)
+>  nfs3_proc_create(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
+>  		 int flags)
+>  {
+> -	struct posix_acl *default_acl, *acl;
+> +	struct posix_acl *pacl;
+>  	struct nfs3_createdata *data;
+>  	struct dentry *d_alias;
+>  	int status = -ENOMEM;
+> @@ -350,6 +350,10 @@ static void nfs3_free_createdata(struct nfs3_createdata *data)
+>  	if (data == NULL)
+>  		goto out;
+>  
+> +	pacl = get_acl(dir, ACL_TYPE_DEFAULT);
+> +	if (!pacl || pacl == ERR_PTR(-EOPNOTSUPP))
+> +		sattr->ia_mode &= ~current_umask();
+> +
+>  	data->msg.rpc_proc = &nfs3_procedures[NFS3PROC_CREATE];
+>  	data->arg.create.fh = NFS_FH(dir);
+>  	data->arg.create.name = dentry->d_name.name;
+> @@ -363,10 +367,6 @@ static void nfs3_free_createdata(struct nfs3_createdata *data)
+>  		data->arg.create.verifier[1] = cpu_to_be32(current->pid);
+>  	}
+>  
+> -	status = posix_acl_create(dir, &sattr->ia_mode, &default_acl, &acl);
+> -	if (status)
+> -		goto out;
+> -
+>  	for (;;) {
+>  		d_alias = nfs3_do_create(dir, dentry, data);
+>  		status = PTR_ERR_OR_ZERO(d_alias);
+> @@ -416,14 +416,10 @@ static void nfs3_free_createdata(struct nfs3_createdata *data)
+>  		if (status != 0)
+>  			goto out_dput;
+>  	}
+> -
+> -	status = nfs3_proc_setacls(d_inode(dentry), acl, default_acl);
+> -
+>  out_dput:
+>  	dput(d_alias);
+>  out_release_acls:
+> -	posix_acl_release(acl);
+> -	posix_acl_release(default_acl);
+> +	posix_acl_release(pacl);
+>  out:
+>  	nfs3_free_createdata(data);
+>  	dprintk("NFS reply create: %d\n", status);
+> @@ -582,7 +578,7 @@ static void nfs3_proc_rename_rpc_prepare(struct rpc_task *task, struct nfs_renam
+>  static int
+>  nfs3_proc_mkdir(struct inode *dir, struct dentry *dentry, struct iattr *sattr)
+>  {
+> -	struct posix_acl *default_acl, *acl;
+> +	struct posix_acl *pacl;
+>  	struct nfs3_createdata *data;
+>  	struct dentry *d_alias;
+>  	int status = -ENOMEM;
+> @@ -593,10 +589,9 @@ static void nfs3_proc_rename_rpc_prepare(struct rpc_task *task, struct nfs_renam
+>  	if (data == NULL)
+>  		goto out;
+>  
+> -	status = posix_acl_create(dir, &sattr->ia_mode, &default_acl, &acl);
+> -	if (status)
+> -		goto out;
+> -
+> +	pacl = get_acl(dir, ACL_TYPE_DEFAULT);
+> +	if (!pacl || pacl == ERR_PTR(-EOPNOTSUPP))
+> +		sattr->ia_mode &= ~current_umask();
+>  	data->msg.rpc_proc = &nfs3_procedures[NFS3PROC_MKDIR];
+>  	data->arg.mkdir.fh = NFS_FH(dir);
+>  	data->arg.mkdir.name = dentry->d_name.name;
+> @@ -612,12 +607,9 @@ static void nfs3_proc_rename_rpc_prepare(struct rpc_task *task, struct nfs_renam
+>  	if (d_alias)
+>  		dentry = d_alias;
+>  
+> -	status = nfs3_proc_setacls(d_inode(dentry), acl, default_acl);
+> -
+>  	dput(d_alias);
+>  out_release_acls:
+> -	posix_acl_release(acl);
+> -	posix_acl_release(default_acl);
+> +	posix_acl_release(pacl);
+>  out:
+>  	nfs3_free_createdata(data);
+>  	dprintk("NFS reply mkdir: %d\n", status);
+> @@ -713,7 +705,7 @@ static int nfs3_proc_readdir(struct nfs_readdir_arg *nr_arg,
+>  nfs3_proc_mknod(struct inode *dir, struct dentry *dentry, struct iattr *sattr,
+>  		dev_t rdev)
+>  {
+> -	struct posix_acl *default_acl, *acl;
+> +	struct posix_acl *pacl;
+>  	struct nfs3_createdata *data;
+>  	struct dentry *d_alias;
+>  	int status = -ENOMEM;
+> @@ -725,9 +717,9 @@ static int nfs3_proc_readdir(struct nfs_readdir_arg *nr_arg,
+>  	if (data == NULL)
+>  		goto out;
+>  
+> -	status = posix_acl_create(dir, &sattr->ia_mode, &default_acl, &acl);
+> -	if (status)
+> -		goto out;
+> +	pacl = get_acl(dir, ACL_TYPE_DEFAULT);
+> +	if (!pacl || pacl == ERR_PTR(-EOPNOTSUPP))
+> +		sattr->ia_mode &= ~current_umask();
+>  
+>  	data->msg.rpc_proc = &nfs3_procedures[NFS3PROC_MKNOD];
+>  	data->arg.mknod.fh = NFS_FH(dir);
+> @@ -762,12 +754,9 @@ static int nfs3_proc_readdir(struct nfs_readdir_arg *nr_arg,
+>  	if (d_alias)
+>  		dentry = d_alias;
+>  
+> -	status = nfs3_proc_setacls(d_inode(dentry), acl, default_acl);
+> -
+>  	dput(d_alias);
+>  out_release_acls:
+> -	posix_acl_release(acl);
+> -	posix_acl_release(default_acl);
+> +	posix_acl_release(pacl);
+>  out:
+>  	nfs3_free_createdata(data);
+>  	dprintk("NFS reply mknod: %d\n", status);
+> -- 
+> 1.8.3.1
