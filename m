@@ -2,199 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D28A23AE13C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 03:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E253AE147
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 03:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbhFUBMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 21:12:50 -0400
-Received: from yyz.mikelr.com ([170.75.163.43]:34190 "EHLO yyz.mikelr.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229872AbhFUBMt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 21:12:49 -0400
-X-Greylist: delayed 597 seconds by postgrey-1.27 at vger.kernel.org; Sun, 20 Jun 2021 21:12:49 EDT
-Received: from glidewell.ykf.mikelr.com (198-84-194-208.cpe.teksavvy.com [198.84.194.208])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by yyz.mikelr.com (Postfix) with ESMTPSA id D6AD84F834;
-        Sun, 20 Jun 2021 21:00:38 -0400 (EDT)
-From:   Mikel Rychliski <mikel@mikelr.com>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
-        <thomas.hellstrom@linux.intel.com>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Mikel Rychliski <mikel@mikelr.com>
-Subject: [PATCH] drm/radeon: Fix NULL dereference when updating memory stats
-Date:   Sun, 20 Jun 2021 20:59:50 -0400
-Message-Id: <20210621005950.24734-1-mikel@mikelr.com>
-X-Mailer: git-send-email 2.13.7
+        id S230075AbhFUBXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 21:23:52 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:53046 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229877AbhFUBXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Jun 2021 21:23:51 -0400
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn0Cb6c9gjvkUAA--.2660S3;
+        Mon, 21 Jun 2021 09:21:32 +0800 (CST)
+Subject: Re: [RFC PATCH 1/2] ftrace: Introduce cmdline argument
+ ftrace_disabled
+To:     Steven Rostedt <rostedt@goodmis.org>
+References: <1624084160-3342-1-git-send-email-yangtiezhu@loongson.cn>
+ <1624084160-3342-2-git-send-email-yangtiezhu@loongson.cn>
+ <20210619112202.0a2c7196@gandalf.local.home>
+Cc:     Ingo Molnar <mingo@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <6847bf76-698d-a314-0825-803b48cb8740@loongson.cn>
+Date:   Mon, 21 Jun 2021 09:21:31 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
+MIME-Version: 1.0
+In-Reply-To: <20210619112202.0a2c7196@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9Dxn0Cb6c9gjvkUAA--.2660S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zr15tF4kXF48JFWfKFWfZrb_yoW8KF43pa
+        4xtasrtF4UXF4q9asru348Jry5J3ykXFWxta4DC3y5tws8Crn5Xrs2kr4qg3Z7Kr18G34a
+        vF18Ar1Uur4xZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr
+        1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE
+        67vIY487MxkIecxEwVAFwVWkMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvj
+        DU0xZFpf9x0JUHpB-UUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-radeon_ttm_bo_destroy() is attempting to access the resource object to
-update memory counters. However, the resource object is already freed when
-ttm calls this function via the destroy callback. This causes an oops when
-a bo is freed:
+On 06/19/2021 11:22 PM, Steven Rostedt wrote:
+> On Sat, 19 Jun 2021 14:29:19 +0800
+> Tiezhu Yang <yangtiezhu@loongson.cn> wrote:
+>
+>> If set CONFIG_FUNCTION_TRACER=y, we can use the following command to
+>> disable ftrace after boot up:
+>> echo 0 > /proc/sys/kernel/ftrace_enabled
+> I'd love to just remove that. It's original purpose was to stop function
+> tracing when the latency tracers were active. That's now done via a tracefs
+> option. The "ftrace_enabled" really has no use anymore.
+>
+>> ftrace_disabled is much stronger than ftrace_enabled, introduce a new
+>> cmdline argument ftrace_disabled for user to control whether to disable
+>> ftrace when boot up.
+> "ftrace_disabled" is triggered when an anomaly is detected, and for the
+> safety of the system, ftrace shuts down. It was never meant to be a user
+> triggered event.
 
-	BUG: kernel NULL pointer dereference, address: 0000000000000010
-	RIP: 0010:radeon_ttm_bo_destroy+0x2c/0x100 [radeon]
-	Call Trace:
-	 radeon_bo_unref+0x1a/0x30 [radeon]
-	 radeon_gem_object_free+0x33/0x50 [radeon]
-	 drm_gem_object_release_handle+0x69/0x70 [drm]
-	 drm_gem_handle_delete+0x62/0xa0 [drm]
-	 ? drm_mode_destroy_dumb+0x40/0x40 [drm]
-	 drm_ioctl_kernel+0xb2/0xf0 [drm]
-	 drm_ioctl+0x30a/0x3c0 [drm]
-	 ? drm_mode_destroy_dumb+0x40/0x40 [drm]
-	 radeon_drm_ioctl+0x49/0x80 [radeon]
-	 __x64_sys_ioctl+0x8e/0xd0
+Thanks for your explanation.
 
-Avoid the issue by updating the counters in the delete_mem_notify callback
-instead. Also, fix memory statistic updating in radeon_bo_move() to
-identify the source type correctly. The source type needs to be saved
-before the move, because the moved from object may be altered by the move.
+>
+> You have no rationale for this change. What's the purpose of this?
 
-Fixes: bfa3357ef9ab ("drm/ttm: allocate resource object instead of embedding it v2")
-Signed-off-by: Mikel Rychliski <mikel@mikelr.com>
----
- drivers/gpu/drm/radeon/radeon_object.c | 23 +++--------------------
- drivers/gpu/drm/radeon/radeon_object.h |  7 ++++---
- drivers/gpu/drm/radeon/radeon_ttm.c    | 20 +++++++++++++++++---
- 3 files changed, 24 insertions(+), 26 deletions(-)
+The "System Benchmarks Index Score" of UnixBench under FUNCTION_TRACER
+is lower than !FUNCTION_TRACER, I want to use this new cmdline argument
+ftrace_disabled to test it, this is the original intention.
 
-diff --git a/drivers/gpu/drm/radeon/radeon_object.c b/drivers/gpu/drm/radeon/radeon_object.c
-index bfaaa3c969a3..ea34c0661710 100644
---- a/drivers/gpu/drm/radeon/radeon_object.c
-+++ b/drivers/gpu/drm/radeon/radeon_object.c
-@@ -49,8 +49,8 @@ static void radeon_bo_clear_surface_reg(struct radeon_bo *bo);
-  * function are calling it.
-  */
- 
--static void radeon_update_memory_usage(struct radeon_bo *bo,
--				       unsigned mem_type, int sign)
-+void radeon_update_memory_usage(struct radeon_bo *bo,
-+				unsigned int mem_type, int sign)
- {
- 	struct radeon_device *rdev = bo->rdev;
- 
-@@ -76,8 +76,6 @@ static void radeon_ttm_bo_destroy(struct ttm_buffer_object *tbo)
- 
- 	bo = container_of(tbo, struct radeon_bo, tbo);
- 
--	radeon_update_memory_usage(bo, bo->tbo.resource->mem_type, -1);
--
- 	mutex_lock(&bo->rdev->gem.mutex);
- 	list_del_init(&bo->list);
- 	mutex_unlock(&bo->rdev->gem.mutex);
-@@ -726,25 +724,10 @@ int radeon_bo_check_tiling(struct radeon_bo *bo, bool has_moved,
- 	return radeon_bo_get_surface_reg(bo);
- }
- 
--void radeon_bo_move_notify(struct ttm_buffer_object *bo,
--			   bool evict,
--			   struct ttm_resource *new_mem)
-+void radeon_bo_move_notify(struct radeon_bo *rbo)
- {
--	struct radeon_bo *rbo;
--
--	if (!radeon_ttm_bo_is_radeon_bo(bo))
--		return;
--
--	rbo = container_of(bo, struct radeon_bo, tbo);
- 	radeon_bo_check_tiling(rbo, 0, 1);
- 	radeon_vm_bo_invalidate(rbo->rdev, rbo);
--
--	/* update statistics */
--	if (!new_mem)
--		return;
--
--	radeon_update_memory_usage(rbo, bo->resource->mem_type, -1);
--	radeon_update_memory_usage(rbo, new_mem->mem_type, 1);
- }
- 
- vm_fault_t radeon_bo_fault_reserve_notify(struct ttm_buffer_object *bo)
-diff --git a/drivers/gpu/drm/radeon/radeon_object.h b/drivers/gpu/drm/radeon/radeon_object.h
-index 1739c6a142cd..f97a17cce28b 100644
---- a/drivers/gpu/drm/radeon/radeon_object.h
-+++ b/drivers/gpu/drm/radeon/radeon_object.h
-@@ -133,6 +133,9 @@ static inline u64 radeon_bo_mmap_offset(struct radeon_bo *bo)
- 	return drm_vma_node_offset_addr(&bo->tbo.base.vma_node);
- }
- 
-+extern void radeon_update_memory_usage(struct radeon_bo *bo,
-+				       unsigned int mem_type, int sign);
-+
- extern int radeon_bo_create(struct radeon_device *rdev,
- 			    unsigned long size, int byte_align,
- 			    bool kernel, u32 domain, u32 flags,
-@@ -160,9 +163,7 @@ extern void radeon_bo_get_tiling_flags(struct radeon_bo *bo,
- 				u32 *tiling_flags, u32 *pitch);
- extern int radeon_bo_check_tiling(struct radeon_bo *bo, bool has_moved,
- 				bool force_drop);
--extern void radeon_bo_move_notify(struct ttm_buffer_object *bo,
--				  bool evict,
--				  struct ttm_resource *new_mem);
-+extern void radeon_bo_move_notify(struct radeon_bo *rbo);
- extern vm_fault_t radeon_bo_fault_reserve_notify(struct ttm_buffer_object *bo);
- extern int radeon_bo_get_surface_reg(struct radeon_bo *bo);
- extern void radeon_bo_fence(struct radeon_bo *bo, struct radeon_fence *fence,
-diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/radeon/radeon_ttm.c
-index ad2a5a791bba..c318a80853e5 100644
---- a/drivers/gpu/drm/radeon/radeon_ttm.c
-+++ b/drivers/gpu/drm/radeon/radeon_ttm.c
-@@ -199,7 +199,7 @@ static int radeon_bo_move(struct ttm_buffer_object *bo, bool evict,
- 	struct ttm_resource *old_mem = bo->resource;
- 	struct radeon_device *rdev;
- 	struct radeon_bo *rbo;
--	int r;
-+	int r, old_type;
- 
- 	if (new_mem->mem_type == TTM_PL_TT) {
- 		r = radeon_ttm_tt_bind(bo->bdev, bo->ttm, new_mem);
-@@ -216,6 +216,9 @@ static int radeon_bo_move(struct ttm_buffer_object *bo, bool evict,
- 	if (WARN_ON_ONCE(rbo->tbo.pin_count > 0))
- 		return -EINVAL;
- 
-+	/* Save old type for statistics update */
-+	old_type = old_mem->mem_type;
-+
- 	rdev = radeon_get_rdev(bo->bdev);
- 	if (old_mem->mem_type == TTM_PL_SYSTEM && bo->ttm == NULL) {
- 		ttm_bo_move_null(bo, new_mem);
-@@ -261,7 +264,9 @@ static int radeon_bo_move(struct ttm_buffer_object *bo, bool evict,
- out:
- 	/* update statistics */
- 	atomic64_add(bo->base.size, &rdev->num_bytes_moved);
--	radeon_bo_move_notify(bo, evict, new_mem);
-+	radeon_update_memory_usage(rbo, old_type, -1);
-+	radeon_update_memory_usage(rbo, new_mem->mem_type, 1);
-+	radeon_bo_move_notify(rbo);
- 	return 0;
- }
- 
-@@ -682,7 +687,16 @@ bool radeon_ttm_tt_is_readonly(struct radeon_device *rdev,
- static void
- radeon_bo_delete_mem_notify(struct ttm_buffer_object *bo)
- {
--	radeon_bo_move_notify(bo, false, NULL);
-+	struct radeon_bo *rbo;
-+
-+	if (!radeon_ttm_bo_is_radeon_bo(bo))
-+		return;
-+
-+	rbo = container_of(bo, struct radeon_bo, tbo);
-+
-+	if (bo->resource)
-+		radeon_update_memory_usage(rbo, bo->resource->mem_type, -1);
-+	radeon_bo_move_notify(rbo);
- }
- 
- static struct ttm_device_funcs radeon_bo_driver = {
--- 
-2.13.7
+I see the following help info of "config FUNCTION_TRACER":
+
+[If it's runtime disabled (the bootup default), then the overhead of the
+instructions is very small and not measurable even in micro-benchmarks.]
+
+I am not quite understand the above description, could you tell me how to
+avoid the runtime performance overhead under FUNCTION_TRACER?
+
+Thanks,
+Tiezhu
+
+>
+> -- Steve
+>
+>
+>> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+>> ---
+>>   kernel/trace/ftrace.c | 8 ++++++++
+>>   1 file changed, 8 insertions(+)
+>>
+>> diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+>> index 72ef4dc..a015699 100644
+>> --- a/kernel/trace/ftrace.c
+>> +++ b/kernel/trace/ftrace.c
+>> @@ -5517,6 +5517,14 @@ static char ftrace_filter_buf[FTRACE_FILTER_SIZE] __initdata;
+>>   /* Used by function selftest to not test if filter is set */
+>>   bool ftrace_filter_param __initdata;
+>>   
+>> +static int __init set_ftrace_disabled(char *str)
+>> +{
+>> +	pr_info("Set ftrace_disabled to disable ftrace\n");
+>> +	ftrace_disabled = 1;
+>> +	return 1;
+>> +}
+>> +__setup("ftrace_disabled", set_ftrace_disabled);
+>> +
+>>   static int __init set_ftrace_notrace(char *str)
+>>   {
+>>   	ftrace_filter_param = true;
 
