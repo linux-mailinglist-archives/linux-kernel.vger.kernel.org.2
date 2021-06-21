@@ -2,94 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CDC3AEC43
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:25:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A64673AEC45
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbhFUP1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 11:27:07 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:33978 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229789AbhFUP06 (ORCPT
+        id S230028AbhFUP1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 11:27:24 -0400
+Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:42921 "EHLO
+        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230318AbhFUP1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 11:26:58 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15LFHVji030700;
-        Mon, 21 Jun 2021 10:24:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=R5FkVCq+KE7byMZx53BaO/xYpXWQwjNkt9WJFd7GKUw=;
- b=CwX+8u4XG63XnA6DgvP2R2YUGC/w3zJKqYKL6h/pg76KWfbs7gci4Kbh6xUO6WeXal/X
- jsLxGMC7SqxO5RjPoHJrDb7htZo6qruGtS+XkB0EFTA+2FEo1RxhykrwF/M01WMW4vTV
- 6wBKtnPbAJ6JZoVFPbv6UBxLtMz3rNnZyryM9ZXLrP6jwnQZUMerwGilZJ8mNPvSooZA
- pIsoZQp/B1StyViSomX9kbJjwbfwt8oVM1d4xPIis0YOojGsgfpUL+yTqWHdT6erg0Wk
- b4eG4OBdrMj3QZ7RyISMXK2Y8lLc59ThQuAKutrzZb++Dp2y0/zH66Giz4nBGOcZV+31 xw== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 39aqy20fp8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 21 Jun 2021 10:24:37 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 21 Jun
- 2021 16:24:35 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Mon, 21 Jun 2021 16:24:35 +0100
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.172])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8BDC52B2;
-        Mon, 21 Jun 2021 15:24:35 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <rjw@rjwysocki.net>, <lenb@kernel.org>
-CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH] ACPI: tables: Add custom DSDT file as makefile prerequisite
-Date:   Mon, 21 Jun 2021 16:24:33 +0100
-Message-ID: <20210621152433.29716-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 21 Jun 2021 11:27:11 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id vLn5lDgTHhg8ZvLn9ldWnf; Mon, 21 Jun 2021 17:24:53 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1624289093; bh=hOQLMrRrfFJzxZFToK3CIhIvlLxdCa2uAglYNpU8vAU=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=f0Sv+rswJHBTHjDKgV8UNShO42aIx2KohoGcil6NJJxzWug4pwk0m07BkimUt3aLm
+         sp6fePmbBsZZFwfppHpWdiui+6eDsmn0s6eNsvES1V6RAyXnltg/aIcXjwdqkfSxng
+         lkBrIklDrWcpKF6ve2W329A1tQFO+HnwaLXDwqMY32iPRwhhAI714sVHzhcR51xpXi
+         iYdKc0d1p8CheHDCJh6UHwEMl3xqWBlBND5FrS0rwyR7IMBBbSha7Wdb97jw/rZGxG
+         OYuc9Z4R/S/YJqrhQICyUwJNnc43GEz+aviHZzrS0GDKRb9F74H9/IJxgHZQ+TuxDz
+         EOR4qsSWcT1gg==
+Subject: Re: [PATCH 4/5] media: ivtv: prevent going past the hw arrays
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Andy Walls <awalls@md.metrocast.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+References: <cover.1624276137.git.mchehab+huawei@kernel.org>
+ <94334c02c246fad023ec04a02c43b708d853b0cc.1624276138.git.mchehab+huawei@kernel.org>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <39c0801c-d79f-5a80-77a3-47001d55be07@xs4all.nl>
+Date:   Mon, 21 Jun 2021 17:24:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: etH7C2KjIMKmlE83Lz-VQExTp6DeUb0B
-X-Proofpoint-ORIG-GUID: etH7C2KjIMKmlE83Lz-VQExTp6DeUb0B
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 clxscore=1011 phishscore=0 lowpriorityscore=0 spamscore=0
- suspectscore=0 priorityscore=1501 adultscore=0 bulkscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2106210091
+In-Reply-To: <94334c02c246fad023ec04a02c43b708d853b0cc.1624276138.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfEKO8qt75kqyu7AyJxyNLd7LWlMIHGnbEQe21Q5nxfdpDvAxAWhLK3+pGW6RQ5lSAzRb7odYxw4gsZDVCdETicox1n42t6TWm8/hRw3eZGM7CI8639rI
+ t4iWX7xQbuMaqsrAmbQB56Fw3H8gKqYzuCYkDePiWknExWPQXwnZQPi6EZ6Sn8oddlfYDlNWkgpK0akJaX7RATxpHuK1vL0h66zIFjgSMxAUOYehFxiYeLJr
+ ZHOLLvL7QWb8VwB7v8E5sy4Z+cw5akDDMXeVppSGl1dmAunXkeKEt+1wAP7FBONQecIGy0VTVEPPclD/x7pOw3v08/VA0dKDxOVspYxt7yDVYht0Tie4hzv0
+ Zpr2imiqPziQz62Q82xpBikpk2wOHVNdUdn0zISAwBcx7BQf9v1PprcsdmoUErJ3alW2kqiX
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A custom DSDT file is mostly used during development or debugging,
-and in that case it is quite likely to want to rebuild the kernel
-after changing ONLY the content of the DSDT.
+On 21/06/2021 13:56, Mauro Carvalho Chehab wrote:
+> As warned by smatch:
+> 
+> 	drivers/media/pci/ivtv/ivtv-i2c.c:245 ivtv_i2c_register() error: buffer overflow 'hw_devicenames' 21 <= 31
+> 	drivers/media/pci/ivtv/ivtv-i2c.c:266 ivtv_i2c_register() error: buffer overflow 'hw_addrs' 21 <= 31
+> 	drivers/media/pci/ivtv/ivtv-i2c.c:269 ivtv_i2c_register() error: buffer overflow 'hw_addrs' 21 <= 31
+> 	drivers/media/pci/ivtv/ivtv-i2c.c:275 ivtv_i2c_register() error: buffer overflow 'hw_addrs' 21 <= 31
+> 	drivers/media/pci/ivtv/ivtv-i2c.c:280 ivtv_i2c_register() error: buffer overflow 'hw_addrs' 21 <= 31
+> 	drivers/media/pci/ivtv/ivtv-i2c.c:290 ivtv_i2c_register() error: buffer overflow 'hw_addrs' 21 <= 31
+> 
+> The logic at ivtv_i2c_register() could let buffer overflows at
+> hw_devicenames and hw_addrs arrays.
+> 
+> This won't happen in practice due to a carefully-contructed
+> logic, but it is not error-prune.
+> 
+> Change the logic in a way that will make clearer that the
+> I2C hardware flags will affect the size of those two
+> arrays, and add an explicit check to avoid buffer overflows.
+> 
+> While here, use the bit macro.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/media/pci/ivtv/ivtv-cards.h | 68 ++++++++++++++++++++---------
+>  drivers/media/pci/ivtv/ivtv-i2c.c   | 16 ++++---
+>  2 files changed, 58 insertions(+), 26 deletions(-)
+> 
+> diff --git a/drivers/media/pci/ivtv/ivtv-cards.h b/drivers/media/pci/ivtv/ivtv-cards.h
+> index f3e2c5634962..494982e4165d 100644
+> --- a/drivers/media/pci/ivtv/ivtv-cards.h
+> +++ b/drivers/media/pci/ivtv/ivtv-cards.h
+> @@ -78,27 +78,53 @@
+>  #define IVTV_PCI_ID_SONY		0x104d
+>  
+>  /* hardware flags, no gaps allowed */
+> -#define IVTV_HW_CX25840			(1 << 0)
+> -#define IVTV_HW_SAA7115			(1 << 1)
+> -#define IVTV_HW_SAA7127			(1 << 2)
+> -#define IVTV_HW_MSP34XX			(1 << 3)
+> -#define IVTV_HW_TUNER			(1 << 4)
+> -#define IVTV_HW_WM8775			(1 << 5)
+> -#define IVTV_HW_CS53L32A		(1 << 6)
+> -#define IVTV_HW_TVEEPROM		(1 << 7)
+> -#define IVTV_HW_SAA7114			(1 << 8)
+> -#define IVTV_HW_UPD64031A		(1 << 9)
+> -#define IVTV_HW_UPD6408X		(1 << 10)
+> -#define IVTV_HW_SAA717X			(1 << 11)
+> -#define IVTV_HW_WM8739			(1 << 12)
+> -#define IVTV_HW_VP27SMPX		(1 << 13)
+> -#define IVTV_HW_M52790			(1 << 14)
+> -#define IVTV_HW_GPIO			(1 << 15)
+> -#define IVTV_HW_I2C_IR_RX_AVER		(1 << 16)
+> -#define IVTV_HW_I2C_IR_RX_HAUP_EXT	(1 << 17) /* External before internal */
+> -#define IVTV_HW_I2C_IR_RX_HAUP_INT	(1 << 18)
+> -#define IVTV_HW_Z8F0811_IR_HAUP		(1 << 19)
+> -#define IVTV_HW_I2C_IR_RX_ADAPTEC	(1 << 20)
+> +enum ivtv_hw_bits {
+> +	IVTV_HW_BIT_CX25840		= 0,
+> +	IVTV_HW_BIT_SAA7115		= 1,
+> +	IVTV_HW_BIT_SAA7127		= 2,
+> +	IVTV_HW_BIT_MSP34XX		= 3,
+> +	IVTV_HW_BIT_TUNER		= 4,
+> +	IVTV_HW_BIT_WM8775		= 5,
+> +	IVTV_HW_BIT_CS53L32A		= 6,
+> +	IVTV_HW_BIT_TVEEPROM		= 7,
+> +	IVTV_HW_BIT_SAA7114		= 8,
+> +	IVTV_HW_BIT_UPD64031A		= 9,
+> +	IVTV_HW_BIT_UPD6408X		= 10,
+> +	IVTV_HW_BIT_SAA717X		= 11,
+> +	IVTV_HW_BIT_WM8739		= 12,
+> +	IVTV_HW_BIT_VP27SMPX		= 13,
+> +	IVTV_HW_BIT_M52790		= 14,
+> +	IVTV_HW_BIT_GPIO		= 15,
+> +	IVTV_HW_BIT_I2C_IR_RX_AVER	= 16,
+> +	IVTV_HW_BIT_I2C_IR_RX_HAUP_EXT	= 17, /* External before internal */
+> +	IVTV_HW_BIT_I2C_IR_RX_HAUP_INT	= 18,
+> +	IVTV_HW_BIT_Z8F0811_IR_HAUP	= 19,
+> +	IVTV_HW_BIT_I2C_IR_RX_ADAPTEC	= 20,
+> +
+> +	IVTV_HW_MAX_BITS		= 21	/* Should be the last bit + 1 */
 
-This patch adds the custom DSDT as a prerequisite to tables.o
-to ensure a rebuild if the DSDT file is updated. Make will merge
-the prerequisites from multiple rules for the same target.
+It's an enum, so you can drop the '= nr' bit.
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- drivers/acpi/Makefile | 5 +++++
- 1 file changed, 5 insertions(+)
+Other than that it looks OK to me.
 
-diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
-index efb0d1f64019..ceb1aed4b1fc 100644
---- a/drivers/acpi/Makefile
-+++ b/drivers/acpi/Makefile
-@@ -8,6 +8,11 @@ ccflags-$(CONFIG_ACPI_DEBUG)	+= -DACPI_DEBUG_OUTPUT
- #
- # ACPI Boot-Time Table Parsing
- #
-+ifeq ($(CONFIG_ACPI_CUSTOM_DSDT),y)
-+tables.o: $(src)/../../include/$(subst $\",,$(CONFIG_ACPI_CUSTOM_DSDT_FILE)) ;
-+
-+endif
-+
- obj-$(CONFIG_ACPI)		+= tables.o
- obj-$(CONFIG_X86)		+= blacklist.o
- 
--- 
-2.20.1
+Regards,
+
+	Hans
+
+> +};
+> +
+> +#define IVTV_HW_CX25840			BIT(IVTV_HW_BIT_CX25840)
+> +#define IVTV_HW_SAA7115			BIT(IVTV_HW_BIT_SAA7115)
+> +#define IVTV_HW_SAA7127			BIT(IVTV_HW_BIT_SAA7127)
+> +#define IVTV_HW_MSP34XX			BIT(IVTV_HW_BIT_MSP34XX)
+> +#define IVTV_HW_TUNER			BIT(IVTV_HW_BIT_TUNER)
+> +#define IVTV_HW_WM8775			BIT(IVTV_HW_BIT_WM8775)
+> +#define IVTV_HW_CS53L32A		BIT(IVTV_HW_BIT_CS53L32A)
+> +#define IVTV_HW_TVEEPROM		BIT(IVTV_HW_BIT_TVEEPROM)
+> +#define IVTV_HW_SAA7114			BIT(IVTV_HW_BIT_SAA7114)
+> +#define IVTV_HW_UPD64031A		BIT(IVTV_HW_BIT_UPD64031A)
+> +#define IVTV_HW_UPD6408X		BIT(IVTV_HW_BIT_UPD6408X)
+> +#define IVTV_HW_SAA717X			BIT(IVTV_HW_BIT_SAA717X)
+> +#define IVTV_HW_WM8739			BIT(IVTV_HW_BIT_WM8739)
+> +#define IVTV_HW_VP27SMPX		BIT(IVTV_HW_BIT_VP27SMPX)
+> +#define IVTV_HW_M52790			BIT(IVTV_HW_BIT_M52790)
+> +#define IVTV_HW_GPIO			BIT(IVTV_HW_BIT_GPIO)
+> +#define IVTV_HW_I2C_IR_RX_AVER		BIT(IVTV_HW_BIT_I2C_IR_RX_AVER)
+> +#define IVTV_HW_I2C_IR_RX_HAUP_EXT	BIT(IVTV_HW_BIT_I2C_IR_RX_HAUP_EXT)
+> +#define IVTV_HW_I2C_IR_RX_HAUP_INT	BIT(IVTV_HW_BIT_I2C_IR_RX_HAUP_INT)
+> +#define IVTV_HW_Z8F0811_IR_HAUP		BIT(IVTV_HW_BIT_Z8F0811_IR_HAUP)
+> +#define IVTV_HW_I2C_IR_RX_ADAPTEC	BIT(IVTV_HW_BIT_I2C_IR_RX_ADAPTEC)
+>  
+>  #define IVTV_HW_SAA711X   (IVTV_HW_SAA7115 | IVTV_HW_SAA7114)
+>  
+> diff --git a/drivers/media/pci/ivtv/ivtv-i2c.c b/drivers/media/pci/ivtv/ivtv-i2c.c
+> index 982045c4eea8..c052c57c6dce 100644
+> --- a/drivers/media/pci/ivtv/ivtv-i2c.c
+> +++ b/drivers/media/pci/ivtv/ivtv-i2c.c
+> @@ -85,7 +85,7 @@
+>  #define IVTV_ADAPTEC_IR_ADDR		0x6b
+>  
+>  /* This array should match the IVTV_HW_ defines */
+> -static const u8 hw_addrs[] = {
+> +static const u8 hw_addrs[IVTV_HW_MAX_BITS] = {
+>  	IVTV_CX25840_I2C_ADDR,
+>  	IVTV_SAA7115_I2C_ADDR,
+>  	IVTV_SAA7127_I2C_ADDR,
+> @@ -110,7 +110,7 @@ static const u8 hw_addrs[] = {
+>  };
+>  
+>  /* This array should match the IVTV_HW_ defines */
+> -static const char * const hw_devicenames[] = {
+> +static const char * const hw_devicenames[IVTV_HW_MAX_BITS] = {
+>  	"cx25840",
+>  	"saa7115",
+>  	"saa7127_auto",	/* saa7127 or saa7129 */
+> @@ -240,10 +240,16 @@ void ivtv_i2c_new_ir_legacy(struct ivtv *itv)
+>  
+>  int ivtv_i2c_register(struct ivtv *itv, unsigned idx)
+>  {
+> -	struct v4l2_subdev *sd;
+>  	struct i2c_adapter *adap = &itv->i2c_adap;
+> -	const char *type = hw_devicenames[idx];
+> -	u32 hw = 1 << idx;
+> +	struct v4l2_subdev *sd;
+> +	const char *type;
+> +	u32 hw;
+> +
+> +	if (idx >= IVTV_HW_MAX_BITS)
+> +		return -ENODEV;
+> +
+> +	type = hw_devicenames[idx];
+> +	hw = 1 << idx;
+>  
+>  	if (hw == IVTV_HW_TUNER) {
+>  		/* special tuner handling */
+> 
 
