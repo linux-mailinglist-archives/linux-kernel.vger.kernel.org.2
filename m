@@ -2,102 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E30503AE2CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 07:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6783AE2D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 07:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbhFUFiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 01:38:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30901 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229479AbhFUFiQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 01:38:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624253761;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RY9DMg40/fTZjgZ6Fij6lpyg1UQhKJ1773t8fOZ+VDA=;
-        b=iNVen4KR3MKrjcofAnkndEAHOvskE0h7ha9IsSdVkB0uZBFmLeBoLUIS2dLHjPB6MZM8+S
-        Nf5xTyTKTNLs80C8s3wL72j4S55H9tZbjKeSW8xk4oF/K/7jpcMaxzbzyiokDuknoKPblE
-        8ikMatEZvlSb9n4uMTx/jYhfBTHwON0=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-540-sJa_fmIxMFK4b3B2TYbY5Q-1; Mon, 21 Jun 2021 01:35:59 -0400
-X-MC-Unique: sJa_fmIxMFK4b3B2TYbY5Q-1
-Received: by mail-wr1-f69.google.com with SMTP id l2-20020adfe5820000b029011a64161d6aso8017924wrm.6
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 22:35:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RY9DMg40/fTZjgZ6Fij6lpyg1UQhKJ1773t8fOZ+VDA=;
-        b=CIlzwcSzlP3dlDXPaQ5/b7lLG1T6XMax6Pnqglh5vvB1vFoUotvo0cND0kej5R5xTe
-         yjfBG/Z3hXm50lGuH8kKgFFRM68qNC/rfxTb5KgcYEBYklsGA/lQ7OwNaULkRH7YgVmt
-         5bIXE/A11LnMnM6b9W2NdfOCoMS1HoYWP0sp6DxGd0Pa3BDSCARjoLkl2zzV7Sv/ab6D
-         wQ0zaTWVAwrap9AZFwKtvF6Ys5hRI5GF03dUD+YMI2kRCq+U26xYVwvnoF4Hgrad5xfk
-         eGH+BZ9NyqvBQZHdDZ9z8hGbbVE1/Kbg22ox1pPYSWT3lbA4Sw+c60vEpM68GyVHW0vk
-         Wmcw==
-X-Gm-Message-State: AOAM532vA4ZHyLu5kIiDi0XGGlckJ7iO8T8MxyWvlDpOdo7AVtK2gMan
-        t6zNwiqMGYdlSheb/YupW79V96aQq3fQXKCGnsu//0DiyAkN+Mu3q85/y/HsEwr4x5KPsJLWp6f
-        EXmRTzzRLR6t8dtFWfA6EnViD
-X-Received: by 2002:a5d:6583:: with SMTP id q3mr11825345wru.360.1624253758476;
-        Sun, 20 Jun 2021 22:35:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzNVzD02BSHJ5YfAF1/SPXAwkkudd9JO9SOY1nKn8HyLYLX4v9IpbakIlVA1prWMh7+0Pf55Q==
-X-Received: by 2002:a5d:6583:: with SMTP id q3mr11825334wru.360.1624253758292;
-        Sun, 20 Jun 2021 22:35:58 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.58.33])
-        by smtp.gmail.com with ESMTPSA id f19sm16229383wre.48.2021.06.20.22.35.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Jun 2021 22:35:57 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 07:35:55 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     bigeasy@linutronix.de, linux-rt-users@vger.kernel.org,
-        peterz@infradead.org, linux-kernel@vger.kernel.org,
-        bristot@redhat.com, Anna-Maria Behnsen <anna-maria@linutronix.de>
-Subject: Re: [RFC PATCH RT v2 1/2] time/hrtimer: Add PINNED_HARD mode for
- realtime hrtimers
-Message-ID: <YNAlO4CScpaj65HG@localhost.localdomain>
-References: <20210616071705.166658-1-juri.lelli@redhat.com>
- <20210616071705.166658-2-juri.lelli@redhat.com>
- <87k0mqeofg.ffs@nanos.tec.linutronix.de>
- <87bl82e19d.ffs@nanos.tec.linutronix.de>
+        id S229744AbhFUFk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 01:40:59 -0400
+Received: from ozlabs.org ([203.11.71.1]:34889 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229618AbhFUFk6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 01:40:58 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G7dcK2Qs8z9sW7;
+        Mon, 21 Jun 2021 15:38:41 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624253922;
+        bh=vxr+NI1ARhFqgXcu3KmRNV3DAto9I4LurB4qnjfhNvw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=pbLB0aLsRoUMhPOqpDRGOkhKuGd/gBZEnXMe8MjVqF9UM9C7GdSp7E9b5aXKVi+uR
+         djkzCsix4snx29oiKXxMzI9D99kKTCn92rB9hHh4XI+W7Rt6NtSkI7oDMlkxpGkYRU
+         5EbuYhlPM8GDCsdoJT+Bi+ukhhMDi3OumDDm4TTGnC+vLvZeZwpTllzGXWkYnMg/Gj
+         6zOV0lTUzTUu6DvS2So5kMHfvrdXJ1RvoSaVJHAeJuZH96usIhV30VhcxStz8HDImg
+         WiD9NG97a5sAWgv0pYBZS2qSqqb0nKUW8idIDgaNzDyAN23ba/9cSRqVn9If69Jliz
+         ImqV56xiM0jbA==
+Date:   Mon, 21 Jun 2021 15:38:39 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Wim Van Sebroeck <wim@iguana.be>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the watchdog tree
+Message-ID: <20210621153839.43dd423e@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87bl82e19d.ffs@nanos.tec.linutronix.de>
+Content-Type: multipart/signed; boundary="Sig_/Teyys8cS/W5/nBG=c8p8zzx";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--Sig_/Teyys8cS/W5/nBG=c8p8zzx
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 19/06/21 09:56, Thomas Gleixner wrote:
-> On Sat, Jun 19 2021 at 01:35, Thomas Gleixner wrote:
-> > The wild west of anything which scratches 'my itch' based on 'my use
-> > case numbers' in Linux ended many years ago and while RT was always a
-> > valuable playground for unthinkable ideas we definitely tried hard not
-> > to accept use case specific hacks wihtout a proper justification that it
-> > makes sense in general.
-> >
-> > So why are you even trying to sell this to me?
-> 
-> I wouldn't have been that grumpy if you'd at least checked whether the
-> task is pinned. Still I would have told you that you "fix" it at the
-> wrong place.
+Hi all,
 
-Ah, indeed. Pulled the trigger too early it seems. I'll ponder more.
+After merging the watchdog tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-> Why on earth is that nohz heuristic trainwreck not even checking that?
-> It's not a RT problem and it's not a problem restricted to RT tasks
-> either. If a task is pinned then arming the timer on a random other CPU
-> is blatant nonsense independent of the scheduling class.
+ERROR: modpost: "bd70528_wdt_unlock" [drivers/rtc/rtc-bd70528.ko] undefined!
+ERROR: modpost: "bd70528_wdt_lock" [drivers/rtc/rtc-bd70528.ko] undefined!
+ERROR: modpost: "bd70528_wdt_set" [drivers/rtc/rtc-bd70528.ko] undefined!
 
-Agree. Lemme look more into it.
+Caused by commit
 
-Thanks for the comments!
+  f2a5178b0b9f ("watchdog: bd70528 drop bd70528 support")
 
-Best,
-Juri
+I have used the watchdog tree from next-20210618 for today.
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Teyys8cS/W5/nBG=c8p8zzx
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDQJd8ACgkQAVBC80lX
+0GwoSQf+Lmmu83hAOjrJ49F2rB+sCr1aDsvIKaEisJyDJ1/LBT4gy2GTE7CpvlWA
+iczg4mq7P2vnKeuQSYfKMEAv3dR7GmfqGoi+jD9avIZiFjKMKPj3XEyoiigo/lBT
+vwZbbf+btCL4/pnVv9u93/wofw1KKDbx7i0DeOUn5qjCi3KSSqKrMytFp/8mgGR/
+8CIAtXgfrm/TYpdg8JWDuOBex527tZquQpiNd0wh3KHkLV8Dwbunvxt17HKFrK8B
+Jz7VKyuvV61n1sSK/3U2HG0B8bQlZLKusNH6JRa/qVubBfbnZo6QB/4aHbYq1566
+CqGSjP/uVvzoaiSWSwTPwN6reUroGg==
+=kUkq
+-----END PGP SIGNATURE-----
+
+--Sig_/Teyys8cS/W5/nBG=c8p8zzx--
