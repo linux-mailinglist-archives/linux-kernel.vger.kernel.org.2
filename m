@@ -2,96 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C183AF782
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E8B3AF785
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:37:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbhFUVjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 17:39:11 -0400
-Received: from server.eikelenboom.it ([91.121.65.215]:59254 "EHLO
-        server.eikelenboom.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbhFUVjK (ORCPT
+        id S231512AbhFUVkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 17:40:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230006AbhFUVkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 17:39:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=eikelenboom.it; s=20180706; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=echRYO9/03A/RWXXeBXOytrx6HhFq/gOusrcAB2T0SM=; b=QMPoXeGzyDQrsOIfNIieSIfeAg
-        n/wxyrVCxb+cCG47obHfKhLENJth+oPCFd5VIHGVTll5N/G/9yNjsJi7Yx8F/K89OG2RDP6V+TUjY
-        KzzBpOpGalQ7ffutRpu+8cDkyXvDBMQ3R6mVGBMc3rVAslKKuTWUD3tz8UJS5E17hAto=;
-Received: from 76-24-144-85.ftth.glasoperator.nl ([85.144.24.76]:35594 helo=[172.16.1.50])
-        by server.eikelenboom.it with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <linux@eikelenboom.it>)
-        id 1lvRfm-0002an-Va; Mon, 21 Jun 2021 23:41:39 +0200
-Subject: Re: Linux 5.13-rc6 regression to 5.12.x: kernel OOM and panic during
- kernel boot in low memory Xen VM's (256MB assigned memory).
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Juergen Gross <jgross@suse.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
-        kernel test robot <oliver.sang@intel.com>
-References: <ee8bf04c-6e55-1d9b-7bdb-25e6108e8e1e@eikelenboom.it>
- <CAHk-=wjgg67NMBNG99naEQ1cM0mXBBzdhCJaYFH-kC+mLK+J2g@mail.gmail.com>
- <9108c22e-3521-9e24-6124-7776d947b788@rasmusvillemoes.dk>
- <0b12f27b-1109-b621-c969-10814b2c1c2f@eikelenboom.it>
- <7338064f-10b6-545d-bc6c-843d04aafe28@eikelenboom.it>
- <e7f9c4f8-1669-75ce-b052-1030350a159e@eikelenboom.it>
- <bfdd1d6b-77a3-450b-71f4-63e9cc314ace@rasmusvillemoes.dk>
-From:   Sander Eikelenboom <linux@eikelenboom.it>
-Message-ID: <c4a0bc1e-9b20-47d9-7299-71bac5c43596@eikelenboom.it>
-Date:   Mon, 21 Jun 2021 23:36:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 21 Jun 2021 17:40:06 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28EE5C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:37:51 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id a16so5707511ljq.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:37:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:cc
+         :content-transfer-encoding;
+        bh=IRAe1gzac7nCzxXjKWrhQY2IFkQPRwkIOAaDOtq0Gqk=;
+        b=gFRNGq5Ceg5goaAdSU2H/UZuotNIWaUMO3o70dCpvzhpPF1nMSQ4Vr8MaUBkso4ktV
+         lsfsfoolsCt/OCwkayNVEbks/Lx2srbO5dv31mm0qs6kCd/nvX7zTRn9DvSsICZYmc41
+         GQMzhaVIrxB7uslhKgsEe6pmCh83CF8qwnUQfdFH5ox52M0lEudNDaImDT4UQiNRDqng
+         jdFEUrbFptgBDpJwMv1qgWnldvuNr7j/Kdju8td1PUL76F6+ZV3ZsLXQIsPQ78MjyriE
+         40WumzH7VFPLh11ZhiBqnUsQTQUC3OvBSoY2bZ8c/4I0LSoQADSmkdUrGnwrsUzyQmFC
+         XIhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:cc:content-transfer-encoding;
+        bh=IRAe1gzac7nCzxXjKWrhQY2IFkQPRwkIOAaDOtq0Gqk=;
+        b=CyLs7RR0iIKR7zr0jv5GhVA7MT5k+ScJ2a/bmlGLv1fffdObwgH8Eol72/FbvMZA9v
+         yk2V8HQsq0kEC0vdyxnTqmW1ld8UyxhhWO7Wo2fbHJcqISiVyt2mPfB84Mlf+/LITc67
+         Xb22lfVhrBDXY6imTAOThw4plXRxnqSmi07SZoYWm6RZifZFjElQyighp3ysuf/6PF0h
+         yWK9VUshbKtYFWQS/MAfOVt3iVw2RIDutJC3H8rL1H2BYhdvcx5RswocJKQWB85RfnL4
+         OSAqBDflZ2BFt4KeLuwSR1nfC8bniJxdQRaVVFhbdfT92NJI/mkKT9pEcqlSUwHYbZd7
+         nMlg==
+X-Gm-Message-State: AOAM532vX2zrGFdfd1fVLRbF3+i9ECpvUbsCVrvxuuVc2BMvEnMwd2yo
+        Ukt0dYrFLcXKmLrTWzwh0Ve8aVQRORlJJAFNpgk=
+X-Received: by 2002:a2e:8145:: with SMTP id t5mt70949ljg.183.1624311469469;
+ Mon, 21 Jun 2021 14:37:49 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <bfdd1d6b-77a3-450b-71f4-63e9cc314ace@rasmusvillemoes.dk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: nl-NL
-Content-Transfer-Encoding: 7bit
+References: <20210618105526.265003-1-zenczykowski@gmail.com>
+ <CACAyw99k4ZhePBcRJzJn37rvGKnPHEgE3z8Y-47iYKQO2nqFpQ@mail.gmail.com>
+ <CANP3RGdrpb+KiD+a29zTSU3LKR8Qo6aFdo4QseRvPdNhZ_AOJw@mail.gmail.com> <CACAyw9948drqRE=0tC=5OrdX=nOVR3JSPScXrkdAv+kGD_P3ZA@mail.gmail.com>
+In-Reply-To: <CACAyw9948drqRE=0tC=5OrdX=nOVR3JSPScXrkdAv+kGD_P3ZA@mail.gmail.com>
+From:   =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
+Date:   Mon, 21 Jun 2021 14:37:37 -0700
+Message-ID: <CAHo-Oozra2ygb4qW6s8rsgZFmdr-gaQuGzREtXuZLwzzESCYNw@mail.gmail.com>
+Subject: Re: [PATCH bpf] Revert "bpf: program: Refuse non-O_RDWR flags in BPF_OBJ_GET"
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Linux Network Development Mailing List 
+        <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Greg Kroah-Hartman <gregkh@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Lorenz Bauer <lmb@cloudflare.com>,
+        Lorenzo Colitti <lorenzo@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/06/2021 18:54, Rasmus Villemoes wrote:
-> On 18/06/2021 03.06, Sander Eikelenboom wrote:
->> On 17/06/2021 21:39, Sander Eikelenboom wrote:
-> 
->>
->> OK, done some experimentation and it seems with 256M assigned to the VM
->> it was almost at the edge of OOM with the 5.12 kernel as well in the
->> config I am using it.
->> With v5.12 when I assign 240M it boots, with 230M it doesn't. With 5.13
->> the tipping point seems to be around 265M and 270M, so my config was
->> already quite close to the edge.
->>
->> The "direct kernel boot" feature I'm using just seems somewhat memory
->> hungry, but using another compression algorithm for the kernel and
->> initramfs already helped in my case.
->>
->> So sorry for the noise, clearly user-error.
-> 
-> Hm, perhaps, but I'm still a bit nervous about that report from Oliver
-> Sang/kernel test robot, which was for a VM equipped with 16G of memory.
-> But despite quite a few attempts, I haven't been able to reproduce that
-> locally, so unfortunately I have no idea what's going on.
-> 
-> Rasmus
-> 
+The patch this reverts breaks (Android) userspace, and I've even
+pointed out the specific code in question that it breaks.
+What happened to the policy of not breaking userspace?
 
-Hmm I just tried to switch all VM's to a 5.13-rc7 kernel.
-Some worked since i reduced the size, but some still fail.
+Why are 'Changes Requested' (see
+https://patchwork.kernel.org/project/netdevbpf/patch/20210618105526.265003-=
+1-zenczykowski@gmail.com/
+)
+by whom? What changes?  What do you expect me to do?
 
-The difference seems the be the number of vcpu's I assign to the VM's
+Why should I even care?  Why should it even be me?  I'm not the one
+that broke things.
 
-The ones with 1 vcpu now boot with 256MB assigned (that was what I tested before),
-but the ones with 2 vcpu's assigned don't and still OOM
-on the same kernel and initramfs that I pass in from the host.
+On Mon, Jun 21, 2021 at 2:02 AM Lorenz Bauer <lmb@cloudflare.com> wrote:
+>
+> On Fri, 18 Jun 2021 at 19:30, Maciej =C5=BBenczykowski
+> <zenczykowski@gmail.com> wrote:
+> >
+> > On Fri, Jun 18, 2021 at 4:55 AM Lorenz Bauer <lmb@cloudflare.com> wrote=
+:
+> > >
+> > > On Fri, 18 Jun 2021 at 11:55, Maciej =C5=BBenczykowski
+> > > <zenczykowski@gmail.com> wrote:
+> > > >
+> > > > This reverts commit d37300ed182131f1757895a62e556332857417e5.
+> > > >
+> > > > This breaks Android userspace which expects to be able to
+> > > > fetch programs with just read permissions.
+> > >
+> > > Sorry about this! I'll defer to the maintainers what to do here.
+> > > Reverting leaves us with a gaping hole for access control of pinned
+> > > programs.
+> >
+> > Not sure what hole you're referring to.  Could you provide more details=
+/explanation?
+> >
+> > It seems perfectly reasonable to be able to get a program with just rea=
+d privs.
+> > After all, you're not modifying it, just using it.
+>
+> Agreed, if that was what the kernel is doing. What you get with
+> BPF_F_RDONLY is a fully read-write fd, since the rest of the BPF
+> subsystem doesn't check program fd flags. Hence my fix to only allow
+> O_RDWR, which matches what the kernel actually does. Otherwise any
+> user with read-only access can get a R/W fd.
+>
+> > AFAIK there is no way to modify a program after it was loaded, has this=
+ changed?
+>
+> You can't modify the program, but you can detach it, for example. Any
+> program related bpf command that takes a program fd basically.
 
-Could that box from the test-robot have a massive amount of cpu-cores
-and that it is some how related to that ?
+I fail to see how this is a problem, since it's not modifying the program,
+why should it need a rdwr file descriptor to do so?
 
---
-Sander
+AFAIK in many cases, you don't even need the bpf file descriptor at
+all (for example
+you can detach a tc bpf program via removing the tc filter or tc qdisc
+or the network interface).
+
+Do you perhaps mean to say you can unpin it?
+But, if so, then that's a problem in the unpin code...
+
+Or it's even entirely unrelated, since deleting files does not need
+read or write access to the file, just the folder the file is in.
+
+[maze@zeus ~]$ touch foo; chmod a-rwx foo; sudo chown root:root foo; ls -al=
+ foo
+----------. 1 root root 0 Jun 21 14:26 foo
+[maze@zeus ~]$ rm -f foo; ls -al foo
+ls: cannot access 'foo': No such file or directory
+
+> > if so, the checks should be on the modifications not the fd fetch.
+>
+> True, unfortunately that code doesn't exist. It's also not
+> straightforward to write and probably impossible to backport.
+
+Now you're suggesting you expect this broken patch (that I'm trying to reve=
+rt)
+to make it into older LTS releases and break things out in the field???
+
+> > I guess one could argue fetching with write only privs doesn't make sen=
+se?
+> >
+> > Anyway... userspace is broken... so revert is the answer.
+> >
+> > In Android the process loading/pinning bpf maps/programs is a different
+> > process (the 'bpfloader') to the users (which are far less privileged)
+>
+> If the revert happens you need to make sure that all of your pinned
+> state is only readable by the bpfloader user. And everybody else,
+> realistically.
+
+On Android selinux prevents anyone from doing untoward things, since
+they can't get the fds in the first place.
+
+I *want* less privileged users (that can't load bpf programs, but have
+the selinux privs to get pinned program fds) to be able to
+attach/detach them (via xdp, tc or to cgroups). That's how stuff works
+right *now*.
+
+Could I perhaps redesign the system to work around this?
+I don't know.  Perhaps.  Perhaps not.
+
+I haven't given it that much thought - I'm still trying to fix
+(workaround) an hrtimer ncm performance regression that was introduced
+in 5.10.~24 LTS (there at least we can argue the old code was buggy,
+and the hrtimer implementation on the hardware in question outright
+terrible and super slow).
+
+I'm guessing changes would be needed to the progRetrieve() function,
+and the tests, and the bpfloader, and the permissions embedded in the
+programs themselves, and possibly the iptables binary (and the
+netutils wrapper) since it uses xt_bpf, and possibly to binaries
+privileges and/or selinux capabilities/policies.  Or maybe not.  I
+simply don't know.
+
+Well tested patches to make things work are welcome at the aosp project.
+A word of warning: I haven't checked / thought things through, but it
+may take 5+ years to roll them out.
+At this point it's far too late to make such changes in Android 12/S.
+
+Here's another example of fetching programs with BPF_F_RDONLY in
+iptables (yes, it was added by me, due to our use in Android):
+  https://android.googlesource.com/platform/external/iptables.git/+/refs/he=
+ads/master/extensions/libxt_bpf.c#64
+
+The fact that this snuck into the 5.12 final release is not relevant
+(ie. this is a regression in 5.12 vs 5.11, and it is still broken in
+5.13-rcX).
+
+Please revert immediately.  I've got better things to do.  I shouldn't
+have to be thinking about this or arguing about this.
+It already took me significantly more than a day simply to track this
+down (arguably due to miscommunications with Greg, who'd earlier
+actually found this in 5.12, but misunderstood the problem, but
+still...).
+
+Thanks,
+Maciej
