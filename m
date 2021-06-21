@@ -2,173 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C10E13AEAF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3787E3AEAFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:16:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhFUOQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 10:16:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55230 "EHLO
+        id S230118AbhFUOSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 10:18:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbhFUOQx (ORCPT
+        with ESMTP id S230076AbhFUOSr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 10:16:53 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A65C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:14:39 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5DC315C75;
-        Mon, 21 Jun 2021 16:14:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1624284877;
-        bh=+ijZcGgErRf9SanuSF2mZQpMGv5X/UoUh1FlzcKR980=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mxylxRwyRfISf9L8jpkV9gaKB50jrdUVt44Nl6y/lk7t+sib/k3PJgnnaVmUe+DyH
-         2HdKUdB7w6cx1wdVoiFjC9a7YA/DmXWBDB+2Rh+lkaU1Wd6hb+t/+R7BpiGTREWLiv
-         6QMuhpZ4zeIalnjUXOYNidlpRrD1v6HWJc+h3RmQ=
-Date:   Mon, 21 Jun 2021 17:14:11 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Marek Vasut <marex@denx.de>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Eric Anholt <eric@anholt.net>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Maxime Ripard <maxime@cerno.tech>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        linux-rpi-kernel@lists.infradead.org
-Subject: Re: [PATCH] drm/vc4: dsi: Only register our component once a DSI
- device is attached
-Message-ID: <YNCesxIe8cgncnxq@pendragon.ideasonboard.com>
-References: <20200707101912.571531-1-maxime@cerno.tech>
- <YM6dgVb12oITNfc0@pendragon.ideasonboard.com>
- <CAPY8ntC+hzmfrJwWW0ytNdHSXruMKMi7N3K6tdJbp9gDBbJ3Qw@mail.gmail.com>
- <YM+MEsKjdkYAVI5X@pendragon.ideasonboard.com>
- <YM/FwVkkQXX8VrzV@pendragon.ideasonboard.com>
- <CAPY8ntCbzFkbM5fZmo3RVw5okQkVKFcR8TCHOo+xkW7wNk8MQA@mail.gmail.com>
- <YNCMbw6B6OL4Gho3@pendragon.ideasonboard.com>
- <CAMty3ZCsa+=vyqT3S1mjAYH2g57O8_BPciQ-dE4+qTsHWCwSDA@mail.gmail.com>
+        Mon, 21 Jun 2021 10:18:47 -0400
+Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB70C061574;
+        Mon, 21 Jun 2021 07:16:32 -0700 (PDT)
+Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvKir-00Ar4K-2D; Mon, 21 Jun 2021 14:16:21 +0000
+Date:   Mon, 21 Jun 2021 14:16:21 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Michael Schmitz <schmitzmic@gmail.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+Message-ID: <YNCfNWC1UMvuE5d5@zeniv-ca.linux.org.uk>
+References: <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+ <87sg1lwhvm.fsf@disp2133>
+ <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+ <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+ <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+ <87eed4v2dc.fsf@disp2133>
+ <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+ <87fsxjorgs.fsf@disp2133>
+ <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+ <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMty3ZCsa+=vyqT3S1mjAYH2g57O8_BPciQ-dE4+qTsHWCwSDA@mail.gmail.com>
+In-Reply-To: <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jagan,
-
-On Mon, Jun 21, 2021 at 07:41:07PM +0530, Jagan Teki wrote:
-> On Mon, Jun 21, 2021 at 6:26 PM Laurent Pinchart wrote:
-> > On Mon, Jun 21, 2021 at 12:49:14PM +0100, Dave Stevenson wrote:
-> > > On Sun, 20 Jun 2021 at 23:49, Laurent Pinchart wrote:
-> > > > On Sun, Jun 20, 2021 at 09:42:27PM +0300, Laurent Pinchart wrote:
-> > > > > On Sun, Jun 20, 2021 at 03:29:03PM +0100, Dave Stevenson wrote:
-> > > > > > On Sun, 20 Jun 2021 at 04:26, Laurent Pinchart wrote:
-> > > > > > >
-> > > > > > > Hi Maxime,
-> > > > > > >
-> > > > > > > I'm testing this, and I'm afraid it causes an issue with all the
-> > > > > > > I2C-controlled bridges. I'm focussing on the newly merged ti-sn65dsi83
-> > > > > > > driver at the moment, but other are affected the same way.
-> > > > > > >
-> > > > > > > With this patch, the DSI component is only added when the DSI device is
-> > > > > > > attached to the host with mipi_dsi_attach(). In the ti-sn65dsi83 driver,
-> > > > > > > this happens in the bridge attach callback, which is called when the
-> > > > > > > bridge is attached by a call to drm_bridge_attach() in vc4_dsi_bind().
-> > > > > > > This creates a circular dependency, and the DRM/KMS device is never
-> > > > > > > created.
-> > > > > > >
-> > > > > > > How should this be solved ? Dave, I think you have shown an interest in
-> > > > > > > the sn65dsi83 recently, any help would be appreciated. On a side note,
-> > > > > > > I've tested the ti-sn65dsi83 driver on a v5.10 RPi kernel, without much
-> > > > > > > success (on top of commit e1499baa0b0c I get a very weird frame rate -
-> > > > > > > 147 fps of 99 fps instead of 60 fps - and nothing on the screen, and on
-> > > > > > > top of the latest v5.10 RPi branch, I get lock-related warnings at every
-> > > > > > > page flip), which is why I tried v5.12 and noticed this patch. Is it
-> > > > > > > worth trying to bring up the display on the v5.10 RPi kernel in parallel
-> > > > > > > to fixing the issue introduced in this patch, or is DSI known to be
-> > > > > > > broken there ?
-> > > > > >
-> > > > > > I've been looking at SN65DSI83/4, but as I don't have any hardware
-> > > > > > I've largely been suggesting things to try to those on the forums who
-> > > > > > do [1].
-> > > > > >
-> > > > > > My branch at https://github.com/6by9/linux/tree/rpi-5.10.y-sn65dsi8x-marek
-> > > > > > is the latest one I've worked on. It's rpi-5.10.y with Marek's driver
-> > > > > > cherry-picked, and an overlay and simple-panel definition by others.
-> > > > > > It also has a rework for vc4_dsi to use pm_runtime, instead of
-> > > > > > breaking up the DSI bridge chain (which is flawed as it never calls
-> > > > > > the bridge mode_set or mode_valid functions which sn65dsi83 relies
-> > > > > > on).
-> > > > > >
-> > > > > > I ran it on Friday in the lab and encountered an issue with vc4_dsi
-> > > > > > should vc4_dsi_encoder_mode_fixup wish for a divider of 7 (required
-> > > > > > for this 800x1280 panel over 4 lanes) where it resulted in an invalid
-> > > > > > mode configuration. That resulted in patch [2] which then gave me
-> > > > > > sensible numbers.
-> > > > > >
-> > > > > > That branch with dtoverlay=vc4-kms-v3d and
-> > > > > > dtoverlay=vc4-kms-dsi-ti-sn65dsi83 created all the expected devices,
-> > > > > > and everything came up normally.
-> > > > > > It was a busy day, but I think I even stuck a scope on the clock lanes
-> > > > > > at that point and confirmed that they were at the link frequency
-> > > > > > expected.
-> > > > >
-> > > > > Thanks, I'll test your branch and will report the results.
-> > > >
-> > > > I had to apply the following diff to work around a crash:
-> > > >
-> > > > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi83.c b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-> > > > index 55b6c53207f5..647426aa793a 100644
-> > > > --- a/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-> > > > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
-> > > > @@ -525,6 +525,9 @@ static bool sn65dsi83_mode_fixup(struct drm_bridge *bridge,
-> > > >
-> > > >         /* The DSI format is always RGB888_1X24 */
-> > > >         list_for_each_entry(connector, &ddev->mode_config.connector_list, head) {
-> > > > +               if (!connector->display_info.bus_formats)
-> > > > +                       continue;
-> > > > +
-> > > >                 switch (connector->display_info.bus_formats[0]) {
-> > > >                 case MEDIA_BUS_FMT_RGB666_1X7X3_SPWG:
-> > > >                         ctx->lvds_format_24bpp = false;
-> > > >
-> > > > connector->display_info.bus_formats is NULL for the HDMI connectors, as
-> > > > I have nothing connected to them, as well as for the writeback
-> > > > connector.
-> > >
-> > > I'm now confused as to what I'm doing as my branch appears NOT to have
-> > > Marek's latest version of the driver as it doesn't have
-> > > sn65dsi83_mode_fixup.
-> > > I need to have another look at what's going on - I think I've got
-> > > branches confused when switching between machines :-( Remaking that
-> > > branch now.
-> > >
-> > > I do see that Marek has sent another patch around
-> > > sn65dsi83_mode_fixup, but it'll still dereference
-> > > connector->display_info.bus_formats[0] on all connectors. Shouldn't it
-> > > only be switching on the one connector that is connected to this
-> > > bridge, not HDMI or writeback connectors? I'm not totally clear on
-> > > which connectors are in that list.
-> > > https://patchwork.freedesktop.org/patch/440175/
-> >
-> > The following series should fix the issue:
-> >
-> > [PATCH] drm/bridge: ti-sn65dsi83: Replace connector format patching with atomic_get_input_bus_fmts
-> > [PATCH 0/5] ti-sn65dsi83: Finalize transition to atomic operations
+On Mon, Jun 21, 2021 at 01:54:56PM +0000, Al Viro wrote:
+> On Tue, Jun 15, 2021 at 02:58:12PM -0700, Linus Torvalds wrote:
 > 
-> Look like DSI on STM32MP1 seems broken even with these on top of
-> drm-misc/drm-misc-next , anything broken on the tree?
+> > And I think our horrible "kernel threads return to user space when
+> > done" is absolutely horrifically nasty. Maybe of the clever sort, but
+> > mostly of the historical horror sort.
+> 
+> How would you prefer to handle that, then?  Separate magical path from
+> kernel_execve() to switch to userland?  We used to have something of
+> that sort, and that had been a real horror...
+> 
+> As it is, it's "kernel thread is spawned at the point similar to
+> ret_from_fork(), runs the payload (which almost never returns) and
+> then proceeds out to userland, same way fork(2) would've done."
+> That way kernel_execve() doesn't have to do anything magical.
+> 
+> Al, digging through the old notes and current call graph...
 
-No idea, I don't have a functional display on my RPi CM4 device yet, so
-I can't tell :-)
+	FWIW, the major assumption back then had been that get_signal(),
+signal_delivered() and all associated machinery (including coredumps)
+runs *only* from SIGPENDING/NOTIFY_SIGNAL handling.
 
--- 
-Regards,
-
-Laurent Pinchart
+	And "has complete registers on stack" is only a part of that;
+there was other fun stuff in the area ;-/  Do we want coredumps for
+those, and if we do, will the de_thread stuff work there?
