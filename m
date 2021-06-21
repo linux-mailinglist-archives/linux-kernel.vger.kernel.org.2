@@ -2,109 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 696683AE1B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 04:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F4023AE1B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 04:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbhFUCmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 22:42:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57022 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229899AbhFUCmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 22:42:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A9506117A;
-        Mon, 21 Jun 2021 02:40:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624243229;
-        bh=kvA/863X51D5uuCExsqTAZJw9OimySqMMSVIU2Op2YE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=CZv9pbMWPrzni0vevDUjAs3JnoDYWodl76e62ay6jo0FyyVcun5R/YRxyneOIAngX
-         zKRoNdMairPxKeihcsJa7McHeMdVuEHPzjQ/Wywt/afdKsyZg9HglfxXvDnY04oHUm
-         OHyqeWq3uG1P4GXh9djNKNsOYYD2FXdxYlPoYviW6utjMIoxWvQ2EaTGe+zRGCuHHV
-         KZXGnYw4FfgD3tCq/vd4pXmV1KIL3vjEAcwRXZzjLOX9CjwSBzazEIJMgh8CGhgj1q
-         sHLoTnmChbrJrROcL8OmY/XEHSMnkeENN+h90537IrgNw7XognJLWTGCmH2QMhUyca
-         aBk07OdNgHKyA==
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Cc:     Daeho Jeong <daehojeong@google.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH] f2fs: enable extent cache for compression files in read-only
-Date:   Sun, 20 Jun 2021 19:40:27 -0700
-Message-Id: <20210621024027.1511092-1-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S230206AbhFUCnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 22:43:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229899AbhFUCnA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Jun 2021 22:43:00 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 238DFC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 19:40:46 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id g4so9079530pjk.0
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 19:40:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=R+zDclVd6+MF8AmpSfvARcxTjI1VRTEmoNc6MqmkAtI=;
+        b=W05GGJevbvZz2bk+fG2OykdTR9XPa6Xt3uNIHizgG9jFYTgEFj8LvXG3706Dy2AbN2
+         YzV4EmQAvUdJjOPzk4GtjSXexpFmUzEuVfVISdS1RvDCte+Sm/yE7DAlVs//eIG7f6sv
+         ebRPL2naD9gEuxMiqC6LHzcrHxj+plrXPtW33jYj4YsCQrLAWUjuly2DOSdjrBRSM8sy
+         rw0WqvVer1Tk45DYAJun3gJsfE3YENnoGQnnMkGRztgH9U2YcZYM5HabVYFlBjW0HF43
+         GN3ek5aMTTCwKTQc8+zDHnKt+/MntIIPkSt1BN9LnzZ8sxAucOf826+QzBVZVT7LuumP
+         nNfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=R+zDclVd6+MF8AmpSfvARcxTjI1VRTEmoNc6MqmkAtI=;
+        b=YuZKGkWXeTI/rDJLEpmxsHYBP4iO51QT3md93y5UxsujX4Vu+Twp1tErI/C6y2mE3v
+         6E0+XGHNYZAkjiWh4FBItEvnN3U4cwEc7rbgc9OqYy1X7maYAcScY10deVFdPm+5uYCu
+         98jTVaAFy8nlciN1f4MFI/xX0PbwJDCeGINbGDEowEXzpbBU+zuhkMOmKxv7f2dprPrr
+         Puiy4IT6mRiRR/6wj4RXkBMYMt04Ss1HbCc8AeqCdCAOoiMLclm5/0hADorZRmyGZmQ+
+         QEOzuqPgbRaNXNgBE1ctn1n0HLT+xN8XN5oJA4+N86fRTtqvPY46KAC+I41q4NC7WdVX
+         JsQQ==
+X-Gm-Message-State: AOAM530nL4JfxB+fqY87TGpNnJAGCSDLgUb/CDrNRAhgGI/m3EFRLhCl
+        6JDurfzcYBOqGRVMzx6fJliDpfr+9ECtPw==
+X-Google-Smtp-Source: ABdhPJyN2QefH8b0axptOESAvaGCW6oXAhlyrqN7RwA0MWTE2OlbTc+uHSDnO3qs2mVRwg20anAimQ==
+X-Received: by 2002:a17:90a:4592:: with SMTP id v18mr24436412pjg.132.1624243245636;
+        Sun, 20 Jun 2021 19:40:45 -0700 (PDT)
+Received: from localhost ([209.9.72.215])
+        by smtp.gmail.com with ESMTPSA id y1sm2080153pgr.70.2021.06.20.19.40.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 20 Jun 2021 19:40:45 -0700 (PDT)
+From:   gumingtao <gumingtao1225@gmail.com>
+X-Google-Original-From: gumingtao <gumingtao@xiaomi.com>
+To:     cl@linux.com
+Cc:     penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, vbabka@suse.cz, nathan@kernel.org,
+        ndesaulniers@google.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        gumingtao <gumingtao@xiaomi.com>
+Subject: [PATCH v2] slab: Use %s instead of function name
+Date:   Mon, 21 Jun 2021 10:40:39 +0800
+Message-Id: <cover.1624240708.git.gumingtao@xiaomi.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
+Changes in v2
+ - use %s replace function name for the panic() call
+ - use %s replace function name:kmem_cache_destroy
 
-Let's allow extent cache for RO partition.
+gumingtao (1):
+  slab: Use %s instead of function name
 
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- fs/f2fs/f2fs.h | 39 ++++++++++++++++++++-------------------
- 1 file changed, 20 insertions(+), 19 deletions(-)
+ mm/slab_common.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index d84e78dabdbe..16ce1ade9fa6 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3148,25 +3148,6 @@ static inline bool is_dot_dotdot(const u8 *name, size_t len)
- 	return false;
- }
- 
--static inline bool f2fs_may_extent_tree(struct inode *inode)
--{
--	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
--
--	if (!test_opt(sbi, EXTENT_CACHE) ||
--			is_inode_flag_set(inode, FI_NO_EXTENT) ||
--			is_inode_flag_set(inode, FI_COMPRESSED_FILE))
--		return false;
--
--	/*
--	 * for recovered files during mount do not create extents
--	 * if shrinker is not registered.
--	 */
--	if (list_empty(&sbi->s_list))
--		return false;
--
--	return S_ISREG(inode->i_mode);
--}
--
- static inline void *f2fs_kmalloc(struct f2fs_sb_info *sbi,
- 					size_t size, gfp_t flags)
- {
-@@ -4201,6 +4182,26 @@ F2FS_FEATURE_FUNCS(casefold, CASEFOLD);
- F2FS_FEATURE_FUNCS(compression, COMPRESSION);
- F2FS_FEATURE_FUNCS(readonly, RO);
- 
-+static inline bool f2fs_may_extent_tree(struct inode *inode)
-+{
-+	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-+
-+	if (!test_opt(sbi, EXTENT_CACHE) ||
-+			is_inode_flag_set(inode, FI_NO_EXTENT) ||
-+			(is_inode_flag_set(inode, FI_COMPRESSED_FILE) &&
-+			 !f2fs_sb_has_readonly(sbi)))
-+		return false;
-+
-+	/*
-+	 * for recovered files during mount do not create extents
-+	 * if shrinker is not registered.
-+	 */
-+	if (list_empty(&sbi->s_list))
-+		return false;
-+
-+	return S_ISREG(inode->i_mode);
-+}
-+
- #ifdef CONFIG_BLK_DEV_ZONED
- static inline bool f2fs_blkz_is_seq(struct f2fs_sb_info *sbi, int devi,
- 				    block_t blkaddr)
 -- 
-2.32.0.288.g62a8d224e6-goog
+2.7.4
 
