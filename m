@@ -2,187 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C723AEB14
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4C03AEB1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhFUOW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 10:22:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56584 "EHLO
+        id S230146AbhFUOYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 10:24:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbhFUOWx (ORCPT
+        with ESMTP id S229789AbhFUOYv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 10:22:53 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31AEBC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:20:39 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id y7so19806196wrh.7
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:20:39 -0700 (PDT)
+        Mon, 21 Jun 2021 10:24:51 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86721C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:22:37 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id q192so7197625pfc.7
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:22:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ec7hxlIB77SSjw/55RmOMCuUntyz8RSRzIK/yT10Dvk=;
-        b=hdjFmcsB7YIei1isj+gSWLLnQe/OhKX1iiuoZJRIb0Y5ZjSRed91RUS0dHVk5ggMn5
-         RvzeIUS7C6AplN/c1p38QeXspMIbu1dx50vmfj9IfhRCU0PvQxRWsAQsLAtFcnCZeVTs
-         LE5yRt50lgyFPVhoGDAul329GvtCpJQZUhgyk=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8L+cd+ZQnTliBnbuqbahlYKMU/bFlGdaEWT+XDryuZI=;
+        b=dDIxGFZonS5d2guwsqbUn2ZNdVnahSjKxnJNiJ2rDNoD8zO8Jk0pUBBIAWfU3PkRPH
+         KuFeaDX33DXkPKL/5wJCUaMyaYDyC+RDoYasJymcxt68eNG69MeQei7wGMSk9S8FYP0k
+         VMyIVd1WlDqNOTkQZDQVqlUuXCqEXCUZEIDkH+u/JJKbuvJQqKCZ1Yr60pm7+gT6Ra9L
+         fNj24dLytBMmOz0TRnxMuIsGRkG59I3GALaGaxtF0Vmhk1KhcWXcxTNMjJdOAvK3nlIU
+         Je8nYmTxMYaiOxR+Xw6+myXxmoyuoXDSJ4vcpacn6Dw9jJg/QrLiOKyAD5ygpjr+XHYM
+         1Aww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=Ec7hxlIB77SSjw/55RmOMCuUntyz8RSRzIK/yT10Dvk=;
-        b=WlV/nI3yR66JLicg/1DrGROhqLM6QiAAkG4h1OjCD39r6SD/e0ZWSbj4PAm64/Ulbs
-         T9L0teXlInW8KDMwrDsDev5PG7MLs0OnVypv86CNUgPWcoxWtX3op86MKmDM+D3XpQi+
-         0ju3C9NFiC2Ol3A7hqYhhIDuF9tt0R5nTgS2F7Y42KEGwf8+xUN5l9L1uA1KxPoRHnym
-         gBaVrD14vhZlLkc+ziEzMTeTv8Iu/Ll4CGBQtDkB3Z+d9vXpLQPg2mcMOLvNa5TaaT4o
-         Hv+yEgll+bjYDsLjRhw/QqgDbSbNFYov/9rW18IHvTxzIC/eJtK/C1IHyGnFjmxGhvAg
-         mE0A==
-X-Gm-Message-State: AOAM533FPSnCfxIW6lCXjLJneGnGIe1882dwVqKLRjBI1xD+YjydtGBr
-        rSldhoMTQkofk9H1K6TcOkmAdQ==
-X-Google-Smtp-Source: ABdhPJzPyUcaJgvK25ATnGRsGylqHKBhORMyjB5T83l8p03Kbo46vsfx/gdiWtoNiHUQ9xmV7GCvtQ==
-X-Received: by 2002:a05:6000:12c7:: with SMTP id l7mr22475136wrx.161.1624285237673;
-        Mon, 21 Jun 2021 07:20:37 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id 4sm17161648wry.74.2021.06.21.07.20.36
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8L+cd+ZQnTliBnbuqbahlYKMU/bFlGdaEWT+XDryuZI=;
+        b=toUzII4UMOeZuTD3r9B+PT77P3nAiQ4GrUetgutyItUQOt3/mnHhjfrrMdAhAzfqOs
+         syepYK1zoKolZCe0phIsPXOpDbE2bhX7+DQYx0i8EdNoVI0affGyYja17MBjfTLc/8Hs
+         wmBf3YovoqxEySsbaBcG+K+h2cawPf9A7ox9umKYxZdjSiw9/kyE6uDrG+G22hmeoJZi
+         429Apsah0wMxSYbhyWSOm88Gc3QzjhpVEDmaNMKnIBUyUqR4xy43vlDJDyptXmA35poh
+         zCyLBfRaWCPZ4WC0G+SjtcaOdDmen0dV1T1xsNp1f8IAa+d5RsrakvpEygbeQHhmzlC1
+         ApoQ==
+X-Gm-Message-State: AOAM533thOEDpImtvIxIILEW7Xf1dLyeSRPNUBZy5A7AL/MiM1pOzd2/
+        qCIms2vIeNg/BGCg0slTklo=
+X-Google-Smtp-Source: ABdhPJzZ6AmPiFqoTJcZ4tUQRgeJ1RJjJAfN/W5xkONC67cFCSfCwrZunMX6TFVg9VAcgVbj4ZSUEQ==
+X-Received: by 2002:a63:185b:: with SMTP id 27mr24580741pgy.164.1624285357096;
+        Mon, 21 Jun 2021 07:22:37 -0700 (PDT)
+Received: from ojas ([122.177.154.120])
+        by smtp.gmail.com with ESMTPSA id v4sm17119750pgr.65.2021.06.21.07.22.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 07:20:37 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 16:20:35 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Doug Ledford <dledford@redhat.com>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Tomer Tayar <ttayar@habana.ai>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v3 1/2] habanalabs: define uAPI to export FD for DMA-BUF
-Message-ID: <YNCgM1svqKGUhcFY@phenom.ffwll.local>
-Mail-Followup-To: Greg KH <gregkh@linuxfoundation.org>,
-        Oded Gabbay <ogabbay@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Tomer Tayar <ttayar@habana.ai>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>, Christoph Hellwig <hch@lst.de>
-References: <20210618123615.11456-1-ogabbay@kernel.org>
- <CAKMK7uFOfoxbD2Z5mb-qHFnUe5rObGKQ6Ygh--HSH9M=9bziGg@mail.gmail.com>
- <YNCN0ulL6DQiRJaB@kroah.com>
+        Mon, 21 Jun 2021 07:22:36 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 19:52:26 +0530
+From:   Ojaswin Mujoo <ojaswin98@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     nsaenz@kernel.org, gregkh@linuxfoundation.org,
+        stefan.wahren@i2se.com, arnd@arndb.de, phil@raspberrypi.com,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] staging: vchiq: Refactor vchiq cdev code
+Message-ID: <20210621142226.GA186979@ojas>
+References: <cover.1624185152.git.ojaswin98@gmail.com>
+ <e786f8c7f92561065b840490c32959932526dac6.1624185152.git.ojaswin98@gmail.com>
+ <20210621082132.GC1901@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YNCN0ulL6DQiRJaB@kroah.com>
-X-Operating-System: Linux phenom 5.10.0-7-amd64 
+In-Reply-To: <20210621082132.GC1901@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 03:02:10PM +0200, Greg KH wrote:
-> On Mon, Jun 21, 2021 at 02:28:48PM +0200, Daniel Vetter wrote:
-> > On Fri, Jun 18, 2021 at 2:36 PM Oded Gabbay <ogabbay@kernel.org> wrote:
-> > > User process might want to share the device memory with another
-> > > driver/device, and to allow it to access it over PCIe (P2P).
-> > >
-> > > To enable this, we utilize the dma-buf mechanism and add a dma-buf
-> > > exporter support, so the other driver can import the device memory and
-> > > access it.
-> > >
-> > > The device memory is allocated using our existing allocation uAPI,
-> > > where the user will get a handle that represents the allocation.
-> > >
-> > > The user will then need to call the new
-> > > uAPI (HL_MEM_OP_EXPORT_DMABUF_FD) and give the handle as a parameter.
-> > >
-> > > The driver will return a FD that represents the DMA-BUF object that
-> > > was created to match that allocation.
-> > >
-> > > Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
-> > > Reviewed-by: Tomer Tayar <ttayar@habana.ai>
-> > 
-> > Mission acomplished, we've gone full circle, and the totally-not-a-gpu
-> > driver is now trying to use gpu infrastructure. And seems to have
-> > gained vram meanwhile too. Next up is going to be synchronization
-> > using dma_fence so you can pass buffers back&forth without stalls
-> > among drivers.
+Hello Dan,
+
+On Mon, Jun 21, 2021 at 11:21:32AM +0300, Dan Carpenter wrote:
+> On Sun, Jun 20, 2021 at 06:25:46PM +0530, Ojaswin Mujoo wrote:
+> >  	vchiq_debugfs_init();
+> >  
+> >  	vchiq_log_info(vchiq_arm_log_level,
+> > -		"vchiq: initialised - version %d (min %d), device %d.%d",
+> > -		VCHIQ_VERSION, VCHIQ_VERSION_MIN,
+> > -		MAJOR(vchiq_devid), MINOR(vchiq_devid));
+> > +		       "vchiq: platform initialised - version %d (min %d)",
+> > +		       VCHIQ_VERSION, VCHIQ_VERSION_MIN);
+> > +
+> > +	/*
+> > +	 * We don't handle error here since the function handles
+> > +	 * cleanup in cases of failure. Further, we can proceed
+> > +	 * even if this function fails.
+> > +	 */
+> > +	vchiq_register_chrdev(&pdev->dev);
 > 
-> What's wrong with other drivers using dmabufs and even dma_fence?  It's
-> a common problem when shuffling memory around systems, why is that
-> somehow only allowed for gpu drivers?
+> I feel like ignoring errors and just continuing seems helpful, but it's
+> actually doing the users a disservice.  If it's an error during, boot
+> that's different, in that case it's better to get some kind of minimally
+> useful boot so the user can debug the problem.  But if the error isn't
+> going to prevent the system from booting then it's better to just return
+> an error so they can fix the problem and try again.
+Got it, I'll fix this in the next revision.
+
+Thank you,
+Ojaswin
+
 > 
-> There are many users of these structures in the kernel today that are
-> not gpu drivers (tee, fastrpc, virtio, xen, IB, etc) as this is a common
-> thing that drivers want to do (throw chunks of memory around from
-> userspace to hardware).
+> regards,
+> dan carpenter
 > 
-> I'm not trying to be a pain here, but I really do not understand why
-> this is a problem.  A kernel api is present, why not use it by other
-> in-kernel drivers?  We had the problem in the past where subsystems were
-> trying to create their own interfaces for the same thing, which is why
-> you all created the dmabuf api to help unify this.
-
-It's the same thing as ever. 90% of an accel driver are in userspace,
-that's where all the fun is, that's where the big picture review needs to
-happen, and we've very conveniently bypassed all that a few years back
-because it was too annoying.
-
-Once we have the full driver stack and can start reviewing it I have no
-objections to totally-not-gpus using all this stuff too. But until we can
-do that this is all just causing headaches.
-
-Ofc if you assume that userspace doesn't matter then you don't care, which
-is where this giantic disconnect comes from.
-
-Also unless we're actually doing this properly there's zero incentive for
-me to review the kernel code and check whether it follows the rules
-correctly, so you have excellent chances that you just break the rules.
-And dma_buf/fence are tricky enough that you pretty much guaranteed to
-break the rules if you're not involved in the discussions. Just now we
-have a big one where everyone involved (who's been doing this for 10+
-years all at least) realizes we've fucked up big time.
-
-Anyway we've had this discussion, we're not going to move anyone here at
-all, so *shrug*. I'll keep seeing accelarators in drivers/misc as blantant
-bypassing of review by actual accelerator pieces, you keep seing dri-devel
-as ... well I dunno, people who don't know what they're talking about
-maybe. Or not relevant to your totally-not-a-gpu thing.
-
-> > Also I'm wondering which is the other driver that we share buffers
-> > with. The gaudi stuff doesn't have real struct pages as backing
-> > storage, it only fills out the dma_addr_t. That tends to blow up with
-> > other drivers, and the only place where this is guaranteed to work is
-> > if you have a dynamic importer which sets the allow_peer2peer flag.
-> > Adding maintainers from other subsystems who might want to chime in
-> > here. So even aside of the big question as-is this is broken.
-> 
-> From what I can tell this driver is sending the buffers to other
-> instances of the same hardware, as that's what is on the other "end" of
-> the network connection.  No different from IB's use of RDMA, right?
-
-There's no import afaict, but maybe I missed it. Assuming I haven't missed
-it the importing necessarily has to happen by some other drivers.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
