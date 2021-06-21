@@ -2,142 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EC033AF84E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 00:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 865D63AF85C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 00:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbhFUWNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 18:13:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230006AbhFUWNO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 18:13:14 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3B6FC061574;
-        Mon, 21 Jun 2021 15:10:58 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id e20so15318746pgg.0;
-        Mon, 21 Jun 2021 15:10:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UF4/JJqG6JXnFjCPq71Sx5BtNeVSInrBkeRyP6YGuP8=;
-        b=ZVUi5rMMu9e8N20YsHUrih7hDTgSGkWPZN7wCDYc8AVmkWcSf9J1mbZGy4QOzmEaLb
-         BeQKcrKQRBilqUJgxGpAJ6cBcwL0l5/YY1w5jYkCFCu8NuwBARzKf3BrESrUjLDQCH5p
-         XGepzKRzk8KQXmOEC59rDlkVUT4wH3v+fmHCE0HceL2+WwXkM+1exgcwShbKZr6pONnK
-         Ddo4rE17wqrhLF99VPZkX1IbhO0QuC0EOeuMp7djZT+a4bYJKPziVODD+/AYuGwNbCIS
-         p77jzdAu5+CLVc2n+JpRC7LJHz8SoNZoIwE45VZIkYl+Wb/UKabZynqmJbkD/Wflzi8U
-         MXww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UF4/JJqG6JXnFjCPq71Sx5BtNeVSInrBkeRyP6YGuP8=;
-        b=mq5tkElvsC0K5EueOSoP68LThvnrqiX5+ZRgqupQ+Ac3rmSGvvXRMqUoIzf8Vu06CT
-         +0Vqb+w20BaK7XRH6QevNZz3/2MB3P2i88B83Cy5v5vjkK8WLLrkGTySgkmDc1LW3pNr
-         4QfMufAh9kNrzgvAS5c83YJ74b/KZd2Vaxnh9q4bGGUH1PXOLwKNGQO4o2AUF8c+PfWu
-         28W+/Rc6XwjN8nDfSha5PXfedwvjxG3Q4nQwOuuorjCksTJbCdxgL5VMvVLJK/aFBXHO
-         GkCMoH5Kx0j+4QaTL5vSObvT14PU2Qd+U+yDLyC4iBaf5ez+fxQSeuGScw97rBGmcAbz
-         s+Cw==
-X-Gm-Message-State: AOAM530v8JH10/M3jM2MFjUGr9HT4yy30xiVeraIPPFoA2mzYj/QneDj
-        nwEIFhK1xXJkyfYDKf2QA2HTVo80fqw=
-X-Google-Smtp-Source: ABdhPJxmAZNHrmc5d9ModStTgJeuMjkjt3YAmpLXR75ph+zdA5U9g++LQvjn6vpnAas4bbrgqcEewQ==
-X-Received: by 2002:aa7:8509:0:b029:2e5:8cfe:bc17 with SMTP id v9-20020aa785090000b02902e58cfebc17mr398740pfn.2.1624313458063;
-        Mon, 21 Jun 2021 15:10:58 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id v6sm16484470pfi.46.2021.06.21.15.10.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 15:10:57 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     netdev@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH net-next v2] net: dsa: b53: Create default VLAN entry explicitly
-Date:   Mon, 21 Jun 2021 15:10:55 -0700
-Message-Id: <20210621221055.958628-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S231738AbhFUWU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 18:20:29 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:57741 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229789AbhFUWU2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 18:20:28 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G83nZ0zwjz9sRN;
+        Tue, 22 Jun 2021 08:18:09 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624313890;
+        bh=AE4pqSRAtnB6ygkfAvP5+Fk5dWOHydQStK490FS4+/k=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eG4Rb4hgprhREKREZi9IH1nXrrSkN/G/zkqVI+V03220ABwy+oIVP/1xFXe+TOLlk
+         qLKndSq2RFn5gv9rGthdnup+4n3v7ZgK50DIQ+u0vVRRwIvGhngu+hgZG2Ps7kqG5f
+         BZoA9a1lQ4H7h05DxwT8IgiRDfr+Z7xpUEcBjowzpxVV7gueIMTmvQsVHelc+9CtRF
+         5A0YLhJlhXy9vbdTI653a2a1JWVfyWiY5ItzhwwjKU3dmb4Wg0GGw8wP8ePsX9Yoyb
+         QOyZdgg+Fq5MWQ6Ol9+hKaAzlTaqtp5u8/0fIBZN06ZUfaQGhQYgnAFwB2BoaN6WL2
+         KGmXi1dlBGerw==
+Date:   Tue, 22 Jun 2021 08:18:09 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the kvm tree
+Message-ID: <20210622081809.13dd2299@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/geag1LsnjWrC0Eu8s.pqwmg";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case CONFIG_VLAN_8021Q is not set, there will be no call down to the
-b53 driver to ensure that the default PVID VLAN entry will be configured
-with the appropriate untagged attribute towards the CPU port. We were
-implicitly relying on dsa_slave_vlan_rx_add_vid() to do that for us,
-instead make it explicit.
+--Sig_/geag1LsnjWrC0Eu8s.pqwmg
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reported-by: Vladimir Oltean <olteanv@gmail.com>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
-Changes in v2:
+Hi all,
 
-- use b53_vlan_port_needs_forced_tagged() as suggested by Vladimir in
-  his review
+In commit
 
- drivers/net/dsa/b53/b53_common.c | 27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
+  ade74e1433f3 ("KVM: x86/mmu: Grab nx_lpage_splits as an unsigned long bef=
+ore division")
 
-diff --git a/drivers/net/dsa/b53/b53_common.c b/drivers/net/dsa/b53/b53_common.c
-index 6e199454e41d..b23e3488695b 100644
---- a/drivers/net/dsa/b53/b53_common.c
-+++ b/drivers/net/dsa/b53/b53_common.c
-@@ -728,6 +728,13 @@ static u16 b53_default_pvid(struct b53_device *dev)
- 		return 0;
- }
- 
-+static bool b53_vlan_port_needs_forced_tagged(struct dsa_switch *ds, int port)
-+{
-+	struct b53_device *dev = ds->priv;
-+
-+	return dev->tag_protocol == DSA_TAG_PROTO_NONE && dsa_is_cpu_port(ds, port);
-+}
-+
- int b53_configure_vlan(struct dsa_switch *ds)
- {
- 	struct b53_device *dev = ds->priv;
-@@ -748,9 +755,20 @@ int b53_configure_vlan(struct dsa_switch *ds)
- 
- 	b53_enable_vlan(dev, -1, dev->vlan_enabled, ds->vlan_filtering);
- 
--	b53_for_each_port(dev, i)
-+	/* Create an untagged VLAN entry for the default PVID in case
-+	 * CONFIG_VLAN_8021Q is disabled and there are no calls to
-+	 * dsa_slave_vlan_rx_add_vid() to create the default VLAN
-+	 * entry. Do this only when the tagging protocol is not
-+	 * DSA_TAG_PROTO_NONE
-+	 */
-+	b53_for_each_port(dev, i) {
-+		v = &dev->vlans[def_vid];
-+		v->members |= BIT(i);
-+		if (!b53_vlan_port_needs_forced_tagged(ds, i))
-+			v->untag = v->members;
- 		b53_write16(dev, B53_VLAN_PAGE,
- 			    B53_VLAN_PORT_DEF_TAG(i), def_vid);
-+	}
- 
- 	/* Upon initial call we have not set-up any VLANs, but upon
- 	 * system resume, we need to restore all VLAN entries.
-@@ -1460,13 +1478,6 @@ static int b53_vlan_prepare(struct dsa_switch *ds, int port,
- 	return 0;
- }
- 
--static bool b53_vlan_port_needs_forced_tagged(struct dsa_switch *ds, int port)
--{
--	struct b53_device *dev = ds->priv;
--
--	return dev->tag_protocol == DSA_TAG_PROTO_NONE && dsa_is_cpu_port(ds, port);
--}
--
- int b53_vlan_add(struct dsa_switch *ds, int port,
- 		 const struct switchdev_obj_port_vlan *vlan,
- 		 struct netlink_ext_ack *extack)
--- 
-2.25.1
+Fixes tag
 
+  Fixes: 7ee093d4f3f5 ("KVM: switch per-VM stats to u64")
+
+has these problem(s):
+
+  - Target SHA1 does not exist
+
+Maybe you meant
+
+Fixes: e3cb6fa0e2bf ("KVM: switch per-VM stats to u64")
+
+It is very hard to get the commit SHA right when the commit you are
+"fixing" is after the fix commit :-)
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/geag1LsnjWrC0Eu8s.pqwmg
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDRECEACgkQAVBC80lX
+0Gw5Fgf/W8q09hzJNqm1v0sgT+ewyzOKVD0TGhpUrUvj7BOaIqslVuzSd3uxDTed
+6S06T11efUGW8hOsW80D09Sgd/5f1iEAh3Ip4+c/4fafIuhojZCGnYwmdAXQ2awE
+2HdZ/9qQJwq6XuFvF9fq1+HW76uZqhiUl+ly6kQHus9rGfzEVFcdJWc+fP89NXd7
+nPUws8fleh340hL7SPGNtov6TrqK5Ce9E3V8jVsQ4F0J03f4wgHQ8UXWI7T8icsD
+mZvqdvXiq45EgmmF7/LwUr8r/XttqIs5JYd53wQdfqa1124vifVQz2K5MihVgZZz
+gZrjeyWXnygZfh2o1qBntcUAx8Dq0A==
+=4tKg
+-----END PGP SIGNATURE-----
+
+--Sig_/geag1LsnjWrC0Eu8s.pqwmg--
