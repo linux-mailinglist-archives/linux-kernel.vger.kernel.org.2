@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F16F23AE42C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 09:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BAD13AE42E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 09:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbhFUH1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 03:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46916 "EHLO
+        id S230526AbhFUH2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 03:28:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230463AbhFUH1t (ORCPT
+        with ESMTP id S230500AbhFUH1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 03:27:49 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67BA2C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 00:25:34 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id c5so294540pfv.8
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 00:25:34 -0700 (PDT)
+        Mon, 21 Jun 2021 03:27:55 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57BB6C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 00:25:41 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id t13so1627611pgu.11
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 00:25:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=amarulasolutions.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=CDm4Fe12mdxq5DdIPspRuN5iFshZ9EbPE5vdu5Oxm04=;
-        b=YZOmFhde+7WJEAJJcHhiE2RoCfiZ5+Xre9HWv6er8mZGYPFwx86A5pI5HvqQ2aIYJa
-         mGQl507iONMiu2Njyt//5ToHzpgInx4NxnruZObcvkMMVEwmlvPwD1V4WVl+A4Mn9tpU
-         Es22Hpp1Cbf2desjyFjngKNPKVp4vgR3lYPsE=
+        bh=lTGm4JdvD3Vra2uimR9VdWCccBLfDRHg1bYd/TgBubU=;
+        b=PFJ+240oebdQnrjo/n/RAYbIElojZ4FKbPovvcLEqUz4yBbkyVuFvAOGUWXkm30rfe
+         75bW0/Ce4RgwAgC4v3Vrk7kmCKD6qi1mkuF5f0eGUUYyW6TGPpMB4W5gED+bP1XNgU3J
+         fcUqMyXjuP9ETuCKYHTX4nrwrmYudt7xQPSBo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=CDm4Fe12mdxq5DdIPspRuN5iFshZ9EbPE5vdu5Oxm04=;
-        b=ugSkshg0YU2McQZaEtOeKtGHI14MS5xuXpjMy0XEPHNQDd4GSAwOIBt4bEfWbpA14y
-         zbAo+GpbL/CMdYVbbcRmJeEBjNh0beaRu+1POS9njK3UwEDYsk2GcEmMn1fXz41HqfpP
-         zOuIX/bDhRvAeSy2NFZbFFSNhzyeZzLOVF6rdBdVTNS9NHFPa6xJch6CyrZ5Nglyb6F8
-         WLJLJhgdvH3BNPwyA3GkHB33uCiVrOjy3lwEAPRdsQ4kYeQOKq2SXR6D3SWfMGr2OcoL
-         SthRNSFcPt+7/C2ADYRzQ+nmqia16kA+qkU1TgWbQS0uURvAHN6iCww92hJBiljQ1OSH
-         4YSg==
-X-Gm-Message-State: AOAM531wnEE7gJvyv7+Dcm47+ihHH7H3mNjSbwPR5x0Gf+xa/xcJQvit
-        sVjMh+/l95GJAkaEL2ZQlGVNcg==
-X-Google-Smtp-Source: ABdhPJxxKWIiejU1Buqyxc/58klL8XS905Uz5TdWMrAYfu8+TVmMNfyDjpogOLqWfZadZDexODr4cQ==
-X-Received: by 2002:a65:63d2:: with SMTP id n18mr22683982pgv.447.1624260333918;
-        Mon, 21 Jun 2021 00:25:33 -0700 (PDT)
+        bh=lTGm4JdvD3Vra2uimR9VdWCccBLfDRHg1bYd/TgBubU=;
+        b=Gpi7Qiq6h99DTOUBjTHM4ptNEQGlKlh4ke2DYT6G95T0FQzCcTQVfLvvY2t2Wy5Al9
+         Bbnc3NyBjNFZNnCcgMp7PtwCLKuXZ4uI4TFoXl323VQ+E2YKoE/3gVtxEe/+yATNUbKg
+         w1/MkGseSvWNfkXlik12wjBMB8K2wYTvIg8nGKnFuG36LIx57AONg3SSq5HShw4xjtuF
+         rnf1ZRbUfNM6A9zX/3wR2Gi4zQwVOXtF/SjEWFnfyhbAiPYyA/rdRS5iFfxYIofp9VAC
+         VXmsGu1isTfZwGAsef4sDHyUDQvKTllTDZ+EyuIvvQco2MrHcSSKptpkpi42NcuOuC8k
+         6dvw==
+X-Gm-Message-State: AOAM531N9qzoQZ5CyLPbIwkBqsFy0DjNFZrXyhAL23UxXRVLCJ+ABA+0
+        bsDU+z8is6HaSpzOpOEHAW1DJw==
+X-Google-Smtp-Source: ABdhPJySHSLKRyuhIZrudYf++tyEsD+0GgBX+hyzQUfgAdzn15cvpKaHOeRlq0FvEo+n97tiu5R9dg==
+X-Received: by 2002:a63:185b:: with SMTP id 27mr23058306pgy.164.1624260340808;
+        Mon, 21 Jun 2021 00:25:40 -0700 (PDT)
 Received: from localhost.localdomain ([2405:201:c00a:a884:139:e97f:a55d:7f66])
-        by smtp.gmail.com with ESMTPSA id 21sm13951294pfh.103.2021.06.21.00.25.27
+        by smtp.gmail.com with ESMTPSA id 21sm13951294pfh.103.2021.06.21.00.25.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 00:25:33 -0700 (PDT)
+        Mon, 21 Jun 2021 00:25:40 -0700 (PDT)
 From:   Jagan Teki <jagan@amarulasolutions.com>
 To:     Peng Fan <peng.fan@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
@@ -60,9 +60,9 @@ Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Milco Pratesi <milco.pratesi@engicam.com>,
         Jagan Teki <jagan@amarulasolutions.com>,
         Rob Herring <robh+dt@kernel.org>
-Subject: [RFC PATCH 8/9] arm64: dts: imx8mm: Add MIPI DSI pipeline
-Date:   Mon, 21 Jun 2021 12:54:23 +0530
-Message-Id: <20210621072424.111733-9-jagan@amarulasolutions.com>
+Subject: [RFC PATCH 9/9] arm64: dts: imx8mm-icore: Enable LVDS panel for EDIMM2.2
+Date:   Mon, 21 Jun 2021 12:54:24 +0530
+Message-Id: <20210621072424.111733-10-jagan@amarulasolutions.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210621072424.111733-1-jagan@amarulasolutions.com>
 References: <20210621072424.111733-1-jagan@amarulasolutions.com>
@@ -72,89 +72,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add MIPI DSI pipeline for i.MX8MM.
-
-Video pipeline start from eLCDIF to MIPI DSI and respective
-Panel or Bridge on the backend side.
-
-Add support for it.
+Enable LVDS Panel for Engicam i.Core MX8MMini EDIMM2.2 board.
 
 Cc: Rob Herring <robh+dt@kernel.org>
 Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
 ---
- arch/arm64/boot/dts/freescale/imx8mm.dtsi | 59 +++++++++++++++++++++++
- 1 file changed, 59 insertions(+)
+ .../freescale/imx8mm-icore-mx8mm-edimm2.2.dts | 90 +++++++++++++++++++
+ 1 file changed, 90 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-index 5f68182ed3a6..bc09fce0f6a9 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-@@ -1047,6 +1047,65 @@ lcdif: lcdif@32e00000 {
- 				interrupts = <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
- 				power-domains = <&dispmix_blk_ctl IMX8MM_BLK_CTL_PD_DISPMIX_LCDIF>;
- 				status = "disabled";
-+
-+				port {
-+					lcdif_out_dsi: endpoint {
-+						remote-endpoint = <&dsi_in_lcdif>;
-+					};
-+				};
-+			};
-+
-+			dsi: dsi@32e10000 {
-+				compatible = "fsl,imx8mm-sec-dsim";
-+				reg = <0x32e10000 0xa0>;
-+				clocks = <&clk IMX8MM_CLK_DSI_CORE>,
-+					 <&clk IMX8MM_CLK_DSI_PHY_REF>;
-+				clock-names = "bus", "phy_ref";
-+				assigned-clocks = <&clk IMX8MM_CLK_DSI_CORE>,
-+						  <&clk IMX8MM_VIDEO_PLL1_OUT>,
-+						  <&clk IMX8MM_CLK_DSI_PHY_REF>;
-+				assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_266M>,
-+							 <&clk IMX8MM_VIDEO_PLL1_BYPASS>,
-+							 <&clk IMX8MM_VIDEO_PLL1_OUT>;
-+				assigned-clock-rates = <266000000>, <594000000>, <27000000>;
-+				interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
-+				phys = <&dphy>;
-+				phy-names = "dphy";
-+				power-domains = <&dispmix_blk_ctl IMX8MM_BLK_CTL_PD_DISPMIX_MIPI_DSI>;
-+				samsung,burst-clock-frequency = <891000000>;
-+				samsung,esc-clock-frequency = <54000000>;
-+				samsung,pll-clock-frequency = <27000000>;
-+				status = "disabled";
-+
-+				ports {
-+					#address-cells = <1>;
-+					#size-cells = <0>;
-+
-+					port@0 {
-+						reg = <0>;
-+						#address-cells = <1>;
-+						#size-cells = <0>;
-+
-+						dsi_in_lcdif: endpoint@0 {
-+							reg = <0>;
-+							remote-endpoint = <&lcdif_out_dsi>;
-+						};
-+					};
-+
-+					port@1 {
-+						reg = <1>;
-+					};
-+				};
-+			};
-+
-+			dphy: dphy@32e100a4 {
-+				compatible = "fsl,imx8mm-sec-dsim-dphy";
-+				reg = <0x32e100a4 0xbc>;
-+				clocks = <&clk IMX8MM_CLK_DSI_PHY_REF>;
-+				clock-names = "phy_ref";
-+				#phy-cells = <0>;
-+				power-domains = <&dispmix_blk_ctl IMX8MM_BLK_CTL_PD_DISPMIX_MIPI_DPHY>;
-+				status = "disabled";
- 			};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-edimm2.2.dts b/arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-edimm2.2.dts
+index a4a2ada14835..f1256c9c9bd7 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-edimm2.2.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mm-icore-mx8mm-edimm2.2.dts
+@@ -14,9 +14,51 @@ / {
+ 	compatible = "engicam,icore-mx8mm-edimm2.2", "engicam,icore-mx8mm",
+ 		     "fsl,imx8mm";
  
- 			dispmix_blk_ctl: blk-ctl@32e28000 {
++	backlight: backlight {
++		compatible = "pwm-backlight";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_pwm1>;
++		pwms = <&pwm1 0 1000000>;
++		brightness-levels = <0 4 8 16 32 64 128 255>;
++		default-brightness-level = <7>;
++	};
++
+ 	chosen {
+ 		stdout-path = &uart2;
+ 	};
++
++	panel {
++		compatible = "yes-optoelectronics,ytc700tlag-05-201c";
++		backlight = <&backlight>;
++		data-mapping = "vesa-24";
++
++		port {
++			panel_out_bridge: endpoint {
++				remote-endpoint = <&bridge_out_panel>;
++			};
++		};
++	};
++};
++
++&dphy {
++	status = "okay";
++};
++
++&dsi {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "okay";
++
++	ports {
++		port@1 {
++			reg = <1>;
++
++			dsi_out_bridge: endpoint {
++				remote-endpoint = <&bridge_in_dsi>;
++				data-lanes = <0 1>;
++			};
++		};
++	};
+ };
+ 
+ &fec1 {
+@@ -35,9 +77,43 @@ &i2c4 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_i2c4>;
+ 	status = "okay";
++
++	bridge@2c {
++		compatible = "ti,sn65dsi84";
++		reg = <0x2c>;
++		enable-gpios = <&gpio3 9  GPIO_ACTIVE_HIGH>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_dsi_bridge_enable>;
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++				bridge_in_dsi: endpoint {
++					remote-endpoint = <&dsi_out_bridge>;
++				};
++			};
++
++			port@1 {
++				reg = <1>;
++				bridge_out_panel: endpoint {
++					remote-endpoint = <&panel_out_bridge>;
++				};
++			};
++		};
++	};
+ };
+ 
+ &iomuxc {
++	pinctrl_dsi_bridge_enable: dsibridgeenablegrp {
++		fsl,pins = <
++			MX8MM_IOMUXC_NAND_DATA03_GPIO3_IO9	0x19
++			MX8MM_IOMUXC_NAND_DATA02_GPIO3_IO8	0x19
++		>;
++	};
++
+ 	pinctrl_i2c2: i2c2grp {
+ 		fsl,pins = <
+ 			MX8MM_IOMUXC_I2C2_SCL_I2C2_SCL		0x400001c3
+@@ -52,6 +128,12 @@ MX8MM_IOMUXC_I2C4_SDA_I2C4_SDA		0x400001c3
+ 		>;
+ 	};
+ 
++	pinctrl_pwm1: pwm1grp {
++		fsl,pins = <
++			MX8MM_IOMUXC_SPDIF_EXT_CLK_PWM1_OUT     0x19
++		>;
++	};
++
+ 	pinctrl_uart2: uart2grp {
+ 		fsl,pins = <
+ 			MX8MM_IOMUXC_UART2_RXD_UART2_DCE_RX	0x140
+@@ -77,6 +159,14 @@ MX8MM_IOMUXC_SD1_DATA3_USDHC1_DATA3	0x1d0
+ 	};
+ };
+ 
++&lcdif {
++	status = "okay";
++};
++
++&pwm1 {
++	status = "okay";
++};
++
+ &uart2 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_uart2>;
 -- 
 2.25.1
 
