@@ -2,140 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD093AF95A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:30:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1870C3AF95C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbhFUXc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 19:32:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231580AbhFUXcZ (ORCPT
+        id S231966AbhFUXcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 19:32:47 -0400
+Received: from mail-pg1-f182.google.com ([209.85.215.182]:33438 "EHLO
+        mail-pg1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231580AbhFUXcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 19:32:25 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17451C061574;
-        Mon, 21 Jun 2021 16:30:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=a6d/NJHwlZq6AUmSTyCf+cV1g5N9qWN9aa1pKg9sprs=; b=skvz9csc7QNZpRvZn8BVFxduNn
-        1k5bo0VZG6P7/V1/B0oKE98y9KldqDWB9KKDDWZ/+aAmcfE3Ix+MRWF7Q1m0U4V1NWWbn0gw5pGBb
-        Zi0XXvgMNxBB2JcxaujqSNHoFl9OUdXxUa6Eg/atMd15BROCb2Nc583HHh9E4uEpb2FHem85i2Jfh
-        USGfekmaseZncm3Lw3+ehHp3zpG4EVN/48PDjNlqnS830swJtyCLFoc6imzGKF0v+pM7KAKZ53CO0
-        lsXK1DFPZ1BhEEG/LZOshC+FeRDrjk8HwiouDyi3eJsBZe83AJHI7+eEKdb0VjGNqrhFR/yOtJWFI
-        cvdjtaHw==;
-Received: from [2601:1c0:6280:3f0::aefb]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvTMk-0056DU-0a; Mon, 21 Jun 2021 23:30:06 +0000
-Subject: Re: linux-next: Tree for Apr 16 (objtool: warnings)
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>
-References: <20210416213625.14542675@canb.auug.org.au>
- <b3778b1a-9494-4724-5066-c000f7fb5e94@infradead.org>
- <YNCVaPtEWlsvQfjw@hirez.programming.kicks-ass.net>
- <YNCgxwLBiK9wclYJ@hirez.programming.kicks-ass.net>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <553df45e-57fe-1066-ee4f-0dcd023c24c6@infradead.org>
-Date:   Mon, 21 Jun 2021 16:30:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 21 Jun 2021 19:32:46 -0400
+Received: by mail-pg1-f182.google.com with SMTP id e20so15452608pgg.0;
+        Mon, 21 Jun 2021 16:30:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GrMPD8Q/N3dXfJ5cKEITmI3LLNMjso9lYG7XVTDPL9g=;
+        b=sP4cgqgWwsWU4sEGOCdT96zZmcCiMp5+TtI2yBs/IME2ZDvSsEA9lvPja5I0hsGTLN
+         b6uCNnDCrM+e8cj6JZTr9bf7lUjH63yd0G5PTV3J/j0ED233yQAw7wg/CxuGtX7CT+M5
+         vDaEh0jTY94ydcmF2dBRJq7Z8Xb9ouQ6trIABlg3i9Gt5CsEugzBtH21IWeJT7yGXPFv
+         zfdtFyQTm+cp+4Zr+zhfdqT9YljNvjpAikFATnkExmgo07qTMQqBdIpXjiZxbPpnhJTj
+         XBCeDFZMEQn1MaqBqoHbVE2Z5P8l0tWpflv8Y1X+Whl3+zhegdmhuYmPgT4Bw+k2emAR
+         z3gw==
+X-Gm-Message-State: AOAM531VAYEVSIzcCndo9JFXYyMby+FW+D/v4l0Rr98S3RfpRLDVWRWW
+        OfjUkL/tc8NMIc0Av2iNYo8=
+X-Google-Smtp-Source: ABdhPJzTFvEUMxNJ8Q96FLYGL45LpBqAZ/xRXBF7ssJPlgsoSrFzzZmLIai2l4mBmUuiJi9pX2BlUg==
+X-Received: by 2002:a63:2fc4:: with SMTP id v187mr881795pgv.59.1624318230604;
+        Mon, 21 Jun 2021 16:30:30 -0700 (PDT)
+Received: from localhost ([173.239.198.97])
+        by smtp.gmail.com with ESMTPSA id y1sm4991356pgr.70.2021.06.21.16.30.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 16:30:29 -0700 (PDT)
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     minchan@kernel.org, gregkh@linuxfoundation.org, jeyu@kernel.org,
+        ngupta@vflare.org, sergey.senozhatsky.work@gmail.com
+Cc:     mcgrof@kernel.org, axboe@kernel.dk, mbenes@suse.com,
+        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
+        jikos@kernel.org, rostedt@goodmis.org, peterz@infradead.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/3] zram: fix few sysfs races
+Date:   Mon, 21 Jun 2021 16:30:10 -0700
+Message-Id: <20210621233013.562641-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <YNCgxwLBiK9wclYJ@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/21/21 7:23 AM, Peter Zijlstra wrote:
-> On Mon, Jun 21, 2021 at 03:34:32PM +0200, Peter Zijlstra wrote:
->> On Fri, Apr 16, 2021 at 10:50:49AM -0700, Randy Dunlap wrote:
->>> On 4/16/21 4:36 AM, Stephen Rothwell wrote:
->>>> Hi all,
->>>>
->>>> Changes since 20210415:
->>>
->>>
->>> on x86_64, objtool is not liking retpoline.o:
->>>
->>> $ gcc --version
->>> gcc (SUSE Linux) 7.5.0
->>>
->>>
->>> Is there already a patch for these?
->>>
->>>
->>> ===== build-r8840.out =====
->>> arch/x86/lib/retpoline.o: warning: objtool: __x86_indirect_alt_call_rax()+0x0: call without frame pointer save/setup
->>> arch/x86/lib/retpoline.o: warning: objtool: __x86_indirect_alt_call_rbx()+0x0: call without frame pointer save/setup
->>> arch/x86/lib/retpoline.o: warning: objtool: __x86_indirect_alt_call_rcx()+0x0: call without frame pointer save/setup
->>> arch/x86/lib/retpoline.o: warning: objtool: __x86_indirect_alt_call_rdx()+0x0: call without frame pointer save/setup
->>> arch/x86/lib/retpoline.o: warning: objtool: __x86_indirect_alt_call_rsi()+0x0: call without frame pointer save/setup
->>> arch/x86/lib/retpoline.o: warning: objtool: __x86_indirect_alt_call_rdi()+0x0: call without frame pointer save/setup
->>> arch/x86/lib/retpoline.o: warning: objtool: __x86_indirect_alt_call_rbp()+0x0: call without frame pointer save/setup
->>> arch/x86/lib/retpoline.o: warning: objtool: __x86_indirect_alt_call_r8()+0x0: call without frame pointer save/setup
->>> arch/x86/lib/retpoline.o: warning: objtool: __x86_indirect_alt_call_r9()+0x0: call without frame pointer save/setup
->>> arch/x86/lib/retpoline.o: warning: objtool: __x86_indirect_alt_call_r10()+0x0: call without frame pointer save/setup
->>> arch/x86/lib/retpoline.o: warning: objtool: __x86_indirect_alt_call_r11()+0x0: call without frame pointer save/setup
->>> arch/x86/lib/retpoline.o: warning: objtool: __x86_indirect_alt_call_r12()+0x0: call without frame pointer save/setup
->>> arch/x86/lib/retpoline.o: warning: objtool: __x86_indirect_alt_call_r13()+0x0: call without frame pointer save/setup
->>> arch/x86/lib/retpoline.o: warning: objtool: __x86_indirect_alt_call_r14()+0x0: call without frame pointer save/setup
->>> arch/x86/lib/retpoline.o: warning: objtool: __x86_indirect_alt_call_r15()+0x0: call without frame pointer save/setup
->>
->> Damn, sorry I missed this. I know what the problem is, but I've yet to
->> find a solution that's not terrible... hold on.
-> 
-> ---
-> Subject: objtool/x86: Ignore __x86_indirect_alt_* symbols
-> From: Peter Zijlstra <peterz@infradead.org>
-> Date: Mon Jun 21 16:13:55 CEST 2021
-> 
-> Because the __x86_indirect_alt* symbols are just that, objtool will
-> try and validate them as regular symbols, instead of the alternative
-> replacements that they are.
-> 
-> This goes sideways for FRAME_POINTER=y builds; which generate a fair
-> amount of warnings.
-> 
-> Fixes: 9bc0bb50727c ("objtool/x86: Rewrite retpoline thunk calls")
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+This v3 changes the approach for the deadlock fix with wrappers which
+provide the same solution of the try_module_get(). This is less code,
+should be easier to review.
 
-Looks good in my testing.  Thanks.
+The last patch is also new. I dropped the bdget() stuff for the block
+device and instead am doing a direct kobject fetch as well as a bus get to
+provide a more generic solution without having to require each type to
+implement its own refcounts.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+This series also available on my linux-next repository:
 
-> ---
->  arch/x86/lib/retpoline.S |    4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> --- a/arch/x86/lib/retpoline.S
-> +++ b/arch/x86/lib/retpoline.S
-> @@ -58,12 +58,16 @@ SYM_FUNC_START_NOALIGN(__x86_indirect_al
->  2:	.skip	5-(2b-1b), 0x90
->  SYM_FUNC_END(__x86_indirect_alt_call_\reg)
->  
-> +STACK_FRAME_NON_STANDARD(__x86_indirect_alt_call_\reg)
-> +
->  SYM_FUNC_START_NOALIGN(__x86_indirect_alt_jmp_\reg)
->  	ANNOTATE_RETPOLINE_SAFE
->  1:	jmp	*%\reg
->  2:	.skip	5-(2b-1b), 0x90
->  SYM_FUNC_END(__x86_indirect_alt_jmp_\reg)
->  
-> +STACK_FRAME_NON_STANDARD(__x86_indirect_alt_jmp_\reg)
-> +
->  .endm
->  
->  /*
-> 
+https://git.kernel.org/pub/scm/linux/kernel/git/mcgrof/linux-next.git/log/?h=20210427-sysfs-fix-races-v5
 
+Luis Chamberlain (3):
+  zram: fix crashes due to use of cpu hotplug multistate
+  zram: fix deadlock with sysfs attribute usage and driver removal
+  drivers/base/core: refcount kobject and bus on device attribute read /
+    store
+
+ drivers/base/base.h           |   2 +
+ drivers/base/bus.c            |   4 +-
+ drivers/base/core.c           |  42 +++++++++-
+ drivers/block/zram/zram_drv.c | 141 ++++++++++++++++++++++++----------
+ drivers/block/zram/zram_drv.h |  40 ++++++++++
+ 5 files changed, 181 insertions(+), 48 deletions(-)
 
 -- 
-~Randy
+2.30.2
 
