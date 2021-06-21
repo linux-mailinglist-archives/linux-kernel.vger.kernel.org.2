@@ -2,234 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D94B3AE94B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B79C3AE94A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:42:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbhFUMpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 08:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhFUMpR (ORCPT
+        id S229946AbhFUMpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 08:45:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49693 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229736AbhFUMo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 08:45:17 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F32C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 05:43:03 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id q190so27359703qkd.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 05:43:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uged.al; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T+LmD+kQYl9KWjs3WNslIqBoSlOPQuU2PMBDArJmqyA=;
-        b=VdvIKab7G0jo2Iatm0bZKpo6b5x9q7TuenDRzg4xMBROXbo7dXHRMAuHUNRT4X5X49
-         MP5OCswylFTAdaGoRmn3zYkews7eHfimEYiWYETJTNlt40I+FhRNAsvY7O5doUZ967WK
-         h5ODAJyX62fcITASLyuvxRVuhB5feJLwagG0dX2Lkt03GOAA1ScLgmAMdl5ItYFe8toY
-         ffnSrMcZVU+XsUA9iQhYsHnUYCb6oaD/SheagejDd4E1gyk8Zi8VyKoWhLNkxzA9QZ+g
-         UM8K/vDk8w4o5lGofyMjWvP+q0IqKupZNlK9R/Bul046zsn2cll3BhqdCSOOUzYcAfF/
-         0C/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T+LmD+kQYl9KWjs3WNslIqBoSlOPQuU2PMBDArJmqyA=;
-        b=hz+y0HHyEyeOmk/cZctjRLSEqse8GUfUeZliHl5yo2afFrLzZDqvIQzmdzp1SAQmpU
-         1h/OYE9osXr43+uUccRRxXPTmDHnnSYfp6lAA/jbY/t9uKOPF5e6mTLTh89WC9hKhaeJ
-         O3ZU8ClS1Bv/CblZkfLeLLYKlVfG5/ZVPYWtfpp3LxHVhoz7yTKw9U518ZYxHE+9Q24W
-         XWvZYJ01iQXwFkA9VxgkAcvNt8Gsa6THiwZXzROckRAL3M+3myXnvkJBuyyq07+40118
-         vgWzsvYT/9Ncn/QtOLzUC3N0/pWtOXKp6KDsw1UayMt7kMxfDMBP3aFkSJEObOo/ZGk9
-         7SeA==
-X-Gm-Message-State: AOAM531XIXrw3uh5DF6uPodLHnFh1CA1NJVqumvwWPVq5ls6xILILMB6
-        WShu8kIPU/XIaEZjT2V5Nqvv3MCerwX7m6cL0DDeT5d7ll3OzQ+WnfI=
-X-Google-Smtp-Source: ABdhPJwfM0Hs1tHizl/QHRu2PUDcX/oBgvfaGVKpMS7oF13qGoYd12AouIA0LqBDOFXoR82/abxpkAcqAhub6+rGmYg=
-X-Received: by 2002:ae9:dd06:: with SMTP id r6mr23422853qkf.74.1624279382697;
- Mon, 21 Jun 2021 05:43:02 -0700 (PDT)
+        Mon, 21 Jun 2021 08:44:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624279365;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=U7oodMi/ZKM5fungj76xZx+pwDIdyEYXUIeRXwel/y0=;
+        b=Qv7RE2pAcNGuTx4duS3SisefBo7bdNshd6tuuCS+RHeiXnen9yIT2bacKw6Yq2tmOZ16RQ
+        msdD29GVcGbGO15AjphUixStqmVygLXwlTQM7DEiWIC8/Xf9QyxwrLAMKeR1/A1VWAIqzl
+        mRpn4JNp5xAb6XTRE+VnCqBoi0/z7tU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-538-vr0VM0sKM4q1s2lK2oXTDA-1; Mon, 21 Jun 2021 08:42:42 -0400
+X-MC-Unique: vr0VM0sKM4q1s2lK2oXTDA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 28FDD100CCC2;
+        Mon, 21 Jun 2021 12:42:41 +0000 (UTC)
+Received: from laptop.redhat.com (ovpn-112-27.ams2.redhat.com [10.36.112.27])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D911E60871;
+        Mon, 21 Jun 2021 12:42:38 +0000 (UTC)
+From:   Eric Auger <eric.auger@redhat.com>
+To:     eric.auger.pro@gmail.com, eric.auger@redhat.com,
+        stable@vger.kernel.org, maz@kernel.org,
+        linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu
+Subject: [PATCH for-stable-5.4] KVM: arm/arm64: Fix KVM_VGIC_V3_ADDR_TYPE_REDIST read
+Date:   Mon, 21 Jun 2021 14:42:32 +0200
+Message-Id: <20210621124232.793383-1-eric.auger@redhat.com>
 MIME-Version: 1.0
-References: <9D4A658A-5F77-4C33-904A-126E6052B205@linux.vnet.ibm.com>
- <CAFpoUr3g5t3Z0BtW4-jnYomc3cdY=V5=Zt94-C+fHOjGWa107w@mail.gmail.com>
- <CAKfTPtC=aXasuSNvn+A3152-4xoOTWROhJpZAVq6RLh1Hacpng@mail.gmail.com>
- <CAFpoUr2o2PVPOx+AvatjjUvqPTyNKE3C6oXejyU3HVMmtCnzvQ@mail.gmail.com>
- <6D1F875D-58E9-4A55-B0C3-21D5F31EDB76@linux.vnet.ibm.com> <CAFpoUr0iWFTq2grtnX_EH6KnZLZQCg1o6_yv1gfDK8WdbHmUCA@mail.gmail.com>
-In-Reply-To: <CAFpoUr0iWFTq2grtnX_EH6KnZLZQCg1o6_yv1gfDK8WdbHmUCA@mail.gmail.com>
-From:   Odin Ugedal <odin@uged.al>
-Date:   Mon, 21 Jun 2021 14:42:23 +0200
-Message-ID: <CAFpoUr3Wy9raHx+Dc0S8TB_Xi=E+Epsh_pA3DEFZP4eKf7s07A@mail.gmail.com>
-Subject: Re: [powerpc][5.13.0-rc7] Kernel warning (kernel/sched/fair.c:401)
- while running LTP tests
-To:     Odin Ugedal <odin@uged.al>
-Cc:     Sachin Sant <sachinp@linux.vnet.ibm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+When reading the base address of the a REDIST region
+through KVM_VGIC_V3_ADDR_TYPE_REDIST we expect the
+redistributor region list to be populated with a single
+element.
 
-Did some more research, and it looks like this is what happens:
+However list_first_entry() expects the list to be non empty.
+Instead we should use list_first_entry_or_null which effectively
+returns NULL if the list is empty.
 
-$ tree /sys/fs/cgroup/ltp/ -d --charset=ascii
-/sys/fs/cgroup/ltp/
-|-- drain
-`-- test-6851
-    `-- level2
-        |-- level3a
-        |   |-- worker1
-        |   `-- worker2
-        `-- level3b
-            `-- worker3
+Fixes: dbd9733ab674 ("KVM: arm/arm64: Replace the single rdist region by a list")
+Cc: <Stable@vger.kernel.org> # v5.4
+Signed-off-by: Eric Auger <eric.auger@redhat.com>
+Reported-by: Gavin Shan <gshan@redhat.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210412150034.29185-1-eric.auger@redhat.com
+---
+ virt/kvm/arm/vgic/vgic-kvm-device.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Timeline (ish):
-- worker3 gets throttled
-- level3b is decayed, since it has no more load
-- level2 get throttled
-- worker3 get unthrottled
-- level2 get unthrottled
-  - worker3 is added to list
-  - level3b is not added to list, since nr_running==0 and is decayed
+diff --git a/virt/kvm/arm/vgic/vgic-kvm-device.c b/virt/kvm/arm/vgic/vgic-kvm-device.c
+index 44419679f91a..5eaede3e3b5a 100644
+--- a/virt/kvm/arm/vgic/vgic-kvm-device.c
++++ b/virt/kvm/arm/vgic/vgic-kvm-device.c
+@@ -87,8 +87,8 @@ int kvm_vgic_addr(struct kvm *kvm, unsigned long type, u64 *addr, bool write)
+ 			r = vgic_v3_set_redist_base(kvm, 0, *addr, 0);
+ 			goto out;
+ 		}
+-		rdreg = list_first_entry(&vgic->rd_regions,
+-					 struct vgic_redist_region, list);
++		rdreg = list_first_entry_or_null(&vgic->rd_regions,
++						 struct vgic_redist_region, list);
+ 		if (!rdreg)
+ 			addr_ptr = &undef_value;
+ 		else
+-- 
+2.26.3
 
-
-The attached diff (based on
-https://lore.kernel.org/lkml/20210518125202.78658-3-odin@uged.al/)
-fixes the issue for me. Not the most elegant solution, but the
-simplest one as of now, and to show what is wrong.
-
-Any thoughts Vincent?
-
-Thanks
-Odin
-
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index bfaa6e1f6067..aa32e9c29efd 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -376,7 +376,8 @@ static inline bool list_add_leaf_cfs_rq(struct
-cfs_rq *cfs_rq)
-        return false;
- }
-
--static inline void list_del_leaf_cfs_rq(struct cfs_rq *cfs_rq)
-+/* Returns 1 if cfs_rq was present in the list and removed */
-+static inline bool list_del_leaf_cfs_rq(struct cfs_rq *cfs_rq)
- {
-        if (cfs_rq->on_list) {
-                struct rq *rq = rq_of(cfs_rq);
-@@ -393,7 +394,9 @@ static inline void list_del_leaf_cfs_rq(struct
-cfs_rq *cfs_rq)
-
-                list_del_rcu(&cfs_rq->leaf_cfs_rq_list);
-                cfs_rq->on_list = 0;
-+               return 1;
-        }
-+       return 0;
- }
-
- static inline void assert_list_leaf_cfs_rq(struct rq *rq)
-@@ -3298,24 +3301,6 @@ static inline void cfs_rq_util_change(struct
-cfs_rq *cfs_rq, int flags)
-
- #ifdef CONFIG_SMP
- #ifdef CONFIG_FAIR_GROUP_SCHED
--
--static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
--{
--       if (cfs_rq->load.weight)
--               return false;
--
--       if (cfs_rq->avg.load_sum)
--               return false;
--
--       if (cfs_rq->avg.util_sum)
--               return false;
--
--       if (cfs_rq->avg.runnable_sum)
--               return false;
--
--       return true;
--}
--
- /**
-  * update_tg_load_avg - update the tg's load avg
-  * @cfs_rq: the cfs_rq whose avg changed
-@@ -4109,11 +4094,6 @@ static inline void update_misfit_status(struct
-task_struct *p, struct rq *rq)
-
- #else /* CONFIG_SMP */
-
--static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
--{
--       return true;
--}
--
- #define UPDATE_TG      0x0
- #define SKIP_AGE_LOAD  0x0
- #define DO_ATTACH      0x0
-@@ -4771,10 +4751,11 @@ static int tg_unthrottle_up(struct task_group
-*tg, void *data)
-        if (!cfs_rq->throttle_count) {
-                cfs_rq->throttled_clock_task_time += rq_clock_task(rq) -
-                                             cfs_rq->throttled_clock_task;
--
--               /* Add cfs_rq with load or one or more already running
-entities to the list */
--               if (!cfs_rq_is_decayed(cfs_rq) || cfs_rq->nr_running)
-+               if (cfs_rq->insert_on_unthrottle) {
-                        list_add_leaf_cfs_rq(cfs_rq);
-+                       if (tg->parent)
-+
-tg->parent->cfs_rq[cpu_of(rq)]->insert_on_unthrottle = true;
-+                       }
-        }
-
-        return 0;
-@@ -4788,7 +4769,7 @@ static int tg_throttle_down(struct task_group
-*tg, void *data)
-        /* group is entering throttled state, stop time */
-        if (!cfs_rq->throttle_count) {
-                cfs_rq->throttled_clock_task = rq_clock_task(rq);
--               list_del_leaf_cfs_rq(cfs_rq);
-+               cfs_rq->insert_on_unthrottle = list_del_leaf_cfs_rq(cfs_rq);
-        }
-        cfs_rq->throttle_count++;
-
-@@ -8019,6 +8000,23 @@ static bool __update_blocked_others(struct rq
-*rq, bool *done)
-
- #ifdef CONFIG_FAIR_GROUP_SCHED
-
-+static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
-+{
-+       if (cfs_rq->load.weight)
-+               return false;
-+
-+       if (cfs_rq->avg.load_sum)
-+               return false;
-+
-+       if (cfs_rq->avg.util_sum)
-+               return false;
-+
-+       if (cfs_rq->avg.runnable_sum)
-+               return false;
-+
-+       return true;
-+}
-+
- static bool __update_blocked_fair(struct rq *rq, bool *done)
- {
-        struct cfs_rq *cfs_rq, *pos;
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index a189bec13729..12a707d99ee6 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -602,6 +602,7 @@ struct cfs_rq {
-        u64                     throttled_clock_task_time;
-        int                     throttled;
-        int                     throttle_count;
-+       int                     insert_on_unthrottle;
-        struct list_head        throttled_list;
- #endif /* CONFIG_CFS_BANDWIDTH */
- #endif /* CONFIG_FAIR_GROUP_SCHED */
