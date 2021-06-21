@@ -2,101 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD283AE744
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18AE03AE74C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230076AbhFUKlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 06:41:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbhFUKlD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 06:41:03 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 163F6C061574;
-        Mon, 21 Jun 2021 03:38:48 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id q64so22784285qke.7;
-        Mon, 21 Jun 2021 03:38:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wqPsiTjn3y34NIB0txQqm3bYJeUD7nTZah6VlYwyDvw=;
-        b=fRNs9Zi/uOSEbURx7ABqOmbwARWVSC+180v2trvI2kOex9/oQ27tA0DkbHuk3l/EHt
-         r//uDv/OPjfvnvcl8/dFZ3QfK6gEN0y0nLKvZLKZ8hS8PphiXnrBifC3jcKEbJN9dOrX
-         Hm4tNTwPjkywwVmCYRVRGOureCrWwDxE7WqELo2Cdm5S0AthAAw8ECaC9hhJBbhhLmLI
-         DqnCS3chMhsJtkV7RWtdhL7Y0+UKX+K3nrI+VR52LJ0+Xf3Cjl0mWp9pa0/FuSGhBmDN
-         OyVyZSHLKKrjdrEmf91VX+aSa2i30vuP2SK+miGkxHbn7G4pRazjjgPrxRKlBF7cvc8m
-         fLyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wqPsiTjn3y34NIB0txQqm3bYJeUD7nTZah6VlYwyDvw=;
-        b=SUpBHuVSOxtJMKPLHNOgDXg/KV6s7b+lmmtsX0Fb3jPib6stDExrO1zmtGlVM3QKfj
-         xaoNUXBe7Z5cm5kL7SqYbf7DU0+y8QcB40xiqVaEE/LA+Do5We/n9hC+8Kv3bAgwzAW4
-         LfubmTMdpEmuXQhITMOnuKTVGlL8NSBIjxmeKCB42akGhFuSk2azh0rFKEkPdIlV2/0o
-         p1yb72Kk676Xtkhgox1UpRmTsbcynLwtVsE2VSKdxtVdvWPkRq8B9JgrKdgKNKnTKwOI
-         q4GxNN3t+TOTtmHzgtIkDK+ThMSGd0p2Jsp7kDLUukqM0g6AQfrV1dC8EUv4kbFtzy2L
-         tHYg==
-X-Gm-Message-State: AOAM530RKyjEMCTitGCwdbl4S16TX0Lv2pyjwopZ61+ZkK+KXVaKI3qC
-        NBfAbYwYy/YUV3GE9VpcMeM=
-X-Google-Smtp-Source: ABdhPJzEHDMzYkCX84hBARARNxsv87s7p5D0N2hRoR9/criB4+J8tMwOUsEUpQgnAGCQc4MHl9Unog==
-X-Received: by 2002:a37:46c2:: with SMTP id t185mr20561684qka.466.1624271927300;
-        Mon, 21 Jun 2021 03:38:47 -0700 (PDT)
-Received: from localhost.localdomain (email.nillco.net. [139.177.202.100])
-        by smtp.gmail.com with ESMTPSA id q25sm2149031qkm.33.2021.06.21.03.38.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 03:38:46 -0700 (PDT)
-From:   Rong Zhang <ulin0208@gmail.com>
-To:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, jmorris@namei.org,
-        yoshfuji@linux-ipv6.org, kaber@trash.net
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Rong Zhang <ulin0208@gmail.com>
-Subject: [PATCH] tcp: fix ipv6 tproxy doesn't work on kernel 4.4.x
-Date:   Mon, 21 Jun 2021 18:38:29 +0800
-Message-Id: <20210621103829.506112-1-ulin0208@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        id S230335AbhFUKmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 06:42:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36812 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229707AbhFUKl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 06:41:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42CFB61153;
+        Mon, 21 Jun 2021 10:39:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624271985;
+        bh=zgKn2cpuQHF+2qa0GGW/2HNtTJsh2dw9eYQVZ+5waVU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S11sfwUH0Q+XqzZ87eOI+NfxdnxsCDI/vqWFfQrYU4yBXmqChGeKV8ohh1VOPMbsl
+         4FJVPZzgtldHmZMI2fqXvopHcPFJVSMZa2TskjNlgsWf2lK5nuUj5AhUSi2eBQ0dxJ
+         YmfB63OjnEa8vOPiMPTj1gzru8FUikCB5/ta9ZZl02dbuMELA8ZheguLos+PWO5i8Q
+         pNyzEHjdUJiBsHHdPLgL+CDWYM6R8Qi4+afBd/fpZSR2nRNVVBtM8gSPA/vKw4Ilkf
+         HstdyyHCgr4F/6kVx2ycdla2wutHfqEZXCOBACBipLPbXdq8ZKf41yAihi0WreM5/a
+         R4ieau/vXvsvQ==
+Date:   Mon, 21 Jun 2021 11:39:23 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] spi: Remove unneeded parentheses in spi_map_buf()
+Message-ID: <20210621103923.GA4094@sirena.org.uk>
+References: <20210619111526.27776-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="DocE+STaALJfprDB"
+Content-Disposition: inline
+In-Reply-To: <20210619111526.27776-1-andriy.shevchenko@linux.intel.com>
+X-Cookie: I hate dying.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Not only in tcp_v4_init_req() but also in tcp_v6_init_req()
-need to initialize no_srccheck, otherwise ipv6 tproxy doesn't work.
-So move it before init_req().
 
-Signed-off-by: Rong Zhang <ulin0208@gmail.com>
----
- net/ipv4/tcp_input.c | 1 +
- net/ipv4/tcp_ipv4.c  | 1 -
- 2 files changed, 1 insertion(+), 1 deletion(-)
+--DocE+STaALJfprDB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
-index 0919183b003f..e2bfcb30564d 100644
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -6360,6 +6360,7 @@ int tcp_conn_request(struct request_sock_ops *rsk_ops,
- 
- 	tmp_opt.tstamp_ok = tmp_opt.saw_tstamp;
- 	tcp_openreq_init(req, &tmp_opt, skb, sk);
-+	inet_rsk(req)->no_srccheck = inet_sk(sk)->transparent;
- 
- 	/* Note: tcp_v6_init_req() might override ir_iif for link locals */
- 	inet_rsk(req)->ir_iif = sk->sk_bound_dev_if;
-diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
-index 3826745a160e..91c7a76f3bb3 100644
---- a/net/ipv4/tcp_ipv4.c
-+++ b/net/ipv4/tcp_ipv4.c
-@@ -1206,7 +1206,6 @@ static void tcp_v4_init_req(struct request_sock *req,
- 
- 	sk_rcv_saddr_set(req_to_sk(req), ip_hdr(skb)->daddr);
- 	sk_daddr_set(req_to_sk(req), ip_hdr(skb)->saddr);
--	ireq->no_srccheck = inet_sk(sk_listener)->transparent;
- 	RCU_INIT_POINTER(ireq->ireq_opt, tcp_v4_save_options(skb));
- }
- 
--- 
-2.32.0
+On Sat, Jun 19, 2021 at 02:15:26PM +0300, Andy Shevchenko wrote:
+> The boolean expression to get kmap_buf is hard to read due to
+> too many unneeded parentheses. Remove them for good.
 
+> -	const bool kmap_buf = ((unsigned long)buf >= PKMAP_BASE &&
+> -				(unsigned long)buf < (PKMAP_BASE +
+> -					(LAST_PKMAP * PAGE_SIZE)));
+> +	const bool kmap_buf = (unsigned long)buf >= PKMAP_BASE &&
+> +			      (unsigned long)buf < (PKMAP_BASE + LAST_PKMAP * PAGE_SIZE);
+
+No, I think this makes things worse - to the extent there's an issue
+here it's not excessive brackets.
+
+--DocE+STaALJfprDB
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDQbFoACgkQJNaLcl1U
+h9CtEwf/XSDSy4m8faQ1XcL20EMHIe5FLhxPqxqCdJojJeSAoI/3wBkqI4OkCdDy
+tLzzQzENnoQGrf1Xc4mT/9iLLfAevqvypIStosLZkGQhqIFZSsnigVMGD3gYQYxN
+zNytzmYr//S2OIqo2zES4A6Btw65NHZ0iHtwT4JSN+M3KHQZHtYAxJ0uQ7bRG0ey
+UU1zLC6uoCfb9MMi0eSf2/lUfG71yAViQp8psfMnNebQBYcJQErFOfhVgywvAWkO
+4ndbQo1BmioPz/sJXuLHh4E+Ld/iZ7WJLHv3BKH+3i35c1QV0q7ta+noql2bEc87
+9YUyrr50yFREVOXUgaBfJMYX5GBUeQ==
+=E/Oj
+-----END PGP SIGNATURE-----
+
+--DocE+STaALJfprDB--
