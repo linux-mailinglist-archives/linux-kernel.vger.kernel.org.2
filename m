@@ -2,199 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B7DE3AEB37
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:26:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E286C3AEB35
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:26:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbhFUO3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 10:29:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbhFUO3B (ORCPT
+        id S230057AbhFUO26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 10:28:58 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:44788 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229765AbhFUO25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 10:29:01 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65925C061574;
-        Mon, 21 Jun 2021 07:26:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=+FLy97mYiZUhpCmnjYrs9sM1itPFoTYvaxLbjIGV0Vo=; b=ra6UFsNTyawCbvwUOQ4AmcVjY
-        ZUEnTXHRmXzkEE3aIfpcLE3COwLKLFVy2ZBqsybs9U7dwlMCYflbJgWW/jdbfGAnL8sY0b7mXq3MZ
-        +GBGwc8815KLbSQP17ex7rB5Fm/Fndju7fS64XbZErWb36BvqDelQtDONcKy2VAK4Gmtw5i0dV8lo
-        7IRdiAgloL0DaeTeI3OVatJPcBHqIScdDl+1efRNgJpR4KGtFouyAvjteszHpTs26L0BdgBUGHQZT
-        za8H9bdN+7EOovuOrhR3/1xW3Vs5/HFiXHQMl12MNd34Lq61deVnGb2GJzBi34taHIDpdXnjPtDWi
-        aLw7i5Yww==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45226)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lvKsh-0004FE-NN; Mon, 21 Jun 2021 15:26:31 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lvKse-0002xR-Iz; Mon, 21 Jun 2021 15:26:28 +0100
-Date:   Mon, 21 Jun 2021 15:26:28 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Steen Hegelund <steen.hegelund@microchip.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Madalin Bucur <madalin.bucur@oss.nxp.com>,
-        Mark Einon <mark.einon@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Simon Horman <simon.horman@netronome.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-        Lars Povlsen <lars.povlsen@microchip.com>
-Subject: Re: [PATCH net-next v4 03/10] net: sparx5: add hostmode with phylink
- support
-Message-ID: <20210621142628.GM22278@shell.armlinux.org.uk>
-References: <20210615085034.1262457-1-steen.hegelund@microchip.com>
- <20210615085034.1262457-4-steen.hegelund@microchip.com>
+        Mon, 21 Jun 2021 10:28:57 -0400
+Received: by mail-ot1-f54.google.com with SMTP id f3-20020a0568301c23b029044ce5da4794so11285387ote.11;
+        Mon, 21 Jun 2021 07:26:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B4ch28GCk8dk3pjO3ELnpUzX8wYQmHs4b0pRuquJHU0=;
+        b=aiEbP9rjkl8X9M/ffhaE0HhKzYSakduiDCKdf1X64d9mXFinv6WCsHll2q1aov+g1l
+         KyZm9OsFLhzr40d5LhasQaUZW9i2dIpUuM6fh6AG2WzL46irxqs1fONYUDJB3BLh91wJ
+         FhURQpvMF/YXvXNx4D4GKSlxNJ8C3gxtLe0NPZy0GEmd4xsHzmwq9eedPlSj266pMf/t
+         yqczYxvAahWWkZMc+9JeXW2zduPWlZI4nwVi0FFVeEC1Lg26w+RY4OSN02szzQcLB+/y
+         sDooFgUdKg98cRz1+BsiSUvMOXVF1jbH3ptAPrpzLdg0fr+dLAXCOYbaOUZdkQeMaYKi
+         Y1yQ==
+X-Gm-Message-State: AOAM532XrVkiwsyGAFK7urdbCvGKrkxRUBR+qJ5w0ba1o6vYPdY6l3T1
+        5w7S1YAKroyJWTJnT8pml7+5APjPxE3FRKzXutg=
+X-Google-Smtp-Source: ABdhPJzDnNFhrdHd6ahLHE6AS1IKT/t0Q0mAbMRbRvZozDJwoRpfpAgJ2D3zAIXGFY0IclGrfIazuQx+P8u4wJcTOi4=
+X-Received: by 2002:a05:6830:1bf7:: with SMTP id k23mr22277783otb.206.1624285602346;
+ Mon, 21 Jun 2021 07:26:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210615085034.1262457-4-steen.hegelund@microchip.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+References: <5c8da9d378dee39d9c6063713b093f51d271fa9d.1623825358.git.viresh.kumar@linaro.org>
+ <c31424b7962608eb13f946a665ba6848c4986856.1623986349.git.viresh.kumar@linaro.org>
+ <CAJZ5v0h37bs0xLUCeD7ZuZfXLPBx=6Mpr-Y+Ef=qcnDA4aoLbQ@mail.gmail.com>
+ <20210621030949.tng5xzq7dm7ngaez@vireshk-i7> <CAJZ5v0jM3nusF1fjcMHLRHPk2PhFErhBXijpWHiSNnunzPFjeA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jM3nusF1fjcMHLRHPk2PhFErhBXijpWHiSNnunzPFjeA@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 21 Jun 2021 16:26:31 +0200
+Message-ID: <CAJZ5v0iHDk6Te0KogYToWSyquNcpS2edQzp1UbW3KFAVL31Hnw@mail.gmail.com>
+Subject: Re: [PATCH V3 2/3] cpufreq: intel_pstate: Migrate away from
+ ->stop_cpu() callback
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dirk Brandewie <dirk.brandewie@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 10:50:27AM +0200, Steen Hegelund wrote:
-> This patch adds netdevs and phylink support for the ports in the switch.
-> It also adds register based injection and extraction for these ports.
-> 
-> Frame DMA support for injection and extraction will be added in a later
-> series.
-> 
-> Signed-off-by: Steen Hegelund <steen.hegelund@microchip.com>
-> Signed-off-by: Bjarni Jonasson <bjarni.jonasson@microchip.com>
-> Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+On Mon, Jun 21, 2021 at 4:17 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Mon, Jun 21, 2021 at 5:09 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> >
+> > On 18-06-21, 14:00, Rafael J. Wysocki wrote:
+> > > On Fri, Jun 18, 2021 at 5:22 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > > >
+> > > > commit 367dc4aa932b ("cpufreq: Add stop CPU callback to cpufreq_driver
+> > > > interface") added the stop_cpu() callback to allow the drivers to do
+> > > > clean up before the CPU is completely down and its state can't be
+> > > > modified.
+> > > >
+> > > > At that time the CPU hotplug framework used to call the cpufreq core's
+> > > > registered notifier for different events like CPU_DOWN_PREPARE and
+> > > > CPU_POST_DEAD. The stop_cpu() callback was called during the
+> > > > CPU_DOWN_PREPARE event.
+> > > >
+> > > > This is no longer the case, cpuhp_cpufreq_offline() is called only once
+> > > > by the CPU hotplug core now and we don't really need to separately
+> > > > call stop_cpu() for cpufreq drivers.
+> > > >
+> > > > Migrate to using the exit() and offline() callbacks instead of
+> > > > stop_cpu().
+> > > >
+> > > > We need to clear util hook from both the callbacks, exit() and
+> > > > offline(), since it is possible that only exit() gets called sometimes
+> > > > (specially on errors) or both get called at other times.
+> > > > intel_pstate_clear_update_util_hook() anyway have enough protection in
+> > > > place if it gets called a second time and will return early then.
+> > > >
+> > > > Cc: Dirk Brandewie <dirk.brandewie@gmail.com>
+> > > > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > > > ---
+> > > > V2->V3:
+> > > > - Update intel_pstate_cpu_offline() as well.
+> > > > - Improved commit log.
+> > > >
+> > > >  drivers/cpufreq/intel_pstate.c | 12 ++++--------
+> > > >  1 file changed, 4 insertions(+), 8 deletions(-)
+> > > >
+> > > > diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+> > > > index 0e69dffd5a76..8f8a2d9d7daa 100644
+> > > > --- a/drivers/cpufreq/intel_pstate.c
+> > > > +++ b/drivers/cpufreq/intel_pstate.c
+> > > > @@ -2335,6 +2335,8 @@ static int intel_pstate_cpu_offline(struct cpufreq_policy *policy)
+> > > >
+> > > >         pr_debug("CPU %d going offline\n", cpu->cpu);
+> > > >
+> > > > +       intel_pstate_clear_update_util_hook(policy->cpu);
+> > > > +
+> > > >         if (cpu->suspended)
+> > > >                 return 0;
+> > > >
+> > > > @@ -2374,17 +2376,12 @@ static int intel_pstate_cpu_online(struct cpufreq_policy *policy)
+> > > >         return 0;
+> > > >  }
+> > > >
+> > > > -static void intel_pstate_stop_cpu(struct cpufreq_policy *policy)
+> > > > -{
+> > > > -       pr_debug("CPU %d stopping\n", policy->cpu);
+> > > > -
+> > > > -       intel_pstate_clear_update_util_hook(policy->cpu);
+> > > > -}
+> > > > -
+> > > >  static int intel_pstate_cpu_exit(struct cpufreq_policy *policy)
+> > > >  {
+> > > >         pr_debug("CPU %d exiting\n", policy->cpu);
+> > > >
+> > > > +       intel_pstate_clear_update_util_hook(policy->cpu);
+> > >
+> > > This change is not needed now, because ->offline always runs before
+> > > ->exit if present.
+> >
+> > Not necessarily, we don't call ->offline() for many error paths in
+> > cpufreq_online().
+>
+> I guess you mean the error paths in cpufreq_offline()?
 
-Hi,
+s/offline/online/
 
-While looking at this patch, I found sparx5_destroy_netdev() which seems
-to be unreferenced - it may be referenced in a future patch. However,
-this means that while sparx5_create_port() creates the phylink
-structure, there is nothing in this patch that cleans it up.
-
-I'm puzzled by the call to phylink_disconnect_phy() in
-sparx5_destroy_netdev() too - surely if we get to the point of tearing
-down stuff that we've created at initialisation, the interface had
-better be down?
-
-> diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_phylink.c b/drivers/net/ethernet/microchip/sparx5/sparx5_phylink.c
-> new file mode 100644
-> index 000000000000..c17a3502645a
-> --- /dev/null
-> +++ b/drivers/net/ethernet/microchip/sparx5/sparx5_phylink.c
-> @@ -0,0 +1,185 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/* Microchip Sparx5 Switch driver
-> + *
-> + * Copyright (c) 2021 Microchip Technology Inc. and its subsidiaries.
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/phylink.h>
-> +#include <linux/device.h>
-> +#include <linux/netdevice.h>
-> +#include <linux/sfp.h>
-> +
-> +#include "sparx5_main_regs.h"
-> +#include "sparx5_main.h"
-> +
-> +static void sparx5_phylink_validate(struct phylink_config *config,
-> +				    unsigned long *supported,
-> +				    struct phylink_link_state *state)
-> +{
-> +	struct sparx5_port *port = netdev_priv(to_net_dev(config->dev));
-> +	__ETHTOOL_DECLARE_LINK_MODE_MASK(mask) = { 0, };
-> +
-> +	phylink_set(mask, Autoneg);
-> +	phylink_set_port_modes(mask);
-> +	phylink_set(mask, Pause);
-> +	phylink_set(mask, Asym_Pause);
-> +
-> +	switch (state->interface) {
-> +	case PHY_INTERFACE_MODE_5GBASER:
-> +	case PHY_INTERFACE_MODE_10GBASER:
-> +	case PHY_INTERFACE_MODE_25GBASER:
-> +	case PHY_INTERFACE_MODE_NA:
-> +		if (port->conf.bandwidth == SPEED_5000)
-> +			phylink_set(mask, 5000baseT_Full);
-> +		if (port->conf.bandwidth == SPEED_10000) {
-> +			phylink_set(mask, 5000baseT_Full);
-> +			phylink_set(mask, 10000baseT_Full);
-> +			phylink_set(mask, 10000baseCR_Full);
-> +			phylink_set(mask, 10000baseSR_Full);
-> +			phylink_set(mask, 10000baseLR_Full);
-> +			phylink_set(mask, 10000baseLRM_Full);
-> +			phylink_set(mask, 10000baseER_Full);
-> +		}
-> +		if (port->conf.bandwidth == SPEED_25000) {
-> +			phylink_set(mask, 5000baseT_Full);
-> +			phylink_set(mask, 10000baseT_Full);
-> +			phylink_set(mask, 10000baseCR_Full);
-> +			phylink_set(mask, 10000baseSR_Full);
-> +			phylink_set(mask, 10000baseLR_Full);
-> +			phylink_set(mask, 10000baseLRM_Full);
-> +			phylink_set(mask, 10000baseER_Full);
-> +			phylink_set(mask, 25000baseCR_Full);
-> +			phylink_set(mask, 25000baseSR_Full);
-> +		}
-
-I really need to fix phylink so we shouldn't be lying about which
-speeds are supported over a 10GBASER link... but that's something
-for the future.
-
-> +static bool port_conf_has_changed(struct sparx5_port_config *a, struct sparx5_port_config *b)
-> +{
-> +	if (a->speed != b->speed ||
-> +	    a->portmode != b->portmode ||
-> +	    a->autoneg != b->autoneg ||
-> +	    a->pause != b->pause ||
-> +	    a->power_down != b->power_down ||
-> +	    a->media != b->media)
-> +		return true;
-> +	return false;
-> +}
-
-Should this be positioned somewhere else rather than in the middle of
-the sparx5 phylink functions (top of file maybe?)
-
-> +static void sparx5_phylink_mac_config(struct phylink_config *config,
-> +				      unsigned int mode,
-> +				      const struct phylink_link_state *state)
-> +{
-> +	struct sparx5_port *port = netdev_priv(to_net_dev(config->dev));
-> +
-> +	port->conf.autoneg = state->an_enabled;
-> +	port->conf.pause = state->pause;
-
-What are you doing with state->pause? It looks to me like you're using
-both of these to carry configuration to pcs_config?
-
-Generally, an_enabled can be pulled out of the advertising mask, it
-should always reflect ETHTOOL_LINK_MODE_Autoneg_BIT. The "pause"
-interpretation of the pause bits here are somewhat hardware specific.
-It depends whether the MAC automatically receives state information
-from the PCS or not. If the hardware does, then MLO_PAUSE_AN indicates
-whether that should be permitted or not.
-
-Otherwise, the advertising mask in pcs_config() indicates which pause
-modes should be advertised, and the tx_pause/rx_pause in the
-*_link_up() indicates what should actually be set.
-
-Thanks.
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+> IMO this is confusing/broken, because ->offline should always be
+> called after ->online has returned success.
+>
+> > offline() only comes into play after driver is registered properly once.
+>
+> The relevant intel_pstate case is a ->setpolicy driver where
+> ->setpolicy or ->online, if successful, need to be followed by
+> ->offline.
+>
+> If ->setpolicy is successful in the cpufreq_online() path, the entire
+> cpufreq_online() is successful and the error paths in question are not
+> executed.
+>
+> So the change I was talking about is not needed AFAICS.
