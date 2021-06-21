@@ -2,129 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA133AE6C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C216F3AE6CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230175AbhFUKMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 06:12:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229621AbhFUKMH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 06:12:07 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1ABDC061574;
-        Mon, 21 Jun 2021 03:09:52 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id g20so27901739ejt.0;
-        Mon, 21 Jun 2021 03:09:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=V2jT8puV4OZ+wc+RksUsJy6W4hsyAu8hadDI4bSM4kU=;
-        b=W7nafuh9jA62KgRgR7Wjc0nejRWPU7vEML5l2HooMPML4AapCl67GUv26t8KAv+GN2
-         6G6U0cOnN1lrzYzcdSZLJzevqECliU7vBXjMhCLDhqUJ9FLzzRgPW0TktyEnnbf2RpgT
-         Owvo6rbV1VH6hSZbzjYhSB+OQt+6X6os46H2SJFrj3Y1NSLmS8bv4r8T0voNPCW3fHP0
-         j5WfxcQ+8n7owZladcEJDaMyzsIyZfeSkUM5QuXOGzXjokD1mM23Gdii8JF9CH4YpiR5
-         z/N7c4Li79dhBpS/gIwSfYYhYnaJ8XcujHzpadbB2mVHrj7kXuR/T5v+19bXKrqe8wwQ
-         kDhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=V2jT8puV4OZ+wc+RksUsJy6W4hsyAu8hadDI4bSM4kU=;
-        b=ZZOkSOq2p1e+ps+10XlmQPTDSNY4jyZP7swC18XWJyxVw37s7fIosziXllw9BHAKVz
-         PDgiScSjiyslJqTDQx2UV2Rv3mzwJFTgRW/EruIHUNdtXVC9tBKz0pBgv+OFMkxak+xa
-         0mTqTjUbwEKDVg1nAcrXv10MET9VKvbDACW0Cg26ilNG2Q/7pAvCIoTkN3l5f4miHLix
-         cxCsizfH/nGgJVf6AGV5omOcMAtzkZvj8o2EF1S8vbzfW4iMGvi+YWIUuR6YcQjbLMtS
-         5PUfKO2q+Xg2OYUgZVrdiKOyX+j+ooJtBW0NdM0Vv56/67hzT+H8Ym8/8MuW2vouQxoL
-         DgKw==
-X-Gm-Message-State: AOAM532YI1dk/1fq9AbOSi6l0vU6hzzDKnVUwwdh8m7s1U05cqhQn4EC
-        hcB/LaUd4TLxtMS2OR/yw7I=
-X-Google-Smtp-Source: ABdhPJwXLJxdw/bSmhd7bXasPlmlGlclSG869VfOgQKGJL68OYLxpK2tP26i7wl0orh56HPcjOjQQw==
-X-Received: by 2002:a17:906:8a71:: with SMTP id hy17mr15688656ejc.79.1624270191547;
-        Mon, 21 Jun 2021 03:09:51 -0700 (PDT)
-Received: from skbuf ([188.26.224.68])
-        by smtp.gmail.com with ESMTPSA id o4sm10104074edc.94.2021.06.21.03.09.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 03:09:51 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 13:09:49 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Boris Sukholitko <boris.sukholitko@broadcom.com>
-Cc:     Vadym Kochan <vadym.kochan@plvision.eu>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Serhiy Boiko <serhiy.boiko@plvision.eu>,
-        Volodymyr Mytnyk <volodymyr.mytnyk@plvision.eu>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jiri@resnulli.us, idosch@idosch.org, ilya.lifshits@broadcom.com
-Subject: Re: [PATCH net-next] net/sched: cls_flower: fix resetting of ether
- proto mask
-Message-ID: <20210621100949.dkzvv4mdgopcenab@skbuf>
-References: <20210617161435.8853-1-vadym.kochan@plvision.eu>
- <20210617164155.li3fct6ad45a6j7h@skbuf>
- <20210617195102.h3bg6khvaogc2vwh@skbuf>
- <20210621083037.GA9665@builder>
+        id S229641AbhFUKNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 06:13:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58116 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229663AbhFUKNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 06:13:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C41F860FE9;
+        Mon, 21 Jun 2021 10:11:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624270264;
+        bh=bVbHmO+KD1RJdeZ8rCLmbHPMTnDTtKhwg9BcddwTEwU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=avT6x6VkGk5MZHaL6aTfxrWF7tmL/lqPZr2/16klm8yIwdt1+1jlFalN/qXiBG2u5
+         7+DsBi3PBzf3Y9/vj0d2I0b1dZMaI2ER7HDUISNzseQnJtiwTmz/e9ulfDzQcSwd07
+         H+2DkCGabRisfCfE5DqJk1F4/dpcwKrhSGRRQpAuZszgVPTcqfUSKt4woZNYlmcgBx
+         YmnuDqP3B3z6gD3xiBj6OTbzbtSR9de+vZ2BtEAD7g37c8zBQyFmT9h6hJ/MPfvzv2
+         s2Ld76p3IghlOt9nojHfhXaOWt70pvYm3Ho2QAEmtcLDsmNC9vU25SbLWRBUTWdRiD
+         XMlTI9UPOlQzA==
+Date:   Mon, 21 Jun 2021 11:10:59 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     Chanwoo Choi <cw00.choi@samsung.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 1/2] clocksource/drivers/exynos_mct: Prioritise Arm arch
+ timer on arm64
+Message-ID: <20210621101058.GB28788@willie-the-truck>
+References: <20210608154341.10794-1-will@kernel.org>
+ <CGME20210608154400epcas1p1b22fd50629611a9475cb4d2b8dd9442d@epcas1p1.samsung.com>
+ <20210608154341.10794-2-will@kernel.org>
+ <466bfc19-2260-87c6-c458-b43cf23617e3@samsung.com>
+ <2a0181ea-a26e-65e9-16f6-cc233b6b296f@linaro.org>
+ <fbcd234d-3ea0-d609-1f1d-b557ea329c37@samsung.com>
+ <20210617214748.GC25403@willie-the-truck>
+ <d79ebd58-1c4e-834c-fc06-482f25f6f3de@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210621083037.GA9665@builder>
+In-Reply-To: <d79ebd58-1c4e-834c-fc06-482f25f6f3de@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 11:32:27AM +0300, Boris Sukholitko wrote:
-> On Thu, Jun 17, 2021 at 10:51:02PM +0300, Vladimir Oltean wrote:
-> > On Thu, Jun 17, 2021 at 07:41:55PM +0300, Vladimir Oltean wrote:
-> > > On Thu, Jun 17, 2021 at 07:14:35PM +0300, Vadym Kochan wrote:
-> 
-> [snip excellent problem analysis]
-> 
-> > So maybe it is the flow dissector we need to fix, to make it give us an
-> > additional pure EtherType if asked for, make tc-flower use that
-> > dissector key instead, and then revert Jamal's user space patch, and we
-> > should all install our tc filters as:
+On Mon, Jun 21, 2021 at 11:25:47AM +0200, Daniel Lezcano wrote:
+> On 17/06/2021 23:47, Will Deacon wrote:
+> > On Thu, Jun 17, 2021 at 09:58:35AM +0900, Chanwoo Choi wrote:
+> >> On 6/17/21 12:25 AM, Daniel Lezcano wrote:
+> >>> On 10/06/2021 03:03, Chanwoo Choi wrote:
+> >>>> On 6/9/21 12:43 AM, Will Deacon wrote:
+> >>>>> diff --git a/drivers/clocksource/exynos_mct.c b/drivers/clocksource/exynos_mct.c
+> >>>>> index fabad79baafc..804d3e01c8f4 100644
+> >>>>> --- a/drivers/clocksource/exynos_mct.c
+> >>>>> +++ b/drivers/clocksource/exynos_mct.c
+> >>>>> @@ -51,6 +51,15 @@
+> >>>>>  
+> >>>>>  #define TICK_BASE_CNT	1
+> >>>>>  
+> >>>>> +#ifdef CONFIG_ARM
+> >>>>> +/* Use values higher than ARM arch timer. See 6282edb72bed. */
+> >>>>> +#define MCT_CLKSOURCE_RATING		450
+> >>>>> +#define MCT_CLKEVENTS_RATING		500
+> >>>>> +#else
+> >>>>> +#define MCT_CLKSOURCE_RATING		350
+> >>>>> +#define MCT_CLKEVENTS_RATING		350
+> >>>>> +#endif
+> >>>>> +
+> >>>>>  enum {
+> >>>>>  	MCT_INT_SPI,
+> >>>>>  	MCT_INT_PPI
+> >>>>> @@ -206,7 +215,7 @@ static void exynos4_frc_resume(struct clocksource *cs)
+> >>>>>  
+> >>>>>  static struct clocksource mct_frc = {
+> >>>>>  	.name		= "mct-frc",
+> >>>>> -	.rating		= 450,	/* use value higher than ARM arch timer */
+> >>>>> +	.rating		= MCT_CLKSOURCE_RATING,
+> >>>>>  	.read		= exynos4_frc_read,
+> >>>>>  	.mask		= CLOCKSOURCE_MASK(32),
+> >>>>>  	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
+> >>>>> @@ -457,7 +466,7 @@ static int exynos4_mct_starting_cpu(unsigned int cpu)
+> >>>>>  	evt->set_state_oneshot_stopped = set_state_shutdown;
+> >>>>>  	evt->tick_resume = set_state_shutdown;
+> >>>>>  	evt->features = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT;
+> >>>>> -	evt->rating = 500;	/* use value higher than ARM arch timer */
+> >>>>> +	evt->rating = MCT_CLKEVENTS_RATING,
+> >>>>>  
+> >>>>>  	exynos4_mct_write(TICK_BASE_CNT, mevt->base + MCT_L_TCNTB_OFFSET);
+> >>>>>  
+> >>>>>
+> >>>>
+> >>>> I'm not sure that exynos mct is working without problem
+> >>>> such as the case of 6282edb72bed.
+> >>>> As described on On ,6282edb72bed the arch timer on exynos SoC
+> >>>> depends on Exynos MCT device. the arch timer is not able to work
+> >>>> without Exynos MCT because of using the common module.
+> >>>
+> >>> Is it possible to change the DT to have a phandle to the exynos_mct, so
+> >>> it will be probed before the arch_arm_timer ?
+> >>
+> >> I think that DT changes is not proper way to keep the order between
+> >> exynos_mct and arch timer.
 > > 
-> > tc filter add dev sw1p0 ingress handle 11 protocol all flower eth_type 0x8864 skip_hw action drop
-> > 
-> > ?
+> > exynos4_mct_frc_start() is called unconditionally from probe via
+> > exynos4_clocksource_init() so as long as the mct probes first, then the
+> > arch timer should work, no? The rating shouldn't affect that.
 > 
-> I like this solution. To be more explicit, the plan becomes:
+> How do you ensure the exynos mct is probed before the arch timer ?
 > 
-> 1. Add FLOW_DISSECTOR_KEY_ETH_TYPE and struct flow_dissector_key_eth_type.
-> 2. Have skb flow dissector use it.
-> 3. Userspace does not set TCA_FLOWER_KEY_ETH_TYPE automagically
->    anymore. cls_flower takes basic.n_proto from struct tcf_proto.
-> 4. Add eth_type to the userspace and use it to set TCA_FLOWER_KEY_ETH_TYPE
-> 5. Existence of TCA_FLOWER_KEY_ETH_TYPE triggers new eth_type dissector.
-> 
-> IMHO this neatly solves non-vlan protocol match case.
-> 
-> What should we do with the VLANs then? Should we have vlan_pure_ethtype
-> and cvlan_pure_ethtype as additional keys?
+> The Makefile provides the right order, but the dependency is implicit.
 
-Yeah, I don't know about the "_pure_" part (the current name of the
-options in tc user space seems fine), but the flow dissector should have
-some parsing keys for the C-VLAN and S-VLAN EthType too, since the
-FLOW_DISSECTOR_KEY_ETH_TYPE should match on, well, the EtherType.
+Currently, I think it's done by the order of the CPU hotplug notifiers (
+see the hunk of 6282edb72bed which touches cpuhotplug.h).
 
-> > 
-> > Or maybe just be like you, say I don't care about any of that, I just
-> > want it to behave as before, and simply revert Boris's patch. Ok, maybe
-> 
-> FTR I fully support reverting the patch. Please accept my apologies for
-> breaking the HW offload and big thanks to Vadym for finding it.
-> 
-> I will send the revert shortly.
-> 
-> Thanks,
-> Boris.
-
-Thanks.
-
-Please note that I haven't used tc for long enough to know what changes
-are for its own good, so there is still place for expert feedback from
-the maintainers, but this solution seems common sense to me.
+Will
