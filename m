@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 958253AF0BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD6A3AEF7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:38:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233002AbhFUQvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:51:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37530 "EHLO mail.kernel.org"
+        id S233106AbhFUQjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:39:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232736AbhFUQr6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:47:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 95D9C6141D;
-        Mon, 21 Jun 2021 16:33:52 +0000 (UTC)
+        id S233008AbhFUQfB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:35:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F82F61261;
+        Mon, 21 Jun 2021 16:27:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624293233;
-        bh=Us8ej3Dpz7iAYq8Ti6D8ZdHHlSlfCYYhYbReDpONHxk=;
+        s=korg; t=1624292851;
+        bh=Od5Mwtx5ni8Q84eaXsJKkNh8qUj7gma3kMNQUgdn7GU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vPgsODDy0C0CNuIE+jURXPAVtA8I9mQrGE0kUXVFzOqGww4/WmfGHetJmJbzrHVFO
-         GkDWtCVKU3Q8k0IL7saXozeckZ2QIosRzQP+vJXWsN2uMLFJKOVT1FdyuaDXN0tR6u
-         d7Px4R43QWI+FXqnSBxlMD1VFc8TsyH9c/3N+MaU=
+        b=tPHaV5znIlbAggPPUHPG466ZKKBIMHdPh2x6t60JVa9qwtqat8n9T5X9S7YAdyvND
+         bUfHdz2BOZYcFfTvCxE05W4yTBnamlKeTazOO1ytDB/iS1Dvz8IeGJmIMD0L96/R0N
+         uWl666ryEz59nfc24mdBBNFnMoTZoCfZgfV85+NY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>,
-        Michael Chan <michael.chan@broadcom.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 5.12 130/178] PCI: Add ACS quirk for Broadcom BCM57414 NIC
-Date:   Mon, 21 Jun 2021 18:15:44 +0200
-Message-Id: <20210621154927.198140249@linuxfoundation.org>
+        stable@vger.kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH 5.10 115/146] s390/mcck: fix calculation of SIE critical section size
+Date:   Mon, 21 Jun 2021 18:15:45 +0200
+Message-Id: <20210621154918.685443648@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621154921.212599475@linuxfoundation.org>
-References: <20210621154921.212599475@linuxfoundation.org>
+In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
+References: <20210621154911.244649123@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,40 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
+From: Alexander Gordeev <agordeev@linux.ibm.com>
 
-commit db2f77e2bd99dbd2fb23ddde58f0fae392fe3338 upstream.
+commit 5bcbe3285fb614c49db6b238253f7daff7e66312 upstream.
 
-The Broadcom BCM57414 NIC may be a multi-function device.  While it does
-not advertise an ACS capability, peer-to-peer transactions are not possible
-between the individual functions, so it is safe to treat them as fully
-isolated.
+The size of SIE critical section is calculated wrongly
+as result of a missed subtraction in commit 0b0ed657fe00
+("s390: remove critical section cleanup from entry.S")
 
-Add an ACS quirk for this device so the functions can be in independent
-IOMMU groups and attached individually to userspace applications using
-VFIO.
-
-[bhelgaas: commit log]
-Link: https://lore.kernel.org/r/1621645997-16251-1-git-send-email-michael.chan@broadcom.com
-Signed-off-by: Sriharsha Basavapatna <sriharsha.basavapatna@broadcom.com>
-Signed-off-by: Michael Chan <michael.chan@broadcom.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: stable@vger.kernel.org
+Fixes: 0b0ed657fe00 ("s390: remove critical section cleanup from entry.S")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Alexander Gordeev <agordeev@linux.ibm.com>
+Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/quirks.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/s390/kernel/entry.S |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -4786,6 +4786,8 @@ static const struct pci_dev_acs_enabled
- 	{ PCI_VENDOR_ID_AMPERE, 0xE00A, pci_quirk_xgene_acs },
- 	{ PCI_VENDOR_ID_AMPERE, 0xE00B, pci_quirk_xgene_acs },
- 	{ PCI_VENDOR_ID_AMPERE, 0xE00C, pci_quirk_xgene_acs },
-+	/* Broadcom multi-function device */
-+	{ PCI_VENDOR_ID_BROADCOM, 0x16D7, pci_quirk_mf_endpoint_acs },
- 	{ PCI_VENDOR_ID_BROADCOM, 0xD714, pci_quirk_brcm_acs },
- 	/* Amazon Annapurna Labs */
- 	{ PCI_VENDOR_ID_AMAZON_ANNAPURNA_LABS, 0x0031, pci_quirk_al_acs },
+--- a/arch/s390/kernel/entry.S
++++ b/arch/s390/kernel/entry.S
+@@ -1284,7 +1284,7 @@ ENDPROC(stack_overflow)
+ 	je	1f
+ 	larl	%r13,.Lsie_entry
+ 	slgr	%r9,%r13
+-	larl	%r13,.Lsie_skip
++	lghi	%r13,.Lsie_skip - .Lsie_entry
+ 	clgr	%r9,%r13
+ 	jh	1f
+ 	oi	__LC_CPU_FLAGS+7, _CIF_MCCK_GUEST
 
 
