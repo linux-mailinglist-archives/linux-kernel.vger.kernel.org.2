@@ -2,302 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 912A13AE196
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 04:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F99C3AE19C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 04:13:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhFUCDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 22:03:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbhFUCDo (ORCPT
+        id S230137AbhFUCPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 22:15:35 -0400
+Received: from gw2.atmark-techno.com ([35.74.137.57]:35234 "EHLO
+        gw2.atmark-techno.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229937AbhFUCPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 22:03:44 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C667AC061574;
-        Sun, 20 Jun 2021 19:01:27 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id h4so1342158pgp.5;
-        Sun, 20 Jun 2021 19:01:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=eBenL+K0D9YseyOr/6iu7WZ/qK861+9DmHdUBK69eNs=;
-        b=edUzJt4q73ySN+3FvCki7GDrq6S25JUvxXQottKAuCVu8h9ny4JmKxRiasuJGyjjc9
-         al02KPO/zbNDhXMMrw5AngWJQpaSGIIz03brWP7pgFJGLqrCq+adN2Z2bAWsC6fSRu+B
-         MnfXpHhvsOR/WcZCPbohwpcq8EGFXIU3DsY6h+xd6Coz8GRqr0WdBavpw9f1YBEJ/JDG
-         tz95p3FS4110MFYav1m1+p/pdlOjl3iVrSQEYjyXJS5oFUs0PvU7h6E+VbK05QRivQPu
-         JfECFr6fcLSecl5WvwIOvYL03BjUrrBwJS4ROuqzNhBwLrlP3CpKISsUlLdBN4ifmfrZ
-         Z0Ag==
+        Sun, 20 Jun 2021 22:15:34 -0400
+Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
+        by gw2.atmark-techno.com (Postfix) with ESMTPS id 7F21B20D08
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:03:22 +0900 (JST)
+Received: by mail-pj1-f70.google.com with SMTP id s5-20020a17090a7645b029016f7e331ca4so4181339pjl.6
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 19:03:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=eBenL+K0D9YseyOr/6iu7WZ/qK861+9DmHdUBK69eNs=;
-        b=ejdiKrmFgPrziq27df6oGMHufbsTNB0iuL6Dh02sxpxBRPDHoyAFf91qdPcc0ONZS9
-         0tqNQIDokbwSJmmfmrJfV7U0kUhznCgLsRTWJfMgAb8ub4bFiRXdbWBu84mZCOwSof7r
-         5s6eJA4VGCQQ8HC/dF4eAHMqTiltNgySiLg1LnXn5WubFj0ySP/3FXvNKXfp05rrgJNz
-         v94b4CYBCJvkTyd/sh5Fdkmmu59TCsoQBNz8Cbo+YVK++zvwjwuaXRLxSvsUI0eNHhAT
-         g/6j6sDhR1z1tm9I0C84T05c0ZpNmEfAx41VkGrhjcC58NJQBh88UY/Vt7gA62Xw+SE0
-         4ZMA==
-X-Gm-Message-State: AOAM533RoxjuBBlwXGZh2tvRAVmwwR3UPH8N4Fz9ICe8iFbXAHTjMgp1
-        4G2o1KanAJCcRHws4Z8meuw=
-X-Google-Smtp-Source: ABdhPJzPsTJBSgG6RE9+Q2b22VRKMeB0NiXW5K/G7fzie1q0MG6ufVe/+M32TUVs56ptawlX8MS3LQ==
-X-Received: by 2002:a63:ff09:: with SMTP id k9mr21430179pgi.113.1624240887393;
-        Sun, 20 Jun 2021 19:01:27 -0700 (PDT)
-Received: from ?IPv6:2001:df0:0:200c:e4cb:9037:8dab:1327? ([2001:df0:0:200c:e4cb:9037:8dab:1327])
-        by smtp.gmail.com with ESMTPSA id r14sm13629140pgm.28.2021.06.20.19.01.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 20 Jun 2021 19:01:26 -0700 (PDT)
-Subject: Re: [PATCH 1/2] alpha/ptrace: Record and handle the absence of
- switch_stack
-To:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
-References: <87sg1p30a1.fsf@disp2133>
- <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
- <87pmwsytb3.fsf@disp2133>
- <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
- <87sg1lwhvm.fsf@disp2133>
- <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
- <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
- <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com> <87eed4v2dc.fsf@disp2133>
- <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com> <87fsxjorgs.fsf@disp2133>
- <87zgvqor7d.fsf_-_@disp2133>
- <CAHk-=wir2P6h+HKtswPEGDh+GKLMM6_h8aovpMcUHyQv2zJ5Og@mail.gmail.com>
- <87mtrpg47k.fsf@disp2133> <87pmwlek8d.fsf_-_@disp2133>
- <87k0mtek4n.fsf_-_@disp2133>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <393c37de-5edf-effc-3d06-d7e63f34a317@gmail.com>
-Date:   Mon, 21 Jun 2021 14:01:18 +1200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cPF5UweySrMkbBj5zDiR8HRka2TADsWzHftasg98zJs=;
+        b=O9u6C/jvOAMeIpjAQUjeZT7ATyIxOaz4AW7XKzmCcwmqRdl6t0EmOYQqJiTq1YSg1S
+         BWEkWIHxDR9bN4+RaU2rJvauOvrCSoL28m6uRuKs3Hi2CycRySq80RW9bbZ1AeDECjLn
+         VvUFx1LDVmwOBFHIeQ4t38l9IHa15JfAe6cbNFr1yVac8SZ+pX4aIZq783gXYTod9H6i
+         C6qPnhpAqp3vSy4FYZ+k7J1xYOODS3ywlTMQMF9C3WtS+6oY31ejf6fibenVdryYr7wH
+         2suwi2NBxgYSsCF9mjFvX4oeSDmoNSdc+EbMacd0E3gn7e1mZhbzMIA5eY5N/Fc5DNAa
+         tYOg==
+X-Gm-Message-State: AOAM5309FqnrZwWhyoJh2z1IiSZ36s+pzfs+L36VrEuoTNoPMW1Yc9E3
+        Tndy9iZsganxAfCoSTO0QzeY0S79hQYaXsr2+VqrcmWqFXDWsvX1eBi3s65AMBmWPQ/ooCSXAjM
+        rc7dDKAcKGsnZdQzfjMgKFjP4jg==
+X-Received: by 2002:a17:902:e54c:b029:124:5738:cd9b with SMTP id n12-20020a170902e54cb02901245738cd9bmr4032572plf.37.1624241001472;
+        Sun, 20 Jun 2021 19:03:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwx8Jdi39fuUyMjJ1Kb1I8R8bWjY0P4PsRzQ0H9QhFuNwbpgfwmRCUN81esvdU5Up0p8pQdeA==
+X-Received: by 2002:a17:902:e54c:b029:124:5738:cd9b with SMTP id n12-20020a170902e54cb02901245738cd9bmr4032535plf.37.1624241001191;
+        Sun, 20 Jun 2021 19:03:21 -0700 (PDT)
+Received: from pc-0115 (35.112.198.104.bc.googleusercontent.com. [104.198.112.35])
+        by smtp.gmail.com with ESMTPSA id jz10sm4710917pjb.4.2021.06.20.19.03.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 20 Jun 2021 19:03:20 -0700 (PDT)
+Received: from martinet by pc-0115 with local (Exim 4.94.2)
+        (envelope-from <martinet@pc-0115>)
+        id 1lv9HR-0013P4-QI; Mon, 21 Jun 2021 11:03:17 +0900
+Date:   Mon, 21 Jun 2021 11:03:07 +0900
+From:   Dominique MARTINET <dominique.martinet@atmark-techno.com>
+To:     Jianxiong Gao <jxgao@google.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Konrad Rzeszutek Wilk <konrad@darnok.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Horia =?utf-8?Q?Geant=C4=83?= <horia.geanta@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Lukas Hartmann <lukas@mntmn.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        Marc Orr <marcorr@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Peter Gonda <pgonda@google.com>,
+        Chanho Park <chanho61.park@samsung.com>
+Subject: Re: swiotlb/caamjr regression (Was: [GIT PULL] (swiotlb)
+ stable/for-linus-5.12)
+Message-ID: <YM/zWyZlk1bzHWgI@atmark-techno.com>
+References: <YL7XXNOnbaDgmTB9@atmark-techno.com>
+ <2e899de2-4b69-c4b6-33a6-09fb8949d2fd@nxp.com>
+ <20210611062153.GA30906@lst.de>
+ <YMM8Ua0HMmErLIQg@0xbeefdead.lan>
+ <CAMGD6P1v2JoJoxSuAYL8UjdtCaLCc4K_7xzVkumspeb0qn=LBQ@mail.gmail.com>
+ <YMqW+/gQvM+uWUTw@fedora>
+ <YMqZswFnSNKk4Z7B@atmark-techno.com>
+ <20210617051232.GB27192@lst.de>
+ <YMrfWBLsJxCRhX5U@atmark-techno.com>
+ <CAMGD6P0=9RE1-q1WHkwR1jymK5jyvN6QgypQ2KgdvBQn0CUTHw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87k0mtek4n.fsf_-_@disp2133>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/mixed; boundary="hJa3fgBh5wrqenuN"
+Content-Disposition: inline
+In-Reply-To: <CAMGD6P0=9RE1-q1WHkwR1jymK5jyvN6QgypQ2KgdvBQn0CUTHw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
 
-instrumenting get_reg on m68k and using a similar patch to yours to warn 
-when unsaved registers are accessed on the switch stack, I get a hit 
-from getegid and getegid32, just by running a simple ptrace on ls.
+--hJa3fgBh5wrqenuN
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-Going to wack those two moles now ...
+Jianxiong Gao wrote on Fri, Jun 18, 2021 at 11:01:59AM -0700:
+> > Jianxiong Gao, before spending more time on this, could you also try
+> > Chanho Park's patch?
+> > https://lore.kernel.org/linux-iommu/20210510091816.GA2084@lst.de/T/#m0d0df6490350a08dcc24c9086c8edc165b402d6f
+> >
+> I have tested Chanho Parks's patch and it works for us.
+> The NVMe driver performs correctly with the patch.
+> 
+> I have teste the patch on 06af8679449d
 
-Cheers,
+Thanks!
+(a bit late, but added Chanho Park in Cc...)
 
-     Michael
+I can confirm it also works for our caam problem, as Horia said.
+
+I've also come to term with the use of swiotlb_align_offset() through
+testing, or rather many devices seem to have a 0 mask so it will almost
+always be cancelled out, so if it works for Jianxiong then it's probably
+good enough and I'll just assume that's how the orig_addr has been
+designed...
+
+I think it's missing a couple of checks like the one Linus had in his
+patch, and would be comfortable with something like the attached patch
+(in practice for me exactly the same as the original patch, except I've
+added two checks: offsets smaller than orig addr offset are refused as
+well as offsets bigger than the mapping size)
+
+I'm sorry Jianxiong but would you be willing to take the time to test
+again just to make sure there were no such offsets in your case?
 
 
-On 17/06/21 6:31 am, Eric W. Biederman wrote:
-> While thinking about the information leaks fixed in 77f6ab8b7768
-> ("don't dump the threads that had been already exiting when zapped.")
-> I realized the problem is much more general than just coredumps and
-> exit_mm.  We have io_uring threads, PTRACE_EVENT_FORK,
-> PTRACE_EVENT_VFORK, PTRACE_EVENT_CLONE, PTRACE_EVENT_EXEC and
-> PTRACE_EVENT_EXIT where ptrace is allowed to access userspace
-> registers, but on some architectures has not saved them so
-> they can be modified.
->
-> The function alpha_switch_to does something reasonable it saves the
-> floating point registers and the caller saved registers and switches
-> to a different thread.  Any register the caller is not expected to
-> save it does not save.
->
-> Meanhile the system call entry point on alpha also does something
-> reasonable.  The system call entry point saves all but the caller
-> saved integer registers and doesn't touch the floating point registers
-> as the kernel code does not touch them.
->
-> This is a nice happy fast path until the kernel wants to access the
-> user space's registers through ptrace or similar.  As user spaces's
-> caller saved registers may be saved at an unpredictable point in the
-> kernel code's stack, the routine which may stop and make the userspace
-> registers available must be wrapped by code that will first save a
-> switch stack frame at the bottom of the call stack, call the code that
-> may access those registers and then pop the switch stack frame.
->
-> The practical problem with this code structure is that this results in
-> a game of whack-a-mole wrapping different kernel system calls.  Loosing
-> the game of whack-a-mole results in a security hole where userspace can
-> write arbitrary data to the kernel stack.
->
-> In general it is not possible to prevent generic code introducing a
-> ptrace_stop or register access not knowing alpha's limitations, that
-> where alpha does not make all of the registers avaliable.
->
-> Prevent security holes by recording when all of the registers are
-> available so generic code changes do not result in security holes
-> on alpha.
->
-> Cc: stable@vger.kernel.org
-> Fixes: dbe1bdbb39db ("io_uring: handle signals for IO threads like a normal thread")
-> Fixes: 45c1a159b85b ("Add PTRACE_O_TRACEVFORKDONE and PTRACE_O_TRACEEXIT facilities.")
-> Fixes: a0691b116f6a ("Add new ptrace event tracing mechanism")
-> History-tree: https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-> ---
->   arch/alpha/include/asm/thread_info.h |  2 ++
->   arch/alpha/kernel/entry.S            | 38 ++++++++++++++++++++++------
->   arch/alpha/kernel/ptrace.c           | 13 ++++++++--
->   3 files changed, 43 insertions(+), 10 deletions(-)
->
-> diff --git a/arch/alpha/include/asm/thread_info.h b/arch/alpha/include/asm/thread_info.h
-> index 2592356e3215..41e5986ed9c8 100644
-> --- a/arch/alpha/include/asm/thread_info.h
-> +++ b/arch/alpha/include/asm/thread_info.h
-> @@ -63,6 +63,7 @@ register struct thread_info *__current_thread_info __asm__("$8");
->   #define TIF_NEED_RESCHED	3	/* rescheduling necessary */
->   #define TIF_SYSCALL_AUDIT	4	/* syscall audit active */
->   #define TIF_NOTIFY_SIGNAL	5	/* signal notifications exist */
-> +#define TIF_ALLREGS_SAVED	6	/* both pt_regs and switch_stack saved */
->   #define TIF_DIE_IF_KERNEL	9	/* dik recursion lock */
->   #define TIF_MEMDIE		13	/* is terminating due to OOM killer */
->   #define TIF_POLLING_NRFLAG	14	/* idle is polling for TIF_NEED_RESCHED */
-> @@ -73,6 +74,7 @@ register struct thread_info *__current_thread_info __asm__("$8");
->   #define _TIF_NOTIFY_RESUME	(1<<TIF_NOTIFY_RESUME)
->   #define _TIF_SYSCALL_AUDIT	(1<<TIF_SYSCALL_AUDIT)
->   #define _TIF_NOTIFY_SIGNAL	(1<<TIF_NOTIFY_SIGNAL)
-> +#define _TIF_ALLREGS_SAVED	(1<<TIF_ALLREGS_SAVED)
->   #define _TIF_POLLING_NRFLAG	(1<<TIF_POLLING_NRFLAG)
->   
->   /* Work to do on interrupt/exception return.  */
-> diff --git a/arch/alpha/kernel/entry.S b/arch/alpha/kernel/entry.S
-> index e227f3a29a43..c1edf54dc035 100644
-> --- a/arch/alpha/kernel/entry.S
-> +++ b/arch/alpha/kernel/entry.S
-> @@ -174,6 +174,28 @@
->   	.cfi_adjust_cfa_offset	-SWITCH_STACK_SIZE
->   .endm
->   
-> +.macro	SAVE_SWITCH_STACK
-> +	DO_SWITCH_STACK
-> +1:	ldl_l	$1, TI_FLAGS($8)
-> +	bis	$1, _TIF_ALLREGS_SAVED, $1
-> +	stl_c	$1, TI_FLAGS($8)
-> +	beq	$1, 2f
-> +.subsection 2
-> +2:	br	1b
-> +.previous
-> +.endm
-> +
-> +.macro	RESTORE_SWITCH_STACK
-> +1:	ldl_l	$1, TI_FLAGS($8)
-> +	bic	$1, _TIF_ALLREGS_SAVED, $1
-> +	stl_c	$1, TI_FLAGS($8)
-> +	beq	$1, 2f
-> +.subsection 2
-> +2:	br	1b
-> +.previous
-> +	UNDO_SWITCH_STACK
-> +.endm
-> +
->   /*
->    * Non-syscall kernel entry points.
->    */
-> @@ -559,9 +581,9 @@ $work_resched:
->   
->   $work_notifysig:
->   	mov	$sp, $16
-> -	DO_SWITCH_STACK
-> +	SAVE_SWITCH_STACK
->   	jsr	$26, do_work_pending
-> -	UNDO_SWITCH_STACK
-> +	RESTORE_SWITCH_STACK
->   	br	restore_all
->   
->   /*
-> @@ -572,9 +594,9 @@ $work_notifysig:
->   	.type	strace, @function
->   strace:
->   	/* set up signal stack, call syscall_trace */
-> -	DO_SWITCH_STACK
-> +	SAVE_SWITCH_STACK
->   	jsr	$26, syscall_trace_enter /* returns the syscall number */
-> -	UNDO_SWITCH_STACK
-> +	RESTORE_SWITCH_STACK
->   
->   	/* get the arguments back.. */
->   	ldq	$16, SP_OFF+24($sp)
-> @@ -602,9 +624,9 @@ ret_from_straced:
->   $strace_success:
->   	stq	$0, 0($sp)		/* save return value */
->   
-> -	DO_SWITCH_STACK
-> +	SAVE_SWITCH_STACK
->   	jsr	$26, syscall_trace_leave
-> -	UNDO_SWITCH_STACK
-> +	RESTORE_SWITCH_STACK
->   	br	$31, ret_from_sys_call
->   
->   	.align	3
-> @@ -618,13 +640,13 @@ $strace_error:
->   	stq	$0, 0($sp)
->   	stq	$1, 72($sp)	/* a3 for return */
->   
-> -	DO_SWITCH_STACK
-> +	SAVE_SWITCH_STACK
->   	mov	$18, $9		/* save old syscall number */
->   	mov	$19, $10	/* save old a3 */
->   	jsr	$26, syscall_trace_leave
->   	mov	$9, $18
->   	mov	$10, $19
-> -	UNDO_SWITCH_STACK
-> +	RESTORE_SWITCH_STACK
->   
->   	mov	$31, $26	/* tell "ret_from_sys_call" we can restart */
->   	br	ret_from_sys_call
-> diff --git a/arch/alpha/kernel/ptrace.c b/arch/alpha/kernel/ptrace.c
-> index 8c43212ae38e..41fb994f36dc 100644
-> --- a/arch/alpha/kernel/ptrace.c
-> +++ b/arch/alpha/kernel/ptrace.c
-> @@ -117,7 +117,13 @@ get_reg_addr(struct task_struct * task, unsigned long regno)
->   		zero = 0;
->   		addr = &zero;
->   	} else {
-> -		addr = task_stack_page(task) + regoff[regno];
-> +		int off = regoff[regno];
-> +		if (WARN_ON_ONCE((off < PT_REG(r0)) &&
-> +				!test_ti_thread_flag(task_thread_info(task),
-> +						     TIF_ALLREGS_SAVED)))
-> +			addr = &zero;
-> +		else
-> +			addr = task_stack_page(task) + off;
->   	}
->   	return addr;
->   }
-> @@ -145,13 +151,16 @@ get_reg(struct task_struct * task, unsigned long regno)
->   static int
->   put_reg(struct task_struct *task, unsigned long regno, unsigned long data)
->   {
-> +	unsigned long *addr;
->   	if (regno == 63) {
->   		task_thread_info(task)->ieee_state
->   		  = ((task_thread_info(task)->ieee_state & ~IEEE_SW_MASK)
->   		     | (data & IEEE_SW_MASK));
->   		data = (data & FPCR_DYN_MASK) | ieee_swcr_to_fpcr(data);
->   	}
-> -	*get_reg_addr(task, regno) = data;
-> +	addr = get_reg_addr(task, regno);
-> +	if (addr != &zero)
-> +		*addr = data;
->   	return 0;
->   }
->   
+If we're good with that I'll send it as an official v2 keeping Chanho's
+from, unless he wants to.
+
+
+Thanks everyone,
+-- 
+Dominique
+
+
+
+--hJa3fgBh5wrqenuN
+Content-Type: text/x-diff; charset=utf-8
+Content-Description: swiotlb.patch
+Content-Disposition: attachment; filename="swiotlb.patch"
+
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 8ca7d505d61c..23f8d0b168c5 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -334,6 +334,14 @@ void __init swiotlb_exit(void)
+ 	io_tlb_default_mem = NULL;
+ }
+ 
++/*
++ * Return the offset into a iotlb slot required to keep the device happy.
++ */
++static unsigned int swiotlb_align_offset(struct device *dev, u64 addr)
++{
++	return addr & dma_get_min_align_mask(dev) & (IO_TLB_SIZE - 1);
++}
++
+ /*
+  * Bounce: copy the swiotlb buffer from or back to the original dma location
+  */
+@@ -346,10 +354,31 @@ static void swiotlb_bounce(struct device *dev, phys_addr_t tlb_addr, size_t size
+ 	size_t alloc_size = mem->slots[index].alloc_size;
+ 	unsigned long pfn = PFN_DOWN(orig_addr);
+ 	unsigned char *vaddr = phys_to_virt(tlb_addr);
++	unsigned int tlb_offset, orig_addr_offset;
+ 
+ 	if (orig_addr == INVALID_PHYS_ADDR)
+ 		return;
+ 
++	tlb_offset = tlb_addr & (IO_TLB_SIZE - 1);
++	orig_addr_offset = swiotlb_align_offset(dev, orig_addr);
++	if (tlb_offset < orig_addr_offset) {
++		dev_WARN_ONCE(dev, 1,
++			"Access before mapping start detected. orig offset %u, requested offset %u.\n",
++			orig_addr_offset, tlb_offset);
++		return;
++	}
++
++	tlb_offset -= orig_addr_offset;
++	if (tlb_offset > alloc_size) {
++		dev_WARN_ONCE(dev, 1,
++			"Buffer overflow detected. Allocation size: %zu. Mapping size: %zu+%u.\n",
++			alloc_size, size, tlb_offset);
++		return;
++	}
++
++	orig_addr += tlb_offset;
++	alloc_size -= tlb_offset;
++
+ 	if (size > alloc_size) {
+ 		dev_WARN_ONCE(dev, 1,
+ 			"Buffer overflow detected. Allocation size: %zu. Mapping size: %zu.\n",
+@@ -390,14 +419,6 @@ static void swiotlb_bounce(struct device *dev, phys_addr_t tlb_addr, size_t size
+ 
+ #define slot_addr(start, idx)	((start) + ((idx) << IO_TLB_SHIFT))
+ 
+-/*
+- * Return the offset into a iotlb slot required to keep the device happy.
+- */
+-static unsigned int swiotlb_align_offset(struct device *dev, u64 addr)
+-{
+-	return addr & dma_get_min_align_mask(dev) & (IO_TLB_SIZE - 1);
+-}
+-
+ /*
+  * Carefully handle integer overflow which can occur when boundary_mask == ~0UL.
+  */
+
+--hJa3fgBh5wrqenuN--
