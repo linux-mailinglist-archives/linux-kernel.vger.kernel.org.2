@@ -2,69 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E42713AF819
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6CA3AF81A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231864AbhFUV4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 17:56:03 -0400
-Received: from mga03.intel.com ([134.134.136.65]:54165 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230263AbhFUV4B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 17:56:01 -0400
-IronPort-SDR: jzaJHtAeTe+kaGeo7Jzl5o4zqAAHrXzwajs+wZjy8ppAUQPkyX8lgAmeM6UOfMSQYLkXoTbu5R
- 1ZLPZlj818Ig==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="206979733"
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208";a="206979733"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 14:53:46 -0700
-IronPort-SDR: 9JkbAif2JeIyDUqy/2ZLO+refLXJf8h7ahP9j11N0Jn1J2BUVQjqmNQsUOyH8RbkBWrnwkd0lQ
- az63/pUT1kJg==
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208";a="454029184"
-Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 14:53:45 -0700
-Date:   Mon, 21 Jun 2021 21:53:39 +0000
-From:   Fenghua Yu <fenghua.yu@intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V3 00/66] x86/fpu: Spring cleaning and PKRU sanitizing
-Message-ID: <YNEKYysw6/fUgZrL@otcwcpicx3.sc.intel.com>
-References: <20210618141823.161158090@linutronix.de>
+        id S231181AbhFUV4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 17:56:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46676 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230263AbhFUV4h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 17:56:37 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1354C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:54:22 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id 69so9317725plc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:54:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=APrF3kvRTyjTvlbhavoz/NkerS2/l6ATaVJxi4ziIkE=;
+        b=c/iQ6N1/0xiTEXFHfm3yDb5q2rZQvjSZGTECVNdCQoc1vKa7GpPnDDA656In2fgnJ7
+         wxVTQTIZq1F4m8rBegWJvFNY+u9DKwKmI6Z4ALPnsSdhpwtt2yTsYR3qsr5WGtBlh6Tl
+         FFN7C52IIJbWFmbWgQXpfQ1BcYGX0GTB6Nero=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=APrF3kvRTyjTvlbhavoz/NkerS2/l6ATaVJxi4ziIkE=;
+        b=CBlllHOJT5Axv/uV+DOTbgy7kM5zKlbTKehPYYrDe/bE77DKeIzGq/AlRRsVO/531x
+         VWGEyp8PcRzouVVOVBGwdi+yrndahKFssVTW4FSvrL7S1Nyqlyih0IuauBMB8rh4uU0c
+         1LZtWhCuGjOrl9SjXAERtpoIfaRWxWcAF29Oc9S6hL0vX7SSUqBWYjbBiVwzoOMaAie1
+         xlGNNabFmAOJbzlfBRIa+LUf/AoXfhC0dx5LMNEObxq8Q0Pl5m8OPNUdH8vrj3aCGgEZ
+         KMiY8XVdex/zELlOxaDYHvLI7IR4rQIhRBV+pMuobSOEtBMf5Xc5CZcaiNdTniKvo9uC
+         r10Q==
+X-Gm-Message-State: AOAM531FAWuviC7K7zSqsZdf3o88xrEnmb+Vmpzqf3DQn/yICQM7QhRu
+        uNcQNTFlmk3WUeLOBksLutAKIw==
+X-Google-Smtp-Source: ABdhPJwL6RAoEZ6YFjBRXK/2kBquU1M6qjK79nhcn7Pkp8heQObszg3SzvqzImjSE8Zvmh9cGvOwkw==
+X-Received: by 2002:a17:902:b409:b029:114:afa6:7f4a with SMTP id x9-20020a170902b409b0290114afa67f4amr19787048plr.56.1624312462342;
+        Mon, 21 Jun 2021 14:54:22 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id v129sm7166195pfc.71.2021.06.21.14.54.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 14:54:21 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     "David S . Miller" <davem@davemloft.net>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Sunil Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geetha sowjanya <gakula@marvell.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        hariprasad <hkelam@marvell.com>,
+        Subbaraya Sundeep <sbhatta@marvell.com>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [PATCH] octeontx2-af: Avoid field-overflowing memcpy()
+Date:   Mon, 21 Jun 2021 14:54:19 -0700
+Message-Id: <20210621215419.1407886-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210618141823.161158090@linutronix.de>
+X-Patch-Hashes: v=1; h=sha256; g=b17b800f29ea6e6ad1b30b0c2ecbb7df53d261dd; i=11l6vH6fAxI3yJ0jzd3eaE2f+yyEs0bXJk1UH8s59xw=; m=9pzQoBWf6cgaZyB52H8V+Tt7PyeU+Nsu+QkJXmVQ/Sk=; p=6bBIi/RIyCcdYNjz3LFf9VU0AE7+w5vEKRR5cY+Qht0=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmDRCosACgkQiXL039xtwCbRrg/+OrW nyJ8YIB/UpRzbZHxWA1oSiqwjP9z2JIe4sFxhNYEzQrqrhKzi1Wduovg6z6UoQ98al9pa8mfMwkjS 2gQ9lxesJzFgYTdsOB7UVXQyu+r0s17xVgeYeDvWX0/0yjvfpNTUf1PA4kSp1lqTF7CSqWwK5yIwu +zJSgDk0l3HdCKPHtTo7t0lwVho45jKnsdJEBs8CBQO9zaD2hBEOawGopmQas7Xn80Bz+fb99wkwx UqwqrtYkDzUO11LGmRMcDa8ivU0hxVOBWC4wfrfU6Bev4vJPBTPPzdygjjTuFWGkf9Xjs7GQt8BRC YTu6aeWcfIvy2ESE1PRimwwnf/G+8o5EsbxNtmqdXeklc/oEecB9MjOChPz9dGoSxRbTzr2BlNsBI mXH6BKETE3e+qY5tSJ9pouJcuCMafSgsCjUXkzHgDeNJ/y+SJYBuoBRgvrihhPBkC7SFmo6/+24M8 rnBLcakwmw5wOZ5XU+z1B5gOxvtX1nTCEnDLjmaof1Mu6k1CDAtG5cAIKKQlx10VImJ4MZpEXFPho MOFmBdH6eADBk1Jla7W281yJqT/oc/ZpPU54sMbEja+sH9zhfciaDszw7cnxOKEUNfSXPTgL+8bk+ wX63AgUI+31sLhulhNQ/GrfbI0qhxRKTqCseaEDKuOhiXPxnf8Odo/5UMnzbeGes=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, X86 maintainers,
+In preparation for FORTIFY_SOURCE performing compile-time and run-time
+field bounds checking for memcpy(), memmove(), and memset(), avoid
+intentionally writing across neighboring fields.
 
-On Fri, Jun 18, 2021 at 04:18:23PM +0200, Thomas Gleixner wrote:
-> The main parts of this series are:
-> 
->   - Yet more bug fixes
+To avoid having memcpy() think a u64 "prof" is being written beyond,
+adjust the prof member type by adding struct nix_bandprof_s to the union
+to match the other structs. This silences the following future warning:
+
+In file included from ./include/linux/string.h:253,
+                 from ./include/linux/bitmap.h:10,
+                 from ./include/linux/cpumask.h:12,
+                 from ./arch/x86/include/asm/cpumask.h:5,
+                 from ./arch/x86/include/asm/msr.h:11,
+                 from ./arch/x86/include/asm/processor.h:22,
+                 from ./arch/x86/include/asm/timex.h:5,
+                 from ./include/linux/timex.h:65,
+                 from ./include/linux/time32.h:13,
+                 from ./include/linux/time.h:60,
+                 from ./include/linux/stat.h:19,
+                 from ./include/linux/module.h:13,
+                 from drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c:11:
+In function '__fortify_memcpy_chk',
+    inlined from '__fortify_memcpy' at ./include/linux/fortify-string.h:310:2,
+    inlined from 'rvu_nix_blk_aq_enq_inst' at drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c:910:5:
+./include/linux/fortify-string.h:268:4: warning: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); please use struct_group() [-Wattribute-warning]
+  268 |    __write_overflow_field();
+      |    ^~~~~~~~~~~~~~~~~~~~~~~~
+
+drivers/net/ethernet/marvell/octeontx2/af/rvu_nix.c:
 ...
-> and is also available via git:
->   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git x86/fpu
+                        else if (req->ctype == NIX_AQ_CTYPE_BANDPROF)
+                                memcpy(&rsp->prof, ctx,
+                                       sizeof(struct nix_bandprof_s));
 ...
-> Changes vs. V2:
-...
 
-After reverting the disabling PASID patch, resolving one PKRU conflict, and
-porting the latest internal IDXD patches to this series, I can run stress
-PASID context switch tests on this series (and v2 as well). I don't see any
-issue for PASID context switch.
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ drivers/net/ethernet/marvell/octeontx2/af/mbox.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Also thank you very much for moving the PASID feature forward.
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+index 7d7dfa8d8a3f..770d86262838 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+@@ -746,7 +746,7 @@ struct nix_aq_enq_rsp {
+ 		struct nix_cq_ctx_s cq;
+ 		struct nix_rsse_s   rss;
+ 		struct nix_rx_mce_s mce;
+-		u64 prof;
++		struct nix_bandprof_s prof;
+ 	};
+ };
+ 
+-- 
+2.30.2
 
--Fenghua
