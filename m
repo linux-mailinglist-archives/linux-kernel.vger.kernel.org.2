@@ -2,130 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918493AE1D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 05:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393853AE1F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 05:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230040AbhFUDSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 23:18:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50935 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229901AbhFUDSS (ORCPT
+        id S230202AbhFUDuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 23:50:19 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:41729 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230047AbhFUDuR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 23:18:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624245364;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=B2ArXRtPJQk6BlyRJnDmaMoLiN4BggSlTFGtO4czGec=;
-        b=DSjqlKWhGaynEgp/Bv2rv6ToF3WL3YpOfy6rSSOnKb8Vo4aIGCITqEg4i3c0L1dABqL724
-        1pJqsSYdjboxdetmX+khJ+XRYROCROcf3zlLsOdVxjFCkOgqIgq/uOgdl0qF8qet/IiRZo
-        mpNDJA9eO/7XQFtSXVV9S17NbcWg/Po=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-517-k9RcUUAnOGa-LzfWJ-xwQg-1; Sun, 20 Jun 2021 23:16:00 -0400
-X-MC-Unique: k9RcUUAnOGa-LzfWJ-xwQg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 35F821084F57;
-        Mon, 21 Jun 2021 03:15:59 +0000 (UTC)
-Received: from [10.64.54.84] (vpn2-54-84.bne.redhat.com [10.64.54.84])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8396C5D703;
-        Mon, 21 Jun 2021 03:15:53 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [RFC PATCH] mm/page_reporting: Adjust threshold according to
- MAX_ORDER
-To:     David Hildenbrand <david@redhat.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        shan.gavin@gmail.com, Anshuman Khandual <anshuman.khandual@arm.com>
-References: <20210601033319.100737-1-gshan@redhat.com>
- <76516781-6a70-f2b0-f3e3-da999c84350f@redhat.com>
- <0c0eb8c8-463d-d6f1-3cec-bbc0af0a229c@redhat.com>
- <b45b26ea-a6ac-934c-2467-c6e829b5d3ad@redhat.com>
- <CAKgT0Ue9SQ8=ju1m6ftKTb4Tai9EJ5NQhnB_uk-DzMc19-R4cQ@mail.gmail.com>
- <63c06446-3b10-762c-3a29-464854b74e08@redhat.com>
- <0cb302f1-7fb6-e47c-e138-b7a03f2b02e2@redhat.com>
- <33b441b2-f10d-a7fb-8163-df2afbf6527d@redhat.com>
- <9e553b30-ce18-df65-bd3c-c68eaa4d0d91@redhat.com>
- <3adbcad8-1016-cf48-4574-799de0bba6e4@redhat.com>
- <249e5814-e644-3d82-9b38-232928af4dbd@redhat.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <5ee628f8-772c-b1ed-557c-68d6a4a83415@redhat.com>
-Date:   Mon, 21 Jun 2021 15:16:54 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Sun, 20 Jun 2021 23:50:17 -0400
+Received: from epcas3p4.samsung.com (unknown [182.195.41.22])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210621034802epoutp03a9ebf6580c81faecb62ff070f90e34b0~KfEwwcHYj0682406824epoutp03e
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 03:48:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210621034802epoutp03a9ebf6580c81faecb62ff070f90e34b0~KfEwwcHYj0682406824epoutp03e
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1624247282;
+        bh=4o0BF1p//yguPV8uZCfsZ88Z+jjCIGGL4FlNAhcy5Jg=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=SSzeHCcLxu4iqT7m+4Qcpte8F2fvtWneNWAteX4CCk+l05gGqCxX/6VzqQm8PnBFA
+         fJsoM8yOg+AZG5AsXSePYKG/tySiaptpQwOVAkppdEA5eYgcKACAV3thOjVinizLrg
+         ijEHylbCHpXkRGJWYvbQBfsa1ursBcgQFA8pIq5M=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas3p3.samsung.com (KnoxPortal) with ESMTP id
+        20210621034801epcas3p36a5f228cb6b3a73bc4296b90fc6d3dd8~KfEwLFK1h0112101121epcas3p3j;
+        Mon, 21 Jun 2021 03:48:01 +0000 (GMT)
+Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp1.localdomain
+        (Postfix) with ESMTP id 4G7b8d4TMfz4x9Q3; Mon, 21 Jun 2021 03:48:01 +0000
+        (GMT)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210621025522epcas2p24c20721675d0705ce694a7dc69006264~KeWx4tFzs1749517495epcas2p2b;
+        Mon, 21 Jun 2021 02:55:22 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210621025522epsmtrp2857703936059551ab47ef74bf7bf8991~KeWx2rmu62801528015epsmtrp2a;
+        Mon, 21 Jun 2021 02:55:22 +0000 (GMT)
+X-AuditID: b6c32a2a-c01ff70000002061-8e-60cfff9a722e
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        13.34.08289.A9FFFC06; Mon, 21 Jun 2021 11:55:22 +0900 (KST)
+Received: from KORCO039056 (unknown [10.229.8.156]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210621025522epsmtip2b1550c3abc802ff415f31c6f4b6db240~KeWxipG3f0873908739epsmtip2m;
+        Mon, 21 Jun 2021 02:55:22 +0000 (GMT)
+From:   "Chanho Park" <chanho61.park@samsung.com>
+To:     "'Dominique MARTINET'" <dominique.martinet@atmark-techno.com>,
+        "'Jianxiong Gao'" <jxgao@google.com>
+Cc:     "'Christoph Hellwig'" <hch@lst.de>,
+        "'Konrad Rzeszutek Wilk'" <konrad@darnok.org>,
+        "'Konrad Rzeszutek Wilk'" <konrad.wilk@oracle.com>,
+        "'Linus Torvalds'" <torvalds@linux-foundation.org>,
+        =?utf-8?Q?'Horia_Geant=C4=83'?= <horia.geanta@nxp.com>,
+        <linux-kernel@vger.kernel.org>,
+        "'Lukas Hartmann'" <lukas@mntmn.com>,
+        "'Aymen Sghaier'" <aymen.sghaier@nxp.com>,
+        "'Herbert Xu'" <herbert@gondor.apana.org.au>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        <linux-crypto@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
+        "'Marc Orr'" <marcorr@google.com>,
+        "'Erdem Aktas'" <erdemaktas@google.com>,
+        "'Peter Gonda'" <pgonda@google.com>,
+        "'Bumyong Lee'" <bumyong.lee@samsung.com>
+In-Reply-To: <YM/zWyZlk1bzHWgI@atmark-techno.com>
+Subject: RE: swiotlb/caamjr regression (Was: [GIT PULL] (swiotlb)
+ stable/for-linus-5.12)
+Date:   Mon, 21 Jun 2021 11:55:22 +0900
+Message-ID: <2038148563.21624247281621.JavaMail.epsvc@epcpadp4>
 MIME-Version: 1.0
-In-Reply-To: <249e5814-e644-3d82-9b38-232928af4dbd@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQFDXrbxzNqCjAFYIyZp8SJPpEE7BALklUvQAU7mhF0BiRUMkQElteCnAXJthq8BvQCqOAH1sv7OAe2NoSYCTMPpJQDVyVEXAhuWClmrrDnekA==
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrIIsWRmVeSWpSXmKPExsWy7bCSvO6s/+cTDM695bZoPbyUyWLvaQuL
+        l4c0Leacb2GxWH3AyWL9hf/sFitXH2Wy6H4lY/Hh/GEmiwX7rS2mtfWxWCxb/JTR4s3zy6wW
+        9+/9ZLK4vGsOm8WV1VPZLY5c6me3mL7gHrPFo7637A7CHp3Ni5k8Oq5cZffYsvImk8e2A6oe
+        CzaVepyY8ZvFY/KN5Yweu282sHksPXqE1WPjux1MHh+f3mLx6NuyitHj8ya5AN4oLpuU1JzM
+        stQifbsEroyt0+azFqzkrljzfi1rA2MDZxcjJ4eEgInE9h3HmboYuTiEBHYwStz5dZgNIiEr
+        8ezdDnYIW1jifssRVoiiZ4wSEzseMYMk2AT0JV52bGMFsUUEMiXeLexiBCliFtjLKnGs7Rg7
+        RMcyFolXPfPBRnEKGEpMvnMHbIWwQITEh62tYN0sAqoSr+7/B4pzcPAKWErMnSILEuYVEJQ4
+        OfMJC4jNLKAt8fTmUzh72cLXzBDXKUj8fLoM6og6iWsXn7JD1IhIzO5sY57AKDwLyahZSEbN
+        QjJqFpKWBYwsqxglUwuKc9Nziw0LjPJSy/WKE3OLS/PS9ZLzczcxglOBltYOxj2rPugdYmTi
+        YDzEKMHBrCTCy5l5JkGINyWxsiq1KD++qDQntfgQozQHi5I474Wuk/FCAumJJanZqakFqUUw
+        WSYOTqkGJt15cxj4uKQ2HjB87Dn3SCenXJtI2UtZJ4P2a0YWAa81WY4aTjT9svh16oOw1/lm
+        imsmaX7fkjcz7qdypN3BFVOP7BP64HZrJttVkXCr7tyPW2ZPNvBVy5vLKeJ59Hnd9LCTN5t/
+        3z4rvzp4TZPpy9/CK7qDJgrOuOL5f1ua04egSVucBNxmq3xZddq9LCKocvFcL+VE1Z4FneV/
+        vtcZcGccVPW6zvcs8KNIivam2nU6jj7r7vBHTTCItJVlW13fveibplT6rDWtVzbknHx1K/65
+        7ppGkX8S4asXJav2aX97b+a7a80WqxKWSAW2r3w7bJg6z0pYdjXtbGVvcpJO3/3w4gzzzMDd
+        RatPmJU3K7EUZyQaajEXFScCAGgu9I90AwAA
+X-CMS-MailID: 20210621025522epcas2p24c20721675d0705ce694a7dc69006264
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20210621020328epcas2p207e9fa2df119730ceb993543621437d8
+References: <YL7XXNOnbaDgmTB9@atmark-techno.com>
+        <2e899de2-4b69-c4b6-33a6-09fb8949d2fd@nxp.com>
+        <20210611062153.GA30906@lst.de> <YMM8Ua0HMmErLIQg@0xbeefdead.lan>
+        <CAMGD6P1v2JoJoxSuAYL8UjdtCaLCc4K_7xzVkumspeb0qn=LBQ@mail.gmail.com>
+        <YMqW+/gQvM+uWUTw@fedora> <YMqZswFnSNKk4Z7B@atmark-techno.com>
+        <20210617051232.GB27192@lst.de> <YMrfWBLsJxCRhX5U@atmark-techno.com>
+        <CAMGD6P0=9RE1-q1WHkwR1jymK5jyvN6QgypQ2KgdvBQn0CUTHw@mail.gmail.com>
+        <CGME20210621020328epcas2p207e9fa2df119730ceb993543621437d8@epcas2p2.samsung.com>
+        <YM/zWyZlk1bzHWgI@atmark-techno.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/21 10:07 PM, David Hildenbrand wrote:
->> Indeed. 512MB pageblocks are rare, especially on systems which have been
->> up and running for long time.
->>
->> The free page reporting starts from guest. Taking an extreme case: guest has
->> 512MB memory and it's backed by one THP on host. The free page reporting won't
->> work at all.
->>
->> Besides, it seems free page reporting isn't guranteed to work all the time.
->> For example, on system where we have 4KB base page size. Freeing individual
->> 4KB pages can't come up with a free 2MB pageblock due to fragmentation.
->> In this case, the free'd page won't be reported immediately, but might be
->> reported after swapping or compaction due to memory pressure. The free page
->> isn't reported immediately at least.
-> 
-> Exactly, it's a pure optimization that won't work, especially when guest memory is heavily fragmented. There has to be a balance between reclaiming free memory in the hypervisor, degrading VM performance, and overhead of the feature.
-> 
-> Further, there are no guarantees when a VM will reuse the memory again. In the worst case, all VMs that reported free pages reuse memory at the same time. In that case, one definitely needs sufficient backend memory in the hypervisor (-> swap) to not run out of memory, and performance will be degraded.
-> 
-> As MST once phrased it, if the feature has a higher overhead than swapping in the hypervisor, it's of little use.
-> 
++ Bumyong who is the original author of the patch.=20
 
-Thanks for the explanation and sorry again for late response, David. I took
-last week as holiday and didn't work too much.
+Hi Dominique,
 
-However, it's nice to have unused pages returned back to the host. These pages
-can be used by other VMs or applications running on the host.
+> Thanks!
+> (a bit late, but added Chanho Park in Cc...)
+>=20
+> I can confirm it also works for our caam problem, as Horia said.
+>=20
+> I've also come to term with the use of swiotlb_align_offset() through
+> testing, or rather many devices seem to have a 0 mask so it will almost
+> always be cancelled out, so if it works for Jianxiong then it's probably
+> good enough and I'll just assume that's how the orig_addr has been
+> designed...
+>=20
+> I think it's missing a couple of checks like the one Linus had in his
+> patch, and would be comfortable with something like the attached patch (i=
+n
+> practice for me exactly the same as the original patch, except I've added
+> two checks: offsets smaller than orig addr offset are refused as well as
+> offsets bigger than the mapping size)
+>=20
+> I'm sorry Jianxiong but would you be willing to take the time to test
+> again just to make sure there were no such offsets in your case?
+>=20
+>=20
+> If we're good with that I'll send it as an official v2 keeping Chanho's
+> from, unless he wants to.
+>=20
 
->>
->> David, how about taking your suggestion to have different threshold size only
->> for arm64 (64KB base page size). The threshold will be smaller than pageblock_order
->> for sure. There are two ways to do so and please let me know which is the preferred
->> way to go if you (and Alex) agree to do it.
->>
->> (a) Introduce CONFIG_PAGE_REPORTING_ORDER for individual archs to choose the
->>       value. The threshold falls back to pageblock_order if isn't configurated.
->> (b) Rename PAGE_REPORTING_MIN_ORDER to PAGE_REPORTING_ORDER. archs can decide
->>       its value. If it's not provided by arch, it falls back to pageblock_order.
->>
-> 
-> I wonder if we could further define it as a (module/cmdline) parameter and make it configurable when booting. The default could then be set based on CONFIG_PAGE_REPORTING_ORDER. CONFIG_PAGE_REPORTING_ORDER would default to pageblock_order (if easily possible) and could be special-cases to arm64 with 64k.
-> 
+Sure. No problem. But, the patch was already stacked on Konrad's tree
+and linux-next as well.
 
-The formal patches are posted for review. I used macro PAGE_REPORTING_ORDER
-instead of CONFIG_PAGE_REPORTING_ORDER. The page reporting order (threshold)
-is also exported as a module parameter, as you suggested.
+https://git.kernel.org/pub/scm/linux/kernel/git/konrad/swiotlb.git/commit/?=
+h=3Ddevel/for-linus-5.14&id=3D33d1641f38f0c327bc3e5c21de585c77a6512bc6=20
 
->> By the way, I recently had some performance testing on different page sizes.
->> We get much more performance gain from 64KB (vs 4KB) page size in guest than
->> 512MB (vs 2MB) THP on host. It means the performance won't be affected too
->> much even the 512MB THP is splitted on arm64 host.
-> 
-> Yes, if one is even able to get 512MB THP populated in the hypervisor -- because once again, 512MB THP are just a bad fit for many workloads.
-> 
+Best Regards,=20
+Chanho Park
 
-Yeah, indeed :)
-
-Thanks,
-Gavin
 
