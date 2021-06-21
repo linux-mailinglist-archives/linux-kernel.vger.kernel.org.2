@@ -2,110 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8458A3AED28
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F013AED20
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhFUQMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53688 "EHLO
+        id S230186AbhFUQK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:10:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbhFUQMV (ORCPT
+        with ESMTP id S229789AbhFUQK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:12:21 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB823C061574;
-        Mon, 21 Jun 2021 09:10:06 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id k8so2958913ljk.7;
-        Mon, 21 Jun 2021 09:10:06 -0700 (PDT)
+        Mon, 21 Jun 2021 12:10:26 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E9AC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:08:11 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id f10so10793020iok.6
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:08:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ICkdfzH6XCcjBYxGEsjQo2bFyJ6lwjMxxQXnUmGqrvc=;
-        b=XDRZ8PFNYOTui7aSL6NlwFjzQAM5YqE+Hbp7/ywcKilL8ADnJXU5ER4eblkIapr/VP
-         vv1zsKBFx6pHrikjZ2tsd+3ETTb/rhp3pCmAP69nbFPyMNei70KWSf8N2TQfI2Z4KjY5
-         qpI7CTtJc38uTYhK4jaA2D3IKL34DM6qKvGmLLrewvuB7xr86XkNCeDcoV0byAvhxY3n
-         AEd26Ub/tAzth6EbottMjQeMeql7uPqOJ012i1tWQLyhvulvoQSVs7nL4OFPf8CqTgpV
-         DFexIku0E6BopK+p0a36RvkibLMmHXL/QoZYTQVDVUrqQKV+ACI7ymHvJGzLzxL2b7/+
-         VyfA==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=OlCOy+HeD0rN5WnuF7UNheKbb+x7CdKtiEN/ib6DAGc=;
+        b=nk/K/v736t7tgQbi4fKvxJbk69XoezM/RDnzm+woo4Ihgmkv0V/PNn/KrFIqnPROak
+         0VwfmLpvr7/PxlHjVd6mpXPzRCRPxeA8ufUipVzpLSMTars4mkxbZ7r4N/INfFkM+K+L
+         9Y7xynd0caPsPqnpShmz0JUHhjs8CX+ct7qCFUIONcTVSOoB9NuX9SiXgloSLOXtMUWt
+         vvWXcpTj1YoSv4CJbYYA3xmArILUSDF/XmdOPH8tT4WNGJuLxICl8hhJK+I3XlrgiQJh
+         SUEE+T3gFTtvZbYPN7mjUpS6vQ/PS+FMyakgnmlEy0innk9frwyu6KwsvCJUa1+So3+6
+         NMxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ICkdfzH6XCcjBYxGEsjQo2bFyJ6lwjMxxQXnUmGqrvc=;
-        b=pmKPI7F9/K5jEr7kIpo9XeYP8vjApTX4LZr7NiSoHwRnLB9J+PpZuk7of/Hxi/V+6Z
-         v4BFJFIdmv/T2bb+OPG6VYmX2mQWU+cs8qYw1gKbDmARilr34JakrB5P65yaMnIoYyW9
-         u5xqvrWE3ibKRRwiOpM1Go96ZwH7yr9r8ffoueosi+4P5cMkPst6RqFvg7wS7CzRItkD
-         2HEywHOTnD/baR7ucNLsl+Hzju4kWocTWl48umPI5qSvj/F4PecipJIsGTjCq+UD2j3M
-         vJUH/Ky0SaADQhJEmWyvAPopx4M/+B34dT55H6v1NfKzWZpMrZBnYePyB+t9HffuG/wq
-         3ocg==
-X-Gm-Message-State: AOAM533moFRuIH2x70VlvYCG4B04sD/YjaC/P6+0yc65fwhNOQnMoHne
-        8vqerlsTawIamIzXiTVzn5E=
-X-Google-Smtp-Source: ABdhPJw+z+F/RX/pIwciHgZzeVtAviu351AwkBaOXZkuSyayZWlDQgyxro7OlRKRaOWdlTcsg6NMTg==
-X-Received: by 2002:a2e:b4c6:: with SMTP id r6mr10614446ljm.302.1624291805123;
-        Mon, 21 Jun 2021 09:10:05 -0700 (PDT)
-Received: from localhost.localdomain (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
-        by smtp.gmail.com with ESMTPSA id j9sm1916033lfm.309.2021.06.21.09.10.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 09:10:04 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <treding@nvidia.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v1] soc/tegra: Make regulator couplers depend on CONFIG_REGULATOR
-Date:   Mon, 21 Jun 2021 19:07:39 +0300
-Message-Id: <20210621160739.22448-1-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        bh=OlCOy+HeD0rN5WnuF7UNheKbb+x7CdKtiEN/ib6DAGc=;
+        b=YP3DEZWJD3yaxPfFskbK9ZbiFeDvYIBwdGTDQiYQ+uXCnIlyGy8qnrV1WvIzpIKN2u
+         L8x74OunICoFm3k0eaP1nhWi//FP+xNThgMbsfdTV6SsrXS3kWWeH3Di6XU6lafqdxiM
+         2AtJlSpJXVfwVPPozSuoqXs+ycZN+7UAjGdLK8hmGBAxlza7TdBojUKGPcttc9wYePl5
+         6o8BVXcm4toRPo9ESfpxUnXez9DP4/n27xAt4DSc4z6yQNynJLeGiOrVdpnyy7Iybk5r
+         CKQ9evCU/dzQBigH9SdBmS4pHsVT5wuA9bK7UQxjixeUIo/Q4aYTeoTlTheuCPkqr8dD
+         uBpg==
+X-Gm-Message-State: AOAM530AnPpQWFH51X44E9WEhla+TwwFGsB41kwo337DLdwI2hEjUjPC
+        uOVyrb8NjHX8lmJDhaLk94pJIQ==
+X-Google-Smtp-Source: ABdhPJw7GMOu2YIDQVXr+m45vazP/BWgabqyV4P6eXHb7lrtN748i81jWxSafG4j/1BdyvLR9BWL9A==
+X-Received: by 2002:a02:a817:: with SMTP id f23mr7422871jaj.101.1624291690445;
+        Mon, 21 Jun 2021 09:08:10 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id e14sm6317948ile.2.2021.06.21.09.08.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 09:08:09 -0700 (PDT)
+Subject: Re: [PATCH FIXES/IMPROVEMENTS 0/7] block, bfq: preserve control,
+ boost throughput, fix bugs
+To:     Paolo Valente <paolo.valente@linaro.org>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mariottiluca1@hotmail.it, holger@applied-asynchrony.com,
+        pedroni.pietro.96@gmail.com
+References: <20210619140948.98712-1-paolo.valente@linaro.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <02db63cb-9cd0-4068-00db-dc37314faea7@kernel.dk>
+Date:   Mon, 21 Jun 2021 10:08:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210619140948.98712-1-paolo.valente@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The regulator coupler drivers now use regulator-driver API function that
-isn't available during compile-testing. Make regulator coupler drivers
-depend on CONFIG_REGULATOR in Kconfig.
+On 6/19/21 8:09 AM, Paolo Valente wrote:
+> Hi Jens,
+> this series contains an already proposed patch by Luca, plus six new
+> patches. The goals of these patches are summarized in the subject of
+> this cover letter. I'm including Luca's patch here, because it enabled
+> the actual use of stable merge, and, as such, triggered an otherwise
+> silent bug. This series contains also the fix for that bug ("block,
+> bfq: avoid delayed merge of async queues"), tested by Holger [1].
 
-Fixes: 03978d42ed0d ("soc/tegra: regulators: Bump voltages on system reboot")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/soc/tegra/Kconfig | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Applied, thanks.
 
-diff --git a/drivers/soc/tegra/Kconfig b/drivers/soc/tegra/Kconfig
-index db49075b1946..1224e1c8c2c9 100644
---- a/drivers/soc/tegra/Kconfig
-+++ b/drivers/soc/tegra/Kconfig
-@@ -15,7 +15,7 @@ config ARCH_TEGRA_2x_SOC
- 	select PL310_ERRATA_769419 if CACHE_L2X0
- 	select SOC_TEGRA_FLOWCTRL
- 	select SOC_TEGRA_PMC
--	select SOC_TEGRA20_VOLTAGE_COUPLER
-+	select SOC_TEGRA20_VOLTAGE_COUPLER if REGULATOR
- 	select TEGRA_TIMER
- 	help
- 	  Support for NVIDIA Tegra AP20 and T20 processors, based on the
-@@ -29,7 +29,7 @@ config ARCH_TEGRA_3x_SOC
- 	select PL310_ERRATA_769419 if CACHE_L2X0
- 	select SOC_TEGRA_FLOWCTRL
- 	select SOC_TEGRA_PMC
--	select SOC_TEGRA30_VOLTAGE_COUPLER
-+	select SOC_TEGRA30_VOLTAGE_COUPLER if REGULATOR
- 	select TEGRA_TIMER
- 	help
- 	  Support for NVIDIA Tegra T30 processor family, based on the
-@@ -154,7 +154,9 @@ config SOC_TEGRA_POWERGATE_BPMP
- config SOC_TEGRA20_VOLTAGE_COUPLER
- 	bool "Voltage scaling support for Tegra20 SoCs"
- 	depends on ARCH_TEGRA_2x_SOC || COMPILE_TEST
-+	depends on REGULATOR
- 
- config SOC_TEGRA30_VOLTAGE_COUPLER
- 	bool "Voltage scaling support for Tegra30 SoCs"
- 	depends on ARCH_TEGRA_3x_SOC || COMPILE_TEST
-+	depends on REGULATOR
 -- 
-2.30.2
+Jens Axboe
 
