@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9308E3AEEB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA6C83AEEB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232207AbhFUQbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:31:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48302 "EHLO mail.kernel.org"
+        id S231145AbhFUQbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:31:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232304AbhFUQ3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:29:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7762C613F3;
-        Mon, 21 Jun 2021 16:23:57 +0000 (UTC)
+        id S232318AbhFUQ3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:29:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E138861353;
+        Mon, 21 Jun 2021 16:23:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292637;
-        bh=GPZlmCmG5Ozv64hMj2PJFVS6AWHaoBhOPRTJYmhJWpc=;
+        s=korg; t=1624292640;
+        bh=UkDxa+fl9rFOLo1Io0faeV/fqWbjlXYKuHxxv5ocWTY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ma1AMhKqRetwfblOOIKjl8ikbKkEXQTLQnl6Ga3LpNl5Kp8Prq9+imM11KnWjppeS
-         d4z+hYsoISZOId00w2MFIIEh7iU2yXxK1iohmYYHf2OsAPGH3oDUSbwpr6YTKZzg3n
-         gZ/VP3OU+al4luaQUHn+25zjBLR0vfr1K05AAxpI=
+        b=ixSzxK8mzy0Oo6Xuf5q+FbMbPNWHWSF19STfZ5ZMiNO6ZUsbC+IoG9RxFwR8RGkBK
+         b47Hcj9gxRGKSC8tZXbaR+mqAwaY8wIXrizjIGH54St3dsNrDAQa83wtbiSAUe3PEc
+         wvMrUZ9+oKTApxCzKEh0+D1+JzvvYV095IkO0+vQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Axel Lin <axel.lin@ingics.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 073/146] net: ethernet: fix potential use-after-free in ec_bhf_remove
-Date:   Mon, 21 Jun 2021 18:15:03 +0200
-Message-Id: <20210621154915.515545612@linuxfoundation.org>
+Subject: [PATCH 5.10 074/146] regulator: cros-ec: Fix error code in dev_err message
+Date:   Mon, 21 Jun 2021 18:15:04 +0200
+Message-Id: <20210621154915.604917424@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
 References: <20210621154911.244649123@linuxfoundation.org>
@@ -40,54 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Skripkin <paskripkin@gmail.com>
+From: Axel Lin <axel.lin@ingics.com>
 
-[ Upstream commit 9cca0c2d70149160407bda9a9446ce0c29b6e6c6 ]
+[ Upstream commit 3d681804efcb6e5d8089a433402e19179347d7ae ]
 
-static void ec_bhf_remove(struct pci_dev *dev)
-{
-...
-	struct ec_bhf_priv *priv = netdev_priv(net_dev);
+Show proper error code instead of 0.
 
-	unregister_netdev(net_dev);
-	free_netdev(net_dev);
-
-	pci_iounmap(dev, priv->dma_io);
-	pci_iounmap(dev, priv->io);
-...
-}
-
-priv is netdev private data, but it is used
-after free_netdev(). It can cause use-after-free when accessing priv
-pointer. So, fix it by moving free_netdev() after pci_iounmap()
-calls.
-
-Fixes: 6af55ff52b02 ("Driver for Beckhoff CX5020 EtherCAT master module.")
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Link: https://lore.kernel.org/r/20210512075824.620580-1-axel.lin@ingics.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ec_bhf.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/regulator/cros-ec-regulator.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/ec_bhf.c b/drivers/net/ethernet/ec_bhf.c
-index 46b0dbab8aad..7c992172933b 100644
---- a/drivers/net/ethernet/ec_bhf.c
-+++ b/drivers/net/ethernet/ec_bhf.c
-@@ -576,10 +576,12 @@ static void ec_bhf_remove(struct pci_dev *dev)
- 	struct ec_bhf_priv *priv = netdev_priv(net_dev);
+diff --git a/drivers/regulator/cros-ec-regulator.c b/drivers/regulator/cros-ec-regulator.c
+index eb3fc1db4edc..c4754f3cf233 100644
+--- a/drivers/regulator/cros-ec-regulator.c
++++ b/drivers/regulator/cros-ec-regulator.c
+@@ -225,8 +225,9 @@ static int cros_ec_regulator_probe(struct platform_device *pdev)
  
- 	unregister_netdev(net_dev);
--	free_netdev(net_dev);
+ 	drvdata->dev = devm_regulator_register(dev, &drvdata->desc, &cfg);
+ 	if (IS_ERR(drvdata->dev)) {
++		ret = PTR_ERR(drvdata->dev);
+ 		dev_err(&pdev->dev, "Failed to register regulator: %d\n", ret);
+-		return PTR_ERR(drvdata->dev);
++		return ret;
+ 	}
  
- 	pci_iounmap(dev, priv->dma_io);
- 	pci_iounmap(dev, priv->io);
-+
-+	free_netdev(net_dev);
-+
- 	pci_release_regions(dev);
- 	pci_clear_master(dev);
- 	pci_disable_device(dev);
+ 	platform_set_drvdata(pdev, drvdata);
 -- 
 2.30.2
 
