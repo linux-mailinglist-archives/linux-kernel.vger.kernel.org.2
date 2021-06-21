@@ -2,101 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFE4B3AEC40
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CDC3AEC43
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbhFUP0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 11:26:09 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:53255 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230290AbhFUP0F (ORCPT
+        id S230302AbhFUP1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 11:27:07 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:33978 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229789AbhFUP06 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 11:26:05 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 0233B58085E;
-        Mon, 21 Jun 2021 11:23:51 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Mon, 21 Jun 2021 11:23:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=9K3u2Ll8ef7lXqXfO5YF59Gk1Vi
-        Je+PDxvFbDXwXxtQ=; b=yebfp9yeoY21SFGD5LE170uZbwnlZJ0dji95uyz2NKp
-        jpHtDrBfRsOtkHAlHXYiT2QCfacEl3geh0kqZOXs8Vrf7tjqUvI6OxpSHgZXfuTF
-        PdR2Q+JGQ9QdOtzy3THAiEEXcpSuoaZGopZ4yQTdNEr9lyDNPmt9zfRrgbApb5hg
-        A3oaWGfHKH81sUD0lNrn8yy2xvhaywvqKtDmdqEL87yIs2vnwHZoOqT+wn5/Xz1r
-        6oQkQNs4+x7M2yNYPIYU2rm2inEP7qd7AHlzjA1v6nlbLzntpTFcUUOZn1d291hE
-        dG0hh/H8DypJ+iPn8cr7Tngqzsq8d601BzbVCho3FQA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=9K3u2L
-        l8ef7lXqXfO5YF59Gk1ViJe+PDxvFbDXwXxtQ=; b=dFfApVLdvFrcIX7MX9a4VW
-        ldDHW8yNGPjzdXBqtJTuAYXPI2tDjF1IoM7qNk2EOJy0NfoIhSA42pzIsW+2F61/
-        EWgqV5q4FTIF0YIgMJw3J+KwV5RR/xE7rQ44n6ERaeb6amFVpPkbOfc8IxK35NyF
-        5KVSaZPlG4tiFBL5RE1y+tl8OlHyD4J8mFVgdQ/3zLj7ejQbU/Gb9h1ZepIn/Agb
-        KQ+pkVVj2/0UwNTV6TOK0T+0FqNbVCYSremmO+gHko7oY/TmfTvGPLOAt2KLmW3R
-        GzWV3cSFZ0FMefHa7y9r5OcqxKYYZuH0gXuUAJWQ2FGawG6QAqO5AOhe9GTUgEXw
-        ==
-X-ME-Sender: <xms:Bq_QYOpP6Z7kLX35bmHnoKYpsF2Tc25pDxVa-CJocLWOFFhFaHuTDw>
-    <xme:Bq_QYMpe0SaZL9vx2mqhg7SCdIo2C6YB05ekoJmyfBPpfu6ISM8HDEy8RCP1OUpQ1
-    1_3-0D_Qh0Dhw>
-X-ME-Received: <xmr:Bq_QYDMw5yd8o5K0T9guxB-V1L2VZhZ2QLXMTwmCr-uZfVJEaFY_2HKC7lr9NXxpFjZZkMvK8hMgBHkOdDJeYMp5bLVDF6Zl>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeefledgkeelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeeuleeltd
-    ehkeeltefhleduuddvhfffuedvffduveegheekgeeiffevheegfeetgfenucffohhmrghi
-    nhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepghhrvghgsehkrhhorghhrdgtohhm
-X-ME-Proxy: <xmx:Bq_QYN7DpKCpDeoTuc9ll7qeNlLgZaZq2zu8f9mO2P73xNnan_6X_w>
-    <xmx:Bq_QYN6dDL_YUMzZYs1vCjgcpSFBbUgfM4OxWjj0ktDPI_gb7naR5g>
-    <xmx:Bq_QYNhHwzvF75IckUaN0aBH6Edt8nr67ldslzF9DVxGvirwxvU7Jg>
-    <xmx:Bq_QYKxjbvQts28nBm8P8cWOenVy56YZxj4UM5oRGlVV23ek2UQClQ>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 21 Jun 2021 11:23:50 -0400 (EDT)
-Date:   Mon, 21 Jun 2021 17:23:47 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Eric Auger <eric.auger@redhat.com>
-Cc:     eric.auger.pro@gmail.com, stable@vger.kernel.org, maz@kernel.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu
-Subject: Re: [PATCH for-stable-5.4] KVM: arm/arm64: Fix
- KVM_VGIC_V3_ADDR_TYPE_REDIST read
-Message-ID: <YNCvA4qDuc2Tlmi0@kroah.com>
-References: <20210621124232.793383-1-eric.auger@redhat.com>
+        Mon, 21 Jun 2021 11:26:58 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15LFHVji030700;
+        Mon, 21 Jun 2021 10:24:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=R5FkVCq+KE7byMZx53BaO/xYpXWQwjNkt9WJFd7GKUw=;
+ b=CwX+8u4XG63XnA6DgvP2R2YUGC/w3zJKqYKL6h/pg76KWfbs7gci4Kbh6xUO6WeXal/X
+ jsLxGMC7SqxO5RjPoHJrDb7htZo6qruGtS+XkB0EFTA+2FEo1RxhykrwF/M01WMW4vTV
+ 6wBKtnPbAJ6JZoVFPbv6UBxLtMz3rNnZyryM9ZXLrP6jwnQZUMerwGilZJ8mNPvSooZA
+ pIsoZQp/B1StyViSomX9kbJjwbfwt8oVM1d4xPIis0YOojGsgfpUL+yTqWHdT6erg0Wk
+ b4eG4OBdrMj3QZ7RyISMXK2Y8lLc59ThQuAKutrzZb++Dp2y0/zH66Giz4nBGOcZV+31 xw== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 39aqy20fp8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 21 Jun 2021 10:24:37 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Mon, 21 Jun
+ 2021 16:24:35 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Mon, 21 Jun 2021 16:24:35 +0100
+Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.172])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 8BDC52B2;
+        Mon, 21 Jun 2021 15:24:35 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <rjw@rjwysocki.net>, <lenb@kernel.org>
+CC:     <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH] ACPI: tables: Add custom DSDT file as makefile prerequisite
+Date:   Mon, 21 Jun 2021 16:24:33 +0100
+Message-ID: <20210621152433.29716-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621124232.793383-1-eric.auger@redhat.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: etH7C2KjIMKmlE83Lz-VQExTp6DeUb0B
+X-Proofpoint-ORIG-GUID: etH7C2KjIMKmlE83Lz-VQExTp6DeUb0B
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 clxscore=1011 phishscore=0 lowpriorityscore=0 spamscore=0
+ suspectscore=0 priorityscore=1501 adultscore=0 bulkscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106210091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 02:42:32PM +0200, Eric Auger wrote:
-> When reading the base address of the a REDIST region
-> through KVM_VGIC_V3_ADDR_TYPE_REDIST we expect the
-> redistributor region list to be populated with a single
-> element.
-> 
-> However list_first_entry() expects the list to be non empty.
-> Instead we should use list_first_entry_or_null which effectively
-> returns NULL if the list is empty.
-> 
-> Fixes: dbd9733ab674 ("KVM: arm/arm64: Replace the single rdist region by a list")
-> Cc: <Stable@vger.kernel.org> # v5.4
-> Signed-off-by: Eric Auger <eric.auger@redhat.com>
-> Reported-by: Gavin Shan <gshan@redhat.com>
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> Link: https://lore.kernel.org/r/20210412150034.29185-1-eric.auger@redhat.com
-> ---
->  virt/kvm/arm/vgic/vgic-kvm-device.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+A custom DSDT file is mostly used during development or debugging,
+and in that case it is quite likely to want to rebuild the kernel
+after changing ONLY the content of the DSDT.
 
-Both now queued up, thanks.
+This patch adds the custom DSDT as a prerequisite to tables.o
+to ensure a rebuild if the DSDT file is updated. Make will merge
+the prerequisites from multiple rules for the same target.
 
-Next time, give us a hint as to what the upstream commit id is, so that
-we do not have to dig it up ourselves :)
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ drivers/acpi/Makefile | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-thanks,
+diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
+index efb0d1f64019..ceb1aed4b1fc 100644
+--- a/drivers/acpi/Makefile
++++ b/drivers/acpi/Makefile
+@@ -8,6 +8,11 @@ ccflags-$(CONFIG_ACPI_DEBUG)	+= -DACPI_DEBUG_OUTPUT
+ #
+ # ACPI Boot-Time Table Parsing
+ #
++ifeq ($(CONFIG_ACPI_CUSTOM_DSDT),y)
++tables.o: $(src)/../../include/$(subst $\",,$(CONFIG_ACPI_CUSTOM_DSDT_FILE)) ;
++
++endif
++
+ obj-$(CONFIG_ACPI)		+= tables.o
+ obj-$(CONFIG_X86)		+= blacklist.o
+ 
+-- 
+2.20.1
 
-greg k-h
