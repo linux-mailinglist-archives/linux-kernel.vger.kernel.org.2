@@ -2,120 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CBB83AF720
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB1E3AF72A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231269AbhFUVCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 17:02:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34314 "EHLO
+        id S231297AbhFUVHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 17:07:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhFUVCU (ORCPT
+        with ESMTP id S230102AbhFUVHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 17:02:20 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08830C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:00:05 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id y13-20020a1c4b0d0000b02901c20173e165so902663wma.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:00:04 -0700 (PDT)
+        Mon, 21 Jun 2021 17:07:43 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84178C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:05:27 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id bj15so32339576qkb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:05:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xA58HD/7gnajS6qk34Ai7OQ9mkRPbhDwepfq+viVvEE=;
-        b=jjaBzzj/7EfHBKn4zRPnzH4Uj/gaxV9Ap2RnuYS3uJZrdnBaYqOtOtcgVMhc1/NjvU
-         kLoc8wvqKLtTGYlQxZEqTDiypimXvljAOCRxoiKAjWImuirFzZKI6PeVXRgOXJKetR77
-         OYl64f7LAKhsJ782dtPt3BewXxS29NRUU5lsPs9TftA6vcWMx/8nWZWz9htWb9fEJLft
-         0ziCJyt8G7JZCsGIp4oSqVN4nKUYwt6f+FduOvMaHvJLAKyG2XHnvfbE5iDdKopqe9gk
-         WzDwoRCZYEGMTRNCPF26iZcW1v756targ9vE49IEoaaRzZFNPrw+XEJ4HXkLM6W17WAz
-         2+7A==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=L5lwOC/KEE0gVZhse9x0TtGeL/8XUcgfK7pngTjKxOw=;
+        b=CVzBfFiF0BipZ6q3gjjvis8m/qyFpyjXUNZdUSDDuN/SijLBTNAhb9wVswBj4t6wi4
+         Go9gBmD/Zp4t1d+lrZdqXhbIFA9pHoySALsNnYAyPG679kfqsh74AIY9yDH/J9bmJzRR
+         GkwXJ0LpJT7lJtMLX6jajvVq4W6GWkI+aXeorBuIHSkPP/40bgM+8QkD4Jw8yhi2CARa
+         561IX6N+zdyXfaSlAWqpKtXKzcPUrEOfyf1VAr/4osLPsNwd0ZS/XfYBB/W//Jf8edH+
+         ao8JsVtQnlVNN3Bjht3StwS2N89rQ9EgXSdVL96Uwq3noYy6ayk6QOKV3iydRLlCErob
+         pwTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xA58HD/7gnajS6qk34Ai7OQ9mkRPbhDwepfq+viVvEE=;
-        b=D26pA6jhrFl1Y7uycg/GVOJJgfDEeh9slSxBn7ba8ln9m9JIoKqVgMUTT6xZDYjesU
-         M0WyqDSJIp8P+W1SVD6Wannyu5ZJ8jeryJQdySPtV1/tUq4UGpTXXz6hYvu0HSkClwYR
-         E0Ve4pSx8qVQYwxh9vNdbXgBqDFeN/E05bvxgPVvmfNbb0V2EtFnVMgJuNX6pj8s4C3p
-         TkdqHLEahIp0XiKC7QRCILupXSGYaYvPzDgx+StrLgBa1B/8v0eXEPd0zLtrAqcJD70N
-         54MMCPV4VvSDKibtuYcs5lqcysNP1IFyrikuCr/uSxTWqFvxqu6bQoXig2svigU+Scee
-         QVgQ==
-X-Gm-Message-State: AOAM531fvXBlWQlS+KcxVu5mcYmEVqt0NQm4bVjOG7CY0nX8y8w5PMLB
-        jc2vutw9ogQ5T5uExlPxZvKUOA==
-X-Google-Smtp-Source: ABdhPJz8ODwHt5Y5HBln/QPZYlLgKLzimB5hQ6XwJ/lhbau52eKnFqAQAQLjJ58VFQCgXOBMPUnvSA==
-X-Received: by 2002:a1c:18d:: with SMTP id 135mr247455wmb.55.1624309202217;
-        Mon, 21 Jun 2021 14:00:02 -0700 (PDT)
-Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
-        by smtp.gmail.com with ESMTPSA id z10sm133978wmp.39.2021.06.21.14.00.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 14:00:01 -0700 (PDT)
-Subject: Re: [PATCH v3 01/23] x86/elf: Check in_x32_syscall() in
- compat_arch_setup_additional_pages()
-To:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Will Deacon <will@kernel.org>, x86@kernel.org
-References: <20210611180242.711399-1-dima@arista.com>
- <20210611180242.711399-2-dima@arista.com>
- <87tulth9j8.ffs@nanos.tec.linutronix.de>
-From:   Dmitry Safonov <dima@arista.com>
-Message-ID: <2fdcea8f-521d-c06c-15f0-b0b6782fd30e@arista.com>
-Date:   Mon, 21 Jun 2021 21:59:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=L5lwOC/KEE0gVZhse9x0TtGeL/8XUcgfK7pngTjKxOw=;
+        b=eAoOYz5iCn2R//03eRNydc8IIyWppPHUqHh2eBO5ur18ftds0WRvC3rqsDJj1tproG
+         fzHlzxOZWPUhLXPPZ516JzHBkMXZyYIhl+jEdKPQ6iBXARmLMbUNuzMZvuu7OzdcybFa
+         3u43tAY+iGiqXlIf9hXZ85KV5tUrHcMabt3ht2A88uNf60zvsmxUF8R+QAbS4EQEmvzD
+         dagQaYGL9uLDnjnxnG+eL2qky1/4E2rM77FzAsJKZAKfgF9/Fdh0Rj8w7+t8uEmBeUuA
+         hCOWQij0GRqD3jyzvTzFWsRNfJuJ1rVm7SqVmDrJFcOBjWUlpL47S3zyyTgSM8tmyT1T
+         2h6Q==
+X-Gm-Message-State: AOAM531Yfv5mhkFJe9V8MZSfFfmF1xUYyUWb+f1Y3rks5I/dvYnA7rxn
+        BBXpUraPEP4xOavJSLVnNLs0Ox6sHAtqjOYIvko=
+X-Google-Smtp-Source: ABdhPJwYv0+ELrZALDbb8v/s33oNwpcvgZcB1AdR2Ee5p9MuPtNf616P/rlisqndtcj+PDU38FUrvVX+lrPd8Ww6SpI=
+X-Received: by 2002:a25:bd49:: with SMTP id p9mr114483ybm.241.1624309526386;
+ Mon, 21 Jun 2021 14:05:26 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87tulth9j8.ffs@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a81:5943:0:0:0:0:0 with HTTP; Mon, 21 Jun 2021 14:05:26
+ -0700 (PDT)
+Reply-To: yatmirnutha@gmail.com
+From:   Mr Yatmir Nutha <ramoud.hiwad@gmail.com>
+Date:   Mon, 21 Jun 2021 14:05:26 -0700
+Message-ID: <CAELqVud3tF=CHDHQwjC5ifYz-Bs+xMihVt5C6VZWjPZ4e-kjMA@mail.gmail.com>
+Subject: i need your urgent help and assistance.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+Dear Friend.
 
-On 6/19/21 9:41 PM, Thomas Gleixner wrote:
-> On Fri, Jun 11 2021 at 19:02, Dmitry Safonov wrote:
->> Partly revert commit 3316ec8ccd34 ("x86/elf: Use e_machine to check for
->> x32/ia32 in setup_additional_pages()") and commit 9a29a671902c ("elf:
->> Expose ELF header on arch_setup_additional_pages()".
->> Both patches did a good thing: removed usage of TIF_X32, but with
->> a price of additional macros ARCH_SETUP_ADDITIONAL_PAGES() and ifdeffs.
->>
->> Instead, use in_x32_syscall() - the first thing load_elf_binary() does
->> after parsing and checking new ELF binary. It's done that early after
->> exec() that mmap() code already uses it straight away, which is needed
->> to know which mmap_base to use (see arch_pick_mmap_layout()).
->> Add comments to describe how it works.
-> 
-> I still have no idea what this is trying to solve. All you describe is
-> what this does.
 
-Yeah, I still have problems with describing why rather than what sometimes..
 
-How about something like this:
 
-In order to simplify code, new macro ARCH_SETUP_ADDITIONAL_PAGES() can
-be dropped as well as a new argument in
-compat_arch_setup_additional_pages(). Resulting in partial revert of the
-commit 3316ec8ccd34 ("x86/elf: Use e_machine to check for x32/ia32 in
-setup_additional_pages()") and the commit 9a29a671902c ("elf: Expose ELF
-header on arch_setup_additional_pages()".
+I am Mr Yatmir Nutha. the director of the accounts & auditing
+department at the bank Ouagadougou-Burkina Faso in west Africa. With
+due respect, I have decided to contact you on a business transaction
+that will be beneficial to both of us.
 
-Instead of a new macro and an additional function argument, use
-in_x32_syscall() which is already valid at the moment of premapping
-vDSO. Add comments to describe how it works.
+At the bank's last accounts/auditing evaluations, my staffs came
+across an old account which was being maintained by a foreign client
+who we learn was among the deceased passengers of motor accident on
+November.2003, the deceased was unable to run this account since his
+death. The account has remained dormant without the knowledge of his
+family since it was put in a safe deposit account in the bank for
+future investment by the client.
 
-Thanks for reviewing,
-          Dmitry
+Since his demise, even the members of his family haven't applied for
+claims over this fund and it has been in the safe deposit account
+until I discovered that it cannot be claimed since our client is a
+foreign national and we are sure that he has no next of kin here to
+file claims over the money. As the director of the department,this
+discovery was brought to my office so as to decide what is to be
+done.I decided to seek ways through which to transfer this money out
+of the bank and out of the country too.
+
+The total amount in the account is ten million five hundred thousand
+dollars (USD 10,500,000.00).with my positions as staffs of the bank, I
+am handicapped because I cannot operate foreign accounts and cannot
+lay bonafide claim over this money. The client was a foreign national
+and you will only be asked to act as his next of kin and I will supply
+you with all the necessary information and bank data to assist you in
+being able to transfer this money to any bank of your choice where
+this money could be transferred into.
+
+The total sum will be shared as follows: 50% for me, 50% for you and
+expenses incidental occur during the transfer will be incur by both of
+us. The transfer is risk free on both sides hence you are going to
+follow my instruction till the fund transfer to your account.Since I
+work in this bank that is why you should be confident in the success
+of this transaction because you will be updated with information as at
+when desired.
+
+I will wish you to keep this transaction secret and confidential as I
+am hoping to retire with my share of this money at the end of
+transaction which will be when this  money is safety in your account.
+I will then come over to your country for sharing according to the
+previously agreed percentages. You might even have to advise me on
+possibilities of investment in your country or elsewhere of our
+choice. May God help you to help me to a restive retirement, Amen.
+
+Please for further information and inquires feel free to contact me
+back immediately for more explanation and better understanding I want
+you to assure me your capability of handling this project with trust.
+
+Contact me via Email: yatmirnutha@gmail.com
+Thanks and remain blessed
+Mr Yatmir Nutha.
++22664234630
