@@ -2,89 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B4A33AF578
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:47:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD6063AF57A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232328AbhFUStj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:49:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41174 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232170AbhFUSte (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:49:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37B7C61353;
-        Mon, 21 Jun 2021 18:47:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624301239;
-        bh=/OILYFrNI8JuScLMPbDFllbR2pKC/ijN5T2alXtxSbo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sy3m5mpOG+Bq50cPcVUbpAuPlIwb+Q+vY9yBP80r26VUHZKOcTikj4t+Y/LeAElNH
-         YOzGUi+LMQohxt8f1A/mimRX3aXX6Wypf99esEvQ1UGHM0hk07S72+TurhbTvNJkXo
-         YRn8VHztouweUnditVvAQDRte2ZIgKVl5SrKOyS9yZnSl+xWO7zGArS2UvXhkIJgiB
-         x/l/jIcKZTqDxEr4xRgx21xmmGlDpwbws1lkIovQcRk0M/ZFADOINalUNXlHszjBFE
-         UQpyCM7n4lZrlz4YweBaAYCW180zjkvVFQuglSfXMfoYWCKpxUWMrInqbGrkP9FOzd
-         ou9awOl8rpYLg==
-From:   Mark Brown <broonie@kernel.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc:     Mark Brown <broonie@kernel.org>, krzysztof.kozlowski@canonical.com,
-        s.nawrocki@samsung.com
-Subject: Re: [PATCH -next 0/4] ASoC: samsung: Use devm_platform_get_and_ioremap_resource()
-Date:   Mon, 21 Jun 2021 19:46:07 +0100
-Message-Id: <162430055264.9224.5838866943547505866.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210616091652.2552927-1-yangyingliang@huawei.com>
-References: <20210616091652.2552927-1-yangyingliang@huawei.com>
+        id S232323AbhFUSt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:49:57 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:58727 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232329AbhFUSty (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 14:49:54 -0400
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AFTM8E6/U+dPHV242oeZuk+DEI+orL9Y04lQ7?=
+ =?us-ascii?q?vn2ZKCYlEPBw+PrAoB1273HJYVUqKRIdcLK7WZVoKEm0nfVICOIqUItKMjONhI?=
+ =?us-ascii?q?LRFuFfBV2L+VHdJxE=3D?=
+X-IronPort-AV: E=Sophos;i="5.83,289,1616454000"; 
+   d="scan'208";a="515895312"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 20:47:38 +0200
+Date:   Mon, 21 Jun 2021 20:47:38 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Denis Efremov <efremov@linux.com>
+cc:     Keith Busch <kbusch@kernel.org>, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH] coccinelle: api: remove kobj_to_dev.cocci script
+In-Reply-To: <cc3b2db6-70fd-0bb2-d083-f87f9a35e9a7@linux.com>
+Message-ID: <alpine.DEB.2.22.394.2106212047100.47043@hadrien>
+References: <20210621174808.1489111-1-kbusch@kernel.org> <cc3b2db6-70fd-0bb2-d083-f87f9a35e9a7@linux.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Jun 2021 17:16:48 +0800, Yang Yingliang wrote:
-> Use devm_platform_get_and_ioremap_resource() to simplify
-> code.
-> 
-> Yang Yingliang (4):
->   ASoC: samsung: i2s: Use devm_platform_get_and_ioremap_resource()
->   ASoC: samsung: pcm: Use devm_platform_get_and_ioremap_resource()
->   ASoC: samsung: s3c2412-i2s: Use
->     devm_platform_get_and_ioremap_resource()
->   ASoC: samsung: s3c24xx-i2s: Use
->     devm_platform_get_and_ioremap_resource()
-> 
-> [...]
 
-Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+On Mon, 21 Jun 2021, Denis Efremov wrote:
 
-Thanks!
+>
+>
+> On 6/21/21 8:48 PM, Keith Busch wrote:
+> > Using kobj_to_dev() instead of container_of() is not universally
+> > accepted among maintainers as an improvement. The warning leads to
+> > repeated patch submissions that won't be accepted. Remove the script.
+> >
+> > Cc: Christoph Hellwig <hch@lst.de>
+> > Cc: Jens Axboe <axboe@kernel.dk>
+> > Cc: Denis Efremov <efremov@linux.com>
+> > Cc: Julia Lawall <Julia.Lawall@inria.fr>
+> > Signed-off-by: Keith Busch <kbusch@kernel.org>
+>
+> Acked-by: Denis Efremov <efremov@linux.com>
 
-[1/4] ASoC: samsung: i2s: Use devm_platform_get_and_ioremap_resource()
-      commit: 5eb8262c686509ffb60a5b04ca6ee562f02cbaf5
-[2/4] ASoC: samsung: pcm: Use devm_platform_get_and_ioremap_resource()
-      commit: c3255553d6b6cd5c8de42d2faa80e1d33401cb3b
-[3/4] ASoC: samsung: s3c2412-i2s: Use devm_platform_get_and_ioremap_resource()
-      commit: 87a32d00249e6e3c6b1ac020d36136b2cd75fcc8
-[4/4] ASoC: samsung: s3c24xx-i2s: Use devm_platform_get_and_ioremap_resource()
-      commit: b73cbd7b1c2d477d143c544bdc2b3415bae58a14
+Applied.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
+>
+> > ---
+> >  scripts/coccinelle/api/kobj_to_dev.cocci | 45 ------------------------
+> >  1 file changed, 45 deletions(-)
+> >  delete mode 100644 scripts/coccinelle/api/kobj_to_dev.cocci
+> >
+> > diff --git a/scripts/coccinelle/api/kobj_to_dev.cocci b/scripts/coccinelle/api/kobj_to_dev.cocci
+> > deleted file mode 100644
+> > index cd5d31c6fe76..000000000000
+> > --- a/scripts/coccinelle/api/kobj_to_dev.cocci
+> > +++ /dev/null
+> > @@ -1,45 +0,0 @@
+> > -// SPDX-License-Identifier: GPL-2.0-only
+> > -///
+> > -/// Use kobj_to_dev() instead of container_of()
+> > -///
+> > -// Confidence: High
+> > -// Copyright: (C) 2020 Denis Efremov ISPRAS
+> > -// Options: --no-includes --include-headers
+> > -//
+> > -// Keywords: kobj_to_dev, container_of
+> > -//
+> > -
+> > -virtual context
+> > -virtual report
+> > -virtual org
+> > -virtual patch
+> > -
+> > -
+> > -@r depends on !patch@
+> > -expression ptr;
+> > -symbol kobj;
+> > -position p;
+> > -@@
+> > -
+> > -* container_of(ptr, struct device, kobj)@p
+> > -
+> > -
+> > -@depends on patch@
+> > -expression ptr;
+> > -@@
+> > -
+> > -- container_of(ptr, struct device, kobj)
+> > -+ kobj_to_dev(ptr)
+> > -
+> > -
+> > -@script:python depends on report@
+> > -p << r.p;
+> > -@@
+> > -
+> > -coccilib.report.print_report(p[0], "WARNING opportunity for kobj_to_dev()")
+> > -
+> > -@script:python depends on org@
+> > -p << r.p;
+> > -@@
+> > -
+> > -coccilib.org.print_todo(p[0], "WARNING opportunity for kobj_to_dev()")
+> >
+>
