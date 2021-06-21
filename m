@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C523AF558
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 255AC3AF55C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbhFUSsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:48:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39836 "EHLO mail.kernel.org"
+        id S230509AbhFUSst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:48:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229887AbhFUSsp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:48:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E44BE61107;
-        Mon, 21 Jun 2021 18:46:29 +0000 (UTC)
+        id S230291AbhFUSsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 14:48:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8539661107;
+        Mon, 21 Jun 2021 18:46:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624301190;
-        bh=Z71y+SBq3KMuZ39iEoJG5bILoscerM41HzpRFtX8OTw=;
+        s=k20201202; t=1624301193;
+        bh=G2wivm1SL+bm/7n4q2pZN3wn8lBMoRzv9Fh+X54SWCs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QjJHQU6j1u/LdayzRIMOu0sHi0PjFxq5KH6jRz9DeipD/Le/idkeNXGQqShj3tyMG
-         Dn7Wg5PDZnkCg9ICE2qMFarhaO4PW1gm12tyVDJAW1eKNeziEM0uYeYptJDXgvhTuu
-         pg9gRmaLjwxcBZ1zwLBx0YjFliO4cyZFNUoLdjum4rDUGvJBPrJSqElZr8X8YP+C3B
-         EYOh1KyDj/0vpzmyG5s1Z1qplleNOPKPvt6lR2P8JmcoR8TApEpJAaXNhOdrqpw4/Z
-         /JYZzdVSWzhaJ4ZFxls3vv48inrmTl6iAOJGZ+xuX8FvtbGec5ibnRIqJcDzSkYmr+
-         yo19XlLZJicBA==
+        b=Jy2V7ecni9064dCbkOtCvl+MrUtgvtig06inHRh5K72oaYbRUooPzuNNPHXBEaFoN
+         CXokIIY/B6bK8hBX0GRpnf8mAv9H7wqSBPCAP65pj9VieHNDkoyZ6ZLAOwSqu/UWbI
+         WcvRQqDyVeOWgQWdfGD0vi0rH2+fvZhn0Gf6Y1DrmC3hjMdt74WgrDb2cxt4unaY45
+         MpPVmJeBqB/4zyF2TJ9EJercekL6lT39f7XR0cbHAtSym9gqLeduFvjln6poBFlZw7
+         JlKBTWe7Q1s1WkMIYnrflw1i9H65rDhYkGIo/IKlw6wubae3DOox2s+0whn+31b7BG
+         QQyqGDsmOxL3g==
 From:   Mark Brown <broonie@kernel.org>
-To:     Axel Lin <axel.lin@ingics.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] regulator: hi6421v600: Fix setting idle mode
-Date:   Mon, 21 Jun 2021 19:45:49 +0100
-Message-Id: <162430087047.9551.3163979267051992655.b4-ty@kernel.org>
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
+        linux-arm-msm@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        bhupesh.linux@gmail.com, linux-gpio@vger.kernel.org,
+        lgirdwood@gmail.com, devicetree@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: [PATCH v3 0/5] regulator: qcom,rpmh-regulator: Add support for pmic available on SA8155p-adp board
+Date:   Mon, 21 Jun 2021 19:45:50 +0100
+Message-Id: <162430087046.9551.10979726950537776436.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210619123423.4091429-1-axel.lin@ingics.com>
-References: <20210619123423.4091429-1-axel.lin@ingics.com>
+In-Reply-To: <20210617051712.345372-1-bhupesh.sharma@linaro.org>
+References: <20210617051712.345372-1-bhupesh.sharma@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,13 +43,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 19 Jun 2021 20:34:23 +0800, Axel Lin wrote:
-> commit db27f8294cd7 changed eco_mode << (ffs(sreg->eco_mode_mask) - 1)
-> to sreg->eco_mode_mask << (ffs(sreg->eco_mode_mask) - 1) which is wrong.
-> Fix it by simply set val = sreg->eco_mode_mask.
-> 
-> In additional, sreg->eco_mode_mask can be 0 (LDO3, LDO33, LDO34).
-> Return -EINVAL if idle mode is not supported when sreg->eco_mode_mask is 0.
+On Thu, 17 Jun 2021 10:47:07 +0530, Bhupesh Sharma wrote:
+> Changes since v2:
+> -----------------
+> - v2 series can be found here: https://lore.kernel.org/linux-arm-msm/20210615074543.26700-1-bhupesh.sharma@linaro.org/T/#m8303d27d561b30133992da88198abb78ea833e21
+> - Addressed review comments from Bjorn and Mark.
+> - As per suggestion from Bjorn, seperated the patches in different
+>   patchsets (specific to each subsystem) to ease review and patch application.
 > 
 > [...]
 
@@ -58,8 +59,16 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: hi6421v600: Fix setting idle mode
-      commit: 57c045bc727001c43b6a65adb0418aa7b3e6dbd0
+[1/5] dt-bindings: regulator: qcom,rpmh-regulator: Arrange compatibles alphabetically
+      commit: 85adaac269c36d8e2e0a5de87a1dc4ec06e984f1
+[2/5] dt-bindings: regulator: qcom,rpmh-regulator: Add compatible for SA8155p-adp board pmic
+      commit: 66376e152303bb60d6a75328b7bc998de86f8c08
+[3/5] regulator: qcom-rpmh: Cleanup terminator line commas
+      commit: ba5dabf40e9143ff6c48943b76a532d5ab34d0e8
+[4/5] regulator: qcom-rpmh: Add terminator at the end of pm7325x_vreg_data[] array
+      commit: f26cdadad729743888eb4ac2c17eac3cf845b493
+[5/5] regulator: qcom-rpmh: Add new regulator found on SA8155p adp board
+      commit: 9a336ed97d00bb69547272fc7d0439802bece375
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
