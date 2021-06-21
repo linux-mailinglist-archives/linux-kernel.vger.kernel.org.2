@@ -2,124 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE913AE5A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B29A3AE5A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231185AbhFUJJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:09:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:59308 "EHLO foss.arm.com"
+        id S230388AbhFUJKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:10:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:59366 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231181AbhFUJJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:09:03 -0400
+        id S229618AbhFUJKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 05:10:14 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 453A11FB;
-        Mon, 21 Jun 2021 02:06:48 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 77FA83F718;
-        Mon, 21 Jun 2021 02:06:45 -0700 (PDT)
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     boqun.feng@gmail.com, bp@alien8.de, catalin.marinas@arm.com,
-        dvyukov@google.com, elver@google.com, ink@jurassic.park.msu.ru,
-        jonas@southpole.se, juri.lelli@redhat.com, linux@armlinux.org.uk,
-        luto@kernel.org, mark.rutland@arm.com, mattst88@gmail.com,
-        mingo@redhat.com, monstr@monstr.eu, paulmck@kernel.org,
-        peterz@infradead.org, rth@twiddle.net, shorne@gmail.com,
-        stefan.kristiansson@saunalahti.fi, tglx@linutronix.de,
-        vincent.guittot@linaro.org, will@kernel.org
-Subject: [PATCH v2 9/9] x86: snapshot thread flags
-Date:   Mon, 21 Jun 2021 10:06:02 +0100
-Message-Id: <20210621090602.16883-11-mark.rutland@arm.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20210621090602.16883-1-mark.rutland@arm.com>
-References: <20210621090602.16883-1-mark.rutland@arm.com>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2B7B91FB;
+        Mon, 21 Jun 2021 02:08:00 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 95C723F718;
+        Mon, 21 Jun 2021 02:07:57 -0700 (PDT)
+Subject: Re: [PATCH v16 3/7] KVM: arm64: Introduce MTE VM feature
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Andrew Jones <drjones@redhat.com>
+References: <20210618132826.54670-1-steven.price@arm.com>
+ <20210618132826.54670-4-steven.price@arm.com> <87a6njd22b.wl-maz@kernel.org>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <566f272b-39e3-5da0-6b94-5f992a77adbe@arm.com>
+Date:   Mon, 21 Jun 2021 10:07:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+MIME-Version: 1.0
+In-Reply-To: <87a6njd22b.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some thread flags can be set remotely, and so even when IRQs are
-disabled, the flags can change under our feet. Generally this is
-unlikely to cause a problem in practice, but it is somewhat unsound, and
-KCSAN will legitimately warn that there is a data race.
+On 21/06/2021 10:01, Marc Zyngier wrote:
+> On Fri, 18 Jun 2021 14:28:22 +0100,
+> Steven Price <steven.price@arm.com> wrote:
+>>
+>> Add a new VM feature 'KVM_ARM_CAP_MTE' which enables memory tagging
+>> for a VM. This will expose the feature to the guest and automatically
+>> tag memory pages touched by the VM as PG_mte_tagged (and clear the tag
+>> storage) to ensure that the guest cannot see stale tags, and so that
+>> the tags are correctly saved/restored across swap.
+>>
+>> Actually exposing the new capability to user space happens in a later
+>> patch.
+>>
+>> Signed-off-by: Steven Price <steven.price@arm.com>
+>> ---
+>>  arch/arm64/include/asm/kvm_emulate.h |  3 ++
+>>  arch/arm64/include/asm/kvm_host.h    |  3 ++
+>>  arch/arm64/kvm/hyp/exception.c       |  3 +-
+>>  arch/arm64/kvm/mmu.c                 | 62 +++++++++++++++++++++++++++-
+>>  arch/arm64/kvm/sys_regs.c            |  7 ++++
+>>  include/uapi/linux/kvm.h             |  1 +
+>>  6 files changed, 77 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
+>> index f612c090f2e4..6bf776c2399c 100644
+>> --- a/arch/arm64/include/asm/kvm_emulate.h
+>> +++ b/arch/arm64/include/asm/kvm_emulate.h
+>> @@ -84,6 +84,9 @@ static inline void vcpu_reset_hcr(struct kvm_vcpu *vcpu)
+>>  	if (cpus_have_const_cap(ARM64_MISMATCHED_CACHE_TYPE) ||
+>>  	    vcpu_el1_is_32bit(vcpu))
+>>  		vcpu->arch.hcr_el2 |= HCR_TID2;
+>> +
+>> +	if (kvm_has_mte(vcpu->kvm))
+>> +		vcpu->arch.hcr_el2 |= HCR_ATA;
+>>  }
+>>  
+>>  static inline unsigned long *vcpu_hcr(struct kvm_vcpu *vcpu)
+>> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+>> index 7cd7d5c8c4bc..afaa5333f0e4 100644
+>> --- a/arch/arm64/include/asm/kvm_host.h
+>> +++ b/arch/arm64/include/asm/kvm_host.h
+>> @@ -132,6 +132,8 @@ struct kvm_arch {
+>>  
+>>  	u8 pfr0_csv2;
+>>  	u8 pfr0_csv3;
+>> +	/* Memory Tagging Extension enabled for the guest */
+>> +	bool mte_enabled;
+>>  };
+>>  
+>>  struct kvm_vcpu_fault_info {
+>> @@ -769,6 +771,7 @@ bool kvm_arm_vcpu_is_finalized(struct kvm_vcpu *vcpu);
+>>  #define kvm_arm_vcpu_sve_finalized(vcpu) \
+>>  	((vcpu)->arch.flags & KVM_ARM64_VCPU_SVE_FINALIZED)
+>>  
+>> +#define kvm_has_mte(kvm) (system_supports_mte() && (kvm)->arch.mte_enabled)
+>>  #define kvm_vcpu_has_pmu(vcpu)					\
+>>  	(test_bit(KVM_ARM_VCPU_PMU_V3, (vcpu)->arch.features))
+>>  
+>> diff --git a/arch/arm64/kvm/hyp/exception.c b/arch/arm64/kvm/hyp/exception.c
+>> index 73629094f903..56426565600c 100644
+>> --- a/arch/arm64/kvm/hyp/exception.c
+>> +++ b/arch/arm64/kvm/hyp/exception.c
+>> @@ -112,7 +112,8 @@ static void enter_exception64(struct kvm_vcpu *vcpu, unsigned long target_mode,
+>>  	new |= (old & PSR_C_BIT);
+>>  	new |= (old & PSR_V_BIT);
+>>  
+>> -	// TODO: TCO (if/when ARMv8.5-MemTag is exposed to guests)
+>> +	if (kvm_has_mte(vcpu->kvm))
+>> +		new |= PSR_TCO_BIT;
+>>  
+>>  	new |= (old & PSR_DIT_BIT);
+>>  
+>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+>> index c5d1f3c87dbd..f5305b7561ad 100644
+>> --- a/arch/arm64/kvm/mmu.c
+>> +++ b/arch/arm64/kvm/mmu.c
+>> @@ -822,6 +822,45 @@ transparent_hugepage_adjust(struct kvm_memory_slot *memslot,
+>>  	return PAGE_SIZE;
+>>  }
+>>  
+>> +/*
+>> + * The page will be mapped in stage 2 as Normal Cacheable, so the VM will be
+>> + * able to see the page's tags and therefore they must be initialised first. If
+>> + * PG_mte_tagged is set, tags have already been initialised.
+>> + *
+>> + * The race in the test/set of the PG_mte_tagged flag is handled by:
+>> + * - preventing VM_SHARED mappings in a memslot with MTE preventing two VMs
+>> + *   racing to santise the same page
+>> + * - mmap_lock protects between a VM faulting a page in and the VMM performing
+>> + *   an mprotect() to add VM_MTE
+>> + */
+>> +static int sanitise_mte_tags(struct kvm *kvm, kvm_pfn_t pfn,
+>> +			     unsigned long size)
+>> +{
+>> +	unsigned long i, nr_pages = size >> PAGE_SHIFT;
+>> +	struct page *page;
+>> +
+>> +	if (!kvm_has_mte(kvm))
+>> +		return 0;
+>> +
+>> +	/*
+>> +	 * pfn_to_online_page() is used to reject ZONE_DEVICE pages
+>> +	 * that may not support tags.
+>> +	 */
+>> +	page = pfn_to_online_page(pfn);
+>> +
+>> +	if (!page)
+>> +		return -EFAULT;
+>> +
+>> +	for (i = 0; i < nr_pages; i++, page++) {
+>> +		if (!test_bit(PG_mte_tagged, &page->flags)) {
+>> +			mte_clear_page_tags(page_address(page));
+>> +			set_bit(PG_mte_tagged, &page->flags);
+>> +		}
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>  static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>  			  struct kvm_memory_slot *memslot, unsigned long hva,
+>>  			  unsigned long fault_status)
+>> @@ -971,8 +1010,16 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>  	if (writable)
+>>  		prot |= KVM_PGTABLE_PROT_W;
+>>  
+>> -	if (fault_status != FSC_PERM && !device)
+>> +	if (fault_status != FSC_PERM && !device) {
+>> +		/* Check the VMM hasn't introduced a new VM_SHARED VMA */
+>> +		if (kvm_has_mte(kvm) && vma->vm_flags & VM_SHARED)
+>> +			return -EINVAL;
+> 
+> nit: I'd rather we return -EFAULT here. That's consistent with other
+> cases where we can't satisfy the mapping.
 
-To avoid such issues, a snapshot of the flags has to be taken prior to
-using them. Some places already use READ_ONCE() for that, others do not.
+Sure, and it would be even better if I dropped the lock (goto
+out_unlock) - I'll fix that too!
 
-Convert them all to the new flag accessor helpers.
+Thanks,
 
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Ingo Molnar <mingo@redhat.com>
----
- arch/x86/kernel/process.c | 8 ++++----
- arch/x86/kernel/process.h | 6 +++---
- arch/x86/mm/tlb.c         | 2 +-
- 3 files changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 5e1f38179f49..d1c4a93c6e26 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -332,7 +332,7 @@ void arch_setup_new_exec(void)
- 		clear_thread_flag(TIF_SSBD);
- 		task_clear_spec_ssb_disable(current);
- 		task_clear_spec_ssb_noexec(current);
--		speculation_ctrl_update(task_thread_info(current)->flags);
-+		speculation_ctrl_update(read_thread_flags());
- 	}
- }
- 
-@@ -584,7 +584,7 @@ static unsigned long speculation_ctrl_update_tif(struct task_struct *tsk)
- 			clear_tsk_thread_flag(tsk, TIF_SPEC_IB);
- 	}
- 	/* Return the updated threadinfo flags*/
--	return task_thread_info(tsk)->flags;
-+	return read_task_thread_flags(tsk);
- }
- 
- void speculation_ctrl_update(unsigned long tif)
-@@ -620,8 +620,8 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p)
- {
- 	unsigned long tifp, tifn;
- 
--	tifn = READ_ONCE(task_thread_info(next_p)->flags);
--	tifp = READ_ONCE(task_thread_info(prev_p)->flags);
-+	tifn = read_task_thread_flags(next_p);
-+	tifp = read_task_thread_flags(prev_p);
- 
- 	switch_to_bitmap(tifp);
- 
-diff --git a/arch/x86/kernel/process.h b/arch/x86/kernel/process.h
-index 1d0797b2338a..0b1be8685b49 100644
---- a/arch/x86/kernel/process.h
-+++ b/arch/x86/kernel/process.h
-@@ -13,9 +13,9 @@ void __switch_to_xtra(struct task_struct *prev_p, struct task_struct *next_p);
- static inline void switch_to_extra(struct task_struct *prev,
- 				   struct task_struct *next)
- {
--	unsigned long next_tif = task_thread_info(next)->flags;
--	unsigned long prev_tif = task_thread_info(prev)->flags;
--
-+	unsigned long next_tif = read_task_thread_flags(next);
-+	unsigned long prev_tif = read_task_thread_flags(prev);
-+	
- 	if (IS_ENABLED(CONFIG_SMP)) {
- 		/*
- 		 * Avoid __switch_to_xtra() invocation when conditional
-diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index 78804680e923..fcc5e22050d4 100644
---- a/arch/x86/mm/tlb.c
-+++ b/arch/x86/mm/tlb.c
-@@ -318,7 +318,7 @@ void switch_mm(struct mm_struct *prev, struct mm_struct *next,
- 
- static unsigned long mm_mangle_tif_spec_ib(struct task_struct *next)
- {
--	unsigned long next_tif = task_thread_info(next)->flags;
-+	unsigned long next_tif = read_task_thread_flags(next);
- 	unsigned long ibpb = (next_tif >> TIF_SPEC_IB) & LAST_USER_MM_IBPB;
- 
- 	return (unsigned long)next->mm | ibpb;
--- 
-2.11.0
-
+Steve
