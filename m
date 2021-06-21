@@ -2,138 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E99B3AE29D
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 07:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9326C3AE2A0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 07:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229487AbhFUFKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 01:10:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44434 "EHLO
+        id S229663AbhFUFO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 01:14:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbhFUFKb (ORCPT
+        with ESMTP id S229441AbhFUFOy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 01:10:31 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D62A9C061756;
-        Sun, 20 Jun 2021 22:08:15 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id b1so1097575pls.3;
-        Sun, 20 Jun 2021 22:08:15 -0700 (PDT)
+        Mon, 21 Jun 2021 01:14:54 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF28EC061574;
+        Sun, 20 Jun 2021 22:12:37 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id y13so1760732plc.8;
+        Sun, 20 Jun 2021 22:12:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kMUpJT6SJolW0ymOF8PtGlnKamkYOUcs0svNbBgMhJY=;
-        b=Nudnp+zb14BLhJ0FHsvMYBCcL4Wbt6dELJeu3PBbqKQVXuriixTJmJETbQG0lguS9C
-         47EygArUq/9STsCyOZBucXahoKt4wL3Qb6atUgE3uwDNTBqulskplXOi4Tpgn1ACAomW
-         6lH/bR4g8d/891nVEa9+0BJY8UoNTGpr5JMI1MpcElzJGGMVwe3vJWHKY4UqEoYkr+IB
-         WdFXAZ+0GF12KUeAdO0Ov9yomRQqmetesnAvoR1TMCkDHdWJr2d0Vouo40ktpZBsBfQU
-         WtaJY+uw7Quni3TubnodwriNg3mYm52KdRmh66iubwN1LpquGHL54sHlBYtGggXMUuwo
-         n2DQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HaH5unS1AysbRIEpLRFXHHZaHGqckXJCcf5aMH0w3qo=;
+        b=S7xkkatBIxyw8Ml0wapeOghAojKDBfx59rpe6dQB46KQCr7GX8pYnOa0RjfKxFwNXn
+         C1YdFjmWpS7NhFeuW/C/WZ+gLYXRKqRfyGS7WCZnKqVGGsub8rA86Yp4My5jPwwvcNwk
+         xYE5+8GtDo1hNz6FFH4IrO43DXB060Egq9N6qBWhp1NgKhdJQJs3DTL7TDN2qPhIJdev
+         lyQeA7/9ZgZV9QKmJOkmhNFEStjhLE98fVGSG8Iw4d/cUS65xx7iFSl501ERMQod73kO
+         t7mEZIjPUXxKy2mqpvbiFL0gMFPTjDRwr0eVx1c7UxbQ+NV9D2nmL3GIEQptU3/RWlSN
+         YC8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kMUpJT6SJolW0ymOF8PtGlnKamkYOUcs0svNbBgMhJY=;
-        b=k6JHznv2+SeFVI45ozkMMgOtDNWOI0VVEHp+ohv7BXH+NSq6sKDMqm2VBL44jnZc/Q
-         7cZN15xpMjN/KsxfQRyy+MgfWWS+Oc43WTTppFigZ1Xa5vH0Eo7mfQt3Ycl/WmLUYgcP
-         SuwjUBCIdF60pMxUfIXkdoh19HlPN2P850ioXeEdQbND1NO+cE+h5R5m/XSrVm+kPDgk
-         dKidzvAQ3PBfXdF0bgCbtS26Dzv2Hp2GOSGDVE2dXNvp8W7LAZfRPrmO7mlGaMu3014f
-         zLdk9S47jh9h4LSHzIh2vaUjU3lfxrD6jqGypkmHFHtmqU2mFSxfcgKqW6CSM55CFl39
-         Z3jQ==
-X-Gm-Message-State: AOAM533ICHUKxFudw3srMe8YR4HOA7uRLsAsdx4GsVAcze3y2vnRjUjS
-        3StW9zMQ5b6nJc+uLlJIOwY=
-X-Google-Smtp-Source: ABdhPJwOhL0mLsHjkspQhaibd6HaytHoiZFH5K99xa6QKWQiQsLAaPuXd0zkdqryHwwHYb5KxQCAbg==
-X-Received: by 2002:a17:90b:1bc4:: with SMTP id oa4mr25633384pjb.18.1624252095393;
-        Sun, 20 Jun 2021 22:08:15 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.71])
-        by smtp.gmail.com with ESMTPSA id b5sm11808783pgh.41.2021.06.20.22.08.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Jun 2021 22:08:14 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Takashi Iwai <tiwai@suse.de>, Sean Young <sean@mess.org>
-Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] media: dvb-usb: Fix error handling in dvb_usb_i2c_init
-Date:   Mon, 21 Jun 2021 13:07:28 +0800
-Message-Id: <20210621050729.3898275-3-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210621050729.3898275-1-mudongliangabcd@gmail.com>
-References: <20210621050729.3898275-1-mudongliangabcd@gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HaH5unS1AysbRIEpLRFXHHZaHGqckXJCcf5aMH0w3qo=;
+        b=M2nzWx59UuLFYgwKy4WCDOVtlHcAYSFGyqXH9QFIxrcOzhKSal6ZLWvy/DGmtGvcXR
+         1N4FoN8WqcFAYHy4KU0eVI1+OiylVN8TWl8YFG3s3D9g4hgLcwqC7YsuwFseS2PKdODA
+         /1YEr2kwADyVVZkEIhWrY+4iht2YasMYkY3UP7vnzrYJYIInSOouQCx7PAhZv48n4UGg
+         Z1Hv/DHo1EC2FSPKKMg2hs0LpH0Rx02AwfQ4OMmMmaeTdVqlsUCAOnhHJhIJ5CjFr0WR
+         sTVQxQV5VsUTEizyO5Yt36ADICdEY7YOf9vhNww8vWPW7mkAL2GyMAHxxXUtfOsRmBvG
+         fkgw==
+X-Gm-Message-State: AOAM533zhQ1Uc/WnU0spRWbBbAWIIqnGSDiH4vf0PDYWMfw+75GnejNi
+        gspRLI8YLt11f9oHny46W0GYrupQiwUo5sMj
+X-Google-Smtp-Source: ABdhPJxk/okA8AJ+zQxIXq1Dn/2ph8vdLsfFwO7eImZTeWu2At8jjd0XgPBQ9ddLUvYNxfidHPQKSg==
+X-Received: by 2002:a17:90a:9302:: with SMTP id p2mr24082918pjo.202.1624252357305;
+        Sun, 20 Jun 2021 22:12:37 -0700 (PDT)
+Received: from sz-dl-056.autox.sz ([122.10.161.207])
+        by smtp.gmail.com with ESMTPSA id u7sm15461024pgl.39.2021.06.20.22.12.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 20 Jun 2021 22:12:36 -0700 (PDT)
+From:   Yejune Deng <yejune.deng@gmail.com>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yejune Deng <yejune.deng@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH v2] net: add pf_family_names[] for protocol family
+Date:   Mon, 21 Jun 2021 13:12:25 +0800
+Message-Id: <20210621051225.24018-1-yejune.deng@gmail.com>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In dvb_usb_i2c_init, if i2c_add_adapter fails, it only prints an error
-message, and then continues to set DVB_USB_STATE_I2C. This affects the
-logic of dvb_usb_i2c_exit, which leads to that, the deletion of i2c_adap
-even if the i2c_add_adapter fails.
+Modify the pr_info content from int to char * in sock_register() and
+sock_unregister(), this looks more readable.
 
-Fix this by returning at the failure of i2c_add_adapter and then move
-dvb_usb_i2c_exit out of the error handling code of dvb_usb_i2c_init.
+Fixed build error in ARCH=sparc64.
 
-Fixes: 13a79f14ab28 ("media: dvb-usb: Fix memory leak at error in dvb_usb_device_init()")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+Reported-by: kernel test robot <lkp@intel.com>
 ---
- drivers/media/usb/dvb-usb/dvb-usb-i2c.c  | 9 +++++++--
- drivers/media/usb/dvb-usb/dvb-usb-init.c | 3 ++-
- 2 files changed, 9 insertions(+), 3 deletions(-)
+ net/socket.c | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 50 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/usb/dvb-usb/dvb-usb-i2c.c b/drivers/media/usb/dvb-usb/dvb-usb-i2c.c
-index 2e07106f4680..bc4b2abdde1a 100644
---- a/drivers/media/usb/dvb-usb/dvb-usb-i2c.c
-+++ b/drivers/media/usb/dvb-usb/dvb-usb-i2c.c
-@@ -17,7 +17,8 @@ int dvb_usb_i2c_init(struct dvb_usb_device *d)
+diff --git a/net/socket.c b/net/socket.c
+index 4f2c6d2795d0..bd9233da2497 100644
+--- a/net/socket.c
++++ b/net/socket.c
+@@ -165,6 +165,54 @@ static const struct file_operations socket_file_ops = {
+ 	.show_fdinfo =	sock_show_fdinfo,
+ };
  
- 	if (d->props.i2c_algo == NULL) {
- 		err("no i2c algorithm specified");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto err;
++static const char * const pf_family_names[] = {
++	[PF_UNSPEC]	= "PF_UNSPEC",
++	[PF_UNIX]	= "PF_UNIX/PF_LOCAL",
++	[PF_INET]	= "PF_INET",
++	[PF_AX25]	= "PF_AX25",
++	[PF_IPX]	= "PF_IPX",
++	[PF_APPLETALK]	= "PF_APPLETALK",
++	[PF_NETROM]	= "PF_NETROM",
++	[PF_BRIDGE]	= "PF_BRIDGE",
++	[PF_ATMPVC]	= "PF_ATMPVC",
++	[PF_X25]	= "PF_X25",
++	[PF_INET6]	= "PF_INET6",
++	[PF_ROSE]	= "PF_ROSE",
++	[PF_DECnet]	= "PF_DECnet",
++	[PF_NETBEUI]	= "PF_NETBEUI",
++	[PF_SECURITY]	= "PF_SECURITY",
++	[PF_KEY]	= "PF_KEY",
++	[PF_NETLINK]	= "PF_NETLINK/PF_ROUTE",
++	[PF_PACKET]	= "PF_PACKET",
++	[PF_ASH]	= "PF_ASH",
++	[PF_ECONET]	= "PF_ECONET",
++	[PF_ATMSVC]	= "PF_ATMSVC",
++	[PF_RDS]	= "PF_RDS",
++	[PF_SNA]	= "PF_SNA",
++	[PF_IRDA]	= "PF_IRDA",
++	[PF_PPPOX]	= "PF_PPPOX",
++	[PF_WANPIPE]	= "PF_WANPIPE",
++	[PF_LLC]	= "PF_LLC",
++	[PF_IB]		= "PF_IB",
++	[PF_MPLS]	= "PF_MPLS",
++	[PF_CAN]	= "PF_CAN",
++	[PF_TIPC]	= "PF_TIPC",
++	[PF_BLUETOOTH]	= "PF_BLUETOOTH",
++	[PF_IUCV]	= "PF_IUCV",
++	[PF_RXRPC]	= "PF_RXRPC",
++	[PF_ISDN]	= "PF_ISDN",
++	[PF_PHONET]	= "PF_PHONET",
++	[PF_IEEE802154]	= "PF_IEEE802154",
++	[PF_CAIF]	= "PF_CAIF",
++	[PF_ALG]	= "PF_ALG",
++	[PF_NFC]	= "PF_NFC",
++	[PF_VSOCK]	= "PF_VSOCK",
++	[PF_KCM]	= "PF_KCM",
++	[PF_QIPCRTR]	= "PF_QIPCRTR",
++	[PF_SMC]	= "PF_SMC",
++	[PF_XDP]	= "PF_XDP",
++};
++
+ /*
+  *	The protocol list. Each protocol is registered in here.
+  */
+@@ -2975,7 +3023,7 @@ int sock_register(const struct net_proto_family *ops)
  	}
+ 	spin_unlock(&net_family_lock);
  
- 	strscpy(d->i2c_adap.name, d->desc->name, sizeof(d->i2c_adap.name));
-@@ -27,11 +28,15 @@ int dvb_usb_i2c_init(struct dvb_usb_device *d)
- 
- 	i2c_set_adapdata(&d->i2c_adap, d);
- 
--	if ((ret = i2c_add_adapter(&d->i2c_adap)) < 0)
-+	ret = i2c_add_adapter(&d->i2c_adap);
-+	if (ret < 0) {
- 		err("could not add i2c adapter");
-+		goto err;
-+	}
- 
- 	d->state |= DVB_USB_STATE_I2C;
- 
-+err:
- 	return ret;
+-	pr_info("NET: Registered protocol family %d\n", ops->family);
++	pr_info("NET: Registered %s protocol family\n", pf_family_names[ops->family]);
+ 	return err;
  }
+ EXPORT_SYMBOL(sock_register);
+@@ -3003,7 +3051,7 @@ void sock_unregister(int family)
  
-diff --git a/drivers/media/usb/dvb-usb/dvb-usb-init.c b/drivers/media/usb/dvb-usb/dvb-usb-init.c
-index 21ad51be4820..ae3f76787279 100644
---- a/drivers/media/usb/dvb-usb/dvb-usb-init.c
-+++ b/drivers/media/usb/dvb-usb/dvb-usb-init.c
-@@ -147,6 +147,7 @@ static int dvb_usb_exit(struct dvb_usb_device *d)
- 		d->props.priv_destroy(d);
+ 	synchronize_rcu();
  
- 	kfree(d->priv);
-+	d->priv = NULL;
- 	return 0;
+-	pr_info("NET: Unregistered protocol family %d\n", family);
++	pr_info("NET: Unregistered %s protocol family\n", pf_family_names[family]);
  }
+ EXPORT_SYMBOL(sock_unregister);
  
-@@ -193,8 +194,8 @@ static int dvb_usb_init(struct dvb_usb_device *d, short *adapter_nums)
- 
- err_adapter_init:
- 	dvb_usb_adapter_exit(d);
--err_i2c_init:
- 	dvb_usb_i2c_exit(d);
-+err_i2c_init:
- 	if (d->priv && d->props.priv_destroy)
- 		d->props.priv_destroy(d);
- err_priv_init:
 -- 
-2.25.1
+2.32.0
 
