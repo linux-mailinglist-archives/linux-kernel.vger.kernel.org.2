@@ -2,181 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1CDD3AE8DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE3F3AE8C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:09:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbhFUMRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 08:17:34 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3294 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229610AbhFUMRc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 08:17:32 -0400
-Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G7pFW27Qbz6FBVY;
-        Mon, 21 Jun 2021 20:07:59 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 21 Jun 2021 14:15:17 +0200
-Received: from [10.47.93.67] (10.47.93.67) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 21 Jun
- 2021 13:15:16 +0100
-Subject: Re: [PATCH v14 6/6] iommu: Remove mode argument from
- iommu_set_dma_strict()
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "corbet@lwn.net" <corbet@lwn.net>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        Linuxarm <linuxarm@huawei.com>,
-        "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>,
-        "chenxiang (M)" <chenxiang66@hisilicon.com>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        <nadav.amit@gmail.com>
-References: <1624016058-189713-1-git-send-email-john.garry@huawei.com>
- <1624016058-189713-7-git-send-email-john.garry@huawei.com>
- <c062ef9e-c106-4218-ba2a-c94fdcb6d955@linux.intel.com>
- <60bdd7c3-d73e-c005-ddf7-069bc5065bce@huawei.com>
- <855dd109-1449-7bc6-3d25-7ffeeeffa82a@linux.intel.com>
- <fc52069d-46c5-5ca5-1b44-2fa7cf287d5a@huawei.com>
- <2330bb52-1768-5122-9378-7923034c82bd@arm.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <aaec67ab-0bb9-3c15-de81-97b92918c5c5@huawei.com>
-Date:   Mon, 21 Jun 2021 13:08:51 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S229710AbhFUMLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 08:11:22 -0400
+Received: from mail-dm6nam11on2065.outbound.protection.outlook.com ([40.107.223.65]:40640
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229621AbhFUMLV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 08:11:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ASTFKdpetamtZnEPg9c3ahR032x8+UkO6v58hWD44X0+bCqraIoSGOdPO1CC7gXJkJ8NI3SSGegvdtd4CWXRrAJrvAXml/NNjJiKP95vdsBJ+K10FaA8HBpOk0XvXHl1QZqqe5BHvb012484pePtnb6ieGmLPpqpC5jCSFA1V5etB/uXkwC8eduZx+HfZsqxHPGqQiW4FNAcS7XNPDLcg2RX/4gP101ZFBk7c5lVI289f3039Z5e0aT4GDIm5X090WGAGbC0ThSTiLQ4xMLQAcrgAE9qb6lvYu7y75RCvfwZdMZhqJWsuZFBxG3Rp3/mTk1VZMyy7xLvV505LQTGxw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+VrKjqTh3HRRcLbB56wzobmBb2329QMVsabBJRg74ek=;
+ b=UCZAprHtEgU70X+9zMns/pgyp9SJ5re3LM8+Gy2WD8LxC7W22oHhEHvDiZAK0vs3nw2oJTrSsFtieeSaXrwbEIKZL2fsOhJadO8FpFoOpdIVbf8pwDvp9o/xFK5gRPofN0P7DK7VtdtDq61ZRQlvxu70Xpbw8shJRoyFnjRWeumBvNKj4c4OGvx0In92sYKw4VRv3UByoSjokLRTjnW1LgXyDJXG1KYY2IHC6vAWb35emIXv8Rf5pCA9Wni2O+eWKBJnfSWtLEpAan8csi5IohQcB7Ub1ZU29WigUps4zUd/BpD7kfUevSqTVEYraRlmMAYCfeW5+dO/h9XBJeRHoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.112.34) smtp.rcpttodomain=linux-foundation.org
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=none sp=none pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+VrKjqTh3HRRcLbB56wzobmBb2329QMVsabBJRg74ek=;
+ b=X2dg22AyyDRfmjCuknmc9THGknzjBYZngveL2uNtCoHP1EozHvQyMNbZJEEEmAgOBetPMyo8qpCp1q5HXyBPMfTgWFxxnRaFuhCBfieKw6O+O4SvxCEncHWaiDrYd6pGmcTNUBPCYnjF3yATMbafizGrw30xOc4TX3XZGACQD4tf3BwC4kneMpAb6LW8mXnS3AnxrFvS9iGPrsfCBjmnrjd+5VJA0AoqRaNtfUZrxgmJj8yF7sO7Nll7G2Yf9KFRhTqkwkBnHuUdQzPROkXQGb+0FJHvlycVk+HnXcusD8hPGEZ5v3Qr/HstDvyVLmrvqU/j+fQHySulDhKjg077IQ==
+Received: from DS7PR03CA0139.namprd03.prod.outlook.com (2603:10b6:5:3b4::24)
+ by SN6PR12MB2637.namprd12.prod.outlook.com (2603:10b6:805:6b::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Mon, 21 Jun
+ 2021 12:09:06 +0000
+Received: from DM6NAM11FT026.eop-nam11.prod.protection.outlook.com
+ (2603:10b6:5:3b4:cafe::5c) by DS7PR03CA0139.outlook.office365.com
+ (2603:10b6:5:3b4::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19 via Frontend
+ Transport; Mon, 21 Jun 2021 12:09:06 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
+ smtp.mailfrom=nvidia.com; linux-foundation.org; dkim=none (message not
+ signed) header.d=none;linux-foundation.org; dmarc=pass action=none
+ header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.112.34; helo=mail.nvidia.com;
+Received: from mail.nvidia.com (216.228.112.34) by
+ DM6NAM11FT026.mail.protection.outlook.com (10.13.172.161) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.20.4242.16 via Frontend Transport; Mon, 21 Jun 2021 12:09:05 +0000
+Received: from nvdebian.localnet (172.20.187.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 21 Jun
+ 2021 12:09:02 +0000
+From:   Alistair Popple <apopple@nvidia.com>
+To:     Peter Xu <peterx@redhat.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: [PATCH v3 08/27] mm: Introduce zap_details.zap_flags
+Date:   Mon, 21 Jun 2021 22:09:00 +1000
+Message-ID: <5845701.Ud2vPSPtVx@nvdebian>
+In-Reply-To: <20210527202130.30840-1-peterx@redhat.com>
+References: <20210527201927.29586-1-peterx@redhat.com> <20210527202130.30840-1-peterx@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <2330bb52-1768-5122-9378-7923034c82bd@arm.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.47.93.67]
-X-ClientProxiedBy: lhreml747-chm.china.huawei.com (10.201.108.197) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [172.20.187.5]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d9dcc787-3c37-4538-3177-08d934ad5e03
+X-MS-TrafficTypeDiagnostic: SN6PR12MB2637:
+X-Microsoft-Antispam-PRVS: <SN6PR12MB2637C6A0CDCCA6F9BEF9BF3FDF0A9@SN6PR12MB2637.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pHQanbFUQvFVXUTTMgbpqcgPtlJB4jNkNeVHm5JVx7UNScgYkMWfgYtUaREaYg79FKpQZTbWIzOfslKYRq4XfPMMn6gZ3JAJlNCAda1fSVoFJKTQLEi/bkvN6LVIRpCktUrnCe/6bUgeweDhr4LE6yGF07guipXDdo4tJ/Wgzra4LsI+yAFKCKlpHrGHN5AmGXxcMvLO/R+cL+wHIvivYutSVm6sghk8q3HNpS5IjhyljOvalgLiCGKdLDwwCLl9Obd/bJmKiuiOzTPIv3Kqfs9wLdO/sBRHF4Y2ev0xRalMxrX3HQfoMKdY/ftbHhGcfcyb9Zg4ZxXm0mNImbCf2rEKrP9feRX8R4KLfs5S8GppLcct5kFH2Aa2/ey6CmJgp+E7ZZekQgoM9dKujvrfm2wR+WCxVj825za1AcDrVzAeQJo8qk6WTz5LRtmp8C4p/K7pVxDL/s7PU7U9/iB94vXSxIjn12wBgM6LiUBqvsHJZTpC4lM0n02IB7jiBbkq45Um90aDwvWa+bfBNUzVMrO0lJrsy99OyvfNHzlEV1dgjlDl5E7osZAAC1RDuKrP/1ilSX8l9K4EKix2AmvTMUxtIe10bMIgETLLYRJUycNoDlzhx3UlfEnsd9PYYqyFONZIolX629wU7sohPwZgBePfcWA51zu4+a/2CqXLYCNGoBhZv7XErHVwQeZ4NXfW
+X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(376002)(39860400002)(346002)(136003)(396003)(46966006)(36840700001)(36906005)(83380400001)(316002)(426003)(54906003)(336012)(478600001)(2906002)(70586007)(33716001)(9686003)(4326008)(9576002)(7416002)(70206006)(82310400003)(86362001)(5660300002)(7636003)(8676002)(356005)(8936002)(26005)(36860700001)(47076005)(16526019)(186003)(82740400003)(6916009)(39026012);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2021 12:09:05.9730
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d9dcc787-3c37-4538-3177-08d934ad5e03
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT026.eop-nam11.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2637
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/06/2021 12:59, Robin Murphy wrote:
-
-+ Nadav
-
->> On a personal level I would be happy with that approach, but I think
->> it's better to not start changing things right away in a follow-up series.
->>
->> So how about we add this patch (which replaces 6/6 "iommu: Remove mode
->> argument from iommu_set_dma_strict()")?
->>
->> Robin, any opinion?
-> For me it boils down to whether there are any realistic workloads where
-> non-strict mode*would*  still perform better under virtualisation. The
-> only reason for the user to explicitly pass "iommu.strict=0" is because
-> they expect it to increase unmap performance; if it's only ever going to
-> lead to an unexpected performance loss, I don't see any value in
-> overriding the kernel's decision purely for the sake of subservience.
+On Friday, 28 May 2021 6:21:30 AM AEST Peter Xu wrote:
+> Instead of trying to introduce one variable for every new zap_details fields,
+> let's introduce a flag so that it can start to encode true/false informations.
 > 
-> If there*are*  certain valid cases for allowing it for people who really
-> know what they're doing, then we should arguably also log a counterpart
-> message to say "we're honouring your override but beware it may have the
-> opposite effect to what you expect" for the benefit of other users who
-> assume it's a generic go-faster knob. At that point it starts getting
-> non-trivial enough that I'd want to know for sure it's worthwhile.
+> Let's start to use this flag first to clean up the only check_mapping variable.
+> Firstly, the name "check_mapping" implies this is a "boolean", but actually it
+> stores the mapping inside, just in a way that it won't be set if we don't want
+> to check the mapping.
 > 
-> The other reason this might be better to revisit later is that an AMD
-> equivalent is still in flight[1], and there might be more that can
-> eventually be factored out. I think both series are pretty much good to
-> merge for 5.14, but time's already tight to sort out the conflicts which
-> exist as-is, without making them any worse.
-
-ok, fine. Can revisit.
-
-As for getting these merged, I'll dry-run merging both of those series 
-to see the conflicts. It doesn't look too problematic from a glance.
-
-Cheers,
-John
-
+> To make things clearer, introduce the 1st zap flag ZAP_FLAG_CHECK_MAPPING, so
+> that we only check against the mapping if this bit set.  At the same time, we
+> can rename check_mapping into zap_mapping and set it always.
 > 
-> Robin.
+> Since at it, introduce another helper zap_check_mapping_skip() and use it in
+> zap_pte_range() properly.
 > 
-> [1]
-> https://lore.kernel.org/linux-iommu/20210616100500.174507-3-namit@vmware.com/
+> Some old comments have been removed in zap_pte_range() because they're
+> duplicated, and since now we're with ZAP_FLAG_CHECK_MAPPING flag, it'll be very
+> easy to grep this information by simply grepping the flag.
 > 
->> ------->8---------
->>
->> [PATCH] iommu/vt-d: Make "iommu.strict" override batching due to
->>    virtualization
->>
->> As a change in policy, make iommu.strict cmdline argument override
->> whether we disable batching due to virtualization.
->>
->> The API of iommu_set_dma_strict() is changed to accept a "force"
->> argument, which means that we always set iommu_dma_strict true,
->> regardless of whether we already set via cmdline. Also return a boolean,
->> to tell whether iommu_dma_strict was set or not.
->>
->> Note that in all pre-existing callsites of iommu_set_dma_strict(),
->> argument strict was true, so this argument is dropped.
->>
->> Signed-off-by: John Garry<john.garry@huawei.com>
->>
->> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
->> index 06666f9d8116..e8d65239b359 100644
->> --- a/drivers/iommu/intel/iommu.c
->> +++ b/drivers/iommu/intel/iommu.c
->> @@ -4380,10 +4380,8 @@ int __init intel_iommu_init(void)
->>             * is likely to be much lower than the overhead of synchronizing
->>             * the virtual and physical IOMMU page-tables.
->>             */
->> -        if (cap_caching_mode(iommu->cap)) {
->> +        if (cap_caching_mode(iommu->cap) && iommu_set_dma_strict(false))
->>                pr_info_once("IOMMU batching disallowed due to
->> virtualization\n");
->> -            iommu_set_dma_strict(true);
->> -        }
->>            iommu_device_sysfs_add(&iommu->iommu, NULL,
->>                           intel_iommu_groups,
->>                           "%s", iommu->name);
->> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->> index 60b1ec42e73b..1434bee64af3 100644
->> --- a/drivers/iommu/iommu.c
->> +++ b/drivers/iommu/iommu.c
->> @@ -349,10 +349,14 @@ static int __init iommu_dma_setup(char *str)
->>    }
->>    early_param("iommu.strict", iommu_dma_setup);
->>
->> -void iommu_set_dma_strict(bool strict)
->> +/* Return true if we set iommu_dma_strict */
->> +bool iommu_set_dma_strict(bool force)
->>    {
->> -    if (strict || !(iommu_cmd_line & IOMMU_CMD_LINE_STRICT))
->> -        iommu_dma_strict = strict;
->> +    if (force || !(iommu_cmd_line & IOMMU_CMD_LINE_STRICT)) {
->> +        iommu_dma_strict = true;
->> +        return true;
->> +    }
->> +    return false;
->>    }
->>
->>    bool iommu_get_dma_strict(struct iommu_domain *domain)
->> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
->> index 32d448050bf7..f17b20234296 100644
->> --- a/include/linux/iommu.h
->> +++ b/include/linux/iommu.h
->> @@ -476,7 +476,7 @@ int iommu_enable_nesting(struct iommu_domain *domain);
->>    int iommu_set_pgtable_quirks(struct iommu_domain *domain,
->>            unsigned long quirks);
->>
->> -void iommu_set_dma_strict(bool val);
->> +bool iommu_set_dma_strict(bool force);
->>    bool iommu_get_dma_strict(struct iommu_domain *domain);
->>
->>    extern int report_iommu_fault(struct iommu_domain *domain, struct
->> device *dev,
+> It'll also make life easier when we want to e.g. pass in zap_flags into the
+> callers like unmap_mapping_pages() (instead of adding new booleans besides the
+> even_cows parameter).
+> 
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
+>  include/linux/mm.h | 19 ++++++++++++++++++-
+>  mm/memory.c        | 31 ++++++++-----------------------
+>  2 files changed, 26 insertions(+), 24 deletions(-)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index db155be8e66c..52d3ef2ed753 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1721,13 +1721,30 @@ static inline bool can_do_mlock(void) { return false; }
+>  extern int user_shm_lock(size_t, struct user_struct *);
+>  extern void user_shm_unlock(size_t, struct user_struct *);
+>  
+> +/* Whether to check page->mapping when zapping */
+> +#define  ZAP_FLAG_CHECK_MAPPING             BIT(0)
+> +
+>  /*
+>   * Parameter block passed down to zap_pte_range in exceptional cases.
+>   */
+>  struct zap_details {
+> -	struct address_space *check_mapping;	/* Check page->mapping if set */
+> +	struct address_space *zap_mapping;
+> +	unsigned long zap_flags;
+>  };
+>  
+> +/* Return true if skip zapping this page, false otherwise */
+> +static inline bool
+> +zap_check_mapping_skip(struct zap_details *details, struct page *page)
+> +{
+> +	if (!details || !page)
+> +		return false;
+> +
+> +	if (!(details->zap_flags & ZAP_FLAG_CHECK_MAPPING))
+> +		return false;
+> +
+> +	return details->zap_mapping != page_rmapping(page);
+
+I doubt this matters in practice, but there is a slight behaviour change
+here that might be worth checking. Previously this check was equivalent
+to:
+
+details->zap_mapping && details->zap_mapping != page_rmapping(page)
+
+Otherwise I think this looks good.
+
+> +}
+> +
+>  struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
+>  			     pte_t pte);
+>  struct page *vm_normal_page_pmd(struct vm_area_struct *vma, unsigned long addr,
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 27cf8a6375c6..c9dc4e9e05b5 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -1330,16 +1330,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+>  			struct page *page;
+>  
+>  			page = vm_normal_page(vma, addr, ptent);
+> -			if (unlikely(details) && page) {
+> -				/*
+> -				 * unmap_shared_mapping_pages() wants to
+> -				 * invalidate cache without truncating:
+> -				 * unmap shared but keep private pages.
+> -				 */
+> -				if (details->check_mapping &&
+> -				    details->check_mapping != page_rmapping(page))
+> -					continue;
+> -			}
+> +			if (unlikely(zap_check_mapping_skip(details, page)))
+> +				continue;
+>  			ptent = ptep_get_and_clear_full(mm, addr, pte,
+>  							tlb->fullmm);
+>  			tlb_remove_tlb_entry(tlb, pte, addr);
+> @@ -1372,17 +1364,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
+>  		    is_device_exclusive_entry(entry)) {
+>  			struct page *page = pfn_swap_entry_to_page(entry);
+>  
+> -			if (unlikely(details && details->check_mapping)) {
+> -				/*
+> -				 * unmap_shared_mapping_pages() wants to
+> -				 * invalidate cache without truncating:
+> -				 * unmap shared but keep private pages.
+> -				 */
+> -				if (details->check_mapping !=
+> -				    page_rmapping(page))
+> -					continue;
+> -			}
+> -
+> +			if (unlikely(zap_check_mapping_skip(details, page)))
+> +				continue;
+>  			pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+>  			rss[mm_counter(page)]--;
+>  
+> @@ -3345,9 +3328,11 @@ void unmap_mapping_pages(struct address_space *mapping, pgoff_t start,
+>  		pgoff_t nr, bool even_cows)
+>  {
+>  	pgoff_t	first_index = start, last_index = start + nr - 1;
+> -	struct zap_details details = { };
+> +	struct zap_details details = { .zap_mapping = mapping };
+> +
+> +	if (!even_cows)
+> +		details.zap_flags |= ZAP_FLAG_CHECK_MAPPING;
+>  
+> -	details.check_mapping = even_cows ? NULL : mapping;
+>  	if (last_index < first_index)
+>  		last_index = ULONG_MAX;
+>  
+> 
+
+
+
 
