@@ -2,152 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94D83AE5FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63DDA3AE604
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:28:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230427AbhFUJ2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:28:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230225AbhFUJ2G (ORCPT
+        id S230318AbhFUJaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:30:24 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:34136 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229597AbhFUJaX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:28:06 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44595C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:25:52 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id n35-20020a05600c3ba3b02901cdecb6bda8so13316851wms.5
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:25:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=khjWeiSnkM2JJW86gTrKIOVSLeTv7Yb6KaH/heggdtk=;
-        b=D7+xRf++un3IqmYn8bmv7KAGa9NMjyPIbi8yoy4Ti9SUXDRJjRaloHfCpxV/03Arf7
-         CoERUSxWGR0XDUWdMf/1y7IHE6wK6tX5nqjAOvuhocuiKx22ltR0guuxKZePTG1Fgl9k
-         NA3WegyOWA5PBhjYeeddblQoSNJ5dcaLnGxqKOn9yIK97LKfgo7SEzfR6PGsn3vvw2B7
-         A7SG9sOSiEH/snvvetYA4vFouncOe8XSKa4X3stERRW8kdZzIy3Gak8fRXXGb15X7iGt
-         AxQpL3GA0gWVhio0AHuwSHamj0wj8pYNhx1ttV3fUV2+mkZvOPS0jHoNaXjh0nKxEqV/
-         /QMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=khjWeiSnkM2JJW86gTrKIOVSLeTv7Yb6KaH/heggdtk=;
-        b=WRFbfYXjHgKoecAOUF007hhCYMARKAsoeqEXAqnT8FvpOXzHyUPJFSkGOjqAHOpIbp
-         cnw47ypi4k4AX31QJWN1pe5yv/lxNw5abwBRkHYslBGbPfvx5J8uN4jb+35HNz3rB+I7
-         X5+1fH+7OtVq+4WPKbxjPthKv6KBEqS32sigZdySF2JaxFWx+pvWTQrKc06ZI5ypkIqz
-         atBREYoURwQOHBetnGYRMNJ3Nee9/XA85oQ5uOnx43iqlsj4YHxSfEON5bYHCzpZlTJI
-         fw1ah+r0YcNeLo6fLqCFwLoX2ufskrocuhrJeGX2I5gJsaD7Lv1wyHYlkPaqRg/tqU71
-         wpGA==
-X-Gm-Message-State: AOAM53311A5CITRIOtsAMV8p0klweUoCfHEc+YsYLxg2PseDujDteg/j
-        7VV7TkhxOFnvJnX1+pKik5yEcA==
-X-Google-Smtp-Source: ABdhPJyU+t2q4RnAwWxnByMGNzM0KKcktgIONYVsvt+ZubU3WPqQEmpfq8xdZyXbgeekVOfLseJSTQ==
-X-Received: by 2002:a7b:c1d3:: with SMTP id a19mr12109104wmj.181.1624267549391;
-        Mon, 21 Jun 2021 02:25:49 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:5ebd:8bd9:d549:4211? ([2a01:e34:ed2f:f020:5ebd:8bd9:d549:4211])
-        by smtp.googlemail.com with ESMTPSA id 24sm4377077wmi.35.2021.06.21.02.25.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 02:25:48 -0700 (PDT)
-Subject: Re: [PATCH 1/2] clocksource/drivers/exynos_mct: Prioritise Arm arch
- timer on arm64
-To:     Will Deacon <will@kernel.org>, Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20210608154341.10794-1-will@kernel.org>
- <CGME20210608154400epcas1p1b22fd50629611a9475cb4d2b8dd9442d@epcas1p1.samsung.com>
- <20210608154341.10794-2-will@kernel.org>
- <466bfc19-2260-87c6-c458-b43cf23617e3@samsung.com>
- <2a0181ea-a26e-65e9-16f6-cc233b6b296f@linaro.org>
- <fbcd234d-3ea0-d609-1f1d-b557ea329c37@samsung.com>
- <20210617214748.GC25403@willie-the-truck>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <d79ebd58-1c4e-834c-fc06-482f25f6f3de@linaro.org>
-Date:   Mon, 21 Jun 2021 11:25:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 21 Jun 2021 05:30:23 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R751e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0Ud8YYYK_1624267685;
+Received: from localhost(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0Ud8YYYK_1624267685)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 21 Jun 2021 17:28:06 +0800
+From:   Huaixin Chang <changhuaixin@linux.alibaba.com>
+To:     luca.abeni@santannapisa.it
+Cc:     anderson@cs.unc.edu, baruah@wustl.edu, bsegall@google.com,
+        changhuaixin@linux.alibaba.com, dietmar.eggemann@arm.com,
+        dtcccc@linux.alibaba.com, juri.lelli@redhat.com,
+        khlebnikov@yandex-team.ru, linux-kernel@vger.kernel.org,
+        mgorman@suse.de, mingo@redhat.com, odin@uged.al, odin@ugedal.com,
+        pauld@redhead.com, peterz@infradead.org, pjt@google.com,
+        rostedt@goodmis.org, shanpeic@linux.alibaba.com, tj@kernel.org,
+        tommaso.cucinotta@santannapisa.it, vincent.guittot@linaro.org,
+        xiyou.wangcong@gmail.com
+Subject: [PATCH v6 0/3] sched/fair: Burstable CFS bandwidth controller
+Date:   Mon, 21 Jun 2021 17:27:57 +0800
+Message-Id: <20210621092800.23714-1-changhuaixin@linux.alibaba.com>
+X-Mailer: git-send-email 2.14.4.44.g2045bb6
 MIME-Version: 1.0
-In-Reply-To: <20210617214748.GC25403@willie-the-truck>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/06/2021 23:47, Will Deacon wrote:
-> On Thu, Jun 17, 2021 at 09:58:35AM +0900, Chanwoo Choi wrote:
->> On 6/17/21 12:25 AM, Daniel Lezcano wrote:
->>> On 10/06/2021 03:03, Chanwoo Choi wrote:
->>>> On 6/9/21 12:43 AM, Will Deacon wrote:
->>>>> diff --git a/drivers/clocksource/exynos_mct.c b/drivers/clocksource/exynos_mct.c
->>>>> index fabad79baafc..804d3e01c8f4 100644
->>>>> --- a/drivers/clocksource/exynos_mct.c
->>>>> +++ b/drivers/clocksource/exynos_mct.c
->>>>> @@ -51,6 +51,15 @@
->>>>>  
->>>>>  #define TICK_BASE_CNT	1
->>>>>  
->>>>> +#ifdef CONFIG_ARM
->>>>> +/* Use values higher than ARM arch timer. See 6282edb72bed. */
->>>>> +#define MCT_CLKSOURCE_RATING		450
->>>>> +#define MCT_CLKEVENTS_RATING		500
->>>>> +#else
->>>>> +#define MCT_CLKSOURCE_RATING		350
->>>>> +#define MCT_CLKEVENTS_RATING		350
->>>>> +#endif
->>>>> +
->>>>>  enum {
->>>>>  	MCT_INT_SPI,
->>>>>  	MCT_INT_PPI
->>>>> @@ -206,7 +215,7 @@ static void exynos4_frc_resume(struct clocksource *cs)
->>>>>  
->>>>>  static struct clocksource mct_frc = {
->>>>>  	.name		= "mct-frc",
->>>>> -	.rating		= 450,	/* use value higher than ARM arch timer */
->>>>> +	.rating		= MCT_CLKSOURCE_RATING,
->>>>>  	.read		= exynos4_frc_read,
->>>>>  	.mask		= CLOCKSOURCE_MASK(32),
->>>>>  	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
->>>>> @@ -457,7 +466,7 @@ static int exynos4_mct_starting_cpu(unsigned int cpu)
->>>>>  	evt->set_state_oneshot_stopped = set_state_shutdown;
->>>>>  	evt->tick_resume = set_state_shutdown;
->>>>>  	evt->features = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT;
->>>>> -	evt->rating = 500;	/* use value higher than ARM arch timer */
->>>>> +	evt->rating = MCT_CLKEVENTS_RATING,
->>>>>  
->>>>>  	exynos4_mct_write(TICK_BASE_CNT, mevt->base + MCT_L_TCNTB_OFFSET);
->>>>>  
->>>>>
->>>>
->>>> I'm not sure that exynos mct is working without problem
->>>> such as the case of 6282edb72bed.
->>>> As described on On ,6282edb72bed the arch timer on exynos SoC
->>>> depends on Exynos MCT device. the arch timer is not able to work
->>>> without Exynos MCT because of using the common module.
->>>
->>> Is it possible to change the DT to have a phandle to the exynos_mct, so
->>> it will be probed before the arch_arm_timer ?
->>
->> I think that DT changes is not proper way to keep the order between
->> exynos_mct and arch timer.
-> 
-> exynos4_mct_frc_start() is called unconditionally from probe via
-> exynos4_clocksource_init() so as long as the mct probes first, then the
-> arch timer should work, no? The rating shouldn't affect that.
+Changelog:
+v6:
+- Separate burst config to cpu.max.burst.
+- Rewrite commit log and document for burst feature.
+- Remove global sysfsctl to disable burst feature.
+- Some code mofication.
+- Rebase upon v5.13-rc6.
 
-How do you ensure the exynos mct is probed before the arch timer ?
+v5:
+- Rearrange into 3 patches, one less than the previous version.
+- The interference to other groups are valued.
+- Put a limit on burst, so that code is further simplified.
+- Rebase upon v5.13-rc3.
+Link:
+https://lore.kernel.org/lkml/20210520123419.8039-1-changhuaixin@linux.alibaba.com/
 
-The Makefile provides the right order, but the dependency is implicit.
+v4:
+- Adjust assignments in tg_set_cfs_bandwidth(), saving unnecessary
+  assignemnts when quota == RUNTIME_INF.
+- Getting rid of sysctl_sched_cfs_bw_burst_onset_percent, as there seems
+  no justification for both controlling start bandwidth and a percent
+  way.
+- Comment improvement in sched_cfs_period_timer() shifts on explaining
+  why max_overrun shifting to 0 is a problem.
+- Rename previous_runtime to runtime_at_period_start.
+- Add cgroup2 interface and documentation.
+- Getting rid of exposing current_bw as there are not enough
+  justification and the updating problem.
+- Add justification on cpu.stat change in the changelog.
+- Rebase upon v5.12-rc3.
+- Correct SoB chain.
+- Several indentation fixes.
+- Adjust quota in schbench test from 700000 to 600000.
+Link:
+https://lore.kernel.org/lkml/20210316044931.39733-1-changhuaixin@linux.alibaba.com/
 
+v3:
+- Fix another issue reported by test robot.
+- Update docs as Randy Dunlap suggested.
+Link:
+https://lore.kernel.org/lkml/20210120122715.29493-1-changhuaixin@linux.alibaba.com/
 
+v2:
+- Fix an issue reported by test robot.
+- Rewriting docs. Appreciate any further suggestions or help.
+Link:
+https://lore.kernel.org/lkml/20210121110453.18899-1-changhuaixin@linux.alibaba.com/
+
+v1 Link:
+https://lore.kernel.org/lkml/20201217074620.58338-1-changhuaixin@linux.alibaba.com/
+
+Previously, Cong Wang and Konstantin Khlebnikov proposed similar
+feature:
+https://lore.kernel.org/lkml/20180522062017.5193-1-xiyou.wangcong@gmail.com/
+https://lore.kernel.org/lkml/157476581065.5793.4518979877345136813.stgit@buzz/
+
+This time we present more latency statistics and handle overflow while
+accumulating.
+
+Huaixin Chang (3):
+  sched/fair: Introduce the burstable CFS controller
+  sched/fair: Add cfs bandwidth burst statistics
+  sched/fair: Add document for burstable CFS bandwidth
+
+ Documentation/admin-guide/cgroup-v2.rst | 17 +++---
+ Documentation/scheduler/sched-bwc.rst   | 76 ++++++++++++++++++++++----
+ include/linux/sched/sysctl.h            |  1 +
+ kernel/sched/core.c                     | 96 ++++++++++++++++++++++++++-------
+ kernel/sched/fair.c                     | 32 ++++++++++-
+ kernel/sched/sched.h                    |  4 ++
+ kernel/sysctl.c                         |  9 ++++
+ 7 files changed, 200 insertions(+), 35 deletions(-)
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+2.14.4.44.g2045bb6
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
