@@ -2,120 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E27403AE700
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3430D3AE707
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhFUK1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 06:27:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbhFUK1C (ORCPT
+        id S229747AbhFUK37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 06:29:59 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:33897 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFUK36 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 06:27:02 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8572BC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 03:24:47 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id l7-20020a05600c1d07b02901b0e2ebd6deso10323708wms.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 03:24:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CDiXxvYtfyxE5nFB19grFf8yJhbwkKeNX1uoZe/8Uvc=;
-        b=iYhp2WQffqmJU3YQ3FdHYngsgmsFop0nY+fE0oobBV8Y+pTXI4LS43Evyzld6i9Qj9
-         dbQmB2+1HVtUSvGgSHdDxkPfiCQLhgYb5SVmzuImES+rZEmyeg/kEHInqko67OkZK1kR
-         8lDW7EmzIVdsEASl0OA3pMhBMaomQE1vs0h8M+r5pruTxOdq/eh9zrzYOYDObTvf+isg
-         QM+Ssn7aK6vSs+ot5Eo4iNWPX5rqO5S5y2rIN301g9WkMbm8cfr9QXSRJSIg2ocBKI/K
-         aXn7aiSkDvXCfLea8TfsU204ORV6dr2Cif+f4Al5ZYT+24XrcGB9vadALSUDw3p850hp
-         1b5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CDiXxvYtfyxE5nFB19grFf8yJhbwkKeNX1uoZe/8Uvc=;
-        b=Yp9IrqTdUWd6t7ITm1IQfwGXusbmgmTLyQA3kx32IqeJdi/qcEl2aGGaGYyFEqgHY+
-         nqfaUVpUKEPRST8O3G8EtzSmbWGcvohbNd95bEST6MY/C8V8HQB/04WJ/3L2HovU9msn
-         LAyM2QtjfsXMP6g6QZkzRvHZyFL872o8i/hEWaj9qpHfNL5MLUlH09I6pgcJMJbFyGpe
-         /hCeMwjxrX4dynV/RFlIaxRpGqKz5Z9zsgg5dcmqo43C8Zgo+LH72IbcI5QXXJaJ5Qc2
-         hCL10DF9bH+UhtgAX/oKsXLNMrkLpEHN1CzLUcfMD55LS475J8lEA9YaEu+0aF7eLDyK
-         F0Gg==
-X-Gm-Message-State: AOAM533+nfjakuOPhaLQwOjQBznbS3R6QhNWN7xfgml/PmhUJd4S7DMl
-        1LPCDhVRUwDh2HpBPS7cncPoKQ==
-X-Google-Smtp-Source: ABdhPJyZQ3CPhDv7pPIktHohGygVyJpoofZEJT9P7K2Hx2D0J427cfLpLmA6fyca61BcLiClNbY5Zg==
-X-Received: by 2002:a7b:c44d:: with SMTP id l13mr8003996wmi.69.1624271085972;
-        Mon, 21 Jun 2021 03:24:45 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:5ebd:8bd9:d549:4211? ([2a01:e34:ed2f:f020:5ebd:8bd9:d549:4211])
-        by smtp.googlemail.com with ESMTPSA id u18sm15538371wmj.15.2021.06.21.03.24.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 03:24:45 -0700 (PDT)
-Subject: Re: [PATCH 1/2] clocksource/drivers/exynos_mct: Prioritise Arm arch
- timer on arm64
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Will Deacon <will@kernel.org>,
-        Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20210608154341.10794-1-will@kernel.org>
- <CGME20210608154400epcas1p1b22fd50629611a9475cb4d2b8dd9442d@epcas1p1.samsung.com>
- <20210608154341.10794-2-will@kernel.org>
- <466bfc19-2260-87c6-c458-b43cf23617e3@samsung.com>
- <2a0181ea-a26e-65e9-16f6-cc233b6b296f@linaro.org>
- <fbcd234d-3ea0-d609-1f1d-b557ea329c37@samsung.com>
- <20210617214748.GC25403@willie-the-truck>
- <d79ebd58-1c4e-834c-fc06-482f25f6f3de@linaro.org>
- <95fb8ea3-f409-55ee-6b5c-f19858dd0fab@samsung.com>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <6847bb2f-02ac-35a4-bb7a-491a52325a60@linaro.org>
-Date:   Mon, 21 Jun 2021 12:24:44 +0200
+        Mon, 21 Jun 2021 06:29:58 -0400
+Received: from [192.168.1.155] ([95.118.106.223]) by mrelayeu.kundenserver.de
+ (mreue009 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1Mk0FM-1lXAgQ15NA-00kNZY; Mon, 21 Jun 2021 12:27:42 +0200
+Subject: Re: LockDown that allows read of /dev/mem ?
+To:     "David F." <df7729@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <CAGRSmLvaZ7av7ne-XKfZGrij1x9i5v1aH=t0ufL=Ad1193G0vA@mail.gmail.com>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <99e0ef5a-156f-c8e5-cfc3-7c50e5e15a98@metux.net>
+Date:   Mon, 21 Jun 2021 12:27:41 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <95fb8ea3-f409-55ee-6b5c-f19858dd0fab@samsung.com>
+In-Reply-To: <CAGRSmLvaZ7av7ne-XKfZGrij1x9i5v1aH=t0ufL=Ad1193G0vA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Language: tl
 Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:nFO2JBTQkP3ieWeKK9VmghH2rracDNY2weGmzNK0fCv8dWxYQX1
+ K4O7XWfwVhL9jYpqqJLA1rFPizFzbciFwPirF57elEdYewqexyY21oEBndh9dTOt6BKdKLA
+ kcmZz2agy7BX9GiyVok0nCqbDX4Pp7eIFJD7pACHJ/zXvXdA+9WAkTkQa6DNK/EyeipwsdB
+ qv+YVFdx6IEi6On/UN2Ag==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:UngH/ZoRFMs=:dvlpNgLi+yj4/FnZq7aihR
+ XTKDpQrzhe/aBZ7vKGO0+6K74wmoQsy+247m0JVlsUVXNCnZQNb4bT40NA0SqlqccjCdyiwql
+ AwxBy5K3X7vkabOmzluvbbbh8Uw6uV2aaVIaoGk7vfGesNwp14EMgWRxhxGR4S0VEuMyfnu8P
+ 6qptTlrGYGsdj0lXHcRwBVHhsCEmoUwh/rdTSb6eHc2vnHIfIzKVyGFXYd5hgg59rogh9JmX5
+ 3JUntoWBoV1+0mxoC4ew2Tgw4G/h6NoO9NHuDbgZJ83cuIWqqH6mai7A52Xhc4amjmtyqha1o
+ DhsfD7sVeBBzzOLpNaQ0aa1nH/n+EUs13SqbbkOcrwMpEa54HX0B5yJVf/tZ3/KxCLZ4PaFdp
+ xEW8J4Sk0zQ2S7OnwjchhSVLVIHBT2NFFIIyWjpgvyKj65MpiDE0h9fVm4qyorSCkywAwro0K
+ tAnHgB+cc8yZZkaYDWzXtTwf+W7TIGBEl8REb5652hUxvdIgoezAwAcMvAcbTsoVZZIcL50zt
+ owTeICkJlT3fVJypa9GF9w=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/06/2021 12:17, Marek Szyprowski wrote:
+On 20.06.21 01:55, David F. wrote:
 
-[ ... ]
+> I'm finding that LockDown Integrity prevents blocks things like mdadm,
+> Xvesa, and a couple of my specialized tools.    There should be an
+> option to allow /dev/mem read access.  Is there?  There are no secrets
+> to the boot disk booted environment it's all root.
 
->>>>>> I'm not sure that exynos mct is working without problem
->>>>>> such as the case of 6282edb72bed.
->>>>>> As described on On ,6282edb72bed the arch timer on exynos SoC
->>>>>> depends on Exynos MCT device. the arch timer is not able to work
->>>>>> without Exynos MCT because of using the common module.
->>>>> Is it possible to change the DT to have a phandle to the exynos_mct, so
->>>>> it will be probed before the arch_arm_timer ?
->>>> I think that DT changes is not proper way to keep the order between
->>>> exynos_mct and arch timer.
->>> exynos4_mct_frc_start() is called unconditionally from probe via
->>> exynos4_clocksource_init() so as long as the mct probes first, then the
->>> arch timer should work, no? The rating shouldn't affect that.
->> How do you ensure the exynos mct is probed before the arch timer ?
->>
->> The Makefile provides the right order, but the dependency is implicit.
-> 
-> In my test systems based on Exynos5433, the bootloader enabled MCT, so 
-> kernel can also start with arch_timer then switch to MCT. The probe 
-> order also depend on the order of DT nodes, so with the current dts MCT 
-> is probed first. This is not the best approach, but so far it works.
+Looks like conflict of goals. lockdown is used in scenarios where one
+really doesn't take any chance that code running w/ root privileges can
+do such things (there's a lot of security critical information one can
+learn from reading the raw memory).
 
-Right, generally assuming the firmware is doing the right thing from an
-initialization POV is not a good idea :/
+I wonder what your actual use case is.
 
-But in our case, as pointed by Will, the cpuhotplug ordering gives the
-right sequence. So it should be fine.
+* why are you using lockdown and also running everything as root ?
+* why are you still using the old Xvesa instead of using KMS or
+  framebuffer device ?
+* why does mdadm want to access /dev/mem ?
 
+
+
+--mtx
 
 -- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
-
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
