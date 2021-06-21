@@ -2,109 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA0803AEC60
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 003203AEC65
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbhFUPcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 11:32:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbhFUPcL (ORCPT
+        id S230268AbhFUPcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 11:32:33 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:57110 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230212AbhFUPcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 11:32:11 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCA90C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 08:29:55 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id t8so3668467pfe.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 08:29:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Gds6tYovSOr86cZquT2aU8c5nyspROJziSCZyLOf3K0=;
-        b=fkQiKOBfr5BOlLxAnkKK8hOr9+4enjduv6V7fLB6+8JqwHndcgMV7M0mhhANGGDn9x
-         ZrNosHhtlgsPYLKEapknsgMmoqHmswZgIZLhR+y3Uochz7jzfOTCpD45eO1kRqEt1gOO
-         MWwERIRdNlJ5lmcvKExVsvqEQgVKfy6f2jW/Y1ZxyLqKe2rZvvm1ZYF4AMluw61/3PT+
-         WqTS5FO0nIMamyZmQMwA5Rqa9HfdQhBQ7O6x2AEmQXkMbuD3R6UO2h0B637/iuhws59/
-         wJKxLuNXyYE7NAn8AQVQ3KU2MzkzmpfiNCCK8xEJ6RywtwoIkT5UbeQZundk46rvC6q0
-         xASQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Gds6tYovSOr86cZquT2aU8c5nyspROJziSCZyLOf3K0=;
-        b=BdRYPlLp2G6Fod/tMxr3iAUbAzf30LVaXJM7R3TGiS7c+TccMmgIdLNwKEIz/e0XmE
-         NwhNF+/rZkl00pVr+sfoHx95m/SPlsmM8qHBtJYXzFi165sJyNyzF/6v1/0DtPt15k3M
-         IHojkPUiXd42SGF99JO0dI5oMwfPr5oPA0TbsOBEM6ekID/XEYpkpj43ImgTel0NOC3w
-         M9vObQ70722cQY9flGxy4zT/PVDRBnlyfCcoSMv5qcH6SK7+um62Bqv1l9N2znRD9wvR
-         6pnUyM7zQpyqeM9Wzb5sRNV2pa75tLgzNQqpefcU1cUoz0xzXX5Y4TqjbXNIDQ0lZwjq
-         HgfA==
-X-Gm-Message-State: AOAM530RR6JmfvV6PWyos0DVytY3YIvNBwi70uUCsmYmQP9CRmi8Zxl7
-        rHgknMBN6pg/q0hlwkjnMKyXUcH3ugIHUKQi5GXzUL2mXepCBA==
-X-Google-Smtp-Source: ABdhPJyg4gpN465wP9upTbg8ssR/8d9GrlE0teDXQX2kLTcbJ5SYz990V3YQHM0VgsZxbA088KJNmZsr5bZNpGtp7s0=
-X-Received: by 2002:a63:5d65:: with SMTP id o37mr24320310pgm.79.1624289395377;
- Mon, 21 Jun 2021 08:29:55 -0700 (PDT)
+        Mon, 21 Jun 2021 11:32:32 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 45D831FD3D;
+        Mon, 21 Jun 2021 15:30:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624289417; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fbUjd4Dn1lEYNmAX1UGERXtZ58wKrqzYxp+NDjL0tqc=;
+        b=qWa/6emWYwO7sLVVgDSFBcxCGOZ4TUmyO1/jhy/MlVFG5256Firl7RaM3Yst9DYjVS2bY2
+        EMMO901xah/A09q7Ms9R7PwJSxL+CKQ6/vaK0hk7e0JF8u9s9juy7Wv5UXmp7yz2zk/6r5
+        OUXCiZCuLrmclbfACn2NshRD8fUAd6w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624289417;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fbUjd4Dn1lEYNmAX1UGERXtZ58wKrqzYxp+NDjL0tqc=;
+        b=x8jwFDYF5ZXZqhNzNaoR8dFuMcIPZMPon+O1/S4BZkvjtdR+6KCdMNqNBYlySYF4ZyTqAN
+        WHHF63E7fP8ciaAA==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 2DC4F118DD;
+        Mon, 21 Jun 2021 15:30:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624289417; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fbUjd4Dn1lEYNmAX1UGERXtZ58wKrqzYxp+NDjL0tqc=;
+        b=qWa/6emWYwO7sLVVgDSFBcxCGOZ4TUmyO1/jhy/MlVFG5256Firl7RaM3Yst9DYjVS2bY2
+        EMMO901xah/A09q7Ms9R7PwJSxL+CKQ6/vaK0hk7e0JF8u9s9juy7Wv5UXmp7yz2zk/6r5
+        OUXCiZCuLrmclbfACn2NshRD8fUAd6w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624289417;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fbUjd4Dn1lEYNmAX1UGERXtZ58wKrqzYxp+NDjL0tqc=;
+        b=x8jwFDYF5ZXZqhNzNaoR8dFuMcIPZMPon+O1/S4BZkvjtdR+6KCdMNqNBYlySYF4ZyTqAN
+        WHHF63E7fP8ciaAA==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id U/NdC4mw0GC1EgAALh3uQQ
+        (envelope-from <bp@suse.de>); Mon, 21 Jun 2021 15:30:17 +0000
+Date:   Mon, 21 Jun 2021 17:30:07 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch V3 22/66] x86/fpu: Move fpu__write_begin() to regset
+Message-ID: <YNCwf72K3LH6J8/T@zn.tnic>
+References: <20210618141823.161158090@linutronix.de>
+ <20210618143446.905002907@linutronix.de>
 MIME-Version: 1.0
-References: <CAGRSmLvaZ7av7ne-XKfZGrij1x9i5v1aH=t0ufL=Ad1193G0vA@mail.gmail.com>
- <99e0ef5a-156f-c8e5-cfc3-7c50e5e15a98@metux.net>
-In-Reply-To: <99e0ef5a-156f-c8e5-cfc3-7c50e5e15a98@metux.net>
-From:   "David F." <df7729@gmail.com>
-Date:   Mon, 21 Jun 2021 08:29:44 -0700
-Message-ID: <CAGRSmLuoP79dkE5_NgF+wiuotsYc6sV=fk=qzBVcEsjq0by5CQ@mail.gmail.com>
-Subject: Re: LockDown that allows read of /dev/mem ?
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210618143446.905002907@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lockdown required by secure boot and shim signing (prevent acpi
-patching), root because it's main use is a utility boot disk.   If
-lockdown could be forced when secure boot active but not when not
-active, that be best, but I'm not seeing that option.  The other
-option maybe to modify open_port on mem.c to do the secure boot check.
-However searching EFI_SECURE_BOOT doesn't exist in 5.10.x as in
-efi_enabled(EFI_SECURE_BOOT) - It appears that is some other patch
-that is not applied to the base, I do see struct boot_params has a
-secure_boot field set, but can I access that from mem.c?  If not, is
-efi_get_secureboot() function available when /drivers/char/mem.c may
-be used?
+On Fri, Jun 18, 2021 at 04:18:45PM +0200, Thomas Gleixner wrote:
+> The only usecase for fpu__write_begin is the set() callback of regset, so
+> the function is pointlessly global.
+> 
+> Move it to the regset code and rename it to fpu_force_restore() which is
+> exactly decribing what the function does.
 
-On Mon, Jun 21, 2021 at 3:27 AM Enrico Weigelt, metux IT consult
-<lkml@metux.net> wrote:
->
-> On 20.06.21 01:55, David F. wrote:
->
-> > I'm finding that LockDown Integrity prevents blocks things like mdadm,
-> > Xvesa, and a couple of my specialized tools.    There should be an
-> > option to allow /dev/mem read access.  Is there?  There are no secrets
-> > to the boot disk booted environment it's all root.
->
-> Looks like conflict of goals. lockdown is used in scenarios where one
-> really doesn't take any chance that code running w/ root privileges can
-> do such things (there's a lot of security critical information one can
-> learn from reading the raw memory).
->
-> I wonder what your actual use case is.
->
-> * why are you using lockdown and also running everything as root ?
-> * why are you still using the old Xvesa instead of using KMS or
->   framebuffer device ?
-> * why does mdadm want to access /dev/mem ?
->
->
->
-> --mtx
->
-> --
+And makes the _set() callbacks a lot more readable, nice!
+
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 > ---
-> Hinweis: unverschl=C3=BCsselte E-Mails k=C3=B6nnen leicht abgeh=C3=B6rt u=
-nd manipuliert
-> werden ! F=C3=BCr eine vertrauliche Kommunikation senden Sie bitte ihren
-> GPG/PGP-Schl=C3=BCssel zu.
-> ---
-> Enrico Weigelt, metux IT consult
-> Free software and Linux embedded engineering
-> info@metux.net -- +49-151-27565287
+>  arch/x86/include/asm/fpu/internal.h |    1 -
+>  arch/x86/kernel/fpu/core.c          |   24 ------------------------
+>  arch/x86/kernel/fpu/regset.c        |   25 ++++++++++++++++++++++---
+>  3 files changed, 22 insertions(+), 28 deletions(-)
+
+...
+
+> --- a/arch/x86/kernel/fpu/regset.c
+> +++ b/arch/x86/kernel/fpu/regset.c
+> @@ -44,6 +44,25 @@ static void fpu_sync_fpstate(struct fpu
+>  		fpu__save(fpu);
+>  }
+>  
+> +/*
+> + * Invalidate cached FPU registers before modifying the stopped target
+> + * task's fpstate.
+> + *
+> + * This forces the target task on resume to restore the FPU registers from
+> + * modified fpstate. Otherwise the task might skip the restore and operate
+> + * with the cached FPU registers which discards the modifications.
+> + */
+> +static void fpu_force_restore(struct fpu *fpu)
+> +{
+> +	/*
+> +	 * Only stopped child tasks can be used to modify the FPU
+> +	 * state in the fpstate buffer:
+> +	 */
+> +	WARN_ON_FPU(fpu == &current->thread.fpu);
+> +
+> +	__fpu_invalidate_fpregs_state(fpu);
+> +}
+> +
+>  int xfpregs_get(struct task_struct *target, const struct user_regset *regset,
+>  		struct membuf to)
+>  {
+> @@ -89,7 +108,7 @@ int xfpregs_set(struct task_struct *targ
+>  	if (newstate.mxcsr & ~mxcsr_feature_mask)
+>  		ret = -EINVAL;
+		^^^^^^^^^^^^^^
+
+Don't forget to fix that thing, btw.
+
+> -	fpu__prepare_write(fpu);
+> +	fpu_force_restore(fpu);
+>  
+>  	/* Copy the state  */
+>  	memcpy(&fpu->state.fxsave, &newstate, sizeof(newstate));
+> @@ -147,7 +166,7 @@ int xstateregs_set(struct task_struct *t
+>  		}
+>  	}
+>  
+> -	fpu__prepare_write(fpu);
+> +	fpu_force_restore(fpu);
+>  	ret = copy_kernel_to_xstate(&fpu->state.xsave, kbuf ?: tmpbuf);
+
+Ok, this here:
+
+fpu_force_restore() will unconditionally invalidate the fpregs but the
+following copy_kernel_to_xstate() call can return -EINVAL when the
+xstate header validation fails or mxcsr has reserved bits set so we will
+not have copied anything to the target thread.
+
+Or do we say this is a slowpath so we don't care?
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
