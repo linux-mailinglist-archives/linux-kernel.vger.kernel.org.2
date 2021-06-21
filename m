@@ -2,132 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC063AE616
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:32:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C95F3AE619
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230235AbhFUJed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:34:33 -0400
-Received: from mail-dm6nam11on2075.outbound.protection.outlook.com ([40.107.223.75]:61497
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229597AbhFUJeb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:34:31 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DtM9fIchsN0/uO9pQEnF3S01UMWG/DnsAazKx0bJqlpOBn0llxV/qhGMD1xUYtz6imX8m/i1TEbvlarODoilkx0DKz1hfP+oj1y8eqKBIrJjj924rt22l04z9PiCO2MKAqXZZ1I6ComayozbcQsr6S+719HElQusG96sqkyB7jHhEBc3MGTDVpH/Unt7Sc1LnPRl8khtsQJjDZI3v3BlodfIYGqwYxJxGFPbKSa1iI1TidtOnu4N8NHE1DyHDakg5dogUXBh7NpqO71792sEVFIvl/azOa6UvyvscGtucOSZaHDAVyjgiOdYMDxi5lh8YmiXNt5x7RCCIkEB/znqRQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pzIvKC/j5e5RN+JNSAQ5DnewpfLxEAHlZ9MBygMV56o=;
- b=bGgCbYGE75DLFnuWUh3i2FDnceovVriTfbNqn2b389GJ0cSbtA+4puy2Ap/2e2S8HC6u9j8UD6MOI7ah0iTg2LIFVocjKtPt8AqepD7mAcvFvUSnqWLuGUlccugDqexomCIHuEbjbKoBNhcspelq8td9V+0SMq+YJvpt0fdVMWHeyO1+hJPsPmhutkgSU8vFHrR+n4waiK0t1CdcN0XQwVYHIaATmNyRR4ODguE5tv1QRMggCM+t0he8TbBMELEKcz7XnVG09gRrFwJIJEIPuKQiMlPUPi0CcNsWWw3GQOjrhv9yYurpi7AaQtI9dWZKMQxOwxNFQ8DFGcfi84E/2Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=arm.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pzIvKC/j5e5RN+JNSAQ5DnewpfLxEAHlZ9MBygMV56o=;
- b=SR5NqV+Yp9G907h52u5yiehEkQrjLZJ7FJNMtLWoPhE980kEQ8GXJ5/QWFMayVisOYVyZpprd8gT3cfd8z6YmlibALWJDGYOxMnhJ45ybd5VDIWbkZsMpWf892WiOrNJJhcC8/xarV1iY41YYDiaROB2RYmpaXTRffoXlVv5SNeOjCNmq0t2deEboBQfoSzW74xg1PFnHFKBUQfbZyi5sU0rU6YHdC6jYgsO2V/4M7grqrc35ccfehV+BucBU5zBM4iU12vYpQOHxA8HBQxbsf7qEPsQ/UZWaKqGc+zDPgn+W5u+DHaRryry39rgsG3C3h5Hq8NlxVy+8DTqzEDNPQ==
-Received: from BN6PR18CA0022.namprd18.prod.outlook.com (2603:10b6:404:121::32)
- by CY4PR12MB1525.namprd12.prod.outlook.com (2603:10b6:910:11::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Mon, 21 Jun
- 2021 09:32:16 +0000
-Received: from BN8NAM11FT040.eop-nam11.prod.protection.outlook.com
- (2603:10b6:404:121:cafe::a7) by BN6PR18CA0022.outlook.office365.com
- (2603:10b6:404:121::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19 via Frontend
- Transport; Mon, 21 Jun 2021 09:32:16 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; arm.com; dkim=none (message not signed)
- header.d=none;arm.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT040.mail.protection.outlook.com (10.13.177.166) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4242.16 via Frontend Transport; Mon, 21 Jun 2021 09:32:15 +0000
-Received: from [10.40.204.223] (172.20.187.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 21 Jun
- 2021 09:32:11 +0000
-Subject: Re: [PATCH V2 0/5] Update pcie-tegra194 driver
-To:     <kw@linux.com>, <helgaas@kernel.org>, <vidyas@nvidia.com>,
-        <lorenzo.pieralisi@arm.com>, <bhelgaas@google.com>,
-        <thierry.reding@gmail.com>, <jonathanh@nvidia.com>
-CC:     <linux-tegra@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kthota@nvidia.com>,
-        <mmaddireddy@nvidia.com>
-References: <20210606082204.14222-1-omp@nvidia.com>
-From:   Om Prakash Singh <omp@nvidia.com>
-Message-ID: <2fdb1d89-88d5-6895-ec20-0e2ce4cacb85@nvidia.com>
-Date:   Mon, 21 Jun 2021 15:02:07 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230334AbhFUJeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:34:37 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:33776 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229597AbhFUJee (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 05:34:34 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15L9WJaj009185;
+        Mon, 21 Jun 2021 04:32:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1624267939;
+        bh=4I2/2eb8nZ0S8cBUZBu8V0VwmlPkUizPMMASelNMArs=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=pA625G/CNfc3Kz+RFgb04T6l6InYatEelIoDsHQzoSWPbezLssQKimxPFrNQ16kGd
+         xlE6yY+fvAA5g5O1xlx576SuIfynRuB88T9UGWlH8cM3qzXAhMvkHHgjs+S71Hd99Z
+         p5H035ORGZt/N9p2QjXmFG9FrlS9uFt4GzWuYdhY=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15L9WJev014028
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 21 Jun 2021 04:32:19 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 21
+ Jun 2021 04:32:19 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Mon, 21 Jun 2021 04:32:19 -0500
+Received: from [10.250.235.117] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15L9WF2l120911;
+        Mon, 21 Jun 2021 04:32:16 -0500
+Subject: Re: [PATCH v2] dt-bindings: spi: omap-spi: Convert to json-schema
+To:     Rob Herring <robh@kernel.org>
+CC:     Lokesh Vutla <lokeshvutla@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210608052010.15656-1-a-govindraju@ti.com>
+ <20210618204505.GA2835349@robh.at.kernel.org>
+From:   Aswath Govindraju <a-govindraju@ti.com>
+Message-ID: <b7a661bc-69f4-4c90-c6db-a7ef84d43f65@ti.com>
+Date:   Mon, 21 Jun 2021 15:02:14 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210606082204.14222-1-omp@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+In-Reply-To: <20210618204505.GA2835349@robh.at.kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.187.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3a8483d5-e28e-4350-f07e-08d934977526
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1525:
-X-Microsoft-Antispam-PRVS: <CY4PR12MB1525AC0AF536B2B708B4FF92DA0A9@CY4PR12MB1525.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mwvd+FEYSNHqQ44CJX+2LIeSrIQ1oFNqKv5sI6yDgguenM87OkFJj4KZkTHoHdgEmhZ2yyB/N0fzhbw7FuTyzgRbbJX7Io1CJbxrs9d/tKBqBRkQxiqOzMup2vS9EToKB06sXp0w3PNVT72Rb+xyfqFHgPV21mPgTFljr2rfKI6xsTlPwpwSofUBVYjpwUXiYp5bRdshMXxb29ZCldIy+wk5W/Bb9azmhpr4iHC8soRt9voQeab0Kqvl2zRIdh7Cd2ZXLY+d7dv3sJQAsKpsm9j12CyxAvxGrPRh5t8LKgtBJ5Ubx38wDwBCcMnhKLFdbs8Ma2JCf+i8jEXLYbRKZFB9pHBBbzzcVm5qjtr3L1UQgN9pDH9FOOrFvtn4nJaEUKEG5+XA9t8/pKTrzg5Mb6FUF7mJswAl6RFXl9YSWOMYBYPQEFTeb1jschtq4WSh/wZPXCaAYoix9ujiFj9bzWIWd0l8o29loioddiDgbHWdU4CyyJUc1nUuw9BkSkcvkS2av5lfDHjuXInQ3fBls7y2UU9+WXQJIsfX4dAx5Mol22tHZrZXSj2foiUgeHes2yauB+i3uQ+F8fD3QVr7ng4c4eFws4lpMrJQGhju+8w/3lJNqdgDDYiTMDZdXFYvvPSWygoTmK6dg5ur9g5qCYZ8a0rnFzLfKxP0R2tVhwzVRPxB+QxvVIi5/YYxPYhvTune1mrbFmfsUnVMr9o99zKKr5FHZ6QoyjQ3kwmk+W+YciH/yYwYHPckB4YfBW0OY9oimAuhUDGtktX4bNvRZj4ccLXqQlKqUkyYQvf8rn7ZbFxqFZvcwPHHq6ufkW64
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(346002)(39860400002)(46966006)(36840700001)(966005)(8936002)(26005)(6666004)(82740400003)(47076005)(86362001)(36756003)(15650500001)(82310400003)(8676002)(4326008)(6636002)(53546011)(84040400003)(107886003)(7636003)(478600001)(70586007)(70206006)(356005)(36860700001)(2906002)(31696002)(16526019)(2616005)(5660300002)(16576012)(316002)(54906003)(36906005)(336012)(83380400001)(31686004)(186003)(426003)(110136005)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2021 09:32:15.7979
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3a8483d5-e28e-4350-f07e-08d934977526
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT040.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1525
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lorenzo, Bjorn,
-Can you help review this patch series please?
+Hi Rob,
+
+On 19/06/21 2:15 am, Rob Herring wrote:
+> On Tue, Jun 08, 2021 at 10:50:09AM +0530, Aswath Govindraju wrote:
+>> Convert omap-spi dt-binding documentation from txt to yaml format.
+>>
+>> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+>> ---
+>>
+>> changes since v1:
+>> - split the series according to their respective trees
+>>
+>> link to v1:
+>> https://lore.kernel.org/patchwork/project/lkml/list/?series=502255
+>>
+>>  .../devicetree/bindings/spi/omap-spi.txt      |  48 -------
+>>  .../devicetree/bindings/spi/omap-spi.yaml     | 126 ++++++++++++++++++
+>>  2 files changed, 126 insertions(+), 48 deletions(-)
+>>  delete mode 100644 Documentation/devicetree/bindings/spi/omap-spi.txt
+>>  create mode 100644 Documentation/devicetree/bindings/spi/omap-spi.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/spi/omap-spi.txt b/Documentation/devicetree/bindings/spi/omap-spi.txt
+>> deleted file mode 100644
+>> index 487208c256c0..000000000000
+>> --- a/Documentation/devicetree/bindings/spi/omap-spi.txt
+>> +++ /dev/null
+>> @@ -1,48 +0,0 @@
+>> -OMAP2+ McSPI device
+>> -
+>> -Required properties:
+>> -- compatible :
+>> -  - "ti,am654-mcspi" for AM654.
+>> -  - "ti,omap2-mcspi" for OMAP2 & OMAP3.
+>> -  - "ti,omap4-mcspi" for OMAP4+.
+>> -- ti,spi-num-cs : Number of chipselect supported  by the instance.
+>> -- ti,hwmods: Name of the hwmod associated to the McSPI
+>> -- ti,pindir-d0-out-d1-in: Select the D0 pin as output and D1 as
+>> -			  input. The default is D0 as input and
+>> -			  D1 as output.
+>> -
+>> -Optional properties:
+>> -- dmas: List of DMA specifiers with the controller specific format
+>> -	as described in the generic DMA client binding. A tx and rx
+>> -	specifier is required for each chip select.
+>> -- dma-names: List of DMA request names. These strings correspond
+>> -	1:1 with the DMA specifiers listed in dmas. The string naming
+>> -	is to be "rxN" and "txN" for RX and TX requests,
+>> -	respectively, where N equals the chip select number.
+>> -
+>> -Examples:
+>> -
+>> -[hwmod populated DMA resources]
+>> -
+>> -mcspi1: mcspi@1 {
+>> -    #address-cells = <1>;
+>> -    #size-cells = <0>;
+>> -    compatible = "ti,omap4-mcspi";
+>> -    ti,hwmods = "mcspi1";
+>> -    ti,spi-num-cs = <4>;
+>> -};
+>> -
+>> -[generic DMA request binding]
+>> -
+>> -mcspi1: mcspi@1 {
+>> -    #address-cells = <1>;
+>> -    #size-cells = <0>;
+>> -    compatible = "ti,omap4-mcspi";
+>> -    ti,hwmods = "mcspi1";
+>> -    ti,spi-num-cs = <2>;
+>> -    dmas = <&edma 42
+>> -	    &edma 43
+>> -	    &edma 44
+>> -	    &edma 45>;
+>> -    dma-names = "tx0", "rx0", "tx1", "rx1";
+>> -};
+>> diff --git a/Documentation/devicetree/bindings/spi/omap-spi.yaml b/Documentation/devicetree/bindings/spi/omap-spi.yaml
+>> new file mode 100644
+>> index 000000000000..cd20704f2edc
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/spi/omap-spi.yaml
+>> @@ -0,0 +1,126 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/spi/omap-spi.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: SPI controller bindings for OMAP and K3 SoCs
+>> +
+>> +maintainers:
+>> +  - Mark Brown <broonie@kernel.org>
+> 
+> A TI person here please.
+> 
+
+Added myself as the reviewer in v3.
+
+Thank you for the review and comments. I have posted a respin(v3) of
+this patch after addressing all the comments.
 
 Thanks,
-Om
+Aswath
 
+> You need a ref to spi-controller.yaml
+> 
+>> +
+>> +properties:
+>> +  compatible:
+>> +    oneOf:
+>> +      - items:
+>> +          - enum:
+>> +              - ti,am654-mcspi
+>> +              - ti,am4372-mcspi
+>> +          - const: ti,omap4-mcspi
+>> +      - items:
+>> +          - enum:
+>> +              - ti,omap2-mcspi
+>> +              - ti,omap4-mcspi
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  interrupts:
+>> +    maxItems: 1
+>> +
+>> +  clocks:
+>> +    maxItems: 1
+>> +
+> 
+>> +  '#address-cells':
+>> +    const: 1
+>> +
+>> +  '#size-cells':
+>> +    const: 0
+> 
+> Don't need these, covered by spi-controller.yaml.
+> 
+>> +
+>> +  power-domains:
+>> +    maxItems: 1
+>> +
+>> +  ti,spi-num-cs:
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    description: Number of chipselect supported  by the instance.
+>> +    minimum: 1
+>> +    maximum: 4
+>> +
+>> +  ti,hwmods:
+>> +    $ref: /schemas/types.yaml#/definitions/string
+>> +    description:
+>> +      Must be "mcspi<n>", n being the instance number (1-based).
+>> +      This property is applicable only on legacy platforms mainly omap2/3
+>> +      and ti81xx and should not be used on other platforms.
+>> +    deprecated: true
+>> +
+>> +  ti,pindir-d0-out-d1-in:
+>> +    description:
+>> +      Select the D0 pin as output and D1 as input. The default is D0
+>> +      as input and D1 as output.
+>> +    type: boolean
+>> +
+>> +  dmas:
+>> +    description:
+>> +      List of DMA specifiers with the controller specific format as
+>> +      described in the generic DMA client binding. A tx and rx
+>> +      specifier is required for each chip select.
+>> +    minItems: 1
+>> +    maxItems: 8
+>> +
+>> +  dma-names:
+>> +    description:
+>> +      List of DMA request names. These strings correspond 1:1 with
+>> +      the DMA sepecifiers listed in dmas. The string names is to be
+>> +      "rxN" and "txN" for RX and TX requests, respectively. Where N
+>> +      is the chip select number.
+>> +    minItems: 1
+>> +    maxItems: 8
+>> +
+>> +patternProperties:
+>> +  "@[0-9a-f]+$":
+>> +    type: object
+>> +    description:
+>> +      Flash devices are defined as a sub-node of the spi controller
+> 
+> Covered by spi-controller.yaml.
+> 
+>> +
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +  - interrupts
+>> +
+>> +additionalProperties: false
+>> +
+>> +if:
+>> +  properties:
+>> +    compatible:
+>> +      oneOf:
+>> +        - const: ti,omap2-mcspi
+>> +        - const: ti,omap4-mcspi
+>> +
+>> +then:
+>> +  properties:
+>> +    ti,hwmods:
+>> +      items:
+>> +        - pattern: "^mcspi([1-9])$"
+>> +
+>> +else:
+>> +  properties:
+>> +    ti,hwmods: false
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/interrupt-controller/irq.h>
+>> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+>> +    #include <dt-bindings/soc/ti,sci_pm_domain.h>
+>> +
+>> +    main_spi0: spi@2100000 {
+> 
+> Drop unused labels.
+> 
+>> +      compatible = "ti,am654-mcspi","ti,omap4-mcspi";
+>> +      reg = <0x2100000 0x400>;
+>> +      interrupts = <GIC_SPI 184 IRQ_TYPE_LEVEL_HIGH>;
+>> +      clocks = <&k3_clks 137 1>;
+>> +      power-domains = <&k3_pds 137 TI_SCI_PD_EXCLUSIVE>;
+>> +      #address-cells = <1>;
+>> +      #size-cells = <0>;
+>> +      dmas = <&main_udmap 0xc500>, <&main_udmap 0x4500>;
+>> +      dma-names = "tx0", "rx0";
+>> +    };
+>> -- 
+>> 2.17.1
+>>
+>>
 
-On 6/6/2021 1:51 PM, Om Prakash Singh wrote:
-> Update pcie-tegra194 driver with bug fixing and cleanup
-> 
-> Changes from V1->V2
->    PCI: tegra: Fix handling BME_CHGED event
-> 	- Update variable naming
->    PCI: tegra: Fix MSI-X programming
-> 	- No change
->    PCI: tegra: Disable interrupts before entering L2
-> 	- Rephrase the commit message
->    PCI: tegra: Don't allow suspend when Tegra PCIe is in EP mode
-> 	- Update return value to -ENOTSUPP.
->    PCI: tegra: Cleanup unused code
-> 	- No Change
-> 
-> V1:
-> http://patchwork.ozlabs.org/project/linux-pci/patch/20210527115246.20509-2-omp@nvidia.com/
-> 
-> Om Prakash Singh (5):
->    PCI: tegra: Fix handling BME_CHGED event
->    PCI: tegra: Fix MSI-X programming
->    PCI: tegra: Disable interrupts before entering L2
->    PCI: tegra: Don't allow suspend when Tegra PCIe is in EP mode
->    PCI: tegra: Cleanup unused code
-> 
->   drivers/pci/controller/dwc/pcie-tegra194.c | 36 +++++++++++++---------
->   1 file changed, 22 insertions(+), 14 deletions(-)
-> 
