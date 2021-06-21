@@ -2,247 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D5C43AE2E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 07:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D17E73AE2E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 07:53:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbhFUFzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 01:55:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56954 "EHLO mail.kernel.org"
+        id S229904AbhFUFzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 01:55:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229576AbhFUFzk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 01:55:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B3B76113C;
-        Mon, 21 Jun 2021 05:53:26 +0000 (UTC)
+        id S229837AbhFUFzq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 01:55:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 765176113C;
+        Mon, 21 Jun 2021 05:53:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624254806;
-        bh=VNjmysMr5aFo5Y2ewZkvwCDsHp1Bte5+E7/g36fuzzU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=P5Wn0abpDffObFsODQBb46AJG5uEv9KMlhwnpO5l3hywP10zpyQgChYxpIIvT6C+0
-         lIo0YRD1ngL1aAg252d8jh7E4Fdvn3Je8gTBRPMY0eyJ0HVzsZYrdXjOMBPrYR5juR
-         1cpMKVxm1MJEk99eC7lX/XYt77ZMMYExCYEwTr2vdNrtReY6oB1tmI7ApA4kpu/ue+
-         WQldb9mRpxM6zrO+/H7AtSpmfqkknVPQoc9/jGqChsLrnxefRVe4ZsvqzB6bjwOEbl
-         xhiUYqIn2Vc6Yyi+ktmhCNjBNK1eQfkq4XSPDDbZBahco7TTJc4KsCJa4rdZbq6MEq
-         hnUmFO4HxHgtQ==
-Subject: Re: arch/powerpc/kvm/book3s_hv_nested.c:264:6: error: stack frame
- size of 2304 bytes in function 'kvmhv_enter_nested_guest'
-To:     Nicholas Piggin <npiggin@gmail.com>, Arnd Bergmann <arnd@arndb.de>,
-        kernel test robot <lkp@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        clang-built-linux@googlegroups.com, kbuild-all@lists.01.org,
-        Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linuxppc-dev@lists.ozlabs.org, kvm-ppc@vger.kernel.org
-References: <202104031853.vDT0Qjqj-lkp@intel.com>
- <1624232938.d90brlmh3p.astroid@bobo.none>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <e6167885-30e5-d149-bcde-3e9ad9f5d381@kernel.org>
-Date:   Sun, 20 Jun 2021 22:53:22 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        s=k20201202; t=1624254813;
+        bh=oHn9vLyQFjLL+PNJb+s571o2xnhvwHG0yilY6LZWmuY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=s9r0J2xjgaLq+fczzvS8DtDEeme7Ha3Fw9HLlOg161bMu4q1spEHDobAIsb5e89ze
+         kZnxbBpWPhytimCG73bAWkM2zLn5SZhm5VSW9K9O0ogIQnSzeFRZy1IYRgD+1c8Q9B
+         fMwH5HN92wNsBBEAGlQCdzaMRgW4Ju2mbm/pF3IMyr8ENAIZ+4OXxY48k5pi61FBON
+         HpxP0Tw+7cNYlQq4oOrHrt/DdmMgxDY0Z4ijt2iF+GDeIIX9itSlS8YTxSBIUmVSb8
+         kdR/lpVr3Hh29i0R50/uRhWTDSEkPXTyohdGoaXdr8Ad7TlE0SCYaDqta/fkdKB910
+         mYN8SNxdLFIRA==
+Date:   Mon, 21 Jun 2021 11:23:29 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Nelson Costa <Nelson.Costa@synopsys.com>
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jose Abreu <Jose.Abreu@synopsys.com>
+Subject: Re: [PATCH 5/9] phy: dwc: Add Synopsys DesignWare HDMI RX PHYs e405
+ and e406 Driver
+Message-ID: <YNApWS7tNGdWbyCm@vkoul-mobl>
+References: <cover.1622631488.git.nelson.costa@synopsys.com>
+ <ac32f8d433860c5be612b393023329f967e2c058.1622631488.git.nelson.costa@synopsys.com>
 MIME-Version: 1.0
-In-Reply-To: <1624232938.d90brlmh3p.astroid@bobo.none>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ac32f8d433860c5be612b393023329f967e2c058.1622631488.git.nelson.costa@synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/20/2021 4:59 PM, Nicholas Piggin wrote:
-> Excerpts from kernel test robot's message of April 3, 2021 8:47 pm:
->> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
->> head:   d93a0d43e3d0ba9e19387be4dae4a8d5b175a8d7
->> commit: 97e4910232fa1f81e806aa60c25a0450276d99a2 linux/compiler-clang.h: define HAVE_BUILTIN_BSWAP*
->> date:   3 weeks ago
->> config: powerpc64-randconfig-r006-20210403 (attached as .config)
->> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 0fe8af94688aa03c01913c2001d6a1a911f42ce6)
->> reproduce (this is a W=1 build):
->>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          # install powerpc64 cross compiling tool for clang build
->>          # apt-get install binutils-powerpc64-linux-gnu
->>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=97e4910232fa1f81e806aa60c25a0450276d99a2
->>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->>          git fetch --no-tags linus master
->>          git checkout 97e4910232fa1f81e806aa60c25a0450276d99a2
->>          # save the attached .config to linux build tree
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=powerpc64
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All errors (new ones prefixed by >>):
->>
->>>> arch/powerpc/kvm/book3s_hv_nested.c:264:6: error: stack frame size of 2304 bytes in function 'kvmhv_enter_nested_guest' [-Werror,-Wframe-larger-than=]
->>     long kvmhv_enter_nested_guest(struct kvm_vcpu *vcpu)
->>          ^
->>     1 error generated.
->>
->>
->> vim +/kvmhv_enter_nested_guest +264 arch/powerpc/kvm/book3s_hv_nested.c
-> 
-> Not much changed here recently. It's not that big a concern because it's
-> only called in the KVM ioctl path, not in any deep IO paths or anything,
-> and doesn't recurse. Might be a bit of inlining or stack spilling put it
-> over the edge.
+On 02-06-21, 13:24, Nelson Costa wrote:
 
-It appears to be the fact that LLVM's PowerPC backend does not emit 
-efficient byteswap assembly:
+> +# Makefile for the PHY drivers.
+> +#
+> +
+> +phy-dw-hdmi-e40x-y			:= phy-dw-hdmi-e40x-core.o
+> +phy-dw-hdmi-e40x-y			+= phy-dw-hdmi-e405.o
+> +phy-dw-hdmi-e40x-y			+= phy-dw-hdmi-e406.o
 
-https://github.com/ClangBuiltLinux/linux/issues/1292
+why not:
+phy-dw-hdmi-e40x-y                   :=  phy-dw-hdmi-e40x-core.o phy-dw-hdmi-e405.o phy-dw-hdmi-e406.o ?
 
-https://bugs.llvm.org/show_bug.cgi?id=49610
+> +obj-$(CONFIG_VIDEO_DWC_HDMI_PHY_E40X)	+= phy-dw-hdmi-e40x.o
+> diff --git a/drivers/phy/dwc/phy-dw-hdmi-e405.c b/drivers/phy/dwc/phy-dw-hdmi-e405.c
+> new file mode 100644
+> index 0000000..5078a86
+> --- /dev/null
+> +++ b/drivers/phy/dwc/phy-dw-hdmi-e405.c
+> @@ -0,0 +1,497 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (c) 2018 - present Synopsys, Inc. and/or its affiliates.
+> + * Synopsys DesignWare HDMI PHY e405
 
-> powerpc does make it an error though, would be good to avoid that so the
-> robot doesn't keep tripping over.
+2018 - 2021 ?
 
-Marking byteswap_pt_regs as 'noinline_for_stack' drastically reduces the 
-stack usage. If that is an acceptable solution, I can send it along 
-tomorrow.
+> +/* PHY e405 mpll configuration */
+> +static const struct dw_phy_mpll_config dw_phy_e405_mpll_cfg[] = {
+> +	{ 0x27, 0x1B94 },
 
-Cheers,
-Nathan
+Lowercase please
 
-> Thanks,
-> Nick
-> 
-> 
->>
->> afe75049303f75 Ravi Bangoria        2020-12-16  263
->> 360cae313702cd Paul Mackerras       2018-10-08 @264  long kvmhv_enter_nested_guest(struct kvm_vcpu *vcpu)
->> 360cae313702cd Paul Mackerras       2018-10-08  265  {
->> 360cae313702cd Paul Mackerras       2018-10-08  266  	long int err, r;
->> 360cae313702cd Paul Mackerras       2018-10-08  267  	struct kvm_nested_guest *l2;
->> 360cae313702cd Paul Mackerras       2018-10-08  268  	struct pt_regs l2_regs, saved_l1_regs;
->> afe75049303f75 Ravi Bangoria        2020-12-16  269  	struct hv_guest_state l2_hv = {0}, saved_l1_hv;
->> 360cae313702cd Paul Mackerras       2018-10-08  270  	struct kvmppc_vcore *vc = vcpu->arch.vcore;
->> 360cae313702cd Paul Mackerras       2018-10-08  271  	u64 hv_ptr, regs_ptr;
->> 360cae313702cd Paul Mackerras       2018-10-08  272  	u64 hdec_exp;
->> 360cae313702cd Paul Mackerras       2018-10-08  273  	s64 delta_purr, delta_spurr, delta_ic, delta_vtb;
->> 360cae313702cd Paul Mackerras       2018-10-08  274  	u64 mask;
->> 360cae313702cd Paul Mackerras       2018-10-08  275  	unsigned long lpcr;
->> 360cae313702cd Paul Mackerras       2018-10-08  276
->> 360cae313702cd Paul Mackerras       2018-10-08  277  	if (vcpu->kvm->arch.l1_ptcr == 0)
->> 360cae313702cd Paul Mackerras       2018-10-08  278  		return H_NOT_AVAILABLE;
->> 360cae313702cd Paul Mackerras       2018-10-08  279
->> 360cae313702cd Paul Mackerras       2018-10-08  280  	/* copy parameters in */
->> 360cae313702cd Paul Mackerras       2018-10-08  281  	hv_ptr = kvmppc_get_gpr(vcpu, 4);
->> 1508c22f112ce1 Alexey Kardashevskiy 2020-06-09  282  	regs_ptr = kvmppc_get_gpr(vcpu, 5);
->> 1508c22f112ce1 Alexey Kardashevskiy 2020-06-09  283  	vcpu->srcu_idx = srcu_read_lock(&vcpu->kvm->srcu);
->> afe75049303f75 Ravi Bangoria        2020-12-16  284  	err = kvmhv_read_guest_state_and_regs(vcpu, &l2_hv, &l2_regs,
->> afe75049303f75 Ravi Bangoria        2020-12-16  285  					      hv_ptr, regs_ptr);
->> 1508c22f112ce1 Alexey Kardashevskiy 2020-06-09  286  	srcu_read_unlock(&vcpu->kvm->srcu, vcpu->srcu_idx);
->> 360cae313702cd Paul Mackerras       2018-10-08  287  	if (err)
->> 360cae313702cd Paul Mackerras       2018-10-08  288  		return H_PARAMETER;
->> 1508c22f112ce1 Alexey Kardashevskiy 2020-06-09  289
->> 10b5022db7861a Suraj Jitindar Singh 2018-10-08  290  	if (kvmppc_need_byteswap(vcpu))
->> 10b5022db7861a Suraj Jitindar Singh 2018-10-08  291  		byteswap_hv_regs(&l2_hv);
->> afe75049303f75 Ravi Bangoria        2020-12-16  292  	if (l2_hv.version > HV_GUEST_STATE_VERSION)
->> 360cae313702cd Paul Mackerras       2018-10-08  293  		return H_P2;
->> 360cae313702cd Paul Mackerras       2018-10-08  294
->> 10b5022db7861a Suraj Jitindar Singh 2018-10-08  295  	if (kvmppc_need_byteswap(vcpu))
->> 10b5022db7861a Suraj Jitindar Singh 2018-10-08  296  		byteswap_pt_regs(&l2_regs);
->> 9d0b048da788c1 Suraj Jitindar Singh 2018-10-08  297  	if (l2_hv.vcpu_token >= NR_CPUS)
->> 9d0b048da788c1 Suraj Jitindar Singh 2018-10-08  298  		return H_PARAMETER;
->> 9d0b048da788c1 Suraj Jitindar Singh 2018-10-08  299
->> 360cae313702cd Paul Mackerras       2018-10-08  300  	/* translate lpid */
->> 360cae313702cd Paul Mackerras       2018-10-08  301  	l2 = kvmhv_get_nested(vcpu->kvm, l2_hv.lpid, true);
->> 360cae313702cd Paul Mackerras       2018-10-08  302  	if (!l2)
->> 360cae313702cd Paul Mackerras       2018-10-08  303  		return H_PARAMETER;
->> 360cae313702cd Paul Mackerras       2018-10-08  304  	if (!l2->l1_gr_to_hr) {
->> 360cae313702cd Paul Mackerras       2018-10-08  305  		mutex_lock(&l2->tlb_lock);
->> 360cae313702cd Paul Mackerras       2018-10-08  306  		kvmhv_update_ptbl_cache(l2);
->> 360cae313702cd Paul Mackerras       2018-10-08  307  		mutex_unlock(&l2->tlb_lock);
->> 360cae313702cd Paul Mackerras       2018-10-08  308  	}
->> 360cae313702cd Paul Mackerras       2018-10-08  309
->> 360cae313702cd Paul Mackerras       2018-10-08  310  	/* save l1 values of things */
->> 360cae313702cd Paul Mackerras       2018-10-08  311  	vcpu->arch.regs.msr = vcpu->arch.shregs.msr;
->> 360cae313702cd Paul Mackerras       2018-10-08  312  	saved_l1_regs = vcpu->arch.regs;
->> 360cae313702cd Paul Mackerras       2018-10-08  313  	kvmhv_save_hv_regs(vcpu, &saved_l1_hv);
->> 360cae313702cd Paul Mackerras       2018-10-08  314
->> 360cae313702cd Paul Mackerras       2018-10-08  315  	/* convert TB values/offsets to host (L0) values */
->> 360cae313702cd Paul Mackerras       2018-10-08  316  	hdec_exp = l2_hv.hdec_expiry - vc->tb_offset;
->> 360cae313702cd Paul Mackerras       2018-10-08  317  	vc->tb_offset += l2_hv.tb_offset;
->> 360cae313702cd Paul Mackerras       2018-10-08  318
->> 360cae313702cd Paul Mackerras       2018-10-08  319  	/* set L1 state to L2 state */
->> 360cae313702cd Paul Mackerras       2018-10-08  320  	vcpu->arch.nested = l2;
->> 360cae313702cd Paul Mackerras       2018-10-08  321  	vcpu->arch.nested_vcpu_id = l2_hv.vcpu_token;
->> 360cae313702cd Paul Mackerras       2018-10-08  322  	vcpu->arch.regs = l2_regs;
->> 360cae313702cd Paul Mackerras       2018-10-08  323  	vcpu->arch.shregs.msr = vcpu->arch.regs.msr;
->> 360cae313702cd Paul Mackerras       2018-10-08  324  	mask = LPCR_DPFD | LPCR_ILE | LPCR_TC | LPCR_AIL | LPCR_LD |
->> 360cae313702cd Paul Mackerras       2018-10-08  325  		LPCR_LPES | LPCR_MER;
->> 360cae313702cd Paul Mackerras       2018-10-08  326  	lpcr = (vc->lpcr & ~mask) | (l2_hv.lpcr & mask);
->> 73937deb4b2d7f Suraj Jitindar Singh 2018-10-08  327  	sanitise_hv_regs(vcpu, &l2_hv);
->> 360cae313702cd Paul Mackerras       2018-10-08  328  	restore_hv_regs(vcpu, &l2_hv);
->> 360cae313702cd Paul Mackerras       2018-10-08  329
->> 360cae313702cd Paul Mackerras       2018-10-08  330  	vcpu->arch.ret = RESUME_GUEST;
->> 360cae313702cd Paul Mackerras       2018-10-08  331  	vcpu->arch.trap = 0;
->> 360cae313702cd Paul Mackerras       2018-10-08  332  	do {
->> 360cae313702cd Paul Mackerras       2018-10-08  333  		if (mftb() >= hdec_exp) {
->> 360cae313702cd Paul Mackerras       2018-10-08  334  			vcpu->arch.trap = BOOK3S_INTERRUPT_HV_DECREMENTER;
->> 360cae313702cd Paul Mackerras       2018-10-08  335  			r = RESUME_HOST;
->> 360cae313702cd Paul Mackerras       2018-10-08  336  			break;
->> 360cae313702cd Paul Mackerras       2018-10-08  337  		}
->> 8c99d34578628b Tianjia Zhang        2020-04-27  338  		r = kvmhv_run_single_vcpu(vcpu, hdec_exp, lpcr);
->> 360cae313702cd Paul Mackerras       2018-10-08  339  	} while (is_kvmppc_resume_guest(r));
->> 360cae313702cd Paul Mackerras       2018-10-08  340
->> 360cae313702cd Paul Mackerras       2018-10-08  341  	/* save L2 state for return */
->> 360cae313702cd Paul Mackerras       2018-10-08  342  	l2_regs = vcpu->arch.regs;
->> 360cae313702cd Paul Mackerras       2018-10-08  343  	l2_regs.msr = vcpu->arch.shregs.msr;
->> 360cae313702cd Paul Mackerras       2018-10-08  344  	delta_purr = vcpu->arch.purr - l2_hv.purr;
->> 360cae313702cd Paul Mackerras       2018-10-08  345  	delta_spurr = vcpu->arch.spurr - l2_hv.spurr;
->> 360cae313702cd Paul Mackerras       2018-10-08  346  	delta_ic = vcpu->arch.ic - l2_hv.ic;
->> 360cae313702cd Paul Mackerras       2018-10-08  347  	delta_vtb = vc->vtb - l2_hv.vtb;
->> 360cae313702cd Paul Mackerras       2018-10-08  348  	save_hv_return_state(vcpu, vcpu->arch.trap, &l2_hv);
->> 360cae313702cd Paul Mackerras       2018-10-08  349
->> 360cae313702cd Paul Mackerras       2018-10-08  350  	/* restore L1 state */
->> 360cae313702cd Paul Mackerras       2018-10-08  351  	vcpu->arch.nested = NULL;
->> 360cae313702cd Paul Mackerras       2018-10-08  352  	vcpu->arch.regs = saved_l1_regs;
->> 360cae313702cd Paul Mackerras       2018-10-08  353  	vcpu->arch.shregs.msr = saved_l1_regs.msr & ~MSR_TS_MASK;
->> 360cae313702cd Paul Mackerras       2018-10-08  354  	/* set L1 MSR TS field according to L2 transaction state */
->> 360cae313702cd Paul Mackerras       2018-10-08  355  	if (l2_regs.msr & MSR_TS_MASK)
->> 360cae313702cd Paul Mackerras       2018-10-08  356  		vcpu->arch.shregs.msr |= MSR_TS_S;
->> 360cae313702cd Paul Mackerras       2018-10-08  357  	vc->tb_offset = saved_l1_hv.tb_offset;
->> 360cae313702cd Paul Mackerras       2018-10-08  358  	restore_hv_regs(vcpu, &saved_l1_hv);
->> 360cae313702cd Paul Mackerras       2018-10-08  359  	vcpu->arch.purr += delta_purr;
->> 360cae313702cd Paul Mackerras       2018-10-08  360  	vcpu->arch.spurr += delta_spurr;
->> 360cae313702cd Paul Mackerras       2018-10-08  361  	vcpu->arch.ic += delta_ic;
->> 360cae313702cd Paul Mackerras       2018-10-08  362  	vc->vtb += delta_vtb;
->> 360cae313702cd Paul Mackerras       2018-10-08  363
->> 360cae313702cd Paul Mackerras       2018-10-08  364  	kvmhv_put_nested(l2);
->> 360cae313702cd Paul Mackerras       2018-10-08  365
->> 360cae313702cd Paul Mackerras       2018-10-08  366  	/* copy l2_hv_state and regs back to guest */
->> 10b5022db7861a Suraj Jitindar Singh 2018-10-08  367  	if (kvmppc_need_byteswap(vcpu)) {
->> 10b5022db7861a Suraj Jitindar Singh 2018-10-08  368  		byteswap_hv_regs(&l2_hv);
->> 10b5022db7861a Suraj Jitindar Singh 2018-10-08  369  		byteswap_pt_regs(&l2_regs);
->> 10b5022db7861a Suraj Jitindar Singh 2018-10-08  370  	}
->> 1508c22f112ce1 Alexey Kardashevskiy 2020-06-09  371  	vcpu->srcu_idx = srcu_read_lock(&vcpu->kvm->srcu);
->> afe75049303f75 Ravi Bangoria        2020-12-16  372  	err = kvmhv_write_guest_state_and_regs(vcpu, &l2_hv, &l2_regs,
->> afe75049303f75 Ravi Bangoria        2020-12-16  373  					       hv_ptr, regs_ptr);
->> 1508c22f112ce1 Alexey Kardashevskiy 2020-06-09  374  	srcu_read_unlock(&vcpu->kvm->srcu, vcpu->srcu_idx);
->> 360cae313702cd Paul Mackerras       2018-10-08  375  	if (err)
->> 360cae313702cd Paul Mackerras       2018-10-08  376  		return H_AUTHORITY;
->> 360cae313702cd Paul Mackerras       2018-10-08  377
->> 360cae313702cd Paul Mackerras       2018-10-08  378  	if (r == -EINTR)
->> 360cae313702cd Paul Mackerras       2018-10-08  379  		return H_INTERRUPT;
->> 360cae313702cd Paul Mackerras       2018-10-08  380
->> 873db2cd9a6d7f Suraj Jitindar Singh 2018-12-14  381  	if (vcpu->mmio_needed) {
->> 873db2cd9a6d7f Suraj Jitindar Singh 2018-12-14  382  		kvmhv_nested_mmio_needed(vcpu, regs_ptr);
->> 873db2cd9a6d7f Suraj Jitindar Singh 2018-12-14  383  		return H_TOO_HARD;
->> 873db2cd9a6d7f Suraj Jitindar Singh 2018-12-14  384  	}
->> 873db2cd9a6d7f Suraj Jitindar Singh 2018-12-14  385
->> 360cae313702cd Paul Mackerras       2018-10-08  386  	return vcpu->arch.trap;
->> 360cae313702cd Paul Mackerras       2018-10-08  387  }
->> 360cae313702cd Paul Mackerras       2018-10-08  388
->>
->> :::::: The code at line 264 was first introduced by commit
->> :::::: 360cae313702cdd0b90f82c261a8302fecef030a KVM: PPC: Book3S HV: Nested guest entry via hypercall
->>
->> :::::: TO: Paul Mackerras <paulus@ozlabs.org>
->> :::::: CC: Michael Ellerman <mpe@ellerman.id.au>
->>
->> ---
->> 0-DAY CI Kernel Test Service, Intel Corporation
->> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
->>
+> +	{ 0x28, 0x16D2 },
+> +	{ 0x29, 0x12D9 },
+> +	{ 0x2A, 0x3249 },
+> +	{ 0x2B, 0x3653 },
+> +	{ 0x2C, 0x3436 },
+> +	{ 0x2D, 0x124D },
+> +	{ 0x2E, 0x0001 },
+> +	{ 0xCE, 0x0505 },
+> +	{ 0xCF, 0x0505 },
+> +	{ 0xD0, 0x0000 },
+> +	{ 0x00, 0x0000 },
+> +};
+> +
+> +/* PHY e405 equalization functions */
+> +static int dw_phy_eq_test(struct dw_phy_dev *dw_dev,
+> +			  u16 *fat_bit_mask, int *min_max_length)
+
+Please align this to preceding line open brace (checkpatch with --strict would warn you about this)
+
+> +{
+> +	u16 main_fsm_status, val;
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < DW_PHY_EQ_WAIT_TIME_START; i++) {
+> +		main_fsm_status = dw_phy_read(dw_dev, DW_PHY_MAINFSM_STATUS1);
+> +		if (main_fsm_status & DW_PHY_CLOCK_STABLE)
+> +			break;
+> +		mdelay(DW_PHY_EQ_SLEEP_TIME_CDR);
+> +	}
+> +
+> +	if (i == DW_PHY_EQ_WAIT_TIME_START) {
+> +		dev_dbg(dw_dev->dev, "PHY start conditions not achieved\n");
+
+not error?
+
+> +		return -ETIMEDOUT;
+> +	}
+> +
+> +	if (main_fsm_status & DW_PHY_PLL_RATE_BIT1) {
+> +		dev_dbg(dw_dev->dev, "invalid pll rate\n");
+
+error?
+
+> +		return -EINVAL;
+> +	}
+> +
+> +	val = dw_phy_read(dw_dev, DW_PHY_CDR_CTRL_CNT) &
+> +		DW_PHY_HDMI_MHL_MODE_MASK;
+
+can be single line
+
+> +static void dw_phy_eq_init_vars(struct dw_phy_eq_ch *ch)
+> +{
+> +	ch->acc = 0;
+> +	ch->acq = 0;
+> +	ch->last_acq = 0;
+> +	ch->valid_long_setting = 0;
+> +	ch->valid_short_setting = 0;
+
+memset() ?
+
+> +static bool dw_phy_eq_acquire_early_cnt(struct dw_phy_dev *dw_dev,
+> +					u16 setting, u16 acq,
+> +					struct dw_phy_eq_ch *ch0,
+> +					struct dw_phy_eq_ch *ch1,
+> +					struct dw_phy_eq_ch *ch2)
+> +{
+> +	u16 lock_vector = 0x1 << setting;
+> +	unsigned int i;
+> +
+> +	ch0->out_bound_acq = 0;
+> +	ch1->out_bound_acq = 0;
+> +	ch2->out_bound_acq = 0;
+> +	ch0->acq = 0;
+> +	ch1->acq = 0;
+> +	ch2->acq = 0;
+> +
+> +	dw_phy_eq_equal_setting(dw_dev, lock_vector);
+> +	dw_phy_eq_auto_calib(dw_dev);
+> +
+> +	mdelay(DW_PHY_EQ_SLEEP_TIME_CDR);
+> +	if (!dw_phy_tmds_valid(dw_dev))
+> +		dev_dbg(dw_dev->dev, "TMDS is NOT valid\n");
+> +
+> +	ch0->read_acq = dw_phy_read(dw_dev, DW_PHY_CH0_EQ_STATUS3);
+> +	ch1->read_acq = dw_phy_read(dw_dev, DW_PHY_CH1_EQ_STATUS3);
+> +	ch2->read_acq = dw_phy_read(dw_dev, DW_PHY_CH2_EQ_STATUS3);
+> +
+> +	ch0->acq += ch0->read_acq;
+> +	ch1->acq += ch1->read_acq;
+> +	ch2->acq += ch2->read_acq;
+> +
+> +	ch0->upper_bound_acq = ch0->read_acq + DW_PHY_EQ_BOUNDSPREAD;
+> +	ch0->lower_bound_acq = ch0->read_acq - DW_PHY_EQ_BOUNDSPREAD;
+> +	ch1->upper_bound_acq = ch1->read_acq + DW_PHY_EQ_BOUNDSPREAD;
+> +	ch1->lower_bound_acq = ch1->read_acq - DW_PHY_EQ_BOUNDSPREAD;
+> +	ch2->upper_bound_acq = ch2->read_acq + DW_PHY_EQ_BOUNDSPREAD;
+> +	ch2->lower_bound_acq = ch2->read_acq - DW_PHY_EQ_BOUNDSPREAD;
+> +
+> +	for (i = 1; i < acq; i++) {
+
+why do we start from 1 here..?
+
+> +static const struct dw_phy_mpll_config dw_phy_e406_mpll_cfg[] = {
+> +	{ 0x27, 0x1C94 },
+> +	{ 0x28, 0x3713 },
+> +	{ 0x29, 0x24DA },
+> +	{ 0x2A, 0x5492 },
+> +	{ 0x2B, 0x4B0D },
+> +	{ 0x2C, 0x4760 },
+> +	{ 0x2D, 0x008C },
+> +	{ 0x2E, 0x0010 },
+> +	{ 0x00, 0x0000 },
+
+lower case here too please
+
+> +static void dw_phy_eq_init_vars(struct dw_phy_eq_ch *ch)
+> +{
+> +	ch->acc = 0;
+> +	ch->acq = 0;
+> +	ch->last_acq = 0;
+> +	ch->valid_long_setting = 0;
+> +	ch->valid_short_setting = 0;
+> +	ch->best_setting = DW_PHY_EQ_SHORT_CABLE_SETTING;
+> +}
+
+duplicate, it would make sense to create a common lib of such functions
+and use them across these files
+
+> +static int dw_phy_set_data(struct dw_phy_dev *dw_dev)
+> +{
+> +	const struct dw_hdmi_phy_data *of_data;
+> +
+> +	of_data = of_device_get_match_data(dw_dev->dev);
+> +
+> +	if (of_data) {
+> +		dw_dev->phy_data = (struct dw_hdmi_phy_data *)of_data;
+> +	} else if (dw_dev->config->version == dw_phy_e405_data.version) {
+> +		dw_dev->phy_data = &dw_phy_e405_data;
+> +	} else if (dw_dev->config->version == dw_phy_e406_data.version) {
+> +		dw_dev->phy_data = &dw_phy_e406_data;
+
+Driver supports only of, where will these else cases get triggered?
+
+-- 
+~Vinod
