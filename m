@@ -2,84 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2DC73AE87C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 13:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 093F13AE888
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 13:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230021AbhFUL7I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 07:59:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34232 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229640AbhFUL7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 07:59:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2179661108;
-        Mon, 21 Jun 2021 11:56:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624276613;
-        bh=eKQAKkLLipiPydD36jq5fQOg8fFfg7eqxulZXVht4ac=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hVX9hvurJiChkgzV1uDiAOYCLzGabkN66JjHWqDHrWZd1/+WCcxVs/SH0DOxZq8Kv
-         U+konUGRUxfz5aT4jAYSTzX7Ib0wsr3RNXx5rnV/AyiBnIL3Sy2AS5d5DaafdvTIhS
-         kmJDIkiE2APzZ8szgzvRe5A7/f9yEE0dMG4JtooLcZpxjlRnYCouIOLXOX3tkGGaFM
-         gd/XbSx0+DJmFK6aK9x7prjXkbuLKkdbQX42Qa535Sf5nJYwxrPvAy1cRxdKgMjNmC
-         SNekzqR+U+TB4Y0v3nGNLQ/+vWSytzILq5eJ/nezNrSFRJ9cAIyYiH4pmtCxXalUG2
-         n19sCkSOiE+Sg==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1lvIXr-000Hcw-2Y; Mon, 21 Jun 2021 13:56:51 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH 5/5] media: sti: don't copy past the size
-Date:   Mon, 21 Jun 2021 13:56:49 +0200
-Message-Id: <1c043f5c26b9cf5b4520241e2015feeae8445f58.1624276138.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1624276137.git.mchehab+huawei@kernel.org>
-References: <cover.1624276137.git.mchehab+huawei@kernel.org>
+        id S229762AbhFUMA2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 08:00:28 -0400
+Received: from mail-vs1-f44.google.com ([209.85.217.44]:44580 "EHLO
+        mail-vs1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229610AbhFUMA1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 08:00:27 -0400
+Received: by mail-vs1-f44.google.com with SMTP id x13so9047832vsf.11;
+        Mon, 21 Jun 2021 04:58:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JvkNDTjahjImKj3duGEUeFWayKv7PwXaOqSSyc1OVNU=;
+        b=mzK59I7nS2/Rbb7tHKJMj67tOfJ4UMw82PnXs9qpMeAYPi9OTasrlFXZsRv+kikZRN
+         1q00zKJKYkb4SZ335W2+vHhWXV5YeZktngy4xw8gJns7FeS36Bw+5V4gTyMw8r3VJiOK
+         zfl7iWLEtT+BBtWNst4tpHJYQ1EO+6TwMp7E31DnM8RQUSLeB1R3QNgEw1bEih263m7x
+         +bQL513hHSD+S8Z6iM/nbZS61pZKhh/4KSr4qQsHn0FU85FmL4ZzypKW4cKr/kcXYeIT
+         b/4RJMiTvYpX3VlR4Qxr69LWo9Qyx2v135E4WtVQG9TUQFjKJRU6ob4wmaNaPGWcj9N5
+         thiA==
+X-Gm-Message-State: AOAM530qrcPEykzzwSoazQjg4+n8JPS4v8SFpODCeKv4XMcQdmCj3Y3Z
+        v5XHiynpGPp7JAohPH1lrF7x5keWRKv+NbNlnTc=
+X-Google-Smtp-Source: ABdhPJyPTI7R1k+VHXKEn7V/ytUzb8Ph6jRLuMRm32wJsktBv6I/1V9kLSm+9ZXOI3OWa7GJ2hPARZleNFt36FNBlDA=
+X-Received: by 2002:a67:7787:: with SMTP id s129mr11610077vsc.40.1624276692898;
+ Mon, 21 Jun 2021 04:58:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+References: <20210408072402.15069-1-dinghao.liu@zju.edu.cn>
+In-Reply-To: <20210408072402.15069-1-dinghao.liu@zju.edu.cn>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 21 Jun 2021 13:58:01 +0200
+Message-ID: <CAMuHMdXAW5jeUBQzK84DMbUqhG+NyD1V=Spci2RYahw_X_m12w@mail.gmail.com>
+Subject: Re: [PATCH] PCI: rcar: Fix runtime PM imbalance in rcar_pcie_ep_probe
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     Kangjie Lu <kjlu@umn.edu>,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The logic at delta_ipc_open() tries to copy past the size of
-the name passed to it:
+On Thu, Apr 8, 2021 at 9:24 AM Dinghao Liu <dinghao.liu@zju.edu.cn> wrote:
+> pm_runtime_get_sync() will increase the runtime PM counter
+> even it returns an error. Thus a pairing decrement is needed
+> to prevent refcount leak. Fix this by replacing this API with
+> pm_runtime_resume_and_get(), which will not change the runtime
+> PM counter on error.
+>
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-	drivers/media/platform/sti/delta/delta-ipc.c:178 delta_ipc_open() error: __memcpy() 'name' too small (17 vs 32)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Basically,this function is called just one with:
+Gr{oetje,eeting}s,
 
-	ret = delta_ipc_open(pctx, "JPEG_DECODER_HW0", ...);
+                        Geert
 
-The string used there has just 17 bytes. Yet, the logic tries
-to copy the entire name size (32 bytes), which is plain wrong.
-
-Replace it by strscpy, which is good enough to copy the string,
-warranting that this will be NUL-terminated.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/media/platform/sti/delta/delta-ipc.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/media/platform/sti/delta/delta-ipc.c b/drivers/media/platform/sti/delta/delta-ipc.c
-index 186d88f02ecd..21d3e08e259a 100644
---- a/drivers/media/platform/sti/delta/delta-ipc.c
-+++ b/drivers/media/platform/sti/delta/delta-ipc.c
-@@ -175,8 +175,7 @@ int delta_ipc_open(struct delta_ctx *pctx, const char *name,
- 	msg.ipc_buf_size = ipc_buf_size;
- 	msg.ipc_buf_paddr = ctx->ipc_buf->paddr;
- 
--	memcpy(msg.name, name, sizeof(msg.name));
--	msg.name[sizeof(msg.name) - 1] = 0;
-+	strscpy(msg.name, name, sizeof(msg.name));
- 
- 	msg.param_size = param->size;
- 	memcpy(ctx->ipc_buf->vaddr, param->data, msg.param_size);
 -- 
-2.31.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
