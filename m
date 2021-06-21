@@ -2,140 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7E573AE6AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7694E3AE6B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230381AbhFUKEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 06:04:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51463 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229663AbhFUKEm (ORCPT
+        id S230075AbhFUKHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 06:07:10 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50694 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229621AbhFUKHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 06:04:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624269748;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PZIO5NpgIVUNv0kj+r82DXgHE7L65dog7HHDBqbMgHI=;
-        b=gGQtjQiqmP7SeoT9S9Dj4EGKiTFohwj6gvv0i+RsTHR2Yz5SUa1pm+pKiHEoA3AihAbTdn
-        wRqXOQJSeINZVfQLCMfXeaTkkODgJb6PC15yTexz/gm+F7eK3c9Uh7uq+qy2I+EkGIJDL3
-        PwGvuTy3xpgrlLaox/sgyHdQu/aMJqY=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-580-x3R5yaiGM6CxpZcNgvb3OQ-1; Mon, 21 Jun 2021 06:02:27 -0400
-X-MC-Unique: x3R5yaiGM6CxpZcNgvb3OQ-1
-Received: by mail-ej1-f69.google.com with SMTP id q14-20020a1709066aceb029049fa6bee56fso569628ejs.21
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 03:02:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PZIO5NpgIVUNv0kj+r82DXgHE7L65dog7HHDBqbMgHI=;
-        b=RZPF8Py4eeS9Abwrg30pd9Bs/eCmJpO8OMVNhAl1u/3DM96nGXOIDzSItMA7T2bABq
-         LUMaQMVeQqY9gzYxwz5rkBovCG4ycHQUEbodE9YB8AvbbwGe5DYgtmZy2zjjbQ0yeIvi
-         KudawW7B2HnbQGeNJ2jqTG2hf3tNNBh3Y6mkg0o5gPtWSdvN2pXXOUbAl6KDZ0I1CBy5
-         YfKyucTJ5GMJdGx8UU0AKGXeBXY022pqvvsRjwjuy0GFzVYc4EiFIk8RmwmewFwSFmK3
-         kEjic4qiO7Qw8Sihwp/L9GNys/AZS5YDWxY7Xqc3+7dC0CWzjdre3v88MGbbBI6GFSWu
-         D2sg==
-X-Gm-Message-State: AOAM532ova+oUFQ8WcN1sqfZfVWCUK2ed7Q8ypkqFQm0wnwMitktjuG0
-        nxRqd7EA/TueH0OFwpcY8D5xVQW2870fq0kNp+v7Jzthd6uRfxnsvy7HxuD7R4XFl6pnIezKRxc
-        0jZPd1glEL32zAEk4Fojuh7UU
-X-Received: by 2002:a17:907:2165:: with SMTP id rl5mr23532502ejb.98.1624269745870;
-        Mon, 21 Jun 2021 03:02:25 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyI/DlaZvtpyAu2Ncemo1+R+rxYzgmP6CvYztVMEJT254YGs7mVm/LkwCtPDgJX2tnwmfaVSQ==
-X-Received: by 2002:a17:907:2165:: with SMTP id rl5mr23532477ejb.98.1624269745555;
-        Mon, 21 Jun 2021 03:02:25 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id o14sm5130578edw.36.2021.06.21.03.02.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 03:02:25 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 12:02:22 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     "Longpeng(Mike)" <longpeng2@huawei.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        arei.gonglei@huawei.com, "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        lixianming <lixianming5@huawei.com>
-Subject: Re: [PATCH v2] vsock: notify server to shutdown when client has
- pending signal
-Message-ID: <20210621100222.jg7rajkjyzuao5h5@steredhat>
-References: <20210621062601.1473-1-longpeng2@huawei.com>
+        Mon, 21 Jun 2021 06:07:09 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15LA4k69039573;
+        Mon, 21 Jun 2021 06:04:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=YeQ6G+Xiv94s6yau5B40Z1/XrGaewAAJ4ZmFfwdOEgE=;
+ b=jE+28dvyg6ZxmW0w2B13PT8OjHCfVgMv8RUo9mz+/ESrxay34l1s0NIGpnMWQSJxH9D1
+ WrZEGhkInTLYgTwo9Y2sjuWjKX3oFPm4zziqoeoXAjoWfnbuV2PPh0C/TxXTbJATRk0M
+ +4HLsoJFwAeZ+cQe7AqqllwBf0aK5m0AOMqokGmpFU3GelJpHZBYSeqLL8kUg4z7RsSH
+ 4k1ot/ykgZnwEzE2WvCKtOK3vZLvVQccQEUpEpJd5HsVK1XCSGmWaUOuHGVKcv1RhmXJ
+ TWQxw3ciqZdTSX/SGxeWS6VvpQmDuh5pxBnD4Cbj9expvE6Tm7dtZCPTg+DeoRM/6ipJ ZQ== 
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 39aqrpsnvq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 06:04:49 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15LA4P9l002485;
+        Mon, 21 Jun 2021 10:04:38 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma05fra.de.ibm.com with ESMTP id 3998788eg3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 10:04:37 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15LA4YqK32375048
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Jun 2021 10:04:34 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9878E4204C;
+        Mon, 21 Jun 2021 10:04:34 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 314AE4203F;
+        Mon, 21 Jun 2021 10:04:34 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.30.36])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Mon, 21 Jun 2021 10:04:34 +0000 (GMT)
+Date:   Mon, 21 Jun 2021 12:04:32 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     "Jason J. Herne" <jjherne@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        akrowiak@linux.ibm.com, jgg@nvidia.com
+Subject: Re: [PATCH v2] s390/vfio-ap: Fix module unload memory leak of
+ matrix_dev
+Message-ID: <20210621120432.0e6d2839.pasic@linux.ibm.com>
+In-Reply-To: <20210618171255.2025-1-jjherne@linux.ibm.com>
+References: <20210618171255.2025-1-jjherne@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210621062601.1473-1-longpeng2@huawei.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: oZ_td83_RAcwouGfS2-U13mHpY-kgWek
+X-Proofpoint-ORIG-GUID: oZ_td83_RAcwouGfS2-U13mHpY-kgWek
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-21_03:2021-06-21,2021-06-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
+ mlxscore=0 suspectscore=0 spamscore=0 lowpriorityscore=0 mlxlogscore=999
+ priorityscore=1501 malwarescore=0 adultscore=0 bulkscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2106210059
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 02:26:01PM +0800, Longpeng(Mike) wrote:
->The client's sk_state will be set to TCP_ESTABLISHED if the server
->replay the client's connect request.
->
->However, if the client has pending signal, its sk_state will be set
->to TCP_CLOSE without notify the server, so the server will hold the
->corrupt connection.
->
->            client                        server
->
->1. sk_state=TCP_SYN_SENT         |
->2. call ->connect()              |
->3. wait reply                    |
->                                 | 4. sk_state=TCP_ESTABLISHED
->                                 | 5. insert to connected list
->                                 | 6. reply to the client
->7. sk_state=TCP_ESTABLISHED      |
->8. insert to connected list      |
->9. *signal pending* <--------------------- the user kill client
->10. sk_state=TCP_CLOSE           |
->client is exiting...             |
->11. call ->release()             |
->     virtio_transport_close
->      if (!(sk->sk_state == TCP_ESTABLISHED ||
->	      sk->sk_state == TCP_CLOSING))
->		return true; *return at here, the server cannot notice the connection is corrupt*
->
->So the client should notify the peer in this case.
->
->Cc: David S. Miller <davem@davemloft.net>
->Cc: Jakub Kicinski <kuba@kernel.org>
->Cc: Jorgen Hansen <jhansen@vmware.com>
->Cc: Norbert Slusarek <nslusarek@gmx.net>
->Cc: Andra Paraschiv <andraprs@amazon.com>
->Cc: Colin Ian King <colin.king@canonical.com>
->Cc: David Brazdil <dbrazdil@google.com>
->Cc: Alexander Popov <alex.popov@linux.com>
->Suggested-by: Stefano Garzarella <sgarzare@redhat.com>
->Link: https://lkml.org/lkml/2021/5/17/418
->Signed-off-by: lixianming <lixianming5@huawei.com>
->Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
->---
-> net/vmw_vsock/af_vsock.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->index 92a72f0..ae11311 100644
->--- a/net/vmw_vsock/af_vsock.c
->+++ b/net/vmw_vsock/af_vsock.c
->@@ -1369,7 +1369,7 @@ static int vsock_stream_connect(struct socket *sock, struct sockaddr *addr,
->
-> 		if (signal_pending(current)) {
-> 			err = sock_intr_errno(timeout);
->-			sk->sk_state = TCP_CLOSE;
->+			sk->sk_state = sk->sk_state == TCP_ESTABLISHED ? TCP_CLOSING : TCP_CLOSE;
-> 			sock->state = SS_UNCONNECTED;
-> 			vsock_transport_cancel_pkt(vsk);
-> 			goto out_wait;
->-- 
->1.8.3.1
->
+On Fri, 18 Jun 2021 13:12:55 -0400
+"Jason J. Herne" <jjherne@linux.ibm.com> wrote:
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+> vfio_ap_matrix_dev_release is shadowing the global matrix_dev with a NULL
+> pointer. Driver data for the matrix device is never set and so
+> dev_get_drvdata() always returns NULL. When release is called we end up
+> not freeing matrix_dev. The fix is to remove the shadow variable and get
+> the correct pointer from the device using container_of. We'll also NULL
+> the global to prevent any future use.
+> 
+> Signed-off-by: Jason J. Herne <jjherne@linux.ibm.com>
+> ---
+>  drivers/s390/crypto/vfio_ap_drv.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/s390/crypto/vfio_ap_drv.c b/drivers/s390/crypto/vfio_ap_drv.c
+> index 7dc72cb718b0..40e66cb363d1 100644
+> --- a/drivers/s390/crypto/vfio_ap_drv.c
+> +++ b/drivers/s390/crypto/vfio_ap_drv.c
+> @@ -82,9 +82,8 @@ static void vfio_ap_queue_dev_remove(struct ap_device *apdev)
+>  
+>  static void vfio_ap_matrix_dev_release(struct device *dev)
+>  {
+> -	struct ap_matrix_dev *matrix_dev = dev_get_drvdata(dev);
+> -
+> -	kfree(matrix_dev);
+> +	kfree(container_of(dev, struct ap_matrix_dev, device));
+> +	matrix_dev = NULL;
+
+Reviewed-by: Halil Pasic <pasic@linux.ibm.com>
+
+I'm not sure nulling the global here buys us anything (especially after
+the kfree()). But it does not hurt either, so I'm fine with it. Style
+wise I think vfio_ap_matrix_dev_destroy() is a better place for the
+nulling IMHO, as it is dealing with module global state.
+
+Regards,
+Halil
+
+
+>  }
+>  
+>  static int matrix_bus_match(struct device *dev, struct device_driver *drv)
 
