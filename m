@@ -2,144 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71AB83AE999
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C92223AE995
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229707AbhFUNFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 09:05:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbhFUNFX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 09:05:23 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0470C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 06:03:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=gb4Xc0jhckMTpUbU0AvOmkHXxGN8uRuBfWiJLIWbCwc=; b=BeuvRc3vfVhwl1xHnScd7u1dvi
-        coGKRdXF5QCRLzhSE+M7E/A4MlECUcN4VoNY2hYEJf5s4AQm59Hh/J32Yl2krq2tM8EOtDicZ28ln
-        MEcN+lUXSaDW37MLv183AOGNNYpHF4dtDkMGzNz4eqY7liEPEFpbD4dcuV2XV9nkp89wVWEPR4mOB
-        NpI+r/Nrkcnyy5FahNrEOBLBMJgyhT4KOjZeaejDHvueWrkDr+7PrwLIoiL6hAeC+NBi5d0kEUicD
-        1n+o4smxREtIgy/M1K7pXfVHHV/LvcVROfKbd7SJgXvl8MHIrbzfNlJqq+rgyDR2yfebcTEcnp67K
-        LliW5EeA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvJZ4-00D6gd-Gj; Mon, 21 Jun 2021 13:02:16 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        David Rientjes <rientjes@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Christoph Lameter <cl@linux.com>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: [PATCH] mm: Move kvmalloc-related functions to slab.h
-Date:   Mon, 21 Jun 2021 14:02:08 +0100
-Message-Id: <20210621130209.3123659-1-willy@infradead.org>
-X-Mailer: git-send-email 2.31.1
+        id S229945AbhFUNE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 09:04:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46106 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229640AbhFUNE1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 09:04:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A8026600D4;
+        Mon, 21 Jun 2021 13:02:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624280533;
+        bh=i0BoGd9phtcsE2N4w5S/NNcCyOLvsVmvubKDwfPIMew=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N9ZvxmN6kzyMcupSt5ch1urOqDBkE0Yg6zpYbUkiJjCrqT/WAfP0GZcwtdCxyIhN5
+         VJf2oNP6LasPeV9faVnguB0ItTYTqoiIi/KT6Spd+x7CVZUlDVNtQ1gqJ8z8De0PSa
+         aehoznUR6BHHlVGF7/uMhhG8Rm1/YXbxpCs5Xms4=
+Date:   Mon, 21 Jun 2021 15:02:10 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Oded Gabbay <ogabbay@kernel.org>, Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Doug Ledford <dledford@redhat.com>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Tomer Tayar <ttayar@habana.ai>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v3 1/2] habanalabs: define uAPI to export FD for DMA-BUF
+Message-ID: <YNCN0ulL6DQiRJaB@kroah.com>
+References: <20210618123615.11456-1-ogabbay@kernel.org>
+ <CAKMK7uFOfoxbD2Z5mb-qHFnUe5rObGKQ6Ygh--HSH9M=9bziGg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKMK7uFOfoxbD2Z5mb-qHFnUe5rObGKQ6Ygh--HSH9M=9bziGg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Not all files in the kernel should include mm.h.  Migrating callers from
-kmalloc to kvmalloc is easier if the kvmalloc functions are in slab.h.
+On Mon, Jun 21, 2021 at 02:28:48PM +0200, Daniel Vetter wrote:
+> On Fri, Jun 18, 2021 at 2:36 PM Oded Gabbay <ogabbay@kernel.org> wrote:
+> > User process might want to share the device memory with another
+> > driver/device, and to allow it to access it over PCIe (P2P).
+> >
+> > To enable this, we utilize the dma-buf mechanism and add a dma-buf
+> > exporter support, so the other driver can import the device memory and
+> > access it.
+> >
+> > The device memory is allocated using our existing allocation uAPI,
+> > where the user will get a handle that represents the allocation.
+> >
+> > The user will then need to call the new
+> > uAPI (HL_MEM_OP_EXPORT_DMABUF_FD) and give the handle as a parameter.
+> >
+> > The driver will return a FD that represents the DMA-BUF object that
+> > was created to match that allocation.
+> >
+> > Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+> > Reviewed-by: Tomer Tayar <ttayar@habana.ai>
+> 
+> Mission acomplished, we've gone full circle, and the totally-not-a-gpu
+> driver is now trying to use gpu infrastructure. And seems to have
+> gained vram meanwhile too. Next up is going to be synchronization
+> using dma_fence so you can pass buffers back&forth without stalls
+> among drivers.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- include/linux/mm.h   | 32 --------------------------------
- include/linux/slab.h | 32 ++++++++++++++++++++++++++++++++
- 2 files changed, 32 insertions(+), 32 deletions(-)
+What's wrong with other drivers using dmabufs and even dma_fence?  It's
+a common problem when shuffling memory around systems, why is that
+somehow only allowed for gpu drivers?
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 8ae31622deef..750a6f227ec7 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -798,38 +798,6 @@ static inline int is_vmalloc_or_module_addr(const void *x)
- }
- #endif
- 
--extern void *kvmalloc_node(size_t size, gfp_t flags, int node);
--static inline void *kvmalloc(size_t size, gfp_t flags)
--{
--	return kvmalloc_node(size, flags, NUMA_NO_NODE);
--}
--static inline void *kvzalloc_node(size_t size, gfp_t flags, int node)
--{
--	return kvmalloc_node(size, flags | __GFP_ZERO, node);
--}
--static inline void *kvzalloc(size_t size, gfp_t flags)
--{
--	return kvmalloc(size, flags | __GFP_ZERO);
--}
--
--static inline void *kvmalloc_array(size_t n, size_t size, gfp_t flags)
--{
--	size_t bytes;
--
--	if (unlikely(check_mul_overflow(n, size, &bytes)))
--		return NULL;
--
--	return kvmalloc(bytes, flags);
--}
--
--static inline void *kvcalloc(size_t n, size_t size, gfp_t flags)
--{
--	return kvmalloc_array(n, size, flags | __GFP_ZERO);
--}
--
--extern void kvfree(const void *addr);
--extern void kvfree_sensitive(const void *addr, size_t len);
--
- static inline int head_compound_mapcount(struct page *head)
- {
- 	return atomic_read(compound_mapcount_ptr(head)) + 1;
-diff --git a/include/linux/slab.h b/include/linux/slab.h
-index 0c97d788762c..ee676de68afe 100644
---- a/include/linux/slab.h
-+++ b/include/linux/slab.h
-@@ -697,6 +697,38 @@ static inline void *kzalloc_node(size_t size, gfp_t flags, int node)
- 	return kmalloc_node(size, flags | __GFP_ZERO, node);
- }
- 
-+extern void *kvmalloc_node(size_t size, gfp_t flags, int node);
-+static inline void *kvmalloc(size_t size, gfp_t flags)
-+{
-+	return kvmalloc_node(size, flags, NUMA_NO_NODE);
-+}
-+static inline void *kvzalloc_node(size_t size, gfp_t flags, int node)
-+{
-+	return kvmalloc_node(size, flags | __GFP_ZERO, node);
-+}
-+static inline void *kvzalloc(size_t size, gfp_t flags)
-+{
-+	return kvmalloc(size, flags | __GFP_ZERO);
-+}
-+
-+static inline void *kvmalloc_array(size_t n, size_t size, gfp_t flags)
-+{
-+	size_t bytes;
-+
-+	if (unlikely(check_mul_overflow(n, size, &bytes)))
-+		return NULL;
-+
-+	return kvmalloc(bytes, flags);
-+}
-+
-+static inline void *kvcalloc(size_t n, size_t size, gfp_t flags)
-+{
-+	return kvmalloc_array(n, size, flags | __GFP_ZERO);
-+}
-+
-+extern void kvfree(const void *addr);
-+extern void kvfree_sensitive(const void *addr, size_t len);
-+
- unsigned int kmem_cache_size(struct kmem_cache *s);
- void __init kmem_cache_init_late(void);
- 
--- 
-2.30.2
+There are many users of these structures in the kernel today that are
+not gpu drivers (tee, fastrpc, virtio, xen, IB, etc) as this is a common
+thing that drivers want to do (throw chunks of memory around from
+userspace to hardware).
 
+I'm not trying to be a pain here, but I really do not understand why
+this is a problem.  A kernel api is present, why not use it by other
+in-kernel drivers?  We had the problem in the past where subsystems were
+trying to create their own interfaces for the same thing, which is why
+you all created the dmabuf api to help unify this.
+
+> Also I'm wondering which is the other driver that we share buffers
+> with. The gaudi stuff doesn't have real struct pages as backing
+> storage, it only fills out the dma_addr_t. That tends to blow up with
+> other drivers, and the only place where this is guaranteed to work is
+> if you have a dynamic importer which sets the allow_peer2peer flag.
+> Adding maintainers from other subsystems who might want to chime in
+> here. So even aside of the big question as-is this is broken.
+
+From what I can tell this driver is sending the buffers to other
+instances of the same hardware, as that's what is on the other "end" of
+the network connection.  No different from IB's use of RDMA, right?
+
+thanks,
+
+greg k-h
