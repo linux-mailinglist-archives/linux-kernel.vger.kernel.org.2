@@ -2,60 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA2D3AE48C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0B283AE49F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhFUIIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 04:08:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhFUIIf (ORCPT
+        id S230061AbhFUIU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 04:20:29 -0400
+Received: from infomag.iguana.be ([185.87.124.46]:44040 "EHLO
+        infomag.iguana.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229905AbhFUIU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 04:08:35 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D30DFC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 01:06:21 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624262779;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bv66guGPURdvi5EgNyQkHAh60w+8Jwry+B/iwalVowc=;
-        b=Tnd+7bCuUo+RBZVxPDqgxN+AUYCjS/AKbrSLLFZ/S4ULfRaKyCQ7V1hNFo2ff0/PEWWoPo
-        Sun65P294D+FEdqlkEGIaWzuTsmaS9Mz+1maN7ZNdN5VM/Hl1oAXgWlnix3vKwhL/csnHd
-        QtA/jtsWoWWCp9HbcNTRnpRxtZJlzgOtTTR8DTLm6wIRJZLyIQXdCaAXHwn2I03JGd4V03
-        d0f+F/riQmMDuntoyZsRaJ6vrpJJoiBiGjO2UYVGV6qzM9V82rLoQbsCy0W6ZfU4rKYY7q
-        dh9/ZyD/gX2XDARPd4mXVngQbomfYeWgTdS+GQRN43TVM/mOUWbwT5LLwo+5Mw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624262779;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bv66guGPURdvi5EgNyQkHAh60w+8Jwry+B/iwalVowc=;
-        b=SvHJolxxMr26rz0YAAQ51L2dWeqdg1NiTWP77L/xaI87JhUdK0oWJMlFEffGDlSwExl63C
-        QXs5sCwjBUNCsNBg==
-To:     Yaohui Wang <yaohuiwang@linux.alibaba.com>,
-        dave.hansen@linux.intel.com
-Cc:     luto@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, linux-kernel@vger.kernel.org,
-        Ben Luo <luoben@linux.alibaba.com>,
-        Yahui Wang <yaohuiwang@linux.alibaba.com>
-Subject: Re: [PATCH v2 1/2] mm: fix the pfn calculation mistake in __ioremap_check_ram
-In-Reply-To: <87r1gxh7nj.ffs@nanos.tec.linutronix.de>
-References: <20210611042147.80744-1-yaohuiwang@linux.alibaba.com> <20210611042147.80744-2-yaohuiwang@linux.alibaba.com> <87r1gxh7nj.ffs@nanos.tec.linutronix.de>
-Date:   Mon, 21 Jun 2021 10:06:19 +0200
-Message-ID: <87sg1bfxqc.ffs@nanos.tec.linutronix.de>
+        Mon, 21 Jun 2021 04:20:28 -0400
+X-Greylist: delayed 592 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Jun 2021 04:20:27 EDT
+Received: by infomag.iguana.be (Postfix, from userid 1001)
+        id 37AFB603CACE; Mon, 21 Jun 2021 10:08:20 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 infomag.iguana.be 37AFB603CACE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=iguana.be;
+        s=infomag-20180602; t=1624262900;
+        bh=R1BOYJmyCsFjrpCi/j6BH+ZFJ9mn3RCuXqY+n3LYg1I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IVFd18VMfUmYlLGEAUwJpFegqlCCeutC+mBJIIqPQficpCelq181BgZaXo5MPIofn
+         i3b2WAWa+RR8Gj7rTrywq9oKBzpYAiFcYg27BOJe4VvDJFnXHz2MLHeUa2s9+NGpHN
+         zJusf5tBJAMybEeqO3kCYysurd6RfWDU4cr/8P7k=
+Date:   Mon, 21 Jun 2021 10:08:20 +0200
+From:   Wim Van Sebroeck <wim@iguana.be>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the watchdog tree
+Message-ID: <20210621080820.GA20712@infomag.iguana.be>
+References: <20210621153839.43dd423e@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621153839.43dd423e@canb.auug.org.au>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 19 2021 at 23:22, Thomas Gleixner wrote:
-> Please make that:
->
->        start_pfn = PFN_DOWN(res->start);
->        stop_pfn = PFN_UP(res->end);
+Hi Stephen,
 
-That should obviously be PFN_DOWN(res->end) as well.
+Fixed for tomorrow's pull.
+
+Kind regards,
+Wim.
+
+> Hi all,
+> 
+> After merging the watchdog tree, today's linux-next build (x86_64
+> allmodconfig) failed like this:
+> 
+> ERROR: modpost: "bd70528_wdt_unlock" [drivers/rtc/rtc-bd70528.ko] undefined!
+> ERROR: modpost: "bd70528_wdt_lock" [drivers/rtc/rtc-bd70528.ko] undefined!
+> ERROR: modpost: "bd70528_wdt_set" [drivers/rtc/rtc-bd70528.ko] undefined!
+> 
+> Caused by commit
+> 
+>   f2a5178b0b9f ("watchdog: bd70528 drop bd70528 support")
+> 
+> I have used the watchdog tree from next-20210618 for today.
+> 
+> -- 
+> Cheers,
+> Stephen Rothwell
+
+
