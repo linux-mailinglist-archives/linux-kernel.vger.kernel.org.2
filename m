@@ -2,130 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F97E3AE4A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:19:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8213AE4B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhFUIV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 04:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58866 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbhFUIV6 (ORCPT
+        id S230215AbhFUIY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 04:24:28 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:47278 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229618AbhFUIY0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 04:21:58 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86302C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 01:19:44 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id v13so8112734ple.9
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 01:19:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=77hf/T8lwDKu+LOBcDl7pOZpmghmTiN2GKRCSb96Rx8=;
-        b=DY4YWQUf04XklvK2k1UJkaX/mFPv5j/WzVzLuU4pgdzbOhzY1ZSQ8g4GV1bG/BNJFz
-         /3Wv/ZRnqVvTvR0RhyzX43rm0uiQ8SjPK5z6v+HvTXnemGQycjwZzIzNvCFnDVi1EqMv
-         CEoaaxrOSq609fK/fH9XUO6Q8GrTCb65a++MkgO1/eAjplkFlPL7c6eh2DwqkaY3qmCr
-         lvsFEnUgfz80XY/+E8sd5LeU239VqUJpUdAi/b8mRMVJKk/KHrMLoQqDrpp9zA+UuX1q
-         P5jCag4SYP9hnzjF6qW4VbpIDQczTqKq193OEEAaRATB5+vl/vPEcz0st/3nRNLQfkzd
-         qJ1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=77hf/T8lwDKu+LOBcDl7pOZpmghmTiN2GKRCSb96Rx8=;
-        b=CvbOzjK95H2q2G3FOPtk+jIwc+rlwQIOkNWEfJFZMydnyEqOgc8rESl/FpRMIMhZNn
-         CjhCk6ElNs3+hLcvGu8QB7G59xh5NKt1MA/W8Gpq2JzTphi90IzwWHo/ukTDL6bZiLlO
-         8BrwfCUprgTg4iaqvWtL9YkhhUqoVDiDfBQ+XzLu7fR7FuVUyDdXcgSdyOxzw+md0Stt
-         FFmu6f0+0n6fvN0rtwSPU2+4sOipkobjDv9C5F+AvPTtzZNjfgBsD+KQ9xl8CTOuF78k
-         CHDrLXjHhK+Jas5e7coPgrNXkXrSBSixnLZtXzVfjybgPriMX8yDeczdHXJrt/JkyPLj
-         pe7A==
-X-Gm-Message-State: AOAM531Xi6eI2LJ6hzujkRlgye8DNs02EQHkGPKnGEOw0hDybt39m9cd
-        Znf9D6a/q1dKIA2T3s41z6s=
-X-Google-Smtp-Source: ABdhPJwmTtMRPENxKEKo5otLMCyugFRQtTECBJzwX0OindmT7C4PaS0PZJARgPsf4hnCNGXhvJr9+Q==
-X-Received: by 2002:a17:90a:4410:: with SMTP id s16mr24872989pjg.25.1624263583815;
-        Mon, 21 Jun 2021 01:19:43 -0700 (PDT)
-Received: from jm.lan (36-229-229-123.dynamic-ip.hinet.net. [36.229.229.123])
-        by smtp.gmail.com with ESMTPSA id u1sm14384584pfu.160.2021.06.21.01.19.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 01:19:43 -0700 (PDT)
-From:   Jhih-Ming Huang <fbihjmeric@gmail.com>
-To:     gregkh@linuxfoundation.org, fabioaiuto83@gmail.com,
-        ross.schm.dev@gmail.com, maqianga@uniontech.com,
-        marcocesati@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     Jhih-Ming Huang <fbihjmeric@gmail.com>
-Subject: [PATCH v5] rtw_security: fix cast to restricted __le32
-Date:   Mon, 21 Jun 2021 16:19:28 +0800
-Message-Id: <20210621081928.145203-1-fbihjmeric@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210619075255.107807-1-fbihjmeric@gmail.com>
-References: <20210619075255.107807-1-fbihjmeric@gmail.com>
+        Mon, 21 Jun 2021 04:24:26 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15L8C6XW002932;
+        Mon, 21 Jun 2021 08:21:53 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=rsBsyzNSoz0GNqEab3e2cU6lY3mRx3ISkb2b1vS63A0=;
+ b=vuzqs3Hg1Q8F6MGm4vft/aEJ4vbL5XaH36E2YmEfM8Owj74Qza44gsEWjmQREH36VNXd
+ FJFKrHxaaHC5eat+NFyrdVjjBRvFIG0fQSTSPNzBoSq9rHaM0x8YOly0F9V3P2bRmjHD
+ ASriCiI5f1d3kpj/DHvd0PrTCEWW6+yJ+0xQ2h3b7QSOGS582lY8IdKQSbAGntiaD4KI
+ 7vTp8eiOPiyK7c6vlOIT2N1cMZURReapI978n6tXxQbjdhkjA743qI+eGrvPbrBjidbX
+ WrIkXnxxRee9TFIPe+G/dHkaeuL+mMrMeEjLvHU7OaTt/dxOkllw56K7e7MCikWmsogx tQ== 
+Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39acyq8qwj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Jun 2021 08:21:52 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15L8GIf3039192;
+        Mon, 21 Jun 2021 08:21:51 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 399tbqpk6b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Jun 2021 08:21:51 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15L8HwgH042250;
+        Mon, 21 Jun 2021 08:21:51 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 399tbqpk5h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Jun 2021 08:21:51 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 15L8Leic010812;
+        Mon, 21 Jun 2021 08:21:43 GMT
+Received: from kadam (/102.222.70.252)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 21 Jun 2021 01:21:40 -0700
+Date:   Mon, 21 Jun 2021 11:21:32 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Ojaswin Mujoo <ojaswin98@gmail.com>
+Cc:     nsaenz@kernel.org, gregkh@linuxfoundation.org,
+        stefan.wahren@i2se.com, arnd@arndb.de, phil@raspberrypi.com,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/5] staging: vchiq: Refactor vchiq cdev code
+Message-ID: <20210621082132.GC1901@kadam>
+References: <cover.1624185152.git.ojaswin98@gmail.com>
+ <e786f8c7f92561065b840490c32959932526dac6.1624185152.git.ojaswin98@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e786f8c7f92561065b840490c32959932526dac6.1624185152.git.ojaswin98@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: Cd10xYLrEn5jIVPHNS36QE2PbaANv26K
+X-Proofpoint-ORIG-GUID: Cd10xYLrEn5jIVPHNS36QE2PbaANv26K
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch fixes the sparse warning of fix cast to restricted __le32.
+On Sun, Jun 20, 2021 at 06:25:46PM +0530, Ojaswin Mujoo wrote:
+>  	vchiq_debugfs_init();
+>  
+>  	vchiq_log_info(vchiq_arm_log_level,
+> -		"vchiq: initialised - version %d (min %d), device %d.%d",
+> -		VCHIQ_VERSION, VCHIQ_VERSION_MIN,
+> -		MAJOR(vchiq_devid), MINOR(vchiq_devid));
+> +		       "vchiq: platform initialised - version %d (min %d)",
+> +		       VCHIQ_VERSION, VCHIQ_VERSION_MIN);
+> +
+> +	/*
+> +	 * We don't handle error here since the function handles
+> +	 * cleanup in cases of failure. Further, we can proceed
+> +	 * even if this function fails.
+> +	 */
+> +	vchiq_register_chrdev(&pdev->dev);
 
-There was a change for replacing private CRC-32 routines with in kernel
-ones.
-However, the author used le32_to_cpu to convert crc32_le(), and we
-should cpu_to_le32.
+I feel like ignoring errors and just continuing seems helpful, but it's
+actually doing the users a disservice.  If it's an error during, boot
+that's different, in that case it's better to get some kind of minimally
+useful boot so the user can debug the problem.  But if the error isn't
+going to prevent the system from booting then it's better to just return
+an error so they can fix the problem and try again.
 
-Ths commit also fixes the payload checking by memcmp instead of checking element
-by element and removes the unused variable.
-
-Signed-off-by: Jhih-Ming Huang <fbihjmeric@gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_security.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
-index a99f439328f1..8dc6a976b487 100644
---- a/drivers/staging/rtl8723bs/core/rtw_security.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_security.c
-@@ -92,7 +92,6 @@ void rtw_wep_encrypt(struct adapter *padapter, u8 *pxmitframe)
- void rtw_wep_decrypt(struct adapter  *padapter, u8 *precvframe)
- {
- 	/*  exclude ICV */
--	u8 crc[4];
- 	signed int	length;
- 	u32 keylength;
- 	u8 *pframe, *payload, *iv, wepkey[16];
-@@ -119,10 +118,6 @@ void rtw_wep_decrypt(struct adapter  *padapter, u8 *precvframe)
- 		/* decrypt payload include icv */
- 		arc4_setkey(ctx, wepkey, 3 + keylength);
- 		arc4_crypt(ctx, payload, payload,  length);
--
--		/* calculate icv and compare the icv */
--		*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
--
- 	}
- }
- 
-@@ -537,7 +532,7 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
- 	u32 pnh;
- 	u8   rc4key[16];
- 	u8   ttkey[16];
--	u8 crc[4];
-+	__le32 crc;
- 	signed int			length;
- 
- 	u8 *pframe, *payload, *iv, *prwskey;
-@@ -618,10 +613,9 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
- 			arc4_setkey(ctx, rc4key, 16);
- 			arc4_crypt(ctx, payload, payload, length);
- 
--			*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
-+			crc = cpu_to_le32(~crc32_le(~0, payload, length - 4));
- 
--			if (crc[3] != payload[length - 1] || crc[2] != payload[length - 2] ||
--			    crc[1] != payload[length - 3] || crc[0] != payload[length - 4])
-+			if (memcmp(&crc, payload + length - 4, 4) != 0)
- 				res = _FAIL;
- 		} else {
- 			res = _FAIL;
--- 
-2.32.0
+regards,
+dan carpenter
 
