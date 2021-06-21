@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E658D3AED83
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9308E3AEEB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231386AbhFUQUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:20:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40474 "EHLO mail.kernel.org"
+        id S232207AbhFUQbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:31:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48302 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231248AbhFUQUF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:20:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A66361289;
-        Mon, 21 Jun 2021 16:17:49 +0000 (UTC)
+        id S232304AbhFUQ3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:29:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7762C613F3;
+        Mon, 21 Jun 2021 16:23:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292270;
-        bh=dXoz8y2l5ilNqiLb4Stw0VTkhiHTcNOhwddVUpJemOo=;
+        s=korg; t=1624292637;
+        bh=GPZlmCmG5Ozv64hMj2PJFVS6AWHaoBhOPRTJYmhJWpc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s/K+8F0Yjb0d0CWxtAQDtW5Yg+rIAhpRdBAzVPK85kxFATweDJ5maEz9rRz6y0AXP
-         xHu1G/lBD+kCkE6FL/5YIrJLZH5bG0OcwDxkc5IFiBHbFcQ3uaVNa4/dYsPR+IjZeq
-         bOmxCbPHc3DTJtFPAt9NXR2CCkITFcY67E5ljep8=
+        b=Ma1AMhKqRetwfblOOIKjl8ikbKkEXQTLQnl6Ga3LpNl5Kp8Prq9+imM11KnWjppeS
+         d4z+hYsoISZOId00w2MFIIEh7iU2yXxK1iohmYYHf2OsAPGH3oDUSbwpr6YTKZzg3n
+         gZ/VP3OU+al4luaQUHn+25zjBLR0vfr1K05AAxpI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
-        Richard Cochran <richardcochran@gmail.com>,
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 28/90] ptp: improve max_adj check against unreasonable values
+Subject: [PATCH 5.10 073/146] net: ethernet: fix potential use-after-free in ec_bhf_remove
 Date:   Mon, 21 Jun 2021 18:15:03 +0200
-Message-Id: <20210621154905.071913255@linuxfoundation.org>
+Message-Id: <20210621154915.515545612@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621154904.159672728@linuxfoundation.org>
-References: <20210621154904.159672728@linuxfoundation.org>
+In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
+References: <20210621154911.244649123@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,78 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jakub Kicinski <kuba@kernel.org>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-[ Upstream commit 475b92f932168a78da8109acd10bfb7578b8f2bb ]
+[ Upstream commit 9cca0c2d70149160407bda9a9446ce0c29b6e6c6 ]
 
-Scaled PPM conversion to PPB may (on 64bit systems) result
-in a value larger than s32 can hold (freq/scaled_ppm is a long).
-This means the kernel will not correctly reject unreasonably
-high ->freq values (e.g. > 4294967295ppb, 281474976645 scaled PPM).
+static void ec_bhf_remove(struct pci_dev *dev)
+{
+...
+	struct ec_bhf_priv *priv = netdev_priv(net_dev);
 
-The conversion is equivalent to a division by ~66 (65.536),
-so the value of ppb is always smaller than ppm, but not small
-enough to assume narrowing the type from long -> s32 is okay.
+	unregister_netdev(net_dev);
+	free_netdev(net_dev);
 
-Note that reasonable user space (e.g. ptp4l) will not use such
-high values, anyway, 4289046510ppb ~= 4.3x, so the fix is
-somewhat pedantic.
+	pci_iounmap(dev, priv->dma_io);
+	pci_iounmap(dev, priv->io);
+...
+}
 
-Fixes: d39a743511cd ("ptp: validate the requested frequency adjustment.")
-Fixes: d94ba80ebbea ("ptp: Added a brand new class driver for ptp clocks.")
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Acked-by: Richard Cochran <richardcochran@gmail.com>
+priv is netdev private data, but it is used
+after free_netdev(). It can cause use-after-free when accessing priv
+pointer. So, fix it by moving free_netdev() after pci_iounmap()
+calls.
+
+Fixes: 6af55ff52b02 ("Driver for Beckhoff CX5020 EtherCAT master module.")
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ptp/ptp_clock.c          | 6 +++---
- include/linux/ptp_clock_kernel.h | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/ec_bhf.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/ptp/ptp_clock.c b/drivers/ptp/ptp_clock.c
-index b84f16bbd6f2..eedf067ee8e3 100644
---- a/drivers/ptp/ptp_clock.c
-+++ b/drivers/ptp/ptp_clock.c
-@@ -63,7 +63,7 @@ static void enqueue_external_timestamp(struct timestamp_event_queue *queue,
- 	spin_unlock_irqrestore(&queue->lock, flags);
- }
+diff --git a/drivers/net/ethernet/ec_bhf.c b/drivers/net/ethernet/ec_bhf.c
+index 46b0dbab8aad..7c992172933b 100644
+--- a/drivers/net/ethernet/ec_bhf.c
++++ b/drivers/net/ethernet/ec_bhf.c
+@@ -576,10 +576,12 @@ static void ec_bhf_remove(struct pci_dev *dev)
+ 	struct ec_bhf_priv *priv = netdev_priv(net_dev);
  
--s32 scaled_ppm_to_ppb(long ppm)
-+long scaled_ppm_to_ppb(long ppm)
- {
- 	/*
- 	 * The 'freq' field in the 'struct timex' is in parts per
-@@ -80,7 +80,7 @@ s32 scaled_ppm_to_ppb(long ppm)
- 	s64 ppb = 1 + ppm;
- 	ppb *= 125;
- 	ppb >>= 13;
--	return (s32) ppb;
-+	return (long) ppb;
- }
- EXPORT_SYMBOL(scaled_ppm_to_ppb);
+ 	unregister_netdev(net_dev);
+-	free_netdev(net_dev);
  
-@@ -138,7 +138,7 @@ static int ptp_clock_adjtime(struct posix_clock *pc, struct __kernel_timex *tx)
- 		delta = ktime_to_ns(kt);
- 		err = ops->adjtime(ops, delta);
- 	} else if (tx->modes & ADJ_FREQUENCY) {
--		s32 ppb = scaled_ppm_to_ppb(tx->freq);
-+		long ppb = scaled_ppm_to_ppb(tx->freq);
- 		if (ppb > ops->max_adj || ppb < -ops->max_adj)
- 			return -ERANGE;
- 		if (ops->adjfine)
-diff --git a/include/linux/ptp_clock_kernel.h b/include/linux/ptp_clock_kernel.h
-index 93cc4f1d444a..874f7e73ed01 100644
---- a/include/linux/ptp_clock_kernel.h
-+++ b/include/linux/ptp_clock_kernel.h
-@@ -218,7 +218,7 @@ extern int ptp_clock_index(struct ptp_clock *ptp);
-  * @ppm:    Parts per million, but with a 16 bit binary fractional field
-  */
- 
--extern s32 scaled_ppm_to_ppb(long ppm);
-+extern long scaled_ppm_to_ppb(long ppm);
- 
- /**
-  * ptp_find_pin() - obtain the pin index of a given auxiliary function
+ 	pci_iounmap(dev, priv->dma_io);
+ 	pci_iounmap(dev, priv->io);
++
++	free_netdev(net_dev);
++
+ 	pci_release_regions(dev);
+ 	pci_clear_master(dev);
+ 	pci_disable_device(dev);
 -- 
 2.30.2
 
