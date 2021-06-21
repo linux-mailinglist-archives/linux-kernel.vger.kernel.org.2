@@ -2,20 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63DDA3AE604
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD883AE606
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230318AbhFUJaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:30:24 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:34136 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229597AbhFUJaX (ORCPT
+        id S230444AbhFUJa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:30:28 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:39477 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229597AbhFUJa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:30:23 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R751e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0Ud8YYYK_1624267685;
-Received: from localhost(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0Ud8YYYK_1624267685)
+        Mon, 21 Jun 2021 05:30:26 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0Ud7GNQf_1624267687;
+Received: from localhost(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0Ud7GNQf_1624267687)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 21 Jun 2021 17:28:06 +0800
+          Mon, 21 Jun 2021 17:28:07 +0800
 From:   Huaixin Chang <changhuaixin@linux.alibaba.com>
 To:     luca.abeni@santannapisa.it
 Cc:     anderson@cs.unc.edu, baruah@wustl.edu, bsegall@google.com,
@@ -27,10 +27,12 @@ Cc:     anderson@cs.unc.edu, baruah@wustl.edu, bsegall@google.com,
         rostedt@goodmis.org, shanpeic@linux.alibaba.com, tj@kernel.org,
         tommaso.cucinotta@santannapisa.it, vincent.guittot@linaro.org,
         xiyou.wangcong@gmail.com
-Subject: [PATCH v6 0/3] sched/fair: Burstable CFS bandwidth controller
-Date:   Mon, 21 Jun 2021 17:27:57 +0800
-Message-Id: <20210621092800.23714-1-changhuaixin@linux.alibaba.com>
+Subject: [PATCH v6 1/3] sched/fair: Introduce the burstable CFS controller
+Date:   Mon, 21 Jun 2021 17:27:58 +0800
+Message-Id: <20210621092800.23714-2-changhuaixin@linux.alibaba.com>
 X-Mailer: git-send-email 2.14.4.44.g2045bb6
+In-Reply-To: <20210621092800.23714-1-changhuaixin@linux.alibaba.com>
+References: <20210621092800.23714-1-changhuaixin@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
@@ -38,79 +40,310 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Changelog:
-v6:
-- Separate burst config to cpu.max.burst.
-- Rewrite commit log and document for burst feature.
-- Remove global sysfsctl to disable burst feature.
-- Some code mofication.
-- Rebase upon v5.13-rc6.
+The CFS bandwidth controller limits CPU requests of a task group to
+quota during each period. However, parallel workloads might be bursty
+so that they get throttled even when their average utilization is under
+quota. And they are latency sensitive at the same time so that
+throttling them is undesired.
 
-v5:
-- Rearrange into 3 patches, one less than the previous version.
-- The interference to other groups are valued.
-- Put a limit on burst, so that code is further simplified.
-- Rebase upon v5.13-rc3.
-Link:
-https://lore.kernel.org/lkml/20210520123419.8039-1-changhuaixin@linux.alibaba.com/
+We borrow time now against our future underrun, at the cost of increased
+interference against the other system users. All nicely bounded.
 
-v4:
-- Adjust assignments in tg_set_cfs_bandwidth(), saving unnecessary
-  assignemnts when quota == RUNTIME_INF.
-- Getting rid of sysctl_sched_cfs_bw_burst_onset_percent, as there seems
-  no justification for both controlling start bandwidth and a percent
-  way.
-- Comment improvement in sched_cfs_period_timer() shifts on explaining
-  why max_overrun shifting to 0 is a problem.
-- Rename previous_runtime to runtime_at_period_start.
-- Add cgroup2 interface and documentation.
-- Getting rid of exposing current_bw as there are not enough
-  justification and the updating problem.
-- Add justification on cpu.stat change in the changelog.
-- Rebase upon v5.12-rc3.
-- Correct SoB chain.
-- Several indentation fixes.
-- Adjust quota in schbench test from 700000 to 600000.
-Link:
-https://lore.kernel.org/lkml/20210316044931.39733-1-changhuaixin@linux.alibaba.com/
+Traditional (UP-EDF) bandwidth control is something like:
 
-v3:
-- Fix another issue reported by test robot.
-- Update docs as Randy Dunlap suggested.
-Link:
-https://lore.kernel.org/lkml/20210120122715.29493-1-changhuaixin@linux.alibaba.com/
+  (U = \Sum u_i) <= 1
 
-v2:
-- Fix an issue reported by test robot.
-- Rewriting docs. Appreciate any further suggestions or help.
-Link:
-https://lore.kernel.org/lkml/20210121110453.18899-1-changhuaixin@linux.alibaba.com/
+This guaranteeds both that every deadline is met and that the system is
+stable. After all, if U were > 1, then for every second of walltime,
+we'd have to run more than a second of program time, and obviously miss
+our deadline, but the next deadline will be further out still, there is
+never time to catch up, unbounded fail.
 
-v1 Link:
-https://lore.kernel.org/lkml/20201217074620.58338-1-changhuaixin@linux.alibaba.com/
+This work observes that a workload doesn't always executes the full
+quota; this enables one to describe u_i as a statistical distribution.
 
-Previously, Cong Wang and Konstantin Khlebnikov proposed similar
-feature:
-https://lore.kernel.org/lkml/20180522062017.5193-1-xiyou.wangcong@gmail.com/
-https://lore.kernel.org/lkml/157476581065.5793.4518979877345136813.stgit@buzz/
+For example, have u_i = {x,e}_i, where x is the p(95) and x+e p(100)
+(the traditional WCET). This effectively allows u to be smaller,
+increasing the efficiency (we can pack more tasks in the system), but at
+the cost of missing deadlines when all the odds line up. However, it
+does maintain stability, since every overrun must be paired with an
+underrun as long as our x is above the average.
 
-This time we present more latency statistics and handle overflow while
-accumulating.
+That is, suppose we have 2 tasks, both specify a p(95) value, then we
+have a p(95)*p(95) = 90.25% chance both tasks are within their quota and
+everything is good. At the same time we have a p(5)p(5) = 0.25% chance
+both tasks will exceed their quota at the same time (guaranteed deadline
+fail). Somewhere in between there's a threshold where one exceeds and
+the other doesn't underrun enough to compensate; this depends on the
+specific CDFs.
 
-Huaixin Chang (3):
-  sched/fair: Introduce the burstable CFS controller
-  sched/fair: Add cfs bandwidth burst statistics
-  sched/fair: Add document for burstable CFS bandwidth
+At the same time, we can say that the worst case deadline miss, will be
+\Sum e_i; that is, there is a bounded tardiness (under the assumption
+that x+e is indeed WCET).
 
- Documentation/admin-guide/cgroup-v2.rst | 17 +++---
- Documentation/scheduler/sched-bwc.rst   | 76 ++++++++++++++++++++++----
- include/linux/sched/sysctl.h            |  1 +
- kernel/sched/core.c                     | 96 ++++++++++++++++++++++++++-------
- kernel/sched/fair.c                     | 32 ++++++++++-
- kernel/sched/sched.h                    |  4 ++
- kernel/sysctl.c                         |  9 ++++
- 7 files changed, 200 insertions(+), 35 deletions(-)
+The benefit of burst is seen when testing with schbench. Default value of
+kernel.sched_cfs_bandwidth_slice_us(5ms) and CONFIG_HZ(1000) is used.
 
+	mkdir /sys/fs/cgroup/cpu/test
+	echo $$ > /sys/fs/cgroup/cpu/test/cgroup.procs
+	echo 100000 > /sys/fs/cgroup/cpu/test/cpu.cfs_quota_us
+	echo 100000 > /sys/fs/cgroup/cpu/test/cpu.cfs_burst_us
+
+	./schbench -m 1 -t 3 -r 20 -c 80000 -R 10
+
+The average CPU usage is at 80%. I run this for 10 times, and got long tail
+latency for 6 times and got throttled for 8 times.
+
+Tail latencies are shown below, and it wasn't the worst case.
+
+	Latency percentiles (usec)
+		50.0000th: 19872
+		75.0000th: 21344
+		90.0000th: 22176
+		95.0000th: 22496
+		*99.0000th: 22752
+		99.5000th: 22752
+		99.9000th: 22752
+		min=0, max=22727
+	rps: 9.90 p95 (usec) 22496 p99 (usec) 22752 p95/cputime 28.12% p99/cputime 28.44%
+
+The interferenece when using burst is valued by the possibilities for
+missing the deadline and the average WCET. Test results showed that when
+there many cgroups or CPU is under utilized, the interference is
+limited. More details are shown in:
+https://lore.kernel.org/lkml/5371BD36-55AE-4F71-B9D7-B86DC32E3D2B@linux.alibaba.com/
+
+Co-developed-by: Shanpei Chen <shanpeic@linux.alibaba.com>
+Signed-off-by: Shanpei Chen <shanpeic@linux.alibaba.com>
+Co-developed-by: Tianchen Ding <dtcccc@linux.alibaba.com>
+Signed-off-by: Tianchen Ding <dtcccc@linux.alibaba.com>
+Signed-off-by: Huaixin Chang <changhuaixin@linux.alibaba.com>
+---
+ kernel/sched/core.c  | 68 +++++++++++++++++++++++++++++++++++++++++++++++-----
+ kernel/sched/fair.c  | 13 ++++++----
+ kernel/sched/sched.h |  1 +
+ 3 files changed, 72 insertions(+), 10 deletions(-)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 5226cc26a095..b58ced2194a0 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8962,7 +8962,8 @@ static const u64 max_cfs_runtime = MAX_BW * NSEC_PER_USEC;
+ 
+ static int __cfs_schedulable(struct task_group *tg, u64 period, u64 runtime);
+ 
+-static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota)
++static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota,
++				u64 burst)
+ {
+ 	int i, ret = 0, runtime_enabled, runtime_was_enabled;
+ 	struct cfs_bandwidth *cfs_b = &tg->cfs_bandwidth;
+@@ -8992,6 +8993,10 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota)
+ 	if (quota != RUNTIME_INF && quota > max_cfs_runtime)
+ 		return -EINVAL;
+ 
++	if (quota != RUNTIME_INF && (burst > quota ||
++				     burst + quota > max_cfs_runtime))
++		return -EINVAL;
++
+ 	/*
+ 	 * Prevent race between setting of cfs_rq->runtime_enabled and
+ 	 * unthrottle_offline_cfs_rqs().
+@@ -9013,6 +9018,7 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota)
+ 	raw_spin_lock_irq(&cfs_b->lock);
+ 	cfs_b->period = ns_to_ktime(period);
+ 	cfs_b->quota = quota;
++	cfs_b->burst = burst;
+ 
+ 	__refill_cfs_bandwidth_runtime(cfs_b);
+ 
+@@ -9046,9 +9052,10 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota)
+ 
+ static int tg_set_cfs_quota(struct task_group *tg, long cfs_quota_us)
+ {
+-	u64 quota, period;
++	u64 quota, period, burst;
+ 
+ 	period = ktime_to_ns(tg->cfs_bandwidth.period);
++	burst = tg->cfs_bandwidth.burst;
+ 	if (cfs_quota_us < 0)
+ 		quota = RUNTIME_INF;
+ 	else if ((u64)cfs_quota_us <= U64_MAX / NSEC_PER_USEC)
+@@ -9056,7 +9063,7 @@ static int tg_set_cfs_quota(struct task_group *tg, long cfs_quota_us)
+ 	else
+ 		return -EINVAL;
+ 
+-	return tg_set_cfs_bandwidth(tg, period, quota);
++	return tg_set_cfs_bandwidth(tg, period, quota, burst);
+ }
+ 
+ static long tg_get_cfs_quota(struct task_group *tg)
+@@ -9074,15 +9081,16 @@ static long tg_get_cfs_quota(struct task_group *tg)
+ 
+ static int tg_set_cfs_period(struct task_group *tg, long cfs_period_us)
+ {
+-	u64 quota, period;
++	u64 quota, period, burst;
+ 
+ 	if ((u64)cfs_period_us > U64_MAX / NSEC_PER_USEC)
+ 		return -EINVAL;
+ 
+ 	period = (u64)cfs_period_us * NSEC_PER_USEC;
+ 	quota = tg->cfs_bandwidth.quota;
++	burst = tg->cfs_bandwidth.burst;
+ 
+-	return tg_set_cfs_bandwidth(tg, period, quota);
++	return tg_set_cfs_bandwidth(tg, period, quota, burst);
+ }
+ 
+ static long tg_get_cfs_period(struct task_group *tg)
+@@ -9095,6 +9103,30 @@ static long tg_get_cfs_period(struct task_group *tg)
+ 	return cfs_period_us;
+ }
+ 
++static int tg_set_cfs_burst(struct task_group *tg, long cfs_burst_us)
++{
++	u64 quota, period, burst;
++
++	if ((u64)cfs_burst_us > U64_MAX / NSEC_PER_USEC)
++		return -EINVAL;
++
++	burst = (u64)cfs_burst_us * NSEC_PER_USEC;
++	period = ktime_to_ns(tg->cfs_bandwidth.period);
++	quota = tg->cfs_bandwidth.quota;
++
++	return tg_set_cfs_bandwidth(tg, period, quota, burst);
++}
++
++static long tg_get_cfs_burst(struct task_group *tg)
++{
++	u64 burst_us;
++
++	burst_us = tg->cfs_bandwidth.burst;
++	do_div(burst_us, NSEC_PER_USEC);
++
++	return burst_us;
++}
++
+ static s64 cpu_cfs_quota_read_s64(struct cgroup_subsys_state *css,
+ 				  struct cftype *cft)
+ {
+@@ -9119,6 +9151,18 @@ static int cpu_cfs_period_write_u64(struct cgroup_subsys_state *css,
+ 	return tg_set_cfs_period(css_tg(css), cfs_period_us);
+ }
+ 
++static u64 cpu_cfs_burst_read_u64(struct cgroup_subsys_state *css,
++				  struct cftype *cft)
++{
++	return tg_get_cfs_burst(css_tg(css));
++}
++
++static int cpu_cfs_burst_write_u64(struct cgroup_subsys_state *css,
++				   struct cftype *cftype, u64 cfs_burst_us)
++{
++	return tg_set_cfs_burst(css_tg(css), cfs_burst_us);
++}
++
+ struct cfs_schedulable_data {
+ 	struct task_group *tg;
+ 	u64 period, quota;
+@@ -9271,6 +9315,11 @@ static struct cftype cpu_legacy_files[] = {
+ 		.read_u64 = cpu_cfs_period_read_u64,
+ 		.write_u64 = cpu_cfs_period_write_u64,
+ 	},
++	{
++		.name = "cfs_burst_us",
++		.read_u64 = cpu_cfs_burst_read_u64,
++		.write_u64 = cpu_cfs_burst_write_u64,
++	},
+ 	{
+ 		.name = "stat",
+ 		.seq_show = cpu_cfs_stat_show,
+@@ -9436,12 +9485,13 @@ static ssize_t cpu_max_write(struct kernfs_open_file *of,
+ {
+ 	struct task_group *tg = css_tg(of_css(of));
+ 	u64 period = tg_get_cfs_period(tg);
++	u64 burst = tg_get_cfs_burst(tg);
+ 	u64 quota;
+ 	int ret;
+ 
+ 	ret = cpu_period_quota_parse(buf, &period, &quota);
+ 	if (!ret)
+-		ret = tg_set_cfs_bandwidth(tg, period, quota);
++		ret = tg_set_cfs_bandwidth(tg, period, quota, burst);
+ 	return ret ?: nbytes;
+ }
+ #endif
+@@ -9468,6 +9518,12 @@ static struct cftype cpu_files[] = {
+ 		.seq_show = cpu_max_show,
+ 		.write = cpu_max_write,
+ 	},
++	{
++		.name = "max.burst",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.read_u64 = cpu_cfs_burst_read_u64,
++		.write_u64 = cpu_cfs_burst_write_u64,
++	},
+ #endif
+ #ifdef CONFIG_UCLAMP_TASK_GROUP
+ 	{
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 2c8a9352590d..53d7cc4d009b 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4634,8 +4634,11 @@ static inline u64 sched_cfs_bandwidth_slice(void)
+  */
+ void __refill_cfs_bandwidth_runtime(struct cfs_bandwidth *cfs_b)
+ {
+-	if (cfs_b->quota != RUNTIME_INF)
+-		cfs_b->runtime = cfs_b->quota;
++	if (unlikely(cfs_b->quota == RUNTIME_INF))
++		return;
++
++	cfs_b->runtime += cfs_b->quota;
++	cfs_b->runtime = min(cfs_b->runtime, cfs_b->quota + cfs_b->burst);
+ }
+ 
+ static inline struct cfs_bandwidth *tg_cfs_bandwidth(struct task_group *tg)
+@@ -4996,6 +4999,9 @@ static int do_sched_cfs_period_timer(struct cfs_bandwidth *cfs_b, int overrun, u
+ 	throttled = !list_empty(&cfs_b->throttled_cfs_rq);
+ 	cfs_b->nr_periods += overrun;
+ 
++	/* Refill extra burst quota even if cfs_b->idle */
++	__refill_cfs_bandwidth_runtime(cfs_b);
++
+ 	/*
+ 	 * idle depends on !throttled (for the case of a large deficit), and if
+ 	 * we're going inactive then everything else can be deferred
+@@ -5003,8 +5009,6 @@ static int do_sched_cfs_period_timer(struct cfs_bandwidth *cfs_b, int overrun, u
+ 	if (cfs_b->idle && !throttled)
+ 		goto out_deactivate;
+ 
+-	__refill_cfs_bandwidth_runtime(cfs_b);
+-
+ 	if (!throttled) {
+ 		/* mark as potentially idle for the upcoming period */
+ 		cfs_b->idle = 1;
+@@ -5285,6 +5289,7 @@ void init_cfs_bandwidth(struct cfs_bandwidth *cfs_b)
+ 	cfs_b->runtime = 0;
+ 	cfs_b->quota = RUNTIME_INF;
+ 	cfs_b->period = ns_to_ktime(default_cfs_period());
++	cfs_b->burst = 0;
+ 
+ 	INIT_LIST_HEAD(&cfs_b->throttled_cfs_rq);
+ 	hrtimer_init(&cfs_b->period_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_PINNED);
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index a189bec13729..d317ca74a48c 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -366,6 +366,7 @@ struct cfs_bandwidth {
+ 	ktime_t			period;
+ 	u64			quota;
+ 	u64			runtime;
++	u64			burst;
+ 	s64			hierarchical_quota;
+ 
+ 	u8			idle;
 -- 
 2.14.4.44.g2045bb6
 
