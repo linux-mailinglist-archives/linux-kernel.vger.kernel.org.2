@@ -2,158 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A4D3AF1B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E25B3AF1BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhFURRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 13:17:30 -0400
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:37698 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230059AbhFURRZ (ORCPT
+        id S231235AbhFURRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 13:17:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230059AbhFURRh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 13:17:25 -0400
-Received: by mail-ot1-f47.google.com with SMTP id 102-20020a9d0eef0000b02903fccc5b733fso18438330otj.4;
-        Mon, 21 Jun 2021 10:15:10 -0700 (PDT)
+        Mon, 21 Jun 2021 13:17:37 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07FCDC061756;
+        Mon, 21 Jun 2021 10:15:22 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id x22so7399281pll.11;
+        Mon, 21 Jun 2021 10:15:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=vLkEnphqch5/WsWN5BRAkVt/dJhdo5e4NycFb+xafoc=;
+        b=Zr9qeffP4/VadNftyoFyjTDDcmPPnrndlfggU4nx8o9YhRmuqQvaulEHfFoowz3pfh
+         67XtAU2P/g73012xgRX+nSi2Fd2nh/lWpzsC2LpzGnVD8TA7GV1el6LySVB3uUfnK4kU
+         Xd8Yplh59MRnpU5b+obQne9STok8tDIe+2rOJ4lRAoEkt/Vu0b3IfqXXnZmb/VT+kE2o
+         dpR0/Uc9lyvCTnOPyLg29ph89hcL8tdpQOE2m8MCcCWMl6KeZvMM+Kk2jNkY3EOyyuy5
+         5f31931GmksXnzW03/qoLb9K+fli/kMAnG0pnytbFOXGJBvB5XxdhhrsTzPlz89AQ+6p
+         uI1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jXm4NUtSsDnuPgFRz6Ycu8nMt+U8kUvdPj/gorMrW8Q=;
-        b=dnQu4yM+INZNFSogRkvEieI8Lnv1TW93WKN5ejEseWKBq1ofra4iHrW4UJE+vr3KPo
-         17k+YmBoypzRQUBQa3xpUeM6d/DEq/MLchtHebYdfgRbOBtHlQPFoyjNv+ESt7EfyBdL
-         SVeqxCxnlLM6FBuh1WY8W7I23nEhMTJCEcRuYa0RBJjRNuNl1n5mscCHgnDPI2VfwZv7
-         VgtZI1p9al/Ds5/J8281E3ReksywwxZmBatMoKNzQzi0mYLgvBMNHip15Pb9qPI80wUt
-         GC+OqjhXbA678xRXkjs2Xwz7Hp/DP7Jyp+iNJF+kEFvuRCd+WTp8/X9lOrqOnMI/0DoH
-         mQlQ==
-X-Gm-Message-State: AOAM530kl40aQdbTsLZAPGYbuoLfLuNIJA7jMy9s3YXojsLj8StIKDQG
-        NyBrHgcCYedRwSvjwVSr5yssAYduuAuhfXLjIJE=
-X-Google-Smtp-Source: ABdhPJzSwGsGfGepxGsiL+hQYZ1zqB9QAIz3cRvElmUbwzCWuT06q+OkKyQ0Ghm2bN5RhpEhNV6LxcX4Q3Vmty3OVwE=
-X-Received: by 2002:a9d:674b:: with SMTP id w11mr14327789otm.260.1624295710230;
- Mon, 21 Jun 2021 10:15:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <5c8da9d378dee39d9c6063713b093f51d271fa9d.1623825358.git.viresh.kumar@linaro.org>
- <c31424b7962608eb13f946a665ba6848c4986856.1623986349.git.viresh.kumar@linaro.org>
- <CAJZ5v0h37bs0xLUCeD7ZuZfXLPBx=6Mpr-Y+Ef=qcnDA4aoLbQ@mail.gmail.com>
- <20210621030949.tng5xzq7dm7ngaez@vireshk-i7> <CAJZ5v0jM3nusF1fjcMHLRHPk2PhFErhBXijpWHiSNnunzPFjeA@mail.gmail.com>
- <CAJZ5v0iHDk6Te0KogYToWSyquNcpS2edQzp1UbW3KFAVL31Hnw@mail.gmail.com>
-In-Reply-To: <CAJZ5v0iHDk6Te0KogYToWSyquNcpS2edQzp1UbW3KFAVL31Hnw@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 21 Jun 2021 19:14:59 +0200
-Message-ID: <CAJZ5v0g2tCZptcqh+c55YYiO7rDHmZivMLsmpq_7005zNPN1xg@mail.gmail.com>
-Subject: Re: [PATCH V3 2/3] cpufreq: intel_pstate: Migrate away from
- ->stop_cpu() callback
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=vLkEnphqch5/WsWN5BRAkVt/dJhdo5e4NycFb+xafoc=;
+        b=Ts/NZ37xpQ5VRvk///krST4Lab4mtHUYrjEoXlgDByP5/0A8fOpvO1iXSuSmhSf230
+         4/AYxkxy3NJ/GI2Us1SCyIs8XeUs9XKqqY07UsJNf6Ws+/1s3fDuE+bnoxW0VFVXAwWb
+         Zek0nYB0JWtS8JJcXBe1XWNga0XXQfib8XWnvfJWP6MbVZK28dnj+h6GtgyF6GGKIidm
+         UVKeHwf3ialyTgQwMUTi1U7xZlvmJhOviSt9jCD4k2uECdiR3sIhrHd6jjlkZTdZbEMU
+         p5hLXY5bHTCQlsEQaihOQy2MZ1qYYkZ3lGHZW4j6denzQdStSowlyXE6ya+YUmlUL/NS
+         O8cQ==
+X-Gm-Message-State: AOAM532tfNAOErAiSs7BLDdyd9IHepjfY7DirSWj3/b/lYnRMwPHLnu4
+        3pE1NqaB5+UHm98tCJFD/hs=
+X-Google-Smtp-Source: ABdhPJwvOIA9ogwRcnjSdum17wLFfB+m+5aYA6iAJBPiIuAoSStO88zQf6F3E183cvxrYGY7p0CCkA==
+X-Received: by 2002:a17:90a:cd03:: with SMTP id d3mr28166990pju.31.1624295721539;
+        Mon, 21 Jun 2021 10:15:21 -0700 (PDT)
+Received: from localhost ([103.248.31.165])
+        by smtp.gmail.com with ESMTPSA id i20sm900484pfo.130.2021.06.21.10.15.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 10:15:21 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 22:45:18 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Shanker R Donthineni <sdonthineni@nvidia.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>, alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Sinan Kaya <okaya@kernel.org>,
         Len Brown <lenb@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dirk Brandewie <dirk.brandewie@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v7 2/8] PCI: Add new array for keeping track of ordering
+ of reset methods
+Message-ID: <20210621171518.vs4h4y6ag2benlwp@archlinux>
+References: <20210608054857.18963-3-ameynarkhede03@gmail.com>
+ <20210617231305.GA3139128@bjorn-Precision-5520>
+ <20210618172242.vs3qwimjpcicb4m4@archlinux>
+ <1fb0a184-908c-5f98-ef6d-74edc602c2e0@nvidia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1fb0a184-908c-5f98-ef6d-74edc602c2e0@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 4:26 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+On 21/06/21 10:02AM, Shanker R Donthineni wrote:
+> Hi Bjorn,
 >
-> On Mon, Jun 21, 2021 at 4:17 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> On 6/18/21 12:22 PM, Amey Narkhede wrote:
+> > I wonder if this would be easier if dev->reset_methods[] contained
+> > indices into pci_reset_fn_methods[], highest priority first, with the
+> > priority being determined when dev->reset_methods[] is updated.  For
+> > example:
 > >
-> > On Mon, Jun 21, 2021 at 5:09 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > >
-> > > On 18-06-21, 14:00, Rafael J. Wysocki wrote:
-> > > > On Fri, Jun 18, 2021 at 5:22 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
-> > > > >
-> > > > > commit 367dc4aa932b ("cpufreq: Add stop CPU callback to cpufreq_driver
-> > > > > interface") added the stop_cpu() callback to allow the drivers to do
-> > > > > clean up before the CPU is completely down and its state can't be
-> > > > > modified.
-> > > > >
-> > > > > At that time the CPU hotplug framework used to call the cpufreq core's
-> > > > > registered notifier for different events like CPU_DOWN_PREPARE and
-> > > > > CPU_POST_DEAD. The stop_cpu() callback was called during the
-> > > > > CPU_DOWN_PREPARE event.
-> > > > >
-> > > > > This is no longer the case, cpuhp_cpufreq_offline() is called only once
-> > > > > by the CPU hotplug core now and we don't really need to separately
-> > > > > call stop_cpu() for cpufreq drivers.
-> > > > >
-> > > > > Migrate to using the exit() and offline() callbacks instead of
-> > > > > stop_cpu().
-> > > > >
-> > > > > We need to clear util hook from both the callbacks, exit() and
-> > > > > offline(), since it is possible that only exit() gets called sometimes
-> > > > > (specially on errors) or both get called at other times.
-> > > > > intel_pstate_clear_update_util_hook() anyway have enough protection in
-> > > > > place if it gets called a second time and will return early then.
-> > > > >
-> > > > > Cc: Dirk Brandewie <dirk.brandewie@gmail.com>
-> > > > > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> > > > > ---
-> > > > > V2->V3:
-> > > > > - Update intel_pstate_cpu_offline() as well.
-> > > > > - Improved commit log.
-> > > > >
-> > > > >  drivers/cpufreq/intel_pstate.c | 12 ++++--------
-> > > > >  1 file changed, 4 insertions(+), 8 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-> > > > > index 0e69dffd5a76..8f8a2d9d7daa 100644
-> > > > > --- a/drivers/cpufreq/intel_pstate.c
-> > > > > +++ b/drivers/cpufreq/intel_pstate.c
-> > > > > @@ -2335,6 +2335,8 @@ static int intel_pstate_cpu_offline(struct cpufreq_policy *policy)
-> > > > >
-> > > > >         pr_debug("CPU %d going offline\n", cpu->cpu);
-> > > > >
-> > > > > +       intel_pstate_clear_update_util_hook(policy->cpu);
-> > > > > +
-> > > > >         if (cpu->suspended)
-> > > > >                 return 0;
-> > > > >
-> > > > > @@ -2374,17 +2376,12 @@ static int intel_pstate_cpu_online(struct cpufreq_policy *policy)
-> > > > >         return 0;
-> > > > >  }
-> > > > >
-> > > > > -static void intel_pstate_stop_cpu(struct cpufreq_policy *policy)
-> > > > > -{
-> > > > > -       pr_debug("CPU %d stopping\n", policy->cpu);
-> > > > > -
-> > > > > -       intel_pstate_clear_update_util_hook(policy->cpu);
-> > > > > -}
-> > > > > -
-> > > > >  static int intel_pstate_cpu_exit(struct cpufreq_policy *policy)
-> > > > >  {
-> > > > >         pr_debug("CPU %d exiting\n", policy->cpu);
-> > > > >
-> > > > > +       intel_pstate_clear_update_util_hook(policy->cpu);
-> > > >
-> > > > This change is not needed now, because ->offline always runs before
-> > > > ->exit if present.
-> > >
-> > > Not necessarily, we don't call ->offline() for many error paths in
-> > > cpufreq_online().
+> >   const struct pci_reset_fn_method pci_reset_fn_methods[] = {
+> >     { },                                                     # 0
+> >     { &pci_dev_specific_reset, .name = "device_specific" },  # 1
+> >     { &pci_dev_acpi_reset, .name = "acpi" },                 # 2
+> >     { &pcie_reset_flr, .name = "flr" },                      # 3
+> >     { &pci_af_flr, .name = "af_flr" },                       # 4
+> >     { &pci_pm_reset, .name = "pm" },                         # 5
+> >     { &pci_reset_bus_function, .name = "bus" },              # 6
+> >   };
 > >
-> > I guess you mean the error paths in cpufreq_offline()?
+> >   dev->reset_methods[] = [1, 2, 3, 4, 5, 6]
+> >     means all reset methods are supported, in the default priority
+> >     order
+> >
+> >   dev->reset_methods[] = [1, 0, 0, 0, 0, 0]
+> >     means only pci_dev_specific_reset is supported
+> >
+> >   dev->reset_methods[] = [3, 5, 0, 0, 0, 0]
+> >     means pcie_reset_flr and pci_pm_reset are supported, in that
+> >     priority order
+> What about keeping two bitmap fields 'resets_supported' and 'resets_enabled' in
+> pci_dev object and mange it through sysfs and probe helper function. We can avoid
+> two loops multiple paces and takes only 2Bytes of memory to keep track resets.
 >
-> s/offline/online/
+> resets_supported  ---> initialized during pci_dev setup
+> resets_enabled ---> Exposed to userspace through sysfs by default set to resets_supported
 >
-> > IMO this is confusing/broken, because ->offline should always be
-> > called after ->online has returned success.
-> >
-> > > offline() only comes into play after driver is registered properly once.
-> >
-> > The relevant intel_pstate case is a ->setpolicy driver where
-> > ->setpolicy or ->online, if successful, need to be followed by
-> > ->offline.
-> >
-> > If ->setpolicy is successful in the cpufreq_online() path, the entire
-> > cpufreq_online() is successful and the error paths in question are not
-> > executed.
-> >
-> > So the change I was talking about is not needed AFAICS.
+> include/linux/pci.h:
+> ------------------------
+> /* Different types of PCI resets possible, lower number is higher priority */
+> #define PCI_RESET_METHOD_DEVSPEC     0
+> #define PCI_RESET_METHOD_ACPI            1
+> #define PCI_RESET_METHOD_FLR              2
+> #define PCI_RESET_METHOD_Af_FLR         3
+> #define PCI_RESET_METHOD_PM               4
+> #define PCI_RESET_METHOD_BUS             5
+> #define PCI_RESET_METHOD_MAX            6
+>
+> struct pci_dev {
+>     ...
+>         u8              resets_supported;
+>         u8              resets_enabled;
+> };
+>
+> static inline bool pci_reset_supported(struct pci_dev *dev)
+> {
+>         return !!(dev->resets_supported);
+> }
+>
+>
+> drivers/pci/pci.c:
+> --------------------
+> const struct pci_reset_fn_method pci_reset_fn_methods[PCI_RESET_METHOD_MAX] = {
+>         [PCI_RESET_METHOD_DEVSPEC] = { &pci_dev_specific_reset,
+>                                                                    .name = "device_specific" },
+>         [PCI_RESET_METHOD_ACPI] = { &pci_dev_acpi_reset, .name = "acpi" },
+>         [PCI_RESET_METHOD_FLR] = { &pcie_reset_flr, .name = "flr" },
+>         [PCI_RESET_METHOD_Af_FLR] = { &pci_af_flr, .name = "af_flr" },
+>         [PCI_RESET_METHOD_PM] = { &pci_pm_reset, .name = "pm" },
+>         [PCI_RESET_METHOD_BUS] = { &pci_reset_bus_function, .name = "bus" }
+> };
+>
+>
+> void pci_init_reset_methods(struct pci_dev *dev)
+> {
+>         int i, rc;
+>
+>         BUILD_BUG_ON(ARRAY_SIZE(pci_reset_fn_methods) != PCI_RESET_METHOD_MAX);
+>         might_sleep();
+>
+>         for (i = 0; i < PCI_RESET_METHOD_MAX; i++) {
+>                 rc = pci_reset_fn_methods[i].reset_fn(dev, PCI_RESET_PROBE);
+>                 if (!rc)
+>                         dev->resets_supported |= BIT(i);
+>                 else if (rc != -ENOTTY)
+>                         break;
+>         }
+>         dev->resets_enabled = dev->resets_supported;
+> }
+>
+> int __pci_reset_function_locked(struct pci_dev *dev)
+> {
+>         int i, rc = -ENOTTY;
+>
+>         might_sleep();
+>
+>         for (i = 0; i < PCI_RESET_METHOD_MAX; i++) {
+>                 if (dev->resets_enabled & BIT(i)) {
+>                         rc = pci_reset_fn_methods[i].reset_fn(dev, 0);
+>                         if (rc != -ENOTTY)
+>                                 return rc;
+>                 }
+>         }
+>
+>         if (rc == -ENOTTY)
+>                 pci_warn(dev, "No reset happened reason %s\n",
+>                          !!dev->resets_supported ?
+>                          "disabled by user" : "not supported");
+>
+>         return rc;
+> }
+>
+> drivers/pci/pci-sysfs.c
+> ----------------------------
+> static ssize_t reset_method_store(struct device *dev,
+>                                   struct device_attribute *attr,
+>                                   const char *buf, size_t count)
+> {
+>         struct pci_dev *pdev = to_pci_dev(dev);
+>         u8 resets_enabled = 0;
+> ...
+>         if (sysfs_streq(options, "default")) {
+>                 pdev->resets_enabled = pdev->resets_supported;
+>                 goto set_reset_methods;
+>         }
+>
+>         while ((name = strsep(&options, ",")) != NULL) {
+>                 if (sysfs_streq(name, ""))
+>                         continue;
+>                 name = strim(name);
+>
+>                 for (i = 0; i < PCI_RESET_METHOD_MAX; i++) {
+>                         if ((pdev->resets_supported & BIT(i)) &&
+>                             sysfs_streq(name, pci_reset_fn_methods[i].name)) {
+>                                 resets_enabled |= BIT(i);
+>                                 break;
+>                         }
+>                 }
+> ...
+>         }
+>
+> set_reset_methods:
+>         kfree(options);
+>         pdev->resets_enabled =  resets_enabled;
+>         return count;
+> }
+>
+> static ssize_t reset_method_show(struct device *dev,
+>                                  struct device_attribute *attr,
+>                                  char *buf)
+> {
+>         struct pci_dev *pdev = to_pci_dev(dev);
+>         ssize_t len = 0;
+>         int i;
+>
+>         for (i = 0; i < PCI_RESET_METHOD_MAX; i++) {
+>                 if (pdev->resets_enabled & BIT(i))
+>                         len += sysfs_emit_at(buf, len, "%s%s",
+>                                              len ? "," : "",
+>                                              pci_reset_fn_methods[i].name);
+>         }
+>         len += sysfs_emit_at(buf, len, len ? "\n" : "");
+>
+>         return len;
+> }
+>
+Thank you for the idea.
+Actually that would be coming full circle because Alex, Raphael and I
+tried similar approach earlier while prototyping for v2 but this implementation
+does look better than what I had at that time.
 
-Regardless of all of the above, the ->online, ->offline and ->exit
-callback routines are used by intel_pstate both in the active mode and
-the passive mode, so some more work is needed to migrate it away from
-using ->stop_cpu.
+Thanks,
+Amey
