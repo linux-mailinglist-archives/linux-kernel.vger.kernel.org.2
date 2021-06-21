@@ -2,100 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EED4C3AE1D0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 05:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 918493AE1D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 05:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbhFUDN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 23:13:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47413 "EHLO
+        id S230040AbhFUDSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 23:18:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50935 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230316AbhFUDN5 (ORCPT
+        by vger.kernel.org with ESMTP id S229901AbhFUDSS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 23:13:57 -0400
+        Sun, 20 Jun 2021 23:18:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624245103;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        s=mimecast20190719; t=1624245364;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=E6hTJAwE1ThQJZthX/koVPnKeQXaG7vgSbRZcgpc+Oo=;
-        b=W/rLHGL7ZgySs2WaKMY5UxGPE4JwVFvSbvBRo5fKQDHQHhRbRWZXsiyV3KKnNd1ieAvyaG
-        Q5yXUkccM/QFecsdc7BEQifxf75KVGTpOgP3l3dtoIT7q1K4os5vwSvJ81QrVoKZVSd/Wf
-        pGdA4BDWMuzvlcSfm/A3924ctwgBBhM=
+        bh=B2ArXRtPJQk6BlyRJnDmaMoLiN4BggSlTFGtO4czGec=;
+        b=DSjqlKWhGaynEgp/Bv2rv6ToF3WL3YpOfy6rSSOnKb8Vo4aIGCITqEg4i3c0L1dABqL724
+        1pJqsSYdjboxdetmX+khJ+XRYROCROcf3zlLsOdVxjFCkOgqIgq/uOgdl0qF8qet/IiRZo
+        mpNDJA9eO/7XQFtSXVV9S17NbcWg/Po=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-513-vUu3RFF5PXaJKh8IqliPfg-1; Sun, 20 Jun 2021 23:11:42 -0400
-X-MC-Unique: vUu3RFF5PXaJKh8IqliPfg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+ us-mta-517-k9RcUUAnOGa-LzfWJ-xwQg-1; Sun, 20 Jun 2021 23:16:00 -0400
+X-MC-Unique: k9RcUUAnOGa-LzfWJ-xwQg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DF467100B3AC;
-        Mon, 21 Jun 2021 03:11:40 +0000 (UTC)
-Received: from gshan.redhat.com (vpn2-54-84.bne.redhat.com [10.64.54.84])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7258460C9D;
-        Mon, 21 Jun 2021 03:11:31 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 35F821084F57;
+        Mon, 21 Jun 2021 03:15:59 +0000 (UTC)
+Received: from [10.64.54.84] (vpn2-54-84.bne.redhat.com [10.64.54.84])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8396C5D703;
+        Mon, 21 Jun 2021 03:15:53 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [RFC PATCH] mm/page_reporting: Adjust threshold according to
+ MAX_ORDER
+To:     David Hildenbrand <david@redhat.com>,
+        Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        shan.gavin@gmail.com, Anshuman Khandual <anshuman.khandual@arm.com>
+References: <20210601033319.100737-1-gshan@redhat.com>
+ <76516781-6a70-f2b0-f3e3-da999c84350f@redhat.com>
+ <0c0eb8c8-463d-d6f1-3cec-bbc0af0a229c@redhat.com>
+ <b45b26ea-a6ac-934c-2467-c6e829b5d3ad@redhat.com>
+ <CAKgT0Ue9SQ8=ju1m6ftKTb4Tai9EJ5NQhnB_uk-DzMc19-R4cQ@mail.gmail.com>
+ <63c06446-3b10-762c-3a29-464854b74e08@redhat.com>
+ <0cb302f1-7fb6-e47c-e138-b7a03f2b02e2@redhat.com>
+ <33b441b2-f10d-a7fb-8163-df2afbf6527d@redhat.com>
+ <9e553b30-ce18-df65-bd3c-c68eaa4d0d91@redhat.com>
+ <3adbcad8-1016-cf48-4574-799de0bba6e4@redhat.com>
+ <249e5814-e644-3d82-9b38-232928af4dbd@redhat.com>
 From:   Gavin Shan <gshan@redhat.com>
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, alexander.duyck@gmail.com,
-        akpm@linux-foundation.org, david@redhat.com,
-        anshuman.khandual@arm.com, catalin.marinas@arm.com,
-        will@kernel.org, shan.gavin@gmail.com
-Subject: [PATCH 3/3] arm64: mm: Specify smaller page reporting order
-Date:   Mon, 21 Jun 2021 13:11:52 +0800
-Message-Id: <20210621051152.305224-4-gshan@redhat.com>
-In-Reply-To: <20210621051152.305224-1-gshan@redhat.com>
-References: <20210621051152.305224-1-gshan@redhat.com>
+Message-ID: <5ee628f8-772c-b1ed-557c-68d6a4a83415@redhat.com>
+Date:   Mon, 21 Jun 2021 15:16:54 +1000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <249e5814-e644-3d82-9b38-232928af4dbd@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The page reporting order is stick to @pageblock_order and its size
-is 512MB when 64KB base page size is chosen. It also means the
-page reporting won't be started if current freeing page can't come
-up with a 512MB free area. It's hard when the system memory becomes
-fragmented.
+On 6/16/21 10:07 PM, David Hildenbrand wrote:
+>> Indeed. 512MB pageblocks are rare, especially on systems which have been
+>> up and running for long time.
+>>
+>> The free page reporting starts from guest. Taking an extreme case: guest has
+>> 512MB memory and it's backed by one THP on host. The free page reporting won't
+>> work at all.
+>>
+>> Besides, it seems free page reporting isn't guranteed to work all the time.
+>> For example, on system where we have 4KB base page size. Freeing individual
+>> 4KB pages can't come up with a free 2MB pageblock due to fragmentation.
+>> In this case, the free'd page won't be reported immediately, but might be
+>> reported after swapping or compaction due to memory pressure. The free page
+>> isn't reported immediately at least.
+> 
+> Exactly, it's a pure optimization that won't work, especially when guest memory is heavily fragmented. There has to be a balance between reclaiming free memory in the hypervisor, degrading VM performance, and overhead of the feature.
+> 
+> Further, there are no guarantees when a VM will reuse the memory again. In the worst case, all VMs that reported free pages reuse memory at the same time. In that case, one definitely needs sufficient backend memory in the hypervisor (-> swap) to not run out of memory, and performance will be degraded.
+> 
+> As MST once phrased it, if the feature has a higher overhead than swapping in the hypervisor, it's of little use.
+> 
 
-This specifies the page reporting order to 5 when the 64KB base page
-size is chosen, corresponding to huge page size with 4KB base page
-size, so that page reporting has more chance to work.
+Thanks for the explanation and sorry again for late response, David. I took
+last week as holiday and didn't work too much.
 
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Signed-off-by: Gavin Shan <gshan@redhat.com>
----
- arch/arm64/include/asm/page.h | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+However, it's nice to have unused pages returned back to the host. These pages
+can be used by other VMs or applications running on the host.
 
-diff --git a/arch/arm64/include/asm/page.h b/arch/arm64/include/asm/page.h
-index 012cffc574e8..b8386e7d7d47 100644
---- a/arch/arm64/include/asm/page.h
-+++ b/arch/arm64/include/asm/page.h
-@@ -18,6 +18,19 @@
- struct page;
- struct vm_area_struct;
- 
-+/*
-+ * The page reporting won't be started if the freeing page can't come up
-+ * with a huge page, which is 512MB with 64KB base page size. It's hard
-+ * to have 512MB free area when the memory becomes fragmented, stop page
-+ * reporting from working properly. So we choose smaller page reporting
-+ * order, which is same to the huge page size (2MB) with 4KB base page
-+ * size. However, more overheads will be introduced because page reporting
-+ * will be running more frequently.
-+ */
-+#if defined(CONFIG_PAGE_REPORTING) && defined(CONFIG_ARM64_64K_PAGES)
-+#define PAGE_REPORTING_ORDER 5
-+#endif
-+
- extern void copy_page(void *to, const void *from);
- extern void clear_page(void *to);
- 
--- 
-2.23.0
+>>
+>> David, how about taking your suggestion to have different threshold size only
+>> for arm64 (64KB base page size). The threshold will be smaller than pageblock_order
+>> for sure. There are two ways to do so and please let me know which is the preferred
+>> way to go if you (and Alex) agree to do it.
+>>
+>> (a) Introduce CONFIG_PAGE_REPORTING_ORDER for individual archs to choose the
+>>       value. The threshold falls back to pageblock_order if isn't configurated.
+>> (b) Rename PAGE_REPORTING_MIN_ORDER to PAGE_REPORTING_ORDER. archs can decide
+>>       its value. If it's not provided by arch, it falls back to pageblock_order.
+>>
+> 
+> I wonder if we could further define it as a (module/cmdline) parameter and make it configurable when booting. The default could then be set based on CONFIG_PAGE_REPORTING_ORDER. CONFIG_PAGE_REPORTING_ORDER would default to pageblock_order (if easily possible) and could be special-cases to arm64 with 64k.
+> 
+
+The formal patches are posted for review. I used macro PAGE_REPORTING_ORDER
+instead of CONFIG_PAGE_REPORTING_ORDER. The page reporting order (threshold)
+is also exported as a module parameter, as you suggested.
+
+>> By the way, I recently had some performance testing on different page sizes.
+>> We get much more performance gain from 64KB (vs 4KB) page size in guest than
+>> 512MB (vs 2MB) THP on host. It means the performance won't be affected too
+>> much even the 512MB THP is splitted on arm64 host.
+> 
+> Yes, if one is even able to get 512MB THP populated in the hypervisor -- because once again, 512MB THP are just a bad fit for many workloads.
+> 
+
+Yeah, indeed :)
+
+Thanks,
+Gavin
 
