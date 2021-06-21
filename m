@@ -2,70 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C543AF82C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 00:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A92C33AF83B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 00:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232102AbhFUWCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 18:02:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48324 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231715AbhFUWCS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 18:02:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id EA40C6128C;
-        Mon, 21 Jun 2021 22:00:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624312804;
-        bh=vX+RaGheyY1gsEhdZsoG6F0qs/k+AUQKs69sAR768xE=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=jTff1tasDIgFelIUw1rB8efd+bqGw/zY7+j2UEW3aBeabY0c6j22pYpcoSgW0/CC5
-         wZ1hGkVDpm7gr8zaCCiqsDtrWQ7mT+YhkEgMq3okp4yaNZsMMz0NJ4K3NG1K9rIlHD
-         EuKyAt655iNB0YkzW1dsHEQJ/KMFk+BJMAyXQUqaMd2g7KCPuaM2aT4ExIVX8Sq1mp
-         S/f9ZiQ1MZ/cF6ixTN6d18VDj1neaqd/0WtWSmJ/8TV7xGUyaeF1C16qv4wryZpRV5
-         sPy9u+s9AsVsVyHP9ShZjHg9u55SRAZTWfn76/SlCxECF5lzbvTXtO3waAWbZd0/0S
-         dLa3OZpb2+tVw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E294160952;
-        Mon, 21 Jun 2021 22:00:03 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S231143AbhFUWJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 18:09:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229789AbhFUWJX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 18:09:23 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4612CC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 15:07:08 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id g142so34404429qke.4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 15:07:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fX+yJFrM+YgrVjCOj6OzIvdUjYyOhfulkOktgGq/PlY=;
+        b=FR2yKrF+DGo/PlodcKHQZ/QoUiBzbgjQ8w9XOQzM2f2VMS06xpY9/FEtc310O2Pk5T
+         asjGSjxN5FhTn++sepdMoBKSM9a4ACGM6FOeCL50e7cDgeKVx3ank19JDEf/RzbM+AGb
+         lFhIAF7pQbRcQvmQu0f3kyT3zPQCjrnQN0QxMogSeXx4qqlypUfrPs+0UXwFO4uPws/H
+         RVr77ka2Hbak8Jvkw8RG9kr4NXcnElEwq9BsEXjcVSiql9cPBhYBDHmKF99RGsV8qGx/
+         GW4sXzDY54cG3IqvXOdWEsq/BejVEpGq4b2T2DPGk+Da4Vp8gtP/FP741LxrUJ3YyjqG
+         gf9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fX+yJFrM+YgrVjCOj6OzIvdUjYyOhfulkOktgGq/PlY=;
+        b=n6fVM5e6UftwICaV1a0DzXTcmqXX3d5unwkjeI2JC4SupESyUiPBST4aDQ8hFTEZys
+         xvaGK56QffJMVv585+NAy/TInM1e1jwQsbLIQylvsJaRPGswBRVT5sDEOn6FwmWpbpUs
+         5yPF41AmRkbasSWKmVgwWgP9HIVZSMm75tlXTSv/oHuVJAMxQaodRZxgAKDxVUQhextZ
+         porF5yDz2C6Qg6JsnxanQyogSxUv4tF0nfGIprUPFBIjP7PuqblMdkGMp1l79XJ0dyyF
+         ZN6w0JHON6vfdbuM5dBxck03Jt+kCaBFvrdOd3ZHnLxEtQnEiBlzlFC0Q7VuyQxOjQUs
+         5ifg==
+X-Gm-Message-State: AOAM530n4srrrxkSwhMumXyL/fattWhwK2u/w1N7wyU3KBUrfxid2X7K
+        FT+sigTRlIixv826ZwNnBGzkFKhvoWYd+xuZangkVQ==
+X-Google-Smtp-Source: ABdhPJyB5Yo0/EbFUom3OyDoOnDiFK3t2cDAcX5WOdjF3EgSMLrT8N/yFSCNsQXVX1+jQEfUxWf66pp3UH2a2hvyVWE=
+X-Received: by 2002:a25:be44:: with SMTP id d4mr400528ybm.497.1624313227049;
+ Mon, 21 Jun 2021 15:07:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] ibmvnic: Use strscpy() instead of strncpy()
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162431280392.22265.13378585860049565329.git-patchwork-notify@kernel.org>
-Date:   Mon, 21 Jun 2021 22:00:03 +0000
-References: <20210621213509.1404256-1-keescook@chromium.org>
-In-Reply-To: <20210621213509.1404256-1-keescook@chromium.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     davem@davemloft.net, drt@linux.ibm.com, sukadev@linux.ibm.com,
-        tlfalcon@linux.ibm.com, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20210402055745.3690281-1-varmam@google.com>
+In-Reply-To: <20210402055745.3690281-1-varmam@google.com>
+From:   Manish Varma <varmam@google.com>
+Date:   Mon, 21 Jun 2021 15:06:56 -0700
+Message-ID: <CAMyCerJ2wjdXeEP3iRaKOgXOm94rdqVkzAf5iy2cwpjMWVj0hA@mail.gmail.com>
+Subject: Re: [PATCH v3] fs: Improve eventpoll logging to stop indicting timerfd
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, kernel test robot <lkp@intel.com>,
+        Kelly Rossmoyer <krossmo@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hello Alexander and Thomas,
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+Please share if you have any further feedback on this patch, or if
+there's any other action required from my end to before this gets
+merged.
 
-On Mon, 21 Jun 2021 14:35:09 -0700 you wrote:
-> Since these strings are expected to be NUL-terminated and the buffers
-> are exactly sized (in vnic_client_data_len()) with no padding, strncpy()
-> can be safely replaced with strscpy() here, as strncpy() on
-> NUL-terminated string is considered deprecated[1]. This has the
-> side-effect of silencing a -Warray-bounds warning due to the compiler
-> being confused about the vlcd incrementing:
-> 
-> [...]
+Thanks,
+Manish
 
-Here is the summary with links:
-  - ibmvnic: Use strscpy() instead of strncpy()
-    https://git.kernel.org/netdev/net-next/c/ef2c3ddaa4ed
+On Thu, Apr 1, 2021 at 10:57 PM Manish Varma <varmam@google.com> wrote:
+>
+> timerfd doesn't create any wakelocks, but eventpoll can.  When it does,
+> it names them after the underlying file descriptor, and since all
+> timerfd file descriptors are named "[timerfd]" (which saves memory on
+> systems like desktops with potentially many timerfd instances), all
+> wakesources created as a result of using the eventpoll-on-timerfd idiom
+> are called... "[timerfd]".
+>
+> However, it becomes impossible to tell which "[timerfd]" wakesource is
+> affliated with which process and hence troubleshooting is difficult.
+>
+> This change addresses this problem by changing the way eventpoll
+> wakesources are named:
+>
+> 1) the top-level per-process eventpoll wakesource is now named "epoll:P"
+> (instead of just "eventpoll"), where P, is the PID of the creating
+> process.
+> 2) individual per-underlying-filedescriptor eventpoll wakesources are
+> now named "epollitemN:P.F", where N is a unique ID token and P is PID
+> of the creating process and F is the name of the underlying file
+> descriptor.
+>
+> All together that should be splitted up into a change to eventpoll and
+> timerfd (or other file descriptors).
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Co-developed-by: Kelly Rossmoyer <krossmo@google.com>
+> Signed-off-by: Kelly Rossmoyer <krossmo@google.com>
+> Signed-off-by: Manish Varma <varmam@google.com>
+> ---
+>  drivers/base/power/wakeup.c | 10 ++++++++--
+>  fs/eventpoll.c              | 10 ++++++++--
+>  include/linux/pm_wakeup.h   |  4 ++--
+>  3 files changed, 18 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/base/power/wakeup.c b/drivers/base/power/wakeup.c
+> index 01057f640233..3628536c67a5 100644
+> --- a/drivers/base/power/wakeup.c
+> +++ b/drivers/base/power/wakeup.c
+> @@ -216,13 +216,19 @@ EXPORT_SYMBOL_GPL(wakeup_source_remove);
+>  /**
+>   * wakeup_source_register - Create wakeup source and add it to the list.
+>   * @dev: Device this wakeup source is associated with (or NULL if virtual).
+> - * @name: Name of the wakeup source to register.
+> + * @fmt: format string for the wakeup source name
+>   */
+>  struct wakeup_source *wakeup_source_register(struct device *dev,
+> -                                            const char *name)
+> +                                            const char *fmt, ...)
+>  {
+>         struct wakeup_source *ws;
+>         int ret;
+> +       char name[128];
+> +       va_list args;
+> +
+> +       va_start(args, fmt);
+> +       vsnprintf(name, sizeof(name), fmt, args);
+> +       va_end(args);
+>
+>         ws = wakeup_source_create(name);
+>         if (ws) {
+> diff --git a/fs/eventpoll.c b/fs/eventpoll.c
+> index 7df8c0fa462b..7c35987a8887 100644
+> --- a/fs/eventpoll.c
+> +++ b/fs/eventpoll.c
+> @@ -312,6 +312,7 @@ struct ctl_table epoll_table[] = {
+>  };
+>  #endif /* CONFIG_SYSCTL */
+>
+> +static atomic_t wakesource_create_id  = ATOMIC_INIT(0);
+>  static const struct file_operations eventpoll_fops;
+>
+>  static inline int is_file_epoll(struct file *f)
+> @@ -1451,15 +1452,20 @@ static int ep_create_wakeup_source(struct epitem *epi)
+>  {
+>         struct name_snapshot n;
+>         struct wakeup_source *ws;
+> +       pid_t task_pid;
+> +       int id;
+> +
+> +       task_pid = task_pid_nr(current);
+>
+>         if (!epi->ep->ws) {
+> -               epi->ep->ws = wakeup_source_register(NULL, "eventpoll");
+> +               epi->ep->ws = wakeup_source_register(NULL, "epoll:%d", task_pid);
+>                 if (!epi->ep->ws)
+>                         return -ENOMEM;
+>         }
+>
+> +       id = atomic_inc_return(&wakesource_create_id);
+>         take_dentry_name_snapshot(&n, epi->ffd.file->f_path.dentry);
+> -       ws = wakeup_source_register(NULL, n.name.name);
+> +       ws = wakeup_source_register(NULL, "epollitem%d:%d.%s", id, task_pid, n.name.name);
+>         release_dentry_name_snapshot(&n);
+>
+>         if (!ws)
+> diff --git a/include/linux/pm_wakeup.h b/include/linux/pm_wakeup.h
+> index aa3da6611533..cb91c84f6f08 100644
+> --- a/include/linux/pm_wakeup.h
+> +++ b/include/linux/pm_wakeup.h
+> @@ -95,7 +95,7 @@ extern void wakeup_source_destroy(struct wakeup_source *ws);
+>  extern void wakeup_source_add(struct wakeup_source *ws);
+>  extern void wakeup_source_remove(struct wakeup_source *ws);
+>  extern struct wakeup_source *wakeup_source_register(struct device *dev,
+> -                                                   const char *name);
+> +                                                   const char *fmt, ...);
+>  extern void wakeup_source_unregister(struct wakeup_source *ws);
+>  extern int wakeup_sources_read_lock(void);
+>  extern void wakeup_sources_read_unlock(int idx);
+> @@ -137,7 +137,7 @@ static inline void wakeup_source_add(struct wakeup_source *ws) {}
+>  static inline void wakeup_source_remove(struct wakeup_source *ws) {}
+>
+>  static inline struct wakeup_source *wakeup_source_register(struct device *dev,
+> -                                                          const char *name)
+> +                                                          const char *fmt, ...)
+>  {
+>         return NULL;
+>  }
+> --
+> 2.31.0.208.g409f899ff0-goog
+>
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
 
-
+-- 
+Manish Varma | Software Engineer | varmam@google.com | 650-686-0858
