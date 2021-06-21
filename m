@@ -2,242 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF98C3AF645
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 21:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 403563AF647
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 21:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231398AbhFUTlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 15:41:12 -0400
-Received: from mga17.intel.com ([192.55.52.151]:62776 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230520AbhFUTlK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 15:41:10 -0400
-IronPort-SDR: OI+aHuBswq84ZeIVlp9xC7JG7Heat2ihn8X9V5KwUmKXQD/CutkCe0k6mQXcjWjrApY/qX0hhn
- QjfAUeu41bqQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="187299327"
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208";a="187299327"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 12:38:55 -0700
-IronPort-SDR: +BqhPqjL6hyzI/EJKmIc/bigYaE2VmL8r/ulqMx9Szs/WWEihAq0b9PfKju6CPnupC86EwWFs1
- A6Rwl5VdQr7g==
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208";a="486617922"
-Received: from twinkler-lnx.jer.intel.com ([10.12.91.138])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 12:38:53 -0700
-From:   Tomas Winkler <tomas.winkler@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Alexander Usyskin <alexander.usyskin@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Tomas Winkler <tomas.winkler@intel.com>
-Subject: [char-misc-next v2 2/2] mei: revamp mei extension header structure layout.
-Date:   Mon, 21 Jun 2021 22:37:56 +0300
-Message-Id: <20210621193756.134027-2-tomas.winkler@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210621193756.134027-1-tomas.winkler@intel.com>
-References: <20210621193756.134027-1-tomas.winkler@intel.com>
+        id S231481AbhFUTlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 15:41:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230520AbhFUTlg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 15:41:36 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EFF6C061574;
+        Mon, 21 Jun 2021 12:39:21 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id y21so3288751plb.4;
+        Mon, 21 Jun 2021 12:39:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fw8e0QGAyBFyQwC0T6EatUmLOF1fUFPjIT22kDbtqW0=;
+        b=qwG9NpTVN83UAvrRCZPveYHBZdAfHjqEl0bHubMuURwCAKtSgiIU2pFN8kjOmm8G7d
+         td3iFjCpdOl4Jx22sspGPUUyn85gZxn0iBFeW6vjT6f6AmFJZS4ihzwJv3w7DMM7QT0Y
+         GKBOO08rfwu3vHQeO/VORztw2ESbIQnhYvYqACHH3YKF712vX9tTOFXX8TpmyFmkW4ph
+         YZ6GKrOtVF4TUzokp63Z56BM1ZutmMGWxO298EasDu5KBLP6IpaAVlJr0Po4GWhSElCV
+         7rlax4oVPdBfSRo7XYYT03KqmPzmBPAQaChWk10f3PbnEUezeM7etjb/F2Dl+oIca9p9
+         ZL1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fw8e0QGAyBFyQwC0T6EatUmLOF1fUFPjIT22kDbtqW0=;
+        b=D1Hq+ruZbOjZWXjSA6CmokukKQS0aVjqM78sKQZ4Lr+An60ZCACOgaKuhH8w/fDKft
+         yMja12c5foil2qQbFf4kgAX3VuJjyiPtstIuRAF2//kHEJkyhlv4jATneNQ1YCuqo3qt
+         P4ubUFtRR7nuBDr7SMHaRL4sEdvnXy0hAkluKhiasDmJVCGxDUMX5nO/FAWJ3JW49RWk
+         qit+i1Gs40v90IK+qQqYkPRmnsRHlaCNKSWjLHPTRkKZlHDVEkRaSk2JZWDyWzsYoQBe
+         fQ0n2V8cpxiAEOr/CspkDcIbYdr+1XjLzcZGEB7R4S618hYw4PgrTT1Q8P8CTU2Hw0FZ
+         hOtg==
+X-Gm-Message-State: AOAM530mEGWXnxXVkZYpbcPo1nhISdM0z1sr+XlxAsOg0XrmsmhUZ/oN
+        zcSqNc0kqrvy3sxnj/2ecTT5EXtF6ik=
+X-Google-Smtp-Source: ABdhPJwb9qcdX1mAgaEHhLd2n8/gbzdz2XewzZKvvFfs+yajTPbXnKE0Jtfw0UPctg1wRFv3JebVFg==
+X-Received: by 2002:a17:90a:cc08:: with SMTP id b8mr143348pju.128.1624304360776;
+        Mon, 21 Jun 2021 12:39:20 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id n129sm15759882pfn.167.2021.06.21.12.39.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 12:39:20 -0700 (PDT)
+Subject: Re: [PATCH 5.12 000/178] 5.12.13-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210621154921.212599475@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <eecadf15-5a8f-696f-46c2-349bf6bd91b3@gmail.com>
+Date:   Mon, 21 Jun 2021 12:39:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210621154921.212599475@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The mei extension header was build as array of flexible structures
-which will not work if actually more headers are added.
-(Currently only vtag header was used).
-Sparse reports:
+On 6/21/21 9:13 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.12.13 release.
+> There are 178 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 23 Jun 2021 15:48:46 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.13-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-drivers/misc/mei/hw.h:253:32: warning: array of flexible structures
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
-Use basic type u8 for the variable sized extension.
-Define explicitly mei_ext_hdr_vtag structure.
-And also fix mei_ext_next() function to point correctly to the
-end of the header.
-
-Note: the headers are part of firmware interface and need to be __packed.
-
-Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
----
-V2:
-1. Move kdoc fix to a different patch.
-2. Update the commit message.
-
- drivers/misc/mei/client.c    | 16 +++++++++-------
- drivers/misc/mei/hw.h        | 26 +++++++++++++++++++-------
- drivers/misc/mei/interrupt.c | 23 ++++++++++-------------
- 3 files changed, 38 insertions(+), 27 deletions(-)
-
-diff --git a/drivers/misc/mei/client.c b/drivers/misc/mei/client.c
-index 18e49479d8b0..96f4e59c32a5 100644
---- a/drivers/misc/mei/client.c
-+++ b/drivers/misc/mei/client.c
-@@ -1726,12 +1726,15 @@ int mei_cl_read_start(struct mei_cl *cl, size_t length, const struct file *fp)
- 	return rets;
- }
- 
--static inline u8 mei_ext_hdr_set_vtag(struct mei_ext_hdr *ext, u8 vtag)
-+static inline u8 mei_ext_hdr_set_vtag(void *ext, u8 vtag)
- {
--	ext->type = MEI_EXT_HDR_VTAG;
--	ext->ext_payload[0] = vtag;
--	ext->length = mei_data2slots(sizeof(*ext));
--	return ext->length;
-+	struct mei_ext_hdr_vtag *vtag_hdr = ext;
-+
-+	vtag_hdr->hdr.type = MEI_EXT_HDR_VTAG;
-+	vtag_hdr->hdr.length = mei_data2slots(sizeof(*vtag_hdr));
-+	vtag_hdr->vtag = vtag;
-+	vtag_hdr->reserved = 0;
-+	return vtag_hdr->hdr.length;
- }
- 
- /**
-@@ -1745,7 +1748,6 @@ static struct mei_msg_hdr *mei_msg_hdr_init(const struct mei_cl_cb *cb)
- {
- 	size_t hdr_len;
- 	struct mei_ext_meta_hdr *meta;
--	struct mei_ext_hdr *ext;
- 	struct mei_msg_hdr *mei_hdr;
- 	bool is_ext, is_vtag;
- 
-@@ -1764,7 +1766,7 @@ static struct mei_msg_hdr *mei_msg_hdr_init(const struct mei_cl_cb *cb)
- 
- 	hdr_len += sizeof(*meta);
- 	if (is_vtag)
--		hdr_len += sizeof(*ext);
-+		hdr_len += sizeof(struct mei_ext_hdr_vtag);
- 
- setup_hdr:
- 	mei_hdr = kzalloc(hdr_len, GFP_KERNEL);
-diff --git a/drivers/misc/mei/hw.h b/drivers/misc/mei/hw.h
-index 47ef2429a4bc..dfd60c916da0 100644
---- a/drivers/misc/mei/hw.h
-+++ b/drivers/misc/mei/hw.h
-@@ -235,9 +235,8 @@ enum mei_ext_hdr_type {
- struct mei_ext_hdr {
- 	u8 type;
- 	u8 length;
--	u8 ext_payload[2];
--	u8 hdr[];
--};
-+	u8 data[];
-+} __packed;
- 
- /**
-  * struct mei_ext_meta_hdr - extend header meta data
-@@ -250,8 +249,21 @@ struct mei_ext_meta_hdr {
- 	u8 count;
- 	u8 size;
- 	u8 reserved[2];
--	struct mei_ext_hdr hdrs[];
--};
-+	u8 hdrs[];
-+} __packed;
-+
-+/**
-+ * struct mei_ext_hdr_vtag - extend header for vtag
-+ *
-+ * @hdr: standard extend header
-+ * @vtag: virtual tag
-+ * @reserved: reserved
-+ */
-+struct mei_ext_hdr_vtag {
-+	struct mei_ext_hdr hdr;
-+	u8 vtag;
-+	u8 reserved;
-+} __packed;
- 
- /*
-  * Extended header iterator functions
-@@ -266,7 +278,7 @@ struct mei_ext_meta_hdr {
-  */
- static inline struct mei_ext_hdr *mei_ext_begin(struct mei_ext_meta_hdr *meta)
- {
--	return meta->hdrs;
-+	return (struct mei_ext_hdr *)meta->hdrs;
- }
- 
- /**
-@@ -295,7 +307,7 @@ static inline bool mei_ext_last(struct mei_ext_meta_hdr *meta,
-  */
- static inline struct mei_ext_hdr *mei_ext_next(struct mei_ext_hdr *ext)
- {
--	return (struct mei_ext_hdr *)(ext->hdr + (ext->length * 4));
-+	return (struct mei_ext_hdr *)((u8 *)ext + (ext->length * 4));
- }
- 
- /**
-diff --git a/drivers/misc/mei/interrupt.c b/drivers/misc/mei/interrupt.c
-index aab3ebfa9fc4..a67f4f2d33a9 100644
---- a/drivers/misc/mei/interrupt.c
-+++ b/drivers/misc/mei/interrupt.c
-@@ -123,13 +123,13 @@ static int mei_cl_irq_read_msg(struct mei_cl *cl,
- 
- 	if (mei_hdr->extended) {
- 		struct mei_ext_hdr *ext;
--		struct mei_ext_hdr *vtag = NULL;
-+		struct mei_ext_hdr_vtag *vtag_hdr = NULL;
- 
- 		ext = mei_ext_begin(meta);
- 		do {
- 			switch (ext->type) {
- 			case MEI_EXT_HDR_VTAG:
--				vtag = ext;
-+				vtag_hdr = (struct mei_ext_hdr_vtag *)ext;
- 				break;
- 			case MEI_EXT_HDR_NONE:
- 				fallthrough;
-@@ -141,20 +141,20 @@ static int mei_cl_irq_read_msg(struct mei_cl *cl,
- 			ext = mei_ext_next(ext);
- 		} while (!mei_ext_last(meta, ext));
- 
--		if (!vtag) {
-+		if (!vtag_hdr) {
- 			cl_dbg(dev, cl, "vtag not found in extended header.\n");
- 			cb->status = -EPROTO;
- 			goto discard;
- 		}
- 
--		cl_dbg(dev, cl, "vtag: %d\n", vtag->ext_payload[0]);
--		if (cb->vtag && cb->vtag != vtag->ext_payload[0]) {
-+		cl_dbg(dev, cl, "vtag: %d\n", vtag_hdr->vtag);
-+		if (cb->vtag && cb->vtag != vtag_hdr->vtag) {
- 			cl_err(dev, cl, "mismatched tag: %d != %d\n",
--			       cb->vtag, vtag->ext_payload[0]);
-+			       cb->vtag, vtag_hdr->vtag);
- 			cb->status = -EPROTO;
- 			goto discard;
- 		}
--		cb->vtag = vtag->ext_payload[0];
-+		cb->vtag = vtag_hdr->vtag;
- 	}
- 
- 	if (!mei_cl_is_connected(cl)) {
-@@ -331,7 +331,6 @@ int mei_irq_read_handler(struct mei_device *dev,
- 	struct mei_ext_meta_hdr *meta_hdr = NULL;
- 	struct mei_cl *cl;
- 	int ret;
--	u32 ext_meta_hdr_u32;
- 	u32 hdr_size_left;
- 	u32 hdr_size_ext;
- 	int i;
-@@ -367,14 +366,12 @@ int mei_irq_read_handler(struct mei_device *dev,
- 
- 	if (mei_hdr->extended) {
- 		if (!dev->rd_msg_hdr[1]) {
--			ext_meta_hdr_u32 = mei_read_hdr(dev);
--			dev->rd_msg_hdr[1] = ext_meta_hdr_u32;
-+			dev->rd_msg_hdr[1] = mei_read_hdr(dev);
- 			dev->rd_msg_hdr_count++;
- 			(*slots)--;
--			dev_dbg(dev->dev, "extended header is %08x\n",
--				ext_meta_hdr_u32);
-+			dev_dbg(dev->dev, "extended header is %08x\n", dev->rd_msg_hdr[1]);
- 		}
--		meta_hdr = ((struct mei_ext_meta_hdr *)dev->rd_msg_hdr + 1);
-+		meta_hdr = ((struct mei_ext_meta_hdr *)&dev->rd_msg_hdr[1]);
- 		if (check_add_overflow((u32)sizeof(*meta_hdr),
- 				       mei_slots2data(meta_hdr->size),
- 				       &hdr_size_ext)) {
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.31.1
-
+Florian
