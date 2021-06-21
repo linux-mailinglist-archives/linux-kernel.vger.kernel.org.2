@@ -2,93 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D203AECF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64FD43AECF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:01:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbhFUQDg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:03:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51640 "EHLO
+        id S230102AbhFUQDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:03:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbhFUQDf (ORCPT
+        with ESMTP id S229719AbhFUQDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:03:35 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF34C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:01:20 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id m14so2979122edp.9
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:01:20 -0700 (PDT)
+        Mon, 21 Jun 2021 12:03:52 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A461C061574;
+        Mon, 21 Jun 2021 09:01:37 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id gn32so2253291ejc.2;
+        Mon, 21 Jun 2021 09:01:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZJINl3ujyElFF79o2Vp6G7gTRrWKDKDmi7XTzlrNQuo=;
-        b=fux+ZPc4AJRwDv70FuZ0/eTKAWRBdJbvBe12avwC7WTFmYx9RXoAqtQU3b92nmYgrr
-         SAdaZx9qV85GN85nhBVX+bXhD8cjIE1c7yZXOCdtFgC64PdrqkdrHZ4s9Pa9uUNzSSgI
-         V0ng5OzjTjNJyHr5MhxRopH7B3RZ+atucD4TE=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AXQsb95tfVUSJnmAPnbsPilhrI1OfYFXkT1W9z6mr7o=;
+        b=Ogi7N9hJCRnrT8TRKwfl1lh2nTMVyHSoiGurY31vDj8mVzpGbb2OC+oRAFVW68PQXV
+         viEFM8+94BUP8Sqwy/sJEfR3V+1QNrRCfL60u4xDIqqX/cAxTQOkPiwBv/vb5ySrgPn0
+         Wf+s+iqEnnwzuN3kospLANtQSAg31nu5dtHqsyMnxbg8zlCGYdawtbGxmkbBD1nIZGX4
+         EjZLtWxwVb1teqbtof3fiGEX7hV9AbxYRQXhug4p+hba4ovxD/COhMKMyKE8uICmQxgL
+         e3KtnYbb6Y8m9uwvioiJUlr7TIFCyXsBctq9z8Qri0sYtT6kH2eTZpJ/5Vi3xAHqomJU
+         wLnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZJINl3ujyElFF79o2Vp6G7gTRrWKDKDmi7XTzlrNQuo=;
-        b=nTzKMCJRqllaBqtvk2FgiorCP/ET1HGIDf3Zu5A4LGnHVCLSot6h76EEnUqGUyx1tI
-         usl/i5W6QajCpEChWYJ20+L0Tc++M8qzmxRlGSXbhTVYzeuBVNkCtrwb365zVTA62RJN
-         c3s8Hp+KrhIMyc136yUHjILTAYEZpaBwesxt1bX89LT8FXBRgFpz6YJRInzRer2kBiKt
-         fmze+DMfM7zBHzYfVtWmGgyN8UD0dS86jsk8/f0hVUcaG/paPywJ+TZJ0KP7UKjRXHSU
-         VB3N8iVbMvtXsrZ0DmswQotDzzWT03mI2oC+NB3Rp1P6NCmmw+8VoiTR5c3TIQR+P4RE
-         fulg==
-X-Gm-Message-State: AOAM530M5NyhkuispTtp92FkzMa52mSv3jl0r4lJlC5LkyG6KRDMMckb
-        nLq/7/jPpcqf/qy2XnfRPp+IE1D/IjB+WQ==
-X-Google-Smtp-Source: ABdhPJwIgu6wJ+DzjSb7rdWV8o1Xs362qySHLk/qlWURN5a6En6I3SxbPcwZ4LzhQNQ5OVfTUT2cuQ==
-X-Received: by 2002:a05:6402:1911:: with SMTP id e17mr22488554edz.62.1624291279115;
-        Mon, 21 Jun 2021 09:01:19 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.64.110])
-        by smtp.gmail.com with ESMTPSA id h16sm10666590edb.23.2021.06.21.09.01.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 09:01:18 -0700 (PDT)
-Subject: Re: [PATCH] mm/page_alloc: __alloc_pages_bulk(): do bounds check
- before accessing array
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210507064504.1712559-1-linux@rasmusvillemoes.dk>
- <20210507102634.GD9524@techsingularity.net>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <387ca68d-7c59-b316-7d95-cf13a3b26770@rasmusvillemoes.dk>
-Date:   Mon, 21 Jun 2021 18:01:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AXQsb95tfVUSJnmAPnbsPilhrI1OfYFXkT1W9z6mr7o=;
+        b=ZJWWwTPXOmYP0q1knpJ/a4wILlJu8dL1ymn60ALIqHCP9E+GST1ATOq1ZHga0lWfvV
+         ZFp63P3Z4vcVP9lSkxE08w51TObIXRk/D5a9EatIDw+fg71K25JnKbxAzLUWy4T446al
+         3sBTlGnWF5f4PU8ySKADVTQQhTG0iF5rl14R82aPA1gnkFPRAnJschaxQ3Mc6b1D1E7u
+         ZqQmd+b+mvo27wjxVdHGVqkQkCcyQ4GPxdr5swTjUf8v2gTAhGGVI4trVoZDV9bcYE6J
+         AxddeglcBc5ZpkDlI539ivhC6LLqCUnFNJebpeVAyalOlwVgoz9Jj9SCwQF125jqf7Vi
+         LUaQ==
+X-Gm-Message-State: AOAM531zFcef8yQAEq24YImP8HbTDqUOKKeqSpgLXN5f2v2y6NFE6sBS
+        Pk1Y10NUlfQHEbHgsGHwsi7wShV4GP5zuIzIPRY=
+X-Google-Smtp-Source: ABdhPJy18zZNIVjH6ZjLWzNGjMJcMykbyodCXgXOUYv232TCI+i3sbMsYrw5Y6gqSL9mQ91Ecye65xasjxJrmFy5ahM=
+X-Received: by 2002:a17:907:1b1b:: with SMTP id mp27mr24852933ejc.538.1624291295912;
+ Mon, 21 Jun 2021 09:01:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210507102634.GD9524@techsingularity.net>
-Content-Type: text/plain; charset=iso-8859-15
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <60cb0586.1c69fb81.8015b.37a1@mx.google.com> <YNCwJqtKKCskB2Au@kroah.com>
+In-Reply-To: <YNCwJqtKKCskB2Au@kroah.com>
+From:   Amit Klein <aksecurity@gmail.com>
+Date:   Mon, 21 Jun 2021 19:01:25 +0300
+Message-ID: <CANEQ_++RU=yBCXHBajRJcJNLZ73hqgMJ4yEmjw5gwZZHnbyzTQ@mail.gmail.com>
+Subject: Re: [PATCH 4.19] inet: use bigger hash table for IP ID generation
+ (backported to 4.19)
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Eric Dumazet <edumazet@google.com>, Willy Tarreau <w@1wt.eu>,
+        "David S . Miller" <davem@davemloft.net>,
+        netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/05/2021 12.26, Mel Gorman wrote:
-> On Fri, May 07, 2021 at 08:45:03AM +0200, Rasmus Villemoes wrote:
->> In the event that somebody would call this with an already fully
->> populated page_array, the last loop iteration would do an access
->> beyond the end of page_array.
->>
->> It's of course extremely unlikely that would ever be done, but this
->> triggers my internal static analyzer. Also, if it really is not
->> supposed to be invoked this way (i.e., with no NULL entries in
->> page_array), the nr_populated<nr_pages check could simply be removed
->> instead.
->>
->> Fixes: 0f87d9d30f21 (mm/page_alloc: add an array-based interface to the bulk page allocator)
->> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-> 
-> Acked-by: Mel Gorman <mgorman@techsingularity.net>
-> 
+On Mon, Jun 21, 2021 at 6:28 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Thu, Jun 17, 2021 at 01:19:18AM -0700, Amit Klein wrote:
+> > Subject: inet: use bigger hash table for IP ID generation (backported to 4.19)
+> > From: Amit Klein <aksecurity@gmail.com>
+[...]
+>
+> I had to dig up what the upstream git commit id was for this, please
+> specify it next time :(
+>
 
-Andrew, will you get this to Linus before 5.13 is released? I got a mail
-on May 9 that it had been added to your queue, but I don't see it in
-master yet.
+Sure. Awfully sorry about the omission.
 
-Rasmus
+> I've queued this, and the 4.14 version up.
+
+Thanks.
+
+ Can you create a 4.4.y and
+> 4.9.y version as well?
+>
+
+Absolutely. I plan to do so later this week.
+
+-Amit
