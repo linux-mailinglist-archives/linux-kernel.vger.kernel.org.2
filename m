@@ -2,85 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 302A63AF666
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 21:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10EEE3AF66B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 21:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231613AbhFUTsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 15:48:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230347AbhFUTsH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 15:48:07 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25738C061574;
-        Mon, 21 Jun 2021 12:45:53 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvPrW-00AwOu-3b; Mon, 21 Jun 2021 19:45:38 +0000
-Date:   Mon, 21 Jun 2021 19:45:38 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
-Message-ID: <YNDsYk6kbisbNy3I@zeniv-ca.linux.org.uk>
-References: <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
- <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
- <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
- <87eed4v2dc.fsf@disp2133>
- <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
- <87fsxjorgs.fsf@disp2133>
- <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
- <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
- <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
- <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
+        id S231695AbhFUTsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 15:48:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230347AbhFUTsv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 15:48:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B349D61357;
+        Mon, 21 Jun 2021 19:46:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624304796;
+        bh=lnxmRAOLx2G/gfVU9uDFWE8tnhIK83k9r8INnlkRAM0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=c2+nlVyJd/TabDbWdW+hYVLVm+ZPbx5EBZmwqTvwxQYB49WdOXvMpfPptzbLmgGw9
+         Bt0R4fusIbFbY0lFRG79rp1tJMIbteIwnsoUaGfaUPpq7QgoKL7CynXlYhJ9/BlIDU
+         tYABJcdTsPGfYEr/JaUTmN02WJQGx8/i79Mq1/VBfufbLQ6zL0BAQvOeCKcBOHzar3
+         h4aOCETkJKFK999YWkcmOFmqFvzNNufj/EVFwe1EU/8IpfSeMsqgoOAB9mbp5LbNSt
+         opSqgRiLtnU0Ger/HnZACrFcTMvEfE5OBKA+sXXtKNXuN/et7G42FO8gYHAh2wMftF
+         48nYR4A+DLd0g==
+Received: by mail-ej1-f46.google.com with SMTP id g20so30773698ejt.0;
+        Mon, 21 Jun 2021 12:46:36 -0700 (PDT)
+X-Gm-Message-State: AOAM531tXJtgOpmL31Tz+4hrL90VXdbCkRzpXHCMj2cSNdqDWQQ9o0Kh
+        aqJJ18M2AapEZ4leYFDUFSWvF4qa0yidJxAznQ==
+X-Google-Smtp-Source: ABdhPJx/sbO2gPBSW7o+uJ5mY4gfi05JpBn63eNZ7EKWJUPYGXGRlLXdWMYYNKj8dov2Lkh6T/MPI/081uehPLaTrU8=
+X-Received: by 2002:a17:906:3b13:: with SMTP id g19mr24880860ejf.360.1624304795292;
+ Mon, 21 Jun 2021 12:46:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <20210612094631.89980-1-martin.botka@somainline.org>
+ <20210612094631.89980-3-martin.botka@somainline.org> <CABb+yY3BYYC2na8EFunEeu0XCfLXrUQon=hF3q5p=+FUoigoyw@mail.gmail.com>
+In-Reply-To: <CABb+yY3BYYC2na8EFunEeu0XCfLXrUQon=hF3q5p=+FUoigoyw@mail.gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 21 Jun 2021 13:46:22 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqLWqtAtqLRF-MAnq80NMfD0a+CfWPv8JWjjNTJFgMjCxg@mail.gmail.com>
+Message-ID: <CAL_JsqLWqtAtqLRF-MAnq80NMfD0a+CfWPv8JWjjNTJFgMjCxg@mail.gmail.com>
+Subject: Re: [PATCH V3 3/3] mailbox: qcom-apcs: Add SM6125 compatible
+To:     Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     Martin Botka <martin.botka@somainline.org>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        jamipkettunen@somainline.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 12:22:06PM -0700, Linus Torvalds wrote:
-> On Mon, Jun 21, 2021 at 11:59 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+On Sun, Jun 20, 2021 at 10:03 PM Jassi Brar <jassisinghbrar@gmail.com> wrote:
+>
+> On Sat, Jun 12, 2021 at 4:46 AM Martin Botka
+> <martin.botka@somainline.org> wrote:
 > >
-> >         There's a large mess around do_exit() - we have a bunch of
-> > callers all over arch/*; if nothing else, I very much doubt that really
-> > want to let tracer play with a thread in the middle of die_if_kernel()
-> > or similar.
-> 
-> Right you are.
-> 
-> I'm really beginning to hate ptrace_{event,notify}() and those
-> PTRACE_EVENT_xyz things.
-> 
-> I don't even know what uses them, honestly. How very annoying.
-> 
-> I guess it's easy enough (famous last words) to move the
-> ptrace_event() call out of do_exit() and into the actual
-> exit/exit_group system calls, and the signal handling path. The paths
-> that actually have proper pt_regs.
-> 
-> Looks like sys_exit() and do_group_exit() would be the two places to
-> do it (do_group_exit() would handle the signal case and
-> sys_group_exit()).
+> > This commit adds compatible for the SM6125 SoC
+> >
+> > Signed-off-by: Martin Botka <martin.botka@somainline.org>
+> > ---
+> > Changes in V2:
+> > None
+> > Changes in V3:
+> > Change compatible to apcs-hmss-global
+> >  drivers/mailbox/qcom-apcs-ipc-mailbox.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >
+> > diff --git a/drivers/mailbox/qcom-apcs-ipc-mailbox.c b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
+> > index f25324d03842..f24c5ad8d658 100644
+> > --- a/drivers/mailbox/qcom-apcs-ipc-mailbox.c
+> > +++ b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
+> > @@ -57,6 +57,10 @@ static const struct qcom_apcs_ipc_data sdm660_apcs_data = {
+> >         .offset = 8, .clk_name = NULL
+> >  };
+> >
+> > +static const struct qcom_apcs_ipc_data sm6125_apcs_data = {
+> > +       .offset = 8, .clk_name = NULL
+> > +};
+> > +
+> >  static const struct qcom_apcs_ipc_data apps_shared_apcs_data = {
+> >         .offset = 12, .clk_name = NULL
+> >  };
+> > @@ -166,6 +170,7 @@ static const struct of_device_id qcom_apcs_ipc_of_match[] = {
+> >         { .compatible = "qcom,sc8180x-apss-shared", .data = &apps_shared_apcs_data },
+> >         { .compatible = "qcom,sdm660-apcs-hmss-global", .data = &sdm660_apcs_data },
+> >         { .compatible = "qcom,sdm845-apss-shared", .data = &apps_shared_apcs_data },
+> > +       { .compatible = "qcom,sm6125-apcs-hmss-global", .data = &sm6125_apcs_data },
+> >         { .compatible = "qcom,sm8150-apss-shared", .data = &apps_shared_apcs_data },
+> >         { .compatible = "qcom,sdx55-apcs-gcc", .data = &sdx55_apcs_data },
+> >         {}
+> >
+> These all are basically different names for the same controller.
+> The 'offset' is a configuration parameter and the 'clock', when NULL,
+> is basically some "always-on" clock.
+> I am sure we wouldn't be doing it, if the controller was third-party.
 
-Maybe...  I'm digging through that pile right now, will follow up when
-I get a reasonably complete picture.  In the meanwhile, do kernel/kthread.c
-uses look even remotely sane?  Intentional - sure, but it really looks
-wrong to use thread exit code as communication channel there...
+If newer implementations are 'the same', then they should have a
+fallback compatible to the existing one that is the same and no driver
+change is needed. If the differences are board or instance (within an
+SoC) specific, then a DT property would be appropriate.
+
+3rd party IP is generally not any different. SoC vendors manage to
+make their implementations unique...
+
+Rob
