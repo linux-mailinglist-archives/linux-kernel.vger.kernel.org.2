@@ -2,213 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3CCA3AF93C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:23:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A87183AF944
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231625AbhFUXZl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 19:25:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38552 "EHLO
+        id S231849AbhFUX1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 19:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231790AbhFUXZk (ORCPT
+        with ESMTP id S231566AbhFUX1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 19:25:40 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE2DC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:23:25 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id p13so14924177pfw.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:23:25 -0700 (PDT)
+        Mon, 21 Jun 2021 19:27:23 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E69FC061574;
+        Mon, 21 Jun 2021 16:25:07 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id y21so3553725plb.4;
+        Mon, 21 Jun 2021 16:25:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Nqw3RDJ+DTyT+o1frNSrU6yxZhY99eAuItIbguQEWVc=;
-        b=GrhNXMS0SWzU6iw+vXo9GCtOePd1pNW+VTpDK0ncZ8i6wGmF9Gm1mIOHxZot9Ed0su
-         hm3kwe7tpUymfqEo3zFiFnVHGDtwBQOJWOwXeEy4nYzAveRHsd/eAhpsHnOJEwSqGjH3
-         SCGxqFrI1h3ZNdTp2aH25aLDTgE85/a6eKq+0=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=r0VwenRqskFTDoxa2BG069i4DjqqTYGW10YD8Bvo/q0=;
+        b=F+xHU0Aq6hmH1YvvN8TsIaDZ+1YxE0TAC/D7AUDfDVD99ivp1J2/ZEe+x6H78uyvXj
+         E3ihUPFI1h6CinFlQiMGG9N/FK57sYaQBEHYKmbxomJfPEevCH3VNE9VvZYCh2EFsghE
+         f/HFVrKLPWMR/AoMFOGbraO2smRAYLfRB9g2p0gs6svzmnCwmD2LKKhlymdV7bvrAyiF
+         bZ5H+34iH1uRaGrMDypbUXzPC99bK1vJS/SsOQ1yuMsrhStJouJdPbuOTjsC4KacgFq7
+         zNn+nXPzUDdD/SjHRFw34nmjK53kw1U/2GRYEOaSyDHA8Wp7EQ+lOYrEvt5YlvltZ1kq
+         7nPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Nqw3RDJ+DTyT+o1frNSrU6yxZhY99eAuItIbguQEWVc=;
-        b=qhf2FNBno9bL5otYE0jJAJwmv307dlQnZnKCCQIz6A9xGoJRuPPHlroJe+xHGKtLig
-         EgQ0Ps5OvWTJDDQuq8WxiKnnBoBTumvwmGzziFU5Iqvsa1PcICruOFfmf2VkhZS+sVF2
-         CdXys3C/MSSrATTuivjT98PXHpiAg1KgIh6YYx3OuSJ+lk9etx162/93yIRfdbpkPWKp
-         9BmE61I7Ttb8hibHK7S7pAa06AYET5i3liYtzpr80jKd59DHsk+i+yTtx0LxOB0wyOwM
-         F+hIHbnAJ6EhVbDD6VjcDokvv63JzgF4XqYHxk1ZE8gN0Bw1QRLORFMFn4aotDNWBkVq
-         CKvA==
-X-Gm-Message-State: AOAM531kIPMQk0LjFxUJAIWwBqIVQx/WYVLgk9bEnp7gyDGCBHY1uk6I
-        e4mxp85M5JXbqUYJ+ooQi8Wn4w==
-X-Google-Smtp-Source: ABdhPJzw3RkUA3AzHbb59oK1W8ShH20Pt5+AZqtVwv2ZzkiD4zsX6N5Q6sbE9jkDPg0nZ3S3LPnYAw==
-X-Received: by 2002:a62:53c1:0:b029:2ef:25e8:d9e5 with SMTP id h184-20020a6253c10000b02902ef25e8d9e5mr614646pfb.74.1624317805166;
-        Mon, 21 Jun 2021 16:23:25 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id g29sm17578166pgm.11.2021.06.21.16.23.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 16:23:24 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Dave Kleikamp <shaggy@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        jfs-discussion@lists.sourceforge.net,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] jfs: Avoid field-overflowing memcpy()
-Date:   Mon, 21 Jun 2021 16:23:22 -0700
-Message-Id: <20210621232322.1871799-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=r0VwenRqskFTDoxa2BG069i4DjqqTYGW10YD8Bvo/q0=;
+        b=HnhapqjeeD2GU5PXqrRKLUUQb3Aw14gUH16s+rLQU1K+c412ngbxSMu+/MkiKS6Gxh
+         famaqzKl065AhSf+j1sbJQLryW9HHy2/PglQ+CG0WG2tzUlY8B21gXoNQSLMSjq4YJVg
+         pCUMbZ4vbt8/1fjVreatp1uv6ISMqvp+aD0wpOjjECJhmSmYuMTvPO5SUTd6QL4ruYJ5
+         0O7jRZ2stQBzwHRe9jyqWy1g4TVqVC9x8Bm/Y/YL4kPdXYWum0x+fUnhiVMAeuVq2s5d
+         qHEqC6li6wokp5YGVxoC054TyccH7v1n0QM4YNDXe98RspOL/EYL1goYo2zJBLTqn7TY
+         5tHg==
+X-Gm-Message-State: AOAM532MFDj8YW/o1kSganGiVgnvlH+knOkHZpaFmXdMrcg0cGYgLyu+
+        txl5NDkShBwiQvwymxsvsH4=
+X-Google-Smtp-Source: ABdhPJxZXn+aC1eJ8kEUSL89QiRwAcF2SYH1ok/wnVJVoR/0d2Q7ch0UBMjyXnIPBipspF93KtOPVg==
+X-Received: by 2002:a17:90a:1541:: with SMTP id y1mr701499pja.74.1624317907229;
+        Mon, 21 Jun 2021 16:25:07 -0700 (PDT)
+Received: from ?IPv6:2001:df0:0:200c:2114:f868:6a99:ac19? ([2001:df0:0:200c:2114:f868:6a99:ac19])
+        by smtp.gmail.com with ESMTPSA id m4sm252608pjv.41.2021.06.21.16.25.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 16:25:06 -0700 (PDT)
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+References: <87sg1lwhvm.fsf@disp2133>
+ <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+ <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+ <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com> <87eed4v2dc.fsf@disp2133>
+ <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com> <87fsxjorgs.fsf@disp2133>
+ <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+ <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
+ <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
+ <YNDnY0niP+IfSx+X@zeniv-ca.linux.org.uk>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <d8105fc4-9551-c80a-37f4-2c57b3173283@gmail.com>
+Date:   Tue, 22 Jun 2021 11:24:57 +1200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=b11510bc7e50860adb5724ba145e9eb45c6c55f8; i=dF8ixb+THfuF0nlsv1dQ2ZPKzBL7OPmaRy5zMjzXzkQ=; m=dZhpAKqgH3qyGhCqzRZONrY9E1fP0G347jf3KEe/AJc=; p=ZB+jylUfBmb3AKcK6RN2EtlbnZH0790JymJLoekV5EE=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmDRH2oACgkQiXL039xtwCY1Lg/+Lq6 Wzj3j9XEvWvRtm7sY906hIOMjW0Bmr8KDM0B8AZgdttldYYWkqZcCaIXx3cwmjdA0oPtvoAUiymjK DgRCTVH0l3FisDsQBCs/Cwgz03XI9D9F5CyrrjOZrqQC0N8BpdV8bFbmLcUKXqtXgLLOYjRx+iCd5 ksArwzkRr109ZIpdukzOxvEh1nbyvDW1s/4CunG/7DXlV2MGvdIjI7KyFn2DpGJCkwtQtwfq9lN3X LscLUySz82lDe/qpKoz/WsxInScnazXptKXn4baTVtvYM8OuLyoXbJjn1+DOGphofM3siWSI7LM5I b3ID4UXB8cNlxVwLdR/zuz21bwO7g/Lh6Ijai9fz0ktMkHUpWowjR99ymYmbfrqOCISUHziokRPfO cYlKzXUBeCLRMtKAfhRoEY9Hcg2rzlJw4xrzSWT3yoCvy/otfOw09IJje1S/wJS6ghQMqGuqI3wZn JcqrZIs6VQJu2blQzp7RL6hSuannlJXtDLoJiD0oMFvSrlQ2GyVsXkzMJ/6Y006Lzz/4WLkwjogaZ 3/ty5ylzn08K59xlixLsJ8CKP+LVrzcBp4QZYDYvWy+6w/ILkAILuW34QAHobrdGIigbRpKz61zAc YSxG567tej3H5UuFd08yAdDO2oGLAo01//x1fRmW9MbFxAJrYcsFS44tythT+i5k=
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <YNDnY0niP+IfSx+X@zeniv-ca.linux.org.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation for FORTIFY_SOURCE performing compile-time and run-time
-field array bounds checking for memcpy(), memmove(), and memset(),
-avoid intentionally writing across neighboring fields.
+Hi Al,
 
-Introduce more unions to cover the full inline data section, so that the
-entire 256 bytes can be addressed by memcpy() without thinking it is
-crossing field boundaries. Additionally adjusts dir memcpy() to use
-existing union names to get the same coverage.
+On 22/06/21 7:24 am, Al Viro wrote:
+>
+>> 	There's a large mess around do_exit() - we have a bunch of
+>> callers all over arch/*; if nothing else, I very much doubt that really
+>> want to let tracer play with a thread in the middle of die_if_kernel()
+>> or similar.
+>>
+>> We sure as hell do not want to arrange for anything on the kernel
+>> stack in such situations, no matter what's done in exit(2)...
+> FWIW, on alpha it's die_if_kernel(), do_entUna() and do_page_fault(),
+> all in not-from-userland cases.  On m68k - die_if_kernel(), do_page_fault()
+> (both for non-from-userland cases) and something really odd - fpsp040_die().
+> Exception handling for floating point stuff on 68040?  Looks like it has
+Exception handling for emulated floating point instructions, really - 
+exceptions happening when excecuting FPU instructions on hardware will 
+do the normal exception processing.
+> an open-coded copy_to_user()/copy_from_user(), with faults doing hard
+> do_exit(SIGSEGV) instead of raising a signal and trying to do something
+> sane...
 
-diffoscope shows there are no binary differences before/after excepting
-the name of the initcall, which is line number based:
+Yes, that's what it does. Not pretty ... though all that using m68k 
+copy_to_user()/copy_from_user() would change is returning how many bytes 
+could not copied. In contrast to the ifpsp060 code, we could not pass on 
+that return status to callers of copyin/copyout in fpsp040, so I don't 
+see what sane thing could be done if a fault happens.
 
-$ diffoscope --exclude-directory-metadata yes before/fs after/fs
---- before/fs
-+++ after/fs
-│   --- before/fs/jfs
-├── +++ after/fs/jfs
-│ │   --- before/fs/jfs/super.o
-│ ├── +++ after/fs/jfs/super.o
-│ │ ├── readelf --wide --symbols {}
-│ │ │ @@ -2,15 +2,15 @@
-│ │ │  Symbol table '.symtab' contains 158 entries:
-│ │ │     Num:    Value          Size Type    Bind   Vis      Ndx Name
-...
-│ │ │ -     5: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT    6 __initcall__kmod_jfs__319_1049_ini
-t_jfs_fs6
-│ │ │ +     5: 0000000000000000     0 NOTYPE  LOCAL  DEFAULT    6 __initcall__kmod_jfs__319_1050_ini
-t_jfs_fs6
-...
+(I'd expect the MMU would have raised a bus error and resolved the 
+problem by a page fault if possible, before we ever get to this point?)
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- fs/jfs/jfs_dinode.h | 14 ++++++++++----
- fs/jfs/jfs_imap.c   |  4 ++--
- fs/jfs/jfs_incore.h | 12 ++++++++++--
- fs/jfs/super.c      |  3 ++-
- 4 files changed, 24 insertions(+), 9 deletions(-)
+> I really don't want to try and figure out how painful would it be to
+> teach that code how to deal with faults - _testing_ anything in that
+> area sure as hell will be.  IIRC, details of recovery from FPU exceptions
+> on 68040 in the manual left impression of a minefield...
 
-diff --git a/fs/jfs/jfs_dinode.h b/fs/jfs/jfs_dinode.h
-index d6af79e94263..6b231d0d0071 100644
---- a/fs/jfs/jfs_dinode.h
-+++ b/fs/jfs/jfs_dinode.h
-@@ -101,7 +101,6 @@ struct dinode {
- 					u8 unused[16];	/* 16: */
- 					dxd_t _dxd;	/* 16: */
- 					union {
--						__le32 _rdev;	/* 4: */
- 						/*
- 						 * The fast symlink area
- 						 * is expected to overflow
-@@ -109,9 +108,15 @@ struct dinode {
- 						 * needed (which will clear
- 						 * INLINEEA).
- 						 */
--						u8 _fastsymlink[128];
--					} _u;
--					u8 _inlineea[128];
-+						struct {
-+							union {
-+								__le32 _rdev;	/* 4: */
-+								u8 _fastsymlink[128];
-+							} _u;
-+							u8 _inlineea[128];
-+						};
-+						u8 _inline_all[256];
-+					};
- 				} _special;
- 			} _u2;
- 		} _file;
-@@ -122,6 +127,7 @@ struct dinode {
- #define di_rdev		u._file._u2._special._u._rdev
- #define di_fastsymlink	u._file._u2._special._u._fastsymlink
- #define di_inlineea	u._file._u2._special._inlineea
-+#define di_inline_all	u._file._u2._special._inline_all
- 	} u;
- };
- 
-diff --git a/fs/jfs/jfs_imap.c b/fs/jfs/jfs_imap.c
-index 937ca07b58b1..4df3f222c35c 100644
---- a/fs/jfs/jfs_imap.c
-+++ b/fs/jfs/jfs_imap.c
-@@ -763,7 +763,7 @@ int diWrite(tid_t tid, struct inode *ip)
- 		lv = & dilinelock->lv[dilinelock->index];
- 		lv->offset = (dioffset + 2 * 128) >> L2INODESLOTSIZE;
- 		lv->length = 2;
--		memcpy(&dp->di_fastsymlink, jfs_ip->i_inline, IDATASIZE);
-+		memcpy(&dp->di_inline_all, jfs_ip->i_inline_all, IDATASIZE);
- 		dilinelock->index++;
- 	}
- 	/*
-@@ -3084,7 +3084,7 @@ static int copy_from_dinode(struct dinode * dip, struct inode *ip)
- 	}
- 
- 	if (S_ISDIR(ip->i_mode)) {
--		memcpy(&jfs_ip->i_dirtable, &dip->di_dirtable, 384);
-+		memcpy(&jfs_ip->u.dir, &dip->u._dir, 384);
- 	} else if (S_ISREG(ip->i_mode) || S_ISLNK(ip->i_mode)) {
- 		memcpy(&jfs_ip->i_xtroot, &dip->di_xtroot, 288);
- 	} else
-diff --git a/fs/jfs/jfs_incore.h b/fs/jfs/jfs_incore.h
-index a466ec41cfbb..721def69e732 100644
---- a/fs/jfs/jfs_incore.h
-+++ b/fs/jfs/jfs_incore.h
-@@ -77,11 +77,18 @@ struct jfs_inode_info {
- 			unchar _unused[16];	/* 16: */
- 			dxd_t _dxd;		/* 16: */
- 			/* _inline may overflow into _inline_ea when needed */
--			unchar _inline[128];	/* 128: inline symlink */
- 			/* _inline_ea may overlay the last part of
- 			 * file._xtroot if maxentry = XTROOTINITSLOT
- 			 */
--			unchar _inline_ea[128];	/* 128: inline extended attr */
-+			union {
-+				struct {
-+					/* 128: inline symlink */
-+					unchar _inline[128];
-+					/* 128: inline extended attr */
-+					unchar _inline_ea[128];
-+				};
-+				unchar _inline_all[256];
-+			};
- 		} link;
- 	} u;
- #ifdef CONFIG_QUOTA
-@@ -96,6 +103,7 @@ struct jfs_inode_info {
- #define i_dtroot u.dir._dtroot
- #define i_inline u.link._inline
- #define i_inline_ea u.link._inline_ea
-+#define i_inline_all u.link._inline_all
- 
- #define IREAD_LOCK(ip, subclass) \
- 	down_read_nested(&JFS_IP(ip)->rdwrlock, subclass)
-diff --git a/fs/jfs/super.c b/fs/jfs/super.c
-index 1f0ffabbde56..9030aeaf0f88 100644
---- a/fs/jfs/super.c
-+++ b/fs/jfs/super.c
-@@ -939,7 +939,8 @@ static int __init init_jfs_fs(void)
- 	jfs_inode_cachep =
- 	    kmem_cache_create_usercopy("jfs_ip", sizeof(struct jfs_inode_info),
- 			0, SLAB_RECLAIM_ACCOUNT|SLAB_MEM_SPREAD|SLAB_ACCOUNT,
--			offsetof(struct jfs_inode_info, i_inline), IDATASIZE,
-+			offsetof(struct jfs_inode_info, i_inline_all),
-+			sizeof_field(struct jfs_inode_info, i_inline_all),
- 			init_once);
- 	if (jfs_inode_cachep == NULL)
- 		return -ENOMEM;
--- 
-2.30.2
+This is only about faults when moving data from/to user space. FPU 
+exceptions are handled elsewhere in the code. So we at least don't have 
+to deal with that particular minefield.
+
+Teaching the fpsp040 code to deal with access faults looks horrible 
+indeed... let's not go there.
+
+Cheers,
+
+     Michael
+
 
