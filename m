@@ -2,92 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88CA43AE528
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8CA3AE51A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhFUIqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 04:46:31 -0400
-Received: from mga14.intel.com ([192.55.52.115]:8936 "EHLO mga14.intel.com"
+        id S230302AbhFUImF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 04:42:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229618AbhFUIq3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 04:46:29 -0400
-IronPort-SDR: gP0IOFJNtkAObh06AX0GA0BMtToozTMQLDNlpC+qT79DCcy7swQQRTXOIgGeBVJSNs+uS+OyOz
- ry1TiD+HeIMw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10021"; a="206623204"
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208";a="206623204"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 01:44:10 -0700
-IronPort-SDR: fcjoaP9xUrCjzGwX3lAv4N7WaMjcQt+6wZbcHi4InqMLAZfxIDsQBySBZ6XSGEafbWyhd7X9Ab
- HTFWEv3bVBBg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208";a="486411268"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.162])
-  by orsmga001.jf.intel.com with ESMTP; 21 Jun 2021 01:44:07 -0700
-Date:   Mon, 21 Jun 2021 16:38:56 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@silicom.dk>
-Cc:     Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        Moritz Fischer <mdf@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@geanix.com>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH 0/4] fpga/mfd/hwmon: Initial support for Silicom N5010 PAC
-Message-ID: <20210621083856.GA24178@yilunxu-OptiPlex-7050>
-References: <20210621070621.431482-1-mhu@silicom.dk>
+        id S230137AbhFUImF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 04:42:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21AD960FD8;
+        Mon, 21 Jun 2021 08:39:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624264790;
+        bh=9kzzjefyjneTAiDNZ6xrBap47Es23Ehns4z0lVHvvyo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B0ZNVGiCdQk72cDAT0sY80V4RF75JKQJODenJ3qhKj3Es1Ur+CWCQXc3H2RrM/08K
+         tzZLB7QLoVTE9LaAsFLYvzhr+QND1EXCDRb0KjWRZerOjZnQomnbDeveKDVF/gcLUR
+         2GsKYMbVy5mR9YV5ZAocfb6ZiCzg+41A0OH/EX/0=
+Date:   Mon, 21 Jun 2021 10:39:48 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Shunsuke Mie <mie@igel.co.jp>
+Cc:     kishon@ti.com, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] PCI: endpoint: Fix use after free in pci_epf_remove_cfs()
+Message-ID: <YNBQVIT1yrzSng43@kroah.com>
+References: <20210621070058.37682-1-mie@igel.co.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210621070621.431482-1-mhu@silicom.dk>
+In-Reply-To: <20210621070058.37682-1-mie@igel.co.jp>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 09:06:17AM +0200, Martin Hundebøll wrote:
-> From: Martin Hundebøll <mhu@geanix.com>
+On Mon, Jun 21, 2021 at 04:00:58PM +0900, Shunsuke Mie wrote:
+> All of entries are freed in a loop, however, the freed entry is accessed
+> by list_del() after the loop.
 > 
-> This is an initial set of patches for the Silciom N5010 programmable
-> accelerated card adding support for reading out sensors.
+> When epf driver that includes pci-epf-test unload, the pci_epf_remove_cfs()
+> is called, and occurred the use after free. Therefore, kernel panics
+> randomly after or while the module unloading.
+> 
+> I tested this patch with r8a77951-Salvator-xs boards.
+> 
+> Fixes: ef1433f ("PCI: endpoint: Create configfs entry for each pci_epf_device_id table entry")
+> Signed-off-by: Shunsuke Mie <mie@igel.co.jp>
+> ---
+>  drivers/pci/endpoint/pci-epf-core.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
-Seems the card is a variant of d5005, just changes the layout of the
-sensors in BMC. It may not worth a dedicated PCI DID, and pass
-down the info all the way from
-  pcie -> dfl -> spi-altera -> m10bmc -> m10bmc-hwmon
+<formletter>
 
-Is it possible we just have some version check in m10bmc?
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
 
-Thank,
-Yilun
-
-> 
-> I'm not really sure if these should be taken through each of the
-> affected trees separately, or just by fpga collectively?
-> 
-> Based on current master.
-> 
-> // Martin
-> 
-> Debarati Biswas (1):
->   fpga: dfl: Move DFH header register macros to linux/dfl.h
-> 
-> Martin Hundebøll (3):
->   fpga: dfl: pci: add device IDs for Silicom N501x PAC cards
->   spi: spi-altera-dfl: support n5010 feature revision
->   hwmon: intel-m10-bmc: add sensor support for Silicom N5010 card
-> 
->  drivers/fpga/dfl-pci.c              |   5 ++
->  drivers/fpga/dfl.h                  |  48 +-----------
->  drivers/hwmon/intel-m10-bmc-hwmon.c | 116 ++++++++++++++++++++++++++++
->  drivers/mfd/intel-m10-bmc.c         |  12 ++-
->  drivers/spi/spi-altera-dfl.c        |  15 +++-
->  include/linux/dfl.h                 |  52 +++++++++++++
->  6 files changed, 198 insertions(+), 50 deletions(-)
-> 
-> -- 
-> 2.31.0
+</formletter>
