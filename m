@@ -2,250 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 195093AF9F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE903AF9CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232440AbhFUXzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 19:55:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232414AbhFUXzh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 19:55:37 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2A61C0617A8
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:53:21 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso774091pjx.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:53:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TEKHWQJp4n8yoFiHOuNtGCbJTSsuHccWZBKCtuc7Qts=;
-        b=JfVj6R5c5gvmti+4j0JlnamjjPtwJC40uf1GOUKZBNoGRYiwsk9gN9EB47jU4GyrdB
-         xt9uNo3jbU8+ZN08CVaYhgzUoi4ZKNEmEvp0W/f1M3/vIs9Q8AtbTKYGjpLEMeJJH90a
-         3Q3C/PI3x6byOZQohM26KarCNSpYlv4k3HqMA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TEKHWQJp4n8yoFiHOuNtGCbJTSsuHccWZBKCtuc7Qts=;
-        b=pR47DvdXaN72cGTE7mZQDM/xL1t4FucpsSl6lWanPR5jH8Y3t+N2TBUORGOf6Q48Pc
-         eTPzmyeCiXQChJqFvHit2Z+C6kx+DamAaCIjk+ynB8EKyoHIfTRTecnVZK76Bio51c26
-         owQ4ZXOhPF3Ugx9q8Rb58ezSuFsHCkkqrcE6ZV0wESuN6Sv1FZ2E2IARp1rae2UsXWEg
-         Us0MYnri6LiXVCCj5N3sy1N26ML9QcTqKHS8b6ltFljMfwGt+SBF6ZQwIZT0V17oSRuP
-         zUpJsllV14HjuOlTDVdEoHGFF5ErfyP7UIGe3M59PozGHfQf+zknbV3r//j1N84XpcCd
-         nVQg==
-X-Gm-Message-State: AOAM531eIiP1skIiGB9x1w80HZNG6PmDL97NFVU2eBtSgE55eTZc/nAP
-        jFDMcSA74CFE3Sbgbd/IT9+aAQ==
-X-Google-Smtp-Source: ABdhPJy2hHxfJrn4WVFmNTak00b5y5qz5F7V+JU2zimAB1kk2WW5Pzu2fcXDvLwNYMoHeCfmM4GdVw==
-X-Received: by 2002:a17:90a:73ca:: with SMTP id n10mr809631pjk.16.1624319601314;
-        Mon, 21 Jun 2021 16:53:21 -0700 (PDT)
-Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:bdc1:a4b1:b06e:91d1])
-        by smtp.gmail.com with ESMTPSA id s27sm4339663pfg.169.2021.06.21.16.53.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 16:53:20 -0700 (PDT)
-From:   Douglas Anderson <dianders@chromium.org>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org,
-        rafael.j.wysocki@intel.com, will@kernel.org, robin.murphy@arm.com,
-        joro@8bytes.org, bjorn.andersson@linaro.org,
-        ulf.hansson@linaro.org, adrian.hunter@intel.com,
-        bhelgaas@google.com
-Cc:     robdclark@chromium.org, linux-arm-msm@vger.kernel.org,
-        linux-pci@vger.kernel.org, quic_c_gdjako@quicinc.com,
-        iommu@lists.linux-foundation.org, sonnyrao@chromium.org,
-        saiprakash.ranjan@codeaurora.org, linux-mmc@vger.kernel.org,
-        vbadigan@codeaurora.org, rajatja@google.com, saravanak@google.com,
-        joel@joelfernandes.org, Douglas Anderson <dianders@chromium.org>,
-        Andy Gross <agross@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] mmc: sdhci-msm: Request non-strict IOMMU mode
-Date:   Mon, 21 Jun 2021 16:52:48 -0700
-Message-Id: <20210621165230.6.Icde6be7601a5939960caf802056c88cd5132eb4e@changeid>
-X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-In-Reply-To: <20210621235248.2521620-1-dianders@chromium.org>
-References: <20210621235248.2521620-1-dianders@chromium.org>
+        id S232248AbhFUXzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 19:55:17 -0400
+Received: from mail-mw2nam10on2063.outbound.protection.outlook.com ([40.107.94.63]:62625
+        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231486AbhFUXzO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 19:55:14 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HtXvhDS9rLb/SZ5NQut5pCog0H5lBiGIZCKkI24QlgjxYa2fg2S06vbWGkSgO9UZzrXIeVnUoAR0E+taOUr1xOAwtldfXDGNcG0H7VJGi9D3+RgJhM69PkZmcJ43hjkTDzkz1RysCakJjGrd1ZJykZ2QFa4ig9IVRNHPaSzsT9fbjIfdAgrqaQYUJfcCXGzhHRklrciF0Jkb4mD8La/3KFVZa7Us7v3GBpbFzlH23avQFWz/PeLI0M6mQbuRQKnNd6LewPhfP4S034k83UM65x/gxY1m1H18blua0qA4m0Rlaxei2O3l5YtOL+ObyOGu2fdNZGDHQYCkyljfbkmUdQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ok/71n32DD6kgr8B330SreuCjN7/gl28Y2fTUPERJcc=;
+ b=HYtXATkjeEBstwV2+f3f10prm204hHFkkARcCAi/2knp+yUpNDdMxYWNuGufo/XggyCFfii2yC9lNieYUCGWslaQfULMRLoq2hDlgTxUEqUyJvWO1gOYShjhTfVYTOg8xqhNibQIgpYERWEX300uAcJQJ6gZ7Dxp6LkwY5XgR3Rc7to3zLru4GWllUGax4ooh+HJAzmB0HvHmr2SPGrKF+YAutD2Hm4NP1vJ/sMgrcrzl7Jn/uV2TSM+qLwdBqt05bNPQ+5t2Oz3XF0Lw5JzThgKz6bGQGvWVi6mq6U7oaIwpNzQd3EcodehXBRLE8oDdrNrukE0rfqUzBlp6/6DSg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ok/71n32DD6kgr8B330SreuCjN7/gl28Y2fTUPERJcc=;
+ b=I8949blzvVXe52C107CJavmt0LbN+H34O/VOY6SXhzk7s90g4Z9Ipjm+LCYJmPjSzVPbDdUgObSPr2e2CEZV2i7K+NKOESWRo5kWHE8AegXMhCpEv3FBN900vOIsN8liD7tTHKhPkvFfIArhrysqK/fsVGC+8IeAHnagAbrmuzi49wjDOIqYLlILsSdbFhFxMcwV+o/9OU0xmab1dqZU0/Ew/dFKWz+58q87oRghr3wp7f2nc4iEUgGDtXcXLByxrmNHD2kJfu3iepjZdFwo6Chog2oGpVfYo12xmN9MXyOLOl0GeARFMh6bj4cY8pSeWl5SkEocsfEQYZxAQuxtDg==
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5318.namprd12.prod.outlook.com (2603:10b6:208:31d::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16; Mon, 21 Jun
+ 2021 23:52:58 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4242.023; Mon, 21 Jun 2021
+ 23:52:58 +0000
+Date:   Mon, 21 Jun 2021 20:52:57 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Anand Khoje <anand.a.khoje@oracle.com>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dledford@redhat.com, haakon.bugge@oracle.com, leon@kernel.org
+Subject: Re: [PATCH v5 for-next 0/3] IB/core: Obtaining subnet_prefix from
+ cache in
+Message-ID: <20210621235257.GB2374294@nvidia.com>
+References: <20210616154509.1047-1-anand.a.khoje@oracle.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210616154509.1047-1-anand.a.khoje@oracle.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: MN2PR19CA0027.namprd19.prod.outlook.com
+ (2603:10b6:208:178::40) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR19CA0027.namprd19.prod.outlook.com (2603:10b6:208:178::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend Transport; Mon, 21 Jun 2021 23:52:58 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lvTir-009xgE-Nq; Mon, 21 Jun 2021 20:52:57 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3872935a-5d3b-47a2-18ac-08d9350fb28f
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5318:
+X-Microsoft-Antispam-PRVS: <BL1PR12MB531810A458D1BC60D0926F95C20A9@BL1PR12MB5318.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MPf61WluXSA993OZmP4ZMg57pWO1FHg2PXHw0foLXy0at20/02gD6tJia2mZEquxp37iOsmIZNpbA5a9uJ7RnSANV/u6sq63GyCOSI0pQ3wfvSlLKr664m7kpGzr49b4c+we9R7hJpPMButfsTCs7PfYGQeEURgUqcXjRu+3OiVR7WHkj7Nr03eaaT2uctfFkjLdAjEq/Rzal5HthoeTpH6O6zXvBS1M2zlrkHH/2oeq2PYLRpsfwvQItr8lFaOMEoQ0Yy7jLKIl0igKke41wUFBPX6Hiav36zWUGDK3dhZnYq+jN6Sm9Khjx9jbB6u33g6X/dG6N28k/8pgEo721xRsy49YSmT60is7jiVAeczNcj8LPrHKMGenCqWsC9T4sr9/pukFR5Ybi/Db4rzJSdj/Z9IlVsNc1Cd2NWhXd6bZnW/Wuhjsws1qyLdVcmtSjmL9iYO6rHzWqxfufqa8FXnU17qeT9VD8nqbkcfKLy1Io2X/rphJqGGFACnIL0vMdBwMt4re0dO3icDiZI0vnCVWE/sN6iYTc21uAMHfxZcqE9ho0q0DMiFz57npuR28uL1kRPWbnaE1JPIo7N6Pm7pzi+UPWTB8SthD1Gbd6XQ=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(376002)(39860400002)(366004)(6916009)(426003)(36756003)(8676002)(1076003)(316002)(2616005)(33656002)(83380400001)(66946007)(66476007)(478600001)(8936002)(38100700002)(9786002)(186003)(9746002)(86362001)(5660300002)(66556008)(4326008)(2906002)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tv4Yn0zyoTwomAicMWt9nHn894/EW2i58uXKFY7ZIqfRFY/6NnZ2P9Ic5XFO?=
+ =?us-ascii?Q?sNOg1sLxQIyJJ4+Z952HV1ZhC4Dg9Zr6zxkG0wMJPBMljar8eEDf9gPhvycK?=
+ =?us-ascii?Q?UMAlrZSFqh3T2bM+1BNqaOw66HwMXtW882jE9TT23NtIFboyVA+wH7c/DCs0?=
+ =?us-ascii?Q?cCgZvlCY8WGf/0QTvNWFb5xdo96VBr9SRQEnb1kmNkhEQ305eFBI94SvGGHT?=
+ =?us-ascii?Q?E3i3urG+j+gTJeT9vlp5P8QjozjS1bqEl0CQ3IY6BSY2EVTtDByDp74wHeND?=
+ =?us-ascii?Q?O2gR/mSxqE2fJu/FcPp0mrAmID22Jfofc7LCLgiOfs2/HOdxqm8OqIsn6DZ2?=
+ =?us-ascii?Q?GbFuDDICT8npgmZ2zG9Lx+udX+yG6L1aZnlnoqrQmZqBAuiAzp7rF7yGwdvT?=
+ =?us-ascii?Q?+ctahEa4xJwsC+XLzrFiebRhB8rRTOweSOCmdAldRGYVonE276HyeH3V3WO4?=
+ =?us-ascii?Q?BFwp1awmrxXLJEKCAEO4l/zgb0FlE3FTbeU4rUj76GBkmgZrelafWxfrY+YU?=
+ =?us-ascii?Q?eIv1s1CeBUXK8PsorqPnUlF4qRiei6wCP2JfYiBw/BQMPgRV+4LaCoGLfocQ?=
+ =?us-ascii?Q?5AO7V1sVPWSZPIZiZVK9S3zHAb5yGIVualgHEowAvzhns+2Rrzvzdgrjf1Lm?=
+ =?us-ascii?Q?8n8N20IJzsqBu6wqiFoy+mU4OPCoDptGs0qan5can2T6U7selrTSO5jBXUou?=
+ =?us-ascii?Q?AGUneA9RVXZ2VyL6Oj90Xmh9e6umFaw8EvL9RTouJ6TR1xlnWDMgzJfZ7qqq?=
+ =?us-ascii?Q?AlMwIWZI3oGf0OM4v8I0CUCSmWMB+lS0W4wNzNaYJ770YXrUHh+VAk6xsvZA?=
+ =?us-ascii?Q?GzMPa3t9Dvr/fY/WiPvC8Xmf8+hnIB+9Nw3vJ89E+H7JPBJTgWg13ZYgGlvU?=
+ =?us-ascii?Q?4BMJ5HGQk2E42baweNm/Fq+MXFbisRITR671UTrQc7cGCtEP89oAvkvTZt0y?=
+ =?us-ascii?Q?QgPvrl4yscAaFkxPtb3LY2zqxdeo3ovzRU0PPrBmFnXQyYMMC3sPa9z1FdmY?=
+ =?us-ascii?Q?ZWKLc2grI7jGMNSYXJ5pZhhdv1CkTHvNCVMDwkvQenAvTBOBoWZjx5JPA9Oz?=
+ =?us-ascii?Q?vqO7RtZW5i/wxwd8oTulUX+DxMeX0+ay6K2ILVOaCQ4EEbZVKvh6SNcD46cV?=
+ =?us-ascii?Q?TsUbHsKlGOwXgmCK4yGUgClQzFSbt+4b8+pYN3dCwQXiXgq5HRsf3Z3nDfcW?=
+ =?us-ascii?Q?JefJCmzPpRE/hTgRnwl8Qg5YvgwP+GfXq4Oy6agGNnu6qhsYa+EDkej7AkRg?=
+ =?us-ascii?Q?TfV+bK3uCOQ0eWQDCN/yju5mibHp4ni7d4blYvf9C6qVsXN9GSgTtqXBD6Rd?=
+ =?us-ascii?Q?QhAk6WDLAv+o89pHDmGzOcXY?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3872935a-5d3b-47a2-18ac-08d9350fb28f
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2021 23:52:58.7593
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aWwyyWzCbyk/xEC5jeVDfEZMk3XBFwYshRx+JYxTc4G1yimr0j21Gtx9bHw2AwVp
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5318
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IOMMUs can be run in "strict" mode or in "non-strict" mode. The
-quick-summary difference between the two is that in "strict" mode we
-wait until everything is flushed out when we unmap DMA memory. In
-"non-strict" we don't.
+On Wed, Jun 16, 2021 at 09:15:06PM +0530, Anand Khoje wrote:
+> This v5 patch series is used to read the port_attribute subnet_prefix
+> from a valid cache entry instead of having to call
+> device->ops.query_gid() in Infiniband link-layer devices. This requires
+> addition of a flag used to check that the cache entry is initialized and
+> that a valid value is being read.
+> 
+> 1. Removed the port validity check from ib_get_cached_subnet_prefix.
+> This check was not useful as the port_num is always valid.
+> 
+> 2. Shuffled locks pkey_lost_lock and netdev_lock in struct ib_port_data.
+> This was done as output of pahole showed two 4-byte holes in the
+> structure ib_port_data after pkey_list_lock and netdev_lock. Moving
+> netdev_lock shaved off 8 bytes from the structure.
+> 
+> 3. Added a flag to struct ib_port_data. This is used to validate the
+> status of cached subnet_prefix. This valid cache entry of subnet_prefix
+> is used in function __ib_query_port().
+> This allows the utilization of the cache entry and hence avoids a call
+> into device->ops.query_gid(). We also ensure that in the event of a
+> cache update, the value for subnet_prefix gets read from the newly updated
+> GID cache and not via ib_query_port(), so that we do not end up reading a
+> stale cache value.
+> 
+> Anand Khoje (3):
+>   IB/core: Removed port validity check from ib_get_cached_subnet_prefix
+>   IB/core: Shuffle locks in ib_port_data to save memory
 
-Using the IOMMU in "strict" mode is more secure/safer but slower
-because we have to sit and wait for flushes while we're unmapping. To
-explain a bit why "non-strict" mode is unsafe, let's imagine two
-examples.
+I took these two, thanks
 
-An example of "non-strict" being insecure when reading from a device:
-a) Linux driver maps memory for DMA.
-b) Linux driver starts DMA on the device.
-c) Device write to RAM subject to bounds checking done by IOMMU.
-d) Device finishes writing to RAM and signals transfer is finished.
-e) Linux driver starts unmapping DMA memory but doesn't flush.
-f) Linux driver validates that the data in memory looks sane and that
-   accessing it won't cause the driver to, for instance, overflow a
-   buffer.
-g) Device takes advantage of knowledge of how the Linux driver works
-   and sneaks in a modification to the data after the validation but
-   before the IOMMU unmap flush finishes.
-h) Device has now caused the Linux driver to access memory it
-   shouldn't.
-
-An example of "non-strict" being insecure when writing to a device:
-a) Linux driver writes data intended for the device to RAM.
-b) Linux driver maps memory for DMA.
-c) Linux driver starts DMA on the device.
-d) Device reads from RAM subject to bounds checking done by IOMMU.
-e) Device finishes reading from RAM and signals transfer is finished.
-f) Linux driver starts unmapping DMA memory but doesn't flush.
-g) Linux driver frees memory and returns it to the pool.
-h) Memory is allocated for another purpose.
-i) Device takes advantage of the period of time before IOMMU flush to
-   read memory that it shouldn't have had access to.
-
-As you can see from the above examples, using the iommu in
-"non-strict" mode might not sound _too_ scary (the window of badness
-is small and the exposed memory is small) but there is certainly
-risk. Let's evaluate the risk by breaking it down into two problems
-that IOMMUs are supposed to be protecting us against:
-
-Case 1: IOMMUs prevent malicious code running on the peripheral (maybe
-a malicious peripheral or maybe someone exploited a benign peripheral)
-from turning into an exploit of the Linux kernel. This is particularly
-important if the peripheral has loadable / updatable firmware or if
-the peripheral has some type of general purpose processor and is
-processing untrusted inputs. It's also important if the device is
-something that can be easily plugged into the host and the device has
-direct DMA access itself, like a PCIe device.
-
-Case 2: IOMMUs limit the severity of a class of software bugs in the
-kernel. If we misconfigure a peripheral by accident then instead of
-the peripheral clobbering random memory due to a bug we might get an
-IOMMU error.
-
-Now that we understand the issue and the risks, let's evaluate whether
-we really need "strict" mode for the Qualcomm SDHCI controllers. I
-will make the argument that we don't _need_ strict mode for them. Why?
-* The SDHCI controller on Qualcomm SoCs doesn't appear to have
-  loadable / updatable firmware and, assuming it's got some firmware
-  baked into it, I see no evidence that the firmware could be
-  compromised.
-* Even though, for external SD cards in particular, the controller is
-  dealing with "untrusted" inputs, it's dealing with them in a very
-  controlled way.  It seems unlikely that a rogue SD card would be
-  able to present something to the SDHCI controller that would cause
-  it to DMA to/from an address other than one the kernel told it
-  about.
-* Although it would be nice to catch more software bugs, once the
-  Linux driver has been debugged and stressed the value is not very
-  high. If the IOMMU caught something like this the system would be in
-  a pretty bad shape anyway (we don't really recover from IOMMU
-  errors) and the only benefit would be a better spotlight on what
-  went wrong.
-
-Now we have a good understanding of the benefits of "strict" mode for
-our SDHCI controllers, let's look at some performance numbers. I used
-"dd" to measure read speeds from eMMC on a sc7180-trogdor-lazor
-board. Basic test command (while booted from USB):
-  echo 3 > /proc/sys/vm/drop_caches
-  dd if=/dev/mmcblk1 of=/dev/null bs=4M count=512
-
-I attempted to run my tests for enough iterations that results
-stabilized and weren't too noisy. Tests were run with patches picked
-to the chromeos-5.4 tree (sanity checked against v5.13-rc7). I also
-attempted to compare to other attempts to address IOMMU problems
-and/or attempts to bump the cpufreq up to solve this problem:
-- eMMC datasheet spec: 300 MB/s "Typical Sequential Performance"
-  NOTE: we're driving the bus at 192 MHz instead of 200 Mhz so we might
-  not be able to achieve the full 300 MB/s.
-- Baseline: 210.9 MB/s
-- Baseline + peg cpufreq to max: 284.3 MB/s
-- This patch: 279.6 MB/s
-- This patch + peg cpufreq to max: 288.1 MB/s
-- Joel's IO Wait fix [1]: 258.4 MB/s
-- Joel's IO Wait fix [1] + peg cpufreq to max: 287.8 MB/s
-- TLBIVA patches [2] + [3]: 214.7 MB/s
-- TLBIVA patches [2] + [3] + peg cpufreq to max: 285.7 MB/s
-- This patch plus Joel's [1]: 280.2 MB/s
-- This patch plus Joel's [1] + peg...: 279.0 MB/s
-  NOTE: I suspect something in the system was thermal throttling since
-  there's a heat wave right now.
-
-I also spent a little bit of time trying to see if I could get the
-IOMMU flush for MMC out of the critical path but was unable to figure
-out how to do this and get good performance.
-
-Overall I'd say that the performance results above show:
-* It's really not straightforward to point at "one thing" that is
-  making our eMMC performance bad.
-* It's certainly possible to get pretty good eMMC performance even
-  without this patch.
-* This patch makes it much easier to get good eMMC performance.
-* No other solutions that I found resulted in quite as good eMMC
-  performance as having this patch.
-
-Given all the above (security safety concerns are minimal and it's a
-nice performance win), I'm proposing that running SDHCI on Qualcomm
-SoCs in non-strict mode is the right thing to do until such point in
-time as someone can come up with a better solution to get good SD/eMMC
-performance without it.
-
-NOTES:
-* It's likely that arguments similar to the above can be made for
-  other SDHCI controllers. However, given that this is something that
-  can have an impact on security it feels like we want each SDHCI
-  controller to opt-in. I believe it is conceivable, for instance,
-  that some SDHCI controllers might have loadable or updatable
-  firmware.
-* It's also likely other peripherals will want this to get the quick
-  performance win. That also should be fine, though anyone landing a
-  similar patch should be very careful that it is low risk for all
-  users of a given peripheral.
-* Conceivably if even this patch is considered too "high risk", we
-  could limit this to just non-removable cards (like eMMC) by just
-  checking the device tree. This is one nice advantage of using the
-  pre_probe() to set this.
-
-[1] https://lore.kernel.org/r/20210618040639.3113489-1-joel@joelfernandes.org
-[2] https://lore.kernel.org/r/1623850736-389584-1-git-send-email-quic_c_gdjako@quicinc.com/
-[3] https://lore.kernel.org/r/cover.1623981933.git.saiprakash.ranjan@codeaurora.org/
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-
- drivers/mmc/host/sdhci-msm.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-index e44b7a66b73c..33ef5e6941d7 100644
---- a/drivers/mmc/host/sdhci-msm.c
-+++ b/drivers/mmc/host/sdhci-msm.c
-@@ -2465,6 +2465,13 @@ static inline void sdhci_msm_get_of_property(struct platform_device *pdev,
- }
- 
- 
-+static int sdhci_msm_pre_probe(struct device *dev)
-+{
-+	dev->request_non_strict_iommu = true;
-+
-+	return 0;
-+}
-+
- static int sdhci_msm_probe(struct platform_device *pdev)
- {
- 	struct sdhci_host *host;
-@@ -2811,6 +2818,7 @@ static struct platform_driver sdhci_msm_driver = {
- 		   .of_match_table = sdhci_msm_dt_match,
- 		   .pm = &sdhci_msm_pm_ops,
- 		   .probe_type = PROBE_PREFER_ASYNCHRONOUS,
-+		   .pre_probe = sdhci_msm_pre_probe,
- 	},
- };
- 
--- 
-2.32.0.288.g62a8d224e6-goog
-
+Jason
