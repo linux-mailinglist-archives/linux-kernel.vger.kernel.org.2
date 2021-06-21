@@ -2,170 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE6A3AF749
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E449F3AF74E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:18:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231466AbhFUVSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 17:18:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39790 "EHLO mail.kernel.org"
+        id S231418AbhFUVUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 17:20:53 -0400
+Received: from mga01.intel.com ([192.55.52.88]:28896 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231226AbhFUVSK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 17:18:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBF996135A
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 21:15:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624310156;
-        bh=BMFxuktetIHIQ9p2t3t67WAB+tyoq+VgC9t9IHSehTw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dGr3ePTmZInHvQKuw/NIMkeeWWgNeTML244dDHzoXjZ1ASu4n2bRDIE0yndMZIaKP
-         gfEIMSZ/mzWphKTu4e9D+7qkzzIBebrgoEQToS5FuUyKUR7xEm60s1ayad+msFMo+S
-         jhaGgro3tz18Kg9FHQ3TGQo1xPOx0G6R9wS3Yr1stS97MMQVn7rjIozZju82/p1p6Q
-         sO6rTXHEV5v4c2Gl2rnSKJJVwvaxhmleyEoTkGL1A2CFgUerCE6cRgErUtSU/MoSiF
-         KsopWAMDOIz3CNJfsFiKCVmeLHX4dy6pCC0uoMnZNfHltx5pC1ZsdkTEwoJkv4UduL
-         ima7y0LWgLe/w==
-Received: by mail-ej1-f52.google.com with SMTP id hq39so4005493ejc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:15:55 -0700 (PDT)
-X-Gm-Message-State: AOAM530/qdcoZuJf3fF7/74SEzGzsvK9MiiW3TvP+FKGYmEHvODVWFqF
-        7Nd6Pao6/el045kC7nSooy+87fBKWg0p0UAOwyAgTA==
-X-Google-Smtp-Source: ABdhPJzJvillf+fe0IVGNg4yoMts5knbu7LBH/8P0ZmQVvZmgMHS6H408uZUCQqsC7kGs1kXyPakC8BoyWYuca7XMlo=
-X-Received: by 2002:a17:907:3e9f:: with SMTP id hs31mr132059ejc.253.1624310154427;
- Mon, 21 Jun 2021 14:15:54 -0700 (PDT)
+        id S229890AbhFUVUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 17:20:50 -0400
+IronPort-SDR: GNrydWMuiPlDIdfKTwa7xq/nobOAqPSeETizp407JHiV93lJ7CcFwsrCwn3rcSEs8V2CawZtIr
+ e3t/2spVI9UQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="228487278"
+X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
+   d="scan'208";a="228487278"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 14:18:36 -0700
+IronPort-SDR: iURLcX2X/l1I+WenSKlRwrlBmsndlHc0zgVDKu/bxMZJX0OSYHjJNZaxrLP1w5ffUGiDtgQ3Pw
+ fdwOYhqGAPEw==
+X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
+   d="scan'208";a="423082471"
+Received: from bhooglan-mobl1.amr.corp.intel.com (HELO [10.255.228.227]) ([10.255.228.227])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 14:18:35 -0700
+Subject: Re: [PATCH] selftests/sgx: remove checks for file execute permissions
+To:     Reinette Chatre <reinette.chatre@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, tim.gardner@canonical.com,
+        jarkko@kernel.org, shuah@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+References: <20210621190556.4B5DCBB1@viggo.jf.intel.com>
+ <121f7215-f11d-2533-b736-9f18516c3220@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <1f46324e-2cbe-f4a7-65d5-24b22a8b36b1@intel.com>
+Date:   Mon, 21 Jun 2021 14:18:33 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1624032777-7013-1-git-send-email-ross.philipson@oracle.com>
- <1624032777-7013-13-git-send-email-ross.philipson@oracle.com>
- <53edcf0e-c094-876c-ac3d-7c9752e9ea99@arm.com> <34d05f0e-b24c-b8cf-c521-8b30cc1df532@oracle.com>
-In-Reply-To: <34d05f0e-b24c-b8cf-c521-8b30cc1df532@oracle.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 21 Jun 2021 14:15:42 -0700
-X-Gmail-Original-Message-ID: <CALCETrUdEvLFKuvU7z_ut6cEfAgJogNp3oBXL-EdDLU=W+VeKA@mail.gmail.com>
-Message-ID: <CALCETrUdEvLFKuvU7z_ut6cEfAgJogNp3oBXL-EdDLU=W+VeKA@mail.gmail.com>
-Subject: Re: [PATCH v2 12/12] iommu: Do not allow IOMMU passthrough with
- Secure Launch
-To:     Ross Philipson <ross.philipson@oracle.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Wang <jasowang@redhat.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        "Daniel P. Smith" <dpsmith@apertussolutions.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, trenchboot-devel@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <121f7215-f11d-2533-b736-9f18516c3220@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 10:51 AM Ross Philipson
-<ross.philipson@oracle.com> wrote:
->
-> On 6/18/21 2:32 PM, Robin Murphy wrote:
-> > On 2021-06-18 17:12, Ross Philipson wrote:
-> >> The IOMMU should always be set to default translated type after
-> >> the PMRs are disabled to protect the MLE from DMA.
-> >>
-> >> Signed-off-by: Ross Philipson <ross.philipson@oracle.com>
-> >> ---
-> >>   drivers/iommu/intel/iommu.c | 5 +++++
-> >>   drivers/iommu/iommu.c       | 6 +++++-
-> >>   2 files changed, 10 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-> >> index be35284..4f0256d 100644
-> >> --- a/drivers/iommu/intel/iommu.c
-> >> +++ b/drivers/iommu/intel/iommu.c
-> >> @@ -41,6 +41,7 @@
-> >>   #include <linux/dma-direct.h>
-> >>   #include <linux/crash_dump.h>
-> >>   #include <linux/numa.h>
-> >> +#include <linux/slaunch.h>
-> >>   #include <asm/irq_remapping.h>
-> >>   #include <asm/cacheflush.h>
-> >>   #include <asm/iommu.h>
-> >> @@ -2877,6 +2878,10 @@ static bool device_is_rmrr_locked(struct device
-> >> *dev)
-> >>    */
-> >>   static int device_def_domain_type(struct device *dev)
-> >>   {
-> >> +    /* Do not allow identity domain when Secure Launch is configured */
-> >> +    if (slaunch_get_flags() & SL_FLAG_ACTIVE)
-> >> +        return IOMMU_DOMAIN_DMA;
-> >
-> > Is this specific to Intel? It seems like it could easily be done
-> > commonly like the check for untrusted external devices.
->
-> It is currently Intel only but that will change. I will look into what
-> you suggest.
->
-> >
-> >> +
-> >>       if (dev_is_pci(dev)) {
-> >>           struct pci_dev *pdev = to_pci_dev(dev);
-> >>   diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> >> index 808ab70d..d49b7dd 100644
-> >> --- a/drivers/iommu/iommu.c
-> >> +++ b/drivers/iommu/iommu.c
-> >> @@ -23,6 +23,7 @@
-> >>   #include <linux/property.h>
-> >>   #include <linux/fsl/mc.h>
-> >>   #include <linux/module.h>
-> >> +#include <linux/slaunch.h>
-> >>   #include <trace/events/iommu.h>
-> >>     static struct kset *iommu_group_kset;
-> >> @@ -2761,7 +2762,10 @@ void iommu_set_default_passthrough(bool cmd_line)
-> >>   {
-> >>       if (cmd_line)
-> >>           iommu_cmd_line |= IOMMU_CMD_LINE_DMA_API;
-> >> -    iommu_def_domain_type = IOMMU_DOMAIN_IDENTITY;
-> >> +
-> >> +    /* Do not allow identity domain when Secure Launch is configured */
-> >> +    if (!(slaunch_get_flags() & SL_FLAG_ACTIVE))
-> >> +        iommu_def_domain_type = IOMMU_DOMAIN_IDENTITY;
-> >
-> > Quietly ignoring the setting and possibly leaving iommu_def_domain_type
-> > uninitialised (note that 0 is not actually a usable type) doesn't seem
-> > great. AFAICS this probably warrants similar treatment to the
->
-> Ok so I guess it would be better to set it to IOMMU_DOMAIN_DMA event
-> though passthrough was requested. Or perhaps something more is needed here?
->
-> > mem_encrypt_active() case - there doesn't seem a great deal of value in
-> > trying to save users from themselves if they care about measured boot
-> > yet explicitly pass options which may compromise measured boot. If you
-> > really want to go down that route there's at least the sysfs interface
-> > you'd need to nobble as well, not to mention the various ways of
-> > completely disabling IOMMUs...
->
-> Doing a secure launch with the kernel is not a general purpose user use
-> case. A lot of work is done to secure the environment. Allowing
-> passthrough mode would leave the secure launch kernel exposed to DMA. I
-> think what we are trying to do here is what we intend though there may
-> be a better way or perhaps it is incomplete as you suggest.
->
+On 6/21/21 2:08 PM, Reinette Chatre wrote:
+> 
+> Thank you very much for fixing this. With this applied the SGX tests are
+> able to run again on my system.
+> 
+> Tested-by: Reinette Chatre <reinette.chatre@intel.com>
+> 
+> I think it is missing a "Signed-off-by".
 
-I don't really like all these special cases.  Generically, what you're
-trying to do is (AFAICT) to get the kernel to run in a mode in which
-it does its best not to trust attached devices.  Nothing about this is
-specific to Secure Launch.  There are plenty of scenarios in which
-this the case:
+Right you are.  I think I've done this twice in a row for one-off
+patches.  Sheesh.
 
- - Virtual devices in a VM host outside the TCB, e.g. VDUSE, Xen
-device domains (did I get the name right), whatever tricks QEMU has,
-etc.
- - SRTM / DRTM technologies (including but not limited to Secure
-Launch -- plain old Secure Boot can work like this too).
- - Secure guest technologies, including but not limited to TDX and SEV.
- - Any computer with a USB-C port or other external DMA-capable port.
- - Regular computers in which the admin wants to enable this mode for
-whatever reason.
+Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 
-Can you folks all please agree on a coordinated way for a Linux kernel
-to configure itself appropriately?  Or to be configured via initramfs,
-boot option, or some other trusted source of configuration supplied at
-boot time?  We don't need a whole bunch of if (TDX), if (SEV), if
-(secure launch), if (I have a USB-C port with PCIe exposed), if
-(running on Xen), and similar checks all over the place.
+If anyone wants a resend with this included, please let me know.
