@@ -2,58 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 292693AE4C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 665893AE4CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhFUIbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 04:31:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34200 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229618AbhFUIbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 04:31:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E91E060FF4;
-        Mon, 21 Jun 2021 08:29:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624264174;
-        bh=KPznl7d9Wv3j9LDZ3CCsrENhbmOEiGLgBvC80ba2OpA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NKcKMH9coXa7nADZfEz4x5P/kGS731f1HhZIVx60t48cKEoNQpwC2N117B/ihq7YH
-         Uy1qdn1uXFk84gWE6naSTZwYWwEs/9S0Ns+5CM2UFMt7/Ju2cz2giWHuRVYm8LynOC
-         iK69jfglBsA9O91maMPa+HjuVBpXHcSBCWhTczvq34FSkTO5NiwGCKc3M/HOgeuewx
-         i3QB353yODBZVuLSC+Pu2PIuB/Jko4JIlpp3FKMH39bPvMEBZBVZ61oOEoA5fVpX2w
-         IaF29J3BRvTnsoeKIewsKg3FujT1pw0K585rLJ0tGUhLOi4kHbpLDAn5MP//T1zPzP
-         Rt9IkBIIWV19g==
-Date:   Mon, 21 Jun 2021 13:59:31 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     angkery <angkery@163.com>
-Cc:     sean.wang@mediatek.com, matthias.bgg@gmail.com,
-        long.cheng@mediatek.com, dmaengine@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Junlin Yang <yangjunlin@yulong.com>
-Subject: Re: [PATCH v1] dmaengine: mediatek: Return the correct errno code
-Message-ID: <YNBN684ZiVdVb4eU@vkoul-mobl>
-References: <20210621062048.1935-1-angkery@163.com>
+        id S230302AbhFUIcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 04:32:08 -0400
+Received: from mailout1.secunet.com ([62.96.220.44]:57788 "EHLO
+        mailout1.secunet.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230137AbhFUIcG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 04:32:06 -0400
+Received: from cas-essen-01.secunet.de (unknown [10.53.40.201])
+        by mailout1.secunet.com (Postfix) with ESMTP id 2005D80004E;
+        Mon, 21 Jun 2021 10:29:50 +0200 (CEST)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ cas-essen-01.secunet.de (10.53.40.201) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 21 Jun 2021 10:29:49 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 21 Jun
+ 2021 10:29:49 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id 899D131803E8; Mon, 21 Jun 2021 10:29:49 +0200 (CEST)
+Date:   Mon, 21 Jun 2021 10:29:49 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Varad Gautam <varad.gautam@suse.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        <netdev@vger.kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Florian Westphal <fw@strlen.de>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        <stable@vger.kernel.org>
+Subject: Re: [PATCH] xfrm: policy: Restructure RCU-read locking in
+ xfrm_sk_policy_lookup
+Message-ID: <20210621082949.GX40979@gauss3.secunet.de>
+References: <20210618141101.18168-1-varad.gautam@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210621062048.1935-1-angkery@163.com>
+In-Reply-To: <20210618141101.18168-1-varad.gautam@suse.com>
+X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-06-21, 14:20, angkery wrote:
-> From: Junlin Yang <yangjunlin@yulong.com>
+On Fri, Jun 18, 2021 at 04:11:01PM +0200, Varad Gautam wrote:
+> Commit "xfrm: policy: Read seqcount outside of rcu-read side in
+> xfrm_policy_lookup_bytype" [Linked] resolved a locking bug in
+> xfrm_policy_lookup_bytype that causes an RCU reader-writer deadlock on
+> the mutex wrapped by xfrm_policy_hash_generation on PREEMPT_RT since
+> 77cc278f7b20 ("xfrm: policy: Use sequence counters with associated
+> lock").
 > 
-> When devm_kzalloc failed, should return ENOMEM rather than ENODEV.
-> 
-> Fixes: 9135408c3ace ("dmaengine: mediatek: Add MediaTek UART APDMA support")
-> Signed-off-by: Junlin Yang <yangjunlin@yulong.com>
+> However, xfrm_sk_policy_lookup can still reach xfrm_policy_lookup_bytype
+> while holding rcu_read_lock(), as:
+> xfrm_sk_policy_lookup()
+>   rcu_read_lock()
+>   security_xfrm_policy_lookup()
+>     xfrm_policy_lookup()
 
-Patch was sent by angkery <angkery@163.com> and signed off by Junlin
-Yang <yangjunlin@yulong.com>. I would need s-o-b by sender as well...
+Hm, I don't see that call chain. security_xfrm_policy_lookup() calls
+a hook with the name xfrm_policy_lookup. The only LSM that has
+registered a function to that hook is selinux. It registers
+selinux_xfrm_policy_lookup() and I don't see how we can call
+xfrm_policy_lookup() from there.
 
-Thanks
+Did you actually trigger that bug?
 
--- 
-~Vinod
