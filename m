@@ -2,218 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5193AF4FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DB063AF4FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232033AbhFUSZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:25:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55506 "EHLO
+        id S231807AbhFUS0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:26:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231803AbhFUSZJ (ORCPT
+        with ESMTP id S231194AbhFUS0l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:25:09 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4540C061574;
-        Mon, 21 Jun 2021 11:22:54 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 6725A5E17;
-        Mon, 21 Jun 2021 20:22:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1624299772;
-        bh=B1hshC97pO+3kI/cTa6a+7piw5qtRoHK8S+RKnL0igM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C2mx3gUm+ombWTc95lt8BfRA+wZZLxWWqZZw9KFkDGW+Ye6txj68Lbo64VULEEuA3
-         IDyhTBqBRX84YdkwnzoDTuriqXVjPF1DanNmtF7RlDhSumcs+R5NPikhh+SakMqA/t
-         0o1SyqYn6APMM1/8KCPLDvtZwhUGb8nt6xhGQXUs=
-Date:   Mon, 21 Jun 2021 21:22:26 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: uvc: limit max bandwidth for HDMI capture
-Message-ID: <YNDY4iesZGF+7Cr0@pendragon.ideasonboard.com>
-References: <b791d5874c83663505cbd4f74907ac38d00bb727.1612206534.git.mchehab+huawei@kernel.org>
+        Mon, 21 Jun 2021 14:26:41 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5E67C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:24:25 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id d12so297143pgd.9
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:24:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8srstiN/1QZXwDTulF83V5rnWY0uXObxwuHnse4sC/A=;
+        b=mbdRjmeqpU09zwARWs6VBWCsKthtt1ciZ7/sKECb+LXhO/trEQk1wiQ8V1CZ0EV2Jm
+         ZlEkgW0zlljp2e/FgFuPRW9rdjI05xum01p50e9bFYSmMCNHbE5kQqAAo8oW420leycF
+         l0vqb2QcSakmgDG0XDSPywc8AdQoRSaV2MRpsf1z/7e/SYs0HhYtYQWrwQE/QE4PjipG
+         c4TpQZj3g/Yj1i5YmfIbNfvRTE4EkwYphVE25FDEvIvwz2vNVjsu4RuTd9AcI1aE94qc
+         6y/mckyWvHWNGxtF6OvgOWOlNbuvcJGnmCcaDgeccujmVJiAIXsJrfar32C9U2x7wAJX
+         6Gqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8srstiN/1QZXwDTulF83V5rnWY0uXObxwuHnse4sC/A=;
+        b=n/KfSlDKASNnDOQL5hVa74WMyrjR0YUyQRiJouDX7zyc5y0kwfyl7llfOVYgKG75gg
+         k5HsOGHOWsOSgfcKYA5BouMfMLxh9VbP7noU8qnKB8nH66Y9uokIdcXEZmKF75Lr8e2o
+         Pp8dneuQeJT+a1D63LL0KMtMsQIm3Cs2PJqaaJR/2QmqB0M6d2A5wiIAJ65R7P7xa0AC
+         8Gsp2uty1GFE6zIkU0wKkRsPECUrzID4Yfw2oPT3TVo2uF8tdqkWq4sbIrJQ1lY4HbqA
+         +qgjYYOXfxX/J4d8unIHJbDSuVRyI9DkLSftNl+6V9v2141kRvM8j56xIJT00Lit+sQa
+         rX0g==
+X-Gm-Message-State: AOAM5325U8zg39LfPNTNzOpmigIGtjQgVGl4HkfAoogeg8VEjWyP3DFZ
+        KUvnvYNBrqpSbdAJZlWdwXxN/w==
+X-Google-Smtp-Source: ABdhPJwsKW/VhOsBp1lMcO0miiGnEaYNCbevivBl7JAn5W5XepPB84CTUFkwR3IV2ygsBGL4tRrmSA==
+X-Received: by 2002:a63:1143:: with SMTP id 3mr25502463pgr.166.1624299865199;
+        Mon, 21 Jun 2021 11:24:25 -0700 (PDT)
+Received: from google.com ([2620:15c:2ce:200:33e1:52f0:4159:6ed])
+        by smtp.gmail.com with ESMTPSA id b18sm4756953pft.1.2021.06.21.11.24.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 11:24:24 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 11:24:18 -0700
+From:   Fangrui Song <maskray@google.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Bill Wendling <wcw@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, Martin Liska <mliska@suse.cz>,
+        Marco Elver <elver@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH 1/2] compiler_attributes.h: define __no_profile, add to
+ noinstr
+Message-ID: <20210621182418.57qbumtovysrlkwy@google.com>
+References: <20210618233023.1360185-1-ndesaulniers@google.com>
+ <20210618233023.1360185-2-ndesaulniers@google.com>
+ <CANiq72kjyiAQn2+ijZKFo7SY3z+dCV6fGXYP1O_Mq7Ui3EqSzQ@mail.gmail.com>
+ <CANiq72nbbqeD2dv3z0y3rN-_kdnh=9-pD7oSyWUfaG8oJ2y_8A@mail.gmail.com>
+ <CAKwvOd=B6LV9rZmtPacfz_F10jj1wrovoGu8yvdOqKZ69-T6mQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <b791d5874c83663505cbd4f74907ac38d00bb727.1612206534.git.mchehab+huawei@kernel.org>
+In-Reply-To: <CAKwvOd=B6LV9rZmtPacfz_F10jj1wrovoGu8yvdOqKZ69-T6mQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+On 2021-06-21, Nick Desaulniers wrote:
+>On Sat, Jun 19, 2021 at 4:32 AM Miguel Ojeda
+><miguel.ojeda.sandonis@gmail.com> wrote:
+>>
+>> On Sat, Jun 19, 2021 at 1:26 PM Miguel Ojeda
+>> <miguel.ojeda.sandonis@gmail.com> wrote:
+>> >
+>> > I am not sure if it is best or not to have the GCC link in order to be
+>> > consistent with the rest of the links (they are for the docs only). Do
+>> > we know if GCC going to implement it soon?
+>>
+>> i.e. if GCC does not implement it yet we use elsewhere this kind of
+>> marker instead:
+>>
+>>      * Optional: not supported by gcc
+>>
+>> The first of its kind, normally it is clang/icc there ;-)
+>
+>:^) GCC does have an attribute since GCC 7.1 for this.
+>https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80223#c11
+>I'm moving Clang over to use that in
+>https://reviews.llvm.org/D104658
+>Once that lands, I'll send a v2 (without carrying any reviewed by tags).
 
-Thank you for the patch.
+Thanks! __attribute__((no_profile_instrument_function)) looks good to me.
 
-On Mon, Feb 01, 2021 at 08:08:59PM +0100, Mauro Carvalho Chehab wrote:
-> This device:
->         534d:2109 MacroSilicon
-> 
-> Announces that it supports several frame intervals for
-> their resolutions for MJPEG compression:
-> 
->         VideoStreaming Interface Descriptor:
->         bLength                            46
->         bDescriptorType                    36
->         bDescriptorSubtype                  7 (FRAME_MJPEG)
->         bFrameIndex                         1
->         bmCapabilities                   0x00
->           Still image unsupported
->         wWidth                           1920
->         wHeight                          1080
->         dwMinBitRate                   768000
->         dwMaxBitRate                196608000
->         dwMaxVideoFrameBufferSize     4147200
->         dwDefaultFrameInterval         166666
->         bFrameIntervalType                  5
->         dwFrameInterval( 0)            166666
->         dwFrameInterval( 1)            333333
->         dwFrameInterval( 2)            400000
->         dwFrameInterval( 3)            500000
->         dwFrameInterval( 4)           1000000
-> 
-> However, the highest frame interval (166666), which means 60 fps
-> is not supported. For such resolution, the maximum interval
-> is, instead 333333 (30 fps).
+Also a reminder that __GCC4_has_attribute___no_profile in v1 misses two
+underscores. v2 no_profile_instrument_function may need to fix this.
 
-What happens if you try to select it ?
 
-> The last format that supports such frame interval is 1280x720.
-> 
-> Add a quirk to estimate a raw bandwidth, by doing:
->         width * height * framerate
-> E. g.:
->         1920 * 1080 * 30 = 62208000
-> 
-> if the bandwidth is greater than such threshold, get
-> the next value from the dwFrameInterval.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/media/usb/uvc/uvc_driver.c | 15 +++++++++++++++
->  drivers/media/usb/uvc/uvc_video.c  | 26 +++++++++++++++++++++++---
->  drivers/media/usb/uvc/uvcvideo.h   |  2 ++
->  3 files changed, 40 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> index 1abc122a0977..c83a329f6527 100644
-> --- a/drivers/media/usb/uvc/uvc_driver.c
-> +++ b/drivers/media/usb/uvc/uvc_driver.c
-> @@ -2339,6 +2339,7 @@ static int uvc_probe(struct usb_interface *intf,
->  	dev->info = info ? info : &uvc_quirk_none;
->  	dev->quirks = uvc_quirks_param == -1
->  		    ? dev->info->quirks : uvc_quirks_param;
-> +	dev->max_bandwidth = dev->info->max_bandwidth;
->  
->  	if (id->idVendor && id->idProduct)
->  		uvc_dbg(dev, PROBE, "Probing known UVC device %s (%04x:%04x)\n",
-> @@ -2615,6 +2616,11 @@ static const struct uvc_device_info uvc_quirk_fix_bandwidth = {
->  	.quirks = UVC_QUIRK_FIX_BANDWIDTH,
->  };
->  
-> +static const struct uvc_device_info uvc_quirk_fix_bw_622 = {
-> +	.quirks = UVC_QUIRK_FIX_BANDWIDTH,
-> +	.max_bandwidth = 62208000,
-> +};
-> +
->  static const struct uvc_device_info uvc_quirk_probe_def = {
->  	.quirks = UVC_QUIRK_PROBE_DEF,
->  };
-> @@ -2830,6 +2836,15 @@ static const struct usb_device_id uvc_ids[] = {
->  	  .bInterfaceSubClass	= 1,
->  	  .bInterfaceProtocol	= 0,
->  	  .driver_info		= (kernel_ulong_t)&uvc_quirk_fix_bandwidth },
-> +	/* MacroSilicon HDMI capture */
-> +	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
-> +				| USB_DEVICE_ID_MATCH_INT_INFO,
-> +	  .idVendor		= 0x534d,
-> +	  .idProduct		= 0x2109,
-> +	  .bInterfaceClass	= USB_CLASS_VIDEO,
-> +	  .bInterfaceSubClass	= 1,
-> +	  .bInterfaceProtocol	= 0,
-> +	  .driver_info		= (kernel_ulong_t)&uvc_quirk_fix_bw_622 },
->  	/* Genesys Logic USB 2.0 PC Camera */
->  	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
->  				| USB_DEVICE_ID_MATCH_INT_INFO,
-> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> index f2f565281e63..4afc1fbe0801 100644
-> --- a/drivers/media/usb/uvc/uvc_video.c
-> +++ b/drivers/media/usb/uvc/uvc_video.c
-> @@ -162,9 +162,29 @@ static void uvc_fixup_video_ctrl(struct uvc_streaming *stream,
->  	if ((ctrl->dwMaxPayloadTransferSize & 0xffff0000) == 0xffff0000)
->  		ctrl->dwMaxPayloadTransferSize &= ~0xffff0000;
->  
-> -	if (!(format->flags & UVC_FMT_FLAG_COMPRESSED) &&
-> -	    stream->dev->quirks & UVC_QUIRK_FIX_BANDWIDTH &&
-> -	    stream->intf->num_altsetting > 1) {
-> +
-> +	if (!(stream->dev->quirks & UVC_QUIRK_FIX_BANDWIDTH))
-> +		return;
-> +
-> +	/* Handle UVC_QUIRK_FIX_BANDWIDTH */
-> +
-> +	if (format->flags & UVC_FMT_FLAG_COMPRESSED &&
-> +	    stream->dev->max_bandwidth && frame->bFrameIntervalType) {
-> +		u32 bandwidth;
-> +
-> +		for (i = 0; i < frame->bFrameIntervalType - 1; ++i) {
+Reviewed-by: Fangrui Song <maskray@google.com>
 
-Why - 1 ?
-
-> +			bandwidth = frame->wWidth * frame->wHeight;
-> +			bandwidth *= 10000000 / frame->dwFrameInterval[i];
-> +
-> +			if (bandwidth <= stream->dev->max_bandwidth)
-> +				break;
-> +		}
-> +
-> +		ctrl->dwFrameInterval = frame->dwFrameInterval[i];
-
-This doesn't seem correct, you're selecting the first frame internal
-below the bandwidth limit, even if the user explicitly requests a lower
-frame rate.
-
-> +		return;
-> +	}
-> +
-> +	if (stream->intf->num_altsetting > 1) {
-
-There's an incorrect change in logic here. Before the patch this code
-would run only for !UVC_FMT_FLAG_COMPRESSED, while with the patch, it will
-run if UVC_FMT_FLAG_COMPRESSED && !(stream->dev->max_bandwidth &&
-frame->bFrameIntervalType).
-
->  		u32 interval;
->  		u32 bandwidth;
->  
-> diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> index 97df5ecd66c9..b44e0cd4c826 100644
-> --- a/drivers/media/usb/uvc/uvcvideo.h
-> +++ b/drivers/media/usb/uvc/uvcvideo.h
-> @@ -658,6 +658,7 @@ static inline u32 uvc_urb_index(const struct uvc_urb *uvc_urb)
->  
->  struct uvc_device_info {
->  	u32	quirks;
-> +	u32	max_bandwidth;
->  	u32	meta_format;
->  	u16	uvc_version;
->  };
-> @@ -667,6 +668,7 @@ struct uvc_device {
->  	struct usb_interface *intf;
->  	unsigned long warnings;
->  	u32 quirks;
-> +	u32 max_bandwidth;
-
-uvc_device has a uvc_device_info pointer, there's no need to copy the
-field here.
-
->  	int intfnum;
->  	char name[32];
->  
-
--- 
-Regards,
-
-Laurent Pinchart
+>>
+>> We could nevertheless have the link there, something like:
+>>
+>>     * Optional: not supported by GCC
+>>                 https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80223
+>
+>-- 
+>Thanks,
+>~Nick Desaulniers
