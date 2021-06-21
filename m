@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8700E3AF074
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F243AEEF4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233231AbhFUQt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:49:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37050 "EHLO mail.kernel.org"
+        id S232071AbhFUQeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:34:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48950 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233684AbhFUQpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:45:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C6D76128E;
-        Mon, 21 Jun 2021 16:32:31 +0000 (UTC)
+        id S232256AbhFUQab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:30:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46D406135D;
+        Mon, 21 Jun 2021 16:25:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624293152;
-        bh=gZsWYGD6DSZN9b0ieH25qpJfCk/qelBdQLh26Y8L3ug=;
+        s=korg; t=1624292711;
+        bh=DHAxnpUEXkMbtydLit97tKQ01mF9G1yJqfRoaatq2Ys=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RQw8WxV5PxFSFwefo7z54cPkLJrcyrMZrLTS2wAbQVRpQnmPqGCA/qhxtByB9+ZJ8
-         80xv+266gomPWLkT4a20wMuK62nj02DAFyHwqVppJlhZXpO/mxMoNTw4PWd15v7QOR
-         YIE6rE9t9n7TPej6lS5fPLwgcqynwHXA+w2v8FlU=
+        b=sg+SpjWZVEsyIjD3D6b05ks4PnkwgoIcqS9+j1CXEiRZ0DYP7nnEBzfA2t7aMaZuQ
+         f/40k+z635zzk5CDTi7aSjbaGnnlVSFfyG6+zibLXcDauvp+0CA9uKfnF1TogrOwAi
+         DbcH1ImeEJiPA/quXqVqdYUQ+IC8qzJCVFjoN2Ss=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Norbert Slusarek <nslusarek@gmx.net>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.12 117/178] can: bcm: fix infoleak in struct bcm_msg_head
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        syzbot+57281c762a3922e14dfe@syzkaller.appspotmail.com
+Subject: [PATCH 5.10 101/146] can: mcba_usb: fix memory leak in mcba_usb
 Date:   Mon, 21 Jun 2021 18:15:31 +0200
-Message-Id: <20210621154926.762542509@linuxfoundation.org>
+Message-Id: <20210621154917.646889748@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621154921.212599475@linuxfoundation.org>
-References: <20210621154921.212599475@linuxfoundation.org>
+In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
+References: <20210621154911.244649123@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +40,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Norbert Slusarek <nslusarek@gmx.net>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit 5e87ddbe3942e27e939bdc02deb8579b0cbd8ecc upstream.
+commit 91c02557174be7f72e46ed7311e3bea1939840b0 upstream.
 
-On 64-bit systems, struct bcm_msg_head has an added padding of 4 bytes between
-struct members count and ival1. Even though all struct members are initialized,
-the 4-byte hole will contain data from the kernel stack. This patch zeroes out
-struct bcm_msg_head before usage, preventing infoleaks to userspace.
+Syzbot reported memory leak in SocketCAN driver for Microchip CAN BUS
+Analyzer Tool. The problem was in unfreed usb_coherent.
 
-Fixes: ffd980f976e7 ("[CAN]: Add broadcast manager (bcm) protocol")
-Link: https://lore.kernel.org/r/trinity-7c1b2e82-e34f-4885-8060-2cd7a13769ce-1623532166177@3c-app-gmx-bs52
+In mcba_usb_start() 20 coherent buffers are allocated and there is
+nothing, that frees them:
+
+1) In callback function the urb is resubmitted and that's all
+2) In disconnect function urbs are simply killed, but URB_FREE_BUFFER
+   is not set (see mcba_usb_start) and this flag cannot be used with
+   coherent buffers.
+
+Fail log:
+| [ 1354.053291][ T8413] mcba_usb 1-1:0.0 can0: device disconnected
+| [ 1367.059384][ T8420] kmemleak: 20 new suspected memory leaks (see /sys/kernel/debug/kmem)
+
+So, all allocated buffers should be freed with usb_free_coherent()
+explicitly
+
+NOTE:
+The same pattern for allocating and freeing coherent buffers
+is used in drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+
+Fixes: 51f3baad7de9 ("can: mcba_usb: Add support for Microchip CAN BUS Analyzer")
+Link: https://lore.kernel.org/r/20210609215833.30393-1-paskripkin@gmail.com
 Cc: linux-stable <stable@vger.kernel.org>
-Signed-off-by: Norbert Slusarek <nslusarek@gmx.net>
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Reported-and-tested-by: syzbot+57281c762a3922e14dfe@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/can/bcm.c |    3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/can/usb/mcba_usb.c |   17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -402,6 +402,7 @@ static enum hrtimer_restart bcm_tx_timeo
- 		if (!op->count && (op->flags & TX_COUNTEVT)) {
+--- a/drivers/net/can/usb/mcba_usb.c
++++ b/drivers/net/can/usb/mcba_usb.c
+@@ -82,6 +82,8 @@ struct mcba_priv {
+ 	bool can_ka_first_pass;
+ 	bool can_speed_check;
+ 	atomic_t free_ctx_cnt;
++	void *rxbuf[MCBA_MAX_RX_URBS];
++	dma_addr_t rxbuf_dma[MCBA_MAX_RX_URBS];
+ };
  
- 			/* create notification to user */
-+			memset(&msg_head, 0, sizeof(msg_head));
- 			msg_head.opcode  = TX_EXPIRED;
- 			msg_head.flags   = op->flags;
- 			msg_head.count   = op->count;
-@@ -439,6 +440,7 @@ static void bcm_rx_changed(struct bcm_op
- 	/* this element is not throttled anymore */
- 	data->flags &= (BCM_CAN_FLAGS_MASK|RX_RECV);
+ /* CAN frame */
+@@ -633,6 +635,7 @@ static int mcba_usb_start(struct mcba_pr
+ 	for (i = 0; i < MCBA_MAX_RX_URBS; i++) {
+ 		struct urb *urb = NULL;
+ 		u8 *buf;
++		dma_addr_t buf_dma;
  
-+	memset(&head, 0, sizeof(head));
- 	head.opcode  = RX_CHANGED;
- 	head.flags   = op->flags;
- 	head.count   = op->count;
-@@ -560,6 +562,7 @@ static enum hrtimer_restart bcm_rx_timeo
+ 		/* create a URB, and a buffer for it */
+ 		urb = usb_alloc_urb(0, GFP_KERNEL);
+@@ -642,7 +645,7 @@ static int mcba_usb_start(struct mcba_pr
+ 		}
+ 
+ 		buf = usb_alloc_coherent(priv->udev, MCBA_USB_RX_BUFF_SIZE,
+-					 GFP_KERNEL, &urb->transfer_dma);
++					 GFP_KERNEL, &buf_dma);
+ 		if (!buf) {
+ 			netdev_err(netdev, "No memory left for USB buffer\n");
+ 			usb_free_urb(urb);
+@@ -661,11 +664,14 @@ static int mcba_usb_start(struct mcba_pr
+ 		if (err) {
+ 			usb_unanchor_urb(urb);
+ 			usb_free_coherent(priv->udev, MCBA_USB_RX_BUFF_SIZE,
+-					  buf, urb->transfer_dma);
++					  buf, buf_dma);
+ 			usb_free_urb(urb);
+ 			break;
+ 		}
+ 
++		priv->rxbuf[i] = buf;
++		priv->rxbuf_dma[i] = buf_dma;
++
+ 		/* Drop reference, USB core will take care of freeing it */
+ 		usb_free_urb(urb);
  	}
+@@ -708,7 +714,14 @@ static int mcba_usb_open(struct net_devi
  
- 	/* create notification to user */
-+	memset(&msg_head, 0, sizeof(msg_head));
- 	msg_head.opcode  = RX_TIMEOUT;
- 	msg_head.flags   = op->flags;
- 	msg_head.count   = op->count;
+ static void mcba_urb_unlink(struct mcba_priv *priv)
+ {
++	int i;
++
+ 	usb_kill_anchored_urbs(&priv->rx_submitted);
++
++	for (i = 0; i < MCBA_MAX_RX_URBS; ++i)
++		usb_free_coherent(priv->udev, MCBA_USB_RX_BUFF_SIZE,
++				  priv->rxbuf[i], priv->rxbuf_dma[i]);
++
+ 	usb_kill_anchored_urbs(&priv->tx_submitted);
+ }
+ 
 
 
