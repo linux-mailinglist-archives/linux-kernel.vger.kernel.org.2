@@ -2,127 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 450503AE5CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D60AD3AE5D3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbhFUJTd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:19:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43838 "EHLO
+        id S230286AbhFUJW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:22:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230161AbhFUJT2 (ORCPT
+        with ESMTP id S230102AbhFUJW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:19:28 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFA0C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:17:13 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id u20so4417443ljl.13
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:17:13 -0700 (PDT)
+        Mon, 21 Jun 2021 05:22:27 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075AFC06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:20:13 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id o10-20020a17090aac0ab029016e92770073so9885072pjq.5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:20:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=i/sPeos/C5F1U494DWZt/eYjG4B+Gq4D4knUrPa6L6o=;
-        b=WmCweXRLsmPL+YPcYBzgOGYAJSaVIPt35+R/Y9LiTX0W8JNUDE+Ka0GYFDyEgXs2Jz
-         n+4QHyAgnYuupit8ckQCM9D5jmDl84ZJB1f5nIrTur45+LtcGHPdX9UGN7zW0vvE4++t
-         mBgr9X3KCD5ZY2+bqbDlRSppgP9E2rCjAq0ogQW1CO5uMggwCS9TlLo8V3KFaMTX6fRB
-         4MVBNxZNktsCbXIlB8dfzyMcw5vH0BCoTAMkagHxN44nkAMnxNFtSPID9Wqs4vN3o3yH
-         c+46ZVzFb6vX9YIgt5LDE+Jxhby4DTn1IQOx2UfCnmO7tizdjzjKyCvOBMp3PkezodIZ
-         KBGA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xucopJdQYEMHhZQ7dqqB8UQAFZOXBMVYsdXdizA97FA=;
+        b=vgHziPNRBMyZcOclBhC3U0MKPvE9Hn1g1zorbrtQPSjbwjjMHtxuehLkK5jav4xtQP
+         0MsgvldXgiQbvefMiSDkhR0TiOaOfA3sw7mIbn4hm//b6lkh2TSQ/YwZbqiwf9k6q/yl
+         MpAFGvVHz6gQ8nfIE6QxXJhawJXd93wnismO4+HeCAIO4326OoyrTnZPgapwS53dgSOD
+         2mJPLOYkN9tz8rtAKlyp/n7wxonyxaqipTjoEzSm04OT0zO3uTSx3e8XZY026j5NTswn
+         9c2xHcwYqnPU4NA+I6izG4vBuEs9oAjRCzer7DlyPRnQZtSsiugwN/QrvqdekmRETZ34
+         n7rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=i/sPeos/C5F1U494DWZt/eYjG4B+Gq4D4knUrPa6L6o=;
-        b=kz5pTfI0HjYwmirh6V8YLIAdSoRJq3maJKIfD1qtn5Dur+72TlB/UKmhB9+GmJZg/k
-         YNC1qoeLTrkIZl3wtPfQXCN4zHeGgTgYD5Zvb3pq1UTyoQxwGD/D6ELp1F2NLdbT6Eoa
-         CZJQjho6QWGK5bUAT0G5sHPCTlcptssquVpDgHigb+fQ6wG8iZlR/E638IZ1cuABO1Nh
-         SQi32C6XNhZHr70myU+46anPEjNspAutJuvgRC3Mlkz971X3xBgc+Xyoy9mRuUhNTUyf
-         fNkehh8gwtMqEkP7joty0lkPrudSIhRHOtZHxrVyW6ll5vQIXNy18F06uU6TZJeruuh6
-         6T5A==
-X-Gm-Message-State: AOAM532eo4I/d5lLtc7v7gDSha/C+Qn8172m4Y8PSDr95KvLX4XnNnq0
-        F0cNZa41EpMTrPN4psgNu8IVEh1XDo2X22g/hoTf9w==
-X-Google-Smtp-Source: ABdhPJxPDega/DBfjIwTHMbbh7+x5sJNgNudhYP0oJ9eAexzjsnjFMBcWB/qgqQaaHeARVWuncLMCDMoUPghXh+tlfg=
-X-Received: by 2002:a05:651c:95:: with SMTP id 21mr1330213ljq.176.1624267032016;
- Mon, 21 Jun 2021 02:17:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <1624023139-66147-1-git-send-email-vincent.donnefort@arm.com>
- <CAKfTPtDgLRYdFNY_A3=yXk-LXi-eH21xApAaYfYk_RbG4k61EQ@mail.gmail.com> <20210621090312.GA193194@e120877-lin.cambridge.arm.com>
-In-Reply-To: <20210621090312.GA193194@e120877-lin.cambridge.arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 21 Jun 2021 11:17:00 +0200
-Message-ID: <CAKfTPtDjFqWBubop-Vnr4B+PXoO3Omu6kW_0LCPqxryx=QydVw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] sched/rt: Fix RT utilization tracking during policy change
-To:     Vincent Donnefort <vincent.donnefort@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=xucopJdQYEMHhZQ7dqqB8UQAFZOXBMVYsdXdizA97FA=;
+        b=lzS9ZbNvgjSGZ0fY9Kl5sCAadEpPkjxA8shXNBHNBfNlsjvEBvvkWXb19GUs7IV7iI
+         d3WB8i0FSB9aCMh6x/9hbLvODdihNJpOa6DpJ42TOx7FcqFA6Lvq/jeD4P38rB6jb6U0
+         J3ZoXg9RLi+qTgLoye76/7DLG7/+gkKFmToiUa8CIcGAfbtscgxE+L8AazfbiyicJk88
+         qYJps6w09uYrEjbiGudoGljeR/qRYCdKB+2HYwtipm9tVSqNSz732vtT3S/BTyqTFynf
+         BA24ZnRHI0g/P+XguDJ9jHYYrglii7721SiDzFHdRZeATA+uycZv8V4x+etXeKXOJE3/
+         KBkw==
+X-Gm-Message-State: AOAM531+K6tXyc1mOxBt+fk/XBBISlzInNwy3iYG9Z2y/9ZtnY5DIi/J
+        /3YOiDA/uwXjwbbKtGudZ+5QbA==
+X-Google-Smtp-Source: ABdhPJymdL2wIiZ+VPdAPkTBA1iFDujziFi2nwnCOjvdII9bEiKPuiO3gz+pu3aUf6faKlwyhs0G5Q==
+X-Received: by 2002:a17:902:e313:b029:125:827f:c621 with SMTP id q19-20020a170902e313b0290125827fc621mr1847055plc.25.1624267212333;
+        Mon, 21 Jun 2021 02:20:12 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id w123sm7828850pff.186.2021.06.21.02.20.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 02:20:11 -0700 (PDT)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-pm@vger.kernel.org, Qian Cai <quic_qiancai@quicinc.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH V3 0/4] cpufreq: cppc: Add support for frequency invariance
+Date:   Mon, 21 Jun 2021 14:49:33 +0530
+Message-Id: <cover.1624266901.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a514
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Jun 2021 at 11:03, Vincent Donnefort
-<vincent.donnefort@arm.com> wrote:
->
-> [...]
->
-> > >         /*
-> > > -        * If we are already running, then there's nothing
-> > > -        * that needs to be done. But if we are not running
-> > > -        * we may need to preempt the current running task.
-> > > -        * If that current running task is also an RT task
-> > > +        * If we are not running we may need to preempt the current
-> > > +        * running task. If that current running task is also an RT task
-> > >          * then see if we can move to another run queue.
-> > >          */
-> > >         if (task_on_rq_queued(p) && rq->curr != p) {
-> > > @@ -2355,6 +2353,13 @@ static void switched_to_rt(struct rq *rq, struct task_struct *p)
-> > >                 if (p->prio < rq->curr->prio && cpu_online(cpu_of(rq)))
-> > >                         resched_curr(rq);
-> > >         }
-> > > +
-> > > +       /*
-> > > +        * If we are running, update the avg_rt tracking, as the running time
-> > > +        * will now on be accounted into the latter.
-> > > +        */
-> > > +       if (task_current(rq, p))
-> >
-> > task_current(rq,p) equals the "rq->curr != p" above. Having 2
-> > different ways to get the same value in the function is a bit
-> > confusing.
-> >
-> > And call it once
-> >
-> > Otherwise, the fix looks good to me
->
-> I can change it to something like:
->
-> if (task_current(rq, p)) {
->     update_rt_rq_load_avg()
->     return;
-> }
->
-> if (task_on_rq_queued(p) {
->         ...
->         if (p->prio ...)
->                 resched_curr(rq);
-> }
->
-> ?
+Hello,
 
-yes, looks good to me
+Changes since V2:
+
+- We don't need start_cpu() and stop_cpu() callbacks anymore, we can make it
+  work using policy ->init() and exit() alone.
+
+- Two new cleanup patches 1/4 and 2/4.
+
+- Improved commit log of 3/4.
+
+- Dropped WARN_ON(local_freq_scale > 1024), since this can occur on counter's
+  overlap (seen with Vincent's setup).
+
+- Handle stuff from init/exit() callbacks only.
+
+Changes since V1:
+
+- Few of the patches migrating users to ->exit() callback are posted separately.
+
+- The CPPC patch was completely reverted and so the support for FIE is again
+  added here from scratch.
+
+- The start_cpu() and stop_cpu() interface is reworked a little so stop_cpu() is
+  only ever called for a CPU if start_cpu() was called for it earlier.
+
+- A new patch to implement RCU locking in arch_topology core to avoid some
+  races.
+
+- Some cleanup and very clear/separate paths for FIE in cppc driver now.
 
 
->
-> >
-> > > +               update_rt_rq_load_avg(rq_clock_pelt(rq), rq, 0);
-> > >  }
-> > >
-> > >  /*
-> > > --
-> > > 2.7.4
-> > >
+-------------------------8<-------------------------
+
+CPPC cpufreq driver is used for ARM servers and this patch series tries to
+provide counter-based frequency invariance support for them in the absence for
+architecture specific counters (like AMUs).
+
+This was reverted earlier for the 5.13 kernel after Qian Cai reported kernel
+oops during suspend/resume.
+
+This is based of v5.13-rc7 + a cleanup patchset:
+
+https://lore.kernel.org/linux-pm/cover.1623825358.git.viresh.kumar@linaro.org/
+
+All the patches are pushed here together for people to run.
+
+https://git.kernel.org/pub/scm/linux/kernel/git/vireshk/pm.git/log/?h=cpufreq/cppc
+
+This is tested on my Hikey platform (without the actual read/write to
+performance counters), with this script for over an hour:
+
+while true; do
+    for i in `seq 1 7`;
+    do
+        echo 0 > /sys/devices/system/cpu/cpu$i/online;
+    done;
+
+    for i in `seq 1 7`;
+    do
+        echo 1 > /sys/devices/system/cpu/cpu$i/online;
+    done;
+done
+
+
+The same is done by Vincent on ThunderX2 and no issues were seen.
+
+I would like to get this merged for 5.14, since it was recently reverted from
+5.13. And that it is still an independent change to a single driver and topology
+APIs that no one is using apart from arm64 topology stuff.
+
+Thanks.
+
+--
+Viresh
+
+Viresh Kumar (4):
+  cpufreq: cppc: Fix potential memleak in cppc_cpufreq_cpu_init
+  cpufreq: cppc: Pass structure instance by reference
+  arch_topology: Avoid use-after-free for scale_freq_data
+  cpufreq: CPPC: Add support for frequency invariance
+
+ drivers/base/arch_topology.c   |  27 +++-
+ drivers/cpufreq/Kconfig.arm    |  10 ++
+ drivers/cpufreq/cppc_cpufreq.c | 287 +++++++++++++++++++++++++++++----
+ include/linux/arch_topology.h  |   1 +
+ kernel/sched/core.c            |   1 +
+ 5 files changed, 292 insertions(+), 34 deletions(-)
+
+-- 
+2.31.1.272.g89b43f80a514
+
