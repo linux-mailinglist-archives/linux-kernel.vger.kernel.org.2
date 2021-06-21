@@ -2,77 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8E13AEC74
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C623AEC78
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:33:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbhFUPfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 11:35:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230013AbhFUPfA (ORCPT
+        id S230302AbhFUPfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 11:35:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45770 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230052AbhFUPfM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 11:35:00 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE28C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 08:32:44 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id x24so30873970lfr.10
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 08:32:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lhnq76ooUUm7QmAimfwToYt+1c8p8xn5OCuByHp0pz8=;
-        b=Uutdd5a3TidMnliyw0hwftDBOxT2npgsoNP3TF+B5iMzp3GbotrSzvLHGt/0ursV8j
-         TZnES5qZrHg8zsZZY2D/y4a15FKY62F/tpPtVFMSj9WDGWWLnz/vNgPuyZIKyKjCN5KS
-         QXrFCXfMBrOHQoC5n+QL3yzvxSxxJSSVBlxfY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lhnq76ooUUm7QmAimfwToYt+1c8p8xn5OCuByHp0pz8=;
-        b=lAwJLcvyyWns8M7yY5SaOz4kXPfR68crn0eCqtn03rd9YOO+4tikq8CtReQNod6ZhA
-         WaQ2r1vhYW7pYpgHn9sa1qtx89HkoEY9aIp8qG9YA4RinI9fCFy74rVO1CNTs4tqkFO8
-         0yKmuhsFOkk8m3Zlk1LUU3N2DaA4qFkCLYUsvThZfVdDDQzt/Foi0GotTl83uDQhsQuJ
-         IQpDGJFMyE9y01jYXyNAt2RBDMLWVRToMnPaoA3xljx3eXQjBQ5hxVb1NoNibBBf+px/
-         Aegt6j2LY+VuzCQWzlijBxWiDHIXSv6qHSFBgxgRV7Hl++FB6lRsk/cmQ3AeajveFbJv
-         liXg==
-X-Gm-Message-State: AOAM531FcFtmsEXz4yKd7KnRHD6YwVxWmkVAyATUf1LKk+JduRfpmteg
-        0+fv4wevrSZS/tAIWnqcy+OltbiEWFZSQDfH
-X-Google-Smtp-Source: ABdhPJwxZJgyT26Q1cdPT2YbJA6WqJr4iOWPfdRJiJHreKLawpm9By4o/kJbAH7bTEq1RNBa+LwBxg==
-X-Received: by 2002:a05:6512:139f:: with SMTP id p31mr13126065lfa.337.1624289562349;
-        Mon, 21 Jun 2021 08:32:42 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id h5sm1121333lfp.193.2021.06.21.08.32.41
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 08:32:41 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id m21so30875914lfg.13
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 08:32:41 -0700 (PDT)
-X-Received: by 2002:a05:6512:557:: with SMTP id h23mr9653054lfl.253.1624289561362;
- Mon, 21 Jun 2021 08:32:41 -0700 (PDT)
+        Mon, 21 Jun 2021 11:35:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624289578;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=oltzUUgSfes6rdxhCcSehOIrX0vxzgmoXi/a9KypyPU=;
+        b=Xa5thCxIptMOQbJEBqoxAC5R8enwuXCQ7xYIDXjRbxGZDUBbK2vPUqrPNBe9rpkWbGP5yz
+        iGdb58bm7nJUM5WFNHsWtuZ1hAQaHjJimbbqyaHIxlYC16akLSKpWNLfgzgKebDQMFQ5tI
+        aJ0HURULoGYIDIuYahwFrp3quYa9xv8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-259-MN3Wuz4BOy6Fah9oJeyyZA-1; Mon, 21 Jun 2021 11:32:54 -0400
+X-MC-Unique: MN3Wuz4BOy6Fah9oJeyyZA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 606C75721E;
+        Mon, 21 Jun 2021 15:32:53 +0000 (UTC)
+Received: from localhost.localdomain (ovpn-112-119.ams2.redhat.com [10.36.112.119])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7429419CBA;
+        Mon, 21 Jun 2021 15:32:51 +0000 (UTC)
+From:   =?UTF-8?q?=C3=8D=C3=B1igo=20Huguet?= <ihuguet@redhat.com>
+To:     ecree.xilinx@gmail.com, habetsm.xilinx@gmail.com,
+        davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ihuguet@redhat.com, ivecera@redhat.com
+Subject: [PATCH 1/4] sfc: avoid double pci_remove of VFs
+Date:   Mon, 21 Jun 2021 17:32:35 +0200
+Message-Id: <20210621153238.13147-1-ihuguet@redhat.com>
 MIME-Version: 1.0
-References: <CAHk-=wjj38E8hW+unHZ9EaJrS6x+4Tnz0qffjvLcGf70dXkKnQ@mail.gmail.com>
- <20210621133915.GA2892783@roeck-us.net>
-In-Reply-To: <20210621133915.GA2892783@roeck-us.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 21 Jun 2021 08:32:25 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjg8oww+Bt5EY8a=5M59sv5pPSPMC-tPT+QrWEAAmDkkQ@mail.gmail.com>
-Message-ID: <CAHk-=wjg8oww+Bt5EY8a=5M59sv5pPSPMC-tPT+QrWEAAmDkkQ@mail.gmail.com>
-Subject: Re: Linux 5.13-rc7
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 6:39 AM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> Build results:
->         total: 151 pass: 151 fail: 0
-> Qemu test results:
->         total: 462 pass: 462 fail: 0
+If pci_remove was called for a PF with VFs, the removal of the VFs was
+called twice from efx_ef10_sriov_fini: one directly with pci_driver->remove
+and another implicit by calling pci_disable_sriov, which also perform
+the VFs remove. This was leading to crashing the kernel on the second
+attempt.
 
-Thanks,
+Given that pci_disable_sriov already calls to pci remove function, get
+rid of the direct call to pci_driver->remove from the driver.
 
-              Linus
+2 different ways to trigger the bug:
+- Create one or more VFs, then attach the PF to a virtual machine (at
+  least with qemu/KVM)
+- Create one or more VFs, then remove the PF with:
+  echo 1 > /sys/bus/pci/devices/PF_PCI_ID/remove
+
+Removing sfc module does not trigger the error, at least for me, because
+it removes the VF first, and then the PF.
+
+Example of a log with the error:
+    list_del corruption, ffff967fd20a8ad0->next is LIST_POISON1 (dead000000000100)
+    ------------[ cut here ]------------
+    kernel BUG at lib/list_debug.c:47!
+    [...trimmed...]
+    RIP: 0010:__list_del_entry_valid.cold.1+0x12/0x4c
+    [...trimmed...]
+    Call Trace:
+    efx_dissociate+0x1f/0x140 [sfc]
+    efx_pci_remove+0x27/0x150 [sfc]
+    pci_device_remove+0x3b/0xc0
+    device_release_driver_internal+0x103/0x1f0
+    pci_stop_bus_device+0x69/0x90
+    pci_stop_and_remove_bus_device+0xe/0x20
+    pci_iov_remove_virtfn+0xba/0x120
+    sriov_disable+0x2f/0xe0
+    efx_ef10_pci_sriov_disable+0x52/0x80 [sfc]
+    ? pcie_aer_is_native+0x12/0x40
+    efx_ef10_sriov_fini+0x72/0x110 [sfc]
+    efx_pci_remove+0x62/0x150 [sfc]
+    pci_device_remove+0x3b/0xc0
+    device_release_driver_internal+0x103/0x1f0
+    unbind_store+0xf6/0x130
+    kernfs_fop_write+0x116/0x190
+    vfs_write+0xa5/0x1a0
+    ksys_write+0x4f/0xb0
+    do_syscall_64+0x5b/0x1a0
+    entry_SYSCALL_64_after_hwframe+0x65/0xca
+
+Signed-off-by: Íñigo Huguet <ihuguet@redhat.com>
+---
+ drivers/net/ethernet/sfc/ef10_sriov.c | 10 +---------
+ 1 file changed, 1 insertion(+), 9 deletions(-)
+
+diff --git a/drivers/net/ethernet/sfc/ef10_sriov.c b/drivers/net/ethernet/sfc/ef10_sriov.c
+index 21fa6c0e8873..a5d28b0f75ba 100644
+--- a/drivers/net/ethernet/sfc/ef10_sriov.c
++++ b/drivers/net/ethernet/sfc/ef10_sriov.c
+@@ -439,7 +439,6 @@ int efx_ef10_sriov_init(struct efx_nic *efx)
+ void efx_ef10_sriov_fini(struct efx_nic *efx)
+ {
+ 	struct efx_ef10_nic_data *nic_data = efx->nic_data;
+-	unsigned int i;
+ 	int rc;
+ 
+ 	if (!nic_data->vf) {
+@@ -449,14 +448,7 @@ void efx_ef10_sriov_fini(struct efx_nic *efx)
+ 		return;
+ 	}
+ 
+-	/* Remove any VFs in the host */
+-	for (i = 0; i < efx->vf_count; ++i) {
+-		struct efx_nic *vf_efx = nic_data->vf[i].efx;
+-
+-		if (vf_efx)
+-			vf_efx->pci_dev->driver->remove(vf_efx->pci_dev);
+-	}
+-
++	/* Disable SRIOV and remove any VFs in the host */
+ 	rc = efx_ef10_pci_sriov_disable(efx, true);
+ 	if (rc)
+ 		netif_dbg(efx, drv, efx->net_dev,
+-- 
+2.31.1
+
