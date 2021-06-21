@@ -2,134 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76EB43AF3B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4143C3AF446
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233744AbhFUSDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:03:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45706 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233664AbhFUSA1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:00:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F7D6611BD;
-        Mon, 21 Jun 2021 17:54:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624298083;
-        bh=Xg3ckCh4MrK9PKspTRjU2MM4Mq3C/p5v9MLKyXw03lI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hDNijmuCOLA4UZ3M9hGl3WZVKMt2P4d8+E9pCbDrkMDp9T9pq5jN1rT0qR3HuaP0F
-         YNEyxigjnvOMuoOOIDX/6IdxqwzDpnlRwjyO4CSGaE9SEt1zUuHDO7aNFw3f5Fic7B
-         IrWk/ji6jeXhFzsG4fki5kw523zGrpTXbj4IY+XBWMt9QW5wclwOJezbkm6p2SLbWp
-         hozWbzClQKy3dRGybdUBeQxnWHR9JdGKdudSiHnvjPahuIZLkyEOdsCL5zPHUv3yeI
-         +rGYec79YHU764Gt7fe0V4LBwf30Q5SN644o8J4wz5ofNh5NPcAf0aY0y3qyw1epD1
-         9fVRypldpTW8Q==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mikel Rychliski <mikel@mikelr.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sasha Levin <sashal@kernel.org>, linux-pci@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 24/26] PCI: Add AMD RS690 quirk to enable 64-bit DMA
-Date:   Mon, 21 Jun 2021 13:53:57 -0400
-Message-Id: <20210621175400.735800-24-sashal@kernel.org>
+        id S234304AbhFUSHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231194AbhFUSD6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 14:03:58 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0F02C061D7E;
+        Mon, 21 Jun 2021 10:54:05 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id BFF4C1F42686
+Received: by jupiter.universe (Postfix, from userid 1000)
+        id 10A954800DC; Mon, 21 Jun 2021 19:54:00 +0200 (CEST)
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>, Ian Ray <ian.ray@ge.com>,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, kernel@collabora.com,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCHv5 3/5] dt-bindings: misc: ge-achc: Convert to DT schema format
+Date:   Mon, 21 Jun 2021 19:53:57 +0200
+Message-Id: <20210621175359.126729-4-sebastian.reichel@collabora.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210621175400.735800-1-sashal@kernel.org>
-References: <20210621175400.735800-1-sashal@kernel.org>
+In-Reply-To: <20210621175359.126729-1-sebastian.reichel@collabora.com>
+References: <20210621175359.126729-1-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikel Rychliski <mikel@mikelr.com>
+Convert the binding to DT schema format. Also update the binding
+to fix shortcomings
 
-[ Upstream commit cacf994a91d3a55c0c2f853d6429cd7b86113915 ]
+ * Add "nxp,kinetis-k20" fallback compatible
+ * add programming SPI interface and reset GPIO
+ * add main clock
+ * add voltage supplies
+ * drop spi-max-frequency from required properties,
+   driver will setup max. frequency
 
-Although the AMD RS690 chipset has 64-bit DMA support, BIOS implementations
-sometimes fail to configure the memory limit registers correctly.
-
-The Acer F690GVM mainboard uses this chipset and a Marvell 88E8056 NIC. The
-sky2 driver programs the NIC to use 64-bit DMA, which will not work:
-
-  sky2 0000:02:00.0: error interrupt status=0x8
-  sky2 0000:02:00.0 eth0: tx timeout
-  sky2 0000:02:00.0 eth0: transmit ring 0 .. 22 report=0 done=0
-
-Other drivers required by this mainboard either don't support 64-bit DMA,
-or have it disabled using driver specific quirks. For example, the ahci
-driver has quirks to enable or disable 64-bit DMA depending on the BIOS
-version (see ahci_sb600_enable_64bit() in ahci.c). This ahci quirk matches
-against the SB600 SATA controller, but the real issue is almost certainly
-with the RS690 PCI host that it was commonly attached to.
-
-To avoid this issue in all drivers with 64-bit DMA support, fix the
-configuration of the PCI host. If the kernel is aware of physical memory
-above 4GB, but the BIOS never configured the PCI host with this
-information, update the registers with our values.
-
-[bhelgaas: drop PCI_DEVICE_ID_ATI_RS690 definition]
-Link: https://lore.kernel.org/r/20210611214823.4898-1-mikel@mikelr.com
-Signed-off-by: Mikel Rychliski <mikel@mikelr.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 ---
- arch/x86/pci/fixup.c | 44 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
+ .../devicetree/bindings/misc/ge-achc.txt      | 26 --------
+ .../devicetree/bindings/misc/ge-achc.yaml     | 65 +++++++++++++++++++
+ 2 files changed, 65 insertions(+), 26 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/misc/ge-achc.txt
+ create mode 100644 Documentation/devicetree/bindings/misc/ge-achc.yaml
 
-diff --git a/arch/x86/pci/fixup.c b/arch/x86/pci/fixup.c
-index 0c67a5a94de3..76959a7d88c8 100644
---- a/arch/x86/pci/fixup.c
-+++ b/arch/x86/pci/fixup.c
-@@ -779,4 +779,48 @@ DECLARE_PCI_FIXUP_RESUME(PCI_VENDOR_ID_AMD, 0x1571, pci_amd_enable_64bit_bar);
- DECLARE_PCI_FIXUP_RESUME(PCI_VENDOR_ID_AMD, 0x15b1, pci_amd_enable_64bit_bar);
- DECLARE_PCI_FIXUP_RESUME(PCI_VENDOR_ID_AMD, 0x1601, pci_amd_enable_64bit_bar);
- 
-+#define RS690_LOWER_TOP_OF_DRAM2	0x30
-+#define RS690_LOWER_TOP_OF_DRAM2_VALID	0x1
-+#define RS690_UPPER_TOP_OF_DRAM2	0x31
-+#define RS690_HTIU_NB_INDEX		0xA8
-+#define RS690_HTIU_NB_INDEX_WR_ENABLE	0x100
-+#define RS690_HTIU_NB_DATA		0xAC
+diff --git a/Documentation/devicetree/bindings/misc/ge-achc.txt b/Documentation/devicetree/bindings/misc/ge-achc.txt
+deleted file mode 100644
+index 77df94d7a32f..000000000000
+--- a/Documentation/devicetree/bindings/misc/ge-achc.txt
++++ /dev/null
+@@ -1,26 +0,0 @@
+-* GE Healthcare USB Management Controller
+-
+-A device which handles data aquisition from compatible USB based peripherals.
+-SPI is used for device management.
+-
+-Note: This device does not expose the peripherals as USB devices.
+-
+-Required properties:
+-
+-- compatible : Should be "ge,achc"
+-
+-Required SPI properties:
+-
+-- reg : Should be address of the device chip select within
+-  the controller.
+-
+-- spi-max-frequency : Maximum SPI clocking speed of device in Hz, should be
+-  1MHz for the GE ACHC.
+-
+-Example:
+-
+-spidev0: spi@0 {
+-	compatible = "ge,achc";
+-	reg = <0>;
+-	spi-max-frequency = <1000000>;
+-};
+diff --git a/Documentation/devicetree/bindings/misc/ge-achc.yaml b/Documentation/devicetree/bindings/misc/ge-achc.yaml
+new file mode 100644
+index 000000000000..ff07aa62ed57
+--- /dev/null
++++ b/Documentation/devicetree/bindings/misc/ge-achc.yaml
+@@ -0,0 +1,65 @@
++# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
++# Copyright (C) 2021 GE Inc.
++# Copyright (C) 2021 Collabora Ltd.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/misc/ge-achc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+/*
-+ * Some BIOS implementations support RAM above 4GB, but do not configure the
-+ * PCI host to respond to bus master accesses for these addresses. These
-+ * implementations set the TOP_OF_DRAM_SLOT1 register correctly, so PCI DMA
-+ * works as expected for addresses below 4GB.
-+ *
-+ * Reference: "AMD RS690 ASIC Family Register Reference Guide" (pg. 2-57)
-+ * https://www.amd.com/system/files/TechDocs/43372_rs690_rrg_3.00o.pdf
-+ */
-+static void rs690_fix_64bit_dma(struct pci_dev *pdev)
-+{
-+	u32 val = 0;
-+	phys_addr_t top_of_dram = __pa(high_memory - 1) + 1;
++title: GE Healthcare USB Management Controller
 +
-+	if (top_of_dram <= (1ULL << 32))
-+		return;
++description: |
++  A device which handles data acquisition from compatible USB based peripherals.
++  SPI is used for device management.
 +
-+	pci_write_config_dword(pdev, RS690_HTIU_NB_INDEX,
-+				RS690_LOWER_TOP_OF_DRAM2);
-+	pci_read_config_dword(pdev, RS690_HTIU_NB_DATA, &val);
++  Note: This device does not expose the peripherals as USB devices.
 +
-+	if (val)
-+		return;
++maintainers:
++  - Sebastian Reichel <sre@kernel.org>
 +
-+	pci_info(pdev, "Adjusting top of DRAM to %pa for 64-bit DMA support\n", &top_of_dram);
++properties:
++  compatible:
++    items:
++      - const: ge,achc
++      - const: nxp,kinetis-k20
 +
-+	pci_write_config_dword(pdev, RS690_HTIU_NB_INDEX,
-+		RS690_UPPER_TOP_OF_DRAM2 | RS690_HTIU_NB_INDEX_WR_ENABLE);
-+	pci_write_config_dword(pdev, RS690_HTIU_NB_DATA, top_of_dram >> 32);
++  clocks:
++    maxItems: 1
 +
-+	pci_write_config_dword(pdev, RS690_HTIU_NB_INDEX,
-+		RS690_LOWER_TOP_OF_DRAM2 | RS690_HTIU_NB_INDEX_WR_ENABLE);
-+	pci_write_config_dword(pdev, RS690_HTIU_NB_DATA,
-+		top_of_dram | RS690_LOWER_TOP_OF_DRAM2_VALID);
-+}
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATI, 0x7910, rs690_fix_64bit_dma);
++  vdd-supply:
++    description: Digital power supply regulator on VDD pin
 +
- #endif
++  vdda-supply:
++    description: Analog power supply regulator on VDDA pin
++
++  reg:
++    items:
++      - description: Control interface
++      - description: Firmware programming interface
++
++  reset-gpios:
++    description: GPIO used for hardware reset.
++    maxItems: 1
++
++required:
++  - compatible
++  - clocks
++  - reg
++  - reset-gpios
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    spi {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        spi@1 {
++            compatible = "ge,achc", "nxp,kinetis-k20";
++            reg = <1>, <0>;
++            clocks = <&achc_24M>;
++            reset-gpios = <&gpio3 6 GPIO_ACTIVE_LOW>;
++        };
++    };
 -- 
 2.30.2
 
