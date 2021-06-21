@@ -2,36 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9401F3AEEEE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 297C93AF071
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232389AbhFUQdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:33:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48560 "EHLO mail.kernel.org"
+        id S233072AbhFUQtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:49:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37914 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231250AbhFUQaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:30:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69848613E2;
-        Mon, 21 Jun 2021 16:25:00 +0000 (UTC)
+        id S233646AbhFUQpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:45:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0481761040;
+        Mon, 21 Jun 2021 16:32:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292701;
-        bh=gZsWYGD6DSZN9b0ieH25qpJfCk/qelBdQLh26Y8L3ug=;
+        s=korg; t=1624293143;
+        bh=TUDia6ZNuQqMxoADShp9wR3w1y43Dohd6yJsjfneYzI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w61UCgDteqPIOAs8CDyUK81O65yOj6+wFeDNGg4Wx66huns5tL4uHArbYb4GQEm7F
-         HYdMhp1lzZ0dOKb/mrLEHxCxenBdgTz9O2qYGJNcgusBg2avKkYJTZX53DRVCf5nWO
-         iTQdc7iRQxVO9LZ0LUaejHlnsAfxZtnlJqPYj/NM=
+        b=htNY5KShJHGquRIYmc0kGPMlIOYfxGzaU45FJyBATiQO60tgicqPidk/IY9oTZvWM
+         ZeXJ3efq0+kbi4QqMXYaKBYCqf7P3cTlsEvyfnimLXTfqapvfuqzV4Zrav2x5aSnGI
+         cI3JgPc1cMPIDFZbc7DZpUmo+PqXG+B6FKOYLW68=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Norbert Slusarek <nslusarek@gmx.net>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH 5.10 098/146] can: bcm: fix infoleak in struct bcm_msg_head
+        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
+        Ian Rogers <irogers@google.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Kajol Jain <kjain@linux.ibm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 114/178] perf metricgroup: Return error code from metricgroup__add_metric_sys_event_iter()
 Date:   Mon, 21 Jun 2021 18:15:28 +0200
-Message-Id: <20210621154917.425217456@linuxfoundation.org>
+Message-Id: <20210621154926.650552769@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
-References: <20210621154911.244649123@linuxfoundation.org>
+In-Reply-To: <20210621154921.212599475@linuxfoundation.org>
+References: <20210621154921.212599475@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,51 +46,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Norbert Slusarek <nslusarek@gmx.net>
+From: John Garry <john.garry@huawei.com>
 
-commit 5e87ddbe3942e27e939bdc02deb8579b0cbd8ecc upstream.
+[ Upstream commit fe7a98b9d9b36e5c8a22d76b67d29721f153f66e ]
 
-On 64-bit systems, struct bcm_msg_head has an added padding of 4 bytes between
-struct members count and ival1. Even though all struct members are initialized,
-the 4-byte hole will contain data from the kernel stack. This patch zeroes out
-struct bcm_msg_head before usage, preventing infoleaks to userspace.
+The error code is not set at all in the sys event iter function.
 
-Fixes: ffd980f976e7 ("[CAN]: Add broadcast manager (bcm) protocol")
-Link: https://lore.kernel.org/r/trinity-7c1b2e82-e34f-4885-8060-2cd7a13769ce-1623532166177@3c-app-gmx-bs52
-Cc: linux-stable <stable@vger.kernel.org>
-Signed-off-by: Norbert Slusarek <nslusarek@gmx.net>
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This may lead to an uninitialized value of "ret" in
+metricgroup__add_metric() when no CPU metric is added.
+
+Fix by properly setting the error code.
+
+It is not necessary to init "ret" to 0 in metricgroup__add_metric(), as
+if we have no CPU or sys event metric matching, then "has_match" should
+be 0 and "ret" is set to -EINVAL.
+
+However gcc cannot detect that it may not have been set after the
+map_for_each_metric() loop for CPU metrics, which is strange.
+
+Fixes: be335ec28efa8 ("perf metricgroup: Support adding metrics for system PMUs")
+Signed-off-by: John Garry <john.garry@huawei.com>
+Acked-by: Ian Rogers <irogers@google.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Kajol Jain <kjain@linux.ibm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Link: http://lore.kernel.org/lkml/1623335580-187317-3-git-send-email-john.garry@huawei.com
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/can/bcm.c |    3 +++
- 1 file changed, 3 insertions(+)
+ tools/perf/util/metricgroup.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -402,6 +402,7 @@ static enum hrtimer_restart bcm_tx_timeo
- 		if (!op->count && (op->flags & TX_COUNTEVT)) {
+diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+index 1af71ac1cc68..939aed36e0c2 100644
+--- a/tools/perf/util/metricgroup.c
++++ b/tools/perf/util/metricgroup.c
+@@ -1072,16 +1072,18 @@ static int metricgroup__add_metric_sys_event_iter(struct pmu_event *pe,
  
- 			/* create notification to user */
-+			memset(&msg_head, 0, sizeof(msg_head));
- 			msg_head.opcode  = TX_EXPIRED;
- 			msg_head.flags   = op->flags;
- 			msg_head.count   = op->count;
-@@ -439,6 +440,7 @@ static void bcm_rx_changed(struct bcm_op
- 	/* this element is not throttled anymore */
- 	data->flags &= (BCM_CAN_FLAGS_MASK|RX_RECV);
+ 	ret = add_metric(d->metric_list, pe, d->metric_no_group, &m, NULL, d->ids);
+ 	if (ret)
+-		return ret;
++		goto out;
  
-+	memset(&head, 0, sizeof(head));
- 	head.opcode  = RX_CHANGED;
- 	head.flags   = op->flags;
- 	head.count   = op->count;
-@@ -560,6 +562,7 @@ static enum hrtimer_restart bcm_rx_timeo
- 	}
+ 	ret = resolve_metric(d->metric_no_group,
+ 				     d->metric_list, NULL, d->ids);
+ 	if (ret)
+-		return ret;
++		goto out;
  
- 	/* create notification to user */
-+	memset(&msg_head, 0, sizeof(msg_head));
- 	msg_head.opcode  = RX_TIMEOUT;
- 	msg_head.flags   = op->flags;
- 	msg_head.count   = op->count;
+ 	*(d->has_match) = true;
+ 
+-	return *d->ret;
++out:
++	*(d->ret) = ret;
++	return ret;
+ }
+ 
+ static int metricgroup__add_metric(const char *metric, bool metric_no_group,
+-- 
+2.30.2
+
 
 
