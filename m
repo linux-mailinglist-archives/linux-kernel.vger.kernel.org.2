@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F9FB3AE74F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33FC83AE755
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230392AbhFUKm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 06:42:28 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:50405 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229707AbhFUKmZ (ORCPT
+        id S230439AbhFUKm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 06:42:29 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:42745 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229946AbhFUKm1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 06:42:25 -0400
-X-UUID: 61f869a0794f4faab27feb09e09962da-20210621
-X-UUID: 61f869a0794f4faab27feb09e09962da-20210621
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        Mon, 21 Jun 2021 06:42:27 -0400
+X-UUID: f50edb71323c42f7b0a649034c877f02-20210621
+X-UUID: f50edb71323c42f7b0a649034c877f02-20210621
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
         (envelope-from <kewei.xu@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 626648486; Mon, 21 Jun 2021 18:40:08 +0800
+        with ESMTP id 777666302; Mon, 21 Jun 2021 18:40:09 +0800
 Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 21 Jun 2021 18:40:06 +0800
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 21 Jun 2021 18:40:07 +0800
 Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 21 Jun 2021 18:40:05 +0800
+ Transport; Mon, 21 Jun 2021 18:40:06 +0800
 From:   <kewei.xu@mediatek.com>
 To:     <wsa@the-dreams.de>
 CC:     <bbrezillon@kernel.org>, <matthias.bgg@gmail.com>,
@@ -34,11 +34,14 @@ CC:     <bbrezillon@kernel.org>, <matthias.bgg@gmail.com>,
         <linux-mediatek@lists.infradead.org>,
         <srv_heupstream@mediatek.com>, <leilk.liu@mediatek.com>,
         <qii.wang@mediatek.com>, <liguo.zhang@mediatek.com>,
-        <xinping.qian@mediatek.com>, <ot_daolong.zhu@mediatek.com>
-Subject: [PATCH V3 0/3] Introduce an attribute to choose timing setting 
-Date:   Mon, 21 Jun 2021 18:39:42 +0800
-Message-ID: <1624271985-23591-1-git-send-email-kewei.xu@mediatek.com>
+        <xinping.qian@mediatek.com>, <ot_daolong.zhu@mediatek.com>,
+        Kewei Xu <kewei.xu@mediatek.com>
+Subject: [PATCH V3 1/3] i2c: mediatek: Add OFFSET_EXT_CONF setting back
+Date:   Mon, 21 Jun 2021 18:39:43 +0800
+Message-ID: <1624271985-23591-2-git-send-email-kewei.xu@mediatek.com>
 X-Mailer: git-send-email 1.9.1
+In-Reply-To: <1624271985-23591-1-git-send-email-kewei.xu@mediatek.com>
+References: <1624271985-23591-1-git-send-email-kewei.xu@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-MTK:  N
@@ -46,23 +49,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From 5359d08e7af0c7981d08cb37555491d098f3e61a Mon Sep 17 00:00:00 2001
 From: Kewei Xu <kewei.xu@mediatek.com>
-Date: Mon, 21 Jun 2021 18:21:44 +0800
-Subject: [PATCH V3 0/3] Introduce an attribute to choose timing setting
 
-Main changes compared to V2:
---add back misdelete statement.
+In the commit be5ce0e97cc7 ("i2c: mediatek: Add i2c ac-timing adjust
+support"), we miss setting OFFSET_EXT_CONF register if
+i2c->dev_comp->timing_adjust is false, now add it back.
 
-Kewei Xu (3):
-  i2c: mediatek: Add OFFSET_EXT_CONF setting back
-  dt-bindings: i2c: add attribute default-timing-adjust
-  i2c: mediatek: Isolate speed setting via dts for special devices
+Fixes: be5ce0e97cc7 ("i2c: mediatek: Add i2c ac-timing adjust support")
+Signed-off-by: Kewei Xu <kewei.xu@mediatek.com>
+---
+ drivers/i2c/busses/i2c-mt65xx.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
- .../devicetree/bindings/i2c/i2c-mt65xx.txt         |  2 +
- drivers/i2c/busses/i2c-mt65xx.c                    | 86 ++++++++++++++++++++--
- 2 files changed, 83 insertions(+), 5 deletions(-)
-
+diff --git a/drivers/i2c/busses/i2c-mt65xx.c b/drivers/i2c/busses/i2c-mt65xx.c
+index ded94f9..fe3cea7 100644
+--- a/drivers/i2c/busses/i2c-mt65xx.c
++++ b/drivers/i2c/busses/i2c-mt65xx.c
+@@ -41,6 +41,8 @@
+ #define I2C_HANDSHAKE_RST		0x0020
+ #define I2C_FIFO_ADDR_CLR		0x0001
+ #define I2C_DELAY_LEN			0x0002
++#define I2C_ST_START_CON		0x8001
++#define I2C_FS_START_CON		0x1800
+ #define I2C_TIME_CLR_VALUE		0x0000
+ #define I2C_TIME_DEFAULT_VALUE		0x0003
+ #define I2C_WRRD_TRANAC_VALUE		0x0002
+@@ -484,6 +486,7 @@ static void mtk_i2c_clock_disable(struct mtk_i2c *i2c)
+ static void mtk_i2c_init_hw(struct mtk_i2c *i2c)
+ {
+ 	u16 control_reg;
++	u16 ext_conf_val;
+ 
+ 	if (i2c->dev_comp->apdma_sync) {
+ 		writel(I2C_DMA_WARM_RST, i2c->pdmabase + OFFSET_RST);
+@@ -518,8 +521,13 @@ static void mtk_i2c_init_hw(struct mtk_i2c *i2c)
+ 	if (i2c->dev_comp->ltiming_adjust)
+ 		mtk_i2c_writew(i2c, i2c->ltiming_reg, OFFSET_LTIMING);
+ 
++	if (i2c->speed_hz <= I2C_MAX_STANDARD_MODE_FREQ)
++		ext_conf_val = I2C_ST_START_CON;
++	else
++		ext_conf_val = I2C_FS_START_CON;
++
+ 	if (i2c->dev_comp->timing_adjust) {
+-		mtk_i2c_writew(i2c, i2c->ac_timing.ext, OFFSET_EXT_CONF);
++		ext_conf_val = i2c->ac_timing.ext;
+ 		mtk_i2c_writew(i2c, i2c->ac_timing.inter_clk_div,
+ 			       OFFSET_CLOCK_DIV);
+ 		mtk_i2c_writew(i2c, I2C_SCL_MIS_COMP_VALUE,
+@@ -544,6 +552,7 @@ static void mtk_i2c_init_hw(struct mtk_i2c *i2c)
+ 				       OFFSET_HS_STA_STO_AC_TIMING);
+ 		}
+ 	}
++	mtk_i2c_writew(i2c, ext_conf_val, OFFSET_EXT_CONF);
+ 
+ 	/* If use i2c pin from PMIC mt6397 side, need set PATH_DIR first */
+ 	if (i2c->have_pmic)
 -- 
 1.9.1
- 
+
