@@ -2,136 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D54B3AF778
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF37E3AF76A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:32:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231717AbhFUVfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 17:35:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41700 "EHLO
+        id S231379AbhFUVea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 17:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231680AbhFUVfc (ORCPT
+        with ESMTP id S230006AbhFUVe1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 17:35:32 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3804C061574;
-        Mon, 21 Jun 2021 14:33:16 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id k8so4183052ljk.7;
-        Mon, 21 Jun 2021 14:33:16 -0700 (PDT)
+        Mon, 21 Jun 2021 17:34:27 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08CDEC061574;
+        Mon, 21 Jun 2021 14:32:13 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id f13so72590ljp.10;
+        Mon, 21 Jun 2021 14:32:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=LwLiDvKh+SYknHvIUl9sZJTxK3M1sxYb6xuIBop9DcM=;
-        b=CGENMLH4FOKUotexatotqZrpSnrbqA4qPnOp5TuH0n6mWIHe64R1nJKEF5w6TJMnYV
-         boWZlAOumdzJOeNlpjwWA+gW9s2xjU1TdQVWXvfkjlrhxXuuT6D3M7lgK5WW9D4KZcCo
-         BtvhljYxplt9UAjTjXD/80UvQzyRsvBd7Pzn/nK1KXl9zS8KY/BiwypeWYmgcyurJMOd
-         iIQuJGttsmtHaNt/CeSePAVAbOkSgD1A9OS/Y4BZG9XhzmJiheG1PD8F/aoH4Kz91Aca
-         nseH7Rw7WL6tyKdxQO9xCqSZiw6iYycSCTv7G+J18/eDHBUNqUaXQ8hYp8WIM879zxlf
-         ygvg==
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=XttW2DB5Vb9m+WTM2zdPl5AyA493GBkpUm0PN3ByhPM=;
+        b=rUfqdcYZammBUrDpi4PoGjfb31cugOE7LvirnXnv+GIxcaUnG3w9zOJ604Ixzfs2SG
+         y399ErsivItDWV57S32AzLmX6zCzi7EasoNbN0Fe8pKy5JIwSGuOXhsY6XIfIPQ6woSl
+         ReKQa4oQ+2eo0epISX/RoA3y0QlXIPk//drUdgAnbgKxq2fKNO+eBZSZgiebDe1TkrKI
+         vccM4wy515ts297PVue+3KEjhO/21oPCudUKI5WL4OPHXBO5nlpViyh+opnwQR3S5mSC
+         ETWkid5bbudJ9Ak1TzgsOy6AFN2+LkkZptm0OahiILvNM4O/3THH2LjL1NgJm2bf0wod
+         7/qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=LwLiDvKh+SYknHvIUl9sZJTxK3M1sxYb6xuIBop9DcM=;
-        b=G0yIra/1DIgK4/Bil2Al+4LXdJrAGPVOaIYEkhaxrScGdc84IU5t5ThW7GgPxCpDAL
-         y8H8qvL2vumwNvKhviTXNrab8Iep/Ss39meLToFw4/AJoWEveV2i7sup0HSs/ZV15dPG
-         kEQwaA3jJjSUG3He8Eu191YXmZlQZ2trCli7rzJeDsEhpzUkjDmUagJpec7On7pEWCpW
-         w2ASJzVgGfiFv2F1Jvx79fW4T2WpSBbzXs+91WpaGdQI2ZD8Z0iS68fcKoDq/eWgY7xR
-         xUpuQY4ISrEQWufVFvS3CweXsiu7PQULR7yIcGTHQJZAJJfqxfj/1xa531YQhKR7Fq9P
-         xlSA==
-X-Gm-Message-State: AOAM53274EKOn99hL/gn9g9zaO5N0K2jLlRpjq0NdwqgQszlsmDSaI1H
-        9urkwAK++pwO7xJMGfpThBM=
-X-Google-Smtp-Source: ABdhPJzYpGk8aMYTdwETyUthyvjaqalAG3POwWNtEPPFWfh3BtaoZ68RIC1fNdTnARTZwtFEAqKQvQ==
-X-Received: by 2002:a2e:9009:: with SMTP id h9mr206916ljg.213.1624311195066;
-        Mon, 21 Jun 2021 14:33:15 -0700 (PDT)
-Received: from localhost.localdomain (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
-        by smtp.gmail.com with ESMTPSA id u10sm1074722lfg.240.2021.06.21.14.33.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 14:33:14 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-hwmon@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v4 2/2] hwmon: Support set_trips() of thermal device ops
-Date:   Tue, 22 Jun 2021 00:31:53 +0300
-Message-Id: <20210621213153.28247-3-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210621213153.28247-1-digetx@gmail.com>
-References: <20210621213153.28247-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=XttW2DB5Vb9m+WTM2zdPl5AyA493GBkpUm0PN3ByhPM=;
+        b=NqLfWpzGZK7VLqgL90FGQVqEZWyUgu8YJ8n6ORKmaondeBeZ9BJlQlIyHYQTNElX0L
+         ER4XV3ra8lIU49SIreA3yP0cUBN8NlWkcLbvAv0LieCv6gpA8DCGf7qaoKA4c6cIlmv7
+         W5Vpjbn9MXr8nUIwszTDo77/VoPk6vmcdm1kt2mfQvvHWdN6XBiRvAGoJNEsb8KRLoi1
+         efNUNVy62k6SJ39OOrbppIxvjx2RX8mS1hkfLBTwqY5qzPDji4xhfutgidZrSit4+Bvl
+         MTyS+Vnu9VthepYNIBa/IuELdtNqJ2f0XWjp8q2GphHDTHJY7xfFOmoOq8nB68vIHfn+
+         Q46Q==
+X-Gm-Message-State: AOAM533Hl6eYfhzWilu7TZYvhgU0vHQ1XwV5hGv7tsDzibFfX/NNh9k4
+        27PUf56ffdyZygRI0FzrnGp3mzpfDfYxMUNhsJg=
+X-Google-Smtp-Source: ABdhPJzQYy8Zv2CoT4+5jf+Ljt9HmhtwZp1c4bIUyBIO+4vf8Ela55EiC0s0gJecmfdGTLXQhmsvO2O/+kTDAQ0FLDA=
+X-Received: by 2002:a05:651c:10b9:: with SMTP id k25mr227755ljn.256.1624311131260;
+ Mon, 21 Jun 2021 14:32:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Steve French <smfrench@gmail.com>
+Date:   Mon, 21 Jun 2021 16:32:00 -0500
+Message-ID: <CAH2r5msOSLaZT42-jFMjJrB1YiYTZBzdM18ieqQY2v=YwXzcrA@mail.gmail.com>
+Subject: [SMBDIRECT][PATCH] missing rc checks while waiting for SMB3 over RDMA events
+To:     Long Li <longli@microsoft.com>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="000000000000fbdd3d05c54d677d"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support set_trips() callback of thermal device ops. This allows HWMON
-device to operatively notify thermal core about temperature changes, which
-is very handy to have in a case where HWMON sensor is used by CPU thermal
-zone that performs passive cooling and emergency shutdown on overheat.
-Thermal core will be able to react faster to temperature changes.
+--000000000000fbdd3d05c54d677d
+Content-Type: text/plain; charset="UTF-8"
 
-The set_trips() callback is entirely optional. If HWMON sensor doesn't
-support setting thermal trips, then the callback is a NO-OP. The dummy
-callback has no effect on the thermal core. The temperature trips are
-either complement the temperature polling mechanism of thermal core or
-replace the polling if sensor can set the trips and polling is disabled
-by a particular device in a device-tree.
+    There were two places where we weren't checking for error
+    (e.g. ERESTARTSYS) while waiting for rdma resolution.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/hwmon/hwmon.c | 33 +++++++++++++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+    Addresses-Coverity: 1462165 ("Unchecked return value")
+   Signed-off-by: Steve French <stfrench@microsoft.com>
 
-diff --git a/drivers/hwmon/hwmon.c b/drivers/hwmon/hwmon.c
-index fd47ab4e6892..9cb9d814cb88 100644
---- a/drivers/hwmon/hwmon.c
-+++ b/drivers/hwmon/hwmon.c
-@@ -153,8 +153,41 @@ static int hwmon_thermal_get_temp(void *data, int *temp)
- 	return 0;
- }
- 
-+static int hwmon_thermal_set_trips(void *data, int low, int high)
-+{
-+	struct hwmon_thermal_data *tdata = data;
-+	struct hwmon_device *hwdev = to_hwmon_device(tdata->dev);
-+	const struct hwmon_chip_info *chip = hwdev->chip;
-+	const struct hwmon_channel_info **info = chip->info;
-+	unsigned int i;
-+	int err;
-+
-+	if (!chip->ops->write)
-+		return 0;
-+
-+	for (i = 0; info[i] && info[i]->type != hwmon_temp; i++)
-+		continue;
-+
-+	if (info[i] && info[i]->config[tdata->index] & HWMON_T_MIN) {
-+		err = chip->ops->write(tdata->dev, hwmon_temp,
-+				       hwmon_temp_min, tdata->index, low);
-+		if (err && err != -EOPNOTSUPP)
-+			return err;
-+	}
-+
-+	if (info[i] && info[i]->config[tdata->index] & HWMON_T_MAX) {
-+		err = chip->ops->write(tdata->dev, hwmon_temp,
-+				       hwmon_temp_max, tdata->index, high);
-+		if (err && err != -EOPNOTSUPP)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct thermal_zone_of_device_ops hwmon_thermal_ops = {
- 	.get_temp = hwmon_thermal_get_temp,
-+	.set_trips = hwmon_thermal_set_trips,
- };
- 
- static void hwmon_thermal_remove_sensor(void *data)
+diff --git a/fs/cifs/smbdirect.c b/fs/cifs/smbdirect.c
+index 10dfe5006792..ae07732f750f 100644
+--- a/fs/cifs/smbdirect.c
++++ b/fs/cifs/smbdirect.c
+@@ -572,8 +572,11 @@ static struct rdma_cm_id *smbd_create_id(
+                log_rdma_event(ERR, "rdma_resolve_addr() failed %i\n", rc);
+                goto out;
+        }
+-       wait_for_completion_interruptible_timeout(
++       rc = wait_for_completion_interruptible_timeout(
+                &info->ri_done, msecs_to_jiffies(RDMA_RESOLVE_TIMEOUT));
++       /* -ERESTARTSYS, returned when interrupted, is the only rc mentioned */
++       if (rc < 0)
++               goto out;
+        rc = info->ri_rc;
+        if (rc) {
+                log_rdma_event(ERR, "rdma_resolve_addr() completed %i\n", rc);
+@@ -586,8 +589,10 @@ static struct rdma_cm_id *smbd_create_id(
+                log_rdma_event(ERR, "rdma_resolve_route() failed %i\n", rc);
+                goto out;
+        }
+-       wait_for_completion_interruptible_timeout(
++       rc = wait_for_completion_interruptible_timeout(
+                &info->ri_done, msecs_to_jiffies(RDMA_RESOLVE_TIMEOUT));
++       if (rc < 0)  /* e.g. if interrupted and returns -ERESTARTSYS */
++               goto out
+        rc = info->ri_rc;
+        if (rc) {
+                log_rdma_event(ERR, "rdma_resolve_route() completed %i\n", rc);
+
+
 -- 
-2.30.2
+Thanks,
 
+Steve
+
+--000000000000fbdd3d05c54d677d
+Content-Type: text/x-patch; charset="US-ASCII"; 
+	name="0001-smbdirect-missing-rc-checks-while-waiting-for-rdma-e.patch"
+Content-Disposition: attachment; 
+	filename="0001-smbdirect-missing-rc-checks-while-waiting-for-rdma-e.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kq74wddw0>
+X-Attachment-Id: f_kq74wddw0
+
+RnJvbSA5YmY0MmNhZWI5NWQ4YTViZjY3MjM0OGU1ZGViYTU4M2Y4MjMzNzEzIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBTdGV2ZSBGcmVuY2ggPHN0ZnJlbmNoQG1pY3Jvc29mdC5jb20+
+CkRhdGU6IE1vbiwgMjEgSnVuIDIwMjEgMTY6MjU6MjAgLTA1MDAKU3ViamVjdDogW1BBVENIXSBz
+bWJkaXJlY3Q6IG1pc3NpbmcgcmMgY2hlY2tzIHdoaWxlIHdhaXRpbmcgZm9yIHJkbWEgZXZlbnRz
+CgpUaGVyZSB3ZXJlIHR3byBwbGFjZXMgd2hlcmUgd2Ugd2VyZW4ndCBjaGVja2luZyBmb3IgZXJy
+b3IKKGUuZy4gRVJFU1RBUlRTWVMpIHdoaWxlIHdhaXRpbmcgZm9yIHJkbWEgcmVzb2x1dGlvbi4K
+CkFkZHJlc3Nlcy1Db3Zlcml0eTogMTQ2MjE2NSAoIlVuY2hlY2tlZCByZXR1cm4gdmFsdWUiKQpT
+aWduZWQtb2ZmLWJ5OiBTdGV2ZSBGcmVuY2ggPHN0ZnJlbmNoQG1pY3Jvc29mdC5jb20+Ci0tLQog
+ZnMvY2lmcy9zbWJkaXJlY3QuYyB8IDkgKysrKysrKy0tCiAxIGZpbGUgY2hhbmdlZCwgNyBpbnNl
+cnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2ZzL2NpZnMvc21iZGlyZWN0
+LmMgYi9mcy9jaWZzL3NtYmRpcmVjdC5jCmluZGV4IDEwZGZlNTAwNjc5Mi4uYWUwNzczMmY3NTBm
+IDEwMDY0NAotLS0gYS9mcy9jaWZzL3NtYmRpcmVjdC5jCisrKyBiL2ZzL2NpZnMvc21iZGlyZWN0
+LmMKQEAgLTU3Miw4ICs1NzIsMTEgQEAgc3RhdGljIHN0cnVjdCByZG1hX2NtX2lkICpzbWJkX2Ny
+ZWF0ZV9pZCgKIAkJbG9nX3JkbWFfZXZlbnQoRVJSLCAicmRtYV9yZXNvbHZlX2FkZHIoKSBmYWls
+ZWQgJWlcbiIsIHJjKTsKIAkJZ290byBvdXQ7CiAJfQotCXdhaXRfZm9yX2NvbXBsZXRpb25faW50
+ZXJydXB0aWJsZV90aW1lb3V0KAorCXJjID0gd2FpdF9mb3JfY29tcGxldGlvbl9pbnRlcnJ1cHRp
+YmxlX3RpbWVvdXQoCiAJCSZpbmZvLT5yaV9kb25lLCBtc2Vjc190b19qaWZmaWVzKFJETUFfUkVT
+T0xWRV9USU1FT1VUKSk7CisJLyogLUVSRVNUQVJUU1lTLCByZXR1cm5lZCB3aGVuIGludGVycnVw
+dGVkLCBpcyB0aGUgb25seSByYyBtZW50aW9uZWQgKi8KKwlpZiAocmMgPCAwKQorCQlnb3RvIG91
+dDsKIAlyYyA9IGluZm8tPnJpX3JjOwogCWlmIChyYykgewogCQlsb2dfcmRtYV9ldmVudChFUlIs
+ICJyZG1hX3Jlc29sdmVfYWRkcigpIGNvbXBsZXRlZCAlaVxuIiwgcmMpOwpAQCAtNTg2LDggKzU4
+OSwxMCBAQCBzdGF0aWMgc3RydWN0IHJkbWFfY21faWQgKnNtYmRfY3JlYXRlX2lkKAogCQlsb2df
+cmRtYV9ldmVudChFUlIsICJyZG1hX3Jlc29sdmVfcm91dGUoKSBmYWlsZWQgJWlcbiIsIHJjKTsK
+IAkJZ290byBvdXQ7CiAJfQotCXdhaXRfZm9yX2NvbXBsZXRpb25faW50ZXJydXB0aWJsZV90aW1l
+b3V0KAorCXJjID0gd2FpdF9mb3JfY29tcGxldGlvbl9pbnRlcnJ1cHRpYmxlX3RpbWVvdXQoCiAJ
+CSZpbmZvLT5yaV9kb25lLCBtc2Vjc190b19qaWZmaWVzKFJETUFfUkVTT0xWRV9USU1FT1VUKSk7
+CisJaWYgKHJjIDwgMCkgIC8qIGUuZy4gaWYgaW50ZXJydXB0ZWQgYW5kIHJldHVybnMgLUVSRVNU
+QVJUU1lTICovCisJCWdvdG8gb3V0CiAJcmMgPSBpbmZvLT5yaV9yYzsKIAlpZiAocmMpIHsKIAkJ
+bG9nX3JkbWFfZXZlbnQoRVJSLCAicmRtYV9yZXNvbHZlX3JvdXRlKCkgY29tcGxldGVkICVpXG4i
+LCByYyk7Ci0tIAoyLjMwLjIKCg==
+--000000000000fbdd3d05c54d677d--
