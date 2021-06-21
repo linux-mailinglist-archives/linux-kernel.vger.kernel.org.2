@@ -2,112 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E95B73AE1EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 05:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D752E3AE1F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 05:46:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbhFUDq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 23:46:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54530 "EHLO
+        id S230212AbhFUDsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 23:48:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229905AbhFUDq4 (ORCPT
+        with ESMTP id S229905AbhFUDsQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 23:46:56 -0400
-Received: from zeniv-ca.linux.org.uk (zeniv-ca.linux.org.uk [IPv6:2607:5300:60:148a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02863C061574;
-        Sun, 20 Jun 2021 20:44:42 -0700 (PDT)
-Received: from viro by zeniv-ca.linux.org.uk with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvArR-00AhLi-66; Mon, 21 Jun 2021 03:44:33 +0000
-Date:   Mon, 21 Jun 2021 03:44:33 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Michael Schmitz <schmitzmic@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH 1/2] alpha/ptrace: Record and handle the absence of
- switch_stack
-Message-ID: <YNALIY2vhvzKi+Sy@zeniv-ca.linux.org.uk>
-References: <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
- <87fsxjorgs.fsf@disp2133>
- <87zgvqor7d.fsf_-_@disp2133>
- <CAHk-=wir2P6h+HKtswPEGDh+GKLMM6_h8aovpMcUHyQv2zJ5Og@mail.gmail.com>
- <87mtrpg47k.fsf@disp2133>
- <87pmwlek8d.fsf_-_@disp2133>
- <87k0mtek4n.fsf_-_@disp2133>
- <393c37de-5edf-effc-3d06-d7e63f34a317@gmail.com>
- <CAHk-=wip8KgrNUcU68wsLZqbWV+3NWg9kqqQwygHGAA8-xOwMA@mail.gmail.com>
- <60c0fe00-b966-6385-d348-f6dd45277113@gmail.com>
+        Sun, 20 Jun 2021 23:48:16 -0400
+Received: from mail-vs1-xe2c.google.com (mail-vs1-xe2c.google.com [IPv6:2607:f8b0:4864:20::e2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60520C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 20:46:02 -0700 (PDT)
+Received: by mail-vs1-xe2c.google.com with SMTP id j8so8469706vsd.0
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 20:46:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=bgDx2y7jnHVgqpuH7DSftkNRKg871OtZSQDSrAU/dKc=;
+        b=RBgI4HZOPSLWFitfDhCXIi1mcWgVvf3+50V5tuKS/O8N8Nja87eY9XsQ8PGbHRDp9k
+         ltUFHJ6eDpV4UUlkmvP+A9XJF+swllOumaSrn1A2bi46Ei36fhBwCYcWsZ+/AvAwEbz7
+         S0KYpU/qfIYt6V79RiP/1Ys3Qp2E2q79UeYI2trez2eKuLm74gbksVymh+y+rr/ZoZbz
+         SS8fUnjBmIVwXjQk7sTIGSL5G0fM1mn0HzC8U4JP/nFQKza5qo+dG/eVtHxgzWg5tWU3
+         lFmOa1AqiIqNsFk81RdFuDYEZ8B8sENcTLkDcXXAlXlfDAoG33qm0J7n7NlnHj7NBUyV
+         PLfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=bgDx2y7jnHVgqpuH7DSftkNRKg871OtZSQDSrAU/dKc=;
+        b=dZitw4NyWqM9IH6zyJt1YBUaA2dV+J/zX+kRiLbH9vPKDgYN682rF7BLZtK/YaBQAm
+         EfInp6pdY8IOXMyOajhTnoQNRWIPnFz+rwVjDbmKkBDL4JVQAXpha3oSi+QnKMabddC3
+         dB1s2QhsZhHRe0FJgdd7N0WnZYw0pIWNEzsQvOuFo6ipRFEISm6H0WAbtUIhRrn8RL6h
+         cjiuioGvxuzRWLJZuv6xL6hNl+Li3bi3M5hlMbsy18zWsr0sEDo0M+O2jGkToinzUVQJ
+         cfIGpWCYDVCU8yPEs6qaVLVqXS/FfksXsHfvuHOuRW1sgUpiY+tyD7ZPr7dYvaXJYlw6
+         G5Ug==
+X-Gm-Message-State: AOAM53386zvnL5+eLTmtMW1SfiSnc18FQ6yvg9zP6eylDBxhPaFCFUmf
+        ezPmzNZ1uSIBNxJGKG3URc9G7kwY22j3xIAuBjXxFA==
+X-Google-Smtp-Source: ABdhPJy7ECzuz5hNyc7Izeqf3qovhAfGANrRMoXis/pR0LSbVi4JKaNiqOgKBjh4RwGD/ZfwWnpS/ebVXWAkHA/w0n0=
+X-Received: by 2002:a05:6102:3026:: with SMTP id v6mr5152176vsa.1.1624247161113;
+ Sun, 20 Jun 2021 20:46:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <60c0fe00-b966-6385-d348-f6dd45277113@gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <70042d9f.111abd.17a19f94b84.Coremail.linma@zju.edu.cn>
+In-Reply-To: <70042d9f.111abd.17a19f94b84.Coremail.linma@zju.edu.cn>
+From:   "Anand K. Mistry" <amistry@google.com>
+Date:   Mon, 21 Jun 2021 13:45:48 +1000
+Message-ID: <CAATStaMu-Nx1XS=4fbK6T2cRanS8OvSzP_83dmSnEKB7pgpm8A@mail.gmail.com>
+Subject: Re: Re: [PATCH 5.4 39/78] Bluetooth: use correct lock to prevent UAF
+ of hdev object
+To:     LinMa <linma@zju.edu.cn>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 03:18:35PM +1200, Michael Schmitz wrote:
+On Thu, 17 Jun 2021 at 22:37, LinMa <linma@zju.edu.cn> wrote:
+>
+>
+> Oops, sorry for the delay here. I just forgot to check the mails.
+>
+> This comment is right, when I submit this patch I mentioned that the repl=
+acement of this lock can hang the detaching routine because it needs to wai=
+t the release of the lock_sock().
+>
+> But this does no harm in my testing. In fact, the relevant code can only =
+be executed when removing the controller. I think it can wait for the lock.=
+ Moreover, this patch can fix the potential UAF indeed.
+>
+> > may need further discussion. (wrote in previous mail list
+>
+> Welcome the additional advise on this. Does this really broken the lock p=
+rinciple?
 
-> This is what I get from WARN_ONCE:
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 1177 at arch/m68k/kernel/ptrace.c:91 get_reg+0x90/0xb8
-> Modules linked in:
-> CPU: 0 PID: 1177 Comm: strace Not tainted 5.13.0-rc1-atari-fpuemu-exitfix+
-> #1146
-> Stack from 014b7f04:
->         014b7f04 00336401 00336401 000278f0 0032c015 0000005b 00000005
-> 0002795a
->         0032c015 0000005b 0000338c 00000009 00000000 00000000 ffffffe4
-> 00000005
->         00000003 00000014 00000003 00000014 efc2b90c 0000338c 0032c015
-> 0000005b
->         00000009 00000000 efc2b908 00912540 efc2b908 000034cc 00912540
-> 00000005
->         00000000 efc2b908 00000003 00912540 8000110c c010b0a4 efc2b90c
-> 0002d1d8
->         00912540 00000003 00000014 efc2b908 0000049a 00000014 efc2b908
-> 800acaa8
-> Call Trace: [<000278f0>] __warn+0x9e/0xb4
->  [<0002795a>] warn_slowpath_fmt+0x54/0x62
->  [<0000338c>] get_reg+0x90/0xb8
->  [<0000338c>] get_reg+0x90/0xb8
->  [<000034cc>] arch_ptrace+0x7e/0x250
->  [<0002d1d8>] sys_ptrace+0x232/0x2f8
->  [<00002ab6>] syscall+0x8/0xc
->  [<0000c00b>] lower+0x7/0x20
-> 
-> ---[ end trace ee4be53b94695793 ]---
-> 
-> Syscall numbers are actually 90 and 192 - sys_old_mmap and sys_mmap2 on
-> m68k. Used the calculator on my Ubuntu desktop, that appears to be a little
-> confused about hex to decimal conversions.
-> 
-> I hope that makes more sense?
+One more data point. I'm seeing this 100% of the time when trying the
+suspend my system (on 5.10):
 
-Not really; what is the condition you are checking?  The interesting trace
-is not that with get_reg() - it's that of the process being traced.  You
-are not accessing the stack of caller of ptrace(2) here, so you want to
-know that SAVE_SWITCH_STACK had been done by the tracee, not tracer.
+[  466.608970] BUG: sleeping function called from invalid context at
+net/core/sock.c:3074
+[  466.608975] in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid:
+5614, name: kworker/u4:4
+[  466.608980] CPU: 1 PID: 5614 Comm: kworker/u4:4 Tainted: G        W
+        5.10.43 #64
+[  466.608983] Hardware name: HP Grunt/Grunt, BIOS
+Google_Grunt.11031.104.0 09/05/2019
+[  466.608991] Workqueue: events_unbound async_run_entry_fn
+[  466.608995] Call Trace:
+[  466.609003]  dump_stack+0x9c/0xe7
+[  466.609009]  ___might_sleep+0x148/0x15e
+[  466.609013]  lock_sock_nested+0x22/0x5d
+[  466.609033]  hci_sock_dev_event+0x15a/0x1f0 [bluetooth]
+[  466.609043]  hci_unregister_dev+0x15c/0x303 [bluetooth]
+[  466.609049]  btusb_disconnect+0x77/0x127 [btusb]
+[  466.609054]  usb_unbind_interface+0xa6/0x22e
+[  466.609059]  ? usb_dev_suspend+0x14/0x14
+[  466.609063]  device_release_driver_internal+0x100/0x1a1
+[  466.609067]  unbind_marked_interfaces+0x4b/0x66
+[  466.609071]  usb_resume+0x59/0x66
+[  466.609075]  dpm_run_callback+0x8c/0x126
+[  466.609078]  device_resume+0x1f1/0x25b
+[  466.609082]  async_resume+0x1d/0x42
+[  466.609085]  async_run_entry_fn+0x3d/0xd1
+[  466.609089]  process_one_work+0x1b9/0x363
+[  466.609093]  worker_thread+0x213/0x372
+[  466.609097]  kthread+0x150/0x15f
+[  466.609100]  ? pr_cont_work+0x58/0x58
+[  466.609103]  ? kthread_blkcg+0x31/0x31
+[  466.609106]  ret_from_fork+0x22/0x30
 
-And if that had been strace ls, you have TIF_SYSCALL_TRACE set for ls, so
-	* ls hits system_call
-	* notices TIF_SYSCALL_TRACE and goes to do_trace_entry
-	* does SAVE_SWITCH_STACK there
-	* calls syscall_trace(), which calls ptrace_notify()
-	* ptrace_notify() calls ptrace_do_notify(), which calls ptrace_stop()
-	* ptrace_stop() arranges for tracer to be woken up and gives CPU up,
-with TASK_TRACED as process state.
 
-That's the callchain in ls, and switch_stack accessed by get_reg() from
-strace is the one on ls(1) stack created by SAVE_SWITCH_STACK.
+>
+> Regards Lin Ma
+>
+> =E5=9C=A8 2021-06-16 23:01:08=EF=BC=8C"Greg Kroah-Hartman" <gregkh@linuxf=
+oundation.org> =E5=86=99=E9=81=93=EF=BC=9A
+>
+> >On Mon, Jun 14, 2021 at 04:15:02PM +0200, Eric Dumazet wrote:
+> >>
+> >>
+> >> On 6/8/21 8:27 PM, Greg Kroah-Hartman wrote:
+> >> > From: Lin Ma <linma@zju.edu.cn>
+> >> >
+> >> > commit e305509e678b3a4af2b3cfd410f409f7cdaabb52 upstream.
+> >> >
+> >> > The hci_sock_dev_event() function will cleanup the hdev object for
+> >> > sockets even if this object may still be in used within the
+> >> > hci_sock_bound_ioctl() function, result in UAF vulnerability.
+> >> >
+> >> > This patch replace the BH context lock to serialize these affairs
+> >> > and prevent the race condition.
+> >> >
+> >> > Signed-off-by: Lin Ma <linma@zju.edu.cn>
+> >> > Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+> >> > Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >> > ---
+> >> >  net/bluetooth/hci_sock.c |    4 ++--
+> >> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >> >
+> >> > --- a/net/bluetooth/hci_sock.c
+> >> > +++ b/net/bluetooth/hci_sock.c
+> >> > @@ -755,7 +755,7 @@ void hci_sock_dev_event(struct hci_dev *
+> >> >            /* Detach sockets from device */
+> >> >            read_lock(&hci_sk_list.lock);
+> >> >            sk_for_each(sk, &hci_sk_list.head) {
+> >> > -                  bh_lock_sock_nested(sk);
+> >> > +                  lock_sock(sk);
+> >> >                    if (hci_pi(sk)->hdev =3D=3D hdev) {
+> >> >                            hci_pi(sk)->hdev =3D NULL;
+> >> >                            sk->sk_err =3D EPIPE;
+> >> > @@ -764,7 +764,7 @@ void hci_sock_dev_event(struct hci_dev *
+> >> >
+> >> >                            hci_dev_put(hdev);
+> >> >                    }
+> >> > -                  bh_unlock_sock(sk);
+> >> > +                  release_sock(sk);
+> >> >            }
+> >> >            read_unlock(&hci_sk_list.lock);
+> >> >    }
+> >> >
+> >> >
+> >>
+> >>
+> >> This patch is buggy.
+> >>
+> >> lock_sock() can sleep.
+> >>
+> >> But the read_lock(&hci_sk_list.lock) two lines before is not going to =
+allow the sleep.
+> >>
+> >> Hmmm ?
+> >>
+> >>
+> >
+> >Odd, Lin, did you see any problems with your testing of this?
+> >
+
+
+
+--=20
+Anand K. Mistry
+Software Engineer
+Google Australia
