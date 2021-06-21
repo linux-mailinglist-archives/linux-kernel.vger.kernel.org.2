@@ -2,133 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF673AEDD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D985D3AED3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:15:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231354AbhFUQXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:23:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41900 "EHLO mail.kernel.org"
+        id S230222AbhFUQR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:17:59 -0400
+Received: from mga14.intel.com ([192.55.52.115]:43299 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231834AbhFUQV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:21:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 39B0161370;
-        Mon, 21 Jun 2021 16:19:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292376;
-        bh=RoLcPgWCvjSIo1JSDqIbHOHp+GAykiVT3pMa/3u0SCE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BA9Y8i0JnI13SCIj9e4jLxFieNHlOY63aKAEL7i2g1x/EQ7VCPd2vmqIJcSFoAtmx
-         M6MHTYzfXl7SwEhRjuVymv9f2vA/Pc+mOqSoqLaMsT2IPCv7F37uf9ca+7Z1TxMAja
-         /Wv1oRlg8inr2kB3jKr8iUGfj0GFDW+B9A8VhyTY=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@suse.de>,
+        id S230071AbhFUQR7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:17:59 -0400
+IronPort-SDR: bHVwbM05w78MWcTpKfl5TDfnjC5JG/E8PBmB/axl5ADqEV56Wfbp1ew+j2K/RYQLtWoTP6urpi
+ bRPxYXYmxO9Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="206698547"
+X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
+   d="scan'208";a="206698547"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 09:15:44 -0700
+IronPort-SDR: 68XMMSd3evT7yCXErLke1L14KkHaV3zb5EaEDrijovCR98EF1PaUbKF8/QOFDVaoNia02UxXtH
+ iZOCPDadUDag==
+X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
+   d="scan'208";a="480514839"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.157.87]) ([10.209.157.87])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 09:15:43 -0700
+Subject: Re: [patch V3 00/66] x86/fpu: Spring cleaning and PKRU sanitizing
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
         Dave Hansen <dave.hansen@linux.intel.com>,
-        Rik van Riel <riel@surriel.com>,
-        Babu Moger <babu.moger@amd.com>
-Subject: [PATCH 5.4 67/90] x86/pkru: Write hardware init value to PKRU when xstate is init
-Date:   Mon, 21 Jun 2021 18:15:42 +0200
-Message-Id: <20210621154906.431457997@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621154904.159672728@linuxfoundation.org>
-References: <20210621154904.159672728@linuxfoundation.org>
-User-Agent: quilt/0.66
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+References: <20210618141823.161158090@linutronix.de>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <4473dcbd-38fa-bc19-d665-673dfc763f8f@intel.com>
+Date:   Mon, 21 Jun 2021 09:15:43 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210618141823.161158090@linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+On 6/18/2021 7:18 AM, Thomas Gleixner wrote:
+> The main parts of this series are:
+> 
+>    - Yet more bug fixes
+> 
+>    - Simplification and removal/replacement of redundant and/or
+>      overengineered code.
+> 
+>    - Name space cleanup as the existing names were just a permanent source
+>      of confusion.
+> 
+>    - Clear seperation of user ABI and kernel internal state handling.
+> 
+>    - Removal of PKRU from being XSTATE managed in the kernel because PKRU
+>      has to be eagerly restored on context switch and keeping it in sync
+>      in the xstate buffer is just pointless overhead and fragile.
+> 
+>      The kernel still XSAVEs PKRU on context switch but the value in the
+>      buffer is not longer used and never restored from the buffer.
+> 
+>      This still needs to be cleaned up, but the series is already 40+
+>      patches large and the cleanup of this is not a functional problem.
+> 
+>      The functional issues of PKRU management are fully addressed with the
+>      series as is.
+> 
+>    - Cleanup of fpu signal restore
+> 
+>      - Make the fast path self contained. Handle #PF directly and skip
+>        the slow path on any other exception as that will just end up
+>        with the same result that the frame is invalid. This allows
+>        the compiler to optimize the slow path out for 64bit kernels
+>        w/o ia32 emulation.
+> 
+>      - Reduce code duplication and unnecessary operations
+>        
+> 
+> It applies on top of
+> 
+>    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+> 
+> and is also available via git:
+> 
+>    git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git x86/fpu
+> 
+> This is a follow up to V2 which can be found here:
+> 
+>       https://lore.kernel.org/r/20210614154408.673478623@linutronix.de
+> 
+> Changes vs. V2:
+> 
+>    - Fixed the testing fallout (Dave, Kan)
+> 
+>    - Fixed a few issues found by myself when going through the lot
+>      with a fine comb, especially MXCSR handling
+> 
+>    - Drop the FNSAVE optimizations
+> 
+>    - Cleanup of signal restore
+> 
+>    - Addressed review comments, mostly comments and a hopefully better
+>      naming scheme which now just uses the instruction names and
+>      consolidates everything else on save/restore so it's close to the way
+>      how the hardware works.
+> 
+>    - A few cleanups and simplifications on the way (mostly regset related).
+> 
+>    - Picked up tags
+> 
+> With the above I'm not intending to do any further surgery on that
+> code at the moment, though there is still room for improvement which
+> can and has to be worked on when new bits are added.
+> 
+> Thanks,
 
-commit 510b80a6a0f1a0d114c6e33bcea64747d127973c upstream.
+Run all my tests again, and all pass.
 
-When user space brings PKRU into init state, then the kernel handling is
-broken:
+Thanks,
+Yu-cheng
 
-  T1 user space
-     xsave(state)
-     state.header.xfeatures &= ~XFEATURE_MASK_PKRU;
-     xrstor(state)
-
-  T1 -> kernel
-     schedule()
-       XSAVE(S) -> T1->xsave.header.xfeatures[PKRU] == 0
-       T1->flags |= TIF_NEED_FPU_LOAD;
-
-       wrpkru();
-
-     schedule()
-       ...
-       pk = get_xsave_addr(&T1->fpu->state.xsave, XFEATURE_PKRU);
-       if (pk)
-	 wrpkru(pk->pkru);
-       else
-	 wrpkru(DEFAULT_PKRU);
-
-Because the xfeatures bit is 0 and therefore the value in the xsave
-storage is not valid, get_xsave_addr() returns NULL and switch_to()
-writes the default PKRU. -> FAIL #1!
-
-So that wrecks any copy_to/from_user() on the way back to user space
-which hits memory which is protected by the default PKRU value.
-
-Assumed that this does not fail (pure luck) then T1 goes back to user
-space and because TIF_NEED_FPU_LOAD is set it ends up in
-
-  switch_fpu_return()
-      __fpregs_load_activate()
-        if (!fpregs_state_valid()) {
-  	 load_XSTATE_from_task();
-        }
-
-But if nothing touched the FPU between T1 scheduling out and back in,
-then the fpregs_state is still valid which means switch_fpu_return()
-does nothing and just clears TIF_NEED_FPU_LOAD. Back to user space with
-DEFAULT_PKRU loaded. -> FAIL #2!
-
-The fix is simple: if get_xsave_addr() returns NULL then set the
-PKRU value to 0 instead of the restrictive default PKRU value in
-init_pkru_value.
-
- [ bp: Massage in minor nitpicks from folks. ]
-
-Fixes: 0cecca9d03c9 ("x86/fpu: Eager switch PKRU state")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
-Acked-by: Rik van Riel <riel@surriel.com>
-Tested-by: Babu Moger <babu.moger@amd.com>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/20210608144346.045616965@linutronix.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/x86/include/asm/fpu/internal.h |   11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
---- a/arch/x86/include/asm/fpu/internal.h
-+++ b/arch/x86/include/asm/fpu/internal.h
-@@ -608,9 +608,16 @@ static inline void switch_fpu_finish(str
- 	 * return to userland e.g. for a copy_to_user() operation.
- 	 */
- 	if (!(current->flags & PF_KTHREAD)) {
-+		/*
-+		 * If the PKRU bit in xsave.header.xfeatures is not set,
-+		 * then the PKRU component was in init state, which means
-+		 * XRSTOR will set PKRU to 0. If the bit is not set then
-+		 * get_xsave_addr() will return NULL because the PKRU value
-+		 * in memory is not valid. This means pkru_val has to be
-+		 * set to 0 and not to init_pkru_value.
-+		 */
- 		pk = get_xsave_addr(&new_fpu->state.xsave, XFEATURE_PKRU);
--		if (pk)
--			pkru_val = pk->pkru;
-+		pkru_val = pk ? pk->pkru : 0;
- 	}
- 	__write_pkru(pkru_val);
- }
-
-
+> 
+> 	tglx
+> ---
+>   arch/x86/events/intel/lbr.c          |    6
+>   arch/x86/include/asm/fpu/internal.h  |  211 +++-------
+>   arch/x86/include/asm/fpu/xstate.h    |   70 ++-
+>   arch/x86/include/asm/pgtable.h       |   57 --
+>   arch/x86/include/asm/pkeys.h         |    9
+>   arch/x86/include/asm/pkru.h          |   62 +++
+>   arch/x86/include/asm/processor.h     |    9
+>   arch/x86/include/asm/special_insns.h |   14
+>   arch/x86/kernel/cpu/common.c         |   34 -
+>   arch/x86/kernel/fpu/core.c           |  276 +++++++------
+>   arch/x86/kernel/fpu/init.c           |   15
+>   arch/x86/kernel/fpu/regset.c         |  220 ++++++-----
+>   arch/x86/kernel/fpu/signal.c         |  423 +++++++++------------
+>   arch/x86/kernel/fpu/xstate.c         |  693 ++++++++++++++---------------------
+>   arch/x86/kernel/process.c            |   22 -
+>   arch/x86/kernel/process_64.c         |   28 +
+>   arch/x86/kernel/traps.c              |    5
+>   arch/x86/kvm/svm/sev.c               |    1
+>   arch/x86/kvm/x86.c                   |   56 +-
+>   arch/x86/mm/extable.c                |    2
+>   arch/x86/mm/fault.c                  |    2
+>   arch/x86/mm/pkeys.c                  |   22 -
+>   include/linux/pkeys.h                |    4
+>   23 files changed, 1060 insertions(+), 1181 deletions(-)
+> 
+>
