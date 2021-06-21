@@ -2,82 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 072A13AE497
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:11:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8A53AE4A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhFUIOG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 04:14:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55282 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229618AbhFUIOD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 04:14:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E067610EA;
-        Mon, 21 Jun 2021 08:11:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624263110;
-        bh=B1HzwqF6qT//Y5Tg885P0y5TOhf9gHty4Tfj48hXgs0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DG3n0y4jQeQ93qQYfC3lleF7+cF9JCV0gApVQJuAGBfdAhBgvUlpHivyu5LJjmofI
-         BDxaHC7f4pw709wDALCHE/IRoLiwFyhQdmfTlFzp1HtNEj1SyhLgS+J+Y4NCzZEgmT
-         /vib9syMyUKb5W5dLeAH3nji6ROzSAkwwslBK5YE7/b/wGisfqZIZC+2jfvQQZinoN
-         1bw34xxE0Z05NAS5rAkylX2an60H33tFy5d7/WF1VH5h51ayZA0u8rD4u6W8YnwTAS
-         boslV83TgSx325C3fxvaqzQBGpB4V7Nl9FNCvdJ6io9ryRFcznDDnyv2RN2ryjfOz5
-         d0X4OERgeROJA==
-Date:   Mon, 21 Jun 2021 11:11:46 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Jack Morgenstein <jackm@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Yishai Hadas <yishaih@nvidia.com>,
-        Doug Ledford <dledford@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] IB/mlx4: Avoid field-overflowing memcpy()
-Message-ID: <YNBJwnwaS6w9A0x4@unreal>
-References: <20210616203744.1248551-1-keescook@chromium.org>
- <YMr4ypsh7D3q1R5+@unreal>
- <202106171239.C425161E8@keescook>
+        id S230211AbhFUIVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 04:21:11 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3290 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229641AbhFUIVK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 04:21:10 -0400
+Received: from fraeml715-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G7hxk3T1Vz6K7Td;
+        Mon, 21 Jun 2021 16:08:58 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml715-chm.china.huawei.com (10.206.15.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 21 Jun 2021 10:18:54 +0200
+Received: from [10.47.93.67] (10.47.93.67) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 21 Jun
+ 2021 09:18:53 +0100
+Subject: Re: [PATCH v14 6/6] iommu: Remove mode argument from
+ iommu_set_dma_strict()
+To:     Lu Baolu <baolu.lu@linux.intel.com>, <joro@8bytes.org>,
+        <will@kernel.org>, <dwmw2@infradead.org>, <robin.murphy@arm.com>,
+        <corbet@lwn.net>
+CC:     <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
+        <linuxarm@huawei.com>, <thunder.leizhen@huawei.com>,
+        <chenxiang66@hisilicon.com>, <linux-doc@vger.kernel.org>
+References: <1624016058-189713-1-git-send-email-john.garry@huawei.com>
+ <1624016058-189713-7-git-send-email-john.garry@huawei.com>
+ <c062ef9e-c106-4218-ba2a-c94fdcb6d955@linux.intel.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <60bdd7c3-d73e-c005-ddf7-069bc5065bce@huawei.com>
+Date:   Mon, 21 Jun 2021 09:12:29 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202106171239.C425161E8@keescook>
+In-Reply-To: <c062ef9e-c106-4218-ba2a-c94fdcb6d955@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.93.67]
+X-ClientProxiedBy: lhreml747-chm.china.huawei.com (10.201.108.197) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 12:46:43PM -0700, Kees Cook wrote:
-> On Thu, Jun 17, 2021 at 10:24:58AM +0300, Leon Romanovsky wrote:
-> > On Wed, Jun 16, 2021 at 01:37:44PM -0700, Kees Cook wrote:
-> > > In preparation for FORTIFY_SOURCE performing compile-time and run-time
-> > > field bounds checking for memcpy(), memmove(), and memset(), avoid
-> > > intentionally writing across neighboring array fields.
-> > > 
-> > > Use the ether_addr_copy() helper instead, as already done for smac.
-> > > 
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > ---
-> > >  drivers/infiniband/hw/mlx4/qp.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
-> > > index 2ae22bf50016..4a2ef7daaded 100644
-> > > --- a/drivers/infiniband/hw/mlx4/qp.c
-> > > +++ b/drivers/infiniband/hw/mlx4/qp.c
-> > > @@ -3144,7 +3144,7 @@ static int build_mlx_header(struct mlx4_ib_qp *qp, const struct ib_ud_wr *wr,
-> > >  		mlx->sched_prio = cpu_to_be16(pcp);
-> > >  
-> > >  		ether_addr_copy(sqp->ud_header.eth.smac_h, ah->av.eth.s_mac);
-> > > -		memcpy(sqp->ud_header.eth.dmac_h, ah->av.eth.mac, 6);
-> > > +		ether_addr_copy(sqp->ud_header.eth.dmac_h, ah->av.eth.mac);
-> > >  		memcpy(&ctrl->srcrb_flags16[0], ah->av.eth.mac, 2);
-> > >  		memcpy(&ctrl->imm, ah->av.eth.mac + 2, 4);
-> > 
-> > I don't understand the last three lines. We are copying 6 bytes to
-> > ah->av.eth.mac and immediately after that overwriting them.
+On 21/06/2021 06:17, Lu Baolu wrote:
+> On 2021/6/18 19:34, John Garry wrote:
+>> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+>> index 60b1ec42e73b..ff221d3ddcbc 100644
+>> --- a/drivers/iommu/iommu.c
+>> +++ b/drivers/iommu/iommu.c
+>> @@ -349,10 +349,9 @@ static int __init iommu_dma_setup(char *str)
+>>   }
+>>   early_param("iommu.strict", iommu_dma_setup);
+>> -void iommu_set_dma_strict(bool strict)
+>> +void iommu_set_dma_strict(void)
+>>   {
+>> -    if (strict || !(iommu_cmd_line & IOMMU_CMD_LINE_STRICT))
+>> -        iommu_dma_strict = strict;
+>> +    iommu_dma_strict = true;
+>>   }
 > 
-> I'm not following (the memcpy() is replaced by ether_addr_copy()).
 
-Forget it, it was me who mixed src with dst in the memcpy() signature.
+Hi baolu,
+
+> Sorry for this late comment.
+>  > Normally the cache invalidation policy should come from the user. We
+> have pre-build kernel option and also a kernel boot command iommu.strict
+> to override it. These seem reasonable.
+> 
+> We also have a helper (iommu_set_dma_strict()) so that the vendor iommu
+> driver could squeeze in and change the previous settings mostly due to:
+> 
+> a) vendor iommu driver specific kernel boot command. (We are about to
+>     deprecate those.)
+> 
+> b) quirky hardware.
+> 
+> c) kernel optimization (e.x. strict mode in VM environment).
+> 
+> a) and b) are mandatory, while c) is optional. In any instance should c)
+> override the flush mode specified by the user. Hence, probably we should
+> also have another helper like:
+> 
+> void iommu_set_dma_strict_optional()
+> {
+>      if (!(iommu_cmd_line & IOMMU_CMD_LINE_STRICT))
+>          iommu_dma_strict = true;
+> }
+> 
+> Any thoughts?
+
+What you are suggesting is a change in policy from mainline code. 
+Currently for c) we always set strict enabled, regardless of any user 
+cmdline input. But now you are saying that you want iommu.strict to 
+override in particular scenario, right?
+
+In that case I would think it's better to rework the current API, like 
+adding an option to "force" strict mode:
+
+void iommu_set_dma_strict(bool force)
+{
+      	if (force == true)
+		iommu_dma_strict = true;
+	else if (!(iommu_cmd_line & IOMMU_CMD_LINE_STRICT))
+		iommu_dma_strict = true;
+}
+
+So we would use iommu_set_dma_strict(true) for a) and b), but 
+iommu_set_dma_strict(false) for c).
+
+Then I am not sure what you want to do with the accompanying print for 
+c). It was:
+"IOMMU batching is disabled due to virtualization"
+
+And now is from this series:
+"IOMMU batching disallowed due to virtualization"
+
+Using iommu_get_dma_strict(domain) is not appropriate here to know the 
+current mode (so we know whether to print).
+
+Note that this change would mean that the current series would require 
+non-trivial rework, which would be unfortunate so late in the cycle.
 
 Thanks,
-Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+John
