@@ -2,216 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C715D3AE96B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7A03AE96F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbhFUMzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 08:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbhFUMzG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 08:55:06 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858A1C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 05:52:52 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id j1so2322421wrn.9
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 05:52:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=oUbWLR6jP8sFAmnNbGZX4JOnm2ju8K/Z3jaXNl0VaNQ=;
-        b=s69jGoi5HE6JfVg/S0mlcw3uDa6K+m3W7p6LfVGYpAdim7suxSey2r56Y8nH5MlurJ
-         1iSvlFqJz+adhwc0DG9qlnoIvwE2qxk/sh1WBuZy9NbOXNFkApFLFpGKhmDTnfkYRT6Q
-         bUw1UMQBufKlYMS9dBFsRXM5RbTGbhR/Y4+j0A6yQzD4ByQ+13X/Kgl6b/JJKSH41g2f
-         rBEPXHRlnNIWe7LjgH2AhOcXIVi1g6VwsXkeHScnPpiig2mPRtlXKxISAcyQYery1FRw
-         ZqyKJ35PATKRg5j0xlKRxrPKKqE3xgZX3k4l23kTUkTH/08o7ghWooUIBHuTRjLod9U5
-         9Rwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oUbWLR6jP8sFAmnNbGZX4JOnm2ju8K/Z3jaXNl0VaNQ=;
-        b=K/NL0QPFTmxDFQ4Qq+wc522T0iCqC60F+xVOtoPz49E9DRpzCk+/dMoBPbf6cPH6jU
-         zQzr/RYfmxlcOMDFbm02KeI3k+nTitXu9VHgaHKBlN2+er1v1HXe/QAXnwPADLlETLE9
-         ZDSOIDPFIgOmvLsxMUQM5Kexip5/TfPy54lDztpFgeIzYWbTFKx10YB/NCt3V5vM1ESF
-         9C5GEz+Q1idq+1kTNTZvTzh0pAcMnz9D40QeoWlu1TB7B29gU3xr5tA+DzD3UNn49iGv
-         lt0wpOoZaoESS19vC2TQUxC2x52S6gjRiRxHMw2gyWOu895iag7leWCDKUxdMJMnizSo
-         K3Ew==
-X-Gm-Message-State: AOAM531YElMoC2Uacg5e6B26VzyUbComcWxcyTYqlO5aXzcAlHKn1DrR
-        KB2Kzr8NgD2JeGIo61ljPWjdRA==
-X-Google-Smtp-Source: ABdhPJwxP79R2nIH3qYcLv/Uw34PrwDf8thNus0OZKbDqKhEbV3YV6hiE/GqoUTsc+Yq2uCtvPPrpQ==
-X-Received: by 2002:adf:f587:: with SMTP id f7mr3891667wro.253.1624279971181;
-        Mon, 21 Jun 2021 05:52:51 -0700 (PDT)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id v5sm9953974wml.26.2021.06.21.05.52.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 21 Jun 2021 05:52:50 -0700 (PDT)
-Subject: Re: [PATCH v3] ASoC: qcom: Fix for DMA interrupt clear reg
- overwriting
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, swboyd@chromium.org,
-        judyhsiao@chromium.org
-References: <20210609072310.26099-1-srivasam@codeaurora.org>
- <CGME20210617193537eucas1p217b93d091ae8795581b30931ad8c7467@eucas1p2.samsung.com>
- <5ae06ccb-ffd4-ca9f-5a88-1f8bf8b48d37@samsung.com>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <ec4f3faf-2169-3cd2-7471-976f20f77110@linaro.org>
-Date:   Mon, 21 Jun 2021 13:52:49 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <5ae06ccb-ffd4-ca9f-5a88-1f8bf8b48d37@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        id S229727AbhFUM5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 08:57:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44550 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229651AbhFUM5I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 08:57:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D92AF61026;
+        Mon, 21 Jun 2021 12:54:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624280094;
+        bh=ZAjvql/WozVxJBMClscRiTlo3MN4OgvT5SVv+auyNe4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=qneNoNXPAz0jZ1yeBFTZWDeRZqVahSNNMbgA+FIk4yEvEUC7UwdgZ13QC5ekuBLFT
+         LwalqS4v6eymMGyLRlhH0JbD1QVUiihbR5Xd9X/86SmF0UhtevQ1g7gcZdoFVMn7bb
+         DtGIroST6RHBLJL5fgQJGbxUWk1PckxCdge1EtH9DDusgZey1E1ssD/ygIOahaTABV
+         v0LvPgqlDsH3KHuD+FVf9PZqy/CjRaGPAwMJrEsSY/zMmk3BvBBgypVClGtPNPW0XX
+         HrlOttalNx196MgqCEpwsd7lP3Yj4+ZnFzSJLv5cFmXHb2ZhjMtyF9Q4FmbjS5U78B
+         Vhwb5Mpg8jehw==
+Date:   Mon, 21 Jun 2021 21:54:52 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>, acme@kernel.org
+Subject: Re: [PATCH] kprobes: Print an error if probe is rejected
+Message-Id: <20210621215452.0eea52e14dbe5969b66ae149@kernel.org>
+In-Reply-To: <1624266910.z97eue1i84.naveen@linux.ibm.com>
+References: <20210610085617.1590138-1-naveen.n.rao@linux.vnet.ibm.com>
+        <20210610191643.d24e7d56d102567070fe8386@kernel.org>
+        <1623419180.o4u5xf72jm.naveen@linux.ibm.com>
+        <20210611154021.008537b0@gandalf.local.home>
+        <1623684632.0k2j6ky7k3.naveen@linux.ibm.com>
+        <20210619011516.dadbd24e27996bae62fd288f@kernel.org>
+        <1624266910.z97eue1i84.naveen@linux.ibm.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marek/Srinivasa,
+On Mon, 21 Jun 2021 15:06:24 +0530
+"Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
 
-
-On 17/06/2021 20:35, Marek Szyprowski wrote:
-> Hi,
+> Hi Masami,
 > 
-> On 09.06.2021 09:23, Srinivasa Rao Mandadapu wrote:
->> The DMA interrupt clear register overwritten during
->> simultaneous playback and capture in lpass platform
->> interrupt handler. It's causing playback or capture stuck
->> in similtaneous plaback on speaker and capture on dmic test.
->> Update appropriate reg fields of corresponding channel instead
->> of entire register write.
->>
->> Fixes: commit c5c8635a04711 ("ASoC: qcom: Add LPASS platform driver")
->>
->> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> Masami Hiramatsu wrote:
+> > Hi Naveen,
+> > 
+> > On Mon, 14 Jun 2021 21:00:52 +0530
+> > "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
+> > 
+> >> Steven Rostedt wrote:
+> >> > On Fri, 11 Jun 2021 19:25:38 +0530
+> >> > "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
+> >> > 
+> >> >> We also have perf_event_open() as an interface to add probes, and I 
+> >> >> don't think it would be helpful to require all tools to utilize the 
+> >> >> error log from tracefs for this purpose.
+> >> > 
+> >> > The there should be a perf interface to read the errors. I agree with
+> >> > Masami. Let's not have console logs for probe errors.
+> >> 
+> >> Ok, understood.
+> > 
+> > Will you update this?
 > 
-Can you please try this patch and let us know if this fixes the issue
-
-------------------------->cut<-------------------------------
-Author: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date:   Mon Jun 21 12:38:43 2021 +0100
-
-     ASoC: qcom: lpass-cpu: mark IRQ_CLEAR register as volatile and readable
-
-     Currently IRQ_CLEAR register is marked as write-only, however using
-     regmap_update_bits on this register will have some side effects.
-     so mark IRQ_CLEAR register appropriately as readable and volatile.
-
-     Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index 0b9cbf2ce505..8998697cd1e1 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -525,6 +525,8 @@ static bool lpass_cpu_regmap_readable(struct device 
-*dev, unsigned int reg)
-                         return true;
-
-         for (i = 0; i < v->irq_ports; ++i) {
-+               if (reg == LPAIF_IRQCLEAR_REG(v, i))
-+                       return true;
-                 if (reg == LPAIF_IRQEN_REG(v, i))
-                         return true;
-                 if (reg == LPAIF_IRQSTAT_REG(v, i))
-@@ -566,9 +568,12 @@ static bool lpass_cpu_regmap_volatile(struct device 
-*dev, unsigned int reg)
-         struct lpass_variant *v = drvdata->variant;
-         int i;
-
--       for (i = 0; i < v->irq_ports; ++i)
-+       for (i = 0; i < v->irq_ports; ++i) {
-+               if (reg == LPAIF_IRQCLEAR_REG(v, i))
-+                       return true;
-                 if (reg == LPAIF_IRQSTAT_REG(v, i))
-                         return true;
-+       }
-
-         for (i = 0; i < v->rdma_channels; ++i)
-                 if (reg == LPAIF_RDMACURR_REG(v, i))
-
-------------------------->cut<-------------------------------
-
---srini
-
-> This patch landed recently in linux-next as commit da0363f7bfd3 ("ASoC:
-> qcom: Fix for DMA interrupt clear reg overwriting"). It breaks ALSA
-> playback on DragonBoard 410c (arch/arm64/boot/dts/qcom/apq8016-sbc.dts).
-> After applying this patch, running 'speaker-test -l1' never finishes.
-> There is no error nor kernel warning message. Before that commit, the
-> playback worked fine on that board.
+> Not sure if you are asking about error logging with perf_event_open(), 
+> or about reading error_log from tracefs.
 > 
->> ---
->> Changes since v2:
->> 	-- Removed redundant variables.
->> Changes since v1:
->> 	-- Subject lines changed.
->>    sound/soc/qcom/lpass-platform.c | 12 ++++++------
->>    1 file changed, 6 insertions(+), 6 deletions(-)
->>
->> diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
->> index 0df9481ea4c6..f9df76d37858 100644
->> --- a/sound/soc/qcom/lpass-platform.c
->> +++ b/sound/soc/qcom/lpass-platform.c
->> @@ -526,7 +526,7 @@ static int lpass_platform_pcmops_trigger(struct snd_soc_component *component,
->>    			return -EINVAL;
->>    		}
->>    
->> -		ret = regmap_write(map, reg_irqclr, val_irqclr);
->> +		ret = regmap_update_bits(map, reg_irqclr, val_irqclr, val_irqclr);
->>    		if (ret) {
->>    			dev_err(soc_runtime->dev, "error writing to irqclear reg: %d\n", ret);
->>    			return ret;
->> @@ -650,10 +650,11 @@ static irqreturn_t lpass_dma_interrupt_handler(
->>    	struct lpass_variant *v = drvdata->variant;
->>    	irqreturn_t ret = IRQ_NONE;
->>    	int rv;
->> -	unsigned int reg = 0, val = 0;
->> +	unsigned int reg, val, mask;
->>    	struct regmap *map;
->>    	unsigned int dai_id = cpu_dai->driver->id;
->>    
->> +	mask = LPAIF_IRQ_ALL(chan);
->>    	switch (dai_id) {
->>    	case LPASS_DP_RX:
->>    		map = drvdata->hdmiif_map;
->> @@ -676,8 +677,7 @@ static irqreturn_t lpass_dma_interrupt_handler(
->>    	return -EINVAL;
->>    	}
->>    	if (interrupts & LPAIF_IRQ_PER(chan)) {
->> -
->> -		rv = regmap_write(map, reg, LPAIF_IRQ_PER(chan) | val);
->> +		rv = regmap_update_bits(map, reg, mask, (LPAIF_IRQ_PER(chan) | val));
->>    		if (rv) {
->>    			dev_err(soc_runtime->dev,
->>    				"error writing to irqclear reg: %d\n", rv);
->> @@ -688,7 +688,7 @@ static irqreturn_t lpass_dma_interrupt_handler(
->>    	}
->>    
->>    	if (interrupts & LPAIF_IRQ_XRUN(chan)) {
->> -		rv = regmap_write(map, reg, LPAIF_IRQ_XRUN(chan) | val);
->> +		rv = regmap_update_bits(map, reg, mask, (LPAIF_IRQ_XRUN(chan) | val));
->>    		if (rv) {
->>    			dev_err(soc_runtime->dev,
->>    				"error writing to irqclear reg: %d\n", rv);
->> @@ -700,7 +700,7 @@ static irqreturn_t lpass_dma_interrupt_handler(
->>    	}
->>    
->>    	if (interrupts & LPAIF_IRQ_ERR(chan)) {
->> -		rv = regmap_write(map, reg, LPAIF_IRQ_ERR(chan) | val);
->> +		rv = regmap_update_bits(map, reg, mask, (LPAIF_IRQ_ERR(chan) | val));
->>    		if (rv) {
->>    			dev_err(soc_runtime->dev,
->>    				"error writing to irqclear reg: %d\n", rv);
+> For perf_event_open(), I think we will just need to return the error 
+> code, and interpret the return value in userspace. I don't think there 
+> is any other way to pass error log or strings back from the kernel.
+
+Yeah, I think that's good idea.
+
 > 
-> Best regards
+> I will update this series to return the correct return value as 
+> suggested.
+
+OK, then I will update tracefs to interpret the code and put appropriate
+error message on error_log.
+
+Thank you!
+
 > 
+> 
+> Thanks,
+> Naveen
+> 
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
