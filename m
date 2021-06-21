@@ -2,231 +2,357 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 136903AE906
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 563383AE90A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229736AbhFUM2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 08:28:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:33894 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229640AbhFUM2S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 08:28:18 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 392531FB;
-        Mon, 21 Jun 2021 05:26:04 -0700 (PDT)
-Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 318143F718;
-        Mon, 21 Jun 2021 05:26:02 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 13:25:53 +0100
-From:   Beata Michalska <beata.michalska@arm.com>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>, Josh Don <joshdon@google.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [RFC] schedutil: Fix iowait boost issues for slow I/O devices
-Message-ID: <20210621122553.GA32028@e120325.cambridge.arm.com>
-References: <20210618040639.3113489-1-joel@joelfernandes.org>
- <CAEXW_YR-1M9QSicpq4YHTR0NVsv0t4QXKAvthtUNeQKNe81zjw@mail.gmail.com>
+        id S229837AbhFUMaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 08:30:06 -0400
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:51276 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229651AbhFUMaE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 08:30:04 -0400
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id B879A76350;
+        Mon, 21 Jun 2021 15:27:47 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1624278467;
+        bh=RqGHixMXSbuv9LW6i7BRGxThDmgvkwrZO3U6ObcynLE=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=u1YQH+i9YbY1bpDDFCXZOlfx75BW2qYadYG8o9URI37x86DWaRJpFdWjphkjWUWiw
+         dpIYb2vSwVogd2y+c/9Yw0Wj40FbJT2vYM1sooySIE2uZ2/pKa6pW8TQVr/Mh9p4XM
+         Pi+9Xo1cFGZjV23gqqcS7hwNG2n7kGVpI2k/O272JQyNBADBRIbyDKm6z40jTHl5Ag
+         szmX5T4VQ3z69HJ1/LK45rgId41aH7XzNjahCuizmRwUWBCceNeqs1xIFR1vJrzfoo
+         ITTWcYjB5azd1C4X/iVvWmFs/LbdMGDw76BwKvGFSzs9T/iyJgtTzt3sx9/VFX9h67
+         0daKz3XWaPgsg==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id D19B776342;
+        Mon, 21 Jun 2021 15:27:45 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.68.129) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Mon, 21
+ Jun 2021 15:27:45 +0300
+Subject: Re: [MASSMAIL KLMS] Re: [PATCH v11 11/18] virtio/vsock: dequeue
+ callback for SOCK_SEQPACKET
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+References: <20210611110744.3650456-1-arseny.krasnov@kaspersky.com>
+ <20210611111241.3652274-1-arseny.krasnov@kaspersky.com>
+ <20210618134423.mksgnbmchmow4sgh@steredhat.lan>
+ <bb323125-f802-1d16-7530-6e4f4abb00a6@kaspersky.com>
+ <20210618155555.j5p4v6j5gk2dboj3@steredhat.lan>
+ <650673dc-8b29-657e-5bbd-2cc974628ec9@kaspersky.com>
+ <20210618162509.yppkajmvcbzvidy4@steredhat.lan>
+ <31f58b17-02e6-4246-5ad8-7e8d7892ecb7@kaspersky.com>
+ <b27d3fd1-fa8a-97ff-9035-cf3f525d5866@kaspersky.com>
+ <20210621102320.4uaqaee74yynnn2q@steredhat>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <770f1afe-4ced-e080-769e-959a2ea61281@kaspersky.com>
+Date:   Mon, 21 Jun 2021 15:27:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEXW_YR-1M9QSicpq4YHTR0NVsv0t4QXKAvthtUNeQKNe81zjw@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210621102320.4uaqaee74yynnn2q@steredhat>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.64.68.129]
+X-ClientProxiedBy: hqmailmbx3.avp.ru (10.64.67.243) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 06/21/2021 12:08:25
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 164502 [Jun 21 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
+X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: kaspersky.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;lore.kernel.org:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 06/21/2021 12:12:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 21.06.2021 11:41:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/06/21 10:51:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/06/21 10:36:00 #16775443
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joel,
-On Fri, Jun 18, 2021 at 12:07:16AM -0400, Joel Fernandes wrote:
-> Forgot to CC +Beata Michalska , sorry.
-> 
-> On Fri, Jun 18, 2021 at 12:06 AM Joel Fernandes (Google)
-> <joel@joelfernandes.org> wrote:
-> >
-> > The iowait boost code is currently broken. Following are the issues and
-> > possible solitions:
-> >
-> > Issue #1: If a CPU requests iowait boost in a cluster, another CPU can
-> > go ahead and decay it very quickly if it thinks there's no new request
-> > for the iowait boosting CPU in the meanwhile. To fix this, track when
-> > the iowait boost was last applied to a policy.  This happens when
-> > should_update_freq() returns true. I have made the code wait for at
-> > least 10 ticks between 2 different iowait_boost_apply() for any decay to
-> > happen, and made it configurable via sysctl.
-> >
-> > Issue #2: If the iowait is longer than a tick, then successive iowait
-> > boost doubling does not happen. So I/O waiting tasks for slow devices
-> > never gets a boost. This is much worse if the tick rate is high since we
-> > use ticks to measure if no new I/O completion happened. To workaround
-> > this, be liberal about how many ticks should elapse before resetting the
-> > boost. I have chosen a conservative number of 20, and made it
-> > configurable via sysctl.
-> >
-> > Tested on a 6+2 ARM64 device, running dd:
-> > dd if=zeros of=/dev/null bs=1M count=64 iflag=direct
-> > Throughput improves from 180MB/s to 200MB/s (~5 percent).
-> >
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> >
-> > ---
-> > NOTE: This RFC patch is for discussion of the issues and I am posting for
-> > comments. Beata and Vince are also working on an alternate solution.
-> >
-> >  include/linux/sched/sysctl.h     |  3 +++
-> >  kernel/sched/core.c              |  3 +++
-> >  kernel/sched/cpufreq_schedutil.c | 22 +++++++++++++++++++---
-> >  kernel/sched/sched.h             |  3 +++
-> >  kernel/sysctl.c                  | 14 ++++++++++++++
-> >  5 files changed, 42 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
-> > index db2c0f34aaaf..03ac66b45406 100644
-> > --- a/include/linux/sched/sysctl.h
-> > +++ b/include/linux/sched/sysctl.h
-> > @@ -53,6 +53,9 @@ extern int sysctl_resched_latency_warn_ms;
-> >  extern int sysctl_resched_latency_warn_once;
-> >  #endif
-> >
-> > +extern unsigned int sysctl_iowait_reset_ticks;
-> > +extern unsigned int sysctl_iowait_apply_ticks;
-> > +
-> >  /*
-> >   *  control realtime throttling:
-> >   *
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index adea0b1e8036..e44985fb6a93 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -76,6 +76,9 @@ __read_mostly int sysctl_resched_latency_warn_once = 1;
-> >   */
-> >  const_debug unsigned int sysctl_sched_nr_migrate = 32;
-> >
-> > +unsigned int sysctl_iowait_reset_ticks = 20;
-> > +unsigned int sysctl_iowait_apply_ticks = 10;
-> > +
-> >  /*
-> >   * period over which we measure -rt task CPU usage in us.
-> >   * default: 1s
-> > diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-> > index 4f09afd2f321..4e4e1b0aec6c 100644
-> > --- a/kernel/sched/cpufreq_schedutil.c
-> > +++ b/kernel/sched/cpufreq_schedutil.c
-> > @@ -27,6 +27,7 @@ struct sugov_policy {
-> >         struct list_head        tunables_hook;
-> >
-> >         raw_spinlock_t          update_lock;
-> > +       u64                     last_update;
-> >         u64                     last_freq_update_time;
-> >         s64                     freq_update_delay_ns;
-> >         unsigned int            next_freq;
-> > @@ -186,9 +187,13 @@ static bool sugov_iowait_reset(struct sugov_cpu *sg_cpu, u64 time,
-> >                                bool set_iowait_boost)
-> >  {
-> >         s64 delta_ns = time - sg_cpu->last_update;
-> > +       unsigned int ticks = TICK_NSEC;
-> > +
-> > +       if (sysctl_iowait_reset_ticks)
-> > +               ticks = sysctl_iowait_reset_ticks * TICK_NSEC;
-> >
-I am not sure how that would play with power vs performance balance.
-And what about sporadic I/O wake-ups ? Wouldn't that mess too much allowing
-freq spikes for smht which is actually not I/O heavy ?
-I guess same would apply to the changes to sugov_iowait_apply.
 
+On 21.06.2021 13:23, Stefano Garzarella wrote:
+> On Mon, Jun 21, 2021 at 09:55:13AM +0300, Arseny Krasnov wrote:
+>> On 18.06.2021 19:26, Arseny Krasnov wrote:
+>>> On 18.06.2021 19:25, Stefano Garzarella wrote:
+>>>> On Fri, Jun 18, 2021 at 07:08:30PM +0300, Arseny Krasnov wrote:
+>>>>> On 18.06.2021 18:55, Stefano Garzarella wrote:
+>>>>>> On Fri, Jun 18, 2021 at 06:04:37PM +0300, Arseny Krasnov wrote:
+>>>>>>> On 18.06.2021 16:44, Stefano Garzarella wrote:
+>>>>>>>> Hi Arseny,
+>>>>>>>> the series looks great, I have just a question below about
+>>>>>>>> seqpacket_dequeue.
+>>>>>>>>
+>>>>>>>> I also sent a couple a simple fixes, it would be great if you can review
+>>>>>>>> them:
+>>>>>>>> https://lore.kernel.org/netdev/20210618133526.300347-1-sgarzare@redhat.com/
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> On Fri, Jun 11, 2021 at 02:12:38PM +0300, Arseny Krasnov wrote:
+>>>>>>>>> Callback fetches RW packets from rx queue of socket until whole record
+>>>>>>>>> is copied(if user's buffer is full, user is not woken up). This is done
+>>>>>>>>> to not stall sender, because if we wake up user and it leaves syscall,
+>>>>>>>>> nobody will send credit update for rest of record, and sender will wait
+>>>>>>>>> for next enter of read syscall at receiver's side. So if user buffer is
+>>>>>>>>> full, we just send credit update and drop data.
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>>>>>>>>> ---
+>>>>>>>>> v10 -> v11:
+>>>>>>>>> 1) 'msg_count' field added to count current number of EORs.
+>>>>>>>>> 2) 'msg_ready' argument removed from callback.
+>>>>>>>>> 3) If 'memcpy_to_msg()' failed during copy loop, there will be
+>>>>>>>>>    no next attempts to copy data, rest of record will be freed.
+>>>>>>>>>
+>>>>>>>>> include/linux/virtio_vsock.h            |  5 ++
+>>>>>>>>> net/vmw_vsock/virtio_transport_common.c | 84 +++++++++++++++++++++++++
+>>>>>>>>> 2 files changed, 89 insertions(+)
+>>>>>>>>>
+>>>>>>>>> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+>>>>>>>>> index dc636b727179..1d9a302cb91d 100644
+>>>>>>>>> --- a/include/linux/virtio_vsock.h
+>>>>>>>>> +++ b/include/linux/virtio_vsock.h
+>>>>>>>>> @@ -36,6 +36,7 @@ struct virtio_vsock_sock {
+>>>>>>>>> 	u32 rx_bytes;
+>>>>>>>>> 	u32 buf_alloc;
+>>>>>>>>> 	struct list_head rx_queue;
+>>>>>>>>> +	u32 msg_count;
+>>>>>>>>> };
+>>>>>>>>>
+>>>>>>>>> struct virtio_vsock_pkt {
+>>>>>>>>> @@ -80,6 +81,10 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
+>>>>>>>>> 			       struct msghdr *msg,
+>>>>>>>>> 			       size_t len, int flags);
+>>>>>>>>>
+>>>>>>>>> +ssize_t
+>>>>>>>>> +virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
+>>>>>>>>> +				   struct msghdr *msg,
+>>>>>>>>> +				   int flags);
+>>>>>>>>> s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
+>>>>>>>>> s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
+>>>>>>>>>
+>>>>>>>>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>>>>>>>>> index ad0d34d41444..1e1df19ec164 100644
+>>>>>>>>> --- a/net/vmw_vsock/virtio_transport_common.c
+>>>>>>>>> +++ b/net/vmw_vsock/virtio_transport_common.c
+>>>>>>>>> @@ -393,6 +393,78 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+>>>>>>>>> 	return err;
+>>>>>>>>> }
+>>>>>>>>>
+>>>>>>>>> +static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
+>>>>>>>>> +						 struct msghdr *msg,
+>>>>>>>>> +						 int flags)
+>>>>>>>>> +{
+>>>>>>>>> +	struct virtio_vsock_sock *vvs = vsk->trans;
+>>>>>>>>> +	struct virtio_vsock_pkt *pkt;
+>>>>>>>>> +	int dequeued_len = 0;
+>>>>>>>>> +	size_t user_buf_len = msg_data_left(msg);
+>>>>>>>>> +	bool copy_failed = false;
+>>>>>>>>> +	bool msg_ready = false;
+>>>>>>>>> +
+>>>>>>>>> +	spin_lock_bh(&vvs->rx_lock);
+>>>>>>>>> +
+>>>>>>>>> +	if (vvs->msg_count == 0) {
+>>>>>>>>> +		spin_unlock_bh(&vvs->rx_lock);
+>>>>>>>>> +		return 0;
+>>>>>>>>> +	}
+>>>>>>>>> +
+>>>>>>>>> +	while (!msg_ready) {
+>>>>>>>>> +		pkt = list_first_entry(&vvs->rx_queue, struct virtio_vsock_pkt, list);
+>>>>>>>>> +
+>>>>>>>>> +		if (!copy_failed) {
+>>>>>>>>> +			size_t pkt_len;
+>>>>>>>>> +			size_t bytes_to_copy;
+>>>>>>>>> +
+>>>>>>>>> +			pkt_len = (size_t)le32_to_cpu(pkt->hdr.len);
+>>>>>>>>> +			bytes_to_copy = min(user_buf_len, pkt_len);
+>>>>>>>>> +
+>>>>>>>>> +			if (bytes_to_copy) {
+>>>>>>>>> +				int err;
+>>>>>>>>> +
+>>>>>>>>> +				/* sk_lock is held by caller so no one else can dequeue.
+>>>>>>>>> +				 * Unlock rx_lock since memcpy_to_msg() may sleep.
+>>>>>>>>> +				 */
+>>>>>>>>> +				spin_unlock_bh(&vvs->rx_lock);
+>>>>>>>>> +
+>>>>>>>>> +				err = memcpy_to_msg(msg, pkt->buf, bytes_to_copy);
+>>>>>>>>> +				if (err) {
+>>>>>>>>> +					/* Copy of message failed, set flag to skip
+>>>>>>>>> +					 * copy path for rest of fragments. Rest of
+>>>>>>>>> +					 * fragments will be freed without copy.
+>>>>>>>>> +					 */
+>>>>>>>>> +					copy_failed = true;
+>>>>>>>>> +					dequeued_len = err;
+>>>>>>>> If we fail to copy the message we will discard the entire packet.
+>>>>>>>> Is it acceptable for the user point of view, or we should leave the
+>>>>>>>> packet in the queue and the user can retry, maybe with a different
+>>>>>>>> buffer?
+>>>>>>>>
+>>>>>>>> Then we can remove the packets only when we successfully copied all the
+>>>>>>>> fragments.
+>>>>>>>>
+>>>>>>>> I'm not sure make sense, maybe better to check also other
+>>>>>>>> implementations :-)
+>>>>>>>>
+>>>>>>>> Thanks,
+>>>>>>>> Stefano
+>>>>>>> Understand, i'll check it on weekend, anyway I think it is
+>>>>>>> not critical for implementation.
+>>>>>> Yep, I agree.
+>>>>>>
+>>>>>>> I have another question: may be it is useful to research for
+>>>>>>> approach where packets are not queued until whole message
+>>>>>>> is received, but copied to user's buffer thus freeing memory.
+>>>>>>> (like previous implementation, of course with solution of problem
+>>>>>>> where part of message still in queue, while reader was woken
+>>>>>>> by timeout or signal).
+>>>>>>>
+>>>>>>> I think it is better, because  in current version, sender may set
+>>>>>>> 'peer_alloc_buf' to  for example 1MB, so at receiver we get
+>>>>>>> 1MB of 'kmalloc()' memory allocated, while having user's buffer
+>>>>>>> to copy data there or drop it(if user's buffer is full). This way
+>>>>>>> won't change spec(e.g. no message id or SEQ_BEGIN will be added).
+>>>>>>>
+>>>>>>> What do You think?
+>>>>>> Yep, I see your point and it would be great, but I think the main issues
+>>>>>> to fix is how to handle a signal while we are waiting other fragments
+>>>>>> since the other peer can take unspecified time to send them.
+>>>>> What about transport callback, something like 'seqpacket_drain()' or
+>>>>>
+>>>>> 'seqpacket_drop_curr()' - when we got signal or timeout, notify transport
+>>>>>
+>>>>> to drop current message. In virtio case this will set special flag in transport,
+>>>>>
+>>>>> so on next dequeue, this flag is checked and if it is set - we drop all packets
+>>>>>
+>>>>> until EOR found. Then we can copy untouched new record.
+>>>>>
+>>>> But in this way, we will lose the entire message.
+>>>>
+>>>> Is it acceptable for seqpacket?
+>>>>
+>>>> Stefano
+>>> Hm, i'll check it. At least for unix domain sockets - it supports SEQPACKET
+>> Hello, i've checked AF_UNIX and AF_AX25 SEQPACKET implementations,
+> Great! Thanks for checking!
+>
+>> in both cases:
+>>
+>> 1) Datagram is dequeued first, then copied to user's buffer.
+>>
+>> 2) Datagram is also freed when copying to user's buffer fail
+>>
+>> (it is not reinserted back).
+>>
+>>
+>> But, in case of virtio vsock, i've got the following concern in
+>> this approach: in cases of AF_UNIX or AF_AX25 there is maximum
+>>
+>> datagram size, strictly limited by spec, so no 'setsockopt()' call allows
+>>
+>> to exceed this. Also these limits are significantly smaller that current
+>>
+>> amounts of RAM. But, in our case, there is no such limit: peer could
+>>
+>> say 'i want to use 100MB datagram', and receiver just answer 'ok',
+> The receiver sets the limit of its receive buffer and tells the 
+> transmitter that it should not exceed it. The default should be 256 KB, 
+> so IIUC this scenario can happen only if the receiver do a 
+> 'setsockopt()' increasing the limit to 100MB. Right?
+>
+> Maybe we should limit it.
 
----
-BR
-B.
+Yes, sorry, i meant this. Two peers want's to transmit 100mb message.
 
-> > -       /* Reset boost only if a tick has elapsed since last request */
-> > -       if (delta_ns <= TICK_NSEC)
-> > +       /* Reset boost only if enough ticks has elapsed since last request. */
-> > +       if (delta_ns <= ticks)
-> >                 return false;
-> >
-> >         sg_cpu->iowait_boost = set_iowait_boost ? IOWAIT_BOOST_MIN : 0;
-> > @@ -260,6 +265,7 @@ static void sugov_iowait_boost(struct sugov_cpu *sg_cpu, u64 time,
-> >   */
-> >  static void sugov_iowait_apply(struct sugov_cpu *sg_cpu, u64 time)
-> >  {
-> > +       struct sugov_policy *sg_policy = sg_cpu->sg_policy;
-> >         unsigned long boost;
-> >
-> >         /* No boost currently required */
-> > @@ -270,7 +276,9 @@ static void sugov_iowait_apply(struct sugov_cpu *sg_cpu, u64 time)
-> >         if (sugov_iowait_reset(sg_cpu, time, false))
-> >                 return;
-> >
-> > -       if (!sg_cpu->iowait_boost_pending) {
-> > +       if (!sg_cpu->iowait_boost_pending &&
-> > +           (!sysctl_iowait_apply_ticks ||
-> > +            (time - sg_policy->last_update > (sysctl_iowait_apply_ticks * TICK_NSEC)))) {
-> >                 /*
-> >                  * No boost pending; reduce the boost value.
-> >                  */
-> > @@ -449,6 +457,14 @@ sugov_update_shared(struct update_util_data *hook, u64 time, unsigned int flags)
-> >                 if (!sugov_update_next_freq(sg_policy, time, next_f))
-> >                         goto unlock;
-> >
-> > +               /*
-> > +                * Required for ensuring iowait decay does not happen too
-> > +                * quickly.  This can happen, for example, if a neighboring CPU
-> > +                * does a cpufreq update immediately after a CPU that just
-> > +                * completed I/O.
-> > +                */
-> > +               sg_policy->last_update = time;
-> > +
-> >                 if (sg_policy->policy->fast_switch_enabled)
-> >                         cpufreq_driver_fast_switch(sg_policy->policy, next_f);
-> >                 else
-> > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> > index 8f0194cee0ba..2b9c6d5091f7 100644
-> > --- a/kernel/sched/sched.h
-> > +++ b/kernel/sched/sched.h
-> > @@ -2381,6 +2381,9 @@ extern void check_preempt_curr(struct rq *rq, struct task_struct *p, int flags);
-> >  extern const_debug unsigned int sysctl_sched_nr_migrate;
-> >  extern const_debug unsigned int sysctl_sched_migration_cost;
-> >
-> > +extern unsigned int sysctl_iowait_reset_ticks;
-> > +extern unsigned int sysctl_iowait_apply_ticks;
-> > +
-> >  #ifdef CONFIG_SCHED_HRTICK
-> >
-> >  /*
-> > diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-> > index 0afbfc83157a..83f9c5223ba4 100644
-> > --- a/kernel/sysctl.c
-> > +++ b/kernel/sysctl.c
-> > @@ -1717,6 +1717,20 @@ static struct ctl_table kern_table[] = {
-> >                 .mode           = 0644,
-> >                 .proc_handler   = proc_dointvec,
-> >         },
-> > +       {
-> > +               .procname       = "iowait_reset_ticks",
-> > +               .data           = &sysctl_iowait_reset_ticks,
-> > +               .maxlen         = sizeof(unsigned int),
-> > +               .mode           = 0644,
-> > +               .proc_handler   = proc_dointvec,
-> > +       },
-> > +       {
-> > +               .procname       = "iowait_apply_ticks",
-> > +               .data           = &sysctl_iowait_apply_ticks,
-> > +               .maxlen         = sizeof(unsigned int),
-> > +               .mode           = 0644,
-> > +               .proc_handler   = proc_dointvec,
-> > +       },
-> >  #ifdef CONFIG_SCHEDSTATS
-> >         {
-> >                 .procname       = "sched_schedstats",
-> > --
-> > 2.32.0.288.g62a8d224e6-goog
-> >
+Receiver calls 'setsockopt()' and got 100mb of kmalloc() memory.
+
+May be, from point of view of these two peers its ok. But for whole system
+
+- i'm not sure. And limit - it is interesting question, what value to use as limit?
+
+>
+>>  as there is just variable assignment to setup new limit. Now, consider
+>>
+>> that there will be 10 peers, 100MB each(no one limit such request,
+>>
+>> because each socket doesn't know about each other). I think we get
+>>
+>> out-of-service in this case - all kmalloc() memory will be wasted for
+>>
+>> pending record.
+>>
+>>
+>> I still think, that approach when we copy data from packet to user's
+>>
+>> buffer without waiting EOR is better.
+> Okay, in this way we can remove the receive buffer limit and maybe if we 
+> receive a signal, we can set MSG_TRUNC, return the partially received 
+> packet to the user, but we must free any next fragments.
+>
+> So, as you proposed, we need a `seqpacket_drop()` to tell to the 
+> transport that if we were copying an uncompleted message, then it should 
+> delete the queued fragments and any others until the next EOR.
+
+Ok, i'll prepare RFC patch for this approach, i think it will be
+
+significantly smaller than merged patchset.
+
+>
+>>
+>> Also i'll rebase QEMU patch today or tomorrow.
+> Great, please CC me, this is something high priority to test 
+> SOCK_SEQPACKET with a guest.
+Ack
+>
+>>
+>> What do You Think?
+> I'm fine with both, but I slightly prefer the approach we implemented 
+> because it's easier to handle.
+>
+> Thanks,
+> Stefano
+>
+>
