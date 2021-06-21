@@ -2,197 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A92C33AF83B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 00:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C6E3AF84A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 00:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbhFUWJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 18:09:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49540 "EHLO
+        id S231653AbhFUWMy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 18:12:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbhFUWJX (ORCPT
+        with ESMTP id S230006AbhFUWMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 18:09:23 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4612CC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 15:07:08 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id g142so34404429qke.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 15:07:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fX+yJFrM+YgrVjCOj6OzIvdUjYyOhfulkOktgGq/PlY=;
-        b=FR2yKrF+DGo/PlodcKHQZ/QoUiBzbgjQ8w9XOQzM2f2VMS06xpY9/FEtc310O2Pk5T
-         asjGSjxN5FhTn++sepdMoBKSM9a4ACGM6FOeCL50e7cDgeKVx3ank19JDEf/RzbM+AGb
-         lFhIAF7pQbRcQvmQu0f3kyT3zPQCjrnQN0QxMogSeXx4qqlypUfrPs+0UXwFO4uPws/H
-         RVr77ka2Hbak8Jvkw8RG9kr4NXcnElEwq9BsEXjcVSiql9cPBhYBDHmKF99RGsV8qGx/
-         GW4sXzDY54cG3IqvXOdWEsq/BejVEpGq4b2T2DPGk+Da4Vp8gtP/FP741LxrUJ3YyjqG
-         gf9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fX+yJFrM+YgrVjCOj6OzIvdUjYyOhfulkOktgGq/PlY=;
-        b=n6fVM5e6UftwICaV1a0DzXTcmqXX3d5unwkjeI2JC4SupESyUiPBST4aDQ8hFTEZys
-         xvaGK56QffJMVv585+NAy/TInM1e1jwQsbLIQylvsJaRPGswBRVT5sDEOn6FwmWpbpUs
-         5yPF41AmRkbasSWKmVgwWgP9HIVZSMm75tlXTSv/oHuVJAMxQaodRZxgAKDxVUQhextZ
-         porF5yDz2C6Qg6JsnxanQyogSxUv4tF0nfGIprUPFBIjP7PuqblMdkGMp1l79XJ0dyyF
-         ZN6w0JHON6vfdbuM5dBxck03Jt+kCaBFvrdOd3ZHnLxEtQnEiBlzlFC0Q7VuyQxOjQUs
-         5ifg==
-X-Gm-Message-State: AOAM530n4srrrxkSwhMumXyL/fattWhwK2u/w1N7wyU3KBUrfxid2X7K
-        FT+sigTRlIixv826ZwNnBGzkFKhvoWYd+xuZangkVQ==
-X-Google-Smtp-Source: ABdhPJyB5Yo0/EbFUom3OyDoOnDiFK3t2cDAcX5WOdjF3EgSMLrT8N/yFSCNsQXVX1+jQEfUxWf66pp3UH2a2hvyVWE=
-X-Received: by 2002:a25:be44:: with SMTP id d4mr400528ybm.497.1624313227049;
- Mon, 21 Jun 2021 15:07:07 -0700 (PDT)
+        Mon, 21 Jun 2021 18:12:53 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D54C9C061574;
+        Mon, 21 Jun 2021 15:10:38 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G83cr0lZHz9sRN;
+        Tue, 22 Jun 2021 08:10:36 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624313436;
+        bh=GnzZNzlmyed4Oqjm8Dz4y6A/UQBy79JHgxdRF+4U/yg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HITEbOXkKV3JA4R2YfqYpm2lZAdV0jc0dN5GqnkZgr7M27zl69c4FZ33FRJl8pMSZ
+         c6NpY0Uhlzt5bLuRod2pLPn6CDwGOAbAqTMm7akOzJ1PrpKA/93IhAGhXFxu5x2VBO
+         M7sdbe/eOzzCuVFlwlZ7PLfvkWCvE5mS7wGZQhS8ZMYhWIUerh51uwFzbzxifQpVQz
+         QkfpjQg5P9xLrCpUbDLBW2GRfqMaV5zjmBSZoU6PBfQjDZEzI5MaN60DfOtdUHlE2+
+         FF8HWOJTFJbM24VJgwd8774dkj/OQr2YorcSvPOJG9lttCmwzBUQ+6z7sjINeT43Ep
+         7Yuf357aaiaNA==
+Date:   Tue, 22 Jun 2021 08:10:34 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     David Chinner <david@fromorbit.com>, linux-xfs@vger.kernel.org,
+        Allison Henderson <allison.henderson@oracle.com>,
+        Chandan Babu R <chandanrlinux@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commits in the xfs tree
+Message-ID: <20210622081034.472513aa@canb.auug.org.au>
+In-Reply-To: <20210621215159.GE3619569@locust>
+References: <20210621082656.59cae0d8@canb.auug.org.au>
+        <20210621171208.GD3619569@locust>
+        <20210622072719.1d312bf0@canb.auug.org.au>
+        <20210621215159.GE3619569@locust>
 MIME-Version: 1.0
-References: <20210402055745.3690281-1-varmam@google.com>
-In-Reply-To: <20210402055745.3690281-1-varmam@google.com>
-From:   Manish Varma <varmam@google.com>
-Date:   Mon, 21 Jun 2021 15:06:56 -0700
-Message-ID: <CAMyCerJ2wjdXeEP3iRaKOgXOm94rdqVkzAf5iy2cwpjMWVj0hA@mail.gmail.com>
-Subject: Re: [PATCH v3] fs: Improve eventpoll logging to stop indicting timerfd
-To:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, kernel test robot <lkp@intel.com>,
-        Kelly Rossmoyer <krossmo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/=XLiURUMYZZpPMDN6ot1ilS";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Alexander and Thomas,
+--Sig_/=XLiURUMYZZpPMDN6ot1ilS
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Please share if you have any further feedback on this patch, or if
-there's any other action required from my end to before this gets
-merged.
+Hi Darrick,
 
-Thanks,
-Manish
+On Mon, 21 Jun 2021 14:51:59 -0700 "Darrick J. Wong" <djwong@kernel.org> wr=
+ote:
+>
+> > Of course, you should not really rebase a published tree at all (unless
+> > vitally necessary) - see Documentation/maintainer/rebasing-and-merging.=
+rst =20
+>=20
+> Heh.  That ship has sailed, unfortunately.  If we /really/ care about
+> maintainers adding their own SoB tags to non-merge commits then I /have/
+> to rebase.
 
-On Thu, Apr 1, 2021 at 10:57 PM Manish Varma <varmam@google.com> wrote:
->
-> timerfd doesn't create any wakelocks, but eventpoll can.  When it does,
-> it names them after the underlying file descriptor, and since all
-> timerfd file descriptors are named "[timerfd]" (which saves memory on
-> systems like desktops with potentially many timerfd instances), all
-> wakesources created as a result of using the eventpoll-on-timerfd idiom
-> are called... "[timerfd]".
->
-> However, it becomes impossible to tell which "[timerfd]" wakesource is
-> affliated with which process and hence troubleshooting is difficult.
->
-> This change addresses this problem by changing the way eventpoll
-> wakesources are named:
->
-> 1) the top-level per-process eventpoll wakesource is now named "epoll:P"
-> (instead of just "eventpoll"), where P, is the PID of the creating
-> process.
-> 2) individual per-underlying-filedescriptor eventpoll wakesources are
-> now named "epollitemN:P.F", where N is a unique ID token and P is PID
-> of the creating process and F is the name of the underlying file
-> descriptor.
->
-> All together that should be splitted up into a change to eventpoll and
-> timerfd (or other file descriptors).
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Co-developed-by: Kelly Rossmoyer <krossmo@google.com>
-> Signed-off-by: Kelly Rossmoyer <krossmo@google.com>
-> Signed-off-by: Manish Varma <varmam@google.com>
-> ---
->  drivers/base/power/wakeup.c | 10 ++++++++--
->  fs/eventpoll.c              | 10 ++++++++--
->  include/linux/pm_wakeup.h   |  4 ++--
->  3 files changed, 18 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/base/power/wakeup.c b/drivers/base/power/wakeup.c
-> index 01057f640233..3628536c67a5 100644
-> --- a/drivers/base/power/wakeup.c
-> +++ b/drivers/base/power/wakeup.c
-> @@ -216,13 +216,19 @@ EXPORT_SYMBOL_GPL(wakeup_source_remove);
->  /**
->   * wakeup_source_register - Create wakeup source and add it to the list.
->   * @dev: Device this wakeup source is associated with (or NULL if virtual).
-> - * @name: Name of the wakeup source to register.
-> + * @fmt: format string for the wakeup source name
->   */
->  struct wakeup_source *wakeup_source_register(struct device *dev,
-> -                                            const char *name)
-> +                                            const char *fmt, ...)
->  {
->         struct wakeup_source *ws;
->         int ret;
-> +       char name[128];
-> +       va_list args;
-> +
-> +       va_start(args, fmt);
-> +       vsnprintf(name, sizeof(name), fmt, args);
-> +       va_end(args);
->
->         ws = wakeup_source_create(name);
->         if (ws) {
-> diff --git a/fs/eventpoll.c b/fs/eventpoll.c
-> index 7df8c0fa462b..7c35987a8887 100644
-> --- a/fs/eventpoll.c
-> +++ b/fs/eventpoll.c
-> @@ -312,6 +312,7 @@ struct ctl_table epoll_table[] = {
->  };
->  #endif /* CONFIG_SYSCTL */
->
-> +static atomic_t wakesource_create_id  = ATOMIC_INIT(0);
->  static const struct file_operations eventpoll_fops;
->
->  static inline int is_file_epoll(struct file *f)
-> @@ -1451,15 +1452,20 @@ static int ep_create_wakeup_source(struct epitem *epi)
->  {
->         struct name_snapshot n;
->         struct wakeup_source *ws;
-> +       pid_t task_pid;
-> +       int id;
-> +
-> +       task_pid = task_pid_nr(current);
->
->         if (!epi->ep->ws) {
-> -               epi->ep->ws = wakeup_source_register(NULL, "eventpoll");
-> +               epi->ep->ws = wakeup_source_register(NULL, "epoll:%d", task_pid);
->                 if (!epi->ep->ws)
->                         return -ENOMEM;
->         }
->
-> +       id = atomic_inc_return(&wakesource_create_id);
->         take_dentry_name_snapshot(&n, epi->ffd.file->f_path.dentry);
-> -       ws = wakeup_source_register(NULL, n.name.name);
-> +       ws = wakeup_source_register(NULL, "epollitem%d:%d.%s", id, task_pid, n.name.name);
->         release_dentry_name_snapshot(&n);
->
->         if (!ws)
-> diff --git a/include/linux/pm_wakeup.h b/include/linux/pm_wakeup.h
-> index aa3da6611533..cb91c84f6f08 100644
-> --- a/include/linux/pm_wakeup.h
-> +++ b/include/linux/pm_wakeup.h
-> @@ -95,7 +95,7 @@ extern void wakeup_source_destroy(struct wakeup_source *ws);
->  extern void wakeup_source_add(struct wakeup_source *ws);
->  extern void wakeup_source_remove(struct wakeup_source *ws);
->  extern struct wakeup_source *wakeup_source_register(struct device *dev,
-> -                                                   const char *name);
-> +                                                   const char *fmt, ...);
->  extern void wakeup_source_unregister(struct wakeup_source *ws);
->  extern int wakeup_sources_read_lock(void);
->  extern void wakeup_sources_read_unlock(int idx);
-> @@ -137,7 +137,7 @@ static inline void wakeup_source_add(struct wakeup_source *ws) {}
->  static inline void wakeup_source_remove(struct wakeup_source *ws) {}
->
->  static inline struct wakeup_source *wakeup_source_register(struct device *dev,
-> -                                                          const char *name)
-> +                                                          const char *fmt, ...)
->  {
->         return NULL;
->  }
-> --
-> 2.31.0.208.g409f899ff0-goog
->
+We do *not* care about maintainers adding their own SOB to non-merge
+commits that are in a branch that are all committed by someone else.
+As you say, that is not possible without rewriting the whole branch.
 
+--=20
+Cheers,
+Stephen Rothwell
 
--- 
-Manish Varma | Software Engineer | varmam@google.com | 650-686-0858
+--Sig_/=XLiURUMYZZpPMDN6ot1ilS
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDRDloACgkQAVBC80lX
+0Gwy4wgAjuRwKDluvG4G3yoAmqLWo/ZeKoIe9KO7pftZsDQnYkNp0Jv/1Mbk4Hvx
+6JfCcQpIOCk6KhUqtAtAUjozYS1PTyE9HD9Hp1N8oSvMz7ezMrUBKeu7OOhHK2Mi
+I+K6VsB02Y8XHaOsKw9WyeUu+cYsFS+pWxWWB2tdolxjS8ae+82HMWEh1UQxaEpa
+Z+lnzR4eapKQe9t9yy5b2EMlVGbodz/VFcxWspphnTZIt+w9ZeH6FrGhck/OJKRX
+IVX0v4GnYYF8hQq5C3tSlL7Mo5t3dv2xkJiKKDLXfb/QJa7U0h3IloZvVLDPTJy0
+ohDXpt3/Mx0nm3Si7f/iT9X1o11UoA==
+=7XIC
+-----END PGP SIGNATURE-----
+
+--Sig_/=XLiURUMYZZpPMDN6ot1ilS--
