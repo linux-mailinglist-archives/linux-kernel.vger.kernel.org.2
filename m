@@ -2,136 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D87D83AE155
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 03:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8997F3AE158
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 03:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbhFUBkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 21:40:04 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:50301 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbhFUBkD (ORCPT
+        id S230076AbhFUBlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 21:41:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55396 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229899AbhFUBlB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 21:40:03 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624239470; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=lYEMqrykgWc6HM062opojkGd6Q6iRcgqfcdWknEUeUY=;
- b=Oo7904a39D9DiVXHPDw6yG6zMumTxDglJqAud3HJj7GiF7unYDBbwOki5ym/nK9KaC8qmzvh
- pHjdNy9/LS/LQeYGETbxm1gi5SnAs1QRLbzNOQk9sCmZ4ITC7TzbQw5KQsgGAWFG9UGLm9zm
- vVcRencTqyZ54O5ddaJ+AL/mBxo=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60cfed5fe570c056194d4f81 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 21 Jun 2021 01:37:35
- GMT
-Sender: linyyuan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CAFB3C43217; Mon, 21 Jun 2021 01:37:35 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: linyyuan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EA65EC433F1;
-        Mon, 21 Jun 2021 01:37:34 +0000 (UTC)
+        Sun, 20 Jun 2021 21:41:01 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E66C061574;
+        Sun, 20 Jun 2021 18:38:47 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id s22so22788970ljg.5;
+        Sun, 20 Jun 2021 18:38:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=Ucm3wibUKjyDXQlWvsaDkSdXqDbxxo3t9VSQN89L9Co=;
+        b=BTlxdwbuRpgVcK978ahZti3mOppExd/U6mwBAaLVrjhA5uQaZGlR3lBoODkFn0HOqk
+         62jBeVq9CY95Yu1xfBJlML0yHnMuCIP/9U+Ab1rxcGbgNG9ZBxEY2ag+aPPzUGR5otjs
+         aqSBMT8ME6WaVxbcKal9RcHhIHfn45KBkAUTPbEnnqR3InZkcSxrCjBbGq5KDNR+ffI4
+         le0n5y2SK01XdEdJ8n+8QazVPH7zorDXFaK3i5reARh0KcGNht2hlOLs2i0PB5aqs5eF
+         xuEZdk8zGXAz4FjopjVehUYszCezbBEMafTDgs4vVmk/UCRcCMFJiMa+kOo2BTRrB645
+         Al3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=Ucm3wibUKjyDXQlWvsaDkSdXqDbxxo3t9VSQN89L9Co=;
+        b=WG3EEpcRlvcCbG2oWS4mEhEb/P/P8IoBOtiwtFPJJlCxl0lmqFjx6HyzJY8nQoBevQ
+         a2/5F50c5pCJiKe2mla5kBwzIHfsFUA/sPGko3Hw2gbQKHpoEkepFkBXTksCusDw1zxD
+         y+Iua/MVdMJsN4XCmLPvXBvxDysmIpuPJgzFF5sVq6M4mmwy3jGg0iqanp8BU9uW3Is8
+         oiWOuznOx7Tngc4msmDdLPmnU3y01EjooBTIqnVwjJVo2HkOH8n+MfWr1GAq131CTedA
+         SgRYHjrcpTh54YK4G5efX3rDLSAoYOEaB8SCSZ5diZ+vyjqyCmKSf3KbAe3SEJItAdJL
+         vdDA==
+X-Gm-Message-State: AOAM5302RsQ+EDj2Zp0Qbk7n1TqYipk94LRSgN3AKQRTuU5j6EZ8S6ka
+        Nx5tz+Q4cDIKDFQ/9WClmrFTiuLyjoLJ5cPML/o=
+X-Google-Smtp-Source: ABdhPJxp1+mKBu76yS7r8Uyat0furanFf8Nvs2vaKaHNhbKYe6J5BU4yUx53dWxGthf7PEvqTxoM3LEIdEllBCywSug=
+X-Received: by 2002:a2e:8190:: with SMTP id e16mr19511865ljg.81.1624239525427;
+ Sun, 20 Jun 2021 18:38:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 21 Jun 2021 09:37:34 +0800
-From:   linyyuan@codeaurora.org
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jack Pham <jackp@codeaurora.org>
-Subject: Re: [PATCH v3 1/2] usb: udc: core: hide struct usb_gadget_driver to
- gadget driver
-In-Reply-To: <20210620134743.GA377492@rowland.harvard.edu>
-References: <20210619154309.52127-1-linyyuan@codeaurora.org>
- <20210619154309.52127-2-linyyuan@codeaurora.org>
- <20210620021337.GA361976@rowland.harvard.edu>
- <42b3ebc2316495328e2d0061af81ef17@codeaurora.org>
- <018a4e222c2c3d6f5ca63b5f2036f8d8@codeaurora.org>
- <20210620134743.GA377492@rowland.harvard.edu>
-Message-ID: <98c2729c25442d6c66131d17cabdda27@codeaurora.org>
-X-Sender: linyyuan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210320045720.11872-1-chgokhl@gmail.com> <CAPDyKFqXtKPngfnQZXXaF=rvqw0=nWzDc7P++QxNHPwGHHSxUA@mail.gmail.com>
+In-Reply-To: <CAPDyKFqXtKPngfnQZXXaF=rvqw0=nWzDc7P++QxNHPwGHHSxUA@mail.gmail.com>
+Reply-To: chgokhl@163.com
+From:   hieagle <chgokhl@gmail.com>
+Date:   Mon, 21 Jun 2021 09:38:34 +0800
+Message-ID: <CAMjpFAUTsei-PWLDdM+_78qXTo=QFdw-Wbgo9QA2Jnss+i4yRA@mail.gmail.com>
+Subject: Re: [PATCH] mmc: core: Mark mmc_host device with pm_runtime_no_callbacks
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kehuanlin@fishsemi.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-06-20 21:47, Alan Stern wrote:
-> On Sun, Jun 20, 2021 at 11:53:18AM +0800, linyyuan@codeaurora.org 
-> wrote:
->> On 2021-06-20 11:46, linyyuan@codeaurora.org wrote:
->> > On 2021-06-20 10:13, Alan Stern wrote:
->> > > On Sat, Jun 19, 2021 at 11:43:08PM +0800, Linyu Yuan wrote:
->> > > > currently most gadget driver have a pointer to save
->> > > > struct usb_gadget_driver from upper layer,
->> > > > it allow upper layer set and unset of the pointer.
->> > > >
->> > > > there is race that upper layer unset the pointer first,
->> > > > but gadget driver use the pointer later,
->> > > > and it cause system crash due to NULL pointer access.
->> > >
->> > > This race has already been fixed in Greg's usb-next branch.  See
->> > > commit
->> > > 7dc0c55e9f30 ("USB: UDC core: Add udc_async_callbacks gadget op") and
->> > > following commits 04145a03db9d ("USB: UDC: Implement
->> > > udc_async_callbacks in dummy-hcd") and b42e8090ba93 ("USB: UDC:
->> > > Implement udc_async_callbacks in net2280").
->> > >
->> > thanks, this is better, lower driver only need change several places.
->> > > You just need to write a corresponding patch implementing the
->> > > async_callbacks op for dwc3.
->> > yes, i will do.
->> > >
->> Alan, i want to discuss your suggestion again in b42e8090ba93 ("USB: 
->> UDC:
->> Implement udc_async_callbacks in net2280")
->> 
->> +                       if (dev->async_callbacks) { ----> if CPU1 saw 
->> this
->> is true
->> +                               spin_unlock(&dev->lock); ---> CPU2 get 
->> lock
->> after this unlock,
->> it will set async_callbacks to false, then follow call also crash, 
->> right ?
->> +                               tmp = dev->driver->setup(&dev->gadget,
->> &u.r);
->> +                               spin_lock(&dev->lock);
->> +                       }
-> 
-> No, this is okay.  The reason is because usb_gadget_remove_driver (CPU2
-> in your example) does this:
-> 
->         usb_gadget_disable_async_callbacks(udc);
->         if (udc->gadget->irq)
->                 synchronize_irq(udc->gadget->irq);
->         udc->driver->unbind(udc->gadget);
->         usb_gadget_udc_stop(udc);
-> 
-> The synchronize_irq call will make CPU2 wait until CPU1 has finished
-> handling the interrupt for the setup packet.  The system won't crash,
-> because dev->driver->setup will be called before unbind and udc_stop
-> instead of after.
-still several question,
-1. how about suspend calll dev->driver->suspend ?
-2. will 04145a03db9d ("USB: UDC: Implement udc_async_callbacks in 
-dummy-hcd") backport to LTS branch ?
-3. how about coding style ? so following code
-if (foo->gadget_driver && foo->gadget_driver->resume)
-change to
-if (foo->asnyc_callbacks && foo->gadget_driver->resume)
-> 
-> Alan Stern
+Sorry, I don't receive the reply email in my gmail.
+
+Normally the mmc_host's power.disable_depth is large than zero, the
+rpm_resume(mmc:0001) will not be called recursively for parent. This is
+the most case.
+
+Although the mmc class device never calls pm_runtime_enable() directly,
+there are still some cases as below to call pm_runtime_enable(), which
+may cause it's power.disable_depth decremented to zero.
+  case1: device_resume_early->pm_runtime_enable
+  case2: device_resume->pm_runtime_enable
+
+Anything that can go wrong will go wrong. Unfortunately we meet the case.
+If you trigger to set the mmc_host's power.disable_depth value to zero
+after mmc suspended, you can find the issue.
+
+In our platform the mmc device's parent list is as below:
+     mmc0:0001->mmc_host mmc0->fa630000.mmc->soc.
+The rpm_resume call trace is as below in our scenario:
+
+rpm_resume(mmc0:0001)
+|
+if (!parent && dev->parent) //true
+if (!parent->power.disable_depth
+   && !parent->power.ignore_children) //true
+rpm_resume(parent, 0) --->  rpm_resume(mmc_host, 0)
+|                           |
+|                           callback =3D RPM_GET_CALLBACK(mmc_host, ...) =
+=3D NULL
+|                           retval =3D rpm_callback(callback, mmc_host) =3D=
+ -ENOSYS
+|                           |
+|                           return retval =3D -ENOSYS
+if (retval) goto out; //skip rpm_callback()
+return retval =3D -ENOSYS
+
+The scenario is rare, but anything that can go wrong will go wrong.
+The patch can enhance the code to avoid this scenario.
+
+Ulf Hansson <ulf.hansson@linaro.org> =E4=BA=8E2021=E5=B9=B43=E6=9C=8822=E6=
+=97=A5=E5=91=A8=E4=B8=80 =E4=B8=8B=E5=8D=886:26=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Sat, 20 Mar 2021 at 05:57, kehuanlin <chgokhl@gmail.com> wrote:
+> >
+> > The rpm_resume() will call parent's resume callback recursively.
+> > Since mmc_host has no its own pm_runtime callbacks, the mmc devices
+> > may fail to resume (-ENOSYS in rpm_callback) sometimes. Mark mmc_host
+> > device with pm_runtime_no_callbacks can fix the issue.
+>
+> Can you please elaborate more on this? What do you mean by "sometimes"?
+>
+> More precisely, how do you trigger the rpm_callback() for mmc class
+> device to return -ENOSYS?
+>
+> Don't get me wrong, the patch is fine, but I want to understand if it
+> actually solves a problem for you - or that it's better considered as
+> an optimization?
+>
+> Kind regards
+> Uffe
+>
+> >
+> > Signed-off-by: kehuanlin <chgokhl@gmail.com>
+> > ---
+> >  drivers/mmc/core/host.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/mmc/core/host.c b/drivers/mmc/core/host.c
+> > index 9b89a91b6b47..177bebd9a6c4 100644
+> > --- a/drivers/mmc/core/host.c
+> > +++ b/drivers/mmc/core/host.c
+> > @@ -15,6 +15,7 @@
+> >  #include <linux/of.h>
+> >  #include <linux/of_gpio.h>
+> >  #include <linux/pagemap.h>
+> > +#include <linux/pm_runtime.h>
+> >  #include <linux/pm_wakeup.h>
+> >  #include <linux/export.h>
+> >  #include <linux/leds.h>
+> > @@ -480,6 +481,7 @@ struct mmc_host *mmc_alloc_host(int extra, struct d=
+evice *dev)
+> >         host->class_dev.class =3D &mmc_host_class;
+> >         device_initialize(&host->class_dev);
+> >         device_enable_async_suspend(&host->class_dev);
+> > +       pm_runtime_no_callbacks(&host->class_dev);
+> >
+> >         if (mmc_gpio_alloc(host)) {
+> >                 put_device(&host->class_dev);
+> > --
+> > 2.30.0
+> >
