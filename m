@@ -2,185 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2AC3AECAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:40:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA17D3AECB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:45:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbhFUPnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 11:43:00 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59881 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230229AbhFUPm7 (ORCPT
+        id S230161AbhFUPrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 11:47:52 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:52055 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230028AbhFUPrv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 11:42:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624290044;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8Go9MX9URt78M8jN2i7z0+0HeUDLUit2ibTF2M8h6Wk=;
-        b=NjnSK2XFoMKHsbnPtpns0/2GfpIFbaER5sjNRu/wiRmCj1ZCxwtSk4K2qOh+xisPPmIoSl
-        sectfmHVRUBDV0IzznSHbxyo8c1jGLfJTUIIi+MhMX6XGMK6RJLKG3r6skoQB3oWEc/lOw
-        Og34AZM0+WhmP+WVYAzQ9RyUasLgbKw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-263-5tRt-NQMPAe3z-m_7VMt0A-1; Mon, 21 Jun 2021 11:40:38 -0400
-X-MC-Unique: 5tRt-NQMPAe3z-m_7VMt0A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 19094800C78;
-        Mon, 21 Jun 2021 15:40:37 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E6AB860916;
-        Mon, 21 Jun 2021 15:40:31 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH v3 2/2] netfs: fix test for whether we can skip read when
- writing beyond EOF
-From:   David Howells <dhowells@redhat.com>
-To:     linux-cachefs@redhat.com, linux-afs@lists.infradead.org
-Cc:     Andrew W Elble <aweits@rit.edu>, Jeff Layton <jlayton@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        ceph-devel@vger.kernel.org, dhowells@redhat.com,
-        Jeff Layton <jlayton@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 21 Jun 2021 16:40:31 +0100
-Message-ID: <162429003110.2770648.16870905479999978447.stgit@warthog.procyon.org.uk>
-In-Reply-To: <162429000639.2770648.6368710175435880749.stgit@warthog.procyon.org.uk>
-References: <162429000639.2770648.6368710175435880749.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Mon, 21 Jun 2021 11:47:51 -0400
+X-UUID: 4d3fb1b3cf1e47ee99897b930936ce1e-20210621
+X-UUID: 4d3fb1b3cf1e47ee99897b930936ce1e-20210621
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <yee.lee@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1944458588; Mon, 21 Jun 2021 23:45:34 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 21 Jun 2021 23:45:32 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 21 Jun 2021 23:45:32 +0800
+From:   <yee.lee@mediatek.com>
+To:     <andreyknvl@gmail.com>
+CC:     <wsd_upstream@mediatek.com>, Yee Lee <yee.lee@mediatek.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "open list:KASAN" <kasan-dev@googlegroups.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Subject: [PATCH] kasan: unpoison use memset to init unaligned object size
+Date:   Mon, 21 Jun 2021 23:44:41 +0800
+Message-ID: <20210621154442.18463-1-yee.lee@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
+From: Yee Lee <yee.lee@mediatek.com>
 
-It's not sufficient to skip reading when the pos is beyond the EOF.
-There may be data at the head of the page that we need to fill in
-before the write.
+This patch adds a memset to initialize object of unaligned size.
+Duing to the MTE granulrity, the integrated initialization using
+hwtag instruction will force clearing out bytes in granular size,
+which may cause undesired effect, such as overwriting to the redzone
+of SLUB debug. In this patch, for the unaligned object size, function
+uses memset to initailize context instead of the hwtag instruction.
 
-Add a new helper function that corrects and clarifies the logic of
-when we can skip reads, and have it only zero out the part of the page
-that won't have data copied in for the write.
-
-Finally, don't set the page Uptodate after zeroing. It's not up to date
-since the write data won't have been copied in yet.
-
-[DH made the following changes:
-
- - Prefixed the new function with "netfs_".
-
- - Don't call zero_user_segments() for a full-page write.
-
- - Altered the beyond-last-page check to avoid a DIV instruction and got
-   rid of then-redundant zero-length file check.
-]
-
-Fixes: e1b1240c1ff5f ("netfs: Add write_begin helper")
-Reported-by: Andrew W Elble <aweits@rit.edu>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-cc: ceph-devel@vger.kernel.org
-Link: https://lore.kernel.org/r/20210613233345.113565-1-jlayton@kernel.org/
-Link: https://lore.kernel.org/r/162367683365.460125.4467036947364047314.stgit@warthog.procyon.org.uk/ # v1
-Link: https://lore.kernel.org/r/162391826758.1173366.11794946719301590013.stgit@warthog.procyon.org.uk/ # v2
+Signed-off-by: Yee Lee <yee.lee@mediatek.com>
 ---
+ mm/kasan/kasan.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
- fs/netfs/read_helper.c |   49 +++++++++++++++++++++++++++++++++++-------------
- 1 file changed, 36 insertions(+), 13 deletions(-)
-
-diff --git a/fs/netfs/read_helper.c b/fs/netfs/read_helper.c
-index 725614625ed4..0b6cd3b8734c 100644
---- a/fs/netfs/read_helper.c
-+++ b/fs/netfs/read_helper.c
-@@ -1011,12 +1011,42 @@ int netfs_readpage(struct file *file,
- }
- EXPORT_SYMBOL(netfs_readpage);
+diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+index 8f450bc28045..d8faa64614b7 100644
+--- a/mm/kasan/kasan.h
++++ b/mm/kasan/kasan.h
+@@ -387,8 +387,11 @@ static inline void kasan_unpoison(const void *addr, size_t size, bool init)
  
--static void netfs_clear_thp(struct page *page)
-+/**
-+ * netfs_skip_page_read - prep a page for writing without reading first
-+ * @page: page being prepared
-+ * @pos: starting position for the write
-+ * @len: length of write
-+ *
-+ * In some cases, write_begin doesn't need to read at all:
-+ * - full page write
-+ * - write that lies in a page that is completely beyond EOF
-+ * - write that covers the the page from start to EOF or beyond it
-+ *
-+ * If any of these criteria are met, then zero out the unwritten parts
-+ * of the page and return true. Otherwise, return false.
-+ */
-+static bool netfs_skip_page_read(struct page *page, loff_t pos, size_t len)
- {
--	unsigned int i;
-+	struct inode *inode = page->mapping->host;
-+	loff_t i_size = i_size_read(inode);
-+	size_t offset = offset_in_thp(page, pos);
-+
-+	/* Full page write */
-+	if (offset == 0 && len >= thp_size(page))
-+		return true;
-+
-+	/* pos beyond last page in the file */
-+	if (pos - offset >= i_size)
-+		goto zero_out;
-+
-+	/* Write that covers from the start of the page to EOF or beyond */
-+	if (offset == 0 && (pos + len) >= i_size)
-+		goto zero_out;
- 
--	for (i = 0; i < thp_nr_pages(page); i++)
--		clear_highpage(page + i);
-+	return false;
-+zero_out:
-+	zero_user_segments(page, 0, offset, offset + len, thp_size(page));
-+	return true;
+ 	if (WARN_ON((unsigned long)addr & KASAN_GRANULE_MASK))
+ 		return;
++	if (init && ((unsigned long)size & KASAN_GRANULE_MASK)) {
++		init = false;
++		memset((void *)addr, 0, size);
++	}
+ 	size = round_up(size, KASAN_GRANULE_SIZE);
+-
+ 	hw_set_mem_tag_range((void *)addr, size, tag, init);
  }
  
- /**
-@@ -1024,7 +1054,7 @@ static void netfs_clear_thp(struct page *page)
-  * @file: The file to read from
-  * @mapping: The mapping to read from
-  * @pos: File position at which the write will begin
-- * @len: The length of the write in this page
-+ * @len: The length of the write (may extend beyond the end of the page chosen)
-  * @flags: AOP_* flags
-  * @_page: Where to put the resultant page
-  * @_fsdata: Place for the netfs to store a cookie
-@@ -1061,8 +1091,6 @@ int netfs_write_begin(struct file *file, struct address_space *mapping,
- 	struct inode *inode = file_inode(file);
- 	unsigned int debug_index = 0;
- 	pgoff_t index = pos >> PAGE_SHIFT;
--	int pos_in_page = pos & ~PAGE_MASK;
--	loff_t size;
- 	int ret;
- 
- 	DEFINE_READAHEAD(ractl, file, NULL, mapping, index);
-@@ -1090,13 +1118,8 @@ int netfs_write_begin(struct file *file, struct address_space *mapping,
- 	 * within the cache granule containing the EOF, in which case we need
- 	 * to preload the granule.
- 	 */
--	size = i_size_read(inode);
- 	if (!ops->is_cache_enabled(inode) &&
--	    ((pos_in_page == 0 && len == thp_size(page)) ||
--	     (pos >= size) ||
--	     (pos_in_page == 0 && (pos + len) >= size))) {
--		netfs_clear_thp(page);
--		SetPageUptodate(page);
-+	    netfs_skip_page_read(page, pos, len)) {
- 		netfs_stat(&netfs_n_rh_write_zskip);
- 		goto have_page_no_wait;
- 	}
-
+-- 
+2.18.0
 
