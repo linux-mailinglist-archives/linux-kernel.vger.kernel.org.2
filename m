@@ -2,170 +2,319 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7CA3AE389
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 08:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660173AE38F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 08:55:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229789AbhFUGym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 02:54:42 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:34289 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229576AbhFUGyl (ORCPT
+        id S229943AbhFUG5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 02:57:34 -0400
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:39271 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFUG5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 02:54:41 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id D34615C009A;
-        Mon, 21 Jun 2021 02:52:27 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Mon, 21 Jun 2021 02:52:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=fVBNFAIC+o0Qr3V3e8/8B3LGO4o
-        YUVLp/J0au7zPfBE=; b=ittxmqKzyd8JOXXwLwhsQNyioIk3W5OYIYElIsRQDM8
-        j1AsckJs6sMPdFKBOrTC/lGqRYy2P7Y+b89FCnrYt94+L6+6oEFBi6VKsIuZqJRm
-        Jd8lzf/VybhlJ+VXgXw5S785XPxl9diUvCNPpnaCulfXFE0JVeDxu58I9tCYRsg/
-        5jScc79UU7sWlEgHXbzxxsl3Nq9QHbK+qGS3O5EegsnBVkUiia8M4iAyiAOmHgz7
-        r559G3hhjtcqh3/LdW7X/1ubGM7l67BivHZLyD3Soxnvv7C2C+0YyOM0L/8JHut6
-        5yijizcbMs3fOvkMDr+s/ZeU/9YrTkKNQ7mUbKkaiFw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=fVBNFA
-        IC+o0Qr3V3e8/8B3LGO4oYUVLp/J0au7zPfBE=; b=UFfUp98ti3YvtEm9W/KNaZ
-        KLgcY0YN/a3aNF2W30+7L+XTaO3HkUYI+7/8CMOP2G/b54haBhSkin3WCUdKAuFx
-        uiNQycpaUkICMJ3uUTCf/ktPP6xGIFtJh0AVU8WKwwLiaR5FOotmEc9NryqURrYs
-        MMTaZn6f2t+xXQqPhkDxCLkBgr1PiVoXuTBdsgTSIAnB22x4YOv6U3MCL8L3SKIH
-        S1I2z9U0CFPQeCtZtkLOxiI7OiqFnXZPsCPdWr51TtRjCv4bdwKJGJv2IVEf3hb9
-        nraLlT9FXSPNB+PlKaHhR1KF2qv5cDK0/VD7N5mX+thrvKMHEYF+ndtbr9fnEA5Q
-        ==
-X-ME-Sender: <xms:KzfQYEdZR89eG--dyT8Wldog9pF6KUDftlg6dfz4Y8TYqW2V31FAmw>
-    <xme:KzfQYGPpAINwsgr3m353vHiVsczYG2efaYftf-3OdGgsx91gdtIWemRELVSfaUR_5
-    sjgCPKPM2fNWw>
-X-ME-Received: <xmr:KzfQYFiptpHsKTkvsfatCpvYi_9zQp4BFDvI8v-DxVZjfHc1IoHWMIENxxXQr2uMp8zWP9s5SIbEHEy6Wv2laPWFdU1U4H24>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeefkedguddtkecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttd
-    ertddttddvnecuhfhrohhmpefirhgvghcumffjuceoghhrvghgsehkrhhorghhrdgtohhm
-    qeenucggtffrrghtthgvrhhnpeettdeffeegffeuveeffefftedvuefhiedvvdehjedvfe
-    etvddvteethfeiiefgudenucffohhmrghinhepghhithhhuhgsrdgtohhmpdhgihhthhhu
-    sghushgvrhgtohhnthgvnhhtrdgtohhmpddtuddrohhrghenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:KzfQYJ-W7thFG3TAWaMUrZZC1zD4zPaWV0A1ROX7MLNJ3gmrW80g4Q>
-    <xmx:KzfQYAvAwLFi-ZAhwUNuI6IAA_AL5WvN5ByuTI20jm2FboxHPG9AUg>
-    <xmx:KzfQYAFDpvBhhG_AMYZaCLHvovke9mvRjfBpKs_HU0w0YeWrwlIVbQ>
-    <xmx:KzfQYCJZ0HBjlfyKwHi5nxtFU_OrqYjlTNFzdGNjc5ZiZBY_m7_51w>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 21 Jun 2021 02:52:27 -0400 (EDT)
-Date:   Mon, 21 Jun 2021 08:52:24 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Jhih-Ming Huang <fbihjmeric@gmail.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [fbihjmeric@gmail.com: Re:
- drivers/staging/rtl8723bs/core/rtw_security.c:95:9: warning: variable 'crc'
- set but not used]
-Message-ID: <YNA3KAxTeXsb35/W@kroah.com>
-References: <20210621063041.v4u35pxgglgwn2go@gmail.com>
+        Mon, 21 Jun 2021 02:57:32 -0400
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id B3FFA75BE8;
+        Mon, 21 Jun 2021 09:55:16 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1624258516;
+        bh=gQqYERlcjzRal/bJN/6CthI5JwsFfeBb4jYg5GsbTlI=;
+        h=Subject:From:To:Message-ID:Date:MIME-Version:Content-Type;
+        b=nkUz4A+hYiybb3qMlhr9WPidX5zbiTuit92liZ/jrjce5I/nFqiWvMMCH0jgA9YZf
+         4AOZ8byRXY0RZAO9BDIirJuDQHiHrgwNUqW4iCBOBdUdK/2n1ifGyynr9hAAwparM9
+         vVex4O1wUluSpSFDBaKEt/1rqdl5hTidkoQitLi/jXIvTGLd+/zCsGrQUNN+FpWUpP
+         W9SftWHQP23d9uWFDg3hLxkzjNJSgXBtlXdBW8LfdPPO4R8xdqEnS79lROx8Lm37u6
+         ztwszbPGU0GQ1wtHw0okTwzRNXBd+TcyvljuJ3wTfv+mGGkUf1kqCGBC4pb+j6WVAv
+         RD0dE2uJsSQQw==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id E6D8675BA6;
+        Mon, 21 Jun 2021 09:55:15 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.68.129) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Mon, 21
+ Jun 2021 09:55:14 +0300
+Subject: Re: [MASSMAIL KLMS] Re: [PATCH v11 11/18] virtio/vsock: dequeue
+ callback for SOCK_SEQPACKET
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+References: <20210611110744.3650456-1-arseny.krasnov@kaspersky.com>
+ <20210611111241.3652274-1-arseny.krasnov@kaspersky.com>
+ <20210618134423.mksgnbmchmow4sgh@steredhat.lan>
+ <bb323125-f802-1d16-7530-6e4f4abb00a6@kaspersky.com>
+ <20210618155555.j5p4v6j5gk2dboj3@steredhat.lan>
+ <650673dc-8b29-657e-5bbd-2cc974628ec9@kaspersky.com>
+ <20210618162509.yppkajmvcbzvidy4@steredhat.lan>
+ <31f58b17-02e6-4246-5ad8-7e8d7892ecb7@kaspersky.com>
+Message-ID: <b27d3fd1-fa8a-97ff-9035-cf3f525d5866@kaspersky.com>
+Date:   Mon, 21 Jun 2021 09:55:13 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621063041.v4u35pxgglgwn2go@gmail.com>
+In-Reply-To: <31f58b17-02e6-4246-5ad8-7e8d7892ecb7@kaspersky.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.64.68.129]
+X-ClientProxiedBy: hqmailmbx3.avp.ru (10.64.67.243) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 06/21/2021 06:31:51
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 164494 [Jun 20 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 448 448 71fb1b37213ce9a885768d4012c46ac449c77b17
+X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;lore.kernel.org:7.1.1;kaspersky.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 06/21/2021 06:35:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 21.06.2021 5:14:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/06/21 03:57:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/06/21 05:44:00 #16774393
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 02:30:41PM +0800, Jhih-Ming Huang wrote:
-> On Sat, Jun 19, 2021 at 6:27 PM kernel test robot <lkp@intel.com> wrote:
-> >
-> > tree:   https://github.com/0day-ci/linux/commits/UPDATE-20210619-155350/Jhih-Ming-Huang/rtw_security-fix-cast-to-restricted-__le32/20210616-131056
-> > head:   ed0359e3fa64928e48021387a694f211bc840ff7
-> > commit: ed0359e3fa64928e48021387a694f211bc840ff7 rtw_security: fix cast to restricted __le32
-> > date:   3 hours ago
-> > config: sh-allmodconfig (attached as .config)
-> > compiler: sh4-linux-gcc (GCC) 9.3.0
-> > reproduce (this is a W=1 build):
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # https://github.com/0day-ci/linux/commit/ed0359e3fa64928e48021387a694f211bc840ff7
-> >         git remote add linux-review https://github.com/0day-ci/linux
-> >         git fetch --no-tags linux-review UPDATE-20210619-155350/Jhih-Ming-Huang/rtw_security-fix-cast-to-restricted-__le32/20210616-131056
-> >         git checkout ed0359e3fa64928e48021387a694f211bc840ff7
-> >         # save the attached .config to linux build tree
-> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=sh
-> >
-> > If you fix the issue, kindly add following tag as appropriate
-> > Reported-by: kernel test robot <lkp@intel.com>
-> >
-> > All warnings (new ones prefixed by >>):
-> >
-> >    drivers/staging/rtl8723bs/core/rtw_security.c: In function 'rtw_wep_decrypt':
-> > >> drivers/staging/rtl8723bs/core/rtw_security.c:95:9: warning: variable 'crc' set but not used [-Wunused-but-set-variable]
-> >       95 |  __le32 crc;
-> >          |         ^~~
-> >
-> > Kconfig warnings: (for reference only)
-> >    WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
-> >    Depends on SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC && HAS_DMA
-> >    Selected by
-> >    - SND_ATMEL_SOC_SSC && SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC
-> >    - SND_ATMEL_SOC_SSC_PDC && SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC && ATMEL_SSC
-> >
-> >
-> > vim +/crc +95 drivers/staging/rtl8723bs/core/rtw_security.c
-> >
-> >     91
-> >     92  void rtw_wep_decrypt(struct adapter  *padapter, u8 *precvframe)
-> >     93  {
-> >     94          /*  exclude ICV */
-> >   > 95          __le32 crc;
-> >     96          signed int      length;
-> >     97          u32 keylength;
-> >     98          u8 *pframe, *payload, *iv, wepkey[16];
-> >     99          u8  keyindex;
-> >    100          struct  rx_pkt_attrib    *prxattrib = &(((union recv_frame *)precvframe)->u.hdr.attrib);
-> >    101          struct  security_priv *psecuritypriv = &padapter->securitypriv;
-> >    102          struct arc4_ctx *ctx = &psecuritypriv->recv_arc4_ctx;
-> >    103
-> >    104          pframe = (unsigned char *)((union recv_frame *)precvframe)->u.hdr.rx_data;
-> >    105
-> >    106          /* start to decrypt recvframe */
-> >    107          if ((prxattrib->encrypt == _WEP40_) || (prxattrib->encrypt == _WEP104_)) {
-> >    108                  iv = pframe+prxattrib->hdrlen;
-> >    109                  /* keyindex =(iv[3]&0x3); */
-> >    110                  keyindex = prxattrib->key_index;
-> >    111                  keylength = psecuritypriv->dot11DefKeylen[keyindex];
-> >    112                  memcpy(&wepkey[0], iv, 3);
-> >    113                  /* memcpy(&wepkey[3], &psecuritypriv->dot11DefKey[psecuritypriv->dot11PrivacyKeyIndex].skey[0], keylength); */
-> >    114                  memcpy(&wepkey[3], &psecuritypriv->dot11DefKey[keyindex].skey[0], keylength);
-> >    115                  length = ((union recv_frame *)precvframe)->u.hdr.len-prxattrib->hdrlen-prxattrib->iv_len;
-> >    116
-> >    117                  payload = pframe+prxattrib->iv_len+prxattrib->hdrlen;
-> >    118
-> >    119                  /* decrypt payload include icv */
-> >    120                  arc4_setkey(ctx, wepkey, 3 + keylength);
-> >    121                  arc4_crypt(ctx, payload, payload,  length);
-> >    122
-> >    123                  /* calculate icv and compare the icv */
-> >    124                  crc = cpu_to_le32(~crc32_le(~0, payload, length - 4));
-> >    125
-> >    126          }
-> >    127  }
-> >    128
-> >
-> > ---
-> > 0-DAY CI Kernel Test Service, Intel Corporation
-> > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> 
-> This warning was introduced by my pull request,
-> but I am fixing the sparse warning and the unused variable was
-> declared in the previous commit.
-> The original author did not compare the crc and payload in
-> rtw_wep_decrypt, so the variable 'crc' was set but not used.
-> 
-> Should I fix this in my pull request?
 
-We do not do "pull requests" in the kernel development process for
-normal changes.  Just send a patch like normal for this and I will be
-glad to apply it to my trees and send it onward.
+On 18.06.2021 19:26, Arseny Krasnov wrote:
+> On 18.06.2021 19:25, Stefano Garzarella wrote:
+>> On Fri, Jun 18, 2021 at 07:08:30PM +0300, Arseny Krasnov wrote:
+>>> On 18.06.2021 18:55, Stefano Garzarella wrote:
+>>>> On Fri, Jun 18, 2021 at 06:04:37PM +0300, Arseny Krasnov wrote:
+>>>>> On 18.06.2021 16:44, Stefano Garzarella wrote:
+>>>>>> Hi Arseny,
+>>>>>> the series looks great, I have just a question below about
+>>>>>> seqpacket_dequeue.
+>>>>>>
+>>>>>> I also sent a couple a simple fixes, it would be great if you can review
+>>>>>> them:
+>>>>>> https://lore.kernel.org/netdev/20210618133526.300347-1-sgarzare@redhat.com/
+>>>>>>
+>>>>>>
+>>>>>> On Fri, Jun 11, 2021 at 02:12:38PM +0300, Arseny Krasnov wrote:
+>>>>>>> Callback fetches RW packets from rx queue of socket until whole record
+>>>>>>> is copied(if user's buffer is full, user is not woken up). This is done
+>>>>>>> to not stall sender, because if we wake up user and it leaves syscall,
+>>>>>>> nobody will send credit update for rest of record, and sender will wait
+>>>>>>> for next enter of read syscall at receiver's side. So if user buffer is
+>>>>>>> full, we just send credit update and drop data.
+>>>>>>>
+>>>>>>> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>>>>>>> ---
+>>>>>>> v10 -> v11:
+>>>>>>> 1) 'msg_count' field added to count current number of EORs.
+>>>>>>> 2) 'msg_ready' argument removed from callback.
+>>>>>>> 3) If 'memcpy_to_msg()' failed during copy loop, there will be
+>>>>>>>    no next attempts to copy data, rest of record will be freed.
+>>>>>>>
+>>>>>>> include/linux/virtio_vsock.h            |  5 ++
+>>>>>>> net/vmw_vsock/virtio_transport_common.c | 84 +++++++++++++++++++++++++
+>>>>>>> 2 files changed, 89 insertions(+)
+>>>>>>>
+>>>>>>> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+>>>>>>> index dc636b727179..1d9a302cb91d 100644
+>>>>>>> --- a/include/linux/virtio_vsock.h
+>>>>>>> +++ b/include/linux/virtio_vsock.h
+>>>>>>> @@ -36,6 +36,7 @@ struct virtio_vsock_sock {
+>>>>>>> 	u32 rx_bytes;
+>>>>>>> 	u32 buf_alloc;
+>>>>>>> 	struct list_head rx_queue;
+>>>>>>> +	u32 msg_count;
+>>>>>>> };
+>>>>>>>
+>>>>>>> struct virtio_vsock_pkt {
+>>>>>>> @@ -80,6 +81,10 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
+>>>>>>> 			       struct msghdr *msg,
+>>>>>>> 			       size_t len, int flags);
+>>>>>>>
+>>>>>>> +ssize_t
+>>>>>>> +virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
+>>>>>>> +				   struct msghdr *msg,
+>>>>>>> +				   int flags);
+>>>>>>> s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
+>>>>>>> s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
+>>>>>>>
+>>>>>>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>>>>>>> index ad0d34d41444..1e1df19ec164 100644
+>>>>>>> --- a/net/vmw_vsock/virtio_transport_common.c
+>>>>>>> +++ b/net/vmw_vsock/virtio_transport_common.c
+>>>>>>> @@ -393,6 +393,78 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+>>>>>>> 	return err;
+>>>>>>> }
+>>>>>>>
+>>>>>>> +static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
+>>>>>>> +						 struct msghdr *msg,
+>>>>>>> +						 int flags)
+>>>>>>> +{
+>>>>>>> +	struct virtio_vsock_sock *vvs = vsk->trans;
+>>>>>>> +	struct virtio_vsock_pkt *pkt;
+>>>>>>> +	int dequeued_len = 0;
+>>>>>>> +	size_t user_buf_len = msg_data_left(msg);
+>>>>>>> +	bool copy_failed = false;
+>>>>>>> +	bool msg_ready = false;
+>>>>>>> +
+>>>>>>> +	spin_lock_bh(&vvs->rx_lock);
+>>>>>>> +
+>>>>>>> +	if (vvs->msg_count == 0) {
+>>>>>>> +		spin_unlock_bh(&vvs->rx_lock);
+>>>>>>> +		return 0;
+>>>>>>> +	}
+>>>>>>> +
+>>>>>>> +	while (!msg_ready) {
+>>>>>>> +		pkt = list_first_entry(&vvs->rx_queue, struct virtio_vsock_pkt, list);
+>>>>>>> +
+>>>>>>> +		if (!copy_failed) {
+>>>>>>> +			size_t pkt_len;
+>>>>>>> +			size_t bytes_to_copy;
+>>>>>>> +
+>>>>>>> +			pkt_len = (size_t)le32_to_cpu(pkt->hdr.len);
+>>>>>>> +			bytes_to_copy = min(user_buf_len, pkt_len);
+>>>>>>> +
+>>>>>>> +			if (bytes_to_copy) {
+>>>>>>> +				int err;
+>>>>>>> +
+>>>>>>> +				/* sk_lock is held by caller so no one else can dequeue.
+>>>>>>> +				 * Unlock rx_lock since memcpy_to_msg() may sleep.
+>>>>>>> +				 */
+>>>>>>> +				spin_unlock_bh(&vvs->rx_lock);
+>>>>>>> +
+>>>>>>> +				err = memcpy_to_msg(msg, pkt->buf, bytes_to_copy);
+>>>>>>> +				if (err) {
+>>>>>>> +					/* Copy of message failed, set flag to skip
+>>>>>>> +					 * copy path for rest of fragments. Rest of
+>>>>>>> +					 * fragments will be freed without copy.
+>>>>>>> +					 */
+>>>>>>> +					copy_failed = true;
+>>>>>>> +					dequeued_len = err;
+>>>>>> If we fail to copy the message we will discard the entire packet.
+>>>>>> Is it acceptable for the user point of view, or we should leave the
+>>>>>> packet in the queue and the user can retry, maybe with a different
+>>>>>> buffer?
+>>>>>>
+>>>>>> Then we can remove the packets only when we successfully copied all the
+>>>>>> fragments.
+>>>>>>
+>>>>>> I'm not sure make sense, maybe better to check also other
+>>>>>> implementations :-)
+>>>>>>
+>>>>>> Thanks,
+>>>>>> Stefano
+>>>>> Understand, i'll check it on weekend, anyway I think it is
+>>>>> not critical for implementation.
+>>>> Yep, I agree.
+>>>>
+>>>>> I have another question: may be it is useful to research for
+>>>>> approach where packets are not queued until whole message
+>>>>> is received, but copied to user's buffer thus freeing memory.
+>>>>> (like previous implementation, of course with solution of problem
+>>>>> where part of message still in queue, while reader was woken
+>>>>> by timeout or signal).
+>>>>>
+>>>>> I think it is better, because  in current version, sender may set
+>>>>> 'peer_alloc_buf' to  for example 1MB, so at receiver we get
+>>>>> 1MB of 'kmalloc()' memory allocated, while having user's buffer
+>>>>> to copy data there or drop it(if user's buffer is full). This way
+>>>>> won't change spec(e.g. no message id or SEQ_BEGIN will be added).
+>>>>>
+>>>>> What do You think?
+>>>> Yep, I see your point and it would be great, but I think the main issues
+>>>> to fix is how to handle a signal while we are waiting other fragments
+>>>> since the other peer can take unspecified time to send them.
+>>> What about transport callback, something like 'seqpacket_drain()' or
+>>>
+>>> 'seqpacket_drop_curr()' - when we got signal or timeout, notify transport
+>>>
+>>> to drop current message. In virtio case this will set special flag in transport,
+>>>
+>>> so on next dequeue, this flag is checked and if it is set - we drop all packets
+>>>
+>>> until EOR found. Then we can copy untouched new record.
+>>>
+>> But in this way, we will lose the entire message.
+>>
+>> Is it acceptable for seqpacket?
+>>
+>> Stefano
+> Hm, i'll check it. At least for unix domain sockets - it supports SEQPACKET
 
-thanks,
+Hello, i've checked AF_UNIX and AF_AX25 SEQPACKET implementations,
 
-greg k-h
+in both cases:
+
+1) Datagram is dequeued first, then copied to user's buffer.
+
+2) Datagram is also freed when copying to user's buffer fail
+
+(it is not reinserted back).
+
+
+But, in case of virtio vsock, i've got the following concern in
+
+this approach: in cases of AF_UNIX or AF_AX25 there is maximum
+
+datagram size, strictly limited by spec, so no 'setsockopt()' call allows
+
+to exceed this. Also these limits are significantly smaller that current
+
+amounts of RAM. But, in our case, there is no such limit: peer could
+
+say 'i want to use 100MB datagram', and receiver just answer 'ok',
+
+ as there is just variable assignment to setup new limit. Now, consider
+
+that there will be 10 peers, 100MB each(no one limit such request,
+
+because each socket doesn't know about each other). I think we get
+
+out-of-service in this case - all kmalloc() memory will be wasted for
+
+pending record.
+
+
+I still think, that approach when we copy data from packet to user's
+
+buffer without waiting EOR is better.
+
+
+Also i'll rebase QEMU patch today or tomorrow.
+
+
+What do You Think?
+
+>>
