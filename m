@@ -2,203 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3913AF913
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 378E63AF91C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:18:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231648AbhFUXSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 19:18:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36984 "EHLO
+        id S231739AbhFUXVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 19:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230130AbhFUXSv (ORCPT
+        with ESMTP id S231680AbhFUXVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 19:18:51 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDC2BC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:16:36 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id x22so7865652pll.11
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:16:36 -0700 (PDT)
+        Mon, 21 Jun 2021 19:21:07 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6317C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:18:52 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id a2-20020ad441c20000b0290251bb08ce61so14506405qvq.19
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:18:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=o38KzSQf9bk0w4H1R0wVtOAX95R/HHsV6qoW4ydXw+4=;
-        b=Y52wWIe+5PSkZscV4l4zndjTceFusvppikvaZXHKCtsxUv1L8hByVc26U04LgF7QIg
-         XpKk5xmflRzxBgkJxQPYwo6/5Adnf6f8dnNwNCWvDJ3TGa9xMuGXF5/rkQJIVL6bYj/8
-         IshpVIuUWX6RQhpEKrbFTPmDDGCs2260NApQqevq9I2GR7csiOovxNE6ItezXrtaCqWB
-         rbNLX3FkKHgZsIb1aLqGLZLazCt6SLL0cOEGFiv6XD3UHRnVvANYDC7z8oAi7aENWxJj
-         HMVSKkNPecKOW6tDlvGmXMRpSdp8C0XGajSKA8U2wcZ/zpogBS679AAIQDZhl1TGbLFo
-         73VQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=EuIcmSw5KPdPoDKod6astx8c5RujtZWXcqBmQqWg68Y=;
+        b=Rl2f+IVFqR4FXBxc4YAH9IgPYaLlI0oYo4anxkuLff4uba+ORx0p7N9irHcgqyQ+9M
+         hmodRj/mKufcXYD11r2VSZ5hDKLyMvdLLLmobp3968Q8QfOqiRIMD5DcevQhK1EJCWRO
+         n7YxcGY/61Wgt9WwsRSZ6z3H5yImCbKhYTohLAKNS6nyOkyj4osBjSTdvq78hw1W4QDD
+         gvjHiARt6uW5acWJ7Fc8Qw3tqcAV19/d9odEv831VqpKPsvASivqCZg122/+MYAhLcWF
+         fQIf8W7RIKXiSmMlSEyeiG7Yu61ytddyLALZ9ISgnTlBZNRvqmVKf3y9TnrsFOaIwbNE
+         v2Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=o38KzSQf9bk0w4H1R0wVtOAX95R/HHsV6qoW4ydXw+4=;
-        b=BevGpK57/p1f/CE8GrGEsBt+qfPciGXGX9/e22xNM5+ZFjFqkhUWUT+X4z/xL9Kn7w
-         utCZdRqSGtz3H+wg8K5GGK4apJf+llZ4N5UJwVNN83e2Hbky7XS+0w2+7W4lsVgmn9zj
-         +oJPVQlPOVBmBWFSOD8urr51Gr8LmgfChrbL9bKCxR+IhKlGxun7VNJme4uOEdLk5zeD
-         lSAQzFKYIXvlxm1WK9+is4qhy0jGXX/aGBKZNmT7lFNDPe1d3YdnL4tJjlHFJYLBcyei
-         8tN1lFsZDAk0tkOrkKS3Et7P8WLHOzsoMEPSbeuLTl842N66Gy8CD9O9CmnM98y/Emm/
-         hanQ==
-X-Gm-Message-State: AOAM53084yJykYrcKI+8LkmLNvTYEhuxccB7XZpXSWHhBlYDvdNLk7cm
-        YPUgJaH1FM+X8cREiHGTKQ/2TQ==
-X-Google-Smtp-Source: ABdhPJzvZNwZ5ttzMbcP5RAWrMfd1TwySMuBxZi2MrHX6mW1Virrq+UUkD7969Grh1YJRoBbIrn48A==
-X-Received: by 2002:a17:902:c1cd:b029:121:3424:fcd5 with SMTP id c13-20020a170902c1cdb02901213424fcd5mr19098076plc.77.1624317396394;
-        Mon, 21 Jun 2021 16:16:36 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id z17sm16635456pfq.218.2021.06.21.16.16.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 16:16:35 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 17:16:33 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH v2 1/1] rpmsg: ctrl: Introduce new
- RPMSG_CREATE/RELEASE_DEV_IOCTL controls
-Message-ID: <20210621231633.GC980846@p14s>
-References: <20210621125800.27696-1-arnaud.pouliquen@foss.st.com>
- <20210621125800.27696-2-arnaud.pouliquen@foss.st.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621125800.27696-2-arnaud.pouliquen@foss.st.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=EuIcmSw5KPdPoDKod6astx8c5RujtZWXcqBmQqWg68Y=;
+        b=q9wutJ4DHJ0rBkJ+OSlig84Kpv5oPjKfITqyMBvWZLqVzZnWeXRQkBL5yM4SBD0N6n
+         gZeYjiwVVH9t0h1Z8a0A0NpmJLN3QBMaungG3AlsLTXCiE1q1ahK/VhXhK/ykGQlgpW7
+         TsfOCmh+G3QZEUpJZj2iIxQThx9723g7UfPVqdVFUWKACTghCd21vfdFXS8tjVGd4mvI
+         iM5on1wN96M5TAlWGWxpptAyrBGrz2PFBV50Q/zstDz30AYw0IZa51gf4zo4ycDxlAIv
+         lWIl9DQzzHw7/j1+Lxiz/FXHyDUa6vTHQR1e8nHLA59ZYTQc0AoGllFh3KVWP1kw1lf/
+         XkGw==
+X-Gm-Message-State: AOAM5318/WdwhfQrRsBp3IGcxyps0qnjegt9J83Wq9WuZDndeT1eoyM2
+        A1ouDz/jrCQzdUf8TShw8Xrov7eSAKk/os0R1lk=
+X-Google-Smtp-Source: ABdhPJwXV3AaUVj/zGKNnPsDnVTnkVqvyKrfM+eSMD0ScbK7e4btiOXMggCYiTefAq5RSnQMsJmgFBuwAnoE5CW3OBg=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:dfd:ebf9:4ec7:1783])
+ (user=ndesaulniers job=sendgmr) by 2002:a25:3749:: with SMTP id
+ e70mr789717yba.53.1624317531803; Mon, 21 Jun 2021 16:18:51 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 16:18:19 -0700
+Message-Id: <20210621231822.2848305-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
+Subject: [PATCH v2 0/3] no_profile fn attr and Kconfig for GCOV+PGO
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Bill Wendling <wcw@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
+        Martin Liska <mliska@suse.cz>, Marco Elver <elver@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Fangrui Song <maskray@google.com>, linux-doc@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        johannes.berg@intel.com, linux-toolchains@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 02:58:00PM +0200, Arnaud Pouliquen wrote:
-> Allow the user space application to create and release an rpmsg device
-> by adding RPMSG_CREATE_DEV_IOCTL and RPMSG_RELEASE_DEV_IOCTL ioctrls to
-> the /dev/rpmsg_ctrl interface
-> 
-> The RPMSG_CREATE_DEV_IOCTL Ioctl can be used to instantiate a local rpmsg
-> device.
-> Depending on the back-end implementation, the associated rpmsg driver is
-> probed and a NS announcement can be sent to the remote processor.
-> 
-> The RPMSG_RELEASE_DEV_IOCTL allows the user application to release a
-> rpmsg device created either by the remote processor or with the
-> RPMSG_CREATE_DEV_IOCTL call.
-> Depending on the back-end implementation, the associated rpmsg driver is
-> removed and a NS destroy rpmsg can be sent to the remote processor.
-> 
-> Suggested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> ---
->  drivers/rpmsg/rpmsg_ctrl.c | 37 +++++++++++++++++++++++++++++++++----
->  include/uapi/linux/rpmsg.h | 10 ++++++++++
->  2 files changed, 43 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
-> index eeb1708548c1..cb19e32d05e1 100644
-> --- a/drivers/rpmsg/rpmsg_ctrl.c
-> +++ b/drivers/rpmsg/rpmsg_ctrl.c
-> @@ -23,6 +23,7 @@
->  #include <uapi/linux/rpmsg.h>
->  
->  #include "rpmsg_char.h"
-> +#include "rpmsg_internal.h"
->  
->  static dev_t rpmsg_major;
->  
-> @@ -37,11 +38,13 @@ static DEFINE_IDA(rpmsg_minor_ida);
->   * @rpdev:	underlaying rpmsg device
->   * @cdev:	cdev for the ctrl device
->   * @dev:	device for the ctrl device
-> + * @ctrl_lock:	serialize the ioctrls.
->   */
->  struct rpmsg_ctrldev {
->  	struct rpmsg_device *rpdev;
->  	struct cdev cdev;
->  	struct device dev;
-> +	struct mutex ctrl_lock;
->  };
->  
->  static int rpmsg_ctrldev_open(struct inode *inode, struct file *filp)
-> @@ -70,9 +73,8 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
->  	void __user *argp = (void __user *)arg;
->  	struct rpmsg_endpoint_info eptinfo;
->  	struct rpmsg_channel_info chinfo;
-> -
-> -	if (cmd != RPMSG_CREATE_EPT_IOCTL)
-> -		return -EINVAL;
-> +	struct rpmsg_device *rpdev;
-> +	int ret = 0;
->  
->  	if (copy_from_user(&eptinfo, argp, sizeof(eptinfo)))
->  		return -EFAULT;
-> @@ -82,7 +84,33 @@ static long rpmsg_ctrldev_ioctl(struct file *fp, unsigned int cmd,
->  	chinfo.src = eptinfo.src;
->  	chinfo.dst = eptinfo.dst;
->  
-> -	return rpmsg_chrdev_eptdev_create(ctrldev->rpdev, &ctrldev->dev, chinfo);
-> +	mutex_lock(&ctrldev->ctrl_lock);
+The kernel has been using noinstr for correctness to politely request
+that the compiler avoid adding various forms of instrumentation to
+certain functions.
 
-Have you been able to verify the VFS layer doesn't take care of serializing
-ioctl() and file accesses in general?  I did a quick search in the drivers/
-directory and the vast majority of implementations don't use a lock.
+GCOV and PGO can both instrument functions, yet the function attribute
+to disable such instrumentation (no_profile_instrument_function) was not
+being used to suppress such implementation. Also, clang only just
+recently gained support for no_profile_instrument_function. GCC has
+supported that since 7.1+.
 
-Thanks,
-Mathieu
+Add a new function annotation __no_profile that expands to
+__attribute__((__no_profile_instrument_function__)) and Kconfig values
+CC_HAS_NO_PROFILE_FN_ATTR and ARCH_WANTS_NO_INSTR. Make GCOV and PGO
+depend on either !ARCH_WANTS_NO_INSTR or CC_HAS_NO_PROFILE_FN_ATTR.
 
-> +	switch (cmd) {
-> +	case RPMSG_CREATE_EPT_IOCTL:
-> +		ret = rpmsg_chrdev_eptdev_create(ctrldev->rpdev, &ctrldev->dev, chinfo);
-> +		break;
-> +
-> +	case RPMSG_CREATE_DEV_IOCTL:
-> +		rpdev = rpmsg_create_channel(ctrldev->rpdev, &chinfo);
-> +		if (!rpdev) {
-> +			dev_err(&ctrldev->dev, "failed to create %s channel\n", chinfo.name);
-> +			ret = -ENXIO;
-> +		}
-> +		break;
-> +
-> +	case RPMSG_RELEASE_DEV_IOCTL:
-> +		ret = rpmsg_release_channel(ctrldev->rpdev, &chinfo);
-> +		if (ret)
-> +			dev_err(&ctrldev->dev, "failed to release %s channel (%d)\n",
-> +				chinfo.name, ret);
-> +		break;
-> +
-> +	default:
-> +		ret = -EINVAL;
-> +	}
-> +	mutex_unlock(&ctrldev->ctrl_lock);
-> +
-> +	return ret;
->  };
->  
->  static const struct file_operations rpmsg_ctrldev_fops = {
-> @@ -119,6 +147,7 @@ static int rpmsg_ctrldev_probe(struct rpmsg_device *rpdev)
->  	device_initialize(dev);
->  	dev->parent = &rpdev->dev;
->  
-> +	mutex_init(&ctrldev->ctrl_lock);
->  	cdev_init(&ctrldev->cdev, &rpmsg_ctrldev_fops);
->  	ctrldev->cdev.owner = THIS_MODULE;
->  
-> diff --git a/include/uapi/linux/rpmsg.h b/include/uapi/linux/rpmsg.h
-> index f5ca8740f3fb..1637e68177d9 100644
-> --- a/include/uapi/linux/rpmsg.h
-> +++ b/include/uapi/linux/rpmsg.h
-> @@ -33,4 +33,14 @@ struct rpmsg_endpoint_info {
->   */
->  #define RPMSG_DESTROY_EPT_IOCTL	_IO(0xb5, 0x2)
->  
-> +/**
-> + * Instantiate a new local rpmsg service device.
-> + */
-> +#define RPMSG_CREATE_DEV_IOCTL	_IOW(0xb5, 0x3, struct rpmsg_endpoint_info)
-> +
-> +/**
-> + * Release a local rpmsg device.
-> + */
-> +#define RPMSG_RELEASE_DEV_IOCTL	_IOW(0xb5, 0x4, struct rpmsg_endpoint_info)
-> +
->  #endif
-> -- 
-> 2.17.1
-> 
+Changes V1 -> V2:
+* s/no_profile/no_profile_instrument_function/
+* fix trailing double underscore on GCC 4 define, as per Fangrui+Miguel.
+* Pick up Fangrui + Miguel's reviewed-by tag.
+* Add link to GCC's doc.
+* Fix clang's doc format; will appear once clang-13 is released.
+* New cleanup patch 2/3. Orthogonal to the series, but while I'm here...
+
+Base is
+https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/log/?h=for-next/clang/pgo.
+
+Nick Desaulniers (3):
+  compiler_attributes.h: define __no_profile, add to noinstr
+  compiler_attributes.h: cleanups for GCC 4.9+
+  Kconfig: add ARCH_WANTS_NO_INSTR+CC_HAS_NO_PROFILE_FN_ATTR, depend on
+    for GCOV and PGO
+
+ arch/Kconfig                        |  7 +++++++
+ arch/arm64/Kconfig                  |  1 +
+ arch/s390/Kconfig                   |  1 +
+ arch/x86/Kconfig                    |  1 +
+ include/linux/compiler_attributes.h | 19 ++++++++++++++++---
+ include/linux/compiler_types.h      |  2 +-
+ init/Kconfig                        |  3 +++
+ kernel/gcov/Kconfig                 |  1 +
+ kernel/pgo/Kconfig                  |  3 ++-
+ 9 files changed, 33 insertions(+), 5 deletions(-)
+
+
+base-commit: 4356bc4c0425c81e204f561acf4dd0095544a6cb
+-- 
+2.32.0.288.g62a8d224e6-goog
+
