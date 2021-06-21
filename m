@@ -2,135 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BD6A3AE7D2
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 13:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3A63AE7C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbhFULDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 07:03:05 -0400
-Received: from mail-bn7nam10on2059.outbound.protection.outlook.com ([40.107.92.59]:39809
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229651AbhFULDE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 07:03:04 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UeqhlItdJ4FD4S8ULuktmEKDroJLh8rMGmlVSiS+8D1wrjCpgD+ChLyDafNgJ2VL2eed8J6QnUoyB9tmfuL4BnQwaqxNublLvmD9E3pGL8MliLfe3lwcZr1WY7+GnYomxsI/7YsGNa1yc6kS3shXI33CfYNNoh6s/qf8nrzbvt35DkJfCjbvbHRty63GAg87zrN0Om7PJGGJUnUTOYolZwVORVxVWLC/0pK/WjSfYK249qhB2phgiGsqRLSxON9AgkYepxG+C259wQgHo9Eb7l/8pG+SJaaCYkySQ2ZDl++YXG66lQp+47lexGPu80DRRlXJXCUyt8gRxu/RmYrAlg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dWgzBPoO0VEBMZZcZZZNzJSB6SNd368MUG1O+/jsDBY=;
- b=OgizJGvvCINBxIlXUJ5N37MDbew1yGzGBH4upfTHU43QIWHFAVOdhEflkVRdzEgo4+pkXHEEIBOrFdKAy4hQy0TQV0iv/YdrryfNFYqKN9DdEYXwpy2gIiTBMAX9+HplnsBixzVgG9nrF6djjJDCW8MdKkqqHJN1IRMY4zauAKyi3ZW8VHH8qh8tLshfvxg2R4/SX90fHvUOrYPOpJ2bn2rfMBEUDSYSKIBPLLocuConsJByHTtRN5N9pvOPIWrZIzy4LDBv9W2uSWCi7FrA0q1SrNH5hdROAvqaexwslmi9rjOacQAFJbi63rEgRb5PCawMFjo4zBuL2LCNezOLLw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=arndb.de smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
+        id S230061AbhFULBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 07:01:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229641AbhFULBt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 07:01:49 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99B90C061574;
+        Mon, 21 Jun 2021 03:59:34 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id h2so4797683edt.3;
+        Mon, 21 Jun 2021 03:59:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dWgzBPoO0VEBMZZcZZZNzJSB6SNd368MUG1O+/jsDBY=;
- b=KHsmKRs+Y8A8AoPiSnsj5ByCALitWd+/yQ8idOdiIM3cIakh19TL/WLJqxyk1gJKCtpQrY0+kawZFLpe7KdpyhBjXs9dwuwsdtY4ITKk67enm3IuH4AyXu3ToVJGdCSEhvwFlV4+tI81HBdgyc/hah6MJW+L/rfZm8xH3PJoWfo=
-Received: from SN4PR0201CA0070.namprd02.prod.outlook.com
- (2603:10b6:803:20::32) by SA0PR02MB7179.namprd02.prod.outlook.com
- (2603:10b6:806:e6::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Mon, 21 Jun
- 2021 11:00:47 +0000
-Received: from SN1NAM02FT0030.eop-nam02.prod.protection.outlook.com
- (2603:10b6:803:20:cafe::84) by SN4PR0201CA0070.outlook.office365.com
- (2603:10b6:803:20::32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21 via Frontend
- Transport; Mon, 21 Jun 2021 11:00:47 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; arndb.de; dkim=none (message not signed)
- header.d=none;arndb.de; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT0030.mail.protection.outlook.com (10.97.5.194) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4242.16 via Frontend Transport; Mon, 21 Jun 2021 11:00:47 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 21 Jun 2021 04:00:46 -0700
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Mon, 21 Jun 2021 04:00:46 -0700
-Envelope-to: arnd@arndb.de,
- linux@armlinux.org.uk,
- robh+dt@kernel.org,
- linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org,
- michael@walle.cc
-Received: from [172.30.17.109] (port=45816)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1lvHfa-0006R2-4q; Mon, 21 Jun 2021 04:00:46 -0700
-Subject: Re: [PATCH 0/3] ARM: add NAND support to Ebang EBAZ4205 board
-To:     Michael Walle <michael@walle.cc>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <20210616155437.27378-1-michael@walle.cc>
-From:   Michal Simek <michal.simek@xilinx.com>
-Message-ID: <407a3259-6526-4c7d-6bec-bce1fd91ea01@xilinx.com>
-Date:   Mon, 21 Jun 2021 13:00:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mQxqixLK5rjqMvfwNndLJU9kpq2UUMss0IdRDqE4Nyc=;
+        b=YxZQAdUUkLMQ2M2mYkUfSjDJ+SB9P+64CPFg3uK5hM1E/C6K8NmCvjI6fxDHBrBoe5
+         Lq7cJ78pC6eJoQL/iMslWnzhkAluJRJRKlpXrcHJnAUBY4LLp/MkPZU7sYhkLRFqBEPl
+         0uRZq36q9MKx0pTNYdZeSNZVZbFJ3t7QfDM1AYpc6XcFG9PqXhyyIxdCa5GYj1KE51gX
+         CERelqx0rdtwMVSq94UjUjpVTG8H0AvhhKV8qm464N8P+VLib7JBniwt5Gxc5ZaGVkw8
+         lQDzEpiPMwHEZaSZ1PmHvgWOeshz1XWPFZ9zBPPsG67Jh3+Her1tkKd/DUdiLjAtUvJM
+         joSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mQxqixLK5rjqMvfwNndLJU9kpq2UUMss0IdRDqE4Nyc=;
+        b=njVvNvWBWgtdZ4Zc1jjo/ZF+k+3FXSkkPtDGHEfIuLP+Cg8Q9uCnfWcBTBgSvJIMSs
+         spH7Wi3g8Umr3zNOgt84mH79d/Mtcq9IJBJTn/n8zKcsV2lXDfYqv1X6M5DaRDhtHH9/
+         UiXbotFVdvKNAhqNhmlFpb35u/y8F/X7RL0y1WBOBRnstIadJxdk3WaxEMiWw0P1bgsy
+         YXt+l0h06hjYfLNU0p9Un549obS2D+RHtnaIa78e28HEEss+KGkwPDp6d1hLDpjx15Gy
+         oi04iO7HjJv1IAtdz234B6p0Abkz1bhwS3rUpN06abQEvh9Si9QhlUeGy799pSpvdvXa
+         OXjQ==
+X-Gm-Message-State: AOAM531ZSS2Xkjy6w9PUPPET8Jm84LZJ+AnSx4Dx8slY5KBeboBZiaJo
+        bRz/+oQ1c4cgV4bUWeq8B7w=
+X-Google-Smtp-Source: ABdhPJygm2GSM+8x1mA8AMigPK6YI6mwpzcBwg47WwZ0gmXyzshqwUTK6KliNuLXNpTFL6h27g8Z5Q==
+X-Received: by 2002:a50:fd1a:: with SMTP id i26mr6912086eds.181.1624273173262;
+        Mon, 21 Jun 2021 03:59:33 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id c15sm7817001edu.19.2021.06.21.03.59.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 03:59:32 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 13:01:28 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Subject: Re: [PATCH v18 0/2] Add memory bandwidth management to NVIDIA Tegra
+ DRM driver
+Message-ID: <YNBxiFXMS9rfT93c@orome.fritz.box>
+References: <20210601042108.1942-1-digetx@gmail.com>
+ <8accfe1e-fc48-21ca-f7c6-bd2d60162e6d@gmail.com>
+ <50912a57-aa43-58b0-02d2-6928578d6286@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210616155437.27378-1-michael@walle.cc>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1018ae16-6607-4d29-5ba6-08d934a3d2fb
-X-MS-TrafficTypeDiagnostic: SA0PR02MB7179:
-X-Microsoft-Antispam-PRVS: <SA0PR02MB71798951979468DB542C4565C60A9@SA0PR02MB7179.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: myJ6uEt7vuBaI0s10qG6WU5zIKzNE2fxqJHLYCI9+8Xh8bvGriABwAdVhqbaaYeAUBTSaojXwRGyWpRFbc/lSkAOd87p7SXH6kHCWMR009Tmo5MT6KGFZmu0+GzkKkEOJgS0yN77ZklBmq4ibRBsKbPiO5ytQzdMM2MfEqdCfhUMMWf2MkmFqmlcqd6YzjCrfsI3oW1RqS1mLRMhiXMw/kdlQSL+NcnIsvyt4IJkoIN3bZci1KOlTuVyscbGt+qw5yJwBU2KFbkdXWZwcSAPXmzumMonYiwNK9s819K20Of9sj93+IWirOOPJGxjG3p3/19L1wbL6KI6qL7nR+3ke1UgjjtW1kDLA3awOaucViJ/FyT4JkbWbQXmpPIrQwrcN0hDJE3SOxgBSfZReZje4GnCdiYLV72Ey9Yuzzco8xm+gL3dF5r/7ljd/8n3kA1QNCcAplONmlEAKKfYCh1Z5l+twTrAUDp2eRm8k5jBPvIQlw8r31BP/GxaJyLOvGP1XRB/1TEnM69U1CKQI3pLk7un3i0nX1vMuM2sbTtIcFidQTIaaW5FExPXnqBcLvl6c7ToJZBuO3XgiFjsRG7Hj11VZpM0s88KwBvs4TrSIbDpXMi/Az7BqSzKU/XUofsXdBvjvbokh0jKdThvL24Ivoa08GfyitKOfxrGFTQ+gtHWXZzn6SftUV7JVlWljfF3glsSph9FKcWitw34ch7DcOuikj1OhTqtqWixoNuGxw4=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(396003)(136003)(376002)(39850400004)(36840700001)(46966006)(36860700001)(36756003)(26005)(4744005)(82310400003)(316002)(47076005)(6666004)(8676002)(2906002)(5660300002)(54906003)(4326008)(8936002)(31686004)(336012)(53546011)(70206006)(70586007)(356005)(478600001)(36906005)(31696002)(82740400003)(110136005)(7636003)(186003)(44832011)(426003)(9786002)(2616005)(50156003)(43740500002)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2021 11:00:47.2798
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1018ae16-6607-4d29-5ba6-08d934a3d2fb
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0030.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR02MB7179
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="hHIGeTg/3zFQR6Mt"
+Content-Disposition: inline
+In-Reply-To: <50912a57-aa43-58b0-02d2-6928578d6286@gmail.com>
+User-Agent: Mutt/2.0.7 (481f3800) (2021-05-04)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--hHIGeTg/3zFQR6Mt
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 6/16/21 5:54 PM, Michael Walle wrote:
-> Thanks to Miguel, there is finally a NAND driver for this SoC and we can
-> now support the NAND device on the EBAZ4205.
-> 
-> Btw. I'm not sure how often the PL35x NAND controller is used in SoC and
-> if it qualifies to add it to the multi_v7 defconfig.
-> 
-> Michael Walle (3):
->   ARM: configs: multi_v7: enable PL35x NAND controller
->   ARM: dts: zynq: add NAND flash controller node
->   ARM: dts: ebaz4205: enable NAND support
-> 
->  arch/arm/boot/dts/zynq-7000.dtsi    | 21 +++++++++++++++++++++
->  arch/arm/boot/dts/zynq-ebaz4205.dts | 12 ++++++++++++
->  arch/arm/configs/multi_v7_defconfig |  1 +
->  3 files changed, 34 insertions(+)
-> 
+On Mon, Jun 21, 2021 at 07:19:15AM +0300, Dmitry Osipenko wrote:
+> 07.06.2021 01:40, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > 01.06.2021 07:21, Dmitry Osipenko =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >> This series adds memory bandwidth management to the NVIDIA Tegra DRM d=
+river,
+> >> which is done using interconnect framework. It fixes display corruptio=
+n that
+> >> happens due to insufficient memory bandwidth.
+> >>
+> >> Changelog:
+> >>
+> >> v18: - Moved total peak bandwidth from CRTC state to plane state and r=
+emoved
+> >>        dummy plane bandwidth state initialization from T186+ plane hub=
+=2E This
+> >>        was suggested by Thierry Reding to v17.
+> >>
+> >>      - I haven't done anything about the cursor's plane bandwidth which
+> >>        doesn't contribute to overlapping bandwidths for a small sized
+> >>        window because it works okay as-is.
+> >=20
+> > Thierry, will you take these patches for 5.14?
+> >=20
+>=20
+> The display controller does _NOT_WORK_ properly without bandwidth
+> management.
 
-Queue.
+That's surprising. So either it has never worked before (which I think
+I'd know) or something has caused this regression recently. In the
+latter case we need to identify what that was and revert (or fix) it.
 
-Thanks,
-Michal
+> Can we get this patch into 5.14? What is the problem?
+
+There was not enough time to review and test this, so I didn't feel
+comfortable picking it up so close to the -rc6 cut-off. I plan to pick
+this up early in the v5.14 release cycle and target v5.15.
+
+Thierry
+
+--hHIGeTg/3zFQR6Mt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmDQcYQACgkQ3SOs138+
+s6HM5Q//eNrrfdv1Eha+kmKoOay07IzXHohR56bITStHor3M0uzvNVZaSCcADjl4
+FpHEAIfe2FuS41Y81iUZqV3PmRNXloneCz4vzgFVkmz8poeq5aPwiQlsSPEzRawt
+UJbyYSGTUhtM8GvqxW6TL47M8wYCYND7bTp+GIh45nGPSuZlGIhT4Qp9zqfxARn7
+AmuA/lUkHxT5krTo1Sx9PfTENLPxMikM4MdahTnro0S1WAOqWaudqnWidV81jA2j
+pAektGCfs5uanFq8nOjpO4/AkHmYfq1FSOS0ZpYn2eyhDDK9BDPLuW4L3ithBl1o
+r+vqwedj/xAPeOWxha6JwEvMwhRReZHN0/uZTlWDnqvAVgVFrptefGKo7V355Brw
+NRgJrJFCdoCW8m2FntrRCoxTqDy0v9h+607vD3myk9pyD94IZ7SeKEwyh31vKls3
+OwIGQEVPgyDXoSolj/rG7xwF2vDN+OaW+hidqmuM3p5xpjOqwToJ996s0F0XuUc1
+x0uKQ5+jnuRH132Nn2K73OBFzBS6Le/h1N/DLtxOhq1L3VcZczRx9MYDR5aT6p5r
+Pug+Byyy3Qx0TRDUq6P+bJGTHu3di+ty0Rvrd/LdbTCXHNNctN/N95ZUseeUsG1E
+RnN2FwphYn08qZ5QKGWesnLj4+RJHVjH+c8PpXjyaj2FNXyvsZU=
+=NJyS
+-----END PGP SIGNATURE-----
+
+--hHIGeTg/3zFQR6Mt--
