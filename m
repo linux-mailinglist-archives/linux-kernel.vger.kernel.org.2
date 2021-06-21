@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 676DC3AF0C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:50:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE0C3AEF5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233224AbhFUQwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:52:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37672 "EHLO mail.kernel.org"
+        id S232842AbhFUQiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:38:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54840 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232761AbhFUQsB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:48:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A2C361458;
-        Mon, 21 Jun 2021 16:34:00 +0000 (UTC)
+        id S232457AbhFUQeC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:34:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7DAB613DA;
+        Mon, 21 Jun 2021 16:26:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624293240;
-        bh=AlgjhKd+Dnlkxs65AqMCoedbfkv/5rXTQeyFulhIvSw=;
+        s=korg; t=1624292801;
+        bh=e4vfX5Ro9cYX5wtIn9Np8do7rZxDr4xaf4uruk5Qi5A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P+pogUOLIdNiBS+F1wNW44mxzBDl6E76NU0QoajVctDIzYs0zNBSnW1DkYhogzxaq
-         bm/GMCqPRj+Vq3OVNn1907COhg5Rk7GeywY44hMreHre2f248mko9y6zwGrBsaHCeU
-         yLdHcRZ2MU5Au6Y7/pF+zwXZY7a+gkE0ArZxWrTk=
+        b=keEGpRTk8N0gssffSY8WzMOtG6iVJsHTgcHCDP20R8rFTPD7j5rdRsXp5wc+6y6OI
+         ai05wp6zW+zqQNvc7JsMU1Jc57trk38wZAn5olhcrsRxQuCQMJgci7uWo8BchRv+kn
+         SbwomYRZQ+bPX6zRYnoKcFrZ06l9itQ80pm+/ZjQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jongho Park <jongho7.park@samsung.com>,
-        Bumyong Lee <bumyong.lee@samsung.com>,
-        Chanho Park <chanho61.park@samsung.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 5.12 150/178] dmaengine: pl330: fix wrong usage of spinlock flags in dma_cyclc
-Date:   Mon, 21 Jun 2021 18:16:04 +0200
-Message-Id: <20210621154927.870951565@linuxfoundation.org>
+        stable@vger.kernel.org, Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 135/146] net: bridge: fix vlan tunnel dst refcnt when egressing
+Date:   Mon, 21 Jun 2021 18:16:05 +0200
+Message-Id: <20210621154920.181996104@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621154921.212599475@linuxfoundation.org>
-References: <20210621154921.212599475@linuxfoundation.org>
+In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
+References: <20210621154911.244649123@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +39,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bumyong Lee <bumyong.lee@samsung.com>
+From: Nikolay Aleksandrov <nikolay@nvidia.com>
 
-commit 4ad5dd2d7876d79507a20f026507d1a93b8fff10 upstream.
+commit cfc579f9d89af4ada58c69b03bcaa4887840f3b3 upstream.
 
-flags varible which is the input parameter of pl330_prep_dma_cyclic()
-should not be used by spinlock_irq[save/restore] function.
+The egress tunnel code uses dst_clone() and directly sets the result
+which is wrong because the entry might have 0 refcnt or be already deleted,
+causing number of problems. It also triggers the WARN_ON() in dst_hold()[1]
+when a refcnt couldn't be taken. Fix it by using dst_hold_safe() and
+checking if a reference was actually taken before setting the dst.
 
-Signed-off-by: Jongho Park <jongho7.park@samsung.com>
-Signed-off-by: Bumyong Lee <bumyong.lee@samsung.com>
-Signed-off-by: Chanho Park <chanho61.park@samsung.com>
-Link: https://lore.kernel.org/r/20210507063647.111209-1-chanho61.park@samsung.com
-Fixes: f6f2421c0a1c ("dmaengine: pl330: Merge dma_pl330_dmac and pl330_dmac structs")
+[1] dmesg WARN_ON log and following refcnt errors
+ WARNING: CPU: 5 PID: 38 at include/net/dst.h:230 br_handle_egress_vlan_tunnel+0x10b/0x134 [bridge]
+ Modules linked in: 8021q garp mrp bridge stp llc bonding ipv6 virtio_net
+ CPU: 5 PID: 38 Comm: ksoftirqd/5 Kdump: loaded Tainted: G        W         5.13.0-rc3+ #360
+ Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1.fc33 04/01/2014
+ RIP: 0010:br_handle_egress_vlan_tunnel+0x10b/0x134 [bridge]
+ Code: e8 85 bc 01 e1 45 84 f6 74 90 45 31 f6 85 db 48 c7 c7 a0 02 19 a0 41 0f 94 c6 31 c9 31 d2 44 89 f6 e8 64 bc 01 e1 85 db 75 02 <0f> 0b 31 c9 31 d2 44 89 f6 48 c7 c7 70 02 19 a0 e8 4b bc 01 e1 49
+ RSP: 0018:ffff8881003d39e8 EFLAGS: 00010246
+ RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+ RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffffffffa01902a0
+ RBP: ffff8881040c6700 R08: 0000000000000000 R09: 0000000000000001
+ R10: 2ce93d0054fe0d00 R11: 54fe0d00000e0000 R12: ffff888109515000
+ R13: 0000000000000000 R14: 0000000000000001 R15: 0000000000000401
+ FS:  0000000000000000(0000) GS:ffff88822bf40000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00007f42ba70f030 CR3: 0000000109926000 CR4: 00000000000006e0
+ Call Trace:
+  br_handle_vlan+0xbc/0xca [bridge]
+  __br_forward+0x23/0x164 [bridge]
+  deliver_clone+0x41/0x48 [bridge]
+  br_handle_frame_finish+0x36f/0x3aa [bridge]
+  ? skb_dst+0x2e/0x38 [bridge]
+  ? br_handle_ingress_vlan_tunnel+0x3e/0x1c8 [bridge]
+  ? br_handle_frame_finish+0x3aa/0x3aa [bridge]
+  br_handle_frame+0x2c3/0x377 [bridge]
+  ? __skb_pull+0x33/0x51
+  ? vlan_do_receive+0x4f/0x36a
+  ? br_handle_frame_finish+0x3aa/0x3aa [bridge]
+  __netif_receive_skb_core+0x539/0x7c6
+  ? __list_del_entry_valid+0x16e/0x1c2
+  __netif_receive_skb_list_core+0x6d/0xd6
+  netif_receive_skb_list_internal+0x1d9/0x1fa
+  gro_normal_list+0x22/0x3e
+  dev_gro_receive+0x55b/0x600
+  ? detach_buf_split+0x58/0x140
+  napi_gro_receive+0x94/0x12e
+  virtnet_poll+0x15d/0x315 [virtio_net]
+  __napi_poll+0x2c/0x1c9
+  net_rx_action+0xe6/0x1fb
+  __do_softirq+0x115/0x2d8
+  run_ksoftirqd+0x18/0x20
+  smpboot_thread_fn+0x183/0x19c
+  ? smpboot_unregister_percpu_thread+0x66/0x66
+  kthread+0x10a/0x10f
+  ? kthread_mod_delayed_work+0xb6/0xb6
+  ret_from_fork+0x22/0x30
+ ---[ end trace 49f61b07f775fd2b ]---
+ dst_release: dst:00000000c02d677a refcnt:-1
+ dst_release underflow
+
 Cc: stable@vger.kernel.org
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Fixes: 11538d039ac6 ("bridge: vlan dst_metadata hooks in ingress and egress paths")
+Signed-off-by: Nikolay Aleksandrov <nikolay@nvidia.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/dma/pl330.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/bridge/br_vlan_tunnel.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/dma/pl330.c
-+++ b/drivers/dma/pl330.c
-@@ -2694,13 +2694,15 @@ static struct dma_async_tx_descriptor *p
- 	for (i = 0; i < len / period_len; i++) {
- 		desc = pl330_get_desc(pch);
- 		if (!desc) {
-+			unsigned long iflags;
-+
- 			dev_err(pch->dmac->ddma.dev, "%s:%d Unable to fetch desc\n",
- 				__func__, __LINE__);
+--- a/net/bridge/br_vlan_tunnel.c
++++ b/net/bridge/br_vlan_tunnel.c
+@@ -204,8 +204,8 @@ int br_handle_egress_vlan_tunnel(struct
+ 		return err;
  
- 			if (!first)
- 				return NULL;
+ 	tunnel_dst = rcu_dereference(vlan->tinfo.tunnel_dst);
+-	if (tunnel_dst)
+-		skb_dst_set(skb, dst_clone(&tunnel_dst->dst));
++	if (tunnel_dst && dst_hold_safe(&tunnel_dst->dst))
++		skb_dst_set(skb, &tunnel_dst->dst);
  
--			spin_lock_irqsave(&pl330->pool_lock, flags);
-+			spin_lock_irqsave(&pl330->pool_lock, iflags);
- 
- 			while (!list_empty(&first->node)) {
- 				desc = list_entry(first->node.next,
-@@ -2710,7 +2712,7 @@ static struct dma_async_tx_descriptor *p
- 
- 			list_move_tail(&first->node, &pl330->desc_pool);
- 
--			spin_unlock_irqrestore(&pl330->pool_lock, flags);
-+			spin_unlock_irqrestore(&pl330->pool_lock, iflags);
- 
- 			return NULL;
- 		}
+ 	return 0;
+ }
 
 
