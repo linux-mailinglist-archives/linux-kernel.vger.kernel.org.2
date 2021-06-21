@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89F713AED85
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E315E3AEEBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:31:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231629AbhFUQUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:20:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40508 "EHLO mail.kernel.org"
+        id S230121AbhFUQbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:31:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48572 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231226AbhFUQUH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:20:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7802A61001;
-        Mon, 21 Jun 2021 16:17:52 +0000 (UTC)
+        id S232355AbhFUQ3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:29:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C94B613F5;
+        Mon, 21 Jun 2021 16:24:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292272;
-        bh=YqBnU7UspfXzaJyd0hmCP7hM8L2dETRU+fLaIw7MsY4=;
+        s=korg; t=1624292642;
+        bh=Nid7jggVe/PAW3eV73p0RQ07l3cgKqshs4Xx82lieVg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bckET+WughH8WSxZJjHgu7Kb1O3xLYyPZ+w1DKOnBfpAA2QvF72fOOqJhWT0rB/H+
-         P4leUhfycidNXKHr3GoG8DGHsE6ofB2KRXoLRI8Wblhf7JMakjPCvUa2ihMAONCIaE
-         p+F7JjRTPMwHUnG025b/8paLbJyiORQ6Ovq0x+8M=
+        b=Lh7d0CqDwmps+p304DOvP+Nv1VtHuB4vRgtWoWk5qBLqmAcZPtQIXolaYdXZJ9+GO
+         2lS0BaKfmsDnIoVnWhTk5/TUT+MzUsLnCJ79CA/xyg1lZOyeB4QSqDDDxiZBFOvTiC
+         qBTRBGFfxC6TO+m3iDJr5YSUEhOxrmuAb9qza1bU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Colitti <lorenzo@google.com>,
-        =?UTF-8?q?Maciej=20=C5=BBenczykowski?= <maze@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Dmitry Osipenko <digetx@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 29/90] net: cdc_ncm: switch to eth%d interface naming
-Date:   Mon, 21 Jun 2021 18:15:04 +0200
-Message-Id: <20210621154905.101981136@linuxfoundation.org>
+Subject: [PATCH 5.10 075/146] regulator: max77620: Silence deferred probe error
+Date:   Mon, 21 Jun 2021 18:15:05 +0200
+Message-Id: <20210621154915.673171222@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621154904.159672728@linuxfoundation.org>
-References: <20210621154904.159672728@linuxfoundation.org>
+In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
+References: <20210621154911.244649123@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,72 +40,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maciej Żenczykowski <maze@google.com>
+From: Dmitry Osipenko <digetx@gmail.com>
 
-[ Upstream commit c1a3d4067309451e68c33dbd356032549cc0bd8e ]
+[ Upstream commit 62499a94ce5b9a41047dbadaad885347b1176079 ]
 
-This is meant to make the host side cdc_ncm interface consistently
-named just like the older CDC protocols: cdc_ether & cdc_ecm
-(and even rndis_host), which all use 'FLAG_ETHER | FLAG_POINTTOPOINT'.
+One of previous changes to regulator core causes PMIC regulators to
+re-probe until supply regulator is registered. Silence noisy error
+message about the deferred probe.
 
-include/linux/usb/usbnet.h:
-  #define FLAG_ETHER	0x0020		/* maybe use "eth%d" names */
-  #define FLAG_WLAN	0x0080		/* use "wlan%d" names */
-  #define FLAG_WWAN	0x0400		/* use "wwan%d" names */
-  #define FLAG_POINTTOPOINT 0x1000	/* possibly use "usb%d" names */
-
-drivers/net/usb/usbnet.c @ line 1711:
-  strcpy (net->name, "usb%d");
-  ...
-  // heuristic:  "usb%d" for links we know are two-host,
-  // else "eth%d" when there's reasonable doubt.  userspace
-  // can rename the link if it knows better.
-  if ((dev->driver_info->flags & FLAG_ETHER) != 0 &&
-      ((dev->driver_info->flags & FLAG_POINTTOPOINT) == 0 ||
-       (net->dev_addr [0] & 0x02) == 0))
-          strcpy (net->name, "eth%d");
-  /* WLAN devices should always be named "wlan%d" */
-  if ((dev->driver_info->flags & FLAG_WLAN) != 0)
-          strcpy(net->name, "wlan%d");
-  /* WWAN devices should always be named "wwan%d" */
-  if ((dev->driver_info->flags & FLAG_WWAN) != 0)
-          strcpy(net->name, "wwan%d");
-
-So by using ETHER | POINTTOPOINT the interface naming is
-either usb%d or eth%d based on the global uniqueness of the
-mac address of the device.
-
-Without this 2.5gbps ethernet dongles which all seem to use the cdc_ncm
-driver end up being called usb%d instead of eth%d even though they're
-definitely not two-host.  (All 1gbps & 5gbps ethernet usb dongles I've
-tested don't hit this problem due to use of different drivers, primarily
-r8152 and aqc111)
-
-Fixes tag is based purely on git blame, and is really just here to make
-sure this hits LTS branches newer than v4.5.
-
-Cc: Lorenzo Colitti <lorenzo@google.com>
-Fixes: 4d06dd537f95 ("cdc_ncm: do not call usbnet_link_change from cdc_ncm_bind")
-Signed-off-by: Maciej Żenczykowski <maze@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+Link: https://lore.kernel.org/r/20210523224243.13219-3-digetx@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/cdc_ncm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/regulator/max77620-regulator.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/usb/cdc_ncm.c b/drivers/net/usb/cdc_ncm.c
-index 0646bcd26968..4cff0a6b1098 100644
---- a/drivers/net/usb/cdc_ncm.c
-+++ b/drivers/net/usb/cdc_ncm.c
-@@ -1662,7 +1662,7 @@ static void cdc_ncm_status(struct usbnet *dev, struct urb *urb)
- static const struct driver_info cdc_ncm_info = {
- 	.description = "CDC NCM",
- 	.flags = FLAG_POINTTOPOINT | FLAG_NO_SETINT | FLAG_MULTI_PACKET
--			| FLAG_LINK_INTR,
-+			| FLAG_LINK_INTR | FLAG_ETHER,
- 	.bind = cdc_ncm_bind,
- 	.unbind = cdc_ncm_unbind,
- 	.manage_power = usbnet_manage_power,
+diff --git a/drivers/regulator/max77620-regulator.c b/drivers/regulator/max77620-regulator.c
+index 5c439c850d09..3cf8f085170a 100644
+--- a/drivers/regulator/max77620-regulator.c
++++ b/drivers/regulator/max77620-regulator.c
+@@ -846,12 +846,10 @@ static int max77620_regulator_probe(struct platform_device *pdev)
+ 			return ret;
+ 
+ 		rdev = devm_regulator_register(dev, rdesc, &config);
+-		if (IS_ERR(rdev)) {
+-			ret = PTR_ERR(rdev);
+-			dev_err(dev, "Regulator registration %s failed: %d\n",
+-				rdesc->name, ret);
+-			return ret;
+-		}
++		if (IS_ERR(rdev))
++			return dev_err_probe(dev, PTR_ERR(rdev),
++					     "Regulator registration %s failed\n",
++					     rdesc->name);
+ 	}
+ 
+ 	return 0;
 -- 
 2.30.2
 
