@@ -2,123 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AFDB3AEA81
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4371C3AEA86
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbhFUNzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 09:55:48 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:50323 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S229747AbhFUNzr (ORCPT
+        id S230291AbhFUN4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 09:56:23 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:20936 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229747AbhFUN4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 09:55:47 -0400
-Received: (qmail 414341 invoked by uid 1000); 21 Jun 2021 09:53:32 -0400
-Date:   Mon, 21 Jun 2021 09:53:32 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     linyyuan@codeaurora.org
-Cc:     Felipe Balbi <balbi@kernel.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jack Pham <jackp@codeaurora.org>
-Subject: Re: [PATCH v3 1/2] usb: udc: core: hide struct usb_gadget_driver to
- gadget driver
-Message-ID: <20210621135332.GA413023@rowland.harvard.edu>
-References: <20210619154309.52127-1-linyyuan@codeaurora.org>
- <20210619154309.52127-2-linyyuan@codeaurora.org>
- <20210620021337.GA361976@rowland.harvard.edu>
- <42b3ebc2316495328e2d0061af81ef17@codeaurora.org>
- <018a4e222c2c3d6f5ca63b5f2036f8d8@codeaurora.org>
- <20210620134743.GA377492@rowland.harvard.edu>
- <98c2729c25442d6c66131d17cabdda27@codeaurora.org>
+        Mon, 21 Jun 2021 09:56:22 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15LDYHii133966;
+        Mon, 21 Jun 2021 09:53:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=9iODRwHV+KkdTt6FfaUgzfaq3KIbniuN823W91WdpWQ=;
+ b=ZQaH2xgT7eWgtNku2HhxSQrpcjx2SCO16k4n8wPEaYIu3y7DgRxeFq9+hpExCXj7C1uV
+ YxVsrCyGVFAfNOm3UjOVs8qmVo9I8YjTBv2D12qN8yIfUesPAAzVxMei7bVqHGtbg0Y8
+ D4SIGEqhPD5a947X1ANcHnPG6VH452KsrvateHzXUnto3Y5Cofqf8PfowOfHAz4J98LV
+ ngX2fBXbQuJRzT5ytMo2dAOlaryzhW5HZHsQXtXppWFBHTDZGdprnLAWRbTfYLEZABFr
+ M/IwrDzF1lmNHOiauv8zTS5QLDc9lTrtMIu1SvR1JWeU+YnTzVL4rSqdd04uGmc8CxxW bQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39aufxs7gh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 09:53:54 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15LDZEcC137987;
+        Mon, 21 Jun 2021 09:53:54 -0400
+Received: from ppma04fra.de.ibm.com (6a.4a.5195.ip4.static.sl-reverse.com [149.81.74.106])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39aufxs7fa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 09:53:54 -0400
+Received: from pps.filterd (ppma04fra.de.ibm.com [127.0.0.1])
+        by ppma04fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15LDrpeI006331;
+        Mon, 21 Jun 2021 13:53:51 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04fra.de.ibm.com with ESMTP id 399878rgq2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 13:53:51 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15LDrn6r33423684
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Jun 2021 13:53:49 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 45A324C04E;
+        Mon, 21 Jun 2021 13:53:49 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F37D94C044;
+        Mon, 21 Jun 2021 13:53:48 +0000 (GMT)
+Received: from [9.145.162.96] (unknown [9.145.162.96])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 21 Jun 2021 13:53:48 +0000 (GMT)
+Subject: Re: [PATCH] gcov,x86: Mark GCOV broken for x86
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        johannes.berg@intel.com, ndesaulniers@google.com,
+        nathan@kernel.org, keescook@chromium.org, elver@google.com,
+        mark.rutland@arm.com
+References: <YMcssV/n5IBGv4f0@hirez.programming.kicks-ass.net>
+ <2f8a4e21-a09b-8c8d-54ce-45cf2f0e83ff@linux.ibm.com>
+ <YMx/9Xv8BF7ghAO6@hirez.programming.kicks-ass.net>
+From:   Peter Oberparleiter <oberpar@linux.ibm.com>
+Message-ID: <0df5ec31-46ac-4f50-26f5-c761371198c9@linux.ibm.com>
+Date:   Mon, 21 Jun 2021 15:53:48 +0200
+In-Reply-To: <YMx/9Xv8BF7ghAO6@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: DvKKHJltdzQw4UTf_L-VICcc8TL5Wkpj
+X-Proofpoint-GUID: BGvaG9Hln6JTpB0yttkhRYqz4QV0GxN3
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <98c2729c25442d6c66131d17cabdda27@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-21_06:2021-06-21,2021-06-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ adultscore=0 impostorscore=0 malwarescore=0 phishscore=0 spamscore=0
+ clxscore=1015 bulkscore=0 lowpriorityscore=0 mlxlogscore=999
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106210080
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 09:37:34AM +0800, linyyuan@codeaurora.org wrote:
-> On 2021-06-20 21:47, Alan Stern wrote:
-> > On Sun, Jun 20, 2021 at 11:53:18AM +0800, linyyuan@codeaurora.org wrote:
-> > > On 2021-06-20 11:46, linyyuan@codeaurora.org wrote:
-> > > > On 2021-06-20 10:13, Alan Stern wrote:
-> > > > > On Sat, Jun 19, 2021 at 11:43:08PM +0800, Linyu Yuan wrote:
-> > > > > > currently most gadget driver have a pointer to save
-> > > > > > struct usb_gadget_driver from upper layer,
-> > > > > > it allow upper layer set and unset of the pointer.
-> > > > > >
-> > > > > > there is race that upper layer unset the pointer first,
-> > > > > > but gadget driver use the pointer later,
-> > > > > > and it cause system crash due to NULL pointer access.
-> > > > >
-> > > > > This race has already been fixed in Greg's usb-next branch.  See
-> > > > > commit
-> > > > > 7dc0c55e9f30 ("USB: UDC core: Add udc_async_callbacks gadget op") and
-> > > > > following commits 04145a03db9d ("USB: UDC: Implement
-> > > > > udc_async_callbacks in dummy-hcd") and b42e8090ba93 ("USB: UDC:
-> > > > > Implement udc_async_callbacks in net2280").
-> > > > >
-> > > > thanks, this is better, lower driver only need change several places.
-> > > > > You just need to write a corresponding patch implementing the
-> > > > > async_callbacks op for dwc3.
-> > > > yes, i will do.
-> > > > >
-> > > Alan, i want to discuss your suggestion again in b42e8090ba93 ("USB:
-> > > UDC:
-> > > Implement udc_async_callbacks in net2280")
-> > > 
-> > > +                       if (dev->async_callbacks) { ----> if CPU1
-> > > saw this
-> > > is true
-> > > +                               spin_unlock(&dev->lock); ---> CPU2
-> > > get lock
-> > > after this unlock,
-> > > it will set async_callbacks to false, then follow call also crash,
-> > > right ?
-> > > +                               tmp = dev->driver->setup(&dev->gadget,
-> > > &u.r);
-> > > +                               spin_lock(&dev->lock);
-> > > +                       }
-> > 
-> > No, this is okay.  The reason is because usb_gadget_remove_driver (CPU2
-> > in your example) does this:
-> > 
-> >         usb_gadget_disable_async_callbacks(udc);
-> >         if (udc->gadget->irq)
-> >                 synchronize_irq(udc->gadget->irq);
-> >         udc->driver->unbind(udc->gadget);
-> >         usb_gadget_udc_stop(udc);
-> > 
-> > The synchronize_irq call will make CPU2 wait until CPU1 has finished
-> > handling the interrupt for the setup packet.  The system won't crash,
-> > because dev->driver->setup will be called before unbind and udc_stop
-> > instead of after.
+On 18.06.2021 13:13, Peter Zijlstra wrote:
+> On Mon, Jun 14, 2021 at 04:43:27PM +0200, Peter Oberparleiter wrote:
+>> On 14.06.2021 12:17, Peter Zijlstra wrote:
+>> If there was a way to automatically identify 'noinstr'-afflicted source
+>> files (e.g. by grepping the pre-processed source files), one could also
+>> automate this process by adjusting the kbuild-code that adds profiling
+>> flags to automatically exclude such files.
+> 
+> Or we just wait for the compilers to implement the required function
+> attribute and then make the whole thing depend on having a recent enough
+> compiler, which is what I'm hoping for.
 
-> still several question,
-> 1. how about suspend calll dev->driver->suspend ?
+Sounds like the best approach given the current situation.
 
-The same reasoning applies.  The synchronize_irq call will make CPU2 
-wait until CPU1 has finished handling the interrupt for the USB bus 
-suspend.  The system won't crash, because dev->driver->suspend will be 
-called before unbind and udc_stop instead of after.
+> Developers should use recent compilers anyway...
+> 
+>>> Until such time as that compilers have added a function attribute to
+>>> disable this instrumentation, mark GCOV as broken.
+>>>
+>>> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-> 2. will 04145a03db9d ("USB: UDC: Implement udc_async_callbacks in
-> dummy-hcd") backport to LTS branch ?
+[...]
 
-None of these commits are marked for back-porting to the -stable 
-kernels.  The race they fix does not occur often.
+>> Users that are absolutely sure that their code can work with
+>> gcov-profiling can manually edit their sub-Makefiles to list those files
+>> that should be instrumented. In my opinion your introduction of
+>> ARCH_HAS_GCOV_BROKEN unnecessarily takes away this capability.
+> 
+> Are there any users?
 
-If you the commits to be applied to the LTS stable kernels, you can ask 
-Greg KH to do it.
+I honestly cannot tell how many people are using the gcov-kernel
+facility, but I guess that is true for most kernel functions. I do get
+regular bug reports if things break due to GCC changes though, so there
+are definitely some users.
 
-> 3. how about coding style ? so following code
-> if (foo->gadget_driver && foo->gadget_driver->resume)
-> change to
-> if (foo->asnyc_callbacks && foo->gadget_driver->resume)
+> Who uses this GCOV stuff, and should we migrate them to KCOV?
 
-I don't understand this question.
+I have not used KCOV myself, but based on the documentation available
+about the mechanism itself and some of its users it appears that GCOV
+and KCOV are not feature-equivalent:
 
-Alan Stern
+KCOV provides an opt-in capability for user-space processes to record a
+history of kernel code executed on their behalf. Opt-in means the
+process must include code to start recording. There's also some limited
+support for collecting data for kernel background tasks.
+
+The output is a sequence of kernel addresses relating to executed basic
+blocks - great for consumption in automated mechanisms like fuzzers and
+the like, but tooling for post-processing the data into human-readable
+format for general purpose review seems to be scarce.
+
+GCOV provides a build-time configurable option to instrument almost all
+kernel code or, if requested, only specific parts. There's no need to
+opt-in at run-time, all execution of instrumented code running since
+boot will be recorded, including interrupt handlers, background tasks,
+etc. Of course this also means there's no means to filter by the process
+causing the kernel code execution.
+
+The output is GCC's .gcda data format. Using GCC's gcov tool this can be
+directly converted into annotated source code containing statement,
+function, and branch coverage data. Also there are tools building on
+gcov output to create overview pages for the thousands of kernel source
+files and detailed graphical output based on this information. This kind
+of representation is great for manual review to answer questions like
+"all my tests ran, why is there still an uncovered piece of kernel code?"
+
+So to summarize:
+
+KCOV => Great for automated processing (e.g. fuzzing)
+
+GCOV => Great for manual review (e.g. improving test coverage)
+
+> The thing is, I got dead kernel reports from KCOV users really quickly
+> after all this landed, I've never even heard of a GCOV user, let alone
+> had a problem report from one.
+
+KCOV is used 24/7 by automated fuzzing code - I would assume that those
+catch fatal errors rather quickly. GCOV is used when a developer/tester
+has a need to review their test coverage. And even then they may only
+instrument portions of the kernel that may not affected by the noinstr
+problem.
+
+> Given all this seems mostly unused, I suppose we can wait for the
+> compilers to implement the attribute and simply ignore any and all
+> problems stemming from the use of GCOV -- telling them to go use KCOV
+> instead.
+
+It seems this might be resolved for GCC rather quickly...
+
+https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80223#c11
+
+> At the same time; since there are no users (that I know of), I don't see
+> the problem with killing the entire thing for x86 either.
+
+If there really were no more GCOV users and KCOV would provide the same
+functionality and level of tool support I would not object. But IMO none
+of these requirements are met today.
+
+
+Regards,
+  Peter
+
+-- 
+Peter Oberparleiter
+Linux on Z Development - IBM Germany
