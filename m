@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AB8E3AEF30
+	by mail.lfdr.de (Postfix) with ESMTP id E37033AEF31
 	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:34:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232450AbhFUQgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:36:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55204 "EHLO mail.kernel.org"
+        id S232489AbhFUQgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:36:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55398 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231918AbhFUQcT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:32:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D6090613C5;
-        Mon, 21 Jun 2021 16:26:01 +0000 (UTC)
+        id S232239AbhFUQcc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:32:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 83B0E613C2;
+        Mon, 21 Jun 2021 16:26:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292762;
-        bh=CL1FZxBMXtZzqlodM+oS8fWPPciTagavnSrueaHbjIg=;
+        s=korg; t=1624292765;
+        bh=fU13to9nu0aO8QZO1mX+8wtj7oG7zYJNoYFpZBMBe8w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TFhvH9wgx4xNBvoAuTtd2WRT0A0VpOAnsNRVxoEik38VVwdrvDE6avYvOS6bVEGRK
-         cASBCo80VVlModmBX4A/kKxQdQB7mN50t7hwAUzqeUfphaV7sBeKixCUsas/8jNW4S
-         m6qx+SIDp8hYSNMfJ8l/FprE1zAi/HtURh5R7RkM=
+        b=SmAAWikZ1SE1IWFY8XvLhkr4agUKenFjg//h+eDZjggvIJLw0UdqsGfq9ZM6zZ5vh
+         lAIXeeJZXbHCQMnd9s+ho6pRVqBD3+/syR0C/msIN1Noi1w2fgheo5A3YM8CM3G/NI
+         i3F5Ryeno2tLXJnNL/zymapLNI8g11UTuTAlsLwQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oder Chiou <oder_chiou@realtek.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 087/146] ASoC: rt5682: Fix the fast discharge for headset unplugging in soundwire mode
-Date:   Mon, 21 Jun 2021 18:15:17 +0200
-Message-Id: <20210621154916.605940345@linuxfoundation.org>
+Subject: [PATCH 5.10 088/146] pinctrl: ralink: rt2880: avoid to error in calls is pin is already enabled
+Date:   Mon, 21 Jun 2021 18:15:18 +0200
+Message-Id: <20210621154916.667453687@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
 References: <20210621154911.244649123@linuxfoundation.org>
@@ -40,35 +41,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oder Chiou <oder_chiou@realtek.com>
+From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 
-[ Upstream commit 49783c6f4a4f49836b5a109ae0daf2f90b0d7713 ]
+[ Upstream commit eb367d875f94a228c17c8538e3f2efcf2eb07ead ]
 
-Based on ("5a15cd7fce20b1fd4aece6a0240e2b58cd6a225d"), the setting also
-should be set in soundwire mode.
+In 'rt2880_pmx_group_enable' driver is printing an error and returning
+-EBUSY if a pin has been already enabled. This begets anoying messages
+in the caller when this happens like the following:
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
-Link: https://lore.kernel.org/r/20210604063150.29925-1-oder_chiou@realtek.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+rt2880-pinmux pinctrl: pcie is already enabled
+mt7621-pci 1e140000.pcie: Error applying setting, reverse things back
+
+To avoid this just print the already enabled message in the pinctrl
+driver and return 0 instead to not confuse the user with a real
+bad problem.
+
+Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Link: https://lore.kernel.org/r/20210604055337.20407-1-sergio.paracuellos@gmail.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5682-sdw.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5682-sdw.c b/sound/soc/codecs/rt5682-sdw.c
-index 58fb13132602..aa6c325faeab 100644
---- a/sound/soc/codecs/rt5682-sdw.c
-+++ b/sound/soc/codecs/rt5682-sdw.c
-@@ -455,7 +455,8 @@ static int rt5682_io_init(struct device *dev, struct sdw_slave *slave)
+diff --git a/drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c b/drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c
+index caaf9e34f1ee..09b0b8a16e99 100644
+--- a/drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c
++++ b/drivers/staging/mt7621-pinctrl/pinctrl-rt2880.c
+@@ -127,7 +127,7 @@ static int rt2880_pmx_group_enable(struct pinctrl_dev *pctrldev,
+ 	if (p->groups[group].enabled) {
+ 		dev_err(p->dev, "%s is already enabled\n",
+ 			p->groups[group].name);
+-		return -EBUSY;
++		return 0;
+ 	}
  
- 	regmap_update_bits(rt5682->regmap, RT5682_CBJ_CTRL_2,
- 		RT5682_EXT_JD_SRC, RT5682_EXT_JD_SRC_MANUAL);
--	regmap_write(rt5682->regmap, RT5682_CBJ_CTRL_1, 0xd042);
-+	regmap_write(rt5682->regmap, RT5682_CBJ_CTRL_1, 0xd142);
-+	regmap_update_bits(rt5682->regmap, RT5682_CBJ_CTRL_5, 0x0700, 0x0600);
- 	regmap_update_bits(rt5682->regmap, RT5682_CBJ_CTRL_3,
- 		RT5682_CBJ_IN_BUF_EN, RT5682_CBJ_IN_BUF_EN);
- 	regmap_update_bits(rt5682->regmap, RT5682_SAR_IL_CMD_1,
+ 	p->groups[group].enabled = 1;
 -- 
 2.30.2
 
