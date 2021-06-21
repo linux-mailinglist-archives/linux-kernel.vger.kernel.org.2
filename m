@@ -2,101 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6CB43AE4B0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2103AE4B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230137AbhFUIY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 04:24:27 -0400
-Received: from mickerik.phytec.de ([195.145.39.210]:49774 "EHLO
-        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbhFUIYZ (ORCPT
+        id S230298AbhFUIY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 04:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229789AbhFUIY4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 04:24:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
-        q=dns/txt; i=@phytec.de; t=1624263730; x=1626855730;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=j+xB7H9HGYdYGqce6ZAiCB34bLZKU7MahT3T7Ll1a8U=;
-        b=T5mYIaf5CpVKoca1J6Z3n2iopRZ2SHHQF/pjoVZYqrB472sChRXVMDfhu1RDb2Xs
-        nNnD6jhIRHE8O4Dhex1ZfK6mCO5bT/9undKc39TXdj59CPQPLIiGBsswEHoEgv2e
-        ZYEf/V80W0nf+Qy6cdK1F0UZ3sr+H3nvJwEn+uF5xWI=;
-X-AuditID: c39127d2-a77bc70000001c5e-0c-60d04c3223cd
-Received: from florix.phytec.de (florix.phytec.de [172.16.0.118])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 8B.D2.07262.23C40D06; Mon, 21 Jun 2021 10:22:10 +0200 (CEST)
-Received: from Berlix.phytec.de (172.16.0.117) by Florix.phytec.de
- (172.16.0.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 21 Jun
- 2021 10:22:10 +0200
-Received: from Berlix.phytec.de ([fe80::343f:7618:c7ce:97c9]) by
- berlix.phytec.de ([fe80::343f:7618:c7ce:97c9%3]) with mapi id 15.01.2176.009;
- Mon, 21 Jun 2021 10:22:10 +0200
-From:   =?utf-8?B?U3RlZmFuIFJpZWRtw7xsbGVy?= <S.Riedmueller@phytec.de>
-To:     "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "airlied@linux.ie" <airlied@linux.ie>,
-        "sam@ravnborg.org" <sam@ravnborg.org>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>
-CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "laurent.pinchart@ideasonboard.com" 
-        <laurent.pinchart@ideasonboard.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/3] drm/panel: Add connector_type and bus_format for AUO
- G104SN02 V2 panel
-Thread-Topic: [PATCH 1/3] drm/panel: Add connector_type and bus_format for AUO
- G104SN02 V2 panel
-Thread-Index: AQHXMdf+y0dS36bcQE6gcAvYiVq17ar1fdqAgCjp/gA=
-Date:   Mon, 21 Jun 2021 08:22:10 +0000
-Message-ID: <5942e9c67f7d50737536613b80a2cb42a3615b3d.camel@phytec.de>
-References: <20210415091616.53415-1-s.riedmueller@phytec.de>
-         <57bf547d95ba84f72d0f9da0e687fbe71311e5b8.camel@phytec.de>
-In-Reply-To: <57bf547d95ba84f72d0f9da0e687fbe71311e5b8.camel@phytec.de>
-Accept-Language: en-US, de-DE
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.16.0.116]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C7A4566DCC146349A87FC4C76A0BC936@phytec.de>
-Content-Transfer-Encoding: base64
+        Mon, 21 Jun 2021 04:24:56 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F81C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 01:22:42 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id v12so8125372plo.10
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 01:22:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZfnxSoMfUVSSDlsLwp0WoW5E9lvPUyllvrQ8/9x9fLo=;
+        b=Pq1hHK9RJgIPikajvGj85KADiwQEuKLSL5C/+AGosMjMpAuewjq3kPtHYvFliErquW
+         Dy/C5wsHTujMyiVG705Dk14Pq40bu6NT/A+ICipcaIZ/D3OMovB1P2UUohN7CQHmYOKX
+         hXz1gu6jk0HJAjW1XXt4efahnR9klmCmyuyX1cnyb5WpVbaJZfEqKCGY0ttXE/ESYPHg
+         zipKK1RE3mCkmWfqVE3hJhArk9N4mwqPMG3ABYfybgsW68T7wYsRoyEhnKGuX4HabAKU
+         MRGyZ/ZU0i4A/NhPhh75WEdCNzt0jE6FUham0iQH5/v9yMYzydQ740bMvEtw6yKJe/nj
+         Z+EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZfnxSoMfUVSSDlsLwp0WoW5E9lvPUyllvrQ8/9x9fLo=;
+        b=R6NeU1DqDcUnMspoycHa7XPD9HHlT/6lOusOVQa4B2V2UA7easxX47lwjH1P6NcQXX
+         L2Sm55s8i0TgtRRamL/DLuipCVp6G/HKE7X01whnVl2Im9VuXsZK0klDhRU5eH/7t59l
+         qjyXGgWBBEr9IectQ8mQrwxNF+zOcl+AlxHG5Bb1IW7xsAI+8hV3cifgA0lw9bwIKQn6
+         xV0cLKLGrapqbwPxVPkl4ZUaRdYd4bzmx2E1D2W9vYwiUv3+oofFHIEOdIyLL7rt0ASO
+         tgSddbLxYhqXHw7k0HKZdg3yalTh6/fhBei8LIdanCU2SgiZETYFyZGWHU8Ut3qzAFmh
+         5iow==
+X-Gm-Message-State: AOAM533iD7KJ989+vpUzSeEjRiV0hRz4MrCJMHfrTeVm5LJJI4hMKzyq
+        H1W3wsFZ3p8KSXLjazosh7c=
+X-Google-Smtp-Source: ABdhPJxJKSr1RTmSGiHrxaEzMzm5hoT9ayOKkcibP7Qtd34i6z276Sl4xoSmR6arsd4XjBFcRtplTQ==
+X-Received: by 2002:a17:902:d645:b029:11d:d075:cf43 with SMTP id y5-20020a170902d645b029011dd075cf43mr16832526plh.14.1624263761549;
+        Mon, 21 Jun 2021 01:22:41 -0700 (PDT)
+Received: from gmail.com (36-229-229-123.dynamic-ip.hinet.net. [36.229.229.123])
+        by smtp.gmail.com with ESMTPSA id z18sm14128683pfe.214.2021.06.21.01.22.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 01:22:40 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 16:22:37 +0800
+From:   Jhih-Ming Huang <fbihjmeric@gmail.com>
+To:     Greg KH <greg@kroah.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [fbihjmeric@gmail.com: Re:
+ drivers/staging/rtl8723bs/core/rtw_security.c:95:9: warning: variable 'crc'
+ set but not used]
+Message-ID: <20210621082237.im2asbiyc65kyzol@gmail.com>
+References: <20210621063041.v4u35pxgglgwn2go@gmail.com>
+ <YNA3KAxTeXsb35/W@kroah.com>
+ <20210621065709.6ffzqujlt26evjjz@gmail.com>
+ <YNBJc1Xlh75yz9DB@kroah.com>
 MIME-Version: 1.0
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPIsWRmVeSWpSXmKPExsWyRoChTNfI50KCwYbfxha9504yWfzfNpHZ
-        4srX92wWnROXsFtc3jWHzWLFz62MFj93zWNxYPfY+20Bi8fOWXfZPWZ3zGT12P7tAavH/e7j
-        TB5Lpl1l8/i8SS6APYrLJiU1J7MstUjfLoEr49LFG8wF53gqzh7ayd7AuISni5GTQ0LARGLd
-        6pVMXYxcHEICy5kkthzuY4dwHjJK9N6eAJXZxCjx6/48JpAWNgEXic9t39hAEiICGxglHu7e
-        wwriMAtcZpRoObidHaRKWCBR4vKhrywgtohAksTUh49ZIWwrictHtrOB2CwCqhINjzYAxTk4
-        eAXcJBq/Z4CEhQSqJJac7wcbwyngLjH7cRdYK6OArERnwzuwI5gFxCU2PfvOCvGDgMSSPeeZ
-        IWxRiZeP/0HFFSTaejqZQMYzC2hKrN+lD2FaSGy6oAkxRVFiSvdDsE28AoISJ2c+YZnAKD4L
-        yYJZCM2zEJpnIWmehaR5ASPrKkah3Mzk7NSizGy9gozKktRkvZTUTYzASD48Uf3SDsa+OR6H
-        GJk4GA8xSnAwK4nwcmaeSRDiTUmsrEotyo8vKs1JLT7EKM3BoiTOu4G3JExIID2xJDU7NbUg
-        tQgmy8TBKdXAKFbQHqJwrv3QfoXNy+V3nF22zp/5ReWrc/Xintp2/0+Y/7pc8NS2db72C81r
-        aTtEmbROzrvsnrPjlVpyUfXslSWWTvaR9lGWprHPu9n+nN54RL3XdNPsIu+ZonErF+eeFLsY
-        zcQ0Ly0vehWXuqLBVu0XEe0Kxxb5S7xT+GiqZeeyzs2pado2JZbijERDLeai4kQAvi9H/dIC
-        AAA=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNBJc1Xlh75yz9DB@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQoNCmFub3RoZXIgZ2VudGxlIHBpbmcuDQoNCkFsc28gYWRkaW5nIExhdXJlbnQgUGluY2hh
-cnQgdG8gQ0MuDQoNClJlZ2FyZHMsDQpTdGVmYW4NCg0KT24gV2VkLCAyMDIxLTA1LTI2IGF0IDA3
-OjM0ICswMDAwLCBTdGVmYW4gUmllZG3DvGxsZXIgd3JvdGU6DQo+IEhpLA0KPiANCj4gZ2VudGxl
-IHBpbmcgZm9yIHRoaXMgc21hbGwgc2VyaWVzLg0KPiANCj4gUmVnYXJkcywNCj4gU3RlZmFuDQo+
-IA0KPiBPbiBUaHUsIDIwMjEtMDQtMTUgYXQgMTE6MTYgKzAyMDAsIFN0ZWZhbiBSaWVkbXVlbGxl
-ciB3cm90ZToNCj4gPiBUaGUgQVVPIEcxMDRTTjAyIFYyIGlzIGFuIExWRFMgZGlzcGxheSB3aGlj
-aCBzdXBwb3J0cyA2IGFuZCA4IGJwYyBQU1dHLg0KPiA+IEFkZCB0aGUgY29ycmVzcG9uZGluZyBj
-b25uZWN0b3IgdHlwZSBhbmQgOCBicGMgYXMgZGVmYXVsdCBidXNfZm9ybWF0Lg0KPiA+IA0KPiA+
-IFNpZ25lZC1vZmYtYnk6IFN0ZWZhbiBSaWVkbXVlbGxlciA8cy5yaWVkbXVlbGxlckBwaHl0ZWMu
-ZGU+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvZ3B1L2RybS9wYW5lbC9wYW5lbC1zaW1wbGUuYyB8
-IDIgKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKQ0KPiA+IA0KPiA+IGRp
-ZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vcGFuZWwvcGFuZWwtc2ltcGxlLmMNCj4gPiBiL2Ry
-aXZlcnMvZ3B1L2RybS9wYW5lbC9wYW5lbC1zaW1wbGUuYw0KPiA+IGluZGV4IDRlMmRhZDMxNGM3
-OS4uNDQ1ODNkMGVkOTAyIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9wYW5lbC9w
-YW5lbC1zaW1wbGUuYw0KPiA+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9wYW5lbC9wYW5lbC1zaW1w
-bGUuYw0KPiA+IEBAIC0xMDk4LDYgKzEwOTgsOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHBhbmVs
-X2Rlc2MgYXVvX2cxMDRzbjAyID0gew0KPiA+ICAJCS53aWR0aCA9IDIxMSwNCj4gPiAgCQkuaGVp
-Z2h0ID0gMTU4LA0KPiA+ICAJfSwNCj4gPiArCS5idXNfZm9ybWF0ID0gTUVESUFfQlVTX0ZNVF9S
-R0I4ODhfMVg3WDRfU1BXRywNCj4gPiArCS5jb25uZWN0b3JfdHlwZSA9IERSTV9NT0RFX0NPTk5F
-Q1RPUl9MVkRTLA0KPiA+ICB9Ow0KPiA+ICANCj4gPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBkcm1f
-ZGlzcGxheV9tb2RlIGF1b19nMTIxZWFuMDFfbW9kZSA9IHsNCg==
+On Mon, Jun 21, 2021 at 10:10:27AM +0200, Greg KH wrote:
+> On Mon, Jun 21, 2021 at 02:57:09PM +0800, Jhih-Ming Huang wrote:
+> > On Mon, Jun 21, 2021 at 08:52:24AM +0200, Greg KH wrote:
+> > > On Mon, Jun 21, 2021 at 02:30:41PM +0800, Jhih-Ming Huang wrote:
+> > > > On Sat, Jun 19, 2021 at 6:27 PM kernel test robot <lkp@intel.com> wrote:
+> > > > >
+> > > > > tree:   https://github.com/0day-ci/linux/commits/UPDATE-20210619-155350/Jhih-Ming-Huang/rtw_security-fix-cast-to-restricted-__le32/20210616-131056
+> > > > > head:   ed0359e3fa64928e48021387a694f211bc840ff7
+> > > > > commit: ed0359e3fa64928e48021387a694f211bc840ff7 rtw_security: fix cast to restricted __le32
+> > > > > date:   3 hours ago
+> > > > > config: sh-allmodconfig (attached as .config)
+> > > > > compiler: sh4-linux-gcc (GCC) 9.3.0
+> > > > > reproduce (this is a W=1 build):
+> > > > >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> > > > >         chmod +x ~/bin/make.cross
+> > > > >         # https://github.com/0day-ci/linux/commit/ed0359e3fa64928e48021387a694f211bc840ff7
+> > > > >         git remote add linux-review https://github.com/0day-ci/linux
+> > > > >         git fetch --no-tags linux-review UPDATE-20210619-155350/Jhih-Ming-Huang/rtw_security-fix-cast-to-restricted-__le32/20210616-131056
+> > > > >         git checkout ed0359e3fa64928e48021387a694f211bc840ff7
+> > > > >         # save the attached .config to linux build tree
+> > > > >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=sh
+> > > > >
+> > > > > If you fix the issue, kindly add following tag as appropriate
+> > > > > Reported-by: kernel test robot <lkp@intel.com>
+> > > > >
+> > > > > All warnings (new ones prefixed by >>):
+> > > > >
+> > > > >    drivers/staging/rtl8723bs/core/rtw_security.c: In function 'rtw_wep_decrypt':
+> > > > > >> drivers/staging/rtl8723bs/core/rtw_security.c:95:9: warning: variable 'crc' set but not used [-Wunused-but-set-variable]
+> > > > >       95 |  __le32 crc;
+> > > > >          |         ^~~
+> > > > >
+> > > > > Kconfig warnings: (for reference only)
+> > > > >    WARNING: unmet direct dependencies detected for SND_ATMEL_SOC_PDC
+> > > > >    Depends on SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC && HAS_DMA
+> > > > >    Selected by
+> > > > >    - SND_ATMEL_SOC_SSC && SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC
+> > > > >    - SND_ATMEL_SOC_SSC_PDC && SOUND && !UML && SND && SND_SOC && SND_ATMEL_SOC && ATMEL_SSC
+> > > > >
+> > > > >
+> > > > > vim +/crc +95 drivers/staging/rtl8723bs/core/rtw_security.c
+> > > > >
+> > > > >     91
+> > > > >     92  void rtw_wep_decrypt(struct adapter  *padapter, u8 *precvframe)
+> > > > >     93  {
+> > > > >     94          /*  exclude ICV */
+> > > > >   > 95          __le32 crc;
+> > > > >     96          signed int      length;
+> > > > >     97          u32 keylength;
+> > > > >     98          u8 *pframe, *payload, *iv, wepkey[16];
+> > > > >     99          u8  keyindex;
+> > > > >    100          struct  rx_pkt_attrib    *prxattrib = &(((union recv_frame *)precvframe)->u.hdr.attrib);
+> > > > >    101          struct  security_priv *psecuritypriv = &padapter->securitypriv;
+> > > > >    102          struct arc4_ctx *ctx = &psecuritypriv->recv_arc4_ctx;
+> > > > >    103
+> > > > >    104          pframe = (unsigned char *)((union recv_frame *)precvframe)->u.hdr.rx_data;
+> > > > >    105
+> > > > >    106          /* start to decrypt recvframe */
+> > > > >    107          if ((prxattrib->encrypt == _WEP40_) || (prxattrib->encrypt == _WEP104_)) {
+> > > > >    108                  iv = pframe+prxattrib->hdrlen;
+> > > > >    109                  /* keyindex =(iv[3]&0x3); */
+> > > > >    110                  keyindex = prxattrib->key_index;
+> > > > >    111                  keylength = psecuritypriv->dot11DefKeylen[keyindex];
+> > > > >    112                  memcpy(&wepkey[0], iv, 3);
+> > > > >    113                  /* memcpy(&wepkey[3], &psecuritypriv->dot11DefKey[psecuritypriv->dot11PrivacyKeyIndex].skey[0], keylength); */
+> > > > >    114                  memcpy(&wepkey[3], &psecuritypriv->dot11DefKey[keyindex].skey[0], keylength);
+> > > > >    115                  length = ((union recv_frame *)precvframe)->u.hdr.len-prxattrib->hdrlen-prxattrib->iv_len;
+> > > > >    116
+> > > > >    117                  payload = pframe+prxattrib->iv_len+prxattrib->hdrlen;
+> > > > >    118
+> > > > >    119                  /* decrypt payload include icv */
+> > > > >    120                  arc4_setkey(ctx, wepkey, 3 + keylength);
+> > > > >    121                  arc4_crypt(ctx, payload, payload,  length);
+> > > > >    122
+> > > > >    123                  /* calculate icv and compare the icv */
+> > > > >    124                  crc = cpu_to_le32(~crc32_le(~0, payload, length - 4));
+> > > > >    125
+> > > > >    126          }
+> > > > >    127  }
+> > > > >    128
+> > > > >
+> > > > > ---
+> > > > > 0-DAY CI Kernel Test Service, Intel Corporation
+> > > > > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> > > > 
+> > > > This warning was introduced by my pull request,
+> > > > but I am fixing the sparse warning and the unused variable was
+> > > > declared in the previous commit.
+> > > > The original author did not compare the crc and payload in
+> > > > rtw_wep_decrypt, so the variable 'crc' was set but not used.
+> > > > 
+> > > > Should I fix this in my pull request?
+> > > 
+> > > We do not do "pull requests" in the kernel development process for
+> > > normal changes.  Just send a patch like normal for this and I will be
+> > > glad to apply it to my trees and send it onward.
+> > > 
+> > > thanks,
+> > > 
+> > > greg k-h
+> > 
+> > thanks for your fast reply.
+> > 
+> > should I send the other patch based on my original patch or I should combine
+> > these two patches into one patch?
+> 
+> What ever will be able to be applied to my tree is what I need.  I can
+> not remove an existing patch from it.  If I have not accepted the patch,
+> then a new patch is required.
+> 
+> thanks,
+> 
+> greg k-h
+
+got it. new patch is sent. 
+
+thanks.
+
+--jmhuang
