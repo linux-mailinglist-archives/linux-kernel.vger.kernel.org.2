@@ -2,60 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F097A3AF9B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A04EC3AF9B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232142AbhFUXow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 19:44:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39956 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231486AbhFUXov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 19:44:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE5D7611BD;
-        Mon, 21 Jun 2021 23:42:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624318957;
-        bh=LbtiJo7X6u8ObVFmZtZLMgw6UKzAz6klxd8rt//+jjg=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=qAyndvQe4lRDEaFpAZafZxLGLDRzxUnWTClbnDQnog1MQXJNBlZR3KiEdDEBmIJCE
-         4i7f3o9cRBRuHhETTQbm6+n53L3978fUZ7ncb+HBJkWz+F4CXFuK1cR8JoMTdk85I1
-         j1XpzSqmtsYAjPSNqT+O6zm9YtTEv+FnBFkytw1LD2L3CRimGnoAyB6amSEr/JwJRj
-         YeommXN+aGrDLB/jw3gVH+fH38Db1OgUJSGTDSkAN+r8LB/nHIUKPR0PzyMeFRXKZb
-         Fe3b8YaDahlsRAPVcIGlMJehfJegXa65Dsi7naIXBosxcWucXbttiZkuVsoYQ3dGOd
-         2yAg7i2InitJQ==
-Content-Type: text/plain; charset="utf-8"
+        id S232031AbhFUXqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 19:46:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231486AbhFUXqV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 19:46:21 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99FCC061574;
+        Mon, 21 Jun 2021 16:44:05 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id f15so6032365wro.8;
+        Mon, 21 Jun 2021 16:44:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dkfEivTJ/i26MPVfrBKgtPUKbo9w17uJTMSrgD2eqdY=;
+        b=oYVrW9ZO5ZsWfZI7ky1Mi50azrN2wO3BB81Tmwchom8xnc5uqZRVf34P29fNovw2Dz
+         ZNQibF1z0lANfFpD1rjk385hAwrl2f2v+fXyjqP8iG2Qr9OwrVdNh4ot0M9YWrJ+jQxA
+         EkbnAn0kvMThOcKNIFwUop8kzTSlAV4tkxXRywF/+4mxhAXtaH8v890XlNE54Aqtta6i
+         wiWlp+z5eJj6d8wmNiYAd1F94pPQoy3Q2cYE23lNtIgK2T/z3BPjFIBPoxmIqwjurycT
+         WIFBW17NpULpCuq29xKvhW07MqzLbBro4s11hf/kCGBYRTEBHMwuZIa89lVQgsML20Cj
+         fY5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dkfEivTJ/i26MPVfrBKgtPUKbo9w17uJTMSrgD2eqdY=;
+        b=epE83YzNBCla7/TUoIrVDJMTJpGmCoaObcz7nblcx6pXOfODl+jy560PQszczTtAMN
+         2cDatYQsZOUjM/Hu+uITqwYjfveEqDAv9pqu29lazyd/yPBzxj5T6RBQdT9lIJcE2vEM
+         2Mhvke3xGmOSD+mxCA9ylDMaBoHolnuZmaaf898fgsCyiIXLyLbFce8x88a9yZ08pJe8
+         c27Tweku0qzJ6QYeExYjnTWqiGbzMkNImIpODUB3GRPp6x4ZOnEeG/212dAVYrO06AvA
+         ccyY2UKgP4wacpOn8fL2BFLCZG8lhYz97U70yNVaqecWyGQ9jpMPfq4+OeFlbHhf8ZNt
+         RU7A==
+X-Gm-Message-State: AOAM530+BTwvApTedoUirlKDeTNfV7WwaXKTnYuK2PxjoejFLBJQLrkY
+        qGQpGRhyCfbr7fywTM9Iwy8=
+X-Google-Smtp-Source: ABdhPJz2G+xhicVhcujyn9BYWbKTDJZXahzlmrvJ5VgRC+iRhErU8dSXo8i70WHbATY3t7/YrTXiag==
+X-Received: by 2002:a05:6000:1a41:: with SMTP id t1mr1043592wry.175.1624319044213;
+        Mon, 21 Jun 2021 16:44:04 -0700 (PDT)
+Received: from honeypot.. ([151.29.45.200])
+        by smtp.googlemail.com with ESMTPSA id n18sm473130wmq.41.2021.06.21.16.44.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 16:44:03 -0700 (PDT)
+From:   Riccardo Mancini <rickyman7@gmail.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Riccardo Mancini <rickyman7@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] perf: add missing evlist__delete when deleting
+Date:   Tue, 22 Jun 2021 01:43:16 +0200
+Message-Id: <20210621234317.235545-1-rickyman7@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1623740819-28040-1-git-send-email-abel.vesa@nxp.com>
-References: <1623740819-28040-1-git-send-email-abel.vesa@nxp.com>
-Subject: Re: [GIT PULL] clk: imx: Updates for v5.14
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     NXP Linux Team <linux-imx@nxp.com>, linux-clk@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-To:     Abel Vesa <abel.vesa@nxp.com>
-Date:   Mon, 21 Jun 2021 16:42:35 -0700
-Message-ID: <162431895570.3552334.196688138042205414@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Abel Vesa (2021-06-15 00:06:59)
-> The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627=
-b5:
->=20
->   Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
->=20
-> are available in the Git repository at:
->=20
->   git://git.kernel.org/pub/scm/linux/kernel/git/abelvesa/linux.git/ tags/=
-clk-imx-5.14
->=20
-> for you to fetch changes up to c586f53ae159c6c1390f093a1ec94baef2df9f3a:
->=20
->   clk: imx8mq: remove SYS PLL 1/2 clock gates (2021-06-14 17:05:45 +0300)
->=20
-> ----------------------------------------------------------------
+ASan reports a memory leak caused by evlist not being deleted on exit in
+perf-report and perf-script.
+The problem is caused by evlist__delete not being called before
+perf_session__delete, since the latter does not delete the evlist too.
+These two patches add the missing deletes in both perf-report and 
+perf-script.
 
-Thanks. Pulled into clk-next
+ASan report follows:
+
+$ ./perf script report flamegraph
+=================================================================
+==227640==ERROR: LeakSanitizer: detected memory leaks
+
+<SNIP unrelated>
+
+Indirect leak of 2704 byte(s) in 1 object(s) allocated from:
+    #0 0x4f4137 in calloc (/home/user/linux/tools/perf/perf+0x4f4137)
+    #1 0xbe3d56 in zalloc /home/user/linux/tools/lib/perf/../../lib/zalloc.c:8:9
+    #2 0x7f999e in evlist__new /home/user/linux/tools/perf/util/evlist.c:77:26
+    #3 0x8ad938 in perf_session__read_header /home/user/linux/tools/perf/util/header.c:3797:20
+    #4 0x8ec714 in perf_session__open /home/user/linux/tools/perf/util/session.c:109:6
+    #5 0x8ebe83 in perf_session__new /home/user/linux/tools/perf/util/session.c:213:10
+    #6 0x60c6de in cmd_script /home/user/linux/tools/perf/builtin-script.c:3856:12
+    #7 0x7b2930 in run_builtin /home/user/linux/tools/perf/perf.c:313:11
+    #8 0x7b120f in handle_internal_command /home/user/linux/tools/perf/perf.c:365:8
+    #9 0x7b2493 in run_argv /home/user/linux/tools/perf/perf.c:409:2
+    #10 0x7b0c89 in main /home/user/linux/tools/perf/perf.c:539:3
+    #11 0x7f5260654b74  (/lib64/libc.so.6+0x27b74)
+
+Indirect leak of 568 byte(s) in 1 object(s) allocated from:
+    #0 0x4f4137 in calloc (/home/user/linux/tools/perf/perf+0x4f4137)
+    #1 0xbe3d56 in zalloc /home/user/linux/tools/lib/perf/../../lib/zalloc.c:8:9
+    #2 0x80ce88 in evsel__new_idx /home/user/linux/tools/perf/util/evsel.c:268:24
+    #3 0x8aed93 in evsel__new /home/user/linux/tools/perf/util/evsel.h:210:9
+    #4 0x8ae07e in perf_session__read_header /home/user/linux/tools/perf/util/header.c:3853:11
+    #5 0x8ec714 in perf_session__open /home/user/linux/tools/perf/util/session.c:109:6
+    #6 0x8ebe83 in perf_session__new /home/user/linux/tools/perf/util/session.c:213:10
+    #7 0x60c6de in cmd_script /home/user/linux/tools/perf/builtin-script.c:3856:12
+    #8 0x7b2930 in run_builtin /home/user/linux/tools/perf/perf.c:313:11
+    #9 0x7b120f in handle_internal_command /home/user/linux/tools/perf/perf.c:365:8
+    #10 0x7b2493 in run_argv /home/user/linux/tools/perf/perf.c:409:2
+    #11 0x7b0c89 in main /home/user/linux/tools/perf/perf.c:539:3
+    #12 0x7f5260654b74  (/lib64/libc.so.6+0x27b74)
+
+Indirect leak of 264 byte(s) in 1 object(s) allocated from:
+    #0 0x4f4137 in calloc (/home/user/linux/tools/perf/perf+0x4f4137)
+    #1 0xbe3d56 in zalloc /home/user/linux/tools/lib/perf/../../lib/zalloc.c:8:9
+    #2 0xbe3e70 in xyarray__new /home/user/linux/tools/lib/perf/xyarray.c:10:23
+    #3 0xbd7754 in perf_evsel__alloc_id /home/user/linux/tools/lib/perf/evsel.c:361:21
+    #4 0x8ae201 in perf_session__read_header /home/user/linux/tools/perf/util/header.c:3871:7
+    #5 0x8ec714 in perf_session__open /home/user/linux/tools/perf/util/session.c:109:6
+    #6 0x8ebe83 in perf_session__new /home/user/linux/tools/perf/util/session.c:213:10
+    #7 0x60c6de in cmd_script /home/user/linux/tools/perf/builtin-script.c:3856:12
+    #8 0x7b2930 in run_builtin /home/user/linux/tools/perf/perf.c:313:11
+    #9 0x7b120f in handle_internal_command /home/user/linux/tools/perf/perf.c:365:8
+    #10 0x7b2493 in run_argv /home/user/linux/tools/perf/perf.c:409:2
+    #11 0x7b0c89 in main /home/user/linux/tools/perf/perf.c:539:3
+    #12 0x7f5260654b74  (/lib64/libc.so.6+0x27b74)
+
+Indirect leak of 32 byte(s) in 1 object(s) allocated from:
+    #0 0x4f4137 in calloc (/home/user/linux/tools/perf/perf+0x4f4137)
+    #1 0xbe3d56 in zalloc /home/user/linux/tools/lib/perf/../../lib/zalloc.c:8:9
+    #2 0xbd77e0 in perf_evsel__alloc_id /home/user/linux/tools/lib/perf/evsel.c:365:14
+    #3 0x8ae201 in perf_session__read_header /home/user/linux/tools/perf/util/header.c:3871:7
+    #4 0x8ec714 in perf_session__open /home/user/linux/tools/perf/util/session.c:109:6
+    #5 0x8ebe83 in perf_session__new /home/user/linux/tools/perf/util/session.c:213:10
+    #6 0x60c6de in cmd_script /home/user/linux/tools/perf/builtin-script.c:3856:12
+    #7 0x7b2930 in run_builtin /home/user/linux/tools/perf/perf.c:313:11
+    #8 0x7b120f in handle_internal_command /home/user/linux/tools/perf/perf.c:365:8
+    #9 0x7b2493 in run_argv /home/user/linux/tools/perf/perf.c:409:2
+    #10 0x7b0c89 in main /home/user/linux/tools/perf/perf.c:539:3
+    #11 0x7f5260654b74  (/lib64/libc.so.6+0x27b74)
+
+Indirect leak of 7 byte(s) in 1 object(s) allocated from:
+    #0 0x4b8207 in strdup (/home/user/linux/tools/perf/perf+0x4b8207)
+    #1 0x8b4459 in evlist__set_event_name /home/user/linux/tools/perf/util/header.c:2292:16
+    #2 0x89d862 in process_event_desc /home/user/linux/tools/perf/util/header.c:2313:3
+    #3 0x8af319 in perf_file_section__process /home/user/linux/tools/perf/util/header.c:3651:9
+    #4 0x8aa6e9 in perf_header__process_sections /home/user/linux/tools/perf/util/header.c:3427:9
+    #5 0x8ae3e7 in perf_session__read_header /home/user/linux/tools/perf/util/header.c:3886:2
+    #6 0x8ec714 in perf_session__open /home/user/linux/tools/perf/util/session.c:109:6
+    #7 0x8ebe83 in perf_session__new /home/user/linux/tools/perf/util/session.c:213:10
+    #8 0x60c6de in cmd_script /home/user/linux/tools/perf/builtin-script.c:3856:12
+    #9 0x7b2930 in run_builtin /home/user/linux/tools/perf/perf.c:313:11
+    #10 0x7b120f in handle_internal_command /home/user/linux/tools/perf/perf.c:365:8
+    #11 0x7b2493 in run_argv /home/user/linux/tools/perf/perf.c:409:2
+    #12 0x7b0c89 in main /home/user/linux/tools/perf/perf.c:539:3
+    #13 0x7f5260654b74  (/lib64/libc.so.6+0x27b74)
+
+SUMMARY: AddressSanitizer: 3728 byte(s) leaked in 7 allocation(s).
+
+Riccardo Mancini (2):
+  perf report: delete evlist when deleting session
+  perf script: delete evlist when deleting session
+
+ tools/perf/builtin-report.c | 2 ++
+ tools/perf/builtin-script.c | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+-- 
+2.31.1
+
