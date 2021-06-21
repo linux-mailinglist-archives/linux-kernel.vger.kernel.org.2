@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDD6B3AED61
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22BEA3AED62
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhFUQTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:19:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39558 "EHLO mail.kernel.org"
+        id S231174AbhFUQTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:19:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231139AbhFUQTX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:19:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4B706115B;
-        Mon, 21 Jun 2021 16:17:07 +0000 (UTC)
+        id S230102AbhFUQTZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:19:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 602FC61363;
+        Mon, 21 Jun 2021 16:17:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292228;
-        bh=mucShEdvimHrvOvUTvDiwfH5DrV9OhOorWz00grWSLw=;
+        s=korg; t=1624292230;
+        bh=rTTHAVyGKtxLRLlCtM0ym14kZQyZ59KzEhzWvIGrUnQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EVEhO96a/8E23wjw0IeADOVW8UtSYlur78D87LzxxKE7oJ5f+AjwaF8FgcuymFUQN
-         WBx2GNcMtFYxa6nd0u5hZel1APMMLnN2VrutenCDz8RDdI0jy4edKhbBr6JCNbaAiE
-         pyOVl5ZQ5e7h9n7TY9bWJBWJiYAhggnXrPynOPzs=
+        b=HZ2XywS4TpvoVxTakuKETJEt0ogWiTGm+zCO2ZhXfamPowY2TLV6B0fC7YQaBTQwX
+         Nsb8AM5Cq0efaq4KLQImiw5TYqOG8ounpE5rDXFfBCAhkF1i5KaZqk3ih8HLqAETo4
+         m1sNs+uEjFCJGlZtA47LarGuHMVLdHdNpFJm5808=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        stable@vger.kernel.org,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 13/90] rtnetlink: Fix regression in bridge VLAN configuration
-Date:   Mon, 21 Jun 2021 18:14:48 +0200
-Message-Id: <20210621154904.594531065@linuxfoundation.org>
+Subject: [PATCH 5.4 14/90] net/sched: act_ct: handle DNAT tuple collision
+Date:   Mon, 21 Jun 2021 18:14:49 +0200
+Message-Id: <20210621154904.626642941@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210621154904.159672728@linuxfoundation.org>
 References: <20210621154904.159672728@linuxfoundation.org>
@@ -41,53 +41,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ido Schimmel <idosch@nvidia.com>
+From: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
 
-[ Upstream commit d2e381c4963663bca6f30c3b996fa4dbafe8fcb5 ]
+[ Upstream commit 13c62f5371e3eb4fc3400cfa26e64ca75f888008 ]
 
-Cited commit started returning errors when notification info is not
-filled by the bridge driver, resulting in the following regression:
+This this the counterpart of 8aa7b526dc0b ("openvswitch: handle DNAT
+tuple collision") for act_ct. From that commit changelog:
 
- # ip link add name br1 type bridge vlan_filtering 1
- # bridge vlan add dev br1 vid 555 self pvid untagged
- RTNETLINK answers: Invalid argument
+"""
+With multiple DNAT rules it's possible that after destination
+translation the resulting tuples collide.
 
-As long as the bridge driver does not fill notification info for the
-bridge device itself, an empty notification should not be considered as
-an error. This is explained in commit 59ccaaaa49b5 ("bridge: dont send
-notification when skb->len == 0 in rtnl_bridge_notify").
+...
 
-Fix by removing the error and add a comment to avoid future bugs.
+Netfilter handles this case by allocating a null binding for SNAT at
+egress by default.  Perform the same operation in openvswitch for DNAT
+if no explicit SNAT is requested by the user and allocate a null binding
+for SNAT for packets in the "original" direction.
+"""
 
-Fixes: a8db57c1d285 ("rtnetlink: Fix missing error code in rtnl_bridge_notify()")
-Signed-off-by: Ido Schimmel <idosch@nvidia.com>
-Reviewed-by: Nikolay Aleksandrov <nikolay@nvidia.com>
+Fixes: 95219afbb980 ("act_ct: support asymmetric conntrack")
+Signed-off-by: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/rtnetlink.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ net/sched/act_ct.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/net/core/rtnetlink.c b/net/core/rtnetlink.c
-index bdeb169a7a99..0bad5db23129 100644
---- a/net/core/rtnetlink.c
-+++ b/net/core/rtnetlink.c
-@@ -4535,10 +4535,12 @@ static int rtnl_bridge_notify(struct net_device *dev)
- 	if (err < 0)
- 		goto errout;
+diff --git a/net/sched/act_ct.c b/net/sched/act_ct.c
+index 31eb8eefc868..16c4cbf6d1f0 100644
+--- a/net/sched/act_ct.c
++++ b/net/sched/act_ct.c
+@@ -361,14 +361,19 @@ static int tcf_ct_act_nat(struct sk_buff *skb,
+ 	}
  
--	if (!skb->len) {
--		err = -EINVAL;
-+	/* Notification info is only filled for bridge ports, not the bridge
-+	 * device itself. Therefore, a zero notification length is valid and
-+	 * should not result in an error.
-+	 */
-+	if (!skb->len)
- 		goto errout;
--	}
- 
- 	rtnl_notify(skb, net, 0, RTNLGRP_LINK, NULL, GFP_ATOMIC);
- 	return 0;
+ 	err = ct_nat_execute(skb, ct, ctinfo, range, maniptype);
+-	if (err == NF_ACCEPT &&
+-	    ct->status & IPS_SRC_NAT && ct->status & IPS_DST_NAT) {
+-		if (maniptype == NF_NAT_MANIP_SRC)
+-			maniptype = NF_NAT_MANIP_DST;
+-		else
+-			maniptype = NF_NAT_MANIP_SRC;
+-
+-		err = ct_nat_execute(skb, ct, ctinfo, range, maniptype);
++	if (err == NF_ACCEPT && ct->status & IPS_DST_NAT) {
++		if (ct->status & IPS_SRC_NAT) {
++			if (maniptype == NF_NAT_MANIP_SRC)
++				maniptype = NF_NAT_MANIP_DST;
++			else
++				maniptype = NF_NAT_MANIP_SRC;
++
++			err = ct_nat_execute(skb, ct, ctinfo, range,
++					     maniptype);
++		} else if (CTINFO2DIR(ctinfo) == IP_CT_DIR_ORIGINAL) {
++			err = ct_nat_execute(skb, ct, ctinfo, NULL,
++					     NF_NAT_MANIP_SRC);
++		}
+ 	}
+ 	return err;
+ #else
 -- 
 2.30.2
 
