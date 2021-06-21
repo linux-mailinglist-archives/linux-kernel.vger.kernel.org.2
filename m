@@ -2,106 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 445863AE914
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D57B3AE918
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhFUMbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 08:31:49 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3295 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbhFUMbq (ORCPT
+        id S229762AbhFUMdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 08:33:10 -0400
+Received: from gimli.rothwell.id.au ([103.230.158.156]:48735 "EHLO
+        gimli.rothwell.id.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhFUMdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 08:31:46 -0400
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G7pQw6HZLz6H8DN;
-        Mon, 21 Jun 2021 20:16:08 +0800 (CST)
-Received: from roberto-ThinkStation-P620.huawei.com (10.204.62.217) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 21 Jun 2021 14:29:29 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     <zohar@linux.ibm.com>, <paul@paul-moore.com>,
-        <stephen.smalley.work@gmail.com>, <casey@schaufler-ca.com>,
-        <stefanb@linux.ibm.com>
-CC:     <linux-integrity@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <selinux@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH v2] evm: Check xattr size discrepancy between kernel and user
-Date:   Mon, 21 Jun 2021 14:29:12 +0200
-Message-ID: <20210621122912.1472470-1-roberto.sassu@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 21 Jun 2021 08:33:09 -0400
+Received: from authenticated.rothwell.id.au (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.rothwell.id.au (Postfix) with ESMTPSA id 4G7plp719qzyNc;
+        Mon, 21 Jun 2021 22:30:46 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rothwell.id.au;
+        s=201702; t=1624278651;
+        bh=JQxVDoKF51qG0AkUhMlXbwCZCBS+9ZJYGc/Mz5M8mlQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KHiYwXfW/pku6rbNnj6hfeThwnw7A4z63MRtjVch5y9WhXukmPGySQORCmV9Vq7LW
+         3LPAB3i6oOXwNIdIQORNI+106+Zt4W256j4fCmvZAEwXD3o/p3w7nEq5q/AhpZ03ZA
+         7Xf9FEPobVo863M/vi3lGLhEOyas+TS8brRZWMm1qt78DZ7j/dwjGNlViv4j70mYW5
+         Aw6hFGyPs2IakijTi4ZHsAJZv5B3Y8HmdOtKgdCUK7wtRSjL3ZcHKe1hCMpo5J/EQx
+         dOUY3DIIfnKPu+NMvayMbquLxCLKkmovx9rwQDvhgHdFXPq1CGVjv09Yz1UwaDNvIX
+         sRtOl04zEZ8PA==
+Date:   Mon, 21 Jun 2021 22:30:45 +1000
+From:   Stephen Rothwell <sfr@rothwell.id.au>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Jens Axboe <axboe@kernel.dk>,
+        David Miller <davem@davemloft.net>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Finn Thain <fthain@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Subject: Re: linux-next: manual merge of the block tree with the ide and
+ kspp-gustavo trees
+Message-ID: <20210621223045.018223b9@elm.ozlabs.ibm.com>
+In-Reply-To: <CAHp75VcJKX4xzP1PrCBixDzgGBGwVvbV3YtMebKxpRoi1_EhaA@mail.gmail.com>
+References: <20210621141110.548ec3d0@canb.auug.org.au>
+        <CAHp75VcJKX4xzP1PrCBixDzgGBGwVvbV3YtMebKxpRoi1_EhaA@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.204.62.217]
-X-ClientProxiedBy: lhreml752-chm.china.huawei.com (10.201.108.202) To
- fraeml714-chm.china.huawei.com (10.206.15.33)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/Fy5o/0mu3mzyH2Kk2QtDPd5";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel and the user obtain an xattr value in two different ways:
+--Sig_/Fy5o/0mu3mzyH2Kk2QtDPd5
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-kernel (EVM): uses vfs_getxattr_alloc() which obtains the xattr value from
-              the filesystem handler (raw value);
+Hi Andy,
 
-user (ima-evm-utils): uses vfs_getxattr() which obtains the xattr value
-                      from the LSMs (normalized value).
+On Mon, 21 Jun 2021 13:56:13 +0300 Andy Shevchenko <andy.shevchenko@gmail.c=
+om> wrote:
+>
+> On Mon, Jun 21, 2021 at 7:13 AM Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>=20
+>=20
+> >   2c8cbe0b2971 ("IDE SUBSYSTEM: Replace HTTP links with HTTPS ones")
+> >   9a51ffe845e4 ("ide: use generic power management")
+> >   f9e09a0711ca ("ide: sc1200: use generic power management")
+> >   d41b375134a9 ("ide: delkin_cb: use generic power management")
+> >   6800cd8cbc6e ("ide-acpi: use %*ph to print small buffer")
+> >   731d5f441e1c ("ide: Fix fall-through warnings for Clang")
+> >
+> > from the ide and kspp-gustavo trees and commits: =20
+>=20
+> As far as I can tell the IDE hasn't sent PR to LInus for a long time
+> (like a few release cycles). I don't know what happened there, though.
 
-Normally, this does not have an impact unless security.selinux is set with
-setfattr, with a value not terminated by '\0' (this is not the recommended
-way, security.selinux should be set with the appropriate tools such as
-chcon and restorecon).
+Yeah, the top commit in the ide tree (which is intended to hold bug
+fixes for Linus' tree) is dated 4 Aug 2020, so hopefully this will
+prompt Dave to do something with it.  There has been no ide "future
+development" tree in linux-next since 2011.
 
-In this case, the kernel and the user see two different xattr values: the
-former sees the xattr value without '\0' (raw value), the latter sees the
-value with '\0' (value normalized by SELinux).
+--=20
+Cheers,
+Stephen Rothwell
 
-This could result in two different verification outcomes from EVM and
-ima-evm-utils, if a signature was calculated with a security.selinux value
-terminated by '\0' and the value set in the filesystem is not terminated by
-'\0'. The former would report verification failure due to the missing '\0',
-while the latter would report verification success (because it gets the
-normalized value with '\0').
+--Sig_/Fy5o/0mu3mzyH2Kk2QtDPd5
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-This patch mitigates this issue by comparing in evm_calc_hmac_or_hash() the
-size of the xattr returned by the two xattr functions and by warning the
-user if there is a discrepancy.
+-----BEGIN PGP SIGNATURE-----
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Suggested-by: Mimi Zohar <zohar@linux.ibm.com>
----
- security/integrity/evm/evm_crypto.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDQhnUACgkQAVBC80lX
+0GwlvAf+Jy/JQiD1G3kpyheGpSOuus8Uqp9jpo6/dNQOcZ+0xWbkXDM7xJWpePle
+SOR+ISangurQsuIN83jczgtHErE899J1Lol1rP8sgH/KBDKDgH4H21wljLofLHR6
+KbbpNsWhxK59YzKQqC401ERzXIFD4u0iKzI3M1VT/c3/Ksr1QzpW2iN+euBnOd+U
+8MWs62yQPI0aF7PwxNWAZLOOW7aiHzFu9n567nVCWjGAMU8VdOHPw6ZYCulc7UBB
+byzeFkrkgO5LdXgrOYMGnDCfXRwQPcit5nDf7H341blySIqtu8E96cWpkI7sG5R0
+2zG8efbBE0lws7KFINz8bvPAXfD2Gg==
+=SPti
+-----END PGP SIGNATURE-----
 
-diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
-index 96b22f2ac27a..462c5258322a 100644
---- a/security/integrity/evm/evm_crypto.c
-+++ b/security/integrity/evm/evm_crypto.c
-@@ -221,7 +221,7 @@ static int evm_calc_hmac_or_hash(struct dentry *dentry,
- 	size_t xattr_size = 0;
- 	char *xattr_value = NULL;
- 	int error;
--	int size;
-+	int size, user_space_size;
- 	bool ima_present = false;
- 
- 	if (!(inode->i_opflags & IOP_XATTR) ||
-@@ -276,6 +276,12 @@ static int evm_calc_hmac_or_hash(struct dentry *dentry,
- 		if (size < 0)
- 			continue;
- 
-+		user_space_size = vfs_getxattr(&init_user_ns, dentry,
-+					       xattr->name, NULL, 0);
-+		if (user_space_size != size)
-+			pr_debug("file %s: xattr %s size mismatch (kernel: %d, user: %d)\n",
-+				 dentry->d_name.name, xattr->name, size,
-+				 user_space_size);
- 		error = 0;
- 		xattr_size = size;
- 		crypto_shash_update(desc, (const u8 *)xattr_value, xattr_size);
--- 
-2.25.1
-
+--Sig_/Fy5o/0mu3mzyH2Kk2QtDPd5--
