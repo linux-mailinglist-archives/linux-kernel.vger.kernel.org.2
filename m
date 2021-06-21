@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 298F23AEBF0
+	by mail.lfdr.de (Postfix) with ESMTP id B21AB3AEBF1
 	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhFUPHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 11:07:16 -0400
-Received: from mga02.intel.com ([134.134.136.20]:58513 "EHLO mga02.intel.com"
+        id S230206AbhFUPHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 11:07:17 -0400
+Received: from mga02.intel.com ([134.134.136.20]:58517 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229747AbhFUPHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 11:07:14 -0400
-IronPort-SDR: B/JeFTeGLjkKljfiofzvWmj7D8Pqg1Mh2uq0zmnCQ2w0s+Bn07MQpagFKRZ+ZO03nNHYcwOByX
- Wd5amrHbUfEw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="193998786"
+        id S230028AbhFUPHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 11:07:15 -0400
+IronPort-SDR: 9zhNhtmDqOyBWC10elTKKftcB2/MsJXTgscKyay60mQ5KGeYMGA/D1QFL3S3rOozBbfMOF4YHZ
+ UL/3HaYI2mAg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="193998805"
 X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208";a="193998786"
+   d="scan'208";a="193998805"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 08:04:54 -0700
-IronPort-SDR: vZ+04PrVbHVu1SiDnl29C5d8dcffnRutge9/QkMSvs5cUmUcxQKrAH4fZn1N+sszy3cJpiKkif
- 6Esbb5ANcuTg==
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 08:04:57 -0700
+IronPort-SDR: oJMUWTYdXZdDzNRHherZjRWKTvOh3SM0Dmy4qSukYbGc4963k6cOGzRUjwggJdI6pncEPbB9+k
+ qZTJnLRULF0w==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208";a="486519153"
+   d="scan'208";a="486519190"
 Received: from ahunter-desktop.fi.intel.com ([10.237.72.79])
-  by orsmga001.jf.intel.com with ESMTP; 21 Jun 2021 08:04:51 -0700
+  by orsmga001.jf.intel.com with ESMTP; 21 Jun 2021 08:04:54 -0700
 From:   Adrian Hunter <adrian.hunter@intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
 Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
@@ -35,56 +35,94 @@ Cc:     Jiri Olsa <jolsa@redhat.com>, Andi Kleen <ak@linux.intel.com>,
         Leo Yan <leo.yan@linaro.org>,
         Kan Liang <kan.liang@linux.intel.com>,
         linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RFC 00/11] perf script: Add API for filtering via dynamically loaded shared object
-Date:   Mon, 21 Jun 2021 18:05:03 +0300
-Message-Id: <20210621150514.32159-1-adrian.hunter@intel.com>
+Subject: [PATCH RFC 01/11] perf script: Move filter_cpu() earlier
+Date:   Mon, 21 Jun 2021 18:05:04 +0300
+Message-Id: <20210621150514.32159-2-adrian.hunter@intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210621150514.32159-1-adrian.hunter@intel.com>
+References: <20210621150514.32159-1-adrian.hunter@intel.com>
 Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Generally, it should be more efficient if filter_cpu() comes before
+machine__resolve() because filter_cpu() is much less code than
+machine__resolve().
+
+Example:
+
+ $ perf record --sample-cpu -- make -C tools/perf >/dev/null
+
+Before:
+
+ $ perf stat -- perf script -C 0 >/dev/null
+
+  Performance counter stats for 'perf script -C 0':
+
+            116.94 msec task-clock                #    0.992 CPUs utilized
+                 2      context-switches          #   17.103 /sec
+                 0      cpu-migrations            #    0.000 /sec
+             8,187      page-faults               #   70.011 K/sec
+       478,351,812      cycles                    #    4.091 GHz
+       564,785,464      instructions              #    1.18  insn per cycle
+       114,341,105      branches                  #  977.789 M/sec
+         2,615,495      branch-misses             #    2.29% of all branches
+
+       0.117840576 seconds time elapsed
+
+       0.085040000 seconds user
+       0.032396000 seconds sys
+
+After:
+
+ $ perf stat -- perf script -C 0 >/dev/null
+
+  Performance counter stats for 'perf script -C 0':
+
+            107.45 msec task-clock                #    0.992 CPUs utilized
+                 3      context-switches          #   27.919 /sec
+                 0      cpu-migrations            #    0.000 /sec
+             7,964      page-faults               #   74.117 K/sec
+       438,417,260      cycles                    #    4.080 GHz
+       522,571,855      instructions              #    1.19  insn per cycle
+       105,187,488      branches                  #  978.921 M/sec
+         2,356,261      branch-misses             #    2.24% of all branches
+
+       0.108282546 seconds time elapsed
+
+       0.095935000 seconds user
+       0.011991000 seconds sys
+
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+---
+ tools/perf/builtin-script.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+index 57488d60b64a..08a2b5d51018 100644
+--- a/tools/perf/builtin-script.c
++++ b/tools/perf/builtin-script.c
+@@ -2191,6 +2191,9 @@ static int process_sample_event(struct perf_tool *tool,
+ 		return 0;
+ 	}
  
-In some cases, users want to filter very large amounts of data (e.g. from
-AUX area tracing like Intel PT) looking for something specific. While
-scripting such as Python can be used, Python is 10 to 20 times slower than
-C. So define a C API so that custom filters can be written and loaded.
++	if (filter_cpu(sample))
++		return 0;
++
+ 	if (machine__resolve(machine, &al, sample) < 0) {
+ 		pr_err("problem processing %d event, skipping it.\n",
+ 		       event->header.type);
+@@ -2200,9 +2203,6 @@ static int process_sample_event(struct perf_tool *tool,
+ 	if (al.filtered)
+ 		goto out_put;
+ 
+-	if (filter_cpu(sample))
+-		goto out_put;
+-
+ 	if (scripting_ops) {
+ 		struct addr_location *addr_al_ptr = NULL;
+ 		struct addr_location addr_al;
+-- 
+2.17.1
 
-There are 3 preparation patches.  The main patch is patch 4.
-
-The other patches add more functionality, except for patch 6 which installs
-the C API header file.
-
-
-Adrian Hunter (11):
-      perf script: Move filter_cpu() earlier
-      perf script: Move filtering before scripting
-      perf script: Share addr_al between functions
-      perf script: Add API for filtering via dynamically loaded shared object
-      perf script: Add dlfilter__filter_event_early()
-      perf build: Install perf_dlfilter.h
-      perf dlfilter: Add resolve_address() to perf_dlfilter_fns
-      perf dlfilter: Add insn() to perf_dlfilter_fns
-      perf dlfilter: Add srcline() to perf_dlfilter_fns
-      perf dlfilter: Add attr() to perf_dlfilter_fns
-      perf dlfilter: Add object_code() to perf_dlfilter_fns
-
- tools/perf/Documentation/perf-dlfilter.txt | 235 +++++++++++++++
- tools/perf/Documentation/perf-script.txt   |   7 +-
- tools/perf/Makefile.config                 |   3 +
- tools/perf/Makefile.perf                   |   4 +-
- tools/perf/builtin-script.c                |  93 ++++--
- tools/perf/util/Build                      |   1 +
- tools/perf/util/dlfilter.c                 | 469 +++++++++++++++++++++++++++++
- tools/perf/util/dlfilter.h                 |  91 ++++++
- tools/perf/util/perf_dlfilter.h            | 139 +++++++++
- 9 files changed, 1015 insertions(+), 27 deletions(-)
- create mode 100644 tools/perf/Documentation/perf-dlfilter.txt
- create mode 100644 tools/perf/util/dlfilter.c
- create mode 100644 tools/perf/util/dlfilter.h
- create mode 100644 tools/perf/util/perf_dlfilter.h
-
-
-Regards
-Adrian
