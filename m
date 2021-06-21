@@ -2,108 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D57B3AE918
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32A853AE94D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbhFUMdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 08:33:10 -0400
-Received: from gimli.rothwell.id.au ([103.230.158.156]:48735 "EHLO
-        gimli.rothwell.id.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbhFUMdJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 08:33:09 -0400
-Received: from authenticated.rothwell.id.au (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.rothwell.id.au (Postfix) with ESMTPSA id 4G7plp719qzyNc;
-        Mon, 21 Jun 2021 22:30:46 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rothwell.id.au;
-        s=201702; t=1624278651;
-        bh=JQxVDoKF51qG0AkUhMlXbwCZCBS+9ZJYGc/Mz5M8mlQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KHiYwXfW/pku6rbNnj6hfeThwnw7A4z63MRtjVch5y9WhXukmPGySQORCmV9Vq7LW
-         3LPAB3i6oOXwNIdIQORNI+106+Zt4W256j4fCmvZAEwXD3o/p3w7nEq5q/AhpZ03ZA
-         7Xf9FEPobVo863M/vi3lGLhEOyas+TS8brRZWMm1qt78DZ7j/dwjGNlViv4j70mYW5
-         Aw6hFGyPs2IakijTi4ZHsAJZv5B3Y8HmdOtKgdCUK7wtRSjL3ZcHKe1hCMpo5J/EQx
-         dOUY3DIIfnKPu+NMvayMbquLxCLKkmovx9rwQDvhgHdFXPq1CGVjv09Yz1UwaDNvIX
-         sRtOl04zEZ8PA==
-Date:   Mon, 21 Jun 2021 22:30:45 +1000
-From:   Stephen Rothwell <sfr@rothwell.id.au>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Jens Axboe <axboe@kernel.dk>,
-        David Miller <davem@davemloft.net>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Finn Thain <fthain@linux-m68k.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Subject: Re: linux-next: manual merge of the block tree with the ide and
- kspp-gustavo trees
-Message-ID: <20210621223045.018223b9@elm.ozlabs.ibm.com>
-In-Reply-To: <CAHp75VcJKX4xzP1PrCBixDzgGBGwVvbV3YtMebKxpRoi1_EhaA@mail.gmail.com>
-References: <20210621141110.548ec3d0@canb.auug.org.au>
-        <CAHp75VcJKX4xzP1PrCBixDzgGBGwVvbV3YtMebKxpRoi1_EhaA@mail.gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230056AbhFUMpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 08:45:23 -0400
+Received: from mx2.tinno.com ([58.61.149.250]:59713 "EHLO spam.tinno.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229736AbhFUMpV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 08:45:21 -0400
+X-Greylist: delayed 1700 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Jun 2021 08:45:20 EDT
+Received: from spam.tinno.com (localhost [127.0.0.2] (may be forged))
+        by spam.tinno.com with ESMTP id 15LCEiLR019249;
+        Mon, 21 Jun 2021 20:14:44 +0800 (GMT-8)
+        (envelope-from kezhou.li@tinno.com)
+Received: from mailbox01.tinno.com (mailbox01.tinno.com [172.16.5.25])
+        by spam.tinno.com with ESMTPS id 15LCEVSO019168
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=FAIL);
+        Mon, 21 Jun 2021 20:14:31 +0800 (GMT-8)
+        (envelope-from kezhou.li@tinno.com)
+Received: from localhost (172.16.63.58) by mailbox01.tinno.com (172.16.5.27)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 21 Jun 2021 20:14:03
+ +0800
+From:   Kezhou Li <kezhou.li@tinno.com>
+To:     <pali@kernel.org>, <sre@kernel.org>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Kezhou Li <kezhou.li@tinno.com>
+Subject: [External][PATCH] power: supply: bq2415x: fix deadlock in
+ bq2415x_set_autotimer
+Date:   Mon, 21 Jun 2021 20:14:20 +0800
+Message-ID: <1624277660-11440-1-git-send-email-kezhou.li@tinno.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Fy5o/0mu3mzyH2Kk2QtDPd5";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-Originating-IP: [172.16.63.58]
+X-ClientProxiedBy: mailbox01.tinno.com (172.16.5.27) To mailbox01.tinno.com
+ (172.16.5.27)
+X-DNSRBL: 
+X-MAIL: spam.tinno.com 15LCEiLR019249
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Fy5o/0mu3mzyH2Kk2QtDPd5
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: "Kezhou Li" <kezhou.li@tinno.com>
 
-Hi Andy,
+The bq2415x_timer_error called by bq2415x_timer_work when some error
+happens, and then calls cancel_delayed_work_sync(&bq->work). Finally
+this function is waiting for the work to finish but the work is
+waiting for the return of the function. So it causes a deadlock.
 
-On Mon, 21 Jun 2021 13:56:13 +0300 Andy Shevchenko <andy.shevchenko@gmail.c=
-om> wrote:
->
-> On Mon, Jun 21, 2021 at 7:13 AM Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->=20
->=20
-> >   2c8cbe0b2971 ("IDE SUBSYSTEM: Replace HTTP links with HTTPS ones")
-> >   9a51ffe845e4 ("ide: use generic power management")
-> >   f9e09a0711ca ("ide: sc1200: use generic power management")
-> >   d41b375134a9 ("ide: delkin_cb: use generic power management")
-> >   6800cd8cbc6e ("ide-acpi: use %*ph to print small buffer")
-> >   731d5f441e1c ("ide: Fix fall-through warnings for Clang")
-> >
-> > from the ide and kspp-gustavo trees and commits: =20
->=20
-> As far as I can tell the IDE hasn't sent PR to LInus for a long time
-> (like a few release cycles). I don't know what happened there, though.
+Signed-off-by: Kezhou Li <kezhou.li@tinno.com>
+---
+ drivers/power/supply/bq2415x_charger.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Yeah, the top commit in the ide tree (which is intended to hold bug
-fixes for Linus' tree) is dated 4 Aug 2020, so hopefully this will
-prompt Dave to do something with it.  There has been no ide "future
-development" tree in linux-next since 2011.
+diff --git a/drivers/power/supply/bq2415x_charger.c b/drivers/power/supply/bq2415x_charger.c
+index 5724001..7889edb 100644
+--- a/drivers/power/supply/bq2415x_charger.c
++++ b/drivers/power/supply/bq2415x_charger.c
+@@ -862,8 +862,6 @@ static void bq2415x_set_autotimer(struct bq2415x_device *bq, int state)
+ 		schedule_delayed_work(&bq->work, BQ2415X_TIMER_TIMEOUT * HZ);
+ 		bq2415x_exec_command(bq, BQ2415X_TIMER_RESET);
+ 		bq->timer_error = NULL;
+-	} else {
+-		cancel_delayed_work_sync(&bq->work);
+ 	}
+ 
+ 	mutex_unlock(&bq2415x_timer_mutex);
+-- 
+1.9.1
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Fy5o/0mu3mzyH2Kk2QtDPd5
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDQhnUACgkQAVBC80lX
-0GwlvAf+Jy/JQiD1G3kpyheGpSOuus8Uqp9jpo6/dNQOcZ+0xWbkXDM7xJWpePle
-SOR+ISangurQsuIN83jczgtHErE899J1Lol1rP8sgH/KBDKDgH4H21wljLofLHR6
-KbbpNsWhxK59YzKQqC401ERzXIFD4u0iKzI3M1VT/c3/Ksr1QzpW2iN+euBnOd+U
-8MWs62yQPI0aF7PwxNWAZLOOW7aiHzFu9n567nVCWjGAMU8VdOHPw6ZYCulc7UBB
-byzeFkrkgO5LdXgrOYMGnDCfXRwQPcit5nDf7H341blySIqtu8E96cWpkI7sG5R0
-2zG8efbBE0lws7KFINz8bvPAXfD2Gg==
-=SPti
------END PGP SIGNATURE-----
-
---Sig_/Fy5o/0mu3mzyH2Kk2QtDPd5--
