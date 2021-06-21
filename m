@@ -2,98 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 590C53AF507
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A353AF506
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231901AbhFUS2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:28:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33620 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231740AbhFUS2E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:28:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EDD606054E;
-        Mon, 21 Jun 2021 18:25:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624299950;
-        bh=xDbIiO2U9PPPDA8IGdGJB0YSQtthnxnEYlLcPl6LzZk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GkIXifskbHUdNDMnLgqEC7yGxDgDNaOjFv4ijENR4xtQgB4IlqFLUhws3uDzaHCAe
-         oe754NLbUUOcWj8kGxvcSm+XpWorxq6SUN6Ee14MNuAeX2JFP60a2iqEb+t//jGEEs
-         exv5CxQf4pNUkVEwnLYWX7hYx/jD90o5aq2EYafYxfmvu+gl5Wpo47O7L067tHUti2
-         85BH/cU89909Y7F8tI3r/ezdg6IUWHAyX1Y3QP47u0VdMtFy7G5y/YPtgSLbXOLNTC
-         M7C78CmwvzltAta+/dJw/R5UIFidoUHlvBzsIGbsb/aex5Cd8wbwxxomH7JrUuoryt
-         V8fro9fatTHoQ==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] KVM: PPC: Book3S HV: Workaround high stack usage with clang
-Date:   Mon, 21 Jun 2021 11:24:40 -0700
-Message-Id: <20210621182440.990242-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.32.0.93.g670b81a890
-In-Reply-To: <YNDUEoanTqvayZ5P@archlinux-ax161>
-References: <YNDUEoanTqvayZ5P@archlinux-ax161>
+        id S231833AbhFUS2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:28:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230202AbhFUS2D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 14:28:03 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF406C061574;
+        Mon, 21 Jun 2021 11:25:48 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id q23so16120697ljh.0;
+        Mon, 21 Jun 2021 11:25:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UE39sQE7FWv732rmh+5q2NvzRlkG3ZqyU7Z5WAw6Ojg=;
+        b=Zw3+aaGW0rFR5WROkwj0e14WhYewwdlrzW+PlBTaANvZiH5VCbrd+DEy/Q3A+f5qCv
+         wj6JTx4G7J2SWcV54HiHOM2l3oV8zlC5J/dN4JakBYSpekrapPIZux8eZ1S2f+bwhsIP
+         FRaqDJTZFXcib9ON82HTr7qAHVONdvk5ACDfYOa1pieHpBi0M8iFJzZi8QvwiQY8pROq
+         4EI1qHVPVFTHI2QR4NPrBXQeItOloyvsOd/lWCHHNxcvXyxkMnnPrQfSL/+oApLbcVLf
+         zzARW5bX3RrDwgswakgKetw1rEKYEqhVZGbMU4GcHe+Vu8s0lU3LY2JLSMXkTCYxLRpf
+         k6hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UE39sQE7FWv732rmh+5q2NvzRlkG3ZqyU7Z5WAw6Ojg=;
+        b=XGl7IibhvcHcVTN1vEdRpg5s34MNZtz0xGzNSjsV+/tnIYeaU6SbBJKMvYIYtl595m
+         KDNJFA1ZEbY7a0yrnZbaKWmIC12F6kqbWr0JwFIfbQglN35GAcTQcL7uxee3Yj9w/Jgi
+         gdxCDUS5R0+c4W+Mfi1qAkcaReCesJP9QRfqANpuDGTwS9//k0adtUqd/EI3w3xGGqUZ
+         HUvOdm6pI9uVQ9wWrhq/hgEm7p9hGjcRdPAYHdIfUoo0wo+XsgB44DtJ2u2V1OFYXPmu
+         rn9XP0SdmJAV9OpZ5OaLH4ZIH7o2BNbw54Pe+lNyf1t9hZt1vrfnslRuJWFfktwY9AY2
+         Sqew==
+X-Gm-Message-State: AOAM533lA95xyOZNHitg7GnXvundkk2NRCfpC2DBdpde9xht8MQOn/dk
+        b627UAiIZKIJWvnmTQe9X95vmX1ujeg=
+X-Google-Smtp-Source: ABdhPJzguFz7FhLyzTq9Ad9RccZfyhT4R1mFoXnQ0l3mtdB5WVsN/17wL/ch/cVKeEI73i3E86ayng==
+X-Received: by 2002:a2e:870d:: with SMTP id m13mr23249096lji.250.1624299947185;
+        Mon, 21 Jun 2021 11:25:47 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
+        by smtp.googlemail.com with ESMTPSA id b11sm1948098lfi.292.2021.06.21.11.25.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 11:25:46 -0700 (PDT)
+Subject: Re: [PATCH v4 0/6] Add driver for NVIDIA Tegra30 SoC Thermal sensor
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Ihor Didenko <tailormoon@rambler.ru>,
+        Ion Agorria <ion@agorria.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20210616190417.32214-1-digetx@gmail.com>
+ <e1e3816a-ddf4-be13-0410-0b929f3be60b@linaro.org>
+ <cdc3d6fe-f2a8-d50c-af11-98ab4f72b713@gmail.com>
+ <1f938d62-aeac-325f-4735-80cccfd529c2@linaro.org>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <fd2191fb-e102-03ab-386b-da8189252c19@gmail.com>
+Date:   Mon, 21 Jun 2021 21:25:46 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
+In-Reply-To: <1f938d62-aeac-325f-4735-80cccfd529c2@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LLVM does not emit optimal byteswap assembly, which results in high
-stack usage in kvmhv_enter_nested_guest() due to the inlining of
-byteswap_pt_regs(). With LLVM 12.0.0:
+21.06.2021 21:16, Daniel Lezcano пишет:
+> On 21/06/2021 19:26, Dmitry Osipenko wrote:
+>> 21.06.2021 20:13, Daniel Lezcano пишет:
+>>>
+>>> Hi Dmitry,
+>>>
+>>> I compiled the your series and got these unresolved.
+>>>
+>>> arm-linux-gnueabi-ld: drivers/thermal/tegra/soctherm-fuse.o: in function
+>>> `tegra_calc_shared_calib':
+>>> soctherm-fuse.c:(.text+0x60): undefined reference to `tegra_fuse_readl'
+>>> arm-linux-gnueabi-ld: soctherm-fuse.c:(.text+0xf0): undefined reference
+>>> to `tegra_fuse_readl'
+>>> arm-linux-gnueabi-ld: drivers/thermal/tegra/soctherm-fuse.o: in function
+>>> `tegra_calc_tsensor_calib':
+>>> soctherm-fuse.c:(.text+0x144): undefined reference to `tegra_fuse_readl'
+>>> arm-linux-gnueabi-ld: drivers/thermal/tegra/tegra30-tsensor.o: in
+>>> function `tegra_tsensor_fuse_read_spare':
+>>> tegra30-tsensor.c:(.text+0x364): undefined reference to `tegra_fuse_readl'
+>>> arm-linux-gnueabi-ld: drivers/thermal/tegra/tegra30-tsensor.o: in
+>>> function `tegra_tsensor_probe':
+>>> tegra30-tsensor.c:(.text+0x874): undefined reference to `tegra_fuse_readl'
+>>> arm-linux-gnueabi-ld:
+>>> drivers/thermal/tegra/tegra30-tsensor.o:tegra30-tsensor.c:(.text+0x904):
+>>> more undefined references to `tegra_fuse_readl' follow
+>>> make[1]: *** [/home/dlezcano/Work/src/linux/Makefile:1196: vmlinux] Error 1
+>>> make: *** [/home/dlezcano/Work/src/linux/Makefile:215: __sub-make] Error 2
+>>
+>> The missing stub was added by [1]. I guess you could take [2] for the
+>> base since Thierry already sent out PR for 5.14, or we could defer the
+>> "thermal/drivers/tegra: Correct compile-testing of drivers" patch till
+>> the next kernel version. Please choose whatever is easier for you.
+> 
+> I would like to prevent to have more patches floating around. As we are
+> close the to the merge window, I think we can live with the missing
+> stubs ATM. But in the future, provide an immutable branch with the
+> fixes, so we can share it and prevent these issues.
 
-arch/powerpc/kvm/book3s_hv_nested.c:289:6: error: stack frame size of
-2512 bytes in function 'kvmhv_enter_nested_guest' [-Werror,-Wframe-larger-than=]
-long kvmhv_enter_nested_guest(struct kvm_vcpu *vcpu)
-     ^
-1 error generated.
-
-While this gets fixed in LLVM, mark byteswap_pt_regs() as
-noinline_for_stack so that it does not get inlined and break the build
-due to -Werror by default in arch/powerpc/. Not inlining saves
-approximately 800 bytes with LLVM 12.0.0:
-
-arch/powerpc/kvm/book3s_hv_nested.c:290:6: warning: stack frame size of
-1728 bytes in function 'kvmhv_enter_nested_guest' [-Wframe-larger-than=]
-long kvmhv_enter_nested_guest(struct kvm_vcpu *vcpu)
-     ^
-1 warning generated.
-
-Link: https://github.com/ClangBuiltLinux/linux/issues/1292
-Link: https://bugs.llvm.org/show_bug.cgi?id=49610
-Link: https://lore.kernel.org/r/202104031853.vDT0Qjqj-lkp@intel.com/
-Link: https://gist.github.com/ba710e3703bf45043a31e2806c843ffd
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- arch/powerpc/kvm/book3s_hv_nested.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/powerpc/kvm/book3s_hv_nested.c b/arch/powerpc/kvm/book3s_hv_nested.c
-index 60724f674421..1b3ff0af1264 100644
---- a/arch/powerpc/kvm/book3s_hv_nested.c
-+++ b/arch/powerpc/kvm/book3s_hv_nested.c
-@@ -53,7 +53,8 @@ void kvmhv_save_hv_regs(struct kvm_vcpu *vcpu, struct hv_guest_state *hr)
- 	hr->dawrx1 = vcpu->arch.dawrx1;
- }
- 
--static void byteswap_pt_regs(struct pt_regs *regs)
-+/* Use noinline_for_stack due to https://bugs.llvm.org/show_bug.cgi?id=49610 */
-+static noinline_for_stack void byteswap_pt_regs(struct pt_regs *regs)
- {
- 	unsigned long *addr = (unsigned long *) regs;
- 
-
-base-commit: 4a21192e2796c3338c4b0083b494a84a61311aaf
--- 
-2.32.0.93.g670b81a890
-
+Thank you! There were multiple issues like this during this kernel
+release. It's not easy to track all dependencies, I keep forgetting when
+and which patches are already applied. Hopefully nobody bisects code
+with COMPILE_TEST=y, so this should be a minor issue. Sorry for the
+inconvenience.
