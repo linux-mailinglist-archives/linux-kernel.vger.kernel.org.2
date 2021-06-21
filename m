@@ -2,209 +2,378 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841073AF5AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B695A3AF5B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232105AbhFUSwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33778 "EHLO
+        id S230298AbhFUS5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:57:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231386AbhFUSwp (ORCPT
+        with ESMTP id S229897AbhFUS5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:52:45 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E46FC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:50:30 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id dm5so18102995ejc.9
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:50:30 -0700 (PDT)
+        Mon, 21 Jun 2021 14:57:35 -0400
+Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15C0CC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:55:20 -0700 (PDT)
+Received: by mail-oo1-xc2f.google.com with SMTP id s20-20020a4ae9940000b02902072d5df239so4742138ood.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:55:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Su81jZ58rhgHEJ5xNq4SVnXH+2VzVF+NBRidhz73D1A=;
-        b=fj1t9s647G21SEyRURvGSz0x9wtmxJ1tZ8/CUue9B6KUosAd6dSoUS60m96cQ+7eyu
-         X+YDOnrvGr+bsP98c9Ca2GgLJ+1qdkFzpx1kZ4FjC9sSbmixe3cBrCy5j7iiA/8H78Ad
-         qWzJYPTfCuC5c+PUdeApqrOKftevo3P8yumqzO/0U21y4euK6bSiWWRwcW6CnM20ymWn
-         pngu/blLd7uK6hsKweTMDWkfmorb5VY9mnJDNM5UXnw3AqND/Bg88L0a/8/8CI1sTioU
-         NjhPSc1Q63+MzLtw8gnM6sknXv0ioUMK76/Z/kE4nBov+x0xRP9UtXsfzDXe0v2gU9Kb
-         N7iA==
+         :cc:content-transfer-encoding;
+        bh=ws0oUR3ELNIs8zDdYQlkxeo47oD4qWhq/p9GYsE3cWc=;
+        b=UAj25foB8paV/qzw6De9bWBQ/zVoonOSC+mqDDzsWiB7zTejfKKEtdvdFtcEGTJ9d4
+         LiZOfgfzhcGf/yG8msPChespnZL7E5JA3E1VLZqYVF4ppCo/5f1oK1iQa5aVb5avu56d
+         dPErho+jgb2momidg8IeTmOcCRCES6u8xezcvZyiN1/EFH1od8URuHtQquzC0CJpidCV
+         tTOzmR9pySr/8G8IcM/AMppDsyw4cgNdHHaxQVCTAq52yfxDfQzeIlZwmC3s7pleVZkE
+         Ku8m7irJZ+xh95Vq0dkuzopdEzsgGwYzOz3RhSA88hcl/WgKq6XdSbl9gfNzt6Fg1xih
+         qycA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Su81jZ58rhgHEJ5xNq4SVnXH+2VzVF+NBRidhz73D1A=;
-        b=FJVJXuWRwRRb4N+PUK3YXx4oNcSCQwNQotfEpbNPi+Bk7u9Uuk17YLvLb3HK6OiA9j
-         Y/Fk41VfOt/ckJMgLwrp4AovvuH9ooEt1hh+1nuqJrHwYwBlQzv5TCabNiNi55zqfJ3k
-         0pyTG2QUuHTNCyU8TyHWj0eZvqyWV/nIEyjZRLo8un9fbSpDAJjaCTiz1RstpJG9AZG6
-         IQCMo57Fl73QcpJUlDiHtXISLzwnUJ8HvGFSCzK05Je5HSBdCcXbLvO98ACjIDC43HU8
-         eDzp+v0viyNt5lPlB1MNwZvRLfnvfFzjXoRBt5yavItxSZj1UBCLBrfqbKbplCe/GxDk
-         OIrA==
-X-Gm-Message-State: AOAM533utnQNV3qOdy2Cq+nQ7U1bDuuAB6wuVIsns5RhsVyUOPHEW0t9
-        sNZpEirvSSaNMQa6msML0BFDIZnXllfAzGJLWraX
-X-Google-Smtp-Source: ABdhPJxQyvHqkYkNkWIsH1dHYcEpHGTwWmWGnD1nZJKmm5KPLeVDAC8o6xVf4JO7qmGgkAFyzuoFRp5TgnFiSAjuZZk=
-X-Received: by 2002:a17:906:e108:: with SMTP id gj8mr25315960ejb.90.1624301428439;
- Mon, 21 Jun 2021 11:50:28 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ws0oUR3ELNIs8zDdYQlkxeo47oD4qWhq/p9GYsE3cWc=;
+        b=Oa/3qugBbSB0NgFQUJGjE4Q0QAunBwnkls2FA+dU6yCSU19xex04svadXiofZzAGYt
+         183GP1UzmoyQXz88bu1dm2GtWhgm+5Xe8/nHD5jymRwcmIPAvXoO8ew24IeIh/yE/E0a
+         ODNsj9ZvP1+zIE04KSAzWdFscrxSjTySizw/rNt8dTYVQobNF93yzto1WXflpOq6udjH
+         Zmp5VSNfnVk6wsOnoV4mEP7V3R0AkVW3y7gu33YhnYQHf/zj5TohyBfOEYb69PoUDmbV
+         HlFZG9EBZkd+QfasO9V0Rff6Pp2Up2Pl/kHGVIOAchTUKuwYcVXeKrk2lpPlc/T2ucS8
+         qnKg==
+X-Gm-Message-State: AOAM531vlS2NryDtjybTxjBCa/YK6uJsq2n/VW86mB5rUwaObehuMbLL
+        sji3DPJ+KR3Tx9R358HKVu5fgO6EXG8r3hVmkQU=
+X-Google-Smtp-Source: ABdhPJwZOfxSpjPiiNCLU7Pfkv6Ol9WQKID5eHbvsk9ZYD8jHhKBt6Tf6/5taM6m/Jblb7JD4y3WgD8QHo+lW5rJpps=
+X-Received: by 2002:a4a:3904:: with SMTP id m4mr38610ooa.61.1624301719420;
+ Mon, 21 Jun 2021 11:55:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210618233023.1360185-1-ndesaulniers@google.com>
- <20210618233023.1360185-3-ndesaulniers@google.com> <CANpmjNNK-iYXucjz7Degh1kJPF_Z_=8+2vNLtUW17x0UnfgtPg@mail.gmail.com>
- <CAKwvOdmxGt6nAj+dDZEPdQtXNbYb8N6y3XwoCvCD+Qazskh7zw@mail.gmail.com>
-In-Reply-To: <CAKwvOdmxGt6nAj+dDZEPdQtXNbYb8N6y3XwoCvCD+Qazskh7zw@mail.gmail.com>
-From:   Bill Wendling <morbo@google.com>
-Date:   Mon, 21 Jun 2021 11:50:17 -0700
-Message-ID: <CAGG=3QXeAxaf0AhKsg8P1-j2uHOoXne2KCOCEhq9SKa-e2dnag@mail.gmail.com>
-Subject: Re: [PATCH 2/2] Kconfig: CC_HAS_NO_PROFILE_FN_ATTR, depend on for
- GCOV and PGO
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Bill Wendling <wcw@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Martin Liska <mliska@suse.cz>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Fangrui Song <maskray@google.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        linux-toolchains@vger.kernel.org, Marco Elver <elver@google.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>
+References: <20210621130508.29511-1-bernard@vivo.com> <626348b5-a3c5-4a86-ca9f-ec41cc82044d@gmail.com>
+In-Reply-To: <626348b5-a3c5-4a86-ca9f-ec41cc82044d@gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Mon, 21 Jun 2021 14:55:08 -0400
+Message-ID: <CADnq5_OZ9_s6RMYcpstF2fN3kFjEkjC2Kx8kwZakHTpeFYf9Og@mail.gmail.com>
+Subject: Re: [PATCH] drm/radeon: delete useless function return values &
+ remove meaningless if(r) check code
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
+Cc:     Bernard Zhao <bernard@vivo.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 11:22 AM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Fri, Jun 18, 2021 at 11:23 PM Marco Elver <elver@google.com> wrote:
-> >
-> > On Sat, 19 Jun 2021 at 01:30, Nick Desaulniers <ndesaulniers@google.com> wrote:
-> > >
-> > > We don't want compiler instrumentation to touch noinstr functions, which
-> > > are annotated with the no_profile function attribute. Add a Kconfig test
-> > > for this and make PGO and GCOV depend on it.
-> > >
-> > > Cc: Masahiro Yamada <masahiroy@kernel.org>
-> > > Cc: Peter Oberparleiter <oberpar@linux.ibm.com>
-> > > Link: https://lore.kernel.org/lkml/YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net/
-> > > Link: https://lore.kernel.org/lkml/YMcssV%2Fn5IBGv4f0@hirez.programming.kicks-ass.net/
-> > > Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > > ---
-> > >  init/Kconfig        | 3 +++
-> > >  kernel/gcov/Kconfig | 1 +
-> > >  kernel/pgo/Kconfig  | 3 ++-
-> > >  3 files changed, 6 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/init/Kconfig b/init/Kconfig
-> > > index 1ea12c64e4c9..540f862b40c6 100644
-> > > --- a/init/Kconfig
-> > > +++ b/init/Kconfig
-> > > @@ -83,6 +83,9 @@ config TOOLS_SUPPORT_RELR
-> > >  config CC_HAS_ASM_INLINE
-> > >         def_bool $(success,echo 'void foo(void) { asm inline (""); }' | $(CC) -x c - -c -o /dev/null)
-> > >
-> > > +config CC_HAS_NO_PROFILE_FN_ATTR
-> > > +       def_bool $(success,echo '__attribute__((no_profile)) int x();' | $(CC) -x c - -c -o /dev/null -Werror)
-> > > +
-> > >  config CONSTRUCTORS
-> > >         bool
-> > >
-> > > diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
-> > > index 58f87a3092f3..19facd4289cd 100644
-> > > --- a/kernel/gcov/Kconfig
-> > > +++ b/kernel/gcov/Kconfig
-> > > @@ -5,6 +5,7 @@ config GCOV_KERNEL
-> > >         bool "Enable gcov-based kernel profiling"
-> > >         depends on DEBUG_FS
-> > >         depends on !CC_IS_CLANG || CLANG_VERSION >= 110000
-> > > +       depends on !X86 || (X86 && CC_HAS_NO_PROFILE_FN_ATTR)
-> >
-> > [+Cc Mark]
-> >
-> > arm64 is also starting to rely on noinstr working properly.
->
-> Sure,
-> Will, Catalin, other arm64 folks:
-> Any thoughts on requiring GCC 7.1+/Clang 13.0+ for GCOV support?  That
-> way we can better guarantee that GCOV (and eventually, PGO) don't
-> touch noinstr functions?
->
-> If that's ok, I'll add modify the above like:
->
-> + depends on !ARM64 || (ARM64 && CC_HAS_NO_PROFILE_FN_ATTR)
->
-Wouldn't "!ARM64 || CC_HAS_NO_PROFILE_FN_ATTR" be more succinct?
+Applied.  Thanks!
 
-> to the above hunk in v2.  Oh, looks like arch/s390 also uses noinstr.
-> Same question applies then:
+Alex
+
+On Mon, Jun 21, 2021 at 9:15 AM Christian K=C3=B6nig
+<ckoenig.leichtzumerken@gmail.com> wrote:
 >
-> + depends on !S390 || (S390 && CC_HAS_NO_PROFILE_FN_ATTR)
->
-> Or, we could just do
->
-> + depends on CC_HAS_NO_PROFILE_FN_ATTR
->
-> Though that will penalize architectures not using noinstr, that still
-> would like to use GCOV with versions of GCC older than 7.1.  Perhaps
-> there are no such such users, or they should consider upgrading their
-> tools to we can stick with the simpler Kconfig? Thoughts?
->
+> Am 21.06.21 um 15:05 schrieb Bernard Zhao:
+> > Function radeon_fence_driver_init always returns success,
+> > the function type maybe coule be changed to void.
+> > This patch first delete the check of the return
+> > value of the function call radeon_fence_driver_init, then,
+> > optimise the function declaration and function to void type.
 > >
-> > This should probably be a 'select ARCH_HAS_GCOV_PROFILE_ALL if
-> > CC_HAS_NO_PROFILE_FN_ATTR' in the relevant arch/../Kconfig.
-> >
-> > Alternatively, using:
-> > https://lkml.kernel.org/r/YMcssV/n5IBGv4f0@hirez.programming.kicks-ass.net
-> >
-> > But I'd probably not overcomplicate things at this point and just use
-> > ARCH_HAS_GCOV_PROFILE_ALL, because GCOV seems to be a) rarely used,
-> > and b) if someone decides to selectively instrument stuff like entry
-> > code, we can just say it's user error.
-> >
-> >
-> > >         select CONSTRUCTORS
-> > >         default n
-> > >         help
-> > > diff --git a/kernel/pgo/Kconfig b/kernel/pgo/Kconfig
-> > > index d2053df1111c..26f75ac4c6c1 100644
-> > > --- a/kernel/pgo/Kconfig
-> > > +++ b/kernel/pgo/Kconfig
-> > > @@ -8,7 +8,8 @@ config PGO_CLANG
-> > >         bool "Enable clang's PGO-based kernel profiling"
-> > >         depends on DEBUG_FS
-> > >         depends on ARCH_SUPPORTS_PGO_CLANG
-> > > -       depends on CC_IS_CLANG && CLANG_VERSION >= 120000
-> > > +       depends on CC_IS_CLANG
-> > > +       depends on CC_HAS_NO_PROFILE_FN_ATTR
-> > >         help
-> > >           This option enables clang's PGO (Profile Guided Optimization) based
-> > >           code profiling to better optimize the kernel.
-> > > --
-> > > 2.32.0.288.g62a8d224e6-goog
-> > >
+> > Signed-off-by: Bernard Zhao <bernard@vivo.com>
 >
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
 >
+> > ---
+> >   drivers/gpu/drm/radeon/cik.c          | 4 +---
+> >   drivers/gpu/drm/radeon/evergreen.c    | 4 +---
+> >   drivers/gpu/drm/radeon/ni.c           | 4 +---
+> >   drivers/gpu/drm/radeon/r100.c         | 4 +---
+> >   drivers/gpu/drm/radeon/r300.c         | 4 +---
+> >   drivers/gpu/drm/radeon/r420.c         | 5 +----
+> >   drivers/gpu/drm/radeon/r520.c         | 4 +---
+> >   drivers/gpu/drm/radeon/r600.c         | 4 +---
+> >   drivers/gpu/drm/radeon/radeon.h       | 2 +-
+> >   drivers/gpu/drm/radeon/radeon_fence.c | 5 +----
+> >   drivers/gpu/drm/radeon/rs400.c        | 4 +---
+> >   drivers/gpu/drm/radeon/rs600.c        | 4 +---
+> >   drivers/gpu/drm/radeon/rs690.c        | 4 +---
+> >   drivers/gpu/drm/radeon/rv515.c        | 4 +---
+> >   drivers/gpu/drm/radeon/rv770.c        | 4 +---
+> >   drivers/gpu/drm/radeon/si.c           | 4 +---
+> >   16 files changed, 16 insertions(+), 48 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/radeon/cik.c b/drivers/gpu/drm/radeon/cik.=
+c
+> > index 42a8afa839cb..f6cf0b8fdd83 100644
+> > --- a/drivers/gpu/drm/radeon/cik.c
+> > +++ b/drivers/gpu/drm/radeon/cik.c
+> > @@ -8584,9 +8584,7 @@ int cik_init(struct radeon_device *rdev)
+> >       radeon_get_clock_info(rdev->ddev);
+> >
+> >       /* Fence driver */
+> > -     r =3D radeon_fence_driver_init(rdev);
+> > -     if (r)
+> > -             return r;
+> > +     radeon_fence_driver_init(rdev);
+> >
+> >       /* initialize memory controller */
+> >       r =3D cik_mc_init(rdev);
+> > diff --git a/drivers/gpu/drm/radeon/evergreen.c b/drivers/gpu/drm/radeo=
+n/evergreen.c
+> > index 8e9e88bf1f43..36a888e1b179 100644
+> > --- a/drivers/gpu/drm/radeon/evergreen.c
+> > +++ b/drivers/gpu/drm/radeon/evergreen.c
+> > @@ -5208,9 +5208,7 @@ int evergreen_init(struct radeon_device *rdev)
+> >       /* Initialize clocks */
+> >       radeon_get_clock_info(rdev->ddev);
+> >       /* Fence driver */
+> > -     r =3D radeon_fence_driver_init(rdev);
+> > -     if (r)
+> > -             return r;
+> > +     radeon_fence_driver_init(rdev);
+> >       /* initialize AGP */
+> >       if (rdev->flags & RADEON_IS_AGP) {
+> >               r =3D radeon_agp_init(rdev);
+> > diff --git a/drivers/gpu/drm/radeon/ni.c b/drivers/gpu/drm/radeon/ni.c
+> > index ab7bd3080217..4a364ca7a1be 100644
+> > --- a/drivers/gpu/drm/radeon/ni.c
+> > +++ b/drivers/gpu/drm/radeon/ni.c
+> > @@ -2375,9 +2375,7 @@ int cayman_init(struct radeon_device *rdev)
+> >       /* Initialize clocks */
+> >       radeon_get_clock_info(rdev->ddev);
+> >       /* Fence driver */
+> > -     r =3D radeon_fence_driver_init(rdev);
+> > -     if (r)
+> > -             return r;
+> > +     radeon_fence_driver_init(rdev);
+> >       /* initialize memory controller */
+> >       r =3D evergreen_mc_init(rdev);
+> >       if (r)
+> > diff --git a/drivers/gpu/drm/radeon/r100.c b/drivers/gpu/drm/radeon/r10=
+0.c
+> > index fcfcaec25a9e..aa6800b0e198 100644
+> > --- a/drivers/gpu/drm/radeon/r100.c
+> > +++ b/drivers/gpu/drm/radeon/r100.c
+> > @@ -4056,9 +4056,7 @@ int r100_init(struct radeon_device *rdev)
+> >       /* initialize VRAM */
+> >       r100_mc_init(rdev);
+> >       /* Fence driver */
+> > -     r =3D radeon_fence_driver_init(rdev);
+> > -     if (r)
+> > -             return r;
+> > +     radeon_fence_driver_init(rdev);
+> >       /* Memory manager */
+> >       r =3D radeon_bo_init(rdev);
+> >       if (r)
+> > diff --git a/drivers/gpu/drm/radeon/r300.c b/drivers/gpu/drm/radeon/r30=
+0.c
+> > index 92643dfdd8a8..621ff174dff3 100644
+> > --- a/drivers/gpu/drm/radeon/r300.c
+> > +++ b/drivers/gpu/drm/radeon/r300.c
+> > @@ -1549,9 +1549,7 @@ int r300_init(struct radeon_device *rdev)
+> >       /* initialize memory controller */
+> >       r300_mc_init(rdev);
+> >       /* Fence driver */
+> > -     r =3D radeon_fence_driver_init(rdev);
+> > -     if (r)
+> > -             return r;
+> > +     radeon_fence_driver_init(rdev);
+> >       /* Memory manager */
+> >       r =3D radeon_bo_init(rdev);
+> >       if (r)
+> > diff --git a/drivers/gpu/drm/radeon/r420.c b/drivers/gpu/drm/radeon/r42=
+0.c
+> > index 1ed4407b91aa..7e6320e8c6a0 100644
+> > --- a/drivers/gpu/drm/radeon/r420.c
+> > +++ b/drivers/gpu/drm/radeon/r420.c
+> > @@ -425,10 +425,7 @@ int r420_init(struct radeon_device *rdev)
+> >       r300_mc_init(rdev);
+> >       r420_debugfs(rdev);
+> >       /* Fence driver */
+> > -     r =3D radeon_fence_driver_init(rdev);
+> > -     if (r) {
+> > -             return r;
+> > -     }
+> > +     radeon_fence_driver_init(rdev);
+> >       /* Memory manager */
+> >       r =3D radeon_bo_init(rdev);
+> >       if (r) {
+> > diff --git a/drivers/gpu/drm/radeon/r520.c b/drivers/gpu/drm/radeon/r52=
+0.c
+> > index fc78e64ae727..6cbcaa845192 100644
+> > --- a/drivers/gpu/drm/radeon/r520.c
+> > +++ b/drivers/gpu/drm/radeon/r520.c
+> > @@ -299,9 +299,7 @@ int r520_init(struct radeon_device *rdev)
+> >       r520_mc_init(rdev);
+> >       rv515_debugfs(rdev);
+> >       /* Fence driver */
+> > -     r =3D radeon_fence_driver_init(rdev);
+> > -     if (r)
+> > -             return r;
+> > +     radeon_fence_driver_init(rdev);
+> >       /* Memory manager */
+> >       r =3D radeon_bo_init(rdev);
+> >       if (r)
+> > diff --git a/drivers/gpu/drm/radeon/r600.c b/drivers/gpu/drm/radeon/r60=
+0.c
+> > index 7444dc0e0c0e..ca3fcae2adb5 100644
+> > --- a/drivers/gpu/drm/radeon/r600.c
+> > +++ b/drivers/gpu/drm/radeon/r600.c
+> > @@ -3282,9 +3282,7 @@ int r600_init(struct radeon_device *rdev)
+> >       /* Initialize clocks */
+> >       radeon_get_clock_info(rdev->ddev);
+> >       /* Fence driver */
+> > -     r =3D radeon_fence_driver_init(rdev);
+> > -     if (r)
+> > -             return r;
+> > +     radeon_fence_driver_init(rdev);
+> >       if (rdev->flags & RADEON_IS_AGP) {
+> >               r =3D radeon_agp_init(rdev);
+> >               if (r)
+> > diff --git a/drivers/gpu/drm/radeon/radeon.h b/drivers/gpu/drm/radeon/r=
+adeon.h
+> > index 56ed5634cebe..8a15f490a390 100644
+> > --- a/drivers/gpu/drm/radeon/radeon.h
+> > +++ b/drivers/gpu/drm/radeon/radeon.h
+> > @@ -384,7 +384,7 @@ struct radeon_fence {
+> >   };
+> >
+> >   int radeon_fence_driver_start_ring(struct radeon_device *rdev, int ri=
+ng);
+> > -int radeon_fence_driver_init(struct radeon_device *rdev);
+> > +void radeon_fence_driver_init(struct radeon_device *rdev);
+> >   void radeon_fence_driver_fini(struct radeon_device *rdev);
+> >   void radeon_fence_driver_force_completion(struct radeon_device *rdev,=
+ int ring);
+> >   int radeon_fence_emit(struct radeon_device *rdev, struct radeon_fence=
+ **fence, int ring);
+> > diff --git a/drivers/gpu/drm/radeon/radeon_fence.c b/drivers/gpu/drm/ra=
+deon/radeon_fence.c
+> > index 0d8ef2368adf..b2ce642ca4fa 100644
+> > --- a/drivers/gpu/drm/radeon/radeon_fence.c
+> > +++ b/drivers/gpu/drm/radeon/radeon_fence.c
+> > @@ -905,9 +905,8 @@ static void radeon_fence_driver_init_ring(struct ra=
+deon_device *rdev, int ring)
+> >    * Not all asics have all rings, so each asic will only
+> >    * start the fence driver on the rings it has using
+> >    * radeon_fence_driver_start_ring().
+> > - * Returns 0 for success.
+> >    */
+> > -int radeon_fence_driver_init(struct radeon_device *rdev)
+> > +void radeon_fence_driver_init(struct radeon_device *rdev)
+> >   {
+> >       int ring;
+> >
+> > @@ -917,8 +916,6 @@ int radeon_fence_driver_init(struct radeon_device *=
+rdev)
+> >       }
+> >
+> >       radeon_debugfs_fence_init(rdev);
+> > -
+> > -     return 0;
+> >   }
+> >
+> >   /**
+> > diff --git a/drivers/gpu/drm/radeon/rs400.c b/drivers/gpu/drm/radeon/rs=
+400.c
+> > index 8423bcc3302b..6383f7a34bd8 100644
+> > --- a/drivers/gpu/drm/radeon/rs400.c
+> > +++ b/drivers/gpu/drm/radeon/rs400.c
+> > @@ -555,9 +555,7 @@ int rs400_init(struct radeon_device *rdev)
+> >       /* initialize memory controller */
+> >       rs400_mc_init(rdev);
+> >       /* Fence driver */
+> > -     r =3D radeon_fence_driver_init(rdev);
+> > -     if (r)
+> > -             return r;
+> > +     radeon_fence_driver_init(rdev);
+> >       /* Memory manager */
+> >       r =3D radeon_bo_init(rdev);
+> >       if (r)
+> > diff --git a/drivers/gpu/drm/radeon/rs600.c b/drivers/gpu/drm/radeon/rs=
+600.c
+> > index 5bf26058eec0..b2d22e25eee1 100644
+> > --- a/drivers/gpu/drm/radeon/rs600.c
+> > +++ b/drivers/gpu/drm/radeon/rs600.c
+> > @@ -1132,9 +1132,7 @@ int rs600_init(struct radeon_device *rdev)
+> >       rs600_mc_init(rdev);
+> >       r100_debugfs_rbbm_init(rdev);
+> >       /* Fence driver */
+> > -     r =3D radeon_fence_driver_init(rdev);
+> > -     if (r)
+> > -             return r;
+> > +     radeon_fence_driver_init(rdev);
+> >       /* Memory manager */
+> >       r =3D radeon_bo_init(rdev);
+> >       if (r)
+> > diff --git a/drivers/gpu/drm/radeon/rs690.c b/drivers/gpu/drm/radeon/rs=
+690.c
+> > index 7bc302a89232..14fb0819b8c1 100644
+> > --- a/drivers/gpu/drm/radeon/rs690.c
+> > +++ b/drivers/gpu/drm/radeon/rs690.c
+> > @@ -850,9 +850,7 @@ int rs690_init(struct radeon_device *rdev)
+> >       rs690_mc_init(rdev);
+> >       rv515_debugfs(rdev);
+> >       /* Fence driver */
+> > -     r =3D radeon_fence_driver_init(rdev);
+> > -     if (r)
+> > -             return r;
+> > +     radeon_fence_driver_init(rdev);
+> >       /* Memory manager */
+> >       r =3D radeon_bo_init(rdev);
+> >       if (r)
+> > diff --git a/drivers/gpu/drm/radeon/rv515.c b/drivers/gpu/drm/radeon/rv=
+515.c
+> > index 46a53dd38079..63fb06e8e2d7 100644
+> > --- a/drivers/gpu/drm/radeon/rv515.c
+> > +++ b/drivers/gpu/drm/radeon/rv515.c
+> > @@ -648,9 +648,7 @@ int rv515_init(struct radeon_device *rdev)
+> >       rv515_mc_init(rdev);
+> >       rv515_debugfs(rdev);
+> >       /* Fence driver */
+> > -     r =3D radeon_fence_driver_init(rdev);
+> > -     if (r)
+> > -             return r;
+> > +     radeon_fence_driver_init(rdev);
+> >       /* Memory manager */
+> >       r =3D radeon_bo_init(rdev);
+> >       if (r)
+> > diff --git a/drivers/gpu/drm/radeon/rv770.c b/drivers/gpu/drm/radeon/rv=
+770.c
+> > index 88e29ebaad46..74499307285b 100644
+> > --- a/drivers/gpu/drm/radeon/rv770.c
+> > +++ b/drivers/gpu/drm/radeon/rv770.c
+> > @@ -1941,9 +1941,7 @@ int rv770_init(struct radeon_device *rdev)
+> >       /* Initialize clocks */
+> >       radeon_get_clock_info(rdev->ddev);
+> >       /* Fence driver */
+> > -     r =3D radeon_fence_driver_init(rdev);
+> > -     if (r)
+> > -             return r;
+> > +     radeon_fence_driver_init(rdev);
+> >       /* initialize AGP */
+> >       if (rdev->flags & RADEON_IS_AGP) {
+> >               r =3D radeon_agp_init(rdev);
+> > diff --git a/drivers/gpu/drm/radeon/si.c b/drivers/gpu/drm/radeon/si.c
+> > index d0e94b10e4c0..013e44ed0f39 100644
+> > --- a/drivers/gpu/drm/radeon/si.c
+> > +++ b/drivers/gpu/drm/radeon/si.c
+> > @@ -6857,9 +6857,7 @@ int si_init(struct radeon_device *rdev)
+> >       radeon_get_clock_info(rdev->ddev);
+> >
+> >       /* Fence driver */
+> > -     r =3D radeon_fence_driver_init(rdev);
+> > -     if (r)
+> > -             return r;
+> > +     radeon_fence_driver_init(rdev);
+> >
+> >       /* initialize memory controller */
+> >       r =3D si_mc_init(rdev);
 >
-> --
-> Thanks,
-> ~Nick Desaulniers
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
