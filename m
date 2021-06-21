@@ -2,142 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64A403AE80C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 13:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BCAC3AE7FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 13:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbhFULVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 07:21:12 -0400
-Received: from foss.arm.com ([217.140.110.172]:32912 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230032AbhFULVA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 07:21:00 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 49288D6E;
-        Mon, 21 Jun 2021 04:18:45 -0700 (PDT)
-Received: from e112269-lin.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8E2C73F718;
-        Mon, 21 Jun 2021 04:18:42 -0700 (PDT)
-From:   Steven Price <steven.price@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>
-Cc:     Steven Price <steven.price@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Andrew Jones <drjones@redhat.com>
-Subject: [PATCH v17 6/6] KVM: arm64: Document MTE capability and ioctl
-Date:   Mon, 21 Jun 2021 12:17:16 +0100
-Message-Id: <20210621111716.37157-7-steven.price@arm.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210621111716.37157-1-steven.price@arm.com>
-References: <20210621111716.37157-1-steven.price@arm.com>
+        id S230061AbhFULTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 07:19:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229710AbhFULTv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 07:19:51 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F29C06175F
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 04:17:36 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id f2so19158985wri.11
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 04:17:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vIId8K2X0cg04va2SpbcSoJb2/1oMnQwPdbB65aNKlU=;
+        b=EDo7uTCSwYO6tXzuq8jJ+QbGzLI4DK6DECBy0vtHTBWcb9rPTimZFEiBqHhkHQT2L0
+         rFhgFtqJddKzYplsMRuZqDMRQppdcaZf0PGnXxQiV1dC0eWkapEnteGK4Ln/WO4YQTMW
+         ryk2OAi8NqxXcHNkJA94p2Yar3eCIPi/4xYr+JBUANL0PynflWaXPGfBGxvt8E7oxk/I
+         QwgBcZFIidPc3JfSZlSBJ/0nvsObacHhfYZJ56/hGtJ/Ji+d0AIF13jt0Nr3/oKy67UG
+         86OJVK21NZGh+xU+rZ0S/XITBU/hACliGamMweEEUtnkyzMYSoziEE803l/EP4RPHAdK
+         SxrA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vIId8K2X0cg04va2SpbcSoJb2/1oMnQwPdbB65aNKlU=;
+        b=kNm1VUDoRYLvCHq0vkLyp2RNCRlr1rQ9m3KC1+GTa4Sj5MsJ6NPeDvgy89mXNaUHFB
+         hCxFG0+kPIRBHQH7Cc+DNVQSaKlx4rtO7esDD0PwVImO8+Wg1u49E6PD4CAguoPy1cc4
+         o2xeaXmoyfl3at1Wc23cFA4gmh0jfeXR5vZwHUwJ6dqFJmM5mD5Qf2/SO0k2iTdiVkBu
+         WL+np7LlVT5lLsTrV94NfP+ju5RvoDLS7ABShjAWy3TTfVk5rLl4hLcyTqQS4U00FLRm
+         uYyvtfQ1ubYq35X7Y77t0Jg8eE/Z8lPeKsi30trF7dC+z5N/fPgWQIcSx2f1TEyW99w/
+         XVTw==
+X-Gm-Message-State: AOAM532n0DD0GQIoXjlzJV6uxNuhvWDwL7Vp/5Un9SFsLrOjQlYXRN6H
+        Rb9nqFRURNHhzEGRdq0XKpFRAA==
+X-Google-Smtp-Source: ABdhPJykG3GgJZt4zAIgBQXMeH/COPGhCNvEyfqZmxNGqdOdbRQqkjoDnd7dGcpS5E2lZu+Z2IMDng==
+X-Received: by 2002:a5d:69cb:: with SMTP id s11mr6891104wrw.240.1624274254528;
+        Mon, 21 Jun 2021 04:17:34 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:5ebd:8bd9:d549:4211? ([2a01:e34:ed2f:f020:5ebd:8bd9:d549:4211])
+        by smtp.googlemail.com with ESMTPSA id e15sm3183114wrm.60.2021.06.21.04.17.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 04:17:33 -0700 (PDT)
+Subject: Re: [RESEND PATCH v2 2/2] cpuidle: qcom: Add SPM register data for
+ MSM8226
+To:     Bartosz Dudziak <bartosz.dudziak@snejp.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        David Sterba <dsterba@suse.com>, Jens Axboe <axboe@kernel.dk>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org
+Cc:     Stephan Gerhold <stephan@gerhold.net>
+References: <20210612205335.9730-1-bartosz.dudziak@snejp.pl>
+ <20210612205335.9730-3-bartosz.dudziak@snejp.pl>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <8d23a3b3-61ad-fabb-fa95-e0bebac2e0ee@linaro.org>
+Date:   Mon, 21 Jun 2021 13:17:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <20210612205335.9730-3-bartosz.dudziak@snejp.pl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A new capability (KVM_CAP_ARM_MTE) identifies that the kernel supports
-granting a guest access to the tags, and provides a mechanism for the
-VMM to enable it.
+On 12/06/2021 22:53, Bartosz Dudziak wrote:
+> Add MSM8226 register data to SPM AVS Wrapper 2 (SAW2) power controller
+> driver.
+> 
+> Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
+> Signed-off-by: Bartosz Dudziak <bartosz.dudziak@snejp.pl>
 
-A new ioctl (KVM_ARM_MTE_COPY_TAGS) provides a simple way for a VMM to
-access the tags of a guest without having to maintain a PROT_MTE mapping
-in userspace. The above capability gates access to the ioctl.
+Bjorn ? Andy ?
 
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Steven Price <steven.price@arm.com>
----
- Documentation/virt/kvm/api.rst | 61 ++++++++++++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
+> ---
+>  drivers/cpuidle/cpuidle-qcom-spm.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/drivers/cpuidle/cpuidle-qcom-spm.c b/drivers/cpuidle/cpuidle-qcom-spm.c
+> index adf91a6e4d..c0e7971da2 100644
+> --- a/drivers/cpuidle/cpuidle-qcom-spm.c
+> +++ b/drivers/cpuidle/cpuidle-qcom-spm.c
+> @@ -87,6 +87,18 @@ static const struct spm_reg_data spm_reg_8974_8084_cpu  = {
+>  	.start_index[PM_SLEEP_MODE_SPC] = 3,
+>  };
+>  
+> +/* SPM register data for 8226 */
+> +static const struct spm_reg_data spm_reg_8226_cpu  = {
+> +	.reg_offset = spm_reg_offset_v2_1,
+> +	.spm_cfg = 0x0,
+> +	.spm_dly = 0x3C102800,
+> +	.seq = { 0x60, 0x03, 0x60, 0x0B, 0x0F, 0x20, 0x10, 0x80, 0x30, 0x90,
+> +		0x5B, 0x60, 0x03, 0x60, 0x3B, 0x76, 0x76, 0x0B, 0x94, 0x5B,
+> +		0x80, 0x10, 0x26, 0x30, 0x0F },
+> +	.start_index[PM_SLEEP_MODE_STBY] = 0,
+> +	.start_index[PM_SLEEP_MODE_SPC] = 5,
+> +};
+> +
+>  static const u8 spm_reg_offset_v1_1[SPM_REG_NR] = {
+>  	[SPM_REG_CFG]		= 0x08,
+>  	[SPM_REG_SPM_CTL]	= 0x20,
+> @@ -259,6 +271,8 @@ static struct spm_driver_data *spm_get_drv(struct platform_device *pdev,
+>  }
+>  
+>  static const struct of_device_id spm_match_table[] = {
+> +	{ .compatible = "qcom,msm8226-saw2-v2.1-cpu",
+> +	  .data = &spm_reg_8226_cpu },
+>  	{ .compatible = "qcom,msm8974-saw2-v2.1-cpu",
+>  	  .data = &spm_reg_8974_8084_cpu },
+>  	{ .compatible = "qcom,apq8084-saw2-v2.1-cpu",
+> 
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index 7fcb2fd38f42..97661a97943f 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -5034,6 +5034,43 @@ see KVM_XEN_VCPU_SET_ATTR above.
- The KVM_XEN_VCPU_ATTR_TYPE_RUNSTATE_ADJUST type may not be used
- with the KVM_XEN_VCPU_GET_ATTR ioctl.
- 
-+4.130 KVM_ARM_MTE_COPY_TAGS
-+---------------------------
-+
-+:Capability: KVM_CAP_ARM_MTE
-+:Architectures: arm64
-+:Type: vm ioctl
-+:Parameters: struct kvm_arm_copy_mte_tags
-+:Returns: number of bytes copied, < 0 on error (-EINVAL for incorrect
-+          arguments, -EFAULT if memory cannot be accessed).
-+
-+::
-+
-+  struct kvm_arm_copy_mte_tags {
-+	__u64 guest_ipa;
-+	__u64 length;
-+	void __user *addr;
-+	__u64 flags;
-+	__u64 reserved[2];
-+  };
-+
-+Copies Memory Tagging Extension (MTE) tags to/from guest tag memory. The
-+``guest_ipa`` and ``length`` fields must be ``PAGE_SIZE`` aligned. The ``addr``
-+field must point to a buffer which the tags will be copied to or from.
-+
-+``flags`` specifies the direction of copy, either ``KVM_ARM_TAGS_TO_GUEST`` or
-+``KVM_ARM_TAGS_FROM_GUEST``.
-+
-+The size of the buffer to store the tags is ``(length / 16)`` bytes
-+(granules in MTE are 16 bytes long). Each byte contains a single tag
-+value. This matches the format of ``PTRACE_PEEKMTETAGS`` and
-+``PTRACE_POKEMTETAGS``.
-+
-+If an error occurs before any data is copied then a negative error code is
-+returned. If some tags have been copied before an error occurs then the number
-+of bytes successfully copied is returned. If the call completes successfully
-+then ``length`` is returned.
-+
- 5. The kvm_run structure
- ========================
- 
-@@ -6362,6 +6399,30 @@ default.
- 
- See Documentation/x86/sgx/2.Kernel-internals.rst for more details.
- 
-+7.26 KVM_CAP_ARM_MTE
-+--------------------
-+
-+:Architectures: arm64
-+:Parameters: none
-+
-+This capability indicates that KVM (and the hardware) supports exposing the
-+Memory Tagging Extensions (MTE) to the guest. It must also be enabled by the
-+VMM before creating any VCPUs to allow the guest access. Note that MTE is only
-+available to a guest running in AArch64 mode and enabling this capability will
-+cause attempts to create AArch32 VCPUs to fail.
-+
-+When enabled the guest is able to access tags associated with any memory given
-+to the guest. KVM will ensure that the tags are maintained during swap or
-+hibernation of the host; however the VMM needs to manually save/restore the
-+tags as appropriate if the VM is migrated.
-+
-+When this capability is enabled all memory in memslots must be mapped as
-+not-shareable (no MAP_SHARED), attempts to create a memslot with a
-+MAP_SHARED mmap will result in an -EINVAL return.
-+
-+When enabled the VMM may make use of the ``KVM_ARM_MTE_COPY_TAGS`` ioctl to
-+perform a bulk copy of tags to/from the guest.
-+
- 8. Other capabilities.
- ======================
- 
+
 -- 
-2.20.1
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
