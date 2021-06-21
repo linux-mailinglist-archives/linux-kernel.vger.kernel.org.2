@@ -2,79 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD473AF358
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1778A3AF2E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:56:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233425AbhFUSAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:00:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39086 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232859AbhFUR6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 13:58:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C8E1613DA;
-        Mon, 21 Jun 2021 17:53:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624298035;
-        bh=xWGsgCXd7OEaijrEvpsTLlP6MXTD0C9RJegrSoeQg78=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AVHDfjdC9ZwO2rlfTTIyxJP/bw43kSMfUxh0w8XblGdtAl4+ZGnvZGb3L6yJQNlji
-         prkeU6UY45pGmrvlBsLSYpwQ2FEYTaBiehvwfjlnreZIDoYtUmIq7u4URWoC54ZQIF
-         oDO5Fe+xzyWCzlLlpxjqy0rfp4YYg9i1DH6rLAv59myj3pzx77LKg4+cUDe4p5Q+PF
-         WE/N1qNbQxAH1l+TsfU7S1XUomQFUbvcim9j5BnegN9lHctomAxHvWFSWmYPx3BtPA
-         1cG56HBquKggwmKkHCBmi7CIyx4w173jHBHO0s4Zxss2tmh6LEhuFn/dWccUEijA7B
-         KsPo5plOYimWw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Esben Haabendal <esben@geanix.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.10 35/35] net: ll_temac: Avoid ndo_start_xmit returning NETDEV_TX_BUSY
-Date:   Mon, 21 Jun 2021 13:53:00 -0400
-Message-Id: <20210621175300.735437-35-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210621175300.735437-1-sashal@kernel.org>
-References: <20210621175300.735437-1-sashal@kernel.org>
+        id S231868AbhFUR5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 13:57:54 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45968 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231961AbhFURzr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 13:55:47 -0400
+Date:   Mon, 21 Jun 2021 17:53:29 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624298011;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YH3f6MBaqyU4MYEEOYfekfCSOLt9UeEUXfvYCYqWqdI=;
+        b=Y9qft6Mb00Mx+3gU6XUCpwxkF8t2cTyw3gzAPgmJISxilvS78kkuyHt56vaZVMgaDz9lgg
+        WuDyqMRaQctRL/5HJf4fAZ/awNd64L43v0aFRluduAkdU0GpSX06bHUwfcLkynHpZpdOmk
+        jgfFoc9AdJCz3yJK9wQEDHgtWhi2rYH0Vq9/HLkHsFeBm/LFO0w2R+VADi2aPmZR4bybJT
+        vczUV5P1PggmMlck5dgrzFIQrXi6NPmj+CwPMxr7H+75jL3zgHt7ICPiqDvgGoDoLvNiZU
+        u8G6RPzu6T3Q/J7//OhT7l3kICvB7+ndaQkwOw+5eEwpf3BRBMubaYiM+tTPVw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624298011;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=YH3f6MBaqyU4MYEEOYfekfCSOLt9UeEUXfvYCYqWqdI=;
+        b=+NIRJTGY520NQltVup6Qt4/rKcc09Mc41xilWDXPLeXCEmGDDUUQSyV3fDr4Ybkx4lz05+
+        bEMr3a5nuhWV51CA==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: objtool/urgent] objtool/x86: Ignore __x86_indirect_alt_* symbols
+Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <YNCgxwLBiK9wclYJ@hirez.programming.kicks-ass.net>
+References: <YNCgxwLBiK9wclYJ@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Message-ID: <162429800985.395.5319249290550367396.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Esben Haabendal <esben@geanix.com>
+The following commit has been merged into the objtool/urgent branch of tip:
 
-[ Upstream commit f6396341194234e9b01cd7538bc2c6ac4501ab14 ]
+Commit-ID:     31197d3a0f1caeb60fb01f6755e28347e4f44037
+Gitweb:        https://git.kernel.org/tip/31197d3a0f1caeb60fb01f6755e28347e4f44037
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Mon, 21 Jun 2021 16:13:55 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Mon, 21 Jun 2021 17:26:57 +02:00
 
-As documented in Documentation/networking/driver.rst, the ndo_start_xmit
-method must not return NETDEV_TX_BUSY under any normal circumstances, and
-as recommended, we simply stop the tx queue in advance, when there is a
-risk that the next xmit would cause a NETDEV_TX_BUSY return.
+objtool/x86: Ignore __x86_indirect_alt_* symbols
 
-Signed-off-by: Esben Haabendal <esben@geanix.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Because the __x86_indirect_alt* symbols are just that, objtool will
+try and validate them as regular symbols, instead of the alternative
+replacements that they are.
+
+This goes sideways for FRAME_POINTER=y builds; which generate a fair
+amount of warnings.
+
+Fixes: 9bc0bb50727c ("objtool/x86: Rewrite retpoline thunk calls")
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/YNCgxwLBiK9wclYJ@hirez.programming.kicks-ass.net
 ---
- drivers/net/ethernet/xilinx/ll_temac_main.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/x86/lib/retpoline.S | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/ethernet/xilinx/ll_temac_main.c b/drivers/net/ethernet/xilinx/ll_temac_main.c
-index fb977bc4d838..b1caf56b2584 100644
---- a/drivers/net/ethernet/xilinx/ll_temac_main.c
-+++ b/drivers/net/ethernet/xilinx/ll_temac_main.c
-@@ -938,6 +938,11 @@ temac_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 	wmb();
- 	lp->dma_out(lp, TX_TAILDESC_PTR, tail_p); /* DMA start */
+diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+index 4d32cb0..ec9922c 100644
+--- a/arch/x86/lib/retpoline.S
++++ b/arch/x86/lib/retpoline.S
+@@ -58,12 +58,16 @@ SYM_FUNC_START_NOALIGN(__x86_indirect_alt_call_\reg)
+ 2:	.skip	5-(2b-1b), 0x90
+ SYM_FUNC_END(__x86_indirect_alt_call_\reg)
  
-+	if (temac_check_tx_bd_space(lp, MAX_SKB_FRAGS + 1)) {
-+		netdev_info(ndev, "%s -> netif_stop_queue\n", __func__);
-+		netif_stop_queue(ndev);
-+	}
++STACK_FRAME_NON_STANDARD(__x86_indirect_alt_call_\reg)
 +
- 	return NETDEV_TX_OK;
- }
+ SYM_FUNC_START_NOALIGN(__x86_indirect_alt_jmp_\reg)
+ 	ANNOTATE_RETPOLINE_SAFE
+ 1:	jmp	*%\reg
+ 2:	.skip	5-(2b-1b), 0x90
+ SYM_FUNC_END(__x86_indirect_alt_jmp_\reg)
  
--- 
-2.30.2
-
++STACK_FRAME_NON_STANDARD(__x86_indirect_alt_jmp_\reg)
++
+ .endm
+ 
+ /*
