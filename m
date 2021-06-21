@@ -2,128 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B663AF53E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA83B3AF541
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:41:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhFUSnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:43:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230057AbhFUSnb (ORCPT
+        id S230137AbhFUSnt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:43:49 -0400
+Received: from relay04.th.seeweb.it ([5.144.164.165]:45921 "EHLO
+        relay04.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231159AbhFUSno (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:43:31 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBDA9C06175F;
-        Mon, 21 Jun 2021 11:41:15 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id u13so12508385lfk.2;
-        Mon, 21 Jun 2021 11:41:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OaHrTHwOZlGiJZp19fuqPfINJsoeOnFyeJ/MKkylnkI=;
-        b=EfIszghJdm21cMreSbQ996P4YHET0dcRSj3dKOVqDInMzRelDwW2na///uju3wbFB4
-         L3NnrpvKinrjb2pK/l/SuBtg5aQNPinZRpOY9mIda+IZS4aFdxtKAfUdA4cpmNIC/TTa
-         XrkUgszFd9zc/OWujPxq6c2dFgnRxP3CZiN/oCvkkHOolOvUawfXW586wlfvnzk+78/O
-         Y+M1pqaCt66DBNmESW4qkSmv4jnAYc7MZ3FlkeTx+In/x2uNXthFjDtOO5fDn+bM0nWq
-         yGzcr1bMU6FylSmEVKPfBi6FoXGdzKlj4BG1n7EYZ2eDEMVTDOkM3MUlI0tWiE2Z7rcS
-         NGuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OaHrTHwOZlGiJZp19fuqPfINJsoeOnFyeJ/MKkylnkI=;
-        b=D7/jO2zagXoG1QOdBeDvBCOdIoFxqzJBtlqEpdIGjq14wYf3PjmgMQ7IhB/og46m4g
-         cD/DGmpn56e0RL5qqWPvsM+hm8a4irM2VDaPtRaLUIFyMrX6MLL/B+EJRh/z35VLDmAF
-         ckkMjW99cvUUo72SOsK6uFbj0yqKUT13TU0uHlLgrxAc3kBYUZzD+9mGuHEPMhqSBn/n
-         2RZqlzg6Z7ry2PsgquumilKBeOwoM0agHdElzRw46D8f4UCCuelpBPcOxz1akA7y4pCT
-         FgWyrg33+dDxIhhCp4+TwyuvR6h2xieFWxMi4iV71PG2qhL8dhUpdYPE5CUV0ZuUrdRK
-         m5yQ==
-X-Gm-Message-State: AOAM532ZbDYDC/k6tuTY8IMiMwjeJJka1krJ/q6zZnrWT7Y5XTr2+Esb
-        fV3nDPB2xTfvb09yVPfk3gc=
-X-Google-Smtp-Source: ABdhPJxwJmm4BeibPP0lzIuhx6wMYOcQrZkZUFKCj4OeTFs2ubahQPT6J+uDdEPtnXKz7H2EBRHwFQ==
-X-Received: by 2002:a05:6512:92d:: with SMTP id f13mr15320408lft.186.1624300874353;
-        Mon, 21 Jun 2021 11:41:14 -0700 (PDT)
-Received: from localhost.localdomain (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
-        by smtp.gmail.com with ESMTPSA id y22sm1950843lfa.145.2021.06.21.11.41.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 11:41:14 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-hwmon@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v3 2/2] hwmon: Support set_trips() of thermal device ops
-Date:   Mon, 21 Jun 2021 21:40:58 +0300
-Message-Id: <20210621184058.4110-3-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210621184058.4110-1-digetx@gmail.com>
-References: <20210621184058.4110-1-digetx@gmail.com>
+        Mon, 21 Jun 2021 14:43:44 -0400
+X-Greylist: delayed 1868 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Jun 2021 14:43:44 EDT
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 66A261F893;
+        Mon, 21 Jun 2021 20:41:27 +0200 (CEST)
+Subject: Re: [PATCH net-next 2/6] net: ipa: inter-EE interrupts aren't always
+ available
+To:     Alex Elder <elder@linaro.org>, davem@davemloft.net, kuba@kernel.org
+Cc:     robh+dt@kernel.org, jamipkettunen@gmail.com,
+        bjorn.andersson@linaro.org, agross@kernel.org, elder@kernel.org,
+        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210621175627.238474-1-elder@linaro.org>
+ <20210621175627.238474-3-elder@linaro.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <0f1f2f7f-b858-8367-b85c-b76964898fcc@somainline.org>
+Date:   Mon, 21 Jun 2021 20:41:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210621175627.238474-3-elder@linaro.org>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support set_trips() callback of thermal device ops. This allows HWMON
-device to operatively notify thermal core about temperature changes, which
-is very handy to have in a case where HWMON sensor is used by CPU thermal
-zone that performs passive cooling and emergency shutdown on overheat.
-Thermal core will be able to react faster to temperature changes.
+Il 21/06/21 19:56, Alex Elder ha scritto:
+> The GSI inter-EE interrupts are not supported prior to IPA v3.5.
+> Don't attempt to initialize them in gsi_irq_setup() for hardware
+> that does not support them.
+> 
+> Originally proposed by AngeloGioacchino Del Regno.
+> 
+> Link: https://lore.kernel.org/netdev/20210211175015.200772-4-angelogioacchino.delregno@somainline.org
+> Signed-off-by: Alex Elder <elder@linaro.org>
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/hwmon/hwmon.c | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
-
-diff --git a/drivers/hwmon/hwmon.c b/drivers/hwmon/hwmon.c
-index fd47ab4e6892..e74dc81e650d 100644
---- a/drivers/hwmon/hwmon.c
-+++ b/drivers/hwmon/hwmon.c
-@@ -153,8 +153,40 @@ static int hwmon_thermal_get_temp(void *data, int *temp)
- 	return 0;
- }
- 
-+static int hwmon_thermal_set_trips(void *data, int low, int high)
-+{
-+	struct hwmon_thermal_data *tdata = data;
-+	struct hwmon_device *hwdev = to_hwmon_device(tdata->dev);
-+	const struct hwmon_chip_info *chip = hwdev->chip;
-+	const struct hwmon_channel_info **info = chip->info;
-+	unsigned int i;
-+
-+	if (!chip->ops->write)
-+		return 0;
-+
-+	for (i = 1; info[i] && info[i]->type != hwmon_temp; i++)
-+		continue;
-+
-+	if (info[i] && info[i]->config[tdata->index] & HWMON_T_MIN) {
-+		int err = chip->ops->write(tdata->dev, hwmon_temp,
-+					   hwmon_temp_min, tdata->index, low);
-+		if (err < 0 && err != -EOPNOTSUPP)
-+			return err;
-+	}
-+
-+	if (info[i] && info[i]->config[tdata->index] & HWMON_T_MAX) {
-+		int err = chip->ops->write(tdata->dev, hwmon_temp,
-+					   hwmon_temp_max, tdata->index, high);
-+		if (err < 0 && err != -EOPNOTSUPP)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct thermal_zone_of_device_ops hwmon_thermal_ops = {
- 	.get_temp = hwmon_thermal_get_temp,
-+	.set_trips = hwmon_thermal_set_trips,
- };
- 
- static void hwmon_thermal_remove_sensor(void *data)
--- 
-2.30.2
-
+Acked-by: AngeloGioacchino Del Regno 
+<angelogioacchino.delregno@somainline.org>
