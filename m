@@ -2,117 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD6063AF57A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5DC03AF58C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232323AbhFUSt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:49:57 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:58727 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232329AbhFUSty (ORCPT
+        id S231853AbhFUSwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:52:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29389 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230160AbhFUSwE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:49:54 -0400
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AFTM8E6/U+dPHV242oeZuk+DEI+orL9Y04lQ7?=
- =?us-ascii?q?vn2ZKCYlEPBw+PrAoB1273HJYVUqKRIdcLK7WZVoKEm0nfVICOIqUItKMjONhI?=
- =?us-ascii?q?LRFuFfBV2L+VHdJxE=3D?=
-X-IronPort-AV: E=Sophos;i="5.83,289,1616454000"; 
-   d="scan'208";a="515895312"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 20:47:38 +0200
-Date:   Mon, 21 Jun 2021 20:47:38 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Denis Efremov <efremov@linux.com>
-cc:     Keith Busch <kbusch@kernel.org>, linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH] coccinelle: api: remove kobj_to_dev.cocci script
-In-Reply-To: <cc3b2db6-70fd-0bb2-d083-f87f9a35e9a7@linux.com>
-Message-ID: <alpine.DEB.2.22.394.2106212047100.47043@hadrien>
-References: <20210621174808.1489111-1-kbusch@kernel.org> <cc3b2db6-70fd-0bb2-d083-f87f9a35e9a7@linux.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Mon, 21 Jun 2021 14:52:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624301389;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=8+0lAgdKmEikh/Be8Z1O35k9BkrQgmcKMiwbRtHdQCs=;
+        b=dVQdNttU3tKfzfWTvtrWrw+oQBINFyk3UXurvyJv3qP7wAJn2VyH2p+i8nhJOk35qvZKe6
+        8sAz2Eqm4QHqx3AR4ScMnlyEO/NT8Tegjy7tWvo8K44zaQcH7q9yFx6Z1zI7aQQr35i6s9
+        9xN5aVlP6mAQhSM2TQeGIB7VDuU4mKI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-356-zSqeXrXOMZ6GWiIus38YDg-1; Mon, 21 Jun 2021 14:49:47 -0400
+X-MC-Unique: zSqeXrXOMZ6GWiIus38YDg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 86E7D653;
+        Mon, 21 Jun 2021 18:49:45 +0000 (UTC)
+Received: from llong.com (ovpn-114-127.rdu2.redhat.com [10.10.114.127])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2DE705D9CA;
+        Mon, 21 Jun 2021 18:49:37 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v2 0/6] cgroup/cpuset: Add new cpuset partition type & empty effecitve cpus
+Date:   Mon, 21 Jun 2021 14:49:18 -0400
+Message-Id: <20210621184924.27493-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+v2:
+ - Drop v1 patch 1.
+ - Break out some cosmetic changes into a separate patch (patch #1).
+ - Add a new patch to clarify the transition to invalid partition root
+   is mainly caused by hotplug events.
+ - Enhance the partition root state test including CPU online/offline
+   behavior and fix issues found by the test.
+
+This patchset makes the following three major changes to the cpuset v2 code:
+
+ Patch 2: Clarify the use of invalid partition root and add new checks
+ to make sure that normal cpuset control file operations will not be
+ allowed to create invalid partition root. It also fixes some of the
+ issues in existing code.
+
+ Patch 3: Add a new partition state "isolated" to create a partition
+ root without load balancing. This is for handling intermitten workloads
+ that have a strict low latency requirement.
+
+ Patch 4: Allow partition roots that are not the top cpuset to distribute
+ all its cpus to child partitions as long as there is no task associated
+ with that partition root. This allows more flexibility for middleware
+ to manage multiple partitions.
+
+Patch 5 updates the cgroup-v2.rst file accordingly. Patch 5 adds a new
+cpuset test to test the new cpuset partition code.
 
 
-On Mon, 21 Jun 2021, Denis Efremov wrote:
+Waiman Long (6):
+  cgroup/cpuset: Miscellaneous code cleanup
+  cgroup/cpuset: Clarify the use of invalid partition root
+  cgroup/cpuset: Add a new isolated cpus.partition type
+  cgroup/cpuset: Allow non-top parent partition root to distribute out
+    all CPUs
+  cgroup/cpuset: Update description of cpuset.cpus.partition in
+    cgroup-v2.rst
+  kselftest/cgroup: Add cpuset v2 partition root state test
 
->
->
-> On 6/21/21 8:48 PM, Keith Busch wrote:
-> > Using kobj_to_dev() instead of container_of() is not universally
-> > accepted among maintainers as an improvement. The warning leads to
-> > repeated patch submissions that won't be accepted. Remove the script.
-> >
-> > Cc: Christoph Hellwig <hch@lst.de>
-> > Cc: Jens Axboe <axboe@kernel.dk>
-> > Cc: Denis Efremov <efremov@linux.com>
-> > Cc: Julia Lawall <Julia.Lawall@inria.fr>
-> > Signed-off-by: Keith Busch <kbusch@kernel.org>
->
-> Acked-by: Denis Efremov <efremov@linux.com>
+ Documentation/admin-guide/cgroup-v2.rst       |  65 +-
+ kernel/cgroup/cpuset.c                        | 285 ++++++---
+ tools/testing/selftests/cgroup/Makefile       |   2 +-
+ .../selftests/cgroup/test_cpuset_prs.sh       | 558 ++++++++++++++++++
+ 4 files changed, 794 insertions(+), 116 deletions(-)
+ create mode 100755 tools/testing/selftests/cgroup/test_cpuset_prs.sh
 
-Applied.
+-- 
+2.18.1
 
->
-> > ---
-> >  scripts/coccinelle/api/kobj_to_dev.cocci | 45 ------------------------
-> >  1 file changed, 45 deletions(-)
-> >  delete mode 100644 scripts/coccinelle/api/kobj_to_dev.cocci
-> >
-> > diff --git a/scripts/coccinelle/api/kobj_to_dev.cocci b/scripts/coccinelle/api/kobj_to_dev.cocci
-> > deleted file mode 100644
-> > index cd5d31c6fe76..000000000000
-> > --- a/scripts/coccinelle/api/kobj_to_dev.cocci
-> > +++ /dev/null
-> > @@ -1,45 +0,0 @@
-> > -// SPDX-License-Identifier: GPL-2.0-only
-> > -///
-> > -/// Use kobj_to_dev() instead of container_of()
-> > -///
-> > -// Confidence: High
-> > -// Copyright: (C) 2020 Denis Efremov ISPRAS
-> > -// Options: --no-includes --include-headers
-> > -//
-> > -// Keywords: kobj_to_dev, container_of
-> > -//
-> > -
-> > -virtual context
-> > -virtual report
-> > -virtual org
-> > -virtual patch
-> > -
-> > -
-> > -@r depends on !patch@
-> > -expression ptr;
-> > -symbol kobj;
-> > -position p;
-> > -@@
-> > -
-> > -* container_of(ptr, struct device, kobj)@p
-> > -
-> > -
-> > -@depends on patch@
-> > -expression ptr;
-> > -@@
-> > -
-> > -- container_of(ptr, struct device, kobj)
-> > -+ kobj_to_dev(ptr)
-> > -
-> > -
-> > -@script:python depends on report@
-> > -p << r.p;
-> > -@@
-> > -
-> > -coccilib.report.print_report(p[0], "WARNING opportunity for kobj_to_dev()")
-> > -
-> > -@script:python depends on org@
-> > -p << r.p;
-> > -@@
-> > -
-> > -coccilib.org.print_todo(p[0], "WARNING opportunity for kobj_to_dev()")
-> >
->
