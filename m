@@ -2,113 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A2A3AEC9F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 975493AECA1
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:40:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230251AbhFUPkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 11:40:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45540 "EHLO
+        id S230232AbhFUPma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 11:42:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:36375 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230161AbhFUPkw (ORCPT
+        by vger.kernel.org with ESMTP id S229837AbhFUPm3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 11:40:52 -0400
+        Mon, 21 Jun 2021 11:42:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624289917;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/PT2H+5rBlFaNgMWz3m8mH4Pq2q3IOb/grR2Heyyj5M=;
-        b=h3M7RrIUraXMVZiEIDWYZNj6aWvtQ6JKsgffrlyf+xgOXwW9onFLPF17GChKowLoox5rmE
-        34cLYQRwpyA93VSWCo/P9IIwvEzQQk/0mvB+Ed8mHi4TzGfcf9cblqRaayhtJk81XtD7Us
-        aBN8kuyfbruJj/LS6gpBDxEaX+hM1fg=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-351-D78cwcsvNq-gPPalZnftfQ-1; Mon, 21 Jun 2021 11:38:36 -0400
-X-MC-Unique: D78cwcsvNq-gPPalZnftfQ-1
-Received: by mail-wr1-f69.google.com with SMTP id v9-20020a5d4a490000b029011a86baa40cso4108034wrs.7
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 08:38:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-transfer-encoding:content-language;
-        bh=/PT2H+5rBlFaNgMWz3m8mH4Pq2q3IOb/grR2Heyyj5M=;
-        b=YoZmUc4mHPfi2j6pMFoaYnT/hQQgArfGPdQz84wi7tqX1huaZSNHfrI0Urg5jRjM6I
-         Ij5cC41cKsSaoiqYlOzKHTyU0S1OL6d0pekVeLg5qKZ+ArmMTTyjs/LXjAH6jLlI8s71
-         YKCVCoSrDKs+P+O0dm50BLNdKmnXFRPvSfv0e1LZEKlT00T3JznLWe3RhsQY2+bZdDXm
-         A9rs0IXLR6i1cGE99HMDEHPrik3OkidSN/Gd6DYasXUtC5La+WD1FJxQtM3oEsAvhQ0h
-         vKjgzemObBcJWrjnyF8DN7rtSQtpMqVi6MmLlFnZkpBB2LlcAmAtDNZJCP0uRtWMZM7a
-         Raow==
-X-Gm-Message-State: AOAM5322O1kQZKXF5uAmpIbewHXuNBQhuk39tVbbYyknIQU9M1MIV5oV
-        QbTInxNl/ur3z3jWXX9OXNEhdL1T4um4kMcyoaSF1aWsMa0Fc7oNPRzy2HirrDuoYT5yrszs/OD
-        V3hIhzK/3XgIu/9PNc+TMAtMj
-X-Received: by 2002:a05:6000:1001:: with SMTP id a1mr26918932wrx.418.1624289914096;
-        Mon, 21 Jun 2021 08:38:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwBmisgDmIC43EwBLz2kszOmTyi7ROWV2l0j77EjN7RpHdmMIn2XY6HwlfXesCj3PgXQh5ttw==
-X-Received: by 2002:a05:6000:1001:: with SMTP id a1mr26918915wrx.418.1624289913893;
-        Mon, 21 Jun 2021 08:38:33 -0700 (PDT)
-Received: from [192.168.43.95] ([37.173.110.237])
-        by smtp.gmail.com with ESMTPSA id n13sm19466650wrg.75.2021.06.21.08.38.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 08:38:33 -0700 (PDT)
-Reply-To: eric.auger@redhat.com
-Subject: Re: [PATCH for-stable-5.4] KVM: arm/arm64: Fix
- KVM_VGIC_V3_ADDR_TYPE_REDIST read
-To:     Greg KH <greg@kroah.com>
-Cc:     eric.auger.pro@gmail.com, stable@vger.kernel.org, maz@kernel.org,
-        linux-kernel@vger.kernel.org, kvmarm@lists.cs.columbia.edu
-References: <20210621124232.793383-1-eric.auger@redhat.com>
- <YNCvA4qDuc2Tlmi0@kroah.com>
-From:   Eric Auger <eric.auger@redhat.com>
-Message-ID: <acd4fdcb-d6d4-755b-6f9d-9acf4b08d564@redhat.com>
-Date:   Mon, 21 Jun 2021 17:38:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        s=mimecast20190719; t=1624290015;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=EGmr8KU/QYvg2NpXPR2eqgVDjMWUnLchWUGphjhj2eI=;
+        b=MyUSoGKrFPBggWquAamit/m3gxs+fmABq+3SEi5gdP0fA+oOCHsmX5bCzRv2cgna1IoaRS
+        cUVTJGduQ/x4AHxys4t8erVXhb7NpUhfPRoqME1aOmsOjdXrqaSkLE5yjcilSQkGrC9Fny
+        F15jGfzVcpmqn6iObR9vb5YgTrZ/vxU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-166-rFh51d3EMwupT8yangv-Lw-1; Mon, 21 Jun 2021 11:40:13 -0400
+X-MC-Unique: rFh51d3EMwupT8yangv-Lw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 66A2C8042F3;
+        Mon, 21 Jun 2021 15:40:12 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5CEE110013D6;
+        Mon, 21 Jun 2021 15:40:07 +0000 (UTC)
+Subject: [PATCH v3 0/2] netfs, afs: Fix write_begin/end
+From:   David Howells <dhowells@redhat.com>
+To:     linux-cachefs@redhat.com, linux-afs@lists.infradead.org
+Cc:     Andrew W Elble <aweits@rit.edu>, ceph-devel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jeff Layton <jlayton@kernel.org>, dhowells@redhat.com,
+        Jeff Layton <jlayton@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 21 Jun 2021 16:40:06 +0100
+Message-ID: <162429000639.2770648.6368710175435880749.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-In-Reply-To: <YNCvA4qDuc2Tlmi0@kroah.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
 
-On 6/21/21 5:23 PM, Greg KH wrote:
-> On Mon, Jun 21, 2021 at 02:42:32PM +0200, Eric Auger wrote:
->> When reading the base address of the a REDIST region
->> through KVM_VGIC_V3_ADDR_TYPE_REDIST we expect the
->> redistributor region list to be populated with a single
->> element.
->>
->> However list_first_entry() expects the list to be non empty.
->> Instead we should use list_first_entry_or_null which effectively
->> returns NULL if the list is empty.
->>
->> Fixes: dbd9733ab674 ("KVM: arm/arm64: Replace the single rdist region by a list")
->> Cc: <Stable@vger.kernel.org> # v5.4
->> Signed-off-by: Eric Auger <eric.auger@redhat.com>
->> Reported-by: Gavin Shan <gshan@redhat.com>
->> Signed-off-by: Marc Zyngier <maz@kernel.org>
->> Link: https://lore.kernel.org/r/20210412150034.29185-1-eric.auger@redhat.com
->> ---
->>  virt/kvm/arm/vgic/vgic-kvm-device.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
-> Both now queued up, thanks.
->
-> Next time, give us a hint as to what the upstream commit id is, so that
-> we do not have to dig it up ourselves :)
-Sure I will.
+Here are some patches to fix netfs_write_begin() and afs_write_end() in the
+following ways:
 
-Thanks!
+ (1) In netfs_write_begin(), extract the decision about whether to skip a
+     page out to its own helper and have that clear around the region to be
+     written, but not clear that region.  This requires the filesystem to
+     patch it up afterwards if the hole doesn't get completely filled.
 
-Eric
->
-> thanks,
->
-> greg k-h
->
+ (2) Use offset_in_thp() in (1) rather than manually calculating the offset
+     into the page.
+
+ (3) Due to (1), afs_write_end() now needs to handle short data write into
+     the page by generic_perform_write().  I've adopted an analogous
+     approach to ceph of just returning 0 in this case and letting the
+     caller go round again.
+
+Also add a note that (in the future) the len parameter may extend beyond
+the page allocated.  This is because the page allocation is deferred to
+write_begin() and that gets to decide what size of THP to allocate.
+
+The patches can be found here:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git/log/?h=afs-fixes
+
+David
+
+Link: https://lore.kernel.org/r/20210613233345.113565-1-jlayton@kernel.org/
+Link: https://lore.kernel.org/r/162367681795.460125.11729955608839747375.stgit@warthog.procyon.org.uk/
+Link: https://lore.kernel.org/r/162391823192.1173366.9740514875196345746.stgit@warthog.procyon.org.uk/ # v3
+
+Changes
+=======
+
+ver #3:
+   - Drop the bits that make afs take account of len exceeding the end of
+     the page in afs_write_begin/end().
+
+ver #2:
+   - Removed a var that's no longer used (spotted by the kernel test robot)
+   - Removed a forgotten "noinline".
+
+ver #1:
+   - Prefixed the Jeff's new helper with "netfs_".
+   - Don't call zero_user_segments() for a full-page write.
+   - Altered the beyond-last-page check to avoid a DIV.
+   - Removed redundant zero-length-file check.
+   - Added patches to fix afs.
+
+---
+David Howells (1):
+      afs: Fix afs_write_end() to handle short writes
+
+Jeff Layton (1):
+      netfs: fix test for whether we can skip read when writing beyond EOF
+
+
+ fs/netfs/read_helper.c | 49 +++++++++++++++++++++++++++++++-----------
+ 1 file changed, 36 insertions(+), 13 deletions(-)
+
 
