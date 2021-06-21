@@ -2,62 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E173D3AF4A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 174413AF4F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232334AbhFUSRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:17:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232332AbhFUSQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:16:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 479026100B;
-        Mon, 21 Jun 2021 18:14:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624299244;
-        bh=2amx5P6XjgZYv0txanRSu5/7nAroLuy6zHvMNtRUxd8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WoChQ35isenL0ze3Uukbbg9TSM+pe+t0zfNUFOFJ93WophotAMVZHeEVBfiBsp9fV
-         3X/r/xdL1LUfF7iqqGSZDidQTRnAtATDxuc5ecrc9YQbnFt6Gy1b2mYN4rPQTpzptI
-         d6LlkkOAD+5yOtOQL7E5mRkdeq3BIFbE5VUyAuxdhTNnYkEHfidvwws9S3q+4gwUWG
-         eaeSDIGFciAnd2OfxdopPBi/fSzxoSkK2035Jgzhxf3OsazNKIgU7sIGcK+5BzCjN6
-         rlk4UIM64rzMIoDrz1BIWVqXNRsfuRJSROE7ZBZHXfKT7qCVauHGNN7A6f4FjXz+zE
-         jQ0duHTiPEVQg==
-From:   Will Deacon <will@kernel.org>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     catalin.marinas@arm.com, kernel-team@android.com,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH] arm64/mm: Rename ARM64_SWAPPER_USES_SECTION_MAPS
-Date:   Mon, 21 Jun 2021 19:13:59 +0100
-Message-Id: <162429614365.4116678.14416977840509312271.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1623991622-24294-1-git-send-email-anshuman.khandual@arm.com>
-References: <1623991622-24294-1-git-send-email-anshuman.khandual@arm.com>
+        id S231978AbhFUSYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:24:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232658AbhFUSYR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 14:24:17 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74090C08ED80
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:16:20 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id j21-20020a05600c1c15b02901dde2accccbso611361wms.4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:16:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Dd7yghOb0KNJkV2ROTjPZJ2i5uavd4KwAo4JP7s9Uh4=;
+        b=w61EAA0A3s4UHdfZm6Cdy9t0YpMXsR6CAczSZck9nS7ZwFdyqzrWbMH21/DW3jImTr
+         hoi6+c7c/NmoJfWGhND4aW3DMdswUPlIc7a47ztiTFcLye0OGJPz2oRjk4hlBlFJ3gB+
+         CyaKGe6jOr9QpaiEbeG5LHSj0Qzyhm6rw7UX4VKrrj/C/hUkhwYJfyOXJDJNeySTAX2x
+         aiNRLRID/oOSgqSm3An+3A10KsWQoKaP9YJYE6BoUD8lA5TuxNH7P84xPjoJDo4baeSG
+         UrU33E4EIDPWSGpkg+tkei9Hto7DLO8lllcbmvRccFzi6DFfZ4q6quxVwFLEnsz3F964
+         92SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Dd7yghOb0KNJkV2ROTjPZJ2i5uavd4KwAo4JP7s9Uh4=;
+        b=JLP7ENBrYgesah1CrNkjWPoVa8TC1IuhOrj7i37MeIFksCzJuswlTYInzyUAm8SZnE
+         UUSqtfrU+XIesBSGsbszlWpO69Ng6cVOZybqD8dl4GYL+6i72yE3D/bkQV2dI5b4j64z
+         l1gMuy87gO/HE0nreO+FSpRHOWfsjIejgi8EoiLwK8XMUf5t4bcyKXSOszNmdwERZfTd
+         kz1Qpymb0Urg4xBdRP3qg+chrLP8kwLW9vG2Mj6OHDMoiTUK4t0k6D0vVs+amcZYTexk
+         otberFLk08UmHGnU+UFjY9XeKOp5zRFEi7zYh1O4qqmeXBDEw2sd/mzLPUP4VNoy3zAQ
+         QJ+w==
+X-Gm-Message-State: AOAM532753Kkre6Tx51wIEMPEOIWocNUVI/t1w97g/PFUmCGiarWUoVY
+        QxQHL0R6qExyXTx9RmdQoWhu2Gllk8xMfQJn
+X-Google-Smtp-Source: ABdhPJymWO6g7B4/Tw6wptEln54bwiSLpf+aSuu7iq6H5LmqimOmS9x6mO6ce2Y+yPGS6N1HWh4WDw==
+X-Received: by 2002:a7b:cc84:: with SMTP id p4mr6083148wma.2.1624299378412;
+        Mon, 21 Jun 2021 11:16:18 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:5ebd:8bd9:d549:4211? ([2a01:e34:ed2f:f020:5ebd:8bd9:d549:4211])
+        by smtp.googlemail.com with ESMTPSA id k2sm18206405wrw.93.2021.06.21.11.16.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 11:16:17 -0700 (PDT)
+Subject: Re: [PATCH v4 0/6] Add driver for NVIDIA Tegra30 SoC Thermal sensor
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Andreas Westman Dorcsak <hedmoo@yahoo.com>,
+        Maxim Schwalm <maxim.schwalm@gmail.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Ihor Didenko <tailormoon@rambler.ru>,
+        Ion Agorria <ion@agorria.com>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Peter Geis <pgwipeout@gmail.com>
+Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+References: <20210616190417.32214-1-digetx@gmail.com>
+ <e1e3816a-ddf4-be13-0410-0b929f3be60b@linaro.org>
+ <cdc3d6fe-f2a8-d50c-af11-98ab4f72b713@gmail.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <1f938d62-aeac-325f-4735-80cccfd529c2@linaro.org>
+Date:   Mon, 21 Jun 2021 20:16:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <cdc3d6fe-f2a8-d50c-af11-98ab4f72b713@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Jun 2021 10:17:02 +0530, Anshuman Khandual wrote:
-> ARM64_SWAPPER_USES_SECTION_MAPS implies that a PMD level huge page mappings
-> are used for swapper, idmap and vmemmap. Lets make it PMD explicit removing
-> any possible confusion with generic memory sections and also bit generic as
-> it's applicable for idmap and vmemmap mappings as well. Hence rename it as
-> ARM64_KERNEL_USES_PMD_MAPS instead.
+On 21/06/2021 19:26, Dmitry Osipenko wrote:
+> 21.06.2021 20:13, Daniel Lezcano пишет:
+>>
+>> Hi Dmitry,
+>>
+>> I compiled the your series and got these unresolved.
+>>
+>> arm-linux-gnueabi-ld: drivers/thermal/tegra/soctherm-fuse.o: in function
+>> `tegra_calc_shared_calib':
+>> soctherm-fuse.c:(.text+0x60): undefined reference to `tegra_fuse_readl'
+>> arm-linux-gnueabi-ld: soctherm-fuse.c:(.text+0xf0): undefined reference
+>> to `tegra_fuse_readl'
+>> arm-linux-gnueabi-ld: drivers/thermal/tegra/soctherm-fuse.o: in function
+>> `tegra_calc_tsensor_calib':
+>> soctherm-fuse.c:(.text+0x144): undefined reference to `tegra_fuse_readl'
+>> arm-linux-gnueabi-ld: drivers/thermal/tegra/tegra30-tsensor.o: in
+>> function `tegra_tsensor_fuse_read_spare':
+>> tegra30-tsensor.c:(.text+0x364): undefined reference to `tegra_fuse_readl'
+>> arm-linux-gnueabi-ld: drivers/thermal/tegra/tegra30-tsensor.o: in
+>> function `tegra_tsensor_probe':
+>> tegra30-tsensor.c:(.text+0x874): undefined reference to `tegra_fuse_readl'
+>> arm-linux-gnueabi-ld:
+>> drivers/thermal/tegra/tegra30-tsensor.o:tegra30-tsensor.c:(.text+0x904):
+>> more undefined references to `tegra_fuse_readl' follow
+>> make[1]: *** [/home/dlezcano/Work/src/linux/Makefile:1196: vmlinux] Error 1
+>> make: *** [/home/dlezcano/Work/src/linux/Makefile:215: __sub-make] Error 2
+> 
+> The missing stub was added by [1]. I guess you could take [2] for the
+> base since Thierry already sent out PR for 5.14, or we could defer the
+> "thermal/drivers/tegra: Correct compile-testing of drivers" patch till
+> the next kernel version. Please choose whatever is easier for you.
 
-Applied to arm64 (for-next/mm), thanks!
+I would like to prevent to have more patches floating around. As we are
+close the to the merge window, I think we can live with the missing
+stubs ATM. But in the future, provide an immutable branch with the
+fixes, so we can share it and prevent these issues.
 
-[1/1] arm64/mm: Rename ARM64_SWAPPER_USES_SECTION_MAPS
-      https://git.kernel.org/arm64/c/2062d44da349
+  -- Daniel
 
-Cheers,
+
+
 -- 
-Will
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
