@@ -2,87 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0380D3AE1A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 04:18:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D625F3AE1A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 04:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbhFUCUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 22:20:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35706 "EHLO
+        id S230151AbhFUCUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 22:20:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229877AbhFUCUP (ORCPT
+        with ESMTP id S230040AbhFUCUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 22:20:15 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C11EC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 19:18:01 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id k11so747092ioa.5
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 19:18:01 -0700 (PDT)
+        Sun, 20 Jun 2021 22:20:32 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E151C061760
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 19:18:17 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id d13so22807013ljg.12
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 19:18:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sC+CWqmXSvQbdEzFj6mik48sZrpR2zcfHhg4ZTETBBE=;
-        b=kU1bnKG9ZtCmpLWsP6YXUdugCf0ACmvDyukn1JMuevjRIfI5H8OQa4cTUPk1+nByFz
-         BYt6TVpKcaY+2DZ3UElO6WX3dn8XlZTncNElItaOFM2G+yJq325tZWhFECqIytxm9zIG
-         Lw9VW4OXdrx8DApt914a1xHAlvilxRVueAIK2U2oky7b/C4D7Hj2e05tLR6XV6qNVgJj
-         El+gS3BtIyITh2lIfJ14Jrm3tOJ9UIvRv9T93fc4eMdfC/TLzmoknVxmnMTl/M3EXiK+
-         SWZz5XdakhYh4FW1A7dcQmf095EbpDt6QlmalAQncWGAyZ38yAr21fZDbccKx56bIgdP
-         gOxA==
+        bh=dZejXSKJots0a5Xk5qseqeRM6JTbTp59SHNg6hTQH+o=;
+        b=MAhMZqudZsSxZ/7jbtmYhk1RV1H9tJShm//WrMFiOV2ya/PC4lyBw53NovX2z0W3UQ
+         lVW5QcVk8O7fSzPpRXICb0URT/gxy4ajlbBr3HqIyZlMxRX6b08rhnK5f1HRSHzKKYIK
+         QB0Eqv+7FA7Oe20guNcwkG9wa52yJ/I7XOJfE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sC+CWqmXSvQbdEzFj6mik48sZrpR2zcfHhg4ZTETBBE=;
-        b=ZbQukYx7b4I2SehmjwnsvhjhYNDZDBk3wXvod/5Uy1YCNaZ5EarNgA0eJ/Fih3N4hW
-         FIPfXBd4Djhj/t6kmuvLGKUgsAlS/K1hQNGaR4eBmAYGovNkwf8fyVlinx0eha2cA41P
-         C5KsCxDYEAxDv6s7DG3Xym9mHX0+MMkLP4QKMg+TOgmErf/KF8LBpSoXIUx+V6O9e4xh
-         VdGLG2GT90E+kajY+qv8HwxlTwsai0U7optqBQIDegM9EjCM4aIIKmntEeL6VRuuaNMN
-         EoSVv095ZNkEeRU4V21US+aB8yG+wwC1pHF1CXmAQaToM1Z9RQd/v2eX7ZdCOk93u1hA
-         6u9Q==
-X-Gm-Message-State: AOAM530u0FV7Z+OI97xVamRLhUSrUyPoxgsy5OETgEZ7fxiS2oyckNtl
-        pgRYln7ozzPEKNsVozm53lcCZVwXKdMGog5hS+sdkqagx+4=
-X-Google-Smtp-Source: ABdhPJw362ru0c9lLnP975ktgy0BRnIsfVZHKqh07ExNCmbCaUdaW2PAjvmuiDnJ0QjIWUWJZx+zduzSSz6vpSUvFPA=
-X-Received: by 2002:a05:6602:38d:: with SMTP id f13mr18110750iov.109.1624241880641;
- Sun, 20 Jun 2021 19:18:00 -0700 (PDT)
+        bh=dZejXSKJots0a5Xk5qseqeRM6JTbTp59SHNg6hTQH+o=;
+        b=fyv+n83zmXlTbqWplp03H31TAMmgNAxFFotuc7gSgHDtrbRCX8T8E01f97+ZqhOZUc
+         waJbtuqwe2Y/QKPLm6CxFyf+68U9lxnFhkFElTeiHeV5zUmIGmgvVb0g+ro49GSaktiM
+         iAq6KE209z+i1czMJ76YouXDO/6K7+0Ogd9VDoAkGRz9FLNqvPuH+WlzWOB4oiBf9N/9
+         jg4WFGa5bq54gI2xYWZRWBem8PBSHB1DXBRxnSCz/7zWMBXdJIeSx2oHTok9rl+G/+12
+         OkshrMpRb9/TbbN7Ejt63rGbx9uPdVyi1n1bd4mr4i8G5QdXZm++VClKGTJc3rhYesiK
+         BXXA==
+X-Gm-Message-State: AOAM5331KRKDWIUToN5zw2xVVTxY/MbmADnlATI56OLnI/m2RyjJ+sEB
+        7rtVkoKQQAYtpws9fg9l9so2Nunb/MWcuBYL
+X-Google-Smtp-Source: ABdhPJxFghOstZJRTq10oBlxUV4M5WssnWLOZZmRuWYTEmpa8WVEH1kvDjttJPnUWlblkwIh29CZdg==
+X-Received: by 2002:a2e:b24f:: with SMTP id n15mr19475029ljm.261.1624241895437;
+        Sun, 20 Jun 2021 19:18:15 -0700 (PDT)
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
+        by smtp.gmail.com with ESMTPSA id z2sm610575ljm.10.2021.06.20.19.18.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 20 Jun 2021 19:18:14 -0700 (PDT)
+Received: by mail-lf1-f48.google.com with SMTP id f30so27540880lfj.1
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 19:18:13 -0700 (PDT)
+X-Received: by 2002:a05:6512:557:: with SMTP id h23mr7348506lfl.253.1624241893502;
+ Sun, 20 Jun 2021 19:18:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <1624094597-23993-1-git-send-email-kewei.xu@mediatek.com>
-In-Reply-To: <1624094597-23993-1-git-send-email-kewei.xu@mediatek.com>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Mon, 21 Jun 2021 10:17:49 +0800
-Message-ID: <CA+Px+wUo1T6qesMudkOo7+9EP6bLOT4Akzj8DOEg5EG_kQcHjw@mail.gmail.com>
-Subject: Re: [PATCH] i2c: mediatek: Isolate speed setting via dts for special devices
-To:     kewei.xu@mediatek.com
-Cc:     wsa@the-dreams.de, matthias.bgg@gmail.com,
-        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        srv_heupstream@mediatek.com, leilk.liu@mediatek.com,
-        qii.wang@mediatek.com
+References: <87sg1p30a1.fsf@disp2133> <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
+ <87pmwsytb3.fsf@disp2133> <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
+ <87sg1lwhvm.fsf@disp2133> <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+ <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com> <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+ <87eed4v2dc.fsf@disp2133> <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+ <87fsxjorgs.fsf@disp2133> <87zgvqor7d.fsf_-_@disp2133> <CAHk-=wir2P6h+HKtswPEGDh+GKLMM6_h8aovpMcUHyQv2zJ5Og@mail.gmail.com>
+ <87mtrpg47k.fsf@disp2133> <87pmwlek8d.fsf_-_@disp2133> <87k0mtek4n.fsf_-_@disp2133>
+ <393c37de-5edf-effc-3d06-d7e63f34a317@gmail.com>
+In-Reply-To: <393c37de-5edf-effc-3d06-d7e63f34a317@gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 20 Jun 2021 19:17:57 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wip8KgrNUcU68wsLZqbWV+3NWg9kqqQwygHGAA8-xOwMA@mail.gmail.com>
+Message-ID: <CAHk-=wip8KgrNUcU68wsLZqbWV+3NWg9kqqQwygHGAA8-xOwMA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] alpha/ptrace: Record and handle the absence of switch_stack
+To:     Michael Schmitz <schmitzmic@gmail.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 19, 2021 at 5:23 PM <kewei.xu@mediatek.com> wrote:
-> In the commit be5ce0e97cc7 ("i2c: mediatek: Add i2c ac-timing adjust
-> support"), the I2C timing calculation has been revised to support
-> ac-timing, revised to support ac-timing adjustment, however that will
-> break on some I2C components. As a result we want to introduce a new
-> setting "default-adjust-timing" so those components can choose to use the
-> old (default) timing algorithm.
-Could you provide a proper "Fixes" tag.
+On Sun, Jun 20, 2021 at 7:01 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
+>
+> instrumenting get_reg on m68k and using a similar patch to yours to warn
+> when unsaved registers are accessed on the switch stack, I get a hit
+> from getegid and getegid32, just by running a simple ptrace on ls.
+>
+> Going to wack those two moles now ...
 
-> @@ -544,6 +558,7 @@ static void mtk_i2c_init_hw(struct mtk_i2c *i2c)
->                                        OFFSET_HS_STA_STO_AC_TIMING);
->                 }
->         }
-> +       mtk_i2c_writew(i2c, ext_conf_val, OFFSET_EXT_CONF);
-This looks like another fix.  Could you separate this into another
-patch or explain more why it needs to be in the patch?
+I don't see what's going on. Those system calls don't use the register
+state, afaik. What's the call chain, exactly?
 
-> @@ -1284,6 +1355,8 @@ static int mtk_i2c_parse_dt(struct device_node *np, struct mtk_i2c *i2c)
->         i2c->have_pmic = of_property_read_bool(np, "mediatek,have-pmic");
->         i2c->use_push_pull =
->                 of_property_read_bool(np, "mediatek,use-push-pull");
-> +       i2c->default_timing_adjust =
-> +               of_property_read_bool(np, "mediatek,default-timing-adjust");
-Need a DT-binding document patch for the newly added property.
+           Linus
