@@ -2,124 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A683AE5DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 290073AE5E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230513AbhFUJWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:22:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44576 "EHLO
+        id S230503AbhFUJXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:23:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230455AbhFUJWi (ORCPT
+        with ESMTP id S230204AbhFUJX3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:22:38 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6BF6C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:20:22 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id bj15so26944839qkb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:20:22 -0700 (PDT)
+        Mon, 21 Jun 2021 05:23:29 -0400
+Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61817C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:21:14 -0700 (PDT)
+Received: by mail-vs1-xe31.google.com with SMTP id j15so8838430vsf.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:21:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Thh2opi8YGKKCEfU6ECwo8lT/xNy33vFpN+m6aUkk70=;
-        b=Sfu8uTdvW0jrc71YyHyh5FMxfTEEBAQndnCmL6dQ9ergOHCUENc4bR+FFIUDYLUhx3
-         6MVCVL4fiUOi7VRwE8zX6GW59jCNTh1AdczkRBo10bRNom0MTrH+WE708COsy07lfGFW
-         H8+VH1OBwO59X7fKIzk1lSwPLEQa8KDVqe0l7VQeQRw/GW27lrUnjv09l6yqP9hnId9w
-         EMoVCF2OFTsozX5VTg56eaz8EEo8oChfisqzr7XClOLrGkZpTcY9hlznx5PpTbpPFzNs
-         G7Y6GDl4k78MujFJ/riPoKEavpNecta+tgHkI3yPE9JF6XmS0wrwp5Dxi8ePB9uHRAXq
-         XVXA==
+         :cc;
+        bh=1Vd+PiHe/bRMwnxiMCntHGnrHkv4JBBFa+zKaAXH/ik=;
+        b=o19037BEi9Dfo1ZRbE+9uwTl0qZClU4ImAXQTQPWpbRUvSpymIfO03q37ef6YgjjpX
+         IMFhFXsueQpoElj4cxKi959NDwhJQpkswzbWSAF+1DI470H1uHbfBh17femO8xSzr9E6
+         OshtcVwygLfmP8W0dR521utFAK/ugxiOq3aQB4rwy33SYAm0vtOAijsdpTObtSNimpK9
+         zzhhkM4MwyWav2y9BW0wumJdLbOa61PA1okKfXuqVDMwBrcIuL1LUtV2lk/Uhdwi0yja
+         gD6U9TdPK+GKQmETtWuUsL4dAu4M1+b72qVEeHW556tdMbnzl+X7FTdTzoZKSjzbVmiT
+         JZCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Thh2opi8YGKKCEfU6ECwo8lT/xNy33vFpN+m6aUkk70=;
-        b=TmHKwhBbAgJPzkaMHBef57/TiFbRHG2aEm5AJz7zGG9Zrs4bsBG3w72k+EzVHKLgfx
-         6BfY54hUkb4XaexYFAaWvJGdR3aHxhX1BTT0ppOp8NZ3wbxt74TdvTRyXUImKw/qJZ5M
-         vnluxmjzPxsTtZ+nIdw4qDaFDZIlQ4SXGluBn7Ue4/gzWnQexu3gpOzye57HEOaLU2nB
-         cKBMS3zV3miHKJbgDSJzBQH3ZP+5M+/py5HS+gVIXZ1oEkBZb6MzWhuQrPBPw81h/F47
-         f3dwo/PEmk3omAaAcz2DzRPEIzgIK5F0/9SE8BEO/H+tAd+E0+CYwPkT0eLcC6S+zAyT
-         pPHA==
-X-Gm-Message-State: AOAM531eSh/FclDXuCPkFtthbUvzA2VTXQVvaPOYYXUWqMF46hV2TcLs
-        2agvvH6bkFak1TuKQBSm2g+jC3fiVMetAA3rCq7hSxAhXl4IYcVJ
-X-Google-Smtp-Source: ABdhPJweQq+krXsUDsoeOuS4izGdW2bpWPGAcnA8SsKmxmctBiSz3y8JmTYbQnPZ+PkDcdOM5HQzhkzgI3dU7uno8zA=
-X-Received: by 2002:a25:2351:: with SMTP id j78mr30757910ybj.391.1624267221792;
- Mon, 21 Jun 2021 02:20:21 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=1Vd+PiHe/bRMwnxiMCntHGnrHkv4JBBFa+zKaAXH/ik=;
+        b=F0Sl59Q+Ntkd0/3IsJV25DNcVl/CKVfTJ2pwwHc8o+g41p+lPtIuhwO5Qxlh38NbuC
+         LrWYo+k0tvpvFyk8/uvIalB89UnG9RXlsq6xSaYAMPvkxEapvLKfcrhwYW45EsuCzkjI
+         QzG1ZRbvvSCB9+MeykhkrBtJJlhFtovGRJvx/wIZRvKjAdKqUHFOc8oGK6k8PBvQ3vmd
+         eaMpajYDqk3gEQSwFj1l4SfwwJkC0ksMNiYBbFzKLXmosEqEJCgi09/9RIvbc1RrngXB
+         v1RWYa34/IctXkF5EqFSUkmvgHM0x7+GVGpjUO0DFwfInPz2qZt8sUz8K+mJ7ArrnldE
+         7RJg==
+X-Gm-Message-State: AOAM532gz+9LuyrxkjBoVNHbi8fGL5KBT+yUg5EsYSzUh/Ndrv0+GiHN
+        wuQzcWWwLrxV2NKEnpBhttAzq3RD/wZQqiwsrjJnVA==
+X-Google-Smtp-Source: ABdhPJyWynQJTb2V6t+oCYPeSuI9ZT9iQyheQZxOsYra5j4JCehtuF1qKlo0ua3FavFCXS9dY9cP3NthP6wRLhlbwhU=
+X-Received: by 2002:a05:6102:3a70:: with SMTP id bf16mr6298082vsb.48.1624267273523;
+ Mon, 21 Jun 2021 02:21:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210617095309.3542373-1-stapelberg+linux@google.com>
- <CAJfpegvpnQMSRU+TW4J5+F+3KiAj8J_m+OjNrnh7f2X9DZp2Ag@mail.gmail.com>
- <CAH9Oa-ZcG0+08d=D5-rbzY-v1cdUcuW0E7D_GcwjDoC1Phf+0g@mail.gmail.com> <CAJfpegu0prjjHVhBzwZBVk5N+avHvUcyi4ovhKbf+F7GEuVkmw@mail.gmail.com>
-In-Reply-To: <CAJfpegu0prjjHVhBzwZBVk5N+avHvUcyi4ovhKbf+F7GEuVkmw@mail.gmail.com>
-From:   Michael Stapelberg <stapelberg+linux@google.com>
-Date:   Mon, 21 Jun 2021 11:20:10 +0200
-Message-ID: <CAH9Oa-YxeZ25Vbto3NyUw=RK5vQWv_v7xp3vHS9667iJJ8XV_A@mail.gmail.com>
-Subject: Re: [PATCH] backing_dev_info: introduce min_bw/max_bw limits
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        linux-fsdevel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Dennis Zhou <dennis@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Roman Gushchin <guro@fb.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Jan Kara <jack@suse.cz>, Song Liu <song@kernel.org>,
-        David Sterba <dsterba@suse.com>
+References: <20210320045720.11872-1-chgokhl@gmail.com> <CAPDyKFqXtKPngfnQZXXaF=rvqw0=nWzDc7P++QxNHPwGHHSxUA@mail.gmail.com>
+ <CAMjpFAUTsei-PWLDdM+_78qXTo=QFdw-Wbgo9QA2Jnss+i4yRA@mail.gmail.com>
+In-Reply-To: <CAMjpFAUTsei-PWLDdM+_78qXTo=QFdw-Wbgo9QA2Jnss+i4yRA@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 21 Jun 2021 11:20:36 +0200
+Message-ID: <CAPDyKFqUhx8SmpXj=kmxzEKLWt4RU8rTxiiQgAXWX=fzmL=J0Q@mail.gmail.com>
+Subject: Re: [PATCH] mmc: core: Mark mmc_host device with pm_runtime_no_callbacks
+To:     chgokhl@163.com
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kehuanlin@fishsemi.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Miklos
+On Mon, 21 Jun 2021 at 03:38, hieagle <chgokhl@gmail.com> wrote:
+>
+> Sorry, I don't receive the reply email in my gmail.
+>
+> Normally the mmc_host's power.disable_depth is large than zero, the
+> rpm_resume(mmc:0001) will not be called recursively for parent. This is
+> the most case.
+>
+> Although the mmc class device never calls pm_runtime_enable() directly,
+> there are still some cases as below to call pm_runtime_enable(), which
+> may cause it's power.disable_depth decremented to zero.
+>   case1: device_resume_early->pm_runtime_enable
+>   case2: device_resume->pm_runtime_enable
 
-On Fri, 18 Jun 2021 at 16:42, Miklos Szeredi <miklos@szeredi.hu> wrote:
->
-> On Fri, 18 Jun 2021 at 10:31, Michael Stapelberg
-> <stapelberg+linux@google.com> wrote:
->
-> > Maybe, but I don=E2=80=99t have the expertise, motivation or time to
-> > investigate this any further, let alone commit to get it done.
-> > During our previous discussion I got the impression that nobody else
-> > had any cycles for this either:
-> > https://lore.kernel.org/linux-fsdevel/CANnVG6n=3DySfe1gOr=3D0ituQidp56i=
-dGARDKHzP0hv=3DERedeMrMA@mail.gmail.com/
-> >
-> > Have you had a look at the China LSF report at
-> > http://bardofschool.blogspot.com/2011/?
-> > The author of the heuristic has spent significant effort and time
-> > coming up with what we currently have in the kernel:
-> >
-> > """
-> > Fengguang said he draw more than 10K performance graphs and read even
-> > more in the past year.
-> > """
-> >
-> > This implies that making changes to the heuristic will not be a quick f=
-ix.
->
-> Having a piece of kernel code sitting there that nobody is willing to
-> fix is certainly not a great situation to be in.
+Those calls to pm_runtime_enable() are in balance with previous calls
+to __pm_runtime_disable and pm_runtime_disable(), in
+__device_suspend() and __device_suspend_late().
 
-Agreed.
+In other words, the power.disable_depth is not being decremented to
+zero in any of those above path, I think.
 
 >
-> And introducing band aids is not going improve the above situation,
-> more likely it will prolong it even further.
+> Anything that can go wrong will go wrong. Unfortunately we meet the case.
+> If you trigger to set the mmc_host's power.disable_depth value to zero
+> after mmc suspended, you can find the issue.
+>
+> In our platform the mmc device's parent list is as below:
+>      mmc0:0001->mmc_host mmc0->fa630000.mmc->soc.
+> The rpm_resume call trace is as below in our scenario:
+>
+> rpm_resume(mmc0:0001)
+> |
+> if (!parent && dev->parent) //true
+> if (!parent->power.disable_depth
+>    && !parent->power.ignore_children) //true
+> rpm_resume(parent, 0) --->  rpm_resume(mmc_host, 0)
+> |                           |
+> |                           callback = RPM_GET_CALLBACK(mmc_host, ...) = NULL
+> |                           retval = rpm_callback(callback, mmc_host) = -ENOSYS
+> |                           |
+> |                           return retval = -ENOSYS
+> if (retval) goto out; //skip rpm_callback()
+> return retval = -ENOSYS
+>
+> The scenario is rare, but anything that can go wrong will go wrong.
+> The patch can enhance the code to avoid this scenario.
 
-Sounds like =E2=80=9CPerfect is the enemy of good=E2=80=9D to me: you=E2=80=
-=99re looking for a
-perfect hypothetical solution,
-whereas we have a known-working low risk fix for a real problem.
+Well, I am still not convinced as I don't see how the
+power.disable_depth can ever reach zero.
 
-Could we find a solution where medium-/long-term, the code in question
-is improved,
-perhaps via a Summer Of Code project or similar community efforts,
-but until then, we apply the patch at hand?
+If you could provide a stack-trace of when power.disable_depth reaches
+zero, that would be helpful.
 
-As I mentioned, I think adding min/max limits can be useful regardless
-of how the heuristic itself changes.
+[...]
 
-If that turns out to be incorrect or undesired, we can still turn the
-knobs into a no-op, if removal isn=E2=80=99t an option.
-
-Thanks
-Best regards
-Michael
+Kind regards
+Uffe
