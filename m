@@ -2,119 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 290073AE5E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:21:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 119B63AE5E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230503AbhFUJXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:23:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230204AbhFUJX3 (ORCPT
+        id S230311AbhFUJYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:24:49 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:40784 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230102AbhFUJYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:23:29 -0400
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61817C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:21:14 -0700 (PDT)
-Received: by mail-vs1-xe31.google.com with SMTP id j15so8838430vsf.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:21:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1Vd+PiHe/bRMwnxiMCntHGnrHkv4JBBFa+zKaAXH/ik=;
-        b=o19037BEi9Dfo1ZRbE+9uwTl0qZClU4ImAXQTQPWpbRUvSpymIfO03q37ef6YgjjpX
-         IMFhFXsueQpoElj4cxKi959NDwhJQpkswzbWSAF+1DI470H1uHbfBh17femO8xSzr9E6
-         OshtcVwygLfmP8W0dR521utFAK/ugxiOq3aQB4rwy33SYAm0vtOAijsdpTObtSNimpK9
-         zzhhkM4MwyWav2y9BW0wumJdLbOa61PA1okKfXuqVDMwBrcIuL1LUtV2lk/Uhdwi0yja
-         gD6U9TdPK+GKQmETtWuUsL4dAu4M1+b72qVEeHW556tdMbnzl+X7FTdTzoZKSjzbVmiT
-         JZCQ==
+        Mon, 21 Jun 2021 05:24:47 -0400
+Received: from mail-ej1-f71.google.com ([209.85.218.71])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lvG8X-0000ZK-3C
+        for linux-kernel@vger.kernel.org; Mon, 21 Jun 2021 09:22:33 +0000
+Received: by mail-ej1-f71.google.com with SMTP id q14-20020a1709066aceb029049fa6bee56fso529112ejs.21
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:22:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1Vd+PiHe/bRMwnxiMCntHGnrHkv4JBBFa+zKaAXH/ik=;
-        b=F0Sl59Q+Ntkd0/3IsJV25DNcVl/CKVfTJ2pwwHc8o+g41p+lPtIuhwO5Qxlh38NbuC
-         LrWYo+k0tvpvFyk8/uvIalB89UnG9RXlsq6xSaYAMPvkxEapvLKfcrhwYW45EsuCzkjI
-         QzG1ZRbvvSCB9+MeykhkrBtJJlhFtovGRJvx/wIZRvKjAdKqUHFOc8oGK6k8PBvQ3vmd
-         eaMpajYDqk3gEQSwFj1l4SfwwJkC0ksMNiYBbFzKLXmosEqEJCgi09/9RIvbc1RrngXB
-         v1RWYa34/IctXkF5EqFSUkmvgHM0x7+GVGpjUO0DFwfInPz2qZt8sUz8K+mJ7ArrnldE
-         7RJg==
-X-Gm-Message-State: AOAM532gz+9LuyrxkjBoVNHbi8fGL5KBT+yUg5EsYSzUh/Ndrv0+GiHN
-        wuQzcWWwLrxV2NKEnpBhttAzq3RD/wZQqiwsrjJnVA==
-X-Google-Smtp-Source: ABdhPJyWynQJTb2V6t+oCYPeSuI9ZT9iQyheQZxOsYra5j4JCehtuF1qKlo0ua3FavFCXS9dY9cP3NthP6wRLhlbwhU=
-X-Received: by 2002:a05:6102:3a70:: with SMTP id bf16mr6298082vsb.48.1624267273523;
- Mon, 21 Jun 2021 02:21:13 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7esRvVcinYR7rlyfgxB0axaJuCa7vrRfbX3KD5RVOvA=;
+        b=uKWWDPH/Ym4kNfQNqyOwgJ5ciBIF6bXfp+SjNEuIqgbeiKYlKdt5gBumh2x0JBtxeu
+         r65cofibZ+ELpnkh0oib1qE7vqjBFM0elLdZgEabWf0mOVDATGzpEaeWL0Qg8zJt0Fcb
+         psT5GuucOncBapFIY9xqUo7jh9ysd6FAw0P8dKW81TU640Gi5C2HHQHK236xzwKbkEzG
+         0kKT2wYr8II8I2im1GVtSbq0nCCkMsk6bo/f/5lPoPDjXmPJ3i6sne2Gh2QnBJOPxkIQ
+         u015g6IcFW3t27v2RKspEc2jyzVcDsNrZV4IxxNWOI1nH4dsuzq7j39WI5hMdJcE2gxD
+         7cGQ==
+X-Gm-Message-State: AOAM532b1PYaKkuZkGvFOpWCwZN4oc8W69RfPYBZZH0GC+hfCP41m2Ye
+        ah+6KRl7jFRRMZNkPaadVYOYEYhm8pbCyjbkLxr3CDeQ/DYblWbLRO4fkgPUSrGSgIIKCYfUec5
+        iFzdsCLZxK4CDGDNEmiJ62hYLX8z6JKZroHdCG8dOJA==
+X-Received: by 2002:a17:907:10d8:: with SMTP id rv24mr23244120ejb.542.1624267352893;
+        Mon, 21 Jun 2021 02:22:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwK87IiOxM4hAhjXuyIaQM65msNysHT4P/N9iideRyYDPL+x8j12EeilZUbJEJaGVB4YOM4Vw==
+X-Received: by 2002:a17:907:10d8:: with SMTP id rv24mr23244113ejb.542.1624267352732;
+        Mon, 21 Jun 2021 02:22:32 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
+        by smtp.gmail.com with ESMTPSA id gz12sm4555566ejc.36.2021.06.21.02.22.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 02:22:32 -0700 (PDT)
+Subject: Re: [PATCH -next 4/4] ASoC: samsung: s3c24xx-i2s: Use
+ devm_platform_get_and_ioremap_resource()
+To:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc:     s.nawrocki@samsung.com, broonie@kernel.org
+References: <20210616091652.2552927-1-yangyingliang@huawei.com>
+ <20210616091652.2552927-5-yangyingliang@huawei.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <a5d4ccb1-e98b-f983-ff0a-d57ddd2c045e@canonical.com>
+Date:   Mon, 21 Jun 2021 11:22:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210320045720.11872-1-chgokhl@gmail.com> <CAPDyKFqXtKPngfnQZXXaF=rvqw0=nWzDc7P++QxNHPwGHHSxUA@mail.gmail.com>
- <CAMjpFAUTsei-PWLDdM+_78qXTo=QFdw-Wbgo9QA2Jnss+i4yRA@mail.gmail.com>
-In-Reply-To: <CAMjpFAUTsei-PWLDdM+_78qXTo=QFdw-Wbgo9QA2Jnss+i4yRA@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 21 Jun 2021 11:20:36 +0200
-Message-ID: <CAPDyKFqUhx8SmpXj=kmxzEKLWt4RU8rTxiiQgAXWX=fzmL=J0Q@mail.gmail.com>
-Subject: Re: [PATCH] mmc: core: Mark mmc_host device with pm_runtime_no_callbacks
-To:     chgokhl@163.com
-Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kehuanlin@fishsemi.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210616091652.2552927-5-yangyingliang@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Jun 2021 at 03:38, hieagle <chgokhl@gmail.com> wrote:
->
-> Sorry, I don't receive the reply email in my gmail.
->
-> Normally the mmc_host's power.disable_depth is large than zero, the
-> rpm_resume(mmc:0001) will not be called recursively for parent. This is
-> the most case.
->
-> Although the mmc class device never calls pm_runtime_enable() directly,
-> there are still some cases as below to call pm_runtime_enable(), which
-> may cause it's power.disable_depth decremented to zero.
->   case1: device_resume_early->pm_runtime_enable
->   case2: device_resume->pm_runtime_enable
+On 16/06/2021 11:16, Yang Yingliang wrote:
+> Use devm_platform_get_and_ioremap_resource() to simplify
+> code.
+> 
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  sound/soc/samsung/s3c24xx-i2s.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
 
-Those calls to pm_runtime_enable() are in balance with previous calls
-to __pm_runtime_disable and pm_runtime_disable(), in
-__device_suspend() and __device_suspend_late().
 
-In other words, the power.disable_depth is not being decremented to
-zero in any of those above path, I think.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
->
-> Anything that can go wrong will go wrong. Unfortunately we meet the case.
-> If you trigger to set the mmc_host's power.disable_depth value to zero
-> after mmc suspended, you can find the issue.
->
-> In our platform the mmc device's parent list is as below:
->      mmc0:0001->mmc_host mmc0->fa630000.mmc->soc.
-> The rpm_resume call trace is as below in our scenario:
->
-> rpm_resume(mmc0:0001)
-> |
-> if (!parent && dev->parent) //true
-> if (!parent->power.disable_depth
->    && !parent->power.ignore_children) //true
-> rpm_resume(parent, 0) --->  rpm_resume(mmc_host, 0)
-> |                           |
-> |                           callback = RPM_GET_CALLBACK(mmc_host, ...) = NULL
-> |                           retval = rpm_callback(callback, mmc_host) = -ENOSYS
-> |                           |
-> |                           return retval = -ENOSYS
-> if (retval) goto out; //skip rpm_callback()
-> return retval = -ENOSYS
->
-> The scenario is rare, but anything that can go wrong will go wrong.
-> The patch can enhance the code to avoid this scenario.
 
-Well, I am still not convinced as I don't see how the
-power.disable_depth can ever reach zero.
-
-If you could provide a stack-trace of when power.disable_depth reaches
-zero, that would be helpful.
-
-[...]
-
-Kind regards
-Uffe
+Best regards,
+Krzysztof
