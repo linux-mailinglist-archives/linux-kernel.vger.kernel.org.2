@@ -2,66 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF5723AE9C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 091E23AE9D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbhFUNLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 09:11:25 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:47570 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229651AbhFUNLX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 09:11:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=htXr5+GTGyZJxaugUXnZ7e7qviUalTTBhF0Oq+fysqM=; b=Zvslj/ZMkVwvvFB19uFwtxtMfg
-        j0OFcxF9euXqDrFnWNpF3XQMa3P8cliizUOAPYr0OPW9R+A4hoM1s/Npa6wSf5N02ihrs+fpC9Agr
-        Bnk6J1q5cE35jzkXlz4pX7l6PRTpD5DPiMCv5BwPr9E4i7TPHGpiOXZKPNhVXgR38npQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lvJfm-00AVQD-FV; Mon, 21 Jun 2021 15:09:06 +0200
-Date:   Mon, 21 Jun 2021 15:09:06 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Jian-Hong Pan <jhp@endlessos.org>
-Cc:     Doug Berger <opendmb@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Stefan Wahren <stefan.wahren@i2se.com>,
-        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux@endlessos.org,
-        linux-rpi-kernel@lists.infradead.org
-Subject: Re: [PATCH] net: bcmgenet: Fix attaching to PYH failed on RPi 4B
-Message-ID: <YNCPcmEPuwdwoLto@lunn.ch>
-References: <20210621103310.186334-1-jhp@endlessos.org>
+        id S230160AbhFUNQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 09:16:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229695AbhFUNQC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 09:16:02 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B96DC061574;
+        Mon, 21 Jun 2021 06:13:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Qu1aJMR4flK0FS15KBa/VkE4TUOWBJPRGztPmWnzK6c=; b=K0W+z+kc1UHE1xUwN23ov4DCXk
+        UfNfytG81fCmu7N1/rVD6hDM5ZQASQVrfULgFCTHfXTbo9+aPfqSaT686/FlRf/IwfnQ/TtfLVnLz
+        VTKBasZqrJunBpw1tyc3XWvYjCMfmCjZ08PSmYaSulth3AgwY811iHeAxtu6rh9aDyQHcEnjmfgsA
+        au8SKJM6tRKOQWnfcL0S1IpZ7sVpSBHxn2J2c024z/r+YWKwmwrIHsSFa1/RS0lixLfFPTKB+NK9g
+        B3+8DmaOt7MHjr1DfH9FPY6c/okFymw5ZmHpv7Erm5QUf64OA4Waf1YfeGCZouAuWoftnmYPQH3Wq
+        5HRpb+nQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvJjl-00AFAZ-NK; Mon, 21 Jun 2021 13:13:20 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 579303001C0;
+        Mon, 21 Jun 2021 15:13:18 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 41770203C06B1; Mon, 21 Jun 2021 15:13:18 +0200 (CEST)
+Date:   Mon, 21 Jun 2021 15:13:18 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v7 0/2] x86/sev: Fixes for SEV-ES Guest Support
+Message-ID: <YNCQbmC6kuL4K1Mp@hirez.programming.kicks-ass.net>
+References: <20210618115409.22735-1-joro@8bytes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210621103310.186334-1-jhp@endlessos.org>
+In-Reply-To: <20210618115409.22735-1-joro@8bytes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 06:33:11PM +0800, Jian-Hong Pan wrote:
-> The Broadcom UniMAC MDIO bus comes too late. So, GENET cannot find the
-> ethernet PHY on UniMAC MDIO bus. This leads GENET fail to attach the
-> PHY.
-> 
-> bcmgenet fd580000.ethernet: GENET 5.0 EPHY: 0x0000
-> ...
-> could not attach to PHY
-> bcmgenet fd580000.ethernet eth0: failed to connect to PHY
-> uart-pl011 fe201000.serial: no DMA platform data
-> libphy: bcmgenet MII bus: probed
-> ...
-> unimac-mdio unimac-mdio.-19: Broadcom UniMAC MDIO bus
-> 
-> This patch makes GENET try to connect the PHY up to 3 times. Also, waits
-> a while between each time for mdio-bcm-unimac module's loading and
-> probing.
+On Fri, Jun 18, 2021 at 01:54:07PM +0200, Joerg Roedel wrote:
+> Joerg Roedel (2):
+>   x86/sev: Make sure IRQs are disabled while GHCB is active
+>   x86/sev: Split up runtime #VC handler for correct state tracking
 
-Don't loop. Return -EPROBE_DEFER. The driver core will then probed the
-driver again later, by which time, the MDIO bus driver should of
-probed.
-
-	Andrew
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
