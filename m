@@ -2,100 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A1A3AEA7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C493AEA84
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhFUNyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 09:54:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230388AbhFUNyc (ORCPT
+        id S230235AbhFUNzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 09:55:54 -0400
+Received: from mout.kundenserver.de ([217.72.192.73]:37675 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229747AbhFUNzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 09:54:32 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5432C061574;
-        Mon, 21 Jun 2021 06:52:17 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id g24so10006664pji.4;
-        Mon, 21 Jun 2021 06:52:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=cS/F8T1IFYAn7INxjRc02bXMnhEJgrDiWz1RpqB30qg=;
-        b=SJCGESTjQtyYduI8KWTbHwthcEwAcmaxdU6hvYYWVh+GfYWmxJjiB0YEJw5i7+Hs+/
-         7UNlbQQnS3Ixf218WX02g797CCw5A7nupA3Eh3COwpxuMd8H5rWsQhO+4S2EnVd6XjA2
-         VIhOYoO/1rreePN2r3ARbaic4QcE20/gufqYpvJ28Xg+MmCAnxBMlHAky0lJM9vFlQP4
-         IHAhRyMc8yPXLJjafnW7UXiGp9wAhBC0pDrE47/KRhyCnBN5emslw6hfGeuyF+DCYdc0
-         t371rI7FASZx/JgDK2IJSW4oms1cjy6eUsX8kiH/9pBVU7QY0ORfMiGgW1O9BkcaY5Ej
-         MtfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=cS/F8T1IFYAn7INxjRc02bXMnhEJgrDiWz1RpqB30qg=;
-        b=mXsuHYcREAfuATfmHHDivTsvGNHGSlXyQDVvFmnQvBxUHElaulOEpqi2jxb/QDVyHw
-         f0xwzhk2DQfpxk/rcfIMMNcWABpUkVrJ9g4eOw0vgMSqoSs0JJxBf9/CYUH/P0Nt7qQ7
-         HMrqUH8fFiVFK1cPc8EjXD6AR/4ji+B+1a9MfjcqxZuZV06P8vSBqE0HV3VYBwL4Osgb
-         wG4ZH2QqoAH2OkQVBwz3CQ0RbdWvmEw3yGUBIoxh9HCHHeFfpWN/tjDqfwyFiezZAez1
-         /u4cB+DPVIGdQjiw1GnjY5vR5aKCmxx/nTWBMh0qGobhT7LSvV6W7bQEOws2mnm0ku2G
-         NGxA==
-X-Gm-Message-State: AOAM5302Bv5hEGGwCipoOAz/8AoNihzXkBWeG+mMUBCCZxEiRk/mmiya
-        pmODv8poNxNVp1X35o0zhLk=
-X-Google-Smtp-Source: ABdhPJxT9DTOz8C0+5X6I7CDf35WX5i4rQLGUTavO5WmXFb6c5vVq6gzP11MULWNG5JNW0L/EF4OHw==
-X-Received: by 2002:a17:902:9f83:b029:f6:5c3c:db03 with SMTP id g3-20020a1709029f83b02900f65c3cdb03mr18185118plq.2.1624283537354;
-        Mon, 21 Jun 2021 06:52:17 -0700 (PDT)
-Received: from localhost ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id h21sm14832500pfv.190.2021.06.21.06.52.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 06:52:16 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-To:     linux-staging@lists.linux.dev
-Cc:     netdev@vger.kernel.org,
-        Benjamin Poirier <benjamin.poirier@gmail.com>,
-        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
-        Manish Chopra <manishc@marvell.com>,
-        GR-Linux-NIC-Dev@marvell.com (supporter:QLOGIC QLGE 10Gb ETHERNET
-        DRIVER), Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [RFC 19/19] staging: qlge: remove TODO item of unnecessary runtime checks
-Date:   Mon, 21 Jun 2021 21:49:02 +0800
-Message-Id: <20210621134902.83587-20-coiby.xu@gmail.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621134902.83587-1-coiby.xu@gmail.com>
-References: <20210621134902.83587-1-coiby.xu@gmail.com>
+        Mon, 21 Jun 2021 09:55:52 -0400
+Received: from mail-wm1-f46.google.com ([209.85.128.46]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MQeDw-1lb2K03u6Q-00NjKM; Mon, 21 Jun 2021 15:53:34 +0200
+Received: by mail-wm1-f46.google.com with SMTP id m3so10583863wms.4;
+        Mon, 21 Jun 2021 06:53:34 -0700 (PDT)
+X-Gm-Message-State: AOAM530MXXQE4mKLHbh1noeYyyRLtHZ4YcD8rp9/edvq04IvLgBB1+Ck
+        FabfaSMtmqrPDsDXPckSv/r1RjqP1hUelE3rvME=
+X-Google-Smtp-Source: ABdhPJw493ZkeJn6Qtnt0HQKPzDF/wWCQngLy4cn5egAOAwLzehc5RUr8VSFHkWig0MgcgLR54Gxv9aeKx7kxIrTKm8=
+X-Received: by 2002:a1c:c90f:: with SMTP id f15mr27500984wmb.142.1624283614520;
+ Mon, 21 Jun 2021 06:53:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <fdee3a286defb103aa07b5493b805d1987885165.1624281224.git.michal.simek@xilinx.com>
+In-Reply-To: <fdee3a286defb103aa07b5493b805d1987885165.1624281224.git.michal.simek@xilinx.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 21 Jun 2021 15:51:17 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1twOhC8DFxpLxpk8bcy0+JfGZUSE9bX4tdMetVLGTcSQ@mail.gmail.com>
+Message-ID: <CAK8P3a1twOhC8DFxpLxpk8bcy0+JfGZUSE9bX4tdMetVLGTcSQ@mail.gmail.com>
+Subject: Re: [PATCH v2] clk: zynqmp: fix compile testing without ZYNQMP_FIRMWARE
+To:     Michal Simek <michal.simek@xilinx.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Simek <monstr@monstr.eu>, git <git@xilinx.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
+        Quanyang Wang <quanyang.wang@windriver.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:Q0lQsOJJlDknj+DFICyZc3Ei5FFgpGGBLXjXD4Mqnun7FSDskTa
+ hKG8tJ1kreUuheVYGDeyO+aglco0VUYsPwJXY7x62HKdMAvaM/o6RFIk1y2HE9VK6TboLsc
+ NXa9ebfGIaw8CKIJqXrkbKwna3dGau7PECDDyxP+7mJNybJaQYSbJpTMgeO6yv9fLmZSJhR
+ QEGd4EXbK25uqLd+XNyVA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ArZFVgSvc2s=:qry7NKJzY6z9p60eKzxMWf
+ V/w4v+GQ4Xw1L/AhwvWulbsrdGav7o2gp0DYyalXoj1bLwpA8g2bNW1YAUjwTIUYhdbC9o5nv
+ lzUAR/Y5oeig8OYdD+ncviY6HVeSLXqNvK4bkYHr1VTh5OoBa549nhdNL0Vhn8L4N7Qd5CM6q
+ chNbUNiMT8ijn5cIWqM8Ednpwi0C99Tear5Xmcn3rKIUK1qfxZ8UEQ+EmE9FTmDxjPs2jNkop
+ s32i6b7SwhTKjwBNUcIoE4puX+t1aS84C8XxftxZlyuEY1IdIUiqJAx5cNZ17lDe8sQgxsGbj
+ ygGx/sbEStQfuuQGS/q9P6WoGlK0OmNY8ZcmmnA2a2qxmvnbNrf88YOjz/lRt8u/CAp9j3nWn
+ MS6KpmgaYNHZ+UnFetF1NW3Gj6IN9Ap7V2BwDKakBItsosjgU1GJKer6yTL1O/y2zkvli6nhP
+ dLIiBdH0z6nu0aIIpmwUrfKqdI8Sljm426a5UMBrJbe3pxy2i0EjfYW1sEB7MuRYbWjpRdC9h
+ 0XBdrDkdPbCnLvlOfUu14/kwUFikxwfQny4SGJBb01wDThqMSmDQM3nkYCYAov4Z9CdEjV05+
+ GwkHee7xoT9XeHGt9dqFPj88AkYsBEuTfx9tVs5Rqzj7qhUYzR0viJIyePqXnaXQAyOdcojvx
+ /Yxo=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commits [1],
+On Mon, Jun 21, 2021 at 3:14 PM Michal Simek <michal.simek@xilinx.com> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> When the firmware code is disabled, the incomplete error handling
+> in the clk driver causes compile-time warnings:
+>
+> drivers/clk/zynqmp/pll.c: In function 'zynqmp_pll_recalc_rate':
+> drivers/clk/zynqmp/pll.c:147:29: error: 'fbdiv' is used uninitialized [-Werror=uninitialized]
+>   147 |         rate =  parent_rate * fbdiv;
+>       |                 ~~~~~~~~~~~~^~~~~~~
+> In function 'zynqmp_pll_get_mode',
+>     inlined from 'zynqmp_pll_recalc_rate' at drivers/clk/zynqmp/pll.c:148:6:
+> drivers/clk/zynqmp/pll.c:61:27: error: 'ret_payload' is used uninitialized [-Werror=uninitialized]
+>    61 |         return ret_payload[1];
+>       |                ~~~~~~~~~~~^~~
+> drivers/clk/zynqmp/pll.c: In function 'zynqmp_pll_recalc_rate':
+> drivers/clk/zynqmp/pll.c:53:13: note: 'ret_payload' declared here
+>    53 |         u32 ret_payload[PAYLOAD_ARG_CNT];
+>       |             ^~~~~~~~~~~
+> drivers/clk/zynqmp/clk-mux-zynqmp.c: In function 'zynqmp_clk_mux_get_parent':
+> drivers/clk/zynqmp/clk-mux-zynqmp.c:57:16: error: 'val' is used uninitialized [-Werror=uninitialized]
+>    57 |         return val;
+>       |                ^~~
+>
+> As it was apparently intentional to support this for compile testing
+> purposes, change the code to have just enough error handling for the
+> compiler to not notice the remaining bugs.
+>
+> Fixes: 21f237534661 ("clk: zynqmp: Drop dependency on ARCH_ZYNQMP")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+> ---
+>
+> Changes in v2:
+> Based on discussion here
+> Link: https://lore.kernel.org/r/20210421134844.3297838-1-arnd@kernel.org
+> I have updated error return value which I got from clock core based on
+> error cases.
+>
+> zynqmp_clk_mux_get_parent() should return num_parents() as error defined in
+> clk_core_get_parent_by_index() where num_parents is incorrect index.
+>
+> Extend zynqmp_pll_get_mode() with PLL_MODE_ERROR to handle error case.
+>
+> zynqmp_pll_recalc_rate() returns 0 because __clk_core_init() consider 0 as
+> default rate. But maybe -1ul which was used by Arnd is also good option.
 
-- e4c911a73c89 ("staging: qlge: Remove rx_ring.type")
-- a68a5b2fd3a2 ("staging: qlge: Remove bq_desc.maplen")
-- 16714d98bf63 ("staging: qlge: Remove rx_ring.sbq_buf_size")
-- ec705b983b46 ("staging: qlge: Remove qlge_bq.len & size")
+Looks good to me. You changed more than I did now, so it might be better
+to change my authorship to Co-developed-by, probably not worth respinning
+for that.
 
-and recent "commit a0e57b58d35d3d6808187bb10ee9e5030ff87618
-("staging: qlge: the number of pages to contain a buffer queue is
- constant") has fixed issue. Thus remove the TODO item.
-
-[1] https://lore.kernel.org/netdev/YJeUZo+zoNZmFuKs@f3/
-
-Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
----
- drivers/staging/qlge/TODO | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/staging/qlge/TODO b/drivers/staging/qlge/TODO
-index 7e466a0f7771..0e349ffc630e 100644
---- a/drivers/staging/qlge/TODO
-+++ b/drivers/staging/qlge/TODO
-@@ -1,4 +1,2 @@
--* the driver has a habit of using runtime checks where compile time checks are
--  possible (ex. ql_free_rx_buffers(), ql_alloc_rx_buffers())
- * remove duplicate and useless comments
- * fix checkpatch issues
--- 
-2.32.0
-
+       Arnd
