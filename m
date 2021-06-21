@@ -2,151 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393853AE1F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 05:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6383AE1E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 05:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhFUDuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 23:50:19 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:41729 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbhFUDuR (ORCPT
+        id S230103AbhFUDjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 23:39:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229968AbhFUDjH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 23:50:17 -0400
-Received: from epcas3p4.samsung.com (unknown [182.195.41.22])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210621034802epoutp03a9ebf6580c81faecb62ff070f90e34b0~KfEwwcHYj0682406824epoutp03e
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 03:48:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210621034802epoutp03a9ebf6580c81faecb62ff070f90e34b0~KfEwwcHYj0682406824epoutp03e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1624247282;
-        bh=4o0BF1p//yguPV8uZCfsZ88Z+jjCIGGL4FlNAhcy5Jg=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=SSzeHCcLxu4iqT7m+4Qcpte8F2fvtWneNWAteX4CCk+l05gGqCxX/6VzqQm8PnBFA
-         fJsoM8yOg+AZG5AsXSePYKG/tySiaptpQwOVAkppdEA5eYgcKACAV3thOjVinizLrg
-         ijEHylbCHpXkRGJWYvbQBfsa1ursBcgQFA8pIq5M=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas3p3.samsung.com (KnoxPortal) with ESMTP id
-        20210621034801epcas3p36a5f228cb6b3a73bc4296b90fc6d3dd8~KfEwLFK1h0112101121epcas3p3j;
-        Mon, 21 Jun 2021 03:48:01 +0000 (GMT)
-Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp1.localdomain
-        (Postfix) with ESMTP id 4G7b8d4TMfz4x9Q3; Mon, 21 Jun 2021 03:48:01 +0000
-        (GMT)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210621025522epcas2p24c20721675d0705ce694a7dc69006264~KeWx4tFzs1749517495epcas2p2b;
-        Mon, 21 Jun 2021 02:55:22 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210621025522epsmtrp2857703936059551ab47ef74bf7bf8991~KeWx2rmu62801528015epsmtrp2a;
-        Mon, 21 Jun 2021 02:55:22 +0000 (GMT)
-X-AuditID: b6c32a2a-c01ff70000002061-8e-60cfff9a722e
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        13.34.08289.A9FFFC06; Mon, 21 Jun 2021 11:55:22 +0900 (KST)
-Received: from KORCO039056 (unknown [10.229.8.156]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210621025522epsmtip2b1550c3abc802ff415f31c6f4b6db240~KeWxipG3f0873908739epsmtip2m;
-        Mon, 21 Jun 2021 02:55:22 +0000 (GMT)
-From:   "Chanho Park" <chanho61.park@samsung.com>
-To:     "'Dominique MARTINET'" <dominique.martinet@atmark-techno.com>,
-        "'Jianxiong Gao'" <jxgao@google.com>
-Cc:     "'Christoph Hellwig'" <hch@lst.de>,
-        "'Konrad Rzeszutek Wilk'" <konrad@darnok.org>,
-        "'Konrad Rzeszutek Wilk'" <konrad.wilk@oracle.com>,
-        "'Linus Torvalds'" <torvalds@linux-foundation.org>,
-        =?utf-8?Q?'Horia_Geant=C4=83'?= <horia.geanta@nxp.com>,
-        <linux-kernel@vger.kernel.org>,
-        "'Lukas Hartmann'" <lukas@mntmn.com>,
-        "'Aymen Sghaier'" <aymen.sghaier@nxp.com>,
-        "'Herbert Xu'" <herbert@gondor.apana.org.au>,
-        "'David S. Miller'" <davem@davemloft.net>,
-        <linux-crypto@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
-        "'Marc Orr'" <marcorr@google.com>,
-        "'Erdem Aktas'" <erdemaktas@google.com>,
-        "'Peter Gonda'" <pgonda@google.com>,
-        "'Bumyong Lee'" <bumyong.lee@samsung.com>
-In-Reply-To: <YM/zWyZlk1bzHWgI@atmark-techno.com>
-Subject: RE: swiotlb/caamjr regression (Was: [GIT PULL] (swiotlb)
- stable/for-linus-5.12)
-Date:   Mon, 21 Jun 2021 11:55:22 +0900
-Message-ID: <2038148563.21624247281621.JavaMail.epsvc@epcpadp4>
+        Sun, 20 Jun 2021 23:39:07 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 010FDC061574;
+        Sun, 20 Jun 2021 20:36:52 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id x16so12546951pfa.13;
+        Sun, 20 Jun 2021 20:36:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=xLiu6z7n8Nm4pgvs/bW2NXTNeK55NaWWpQGLLIvDVng=;
+        b=S5rqecO5NnewVMiMgfEHBfVJRZG9DzFsYkSVQ/EFVweec1CqVq+fziE2JAteDFz7hb
+         gw7srdiAAkBuFrsn8uyX3zPk1OLrFCbSRHe5kRgRTu9nPpcsrJGJ2CmehyJoJTz73Q/n
+         CIIplHkKDn/X9xYpzxQHk1uC7tHbMq0bnAs+TFiWbtcgL3zZIO/K2cXgVv3wgeR970/W
+         P8TZLmviFCrV1teriIklo40jrRJOoO3donZvc79Vkyz7IptxOVwgC1YmUnH6UOqmiaS/
+         2dEG1K+YrBe3F+VsnA55g2h3uQrQgfc057DDfipoELXgQBCjs5Mtnfr+FUO2ZC5BUHmN
+         iWHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=xLiu6z7n8Nm4pgvs/bW2NXTNeK55NaWWpQGLLIvDVng=;
+        b=D7Nxk8iXoGTcRNBSLGVCZHLPKelB2G2wf1z3QseeGifPifWUhkd0e7XhwrTo3mKmvt
+         yMDxFNK/w9eApEObVJTyZ+LD7cvc/QZE1m9SAAUvz1z+hn2qu/3AS+gI+yraVAmSKQPw
+         zMbCnzZHqwzEPTLfohYO5+veqnTEOlikZ0s5iWaUzFwCqEatnZrwfSaDs0foNnJJLVaP
+         SSurwKfMOd4oRffVfzZfh6DMqybfxCAQhq89YmFCMI2+wKqrQDMw07gFgb3T3UK3nH1x
+         bUxVYKk86X3EuVBf7BtPXrlVpTShdLlqcnfGHWJYhDKvxUlLP+RossXWAg50Kbj54TnT
+         7sMg==
+X-Gm-Message-State: AOAM530LJ5c4SwX10YfLRXFI47vRowaua9xaBjSn3TCU+cNMvtqXtSNH
+        Jxp8SNAtSCxT1QD3SQGm14g=
+X-Google-Smtp-Source: ABdhPJxVBdwsRiX1C8pmBuP+luLGE83oud1sbsqsWQaBPVj49ppFiH84WMPluWwEQgGhK3WPEUFq5w==
+X-Received: by 2002:aa7:8244:0:b029:2ec:968d:c1b4 with SMTP id e4-20020aa782440000b02902ec968dc1b4mr17307756pfn.32.1624246612404;
+        Sun, 20 Jun 2021 20:36:52 -0700 (PDT)
+Received: from [10.1.1.25] (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
+        by smtp.gmail.com with ESMTPSA id b5sm11515267pgh.41.2021.06.20.20.36.43
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 20 Jun 2021 20:36:52 -0700 (PDT)
+Subject: Re: [PATCH 1/2] alpha/ptrace: Record and handle the absence of
+ switch_stack
+To:     Al Viro <viro@zeniv.linux.org.uk>
+References: <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
+ <87eed4v2dc.fsf@disp2133> <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
+ <87fsxjorgs.fsf@disp2133> <87zgvqor7d.fsf_-_@disp2133>
+ <CAHk-=wir2P6h+HKtswPEGDh+GKLMM6_h8aovpMcUHyQv2zJ5Og@mail.gmail.com>
+ <87mtrpg47k.fsf@disp2133> <87pmwlek8d.fsf_-_@disp2133>
+ <87k0mtek4n.fsf_-_@disp2133> <393c37de-5edf-effc-3d06-d7e63f34a317@gmail.com>
+ <YM/5KAlgTtR6ncOl@zeniv-ca.linux.org.uk>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <9db8096e-677f-3852-6ca4-28143a228ec3@gmail.com>
+Date:   Mon, 21 Jun 2021 15:36:41 +1200
+User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
+ Icedove/45.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQFDXrbxzNqCjAFYIyZp8SJPpEE7BALklUvQAU7mhF0BiRUMkQElteCnAXJthq8BvQCqOAH1sv7OAe2NoSYCTMPpJQDVyVEXAhuWClmrrDnekA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrIIsWRmVeSWpSXmKPExsWy7bCSvO6s/+cTDM695bZoPbyUyWLvaQuL
-        l4c0Leacb2GxWH3AyWL9hf/sFitXH2Wy6H4lY/Hh/GEmiwX7rS2mtfWxWCxb/JTR4s3zy6wW
-        9+/9ZLK4vGsOm8WV1VPZLY5c6me3mL7gHrPFo7637A7CHp3Ni5k8Oq5cZffYsvImk8e2A6oe
-        CzaVepyY8ZvFY/KN5Yweu282sHksPXqE1WPjux1MHh+f3mLx6NuyitHj8ya5AN4oLpuU1JzM
-        stQifbsEroyt0+azFqzkrljzfi1rA2MDZxcjJ4eEgInE9h3HmboYuTiEBHYwStz5dZgNIiEr
-        8ezdDnYIW1jifssRVoiiZ4wSEzseMYMk2AT0JV52bGMFsUUEMiXeLexiBCliFtjLKnGs7Rg7
-        RMcyFolXPfPBRnEKGEpMvnMHbIWwQITEh62tYN0sAqoSr+7/B4pzcPAKWErMnSILEuYVEJQ4
-        OfMJC4jNLKAt8fTmUzh72cLXzBDXKUj8fLoM6og6iWsXn7JD1IhIzO5sY57AKDwLyahZSEbN
-        QjJqFpKWBYwsqxglUwuKc9Nziw0LjPJSy/WKE3OLS/PS9ZLzczcxglOBltYOxj2rPugdYmTi
-        YDzEKMHBrCTCy5l5JkGINyWxsiq1KD++qDQntfgQozQHi5I474Wuk/FCAumJJanZqakFqUUw
-        WSYOTqkGJt15cxj4uKQ2HjB87Dn3SCenXJtI2UtZJ4P2a0YWAa81WY4aTjT9svh16oOw1/lm
-        imsmaX7fkjcz7qdypN3BFVOP7BP64HZrJttVkXCr7tyPW2ZPNvBVy5vLKeJ59Hnd9LCTN5t/
-        3z4rvzp4TZPpy9/CK7qDJgrOuOL5f1ua04egSVucBNxmq3xZddq9LCKocvFcL+VE1Z4FneV/
-        vtcZcGccVPW6zvcs8KNIivam2nU6jj7r7vBHTTCItJVlW13fveibplT6rDWtVzbknHx1K/65
-        7ppGkX8S4asXJav2aX97b+a7a80WqxKWSAW2r3w7bJg6z0pYdjXtbGVvcpJO3/3w4gzzzMDd
-        RatPmJU3K7EUZyQaajEXFScCAGgu9I90AwAA
-X-CMS-MailID: 20210621025522epcas2p24c20721675d0705ce694a7dc69006264
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210621020328epcas2p207e9fa2df119730ceb993543621437d8
-References: <YL7XXNOnbaDgmTB9@atmark-techno.com>
-        <2e899de2-4b69-c4b6-33a6-09fb8949d2fd@nxp.com>
-        <20210611062153.GA30906@lst.de> <YMM8Ua0HMmErLIQg@0xbeefdead.lan>
-        <CAMGD6P1v2JoJoxSuAYL8UjdtCaLCc4K_7xzVkumspeb0qn=LBQ@mail.gmail.com>
-        <YMqW+/gQvM+uWUTw@fedora> <YMqZswFnSNKk4Z7B@atmark-techno.com>
-        <20210617051232.GB27192@lst.de> <YMrfWBLsJxCRhX5U@atmark-techno.com>
-        <CAMGD6P0=9RE1-q1WHkwR1jymK5jyvN6QgypQ2KgdvBQn0CUTHw@mail.gmail.com>
-        <CGME20210621020328epcas2p207e9fa2df119730ceb993543621437d8@epcas2p2.samsung.com>
-        <YM/zWyZlk1bzHWgI@atmark-techno.com>
+In-Reply-To: <YM/5KAlgTtR6ncOl@zeniv-ca.linux.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ Bumyong who is the original author of the patch.=20
-
-Hi Dominique,
-
-> Thanks!
-> (a bit late, but added Chanho Park in Cc...)
->=20
-> I can confirm it also works for our caam problem, as Horia said.
->=20
-> I've also come to term with the use of swiotlb_align_offset() through
-> testing, or rather many devices seem to have a 0 mask so it will almost
-> always be cancelled out, so if it works for Jianxiong then it's probably
-> good enough and I'll just assume that's how the orig_addr has been
-> designed...
->=20
-> I think it's missing a couple of checks like the one Linus had in his
-> patch, and would be comfortable with something like the attached patch (i=
-n
-> practice for me exactly the same as the original patch, except I've added
-> two checks: offsets smaller than orig addr offset are refused as well as
-> offsets bigger than the mapping size)
->=20
-> I'm sorry Jianxiong but would you be willing to take the time to test
-> again just to make sure there were no such offsets in your case?
->=20
->=20
-> If we're good with that I'll send it as an official v2 keeping Chanho's
-> from, unless he wants to.
->=20
-
-Sure. No problem. But, the patch was already stacked on Konrad's tree
-and linux-next as well.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/konrad/swiotlb.git/commit/?=
-h=3Ddevel/for-linus-5.14&id=3D33d1641f38f0c327bc3e5c21de585c77a6512bc6=20
-
-Best Regards,=20
-Chanho Park
+Hi Al,
 
 
+Am 21.06.2021 um 14:27 schrieb Al Viro:
+> On Mon, Jun 21, 2021 at 02:01:18PM +1200, Michael Schmitz wrote:
+>> Hi Eric,
+>>
+>> instrumenting get_reg on m68k and using a similar patch to yours to warn
+>> when unsaved registers are accessed on the switch stack, I get a hit from
+>> getegid and getegid32, just by running a simple ptrace on ls.
+>>
+>> Going to wack those two moles now ...
+>
+> Explain, please.  get_reg() is called by tracer; whose state are you checking?
+
+The check is only triggered when syscall tracing (I set a flag on trace 
+entry, and clear that on trace exit)... From the WARN_ONCE stack dump, 
+it appears that I get the warning from inside the syscall, not 
+syscall_trace().
+
+> Because you are *not* accessing the switch stack of the caller of get_reg().
+> And tracee should be in something like syscall_trace() or do_notify_resume();
+> both have SAVE_SWITCH_STACK done by the glue...
+
+And that's where my problem may be - I stupidly forgot to set the 'all 
+registers saved' flag before calling syscall_trace() ...
+
+I'll fix that and try again. Sorry for the noise!
+
+Cheers,
+
+	Michael
+
+
+
+>
