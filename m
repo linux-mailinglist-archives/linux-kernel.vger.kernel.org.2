@@ -2,169 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9063AEAE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C10E13AEAF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:14:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbhFUOPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 10:15:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54978 "EHLO
+        id S230103AbhFUOQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 10:16:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229765AbhFUOPt (ORCPT
+        with ESMTP id S229887AbhFUOQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 10:15:49 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF360C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:13:34 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id h16so10064924pjv.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:13:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=uYXsev2NikLvniwUbGy7LLHqgqCmmM6+EMtNEtpgAt0=;
-        b=A3E/kkKI7oDrgwcYmlIm7TxoWXPEMeBFJgw/BEl3Wi45bV6g18XiUpXkJCTvnYNnYa
-         v9cL6izMATY3rsTGfQBgQhesZGDhpyf+0cWXOv0MGFTAYqz+46+mWIWKyhJKCOCZx2Av
-         pT6rNqAbmIt9zP6MTs1NwRGNXj/jRXx/ofzYzHDSy9aD+Q8AHhJwOPCS0oA0TO+W1mzN
-         JQdst+2QBrU/kw4WVLoA0XVWtRvnNlwLCVHmtrcyLjGqLA4yT1uH2oGLsvLGh9tggtMS
-         QZLc6cOLqtCb7Nmd+EnnIAevvfhHi0DsV5YzbN+GnILNbmCFJ33Kwsbq5aiGrT+GFWbQ
-         XBiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uYXsev2NikLvniwUbGy7LLHqgqCmmM6+EMtNEtpgAt0=;
-        b=LnOFXUBo54xGk5vSEyqb2SBIjvdJimwbewwLwy3CwCDiGDo96b0PfCdj3WRi0mZdYO
-         2TyYZt4gq4wGvQlujFNtyooNHVBP+yu3d6/wexe/Wn9I5pyF5K9TBXyrq6GykaU2quyO
-         RWkh6KB278F5bhjKAfKuAXRG1J+FlOAnCpwxuhsE/l8Du0XNZRSUSwIyAN5YsgeTVPgx
-         C/2o1K3aGzMCQK+WKPBq+IqZe7lTu6t6vre/9VBoYiZR1VIlN3KbZxMLFfm7C3LdmlL+
-         tltFp9iUm1kIB/lVeh93a2Otrba2grqaQvM5HMT9nN8FRfr+kuVVQEjRIPRq7Y9rao06
-         aOwQ==
-X-Gm-Message-State: AOAM530F0irTu0daJk1USsoblgNA5AiUgQpceWhKdMeQabkD7Vl1W3fI
-        0Fi5UhEg0UlFNWokykgvJv0=
-X-Google-Smtp-Source: ABdhPJyg8hcybMXuKce2vGFsGlAouy8e9etcrrkQ6y6X7cXx5IaygdCtBCUIFnRuNPE7Va6f7684qw==
-X-Received: by 2002:a17:90a:4101:: with SMTP id u1mr37335458pjf.59.1624284814088;
-        Mon, 21 Jun 2021 07:13:34 -0700 (PDT)
-Received: from [192.168.1.123] (163.128.178.217.shared.user.transix.jp. [217.178.128.163])
-        by smtp.gmail.com with ESMTPSA id d131sm15982113pfd.176.2021.06.21.07.13.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 07:13:33 -0700 (PDT)
-Cc:     akira.tsukamoto@gmail.com
-Subject: Re: [PATCH 5/5] riscv: __asm_to/copy_from_user: Bulk copy when both
- src, dst are aligned
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>
-References: <5a5c07ac-8c11-79d3-46a3-a255d4148f76@gmail.com>
- <4637f0f2-2da9-1056-37bf-17c0861b6bff@gmail.com>
- <4a847070ad494e839de1d3fc5b39ba57@AcuMS.aculab.com>
-From:   Akira Tsukamoto <akira.tsukamoto@gmail.com>
-Message-ID: <061be1e7-9941-58fb-c2b5-feb2163883af@gmail.com>
-Date:   Mon, 21 Jun 2021 23:13:30 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Mon, 21 Jun 2021 10:16:53 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A65C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:14:39 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 5DC315C75;
+        Mon, 21 Jun 2021 16:14:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1624284877;
+        bh=+ijZcGgErRf9SanuSF2mZQpMGv5X/UoUh1FlzcKR980=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mxylxRwyRfISf9L8jpkV9gaKB50jrdUVt44Nl6y/lk7t+sib/k3PJgnnaVmUe+DyH
+         2HdKUdB7w6cx1wdVoiFjC9a7YA/DmXWBDB+2Rh+lkaU1Wd6hb+t/+R7BpiGTREWLiv
+         6QMuhpZ4zeIalnjUXOYNidlpRrD1v6HWJc+h3RmQ=
+Date:   Mon, 21 Jun 2021 17:14:11 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Jagan Teki <jagan@amarulasolutions.com>
+Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Marek Vasut <marex@denx.de>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Eric Anholt <eric@anholt.net>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Maxime Ripard <maxime@cerno.tech>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        linux-rpi-kernel@lists.infradead.org
+Subject: Re: [PATCH] drm/vc4: dsi: Only register our component once a DSI
+ device is attached
+Message-ID: <YNCesxIe8cgncnxq@pendragon.ideasonboard.com>
+References: <20200707101912.571531-1-maxime@cerno.tech>
+ <YM6dgVb12oITNfc0@pendragon.ideasonboard.com>
+ <CAPY8ntC+hzmfrJwWW0ytNdHSXruMKMi7N3K6tdJbp9gDBbJ3Qw@mail.gmail.com>
+ <YM+MEsKjdkYAVI5X@pendragon.ideasonboard.com>
+ <YM/FwVkkQXX8VrzV@pendragon.ideasonboard.com>
+ <CAPY8ntCbzFkbM5fZmo3RVw5okQkVKFcR8TCHOo+xkW7wNk8MQA@mail.gmail.com>
+ <YNCMbw6B6OL4Gho3@pendragon.ideasonboard.com>
+ <CAMty3ZCsa+=vyqT3S1mjAYH2g57O8_BPciQ-dE4+qTsHWCwSDA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <4a847070ad494e839de1d3fc5b39ba57@AcuMS.aculab.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <CAMty3ZCsa+=vyqT3S1mjAYH2g57O8_BPciQ-dE4+qTsHWCwSDA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/21/2021 8:55 PM, David Laight wrote:
-> From: Akira Tsukamoto
->> Sent: 19 June 2021 12:43
->>
->> In the lucky situation that the both source and destination address are on
->> the aligned boundary, perform load and store with register size to copy the
->> data.
->>
->> Without the unrolling, it will reduce the speed since the next store
->> instruction for the same register using from the load will stall the
->> pipeline.
-> ...
->> diff --git a/arch/riscv/lib/uaccess.S b/arch/riscv/lib/uaccess.S
->> index e2e57551fc76..bceb0629e440 100644
->> --- a/arch/riscv/lib/uaccess.S
->> +++ b/arch/riscv/lib/uaccess.S
->> @@ -67,6 +67,39 @@ ENTRY(__asm_copy_from_user)
->>  	bnez	a3, .Lshift_copy
->>
->>  .Lword_copy:
->> +        /*
->> +	 * Both src and dst are aligned, unrolled word copy
->> +	 *
->> +	 * a0 - start of aligned dst
->> +	 * a1 - start of aligned src
->> +	 * a3 - a1 & mask:(SZREG-1)
->> +	 * t0 - end of aligned dst
->> +	 */
->> +	addi	t0, t0, -(8*SZREG-1) /* not to over run */
->> +2:
->> +	fixup REG_L   a4,        0(a1), 10f
->> +	fixup REG_L   a5,    SZREG(a1), 10f
->> +	fixup REG_L   a6,  2*SZREG(a1), 10f
->> +	fixup REG_L   a7,  3*SZREG(a1), 10f
->> +	fixup REG_L   t1,  4*SZREG(a1), 10f
->> +	fixup REG_L   t2,  5*SZREG(a1), 10f
->> +	fixup REG_L   t3,  6*SZREG(a1), 10f
->> +	fixup REG_L   t4,  7*SZREG(a1), 10f
->> +	fixup REG_S   a4,        0(a0), 10f
->> +	fixup REG_S   a5,    SZREG(a0), 10f
->> +	fixup REG_S   a6,  2*SZREG(a0), 10f
->> +	fixup REG_S   a7,  3*SZREG(a0), 10f
->> +	fixup REG_S   t1,  4*SZREG(a0), 10f
->> +	fixup REG_S   t2,  5*SZREG(a0), 10f
->> +	fixup REG_S   t3,  6*SZREG(a0), 10f
->> +	fixup REG_S   t4,  7*SZREG(a0), 10f
->> +	addi	a0, a0, 8*SZREG
->> +	addi	a1, a1, 8*SZREG
->> +	bltu	a0, t0, 2b
->> +
->> +	addi	t0, t0, 8*SZREG-1 /* revert to original value */
->> +	j	.Lbyte_copy_tail
->> +
+Hi Jagan,
+
+On Mon, Jun 21, 2021 at 07:41:07PM +0530, Jagan Teki wrote:
+> On Mon, Jun 21, 2021 at 6:26 PM Laurent Pinchart wrote:
+> > On Mon, Jun 21, 2021 at 12:49:14PM +0100, Dave Stevenson wrote:
+> > > On Sun, 20 Jun 2021 at 23:49, Laurent Pinchart wrote:
+> > > > On Sun, Jun 20, 2021 at 09:42:27PM +0300, Laurent Pinchart wrote:
+> > > > > On Sun, Jun 20, 2021 at 03:29:03PM +0100, Dave Stevenson wrote:
+> > > > > > On Sun, 20 Jun 2021 at 04:26, Laurent Pinchart wrote:
+> > > > > > >
+> > > > > > > Hi Maxime,
+> > > > > > >
+> > > > > > > I'm testing this, and I'm afraid it causes an issue with all the
+> > > > > > > I2C-controlled bridges. I'm focussing on the newly merged ti-sn65dsi83
+> > > > > > > driver at the moment, but other are affected the same way.
+> > > > > > >
+> > > > > > > With this patch, the DSI component is only added when the DSI device is
+> > > > > > > attached to the host with mipi_dsi_attach(). In the ti-sn65dsi83 driver,
+> > > > > > > this happens in the bridge attach callback, which is called when the
+> > > > > > > bridge is attached by a call to drm_bridge_attach() in vc4_dsi_bind().
+> > > > > > > This creates a circular dependency, and the DRM/KMS device is never
+> > > > > > > created.
+> > > > > > >
+> > > > > > > How should this be solved ? Dave, I think you have shown an interest in
+> > > > > > > the sn65dsi83 recently, any help would be appreciated. On a side note,
+> > > > > > > I've tested the ti-sn65dsi83 driver on a v5.10 RPi kernel, without much
+> > > > > > > success (on top of commit e1499baa0b0c I get a very weird frame rate -
+> > > > > > > 147 fps of 99 fps instead of 60 fps - and nothing on the screen, and on
+> > > > > > > top of the latest v5.10 RPi branch, I get lock-related warnings at every
+> > > > > > > page flip), which is why I tried v5.12 and noticed this patch. Is it
+> > > > > > > worth trying to bring up the display on the v5.10 RPi kernel in parallel
+> > > > > > > to fixing the issue introduced in this patch, or is DSI known to be
+> > > > > > > broken there ?
+> > > > > >
+> > > > > > I've been looking at SN65DSI83/4, but as I don't have any hardware
+> > > > > > I've largely been suggesting things to try to those on the forums who
+> > > > > > do [1].
+> > > > > >
+> > > > > > My branch at https://github.com/6by9/linux/tree/rpi-5.10.y-sn65dsi8x-marek
+> > > > > > is the latest one I've worked on. It's rpi-5.10.y with Marek's driver
+> > > > > > cherry-picked, and an overlay and simple-panel definition by others.
+> > > > > > It also has a rework for vc4_dsi to use pm_runtime, instead of
+> > > > > > breaking up the DSI bridge chain (which is flawed as it never calls
+> > > > > > the bridge mode_set or mode_valid functions which sn65dsi83 relies
+> > > > > > on).
+> > > > > >
+> > > > > > I ran it on Friday in the lab and encountered an issue with vc4_dsi
+> > > > > > should vc4_dsi_encoder_mode_fixup wish for a divider of 7 (required
+> > > > > > for this 800x1280 panel over 4 lanes) where it resulted in an invalid
+> > > > > > mode configuration. That resulted in patch [2] which then gave me
+> > > > > > sensible numbers.
+> > > > > >
+> > > > > > That branch with dtoverlay=vc4-kms-v3d and
+> > > > > > dtoverlay=vc4-kms-dsi-ti-sn65dsi83 created all the expected devices,
+> > > > > > and everything came up normally.
+> > > > > > It was a busy day, but I think I even stuck a scope on the clock lanes
+> > > > > > at that point and confirmed that they were at the link frequency
+> > > > > > expected.
+> > > > >
+> > > > > Thanks, I'll test your branch and will report the results.
+> > > >
+> > > > I had to apply the following diff to work around a crash:
+> > > >
+> > > > diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi83.c b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
+> > > > index 55b6c53207f5..647426aa793a 100644
+> > > > --- a/drivers/gpu/drm/bridge/ti-sn65dsi83.c
+> > > > +++ b/drivers/gpu/drm/bridge/ti-sn65dsi83.c
+> > > > @@ -525,6 +525,9 @@ static bool sn65dsi83_mode_fixup(struct drm_bridge *bridge,
+> > > >
+> > > >         /* The DSI format is always RGB888_1X24 */
+> > > >         list_for_each_entry(connector, &ddev->mode_config.connector_list, head) {
+> > > > +               if (!connector->display_info.bus_formats)
+> > > > +                       continue;
+> > > > +
+> > > >                 switch (connector->display_info.bus_formats[0]) {
+> > > >                 case MEDIA_BUS_FMT_RGB666_1X7X3_SPWG:
+> > > >                         ctx->lvds_format_24bpp = false;
+> > > >
+> > > > connector->display_info.bus_formats is NULL for the HDMI connectors, as
+> > > > I have nothing connected to them, as well as for the writeback
+> > > > connector.
+> > >
+> > > I'm now confused as to what I'm doing as my branch appears NOT to have
+> > > Marek's latest version of the driver as it doesn't have
+> > > sn65dsi83_mode_fixup.
+> > > I need to have another look at what's going on - I think I've got
+> > > branches confused when switching between machines :-( Remaking that
+> > > branch now.
+> > >
+> > > I do see that Marek has sent another patch around
+> > > sn65dsi83_mode_fixup, but it'll still dereference
+> > > connector->display_info.bus_formats[0] on all connectors. Shouldn't it
+> > > only be switching on the one connector that is connected to this
+> > > bridge, not HDMI or writeback connectors? I'm not totally clear on
+> > > which connectors are in that list.
+> > > https://patchwork.freedesktop.org/patch/440175/
+> >
+> > The following series should fix the issue:
+> >
+> > [PATCH] drm/bridge: ti-sn65dsi83: Replace connector format patching with atomic_get_input_bus_fmts
+> > [PATCH 0/5] ti-sn65dsi83: Finalize transition to atomic operations
 > 
-> Are there any riscv chips than can do a memory read and a
-> memory write int the same cycle but don't have significant
-> 'out of order' execution?
-> 
-> Such chips will execute that code very badly.
-> Or, rather, there are loops that allow concurrent read+write
-> that will be a lot faster.
+> Look like DSI on STM32MP1 seems broken even with these on top of
+> drm-misc/drm-misc-next , anything broken on the tree?
 
-For the above two paragraphs, the boom will be probably one of
-them and perhaps U8, but I do not have a chance to try it.
+No idea, I don't have a functional display on my RPi CM4 device yet, so
+I can't tell :-)
 
-I have run the benchmarks both the unrolled load store
-and not unrolled load store and always unrolled version
-was faster on current cores. We could discuss and optimizing
-way when the Out of Order core comes out in the market
-with comparing bench results on real hardware.
+-- 
+Regards,
 
-I really understand of your comments of concurrent read+write
-that you have mentioned in the other thread too.
-
-I just would like to make the current risc-v better
-as soon as possible, since the difference is significant.
-
-> 
-> Also on a cpu that can execute a memory read/write
-> at the same time as an add (probably anything supercaler)
-> you want to move the two 'addi' further up so they get
-> executed 'for free'.
-
-The original assembler version of memcpy does have the `addi`
-moving up the few lines up.
-You really know the internals, I am in the between of making
-the code easy to understand to make the patches in the upstream
-and optimizing further more.
-
-If you really like to, I will move the `addi` up at the time of 
-when merging the patches to one which do not break bisecting.
-
-Akira
+Laurent Pinchart
