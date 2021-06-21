@@ -2,56 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 178173AF555
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91C523AF558
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231799AbhFUSpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbhFUSpg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:45:36 -0400
-Received: from relay02.th.seeweb.it (relay02.th.seeweb.it [IPv6:2001:4b7a:2000:18::163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CD4C06175F;
-        Mon, 21 Jun 2021 11:43:21 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 793EC1F8A3;
-        Mon, 21 Jun 2021 20:43:20 +0200 (CEST)
-Subject: Re: [PATCH net-next 6/6] net: ipa: add IPA v3.1 configuration data
-To:     Alex Elder <elder@linaro.org>, davem@davemloft.net, kuba@kernel.org
-Cc:     robh+dt@kernel.org, jamipkettunen@gmail.com,
-        bjorn.andersson@linaro.org, agross@kernel.org, elder@kernel.org,
-        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210621175627.238474-1-elder@linaro.org>
- <20210621175627.238474-7-elder@linaro.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <51c97dcb-deb7-0cfc-dd0f-b6876e35f78d@somainline.org>
-Date:   Mon, 21 Jun 2021 20:43:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S230225AbhFUSsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:48:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39836 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229887AbhFUSsp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 14:48:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E44BE61107;
+        Mon, 21 Jun 2021 18:46:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624301190;
+        bh=Z71y+SBq3KMuZ39iEoJG5bILoscerM41HzpRFtX8OTw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=QjJHQU6j1u/LdayzRIMOu0sHi0PjFxq5KH6jRz9DeipD/Le/idkeNXGQqShj3tyMG
+         Dn7Wg5PDZnkCg9ICE2qMFarhaO4PW1gm12tyVDJAW1eKNeziEM0uYeYptJDXgvhTuu
+         pg9gRmaLjwxcBZ1zwLBx0YjFliO4cyZFNUoLdjum4rDUGvJBPrJSqElZr8X8YP+C3B
+         EYOh1KyDj/0vpzmyG5s1Z1qplleNOPKPvt6lR2P8JmcoR8TApEpJAaXNhOdrqpw4/Z
+         /JYZzdVSWzhaJ4ZFxls3vv48inrmTl6iAOJGZ+xuX8FvtbGec5ibnRIqJcDzSkYmr+
+         yo19XlLZJicBA==
+From:   Mark Brown <broonie@kernel.org>
+To:     Axel Lin <axel.lin@ingics.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] regulator: hi6421v600: Fix setting idle mode
+Date:   Mon, 21 Jun 2021 19:45:49 +0100
+Message-Id: <162430087047.9551.3163979267051992655.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210619123423.4091429-1-axel.lin@ingics.com>
+References: <20210619123423.4091429-1-axel.lin@ingics.com>
 MIME-Version: 1.0
-In-Reply-To: <20210621175627.238474-7-elder@linaro.org>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 21/06/21 19:56, Alex Elder ha scritto:
-> Add support for the MSM8998 SoC, which includes IPA version 3.1.
+On Sat, 19 Jun 2021 20:34:23 +0800, Axel Lin wrote:
+> commit db27f8294cd7 changed eco_mode << (ffs(sreg->eco_mode_mask) - 1)
+> to sreg->eco_mode_mask << (ffs(sreg->eco_mode_mask) - 1) which is wrong.
+> Fix it by simply set val = sreg->eco_mode_mask.
 > 
-> Originally proposed by AngeloGioacchino Del Regno.
+> In additional, sreg->eco_mode_mask can be 0 (LDO3, LDO33, LDO34).
+> Return -EINVAL if idle mode is not supported when sreg->eco_mode_mask is 0.
 > 
-> Link: https://lore.kernel.org/netdev/20210211175015.200772-6-angelogioacchino.delregno@somainline.org
-> Signed-off-by: Alex Elder <elder@linaro.org>
+> [...]
 
-Acked-by: AngeloGioacchino Del Regno 
-<angelogioacchino.delregno@somainline.org>
+Applied to
 
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+
+Thanks!
+
+[1/1] regulator: hi6421v600: Fix setting idle mode
+      commit: 57c045bc727001c43b6a65adb0418aa7b3e6dbd0
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
