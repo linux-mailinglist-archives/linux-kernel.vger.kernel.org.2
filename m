@@ -2,42 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E72353AF070
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:49:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9401F3AEEEE
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:33:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233042AbhFUQtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:49:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37760 "EHLO mail.kernel.org"
+        id S232389AbhFUQdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:33:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233509AbhFUQoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:44:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2372861453;
-        Mon, 21 Jun 2021 16:32:20 +0000 (UTC)
+        id S231250AbhFUQaJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:30:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69848613E2;
+        Mon, 21 Jun 2021 16:25:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624293140;
-        bh=R1yKl8uCh+vmHRowduVtXAF+6lt3Nqu38ZK+u/j3M1Q=;
+        s=korg; t=1624292701;
+        bh=gZsWYGD6DSZN9b0ieH25qpJfCk/qelBdQLh26Y8L3ug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c4oni1r8A95dzQSOLlK8yHwcsmeWTZThYl7h9doNYLI1+E9rVD9wUXdW6sN81LX5O
-         Ja1OfUqkjD2L6PicSejVlvg6DTQvk05fpZDJWLN69kqdUeUSdfUENtx1eg4pvIP5cA
-         eWnluu0qV6puOiN/ZYuNkqYXcOkLaX1atpZo8L1w=
+        b=w61UCgDteqPIOAs8CDyUK81O65yOj6+wFeDNGg4Wx66huns5tL4uHArbYb4GQEm7F
+         HYdMhp1lzZ0dOKb/mrLEHxCxenBdgTz9O2qYGJNcgusBg2avKkYJTZX53DRVCf5nWO
+         iTQdc7iRQxVO9LZ0LUaejHlnsAfxZtnlJqPYj/NM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, John Garry <john.garry@huawei.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@redhat.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 113/178] perf metricgroup: Fix find_evsel_group() event selector
-Date:   Mon, 21 Jun 2021 18:15:27 +0200
-Message-Id: <20210621154926.615920434@linuxfoundation.org>
+        stable@vger.kernel.org, Norbert Slusarek <nslusarek@gmx.net>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH 5.10 098/146] can: bcm: fix infoleak in struct bcm_msg_head
+Date:   Mon, 21 Jun 2021 18:15:28 +0200
+Message-Id: <20210621154917.425217456@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621154921.212599475@linuxfoundation.org>
-References: <20210621154921.212599475@linuxfoundation.org>
+In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
+References: <20210621154911.244649123@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,87 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Garry <john.garry@huawei.com>
+From: Norbert Slusarek <nslusarek@gmx.net>
 
-[ Upstream commit fc96ec4d5d4155c61cbafd49fb2dd403c899a9f4 ]
+commit 5e87ddbe3942e27e939bdc02deb8579b0cbd8ecc upstream.
 
-The following command segfaults on my x86 broadwell:
+On 64-bit systems, struct bcm_msg_head has an added padding of 4 bytes between
+struct members count and ival1. Even though all struct members are initialized,
+the 4-byte hole will contain data from the kernel stack. This patch zeroes out
+struct bcm_msg_head before usage, preventing infoleaks to userspace.
 
-  $ ./perf stat  -M frontend_bound,retiring,backend_bound,bad_speculation sleep 1
-  WARNING: grouped events cpus do not match, disabling group:
-    anon group { raw 0x10e }
-    anon group { raw 0x10e }
-  perf: util/evsel.c:1596: get_group_fd: Assertion `!(!leader->core.fd)' failed.
-  Aborted (core dumped)
-
-The issue shows itself as a use-after-free in evlist__check_cpu_maps(),
-whereby the leader of an event selector (evsel) has been deleted (yet we
-still attempt to verify for an evsel).
-
-Fundamentally the problem comes from metricgroup__setup_events() ->
-find_evsel_group(), and has developed from the previous fix attempt in
-commit 9c880c24cb0d ("perf metricgroup: Fix for metrics containing
-duration_time").
-
-The problem now is that the logic in checking if an evsel is in the same
-group is subtly broken for the "cycles" event. For the "cycles" event,
-the pmu_name is NULL; however the logic in find_evsel_group() may set an
-event matched against "cycles" as used, when it should not be.
-
-This leads to a condition where an evsel is set, yet its leader is not.
-
-Fix the check for evsel pmu_name by not matching evsels when either has a
-NULL pmu_name.
-
-There is still a pre-existing metric issue whereby the ordering of the
-metrics may break the 'stat' function, as discussed at:
-https://lore.kernel.org/lkml/49c6fccb-b716-1bf0-18a6-cace1cdb66b9@huawei.com/
-
-Fixes: 9c880c24cb0d ("perf metricgroup: Fix for metrics containing duration_time")
-Signed-off-by: John Garry <john.garry@huawei.com>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com> # On a Thinkpad T450S
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Kajol Jain <kjain@linux.ibm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/1623335580-187317-2-git-send-email-john.garry@huawei.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: ffd980f976e7 ("[CAN]: Add broadcast manager (bcm) protocol")
+Link: https://lore.kernel.org/r/trinity-7c1b2e82-e34f-4885-8060-2cd7a13769ce-1623532166177@3c-app-gmx-bs52
+Cc: linux-stable <stable@vger.kernel.org>
+Signed-off-by: Norbert Slusarek <nslusarek@gmx.net>
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/util/metricgroup.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/can/bcm.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index 26c990e32378..1af71ac1cc68 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -162,10 +162,10 @@ static bool contains_event(struct evsel **metric_events, int num_events,
- 	return false;
- }
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -402,6 +402,7 @@ static enum hrtimer_restart bcm_tx_timeo
+ 		if (!op->count && (op->flags & TX_COUNTEVT)) {
  
--static bool evsel_same_pmu(struct evsel *ev1, struct evsel *ev2)
-+static bool evsel_same_pmu_or_none(struct evsel *ev1, struct evsel *ev2)
- {
- 	if (!ev1->pmu_name || !ev2->pmu_name)
--		return false;
-+		return true;
+ 			/* create notification to user */
++			memset(&msg_head, 0, sizeof(msg_head));
+ 			msg_head.opcode  = TX_EXPIRED;
+ 			msg_head.flags   = op->flags;
+ 			msg_head.count   = op->count;
+@@ -439,6 +440,7 @@ static void bcm_rx_changed(struct bcm_op
+ 	/* this element is not throttled anymore */
+ 	data->flags &= (BCM_CAN_FLAGS_MASK|RX_RECV);
  
- 	return !strcmp(ev1->pmu_name, ev2->pmu_name);
- }
-@@ -288,7 +288,7 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
- 			 */
- 			if (!has_constraint &&
- 			    ev->leader != metric_events[i]->leader &&
--			    evsel_same_pmu(ev->leader, metric_events[i]->leader))
-+			    evsel_same_pmu_or_none(ev->leader, metric_events[i]->leader))
- 				break;
- 			if (!strcmp(metric_events[i]->name, ev->name)) {
- 				set_bit(ev->idx, evlist_used);
--- 
-2.30.2
-
++	memset(&head, 0, sizeof(head));
+ 	head.opcode  = RX_CHANGED;
+ 	head.flags   = op->flags;
+ 	head.count   = op->count;
+@@ -560,6 +562,7 @@ static enum hrtimer_restart bcm_rx_timeo
+ 	}
+ 
+ 	/* create notification to user */
++	memset(&msg_head, 0, sizeof(msg_head));
+ 	msg_head.opcode  = RX_TIMEOUT;
+ 	msg_head.flags   = op->flags;
+ 	msg_head.count   = op->count;
 
 
