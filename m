@@ -2,65 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0411E3AE539
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F201F3AE53A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230211AbhFUItb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 04:49:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhFUItQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 04:49:16 -0400
-Received: from mail-vk1-xa32.google.com (mail-vk1-xa32.google.com [IPv6:2607:f8b0:4864:20::a32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95C2C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 01:47:01 -0700 (PDT)
-Received: by mail-vk1-xa32.google.com with SMTP id l7so3564245vkk.2
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 01:47:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uXtdpap2XWVQM3NEM8tHgG7IZgx4gfDzJ3mSSoym7bQ=;
-        b=hQnIxvAO+GKOw5DtQZRyn+Ht3RUiPiiUOc1AEuz4qtakU0ufowvZk69wobzde8tdu5
-         dus5DWnhFKzZS7vlwyU6eqSvLLxil8zxsfTp2E3RgbxDdL6R4kLwzXE6mdccdtu8Jffu
-         NS+ObbYojD8PrU+HsVCoZt8VTFQesY0GbloQE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uXtdpap2XWVQM3NEM8tHgG7IZgx4gfDzJ3mSSoym7bQ=;
-        b=pe/eLZIKO4vbGmiYNgkEUBr+Lh4y+UpwyzAmN78yb37alWEGgvOSuoYgG3V5Uj0JrM
-         7x1X26TnFNGDH4IVApIoUaSXgSw4+aHgCmhFCqNU4INoSehUAHqwj0Xt76gxlwFuBAOA
-         YIygbZ8Z22OnXezVQZ+ozW/fVgzSBSB5Vlhf7BX+ZoXL4Sb2cteu+z8zNDTIZRe4nXhf
-         hKWor06pNy3FgZc8RV+PBmalOvQm3lj8CV4g4GoNCXZrJqpZNdZA/GcMYr3Hhr3/7P+3
-         hfv9q59BX1BwUnwh+QJVicOY0pBCpOdnU9hHbqmE+94kDG55191Y5D4OAmPFs3w335+C
-         E5lg==
-X-Gm-Message-State: AOAM533JuoodI6OCuddZLrTH0qSJqMCZof3QHnU1hmN9xs7PVGpwgJQl
-        BJz/cIvNxNT8+pct3lCOMhrT2R4rCNVgwUVX/U0MGg==
-X-Google-Smtp-Source: ABdhPJwl4UkjpqNWthBeTMv582+Ok4ondhv7QW6U8UxWLSXdoFi3E/5c/bQdoRsRfek0HDgKz3lwTrf9YFBlSzfXnD8=
-X-Received: by 2002:ac5:c5c9:: with SMTP id g9mr4609680vkl.11.1624265220845;
- Mon, 21 Jun 2021 01:47:00 -0700 (PDT)
+        id S230152AbhFUIu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 04:50:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38956 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229618AbhFUIu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 04:50:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 399FA60C3D;
+        Mon, 21 Jun 2021 08:48:10 +0000 (UTC)
+Date:   Mon, 21 Jun 2021 09:48:07 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v16 7/7] KVM: arm64: Document MTE capability and ioctl
+Message-ID: <20210621084806.GA11552@arm.com>
+References: <20210618132826.54670-1-steven.price@arm.com>
+ <20210618132826.54670-8-steven.price@arm.com>
+ <20210618145241.GG16116@arm.com>
+ <1273c642-d2b0-b81d-2052-1f2f0deafdae@arm.com>
 MIME-Version: 1.0
-References: <20210523065152.29632-1-yuehaibing@huawei.com>
-In-Reply-To: <20210523065152.29632-1-yuehaibing@huawei.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Mon, 21 Jun 2021 10:46:49 +0200
-Message-ID: <CAJfpegvE8hFMyMuc8TmhojYihknmH+xuB0=3vAGHsakSavtm6A@mail.gmail.com>
-Subject: Re: [PATCH -next] cuse: use DEVICE_ATTR_*() macros
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1273c642-d2b0-b81d-2052-1f2f0deafdae@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 23 May 2021 at 08:52, YueHaibing <yuehaibing@huawei.com> wrote:
->
-> Use DEVICE_ATTR_*() helper instead of plain DEVICE_ATTR,
-> which makes the code a bit shorter and easier to read.
+On Mon, Jun 21, 2021 at 09:18:31AM +0100, Steven Price wrote:
+> On 18/06/2021 15:52, Catalin Marinas wrote:
+> > On Fri, Jun 18, 2021 at 02:28:26PM +0100, Steven Price wrote:
+> >> +When this capability is enabled all memory in (non-device) memslots must not
+> >> +used VM_SHARED, attempts to create a memslot with a VM_SHARED mmap will result
+> >> +in an -EINVAL return.
+> > 
+> > "must not used" doesn't sound right. Anyway, I'd remove VM_SHARED as
+> > that's a kernel internal and not something the VMM needs to be aware of.
+> > Just say something like "memslots must be mapped as shareable
+> > (MAP_SHARED)".
+> 
+> I think I meant "must not use" - and indeed memslots must *not* be
+> mapped as shareable. I'll update to this wording:
+> 
+>   When this capability is enabled all memory in memslots must be mapped as
+>   not-shareable (no MAP_SHARED), attempts to create a memslot with MAP_SHARED
+>   will result in an -EINVAL return.
 
-Sorry, I don't see really see the cleanup value of this patch.
+It looks fine. Feel free to keep my reviewed-by.
 
-Thanks,
-Miklos
+-- 
+Catalin
