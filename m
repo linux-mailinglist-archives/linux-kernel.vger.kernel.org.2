@@ -2,351 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4E93AF129
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 317303AF131
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233055AbhFURBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 13:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35910 "EHLO
+        id S230425AbhFURDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 13:03:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232404AbhFURAz (ORCPT
+        with ESMTP id S232035AbhFURCu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 13:00:55 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83636C06124A
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:31:35 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id v134-20020a37618c0000b02902fa5329f2b4so162619qkb.18
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:31:35 -0700 (PDT)
+        Mon, 21 Jun 2021 13:02:50 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56BCDC0A888B
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:33:22 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id g24so10293179pji.4
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:33:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=sTDc/9kKVWFZ6hO1Y/wCoh3Kz/EL9+Y6sOs1hNsKjRo=;
-        b=XC5Xo6xTMpDKeVOIL6dec5Gzfea5nQ0s3icAgn2IAVmt4Q4g4JmKxYdqFH/YqBmVUK
-         kg3tczoXIEviY5a0BhYdgUPqFgQWkXNRyp21sVKK3K8Yr9Q7FDKxOC9i3KtipT9pgRO9
-         8pYBULpRNiJezzFO+0L4dDexJ3U5nG756BnFhoBZe2lSzWkymIn5RXYqINw+anpIwBbb
-         VMOb0UWZ3xXbZoWBf3NA317vQbvSt6xBF7nqBVfY7+s3+OobwOQNWF2M+2YJ/AN02Juo
-         iiJwb2UDC0TacYoyIFY+1oBeN1pu8n1hYDVOiKMpR6rqThPIKwYrtfKzfSlqB2fVkIDm
-         BjFA==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RfuZmFTIa+BiKpP9D0IXA33fRGcBiajcpX+BWebyFZw=;
+        b=mDzJgNZcryGHFACHFEDHgkTmlIYQ/uZ4s01IIQTfG0d33to/CCfw1fwmh5sUn1rYjF
+         G/YRtL9q75MzrMaZqzgAmXP0RPJFRmneElRZiNX+dDJqiJsu/tp9TrCT8uNNge1Vq3Gt
+         F7xIbG2WdbCTb+k5CtoLC3Zu7/sS9NZ163zmw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=sTDc/9kKVWFZ6hO1Y/wCoh3Kz/EL9+Y6sOs1hNsKjRo=;
-        b=bjEB9/DgytKG34vdWcRhkhDkyJyfzGPNvoJy1ljqKK5aLmTPW9MtISoE78/UuXPJYX
-         eBo86MLT4ElvYEIsy6NlEF52YmLBu41JS0Rqkzz7kV+uXEk0PM6ZpZ84gA8kGCw8Qg+d
-         DqxIX4hsuPm+6sdPAG+SMQEKnaVvKmSrDxlEQkfhK6w4Eme+6Cbi/wSVXotnSkMdECzE
-         SJij52X26nRsAorUo++x2kMAF/5KBLuSyUcPVgXj2/gGhNUZ5JOCdslMG6EKslFWi/WK
-         KEJL7ur4/3BP7gtKPpJWY7jCe7rf0v8NOFYpomdNDfSL/zcNBWDi6YZ5uBbmiVBTZt0a
-         UVUg==
-X-Gm-Message-State: AOAM5307x84gMz/gCKbp+d6XTxzB9E1tj+JwRJZJKNb5AfUIN20myW7x
-        X8TSDr0cKrMT9qVHummTGrC3aUqeWEE=
-X-Google-Smtp-Source: ABdhPJwm3lwYL9m3LNZBnOOsE/MWmq1zF7GnEB8bo+g0PBvbGRxctdVhkOdgYzhRfiXTQ8KYdYOcL080KHY=
-X-Received: from pgonda1.kir.corp.google.com ([2620:0:1008:11:2742:338c:f077:6d85])
- (user=pgonda job=sendgmr) by 2002:a25:be89:: with SMTP id i9mr31617565ybk.300.1624293094559;
- Mon, 21 Jun 2021 09:31:34 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 09:31:18 -0700
-In-Reply-To: <20210621163118.1040170-1-pgonda@google.com>
-Message-Id: <20210621163118.1040170-4-pgonda@google.com>
-Mime-Version: 1.0
-References: <20210621163118.1040170-1-pgonda@google.com>
-X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH 3/3] KVM, SEV: Add support for SEV-ES local migration
-From:   Peter Gonda <pgonda@google.com>
-To:     kvm@vger.kernel.org
-Cc:     Peter Gonda <pgonda@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        David Rientjes <rientjes@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RfuZmFTIa+BiKpP9D0IXA33fRGcBiajcpX+BWebyFZw=;
+        b=Qkz/ZGAWuvmmtUJwu6sInVrLlfC4U/mnDoqrFEnGWmMCzXmOuZPuPSpgtgWtZ3+I5y
+         xwpw6QQHqWcp0sWO+90s/mQL+/RxyuFhOfDsIW4g6AqWYKRSXhnqL572e4yEXZd9rSB/
+         PS/lXZ8wE7jgLNUiJ48GPvpMK3FYjcOq0LL0FWwqKeo7RsrB/F8GcQfxmOgC2HWUju+N
+         LQlZ3LNoZEyOZiy9m8bsg5PrG4j4fBBleMSt25zLZbQ0fi5nVAaIUJ6wNh7Dxuvdszg1
+         b+a7U2Jh73uenU9OtfYRNMyx9g0N1hAqjgwGYVz0Pn4k+n8gpxuvzkOTp5UhdSixNARt
+         NJaQ==
+X-Gm-Message-State: AOAM531LoYHwpq6LJ2UqKUNEqgbyhLWDm+4nUvSBcsoCiA3d6eQCm48u
+        jeL7bRuc8+JBbW5VxJsZfultxg==
+X-Google-Smtp-Source: ABdhPJyecCMpcNv4WWa9XLQ4xt+7SYjSI34gpgBHcc3fgq11CMS9BCdQ4yBSGWL8tcElRKvvq8qFEg==
+X-Received: by 2002:a17:90a:8d08:: with SMTP id c8mr21813735pjo.177.1624293201955;
+        Mon, 21 Jun 2021 09:33:21 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:9f0f:4fd2:adeb:6f55])
+        by smtp.gmail.com with UTF8SMTPSA id u23sm19400322pgk.38.2021.06.21.09.33.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 09:33:21 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 09:33:19 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Odelu Kukatla <okukatla@codeaurora.org>
+Cc:     georgi.djakov@linaro.org, bjorn.andersson@linaro.org,
+        evgreen@google.com, Georgi Djakov <djakov@kernel.org>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sboyd@kernel.org, mdtipton@codeaurora.org, sibis@codeaurora.org,
+        saravanak@google.com, seansw@qti.qualcomm.com, elder@linaro.org,
+        linux-arm-msm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org
+Subject: Re: [PATCH] interconnect: Aggregate bandwidth votes for unused nodes
+ in sync_state()
+Message-ID: <YNC/T4gpCh/QAkCU@google.com>
+References: <1624122509-17508-1-git-send-email-okukatla@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1624122509-17508-1-git-send-email-okukatla@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Local migration provides a low-cost mechanism for userspace VMM upgrades.
-It is an alternative to traditional (i.e., remote) live migration. Whereas
-remote migration handles move a guest to a new host, local migration only
-handles moving a guest to a new userspace VMM within a host.
+On Sat, Jun 19, 2021 at 10:38:29PM +0530, Odelu Kukatla wrote:
+> When removing the initial bandwidth votes in sync_state(), make sure
+> to call the aggregate() function for nodes which don't have any
+> clients yet. aggregate_requests() does not invoke aggregate()
+> for unused nodes.
+> 
+> Signed-off-by: Odelu Kukatla <okukatla@codeaurora.org>
 
-For SEV-ES to work with local migration the VMSAs, GHCB metadata,
-and other SEV-ES info needs to be preserved along with the guest's
-memory. KVM maintains a pointer to each vCPUs GHCB and may additionally
-contain an copy of the GHCB's save area if the guest has been using it
-for NAE handling. The local send and receive ioctls have been updated to
-move this additional metadata required for each vCPU in SEV-ES into
-hashmap for SEV local migration data.
+It seems this should have a 'Fixes' tag for b1d681d8d324 ("interconnect:
+Add sync state support")', to make sure the change makes it into the
+stable trees.
 
-Signed-off-by: Peter Gonda <pgonda@google.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Dr. David Alan Gilbert <dgilbert@redhat.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: Wanpeng Li <wanpengli@tencent.com>
-Cc: Jim Mattson <jmattson@google.com>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: kvm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
+> ---
+>  drivers/interconnect/core.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/interconnect/core.c b/drivers/interconnect/core.c
+> index 8a1e70e..1d9a00a 100644
+> --- a/drivers/interconnect/core.c
+> +++ b/drivers/interconnect/core.c
+> @@ -1106,7 +1106,16 @@ void icc_sync_state(struct device *dev)
+>  		dev_dbg(p->dev, "interconnect provider is in synced state\n");
+>  		list_for_each_entry(n, &p->nodes, node_list) {
+>  			if (n->init_avg || n->init_peak) {
+> -				aggregate_requests(n);
+> +				if (hlist_empty(&n->req_list)) {
 
----
- arch/x86/kvm/svm/sev.c | 164 +++++++++++++++++++++++++++++++++++++----
- 1 file changed, 150 insertions(+), 14 deletions(-)
+nit: consider handling the common case in the 'if' branch and the exception of
+the initial votes in 'else'.
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 7c33ad2b910d..33df7ed08d21 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -77,6 +77,19 @@ struct enc_region {
- 	unsigned long size;
- };
- 
-+struct vmsa_node {
-+	struct list_head list;
-+	int vcpu_id;
-+	struct vmcb_save_area *vmsa;
-+	struct ghcb *ghcb;
-+	u64 ghcb_gpa;
-+
-+	void *ghcb_sa;
-+	u64 ghcb_sa_len;
-+	bool ghcb_sa_sync;
-+	bool ghcb_sa_free;
-+};
-+
- struct sev_info_migration_node {
- 	struct hlist_node hnode;
- 	u64 token;
-@@ -87,6 +100,11 @@ struct sev_info_migration_node {
- 	unsigned long pages_locked;
- 	struct list_head regions_list;
- 	struct misc_cg *misc_cg;
-+
-+	/* The following fields are for SEV-ES guests */
-+	bool es_enabled;
-+	struct list_head vmsa_list;
-+	u64 ap_jump_table;
- };
- 
- #define SEV_INFO_MIGRATION_HASH_BITS    7
-@@ -1163,6 +1181,94 @@ static int place_migration_node(struct sev_info_migration_node *entry)
- 	return ret;
- }
- 
-+static int process_vmsa_list(struct kvm *kvm, struct list_head *vmsa_list)
-+{
-+	struct vmsa_node *vmsa_node, *q;
-+	struct kvm_vcpu *vcpu;
-+	struct vcpu_svm *svm;
-+
-+	lockdep_assert_held(&kvm->lock);
-+
-+	if (!vmsa_list)
-+		return 0;
-+
-+	list_for_each_entry(vmsa_node, vmsa_list, list) {
-+		if (!kvm_get_vcpu_by_id(kvm, vmsa_node->vcpu_id)) {
-+			WARN(1,
-+			     "Failed to find VCPU with ID %d despite presence in VMSA list.\n",
-+			     vmsa_node->vcpu_id);
-+			return -1;
-+		}
-+	}
-+
-+	/*
-+	 * Move any stashed VMSAs back to their respective VMCBs and delete
-+	 * those nodes.
-+	 */
-+	list_for_each_entry_safe(vmsa_node, q, vmsa_list, list) {
-+		vcpu = kvm_get_vcpu_by_id(kvm, vmsa_node->vcpu_id);
-+		svm = to_svm(vcpu);
-+		svm->vmsa = vmsa_node->vmsa;
-+		svm->ghcb = vmsa_node->ghcb;
-+		svm->vmcb->control.ghcb_gpa = vmsa_node->ghcb_gpa;
-+		svm->vcpu.arch.guest_state_protected = true;
-+		svm->vmcb->control.vmsa_pa = __pa(svm->vmsa);
-+		svm->ghcb_sa = vmsa_node->ghcb_sa;
-+		svm->ghcb_sa_len = vmsa_node->ghcb_sa_len;
-+		svm->ghcb_sa_sync = vmsa_node->ghcb_sa_sync;
-+		svm->ghcb_sa_free = vmsa_node->ghcb_sa_free;
-+
-+		list_del(&vmsa_node->list);
-+		kfree(vmsa_node);
-+	}
-+
-+	return 0;
-+}
-+
-+static int create_vmsa_list(struct kvm *kvm,
-+			    struct sev_info_migration_node *entry)
-+{
-+	int i;
-+	const int num_vcpus = atomic_read(&kvm->online_vcpus);
-+	struct vmsa_node *node;
-+	struct kvm_vcpu *vcpu;
-+	struct vcpu_svm *svm;
-+
-+	INIT_LIST_HEAD(&entry->vmsa_list);
-+	for (i = 0; i < num_vcpus; ++i) {
-+		node = kzalloc(sizeof(*node), GFP_KERNEL);
-+		if (!node)
-+			goto e_freelist;
-+
-+		vcpu = kvm->vcpus[i];
-+		node->vcpu_id = vcpu->vcpu_id;
-+
-+		svm = to_svm(vcpu);
-+		node->vmsa = svm->vmsa;
-+		svm->vmsa = NULL;
-+		node->ghcb = svm->ghcb;
-+		svm->ghcb = NULL;
-+		node->ghcb_gpa = svm->vmcb->control.ghcb_gpa;
-+		node->ghcb_sa = svm->ghcb_sa;
-+		svm->ghcb_sa = NULL;
-+		node->ghcb_sa_len = svm->ghcb_sa_len;
-+		svm->ghcb_sa_len = 0;
-+		node->ghcb_sa_sync = svm->ghcb_sa_sync;
-+		svm->ghcb_sa_sync = false;
-+		node->ghcb_sa_free = svm->ghcb_sa_free;
-+		svm->ghcb_sa_free = false;
-+
-+		list_add_tail(&node->list, &entry->vmsa_list);
-+	}
-+
-+	return 0;
-+
-+e_freelist:
-+	if (process_vmsa_list(kvm, &entry->vmsa_list))
-+		WARN(1, "Unable to move VMSA list back to source VM. Guest is in a broken state now.");
-+	return -1;
-+}
-+
- static int sev_local_send(struct kvm *kvm, struct kvm_sev_cmd *argp)
- {
- 	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
-@@ -1174,9 +1280,6 @@ static int sev_local_send(struct kvm *kvm, struct kvm_sev_cmd *argp)
- 	if (!sev_guest(kvm))
- 		return -ENOTTY;
- 
--	if (sev->es_active)
--		return -EPERM;
--
- 	if (sev->info_token != 0)
- 		return -EEXIST;
- 
-@@ -1196,8 +1299,19 @@ static int sev_local_send(struct kvm *kvm, struct kvm_sev_cmd *argp)
- 	INIT_LIST_HEAD(&entry->regions_list);
- 	list_replace_init(&sev->regions_list, &entry->regions_list);
- 
-+	if (sev_es_guest(kvm)) {
-+		/*
-+		 * If this is an ES guest, we need to move each VMCB's VMSA into a
-+		 * list for migration.
-+		 */
-+		entry->es_enabled = true;
-+		entry->ap_jump_table = sev->ap_jump_table;
-+		if (create_vmsa_list(kvm, entry))
-+			goto e_listdel;
-+	}
-+
- 	if (place_migration_node(entry))
--		goto e_listdel;
-+		goto e_vmsadel;
- 
- 	token = entry->token;
- 
-@@ -1215,6 +1329,11 @@ static int sev_local_send(struct kvm *kvm, struct kvm_sev_cmd *argp)
- 	hash_del(&entry->hnode);
- 	spin_unlock(&sev_info_migration_hash_lock);
- 
-+e_vmsadel:
-+	if (sev_es_guest(kvm) && process_vmsa_list(kvm, &entry->vmsa_list))
-+		WARN(1,
-+		     "Unable to move VMSA list back to source VM. Guest is in a broken state now.");
-+
- e_listdel:
- 	list_replace_init(&entry->regions_list, &sev->regions_list);
- 
-@@ -1233,9 +1352,6 @@ static int sev_local_receive(struct kvm *kvm, struct kvm_sev_cmd *argp)
- 	if (!sev_guest(kvm))
- 		return -ENOTTY;
- 
--	if (sev->es_active)
--		return -EPERM;
--
- 	if (sev->handle != 0)
- 		return -EPERM;
- 
-@@ -1254,6 +1370,14 @@ static int sev_local_receive(struct kvm *kvm, struct kvm_sev_cmd *argp)
- 
- 	memcpy(&old_info, sev, sizeof(old_info));
- 
-+	if (entry->es_enabled) {
-+		if (process_vmsa_list(kvm, &entry->vmsa_list))
-+			goto err_unlock;
-+
-+		sev->es_active = true;
-+		sev->ap_jump_table = entry->ap_jump_table;
-+	}
-+
- 	/*
- 	 * The source VM always frees @entry On the target we simply
- 	 * mark the token as invalid to notify the source the sev info
-@@ -2046,12 +2170,22 @@ void sev_vm_destroy(struct kvm *kvm)
- 		__unregister_region_list_locked(kvm, &sev->regions_list);
- 	}
- 
--	/*
--	 * If userspace was terminated before unregistering the memory
--	 * regions then lets unpin all the registered memory.
--	 */
--	if (entry)
-+	if (entry) {
-+		/*
-+		 * If there are any saved VMSAs, restore them so they can be
-+		 * destructed through the normal path.
-+		 */
-+		if (entry->es_enabled)
-+			if (process_vmsa_list(kvm, &entry->vmsa_list))
-+				WARN(1,
-+				     "Unable to clean up vmsa_list");
-+
-+		/*
-+		 * If userspace was terminated before unregistering the memory
-+		 * regions then lets unpin all the registered memory.
-+		 */
- 		__unregister_region_list_locked(kvm, &entry->regions_list);
-+	}
- 
- 	mutex_unlock(&kvm->lock);
- 
-@@ -2243,9 +2377,11 @@ void sev_free_vcpu(struct kvm_vcpu *vcpu)
- 
- 	svm = to_svm(vcpu);
- 
--	if (vcpu->arch.guest_state_protected)
-+	if (svm->ghcb && vcpu->arch.guest_state_protected)
- 		sev_flush_guest_memory(svm, svm->vmsa, PAGE_SIZE);
--	__free_page(virt_to_page(svm->vmsa));
-+
-+	if (svm->vmsa)
-+		__free_page(virt_to_page(svm->vmsa));
- 
- 	if (svm->ghcb_sa_free)
- 		kfree(svm->ghcb_sa);
--- 
-2.32.0.288.g62a8d224e6-goog
-
+> +					if (p->pre_aggregate)
+> +						p->pre_aggregate(n);
+> +
+> +					p->aggregate(n, 0, 0, 0, &n->avg_bw,
+> +						&n->peak_bw);
+> +				} else {
+> +					aggregate_requests(n);
+> +				}
+> +
+>  				p->set(n, n);
+>  			}
+>  		}
