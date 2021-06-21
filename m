@@ -2,180 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2168C3AF1F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3FB53AF1FC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbhFURaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 13:30:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43054 "EHLO
+        id S231397AbhFURbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 13:31:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231477AbhFURaG (ORCPT
+        with ESMTP id S230205AbhFURbM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 13:30:06 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5015C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:27:51 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso18480295otu.10
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:27:51 -0700 (PDT)
+        Mon, 21 Jun 2021 13:31:12 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0044BC061574;
+        Mon, 21 Jun 2021 10:28:57 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id g24so10384200pji.4;
+        Mon, 21 Jun 2021 10:28:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WmGjGSnaoIjbfNbK6jg4Z58leTIpBSXXFk+GdaHK+O8=;
-        b=IkafJuMXU1dxFooFT/Z7CDiyPl66XkMYfmNHgkZ7Zr9ROZgxDLuuLCItaGKVG+g3ei
-         StPnLiq+x2oO47VLNdr3X8f2MNhdKMSBQivdUZebRFGoy+8PcRI5KnPzwKoGXDq0vAms
-         uOKTDF1aPZqzzgWio3fYUV04SFgYxLlLuiGV0yHop2Fdw9SW3u5n5BFTJBU3vnd9WFvD
-         Rimi7mod+IOXsJwod9l4B5e+z9QEueios+GMwLdNvEMPmTXIUsXGBP1I7DyrZPQQLIen
-         dV6MBOQTH1MFJyB6tKOmOFlqEnXysxtjprh6XkRv1/cGvUFGMFih52BaeUDAlxYnQOsP
-         I4yQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hsPgIATFhcH0s8/nQxedaZItqhlGccYFqrCe5SZycCI=;
+        b=F5NXZMuVLc+XFmS/iuBcEEws46xtf4JvA6gskDZxdEW+vd0kRjJjE6bwDStG/3tXJT
+         BrISEflsKXPYKwe2FAPKEodHaI+XPRJ5lZhS3vg/VsJfgrUQ6WLfR9lKYFzlRUQM5ZNB
+         i0Vp5KV89OkSdgdIM3N2X9i3cuAua3pFBa0xmFM4sB5rAWF23MMBJeumgwIWcfbi2yA6
+         6/lv+pLUf88IwjixM2zR7/APfCzm+N3UvL7N3OOf3Tq2cLzZuHncaw4az2/t2M4RVeeN
+         GUfCCNVvcGq7PnDGmLOowE464MmOYojZcc7MHhocfFuTTZpk2uwM7LbAWysbXLQfbyav
+         IOew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WmGjGSnaoIjbfNbK6jg4Z58leTIpBSXXFk+GdaHK+O8=;
-        b=IzOcm8Lfg7gUFDsYeXKs7d+aKd+g2Uk3/OVC4TwmoglOPe3khC95Es/lViJu0+gB5A
-         Kz+y83oHfg/U/0D+UzOe8ZEfRyjJOrYQqK5aV8XJP++De8ECblA0zCwY5BPwJi4UbIFV
-         abc6mNaHV5qDRzprih1GyBwI9oAeN6GRfwt9qqTuSqXnbKKrn6b3FpuqjURIQO9SdqJ4
-         f7RejKgEG/UfpXFP1fvoRiExCHdwSmFndHhi6YsZqEOc51/a8cuc2PzoaIGUbxPfgdOk
-         qllI4+ltwl1IrRhvTM1rDIrv0BNbKNIfSapAF52JXjVRRCZrbGLQeL1sz5wZJBEu8hGC
-         nInA==
-X-Gm-Message-State: AOAM533lHe/j+FEZe6qL54359X9ln11mQepQ6dyKUCKEM/HXH1eXNtpu
-        I8Q/IRJO2URoSsC0+hAMmqQjIWSY3fNsGLA0mwlOJw==
-X-Google-Smtp-Source: ABdhPJwi8uED1KtCHcgJosUou/U3YERsHdEZWa6Y4ITdxzqfoSrQyjLejdlRZ2O4PLdCBDaz+Bchb6q7YPN7hVIoEJI=
-X-Received: by 2002:a05:6830:1dd5:: with SMTP id a21mr21512580otj.180.1624296471321;
- Mon, 21 Jun 2021 10:27:51 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hsPgIATFhcH0s8/nQxedaZItqhlGccYFqrCe5SZycCI=;
+        b=tdtHbL2VRrc3QskeCDBYj5bbb0k224fcvQxHOzcQscsAdPgeung/utv4iOQOXBSZX5
+         WApdNZ0rCwc9bR8Out2IhozQFDdZHKGD14MDie2R81Wfu1FpnJNDglKDAuM5AUkOtmzv
+         YYHI3SFhloMt9zqdWRGmr412kauZzk3mPV0XPCsERzHKB14SN4H90dx1iYmwvEXnaqRp
+         +WdkHQGw0/3TYE1lwliIuJ4GA8Gi8krxWm7HfoFJEtDb6rYR1zT5CnfkTOXxGN70GGbT
+         GKgaH2A9iMtfc7yGK8bpkG7dImD76dlLrGM21+T99Bdg2UXToKTZYfPrpJNuXD/3uB5H
+         i5ew==
+X-Gm-Message-State: AOAM532xKO19KAGi4qg02LovL1tZd9PviqYMyJzpAEinN8geYUpNEMDY
+        iti/dTdFbh4ijj7jatNpFRY=
+X-Google-Smtp-Source: ABdhPJy4wND+PP/yaAKMrJbSmBXkC2/3oOpFW3arlGwOrIAEEn0kw7egiHXLSs0Nyvekc9ulirITuQ==
+X-Received: by 2002:a17:902:aa86:b029:116:3e3a:2051 with SMTP id d6-20020a170902aa86b02901163e3a2051mr18922772plr.38.1624296537450;
+        Mon, 21 Jun 2021 10:28:57 -0700 (PDT)
+Received: from localhost ([103.248.31.165])
+        by smtp.gmail.com with ESMTPSA id v15sm15975003pfm.216.2021.06.21.10.28.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 10:28:56 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 22:58:54 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v7 4/8] PCI/sysfs: Allow userspace to query and set
+ device reset mechanism
+Message-ID: <20210621172854.3ycsprg2wwx45xgm@archlinux>
+References: <20210619135920.h42gp5ie5c2eutfq@archlinux>
+ <20210621130135.GA3288360@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20210609232501.171257-1-jiang.wang@bytedance.com>
- <20210609232501.171257-7-jiang.wang@bytedance.com> <20210618100424.wfljrnycxxguwt3d@steredhat.lan>
-In-Reply-To: <20210618100424.wfljrnycxxguwt3d@steredhat.lan>
-From:   "Jiang Wang ." <jiang.wang@bytedance.com>
-Date:   Mon, 21 Jun 2021 10:27:40 -0700
-Message-ID: <CAP_N_Z-U0_XP69iNLA1Ray9EEVWyXqb2f85bL-sG2oxjM5PaMA@mail.gmail.com>
-Subject: Re: [External] Re: [RFC v1 6/6] virtio/vsock: add sysfs for rx buf
- len for dgram
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        cong.wang@bytedance.com,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Yongji Xie <xieyongji@bytedance.com>,
-        =?UTF-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Lu Wei <luwei32@huawei.com>,
-        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621130135.GA3288360@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 3:04 AM Stefano Garzarella <sgarzare@redhat.com> wrote:
+On 21/06/21 08:01AM, Bjorn Helgaas wrote:
+> On Sat, Jun 19, 2021 at 07:29:20PM +0530, Amey Narkhede wrote:
+> > On 21/06/18 03:00PM, Bjorn Helgaas wrote:
+> > > On Tue, Jun 08, 2021 at 11:18:53AM +0530, Amey Narkhede wrote:
+> > > > Add reset_method sysfs attribute to enable user to
+> > > > query and set user preferred device reset methods and
+> > > > their ordering.
 >
-> On Wed, Jun 09, 2021 at 11:24:58PM +0000, Jiang Wang wrote:
-> >Make rx buf len configurable via sysfs
+> > > > +	if (sysfs_streq(options, "default")) {
+> > > > +		for (i = 0; i < PCI_RESET_METHODS_NUM; i++)
+> > > > +			reset_methods[i] = reset_methods[i] ? prio-- : 0;
+> > > > +		goto set_reset_methods;
+> > > > +	}
+> > >
+> > > If you use pci_init_reset_methods() here, you can also get this case
+> > > out of the way early.
+> > >
+> > The problem with alternate encoding is we won't be able to know if
+> > one of the reset methods was disabled previously. For example,
 > >
-> >Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
-> >---
-> > net/vmw_vsock/virtio_transport.c | 37 +++++++++++++++++++++++++++++++++++--
-> > 1 file changed, 35 insertions(+), 2 deletions(-)
+> > # cat reset_methods
+> > flr,bus 			# dev->reset_methods = [3, 5, 0, ...]
+> > # echo bus > reset_methods 	# dev->reset_methods = [5, 0, 0, ...]
+> > # cat reset_methods
+> > bus
 > >
-> >diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
-> >index cf47aadb0c34..2e4dd9c48472 100644
-> >--- a/net/vmw_vsock/virtio_transport.c
-> >+++ b/net/vmw_vsock/virtio_transport.c
-> >@@ -29,6 +29,14 @@ static struct virtio_vsock __rcu *the_virtio_vsock;
-> > static struct virtio_vsock *the_virtio_vsock_dgram;
-> > static DEFINE_MUTEX(the_virtio_vsock_mutex); /* protects the_virtio_vsock */
+> > Now if an user wants to enable flr
 > >
-> >+static int rx_buf_len = VIRTIO_VSOCK_DEFAULT_RX_BUF_SIZE;
-> >+static struct kobject *kobj_ref;
-> >+static ssize_t  sysfs_show(struct kobject *kobj,
-> >+                      struct kobj_attribute *attr, char *buf);
-> >+static ssize_t  sysfs_store(struct kobject *kobj,
-> >+                      struct kobj_attribute *attr, const char *buf, size_t count);
-> >+static struct kobj_attribute rxbuf_attr = __ATTR(rx_buf_value, 0660, sysfs_show, sysfs_store);
+> > # echo flr > reset_methods 	# dev->reset_methods = [3, 0, 0, ...]
+> > OR
+> > # echo bus,flr > reset_methods 	# dev->reset_methods = [5, 3, 0, ...]
+> >
+> > either they need to write "default" first then flr or we will need to
+> > reprobe reset methods each time when user writes to reset_method attribute.
 >
-> Maybe better to use a 'dgram' prefix.
+> Not sure I completely understand the problem here.  I think relying on
+> previous state that is invisible to the user is a little problematic
+> because it's hard for the user to predict what will happen.
+>
+> If the user enables a method that was previously "disabled" because
+> the probe failed, won't the reset method itself just fail with
+> -ENOTTY?  Is that a problem?
+>
+I think I didn't explain this correctly. With current implementation
+its not necessary to explicitly set *order of availabe* reset methods.
+User can directly write a single supported reset method only and then perform
+the reset. Side effect of that is other methods are disabled if user
+writes single or less than available number of supported reset method.
+Current implementation is able to handle this case but with new encoding
+we'll need to reprobe reset methods everytime because we have no way
+of distingushing supported and currently enabled reset method.
 
-Sure.
+Alternate way of doing this is using 2 bitmaps as outlined here by
+Shanker https://marc.info/?l=linux-kernel&m=162428773101702&w=2
+> > > > +	while ((name = strsep(&options, ",")) != NULL) {
+> > > > +		if (sysfs_streq(name, ""))
+> > > > +			continue;
+> > > > +
+> > > > +		name = strim(name);
+> > > > +
+> > > > +		for (i = 0; i < PCI_RESET_METHODS_NUM; i++) {
+> > > > +			if (reset_methods[i] &&
+> > > > +			    sysfs_streq(name, pci_reset_fn_methods[i].name)) {
+> > > > +				reset_methods[i] = prio--;
+> > > > +				break;
+> > > > +			}
+> > > > +		}
+> > > > +
+> > > > +		if (i == PCI_RESET_METHODS_NUM) {
+> > > > +			kfree(options);
+> > > > +			return -EINVAL;
+> > > > +		}
+> > > > +	}
+> > > > +
+> > > > +	if (reset_methods[0] &&
+> > > > +	    reset_methods[0] != PCI_RESET_METHODS_NUM)
+> > > > +		pci_warn(pdev, "Device specific reset disabled/de-prioritized by user");
+> > >
+> > > Is there a specific reason for this warning?  Is it just telling the
+> > > user that he might have shot himself in the foot?  Not sure that's
+> > > necessary.
+> > >
+> > I think generally presence of device specific reset method means other
+> > methods are potentially broken. Is it okay to skip this?
+>
+> We might want a warning at reset-time if all the methods failed,
+> because that means we may leak state between users.  Maybe we also
+> want one here, if *all* reset methods are disabled.  I don't really
+> like special treatment of device-specific methods here because it
+> depends on the assumption that "device-specific means all other resets
+> are broken."  That's hard to maintain.
+>
+> Bjorn
+Makes sense. I'll update this.
 
-> >+
-> > struct virtio_vsock {
-> >       struct virtio_device *vdev;
-> >       struct virtqueue **vqs;
-> >@@ -360,7 +368,7 @@ virtio_transport_cancel_pkt(struct vsock_sock *vsk)
-> >
-> > static void virtio_vsock_rx_fill(struct virtio_vsock *vsock, bool is_dgram)
-> > {
-> >-      int buf_len = VIRTIO_VSOCK_DEFAULT_RX_BUF_SIZE;
-> >+      int buf_len = rx_buf_len;
-> >       struct virtio_vsock_pkt *pkt;
-> >       struct scatterlist hdr, buf, *sgs[2];
-> >       struct virtqueue *vq;
-> >@@ -1003,6 +1011,22 @@ static struct virtio_driver virtio_vsock_driver = {
-> >       .remove = virtio_vsock_remove,
-> > };
-> >
-> >+static ssize_t sysfs_show(struct kobject *kobj,
-> >+              struct kobj_attribute *attr, char *buf)
-> >+{
-> >+      return sprintf(buf, "%d", rx_buf_len);
-> >+}
-> >+
-> >+static ssize_t sysfs_store(struct kobject *kobj,
-> >+              struct kobj_attribute *attr, const char *buf, size_t count)
-> >+{
-> >+      if (kstrtou32(buf, 0, &rx_buf_len) < 0)
-> >+              return -EINVAL;
-> >+      if (rx_buf_len < 1024)
-> >+              rx_buf_len = 1024;
-> >+      return count;
-> >+}
-> >+
-> > static int __init virtio_vsock_init(void)
-> > {
-> >       int ret;
-> >@@ -1020,8 +1044,17 @@ static int __init virtio_vsock_init(void)
-> >       if (ret)
-> >               goto out_vci;
-> >
-> >-      return 0;
-> >+      kobj_ref = kobject_create_and_add("vsock", kernel_kobj);
->
-> So, IIUC, the path will be /sys/vsock/rx_buf_value?
->
-> I'm not sure if we need to add a `virtio` subdir (e.g.
-> /sys/vsock/virtio/dgram_rx_buf_size)
-
-I agree adding a virtio is better in case vmware or hyperv will
-also have some settings.
-
-> Thanks,
-> Stefano
->
-> >
-> >+      /*Creating sysfs file for etx_value*/
-> >+      ret = sysfs_create_file(kobj_ref, &rxbuf_attr.attr);
-> >+      if (ret)
-> >+              goto out_sysfs;
-> >+
-> >+      return 0;
-> >+out_sysfs:
-> >+      kobject_put(kobj_ref);
-> >+      sysfs_remove_file(kernel_kobj, &rxbuf_attr.attr);
-> > out_vci:
-> >       vsock_core_unregister(&virtio_transport.transport);
-> > out_wq:
-> >--
-> >2.11.0
-> >
->
+Thanks,
+Amey
