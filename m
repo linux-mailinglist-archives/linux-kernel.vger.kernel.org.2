@@ -2,74 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2EA13AE653
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:44:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC213AE68B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229807AbhFUJrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:47:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbhFUJrE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:47:04 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83517C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:44:50 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id p66so14970491iod.8
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:44:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B1TJ7i7KgvD4fdVHGJRMyrwZBOAJHAbvbRMumj5+UHU=;
-        b=oEH8oXFU370Br9g3znCrw/jxIio1QtFBa5A6CP3kUeuS19QSTY3vKt9nrCSZuKBVTi
-         5brliEyrr6r8ljXgjJMpyq43ews7qe56KFUuDJxzbJcL9WSPWymyu7oXKRvhk4GiAZ+3
-         bLG9WD/aVpzce5J7dH9/+j18PKYirkUpWvUcEIhoSXGcnRXKncDUz+2KoxSQHajjMtrh
-         Lj2MfwxZGzKGt4KClbBqfBPz1ThE/6Od+9F61Wqk66CGQnRf+k+tV6cvO/iQ8cWlxUWf
-         12ef7wufrr92vtA4YaUgHSigOr78dB94tlRU6ur0x/lc4ColXAz8QnaAIRXtcVd4jLQd
-         Knbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B1TJ7i7KgvD4fdVHGJRMyrwZBOAJHAbvbRMumj5+UHU=;
-        b=PVYLXur0Jf2boR+oD39DLv36nfvpbmNyuTvrN44NHQSfCX261ZFR56JnkA0xxpGFei
-         5EZiSIyh0C6aBqJ0vUXbY9nVLy54tTnMJWmlUF7WaF7l6BExQDC4cWokYOnK7aIKs2A2
-         hG8tGZpF1Bvohd1XZUhWUPQBA59ocLFaWISQGpSrlltNNqGlsl/mxVA4pW8zSIuUMxul
-         keH9o8PGMiobvTsu+MNLDMcPUkYFf3RSI5z0pRLKPNqwakxJ7fqtBw/KTKHNEp0b7m/z
-         OCdpjGiRkAupi8kWKaKK+fj0s22Lh1JT6r6itaxRpCmnFIppDZSXRiJ3JeteVPsFux49
-         LtXw==
-X-Gm-Message-State: AOAM533MzyPLyOna3zRQRACsFtomaWiPDS6Z10OYGgoouxq7tCoTCXGT
-        68tRyrX6VI3lTatf1FjjeZLK1ML4X2tXYbxYAmM49Q==
-X-Google-Smtp-Source: ABdhPJy2/hr3Yxo3hr85EvZD23OIDokym52uhxrGItyfkdlVu4ZgoBws3YJE2JUHydA3ekG2826MMN/wIxMICXR4ifo=
-X-Received: by 2002:a6b:5908:: with SMTP id n8mr1139742iob.185.1624268689710;
- Mon, 21 Jun 2021 02:44:49 -0700 (PDT)
+        id S230118AbhFUJ40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:56:26 -0400
+Received: from elvis.franken.de ([193.175.24.41]:40939 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229576AbhFUJ4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 05:56:25 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lvGd7-000490-00; Mon, 21 Jun 2021 11:54:09 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id B8F82C0698; Mon, 21 Jun 2021 11:44:43 +0200 (CEST)
+Date:   Mon, 21 Jun 2021 11:44:43 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH -next] MIPS: OCTEON: octeon-usb: Use
+ devm_platform_get_and_ioremap_resource()
+Message-ID: <20210621094443.GA4425@alpha.franken.de>
+References: <20210605075537.2046896-1-yangyingliang@huawei.com>
 MIME-Version: 1.0
-References: <1624266114-21539-1-git-send-email-kewei.xu@mediatek.com> <1624266114-21539-4-git-send-email-kewei.xu@mediatek.com>
-In-Reply-To: <1624266114-21539-4-git-send-email-kewei.xu@mediatek.com>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Mon, 21 Jun 2021 17:44:38 +0800
-Message-ID: <CA+Px+wXx8eyh2QFRHbkf3ESdXzBw8LNqP=jMihju+jV0TpQvhw@mail.gmail.com>
-Subject: Re: [PATCH V2 3/3] i2c: mediatek: Isolate speed setting via dts for
- special devices
-To:     kewei.xu@mediatek.com
-Cc:     bbrezillon@kernel.org, matthias.bgg@gmail.com, robh+dt@kernel.org,
-        mark.rutland@arm.com, linux-i3c@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        srv_heupstream@mediatek.com, leilk.liu@mediatek.com,
-        qii.wang@mediatek.com, liguo.zhang@mediatek.com,
-        xinping.qian@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210605075537.2046896-1-yangyingliang@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 5:03 PM <kewei.xu@mediatek.com> wrote:
-> @@ -1293,8 +1355,8 @@ static int mtk_i2c_parse_dt(struct device_node *np, struct mtk_i2c *i2c)
->         i2c->have_pmic = of_property_read_bool(np, "mediatek,have-pmic");
->         i2c->use_push_pull =
->                 of_property_read_bool(np, "mediatek,use-push-pull");
-> -
-> -       i2c_parse_fw_timings(i2c->dev, &i2c->timing_info, true);
-Looks like the patch removes the line accidentally.
+On Sat, Jun 05, 2021 at 03:55:37PM +0800, Yang Yingliang wrote:
+> Remove unneeded error handling on the result of a call
+> to platform_get_resource() when the value is passed to
+> devm_ioremap_resource().
+> 
+> And use devm_platform_get_and_ioremap_resource() to simplify
+> code.
+> 
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  arch/mips/cavium-octeon/octeon-usb.c | 9 +--------
+>  1 file changed, 1 insertion(+), 8 deletions(-)
+
+applied to mips-next.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
