@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED12A3AE59C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 424C93AE59D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbhFUJIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:08:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:59168 "EHLO foss.arm.com"
+        id S231157AbhFUJIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:08:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:59210 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230518AbhFUJIq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:08:46 -0400
+        id S230518AbhFUJIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 05:08:51 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CA6FA11D4;
-        Mon, 21 Jun 2021 02:06:32 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1266A1FB;
+        Mon, 21 Jun 2021 02:06:37 -0700 (PDT)
 Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id ADF293F718;
-        Mon, 21 Jun 2021 02:06:29 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 414D93F718;
+        Mon, 21 Jun 2021 02:06:34 -0700 (PDT)
 From:   Mark Rutland <mark.rutland@arm.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     boqun.feng@gmail.com, bp@alien8.de, catalin.marinas@arm.com,
@@ -27,9 +27,9 @@ Cc:     boqun.feng@gmail.com, bp@alien8.de, catalin.marinas@arm.com,
         peterz@infradead.org, rth@twiddle.net, shorne@gmail.com,
         stefan.kristiansson@saunalahti.fi, tglx@linutronix.de,
         vincent.guittot@linaro.org, will@kernel.org
-Subject: [PATCH v2 6/9] arm64: read thread flags
-Date:   Mon, 21 Jun 2021 10:05:58 +0100
-Message-Id: <20210621090602.16883-7-mark.rutland@arm.com>
+Subject: [PATCH v2 6/9] arm64: snapshot thread flags
+Date:   Mon, 21 Jun 2021 10:05:59 +0100
+Message-Id: <20210621090602.16883-8-mark.rutland@arm.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20210621090602.16883-1-mark.rutland@arm.com>
 References: <20210621090602.16883-1-mark.rutland@arm.com>
