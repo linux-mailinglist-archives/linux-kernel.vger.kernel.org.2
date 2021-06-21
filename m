@@ -2,209 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCDA03AED2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CF5C3AED2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:12:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbhFUQNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:13:38 -0400
-Received: from mail-mw2nam10on2084.outbound.protection.outlook.com ([40.107.94.84]:44001
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229789AbhFUQNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:13:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ip8B8+vx8lGVVmzuu2zXC1w6RPrN8Lc4PIckW1kwjia2qy4KAN3+WF1OxcNMRkpgyhdFgjYq7YJr7rVhQeSDv3QgC1Nh8nJDLhewTta9ddHL/tWd9sbpnDPmpQa2pDhV9eqgoagedmXoqaQI8GFQ7zJQSxb+qEexPDQghbhC6ip2fWAbtOpg2QVLdFbSst3u9m48lSv1x2L+s289ylTb2zTYksEsLxt/2soaZWPHB5jIvusZjMDc440hqLwTiupdXhWV3quJRjmdUNiZ2DpBwLSCb4MrJOFh1hxZhb7uJtfOGq8UbSS7qmuv2RXob+gNOv9BN5uIfz57m3rW08MsEg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8+tEVUKfxYPKBYhwLIHzlT6yjHdYzrKc7CIilD+VVEA=;
- b=O/XANj2igSkdeeEheIJEvWnGxaJwRJNyl5uFYIlRjv1yzMuSeC16BJPiR610wT1MKjM5OzJTp+kx9dtPq7JNDhPymjn9pF41fhYbuKNRhzDJ8rx9KS1155GCHP7E9fwAING7dzQxDhkEImogMUhlAutRD639M+s65BAs6FhwmenN/BKS7dfwt4db7voTso3mb1p4XFhAxanXzjMtEG84fIAISnYLx0lfOSqXhvwVrQQTfC7i6pKn21FLwv2S8Ra2dWaMwIKukFyK9pa3K2jaley/wxKRR0GoJuDe5PR7hgU6tX73gN8gfiNS1KgsD9u7Fs7ZBeJhww+hDWZVI7gWQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=intel.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8+tEVUKfxYPKBYhwLIHzlT6yjHdYzrKc7CIilD+VVEA=;
- b=IGnzTGakShcjDDwbJRTHI9r33GaiUGmpNMWjevEg8mpUCN7wKGj5A6WCcmpF+Se/6ow+7ccWsRhqRxqBxuunw42SHLM4j8wG/mB2bGkxmuOWB8pyuBjL//pZ8MiSRH9t6pPaUZV0BSZtHmWaGsABYb2iwLtq+ZDHPtsfPGtVI/qL30Dc0oyCV0YBK7UMeFpDpZy3h5oH9XOccKnKl3VfYXElFfd/MLm2wOZM/kaEwkCaYS0MNOykfuvEMjBaJ2OZc9tHnk5iT2eTN30eA4j+T6L3Qna7ymNvTTEpxPLFN/PGTlJURZooBm+M1Q8cS3AIeQmamY1Gv5hUq/gUt8DFOg==
-Received: from DS7PR03CA0270.namprd03.prod.outlook.com (2603:10b6:5:3b3::35)
- by DM6PR12MB4090.namprd12.prod.outlook.com (2603:10b6:5:217::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Mon, 21 Jun
- 2021 16:11:19 +0000
-Received: from DM6NAM11FT008.eop-nam11.prod.protection.outlook.com
- (2603:10b6:5:3b3:cafe::a7) by DS7PR03CA0270.outlook.office365.com
- (2603:10b6:5:3b3::35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend
- Transport; Mon, 21 Jun 2021 16:11:19 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT008.mail.protection.outlook.com (10.13.172.85) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4242.16 via Frontend Transport; Mon, 21 Jun 2021 16:11:19 +0000
-Received: from [172.27.15.67] (172.20.187.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 21 Jun
- 2021 16:11:15 +0000
-Subject: Re: [PATCH 1/3] mm,memory_hotplug: export mhp min alignment
-From:   Max Gurtovoy <mgurtovoy@nvidia.com>
-To:     David Hildenbrand <david@redhat.com>,
-        <linux-nvme@lists.infradead.org>, <dan.j.williams@intel.com>,
-        <logang@deltatee.com>, <linux-mm@kvack.org>, <hch@lst.de>
-CC:     <sagi@grimberg.me>, <oren@nvidia.com>,
-        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>
-References: <20210602111055.10480-1-mgurtovoy@nvidia.com>
- <20210602111055.10480-2-mgurtovoy@nvidia.com>
- <283740c3-db3f-3c9a-2954-f1c037a13e86@redhat.com>
- <46524325-8e2a-9395-e0d0-7d559c753c67@nvidia.com>
-Message-ID: <7a4acae5-b7f8-9312-8191-aece7270104f@nvidia.com>
-Date:   Mon, 21 Jun 2021 19:11:12 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230268AbhFUQO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:14:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229789AbhFUQOZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:14:25 -0400
+Received: from relay04.th.seeweb.it (relay04.th.seeweb.it [IPv6:2001:4b7a:2000:18::165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9C8C061574;
+        Mon, 21 Jun 2021 09:12:11 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 110E81F4AF;
+        Mon, 21 Jun 2021 18:12:07 +0200 (CEST)
+Subject: Re: [PATCH v5 1/3] cpuidle: qcom_spm: Detach state machine from main
+ SPM handling
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        daniel.lezcano@linaro.org, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com,
+        jamipkettunen@somainline.org, ~postmarketos/upstreaming@lists.sr.ht
+References: <20210618225620.623359-1-angelogioacchino.delregno@somainline.org>
+ <20210618225620.623359-2-angelogioacchino.delregno@somainline.org>
+ <YNB92Dkx5MNg64m+@gerhold.net>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <08c80c7d-638f-23e9-e580-bced3648a635@somainline.org>
+Date:   Mon, 21 Jun 2021 18:12:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <46524325-8e2a-9395-e0d0-7d559c753c67@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YNB92Dkx5MNg64m+@gerhold.net>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
 Content-Language: en-US
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a9f7590c-9d11-454b-a5af-08d934cf346b
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4090:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4090803C222B0C58344D1A22DE0A9@DM6PR12MB4090.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HtqZqYdLRMeC7JPYSQCNMEVHax+7VQ5fbuLRzs1IdN9FuHIHcbKuOLNUPOr1NTvu+mRlmQon4LKwX8/kAYnH26MbEnh370aDV9T2dgCHwnlcR3dBLaAkFOFteuc7YjlIDZTRlk83VkeTFwEcUB5yDoYLxEdG4t1JuYKn2IRO5QM0DRdXRUQ8FTo2n9Tbpn0FM9DjEeAJy8EGT3fnKUHGmsNGv/cMIDjV5aHgEIFAaPIS1SH1oWxNOtfZ/M1uKO0yjEaLevrG02Hni0uy1xODVSi6kGOeRxrE2VxrsuEsn7PVa236DiF8KWMjvDD/HjCOIlL6yLE8EVrqqJtdOkEvUPnBMBHP3lxrNxeZTHvqzS3jA1vkkKdC9iha/+bUHxdl855fK+9O2/xZtpvazvuvPkpQW0m9qal2kKRTeyQTdOHlyj6IXqXvUOKUAFFaTuL2JTqNDEkEuNxPWkymkdEdxOd8UC4bAL7pX+1XEK1o6uPF5md5gEdoJotVU95EZxBY5RIWiZ9b38SoX8swCX9tueBs3ST/CbIjOQf3o/tM/bvo9UdgfHnpHWmEaWSvsB+LzfbvjV+vfs9BKP1vxlDHVmJOm4ojoaz9HV4PkszAXNFdz9KYcmEkoMMh338Nk2GpIeodF2mxOP2CuuDYmKN+a9U0yS8xuGwdNmlXCiht6xEwuq7kAP/8R3Bs+s+zq7yONEjYBPw5eQ7j45qtpJOEDJyBlb9ZdGfACTqbCF/6yYs8RIF1D6+/ZFZUv4tCfJgoGSMQsGcr2biiFUcr0GM4da0CC1YSXexUGP8Zvjd5hVhYHKNP2VjOo1EPDOdUSd8RAHYmQ7XXwBxtI4LuqWN1Ew==
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(136003)(39860400002)(346002)(376002)(46966006)(36840700001)(8676002)(426003)(47076005)(82310400003)(966005)(8936002)(31686004)(478600001)(53546011)(36756003)(26005)(16526019)(4326008)(356005)(7636003)(83380400001)(82740400003)(186003)(31696002)(16576012)(70206006)(316002)(6666004)(86362001)(110136005)(54906003)(70586007)(36906005)(2616005)(2906002)(336012)(36860700001)(5660300002)(43740500002)(2101003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2021 16:11:19.0861
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a9f7590c-9d11-454b-a5af-08d934cf346b
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT008.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4090
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi David,
+Il 21/06/21 13:54, Stephan Gerhold ha scritto:
+> On Sat, Jun 19, 2021 at 12:56:18AM +0200, AngeloGioacchino Del Regno wrote:
+>> In commit a871be6b8eee ("cpuidle: Convert Qualcomm SPM driver to a generic
+>> CPUidle driver") the SPM driver has been converted to a
+>> generic CPUidle driver: that was mainly made to simplify the
+>> driver and that was a great accomplishment;
+>> Though, it was ignored that the SPM driver is not used only
+>> on the ARM architecture.
+>>
+> 
+> Can you please reword this sentence like I suggested in v4? The way you
+> write it at the moment it sounds like this fixes a regression, but
+> actually it extends the driver to cover more use cases.
+> 
 
-do we have a conclusion for this series ?
+I don't see any regression implied: I'm explaining the reason of this
+change just one line after that and .. besides that, I haven't put any
+"Fixes:" tag to this commit.
+When you fix regressions, bad behavior, or anything else relative to a
+patch, you add that tag to say that you're fixing something.
 
-Is the below suggestion accepted by the maintainers ?
+Moreover, I can't see anything wrong in the description for this change,
+nor anything to clarify about it and that as long as you read it in full
 
-I would like to send a new series before closing 5.14 merge window.
+>> In preparation for the enablement of SPM features on AArch64/ARM64,
+>> split the cpuidle-qcom-spm driver in two: the CPUIdle related
+>> state machine (currently used only on ARM SoCs) stays there, while
+>> the SPM communication handling lands back in soc/qcom/spm.c and
+>> also making sure to not discard the simplifications that were
+>> introduced in the aforementioned commit.
+>>
+>> Since now the "two drivers" are split, the SCM dependency in the
+>> main SPM handling is gone and for this reason it was also possible
+>> to move the SPM initialization early: this will also make sure that
+>> whenever the SAW CPUIdle driver is getting initialized, the SPM
+>> driver will be ready to do the job.
+>>
+>> Please note that the anticipation of the SPM initialization was
+>> also done to optimize the boot times on platforms that have their
+>> CPU/L2 idle states managed by other means (such as PSCI), while
+>> needing SAW initialization for other purposes, like AVS control.
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+>> ---
+>>   drivers/cpuidle/Kconfig.arm        |   1 +
+>>   drivers/cpuidle/cpuidle-qcom-spm.c | 295 ++++++-----------------------
+>>   drivers/soc/qcom/Kconfig           |   9 +
+>>   drivers/soc/qcom/Makefile          |   1 +
+>>   drivers/soc/qcom/spm.c             | 198 +++++++++++++++++++
+>>   include/soc/qcom/spm.h             |  43 +++++
+>>   6 files changed, 311 insertions(+), 236 deletions(-)
+>>   create mode 100644 drivers/soc/qcom/spm.c
+>>   create mode 100644 include/soc/qcom/spm.h
+>>
+>> [...]
+>> diff --git a/drivers/cpuidle/cpuidle-qcom-spm.c b/drivers/cpuidle/cpuidle-qcom-spm.c
+>> [...]
+>> @@ -213,132 +80,88 @@ static const struct of_device_id qcom_idle_state_match[] = {
+>>   	{ },
+>>   };
+>>   
+>> -static int spm_cpuidle_init(struct cpuidle_driver *drv, int cpu)
+>> +static int spm_cpuidle_register(int cpu)
+>>   {
+>> +	struct platform_device *pdev = NULL;
+>> +	struct spm_driver_data *spm = NULL;
+>> +	struct device_node *cpu_node, *saw_node;
+>>   	int ret;
+>>   
+>> -	memcpy(drv, &qcom_spm_idle_driver, sizeof(*drv));
+>> -	drv->cpumask = (struct cpumask *)cpumask_of(cpu);
+>> +	cpu_node = of_cpu_device_node_get(cpu);
+>> +	if (!cpu_node)
+>> +		return -ENODEV;
+>>   
+>> -	/* Parse idle states from device tree */
+>> -	ret = dt_init_idle_driver(drv, qcom_idle_state_match, 1);
+>> -	if (ret <= 0)
+>> -		return ret ? : -ENODEV;
+>> +	saw_node = of_parse_phandle(cpu_node, "qcom,saw", 0);
+>> +	if (!saw_node)
+>> +		return -ENODEV;
+>>   
+>> -	/* We have atleast one power down mode */
+>> -	return qcom_scm_set_warm_boot_addr(cpu_resume_arm, drv->cpumask);
+>> -}
+>> +	pdev = of_find_device_by_node(saw_node);
+>> +	of_node_put(saw_node);
+>> +	of_node_put(cpu_node);
+>> +	if (!pdev)
+>> +		return -ENODEV;
+>>   
+>> -static struct spm_driver_data *spm_get_drv(struct platform_device *pdev,
+>> -		int *spm_cpu)
+>> -{
+>> -	struct spm_driver_data *drv = NULL;
+>> -	struct device_node *cpu_node, *saw_node;
+>> -	int cpu;
+>> -	bool found = 0;
+>> +	spm = dev_get_drvdata(&pdev->dev);
+>> +	if (!spm)
+>> +		return -EINVAL;
+>>   
+>> -	for_each_possible_cpu(cpu) {
+>> -		cpu_node = of_cpu_device_node_get(cpu);
+>> -		if (!cpu_node)
+>> -			continue;
+>> -		saw_node = of_parse_phandle(cpu_node, "qcom,saw", 0);
+>> -		found = (saw_node == pdev->dev.of_node);
+>> -		of_node_put(saw_node);
+>> -		of_node_put(cpu_node);
+>> -		if (found)
+>> -			break;
+>> -	}
+>> +	spm->cpuidle_driver.cpumask = (struct cpumask *)cpumask_of(cpu);
+>> +	spm->cpuidle_driver = qcom_spm_idle_driver;
+> 
+> This should be in opposite order.
+> 
 
-On 6/3/2021 1:52 PM, Max Gurtovoy wrote:
->
-> On 6/2/2021 3:14 PM, David Hildenbrand wrote:
->> On 02.06.21 13:10, Max Gurtovoy wrote:
->>> Hotplugged memory has alignmet restrictions. E.g, it disallows all
->>> operations smaller than a sub-section and only allow operations smaller
->>> than a section for SPARSEMEM_VMEMMAP. Export the alignment restrictions
->>> for mhp users.
->>>
->>> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
->>> ---
->>>   include/linux/memory_hotplug.h |  5 +++++
->>>   mm/memory_hotplug.c            | 33 +++++++++++++++++++--------------
->>>   2 files changed, 24 insertions(+), 14 deletions(-)
->>>
->>> diff --git a/include/linux/memory_hotplug.h 
->>> b/include/linux/memory_hotplug.h
->>> index 28f32fd00fe9..c55a9049b11e 100644
->>> --- a/include/linux/memory_hotplug.h
->>> +++ b/include/linux/memory_hotplug.h
->>> @@ -76,6 +76,7 @@ struct mhp_params {
->>>     bool mhp_range_allowed(u64 start, u64 size, bool need_mapping);
->>>   struct range mhp_get_pluggable_range(bool need_mapping);
->>> +unsigned long mhp_get_min_align(void);
->>>     /*
->>>    * Zone resizing functions
->>> @@ -248,6 +249,10 @@ void mem_hotplug_done(void);
->>>       ___page;                \
->>>    })
->>>   +static inline unsigned long mhp_get_min_align(void)
->>> +{
->>> +    return 0;
->>> +}
->>>   static inline unsigned zone_span_seqbegin(struct zone *zone)
->>>   {
->>>       return 0;
->>> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
->>> index 9e86e9ee0a10..161bb6704a9b 100644
->>> --- a/mm/memory_hotplug.c
->>> +++ b/mm/memory_hotplug.c
->>> @@ -270,24 +270,29 @@ void __init 
->>> register_page_bootmem_info_node(struct pglist_data *pgdat)
->>>   }
->>>   #endif /* CONFIG_HAVE_BOOTMEM_INFO_NODE */
->>>   +/*
->>> + * Disallow all operations smaller than a sub-section and only
->>> + * allow operations smaller than a section for
->>> + * SPARSEMEM_VMEMMAP. Note that check_hotplug_memory_range()
->>> + * enforces a larger memory_block_size_bytes() granularity for
->>> + * memory that will be marked online, so this check should only
->>> + * fire for direct arch_{add,remove}_memory() users outside of
->>> + * add_memory_resource().
->>> + */
->>> +unsigned long mhp_get_min_align(void)
->>> +{
->>> +    if (IS_ENABLED(CONFIG_SPARSEMEM_VMEMMAP))
->>> +        return PAGES_PER_SUBSECTION;
->>> +    return PAGES_PER_SECTION;
->>> +}
->>> +EXPORT_SYMBOL_GPL(mhp_get_min_align);
->>
->> We have to main interfaces to "hotplug" memory:
->>
->> a) add_memory() and friends for System RAM, which have memory block 
->> alignment requirements.
->>
->> b) memremap_pages(), which has the alignemnt requirements you mention 
->> here.
->>
->> I feel like what you need would better be exposed in mm/memremap.c, 
->> for example, via "memremap_min_alignment" so it matches the 
->> "memremap_pages" semantics.
->>
->> And then, memremap_pages() is only available with CONFIG_ZONE_DEVICE, 
->> which depends on SPARSEMEM_VMEMMAP. So you'll always have 
->> PAGES_PER_SUBSECTION.
->>
->> I can already spot "memremap_compat_align", maybe you can reuse that 
->> or handle it accordingly in there?
->
-> Yes I think that since subsection is aligned to PAGE_SIZE I can do:
->
-> size_t pci_p2pdma_align_size(size_t size)
-> {
->         unsigned long min_align;
->
->         min_align = memremap_compat_align();
->         if (!IS_ALIGNED(size, min_align))
->                 return ALIGN_DOWN(size, min_align);
->
->         return size;
-> }
->
->
-> thoughts ?
->
->>
->
-> _______________________________________________
-> Linux-nvme mailing list
-> Linux-nvme@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-nvme
+That was a bad overlook, sorry.
+
+> It's still freezing with this patch version. I used the chance to
+> investigate why it freezes, and it's actually not some bug of my
+> platform like you mentioned:
+> 
+>> So you have discovered a bug for which your platform dies when SPM
+>> does not probe, probably due to something else being dependant on this.
+>> In this case, I would encourage you to produce a fix for your platform
+>> to not unexpectedly just hang forever if *some driver* doesn't probe:
+>> that's definitely not right.
+> 
+> There is a simple reason why this happens: If "cpumask" is not set,
+> the cpuidle_driver applies to *all* CPUs. This means that as soon as
+> CPU1/2/3 go into standalone power collapse the SPM for CPU0 (rather than
+> the one for CPU1/2/3!) is re-configured. Eventually CPU0 will execute WFI
+> (without saving the CPU state) and ends up in power collapse (CPU state
+> destroyed) rather than standby (CPU state preserved).
+> 
+
+That's a big relief!
+
+>> [...]
+>> diff --git a/drivers/soc/qcom/spm.c b/drivers/soc/qcom/spm.c
+>> [...]
+>> +static const u16 spm_reg_offset_v2_1[SPM_REG_NR] = {
+> 
+> This should be still u8 in this patch.
+> 
+
+Ack.
+
+> drivers/soc/qcom/spm.c:47:16: error: initialization of 'const u8 *' {aka 'const unsigned char *'} from incompatible pointer type 'const u16 *' {aka 'const short unsigned int *'} [-Werror=incompatible-pointer-types]
+>     47 |  .reg_offset = spm_reg_offset_v2_1,
+>        |                ^~~~~~~~~~~~~~~~~~~
+> drivers/soc/qcom/spm.c:47:16: note: (near initialization for 'spm_reg_8974_8084_cpu.reg_offset')
+> 
+>> [...]
+>> +static const u16 spm_reg_offset_v1_1[SPM_REG_NR] = {
+> 
+> drivers/soc/qcom/spm.c:68:16: error: initialization of 'const u8 *' {aka 'const unsigned char *'} from incompatible pointer type 'const u16 *' {aka 'const short unsigned int *'} [-Werror=incompatible-pointer-types]
+>     68 |  .reg_offset = spm_reg_offset_v1_1,
+>        |                ^~~~~~~~~~~~~~~~~~~
+> drivers/soc/qcom/spm.c:68:16: note: (near initialization for 'spm_reg_8064_cpu.reg_offset')
+> 
+>> [...]
+>> diff --git a/include/soc/qcom/spm.h b/include/soc/qcom/spm.h
+>> new file mode 100644
+>> index 000000000000..719c604a8402
+>> --- /dev/null
+>> +++ b/include/soc/qcom/spm.h
+>> @@ -0,0 +1,43 @@
+>> +/* SPDX-License-Identifier: GPL-2.0-only */
+>> +/*
+>> + * Copyright (c) 2011-2014, The Linux Foundation. All rights reserved.
+>> + * Copyright (c) 2014,2015, Linaro Ltd.
+>> + * Copyright (C) 2021, AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+>> + */
+>> +
+>> +#ifndef __SPM_H__
+>> +#define __SPM_H__
+>> +
+>> +#include <linux/cpuidle.h>
+>> +
+>> +#define MAX_PMIC_DATA		2
+>> +#define MAX_SEQ_DATA		64
+>> +
+>> +enum pm_sleep_mode {
+>> +	PM_SLEEP_MODE_STBY,
+>> +	PM_SLEEP_MODE_RET,
+>> +	PM_SLEEP_MODE_SPC,
+>> +	PM_SLEEP_MODE_PC,
+>> +	PM_SLEEP_MODE_NR,
+>> +};
+>> +
+>> +struct spm_reg_data {
+>> +	const u8 *reg_offset;
+>> +	u32 spm_cfg;
+>> +	u32 spm_dly;
+>> +	u32 pmic_dly;
+>> +	u32 pmic_data[MAX_PMIC_DATA];
+>> +	u8 seq[MAX_SEQ_DATA];
+>> +	u8 start_index[PM_SLEEP_MODE_NR];
+>> +};
+>> +
+>> +struct spm_driver_data {
+>> +	struct cpuidle_driver cpuidle_driver;
+> 
+> Given that the SPM hardware seems to have several different uses,
+> not just CPUidle, wouldn't it be better to allocate the memory for the
+> cpuidle_driver from cpuidle-qcom-spm.c? Just devm_kzalloc() something
+> like:
+> 
+> struct spm_cpuidle_driver {
+> 	struct cpuidle_driver cpuidle_driver;
+> 	struct spm_driver_data *spm;
+> };
+> 
+> in cpuidle-qcom-spm.c.
+> 
+> And then there wouldn't be a need to have the implementation details of
+> the SPM driver in the spm.h header, all that cpuidle-qcom-spm needs is
+> 
+> struct spm_driver_data;
+> 
+> enum pm_sleep_mode {
+> 	PM_SLEEP_MODE_STBY,
+> 	PM_SLEEP_MODE_RET,
+> 	PM_SLEEP_MODE_SPC,
+> 	PM_SLEEP_MODE_PC,
+> 	PM_SLEEP_MODE_NR,
+> };
+> 
+> void spm_set_low_power_mode(struct spm_driver_data *drv,
+> 			    enum pm_sleep_mode mode);
+> 
+> Everything else can remain private to the spm.c driver,
+> like it was before.
+> 
+
+I don't completely dislike the approach but I honestly think that this
+would put some cognitive strain: having a header included in two files
+using "things" defined in there gives people an easy path to follow
+when looking at one of the two files.
+
+Regarding the addition of that one more structure... I am seriously
+undecided on the matter: wasting this kind of amount of memory on a
+ARM64 platform (usually having more than 1GB RAM) is completely
+unnoticeable but, on the other hand, it's still a waste of memory,
+even if it's minimal that much.
+
+I will think about it.
+
+> Thanks,
+> Stephan
+> 
+
