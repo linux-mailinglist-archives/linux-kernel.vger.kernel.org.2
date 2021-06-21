@@ -2,116 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 293563AF4E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E173D3AF4A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232211AbhFUSXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:23:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbhFUSXV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:23:21 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 641D1C0F26F6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:11:00 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id j2so31713215lfg.9
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:11:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3c/Dj9Fc5BgdLF0O+HyOscCTfHQWUTCXKiHfvqmH+Xs=;
-        b=LVtCC8Uqq0BDy6lpRBXE9HmSawC4RvRPlernkLbJMgwCvUmYxrxEYR9ANOYv+bzCka
-         sLaMnxRAh8ObIy3XgWia/tzNHd6XG9Fq3w6/KMgBg4S+trxxvgc7+5LrC2wB3WDOprnc
-         tdAkrh4Sh1ba+x5BK1wouLDQXtq1USPm4i8BuhAX08yrSRcJLeKQSOrA9mFkckhIdofR
-         u42dYsiMJ0VfppUq1olij7Ubwi4sB7T3t6S4kuMBsEbBJdpSZ8PIoG1z1VsGMany983o
-         xI1+XlH/nPGpWJF4LU1i28gPkHKolp82YjOB0fswTNf54a2RsPuUQkETWfSoLkXXA5dO
-         Q6tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3c/Dj9Fc5BgdLF0O+HyOscCTfHQWUTCXKiHfvqmH+Xs=;
-        b=hHs6okqL/p2NijJTeyYefV85fCR3uYLRCYRooytnN2OLrHfJuc9G6SIahaLy6V1MI3
-         gvRgwKuO30ROFcqUSOF1qeB6FFUWy08b8gc0xUPLviAFRVgHmUz1TYXsDk2dLK6iiaiT
-         5txgB4YgqONNaR3R+6Lqiu7Y+FCuSpSteioGE4kLbzLB1IUcv3KDvvP6WBQBxTMAr5DS
-         Pd97zVttIWV51lpEvHxE761J+z4pB5zEosCrSgmVD7pgTzxFm904lmO4T42m5CmHeW+N
-         Q6yNsvVlbjjqiSxRp/NYnU5xslghYLyTBLp94/utBRZ+QXtleST7EBLnC+9wsrif7moi
-         FPOg==
-X-Gm-Message-State: AOAM531T2V4nrOaJOxNgJhlTOgUEAhmYbt79cG+IyWemVuuGnIAPQrOW
-        /x+2bHN0CUkQLPvH+ah22kOwnNsxRRX7aYG8H3DPUg==
-X-Google-Smtp-Source: ABdhPJw9xyLjqcMGtf1syN3OkvZTu30GhQYhz168mpGIwJCCD5sulB0prikKeQAZRs1lp6b2Hz3+9ry1G7AHm0pycs8=
-X-Received: by 2002:ac2:4c83:: with SMTP id d3mr15097330lfl.543.1624299058430;
- Mon, 21 Jun 2021 11:10:58 -0700 (PDT)
+        id S232334AbhFUSRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:17:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56264 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232332AbhFUSQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 14:16:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 479026100B;
+        Mon, 21 Jun 2021 18:14:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624299244;
+        bh=2amx5P6XjgZYv0txanRSu5/7nAroLuy6zHvMNtRUxd8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=WoChQ35isenL0ze3Uukbbg9TSM+pe+t0zfNUFOFJ93WophotAMVZHeEVBfiBsp9fV
+         3X/r/xdL1LUfF7iqqGSZDidQTRnAtATDxuc5ecrc9YQbnFt6Gy1b2mYN4rPQTpzptI
+         d6LlkkOAD+5yOtOQL7E5mRkdeq3BIFbE5VUyAuxdhTNnYkEHfidvwws9S3q+4gwUWG
+         eaeSDIGFciAnd2OfxdopPBi/fSzxoSkK2035Jgzhxf3OsazNKIgU7sIGcK+5BzCjN6
+         rlk4UIM64rzMIoDrz1BIWVqXNRsfuRJSROE7ZBZHXfKT7qCVauHGNN7A6f4FjXz+zE
+         jQ0duHTiPEVQg==
+From:   Will Deacon <will@kernel.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH] arm64/mm: Rename ARM64_SWAPPER_USES_SECTION_MAPS
+Date:   Mon, 21 Jun 2021 19:13:59 +0100
+Message-Id: <162429614365.4116678.14416977840509312271.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <1623991622-24294-1-git-send-email-anshuman.khandual@arm.com>
+References: <1623991622-24294-1-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-References: <20210618233023.1360185-1-ndesaulniers@google.com>
- <20210618233023.1360185-2-ndesaulniers@google.com> <CANiq72kjyiAQn2+ijZKFo7SY3z+dCV6fGXYP1O_Mq7Ui3EqSzQ@mail.gmail.com>
- <CANiq72nbbqeD2dv3z0y3rN-_kdnh=9-pD7oSyWUfaG8oJ2y_8A@mail.gmail.com>
-In-Reply-To: <CANiq72nbbqeD2dv3z0y3rN-_kdnh=9-pD7oSyWUfaG8oJ2y_8A@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 21 Jun 2021 11:10:48 -0700
-Message-ID: <CAKwvOd=B6LV9rZmtPacfz_F10jj1wrovoGu8yvdOqKZ69-T6mQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] compiler_attributes.h: define __no_profile, add to noinstr
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Bill Wendling <wcw@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Martin Liska <mliska@suse.cz>,
-        Marco Elver <elver@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Fangrui Song <maskray@google.com>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 19, 2021 at 4:32 AM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
->
-> On Sat, Jun 19, 2021 at 1:26 PM Miguel Ojeda
-> <miguel.ojeda.sandonis@gmail.com> wrote:
-> >
-> > I am not sure if it is best or not to have the GCC link in order to be
-> > consistent with the rest of the links (they are for the docs only). Do
-> > we know if GCC going to implement it soon?
->
-> i.e. if GCC does not implement it yet we use elsewhere this kind of
-> marker instead:
->
->      * Optional: not supported by gcc
->
-> The first of its kind, normally it is clang/icc there ;-)
+On Fri, 18 Jun 2021 10:17:02 +0530, Anshuman Khandual wrote:
+> ARM64_SWAPPER_USES_SECTION_MAPS implies that a PMD level huge page mappings
+> are used for swapper, idmap and vmemmap. Lets make it PMD explicit removing
+> any possible confusion with generic memory sections and also bit generic as
+> it's applicable for idmap and vmemmap mappings as well. Hence rename it as
+> ARM64_KERNEL_USES_PMD_MAPS instead.
 
-:^) GCC does have an attribute since GCC 7.1 for this.
-https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80223#c11
-I'm moving Clang over to use that in
-https://reviews.llvm.org/D104658
-Once that lands, I'll send a v2 (without carrying any reviewed by tags).
+Applied to arm64 (for-next/mm), thanks!
 
->
-> We could nevertheless have the link there, something like:
->
->     * Optional: not supported by GCC
->                 https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80223
+[1/1] arm64/mm: Rename ARM64_SWAPPER_USES_SECTION_MAPS
+      https://git.kernel.org/arm64/c/2062d44da349
 
+Cheers,
 -- 
-Thanks,
-~Nick Desaulniers
+Will
+
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
