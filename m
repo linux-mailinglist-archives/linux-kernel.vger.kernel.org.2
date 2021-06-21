@@ -2,352 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73E3D3AE9DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC2EE3AE9DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbhFUNRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 09:17:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbhFUNRN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 09:17:13 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7433C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 06:14:58 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id he7so28695776ejc.13
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 06:14:58 -0700 (PDT)
+        id S229945AbhFUNST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 09:18:19 -0400
+Received: from mail-bn8nam12on2051.outbound.protection.outlook.com ([40.107.237.51]:61152
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229640AbhFUNSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 09:18:18 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TSLlVM93ET6+IFNeYWARaK8r0ZrXcj0RxXYFCuepXjnKlYSrBbmSDtNJSe36sXaRJR5tIT4BuX9cf/EwHODtozhOHUOeyLa+OBtBumMi5RQ8h/LWSeWIEJfPAfM9slJUlvndaR4B6Sf58pHRca7QWEg1Yyp07lqoRFRKyZhusiGQJwTmMWRXhJZvv8EQs6WMVR3h9JZOVupwJ7fb7dvn767bcCrctpkP4/GU5c2Ty3LO04tsP2AfrGEALiNjdEJBZywI3kg37mZHCtRNo7QNDqNEbzhYKVg95aiVVXLdjvLDCQKXsttXgrD0Yl8bJbemJSIzZUnlHl81nRD6V+22ng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qR2ekNAj/OT5JCNYejVxANNlGNGqvkx2BGYLDYzBfBA=;
+ b=nQwnHFOCpKZwpQOVquEC5l/YVmpQvmDATvO14dJnBnMBD9BnzjVfWRaZ4RBPxnNm6cUtdJirgW9jl2uQVMTYBREPs6LbVlJKEcVOK6sSvr+2wDN95RJfBTV2xXHJMw93iLeZjU9MBaNVTeyRxi6FqPZ35HJLQEz8yGVXvEzvJ4CqBDizNRcUc+G2cYB6qLc/CbuvN4W+D2rAxETUXheakp1PWTv8MqPk+cOzxLE0Qj6NXKo+t7w6KI1knAmy9fJK6hbO5VNVEv7DQ4yYDGoh9I40gLd3g4kmZlyEty0MEWJ+/beFK0iai/BPvwJCc5lUO0r4gz0pNbjANWihQIrP8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-transfer-encoding:content-language;
-        bh=g9KkfTDVm23JtZIvLIP9VLFqfjPUY5iB/GbhgG8cLMM=;
-        b=vTy8A+9nafnuDunjIDd4Kw5i54e18ysZG8ACwZUsHC3jhZQ5ykmqodZANlff/9K/l5
-         xHhB0j621x7dOKN0Js5v6xmOR+9bGcKIzX1sMSHtdYntVzjJTDTq0b2h8d/tKdYf7Gvo
-         k7F3zfdIojg1Pok3rAfeh3wNfoluqLAIL5V+mz0QCAO2VUfdzsxgqA+KsI1OSsWJuPqD
-         rHVp1803xMdQIOgP93s94eLvEq4dUTZzjmFj/LzxNr8OpSrqJXFyQx0kLafAyvh9MDt5
-         XNOzTKXk4cMGy32mArPZljWNUMxkZTOEPfSZIdmH35JOjaGXmEAhTGONM/gAc50yWADx
-         1UxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=g9KkfTDVm23JtZIvLIP9VLFqfjPUY5iB/GbhgG8cLMM=;
-        b=A5nPMxrfr4QOBpdH0OoMOmyADMjRagLBdADdTUvCSysFzusTaUBwSKMqNGTU6zxOiA
-         0DFouShFlW0RjFVwDTWImu6m+skJwNrOSpCYsi6+p8VDJNUbiw6FNuYocp6qHWh5glz+
-         m8poppbwP2suXBUhFhBwl/M5bRHQuNC9uYrqmcinJZ6PasLQYImFcp6jmZijBoHjmovG
-         7pjfAS8RINgXCRsUs/5Utij5kUMCzsmtkQtIAHpiZipAqpwxKc41pG4r2OtKhMb57w2l
-         xfRkrUshtMULdrrnIeCR1aRJG6uLevn7M/n4gSThuhwIV7oJUm/StXrnOkELmKjgImuI
-         vQFw==
-X-Gm-Message-State: AOAM531N6cWP61AWa88JM9uhxajweN8MXgbuTD8CxQEhepysPGKhY+5N
-        IHjajtM5/JyCqTFW3YY416bBdoP2KI8=
-X-Google-Smtp-Source: ABdhPJw7UOpkpVETkGgcEQ+88p7i7WZ6TCsGVEAzQBQYJbhzRbQ040X/+rhkp86UGkPgHVKCFhvTqg==
-X-Received: by 2002:a17:906:fcad:: with SMTP id qw13mr7684542ejb.209.1624281297327;
-        Mon, 21 Jun 2021 06:14:57 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:aae5:6e05:c:d69? ([2a02:908:1252:fb60:aae5:6e05:c:d69])
-        by smtp.gmail.com with ESMTPSA id q9sm10702070edv.31.2021.06.21.06.14.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 06:14:56 -0700 (PDT)
-Subject: Re: [PATCH] drm/radeon: delete useless function return values &
- remove meaningless if(r) check code
-To:     Bernard Zhao <bernard@vivo.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210621130508.29511-1-bernard@vivo.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <626348b5-a3c5-4a86-ca9f-ec41cc82044d@gmail.com>
-Date:   Mon, 21 Jun 2021 15:14:55 +0200
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qR2ekNAj/OT5JCNYejVxANNlGNGqvkx2BGYLDYzBfBA=;
+ b=lHj4eh7fc9hrcfNf7CSljnHWK3YATFtdzGa7ZxZKatdZL6K7utJ/NmGKhFz+4fYc55HGDgOOnyBn3LWNrokdrfPW7wQHAMKUehtP+uGYol8tiKsOzwH4By46UNOmG7ftoH42q5vWU1cm0yxnuelKlnccTgDzZwLp4s0TC2ZerXs=
+Received: from BN0PR03CA0019.namprd03.prod.outlook.com (2603:10b6:408:e6::24)
+ by SN1PR02MB3648.namprd02.prod.outlook.com (2603:10b6:802:2c::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4219.21; Mon, 21 Jun
+ 2021 13:16:00 +0000
+Received: from BN1NAM02FT053.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:408:e6:cafe::6c) by BN0PR03CA0019.outlook.office365.com
+ (2603:10b6:408:e6::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19 via Frontend
+ Transport; Mon, 21 Jun 2021 13:16:00 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ BN1NAM02FT053.mail.protection.outlook.com (10.13.2.161) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4242.16 via Frontend Transport; Mon, 21 Jun 2021 13:16:00 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 21 Jun 2021 06:15:59 -0700
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Mon, 21 Jun 2021 06:15:59 -0700
+Envelope-to: linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-clk@vger.kernel.org,
+ quanyang.wang@windriver.com,
+ gregkh@linuxfoundation.org,
+ arnd@arndb.de,
+ mturquette@baylibre.com,
+ arnd@kernel.org,
+ punit1.agrawal@toshiba.co.jp,
+ sboyd@kernel.org
+Received: from [172.30.17.109] (port=57666)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1lvJmR-0005ZX-7O; Mon, 21 Jun 2021 06:15:59 -0700
+Subject: Re: [PATCH] clk: zynqmp: fix compile testing without ZYNQMP_FIRMWARE
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Punit Agrawal <punit1.agrawal@toshiba.co.jp>
+CC:     Arnd Bergmann <arnd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rajan Vaja <rajan.vaja@xilinx.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jolly Shah <jolly.shah@xilinx.com>,
+        Quanyang Wang <quanyang.wang@windriver.com>,
+        <linux-clk@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210421134844.3297838-1-arnd@kernel.org>
+ <871rb2swd9.fsf@kokedama.swc.toshiba.co.jp>
+ <01e78b64-8ad1-dfc8-9fc0-6afff4841492@xilinx.com>
+ <87v98dqzfe.fsf@kokedama.swc.toshiba.co.jp>
+ <161974903429.177949.6659170601321970979@swboyd.mtv.corp.google.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <8cc5409f-a8e4-87f9-87f8-79c5467b1faa@xilinx.com>
+Date:   Mon, 21 Jun 2021 15:15:55 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <20210621130508.29511-1-bernard@vivo.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <161974903429.177949.6659170601321970979@swboyd.mtv.corp.google.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: fab146f9-8156-4e46-e98a-08d934b6b69c
+X-MS-TrafficTypeDiagnostic: SN1PR02MB3648:
+X-Microsoft-Antispam-PRVS: <SN1PR02MB3648784D9E8AF330A17FA1BBC60A9@SN1PR02MB3648.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YQt6rlaU3YusQuNihGN9GqBA7IQY8UTo+lSYPTVlZAzVOHLq8gxtM7yJL+kLlqaHhWpxn2wgRCijhZBwJgWR9m5ELUGHsO0Li3dqUd+9q9QmAwKFp5Km1e/yoHMWWMeXz/KkuL7RqdgAfgKjzAJdhQVLf99qsscE/jxt2afNJ4VGst/PrUBpmVeM+1K8QLzk/f0G23Az78oF5ujz8OiJHCG9fZjcoLcWbgdm7XjKUnJl0XS4YQABsCYuCfOOlOguonGY0xvuKd+5MrE0cyv607lshTc2djeymKZ6XWXpzmoHdQ0afyeHXkupyIwYkZS/JXfwKeN74ZWorYdtJzShB49BuELB1tGHmtbkhAsIrLLsUWulJNf8P9N1nt1YmkQfyDfS6D53gu1nUTWMFuMvS7Oc05OddtrEnOHRmLMpwCSCqJNkjgpV+j1qetiQT6PfaofyFFcr4oyKqITGl0EIyJeBeN8OilxA2q2NUOiPiOgKFZy1wtB0+5ZOv8SwcIQBZD+8wb/QXAqOX0FJxcZYYKXXWfNuDRfdEvtf1vz5I3Mb78XesM2dVrGxmFYCD1xsuZ27z9s3yadCnBb5x/0SSgred1LvV0sQSH86UnZBElKBQQTEQr0kQrAZiS9ZN18r6FINE3e3h2i/SHLKxntmhcyMqYC6KvheIIydAWVWwnAdoNv6eiarD7xE7e9BJ0eMrH3m4qN6ptj6RhB8FLY6FGa/r/+Z4QNu/CnSnmqxBpvUlJa4gDs6CBMP1JZFcFbrphPmRCpfCjILV0p78zs9p46UDC02q/pKcuC5uW1pU1qNoaUMEld0tEhrX080tN/nqZrHqMLoYBoBQFXj2+YD7Q==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(136003)(39860400002)(46966006)(36840700001)(7636003)(53546011)(31696002)(478600001)(8936002)(82310400003)(186003)(6666004)(70206006)(8676002)(70586007)(966005)(26005)(36906005)(336012)(83380400001)(2906002)(4326008)(82740400003)(2616005)(7416002)(47076005)(54906003)(36756003)(5660300002)(316002)(44832011)(426003)(31686004)(110136005)(9786002)(36860700001)(356005)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2021 13:16:00.0595
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: fab146f9-8156-4e46-e98a-08d934b6b69c
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN1NAM02FT053.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN1PR02MB3648
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 21.06.21 um 15:05 schrieb Bernard Zhao:
-> Function radeon_fence_driver_init always returns success,
-> the function type maybe coule be changed to void.
-> This patch first delete the check of the return
-> value of the function call radeon_fence_driver_init, then,
-> optimise the function declaration and function to void type.
->
-> Signed-off-by: Bernard Zhao <bernard@vivo.com>
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
 
-> ---
->   drivers/gpu/drm/radeon/cik.c          | 4 +---
->   drivers/gpu/drm/radeon/evergreen.c    | 4 +---
->   drivers/gpu/drm/radeon/ni.c           | 4 +---
->   drivers/gpu/drm/radeon/r100.c         | 4 +---
->   drivers/gpu/drm/radeon/r300.c         | 4 +---
->   drivers/gpu/drm/radeon/r420.c         | 5 +----
->   drivers/gpu/drm/radeon/r520.c         | 4 +---
->   drivers/gpu/drm/radeon/r600.c         | 4 +---
->   drivers/gpu/drm/radeon/radeon.h       | 2 +-
->   drivers/gpu/drm/radeon/radeon_fence.c | 5 +----
->   drivers/gpu/drm/radeon/rs400.c        | 4 +---
->   drivers/gpu/drm/radeon/rs600.c        | 4 +---
->   drivers/gpu/drm/radeon/rs690.c        | 4 +---
->   drivers/gpu/drm/radeon/rv515.c        | 4 +---
->   drivers/gpu/drm/radeon/rv770.c        | 4 +---
->   drivers/gpu/drm/radeon/si.c           | 4 +---
->   16 files changed, 16 insertions(+), 48 deletions(-)
->
-> diff --git a/drivers/gpu/drm/radeon/cik.c b/drivers/gpu/drm/radeon/cik.c
-> index 42a8afa839cb..f6cf0b8fdd83 100644
-> --- a/drivers/gpu/drm/radeon/cik.c
-> +++ b/drivers/gpu/drm/radeon/cik.c
-> @@ -8584,9 +8584,7 @@ int cik_init(struct radeon_device *rdev)
->   	radeon_get_clock_info(rdev->ddev);
->   
->   	/* Fence driver */
-> -	r = radeon_fence_driver_init(rdev);
-> -	if (r)
-> -		return r;
-> +	radeon_fence_driver_init(rdev);
->   
->   	/* initialize memory controller */
->   	r = cik_mc_init(rdev);
-> diff --git a/drivers/gpu/drm/radeon/evergreen.c b/drivers/gpu/drm/radeon/evergreen.c
-> index 8e9e88bf1f43..36a888e1b179 100644
-> --- a/drivers/gpu/drm/radeon/evergreen.c
-> +++ b/drivers/gpu/drm/radeon/evergreen.c
-> @@ -5208,9 +5208,7 @@ int evergreen_init(struct radeon_device *rdev)
->   	/* Initialize clocks */
->   	radeon_get_clock_info(rdev->ddev);
->   	/* Fence driver */
-> -	r = radeon_fence_driver_init(rdev);
-> -	if (r)
-> -		return r;
-> +	radeon_fence_driver_init(rdev);
->   	/* initialize AGP */
->   	if (rdev->flags & RADEON_IS_AGP) {
->   		r = radeon_agp_init(rdev);
-> diff --git a/drivers/gpu/drm/radeon/ni.c b/drivers/gpu/drm/radeon/ni.c
-> index ab7bd3080217..4a364ca7a1be 100644
-> --- a/drivers/gpu/drm/radeon/ni.c
-> +++ b/drivers/gpu/drm/radeon/ni.c
-> @@ -2375,9 +2375,7 @@ int cayman_init(struct radeon_device *rdev)
->   	/* Initialize clocks */
->   	radeon_get_clock_info(rdev->ddev);
->   	/* Fence driver */
-> -	r = radeon_fence_driver_init(rdev);
-> -	if (r)
-> -		return r;
-> +	radeon_fence_driver_init(rdev);
->   	/* initialize memory controller */
->   	r = evergreen_mc_init(rdev);
->   	if (r)
-> diff --git a/drivers/gpu/drm/radeon/r100.c b/drivers/gpu/drm/radeon/r100.c
-> index fcfcaec25a9e..aa6800b0e198 100644
-> --- a/drivers/gpu/drm/radeon/r100.c
-> +++ b/drivers/gpu/drm/radeon/r100.c
-> @@ -4056,9 +4056,7 @@ int r100_init(struct radeon_device *rdev)
->   	/* initialize VRAM */
->   	r100_mc_init(rdev);
->   	/* Fence driver */
-> -	r = radeon_fence_driver_init(rdev);
-> -	if (r)
-> -		return r;
-> +	radeon_fence_driver_init(rdev);
->   	/* Memory manager */
->   	r = radeon_bo_init(rdev);
->   	if (r)
-> diff --git a/drivers/gpu/drm/radeon/r300.c b/drivers/gpu/drm/radeon/r300.c
-> index 92643dfdd8a8..621ff174dff3 100644
-> --- a/drivers/gpu/drm/radeon/r300.c
-> +++ b/drivers/gpu/drm/radeon/r300.c
-> @@ -1549,9 +1549,7 @@ int r300_init(struct radeon_device *rdev)
->   	/* initialize memory controller */
->   	r300_mc_init(rdev);
->   	/* Fence driver */
-> -	r = radeon_fence_driver_init(rdev);
-> -	if (r)
-> -		return r;
-> +	radeon_fence_driver_init(rdev);
->   	/* Memory manager */
->   	r = radeon_bo_init(rdev);
->   	if (r)
-> diff --git a/drivers/gpu/drm/radeon/r420.c b/drivers/gpu/drm/radeon/r420.c
-> index 1ed4407b91aa..7e6320e8c6a0 100644
-> --- a/drivers/gpu/drm/radeon/r420.c
-> +++ b/drivers/gpu/drm/radeon/r420.c
-> @@ -425,10 +425,7 @@ int r420_init(struct radeon_device *rdev)
->   	r300_mc_init(rdev);
->   	r420_debugfs(rdev);
->   	/* Fence driver */
-> -	r = radeon_fence_driver_init(rdev);
-> -	if (r) {
-> -		return r;
-> -	}
-> +	radeon_fence_driver_init(rdev);
->   	/* Memory manager */
->   	r = radeon_bo_init(rdev);
->   	if (r) {
-> diff --git a/drivers/gpu/drm/radeon/r520.c b/drivers/gpu/drm/radeon/r520.c
-> index fc78e64ae727..6cbcaa845192 100644
-> --- a/drivers/gpu/drm/radeon/r520.c
-> +++ b/drivers/gpu/drm/radeon/r520.c
-> @@ -299,9 +299,7 @@ int r520_init(struct radeon_device *rdev)
->   	r520_mc_init(rdev);
->   	rv515_debugfs(rdev);
->   	/* Fence driver */
-> -	r = radeon_fence_driver_init(rdev);
-> -	if (r)
-> -		return r;
-> +	radeon_fence_driver_init(rdev);
->   	/* Memory manager */
->   	r = radeon_bo_init(rdev);
->   	if (r)
-> diff --git a/drivers/gpu/drm/radeon/r600.c b/drivers/gpu/drm/radeon/r600.c
-> index 7444dc0e0c0e..ca3fcae2adb5 100644
-> --- a/drivers/gpu/drm/radeon/r600.c
-> +++ b/drivers/gpu/drm/radeon/r600.c
-> @@ -3282,9 +3282,7 @@ int r600_init(struct radeon_device *rdev)
->   	/* Initialize clocks */
->   	radeon_get_clock_info(rdev->ddev);
->   	/* Fence driver */
-> -	r = radeon_fence_driver_init(rdev);
-> -	if (r)
-> -		return r;
-> +	radeon_fence_driver_init(rdev);
->   	if (rdev->flags & RADEON_IS_AGP) {
->   		r = radeon_agp_init(rdev);
->   		if (r)
-> diff --git a/drivers/gpu/drm/radeon/radeon.h b/drivers/gpu/drm/radeon/radeon.h
-> index 56ed5634cebe..8a15f490a390 100644
-> --- a/drivers/gpu/drm/radeon/radeon.h
-> +++ b/drivers/gpu/drm/radeon/radeon.h
-> @@ -384,7 +384,7 @@ struct radeon_fence {
->   };
->   
->   int radeon_fence_driver_start_ring(struct radeon_device *rdev, int ring);
-> -int radeon_fence_driver_init(struct radeon_device *rdev);
-> +void radeon_fence_driver_init(struct radeon_device *rdev);
->   void radeon_fence_driver_fini(struct radeon_device *rdev);
->   void radeon_fence_driver_force_completion(struct radeon_device *rdev, int ring);
->   int radeon_fence_emit(struct radeon_device *rdev, struct radeon_fence **fence, int ring);
-> diff --git a/drivers/gpu/drm/radeon/radeon_fence.c b/drivers/gpu/drm/radeon/radeon_fence.c
-> index 0d8ef2368adf..b2ce642ca4fa 100644
-> --- a/drivers/gpu/drm/radeon/radeon_fence.c
-> +++ b/drivers/gpu/drm/radeon/radeon_fence.c
-> @@ -905,9 +905,8 @@ static void radeon_fence_driver_init_ring(struct radeon_device *rdev, int ring)
->    * Not all asics have all rings, so each asic will only
->    * start the fence driver on the rings it has using
->    * radeon_fence_driver_start_ring().
-> - * Returns 0 for success.
->    */
-> -int radeon_fence_driver_init(struct radeon_device *rdev)
-> +void radeon_fence_driver_init(struct radeon_device *rdev)
->   {
->   	int ring;
->   
-> @@ -917,8 +916,6 @@ int radeon_fence_driver_init(struct radeon_device *rdev)
->   	}
->   
->   	radeon_debugfs_fence_init(rdev);
-> -
-> -	return 0;
->   }
->   
->   /**
-> diff --git a/drivers/gpu/drm/radeon/rs400.c b/drivers/gpu/drm/radeon/rs400.c
-> index 8423bcc3302b..6383f7a34bd8 100644
-> --- a/drivers/gpu/drm/radeon/rs400.c
-> +++ b/drivers/gpu/drm/radeon/rs400.c
-> @@ -555,9 +555,7 @@ int rs400_init(struct radeon_device *rdev)
->   	/* initialize memory controller */
->   	rs400_mc_init(rdev);
->   	/* Fence driver */
-> -	r = radeon_fence_driver_init(rdev);
-> -	if (r)
-> -		return r;
-> +	radeon_fence_driver_init(rdev);
->   	/* Memory manager */
->   	r = radeon_bo_init(rdev);
->   	if (r)
-> diff --git a/drivers/gpu/drm/radeon/rs600.c b/drivers/gpu/drm/radeon/rs600.c
-> index 5bf26058eec0..b2d22e25eee1 100644
-> --- a/drivers/gpu/drm/radeon/rs600.c
-> +++ b/drivers/gpu/drm/radeon/rs600.c
-> @@ -1132,9 +1132,7 @@ int rs600_init(struct radeon_device *rdev)
->   	rs600_mc_init(rdev);
->   	r100_debugfs_rbbm_init(rdev);
->   	/* Fence driver */
-> -	r = radeon_fence_driver_init(rdev);
-> -	if (r)
-> -		return r;
-> +	radeon_fence_driver_init(rdev);
->   	/* Memory manager */
->   	r = radeon_bo_init(rdev);
->   	if (r)
-> diff --git a/drivers/gpu/drm/radeon/rs690.c b/drivers/gpu/drm/radeon/rs690.c
-> index 7bc302a89232..14fb0819b8c1 100644
-> --- a/drivers/gpu/drm/radeon/rs690.c
-> +++ b/drivers/gpu/drm/radeon/rs690.c
-> @@ -850,9 +850,7 @@ int rs690_init(struct radeon_device *rdev)
->   	rs690_mc_init(rdev);
->   	rv515_debugfs(rdev);
->   	/* Fence driver */
-> -	r = radeon_fence_driver_init(rdev);
-> -	if (r)
-> -		return r;
-> +	radeon_fence_driver_init(rdev);
->   	/* Memory manager */
->   	r = radeon_bo_init(rdev);
->   	if (r)
-> diff --git a/drivers/gpu/drm/radeon/rv515.c b/drivers/gpu/drm/radeon/rv515.c
-> index 46a53dd38079..63fb06e8e2d7 100644
-> --- a/drivers/gpu/drm/radeon/rv515.c
-> +++ b/drivers/gpu/drm/radeon/rv515.c
-> @@ -648,9 +648,7 @@ int rv515_init(struct radeon_device *rdev)
->   	rv515_mc_init(rdev);
->   	rv515_debugfs(rdev);
->   	/* Fence driver */
-> -	r = radeon_fence_driver_init(rdev);
-> -	if (r)
-> -		return r;
-> +	radeon_fence_driver_init(rdev);
->   	/* Memory manager */
->   	r = radeon_bo_init(rdev);
->   	if (r)
-> diff --git a/drivers/gpu/drm/radeon/rv770.c b/drivers/gpu/drm/radeon/rv770.c
-> index 88e29ebaad46..74499307285b 100644
-> --- a/drivers/gpu/drm/radeon/rv770.c
-> +++ b/drivers/gpu/drm/radeon/rv770.c
-> @@ -1941,9 +1941,7 @@ int rv770_init(struct radeon_device *rdev)
->   	/* Initialize clocks */
->   	radeon_get_clock_info(rdev->ddev);
->   	/* Fence driver */
-> -	r = radeon_fence_driver_init(rdev);
-> -	if (r)
-> -		return r;
-> +	radeon_fence_driver_init(rdev);
->   	/* initialize AGP */
->   	if (rdev->flags & RADEON_IS_AGP) {
->   		r = radeon_agp_init(rdev);
-> diff --git a/drivers/gpu/drm/radeon/si.c b/drivers/gpu/drm/radeon/si.c
-> index d0e94b10e4c0..013e44ed0f39 100644
-> --- a/drivers/gpu/drm/radeon/si.c
-> +++ b/drivers/gpu/drm/radeon/si.c
-> @@ -6857,9 +6857,7 @@ int si_init(struct radeon_device *rdev)
->   	radeon_get_clock_info(rdev->ddev);
->   
->   	/* Fence driver */
-> -	r = radeon_fence_driver_init(rdev);
-> -	if (r)
-> -		return r;
-> +	radeon_fence_driver_init(rdev);
->   
->   	/* initialize memory controller */
->   	r = si_mc_init(rdev);
+On 4/30/21 4:17 AM, Stephen Boyd wrote:
+> Quoting Punit Agrawal (2021-04-22 23:37:25)
+>> Michal Simek <michal.simek@xilinx.com> writes:
+>>>
+>>>
+>>>>>  
+>>>>>     rate =  parent_rate * fbdiv;
+>>>>>     if (zynqmp_pll_get_mode(hw) == PLL_MODE_FRAC) {
+>>>>
+>>>> The changes make sense in that the functions error out sensibly when the
+>>>> zynqmp firmware driver is not enabled.
+>>>>
+>>>> Acked-by: Punit Agrawal <punit1.agrawal@toshiba.co.jp>
+>>>
+>>> I think code should be checked that these error values are handled how
+>>> they should be handled.
+>>
+>> I only looked at it from the point of view of getting rid of the
+>> warnings - based on the commit log, Arnd's patch is only taking care of
+>> the compiler warnings when the driver is built with
+>> CONFIG_COMPILE_TEST=y and likely CONFIG_ZYNQMP_FIRMWARE=n.
+> 
+> The subject line basically says this.
+> 
+>>
+>> In practice, the code should not be hit at runtime due to the dependency
+>> on the firmware driver. Even then, a better fix would indeed be taking
+>> the returned values at call sites into account.
+> 
+> Still needs to be fixed. If a better patch is sent I would apply it, but
+> if that isn't going to happen I'll apply this one.
+
+I have sent v2 version based on what I have found how that error values
+should look like. Please take a look at v2.
+https://lore.kernel.org/linux-clk/fdee3a286defb103aa07b5493b805d1987885165.1624281224.git.michal.simek@xilinx.com/
+
+Thanks,
+Michal
 
