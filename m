@@ -2,148 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7D53AF77F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C183AF782
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231217AbhFUVhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 17:37:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42178 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231249AbhFUVha (ORCPT
+        id S231288AbhFUVjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 17:39:11 -0400
+Received: from server.eikelenboom.it ([91.121.65.215]:59254 "EHLO
+        server.eikelenboom.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229790AbhFUVjK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 17:37:30 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC69DC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:35:14 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id g4so10785536pjk.0
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:35:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UDidmCZxhroQ+TOCX79nOJNfPKJOGFSjcIs3K19hLp8=;
-        b=UKzXohh/1StZBHDI4g+MalYUrKYsPNiqfF19dWdrEZWlbsMxHYiLQZgLy4EXhUuWXR
-         M+dVug9hbGLGGAL1TsjAV2lS3Xn1aEk8CKPpyb8zBB/H/ZMu0XR6EhXJwCYlO4Hs6EVq
-         8esrQr3Bd6IvJ34m0TFKXLP/ytkY9pj/UA2nQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UDidmCZxhroQ+TOCX79nOJNfPKJOGFSjcIs3K19hLp8=;
-        b=t/JERyCVvInBkD5MTCFuLREa2Pl4clI2ywqajOqoD+ASok6wMAJQhnfnpfeEzseALA
-         xb1WmAbQBey3Bsh+oIJBTjUbZLR08sT3aRLM3Ua2H1/mWfk3WiYfWh3yRdwm4InxEeOG
-         6v0+k8Tp9Yg8NGqUyOjZRFO/RPMUoft72x7bsOm8Ch9qFtvFVz+46gNNzYDolIgvfDQu
-         /XCNJMXSyCGO+MAqYRWIbIBDkeVOYckzl5v+3fG1XO3kU6o+MRV9VJWRKMvu3cCrOhn7
-         JJ2Ka9re4K1q5h2r21EDPIyATzDD3+nMI0DYl+Xu8ZtkVlDaUE30pQr2MiarxJa4xHHR
-         3tDw==
-X-Gm-Message-State: AOAM532y8ZDmu1ZmjlotOMaesEbjOEWL4RS/UBHACaa73RZt2EyTdq3l
-        unZUjZ+dLpSGjKSqQ2IyRE7GdQ==
-X-Google-Smtp-Source: ABdhPJySc3RO6aQntY+AiU2uAIVn9+bZL0/etrX7035KzHaNrh5bI1NZpIt1xweDPjKFhM6dFtEERg==
-X-Received: by 2002:a17:90a:e98f:: with SMTP id v15mr133613pjy.144.1624311314348;
-        Mon, 21 Jun 2021 14:35:14 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id k9sm17811211pgq.27.2021.06.21.14.35.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 14:35:13 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     "David S . Miller" <davem@davemloft.net>
-Cc:     Kees Cook <keescook@chromium.org>, Dany Madden <drt@linux.ibm.com>,
-        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
-        Thomas Falcon <tlfalcon@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH] ibmvnic: Use strscpy() instead of strncpy()
-Date:   Mon, 21 Jun 2021 14:35:09 -0700
-Message-Id: <20210621213509.1404256-1-keescook@chromium.org>
-X-Mailer: git-send-email 2.30.2
+        Mon, 21 Jun 2021 17:39:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=eikelenboom.it; s=20180706; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=echRYO9/03A/RWXXeBXOytrx6HhFq/gOusrcAB2T0SM=; b=QMPoXeGzyDQrsOIfNIieSIfeAg
+        n/wxyrVCxb+cCG47obHfKhLENJth+oPCFd5VIHGVTll5N/G/9yNjsJi7Yx8F/K89OG2RDP6V+TUjY
+        KzzBpOpGalQ7ffutRpu+8cDkyXvDBMQ3R6mVGBMc3rVAslKKuTWUD3tz8UJS5E17hAto=;
+Received: from 76-24-144-85.ftth.glasoperator.nl ([85.144.24.76]:35594 helo=[172.16.1.50])
+        by server.eikelenboom.it with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <linux@eikelenboom.it>)
+        id 1lvRfm-0002an-Va; Mon, 21 Jun 2021 23:41:39 +0200
+Subject: Re: Linux 5.13-rc6 regression to 5.12.x: kernel OOM and panic during
+ kernel boot in low memory Xen VM's (256MB assigned memory).
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Juergen Gross <jgross@suse.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        kernel test robot <oliver.sang@intel.com>
+References: <ee8bf04c-6e55-1d9b-7bdb-25e6108e8e1e@eikelenboom.it>
+ <CAHk-=wjgg67NMBNG99naEQ1cM0mXBBzdhCJaYFH-kC+mLK+J2g@mail.gmail.com>
+ <9108c22e-3521-9e24-6124-7776d947b788@rasmusvillemoes.dk>
+ <0b12f27b-1109-b621-c969-10814b2c1c2f@eikelenboom.it>
+ <7338064f-10b6-545d-bc6c-843d04aafe28@eikelenboom.it>
+ <e7f9c4f8-1669-75ce-b052-1030350a159e@eikelenboom.it>
+ <bfdd1d6b-77a3-450b-71f4-63e9cc314ace@rasmusvillemoes.dk>
+From:   Sander Eikelenboom <linux@eikelenboom.it>
+Message-ID: <c4a0bc1e-9b20-47d9-7299-71bac5c43596@eikelenboom.it>
+Date:   Mon, 21 Jun 2021 23:36:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-X-Patch-Hashes: v=1; h=sha256; g=9d7d233a23aa862fcc6a92c72955f66ab680a7cf; i=2MSGt3s6JKlmLqc/7MhI8MosbesWNfHpXt3ZKIs5Ui0=; m=73OdtUon7HnZ7lwINUsDE2u3rLyNTedCFDxqqnCnH0U=; p=3HCUEwDxbB6Mvm9EsCUsGy6FDmIED+nO7uTZDX2jFb4=
-X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmDRBg0ACgkQiXL039xtwCYm1hAAn8z zKGC+z3/HykUm/wR8tpn/0aihvrjXOE/pNGc82OUB9sRdy3xFtnvDq7A/jcfeK5kwd4zBM6kXwNzB hM8KxnDiM88KuS4hLn61XmYxNC7V6L5moz2ZX5SZrvv0xsM9gZUxe6frtJoocA4jHfKeR5g0picxr 4UBq2Wf+VhkKayMKHHYMEAq/2PvJb5hDt/xCV0SMyKx00OPatExs2CZtCbpjmCcQSSGdiufea830i Zi3jIfzppQecp3bIq8fXUC0hzIjbYa6KUMJoWOA7SrBAiupg+msTYzA1UvWScPZJE7XtObX9bE4Cf K3u5t+0yC8wx0Cjl/0H+QRMVd7iZV2c+FS67Ynwc6eC8NQj2eOE89pg9VBEj0gOqJjkWu7UHzmt62 SAXNfDGiqs9pmSsrYuAVJV6qsgEPK7f2qzbndwBGL3gqE4uRoV2k5E7f2jnrKGyje3LnVZGAR8Fx9 tlX3OuqdEB05ejAW5Ay60gUCa3I14flW6fTJwQdHM9zfpSxwMPNuy9apw0tb8BJTCUlTe5fan6HA4 QSM3EcAu5rSIcgiXiqrDR4AMldjPbKuvtczjKve7Z9KCH7IX1EaTOalWwNH6F6392Sm1X/y0TEMPO TB9Mi0LVgyXEfzTKoyyXC7lU49OAulgfZrJe+DU7iiAUhNw+8b75S3j73KGOv46g=
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <bfdd1d6b-77a3-450b-71f4-63e9cc314ace@rasmusvillemoes.dk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: nl-NL
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since these strings are expected to be NUL-terminated and the buffers
-are exactly sized (in vnic_client_data_len()) with no padding, strncpy()
-can be safely replaced with strscpy() here, as strncpy() on
-NUL-terminated string is considered deprecated[1]. This has the
-side-effect of silencing a -Warray-bounds warning due to the compiler
-being confused about the vlcd incrementing:
+On 21/06/2021 18:54, Rasmus Villemoes wrote:
+> On 18/06/2021 03.06, Sander Eikelenboom wrote:
+>> On 17/06/2021 21:39, Sander Eikelenboom wrote:
+> 
+>>
+>> OK, done some experimentation and it seems with 256M assigned to the VM
+>> it was almost at the edge of OOM with the 5.12 kernel as well in the
+>> config I am using it.
+>> With v5.12 when I assign 240M it boots, with 230M it doesn't. With 5.13
+>> the tipping point seems to be around 265M and 270M, so my config was
+>> already quite close to the edge.
+>>
+>> The "direct kernel boot" feature I'm using just seems somewhat memory
+>> hungry, but using another compression algorithm for the kernel and
+>> initramfs already helped in my case.
+>>
+>> So sorry for the noise, clearly user-error.
+> 
+> Hm, perhaps, but I'm still a bit nervous about that report from Oliver
+> Sang/kernel test robot, which was for a VM equipped with 16G of memory.
+> But despite quite a few attempts, I haven't been able to reproduce that
+> locally, so unfortunately I have no idea what's going on.
+> 
+> Rasmus
+> 
 
-In file included from ./include/linux/string.h:253,
-                 from ./include/linux/bitmap.h:10,
-                 from ./include/linux/cpumask.h:12,
-                 from ./include/linux/mm_types_task.h:14,
-                 from ./include/linux/mm_types.h:5,
-                 from ./include/linux/buildid.h:5,
-                 from ./include/linux/module.h:14,
-                 from drivers/net/ethernet/ibm/ibmvnic.c:35:
-In function '__fortify_strncpy',
-    inlined from 'vnic_add_client_data' at drivers/net/ethernet/ibm/ibmvnic.c:3919:2:
-./include/linux/fortify-string.h:39:30: warning: '__builtin_strncpy' offset 12 from the object at 'v
-lcd' is out of the bounds of referenced subobject 'name' with type 'char[]' at offset 12 [-Warray-bo
-unds]
-   39 | #define __underlying_strncpy __builtin_strncpy
-      |                              ^
-./include/linux/fortify-string.h:51:9: note: in expansion of macro '__underlying_strncpy'
-   51 |  return __underlying_strncpy(p, q, size);
-      |         ^~~~~~~~~~~~~~~~~~~~
-drivers/net/ethernet/ibm/ibmvnic.c: In function 'vnic_add_client_data':
-drivers/net/ethernet/ibm/ibmvnic.c:3883:7: note: subobject 'name' declared here
- 3883 |  char name[];
-      |       ^~~~
+Hmm I just tried to switch all VM's to a 5.13-rc7 kernel.
+Some worked since i reduced the size, but some still fail.
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings
+The difference seems the be the number of vcpu's I assign to the VM's
 
-Cc: Dany Madden <drt@linux.ibm.com>
-Cc: Sukadev Bhattiprolu <sukadev@linux.ibm.com>
-Cc: Thomas Falcon <tlfalcon@linux.ibm.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: netdev@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- drivers/net/ethernet/ibm/ibmvnic.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+The ones with 1 vcpu now boot with 256MB assigned (that was what I tested before),
+but the ones with 2 vcpu's assigned don't and still OOM
+on the same kernel and initramfs that I pass in from the host.
 
-diff --git a/drivers/net/ethernet/ibm/ibmvnic.c b/drivers/net/ethernet/ibm/ibmvnic.c
-index 2d8804ebdf96..adb0d5ca9ff1 100644
---- a/drivers/net/ethernet/ibm/ibmvnic.c
-+++ b/drivers/net/ethernet/ibm/ibmvnic.c
-@@ -3909,21 +3909,21 @@ static void vnic_add_client_data(struct ibmvnic_adapter *adapter,
- 	vlcd->type = 1;
- 	len = strlen(os_name) + 1;
- 	vlcd->len = cpu_to_be16(len);
--	strncpy(vlcd->name, os_name, len);
-+	strscpy(vlcd->name, os_name, len);
- 	vlcd = (struct vnic_login_client_data *)(vlcd->name + len);
- 
- 	/* Type 2 - LPAR name */
- 	vlcd->type = 2;
- 	len = strlen(utsname()->nodename) + 1;
- 	vlcd->len = cpu_to_be16(len);
--	strncpy(vlcd->name, utsname()->nodename, len);
-+	strscpy(vlcd->name, utsname()->nodename, len);
- 	vlcd = (struct vnic_login_client_data *)(vlcd->name + len);
- 
- 	/* Type 3 - device name */
- 	vlcd->type = 3;
- 	len = strlen(adapter->netdev->name) + 1;
- 	vlcd->len = cpu_to_be16(len);
--	strncpy(vlcd->name, adapter->netdev->name, len);
-+	strscpy(vlcd->name, adapter->netdev->name, len);
- }
- 
- static int send_login(struct ibmvnic_adapter *adapter)
--- 
-2.30.2
+Could that box from the test-robot have a massive amount of cpu-cores
+and that it is some how related to that ?
 
+--
+Sander
