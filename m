@@ -2,92 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0817C3AE5EB
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9E73AE5EC
 	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230392AbhFUJY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:24:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45432 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230397AbhFUJYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:24:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 23FE261002;
-        Mon, 21 Jun 2021 09:22:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624267359;
-        bh=7nH7mh7nw4aBeDVanu7wJ25k1fGBowCozGKRrUJTO9Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=klRlPDCar6MsklKGuq5Jeog4PvJP80d0xihaELpclU7T+Kd2CM3WjPPEUNOkcJ7ks
-         ShLQYFBp61AMiiDVS+ZuROCig05qjflnH7vEy40VIvXRSusEi8bHrlOJBVFF3ix+Fq
-         19vG+QuUnzSQBFJCJMNV66ZaeNh55VTzV8t3Edz8=
-Date:   Mon, 21 Jun 2021 11:22:36 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Ruslan Bilovol <ruslan.bilovol@gmail.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Fabien Chouteau <fabien.chouteau@barco.com>,
-        Segiy Stetsyuk <serg_stetsuk@ukr.net>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@kernel.org
-Subject: Re: [PATCH] usb: gadget: f_hid: fix endianness issue with descriptors
-Message-ID: <YNBaXLAOq+/UO9sN@kroah.com>
-References: <20210617162755.29676-1-ruslan.bilovol@gmail.com>
- <YMt95iarFDUDvjQ8@kroah.com>
- <20210617234421.GA295854@rowland.harvard.edu>
+        id S231147AbhFUJY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:24:59 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:40795 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230433AbhFUJYz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 05:24:55 -0400
+Received: from mail-ed1-f69.google.com ([209.85.208.69])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lvG8f-0000c9-1f
+        for linux-kernel@vger.kernel.org; Mon, 21 Jun 2021 09:22:41 +0000
+Received: by mail-ed1-f69.google.com with SMTP id p23-20020aa7cc970000b02903948bc39fd5so5363890edt.13
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:22:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hZC3Rg3BvJB4BQwVaSuLDsENz/aC3X5mhOq0Jc6AB58=;
+        b=dTP0bX+HXEruJGRRks9zB/S3Mb+sOG+XBjz1ETFv+a/6G9JxUZcPOEhAzcIbh4ztLn
+         deNOJy6givJVfyqhb1J0JZL5l44isDD1L257UqlLFXl3vShKxZpXYwkRtlvJBIMDjMp1
+         Kjnwj89wjsm43wAoMd+u+oPVV32VBbJynnvdrfTwYCYC97JjAkfrwt07X471vvhrxe/d
+         b8PYZL/d79vYoTikl4xC9llqzTT/HCGQvHtV371ZqeRjAYKhRr61mckng5Vh7wQssJxJ
+         SJfI8ehp8LcBzDhlwiHsLsor9v7taVx+oYWoLNs5+lqXAVExaLc2R1SDo6l5Jjdp3DUz
+         rCLA==
+X-Gm-Message-State: AOAM531L6RkC3YoQZoa7rg9+lpWsEgJ9zA+Ph8xCaiXmniZDyxFrApSX
+        Wz1WcOea3kl5nfw3eDu4AITsGKpFhOXFVz+qQZNutOnAHnc6zUewmE8jjd16tHl5nHiqcfuVely
+        V5t1Evp60ls7CsZsxlTtdX8BLXsSOiJMAudhpxCQAKw==
+X-Received: by 2002:a05:6402:b17:: with SMTP id bm23mr1884935edb.173.1624267360873;
+        Mon, 21 Jun 2021 02:22:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxwfZk5ISqN2ouBhxsLkXdlM8l0yr/wsX851g9ngedNHQwRH0qR983JIMEqkYLCHTg+bWq3Yw==
+X-Received: by 2002:a05:6402:b17:: with SMTP id bm23mr1884925edb.173.1624267360791;
+        Mon, 21 Jun 2021 02:22:40 -0700 (PDT)
+Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
+        by smtp.gmail.com with ESMTPSA id q20sm4633633ejb.71.2021.06.21.02.22.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 02:22:40 -0700 (PDT)
+Subject: Re: [PATCH -next 1/4] ASoC: samsung: i2s: Use
+ devm_platform_get_and_ioremap_resource()
+To:     Yang Yingliang <yangyingliang@huawei.com>,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc:     s.nawrocki@samsung.com, broonie@kernel.org
+References: <20210616091652.2552927-1-yangyingliang@huawei.com>
+ <20210616091652.2552927-2-yangyingliang@huawei.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <aaf277d2-a163-1658-4d01-b5843ea95b81@canonical.com>
+Date:   Mon, 21 Jun 2021 11:22:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210617234421.GA295854@rowland.harvard.edu>
+In-Reply-To: <20210616091652.2552927-2-yangyingliang@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 07:44:21PM -0400, Alan Stern wrote:
-> On Thu, Jun 17, 2021 at 06:52:54PM +0200, Greg Kroah-Hartman wrote:
-> > On Thu, Jun 17, 2021 at 07:27:55PM +0300, Ruslan Bilovol wrote:
-> > > Running sparse checker it shows warning message about
-> > > incorrect endianness used for descriptor initialization:
-> > > 
-> > > | f_hid.c:91:43: warning: incorrect type in initializer (different base types)
-> > > | f_hid.c:91:43:    expected restricted __le16 [usertype] bcdHID
-> > > | f_hid.c:91:43:    got int
-> > > 
-> > > Fixing issue with cpu_to_le16() macro
-> > > 
-> > > Fixes: 71adf1189469 ("USB: gadget: add HID gadget driver")
-> > > Cc: Fabien Chouteau <fabien.chouteau@barco.com>
-> > > Cc: Segiy Stetsyuk <serg_stetsuk@ukr.net>
-> > > Cc: stable@kernel.org
-> > > Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-> > > ---
-> > >  drivers/usb/gadget/function/f_hid.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/usb/gadget/function/f_hid.c b/drivers/usb/gadget/function/f_hid.c
-> > > index 70774d8cb14e..02683ac0719d 100644
-> > > --- a/drivers/usb/gadget/function/f_hid.c
-> > > +++ b/drivers/usb/gadget/function/f_hid.c
-> > > @@ -88,7 +88,7 @@ static struct usb_interface_descriptor hidg_interface_desc = {
-> > >  static struct hid_descriptor hidg_desc = {
-> > >  	.bLength			= sizeof hidg_desc,
-> > >  	.bDescriptorType		= HID_DT_HID,
-> > > -	.bcdHID				= 0x0101,
-> > > +	.bcdHID				= cpu_to_le16(0x0101),
-> > 
-> > This is a BCD value, not a little-endian value, are you sure this
-> > conversion is correct?
+On 16/06/2021 11:16, Yang Yingliang wrote:
+> Use devm_platform_get_and_ioremap_resource() to simplify
+> code.
 > 
-> It's a BCD value, but the storage format is little endian.  So yes, the 
-> conversion is correct.
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  sound/soc/samsung/i2s.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> But even more, the conversion is correct because 0x0101 yields exactly 
-> the same sequence of bytes in little-endian and big-endian orders!  
-> Either way, it is two bytes each containing 0x01.
+> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+> index c632842d42eb..309badc97290 100644
+> --- a/sound/soc/samsung/i2s.c
+> +++ b/sound/soc/samsung/i2s.c
+> @@ -1441,8 +1441,7 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+>  		}
+>  	}
+>  
+> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	priv->addr = devm_ioremap_resource(&pdev->dev, res);
+> +	priv->addr = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+>  	if (IS_ERR(priv->addr))
+>  		return PTR_ERR(priv->addr);
+>  
+> 
 
-Ah, which is why no one has noticed this yet :)
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-I'll go apply this just to be "correct".
-
-thanks,
-
-greg k-h
+Best regards,
+Krzysztof
