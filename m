@@ -2,116 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54CEF3AEB05
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:18:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D493AEB08
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbhFUOUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 10:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbhFUOUO (ORCPT
+        id S230160AbhFUOU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 10:20:26 -0400
+Received: from mail-ot1-f52.google.com ([209.85.210.52]:40515 "EHLO
+        mail-ot1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229736AbhFUOUY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 10:20:14 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 151BEC06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:17:59 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id t9so13477714qtw.7
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:17:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=f5JgZDeoCfa2i8b2+lJPyccTDGeyU3UeQJEKpYqzmGw=;
-        b=iW/qNwvjUN60qOdsm7Tc/2UgFmrbPL7i3tcOoqV4K4nAE5p++VtMzaD7tQUmZY5aS/
-         08eVJcFISGR01jyo6CIqviQAi8/x8nwo8NCY7YrYTVakAPQRX4ny9mcq8xMudYSJADOQ
-         h+yKiUXxtEnGjWiqtTAEO+fkAVZBXqOEiFWJnEcxmy2hkR14/qsVhyet4cLlhORAQjbS
-         5b3b0Ub6MVs3bJel4J0zd7N6pAGiflA4WAmb2m/748JAvI/uviYVvmmbpTnenWCmngzg
-         /0zm6jCnZ052zu8m26gQyrxVJtmvIX29vAGvfAg8myajT6QOMOcUsreOn1mLyatblaTF
-         2yQA==
+        Mon, 21 Jun 2021 10:20:24 -0400
+Received: by mail-ot1-f52.google.com with SMTP id v11-20020a9d340b0000b0290455f7b8b1dcso4931961otb.7;
+        Mon, 21 Jun 2021 07:18:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=f5JgZDeoCfa2i8b2+lJPyccTDGeyU3UeQJEKpYqzmGw=;
-        b=HhK2sqGG0Yt7PjZwRbTf74wCXIJhvig7HoFRUoZHxkQiOah2g0ciZXx2sjPoMHGHAy
-         3hEVqLTZFRYdqiOkNCSOV/UT/THDcGlPVXVi8AAhtekIPlzFyDi/DAQ4b8bghu9hkNTu
-         0ZWFDuZM21xK6zkMCqJ0MVdZBQHi7hhvY7GOZOU4wOQqQVrd4a9lSVXIX2IV9iyd1Yp5
-         iYrJ7yjWRBmVf4XOZ5puF6Xl9nhZxgJEIHED9ENWdEBlUpn4SQj+gIf6SlFJIewO+6R0
-         EMfTRWYBs7zgCcgCbtIzc6xO5bjM9F7UCFTpONiEyib2bNkhiGzJs6OzvTY48fnNxb7G
-         mWJw==
-X-Gm-Message-State: AOAM531Nf0nHgFSIEXgRNg7mik3Jg16UNFrnB6JFnIWeETE/KiWOzJiZ
-        a5ybGyEcu8V1Jt81wW/QLdLalA==
-X-Google-Smtp-Source: ABdhPJwxuJR5FNaFOeQuuTYdtMofIT5+18r8iXh+MV7YhfMRJf27n/x+7ThZDE3kkaBxOtliYq23Aw==
-X-Received: by 2002:ac8:44ca:: with SMTP id b10mr24067709qto.224.1624285077981;
-        Mon, 21 Jun 2021 07:17:57 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id y15sm10797034qto.90.2021.06.21.07.17.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 07:17:57 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lvKkO-009WjS-US; Mon, 21 Jun 2021 11:17:56 -0300
-Date:   Mon, 21 Jun 2021 11:17:56 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     Oded Gabbay <ogabbay@kernel.org>, Christoph Hellwig <hch@lst.de>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Doug Ledford <dledford@redhat.com>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Tomer Tayar <ttayar@habana.ai>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>
-Subject: Re: [PATCH v3 1/2] habanalabs: define uAPI to export FD for DMA-BUF
-Message-ID: <20210621141756.GF1096940@ziepe.ca>
-References: <20210618123615.11456-1-ogabbay@kernel.org>
- <CAKMK7uFOfoxbD2Z5mb-qHFnUe5rObGKQ6Ygh--HSH9M=9bziGg@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YxXuShRhaJKj+ypQ+PFD/lwyGK+czyVuDkhKy+fj/VQ=;
+        b=gJYxXgOTLs5iNf+sDOEVBTmvjBGpws0zmeKUNAdRyPAYEboFf8fdFPoA7Jh0Ybw+gB
+         Grj9sHGzSq9n1gBq8YEw8uJ6dy1d5kdPQEJqVxZ5X4PuulcURvzO2W9pX01MI+PQeIPW
+         IpwFZ7L7o8/5eiLg86WzbKOV687SnaLa5lHlzwdtqMtXAjY6FSNZ8O4z+PC0G5UtF3qi
+         QaoSalTWBUuazBLr/pI1XV3zFuU6L5wVDyhwgiHPD5W8w+kUCgz5Mv6KGtoUtm6I9gw3
+         VhXvfRW9C8fEHXFxPPV8MavpqLi1cMqAGoGUGfTtfbGpSCSlxVfX1te63cu3geUU0kEM
+         OAoA==
+X-Gm-Message-State: AOAM533gqTaUvt1dHbAy05I/FO1ep8QwnF9n8QYTylJHNtJZBjVPfdTb
+        e+N76OgzRzKRsc7C1OUoqIx9FmnBOFJMEjC5n48=
+X-Google-Smtp-Source: ABdhPJwnJJaZbmmjz7m6awl2bjreJn6w2WEElHent/0RL7h2wQUyoQ4keiT4yCq3Fb8rUGc6wztK/NAtJ7k5mSlUIx0=
+X-Received: by 2002:a9d:674b:: with SMTP id w11mr13625126otm.260.1624285090434;
+ Mon, 21 Jun 2021 07:18:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uFOfoxbD2Z5mb-qHFnUe5rObGKQ6Ygh--HSH9M=9bziGg@mail.gmail.com>
+References: <5c8da9d378dee39d9c6063713b093f51d271fa9d.1623825358.git.viresh.kumar@linaro.org>
+ <c31424b7962608eb13f946a665ba6848c4986856.1623986349.git.viresh.kumar@linaro.org>
+ <CAJZ5v0h37bs0xLUCeD7ZuZfXLPBx=6Mpr-Y+Ef=qcnDA4aoLbQ@mail.gmail.com> <20210621030949.tng5xzq7dm7ngaez@vireshk-i7>
+In-Reply-To: <20210621030949.tng5xzq7dm7ngaez@vireshk-i7>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 21 Jun 2021 16:17:59 +0200
+Message-ID: <CAJZ5v0jM3nusF1fjcMHLRHPk2PhFErhBXijpWHiSNnunzPFjeA@mail.gmail.com>
+Subject: Re: [PATCH V3 2/3] cpufreq: intel_pstate: Migrate away from
+ ->stop_cpu() callback
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dirk Brandewie <dirk.brandewie@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 02:28:48PM +0200, Daniel Vetter wrote:
+On Mon, Jun 21, 2021 at 5:09 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 18-06-21, 14:00, Rafael J. Wysocki wrote:
+> > On Fri, Jun 18, 2021 at 5:22 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > >
+> > > commit 367dc4aa932b ("cpufreq: Add stop CPU callback to cpufreq_driver
+> > > interface") added the stop_cpu() callback to allow the drivers to do
+> > > clean up before the CPU is completely down and its state can't be
+> > > modified.
+> > >
+> > > At that time the CPU hotplug framework used to call the cpufreq core's
+> > > registered notifier for different events like CPU_DOWN_PREPARE and
+> > > CPU_POST_DEAD. The stop_cpu() callback was called during the
+> > > CPU_DOWN_PREPARE event.
+> > >
+> > > This is no longer the case, cpuhp_cpufreq_offline() is called only once
+> > > by the CPU hotplug core now and we don't really need to separately
+> > > call stop_cpu() for cpufreq drivers.
+> > >
+> > > Migrate to using the exit() and offline() callbacks instead of
+> > > stop_cpu().
+> > >
+> > > We need to clear util hook from both the callbacks, exit() and
+> > > offline(), since it is possible that only exit() gets called sometimes
+> > > (specially on errors) or both get called at other times.
+> > > intel_pstate_clear_update_util_hook() anyway have enough protection in
+> > > place if it gets called a second time and will return early then.
+> > >
+> > > Cc: Dirk Brandewie <dirk.brandewie@gmail.com>
+> > > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > > ---
+> > > V2->V3:
+> > > - Update intel_pstate_cpu_offline() as well.
+> > > - Improved commit log.
+> > >
+> > >  drivers/cpufreq/intel_pstate.c | 12 ++++--------
+> > >  1 file changed, 4 insertions(+), 8 deletions(-)
+> > >
+> > > diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+> > > index 0e69dffd5a76..8f8a2d9d7daa 100644
+> > > --- a/drivers/cpufreq/intel_pstate.c
+> > > +++ b/drivers/cpufreq/intel_pstate.c
+> > > @@ -2335,6 +2335,8 @@ static int intel_pstate_cpu_offline(struct cpufreq_policy *policy)
+> > >
+> > >         pr_debug("CPU %d going offline\n", cpu->cpu);
+> > >
+> > > +       intel_pstate_clear_update_util_hook(policy->cpu);
+> > > +
+> > >         if (cpu->suspended)
+> > >                 return 0;
+> > >
+> > > @@ -2374,17 +2376,12 @@ static int intel_pstate_cpu_online(struct cpufreq_policy *policy)
+> > >         return 0;
+> > >  }
+> > >
+> > > -static void intel_pstate_stop_cpu(struct cpufreq_policy *policy)
+> > > -{
+> > > -       pr_debug("CPU %d stopping\n", policy->cpu);
+> > > -
+> > > -       intel_pstate_clear_update_util_hook(policy->cpu);
+> > > -}
+> > > -
+> > >  static int intel_pstate_cpu_exit(struct cpufreq_policy *policy)
+> > >  {
+> > >         pr_debug("CPU %d exiting\n", policy->cpu);
+> > >
+> > > +       intel_pstate_clear_update_util_hook(policy->cpu);
+> >
+> > This change is not needed now, because ->offline always runs before
+> > ->exit if present.
+>
+> Not necessarily, we don't call ->offline() for many error paths in
+> cpufreq_online().
 
-> Mission acomplished, we've gone full circle, and the totally-not-a-gpu
-> driver is now trying to use gpu infrastructure. And seems to have
-> gained vram meanwhile too. Next up is going to be synchronization
-> using dma_fence so you can pass buffers back&forth without stalls
-> among drivers.
+I guess you mean the error paths in cpufreq_offline()?
 
-Well, we can't even see the other side of this so who knows
+IMO this is confusing/broken, because ->offline should always be
+called after ->online has returned success.
 
-This is a new uAPI, where is the userspace? In RDMA at least I require
-to see the new userspace and test suite before changes to
-include/uapi/rdma can go ahead.
+> offline() only comes into play after driver is registered properly once.
 
-> Doug/Jason from infiniband: Should we add linux-rdma to the dma-buf
-> wildcard match so that you can catch these next time around too? At
-> least when people use scripts/get_maintainers.pl correctly. All the
-> other subsystems using dma-buf are on there already (dri-devel,
-> linux-media and linaro-mm-sig for android/arm embedded stuff).
+The relevant intel_pstate case is a ->setpolicy driver where
+->setpolicy or ->online, if successful, need to be followed by
+->offline.
 
-My bigger concern is this doesn't seem to be implementing PCI P2P DMA
-correctly. This is following the same hacky NULL page approach that
-Christoph Hellwig already NAK'd for AMD.
+If ->setpolicy is successful in the cpufreq_online() path, the entire
+cpufreq_online() is successful and the error paths in question are not
+executed.
 
-This should not be allowed to proliferate.
-
-I would be much happier seeing this be done using the approach of
-Logan's series here:
-
-https://lore.kernel.org/linux-block/20210513223203.5542-1-logang@deltatee.com/
-
-Jason
+So the change I was talking about is not needed AFAICS.
