@@ -2,103 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50AD03AF229
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C0083AF21F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231375AbhFURmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 13:42:45 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:33454 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231614AbhFURmn (ORCPT
+        id S231497AbhFURm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 13:42:29 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:38442 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231138AbhFURmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 13:42:43 -0400
-Received: by mail-ot1-f53.google.com with SMTP id o17-20020a9d76510000b02903eabfc221a9so18602856otl.0;
-        Mon, 21 Jun 2021 10:40:29 -0700 (PDT)
+        Mon, 21 Jun 2021 13:42:24 -0400
+Received: by mail-oi1-f174.google.com with SMTP id q10so20719250oij.5;
+        Mon, 21 Jun 2021 10:40:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=HN13gmA7y3nz/59kVoPJCGFXMqRoOajwJRx5YAglxNM=;
-        b=AlFj5gz1YeuT97+1jaQjfH0Qt+oYPCyLpkrqtSPxbT/TCH13WdMXgzXDFAR6vGm/q1
-         /N7Vnm1aG/JX04LZM/6Bcqd+xWfwB/OTd99rEJOPXnBqRNspy3Hoq7LgDR6eled/Jh+U
-         ncGf97jr4otog9IecQLbYQFlHqIr17or4Op7GdqWlovf0leSB4eHxtiB9Jmx0CiQ/wF0
-         tswr2rSIGZQ183KD9h6xi0FTVD301r7FOjeqlNlvj4k4jNs2JTRCu9pv6cXhGmvrJ2OV
-         f99kuEjuau9NaIiSTFlUiDXmstHTkJmMYqa65btORR1ivb1s9yl8stlZ45cdu4kqU+AY
-         35Jg==
-X-Gm-Message-State: AOAM530W06DyF2HGhdrG3tl2j9JNv6TMYopdt9/7J/z4Qllc1KKR6BRK
-        hzk5ScKjrNuh5yRGlnHPpQ==
-X-Google-Smtp-Source: ABdhPJxGwFqtkOtwDEBJ3jIvQc8diAPAd9rGu2tJSvFeQ6qyy/qsnWkiPbHoebGF3hQmi+JBnknbfw==
-X-Received: by 2002:a9d:7d07:: with SMTP id v7mr21673915otn.204.1624297228726;
-        Mon, 21 Jun 2021 10:40:28 -0700 (PDT)
+        bh=GOLlee18Cq+VZCrN2BSKn7jALbwR1Zc9vSp5DxBhXsc=;
+        b=GaQkr8EvLGEka0ojbR35GP88QlPBNvY07ts1vyEkwFcchnhbA0boHvmzjnWGx+cMAH
+         6rCM8TGCTAr5bTLAgMTAQ/GgT74RLocIS40BnlPQJvjlwccwCv7aKGchKD79FOy5cgH5
+         kJ4ZUY2YvF72gQuWaVX/7BstDpXf4NMfEMi69V2ukZOx5WFVJYoL6CZ/DePkKGdTwUnt
+         FvE7EMMD2de0RRhGThC1SNXDaUN8Q86ZpJX1ujzpT6Byoqr03Jj7BYARfM18bKx+2rLg
+         J8PhM3e5f9sLXKAvR1tNkaJ8YG/LceSgFuADoTOrOI+QzeCqyQcYAfpwEIgPdCu2PiFu
+         Ugkg==
+X-Gm-Message-State: AOAM533mmDptJwUTJXakQYMmiNARIZcwMQp0gkOMo01oPU9paD7LQ6uy
+        6U8aSKxNupMHHhWl7Tn4FQ==
+X-Google-Smtp-Source: ABdhPJxfENLRerkLK7CZCNrrEAOulpIKYqd89FEg+Mrdo1plFtf4lh4tQqcgcpzZACnhF6rlmAMLLw==
+X-Received: by 2002:aca:4d3:: with SMTP id 202mr17729526oie.9.1624297208354;
+        Mon, 21 Jun 2021 10:40:08 -0700 (PDT)
 Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id p25sm3661220ood.4.2021.06.21.10.40.23
+        by smtp.gmail.com with ESMTPSA id y13sm4184113ots.47.2021.06.21.10.40.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 10:40:28 -0700 (PDT)
-Received: (nullmailer pid 1161635 invoked by uid 1000);
+        Mon, 21 Jun 2021 10:40:07 -0700 (PDT)
+Received: (nullmailer pid 1161632 invoked by uid 1000);
         Mon, 21 Jun 2021 17:40:02 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     NXP Linux Team <linux-imx@nxp.com>,
-        Anthony Brandon <anthony@amarulasolutions.com>,
-        Fancy Fang <chen.fang@nxp.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Milco Pratesi <milco.pratesi@engicam.com>,
-        dri-devel@lists.freedesktop.org,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-kernel@vger.kernel.org, Tomasz Figa <t.figa@samsung.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        linux-phy@lists.infradead.org, Shawn Guo <shawnguo@kernel.org>,
-        devicetree@vger.kernel.org, Peng Fan <peng.fan@nxp.com>,
-        Francis Laniel <francis.laniel@amarulasolutions.com>,
-        linux-amarula@amarulasolutions.com,
-        Neil Armstrong <narmstrong@baylibre.com>
-In-Reply-To: <20210621072424.111733-2-jagan@amarulasolutions.com>
-References: <20210621072424.111733-1-jagan@amarulasolutions.com> <20210621072424.111733-2-jagan@amarulasolutions.com>
-Subject: Re: [RFC PATCH 1/9] dt-bindings: display: bridge: Add Samsung SEC MIPI DSIM bindings
+To:     Tomohito Esaki <etom@igel.co.jp>
+Cc:     linux-kernel@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>
+In-Reply-To: <20210621064403.26663-4-etom@igel.co.jp>
+References: <20210621064403.26663-1-etom@igel.co.jp> <20210621064403.26663-4-etom@igel.co.jp>
+Subject: Re: [PATH 3/4] dt-bindings: display: Add virtual DRM
 Date:   Mon, 21 Jun 2021 11:40:02 -0600
-Message-Id: <1624297202.352850.1161634.nullmailer@robh.at.kernel.org>
+Message-Id: <1624297202.341994.1161630.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Jun 2021 12:54:16 +0530, Jagan Teki wrote:
-> Samsung SEC MIPI DSIM Bridge controller is MIPI DSI bridge
-> available in NXP's i.MX8M Mini and Nano Processors.
+On Mon, 21 Jun 2021 15:44:02 +0900, Tomohito Esaki wrote:
+> Add device tree bindings documentation for virtual DRM.
 > 
-> Add dt-bingings for it.
-> 
-> Cc: Andrzej Hajda <a.hajda@samsung.com>
-> Cc: Neil Armstrong <narmstrong@baylibre.com>
-> Cc: Robert Foss <robert.foss@linaro.org>
-> Cc: Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> Signed-off-by: Tomohito Esaki <etom@igel.co.jp>
 > ---
->  .../display/bridge/samsung,sec-dsim.yaml      | 184 ++++++++++++++++++
->  1 file changed, 184 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/samsung,sec-dsim.yaml
+>  .../devicetree/bindings/display/vdrm.yaml     | 67 +++++++++++++++++++
+>  1 file changed, 67 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/vdrm.yaml
 > 
 
 My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
 on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
 yamllint warnings/errors:
+./Documentation/devicetree/bindings/display/vdrm.yaml:39:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
 
 dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/display/bridge/samsung,sec-dsim.example.dts:20:18: fatal error: dt-bindings/power/imx8mm-power.h: No such file or directory
-   20 |         #include <dt-bindings/power/imx8mm-power.h>
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[1]: *** [scripts/Makefile.lib:380: Documentation/devicetree/bindings/display/bridge/samsung,sec-dsim.example.dt.yaml] Error 1
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/display/vdrm.example.dts'
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-extract-example", line 45, in <module>
+    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 120, in get_single_data
+    node = self.composer.get_single_node()
+  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
+  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 731, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
+ruamel.yaml.scanner.ScannerError: while scanning a plain scalar
+  in "<unicode string>", line 38, column 15
+found a tab character that violates indentation
+  in "<unicode string>", line 39, column 1
+make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/display/vdrm.example.dts] Error 1
 make[1]: *** Waiting for unfinished jobs....
+./Documentation/devicetree/bindings/display/vdrm.yaml:  while scanning a plain scalar
+  in "<unicode string>", line 38, column 15
+found a tab character that violates indentation
+  in "<unicode string>", line 39, column 1
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/display/vdrm.yaml: ignoring, error parsing file
+warning: no schema found in file: ./Documentation/devicetree/bindings/display/vdrm.yaml
 make: *** [Makefile:1416: dt_binding_check] Error 2
 \ndoc reference errors (make refcheckdocs):
 
-See https://patchwork.ozlabs.org/patch/1494924
+See https://patchwork.ozlabs.org/patch/1494913
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
