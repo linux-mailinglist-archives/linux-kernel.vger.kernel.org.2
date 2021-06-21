@@ -2,208 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45EA33AF8A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 00:37:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D69613AF8A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 00:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232227AbhFUWjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 18:39:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53626 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231446AbhFUWjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 18:39:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E92736113E;
-        Mon, 21 Jun 2021 22:37:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624315055;
-        bh=x/0sgkn0wKEMEG5kTX8dj7wK/3UEWacXQit3uuR9AyY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=WB8FiOoDjooEJzFQaRSRJHFjDjppQsef2BfHMkPpZvb36nE9bp3RXzXhW9hGeQiAq
-         PAAnul7AbmL94zXlnvgumHRHgTjXz06TjUoEpNIIN8EgvU2GebsoxZxY2MAm+Bt+DQ
-         Fg5ocitU5dT3fx066VqcTRgZKK/LD6AONdAf6vf5ZWVuvSMc+ZOeqzeA5P2wxiC4P6
-         8dhI0j6Bhi9J4PtLW/386nfmXo3J17dMwCvqQseSD3Ojk9u2HtxB9nv6OXTnMBygS4
-         VlsI3OtlguuJWazTysdBwM0YZPrGuKCrFJy9dgBO69ju7jVb06hmwLdgS4dQRxHoj0
-         rOfunRZkSykVg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id AD6F05C052D; Mon, 21 Jun 2021 15:37:34 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 15:37:34 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     syzbot <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com>
-Cc:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
-        axboe@kernel.dk, bpf@vger.kernel.org, christian@brauner.io,
-        daniel@iogearbox.net, dvyukov@google.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, john.fastabend@gmail.com,
-        josh@joshtriplett.org, kafai@fb.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
-        netdev@vger.kernel.org, peterz@infradead.org, rcu@vger.kernel.org,
-        rostedt@goodmis.org, shakeelb@google.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yanfei.xu@windriver.com,
-        yhs@fb.com
-Subject: Re: [syzbot] KASAN: use-after-free Read in
- check_all_holdout_tasks_trace
-Message-ID: <20210621223734.GV4397@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <000000000000f034fc05c2da6617@google.com>
- <00000000000022183205c5106739@google.com>
+        id S232208AbhFUWlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 18:41:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230438AbhFUWk7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 18:40:59 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A67C4C061574;
+        Mon, 21 Jun 2021 15:38:43 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id b5-20020a17090a9905b029016fc06f6c5bso470803pjp.5;
+        Mon, 21 Jun 2021 15:38:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5jTTwbPg5aA08kWmM54tNTs/OmEDeM6LKJVdhYuFH14=;
+        b=HBYIAUjX4Mgt1ZnCBVIxrxXOExvlU5RU16L32k9uNAedNlWaX4/eI9Ppgm39VanY/7
+         RlkmrLuameKM6FzWhahTvGYxIIqHrZ2uIPCmKv1CNUIMzQmh2+QbnnnOmB0rqgm1cxwI
+         6oICzqEr5ndIHmssKrjHeG11ASnt0mnT8OGRWVH2Jd7M0XtxbGO+Oe39V1qnn/801sUO
+         iulWXLLDCoJTpgo5F/ffSupKzdsq8dVgthXFglTvJm2KJa4yS7QD2K/F7bcUJzSM6YQA
+         /B5qFS1+eN+F1CqusjK5ap4f6q9OCrH8l+o9jgWAwwuVbjRVBhrTh5z6DNlYID7RbD6E
+         KlvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5jTTwbPg5aA08kWmM54tNTs/OmEDeM6LKJVdhYuFH14=;
+        b=SvDoseLbIyXW5EvpD1WK4KaJZVxX1ITKkAa55stHhHl5/8VpdJDbSQtyLWCKKB6Mzq
+         489PKuJTPy0iKnjy+eF7lMkJJ4ais3KagqTEE9oyZ4EhAUrojzVyAtAn00gvj794uD5K
+         eBow1/aFJiGlICBBagy71wqk4Y5Op5/ctu62qPevntrPiQFrschXjevbTltEn53wvlBH
+         zEfPVviO/D9w63pzgkEls1PqYnzUJ3I1ik3EZV1VWZkE9UkSUubXWkX0HZUtiPM3MpE/
+         dS7SXAmO1XXykPhithEfWQs2yLWtVIHtjqxvjsd/1Yj8EjPiiBKCTeKPyIeqBeAXzknH
+         dMmw==
+X-Gm-Message-State: AOAM533hskKnsOq8Pd8hqSUxR2OIcDrLCQf71Ba2UWabqPsUDUamfVgG
+        sxSOIj+LOb+SgtDhat/108A=
+X-Google-Smtp-Source: ABdhPJyLNScOpoMcQHbsjJ8Yf6/kiNt5s8gd8KuU3oQqEu+Y82ySplSBY/UCpVm0X1y30SCnDsA+Lw==
+X-Received: by 2002:a17:90a:8589:: with SMTP id m9mr520145pjn.168.1624315123034;
+        Mon, 21 Jun 2021 15:38:43 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:a276:c46e:ab3a:dce2])
+        by smtp.gmail.com with ESMTPSA id l5sm15871455pff.20.2021.06.21.15.38.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 15:38:42 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 15:38:39 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Alexander Larkin <avlarkin82@gmail.com>
+Cc:     torvalds@linux-foundation.org, dan.carpenter@oracle.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        murray.mcallister@gmail.com, security@kernel.org
+Subject: Re: [PATCH] Input: joydev - prevent potential write out of bounds in
+ ioctl
+Message-ID: <YNEU78BBWy2dS0Dq@google.com>
+References: <CAHk-=wjtK7XgQqTE_OyGV8uPX3d1RqUhTQO1D+Bk3wGEiea3Ow@mail.gmail.com>
+ <20210621213215.1698347-1-avlarkin82@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <00000000000022183205c5106739@google.com>
+In-Reply-To: <20210621213215.1698347-1-avlarkin82@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 01:45:23PM -0700, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    0c38740c selftests/bpf: Fix ringbuf test fetching map FD
-> git tree:       bpf-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=128a7e34300000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=a6380da8984033f1
-> dashboard link: https://syzkaller.appspot.com/bug?extid=7b2b13f4943374609532
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1264c2d7d00000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com
+Hi Alexander,
 
-This looks like a bug that Xu Yanfei located a few weeks back.
+On Tue, Jun 22, 2021 at 12:32:15AM +0300, Alexander Larkin wrote:
+> I'm still studying "git send-email", so the first intro part of prev msg deleted, sorry, again:
+> 
+> Continuying my previous message, the JSIOCGBTNMAP always returns 1024 return code,
+> but not "amount of buttons" like I said before
+> (that is probably the size of the keymap that is _u16 keymap[KEY_MAX - BTN_MISC + 1] ).
+> Is it correct?
+> Reading the line of kernel joydev.c
+> 579	len = min_t(size_t, _IOC_SIZE(cmd), sizeof(joydev->keypam)),
+> , why the min is always sizeof(joydev->keypam) ?
+> If I try to call from the userspace
+> ioctl(fd, JSIOCGBTNMAP, buttons)
+> where the buttons is "__u16 buttons[5]", then still I get 1024.
+> 
+> Also I did userspace test (that shows how kernel overwrites (out of array bound) the userspace):
+> 1. The buttons is "__u16 buttons[5]" in userspace,
+> 2. buttons[5] = 1;
+> 3. ioctl(fd, JSIOCGBTNMAP, buttons)
+> 4. printf("new %i\n", buttons[5]),
+> and the output is "new 0", so the value is being overwritten by kernel (so 1024 bytes copied
+> to 10 bytes buffer).
+> 
+> It looks like I don't understand what is the expected value of the _IOC_SIZE(cmd),
+> why not 10 for this read ioctl example? Is it possible to make this ioctl safe, so
+> it doesn't copy more data than user can handle?
 
-Do these commits from -rcu help?
+The definition of JSIOCGBTNMAP is:
 
-6a04a59eacbd ("rcu-tasks: Don't delete holdouts within trc_inspect_reader()"
-dd5da0a9140e ("rcu-tasks: Don't delete holdouts within trc_wait_for_one_reader()")
+#define JSIOCGBTNMAP _IOR('j', 0x34, __u16[KEY_MAX - BTN_MISC + 1])
 
-On any interaction with the HEAD commit above I must defer to Andrii.
+so the size is encoded in the definition and userspace is supposed to
+supply buffer of appropriate size. In your examples you are essentially
+are lying to the kernel and say that the buffer size is KEY_MAX -
+BTN_MISC + 1 words while in reality you only supply 10 bytes (5 words).
 
-							Thanx, Paul
+Maybe we should have defined (long time ago)
 
-> ==================================================================
-> BUG: KASAN: use-after-free in check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
-> Read of size 1 at addr ffff8880294cbc9c by task rcu_tasks_trace/12
-> 
-> CPU: 0 PID: 12 Comm: rcu_tasks_trace Not tainted 5.13.0-rc3-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->  __dump_stack lib/dump_stack.c:79 [inline]
->  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
->  print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:233
->  __kasan_report mm/kasan/report.c:419 [inline]
->  kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:436
->  check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
->  rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
->  rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
->  kthread+0x3b1/0x4a0 kernel/kthread.c:313
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> 
-> Allocated by task 8499:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_set_track mm/kasan/common.c:46 [inline]
->  set_alloc_info mm/kasan/common.c:428 [inline]
->  __kasan_slab_alloc+0x84/0xa0 mm/kasan/common.c:461
->  kasan_slab_alloc include/linux/kasan.h:236 [inline]
->  slab_post_alloc_hook mm/slab.h:524 [inline]
->  slab_alloc_node mm/slub.c:2913 [inline]
->  kmem_cache_alloc_node+0x269/0x3e0 mm/slub.c:2949
->  alloc_task_struct_node kernel/fork.c:171 [inline]
->  dup_task_struct kernel/fork.c:865 [inline]
->  copy_process+0x5c8/0x7120 kernel/fork.c:1947
->  kernel_clone+0xe7/0xab0 kernel/fork.c:2503
->  __do_sys_clone+0xc8/0x110 kernel/fork.c:2620
->  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Freed by task 12:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
->  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
->  ____kasan_slab_free mm/kasan/common.c:360 [inline]
->  ____kasan_slab_free mm/kasan/common.c:325 [inline]
->  __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:368
->  kasan_slab_free include/linux/kasan.h:212 [inline]
->  slab_free_hook mm/slub.c:1582 [inline]
->  slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1607
->  slab_free mm/slub.c:3167 [inline]
->  kmem_cache_free+0x8a/0x740 mm/slub.c:3183
->  __put_task_struct+0x26f/0x400 kernel/fork.c:747
->  trc_wait_for_one_reader kernel/rcu/tasks.h:935 [inline]
->  check_all_holdout_tasks_trace+0x179/0x420 kernel/rcu/tasks.h:1081
->  rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
->  rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
->  kthread+0x3b1/0x4a0 kernel/kthread.c:313
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> 
-> Last potentially related work creation:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
->  __call_rcu kernel/rcu/tree.c:3038 [inline]
->  call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
->  put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
->  release_task+0xca1/0x1690 kernel/exit.c:226
->  wait_task_zombie kernel/exit.c:1108 [inline]
->  wait_consider_task+0x2fb5/0x3b40 kernel/exit.c:1335
->  do_wait_thread kernel/exit.c:1398 [inline]
->  do_wait+0x724/0xd40 kernel/exit.c:1515
->  kernel_wait4+0x14c/0x260 kernel/exit.c:1678
->  __do_sys_wait4+0x13f/0x150 kernel/exit.c:1706
->  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> Second to last potentially related work creation:
->  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
->  kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
->  __call_rcu kernel/rcu/tree.c:3038 [inline]
->  call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
->  put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
->  release_task+0xca1/0x1690 kernel/exit.c:226
->  wait_task_zombie kernel/exit.c:1108 [inline]
->  wait_consider_task+0x2fb5/0x3b40 kernel/exit.c:1335
->  do_wait_thread kernel/exit.c:1398 [inline]
->  do_wait+0x724/0xd40 kernel/exit.c:1515
->  kernel_wait4+0x14c/0x260 kernel/exit.c:1678
->  __do_sys_wait4+0x13f/0x150 kernel/exit.c:1706
->  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
->  entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> The buggy address belongs to the object at ffff8880294cb880
->  which belongs to the cache task_struct of size 6976
-> The buggy address is located 1052 bytes inside of
->  6976-byte region [ffff8880294cb880, ffff8880294cd3c0)
-> The buggy address belongs to the page:
-> page:ffffea0000a53200 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x294c8
-> head:ffffea0000a53200 order:3 compound_mapcount:0 compound_pincount:0
-> flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-> raw: 00fff00000010200 ffffea00008d6400 0000000200000002 ffff888140005140
-> raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> page_owner tracks the page as allocated
-> page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 2, ts 15187628853, free_ts 0
->  prep_new_page mm/page_alloc.c:2358 [inline]
->  get_page_from_freelist+0x1034/0x2bf0 mm/page_alloc.c:3994
->  __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5200
->  alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
->  alloc_slab_page mm/slub.c:1645 [inline]
->  allocate_slab+0x32e/0x4c0 mm/slub.c:1785
->  new_slab mm/slub.c:1848 [inline]
->  new_slab_objects mm/slub.c:2594 [inline]
->  ___slab_alloc+0x4a1/0x810 mm/slub.c:2757
->  __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2797
->  slab_alloc_node mm/slub.c:2879 [inline]
->  kmem_cache_alloc_node+0x12f/0x3e0 mm/slub.c:2949
->  alloc_task_struct_node kernel/fork.c:171 [inline]
->  dup_task_struct kernel/fork.c:865 [inline]
->  copy_process+0x5c8/0x7120 kernel/fork.c:1947
->  kernel_clone+0xe7/0xab0 kernel/fork.c:2503
->  kernel_thread+0xb5/0xf0 kernel/fork.c:2555
->  create_kthread kernel/kthread.c:336 [inline]
->  kthreadd+0x52a/0x790 kernel/kthread.c:679
->  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-> page_owner free stack trace missing
-> 
-> Memory state around the buggy address:
->  ffff8880294cbb80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->  ffff8880294cbc00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> >ffff8880294cbc80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->                             ^
->  ffff8880294cbd00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->  ffff8880294cbd80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-> ==================================================================
-> 
+#define JSIOCGBTNMAP_LEN(len)	_IOC(_IOC_READ, 'j', 0x43, len)
+
+to allow userspace better control over the buffer, but I consider joydev
+interface obsolete and all new clients should be using evdev to get
+events from input devices. so I am not sure if there is any benefit in
+fixing joydev ioctls.
+
+Thanks.
+
+-- 
+Dmitry
