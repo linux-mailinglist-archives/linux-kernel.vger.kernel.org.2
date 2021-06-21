@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 103B13AF078
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF3F23AF08E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233493AbhFUQtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:49:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38074 "EHLO mail.kernel.org"
+        id S230456AbhFUQuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:50:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233890AbhFUQpn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:45:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3772261351;
-        Mon, 21 Jun 2021 16:32:45 +0000 (UTC)
+        id S234019AbhFUQp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:45:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D624461410;
+        Mon, 21 Jun 2021 16:33:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624293165;
-        bh=adBEG7zv+ENyu9SHmLOWViXi62cNurLlJQCxTzrZxb0=;
+        s=korg; t=1624293184;
+        bh=DwaduLBUarpPFjUZGNZPYa6zqcD6k3NaZkMshJsPlpA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j/2ces322IFoot2hsD0qf6pRRDajJADPm4w1OiH4kxQFsrKLPFh+e8LlEf+5jP20E
-         NEGbyHfNQ2nvyj0jHUI14ZOHyRzdzo+7AFZmJt+77VgcsCT8SAJyX0BzUIliGwToIt
-         MH+QRUn8TsauqWMoXU1s+tBpO+irQ7BPVGY4uvJo=
+        b=z7qaSJgD1nip61lIiNmBREGd+lFEzrYM0tT3h00y75eHRpw6aIdN69Pzkgejm8mY8
+         d1wbe1sSKPKu1ZFmtaySaCxmFvsDhRk2MPfiEX5SCDdIGg8Mqh2oVbkljBJtL6py2g
+         IXXnXOCiYdyWEeVBswy4GjOgQkUNVdM5S0LcK11E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Axel Lin <axel.lin@ingics.com>,
+        stable@vger.kernel.org, ChiYuan Huang <cy_huang@richtek.com>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 095/178] regulator: mt6315: Fix function prototype for mt6315_map_mode
-Date:   Mon, 21 Jun 2021 18:15:09 +0200
-Message-Id: <20210621154925.980642040@linuxfoundation.org>
+Subject: [PATCH 5.12 096/178] regulator: rtmv20: Fix to make regcache value first reading back from HW
+Date:   Mon, 21 Jun 2021 18:15:10 +0200
+Message-Id: <20210621154926.019075024@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210621154921.212599475@linuxfoundation.org>
 References: <20210621154921.212599475@linuxfoundation.org>
@@ -40,34 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Axel Lin <axel.lin@ingics.com>
+From: ChiYuan Huang <cy_huang@richtek.com>
 
-[ Upstream commit 89082179ec5028bcd58c87171e08ada035689542 ]
+[ Upstream commit 46639a5e684edd0b80ae9dff220f193feb356277 ]
 
-The .of_map_mode should has below function prototype:
-	unsigned int (*of_map_mode)(unsigned int mode);
+- Fix to make regcache value first reading back from HW.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Link: https://lore.kernel.org/r/20210530022109.425054-1-axel.lin@ingics.com
+Signed-off-by: ChiYuan Huang <cy_huang@richtek.com>
+Link: https://lore.kernel.org/r/1622542155-6373-1-git-send-email-u0084500@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/regulator/mt6315-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/regulator/rtmv20-regulator.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/regulator/mt6315-regulator.c b/drivers/regulator/mt6315-regulator.c
-index 9edc34981ee0..6b8be52c3772 100644
---- a/drivers/regulator/mt6315-regulator.c
-+++ b/drivers/regulator/mt6315-regulator.c
-@@ -59,7 +59,7 @@ static const struct linear_range mt_volt_range1[] = {
- 	REGULATOR_LINEAR_RANGE(0, 0, 0xbf, 6250),
- };
+diff --git a/drivers/regulator/rtmv20-regulator.c b/drivers/regulator/rtmv20-regulator.c
+index 5adc552dffd5..4bca64de0f67 100644
+--- a/drivers/regulator/rtmv20-regulator.c
++++ b/drivers/regulator/rtmv20-regulator.c
+@@ -27,6 +27,7 @@
+ #define RTMV20_REG_LDIRQ	0x30
+ #define RTMV20_REG_LDSTAT	0x40
+ #define RTMV20_REG_LDMASK	0x50
++#define RTMV20_MAX_REGS		(RTMV20_REG_LDMASK + 1)
  
--static unsigned int mt6315_map_mode(u32 mode)
-+static unsigned int mt6315_map_mode(unsigned int mode)
- {
- 	switch (mode) {
- 	case MT6315_BUCK_MODE_AUTO:
+ #define RTMV20_VID_MASK		GENMASK(7, 4)
+ #define RICHTEK_VID		0x80
+@@ -313,6 +314,7 @@ static const struct regmap_config rtmv20_regmap_config = {
+ 	.val_bits = 8,
+ 	.cache_type = REGCACHE_RBTREE,
+ 	.max_register = RTMV20_REG_LDMASK,
++	.num_reg_defaults_raw = RTMV20_MAX_REGS,
+ 
+ 	.writeable_reg = rtmv20_is_accessible_reg,
+ 	.readable_reg = rtmv20_is_accessible_reg,
 -- 
 2.30.2
 
