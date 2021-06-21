@@ -2,101 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76E953AEB87
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4564E3AEB8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbhFUOjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 10:39:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbhFUOju (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 10:39:50 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1673CC061574;
-        Mon, 21 Jun 2021 07:37:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TSzsMEaZNc9O8CyE5xTFvbO8E5MW9oACwQhwhZHUu6o=; b=sX03Tw+S5ActhS5z4uRj8LWHR/
-        CHF30jq/TkswHsOvREKbqCuFJtQXtwM3V0Aug1p7odzdH5FWsjG9Yl4lygnJZZ03BHS3QhKVedk8/
-        7YSzmV/BqDc86keGKSYU3SyP8xIfsJ3JccMFPfW6QD2HH3qeDbscyaGfBbVA97pTlWhfoV67iI8Vm
-        0C0pzNwq4LYNIjz/fygB8mvYlmNnjqST5IqPHy1boozDwXmshZYWqxK0QF2U8m0ikDp65vldg3afJ
-        sp31Y/efsi95fcXwk6qUxDj9FaAwPYjQT4YrGiQT4iSjSbugqhTe87U/PRh8EoIUJFnSsnGm8ZXix
-        JWmYO/4Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvL2j-00DBkD-IM; Mon, 21 Jun 2021 14:36:58 +0000
-Date:   Mon, 21 Jun 2021 15:36:53 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Howells <dhowells@redhat.com>
-Cc:     linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-        Jeff Layton <jlayton@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] afs: Fix afs_write_end() to handle short writes
-Message-ID: <YNCkBXCo1hiQ0vFs@casper.infradead.org>
-References: <162391823192.1173366.9740514875196345746.stgit@warthog.procyon.org.uk>
- <162391825688.1173366.3437507255136307904.stgit@warthog.procyon.org.uk>
+        id S230137AbhFUOky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 10:40:54 -0400
+Received: from mail-am6eur05on2051.outbound.protection.outlook.com ([40.107.22.51]:50325
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229747AbhFUOkx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 10:40:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dBtJ8IJF2amFVperPDjAsvHopiILQr4p9spoK3+hbN7mMUEeEkeeIQ7+MzczCzuTm+dlSJx8+8ZCH5ZtXOGHU3GmR4d8Sw0hVBUWeitsvlKhmmmPXx1IfCivbITqUilFNGqfNliow2ytMzJze6c1VqNfm7V9cvZ6CYh+DlBjkwB+q83fODvH/wxswiG59lVo2/cH8tFg3zpW6F/G7AX2/dMjChlnq0wWb9nBnwATn7szuFiOb4PuCdSCsoJRN/oDYod7XhBoQNvK3eG3tvW/0G86k+zWuRMaHr4HNecSnIQpTlZAKVX1RsFQ9akL3aqwCnGDFA6n2roAuxh1DgCI9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UaM6tK1xhWS9VP/EItAOvtQ/OXj37UFwpfzSQzWppKQ=;
+ b=V6wH73Jnwn+zEzHf9gH7pJ7YlfmwgLbmLHgZKi/ZB5wjejMsxPlYwSJrkrlScuB9Xk+qWsLSYax54ime593GPA/vl/ZI3cOvafjyidjwYKhLR4rWo7SoJvkYmx+942pqVfM13X2guonWJb4I0cNIfyPMGGWxp6rN8AvPIoSwm09xsyg1+/N9/VQoh9rlItT4j69WVlGLIWqR468Od308YpA9cISK/YSahM9gwLXxqVcb0ddHa6if162hqluy7xELmTjeplRnxZnHKvWokyrw1LVMyC//I10mqfgGadImbqkEzpyBLrLqCynyRzz0NCCT3uVNmYE8HaheTBqjhY1TVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
+ dkim=pass header.d=seco.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=secospa.onmicrosoft.com; s=selector2-secospa-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UaM6tK1xhWS9VP/EItAOvtQ/OXj37UFwpfzSQzWppKQ=;
+ b=s4i5IoccGa0zvtGQEYC9+YBUYC4ZBrwxoFeAuGvFVKgOujLK1djedtCG3f3mfXjcmuKvJPq+pStan8NZp2fe3Blt7gUiAi3AuAHMMyXCy9c0w6+AECDHESiIWlsQUrJ+BStdNO6/RVJe0ey7u1ysid053gc2qCJoL4b+LDPaCgU=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=seco.com;
+Received: from DB7PR03MB4523.eurprd03.prod.outlook.com (2603:10a6:10:19::27)
+ by DBBPR03MB7146.eurprd03.prod.outlook.com (2603:10a6:10:209::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18; Mon, 21 Jun
+ 2021 14:38:36 +0000
+Received: from DB7PR03MB4523.eurprd03.prod.outlook.com
+ ([fe80::40d5:3554:c709:6b1b]) by DB7PR03MB4523.eurprd03.prod.outlook.com
+ ([fe80::40d5:3554:c709:6b1b%5]) with mapi id 15.20.4242.023; Mon, 21 Jun 2021
+ 14:38:36 +0000
+Subject: Re: linux-next: Fixes tag needs some work in the devicetree tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Rob Herring <robherring2@gmail.com>
+Cc:     Luca Ceresoli <luca@lucaceresoli.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20210621084216.3c477f94@canb.auug.org.au>
+From:   Sean Anderson <sean.anderson@seco.com>
+Message-ID: <456f4183-aa2e-b714-e681-819485f222a1@seco.com>
+Date:   Mon, 21 Jun 2021 10:38:32 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20210621084216.3c477f94@canb.auug.org.au>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [50.195.82.171]
+X-ClientProxiedBy: BL1PR13CA0120.namprd13.prod.outlook.com
+ (2603:10b6:208:2b9::35) To DB7PR03MB4523.eurprd03.prod.outlook.com
+ (2603:10a6:10:19::27)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <162391825688.1173366.3437507255136307904.stgit@warthog.procyon.org.uk>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [172.27.1.65] (50.195.82.171) by BL1PR13CA0120.namprd13.prod.outlook.com (2603:10b6:208:2b9::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.9 via Frontend Transport; Mon, 21 Jun 2021 14:38:35 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e3b61e08-bf12-43eb-77b6-08d934c240bd
+X-MS-TrafficTypeDiagnostic: DBBPR03MB7146:
+X-Microsoft-Antispam-PRVS: <DBBPR03MB71467E3B2E8B71057610DEA9960A9@DBBPR03MB7146.eurprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:177;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NdI3F5uctKypH613oYX4aet9FzRnH3u5nZvYlmbDMPsrkOG/khp8y3nPCowYrHg0TZ86DUg2BhMiJE7bsKGfmyRtmDxLyip3VwAZxR4I7UK/xspnH/I3jyBeVIHtjuz2SVdt/HUurq2NZQehH/dupv+UeUspOg7Kg5AILZ1uoj7eI9SmIvKN4pjzy4EUuyCgInG8PAxsfqfAKOZlicWM4RLWiiABQ/VvVQ3R1nl4x/1K8oYQYxt4Shg3WxZ/8PPaARfgYc4XG8ZJrZvZhedoVjQUF+1xQTZnKf6cHY5mwj1OSButjO/d2YANWkfFv8UcUeMigq314fksIh7cP1VCG4bfjCrhObo/dUTJDl4KfzBoz1X1ToNTA+3H3TAKZbvVzXZzwhOoCjG4GOqkQviJUD+w/xw7jp3h2+eDd1KwlkUe2c/xUXk6fXIel4wgZWFxEiL/USNdpVtujphgDYVgBdbNwFw2T61q7uojC540XRkZ8TQNsG+bopHaRk9ua4NIz2GUTUw8N9+M/FouIUg3+BJUSMLcEH2je+iB1P+1ZEZi45hCrcoDL7BB0lWNYRcnqP6CLrTOQzwREm7OgoUoY+xO4Ygf36+5+d3xkIzbKbzaNs9HXaZ/nCrz5iBeLKtcwTQhroPUp+kmrYe0raBrT6fRhmRDX4GhYUo4gsqmlrubZG/Ug+x0J/ngQJt/LmNMAqWA4IMGZ545x0PtJzy3Fw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR03MB4523.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(39850400004)(136003)(376002)(366004)(54906003)(4326008)(44832011)(956004)(2616005)(31696002)(26005)(31686004)(110136005)(8676002)(478600001)(6486002)(38350700002)(66556008)(53546011)(16576012)(52116002)(36756003)(6666004)(2906002)(66946007)(86362001)(83380400001)(186003)(316002)(5660300002)(66476007)(16526019)(38100700002)(8936002)(4744005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?Windows-1252?Q?9UwFV7TGiJDcZUWPp3EkojbUIphcutlx0P23Uob98oXkXiLTV8YwxX4A?=
+ =?Windows-1252?Q?uJ7EJbJYifM8Sk+LHOw6K8HjfN7FLJtnishR6ey7jyEXvQghK/HJ0OBP?=
+ =?Windows-1252?Q?AETFY13b/TdqweLBAjusBPgKkPBfAD6Wywuc40ugJ1x12705CjJPf010?=
+ =?Windows-1252?Q?wn8lBpX5Vw9ehm8tZcBztc214LcrGqlRfJ/IcCXbw7NdijFhY0GG/gce?=
+ =?Windows-1252?Q?8PhmrJiBqZWRDydZG0b44UsqvD7ry39WQmU9x1yTgvj+DySzQZbJZ0HS?=
+ =?Windows-1252?Q?8fTjkbi4CA8wtuA/lT0h/tFqxuD9wKuOPi15u8v4d5FJa72Y/DozGCPp?=
+ =?Windows-1252?Q?JqFdUMJAZXB25UyDCFVFvpsWkijx1H6gDFsurGRZIz5665Vbo0DA9/FE?=
+ =?Windows-1252?Q?alpCjQZg4Qq8M6LALLOFECpPT1Ai791YO/CYVciq0r98l8gvS4iLD9Ji?=
+ =?Windows-1252?Q?neY1J1PoMWQ/jBG6TrdYMySdJBjsjIMaC7jkF55BH6EW8pEZJd2w+ECA?=
+ =?Windows-1252?Q?IdQMflICl7UXLCpvvq4wYSqnCvJVQbMVMdqej+WVheWxKYnjCCzhZo6h?=
+ =?Windows-1252?Q?/8QmeDwBOwM7IWNZIJv5siF6pPOG+osTVjbCSklFLIOBGYspasRxUTzm?=
+ =?Windows-1252?Q?AxQ6rqrKlFzoLYejtrlRPR9U/lhUuzt+XnX8mSrQdBUKWQcL0NNMhZw2?=
+ =?Windows-1252?Q?4Nwx5ScCZA2895GqVOatTHHcP0emlL4L9CWBOm6o7WhesCcI9MU73lRR?=
+ =?Windows-1252?Q?4282lCIO/ilpQLdiSItzZ05Sr/f5Dtx7k984OBowzCxv1nuLqjhwVFsh?=
+ =?Windows-1252?Q?BGq/Dd3mN6f8mrSzmp6ZK0kU+Yles38nF85+x++Z/X1wQGWuakHZmOhT?=
+ =?Windows-1252?Q?sOgj0JLtePIpjROYxKyzSfkL/qTW4P352gawauMeKLbgCq8CsyvWaCyB?=
+ =?Windows-1252?Q?xJJx/b3ftlIYbZhXruXVdSm6QbxtPlKPoF5vEeVS5oDBs2/7cEzMHNki?=
+ =?Windows-1252?Q?An2hmDp9bjyFSXSMaOJiv3TH6+h4PpinEzI27j2LhphD7hErl/sK4w7M?=
+ =?Windows-1252?Q?IVFVQ4ri1tba5NAuw7EBb/wpzFH7VYTgjBkZkqbNOtmspWaFqvLCJvOy?=
+ =?Windows-1252?Q?he++yBw1UE2q6oqtQSSg0DqIH4lYbJXDOWB0q1cf9YR94JR+mmW/UOnU?=
+ =?Windows-1252?Q?zfATn4vBdHjskfrBIzEZN9pR73ixb9UShzR4zc9/XG476XHPlvB2MmGY?=
+ =?Windows-1252?Q?9eQfC1w1MwxxvYbEVdZ1Dk5Tr27kTScRz0SFcjTjv7aMzEU4TOjcB+F9?=
+ =?Windows-1252?Q?vOdDnWqtDkWzYNe3tWZSk99yaqghI34S8rEkBXAZXrkI7kC09tJ35GTA?=
+ =?Windows-1252?Q?EUBm67TOLkBTcjQYw7lqf9k2xo9GsWVChJAhyddYsHzUSlH2RQsoVtnc?=
+X-OriginatorOrg: seco.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e3b61e08-bf12-43eb-77b6-08d934c240bd
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR03MB4523.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2021 14:38:36.5553
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nI8katbVvxqdZKCmrKiBo7oTmZ7h298MHxipZ8pmOtn+iHBG/1orsTIn0FG82/gp/mu7Rdry9WduUsfnES0WKA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR03MB7146
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 09:24:16AM +0100, David Howells wrote:
-> Fix afs_write_end() to correctly handle a short copy into the intended
-> write region of the page.  Two things are necessary:
+
+
+On 6/20/21 6:42 PM, Stephen Rothwell wrote:
+> Hi all,
 > 
->  (1) If the page is not up to date, then we should just return 0
->      (ie. indicating a zero-length copy).  The loop in
->      generic_perform_write() will go around again, possibly breaking up the
->      iterator into discrete chunks.
+> In commit
 > 
->      This is analogous to commit b9de313cf05fe08fa59efaf19756ec5283af672a
->      for ceph.
+>    f92f2726e3dd ("dt-bindings: clk: vc5: Fix example")
 > 
->  (2) The page should not have been set uptodate if it wasn't completely set
->      up by netfs_write_begin() (this will be fixed in the next patch), so
->      we need to set uptodate here in such a case.
+> Fixes tag
 > 
-> Also remove the assertion that was checking that the page was set uptodate
-> since it's now set uptodate if it wasn't already a few lines above.  The
-> assertion was from when uptodate was set elsewhere.
+>    Fixes: 766e1b8608bf ("dt-bindings: clk: versaclock5: convert to yaml")
+> 
+> has these problem(s):
+> 
+>    - Target SHA1 does not exist
+> 
+> Maybe you meant
+> 
+> Fixes: 45c940184b50 ("dt-bindings: clk: versaclock5: convert to yaml")
+> 
 
-Thanks for adding that explanation.
+Ah, yes I do. Should I submit a v2?
 
-> +++ b/fs/afs/write.c
-> @@ -119,6 +119,16 @@ int afs_write_end(struct file *file, struct address_space *mapping,
->  	_enter("{%llx:%llu},{%lx}",
->  	       vnode->fid.vid, vnode->fid.vnode, page->index);
->  
-> +	len = min_t(size_t, len, thp_size(page) - from);
-
-This line isn't necessary yet, right?
-
-> +	if (!PageUptodate(page)) {
-> +		if (copied < len) {
-> +			copied = 0;
-> +			goto out;
-> +		}
-> +
-> +		SetPageUptodate(page);
-> +	}
-> +
->  	if (copied == 0)
->  		goto out;
->  
-> @@ -133,8 +143,6 @@ int afs_write_end(struct file *file, struct address_space *mapping,
->  		write_sequnlock(&vnode->cb_lock);
->  	}
->  
-> -	ASSERT(PageUptodate(page));
-> -
->  	if (PagePrivate(page)) {
->  		priv = page_private(page);
->  		f = afs_page_dirty_from(page, priv);
-
-The rest of this looks good.
+--Sean
