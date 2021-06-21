@@ -2,220 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73D793AE508
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B798F3AE50E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:38:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbhFUIio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 04:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbhFUIin (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 04:38:43 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F9AC061574;
-        Mon, 21 Jun 2021 01:36:29 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 08:36:26 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624264587;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eyBXpYH5u7fn8fJ8hrFdUCX8ICkIoQ0HYrBRNu3xLXY=;
-        b=znXYcMkPsdyCnX50whZbFP2HOVWAsi/Ou1vjrXUDzizDjOhX2GzaXSrWFnc7/1W0gWvqT8
-        FL9bCF2QN6QAqXmGIp5nZP7qrjAwYf81NVT6V3mFXlFfSVfVvm6KDrLW2HCRp1qxRTWUAq
-        2kdl8O6nKUE/WZYszV5HiGBWZy0l2qCxFhwecHUGSLetlt8taFcmc97DOz9hKMik0DdwjT
-        Gzld+EmRn9jVLEfbhiLKEUTskj3VIForG2VpMO7Y5jKrVetDPGF83E+Hm+b78yOUSJaB/0
-        ZjWv89IIPjSpBo2igfYdFvx6VdHQjjsIJjDFWt19mO3C+5Sw2kPjeUi+9y6y3Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624264587;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eyBXpYH5u7fn8fJ8hrFdUCX8ICkIoQ0HYrBRNu3xLXY=;
-        b=hU2mMOT+n/AWpjrwvpDqZ/DqwOTuWhKvwVkZmKZv6UtFft9PGlVeajHlh5TL2l9YOTHqeU
-        s6THK4ltZsx9OvDg==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: smp/urgent] cpu/hotplug: Cure the cpusets trainwreck
-Cc:     Alexey Klimov <aklimov@redhat.com>,
-        Joshua Baker <jobaker@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <87tuowcnv3.ffs@nanos.tec.linutronix.de>
-References: <87tuowcnv3.ffs@nanos.tec.linutronix.de>
+        id S230161AbhFUIke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 04:40:34 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:36733 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229890AbhFUIkd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 04:40:33 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624264699; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=zkZFX1WS+/7fa88RZ+e2bW+9prmrxb8QWu3yvtkdX7c=;
+ b=SpvoXBU0MSbDB0gJ/hyYVZkyyyGhjzYFB2t5aAv7Vsj6O/gyXNJBWP6+I3QQApCsC+cNUGtd
+ pzsfIELIKMtDmKol0qbmysbAfrFn6AU2RpOvhMrge+nHjMNl1F30emBHTk6vxQhvH+1u+h2g
+ Scdi3UZPiQYG+BdjGAI8Mzkw1xI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 60d04ffb8491191eb3505eda (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 21 Jun 2021 08:38:19
+ GMT
+Sender: rajeevny=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 4E3CFC4360C; Mon, 21 Jun 2021 08:38:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rajeevny)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B591AC433F1;
+        Mon, 21 Jun 2021 08:38:17 +0000 (UTC)
 MIME-Version: 1.0
-Message-ID: <162426458610.395.17502837087837120048.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Mon, 21 Jun 2021 14:08:17 +0530
+From:   rajeevny@codeaurora.org
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thierry.reding@gmail.com,
+        robdclark@gmail.com, dianders@chromium.org, lyude@redhat.com,
+        jani.nikula@intel.com, robh@kernel.org,
+        laurent.pinchart@ideasonboard.com, a.hajda@samsung.com,
+        daniel.thompson@linaro.org, hoegsberg@chromium.org,
+        abhinavk@codeaurora.org, seanpaul@chromium.org,
+        kalyan_t@codeaurora.org, mkrishn@codeaurora.org,
+        lee.jones@linaro.org, jingoohan1@gmail.com,
+        linux-fbdev@vger.kernel.org
+Subject: Re: [v7 1/5] drm/panel: add basic DP AUX backlight support
+In-Reply-To: <20210620093141.GA703072@ravnborg.org>
+References: <1624099230-20899-1-git-send-email-rajeevny@codeaurora.org>
+ <1624099230-20899-2-git-send-email-rajeevny@codeaurora.org>
+ <20210620093141.GA703072@ravnborg.org>
+Message-ID: <ebf5581759daee9596c2f092ca836ecb@codeaurora.org>
+X-Sender: rajeevny@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the smp/urgent branch of tip:
+Hi Sam,
 
-Commit-ID:     b22afcdf04c96ca58327784e280e10288cfd3303
-Gitweb:        https://git.kernel.org/tip/b22afcdf04c96ca58327784e280e10288cfd3303
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Sat, 27 Mar 2021 22:01:36 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 21 Jun 2021 10:31:06 +02:00
+On 20-06-2021 15:01, Sam Ravnborg wrote:
+> Hi Rajeev
+> 
+> On Sat, Jun 19, 2021 at 04:10:26PM +0530, Rajeev Nandan wrote:
+>> Some panels support backlight control over DP AUX channel using
+>> VESA's standard backlight control interface.
+>> Using new DRM eDP backlight helpers, add support to create and
+>> register a backlight for those panels in drm_panel to simplify
+>> the panel drivers.
+>> 
+>> The panel driver with access to "struct drm_dp_aux" can create and
+>> register a backlight device using following code snippet in its
+>> probe() function:
+>> 
+>> 	err = drm_panel_dp_aux_backlight(panel, aux);
+>> 	if (err)
+>> 		return err;
+> 
+> IT very good to have this supported by drm_panel, so we avoid
+> bolierplate in various drivers.
+> 
+>> 
+>> Then drm_panel will handle backlight_(enable|disable) calls
+>> similar to the case when drm_panel_of_backlight() is used.
+>> 
+>> Currently, we are not supporting one feature where the source
+>> device can combine the backlight brightness levels set through
+>> DP AUX and the BL_PWM_DIM eDP connector pin. Since it's not
+>> required for the basic backlight controls, it can be added later.
+>> 
+>> Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
+>> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+>> Reviewed-by: Lyude Paul <lyude@redhat.com>
+>> ---
+>> 
+>> (no changes since v6)
+>> 
+>> Changes in v5:
+>> - New
+>> 
+>> Changes in v6:
+>> - Fixed ordering of memory allocation (Douglas)
+>> - Updated word wrapping in a comment (Douglas)
+>> 
+>>  drivers/gpu/drm/drm_panel.c | 108 
+>> ++++++++++++++++++++++++++++++++++++++++++++
+>>  include/drm/drm_panel.h     |  15 ++++--
+>>  2 files changed, 119 insertions(+), 4 deletions(-)
+>> 
+>> diff --git a/drivers/gpu/drm/drm_panel.c b/drivers/gpu/drm/drm_panel.c
+>> index f634371..9e65342 100644
+>> --- a/drivers/gpu/drm/drm_panel.c
+>> +++ b/drivers/gpu/drm/drm_panel.c
+>> @@ -26,12 +26,20 @@
+>>  #include <linux/module.h>
+>> 
+>>  #include <drm/drm_crtc.h>
+>> +#include <drm/drm_dp_helper.h>
+>>  #include <drm/drm_panel.h>
+>>  #include <drm/drm_print.h>
+>> 
+>>  static DEFINE_MUTEX(panel_lock);
+>>  static LIST_HEAD(panel_list);
+>> 
+>> +struct dp_aux_backlight {
+>> +	struct backlight_device *base;
+>> +	struct drm_dp_aux *aux;
+>> +	struct drm_edp_backlight_info info;
+>> +	bool enabled;
+>> +};
+>> +
+>>  /**
+>>   * DOC: drm panel
+>>   *
+>> @@ -342,6 +350,106 @@ int drm_panel_of_backlight(struct drm_panel 
+>> *panel)
+>>  	return 0;
+>>  }
+>>  EXPORT_SYMBOL(drm_panel_of_backlight);
+>> +
+>> +static int dp_aux_backlight_update_status(struct backlight_device 
+>> *bd)
+>> +{
+>> +	struct dp_aux_backlight *bl = bl_get_data(bd);
+>> +	u16 brightness = backlight_get_brightness(bd);
+> backlight_get_brightness() returns an int, so using u16 seems wrong.
+> But then drm_edp_backlight_enable() uses u16 for level - so I guess it
+> is OK.
+> We use unsigned long, int, u16 for brightness. Looks like something one
+> could look at one day, but today is not that day.
+> 
+>> +	int ret = 0;
+>> +
+>> +	if (brightness > 0) {
+> Use backlight_is_blank(bd) here, as this is really what you test for.
 
-cpu/hotplug: Cure the cpusets trainwreck
+The backlight_get_brightness() used above has the backlight_is_blank() 
+check and returns brightness 0 when the backlight_is_blank(bd) is true.
+So, instead of calling backlight_is_blank(bd), we are checking 
+brightness value here.
+I took the reference from pwm_backlight_update_status() of the PWM 
+backlight driver (drivers/video/backlight/pwm_bl.c)
 
-Alexey and Joshua tried to solve a cpusets related hotplug problem which is
-user space visible and results in unexpected behaviour for some time after
-a CPU has been plugged in and the corresponding uevent was delivered.
+Yes, we can change this _if_ condition to use backlight_is_blank(bd), as 
+this is an inline function, and is more meaningful.
+With this, there would be one change in the behavior of 
+_backlight_update_status function in the following case:
 
-cpusets delegate the hotplug work (rebuilding cpumasks etc.) to a
-workqueue. This is done because the cpusets code has already a lock
-nesting of cgroups_mutex -> cpu_hotplug_lock. A synchronous callback or
-waiting for the work to finish with cpu_hotplug_lock held can and will
-deadlock because that results in the reverse lock order.
+- Setting brightness=0 when the backlight is not blank:
+In the current case setting brightness=0 is disabling the backlight.
+In the new case, setting brightness=0 will set the brightness to 0 and 
+will do nothing to backlight disable.
 
-As a consequence the uevent can be delivered before cpusets have consistent
-state which means that a user space invocation of sched_setaffinity() to
-move a task to the plugged CPU fails up to the point where the scheduled
-work has been processed.
+I think that should not be a problem?
 
-The same is true for CPU unplug, but that does not create user observable
-failure (yet).
+> 
+> I cannot see why you need the extra check on ->enabled?
+> Would it be sufficient to check backlight_is_blank() only?
 
-It's still inconsistent to claim that an operation is finished before it
-actually is and that's the real issue at hand. uevents just make it
-reliably observable.
+This extra check on bl->enabled flag is added to avoid 
+enabling/disabling backlight again if it is already enabled/disabled.
+Using this flag way can know the transition between backlight blank and 
+un-blank, and decide when to enable/disable the backlight.
 
-Obviously the problem should be fixed in cpusets/cgroups, but untangling
-that is pretty much impossible because according to the changelog of the
-commit which introduced this 8 years ago:
+> 
+>> +		if (!bl->enabled) {
+>> +			drm_edp_backlight_enable(bl->aux, &bl->info, brightness);
+>> +			bl->enabled = true;
+>> +			return 0;
+>> +		}
+>> +		ret = drm_edp_backlight_set_level(bl->aux, &bl->info, brightness);
+>> +	} else {
+>> +		if (bl->enabled) {
+>> +			drm_edp_backlight_disable(bl->aux, &bl->info);
+>> +			bl->enabled = false;
+>> +		}
+>> +	}
+>> +
+>> +	return ret;
+>> +}
+> 
+> 	Sam
 
- 3a5a6d0c2b03("cpuset: don't nest cgroup_mutex inside get_online_cpus()")
-
-the lock order cgroups_mutex -> cpu_hotplug_lock is a design decision and
-the whole code is built around that.
-
-So bite the bullet and invoke the relevant cpuset function, which waits for
-the work to finish, in _cpu_up/down() after dropping cpu_hotplug_lock and
-only when tasks are not frozen by suspend/hibernate because that would
-obviously wait forever.
-
-Waiting there with cpu_add_remove_lock, which is protecting the present
-and possible CPU maps, held is not a problem at all because neither work
-queues nor cpusets/cgroups have any lockchains related to that lock.
-
-Waiting in the hotplug machinery is not problematic either because there
-are already state callbacks which wait for hardware queues to drain. It
-makes the operations slightly slower, but hotplug is slow anyway.
-
-This ensures that state is consistent before returning from a hotplug
-up/down operation. It's still inconsistent during the operation, but that's
-a different story.
-
-Add a large comment which explains why this is done and why this is not a
-dump ground for the hack of the day to work around half thought out locking
-schemes. Document also the implications vs. hotplug operations and
-serialization or the lack of it.
-
-Thanks to Alexy and Joshua for analyzing why this temporary
-sched_setaffinity() failure happened.
-
-Fixes: 3a5a6d0c2b03("cpuset: don't nest cgroup_mutex inside get_online_cpus()")
-Reported-by: Alexey Klimov <aklimov@redhat.com>
-Reported-by: Joshua Baker <jobaker@redhat.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Alexey Klimov <aklimov@redhat.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/87tuowcnv3.ffs@nanos.tec.linutronix.de
----
- kernel/cpu.c | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
-
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index e538518..d2e1692 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -32,6 +32,7 @@
- #include <linux/relay.h>
- #include <linux/slab.h>
- #include <linux/percpu-rwsem.h>
-+#include <linux/cpuset.h>
- 
- #include <trace/events/power.h>
- #define CREATE_TRACE_POINTS
-@@ -873,6 +874,52 @@ void __init cpuhp_threads_init(void)
- 	kthread_unpark(this_cpu_read(cpuhp_state.thread));
- }
- 
-+/*
-+ *
-+ * Serialize hotplug trainwrecks outside of the cpu_hotplug_lock
-+ * protected region.
-+ *
-+ * The operation is still serialized against concurrent CPU hotplug via
-+ * cpu_add_remove_lock, i.e. CPU map protection.  But it is _not_
-+ * serialized against other hotplug related activity like adding or
-+ * removing of state callbacks and state instances, which invoke either the
-+ * startup or the teardown callback of the affected state.
-+ *
-+ * This is required for subsystems which are unfixable vs. CPU hotplug and
-+ * evade lock inversion problems by scheduling work which has to be
-+ * completed _before_ cpu_up()/_cpu_down() returns.
-+ *
-+ * Don't even think about adding anything to this for any new code or even
-+ * drivers. It's only purpose is to keep existing lock order trainwrecks
-+ * working.
-+ *
-+ * For cpu_down() there might be valid reasons to finish cleanups which are
-+ * not required to be done under cpu_hotplug_lock, but that's a different
-+ * story and would be not invoked via this.
-+ */
-+static void cpu_up_down_serialize_trainwrecks(bool tasks_frozen)
-+{
-+	/*
-+	 * cpusets delegate hotplug operations to a worker to "solve" the
-+	 * lock order problems. Wait for the worker, but only if tasks are
-+	 * _not_ frozen (suspend, hibernate) as that would wait forever.
-+	 *
-+	 * The wait is required because otherwise the hotplug operation
-+	 * returns with inconsistent state, which could even be observed in
-+	 * user space when a new CPU is brought up. The CPU plug uevent
-+	 * would be delivered and user space reacting on it would fail to
-+	 * move tasks to the newly plugged CPU up to the point where the
-+	 * work has finished because up to that point the newly plugged CPU
-+	 * is not assignable in cpusets/cgroups. On unplug that's not
-+	 * necessarily a visible issue, but it is still inconsistent state,
-+	 * which is the real problem which needs to be "fixed". This can't
-+	 * prevent the transient state between scheduling the work and
-+	 * returning from waiting for it.
-+	 */
-+	if (!tasks_frozen)
-+		cpuset_wait_for_hotplug();
-+}
-+
- #ifdef CONFIG_HOTPLUG_CPU
- #ifndef arch_clear_mm_cpumask_cpu
- #define arch_clear_mm_cpumask_cpu(cpu, mm) cpumask_clear_cpu(cpu, mm_cpumask(mm))
-@@ -1108,6 +1155,7 @@ out:
- 	 */
- 	lockup_detector_cleanup();
- 	arch_smt_update();
-+	cpu_up_down_serialize_trainwrecks(tasks_frozen);
- 	return ret;
- }
- 
-@@ -1302,6 +1350,7 @@ static int _cpu_up(unsigned int cpu, int tasks_frozen, enum cpuhp_state target)
- out:
- 	cpus_write_unlock();
- 	arch_smt_update();
-+	cpu_up_down_serialize_trainwrecks(tasks_frozen);
- 	return ret;
- }
- 
+Thanks,
+Rajeev
