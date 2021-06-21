@@ -2,83 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DFFC3AEC0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:10:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16B493AEC08
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhFUPMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 11:12:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbhFUPML (ORCPT
+        id S230118AbhFUPLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 11:11:48 -0400
+Received: from mickerik.phytec.de ([195.145.39.210]:62570 "EHLO
+        mickerik.phytec.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229789AbhFUPLq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 11:12:11 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FB8C061574;
-        Mon, 21 Jun 2021 08:09:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=D8ph6pAIQDI8O5xX0/bF6rOuV3U8EpQmauqRDOmPVTw=; b=qawH6s/nu6gNZqpAj9pyqEDODz
-        MQb09/vjLbdWiYpA8JVaY4k0zUar9DsoQrWhb4JKAzFeSFiL8GJvX006u8PF9KYUqLByb4Ue/thtk
-        oHUI/3Nk7hR8YH6VY3dXwfhMF49O4GjrUZqiR2UqDLioeOmdpRDR5+HYGq7r0b4NYsZJmUSQB58pZ
-        9yf4A3b8qVaku3GgAnm/HjM5eG8r0S/i5Fd4NtCo1kK+A0m4vcAiTx0LwElKu4AJoz2VA/d7Qug2d
-        C/hQvAxLJwYFquqABYvrY4OBojOVzOzSv3epUm71kfq9jL4BbZdSsIpMvmfIWhangFScMsVdBsb7Y
-        2F22fS4g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lvLY4-00DDUo-Ca; Mon, 21 Jun 2021 15:09:25 +0000
-Date:   Mon, 21 Jun 2021 16:09:16 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     viro@zeniv.linux.org.uk, Vivek Goyal <vgoyal@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs@redhat.com
-Subject: Re: [PATCH 1/2] init: split get_fs_names
-Message-ID: <YNCrnCvtlOuZO9jV@casper.infradead.org>
-References: <20210621062657.3641879-1-hch@lst.de>
- <20210621062657.3641879-2-hch@lst.de>
+        Mon, 21 Jun 2021 11:11:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a1; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1624288171; x=1626880171;
+        h=From:Sender:Reply-To:Subject:Date:Message-Id:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=JmEqSETyOox4CokfFdKvB32r6pxlkXTxZHSNtV88CFU=;
+        b=GCils+zePEf+Y42zZikpsmTQ8MTonCv48y4JiPALZQdM3dcOrJF9fFImSUDXIx9c
+        robVdMJD/jxpMfMYtgjlgDLNiK7WAA41/9XZtWFpZFQ9CQYcJWikaIyaZdhlBPHU
+        +g1IuQmPtK9oJQsXOOLV5FLYhGWp3tPlicRlrQyKVmQ=;
+X-AuditID: c39127d2-a9fbd70000001c5e-a9-60d0abab9e3e
+Received: from idefix.phytec.de (Unknown_Domain [172.16.0.10])
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id 35.77.07262.BABA0D06; Mon, 21 Jun 2021 17:09:31 +0200 (CEST)
+Received: from lws-riedmueller.phytec.de ([172.16.23.108])
+          by idefix.phytec.de (IBM Domino Release 9.0.1FP7)
+          with ESMTP id 2021062117093092-1007632 ;
+          Mon, 21 Jun 2021 17:09:30 +0200 
+From:   Stefan Riedmueller <s.riedmueller@phytec.de>
+To:     Sam Ravnborg <sam@ravnborg.org>, Daniel Vetter <daniel@ffwll.ch>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: [RESEND PATCH 1/3] drm/panel: Add connector_type and bus_format for AUO G104SN02 V2 panel
+Date:   Mon, 21 Jun 2021 17:09:28 +0200
+Message-Id: <20210621150930.86617-1-s.riedmueller@phytec.de>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621062657.3641879-2-hch@lst.de>
+X-MIMETrack: Itemize by SMTP Server on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 21.06.2021 17:09:31,
+        Serialize by Router on Idefix/Phytec(Release 9.0.1FP7|August  17, 2016) at
+ 21.06.2021 17:09:31
+X-TNEFEvaluated: 1
+Content-Transfer-Encoding: quoted-printable
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrALMWRmVeSWpSXmKPExsWyRoCBS3f16gsJBrd38lr0njvJZPF/20Rm
+        iytf37NZdE5cwm5xedccNosVP7cyWvzcNY/Fgd1j77cFLB47Z91l95jdMZPVY/u3B6we97uP
+        M3ksmXaVzePzJrkA9igum5TUnMyy1CJ9uwSujN9/JQouclQsfLeZpYFxE3sXIweHhICJxKNP
+        jl2MXBxCAtsYJXYuOsoM4VxnlJh9+QhLFyMnB5uAkcSCaY1MIAkRgQmMEo0HZjOBJJgFyiXa
+        l54Cs4UFkiROH3/IDGKzCKhKtE57ywSygVfARuLgmSqQsISAvMTMS9/ZQWxeAUGJkzOfsIDM
+        lBC4wijx9uZ5ZogiIYnTi88yQ8zXlli28DXzBEa+WUh6ZiFJLWBkWsUolJuZnJ1alJmtV5BR
+        WZKarJeSuokRGKqHJ6pf2sHYN8fjECMTB+MhRgkOZiUR3pspFxKEeFMSK6tSi/Lji0pzUosP
+        MUpzsCiJ827gLQkTEkhPLEnNTk0tSC2CyTJxcEo1MHapNJmuWNYj6XQu96NzzZr1ns1XLv3Z
+        zaVSduj8ldpfobc527rr37vd4FnrrXQ3Jcb12UHGid7e5Zqfrm6pEMvwV9bYEfWjck/kb1G7
+        kLPesyPcPmj1fW7fVMI1r/inbJE906ab65c//fziXfPvcEsLxr6Jvb4+KTV1R6Z5b1xWPe8i
+        g/DEhUosxRmJhlrMRcWJABp223xDAgAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 08:26:56AM +0200, Christoph Hellwig wrote:
-> -static void __init get_fs_names(char *page)
-> +static void __init split_fs_names(char *page, char *names)
+The AUO G104SN02 V2 is an LVDS display which supports 6 and 8 bpc PSWG.
+Add the corresponding connector type and 8 bpc as default bus=5Fformat.
 
-If you're going to respin it anyway, can you rename 'page' to 'buf'
-or something?  Kind of confusing to have a char * called 'page'.
+Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+---
+Hi,
+I added the reviewed-by tag from Laurent Pinchart for the RESEND, hope
+that is ok.
+https://lore.kernel.org/dri-devel/YNChySKddg%2FJsMZv@pendragon.ideasonboard=
+.com/
 
->  {
-> +	strcpy(page, root_fs_names);
-> +	while (*page++) {
-> +		if (page[-1] == ',')
-> +			page[-1] = '\0';
-> +	}
-> +	*page = '\0';
-> +}
+ drivers/gpu/drm/panel/panel-simple.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-is it really worth doing a strcpy() followed by a custom strtok()?
-would this work better?
-
-	char c;
-
-	do {
-		c =  *root_fs_names++;
-		*buf++ = c;
-		if (c == ',')
-			buf[-1] = '\0';
-	} while (c);
-
-> +static void __init get_all_fs_names(char *page)
-> +{
-> +	int len = get_filesystem_list(page);
-
-it occurs to me that get_filesystem_list() fails silently.  if you build
-every linux filesystem in, and want your root on zonefs (assuming
-they're alphabetical), we'll fail to find it without a message
-indicating that we overflowed the buffer.
+diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/p=
+anel-simple.c
+index be312b5c04dd..99edd640d700 100644
+--- a/drivers/gpu/drm/panel/panel-simple.c
++++ b/drivers/gpu/drm/panel/panel-simple.c
+@@ -1137,6 +1137,8 @@ static const struct panel=5Fdesc auo=5Fg104sn02 =3D {
+ 		.width =3D 211,
+ 		.height =3D 158,
+ 	},
++	.bus=5Fformat =3D MEDIA=5FBUS=5FFMT=5FRGB888=5F1X7X4=5FSPWG,
++	.connector=5Ftype =3D DRM=5FMODE=5FCONNECTOR=5FLVDS,
+ };
+=20
+ static const struct drm=5Fdisplay=5Fmode auo=5Fg121ean01=5Fmode =3D {
+--=20
+2.25.1
 
