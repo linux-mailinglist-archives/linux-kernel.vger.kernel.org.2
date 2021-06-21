@@ -2,133 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD893AE2DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 07:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E66163AE2F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 08:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229695AbhFUFx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 01:53:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35412 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229479AbhFUFxz (ORCPT
+        id S229487AbhFUGIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 02:08:11 -0400
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:46719 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhFUGIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 01:53:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624254700;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=x4pB8j6tDZRW0gLAsi2832dbbAuey5XcjoKSFTOd6GI=;
-        b=LWRZwLJpZWI9YerMkLafu7hbp6KAEXc1pprkaLcLwp1rp6D6hUdjRTWsA+WrePAmmp+7wl
-        saANdP/D3RF21I5CkTxSk9R+KdeNitPUE3WCvJWf2k4kvwpPiukzBjz2lhUckoeLMOtHgu
-        tALphjoGyjtPMIu9BHlvV4FqpnBVUAk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-332-NfR_JVlMN6m7pwdk431LCw-1; Mon, 21 Jun 2021 01:51:38 -0400
-X-MC-Unique: NfR_JVlMN6m7pwdk431LCw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6707B18414A0;
-        Mon, 21 Jun 2021 05:51:37 +0000 (UTC)
-Received: from [10.64.54.84] (vpn2-54-84.bne.redhat.com [10.64.54.84])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AC32C60861;
-        Mon, 21 Jun 2021 05:51:30 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [RFC PATCH] mm/page_reporting: Adjust threshold according to
- MAX_ORDER
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        shan.gavin@gmail.com, Anshuman Khandual <anshuman.khandual@arm.com>
-References: <20210601033319.100737-1-gshan@redhat.com>
- <76516781-6a70-f2b0-f3e3-da999c84350f@redhat.com>
- <0c0eb8c8-463d-d6f1-3cec-bbc0af0a229c@redhat.com>
- <b45b26ea-a6ac-934c-2467-c6e829b5d3ad@redhat.com>
- <CAKgT0Ue9SQ8=ju1m6ftKTb4Tai9EJ5NQhnB_uk-DzMc19-R4cQ@mail.gmail.com>
- <63c06446-3b10-762c-3a29-464854b74e08@redhat.com>
- <CAKgT0UfSx+qhfLvnukag+Z4Ab72Lyg8UXBvduiswm2BnFZH9vw@mail.gmail.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <5a74f8ed-8579-290b-758f-faa24d2afa70@redhat.com>
-Date:   Mon, 21 Jun 2021 17:52:32 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Mon, 21 Jun 2021 02:08:06 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210621060551euoutp0291b1902f575f76e9756ea3cb8667d7b6~Kg9F22bxF2897228972euoutp02q
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 06:05:51 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210621060551euoutp0291b1902f575f76e9756ea3cb8667d7b6~Kg9F22bxF2897228972euoutp02q
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1624255551;
+        bh=7zo/KJD1puXq+82LaBcXxMxZOsgJWKQdzbVs6z8dDRM=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=h1r1AwqSNOFb8RAoeNB/mo65NOyRGZ8OYzUon1sk4mSJBXrH1iDsiVw4pDgPjYQzF
+         ogYsV6cHFzZLLGbf32Y8H2dZ8boJBoxUiQCxV+70TZx0ZS5xKqz+gln+gsadwsnaUl
+         jL7hBdzo+90+Xel9/2eYfZH3uN8xfaec8VYkp8vA=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20210621060550eucas1p141cdaabda755047efe8e20c8c8b4c6a9~Kg9FhQcaL0793407934eucas1p13;
+        Mon, 21 Jun 2021 06:05:50 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id F6.79.45756.E3C20D06; Mon, 21
+        Jun 2021 07:05:50 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210621060550eucas1p23bae82f91753ea0a81396fb855316bd6~Kg9FCyxHr2694226942eucas1p2F;
+        Mon, 21 Jun 2021 06:05:50 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210621060550eusmtrp1f895269b6921656c05ab1d05ff2727dc~Kg9FB63kW1313213132eusmtrp1l;
+        Mon, 21 Jun 2021 06:05:50 +0000 (GMT)
+X-AuditID: cbfec7f2-7bdff7000002b2bc-55-60d02c3e511b
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id D4.50.31287.E3C20D06; Mon, 21
+        Jun 2021 07:05:50 +0100 (BST)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210621060549eusmtip15a7e129335db8f3debd3b19f966a96cc~Kg9EXtB7J3191831918eusmtip14;
+        Mon, 21 Jun 2021 06:05:49 +0000 (GMT)
+Subject: Re: [PATCH net-next v2 4/8] net: usb: asix: ax88772: add phylib
+ support
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Russell King <linux@armlinux.org.uk>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        netdev@vger.kernel.org
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <2d0bdf2e-49bc-60c0-789e-b909cf1e2667@samsung.com>
+Date:   Mon, 21 Jun 2021 08:05:49 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0UfSx+qhfLvnukag+Z4Ab72Lyg8UXBvduiswm2BnFZH9vw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210618132035.6vg53gjwuyildlry@pengutronix.de>
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrMKsWRmVeSWpSXmKPExsWy7djPc7p2OhcSDC79M7I4f/cQs8Wc8y0s
+        Fovez2C1WDV1J4vFhW19rBaXd81hs1i0rJXZ4tDUvYwWxxaIWTy5x+jA5XH52kVmjy0rbzJ5
+        7Jx1l91j06pONo+dOz4zefT/NfD4vEkugD2KyyYlNSezLLVI3y6BK+Pa1H1sBd/lKv6tnsna
+        wPhQoouRk0NCwETizu4FrF2MXBxCAisYJTa/2MEC4XxhlNj69iYjSJWQwGdGiYu9AjAd65bs
+        ZoYoWs4ocXjTDKj2j4wSvXOb2bsYOTiEBYIklh8MAmkQEdCRaNyyHqyGWWAlk8SEpy9YQBJs
+        AoYSXW+72EBsXgE7ibWLd4D1sgioSkxcIQUSFhVIlng/D2Q+SImgxMmZT8BaOQVsJc5ufAhm
+        MwvISzRvnc0MYYtL3Hoynwlkl4RAM6fEo9e7GCGudpE4eLkPyhaWeHV8CzuELSNxenIPC1QD
+        o8TDc2vZIZweRonLTTOgOqwl7pz7xQZyHbOApsT6XfoQYUeJGStaWEDCEgJ8EjfeCkIcwScx
+        adt0Zogwr0RHmxBEtZrErOPr4NYevHCJeQKj0iwkr81C8s4sJO/MQti7gJFlFaN4amlxbnpq
+        sWFearlecWJucWleul5yfu4mRmC6Ov3v+KcdjHNffdQ7xMjEwXiIUYKDWUmElzPzTIIQb0pi
+        ZVVqUX58UWlOavEhRmkOFiVx3lWz18QLCaQnlqRmp6YWpBbBZJk4OKUamObIfH4XWHjg7NVF
+        UzIXt7lLn4h/nx15sJAntiOO9wSrblrSNgtRo63pVS7Tzc489p+iI39KVejFsdj+H3r2H8zM
+        v3s2c3btrljN2pbN9fuZCBPvq7UGB4LiixOXnrJ6/mrygkTztRsfb312z1DV5FvqlQmnbH4n
+        ywS9ujMvPM/Xo35hz1+TpuLzdi3TfBbznQxkaDxt+PtN+u2P3/QOnxBca5naubOBafsfoZAL
+        x+oTLxVw7M4+nu1wxO5a+VOdJWe5m1OELAW+CwdYRQYu+jzXu2jClelFU65duG46bfujD2wi
+        ++ZX5GybmcDi+mzqrlmy/OpTSl15Z8/PU1CQ5lyqso7/0ttPx/1lhYV3v1NiKc5INNRiLipO
+        BACkRwLxxgMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGIsWRmVeSWpSXmKPExsVy+t/xu7p2OhcSDFbN47c4f/cQs8Wc8y0s
+        Fovez2C1WDV1J4vFhW19rBaXd81hs1i0rJXZ4tDUvYwWxxaIWTy5x+jA5XH52kVmjy0rbzJ5
+        7Jx1l91j06pONo+dOz4zefT/NfD4vEkugD1Kz6Yov7QkVSEjv7jEVina0MJIz9DSQs/IxFLP
+        0Ng81srIVEnfziYlNSezLLVI3y5BL+Pa1H1sBd/lKv6tnsnawPhQoouRk0NCwERi3ZLdzF2M
+        XBxCAksZJY5e2cQEkZCRODmtgRXCFpb4c62LDaLoPaPE4Y5PQA4Hh7BAkMTyg0EgNSICOhKN
+        W9azgtQwC6xkkljYMoEFouEYs8THfx8YQarYBAwlut6CTOLk4BWwk1i7eAc7yCAWAVWJiSuk
+        QMKiAskSP9e3Q5UISpyc+YQFxOYUsJU4u/EhmM0sYCYxb/NDZghbXqJ562woW1zi1pP5TBMY
+        hWYhaZ+FpGUWkpZZSFoWMLKsYhRJLS3OTc8tNtQrTswtLs1L10vOz93ECIzQbcd+bt7BOO/V
+        R71DjEwcjIcYJTiYlUR4OTPPJAjxpiRWVqUW5ccXleakFh9iNAV6ZyKzlGhyPjBF5JXEG5oZ
+        mBqamFkamFqaGSuJ826duyZeSCA9sSQ1OzW1ILUIpo+Jg1OqgWmvoJVNWOjUiH3eQtwNkWef
+        r86/q/r21Zcwl87/O9u6L6o+FF4qaNT7IG9r0R5GdjFnY/9J5nKa6hcreIUmTl3N9YF7u+f6
+        +auMPXacbjjlGLdz072QXa1XzRZUHeUXfizrW/7v5plFa3asfv01NmlykG1BqfcNV+Pb0w//
+        PmAdwR+x/8f/yl2lhw+3nRU+sO1wcHD9hivnpJi21h7wrj/64a9Jl8UPb/cVq8VWM/iffX1+
+        8ZcVV7WC/fIF+Z/Oqd2xjDXlcIi1xGyBh7t3hzPohTxbOlO845/aHnb2H1rbejulRKf9/6X/
+        80D6/lUu+z8YzHjrYfNyakyOdeuJtDJfgxiNkBOcm56tVK+MvcesxFKckWioxVxUnAgAvUv3
+        0FkDAAA=
+X-CMS-MailID: 20210621060550eucas1p23bae82f91753ea0a81396fb855316bd6
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20210618083914eucas1p240f88e7064a7bf15b68370b7506d24a9
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20210618083914eucas1p240f88e7064a7bf15b68370b7506d24a9
+References: <20210607082727.26045-1-o.rempel@pengutronix.de>
+        <20210607082727.26045-5-o.rempel@pengutronix.de>
+        <CGME20210618083914eucas1p240f88e7064a7bf15b68370b7506d24a9@eucas1p2.samsung.com>
+        <15e1bb24-7d67-9d45-54c1-c1c1a0fe444a@samsung.com>
+        <20210618101317.55fr5vl5akmtgcf6@pengutronix.de>
+        <b1c48fa1-d406-766e-f8d7-54f76d3acb7c@gmail.com>
+        <e868450d-c623-bea9-6325-aca4e8367ad5@samsung.com>
+        <20210618132035.6vg53gjwuyildlry@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/17/21 12:15 AM, Alexander Duyck wrote:
-> On Wed, Jun 16, 2021 at 12:10 AM Gavin Shan <gshan@redhat.com> wrote:
->> On 6/15/21 12:26 PM, Alexander Duyck wrote:
->>> On Mon, Jun 14, 2021 at 4:03 AM David Hildenbrand <david@redhat.com> wrote:
->>>> On 11.06.21 09:44, Gavin Shan wrote:
->>>>> On 6/1/21 6:01 PM, David Hildenbrand wrote:
->>>>>> On 01.06.21 05:33, Gavin Shan wrote:
+Hi Oleksij,
 
-[...]
-
->>>
->>> Yes, generally reporting pages comes at a fairly high cost so it is
->>> important to find the right trade-off between the size of the page and
->>> the size of the batch of pages being reported. If the size of the
->>> pages is reduced it maybe important to increase the batch size in
->>> order to avoid paying too much in the way of overhead.
->>>
->>> The other main reason for holding to pageblock_order on x86 is to
->>> avoid THP splitting. Anything smaller than pageblock_order will
->>> trigger THP splitting which will significantly hurt the performance of
->>> the VM in general as it forces it down to order 0 pages.
->>>
+On 18.06.2021 15:20, Oleksij Rempel wrote:
+> On Fri, Jun 18, 2021 at 01:11:41PM +0200, Marek Szyprowski wrote:
+>> On 18.06.2021 13:04, Heiner Kallweit wrote:
+>>> On 18.06.2021 12:13, Oleksij Rempel wrote:
+>>>> thank you for your feedback.
+>>>>
+>>>> On Fri, Jun 18, 2021 at 10:39:12AM +0200, Marek Szyprowski wrote:
+>>>>> On 07.06.2021 10:27, Oleksij Rempel wrote:
+>>>>>> To be able to use ax88772 with external PHYs and use advantage of
+>>>>>> existing PHY drivers, we need to port at least ax88772 part of asix
+>>>>>> driver to the phylib framework.
+>>>>>>
+>>>>>> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+>>>>> I found one more issue with this patch. On one of my test boards
+>>>>> (Samsung Exynos5250 SoC based Arndale) system fails to establish network
+>>>>> connection just after starting the kernel when the driver is build-in.
+>>>>>
+>>> If you build in the MAC driver, do you also build in the PHY driver?
+>>> If the PHY driver is still a module this could explain why genphy
+>>> driver is used.
+>>> And your dmesg filtering suppresses the phy_attached_info() output
+>>> that would tell us the truth.
+>> Here is a bit more complete log:
 >>
->> Alex, Thanks for your reply and sorry for taking your time to this
->> discussion.
+>> # dmesg | grep -i Asix
+>> [    2.412966] usbcore: registered new interface driver asix
+>> [    4.620094] usb 1-3.2.4: Manufacturer: ASIX Elec. Corp.
+>> [    4.641797] asix 1-3.2.4:1.0 (unnamed net_device) (uninitialized):
+>> invalid hw address, using random
+>> [    5.657009] libphy: Asix MDIO Bus: probed
+>> [    5.750584] Asix Electronics AX88772A usb-001:004:10: attached PHY
+>> driver (mii_bus:phy_addr=usb-001:004:10, irq=POLL)
+>> [    5.763908] asix 1-3.2.4:1.0 eth0: register 'asix' at
+>> usb-12110000.usb-3.2.4, ASIX AX88772 USB 2.0 Ethernet, fe:a5:29:e2:97:3e
+>> [    9.090270] asix 1-3.2.4:1.0 eth0: Link is Up - 100Mbps/Full - flow
+>> control off
 >>
->> Could you please confirm it's PAGE_REPORTING_CAPACITY or the budget
->> used in page_reporting_cycle() when you're talking about "batch"?
-> 
-> Yes, when I refer to batch it is how many pages we are processing in a
-> single call. That is limited by PAGE_REPORTING_CAPACITY.
-> 
+>> This seems to be something different than missing PHY driver.
+> Can you please test it:
+>
+> diff --git a/drivers/net/usb/asix_devices.c b/drivers/net/usb/asix_devices.c
+> index aec97b021a73..7897108a1a42 100644
+> --- a/drivers/net/usb/asix_devices.c
+> +++ b/drivers/net/usb/asix_devices.c
+> @@ -453,6 +453,7 @@ static int ax88772a_hw_reset(struct usbnet *dev, int in_pm)
+>   	u16 rx_ctl, phy14h, phy15h, phy16h;
+>   	u8 chipcode = 0;
+>   
+> +	netdev_info(dev->net, "ax88772a_hw_reset\n");
+>   	ret = asix_write_gpio(dev, AX_GPIO_RSE, 5, in_pm);
+>   	if (ret < 0)
+>   		goto out;
+> @@ -509,31 +510,7 @@ static int ax88772a_hw_reset(struct usbnet *dev, int in_pm)
+>   			goto out;
+>   		}
+>   	} else if ((chipcode & AX_CHIPCODE_MASK) == AX_AX88772A_CHIPCODE) {
+> -		/* Check if the PHY registers have default settings */
+> -		phy14h = asix_mdio_read_nopm(dev->net, dev->mii.phy_id,
+> -					     AX88772A_PHY14H);
+> -		phy15h = asix_mdio_read_nopm(dev->net, dev->mii.phy_id,
+> -					     AX88772A_PHY15H);
+> -		phy16h = asix_mdio_read_nopm(dev->net, dev->mii.phy_id,
+> -					     AX88772A_PHY16H);
+> -
+> -		netdev_dbg(dev->net,
+> -			   "772a_hw_reset: MR20=0x%x MR21=0x%x MR22=0x%x\n",
+> -			   phy14h, phy15h, phy16h);
+> -
+> -		/* Restore PHY registers default setting if not */
+> -		if (phy14h != AX88772A_PHY14H_DEFAULT)
+> -			asix_mdio_write_nopm(dev->net, dev->mii.phy_id,
+> -					     AX88772A_PHY14H,
+> -					     AX88772A_PHY14H_DEFAULT);
+> -		if (phy15h != AX88772A_PHY15H_DEFAULT)
+> -			asix_mdio_write_nopm(dev->net, dev->mii.phy_id,
+> -					     AX88772A_PHY15H,
+> -					     AX88772A_PHY15H_DEFAULT);
+> -		if (phy16h != AX88772A_PHY16H_DEFAULT)
+> -			asix_mdio_write_nopm(dev->net, dev->mii.phy_id,
+> -					     AX88772A_PHY16H,
+> -					     AX88772A_PHY16H_DEFAULT);
+> +		netdev_info(dev->net, "do not touch PHY regs\n");
+>   	}
+>   
+>   	ret = asix_write_cmd(dev, AX_CMD_WRITE_IPG0,
 
-Alex, It seems the batch mechanism is to avoid heavy contention on
-zone's lock if I'm correct? The current design is to report all pages
-in the corresponding free list within 17 calls to page_reporting_cycle().
-Could you please explain why 17 was chosen? :)
+This doesn't help for this issue.
 
-    budget = DIV_ROUND_UP(area->nr_free, PAGE_REPORTING_CAPACITY * 16);
-
-It's related to the magic number ("16"). With the threshold is decreased,
-for example from 512MB to 2MB on arm64 with 64KB base page size, more
-page reporting activities will be introduced. From this regard, it's
-reasonable to increase the magic number as well, so that more calls
-to page_reporting_cycle() to avoid the contention to zone's lock.
-
-If you agree, I will come up with something, similar to what we do for
-the threshold. However, I'm not sure if 64 is reasonable cycles to have
-for this particular case.
-
-    in arch/arm64/include/asm/page.h
-       #ifdef CONFIG_ARM64_64K_PAGES
-       #define PAGE_REPORTING_ORDER    5
-       #define PAGE_REPORTING_CYCLES   64
-       #endif
-    in mm/page_reporting.h
-       #ifndef PAGE_REPORTING_CYCLES
-       #define PAGE_REPORTING_CYCLES   16
-       #endif
-    in mm/page_reporting.c::page_reporting_cycle()
-       budget = DIV_ROUND_UP(area->nr_free,
-                             PAGE_REPORTING_CAPACITY * PAGE_REPORTING_CYCLES);
-
-Thanks,
-Gavin
+Best regards
+-- 
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
