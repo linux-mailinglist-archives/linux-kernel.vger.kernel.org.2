@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05B703AEEF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB3053AF079
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232562AbhFUQeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:34:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49174 "EHLO mail.kernel.org"
+        id S233536AbhFUQty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:49:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232274AbhFUQbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:31:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1B9861352;
-        Mon, 21 Jun 2021 16:25:16 +0000 (UTC)
+        id S233882AbhFUQpn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:45:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CE938613C9;
+        Mon, 21 Jun 2021 16:32:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292717;
-        bh=7D5+Z7yqnTuz20Rw2xK/398Z00a3m+DNXkDvvgn3+nQ=;
+        s=korg; t=1624293160;
+        bh=DHAxnpUEXkMbtydLit97tKQ01mF9G1yJqfRoaatq2Ys=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lgm4c3GgHNIji1LnnBIgYqKF6ODHLYW1075kOl4KTZR2s9u1MBhb3O3VpbNtVFdk6
-         6Rk6dWOVdday2FNEm8PAxOcHy4rWTBrLXgcI0ael8KFsoT41O7JVsBT90C0s+Rpbvm
-         J1ZGCn2TvOwrJtZWRVNdsxw7OWEhHySoxqWOYe7Y=
+        b=Oj/Ffgyp9iVO6DxyZBOwHTLFpjqOqMne0m1HRaQuxx0IOlqakH1O2rSsU9EJpt5Oy
+         IrSNWRZ3qA7PemMn6uhS0kSEY34sc2q2VwCN+uNxBu67c//CaqYlbY3MNB0K18UatV
+         GDceZ9ZEwIEb/02KnpkePhrdA15fP3YsJZDBY5qQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Breno Lima <breno.lima@nxp.com>,
-        Jun Li <jun.li@nxp.com>, Peter Chen <peter.chen@kernel.org>
-Subject: [PATCH 5.10 103/146] usb: chipidea: imx: Fix Battery Charger 1.2 CDP detection
-Date:   Mon, 21 Jun 2021 18:15:33 +0200
-Message-Id: <20210621154917.797476453@linuxfoundation.org>
+        stable@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        syzbot+57281c762a3922e14dfe@syzkaller.appspotmail.com
+Subject: [PATCH 5.12 120/178] can: mcba_usb: fix memory leak in mcba_usb
+Date:   Mon, 21 Jun 2021 18:15:34 +0200
+Message-Id: <20210621154926.864191222@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
-References: <20210621154911.244649123@linuxfoundation.org>
+In-Reply-To: <20210621154921.212599475@linuxfoundation.org>
+References: <20210621154921.212599475@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,79 +40,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Breno Lima <breno.lima@nxp.com>
+From: Pavel Skripkin <paskripkin@gmail.com>
 
-commit c6d580d96f140596d69220f60ce0cfbea4ee5c0f upstream.
+commit 91c02557174be7f72e46ed7311e3bea1939840b0 upstream.
 
-i.MX8MM cannot detect certain CDP USB HUBs. usbmisc_imx.c driver is not
-following CDP timing requirements defined by USB BC 1.2 specification
-and section 3.2.4 Detection Timing CDP.
+Syzbot reported memory leak in SocketCAN driver for Microchip CAN BUS
+Analyzer Tool. The problem was in unfreed usb_coherent.
 
-During Primary Detection the i.MX device should turn on VDP_SRC and
-IDM_SINK for a minimum of 40ms (TVDPSRC_ON). After a time of TVDPSRC_ON,
-the i.MX is allowed to check the status of the D- line. Current
-implementation is waiting between 1ms and 2ms, and certain BC 1.2
-complaint USB HUBs cannot be detected. Increase delay to 40ms allowing
-enough time for primary detection.
+In mcba_usb_start() 20 coherent buffers are allocated and there is
+nothing, that frees them:
 
-During secondary detection the i.MX is required to disable VDP_SRC and
-IDM_SNK, and enable VDM_SRC and IDP_SINK for at least 40ms (TVDMSRC_ON).
+1) In callback function the urb is resubmitted and that's all
+2) In disconnect function urbs are simply killed, but URB_FREE_BUFFER
+   is not set (see mcba_usb_start) and this flag cannot be used with
+   coherent buffers.
 
-Current implementation is not disabling VDP_SRC and IDM_SNK, introduce
-disable sequence in imx7d_charger_secondary_detection() function.
+Fail log:
+| [ 1354.053291][ T8413] mcba_usb 1-1:0.0 can0: device disconnected
+| [ 1367.059384][ T8420] kmemleak: 20 new suspected memory leaks (see /sys/kernel/debug/kmem)
 
-VDM_SRC and IDP_SINK should be enabled for at least 40ms (TVDMSRC_ON).
-Increase delay allowing enough time for detection.
+So, all allocated buffers should be freed with usb_free_coherent()
+explicitly
 
-Cc: <stable@vger.kernel.org>
-Fixes: 746f316b753a ("usb: chipidea: introduce imx7d USB charger detection")
-Signed-off-by: Breno Lima <breno.lima@nxp.com>
-Signed-off-by: Jun Li <jun.li@nxp.com>
-Link: https://lore.kernel.org/r/20210614175013.495808-1-breno.lima@nxp.com
-Signed-off-by: Peter Chen <peter.chen@kernel.org>
+NOTE:
+The same pattern for allocating and freeing coherent buffers
+is used in drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+
+Fixes: 51f3baad7de9 ("can: mcba_usb: Add support for Microchip CAN BUS Analyzer")
+Link: https://lore.kernel.org/r/20210609215833.30393-1-paskripkin@gmail.com
+Cc: linux-stable <stable@vger.kernel.org>
+Reported-and-tested-by: syzbot+57281c762a3922e14dfe@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/chipidea/usbmisc_imx.c |   16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ drivers/net/can/usb/mcba_usb.c |   17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/chipidea/usbmisc_imx.c
-+++ b/drivers/usb/chipidea/usbmisc_imx.c
-@@ -686,6 +686,16 @@ static int imx7d_charger_secondary_detec
- 	int val;
- 	unsigned long flags;
+--- a/drivers/net/can/usb/mcba_usb.c
++++ b/drivers/net/can/usb/mcba_usb.c
+@@ -82,6 +82,8 @@ struct mcba_priv {
+ 	bool can_ka_first_pass;
+ 	bool can_speed_check;
+ 	atomic_t free_ctx_cnt;
++	void *rxbuf[MCBA_MAX_RX_URBS];
++	dma_addr_t rxbuf_dma[MCBA_MAX_RX_URBS];
+ };
  
-+	/* Clear VDATSRCENB0 to disable VDP_SRC and IDM_SNK required by BC 1.2 spec */
-+	spin_lock_irqsave(&usbmisc->lock, flags);
-+	val = readl(usbmisc->base + MX7D_USB_OTG_PHY_CFG2);
-+	val &= ~MX7D_USB_OTG_PHY_CFG2_CHRG_VDATSRCENB0;
-+	writel(val, usbmisc->base + MX7D_USB_OTG_PHY_CFG2);
-+	spin_unlock_irqrestore(&usbmisc->lock, flags);
+ /* CAN frame */
+@@ -633,6 +635,7 @@ static int mcba_usb_start(struct mcba_pr
+ 	for (i = 0; i < MCBA_MAX_RX_URBS; i++) {
+ 		struct urb *urb = NULL;
+ 		u8 *buf;
++		dma_addr_t buf_dma;
+ 
+ 		/* create a URB, and a buffer for it */
+ 		urb = usb_alloc_urb(0, GFP_KERNEL);
+@@ -642,7 +645,7 @@ static int mcba_usb_start(struct mcba_pr
+ 		}
+ 
+ 		buf = usb_alloc_coherent(priv->udev, MCBA_USB_RX_BUFF_SIZE,
+-					 GFP_KERNEL, &urb->transfer_dma);
++					 GFP_KERNEL, &buf_dma);
+ 		if (!buf) {
+ 			netdev_err(netdev, "No memory left for USB buffer\n");
+ 			usb_free_urb(urb);
+@@ -661,11 +664,14 @@ static int mcba_usb_start(struct mcba_pr
+ 		if (err) {
+ 			usb_unanchor_urb(urb);
+ 			usb_free_coherent(priv->udev, MCBA_USB_RX_BUFF_SIZE,
+-					  buf, urb->transfer_dma);
++					  buf, buf_dma);
+ 			usb_free_urb(urb);
+ 			break;
+ 		}
+ 
++		priv->rxbuf[i] = buf;
++		priv->rxbuf_dma[i] = buf_dma;
 +
-+	/* TVDMSRC_DIS */
-+	msleep(20);
+ 		/* Drop reference, USB core will take care of freeing it */
+ 		usb_free_urb(urb);
+ 	}
+@@ -708,7 +714,14 @@ static int mcba_usb_open(struct net_devi
+ 
+ static void mcba_urb_unlink(struct mcba_priv *priv)
+ {
++	int i;
 +
- 	/* VDM_SRC is connected to D- and IDP_SINK is connected to D+ */
- 	spin_lock_irqsave(&usbmisc->lock, flags);
- 	val = readl(usbmisc->base + MX7D_USB_OTG_PHY_CFG2);
-@@ -695,7 +705,8 @@ static int imx7d_charger_secondary_detec
- 				usbmisc->base + MX7D_USB_OTG_PHY_CFG2);
- 	spin_unlock_irqrestore(&usbmisc->lock, flags);
+ 	usb_kill_anchored_urbs(&priv->rx_submitted);
++
++	for (i = 0; i < MCBA_MAX_RX_URBS; ++i)
++		usb_free_coherent(priv->udev, MCBA_USB_RX_BUFF_SIZE,
++				  priv->rxbuf[i], priv->rxbuf_dma[i]);
++
+ 	usb_kill_anchored_urbs(&priv->tx_submitted);
+ }
  
--	usleep_range(1000, 2000);
-+	/* TVDMSRC_ON */
-+	msleep(40);
- 
- 	/*
- 	 * Per BC 1.2, check voltage of D+:
-@@ -798,7 +809,8 @@ static int imx7d_charger_primary_detecti
- 				usbmisc->base + MX7D_USB_OTG_PHY_CFG2);
- 	spin_unlock_irqrestore(&usbmisc->lock, flags);
- 
--	usleep_range(1000, 2000);
-+	/* TVDPSRC_ON */
-+	msleep(40);
- 
- 	/* Check if D- is less than VDAT_REF to determine an SDP per BC 1.2 */
- 	val = readl(usbmisc->base + MX7D_USB_OTG_PHY_STATUS);
 
 
