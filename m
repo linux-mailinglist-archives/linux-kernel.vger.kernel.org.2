@@ -2,118 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 693963AEC94
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4107F3AEC8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:35:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230236AbhFUPim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 11:38:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45970 "EHLO
+        id S230047AbhFUPho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 11:37:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbhFUPil (ORCPT
+        with ESMTP id S230013AbhFUPhm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 11:38:41 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA84C061574;
-        Mon, 21 Jun 2021 08:36:25 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id j2so30946385lfg.9;
-        Mon, 21 Jun 2021 08:36:25 -0700 (PDT)
+        Mon, 21 Jun 2021 11:37:42 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B1F9C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 08:35:27 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id u190so10628179pgd.8
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 08:35:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eZm8zZbaVXs8SDuUBCinObEMuZP/+XNNAcVwyswH7lY=;
-        b=aXD5UxUlEodrQYRBS9ddtWkRy09zqoRQKErfxaPb0WCVUQ2edBB7/BluWZB4xPghvm
-         Xl4mDXd4aDfEDoV2ctBdDuS2al7WQiou775gcnVqwyqQ9TJ4dUXgprxquqp9w+e7SGdU
-         5Ic9n87Ii23a635nXi5Q3N7AOJCsTLELbiRs4Bg4yZb8x03CUKWbERbGcO5omGIhnQsu
-         Fdpps9I/BYs4bS5Enb7FZmgpqiuXTij1+pcGaapKk6FDcDMZxWAyYzFUaAJscfE7wW3f
-         7BQTMjQx/DnsgBGBCo7b+E/Xvjik2Wil1anGHxwxNiOtqcRzqghqJCy6a8GSfU+m3kqw
-         nn1A==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6Z6um6vSOtXASiA7h2j5aaZlwZWv+UAQVbbl8FBT3SM=;
+        b=ffvYO8VWnq3MSBjukp958TsYixRe7qd48kpaRn7fgJOe/7QsngOiqhwV5kYc0cFwfQ
+         LzKzGMOWg7X0TvOCgwNEXjkQvu0ZKA1gubVd8iIKMy1EBTGXO9Y6rn/5+YUh2StDVdxK
+         h+edQ+VH0AHoXhUt1ZyzooyiPblJndzuzTs0o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eZm8zZbaVXs8SDuUBCinObEMuZP/+XNNAcVwyswH7lY=;
-        b=lmcj+8B7hK9H0E+mIx067WCJBwu9Y5Nxe4RAdtwV4tZmM2CIoKZQSK7jK0PTRC0sxa
-         LjhJGfrlB42BMRaAFn3iXTM23mRTRzfKrsO0JGP8m7YJPIPITv+twWhlwgDA42kNTDHL
-         Rkt1NlqMh53dlyJt+pBQnrGzoA3XQOECbWkWlQDdDN7KR4VVhuH8sOoOiKFHHYgt1EUb
-         O20oSXtacIK0lFQ4PQ0ovp1X8txr+qRg2v+lPAmpd5VDcKjJ0Ps1sE8e74jkUgT46fCl
-         AoQFIsMFDmNanYvt7k5f7khuGSuUIgVqqRtiC18eXSfwXLfcgTq5dvk/LO/SAyroTHI4
-         tGcQ==
-X-Gm-Message-State: AOAM5303Pu7cin1pGRiwPuDTX4px/yf2k8+sLfgubgR7TRHgJsLyyzRf
-        K6sko0NnFBsm0RpGTxXXY7PnUheccBk=
-X-Google-Smtp-Source: ABdhPJxXi5tvtZ3lWXr4E1t/FgsW6Qpm7a109AvW6YcGqGwDIaYsLVT1gwAxLpna/5/Uw4PDHaQtYA==
-X-Received: by 2002:a05:6512:13a8:: with SMTP id p40mr14791103lfa.14.1624289783693;
-        Mon, 21 Jun 2021 08:36:23 -0700 (PDT)
-Received: from [192.168.2.145] (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
-        by smtp.googlemail.com with ESMTPSA id x1sm2219464lji.19.2021.06.21.08.36.23
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6Z6um6vSOtXASiA7h2j5aaZlwZWv+UAQVbbl8FBT3SM=;
+        b=AZ7L1MdjVvi9jvTCB3pqLUIP9xNTXlmdFeVVKiDlFNQDTbaGr/uwZ9VwJrit3KSe4K
+         +0XDzaz0rBgjoup2Z2Tf0wnrplJhLdTHfe9IIR1vpBD28Tz7t0tB0MMBmwsr6InRPyyH
+         HMuVnaxhVQbJrCKRNYXrduTQHyuSQv51jdBAyo2kU9xqSqkyjC6twYLnJyPIydSdZX+g
+         VmnyDEhU3GPjY0XF0nQkGXrNMW/dgf5uzLG3WrSXsThMwLfvfvbV4Yvjqazt9y3H8fQn
+         4gxgYSH5uNjyeEb9JTDyK394LOlcT1/ycQ0V8KTsFO5JPkj5nZAO17wMAzlHTTAs61Qb
+         wvdA==
+X-Gm-Message-State: AOAM532vN3q6c645V48MBC+MI+2OkXibDBa1IB3nTRyFIvVe9O3jwJD/
+        uWfKmlQq651qfMiRS/kK/p95zw==
+X-Google-Smtp-Source: ABdhPJz1vb3hujhC4eOPR46a/Q/L3haHuLhXnVF/0Ibjv+WaXLv2AwdF11r5C72da2EEKHfiMahMxQ==
+X-Received: by 2002:a63:921e:: with SMTP id o30mr16620136pgd.346.1624289726620;
+        Mon, 21 Jun 2021 08:35:26 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:9f0f:4fd2:adeb:6f55])
+        by smtp.gmail.com with UTF8SMTPSA id f12sm1628243pfc.100.2021.06.21.08.35.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 08:36:23 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] hwmon: (lm90) Prevent integer overflow of
- temperature calculations
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-References: <20210620211408.3893-1-digetx@gmail.com>
- <20210620211408.3893-2-digetx@gmail.com>
- <20210621121229.GB116119@roeck-us.net>
- <ac1c4350-687e-7999-633c-6b7354ef9b8c@gmail.com>
- <20210621142415.GA3604789@roeck-us.net>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <ffedf276-245b-1be6-4182-5d7a117eedd4@gmail.com>
-Date:   Mon, 21 Jun 2021 18:35:10 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 21 Jun 2021 08:35:26 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 08:35:24 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-usb@vger.kernel.org
+Subject: Re: Looking for help with Kconfig dependencies
+Message-ID: <YNCxvElIL0RxreKe@google.com>
+References: <YMzSbDL+XvpLPaTb@google.com>
+ <dc68833d-e525-eeda-5c7c-fbbd8a3287c8@metux.net>
 MIME-Version: 1.0
-In-Reply-To: <20210621142415.GA3604789@roeck-us.net>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <dc68833d-e525-eeda-5c7c-fbbd8a3287c8@metux.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-21.06.2021 17:24, Guenter Roeck пишет:
-> On Mon, Jun 21, 2021 at 03:14:40PM +0300, Dmitry Osipenko wrote:
->> 21.06.2021 15:12, Guenter Roeck пишет:
->>> On Mon, Jun 21, 2021 at 12:14:07AM +0300, Dmitry Osipenko wrote:
->>>> The minimum temperature value that is passed to the driver is unlimited
->>>> and value that is close to INT_MIN results in integer overflow of
->>>> temperature calculations made by the driver. Limit the value in order
->>>> to prevent the overflow. For now the overflow condition is harmless,
->>>> but thermal framework won't work properly once we will support the
->>>> set_trips() callback because it will pass INT_MIN value to the driver.
->>>>
->>> AFAICS that should only happen for lm99 because all other values
->>> are bound in the temp_to_xxx functions. Where else do you see an
->>> overflow (or underflow) ?
->>
->> You're correct that the overflow affects only lm99. But why we should
->> ignore it?
+On Mon, Jun 21, 2021 at 01:26:01PM +0200, Enrico Weigelt, metux IT consult wrote:
+> On 18.06.21 19:05, Matthias Kaehlcke wrote:
 > 
-> That isn't the point. The point is that you claimed there would be a
-> generic underflow, which is not the case. That means we'll only need
-> to apply the fix to the lm99 specific code (which unconditionally
-> subtracts an offset from the provided value, causing the underflow).
+> Hi,
 > 
-> Anyway, thanks for alerting me to the issue. As it turns out, there are
-> other underflow issues in the driver. With improved module test scripts,
-> I get:
 > 
-> Testing lm90 ...
-> temp1_crit_hyst: Suspected underflow: [min=54000, read 85000, written -9223372036854775808]
-> Testing lm99 ...
-> temp1_crit_hyst: Suspected underflow: [min=96000, read 127000, written -9223372036854775808]
-> temp2_crit: Suspected underflow: [min=-112000, read 143000, written -9223372036854775808]
-> temp2_min: Suspected underflow: [min=-112000, read 143875, written -9223372036854775808]
-> temp2_max: Suspected underflow: [min=-112000, read 143875, written -9223372036854775808]
+> Cc'ing to linux-usb ...
 > 
-> So we'll need fixes for lm99 temp2_{min/max/crit} and for temp1_crit_hyst
-> (the latter affects all chips supported by the driver).
+> > Patch https://lore.kernel.org/patchwork/patch/1444212/ adds the new
+> > onboard_usb_hub driver which exports two functions,
+> > onboard_hub_create_pdevs() and onboard_hub_destroy_pdevs(). It also
+> > provides stubs for these functions which are used when the driver
+> > is not selected (CONFIG_USB_ONBOARD_HUB=n).
+> > 
+> > The new exported functions are called by the xhci-plat driver
+> > (https://lore.kernel.org/patchwork/patch/1444215/). Since xhci-plat
+> > now depends on symbols from the onboard_hub_driver the following
+> > dependency was added to its Kconfig entry:
+> > 
+> >   config USB_XHCI_PLATFORM
+> >     tristate "Generic xHCI driver for a platform device"
+> >     select USB_XHCI_RCAR if ARCH_RENESAS
+> >  +  depends on USB_ONBOARD_HUB || !USB_ONBOARD_HUB
+> 
+> What exactly do you intent to archieve with this ?
+> 
+> X or !X = 1, isn't it ?
+> 
+> Why should something depend on something present or absent ?
+> 
+> Is that depends on ... statement necessary at all ?
 
-I'll prepare v3 with the updated commit message and fixed
-temp1_crit_hyst, thank you.
+I know, it's confusing, I had the same reaction when I first saw that
+construct.
+
+Effectively USB_XHCI_PLATFORM can be built without USB_ONBOARD_HUB.
+However if USB_ONBOARD_HUB is built as a module then USB_XHCI_PLATFORM
+should also be built as a module, which is what the above statement
+achieves, unless there are conflicting dependencies.
+
+The same construct is used for CONFIG_USB_XHCI_PCI.
+
+> > This generally seems to work, however when USB_XHCI_PLATFORM is
+> > forced to be builtin by another driver that depends on it (e.g.
+> > USB_DWC3) it is still possible to build the onboard_hub driver
+> > as a module, which results in unresolved symbols:
+> > 
+> > aarch64-linux-gnu-ld: drivers/usb/host/xhci-plat.o: in function
+> > `xhci_plat_remove':
+> > drivers/usb/host/xhci-plat.c:427: undefined reference to
+> > `onboard_hub_destroy_pdevs'
+> > drivers/usb/host/xhci-plat.c:427:(.text+0x82c): relocation truncated
+> > to fit: R_AARCH64_CALL26 against undefined symbol
+> > `onboard_hub_destroy_pdevs'
+> > aarch64-linux-gnu-ld: drivers/usb/host/xhci-plat.o: in function
+> > `xhci_plat_probe':
+> > drivers/usb/host/xhci-plat.c:379: undefined reference to
+> > `onboard_hub_create_pdevs'
+> > drivers/usb/host/xhci-plat.c:379:(.text+0x131c): relocation truncated
+> > to fit: R_AARCH64_CALL26 against undefined symbol
+> > `onboard_hub_create_pdevs'
+> > 
+> > Kconfig generates the following warning with this configuration:
+> > 
+> > WARNING: unmet direct dependencies detected for USB_XHCI_PLATFORM
+> >   Depends on [m]: USB_SUPPORT [=y] && USB [=y] && USB_XHCI_HCD [=y] && (USB_ONBOARD_HUB [=m] || !USB_ONBOARD_HUB [=m])
+> >   Selected by [y]:
+> >   - USB_DWC3 [=y] && USB_SUPPORT [=y] && (USB [=y] || USB_GADGET [=y]) && HAS_DMA [=y] && USB_XHCI_HCD [=y]
+> >   Selected by [m]:
+> >   - USB_CDNS_SUPPORT [=m] && USB_SUPPORT [=y] && (USB [=y] || USB_GADGET [=y]) && HAS_DMA [=y] && USB_XHCI_HCD [=y]
+> >   - USB_BRCMSTB [=m] && USB_SUPPORT [=y] && USB [=y] && (ARCH_BRCMSTB [=y] && PHY_BRCM_USB [=m] || COMPILE_TEST [=y]) && USB_XHCI_HCD [=y]
+> >   - USB_XHCI_MVEBU [=m] && USB_SUPPORT [=y] && USB [=y] && USB_XHCI_HCD [=y] && HAS_IOMEM [=y] && (ARCH_MVEBU [=y] || COMPILE_TEST [=y])
+> 
+> It seems that Kconfig is confused by trying to enforce contradicting
+> dependencies.
+
+yep, the purpose of my post was to sort that out :)
+
+> Now for your driver:
+
+TBH I don't think this is the right thread to discuss the driver, this
+should be done on the corresponding patches.
+
+> If I understand it correctly, you've got a topology like this:
+> 
+> 
+> root hub -+--> 2ndary hub #0 -+--> usb-dev #0
+>           |                   \--> usb-dev #1
+>           |                     ..
+>           \--> 2ndary hub #1 -+--> usb-dev #3
+>                               \--> usb-dev #4
+> 
+> 
+> And in order to get usb-dev #foo running, you need the corresponding
+> hub on its path powered (which in turn is platform specific).
+> 
+> Correct ?
+
+yep
+
+> So, why not reflecting exactly this topology in the device tree ?
+> In that case, the power management *IMHO* could pretty automatically
+> (assuming you've implemented the corresponding pm functions on the
+> 2ndary hub driver).
+> 
+> Okay, that could become a bit tricky when the usb-dev's are
+> automatically enumerated on the root hub and would need to be
+> reparented somehow ... @usb folks: it that possible ?
+
+AFAIK the USB devices (including the secondary hubs) are all automatically
+enumerated, the representation in the device tree is optional in the vast
+majority of cases, so it's a bit of a chicken-egg problem.
+
+> Another option could be implementing this as a regulator that the
+> individual usb devices will be attached to. Not completely semantically
+> correct (since a hub isn't exactly a regulator :o), but should at least
+> do the job: the regulator will be switched on when the device is used
+> and can be switched off when it isn't used anymore.
+
+IMO the representation as a hub is preferable, also initialization might
+be more complex than switching on a single regulator (e.g. multiple
+regulators, GPIOs, clocks, ...)
+
+> The cleanest approach, IMHO, might be adding an hub subsys, somewhat
+> similar to the existing phy subsys. I can imagine similar cases with
+> other interfaces, not just USB only, at least certainly not specific
+> to xhci.
+> 
+> Or could existing phy subsys already be sufficient for that ?
+
+I'll leave that to the USB maintainers, who seem to be happy/ok with
+the current approach. There was discussion about other solutions,
+including a revival of the pwrseq series
+(https://lore.kernel.org/patchwork/project/lkml/list/?series=314989&state=%2A&archive=both),
+which was discarded.
+
+In any case the current solution isn't specific to xHCI. At this point
+only xhci-plat is supported, however it could be extended to other
+USB controllers if needed.
