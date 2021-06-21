@@ -2,94 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 805063AF5D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 21:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4053AF5E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 21:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230455AbhFUTLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 15:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38002 "EHLO
+        id S230439AbhFUTS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 15:18:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229940AbhFUTLv (ORCPT
+        with ESMTP id S229940AbhFUTSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 15:11:51 -0400
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6295DC061574;
-        Mon, 21 Jun 2021 12:09:34 -0700 (PDT)
-Received: by mail-qk1-x732.google.com with SMTP id g4so32031217qkl.1;
-        Mon, 21 Jun 2021 12:09:34 -0700 (PDT)
+        Mon, 21 Jun 2021 15:18:55 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C6BC061574;
+        Mon, 21 Jun 2021 12:16:40 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id h4so3426094pgp.5;
+        Mon, 21 Jun 2021 12:16:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=64p3rTJ8C4Y4xbt9bWVWwTFj4vexAuU70eIjzKEaDiU=;
-        b=SisdruXpXTzw1ZqYxswCpHZM6ssIJVQL24NoxzDaXbobIzGdqqtdSXZ38PcjZgOyZT
-         zpL88716XKOl8WQwRXzEwjYSNdFSBoi8+oYq4VfNtinSNWzQzkslEedGzBVrxyNqSUNV
-         5+0rrUT0Kl8G0mckK5AzsQ1/WkiwCAw+2HjpvixaprI8z/qQ9eui7B5TXBVZlG3JT0RR
-         +FQo5IauDN9TjK88YpvMkXGDYvUtmuHpDgk1pMhl559rD8jiAJdrwRIsLcWPu7pFzb/q
-         8KjS+TKQ9dpNHOLekWkV+seQVxFoBYdSxIPPC3xbH3JvaYSInPwLLnJVQMNh/NQ55GXo
-         xezQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Zt/GPgC7zXhSZxJ3I3ql8E+KcIIkQFY3WfRusDWFKW4=;
+        b=I3ob0m51apj4aZ9Yl40Jwo7+yfUsxrLZZh+sVpURIYa0C5lrDEyagNy/qhTvweD0Hg
+         t1aff8ifNjAXmUZ/21cwzrhKAC3yuLAmZNYoBQUzNpIF+kTQ3iOQqx0KvKpWEJLMD86w
+         IaqVZPYDIpYtmTaMf8pNVkMQoEPN0/6SmQZadFG5nUeJBoi+vku7xugpGTWwKPwRtdBR
+         5QxjCW3Fwz9tY26A12t7aF1rYSIy1mh6gTyKfiYDNpHf0pMwk1vQvuljrrmTLti4QUD9
+         DGJJ7tdeMTK/PRKzcWL0fZwG9SCVUlZbSFqPU67Rm9Zb5GZQ4cH3LTNGMD2txukwWDK0
+         xtcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=64p3rTJ8C4Y4xbt9bWVWwTFj4vexAuU70eIjzKEaDiU=;
-        b=ki7YLyyqRWmCOAhutJkIUSBokO+BIQPQjPdf2bW+PLO3GvyC+N7UB0G/Kx94++sWj7
-         NwLxEnWfXvSP3E7Vdyzf6CabyJFz1YTgzs4dSSlWFrditY+fm7q4IllJFs3lIYlHutU7
-         f2dlO6SPKrgAKeZuA2CXbYMdprkNbSXernLC8f6m4A9KclNiwDZtXwqLwV2pQL9iI3SF
-         wHhn4w+tCFU6NjlzldXo/9vObgUM2G4nG0SOFRD3+B6hUzDg6+45NJk/38qP9NxXNHb7
-         jYLGQN12L7PE/WfdFh5yzLNLUPftxOF3ez61Wwv6fYjDu7pMzeX15hVM6q8TSIk/K7m/
-         jAkw==
-X-Gm-Message-State: AOAM531nvcfQbdms7pXCSa+oSbuCwOQ5ifvXZC6t4s+TqIJEsyfXcKaF
-        YcyaT00R13VAkprPkSyNQK5L63q888Jdts8HIaE=
-X-Google-Smtp-Source: ABdhPJyAEnnUq24/8IcFrqJTt75MMg4Au4Ksk7GhLf8MAYWs3qpwIUa9vJAGS4lYcLXeTwGjioOSDZT2mMmjMlxs9GQ=
-X-Received: by 2002:a25:a448:: with SMTP id f66mr33082808ybi.135.1624302573176;
- Mon, 21 Jun 2021 12:09:33 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Zt/GPgC7zXhSZxJ3I3ql8E+KcIIkQFY3WfRusDWFKW4=;
+        b=azF09cdICJ+/43VtgFXW/ngIW+SP0cUjxUvOLmQv0nYrVd/pV+K5w3Vy//F0FjjOgf
+         VELQb9OiKWE4Ef+cyjxd2S8CnvO37iWUYZaR0JFsqKK8WpWsHvkiCtrR275m6FXVgvWw
+         xLYFembRUCxFbOb+eT5agiDVfoEsLM3o4kauPEeJmBXronAfYNSZTggqrHb361//UXjb
+         JyhLfdm69y0DJIgG5a0cYtR72E+Rt9RqgqcfHfJkjOkxNRlf+1i6d535DhbsWA+JI5uB
+         HFa/YT/0H5BIlTI1lelfLIO4kG64G0O0FSQafJoH9h/fROlSk7p420mSLNzxIgqS0xLy
+         1gsQ==
+X-Gm-Message-State: AOAM532J4uG42WB7cq5QGjeY8YmrmbcnTumAACs8BIbF1xfyfTnxVO2q
+        7BpNiMMhl4YtNc20LwmtrYud3HANYWs=
+X-Google-Smtp-Source: ABdhPJwDKkGXn6QbAkpNpNSx5Gj5iFrYgh2idOAMWCmXrv9SPAtOMpavPLfLaJ5HSMfnPn7qBJYONA==
+X-Received: by 2002:aa7:8058:0:b029:2e9:ee0e:b106 with SMTP id y24-20020aa780580000b02902e9ee0eb106mr21248704pfm.4.1624302999974;
+        Mon, 21 Jun 2021 12:16:39 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id j4sm7960pjv.7.2021.06.21.12.16.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 12:16:39 -0700 (PDT)
+Subject: Re: [PATCH 5.4 00/90] 5.4.128-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210621154904.159672728@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <02601ffa-1417-73e2-0608-3eb94fa0e3a7@gmail.com>
+Date:   Mon, 21 Jun 2021 12:16:28 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210618233023.1360185-1-ndesaulniers@google.com>
- <20210618233023.1360185-2-ndesaulniers@google.com> <CANiq72kjyiAQn2+ijZKFo7SY3z+dCV6fGXYP1O_Mq7Ui3EqSzQ@mail.gmail.com>
- <CANiq72nbbqeD2dv3z0y3rN-_kdnh=9-pD7oSyWUfaG8oJ2y_8A@mail.gmail.com>
- <CAKwvOd=B6LV9rZmtPacfz_F10jj1wrovoGu8yvdOqKZ69-T6mQ@mail.gmail.com> <20210621182418.57qbumtovysrlkwy@google.com>
-In-Reply-To: <20210621182418.57qbumtovysrlkwy@google.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Mon, 21 Jun 2021 21:09:22 +0200
-Message-ID: <CANiq72kn2sbpknuBPdpHcPw+AhFF+qBjp_TkxG0+t3fs8-dW=A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] compiler_attributes.h: define __no_profile, add to noinstr
-To:     Fangrui Song <maskray@google.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Bill Wendling <wcw@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Martin Liska <mliska@suse.cz>,
-        Marco Elver <elver@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Johannes Berg <johannes.berg@intel.com>,
-        linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210621154904.159672728@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 8:24 PM Fangrui Song <maskray@google.com> wrote:
->
-> Also a reminder that __GCC4_has_attribute___no_profile in v1 misses two
-> underscores. v2 no_profile_instrument_function may need to fix this.
+On 6/21/21 9:14 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.128 release.
+> There are 90 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Wed, 23 Jun 2021 15:48:46 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.128-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Good catch! Yes, it is missing the last two.
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
 
-Cheers,
-Miguel
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
