@@ -2,161 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D063AE8BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 626003AE8BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:06:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229708AbhFUMHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 08:07:45 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:45178 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbhFUMHn (ORCPT
+        id S229968AbhFUMIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 08:08:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229576AbhFUMIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 08:07:43 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id AA31B21A2C;
-        Mon, 21 Jun 2021 12:05:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624277128; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xbaMfbL3qX1P1Vq1l4aN8Q68XfQmKAKQKhDEXhGLkoc=;
-        b=b0SbYNL8tpIZMNzDkB4N4aTEkyddmhJ1a++aE/+fp+FJJ0YjDRKAfBSomV5++OjiGEpTJ1
-        aeaBSqVXu017ymNeN+/TSFk8mwOJt9KkuGhmiYYc19CahEFIvUAuvKALuzi/msT/IloQLm
-        RAmqyiuJ9sv77KrC3bwlKUSfnbu5Oyc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624277128;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xbaMfbL3qX1P1Vq1l4aN8Q68XfQmKAKQKhDEXhGLkoc=;
-        b=uPE4splr8oyArOaNn/dWaSx9j6qt7pU/EpUyFVEAN5EzhPEsc6I0um3SHDdwEBGlri5c6E
-        OtZbzsB0y8WKsPDA==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 98DFC118DD;
-        Mon, 21 Jun 2021 12:05:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624277128; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xbaMfbL3qX1P1Vq1l4aN8Q68XfQmKAKQKhDEXhGLkoc=;
-        b=b0SbYNL8tpIZMNzDkB4N4aTEkyddmhJ1a++aE/+fp+FJJ0YjDRKAfBSomV5++OjiGEpTJ1
-        aeaBSqVXu017ymNeN+/TSFk8mwOJt9KkuGhmiYYc19CahEFIvUAuvKALuzi/msT/IloQLm
-        RAmqyiuJ9sv77KrC3bwlKUSfnbu5Oyc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624277128;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xbaMfbL3qX1P1Vq1l4aN8Q68XfQmKAKQKhDEXhGLkoc=;
-        b=uPE4splr8oyArOaNn/dWaSx9j6qt7pU/EpUyFVEAN5EzhPEsc6I0um3SHDdwEBGlri5c6E
-        OtZbzsB0y8WKsPDA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id od5UJIiA0GAVIwAALh3uQQ
-        (envelope-from <bp@suse.de>); Mon, 21 Jun 2021 12:05:28 +0000
-Date:   Mon, 21 Jun 2021 14:05:16 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V3 16/66] x86/fpu: Clean up fpregs_set()
-Message-ID: <YNCAfJAn1872g7Fv@zn.tnic>
-References: <20210618141823.161158090@linutronix.de>
- <20210618143446.220042175@linutronix.de>
+        Mon, 21 Jun 2021 08:08:36 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC494C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 05:06:20 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id x16so13451607pfa.13
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 05:06:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Dhey6DNL2ogOKRIaHxi5hPlcQvIhtGNJ9mhZh8P/uYk=;
+        b=ULxBuc2F6IPVX+cShFxvY1JhiCxC+L0UzFLuU+mVY/5lcpXxMsnlp+60FyM17ISCBV
+         QWv6JHa9i11Lrn+BLzEtjCQeteNQ6Ej1j3OKpQmTZSRgz9E/pOLzXwupmTSgOQhmf3Dm
+         cCIZNKHbLKlbd8LqjEs5KFQ1RLIe7eL5ARaFmW1vyzQ3cLw/rzMqdmtS5zY4qNbuA7Vi
+         vpNCCR3iMiuNjkIGc+5iG8Q2zI7GdJVj8xR9FYj8cehFWoFKD1DxhXm44TYtyfXkQsst
+         fUXDbuw400IFWVVTKmDbS0ND37jKTQyiFbrUEWzkLMQosDqgdYSwtK79XgoEi2jHiuxd
+         Bd8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Dhey6DNL2ogOKRIaHxi5hPlcQvIhtGNJ9mhZh8P/uYk=;
+        b=G5yKMuduSITmQI2ref/eLc1vGE7KrHfk/BNLSqYu/sW5V1xvB9DnDmdPMGTe9XhuhW
+         PekoyP6DSQVODGqwnvOnCtZ1gjgEBraWh1rJNAx7vOKd9ADX4YmB9SDlCYBvBdyF+D8B
+         gxp3+thizAUdM9lhCma9CAh0VFx5Yrk7YVdDRildRMBDwr7LKwr/QjBSgD1LPuMFGiBr
+         LOQIXnscsawvD+tYir9PULceNFUxtVpw8t5cEWZeu8CukrStYEEbQnpIamrfEqfWeoDY
+         gqV6rww32WgkIWXtDQXjhSdce1VmaGc1wnqnXoFP5B/hOyDtVeTiAhZiTh08oDJ/saNF
+         +A6Q==
+X-Gm-Message-State: AOAM531GfgIDbdhe2xhI6keOwZU96GUG1J3UGR3txaaTFJXM8UpTq6Yy
+        5XGCDGGU3QeWjNAM9pgMO00=
+X-Google-Smtp-Source: ABdhPJy84cCGRZRvi+wLEb1t6F6ufWp1R7DByF9uonyAIuiEd0htSIni+2U/w3M5ujFeBBFO3FOkzg==
+X-Received: by 2002:a65:4109:: with SMTP id w9mr23161356pgp.24.1624277180341;
+        Mon, 21 Jun 2021 05:06:20 -0700 (PDT)
+Received: from gmail.com (36-229-229-123.dynamic-ip.hinet.net. [36.229.229.123])
+        by smtp.gmail.com with ESMTPSA id nv1sm15363076pjb.43.2021.06.21.05.06.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 05:06:19 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 20:06:16 +0800
+From:   Jhih-Ming Huang <fbihjmeric@gmail.com>
+To:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: make[2]: *** No rule to make target
+ '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/970a74bfa214d0d2e888d70974dd570293811429/lib/modules/5.13.0-rc6+/kernel/crypto/cmac.ko',
+ needed by '__modinst'.
+Message-ID: <20210621120616.vp4foapbgexf3nsn@gmail.com>
+References: <202106211900.eGQt5TX8-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210618143446.220042175@linutronix.de>
+In-Reply-To: <202106211900.eGQt5TX8-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 04:18:39PM +0200, Thomas Gleixner wrote:
-> From: Andy Lutomirski <luto@kernel.org>
+On Mon, Jun 21, 2021 at 07:47:07PM +0800, kernel test robot wrote:
+> Hi Jhih-Ming,
 > 
-> fpregs_set() has unnecessary complexity to support short or nonzero-offset
-> writes and to handle the case in which a copy from userspace overwrites
-> some of the target buffer and then fails.  Support for partial writes is
-> useless -- just require that the write have offset 0 and the correct size,
-> and copy into a temporary kernel buffer to avoid clobbering the state if
-> the user access fails.
+> First bad commit (maybe != root cause):
 > 
-> Signed-off-by: Andy Lutomirski <luto@kernel.org>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> tree:   https://github.com/0day-ci/linux/commits/UPDATE-20210621-162141/Jhih-Ming-Huang/rtw_security-fix-cast-to-restricted-__le32/20210616-131056
+> head:   970a74bfa214d0d2e888d70974dd570293811429
+> commit: 970a74bfa214d0d2e888d70974dd570293811429 rtw_security: fix cast to restricted __le32
+> date:   3 hours ago
+> config: x86_64-randconfig-a012-20210621 (attached as .config)
+> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project e1adf90826a57b674eee79b071fb46c1f5683cd0)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install x86_64 cross compiling tool for clang build
+>         # apt-get install binutils-x86-64-linux-gnu
+>         # https://github.com/0day-ci/linux/commit/970a74bfa214d0d2e888d70974dd570293811429
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review UPDATE-20210621-162141/Jhih-Ming-Huang/rtw_security-fix-cast-to-restricted-__le32/20210616-131056
+>         git checkout 970a74bfa214d0d2e888d70974dd570293811429
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    arch/x86/Makefile:148: CONFIG_X86_X32 enabled but no binutils support
+> >> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/970a74bfa214d0d2e888d70974dd570293811429/lib/modules/5.13.0-rc6+/kernel/crypto/cmac.ko', needed by '__modinst'.
+> >> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/970a74bfa214d0d2e888d70974dd570293811429/lib/modules/5.13.0-rc6+/kernel/crypto/md5.ko', needed by '__modinst'.
+> >> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/970a74bfa214d0d2e888d70974dd570293811429/lib/modules/5.13.0-rc6+/kernel/crypto/sha512_generic.ko', needed by '__modinst'.
+> >> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/970a74bfa214d0d2e888d70974dd570293811429/lib/modules/5.13.0-rc6+/kernel/drivers/net/net_failover.ko', needed by '__modinst'.
+> >> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/970a74bfa214d0d2e888d70974dd570293811429/lib/modules/5.13.0-rc6+/kernel/drivers/net/virtio_net.ko', needed by '__modinst'.
+> >> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/970a74bfa214d0d2e888d70974dd570293811429/lib/modules/5.13.0-rc6+/kernel/fs/cifs/cifs.ko', needed by '__modinst'.
+> >> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/970a74bfa214d0d2e888d70974dd570293811429/lib/modules/5.13.0-rc6+/kernel/fs/nfs/nfsv4.ko', needed by '__modinst'.
+> >> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/970a74bfa214d0d2e888d70974dd570293811429/lib/modules/5.13.0-rc6+/kernel/lib/crypto/libarc4.ko', needed by '__modinst'.
+> >> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/970a74bfa214d0d2e888d70974dd570293811429/lib/modules/5.13.0-rc6+/kernel/net/core/failover.ko', needed by '__modinst'.
+> >> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/970a74bfa214d0d2e888d70974dd570293811429/lib/modules/5.13.0-rc6+/kernel/net/dns_resolver/dns_resolver.ko', needed by '__modinst'.
+> >> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/970a74bfa214d0d2e888d70974dd570293811429/lib/modules/5.13.0-rc6+/kernel/net/sunrpc/auth_gss/auth_rpcgss.ko', needed by '__modinst'.
+>    make[2]: Target '__modinst' not remade because of errors.
+>    make[1]: *** [Makefile:1770: modules_install] Error 2
+>    make: *** [Makefile:215: __sub-make] Error 2
+>    make: Target 'modules_install' not remade because of errors.
+> 
 > ---
-> V2: New patch. Picked up from Andy
-> ---
->  arch/x86/kernel/fpu/regset.c |   29 +++++++++++++++--------------
->  1 file changed, 15 insertions(+), 14 deletions(-)
-> ---
-> --- a/arch/x86/kernel/fpu/regset.c
-> +++ b/arch/x86/kernel/fpu/regset.c
-> @@ -305,31 +305,32 @@ int fpregs_set(struct task_struct *targe
->  	struct user_i387_ia32_struct env;
->  	int ret;
->  
-> -	fpu__prepare_write(fpu);
-> -	fpstate_sanitize_xstate(fpu);
-> +	/* No funny business with partial or oversized writes is permitted. */
-> +	if (pos != 0 || count != sizeof(struct user_i387_ia32_struct))
-> +		return -EINVAL;
->  
-> -	if (!boot_cpu_has(X86_FEATURE_FPU))
-> +	if (!cpu_feature_enabled(X86_FEATURE_FPU))
->  		return fpregs_soft_set(target, regset, pos, count, kbuf, ubuf);
->  
-> -	if (!boot_cpu_has(X86_FEATURE_FXSR))
-> -		return user_regset_copyin(&pos, &count, &kbuf, &ubuf,
-> -					  &fpu->state.fsave, 0,
-> -					  -1);
-> +	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf, &env, 0, -1);
-> +	if (ret)
-> +		return ret;
->  
-> -	if (pos > 0 || count < sizeof(env))
-> -		convert_from_fxsr(&env, target);
-> +	fpu__prepare_write(fpu);
->  
-> -	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf, &env, 0, -1);
-> -	if (!ret)
-> +	if (cpu_feature_enabled(X86_FEATURE_FXSR))
->  		convert_to_fxsr(&target->thread.fpu.state.fxsave, &env);
-> +	else
-> +		memcpy(&target->thread.fpu.state.fsave, &env, sizeof(env));
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-You have above in the prologue:
+I got this failed build message, and I think it might not be due to my patch.
 
-	struct fpu *fpu = &target->thread.fpu;
+But I am not sure. If I am wrong, please correct me.
+or someone could hint me that it's due to which patch.
 
-so here you can just as well do:
+thanks.
 
-        if (cpu_feature_enabled(X86_FEATURE_FXSR))
-                convert_to_fxsr(&fpu->state.fxsave, &env);
-        else
-                memcpy(&fpu->state.fsave, &env, sizeof(env));
-
-asm is identical.
-
-With that:
-
-Reviewed-by: Borislav Petkov <bp@suse.de>
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+jmhuang
