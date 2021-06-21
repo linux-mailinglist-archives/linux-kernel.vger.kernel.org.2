@@ -2,67 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62E53AE4F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F2A3AE4FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbhFUIfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 04:35:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230292AbhFUIfJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 04:35:09 -0400
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E089C061787
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 01:32:54 -0700 (PDT)
-Received: by mail-ua1-x92c.google.com with SMTP id r9so4718883ual.7
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 01:32:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AyR5BeTCOPiEzhLXOoP4zgcKDESexLdcdJu4pl65SiY=;
-        b=Ts+cw78rGUGx1mzVOd0XZDx4w2BACVKVIHtmARCSf+GwfAQYzOr67ryufCc/Wx3cTt
-         +FIa+a6iv+cUndApmhERphBKGwytNCLYq9lnfxZxOXH6ah55qdzGVO+70isk8YZhVMoA
-         tNuHswn3UnHCUuKROkp8QWeCmBojXCkhgrb8k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AyR5BeTCOPiEzhLXOoP4zgcKDESexLdcdJu4pl65SiY=;
-        b=Nxk4lzElPhX5gOVD9BoPDC2MtsX/5NjlC1uSuBD4zZQvcVpDtMGjxmspX3J8nj9+jD
-         YdFreeWGG8WP+LLB0LwGe+AFa9BqR7XKIoWtA9CZ4eSU9xOSLxQPfILN6UtrNj9oMsNC
-         mJ2M1MREdqOSVW+YV4T91ok16YEjNzGyFwYfXKy/xjaoy9BXB+QaVh1ByUHaMaOEQo78
-         s9UbBIGHk7XKm7NfRaYWub/hWze9Z1sYQr8xDBWhNW80wkbTj3qkwVu2DyD6Vh+4MQnv
-         2EM1O9l6V9tao5yYmrcxBPkp0UTti9U/2RJuL/MXJv9STq6VMKPge+8zF0PrE6tXUGQS
-         Vwsg==
-X-Gm-Message-State: AOAM530olDuhhI/eRK70kfy7mqjGHAJ3/SacfLlGKYPItlA8XCZrx8Uw
-        sfUxJRL0AbGjGRt3oIqDyhy9dtf0qBqYAtDQJ5gR2A==
-X-Google-Smtp-Source: ABdhPJyUn9WwHIOZk5yzmppXQ1vDz67GiVGVK8+LZL/EAAcUso75naYtNYNXQIxJbyU4gawA34Q+mmSYUHrwMXsACnA=
-X-Received: by 2002:ab0:6998:: with SMTP id t24mr21315544uaq.72.1624264373720;
- Mon, 21 Jun 2021 01:32:53 -0700 (PDT)
+        id S230118AbhFUIhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 04:37:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:58534 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229789AbhFUIhk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 04:37:40 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AC161ED1;
+        Mon, 21 Jun 2021 01:35:26 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.12.39])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 860EA3F718;
+        Mon, 21 Jun 2021 01:35:21 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 09:35:18 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, benh@kernel.crashing.org,
+        boqun.feng@gmail.com, bp@alien8.de, catalin.marinas@arm.com,
+        dvyukov@google.com, elver@google.com, ink@jurassic.park.msu.ru,
+        jonas@southpole.se, juri.lelli@redhat.com, linux@armlinux.org.uk,
+        luto@kernel.org, mattst88@gmail.com, mingo@redhat.com,
+        monstr@monstr.eu, mpe@ellerman.id.au, paulmck@kernel.org,
+        paulus@samba.org, peterz@infradead.org, rth@twiddle.net,
+        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
+        vincent.guittot@linaro.org, will@kernel.org
+Subject: Re: [RFC PATCH 10/10] x86: snapshot thread flags
+Message-ID: <20210621083518.GD37068@C02TD0UTHF1T.local>
+References: <20210609122001.18277-1-mark.rutland@arm.com>
+ <20210609122001.18277-11-mark.rutland@arm.com>
+ <87eecxh4hj.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <1621928447-456653-1-git-send-email-wubo40@huawei.com>
-In-Reply-To: <1621928447-456653-1-git-send-email-wubo40@huawei.com>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Mon, 21 Jun 2021 10:32:43 +0200
-Message-ID: <CAJfpegtyxmjD9gobfwD6aYwg718MM6dz2JpFtu20aNRU-ChHjA@mail.gmail.com>
-Subject: Re: [PATCH] fuse: use DIV_ROUND_UP helper macro for calculations
-To:     Wu Bo <wubo40@huawei.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linfeilong <linfeilong@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87eecxh4hj.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 25 May 2021 at 09:15, Wu Bo <wubo40@huawei.com> wrote:
->
-> From: Wu Bo <wubo40@huawei.com>
->
-> Replace open coded divisor calculations with the DIV_ROUND_UP kernel
-> macro for better readability.
+On Sun, Jun 20, 2021 at 12:30:32AM +0200, Thomas Gleixner wrote:
+> On Wed, Jun 09 2021 at 13:20, Mark Rutland wrote:
+> > Some thread flags can be set remotely, and so even when IRQs are
+> > disabled, the flags can change under our feet. Generally this is
+> > unlikely to cause a problem in practice, but it is somewhat unsound, and
+> > KCSAN will legitimately warn that there is a data race.
+> >
+> > To avoid such issues, we should snapshot the flags prior to using them.
+> > Let's use the new helpers to do so on x86.
+> 
+>  To avoid such issues, a snapshot of the flags has to be taken prior to
+>  using them. Some places already use READ_ONCE() for that, others do
+>  not.
+> 
+>  Convert them all to the new flag accessor helpers.
 
-Applied, thanks.
+I'll use that wording consistently throughout the series.
 
-Miklos
+> Other than that.
+> 
+>  Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+
+Thanks!
+
+Mark.
