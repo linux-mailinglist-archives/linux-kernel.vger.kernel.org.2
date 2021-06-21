@@ -2,58 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9E7B3AF531
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32913AF53C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbhFUSnE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59546 "EHLO
+        id S230286AbhFUSne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:43:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229876AbhFUSnB (ORCPT
+        with ESMTP id S230032AbhFUSna (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:43:01 -0400
-Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE7F8C061756;
-        Mon, 21 Jun 2021 11:40:46 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 129841F535;
-        Mon, 21 Jun 2021 20:40:44 +0200 (CEST)
-Subject: Re: [PATCH net-next 3/6] net: ipa: disable misc clock gating for IPA
- v3.1
-To:     Alex Elder <elder@linaro.org>, davem@davemloft.net, kuba@kernel.org
-Cc:     robh+dt@kernel.org, jamipkettunen@gmail.com,
-        bjorn.andersson@linaro.org, agross@kernel.org, elder@kernel.org,
-        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210621175627.238474-1-elder@linaro.org>
- <20210621175627.238474-4-elder@linaro.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Message-ID: <fc8beed5-e1ca-330b-7db4-c1364c48f532@somainline.org>
-Date:   Mon, 21 Jun 2021 20:40:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Mon, 21 Jun 2021 14:43:30 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9989C061756;
+        Mon, 21 Jun 2021 11:41:14 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id u13so12508278lfk.2;
+        Mon, 21 Jun 2021 11:41:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rCjRGBTH8ADpERadaop92tDPR/QT7QNlg1YlaywmJB0=;
+        b=arLaxeAmpb8C6Ar+P13BxH6GG1GYxUiibPri0MWT/fm4bbT4x/00xdAtWKQgpRIj8Y
+         rw1/mMn//cZZQXMLx8Gs+k8czUom2uU3yJ0tGt0W8iLU+RGk72Ypm4jfDNjVxMTQBQhd
+         rAOeeTx3HIEWxdm0rtys54AecEKAi6DbAI2gULX3RdenREh825oVeYUpkN20qJVHzDIy
+         Ot2M3ZYm65G8+WjccAI89xD6lYm4V+rArO8nwQdMRpSQDXsN8DmomzkBBDXM36uO+zWJ
+         cLtcT9+7Emzl9cjdu0jfrqFJw5K6JhhF9fTMMaMGpbspD0LgJuz6p/8x2fvget3sPk03
+         zWag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rCjRGBTH8ADpERadaop92tDPR/QT7QNlg1YlaywmJB0=;
+        b=oFrunvkLXws84G/HAfk4IYQKLkftUsHZwGXUYhoOY4kq1Pu2R3i/R+Ux3pNciwrGFn
+         H24tHD+LdOBMu+NEi0FxWiiiVnvByjiHid/ErFVIS77hS/r338lMNTUBEu3uMFDxhIzP
+         bsK5sg0yySNNMeNB81822+zi326wFLmIHJevpXJ+VwKblTdokrsmG2KGM3o1gKqHbpdA
+         7WHX164pKWvjAQzONseH5jt6F1DfZ23EVRvh2z/j5Z/I21NkW8kNvaTn50wA6WWjgI3x
+         bk7ciKR/cnP10TWxKu2Rxe+twLO3KEE8GP900rzx6RGzGYHk7UytHRCKG+1+KapvzJyw
+         L6Wg==
+X-Gm-Message-State: AOAM532o4aTQtykpGSZ/kzNggZDBtoR+E5hddfPBGiCwQzIm/F4vAKpk
+        Zgqug9iQl+cPIh9Pls/VLYc=
+X-Google-Smtp-Source: ABdhPJwNY1Em83gAncrjMb32cXw0579K8DBHoqShynYRhmbuf57atwgnXK8gXLV7TcmHL8lcre8NbA==
+X-Received: by 2002:a05:6512:13a8:: with SMTP id p40mr15338234lfa.14.1624300873109;
+        Mon, 21 Jun 2021 11:41:13 -0700 (PDT)
+Received: from localhost.localdomain (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
+        by smtp.gmail.com with ESMTPSA id y22sm1950843lfa.145.2021.06.21.11.41.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 11:41:12 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-hwmon@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: [PATCH v3 0/2] Support temperature trips by HWMON core and LM90 driver
+Date:   Mon, 21 Jun 2021 21:40:56 +0300
+Message-Id: <20210621184058.4110-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210621175627.238474-4-elder@linaro.org>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 21/06/21 19:56, Alex Elder ha scritto:
-> For IPA v3.1, a workaround is needed to disable gating on a MISC
-> clock.  I have no further explanation, but this is what the
-> downstream code (msm-4.4) does.
-> 
-> This was suggested in a patch from AngeloGioacchino Del Regno.
-> 
-> Link: https://lore.kernel.org/netdev/20210211175015.200772-2-angelogioacchino.delregno@somainline.org
-> Signed-off-by: Alex Elder <elder@linaro.org>
+Hi,
 
-Acked-by: AngeloGioacchino Del Regno 
-<angelogioacchino.delregno@somainline.org>
+It's typical for embedded devices to use LM90-compatible sensor for
+monitoring of CPU core and skin temperatures. The sensor is often
+used by thermal zone that performs passive cooling and emergency
+shutdown on overheat, hence it's more optimal to use interrupt for
+a faster notification about temperature changes. Thermal framework
+provides set_trips() callback for programming of temperature trips,
+let's support it by HWMON.
+
+Changelog:
+
+v3: - Improved patch that fixes integer overflows by fixing the hysteresis
+      underflow and improving the commit message, telling that min/max/crit
+      fixes are only related to the LM99 sensor. Thanks to Guenter Roeck
+      for the suggestion.
+
+v2: - Reworked set_trips() by making it generic. Now callback invokes
+      the min/max temperature write method directly, instead of using
+      additional new hwmon callback. This was suggested by Guenter Roeck.
+
+    - Added new patch that fixes integer overflows in the LM90 driver.
+      The fixes are necessary for supporting set_trips().
+
+Dmitry Osipenko (2):
+  hwmon: (lm90) Prevent integer underflows of temperature calculations
+  hwmon: Support set_trips() of thermal device ops
+
+ drivers/hwmon/hwmon.c | 32 ++++++++++++++++++++++++++++++++
+ drivers/hwmon/lm90.c  |  9 +++++++++
+ 2 files changed, 41 insertions(+)
+
+-- 
+2.30.2
+
