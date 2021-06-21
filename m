@@ -2,193 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF583AE35C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 08:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0DF73AE361
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 08:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbhFUGpa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 02:45:30 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:47637 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229618AbhFUGp2 (ORCPT
+        id S229949AbhFUGqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 02:46:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229618AbhFUGqr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 02:45:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1624257796; x=1655793796;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=nnTC02y3bJuE4+6AyzbOtq+EC4nl+ykP4j/DuzUVVnQ=;
-  b=PAR+6RZaEp+G2V95Ws4XT+EivbIpY2+8yEk+C+cfhVJNdvGMLXswEw6L
-   Dt6GYiGSPRsHjXsqCxsI8zJkNHXKcQhQHpFEelahLzFF6YYXdW9h4QP7k
-   LmU00Iaa9Rzbi8deSvSwAsCINlfLR9sS2l3kLuimd6ulFqhvTRMyJjL3M
-   D1UB/sPINmwzDLvjjZHWUPbsTvjmBWVHYyqPx8oMqykX9Ap+ZFsCHuFy4
-   mp77qSPRCBmz6enbZ//mk8vJK0aW/4gkcfBdqSZ3VOouxcvC0iCn8mPVb
-   yZhIl5tXUF/dZvrUcoOyzPi8Tj+MopRN5SjS3VcvA3GFG8+wxOx4JYKex
-   g==;
-IronPort-SDR: g8iNThDscDnuXpxvD4QWeR3vJdQyVn3z232iQTKnjAIrMMv0/xJsXKqQP/Tk1n/FX3F9gEpny5
- JzgKZoSKc3lQ4SDanh4yTmSXIcQaafxmTZLdbDG4w+yGba3aki8xy2PA+O6UNkVuyK5xGmuAQO
- Dpy98s2yDvfYGi3tqgqpwXDn/JLOX7lsGSJVbh5Awrqo+tUcG1tdQ0ou7kM13pzrOsiVXolq1O
- keUSJq92b3t3F1t/KGvdEgNrPTrJAmLKjtCHsgDcrVoWIRrswFNZ3DP6dzcxMdg9EMuYv6euHK
- vas=
-X-IronPort-AV: E=Sophos;i="5.83,289,1616428800"; 
-   d="scan'208";a="276243768"
-Received: from mail-dm6nam08lp2049.outbound.protection.outlook.com (HELO NAM04-DM6-obe.outbound.protection.outlook.com) ([104.47.73.49])
-  by ob1.hgst.iphmx.com with ESMTP; 21 Jun 2021 14:43:14 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EcujHX91rPSxQxZF2ve65TvAhgEnCyUkyKsg0MDWKsBaxMLBRaZXmld0KgmB6clJlqiZCiKKJu3vQ3EVtY1uj8iaudXQeyiDf8o1Lg63LnSlnUY7JMQkyt/DquulnVVEwzejV+UhoxKfS3ucrk84eHNFsFbA1ZSYK/py2WhsWSpMs920tStpB4aBRIujIsLtZh1eAgLFMpdvNGnIghZma4jVtLMCXBbLwGCCQhVzCAeRpT52YCvxNMzW29Kc70rQmPmkfb+EQonmj5NyaH8RuQCEnB972zjNK8NLBJknnVrhKnZf2WnBte7AnURQ+utIjZxFx5zHod/CE8v9moYF0w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nnTC02y3bJuE4+6AyzbOtq+EC4nl+ykP4j/DuzUVVnQ=;
- b=lwzqS5tvKUI9BySCArZKS80TuMjNYGpkuisFBmyLENZ8rCxISbWcFdUq2cj1EzJUKiZpzGOuvYbENYy3H6MdYKXGXAnBCB+UWK8+ptWIIpcuW4fYHhErXR7jdttgzu2kSplKgBEqE32lmls2KYbTT7SeAx+Bc6r1WKu3cAD5cVooByFMKpR5rP4JPMl6mzQ6dExlCV6Igj3ZZRvpADYAOJw+fga5m4v6UMjIc2SaFDoPsaxPD5YIspDXaMOVUbc3BbHe1hDtIXR6ZuWFv/VoAbzds1k6yBf9hqiyFY3ejhX1c/jeQnwIYccXMdRO5u6RHl9zSQTGcn6CSuNP4ZPKtw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        Mon, 21 Jun 2021 02:46:47 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07DB8C061756
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 23:44:33 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id t13so1549711pgu.11
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 23:44:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nnTC02y3bJuE4+6AyzbOtq+EC4nl+ykP4j/DuzUVVnQ=;
- b=xUHCRgCPmxE8IdqS5fXfi0tBjyhfGKSH1Vs4crDIY4TcerNSqpjRZBvhQ5X+51KwXF1ekS8/W21agHF4CqbETpqcvS5wZAFtmnE0vvwt72ZxmvV59UG4w+WhXkAFCmTfI/qKUVQVqtvD4gifzZpB3yt+rv0ZhpMTURKmHMgK7qY=
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
- DM6PR04MB6509.namprd04.prod.outlook.com (2603:10b6:5:1bb::16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4242.22; Mon, 21 Jun 2021 06:43:11 +0000
-Received: from DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::78af:772c:a69a:95a0]) by DM6PR04MB6575.namprd04.prod.outlook.com
- ([fe80::78af:772c:a69a:95a0%9]) with mapi id 15.20.4242.023; Mon, 21 Jun 2021
- 06:43:11 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
-        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
-Subject: RE: [PATCH v11 12/12] scsi: ufshpb: Make host mode parameters
- configurable
-Thread-Topic: [PATCH v11 12/12] scsi: ufshpb: Make host mode parameters
- configurable
-Thread-Index: AQHXYqLy6NElc2HCUEi3Gyev+BZB1asd8syAgAAXrTA=
-Date:   Mon, 21 Jun 2021 06:43:11 +0000
-Message-ID: <DM6PR04MB6575BF2A411BDDF7832A844AFC0A9@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <20210616112800.52963-13-avri.altman@wdc.com>
-        <20210616112800.52963-1-avri.altman@wdc.com>
-        <CGME20210616113004epcas2p41cf111449e118965ae71aaaee1d3bd5c@epcms2p8>
- <2038148563.21624252502579.JavaMail.epsvc@epcpadp3>
-In-Reply-To: <2038148563.21624252502579.JavaMail.epsvc@epcpadp3>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: samsung.com; dkim=none (message not signed)
- header.d=none;samsung.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e9ca6bd2-7a08-41f3-6209-08d9347fd6cc
-x-ms-traffictypediagnostic: DM6PR04MB6509:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR04MB6509A45790D56363798C6197FC0A9@DM6PR04MB6509.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: RX/njbgHFMX/feBLLCvVfKURO9f3ID8NmaVBEhZJe7hEUlxs2crSJJtLM69zUwveWGHDBRte+WXoO5Hhto8SolCI78cG1njQI572nTYCaCI2THjCPV9BtO3MzFgCZImVVN/u3Y/wqj5oFSqRgdDLoWzGqQMNyf/EKaFvS9fjgCof31yP9eG0oonqjQzWHw/CjV+motGnTDJT8ygGTKDZ1l02NYuCZxTSB2eKzHnMjgOo82LqsomqdbaTDbp/dF7k4iv+7bXZ10QogwThjx6+wiqLg5ds4j9U9qapiAUDQjJ00kP1RPBWuUbTwLbR6tDNF248WYqspVBhyexBHsSIWjrZCKo1gWY+tyAargSoStWyN2TRej/X6rAugKtMtByTn9zGzXjmcizdJ3gXG4TGFOrXHsKvXRVxHnxpq2p9PQCbiYtaecuVdOzOqM7TYlU32CvxzTXdJKl5NNLtAyM2KMFiTdsbiAnQbH44dh1C0L4+sXPKq6dMd2SshZj1gTZk8v2XdAE2CvVm033aExj+8sEMM8sH5K2tgO2LYrSz04dvK5Kgf3Vu4sHM2bR93GE23Yw+BcDOxLTJPXZO6xC3njCmkAkS4yMFIIDhIPAG7qw=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(396003)(366004)(376002)(346002)(54906003)(66446008)(64756008)(66556008)(66476007)(86362001)(55016002)(2906002)(66946007)(9686003)(76116006)(7416002)(7696005)(71200400001)(110136005)(8936002)(4326008)(8676002)(5660300002)(26005)(38100700002)(478600001)(6506007)(316002)(52536014)(122000001)(33656002)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?V3puZit2cTJtNTdVYWJPVlg4M2ZGQzFKSld0eCt1UEQxbElGNmkwdnk2VUh6?=
- =?utf-8?B?TWd5VHg0dDFhODJWdEdPMXo1SktTRUtyQnROcDZIZXZibVhLdUV6SlZHSkNx?=
- =?utf-8?B?T2hiYitWM2QwcUo4N0d0NjZOSGxDbkJYQjZmUVllRlpySXVUYXFVd2FlUmVM?=
- =?utf-8?B?K1lQT0dZdzdwM1oyaTVXTVlYcjY1L0g4azZ1VE5kYkRha09sRkhIOEdHV1Mz?=
- =?utf-8?B?SzB4QWhGd1dUc0QrdC9Xb1RnanZsRWNseWhTalQyeFlkVlBxN051RldsNG9I?=
- =?utf-8?B?V0lwVzhqaHlnOENkUnAreURmVzF5K0ZiZEZSV1l2eUNtNGNKVmlubVBzOWFU?=
- =?utf-8?B?cjVYVlVSN1diT2FwVkppQnZlWVZ2eVhGcUp2NlFDQVFLdE5wcERMNDNGc2pN?=
- =?utf-8?B?bm5VSDZBRlpvTlRkRUdWZjliUjZkZlBmeFAwMk50aFo2VDV0ZnRINk9SUUph?=
- =?utf-8?B?UnMxL1lMZS9TQUxPUEdaSEhtSEt4NjcrMVkrWTY4VE1SUS81b29kdFpwQTY3?=
- =?utf-8?B?VDQxbU9tM0VRbk1MZmwxUm9idU1QanZIL1BTTVBpOG1NUDB6MXprRjNOeXEz?=
- =?utf-8?B?aTNQZ2p4VUozQkZuTjRYQm94RWlHWVl1TjArMy9CRGFBNFJyejFZeWtnMitp?=
- =?utf-8?B?Qm5WUUVXRkRmRGdGbDFLZ1lUdzlQTFhjNkUrQXMwUndnTEJVdEJCL1Voamk5?=
- =?utf-8?B?UzRPMDY0eUYrU0Q2N3AzRi9CeXlPbmJGK0FtUkZBaFoyd3RKRXBDSjVMZk0z?=
- =?utf-8?B?cVNKNWs3eGtVK3VHenlvWkF3OW50UW53eEhFODdUTW92ZkcwcDhEUmtKaGlN?=
- =?utf-8?B?UUpONlJjR1hQT1FOeXdkTEsrQTdrUC9TSVZvbys5ZGtuaDZKL1hudC9sRE5w?=
- =?utf-8?B?NmZua0lzWVlCMFFnek9oazhZb1BZZnltYVNmZFV1K1FLSEM1bFh1NDZ4MUV2?=
- =?utf-8?B?TEVTV3oyaVFsekFkZWRHM1FNRi9acEd4NDMyR01Kd3dDQjU2cW9UK3hSL0Qx?=
- =?utf-8?B?Zk1jUERpdUFpazhGTkZiNW54aExObUdTNmRURU1adTFXVHdRbUE1d3ZsWEly?=
- =?utf-8?B?NE94QnA4Z29kT3FTZkh4ZUlwUEpheFI1eGg0Y1BFTXA5S2VSeTZKSUQxODMr?=
- =?utf-8?B?TjlidkNIOGhaSWJxOTRUNmF4TTByaTFmZ1d0TjlMODVyZFFoL0pJSTlINlda?=
- =?utf-8?B?SWdZSXpjdlU5S0Z1RFFzN2tvQkw3VE1JV1pDZjhkdy93ZlhKZDcxTWhtazE1?=
- =?utf-8?B?MDVJSzVyclp1NmRGaUpib3I3UERhdGJ6ZDlPbmxraHgyTi9vMVBjTkVKWHZF?=
- =?utf-8?B?bVVSdnl5dUdTVFJhV2s1TllGb1lBY0lkRkpzMlQzd3NKTEQreGFFbzdpK3or?=
- =?utf-8?B?V0dETXR6SEZwWUdLMnYwZXM2WDBBWENlUjZnZWpGbGdDWEtOSjNjaHJCVm5w?=
- =?utf-8?B?VTNSWGQ0V3pVM1QrOVJaODFTbzhxaVF2TUk1WXBPNjZLQ2xJZU92Y092V1hZ?=
- =?utf-8?B?eGo3SDRFOEYyWFY5ZXdzU1lNZkZzakE3cDF4VEJBSFFNK3Q2SUQwK3lPOFlH?=
- =?utf-8?B?YlNveklzV0dmbUZIQlpLUmpTMDI2cFU0WklFVHF2ejU4MUlXbEJpQWlwN0VI?=
- =?utf-8?B?WnhUYzhqb3VqYWJ2dC9SdThOZFFRMkJJaU5OTk9KZmZnZ3hzd050dGo5NlBW?=
- =?utf-8?B?eU9MalZKUjVQd1pWOVJDeVZ4aU5XSnBUdVpzVHZobm5SaE12MVFzb1Y4dXp0?=
- =?utf-8?Q?Jd4V2uSPbTyveBpoFk=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        d=igel-co-jp.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qYWJuyK1bUpXUNYlMG8y+I7VziTPyHJu5fz70XXNt7o=;
+        b=zSsBl46XOGZe6gvr8o3kSN6cTIPzym+tkv/0ToxwVp80014S9cjzeYVaJTe7IchkT3
+         KzO0Rrnnnb0txcx1hIR4xdteZ4vsg1vsE5Y2rnAl/G3FEoMMUe2KYfexSXNGEnx8OtaS
+         ECt8k6XlbFEv1yvP34tPW4y704OmqqlCktx5y0nZXNr5gSEpSpphC9BAjnL5HgbeUDxo
+         TAUXuI8SUtGC7pJsajJykD2gc7WtGj2LQTUZ5G9Rv5/EQwUDJDHyBKw9zMX/1Iq/8Y1Y
+         i7XI+UqHlL1TCvgn8DVn8B21N4EHMGd/uaasHWQaYYI8Ky00kLsBtw7bGJMey2M24OBS
+         7H9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qYWJuyK1bUpXUNYlMG8y+I7VziTPyHJu5fz70XXNt7o=;
+        b=gE4u2zJswd39cL/PIJTTXpDj1kqbxmHNeCxrbWGbPtLDJ9AZIbZ1s8tYVeKoFR+R8g
+         tNNEG2OA+taPUpIf2X62QW/Zl6fuaHRkwd/9xdo91mLmYHHTZa3PqydWemtk1c8ae27t
+         Ank1QsCwpPofDalGhBiH2KSwdcdlOWgm5MWq5Z+RdZuvpfBMDCmcjUuriPj651MN+9Yw
+         U7VFKyw42CcL9Z4w0l8m8qiqyRa9HP1lb1XXyhNhqzo8/BO4bpjzW/ZjDCGmkU1AWSwe
+         t8Ls7EURBqf0EQZ27NXQzIZfgctutnNM4pIdWYJ/LNk6pg1OhrmAAXTx/vwI8phfAJ8F
+         DcaA==
+X-Gm-Message-State: AOAM533T8u1JDBN2fdkpmCzuUtdeKU2d4Tw7Fkxq/oVYbzCjYxB0Jnqf
+        iUrEX0r0k8pFZSL7zSnggSjQcw==
+X-Google-Smtp-Source: ABdhPJyU0p37To1lNBWRzUCiNdn9mBwEeKIBU3xGQdaMaX1k0DNbUC1ZknIAhuYlvctiMOE5qL9jKg==
+X-Received: by 2002:a62:ee16:0:b029:2fe:ffcf:775a with SMTP id e22-20020a62ee160000b02902feffcf775amr17476747pfi.59.1624257872488;
+        Sun, 20 Jun 2021 23:44:32 -0700 (PDT)
+Received: from localhost.localdomain ([240b:10:c9a0:ca00:61b8:26ec:dc30:8823])
+        by smtp.gmail.com with ESMTPSA id o34sm12744450pgm.6.2021.06.20.23.44.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Jun 2021 23:44:32 -0700 (PDT)
+From:   Tomohito Esaki <etom@igel.co.jp>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Cc:     dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-doc@vger.kernel.org, Tomohito Esaki <etom@igel.co.jp>
+Subject: [PATH 0/4] [RFC] Support virtual DRM
+Date:   Mon, 21 Jun 2021 15:43:59 +0900
+Message-Id: <20210621064403.26663-1-etom@igel.co.jp>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e9ca6bd2-7a08-41f3-6209-08d9347fd6cc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 Jun 2021 06:43:11.7909
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 6GDTEWStFSYhw+6U+B/1AL5XcG4TeU1W4GOXKEF9cjqn8uwXEQ6RP2j5nQ0fr/2H51ST3C5N7Vh6q6jGbF07jQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB6509
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBIaSBBdnJpLA0KPiANCj4gPmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL0FCSS90ZXN0aW5n
-L3N5c2ZzLWRyaXZlci11ZnMNCj4gYi9Eb2N1bWVudGF0aW9uL0FCSS90ZXN0aW5nL3N5c2ZzLWRy
-aXZlci11ZnMNCj4gPmluZGV4IGQwMDFmMDA4MzEyYi4uYjEwY2VjYjI4NmRmIDEwMDY0NA0KPiA+
-LS0tIGEvRG9jdW1lbnRhdGlvbi9BQkkvdGVzdGluZy9zeXNmcy1kcml2ZXItdWZzDQo+ID4rKysg
-Yi9Eb2N1bWVudGF0aW9uL0FCSS90ZXN0aW5nL3N5c2ZzLWRyaXZlci11ZnMNCj4gPkBAIC0xNDQ5
-LDcgKzE0NDksNyBAQCBEZXNjcmlwdGlvbjogICAgICAgIFRoaXMgZW50cnkgc2hvd3MgdGhlIG1h
-eGltdW0NCj4gSFBCIGRhdGEgc2l6ZSBmb3IgdXNpbmcgc2luZ2xlIEhQQg0KPiA+DQo+ID4gICAg
-ICAgICAgICAgICAgIFRoZSBmaWxlIGlzIHJlYWQgb25seS4NCj4gPg0KPiA+LVdoYXQ6ICAgICAg
-ICAgICAgICAgIC9zeXMvYnVzL3BsYXRmb3JtL2RyaXZlcnMvdWZzaGNkLyovZmxhZ3Mvd2JfZW5h
-YmxlDQo+ID4rV2hhdDogICAgICAgICAgICAgICAgL3N5cy9idXMvcGxhdGZvcm0vZHJpdmVycy91
-ZnNoY2QvKi9mbGFncy9ocGJfZW5hYmxlDQo+IA0KPiBUaGlzIHBhcnQgc2VlbXMgdG8gYmUgdGhl
-IHByb2JsZW0gd2l0aCBteSBwYXRjaC4gSSB3aWxsIGNvcnJlY3QgaXQuDQpNYXliZSBpZiBqdXN0
-IGFub3RoZXIgc3BpbiBpcyByZWFsbHkgcmVxdWlyZWQ/DQoNCj4gDQo+IC4uLg0KPiANCj4gPmRp
-ZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hwYi5jIGIvZHJpdmVycy9zY3NpL3Vmcy91
-ZnNocGIuYw0KPiA+aW5kZXggYWI2NjkxOWY0MDY1Li42ZjJkZWQ4YzYzYjAgMTAwNjQ0DQo+ID4t
-LS0gYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hwYi5jDQo+ID4rKysgYi9kcml2ZXJzL3Njc2kvdWZz
-L3Vmc2hwYi5jDQo+IA0KPiAuLi4NCj4gDQo+ID5AQCAtMTY5Nyw2ICsxNzA0LDcgQEAgc3RhdGlj
-IHZvaWQNCj4gdWZzaHBiX25vcm1hbGl6YXRpb25fd29ya19oYW5kbGVyKHN0cnVjdCB3b3JrX3N0
-cnVjdCAqd29yaykNCj4gPiAgICAgICAgIHN0cnVjdCB1ZnNocGJfbHUgKmhwYiA9IGNvbnRhaW5l
-cl9vZih3b3JrLCBzdHJ1Y3QgdWZzaHBiX2x1LA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIHVmc2hwYl9ub3JtYWxpemF0aW9uX3dvcmspOw0KPiA+ICAg
-ICAgICAgaW50IHJnbl9pZHg7DQo+ID4rICAgICAgICB1OCBmYWN0b3IgPSBocGItPnBhcmFtcy5u
-b3JtYWxpemF0aW9uX2ZhY3RvcjsNCj4gPg0KPiA+ICAgICAgICAgZm9yIChyZ25faWR4ID0gMDsg
-cmduX2lkeCA8IGhwYi0+cmduc19wZXJfbHU7IHJnbl9pZHgrKykgew0KPiA+ICAgICAgICAgICAg
-ICAgICBzdHJ1Y3QgdWZzaHBiX3JlZ2lvbiAqcmduID0gaHBiLT5yZ25fdGJsICsgcmduX2lkeDsN
-Cj4gPkBAIC0xNzA3LDcgKzE3MTUsNyBAQCBzdGF0aWMgdm9pZA0KPiB1ZnNocGJfbm9ybWFsaXph
-dGlvbl93b3JrX2hhbmRsZXIoc3RydWN0IHdvcmtfc3RydWN0ICp3b3JrKQ0KPiA+ICAgICAgICAg
-ICAgICAgICBmb3IgKHNyZ25faWR4ID0gMDsgc3Jnbl9pZHggPCBocGItPnNyZ25zX3Blcl9yZ247
-IHNyZ25faWR4KyspIHsNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3QgdWZzaHBi
-X3N1YnJlZ2lvbiAqc3JnbiA9IHJnbi0+c3Jnbl90YmwgKyBzcmduX2lkeDsNCj4gPg0KPiA+LSAg
-ICAgICAgICAgICAgICAgICAgICAgIHNyZ24tPnJlYWRzID4+PSAxOw0KPiA+KyAgICAgICAgICAg
-ICAgICAgICAgICAgIHNyZ24tPnJlYWRzID4+PSBmYWN0b3I7DQo+ID4gICAgICAgICAgICAgICAg
-ICAgICAgICAgcmduLT5yZWFkcyArPSBzcmduLT5yZWFkczsNCj4gDQo+IEhvdyBhYm91dCBjaGFu
-Z2luZyBpdCB0byAicmduLT5yZWFkID4+PWZhY3RvciIgYW5kIHBsYWNpbmcgaXQgb3V0c2lkZSB0
-aGUNCj4gZm9yIHN0YXRlbWVudD8NCkkgdGhpbmsgemVyb2luZyByZ24tPnJlYWRzIGJlZm9yZSB0
-aGUgbG9vcCBhbmQgdGhlbiByZ24tPnJlYWRzICs9IHNyZ24tPnJlYWRzDQpNYWtpbmcgaXQgY2xl
-YXIsIGV2ZW4gYXMgZmFyIGFzIGRvYywgdGhhdCB0aGUgcmVnaW9uIHJlYWRzIGlzIHRoZSBzdW0g
-b3ZlciBpdHMgc3VicmVnaW9ucy4NCg0KQW55d2F5LCB0aGlzIGNvZGUgd2FzIGludHJvZHVjZWQg
-aW4gcGF0Y2ggNCwgc28gSSB3aWxsIGZpeCBpdCB0aGVyZSBvbmx5IGlmIHlvdSBmaW5kIGl0IHJl
-YWxseSBuZWNlc3NhcnkuDQoNClRoYW5rcywNCkF2cmkNCg==
+Hello
+Sorry, there was a typo in the dri-devel mail address, so I've resend it.
+---
+
+Virtual DRM splits the overlay planes of a display controller into multiple
+virtual devices to allow each plane to be accessed by each process.
+
+This makes it possible to overlay images output from multiple processes on a
+display. For example, one process displays the camera image without compositor
+while another process overlays the UI.
+
+Virtual DRM driver doesn’t directly control the display hardware and has no
+access to the physical bus. Instead, the virtual DRM driver issues requests to
+the standard DRM device driver (parent) when the hardware needs to be
+controlled. The parent is modified to notify the virtual DRM driver of
+interruptevents from the display hardware. Therefore, in order to use virtual
+DRM, each DRM device driver needs to add code to support virutal DRM.
+
+The only driver supported in this patch series is rcar-du. This patch series
+is divided into multiple. The first patch adds vDRM feature to DRM, and the
+second patch support vDRM for the rcar-du driver. The other patches add
+documentation.
+
+In particular, I would appreciate your advice on the following points:
+* virtual DRM generalization
+  I've only tested with rcar-du, is there anything I should consider to make
+  virtual DRM work with other drivers?
+
+* Integration to upstream
+  I think it is a good idea to add virtual DRM to the DRM core functionality,
+  but I would appreciate any suggestions on what needs to be improved for
+  integration to upstream.
+
+* dumb_create and fb_create callback
+  I think that the dumb_create and fb_create callbacks need to be done by the
+  parent, and it is preferable to use the parent's callbacks as they are.
+  However, since the dumb buffer needs to be registered in the parent and
+  the fb handle needs to be registered in the drm_file of the vDRM, the
+  dumb_create callbacks from the parent driver cannot be used as is.
+  Therefore, the current implementation of the dumb_create callback is
+  workarround.
+  What do you think is the best way to deal with this issue?
+
+
+Tomohito Esaki (4):
+  Add Virtual DRM device driver
+  rcar-du: Add support virtual DRM device
+  dt-bindings: display: Add virtual DRM
+  doc-rst: Add virtual DRM documentation
+
+ .../devicetree/bindings/display/vdrm.yaml     |  67 ++
+ Documentation/gpu/drivers.rst                 |   1 +
+ Documentation/gpu/vdrm.rst                    |  51 ++
+ drivers/gpu/drm/Kconfig                       |   7 +
+ drivers/gpu/drm/Makefile                      |   1 +
+ drivers/gpu/drm/rcar-du/Kconfig               |   4 +
+ drivers/gpu/drm/rcar-du/Makefile              |   1 +
+ drivers/gpu/drm/rcar-du/rcar_du_crtc.c        |  42 +
+ drivers/gpu/drm/rcar-du/rcar_du_crtc.h        |  13 +
+ drivers/gpu/drm/rcar-du/rcar_du_drv.c         |  13 +
+ drivers/gpu/drm/rcar-du/rcar_du_drv.h         |   3 +
+ drivers/gpu/drm/rcar-du/rcar_du_vdrm.c        | 191 ++++
+ drivers/gpu/drm/rcar-du/rcar_du_vdrm.h        |  67 ++
+ drivers/gpu/drm/rcar-du/rcar_du_vsp.c         |  22 +
+ drivers/gpu/drm/rcar-du/rcar_du_vsp.h         |   1 +
+ drivers/gpu/drm/vdrm/vdrm_api.h               |  68 ++
+ drivers/gpu/drm/vdrm/vdrm_drv.c               | 859 ++++++++++++++++++
+ drivers/gpu/drm/vdrm/vdrm_drv.h               |  80 ++
+ 18 files changed, 1491 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/vdrm.yaml
+ create mode 100644 Documentation/gpu/vdrm.rst
+ create mode 100644 drivers/gpu/drm/rcar-du/rcar_du_vdrm.c
+ create mode 100644 drivers/gpu/drm/rcar-du/rcar_du_vdrm.h
+ create mode 100644 drivers/gpu/drm/vdrm/vdrm_api.h
+ create mode 100644 drivers/gpu/drm/vdrm/vdrm_drv.c
+ create mode 100644 drivers/gpu/drm/vdrm/vdrm_drv.h
+
+-- 
+2.25.1
+
