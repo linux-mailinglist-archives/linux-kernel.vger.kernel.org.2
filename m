@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 921803AEF3F
+	by mail.lfdr.de (Postfix) with ESMTP id 00AF63AEF3E
 	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231517AbhFUQhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:37:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53734 "EHLO mail.kernel.org"
+        id S232673AbhFUQhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:37:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232115AbhFUQdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:33:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52973613C9;
-        Mon, 21 Jun 2021 16:26:15 +0000 (UTC)
+        id S231143AbhFUQdM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:33:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 004C061369;
+        Mon, 21 Jun 2021 16:26:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292775;
-        bh=87spd6geNl/EK4z+SKlAsHS8LU4hSHAv+QPgTth09f8=;
+        s=korg; t=1624292778;
+        bh=MDCNXLQaQeRCclZguFc8JPVwqRvHbGxIhkqjfdDrtS8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=09/Go/k6HT4O61hsD23JfuHldUGLWdtI3kokc03jsfRa8398yXMPxxPkFu0fd8UTT
-         4sVTWirk+EkmadxJLWmPRl8FuggDL00fom2uzdINB91tjQS1DixNxeo/45KKwwX26o
-         vnMNHktPLG09bAVDGVylqLTxD88ZcnZdoitwFhDk=
+        b=Ja+o4SwQjMubNFaEBr+r3UJKd2lc/eYooKyNnlcRdPnJDVUIxQ5cwUOrSG/pGLg0z
+         wYzYDwfEQEyBQ4is9/YjKOfU+BMojmnCWKO8pwvnaBnJ0kv1rZKJdZwNGxJHEDvBqG
+         MtnCIdji/cccCH5hmCh8EFtVJn3/gcfui1E4nOik=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jongho Park <jongho7.park@samsung.com>,
-        Bumyong Lee <bumyong.lee@samsung.com>,
-        Chanho Park <chanho61.park@samsung.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH 5.10 126/146] dmaengine: pl330: fix wrong usage of spinlock flags in dma_cyclc
-Date:   Mon, 21 Jun 2021 18:15:56 +0200
-Message-Id: <20210621154919.421145801@linuxfoundation.org>
+        stable@vger.kernel.org, Ben Greear <greearb@candelatech.com>,
+        Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>,
+        Sven Eckelmann <sven@narfation.org>,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 5.10 127/146] mac80211: Fix NULL ptr deref for injected rate info
+Date:   Mon, 21 Jun 2021 18:15:57 +0200
+Message-Id: <20210621154919.487162348@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
 References: <20210621154911.244649123@linuxfoundation.org>
@@ -41,52 +41,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bumyong Lee <bumyong.lee@samsung.com>
+From: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
 
-commit 4ad5dd2d7876d79507a20f026507d1a93b8fff10 upstream.
+commit bddc0c411a45d3718ac535a070f349be8eca8d48 upstream.
 
-flags varible which is the input parameter of pl330_prep_dma_cyclic()
-should not be used by spinlock_irq[save/restore] function.
+The commit cb17ed29a7a5 ("mac80211: parse radiotap header when selecting Tx
+queue") moved the code to validate the radiotap header from
+ieee80211_monitor_start_xmit to ieee80211_parse_tx_radiotap. This made is
+possible to share more code with the new Tx queue selection code for
+injected frames. But at the same time, it now required the call of
+ieee80211_parse_tx_radiotap at the beginning of functions which wanted to
+handle the radiotap header. And this broke the rate parser for radiotap
+header parser.
 
-Signed-off-by: Jongho Park <jongho7.park@samsung.com>
-Signed-off-by: Bumyong Lee <bumyong.lee@samsung.com>
-Signed-off-by: Chanho Park <chanho61.park@samsung.com>
-Link: https://lore.kernel.org/r/20210507063647.111209-1-chanho61.park@samsung.com
-Fixes: f6f2421c0a1c ("dmaengine: pl330: Merge dma_pl330_dmac and pl330_dmac structs")
+The radiotap parser for rates is operating most of the time only on the
+data in the actual radiotap header. But for the 802.11a/b/g rates, it must
+also know the selected band from the chandef information. But this
+information is only written to the ieee80211_tx_info at the end of the
+ieee80211_monitor_start_xmit - long after ieee80211_parse_tx_radiotap was
+already called. The info->band information was therefore always 0
+(NL80211_BAND_2GHZ) when the parser code tried to access it.
+
+For a 5GHz only device, injecting a frame with 802.11a rates would cause a
+NULL pointer dereference because local->hw.wiphy->bands[NL80211_BAND_2GHZ]
+would most likely have been NULL when the radiotap parser searched for the
+correct rate index of the driver.
+
 Cc: stable@vger.kernel.org
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Reported-by: Ben Greear <greearb@candelatech.com>
+Fixes: cb17ed29a7a5 ("mac80211: parse radiotap header when selecting Tx queue")
+Signed-off-by: Mathy Vanhoef <Mathy.Vanhoef@kuleuven.be>
+[sven@narfation.org: added commit message]
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Link: https://lore.kernel.org/r/20210530133226.40587-1-sven@narfation.org
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/dma/pl330.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ include/net/mac80211.h |    7 +++++-
+ net/mac80211/tx.c      |   52 +++++++++++++++++++++++++++++++++----------------
+ 2 files changed, 42 insertions(+), 17 deletions(-)
 
---- a/drivers/dma/pl330.c
-+++ b/drivers/dma/pl330.c
-@@ -2696,13 +2696,15 @@ static struct dma_async_tx_descriptor *p
- 	for (i = 0; i < len / period_len; i++) {
- 		desc = pl330_get_desc(pch);
- 		if (!desc) {
-+			unsigned long iflags;
+--- a/include/net/mac80211.h
++++ b/include/net/mac80211.h
+@@ -6335,7 +6335,12 @@ bool ieee80211_tx_prepare_skb(struct iee
+ 
+ /**
+  * ieee80211_parse_tx_radiotap - Sanity-check and parse the radiotap header
+- *				 of injected frames
++ *				 of injected frames.
++ *
++ * To accurately parse and take into account rate and retransmission fields,
++ * you must initialize the chandef field in the ieee80211_tx_info structure
++ * of the skb before calling this function.
++ *
+  * @skb: packet injected by userspace
+  * @dev: the &struct device of this 802.11 device
+  */
+--- a/net/mac80211/tx.c
++++ b/net/mac80211/tx.c
+@@ -2030,6 +2030,26 @@ void ieee80211_xmit(struct ieee80211_sub
+ 	ieee80211_tx(sdata, sta, skb, false);
+ }
+ 
++static bool ieee80211_validate_radiotap_len(struct sk_buff *skb)
++{
++	struct ieee80211_radiotap_header *rthdr =
++		(struct ieee80211_radiotap_header *)skb->data;
 +
- 			dev_err(pch->dmac->ddma.dev, "%s:%d Unable to fetch desc\n",
- 				__func__, __LINE__);
++	/* check for not even having the fixed radiotap header part */
++	if (unlikely(skb->len < sizeof(struct ieee80211_radiotap_header)))
++		return false; /* too short to be possibly valid */
++
++	/* is it a header version we can trust to find length from? */
++	if (unlikely(rthdr->it_version))
++		return false; /* only version 0 is supported */
++
++	/* does the skb contain enough to deliver on the alleged length? */
++	if (unlikely(skb->len < ieee80211_get_radiotap_len(skb->data)))
++		return false; /* skb too short for claimed rt header extent */
++
++	return true;
++}
++
+ bool ieee80211_parse_tx_radiotap(struct sk_buff *skb,
+ 				 struct net_device *dev)
+ {
+@@ -2038,8 +2058,6 @@ bool ieee80211_parse_tx_radiotap(struct
+ 	struct ieee80211_radiotap_header *rthdr =
+ 		(struct ieee80211_radiotap_header *) skb->data;
+ 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+-	struct ieee80211_supported_band *sband =
+-		local->hw.wiphy->bands[info->band];
+ 	int ret = ieee80211_radiotap_iterator_init(&iterator, rthdr, skb->len,
+ 						   NULL);
+ 	u16 txflags;
+@@ -2052,17 +2070,8 @@ bool ieee80211_parse_tx_radiotap(struct
+ 	u8 vht_mcs = 0, vht_nss = 0;
+ 	int i;
  
- 			if (!first)
- 				return NULL;
+-	/* check for not even having the fixed radiotap header part */
+-	if (unlikely(skb->len < sizeof(struct ieee80211_radiotap_header)))
+-		return false; /* too short to be possibly valid */
+-
+-	/* is it a header version we can trust to find length from? */
+-	if (unlikely(rthdr->it_version))
+-		return false; /* only version 0 is supported */
+-
+-	/* does the skb contain enough to deliver on the alleged length? */
+-	if (unlikely(skb->len < ieee80211_get_radiotap_len(skb->data)))
+-		return false; /* skb too short for claimed rt header extent */
++	if (!ieee80211_validate_radiotap_len(skb))
++		return false;
  
--			spin_lock_irqsave(&pl330->pool_lock, flags);
-+			spin_lock_irqsave(&pl330->pool_lock, iflags);
+ 	info->flags |= IEEE80211_TX_INTFL_DONT_ENCRYPT |
+ 		       IEEE80211_TX_CTL_DONTFRAG;
+@@ -2186,6 +2195,9 @@ bool ieee80211_parse_tx_radiotap(struct
+ 		return false;
  
- 			while (!list_empty(&first->node)) {
- 				desc = list_entry(first->node.next,
-@@ -2712,7 +2714,7 @@ static struct dma_async_tx_descriptor *p
+ 	if (rate_found) {
++		struct ieee80211_supported_band *sband =
++			local->hw.wiphy->bands[info->band];
++
+ 		info->control.flags |= IEEE80211_TX_CTRL_RATE_INJECT;
  
- 			list_move_tail(&first->node, &pl330->desc_pool);
+ 		for (i = 0; i < IEEE80211_TX_MAX_RATES; i++) {
+@@ -2199,7 +2211,7 @@ bool ieee80211_parse_tx_radiotap(struct
+ 		} else if (rate_flags & IEEE80211_TX_RC_VHT_MCS) {
+ 			ieee80211_rate_set_vht(info->control.rates, vht_mcs,
+ 					       vht_nss);
+-		} else {
++		} else if (sband) {
+ 			for (i = 0; i < sband->n_bitrates; i++) {
+ 				if (rate * 5 != sband->bitrates[i].bitrate)
+ 					continue;
+@@ -2236,8 +2248,8 @@ netdev_tx_t ieee80211_monitor_start_xmit
+ 	info->flags = IEEE80211_TX_CTL_REQ_TX_STATUS |
+ 		      IEEE80211_TX_CTL_INJECTED;
  
--			spin_unlock_irqrestore(&pl330->pool_lock, flags);
-+			spin_unlock_irqrestore(&pl330->pool_lock, iflags);
+-	/* Sanity-check and process the injection radiotap header */
+-	if (!ieee80211_parse_tx_radiotap(skb, dev))
++	/* Sanity-check the length of the radiotap header */
++	if (!ieee80211_validate_radiotap_len(skb))
+ 		goto fail;
  
- 			return NULL;
- 		}
+ 	/* we now know there is a radiotap header with a length we can use */
+@@ -2353,6 +2365,14 @@ netdev_tx_t ieee80211_monitor_start_xmit
+ 
+ 	info->band = chandef->chan->band;
+ 
++	/*
++	 * Process the radiotap header. This will now take into account the
++	 * selected chandef above to accurately set injection rates and
++	 * retransmissions.
++	 */
++	if (!ieee80211_parse_tx_radiotap(skb, dev))
++		goto fail_rcu;
++
+ 	/* remove the injection radiotap header */
+ 	skb_pull(skb, len_rthdr);
+ 
 
 
