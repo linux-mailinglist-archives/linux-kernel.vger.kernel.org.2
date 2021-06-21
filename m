@@ -2,111 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C95043AEBBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:50:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1223AEBBC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbhFUOwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 10:52:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35172 "EHLO
+        id S230056AbhFUOwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 10:52:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229890AbhFUOwH (ORCPT
+        with ESMTP id S229790AbhFUOwG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 10:52:07 -0400
-Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B4D4C061760;
-        Mon, 21 Jun 2021 07:49:51 -0700 (PDT)
-Received: by mail-io1-xd32.google.com with SMTP id k16so16067869ios.10;
-        Mon, 21 Jun 2021 07:49:51 -0700 (PDT)
+        Mon, 21 Jun 2021 10:52:06 -0400
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEFEAC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:49:50 -0700 (PDT)
+Received: by mail-qt1-x830.google.com with SMTP id o19so13566306qtp.5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:49:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KWerBli4ZjJRwrbEo97Cp5HhRgHSf15dtXn9Sfu0Hv4=;
-        b=HFnXl+FdFZ8V0Dw4aJXqgtMls6s5Z+pcKkBs9rm32pJNa1omPENtYomfG9S9UWlkFe
-         JZtGOpaHmrbi2c6IWh+uDJfqJ/v5Y3W7e+GzJNdcWswTo3fTByCUMYRZHcg0oqvv0SSV
-         4LAUVcRg2mQW4TGbXfIni9wv53OJOhTkZCUvAhYwZ1Vsc6wXwOk25uQUrSJWQlcsBacS
-         OotUUtFjBIym+oCfW9sqfoVuo0zuModcyUjlQ1AdQlz75HdIczXWxusR+lworS8D2B6C
-         b1Slq76+ekknvhon7sDZQjCw2ctmkLgLUTgT7HC4xvuSt977HZaQW+ZRI2T9FGkWoIM3
-         S/hQ==
+        d=ziepe.ca; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7EhCVDJi9/mtNith6sHIuVtzdsDVwMIUM7u21aSrhMw=;
+        b=pMj9icezCyVPhAoUcyIC4hXg8iF9vNR6ki/LwTLTUx9T50dBy/aY+JIQc2BM9Hz1/z
+         JkL9Jm7F3sTwTj1cBu4VqQ0lfWp+QeZb+UHm3PoPx1trXAkMT1LHeTAZ6a272Hh7Cypf
+         IolYhYiuvw6yY/3OnYlCLxHAyGeUoFVQKeTwptIxn6w6eA5jjABocMAs4na9+zV2VW5T
+         rz9L38LXMzbPG5+9/L86DpSMJOUqS31ppQLS8vlTPUn6gfpb9oKUdfcwayMnbRDQquI9
+         O2qE291+F/7jfBsLM1X67J41Z4Pn6F3VqTRzoFIhrsTP3dOflNs6XlBQ7VQiN7wGxWNO
+         b1bQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KWerBli4ZjJRwrbEo97Cp5HhRgHSf15dtXn9Sfu0Hv4=;
-        b=eK8l8MqO71i9yuGNegUCMkuxPC7jUHSQPWE0feMYgfdmfbk8OkY0ixER8jfCkQTpFv
-         3qCo50oAEQzsl3B/T+4ZfMKgzF+GBJN/n/jr9TVWXCPhepTYktPNSnRqE9talxUMt1ad
-         oU7uQZsi+MEDKdNa+VFeIg58NXYKf8e4tbKsnFIjWc2yJkJ1ir/A3ZFW7oDOonqaXD5u
-         0aiVcqoDhundOhF5SkbpcG/hYyDSNlamfjYaVYXxqncaFwiOHR8cuWK/waH1OwSQyvIC
-         oTbQOurjRv212oIsTxWX06VWmQWoD+zG56x0Phe9mvzXltVkHY15J6YbD9cfLOARneNl
-         HxiQ==
-X-Gm-Message-State: AOAM5329aJ4o/vaUIOsbonMsWTZ/Y8BtB5gPQWkXrVR+4ciMJnm79Fc8
-        lV96sG5LNft411cUNHTZF9iTHrFlhDBofzzv1mA=
-X-Google-Smtp-Source: ABdhPJzjkcw1agZaLbr1f1Dclm4JHyoVvH794DFFZD1kGSKXtTFEHrJNTk6oW26RPU53Rt41dBE1FKZF+nRXJ+GHITc=
-X-Received: by 2002:a05:6638:33a2:: with SMTP id h34mr17713039jav.60.1624286990945;
- Mon, 21 Jun 2021 07:49:50 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7EhCVDJi9/mtNith6sHIuVtzdsDVwMIUM7u21aSrhMw=;
+        b=NPXEglX4DQLolwBxGZ8oq/qfPd9dTcOnLUzy+WdT12nQCaqEcAyFiPF1JFyEjTv1uP
+         AbyEn+yChqXT/wJ9D/XRxBCIFSVn/Ga8Qo5aw9Q/PVofppttVR86w/5ymfirf/wk6TzO
+         Cf3wlhIzZ4+kedVgtk/gx9txPG54NKfukUhf+0ePhDviTRMUd8A3Ce3V6ffTMCYkVlLd
+         V8cK8qWJu+OgcAi2ikuGNzV3sKx5cnkOmze0lug+NmsKt956ngJtPV9jx9Fsngq/h6Hg
+         VheFp1yUSeNqG1KS/Yu9LuNyHNzZXsbJV6f6Q9s8Ewp2JtN9zol7XP//hIdmnqTKgSgR
+         GRTw==
+X-Gm-Message-State: AOAM533p2qGYYRVGC516grOvf2V1VdpFDWEWi8W4fXDSmwPvEouVff0e
+        2QUK+zAHk5Bap9RJojq6Xwkk3Q==
+X-Google-Smtp-Source: ABdhPJyQ783oDw7ztSH9iUqFrEniMfq/XeByphnoK7SGzg/3oOO5hx+wfM7vN3NxmC0psXJAIBTnIQ==
+X-Received: by 2002:ac8:4d84:: with SMTP id a4mr24377635qtw.319.1624286989919;
+        Mon, 21 Jun 2021 07:49:49 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
+        by smtp.gmail.com with ESMTPSA id 186sm4426217qkf.29.2021.06.21.07.49.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 07:49:49 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lvLFE-009XIx-Pt; Mon, 21 Jun 2021 11:49:48 -0300
+Date:   Mon, 21 Jun 2021 11:49:48 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>, Doug Ledford <dledford@redhat.com>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Tomer Tayar <ttayar@habana.ai>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v3 1/2] habanalabs: define uAPI to export FD for DMA-BUF
+Message-ID: <20210621144948.GG1096940@ziepe.ca>
+References: <20210618123615.11456-1-ogabbay@kernel.org>
+ <CAKMK7uFOfoxbD2Z5mb-qHFnUe5rObGKQ6Ygh--HSH9M=9bziGg@mail.gmail.com>
+ <YNCN0ulL6DQiRJaB@kroah.com>
+ <YNCgM1svqKGUhcFY@phenom.ffwll.local>
 MIME-Version: 1.0
-References: <20210503081334.17143-1-shawn.guo@linaro.org> <20210503081334.17143-3-shawn.guo@linaro.org>
- <20210523060009.GA29015@dragon> <CABb+yY3CA+gvRJi7nyA4wxwP3-XtbfDhq51eP8Q+vL7TbMncUQ@mail.gmail.com>
- <20210621063309.GA8666@dragon>
-In-Reply-To: <20210621063309.GA8666@dragon>
-From:   Jassi Brar <jassisinghbrar@gmail.com>
-Date:   Mon, 21 Jun 2021 09:49:40 -0500
-Message-ID: <CABb+yY3T=LkcjarGbZ4KEY_JS5R9iV-X_21gX_VheqsWBUHGDg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] mailbox: qcom: Add MSM8939 APCS support
-To:     Shawn Guo <shawn.guo@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sivaprakash Murugesan <sivaprak@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Benjamin Li <benl@squareup.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNCgM1svqKGUhcFY@phenom.ffwll.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 1:33 AM Shawn Guo <shawn.guo@linaro.org> wrote:
->
-> On Sun, Jun 20, 2021 at 11:27:49PM -0500, Jassi Brar wrote:
-> > On Sun, May 23, 2021 at 1:00 AM Shawn Guo <shawn.guo@linaro.org> wrote:
-> > >
-> > > On Mon, May 03, 2021 at 04:13:34PM +0800, Shawn Guo wrote:
-> > > > MSM8939 has 3 APCS instances for Cluster0 (little cores), Cluster1 (big
-> > > > cores) and CCI (Cache Coherent Interconnect).  Although only APCS of
-> > > > Cluster0 and Cluster1 have IPC bits, each of 3 APCS has A53PLL clock
-> > > > control bits.  That said, we need to register 3 'qcom-apcs-msm8916-clk'
-> > > > devices to instantiate all 3 clocks.  Let's use PLATFORM_DEVID_AUTO
-> > > > rather than PLATFORM_DEVID_NONE for platform_device_register_data()
-> > > > call.  Otherwise, the second A53PLL clock registration will fail due
-> > > > to duplicate device name.
-> > > >
-> > > > [    0.519657] sysfs: cannot create duplicate filename '/bus/platform/devices/qcom-apcs-msm8916-clk'
-> > > > ...
-> > > > [    0.661158] qcom_apcs_ipc b111000.mailbox: failed to register APCS clk
-> > > >
-> > > > Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> > > > Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> > >
-> > > Hi Jassi,
-> > >
-> > > Any comment on this patch?
-> > >
-> > 1)  I was not on the CC list, so I don't have this patch in my mbox.
->
-> That's strange.  The patch series was sent with your address
-> <jassisinghbrar@gmail.com> on "To:" field.  And that can be seen on
-> patch archive [1].
->
-Sorry, yes you are right. But I still can't find it in my inbox (and
-neither in spam).... perhaps I nuked it by mistake. anyways...
+On Mon, Jun 21, 2021 at 04:20:35PM +0200, Daniel Vetter wrote:
 
-> > 2)  Shouldn't this patch be broken into a fix and an enablement patch?
->
-> MSM8939 is the only platform that I know has multiple clusters and uses
-> APCS driver.  So the change becomes a fix only when MSM8939 is enabled.
-> But if you prefer to separate the change, I will do so.
->
-Yes, please.
+> Also unless we're actually doing this properly there's zero incentive for
+> me to review the kernel code and check whether it follows the rules
+> correctly, so you have excellent chances that you just break the rules.
+> And dma_buf/fence are tricky enough that you pretty much guaranteed to
+> break the rules if you're not involved in the discussions. Just now we
+> have a big one where everyone involved (who's been doing this for 10+
+> years all at least) realizes we've fucked up big time.
 
-thanks.
+This is where I come from on dmabuf, it is fiendishly
+complicated. Don't use it unless you absoultely have to, are in DRM,
+and have people like Daniel helping to make sure you use it right.
+
+It's whole premise and design is compromised by specialty historical
+implementation choices on the GPU side.
+
+Jason
