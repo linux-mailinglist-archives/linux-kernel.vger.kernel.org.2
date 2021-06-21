@@ -2,110 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A443AE1B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 04:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FB23AE1BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 04:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhFUCnQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 22:43:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229899AbhFUCnP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 22:43:15 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED17C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 19:41:01 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id t9so12929690pgn.4
-        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 19:41:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :in-reply-to:references;
-        bh=tiITAbqpPnqkOi6wakpBtQx52McUyGYZCcHPIl7xsy0=;
-        b=iWdhN3CFZXKaRQv+sGidLOV3CqKfQ9UOGecgei4hzaT9phkuA+bv+QF4Xiijbwr9Bf
-         LAxbOmRf1eFF4PUxvbR+76UPP8RR9HW+TesgbpzrHl7e/ZEGLYXYCw4Z0YXZc36q4F/7
-         RpXVGKqUv5SeXPlIj9ngMofFNAxi7fwzT8v+3gAgJIgYhDF56XNkHIs+AYAeC1vvPIeH
-         01pGKE+Z2Aqk1Wm2NXKDEv63v+y7UJ4yQx1GIeJL6DwbsB2mkCb+JIROahW6uDgvWb7u
-         SNmxwy1jRD/+QJXTAUuHdd7IZ5uw50hWF7cfYp+Cv+6BhNWMXdJJy9t3NnkV+ZFdUmv1
-         7qcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:in-reply-to:references;
-        bh=tiITAbqpPnqkOi6wakpBtQx52McUyGYZCcHPIl7xsy0=;
-        b=sFbFbDMj2iqwrKpdSfZlh17SXGXv+C4w92CbjPuk3shZRlX0nzYKEYVLEWCMaRlkos
-         wYSFDHUBzPx2ilWwYy40euGSLyrkc/c1hJY2j6vfxmFVQSzhF0l+Tsvx+r+2JRkV55Z5
-         n5hbBl9CiNsbde2qPsIfae4VzA+Gw0R5xkCAkY3jmwB8F0YZw3VtWjtIoW+ngQ6y/5Uu
-         ZbYfPyubclsXXdlYo7Z/VpSqEPWrYd1n2v7m39tw0pLh0QAi/JszgCbWevJzWEeEKVrN
-         HRNVyG9fGOa+xZaXGiNiran7Phl5QowJYnj1ephV4K2BVGF/Vim15DG2tyy9j11Od0b3
-         hJuw==
-X-Gm-Message-State: AOAM533R5nklncBiJexaEjaS5hkPx5/uc9qlgS9z66qtH0BawXVjJawU
-        omnWsE5T77zec0gkZHEhwVQ=
-X-Google-Smtp-Source: ABdhPJysEGeNgCsUe0sJ7w+MeGkmUdqIzdMiUGZ6StdWmAAqML6n1yxhMF+1wkt7w9nuC5KTGTx5Cg==
-X-Received: by 2002:a63:ff14:: with SMTP id k20mr2714079pgi.390.1624243261301;
-        Sun, 20 Jun 2021 19:41:01 -0700 (PDT)
-Received: from localhost ([43.224.245.180])
-        by smtp.gmail.com with ESMTPSA id p20sm15052178pgi.94.2021.06.20.19.41.00
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 20 Jun 2021 19:41:01 -0700 (PDT)
-From:   gumingtao <gumingtao1225@gmail.com>
-X-Google-Original-From: gumingtao <gumingtao@xiaomi.com>
-To:     cl@linux.com
-Cc:     penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, vbabka@suse.cz, nathan@kernel.org,
-        ndesaulniers@google.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        gumingtao <gumingtao@xiaomi.com>
-Subject: [PATCH v2] slab: Use %s instead of function name
-Date:   Mon, 21 Jun 2021 10:40:40 +0800
-Message-Id: <e73123325fa47200f7b94ce36a0152fb774c0538.1624240708.git.gumingtao@xiaomi.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1624240708.git.gumingtao@xiaomi.com>
-References: <cover.1624240708.git.gumingtao@xiaomi.com>
-In-Reply-To: <cover.1624240708.git.gumingtao@xiaomi.com>
-References: <cover.1624240708.git.gumingtao@xiaomi.com>
+        id S230161AbhFUC57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 22:57:59 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:46842 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229901AbhFUC56 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Jun 2021 22:57:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=QK752DbSwacLa/sK38ulodAOLnHwWz+NFCNnwogFzak=; b=lU3TC1nXnpuNByWkI3qu6w4CKW
+        +5XJpObhUS28zRmnViSpHJB89wAq0OgGt+WLPO0ynKPiLdMIbVnO2nLig/wnPK8IF7/4hnSdGP0jW
+        zocMghFEmeqgZBAyEve9gOuIPZk8upBQEZUXoAndV+3fOstVMykWzHu3yCatXrLe4CtA=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lvA5g-00ARYz-Jy; Mon, 21 Jun 2021 04:55:12 +0200
+Date:   Mon, 21 Jun 2021 04:55:12 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Qing Zhang <zhangqing@loongson.cn>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Huacai Chen <chenhc@lemote.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH 1/4] stmmac: pci: Add dwmac support for Loongson
+Message-ID: <YM//kGGAp3vz8OYb@lunn.ch>
+References: <20210618025337.5705-1-zhangqing@loongson.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210618025337.5705-1-zhangqing@loongson.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is better to replace the function name with %s.
+> +static int loongson_dwmac_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> +{
+> +	struct plat_stmmacenet_data *plat;
+> +	struct stmmac_resources res;
+> +	int ret, i, mdio;
+> +	struct device_node *np;
+> +
+> +	np = dev_of_node(&pdev->dev);
+> +
+> +	if (!np) {
+> +		pr_info("dwmac_loongson_pci: No OF node\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	if (!of_device_is_compatible(np, "loongson, pci-gmac")) {
+> +		pr_info("dwmac_loongson_pci: Incompatible OF node\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	plat = devm_kzalloc(&pdev->dev, sizeof(*plat), GFP_KERNEL);
+> +	if (!plat)
+> +		return -ENOMEM;
+> +
+> +	if (plat->mdio_node) {
+> +		dev_err(&pdev->dev, "Found MDIO subnode\n");
 
-Signed-off-by: gumingtao <gumingtao@xiaomi.com>
----
- mm/slab_common.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+It is an error is an MDIO node is found?
 
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index a4a5714..ffa3b11 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -378,11 +378,11 @@ kmem_cache_create_usercopy(const char *name,
- 
- 	if (err) {
- 		if (flags & SLAB_PANIC)
--			panic("kmem_cache_create: Failed to create slab '%s'. Error %d\n",
--				name, err);
-+			panic("%s: Failed to create slab '%s'. Error %d\n",
-+				__func__, name, err);
- 		else {
--			pr_warn("kmem_cache_create(%s) failed with error %d\n",
--				name, err);
-+			pr_warn("%s(%s) failed with error %d\n",
-+				__func__, name, err);
- 			dump_stack();
- 		}
- 		return NULL;
-@@ -509,8 +509,8 @@ void kmem_cache_destroy(struct kmem_cache *s)
- 
- 	err = shutdown_cache(s);
- 	if (err) {
--		pr_err("kmem_cache_destroy %s: Slab cache still has objects\n",
--		       s->name);
-+		pr_err("%s %s: Slab cache still has objects\n",
-+		       __func__, s->name);
- 		dump_stack();
- 	}
- out_unlock:
--- 
-2.7.4
+> +		mdio = true;
+> +	}
+> +
 
+...
+
+> +
+> +	plat->phy_interface = device_get_phy_mode(&pdev->dev);
+> +	if (plat->phy_interface < 0)
+> +		dev_err(&pdev->dev, "phy_mode not found\n");
+> +
+> +	plat->interface = PHY_INTERFACE_MODE_GMII;
+
+Seems odd you call device_get_phy_mode() but then have this hard coded
+PHY_INTERFACE_MODE_GMII?
+
+	Andrew
