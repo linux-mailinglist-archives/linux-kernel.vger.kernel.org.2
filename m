@@ -2,185 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD1453AF8BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 00:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDFFF3AF8D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 00:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232238AbhFUWoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 18:44:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230438AbhFUWoy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 18:44:54 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC062C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 15:42:38 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id y21so3510814plb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 15:42:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JCTSVkIytk/Hp0iEchwMobckKs7yA/n0NMw1lar0mLg=;
-        b=heKd2ClbKCDXRwF6fkwDkcbMHXcQwPByNrGsZHf/mglW82+G95Qrwyq4r4Cka9FXsV
-         mnvwlivYWR8kVKPhO+ZEAmnjtUGzXUkU+h9ZeqGyFviJCYhufhjWDHmELeFYxihn3eNk
-         5I4bZvf3TkcyzPJh6ULTc39PaYMgtSOtSPneodBxPNI1CzdaC5WxWGsSG+5xfZAGNsOF
-         z4OWXGBBdcV4xgIs/tnNP1UYKljQwTPqn9DFg3181EqFU3W+I4HuMcREzxOy8HThTRbl
-         c81JnLUqTlujjre6zKxFS5b//u4mvRzwMGax3pc0C0fWSnjJTttrIIUu3L1HvWw8Dhdd
-         8tTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JCTSVkIytk/Hp0iEchwMobckKs7yA/n0NMw1lar0mLg=;
-        b=SxuHkjNL0sMju56XCyCXIJ1PN3pS47HNklKl8g2BCUbCqGY4owN+eS6CnMe5AWLCg8
-         Ycy2dJBNA5l3XpBeS/5ZdnPl0g7o4EY8TUXWDiWHBrQASipK6QC1oOtxV9zVDr/Zopb8
-         pPMlj77ihYpcLFv4K1wak8zlawPu6Smhaz3AgGicbvQs0SAcWZqdBRKXHT+AUnVavIJY
-         9X36fev6hLG8GjpTqr/+7VllRFCAC8VuhipfkWbPL6Huq98UVGUYxXFxzcVIvd7RW09+
-         3HYFxV8pTC3vPzEOP3TIxRug7f/JoUVx0jHIMHNCd9lEa7aLYdo+6Xpg5Pck2D3ozZ5X
-         sOaw==
-X-Gm-Message-State: AOAM532PV0hWU2OyIwc32zCRFtbL+vtERRIHOdcJUJlJo9oBIFTCARQr
-        XwCOJtYieGjKBzWtp4zyQZA01w==
-X-Google-Smtp-Source: ABdhPJw380SDPCqztfQNuWLssT48FIFqA/Fzbx9ACZhnNr8oIqJQVAOfOEWjzQ5EYcebKaB890LLAw==
-X-Received: by 2002:a17:90a:1b25:: with SMTP id q34mr499846pjq.163.1624315358306;
-        Mon, 21 Jun 2021 15:42:38 -0700 (PDT)
-Received: from p14s (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id c5sm4584329pfv.47.2021.06.21.15.42.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 15:42:37 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 16:42:35 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com, julien.massot@iot.bzh
-Subject: Re: [PATCH 1/4] rpmsg: Introduce rpmsg_create_default_ept function
-Message-ID: <20210621224235.GB980846@p14s>
-References: <20210607173032.30133-1-arnaud.pouliquen@foss.st.com>
- <20210607173032.30133-2-arnaud.pouliquen@foss.st.com>
+        id S232360AbhFUWyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 18:54:53 -0400
+Received: from mga07.intel.com ([134.134.136.100]:28021 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230438AbhFUWyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 18:54:52 -0400
+IronPort-SDR: /HDSsCQR0a33zyN1u1Me50Mz9UK8rbW7Le4gN5mfEKxnK4nOoH8D36996MmFpobaSiJMu7sNwq
+ NmnHip32++Xw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="270793524"
+X-IronPort-AV: E=Sophos;i="5.83,290,1616482800"; 
+   d="scan'208";a="270793524"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 15:51:10 -0700
+IronPort-SDR: l91w44FGSIeCkEgeF6hvTC1Xxfhg5nvRa86I02PAXzIE1KwIaCarL8E768WWXr1wme8vvCWdO9
+ I3u4NiXtjPYw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,290,1616482800"; 
+   d="scan'208";a="486672430"
+Received: from pl-dbox.sh.intel.com (HELO pl-dbox) ([10.239.159.39])
+  by orsmga001.jf.intel.com with ESMTP; 21 Jun 2021 15:51:08 -0700
+Date:   Tue, 22 Jun 2021 06:43:41 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     x86-ml <x86@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [tip:smp/urgent] BUILD REGRESSION
+ b22afcdf04c96ca58327784e280e10288cfd3303
+Message-ID: <20210621224341.GA165241@pl-dbox>
+References: <60d0fc8b.zYHClCDIx15i4OnT%lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210607173032.30133-2-arnaud.pouliquen@foss.st.com>
+In-Reply-To: <60d0fc8b.zYHClCDIx15i4OnT%lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 07, 2021 at 07:30:29PM +0200, Arnaud Pouliquen wrote:
-> The rpmsg devices can be probed without default endpoint. This function
-> provides the capability for rpmsg drivers to create a default endpoint
-> on runtime.
+On Tue, Jun 22, 2021 at 04:54:35AM +0800, kernel test robot wrote:
+> tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp/urgent
+> branch HEAD: b22afcdf04c96ca58327784e280e10288cfd3303  cpu/hotplug: Cure the cpusets trainwreck
 > 
-> For example, a driver might want the rpmsg core dispatcher to drop its
-> messages until it is ready to process them. In this case, the driver will
-> create the default endpoint when the conditions are met to process the
-> messages.
+> Error/Warning in current branch:
+Sorry for broken report, kindly ignore below warnings, we
+will fix this asap.
+
 > 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/b22afcdf04c96ca58327784e280e10288cfd3303/lib/modules/5.13.0-rc6+/kernel/crypto/cmac.ko', needed by '__modinst'.
+> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/b22afcdf04c96ca58327784e280e10288cfd3303/lib/modules/5.13.0-rc6+/kernel/crypto/md5.ko', needed by '__modinst'.
+> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/b22afcdf04c96ca58327784e280e10288cfd3303/lib/modules/5.13.0-rc6+/kernel/crypto/sha512_generic.ko', needed by '__modinst'.
+> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/b22afcdf04c96ca58327784e280e10288cfd3303/lib/modules/5.13.0-rc6+/kernel/drivers/net/net_failover.ko', needed by '__modinst'.
+> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/b22afcdf04c96ca58327784e280e10288cfd3303/lib/modules/5.13.0-rc6+/kernel/drivers/net/virtio_net.ko', needed by '__modinst'.
+> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/b22afcdf04c96ca58327784e280e10288cfd3303/lib/modules/5.13.0-rc6+/kernel/fs/cifs/cifs.ko', needed by '__modinst'.
+> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/b22afcdf04c96ca58327784e280e10288cfd3303/lib/modules/5.13.0-rc6+/kernel/fs/nfs/nfsv4.ko', needed by '__modinst'.
+> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/b22afcdf04c96ca58327784e280e10288cfd3303/lib/modules/5.13.0-rc6+/kernel/lib/crypto/libarc4.ko', needed by '__modinst'.
+> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/b22afcdf04c96ca58327784e280e10288cfd3303/lib/modules/5.13.0-rc6+/kernel/net/core/failover.ko', needed by '__modinst'.
+> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/b22afcdf04c96ca58327784e280e10288cfd3303/lib/modules/5.13.0-rc6+/kernel/net/dns_resolver/dns_resolver.ko', needed by '__modinst'.
+> make[2]: *** No rule to make target '/tmp/kernel/x86_64-randconfig-a012-20210621/clang-13/b22afcdf04c96ca58327784e280e10288cfd3303/lib/modules/5.13.0-rc6+/kernel/net/sunrpc/auth_gss/auth_rpcgss.ko', needed by '__modinst'.
+> 
+> Error/Warning ids grouped by kconfigs:
+> 
+> clang_recent_errors
+> `-- x86_64-randconfig-a012-20210621
+>     |-- make:No-rule-to-make-target-tmp-kernel-x86_64-randconfig-a012-clang-b22afcdf04c96ca58327784e280e10288cfd3303-lib-modules-..-rc6-kernel-crypto-cmac.ko-needed-by-__modinst-.
+>     |-- make:No-rule-to-make-target-tmp-kernel-x86_64-randconfig-a012-clang-b22afcdf04c96ca58327784e280e10288cfd3303-lib-modules-..-rc6-kernel-crypto-md5.ko-needed-by-__modinst-.
+>     |-- make:No-rule-to-make-target-tmp-kernel-x86_64-randconfig-a012-clang-b22afcdf04c96ca58327784e280e10288cfd3303-lib-modules-..-rc6-kernel-crypto-sha512_generic.ko-needed-by-__modinst-.
+>     |-- make:No-rule-to-make-target-tmp-kernel-x86_64-randconfig-a012-clang-b22afcdf04c96ca58327784e280e10288cfd3303-lib-modules-..-rc6-kernel-drivers-net-net_failover.ko-needed-by-__modinst-.
+>     |-- make:No-rule-to-make-target-tmp-kernel-x86_64-randconfig-a012-clang-b22afcdf04c96ca58327784e280e10288cfd3303-lib-modules-..-rc6-kernel-drivers-net-virtio_net.ko-needed-by-__modinst-.
+>     |-- make:No-rule-to-make-target-tmp-kernel-x86_64-randconfig-a012-clang-b22afcdf04c96ca58327784e280e10288cfd3303-lib-modules-..-rc6-kernel-fs-cifs-cifs.ko-needed-by-__modinst-.
+>     |-- make:No-rule-to-make-target-tmp-kernel-x86_64-randconfig-a012-clang-b22afcdf04c96ca58327784e280e10288cfd3303-lib-modules-..-rc6-kernel-fs-nfs-nfsv4.ko-needed-by-__modinst-.
+>     |-- make:No-rule-to-make-target-tmp-kernel-x86_64-randconfig-a012-clang-b22afcdf04c96ca58327784e280e10288cfd3303-lib-modules-..-rc6-kernel-lib-crypto-libarc4.ko-needed-by-__modinst-.
+>     |-- make:No-rule-to-make-target-tmp-kernel-x86_64-randconfig-a012-clang-b22afcdf04c96ca58327784e280e10288cfd3303-lib-modules-..-rc6-kernel-net-core-failover.ko-needed-by-__modinst-.
+>     |-- make:No-rule-to-make-target-tmp-kernel-x86_64-randconfig-a012-clang-b22afcdf04c96ca58327784e280e10288cfd3303-lib-modules-..-rc6-kernel-net-dns_resolver-dns_resolver.ko-needed-by-__modinst-.
+>     `-- make:No-rule-to-make-target-tmp-kernel-x86_64-randconfig-a012-clang-b22afcdf04c96ca58327784e280e10288cfd3303-lib-modules-..-rc6-kernel-net-sunrpc-auth_gss-auth_rpcgss.ko-needed-by-__modinst-.
+> 
+> elapsed time: 724m
+> 
+> configs tested: 135
+> configs skipped: 2
+> 
+> gcc tested configs:
+> arm                                 defconfig
+> arm64                            allyesconfig
+> arm64                               defconfig
+> arm                              allyesconfig
+> arm                              allmodconfig
+> arm                        clps711x_defconfig
+> arm                           u8500_defconfig
+> m68k                         amcore_defconfig
+> sparc64                             defconfig
+> powerpc                       eiger_defconfig
+> mips                        bcm47xx_defconfig
+> arm                           sama5_defconfig
+> arm                            lart_defconfig
+> mips                           jazz_defconfig
+> arm                          badge4_defconfig
+> powerpc                    sam440ep_defconfig
+> powerpc                 mpc8540_ads_defconfig
+> powerpc                    socrates_defconfig
+> m68k                            mac_defconfig
+> riscv                               defconfig
+> um                               alldefconfig
+> arc                              allyesconfig
+> nios2                         10m50_defconfig
+> arm                             mxs_defconfig
+> powerpc                     sequoia_defconfig
+> mips                          ath79_defconfig
+> powerpc                     akebono_defconfig
+> powerpc                       maple_defconfig
+> powerpc                     tqm5200_defconfig
+> arm                          ep93xx_defconfig
+> arc                              alldefconfig
+> sh                          lboxre2_defconfig
+> s390                          debug_defconfig
+> mips                     decstation_defconfig
+> sh                            titan_defconfig
+> arm                        multi_v7_defconfig
+> powerpc                  mpc866_ads_defconfig
+> sh                          landisk_defconfig
+> powerpc                      ep88xc_defconfig
+> mips                  maltasmvp_eva_defconfig
+> s390                             alldefconfig
+> m68k                          multi_defconfig
+> m68k                        mvme16x_defconfig
+> h8300                    h8300h-sim_defconfig
+> mips                       lemote2f_defconfig
+> arm                         socfpga_defconfig
+> mips                           xway_defconfig
+> sparc                       sparc64_defconfig
+> powerpc                      ppc6xx_defconfig
+> sparc64                          alldefconfig
+> arm                        vexpress_defconfig
+> powerpc                       holly_defconfig
+> parisc                generic-32bit_defconfig
+> arm                          pxa168_defconfig
+> mips                           ip22_defconfig
+> arm                         lpc18xx_defconfig
+> powerpc                    gamecube_defconfig
+> mips                            e55_defconfig
+> powerpc                      katmai_defconfig
+> mips                  decstation_64_defconfig
+> m68k                        m5272c3_defconfig
+> sh                         ecovec24_defconfig
+> arm                          collie_defconfig
+> x86_64                            allnoconfig
+> ia64                             allmodconfig
+> ia64                                defconfig
+> ia64                             allyesconfig
+> m68k                             allmodconfig
+> m68k                                defconfig
+> m68k                             allyesconfig
+> nios2                               defconfig
+> nds32                             allnoconfig
+> nds32                               defconfig
+> nios2                            allyesconfig
+> csky                                defconfig
+> alpha                               defconfig
+> alpha                            allyesconfig
+> xtensa                           allyesconfig
+> h8300                            allyesconfig
+> arc                                 defconfig
+> sh                               allmodconfig
+> parisc                              defconfig
+> s390                             allyesconfig
+> s390                             allmodconfig
+> parisc                           allyesconfig
+> s390                                defconfig
+> i386                             allyesconfig
+> sparc                            allyesconfig
+> sparc                               defconfig
+> i386                                defconfig
+> mips                             allyesconfig
+> mips                             allmodconfig
+> powerpc                          allyesconfig
+> powerpc                          allmodconfig
+> powerpc                           allnoconfig
+> x86_64               randconfig-a002-20210621
+> x86_64               randconfig-a001-20210621
+> x86_64               randconfig-a005-20210621
+> x86_64               randconfig-a003-20210621
+> x86_64               randconfig-a004-20210621
+> x86_64               randconfig-a006-20210621
+> i386                 randconfig-a002-20210621
+> i386                 randconfig-a003-20210621
+> i386                 randconfig-a006-20210621
+> i386                 randconfig-a005-20210621
+> i386                 randconfig-a004-20210621
+> i386                 randconfig-a001-20210621
+> i386                 randconfig-a011-20210621
+> i386                 randconfig-a014-20210621
+> i386                 randconfig-a013-20210621
+> i386                 randconfig-a015-20210621
+> i386                 randconfig-a012-20210621
+> i386                 randconfig-a016-20210621
+> riscv                    nommu_k210_defconfig
+> riscv                            allyesconfig
+> riscv                    nommu_virt_defconfig
+> riscv                             allnoconfig
+> riscv                          rv32_defconfig
+> riscv                            allmodconfig
+> x86_64                    rhel-8.3-kselftests
+> um                           x86_64_defconfig
+> um                             i386_defconfig
+> um                            kunit_defconfig
+> x86_64                           allyesconfig
+> x86_64                              defconfig
+> x86_64                               rhel-8.3
+> x86_64                      rhel-8.3-kbuiltin
+> x86_64                                  kexec
+> 
+> clang tested configs:
+> x86_64               randconfig-b001-20210621
+> x86_64               randconfig-a012-20210621
+> x86_64               randconfig-a016-20210621
+> x86_64               randconfig-a015-20210621
+> x86_64               randconfig-a014-20210621
+> x86_64               randconfig-a013-20210621
+> x86_64               randconfig-a011-20210621
+> 
 > ---
->  drivers/rpmsg/rpmsg_core.c | 51 ++++++++++++++++++++++++++++++++++++++
->  include/linux/rpmsg.h      | 14 +++++++++++
->  2 files changed, 65 insertions(+)
-> 
-> diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
-> index e5daee4f9373..07b680bda61f 100644
-> --- a/drivers/rpmsg/rpmsg_core.c
-> +++ b/drivers/rpmsg/rpmsg_core.c
-> @@ -115,6 +115,57 @@ struct rpmsg_endpoint *rpmsg_create_ept(struct rpmsg_device *rpdev,
->  }
->  EXPORT_SYMBOL(rpmsg_create_ept);
->  
-> +/**
-> + * rpmsg_create_default_ept() - create a default rpmsg_endpoint for a rpmsg device
-> + * @rpdev: rpmsg channel device
-> + * @cb: rx callback handler
-> + * @priv: private data for the driver's use
-> + * @chinfo: channel_info with the local rpmsg address to bind with @cb
-> + *
-> + * On register_rpmsg_driver if no callback is provided in the rpmsg_driver structure,
-> + * no endpoint is created when the device is probed by the rpmsg bus.
-> + *
-> + * This function returns a pointer to the default endpoint if already created or creates
-> + * a endpoint and assign it as the default endpoint of the rpmsg device.
-> + *
-> + * Drivers should provide their @rpdev channel (so the new endpoint would belong
-> + * to the same remote processor their channel belongs to), an rx callback
-> + * function, an optional private data (which is provided back when the
-> + * rx callback is invoked), and an address they want to bind with the
-> + * callback. If @addr is RPMSG_ADDR_ANY, then rpmsg_create_ept will
-> + * dynamically assign them an available rpmsg address (drivers should have
-> + * a very good reason why not to always use RPMSG_ADDR_ANY here).
-> + *
-> + * Returns a pointer to the endpoint on success, or NULL on error.
-> + */
-> +struct rpmsg_endpoint *rpmsg_create_default_ept(struct rpmsg_device *rpdev,
-> +						rpmsg_rx_cb_t cb, void *priv,
-> +						struct rpmsg_channel_info chinfo)
-> +{
-> +	struct rpmsg_endpoint *ept;
-> +
-> +	if (WARN_ON(!rpdev))
-> +		return NULL;
-> +
-> +	/* It does not make sense to create a default  endpoint without a callback. */
-> +	if (!cb)
-> +		return NULL;
-> +
-> +	if (rpdev->ept)
-> +		return rpdev->ept;
-> +
-> +	ept = rpdev->ops->create_ept(rpdev, cb, priv, chinfo);
-> +	if (!ept)
-> +		return NULL;
-> +
-> +	/* Assign the new endpoint as default endpoint */
-> +	rpdev->ept = ept;
-> +	rpdev->src = ept->addr;
-> +
-> +	return ept;
-> +}
-> +EXPORT_SYMBOL(rpmsg_create_default_ept);
-> +
->  /**
->   * rpmsg_destroy_ept() - destroy an existing rpmsg endpoint
->   * @ept: endpoing to destroy
-> diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
-> index d97dcd049f18..ab034061722c 100644
-> --- a/include/linux/rpmsg.h
-> +++ b/include/linux/rpmsg.h
-> @@ -172,6 +172,9 @@ void rpmsg_destroy_ept(struct rpmsg_endpoint *);
->  struct rpmsg_endpoint *rpmsg_create_ept(struct rpmsg_device *,
->  					rpmsg_rx_cb_t cb, void *priv,
->  					struct rpmsg_channel_info chinfo);
-> +struct rpmsg_endpoint *rpmsg_create_default_ept(struct rpmsg_device *rpdev,
-> +						rpmsg_rx_cb_t cb, void *priv,
-> +						struct rpmsg_channel_info chinfo);
->  
->  int rpmsg_send(struct rpmsg_endpoint *ept, void *data, int len);
->  int rpmsg_sendto(struct rpmsg_endpoint *ept, void *data, int len, u32 dst);
-> @@ -234,6 +237,17 @@ static inline struct rpmsg_endpoint *rpmsg_create_ept(struct rpmsg_device *rpdev
->  	return ERR_PTR(-ENXIO);
->  }
->  
-> +static inline struct rpmsg_endpoint *rpmsg_create_default_ept(struct rpmsg_device *rpdev,
-> +							      rpmsg_rx_cb_t cb,
-> +							      void *priv,
-
-Please move this to the previous line to match the definition in the other arm
-of the #if.
-
-> +							      struct rpmsg_channel_info chinfo)
-> +{
-> +	/* This shouldn't be possible */
-> +	WARN_ON(1);
-> +
-> +	return NULL;
-> +}
-> +
->  static inline int rpmsg_send(struct rpmsg_endpoint *ept, void *data, int len)
->  {
->  	/* This shouldn't be possible */
-> -- 
-> 2.17.1
-> 
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
