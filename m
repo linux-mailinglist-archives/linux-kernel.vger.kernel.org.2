@@ -2,71 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9943AE951
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 769393AE942
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 14:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhFUMqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 08:46:12 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3296 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbhFUMqK (ORCPT
+        id S229904AbhFUMnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 08:43:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhFUMnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 08:46:10 -0400
-Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G7plY3SyGz6H8Bq;
-        Mon, 21 Jun 2021 20:30:33 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 21 Jun 2021 14:43:55 +0200
-Received: from [10.47.93.67] (10.47.93.67) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 21 Jun
- 2021 13:43:54 +0100
-Subject: Re: [PATCH v4 2/7] iommu/amd: Do not use flush-queue when NpCache is
- on
-To:     Nadav Amit <nadav.amit@gmail.com>, Joerg Roedel <joro@8bytes.org>
-CC:     Robin Murphy <robin.murphy@arm.com>,
-        <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
-        Nadav Amit <namit@vmware.com>,
-        Jiajun Cao <caojiajun@vmware.com>,
-        Will Deacon <will@kernel.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-References: <20210616100500.174507-1-namit@vmware.com>
- <20210616100500.174507-3-namit@vmware.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <91ea2a97-2db6-3e10-9c2e-80f6a4e0f733@huawei.com>
-Date:   Mon, 21 Jun 2021 13:37:29 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Mon, 21 Jun 2021 08:43:02 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 949C2C061574;
+        Mon, 21 Jun 2021 05:40:48 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0aba0093154f80778061c9.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:ba00:9315:4f80:7780:61c9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 91EDE1EC058C;
+        Mon, 21 Jun 2021 14:40:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1624279245;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=vxv+Cb6FghH+Ce7UyXbZ9MQhB51hjGkjpNSgjCGcHF0=;
+        b=q2tertqrWuoJH4HUUxbXX4JflnrZ0vNnsMxW6BnpwI1Go30/kEYLB5JWnx3vFWvTh8Fj0h
+        FeiZQ9RU9/jvZG+ICKskzWaMIGyTXpHKJ/C8a6AO2SJr56GTu0Yhrco32rPYQ7u1HVowpE
+        7TJZX8NWNokO8uKzcBaKkwDspZxUul8=
+Date:   Mon, 21 Jun 2021 14:40:40 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Joerg Roedel <joro@8bytes.org>
+Cc:     x86@kernel.org, Joerg Roedel <jroedel@suse.de>, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v7 1/2] x86/sev: Make sure IRQs are disabled while GHCB
+ is active
+Message-ID: <YNCIyFltNGzLWuk5@zn.tnic>
+References: <20210618115409.22735-1-joro@8bytes.org>
+ <20210618115409.22735-2-joro@8bytes.org>
 MIME-Version: 1.0
-In-Reply-To: <20210616100500.174507-3-namit@vmware.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.93.67]
-X-ClientProxiedBy: lhreml747-chm.china.huawei.com (10.201.108.197) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210618115409.22735-2-joro@8bytes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/06/2021 11:04, Nadav Amit wrote:
-> -	if (iommu->cap & (1UL << IOMMU_CAP_NPCACHE))
-> +	if (iommu->cap & (1UL << IOMMU_CAP_NPCACHE)) {
-> +		if (!amd_iommu_unmap_flush)
-> +			pr_warn("IOMMU batching is disabled due to virtualization");
+On Fri, Jun 18, 2021 at 01:54:08PM +0200, Joerg Roedel wrote:
+> From: Joerg Roedel <jroedel@suse.de>
+> 
+> The #VC handler only cares about IRQs being disabled while the GHCB is
+> active, as it must not be interrupted by something which could cause
+> another #VC while it holds the GHCB (NMI is the exception for which the
+> backup GHCB exits).
+> 
+> Make sure nothing interrupts the code path while the GHCB is active by
+> disabling IRQs in sev_es_get_ghcb() and restoring the previous irq state
+> in sev_es_put_ghcb().
 
-This is missing the '\n', like the Intel driver.
+Note for committer: update those function names.
 
-And, JFYI, we are also downgrading that same print to info level (in the 
-Intel driver).
+-- 
+Regards/Gruss,
+    Boris.
 
-Thanks,
-John
-
-> +
->   		amd_iommu_np_cache = true;
-> +		amd_iommu_unmap_flush = true;
-
+https://people.kernel.org/tglx/notes-about-netiquette
