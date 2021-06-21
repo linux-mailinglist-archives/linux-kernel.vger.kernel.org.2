@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A0E93AF56C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0631C3AF56F
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232168AbhFUStX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:49:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40778 "EHLO mail.kernel.org"
+        id S231403AbhFUSt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:49:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232135AbhFUStP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:49:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 848D26128A;
-        Mon, 21 Jun 2021 18:47:00 +0000 (UTC)
+        id S232221AbhFUStT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 14:49:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FA4D61351;
+        Mon, 21 Jun 2021 18:47:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624301221;
-        bh=u4E7N74D5ICKc9j+WDBObEXlU0zyPpspSv6KfmMn7N0=;
+        s=k20201202; t=1624301224;
+        bh=7yUZDZlOIzDIa47OFbFJ/39Qwhe/+XOMMOCaPdtaBwc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=H4F0ibZgaXX6U83jHhLZTIC+Zm3XoM6mzWjO98BNqOQgt71PSWzGOjwawLckH/1cB
-         r7kJhbRtCuSr0kqT2QZEgjnIUkinK0re8nNRQ4G8pFFL6lGMae/xuTXKSv8q0S3TB4
-         mXxqPEJeTwZw2epe2dShvJWypBTROYodLqH4San8xzhpolWyvnLE/8e91f+7UR+yq9
-         RYKFVbUqHnPjmRZRXiFpN3HUXGg86OOXUHGGJYTWg+Zv93HSzZNjt8KVCWAZmlcWZs
-         GsYg6B92qITz0xeOXe6aU8YRzjgWxHw7JVuIMtruj4B9IyLWbFAfUyD1PekZKe/JmY
-         tk2NNknLE4vDg==
+        b=lD6c1pBHZwqs5eiQs8buzuuA9BfkqJolhjZ6EDv4VF4us1aV1CC0LUyTsb6VhIGp2
+         E/becPsixhGwp4yQaCduiuDSkM/u6NQKgTxxGB+Gb+5l1ACSAQo9z+SUbO6AHK5wU8
+         X35Wg2dinDz5gYfjdhPQPAcn+0z5czmkVkny/B828TD9H3VvA47bg9OSPoqp9nQuQI
+         coxMZ68+/EyAh4aDiT0zJ68a6InuiFLM4sRM5KzBoYyeVu8s0vqXaciwdbVsUcTxNH
+         gEgCasF2SK3G82tGxTq/RjJ854+IlLq7yVQYrjOCUJ9SPpaiBG7JDOM6U0YW5Nx5Wo
+         2C7AKlzucp/Cg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Cc:     Mark Brown <broonie@kernel.org>, srinivas.kandagatla@linaro.org,
-        lgirdwood@gmail.com
-Subject: Re: [PATCH -next 1/2] ASoC: qcom: apq8016_sbc: Use devm_platform_get_and_ioremap_resource()
-Date:   Mon, 21 Jun 2021 19:46:00 +0100
-Message-Id: <162430055263.9224.4713697107804997031.b4-ty@kernel.org>
+To:     tiwai@suse.com, Xiubo.Lee@gmail.com, nicoleotsuka@gmail.com,
+        perex@perex.cz, timur@kernel.org, alsa-devel@alsa-project.org,
+        festevam@gmail.com, Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: fsl_xcvr: disable all interrupts when suspend happens
+Date:   Mon, 21 Jun 2021 19:46:01 +0100
+Message-Id: <162430055262.9224.10660705196927221469.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210615140711.1676704-1-yangyingliang@huawei.com>
-References: <20210615140711.1676704-1-yangyingliang@huawei.com>
+In-Reply-To: <1624009876-3076-1-git-send-email-shengjiu.wang@nxp.com>
+References: <1624009876-3076-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,9 +42,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Jun 2021 22:07:10 +0800, Yang Yingliang wrote:
-> Use devm_platform_get_and_ioremap_resource() to simplify
-> code.
+On Fri, 18 Jun 2021 17:51:16 +0800, Shengjiu Wang wrote:
+> There is an unhandled interrupt after suspend, which cause endless
+> interrupt when system resume, so system may hang.
+> 
+> Disable all interrupts in runtime suspend callback to avoid above
+> issue.
 
 Applied to
 
@@ -51,10 +55,8 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: qcom: apq8016_sbc: Use devm_platform_get_and_ioremap_resource()
-      commit: e6bb518199181c9c35827a48142fbb548125d0b0
-[2/2] ASoC: qcom: lpass-cpu: Use devm_platform_get_and_ioremap_resource()
-      commit: 77b7bae7802848feabe37a92533bee64387906e7
+[1/1] ASoC: fsl_xcvr: disable all interrupts when suspend happens
+      commit: ea837090b388245744988083313f6e9c7c9b9699
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
