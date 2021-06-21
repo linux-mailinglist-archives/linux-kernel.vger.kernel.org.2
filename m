@@ -2,123 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EBB23AF0F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8A23AEFE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:41:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232004AbhFUQzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:55:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232584AbhFUQvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:51:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BF36A6141E;
-        Mon, 21 Jun 2021 16:35:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624293311;
-        bh=XPCWpjmK3NPf8Hr7zjphzLZeWduT3z+M+pWQp2F6Ktg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TDGHGv9/hGsKzQ2kftMUeaz6hp3gfNURq51ZkwbG/RuzvdbdQXkcr/t+o8jJNlYG1
-         XFp9AFL6g1CavKKAPo2bw5S+8JJyyVdHRwK8Ppaf5/aUSLJC4fXq3JhcmgBiwnFmlF
-         Tue1SUBDUSrdKEhgStR/3HnhfxG0u8kbfk+cEnvg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jack Pham <jackp@codeaurora.org>,
-        Peter Chen <peter.chen@kernel.org>
-Subject: [PATCH 5.12 178/178] usb: dwc3: core: fix kernel panic when do reboot
-Date:   Mon, 21 Jun 2021 18:16:32 +0200
-Message-Id: <20210621154928.812384776@linuxfoundation.org>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621154921.212599475@linuxfoundation.org>
-References: <20210621154921.212599475@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S233206AbhFUQn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:43:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233394AbhFUQjv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:39:51 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB4FC061151
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:22:47 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id r9so20351284wrz.10
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:22:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=ZnyDvnG5ZhYgMn6tMi27bIwWL9AbU2dgk9vvsELPdRU=;
+        b=gm2DSLrPi//j9X/mkUegCOP3/S6a37EAmqSALOuICpRdlXNwUbiep/D63aqxU5TK6N
+         We/SX5m7sprl9iqJdw+3XoEUiPNokE/0ONZs1nt33QltP8UklmBn7PttwaMEFgdj+0GP
+         6sXECTAiSiTb2LTlDVpcyiABLCAf70pVVXkCNr/CTzhw8HgYZ8cLD4KXqG5ahwEI+0pO
+         1Ru62ne6wtI59ttbbqx8f1ovjBSaF3zr2pvY04mFGbDpGDnQpzxQrA2nnaz4LOsY7DeO
+         MFKeTXutMm0/U9Vvvqcb7NyQo7Vd18fMzCU2FFWaQErhBzBq5hE+B10iDWwaLHULyve0
+         Gerw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=ZnyDvnG5ZhYgMn6tMi27bIwWL9AbU2dgk9vvsELPdRU=;
+        b=U7rrtZ0t2fdqANgOhFPgBVz6wsa67TsB9elQkemACTnuoLkVnndKZO5m/TXWABnjA1
+         HMomIfRitOEtjuoHv1BSngTWBYsoVOByOBtwQc0cRHmkJ6/vksm0ecYDL6NSp3bbm6Qh
+         +lD6g2sBB6BIJc5e29QqhoF8RwUhT6+UyxE1mywPThn/eCqJp2RlinFBlKr7I3UAdOk+
+         061fNdy5obTnT+CF1KI2AH/VKF9Q34W2RpFDerpWuXLgBCY/qRDmSi+4aW/wF4hP/m31
+         OUg0xxF2zhTNIrX66JedzHQmxyiMyqUohs/CKkGzWKYpWSGuhV5UHsCmRtWKPvHyEJl2
+         rWyw==
+X-Gm-Message-State: AOAM531IwU4S4T5CAfrBg4S29oflh8IfYL4LlkRRCjIWE2c0/AFvRmFo
+        IJXa3SjQSSXv8NBoDwcQkkcsvg==
+X-Google-Smtp-Source: ABdhPJyzWjDLNL4IaffbXnCeqNGNS44dCOSMg3X8j0ZKdhaiJMMvgGSz+ElCqIJyN8CUxDL1PsPmyQ==
+X-Received: by 2002:a5d:66c6:: with SMTP id k6mr28769322wrw.422.1624292565531;
+        Mon, 21 Jun 2021 09:22:45 -0700 (PDT)
+Received: from vingu-book ([2a01:e0a:f:6020:7073:a754:9f82:97c1])
+        by smtp.gmail.com with ESMTPSA id k16sm19052901wrn.96.2021.06.21.09.22.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 21 Jun 2021 09:22:44 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 18:22:43 +0200
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Sachin Sant <sachinp@linux.vnet.ibm.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [powerpc][5.13.0-rc7] Kernel warning (kernel/sched/fair.c:401)
+ while running LTP tests
+Message-ID: <20210621162243.GA29874@vingu-book>
+References: <9D4A658A-5F77-4C33-904A-126E6052B205@linux.vnet.ibm.com>
+ <CAFpoUr3g5t3Z0BtW4-jnYomc3cdY=V5=Zt94-C+fHOjGWa107w@mail.gmail.com>
+ <CAKfTPtC=aXasuSNvn+A3152-4xoOTWROhJpZAVq6RLh1Hacpng@mail.gmail.com>
+ <CAFpoUr2o2PVPOx+AvatjjUvqPTyNKE3C6oXejyU3HVMmtCnzvQ@mail.gmail.com>
+ <6D1F875D-58E9-4A55-B0C3-21D5F31EDB76@linux.vnet.ibm.com>
+ <CAFpoUr0iWFTq2grtnX_EH6KnZLZQCg1o6_yv1gfDK8WdbHmUCA@mail.gmail.com>
+ <CAFpoUr3Wy9raHx+Dc0S8TB_Xi=E+Epsh_pA3DEFZP4eKf7s07A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFpoUr3Wy9raHx+Dc0S8TB_Xi=E+Epsh_pA3DEFZP4eKf7s07A@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Chen <peter.chen@kernel.org>
+Le lundi 21 juin 2021 à 14:42:23 (+0200), Odin Ugedal a écrit :
+> Hi,
+> 
+> Did some more research, and it looks like this is what happens:
+> 
+> $ tree /sys/fs/cgroup/ltp/ -d --charset=ascii
+> /sys/fs/cgroup/ltp/
+> |-- drain
+> `-- test-6851
+>     `-- level2
+>         |-- level3a
+>         |   |-- worker1
+>         |   `-- worker2
+>         `-- level3b
+>             `-- worker3
+> 
+> Timeline (ish):
+> - worker3 gets throttled
+> - level3b is decayed, since it has no more load
+> - level2 get throttled
+> - worker3 get unthrottled
+> - level2 get unthrottled
+>   - worker3 is added to list
+>   - level3b is not added to list, since nr_running==0 and is decayed
+> 
+> 
+> The attached diff (based on
+> https://lore.kernel.org/lkml/20210518125202.78658-3-odin@uged.al/)
+> fixes the issue for me. Not the most elegant solution, but the
+> simplest one as of now, and to show what is wrong.
+> 
+> Any thoughts Vincent?
 
-commit 4bf584a03eec674975ee9fe36c8583d9d470dab1 upstream.
 
-When do system reboot, it calls dwc3_shutdown and the whole debugfs
-for dwc3 has removed first, when the gadget tries to do deinit, and
-remove debugfs for its endpoints, it meets NULL pointer dereference
-issue when call debugfs_lookup. Fix it by removing the whole dwc3
-debugfs later than dwc3_drd_exit.
+I would prefer that we use the reason of adding the cfs in the list instead.
 
-[ 2924.958838] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000002
-....
-[ 2925.030994] pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-[ 2925.037005] pc : inode_permission+0x2c/0x198
-[ 2925.041281] lr : lookup_one_len_common+0xb0/0xf8
-[ 2925.045903] sp : ffff80001276ba70
-[ 2925.049218] x29: ffff80001276ba70 x28: ffff0000c01f0000 x27: 0000000000000000
-[ 2925.056364] x26: ffff800011791e70 x25: 0000000000000008 x24: dead000000000100
-[ 2925.063510] x23: dead000000000122 x22: 0000000000000000 x21: 0000000000000001
-[ 2925.070652] x20: ffff8000122c6188 x19: 0000000000000000 x18: 0000000000000000
-[ 2925.077797] x17: 0000000000000000 x16: 0000000000000000 x15: 0000000000000004
-[ 2925.084943] x14: ffffffffffffffff x13: 0000000000000000 x12: 0000000000000030
-[ 2925.092087] x11: 0101010101010101 x10: 7f7f7f7f7f7f7f7f x9 : ffff8000102b2420
-[ 2925.099232] x8 : 7f7f7f7f7f7f7f7f x7 : feff73746e2f6f64 x6 : 0000000000008080
-[ 2925.106378] x5 : 61c8864680b583eb x4 : 209e6ec2d263dbb7 x3 : 000074756f307065
-[ 2925.113523] x2 : 0000000000000001 x1 : 0000000000000000 x0 : ffff8000122c6188
-[ 2925.120671] Call trace:
-[ 2925.123119]  inode_permission+0x2c/0x198
-[ 2925.127042]  lookup_one_len_common+0xb0/0xf8
-[ 2925.131315]  lookup_one_len_unlocked+0x34/0xb0
-[ 2925.135764]  lookup_positive_unlocked+0x14/0x50
-[ 2925.140296]  debugfs_lookup+0x68/0xa0
-[ 2925.143964]  dwc3_gadget_free_endpoints+0x84/0xb0
-[ 2925.148675]  dwc3_gadget_exit+0x28/0x78
-[ 2925.152518]  dwc3_drd_exit+0x100/0x1f8
-[ 2925.156267]  dwc3_remove+0x11c/0x120
-[ 2925.159851]  dwc3_shutdown+0x14/0x20
-[ 2925.163432]  platform_shutdown+0x28/0x38
-[ 2925.167360]  device_shutdown+0x15c/0x378
-[ 2925.171291]  kernel_restart_prepare+0x3c/0x48
-[ 2925.175650]  kernel_restart+0x1c/0x68
-[ 2925.179316]  __do_sys_reboot+0x218/0x240
-[ 2925.183247]  __arm64_sys_reboot+0x28/0x30
-[ 2925.187262]  invoke_syscall+0x48/0x100
-[ 2925.191017]  el0_svc_common.constprop.0+0x48/0xc8
-[ 2925.195726]  do_el0_svc+0x28/0x88
-[ 2925.199045]  el0_svc+0x20/0x30
-[ 2925.202104]  el0_sync_handler+0xa8/0xb0
-[ 2925.205942]  el0_sync+0x148/0x180
-[ 2925.209270] Code: a9025bf5 2a0203f5 121f0056 370802b5 (79400660)
-[ 2925.215372] ---[ end trace 124254d8e485a58b ]---
-[ 2925.220012] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-[ 2925.227676] Kernel Offset: disabled
-[ 2925.231164] CPU features: 0x00001001,20000846
-[ 2925.235521] Memory Limit: none
-[ 2925.238580] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
+Something like the below should also fixed the problem. It is based on a
+proposal I made to Rik sometimes ago when he tried to flatten the rq:
+https://lore.kernel.org/lkml/20190906191237.27006-6-riel@surriel.com/
 
-Fixes: 8d396bb0a5b6 ("usb: dwc3: debugfs: Add and remove endpoint dirs dynamically")
-Cc: Jack Pham <jackp@codeaurora.org>
-Tested-by: Jack Pham <jackp@codeaurora.org>
-Signed-off-by: Peter Chen <peter.chen@kernel.org>
-Link: https://lore.kernel.org/r/20210608105656.10795-1-peter.chen@kernel.org
-(cherry picked from commit 2a042767814bd0edf2619f06fecd374e266ea068)
-Link: https://lore.kernel.org/r/20210615080847.GA10432@jackp-linux.qualcomm.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This will ensure that a cfs is added in the list whenever one of its  child
+is still in the list. 
+
 ---
- drivers/usb/dwc3/core.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/sched/fair.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
---- a/drivers/usb/dwc3/core.c
-+++ b/drivers/usb/dwc3/core.c
-@@ -1657,8 +1657,8 @@ static int dwc3_remove(struct platform_d
- 
- 	pm_runtime_get_sync(&pdev->dev);
- 
--	dwc3_debugfs_exit(dwc);
- 	dwc3_core_exit_mode(dwc);
-+	dwc3_debugfs_exit(dwc);
- 
- 	dwc3_core_exit(dwc);
- 	dwc3_ulpi_exit(dwc);
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index ea7de54cb022..e751061a9449 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3272,6 +3272,31 @@ static inline void cfs_rq_util_change(struct cfs_rq *cfs_rq, int flags)
+
+ #ifdef CONFIG_SMP
+ #ifdef CONFIG_FAIR_GROUP_SCHED
++/*
++ * Because list_add_leaf_cfs_rq always places a child cfs_rq on the list
++ * immediately before a parent cfs_rq, and cfs_rqs are removed from the list
++ * bottom-up, we only have to test whether the cfs_rq before us on the list
++ * is our child.
++ * If cfs_rq is not on the list, test wether a child needs its to be added to
++ * connect a branch to the tree  * (see list_add_leaf_cfs_rq() for details).
++ */
++static inline bool child_cfs_rq_on_list(struct cfs_rq *cfs_rq)
++{
++	struct cfs_rq *prev_cfs_rq;
++	struct list_head *prev;
++
++	if (cfs_rq->on_list) {
++		prev = cfs_rq->leaf_cfs_rq_list.prev;
++	} else {
++		struct rq *rq = rq_of(cfs_rq);
++
++		prev = rq->tmp_alone_branch;
++	}
++
++	prev_cfs_rq = container_of(prev, struct cfs_rq, leaf_cfs_rq_list);
++
++	return (prev_cfs_rq->tg->parent == cfs_rq->tg);
++}
+
+ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+ {
+@@ -3287,6 +3312,9 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+ 	if (cfs_rq->avg.runnable_sum)
+ 		return false;
+
++	if (child_cfs_rq_on_list(cfs_rq))
++		return false;
++
+ 	return true;
+ }
+
+--
+2.17.1
 
 
+
+> 
+> Thanks
+> Odin
+> 
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index bfaa6e1f6067..aa32e9c29efd 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -376,7 +376,8 @@ static inline bool list_add_leaf_cfs_rq(struct
+> cfs_rq *cfs_rq)
+>         return false;
+>  }
+> 
+> -static inline void list_del_leaf_cfs_rq(struct cfs_rq *cfs_rq)
+> +/* Returns 1 if cfs_rq was present in the list and removed */
+> +static inline bool list_del_leaf_cfs_rq(struct cfs_rq *cfs_rq)
+>  {
+>         if (cfs_rq->on_list) {
+>                 struct rq *rq = rq_of(cfs_rq);
+> @@ -393,7 +394,9 @@ static inline void list_del_leaf_cfs_rq(struct
+> cfs_rq *cfs_rq)
+> 
+>                 list_del_rcu(&cfs_rq->leaf_cfs_rq_list);
+>                 cfs_rq->on_list = 0;
+> +               return 1;
+>         }
+> +       return 0;
+>  }
+> 
+>  static inline void assert_list_leaf_cfs_rq(struct rq *rq)
+> @@ -3298,24 +3301,6 @@ static inline void cfs_rq_util_change(struct
+> cfs_rq *cfs_rq, int flags)
+> 
+>  #ifdef CONFIG_SMP
+>  #ifdef CONFIG_FAIR_GROUP_SCHED
+> -
+> -static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+> -{
+> -       if (cfs_rq->load.weight)
+> -               return false;
+> -
+> -       if (cfs_rq->avg.load_sum)
+> -               return false;
+> -
+> -       if (cfs_rq->avg.util_sum)
+> -               return false;
+> -
+> -       if (cfs_rq->avg.runnable_sum)
+> -               return false;
+> -
+> -       return true;
+> -}
+> -
+>  /**
+>   * update_tg_load_avg - update the tg's load avg
+>   * @cfs_rq: the cfs_rq whose avg changed
+> @@ -4109,11 +4094,6 @@ static inline void update_misfit_status(struct
+> task_struct *p, struct rq *rq)
+> 
+>  #else /* CONFIG_SMP */
+> 
+> -static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+> -{
+> -       return true;
+> -}
+> -
+>  #define UPDATE_TG      0x0
+>  #define SKIP_AGE_LOAD  0x0
+>  #define DO_ATTACH      0x0
+> @@ -4771,10 +4751,11 @@ static int tg_unthrottle_up(struct task_group
+> *tg, void *data)
+>         if (!cfs_rq->throttle_count) {
+>                 cfs_rq->throttled_clock_task_time += rq_clock_task(rq) -
+>                                              cfs_rq->throttled_clock_task;
+> -
+> -               /* Add cfs_rq with load or one or more already running
+> entities to the list */
+> -               if (!cfs_rq_is_decayed(cfs_rq) || cfs_rq->nr_running)
+> +               if (cfs_rq->insert_on_unthrottle) {
+>                         list_add_leaf_cfs_rq(cfs_rq);
+> +                       if (tg->parent)
+> +
+> tg->parent->cfs_rq[cpu_of(rq)]->insert_on_unthrottle = true;
+> +                       }
+>         }
+> 
+>         return 0;
+> @@ -4788,7 +4769,7 @@ static int tg_throttle_down(struct task_group
+> *tg, void *data)
+>         /* group is entering throttled state, stop time */
+>         if (!cfs_rq->throttle_count) {
+>                 cfs_rq->throttled_clock_task = rq_clock_task(rq);
+> -               list_del_leaf_cfs_rq(cfs_rq);
+> +               cfs_rq->insert_on_unthrottle = list_del_leaf_cfs_rq(cfs_rq);
+>         }
+>         cfs_rq->throttle_count++;
+> 
+> @@ -8019,6 +8000,23 @@ static bool __update_blocked_others(struct rq
+> *rq, bool *done)
+> 
+>  #ifdef CONFIG_FAIR_GROUP_SCHED
+> 
+> +static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+> +{
+> +       if (cfs_rq->load.weight)
+> +               return false;
+> +
+> +       if (cfs_rq->avg.load_sum)
+> +               return false;
+> +
+> +       if (cfs_rq->avg.util_sum)
+> +               return false;
+> +
+> +       if (cfs_rq->avg.runnable_sum)
+> +               return false;
+> +
+> +       return true;
+> +}
+> +
+>  static bool __update_blocked_fair(struct rq *rq, bool *done)
+>  {
+>         struct cfs_rq *cfs_rq, *pos;
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index a189bec13729..12a707d99ee6 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -602,6 +602,7 @@ struct cfs_rq {
+>         u64                     throttled_clock_task_time;
+>         int                     throttled;
+>         int                     throttle_count;
+> +       int                     insert_on_unthrottle;
+>         struct list_head        throttled_list;
+>  #endif /* CONFIG_CFS_BANDWIDTH */
+>  #endif /* CONFIG_FAIR_GROUP_SCHED */
