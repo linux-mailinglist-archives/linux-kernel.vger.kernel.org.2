@@ -2,90 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 187E03AF5C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 741A93AF5CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 21:05:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231386AbhFUTBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 15:01:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35788 "EHLO
+        id S231276AbhFUTHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 15:07:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230189AbhFUTBt (ORCPT
+        with ESMTP id S229897AbhFUTHS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 15:01:49 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A859C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:59:34 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id i94so20826829wri.4
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 11:59:34 -0700 (PDT)
+        Mon, 21 Jun 2021 15:07:18 -0400
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43CBAC061574;
+        Mon, 21 Jun 2021 12:05:02 -0700 (PDT)
+Received: by mail-lf1-x12e.google.com with SMTP id i1so4909635lfe.6;
+        Mon, 21 Jun 2021 12:05:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tDnzs4S5mWCJVykG1gJ2TrxiTAKGRBG0mNiuKKTkJDc=;
-        b=IQZsErqzy0GD9BWUQSt0y7ojPiV79nkjcR0kDron5cYD9Prlnll6+uKAgSinS6BxCq
-         wbd3Xhdz/kHPMBUqpr63I6CIdVMO4TJfQvx0Ji2YypFcd6QpzNPPI+h62pqXlvki9XbR
-         CmbBAoEVcnKTZaFpO0ZujR/yV3r39AOG1YcDYI865wT3i2qR1VxJ6cP1VO4VrnAt9s9j
-         WKZAlwh4SAdvqrRZxjwvqcQp9uazkFd0Uht6WrDoSKTocQqI7rH3J6LdXvR8KLzKMqqX
-         dk3oFK+rNgEtDKTqV/B58tDy3Etkj98Anynkh8czotG46uDpBZuYqChfgr7M6It13SK9
-         Z/TQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=iMUzOrcOG3tdgHxs2HmPtt+/y5jqdKzawVgcKyiIepI=;
+        b=Lh32j56ifmSklJcK4qz0WGcjtkeiuXBuADUAdNNk3neWxuJ48fZ687Sc2J5KZKUbmA
+         8rW7XSZwxpKVc/cUWogeK0YOmgdiQl4RsAY6hMIp938/PF0A4HCrba+YPW06gnzQ83to
+         8A90Uu6S1pNhzwMDXPwv/+4UUd+aVe1BFdYwcbGDrFNtt35OYt/dNjrHN0NxmTdLgUDP
+         lVzXnmGaI5sgaPNiZZSSqJbKnq9SWF9n4g8al3TYDo3xVs82Dv2P2d1uPmttfQdi1NDh
+         /IDexi2n2FlUsujg6pJ7gk8DSf/FXKIXP36+UR84Dej6xjQuwIZNjxw3Hmy6wFdYqZH4
+         KshA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=tDnzs4S5mWCJVykG1gJ2TrxiTAKGRBG0mNiuKKTkJDc=;
-        b=sl5SGAS6jRCvVTuE/SfZqYa1wHFyWWpeelWS0bOlGMgwg1XUrbM08V0eVnThgxZjKW
-         Q6gHTlpUH4V9TO3GHQ8T2hLPEc0B1sMbAl1kD6kr7Y9xvEAMR+Q8fqelgECxIvXN220V
-         IBTmFl6tUEj8oYVte52twhF+G736jFvE/zPoDVfP8g7nAKU90I5wOvJMIkZyNHpBv9H0
-         U8wx6Pbl+iwik/clvicCr5+Qp6eaqeG1q9Nl/8kaN36ZsCKh1FXAax+4iup6+V7rYaaT
-         DWP/Gr7CnB9dcICSIFoOBMg9EEppVWWsLrMU+nzw4MjmEFAdni7BBHtWf82BVeBv3BFs
-         ii8A==
-X-Gm-Message-State: AOAM530iBR9FLhWg/ycVSNCXzKD6QVqNTENbMKA4XzZRu1MPJGlXGtFO
-        tRoxQftMT24Fz1V8N3i6tgtfAQ==
-X-Google-Smtp-Source: ABdhPJzWBDHT4D757byXSDoPav1GnjgxtqgyBjgjRQ96BEfuZx3DWW6os8cshh4J3zQ0QMTS3s0PEQ==
-X-Received: by 2002:a5d:59ae:: with SMTP id p14mr29381043wrr.188.1624301973014;
-        Mon, 21 Jun 2021 11:59:33 -0700 (PDT)
-Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id 9sm458818wmf.3.2021.06.21.11.59.32
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=iMUzOrcOG3tdgHxs2HmPtt+/y5jqdKzawVgcKyiIepI=;
+        b=kUCf4btuqZ4Ohz3CYhKwrQkaZjMKYpoRzbIDNqqv0w/FsNA2oF6okIVKA62XHYl4es
+         +5QcKjZgYFvrbV+gvXmLRPWC7D13IyP7iVF+DI5ZGOtCqfLL6IhFzHjXCjUaq7O4YGxf
+         l0JVwNKjWUAgaVpprK3SNW4OvW0XppNZ4UQ/qH3u5bowhq4FlJCSqqZSjQnpcz/wenFE
+         KlyIv6Hs/EZ6HdyPtnZTUHTBRtJuC4Dn6abHlfmu1DhVp5oM/ji67Y99nwk+ZgZOmOjI
+         LUSBGNEk4g/mV4QrEdUgUQZdc3yGb1+cMdOUZWVCk3IpRUwA0cbggIyepQYtp+jyyh2H
+         QlCQ==
+X-Gm-Message-State: AOAM5309XZy2MdRLldSQsF81dtbJ4O/VsU7EQDk5FMwHBgjdQDvTRKPB
+        djJJpiZwvD1zHmlHEDuB6sY=
+X-Google-Smtp-Source: ABdhPJz9oTSoGJAhFPoAG5FraEJi6qloYSNa6yEkMQA+chs/22nNp4OXU0yeSlbx6eAhUplK9+eNmg==
+X-Received: by 2002:ac2:499d:: with SMTP id f29mr10743025lfl.602.1624302300409;
+        Mon, 21 Jun 2021 12:05:00 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.229.24])
+        by smtp.gmail.com with ESMTPSA id w8sm641420lfq.27.2021.06.21.12.04.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 11:59:32 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        linus.walleij@linaro.org, ulli.kroll@googlemail.com
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, lkp@intel.com,
-        Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH] crypto: sl3516: depends on HAS_IOMEM
-Date:   Mon, 21 Jun 2021 18:59:26 +0000
-Message-Id: <20210621185926.4181785-1-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 21 Jun 2021 12:05:00 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 22:04:54 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Guvenc Gulce <guvenc@linux.ibm.com>
+Cc:     syzbot <syzbot+5dda108b672b54141857@syzkaller.appspotmail.com>,
+        coreteam@netfilter.org, davem@davemloft.net, dsahern@kernel.org,
+        fw@strlen.de, kadlec@netfilter.org, kgraul@linux.ibm.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org,
+        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
+        syzkaller-bugs@googlegroups.com, yoshfuji@linux-ipv6.org
+Subject: Re: [syzbot] general protection fault in smc_tx_sendmsg
+Message-ID: <20210621220454.1c4a61d2@gmail.com>
+In-Reply-To: <c8fd3740-8233-2b14-1fc9-57ecebc31ad8@linux.ibm.com>
+References: <000000000000d154d905c53ad34d@google.com>
+        <20210621175603.40ac6eaa@gmail.com>
+        <c8fd3740-8233-2b14-1fc9-57ecebc31ad8@linux.ibm.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sl3516 driver need to depend on HAS_IOMEM.
-This fixes a build error:
-ERROR: modpost: "devm_platform_ioremap_resource" [drivers/crypto/gemini/sl3516-ce.ko] undefined!
+On Mon, 21 Jun 2021 19:18:56 +0200
+Guvenc Gulce <guvenc@linux.ibm.com> wrote:
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- drivers/crypto/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+>=20
+>=20
+> On 21/06/2021 16:56, Pavel Skripkin wrote:
+> > On Sun, 20 Jun 2021 16:22:16 -0700
+> > syzbot <syzbot+5dda108b672b54141857@syzkaller.appspotmail.com>
+> > wrote:
+> >
+> >> Hello,
+> >>
+> >> syzbot found the following issue on:
+> >>
+> >> HEAD commit:    0c337952 Merge tag
+> >> 'wireless-drivers-next-2021-06-16' of g.. git tree:       net-next
+> >> console output:
+> >> https://syzkaller.appspot.com/x/log.txt?x=3D1621de10300000 kernel
+> >> config:  https://syzkaller.appspot.com/x/.config?x=3Da6380da8984033f1
+> >> dashboard link:
+> >> https://syzkaller.appspot.com/bug?extid=3D5dda108b672b54141857 syz
+> >> repro:
+> >> https://syzkaller.appspot.com/x/repro.syz?x=3D121d2d20300000 C
+> >> reproducer:
+> >> https://syzkaller.appspot.com/x/repro.c?x=3D100bd768300000
+> >>
+> >> The issue was bisected to:
+> >>
+> >> commit f9006acc8dfe59e25aa75729728ac57a8d84fc32
+> >> Author: Florian Westphal <fw@strlen.de>
+> >> Date:   Wed Apr 21 07:51:08 2021 +0000
+> >>
+> >>      netfilter: arp_tables: pass table pointer via nf_hook_ops
+> >>
+> > I think, bisection is wrong this time :)
+> >
+> > It should be e0e4b8fa533858532f1b9ea9c6a4660d09beb37a ("net/smc:
+> > Add SMC statistics support")
+> >
+> >
+> > Some debug results:
+> >
+> > syzkaller repro just opens the socket and calls sendmsg. Ftrace log:
+> >
+> >
+> >   0)               |  smc_create() {
+> >   0)               |    smc_sock_alloc() {
+> >   0) + 88.493 us   |      smc_hash_sk();
+> >   0) ! 131.487 us  |    }
+> >   0) ! 189.912 us  |  }
+> >   0)               |  smc_sendmsg() {
+> >   0)   2.808 us    |    smc_tx_sendmsg();
+> >   0) ! 148.484 us  |  }
+> >
+> >
+> > That means, that smc_buf_create() wasn't called at all, so we need
+> > to check sndbuf_desc before dereferencing
+> >
+> > Something like this should work
+> >
+> > diff --git a/net/smc/smc_tx.c b/net/smc/smc_tx.c
+> > index 075c4f4b4..e24071b12 100644
+> > --- a/net/smc/smc_tx.c
+> > +++ b/net/smc/smc_tx.c
+> > @@ -154,7 +154,7 @@ int smc_tx_sendmsg(struct smc_sock *smc, struct
+> > msghdr *msg, size_t len) goto out_err;
+> >   	}
+> >  =20
+> > -	if (len > conn->sndbuf_desc->len)
+> > +	if (conn->sndbuf_desc && len > conn->sndbuf_desc->len)
+> >   		SMC_STAT_RMB_TX_SIZE_SMALL(smc, !conn->lnk);
+> >  =20
+> >   	if (len > conn->peer_rmbe_size)
+> >
+> >
+> > Thoughts?
+> >
+> >
+> > +CC Guvenc Gulce
+> >
+> >
+> > With regards,
+> > Pavel Skripkin
+>=20
+> Thanks for analyzing the cause. Your approach would work but I would
+> prefer that we check the state of the socket before doing the
+> statistics relevant if check. This will ensure that smc_buf_create()
+> was already called. I am testing the fix at the moment which would
+> look like the following:
+>=20
 
-diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index 99b090790178..4f3b7da24495 100644
---- a/drivers/crypto/Kconfig
-+++ b/drivers/crypto/Kconfig
-@@ -268,6 +268,7 @@ config CRYPTO_DEV_NIAGARA2
- 
- config CRYPTO_DEV_SL3516
- 	tristate "Stormlink SL3516 crypto offloader"
-+	depends on HAS_IOMEM
- 	select CRYPTO_SKCIPHER
- 	select CRYPTO_ENGINE
- 	select CRYPTO_ECB
--- 
-2.31.1
+This sounds better. I knew, that my approach will just "silence" the
+bug, that's why I CCed you for better approach :)
 
+> diff --git a/net/smc/smc_tx.c b/net/smc/smc_tx.c
+> index 075c4f4b41cf..289025cd545a 100644
+> --- a/net/smc/smc_tx.c
+> +++ b/net/smc/smc_tx.c
+> @@ -154,6 +154,9 @@ int smc_tx_sendmsg(struct smc_sock *smc, struct
+> msghdr *msg, size_t len) goto out_err;
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>=20
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (sk->sk_state =3D=3D SMC_INIT)
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 return -ENOTCONN;
+> +
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (len > conn->sndbuf_desc->=
+len)
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 SMC_STAT_RMB_TX_SIZE_SMALL(smc, !conn->lnk);
+>=20
+>=20
+
+
+
+
+With regards,
+Pavel Skripkin
