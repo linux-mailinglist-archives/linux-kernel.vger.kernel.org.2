@@ -2,113 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 257623AE5CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D8563AE57E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhFUJUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:20:19 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:31944 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbhFUJUS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:20:18 -0400
-Received: from epcas3p2.samsung.com (unknown [182.195.41.20])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210621091802epoutp045eda835644717c7ce84c00317e5bc502~Kjk5SAe1C1107811078epoutp04-
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:18:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210621091802epoutp045eda835644717c7ce84c00317e5bc502~Kjk5SAe1C1107811078epoutp04-
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1624267082;
-        bh=BkLKe4A7FHy8X5Pp4d78LtN0pOn1oXblP8uasI6bamk=;
-        h=Subject:Reply-To:From:To:Date:References:From;
-        b=cGw0vsPBp+r59+Hpm4FyvYSEa/Om3Wvf8ZRdY6f6GL5imA0V4KgLY5O5AevztdSlC
-         QqrCMWAD1UsDoC3Oo+GLrvgTmPzzqNybcmKJjhCHxnGyX1zHk5OkqgcJTWrrjqMTNd
-         awzTmk0E5/jL1AE0ZkBjRl8B8hgKfFPD+pLELO8A=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas3p2.samsung.com (KnoxPortal) with ESMTP id
-        20210621091801epcas3p297e4cb21fcb590a8f291978aab6a3f7d~Kjk4pjCQx3249532495epcas3p2i;
-        Mon, 21 Jun 2021 09:18:01 +0000 (GMT)
-Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp3.localdomain
-        (Postfix) with ESMTP id 4G7kTP6gcYz4x9QJ; Mon, 21 Jun 2021 09:18:01 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: [PATCH] scsi: ufs: Refactor ufshcd_is_intr_aggr_allowed()
-Reply-To: keosung.park@samsung.com
-Sender: Keoseong Park <keosung.park@samsung.com>
-From:   Keoseong Park <keosung.park@samsung.com>
-To:     "joe@perches.com" <joe@perches.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "adrian.hunter@intel.com" <adrian.hunter@intel.com>,
-        Kiwoong Kim <kwmad.kim@samsung.com>,
-        "satyat@google.com" <satyat@google.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <1891546521.01624267081897.JavaMail.epsvc@epcpadp4>
-Date:   Mon, 21 Jun 2021 17:51:58 +0900
-X-CMS-MailID: 20210621085158epcms2p46170ba48174547df00b9720dbc843110
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210621085158epcms2p46170ba48174547df00b9720dbc843110
-References: <CGME20210621085158epcms2p46170ba48174547df00b9720dbc843110@epcms2p4>
+        id S230298AbhFUJDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:03:47 -0400
+Received: from foss.arm.com ([217.140.110.172]:58858 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229618AbhFUJDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 05:03:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B521E1FB;
+        Mon, 21 Jun 2021 02:01:31 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2A6D13F718;
+        Mon, 21 Jun 2021 02:01:29 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 10:01:26 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Jassi Brar <jassisinghbrar@gmail.com>,
+        Peter Hilber <peter.hilber@opensynergy.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Igor Skalkin <igor.skalkin@opensynergy.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        souvik.chakravarty@arm.com, alex.bennee@linaro.org,
+        jean-philippe@linaro.org, mikhail.golubev@opensynergy.com,
+        anton.yakovlev@opensynergy.com,
+        Vasyl Vavrychuk <Vasyl.Vavrychuk@opensynergy.com>,
+        Andriy Tryshnivskyy <Andriy.Tryshnivskyy@opensynergy.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: Re: [RFC PATCH v3 01/12] firmware: arm_scmi, smccc, mailbox: Make
+ shmem based transports optional
+Message-ID: <20210621090126.GA50227@e120937-lin>
+References: <20210511002040.802226-1-peter.hilber@opensynergy.com>
+ <20210511002040.802226-2-peter.hilber@opensynergy.com>
+ <CABb+yY2q8Vw90=qEiNSOUZ39ZmX0ECShTvSidLoYCuZ-xGy-Mg@mail.gmail.com>
+ <20210621085431.whk5z3gohk3pb6j7@bogus>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621085431.whk5z3gohk3pb6j7@bogus>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change conditional compilation to IS_ENABLED macro,
-and simplify if else statement to return statement.
-No functional change.
+Hi,
 
-Signed-off-by: Keoseong Park <keosung.park@samsung.com>
----
- drivers/scsi/ufs/ufshcd.h | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+On Mon, Jun 21, 2021 at 09:54:31AM +0100, Sudeep Holla wrote:
+> On Sun, Jun 20, 2021 at 11:09:21PM -0500, Jassi Brar wrote:
+> > On Mon, May 10, 2021 at 7:22 PM Peter Hilber
+> > <peter.hilber@opensynergy.com> wrote:
+> > 
+> > .....
+> > 
+> > > --- a/drivers/mailbox/Kconfig
+> > > +++ b/drivers/mailbox/Kconfig
+> > > @@ -1,6 +1,7 @@
+> > >  # SPDX-License-Identifier: GPL-2.0-only
+> > >  menuconfig MAILBOX
+> > >         bool "Mailbox Hardware Support"
+> > > +       select ARM_SCMI_HAVE_SHMEM
+> > >         help
+> > >           Mailbox is a framework to control hardware communication between
+> > >           on-chip processors through queued messages and interrupt driven
+> > >
+> > Isn't this too generic?
+> > Not all platforms, with a mailbox controller, use SCMI as the protocol.
+> >
+> 
+> Yikes! I agree Jassi, this looks super hack.
+> 
 
-diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
-index c98d540ac044..6d239a855753 100644
---- a/drivers/scsi/ufs/ufshcd.h
-+++ b/drivers/scsi/ufs/ufshcd.h
-@@ -893,16 +893,15 @@ static inline bool ufshcd_is_rpm_autosuspend_allowed(struct ufs_hba *hba)
- 
- static inline bool ufshcd_is_intr_aggr_allowed(struct ufs_hba *hba)
- {
--/* DWC UFS Core has the Interrupt aggregation feature but is not detectable*/
--#ifndef CONFIG_SCSI_UFS_DWC
--	if ((hba->caps & UFSHCD_CAP_INTR_AGGR) &&
--	    !(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR))
-+	/*
-+	 * DWC UFS Core has the Interrupt aggregation feature
-+	 * but is not detectable.
-+	 */
-+	if (IS_ENABLED(CONFIG_SCSI_UFS_DWC))
- 		return true;
--	else
--		return false;
--#else
--return true;
--#endif
-+
-+	return (hba->caps & UFSHCD_CAP_INTR_AGGR) &&
-+		!(hba->quirks & UFSHCD_QUIRK_BROKEN_INTR_AGGR);
- }
- 
- static inline bool ufshcd_can_aggressive_pc(struct ufs_hba *hba)
--- 
-2.17.1
+Yes indeed, I have still to rework this part of the series.
+
+(@Jassi: I'm reworking this series starting from the work done by Peter up to
+V3, since it needed some core SCMI transport rework to ease implememtation of
+virtio-scmi transport)
+
+Thanks,
+Cristian
+
+> -- 
+> Regards,
+> Sudeep
