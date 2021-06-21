@@ -2,191 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 656C23AF622
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 21:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53DC13AF630
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 21:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231447AbhFUTaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 15:30:52 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:43432 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230490AbhFUTas (ORCPT
+        id S231158AbhFUTf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 15:35:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230076AbhFUTfZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 15:30:48 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out02.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lvPaz-009kRk-1P; Mon, 21 Jun 2021 13:28:33 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=email.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lvPax-00DZ7U-U6; Mon, 21 Jun 2021 13:28:32 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Andrei Vagin <avagin@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <20210615162346.16032-1-avagin@gmail.com>
-        <877diuq5xb.fsf@disp2133>
-        <CANaxB-zVMxxvt8c1XNKfy6-hAUoodxp=ChJpP_Rn5cTD=26p9w@mail.gmail.com>
-Date:   Mon, 21 Jun 2021 14:27:47 -0500
-In-Reply-To: <CANaxB-zVMxxvt8c1XNKfy6-hAUoodxp=ChJpP_Rn5cTD=26p9w@mail.gmail.com>
-        (Andrei Vagin's message of "Tue, 15 Jun 2021 15:35:14 -0700")
-Message-ID: <87pmwfggr0.fsf@disp2133>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Mon, 21 Jun 2021 15:35:25 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD499C061574;
+        Mon, 21 Jun 2021 12:33:10 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id x21-20020a17090aa395b029016e25313bfcso668555pjp.2;
+        Mon, 21 Jun 2021 12:33:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9LziRyqrNgKF/SJRQo0FBh+YflGxcn2NbuYHi3dgeo0=;
+        b=KSaQprJvkgBw9WmwAZuufcTpuejwPMEyYfGHuijPyB/LTdSmGS9RzYZTR8CddgPfuj
+         JUATOxsUuNzXZFy4O3M0S0cBOgWS1nLcGU3v7E5UX54dZxqHC6n8lTk4mF4GeT5lUw//
+         RrSR72YZOT2/+jXNp57c5orTrv0G+wXqpgKlf4AkGnexWFT6dZxGSaTXIoyap4+/sh/q
+         /n0z4EFbBy9vHzEXjhUZzR+1OY3gVQP79K6mutW56ioUyLStU3yG/uRPjZy4PPQDO4OM
+         tKvFBrn8KQ+iLLVoiwAYTMbuhS6YlSsCzttaG9o9sVDnKHtRZqhtdItZzmV1t201Qyzj
+         q/Ww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9LziRyqrNgKF/SJRQo0FBh+YflGxcn2NbuYHi3dgeo0=;
+        b=dVS8Y6AyqoHV4kJryZLVJWer3LNJlKDFWuRwkFuk0PCVNpQk/Jx5sG80rnE9zvvqoI
+         nY14MsIL4Q5mp4+txho6am2xe8fJNikELb2Qxh/ripngwu7+mt50E5uZKbyr1F4hFH6j
+         BJQeTnXSfU9du6fR0PJ6HV/tOljg58Wx3EJmfXdpxsS2sNT2XGkLQJqI/Sz5FhnA+c3b
+         nnXi2tBMuZY6RKLaRvdLSodRidLHkv3GISudOsVU4Swoz4l0le8AKAqncAaXl9PV4A2g
+         Pyk2H8IL7eg0VcnUH0GDsN20/51VED6v0WFJvLZH9FdKJVphp2GHVxXln5DmgSh04hWn
+         gZqQ==
+X-Gm-Message-State: AOAM533tTgXzypFFI/JgsI99fdXbstms8abSK6pe8cAgTL5dQGbaKZEv
+        zYs3jrIxly9HkkUcmfRc09A=
+X-Google-Smtp-Source: ABdhPJxuwOk22Ju5jiC4MfLYT7X/KEpDj7GR6Dlhp6xbnbfoZFaRMMIX4+r9FN6ShzefForaiOgLRw==
+X-Received: by 2002:a17:902:d909:b029:11d:65e5:ac34 with SMTP id c9-20020a170902d909b029011d65e5ac34mr19511590plz.83.1624303990303;
+        Mon, 21 Jun 2021 12:33:10 -0700 (PDT)
+Received: from localhost ([103.248.31.165])
+        by smtp.gmail.com with ESMTPSA id i3sm3221808pgc.92.2021.06.21.12.33.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 12:33:09 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 01:03:07 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     alex.williamson@redhat.com,
+        Raphael Norwitz <raphael.norwitz@nutanix.com>,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
+        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>
+Subject: Re: [PATCH v7 4/8] PCI/sysfs: Allow userspace to query and set
+ device reset mechanism
+Message-ID: <20210621193307.gt7iwwg6gqqojhfc@archlinux>
+References: <20210621172854.3ycsprg2wwx45xgm@archlinux>
+ <20210621190705.GA3292470@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lvPax-00DZ7U-U6;;;mid=<87pmwfggr0.fsf@disp2133>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/KkeURioQeUCQv/lbdzgTzMI2/4Daqa8s=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa08.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.7 required=8.0 tests=ALL_TRUSTED,BAYES_20,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,
-        T_XMDrugObfuBody_08,XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_20 BODY: Bayes spam probability is 5 to 20%
-        *      [score: 0.1997]
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa08 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  1.0 T_XMDrugObfuBody_08 obfuscated drug references
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa08 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Andrei Vagin <avagin@gmail.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 488 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 12 (2.5%), b_tie_ro: 11 (2.2%), parse: 1.14
-        (0.2%), extract_message_metadata: 12 (2.4%), get_uri_detail_list: 2.1
-        (0.4%), tests_pri_-1000: 14 (2.9%), tests_pri_-950: 1.44 (0.3%),
-        tests_pri_-900: 1.41 (0.3%), tests_pri_-90: 103 (21.1%), check_bayes:
-        101 (20.7%), b_tokenize: 9 (1.9%), b_tok_get_all: 10 (2.0%),
-        b_comp_prob: 3.6 (0.7%), b_tok_touch_all: 73 (14.9%), b_finish: 1.32
-        (0.3%), tests_pri_0: 327 (67.1%), check_dkim_signature: 0.73 (0.1%),
-        check_dkim_adsp: 3.3 (0.7%), poll_dns_idle: 1.06 (0.2%), tests_pri_10:
-        2.4 (0.5%), tests_pri_500: 9 (1.8%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] exec/binfmt_script: trip zero bytes from the buffer
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621190705.GA3292470@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrei Vagin <avagin@gmail.com> writes:
-
-> On Tue, Jun 15, 2021 at 12:33 PM Eric W. Biederman
-> <ebiederm@xmission.com> wrote:
->>
->> Andrei Vagin <avagin@gmail.com> writes:
->>
->> > Without this fix, if we try to run a script that contains only the
->> > interpreter line, the interpreter is executed with one extra empty
->> > argument.
->> >
->> > The code is written so that i_end has to be set to the end of valuable
->> > data in the buffer.
->>
->> Out of curiosity how did you spot this change in behavior?
+On 21/06/21 02:07PM, Bjorn Helgaas wrote:
+> On Mon, Jun 21, 2021 at 10:58:54PM +0530, Amey Narkhede wrote:
+> > On 21/06/21 08:01AM, Bjorn Helgaas wrote:
+> > > On Sat, Jun 19, 2021 at 07:29:20PM +0530, Amey Narkhede wrote:
+> > > > On 21/06/18 03:00PM, Bjorn Helgaas wrote:
+> > > > > On Tue, Jun 08, 2021 at 11:18:53AM +0530, Amey Narkhede wrote:
+> > > > > > Add reset_method sysfs attribute to enable user to
+> > > > > > query and set user preferred device reset methods and
+> > > > > > their ordering.
+> > >
+> > > > > > +	if (sysfs_streq(options, "default")) {
+> > > > > > +		for (i = 0; i < PCI_RESET_METHODS_NUM; i++)
+> > > > > > +			reset_methods[i] = reset_methods[i] ? prio-- : 0;
+> > > > > > +		goto set_reset_methods;
+> > > > > > +	}
+> > > > >
+> > > > > If you use pci_init_reset_methods() here, you can also get this case
+> > > > > out of the way early.
+> > > > >
+> > > > The problem with alternate encoding is we won't be able to know if
+> > > > one of the reset methods was disabled previously. For example,
+> > > >
+> > > > # cat reset_methods
+> > > > flr,bus 			# dev->reset_methods = [3, 5, 0, ...]
+> > > > # echo bus > reset_methods 	# dev->reset_methods = [5, 0, 0, ...]
+> > > > # cat reset_methods
+> > > > bus
+> > > >
+> > > > Now if an user wants to enable flr
+> > > >
+> > > > # echo flr > reset_methods 	# dev->reset_methods = [3, 0, 0, ...]
+> > > > OR
+> > > > # echo bus,flr > reset_methods 	# dev->reset_methods = [5, 3, 0, ...]
+> > > >
+> > > > either they need to write "default" first then flr or we will need to
+> > > > reprobe reset methods each time when user writes to reset_method attribute.
+> > >
+> > > Not sure I completely understand the problem here.  I think relying on
+> > > previous state that is invisible to the user is a little problematic
+> > > because it's hard for the user to predict what will happen.
+> > >
+> > > If the user enables a method that was previously "disabled" because
+> > > the probe failed, won't the reset method itself just fail with
+> > > -ENOTTY?  Is that a problem?
+> > >
+> > I think I didn't explain this correctly. With current implementation
+> > its not necessary to explicitly set *order of availabe* reset methods.
+> > User can directly write a single supported reset method only and then perform
+> > the reset. Side effect of that is other methods are disabled if user
+> > writes single or less than available number of supported reset method.
+> > Current implementation is able to handle this case but with new encoding
+> > we'll need to reprobe reset methods everytime because we have no way
+> > of distingushing supported and currently enabled reset method.
 >
-> gVisor tests started failing with this change:
-> https://github.com/google/gvisor/blob/5e05950c1c520724e2e03963850868befb95efeb/test/syscalls/linux/exec.cc#L307
+> I'm confused.  I thought the point of the nested loops to find the
+> highest priority enabled reset method was to allow the user to control
+> the order.  The sysfs doc says writing "reset_method" sets the "reset
+> methods and their ordering."
 >
-> We run these tests on Ubuntu 20.04 and this is the reason why we
-> caught this issue just a few days ago.
+> It seems complicated to track "supported" and "enabled" separately,
+> and I don't know what the benefit is.  If we write "reset_method" to
+> enable reset X, can we just probe reset X to see if it's supported?
+>
+> Bjorn
+Although final result is same whether user writes a supported reset method or
+their ordering that is,
+# echo bus > reset_methods
+and
+# echo bus,flr > reset_methods
 
-I like where you are going, but starting at the end of the buffer
-there is the potential to skip deliberately embedded '\0' characters.
+are the same but in the first version, users don't have to explicitly
+set the ordering if they just want to perform bus reset.
+Current implementation allows the flexibility for switching between
+first and second option.
 
-While looking at this I realized that your patch should not have
-made a difference but there is a subtle bug in the logic of
-next_non_spacetab, that allowed your code to make it that far.
+Does this address your doubt?
 
-Can you test my patch below?
-
-I think I have simplified the logic enough to prevent bugs from getting
-in.
-
-Eric
-
-diff --git a/fs/binfmt_script.c b/fs/binfmt_script.c
-index 1b6625e95958..7d204693326c 100644
---- a/fs/binfmt_script.c
-+++ b/fs/binfmt_script.c
-@@ -26,7 +26,7 @@ static inline const char *next_non_spacetab(const char *first, const char *last)
- static inline const char *next_terminator(const char *first, const char *last)
- {
- 	for (; first <= last; first++)
--		if (spacetab(*first) || !*first)
-+		if (spacetab(*first))
- 			return first;
- 	return NULL;
- }
-@@ -44,9 +44,9 @@ static int load_script(struct linux_binprm *bprm)
- 	/*
- 	 * This section handles parsing the #! line into separate
- 	 * interpreter path and argument strings. We must be careful
--	 * because bprm->buf is not yet guaranteed to be NUL-terminated
--	 * (though the buffer will have trailing NUL padding when the
--	 * file size was smaller than the buffer size).
-+	 * because bprm->buf is not guaranteed to be NUL-terminated
-+	 * (the buffer will have trailing NUL padding when the file
-+	 * size was smaller than the buffer size).
- 	 *
- 	 * We do not want to exec a truncated interpreter path, so either
- 	 * we find a newline (which indicates nothing is truncated), or
-@@ -57,33 +57,37 @@ static int load_script(struct linux_binprm *bprm)
- 	 */
- 	buf_end = bprm->buf + sizeof(bprm->buf) - 1;
- 	i_end = strnchr(bprm->buf, sizeof(bprm->buf), '\n');
--	if (!i_end) {
--		i_end = next_non_spacetab(bprm->buf + 2, buf_end);
--		if (!i_end)
--			return -ENOEXEC; /* Entire buf is spaces/tabs */
--		/*
--		 * If there is no later space/tab/NUL we must assume the
--		 * interpreter path is truncated.
--		 */
--		if (!next_terminator(i_end, buf_end))
--			return -ENOEXEC;
--		i_end = buf_end;
-+	if (i_end) {
-+		/* Hide the trailing newline */
-+		i_end = i_end - 1;
-+	} else {
-+		/* Find the end of the text */
-+		i_end = memchr(bprm->buf + 2, '\0', sizeof(bprm->buf));
-+		i_end = i_end ? i_end - 1 : buf_end;
- 	}
-+
- 	/* Trim any trailing spaces/tabs from i_end */
--	while (spacetab(i_end[-1]))
-+	while (spacetab(i_end[0]))
- 		i_end--;
- 
- 	/* Skip over leading spaces/tabs */
- 	i_name = next_non_spacetab(bprm->buf+2, i_end);
--	if (!i_name || (i_name == i_end))
-+	if (!i_name)
- 		return -ENOEXEC; /* No interpreter name found */
- 
- 	/* Is there an optional argument? */
- 	i_arg = NULL;
- 	i_sep = next_terminator(i_name, i_end);
--	if (i_sep && (*i_sep != '\0'))
-+	if (i_sep)
- 		i_arg = next_non_spacetab(i_sep, i_end);
- 
-+	/*
-+	 * If there is no space/tab/NUL after the interpreter we must
-+	 * assume the interpreter path is truncated.
-+	 */
-+	if (!i_sep && (i_end == buf_end))
-+		return -ENOEXEC;
-+
- 	/*
- 	 * If the script filename will be inaccessible after exec, typically
- 	 * because it is a "/dev/fd/<fd>/.." path against an O_CLOEXEC fd, give
-
+Thanks,
+Amey
