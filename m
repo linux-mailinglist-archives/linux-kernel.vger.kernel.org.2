@@ -2,131 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E22623AE5F9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A94D83AE5FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:25:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhFUJ1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:27:15 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:39661 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230175AbhFUJ1N (ORCPT
+        id S230427AbhFUJ2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:28:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230225AbhFUJ2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:27:13 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 27B8E580729;
-        Mon, 21 Jun 2021 05:24:59 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 21 Jun 2021 05:24:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=QxyRCw56RmwfC4S1d/yB2NPnff0
-        BTF8jycj1UZFZOJo=; b=npjXHHvytKMSpcHy05FREqM6WoH2QfHaRWOwoh1gTJI
-        +P897+R0OniZWpBHMj9k+WJltAyyrpa6Yp+2/MP5r/bP+eNP+AQAPDprewP+3/yu
-        g/OgybLvwOM2yn4dIzUnzEkK024WlgwpkF3X+hY4Dtr5HEfOW7RMjRuZk/TsuXIw
-        u6ogHxxUOkDo3A4ahIHkKu0dcIgyZrM2YofZK0WRODW7D2tSVB9AF48kBU4NrXYc
-        Gp6xb8U5Hwe2PyQP8oSoDk05eDoRlgMczrr3igl2+Z+H1s0HdpImoRqXjtsCToLC
-        7MTKEtfQC/adkCZkT4+gv6z7RhSemxIkXI6d2gVF1jQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=QxyRCw
-        56RmwfC4S1d/yB2NPnff0BTF8jycj1UZFZOJo=; b=M48pTmlIx68Lnx1QR85eFG
-        Zwirpl1+Ql7Ue8l5TzNtlAxuTKvF8uZkgXPhUL6SYTaMXEMwzkzDs9j7sq7KG3Zz
-        hCcQ59ufyWliuzam7l3L2K/YTZ/8lYpfd7nydQuX837KZQC6T+MTLqGYUBE7YCWv
-        EYrEKMtrIVxw5LVLKAAXbpYPhEsNc8wD3YYxJ6Fcil1B1VvY6nL8FE4Dl0QSrSz/
-        CJ/kLly3Kz1PBo/LevXybi2yBr95P4B/979iVvexZDK9JOI9fD99GA6XAALqwjir
-        6LgKmK82gGRelYox0cvSCYVx6Vwi0L3HvgEdybLLs80K+jxRYB7Ib1Odr+ziOAeQ
-        ==
-X-ME-Sender: <xms:6FrQYN1fMBgyxnejtjwDiDUmGWoArg3IOR1Icv8LWs7JYFKeA9CrCQ>
-    <xme:6FrQYEF7axDha0Qwas79kvOP82YbN3QtP5OeZfm1ScKbMb2QkbR20kcHlWpS06hIk
-    YFUtyD9zbY-zyirE7I>
-X-ME-Received: <xmr:6FrQYN44zIPubjZytZ67_2R1ybQBDgBuDhjaXPhM04YsfnaFUtaBhGASZg7F77ASIy5p3OJrvXt78jIVwvU6GnnRrhoulqZAyHWx>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeefledgudeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:6FrQYK0Wl87_Xs__Vs_2d1BZLkXeyN8sKhgNI5CJu5zN4IjsshyEPg>
-    <xmx:6FrQYAHac96gY3gmP-yAvwfg3Lgeiw7AMJKGlxcj_2DSobH7ltxCJA>
-    <xmx:6FrQYL9UAyVtYBm1Hm3YnFUVGMOmLZr1p3JGgl4PrDQHAJUGHqQGzA>
-    <xmx:61rQYI_u-BujOaCITJgA5pOANeuHUhQNrNjwiEp81SBTaApWjb2Vnw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 21 Jun 2021 05:24:56 -0400 (EDT)
-Date:   Mon, 21 Jun 2021 11:24:54 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Tomohito Esaki <etom@igel.co.jp>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        dri-devlel@lists.freedesktop.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATH 0/4] [RFC] Support virtual DRM
-Message-ID: <20210621092454.jvdmelk2h427jn5v@gilmour>
-References: <20210621062742.26073-1-etom@igel.co.jp>
- <9853d0a9-6053-db64-9c79-40b7e0689eec@suse.de>
+        Mon, 21 Jun 2021 05:28:06 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44595C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:25:52 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id n35-20020a05600c3ba3b02901cdecb6bda8so13316851wms.5
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:25:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=khjWeiSnkM2JJW86gTrKIOVSLeTv7Yb6KaH/heggdtk=;
+        b=D7+xRf++un3IqmYn8bmv7KAGa9NMjyPIbi8yoy4Ti9SUXDRJjRaloHfCpxV/03Arf7
+         CoERUSxWGR0XDUWdMf/1y7IHE6wK6tX5nqjAOvuhocuiKx22ltR0guuxKZePTG1Fgl9k
+         NA3WegyOWA5PBhjYeeddblQoSNJ5dcaLnGxqKOn9yIK97LKfgo7SEzfR6PGsn3vvw2B7
+         A7SG9sOSiEH/snvvetYA4vFouncOe8XSKa4X3stERRW8kdZzIy3Gak8fRXXGb15X7iGt
+         AxQpL3GA0gWVhio0AHuwSHamj0wj8pYNhx1ttV3fUV2+mkZvOPS0jHoNaXjh0nKxEqV/
+         /QMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=khjWeiSnkM2JJW86gTrKIOVSLeTv7Yb6KaH/heggdtk=;
+        b=WRFbfYXjHgKoecAOUF007hhCYMARKAsoeqEXAqnT8FvpOXzHyUPJFSkGOjqAHOpIbp
+         cnw47ypi4k4AX31QJWN1pe5yv/lxNw5abwBRkHYslBGbPfvx5J8uN4jb+35HNz3rB+I7
+         X5+1fH+7OtVq+4WPKbxjPthKv6KBEqS32sigZdySF2JaxFWx+pvWTQrKc06ZI5ypkIqz
+         atBREYoURwQOHBetnGYRMNJ3Nee9/XA85oQ5uOnx43iqlsj4YHxSfEON5bYHCzpZlTJI
+         fw1ah+r0YcNeLo6fLqCFwLoX2ufskrocuhrJeGX2I5gJsaD7Lv1wyHYlkPaqRg/tqU71
+         wpGA==
+X-Gm-Message-State: AOAM53311A5CITRIOtsAMV8p0klweUoCfHEc+YsYLxg2PseDujDteg/j
+        7VV7TkhxOFnvJnX1+pKik5yEcA==
+X-Google-Smtp-Source: ABdhPJyU+t2q4RnAwWxnByMGNzM0KKcktgIONYVsvt+ZubU3WPqQEmpfq8xdZyXbgeekVOfLseJSTQ==
+X-Received: by 2002:a7b:c1d3:: with SMTP id a19mr12109104wmj.181.1624267549391;
+        Mon, 21 Jun 2021 02:25:49 -0700 (PDT)
+Received: from ?IPv6:2a01:e34:ed2f:f020:5ebd:8bd9:d549:4211? ([2a01:e34:ed2f:f020:5ebd:8bd9:d549:4211])
+        by smtp.googlemail.com with ESMTPSA id 24sm4377077wmi.35.2021.06.21.02.25.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 02:25:48 -0700 (PDT)
+Subject: Re: [PATCH 1/2] clocksource/drivers/exynos_mct: Prioritise Arm arch
+ timer on arm64
+To:     Will Deacon <will@kernel.org>, Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <20210608154341.10794-1-will@kernel.org>
+ <CGME20210608154400epcas1p1b22fd50629611a9475cb4d2b8dd9442d@epcas1p1.samsung.com>
+ <20210608154341.10794-2-will@kernel.org>
+ <466bfc19-2260-87c6-c458-b43cf23617e3@samsung.com>
+ <2a0181ea-a26e-65e9-16f6-cc233b6b296f@linaro.org>
+ <fbcd234d-3ea0-d609-1f1d-b557ea329c37@samsung.com>
+ <20210617214748.GC25403@willie-the-truck>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <d79ebd58-1c4e-834c-fc06-482f25f6f3de@linaro.org>
+Date:   Mon, 21 Jun 2021 11:25:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xz4kqr3jldf7e74a"
-Content-Disposition: inline
-In-Reply-To: <9853d0a9-6053-db64-9c79-40b7e0689eec@suse.de>
+In-Reply-To: <20210617214748.GC25403@willie-the-truck>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 17/06/2021 23:47, Will Deacon wrote:
+> On Thu, Jun 17, 2021 at 09:58:35AM +0900, Chanwoo Choi wrote:
+>> On 6/17/21 12:25 AM, Daniel Lezcano wrote:
+>>> On 10/06/2021 03:03, Chanwoo Choi wrote:
+>>>> On 6/9/21 12:43 AM, Will Deacon wrote:
+>>>>> diff --git a/drivers/clocksource/exynos_mct.c b/drivers/clocksource/exynos_mct.c
+>>>>> index fabad79baafc..804d3e01c8f4 100644
+>>>>> --- a/drivers/clocksource/exynos_mct.c
+>>>>> +++ b/drivers/clocksource/exynos_mct.c
+>>>>> @@ -51,6 +51,15 @@
+>>>>>  
+>>>>>  #define TICK_BASE_CNT	1
+>>>>>  
+>>>>> +#ifdef CONFIG_ARM
+>>>>> +/* Use values higher than ARM arch timer. See 6282edb72bed. */
+>>>>> +#define MCT_CLKSOURCE_RATING		450
+>>>>> +#define MCT_CLKEVENTS_RATING		500
+>>>>> +#else
+>>>>> +#define MCT_CLKSOURCE_RATING		350
+>>>>> +#define MCT_CLKEVENTS_RATING		350
+>>>>> +#endif
+>>>>> +
+>>>>>  enum {
+>>>>>  	MCT_INT_SPI,
+>>>>>  	MCT_INT_PPI
+>>>>> @@ -206,7 +215,7 @@ static void exynos4_frc_resume(struct clocksource *cs)
+>>>>>  
+>>>>>  static struct clocksource mct_frc = {
+>>>>>  	.name		= "mct-frc",
+>>>>> -	.rating		= 450,	/* use value higher than ARM arch timer */
+>>>>> +	.rating		= MCT_CLKSOURCE_RATING,
+>>>>>  	.read		= exynos4_frc_read,
+>>>>>  	.mask		= CLOCKSOURCE_MASK(32),
+>>>>>  	.flags		= CLOCK_SOURCE_IS_CONTINUOUS,
+>>>>> @@ -457,7 +466,7 @@ static int exynos4_mct_starting_cpu(unsigned int cpu)
+>>>>>  	evt->set_state_oneshot_stopped = set_state_shutdown;
+>>>>>  	evt->tick_resume = set_state_shutdown;
+>>>>>  	evt->features = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT;
+>>>>> -	evt->rating = 500;	/* use value higher than ARM arch timer */
+>>>>> +	evt->rating = MCT_CLKEVENTS_RATING,
+>>>>>  
+>>>>>  	exynos4_mct_write(TICK_BASE_CNT, mevt->base + MCT_L_TCNTB_OFFSET);
+>>>>>  
+>>>>>
+>>>>
+>>>> I'm not sure that exynos mct is working without problem
+>>>> such as the case of 6282edb72bed.
+>>>> As described on On ,6282edb72bed the arch timer on exynos SoC
+>>>> depends on Exynos MCT device. the arch timer is not able to work
+>>>> without Exynos MCT because of using the common module.
+>>>
+>>> Is it possible to change the DT to have a phandle to the exynos_mct, so
+>>> it will be probed before the arch_arm_timer ?
+>>
+>> I think that DT changes is not proper way to keep the order between
+>> exynos_mct and arch timer.
+> 
+> exynos4_mct_frc_start() is called unconditionally from probe via
+> exynos4_clocksource_init() so as long as the mct probes first, then the
+> arch timer should work, no? The rating shouldn't affect that.
 
---xz4kqr3jldf7e74a
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+How do you ensure the exynos mct is probed before the arch timer ?
 
-Hi,
+The Makefile provides the right order, but the dependency is implicit.
 
-On Mon, Jun 21, 2021 at 09:10:19AM +0200, Thomas Zimmermann wrote:
-> Am 21.06.21 um 08:27 schrieb Tomohito Esaki:
-> > Virtual DRM splits the overlay planes of a display controller into mult=
-iple
-> > virtual devices to allow each plane to be accessed by each process.
-> >=20
-> > This makes it possible to overlay images output from multiple processes=
- on a
-> > display. For example, one process displays the camera image without com=
-positor
-> > while another process overlays the UI.
->=20
-> I briefly looked over your patches. I didn't understand how this is
-> different to the functionality of a compositor? Shouldn't this be solved =
-in
-> userspace?
 
-I think there could be a bunch of use-cases for something that could
-"steal" a plane without the compositor knowing.
 
-Something I'd really like to work at some point for example is that the
-downstream RaspberryPi display driver has a visual clue when it's
-running too hot or is in over-current.
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 
-I don't think this is the right solution though. The DT binding makes it
-far too static, and if there's a compositor I'd assume it would want to
-know about it somehow (at least if it's from the userspace) ?
-
-Maxime
-
---xz4kqr3jldf7e74a
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYNBa5gAKCRDj7w1vZxhR
-xSSHAQDsK7MmbKj9NbX4esOTIjfHi+miWdtqwdA1VXPu7OAU+wEAsmJeTq9Unwha
-ZjKrYBAvq23DkfZ79MOPlRjn2sRbjA4=
-=pjsJ
------END PGP SIGNATURE-----
-
---xz4kqr3jldf7e74a--
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
