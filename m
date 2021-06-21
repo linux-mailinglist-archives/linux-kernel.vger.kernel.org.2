@@ -2,266 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA4343AEA51
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C883AEA57
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhFUNtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 09:49:46 -0400
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:25640 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229887AbhFUNtk (ORCPT
+        id S230151AbhFUNvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 09:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230056AbhFUNvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 09:49:40 -0400
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210621134724euoutp024c29bdd8b5d99a28f88d97bb698982e2~KnQFTWSaJ0999209992euoutp02V
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 13:47:24 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210621134724euoutp024c29bdd8b5d99a28f88d97bb698982e2~KnQFTWSaJ0999209992euoutp02V
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1624283244;
-        bh=WBGmiRk36mDUrOliQVAlmO4y07enstu/5D4iQkLvX/M=;
-        h=Subject:To:From:Date:In-Reply-To:References:From;
-        b=qhFRnE+rGPLp/bGBNqiPpmV4MnV4In63WvH5jbp5wAwMWdvQj1q5ivU2uAwrri+6j
-         VaAMm3vPOVjZBfcM7d1L2FC8eL06mVUdolXIRdFAFons7qFtUQnKWqUnjw7QfajQs9
-         DI+xG9FFjyUD40l8t2WHcSpbtb+BfinwCMXj0qpw=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210621134724eucas1p2899419d20b04f726caab86c236f75932~KnQE9dAbw1083610836eucas1p2Y;
-        Mon, 21 Jun 2021 13:47:24 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id EB.4F.42068.C6890D06; Mon, 21
-        Jun 2021 14:47:24 +0100 (BST)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210621134723eucas1p15155c018d83a6cc8f58e8b235a5fe964~KnQEVbWJW1095010950eucas1p1O;
-        Mon, 21 Jun 2021 13:47:23 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210621134723eusmtrp1b907cbe0396d95965509cc3bed52df3a~KnQEUi1Sr1681616816eusmtrp11;
-        Mon, 21 Jun 2021 13:47:23 +0000 (GMT)
-X-AuditID: cbfec7f4-c71ff7000002a454-8d-60d0986cc113
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 56.FB.31287.B6890D06; Mon, 21
-        Jun 2021 14:47:23 +0100 (BST)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210621134722eusmtip2edd869dc85c0c59c448fc878e343f2d2~KnQDR6AMc2887228872eusmtip20;
-        Mon, 21 Jun 2021 13:47:22 +0000 (GMT)
-Subject: Re: [PATCH v3] ASoC: qcom: Fix for DMA interrupt clear reg
- overwriting
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, swboyd@chromium.org,
-        judyhsiao@chromium.org
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <f12445cc-53ad-4ebe-c0f7-c0d86b369164@samsung.com>
-Date:   Mon, 21 Jun 2021 15:47:21 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.11.0
+        Mon, 21 Jun 2021 09:51:37 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9828DC061574;
+        Mon, 21 Jun 2021 06:49:22 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso10214581pjx.1;
+        Mon, 21 Jun 2021 06:49:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=7viMnibfS6VsxzlqCvYb7FwB8QCMPLVzuuh0psBNrJU=;
+        b=tjJFcaz40QGLpVSYaxM07H8/eGzJESZ6yozxTdvYlveGp0wRby2HUQECj350JoC5if
+         kDo/DC08G/mA2KmpyzjofP83+sJnABlcXw37McOROnOgmcqUhG17ULQrqzZjbTS1v0kS
+         82Oyyo7j2Jz3xUUaKtR+4UDKnR1dLpIe7s3chpgUP7vbb6pMmOgYIQkRvtG2yVsXP7hq
+         cfOKqtBRT/EdrWVW41y5Chrymf3V1QS1KFSkkkOa29Fy7j0Sptx+1BDepm2+FVXcyMss
+         3FthpzKHS55bIjL/2DxwCOonm7w74cGB64GEJhW4nzUSc8nbKjBZClxFOHOMx1ooa7Cx
+         zOog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=7viMnibfS6VsxzlqCvYb7FwB8QCMPLVzuuh0psBNrJU=;
+        b=YXEmMINUsQgoaiSu8Fwh85ETWeqDC6SSQDUaEYmxWVsHQk91OgrmWHw8J2hdPeIOmh
+         etPViZ5DtMd+M6EKK6RVemREKxXBhPco1gxvnUp/994c1gZMgVJ3WDpkh7rpjUUxv9BC
+         uLYPxIccqZ+Rplas1tUzxn34kyG6SrpDRrhc9fo0Rj0SfG/Vq9D0upUlOYAy6NFn5lZj
+         OGi045CRcIGSVSwuWjFelgrZ/js/s48lx+6H3v0rKlIGfSi14GNLpFhDeysnxJYp4Ht+
+         eXtttSyeewoT3S4NzSVAxs+wFLd3N7qlYLUuQhITQAa67lYkErrtPuGb8QdqfwJy7f8m
+         ZGCQ==
+X-Gm-Message-State: AOAM533xMcBqyy+DE2cjhkSCGuk7KUUh3+55GDqUM9kZ7gA0nLZzja9U
+        KUAl4uo314UIdh1qoBMhXPW9NK1yFcCLTCRh
+X-Google-Smtp-Source: ABdhPJxyDY65TbjH9aeMH8nrQD14NHk4OE72CXa7oqptYgUzmsUi/Cm7+meEe8G2ml/icEIlQjGhzQ==
+X-Received: by 2002:a17:902:8c87:b029:11d:6f72:78aa with SMTP id t7-20020a1709028c87b029011d6f7278aamr18252075plo.12.1624283362192;
+        Mon, 21 Jun 2021 06:49:22 -0700 (PDT)
+Received: from localhost ([209.132.188.80])
+        by smtp.gmail.com with ESMTPSA id m12sm8594396pfd.151.2021.06.21.06.49.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 06:49:21 -0700 (PDT)
+From:   Coiby Xu <coiby.xu@gmail.com>
+To:     linux-staging@lists.linux.dev
+Cc:     netdev@vger.kernel.org,
+        Benjamin Poirier <benjamin.poirier@gmail.com>,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Manish Chopra <manishc@marvell.com>,
+        GR-Linux-NIC-Dev@marvell.com (supporter:QLOGIC QLGE 10Gb ETHERNET
+        DRIVER), Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [RFC 01/19] staging: qlge: fix incorrect truesize accounting
+Date:   Mon, 21 Jun 2021 21:48:44 +0800
+Message-Id: <20210621134902.83587-2-coiby.xu@gmail.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210621134902.83587-1-coiby.xu@gmail.com>
+References: <20210621134902.83587-1-coiby.xu@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <ec4f3faf-2169-3cd2-7471-976f20f77110@linaro.org>
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBKsWRmVeSWpSXmKPExsWy7djP87o5My4kGLT8ZLU49/g3i8WVi4eY
-        LBpvL2K1OL3/HYvF1IdP2CzmHznHanFtYjuTxbcrHUwWE/efZbe4vGsOm0Xnrn5Wi465Exgt
-        WvceYbc4uaWZ0aLt2DFWi++vzjJbHL/zlMliw/e1jA5CHhs+N7F5zG64yOJxua+XyWPnrLvs
-        HptWdbJ53Lm2h81j39tlbB7rt1xl8fi8SS6AM4rLJiU1J7MstUjfLoEr49yzBawFh0wqmv5c
-        YGpgbNTtYuTkkBAwkfjc38fcxcjFISSwglHiz5kXUM4XRokt856wQjifGSVWtXxhgmk5vHoF
-        VNVyRomeD12MIAkhgY+MEkf/sXcxcnAICwRKzHxSBhIWEXjHLPFjkjmIzSZgKNH1tosNxOYV
-        sJM42HsezGYRUJVou/EGbIyoQLLE+3kzWCFqBCVOznzCAmJzAtXf37cYzGYWkJdo3jqbGcIW
-        l7j1ZD4TyD0SArs5JQ7vaGOHONRFYtHM6WwQtrDEq+NboOIyEqcn97BANDQzSjw8t5Ydwulh
-        lLjcNIMRospa4s65X2wg3zALaEqs36UPEXaUWP+3gxUkLCHAJ3HjrSDEEXwSk7ZNZ4YI80p0
-        tAlBVKtJzDq+Dm7twQuXmCFsD4n9e6+yTmBUnIXkzVlIXpuF5LVZCDcsYGRZxSieWlqcm55a
-        bJSXWq5XnJhbXJqXrpecn7uJEZgYT/87/mUH4/JXH/UOMTJxMB5ilOBgVhLhvZlyIUGINyWx
-        siq1KD++qDQntfgQozQHi5I4b9KWNfFCAumJJanZqakFqUUwWSYOTqkGJhXPST58S2q2Pd+v
-        O7X3jfaNHz/FvfZ67P52dK3LHfGkXL/K7Xv/fvkj84aJ1ejs4sKvXE0uvTXvpvcWKag+qea4
-        dU7l8Ow+3zMFSapuEhsWT/90gT8nRPDDBr30G6n32HbWLb7dGZZ9l4NPYjrXU+ZHQg2Tjxa+
-        8v67v1jX3F5oGU9G1fe1k4R1lJIsmhi+TmE+te1G1GLuD2YXCrjnvPLY9PvY/rUPVFkrOq/L
-        sRRNvGncpyNiuHzic//obdoF76dmLP2//dJJoZ2zZh5iCRZgSQxe9rNBKt7ywenHq/L6Iv0P
-        V262mmBj+aRKbfVzTd9Hj95G7BaO1/Li4mmUVuz+mbj3S3/R2sfHbik4VSixFGckGmoxFxUn
-        AgCjBkZM+wMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrHIsWRmVeSWpSXmKPExsVy+t/xe7rZMy4kGEy4Im1x7vFvFosrFw8x
-        WTTeXsRqcXr/OxaLqQ+fsFnMP3KO1eLaxHYmi29XOpgsJu4/y25xedccNovOXf2sFh1zJzBa
-        tO49wm5xckszo0XbsWOsFt9fnWW2OH7nKZPFhu9rGR2EPDZ8bmLzmN1wkcXjcl8vk8fOWXfZ
-        PTat6mTzuHNtD5vHvrfL2DzWb7nK4vF5k1wAZ5SeTVF+aUmqQkZ+cYmtUrShhZGeoaWFnpGJ
-        pZ6hsXmslZGpkr6dTUpqTmZZapG+XYJexrlnC1gLDplUNP25wNTA2KjbxcjJISFgInF49Qrm
-        LkYuDiGBpYwSFw6dYIdIyEicnNbACmELS/y51sUGUfSeUeLfhLNAHRwcwgKBEjOflIHUiAi8
-        Y5b42JwPYgsJ/GSU+HYzB8RmEzCU6HoL0svJwStgJ3Gw9zyYzSKgKtF24w0jiC0qkCzxc307
-        VI2gxMmZT1hAbE6g+vv7FoPZzAJmEvM2P2SGsOUlmrfOhrLFJW49mc80gVFwFpL2WUhaZiFp
-        mYWkZQEjyypGkdTS4tz03GJDveLE3OLSvHS95PzcTYzAiN927OfmHYzzXn3UO8TIxMF4iFGC
-        g1lJhPdmyoUEId6UxMqq1KL8+KLSnNTiQ4ymQP9MZJYSTc4Hppy8knhDMwNTQxMzSwNTSzNj
-        JXHerXPXxAsJpCeWpGanphakFsH0MXFwSjUwCZf9vHCkSb1r09fFU16Inxae674lVfiZxb8P
-        dgHOtgeKnpWLiK6X6FnveJhdIq751hLfm5PN3WXC59rf/1Vl+HUR98xp9iUmZ4VP8P7LOs2z
-        WvTMdV9v608bjoaWnHvLkeZwmn96Zltj2kOJTQaL2pLzO2LK88IbE2b4Laz23Ncsq8MsaMd9
-        SenEK4++n+ccJ7TPmm/z8NPm836Tzz+Z/nT3m1urN+/2PdSiZLDA8dRphe6KvUtb28XSP1at
-        /BF6qaeH8cwbw2vsl14Fx81Yp/ukcMrRdeF7D1gJrJPXu96aJxE21V/akr2sJVMh1EU9+Pw6
-        vgPyxfsmps/9fMCO3f1yovGfUO9FR9eINPnXK7EUZyQaajEXFScCAD2Jg6OBAwAA
-X-CMS-MailID: 20210621134723eucas1p15155c018d83a6cc8f58e8b235a5fe964
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210617193537eucas1p217b93d091ae8795581b30931ad8c7467
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210617193537eucas1p217b93d091ae8795581b30931ad8c7467
-References: <20210609072310.26099-1-srivasam@codeaurora.org>
-        <CGME20210617193537eucas1p217b93d091ae8795581b30931ad8c7467@eucas1p2.samsung.com>
-        <5ae06ccb-ffd4-ca9f-5a88-1f8bf8b48d37@samsung.com>
-        <ec4f3faf-2169-3cd2-7471-976f20f77110@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Commit 7c734359d3504c869132166d159c7f0649f0ab34 ("qlge: Size RX buffers
+based on MTU") introduced page_chunk structure. We should add
+qdev->lbq_buf_size to skb->truesize after __skb_fill_page_desc.
 
-On 21.06.2021 14:52, Srinivas Kandagatla wrote:
->
-> On 17/06/2021 20:35, Marek Szyprowski wrote:
->>
->> On 09.06.2021 09:23, Srinivasa Rao Mandadapu wrote:
->>> The DMA interrupt clear register overwritten during
->>> simultaneous playback and capture in lpass platform
->>> interrupt handler. It's causing playback or capture stuck
->>> in similtaneous plaback on speaker and capture on dmic test.
->>> Update appropriate reg fields of corresponding channel instead
->>> of entire register write.
->>>
->>> Fixes: commit c5c8635a04711 ("ASoC: qcom: Add LPASS platform driver")
->>>
->>> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
->>
-> Can you please try this patch and let us know if this fixes the issue
->
-> ------------------------->cut<-------------------------------
-> Author: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Date:   Mon Jun 21 12:38:43 2021 +0100
->
->     ASoC: qcom: lpass-cpu: mark IRQ_CLEAR register as volatile and 
-> readable
->
->     Currently IRQ_CLEAR register is marked as write-only, however using
->     regmap_update_bits on this register will have some side effects.
->     so mark IRQ_CLEAR register appropriately as readable and volatile.
->
->     Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+---
+ drivers/staging/qlge/TODO        |  2 --
+ drivers/staging/qlge/qlge_main.c | 10 +++++-----
+ 2 files changed, 5 insertions(+), 7 deletions(-)
 
-This fixes the issue observed on DragonBoard410c. Feel free to add:
-
-Reported-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-> index 0b9cbf2ce505..8998697cd1e1 100644
-> --- a/sound/soc/qcom/lpass-cpu.c
-> +++ b/sound/soc/qcom/lpass-cpu.c
-> @@ -525,6 +525,8 @@ static bool lpass_cpu_regmap_readable(struct 
-> device *dev, unsigned int reg)
->                         return true;
->
->         for (i = 0; i < v->irq_ports; ++i) {
-> +               if (reg == LPAIF_IRQCLEAR_REG(v, i))
-> +                       return true;
->                 if (reg == LPAIF_IRQEN_REG(v, i))
->                         return true;
->                 if (reg == LPAIF_IRQSTAT_REG(v, i))
-> @@ -566,9 +568,12 @@ static bool lpass_cpu_regmap_volatile(struct 
-> device *dev, unsigned int reg)
->         struct lpass_variant *v = drvdata->variant;
->         int i;
->
-> -       for (i = 0; i < v->irq_ports; ++i)
-> +       for (i = 0; i < v->irq_ports; ++i) {
-> +               if (reg == LPAIF_IRQCLEAR_REG(v, i))
-> +                       return true;
->                 if (reg == LPAIF_IRQSTAT_REG(v, i))
->                         return true;
-> +       }
->
->         for (i = 0; i < v->rdma_channels; ++i)
->                 if (reg == LPAIF_RDMACURR_REG(v, i))
->
-> ------------------------->cut<-------------------------------
->
-> --srini
->
->> This patch landed recently in linux-next as commit da0363f7bfd3 ("ASoC:
->> qcom: Fix for DMA interrupt clear reg overwriting"). It breaks ALSA
->> playback on DragonBoard 410c (arch/arm64/boot/dts/qcom/apq8016-sbc.dts).
->> After applying this patch, running 'speaker-test -l1' never finishes.
->> There is no error nor kernel warning message. Before that commit, the
->> playback worked fine on that board.
->>
->>> ---
->>> Changes since v2:
->>>     -- Removed redundant variables.
->>> Changes since v1:
->>>     -- Subject lines changed.
->>>    sound/soc/qcom/lpass-platform.c | 12 ++++++------
->>>    1 file changed, 6 insertions(+), 6 deletions(-)
->>>
->>> diff --git a/sound/soc/qcom/lpass-platform.c 
->>> b/sound/soc/qcom/lpass-platform.c
->>> index 0df9481ea4c6..f9df76d37858 100644
->>> --- a/sound/soc/qcom/lpass-platform.c
->>> +++ b/sound/soc/qcom/lpass-platform.c
->>> @@ -526,7 +526,7 @@ static int lpass_platform_pcmops_trigger(struct 
->>> snd_soc_component *component,
->>>                return -EINVAL;
->>>            }
->>>    -        ret = regmap_write(map, reg_irqclr, val_irqclr);
->>> +        ret = regmap_update_bits(map, reg_irqclr, val_irqclr, 
->>> val_irqclr);
->>>            if (ret) {
->>>                dev_err(soc_runtime->dev, "error writing to irqclear 
->>> reg: %d\n", ret);
->>>                return ret;
->>> @@ -650,10 +650,11 @@ static irqreturn_t lpass_dma_interrupt_handler(
->>>        struct lpass_variant *v = drvdata->variant;
->>>        irqreturn_t ret = IRQ_NONE;
->>>        int rv;
->>> -    unsigned int reg = 0, val = 0;
->>> +    unsigned int reg, val, mask;
->>>        struct regmap *map;
->>>        unsigned int dai_id = cpu_dai->driver->id;
->>>    +    mask = LPAIF_IRQ_ALL(chan);
->>>        switch (dai_id) {
->>>        case LPASS_DP_RX:
->>>            map = drvdata->hdmiif_map;
->>> @@ -676,8 +677,7 @@ static irqreturn_t lpass_dma_interrupt_handler(
->>>        return -EINVAL;
->>>        }
->>>        if (interrupts & LPAIF_IRQ_PER(chan)) {
->>> -
->>> -        rv = regmap_write(map, reg, LPAIF_IRQ_PER(chan) | val);
->>> +        rv = regmap_update_bits(map, reg, mask, 
->>> (LPAIF_IRQ_PER(chan) | val));
->>>            if (rv) {
->>>                dev_err(soc_runtime->dev,
->>>                    "error writing to irqclear reg: %d\n", rv);
->>> @@ -688,7 +688,7 @@ static irqreturn_t lpass_dma_interrupt_handler(
->>>        }
->>>           if (interrupts & LPAIF_IRQ_XRUN(chan)) {
->>> -        rv = regmap_write(map, reg, LPAIF_IRQ_XRUN(chan) | val);
->>> +        rv = regmap_update_bits(map, reg, mask, 
->>> (LPAIF_IRQ_XRUN(chan) | val));
->>>            if (rv) {
->>>                dev_err(soc_runtime->dev,
->>>                    "error writing to irqclear reg: %d\n", rv);
->>> @@ -700,7 +700,7 @@ static irqreturn_t lpass_dma_interrupt_handler(
->>>        }
->>>           if (interrupts & LPAIF_IRQ_ERR(chan)) {
->>> -        rv = regmap_write(map, reg, LPAIF_IRQ_ERR(chan) | val);
->>> +        rv = regmap_update_bits(map, reg, mask, 
->>> (LPAIF_IRQ_ERR(chan) | val));
->>>            if (rv) {
->>>                dev_err(soc_runtime->dev,
->>>                    "error writing to irqclear reg: %d\n", rv);
->>
->
-Best regards
+diff --git a/drivers/staging/qlge/TODO b/drivers/staging/qlge/TODO
+index c76394b9451b..449d7dca478b 100644
+--- a/drivers/staging/qlge/TODO
++++ b/drivers/staging/qlge/TODO
+@@ -4,8 +4,6 @@
+   ql_build_rx_skb(). That function is now used exclusively to handle packets
+   that underwent header splitting but it still contains code to handle non
+   split cases.
+-* truesize accounting is incorrect (ex: a 9000B frame has skb->truesize 10280
+-  while containing two frags of order-1 allocations, ie. >16K)
+ * while in that area, using two 8k buffers to store one 9k frame is a poor
+   choice of buffer size.
+ * in the "chain of large buffers" case, the driver uses an skb allocated with
+diff --git a/drivers/staging/qlge/qlge_main.c b/drivers/staging/qlge/qlge_main.c
+index 19a02e958865..6dd69b689a58 100644
+--- a/drivers/staging/qlge/qlge_main.c
++++ b/drivers/staging/qlge/qlge_main.c
+@@ -1446,7 +1446,7 @@ static void qlge_process_mac_rx_gro_page(struct qlge_adapter *qdev,
+ 
+ 	skb->len += length;
+ 	skb->data_len += length;
+-	skb->truesize += length;
++	skb->truesize += qdev->lbq_buf_size;
+ 	skb_shinfo(skb)->nr_frags++;
+ 
+ 	rx_ring->rx_packets++;
+@@ -1507,7 +1507,7 @@ static void qlge_process_mac_rx_page(struct qlge_adapter *qdev,
+ 			   lbq_desc->p.pg_chunk.offset + hlen, length - hlen);
+ 	skb->len += length - hlen;
+ 	skb->data_len += length - hlen;
+-	skb->truesize += length - hlen;
++	skb->truesize += qdev->lbq_buf_size;
+ 
+ 	rx_ring->rx_packets++;
+ 	rx_ring->rx_bytes += skb->len;
+@@ -1757,7 +1757,7 @@ static struct sk_buff *qlge_build_rx_skb(struct qlge_adapter *qdev,
+ 					   lbq_desc->p.pg_chunk.offset, length);
+ 			skb->len += length;
+ 			skb->data_len += length;
+-			skb->truesize += length;
++			skb->truesize += qdev->lbq_buf_size;
+ 		} else {
+ 			/*
+ 			 * The headers and data are in a single large buffer. We
+@@ -1783,7 +1783,7 @@ static struct sk_buff *qlge_build_rx_skb(struct qlge_adapter *qdev,
+ 					   length);
+ 			skb->len += length;
+ 			skb->data_len += length;
+-			skb->truesize += length;
++			skb->truesize += qdev->lbq_buf_size;
+ 			qlge_update_mac_hdr_len(qdev, ib_mac_rsp,
+ 						lbq_desc->p.pg_chunk.va,
+ 						&hlen);
+@@ -1835,7 +1835,7 @@ static struct sk_buff *qlge_build_rx_skb(struct qlge_adapter *qdev,
+ 					   lbq_desc->p.pg_chunk.offset, size);
+ 			skb->len += size;
+ 			skb->data_len += size;
+-			skb->truesize += size;
++			skb->truesize += qdev->lbq_buf_size;
+ 			length -= size;
+ 			i++;
+ 		} while (length > 0);
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+2.32.0
 
