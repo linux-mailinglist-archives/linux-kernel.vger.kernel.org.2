@@ -2,106 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D8663AE63A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:40:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2BE3AE64B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:40:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230354AbhFUJmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:42:20 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3291 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbhFUJmT (ORCPT
+        id S230268AbhFUJm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:42:56 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:6160 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229621AbhFUJmy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:42:19 -0400
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G7kpP3MN4z6H6hX;
-        Mon, 21 Jun 2021 17:32:45 +0800 (CST)
-Received: from roberto-ThinkStation-P620.huawei.com (10.204.62.217) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 21 Jun 2021 11:40:02 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     <zohar@linux.ibm.com>, <paul@paul-moore.com>,
-        <stephen.smalley.work@gmail.com>, <casey@schaufler-ca.com>,
-        <stefanb@linux.ibm.com>
-CC:     <linux-integrity@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <selinux@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH] evm: Check xattr size misalignment between kernel and user
-Date:   Mon, 21 Jun 2021 11:39:23 +0200
-Message-ID: <20210621093923.1456675-1-roberto.sassu@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 21 Jun 2021 05:42:54 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15L9XXk3020386;
+        Mon, 21 Jun 2021 05:40:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : subject :
+ to : cc : references : in-reply-to : message-id : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=E8QS2SI8nZorl7Spwf50uyddtVQOnPoeiT4M4UMBtec=;
+ b=nGdqsqJ65PLrruaStrm2//s0qFrbgxMxnZbp83B/hKGEkb10QlpRQcoUjGYg2fBTHorl
+ Ni967fToZ8WbjxycGYnafKFQ8CS0LQ0CynnR1IjQBlXQZfUc9KP8EFGYA6eFAQyhNC0u
+ 9o3VlmsCXirPpQ9+Y2EmNtV5mffVG9AtIgJwqDxapmiScSEd78XLgffte0KxJCkEnaGj
+ DIud/QsiPJZ5iMQDYrkSFjoU3qTX0f7saNZOu1cCekvctbf168rQwU6Clzuron+YcWS3
+ 7fPYGonqDi7ZyPF4eaIXoJHqTb4ICo8uwVuwgKWaPS64NwM/FcEV0VKc5wZNK7OQPBBz lA== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39aq86a2gh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 05:40:39 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15L9cvsb028968;
+        Mon, 21 Jun 2021 09:40:37 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03fra.de.ibm.com with ESMTP id 3998788e8y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 09:40:37 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15L9eZq224379786
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Jun 2021 09:40:35 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EB3B6AE051;
+        Mon, 21 Jun 2021 09:40:34 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6972FAE045;
+        Mon, 21 Jun 2021 09:40:34 +0000 (GMT)
+Received: from localhost (unknown [9.85.73.168])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 21 Jun 2021 09:40:34 +0000 (GMT)
+Date:   Mon, 21 Jun 2021 15:10:33 +0530
+From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
+Subject: Re: [PATCH] tools/perf probe: Print a hint if adding a probe fails
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+References: <20210610094442.1602714-1-naveen.n.rao@linux.vnet.ibm.com>
+        <20210610192926.6f7b606f1fefd285b3907cd5@kernel.org>
+        <YMycflwgCrosgTcb@kernel.org>
+In-Reply-To: <YMycflwgCrosgTcb@kernel.org>
+User-Agent: astroid/v0.15-23-gcdc62b30
+ (https://github.com/astroidmail/astroid)
+Message-Id: <1624268198.nw42tdsihr.naveen@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: tvS_2eOWtZU2DA8_FH94FxWlCUmWniSO
+X-Proofpoint-ORIG-GUID: tvS_2eOWtZU2DA8_FH94FxWlCUmWniSO
+Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.204.62.217]
-X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
- fraeml714-chm.china.huawei.com (10.206.15.33)
-X-CFilter-Loop: Reflected
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-21_03:2021-06-20,2021-06-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ mlxlogscore=999 clxscore=1015 impostorscore=0 lowpriorityscore=0
+ bulkscore=0 malwarescore=0 priorityscore=1501 mlxscore=0 spamscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106210055
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel and the user obtain an xattr value in two different ways:
+Hi Arnaldo,
 
-kernel (EVM): uses vfs_getxattr_alloc() which obtains the xattr value from
-              the filesystem handler (raw value);
+Arnaldo Carvalho de Melo wrote:
+> Em Thu, Jun 10, 2021 at 07:29:26PM +0900, Masami Hiramatsu escreveu:
+>> Hi Naveen,
+>>=20
+>> On Thu, 10 Jun 2021 15:14:42 +0530
+>> "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com> wrote:
+>>=20
+>> > Adding a probe can fail in a few scenarios. perf already checks for the
+>> > address in the kprobe blacklist. However, the address could still be a
+>> > jump label, or have a BUG_ON(). In such cases, it isn't always evident
+>> > why adding the probe failed. Add a hint so that the user knows how to
+>> > proceed.
+>> >=20
+>>=20
+>> Thanks for the report.
+>>=20
+>> Since now there is <tracefs>/error_log, if you see any errors in registe=
+ring
+>> probe-events, perf probe should dump the error_log for the hint message.
+>> Also, kprobes should return the correct different error code for each
+>> errors.
+>=20
+> Was there any followup on this? I think we should do as Masami suggests,
+> Naveen, could you do it?
 
-user (ima-evm-utils): uses vfs_getxattr() which obtains the xattr value
-                      from the LSMs (normalized value).
+Thanks for checking. We have been discussing this on the kernel side of=20
+things here (sorry, missed copying you on that):
+http://lkml.kernel.org/r/20210610085617.1590138-1-naveen.n.rao@linux.vnet.i=
+bm.com
 
-Normally, this does not have an impact unless security.selinux is set with
-setfattr, with a value not terminated by '\0' (this is not the recommended
-way, security.selinux should be set with the appropriate tools such as
-chcon and restorecon).
+I will work on the related changes to perf after the kernel changes.
 
-In this case, the kernel and the user see two different xattr values: the
-former sees the xattr value without '\0' (raw value), the latter sees the
-value with '\0' (value normalized by SELinux).
 
-This could result in two different verification outcomes from EVM and
-ima-evm-utils, if a signature was calculated with a security.selinux value
-terminated by '\0' and the value set in the filesystem is not terminated by
-'\0'. The former would report verification failure due to the missing '\0',
-while the latter would report verification success (because it gets the
-normalized value with '\0').
-
-This patch mitigates this issue by comparing in evm_calc_hmac_or_hash() the
-size of the xattr returned by the two xattr functions and by warning the
-user if there is a misalignment.
-
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Suggested-by: Mimi Zohar <zohar@linux.ibm.com>
----
- security/integrity/evm/evm_crypto.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
-index 96b22f2ac27a..462c5258322a 100644
---- a/security/integrity/evm/evm_crypto.c
-+++ b/security/integrity/evm/evm_crypto.c
-@@ -221,7 +221,7 @@ static int evm_calc_hmac_or_hash(struct dentry *dentry,
- 	size_t xattr_size = 0;
- 	char *xattr_value = NULL;
- 	int error;
--	int size;
-+	int size, user_space_size;
- 	bool ima_present = false;
- 
- 	if (!(inode->i_opflags & IOP_XATTR) ||
-@@ -276,6 +276,12 @@ static int evm_calc_hmac_or_hash(struct dentry *dentry,
- 		if (size < 0)
- 			continue;
- 
-+		user_space_size = vfs_getxattr(&init_user_ns, dentry,
-+					       xattr->name, NULL, 0);
-+		if (user_space_size != size)
-+			pr_debug("file %s: xattr %s size mismatch (kernel: %d, user: %d)\n",
-+				 dentry->d_name.name, xattr->name, size,
-+				 user_space_size);
- 		error = 0;
- 		xattr_size = size;
- 		crypto_shash_update(desc, (const u8 *)xattr_value, xattr_size);
--- 
-2.25.1
+Thanks,
+Naveen
 
