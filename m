@@ -2,50 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE6B3AEF3C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 679D43AF0A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:49:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232425AbhFUQgs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:36:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55954 "EHLO mail.kernel.org"
+        id S231714AbhFUQvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:51:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232112AbhFUQdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:33:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A9B16128E;
-        Mon, 21 Jun 2021 16:26:12 +0000 (UTC)
+        id S232537AbhFUQrq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:47:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B66AC61418;
+        Mon, 21 Jun 2021 16:33:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292773;
-        bh=VUvpdwKNNvGE0HsWxu9oXu4dlx1Jhlt+vjypaAzSoWc=;
+        s=korg; t=1624293217;
+        bh=Kx5gsh0tLRYTOoK4Dnww7+GDnHFfBKKOzu5ZzMlGyaE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k+q4I0KFFnVn8eO0ZIAGBLWnz7X004CllBGse79IF3ace2atcngk3UMIdUyotQz1v
-         MQWTX73aO8IPeNAGXziycDKVMXN6IvJcR3CZPQN4LZ4IBxQizp2UWTlufL+85nxbST
-         SUm/w8FikcpU2olB5mNNB88OkDIFXS9j+3toHQCQ=
+        b=WmdFjhXzo4gm3PEtW6kek8xuZyIxImHSzaitcg06Ki3M/+vqFm+zj5dEqOCEZTxF6
+         4xEwM0Yj01tTgyr8r2JDScMViydhGvqt5kFGXwAjAVzRA7xyE0Z1xz8YoZfgbY396d
+         59rGx3GAh1RcFqQ0EBLsNm83RuU4ukDCl90IHHAE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pingfan Liu <kernelfans@gmail.com>,
-        Baoquan He <bhe@redhat.com>,
-        Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        Kazuhito Hagio <k-hagio@ab.jp.nec.com>,
-        Dave Young <dyoung@redhat.com>, Boris Petkov <bp@alien8.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        James Morse <james.morse@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Dave Anderson <anderson@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 125/146] crash_core, vmcoreinfo: append SECTION_SIZE_BITS to vmcoreinfo
-Date:   Mon, 21 Jun 2021 18:15:55 +0200
-Message-Id: <20210621154919.359292901@linuxfoundation.org>
+        stable@vger.kernel.org, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.12 142/178] x86/ioremap: Map EFI-reserved memory as encrypted for SEV
+Date:   Mon, 21 Jun 2021 18:15:56 +0200
+Message-Id: <20210621154927.604089185@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
-References: <20210621154911.244649123@linuxfoundation.org>
+In-Reply-To: <20210621154921.212599475@linuxfoundation.org>
+References: <20210621154921.212599475@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -54,60 +40,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pingfan Liu <kernelfans@gmail.com>
+From: Tom Lendacky <thomas.lendacky@amd.com>
 
-commit 4f5aecdff25f59fb5ea456d5152a913906ecf287 upstream.
+commit 8d651ee9c71bb12fc0c8eb2786b66cbe5aa3e43b upstream.
 
-As mentioned in kernel commit 1d50e5d0c505 ("crash_core, vmcoreinfo:
-Append 'MAX_PHYSMEM_BITS' to vmcoreinfo"), SECTION_SIZE_BITS in the
-formula:
+Some drivers require memory that is marked as EFI boot services
+data. In order for this memory to not be re-used by the kernel
+after ExitBootServices(), efi_mem_reserve() is used to preserve it
+by inserting a new EFI memory descriptor and marking it with the
+EFI_MEMORY_RUNTIME attribute.
 
-    #define SECTIONS_SHIFT    (MAX_PHYSMEM_BITS - SECTION_SIZE_BITS)
+Under SEV, memory marked with the EFI_MEMORY_RUNTIME attribute needs to
+be mapped encrypted by Linux, otherwise the kernel might crash at boot
+like below:
 
-Besides SECTIONS_SHIFT, SECTION_SIZE_BITS is also used to calculate
-PAGES_PER_SECTION in makedumpfile just like kernel.
+  EFI Variables Facility v0.08 2004-May-17
+  general protection fault, probably for non-canonical address 0x3597688770a868b2: 0000 [#1] SMP NOPTI
+  CPU: 13 PID: 1 Comm: swapper/0 Not tainted 5.12.4-2-default #1 openSUSE Tumbleweed
+  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+  RIP: 0010:efi_mokvar_entry_next
+  [...]
+  Call Trace:
+   efi_mokvar_sysfs_init
+   ? efi_mokvar_table_init
+   do_one_initcall
+   ? __kmalloc
+   kernel_init_freeable
+   ? rest_init
+   kernel_init
+   ret_from_fork
 
-Unfortunately, this arch-dependent macro SECTION_SIZE_BITS changes, e.g.
-recently in kernel commit f0b13ee23241 ("arm64/sparsemem: reduce
-SECTION_SIZE_BITS").  But user space wants a stable interface to get
-this info.  Such info is impossible to be deduced from a crashdump
-vmcore.  Hence append SECTION_SIZE_BITS to vmcoreinfo.
+Expand the __ioremap_check_other() function to additionally check for
+this other type of boot data reserved at runtime and indicate that it
+should be mapped encrypted for an SEV guest.
 
-Link: https://lkml.kernel.org/r/20210608103359.84907-1-kernelfans@gmail.com
-Link: http://lists.infradead.org/pipermail/kexec/2021-June/022676.html
-Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-Acked-by: Baoquan He <bhe@redhat.com>
-Cc: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc: Kazuhito Hagio <k-hagio@ab.jp.nec.com>
-Cc: Dave Young <dyoung@redhat.com>
-Cc: Boris Petkov <bp@alien8.de>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: James Morse <james.morse@arm.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Dave Anderson <anderson@redhat.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+ [ bp: Massage commit message. ]
+
+Fixes: 58c909022a5a ("efi: Support for MOK variable config table")
+Reported-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Tested-by: Joerg Roedel <jroedel@suse.de>
+Cc: <stable@vger.kernel.org> # 5.10+
+Link: https://lkml.kernel.org/r/20210608095439.12668-2-joro@8bytes.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/crash_core.c |    1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/mm/ioremap.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/kernel/crash_core.c
-+++ b/kernel/crash_core.c
-@@ -463,6 +463,7 @@ static int __init crash_save_vmcoreinfo_
- 	VMCOREINFO_LENGTH(mem_section, NR_SECTION_ROOTS);
- 	VMCOREINFO_STRUCT_SIZE(mem_section);
- 	VMCOREINFO_OFFSET(mem_section, section_mem_map);
-+	VMCOREINFO_NUMBER(SECTION_SIZE_BITS);
- 	VMCOREINFO_NUMBER(MAX_PHYSMEM_BITS);
- #endif
- 	VMCOREINFO_STRUCT_SIZE(page);
+--- a/arch/x86/mm/ioremap.c
++++ b/arch/x86/mm/ioremap.c
+@@ -118,7 +118,9 @@ static void __ioremap_check_other(resour
+ 	if (!IS_ENABLED(CONFIG_EFI))
+ 		return;
+ 
+-	if (efi_mem_type(addr) == EFI_RUNTIME_SERVICES_DATA)
++	if (efi_mem_type(addr) == EFI_RUNTIME_SERVICES_DATA ||
++	    (efi_mem_type(addr) == EFI_BOOT_SERVICES_DATA &&
++	     efi_mem_attributes(addr) & EFI_MEMORY_RUNTIME))
+ 		desc->flags |= IORES_MAP_ENCRYPTED;
+ }
+ 
 
 
