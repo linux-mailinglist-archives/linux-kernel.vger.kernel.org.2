@@ -2,97 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00473AF1E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2823AF1E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231575AbhFUR2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 13:28:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42456 "EHLO
+        id S231519AbhFUR16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 13:27:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231489AbhFUR1z (ORCPT
+        with ESMTP id S231397AbhFUR1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 13:27:55 -0400
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 384E7C061766
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:25:38 -0700 (PDT)
-Received: by mail-oi1-x22c.google.com with SMTP id q10so20672268oij.5
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:25:38 -0700 (PDT)
+        Mon, 21 Jun 2021 13:27:47 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E3E0C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:25:32 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id r16so8225783oiw.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:25:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8Nl+UATUG/ekcwj7+lbeC3lq97VrKeBhXiFoqjO/PoM=;
-        b=ZtzZJVQIiktzwMhbckUEj/FSihpO/1RWyF2QAlXOSMKMLwYz2qMKBN98I5AgANFqVc
-         IQChA9yq5zSYbUEZVhDym/IGTUjOOFfdCcY8CsltdJLqcaDvjBZbmL1FSeBG/ceO4kD2
-         iThRqjQh4BBr2EJIQTTbgH+yjk/gP0KSFYyy/Rj8JAGUoVMUmJuJGbBG4QIWzerRMtuz
-         Wi8blOC/XZShQv0fW1DPtvTn6/SMk7szm4Rxzr7YqRhVen7Joc1TDeG2HuA/tcCsiyR/
-         w54Q9fwepWbIPmLIehU2/RpQo/1UIepba1ErkP5TY+UUUAwNnAqOcsKj4+oWEVQiJkKT
-         5OgA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=PnPX+kMwwqow5LYukSPE/j5CcoTy7NRtog3utuQq2IE=;
+        b=IlM4/QIr6kXMDieXq2favI4BOm+o5ZxnHdZwUYTjCqrBZSaWC4gwwIF+F4B9F5qSdf
+         aixUjWQLgS/AXi3OR7McxgHlOKNSFUlc5g8bEKu9UXwxwf9AWPQ4i/9DyNe9ICC96o0z
+         KXXcpuxr22bkxc2HK8qkfH9ZOQKs907KKN6SL4471gnxBZfLveRLtNG/2P3sUyGNT0K5
+         tiK962EvGmj2OJ/2eAMO7IcauWF3j/t64jubulaqCaE5JZZ94PVrXN+lDT9dpBDyomDp
+         IqPIGpw72Sz99ly/1y5ASkIq/xzK1JWnDxNmEiFazMrjkUnxkFj6UFfRxO4Cp/r+TIz8
+         Tgmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8Nl+UATUG/ekcwj7+lbeC3lq97VrKeBhXiFoqjO/PoM=;
-        b=O1WAAWi55PlBpg6SXM5nGJsQsrxI2xJXQpHoRj816naHlHe+ikXkVS5iZq0b6RRvrb
-         q5ni3tkQdSll1KJjqJ26krTXkURIRkaFAhiEGIZffYgxZXXfNvlI1B/pC9FNzD+b5pmf
-         DBCyJbUU37zO1d/mugM+ylh3ZuMh5wd4/lIbvUiS4XUmuRQ4Pf92ERnybjsmGrgVplMU
-         kyqENGViqZUTZYfmGeQMDPC0Lpwy1i5V5lh5RxXIwUgmN3S0OqQSGVqotLKs51wcL4PE
-         baD4Kn9/njSVC3C5SnthJj2CbfhO17KY6zp2p/Pl1D0a87usZXnkTJ18iG/LxrHFByGX
-         G6iw==
-X-Gm-Message-State: AOAM5307+g1RrhWzaaPqOTc9DDcrFCZ0uQl4kCLgKF2ZTp5klIVRmwEU
-        7AwA4rUTf6qiOfUd1Nlj4LiBwuezswOrqcfe9gyHng==
-X-Google-Smtp-Source: ABdhPJyopzV7pDlrYVX5eV/Fi7NWMvWgN1AYozmtcDSU6CyqoDJ+CXMCQ3Dt6qAgUPNI5GU++0ExZe1a/ltfasDu9zw=
-X-Received: by 2002:aca:e0d6:: with SMTP id x205mr17927435oig.109.1624296337665;
- Mon, 21 Jun 2021 10:25:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210609232501.171257-1-jiang.wang@bytedance.com>
- <20210609232501.171257-6-jiang.wang@bytedance.com> <20210618095409.q6s3knm2m4u7lezd@steredhat.lan>
-In-Reply-To: <20210618095409.q6s3knm2m4u7lezd@steredhat.lan>
-From:   "Jiang Wang ." <jiang.wang@bytedance.com>
-Date:   Mon, 21 Jun 2021 10:25:27 -0700
-Message-ID: <CAP_N_Z8+-ObttNsk7YZSdFcRpso5YHJTVqgerPpB0TvMMtj7WA@mail.gmail.com>
-Subject: Re: [External] Re: [RFC v1 5/6] vhost/vsock: add kconfig for vhost
- dgram support
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=PnPX+kMwwqow5LYukSPE/j5CcoTy7NRtog3utuQq2IE=;
+        b=Ful/gkZgCtaRskSXX4ySfJAf1KcoUlQLpNrl62WV4KzWTn7UIApEl6CWVDpFt/wWPh
+         VJL7s6Wtw7/pIOdCMfpb494f3AB05PnGY16Lw7sLKiy/yEguu5KmB3vOMCTcFtyh3lzy
+         N+rgSPNYXH99jdO82Cp4UrALcT3/mpf0t9929h2VqLUzKa8CFLXd4cdFZ4FNje3pxPzn
+         hKJXBuTKGrJeubATWiApXheXbCFJbkdHiPs+K1BNx4pbz5JZH/LCjFFqg4IKAbrH5TNK
+         12zYTj29S0g7o25WYWiHFNsqZslGvV2hMezFca4eLpWq+iBBoFSYdr4fXXwp/tLNhW1e
+         oczw==
+X-Gm-Message-State: AOAM532WAu3yD/3VgRDhkO75R6Kw4scI4KHchFH1RuYOvOQG7uVD54Sb
+        f6YnIbwJEXC/tjI1+hKHvyua2Q==
+X-Google-Smtp-Source: ABdhPJyoXPEE4Y+PUiCrrS+ozWk1/WGyHTeIxyXg0SQgO/W4PkuHBbK13rxi4TsTt6HtaEnAmw6ebQ==
+X-Received: by 2002:aca:b38a:: with SMTP id c132mr17388459oif.90.1624296331567;
+        Mon, 21 Jun 2021 10:25:31 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id u10sm4235029otj.75.2021.06.21.10.25.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 10:25:31 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 12:25:28 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Viresh Kumar <vireshk@kernel.org>,
         "Michael S. Tsirkin" <mst@redhat.com>,
-        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        cong.wang@bytedance.com,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Yongji Xie <xieyongji@bytedance.com>,
-        =?UTF-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
         Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Lu Wei <luwei32@huawei.com>,
-        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>,
+        Alex Benn?e <alex.bennee@linaro.org>,
+        stratos-dev@op-lists.linaro.org,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
+        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
+        Alistair Strachan <astrachan@google.com>
+Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
+Message-ID: <YNDLiPYkmLZN076t@yoga>
+References: <cover.1623326176.git.viresh.kumar@linaro.org>
+ <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
+ <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
+ <YMlwTiN4Y9bK3M4Q@yoga>
+ <8d58da79-8e54-048b-db89-8c1caaa0320f@metux.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8d58da79-8e54-048b-db89-8c1caaa0320f@metux.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 2:54 AM Stefano Garzarella <sgarzare@redhat.com> wrote:
->
-> On Wed, Jun 09, 2021 at 11:24:57PM +0000, Jiang Wang wrote:
-> >Also change number of vqs according to the config
-> >
-> >Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
-> >---
-> > drivers/vhost/Kconfig |  8 ++++++++
-> > drivers/vhost/vsock.c | 11 ++++++++---
-> > 2 files changed, 16 insertions(+), 3 deletions(-)
->
-> As we already discussed, I think we don't need this patch.
+On Wed 16 Jun 10:52 CDT 2021, Enrico Weigelt, metux IT consult wrote:
 
-Sure. will do
+> On 16.06.21 05:30, Bjorn Andersson wrote:
+> 
+> > Combined with the virtio-i2c effort this could provide an alternative by
+> > simply tunneling the busses and GPIOs into Linux and use standard iio
+> > drivers, for cases where this suits your product requirements better.
+> 
+> So, you wanna use virtio as logical interface between the two CPUs ?
+> Interesting idea. Usually folks use rpmsg for those things.
+> 
 
-> Thanks,
-> Stefano
->
+rpmsg is a layer on top of virtio, so this would be an extension of the
+existing model.
+
+There's been discussions (and I believe some implementations) related to
+bridging I2C requests over rpmsg, but I think it's preferable to
+standardize around the virtio based bearer directly.
+
+> What is running on the secondary CPU ? Some OS like Linux or some bare
+> metal stuff ? What kind of CPU is that anyways ?
+> 
+
+These ideas revolves around platforms that implements something like the
+"Android Sensor Hub", which provides some resource constraint
+co-processor that deals with sensor device interaction and processing of
+the data without waking up the power-hungry ARM cores.
+
+Given the focus on power consumption I would guess that these are not
+going to run Linux. Core-wise I've seen this implemented using primarily
+ARM and Hexagon cores.
+
+Regards,
+Bjorn
