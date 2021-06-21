@@ -2,234 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBA53AF1F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2168C3AF1F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231563AbhFUR3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 13:29:52 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.53]:24017 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbhFUR3v (ORCPT
+        id S231596AbhFURaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 13:30:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231477AbhFURaG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 13:29:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1624296453;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=hsoDzzu1giOUqa3P8ZG9xhIVsUbaKTxcoPkDydr9XUE=;
-    b=GG0/r58gjUrXQfLQIh12mBCr+dpsIrAbC+/V2pwvptkCAvfby4flylTQQj15jaUYt/
-    93NNO47vgyKw0PMhKQKhBqD0AenTUSpDWmtMAW1nOxvBHf9LR5IU+hSmvQIRgIoU+Mlk
-    0s579J5DuCP64Esn1aR0FSjb7rYd1KgV2sN0JgQm/jmubIXjOLtra/+1XD3YLlPk9ApL
-    v16iiviubTuATS1xaGW6lZH79B7y0s7sVi4TffpkP9qUybH8/CJO6Avps9iq4vRobj3A
-    BwGMloy5ZkElP8NDpap7r1LVDEkSHbYN5rAXcoleYWuo8mdC5FEOLkqXXF/2vQAwBYR6
-    6IwA==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8f7Ic/Baoo="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.27.3 DYNA|AUTH)
-    with ESMTPSA id 000885x5LHRWLZF
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Mon, 21 Jun 2021 19:27:32 +0200 (CEST)
-Date:   Mon, 21 Jun 2021 19:27:27 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
-        daniel.lezcano@linaro.org, rjw@rjwysocki.net,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com,
-        jamipkettunen@somainline.org, ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH v5 1/3] cpuidle: qcom_spm: Detach state machine from main
- SPM handling
-Message-ID: <YNDL/yLanerZ4hM9@gerhold.net>
-References: <20210618225620.623359-1-angelogioacchino.delregno@somainline.org>
- <20210618225620.623359-2-angelogioacchino.delregno@somainline.org>
- <YNB92Dkx5MNg64m+@gerhold.net>
- <08c80c7d-638f-23e9-e580-bced3648a635@somainline.org>
+        Mon, 21 Jun 2021 13:30:06 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5015C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:27:51 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso18480295otu.10
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:27:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WmGjGSnaoIjbfNbK6jg4Z58leTIpBSXXFk+GdaHK+O8=;
+        b=IkafJuMXU1dxFooFT/Z7CDiyPl66XkMYfmNHgkZ7Zr9ROZgxDLuuLCItaGKVG+g3ei
+         StPnLiq+x2oO47VLNdr3X8f2MNhdKMSBQivdUZebRFGoy+8PcRI5KnPzwKoGXDq0vAms
+         uOKTDF1aPZqzzgWio3fYUV04SFgYxLlLuiGV0yHop2Fdw9SW3u5n5BFTJBU3vnd9WFvD
+         Rimi7mod+IOXsJwod9l4B5e+z9QEueios+GMwLdNvEMPmTXIUsXGBP1I7DyrZPQQLIen
+         dV6MBOQTH1MFJyB6tKOmOFlqEnXysxtjprh6XkRv1/cGvUFGMFih52BaeUDAlxYnQOsP
+         I4yQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WmGjGSnaoIjbfNbK6jg4Z58leTIpBSXXFk+GdaHK+O8=;
+        b=IzOcm8Lfg7gUFDsYeXKs7d+aKd+g2Uk3/OVC4TwmoglOPe3khC95Es/lViJu0+gB5A
+         Kz+y83oHfg/U/0D+UzOe8ZEfRyjJOrYQqK5aV8XJP++De8ECblA0zCwY5BPwJi4UbIFV
+         abc6mNaHV5qDRzprih1GyBwI9oAeN6GRfwt9qqTuSqXnbKKrn6b3FpuqjURIQO9SdqJ4
+         f7RejKgEG/UfpXFP1fvoRiExCHdwSmFndHhi6YsZqEOc51/a8cuc2PzoaIGUbxPfgdOk
+         qllI4+ltwl1IrRhvTM1rDIrv0BNbKNIfSapAF52JXjVRRCZrbGLQeL1sz5wZJBEu8hGC
+         nInA==
+X-Gm-Message-State: AOAM533lHe/j+FEZe6qL54359X9ln11mQepQ6dyKUCKEM/HXH1eXNtpu
+        I8Q/IRJO2URoSsC0+hAMmqQjIWSY3fNsGLA0mwlOJw==
+X-Google-Smtp-Source: ABdhPJwi8uED1KtCHcgJosUou/U3YERsHdEZWa6Y4ITdxzqfoSrQyjLejdlRZ2O4PLdCBDaz+Bchb6q7YPN7hVIoEJI=
+X-Received: by 2002:a05:6830:1dd5:: with SMTP id a21mr21512580otj.180.1624296471321;
+ Mon, 21 Jun 2021 10:27:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <08c80c7d-638f-23e9-e580-bced3648a635@somainline.org>
+References: <20210609232501.171257-1-jiang.wang@bytedance.com>
+ <20210609232501.171257-7-jiang.wang@bytedance.com> <20210618100424.wfljrnycxxguwt3d@steredhat.lan>
+In-Reply-To: <20210618100424.wfljrnycxxguwt3d@steredhat.lan>
+From:   "Jiang Wang ." <jiang.wang@bytedance.com>
+Date:   Mon, 21 Jun 2021 10:27:40 -0700
+Message-ID: <CAP_N_Z-U0_XP69iNLA1Ray9EEVWyXqb2f85bL-sG2oxjM5PaMA@mail.gmail.com>
+Subject: Re: [External] Re: [RFC v1 6/6] virtio/vsock: add sysfs for rx buf
+ len for dgram
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        cong.wang@bytedance.com,
+        Xiongchun Duan <duanxiongchun@bytedance.com>,
+        Yongji Xie <xieyongji@bytedance.com>,
+        =?UTF-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Lu Wei <luwei32@huawei.com>,
+        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
+        Networking <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 06:12:06PM +0200, AngeloGioacchino Del Regno wrote:
-> Il 21/06/21 13:54, Stephan Gerhold ha scritto:
-> > On Sat, Jun 19, 2021 at 12:56:18AM +0200, AngeloGioacchino Del Regno wrote:
-> > > In commit a871be6b8eee ("cpuidle: Convert Qualcomm SPM driver to a generic
-> > > CPUidle driver") the SPM driver has been converted to a
-> > > generic CPUidle driver: that was mainly made to simplify the
-> > > driver and that was a great accomplishment;
-> > > Though, it was ignored that the SPM driver is not used only
-> > > on the ARM architecture.
-> > > 
-> > 
-> > Can you please reword this sentence like I suggested in v4? The way you
-> > write it at the moment it sounds like this fixes a regression, but
-> > actually it extends the driver to cover more use cases.
-> > 
-> 
-> I don't see any regression implied: I'm explaining the reason of this
-> change just one line after that and .. besides that, I haven't put any
-> "Fixes:" tag to this commit.
-> When you fix regressions, bad behavior, or anything else relative to a
-> patch, you add that tag to say that you're fixing something.
-> 
-> Moreover, I can't see anything wrong in the description for this change,
-> nor anything to clarify about it and that as long as you read it in full
-> 
+On Fri, Jun 18, 2021 at 3:04 AM Stefano Garzarella <sgarzare@redhat.com> wrote:
+>
+> On Wed, Jun 09, 2021 at 11:24:58PM +0000, Jiang Wang wrote:
+> >Make rx buf len configurable via sysfs
+> >
+> >Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
+> >---
+> > net/vmw_vsock/virtio_transport.c | 37 +++++++++++++++++++++++++++++++++++--
+> > 1 file changed, 35 insertions(+), 2 deletions(-)
+> >
+> >diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+> >index cf47aadb0c34..2e4dd9c48472 100644
+> >--- a/net/vmw_vsock/virtio_transport.c
+> >+++ b/net/vmw_vsock/virtio_transport.c
+> >@@ -29,6 +29,14 @@ static struct virtio_vsock __rcu *the_virtio_vsock;
+> > static struct virtio_vsock *the_virtio_vsock_dgram;
+> > static DEFINE_MUTEX(the_virtio_vsock_mutex); /* protects the_virtio_vsock */
+> >
+> >+static int rx_buf_len = VIRTIO_VSOCK_DEFAULT_RX_BUF_SIZE;
+> >+static struct kobject *kobj_ref;
+> >+static ssize_t  sysfs_show(struct kobject *kobj,
+> >+                      struct kobj_attribute *attr, char *buf);
+> >+static ssize_t  sysfs_store(struct kobject *kobj,
+> >+                      struct kobj_attribute *attr, const char *buf, size_t count);
+> >+static struct kobj_attribute rxbuf_attr = __ATTR(rx_buf_value, 0660, sysfs_show, sysfs_store);
+>
+> Maybe better to use a 'dgram' prefix.
 
-I don't really want to get into a long discussion about a single
-sentence here but the sentence just doesn't make any sense to me:
+Sure.
 
-  1. You say that I "ignored" something in my commit, which isn't the case.
-  2. The mainline "SPM driver" *is* only used on ARM*32* at the moment.
-     (This is something you want to change in this patch series!)
-
-To me that sentence suggests the "SPM driver" already had support for
-ARM64/your use case and I *deliberately* ignored that while converting
-the driver to a direct CPU Idle driver.
-
-I'm merely suggesting making the situation a bit more clear by replacing
-
-> > > Though, it was ignored that the SPM driver is not used only
-> > > on the ARM architecture.
-
-with something like:
-"However, on newer ARM64 SoCs the SPM hardware is used for purposes
-other than CPUIdle."
-
-> > > In preparation for the enablement of SPM features on AArch64/ARM64,
-> > > split the cpuidle-qcom-spm driver in two: the CPUIdle related
-> > > state machine (currently used only on ARM SoCs) stays there, while
-> > > the SPM communication handling lands back in soc/qcom/spm.c and
-> > > also making sure to not discard the simplifications that were
-> > > introduced in the aforementioned commit.
-> > > 
-> > > Since now the "two drivers" are split, the SCM dependency in the
-> > > main SPM handling is gone and for this reason it was also possible
-> > > to move the SPM initialization early: this will also make sure that
-> > > whenever the SAW CPUIdle driver is getting initialized, the SPM
-> > > driver will be ready to do the job.
-> > > 
-> > > Please note that the anticipation of the SPM initialization was
-> > > also done to optimize the boot times on platforms that have their
-> > > CPU/L2 idle states managed by other means (such as PSCI), while
-> > > needing SAW initialization for other purposes, like AVS control.
-> > > 
-> > > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> > > ---
-> > >   drivers/cpuidle/Kconfig.arm        |   1 +
-> > >   drivers/cpuidle/cpuidle-qcom-spm.c | 295 ++++++-----------------------
-> > >   drivers/soc/qcom/Kconfig           |   9 +
-> > >   drivers/soc/qcom/Makefile          |   1 +
-> > >   drivers/soc/qcom/spm.c             | 198 +++++++++++++++++++
-> > >   include/soc/qcom/spm.h             |  43 +++++
-> > >   6 files changed, 311 insertions(+), 236 deletions(-)
-> > >   create mode 100644 drivers/soc/qcom/spm.c
-> > >   create mode 100644 include/soc/qcom/spm.h
-> > > 
-> > > [...]
-> > > diff --git a/include/soc/qcom/spm.h b/include/soc/qcom/spm.h
-> > > new file mode 100644
-> > > index 000000000000..719c604a8402
-> > > --- /dev/null
-> > > +++ b/include/soc/qcom/spm.h
-> > > @@ -0,0 +1,43 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0-only */
-> > > +/*
-> > > + * Copyright (c) 2011-2014, The Linux Foundation. All rights reserved.
-> > > + * Copyright (c) 2014,2015, Linaro Ltd.
-> > > + * Copyright (C) 2021, AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> > > + */
-> > > +
-> > > +#ifndef __SPM_H__
-> > > +#define __SPM_H__
-> > > +
-> > > +#include <linux/cpuidle.h>
-> > > +
-> > > +#define MAX_PMIC_DATA		2
-> > > +#define MAX_SEQ_DATA		64
-> > > +
-> > > +enum pm_sleep_mode {
-> > > +	PM_SLEEP_MODE_STBY,
-> > > +	PM_SLEEP_MODE_RET,
-> > > +	PM_SLEEP_MODE_SPC,
-> > > +	PM_SLEEP_MODE_PC,
-> > > +	PM_SLEEP_MODE_NR,
-> > > +};
-> > > +
-> > > +struct spm_reg_data {
-> > > +	const u8 *reg_offset;
-> > > +	u32 spm_cfg;
-> > > +	u32 spm_dly;
-> > > +	u32 pmic_dly;
-> > > +	u32 pmic_data[MAX_PMIC_DATA];
-> > > +	u8 seq[MAX_SEQ_DATA];
-> > > +	u8 start_index[PM_SLEEP_MODE_NR];
-> > > +};
-> > > +
-> > > +struct spm_driver_data {
-> > > +	struct cpuidle_driver cpuidle_driver;
-> > 
-> > Given that the SPM hardware seems to have several different uses,
-> > not just CPUidle, wouldn't it be better to allocate the memory for the
-> > cpuidle_driver from cpuidle-qcom-spm.c? Just devm_kzalloc() something
-> > like:
-> > 
-> > struct spm_cpuidle_driver {
-> > 	struct cpuidle_driver cpuidle_driver;
-> > 	struct spm_driver_data *spm;
+> >+
+> > struct virtio_vsock {
+> >       struct virtio_device *vdev;
+> >       struct virtqueue **vqs;
+> >@@ -360,7 +368,7 @@ virtio_transport_cancel_pkt(struct vsock_sock *vsk)
+> >
+> > static void virtio_vsock_rx_fill(struct virtio_vsock *vsock, bool is_dgram)
+> > {
+> >-      int buf_len = VIRTIO_VSOCK_DEFAULT_RX_BUF_SIZE;
+> >+      int buf_len = rx_buf_len;
+> >       struct virtio_vsock_pkt *pkt;
+> >       struct scatterlist hdr, buf, *sgs[2];
+> >       struct virtqueue *vq;
+> >@@ -1003,6 +1011,22 @@ static struct virtio_driver virtio_vsock_driver = {
+> >       .remove = virtio_vsock_remove,
 > > };
-> > 
-> > in cpuidle-qcom-spm.c.
-> > 
-> > And then there wouldn't be a need to have the implementation details of
-> > the SPM driver in the spm.h header, all that cpuidle-qcom-spm needs is
-> > 
-> > struct spm_driver_data;
-> > 
-> > enum pm_sleep_mode {
-> > 	PM_SLEEP_MODE_STBY,
-> > 	PM_SLEEP_MODE_RET,
-> > 	PM_SLEEP_MODE_SPC,
-> > 	PM_SLEEP_MODE_PC,
-> > 	PM_SLEEP_MODE_NR,
-> > };
-> > 
-> > void spm_set_low_power_mode(struct spm_driver_data *drv,
-> > 			    enum pm_sleep_mode mode);
-> > 
-> > Everything else can remain private to the spm.c driver,
-> > like it was before.
-> > 
-> 
-> I don't completely dislike the approach but I honestly think that this
-> would put some cognitive strain: having a header included in two files
-> using "things" defined in there gives people an easy path to follow
-> when looking at one of the two files.
-> 
+> >
+> >+static ssize_t sysfs_show(struct kobject *kobj,
+> >+              struct kobj_attribute *attr, char *buf)
+> >+{
+> >+      return sprintf(buf, "%d", rx_buf_len);
+> >+}
+> >+
+> >+static ssize_t sysfs_store(struct kobject *kobj,
+> >+              struct kobj_attribute *attr, const char *buf, size_t count)
+> >+{
+> >+      if (kstrtou32(buf, 0, &rx_buf_len) < 0)
+> >+              return -EINVAL;
+> >+      if (rx_buf_len < 1024)
+> >+              rx_buf_len = 1024;
+> >+      return count;
+> >+}
+> >+
+> > static int __init virtio_vsock_init(void)
+> > {
+> >       int ret;
+> >@@ -1020,8 +1044,17 @@ static int __init virtio_vsock_init(void)
+> >       if (ret)
+> >               goto out_vci;
+> >
+> >-      return 0;
+> >+      kobj_ref = kobject_create_and_add("vsock", kernel_kobj);
+>
+> So, IIUC, the path will be /sys/vsock/rx_buf_value?
+>
+> I'm not sure if we need to add a `virtio` subdir (e.g.
+> /sys/vsock/virtio/dgram_rx_buf_size)
 
-OK, I guess this is personal preference. I don't really mind if you keep
-the structs defined in the shared header...
+I agree adding a virtio is better in case vmware or hyperv will
+also have some settings.
 
-> Regarding the addition of that one more structure... I am seriously
-> undecided on the matter: wasting this kind of amount of memory on a
-> ARM64 platform (usually having more than 1GB RAM) is completely
-> unnoticeable but, on the other hand, it's still a waste of memory,
-> even if it's minimal that much.
-> 
-
-In my opinion it also makes the two drivers better separated.
-The SPM driver manages the SPM hardware and provides functionality to
-configure it. The CPU idle driver makes use of that functionality
-to implement the CPU idle use case. This does not require the SPM driver
-to know how exactly the CPU idle driver looks.
-
-Stephan
+> Thanks,
+> Stefano
+>
+> >
+> >+      /*Creating sysfs file for etx_value*/
+> >+      ret = sysfs_create_file(kobj_ref, &rxbuf_attr.attr);
+> >+      if (ret)
+> >+              goto out_sysfs;
+> >+
+> >+      return 0;
+> >+out_sysfs:
+> >+      kobject_put(kobj_ref);
+> >+      sysfs_remove_file(kernel_kobj, &rxbuf_attr.attr);
+> > out_vci:
+> >       vsock_core_unregister(&virtio_transport.transport);
+> > out_wq:
+> >--
+> >2.11.0
+> >
+>
