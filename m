@@ -2,116 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C97F3AED36
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40813AED52
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbhFUQQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:16:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23465 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229789AbhFUQQz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:16:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624292080;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=G817IJLoTEYUuE/9RZvRi1mEhIu8nStp2ksiuR5OOGA=;
-        b=C2B2OfccH9C6WJLDVCZzDzYtphAmJM5FpHYr4Ni2OEplI6q40U3KcfBtYgsDtr4zK/m1xg
-        PY1b9Idi3Cobytnlhd53u+HPYkdgMmZ/wyVpHUzV6wOVkskEejkpAPPPLcVs1d4853m7tD
-        Et5hzEa0J0ndaDJs0UyuFrjx07nbf5o=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-533-uXH7lJBzOqedVExIlIzpjw-1; Mon, 21 Jun 2021 12:14:39 -0400
-X-MC-Unique: uXH7lJBzOqedVExIlIzpjw-1
-Received: by mail-ed1-f69.google.com with SMTP id p23-20020aa7cc970000b02903948bc39fd5so5934520edt.13
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:14:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=G817IJLoTEYUuE/9RZvRi1mEhIu8nStp2ksiuR5OOGA=;
-        b=YPaVucmZfr/4y5c9pTLAfEhDHvEewyGw7m3J+9cfmvBIRHhmazu4K2WpMvdi/F5dBG
-         k0QTrS//9MtyheYk8MLFB+Q667z8j49DgRjweQi7XaWNfw5VHHBBOHyeMDnN1o+q/yOR
-         HCEoUFpZimIIj9PaZ+8ihT0k9h2R0No3It9nngpivnIMokkpeWo7KBvWUmW/R36LC2uu
-         O86Ysn4X0oAlSU46NFyqBPb/ZZ1LbW9mDoFrSKj7F2FpZewwvweq2tMOurTCFck7yErR
-         /seI6wDZ7DrkvlVdQumEvMRCQMYUnZVvdHUxAhIUtYoGpN1td0t6qn3QxQLGOtP2Zmls
-         zfyg==
-X-Gm-Message-State: AOAM530ijd3rLT1OXkMs4TEmHD3js+SyG44evzoQOb6qqEWgXCfmreQu
-        GuSQwc0YUyes9hkFAneODBxUMNA5xNTIy4C2RGdLXGtcEwQlWE+otOJP7HM/3erR9d99roPyXd4
-        KoR7AhE4Ed1gJgsMI6s6kyPe52r9jpeOfbabR39XDBIx3SXdxTGmq0olE6SUDNoDhgTbqxbnU9R
-        E=
-X-Received: by 2002:a17:906:1806:: with SMTP id v6mr25386700eje.454.1624292077982;
-        Mon, 21 Jun 2021 09:14:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz27MBznOXPqaISYzA2hEKAT6acpypZ5IVecmksOYSopF0Gsp3VTsfqkrPS8N7V8T56x7UykQ==
-X-Received: by 2002:a17:906:1806:: with SMTP id v6mr25386670eje.454.1624292077790;
-        Mon, 21 Jun 2021 09:14:37 -0700 (PDT)
-Received: from x1.bristot.me (host-79-23-205-114.retail.telecomitalia.it. [79.23.205.114])
-        by smtp.gmail.com with ESMTPSA id x9sm5155238ejc.37.2021.06.21.09.14.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 09:14:37 -0700 (PDT)
-Subject: Re: [PATCH V4 05/12] trace/hwlat: Support hotplug operations
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Phil Auld <pauld@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Kate Carcia <kcarcia@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Clark Willaims <williams@redhat.com>,
-        John Kacur <jkacur@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1623746916.git.bristot@redhat.com>
- <8899f8a8bec38bc600f7a2c61bc6ca664aa7beeb.1623746916.git.bristot@redhat.com>
- <20210618124503.388fe4d4@oasis.local.home>
- <20210618150020.689439d4@oasis.local.home>
- <c4b86b0e-b45d-3039-f49c-0dc53e1adcbd@redhat.com>
- <20210621112528.12aee665@oasis.local.home>
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-Message-ID: <c87c24bd-253c-a645-1f29-83c558d8d4c5@redhat.com>
+        id S229890AbhFUQTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:19:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39306 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230456AbhFUQTL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:19:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A7B76115B;
+        Mon, 21 Jun 2021 16:16:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624292217;
+        bh=pJtJsa5dKodglzVnG/Zr4zW3Qs2WU3pgUAi/BO/azmI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ROKEl8NkgKhJg3CZEXbuL6eBTdZtLmlwIc2yV8OACsvcvmfx4xzqd2JXH8Ht/pqst
+         ZlDpaohpA5KmnSAtQ17oLtwISl22jg6ZpyKlmvcAqtCw9B+JlQbUQ2j0bs5rD5iRCf
+         eWJBJmI3Jpgk0wkFIipNhdCAb38iNweAxDf9K4/A=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>, Stefan Roese <sr@denx.de>,
+        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 01/90] dmaengine: ALTERA_MSGDMA depends on HAS_IOMEM
 Date:   Mon, 21 Jun 2021 18:14:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+Message-Id: <20210621154904.208027675@linuxfoundation.org>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210621154904.159672728@linuxfoundation.org>
+References: <20210621154904.159672728@linuxfoundation.org>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
-In-Reply-To: <20210621112528.12aee665@oasis.local.home>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/21/21 5:25 PM, Steven Rostedt wrote:
-> On Mon, 21 Jun 2021 13:34:44 +0200
-> Daniel Bristot de Oliveira <bristot@redhat.com> wrote:
-> 
->>> And of course, because get_online_cpus() is called within
->>> trace_types_lock, doing this check is going to cause a lock inversion.
->>>  
->> Yep! I tried to take the trace_type_lock here, and got the lockdep info about
->> this problem.
->>
->>> The only thing I could think of is to wake up a worker thread to do the
->>> work. That is, this just wakes the worker thread, then the worker grabs
->>> the trace_types_lock, iterates through the cpu mask of expect running
->>> threads, and then starts or kills them depending on the hwlat_busy
->>> value.  
->> So, it will not wait for the kworker to run?
-> What wont wait?
+From: Randy Dunlap <rdunlap@infradead.org>
 
-For example, at the shutdown, should the hotplug callback wait for the workqueue
-to run & kill the thread, or not?
+[ Upstream commit 253697b93c2a1c237d34d3ae326e394aeb0ca7b3 ]
 
--- Daniel
+When CONFIG_HAS_IOMEM is not set/enabled, certain iomap() family
+functions [including ioremap(), devm_ioremap(), etc.] are not
+available.
+Drivers that use these functions should depend on HAS_IOMEM so that
+they do not cause build errors.
 
-> -- Steve
-> 
+Repairs this build error:
+s390-linux-ld: drivers/dma/altera-msgdma.o: in function `request_and_map':
+altera-msgdma.c:(.text+0x14b0): undefined reference to `devm_ioremap'
+
+Fixes: a85c6f1b2921 ("dmaengine: Add driver for Altera / Intel mSGDMA IP core")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Stefan Roese <sr@denx.de>
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: dmaengine@vger.kernel.org
+Reviewed-by: Stefan Roese <sr@denx.de>
+Phone: (+49)-8142-66989-51 Fax: (+49)-8142-66989-80 Email: sr@denx.de
+Link: https://lore.kernel.org/r/20210522021313.16405-2-rdunlap@infradead.org
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/dma/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
+index 7af874b69ffb..a32d0d715247 100644
+--- a/drivers/dma/Kconfig
++++ b/drivers/dma/Kconfig
+@@ -59,6 +59,7 @@ config DMA_OF
+ #devices
+ config ALTERA_MSGDMA
+ 	tristate "Altera / Intel mSGDMA Engine"
++	depends on HAS_IOMEM
+ 	select DMA_ENGINE
+ 	help
+ 	  Enable support for Altera / Intel mSGDMA controller.
+-- 
+2.30.2
+
+
 
