@@ -2,82 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F1C3AE7DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 13:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0AD03AE7E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 13:05:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbhFULHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 07:07:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbhFULHC (ORCPT
+        id S230272AbhFULHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 07:07:48 -0400
+Received: from mailout1.secunet.com ([62.96.220.44]:58292 "EHLO
+        mailout1.secunet.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229641AbhFULHp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 07:07:02 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7823DC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 04:04:47 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id bj15so27597064qkb.11
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 04:04:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uged.al; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MvrUCOsjHnbRsvDmF+iBFiQ9cG1N/tBu4rO41BmsuJY=;
-        b=EVDUqdE4krKQLAljHqyXPZQniLMQSkWbBzl7Z/Cs0l3Bn1PzJy6LFgNfDcMbk2D+b8
-         OPkQIlKV+BmMRUmpg2y6h3SsLtxHE7gXQcRtnygho525ZpO2xoJyk+9xy6eYFAap6gnO
-         YZB603T9cFPlRiqSBOQuGiwehGNbeXZn9gBGFsO8FV68HXX5MpovfK9JdKaO/i8njNI7
-         tSb+TtGOpA8+A0BaB2xEVVt4m1UjK1iLH/hZN+W2fzeEWQGW4rrcO18YHEFIRuQL8Cvl
-         yAjq9mwVWIaP0R+xhO5g82PpXX7Yxx+1CbVcd7jLmZaFnyTgjcGEZQbFSjiARuE0YLXM
-         srgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MvrUCOsjHnbRsvDmF+iBFiQ9cG1N/tBu4rO41BmsuJY=;
-        b=WnjKB8YgE6ATCsoUijTKWMlH/5H7lQazOdk3U+BVOs3E0HHmQtDlfMhRNUK4JM4wbu
-         llBPLP1ITWPyOgBeFXkQZDr2ZKmEXXICHkCRjeLkFTU5YhB65ql0wOUcCx4lvj3Uti4L
-         qAkiawcqD1ozlJZecpHxx9wvVp30ewA2adAFIgxj4mWGC7GhVxeCx4YndIsFCoRR570O
-         BuZ/Z2HksZMgSDcnKajZbKnt5C3qlfgSF5PxtmBhu4Jyg9EHtrLWM/gp727VedQJAsnC
-         YBHKywvBCO4DfVCWlMm/QeJRKAo2PTv0bbOcmvR3hl0aOIFLoLmgVRoIVaDuDV5U5f2D
-         KCmg==
-X-Gm-Message-State: AOAM532UkA2QrTrBxGoYKytm79jm6deljBhS8DzdnoRQdQjzcNvBa/Xk
-        Bf0RIgrwrCYjpYXwk2OfJ8hgb3EkJm+mwOAEpWv4FA==
-X-Google-Smtp-Source: ABdhPJw+Kzdc2fnjMLQc6URmG51WkagIptLPEULYF0eySLsniubrLBVZGqwOMMepHPn92rar4m3PR/TuvxrbFZHYsPY=
-X-Received: by 2002:a37:b3c5:: with SMTP id c188mr22800576qkf.242.1624273486637;
- Mon, 21 Jun 2021 04:04:46 -0700 (PDT)
+        Mon, 21 Jun 2021 07:07:45 -0400
+Received: from cas-essen-02.secunet.de (unknown [10.53.40.202])
+        by mailout1.secunet.com (Postfix) with ESMTP id D28D780004E;
+        Mon, 21 Jun 2021 13:05:29 +0200 (CEST)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ cas-essen-02.secunet.de (10.53.40.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 21 Jun 2021 13:05:29 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 21 Jun
+ 2021 13:05:29 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id ED7C431803E8; Mon, 21 Jun 2021 13:05:28 +0200 (CEST)
+Date:   Mon, 21 Jun 2021 13:05:28 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Varad Gautam <varad.gautam@suse.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        <netdev@vger.kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Florian Westphal <fw@strlen.de>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        <stable@vger.kernel.org>
+Subject: Re: [PATCH] xfrm: policy: Restructure RCU-read locking in
+ xfrm_sk_policy_lookup
+Message-ID: <20210621110528.GZ40979@gauss3.secunet.de>
+References: <20210618141101.18168-1-varad.gautam@suse.com>
+ <20210621082949.GX40979@gauss3.secunet.de>
+ <f41d40cc-e474-1324-be0a-7beaf580c292@suse.com>
 MIME-Version: 1.0
-References: <9D4A658A-5F77-4C33-904A-126E6052B205@linux.vnet.ibm.com>
- <CAFpoUr3g5t3Z0BtW4-jnYomc3cdY=V5=Zt94-C+fHOjGWa107w@mail.gmail.com>
- <CAKfTPtC=aXasuSNvn+A3152-4xoOTWROhJpZAVq6RLh1Hacpng@mail.gmail.com>
- <CAFpoUr2o2PVPOx+AvatjjUvqPTyNKE3C6oXejyU3HVMmtCnzvQ@mail.gmail.com> <6D1F875D-58E9-4A55-B0C3-21D5F31EDB76@linux.vnet.ibm.com>
-In-Reply-To: <6D1F875D-58E9-4A55-B0C3-21D5F31EDB76@linux.vnet.ibm.com>
-From:   Odin Ugedal <odin@uged.al>
-Date:   Mon, 21 Jun 2021 13:04:07 +0200
-Message-ID: <CAFpoUr0iWFTq2grtnX_EH6KnZLZQCg1o6_yv1gfDK8WdbHmUCA@mail.gmail.com>
-Subject: Re: [powerpc][5.13.0-rc7] Kernel warning (kernel/sched/fair.c:401)
- while running LTP tests
-To:     Sachin Sant <sachinp@linux.vnet.ibm.com>
-Cc:     Odin Ugedal <odin@uged.al>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Peter Zijlstra <peterz@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <f41d40cc-e474-1324-be0a-7beaf580c292@suse.com>
+X-ClientProxiedBy: cas-essen-01.secunet.de (10.53.40.201) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-man. 21. jun. 2021 kl. 12:57 skrev Sachin Sant <sachinp@linux.vnet.ibm.com>:
->
-> Unfortunately this does not help. I can still recreate the failure.
->
-> Have attached the o/p from test run.
->
-> Thanks
-> -Sachin
+On Mon, Jun 21, 2021 at 11:11:18AM +0200, Varad Gautam wrote:
+> On 6/21/21 10:29 AM, Steffen Klassert wrote:
+> > On Fri, Jun 18, 2021 at 04:11:01PM +0200, Varad Gautam wrote:
+> >> Commit "xfrm: policy: Read seqcount outside of rcu-read side in
+> >> xfrm_policy_lookup_bytype" [Linked] resolved a locking bug in
+> >> xfrm_policy_lookup_bytype that causes an RCU reader-writer deadlock on
+> >> the mutex wrapped by xfrm_policy_hash_generation on PREEMPT_RT since
+> >> 77cc278f7b20 ("xfrm: policy: Use sequence counters with associated
+> >> lock").
+> >>
+> >> However, xfrm_sk_policy_lookup can still reach xfrm_policy_lookup_bytype
+> >> while holding rcu_read_lock(), as:
+> >> xfrm_sk_policy_lookup()
+> >>   rcu_read_lock()
+> >>   security_xfrm_policy_lookup()
+> >>     xfrm_policy_lookup()
+> > 
+> > Hm, I don't see that call chain. security_xfrm_policy_lookup() calls
+> > a hook with the name xfrm_policy_lookup. The only LSM that has
+> > registered a function to that hook is selinux. It registers
+> > selinux_xfrm_policy_lookup() and I don't see how we can call
+> > xfrm_policy_lookup() from there.
+> > 
+> > Did you actually trigger that bug?
+> > 
+> 
+> Right, I misread the call chain - security_xfrm_policy_lookup does not reach
+> xfrm_policy_lookup, making this patch unnecessary. The bug I have is:
+> 
+> T1, holding hash_resize_mutex and sleeping inside synchronize_rcu:
+> 
+> __schedule
+> schedule
+> schedule_timeout
+> wait_for_completion
+> __wait_rcu_gp
+> synchronize_rcu
+> xfrm_hash_resize
+> 
+> And T2 producing RCU-stalls since it blocked on the mutex:
+> 
+> __schedule
+> schedule
+> __rt_mutex_slowlock
+> rt_mutex_slowlock_locked
+> rt_mutex_slowlock
+> xfrm_policy_lookup_bytype.constprop.77
 
-Yes, thanks!
+Ugh, why does xfrm_policy_lookup_bytype use a mutex? This is called
+in the receive path inside a sofirq.
 
-I am able to reproduce it locally now, so will keep looking to see if
-I find the cause. Thanks!
+The bug was introduced by: 
 
-Odin
+commit 77cc278f7b202e4f16f8596837219d02cb090b96
+Author: Ahmed S. Darwish <a.darwish@linutronix.de>
+Date:   Mon Jul 20 17:55:22 2020 +0200
+
+    xfrm: policy: Use sequence counters with associated lock
+
+    A sequence counter write side critical section must be protected by some
+    form of locking to serialize writers. If the serialization primitive is
+    not disabling preemption implicitly, preemption has to be explicitly
+    disabled before entering the sequence counter write side critical
+    section.
+
+    A plain seqcount_t does not contain the information of which lock must
+    be held when entering a write side critical section.
+
+    Use the new seqcount_spinlock_t and seqcount_mutex_t data types instead,
+    which allow to associate a lock with the sequence counter. This enables
+    lockdep to verify that the lock used for writer serialization is held
+    when the write side critical section is entered.
+
+    If lockdep is disabled this lock association is compiled out and has
+    neither storage size nor runtime overhead.
+
+    Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+    Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+    Link: https://lkml.kernel.org/r/20200720155530.1173732-17-a.darwish@linutronix.de
+
+This uses a seqcount_mutex_t for xfrm_policy_hash_generation, that's
+wrong.
+
