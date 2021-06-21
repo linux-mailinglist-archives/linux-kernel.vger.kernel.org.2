@@ -2,131 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BCAC3AE7FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 13:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5142D3AE822
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 13:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbhFULTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 07:19:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhFULTv (ORCPT
+        id S229945AbhFUL27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 07:28:59 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3293 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229611AbhFUL25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 07:19:51 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F29C06175F
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 04:17:36 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id f2so19158985wri.11
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 04:17:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vIId8K2X0cg04va2SpbcSoJb2/1oMnQwPdbB65aNKlU=;
-        b=EDo7uTCSwYO6tXzuq8jJ+QbGzLI4DK6DECBy0vtHTBWcb9rPTimZFEiBqHhkHQT2L0
-         rFhgFtqJddKzYplsMRuZqDMRQppdcaZf0PGnXxQiV1dC0eWkapEnteGK4Ln/WO4YQTMW
-         ryk2OAi8NqxXcHNkJA94p2Yar3eCIPi/4xYr+JBUANL0PynflWaXPGfBGxvt8E7oxk/I
-         QwgBcZFIidPc3JfSZlSBJ/0nvsObacHhfYZJ56/hGtJ/Ji+d0AIF13jt0Nr3/oKy67UG
-         86OJVK21NZGh+xU+rZ0S/XITBU/hACliGamMweEEUtnkyzMYSoziEE803l/EP4RPHAdK
-         SxrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vIId8K2X0cg04va2SpbcSoJb2/1oMnQwPdbB65aNKlU=;
-        b=kNm1VUDoRYLvCHq0vkLyp2RNCRlr1rQ9m3KC1+GTa4Sj5MsJ6NPeDvgy89mXNaUHFB
-         hCxFG0+kPIRBHQH7Cc+DNVQSaKlx4rtO7esDD0PwVImO8+Wg1u49E6PD4CAguoPy1cc4
-         o2xeaXmoyfl3at1Wc23cFA4gmh0jfeXR5vZwHUwJ6dqFJmM5mD5Qf2/SO0k2iTdiVkBu
-         WL+np7LlVT5lLsTrV94NfP+ju5RvoDLS7ABShjAWy3TTfVk5rLl4hLcyTqQS4U00FLRm
-         uYyvtfQ1ubYq35X7Y77t0Jg8eE/Z8lPeKsi30trF7dC+z5N/fPgWQIcSx2f1TEyW99w/
-         XVTw==
-X-Gm-Message-State: AOAM532n0DD0GQIoXjlzJV6uxNuhvWDwL7Vp/5Un9SFsLrOjQlYXRN6H
-        Rb9nqFRURNHhzEGRdq0XKpFRAA==
-X-Google-Smtp-Source: ABdhPJykG3GgJZt4zAIgBQXMeH/COPGhCNvEyfqZmxNGqdOdbRQqkjoDnd7dGcpS5E2lZu+Z2IMDng==
-X-Received: by 2002:a5d:69cb:: with SMTP id s11mr6891104wrw.240.1624274254528;
-        Mon, 21 Jun 2021 04:17:34 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:5ebd:8bd9:d549:4211? ([2a01:e34:ed2f:f020:5ebd:8bd9:d549:4211])
-        by smtp.googlemail.com with ESMTPSA id e15sm3183114wrm.60.2021.06.21.04.17.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 04:17:33 -0700 (PDT)
-Subject: Re: [RESEND PATCH v2 2/2] cpuidle: qcom: Add SPM register data for
- MSM8226
-To:     Bartosz Dudziak <bartosz.dudziak@snejp.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        David Sterba <dsterba@suse.com>, Jens Axboe <axboe@kernel.dk>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org
-Cc:     Stephan Gerhold <stephan@gerhold.net>
-References: <20210612205335.9730-1-bartosz.dudziak@snejp.pl>
- <20210612205335.9730-3-bartosz.dudziak@snejp.pl>
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Message-ID: <8d23a3b3-61ad-fabb-fa95-e0bebac2e0ee@linaro.org>
-Date:   Mon, 21 Jun 2021 13:17:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Mon, 21 Jun 2021 07:28:57 -0400
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G7n6P3tHQz6L6WT;
+        Mon, 21 Jun 2021 19:16:45 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 21 Jun 2021 13:26:41 +0200
+Received: from [10.47.93.67] (10.47.93.67) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 21 Jun
+ 2021 12:26:41 +0100
+From:   John Garry <john.garry@huawei.com>
+Subject: perf tool: About tests debug level
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "irogers@google.com" <irogers@google.com>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Alexander Shishkin" <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>
+Message-ID: <ecd941b3-2fd5-61d8-93a1-76a3a3ee4138@huawei.com>
+Date:   Mon, 21 Jun 2021 12:20:16 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-In-Reply-To: <20210612205335.9730-3-bartosz.dudziak@snejp.pl>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.93.67]
+X-ClientProxiedBy: lhreml747-chm.china.huawei.com (10.201.108.197) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12/06/2021 22:53, Bartosz Dudziak wrote:
-> Add MSM8226 register data to SPM AVS Wrapper 2 (SAW2) power controller
-> driver.
-> 
-> Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
-> Signed-off-by: Bartosz Dudziak <bartosz.dudziak@snejp.pl>
+Hi guys,
 
-Bjorn ? Andy ?
+I noticed that when it was discovered recently that the new icelake JSON 
+did not pass "PMU events" test, running the test with -v makes pr_err() 
+and pr_debug() come out at the same level, so it's hard to distinguish 
+the important logs.
 
-> ---
->  drivers/cpuidle/cpuidle-qcom-spm.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/drivers/cpuidle/cpuidle-qcom-spm.c b/drivers/cpuidle/cpuidle-qcom-spm.c
-> index adf91a6e4d..c0e7971da2 100644
-> --- a/drivers/cpuidle/cpuidle-qcom-spm.c
-> +++ b/drivers/cpuidle/cpuidle-qcom-spm.c
-> @@ -87,6 +87,18 @@ static const struct spm_reg_data spm_reg_8974_8084_cpu  = {
->  	.start_index[PM_SLEEP_MODE_SPC] = 3,
->  };
->  
-> +/* SPM register data for 8226 */
-> +static const struct spm_reg_data spm_reg_8226_cpu  = {
-> +	.reg_offset = spm_reg_offset_v2_1,
-> +	.spm_cfg = 0x0,
-> +	.spm_dly = 0x3C102800,
-> +	.seq = { 0x60, 0x03, 0x60, 0x0B, 0x0F, 0x20, 0x10, 0x80, 0x30, 0x90,
-> +		0x5B, 0x60, 0x03, 0x60, 0x3B, 0x76, 0x76, 0x0B, 0x94, 0x5B,
-> +		0x80, 0x10, 0x26, 0x30, 0x0F },
-> +	.start_index[PM_SLEEP_MODE_STBY] = 0,
-> +	.start_index[PM_SLEEP_MODE_SPC] = 5,
-> +};
-> +
->  static const u8 spm_reg_offset_v1_1[SPM_REG_NR] = {
->  	[SPM_REG_CFG]		= 0x08,
->  	[SPM_REG_SPM_CTL]	= 0x20,
-> @@ -259,6 +271,8 @@ static struct spm_driver_data *spm_get_drv(struct platform_device *pdev,
->  }
->  
->  static const struct of_device_id spm_match_table[] = {
-> +	{ .compatible = "qcom,msm8226-saw2-v2.1-cpu",
-> +	  .data = &spm_reg_8226_cpu },
->  	{ .compatible = "qcom,msm8974-saw2-v2.1-cpu",
->  	  .data = &spm_reg_8974_8084_cpu },
->  	{ .compatible = "qcom,apq8084-saw2-v2.1-cpu",
-> 
+Here is a link:
+https://lore.kernel.org/lkml/YLdq%2FH8CXYgHWzCL@kernel.org/
 
+And here is an extract:
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+parsing '(cpu_clk_unhalted.thread / cpu_clk_unhalted.ref_tsc) * msr@tsc@ 
+/ 1000000000 / duration_time'
+parsing '( ( 1 * ( fp_arith_inst_retired.scalar_single + 
+fp_arith_inst_retired.scalar_double ) + 2 * 
+fp_arith_inst_retired.128b_packed_double + 4 * ( 
+fp_arith_inst_retired.128b_packed_single + 
+fp_arith_inst_retired.256b_packed_double ) + 8 * ( 
+fp_arith_inst_retired.256b_packed_single + 
+fp_arith_inst_retired.512b_packed_double ) + 16 * 
+fp_arith_inst_retired.512b_packed_single ) / 1000000000 ) / duration_time'
+parsing 'cpu_clk_unhalted.thread / cpu_clk_unhalted.ref_tsc'
+parsing '1 - cpu_clk_unhalted.one_thread_active / 
+cpu_clk_unhalted.ref_distributed'
+parsing 'cpu_clk_unhalted.thread:k / cpu_clk_unhalted.thread'
+parsing '( 64 * ( uncore_imc@cas_count_read@ + 
+uncore_imc@cas_count_write@ ) / 1000000000 ) / duration_time'
+parsing '1000000000 * ( cha@event\=0x36\,umask\=0x21\,config\=0x40433@ / 
+cha@event\=0x35\,umask\=0x21\,config\=0x40433@ ) / ( cha_0@event\=0x0@ / 
+duration_time )'
+parsing 'cha@event\=0x36\,umask\=0x21\,config\=0x40433@ / 
+cha@event\=0x36\,umask\=0x21\,config\=0x40433\,thresh\=1@'
+parsing '( 1000000000 * ( 
+cha@event\=0x36\,umask\=0x21\,config\=0x40433@_pmm / 
+cha@event\=0x35\,umask\=0x21\,config\=0x40433@_pmm ) / cha_0@event\=0x0@ 
+)' [pr_debug]
+check_parse_fake failed [pr_err]
+test child finished with -1
+---- end ----
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+I annotated in [], above
+
+As for another issue, if you consider "Parse and process metrics", debug 
+from core code comes out at same level as test code, e.g. with -v, we 
+see pr_debug() from test code and core code. Again, this makes it hard 
+to distinguish various levels. As an illustration, here I hack the code 
+to fail a test:
+
+sudo ./perf test -v 68
+68: Parse and process metrics                                       :
+--- start ---
+test child forked, pid 9747
+metric expr inst_retired.any / cpu_clk_unhalted.thread for IPC
+found event inst_retired.any verbose=1 pr_debug
+found event inst_retired.any verbose=1 pr_err
+found event cpu_clk_unhalted.thread verbose=1 pr_debug
+found event cpu_clk_unhalted.thread verbose=1 pr_err
+adding {inst_retired.any,cpu_clk_unhalted.thread}:W
+FAILED tests/parse-metric.c:223 IPC failed, wrong ratio
+FAILED tests/parse-metric.c:374 IPC failed
+test child finished with -1
+---- end ----
+Parse and process metrics: FAILED!
+
+Note that the "FAILED" messages from the test code come from pr_debug().
+
+In a way, I feel that pr_debug()/err from the test is more important 
+than pr_debug() from the core code (when running a test).
+
+Any opinion on this or how to improve (if anyone agrees with me)? Or am 
+I missing something? Or is it not so important?
+
+Thanks,
+John
