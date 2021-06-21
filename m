@@ -2,121 +2,632 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE81A3AF67A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 21:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D4C3AF67D
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 21:53:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231750AbhFUTz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 15:55:27 -0400
-Received: from mga02.intel.com ([134.134.136.20]:18472 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231209AbhFUTzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 15:55:23 -0400
-IronPort-SDR: KzD2/OVWEJpIuHEN/SFVCQ0J9nXNP7J+sBsh/jGm3xqgcS7G1U4jXG0+o5+L3ED4jWsVlwsTNo
- cbg+DW9gNcLg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="194058834"
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208";a="194058834"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 12:53:08 -0700
-IronPort-SDR: BXeXHIt2opCjgdU+kc8Fux/WE/IGgceIx7NAK8FoU2jtWaK8uRrDz6TFmRMSiSrR/nRBWRHYeL
- +a89fkhyTkvQ==
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208";a="453997736"
-Received: from bhooglan-mobl1.amr.corp.intel.com (HELO [10.255.228.227]) ([10.255.228.227])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 12:53:07 -0700
-Subject: Re: [PATCH -V8 02/10] mm/numa: automatically generate node migration
- order
-To:     "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
-        Wei Xu <weixugc@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        osalvador <osalvador@suse.de>
-References: <20210618061537.434999-1-ying.huang@intel.com>
- <20210618061537.434999-3-ying.huang@intel.com>
- <79397FE3-4B08-4DE5-8468-C5CAE36A3E39@nvidia.com>
- <87v96anu6o.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <36307d7a-6e39-b1dd-64e8-95ec59f16867@intel.com>
-Date:   Mon, 21 Jun 2021 12:53:04 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231822AbhFUTzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 15:55:39 -0400
+Received: from relay08.th.seeweb.it ([5.144.164.169]:52237 "EHLO
+        relay08.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231209AbhFUTzh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 15:55:37 -0400
+Received: from localhost.localdomain (bband-dyn238.178-41-213.t-com.sk [178.41.213.238])
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id EE7923E909;
+        Mon, 21 Jun 2021 21:53:20 +0200 (CEST)
+From:   Martin Botka <martin.botka@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        konrad.dybcio@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Martin Botka <martin.botka@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V4 1/2] arch: arm64: dts: qcom: Add support for SM6125
+Date:   Mon, 21 Jun 2021 21:53:04 +0200
+Message-Id: <20210621195308.654587-1-martin.botka@somainline.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-In-Reply-To: <87v96anu6o.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/19/21 1:18 AM, Huang, Ying wrote:
->>>  int next_demotion_node(int node)
->>>  {
->>> -	return node_demotion[node];
->>> +	/*
->>> +	 * node_demotion[] is updated without excluding
->>> +	 * this function from running.  READ_ONCE() avoids
->>> +	 * reading multiple, inconsistent 'node' values
->>> +	 * during an update.
->>> +	 */
->>> +	return READ_ONCE(node_demotion[node]);
->>>  }
->> Is it necessary to have two separate patches to add node_demotion and
->> next_demotion_node() then modify it immediately? Maybe merge Patch 1 into 2?
->>
->> Hmm, I just checked Patch 3 and it changes node_demotion again and uses RCU.
->> I guess it might be much simpler to just introduce node_demotion with RCU
->> in this patch and Patch 3 only takes care of hotplug events.
-> Hi, Dave,
-> 
-> What do you think about this?
-> 
+This commits adds the Device tree file for SM6125 SoC.
 
-Squashing them seems like a good idea to me.
+Signed-off-by: Martin Botka <martin.botka@somainline.org>
+---
+Changes in V2:
+Update compatibles for mailbox & pinctrl
+Changes in V3:
+Fix reg for sdhci1
+Replace hc_mem with hc and core_mem with core
+Changes in V4:
+Update tcsr mutex in accordance with binding
+Move sdc2_state_on to board dts.
+Move sd-cd from sdc2_state_off to board dts.
+Remove stray space
+Change usb3_dwc3: dwc3@ to usb3_dwc3: usb@
+ arch/arm64/boot/dts/qcom/sm6125.dtsi | 566 +++++++++++++++++++++++++++
+ 1 file changed, 566 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/sm6125.dtsi
+
+diff --git a/arch/arm64/boot/dts/qcom/sm6125.dtsi b/arch/arm64/boot/dts/qcom/sm6125.dtsi
+new file mode 100644
+index 000000000000..2b37ce6a9f9c
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/sm6125.dtsi
+@@ -0,0 +1,566 @@
++// SPDX-License-Identifier: BSD-3-Clause
++/*
++ * Copyright (c) 2021, Martin Botka <martin.botka@somainline.org>
++ */
++
++#include <dt-bindings/clock/qcom,gcc-sm6125.h>
++#include <dt-bindings/clock/qcom,rpmcc.h>
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/interrupt-controller/arm-gic.h>
++#include <dt-bindings/power/qcom-rpmpd.h>
++
++/ {
++	interrupt-parent = <&intc>;
++	#address-cells = <2>;
++	#size-cells = <2>;
++
++	chosen { };
++
++	clocks {
++		xo_board: xo-board {
++			compatible = "fixed-clock";
++			#clock-cells = <0>;
++			clock-frequency = <19200000>;
++			clock-output-names = "xo_board";
++		};
++
++		sleep_clk: sleep-clk {
++			compatible = "fixed-clock";
++			#clock-cells = <0>;
++			clock-frequency = <32000>;
++			clock-output-names = "sleep_clk";
++		};
++	};
++
++	cpus {
++		#address-cells = <2>;
++		#size-cells = <0>;
++
++		CPU0: cpu@0 {
++			device_type = "cpu";
++			compatible = "qcom,kryo260";
++			reg = <0x0 0x0>;
++			enable-method = "psci";
++			capacity-dmips-mhz = <1024>;
++			next-level-cache = <&L2_0>;
++			L2_0: l2-cache {
++				compatible = "cache";
++			};
++		};
++
++		CPU1: cpu@1 {
++			device_type = "cpu";
++			compatible = "qcom,kryo260";
++			reg = <0x0 0x1>;
++			enable-method = "psci";
++			capacity-dmips-mhz = <1024>;
++			next-level-cache = <&L2_0>;
++		};
++
++		CPU2: cpu@2 {
++			device_type = "cpu";
++			compatible = "qcom,kryo260";
++			reg = <0x0 0x2>;
++			enable-method = "psci";
++			capacity-dmips-mhz = <1024>;
++			next-level-cache = <&L2_0>;
++		};
++
++		CPU3: cpu@3 {
++			device_type = "cpu";
++			compatible = "qcom,kryo260";
++			reg = <0x0 0x3>;
++			enable-method = "psci";
++			capacity-dmips-mhz = <1024>;
++			next-level-cache = <&L2_0>;
++		};
++
++		CPU4: cpu@100 {
++			device_type = "cpu";
++			compatible = "qcom,kryo260";
++			reg = <0x0 0x100>;
++			enable-method = "psci";
++			capacity-dmips-mhz = <1638>;
++			next-level-cache = <&L2_1>;
++			L2_1: l2-cache {
++				compatible = "cache";
++			};
++		};
++
++		CPU5: cpu@101 {
++			device_type = "cpu";
++			compatible = "qcom,kryo260";
++			reg = <0x0 0x101>;
++			enable-method = "psci";
++			capacity-dmips-mhz = <1638>;
++			next-level-cache = <&L2_1>;
++		};
++
++		CPU6: cpu@102 {
++			device_type = "cpu";
++			compatible = "qcom,kryo260";
++			reg = <0x0 0x102>;
++			enable-method = "psci";
++			capacity-dmips-mhz = <1638>;
++			next-level-cache = <&L2_1>;
++		};
++
++		CPU7: cpu@103 {
++			device_type = "cpu";
++			compatible = "qcom,kryo260";
++			reg = <0x0 0x103>;
++			enable-method = "psci";
++			capacity-dmips-mhz = <1638>;
++			next-level-cache = <&L2_1>;
++		};
++
++		cpu-map {
++			cluster0 {
++				core0 {
++					cpu = <&CPU0>;
++				};
++
++				core1 {
++					cpu = <&CPU1>;
++				};
++
++				core2 {
++					cpu = <&CPU2>;
++				};
++
++				core3 {
++					cpu = <&CPU3>;
++				};
++			};
++
++			cluster1 {
++				core0 {
++					cpu = <&CPU4>;
++				};
++
++				core1 {
++					cpu = <&CPU5>;
++				};
++
++				core2 {
++					cpu = <&CPU6>;
++				};
++
++				core3 {
++					cpu = <&CPU7>;
++				};
++			};
++		};
++	};
++
++	firmware {
++		scm: scm {
++			compatible = "qcom,scm-sm6125", "qcom,scm";
++			#reset-cells = <1>;
++		};
++	};
++
++	memory@40000000 {
++		/* We expect the bootloader to fill in the size */
++		reg = <0x0 0x40000000 0x0 0x0>;
++		device_type = "memory";
++	};
++
++	pmu {
++		compatible = "arm,armv8-pmuv3";
++		interrupts = <GIC_PPI 6 IRQ_TYPE_LEVEL_HIGH>;
++	};
++
++	psci {
++		compatible = "arm,psci-1.0";
++		method = "smc";
++	};
++
++	reserved_memory: reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		hyp_mem: memory@45700000 {
++			reg = <0x0 0x45700000 0x0 0x600000>;
++			no-map;
++		};
++
++		xbl_aop_mem: memory@45e00000 {
++			reg = <0x0 0x45e00000 0x0 0x140000>;
++			no-map;
++		};
++
++		sec_apps_mem: memory@45fff000 {
++			reg = <0x0 0x45fff000 0x0 0x1000>;
++			no-map;
++		};
++
++		smem_mem: memory@46000000 {
++			reg = <0x0 0x46000000 0x0 0x200000>;
++			no-map;
++		};
++
++		reserved_mem1: memory@46200000 {
++			reg = <0x0 0x46200000 0x0 0x2d00000>;
++			no-map;
++		};
++
++		camera_mem: memory@4ab00000 {
++			reg = <0x0 0x4ab00000 0x0 0x500000>;
++			no-map;
++		};
++
++		modem_mem: memory@4b000000 {
++			reg = <0x0 0x4b000000 0x0 0x7e00000>;
++			no-map;
++		};
++
++		venus_mem: memory@52e00000 {
++			reg = <0x0 0x52e00000 0x0 0x500000>;
++			no-map;
++		};
++
++		wlan_msa_mem: memory@53300000 {
++			reg = <0x0 0x53300000 0x0 0x200000>;
++			no-map;
++		};
++
++		cdsp_mem: memory@53500000 {
++			reg = <0x0 0x53500000 0x0 0x1e00000>;
++			no-map;
++		};
++
++		adsp_pil_mem: memory@55300000 {
++			reg = <0x0 0x55300000 0x0 0x1e00000>;
++			no-map;
++		};
++
++		ipa_fw_mem: memory@57100000 {
++			reg = <0x0 0x57100000 0x0 0x10000>;
++			no-map;
++		};
++
++		ipa_gsi_mem: memory@57110000 {
++			reg = <0x0 0x57110000 0x0 0x5000>;
++			no-map;
++		};
++
++		gpu_mem: memory@57115000 {
++			reg = <0x0 0x57115000 0x0 0x2000>;
++			no-map;
++		};
++
++		cont_splash_mem: memory@5c000000 {
++			reg = <0x0 0x5c000000 0x0 0x00f00000>;
++			no-map;
++		};
++
++		dfps_data_mem: memory@5cf00000 {
++			reg = <0x0 0x5cf00000 0x0 0x0100000>;
++			no-map;
++		};
++
++		cdsp_sec_mem: memory@5f800000 {
++			reg = <0x0 0x5f800000 0x0 0x1e00000>;
++			no-map;
++		};
++
++		qseecom_mem: memory@5e400000 {
++			reg = <0x0 0x5e400000 0x0 0x1400000>;
++			no-map;
++		};
++
++		sdsp_mem: memory@f3000000 {
++			reg = <0x0 0xf3000000 0x0 0x400000>;
++			no-map;
++		};
++
++		adsp_mem: memory@f3400000 {
++			reg = <0x0 0xf3400000 0x0 0x800000>;
++			no-map;
++		};
++
++		qseecom_ta_mem: memory@13fc00000 {
++			reg = <0x1 0x3fc00000 0x0 0x400000>;
++			no-map;
++		};
++	};
++
++	rpm-glink {
++		compatible = "qcom,glink-rpm";
++
++		interrupts = <GIC_SPI 194 IRQ_TYPE_EDGE_RISING>;
++		qcom,rpm-msg-ram = <&rpm_msg_ram>;
++		mboxes = <&apcs_glb 0>;
++
++		rpm_requests: rpm-requests {
++			compatible = "qcom,rpm-sm6125";
++			qcom,glink-channels = "rpm_requests";
++
++			rpmcc: clock-controller {
++				compatible = "qcom,rpmcc-sm6125", "qcom,rpmcc";
++				#clock-cells = <1>;
++			};
++		};
++	};
++
++	smem: smem {
++		compatible = "qcom,smem";
++		memory-region = <&smem_mem>;
++		hwlocks = <&tcsr_mutex 3>;
++	};
++
++	soc {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges = <0x00 0x00 0x00 0xffffffff>;
++		compatible = "simple-bus";
++
++		tcsr_mutex: hwlock@340000 {
++			compatible = "qcom,tcsr-mutex";
++			reg = <0x00340000 0x20000>;
++			#hwlock-cells = <1>;
++		};
++
++		tlmm: pinctrl@500000 {
++			compatible = "qcom,sm6125-tlmm";
++			reg = <0x00500000 0x400000>,
++				<0x00900000 0x400000>,
++				<0x00d00000 0x400000>;
++			reg-names = "west", "south", "east";
++			interrupts = <GIC_SPI 227 IRQ_TYPE_LEVEL_HIGH>;
++			gpio-controller;
++			gpio-ranges = <&tlmm 0 0 134>;
++			#gpio-cells = <2>;
++			interrupt-controller;
++			#interrupt-cells = <2>;
++
++			sdc2_state_off: sdc2-off {
++				clk {
++					pins = "sdc2_clk";
++					bias-disable;
++					drive-strength = <2>;
++				};
++
++				cmd {
++					pins = "sdc2_cmd";
++					bias-pull-up;
++					drive-strength = <2>;
++				};
++
++				data {
++					pins = "sdc2_data";
++					bias-pull-up;
++					drive-strength = <2>;
++				};
++			};
++		};
++
++		gcc: clock-controller@1400000 {
++			compatible = "qcom,gcc-sm6125";
++			reg = <0x01400000 0x1f0000>;
++			#clock-cells = <1>;
++			#reset-cells = <1>;
++			#power-domain-cells = <1>;
++			clock-names = "bi_tcxo", "sleep_clk";
++			clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>, <&sleep_clk>;
++		};
++
++		hsusb_phy1: phy@1613000 {
++			compatible = "qcom,msm8996-qusb2-phy";
++			reg = <0x01613000 0x180>;
++			#phy-cells = <0>;
++
++			clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>,
++				 <&gcc GCC_AHB2PHY_USB_CLK>;
++			clock-names = "ref", "cfg_ahb";
++
++			resets = <&gcc GCC_QUSB2PHY_PRIM_BCR>;
++			status = "disabled";
++		};
++
++		rpm_msg_ram: memory@45f0000 {
++			compatible = "qcom,rpm-msg-ram";
++			reg = <0x045f0000 0x7000>;
++		};
++
++		sdhc_1: sdhci@4744000 {
++			compatible = "qcom,sm6125-sdhci", "qcom,sdhci-msm-v5";
++			reg = <0x04744000 0x1000>, <0x04745000 0x1000>;
++			reg-names = "hc", "core";
++
++			interrupts = <GIC_SPI 348 IRQ_TYPE_LEVEL_HIGH>,
++				<GIC_SPI 352 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "hc_irq", "pwr_irq";
++
++			clocks = <&gcc GCC_SDCC1_AHB_CLK>,
++				<&gcc GCC_SDCC1_APPS_CLK>,
++				<&xo_board>;
++			clock-names = "iface", "core", "xo";
++			bus-width = <8>;
++			non-removable;
++			status = "disabled";
++		};
++
++		sdhc_2: sdhci@4784000 {
++			compatible = "qcom,sm6125-sdhci", "qcom,sdhci-msm-v5";
++			reg = <0x04784000 0x1000>;
++			reg-names = "hc";
++
++			interrupts = <GIC_SPI 350 IRQ_TYPE_LEVEL_HIGH>,
++				<GIC_SPI 353 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "hc_irq", "pwr_irq";
++
++			clocks = <&gcc GCC_SDCC2_AHB_CLK>,
++				<&gcc GCC_SDCC2_APPS_CLK>,
++				<&xo_board>;
++			clock-names = "iface", "core", "xo";
++
++			pinctrl-0 = <&sdc2_state_on>;
++			pinctrl-1 = <&sdc2_state_off>;
++			pinctrl-names = "default", "sleep";
++
++			bus-width = <4>;
++			status = "disabled";
++		};
++
++		usb3: usb@4ef8800 {
++			compatible = "qcom,msm8996-dwc3", "qcom,dwc3";
++			reg = <0x04ef8800 0x400>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++			ranges;
++
++			clocks = <&gcc GCC_USB30_PRIM_MASTER_CLK>,
++				<&gcc GCC_SYS_NOC_USB3_PRIM_AXI_CLK>,
++				<&gcc GCC_CFG_NOC_USB3_PRIM_AXI_CLK>,
++				<&gcc GCC_USB3_PRIM_CLKREF_CLK>,
++				<&gcc GCC_USB30_PRIM_SLEEP_CLK>,
++				<&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>;
++
++			assigned-clocks = <&gcc GCC_USB30_PRIM_MOCK_UTMI_CLK>,
++					  <&gcc GCC_USB30_PRIM_MASTER_CLK>;
++			assigned-clock-rates = <19200000>, <66666667>;
++
++			power-domains = <&gcc USB30_PRIM_GDSC>;
++			qcom,select-utmi-as-pipe-clk;
++			status = "disabled";
++
++			usb3_dwc3: usb@4e00000 {
++				compatible = "snps,dwc3";
++				reg = <0x04e00000 0xcd00>;
++				interrupts = <GIC_SPI 255 IRQ_TYPE_LEVEL_HIGH>;
++				phys = <&hsusb_phy1>;
++				phy-names = "usb2-phy";
++				snps,dis_u2_susphy_quirk;
++				snps,dis_enblslpm_quirk;
++				maximum-speed = "high-speed";
++				dr_mode = "peripheral";
++			};
++		};
++
++		spmi_bus: spmi@1c40000 {
++			compatible = "qcom,spmi-pmic-arb";
++			reg =	<0x01c40000 0x1100>,
++				<0x01e00000 0x2000000>,
++				<0x03e00000 0x100000>,
++				<0x03f00000 0xa0000>,
++				<0x01c0a000 0x26000>;
++			reg-names = "core", "chnls", "obsrvr", "intr", "cnfg";
++			interrupt-names = "periph_irq";
++			interrupts = <GIC_SPI 183 IRQ_TYPE_LEVEL_HIGH>;
++			qcom,ee = <0>;
++			qcom,channel = <0>;
++			#address-cells = <2>;
++			#size-cells = <0>;
++			interrupt-controller;
++			#interrupt-cells = <4>;
++			cell-index = <0>;
++		};
++
++		apcs_glb: mailbox@f111000 {
++			compatible = "qcom,sm6125-apcs-hmss-global";
++			reg = <0x0f111000 0x1000>;
++
++			#mbox-cells = <1>;
++		};
++
++		timer@f120000 {
++			compatible = "arm,armv7-timer-mem";
++			#address-cells = <1>;
++			#size-cells = <1>;
++			ranges;
++			reg = <0x0f120000 0x1000>;
++			clock-frequency = <19200000>;
++
++			frame@0f121000 {
++				frame-number = <0>;
++				interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>,
++						<GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
++				reg = <0x0f121000 0x1000>,
++				      <0x0f122000 0x1000>;
++			};
++
++			frame@0f123000 {
++				frame-number = <1>;
++				interrupts = <GIC_SPI 9 IRQ_TYPE_LEVEL_HIGH>;
++				reg = <0x0f123000 0x1000>;
++				status = "disabled";
++			};
++
++			frame@0f124000 {
++				frame-number = <2>;
++				interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
++				reg = <0x0f124000 0x1000>;
++				status = "disabled";
++			};
++
++			frame@f125000 {
++				frame-number = <3>;
++				interrupts = <GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>;
++				reg = <0x0f125000 0x1000>;
++				status = "disabled";
++			};
++
++			frame@f126000 {
++				frame-number = <4>;
++				interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
++				reg = <0x0f126000 0x1000>;
++				status = "disabled";
++			};
++
++			frame@f127000 {
++				frame-number = <5>;
++				interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
++				reg = <0x0f127000 0x1000>;
++				status = "disabled";
++			};
++
++			frame@f128000 {
++				frame-number = <6>;
++				interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
++				reg = <0x0f128000 0x1000>;
++				status = "disabled";
++			};
++		};
++
++		intc: interrupt-controller@f200000 {
++			compatible = "arm,gic-v3";
++			reg = <0x0f200000 0x20000>,
++				<0x0f300000 0x100000>;
++			#interrupt-cells = <3>;
++			interrupt-controller;
++			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
++		};
++	};
++
++	timer {
++		compatible = "arm,armv8-timer";
++		interrupts = <GIC_PPI 1 0xf08
++				GIC_PPI 2 0xf08
++				GIC_PPI 3 0xf08
++				GIC_PPI 0 0xf08>;
++		clock-frequency = <19200000>;
++	};
++};
+-- 
+2.32.0
+
