@@ -2,67 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9F013AED20
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3413AED25
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbhFUQK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:10:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53240 "EHLO
+        id S230180AbhFUQLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:11:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbhFUQK0 (ORCPT
+        with ESMTP id S229719AbhFUQLq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:10:26 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05E9AC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:08:11 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id f10so10793020iok.6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:08:10 -0700 (PDT)
+        Mon, 21 Jun 2021 12:11:46 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A4ADC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:09:32 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id v3so10680971ioq.9
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:09:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=OlCOy+HeD0rN5WnuF7UNheKbb+x7CdKtiEN/ib6DAGc=;
-        b=nk/K/v736t7tgQbi4fKvxJbk69XoezM/RDnzm+woo4Ihgmkv0V/PNn/KrFIqnPROak
-         0VwfmLpvr7/PxlHjVd6mpXPzRCRPxeA8ufUipVzpLSMTars4mkxbZ7r4N/INfFkM+K+L
-         9Y7xynd0caPsPqnpShmz0JUHhjs8CX+ct7qCFUIONcTVSOoB9NuX9SiXgloSLOXtMUWt
-         vvWXcpTj1YoSv4CJbYYA3xmArILUSDF/XmdOPH8tT4WNGJuLxICl8hhJK+I3XlrgiQJh
-         SUEE+T3gFTtvZbYPN7mjUpS6vQ/PS+FMyakgnmlEy0innk9frwyu6KwsvCJUa1+So3+6
-         NMxA==
+        bh=J4OCVJGrQLe5EEY8W81FSo8uSOepsQU9k2XZodzDKxo=;
+        b=dloFBH7MrxD0k1EoHdpizqcM6oEizGBO1rBn3iNK7rWzJrJ4av4aaZ1dYBLvQH2+R9
+         NxI4NtvUdwGMpoU7fgb6Nxwm1Zj6mSgPmlcDVnqENR/7CEOaxlTDnKrf6HRc2FuhiRiM
+         Se3bGiyvthUuWEUOEcPMTIsVN8y7AbHswWRTId3J6ksPKEKCTNWEOz9F8jdsaH89OU/P
+         REz1TdP2JA1Uz53agI91ppTVTh6XY8ja0vRK+yGvB4BS4May2IC2Oh8d7LA0kJYd+sAw
+         VCjrb7jLAQnHm4b1KR+V4snnMPbYdPN5fpxHvLKNyMKZDvigqE5CNb2Hu8uWFbpLU8W5
+         ntTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=OlCOy+HeD0rN5WnuF7UNheKbb+x7CdKtiEN/ib6DAGc=;
-        b=YP3DEZWJD3yaxPfFskbK9ZbiFeDvYIBwdGTDQiYQ+uXCnIlyGy8qnrV1WvIzpIKN2u
-         L8x74OunICoFm3k0eaP1nhWi//FP+xNThgMbsfdTV6SsrXS3kWWeH3Di6XU6lafqdxiM
-         2AtJlSpJXVfwVPPozSuoqXs+ycZN+7UAjGdLK8hmGBAxlza7TdBojUKGPcttc9wYePl5
-         6o8BVXcm4toRPo9ESfpxUnXez9DP4/n27xAt4DSc4z6yQNynJLeGiOrVdpnyy7Iybk5r
-         CKQ9evCU/dzQBigH9SdBmS4pHsVT5wuA9bK7UQxjixeUIo/Q4aYTeoTlTheuCPkqr8dD
-         uBpg==
-X-Gm-Message-State: AOAM530AnPpQWFH51X44E9WEhla+TwwFGsB41kwo337DLdwI2hEjUjPC
-        uOVyrb8NjHX8lmJDhaLk94pJIQ==
-X-Google-Smtp-Source: ABdhPJw7GMOu2YIDQVXr+m45vazP/BWgabqyV4P6eXHb7lrtN748i81jWxSafG4j/1BdyvLR9BWL9A==
-X-Received: by 2002:a02:a817:: with SMTP id f23mr7422871jaj.101.1624291690445;
-        Mon, 21 Jun 2021 09:08:10 -0700 (PDT)
+        bh=J4OCVJGrQLe5EEY8W81FSo8uSOepsQU9k2XZodzDKxo=;
+        b=BfGSuRG8TM8nzvDNFV05gHDtVSTC5V2Zla00VDzvGhHGNJXz/sQwlCWIWJHnUmlgM5
+         hs0dwzXtQpd5YydDqvAisp/Rj4c6/kxjsKAMfrgnkGugGtbpotyVaO6vuP+2tHhcipBA
+         D+VlGvErtBwAoJqo9bIW5gspfwcHaS8MrOv6C3LkAcJylwhlpXjjpqbcyK14s0qfcY2I
+         mil0N/Iy/3S2qzGZqO4csGycwIa3gxlKkQff2a4X/OzjKCD28h2I+E+6xCtHHX/tYyW2
+         WK16bOOrOd9ujuQm983V+6NkVxytXI/etMfo0IVc8z/Yt0xgAmBLh7thneMGm7KlOIKg
+         hNUQ==
+X-Gm-Message-State: AOAM532n1Ab9q3Cr9dOkIEGiNI/DVGEtoQlXsETay2L1FUKfMLQ6Ztrz
+        q7PCHIqIWQ58IupFTnjYZo1VOIMvDzenNg==
+X-Google-Smtp-Source: ABdhPJwEMGQMmejuzmP0roVsVtSuAMP71Aou5hY+G9adaC3dH6FSWe16/YPlMRUceGFO5e6Ul3AU0A==
+X-Received: by 2002:a6b:fd12:: with SMTP id c18mr6676562ioi.182.1624291771349;
+        Mon, 21 Jun 2021 09:09:31 -0700 (PDT)
 Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id e14sm6317948ile.2.2021.06.21.09.08.09
+        by smtp.gmail.com with ESMTPSA id c19sm6411060ili.62.2021.06.21.09.09.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 09:08:09 -0700 (PDT)
-Subject: Re: [PATCH FIXES/IMPROVEMENTS 0/7] block, bfq: preserve control,
- boost throughput, fix bugs
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mariottiluca1@hotmail.it, holger@applied-asynchrony.com,
-        pedroni.pietro.96@gmail.com
-References: <20210619140948.98712-1-paolo.valente@linaro.org>
+        Mon, 21 Jun 2021 09:09:31 -0700 (PDT)
+Subject: Re: [PATCH] block/partitions/msdos: Fix typo inidicator -> indicator
+To:     Thomas Bracht Laumann Jespersen <t@laumann.xyz>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210619195130.19348-1-t@laumann.xyz>
 From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <02db63cb-9cd0-4068-00db-dc37314faea7@kernel.dk>
-Date:   Mon, 21 Jun 2021 10:08:09 -0600
+Message-ID: <bce2f52e-2d8b-1ea1-c2f6-eaff3c498629@kernel.dk>
+Date:   Mon, 21 Jun 2021 10:09:30 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210619140948.98712-1-paolo.valente@linaro.org>
+In-Reply-To: <20210619195130.19348-1-t@laumann.xyz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -70,14 +67,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/19/21 8:09 AM, Paolo Valente wrote:
-> Hi Jens,
-> this series contains an already proposed patch by Luca, plus six new
-> patches. The goals of these patches are summarized in the subject of
-> this cover letter. I'm including Luca's patch here, because it enabled
-> the actual use of stable merge, and, as such, triggered an otherwise
-> silent bug. This series contains also the fix for that bug ("block,
-> bfq: avoid delayed merge of async queues"), tested by Holger [1].
+On 6/19/21 1:51 PM, Thomas Bracht Laumann Jespersen wrote:
+> Just a fix for a small typo in msdos_partition().
 
 Applied, thanks.
 
