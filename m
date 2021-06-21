@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9E73AE5EC
+	by mail.lfdr.de (Postfix) with ESMTP id D555B3AE5ED
 	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 11:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhFUJY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 05:24:59 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40795 "EHLO
+        id S231182AbhFUJZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 05:25:03 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:40800 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230433AbhFUJYz (ORCPT
+        with ESMTP id S231128AbhFUJY7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 05:24:55 -0400
-Received: from mail-ed1-f69.google.com ([209.85.208.69])
+        Mon, 21 Jun 2021 05:24:59 -0400
+Received: from mail-ed1-f71.google.com ([209.85.208.71])
         by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.93)
         (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lvG8f-0000c9-1f
-        for linux-kernel@vger.kernel.org; Mon, 21 Jun 2021 09:22:41 +0000
-Received: by mail-ed1-f69.google.com with SMTP id p23-20020aa7cc970000b02903948bc39fd5so5363890edt.13
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:22:41 -0700 (PDT)
+        id 1lvG8i-0000ch-OY
+        for linux-kernel@vger.kernel.org; Mon, 21 Jun 2021 09:22:44 +0000
+Received: by mail-ed1-f71.google.com with SMTP id cb4-20020a0564020b64b02903947455afa5so5640880edb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 02:22:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=hZC3Rg3BvJB4BQwVaSuLDsENz/aC3X5mhOq0Jc6AB58=;
-        b=dTP0bX+HXEruJGRRks9zB/S3Mb+sOG+XBjz1ETFv+a/6G9JxUZcPOEhAzcIbh4ztLn
-         deNOJy6givJVfyqhb1J0JZL5l44isDD1L257UqlLFXl3vShKxZpXYwkRtlvJBIMDjMp1
-         Kjnwj89wjsm43wAoMd+u+oPVV32VBbJynnvdrfTwYCYC97JjAkfrwt07X471vvhrxe/d
-         b8PYZL/d79vYoTikl4xC9llqzTT/HCGQvHtV371ZqeRjAYKhRr61mckng5Vh7wQssJxJ
-         SJfI8ehp8LcBzDhlwiHsLsor9v7taVx+oYWoLNs5+lqXAVExaLc2R1SDo6l5Jjdp3DUz
-         rCLA==
-X-Gm-Message-State: AOAM531L6RkC3YoQZoa7rg9+lpWsEgJ9zA+Ph8xCaiXmniZDyxFrApSX
-        Wz1WcOea3kl5nfw3eDu4AITsGKpFhOXFVz+qQZNutOnAHnc6zUewmE8jjd16tHl5nHiqcfuVely
-        V5t1Evp60ls7CsZsxlTtdX8BLXsSOiJMAudhpxCQAKw==
-X-Received: by 2002:a05:6402:b17:: with SMTP id bm23mr1884935edb.173.1624267360873;
-        Mon, 21 Jun 2021 02:22:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxwfZk5ISqN2ouBhxsLkXdlM8l0yr/wsX851g9ngedNHQwRH0qR983JIMEqkYLCHTg+bWq3Yw==
-X-Received: by 2002:a05:6402:b17:: with SMTP id bm23mr1884925edb.173.1624267360791;
-        Mon, 21 Jun 2021 02:22:40 -0700 (PDT)
+        bh=9hRe7zjfZNvSRfKJkWKSh5Dej/dPL2l2W1UbNWsYK2U=;
+        b=ogG0Q70ZiQOupLzFs36HzDd319gumjASTHl3tAL6HEccc/O/Eh91YGw3b64tRmBpZn
+         c508X4Der3NIu6DQrCiv15whKETifqCUSOf4v2UF+maQRQtbGQkTwW5Q4iNI7y/58Cb3
+         xArLxzEsxY+8Gfs7joRBcGAw0mXU/xTVgJbLhF1s9+Nb5/wJl8M0TfyEqzP/SCJinkT5
+         Bc6TrWzjJbwn7lhVnqMbey8Qfymf0YX6wPGGFDJrpfFN/jIRGPG/s/KuYB2YX1otJIla
+         VxnAO8LhynjP4YlWPQ2LFEgA2esZ62yrBt2EOchlFM59GAQ5CEDZb6mXV8qArMmGOlFu
+         IQDg==
+X-Gm-Message-State: AOAM5300E4OPqUpBjji28h40TR9dq2bv8FYGFYMevCR+Tf4oqLGhJunZ
+        m80gklMefIf5xKGz21m1KrhnArfSepTpbWuX0IoXotQNJKuRETH8xLFdvfMdZlEfwTnQOB+VSG0
+        Ga06DWdkyUgbHW1WJNaR3b0l3QJS7+Fq5zx8abYuh9Q==
+X-Received: by 2002:aa7:ce86:: with SMTP id y6mr20052614edv.309.1624267364568;
+        Mon, 21 Jun 2021 02:22:44 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzdTF04BSdUZTAZjRPtmzyfYfNWL/XJ9f/4aweEYPF/XycKnP7nFSxN+HP8ORuLjmJWF1Se3g==
+X-Received: by 2002:aa7:ce86:: with SMTP id y6mr20052598edv.309.1624267364414;
+        Mon, 21 Jun 2021 02:22:44 -0700 (PDT)
 Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id q20sm4633633ejb.71.2021.06.21.02.22.40
+        by smtp.gmail.com with ESMTPSA id df20sm10047400edb.76.2021.06.21.02.22.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 02:22:40 -0700 (PDT)
-Subject: Re: [PATCH -next 1/4] ASoC: samsung: i2s: Use
+        Mon, 21 Jun 2021 02:22:44 -0700 (PDT)
+Subject: Re: [PATCH -next 2/4] ASoC: samsung: pcm: Use
  devm_platform_get_and_ioremap_resource()
 To:     Yang Yingliang <yangyingliang@huawei.com>,
         linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 Cc:     s.nawrocki@samsung.com, broonie@kernel.org
 References: <20210616091652.2552927-1-yangyingliang@huawei.com>
- <20210616091652.2552927-2-yangyingliang@huawei.com>
+ <20210616091652.2552927-3-yangyingliang@huawei.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <aaf277d2-a163-1658-4d01-b5843ea95b81@canonical.com>
-Date:   Mon, 21 Jun 2021 11:22:40 +0200
+Message-ID: <88808fcb-d89b-9e90-bd5e-c9074f373192@canonical.com>
+Date:   Mon, 21 Jun 2021 11:22:43 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210616091652.2552927-2-yangyingliang@huawei.com>
+In-Reply-To: <20210616091652.2552927-3-yangyingliang@huawei.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -71,22 +71,22 @@ On 16/06/2021 11:16, Yang Yingliang wrote:
 > 
 > Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 > ---
->  sound/soc/samsung/i2s.c | 3 +--
+>  sound/soc/samsung/pcm.c | 3 +--
 >  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-> index c632842d42eb..309badc97290 100644
-> --- a/sound/soc/samsung/i2s.c
-> +++ b/sound/soc/samsung/i2s.c
-> @@ -1441,8 +1441,7 @@ static int samsung_i2s_probe(struct platform_device *pdev)
->  		}
->  	}
+> diff --git a/sound/soc/samsung/pcm.c b/sound/soc/samsung/pcm.c
+> index bfd76e9cc0ca..4c4dfde0568f 100644
+> --- a/sound/soc/samsung/pcm.c
+> +++ b/sound/soc/samsung/pcm.c
+> @@ -512,8 +512,7 @@ static int s3c_pcm_dev_probe(struct platform_device *pdev)
+>  	/* Default is 128fs */
+>  	pcm->sclk_per_fs = 128;
 >  
-> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	priv->addr = devm_ioremap_resource(&pdev->dev, res);
-> +	priv->addr = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
->  	if (IS_ERR(priv->addr))
->  		return PTR_ERR(priv->addr);
+> -	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	pcm->regs = devm_ioremap_resource(&pdev->dev, mem_res);
+> +	pcm->regs = devm_platform_get_and_ioremap_resource(pdev, 0, &mem_res);
+>  	if (IS_ERR(pcm->regs))
+>  		return PTR_ERR(pcm->regs);
 >  
 > 
 
