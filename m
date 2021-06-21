@@ -2,104 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1223AEBBC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD863AEBC4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:51:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhFUOwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 10:52:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35162 "EHLO
+        id S230189AbhFUOyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 10:54:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbhFUOwG (ORCPT
+        with ESMTP id S229790AbhFUOyH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 10:52:06 -0400
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEFEAC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:49:50 -0700 (PDT)
-Received: by mail-qt1-x830.google.com with SMTP id o19so13566306qtp.5
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:49:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7EhCVDJi9/mtNith6sHIuVtzdsDVwMIUM7u21aSrhMw=;
-        b=pMj9icezCyVPhAoUcyIC4hXg8iF9vNR6ki/LwTLTUx9T50dBy/aY+JIQc2BM9Hz1/z
-         JkL9Jm7F3sTwTj1cBu4VqQ0lfWp+QeZb+UHm3PoPx1trXAkMT1LHeTAZ6a272Hh7Cypf
-         IolYhYiuvw6yY/3OnYlCLxHAyGeUoFVQKeTwptIxn6w6eA5jjABocMAs4na9+zV2VW5T
-         rz9L38LXMzbPG5+9/L86DpSMJOUqS31ppQLS8vlTPUn6gfpb9oKUdfcwayMnbRDQquI9
-         O2qE291+F/7jfBsLM1X67J41Z4Pn6F3VqTRzoFIhrsTP3dOflNs6XlBQ7VQiN7wGxWNO
-         b1bQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7EhCVDJi9/mtNith6sHIuVtzdsDVwMIUM7u21aSrhMw=;
-        b=NPXEglX4DQLolwBxGZ8oq/qfPd9dTcOnLUzy+WdT12nQCaqEcAyFiPF1JFyEjTv1uP
-         AbyEn+yChqXT/wJ9D/XRxBCIFSVn/Ga8Qo5aw9Q/PVofppttVR86w/5ymfirf/wk6TzO
-         Cf3wlhIzZ4+kedVgtk/gx9txPG54NKfukUhf+0ePhDviTRMUd8A3Ce3V6ffTMCYkVlLd
-         V8cK8qWJu+OgcAi2ikuGNzV3sKx5cnkOmze0lug+NmsKt956ngJtPV9jx9Fsngq/h6Hg
-         VheFp1yUSeNqG1KS/Yu9LuNyHNzZXsbJV6f6Q9s8Ewp2JtN9zol7XP//hIdmnqTKgSgR
-         GRTw==
-X-Gm-Message-State: AOAM533p2qGYYRVGC516grOvf2V1VdpFDWEWi8W4fXDSmwPvEouVff0e
-        2QUK+zAHk5Bap9RJojq6Xwkk3Q==
-X-Google-Smtp-Source: ABdhPJyQ783oDw7ztSH9iUqFrEniMfq/XeByphnoK7SGzg/3oOO5hx+wfM7vN3NxmC0psXJAIBTnIQ==
-X-Received: by 2002:ac8:4d84:: with SMTP id a4mr24377635qtw.319.1624286989919;
-        Mon, 21 Jun 2021 07:49:49 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id 186sm4426217qkf.29.2021.06.21.07.49.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 07:49:49 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lvLFE-009XIx-Pt; Mon, 21 Jun 2021 11:49:48 -0300
-Date:   Mon, 21 Jun 2021 11:49:48 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>, Doug Ledford <dledford@redhat.com>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Tomer Tayar <ttayar@habana.ai>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v3 1/2] habanalabs: define uAPI to export FD for DMA-BUF
-Message-ID: <20210621144948.GG1096940@ziepe.ca>
-References: <20210618123615.11456-1-ogabbay@kernel.org>
- <CAKMK7uFOfoxbD2Z5mb-qHFnUe5rObGKQ6Ygh--HSH9M=9bziGg@mail.gmail.com>
- <YNCN0ulL6DQiRJaB@kroah.com>
- <YNCgM1svqKGUhcFY@phenom.ffwll.local>
+        Mon, 21 Jun 2021 10:54:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F9DC061574;
+        Mon, 21 Jun 2021 07:51:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=E5UtLj3YvE+3pbwbOhdxSbthFE/nQMzXTvlgUtUaz0A=; b=WrgMDakfQkZ2nkppn4qLsDXgC2
+        ZZ/NiJTOlED2t/bDaix2G/7oeu4m9FKk7SX5nJUgArPJrugNDxSVR6MLOwAWHh7fS73gODhiHIRBF
+        ncxXH1nbOMKvToqdsgvHHQEGUPYiLVXpMAflgPpHZtDtCtQVIQwHmRdfMheZcFRjkW7va7RE9GWWZ
+        yJ3Z9NoqOq6JnJjVq6+dFCQFtjjOpIqPV8Xgdz0RZtC2fWGWSidfKkSQHB4oZRW9dZaLcTOUOTfeJ
+        OO7D0Jt2IQkBLiPGPzLNPW7gG2Wpe/j5J8gPTPzp4Xr0VhIzkv8sbJ69jtwpRqSRYGWvRyjD36VXH
+        /mDIem5A==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvLGD-00DCT3-5t; Mon, 21 Jun 2021 14:51:03 +0000
+Date:   Mon, 21 Jun 2021 15:50:49 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     David Howells <dhowells@redhat.com>
+Cc:     linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+        Andrew W Elble <aweits@rit.edu>,
+        Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] netfs: fix test for whether we can skip read when
+ writing beyond EOF
+Message-ID: <YNCnSQyKWqV8SkRs@casper.infradead.org>
+References: <162391823192.1173366.9740514875196345746.stgit@warthog.procyon.org.uk>
+ <162391826758.1173366.11794946719301590013.stgit@warthog.procyon.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YNCgM1svqKGUhcFY@phenom.ffwll.local>
+In-Reply-To: <162391826758.1173366.11794946719301590013.stgit@warthog.procyon.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 04:20:35PM +0200, Daniel Vetter wrote:
+On Thu, Jun 17, 2021 at 09:24:27AM +0100, David Howells wrote:
+> From: Jeff Layton <jlayton@kernel.org>
+> 
+> It's not sufficient to skip reading when the pos is beyond the EOF.
+> There may be data at the head of the page that we need to fill in
+> before the write.
+> 
+> Add a new helper function that corrects and clarifies the logic of
+> when we can skip reads, and have it only zero out the part of the page
+> that won't have data copied in for the write.
+> 
+> Finally, don't set the page Uptodate after zeroing. It's not up to date
+> since the write data won't have been copied in yet.
+> 
+> [DH made the following changes:
+> 
+>  - Prefixed the new function with "netfs_".
+> 
+>  - Don't call zero_user_segments() for a full-page write.
+> 
+>  - Altered the beyond-last-page check to avoid a DIV instruction and got
+>    rid of then-redundant zero-length file check.
+> ]
+> 
+> Fixes: e1b1240c1ff5f ("netfs: Add write_begin helper")
+> Reported-by: Andrew W Elble <aweits@rit.edu>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> Signed-off-by: David Howells <dhowells@redhat.com>
+> cc: ceph-devel@vger.kernel.org
+> Link: https://lore.kernel.org/r/20210613233345.113565-1-jlayton@kernel.org/
+> Link: https://lore.kernel.org/r/162367683365.460125.4467036947364047314.stgit@warthog.procyon.org.uk/ # v1
 
-> Also unless we're actually doing this properly there's zero incentive for
-> me to review the kernel code and check whether it follows the rules
-> correctly, so you have excellent chances that you just break the rules.
-> And dma_buf/fence are tricky enough that you pretty much guaranteed to
-> break the rules if you're not involved in the discussions. Just now we
-> have a big one where everyone involved (who's been doing this for 10+
-> years all at least) realizes we've fucked up big time.
-
-This is where I come from on dmabuf, it is fiendishly
-complicated. Don't use it unless you absoultely have to, are in DRM,
-and have people like Daniel helping to make sure you use it right.
-
-It's whole premise and design is compromised by specialty historical
-implementation choices on the GPU side.
-
-Jason
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
