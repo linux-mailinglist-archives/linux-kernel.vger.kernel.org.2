@@ -2,119 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2823AF1E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:25:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017E83AF1EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 19:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbhFUR16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 13:27:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231397AbhFUR1r (ORCPT
+        id S231463AbhFUR2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 13:28:31 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:59582 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230239AbhFUR23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 13:27:47 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E3E0C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:25:32 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id r16so8225783oiw.3
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 10:25:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PnPX+kMwwqow5LYukSPE/j5CcoTy7NRtog3utuQq2IE=;
-        b=IlM4/QIr6kXMDieXq2favI4BOm+o5ZxnHdZwUYTjCqrBZSaWC4gwwIF+F4B9F5qSdf
-         aixUjWQLgS/AXi3OR7McxgHlOKNSFUlc5g8bEKu9UXwxwf9AWPQ4i/9DyNe9ICC96o0z
-         KXXcpuxr22bkxc2HK8qkfH9ZOQKs907KKN6SL4471gnxBZfLveRLtNG/2P3sUyGNT0K5
-         tiK962EvGmj2OJ/2eAMO7IcauWF3j/t64jubulaqCaE5JZZ94PVrXN+lDT9dpBDyomDp
-         IqPIGpw72Sz99ly/1y5ASkIq/xzK1JWnDxNmEiFazMrjkUnxkFj6UFfRxO4Cp/r+TIz8
-         Tgmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PnPX+kMwwqow5LYukSPE/j5CcoTy7NRtog3utuQq2IE=;
-        b=Ful/gkZgCtaRskSXX4ySfJAf1KcoUlQLpNrl62WV4KzWTn7UIApEl6CWVDpFt/wWPh
-         VJL7s6Wtw7/pIOdCMfpb494f3AB05PnGY16Lw7sLKiy/yEguu5KmB3vOMCTcFtyh3lzy
-         N+rgSPNYXH99jdO82Cp4UrALcT3/mpf0t9929h2VqLUzKa8CFLXd4cdFZ4FNje3pxPzn
-         hKJXBuTKGrJeubATWiApXheXbCFJbkdHiPs+K1BNx4pbz5JZH/LCjFFqg4IKAbrH5TNK
-         12zYTj29S0g7o25WYWiHFNsqZslGvV2hMezFca4eLpWq+iBBoFSYdr4fXXwp/tLNhW1e
-         oczw==
-X-Gm-Message-State: AOAM532WAu3yD/3VgRDhkO75R6Kw4scI4KHchFH1RuYOvOQG7uVD54Sb
-        f6YnIbwJEXC/tjI1+hKHvyua2Q==
-X-Google-Smtp-Source: ABdhPJyoXPEE4Y+PUiCrrS+ozWk1/WGyHTeIxyXg0SQgO/W4PkuHBbK13rxi4TsTt6HtaEnAmw6ebQ==
-X-Received: by 2002:aca:b38a:: with SMTP id c132mr17388459oif.90.1624296331567;
-        Mon, 21 Jun 2021 10:25:31 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id u10sm4235029otj.75.2021.06.21.10.25.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 10:25:31 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 12:25:28 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Viresh Kumar <vireshk@kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Alex Benn?e <alex.bennee@linaro.org>,
-        stratos-dev@op-lists.linaro.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Stefano Garzarella --cc virtualization @ lists . linux-foundation . org" 
-        <sgarzare@redhat.com>, virtualization@lists.linux-foundation.org,
-        Alistair Strachan <astrachan@google.com>
-Subject: Re: [PATCH V3 1/3] gpio: Add virtio-gpio driver
-Message-ID: <YNDLiPYkmLZN076t@yoga>
-References: <cover.1623326176.git.viresh.kumar@linaro.org>
- <10442926ae8a65f716bfc23f32339a6b35e51d5a.1623326176.git.viresh.kumar@linaro.org>
- <CACRpkdZV2v2S5z7CZf_8DV=At9-oPSj7RYFH78hWy3ZX37QnDQ@mail.gmail.com>
- <YMlwTiN4Y9bK3M4Q@yoga>
- <8d58da79-8e54-048b-db89-8c1caaa0320f@metux.net>
+        Mon, 21 Jun 2021 13:28:29 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.1.0)
+ id aad6e4917f8b4308; Mon, 21 Jun 2021 19:26:13 +0200
+Received: from kreacher.localnet (89-64-82-37.dynamic.chello.pl [89.64.82.37])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by v370.home.net.pl (Postfix) with ESMTPSA id 3B1C0669A35;
+        Mon, 21 Jun 2021 19:26:13 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] cpufreq: Make cpufreq_online() call driver->offline() on errors
+Date:   Mon, 21 Jun 2021 19:26:12 +0200
+Message-ID: <11788436.O9o76ZdvQC@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8d58da79-8e54-048b-db89-8c1caaa0320f@metux.net>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.64.82.37
+X-CLIENT-HOSTNAME: 89-64-82-37.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrfeefledguddufecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhephfegtdffjeehkeegleejveevtdeugfffieeijeduuddtkefgjedvheeujeejtedvnecukfhppeekledrieegrdekvddrfeejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedvrdefjedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehvihhrvghshhdrkhhumhgrrheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 16 Jun 10:52 CDT 2021, Enrico Weigelt, metux IT consult wrote:
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-> On 16.06.21 05:30, Bjorn Andersson wrote:
-> 
-> > Combined with the virtio-i2c effort this could provide an alternative by
-> > simply tunneling the busses and GPIOs into Linux and use standard iio
-> > drivers, for cases where this suits your product requirements better.
-> 
-> So, you wanna use virtio as logical interface between the two CPUs ?
-> Interesting idea. Usually folks use rpmsg for those things.
-> 
+In the CPU removal path the ->offline() callback provided by the
+driver is always invoked before ->exit(), but in the cpufreq_online()
+error path it is not, so ->exit() is somehow expected to know the
+context in which it has been called and act accordingly.
 
-rpmsg is a layer on top of virtio, so this would be an extension of the
-existing model.
+That is less than straightforward, so make cpufreq_online() invoke
+the driver's ->offline() callback before ->exit() too.
 
-There's been discussions (and I believe some implementations) related to
-bridging I2C requests over rpmsg, but I think it's preferable to
-standardize around the virtio based bearer directly.
+This only potentially affects intel_pstate at this point.
 
-> What is running on the secondary CPU ? Some OS like Linux or some bare
-> metal stuff ? What kind of CPU is that anyways ?
-> 
+Fixes: 91a12e91dc39 ("cpufreq: Allow light-weight tear down and bring up of CPUs")
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/cpufreq/cpufreq.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-These ideas revolves around platforms that implements something like the
-"Android Sensor Hub", which provides some resource constraint
-co-processor that deals with sensor device interaction and processing of
-the data without waking up the power-hungry ARM cores.
+Index: linux-pm/drivers/cpufreq/cpufreq.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/cpufreq.c
++++ linux-pm/drivers/cpufreq/cpufreq.c
+@@ -1516,6 +1516,9 @@ out_destroy_policy:
+ 	up_write(&policy->rwsem);
+ 
+ out_exit_policy:
++	if (cpufreq_driver->offline)
++		cpufreq_driver->offline(policy);
++
+ 	if (cpufreq_driver->exit)
+ 		cpufreq_driver->exit(policy);
+ 
 
-Given the focus on power consumption I would guess that these are not
-going to run Linux. Core-wise I've seen this implemented using primarily
-ARM and Hexagon cores.
 
-Regards,
-Bjorn
+
