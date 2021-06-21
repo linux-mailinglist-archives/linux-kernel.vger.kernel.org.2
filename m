@@ -2,76 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637283AE1C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 05:00:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5AB73AE1CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 05:09:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230292AbhFUDCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 23:02:22 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:46866 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230040AbhFUDCT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 23:02:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=XABV+fu7WuBVU7Zls9QFXa3bbNJ3I+XWXwAfc4iCagM=; b=XbDrYm+k9lPNM9DBO1jazoZUY3
-        25ONFFIOVQqOCIShwwvslQogAmAk1mE6v5ZEDGV/m9HIYVHkVKZGWKopFLCycJAQeESERZrghSBF8
-        YLT0rayJyNbComtrUjsR+wl10Kxt5Z8YTyBNOAUXDw7RTaxOKdJHCCSveMZYVrkGZyVA=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lvAA7-00ARav-E5; Mon, 21 Jun 2021 04:59:47 +0200
-Date:   Mon, 21 Jun 2021 04:59:47 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Qing Zhang <zhangqing@loongson.cn>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Huacai Chen <chenhc@lemote.com>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH 2/4] MIPS: Loongson64: Add GMAC support for
- Loongson-2K1000
-Message-ID: <YNAAo+ABaMVmArcM@lunn.ch>
-References: <20210618025337.5705-1-zhangqing@loongson.cn>
- <20210618025337.5705-2-zhangqing@loongson.cn>
+        id S230032AbhFUDMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 23:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229877AbhFUDMH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 20 Jun 2021 23:12:07 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA85CC061756
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 20:09:52 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id e22so6801091pgv.10
+        for <linux-kernel@vger.kernel.org>; Sun, 20 Jun 2021 20:09:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=m3qVLmPqXTkn2QcO19eSXMz6mJEyfIae5C0oRCwTDbw=;
+        b=CNIyupoYyrLVei4yPnyB4/Fv9SicuTjksAdw3wdy6B/wiCoIifqizrppLUsmOJX9iq
+         V/EJopL6ZI+zv9TNYFh+BlVq9GD601W+4uJvDfReSSSLjSMJI6/ff9KXf4HlP5YUb1T2
+         L5LgbPjCWaiqVxmjrbvhSJ+hYEHTs5Sl/Jq475VtgIGAbjSBumqI8BwRvarHScN/i957
+         UWQKcC32pOXuQs1pGNgdx4QmkgE6+LFIWxqPSUYHBvd95vw6JaOKNyVADdHZt+Eu3ffr
+         YzjZDFgI6MLRJ+bqPhlebRViBme5hhplaY8WZCczTDHfObZs3dhC2j+jm9C4DDTCVIrK
+         OzJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=m3qVLmPqXTkn2QcO19eSXMz6mJEyfIae5C0oRCwTDbw=;
+        b=fRN2fHNRFI5vj7HhJr5y3M0gcPKXUdaa33LrQankrRl1Zu00xx5H/mwgWJuigKNeyc
+         UgSZYQNXPXKGoUKW1fmtUdu6JEWeYBBWEZBGqBOiBAjvYka4Hn+4POnSsU7jHPO6G+L4
+         6qDmczN1dVEzyAJaP284116ZQOAyp+5o47Guw6XxrmtGhkMClbtc2gpbIGlNY8Wm4LbL
+         /BIQVk14usR8fSAr81EVHN/L2/SYKQgDQi+HmyZLiO1eaF/zgxaRQFOIwvBICvK0OCBj
+         JExtFxM+nqBQkUywqE5Jpk6ytgKtqFXCayVg79Wn6g2JJ2SnEf+JdpcCekd93WIpzyrp
+         bh2Q==
+X-Gm-Message-State: AOAM530iaf+UyYlOFQ14Yq5BwA/s/vetYXl4Iid5n3hknrpUUNTb5HA1
+        x49K87z23yGPdMBg1hMQ4bCE3snHVj7v8w==
+X-Google-Smtp-Source: ABdhPJwF6IXIpvn79W6lsrkAV4uspeJ32tJfUC85SDsv+qGcI7ddlZuDOpXAB6E6Sm6z2XbSlJNFng==
+X-Received: by 2002:a63:1324:: with SMTP id i36mr21597068pgl.44.1624244992132;
+        Sun, 20 Jun 2021 20:09:52 -0700 (PDT)
+Received: from localhost ([136.185.134.182])
+        by smtp.gmail.com with ESMTPSA id j10sm10610139pjz.36.2021.06.20.20.09.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 20 Jun 2021 20:09:51 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 08:39:49 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dirk Brandewie <dirk.brandewie@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V3 2/3] cpufreq: intel_pstate: Migrate away from
+ ->stop_cpu() callback
+Message-ID: <20210621030949.tng5xzq7dm7ngaez@vireshk-i7>
+References: <5c8da9d378dee39d9c6063713b093f51d271fa9d.1623825358.git.viresh.kumar@linaro.org>
+ <c31424b7962608eb13f946a665ba6848c4986856.1623986349.git.viresh.kumar@linaro.org>
+ <CAJZ5v0h37bs0xLUCeD7ZuZfXLPBx=6Mpr-Y+Ef=qcnDA4aoLbQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210618025337.5705-2-zhangqing@loongson.cn>
+In-Reply-To: <CAJZ5v0h37bs0xLUCeD7ZuZfXLPBx=6Mpr-Y+Ef=qcnDA4aoLbQ@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +			gmac@3,1 {
-> +				compatible = "pci0014,7a03.0",
-> +						   "pci0014,7a03",
-> +						   "pciclass0c0320",
-> +						   "pciclass0c03",
-> +						   "loongson, pci-gmac";
-> +
-> +				reg = <0x1900 0x0 0x0 0x0 0x0>;
-> +				interrupts = <14 IRQ_TYPE_LEVEL_LOW>,
-> +					     <15 IRQ_TYPE_LEVEL_LOW>;
-> +				interrupt-names = "macirq", "eth_lpi";
-> +				interrupt-parent = <&liointc0>;
-> +				phy-mode = "rgmii";
+On 18-06-21, 14:00, Rafael J. Wysocki wrote:
+> On Fri, Jun 18, 2021 at 5:22 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> >
+> > commit 367dc4aa932b ("cpufreq: Add stop CPU callback to cpufreq_driver
+> > interface") added the stop_cpu() callback to allow the drivers to do
+> > clean up before the CPU is completely down and its state can't be
+> > modified.
+> >
+> > At that time the CPU hotplug framework used to call the cpufreq core's
+> > registered notifier for different events like CPU_DOWN_PREPARE and
+> > CPU_POST_DEAD. The stop_cpu() callback was called during the
+> > CPU_DOWN_PREPARE event.
+> >
+> > This is no longer the case, cpuhp_cpufreq_offline() is called only once
+> > by the CPU hotplug core now and we don't really need to separately
+> > call stop_cpu() for cpufreq drivers.
+> >
+> > Migrate to using the exit() and offline() callbacks instead of
+> > stop_cpu().
+> >
+> > We need to clear util hook from both the callbacks, exit() and
+> > offline(), since it is possible that only exit() gets called sometimes
+> > (specially on errors) or both get called at other times.
+> > intel_pstate_clear_update_util_hook() anyway have enough protection in
+> > place if it gets called a second time and will return early then.
+> >
+> > Cc: Dirk Brandewie <dirk.brandewie@gmail.com>
+> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> > ---
+> > V2->V3:
+> > - Update intel_pstate_cpu_offline() as well.
+> > - Improved commit log.
+> >
+> >  drivers/cpufreq/intel_pstate.c | 12 ++++--------
+> >  1 file changed, 4 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+> > index 0e69dffd5a76..8f8a2d9d7daa 100644
+> > --- a/drivers/cpufreq/intel_pstate.c
+> > +++ b/drivers/cpufreq/intel_pstate.c
+> > @@ -2335,6 +2335,8 @@ static int intel_pstate_cpu_offline(struct cpufreq_policy *policy)
+> >
+> >         pr_debug("CPU %d going offline\n", cpu->cpu);
+> >
+> > +       intel_pstate_clear_update_util_hook(policy->cpu);
+> > +
+> >         if (cpu->suspended)
+> >                 return 0;
+> >
+> > @@ -2374,17 +2376,12 @@ static int intel_pstate_cpu_online(struct cpufreq_policy *policy)
+> >         return 0;
+> >  }
+> >
+> > -static void intel_pstate_stop_cpu(struct cpufreq_policy *policy)
+> > -{
+> > -       pr_debug("CPU %d stopping\n", policy->cpu);
+> > -
+> > -       intel_pstate_clear_update_util_hook(policy->cpu);
+> > -}
+> > -
+> >  static int intel_pstate_cpu_exit(struct cpufreq_policy *policy)
+> >  {
+> >         pr_debug("CPU %d exiting\n", policy->cpu);
+> >
+> > +       intel_pstate_clear_update_util_hook(policy->cpu);
+> 
+> This change is not needed now, because ->offline always runs before
+> ->exit if present.
 
-rgmii? But you set PHY_INTERFACE_MODE_GMII?
+Not necessarily, we don't call ->offline() for many error paths in
+cpufreq_online(). offline() only comes into play after driver is registered
+properly once.
 
-> +				mdio {
-> +					#address-cells = <1>;
-> +					#size-cells = <0>;
-> +					compatible = "snps,dwmac-mdio";
-> +					phy1: ethernet-phy@1 {
-> +						reg = <0>;
-
-The value after the @ should match the reg value.
-
-    Andrew
+-- 
+viresh
