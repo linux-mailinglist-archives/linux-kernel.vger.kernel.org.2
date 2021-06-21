@@ -2,329 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7252C3AF713
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 22:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBB83AF720
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 23:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231239AbhFUU7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 16:59:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35060 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230052AbhFUU7g (ORCPT
+        id S231269AbhFUVCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 17:02:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230102AbhFUVCU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 16:59:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624309041;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=AE8kdmyLHvxX2d1D1AQCBeBTYVUT9uDfKsv6OMIzvPg=;
-        b=Q83hXqLb81nf0OU269ntyvWQLlbH1vgYSK+Pp8CV3qYQwVpS4BmdNeZICxwBGt2M21XYNk
-        qXcb+NT/lljz5/L/yaSygBLTHVoiQ3YOJ1DcXAoumqlO+2gkbv1qbmR1MDx5hVRLLoUefW
-        v5pCGWJJzQM4YcA41fn3j9w7m4k4t68=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-291-nNwjOyoPNA6gJa0SVBuCPA-1; Mon, 21 Jun 2021 16:57:20 -0400
-X-MC-Unique: nNwjOyoPNA6gJa0SVBuCPA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4B01B100C609;
-        Mon, 21 Jun 2021 20:57:18 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AC70460C13;
-        Mon, 21 Jun 2021 20:57:16 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-Subject: [PATCH] afs: Fix tracepoint string placement with built-in AFS
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-Cc:     "Alexey Dobriyan (SK hynix)" <adobriyan@gmail.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Mon, 21 Jun 2021 17:02:20 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08830C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:00:05 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id y13-20020a1c4b0d0000b02901c20173e165so902663wma.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:00:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=xA58HD/7gnajS6qk34Ai7OQ9mkRPbhDwepfq+viVvEE=;
+        b=jjaBzzj/7EfHBKn4zRPnzH4Uj/gaxV9Ap2RnuYS3uJZrdnBaYqOtOtcgVMhc1/NjvU
+         kLoc8wvqKLtTGYlQxZEqTDiypimXvljAOCRxoiKAjWImuirFzZKI6PeVXRgOXJKetR77
+         OYl64f7LAKhsJ782dtPt3BewXxS29NRUU5lsPs9TftA6vcWMx/8nWZWz9htWb9fEJLft
+         0ziCJyt8G7JZCsGIp4oSqVN4nKUYwt6f+FduOvMaHvJLAKyG2XHnvfbE5iDdKopqe9gk
+         WzDwoRCZYEGMTRNCPF26iZcW1v756targ9vE49IEoaaRzZFNPrw+XEJ4HXkLM6W17WAz
+         2+7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xA58HD/7gnajS6qk34Ai7OQ9mkRPbhDwepfq+viVvEE=;
+        b=D26pA6jhrFl1Y7uycg/GVOJJgfDEeh9slSxBn7ba8ln9m9JIoKqVgMUTT6xZDYjesU
+         M0WyqDSJIp8P+W1SVD6Wannyu5ZJ8jeryJQdySPtV1/tUq4UGpTXXz6hYvu0HSkClwYR
+         E0Ve4pSx8qVQYwxh9vNdbXgBqDFeN/E05bvxgPVvmfNbb0V2EtFnVMgJuNX6pj8s4C3p
+         TkdqHLEahIp0XiKC7QRCILupXSGYaYvPzDgx+StrLgBa1B/8v0eXEPd0zLtrAqcJD70N
+         54MMCPV4VvSDKibtuYcs5lqcysNP1IFyrikuCr/uSxTWqFvxqu6bQoXig2svigU+Scee
+         QVgQ==
+X-Gm-Message-State: AOAM531fvXBlWQlS+KcxVu5mcYmEVqt0NQm4bVjOG7CY0nX8y8w5PMLB
+        jc2vutw9ogQ5T5uExlPxZvKUOA==
+X-Google-Smtp-Source: ABdhPJz8ODwHt5Y5HBln/QPZYlLgKLzimB5hQ6XwJ/lhbau52eKnFqAQAQLjJ58VFQCgXOBMPUnvSA==
+X-Received: by 2002:a1c:18d:: with SMTP id 135mr247455wmb.55.1624309202217;
+        Mon, 21 Jun 2021 14:00:02 -0700 (PDT)
+Received: from ?IPv6:2a02:8084:e84:2480:228:f8ff:fe6f:83a8? ([2a02:8084:e84:2480:228:f8ff:fe6f:83a8])
+        by smtp.gmail.com with ESMTPSA id z10sm133978wmp.39.2021.06.21.14.00.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 14:00:01 -0700 (PDT)
+Subject: Re: [PATCH v3 01/23] x86/elf: Check in_x32_syscall() in
+ compat_arch_setup_additional_pages()
+To:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
         Andrew Morton <akpm@linux-foundation.org>,
-        linux-afs@lists.infradead.org, dhowells@redhat.com,
-        adobriyan@gmail.com, akpm@linux-foundation.org,
-        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Mon, 21 Jun 2021 21:57:15 +0100
-Message-ID: <162430903582.2896199.6098150063997983353.stgit@warthog.procyon.org.uk>
-User-Agent: StGit/0.23
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Guo Ren <guoren@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Will Deacon <will@kernel.org>, x86@kernel.org
+References: <20210611180242.711399-1-dima@arista.com>
+ <20210611180242.711399-2-dima@arista.com>
+ <87tulth9j8.ffs@nanos.tec.linutronix.de>
+From:   Dmitry Safonov <dima@arista.com>
+Message-ID: <2fdcea8f-521d-c06c-15f0-b0b6782fd30e@arista.com>
+Date:   Mon, 21 Jun 2021 21:59:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <87tulth9j8.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To quote Alexey[1]:
+Hi Thomas,
 
-    I was adding custom tracepoint to the kernel, grabbed full F34 kernel
-    .config, disabled modules and booted whole shebang as VM kernel.
+On 6/19/21 9:41 PM, Thomas Gleixner wrote:
+> On Fri, Jun 11 2021 at 19:02, Dmitry Safonov wrote:
+>> Partly revert commit 3316ec8ccd34 ("x86/elf: Use e_machine to check for
+>> x32/ia32 in setup_additional_pages()") and commit 9a29a671902c ("elf:
+>> Expose ELF header on arch_setup_additional_pages()".
+>> Both patches did a good thing: removed usage of TIF_X32, but with
+>> a price of additional macros ARCH_SETUP_ADDITIONAL_PAGES() and ifdeffs.
+>>
+>> Instead, use in_x32_syscall() - the first thing load_elf_binary() does
+>> after parsing and checking new ELF binary. It's done that early after
+>> exec() that mmap() code already uses it straight away, which is needed
+>> to know which mmap_base to use (see arch_pick_mmap_layout()).
+>> Add comments to describe how it works.
+> 
+> I still have no idea what this is trying to solve. All you describe is
+> what this does.
 
-    Then did
+Yeah, I still have problems with describing why rather than what sometimes..
 
-	perf record -a -e ...
+How about something like this:
 
-    It crashed:
+In order to simplify code, new macro ARCH_SETUP_ADDITIONAL_PAGES() can
+be dropped as well as a new argument in
+compat_arch_setup_additional_pages(). Resulting in partial revert of the
+commit 3316ec8ccd34 ("x86/elf: Use e_machine to check for x32/ia32 in
+setup_additional_pages()") and the commit 9a29a671902c ("elf: Expose ELF
+header on arch_setup_additional_pages()".
 
-	general protection fault, probably for non-canonical address 0x435f5346592e4243: 0000 [#1] SMP PTI
-	CPU: 1 PID: 842 Comm: cat Not tainted 5.12.6+ #26
-	Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1.fc33 04/01/2014
-	RIP: 0010:t_show+0x22/0xd0
+Instead of a new macro and an additional function argument, use
+in_x32_syscall() which is already valid at the moment of premapping
+vDSO. Add comments to describe how it works.
 
-    Then reproducer was narrowed to
-
-	# cat /sys/kernel/tracing/printk_formats
-
-    Original F34 kernel with modules didn't crash.
-
-    So I started to disable options and after disabling AFS everything
-    started working again.
-
-    The root cause is that AFS was placing char arrays content into a
-    section full of _pointers_ to strings with predictable consequences.
-
-    Non canonical address 435f5346592e4243 is "CB.YFS_" which came from
-    CM_NAME macro.
-
-    Steps to reproduce:
-
-	CONFIG_AFS=y
-	CONFIG_TRACING=y
-
-	# cat /sys/kernel/tracing/printk_formats
-
-Fix this by the following means:
-
- (1) Add enum->string translation tables in the event header with the AFS
-     and YFS cache/callback manager operations listed by RPC operation ID.
-
- (2) Modify the afs_cb_call tracepoint to print the string from the
-     translation table rather than using the string at the afs_call name
-     pointer.
-
- (3) Switch translation table depending on the service we're being accessed
-     as (AFS or YFS) in the tracepoint print clause.  Will this cause
-     problems to userspace utilities?
-
-     Note that the symbolic representation of the YFS service ID isn't
-     available to this header, so I've put it in as a number.  I'm not sure
-     if this is the best way to do this.
-
- (4) Remove the name wrangling (CM_NAME) macro and put the names directly
-     into the afs_call_type structs in cmservice.c.
-
-Fixes: 8e8d7f13b6d5a9 ("afs: Add some tracepoints")
-Reported-by: Alexey Dobriyan (SK hynix) <adobriyan@gmail.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-cc: Andrew Morton <akpm@linux-foundation.org>
-cc: linux-afs@lists.infradead.org
-Link: https://lore.kernel.org/r/YLAXfvZ+rObEOdc%2F@localhost.localdomain/ [1]
-Link: https://lore.kernel.org/r/643721.1623754699@warthog.procyon.org.uk/ # v1
----
-
- fs/afs/cmservice.c         |   25 +++++-----------
- include/trace/events/afs.h |   67 +++++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 69 insertions(+), 23 deletions(-)
-
-diff --git a/fs/afs/cmservice.c b/fs/afs/cmservice.c
-index d3c6bb22c5f4..a3f5de28be79 100644
---- a/fs/afs/cmservice.c
-+++ b/fs/afs/cmservice.c
-@@ -29,16 +29,11 @@ static void SRXAFSCB_TellMeAboutYourself(struct work_struct *);
- 
- static int afs_deliver_yfs_cb_callback(struct afs_call *);
- 
--#define CM_NAME(name) \
--	char afs_SRXCB##name##_name[] __tracepoint_string =	\
--		"CB." #name
--
- /*
-  * CB.CallBack operation type
-  */
--static CM_NAME(CallBack);
- static const struct afs_call_type afs_SRXCBCallBack = {
--	.name		= afs_SRXCBCallBack_name,
-+	.name		= "CB.CallBack",
- 	.deliver	= afs_deliver_cb_callback,
- 	.destructor	= afs_cm_destructor,
- 	.work		= SRXAFSCB_CallBack,
-@@ -47,9 +42,8 @@ static const struct afs_call_type afs_SRXCBCallBack = {
- /*
-  * CB.InitCallBackState operation type
-  */
--static CM_NAME(InitCallBackState);
- static const struct afs_call_type afs_SRXCBInitCallBackState = {
--	.name		= afs_SRXCBInitCallBackState_name,
-+	.name		= "CB.InitCallBackState",
- 	.deliver	= afs_deliver_cb_init_call_back_state,
- 	.destructor	= afs_cm_destructor,
- 	.work		= SRXAFSCB_InitCallBackState,
-@@ -58,9 +52,8 @@ static const struct afs_call_type afs_SRXCBInitCallBackState = {
- /*
-  * CB.InitCallBackState3 operation type
-  */
--static CM_NAME(InitCallBackState3);
- static const struct afs_call_type afs_SRXCBInitCallBackState3 = {
--	.name		= afs_SRXCBInitCallBackState3_name,
-+	.name		= "CB.InitCallBackState3",
- 	.deliver	= afs_deliver_cb_init_call_back_state3,
- 	.destructor	= afs_cm_destructor,
- 	.work		= SRXAFSCB_InitCallBackState,
-@@ -69,9 +62,8 @@ static const struct afs_call_type afs_SRXCBInitCallBackState3 = {
- /*
-  * CB.Probe operation type
-  */
--static CM_NAME(Probe);
- static const struct afs_call_type afs_SRXCBProbe = {
--	.name		= afs_SRXCBProbe_name,
-+	.name		= "CB.Probe",
- 	.deliver	= afs_deliver_cb_probe,
- 	.destructor	= afs_cm_destructor,
- 	.work		= SRXAFSCB_Probe,
-@@ -80,9 +72,8 @@ static const struct afs_call_type afs_SRXCBProbe = {
- /*
-  * CB.ProbeUuid operation type
-  */
--static CM_NAME(ProbeUuid);
- static const struct afs_call_type afs_SRXCBProbeUuid = {
--	.name		= afs_SRXCBProbeUuid_name,
-+	.name		= "CB.ProbeUuid",
- 	.deliver	= afs_deliver_cb_probe_uuid,
- 	.destructor	= afs_cm_destructor,
- 	.work		= SRXAFSCB_ProbeUuid,
-@@ -91,9 +82,8 @@ static const struct afs_call_type afs_SRXCBProbeUuid = {
- /*
-  * CB.TellMeAboutYourself operation type
-  */
--static CM_NAME(TellMeAboutYourself);
- static const struct afs_call_type afs_SRXCBTellMeAboutYourself = {
--	.name		= afs_SRXCBTellMeAboutYourself_name,
-+	.name		= "CB.TellMeAboutYourself",
- 	.deliver	= afs_deliver_cb_tell_me_about_yourself,
- 	.destructor	= afs_cm_destructor,
- 	.work		= SRXAFSCB_TellMeAboutYourself,
-@@ -102,9 +92,8 @@ static const struct afs_call_type afs_SRXCBTellMeAboutYourself = {
- /*
-  * YFS CB.CallBack operation type
-  */
--static CM_NAME(YFS_CallBack);
- static const struct afs_call_type afs_SRXYFSCB_CallBack = {
--	.name		= afs_SRXCBYFS_CallBack_name,
-+	.name		= "YFSCB.CallBack",
- 	.deliver	= afs_deliver_yfs_cb_callback,
- 	.destructor	= afs_cm_destructor,
- 	.work		= SRXAFSCB_CallBack,
-diff --git a/include/trace/events/afs.h b/include/trace/events/afs.h
-index 3ccf591b2374..9f73ed2cf061 100644
---- a/include/trace/events/afs.h
-+++ b/include/trace/events/afs.h
-@@ -174,6 +174,34 @@ enum afs_vl_operation {
- 	afs_VL_GetCapabilities	= 65537,	/* AFS Get VL server capabilities */
- };
- 
-+enum afs_cm_operation {
-+	afs_CB_CallBack			= 204,	/* AFS break callback promises */
-+	afs_CB_InitCallBackState	= 205,	/* AFS initialise callback state */
-+	afs_CB_Probe			= 206,	/* AFS probe client */
-+	afs_CB_GetLock			= 207,	/* AFS get contents of CM lock table */
-+	afs_CB_GetCE			= 208,	/* AFS get cache file description */
-+	afs_CB_GetXStatsVersion		= 209,	/* AFS get version of extended statistics */
-+	afs_CB_GetXStats		= 210,	/* AFS get contents of extended statistics data */
-+	afs_CB_InitCallBackState3	= 213,	/* AFS initialise callback state, version 3 */
-+	afs_CB_ProbeUuid		= 214,	/* AFS check the client hasn't rebooted */
-+};
-+
-+enum yfs_cm_operation {
-+	yfs_CB_Probe			= 206,	/* YFS probe client */
-+	yfs_CB_GetLock			= 207,	/* YFS get contents of CM lock table */
-+	yfs_CB_XStatsVersion		= 209,	/* YFS get version of extended statistics */
-+	yfs_CB_GetXStats		= 210,	/* YFS get contents of extended statistics data */
-+	yfs_CB_InitCallBackState3	= 213,	/* YFS initialise callback state, version 3 */
-+	yfs_CB_ProbeUuid		= 214,	/* YFS check the client hasn't rebooted */
-+	yfs_CB_GetServerPrefs		= 215,
-+	yfs_CB_GetCellServDV		= 216,
-+	yfs_CB_GetLocalCell		= 217,
-+	yfs_CB_GetCacheConfig		= 218,
-+	yfs_CB_GetCellByNum		= 65537,
-+	yfs_CB_TellMeAboutYourself	= 65538, /* get client capabilities */
-+	yfs_CB_CallBack			= 64204,
-+};
-+
- enum afs_edit_dir_op {
- 	afs_edit_dir_create,
- 	afs_edit_dir_create_error,
-@@ -436,6 +464,32 @@ enum afs_cb_break_reason {
- 	EM(afs_YFSVL_GetCellName,		"YFSVL.GetCellName") \
- 	E_(afs_VL_GetCapabilities,		"VL.GetCapabilities")
- 
-+#define afs_cm_operations \
-+	EM(afs_CB_CallBack,			"CB.CallBack") \
-+	EM(afs_CB_InitCallBackState,		"CB.InitCallBackState") \
-+	EM(afs_CB_Probe,			"CB.Probe") \
-+	EM(afs_CB_GetLock,			"CB.GetLock") \
-+	EM(afs_CB_GetCE,			"CB.GetCE") \
-+	EM(afs_CB_GetXStatsVersion,		"CB.GetXStatsVersion") \
-+	EM(afs_CB_GetXStats,			"CB.GetXStats") \
-+	EM(afs_CB_InitCallBackState3,		"CB.InitCallBackState3") \
-+	E_(afs_CB_ProbeUuid,			"CB.ProbeUuid")
-+
-+#define yfs_cm_operations \
-+	EM(yfs_CB_Probe,			"YFSCB.Probe") \
-+	EM(yfs_CB_GetLock,			"YFSCB.GetLock") \
-+	EM(yfs_CB_XStatsVersion,		"YFSCB.XStatsVersion") \
-+	EM(yfs_CB_GetXStats,			"YFSCB.GetXStats") \
-+	EM(yfs_CB_InitCallBackState3,		"YFSCB.InitCallBackState3") \
-+	EM(yfs_CB_ProbeUuid,			"YFSCB.ProbeUuid") \
-+	EM(yfs_CB_GetServerPrefs,		"YFSCB.GetServerPrefs") \
-+	EM(yfs_CB_GetCellServDV,		"YFSCB.GetCellServDV") \
-+	EM(yfs_CB_GetLocalCell,			"YFSCB.GetLocalCell") \
-+	EM(yfs_CB_GetCacheConfig,		"YFSCB.GetCacheConfig") \
-+	EM(yfs_CB_GetCellByNum,			"YFSCB.GetCellByNum") \
-+	EM(yfs_CB_TellMeAboutYourself,		"YFSCB.TellMeAboutYourself") \
-+	E_(yfs_CB_CallBack,			"YFSCB.CallBack")
-+
- #define afs_edit_dir_ops				  \
- 	EM(afs_edit_dir_create,			"create") \
- 	EM(afs_edit_dir_create_error,		"c_fail") \
-@@ -569,6 +623,8 @@ afs_server_traces;
- afs_cell_traces;
- afs_fs_operations;
- afs_vl_operations;
-+afs_cm_operations;
-+yfs_cm_operations;
- afs_edit_dir_ops;
- afs_edit_dir_reasons;
- afs_eproto_causes;
-@@ -649,20 +705,21 @@ TRACE_EVENT(afs_cb_call,
- 
- 	    TP_STRUCT__entry(
- 		    __field(unsigned int,		call		)
--		    __field(const char *,		name		)
- 		    __field(u32,			op		)
-+		    __field(u16,			service_id	)
- 			     ),
- 
- 	    TP_fast_assign(
- 		    __entry->call	= call->debug_id;
--		    __entry->name	= call->type->name;
- 		    __entry->op		= call->operation_ID;
-+		    __entry->service_id	= call->service_id;
- 			   ),
- 
--	    TP_printk("c=%08x %s o=%u",
-+	    TP_printk("c=%08x %s",
- 		      __entry->call,
--		      __entry->name,
--		      __entry->op)
-+		      __entry->service_id == 2501 ?
-+		      __print_symbolic(__entry->op, yfs_cm_operations) :
-+		      __print_symbolic(__entry->op, afs_cm_operations))
- 	    );
- 
- TRACE_EVENT(afs_call,
-
-
+Thanks for reviewing,
+          Dmitry
