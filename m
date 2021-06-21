@@ -2,145 +2,328 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4D63AE6EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8BAA3AE6F4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbhFUKWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 06:22:37 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:58032 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229661AbhFUKWa (ORCPT
+        id S230157AbhFUKZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 06:25:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57422 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229707AbhFUKZl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 06:22:30 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C3A031FD3D;
-        Mon, 21 Jun 2021 10:20:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624270814; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        Mon, 21 Jun 2021 06:25:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624271007;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=mGh2OZ+sU4YiZUPVUoCzIXLtAvtO7WYOIp/iaCBtXuA=;
-        b=DvW648oTZiOMEIWxTmgurzNn+h3bgEIsQCnn4D4JaFHcp2X1KsBf0+XjehNWUYEfHepW5y
-        foR/c0OoZ0Lc9XgND88cyDxsAHvmnTAGZkUEPgQnGvZZt2arPhRhy03qPFhVvO1ws0DN8W
-        h7kgIlgOUAdWp3yb9L4bDrMZupjqXQ0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624270814;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mGh2OZ+sU4YiZUPVUoCzIXLtAvtO7WYOIp/iaCBtXuA=;
-        b=WgsvjjWcmT3L3DieEOUyWv3HBHM8Ypdoi8a6qwPbhPWk28b/GMwwog+HLEVxfh8ewgBInv
-        RULm+ucz40zCjtAQ==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id B0313118DD;
-        Mon, 21 Jun 2021 10:20:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624270814; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mGh2OZ+sU4YiZUPVUoCzIXLtAvtO7WYOIp/iaCBtXuA=;
-        b=DvW648oTZiOMEIWxTmgurzNn+h3bgEIsQCnn4D4JaFHcp2X1KsBf0+XjehNWUYEfHepW5y
-        foR/c0OoZ0Lc9XgND88cyDxsAHvmnTAGZkUEPgQnGvZZt2arPhRhy03qPFhVvO1ws0DN8W
-        h7kgIlgOUAdWp3yb9L4bDrMZupjqXQ0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624270814;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mGh2OZ+sU4YiZUPVUoCzIXLtAvtO7WYOIp/iaCBtXuA=;
-        b=WgsvjjWcmT3L3DieEOUyWv3HBHM8Ypdoi8a6qwPbhPWk28b/GMwwog+HLEVxfh8ewgBInv
-        RULm+ucz40zCjtAQ==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id kIgqKt5n0GCSZgAALh3uQQ
-        (envelope-from <bp@suse.de>); Mon, 21 Jun 2021 10:20:14 +0000
-Date:   Mon, 21 Jun 2021 12:20:03 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V3 14/66] x86/fpu: Rewrite xfpregs_set()
-Message-ID: <YNBn05LUC7GYtA0u@zn.tnic>
-References: <20210618141823.161158090@linutronix.de>
- <20210618143445.984906200@linutronix.de>
+        bh=17jrUzT4jshvnBr/GQQE2JZlgBMr8a3t05HmI0DNTg4=;
+        b=egWMHILDkjT6eqkPZUwkMzuwGpoawFdBLBhwlphw1ddhzlvzKGAoeH9tvWCy9Ee8Y2BH6j
+        sdPo6TDLCeL2Fmp8wkjNCnybBgfhH5pthMRk1bijRMVn7eJmzZIN/EP4k4NAZVys5tS1rs
+        jDOeTB8KdB921tpRLr6oQnXfOKvlx7U=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-106-HW1k8l_8MICH9iS7MbMkLQ-1; Mon, 21 Jun 2021 06:23:24 -0400
+X-MC-Unique: HW1k8l_8MICH9iS7MbMkLQ-1
+Received: by mail-ej1-f70.google.com with SMTP id w13-20020a170906384db02903d9ad6b26d8so1434237ejc.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 03:23:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=17jrUzT4jshvnBr/GQQE2JZlgBMr8a3t05HmI0DNTg4=;
+        b=A9QNLOUpVRwe220IJP27nz5iNVFTzuxHkVut6PDyU/dF4HBWbBgFR4ISS9i7QWshv0
+         wHQVBvEpbjfgdHB70xVr0uLzN+VRlRDCmFV5+epEyKjjnNSTNo0FEV5xeBGc/3FEJR+i
+         U5AbqPrNIFUxLJZ6e/8SVMeX35BbHVBwJ/blMKqaip2f1vgOmkyh8ugLjBF85GkpLNgn
+         ZAOylWEo/8c4ZFE36cKwBdTQ5SChRzFy0WT92ooTd+OS/JIvwIDYZ0HPiUnTU2iDav0g
+         hHB9jmInGZTkVjQjZl44cWBqpDAWZkCi21tmTVZsYrpFcTygCaSi1AUDWI5vacMeVjVL
+         LX7w==
+X-Gm-Message-State: AOAM531+qQWTxx2oqQRssabxn3TeVOT+N7eN7Tx9OBVHvQB2OfrXu1yl
+        tOdTsn6o7y54nCTROzAiqhnk8E0K5p+0tRRH/qD/tNzxcFk4lue4fxFXDWYku0cFK3Dd78pbTOz
+        OVyWi8I3pIDZzz1NqKd0/fz7j
+X-Received: by 2002:aa7:cd9a:: with SMTP id x26mr20286048edv.185.1624271003578;
+        Mon, 21 Jun 2021 03:23:23 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwCpoPvlmrYqsoTqeuc70ych3y5ZMPCLAOlDvljTKxKtpookqp3Z/KFfPo8f0D5bYXz/2+t4w==
+X-Received: by 2002:aa7:cd9a:: with SMTP id x26mr20286013edv.185.1624271003350;
+        Mon, 21 Jun 2021 03:23:23 -0700 (PDT)
+Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
+        by smtp.gmail.com with ESMTPSA id ch17sm10434983edb.42.2021.06.21.03.23.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 03:23:22 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 12:23:20 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+Subject: Re: [MASSMAIL KLMS] Re: [PATCH v11 11/18] virtio/vsock: dequeue
+ callback for SOCK_SEQPACKET
+Message-ID: <20210621102320.4uaqaee74yynnn2q@steredhat>
+References: <20210611110744.3650456-1-arseny.krasnov@kaspersky.com>
+ <20210611111241.3652274-1-arseny.krasnov@kaspersky.com>
+ <20210618134423.mksgnbmchmow4sgh@steredhat.lan>
+ <bb323125-f802-1d16-7530-6e4f4abb00a6@kaspersky.com>
+ <20210618155555.j5p4v6j5gk2dboj3@steredhat.lan>
+ <650673dc-8b29-657e-5bbd-2cc974628ec9@kaspersky.com>
+ <20210618162509.yppkajmvcbzvidy4@steredhat.lan>
+ <31f58b17-02e6-4246-5ad8-7e8d7892ecb7@kaspersky.com>
+ <b27d3fd1-fa8a-97ff-9035-cf3f525d5866@kaspersky.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210618143445.984906200@linutronix.de>
+In-Reply-To: <b27d3fd1-fa8a-97ff-9035-cf3f525d5866@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 04:18:37PM +0200, Thomas Gleixner wrote:
-> From: Andy Lutomirski <luto@kernel.org>
-> 
-> xfpregs_set() was incomprehensible.  Almost all of the complexity was due
-> to trying to support nonsensically sized writes or -EFAULT errors that
-> would have partially or completely overwritten the destination before
-> failing.  Nonsensically sized input would only have been possible using
-> PTRACE_SETREGSET on REGSET_XFP.  Fortunately, it appears (based on Debian
-> code search results) that no one uses that API at all, let alone with the
-> wrong sized buffer.  Failed user access can be handled more cleanly by
-> first copying to kernel memory.
-> 
-> Just rewrite it to require sensible input.
-> 
-> Signed-off-by: Andy Lutomirski <luto@kernel.org>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
-> V2: New patch picked up from Andy
-> ---
->  arch/x86/kernel/fpu/regset.c |   40 +++++++++++++++++++++++++---------------
->  1 file changed, 25 insertions(+), 15 deletions(-)
-> 
-> --- a/arch/x86/kernel/fpu/regset.c
-> +++ b/arch/x86/kernel/fpu/regset.c
-> @@ -47,30 +47,40 @@ int xfpregs_set(struct task_struct *targ
->  		const void *kbuf, const void __user *ubuf)
->  {
->  	struct fpu *fpu = &target->thread.fpu;
-> +	struct user32_fxsr_struct newstate;
->  	int ret;
->  
-> -	if (!boot_cpu_has(X86_FEATURE_FXSR))
-> +	BUILD_BUG_ON(sizeof(newstate) != sizeof(struct fxregs_state));
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_FXSR))
->  		return -ENODEV;
->  
-> -	fpu__prepare_write(fpu);
-> -	fpstate_sanitize_xstate(fpu);
-> +	/* No funny business with partial or oversized writes is permitted. */
-> +	if (pos != 0 || count != sizeof(newstate))
-> +		return -EINVAL;
->  
->  	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
-> -				 &fpu->state.fxsave, 0, -1);
-> +				 &newstate, 0, -1);
+On Mon, Jun 21, 2021 at 09:55:13AM +0300, Arseny Krasnov wrote:
+>
+>On 18.06.2021 19:26, Arseny Krasnov wrote:
+>> On 18.06.2021 19:25, Stefano Garzarella wrote:
+>>> On Fri, Jun 18, 2021 at 07:08:30PM +0300, Arseny Krasnov wrote:
+>>>> On 18.06.2021 18:55, Stefano Garzarella wrote:
+>>>>> On Fri, Jun 18, 2021 at 06:04:37PM +0300, Arseny Krasnov wrote:
+>>>>>> On 18.06.2021 16:44, Stefano Garzarella wrote:
+>>>>>>> Hi Arseny,
+>>>>>>> the series looks great, I have just a question below about
+>>>>>>> seqpacket_dequeue.
+>>>>>>>
+>>>>>>> I also sent a couple a simple fixes, it would be great if you can review
+>>>>>>> them:
+>>>>>>> https://lore.kernel.org/netdev/20210618133526.300347-1-sgarzare@redhat.com/
+>>>>>>>
+>>>>>>>
+>>>>>>> On Fri, Jun 11, 2021 at 02:12:38PM +0300, Arseny Krasnov wrote:
+>>>>>>>> Callback fetches RW packets from rx queue of socket until whole record
+>>>>>>>> is copied(if user's buffer is full, user is not woken up). This is done
+>>>>>>>> to not stall sender, because if we wake up user and it leaves syscall,
+>>>>>>>> nobody will send credit update for rest of record, and sender will wait
+>>>>>>>> for next enter of read syscall at receiver's side. So if user buffer is
+>>>>>>>> full, we just send credit update and drop data.
+>>>>>>>>
+>>>>>>>> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>>>>>>>> ---
+>>>>>>>> v10 -> v11:
+>>>>>>>> 1) 'msg_count' field added to count current number of EORs.
+>>>>>>>> 2) 'msg_ready' argument removed from callback.
+>>>>>>>> 3) If 'memcpy_to_msg()' failed during copy loop, there will be
+>>>>>>>>    no next attempts to copy data, rest of record will be freed.
+>>>>>>>>
+>>>>>>>> include/linux/virtio_vsock.h            |  5 ++
+>>>>>>>> net/vmw_vsock/virtio_transport_common.c | 84 +++++++++++++++++++++++++
+>>>>>>>> 2 files changed, 89 insertions(+)
+>>>>>>>>
+>>>>>>>> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+>>>>>>>> index dc636b727179..1d9a302cb91d 100644
+>>>>>>>> --- a/include/linux/virtio_vsock.h
+>>>>>>>> +++ b/include/linux/virtio_vsock.h
+>>>>>>>> @@ -36,6 +36,7 @@ struct virtio_vsock_sock {
+>>>>>>>> 	u32 rx_bytes;
+>>>>>>>> 	u32 buf_alloc;
+>>>>>>>> 	struct list_head rx_queue;
+>>>>>>>> +	u32 msg_count;
+>>>>>>>> };
+>>>>>>>>
+>>>>>>>> struct virtio_vsock_pkt {
+>>>>>>>> @@ -80,6 +81,10 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
+>>>>>>>> 			       struct msghdr *msg,
+>>>>>>>> 			       size_t len, int flags);
+>>>>>>>>
+>>>>>>>> +ssize_t
+>>>>>>>> +virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
+>>>>>>>> +				   struct msghdr *msg,
+>>>>>>>> +				   int flags);
+>>>>>>>> s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
+>>>>>>>> s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
+>>>>>>>>
+>>>>>>>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>>>>>>>> index ad0d34d41444..1e1df19ec164 100644
+>>>>>>>> --- a/net/vmw_vsock/virtio_transport_common.c
+>>>>>>>> +++ b/net/vmw_vsock/virtio_transport_common.c
+>>>>>>>> @@ -393,6 +393,78 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+>>>>>>>> 	return err;
+>>>>>>>> }
+>>>>>>>>
+>>>>>>>> +static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
+>>>>>>>> +						 struct msghdr *msg,
+>>>>>>>> +						 int flags)
+>>>>>>>> +{
+>>>>>>>> +	struct virtio_vsock_sock *vvs = vsk->trans;
+>>>>>>>> +	struct virtio_vsock_pkt *pkt;
+>>>>>>>> +	int dequeued_len = 0;
+>>>>>>>> +	size_t user_buf_len = msg_data_left(msg);
+>>>>>>>> +	bool copy_failed = false;
+>>>>>>>> +	bool msg_ready = false;
+>>>>>>>> +
+>>>>>>>> +	spin_lock_bh(&vvs->rx_lock);
+>>>>>>>> +
+>>>>>>>> +	if (vvs->msg_count == 0) {
+>>>>>>>> +		spin_unlock_bh(&vvs->rx_lock);
+>>>>>>>> +		return 0;
+>>>>>>>> +	}
+>>>>>>>> +
+>>>>>>>> +	while (!msg_ready) {
+>>>>>>>> +		pkt = list_first_entry(&vvs->rx_queue, struct virtio_vsock_pkt, list);
+>>>>>>>> +
+>>>>>>>> +		if (!copy_failed) {
+>>>>>>>> +			size_t pkt_len;
+>>>>>>>> +			size_t bytes_to_copy;
+>>>>>>>> +
+>>>>>>>> +			pkt_len = (size_t)le32_to_cpu(pkt->hdr.len);
+>>>>>>>> +			bytes_to_copy = min(user_buf_len, pkt_len);
+>>>>>>>> +
+>>>>>>>> +			if (bytes_to_copy) {
+>>>>>>>> +				int err;
+>>>>>>>> +
+>>>>>>>> +				/* sk_lock is held by caller so no one else can dequeue.
+>>>>>>>> +				 * Unlock rx_lock since memcpy_to_msg() may sleep.
+>>>>>>>> +				 */
+>>>>>>>> +				spin_unlock_bh(&vvs->rx_lock);
+>>>>>>>> +
+>>>>>>>> +				err = memcpy_to_msg(msg, pkt->buf, bytes_to_copy);
+>>>>>>>> +				if (err) {
+>>>>>>>> +					/* Copy of message failed, set flag to skip
+>>>>>>>> +					 * copy path for rest of fragments. Rest of
+>>>>>>>> +					 * fragments will be freed without copy.
+>>>>>>>> +					 */
+>>>>>>>> +					copy_failed = true;
+>>>>>>>> +					dequeued_len = err;
+>>>>>>> If we fail to copy the message we will discard the entire packet.
+>>>>>>> Is it acceptable for the user point of view, or we should leave the
+>>>>>>> packet in the queue and the user can retry, maybe with a different
+>>>>>>> buffer?
+>>>>>>>
+>>>>>>> Then we can remove the packets only when we successfully copied all the
+>>>>>>> fragments.
+>>>>>>>
+>>>>>>> I'm not sure make sense, maybe better to check also other
+>>>>>>> implementations :-)
+>>>>>>>
+>>>>>>> Thanks,
+>>>>>>> Stefano
+>>>>>> Understand, i'll check it on weekend, anyway I think it is
+>>>>>> not critical for implementation.
+>>>>> Yep, I agree.
+>>>>>
+>>>>>> I have another question: may be it is useful to research for
+>>>>>> approach where packets are not queued until whole message
+>>>>>> is received, but copied to user's buffer thus freeing memory.
+>>>>>> (like previous implementation, of course with solution of problem
+>>>>>> where part of message still in queue, while reader was woken
+>>>>>> by timeout or signal).
+>>>>>>
+>>>>>> I think it is better, because  in current version, sender may set
+>>>>>> 'peer_alloc_buf' to  for example 1MB, so at receiver we get
+>>>>>> 1MB of 'kmalloc()' memory allocated, while having user's buffer
+>>>>>> to copy data there or drop it(if user's buffer is full). This way
+>>>>>> won't change spec(e.g. no message id or SEQ_BEGIN will be added).
+>>>>>>
+>>>>>> What do You think?
+>>>>> Yep, I see your point and it would be great, but I think the main issues
+>>>>> to fix is how to handle a signal while we are waiting other fragments
+>>>>> since the other peer can take unspecified time to send them.
+>>>> What about transport callback, something like 'seqpacket_drain()' or
+>>>>
+>>>> 'seqpacket_drop_curr()' - when we got signal or timeout, notify transport
+>>>>
+>>>> to drop current message. In virtio case this will set special flag in transport,
+>>>>
+>>>> so on next dequeue, this flag is checked and if it is set - we drop all packets
+>>>>
+>>>> until EOR found. Then we can copy untouched new record.
+>>>>
+>>> But in this way, we will lose the entire message.
+>>>
+>>> Is it acceptable for seqpacket?
+>>>
+>>> Stefano
+>> Hm, i'll check it. At least for unix domain sockets - it supports SEQPACKET
+>
+>Hello, i've checked AF_UNIX and AF_AX25 SEQPACKET implementations,
 
-Like the last time: you can let that line stick out - it fits within 80
-cols.
+Great! Thanks for checking!
 
-With that:
+>
+>in both cases:
+>
+>1) Datagram is dequeued first, then copied to user's buffer.
+>
+>2) Datagram is also freed when copying to user's buffer fail
+>
+>(it is not reinserted back).
+>
+>
+>But, in case of virtio vsock, i've got the following concern in
 
-Reviewed-by: Borislav Petkov <bp@suse.de>
+>this approach: in cases of AF_UNIX or AF_AX25 there is maximum
+>
+>datagram size, strictly limited by spec, so no 'setsockopt()' call allows
+>
+>to exceed this. Also these limits are significantly smaller that current
+>
+>amounts of RAM. But, in our case, there is no such limit: peer could
+>
+>say 'i want to use 100MB datagram', and receiver just answer 'ok',
 
--- 
-Regards/Gruss,
-    Boris.
+The receiver sets the limit of its receive buffer and tells the 
+transmitter that it should not exceed it. The default should be 256 KB, 
+so IIUC this scenario can happen only if the receiver do a 
+'setsockopt()' increasing the limit to 100MB. Right?
 
-SUSE Software Solutions Germany GmbH, GF: Felix ImendÃ¶rffer, HRB 36809, AG NÃ¼rnberg
+Maybe we should limit it.
+
+>
+> as there is just variable assignment to setup new limit. Now, consider
+>
+>that there will be 10 peers, 100MB each(no one limit such request,
+>
+>because each socket doesn't know about each other). I think we get
+>
+>out-of-service in this case - all kmalloc() memory will be wasted for
+>
+>pending record.
+>
+>
+>I still think, that approach when we copy data from packet to user's
+>
+>buffer without waiting EOR is better.
+
+Okay, in this way we can remove the receive buffer limit and maybe if we 
+receive a signal, we can set MSG_TRUNC, return the partially received 
+packet to the user, but we must free any next fragments.
+
+So, as you proposed, we need a `seqpacket_drop()` to tell to the 
+transport that if we were copying an uncompleted message, then it should 
+delete the queued fragments and any others until the next EOR.
+
+>
+>
+>Also i'll rebase QEMU patch today or tomorrow.
+
+Great, please CC me, this is something high priority to test 
+SOCK_SEQPACKET with a guest.
+
+>
+>
+>What do You Think?
+
+I'm fine with both, but I slightly prefer the approach we implemented 
+because it's easier to handle.
+
+Thanks,
+Stefano
+
