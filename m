@@ -2,103 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DD03AE821
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 13:26:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 652373AE82B
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 13:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbhFUL2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 07:28:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229611AbhFUL2l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 07:28:41 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A335C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 04:26:27 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id m41-20020a05600c3b29b02901dcd3733f24so3129287wms.1
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 04:26:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VQIndBF+raV4yH/uAef42b9tgSUc/q1HIDoWGC5a4rI=;
-        b=RTrAlXf9cKXMVWwPGTX1Kwgjh+eL5clejf7gh7Vjpa/nemnps6a40jTvvUVsfcT6HU
-         UOzJzgyK9BDJKzXsF6CcygNTm7Unq1YvMT50PDBrYefsKVO2/anOsOfeDx03Xi5/WxGQ
-         GhrK+l+kGMq/eeUNIMEu3tX4itq5fJbgbc9jF7BKYGFoVeBfZMen60pt0XxNCMLHFK4I
-         lySoWPGXX3GwLDZuYgFrpa0qzqU0hixPCFJ32zDR3CAhZsY5mKrDXnko3xzXM2IZDgP/
-         G/lBWjB5hIEDalX/aYWlHoajEdXb7vm8ziSv3a6/2ewgh/4YJibXy35JIRiBweMngetG
-         zAsg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VQIndBF+raV4yH/uAef42b9tgSUc/q1HIDoWGC5a4rI=;
-        b=Zpub4TykJwJnbwqBs7DnR5tLI69TRlzi/7+okXKCNBd8pmdMlmVfDJ/0NBPQljROJr
-         T4B3tcVGx4J/y5gRQkXP+XYo1kx7TBymxurbIjKuTYjRdi0S1jpV5vydyimYe22Mu0hK
-         c9cEBBD0yCzvJB8el2KS+EiApF37gPfsOJ3cbDE9au1R2/9/hTJFS2esjemnQtq6tTb8
-         l0OIU+GITKcHViY57Tu+ef0Iq2CWoVvJ3WRNtVL632rvm3YiWbUkYT3y1Mv+ESbzr2Y7
-         Wz+Ue+/qjexNI2hxQolaUYNyPNmNgarMLDjb72POEpoZUT+RrxMSdO5w/RX9FDAfKW/b
-         0N9g==
-X-Gm-Message-State: AOAM530eNCoR77wXVfi0JqVhqZPhtFPwN8F9dHswaAbxVXPAxpR/8bh+
-        hetsY03ySJhah+kKeHoPdVuxe6jEh/BWL2aU
-X-Google-Smtp-Source: ABdhPJzBf/rLzdPhlwdeWkxppRCDDwZPEvglk1oWay5c9Zwsnkp4D3mNVDvM1mQNffoDwpamZ2GZ+Q==
-X-Received: by 2002:a05:600c:88a:: with SMTP id l10mr26901650wmp.7.1624274785928;
-        Mon, 21 Jun 2021 04:26:25 -0700 (PDT)
-Received: from ?IPv6:2a01:e34:ed2f:f020:5ebd:8bd9:d549:4211? ([2a01:e34:ed2f:f020:5ebd:8bd9:d549:4211])
-        by smtp.googlemail.com with ESMTPSA id s5sm18556352wrn.38.2021.06.21.04.26.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 04:26:25 -0700 (PDT)
-From:   Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: Re: [PATCH v5 2/3] thermal: mediatek: Add LVTS drivers for SoC
- theraml zones
-To:     Ben Tseng <ben.tseng@mediatek.com>,
-        Fan Chen <fan.chen@mediatek.com>,
-        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
-        srv_heupstream@mediatek.com
-Cc:     Eduardo Valentin <edubezval@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>, hsinyi@chromium.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Michael Kao <michael.kao@mediatek.com>,
-        Yu-Chia Chang <ethan.chang@mediatek.com>
-References: <20210617114707.10618-1-ben.tseng@mediatek.com>
- <20210617114707.10618-3-ben.tseng@mediatek.com>
-Message-ID: <06b1804c-4675-2997-8c5c-bcdffbcfc4a1@linaro.org>
-Date:   Mon, 21 Jun 2021 13:26:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S229765AbhFULaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 07:30:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229487AbhFULaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 07:30:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2A7726100A;
+        Mon, 21 Jun 2021 11:28:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624274889;
+        bh=rj3vBToAOKNVorRQkvAummT8lFrSz1uw9LgUZVhOihw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JQ2eiRJZUYPEo1jVLZNZSuTILbCDyNJI5BC1Xx800KpRxbCTKIM5slfnZPfjGUMBy
+         PwnIaW30TXETz0wAxAl45XRAYVxj6w6OniDUjJAc0bItAmSAKhpFvNGsvh0PLUNhub
+         mfwQ3PpQYU61s7aMQw37nINY4RrBMNrItuPb0PyvVlY0x6mqU4NA/p6cRdP/3txPbh
+         6SBCQuiBQ+GcwBtozqE42l23s1NaaaQdlysAI75xoiSFWXFaC7ebuOOWoOhqVKnJNW
+         fKlXCZD5o6tS6vfgzNUEp6t6CQfint6q3kW3JJUYDMHukC/VbFoGRYv7Rzm33UUuMQ
+         BtyDDIymf1k3A==
+Date:   Mon, 21 Jun 2021 12:27:47 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     srivasam@codeaurora.org, rafael@kernel.org,
+        dp@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [PATCH] regmap: move readable check before accessing regcache.
+Message-ID: <20210621112747.GC4094@sirena.org.uk>
+References: <20210618113558.10046-1-srinivas.kandagatla@linaro.org>
+ <20210618115104.GB4920@sirena.org.uk>
+ <666da41f-173e-152d-84e5-e9b32baa60da@linaro.org>
+ <20210618154836.GC4920@sirena.org.uk>
+ <6eca27bf-5696-3ffc-24a5-5a58407f6e93@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20210617114707.10618-3-ben.tseng@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="RIYY1s2vRbPFwWeW"
+Content-Disposition: inline
+In-Reply-To: <6eca27bf-5696-3ffc-24a5-5a58407f6e93@linaro.org>
+X-Cookie: I hate dying.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/06/2021 13:47, Ben Tseng wrote:
-> From: Michael Kao <michael.kao@mediatek.com>
-> 
-> Add a LVTS (Low voltage thermal sensor) driver to report junction
-> temperatures in Mediatek SoC and register the maximum temperature
-> of sensors and each sensor as a thermal zone.
 
-I think we already talked about that. We don't want a thermal sensor
-driver to aggregate the temperatures but create some kindof virtual
-sensor with a property (min, max, avg, ...) which is usable by anyone.
+--RIYY1s2vRbPFwWeW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[ ... ]
+On Mon, Jun 21, 2021 at 11:30:00AM +0100, Srinivas Kandagatla wrote:
+> On 18/06/2021 16:48, Mark Brown wrote:
+> > On Fri, Jun 18, 2021 at 01:29:50PM +0100, Srinivas Kandagatla wrote:
 
+> > > _regmap_update_bits() checks _regmap_read() return value before baili=
+ng out.
+> > > In non cache path we have this regmap_readable() check however in cac=
+hed
+> > > patch we do not have this check, so _regmap_read() will return succes=
+s in
+> > > this case so regmap_update_bits() never reports any error.
+> >=20
+> > > driver in question does check the return value.
 
+> > OK, so everything is working fine then - what's the problem?  The value
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+> How can this be working fine?
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
+> In this particular setup the register is marked as write only and is not
+> readable. Should it really store value in cache at the first instance?
+
+Yes, we know exactly what the value in the register is since we wrote it
+so there's no problem with us remembering and using that.
+
+> Also on the other note, if we mark the same regmap as uncached this useca=
+se
+> will fail straightaway with -EIO, so why is the behavior different in
+> regcache path?
+
+If the register is marked as uncachable then obviously the cache
+behaviour is going to be different to that for a register which we can
+cache for whatever reason the register was marked volatile.
+
+> Shouldn't the regcache path check if the register is readable before tryi=
+ng
+> to cache the value?
+
+Why?  If we know what the value is we can cache it and then use it,
+meaning things like restoring the value in a cache sync and update_bits()
+work, this is useful especially on devices which have no read support at
+all.  What would the benefit it not caching it be?
+
+> From "APQ8016E Technical Reference Manual" https://developer.qualcomm.com=
+/qfile/28813/lm80-p0436-7_f_410e_proc_apq8016e_device_spec.pdf
+
+> Section: 4.5.9.6.19
+> this register LPASS_LPAIF_IRQ_CLEARa is clearly marked with Type: W
+
+> with this description:
+> "Writing a 1 to a bit in this register clears the latched interrupt event
+
+> So am not 100% sure if we read this we will get anything real from the
+> register. I always get zeros if I do that.
+
+> Should this behavior treated as volatile?
+
+Yes.  This is indistingusihable from a register that is volatile because
+it doesn't latch written values, given that you're saying readback
+actually works there's an argument here that the documentation isn't
+accurate here.  My guess is that this device doesn't have any write only
+registers as far as anything outside the device is concerned since the
+I/O hardware won't fault or anything on reads, it just has addresses
+where the read side isn't wired up to anything.
+
+> If we mark this register as volatile and make it readable then it would w=
+ork
+> but that just sounds like a hack to avoid cache.
+
+> Am sure other hardware platforms have similar write-only registers, how do
+> they handle regmap_update_bits case if they have regcache enabled?
+
+They either mark the registers as volatile or just don't do any
+operations that involve reading the value so it's a non-issue.
+
+--RIYY1s2vRbPFwWeW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDQd7IACgkQJNaLcl1U
+h9A/fgf+Pg2mLrrh7T7omEx9eanLnkHhdJfPwfxAOeNVURlpYVMYVnVrZ9obc+i8
+obgTzFZ9XNx7JS56LhdMJY6GlMMYIGN8QP6GHCtQehL+4558bPBzkbOdK5asNebR
+PhIulYGtMmy2h///HlxNC0Vv1BJKiC0dFLxdFh08w657KPNHPPB+MLqs0Q5FwP+i
+zvLFZWUVXwZG18WhgKoGWkOT9vDTXs6YjsDSbRR/85zgU5kZVCWCf2P7mmvWZmrQ
+RFybYtCUTtwJwr4A7P/qp5P/qwvHD1B+AkI8VH07dv9xR8Ebgj/Q79X3pTQzq9is
+63/1T7Ov3l5y7w1VjJM3opM9YnF4Zw==
+=Mm3p
+-----END PGP SIGNATURE-----
+
+--RIYY1s2vRbPFwWeW--
