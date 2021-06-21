@@ -2,102 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3527F3AED01
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 724133AED10
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhFUQFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:05:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229837AbhFUQFl (ORCPT
+        id S230239AbhFUQHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:07:19 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:13062 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230056AbhFUQHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:05:41 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E55C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:03:26 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id k5so2154804ilv.8
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 09:03:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=eVXRLvzbSMXRfDwdm7VIC+cZ6QdFXq4T0AzqI7GGzAs=;
-        b=H+oXpGUARAhVSBoZL2MY8geozptZKKKELgGSVRYNYAvANNFsmktyHvvPOJ6CZuroJM
-         olIg2/8ItnwTp2yz6p41I5Mt9gepjty8919y2hc7DLc1tk3Pr5vaGgEvPpMlSqIqsL27
-         93aOdH+pMQYKyvb25oXwAzHM8ROWwlAxKZXYkM2iUzoLg5TlfuNJ1oKv7hiUjeRKBYEf
-         dEBnlm1kfAvcc71YL+gFBKSf0S/QFAOw/U/r1mYJRgthg3c7l5G39/nZvEcRalWw1J3K
-         sxeBCfr2P3Q2E9VtUApMXVSdB8LbdkcuAiUQuKiNK2xPdPCgaYgZUy6ko7aTTLkDwpvv
-         CjOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eVXRLvzbSMXRfDwdm7VIC+cZ6QdFXq4T0AzqI7GGzAs=;
-        b=Ba4oVnN717E1m+1Qgec7gPWavKD5cp5t2CuW6YlydNBOOyPV1skeiMnsMR38hIofeB
-         wfnrxcWVbjoqWok1jkK/hldlHvCnlulqkvT3DN5QMrtzCXvsMGggeu6CjmXXjWLPFo8U
-         GYLiC7l7hs6zhdQHT7CNv/ZqdVD4M03prKam8ok91KnJjB28TEKyu9/EClj56cCCefxa
-         zLMaTh2DYGQeHNz56Wy29MMmTqtihhiRJTEYZOPceuL2B/kuJl4ZttKngS5ARJygNZtU
-         eVbLa5f69fk5velrliv7ahqRH7SgTQ6tyVYsX/M82xKfgXyfHHweIyfrDRC2+9wwd8pp
-         dxag==
-X-Gm-Message-State: AOAM532IH9RB54PESpS6MBQF1+ewj3Dg9Pa6LflWa+lRER4dZmFG7lS2
-        thHG0CkZX3M1EPm9LbWroHn+YYVYwjjj/A==
-X-Google-Smtp-Source: ABdhPJwkP8nWk8bySuW3V1xOJ9Rw1HPGvtS6zVwX0bYU4AwIlBDFQLHelmARWU7WL3I5cxJKVsRnfQ==
-X-Received: by 2002:a92:364f:: with SMTP id d15mr19206928ilf.26.1624291403552;
-        Mon, 21 Jun 2021 09:03:23 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id r6sm9796755ioh.27.2021.06.21.09.03.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 09:03:22 -0700 (PDT)
-Subject: Re: [PATCH v2] io_uring: reduce latency by reissueing the operation
-To:     Olivier Langlois <olivier@trillion01.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <e4614f9442d971016f47d69fbcba226f758377a8.1624215754.git.olivier@trillion01.com>
- <c5394ace-d003-df18-c816-2592fc40bf08@infradead.org>
- <b0c5175177af0bfd216d45da361e114870f07aad.camel@trillion01.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <766a96fa-1c90-ec3d-abab-16cacdedb44e@kernel.dk>
-Date:   Mon, 21 Jun 2021 10:03:22 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <b0c5175177af0bfd216d45da361e114870f07aad.camel@trillion01.com>
-Content-Type: text/plain; charset=utf-8
+        Mon, 21 Jun 2021 12:07:17 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15LG3bVK125137;
+        Mon, 21 Jun 2021 12:05:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=xC2H3nWBOh29t3uOaRidY25D5ip6CSxMWk7FCVl2BvQ=;
+ b=NfBcQGZa6F/deQLkw5nVXkYWfVqQzRiyJV+zxf2a1pi/RQSFoJP/4vQo1bqCECrXOh0k
+ ycnB5rwzPzVSSpK9zcBZWdMTB7L3FeKCyqkOdk6xex6p44hLz5Zk99NEZapUu3RxY2CX
+ 2QeD8UQ+YlfeWMX2sswllI/IiABDL3NscpNxkP8/SNWZpQpvmrG3dUsyV17SjJQNiDI8
+ RNZnxb3h3vQQgkdKCuLnmSO9tVPYa1ccoLDVCgBgZHgfopOax4mFIOi5uHEUs847JRXj
+ JhJ+kPpdcXhXfMMUNSTRUSmZWb06fmeICmJIG211K8ZzpZTGCQGMnqBQsVjjVpn+SCUU 7A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39awsa8du2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 12:05:01 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15LG3d5B125316;
+        Mon, 21 Jun 2021 12:05:01 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 39awsa8dsy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 12:05:01 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15LG3u8j024668;
+        Mon, 21 Jun 2021 16:04:59 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06ams.nl.ibm.com with ESMTP id 3997uh901w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 16:04:58 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15LG4tDI10748364
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Jun 2021 16:04:56 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8677952069;
+        Mon, 21 Jun 2021 16:04:55 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.79.141])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id E5BE252050;
+        Mon, 21 Jun 2021 16:04:54 +0000 (GMT)
+Subject: Re: [PATCH v6 1/2] s390/vfio-ap: clean up mdev resources when remove
+ callback invoked
+To:     Tony Krowiak <akrowiak@linux.ibm.com>, jgg@nvidia.com
+Cc:     cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
+        hca@linux.ibm.com, Vasily Gorbik <gor@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210621155714.1198545-1-akrowiak@linux.ibm.com>
+ <20210621155714.1198545-2-akrowiak@linux.ibm.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <e809be5b-0b24-34dc-1eae-82b58dc54545@de.ibm.com>
+Date:   Mon, 21 Jun 2021 18:04:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
+In-Reply-To: <20210621155714.1198545-2-akrowiak@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: OTr8WULTvhURx9TauMF4m4bEC0t2uQSS
+X-Proofpoint-GUID: yaSt5xMNWnlEqjSvY4iHsCXWzz8YO5g7
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-21_06:2021-06-21,2021-06-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
+ phishscore=0 priorityscore=1501 impostorscore=0 adultscore=0 mlxscore=0
+ suspectscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106210095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/20/21 1:28 PM, Olivier Langlois wrote:
-> On Sun, 2021-06-20 at 12:07 -0700, Randy Dunlap wrote:
->> On 6/20/21 12:05 PM, Olivier Langlois wrote:
->>> -               return false;
->>> +               return ret?IO_ARM_POLL_READY:IO_ARM_POLL_ERR;
->>
->> Hi,
->> Please make that return expression more readable.
->>
->>
-> How exactly?
+
+
+On 21.06.21 17:57, Tony Krowiak wrote:
+> The mdev remove callback for the vfio_ap device driver bails out with
+> -EBUSY if the mdev is in use by a KVM guest (i.e., the KVM pointer in the
+> struct ap_matrix_mdev is not NULL). The intended purpose was
+> to prevent the mdev from being removed while in use. There are two
+> problems with this scenario:
 > 
-> by adding spaces?
-> Changing the define names??
+> 1. Returning a non-zero return code from the remove callback does not
+>     prevent the removal of the mdev.
+> 
+> 2. The KVM pointer in the struct ap_matrix_mdev will always be NULL because
+>     the remove callback will not get invoked until the mdev fd is closed.
+>     When the mdev fd is closed, the mdev release callback is invoked and
+>     clears the KVM pointer from the struct ap_matrix_mdev.
+> 
+> Let's go ahead and remove the check for KVM in the remove callback and
+> allow the cleanup of mdev resources to proceed.
+> 
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> Cc: stable@vger.kernel.org
 
-Not super important, but I greatly prefer:
+This one is already queued on
 
-	if (ret)
-		return IO_ARM_POLL_READY;
-	return IO_ARM_POLL_ERR;
+https://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git/log/?h=fixes
 
-as that's a lot more readable to me. This is orthogonal to the currently
-missing spaces, of course.
-
-For the defines, an enum would be preferable too. And place it near where
-it's used.
-
--- 
-Jens Axboe
-
+Jason. Do you want this in stable? Then we should write a mail after merging.
+> ---
+>   drivers/s390/crypto/vfio_ap_ops.c | 10 ----------
+>   1 file changed, 10 deletions(-)
+> 
+> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> index b2c7e10dfdcd..122c85c22469 100644
+> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> @@ -366,16 +366,6 @@ static int vfio_ap_mdev_remove(struct mdev_device *mdev)
+>   	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
+>   
+>   	mutex_lock(&matrix_dev->lock);
+> -
+> -	/*
+> -	 * If the KVM pointer is in flux or the guest is running, disallow
+> -	 * un-assignment of control domain.
+> -	 */
+> -	if (matrix_mdev->kvm_busy || matrix_mdev->kvm) {
+> -		mutex_unlock(&matrix_dev->lock);
+> -		return -EBUSY;
+> -	}
+> -
+>   	vfio_ap_mdev_reset_queues(mdev);
+>   	list_del(&matrix_mdev->node);
+>   	kfree(matrix_mdev);
+> 
