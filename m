@@ -2,85 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B29FE3AE75E
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0567B3AE7A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhFUKnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 06:43:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37362 "EHLO mail.kernel.org"
+        id S230380AbhFUKw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 06:52:28 -0400
+Received: from mx4.veeam.com ([104.41.138.86]:35378 "EHLO mx4.veeam.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230481AbhFUKnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 06:43:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E8F5A61153;
-        Mon, 21 Jun 2021 10:41:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624272064;
-        bh=UbCcZm9yRxkuaU4xQLxn8nCsaydZD6ZzKtQxMT/YMLo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=i+U2tLKYUHdlHLeSjqpjrxf9kXOylOkCNYdCYAkIY4ljKQSACv7cVTNKIW0q5kLR+
-         Hqf9iMMu/c+w8m1ur2Lznh3zuJZMzGLMTDV+SgYNhI3U4ODLCccbuuzFuzHcg9wBFY
-         Z2MLwGijFyzv6NuaqHk9xi/h0didjoIO5avK0dtsoF3RpaIJaSRNjhVDza9u4YQOYI
-         mbiqlPI1Ndga2zg7wSTZJrFlxD5RLUC/9+atcXfZSpsoto3uDUiCwQzn/QTN+bb0En
-         NnPRnsW2raQmvQb5HZLiBmsYMqk0G+BPjpRj8by0uBu7YZNsur5m31IFeIENWtsjFH
-         6hZFEFPzI8YBQ==
-Date:   Mon, 21 Jun 2021 11:40:42 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Dmitry Osipenko <digetx@gmail.com>
-Subject: Re: [PATCH AUTOSEL 5.12 02/33] regulator: max77620: Silence deferred
- probe error
-Message-ID: <20210621104042.GB4094@sirena.org.uk>
-References: <20210615154824.62044-1-sashal@kernel.org>
- <20210615154824.62044-2-sashal@kernel.org>
- <20210615155436.GM5149@sirena.org.uk>
- <YM8633R356GXEwoR@sashalap>
+        id S229621AbhFUKw0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 06:52:26 -0400
+X-Greylist: delayed 438 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Jun 2021 06:52:26 EDT
+Received: from mail.veeam.com (prgmbx01.amust.local [172.24.128.102])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx4.veeam.com (Postfix) with ESMTPS id A05A2339DD;
+        Mon, 21 Jun 2021 13:42:52 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx4;
+        t=1624272172; bh=GljFfCWjRBIR4hzJFuKOmKnKEd6VWDoU5d8lRKHelyU=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To:From;
+        b=Ro9i7SJ4j7/MTK265L8ZUfPMGUw5qbelzB/Cdx4Bf9QB30R+7f4/nRc599kq8rdpJ
+         2kGJdwd+5h7dfRa2MXnD7+/6591+gTQDctHHmi05K3QP01blqdjMn6dsT+E+RQcmig
+         DH6H/rN/jI3k0j8a1hK0dPwlKVI2RP3H6gz4CeRM=
+Received: from veeam.com (172.24.14.5) by prgmbx01.amust.local
+ (172.24.128.102) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.858.5; Mon, 21 Jun 2021
+ 12:42:50 +0200
+Date:   Mon, 21 Jun 2021 13:41:31 +0300
+From:   Sergei Shtepa <sergei.shtepa@veeam.com>
+To:     Christoph Hellwig <hch@infradead.org>,
+        Hannes Reinecke <hare@suse.de>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Alasdair Kergon <agk@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>,
+        "dm-devel@redhat.com" <dm-devel@redhat.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Pavel Tide <Pavel.TIde@veeam.com>
+Subject: Re: [PATCH v9 0/4] block device interposer
+Message-ID: <20210621104131.GA8841@veeam.com>
+References: <1619023545-23431-1-git-send-email-sergei.shtepa@veeam.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5I6of5zJg18YgZEa"
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <YM8633R356GXEwoR@sashalap>
-X-Cookie: I hate dying.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1619023545-23431-1-git-send-email-sergei.shtepa@veeam.com>
+X-Originating-IP: [172.24.14.5]
+X-ClientProxiedBy: spbmbx02.amust.local (172.17.17.172) To
+ prgmbx01.amust.local (172.24.128.102)
+X-EsetResult: clean, is OK
+X-EsetId: 37303A29D2A50B596D7267
+X-Veeam-MMEX: True
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mike,
 
---5I6of5zJg18YgZEa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This is a follow up message.
+Did you have a chance to take a look at the latest patchset from April?
+Thanks!
 
-On Sun, Jun 20, 2021 at 08:55:59AM -0400, Sasha Levin wrote:
-> On Tue, Jun 15, 2021 at 04:54:36PM +0100, Mark Brown wrote:
-> > On Tue, Jun 15, 2021 at 11:47:53AM -0400, Sasha Levin wrote:
-> > > From: Dmitry Osipenko <digetx@gmail.com>
+I can update the patch to be compatible with kernel 5.14.
+I would like to know if you still have interest in blk_interposer.
 
-> > > One of previous changes to regulator core causes PMIC regulators to
-> > > re-probe until supply regulator is registered. Silence noisy error
-> > > message about the deferred probe.
-
-> > This really doesn't look like stable material...
-
-> Not strictly, but we usually take fixes to issues that can confuse users
-> or spam logs.
-
-I really don't think this is appropriate (and don't know that it's even
-relevant without the core change mentioned in the commit log).
-
---5I6of5zJg18YgZEa
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDQbKkACgkQJNaLcl1U
-h9BQTgf+KepvwkW0eqqj1vAPw0OMvyj5s0LXy/zfgoLXNI+n5VI3c+HTZpb/fxSj
-muFuWhx6qTO0OmTCeEc0M+oiMgkB9Is5VFJsps9wxGXhIemMu/rXEXeJkDt2G6UA
-3fJ6aXneDSfFJaPFcuYwBxHpyxgKn5NDFm8pbtXyXgFObatSwUhR3s5XQNAKTcCj
-a1rjmElXPT/o0GaucBXbvfnFewGa6h9XDd9d7mmhiRKz7IkTnEu2I1bsc7cMQCGR
-U5SO6tFE5nJJgg2yA4LAkVeWVYP0BvO6je8zeLouS6jAKLqiUotDdHrzRPt/dG7s
-fVM3PcefuLlRmUTNwKZ5WJWVUwqYYg==
-=yxVY
------END PGP SIGNATURE-----
-
---5I6of5zJg18YgZEa--
+-- 
+Sergei Shtepa
+Veeam Software developer.
