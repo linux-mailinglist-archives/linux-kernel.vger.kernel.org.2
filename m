@@ -2,94 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047023AE561
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:55:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01AC73AE567
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230425AbhFUI5v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 04:57:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230354AbhFUI5u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 04:57:50 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDB63C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 01:55:35 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id a11so18697875wrt.13
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 01:55:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=NguFbkcyh6ap+qxMe2TBXIujUmNeh2JBMoEY6ERT5kg=;
-        b=At0qaUQVH4DX05KxGmf4JuLo8ZCE/RWxYbU73JVhH4W1/aNwfazsccTWlbK0dzytfE
-         DJ1+1mPH99sXv8NeTnlpX/+rdDXQBKhmmgt+z4S3DpdQuAYkEKzWNaG7+uwjsKInSHkr
-         YVSC++sV/6g86vOTu7Bnc1pjiAte5Uvk2FXx1F2JtxBOpsM1WIyFzUO2/tlHYtDyLgmF
-         CNQNuYM5rL3wSXIoxbYtpG9eflWvQo8+WUYxAuT7vV4qmroLG4CN6TEyvsTv1En3AmZn
-         25Kgz7SLkEvrQYQ+F7k97WOqxTqJrleWZ8nJlhRxd9SjtVA0hD4wFLzSukp1x0SWwtXH
-         9sjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=NguFbkcyh6ap+qxMe2TBXIujUmNeh2JBMoEY6ERT5kg=;
-        b=P71yNbXb78eAwTuAmiKUyRDAuHQV+dIi9x1jodDJuOiPkioiESzI160olju7/zvQPx
-         k3sIX6AoDZVJ4U/Js02NhJd4owqsXGcKAb9VwviVkfRZCKt6YnFUZaljQOb+VBh3Kt8e
-         qvxtwf/gcyDk5qwwgYaEykJVBwm/tXtw55sgwUYZl3uteLOiw798VJfhxbJn3HToXmPS
-         Ss0kX6p6lFAMrt0H671WK6ThnhKGM7hI9RI09kFbUIIQxuQMmqW99IcteU6dGhtnwkEm
-         o30NAB16rf0RVdm3HjkAgzgB2mP9kI1LWbKYdMZCrxDt8tfTFdS9mwGD0CfLEdebLFWc
-         u9sg==
-X-Gm-Message-State: AOAM531O+RtD52wni68+pwAlLX1cvIqjaIlTesuXzffjKW5w2b0D10dU
-        XSl1WlggYYZRv+Cpz6PJ07ieBA==
-X-Google-Smtp-Source: ABdhPJxrbBQ8yZEjLN57gMoGFn9sOMWgiBeIR/XtRqnrqtXr7WcbMKAPpKYiDkWybmNdn8jedNDg4w==
-X-Received: by 2002:a5d:6d87:: with SMTP id l7mr26850975wrs.287.1624265734393;
-        Mon, 21 Jun 2021 01:55:34 -0700 (PDT)
-Received: from dell ([91.110.221.210])
-        by smtp.gmail.com with ESMTPSA id y20sm3558216wmi.25.2021.06.21.01.55.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 01:55:33 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 09:55:31 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@silicom.dk>
-Cc:     Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
-        Moritz Fischer <mdf@kernel.org>, Xu Yilun <yilun.xu@intel.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mark Brown <broonie@kernel.org>,
-        Martin =?iso-8859-1?Q?Hundeb=F8ll?= <mhu@geanix.com>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org
-Subject: Re: [PATCH 4/4] hwmon: intel-m10-bmc: add sensor support for Silicom
- N5010 card
-Message-ID: <YNBUA8qsfl9QejhP@dell>
-References: <20210621070621.431482-1-mhu@silicom.dk>
- <20210621070621.431482-5-mhu@silicom.dk>
+        id S230268AbhFUI7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 04:59:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40202 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229618AbhFUI7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 04:59:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C83260FE9;
+        Mon, 21 Jun 2021 08:56:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624265817;
+        bh=YExwmU+u6BVwXlkye/63k32gjtySTQvDE+hPHrJjKNk=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=pboonfM18U3V0GS3mu/bTPSqa4S2oqxmJuOXhFBkxFvyoxGc614j0BJZYZvuhMyYz
+         m8sjfPLk5Zs9uUnNbfeoIDciiPx9vCwbWsOLkDg24IfIh5EzGWgTXIEjIumj4/cmjN
+         Eet87/OikJWM/eKxSaQ5JJSxYvYfJb04ZV0W92U1oAoQK9DSl7URNcyfAeOXnBqF/m
+         minlx75YLi8mds3zKlFWilVYdNF7D2uch2TeFECavlNO8QrnYes9fYo8vg3+7hn9sc
+         NWwXHtj3Ol54MG+S0TvGIns9mugI6or1MWqS8X82lqy2amm4oupRkXyhNlv5/AoUIF
+         6gO6xNOr/B14w==
+Subject: Re: [PATCH V2] arm64: dts: qcom: sc7180: bus votes for eMMC and SD
+ card
+To:     Shaik Sajida Bhanu <sbhanu@codeaurora.org>,
+        bjorn.andersson@linaro.org
+Cc:     asutoshd@codeaurora.org, stummala@codeaurora.org,
+        vbadigan@codeaurora.org, rampraka@codeaurora.org,
+        sayalil@codeaurora.org, sartgarg@codeaurora.org,
+        rnayak@codeaurora.org, saiprakash.ranjan@codeaurora.org,
+        sibis@codeaurora.org, okukatla@codeaurora.org, cang@codeaurora.org,
+        pragalla@codeaurora.org, nitirawa@codeaurora.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        agross@kernel.org, adrian.hunter@intel.com, ulf.hansson@linaro.org,
+        robh+dt@kernel.org
+References: <1623835344-29607-1-git-send-email-sbhanu@codeaurora.org>
+From:   Georgi Djakov <djakov@kernel.org>
+Message-ID: <3229daff-9a32-bced-7e02-c557f7f8b572@kernel.org>
+Date:   Mon, 21 Jun 2021 11:56:48 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210621070621.431482-5-mhu@silicom.dk>
+In-Reply-To: <1623835344-29607-1-git-send-email-sbhanu@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Jun 2021, Martin Hundebøll wrote:
-
-> The Silicom N5010 PAC is similar to Intel N3000 and D5005. Enable
-> monitoring of its sensors like it is done for the two Intel cards.
+On 16.06.21 12:22, Shaik Sajida Bhanu wrote:
+> Update peak bandwidth and average bandwidth vote values for eMMC and
+> SDCard. This patch calculates the new votes as per the comments from
+> https://lore.kernel.org/patchwork/patch/1399453/#1619566.
 > 
-> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
+> Signed-off-by: Shaik Sajida Bhanu <sbhanu@codeaurora.org>
+
+Reviewed-by: Georgi Djakov <djakov@kernel.org>
+
 > ---
->  drivers/hwmon/intel-m10-bmc-hwmon.c | 116 ++++++++++++++++++++++++++++
->  drivers/mfd/intel-m10-bmc.c         |  12 ++-
+> 
+> Changes since V1:
+> 	- Updated the commit message with proper information.
+> ---
+>   arch/arm64/boot/dts/qcom/sc7180.dtsi | 20 ++++++++++----------
+>   1 file changed, 10 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> index fb1d9ad..a5d58eb 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+> @@ -727,15 +727,15 @@
+>   				opp-100000000 {
+>   					opp-hz = /bits/ 64 <100000000>;
+>   					required-opps = <&rpmhpd_opp_low_svs>;
+> -					opp-peak-kBps = <100000 100000>;
+> -					opp-avg-kBps = <100000 50000>;
+> +					opp-peak-kBps = <1800000 600000>;
+> +					opp-avg-kBps = <100000 0>;
+>   				};
+>   
+>   				opp-384000000 {
+>   					opp-hz = /bits/ 64 <384000000>;
+> -					required-opps = <&rpmhpd_opp_svs_l1>;
+> -					opp-peak-kBps = <600000 900000>;
+> -					opp-avg-kBps = <261438 300000>;
+> +					required-opps = <&rpmhpd_opp_nom>;
+> +					opp-peak-kBps = <5400000 1600000>;
+> +					opp-avg-kBps = <390000 0>;
+>   				};
+>   			};
+>   		};
+> @@ -2585,15 +2585,15 @@
+>   				opp-100000000 {
+>   					opp-hz = /bits/ 64 <100000000>;
+>   					required-opps = <&rpmhpd_opp_low_svs>;
+> -					opp-peak-kBps = <160000 100000>;
+> -					opp-avg-kBps = <80000 50000>;
+> +					opp-peak-kBps = <1800000 600000>;
+> +					opp-avg-kBps = <100000 0>;
+>   				};
+>   
+>   				opp-202000000 {
+>   					opp-hz = /bits/ 64 <202000000>;
+> -					required-opps = <&rpmhpd_opp_svs_l1>;
+> -					opp-peak-kBps = <200000	120000>;
+> -					opp-avg-kBps = <100000 60000>;
+> +					required-opps = <&rpmhpd_opp_nom>;
+> +					opp-peak-kBps = <5400000 1600000>;
+> +					opp-avg-kBps = <200000 0>;
+>   				};
+>   			};
+>   		};
+> 
 
-Please split out the MFD part into a different patch.
-
->  2 files changed, 127 insertions(+), 1 deletion(-)
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
