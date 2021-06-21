@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 255AC3AF55C
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 871423AF561
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 20:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhFUSst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 14:48:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39866 "EHLO mail.kernel.org"
+        id S231589AbhFUSsy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 14:48:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230291AbhFUSsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 14:48:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8539661107;
-        Mon, 21 Jun 2021 18:46:32 +0000 (UTC)
+        id S230291AbhFUSsu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 14:48:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33D4A61363;
+        Mon, 21 Jun 2021 18:46:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624301193;
-        bh=G2wivm1SL+bm/7n4q2pZN3wn8lBMoRzv9Fh+X54SWCs=;
+        s=k20201202; t=1624301195;
+        bh=bjxrCn/o/AhjCP8aaet+ZDvqnwF4V76e88ZV3uuxiCQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jy2V7ecni9064dCbkOtCvl+MrUtgvtig06inHRh5K72oaYbRUooPzuNNPHXBEaFoN
-         CXokIIY/B6bK8hBX0GRpnf8mAv9H7wqSBPCAP65pj9VieHNDkoyZ6ZLAOwSqu/UWbI
-         WcvRQqDyVeOWgQWdfGD0vi0rH2+fvZhn0Gf6Y1DrmC3hjMdt74WgrDb2cxt4unaY45
-         MpPVmJeBqB/4zyF2TJ9EJercekL6lT39f7XR0cbHAtSym9gqLeduFvjln6poBFlZw7
-         JlKBTWe7Q1s1WkMIYnrflw1i9H65rDhYkGIo/IKlw6wubae3DOox2s+0whn+31b7BG
-         QQyqGDsmOxL3g==
+        b=O7xvFlqNjLQL5vkQC2nW417DQ2XnSxgqVi5N5P9WZGKpUOe6f1pXtWh6dZeq6H2Bf
+         P/sa1PEtyh/PX3pXcMI4ulf7ffNzYLpWC+EWMYWR7+bW3AzYhwWndrS7Caosm+Pd7U
+         zQOe52b3bvt9uCY/I0kXfrE2IrEO97n55MsVTstNQOLrfbnbwHCeH3L78dWfnW13zu
+         2cSwkkalIV2Z3RnsQH0v0KXGmSyj5nPgy1+QqUFvHFaPsCFy9OWz5FKXxA+Bz3+GYK
+         5jcZw0gTSiss4AQA9U96hBiZuhEv6vjSL16IdQ4oPD/W5+GAYygtPW5DjOroe8d3rk
+         Z8FaiSFiP4p7g==
 From:   Mark Brown <broonie@kernel.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        linux-arm-msm@vger.kernel.org
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        bhupesh.linux@gmail.com, linux-gpio@vger.kernel.org,
-        lgirdwood@gmail.com, devicetree@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH v3 0/5] regulator: qcom,rpmh-regulator: Add support for pmic available on SA8155p-adp board
-Date:   Mon, 21 Jun 2021 19:45:50 +0100
-Message-Id: <162430087046.9551.10979726950537776436.b4-ty@kernel.org>
+To:     Sergey Larin <cerg2010cerg2010@mail.ru>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] regulator: max8893: add regulator driver
+Date:   Mon, 21 Jun 2021 19:45:51 +0100
+Message-Id: <162430087046.9551.11451976278911990353.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210617051712.345372-1-bhupesh.sharma@linaro.org>
-References: <20210617051712.345372-1-bhupesh.sharma@linaro.org>
+In-Reply-To: <20210618141607.884-1-cerg2010cerg2010@mail.ru>
+References: <20210618141607.884-1-cerg2010cerg2010@mail.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -43,15 +42,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Jun 2021 10:47:07 +0530, Bhupesh Sharma wrote:
-> Changes since v2:
-> -----------------
-> - v2 series can be found here: https://lore.kernel.org/linux-arm-msm/20210615074543.26700-1-bhupesh.sharma@linaro.org/T/#m8303d27d561b30133992da88198abb78ea833e21
-> - Addressed review comments from Bjorn and Mark.
-> - As per suggestion from Bjorn, seperated the patches in different
->   patchsets (specific to each subsystem) to ease review and patch application.
-> 
-> [...]
+On Fri, 18 Jun 2021 17:16:06 +0300, Sergey Larin wrote:
+> MAX8893 is a simple regulator which can be found on some of Sasmsung
+> phones.
 
 Applied to
 
@@ -59,16 +52,10 @@ Applied to
 
 Thanks!
 
-[1/5] dt-bindings: regulator: qcom,rpmh-regulator: Arrange compatibles alphabetically
-      commit: 85adaac269c36d8e2e0a5de87a1dc4ec06e984f1
-[2/5] dt-bindings: regulator: qcom,rpmh-regulator: Add compatible for SA8155p-adp board pmic
-      commit: 66376e152303bb60d6a75328b7bc998de86f8c08
-[3/5] regulator: qcom-rpmh: Cleanup terminator line commas
-      commit: ba5dabf40e9143ff6c48943b76a532d5ab34d0e8
-[4/5] regulator: qcom-rpmh: Add terminator at the end of pm7325x_vreg_data[] array
-      commit: f26cdadad729743888eb4ac2c17eac3cf845b493
-[5/5] regulator: qcom-rpmh: Add new regulator found on SA8155p adp board
-      commit: 9a336ed97d00bb69547272fc7d0439802bece375
+[1/2] regulator: max8893: add regulator driver
+      commit: d83f778c627ad4e80bd82dbc88ffa1b1b18876bb
+[2/2] dt-bindings: regulator: Add MAX8893 bindings
+      commit: 01c5741b82969d096ac0870d997b7d2f5a5fe970
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
