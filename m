@@ -2,134 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E27FD3AEC02
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DFFC3AEC0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 17:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230013AbhFUPKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 11:10:08 -0400
-Received: from mail-bn8nam12on2041.outbound.protection.outlook.com ([40.107.237.41]:37409
-        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229747AbhFUPKH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 11:10:07 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T00HV84hoWf0JvE1Nd4R0wTlgIo9p7D/e7z0ba9mIYmSvkGmUxBuxzH2eKneQXb+q68lYsPM5sjKhDRuehl+f8jtdKj155kjFPxj4mUQqiKI0sieP0E05QC42C1c29wpFH12Ro7jUGtr6UslbAs3mjrYdRQZ3POk/1pUJewcmTTj84OQzNlywlm8cacqf3I4WRcmN143/1R/w9ddFQTdT24hdXr7EOE9iViTVcvg4hc9w64DIIfD+zlvQtvUkB7XpnzF5KHoCqkmnJFePw3HXsM7zbncp7aHEl24EYTn+7tvvvytqX1ME0lIuCldvVUqP6Z2oE8yPtQWzMpAmLqh0A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FF/KNHmvI2t390kvAJBAdUJkBPIqws1VqiHmnCuR1aQ=;
- b=NBJAzYsq47zF5YoCOm4FJwg34WbM2Qq1VtAsSxMdXkunOaOkOFrTBsEiX04oO/JwBuG0hgQPjwkc4yhalJ7QEqHjLP87FeKl/ZCCvJGTWvccOTTQuZT7QkX90NMBw3HpuLSWG9+dWZPOM3JUammML8BWdA+bmKdhrRlBXvonkGTlD9vpR68Fs+tYAoG0r0sqytmCayP9hwO55P5T9QbfoIYxVwaFMeWknNBUD6Dlf8HVUtuX3lG52/z0vDJlCe7JS3t4B0vdPQB3FRPc31jMvDM8HFzt2kofV3nGci020D2D/TcQ4v76HG18RllOR20KuEpqxC8RjSTpJQ/xWMcjfQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FF/KNHmvI2t390kvAJBAdUJkBPIqws1VqiHmnCuR1aQ=;
- b=WEX531AiY5gFqpBEkKkispoVUpI7z/pVovo/uTXqi2E05JOntud0CEueSjqaCk92xVg/wpY6mQ9opOw3pcU3b2R833zHQgc60rHYJQFANB0QHrgPhJibsPE176eTPpjX6w7r2ARWj3y4l3FwtL6ppIVirF92oTdvXIG1M10CRDtxqsmvvI+Mb1rrZSmHdeDTVJnasEB3dSTFesiDDXQbyc+UxjZBIdxav0mivmusDUaIR4NdPEqDcZfvXfwRyCbKgi2TIauNCieSgwiaaid9+GuhNLUKFy7lOUamf6J5ZQeT001tXgV4K0H2k1yVXwGu6rA4oGeUwxSPtKlg+t904Q==
-Received: from DM3PR12CA0058.namprd12.prod.outlook.com (2603:10b6:0:56::26) by
- DM6PR12MB2859.namprd12.prod.outlook.com (2603:10b6:5:15d::29) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4242.19; Mon, 21 Jun 2021 15:07:51 +0000
-Received: from DM6NAM11FT026.eop-nam11.prod.protection.outlook.com
- (2603:10b6:0:56:cafe::a0) by DM3PR12CA0058.outlook.office365.com
- (2603:10b6:0:56::26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend
- Transport; Mon, 21 Jun 2021 15:07:51 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT026.mail.protection.outlook.com (10.13.172.161) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4242.16 via Frontend Transport; Mon, 21 Jun 2021 15:07:50 +0000
-Received: from HQMAIL107.nvidia.com (172.20.187.13) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 21 Jun
- 2021 15:07:50 +0000
-Received: from kyarlagadda-linux.nvidia.com (172.20.187.5) by mail.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 21 Jun 2021 15:07:46 +0000
-From:   Akhil R <akhilrajeev@nvidia.com>
-To:     <andy.shevchenko@gmail.com>
-CC:     <akhilrajeev@nvidia.com>, <bgolaszewski@baylibre.com>,
-        <jonathanh@nvidia.com>, <kyarlagadda@nvidia.com>,
-        <ldewangan@nvidia.com>, <linus.walleij@linaro.org>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <mperttunen@nvidia.com>,
-        <smangipudi@nvidia.com>, <thierry.reding@gmail.com>
-Subject: Re: [PATCH v2] gpio: tegra186: Add ACPI support
-Date:   Mon, 21 Jun 2021 20:38:09 +0530
-Message-ID: <1624288089-15278-1-git-send-email-akhilrajeev@nvidia.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <CAHp75Vf+8t78NbYeCh+VLEAzcYJxDP9Pz7DPW_MC9D-K_Ff8uA@mail.gmail.com>
-References: <CAHp75Vf+8t78NbYeCh+VLEAzcYJxDP9Pz7DPW_MC9D-K_Ff8uA@mail.gmail.com>
+        id S230087AbhFUPMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 11:12:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230076AbhFUPML (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 11:12:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7FB8C061574;
+        Mon, 21 Jun 2021 08:09:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=D8ph6pAIQDI8O5xX0/bF6rOuV3U8EpQmauqRDOmPVTw=; b=qawH6s/nu6gNZqpAj9pyqEDODz
+        MQb09/vjLbdWiYpA8JVaY4k0zUar9DsoQrWhb4JKAzFeSFiL8GJvX006u8PF9KYUqLByb4Ue/thtk
+        oHUI/3Nk7hR8YH6VY3dXwfhMF49O4GjrUZqiR2UqDLioeOmdpRDR5+HYGq7r0b4NYsZJmUSQB58pZ
+        9yf4A3b8qVaku3GgAnm/HjM5eG8r0S/i5Fd4NtCo1kK+A0m4vcAiTx0LwElKu4AJoz2VA/d7Qug2d
+        C/hQvAxLJwYFquqABYvrY4OBojOVzOzSv3epUm71kfq9jL4BbZdSsIpMvmfIWhangFScMsVdBsb7Y
+        2F22fS4g==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvLY4-00DDUo-Ca; Mon, 21 Jun 2021 15:09:25 +0000
+Date:   Mon, 21 Jun 2021 16:09:16 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     viro@zeniv.linux.org.uk, Vivek Goyal <vgoyal@redhat.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com
+Subject: Re: [PATCH 1/2] init: split get_fs_names
+Message-ID: <YNCrnCvtlOuZO9jV@casper.infradead.org>
+References: <20210621062657.3641879-1-hch@lst.de>
+ <20210621062657.3641879-2-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 38cf5f20-90b1-4d18-1fa9-08d934c6568d
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2859:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB2859EEAD95A17C42E132DA95C00A9@DM6PR12MB2859.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GlPdjBs6aS0srCIz2fLtIz4ED2bULvqKH2wes9LdHsgN0K6WRsHIV25QxQyrB9pSPCFSCXlqe8SdArjZiIUSZWrZSq51Thsrsbve/GkZ4pu6/ip/kCPYxhCNqjfn8FwGlQKpH2ZyiR8vtoNXOy9hD1WVflyHJZ3mfPXl88gDMS0rOAFVcn9wxKc0U0xEDCT22mUhAhIYani7yV0vxJnU8BTJNK9NZa++yu9GMCVLCH8y7TyYdcZn0yvGLb1/Zh6u5ri+I/X69uTJiJu8S4g8Srt/x5P/0fUvnDIkm+ljfQjpq5Cby1kgF2eED/4uOU8bhEmcDAI+ma3wdZK8AHqZz7Qzoe7pIVjTCmjltwtQHagbIl6dIVqR2SH1zDjWBMv7WJ+9Nwf8rVjWNp3PIFIzTAap8jSKIf6g2VZA/Kr9EVeImxp+cJKdbce/ad4BSq7dcV8ww4WLMPEj1rkLmoi9Q6xvWZT+PQpsaNyle0c8oAbzIT6dXtGO3YGBs3Qt/Ky8bMYXN4GrJcEtiWxxBOcFI/Ru2ISU5aXxrcbnub+HEugxaeH6C0TOxtxjsKQgY2jUFE0MvbgZUX1c8tCwXKThrMvpUk/jfVxB9qCaYzfJDm8Dre2DfyeqqGcuxRetNRRHQS7tNl7JKV9kAjsHDmcFQ0OWL09z0C9DAOYO65lbS0k=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(376002)(39860400002)(346002)(396003)(46966006)(36840700001)(426003)(316002)(82740400003)(478600001)(36906005)(7696005)(8676002)(36756003)(5660300002)(86362001)(4326008)(6916009)(36860700001)(2616005)(47076005)(8936002)(6666004)(336012)(83380400001)(70206006)(70586007)(54906003)(82310400003)(2906002)(186003)(26005)(356005)(7636003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2021 15:07:50.8674
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 38cf5f20-90b1-4d18-1fa9-08d934c6568d
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT026.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2859
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621062657.3641879-2-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 21, 2021 at 08:26:56AM +0200, Christoph Hellwig wrote:
+> -static void __init get_fs_names(char *page)
+> +static void __init split_fs_names(char *page, char *names)
 
-Thanks Andy for the suggestions. Few thoughts I have below.
+If you're going to respin it anyway, can you rename 'page' to 'buf'
+or something?  Kind of confusing to have a char * called 'page'.
 
->What about doing like
+>  {
+> +	strcpy(page, root_fs_names);
+> +	while (*page++) {
+> +		if (page[-1] == ',')
+> +			page[-1] = '\0';
+> +	}
+> +	*page = '\0';
+> +}
 
->      gpio->secure = devm_platform_ioremap_resource_byname(pdev, "security");
->      if (IS_ERR(gpio->secure))
->              gpio->secure = devm_platform_ioremap_resource(pdev, 0);
->      if (IS_ERR(gpio->secure))
->              return PTR_ERR(gpio->secure);
->
->and similar for gpio->base?
+is it really worth doing a strcpy() followed by a custom strtok()?
+would this work better?
 
-Wouldn't this cause a redundant check if it had already succeeded in getting
-the resource by name? Also, could it happen that if the device tree is
-incorrect, then one of the resource is fetched by name and other by the index,
-which I guess, would mess things up. Just my random thoughts, not sure if it
-is valid enough.
+	char c;
 
->Wouldn't the following be enough?
->
->-       gpio->intc.name = pdev->dev.of_node->name;
->+       gpio->intc.name = devm_kasprintf(&pdev->dev, "%pfw",
->dev_fwnode(&pdev->dev));
->+       if (!gpio->intc.name)
->+
+	do {
+		c =  *root_fs_names++;
+		*buf++ = c;
+		if (c == ',')
+			buf[-1] = '\0';
+	} while (c);
 
-How about this way? I feel it would be right to add the OF functions conditionally.
+> +static void __init get_all_fs_names(char *page)
+> +{
+> +	int len = get_filesystem_list(page);
 
-+   if (pdev->dev.of_node) {
-+       gpio->gpio.of_node = pdev->dev.of_node;
-+       gpio->gpio.of_gpio_n_cells = 2;
-+       gpio->gpio.of_xlate = tegra186_gpio_of_xlate;
-+   }
+it occurs to me that get_filesystem_list() fails silently.  if you build
+every linux filesystem in, and want your root on zonefs (assuming
+they're alphabetical), we'll fail to find it without a message
+indicating that we overflowed the buffer.
 
-+   gpio->intc.name = gpio->soc->name;
-
---
-Best Regards,
-Akhil
