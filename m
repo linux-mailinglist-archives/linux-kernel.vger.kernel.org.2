@@ -2,105 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F443AE2AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 07:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 318553AE2B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 07:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbhFUFSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 01:18:11 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:29808 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbhFUFSK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 01:18:10 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 15L50DTC006012;
-        Mon, 21 Jun 2021 13:00:13 +0800 (GMT-8)
-        (envelope-from jamin_lin@aspeedtech.com)
-Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 21 Jun
- 2021 13:14:48 +0800
-Date:   Mon, 21 Jun 2021 13:14:46 +0800
-From:   Jamin Lin <jamin_lin@aspeedtech.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
-        "Andrew Jeffery" <andrew@aj.id.au>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Wolfram Sang" <wsa+renesas@sang-engineering.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Jean Delvare" <jdelvare@suse.de>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Khalil Blaiech <kblaiech@mellanox.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Bence =?utf-8?B?Q3PDs2vDoXM=?= <bence98@sch.bme.hu>,
-        Yicong Yang <yangyicong@hisilicon.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        ChiaWei Wang <chiawei_wang@aspeedtech.com>,
-        Troy Lee <troy_lee@aspeedtech.com>,
-        Steven Lee <steven_lee@aspeedtech.com>
-Subject: Re: [PATCH 3/3] i2c:support new register set for ast2600
-Message-ID: <20210621051446.GB27876@aspeedtech.com>
-References: <20210617094424.27123-1-jamin_lin@aspeedtech.com>
- <20210617094424.27123-4-jamin_lin@aspeedtech.com>
- <YMslyzUKp/7J0ncu@smile.fi.intel.com>
- <20210618035855.GB31659@aspeedtech.com>
- <YMxuz03aTijWH6uj@smile.fi.intel.com>
+        id S229661AbhFUFTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 01:19:47 -0400
+Received: from mga06.intel.com ([134.134.136.31]:49645 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229487AbhFUFTq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 01:19:46 -0400
+IronPort-SDR: 3hn5S7zWgrUGkcg3Ypl98Hf5aaL8yznB6a2V7+IgnT1r+syQJsuQIhR0FkiPui0rbiWWoPSJ3j
+ gF5YmjyyXxrA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10021"; a="267919629"
+X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
+   d="scan'208";a="267919629"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jun 2021 22:17:32 -0700
+IronPort-SDR: 9Xxri7XJd9v6KBQMO9fhv7VvxtB0dH0OGtBQ4S0a8I7KOm46M0mLtWytuAniowgdp2Wya2YagJ
+ ed//po5RjGhA==
+X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
+   d="scan'208";a="453761991"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.254.211.249]) ([10.254.211.249])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jun 2021 22:17:29 -0700
+Cc:     baolu.lu@linux.intel.com, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linuxarm@huawei.com,
+        thunder.leizhen@huawei.com, chenxiang66@hisilicon.com,
+        linux-doc@vger.kernel.org
+To:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
+        will@kernel.org, dwmw2@infradead.org, robin.murphy@arm.com,
+        corbet@lwn.net
+References: <1624016058-189713-1-git-send-email-john.garry@huawei.com>
+ <1624016058-189713-7-git-send-email-john.garry@huawei.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: [PATCH v14 6/6] iommu: Remove mode argument from
+ iommu_set_dma_strict()
+Message-ID: <c062ef9e-c106-4218-ba2a-c94fdcb6d955@linux.intel.com>
+Date:   Mon, 21 Jun 2021 13:17:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <YMxuz03aTijWH6uj@smile.fi.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 15L50DTC006012
+In-Reply-To: <1624016058-189713-7-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 06/18/2021 10:00, Andy Shevchenko wrote:
-> On Fri, Jun 18, 2021 at 11:58:55AM +0800, Jamin Lin wrote:
-> > The 06/17/2021 10:36, Andy Shevchenko wrote:
-> > > On Thu, Jun 17, 2021 at 05:43:40PM +0800, Jamin Lin wrote:
-> > > > Add i2c new driver to support new register set for AST2600.
-> > > > AST2600 support three modes for data transfer which are
-> > > > byte mode, buffer mode and dma mode, respectively.
-> > > > The global driver of i2c is used to set the new register
-> > > > mode and define the base clock frequency
-> > > > of baseclk_1~baseclk_4.
-> 
-> > >  - shrink the code base by at least ~15% (it's possible), i.e. -200 LOCs
-> > Can you describe it more detail?
-> > Do you mean I should separate the patch file to fix size limitation? 
-> 
-> No. Based on my brief review you introduce to many redundant LOCs (lines of
-> code). Remove them, refactor the code, make it small and neat and easy to read
-> and understand. It is possible to achieve!
->
-Will fix
-Thanks
-> > >  - rethink how you do calculations and bit operations
-> > >  - better code style
-> > >
-> > Thanks for your review and very good suggestion
-> > I will update them and sent patch again.
-> > By the way, I received test failed email from Robot due to compiling
-> > warning. I will fix them, too.
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+On 2021/6/18 19:34, John Garry wrote:
+> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> index 60b1ec42e73b..ff221d3ddcbc 100644
+> --- a/drivers/iommu/iommu.c
+> +++ b/drivers/iommu/iommu.c
+> @@ -349,10 +349,9 @@ static int __init iommu_dma_setup(char *str)
+>   }
+>   early_param("iommu.strict", iommu_dma_setup);
+>   
+> -void iommu_set_dma_strict(bool strict)
+> +void iommu_set_dma_strict(void)
+>   {
+> -	if (strict || !(iommu_cmd_line & IOMMU_CMD_LINE_STRICT))
+> -		iommu_dma_strict = strict;
+> +	iommu_dma_strict = true;
+>   }
+
+Sorry for this late comment.
+
+Normally the cache invalidation policy should come from the user. We
+have pre-build kernel option and also a kernel boot command iommu.strict
+to override it. These seem reasonable.
+
+We also have a helper (iommu_set_dma_strict()) so that the vendor iommu
+driver could squeeze in and change the previous settings mostly due to:
+
+a) vendor iommu driver specific kernel boot command. (We are about to
+    deprecate those.)
+
+b) quirky hardware.
+
+c) kernel optimization (e.x. strict mode in VM environment).
+
+a) and b) are mandatory, while c) is optional. In any instance should c)
+override the flush mode specified by the user. Hence, probably we should
+also have another helper like:
+
+void iommu_set_dma_strict_optional()
+{
+	if (!(iommu_cmd_line & IOMMU_CMD_LINE_STRICT))
+		iommu_dma_strict = true;
+}
+
+Any thoughts?
+
+Best regards,
+baolu
