@@ -2,116 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD8B3AF917
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:18:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 303113AF92D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231631AbhFUXU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 19:20:56 -0400
-Received: from mail-co1nam11on2071.outbound.protection.outlook.com ([40.107.220.71]:45281
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229940AbhFUXUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 19:20:54 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LT/+jPdgFjSJhTn4uRNmmI08zZnlx0leYh+3SUmUiVNSMF497lHZKEFOJ48hrNLekuiGF9rlHTmBDFBPJLq3sY/Xk9eVjRM6Gsd1O9Gc5KDES+0urwSVomzy/V7ishhahSK/o74+kMr+HemLT2WA9CkjGqfSePo2fidxubO/g0Tyop1gMZobO/Uf2CB0wsWLamCNHkqBik9fj54i+V9O5MxvineGQYcEwqY+ciJl+mrleG6AucOGEETCjXoh/LnuBbZ9+mc3sZS3Snc++C6qcPDgGrAzZO8xwiXISf/0cEZL3coddrsA8AuobpGw7rkDu2Y144pWLTqP17B3SOG7Pw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TzQEsXzmAHXYA5QucndpHPSUMmssd5U473kGRctvTzc=;
- b=I/Z5aDPQp8f3el6MwLcEfLQeoCJyA2OFmSim1+rRK39PqHDlTOXogBB/pP7cEcX1mVdQ20a/GfjNwzKw+2VHlGNZa0O1JsJm/I3dPizPAQFkHbf4a7AoyoroKx3GYXXhR048RLqLBBlQNNVIEK1Dyhp3RG5MYURSf7Ot6/MPhCapRndiJV+RW+iIwBYJF3GZRQj9FZxOMDeJdNPYp5Slv3N84bB/uxjOfSOG8UKLwkuSLyPiUNwK5rptM7Uo/YPwHHutKis+Bzg449Wzxao2xxs90xRjBBVGNbsStSgsQ0iqj1z/vqFeIPSZl0kWyOofOeuUBmofoDdBSw0Rr8YQkw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TzQEsXzmAHXYA5QucndpHPSUMmssd5U473kGRctvTzc=;
- b=N1mMD344/y57xd8R7f64DB2bvP+egT/TUwCAMGgQSJj4uoBF3OzzcLvXb72ne2/S7bMb0JwZisi+pZ9sSMQHyKGluS9CdtVTdvBvfC/nVs9986btX8dxW1V5dnTiEHIql3ZYWPxOWvayP9dsaFK8k+MsXzYRPGJ7KzdzD6ZQjFdvYg1KFxn9qWsIWHHVsKqaLIYvf2yxRvbPeQZL3dssTcFUMMHFAcpGtiOl4hdkXOz92sezgmhNFCiuVrB4DGFMSmF+0t7+rsSDWTZUGBravFDC5bjTOayAtG4mSbz8koXwJwRJ4OkzdCl1BgGHiBe4irWzAnQi0zD50PVxkSj2lA==
-Authentication-Results: lst.de; dkim=none (message not signed)
- header.d=none;lst.de; dmarc=none action=none header.from=nvidia.com;
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
- by BL1PR12MB5380.namprd12.prod.outlook.com (2603:10b6:208:314::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.23; Mon, 21 Jun
- 2021 23:18:38 +0000
-Received: from BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
- ([fe80::3d51:a3b9:8611:684e%8]) with mapi id 15.20.4242.023; Mon, 21 Jun 2021
- 23:18:38 +0000
-Date:   Mon, 21 Jun 2021 20:18:37 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Avihai Horon <avihaih@nvidia.com>,
-        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        Bart Van Assche <bvanassche@acm.org>,
-        Tom Talpey <tom@talpey.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Chuck Lever III <chuck.lever@oracle.com>,
-        Keith Busch <kbusch@kernel.org>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Honggang LI <honli@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>
-Subject: Re: [PATCH v2 rdma-next] RDMA/mlx5: Enable Relaxed Ordering by
- default for kernel ULPs
-Message-ID: <20210621231837.GT1002214@nvidia.com>
-References: <b7e820aab7402b8efa63605f4ea465831b3b1e5e.1623236426.git.leonro@nvidia.com>
- <20210621180205.GA2332110@nvidia.com>
- <20210621202033.GB13822@lst.de>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621202033.GB13822@lst.de>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL0PR0102CA0065.prod.exchangelabs.com
- (2603:10b6:208:25::42) To BL0PR12MB5506.namprd12.prod.outlook.com
- (2603:10b6:208:1cb::22)
+        id S231709AbhFUXVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 19:21:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34958 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232064AbhFUXV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 19:21:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D8756128E;
+        Mon, 21 Jun 2021 23:19:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624317553;
+        bh=EYSEiTRNCJeziu2InDx+K6VGSnjU1txVEGEaZ6iYlE8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=EALJRLLpGbQ0ysosvYNsYGhLN94XGwgW99Tyxah/VjbhGto+G8K0xtHfJo85MpjI9
+         paLLIdrZ0Sx6/WI5qL0xasZuhUblrr5+xrTeRO4EBTmZF0Uiyn9xFCreS5y4KbfLZz
+         Ebx3uYHhMxvYRodwqRDRIOYwVTmgZPDuQunGJVyLNwYrPBUYTBjRtjUtL5hcKMUB/k
+         9QIeAhMk64hSJdVlS9+TiEKlQ+n0qG8vb5jt5MFpqPluO02UbkXswBavQ44x+U2NQ+
+         iMqfjlTD0BG/VkFAU/nnqm1xY+wFb1R1fnEs8wmVVpYvd/EuckxisM3U8D/fMc8Ec6
+         mStAmAlNR/YQg==
+Received: by mail-ed1-f53.google.com with SMTP id df12so18712555edb.2;
+        Mon, 21 Jun 2021 16:19:13 -0700 (PDT)
+X-Gm-Message-State: AOAM530psCsXxZaCHMB0tmOlI0BO9CL2muXpWmWFrRAR7wWz1Ck2U5MM
+        0hEnlLAZQZQ3turdgEHfdRxN+Fb/SecNrMfkqQ==
+X-Google-Smtp-Source: ABdhPJykf9Ft5YqcKGjPM3wPlxn/4+rWt3HORmIC4fctiHfo0+mQC67N4pJ5C+6RaNYUOWIPmgDOnSsLJVPawxHLBgk=
+X-Received: by 2002:aa7:ccca:: with SMTP id y10mr1021381edt.258.1624317551768;
+ Mon, 21 Jun 2021 16:19:11 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL0PR0102CA0065.prod.exchangelabs.com (2603:10b6:208:25::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21 via Frontend Transport; Mon, 21 Jun 2021 23:18:38 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lvTBd-009svn-AJ; Mon, 21 Jun 2021 20:18:37 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 47b56494-eb22-4eb4-12de-08d9350ae678
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5380:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL1PR12MB53802CC60D5FAF3E613939F9C20A9@BL1PR12MB5380.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: k+B5F/2U0kcOWoTaOApbuAMDi2m+ZkfTuN4XIfO5W8JjmgeHDXDDnf1Htf68YRm79Iq7LMOdT3P5a+Q1PZn+ojtrawBKh3voK1YH8IrKXiyqgnN3bzAlqEjR+7zEhhVxVWjlS6xo3UAATd8yq6Jno9t7LrHGUJRJp0P158wQ5XtKKLMqmVPhn9G7O8hU1hdvNxe++5ZBjyEVCwsLdKdrh5+LpJWMdHPt41xS6t4kIVe5yhVu6sH/mTrr7h+F11Kz7mbeUVeAxVhJr1ec/ihJFcZLOvMYzg8VRUvjg4a09L5wdIkEwwvyiId4c9qQdVx+R1B7Z9yA59R3njL3hSrLeoVzUgbr4btLC9zPKUaYL2kO6JRQpiH4E5ImAa/6ge5rNKcdRUczaWw3NvSEf4OI+hQIPjGXQOsOe2Rxhrzr3qcRBr3rAZL4jZVOQRpDUnLt1TyegA19q+L9wvWWYI8kEABiNWFq8yuBvxQwm8c9e2pnfSwpqiC/1GPw5E4hocYwA1t/cIl3SisDCEzM3PVOo0pXRGlu/ar4r2rKsk1P6P70ccYTqIBD4F3Teon0ps5gXk+88LuggULouJBHKhuQtS5SLcZZPgNsP6yyHR1kvII=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(136003)(396003)(39860400002)(376002)(316002)(38100700002)(1076003)(66946007)(2616005)(66556008)(8676002)(54906003)(66476007)(7416002)(107886003)(186003)(8936002)(33656002)(6916009)(4326008)(36756003)(4744005)(426003)(5660300002)(478600001)(26005)(9786002)(9746002)(2906002)(86362001)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: LEtzyShVT3kyH5xC9Vwb3QNwzaXa1Ky9mAhMTg7jRiuRLAt1cQ+w0wZnV5kDSu65icqb7WhV/lRsWeUZa37enzFjRm70MmP9lX9V0+0+cy7EW5DnwUvfCCHuY6Ogk2MVHYAo/fWlYrFEP39WPpPaWBJ94YWctHJymdVb979U+KfnNd5ZTLxPozGqVbZOljL+60fYpoUTox+Q2j21JJ33EKypF9vMcPkIYBXca9uSWmu6aNsOd46hSQ6h1Irq6Y9O0b/UJSELvFwZLoAq1VWPog3t0AKJyKnjw0FqZ1FPyI0FZGyg8dk/kmW6so1rb1RFdqKY0U6ZeeZedZ4L37Biy0W55WKI6q1rgqKHwHxd0FVTEXtaZ3rG+Y/Jj9LS/ERiUoxUv5OUldsQNjQZWeOGJ8EwYdjAauSl/sa4nJolMsLq89zaTrSYDDtT2qcRYAF0E1rr02JzDd8i/aUty0UdmIhHbbY7o99R7/Bz+BZvyz+9YKU4InS+ZAMMkLb4GL/DYU9agaOXbgMVK+XzrkYSTBZsc7++C4WnVImeM2yL4K3PuJo98CAp0RUJArOk9dMsoEV1QjeyQt8ch8ojVPWYmXhpTA3i3j468+cm1Wl1AWC/8skPgeDib5ajAJTUIMt4VwK3+axCMeWDxW8Q3dpvUplyBgFJahKgTl4+Fx/JmcZ11xtrdtNYbmf7zDhdBuu3k2fxynKGfplZb5Zlly5A7gbEo75U60t+YCElreFLFXfNGadkz6/BbY7r4PBgU5Xz
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 47b56494-eb22-4eb4-12de-08d9350ae678
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2021 23:18:38.3514
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5822IFEOEDFgALuCxaQzMRWAU49o3uyJ4ZiIS7vgTDC0jrxX3k30kPyNlCI4rGsw
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5380
+References: <20210612094631.89980-1-martin.botka@somainline.org>
+ <20210612094631.89980-3-martin.botka@somainline.org> <CABb+yY3BYYC2na8EFunEeu0XCfLXrUQon=hF3q5p=+FUoigoyw@mail.gmail.com>
+ <CAL_JsqLWqtAtqLRF-MAnq80NMfD0a+CfWPv8JWjjNTJFgMjCxg@mail.gmail.com> <CABb+yY0sdSinTm788pMFrqEZ6QMC2OwCP7Kkto+pG9h1aGMzwQ@mail.gmail.com>
+In-Reply-To: <CABb+yY0sdSinTm788pMFrqEZ6QMC2OwCP7Kkto+pG9h1aGMzwQ@mail.gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 21 Jun 2021 17:19:00 -0600
+X-Gmail-Original-Message-ID: <CAL_JsqKdoMwpL_tYC7VQRAG2AC5nR4diShMQCgDseObcgU+egQ@mail.gmail.com>
+Message-ID: <CAL_JsqKdoMwpL_tYC7VQRAG2AC5nR4diShMQCgDseObcgU+egQ@mail.gmail.com>
+Subject: Re: [PATCH V3 3/3] mailbox: qcom-apcs: Add SM6125 compatible
+To:     Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     Martin Botka <martin.botka@somainline.org>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        jamipkettunen@somainline.org, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 10:20:33PM +0200, Christoph Hellwig wrote:
-> On Mon, Jun 21, 2021 at 03:02:05PM -0300, Jason Gunthorpe wrote:
-> > Someone is working on dis-entangling the access flags? It took a long
-> > time to sort out that this mess in wr.c actually does have a
-> > distinct user/kernel call chain too..
-> 
-> I'd love to see it done, but I won't find time for it anytime soon.
+On Mon, Jun 21, 2021 at 5:10 PM Jassi Brar <jassisinghbrar@gmail.com> wrote:
+>
+> On Mon, Jun 21, 2021 at 2:46 PM Rob Herring <robh+dt@kernel.org> wrote:
+> >
+> > On Sun, Jun 20, 2021 at 10:03 PM Jassi Brar <jassisinghbrar@gmail.com> wrote:
+> > >
+> > > On Sat, Jun 12, 2021 at 4:46 AM Martin Botka
+> > > <martin.botka@somainline.org> wrote:
+> > > >
+> > > > This commit adds compatible for the SM6125 SoC
+> > > >
+> > > > Signed-off-by: Martin Botka <martin.botka@somainline.org>
+> > > > ---
+> > > > Changes in V2:
+> > > > None
+> > > > Changes in V3:
+> > > > Change compatible to apcs-hmss-global
+> > > >  drivers/mailbox/qcom-apcs-ipc-mailbox.c | 5 +++++
+> > > >  1 file changed, 5 insertions(+)
+> > > >
+> > > > diff --git a/drivers/mailbox/qcom-apcs-ipc-mailbox.c b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
+> > > > index f25324d03842..f24c5ad8d658 100644
+> > > > --- a/drivers/mailbox/qcom-apcs-ipc-mailbox.c
+> > > > +++ b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
+> > > > @@ -57,6 +57,10 @@ static const struct qcom_apcs_ipc_data sdm660_apcs_data = {
+> > > >         .offset = 8, .clk_name = NULL
+> > > >  };
+> > > >
+> > > > +static const struct qcom_apcs_ipc_data sm6125_apcs_data = {
+> > > > +       .offset = 8, .clk_name = NULL
+> > > > +};
+> > > > +
+> > > >  static const struct qcom_apcs_ipc_data apps_shared_apcs_data = {
+> > > >         .offset = 12, .clk_name = NULL
+> > > >  };
+> > > > @@ -166,6 +170,7 @@ static const struct of_device_id qcom_apcs_ipc_of_match[] = {
+> > > >         { .compatible = "qcom,sc8180x-apss-shared", .data = &apps_shared_apcs_data },
+> > > >         { .compatible = "qcom,sdm660-apcs-hmss-global", .data = &sdm660_apcs_data },
+> > > >         { .compatible = "qcom,sdm845-apss-shared", .data = &apps_shared_apcs_data },
+> > > > +       { .compatible = "qcom,sm6125-apcs-hmss-global", .data = &sm6125_apcs_data },
+> > > >         { .compatible = "qcom,sm8150-apss-shared", .data = &apps_shared_apcs_data },
+> > > >         { .compatible = "qcom,sdx55-apcs-gcc", .data = &sdx55_apcs_data },
+> > > >         {}
+> > > >
+> > > These all are basically different names for the same controller.
+> > > The 'offset' is a configuration parameter and the 'clock', when NULL,
+> > > is basically some "always-on" clock.
+> > > I am sure we wouldn't be doing it, if the controller was third-party.
+> >
+> > If newer implementations are 'the same', then they should have a
+> > fallback compatible to the existing one that is the same and no driver
+> > change is needed. If the differences are board or instance (within an
+> > SoC) specific, then a DT property would be appropriate.
+> >
+> The controllers (13 now) only differ by the 'offset' where the
+> registers are mapped. Clock-name is a pure s/w artifact.
+> So, maybe we could push all these in DT.
 
-Heh, me too..
+Why is 'reg' not used for the offset?
 
-I did actually once try to get a start on doing something to wr.c but
-it rapidly started to get into mire..
+In any case, we can't really get rid of the first 13 instances though...
 
-I thought I recalled Leon saying he or Avihai would work on the ACCESS
-thing anyhow?
-
-Thanks,
-Jason
+Rob
