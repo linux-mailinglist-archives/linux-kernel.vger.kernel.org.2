@@ -2,146 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F49D3AF8AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 00:40:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F633AF8B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 00:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232266AbhFUWmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 18:42:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57084 "EHLO
+        id S232306AbhFUWnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 18:43:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231817AbhFUWmX (ORCPT
+        with ESMTP id S231817AbhFUWnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 18:42:23 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D703C061574;
-        Mon, 21 Jun 2021 15:40:07 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id w13so4892831wmc.3;
-        Mon, 21 Jun 2021 15:40:06 -0700 (PDT)
+        Mon, 21 Jun 2021 18:43:20 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A463AC061574;
+        Mon, 21 Jun 2021 15:41:04 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id he7so31275725ejc.13;
+        Mon, 21 Jun 2021 15:41:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=gg5Nrt23j+TMZ7tzw193EhblKwwxaEj7aLGVZzA+N6M=;
-        b=m/pCm741JPF11lL4vntkhm52M4QUZHGhT9ymC6ZQdim4d2u6fT+/QVtfXOGYt4vml/
-         Ihfhqhkgj4Llr/UWqWklclUBWgnzxBVtK3l/TOLLeX3T/r3CXEm9IXEbPAgBtkLuF5RJ
-         TmVmQSt+JKuA3vFFTV8aBpE0epQ45B77uCjJry6iGEVD0KX8gUeNB9w1vVjswlxKkKFd
-         Wgg4C40q/jBHa1zwTZQ8lSwe0OrXKMa7AEi7B2ACTr+i5JFOb9slnidPKbrvphy1k0RG
-         eN/r6yF5aw8YbubuzqLhkY3dl+jC32xQeKhBLuaz/YsnFUNqfMr3B7wfVNBWuTYrEiFL
-         o4gw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9ZblUxqMAeqDml7/8yTajpBO17oO8lzUGH1Oft0tu0E=;
+        b=CTmPR9KijJJ/ee7Ljc4W8fGbo3n+kzufOxofUEEgd9OvGSExqTLpzR8cdxlsyKsIkT
+         b+3XUx6/gzqeJU+PNKtUVwZEX7fEGnNtX6z0cb4OQgEaqVj0cqfgScp1PZiQE6PlU2qZ
+         wx4jkVJeyljSlyMM3dpacfGtSX4HOo8FFfFN2FCPCHCRGTlOb7SeqZAznuzdHd6scHPJ
+         Josn7+ZhrNiWL6FznO8Qu/aL/+IxP6xuYG2E4I9eXseyTizycp826CZSFTaJSamNeHTu
+         Kpj/NoSF7+ax58qzPMY0xNxTwztt3779pHCEBE4Z5iuOwXKNwGdpyO9FhXlT5HYWY9ek
+         18/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=gg5Nrt23j+TMZ7tzw193EhblKwwxaEj7aLGVZzA+N6M=;
-        b=hFeAIg9hU8pM4Mhj0sK50bDmRB49PYdjWlvHotiu4Q9LNRTk3zbyjdhyOuEIxfqq/T
-         YwoVdhmQA9A7R6jHeCqn0/6nCoexfEp2djQnrVl7vClz65aGeF6SI0NMGcvd2p4yqufW
-         49ywwDSAaMGnFucIPQeVxVWTGGv3wURNGdqYMjDBiDNYOcQ8qoxYhIYnRESR22gkWI9N
-         yWgeuiOcdkkVjwx/dBX9Y9evwXphaSGU4r9/zOgjMKHSRa5JmtaxDXdehSIgRBvIWXYi
-         neD1ZdTViW6gkVTSKJb80Ve6cteUK2Vyq0nBhxiOlUjDFyQvmozOYQ/E4qnqDhWIHhVH
-         u5dQ==
-X-Gm-Message-State: AOAM533UaCP3YnyVcb3BendtU7u1jdYbOsZfBoB28L4mreXYYXGFwCrv
-        wjkzmvVCRw93+RALq5AyC1E=
-X-Google-Smtp-Source: ABdhPJxr8pwl9KJN5vRhj9Ttdt0RdUbs1eGSgCxh2ZA3q1Iky8UgH2CholaWt1qvQDXDQgMi4k8dNA==
-X-Received: by 2002:a05:600c:b57:: with SMTP id k23mr876483wmr.133.1624315205678;
-        Mon, 21 Jun 2021 15:40:05 -0700 (PDT)
-Received: from [192.168.1.211] ([2.29.20.116])
-        by smtp.gmail.com with ESMTPSA id s1sm403403wmj.8.2021.06.21.15.40.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 15:40:05 -0700 (PDT)
-Subject: Re: [PATCH v2 5/8] platform/x86: intel_skl_int3472: Provide
- skl_int3472_unregister_regulator()
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org
-Cc:     Mark Gross <mgross@linux.intel.com>
-References: <20210618125516.53510-1-andriy.shevchenko@linux.intel.com>
- <20210618125516.53510-5-andriy.shevchenko@linux.intel.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <3f379877-284e-9013-0687-0a0250d85c10@gmail.com>
-Date:   Mon, 21 Jun 2021 23:40:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9ZblUxqMAeqDml7/8yTajpBO17oO8lzUGH1Oft0tu0E=;
+        b=CXI5RgkdiF2IERs4z0VeNctkp9KmkQelEi099stfrEkuB4DOppcghxsBow0tQK31Lp
+         jQY6J7y0EpCQht/C1s0o3/bdHcfXssTN5hKSP+xqgSTHnD0x0s0mym/CDCjQD9FES5cv
+         3255mrK8d8wiJNWPIyZWuNnIYBMlrU3aHtE00NA0c5L25LGwv+U5nogA3xrvrRk+6GRo
+         /+qU7Kzd7lZW0JjNb2+dHFz4565AZ5cJhJR0/f7rC4MS3sb8759KWnL0XOtB1IpprpdH
+         b0yxLlHVoOQnoE8PiZBrqCx6Cypve1f7JFWyK7N3Yf5DnIN7s56VM+im80jhsLJEnhUq
+         60Gw==
+X-Gm-Message-State: AOAM531D7u9QWAa0AW5kUXrXuP4k8/kdU6UtiK88r7Ed4cSS9nL4Mrgh
+        HpBtIAeoMX1ctCMTd9FgUto=
+X-Google-Smtp-Source: ABdhPJwxUSkHowvOE+xh3pSsB7Z940uDN23DZV/jF4gJPs8QI7P11veLpYU0qDLFP9dMuTJ8dTRTzQ==
+X-Received: by 2002:a17:906:ce4f:: with SMTP id se15mr468703ejb.232.1624315263325;
+        Mon, 21 Jun 2021 15:41:03 -0700 (PDT)
+Received: from skbuf ([188.26.224.68])
+        by smtp.gmail.com with ESMTPSA id r17sm11082792edt.33.2021.06.21.15.41.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 15:41:03 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 01:41:02 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next v2] net: dsa: b53: Create default VLAN entry
+ explicitly
+Message-ID: <20210621224102.gokr46wyz6zu3cy4@skbuf>
+References: <20210621221055.958628-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210618125516.53510-5-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621221055.958628-1-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy
-
-On 18/06/2021 13:55, Andy Shevchenko wrote:
-> For the sake of APIs to be properly layered provide
-> skl_int3472_unregister_regulator().
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-
-Reviewed-by: Daniel Scally <djrscally@gmail.com>
-
-Tested-by: Daniel Scally <djrscally@gmail.com>
-
-And for 6/8 too.
-
+On Mon, Jun 21, 2021 at 03:10:55PM -0700, Florian Fainelli wrote:
+> In case CONFIG_VLAN_8021Q is not set, there will be no call down to the
+> b53 driver to ensure that the default PVID VLAN entry will be configured
+> with the appropriate untagged attribute towards the CPU port. We were
+> implicitly relying on dsa_slave_vlan_rx_add_vid() to do that for us,
+> instead make it explicit.
+> 
+> Reported-by: Vladimir Oltean <olteanv@gmail.com>
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 > ---
-> v2: new patch
->  .../x86/intel-int3472/intel_skl_int3472_clk_and_regulator.c | 6 ++++++
->  .../platform/x86/intel-int3472/intel_skl_int3472_common.h   | 2 ++
->  .../platform/x86/intel-int3472/intel_skl_int3472_discrete.c | 4 ++--
->  3 files changed, 10 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/platform/x86/intel-int3472/intel_skl_int3472_clk_and_regulator.c b/drivers/platform/x86/intel-int3472/intel_skl_int3472_clk_and_regulator.c
-> index 49ea1e86c193..60c7128f44ee 100644
-> --- a/drivers/platform/x86/intel-int3472/intel_skl_int3472_clk_and_regulator.c
-> +++ b/drivers/platform/x86/intel-int3472/intel_skl_int3472_clk_and_regulator.c
-> @@ -193,3 +193,9 @@ int skl_int3472_register_regulator(struct int3472_discrete_device *int3472,
->  
->  	return ret;
->  }
-> +
-> +void skl_int3472_unregister_regulator(struct int3472_discrete_device *int3472)
-> +{
-> +	regulator_unregister(int3472->regulator.rdev);
-> +	gpiod_put(int3472->regulator.gpio);
-> +}
-> diff --git a/drivers/platform/x86/intel-int3472/intel_skl_int3472_common.h b/drivers/platform/x86/intel-int3472/intel_skl_int3472_common.h
-> index 765e01ec1604..50f73c6eab44 100644
-> --- a/drivers/platform/x86/intel-int3472/intel_skl_int3472_common.h
-> +++ b/drivers/platform/x86/intel-int3472/intel_skl_int3472_common.h
-> @@ -112,7 +112,9 @@ union acpi_object *skl_int3472_get_acpi_buffer(struct acpi_device *adev,
->  					       char *id);
->  int skl_int3472_fill_cldb(struct acpi_device *adev, struct int3472_cldb *cldb);
->  int skl_int3472_register_clock(struct int3472_discrete_device *int3472);
-> +
->  int skl_int3472_register_regulator(struct int3472_discrete_device *int3472,
->  				   struct acpi_resource_gpio *agpio);
-> +void skl_int3472_unregister_regulator(struct int3472_discrete_device *int3472);
->  
->  #endif
-> diff --git a/drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c b/drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c
-> index fd681d2a73fe..2638d375e226 100644
-> --- a/drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c
-> +++ b/drivers/platform/x86/intel-int3472/intel_skl_int3472_discrete.c
-> @@ -400,15 +400,15 @@ int skl_int3472_discrete_remove(struct platform_device *pdev)
->  	struct int3472_discrete_device *int3472 = platform_get_drvdata(pdev);
->  
->  	gpiod_remove_lookup_table(&int3472->gpios);
-> -	regulator_unregister(int3472->regulator.rdev);
->  	clk_unregister(int3472->clock.clk);
->  
->  	if (int3472->clock.cl)
->  		clkdev_drop(int3472->clock.cl);
->  
-> -	gpiod_put(int3472->regulator.gpio);
->  	gpiod_put(int3472->clock.ena_gpio);
->  	gpiod_put(int3472->clock.led_gpio);
->  
-> +	skl_int3472_unregister_regulator(int3472);
-> +
->  	return 0;
->  }
+
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
