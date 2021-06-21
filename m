@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CE623AF0DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EFD33AF0D4
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:51:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232792AbhFUQxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:53:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38074 "EHLO mail.kernel.org"
+        id S232447AbhFUQxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:53:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38072 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233221AbhFUQt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233220AbhFUQt0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Jun 2021 12:49:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 687AC6128C;
-        Mon, 21 Jun 2021 16:34:27 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6FB76135F;
+        Mon, 21 Jun 2021 16:34:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624293268;
-        bh=83jq3viiSj6z8qlYsZ0Vfv/iGyQpkHRFzMx4UVz7zbA=;
+        s=korg; t=1624293270;
+        bh=PHgznUSYVoPoUrpq/y7cvEtA798xYL1bTieH9MaufaE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pOMoHraEWQizGXZkJlztmu7rdSNXbCOtYvN8dm1n6/2kd0Il7QzoBWns47TirBTbM
-         Q2aW/+9S2xjuUJrFrUJM1U1giAoiOnhWkywLui1stiDJFmH4oq1gB7zXinwpTlg1Bw
-         lbYfTFWzb/u4ElBp+bWDleA/D9ssphO0Gzb6fNVo=
+        b=MKpcePWHWzyRPzfN8K1vr+ygeaHeCMHQo7fFR4RNwUuxyzQHrpnIFw2M5FpmuFh+d
+         foJuXucmkcg1EY/iysB2xXyHYkTwWEuOrc6yHhy8v3kbW8Krj5vzZyK4jkCOBUlCpe
+         WMqU7cPHvQqbEJyfscTuDs9Lma2DULYAs0JGCRXU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Avraham Stern <avraham.stern@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Johannes Berg <johannes.berg@intel.com>
-Subject: [PATCH 5.12 159/178] cfg80211: avoid double free of PMSR request
-Date:   Mon, 21 Jun 2021 18:16:13 +0200
-Message-Id: <20210621154928.162912186@linuxfoundation.org>
+        stable@vger.kernel.org, Yifan Zhang <yifan1.zhang@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.12 160/178] drm/amdgpu/gfx10: enlarge CP_MEC_DOORBELL_RANGE_UPPER to cover full doorbell.
+Date:   Mon, 21 Jun 2021 18:16:14 +0200
+Message-Id: <20210621154928.197689890@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210621154921.212599475@linuxfoundation.org>
 References: <20210621154921.212599475@linuxfoundation.org>
@@ -40,61 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Avraham Stern <avraham.stern@intel.com>
+From: Yifan Zhang <yifan1.zhang@amd.com>
 
-commit 0288e5e16a2e18f0b7e61a2b70d9037fc6e4abeb upstream.
+commit 1c0b0efd148d5b24c4932ddb3fa03c8edd6097b3 upstream.
 
-If cfg80211_pmsr_process_abort() moves all the PMSR requests that
-need to be freed into a local list before aborting and freeing them.
-As a result, it is possible that cfg80211_pmsr_complete() will run in
-parallel and free the same PMSR request.
+If GC has entered CGPG, ringing doorbell > first page doesn't wakeup GC.
+Enlarge CP_MEC_DOORBELL_RANGE_UPPER to workaround this issue.
 
-Fix it by freeing the request in cfg80211_pmsr_complete() only if it
-is still in the original pmsr list.
-
+Signed-off-by: Yifan Zhang <yifan1.zhang@amd.com>
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Cc: stable@vger.kernel.org
-Fixes: 9bb7e0f24e7e ("cfg80211: add peer measurement with FTM initiator API")
-Signed-off-by: Avraham Stern <avraham.stern@intel.com>
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Link: https://lore.kernel.org/r/iwlwifi.20210618133832.1fbef57e269a.I00294bebdb0680b892f8d1d5c871fd9dbe785a5e@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/wireless/pmsr.c |   16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
---- a/net/wireless/pmsr.c
-+++ b/net/wireless/pmsr.c
-@@ -324,6 +324,7 @@ void cfg80211_pmsr_complete(struct wirel
- 			    gfp_t gfp)
- {
- 	struct cfg80211_registered_device *rdev = wiphy_to_rdev(wdev->wiphy);
-+	struct cfg80211_pmsr_request *tmp, *prev, *to_free = NULL;
- 	struct sk_buff *msg;
- 	void *hdr;
+--- a/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
++++ b/drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c
+@@ -6769,8 +6769,12 @@ static int gfx_v10_0_kiq_init_register(s
+ 	if (ring->use_doorbell) {
+ 		WREG32_SOC15(GC, 0, mmCP_MEC_DOORBELL_RANGE_LOWER,
+ 			(adev->doorbell_index.kiq * 2) << 2);
++		/* If GC has entered CGPG, ringing doorbell > first page doesn't
++		 * wakeup GC. Enlarge CP_MEC_DOORBELL_RANGE_UPPER to workaround
++		 * this issue.
++		 */
+ 		WREG32_SOC15(GC, 0, mmCP_MEC_DOORBELL_RANGE_UPPER,
+-			(adev->doorbell_index.userqueue_end * 2) << 2);
++			(adev->doorbell.size - 4));
+ 	}
  
-@@ -354,9 +355,20 @@ free_msg:
- 	nlmsg_free(msg);
- free_request:
- 	spin_lock_bh(&wdev->pmsr_lock);
--	list_del(&req->list);
-+	/*
-+	 * cfg80211_pmsr_process_abort() may have already moved this request
-+	 * to the free list, and will free it later. In this case, don't free
-+	 * it here.
-+	 */
-+	list_for_each_entry_safe(tmp, prev, &wdev->pmsr_list, list) {
-+		if (tmp == req) {
-+			list_del(&req->list);
-+			to_free = req;
-+			break;
-+		}
-+	}
- 	spin_unlock_bh(&wdev->pmsr_lock);
--	kfree(req);
-+	kfree(to_free);
- }
- EXPORT_SYMBOL_GPL(cfg80211_pmsr_complete);
- 
+ 	WREG32_SOC15(GC, 0, mmCP_HQD_PQ_DOORBELL_CONTROL,
 
 
