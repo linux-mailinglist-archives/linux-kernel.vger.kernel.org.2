@@ -2,86 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6B203AE7BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:56:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D92F53AE7B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 12:56:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbhFUK7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 06:59:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbhFUK7E (ORCPT
+        id S229888AbhFUK6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 06:58:43 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:8285 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229621AbhFUK6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 06:59:04 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB761C061574;
-        Mon, 21 Jun 2021 03:56:49 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id g24so9716986pji.4;
-        Mon, 21 Jun 2021 03:56:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GdSirJES7B1+22y5mydDEyMVMUgqLhZgeXCo6ocm6Tg=;
-        b=ukE4uT1tMT0nHKzWpmnDwTMW5ziHzyfJfSrNUM2chiWb0X4aj0/dZ/TKGLlLiyNElV
-         hlNh87XHvXiFdsOXr2F37pDvvxvZoVkXBqIvzRD716AOkZP5juPvEFT8ymr8zWI4kGFt
-         mk4uJXlxlSrPx9/QlDsi5P7oDbEfxLPfXwLk3m/E9E4GPR36Ag4y6S/ggb9HFk6kO4K0
-         sRv1a2MhYgJweeYJkGg7HqkI5/UgQZwwgYTCh23dT7jcmvh2OaCrKXR1dQ5BnMSjsDi8
-         Zb+aemAKs6FH5ejZEM3/TGgvg+OilI+VHHGAbQLl921fZ+H2r5JSiurqXviSB2KoWKmM
-         aq6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GdSirJES7B1+22y5mydDEyMVMUgqLhZgeXCo6ocm6Tg=;
-        b=NATLNF1fx01ftLmM4axR3JDdkzSZU9H/oEcx5bsX18dBYtDvFxEtfQm5gQNDzfzt+E
-         XQv0UtMyJEiknMKlRzwuHuoOYNW3T4RcytH9aIsG16PTVj3iXZgK35NeMul1NhgxlFpH
-         /LdwEK2BRwXcQnu4R92OGALvwMkCMX33YCo9VWc6THy/QnHIhL8Xg7eUdeE++FMK7WjQ
-         Z3xLHJ4Kvb9buoetFtpC3qPhIWDBBG3KnwLcZFgm/7vdhjgJOtGzo36iWxCgZdUB/5WY
-         n3v0w5jjrme3znNrGf+WRVAwyaIXy6Y0QnXceXfMW0QnthQ8oeWMzlXasQkmUlq6aydg
-         X5Cg==
-X-Gm-Message-State: AOAM533VwL6Hyp4QrLj/VWbKNIeAaM8chdxIk6EA898nNe9Brxpe7UJ/
-        EYYuhHgMD4LRugQePPDPN0GEx0F0z9Nt+szx/EbpImMtILk=
-X-Google-Smtp-Source: ABdhPJymctgxhIT4X+hm8R361mafQr0+PIVLbDv6OAcZd/soTOxY6lMv4qPdjCoJNA3908ou5S5n0Q+Rk1FHcE6t2HY=
-X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr38265326pja.181.1624273009482;
- Mon, 21 Jun 2021 03:56:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210621141110.548ec3d0@canb.auug.org.au>
-In-Reply-To: <20210621141110.548ec3d0@canb.auug.org.au>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 21 Jun 2021 13:56:13 +0300
-Message-ID: <CAHp75VcJKX4xzP1PrCBixDzgGBGwVvbV3YtMebKxpRoi1_EhaA@mail.gmail.com>
-Subject: Re: linux-next: manual merge of the block tree with the ide and
- kspp-gustavo trees
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Jens Axboe <axboe@kernel.dk>, David Miller <davem@davemloft.net>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Finn Thain <fthain@linux-m68k.org>,
+        Mon, 21 Jun 2021 06:58:41 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4G7mY12xzcz1BQ01;
+        Mon, 21 Jun 2021 18:51:17 +0800 (CST)
+Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 21 Jun 2021 18:56:25 +0800
+Received: from [127.0.0.1] (10.174.179.0) by dggpemm500006.china.huawei.com
+ (7.185.36.236) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Mon, 21 Jun
+ 2021 18:56:24 +0800
+Subject: Re: Please don't waste maintainers' time on your KPI grabbing patches
+ (AKA, don't be a KPI jerk)
+To:     Qu Wenruo <wqu@suse.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <e78add0a-8211-86c3-7032-6d851c30f614@suse.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <0a9ae22c-44a0-6239-f61a-fa516f2a0de6@huawei.com>
+Date:   Mon, 21 Jun 2021 18:56:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
+MIME-Version: 1.0
+In-Reply-To: <e78add0a-8211-86c3-7032-6d851c30f614@suse.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.0]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500006.china.huawei.com (7.185.36.236)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 7:13 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+Hello, Qu:
 
+My contributions to the kernel in the past have mainly been on optimizing the performance of the ARM64 SMMU driver,
+including the iova optimization, strict mode optimization, and the lazy mode optimization. Also working on the
+development of some ARM SoC drivers.
 
->   2c8cbe0b2971 ("IDE SUBSYSTEM: Replace HTTP links with HTTPS ones")
->   9a51ffe845e4 ("ide: use generic power management")
->   f9e09a0711ca ("ide: sc1200: use generic power management")
->   d41b375134a9 ("ide: delkin_cb: use generic power management")
->   6800cd8cbc6e ("ide-acpi: use %*ph to print small buffer")
->   731d5f441e1c ("ide: Fix fall-through warnings for Clang")
->
-> from the ide and kspp-gustavo trees and commits:
+When time and effort is allowed, I also contribute to other modules of Linux kernel, trying to find something can be
+improved, and some cleanup work is being done.
 
-As far as I can tell the IDE hasn't sent PR to LInus for a long time
-(like a few release cycles). I don't know what happened there, though.
+In the future, I will continue to make more and more important contributions to the Linux community.
 
--- 
-With Best Regards,
-Andy Shevchenko
+Thanks.
+Zhen
+
+On 2021/6/18 14:31, Qu Wenruo wrote:
+> Hi Leizhen, and guys in the mail list,
+> 
+> Recently I find one patch removing a debug OOM error message from btrfs selftest.
+> 
+> It's nothing special, some small cleanup work from some kernel newbie.
+> 
+> But the mail address makes me cautious, "@huawei.com".
+> 
+> The last time we got some similar patches from the same company, doing something harmless "cleanup". But those "fixes" are also useless.
+> 
+> This makes me wonder, what is really going on here.
+> 
+> After some quick search, more and more oom error message "cleanup" patches just show up, even some misspell fixes.
+> 
+> 
+> It's OK for first-time/student developers to submit such patches, and I really hope such patches would make them become a long term contributor.
+> In fact, I started my kernel contribution exactly by doing such "cleanups".
+> 
+> But what you guys are doing is really KPI grabbing, I have already see several maintainers arguing with you on such "cleanups", and you're always defending yourself to try to get those patches merged.
+> 
+> You're sending the patch representing your company, by doing this you're really just damaging the already broken reputation.
+> 
+> Please stop this KPI grabbing behavior, and do real contribution to fix the damaged reputation.
+> 
+> Thanks,
+> Qu
+> 
+> 
+> .
+> 
+
