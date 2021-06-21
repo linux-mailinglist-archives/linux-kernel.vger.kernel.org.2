@@ -2,155 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC5C3AEA0F
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7EE3AEA14
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbhFUNbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 09:31:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229876AbhFUNbA (ORCPT
+        id S230057AbhFUNeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 09:34:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27053 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229876AbhFUNeF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 09:31:00 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2F1DC061574;
-        Mon, 21 Jun 2021 06:28:46 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A918D4C2C;
-        Mon, 21 Jun 2021 15:28:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1624282123;
-        bh=J4z112JuKdJWKmcJ0RQBiB0ZWAMM+vP5EbTFkOHaTPE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SyT4dwT9K/cJKNPWFuY7LwQhhDKtmrFcrMSGeCojfpvI6ndAkwz+rykCZZbJeNyVM
-         N9MZ42aFxRTEyo+SJBT1E3EooJvj+a7oMwAaXcObssKulHvXrDJdxQSkrm3yhyNzut
-         hi+n3sGUJWO+3eVIbuOO1CfJKRYNdF3XAWOcUZCU=
-Date:   Mon, 21 Jun 2021 16:28:17 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2] media: uvc: don't do DMA on stack
-Message-ID: <YNCT8a8jFYM96p9u@pendragon.ideasonboard.com>
-References: <aaa1b65bf2b6c1a2da79b44fe7ada63f697ac32e.1624281807.git.mchehab+huawei@kernel.org>
+        Mon, 21 Jun 2021 09:34:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624282311;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aRbSdl5QweonziFZCzKBkR/5y5FG2MCCkXcMH71sHgk=;
+        b=SATYe2U2ig8t36FKvCHnmcsolQEGFZ9k9zQEa1WUao0jSMYs11bXlw0EYS9OxfZoAYlgJE
+        K8eK1Spw3HNnyLHWEIPWAcEQoeioZ6L8SNlz91pm/T0h4MxJ/T/n10QtNVLy+T/qQLET16
+        w/N3XIjeuCpF4WT17Hcxb856LowRHjM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-429-AAHeQQqJNoWPyJst2qT77g-1; Mon, 21 Jun 2021 09:31:49 -0400
+X-MC-Unique: AAHeQQqJNoWPyJst2qT77g-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B1A6319057A6;
+        Mon, 21 Jun 2021 13:31:47 +0000 (UTC)
+Received: from localhost (ovpn-114-233.ams2.redhat.com [10.36.114.233])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 38D2419C46;
+        Mon, 21 Jun 2021 13:31:45 +0000 (UTC)
+Date:   Mon, 21 Jun 2021 14:31:44 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        virtio-fs@redhat.com, linux-kernel@vger.kernel.org,
+        Vivek Goyal <vgoyal@redhat.com>
+Subject: Re: [Virtio-fs] support booting of arbitrary non-blockdevice file
+ systems v2
+Message-ID: <YNCUwHn0zfmDEWBN@stefanha-x1.localdomain>
+References: <20210621062657.3641879-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="H1YdTb2mTDFGvvnD"
 Content-Disposition: inline
-In-Reply-To: <aaa1b65bf2b6c1a2da79b44fe7ada63f697ac32e.1624281807.git.mchehab+huawei@kernel.org>
+In-Reply-To: <20210621062657.3641879-1-hch@lst.de>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
 
-Thank you for the patch.
+--H1YdTb2mTDFGvvnD
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 21, 2021 at 03:23:35PM +0200, Mauro Carvalho Chehab wrote:
-> As warned by smatch:
-> 	drivers/media/usb/uvc/uvc_v4l2.c:911 uvc_ioctl_g_input() error: doing dma on the stack (&i)
-> 	drivers/media/usb/uvc/uvc_v4l2.c:943 uvc_ioctl_s_input() error: doing dma on the stack (&i)
-> 
-> those two functions call uvc_query_ctrl passing a pointer to
-> a data at the DMA stack. those are used to send URBs via
-> usb_control_msg(). Using DMA stack is not supported and should
-> not work anymore on modern Linux versions.
-> 
-> So, use a temporary buffer, allocated together with
-> struct uvc_video_chain.
+On Mon, Jun 21, 2021 at 08:26:55AM +0200, Christoph Hellwig wrote:
+> Hi all,
+>=20
+> this series adds support to boot off arbitrary non-blockdevice root file
+> systems, based off an earlier patch from Vivek.
+>=20
+> Chances since v1:
+>  - don't try to mount every registered file system if none is specified
+>  - fix various null pointer dereferences when certain kernel paramters are
+>    not set
+>  - general refactoring.
+>=20
+> _______________________________________________
+> Virtio-fs mailing list
+> Virtio-fs@redhat.com
+> https://listman.redhat.com/mailman/listinfo/virtio-fs
+>=20
 
-The second part of the sentence isn't correct anymore.
+Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
 
-> Cc: stable@vger.kernel.org	# Kernel 4.9 and upper
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/media/usb/uvc/uvc_v4l2.c | 26 ++++++++++++++++++--------
->  1 file changed, 18 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-> index 252136cc885c..d680ae8a5f87 100644
-> --- a/drivers/media/usb/uvc/uvc_v4l2.c
-> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
-> @@ -899,8 +899,8 @@ static int uvc_ioctl_g_input(struct file *file, void *fh, unsigned int *input)
->  {
->  	struct uvc_fh *handle = fh;
->  	struct uvc_video_chain *chain = handle->chain;
-> +	char *buf;
+--H1YdTb2mTDFGvvnD
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I'd make this
+-----BEGIN PGP SIGNATURE-----
 
-	u8 *buf;
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmDQlMAACgkQnKSrs4Gr
+c8ganQf/dsU6iKVjBTVUSkTJmH1WTbSid1kpQaMUGfq7OVc3uPC8blsmfBdRwlqv
+e8rCiAH7mdtjXCVYEKB4q7+m9Yf6cKMYnGJ/yd0hgEnSxFEhYhoBWpOdRx/mj5Sy
+JP1xUW110BheBPQrdD786/OHo0plrX7mKOvDA6txgn7sMAmrAtVyjd1dmqqbU/Nu
+mYEf5YDcrqpmHFk8H9LHjK471p6pWUeDNwe687dnRaxvONAmg2stGXihP9Ycd4PM
+avhMfaReTGAzo+ezyOEqtc6YTnKZrmU3TRcIg5MPpfR42yKGOIvazW6lKXpTiUmt
+C8FEVeGCoSRA/kNi4zse1bhi4KpeQw==
+=XrUf
+-----END PGP SIGNATURE-----
 
-as the selector value is unsigned.
+--H1YdTb2mTDFGvvnD--
 
->  	int ret;
-> -	u8 i;
->  
->  	if (chain->selector == NULL ||
->  	    (chain->dev->quirks & UVC_QUIRK_IGNORE_SELECTOR_UNIT)) {
-> @@ -908,13 +908,18 @@ static int uvc_ioctl_g_input(struct file *file, void *fh, unsigned int *input)
->  		return 0;
->  	}
->  
-> +	buf = kmalloc(1, GFP_KERNEL);
-
-MIssing error check.
-
-> +
->  	ret = uvc_query_ctrl(chain->dev, UVC_GET_CUR, chain->selector->id,
->  			     chain->dev->intfnum,  UVC_SU_INPUT_SELECT_CONTROL,
-> -			     &i, 1);
-> +			     buf, 1);
->  	if (ret < 0)
->  		return ret;
->  
-> -	*input = i - 1;
-> +	*input = *buf;
-> +
-> +	kfree(buf);
-> +
->  	return 0;
->  }
->  
-> @@ -922,8 +927,8 @@ static int uvc_ioctl_s_input(struct file *file, void *fh, unsigned int input)
->  {
->  	struct uvc_fh *handle = fh;
->  	struct uvc_video_chain *chain = handle->chain;
-> +	char *buf;
-
-u8 * here too.
-
->  	int ret;
-> -	u32 i;
->  
->  	ret = uvc_acquire_privileges(handle);
->  	if (ret < 0)
-> @@ -939,10 +944,15 @@ static int uvc_ioctl_s_input(struct file *file, void *fh, unsigned int input)
->  	if (input >= chain->selector->bNrInPins)
->  		return -EINVAL;
->  
-> -	i = input + 1;
-> -	return uvc_query_ctrl(chain->dev, UVC_SET_CUR, chain->selector->id,
-> -			      chain->dev->intfnum, UVC_SU_INPUT_SELECT_CONTROL,
-> -			      &i, 1);
-> +	buf = kmalloc(1, GFP_KERNEL);
-
-And missing error check.
-
-> +
-> +	*buf = input + 1;
-> +	ret = uvc_query_ctrl(chain->dev, UVC_SET_CUR, chain->selector->id,
-> +			     chain->dev->intfnum, UVC_SU_INPUT_SELECT_CONTROL,
-> +			     buf, 1);
-> +	kfree(buf);
-> +
-> +	return ret;
->  }
->  
->  static int uvc_ioctl_queryctrl(struct file *file, void *fh,
-
--- 
-Regards,
-
-Laurent Pinchart
