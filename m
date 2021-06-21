@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C3B3AEEFC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D56F3AF07A
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232691AbhFUQeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:34:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49586 "EHLO mail.kernel.org"
+        id S233569AbhFUQt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:49:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38112 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232331AbhFUQbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:31:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 15AA76138C;
-        Mon, 21 Jun 2021 16:25:26 +0000 (UTC)
+        id S233922AbhFUQpu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:45:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 879E0613FF;
+        Mon, 21 Jun 2021 16:32:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292727;
-        bh=4UBEDegR1+ok8VwfXrcRVjGbp2H2ycDcefRkifNqyCg=;
+        s=korg; t=1624293171;
+        bh=OaR1Sqm2EarsA1kjXI0gsuzqNvi0REyQ7SKT5BuDkn4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mmkH2Yr2+AzyWxCI3/CPFzWT94+YuEClJU2vVdvQshKKWVkbIZ3oXMCr746laMjTU
-         O5zBnmoCBk6ETKsByCIRPVHiKFoSHQd6Z99AvL9PE1DLemOLYj1ToTwEsZpvGRfAyj
-         H28eYsgvYjNR52wASIC5nirc6vWAYMQF55AE6P+M=
+        b=jnnDqsQF97dKxsdTTK31iyDI7c2Z5spoygAnjLb5Oojfu2NB0Np1erK4trFbgY+e7
+         +Jw+6gSOge21D9e46UmxnODacBTLDsZrpccdL9ddQhVYLIiXd4F5OMlIhzGSR+apmM
+         IVnW2YKGkWz8W9EJIncly7Adkhg108PCqe/Bq2/o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Antti=20J=C3=A4rvinen?= <antti.jarvinen@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Subject: [PATCH 5.10 107/146] PCI: Mark TI C667X to avoid bus reset
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.12 123/178] tracing: Do not stop recording cmdlines when tracing is off
 Date:   Mon, 21 Jun 2021 18:15:37 +0200
-Message-Id: <20210621154918.077242614@linuxfoundation.org>
+Message-Id: <20210621154926.956878596@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
-References: <20210621154911.244649123@linuxfoundation.org>
+In-Reply-To: <20210621154921.212599475@linuxfoundation.org>
+References: <20210621154921.212599475@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,45 +39,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Antti Järvinen <antti.jarvinen@gmail.com>
+From: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-commit b5cf198e74a91073d12839a3e2db99994a39995d upstream.
+commit 85550c83da421fb12dc1816c45012e1e638d2b38 upstream.
 
-Some TI KeyStone C667X devices do not support bus/hot reset.  The PCIESS
-automatically disables LTSSM when Secondary Bus Reset is received and
-device stops working.  Prevent bus reset for these devices.  With this
-change, the device can be assigned to VMs with VFIO, but it will leak state
-between VMs.
+The saved_cmdlines is used to map pids to the task name, such that the
+output of the tracing does not just show pids, but also gives a human
+readable name for the task.
 
-Reference: https://e2e.ti.com/support/processors/f/791/t/954382
-Link: https://lore.kernel.org/r/20210315102606.17153-1-antti.jarvinen@gmail.com
-Signed-off-by: Antti Järvinen <antti.jarvinen@gmail.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Kishon Vijay Abraham I <kishon@ti.com>
+If the name is not mapped, the output looks like this:
+
+    <...>-1316          [005] ...2   132.044039: ...
+
+Instead of this:
+
+    gnome-shell-1316    [005] ...2   132.044039: ...
+
+The names are updated when tracing is running, but are skipped if tracing
+is stopped. Unfortunately, this stops the recording of the names if the
+top level tracer is stopped, and not if there's other tracers active.
+
+The recording of a name only happens when a new event is written into a
+ring buffer, so there is no need to test if tracing is on or not. If
+tracing is off, then no event is written and no need to test if tracing is
+off or not.
+
+Remove the check, as it hides the names of tasks for events in the
+instance buffers.
+
 Cc: stable@vger.kernel.org
+Fixes: 7ffbd48d5cab2 ("tracing: Cache comms only after an event occurred")
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/pci/quirks.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ kernel/trace/trace.c |    2 --
+ 1 file changed, 2 deletions(-)
 
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -3577,6 +3577,16 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_A
-  */
- DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_CAVIUM, 0xa100, quirk_no_bus_reset);
- 
-+/*
-+ * Some TI KeyStone C667X devices do not support bus/hot reset.  The PCIESS
-+ * automatically disables LTSSM when Secondary Bus Reset is received and
-+ * the device stops working.  Prevent bus reset for these devices.  With
-+ * this change, the device can be assigned to VMs with VFIO, but it will
-+ * leak state between VMs.  Reference
-+ * https://e2e.ti.com/support/processors/f/791/t/954382
-+ */
-+DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_TI, 0xb005, quirk_no_bus_reset);
-+
- static void quirk_no_pm_reset(struct pci_dev *dev)
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -2486,8 +2486,6 @@ static bool tracing_record_taskinfo_skip
  {
- 	/*
+ 	if (unlikely(!(flags & (TRACE_RECORD_CMDLINE | TRACE_RECORD_TGID))))
+ 		return true;
+-	if (atomic_read(&trace_record_taskinfo_disabled) || !tracing_is_on())
+-		return true;
+ 	if (!__this_cpu_read(trace_taskinfo_save))
+ 		return true;
+ 	return false;
 
 
