@@ -2,272 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE55F3AEAF8
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7CF3AEAAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 16:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbhFUOSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 10:18:41 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:56976 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbhFUOSj (ORCPT
+        id S229968AbhFUOEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 10:04:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52374 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229736AbhFUOEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 10:18:39 -0400
-Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210621141623epoutp028ce3f44d2ba5c8129c776001d633c2bd~KnpY63-au2518425184epoutp02Y
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 14:16:23 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210621141623epoutp028ce3f44d2ba5c8129c776001d633c2bd~KnpY63-au2518425184epoutp02Y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1624284983;
-        bh=+YOZQIA0VYLmb++HUK8eQxJhK0ZldtwTJ1UJlu/gxuQ=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=aJEvoUS7rsAA9EX+k+05F8oECZKEjpvkDDGrtLJd3C09KOTnOCrcc1inaMrZH3Pq8
-         gWMK4PILO6KhfPyDI2d38fH0mLP8yD0sQrSRHeWjPwtSv8pngOSZESxctGGYYwCBNC
-         WQT3cTP/0blOUyq+GMPQiU6KXikLdS378tQcLxfA=
-Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-        20210621141623epcas5p2ce06f8c1a37f4e6b4c88af58c41409d3~KnpYfGD3t1669816698epcas5p2T;
-        Mon, 21 Jun 2021 14:16:23 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        DA.D0.09595.73F90D06; Mon, 21 Jun 2021 23:16:23 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210621134650epcas5p4a7771105cae63643c2594247f238441e~KnPlu42U71120611206epcas5p4P;
-        Mon, 21 Jun 2021 13:46:50 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210621134650epsmtrp1364841447030c424da91aaa50c87139a~KnPluQ8M11006210062epsmtrp1O;
-        Mon, 21 Jun 2021 13:46:50 +0000 (GMT)
-X-AuditID: b6c32a4a-eebff7000000257b-45-60d09f37a97c
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        4F.A1.08289.A4890D06; Mon, 21 Jun 2021 22:46:50 +0900 (KST)
-Received: from alimakhtar02 (unknown [107.122.12.5]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210621134649epsmtip1d4a2c2eb4e0ab3043bd4668e2a4cefd6~KnPkz49Od0293502935epsmtip1f;
-        Mon, 21 Jun 2021 13:46:49 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@canonical.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <robh+dt@kernel.org>
-Cc:     <linux-samsung-soc@vger.kernel.org>
-In-Reply-To: <0120db2f-e25e-a4ae-669b-a404dbfae05b@canonical.com>
-Subject: RE: [PATCH 2/2] arm64: dts: exynos5433: Add cpu cache information
-Date:   Mon, 21 Jun 2021 19:16:38 +0530
-Message-ID: <000001d766a3$e2ff6610$a8fe3230$@samsung.com>
+        Mon, 21 Jun 2021 10:04:31 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30F4C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:02:15 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id n20so19108921edv.8
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 07:02:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CpIxGlR3fPNuk0vQbtg5MYpb/zfRP+iuV/F0H7hG2gc=;
+        b=IGiY8vpOnvIl++Bqc3unTTmqd/bvatfpNEL1UnPBI8/bjdsfSz1UO0j/Xg+qp/BAW5
+         sD9sGWimiEqGGhHCTyFovCk/Rvgk8LD04fMRNc2U6iTCvOc0qLiot6A+g/W5vSchEbaS
+         af93R8ur1IDvsTXDwd5u4Gjc/oTJSL0U0B1Es90m35+T6aICRIr44zKaognegA92e7K4
+         0jXxWUyJqDQXTKF/h52CEd8ZIzPRdofW+bWHe9mLfqDeOhuNtXQvm0B953MFbe3sHEy0
+         MqLHNHiXg/t/8UPxUkMszzFjt/7wjiyPfIpAeTslaTMaF2e9QJCkydBRv4V9S1vRF4P+
+         H+UQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CpIxGlR3fPNuk0vQbtg5MYpb/zfRP+iuV/F0H7hG2gc=;
+        b=ITGtnViii0wUHi4Fm0DugIXXamM/2YdS64FwbqB7085nFkXbGVJnZkxlozs/8wQtV7
+         uzsb331xQt3NdcZpId8zOlychIhaVkjBOlgT5k0xh0nmM/hPimljtOCJs4Vi7YHMsyqR
+         5alYJ4RfnN6kHANJ110e+aThYzOAIf+I/V2X164Dwf3oKfnEteHYCGvxlsQh8s0YfG+x
+         I76lDKqhoB9L2lF2waIz/rnwKSF+V+BLjEIDXoKKsOCPY5Y/7doDUPhJcu5f/QFWhpD6
+         HakgEAzhsoYT0QFXx+lXoZRtCcSvNII6X/BZmog94kjOFecWfaTpraY1AaRqM+pji1Dk
+         9vbQ==
+X-Gm-Message-State: AOAM533dzbwKBEB4sX9ZhgF+O/no4YyWBA0ODJnxzODySCImBkzU73GD
+        VmpOZFIsUwanOnC4hXcf6Vv+Z96wnQK9FIc7rpk=
+X-Google-Smtp-Source: ABdhPJzTddfM+oN2NrOlwEmgJHcpqzRqYOSQYB76NSL/uIY5o8UUs/jc+Txgb3iekDv9INwyaASNg7S96cj67Kq9hE8=
+X-Received: by 2002:aa7:c7c6:: with SMTP id o6mr5265257eds.228.1624284133308;
+ Mon, 21 Jun 2021 07:02:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQHEo7zAfNlKfaR4gq1MTeAlf4A8nwIz090JAp9BlrYBinVXX6sRE1QQ
-Content-Language: en-in
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprAKsWRmVeSWpSXmKPExsWy7bCmuq75/AsJBkeuclhsfPuDyWLT42us
-        Fpd3zWGzmHF+H5NF694j7A6sHrMaetk8Nq3qZPPYvKTe4/MmuQCWKC6blNSczLLUIn27BK6M
-        Y18PsxXM16w4PXETawPjD7kuRk4OCQETiWffrrJ3MXJxCAnsZpT4srmTFcL5xCgx/89lqMxn
-        RollLWtZYVrOHlrDCJHYxSix6M9lKOclUNWSTYwgVWwCuhI7FrexgSREBBYySszZuZANJMEs
-        oC7x9MhDsFGcAo4Su+9tZOpi5OAQFvCSuNpsBhJmEVCVOLv4MguIzStgKTH3435WCFtQ4uTM
-        JywQY+Qltr+dwwxxkYLEz6fLwGpEBNwkbm/Zyg5RIy5x9GcPM8gNEgKtHBKLjj5gg2hwkXhx
-        5y8ThC0s8er4FnYIW0riZX8bO8g9EgLZEj27jCHCNRJL5x1jgbDtJQ5cmcMCUsIsoCmxfpc+
-        RFhWYuqpdUwQa/kken8/gZrOK7FjHoytKtH87irUGGmJid3drBMYlWYh+WwWks9mIflgFsK2
-        BYwsqxglUwuKc9NTi00LjPJSy/WKE3OLS/PS9ZLzczcxghONltcOxocPPugdYmTiYDzEKMHB
-        rCTCezPlQoIQb0piZVVqUX58UWlOavEhRmkOFiVx3qXshxKEBNITS1KzU1MLUotgskwcnFIN
-        TCv+Pk7c/mWRVZdgsdrnHvvCh3e3dN2T2v3fiMvpf6/NjQa5yCkvJ74+01S8N32Kx85FRrO/
-        OvOdqz43T/b0pH+TfRefY7Raes3t9obbb2Nzc3Y7HWV6vds9214x+VzpSrmtAYLz1hy5nXnF
-        IHeKx7fsRYeCLPq5duzsLH4Z/jHVLktm1nn7nIfiG5JY92nEuB09FrE26QDvl1UOx/aeX53y
-        /oLWhjMSX+6lvNjf+eqNAcfMY2s647s16vQZ094J6P3OklzQyj1l92t3k9iDX5ce/LNS9XNY
-        ilvY23uFSYdd530x2eoi3H1k5xZ3hbeTLP/u4+KsLze6cojVn4tTIPpaotjFkmc78vbbvbov
-        ly+sxFKckWioxVxUnAgAD4brhaMDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrMLMWRmVeSWpSXmKPExsWy7bCSnK7XjAsJBjc2qFhsfPuDyWLT42us
-        Fpd3zWGzmHF+H5NF694j7A6sHrMaetk8Nq3qZPPYvKTe4/MmuQCWKC6blNSczLLUIn27BK6M
-        Y18PsxXM16w4PXETawPjD7kuRk4OCQETibOH1jB2MXJxCAnsYJRo+fSZHSIhLXF94wQoW1hi
-        5b/n7BBFzxkl1n+dzwKSYBPQldixuI0NJCEisJhR4s2EOWwgCWYBdYmnRx6ygthCAl8YJaZ9
-        dACxOQUcJXbf28jUxcjBISzgJXG12QwkzCKgKnF28WWwmbwClhJzP+5nhbAFJU7OfMICMVJb
-        4unNp1C2vMT2t3OYIY5TkPj5dBlYvYiAm8TtLVvZIWrEJY7+7GGewCg8C8moWUhGzUIyahaS
-        lgWMLKsYJVMLinPTc4sNC4zyUsv1ihNzi0vz0vWS83M3MYLjRUtrB+OeVR/0DjEycTAeYpTg
-        YFYS4b2ZciFBiDclsbIqtSg/vqg0J7X4EKM0B4uSOO+FrpPxQgLpiSWp2ampBalFMFkmDk6p
-        BqauxYUJ+8+tdDi42p3bN6eX+eoNkbuXnZPto9JK5vt5v/kd+1tystS8p3uS911avPB8s1ZF
-        vaPy6WlXXx15dVLp4h1X2wl+v+Y0bz595K+yd1iuClt9D3fG0kediusT80o+3XoSU3mq+bG5
-        c4JNfELjL7uFxyQErjxX3jnvmerH+KtqZ0/kGrpMnT29eOX0dqNJxtndMfpTij4Kv209Nk1/
-        4rXgyecz8yt4rGf+M4nfuJJNYYrLtpcCWVceCUrNNrYNK2e6+luOZ41tvd+UHJE1zaqs1tFf
-        HW/eY78gIHRze7fRzj1rLqhnf+p3WHVeIuhqv8pSU4mWBQlHU34lnu78foR5bnZK+KvDJx97
-        T9+pxFKckWioxVxUnAgA00jeRAYDAAA=
-X-CMS-MailID: 20210621134650epcas5p4a7771105cae63643c2594247f238441e
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20210617113314epcas5p4652e98d24d7f56a7c8461175bbb25456
-References: <20210617113739.66911-1-alim.akhtar@samsung.com>
-        <CGME20210617113314epcas5p4652e98d24d7f56a7c8461175bbb25456@epcas5p4.samsung.com>
-        <20210617113739.66911-2-alim.akhtar@samsung.com>
-        <0120db2f-e25e-a4ae-669b-a404dbfae05b@canonical.com>
+References: <20210621051152.305224-1-gshan@redhat.com>
+In-Reply-To: <20210621051152.305224-1-gshan@redhat.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Mon, 21 Jun 2021 07:02:02 -0700
+Message-ID: <CAKgT0Uf3UwhdFX93YrkiB8yk6v3syqUrdbu720ECqv1ak_H_FA@mail.gmail.com>
+Subject: Re: [PATCH 0/3] mm/page_reporting: Make page reporting work on arm64
+ with 64KB page size
+To:     Gavin Shan <gshan@redhat.com>
+Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, shan.gavin@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Krzysztof
+So the question I would have is what is the use case for this? It
+seems like you don't have to deal with the guest native page size
+issues since you are willing to break up what would otherwise be THP
+pages on the guest, and the fact that you are willing to go down to
+2MB pages which happens to align with the host THP page size for x86
+makes me wonder if that is actually the environment you are running
+in.
 
-> -----Original Message-----
-> From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> Sent: 21 June 2021 14:22
-> To: Alim Akhtar <alim.akhtar@samsung.com>; linux-kernel@vger.kernel.org;
-> linux-arm-kernel@lists.infradead.org; robh+dt@kernel.org
-> Cc: linux-samsung-soc@vger.kernel.org
-> Subject: Re: [PATCH 2/2] arm64: dts: exynos5433: Add cpu cache information
-> 
-> On 17/06/2021 13:37, Alim Akhtar wrote:
-> > This patch adds cpu caches information to its dt nodes so that the
-> > same is available to userspace via sysfs.
-> > This SoC has 48/32 KB I/D cache for each A57 cores with 2MB L2 cache.
-> > And 32/32 KB I/D cache for each A53 cores with 256KB L2 cache.
-> >
-> > Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
-> > ---
-> >  arch/arm64/boot/dts/exynos/exynos5433.dtsi | 70
-> > ++++++++++++++++++++++
-> >  1 file changed, 70 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-> > b/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-> > index 18a912eee360..8183a59e9046 100644
-> > --- a/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-> > +++ b/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-> > @@ -62,6 +62,13 @@
-> >  			clock-names = "apolloclk";
-> >  			operating-points-v2 = <&cluster_a53_opp_table>;
-> >  			#cooling-cells = <2>;
-> > +			i-cache-size = <0x8000>;
-> > +			i-cache-line-size = <64>;
-> > +			i-cache-sets = <256>;
-> > +			d-cache-size = <0x8000>;
-> > +			d-cache-line-size = <64>;
-> > +			d-cache-sets = <128>;
-> > +			next-level-cache = <&apollo_l2>;
-> >  		};
-> >
-> >  		cpu1: cpu@101 {
-> > @@ -72,6 +79,13 @@
-> >  			clock-frequency = <1300000000>;
-> >  			operating-points-v2 = <&cluster_a53_opp_table>;
-> >  			#cooling-cells = <2>;
-> > +			i-cache-size = <0x8000>;
-> > +			i-cache-line-size = <64>;
-> > +			i-cache-sets = <256>;
-> > +			d-cache-size = <0x8000>;
-> > +			d-cache-line-size = <64>;
-> > +			d-cache-sets = <128>;
-> > +			next-level-cache = <&apollo_l2>;
-> >  		};
-> >
-> >  		cpu2: cpu@102 {
-> > @@ -82,6 +96,13 @@
-> >  			clock-frequency = <1300000000>;
-> >  			operating-points-v2 = <&cluster_a53_opp_table>;
-> >  			#cooling-cells = <2>;
-> > +			i-cache-size = <0x8000>;
-> > +			i-cache-line-size = <64>;
-> > +			i-cache-sets = <256>;
-> > +			d-cache-size = <0x8000>;
-> > +			d-cache-line-size = <64>;
-> > +			d-cache-sets = <128>;
-> > +			next-level-cache = <&apollo_l2>;
-> >  		};
-> >
-> >  		cpu3: cpu@103 {
-> > @@ -92,6 +113,13 @@
-> >  			clock-frequency = <1300000000>;
-> >  			operating-points-v2 = <&cluster_a53_opp_table>;
-> >  			#cooling-cells = <2>;
-> > +			i-cache-size = <0x8000>;
-> > +			i-cache-line-size = <64>;
-> > +			i-cache-sets = <256>;
-> > +			d-cache-size = <0x8000>;
-> > +			d-cache-line-size = <64>;
-> > +			d-cache-sets = <128>;
-> > +			next-level-cache = <&apollo_l2>;
-> >  		};
-> >
-> >  		cpu4: cpu@0 {
-> > @@ -104,6 +132,13 @@
-> >  			clock-names = "atlasclk";
-> >  			operating-points-v2 = <&cluster_a57_opp_table>;
-> >  			#cooling-cells = <2>;
-> > +			i-cache-size = <0xc000>;
-> > +			i-cache-line-size = <64>;
-> > +			i-cache-sets = <256>;
-> > +			d-cache-size = <0x8000>;
-> > +			d-cache-line-size = <64>;
-> > +			d-cache-sets = <256>;
-> > +			next-level-cache = <&atlas_l2>;
-> >  		};
-> >
-> >  		cpu5: cpu@1 {
-> > @@ -114,6 +149,13 @@
-> >  			clock-frequency = <1900000000>;
-> >  			operating-points-v2 = <&cluster_a57_opp_table>;
-> >  			#cooling-cells = <2>;
-> > +			i-cache-size = <0xc000>;
-> > +			i-cache-line-size = <64>;
-> > +			i-cache-sets = <256>;
-> > +			d-cache-size = <0x8000>;
-> > +			d-cache-line-size = <64>;
-> > +			d-cache-sets = <256>;
-> > +			next-level-cache = <&atlas_l2>;
-> >  		};
-> >
-> >  		cpu6: cpu@2 {
-> > @@ -124,6 +166,13 @@
-> >  			clock-frequency = <1900000000>;
-> >  			operating-points-v2 = <&cluster_a57_opp_table>;
-> >  			#cooling-cells = <2>;
-> > +			i-cache-size = <0xc000>;
-> > +			i-cache-line-size = <64>;
-> > +			i-cache-sets = <256>;
-> > +			d-cache-size = <0x8000>;
-> > +			d-cache-line-size = <64>;
-> > +			d-cache-sets = <256>;
-> > +			next-level-cache = <&atlas_l2>;
-> >  		};
-> >
-> >  		cpu7: cpu@3 {
-> > @@ -134,6 +183,27 @@
-> >  			clock-frequency = <1900000000>;
-> >  			operating-points-v2 = <&cluster_a57_opp_table>;
-> >  			#cooling-cells = <2>;
-> > +			i-cache-size = <0xc000>;
-> > +			i-cache-line-size = <64>;
-> > +			i-cache-sets = <256>;
-> > +			d-cache-size = <0x8000>;
-> > +			d-cache-line-size = <64>;
-> > +			d-cache-sets = <256>;
-> > +			next-level-cache = <&atlas_l2>;
-> > +		};
-> > +
-> > +		atlas_l2: l2-cache0 {
-> 
-> Few other nodes (PMU, OPP tables) use a57/a53 names instead of
-> codenames, so I would prefer to stay with them (so cluster_a57_l2).
-> 
-Thanks for review, will update in next patch set.
+Rather than having the guest control this it might make sense to look
+at adding an interface so that the page_reporting_register function
+and the page_reporting_dev_info struct could be used to report and
+configure the minimum page size that the host can support for the page
+reporting. With that the host could then guarantee that it isn't going
+to hurt performance by splitting pages on the host and risk hurting
+the virtualization performance.
 
-> For Exynos7 it's fine as it uses Atlas already in labels.
-> 
-> > +			compatible = "cache";
-> > +			cache-size = <0x200000>;
-> > +			cache-line-size = <64>;
-> > +			cache-sets = <2048>;
-> > +		};
-> > +
-> > +		apollo_l2: l2-cache1 {
-> > +			compatible = "cache";
-> > +			cache-size = <0x40000>;
-> > +			cache-line-size = <64>;
-> > +			cache-sets = <256>;
-> >  		};
-> >  	};
-> >
-> >
-> 
-> 
-> Best regards,
-> Krzysztof
+Also you would benefit by looking into the callers of
+page_reporting_register as there are more than just the virtio balloon
+that are consuming it. Odds are HyperV won't care about an ARM64
+architecture, but your change would essentially disable it outright
+which is why I think this might be better to address via the consumers
+of page reporting rather than trying to address it in page reporting
+itself.
 
+Thanks,
+
+- Alex
+
+On Sun, Jun 20, 2021 at 8:11 PM Gavin Shan <gshan@redhat.com> wrote:
+>
+> The page reporting threshold is currently equal to @pageblock_order, which
+> is 13 and 512MB on arm64 with 64KB base page size selected. The page
+> reporting won't be triggered if the freeing page can't come up with a free
+> area like that huge. The condition is hard to be met, especially when the
+> system memory becomes fragmented.
+>
+> This series intends to solve the issue by having page reporting threshold
+> as 5 (2MB) on arm64 with 64KB base page size. The patches are organized as:
+>
+>    PATCH[1/3] introduces variable (@page_reporting_order) to replace original
+>               macro (PAGE_REPORTING_MIN_ORDER). It's also exported so that it
+>               can be adjusted at runtime.
+>    PATCH[2/3] renames PAGE_REPORTING_MIN_ORDER with PAGE_REPORTING_ORDER and
+>               allows architecture to specify its own version.
+>    PATCH[3/3] defines PAGE_REPORTING_ORDER to 5, corresponding to 2MB in size,
+>               on arm64 when 64KB base page size is selected. It's still same
+>               as to @pageblock_order for other architectures and cases.
+>
+> Gavin Shan (3):
+>   mm/page_reporting: Allow to set reporting order
+>   mm/page_reporting: Allow architecture to select reporting order
+>   arm64: mm: Specify smaller page reporting order
+>
+>  Documentation/admin-guide/kernel-parameters.txt |  6 ++++++
+>  arch/arm64/include/asm/page.h                   | 13 +++++++++++++
+>  mm/page_reporting.c                             |  8 ++++++--
+>  mm/page_reporting.h                             | 10 +++++++---
+>  4 files changed, 32 insertions(+), 5 deletions(-)
+>
+> --
+> 2.23.0
+>
