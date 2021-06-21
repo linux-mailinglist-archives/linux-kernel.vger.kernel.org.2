@@ -2,125 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6463AE992
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AB83AE999
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 15:03:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhFUND4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 09:03:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45992 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229640AbhFUNDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 09:03:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8344A600D4;
-        Mon, 21 Jun 2021 13:01:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624280500;
-        bh=W8gtyl5OdibdzPJ1NCZxh+AcF0YQC6Y2zW4xUTjbnVM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=rkaSMW08nmJNa2IGQeZFlp3m9VTMGuYz+tJwHa7njfwLre9V+uAbo1asBtfcAdUDO
-         mUnYSg/Zh8ebP4tXcnZ8twrUU33g11JLyU1djKCRkre10DiSRfCtg2QpaUrtmdo7mn
-         MrgHS++4Xod2kAo2vc9OW8QLvpLqu7zmFjDl9nwg1CDQhLQiidtz+FAlK3Q6CMKYGs
-         ACIPGTlGXdQ5PO+Mkzn50OyoCrt0ZiKT0S5w7lAZysJDuyII8gK1HFjpi55AKQ3x9D
-         W9dJj9cnR5ZjBIXJ7Ff3XebP4fJpWvROdygVh2SxXUgp5xbduBoKbn8XziopUuA2eS
-         ERH5If9N7WB4A==
-Date:   Mon, 21 Jun 2021 08:01:35 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Amey Narkhede <ameynarkhede03@gmail.com>
-Cc:     alex.williamson@redhat.com,
-        Raphael Norwitz <raphael.norwitz@nutanix.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, Shanker Donthineni <sdonthineni@nvidia.com>,
-        Sinan Kaya <okaya@kernel.org>, Len Brown <lenb@kernel.org>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v7 4/8] PCI/sysfs: Allow userspace to query and set
- device reset mechanism
-Message-ID: <20210621130135.GA3288360@bjorn-Precision-5520>
+        id S229707AbhFUNFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 09:05:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229695AbhFUNFX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 09:05:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0470C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 06:03:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=gb4Xc0jhckMTpUbU0AvOmkHXxGN8uRuBfWiJLIWbCwc=; b=BeuvRc3vfVhwl1xHnScd7u1dvi
+        coGKRdXF5QCRLzhSE+M7E/A4MlECUcN4VoNY2hYEJf5s4AQm59Hh/J32Yl2krq2tM8EOtDicZ28ln
+        MEcN+lUXSaDW37MLv183AOGNNYpHF4dtDkMGzNz4eqY7liEPEFpbD4dcuV2XV9nkp89wVWEPR4mOB
+        NpI+r/Nrkcnyy5FahNrEOBLBMJgyhT4KOjZeaejDHvueWrkDr+7PrwLIoiL6hAeC+NBi5d0kEUicD
+        1n+o4smxREtIgy/M1K7pXfVHHV/LvcVROfKbd7SJgXvl8MHIrbzfNlJqq+rgyDR2yfebcTEcnp67K
+        LliW5EeA==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvJZ4-00D6gd-Gj; Mon, 21 Jun 2021 13:02:16 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Christoph Lameter <cl@linux.com>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH] mm: Move kvmalloc-related functions to slab.h
+Date:   Mon, 21 Jun 2021 14:02:08 +0100
+Message-Id: <20210621130209.3123659-1-willy@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210619135920.h42gp5ie5c2eutfq@archlinux>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 19, 2021 at 07:29:20PM +0530, Amey Narkhede wrote:
-> On 21/06/18 03:00PM, Bjorn Helgaas wrote:
-> > On Tue, Jun 08, 2021 at 11:18:53AM +0530, Amey Narkhede wrote:
-> > > Add reset_method sysfs attribute to enable user to
-> > > query and set user preferred device reset methods and
-> > > their ordering.
+Not all files in the kernel should include mm.h.  Migrating callers from
+kmalloc to kvmalloc is easier if the kvmalloc functions are in slab.h.
 
-> > > +	if (sysfs_streq(options, "default")) {
-> > > +		for (i = 0; i < PCI_RESET_METHODS_NUM; i++)
-> > > +			reset_methods[i] = reset_methods[i] ? prio-- : 0;
-> > > +		goto set_reset_methods;
-> > > +	}
-> >
-> > If you use pci_init_reset_methods() here, you can also get this case
-> > out of the way early.
-> >
-> The problem with alternate encoding is we won't be able to know if
-> one of the reset methods was disabled previously. For example,
-> 
-> # cat reset_methods
-> flr,bus 			# dev->reset_methods = [3, 5, 0, ...]
-> # echo bus > reset_methods 	# dev->reset_methods = [5, 0, 0, ...]
-> # cat reset_methods
-> bus
-> 
-> Now if an user wants to enable flr
-> 
-> # echo flr > reset_methods 	# dev->reset_methods = [3, 0, 0, ...]
-> OR
-> # echo bus,flr > reset_methods 	# dev->reset_methods = [5, 3, 0, ...]
-> 
-> either they need to write "default" first then flr or we will need to
-> reprobe reset methods each time when user writes to reset_method attribute.
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ include/linux/mm.h   | 32 --------------------------------
+ include/linux/slab.h | 32 ++++++++++++++++++++++++++++++++
+ 2 files changed, 32 insertions(+), 32 deletions(-)
 
-Not sure I completely understand the problem here.  I think relying on
-previous state that is invisible to the user is a little problematic
-because it's hard for the user to predict what will happen.
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 8ae31622deef..750a6f227ec7 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -798,38 +798,6 @@ static inline int is_vmalloc_or_module_addr(const void *x)
+ }
+ #endif
+ 
+-extern void *kvmalloc_node(size_t size, gfp_t flags, int node);
+-static inline void *kvmalloc(size_t size, gfp_t flags)
+-{
+-	return kvmalloc_node(size, flags, NUMA_NO_NODE);
+-}
+-static inline void *kvzalloc_node(size_t size, gfp_t flags, int node)
+-{
+-	return kvmalloc_node(size, flags | __GFP_ZERO, node);
+-}
+-static inline void *kvzalloc(size_t size, gfp_t flags)
+-{
+-	return kvmalloc(size, flags | __GFP_ZERO);
+-}
+-
+-static inline void *kvmalloc_array(size_t n, size_t size, gfp_t flags)
+-{
+-	size_t bytes;
+-
+-	if (unlikely(check_mul_overflow(n, size, &bytes)))
+-		return NULL;
+-
+-	return kvmalloc(bytes, flags);
+-}
+-
+-static inline void *kvcalloc(size_t n, size_t size, gfp_t flags)
+-{
+-	return kvmalloc_array(n, size, flags | __GFP_ZERO);
+-}
+-
+-extern void kvfree(const void *addr);
+-extern void kvfree_sensitive(const void *addr, size_t len);
+-
+ static inline int head_compound_mapcount(struct page *head)
+ {
+ 	return atomic_read(compound_mapcount_ptr(head)) + 1;
+diff --git a/include/linux/slab.h b/include/linux/slab.h
+index 0c97d788762c..ee676de68afe 100644
+--- a/include/linux/slab.h
++++ b/include/linux/slab.h
+@@ -697,6 +697,38 @@ static inline void *kzalloc_node(size_t size, gfp_t flags, int node)
+ 	return kmalloc_node(size, flags | __GFP_ZERO, node);
+ }
+ 
++extern void *kvmalloc_node(size_t size, gfp_t flags, int node);
++static inline void *kvmalloc(size_t size, gfp_t flags)
++{
++	return kvmalloc_node(size, flags, NUMA_NO_NODE);
++}
++static inline void *kvzalloc_node(size_t size, gfp_t flags, int node)
++{
++	return kvmalloc_node(size, flags | __GFP_ZERO, node);
++}
++static inline void *kvzalloc(size_t size, gfp_t flags)
++{
++	return kvmalloc(size, flags | __GFP_ZERO);
++}
++
++static inline void *kvmalloc_array(size_t n, size_t size, gfp_t flags)
++{
++	size_t bytes;
++
++	if (unlikely(check_mul_overflow(n, size, &bytes)))
++		return NULL;
++
++	return kvmalloc(bytes, flags);
++}
++
++static inline void *kvcalloc(size_t n, size_t size, gfp_t flags)
++{
++	return kvmalloc_array(n, size, flags | __GFP_ZERO);
++}
++
++extern void kvfree(const void *addr);
++extern void kvfree_sensitive(const void *addr, size_t len);
++
+ unsigned int kmem_cache_size(struct kmem_cache *s);
+ void __init kmem_cache_init_late(void);
+ 
+-- 
+2.30.2
 
-If the user enables a method that was previously "disabled" because
-the probe failed, won't the reset method itself just fail with
--ENOTTY?  Is that a problem?
-
-> > > +	while ((name = strsep(&options, ",")) != NULL) {
-> > > +		if (sysfs_streq(name, ""))
-> > > +			continue;
-> > > +
-> > > +		name = strim(name);
-> > > +
-> > > +		for (i = 0; i < PCI_RESET_METHODS_NUM; i++) {
-> > > +			if (reset_methods[i] &&
-> > > +			    sysfs_streq(name, pci_reset_fn_methods[i].name)) {
-> > > +				reset_methods[i] = prio--;
-> > > +				break;
-> > > +			}
-> > > +		}
-> > > +
-> > > +		if (i == PCI_RESET_METHODS_NUM) {
-> > > +			kfree(options);
-> > > +			return -EINVAL;
-> > > +		}
-> > > +	}
-> > > +
-> > > +	if (reset_methods[0] &&
-> > > +	    reset_methods[0] != PCI_RESET_METHODS_NUM)
-> > > +		pci_warn(pdev, "Device specific reset disabled/de-prioritized by user");
-> >
-> > Is there a specific reason for this warning?  Is it just telling the
-> > user that he might have shot himself in the foot?  Not sure that's
-> > necessary.
-> >
-> I think generally presence of device specific reset method means other
-> methods are potentially broken. Is it okay to skip this?
-
-We might want a warning at reset-time if all the methods failed,
-because that means we may leak state between users.  Maybe we also
-want one here, if *all* reset methods are disabled.  I don't really
-like special treatment of device-specific methods here because it
-depends on the assumption that "device-specific means all other resets
-are broken."  That's hard to maintain.
-
-Bjorn
