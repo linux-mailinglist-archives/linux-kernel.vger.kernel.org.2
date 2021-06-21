@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 342403AEEAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 195D73AEEA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232297AbhFUQat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:30:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49586 "EHLO mail.kernel.org"
+        id S232301AbhFUQaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:30:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231529AbhFUQ2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231374AbhFUQ2l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 21 Jun 2021 12:28:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50E11611BD;
-        Mon, 21 Jun 2021 16:23:39 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE11E61370;
+        Mon, 21 Jun 2021 16:23:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292619;
-        bh=eTN+BlV+f0iQcq7YZMIiD7nRsr9dem6v+4GLnTTvicY=;
+        s=korg; t=1624292622;
+        bh=P17tUD8aZ2kW86leyNvl2PVVmCrdd0GlPcRX7rIaGL0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bVTGIUkfIs420HjS0fxodZXAkPgOh04o4VKM9Xy0UQze5ihynSGAm9YpJzuW5zwar
-         JC4Pc0sxqSxBCSKJLKe3OcadWXTfUaqHDi9Hdrw7Xk8Z7CwpbNVb9KCNClnK5oKH9w
-         LdU8QanF5uLLkdZA1+LOwuLWTWtAv8YVJbrAVIx4=
+        b=eRTU7D5mJkYZf0+EhZiWkpiIvhWAh9reoM706P6cQzE+Jkm/LSwL67Kn4fRObrvw2
+         Y48flV505Q34Fan7P9c20BGkaBZNSQLkOjbTsHh+PbCDf2o4gDbKLaBDWMlywhkU3C
+         0cB09HdG+UR4DPtMncmhlY7IasD1/x+YtrWP8Ds8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Linyu Yuan <linyyuan@codeaurora.org>,
+        stable@vger.kernel.org, "Pavel Machek (CIP)" <pavel@denx.de>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 067/146] net: cdc_eem: fix tx fixup skb leak
-Date:   Mon, 21 Jun 2021 18:14:57 +0200
-Message-Id: <20210621154915.027220035@linuxfoundation.org>
+Subject: [PATCH 5.10 068/146] cxgb4: fix wrong shift.
+Date:   Mon, 21 Jun 2021 18:14:58 +0200
+Message-Id: <20210621154915.116092830@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
 References: <20210621154911.244649123@linuxfoundation.org>
@@ -40,42 +40,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linyu Yuan <linyyuan@codeaurora.org>
+From: Pavel Machek <pavel@denx.de>
 
-[ Upstream commit c3b26fdf1b32f91c7a3bc743384b4a298ab53ad7 ]
+[ Upstream commit 39eb028183bc7378bb6187067e20bf6d8c836407 ]
 
-when usbnet transmit a skb, eem fixup it in eem_tx_fixup(),
-if skb_copy_expand() failed, it return NULL,
-usbnet_start_xmit() will have no chance to free original skb.
+While fixing coverity warning, commit dd2c79677375 introduced typo in
+shift value. Fix that.
 
-fix it by free orginal skb in eem_tx_fixup() first,
-then check skb clone status, if failed, return NULL to usbnet.
-
-Fixes: 9f722c0978b0 ("usbnet: CDC EEM support (v5)")
-Signed-off-by: Linyu Yuan <linyyuan@codeaurora.org>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+Fixes: dd2c79677375 ("cxgb4: Fix unintentional sign extension issues")
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/usb/cdc_eem.c | 2 +-
+ drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/usb/cdc_eem.c b/drivers/net/usb/cdc_eem.c
-index 0eeec80bec31..e4a570366646 100644
---- a/drivers/net/usb/cdc_eem.c
-+++ b/drivers/net/usb/cdc_eem.c
-@@ -123,10 +123,10 @@ static struct sk_buff *eem_tx_fixup(struct usbnet *dev, struct sk_buff *skb,
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
+index e664e05b9f02..5fbc087268db 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_filter.c
+@@ -198,7 +198,7 @@ static void set_nat_params(struct adapter *adap, struct filter_entry *f,
+ 				      WORD_MASK, f->fs.nat_lip[3] |
+ 				      f->fs.nat_lip[2] << 8 |
+ 				      f->fs.nat_lip[1] << 16 |
+-				      (u64)f->fs.nat_lip[0] << 25, 1);
++				      (u64)f->fs.nat_lip[0] << 24, 1);
+ 		}
  	}
  
- 	skb2 = skb_copy_expand(skb, EEM_HEAD, ETH_FCS_LEN + padlen, flags);
-+	dev_kfree_skb_any(skb);
- 	if (!skb2)
- 		return NULL;
- 
--	dev_kfree_skb_any(skb);
- 	skb = skb2;
- 
- done:
 -- 
 2.30.2
 
