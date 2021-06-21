@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D38B3AF9DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 917563AF9E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 01:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232351AbhFUXzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 19:55:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45348 "EHLO
+        id S232399AbhFUXzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 19:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232284AbhFUXz1 (ORCPT
+        with ESMTP id S232290AbhFUXz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 19:55:27 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF61C0617A6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:53:11 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id k6so14890838pfk.12
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:53:11 -0700 (PDT)
+        Mon, 21 Jun 2021 19:55:29 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFBF7C0617AF
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:53:13 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id f10so7314468plg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 16:53:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=x4ITCUhU/nAWeClxOuhPcTZrOECIOg+GaezMrYjqOog=;
-        b=BwLqztGB8hIbqFPIG2iz+F3ycDuDHHtj9AyQbRD6lqT60SE8LExVuskXB76EYzXjVG
-         lca+htEYcRd7QfmkKugvc8c/OcxzCpyT3q8iyt7e0nJep78c/HVq1/rqRuwnfVRpXWTL
-         jgfxiTc8Dit5C0AJEdXOVb+ofslWLH/3o7/Ms=
+        bh=KLTgOAPTL/hdLPXehUk7jin9tlU4DA3I5amBsr+XFlI=;
+        b=IakNO8AV5d2AjRngN+nO9dr4scVOZ/i0GXGfPwpIa86ahW3Gx5lGZr/Qvp7nX9QLEF
+         ah2PHyMzxecYm5jvWAhtwLlNrNpFAqJF7xOfwTdlDZQDqN2rtdNZFIoQTtMU1ur4ZApC
+         7UbMpvJg4P3n/t96Z0aCStxGsE3he4J8bRing=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=x4ITCUhU/nAWeClxOuhPcTZrOECIOg+GaezMrYjqOog=;
-        b=lWgjlW3paOMfkEJ7pu583JbShRWObsWCTGrtiAcSPeiX3ROL8wv0n91I9uFhZIoLCj
-         +O+5YfeLQzQSFqaUwyGC9zOhIgmDLQp3y0p+TCyamWdrKMgwMnat7xblWyzbCJkui3Gb
-         LF2SaHzuIEtlIH2X58erWhioC6LeN0zVCi+tAptAyT42mGClLZkjt+08g7vE18Eq32l4
-         ksxguLScPXDFMRi78Fco7twXUCnoOFftFYUOMtwRYPPPyvJpUzUy5yVKkbLr72eDwWcG
-         PbsHavKYtbY3/9mTR/A/7BYo8ky4lYUOMfuru5pNs0hFlejNjgLtrLG33kD5YR6+BOlQ
-         vSag==
-X-Gm-Message-State: AOAM532Y9/DNLhm5R+M5kF89Azt3393Di0OYgToaQQ4Z6wEwjysPwLIz
-        fCgfljlCIUwHQBHCsVOwjRJwYw==
-X-Google-Smtp-Source: ABdhPJwZ1ajw+esBAxjNDymFx29gIQcnd4y55FxkQu9BFhGgtAStKyAK4b4QtnH9CUPyj40m+KG3Dg==
-X-Received: by 2002:aa7:9729:0:b029:2ff:1e52:e284 with SMTP id k9-20020aa797290000b02902ff1e52e284mr675748pfg.71.1624319590637;
-        Mon, 21 Jun 2021 16:53:10 -0700 (PDT)
+        bh=KLTgOAPTL/hdLPXehUk7jin9tlU4DA3I5amBsr+XFlI=;
+        b=OEFGSTI/Hgh9R7E3NXiYXAwXZ6j8z1BxY/FSIY8rZnFGt+U91Z3ziXMFdvwKRHgHnK
+         xco/sw6hc7165gIYO807gu1kyZzf9sPnJzvZivZJluOkEfjFv2RuPI0HHXf7hganVkZN
+         Re9Lfj6fB6o2awH/UIDIpKmiNiF4YX5Kr/tTd1ksrHJ43J9HTQCs8uJi2ks39UnPMxwz
+         iqgZ1VcmmBpk/flLMHEbljuyw0V/tQJw3pT5GcpjHWEkbOVQ2p3Ama/uvXfDvKchwYUu
+         nOEQRx6OFz/D+gfxqcOvdqFoqcWxFbavTvPk/xg2uG2FcKfsFM+Nte9OMkSxNxnfkUWq
+         IzwQ==
+X-Gm-Message-State: AOAM53358lZV0N4vkPUoCfxfagmRn1ajNW4CLdfEX/5ZH1mGqbDuWncC
+        j2MfHcUZAz5xLAi31XKS5Ef/8Q==
+X-Google-Smtp-Source: ABdhPJwRWBAs+yleFm5GhcTuxr1KlXgWqhCk+RoJTuTTOnsjL0UiSKVoBvEouzqIK5zI5rTU5FaO7A==
+X-Received: by 2002:a17:90a:be03:: with SMTP id a3mr611377pjs.43.1624319593246;
+        Mon, 21 Jun 2021 16:53:13 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:bdc1:a4b1:b06e:91d1])
-        by smtp.gmail.com with ESMTPSA id s27sm4339663pfg.169.2021.06.21.16.53.08
+        by smtp.gmail.com with ESMTPSA id s27sm4339663pfg.169.2021.06.21.16.53.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 16:53:10 -0700 (PDT)
+        Mon, 21 Jun 2021 16:53:12 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     gregkh@linuxfoundation.org, rafael@kernel.org,
         rafael.j.wysocki@intel.com, will@kernel.org, robin.murphy@arm.com,
@@ -57,11 +57,14 @@ Cc:     robdclark@chromium.org, linux-arm-msm@vger.kernel.org,
         saiprakash.ranjan@codeaurora.org, linux-mmc@vger.kernel.org,
         vbadigan@codeaurora.org, rajatja@google.com, saravanak@google.com,
         joel@joelfernandes.org, Douglas Anderson <dianders@chromium.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/6] drivers: base: Add the concept of "pre_probe" to drivers
-Date:   Mon, 21 Jun 2021 16:52:43 -0700
-Message-Id: <20210621165230.1.Id4ee5788c993294f66542721fca7719c00a5d8f3@changeid>
+Subject: [PATCH 2/6] drivers: base: Add bits to struct device to control iommu strictness
+Date:   Mon, 21 Jun 2021 16:52:44 -0700
+Message-Id: <20210621165230.2.Icfe7cbb2cc86a38dde0ee5ba240e0580a0ec9596@changeid>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
 In-Reply-To: <20210621235248.2521620-1-dianders@chromium.org>
 References: <20210621235248.2521620-1-dianders@chromium.org>
@@ -71,111 +74,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now things are a bit awkward if a driver would like a chance to
-run before some of the more "automatic" things (pinctrl, DMA, IOMMUs,
-...) happen to a device. This patch aims to fix that problem by
-introducing the concept of a "pre_probe" function that drivers can
-implement to run before the "automatic" stuff.
+How to control the "strictness" of an IOMMU is a bit of a mess right
+now. As far as I can tell, right now:
+* You can set the default to "non-strict" and some devices (right now,
+  only PCI devices) can request to run in "strict" mode.
+* You can set the default to "strict" and no devices in the system are
+  allowed to run as "non-strict".
 
-Why would you want to run before the "automatic" stuff? The incentive
-in my case is that I want to be able to fill in some boolean flags in
-the "struct device" before the IOMMU init runs. It appears that the
-strictness vs. non-strictness of a device's iommu config is determined
-once at init time and can't be changed afterwards. However, I would
-like to avoid hardcoding the rules for strictness in the IOMMU
-driver. Instead I'd like to let individual drivers be able to make
-informed decisions about the appropriateness of strictness
-vs. non-strictness.
+I believe this needs to be improved a bit. Specifically:
+* We should be able to default to "strict" mode but let devices that
+  claim to be fairly low risk request that they be run in "non-strict"
+  mode.
+* We should allow devices outside of PCIe to request "strict" mode if
+  the system default is "non-strict".
 
-The desire for running code pre_probe is likely not limited to my use
-case. I believe that the list "qcom_smmu_client_of_match" is hacked
-into the iommu driver specifically because there was no real good
-framework for this. For the existing list it wasn't _quite_ as ugly as
-my needs since the decision could be made solely on compatible string,
-but it still feels like it would have been better for individual
-drivers to run code and setup some state rather than coding up a big
-list in the IOMMU driver.
+I believe the correct way to do this is two bits in "struct
+device". One allows a device to force things to "strict" mode and the
+other allows a device to _request_ "non-strict" mode. The asymmetry
+here is on purpose. Generally if anything in the system makes a
+request for strictness of something then we want it strict. Thus
+drivers can only request (but not force) non-strictness.
 
-Even without this patch, I believe it is possible for a driver to run
-before the "automatic" things by registering for
-"BUS_NOTIFY_BIND_DRIVER" in its init call, though I haven't personally
-tested this. Using the notifier is a bit awkward, though, and I'd
-rather avoid it. Also, using "BUS_NOTIFY_BIND_DRIVER" would require
-drivers to stop using the convenience module_platform_driver() helper
-and roll a bunch of boilerplate code.
-
-NOTE: the pre_probe here is listed in the driver structure. As a side
-effect of this it will be passed a "struct device *" rather than the
-more specific device type (like the "struct platform_device *" that
-most platform devices get passed to their probe). Presumably this
-won't cause trouble and it's a lot less code to write but if we need
-to make it more symmetric that's also possible by touching more files.
+It's expected that the strictness fields can be filled in by the bus
+code like in the patch ("PCI: Indicate that we want to force strict
+DMA for untrusted devices") or by using the new pre_probe concept
+introduced in the patch ("drivers: base: Add the concept of
+"pre_probe" to drivers").
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
 
- drivers/base/dd.c             | 10 ++++++++--
- include/linux/device/driver.h |  9 +++++++++
- 2 files changed, 17 insertions(+), 2 deletions(-)
+ include/linux/device.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/base/dd.c b/drivers/base/dd.c
-index ecd7cf848daf..9a13bff8dafa 100644
---- a/drivers/base/dd.c
-+++ b/drivers/base/dd.c
-@@ -549,10 +549,16 @@ static int really_probe(struct device *dev, struct device_driver *drv)
- re_probe:
- 	dev->driver = drv;
+diff --git a/include/linux/device.h b/include/linux/device.h
+index f1a00040fa53..c1b985e10c47 100644
+--- a/include/linux/device.h
++++ b/include/linux/device.h
+@@ -449,6 +449,15 @@ struct dev_links_info {
+  *		and optionall (if the coherent mask is large enough) also
+  *		for dma allocations.  This flag is managed by the dma ops
+  *		instance from ->dma_supported.
++ * @force_strict_iommu: If set to %true then we should force this device to
++ *			iommu.strict regardless of the other defaults in the
++ *			system. Only has an effect if an IOMMU is in place.
++ * @request_non_strict_iommu: If set to %true and there are no other known
++ *			      reasons to make the iommu.strict for this device,
++ *			      then default to non-strict mode. This implies
++ *			      some belief that the DMA master for this device
++ *			      won't abuse the DMA path to compromise the kernel.
++ *			      Only has an effect if an IOMMU is in place.
+  *
+  * At the lowest level, every device in a Linux system is represented by an
+  * instance of struct device. The device structure contains the information
+@@ -557,6 +566,8 @@ struct device {
+ #ifdef CONFIG_DMA_OPS_BYPASS
+ 	bool			dma_ops_bypass : 1;
+ #endif
++	bool			force_strict_iommu:1;
++	bool			request_non_strict_iommu:1;
+ };
  
-+	if (drv->pre_probe) {
-+		ret = drv->pre_probe(dev);
-+		if (ret)
-+			goto probe_failed_pre_dma;
-+	}
-+
- 	/* If using pinctrl, bind pins now before probing */
- 	ret = pinctrl_bind_pins(dev);
- 	if (ret)
--		goto pinctrl_bind_failed;
-+		goto probe_failed_pre_dma;
- 
- 	if (dev->bus->dma_configure) {
- 		ret = dev->bus->dma_configure(dev);
-@@ -639,7 +645,7 @@ static int really_probe(struct device *dev, struct device_driver *drv)
- 	if (dev->bus)
- 		blocking_notifier_call_chain(&dev->bus->p->bus_notifier,
- 					     BUS_NOTIFY_DRIVER_NOT_BOUND, dev);
--pinctrl_bind_failed:
-+probe_failed_pre_dma:
- 	device_links_no_driver(dev);
- 	devres_release_all(dev);
- 	arch_teardown_dma_ops(dev);
-diff --git a/include/linux/device/driver.h b/include/linux/device/driver.h
-index a498ebcf4993..f7305dd6ceb1 100644
---- a/include/linux/device/driver.h
-+++ b/include/linux/device/driver.h
-@@ -57,6 +57,14 @@ enum probe_type {
-  * @probe_type:	Type of the probe (synchronous or asynchronous) to use.
-  * @of_match_table: The open firmware table.
-  * @acpi_match_table: The ACPI match table.
-+ * @pre_probe:	Called after a device has been bound to a driver but before
-+ *		anything "automatic" (pinctrl, DMA, IOMMUs, ...) has been
-+ *		setup. This is mostly a chance for the driver to do things
-+ *		that might need to be run before any of those automatic
-+ *		processes. The vast majority of devices don't need to
-+ *		implement this. Note that there is no "post_remove" at the
-+ *		moment. If you need to undo something that you did in
-+ *		pre_probe() you can use devres.
-  * @probe:	Called to query the existence of a specific device,
-  *		whether this driver can work with it, and bind the driver
-  *		to a specific device.
-@@ -105,6 +113,7 @@ struct device_driver {
- 	const struct of_device_id	*of_match_table;
- 	const struct acpi_device_id	*acpi_match_table;
- 
-+	int (*pre_probe) (struct device *dev);
- 	int (*probe) (struct device *dev);
- 	void (*sync_state)(struct device *dev);
- 	int (*remove) (struct device *dev);
+ /**
 -- 
 2.32.0.288.g62a8d224e6-goog
 
