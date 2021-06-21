@@ -2,263 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCCC3AF6E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 22:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECF123AF6F0
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 22:44:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbhFUUpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 16:45:13 -0400
-Received: from mga18.intel.com ([134.134.136.126]:54963 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230447AbhFUUpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 16:45:12 -0400
-IronPort-SDR: G3lpmzKch+Gi9Wzqjxan0Zd8KXflbwUEzmNqATFQcYQt6DBuSC7c0H6CASWLroyWUzhd2FLR8n
- 1kr4da5wBEMw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="194241842"
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208";a="194241842"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 13:42:56 -0700
-IronPort-SDR: Zz1oieSByT0AbzSHd3S/FGLfG/Xul+3KaiG3Pbkk8W5cWPXMApjntVIVFZo+joRGfLdFYVkjLd
- q22zquyScbhw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208";a="406092054"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga003.jf.intel.com with ESMTP; 21 Jun 2021 13:42:55 -0700
-Received: from [10.212.235.252] (kliang2-MOBL.ccr.corp.intel.com [10.212.235.252])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 8C61F5808BA;
-        Mon, 21 Jun 2021 13:42:54 -0700 (PDT)
-Subject: Re: [patch V3 38/66] x86/fpu/xstate: Sanitize handling of independent
- features
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20210618141823.161158090@linutronix.de>
- <20210618143448.745062645@linutronix.de>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-Message-ID: <e03c080d-34ca-a154-cc4c-b315e1249c1a@linux.intel.com>
-Date:   Mon, 21 Jun 2021 16:42:53 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231286AbhFUUqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 16:46:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231217AbhFUUqX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 16:46:23 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B53F3C061767
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 13:44:07 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id u11so16122225ljh.2
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 13:44:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GM7eO0vh1gXIyPgCEQpkeMLnL2AEGJ5aVi0qEu4LSo8=;
+        b=Tv/B3mY+3scUULk8gTsFxcANxIboIJw174bs0gw51AOv7A1ZRfIr7hYUaEHwg+ZizI
+         fzmO0YHlj6H2lpoKGi7josGY9Mfw/HLy4ZAYuYJHFNtkAOa2Xk3HnV5PY9Q9nPzry3jo
+         +MQPQ782m2lOvURjw5QugF45Uqk5mi8CTCsdS+oIFpsxhB/L/DenjvL24OwB1TGn2liQ
+         ocgP7RiVl+Ur65AUVZVAg5q9cwhU9ngZMjOlYrqX2OIXbrgr7noecffzw21tqZBLwXgT
+         AzfwivXbDZR8V/PQuBX7aXh8be1p52zDJJBdn6Ws/UOisqI1l5/6lhmWOuFBmYHOJ7XZ
+         I8qA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GM7eO0vh1gXIyPgCEQpkeMLnL2AEGJ5aVi0qEu4LSo8=;
+        b=o/xYzadoRfrFu+LAg8SIUPMjhFH0QA8IrzkfrZYY4l3Cj0Nb94bLnRq/odO7xOPEBw
+         oomuOhFGqzLajPWfluU7IK3JBP2jaxYf6qca61EszYf3haisIAoUcPYz+mVtqHB3GOeh
+         a2I5o7o/NV5j32yYRXLG5Pz2rBK08AhQgUxn0Ig2pM6WLDpX0744eYmx822I3zqy5YIV
+         9v2E884qgZf7po4eOrGDUpKYsNixpuECzUeAG+bfDjlGrwvA8QPKJ+NdI1ahHaS4vXJi
+         zAmAYD1ri1bXQJ0Ac0v2r/3WSINgh0wS2KZe1JiZvtsFkI8SkJGXRbecfMQNBMcdPrF6
+         eYmw==
+X-Gm-Message-State: AOAM531NGzs2EoICzbuqAWiAaryaK+b71isWDVZpV16AMY3Jgdgl1s+g
+        uj2RSJNo2F/Z/AWN0VMdbjWXOCC1GDdQSDmPxZ5tkg==
+X-Google-Smtp-Source: ABdhPJxfm+tu/X5s5KMcrvmuiAKdIXZg/zRgvhW5dsk/13kjWABpiROoHBqsKkjL8DZZ+gemFgG2p2a2kf8W3toM9/4=
+X-Received: by 2002:a05:651c:1181:: with SMTP id w1mr88154ljo.116.1624308245741;
+ Mon, 21 Jun 2021 13:44:05 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210618143448.745062645@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210618233023.1360185-1-ndesaulniers@google.com>
+ <20210618233023.1360185-3-ndesaulniers@google.com> <CANpmjNNK-iYXucjz7Degh1kJPF_Z_=8+2vNLtUW17x0UnfgtPg@mail.gmail.com>
+ <CAKwvOdmxGt6nAj+dDZEPdQtXNbYb8N6y3XwoCvCD+Qazskh7zw@mail.gmail.com> <CAGG=3QXeAxaf0AhKsg8P1-j2uHOoXne2KCOCEhq9SKa-e2dnag@mail.gmail.com>
+In-Reply-To: <CAGG=3QXeAxaf0AhKsg8P1-j2uHOoXne2KCOCEhq9SKa-e2dnag@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 21 Jun 2021 13:43:54 -0700
+Message-ID: <CAKwvOd=9oAGPeuQmWnAMOxZn2ii_CRmyWnheoyXGcd09-U_CwA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] Kconfig: CC_HAS_NO_PROFILE_FN_ATTR, depend on for
+ GCOV and PGO
+To:     Bill Wendling <morbo@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Bill Wendling <wcw@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, Martin Liska <mliska@suse.cz>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Fangrui Song <maskray@google.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        linux-toolchains@vger.kernel.org, Marco Elver <elver@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 21, 2021 at 11:50 AM Bill Wendling <morbo@google.com> wrote:
+>
+> On Mon, Jun 21, 2021 at 11:22 AM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > On Fri, Jun 18, 2021 at 11:23 PM Marco Elver <elver@google.com> wrote:
+> > >
+> > > On Sat, 19 Jun 2021 at 01:30, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> > > >
+> > > > We don't want compiler instrumentation to touch noinstr functions, which
+> > > > are annotated with the no_profile function attribute. Add a Kconfig test
+> > > > for this and make PGO and GCOV depend on it.
+> > > >
+> > > > Cc: Masahiro Yamada <masahiroy@kernel.org>
+> > > > Cc: Peter Oberparleiter <oberpar@linux.ibm.com>
+> > > > Link: https://lore.kernel.org/lkml/YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net/
+> > > > Link: https://lore.kernel.org/lkml/YMcssV%2Fn5IBGv4f0@hirez.programming.kicks-ass.net/
+> > > > Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> > > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> > > > ---
+> > > >  init/Kconfig        | 3 +++
+> > > >  kernel/gcov/Kconfig | 1 +
+> > > >  kernel/pgo/Kconfig  | 3 ++-
+> > > >  3 files changed, 6 insertions(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/init/Kconfig b/init/Kconfig
+> > > > index 1ea12c64e4c9..540f862b40c6 100644
+> > > > --- a/init/Kconfig
+> > > > +++ b/init/Kconfig
+> > > > @@ -83,6 +83,9 @@ config TOOLS_SUPPORT_RELR
+> > > >  config CC_HAS_ASM_INLINE
+> > > >         def_bool $(success,echo 'void foo(void) { asm inline (""); }' | $(CC) -x c - -c -o /dev/null)
+> > > >
+> > > > +config CC_HAS_NO_PROFILE_FN_ATTR
+> > > > +       def_bool $(success,echo '__attribute__((no_profile)) int x();' | $(CC) -x c - -c -o /dev/null -Werror)
+> > > > +
+> > > >  config CONSTRUCTORS
+> > > >         bool
+> > > >
+> > > > diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
+> > > > index 58f87a3092f3..19facd4289cd 100644
+> > > > --- a/kernel/gcov/Kconfig
+> > > > +++ b/kernel/gcov/Kconfig
+> > > > @@ -5,6 +5,7 @@ config GCOV_KERNEL
+> > > >         bool "Enable gcov-based kernel profiling"
+> > > >         depends on DEBUG_FS
+> > > >         depends on !CC_IS_CLANG || CLANG_VERSION >= 110000
+> > > > +       depends on !X86 || (X86 && CC_HAS_NO_PROFILE_FN_ATTR)
+> > >
+> > > [+Cc Mark]
+> > >
+> > > arm64 is also starting to rely on noinstr working properly.
+> >
+> > Sure,
+> > Will, Catalin, other arm64 folks:
+> > Any thoughts on requiring GCC 7.1+/Clang 13.0+ for GCOV support?  That
+> > way we can better guarantee that GCOV (and eventually, PGO) don't
+> > touch noinstr functions?
+> >
+> > If that's ok, I'll add modify the above like:
+> >
+> > + depends on !ARM64 || (ARM64 && CC_HAS_NO_PROFILE_FN_ATTR)
+> >
+> Wouldn't "!ARM64 || CC_HAS_NO_PROFILE_FN_ATTR" be more succinct?
+
+We need to be able to express via Kconfig "GCOV should not be enabled
+for architectures that use noinstr when the toolchain does not support
+__attribute__((no_profile_instrument_function))."
+
+Where "architectures that use noinstr" are currently arm64, s390, and
+x86.  So I guess we could do:
+
++ depends on !ARM64 || !S390 || !X86 || CC_HAS_NO_PROFILE_FN_ATTR
+
+(We could add a Kconfig for ARCH_WANTS_NO_INSTR, which might be more
+informative than listed out architectures which might be non-obvious
+to passers-by).
+
+It would be most succinct to raise the requirements to: "GCOV should
+not be enabled when the toolchain does not support
+__attribute__((no_profile_instrument_function))." Then we could do:
+
++ depends on CC_HAS_NO_PROFILE_FN_ATTR
+
+Assuming no one has the requirement to support GCOV on PPC with GCC <
+7.1, for example.
+
+>
+> > to the above hunk in v2.  Oh, looks like arch/s390 also uses noinstr.
+> > Same question applies then:
+> >
+> > + depends on !S390 || (S390 && CC_HAS_NO_PROFILE_FN_ATTR)
+> >
+> > Or, we could just do
+> >
+> > + depends on CC_HAS_NO_PROFILE_FN_ATTR
+> >
+> > Though that will penalize architectures not using noinstr, that still
+> > would like to use GCOV with versions of GCC older than 7.1.  Perhaps
+> > there are no such such users, or they should consider upgrading their
+> > tools to we can stick with the simpler Kconfig? Thoughts?
+> >
+> > >
+> > > This should probably be a 'select ARCH_HAS_GCOV_PROFILE_ALL if
+> > > CC_HAS_NO_PROFILE_FN_ATTR' in the relevant arch/../Kconfig.
+> > >
+> > > Alternatively, using:
+> > > https://lkml.kernel.org/r/YMcssV/n5IBGv4f0@hirez.programming.kicks-ass.net
+> > >
+> > > But I'd probably not overcomplicate things at this point and just use
+> > > ARCH_HAS_GCOV_PROFILE_ALL, because GCOV seems to be a) rarely used,
+> > > and b) if someone decides to selectively instrument stuff like entry
+> > > code, we can just say it's user error.
+> > >
+> > >
+> > > >         select CONSTRUCTORS
+> > > >         default n
+> > > >         help
+> > > > diff --git a/kernel/pgo/Kconfig b/kernel/pgo/Kconfig
+> > > > index d2053df1111c..26f75ac4c6c1 100644
+> > > > --- a/kernel/pgo/Kconfig
+> > > > +++ b/kernel/pgo/Kconfig
+> > > > @@ -8,7 +8,8 @@ config PGO_CLANG
+> > > >         bool "Enable clang's PGO-based kernel profiling"
+> > > >         depends on DEBUG_FS
+> > > >         depends on ARCH_SUPPORTS_PGO_CLANG
+> > > > -       depends on CC_IS_CLANG && CLANG_VERSION >= 120000
+> > > > +       depends on CC_IS_CLANG
+> > > > +       depends on CC_HAS_NO_PROFILE_FN_ATTR
+> > > >         help
+> > > >           This option enables clang's PGO (Profile Guided Optimization) based
+> > > >           code profiling to better optimize the kernel.
+> > > > --
+> > > > 2.32.0.288.g62a8d224e6-goog
+> > > >
+> >
+> >
+> >
+> > --
+> > Thanks,
+> > ~Nick Desaulniers
 
 
-On 6/18/2021 10:19 AM, Thomas Gleixner wrote:
-> The copy functions for the independent features are horribly named and the
-> supervisor and independent part is just overengineered.
-> 
-> The point is that the supplied mask has either to be a subset of the
-> independent feature or a subset of the task->fpu.xstate managed features.
-> 
-> Rewrite it so it checks check for invalid overlaps of these areas in the
-> caller supplied feature mask. Rename it so it follows the new naming
-> convention for these operations. Mop up the function documentation.
-> 
-> This allows to use that function for other purposes as well.
-> 
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Kan Liang <kan.liang@linux.intel.com>
-> ---
 
-
-I have tested the LBR Xsave feature. Everything looks good.
-
-Tested-by: Kan Liang <kan.liang@linux.intel.com>
-
+-- 
 Thanks,
-Kan
-
-> V3: Rename
-> ---
->   arch/x86/events/intel/lbr.c       |    6 +-
->   arch/x86/include/asm/fpu/xstate.h |    5 +-
->   arch/x86/kernel/fpu/xstate.c      |   93 +++++++++++++++++++-------------------
->   3 files changed, 53 insertions(+), 51 deletions(-)
-> 
-> --- a/arch/x86/events/intel/lbr.c
-> +++ b/arch/x86/events/intel/lbr.c
-> @@ -491,7 +491,7 @@ static void intel_pmu_arch_lbr_xrstors(v
->   {
->   	struct x86_perf_task_context_arch_lbr_xsave *task_ctx = ctx;
->   
-> -	copy_kernel_to_independent_supervisor(&task_ctx->xsave, XFEATURE_MASK_LBR);
-> +	xrstors(&task_ctx->xsave, XFEATURE_MASK_LBR);
->   }
->   
->   static __always_inline bool lbr_is_reset_in_cstate(void *ctx)
-> @@ -576,7 +576,7 @@ static void intel_pmu_arch_lbr_xsaves(vo
->   {
->   	struct x86_perf_task_context_arch_lbr_xsave *task_ctx = ctx;
->   
-> -	copy_independent_supervisor_to_kernel(&task_ctx->xsave, XFEATURE_MASK_LBR);
-> +	xsaves(&task_ctx->xsave, XFEATURE_MASK_LBR);
->   }
->   
->   static void __intel_pmu_lbr_save(void *ctx)
-> @@ -992,7 +992,7 @@ static void intel_pmu_arch_lbr_read_xsav
->   		intel_pmu_store_lbr(cpuc, NULL);
->   		return;
->   	}
-> -	copy_independent_supervisor_to_kernel(&xsave->xsave, XFEATURE_MASK_LBR);
-> +	xsaves(&xsave->xsave, XFEATURE_MASK_LBR);
->   
->   	intel_pmu_store_lbr(cpuc, xsave->lbr.entries);
->   }
-> --- a/arch/x86/include/asm/fpu/xstate.h
-> +++ b/arch/x86/include/asm/fpu/xstate.h
-> @@ -104,8 +104,9 @@ void *get_xsave_addr(struct xregs_state
->   int xfeature_size(int xfeature_nr);
->   int copy_uabi_from_kernel_to_xstate(struct xregs_state *xsave, const void *kbuf);
->   int copy_sigframe_from_user_to_xstate(struct xregs_state *xsave, const void __user *ubuf);
-> -void copy_independent_supervisor_to_kernel(struct xregs_state *xstate, u64 mask);
-> -void copy_kernel_to_independent_supervisor(struct xregs_state *xstate, u64 mask);
-> +
-> +void xsaves(struct xregs_state *xsave, u64 mask);
-> +void xrstors(struct xregs_state *xsave, u64 mask);
->   
->   enum xstate_copy_mode {
->   	XSTATE_COPY_FP,
-> --- a/arch/x86/kernel/fpu/xstate.c
-> +++ b/arch/x86/kernel/fpu/xstate.c
-> @@ -1163,75 +1163,76 @@ int copy_sigframe_from_user_to_xstate(st
->   }
->   
->   /**
-> - * copy_independent_supervisor_to_kernel() - Save independent supervisor states to
-> - *                                           an xsave area
-> - * @xstate: A pointer to an xsave area
-> - * @mask: Represent the independent supervisor features saved into the xsave area
-> + * xsaves - Save selected components to a kernel xstate buffer
-> + * @xstate:	Pointer to the buffer
-> + * @mask:	Feature mask to select the components to save
->    *
-> - * Only the independent supervisor states sets in the mask are saved into the xsave
-> - * area (See the comment in XFEATURE_MASK_INDEPENDENT for the details of independent
-> - * supervisor feature). Besides the independent supervisor states, the legacy
-> - * region and XSAVE header are also saved into the xsave area. The supervisor
-> - * features in the XFEATURE_MASK_SUPERVISOR_SUPPORTED and
-> - * XFEATURE_MASK_SUPERVISOR_UNSUPPORTED are not saved.
-> + * The @xstate buffer must be 64 byte aligned and correctly initialized as
-> + * XSAVES does not write the full xstate header. Before first use the
-> + * buffer should be zeroed otherwise a consecutive XRSTORS from that buffer
-> + * can #GP.
->    *
-> - * The xsave area must be 64-bytes aligned.
-> + * The feature mask must either be a subset of the independent features or
-> + * a subset of the task->fpstate related features
->    */
-> -void copy_independent_supervisor_to_kernel(struct xregs_state *xstate, u64 mask)
-> +void xsaves(struct xregs_state *xstate, u64 mask)
->   {
-> -	u64 independent_mask = xfeatures_mask_independent() & mask;
-> -	u32 lmask, hmask;
-> +	u64 xchk;
->   	int err;
->   
-> -	if (WARN_ON_FPU(!boot_cpu_has(X86_FEATURE_XSAVES)))
-> +	if (WARN_ON_FPU(!cpu_feature_enabled(X86_FEATURE_XSAVES)))
->   		return;
-> +	/*
-> +	 * Validate that this is either a task->fpstate related component
-> +	 * subset or an independent one.
-> +	 */
-> +	if (mask & xfeatures_mask_independent())
-> +		xchk = ~xfeatures_mask_independent();
-> +	else
-> +		xchk = ~xfeatures_mask_all;
->   
-> -	if (WARN_ON_FPU(!independent_mask))
-> +	if (WARN_ON_ONCE(!mask || mask & xchk))
->   		return;
->   
-> -	lmask = independent_mask;
-> -	hmask = independent_mask >> 32;
-> -
-> -	XSTATE_OP(XSAVES, xstate, lmask, hmask, err);
-> -
-> -	/* Should never fault when copying to a kernel buffer */
-> -	WARN_ON_FPU(err);
-> +	XSTATE_OP(XSAVES, xstate, (u32)mask, (u32)(mask >> 32), err);
-> +	WARN_ON_ONCE(err);
->   }
->   
->   /**
-> - * copy_kernel_to_independent_supervisor() - Restore independent supervisor states from
-> - *                                           an xsave area
-> - * @xstate: A pointer to an xsave area
-> - * @mask: Represent the independent supervisor features restored from the xsave area
-> + * xrstors - Restore selected components from a kernel xstate buffer
-> + * @xstate:	Pointer to the buffer
-> + * @mask:	Feature mask to select the components to restore
-> + *
-> + * The @xstate buffer must be 64 byte aligned and correctly initialized
-> + * otherwise XRSTORS from that buffer can #GP.
->    *
-> - * Only the independent supervisor states sets in the mask are restored from the
-> - * xsave area (See the comment in XFEATURE_MASK_INDEPENDENT for the details of
-> - * independent supervisor feature). Besides the independent supervisor states, the
-> - * legacy region and XSAVE header are also restored from the xsave area. The
-> - * supervisor features in the XFEATURE_MASK_SUPERVISOR_SUPPORTED and
-> - * XFEATURE_MASK_SUPERVISOR_UNSUPPORTED are not restored.
-> + * Proper usage is to restore the state which was saved with
-> + * xsaves() into @xstate.
->    *
-> - * The xsave area must be 64-bytes aligned.
-> + * The feature mask must either be a subset of the independent features or
-> + * a subset of the task->fpstate related features
->    */
-> -void copy_kernel_to_independent_supervisor(struct xregs_state *xstate, u64 mask)
-> +void xrstors(struct xregs_state *xstate, u64 mask)
->   {
-> -	u64 independent_mask = xfeatures_mask_independent() & mask;
-> -	u32 lmask, hmask;
-> +	u64 xchk;
->   	int err;
->   
-> -	if (WARN_ON_FPU(!boot_cpu_has(X86_FEATURE_XSAVES)))
-> +	if (WARN_ON_FPU(!cpu_feature_enabled(X86_FEATURE_XSAVES)))
->   		return;
-> +	/*
-> +	 * Validate that this is either a task->fpstate related component
-> +	 * subset or an independent one.
-> +	 */
-> +	if (mask & xfeatures_mask_independent())
-> +		xchk = ~xfeatures_mask_independent();
-> +	else
-> +		xchk = ~xfeatures_mask_all;
->   
-> -	if (WARN_ON_FPU(!independent_mask))
-> +	if (WARN_ON_ONCE(!mask || mask & xchk))
->   		return;
->   
-> -	lmask = independent_mask;
-> -	hmask = independent_mask >> 32;
-> -
-> -	XSTATE_OP(XRSTORS, xstate, lmask, hmask, err);
-> -
-> -	/* Should never fault when copying from a kernel buffer */
-> -	WARN_ON_FPU(err);
-> +	XSTATE_OP(XRSTORS, xstate, (u32)mask, (u32)(mask >> 32), err);
-> +	WARN_ON_ONCE(err);
->   }
->   
->   #ifdef CONFIG_PROC_PID_ARCH_STATUS
-> 
+~Nick Desaulniers
