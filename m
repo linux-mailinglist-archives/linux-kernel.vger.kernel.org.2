@@ -2,108 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D30E3AF607
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 21:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB963AF604
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 21:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231144AbhFUTYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 15:24:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230170AbhFUTYm (ORCPT
+        id S230410AbhFUTYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 15:24:33 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:46960 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230061AbhFUTYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 15:24:42 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E01A7C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 12:22:25 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id u20so7068289ljl.13
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 12:22:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UWwkKMPjf9VHxhA/g9kybS/n5fjzQ1lCr96tYKbsWb4=;
-        b=OWY9B/m6/Mxc4KE4rlqUmS8up4KOodyzZabkrCDG8PZQO7BOG22XJGJUOTvpEvWYz8
-         5PgA6ftqBTHNUdu8z3XpFvF/2p6ZVtR21Nv8hDF/pcwb1wKzuer3Yr3ZrfLh8V5mdy+M
-         eKJPw1pfo8vN7QoUHB7TWIVl4z9STd1R+XvlA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UWwkKMPjf9VHxhA/g9kybS/n5fjzQ1lCr96tYKbsWb4=;
-        b=C7VHhM5UB27QQxYssd9FGPELsUN4VIDw+lx2vo7/mJeSuPjRRfLtcfBN4Kvg0aTb5/
-         HEx2TsT3pr1ymVHKcFKdQEdseaPKyIqOHQ9N7Onni9Cwsia5FS8qbDw8mzaKhRR7fjGQ
-         cyk5LRq/9mbADkjs888vmbKSdjvFw8ytNcL4Vx5DRWguj8Fn1jao+ItxxKyu+SlntEZR
-         5R9EIijDDWbJ1kxYtIpEVUylQ8UKSU1eGAApuVGK2DySzaEHMrYup4EVSB+5yqNPYW43
-         igbP0sE62xZhelLuTImSxu9mLu7UAZR5Yo9ecRAPOvoJ+VWjxqnybrQqFLxwVd79eAt+
-         el6w==
-X-Gm-Message-State: AOAM530FNV1vXuyEmqjTw6d1D8prkBQG6bQKO15aaH6yG9+HMhHk03QK
-        hQO8YhZWxUEyHX31N/y3iTsUdyAUk6HNGEzQn0s=
-X-Google-Smtp-Source: ABdhPJydNGeB1oI9dXzIpJxIu0Esig/XA6riXseDKbPNwsJMMc3MXenb41e18xi8QZKclv7rG06hjA==
-X-Received: by 2002:a05:651c:323:: with SMTP id b3mr23463648ljp.139.1624303344040;
-        Mon, 21 Jun 2021 12:22:24 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id w6sm1889397ljh.23.2021.06.21.12.22.22
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 21 Jun 2021 12:22:22 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id u20so7068200ljl.13
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 12:22:22 -0700 (PDT)
-X-Received: by 2002:a2e:9644:: with SMTP id z4mr23025776ljh.507.1624303342282;
- Mon, 21 Jun 2021 12:22:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
- <87sg1lwhvm.fsf@disp2133> <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
- <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com> <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com>
- <87eed4v2dc.fsf@disp2133> <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com>
- <87fsxjorgs.fsf@disp2133> <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
- <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk> <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
-In-Reply-To: <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 21 Jun 2021 12:22:06 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
-Message-ID: <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
-Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Michael Schmitz <schmitzmic@gmail.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 21 Jun 2021 15:24:31 -0400
+Received: from [173.237.58.148] (port=33322 helo=localhost)
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1lvPUt-0006Dz-Lh; Mon, 21 Jun 2021 15:22:15 -0400
+Date:   Mon, 21 Jun 2021 12:22:13 -0700
+Message-Id: <4deda7761d61c189f4e2581828f852c8a1acb723.1624303174.git.olivier@trillion01.com>
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Olivier Langlois <olivier@trillion01.com>
+Subject: [PATCH v3] io_uring: reduce latency by reissueing the operation
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 11:59 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
->         There's a large mess around do_exit() - we have a bunch of
-> callers all over arch/*; if nothing else, I very much doubt that really
-> want to let tracer play with a thread in the middle of die_if_kernel()
-> or similar.
+It is quite frequent that when an operation fails and returns EAGAIN,
+the data becomes available between that failure and the call to
+vfs_poll() done by io_arm_poll_handler().
 
-Right you are.
+Detecting the situation and reissuing the operation is much faster
+than going ahead and push the operation to the io-wq.
 
-I'm really beginning to hate ptrace_{event,notify}() and those
-PTRACE_EVENT_xyz things.
+Signed-off-by: Olivier Langlois <olivier@trillion01.com>
+---
+ fs/io_uring.c | 31 ++++++++++++++++++++++---------
+ 1 file changed, 22 insertions(+), 9 deletions(-)
 
-I don't even know what uses them, honestly. How very annoying.
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index fc8637f591a6..5efa67c2f974 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -5152,7 +5152,13 @@ static __poll_t __io_arm_poll_handler(struct io_kiocb *req,
+ 	return mask;
+ }
+ 
+-static bool io_arm_poll_handler(struct io_kiocb *req)
++enum {
++	IO_APOLL_OK,
++	IO_APOLL_ABORTED,
++	IO_APOLL_READY
++};
++
++static int io_arm_poll_handler(struct io_kiocb *req)
+ {
+ 	const struct io_op_def *def = &io_op_defs[req->opcode];
+ 	struct io_ring_ctx *ctx = req->ctx;
+@@ -5162,22 +5168,22 @@ static bool io_arm_poll_handler(struct io_kiocb *req)
+ 	int rw;
+ 
+ 	if (!req->file || !file_can_poll(req->file))
+-		return false;
++		return IO_APOLL_ABORTED;
+ 	if (req->flags & REQ_F_POLLED)
+-		return false;
++		return IO_APOLL_ABORTED;
+ 	if (def->pollin)
+ 		rw = READ;
+ 	else if (def->pollout)
+ 		rw = WRITE;
+ 	else
+-		return false;
++		return IO_APOLL_ABORTED;
+ 	/* if we can't nonblock try, then no point in arming a poll handler */
+ 	if (!io_file_supports_async(req, rw))
+-		return false;
++		return IO_APOLL_ABORTED;
+ 
+ 	apoll = kmalloc(sizeof(*apoll), GFP_ATOMIC);
+ 	if (unlikely(!apoll))
+-		return false;
++		return IO_APOLL_ABORTED;
+ 	apoll->double_poll = NULL;
+ 
+ 	req->flags |= REQ_F_POLLED;
+@@ -5203,12 +5209,14 @@ static bool io_arm_poll_handler(struct io_kiocb *req)
+ 	if (ret || ipt.error) {
+ 		io_poll_remove_double(req);
+ 		spin_unlock_irq(&ctx->completion_lock);
+-		return false;
++		if (ret)
++			return IO_APOLL_READY;
++		return IO_APOLL_ABORTED;
+ 	}
+ 	spin_unlock_irq(&ctx->completion_lock);
+ 	trace_io_uring_poll_arm(ctx, req, req->opcode, req->user_data,
+ 				mask, apoll->poll.events);
+-	return true;
++	return IO_APOLL_OK;
+ }
+ 
+ static bool __io_poll_remove_one(struct io_kiocb *req,
+@@ -6437,6 +6445,7 @@ static void __io_queue_sqe(struct io_kiocb *req)
+ 	struct io_kiocb *linked_timeout = io_prep_linked_timeout(req);
+ 	int ret;
+ 
++issue_sqe:
+ 	ret = io_issue_sqe(req, IO_URING_F_NONBLOCK|IO_URING_F_COMPLETE_DEFER);
+ 
+ 	/*
+@@ -6456,12 +6465,16 @@ static void __io_queue_sqe(struct io_kiocb *req)
+ 			io_put_req(req);
+ 		}
+ 	} else if (ret == -EAGAIN && !(req->flags & REQ_F_NOWAIT)) {
+-		if (!io_arm_poll_handler(req)) {
++		switch (io_arm_poll_handler(req)) {
++		case IO_APOLL_READY:
++			goto issue_sqe;
++		case IO_APOLL_ABORTED:
+ 			/*
+ 			 * Queued up for async execution, worker will release
+ 			 * submit reference when the iocb is actually submitted.
+ 			 */
+ 			io_queue_async_work(req);
++			break;
+ 		}
+ 	} else {
+ 		io_req_complete_failed(req, ret);
+-- 
+2.32.0
 
-I guess it's easy enough (famous last words) to move the
-ptrace_event() call out of do_exit() and into the actual
-exit/exit_group system calls, and the signal handling path. The paths
-that actually have proper pt_regs.
-
-Looks like sys_exit() and do_group_exit() would be the two places to
-do it (do_group_exit() would handle the signal case and
-sys_group_exit()).
-
-               Linus
