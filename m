@@ -2,160 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D985D3AED3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:15:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 435BA3AEDDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230222AbhFUQR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:17:59 -0400
-Received: from mga14.intel.com ([192.55.52.115]:43299 "EHLO mga14.intel.com"
+        id S231667AbhFUQXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:23:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41976 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230071AbhFUQR7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:17:59 -0400
-IronPort-SDR: bHVwbM05w78MWcTpKfl5TDfnjC5JG/E8PBmB/axl5ADqEV56Wfbp1ew+j2K/RYQLtWoTP6urpi
- bRPxYXYmxO9Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="206698547"
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208";a="206698547"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 09:15:44 -0700
-IronPort-SDR: 68XMMSd3evT7yCXErLke1L14KkHaV3zb5EaEDrijovCR98EF1PaUbKF8/QOFDVaoNia02UxXtH
- iZOCPDadUDag==
-X-IronPort-AV: E=Sophos;i="5.83,289,1616482800"; 
-   d="scan'208";a="480514839"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.157.87]) ([10.209.157.87])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 09:15:43 -0700
-Subject: Re: [patch V3 00/66] x86/fpu: Spring cleaning and PKRU sanitizing
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-References: <20210618141823.161158090@linutronix.de>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <4473dcbd-38fa-bc19-d665-673dfc763f8f@intel.com>
-Date:   Mon, 21 Jun 2021 09:15:43 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S231840AbhFUQV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:21:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17B566137D;
+        Mon, 21 Jun 2021 16:19:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624292379;
+        bh=LLnmG8brgOHwQ+R3d71IMf6uE3aacgY7WIo8T8fv9JM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=mW7OFvNck4yk/sz76c/yAwL0948Qats/rgdYIizdCEG7xefR33boTUC+fJVZE5qsd
+         KvZTKYbK3cwmUGPk6VXxpHMR+3qRYDHe533vNm/0kkNJiYKMIROLL8vT1zGBydlB6q
+         il5i0UeAHIB2nUjC2SU5dlS5e6YCxmVeoEMLvMHI=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.4 68/90] x86/fpu: Reset state for all signal restore failures
+Date:   Mon, 21 Jun 2021 18:15:43 +0200
+Message-Id: <20210621154906.462940408@linuxfoundation.org>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20210621154904.159672728@linuxfoundation.org>
+References: <20210621154904.159672728@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-In-Reply-To: <20210618141823.161158090@linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/18/2021 7:18 AM, Thomas Gleixner wrote:
-> The main parts of this series are:
-> 
->    - Yet more bug fixes
-> 
->    - Simplification and removal/replacement of redundant and/or
->      overengineered code.
-> 
->    - Name space cleanup as the existing names were just a permanent source
->      of confusion.
-> 
->    - Clear seperation of user ABI and kernel internal state handling.
-> 
->    - Removal of PKRU from being XSTATE managed in the kernel because PKRU
->      has to be eagerly restored on context switch and keeping it in sync
->      in the xstate buffer is just pointless overhead and fragile.
-> 
->      The kernel still XSAVEs PKRU on context switch but the value in the
->      buffer is not longer used and never restored from the buffer.
-> 
->      This still needs to be cleaned up, but the series is already 40+
->      patches large and the cleanup of this is not a functional problem.
-> 
->      The functional issues of PKRU management are fully addressed with the
->      series as is.
-> 
->    - Cleanup of fpu signal restore
-> 
->      - Make the fast path self contained. Handle #PF directly and skip
->        the slow path on any other exception as that will just end up
->        with the same result that the frame is invalid. This allows
->        the compiler to optimize the slow path out for 64bit kernels
->        w/o ia32 emulation.
-> 
->      - Reduce code duplication and unnecessary operations
->        
-> 
-> It applies on top of
-> 
->    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-> 
-> and is also available via git:
-> 
->    git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git x86/fpu
-> 
-> This is a follow up to V2 which can be found here:
-> 
->       https://lore.kernel.org/r/20210614154408.673478623@linutronix.de
-> 
-> Changes vs. V2:
-> 
->    - Fixed the testing fallout (Dave, Kan)
-> 
->    - Fixed a few issues found by myself when going through the lot
->      with a fine comb, especially MXCSR handling
-> 
->    - Drop the FNSAVE optimizations
-> 
->    - Cleanup of signal restore
-> 
->    - Addressed review comments, mostly comments and a hopefully better
->      naming scheme which now just uses the instruction names and
->      consolidates everything else on save/restore so it's close to the way
->      how the hardware works.
-> 
->    - A few cleanups and simplifications on the way (mostly regset related).
-> 
->    - Picked up tags
-> 
-> With the above I'm not intending to do any further surgery on that
-> code at the moment, though there is still room for improvement which
-> can and has to be worked on when new bits are added.
-> 
-> Thanks,
+From: Thomas Gleixner <tglx@linutronix.de>
 
-Run all my tests again, and all pass.
+commit efa165504943f2128d50f63de0c02faf6dcceb0d upstream.
 
-Thanks,
-Yu-cheng
+If access_ok() or fpregs_soft_set() fails in __fpu__restore_sig() then the
+function just returns but does not clear the FPU state as it does for all
+other fatal failures.
 
-> 
-> 	tglx
-> ---
->   arch/x86/events/intel/lbr.c          |    6
->   arch/x86/include/asm/fpu/internal.h  |  211 +++-------
->   arch/x86/include/asm/fpu/xstate.h    |   70 ++-
->   arch/x86/include/asm/pgtable.h       |   57 --
->   arch/x86/include/asm/pkeys.h         |    9
->   arch/x86/include/asm/pkru.h          |   62 +++
->   arch/x86/include/asm/processor.h     |    9
->   arch/x86/include/asm/special_insns.h |   14
->   arch/x86/kernel/cpu/common.c         |   34 -
->   arch/x86/kernel/fpu/core.c           |  276 +++++++------
->   arch/x86/kernel/fpu/init.c           |   15
->   arch/x86/kernel/fpu/regset.c         |  220 ++++++-----
->   arch/x86/kernel/fpu/signal.c         |  423 +++++++++------------
->   arch/x86/kernel/fpu/xstate.c         |  693 ++++++++++++++---------------------
->   arch/x86/kernel/process.c            |   22 -
->   arch/x86/kernel/process_64.c         |   28 +
->   arch/x86/kernel/traps.c              |    5
->   arch/x86/kvm/svm/sev.c               |    1
->   arch/x86/kvm/x86.c                   |   56 +-
->   arch/x86/mm/extable.c                |    2
->   arch/x86/mm/fault.c                  |    2
->   arch/x86/mm/pkeys.c                  |   22 -
->   include/linux/pkeys.h                |    4
->   23 files changed, 1060 insertions(+), 1181 deletions(-)
-> 
->
+Clear the FPU state for these failures as well.
+
+Fixes: 72a671ced66d ("x86, fpu: Unify signal handling code paths for x86 and x86_64 kernels")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/87mtryyhhz.ffs@nanos.tec.linutronix.de
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ arch/x86/kernel/fpu/signal.c |   26 +++++++++++++++-----------
+ 1 file changed, 15 insertions(+), 11 deletions(-)
+
+--- a/arch/x86/kernel/fpu/signal.c
++++ b/arch/x86/kernel/fpu/signal.c
+@@ -289,13 +289,17 @@ static int __fpu__restore_sig(void __use
+ 		return 0;
+ 	}
+ 
+-	if (!access_ok(buf, size))
+-		return -EACCES;
++	if (!access_ok(buf, size)) {
++		ret = -EACCES;
++		goto out;
++	}
+ 
+-	if (!static_cpu_has(X86_FEATURE_FPU))
+-		return fpregs_soft_set(current, NULL,
+-				       0, sizeof(struct user_i387_ia32_struct),
+-				       NULL, buf) != 0;
++	if (!static_cpu_has(X86_FEATURE_FPU)) {
++		ret = fpregs_soft_set(current, NULL, 0,
++				      sizeof(struct user_i387_ia32_struct),
++				      NULL, buf);
++		goto out;
++	}
+ 
+ 	if (use_xsave()) {
+ 		struct _fpx_sw_bytes fx_sw_user;
+@@ -333,7 +337,7 @@ static int __fpu__restore_sig(void __use
+ 	if (ia32_fxstate) {
+ 		ret = __copy_from_user(&env, buf, sizeof(env));
+ 		if (ret)
+-			goto err_out;
++			goto out;
+ 		envp = &env;
+ 	} else {
+ 		/*
+@@ -369,7 +373,7 @@ static int __fpu__restore_sig(void __use
+ 				ret = validate_xstate_header(&fpu->state.xsave.header);
+ 		}
+ 		if (ret)
+-			goto err_out;
++			goto out;
+ 
+ 		sanitize_restored_xstate(&fpu->state, envp, xfeatures, fx_only);
+ 
+@@ -382,7 +386,7 @@ static int __fpu__restore_sig(void __use
+ 		ret = __copy_from_user(&fpu->state.fxsave, buf_fx, state_size);
+ 		if (ret) {
+ 			ret = -EFAULT;
+-			goto err_out;
++			goto out;
+ 		}
+ 
+ 		sanitize_restored_xstate(&fpu->state, envp, xfeatures, fx_only);
+@@ -397,7 +401,7 @@ static int __fpu__restore_sig(void __use
+ 	} else {
+ 		ret = __copy_from_user(&fpu->state.fsave, buf_fx, state_size);
+ 		if (ret)
+-			goto err_out;
++			goto out;
+ 
+ 		fpregs_lock();
+ 		ret = copy_kernel_to_fregs_err(&fpu->state.fsave);
+@@ -408,7 +412,7 @@ static int __fpu__restore_sig(void __use
+ 		fpregs_deactivate(fpu);
+ 	fpregs_unlock();
+ 
+-err_out:
++out:
+ 	if (ret)
+ 		fpu__clear(fpu);
+ 	return ret;
+
+
