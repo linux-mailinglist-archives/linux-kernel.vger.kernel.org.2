@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A82F3AED71
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15AB3AEE9C
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 18:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbhFUQUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 12:20:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39908 "EHLO mail.kernel.org"
+        id S232183AbhFUQaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 12:30:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231232AbhFUQTj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 12:19:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2CAE561001;
-        Mon, 21 Jun 2021 16:17:24 +0000 (UTC)
+        id S232217AbhFUQ20 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 12:28:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB91461361;
+        Mon, 21 Jun 2021 16:23:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624292244;
-        bh=PZg7vceDddbIFWxdH7h0sKAe8bb3DaxjMePV0ikwz/I=;
+        s=korg; t=1624292614;
+        bh=aru5soIzAyaaiihlfzBjkoOBBX4wGyj/7mseXgXu+zk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xs4iqZ/tKT48NsgIkNBrIQ6THA9tW0H08IwI/VuiLGriBvcywi/NqYTFeTauJ1gJu
-         rvinldD937zPakXJQZv1cXaij6Ze0yqKL6Hs0rMDs/eOhEY1xvUR65gsBcIN0zUibZ
-         kgi+YhW7xVkyTes9HzZf2Kd4QUIoXCDE18xiqsfQ=
+        b=F6v6GOEeosoN2C6K4Sb8EcXw73WMpng9b7Nm5pxAJ3fIUnC0vYZRqskO4QrJYhOSg
+         4LFbxiDtJSlY5BwpnJVF3SiMsZ2NvhPR2Y0P7hK3GV80/2Qq/Nre21zcj4X80U3jBX
+         1f/NXML98gop4dA09j4Bvq8nxnFrGD8eEbOd7/xk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aya Levin <ayal@nvidia.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Somnath Kotur <somnath.kotur@broadcom.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 19/90] net/mlx5e: Block offload of outer header csum for UDP tunnels
-Date:   Mon, 21 Jun 2021 18:14:54 +0200
-Message-Id: <20210621154904.785780000@linuxfoundation.org>
+Subject: [PATCH 5.10 065/146] be2net: Fix an error handling path in be_probe()
+Date:   Mon, 21 Jun 2021 18:14:55 +0200
+Message-Id: <20210621154914.865801335@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210621154904.159672728@linuxfoundation.org>
-References: <20210621154904.159672728@linuxfoundation.org>
+In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
+References: <20210621154911.244649123@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,44 +42,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aya Levin <ayal@nvidia.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 6d6727dddc7f93fcc155cb8d0c49c29ae0e71122 ]
+[ Upstream commit c19c8c0e666f9259e2fc4d2fa4b9ff8e3b40ee5d ]
 
-The device is able to offload either the outer header csum or inner
-header csum. The driver utilizes the inner csum offload. Hence, block
-setting of tx-udp_tnl-csum-segmentation and set it to off[fixed].
+If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
+must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
+call, as already done in the remove function.
 
-Fixes: b49663c8fb49 ("net/mlx5e: Add support for UDP tunnel segmentation with outer checksum offload")
-Signed-off-by: Aya Levin <ayal@nvidia.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
+Fixes: d6b6d9877878 ("be2net: use PCIe AER capability")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Acked-by: Somnath Kotur <somnath.kotur@broadcom.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ drivers/net/ethernet/emulex/benet/be_main.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-index 374ce17e1499..24c49a84947f 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_main.c
-@@ -5007,13 +5007,9 @@ static void mlx5e_build_nic_netdev(struct net_device *netdev)
- 	}
- 
- 	if (mlx5_vxlan_allowed(mdev->vxlan) || mlx5_geneve_tx_allowed(mdev)) {
--		netdev->hw_features     |= NETIF_F_GSO_UDP_TUNNEL |
--					   NETIF_F_GSO_UDP_TUNNEL_CSUM;
--		netdev->hw_enc_features |= NETIF_F_GSO_UDP_TUNNEL |
--					   NETIF_F_GSO_UDP_TUNNEL_CSUM;
--		netdev->gso_partial_features = NETIF_F_GSO_UDP_TUNNEL_CSUM;
--		netdev->vlan_features |= NETIF_F_GSO_UDP_TUNNEL |
--					 NETIF_F_GSO_UDP_TUNNEL_CSUM;
-+		netdev->hw_features     |= NETIF_F_GSO_UDP_TUNNEL;
-+		netdev->hw_enc_features |= NETIF_F_GSO_UDP_TUNNEL;
-+		netdev->vlan_features |= NETIF_F_GSO_UDP_TUNNEL;
- 	}
- 
- 	if (mlx5e_tunnel_proto_supported(mdev, IPPROTO_GRE)) {
+diff --git a/drivers/net/ethernet/emulex/benet/be_main.c b/drivers/net/ethernet/emulex/benet/be_main.c
+index 676e437d78f6..cb1e1ad652d0 100644
+--- a/drivers/net/ethernet/emulex/benet/be_main.c
++++ b/drivers/net/ethernet/emulex/benet/be_main.c
+@@ -5905,6 +5905,7 @@ drv_cleanup:
+ unmap_bars:
+ 	be_unmap_pci_bars(adapter);
+ free_netdev:
++	pci_disable_pcie_error_reporting(pdev);
+ 	free_netdev(netdev);
+ rel_reg:
+ 	pci_release_regions(pdev);
 -- 
 2.30.2
 
