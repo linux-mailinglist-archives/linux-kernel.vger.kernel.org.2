@@ -2,151 +2,364 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 209FB3AE1D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 05:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 944943AE1DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 05:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230103AbhFUDVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 20 Jun 2021 23:21:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbhFUDVE (ORCPT
+        id S230118AbhFUDXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 20 Jun 2021 23:23:20 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5056 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229901AbhFUDXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 20 Jun 2021 23:21:04 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D968C061756;
-        Sun, 20 Jun 2021 20:18:50 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id a127so2006751pfa.10;
-        Sun, 20 Jun 2021 20:18:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=bEMA3Fn9G78MJjOLATMzSr4FKpTvjeDpYpynuiBu+GA=;
-        b=PS/fyHWzLBT1/zodXO4xLg84QbHysEnQVTc3dv5WCMuUobaxp6DjQ540et46Alwz6U
-         u5YqcrE7lDRnJDFFQPDZk7+B8Vp6hDXnRyrXGUEzQCp1goLnuT+ys9Sh1vxhaWDW+82z
-         330ohDW3yPJiBQ11QXqp5A6seYVO0rSKK2CDCvGenxUPtIXmmEMTAZ4NX+F2BqEiMXl+
-         3wlBvZuws+TG9TSYLdoxGBWWzLchUp7NE0mel+oO0ADhlz8jwZaLOdJR2f/f+y9lFwKI
-         4HlFdk/pYc2z70DywQwdpOj9mhF0lCT0S7Wk1VCVmTf9MJ2RruOrFzv6tR46qq4HxZ8f
-         I9hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:cc:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=bEMA3Fn9G78MJjOLATMzSr4FKpTvjeDpYpynuiBu+GA=;
-        b=PH/neJql68A/7ZJ0Bdrc8erSkxKgUXVa8kP6d3RqJXRQtdx1WpB0v7E6lsZ8KaTHBB
-         WURGn2G44I1oW5CfcCjdKsrinSz6BFN0/sMizWI6KC7XuH76SXQ6MQIWjlBzQrVMfchJ
-         hBLvZfAq6c5TXyZVKdBow43yqVZDWRreuIkjULlerLF5bQcTfac0XuLv74iqBbeLwiwa
-         M0o1UNR7QkT/fZ2BsukYvy6BeqgOA1s3ajDtSYOhhJcgmYKK0s5Q3EIYsKz06Ld4ftp7
-         g/M6VeEwicxx3TLoJaaSn1jLahV8CJ/rOwl5E9mBNaxZsSMtgisE2R7x8FGK4CGve/lP
-         MtRA==
-X-Gm-Message-State: AOAM532ah2fzN3pwjJK1jI8U/pHJCRMREZP2801DGUly8PfxPr3eH2NS
-        IfB+Y+mJWUGgmrZnwV+rsjQ=
-X-Google-Smtp-Source: ABdhPJyUfWEv5BoYwOgWVygbT6EiyTPosdGk4TH3uOWQjG4bExdI4KdIy6JNOvUBApYgYKKgt24h6w==
-X-Received: by 2002:a62:1e82:0:b029:2f9:aad3:b368 with SMTP id e124-20020a621e820000b02902f9aad3b368mr17509192pfe.79.1624245529816;
-        Sun, 20 Jun 2021 20:18:49 -0700 (PDT)
-Received: from [10.1.1.25] (222-152-189-137-fibre.sparkbb.co.nz. [222.152.189.137])
-        by smtp.gmail.com with ESMTPSA id x13sm13379004pjh.30.2021.06.20.20.18.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 20 Jun 2021 20:18:49 -0700 (PDT)
-Subject: Re: [PATCH 1/2] alpha/ptrace: Record and handle the absence of
- switch_stack
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-References: <87sg1p30a1.fsf@disp2133>
- <CAHk-=wjiBXCZBxLiCG5hxpd0vMkMjiocenponWygG5SCG6DXNw@mail.gmail.com>
- <87pmwsytb3.fsf@disp2133>
- <CAHk-=wgdO5VwSUFjfF9g=DAQNYmVxzTq73NtdisYErzdZKqDGg@mail.gmail.com>
- <87sg1lwhvm.fsf@disp2133>
- <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
- <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
- <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com> <87eed4v2dc.fsf@disp2133>
- <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com> <87fsxjorgs.fsf@disp2133>
- <87zgvqor7d.fsf_-_@disp2133>
- <CAHk-=wir2P6h+HKtswPEGDh+GKLMM6_h8aovpMcUHyQv2zJ5Og@mail.gmail.com>
- <87mtrpg47k.fsf@disp2133> <87pmwlek8d.fsf_-_@disp2133>
- <87k0mtek4n.fsf_-_@disp2133> <393c37de-5edf-effc-3d06-d7e63f34a317@gmail.com>
- <CAHk-=wip8KgrNUcU68wsLZqbWV+3NWg9kqqQwygHGAA8-xOwMA@mail.gmail.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        alpha <linux-alpha@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Arnd Bergmann <arnd@kernel.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>
-From:   Michael Schmitz <schmitzmic@gmail.com>
-Message-ID: <60c0fe00-b966-6385-d348-f6dd45277113@gmail.com>
-Date:   Mon, 21 Jun 2021 15:18:35 +1200
-User-Agent: Mozilla/5.0 (X11; Linux ppc; rv:45.0) Gecko/20100101
- Icedove/45.4.0
+        Sun, 20 Jun 2021 23:23:19 -0400
+Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G7ZRc3XXFzXjFh;
+        Mon, 21 Jun 2021 11:15:56 +0800 (CST)
+Received: from dggpemm000001.china.huawei.com (7.185.36.245) by
+ dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 21 Jun 2021 11:20:53 +0800
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ dggpemm000001.china.huawei.com (7.185.36.245) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 21 Jun 2021 11:20:52 +0800
+From:   Tong Tiangen <tongtiangen@huawei.com>
+To:     <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+CC:     <linux-riscv@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        "Tong Tiangen" <tongtiangen@huawei.com>
+Subject: [PATCH -next v2] riscv: add VMAP_STACK overflow detection
+Date:   Mon, 21 Jun 2021 11:28:55 +0800
+Message-ID: <20210621032855.130650-1-tongtiangen@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wip8KgrNUcU68wsLZqbWV+3NWg9kqqQwygHGAA8-xOwMA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm000001.china.huawei.com (7.185.36.245)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+This patch adds stack overflow detection to riscv, usable when
+CONFIG_VMAP_STACK=y.
 
-Am 21.06.2021 um 14:17 schrieb Linus Torvalds:
-> On Sun, Jun 20, 2021 at 7:01 PM Michael Schmitz <schmitzmic@gmail.com> wrote:
->>
->> instrumenting get_reg on m68k and using a similar patch to yours to warn
->> when unsaved registers are accessed on the switch stack, I get a hit
->> from getegid and getegid32, just by running a simple ptrace on ls.
->>
->> Going to wack those two moles now ...
->
-> I don't see what's going on. Those system calls don't use the register
-> state, afaik. What's the call chain, exactly?
+Overflow is detected in kernel exception entry(kernel/entry.S), if the kernel
+stack is overflow and been detected, the overflow handler is invoked on a
+per-cpu overflow stack. This approach preserves GPRs and the original exception
+information.
 
-This is what I get from WARN_ONCE:
+The overflow detect is performed before any attempt is made to access the stack
+and the principle of stack overflow detection: kernel stacks are aligned to
+double their size, enabling overflow to be detected with a single bit test. For
+example, a 16K stack is aligned to 32K, ensuring that bit 14 of the SP must be
+zero. On an overflow (or underflow), this bit is flipped. Thus, overflow (of
+less than the size of the stack) can be detected by testing whether this bit is
+set.
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 1177 at arch/m68k/kernel/ptrace.c:91 get_reg+0x90/0xb8
-Modules linked in:
-CPU: 0 PID: 1177 Comm: strace Not tainted 
-5.13.0-rc1-atari-fpuemu-exitfix+ #1146
-Stack from 014b7f04:
-         014b7f04 00336401 00336401 000278f0 0032c015 0000005b 00000005 
-0002795a
-         0032c015 0000005b 0000338c 00000009 00000000 00000000 ffffffe4 
-00000005
-         00000003 00000014 00000003 00000014 efc2b90c 0000338c 0032c015 
-0000005b
-         00000009 00000000 efc2b908 00912540 efc2b908 000034cc 00912540 
-00000005
-         00000000 efc2b908 00000003 00912540 8000110c c010b0a4 efc2b90c 
-0002d1d8
-         00912540 00000003 00000014 efc2b908 0000049a 00000014 efc2b908 
-800acaa8
-Call Trace: [<000278f0>] __warn+0x9e/0xb4
-  [<0002795a>] warn_slowpath_fmt+0x54/0x62
-  [<0000338c>] get_reg+0x90/0xb8
-  [<0000338c>] get_reg+0x90/0xb8
-  [<000034cc>] arch_ptrace+0x7e/0x250
-  [<0002d1d8>] sys_ptrace+0x232/0x2f8
-  [<00002ab6>] syscall+0x8/0xc
-  [<0000c00b>] lower+0x7/0x20
+This gives us a useful error message on stack overflow, as can be trigger with
+the LKDTM overflow test:
 
----[ end trace ee4be53b94695793 ]---
+[  388.053267] lkdtm: Performing direct entry EXHAUST_STACK
+[  388.053663] lkdtm: Calling function with 1024 frame size to depth 32 ...
+[  388.054016] lkdtm: loop 32/32 ...
+[  388.054186] lkdtm: loop 31/32 ...
+[  388.054491] lkdtm: loop 30/32 ...
+[  388.054672] lkdtm: loop 29/32 ...
+[  388.054859] lkdtm: loop 28/32 ...
+[  388.055010] lkdtm: loop 27/32 ...
+[  388.055163] lkdtm: loop 26/32 ...
+[  388.055309] lkdtm: loop 25/32 ...
+[  388.055481] lkdtm: loop 24/32 ...
+[  388.055653] lkdtm: loop 23/32 ...
+[  388.055837] lkdtm: loop 22/32 ...
+[  388.056015] lkdtm: loop 21/32 ...
+[  388.056188] lkdtm: loop 20/32 ...
+[  388.058145] Insufficient stack space to handle exception!
+[  388.058153] Task stack:     [0xffffffd014260000..0xffffffd014264000]
+[  388.058160] Overflow stack: [0xffffffe1f8d2c220..0xffffffe1f8d2d220]
+[  388.058168] CPU: 0 PID: 89 Comm: bash Not tainted 5.12.0-rc8-dirty #90
+[  388.058175] Hardware name: riscv-virtio,qemu (DT)
+[  388.058187] epc : number+0x32/0x2c0
+[  388.058247]  ra : vsnprintf+0x2ae/0x3f0
+[  388.058255] epc : ffffffe0002d38f6 ra : ffffffe0002d814e sp : ffffffd01425ffc0
+[  388.058263]  gp : ffffffe0012e4010 tp : ffffffe08014da00 t0 : ffffffd0142606e8
+[  388.058271]  t1 : 0000000000000000 t2 : 0000000000000000 s0 : ffffffd014260070
+[  388.058303]  s1 : ffffffd014260158 a0 : ffffffd01426015e a1 : ffffffd014260158
+[  388.058311]  a2 : 0000000000000013 a3 : ffff0a01ffffff10 a4 : ffffffe000c398e0
+[  388.058319]  a5 : 511b02ec65f3e300 a6 : 0000000000a1749a a7 : 0000000000000000
+[  388.058327]  s2 : ffffffff000000ff s3 : 00000000ffff0a01 s4 : ffffffe0012e50a8
+[  388.058335]  s5 : 0000000000ffff0a s6 : ffffffe0012e50a8 s7 : ffffffe000da1cc0
+[  388.058343]  s8 : ffffffffffffffff s9 : ffffffd0142602b0 s10: ffffffd0142602a8
+[  388.058351]  s11: ffffffd01426015e t3 : 00000000000f0000 t4 : ffffffffffffffff
+[  388.058359]  t5 : 000000000000002f t6 : ffffffd014260158
+[  388.058366] status: 0000000000000100 badaddr: ffffffd01425fff8 cause: 000000000000000f
+[  388.058374] Kernel panic - not syncing: Kernel stack overflow
+[  388.058381] CPU: 0 PID: 89 Comm: bash Not tainted 5.12.0-rc8-dirty #90
+[  388.058387] Hardware name: riscv-virtio,qemu (DT)
+[  388.058393] Call Trace:
+[  388.058400] [<ffffffe000004944>] walk_stackframe+0x0/0xce
+[  388.058406] [<ffffffe0006f0b28>] dump_backtrace+0x38/0x46
+[  388.058412] [<ffffffe0006f0b46>] show_stack+0x10/0x18
+[  388.058418] [<ffffffe0006f3690>] dump_stack+0x74/0x8e
+[  388.058424] [<ffffffe0006f0d52>] panic+0xfc/0x2b2
+[  388.058430] [<ffffffe0006f0acc>] print_trace_address+0x0/0x24
+[  388.058436] [<ffffffe0002d814e>] vsnprintf+0x2ae/0x3f0
+[  388.058956] SMP: stopping secondary CPUs
 
-Syscall numbers are actually 90 and 192 - sys_old_mmap and sys_mmap2 on 
-m68k. Used the calculator on my Ubuntu desktop, that appears to be a 
-little confused about hex to decimal conversions.
+Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+Reviewed-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+---
 
-I hope that makes more sense?
+v2:
+* 1. fix tests fail if STRICT_KERNEL_RWX=n.
+  2. fix W=1 build warning.
 
-Cheers,
+ arch/riscv/Kconfig                      |   1 +
+ arch/riscv/include/asm/asm-prototypes.h |   3 +
+ arch/riscv/include/asm/thread_info.h    |  15 ++++
+ arch/riscv/kernel/entry.S               | 108 ++++++++++++++++++++++++
+ arch/riscv/kernel/traps.c               |  35 ++++++++
+ arch/riscv/kernel/vmlinux.lds.S         |   2 +-
+ 6 files changed, 163 insertions(+), 1 deletion(-)
 
-	Michael
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index a97b03164080..c28284f45434 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -70,6 +70,7 @@ config RISCV
+ 	select HAVE_ARCH_MMAP_RND_BITS if MMU
+ 	select HAVE_ARCH_SECCOMP_FILTER
+ 	select HAVE_ARCH_TRACEHOOK
++	select HAVE_ARCH_VMAP_STACK if MMU && 64BIT
+ 	select HAVE_ASM_MODVERSIONS
+ 	select HAVE_CONTEXT_TRACKING
+ 	select HAVE_DEBUG_KMEMLEAK
+diff --git a/arch/riscv/include/asm/asm-prototypes.h b/arch/riscv/include/asm/asm-prototypes.h
+index 2a652b0c987d..ef386fcf3939 100644
+--- a/arch/riscv/include/asm/asm-prototypes.h
++++ b/arch/riscv/include/asm/asm-prototypes.h
+@@ -25,4 +25,7 @@ DECLARE_DO_ERROR_INFO(do_trap_ecall_s);
+ DECLARE_DO_ERROR_INFO(do_trap_ecall_m);
+ DECLARE_DO_ERROR_INFO(do_trap_break);
+ 
++asmlinkage unsigned long get_overflow_stack(void);
++asmlinkage void handle_bad_stack(struct pt_regs *regs);
++
+ #endif /* _ASM_RISCV_PROTOTYPES_H */
+diff --git a/arch/riscv/include/asm/thread_info.h b/arch/riscv/include/asm/thread_info.h
+index 0e549a3089b3..60da0dcacf14 100644
+--- a/arch/riscv/include/asm/thread_info.h
++++ b/arch/riscv/include/asm/thread_info.h
+@@ -19,6 +19,21 @@
+ #endif
+ #define THREAD_SIZE		(PAGE_SIZE << THREAD_SIZE_ORDER)
+ 
++/*
++ * By aligning VMAP'd stacks to 2 * THREAD_SIZE, we can detect overflow by
++ * checking sp & (1 << THREAD_SHIFT), which we can do cheaply in the entry
++ * assembly.
++ */
++#ifdef CONFIG_VMAP_STACK
++#define THREAD_ALIGN            (2 * THREAD_SIZE)
++#else
++#define THREAD_ALIGN            THREAD_SIZE
++#endif
++
++#define THREAD_SHIFT            (PAGE_SHIFT + THREAD_SIZE_ORDER)
++#define OVERFLOW_STACK_SIZE     SZ_4K
++#define SHADOW_OVERFLOW_STACK_SIZE (1024)
++
+ #ifndef __ASSEMBLY__
+ 
+ #include <asm/processor.h>
+diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+index 80d5a9e017b0..98f502654edd 100644
+--- a/arch/riscv/kernel/entry.S
++++ b/arch/riscv/kernel/entry.S
+@@ -30,6 +30,15 @@ ENTRY(handle_exception)
+ _restore_kernel_tpsp:
+ 	csrr tp, CSR_SCRATCH
+ 	REG_S sp, TASK_TI_KERNEL_SP(tp)
++
++#ifdef CONFIG_VMAP_STACK
++	addi sp, sp, -(PT_SIZE_ON_STACK)
++	srli sp, sp, THREAD_SHIFT
++	andi sp, sp, 0x1
++	bnez sp, handle_kernel_stack_overflow
++	REG_L sp, TASK_TI_KERNEL_SP(tp)
++#endif
++
+ _save_context:
+ 	REG_S sp, TASK_TI_USER_SP(tp)
+ 	REG_L sp, TASK_TI_KERNEL_SP(tp)
+@@ -376,6 +385,105 @@ handle_syscall_trace_exit:
+ 	call do_syscall_trace_exit
+ 	j ret_from_exception
+ 
++#ifdef CONFIG_VMAP_STACK
++handle_kernel_stack_overflow:
++	la sp, shadow_stack
++	addi sp, sp, SHADOW_OVERFLOW_STACK_SIZE
++
++	//save caller register to shadow stack
++	addi sp, sp, -(PT_SIZE_ON_STACK)
++	REG_S x1,  PT_RA(sp)
++	REG_S x5,  PT_T0(sp)
++	REG_S x6,  PT_T1(sp)
++	REG_S x7,  PT_T2(sp)
++	REG_S x10, PT_A0(sp)
++	REG_S x11, PT_A1(sp)
++	REG_S x12, PT_A2(sp)
++	REG_S x13, PT_A3(sp)
++	REG_S x14, PT_A4(sp)
++	REG_S x15, PT_A5(sp)
++	REG_S x16, PT_A6(sp)
++	REG_S x17, PT_A7(sp)
++	REG_S x28, PT_T3(sp)
++	REG_S x29, PT_T4(sp)
++	REG_S x30, PT_T5(sp)
++	REG_S x31, PT_T6(sp)
++
++	la ra, restore_caller_reg
++	tail get_overflow_stack
++
++restore_caller_reg:
++	//save per-cpu overflow stack
++	REG_S a0, -8(sp)
++	//restore caller register from shadow_stack
++	REG_L x1,  PT_RA(sp)
++	REG_L x5,  PT_T0(sp)
++	REG_L x6,  PT_T1(sp)
++	REG_L x7,  PT_T2(sp)
++	REG_L x10, PT_A0(sp)
++	REG_L x11, PT_A1(sp)
++	REG_L x12, PT_A2(sp)
++	REG_L x13, PT_A3(sp)
++	REG_L x14, PT_A4(sp)
++	REG_L x15, PT_A5(sp)
++	REG_L x16, PT_A6(sp)
++	REG_L x17, PT_A7(sp)
++	REG_L x28, PT_T3(sp)
++	REG_L x29, PT_T4(sp)
++	REG_L x30, PT_T5(sp)
++	REG_L x31, PT_T6(sp)
++
++	//load per-cpu overflow stack
++	REG_L sp, -8(sp)
++	addi sp, sp, -(PT_SIZE_ON_STACK)
++
++	//save context to overflow stack
++	REG_S x1,  PT_RA(sp)
++	REG_S x3,  PT_GP(sp)
++	REG_S x5,  PT_T0(sp)
++	REG_S x6,  PT_T1(sp)
++	REG_S x7,  PT_T2(sp)
++	REG_S x8,  PT_S0(sp)
++	REG_S x9,  PT_S1(sp)
++	REG_S x10, PT_A0(sp)
++	REG_S x11, PT_A1(sp)
++	REG_S x12, PT_A2(sp)
++	REG_S x13, PT_A3(sp)
++	REG_S x14, PT_A4(sp)
++	REG_S x15, PT_A5(sp)
++	REG_S x16, PT_A6(sp)
++	REG_S x17, PT_A7(sp)
++	REG_S x18, PT_S2(sp)
++	REG_S x19, PT_S3(sp)
++	REG_S x20, PT_S4(sp)
++	REG_S x21, PT_S5(sp)
++	REG_S x22, PT_S6(sp)
++	REG_S x23, PT_S7(sp)
++	REG_S x24, PT_S8(sp)
++	REG_S x25, PT_S9(sp)
++	REG_S x26, PT_S10(sp)
++	REG_S x27, PT_S11(sp)
++	REG_S x28, PT_T3(sp)
++	REG_S x29, PT_T4(sp)
++	REG_S x30, PT_T5(sp)
++	REG_S x31, PT_T6(sp)
++
++	REG_L s0, TASK_TI_KERNEL_SP(tp)
++	csrr s1, CSR_STATUS
++	csrr s2, CSR_EPC
++	csrr s3, CSR_TVAL
++	csrr s4, CSR_CAUSE
++	csrr s5, CSR_SCRATCH
++	REG_S s0, PT_SP(sp)
++	REG_S s1, PT_STATUS(sp)
++	REG_S s2, PT_EPC(sp)
++	REG_S s3, PT_BADADDR(sp)
++	REG_S s4, PT_CAUSE(sp)
++	REG_S s5, PT_TP(sp)
++	move a0, sp
++	tail handle_bad_stack
++#endif
++
+ END(handle_exception)
+ 
+ ENTRY(ret_from_fork)
+diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+index 7bc88d8aab97..0a98fd0ddfe9 100644
+--- a/arch/riscv/kernel/traps.c
++++ b/arch/riscv/kernel/traps.c
+@@ -203,3 +203,38 @@ int is_valid_bugaddr(unsigned long pc)
+ void __init trap_init(void)
+ {
+ }
++
++#ifdef CONFIG_VMAP_STACK
++static DEFINE_PER_CPU(unsigned long [OVERFLOW_STACK_SIZE/sizeof(long)],
++		overflow_stack)__aligned(16);
++/*
++ * shadow stack, handled_ kernel_ stack_ overflow(in kernel/entry.S) is used
++ * to get per-cpu overflow stack(get_overflow_stack).
++ */
++long shadow_stack[SHADOW_OVERFLOW_STACK_SIZE/sizeof(long)];
++asmlinkage unsigned long get_overflow_stack(void)
++{
++	return (unsigned long)this_cpu_ptr(overflow_stack) +
++		OVERFLOW_STACK_SIZE;
++}
++
++asmlinkage void handle_bad_stack(struct pt_regs *regs)
++{
++	unsigned long tsk_stk = (unsigned long)current->stack;
++	unsigned long ovf_stk = (unsigned long)this_cpu_ptr(overflow_stack);
++
++	console_verbose();
++
++	pr_emerg("Insufficient stack space to handle exception!\n");
++	pr_emerg("Task stack:     [0x%016lx..0x%016lx]\n",
++			tsk_stk, tsk_stk + THREAD_SIZE);
++	pr_emerg("Overflow stack: [0x%016lx..0x%016lx]\n",
++			ovf_stk, ovf_stk + OVERFLOW_STACK_SIZE);
++
++	__show_regs(regs);
++	panic("Kernel stack overflow");
++
++	for (;;)
++		wait_for_interrupt();
++}
++#endif
+diff --git a/arch/riscv/kernel/vmlinux.lds.S b/arch/riscv/kernel/vmlinux.lds.S
+index 891742ff75a7..502d0826ecb1 100644
+--- a/arch/riscv/kernel/vmlinux.lds.S
++++ b/arch/riscv/kernel/vmlinux.lds.S
+@@ -117,7 +117,7 @@ SECTIONS
+ 	. = ALIGN(SECTION_ALIGN);
+ 	_data = .;
+ 
+-	RW_DATA(L1_CACHE_BYTES, PAGE_SIZE, THREAD_SIZE)
++	RW_DATA(L1_CACHE_BYTES, PAGE_SIZE, THREAD_ALIGN)
+ 	.sdata : {
+ 		__global_pointer$ = . + 0x800;
+ 		*(.sdata*)
+-- 
+2.18.0.huawei.25
 
->
->            Linus
->
