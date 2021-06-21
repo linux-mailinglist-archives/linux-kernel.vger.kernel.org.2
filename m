@@ -2,76 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B117C3AE4A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FEA93AE4A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 21 Jun 2021 10:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbhFUIUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 04:20:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:58222 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230076AbhFUIUt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 04:20:49 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7DA03D6E;
-        Mon, 21 Jun 2021 01:18:35 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1D6FA3F718;
-        Mon, 21 Jun 2021 01:18:32 -0700 (PDT)
-Subject: Re: [PATCH v16 7/7] KVM: arm64: Document MTE capability and ioctl
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Andrew Jones <drjones@redhat.com>
-References: <20210618132826.54670-1-steven.price@arm.com>
- <20210618132826.54670-8-steven.price@arm.com>
- <20210618145241.GG16116@arm.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <1273c642-d2b0-b81d-2052-1f2f0deafdae@arm.com>
-Date:   Mon, 21 Jun 2021 09:18:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S230272AbhFUIVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 04:21:19 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:5058 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230229AbhFUIVP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 04:21:15 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G7j3M1VvFzXjHK;
+        Mon, 21 Jun 2021 16:13:51 +0800 (CST)
+Received: from dggpemm500016.china.huawei.com (7.185.36.25) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 21 Jun 2021 16:18:53 +0800
+Received: from [10.67.108.248] (10.67.108.248) by
+ dggpemm500016.china.huawei.com (7.185.36.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 21 Jun 2021 16:18:53 +0800
+Subject: Re: [PATCH] net: ethernet: ti: fix netdev_queue compiling error
+To:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <jesse.brandeburg@intel.com>, <vigneshr@ti.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <heying24@huawei.com>
+References: <20210617112838.143314-1-chenjiahao16@huawei.com>
+ <6dbabec2-25df-7a4a-457f-d738479d36b1@ti.com>
+From:   "chenjiahao (C)" <chenjiahao16@huawei.com>
+Message-ID: <e04de1c9-2852-674b-be24-158fcd1e5919@huawei.com>
+Date:   Mon, 21 Jun 2021 16:18:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <20210618145241.GG16116@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <6dbabec2-25df-7a4a-457f-d738479d36b1@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.108.248]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500016.china.huawei.com (7.185.36.25)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18/06/2021 15:52, Catalin Marinas wrote:
-> On Fri, Jun 18, 2021 at 02:28:26PM +0100, Steven Price wrote:
->> +When this capability is enabled all memory in (non-device) memslots must not
->> +used VM_SHARED, attempts to create a memslot with a VM_SHARED mmap will result
->> +in an -EINVAL return.
+Hi,
+
+Thanks for the review. But still I have a little question in the helper
+you just mentioned:
+
+static inline int qdisc_avail_bulklimit(const struct netdev_queue *txq)
+{
+#ifdef CONFIG_BQL
+	/* Non-BQL migrated drivers will return 0, too. */
+	return dql_avail(&txq->dql);
+#else
+	return 0;
+#endif
+}
+
+In the snippet above, if CONFIG_BQL is not set, 0 will be simply 
+returned and get printed. Should we distinguish this case, or just let 
+it be?
+
+Sincerely,
+Jiahao Chen
+
+在 2021/6/18 18:40, Grygorii Strashko 写道:
 > 
-> "must not used" doesn't sound right. Anyway, I'd remove VM_SHARED as
-> that's a kernel internal and not something the VMM needs to be aware of.
-> Just say something like "memslots must be mapped as shareable
-> (MAP_SHARED)".
-
-I think I meant "must not use" - and indeed memslots must *not* be
-mapped as shareable. I'll update to this wording:
-
-  When this capability is enabled all memory in memslots must be mapped as
-  not-shareable (no MAP_SHARED), attempts to create a memslot with MAP_SHARED
-  will result in an -EINVAL return.
-
-> Otherwise:
 > 
-> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> On 17/06/2021 14:28, Chen Jiahao wrote:
+>> There is a compiling error in am65-cpsw-nuss.c while not selecting
+>> CONFIG_BQL:
+>>
+>> drivers/net/ethernet/ti/am65-cpsw-nuss.c: In function
+>> ‘am65_cpsw_nuss_ndo_host_tx_timeout’:
+>> drivers/net/ethernet/ti/am65-cpsw-nuss.c:353:26: error:
+>> ‘struct netdev_queue’ has no member named ‘dql’
+>>    353 |      dql_avail(&netif_txq->dql),
+>>        |                          ^~
+>>
+>> This problem is solved by adding the #ifdef CONFIG_BQL directive
+>> where struct dql is used.
+>>
+>> Fixes: 93a76530316a ("net: ethernet: ti: introduce am65x/j721e gigabit 
+>> eth subsystem driver")
+>> Signed-off-by: Chen Jiahao <chenjiahao16@huawei.com>
+>> ---
+>>   drivers/net/ethernet/ti/am65-cpsw-nuss.c | 8 ++++++++
+>>   1 file changed, 8 insertions(+)
+>>
+>> diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c 
+>> b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+>> index 6a67b026df0b..a0b30bb763ea 100644
+>> --- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+>> +++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
+>> @@ -346,12 +346,20 @@ static void 
+>> am65_cpsw_nuss_ndo_host_tx_timeout(struct net_device *ndev,
+>>       tx_chn = &common->tx_chns[txqueue];
+>>       trans_start = netif_txq->trans_start;
+>> +#ifdef CONFIG_BQL
+>>       netdev_err(ndev, "txq:%d DRV_XOFF:%d tmo:%u dql_avail:%d 
+>> free_desc:%zu\n",
+>>              txqueue,
+>>              netif_tx_queue_stopped(netif_txq),
+>>              jiffies_to_msecs(jiffies - trans_start),
+>>              dql_avail(&netif_txq->dql),
+>>              k3_cppi_desc_pool_avail(tx_chn->desc_pool));
+>> +#else
+>> +    netdev_err(ndev, "txq:%d DRV_XOFF:%d tmo:%u free_desc:%zu\n",
+>> +           txqueue,
+>> +           netif_tx_queue_stopped(netif_txq),
+>> +           jiffies_to_msecs(jiffies - trans_start),
+>> +           k3_cppi_desc_pool_avail(tx_chn->desc_pool));
+>> +#endif
+>>       if (netif_tx_queue_stopped(netif_txq)) {
+>>           /* try recover if stopped by us */
+>>
+> 
+> Seems like there is right helper available - qdisc_avail_bulklimit().
+> 
+> Any way, it most probably has to be solved in generic way on netdev/dql 
+> level.
 > 
 
-Thanks,
 
-Steve
+
