@@ -2,163 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2803B0454
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD0F43B045C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231512AbhFVM32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 08:29:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45372 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230393AbhFVM3Y (ORCPT
+        id S231615AbhFVMal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 08:30:41 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:42861 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231181AbhFVMaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 08:29:24 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C257C061574;
-        Tue, 22 Jun 2021 05:27:09 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 12:27:07 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624364827;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xmz7W3Dq/LHDUZVEcrLlEE86oqgcmEHLeB5q4ysiw/8=;
-        b=KcEkwpoWVi5Rt35RD0NaXhQyy/ejLu/abykfOZYlEZRLYqWsdvINWQm6gXNXB/xoA+UrWy
-        PqJVhH5XRzqwXvIc6/XmpT003TAbcW6b4AMlknA9XTNzf05HGLHq+SX7tP6IjX1e+RhCn1
-        3pcsaYkmJtGsvPPH3kwjwe+F+r4BSjwKYGm/ixn28Lo3i7poVv3Sh6QjwiTWn1yCC+H5/X
-        VpGZU1F7ucFTNW6yli4xSy5vbLJCpo5jcvuQ4RQ0kccltvHgyfgzMh4YuEytN+rUF6e9dr
-        uveuTgkGA18WlH7yZRqh6Nf53ybs59hArKFzipUeVhnegXx0lwZHpGjDKwzXKQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624364827;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xmz7W3Dq/LHDUZVEcrLlEE86oqgcmEHLeB5q4ysiw/8=;
-        b=vsAU2wBPU5w/w1N5mx5RxZ1CEwfI2Dkb74WxMYsMYb/qd9Hr+HP4IVQ2SEairrOi6zuW3X
-        Y3XwTtXXmflo1LBg==
-From:   "tip-bot2 for Rik van Riel" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] sched/fair: Ensure that the CFS parent is added
- after unthrottling
-Cc:     Sachin Sant <sachinp@linux.vnet.ibm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Rik van Riel <riel@surriel.com>,
-        Ingo Molnar <mingo@kernel.org>, Odin Ugedal <odin@uged.al>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210621174330.11258-1-vincent.guittot@linaro.org>
-References: <20210621174330.11258-1-vincent.guittot@linaro.org>
+        Tue, 22 Jun 2021 08:30:39 -0400
+Received: by mail-ot1-f45.google.com with SMTP id w23-20020a9d5a970000b02903d0ef989477so20949762oth.9;
+        Tue, 22 Jun 2021 05:28:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cHtNQpCSXG22FMwHUu24sGvKayaAtRpBNbls39GRY0k=;
+        b=fxRUVIhQfUbgt5T28jgXCetyExXj9U+0+MbKqK+yaXfRNHrGdaD/U+T68jXd3KPnDc
+         0K57wLEUozn5sflb8WAq6TqjWVbVYB059M7mX8LIjaG9614rUP5FKagJSt3IcuyS7anR
+         IuYcBb99Llp06nSdT2YBbDcvb433K+k1/rDvJ1xiE+EHZFaIp3FsJTbCobFO5O3Dh5Mq
+         qAQ7EF9w6dkHKsIgU4AMp6rFXzWCkU/rtPZBFr0I8dnpwxax7wRrVccL5FAhobbzTlHH
+         mQZt9oTWifEzVukglDcanE5yMre3teo2iA403N9Dm7tAgywcT+gUam8fb/hMqNIrtnDb
+         8nFA==
+X-Gm-Message-State: AOAM531NUKTy0qzycz/5Hv3S2P1Lw1MdW0ssG8AlDVjUDNd1W0dCm63V
+        COWj7GSK3B3ZHVxZ9AXO0LkzN2eQA/nK/61dpOU=
+X-Google-Smtp-Source: ABdhPJz11edPPEwIzAWit6kBhVDryZmRqBd5EY+LP4jHB0+T2TRFdm9ADW+e6N24AglBRWbewC8GNKXh8rFIBXNmq2c=
+X-Received: by 2002:a05:6830:1bf7:: with SMTP id k23mr3061137otb.206.1624364903953;
+ Tue, 22 Jun 2021 05:28:23 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <162436482704.395.4620107137029173552.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210622075925.16189-1-lukasz.luba@arm.com> <20210622075925.16189-4-lukasz.luba@arm.com>
+In-Reply-To: <20210622075925.16189-4-lukasz.luba@arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 22 Jun 2021 14:28:11 +0200
+Message-ID: <CAJZ5v0iVwpn0_wCZOh43DOeR2mudWYJyseMdtMsZGR-sjQ1X9Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/4] cpufreq: Add Active Stats calls tracking
+ frequency changes
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Chris Redpath <Chris.Redpath@arm.com>, Beata.Michalska@arm.com,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Amit Kachhap <amit.kachhap@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/urgent branch of tip:
+On Tue, Jun 22, 2021 at 9:59 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>
+> The Active Stats framework tracks and accounts the activity of the CPU
+> for each performance level. It accounts the real residency, when the CPU
+> was not idle, at a given performance level. This patch adds needed calls
+> which provide the CPU frequency transition events to the Active Stats
+> framework.
+>
+> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> ---
+>  drivers/cpufreq/cpufreq.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index 802abc925b2a..d79cb9310572 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -14,6 +14,7 @@
+>
+>  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>
+> +#include <linux/active_stats.h>
+>  #include <linux/cpu.h>
+>  #include <linux/cpufreq.h>
+>  #include <linux/cpu_cooling.h>
+> @@ -387,6 +388,8 @@ static void cpufreq_notify_transition(struct cpufreq_policy *policy,
+>
+>                 cpufreq_stats_record_transition(policy, freqs->new);
+>                 policy->cur = freqs->new;
+> +
+> +               active_stats_cpu_freq_change(policy->cpu, freqs->new);
+>         }
+>  }
+>
+> @@ -2085,6 +2088,8 @@ unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
+>                             policy->cpuinfo.max_freq);
+>         cpufreq_stats_record_transition(policy, freq);
+>
+> +       active_stats_cpu_freq_fast_change(policy->cpu, freq);
+> +
 
-Commit-ID:     fdaba61ef8a268d4136d0a113d153f7a89eb9984
-Gitweb:        https://git.kernel.org/tip/fdaba61ef8a268d4136d0a113d153f7a89eb9984
-Author:        Rik van Riel <riel@surriel.com>
-AuthorDate:    Mon, 21 Jun 2021 19:43:30 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 22 Jun 2021 14:06:57 +02:00
+This is quite a bit of overhead and so why is it needed in addition to
+the code below?
 
-sched/fair: Ensure that the CFS parent is added after unthrottling
+And pretty much the same goes for the idle loop change.  There is
+quite a bit of instrumentation in that code already and it avoids
+adding new locking for a reason.  Why is it a good idea to add more
+locking to that code?
 
-Ensure that a CFS parent will be in the list whenever one of its children is also
-in the list.
-
-A warning on rq->tmp_alone_branch != &rq->leaf_cfs_rq_list has been
-reported while running LTP test cfs_bandwidth01.
-
-Odin Ugedal found the root cause:
-
-	$ tree /sys/fs/cgroup/ltp/ -d --charset=ascii
-	/sys/fs/cgroup/ltp/
-	|-- drain
-	`-- test-6851
-	    `-- level2
-		|-- level3a
-		|   |-- worker1
-		|   `-- worker2
-		`-- level3b
-		    `-- worker3
-
-Timeline (ish):
-- worker3 gets throttled
-- level3b is decayed, since it has no more load
-- level2 get throttled
-- worker3 get unthrottled
-- level2 get unthrottled
-  - worker3 is added to list
-  - level3b is not added to list, since nr_running==0 and is decayed
-
- [ Vincent Guittot: Rebased and updated to fix for the reported warning. ]
-
-Fixes: a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to list on unthrottle")
-Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Rik van Riel <riel@surriel.com>
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Tested-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
-Acked-by: Odin Ugedal <odin@uged.al>
-Link: https://lore.kernel.org/r/20210621174330.11258-1-vincent.guittot@linaro.org
----
- kernel/sched/fair.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index bfaa6e1..2366331 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -3298,6 +3298,31 @@ static inline void cfs_rq_util_change(struct cfs_rq *cfs_rq, int flags)
- 
- #ifdef CONFIG_SMP
- #ifdef CONFIG_FAIR_GROUP_SCHED
-+/*
-+ * Because list_add_leaf_cfs_rq always places a child cfs_rq on the list
-+ * immediately before a parent cfs_rq, and cfs_rqs are removed from the list
-+ * bottom-up, we only have to test whether the cfs_rq before us on the list
-+ * is our child.
-+ * If cfs_rq is not on the list, test whether a child needs its to be added to
-+ * connect a branch to the tree  * (see list_add_leaf_cfs_rq() for details).
-+ */
-+static inline bool child_cfs_rq_on_list(struct cfs_rq *cfs_rq)
-+{
-+	struct cfs_rq *prev_cfs_rq;
-+	struct list_head *prev;
-+
-+	if (cfs_rq->on_list) {
-+		prev = cfs_rq->leaf_cfs_rq_list.prev;
-+	} else {
-+		struct rq *rq = rq_of(cfs_rq);
-+
-+		prev = rq->tmp_alone_branch;
-+	}
-+
-+	prev_cfs_rq = container_of(prev, struct cfs_rq, leaf_cfs_rq_list);
-+
-+	return (prev_cfs_rq->tg->parent == cfs_rq->tg);
-+}
- 
- static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
- {
-@@ -3313,6 +3338,9 @@ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
- 	if (cfs_rq->avg.runnable_sum)
- 		return false;
- 
-+	if (child_cfs_rq_on_list(cfs_rq))
-+		return false;
-+
- 	return true;
- }
- 
+>         if (trace_cpu_frequency_enabled()) {
+>                 for_each_cpu(cpu, policy->cpus)
+>                         trace_cpu_frequency(freq, cpu);
+> --
