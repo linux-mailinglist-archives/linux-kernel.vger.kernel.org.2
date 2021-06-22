@@ -2,81 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2B73AFB5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 05:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E281D3AFB60
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 05:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230082AbhFVDXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 23:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhFVDXC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 23:23:02 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0515C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 20:20:46 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id c7so20730981edn.6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 20:20:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ingics-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=2Y3kxYWIW4quvbRBWVIa4fOTtu3njJrE0ioG5Cnm9xw=;
-        b=HPi7X8T9CasaITW/jUJjxLRhkWdwkQNQrBfN1vAqPMjdru+JLx+Rw8E/JaR13H5Q67
-         52bAG/0AGgve29yQcp8/F5qb3LyLfA6dC8qjBJjyCkSaEjHp0kxw51yuevwku/LYGM6K
-         cV8g9Ozrwjt/G23a7G47fSoAotklzYM/A/gXtO6D79HnYznPD2yu8u7c7K0Yvcuto60B
-         GT3pBa8uqSxbE/uvrYVTYZQOgMA0fgiMJwnYpDt69RPM/w+v6MiHGGmB1ByALf+yFhgX
-         RW+ValM3O2h9YY7AFOLLHno/noK1vIDi4JmRiFhLo7uGd2nAEZuwUl1Ko2EbA7AxaUYp
-         HTLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=2Y3kxYWIW4quvbRBWVIa4fOTtu3njJrE0ioG5Cnm9xw=;
-        b=GlCij9ZkvDrmeFmWWnAfr6rX++4zwPmtLZr6bopNXej188RYhycO65clX60C/vJVkc
-         aV2jLbzAThDYeT283iOoxqpDlpqE7n3kvOw1QNIcy0q2Qh5kdf5KEjg67y5ka8HJU3KF
-         gBeUVEIcAG6eg9VeEh7+hXQo7QNFwdL07exxtX/mv5or8Lt5XoF5TwfZEbRlFEiHO3BS
-         hIafeMjYKaw7Z1UkTWu0W6UO4kzNpSiRA9WiLBiYk+yvTIC6UNmZumWdH3P1faBSX/Uu
-         z0qHV4AOxbKvBDOdXR26JuUE27Qr90cOTYxNVi769jcKZ70pjttiJnARbysV69YePIQ5
-         5qSA==
-X-Gm-Message-State: AOAM532A/9rIxeh8mF/sgqosrIih/OG4v6mpb044Wq9cVdbZQPI/soKn
-        0eO4oKwohm6ZiJf+ZNZL2bI7mIHqrL8B27b3EVOXFA==
-X-Google-Smtp-Source: ABdhPJxexFGiesaUIzw789uWimHXBM+EirSkbrzXS9xxVRdsot99ivsgjTBpP4uF4ttrCTRKVS4osvetmloDXc3JIzw=
-X-Received: by 2002:a05:6402:1a47:: with SMTP id bf7mr1940303edb.236.1624332044744;
- Mon, 21 Jun 2021 20:20:44 -0700 (PDT)
+        id S230136AbhFVD06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 23:26:58 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:60723 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229546AbhFVD05 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 23:26:57 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G8Bb74sB5z9sXk;
+        Tue, 22 Jun 2021 13:24:35 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624332280;
+        bh=ukHoe8ctQydm1jqRsuwRW4KFJ9MlEMitYVp0CC94KvQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=H9x+PfUGruPRnjchM7TIRaA8XSf9Oi9rXdiOaxzJQuTd9DQF2PgsrKmgzvAGn1NgK
+         SpmIUyUwB/8UxQ8qB4T3xaA4zU2tRI7pqAV7MlIxJe3gRc8aNrXwRXUSl61GzjrTDs
+         VpVh8IxsBhADhYMXQgMPqBWPDTUpFMJsxJzNwACXO63YJx3aW5dRBl0fVV9HDbuhGf
+         1P194O/1dffRAe+hT+BBpiJ3ivKzkm5QlXpnau8npI5+8UeZjBVpiLR60a6qf5uNgJ
+         NozDMciig7blGEC90tDn3UmTzYmESbvG0zRFXlWpsr8dWdV9daD6gPhMg3+Dih3Mh/
+         JAyrG59I++yZg==
+Date:   Tue, 22 Jun 2021 13:24:34 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Rob Herring <robherring2@gmail.com>,
+        Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Parshuram Thombare <pthombar@cadence.com>,
+        Rob Herring <robh@kernel.org>,
+        Robert Foss <robert.foss@linaro.org>
+Subject: linux-next: manual merge of the devicetree tree with Linus' and the
+ drm, arm-soc trees
+Message-ID: <20210622132434.55d19766@canb.auug.org.au>
 MIME-Version: 1.0
-From:   Axel Lin <axel.lin@ingics.com>
-Date:   Tue, 22 Jun 2021 11:20:08 +0800
-Message-ID: <CAFRkauDjKaEmtEoUH94wkT0Xd9-XL3NOYyvB3haYVT+BrAK-Dw@mail.gmail.com>
-Subject: regulator: mt6358 vdram2_idx/vsel_mask/ vsel_shift setting seems wrong
-To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/uSDg2vJvmRq8jbuyLpabCQA";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hsin-Hsiung,
+--Sig_/uSDg2vJvmRq8jbuyLpabCQA
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-In drivers/regulator/mt6358-regulator.c:
+Hi all,
 
-static const u32 vdram2_idx[] = {
-        0, 12,
-};
+Today's linux-next merge of the devicetree tree got conflicts in:
 
-MT6358_LDO("ldo_vdram2", VDRAM2, vdram2_voltages, vdram2_idx,
-           MT6358_LDO_VDRAM2_CON0, 0, MT6358_LDO_VDRAM2_ELR0, 0x10, 0),
+  Documentation/devicetree/bindings/display/bridge/cdns,mhdp8546.yaml
+  Documentation/devicetree/bindings/media/renesas,drif.yaml
+  Documentation/devicetree/bindings/net/stm32-dwmac.yaml
 
-With current setting the vsel_mask does not match the vsel_shift setting
-   So in set_voltage_sel, it will call regmap_update_bits with
-   mask = 0x10
-   val = idx << 0
-   No matter idx is 0 (pvol[0]) or 12 (pvol[1]), it will clear vsel_mask bits
+between commits:
 
-I don't have the datasheet to check, so please help to double check the
-vdram2_idx, vsel_mask and vsel_shift settings for ldo_vdram2.
-I think at least one of the settings is wrong.
+  7169d082e7e6 ("dt-bindings: drm/bridge: MHDP8546 bridge binding changes f=
+or HDCP")
+  8929ef8d4dfd ("media: dt-bindings: media: renesas,drif: Fix fck definitio=
+n")
+  fea998229140 ("dt-bindings: net: document ptp_ref clk in dwmac")
 
-Regards,
-Axel
+from Linus' and the drm, arm-soc trees and commit:
+
+  972d6a7dcec3 ("dt-bindings: Drop redundant minItems/maxItems")
+
+from the devicetree tree.
+
+I fixed it up (I used one side or the other, please check when
+linux-next is released) and can carry the fix as necessary. This is now
+fixed as far as linux-next is concerned, but any non trivial conflicts
+should be mentioned to your upstream maintainer when your tree is
+submitted for merging.  You may also want to consider cooperating with
+the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/uSDg2vJvmRq8jbuyLpabCQA
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDRV/IACgkQAVBC80lX
+0GxoNQf7BpZM/gOXkOiMkGb28zhmBiipd1Z+F6jFXBMUWWPxmT4MNkph/+HWbUUK
+I6NRDbRK/QXYZo4bfWYN7BV8BMBFs8fYoKRh1y8Rbi6QIW8f7L8xDI2kHqYtG0Yz
+/Y3/ZX8YRmHXOMeFnyAwb5kpc6gNo5Mz6W6g/fAWIsMwFVS1+5HqazPvgtwo4hMo
+lwoU3U2wTVtcatnjMQ9U0tkthC9Qp/z7ncMV/nYYephC94t5sma7awwBXmQffBRN
+LGavlv5jeQ0kTvaI7fKJsZ0TsZ234kokXorAeIJua/6TR5Ag2Uq3V5CFYXYUk7+H
+CpxXTNjcNHsQr544g6zYfMWWBLjCKg==
+=T7sk
+-----END PGP SIGNATURE-----
+
+--Sig_/uSDg2vJvmRq8jbuyLpabCQA--
