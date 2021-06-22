@@ -2,173 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1DC73B0EE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:35:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 327823B0EE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbhFVUh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 16:37:26 -0400
-Received: from mga11.intel.com ([192.55.52.93]:61783 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229629AbhFVUhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 16:37:24 -0400
-IronPort-SDR: CiZ9BbnrK6a5oVRJ1e3Lg25OI7j0zNMF1e8zLLG0LyuC+Z4naguZ8lATRBVO2MEamt1d3+5FUB
- fZMj9kI65NxA==
-X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="204132892"
-X-IronPort-AV: E=Sophos;i="5.83,292,1616482800"; 
-   d="scan'208";a="204132892"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 13:35:08 -0700
-IronPort-SDR: M91XCzOWymILaqCpwRHmQB/7JiAvq3JdfGO4DlwBVLIQNfRaeHrvk1cMIHWuJ2X6zHGouHTMBc
- 9BgThSdgDyCw==
-X-IronPort-AV: E=Sophos;i="5.83,292,1616482800"; 
-   d="scan'208";a="423458801"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 13:35:07 -0700
-From:   ira.weiny@intel.com
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Doug Ledford <dledford@redhat.com>,
-        Faisal Latif <faisal.latif@intel.com>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Bernard Metzler <bmt@zurich.ibm.com>,
-        Kamal Heib <kheib@redhat.com>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V2] RDMA/siw: Convert siw_tx_hdt() to kmap_local_page()
-Date:   Tue, 22 Jun 2021 13:34:32 -0700
-Message-Id: <20210622203432.2715659-1-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
-In-Reply-To: <20210622061422.2633501-5-ira.weiny@intel.com>
-References: <20210622061422.2633501-5-ira.weiny@intel.com>
+        id S229995AbhFVUkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 16:40:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229567AbhFVUkX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 16:40:23 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57834C061574;
+        Tue, 22 Jun 2021 13:38:06 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id bu12so515446ejb.0;
+        Tue, 22 Jun 2021 13:38:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2reE9HEGFS3GmTlFMNmOymvNynHbKbLeTe3x7zc3Gic=;
+        b=QV+rtczjWmXLP9+gjBepmDsaLxtvKeuA4yDciNrWmKFV9qP2ImVIL9+K/9DoGYv+oK
+         1V0b4kC0C8eZm/E6KkhLcPG2Ildm+7m0dTNF5beAnmHA1klYgO8IDWNV2nVUss1aX7Oi
+         gT2kXm3Q+fw0sZW3vJAhXfsSlLSQddZonDVLUiQQGs0YcEMUENMNzaciuGPfV1OCHTx2
+         ZBf60dmAnRB5Adklaxidxa09ZF3p+w5iKesMjRUBmbYocaOGI68flWptrL6wVXzA5SvL
+         IeX0Zywh+9STSXKsOYDu3+r6qi/28Eb2G+L3mukADEqMaqdt3+kGfnZyAa6g05yFMszl
+         Wfvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2reE9HEGFS3GmTlFMNmOymvNynHbKbLeTe3x7zc3Gic=;
+        b=OrR1F0YdvwaivhRD3SiRaXED2Oyy/BaxRqgSXzG9R0mDYcBsiygdaZgSTWjLwYC+5w
+         zf402mWFF3WbePklo4r7Gj58LCZFFnqIlfdORPs9Moj5IpnUcB8jVQK3rG1++DYPgNpp
+         OkKIFyvIr4bzjUzCv0ZymfNxXVIwptr66MDgtA1bfzg9Cx1IyPmjgYwYr+reA6/cxOvv
+         UsZBuR53rzXLmEgKseVKKYJJ5SWl5EBdJoGS6GlSxcDouaMNMPiw1Eqx9RhBEVGMDg9r
+         G9+COdPLl3yaw8PCMpGht2Ao4MjrvjkWrtuJsK5hLwIR3EXALsmaW7hXj3UHYs7pCA2e
+         NmFw==
+X-Gm-Message-State: AOAM532Mef2bMxzJBJwOjCfF3sTjMkTzhNbR90vx714zD54Vto9g9WXg
+        xI1/Xm1djhRAm23py6gAyeo=
+X-Google-Smtp-Source: ABdhPJwSeqV/Kln9gJnycFrxBR4phiQi0Kh7NdxE+6TTx6BL/chbRdztCWmRsnWW0HpbEWoDBoim9Q==
+X-Received: by 2002:a17:906:240d:: with SMTP id z13mr5973073eja.118.1624394284830;
+        Tue, 22 Jun 2021 13:38:04 -0700 (PDT)
+Received: from localhost (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
+        by smtp.gmail.com with ESMTPSA id y16sm63709ejk.101.2021.06.22.13.38.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Jun 2021 13:38:04 -0700 (PDT)
+From:   Iskren Chernev <iskren.chernev@gmail.com>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sivaprakash Murugesan <sivaprak@codeaurora.org>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Iskren Chernev <iskren.chernev@gmail.com>
+Subject: [PATCH v1 1/2] dt-bindings: mailbox: qcom: Add SM6115, SM4250 APCS compatible
+Date:   Tue, 22 Jun 2021 23:37:58 +0300
+Message-Id: <20210622203759.566716-1-iskren.chernev@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+Add compatible for the Qualcomm SM6115 and SM4250 APCS block to the
+Qualcomm APCS binding.
 
-kmap() is being deprecated and will break uses of device dax after PKS
-protection is introduced.[1]
-
-The use of kmap() in siw_tx_hdt() is all thread local therefore
-kmap_local_page() is a sufficient replacement and will work with pgmap
-protected pages when those are implemented.
-
-siw_tx_hdt() tracks pages used in a page_array.  It uses that array to
-unmap pages which were mapped on function exit.  Not all entries in the
-array are mapped and this is tracked in kmap_mask.
-
-kunmap_local() takes a mapped address rather than a page.  Alter
-siw_unmap_pages() to take the iov array to reuse the iov_base address of
-each mapping.  Use PAGE_MASK to get the proper address for
-kunmap_local().
-
-kmap_local_page() mappings are tracked in a stack and must be unmapped
-in the opposite order they were mapped in.  Because segments are mapped
-into the page array in increasing index order, modify siw_unmap_pages()
-to unmap pages in decreasing order.
-
-Use kmap_local_page() instead of kmap() to map pages in the page_array.
-
-[1] https://lore.kernel.org/lkml/20201009195033.3208459-59-ira.weiny@intel.com/
-
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
+Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
 ---
-Changes for V2:
-	From Bernard
-		Reuse iov[].iov_base rather than declaring another array of
-		pointers and preserve the use of kmap_mask to know which iov's
-		were kmapped.
+ .../devicetree/bindings/mailbox/qcom,apcs-kpss-global.yaml      | 2 ++
+ 1 file changed, 2 insertions(+)
 
----
- drivers/infiniband/sw/siw/siw_qp_tx.c | 32 +++++++++++++++++----------
- 1 file changed, 20 insertions(+), 12 deletions(-)
+diff --git a/Documentation/devicetree/bindings/mailbox/qcom,apcs-kpss-global.yaml b/Documentation/devicetree/bindings/mailbox/qcom,apcs-kpss-global.yaml
+index 5dc1173d03fd..f56897156d66 100644
+--- a/Documentation/devicetree/bindings/mailbox/qcom,apcs-kpss-global.yaml
++++ b/Documentation/devicetree/bindings/mailbox/qcom,apcs-kpss-global.yaml
+@@ -27,6 +27,8 @@ properties:
+       - qcom,sc8180x-apss-shared
+       - qcom,sdm660-apcs-hmss-global
+       - qcom,sdm845-apss-shared
++      - qcom,sm4250-apcs-hmss-global
++      - qcom,sm6115-apcs-hmss-global
+       - qcom,sm8150-apss-shared
+ 
+   reg:
 
-diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c b/drivers/infiniband/sw/siw/siw_qp_tx.c
-index db68a10d12cd..fd3b9e6a67d7 100644
---- a/drivers/infiniband/sw/siw/siw_qp_tx.c
-+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
-@@ -396,13 +396,20 @@ static int siw_0copy_tx(struct socket *s, struct page **page,
- 
- #define MAX_TRAILER (MPA_CRC_SIZE + 4)
- 
--static void siw_unmap_pages(struct page **pp, unsigned long kmap_mask)
-+static void siw_unmap_pages(struct kvec *iov, unsigned long kmap_mask, int len)
- {
--	while (kmap_mask) {
--		if (kmap_mask & BIT(0))
--			kunmap(*pp);
--		pp++;
--		kmap_mask >>= 1;
-+	int i;
-+
-+	/*
-+	 * Work backwards through the array to honor the kmap_local_page()
-+	 * ordering requirements.
-+	 */
-+	for (i = (len-1); i >= 0; i--) {
-+		if (kmap_mask & BIT(i)) {
-+			unsigned long addr = (unsigned long)iov[i].iov_base;
-+
-+			kunmap_local((void *)(addr & PAGE_MASK));
-+		}
- 	}
- }
- 
-@@ -498,7 +505,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 					p = siw_get_upage(mem->umem,
- 							  sge->laddr + sge_off);
- 				if (unlikely(!p)) {
--					siw_unmap_pages(page_array, kmap_mask);
-+					siw_unmap_pages(iov, kmap_mask, MAX_ARRAY);
- 					wqe->processed -= c_tx->bytes_unsent;
- 					rv = -EFAULT;
- 					goto done_crc;
-@@ -506,11 +513,12 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 				page_array[seg] = p;
- 
- 				if (!c_tx->use_sendpage) {
--					iov[seg].iov_base = kmap(p) + fp_off;
--					iov[seg].iov_len = plen;
-+					void *kaddr = kmap_local_page(page_array[seg]);
- 
- 					/* Remember for later kunmap() */
- 					kmap_mask |= BIT(seg);
-+					iov[seg].iov_base = kaddr + fp_off;
-+					iov[seg].iov_len = plen;
- 
- 					if (do_crc)
- 						crypto_shash_update(
-@@ -518,7 +526,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 							iov[seg].iov_base,
- 							plen);
- 				} else if (do_crc) {
--					kaddr = kmap_local_page(p);
-+					kaddr = kmap_local_page(page_array[seg]);
- 					crypto_shash_update(c_tx->mpa_crc_hd,
- 							    kaddr + fp_off,
- 							    plen);
-@@ -542,7 +550,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 
- 			if (++seg > (int)MAX_ARRAY) {
- 				siw_dbg_qp(tx_qp(c_tx), "to many fragments\n");
--				siw_unmap_pages(page_array, kmap_mask);
-+				siw_unmap_pages(iov, kmap_mask, MAX_ARRAY);
- 				wqe->processed -= c_tx->bytes_unsent;
- 				rv = -EMSGSIZE;
- 				goto done_crc;
-@@ -593,7 +601,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx, struct socket *s)
- 	} else {
- 		rv = kernel_sendmsg(s, &msg, iov, seg + 1,
- 				    hdr_len + data_len + trl_len);
--		siw_unmap_pages(page_array, kmap_mask);
-+		siw_unmap_pages(iov, kmap_mask, MAX_ARRAY);
- 	}
- 	if (rv < (int)hdr_len) {
- 		/* Not even complete hdr pushed or negative rv */
+base-commit: e71e3a48a7e89fa71fb70bf4602367528864d2ff
+prerequisite-patch-id: 0949ba2e2f20cd3acfeff8be80dc78c7a02962fc
+prerequisite-patch-id: f72aa823fffe9b245a924a6da8a14a473fffa5a2
+prerequisite-patch-id: f4548f3471a407e62555c12da5d17bd5fd70f73f
+prerequisite-patch-id: 4fa7457c334f5ac3d43b733478494d74aa23b9ee
+prerequisite-patch-id: dfc565680fb8e8cfa7fc32556efe00a2c329cd33
+prerequisite-patch-id: 541c755a0068730e30e1d2e8a29b8c952aef0a7e
+prerequisite-patch-id: ce568b048e54d44e241813ef0e2d5ce302cb06a5
+prerequisite-patch-id: 83a519082ea76dd4d8579b48e203a38796042fef
+prerequisite-patch-id: 43005c6a296706a18e5e5decb77935442cb63451
 -- 
-2.28.0.rc0.12.gb6a658bd00c9
+2.31.1
 
