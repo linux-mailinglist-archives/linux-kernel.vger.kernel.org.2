@@ -2,125 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8FF3B00FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 12:11:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5214D3B010C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 12:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229945AbhFVKNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 06:13:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26860 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229668AbhFVKNb (ORCPT
+        id S229837AbhFVKPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 06:15:10 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:57793 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229612AbhFVKPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 06:13:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624356676;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WS8d4KycsxMU7KBb2v46pT5Y072Xx9wFwYyCO/co8TM=;
-        b=a1Sux0/FZPUnpq0aPTgWw23fgYTBg4pMDs1IjNoFQpgHpAKmnJ8AQ0ojMc7r/ywhCaat/3
-        cA0QisMo/VPpm9VJAFkOcVjJ6WLo/Ak4CXudO7KMSZ0F3rZTo8opljEe2t7cjkyFWdvWs/
-        BPKU6oJjNS3RZA6ym88dNqLgVuxq/7A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-336-HE7C4kpjOUeqVEwQWzvwTg-1; Tue, 22 Jun 2021 06:11:12 -0400
-X-MC-Unique: HE7C4kpjOUeqVEwQWzvwTg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 20E81802C89;
-        Tue, 22 Jun 2021 10:11:11 +0000 (UTC)
-Received: from localhost (ovpn-114-192.ams2.redhat.com [10.36.114.192])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7537D10023AB;
-        Tue, 22 Jun 2021 10:11:07 +0000 (UTC)
-Date:   Tue, 22 Jun 2021 11:11:06 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Xie Yongji <xieyongji@bytedance.com>
-Cc:     mst@redhat.com, jasowang@redhat.com, axboe@kernel.dk,
-        virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] virtio-blk: Add validation for block size in config
- space
-Message-ID: <YNG3OvKm8XcAY/1I@stefanha-x1.localdomain>
-References: <20210617051004.146-1-xieyongji@bytedance.com>
+        Tue, 22 Jun 2021 06:15:08 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 947F35806DB;
+        Tue, 22 Jun 2021 06:12:52 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Tue, 22 Jun 2021 06:12:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=pQtzM1DqFDdfzJczHbE0hVR7RaJ
+        +DVrWztT+rRlCQh0=; b=YzHFOu2SxOl0BCAJy9jZozNGYJZ0wrl8O0jKdRapOvb
+        KT3zjqk39Ymny9tI2CDMukLxeWkDtCcJqlcRTDTcGeVr1BSngaJEwCeB29nwpxIC
+        yGuzvksRqr0yzcXk35nit/65T9VWhdDkdASeL+gspkvJoOa6IkWzb40RSGLhikK7
+        cO5YO0QbXXFKMRMoclll2kG4sTAULr//wrD2F6Th0zXocozQvADZ2jovNQa4BXVk
+        m+nqZsVW90AS0H/oQI7qp8imm8YsSQ5zQrYIAMBVVwqzhTPNlcMN1kWbYcS2tqjL
+        brQMvFwlX5th0/UT/qk/DRK03E7eMJNbNmlvmYN2SEQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=pQtzM1
+        DqFDdfzJczHbE0hVR7RaJ+DVrWztT+rRlCQh0=; b=kSixDL1BIp5Sj4eeF2VUnQ
+        kBTRdHv/l7Tu8RpL7Iqpqx5KgWdTiwPDLn5ZL13eAcB8MSZM4hHOZK5Na2NznlMA
+        ltIkJJBx9A+WfDXKf1lVmTB+srpRzXKohgvHwcbWlvPe43qpQ188z7AEqqIQM81t
+        lUM9TMGCmV/2ZlTRG4TRENfR8ReQyw6f0oaGr1y/zMQ+UHfw8JU8ADnkBIZklXEK
+        NPDw0W86KqXbPjjhegPy9PtcO/lyW6PDF/QpMSg4kqVKSOVikaxni8EeLRYXiQQy
+        e9bkpsywCyK7kLZfk/l+G7Qu3EFzZQlQRNb2Ju0MnI4/F9v2/RMNvhmDqUUzBIyw
+        ==
+X-ME-Sender: <xms:o7fRYF9ER84jHh9dc4M2AdgOWkI5mpNHtYoOOZFhQmbmSr8e95JLPw>
+    <xme:o7fRYJuST43UsMPDZVu_5hq4j9yctBQoI7LvtaLHMHavgxmYmid9Y06usOpdqZsAH
+    ES12dpb-95OpQ>
+X-ME-Received: <xmr:o7fRYDAG3TDlhxa2D3P6GsQ9Mnh0MB36PwX7ueFhIzNg5wxax4g02GziyMsssL4ZUHlBI_Tcdzo8HmKQC-PlKjNVXObEav4O>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeguddgvdehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
+    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+    drtghomh
+X-ME-Proxy: <xmx:o7fRYJcuzvoovWDL6bc60vHDp4WeROXkdflgDg6-_bT7yvAC9wKm5A>
+    <xmx:o7fRYKNEHSnydVn3U9lte28arUeY5sAZY2R7W7hXlTNQ_DAg6CSxAQ>
+    <xmx:o7fRYLlHS-7r-gU2R4e9-lWQGj-I27RvvTaDuU-ACHTdTYhLMSuKEQ>
+    <xmx:pLfRYFHcJbBityTSwpugTLvpSTYFxnaxP4aJQRh5us2HCDkM5jTOmA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 22 Jun 2021 06:12:50 -0400 (EDT)
+Date:   Tue, 22 Jun 2021 12:12:46 +0200
+From:   Greg KH <greg@kroah.com>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     'Mauro Carvalho Chehab' <mchehab+huawei@kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linuxarm@huawei.com" <linuxarm@huawei.com>,
+        "mauro.chehab@huawei.com" <mauro.chehab@huawei.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH v3] media: uvc: don't do DMA on stack
+Message-ID: <YNG3niUwqeFfltxO@kroah.com>
+References: <6832dffafd54a6a95b287c4a1ef30250d6b9237a.1624282817.git.mchehab+huawei@kernel.org>
+ <d33c39aa824044ad8cacc93234f1e1cd@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Uvqz3smAdALkpwOl"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210617051004.146-1-xieyongji@bytedance.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <d33c39aa824044ad8cacc93234f1e1cd@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 22, 2021 at 08:07:12AM +0000, David Laight wrote:
+> From: Mauro Carvalho Chehab
+> > Sent: 21 June 2021 14:40
+> > 
+> > As warned by smatch:
+> > 	drivers/media/usb/uvc/uvc_v4l2.c:911 uvc_ioctl_g_input() error: doing dma on the stack (&i)
+> > 	drivers/media/usb/uvc/uvc_v4l2.c:943 uvc_ioctl_s_input() error: doing dma on the stack (&i)
+> > 
+> > those two functions call uvc_query_ctrl passing a pointer to
+> > a data at the DMA stack. those are used to send URBs via
+> > usb_control_msg(). Using DMA stack is not supported and should
+> > not work anymore on modern Linux versions.
+> > 
+> > So, use a kmalloc'ed buffer.
+> ...
+> > +	buf = kmalloc(1, GFP_KERNEL);
+> > +	if (!buf)
+> > +		return -ENOMEM;
+> > +
+> >  	ret = uvc_query_ctrl(chain->dev, UVC_GET_CUR, chain->selector->id,
+> >  			     chain->dev->intfnum,  UVC_SU_INPUT_SELECT_CONTROL,
+> > -			     &i, 1);
+> > +			     buf, 1);
+> 
+> Thought...
+> 
+> Is kmalloc(1, GFP_KERNEL) guaranteed to return a pointer into
+> a cache line that will not be accessed by any other code?
+> 
+> (This is slightly weaker than requiring a cache-line aligned
+> pointer - but very similar.)
+> 
+> Without that guarantee you can't use the returned buffer for
+> read dma unless the memory accesses are coherent.
 
---Uvqz3smAdALkpwOl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+For USB buffers, that should be fine, we have been doing this for
+decades now...
 
-On Thu, Jun 17, 2021 at 01:10:04PM +0800, Xie Yongji wrote:
-> This ensures that we will not use an invalid block size
-> in config space (might come from an untrusted device).
->=20
-> Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-> ---
->  drivers/block/virtio_blk.c | 29 +++++++++++++++++++++++------
->  1 file changed, 23 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-> index b9fa3ef5b57c..bbdae989f1ea 100644
-> --- a/drivers/block/virtio_blk.c
-> +++ b/drivers/block/virtio_blk.c
-> @@ -696,6 +696,28 @@ static const struct blk_mq_ops virtio_mq_ops =3D {
->  static unsigned int virtblk_queue_depth;
->  module_param_named(queue_depth, virtblk_queue_depth, uint, 0444);
-> =20
-> +static int virtblk_validate(struct virtio_device *vdev)
-> +{
-> +	u32 blk_size;
-> +
-> +	if (!vdev->config->get) {
-> +		dev_err(&vdev->dev, "%s failure: config access disabled\n",
-> +			__func__);
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (!virtio_has_feature(vdev, VIRTIO_BLK_F_BLK_SIZE))
-> +		return 0;
-> +
-> +	blk_size =3D virtio_cread32(vdev,
-> +			offsetof(struct virtio_blk_config, blk_size));
-> +
-> +	if (blk_size < SECTOR_SIZE || blk_size > PAGE_SIZE)
-> +		__virtio_clear_bit(vdev, VIRTIO_BLK_F_BLK_SIZE);
-> +
-> +	return 0;
-> +}
+thanks,
 
-I saw Michael asked for .validate() in v2. I would prefer to keep
-everything in virtblk_probe() instead of adding .validate() because:
-
-- There is a race condition that an untrusted device can exploit since
-  virtblk_probe() fetches the value again.
-
-- It's more complex now that .validate() takes a first shot at blk_size
-  and then virtblk_probe() deals with it again later on.
-
---Uvqz3smAdALkpwOl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmDRtzoACgkQnKSrs4Gr
-c8gDCgf+IRregxXJWDa8TNewE7DLn0qdSNPYmDbi6biBNsDw8vkFc//cSZdKUMk/
-Au7OUwklOYgGRUJ/Us+16XOuVS2e6s49t8zFT4r9zndIPI2fp7Y3KlPgMgf0kUd8
-9zCNBRUMC7x5aQ9FKpG5DjjN5/gZrywbk9/kPb8ms0/TfV3mrn7c/XBanUZDpAIS
-PFshsLVABiM/H+E/UrGGqYlDx+dGQW3uQtZOyZuWNf+3+H4O/8cNNIVOlyslenQK
-zxaIj/4GD4c3S2lKQHJ5/H3nF3gVpXPNrPsnWK1m+3bMoK0rhmj1hZwrapUJnwp7
-chQ1KlEFWphmgF3zyZNI4aagJDxhcQ==
-=KkQY
------END PGP SIGNATURE-----
-
---Uvqz3smAdALkpwOl--
-
+greg k-h
