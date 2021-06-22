@@ -2,322 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B500C3AFAE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 04:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89BEE3AFAEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 04:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230520AbhFVCMH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Jun 2021 22:12:07 -0400
-Received: from mga03.intel.com ([134.134.136.65]:64169 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229663AbhFVCMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 22:12:06 -0400
-IronPort-SDR: ws2hrqFtWjg/no2L24VZt9Jr6vPJ474fX5dZ6QefiLM8VKkY4H9BHTb2Mi4ywt9Rxzd9cEEVOr
- V9gmY1h/6yYQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="207008238"
-X-IronPort-AV: E=Sophos;i="5.83,290,1616482800"; 
-   d="scan'208";a="207008238"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 19:09:50 -0700
-IronPort-SDR: meKI+jnWwT2TMJQnw+gLzbq7z5IJ9kUJrLFHeN9HjBam1WvkDIp4X1E+V5LSY6Z7z731hAGVwW
- dD7bDpyN4h+A==
-X-IronPort-AV: E=Sophos;i="5.83,290,1616482800"; 
-   d="scan'208";a="556453672"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 19:09:44 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>, Wei Xu <weixugc@google.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Rientjes <rientjes@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        osalvador <osalvador@suse.de>, Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH -V8 05/10] mm/migrate: demote pages during reclaim
-References: <20210618061537.434999-1-ying.huang@intel.com>
-        <20210618061537.434999-6-ying.huang@intel.com>
-        <88CFDFA7-70E1-4C26-B9CF-7A0CEFEB035A@nvidia.com>
-        <874kdupab0.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <CAHbLzkoOYoMuDQx7rBG0-9BrpczAbuE5_-HNLrr_Jn=ttc2kkg@mail.gmail.com>
-Date:   Tue, 22 Jun 2021 10:09:39 +0800
-In-Reply-To: <CAHbLzkoOYoMuDQx7rBG0-9BrpczAbuE5_-HNLrr_Jn=ttc2kkg@mail.gmail.com>
-        (Yang Shi's message of "Mon, 21 Jun 2021 12:58:30 -0700")
-Message-ID: <87o8bymyzg.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S231203AbhFVCNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 22:13:24 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:46256 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229663AbhFVCNX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 22:13:23 -0400
+Received: from [10.130.0.191] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxIOKSRtFgxZ4VAA--.3572S3;
+        Tue, 22 Jun 2021 10:10:40 +0800 (CST)
+Subject: Re: [PATCH 1/4] stmmac: pci: Add dwmac support for Loongson
+To:     Andrew Lunn <andrew@lunn.ch>
+References: <20210618025337.5705-1-zhangqing@loongson.cn>
+ <YM//kGGAp3vz8OYb@lunn.ch>
+Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Huacai Chen <chenhc@lemote.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>
+From:   zhangqing <zhangqing@loongson.cn>
+Message-ID: <d66e6af7-7384-41aa-76a7-7017f27d43cb@loongson.cn>
+Date:   Tue, 22 Jun 2021 10:10:26 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <YM//kGGAp3vz8OYb@lunn.ch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9BxIOKSRtFgxZ4VAA--.3572S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7CF4ftw17JryxXw1xArykuFg_yoW8JF4fpa
+        srGa9xKFZFgFyxCr1FqFWkXFyvvr4Skay0k3y2yFnxK3ZYyrWfX34jgrWUCas3CFZ5Cw45
+        Zw1jgr48Wa4kKrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Kb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4
+        vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkI
+        wI1lc7I2V7IY0VAS07AlzVAYIcxG8wCY02Avz4vE14v_Gr1l42xK82IYc2Ij64vIr41l4I
+        8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AK
+        xVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcV
+        AFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8I
+        cIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14
+        v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU7NBMDUUUU
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yang Shi <shy828301@gmail.com> writes:
 
-> On Sat, Jun 19, 2021 at 12:45 AM Huang, Ying <ying.huang@intel.com> wrote:
->>
->> Zi Yan <ziy@nvidia.com> writes:
->>
->> > On 18 Jun 2021, at 2:15, Huang Ying wrote:
->> >
->> >> From: Dave Hansen <dave.hansen@linux.intel.com>
->> >>
->> >> This is mostly derived from a patch from Yang Shi:
->> >>
->> >>      https://lore.kernel.org/linux-mm/1560468577-101178-10-git-send-email-yang.shi@linux.alibaba.com/
->> >>
->> >> Add code to the reclaim path (shrink_page_list()) to "demote" data
->> >> to another NUMA node instead of discarding the data.  This always
->> >> avoids the cost of I/O needed to read the page back in and sometimes
->> >> avoids the writeout cost when the pagee is dirty.
->> >>
->> >> A second pass through shrink_page_list() will be made if any demotions
->> >> fail.  This essentally falls back to normal reclaim behavior in the
->> >> case that demotions fail.  Previous versions of this patch may have
->> >> simply failed to reclaim pages which were eligible for demotion but
->> >> were unable to be demoted in practice.
->> >>
->> >> Note: This just adds the start of infratructure for migration. It is
->> >> actually disabled next to the FIXME in migrate_demote_page_ok().
->> >>
->> >> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
->> >> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
->> >> Cc: Michal Hocko <mhocko@suse.com>
->> >> Cc: Wei Xu <weixugc@google.com>
->> >> Cc: Yang Shi <yang.shi@linux.alibaba.com>
->> >> Cc: David Rientjes <rientjes@google.com>
->> >> Cc: Dan Williams <dan.j.williams@intel.com>
->> >> Cc: osalvador <osalvador@suse.de>
->> >>
->> >> --
->> >> changes from 20210122:
->> >>  * move from GFP_HIGHUSER -> GFP_HIGHUSER_MOVABLE (Ying)
->> >>
->> >> changes from 202010:
->> >>  * add MR_NUMA_MISPLACED to trace MIGRATE_REASON define
->> >>  * make migrate_demote_page_ok() static, remove 'sc' arg until
->> >>    later patch
->> >>  * remove unnecessary alloc_demote_page() hugetlb warning
->> >>  * Simplify alloc_demote_page() gfp mask.  Depend on
->> >>    __GFP_NORETRY to make it lightweight instead of fancier
->> >>    stuff like leaving out __GFP_IO/FS.
->> >>  * Allocate migration page with alloc_migration_target()
->> >>    instead of allocating directly.
->> >> changes from 20200730:
->> >>  * Add another pass through shrink_page_list() when demotion
->> >>    fails.
->> >> changes from 20210302:
->> >>  * Use __GFP_THISNODE and revise the comment explaining the
->> >>    GFP mask constructionn
->> >> ---
->> >>  include/linux/migrate.h        |  9 ++++
->> >>  include/trace/events/migrate.h |  3 +-
->> >>  mm/vmscan.c                    | 83 ++++++++++++++++++++++++++++++++++
->> >>  3 files changed, 94 insertions(+), 1 deletion(-)
->> >>
->> >> diff --git a/include/linux/migrate.h b/include/linux/migrate.h
->> >> index 4a49bb358787..42952cbe452b 100644
->> >> --- a/include/linux/migrate.h
->> >> +++ b/include/linux/migrate.h
->> >> @@ -28,6 +28,7 @@ enum migrate_reason {
->> >>      MR_NUMA_MISPLACED,
->> >>      MR_CONTIG_RANGE,
->> >>      MR_LONGTERM_PIN,
->> >> +    MR_DEMOTION,
->> >>      MR_TYPES
->> >>  };
->> >>
->> >> @@ -191,6 +192,14 @@ struct migrate_vma {
->> >>  int migrate_vma_setup(struct migrate_vma *args);
->> >>  void migrate_vma_pages(struct migrate_vma *migrate);
->> >>  void migrate_vma_finalize(struct migrate_vma *migrate);
->> >> +int next_demotion_node(int node);
->> >> +
->> >> +#else /* CONFIG_MIGRATION disabled: */
->> >> +
->> >> +static inline int next_demotion_node(int node)
->> >> +{
->> >> +    return NUMA_NO_NODE;
->> >> +}
->> >>
->> >>  #endif /* CONFIG_MIGRATION */
->> >>
->> >> diff --git a/include/trace/events/migrate.h b/include/trace/events/migrate.h
->> >> index 9fb2a3bbcdfb..779f3fad9ecd 100644
->> >> --- a/include/trace/events/migrate.h
->> >> +++ b/include/trace/events/migrate.h
->> >> @@ -21,7 +21,8 @@
->> >>      EM( MR_MEMPOLICY_MBIND, "mempolicy_mbind")              \
->> >>      EM( MR_NUMA_MISPLACED,  "numa_misplaced")               \
->> >>      EM( MR_CONTIG_RANGE,    "contig_range")                 \
->> >> -    EMe(MR_LONGTERM_PIN,    "longterm_pin")
->> >> +    EM( MR_LONGTERM_PIN,    "longterm_pin")                 \
->> >> +    EMe(MR_DEMOTION,        "demotion")
->> >>
->> >>  /*
->> >>   * First define the enums in the above macros to be exported to userspace
->> >> diff --git a/mm/vmscan.c b/mm/vmscan.c
->> >> index 5199b9696bab..ddda32031f0c 100644
->> >> --- a/mm/vmscan.c
->> >> +++ b/mm/vmscan.c
->> >> @@ -41,6 +41,7 @@
->> >>  #include <linux/kthread.h>
->> >>  #include <linux/freezer.h>
->> >>  #include <linux/memcontrol.h>
->> >> +#include <linux/migrate.h>
->> >>  #include <linux/delayacct.h>
->> >>  #include <linux/sysctl.h>
->> >>  #include <linux/oom.h>
->> >> @@ -1231,6 +1232,23 @@ static enum page_references page_check_references(struct page *page,
->> >>      return PAGEREF_RECLAIM;
->> >>  }
->> >>
->> >> +static bool migrate_demote_page_ok(struct page *page)
->> >> +{
->> >> +    int next_nid = next_demotion_node(page_to_nid(page));
->> >> +
->> >> +    VM_BUG_ON_PAGE(!PageLocked(page), page);
->> >> +    VM_BUG_ON_PAGE(PageHuge(page), page);
->> >> +    VM_BUG_ON_PAGE(PageLRU(page), page);
->> >> +
->> >> +    if (next_nid == NUMA_NO_NODE)
->> >> +            return false;
->> >> +    if (PageTransHuge(page) && !thp_migration_supported())
->> >> +            return false;
->> >> +
->> >> +    // FIXME: actually enable this later in the series
->> >> +    return false;
->> >> +}
->> >> +
->> >>  /* Check if a page is dirty or under writeback */
->> >>  static void page_check_dirty_writeback(struct page *page,
->> >>                                     bool *dirty, bool *writeback)
->> >> @@ -1261,6 +1279,47 @@ static void page_check_dirty_writeback(struct page *page,
->> >>              mapping->a_ops->is_dirty_writeback(page, dirty, writeback);
->> >>  }
->> >>
->> >> +static struct page *alloc_demote_page(struct page *page, unsigned long node)
->> >> +{
->> >> +    struct migration_target_control mtc = {
->> >> +            /*
->> >> +             * Allocate from 'node', or fail the quickly and quietly.
->> >> +             * When this happens, 'page; will likely just be discarded
->> >> +             * instead of migrated.
->> >> +             */
->> >> +            .gfp_mask = (GFP_HIGHUSER_MOVABLE & ~__GFP_RECLAIM) |
->> >> +                        __GFP_THISNODE  | __GFP_NOWARN |
->> >> +                        __GFP_NOMEMALLOC | GFP_NOWAIT,
->> >> +            .nid = node
->> >> +    };
->> >> +
->> >> +    return alloc_migration_target(page, (unsigned long)&mtc);
->> >> +}
->> >> +
->> >> +/*
->> >> + * Take pages on @demote_list and attempt to demote them to
->> >> + * another node.  Pages which are not demoted are left on
->> >> + * @demote_pages.
->> >> + */
->> >> +static unsigned int demote_page_list(struct list_head *demote_pages,
->> >> +                                 struct pglist_data *pgdat,
->> >> +                                 struct scan_control *sc)
->> >> +{
->> >> +    int target_nid = next_demotion_node(pgdat->node_id);
->> >> +    unsigned int nr_succeeded = 0;
->> >> +    int err;
->> >> +
->> >> +    if (list_empty(demote_pages))
->> >> +            return 0;
->> >> +
->> >> +    /* Demotion ignores all cpuset and mempolicy settings */
->> >> +    err = migrate_pages(demote_pages, alloc_demote_page, NULL,
->> >> +                        target_nid, MIGRATE_ASYNC, MR_DEMOTION,
->> >> +                        &nr_succeeded);
->> >> +
->> >> +    return nr_succeeded;
->> >> +}
->> >> +
->> >>  /*
->> >>   * shrink_page_list() returns the number of reclaimed pages
->> >>   */
->> >> @@ -1272,12 +1331,15 @@ static unsigned int shrink_page_list(struct list_head *page_list,
->> >>  {
->> >>      LIST_HEAD(ret_pages);
->> >>      LIST_HEAD(free_pages);
->> >> +    LIST_HEAD(demote_pages);
->> >>      unsigned int nr_reclaimed = 0;
->> >>      unsigned int pgactivate = 0;
->> >> +    bool do_demote_pass = true;
->> >>
->> >>      memset(stat, 0, sizeof(*stat));
->> >>      cond_resched();
->> >>
->> >> +retry:
->> >>      while (!list_empty(page_list)) {
->> >>              struct address_space *mapping;
->> >>              struct page *page;
->> >> @@ -1426,6 +1488,16 @@ static unsigned int shrink_page_list(struct list_head *page_list,
->> >>                      ; /* try to reclaim the page below */
->> >>              }
->> >>
->> >> +            /*
->> >> +             * Before reclaiming the page, try to relocate
->> >> +             * its contents to another node.
->> >> +             */
->> >> +            if (do_demote_pass && migrate_demote_page_ok(page)) {
->> >> +                    list_add(&page->lru, &demote_pages);
->> >> +                    unlock_page(page);
->> >> +                    continue;
->> >> +            }
->> >> +
->> >>              /*
->> >>               * Anonymous process memory has backing store?
->> >>               * Try to allocate it some swap space here.
->> >> @@ -1676,6 +1748,17 @@ static unsigned int shrink_page_list(struct list_head *page_list,
->> >>              list_add(&page->lru, &ret_pages);
->> >>              VM_BUG_ON_PAGE(PageLRU(page) || PageUnevictable(page), page);
->> >>      }
->> >> +    /* 'page_list' is always empty here */
->> >> +
->> >> +    /* Migrate pages selected for demotion */
->> >> +    nr_reclaimed += demote_page_list(&demote_pages, pgdat, sc);
->> >> +    /* Pages that could not be demoted are still in @demote_pages */
->> >> +    if (!list_empty(&demote_pages)) {
->> >> +            /* Pages which failed to demoted go back on @page_list for retry: */
->> >> +            list_splice_init(&demote_pages, page_list);
->> >> +            do_demote_pass = false;
->> >> +            goto retry;
->> >> +    }
->> >>
->> >>      pgactivate = stat->nr_activate[0] + stat->nr_activate[1];
->> >>
->> >> --
->> >> 2.30.2
->> >
->> > shrink_page_list() is also used by reclaim_pages(), which is called by
->> > madvise(MADV_PAGEOUT). This patch changes the semantics of madvise(MADV_PAGEOUT)
->> > from “reclaim a given range of pages” to migrate the given pages to lower
->> > tier memory or reclaim them if the migration fails. You might want to check
->> > the caller of shrink_page_list() to avoid changing madvise(MADV_PAGEOUT)
->> > semantics.
->>
->> Thanks for pointing this out!
->>
->> Literally, PAGEOUT means writing the page to the disk instead of
->> migrating pages to the lower tier.  So it seems reasonable to make it
->> keep the original behavior instead of demoting even if in the tiered
->> memory system.
->>
->> If nobody objects, I will change this in the next version.
+
+On 06/21/2021 10:55 AM, Andrew Lunn wrote:
+>> +static int loongson_dwmac_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>> +{
+>> +	struct plat_stmmacenet_data *plat;
+>> +	struct stmmac_resources res;
+>> +	int ret, i, mdio;
+>> +	struct device_node *np;
+>> +
+>> +	np = dev_of_node(&pdev->dev);
+>> +
+>> +	if (!np) {
+>> +		pr_info("dwmac_loongson_pci: No OF node\n");
+>> +		return -ENODEV;
+>> +	}
+>> +
+>> +	if (!of_device_is_compatible(np, "loongson, pci-gmac")) {
+>> +		pr_info("dwmac_loongson_pci: Incompatible OF node\n");
+>> +		return -ENODEV;
+>> +	}
+>> +
+>> +	plat = devm_kzalloc(&pdev->dev, sizeof(*plat), GFP_KERNEL);
+>> +	if (!plat)
+>> +		return -ENOMEM;
+>> +
+>> +	if (plat->mdio_node) {
+>> +		dev_err(&pdev->dev, "Found MDIO subnode\n");
+> It is an error is an MDIO node is found?
+
+Hi，Andrew
+
+Thanks for your advice,
+
+Using dev_ DEG () is appropriate,
+
+and other issues I will fix in v2.
+
+Thanks,
+
+-Qing
+
 >
-> I don't have a strong opinion on this. But I just thought why not let
-> PAGEOUT do demotion if tier'ed memory is available and the "migration
-> in lieu of discard" behavior is opt'ed in by a knob and we keep the
-> consistency between passive reclaim and proactive reclaim.
+>> +		mdio = true;
+>> +	}
+>> +
+> ...
+>
+>> +
+>> +	plat->phy_interface = device_get_phy_mode(&pdev->dev);
+>> +	if (plat->phy_interface < 0)
+>> +		dev_err(&pdev->dev, "phy_mode not found\n");
+>> +
+>> +	plat->interface = PHY_INTERFACE_MODE_GMII;
+> Seems odd you call device_get_phy_mode() but then have this hard coded
+> PHY_INTERFACE_MODE_GMII?
+>
+> 	Andrew
 
-I thought about that too.  Considering the kernel API naming, is it
-better to define MADV_PAGEOUT as writing to disk, and MADV_COLD as
-demoting to the lower tier if enabled.
-
-Best Regards,
-Huang, Ying
