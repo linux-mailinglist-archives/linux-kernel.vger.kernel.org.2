@@ -2,161 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C013B0964
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:41:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1F43B0965
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232530AbhFVPn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:43:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232401AbhFVPmp (ORCPT
+        id S232542AbhFVPna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:43:30 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:51736 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232397AbhFVPm5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:42:45 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40DC5C0617AE
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:40:29 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id j12so1867660qtv.11
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:40:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=NZpdOHQdlbhRQUdadvChaP2QioJ6XoeMWnvncTZxFBo=;
-        b=bFrrHAW8qxNFpB4w6q6y0m3wG93Brg5eP/2CDB60bxAwrbV9T0MwsuqH9FqvvIRVEl
-         azco9BZHD+pLNHUOUPd0/YqiC7g1TkaOLuSEdEPEQsK/HsRy3mej/q89Q1WOFE2N+Ro6
-         7RjC3KVHi7qrQ6NaRAxH4v7ueHDnYI6mNr/5488SwgmJEmoF0yDk72Gp1+3yt3X1dN77
-         SwYTmPDOKjoJcVDChtw4TAWYHg4XwJrbCQOByfoyvt7j1+S/eNeqEnvPfIhPHwupoX/C
-         fllP05M4t8g69iCpBGPz31XolXRyxDJerhlIIoTtJYVOwqMlMtDxL7QTh8S+XznoKv7T
-         C9Zg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=NZpdOHQdlbhRQUdadvChaP2QioJ6XoeMWnvncTZxFBo=;
-        b=DPx+vp/Q5r5ePGZz5LTz3QbrCalkJ6woB7C1hlJCEYGh68qQNV+ALAoipidEdK4Btg
-         /c35Wd8qNzXDPtran+yCFKsE+Pr0raBIrjCcd31w8kFalaZy9nQD+PdK3G3L+W5Ux76S
-         M3oEbf6bvk6+Hzq4fXPNqlnpndD4cdJ8ec25afb2nBTuMGlQAWZvj5mzNTLFdBElV3mE
-         tGnM74G6iNHuYZozrychbrjH5cnBvhUzZPN4kAOf3ohL3N9Y6A6YUKf6J4ActqCV9F9a
-         4mV4zro9S+VOhDw+4Av+2vComeErXyuK9uyFwZhvfTa9FIHaO1eme6TuxC1qkcpKPflE
-         gmuQ==
-X-Gm-Message-State: AOAM533Imt9PEfjATDIwWx7ZlrXAcWO/Gu8l/afeB4K7S3HJRT1FLeBY
-        QbDllebz/VvzYbGCWij3WK+LGA==
-X-Google-Smtp-Source: ABdhPJyBSBJ8ZnJGYH0mWoGpKu8dUURIzu/dEy/gWK1x7lcbRKJ6NR08GtWZTYux23s4RPq5jOQChQ==
-X-Received: by 2002:ac8:4241:: with SMTP id r1mr4000088qtm.121.1624376428220;
-        Tue, 22 Jun 2021 08:40:28 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id y18sm1761588qtj.53.2021.06.22.08.40.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 08:40:27 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lviVn-00ADW0-73; Tue, 22 Jun 2021 12:40:27 -0300
-Date:   Tue, 22 Jun 2021 12:40:27 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
-        Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Tomer Tayar <ttayar@habana.ai>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
- FD for DMA-BUF
-Message-ID: <20210622154027.GS1096940@ziepe.ca>
-References: <20210621175511.GI1096940@ziepe.ca>
- <CAKMK7uEO1_B59DtM7N2g7kkH7pYtLM_WAkn+0f3FU3ps=XEjZQ@mail.gmail.com>
- <CAFCwf11jOnewkbLuxUESswCJpyo7C0ovZj80UrnwUOZkPv2JYQ@mail.gmail.com>
- <20210621232912.GK1096940@ziepe.ca>
- <d358c740-fd3a-9ecd-7001-676e2cb44ec9@gmail.com>
- <CAFCwf11h_Nj_GEdCdeTzO5jgr-Y9em+W-v_pYUfz64i5Ac25yg@mail.gmail.com>
- <20210622120142.GL1096940@ziepe.ca>
- <d497b0a2-897e-adff-295c-cf0f4ff93cb4@amd.com>
- <20210622152343.GO1096940@ziepe.ca>
- <3fabe8b7-7174-bf49-5ffe-26db30968a27@amd.com>
+        Tue, 22 Jun 2021 11:42:57 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1FBBB2195D;
+        Tue, 22 Jun 2021 15:40:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624376440; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A5JiXVBjC6ksabLncNKVZeSDz5WHF+7ATqdjOBvH5l8=;
+        b=mre8lWAZ0Sv4PHcomUP1sYiZs/vk02a4Vq+THQWKXFo5jwYc7NJXZSDgaX4UdlZmos3ROm
+        fVVODINakpT0/Q0k7QgIrUiN9ztxzz/o9y/jvc2k4TueI6hCWnr36atLUrc5/5pt7bXFnd
+        TEtkhf/UHxRMhTd+nC4oU4KjyvkfieQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624376440;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A5JiXVBjC6ksabLncNKVZeSDz5WHF+7ATqdjOBvH5l8=;
+        b=dZ01pVEwNz7uPK9SaqOyjV/V/22w9H37inZ/UXf+rwIg1wJsvLvf9HUzwpsyTuMStaouh7
+        L1EhnjpwufODI8Bw==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 0E893118DD;
+        Tue, 22 Jun 2021 15:40:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624376440; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A5JiXVBjC6ksabLncNKVZeSDz5WHF+7ATqdjOBvH5l8=;
+        b=mre8lWAZ0Sv4PHcomUP1sYiZs/vk02a4Vq+THQWKXFo5jwYc7NJXZSDgaX4UdlZmos3ROm
+        fVVODINakpT0/Q0k7QgIrUiN9ztxzz/o9y/jvc2k4TueI6hCWnr36atLUrc5/5pt7bXFnd
+        TEtkhf/UHxRMhTd+nC4oU4KjyvkfieQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624376440;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A5JiXVBjC6ksabLncNKVZeSDz5WHF+7ATqdjOBvH5l8=;
+        b=dZ01pVEwNz7uPK9SaqOyjV/V/22w9H37inZ/UXf+rwIg1wJsvLvf9HUzwpsyTuMStaouh7
+        L1EhnjpwufODI8Bw==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id jyt7AngE0mDVBwAALh3uQQ
+        (envelope-from <bp@suse.de>); Tue, 22 Jun 2021 15:40:40 +0000
+Date:   Tue, 22 Jun 2021 17:40:39 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch V3 48/66] x86/fpu: Rename __fpregs_load_activate() to
+ fpregs_restore_userregs()
+Message-ID: <YNIEd6SZIGnfbWVJ@zn.tnic>
+References: <20210618141823.161158090@linutronix.de>
+ <20210618143449.881756905@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <3fabe8b7-7174-bf49-5ffe-26db30968a27@amd.com>
+In-Reply-To: <20210618143449.881756905@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 05:29:01PM +0200, Christian König wrote:
-> Am 22.06.21 um 17:23 schrieb Jason Gunthorpe:
-> > On Tue, Jun 22, 2021 at 02:23:03PM +0200, Christian König wrote:
-> > > Am 22.06.21 um 14:01 schrieb Jason Gunthorpe:
-> > > > On Tue, Jun 22, 2021 at 11:42:27AM +0300, Oded Gabbay wrote:
-> > > > > On Tue, Jun 22, 2021 at 9:37 AM Christian König
-> > > > > <ckoenig.leichtzumerken@gmail.com> wrote:
-> > > > > > Am 22.06.21 um 01:29 schrieb Jason Gunthorpe:
-> > > > > > > On Mon, Jun 21, 2021 at 10:24:16PM +0300, Oded Gabbay wrote:
-> > > > > > > 
-> > > > > > > > Another thing I want to emphasize is that we are doing p2p only
-> > > > > > > > through the export/import of the FD. We do *not* allow the user to
-> > > > > > > > mmap the dma-buf as we do not support direct IO. So there is no access
-> > > > > > > > to these pages through the userspace.
-> > > > > > > Arguably mmaping the memory is a better choice, and is the direction
-> > > > > > > that Logan's series goes in. Here the use of DMABUF was specifically
-> > > > > > > designed to allow hitless revokation of the memory, which this isn't
-> > > > > > > even using.
-> > > > > > The major problem with this approach is that DMA-buf is also used for
-> > > > > > memory which isn't CPU accessible.
-> > > > That isn't an issue here because the memory is only intended to be
-> > > > used with P2P transfers so it must be CPU accessible.
-> > > No, especially P2P is often done on memory resources which are not even
-> > > remotely CPU accessible.
-> > That is a special AMD thing, P2P here is PCI P2P and all PCI memory is
-> > CPU accessible.
+On Fri, Jun 18, 2021 at 04:19:11PM +0200, Thomas Gleixner wrote:
+> Rename it so that it becomes entirely clear what this function is
+> about. It's purpose is to restore the FPU registers to the state which was
+> saved in the task's FPU memory state either at context switch or by an in
+> kernel FPU user.
 > 
-> No absolutely not. NVidia GPUs work exactly the same way.
->
-> And you have tons of similar cases in embedded and SoC systems where
-> intermediate memory between devices isn't directly addressable with the CPU.
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  arch/x86/include/asm/fpu/internal.h |    6 ++----
+>  arch/x86/kernel/fpu/core.c          |    2 +-
+>  arch/x86/kernel/fpu/signal.c        |    2 +-
+>  3 files changed, 4 insertions(+), 6 deletions(-)
 
-None of that is PCI P2P.
+Reviewed-by: Borislav Petkov <bp@suse.de>
 
-It is all some specialty direct transfer.
+-- 
+Regards/Gruss,
+    Boris.
 
-You can't reasonably call dma_map_resource() on non CPU mapped memory
-for instance, what address would you pass?
-
-Do not confuse "I am doing transfers between two HW blocks" with PCI
-Peer to Peer DMA transfers - the latter is a very narrow subcase.
-
-> No, just using the dma_map_resource() interface.
-
-Ik, but yes that does "work". Logan's series is better.
-
-> > > > > I'll go and read Logan's patch-set to see if that will work for us in
-> > > > > the future. Please remember, as Daniel said, we don't have struct page
-> > > > > backing our device memory, so if that is a requirement to connect to
-> > > > > Logan's work, then I don't think we will want to do it at this point.
-> > > > It is trivial to get the struct page for a PCI BAR.
-> > > Yeah, but it doesn't make much sense. Why should we create a struct page for
-> > > something that isn't even memory in a lot of cases?
-> > Because the iommu and other places need this handle to setup their
-> > stuff. Nobody has yet been brave enough to try to change those flows
-> > to be able to use a physical CPU address.
-> 
-> Well that is certainly not true. I'm just not sure if that works with all
-> IOMMU drivers thought.
-
-Huh? All the iommu interfaces except for the dma_map_resource() are
-struct page based. dma_map_resource() is slow ad limited in what it
-can do.
-
-Jason
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
