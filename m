@@ -2,165 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E8A83B0EED
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:39:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DCFD3B0EF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229934AbhFVUls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 16:41:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45574 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229758AbhFVUlq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 16:41:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624394370;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=g0MrG4+ll2NdZhlnJFDRRtUXoxi3BC214us5+iugMf4=;
-        b=dMMgFNCcdG2ph1OghqEpEDx2g4DW/xiZPpbvDZ2ZJMUsLG5pmtBQegvNFHPD2+V695v8+8
-        xROkFRFViQdmJBagF+n2iOj4SiA3Odb6cy81gLdqmB4ZOzxg/yqDiY7qE0qBGxhCnLQ1Te
-        JSkfj/rShXk38366OunRmFPhuztO4mA=
-Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
- [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-33-3AgWbK0mNdeNpBqjot6KIw-1; Tue, 22 Jun 2021 16:39:28 -0400
-X-MC-Unique: 3AgWbK0mNdeNpBqjot6KIw-1
-Received: by mail-oi1-f197.google.com with SMTP id h67-20020aca53460000b02901f9abff7c53so416064oib.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:39:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=g0MrG4+ll2NdZhlnJFDRRtUXoxi3BC214us5+iugMf4=;
-        b=cHD4kKtzFY7S9KuibSGFQB1neH25JXZv3Hh/bAU9MglOcTEYwzRVq8q1829mvXJy9a
-         KomF7a4eAFNZGDx8YjRdR1HeHKFILzYBIYL/ovYgZEe/4C3LliWlrXgtGLfgTUO84pR3
-         NRRKAi+wHsOhCPtDpoWIUhGdckHjcfKfSl8/t/EEcnbQbyxe1q5XvjpV6SwfWyakRCir
-         3bl5byvLYC38mIOoCQaJY02vxb6kj/UXM/4GUh+KEBrHf+o5tKvBfYkrWBB/CmBBlUIV
-         hFnEa/fyJHblPvIR93rZ8tohMIsbfxvB9aPM4TpAj8GS2JdMhmpJkO//lYwu0AT7RCYC
-         RRlA==
-X-Gm-Message-State: AOAM533O+cKR8IWfKdqul/N/mFBlm/wJAR75EtcVSH4EshyLlz+Pg/SU
-        jp9APfGcUmrMGqSBur0EAsEXXG1uAOVt7IclFHgQ71ql5C3mpNqvhdYTcCY2u+WuZZ/BjT5qokN
-        HuXUOCCHBbz3FhijB1et7SdKd
-X-Received: by 2002:a05:6808:2012:: with SMTP id q18mr505142oiw.1.1624394368052;
-        Tue, 22 Jun 2021 13:39:28 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyEtvh0TeVS8XIjLHgIJPcpwXe8Uxkzd568eyguTJwkGZ5onD2K6d+EchimlC6NR2wEOkVRIg==
-X-Received: by 2002:a05:6808:2012:: with SMTP id q18mr505135oiw.1.1624394367873;
-        Tue, 22 Jun 2021 13:39:27 -0700 (PDT)
-Received: from redhat.com ([198.99.80.109])
-        by smtp.gmail.com with ESMTPSA id f63sm115130otb.36.2021.06.22.13.39.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 13:39:27 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 14:39:26 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Colin King <colin.king@canonical.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kvm@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] vfio/mdpy: Fix memory leak of object
- mdev_state->vconfig
-Message-ID: <20210622143926.7880e698.alex.williamson@redhat.com>
-In-Reply-To: <20210622185824.GU1096940@ziepe.ca>
-References: <20210622183710.28954-1-colin.king@canonical.com>
-        <20210622185824.GU1096940@ziepe.ca>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S230039AbhFVUmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 16:42:14 -0400
+Received: from mga12.intel.com ([192.55.52.136]:38061 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229675AbhFVUmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 16:42:13 -0400
+IronPort-SDR: EOp02E+TEUuQg+dxE6t8AsEUzHj/iGAFgUaQy+yZchfHq+75abJpPgJKv/zd3Y5YKSHJU7Eka+
+ rPypCV1+nNAg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="186828461"
+X-IronPort-AV: E=Sophos;i="5.83,292,1616482800"; 
+   d="scan'208";a="186828461"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 13:39:56 -0700
+IronPort-SDR: kuDSAiKrot5bo6d+zqvd7xPwRbBxg4+04ZW6TQ6ikhrRJlavR5uqbWbehPqKA7jgQGyZhLGDCF
+ L4IGtYo+ji9w==
+X-IronPort-AV: E=Sophos;i="5.83,292,1616482800"; 
+   d="scan'208";a="556744132"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 13:39:54 -0700
+Date:   Tue, 22 Jun 2021 13:39:54 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Bernard Metzler <BMT@zurich.ibm.com>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Kamal Heib <kheib@redhat.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/4] RDMA/siw: Convert siw_tx_hdt() to kmap_local_page()
+Message-ID: <20210622203954.GM1905674@iweiny-DESK2.sc.intel.com>
+References: <20210622061422.2633501-5-ira.weiny@intel.com>
+ <20210622061422.2633501-1-ira.weiny@intel.com>
+ <OF400EF61E.38060C6A-ON002586FC.005B421A-002586FC.005BCFB3@notes.na.collabserv.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <OF400EF61E.38060C6A-ON002586FC.005B421A-002586FC.005BCFB3@notes.na.collabserv.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Jun 2021 15:58:24 -0300
-Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Tue, Jun 22, 2021 at 04:42:49PM +0000, Bernard Metzler wrote:
+> -----ira.weiny@intel.com wrote: -----
+> 
+> >To: "Jason Gunthorpe" <jgg@ziepe.ca>
+> >From: ira.weiny@intel.com
+> >Date: 06/22/2021 08:14AM
+> >Cc: "Ira Weiny" <ira.weiny@intel.com>, "Mike Marciniszyn"
+> ><mike.marciniszyn@cornelisnetworks.com>, "Dennis Dalessandro"
+> ><dennis.dalessandro@cornelisnetworks.com>, "Doug Ledford"
+> ><dledford@redhat.com>, "Faisal Latif" <faisal.latif@intel.com>,
+> >"Shiraz Saleem" <shiraz.saleem@intel.com>, "Bernard Metzler"
+> ><bmt@zurich.ibm.com>, "Kamal Heib" <kheib@redhat.com>,
+> >linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
+> >Subject: [EXTERNAL] [PATCH 4/4] RDMA/siw: Convert siw_tx_hdt() to
+> >kmap_local_page()
+> >
+> >From: Ira Weiny <ira.weiny@intel.com>
+> >
+> >kmap() is being deprecated and will break uses of device dax after
+> >PKS
+> >protection is introduced.[1]
+> >
+> >The use of kmap() in siw_tx_hdt() is all thread local therefore
+> >kmap_local_page() is a sufficient replacement and will work with
+> >pgmap
+> >protected pages when those are implemented.
+> >
+> >kmap_local_page() mappings are tracked in a stack and must be
+> >unmapped
+> >in the opposite order they were mapped in.
+> >
+> >siw_tx_hdt() tracks pages used in a page_array.  It uses that array
+> >to
+> >unmap pages which were mapped on function exit.  Not all entries in
+> >the
+> >array are mapped and this is tracked in kmap_mask.
+> >
+> >kunmap_local() takes a mapped address rather than a page.  Declare a
+> >mapped address array, page_array_addr, of the same size as the page
+> >array to be used for unmapping.
+> >
+> 
+> Hi Ira, thanks for taking care of that!
+> 
+> I think we can avoid introducing another 'page_array_addr[]' array
+> here, which must be zeroed first and completely searched for
+> valid mappings during unmap, and also further bloats the
+> stack size of siw_tx_hdt(). I think we can go away with the
+> already available iov[].iov_base addresses array, masking addresses
+> with PAGE_MASK during unmapping to mask any first byte offset.
+> All kmap_local_page() mapping end up at that list. For unmapping
+> we can still rely on the kmap_mask bit field, which is more
+> efficient to initialize and search for valid mappings. Ordering
+> during unmapping can be guaranteed if we parse the bitmask
+> in reverse order. Let me know if you prefer me to propose
+> a change -- that siw_tx_hdt() thing became rather complex I
+> have to admit!
 
-> On Tue, Jun 22, 2021 at 07:37:10PM +0100, Colin King wrote:
-> > From: Colin Ian King <colin.king@canonical.com>
+Seems not too bad, V2 sent.
+
+I was concerned with the additional stack size but only 28 pointers (If I did
+my math right) did not seem too bad.  It is redundant though so lets see if
+I've gotten V2 right.
+
+Thanks!
+Ira
+
+> 
+> Best,
+> Bernard.
+> 
+> >Use kmap_local_page() instead of kmap() to map pages in the
+> >page_array.
+> >
+> >Because segments are mapped into the page array in increasing index
+> >order, modify siw_unmap_pages() to unmap pages in decreasing order.
+> >
+> >The kmap_mask is no longer needed as the lack of an address in the
+> >address array can indicate no unmap is required.
+> >
+> >[1]
+> >INVALID URI REMOVED
+> >lkml_20201009195033.3208459-2D59-2Dira.weiny-40intel.com_&d=DwIDAg&c=
+> >jf_iaSHvJObTbx-siA1ZOg&r=2TaYXQ0T-r8ZO1PP1alNwU_QJcRRLfmYTAgd3QCvqSc&
+> >m=wnRcc-qyXV_X7kyQfFYL6XPgmmakQxmo44BmjIon-w0&s=Y0aiKJ4EHZY8FJlI-uiPr
+> >xcBE95kmgn3iEz3p8d5VF4&e= 
+> >
+> >Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> >---
+> > drivers/infiniband/sw/siw/siw_qp_tx.c | 35
+> >+++++++++++++++------------
+> > 1 file changed, 20 insertions(+), 15 deletions(-)
+> >
+> >diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c
+> >b/drivers/infiniband/sw/siw/siw_qp_tx.c
+> >index db68a10d12cd..e70aba23f6e7 100644
+> >--- a/drivers/infiniband/sw/siw/siw_qp_tx.c
+> >+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
+> >@@ -396,13 +396,17 @@ static int siw_0copy_tx(struct socket *s,
+> >struct page **page,
 > > 
-> > In the case where the call to vfio_register_group_dev fails the error
-> > return path kfree's mdev_state but not mdev_state->vconfig. Fix this
-> > by kfree'ing mdev_state->vconfig before returning.
+> > #define MAX_TRAILER (MPA_CRC_SIZE + 4)
 > > 
-> > Addresses-Coverity: ("Resource leak")
-> > Fixes: 437e41368c01 ("vfio/mdpy: Convert to use vfio_register_group_dev()")
-> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> >  samples/vfio-mdev/mdpy.c | 1 +
-> >  1 file changed, 1 insertion(+)
+> >-static void siw_unmap_pages(struct page **pp, unsigned long
+> >kmap_mask)
+> >+static void siw_unmap_pages(void **addrs, int len)
+> > {
+> >-	while (kmap_mask) {
+> >-		if (kmap_mask & BIT(0))
+> >-			kunmap(*pp);
+> >-		pp++;
+> >-		kmap_mask >>= 1;
+> >+	int i;
+> >+
+> >+	/*
+> >+	 * Work backwards through the array to honor the kmap_local_page()
+> >+	 * ordering requirements.
+> >+	 */
+> >+	for (i = (len-1); i >= 0; i--) {
+> >+		if (addrs[i])
+> >+			kunmap_local(addrs[i]);
+> > 	}
+> > }
 > > 
-> > diff --git a/samples/vfio-mdev/mdpy.c b/samples/vfio-mdev/mdpy.c
-> > index 7e9c9df0f05b..393c9df6f6a0 100644
-> > +++ b/samples/vfio-mdev/mdpy.c
-> > @@ -261,6 +261,7 @@ static int mdpy_probe(struct mdev_device *mdev)
-> >  
-> >  	ret = vfio_register_group_dev(&mdev_state->vdev);
-> >  	if (ret) {
-> > +		kfree(mdev_state->vconfig);
-> >  		kfree(mdev_state);
-> >  		return ret;
-> >  	}  
+> >@@ -427,13 +431,15 @@ static int siw_tx_hdt(struct siw_iwarp_tx
+> >*c_tx, struct socket *s)
+> > 	struct siw_sge *sge = &wqe->sqe.sge[c_tx->sge_idx];
+> > 	struct kvec iov[MAX_ARRAY];
+> > 	struct page *page_array[MAX_ARRAY];
+> >+	void *page_array_addr[MAX_ARRAY];
+> > 	struct msghdr msg = { .msg_flags = MSG_DONTWAIT | MSG_EOR };
+> > 
+> > 	int seg = 0, do_crc = c_tx->do_crc, is_kva = 0, rv;
+> > 	unsigned int data_len = c_tx->bytes_unsent, hdr_len = 0, trl_len =
+> >0,
+> > 		     sge_off = c_tx->sge_off, sge_idx = c_tx->sge_idx,
+> > 		     pbl_idx = c_tx->pbl_idx;
+> >-	unsigned long kmap_mask = 0L;
+> >+
+> >+	memset(page_array_addr, 0, sizeof(page_array_addr));
+> > 
+> > 	if (c_tx->state == SIW_SEND_HDR) {
+> > 		if (c_tx->use_sendpage) {
+> >@@ -498,7 +504,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
+> >struct socket *s)
+> > 					p = siw_get_upage(mem->umem,
+> > 							  sge->laddr + sge_off);
+> > 				if (unlikely(!p)) {
+> >-					siw_unmap_pages(page_array, kmap_mask);
+> >+					siw_unmap_pages(page_array_addr, MAX_ARRAY);
+> > 					wqe->processed -= c_tx->bytes_unsent;
+> > 					rv = -EFAULT;
+> > 					goto done_crc;
+> >@@ -506,11 +512,10 @@ static int siw_tx_hdt(struct siw_iwarp_tx
+> >*c_tx, struct socket *s)
+> > 				page_array[seg] = p;
+> > 
+> > 				if (!c_tx->use_sendpage) {
+> >-					iov[seg].iov_base = kmap(p) + fp_off;
+> >-					iov[seg].iov_len = plen;
+> >+					page_array_addr[seg] = kmap_local_page(page_array[seg]);
+> > 
+> >-					/* Remember for later kunmap() */
+> >-					kmap_mask |= BIT(seg);
+> >+					iov[seg].iov_base = page_array_addr[seg] + fp_off;
+> >+					iov[seg].iov_len = plen;
+> > 
+> > 					if (do_crc)
+> > 						crypto_shash_update(
+> >@@ -518,7 +523,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
+> >struct socket *s)
+> > 							iov[seg].iov_base,
+> > 							plen);
+> > 				} else if (do_crc) {
+> >-					kaddr = kmap_local_page(p);
+> >+					kaddr = kmap_local_page(page_array[seg]);
+> > 					crypto_shash_update(c_tx->mpa_crc_hd,
+> > 							    kaddr + fp_off,
+> > 							    plen);
+> >@@ -542,7 +547,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
+> >struct socket *s)
+> > 
+> > 			if (++seg > (int)MAX_ARRAY) {
+> > 				siw_dbg_qp(tx_qp(c_tx), "to many fragments\n");
+> >-				siw_unmap_pages(page_array, kmap_mask);
+> >+				siw_unmap_pages(page_array_addr, MAX_ARRAY);
+> > 				wqe->processed -= c_tx->bytes_unsent;
+> > 				rv = -EMSGSIZE;
+> > 				goto done_crc;
+> >@@ -593,7 +598,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
+> >struct socket *s)
+> > 	} else {
+> > 		rv = kernel_sendmsg(s, &msg, iov, seg + 1,
+> > 				    hdr_len + data_len + trl_len);
+> >-		siw_unmap_pages(page_array, kmap_mask);
+> >+		siw_unmap_pages(page_array_addr, MAX_ARRAY);
+> > 	}
+> > 	if (rv < (int)hdr_len) {
+> > 		/* Not even complete hdr pushed or negative rv */
+> >-- 
+> >2.28.0.rc0.12.gb6a658bd00c9
+> >
+> >
 > 
-> Thanks Colin, looks right
-> 
-> Alex, this is in your hch-mdev-direct-v4 branch can you squash or
-> whatever?
-> 
-> Though if we are touching this I prefer the below:
-
-Discrete fix above as a follow-up patch and later add the below as an
-exit path cleanup, if you'd like to post it separately, seems like the
-way to go to me.  Thanks,
-
-Alex
-
-> diff --git a/samples/vfio-mdev/mdpy.c b/samples/vfio-mdev/mdpy.c
-> index 7e9c9df0f05bac..868a0e7fa90e98 100644
-> --- a/samples/vfio-mdev/mdpy.c
-> +++ b/samples/vfio-mdev/mdpy.c
-> @@ -235,17 +235,16 @@ static int mdpy_probe(struct mdev_device *mdev)
->  
->  	mdev_state->vconfig = kzalloc(MDPY_CONFIG_SPACE_SIZE, GFP_KERNEL);
->  	if (mdev_state->vconfig == NULL) {
-> -		kfree(mdev_state);
-> -		return -ENOMEM;
-> +		ret = -ENOMEM;
-> +		goto err_state;
->  	}
->  
->  	fbsize = roundup_pow_of_two(type->width * type->height * type->bytepp);
->  
->  	mdev_state->memblk = vmalloc_user(fbsize);
->  	if (!mdev_state->memblk) {
-> -		kfree(mdev_state->vconfig);
-> -		kfree(mdev_state);
-> -		return -ENOMEM;
-> +		ret = -ENOMEM;
-> +		goto err_vconfig;
->  	}
->  	dev_info(dev, "%s: %s (%dx%d)\n", __func__, type->name, type->width,
->  		 type->height);
-> @@ -260,12 +259,17 @@ static int mdpy_probe(struct mdev_device *mdev)
->  	mdpy_count++;
->  
->  	ret = vfio_register_group_dev(&mdev_state->vdev);
-> -	if (ret) {
-> -		kfree(mdev_state);
-> -		return ret;
-> -	}
-> +	if (ret)
-> +		goto err_vconfig;
-> +
->  	dev_set_drvdata(&mdev->dev, mdev_state);
->  	return 0;
-> +
-> +err_vconfig:
-> +	kfree(mdev_state->vconfig);
-> +err_state:
-> +	kfree(mdev_state);
-> +	return ret;
->  }
->  
->  static void mdpy_remove(struct mdev_device *mdev)
-> 
-
