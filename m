@@ -2,147 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6B03AFEC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:09:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32183AFECC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230224AbhFVILm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 04:11:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229853AbhFVILl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 04:11:41 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E34C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 01:09:24 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id v22-20020a0568301416b029044e2d8e855eso11218945otp.8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 01:09:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+KIhMHmG9xEoplSTe5YdDdzfi1paJ8XARniBwjTg03k=;
-        b=Ym455ybyRuVNtnqTpdt7P8X+q69idT6SEJDlahlRmKJV8J1gpOx0evM0YjyJjusrTf
-         a8cXrmGrAxJi7wlgusfO0uVUo/9QC971ql1DFoeOSzqCDZzmmHzsiKbu8s3eDfoCSt6G
-         P2swb91IEChiat4UVcQfZ6vzmOk8Glck115Ho3zoNfvpzah8z5QZpvwHE39XDIyAgBuv
-         5gKW3tUs6lXErSCW6dacjs/ovleLewk67xUMAYNuTPq0/GqpoqUPtJ4oQBzqKf+sfFss
-         /PtP6vNZC9LNRq6pivnr+kGJzasgfAfQuYKy+cVS8XlVMpWthsCQBcaV6ll+O2N9Akmy
-         ksdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+KIhMHmG9xEoplSTe5YdDdzfi1paJ8XARniBwjTg03k=;
-        b=BgbKOgNOsBGjbyR05APF1/00CWVnbx8S0mPeGJYwccd5jW8H9opt7e7+6lSMYAmQbt
-         0V5QyDzP3933vrzYKoqGFvfd075IBU+nLDwT1BO3ZFhptNCBQz0WpVVX8k/5esPl8onK
-         hip44C11wrUSs+G8XT+hy6fwOnRo5uO0FaXxGxgdf7laMAE29WC3U1XS27xcmXqaCFAw
-         8C4m4g16Jkzwz0T82c9nFFrJznKfMu68zj6Go0Etitd5LDMW5u8ASCjJqYJ5+bxB7j5U
-         WMbszG2vPnLqSLYsvY54MviuBDkNy2b5vc/ilWg8PNvtzEkUqnYr59XKriADush/8FlF
-         kfEg==
-X-Gm-Message-State: AOAM533XI0msEc3cqtmWjvQBo8SBVSWSKe2TU2awlFM1lx4rQOYNGNMj
-        /QwJ764/N/CqsguRsSnpHfzlar55XVn/7UIPKcjYGQ==
-X-Google-Smtp-Source: ABdhPJxgFSBmdcbDb55PtEoRgnwSIeaz86uH0dDuE3fvOVYXbp9t15kLoyQklb8X4sv2BZbnmGZBqSmyIw3TqpcW5Eg=
-X-Received: by 2002:a05:6830:1bcb:: with SMTP id v11mr2131100ota.251.1624349363988;
- Tue, 22 Jun 2021 01:09:23 -0700 (PDT)
+        id S230286AbhFVIMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 04:12:24 -0400
+Received: from mga17.intel.com ([192.55.52.151]:34208 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229677AbhFVIMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 04:12:22 -0400
+IronPort-SDR: yLnl+IPdXaTIx0brnEEpE2SYkb9b72QQRcbYE+b0Yehk13GyMfkzG3tY+KdB5sJ+m/NcvID2hu
+ eP2yz8iI0HLA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="187389686"
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208";a="187389686"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 01:09:58 -0700
+IronPort-SDR: WRQWjSz6IY04U8on2iTPxmpcU3oevZrESTBlFpgmUtPBFK+YMTI37ILVe7Eo82IVljnXSI/D+h
+ E80JfmEAPzUA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208";a="556537765"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 22 Jun 2021 01:09:55 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 22 Jun 2021 11:09:55 +0300
+Date:   Tue, 22 Jun 2021 11:09:55 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Dominik Brodowski <linux@dominikbrodowski.net>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: v5.13-rcX regression - NULL pointer dereference - MFD and
+ software node API
+Message-ID: <YNGa021IIj+C8H7h@kuha.fi.intel.com>
+References: <YM77uq51jmDC/rHt@owl.dominikbrodowski.net>
+ <CAHp75VfP2h_aLVR9cgfXWHmqNbUZg-KZj2UwMs6dAkbS5eSghg@mail.gmail.com>
+ <YM8rY5hi+zuAekg+@owl.dominikbrodowski.net>
+ <CAHp75VdSyM7JdGDhdo5t+FbmouEA7ZSOwGAtSwSRD8vTwTc+LA@mail.gmail.com>
+ <CAHp75Ve=j+u-9TF0az3o82wOyzixCezkgOm=yUHh37JS_Awiig@mail.gmail.com>
+ <YNBU3Jjme1lQ3MdV@owl.dominikbrodowski.net>
+ <YNBjJnxrXaWmfUqo@smile.fi.intel.com>
+ <YNBsB6zIo4A4vD4w@kuha.fi.intel.com>
+ <YNCw5k9vwdQiS0u4@owl.dominikbrodowski.net>
 MIME-Version: 1.0
-References: <20210621231822.2848305-1-ndesaulniers@google.com>
- <20210621231822.2848305-4-ndesaulniers@google.com> <YNGQhgKd9Ruti5qZ@hirez.programming.kicks-ass.net>
-In-Reply-To: <YNGQhgKd9Ruti5qZ@hirez.programming.kicks-ass.net>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 22 Jun 2021 10:09:10 +0200
-Message-ID: <CANpmjNMsM+tgf2Moy72Xd2oAxpVsAkXXYFtOodvVP5vRZDwdaA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] Kconfig: add ARCH_WANTS_NO_INSTR+CC_HAS_NO_PROFILE_FN_ATTR,
- depend on for GCOV and PGO
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Bill Wendling <wcw@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
-        Martin Liska <mliska@suse.cz>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Fangrui Song <maskray@google.com>, linux-doc@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        johannes.berg@intel.com, linux-toolchains@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YNCw5k9vwdQiS0u4@owl.dominikbrodowski.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Jun 2021 at 09:26, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Mon, Jun 21, 2021 at 04:18:22PM -0700, Nick Desaulniers wrote:
-> > We don't want compiler instrumentation to touch noinstr functions, which
-> > are annotated with the no_profile_instrument_function function
-> > attribute. Add a Kconfig test for this and make PGO and GCOV depend on
-> > it.
-> >
-> > If an architecture is using noinstr, it should denote that via this
-> > Kconfig value. That makes Kconfigs that depend on noinstr able to
-> > express dependencies in an architecturally agnostic way.
-> >
-> > Cc: Masahiro Yamada <masahiroy@kernel.org>
-> > Cc: Peter Oberparleiter <oberpar@linux.ibm.com>
-> > Link: https://lore.kernel.org/lkml/YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net/
-> > Link: https://lore.kernel.org/lkml/YMcssV%2Fn5IBGv4f0@hirez.programming.kicks-ass.net/
-> > Suggested-by: Nathan Chancellor <nathan@kernel.org>
-> > Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > ---
-> > Changes V1 -> V2:
-> > * Add ARCH_WANTS_NO_INSTR
-> > * Change depdendencies to be !ARCH_WANTS_NO_INSTR || CC_HAS_NO_PROFILE_FN_ATTR
-> >   rather than list architectures explicitly, as per Nathan.
-> > * s/no_profile/no_profile_instrument_function/
-> >
-> >  arch/Kconfig        | 7 +++++++
-> >  arch/arm64/Kconfig  | 1 +
-> >  arch/s390/Kconfig   | 1 +
-> >  arch/x86/Kconfig    | 1 +
-> >  init/Kconfig        | 3 +++
-> >  kernel/gcov/Kconfig | 1 +
-> >  kernel/pgo/Kconfig  | 3 ++-
-> >  7 files changed, 16 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/arch/Kconfig b/arch/Kconfig
-> > index 2b4109b0edee..2113c6b3b801 100644
-> > --- a/arch/Kconfig
-> > +++ b/arch/Kconfig
-> > @@ -285,6 +285,13 @@ config ARCH_THREAD_STACK_ALLOCATOR
-> >  config ARCH_WANTS_DYNAMIC_TASK_STRUCT
-> >       bool
-> >
-> > +config ARCH_WANTS_NO_INSTR
-> > +     bool
-> > +     help
-> > +       An architecure should select this if the noinstr macro is being used on
-> > +       functions to denote that the toolchain should avoid instrumenting such
-> > +       functions and is required for correctness.
-> > +
-> >  config ARCH_32BIT_OFF_T
-> >       bool
-> >       depends on !64BIT
->
-> There's also CC_HAS_WORKING_NOSANITIZE_ADDRESS in lib/Kconfig.kasan that
-> might want to be hooked into this, but that can be done separately I
-> suppose.
+On Mon, Jun 21, 2021 at 05:31:50PM +0200, Dominik Brodowski wrote:
+> Am Mon, Jun 21, 2021 at 01:37:59PM +0300 schrieb Heikki Krogerus:
+> > On Mon, Jun 21, 2021 at 01:00:06PM +0300, Andy Shevchenko wrote:
+> > > Can you, please, attach this to the bug report?
+> > > 
+> > > Long story here is that the device creation fails but we already have added
+> > > swnode to it. Meanwhile, device itself is not completely instantiated (yet)
+> > > and dev_name(dev) is NULL. The software_node_notify() is called with such
+> > > device and Oopses in the following line
+> > > 
+> > > 	sysfs_remove_link(&swnode->kobj, dev_name(dev));
+> > > 
+> > > My patch fixes another issue that might happen before this and in the code
+> > > that retrieves swnode itself in the device_remove_software_node().
+> > > 
+> > > Of course my patch won't fix this issue.
+> > > 
+> > > I have heard that Heikki is looking how to fix the issue in your case and
+> > > potentially in any other cases where device_add_software_node() is called
+> > > against not formed object instance.
+> > 
+> > Dominik, can you test the attached patch to confirm if this really is
+> > the case.
+> 
+> With this patch applied, the panic disappears.
 
-KASAN already depends on this for all compiler instrumentation modes,
-not just for 'noinstr' but also to avoid false positives. So it's not
-just for noinstr's benefit, and we should not weaken the requirement
-there.
+Thanks Dominik. I'll clean it and send it out today.
+
+cheers,
+
+-- 
+heikki
