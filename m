@@ -2,112 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A46383AFE7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4577C3AFE7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230217AbhFVH5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 03:57:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39214 "EHLO
+        id S230274AbhFVH6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 03:58:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230040AbhFVH5k (ORCPT
+        with ESMTP id S229876AbhFVH6D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 03:57:40 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C636EC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:55:23 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id bl4so1321401qkb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:55:23 -0700 (PDT)
+        Tue, 22 Jun 2021 03:58:03 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D85CC061574;
+        Tue, 22 Jun 2021 00:55:48 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id w31so16405849pga.6;
+        Tue, 22 Jun 2021 00:55:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g9aBePfq1/KpWdqkDFgr1We+3KCLkJ0L8u7O6nn+3jo=;
-        b=Px9Tadx5bMq0vSKM2XDnWx10m9NkEZC+S+ZT+Ccdf2855IhV4DbtWdLO06ur8qkiT8
-         iZVzl4yOsDQz/cLQtHNY+UPzXOckkBZg+cFuzOyJFVfxv0jJEiYSUymGF0ZqB8GbZy1w
-         BtT01X6nY9orL7tj6PQo3bkl8iIBlFrwN9fog0Tu6s6gSnaqqlyW2Vu9DqUR1cMPwSC2
-         TwWVZGus7bRQYaPsfxt0iZbDkclMVEbwyAdxULaXBOQKOAqa9msQ+7I2586IK+E6i9iV
-         GGYiSO8BaBCCI9FNJ1oOQDkb1QKi9nIxcNQcUH4H5s3GA3sb/wwd4TUTXXaUx10XGdAA
-         3Ulg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7xvaoK29cQI4qjauQSst3YfwzuyBu/bNqlntJ7vGyMM=;
+        b=dOF8BXmAduwGnx+rnd8It1JnF/E30uDMvrhVptvtPu/hHFO0nm9gq8bw/JGlqgjlQY
+         FmxOthJYrZrwm4jYOauo9SK+ixz0RWz3/laRzD/t5SFZXdCWK3UutNeIM+WuRepRZLiR
+         uSuLF8Cjm6RCzSw7bElgGwtt0MtkPz0D459BV9MHEK8nsQ7Yoc9vmth62h/8eNy9ItkV
+         gXYvwop9w7o0ztoV5THkhCZzojkVhtKfqWED/KDXll1nK5JVzsnwN7du4xoLKJ3S5tcd
+         RsimQs1zLIXJUcJsloOxyc84qB4nsEUZ+rhf2Y8yv6qTOC1cGzFwzjpTz9+ZGVCC7TcN
+         +4dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g9aBePfq1/KpWdqkDFgr1We+3KCLkJ0L8u7O6nn+3jo=;
-        b=SObRHHMEf8uN2SLkcveCWcrLdwA4jVSK/ofUzx//OuE9InqHhDs2KuGwaE58DZU4U1
-         W0mvxUwMZmnyBFhY37I1Z/wq+J2uzJrsUxggq+Hjoq6WlGfq53D/Tl5YuFR5ahcPDaV/
-         AQ7tDL3fxplR3JdUC9h7L3fMJSL4KrqJRuybq+dTJR5IbC4YcFOC8DXiGuZGl4EbZVuS
-         VcnVgR/aKUIh+qVDx7DYPzhuCM4OwEBX6mIq8pK7CXbPGIdpIclAqk6UV5wCL07wmGyt
-         33S1R3sMibozhX56Oa0mwHJNu+uRfhcjuOtkbYoKtoVO/DsCpsUPlwnq5xlzRLiOzpF2
-         YbNg==
-X-Gm-Message-State: AOAM532ID0qnAmR0Rzd0sV3LBjKhfDxucrbGRTFBDR/m6/24wVjTnT7d
-        6B+2b40VBYT4Sc4x6csw+TqcZ6Ik4hIr9zBT4iSUDQ==
-X-Google-Smtp-Source: ABdhPJw2hXewn8FpKtmuSSAZpnVwhBWJde4ZMKIrIVNNDVTtd+9iS/Zf4hPk2BHfcx94ZNirkltH5BZ187sDZ28F5MY=
-X-Received: by 2002:a25:1804:: with SMTP id 4mr3012601yby.157.1624348522940;
- Tue, 22 Jun 2021 00:55:22 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7xvaoK29cQI4qjauQSst3YfwzuyBu/bNqlntJ7vGyMM=;
+        b=AeLYA7T65+mrc5ZuZTjq0D7LdVSmvAnZlYZFzdXo3JiUJa1UTmicqZ+uTn2XChSlQn
+         j0Fg0n96Pq4rd6W9iBfmOYEUnGOm4qVTB/YEGuPAhiBO0PAh1tLTEkn7/aboNU0fKUzu
+         y+9JJIR6m2gCT61mOxI7dWnGZl/+TkhdF0VrIBM27PZ/Fd2GTqywCut1ms8zzy+scOr0
+         +pQanm9U6VCv774DXIblyGCfsdmW0uZxk8XKBP44uTxT6uNRFB/n1LtQIS0IRGGeURh7
+         dSrc+adGlOG/h8irUP80Vky58wvUU8xlX3XUPKh2m5nzGImcNdNh4A/XqcBI1qcy+TeR
+         3jyg==
+X-Gm-Message-State: AOAM531iVH+olByTB/4fECIKTYJB/cgyYakZLcl4sfEvFpH03xzqr+W5
+        FjwF0LhjEoCmcDriyxPVdxU=
+X-Google-Smtp-Source: ABdhPJxI1SgB52smWHu7aInkBaStnGfwhvOES28tfLR6ZE/vi5kagHD7lmuAgAZ+JKvN6K9xMqANrw==
+X-Received: by 2002:a63:65c5:: with SMTP id z188mr2607540pgb.174.1624348547535;
+        Tue, 22 Jun 2021 00:55:47 -0700 (PDT)
+Received: from d3 ([2405:6580:97e0:3100:ae94:2ee7:59a:4846])
+        by smtp.gmail.com with ESMTPSA id c6sm9510959pfb.39.2021.06.22.00.55.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 00:55:47 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 16:55:42 +0900
+From:   Benjamin Poirier <benjamin.poirier@gmail.com>
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     linux-staging@lists.linux.dev, netdev@vger.kernel.org,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Manish Chopra <manishc@marvell.com>,
+        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
+        <GR-Linux-NIC-Dev@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC 04/19] staging: qlge: add qlge_* prefix to avoid namespace
+ clashes
+Message-ID: <YNGXfu/wGcKTuJYA@d3>
+References: <20210621134902.83587-1-coiby.xu@gmail.com>
+ <20210621134902.83587-5-coiby.xu@gmail.com>
 MIME-Version: 1.0
-References: <1624314539-17396-1-git-send-email-gabeknez@linux.microsoft.com>
-In-Reply-To: <1624314539-17396-1-git-send-email-gabeknez@linux.microsoft.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 22 Jun 2021 09:55:12 +0200
-Message-ID: <CAMpxmJVREmcqxFJn9CQYL_Y9E3X-8DYRiTMLD5hNE90m8sSG6Q@mail.gmail.com>
-Subject: Re: [PATCH v3] gpiolib: cdev: zero padding during conversion to gpioline_info_changed
-To:     Gabriel Knezek <gabeknez@linux.microsoft.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        joe.reviewer@hotmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621134902.83587-5-coiby.xu@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 12:29 AM Gabriel Knezek
-<gabeknez@linux.microsoft.com> wrote:
->
-> When userspace requests a GPIO v1 line info changed event,
-> lineinfo_watch_read() populates and returns the gpioline_info_changed
-> structure. It contains 5 words of padding at the end which are not
-> initialized before being returned to userspace.
->
-> Zero the structure in gpio_v2_line_info_change_to_v1() before populating
-> its contents.
->
-> Fixes: aad955842d1c ("gpiolib: cdev: support GPIO_V2_GET_LINEINFO_IOCTL and
-> GPIO_V2_GET_LINEINFO_WATCH_IOCTL")
-> Signed-off-by: Gabriel Knezek <gabeknez@linux.microsoft.com>
-> ---
-> Changes in v3:
->   - Include the Fixes tag referencing the code being fixed and properly
->     version the patch.
->
-> Changes in v2:
->   - Update commit message and subject with suggestions about clarity.
->   - Patch series at https://www.spinics.net/lists/linux-gpio/msg62163.html
->
-> v1:
->   - Initial patch
->   - Patch series at https://www.spinics.net/lists/linux-gpio/msg62084.html
->
->  drivers/gpio/gpiolib-cdev.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-> index ee5903aac497..af68532835fe 100644
-> --- a/drivers/gpio/gpiolib-cdev.c
-> +++ b/drivers/gpio/gpiolib-cdev.c
-> @@ -1865,6 +1865,7 @@ static void gpio_v2_line_info_changed_to_v1(
->                 struct gpio_v2_line_info_changed *lic_v2,
->                 struct gpioline_info_changed *lic_v1)
->  {
-> +       memset(lic_v1, 0, sizeof(*lic_v1));
->         gpio_v2_line_info_to_v1(&lic_v2->info, &lic_v1->info);
->         lic_v1->timestamp = lic_v2->timestamp_ns;
->         lic_v1->event_type = lic_v2->event_type;
-> --
-> 2.25.1
->
+On 2021-06-21 21:48 +0800, Coiby Xu wrote:
+> This patch extends commit f8c047be540197ec69cde33e00e82d23961459ea
+> ("staging: qlge: use qlge_* prefix to avoid namespace clashes with other qlogic drivers")
+> to add qlge_ prefix to rx_ring and tx_ring related structures.
 
-I fixed the wrapping of the Fixes tag and queued this for fixes with
-Kent's review tag.
+There are still many struct, defines and enums in qlge.h which don't
+have a prefix or mix ql_ and qlge_, some of which conflict with other
+instances elsewhere in the kernel.
+ex: QL_ADAPTER_UP
 
-Bart
+I think they should all be changed, not just the ones have a conflict
+today.
