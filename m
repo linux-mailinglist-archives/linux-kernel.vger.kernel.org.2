@@ -2,123 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3783C3B0679
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D903B068C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231618AbhFVOJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 10:09:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231597AbhFVOJI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 10:09:08 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C20AC061574;
-        Tue, 22 Jun 2021 07:06:52 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id hz1so12179186ejc.1;
-        Tue, 22 Jun 2021 07:06:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=lp53Y0gTyDe3jcN5tHsholxiEow8xex6nP+9fTMsVuw=;
-        b=TPe5aCgDJqRdLqihIk7FWGHy+EQ0p8K06/88hnNL5HjOXaw+W3Wt5hm/d327/bEFW3
-         pH2lZF8M0YgCtDKuN4XLUaWCRlbhFf6qVqv/gGObrmMCcXXTYOcpwF3aYb1ZPQNzdZF9
-         zYDIhcfDv5wMpT37ZW9ySP+ZVtQ33yHfaeoA8/w69v/twpJsErvQ9lkKqZ4jAPd3Otxn
-         so9rsFNZCR6jP2sPAEpfb5vBxOwe1NaGEXPMq26z2fBeSqp8Vi09ODrKlGLTjArub4W+
-         PxWFaEV5fzLiBQI6LuS1VnjgHEg6d0xN6+gj+wcb2CQ38UuiaRY1wWKs2ayclQKOJiQe
-         AtZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lp53Y0gTyDe3jcN5tHsholxiEow8xex6nP+9fTMsVuw=;
-        b=AjPAyzDJwm+hzw1zeM1oucgAtp5axFK5RfaYiUhUbyX10I99R7sCwib5zYUHeZLHaw
-         EGB2HXs+fcyooK5CLTxwFt/CfbMx80akTAecSZgL/6UmyuOujngyFvfI2Lj3OMSg/IzQ
-         HuelD/vODONec5cXdESj4BKDdxatPRu1R8cwMSLrBubGdGga8aNaZOUm8qEuD3unkJpX
-         mow+8AGxVtkd4eaNimNPfP9kplKlWRjP9JntJYfAWZHLVVjutFyTaQ6L8/mGlImwQR5W
-         QUySIdDSMWiUp0naFvFJ4ue8FqhHbrKa6FYhqOCa1+HDRQpFPCGqLp1+TJrqz7ZH1Iu9
-         0pAQ==
-X-Gm-Message-State: AOAM5305FFTzKTQsKezazWdcmaVFL9ZRNoBU98I7ujkIK+XeTyPRbFTR
-        +y4CuzVzGYO30JPfQl91iFY=
-X-Google-Smtp-Source: ABdhPJwv8yq6Ze0RcRPGoACjstEosenX/SS5aFRiXKeQh+SdY0jGjk70OiXGvqJO1PsBz1I1zsuiKw==
-X-Received: by 2002:a17:906:498b:: with SMTP id p11mr4264067eju.295.1624370810644;
-        Tue, 22 Jun 2021 07:06:50 -0700 (PDT)
-Received: from localhost ([62.96.65.119])
-        by smtp.gmail.com with ESMTPSA id a2sm6164232ejp.1.2021.06.22.07.06.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 07:06:49 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 16:08:48 +0200
-From:   Thierry Reding <thierry.reding@gmail.com>
-To:     Jiajun Cao <jjcao20@fudan.edu.cn>
-Cc:     yuanxzhang@fudan.edu.cn, Xin Tan <tanxin.ctf@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Mohan Kumar <mkumard@nvidia.com>,
-        Peter Geis <pgwipeout@gmail.com>, alsa-devel@alsa-project.org,
-        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pci: hda: Add IRQ check for platform_get_irq()
-Message-ID: <YNHu8GxbzYStfj4W@orome.fritz.box>
-References: <20210622131947.94346-1-jjcao20@fudan.edu.cn>
+        id S231302AbhFVOLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 10:11:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:49960 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230047AbhFVOLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 10:11:53 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 76CC631B;
+        Tue, 22 Jun 2021 07:09:37 -0700 (PDT)
+Received: from [10.57.7.129] (unknown [10.57.7.129])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 603503F694;
+        Tue, 22 Jun 2021 07:09:35 -0700 (PDT)
+Subject: Re: [RFC PATCH 3/4] cpufreq: Add Active Stats calls tracking
+ frequency changes
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Chris Redpath <Chris.Redpath@arm.com>, Beata.Michalska@arm.com,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Amit Kachhap <amit.kachhap@gmail.com>
+References: <20210622075925.16189-1-lukasz.luba@arm.com>
+ <20210622075925.16189-4-lukasz.luba@arm.com>
+ <CAJZ5v0iVwpn0_wCZOh43DOeR2mudWYJyseMdtMsZGR-sjQ1X9Q@mail.gmail.com>
+ <4e5476a6-fa9f-a9ef-ff26-8fa1b4bb90c0@arm.com>
+ <CAJZ5v0i0KQwTWzbEPbs=0B-j7MkE6C1XP=mZaU1hhQm9HyZGJg@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <851205af-39d6-3864-bd28-ae84528946c4@arm.com>
+Date:   Tue, 22 Jun 2021 15:09:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="h2zYJyMj+3v5Om+m"
-Content-Disposition: inline
-In-Reply-To: <20210622131947.94346-1-jjcao20@fudan.edu.cn>
-User-Agent: Mutt/2.0.7 (481f3800) (2021-05-04)
+In-Reply-To: <CAJZ5v0i0KQwTWzbEPbs=0B-j7MkE6C1XP=mZaU1hhQm9HyZGJg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---h2zYJyMj+3v5Om+m
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jun 22, 2021 at 09:19:42PM +0800, Jiajun Cao wrote:
-> The function hda_tegra_first_init() neglects to check the return
-> value after executing platform_get_irq().
->=20
-> hda_tegra_first_init() should check the return value (if negative
-> error number) for errors so as to not pass a negative value to
-> the devm_request_irq().
->=20
-> Fix it by adding a check for the return value irq_id.
->=20
-> Signed-off-by: Jiajun Cao <jjcao20@fudan.edu.cn>
-> Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-> ---
->  sound/pci/hda/hda_tegra.c | 3 +++
->  1 file changed, 3 insertions(+)
+On 6/22/21 2:51 PM, Rafael J. Wysocki wrote:
+> On Tue, Jun 22, 2021 at 3:42 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>>
+>>
+>> On 6/22/21 1:28 PM, Rafael J. Wysocki wrote:
+>>> On Tue, Jun 22, 2021 at 9:59 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>>
+>>>> The Active Stats framework tracks and accounts the activity of the CPU
+>>>> for each performance level. It accounts the real residency, when the CPU
+>>>> was not idle, at a given performance level. This patch adds needed calls
+>>>> which provide the CPU frequency transition events to the Active Stats
+>>>> framework.
+>>>>
+>>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>>>> ---
+>>>>    drivers/cpufreq/cpufreq.c | 5 +++++
+>>>>    1 file changed, 5 insertions(+)
+>>>>
+>>>> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+>>>> index 802abc925b2a..d79cb9310572 100644
+>>>> --- a/drivers/cpufreq/cpufreq.c
+>>>> +++ b/drivers/cpufreq/cpufreq.c
+>>>> @@ -14,6 +14,7 @@
+>>>>
+>>>>    #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>>>>
+>>>> +#include <linux/active_stats.h>
+>>>>    #include <linux/cpu.h>
+>>>>    #include <linux/cpufreq.h>
+>>>>    #include <linux/cpu_cooling.h>
+>>>> @@ -387,6 +388,8 @@ static void cpufreq_notify_transition(struct cpufreq_policy *policy,
+>>>>
+>>>>                   cpufreq_stats_record_transition(policy, freqs->new);
+>>>>                   policy->cur = freqs->new;
+>>>> +
+>>>> +               active_stats_cpu_freq_change(policy->cpu, freqs->new);
+>>>>           }
+>>>>    }
+>>>>
+>>>> @@ -2085,6 +2088,8 @@ unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
+>>>>                               policy->cpuinfo.max_freq);
+>>>>           cpufreq_stats_record_transition(policy, freq);
+>>>>
+>>>> +       active_stats_cpu_freq_fast_change(policy->cpu, freq);
+>>>> +
+>>>
+>>> This is quite a bit of overhead and so why is it needed in addition to
+>>> the code below?
+>>
+>> The code below is tracing, which is good for post-processing. We use in
+>> our tool LISA, when we analyze the EAS decision, based on captured
+>> trace data.
+>>
+>> This new code is present at run time, so subsystems like our thermal
+>> governor IPA can use it and get better estimation about CPU used power
+>> for any arbitrary period, e.g. 50ms, 100ms, 300ms, ...
+> 
+> So can it be made not run when the IPA is not using it?
 
-The original code is probably harmless because it looks like the call to
-request_irq() would return -EINVAL if irq_id was a negative error code.
+I can make a Kconfig for IPA to select this ACTIVE_STATS.
+Also, I can add description that this framework is mostly needed
+for IPA, so don't enable it if you don't use IPA (default is 'n'
+so it shouldn't harm others).
 
-But checking the return value is still a good idea, so:
+This Active Stats shouldn't be stopped when thermal zone is switching
+between governors at run time, e.g. IPA -> step_wise -> IPA
+because when IPA is set next time, it might not have correct CPU
+stats (what is the current frequency and for how long it has been
+actively used).
+Beside, switching governors at run time is not a good idea
+(apart from stress testing them ;) ).
 
-Reviewed-by: Thierry Reding <treding@nvidia.com>
+> 
+>>>
+>>> And pretty much the same goes for the idle loop change.  There is
+>>> quite a bit of instrumentation in that code already and it avoids
+>>> adding new locking for a reason.  Why is it a good idea to add more
+>>> locking to that code?
+>>
+>> This active_stats_cpu_freq_fast_change() doesn't use the locking, it
+>> relies on schedutil lock in [1].
+> 
+> Ah, OK.
+> 
+> But it still adds overhead AFAICS.
 
---h2zYJyMj+3v5Om+m
-Content-Type: application/pgp-signature; name="signature.asc"
+Agree, it's an extra code. For platforms which use IPA it's a
+justifiable cost, weighted by better estimation thanks to this calls.
+For other platforms, this framework will be set to default 'n' option.
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmDR7vAACgkQ3SOs138+
-s6EXFg/9GSl5j8r97IeAHv15Y7wlUZPx43jh/E8tpLotlfxlkQkYJAwI/4JKfU7l
-4/AHaUQN3nJfx1ShlhMRSozHp5d/gTwmKOFYihWe7up8uUkVFtZgv1YxyGdW5JL9
-rR31Mgf3GYYz+w0HN4KxMd29qosCeCWWPLv62LTn5vh2KkMOxlawTNn4ArNAc6iz
-qKv1QAg/HSmHuX0a0g3udOB93avUJkoM53aDhxi7pp7GeR4abWgBUzzV37cD1Y3p
-HbjOZScoye0gKVifvHtIwiMuMadXTApO1dByN76hxLVYSo13DQWIsjYFQPXoTwZ9
-aqkojGAyFYpYpvuxzOy+qUK6ENAKcKKIm7agsMRWUEGR1mJfFlQciwsUXw7aaLmP
-7q5/eLiMydGyfbfG4aNTty13Wu8XNjzNTWs7f+UFbToSJZ7FxYVQIqTc+tzDeowz
-fqcduM7ECuQhCq0/RNYVtD4gAK9W9LuRutv69qifi6iUXFC/TDOZ5wg41r66BGxc
-5eB821Ttk2Qkc+aHupdOqfWiPZoUmdhXseGdWAwQ878gy8k9l9mvZhj8vrEh4NzI
-m/OdiDKd0pJkzqNH/1AtlpFD3zoq6QKXuivtyM4BtQJeoJqUqbVD60gx5fmyaBU7
-PV7QNRerp8KRGfOxOiqo3DjEeOFzpSCCnAbkVJzlwppwSKJbGyE=
-=1SPN
------END PGP SIGNATURE-----
-
---h2zYJyMj+3v5Om+m--
