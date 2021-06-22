@@ -2,253 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F26863B01EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 12:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB2173B01E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 12:57:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbhFVK7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 06:59:38 -0400
-Received: from mx0b-0064b401.pphosted.com ([205.220.178.238]:62912 "EHLO
-        mx0b-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229668AbhFVK7g (ORCPT
+        id S229890AbhFVK7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 06:59:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229668AbhFVK7b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 06:59:36 -0400
-Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15MAsqAw009734;
-        Tue, 22 Jun 2021 10:56:42 GMT
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam07lp2049.outbound.protection.outlook.com [104.47.56.49])
-        by mx0a-0064b401.pphosted.com with ESMTP id 39avpmrmrr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Jun 2021 10:56:42 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=et9boo52Rdzb0V4+GEiylV5q648aXZk48YQRl8Zve0/B1i4l4ylUfF6up+LqWN8EClO5oYvFNRbVhOKoPVpbP/YBxpHdLZT5fhvRJHmaFPuMdqY7mW2z83jY0gbyKD6YZQLXIE6hg13t0HaanlTeok6dQFeGtO8B3ZvjIJEKWG0FeOdQRcnLaTgerVi6MaZ55WvfkiPQj8CgdrtM+X82jxEj83yYsmUyLaDPBxtG7k+LihW0k9EeOU13dphv++xOTSa1kCUAyIslWH6MDDhJu7Nr05prlmvao0i8+G9YgctYqVw0RZKfQmGtque2W7uL0ufGVVjah9rJLHYCXQrycg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aTK8/a4sBUS48QFxabKqaRDVhlhy3fuYRKjRsxqHtBo=;
- b=Ai05snVEIXhGCMRepmm4AXEpJnSKkd7kkWI1GknOVEiBEw0Afhu23k8goba+OHPa22P74fOvaN/oJGmLui52NWlhlgi5z+dkJoBRoSr6OSL0WubB8UMCWwpHzTjGL7tkXZTCYE/YVdDl320ckYEpDxUoQihHmbgVM0uBsqV5BNB8ElW/sqBw4ggnBr30v7CB/d50o9lRCaw3DrqsNaMHlzelRRRz7BTKeiZGLPnpI8lOyUm4aiDjYDVsG+1sA34JKzEHCXIr7bU5/NH/dWSKcczX5YXC9D5fQwgWBwgKUvLG7HlhMcEBMZGM/1wIQhdV1VSNLO3ueJMCKzsw6UXq6Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        Tue, 22 Jun 2021 06:59:31 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D903C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 03:57:14 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id w127so23328081oig.12
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 03:57:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=aTK8/a4sBUS48QFxabKqaRDVhlhy3fuYRKjRsxqHtBo=;
- b=emzA1igICQIkhYLGXkGd6Azyo0tg9/mf2e14iWUAFE75C5UOqjUAQxvnL4TzXxNtfCmidGW57QO1lsyZ2Vn+A75VlVONFElrbnDif5fV6O5UILNzQzXhWUO2Y+UfDQ1hw5ULujqLkGxtU4R/3Ar2PRqKu9dzrz8/mIDFZGgzNlc=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from SN6PR11MB3309.namprd11.prod.outlook.com (2603:10b6:805:bd::14)
- by SA2PR11MB5081.namprd11.prod.outlook.com (2603:10b6:806:118::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.18; Tue, 22 Jun
- 2021 10:56:39 +0000
-Received: from SN6PR11MB3309.namprd11.prod.outlook.com
- ([fe80::a170:9c84:bd22:f77c]) by SN6PR11MB3309.namprd11.prod.outlook.com
- ([fe80::a170:9c84:bd22:f77c%6]) with mapi id 15.20.4242.023; Tue, 22 Jun 2021
- 10:56:39 +0000
-Subject: Re: [PATCH] rcu-scale: change rcu-scale report.
-From:   "Han, Jiangong" <Jiangong.Han@windriver.com>
-To:     paulmck@kernel.org
-Cc:     dave@stgolabs.net, josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, linux-kernel@vger.kernel.org,
-        rcu@vger.kernel.org
-References: <20210605070019.30377-1-jiangong.han@windriver.com>
- <20210609203711.GL4397@paulmck-ThinkPad-P17-Gen-1>
- <127fc462-375e-7e1a-2ecc-dd647f3bcb89@windriver.com>
-Message-ID: <405e1757-45c7-583c-6e1f-1ed54cd935ac@windriver.com>
-Date:   Tue, 22 Jun 2021 18:56:24 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <127fc462-375e-7e1a-2ecc-dd647f3bcb89@windriver.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [147.11.105.121]
-X-ClientProxiedBy: HKAPR04CA0003.apcprd04.prod.outlook.com
- (2603:1096:203:d0::13) To SN6PR11MB3309.namprd11.prod.outlook.com
- (2603:10b6:805:bd::14)
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HnUuefF6pQt/5KIq6n+0n8uuy3Ij0ViBdDnbo/wnUBQ=;
+        b=v2iGUHfXJmUEDSMyQJPjBTsxpCniaCK4XEaVIHbLtw0MOLxkmtcrwd8Nf8TGNr9eU3
+         yKo3eLVqj7x3+LuDTbPN7oJTYuje3aTHLcu2MOsCoZvrrTZKh6WkGYsGp2deZuzNs5Dl
+         D+S6Gn6stNcXDegcJlErLCyQIn0UT8GI7vtF3KekwYwrmoi7pJvgh7TNSVfHdSbNhdXI
+         qFjpbB2N6hNqWwXzXReTFa87IHkQrfTy73f91u7HNx0r6UGEfI4ikszxmmBH37mvhvV/
+         5KzQO/6J5WpjlQ6SmjokgnG4vV7aw8mEytCI9ifoflnOyk1tMqgFIy0QNJ9UKjd3ZbEc
+         HhDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HnUuefF6pQt/5KIq6n+0n8uuy3Ij0ViBdDnbo/wnUBQ=;
+        b=hbYIQx7wAVGoPI9CNG6efyY8B6UUrgPmb/YtGIXa13InZfh/M5ZOcldaCxzGXqtgvn
+         8MP9YQn6sHIzCXUmgdV3VBEknVjMO3O5wi15mgmh6OFiWCPtakQTEOPVnIWRM0Gsck4H
+         VUhFTZ4jRKP0zsBm0nyjzCYEa1EcHv+Vs5sRmxOtfSDh4axuiCspsWE05LQY7oHXqEcm
+         Vx8fynXFbXuD2QAOzh3YlETcwDTt0CbTaYcPgRWOzzxXQaxO7f4ddaPJK2I9hbcFl59R
+         5nLumCYigzvldXNS8wiaFiBnZj3CuHybckKoGtIWloRBJxec2j/ln0ts3a57Vqa3DpIG
+         Y5pw==
+X-Gm-Message-State: AOAM532u3t+tDxS+GH5HbOPVqT3Rq+QTKU6jDNQAZ0uUL4wmPpD7u2Wv
+        qenWSC7mQUKaAZxvn1Qp6EVGyC0vjTcPyM+2y5+TWQ==
+X-Google-Smtp-Source: ABdhPJzDc1X7iIOGSMjc4ltvXLq3EcfZ4hStQ7IHZaNwCEuG3WuoK0wf2exQLr0OAvu+BjQIixbqJmuByA8fdy/G8qQ=
+X-Received: by 2002:aca:de07:: with SMTP id v7mr2542559oig.8.1624359433329;
+ Tue, 22 Jun 2021 03:57:13 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [0.0.0.0] (147.11.105.121) by HKAPR04CA0003.apcprd04.prod.outlook.com (2603:1096:203:d0::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend Transport; Tue, 22 Jun 2021 10:56:33 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 30fc1b6e-233f-4920-06cc-08d9356c69a8
-X-MS-TrafficTypeDiagnostic: SA2PR11MB5081:
-X-Microsoft-Antispam-PRVS: <SA2PR11MB50812CB4E9605537D934C84D9F099@SA2PR11MB5081.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:287;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KyPABEELvCemtdtUfVvWKnF2eveXpnpSXysruVAw8i2fynsTLamvMPTnO7OREuhfezwcxqyr/qW2P+fr1BxFH8tpBigUEPdxf+Cn7giBSrM8ripba0uVcLm8jluqNdQHuY6GX+9JJ/PLGJrxFT5CNphrJWt0kw06zniVSZowNgHRggd5E1aU73nrXY2yXbzgya99dDaAe4vbs+JEb8uCOjArBtYqP0eo4GxVetRGy16fbWK1dp7J2d2gAjjQkGfntCxtVqjtpdTkH6xN4QoY855rtxPDgKriI8S5JAjRwCzf/ms36lwKcIdIAW+dUUK2820s1WKy6Uj11m0utM6xNDNsNaSta5dT55IYGTZwPXBUDyq2ytCdy1mDF9ztOO6i+Wgl6a5ZaUB5XuL8M/Q8d1WmEsz+IGRLjW0Qk2rFgIqIYVr1P+LJ1dTgPIitIpC7oiHGTzqtlOOpWFtgU3JfBHMtcp4U1P1zcUTmwYdBhgkDAMrFOaz8eJnmG2BP08gX/Q0+WwB5QnvDPPR7U6p/EsjbY1ol+UjV5DYPoOAwcTJKKZCZd+a/F1nKi04LUdDQe/VKGmGmeCIByRqJTwdVPOItHvsMaDUheHeHyip170Nr06qS1KqP3vD8bIqq0P9cf5fIBC2a3pUF2kWEXXJdPoF4CgCdPqmwtOSqSojRb3R7z/XaZHtw2Tt2UW6bWhP6XDKwB7928Zkn3lyoqh24PI2LB3ax3OLfmw7knR1Om5+D3YhH/Cr8dSxR2t/Ly6MWBaeApozY8DY7nS74lWaseAi5t3LrUrv9w74DyTqchUEjak4RUvli2pC6E+t6mwx7fX/CjImxz9iBt3Uk7cZwrZIwCnsJsMUUrjtaYabGQKw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3309.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(39850400004)(136003)(366004)(396003)(2616005)(956004)(478600001)(2906002)(966005)(6486002)(6916009)(6706004)(4326008)(5660300002)(36756003)(31696002)(38100700002)(38350700002)(31686004)(186003)(83380400001)(26005)(8676002)(66946007)(66476007)(66556008)(16526019)(52116002)(8936002)(86362001)(16576012)(6666004)(316002)(78286007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?azIzQzRmcXUyMWFNL1hNYkdJTWhBb0VRa0hNRUZJeGJzazBuSWx5Mkg0cHRJ?=
- =?utf-8?B?N1NzY0pxUEFxNXhDQVRLSGlycU1aQng0T0cvU2JXTUpkUmVNWVZLUUIwcURY?=
- =?utf-8?B?WTIvanFDOUc1MHJ6MFBYYmpuOVJwWk92RkxpZjNOYVM2LzY2NWhDOG53RnV2?=
- =?utf-8?B?cDYzWTR1MjF3OXoyYlR0TStzdWhFU0RGQzlNRksrRzhmOURtWFd0aDRyQlAr?=
- =?utf-8?B?STRlU1huZldwdHVaRy91OVo5aDFKVWVmQjBMbVhIdzU3SWFWai9IZEhrZnFJ?=
- =?utf-8?B?MEpIamhMV3ZUbmZpcWhNMytTU3cvU0lqV3NaOFRVeFZFZ0lDNEcvVTVMVHpR?=
- =?utf-8?B?V2pnV3lsRWtyY3g3cHpjTFB5V2hISU9oT0lhUERpOURBZ01mdUg3bU9Ea1Jt?=
- =?utf-8?B?eGN0QXM2UlFJa3V5VjVUU2hsbStTMWUvRzhzcXZFSzM0alFVQmdsOEw1U2ht?=
- =?utf-8?B?eFdDY0hYazJUYjV3ZmNnQTNxM1pOYklUMnFqQ0xEUi83Q01wQVNxN0VNUEZO?=
- =?utf-8?B?VldOd2h5Ny90c2xFZ1dQSWpmNjNmTlYrYzEvWnR6ampwQVFlSWRrSEV1RkJk?=
- =?utf-8?B?UVpmNUFFRXZrcWdWTCtOV3BFejFvd2tOZEtWek5ZNUlFY1hnQTVoZktGQTJ0?=
- =?utf-8?B?cnZsQ0RvVzBHOG1PbUNjeWJIbi92R3JLOGpYTWxXbHRsZ0Z5ME5rTHZuYnVC?=
- =?utf-8?B?M3o0eVlvTzNYV3hBRWhPUFNyQXYrcnNHem9YQmtET29MUTl6QW5Lb1JpbVBF?=
- =?utf-8?B?QTRLbVZ1QzlNUVdvSUdreTl2TFUvczdYQXRlV3V4alo5MkZaSXJWRlF0LzZN?=
- =?utf-8?B?MEpna2o0dmcraXExbktkd3VMOHpaMW9SZTBNVFdaNUM5Y25OOUNZQVVxT0RP?=
- =?utf-8?B?YVBvZllmeTFIUytva1VCZmJsSFZjMlRiRldvalJzRWoxU3JKNmJ5dThyUW9R?=
- =?utf-8?B?OXF0anVvYm1zVXAvaDdTUm1SbUxEQ0hlb2loUVlIVXp5RjAzcEhsOHhkK1U0?=
- =?utf-8?B?WVY1dEl3TjhhanA4eGNVUXByeVRkeEpaYnR4VjVjaXcwcjRXdUI2YVlrbkQ1?=
- =?utf-8?B?bDdWRjRoYXUyYnRtZEtpZGtVQll1TkNDd1lGTjQydWhIb2c2ZDlwbTJYU05i?=
- =?utf-8?B?cnRBMW1tYnoxS2ljbXZSVjNOZnVtcldzemlRd2gwQ3VTV3R0TzI3ZHprTEZ6?=
- =?utf-8?B?TFVHMWQ2cWhzU3RJMVEvOXgyQnJVcm9RcHJ3djRUc0ZVaTNsK2ZiQTVzNjNE?=
- =?utf-8?B?Ly9pTXNSSVhrUnNyMnA0U25YQ3FXS0N6NnA0bGFWR050OXY4aUFEdXYzT2Vj?=
- =?utf-8?B?TThRcGtnYzBqTlE2LzN5a0w4OWxkc3I2R0N1UlVBTkhKU2xlOVFmS0RUTXJq?=
- =?utf-8?B?R20xOGdqZVJKczcwUGtHVHJzaXRnK2xEVmF4ZGtTY0x4VDJzMW9YemNHbStP?=
- =?utf-8?B?c0h1WkkyaEtDZ0pYdVhoaUZLQ0RHN0Y3ZzZNb2g0bVFNVkNhOVhvcDZLTXMz?=
- =?utf-8?B?MlgyNGFqeDM5em5aRG9idEhzQlJSN1RtR1E3Q0duZXovQ2trNXptQWUxSUF1?=
- =?utf-8?B?eGxIS2N4RjNzOHR2RGFtaXFiWStuelRoczl2NWVVODdTdGpXekZuc05haWJm?=
- =?utf-8?B?OTEzQysrTm1GL0dvWktBYWhNRVVPY2FobVRRUGNwU0toUmpHTDdHdVEvS1BS?=
- =?utf-8?B?QkZjWm9aek9qNTliVDdNeFJCcEJrVnV6a1BVVFFPbFFxMk9JNytqT3ZxSXJn?=
- =?utf-8?Q?xPQ3EPvMlCzzgZqajJ5PqHG3dJcseQUqj1/y/eV?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 30fc1b6e-233f-4920-06cc-08d9356c69a8
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3309.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2021 10:56:39.6404
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ZPfU5XI5iDfh4aWS1Ibq3aaQ+9uNcxsQMUBQCOzPPfP7NDbDY0gNHMtVAeS1lfGmbZPnPr9SZpyH33ZJmzReR74rBRZ2oq0P6Gid0FPEJKc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB5081
-X-Proofpoint-GUID: untGitgWKv0cnU0TYTKxukr6YCwrzmZE
-X-Proofpoint-ORIG-GUID: untGitgWKv0cnU0TYTKxukr6YCwrzmZE
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-22_06:2021-06-21,2021-06-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- spamscore=0 bulkscore=0 phishscore=0 mlxscore=0 lowpriorityscore=0
- suspectscore=0 mlxlogscore=999 adultscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106220069
+References: <20210621111716.37157-1-steven.price@arm.com> <20210621111716.37157-6-steven.price@arm.com>
+ <CA+EHjTx7_atkNMqrUkHr0mM2xDbzBafip3s0JhGrGzsX9N08XQ@mail.gmail.com> <875yy6ci20.wl-maz@kernel.org>
+In-Reply-To: <875yy6ci20.wl-maz@kernel.org>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Tue, 22 Jun 2021 11:56:37 +0100
+Message-ID: <CA+EHjTx18kLHLjZ0Zd2gpR35N5q0oENkbEtnnzdWxZZF-gMy4w@mail.gmail.com>
+Subject: Re: [PATCH v17 5/6] KVM: arm64: ioctl to fetch/store tags in a guest
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Steven Price <steven.price@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        qemu-devel@nongnu.org, Dave Martin <Dave.Martin@arm.com>,
+        Juan Quintela <quintela@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-and the new edition for reviewing is here: 
-https://lkml.org/lkml/2021/6/22/327
+Hi Marc,
 
-Thanks for you time.
-Br,
-Jiangong.
+On Tue, Jun 22, 2021 at 11:25 AM Marc Zyngier <maz@kernel.org> wrote:
+>
+> Hi Fuad,
+>
+> On Tue, 22 Jun 2021 09:56:22 +0100,
+> Fuad Tabba <tabba@google.com> wrote:
+> >
+> > Hi,
+> >
+> >
+> > On Mon, Jun 21, 2021 at 12:18 PM Steven Price <steven.price@arm.com> wrote:
+> > >
+> > > The VMM may not wish to have it's own mapping of guest memory mapped
+> > > with PROT_MTE because this causes problems if the VMM has tag checking
+> > > enabled (the guest controls the tags in physical RAM and it's unlikely
+> > > the tags are correct for the VMM).
+> > >
+> > > Instead add a new ioctl which allows the VMM to easily read/write the
+> > > tags from guest memory, allowing the VMM's mapping to be non-PROT_MTE
+> > > while the VMM can still read/write the tags for the purpose of
+> > > migration.
+> > >
+> > > Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> > > Signed-off-by: Steven Price <steven.price@arm.com>
+> > > ---
+> > >  arch/arm64/include/asm/kvm_host.h |  3 ++
+> > >  arch/arm64/include/asm/mte-def.h  |  1 +
+> > >  arch/arm64/include/uapi/asm/kvm.h | 11 +++++
+> > >  arch/arm64/kvm/arm.c              |  7 +++
+> > >  arch/arm64/kvm/guest.c            | 82 +++++++++++++++++++++++++++++++
+> > >  include/uapi/linux/kvm.h          |  1 +
+> > >  6 files changed, 105 insertions(+)
+> > >
+> > > diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> > > index 309e36cc1b42..6a2ac4636d42 100644
+> > > --- a/arch/arm64/include/asm/kvm_host.h
+> > > +++ b/arch/arm64/include/asm/kvm_host.h
+> > > @@ -729,6 +729,9 @@ int kvm_arm_vcpu_arch_get_attr(struct kvm_vcpu *vcpu,
+> > >  int kvm_arm_vcpu_arch_has_attr(struct kvm_vcpu *vcpu,
+> > >                                struct kvm_device_attr *attr);
+> > >
+> > > +long kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
+> > > +                               struct kvm_arm_copy_mte_tags *copy_tags);
+> > > +
+> > >  /* Guest/host FPSIMD coordination helpers */
+> > >  int kvm_arch_vcpu_run_map_fp(struct kvm_vcpu *vcpu);
+> > >  void kvm_arch_vcpu_load_fp(struct kvm_vcpu *vcpu);
+> > > diff --git a/arch/arm64/include/asm/mte-def.h b/arch/arm64/include/asm/mte-def.h
+> > > index cf241b0f0a42..626d359b396e 100644
+> > > --- a/arch/arm64/include/asm/mte-def.h
+> > > +++ b/arch/arm64/include/asm/mte-def.h
+> > > @@ -7,6 +7,7 @@
+> > >
+> > >  #define MTE_GRANULE_SIZE       UL(16)
+> > >  #define MTE_GRANULE_MASK       (~(MTE_GRANULE_SIZE - 1))
+> > > +#define MTE_GRANULES_PER_PAGE  (PAGE_SIZE / MTE_GRANULE_SIZE)
+> > >  #define MTE_TAG_SHIFT          56
+> > >  #define MTE_TAG_SIZE           4
+> > >  #define MTE_TAG_MASK           GENMASK((MTE_TAG_SHIFT + (MTE_TAG_SIZE - 1)), MTE_TAG_SHIFT)
+> > > diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
+> > > index 24223adae150..b3edde68bc3e 100644
+> > > --- a/arch/arm64/include/uapi/asm/kvm.h
+> > > +++ b/arch/arm64/include/uapi/asm/kvm.h
+> > > @@ -184,6 +184,17 @@ struct kvm_vcpu_events {
+> > >         __u32 reserved[12];
+> > >  };
+> > >
+> > > +struct kvm_arm_copy_mte_tags {
+> > > +       __u64 guest_ipa;
+> > > +       __u64 length;
+> > > +       void __user *addr;
+> > > +       __u64 flags;
+> > > +       __u64 reserved[2];
+> > > +};
+> > > +
+> > > +#define KVM_ARM_TAGS_TO_GUEST          0
+> > > +#define KVM_ARM_TAGS_FROM_GUEST                1
+> > > +
+> > >  /* If you need to interpret the index values, here is the key: */
+> > >  #define KVM_REG_ARM_COPROC_MASK                0x000000000FFF0000
+> > >  #define KVM_REG_ARM_COPROC_SHIFT       16
+> > > diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> > > index 28ce26a68f09..511f3716fe33 100644
+> > > --- a/arch/arm64/kvm/arm.c
+> > > +++ b/arch/arm64/kvm/arm.c
+> > > @@ -1359,6 +1359,13 @@ long kvm_arch_vm_ioctl(struct file *filp,
+> > >
+> > >                 return 0;
+> > >         }
+> > > +       case KVM_ARM_MTE_COPY_TAGS: {
+> > > +               struct kvm_arm_copy_mte_tags copy_tags;
+> > > +
+> > > +               if (copy_from_user(&copy_tags, argp, sizeof(copy_tags)))
+> > > +                       return -EFAULT;
+> > > +               return kvm_vm_ioctl_mte_copy_tags(kvm, &copy_tags);
+> > > +       }
+> > >         default:
+> > >                 return -EINVAL;
+> > >         }
+> > > diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
+> > > index 5cb4a1cd5603..4ddb20017b2f 100644
+> > > --- a/arch/arm64/kvm/guest.c
+> > > +++ b/arch/arm64/kvm/guest.c
+> > > @@ -995,3 +995,85 @@ int kvm_arm_vcpu_arch_has_attr(struct kvm_vcpu *vcpu,
+> > >
+> > >         return ret;
+> > >  }
+> > > +
+> > > +long kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
+> > > +                               struct kvm_arm_copy_mte_tags *copy_tags)
+> > > +{
+> > > +       gpa_t guest_ipa = copy_tags->guest_ipa;
+> > > +       size_t length = copy_tags->length;
+> > > +       void __user *tags = copy_tags->addr;
+> > > +       gpa_t gfn;
+> > > +       bool write = !(copy_tags->flags & KVM_ARM_TAGS_FROM_GUEST);
+> > > +       int ret = 0;
+> > > +
+> > > +       if (!kvm_has_mte(kvm))
+> > > +               return -EINVAL;
+> > > +
+> > > +       if (copy_tags->reserved[0] || copy_tags->reserved[1])
+> > > +               return -EINVAL;
+> > > +
+> > > +       if (copy_tags->flags & ~KVM_ARM_TAGS_FROM_GUEST)
+> > > +               return -EINVAL;
+> > > +
+> > > +       if (length & ~PAGE_MASK || guest_ipa & ~PAGE_MASK)
+> > > +               return -EINVAL;
+> > > +
+> > > +       gfn = gpa_to_gfn(guest_ipa);
+> > > +
+> > > +       mutex_lock(&kvm->slots_lock);
+> > > +
+> > > +       while (length > 0) {
+> > > +               kvm_pfn_t pfn = gfn_to_pfn_prot(kvm, gfn, write, NULL);
+> > > +               void *maddr;
+> > > +               unsigned long num_tags;
+> > > +               struct page *page;
+> > > +
+> > > +               if (is_error_noslot_pfn(pfn)) {
+> > > +                       ret = -EFAULT;
+> > > +                       goto out;
+> > > +               }
+> > > +
+> > > +               page = pfn_to_online_page(pfn);
+> > > +               if (!page) {
+> > > +                       /* Reject ZONE_DEVICE memory */
+> > > +                       ret = -EFAULT;
+> > > +                       goto out;
+> > > +               }
+> > > +               maddr = page_address(page);
+> > > +
+> > > +               if (!write) {
+> > > +                       if (test_bit(PG_mte_tagged, &page->flags))
+> > > +                               num_tags = mte_copy_tags_to_user(tags, maddr,
+> > > +                                                       MTE_GRANULES_PER_PAGE);
+> > > +                       else
+> > > +                               /* No tags in memory, so write zeros */
+> > > +                               num_tags = MTE_GRANULES_PER_PAGE -
+> > > +                                       clear_user(tags, MTE_GRANULES_PER_PAGE);
+> > > +                       kvm_release_pfn_clean(pfn);
+> > > +               } else {
+> > > +                       num_tags = mte_copy_tags_from_user(maddr, tags,
+> > > +                                                       MTE_GRANULES_PER_PAGE);
+> > > +                       kvm_release_pfn_dirty(pfn);
+> > > +               }
+> > > +
+> > > +               if (num_tags != MTE_GRANULES_PER_PAGE) {
+> > > +                       ret = -EFAULT;
+> > > +                       goto out;
+> > > +               }
+> > > +
+> > > +               /* Set the flag after checking the write completed fully */
+> > > +               if (write)
+> > > +                       set_bit(PG_mte_tagged, &page->flags);
+> > > +
+> > > +               gfn++;
+> > > +               tags += num_tags;
+> > > +               length -= PAGE_SIZE;
+> > > +       }
+> > > +
+> > > +out:
+> > > +       mutex_unlock(&kvm->slots_lock);
+> > > +       /* If some data has been copied report the number of bytes copied */
+> > > +       if (length != copy_tags->length)
+> > > +               return copy_tags->length - length;
+> >
+> > I'm not sure if this is actually an issue, but a couple of comments on
+> > the return value if there is an error after a partial copy has been
+> > done. If mte_copy_tags_to_user or mte_copy_tags_from_user don't return
+> > MTE_GRANULES_PER_PAGE, then the check for num_tags would fail, but
+> > some of the tags would have been copied, which wouldn't be reflected
+> > in length. That said, on a write the tagged bit wouldn't be set, and
+> > on read then the return value would be conservative, but not
+> > incorrect.
+> >
+> > That said, even though it is described that way in the documentation
+> > (rather deep in the description though), it might be confusing to
+> > return a non-negative value on an error. The other kvm ioctl I could
+> > find that does something similar, KVM_S390_GET_IRQ_STATE, seems to
+> > always return a -ERROR on error, rather than the number of bytes
+> > copied.
+>
+> My mental analogy for this ioctl is the read()/write() syscalls, which
+> return the number of bytes that have been transferred in either
+> direction.
+>
+> I agree that there are some corner cases (a tag copy that fails
+> because of a faulty page adjacent to a valid page will still report
+> some degree of success), but it is also important to report what has
+> actually been done in either direction.
+
+read()/write() return an error (-1) and not the amount copied if there
+is an actual error I believe:
+
+https://man7.org/linux/man-pages/man2/read.2.html
+
+> It is not an error if this number is smaller than the number of
+> bytes requested; this may happen for example because fewer bytes
+> are actually available right now (maybe because we were close to
+> end-of-file, or because we are reading from a pipe, or from a
+> terminal), or because read() was interrupted by a signal.
+>
+> On error, -1 is returned, and errno is set to indicate the error.
+> In this case, it is left unspecified whether the file position
+> (if any) changes.
+
+I think that for the current return value, then it would be good for
+the documentation in patch 6/6 to be more explicit. There it says:
+
+> :Returns: number of bytes copied, < 0 on error (-EINVAL for incorrect
+>           arguments, -EFAULT if memory cannot be accessed).
+
+Later on it does state that if an error happens after some copying has
+been done, it returns the number copied. But that's at the end of the
+section. I think it would be less confusing to have it in the summary
+(with the "Returns").
+
+Thanks,
+/fuad
 
 
-在 2021/6/22 下午6:48, Han, Jiangong 写道:
-> Sorry, my the comment is wrong, and the correct comment should be like 
-> below, and I had modify this, and I had resend one more applying 
-> review patch email for this.
+
+
+
+
+> Thanks,
 >
-> Thanks for you time.
+>         M.
 >
-> Br,
->
-> Jiangong.
->
-> ----------------------------------
->     rcu-scale: rcu-scale returns one less than the real number of gps 
-> in the dmesg report.
->
->     The dmesg report on rcu-scale shows there are N grace periods, and 
-> gps
->     are listed from 0 to N.
->     This commit make writer_n_durations stores the counts of gps,
->     and shows there are N+1 gps, change the listed gps index begin 
-> from 0 to N.
->
->     From
->         [ 8306.087880] rcu-scale: writer 0 gps: 133
->         ......
->         [ 8307.864630] rcu-scale:    0 writer-duration:     0 44003961
->         [ 8307.935711] rcu-scale:    0 writer-duration:     1 32003582
->         ......
->         [ 8316.472860] rcu-scale:    0 writer-duration:   132 28004391
->         [ 8316.538498] rcu-scale:    0 writer-duration:   133 27996410
->
->     to
->         [ 8306.087880] rcu-scale: writer 0 gps: 134
->         ......
->         [ 8307.864630] rcu-scale:    0 writer-duration:     0 44003961
->         [ 8307.935711] rcu-scale:    0 writer-duration:     1 32003582
->         ......
->         [ 8316.472860] rcu-scale:    0 writer-duration:   132 28004391
->         [ 8316.538498] rcu-scale:    0 writer-duration:   133 27996410
->
-> ----------------------------------
->
->
->
->  2021/6/10 上午4:37, Paul E. McKenney 写道:
->> [Please note: This e-mail is from an EXTERNAL e-mail address]
->>
->> On Sat, Jun 05, 2021 at 03:00:19PM +0800, Jiangong.Han wrote:
->>> The report on rcu-scale shows there are N grace periods, and gps
->>> are listed from 0 to N-1.
->>> This commit make writer_n_durations stores the counts of gps,
->>> change the listed gps index begin from 1 to N.
->>>
->>> From
->>>      [ 8306.087880] rcu-scale: writer 0 gps: 133
->>>      ......
->>>      [ 8307.864630] rcu-scale:    0 writer-duration:     0 44003961
->>>      [ 8307.935711] rcu-scale:    0 writer-duration:     1 32003582
->>>      ......
->>>      [ 8316.472860] rcu-scale:    0 writer-duration:   131 28004391
->>>      [ 8316.538498] rcu-scale:    0 writer-duration:   132 27996410
->>>
->>> to
->>>      [ 8306.087880] rcu-scale: writer 0 gps: 133
->>>      ......
->>>      [ 8307.864630] rcu-scale:    0 writer-duration:     1 44003961
->>>      [ 8307.935711] rcu-scale:    0 writer-duration:     2 32003582
->>>      ......
->>>      [ 8316.472860] rcu-scale:    0 writer-duration:   132 28004391
->>>      [ 8316.538498] rcu-scale:    0 writer-duration:   133 27996410
->>>
->>> Signed-off-by: Jiangong.Han <jiangong.han@windriver.com>
->> You lost me on this one.  Why is this helpful?  And how does the change
->> shown below actually result in the output shown above, given that
->> rcu_scale_cleanup() still starts j at zero?
->>
->>                                                          Thanx, Paul
->>
->>> ---
->>>   kernel/rcu/rcuscale.c | 4 ++--
->>>   1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/kernel/rcu/rcuscale.c b/kernel/rcu/rcuscale.c
->>> index dca51fe9c73f..2cc34a22a506 100644
->>> --- a/kernel/rcu/rcuscale.c
->>> +++ b/kernel/rcu/rcuscale.c
->>> @@ -487,7 +487,7 @@ rcu_scale_writer(void *arg)
->>>        if (gp_async) {
->>>                cur_ops->gp_barrier();
->>>        }
->>> -     writer_n_durations[me] = i_max;
->>> +     writer_n_durations[me] = i_max + 1;
->>>        torture_kthread_stopping("rcu_scale_writer");
->>>        return 0;
->>>   }
->>> @@ -561,7 +561,7 @@ rcu_scale_cleanup(void)
->>>                        wdpp = writer_durations[i];
->>>                        if (!wdpp)
->>>                                continue;
->>> -                     for (j = 0; j <= writer_n_durations[i]; j++) {
->>> +                     for (j = 0; j < writer_n_durations[i]; j++) {
->>>                                wdp = &wdpp[j];
->>>                                pr_alert("%s%s %4d writer-duration: 
->>> %5d %llu\n",
->>>                                        scale_type, SCALE_FLAG,
->>> -- 
->>> 2.17.1
->>>
+> --
+> Without deviation from the norm, progress is not possible.
