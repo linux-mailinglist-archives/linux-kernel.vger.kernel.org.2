@@ -2,157 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F7A3B0F5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3DEA3B0F5D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:19:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229913AbhFVVVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 17:21:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229625AbhFVVVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 17:21:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 69B046100B;
-        Tue, 22 Jun 2021 21:19:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624396744;
-        bh=wxUHik84ldYD/auBhIavJdnvC5fjR684L6Uva3QzIjU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=k7PEAHiHrV+Lo/ZKTjWaEzSK6awbWey7qv/Staf0X2F5/euuw//slWdnxlHf/JE5v
-         Wu/cLwNTvXvDMuaT8Kc1YTjYq8LU7ckxBxluVsK2JxW2LXJwFoOO5zDEgwBzAq6r57
-         BdCNJWyzoV1m62LHV/eWJcekHxjkLyin2zXRJsNMNcOucgSLGnGV8XQcsrcVb2EBrO
-         f4C1StY3ThHmaqojoAooL3e3LAi8sFE8NJkqLOuxIlsMCjHy57v+K5NbLrYHJSryOm
-         buZmCmx5UWHNfiZaUfkdhGGkDrf1i3GGqPFFG/1+qgkA5YDU7UiZ9MyEegns08itWT
-         mO6hXiPoG62kA==
-Received: by pali.im (Postfix)
-        id EBC1E889; Tue, 22 Jun 2021 23:19:01 +0200 (CEST)
-Date:   Tue, 22 Jun 2021 23:19:01 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Luca Ceresoli <luca@lucaceresoli.net>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linus.walleij@linaro.org, linux-pci@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v2] PCI: dra7xx: Fix reset behaviour
-Message-ID: <20210622211901.ikulpy32d6qlr4yw@pali>
-References: <9fdbada4-4902-cec1-f283-0d12e1d4ac64@ti.com>
- <20210531162242.jm73yzntzmilsvbg@pali>
- <8207a53c-4de9-d0e5-295a-c165e7237e36@lucaceresoli.net>
- <20210622110627.aqzxxtf2j3uxfeyl@pali>
- <20210622115604.GA25503@lpieralisi>
- <20210622121649.ouiaecdvwutgdyy5@pali>
- <18a104a9-2cb8-7535-a5b2-f5f049adff47@lucaceresoli.net>
- <4d4c0d4d-41b4-4756-5189-bffa15f88406@ti.com>
- <20210622205220.ypu22tuxhpdn2jwz@pali>
- <2873969e-ac56-a41f-0cc9-38e387542aa1@lucaceresoli.net>
+        id S229948AbhFVVVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 17:21:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56253 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229625AbhFVVVj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 17:21:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624396762;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XlNdNVJJaT0poBG4McRO9fS++ltdFMf7gkDA4rZ1bU4=;
+        b=Q8mxc4WjZmPJeQWfI7mU0LwU/cqP8cdOe0HoXA78VUELq3VbfBXFl3uVbJT182Q/1YKvkl
+        1EhMTYFkYVd4eKBW9UP0qkKldRy/eZ4Z3RN6R/2svNmvgbz9CjDk2vMvN6noy+3SrecwdQ
+        TnnIf1StMAUdD8CdJopqcRfCW4qs0Kw=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-420-wMFrQ2iUMmOTDTsASuVWig-1; Tue, 22 Jun 2021 17:19:21 -0400
+X-MC-Unique: wMFrQ2iUMmOTDTsASuVWig-1
+Received: by mail-wr1-f71.google.com with SMTP id j2-20020a5d61820000b029011a6a8149b5so73894wru.14
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 14:19:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XlNdNVJJaT0poBG4McRO9fS++ltdFMf7gkDA4rZ1bU4=;
+        b=GMsU5x8UscQHR24qeoyH8dTJeRgpmLFXbzx5nDKvEptZikeRd+MA0wO0ydFIXwOkIO
+         jPj8JU7yFQY2IUVJTpKHTbWaX2pw9IeiRzNSqHRa5+/yjyuVqsK7BZ9fjXIKWaSDH9Zy
+         pIXJzSArSrPNV6goaggA2tCath0M87sCK7Z3MlOojP0YE6T/oD5cxEOZ1VgMsWAzLTp4
+         LsgCXxSt5rMOTBJ0quKKvXyl7m2k+vW7c9qNFyhYbhTnqA8IaldlkOH8SEs1/Rkb6+zS
+         E1v1eSJq3UrMglbYu5Cyl8EU2U8iH8QuTTBJvFHst453ACXm3ekh0NMcLRtHlEpcG0Fa
+         AVdg==
+X-Gm-Message-State: AOAM5300B3b13tEGu7IL53hEQQxsHqyWOPR0vHHxXPz10s3zTxpZFZOn
+        AILZkEiT84iVgcTWtPmhYaawfykVgRYltVAwkcae5wChyQPlDETOufeWwuMyoOXK2vl5wf9xA2a
+        lsasZcpXmVTVefGfGI7aXZCGQ
+X-Received: by 2002:a05:600c:281:: with SMTP id 1mr6434999wmk.171.1624396760252;
+        Tue, 22 Jun 2021 14:19:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwZyzclexen16GRRF11rovrucoRycvcRVV+FhsLCBCyKB+osnN/XZpx0U6YPpsWaTQRrt3XSg==
+X-Received: by 2002:a05:600c:281:: with SMTP id 1mr6434991wmk.171.1624396760055;
+        Tue, 22 Jun 2021 14:19:20 -0700 (PDT)
+Received: from krava ([5.171.245.189])
+        by smtp.gmail.com with ESMTPSA id g17sm680337wrh.72.2021.06.22.14.19.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 14:19:19 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 23:19:15 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ian Rogers <irogers@google.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>, rickyman7@gmail.com
+Subject: Re: [RFC 00/10] perf: Add build id parsing fault detection/fix
+Message-ID: <YNJT0wvghSZzPJ8Y@krava>
+References: <20210622153918.688500-1-jolsa@kernel.org>
+ <YNIgXkH1xaF7H3Tr@kernel.org>
+ <CAP-5=fU=AAJ0_s1orsF=OCO0=bSmr9BhAmtN251bU_pf0ZFJ6Q@mail.gmail.com>
+ <YNIobHgfVbiiNscn@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2873969e-ac56-a41f-0cc9-38e387542aa1@lucaceresoli.net>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <YNIobHgfVbiiNscn@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 22 June 2021 23:08:07 Luca Ceresoli wrote:
-> On 22/06/21 22:52, Pali Rohár wrote:
-> > On Tuesday 22 June 2021 19:27:37 Kishon Vijay Abraham I wrote:
-> >> Hi Luca, Pali,
-> >>
-> >> On 22/06/21 7:01 pm, Luca Ceresoli wrote:
-> >>> Hi,
-> >>>
-> >>> On 22/06/21 14:16, Pali Rohár wrote:
-> >>>> On Tuesday 22 June 2021 12:56:04 Lorenzo Pieralisi wrote:
-> >>>>> [Adding Linus for GPIO discussion, thread:
-> >>>>> https://lore.kernel.org/linux-pci/20210531090540.2663171-1-luca@lucaceresoli.net]
-> >>>>>
-> >>>>> On Tue, Jun 22, 2021 at 01:06:27PM +0200, Pali Rohár wrote:
-> >>>>>> Hello!
-> >>>>>>
-> >>>>>> On Tuesday 22 June 2021 12:57:22 Luca Ceresoli wrote:
-> >>>>>>> Nothing happened after a few weeks... I understand that knowing the
-> >>>>>>> correct reset timings is relevant, but unfortunately I cannot help much
-> >>>>>>> in finding out the correct values.
-> >>>>>>>
-> >>>>>>> However I'm wondering what should happen to this patch. It *does* fix a
-> >>>>>>> real bug, but potentially with an incorrect or non-optimal usleep range.
-> >>>>>>> Do we really want to ignore a bugfix because we are not sure about how
-> >>>>>>> long this delay should be?
-> >>>>>>
-> >>>>>> As there is no better solution right now, I'm fine with your patch. But
-> >>>>>> patch needs to be approved by Lorenzo, so please wait for his final
-> >>>>>> answer.
-> >>>>>
-> >>>>> I am not a GPIO expert and I have a feeling this is platform specific
-> >>>>> beyond what the PCI specification can actually define architecturally.
-> >>>>
-> >>>> In my opinion timeout is not platform specific as I wrote in email:
-> >>>> https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
-> >>>>
-> >>>> My experiments already proved that some PCIe cards needs to be in reset
-> >>>> state for some minimal time otherwise they cannot be enumerated. And it
-> >>>> does not matter to which platform you connect those (endpoint) cards.
-> >>>>
-> >>>> I do not think that timeout itself is platform specific. GPIO controls
-> >>>> PERST# pin and therefore specified sleep value directly drives how long
-> >>>> is card on the other end of PCIe slot in Warm Reset state. PCIe CEM spec
-> >>>> directly says that PERST# signal controls PCIe Warm Reset.
-> >>>>
-> >>>> What is here platform specific thing is that PERST# signal is controlled
-> >>>> by GPIO. But value of signal (high / low) and how long is in signal in
-> >>>> which state for me sounds like not an platform specific thing, but as
-> >>>> PCIe / CEM related.
-> >>>
-> >>> That's exactly my understanding of this matter. At least for the dra7xx
-> >>> controller it works exactly like this, PERSTn# is nothing but a GPIO
-> >>> output from the SoC that drives the PERSTn# input of the external chip
-> >>> without affecting the controller directly.
-> >>>
-> >>
-> >> While the patch itself is correct, this kind-of changes the behavior on
-> >> already upstreamed platforms. Previously the driver expected #PERST to
-> >> be asserted be external means (or default power-up state) and only takes
-> >> care of de-asserting the #PERST line.
-> >>
-> >> There are 2 platforms that will be impacted due to this change
-> >> 1) arch/arm/boot/dts/am57xx-beagle-x15-common.dtsi (has an inverter on
-> >> GPIO line)
-> >> 2) arch/arm/boot/dts/am571x-idk.dts (directly connected to #PERST)
-> >>
-> >> For 1), gpiod_set_value(reset, 0) will assert the PERST line due to the
-> >> inverter (and GPIO_ACTIVE_LOW)
-> >> For 2), gpiod_set_value(reset, 0) will assert the PERST line because we
-> >> have GPIO_ACTIVE_HIGH
-> > 
-> > Ou! This is a problem in DT. It needs to be defined in a way that state
-> > is same for every DTS device which uses this driver.
-> 
-> Why?
+On Tue, Jun 22, 2021 at 03:14:04PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Tue, Jun 22, 2021 at 10:47:54AM -0700, Ian Rogers escreveu:
+> > On Tue, Jun 22, 2021 at 10:39 AM Arnaldo Carvalho de Melo
+> > <acme@kernel.org> wrote:
+> > >
+> > > Em Tue, Jun 22, 2021 at 05:39:08PM +0200, Jiri Olsa escreveu:
+> > > > hi,
+> > > > this *RFC* patchset adds support to detect faults during
+> > > > mmap2's build id parsing and a way to fix such maps in
+> > > > generated perf.data.
+> > > >
+> > > > It adds support to record build id faults count for session
+> > > > and store it in perf.data and perf inject support to find
+> > > > these maps and reads build ids for them in user space.
+> > >
+> > > > It's probably best explained by the workflow:
+> > > >
+> > > >   Record data with --buildid-mmap option:
+> > > >
+> > > >     # perf record --buildid-mmap ...
+> > > >     ...
+> > > >     [ perf record: Woken up 1 times to write data ]
+> > > >     [ perf record: Failed to parse 4 build ids]
+> > > >     [ perf record: Captured and wrote 0.008 MB perf.data ]
+> > > >
+> > > >   Check if there's any build id fault reported:
+> > > >
+> > > >     # perf report --header-only
+> > > >     ...
+> > > >     # build id mmap stats: FAULTS 4, LOST 0, NOT FIXED
+> > > >
+> > > >   There is, check the stats:
+> > > >
+> > > >     # perf report --stat
+> > > >
+> > > >     Aggregated stats:
+> > > >              TOTAL events:        104
+> > > >                       ....
+> > > >            BUILD_ID fails:          4  (14.3%)
+> > > >
+> > > >   Yep, let's fix it:
+> > > >
+> > > >     # perf inject --buildid-mmap2 -i perf.data -o perf-fixed.data
+> > >
+> > > Can we make it possible to automate this with --fixup-buildids or a
+> > > perfconfig 'record' knob?
+> > >
+> > > This would entail requesting that build-ids that _fail_ be sent to the
+> > > side-band thread we have in 'perf record', this way we wouldn't have to
+> > > traverse the whole perf.data file, be it with 'perf-record' at the end
+> > > of a session with faulty build ids, or in a similar fashion using 'perf
+> > > inject' as you suggest.
+> > >
+> > > I even think that we can have all these modes and let the user to decide
+> > > how important is this for them and how convenient they want the whole
+> > > process to be.
 
-I'm starting to be confused by triple or more negations (asserting,
-signal inverter, active low)...
+right, that might be good to decide first.. because as I said,
+I never hit faulted build id, so it probably needs the special
+setup you guys are using.. could you try on your setup and check
+how many faulted build ids you see?
 
-In your patch is GPIO set value to 0 and Kishon wrote that GPIO set
-value to 0 for those two boards assert PERST# line. Asserting PERST#
-line cause endpoint PCIe card to be in reset state. And in pci-dra7xx.c
-driver there is no other code which de-asserts PERST# line.
+thanks,
+jirka
 
-So based on all this information I deduced that your patch will cause
-putting PCIe cards into reset state (forever) and therefore they would
-not work.
-
-Or do I have here some mistake?
-
-> These are different boards and each specifies its own polarity.
-> They are already opposite to each other right now:
-> 
-> https://elixir.bootlin.com/linux/v5.13-rc7/source/arch/arm/boot/dts/am57xx-beagle-x15-common.dtsi#L602
-> 
-> https://elixir.bootlin.com/linux/v5.13-rc7/source/arch/arm/boot/dts/am571x-idk.dts#L196
-> 
-> -- 
-> Luca
-> 
