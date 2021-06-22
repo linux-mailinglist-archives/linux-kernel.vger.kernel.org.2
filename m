@@ -2,74 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0F13AFF55
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 026B53AFF5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbhFVIeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 04:34:08 -0400
-Received: from mga02.intel.com ([134.134.136.20]:9523 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229628AbhFVIeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 04:34:07 -0400
-IronPort-SDR: IPThxi2VB99ay812jsrB0XPHj1OqaMIBqIE8AXIZ6zb+imGGk96xbv26aOG4YJW3IYRwX0CwQB
- g/Skx8YTnTZg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="194150643"
-X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="194150643"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 01:31:34 -0700
-IronPort-SDR: JWFZFk1oPOMYrDwszmAKBB9hfqFqn3B9kATAqjc1YYWnE9dSSmT4N2lIRkf0QjbGCJ635WjV49
- 1d5ilXF2yhqw==
-X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="452528472"
-Received: from unknown (HELO [10.185.169.18]) ([10.185.169.18])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 01:31:31 -0700
-Subject: Re: [Intel-wired-lan] [PATCH] e1000e: Fix an error handling path in
- 'e1000_probe()'
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org,
-        "Edri, Michael" <michael.edri@intel.com>
-Cc:     netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
-        "Neftin, Sasha" <sasha.neftin@intel.com>
-References: <2651bb1778490c45d963122619fe3403fdf6b9de.1623819901.git.christophe.jaillet@wanadoo.fr>
-From:   "Neftin, Sasha" <sasha.neftin@intel.com>
-Message-ID: <9622d773-323a-3022-e447-0586defd3732@intel.com>
-Date:   Tue, 22 Jun 2021 11:31:29 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230165AbhFVIi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 04:38:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49852 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229628AbhFVIi5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 04:38:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624351001;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pMP1HyhxKTyN2FUAhEkRKvFSSH4fVsdxmMyfHGuWDRA=;
+        b=Eoy3fsiTbWfc/luJhOj6F/AHld/Gv0EWaycsiTuif86PBMVXXUhLhSsP3b1P5uDTIYZJX7
+        dSCy7aqCY9444pwlqtAmNM5Q67E9WNppWlLaSh7wN4VFkand1O4/46KD5g3jrVvaipk78y
+        cPAvZZAfWe3E1PglHdi6T0JoWj7kYIo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-353-dSDbuGJZP86OHu5ynYiK5g-1; Tue, 22 Jun 2021 04:36:39 -0400
+X-MC-Unique: dSDbuGJZP86OHu5ynYiK5g-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1EA81362FB;
+        Tue, 22 Jun 2021 08:36:38 +0000 (UTC)
+Received: from localhost (ovpn-114-192.ams2.redhat.com [10.36.114.192])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4F18F5C1A3;
+        Tue, 22 Jun 2021 08:36:34 +0000 (UTC)
+Date:   Tue, 22 Jun 2021 09:36:33 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        virtio-fs@redhat.com, linux-kernel@vger.kernel.org,
+        Vivek Goyal <vgoyal@redhat.com>
+Subject: Re: [Virtio-fs] [PATCH 3/2] fs: simplify get_filesystem_list /
+ get_all_fs_names
+Message-ID: <YNGhERcnLuzjn8j9@stefanha-x1.localdomain>
+References: <20210621062657.3641879-1-hch@lst.de>
+ <20210622081217.GA2975@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <2651bb1778490c45d963122619fe3403fdf6b9de.1623819901.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="Y+sWrBBljVlHm2Wk"
+Content-Disposition: inline
+In-Reply-To: <20210622081217.GA2975@lst.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/2021 08:05, Christophe JAILLET wrote:
-> If an error occurs after a 'pci_enable_pcie_error_reporting()' call, it
-> must be undone by a corresponding 'pci_disable_pcie_error_reporting()'
-> call, as already done in the remove function.
-> 
-> Fixes: 111b9dc5c981 ("e1000e: add aer support")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+
+--Y+sWrBBljVlHm2Wk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Jun 22, 2021 at 10:12:17AM +0200, Christoph Hellwig wrote:
+> Just output the '\0' separate list of supported file systems for block
+> devices directly rather than going through a pointless round of string
+> manipulation.
+>=20
+> Based on an earlier patch from Al Viro <viro@zeniv.linux.org.uk>.
+>=20
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
->   drivers/net/ethernet/intel/e1000e/netdev.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/net/ethernet/intel/e1000e/netdev.c b/drivers/net/ethernet/intel/e1000e/netdev.c
-> index 5435606149b0..c8aa69fd0405 100644
-> --- a/drivers/net/ethernet/intel/e1000e/netdev.c
-> +++ b/drivers/net/ethernet/intel/e1000e/netdev.c
-> @@ -7662,6 +7662,7 @@ static int e1000_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
->   err_ioremap:
->   	free_netdev(netdev);
->   err_alloc_etherdev:
-> +	pci_disable_pcie_error_reporting(pdev);
->   	pci_release_mem_regions(pdev);
->   err_pci_reg:
->   err_dma:
-> 
-Acked-by: Sasha Neftin <sasha.neftin@intel.com>
+>  fs/filesystems.c   | 24 ++++++++++++++----------
+>  include/linux/fs.h |  2 +-
+>  init/do_mounts.c   | 20 +-------------------
+>  3 files changed, 16 insertions(+), 30 deletions(-)
+>=20
+> diff --git a/fs/filesystems.c b/fs/filesystems.c
+> index 90b8d879fbaf..7c136251607a 100644
+> --- a/fs/filesystems.c
+> +++ b/fs/filesystems.c
+> @@ -209,21 +209,25 @@ SYSCALL_DEFINE3(sysfs, int, option, unsigned long, =
+arg1, unsigned long, arg2)
+>  }
+>  #endif
+> =20
+> -int __init get_filesystem_list(char *buf)
+> +void __init list_bdev_fs_names(char *buf, size_t size)
+>  {
+> -	int len =3D 0;
+> -	struct file_system_type * tmp;
+> +	struct file_system_type *p;
+> +	size_t len;
+> =20
+>  	read_lock(&file_systems_lock);
+> -	tmp =3D file_systems;
+> -	while (tmp && len < PAGE_SIZE - 80) {
+> -		len +=3D sprintf(buf+len, "%s\t%s\n",
+> -			(tmp->fs_flags & FS_REQUIRES_DEV) ? "" : "nodev",
+> -			tmp->name);
+> -		tmp =3D tmp->next;
+> +	for (p =3D file_systems; p; p =3D p->next) {
+> +		if (!(p->fs_flags & FS_REQUIRES_DEV))
+> +			continue;
+> +		len =3D strlen(p->name) + 1;
+> +		if (len > size) {
+> +			pr_warn("%s: truncating file system list\n", __func__);
+> +			break;
+> +		}
+> +		memcpy(buf, p->name, len);
+> +		buf +=3D len;
+> +		size -=3D len;
+>  	}
+>  	read_unlock(&file_systems_lock);
+> -	return len;
+>  }
+
+I don't see the extra NUL terminator byte being added that's required by
+the loop in mount_block_root()?
+
+--Y+sWrBBljVlHm2Wk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmDRoREACgkQnKSrs4Gr
+c8g8mgf+PDTW/0OS88/JmQ5E27ZXpLlNGUJkTSdpn4jhWZpdPhbG/+yiPRoTpPv8
+NmvfbL7yomhRXntd+pA/WUlyF6Eb2SDv8Wfo0/qU+fTIsaHA7mz/d9300ucC1Thw
+ZuDl7uadlf2KbJRlhLZHzl9Q2Q9+PsscEql0TSsIJU0X2qO1qxm4tvncbyyXY/lc
+nLLkGJVf9205rvJf2TcuBFF1UYUThOB7+VjIzn2CBfKahLyTOGSePy5GyvcdFp2s
+0EGWvIFHcsWuHxkDRdGVLt51bsOiEHRBsjZ7LHiIruzo0Y9tqYNJDTvhphtE+fMw
+jDjcU52ufud1nFXZcKVeYswxfIp8vg==
+=08W1
+-----END PGP SIGNATURE-----
+
+--Y+sWrBBljVlHm2Wk--
+
