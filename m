@@ -2,117 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2152A3AFCB4
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 07:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85FE23AFCA8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 07:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbhFVFd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 01:33:27 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:43751 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229853AbhFVFd0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 01:33:26 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G8FP92yLZz9sjB;
-        Tue, 22 Jun 2021 15:31:08 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624339870;
-        bh=+iTBWQ1I2dZ1rputthWeJ/k2YsXV48BguOCFkccfVsM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=j7lrNnbCjMXFeINRUnZ0RewL4ixFZ75s05+TtrJU1Xt0At9CumtyqSGbtVzoDcK7c
-         wvlZ4FPDEoHX798NGL0jS+CWBKoZX611iwZqLvwhj8jttj58mqBr7tHDpMElbqGBTX
-         ptPOh6DNtbVZm14YKEBktMT+6/2suKyV7b1UBUAAW67j/znjEkLoEGDRfn9kekUuCg
-         aXEK15o9pQFU9qPBbH4w5ESebDzGNzejLxrycB14mctRA3b7o2jYsJ81tTePqH56r0
-         KKKl2FmcIvtLd9ApU6m7R0NX134Ka5Jwm+1SDUlQzD8UMFPuPZ2n/7eTEcl/LW0E0q
-         SV/QWWTNrTNyQ==
-Date:   Tue, 22 Jun 2021 15:31:07 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christoffer Dall <cdall@cs.columbia.edu>,
-        Marc Zyngier <maz@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Jim Mattson <jmattson@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Ricardo Koller <ricarkol@google.com>
-Subject: linux-next: manual merge of the kvm-arm tree with the kvm tree
-Message-ID: <20210622153107.1db31b13@canb.auug.org.au>
+        id S230109AbhFVFan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 01:30:43 -0400
+Received: from mail-vi1eur05on2045.outbound.protection.outlook.com ([40.107.21.45]:14593
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229917AbhFVFal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 01:30:41 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=byE67l146TBvuOB2cW87t7s+d5q+8gk1yHdHpcD3TpJ6+Oh1+Z0P89duUYj84lkhHmNT3nWpTvXsdz3Z6uUbcclx8b4ZT/AyLfcV2Wq+GLhOyIvOSp2EZ5DQ4aq+5yyxn/1dilEw/dj3QxQA+46lvayut5LuNx8PBecDj5iiYtQYK2OG8gFQ983db9JjicfUUtHNso9XSaB2miUnaxAaZ1wm8b5vzYr3YH4KIVPIdIfvlWrt0Cam1IeBChvDZpLxpzbTLGoI3TvzAalNcbELi3fwqayKTxJInEZLQnThDHBpyoqqCg70Aejg8frC0Ug3dgc6tiTqhnSWD0zJfcU/wQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9EvS1provBgvWd6RTu1jI+e4uqATEpWmDgP80Eg6rPc=;
+ b=KF3TRMeDxN77fSJDCoOcb8JC2cF40KBnmHOkulDJgRdPG0SB8VjYS9R/wubiRTRVQZ5TjRcxHOqUMqtW1HtVzbP90c9eK8gJAqq6HugjIRUCYojbtr5Wl6uB96x70QVeXxFzeK1wHB5F+dzUyb68tFKaYBLOdVWHfI/V0qofSoPXbuh6JlTxi7ioW2U41Bb6gEDG/tQ2RIJVm0fHNMipM5b0kXVP4NugXVyUkJ99xEu14x2y9TDGOHREU0B8P1wqun19ZCE9fWoSlo7kGM5o10NkMgBPmExcy6HMKi2hyAZewMtHPJahMBZD67Zqb+rI/Cu1FaQ5X38lxOAAaAVvbQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9EvS1provBgvWd6RTu1jI+e4uqATEpWmDgP80Eg6rPc=;
+ b=VX2Iu1GYNuEZirHO4uyU7YbDxndHWhniUQESKguedY7ncqHB1wydhKdZQNmUkOCjhahuZhxL6og3M/xYss0rAyd4VoN1V65JHPlzGgUb0mnuUhUcxNFRoZROfJYN97DkTELyYOgcnnhQPTpCuOWroXarkrIPnBJJzgzBYMiCOXs=
+Authentication-Results: wizery.com; dkim=none (message not signed)
+ header.d=none;wizery.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB3PR0402MB3659.eurprd04.prod.outlook.com (2603:10a6:8:5::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Tue, 22 Jun
+ 2021 05:28:23 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c445:d742:eb76:86dd]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c445:d742:eb76:86dd%9]) with mapi id 15.20.4242.023; Tue, 22 Jun 2021
+ 05:28:23 +0000
+From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+To:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        mathieu.poirier@linaro.org, o.rempel@pengutronix.de,
+        robh+dt@kernel.org
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH V3 0/2] remoteproc: imx_rproc: support i.MX8ULP
+Date:   Tue, 22 Jun 2021 14:01:46 +0800
+Message-Id: <20210622060148.18411-1-peng.fan@oss.nxp.com>
+X-Mailer: git-send-email 2.30.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: SG2PR03CA0133.apcprd03.prod.outlook.com (2603:1096:4:c8::6)
+ To DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/t1p/v3sR99B7_wU_ust+T8f";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SG2PR03CA0133.apcprd03.prod.outlook.com (2603:1096:4:c8::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.10 via Frontend Transport; Tue, 22 Jun 2021 05:28:18 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: df0e2a23-4d25-4c56-478d-08d9353e8d72
+X-MS-TrafficTypeDiagnostic: DB3PR0402MB3659:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB3PR0402MB36590C7F5A2725D25423064FC9099@DB3PR0402MB3659.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: t6Aa/Ip2zZGL1NWPM++4iNfh+jLBNvY0p1sE+LwxcJVZ3ErlS1KjKLTvbc3eGCN85jaCd3/2VJuXjxpaQaU1wg7en31tcUxhQqm/MsrodbAyVCqVPbJyF6xSslZII+HsZ1Jsc/RQNGuD1z4qO85sBPEVkZyegJvjSiFd/KCLA2T0OngxispxcXorzpK+9YY9PKB1q/8fWxl5cCogvoEob66rBt1PAZHrRtXGhOHorEtfIlFg+26+i89j9dY8Gt5k7+uh0ERNab1UstbOIxLe2kTdmpnLkHdPCFVa35IA4dnjsV5uEUHOQPBjSP1pL1rDiqWbD/S9k3Se+qwN9mcqlx2v3sSVXQ2GE6mBK3eYj5lJRqn+vAUxp7rs/OfhJGmFLN1Ysmj8Rj8yTYdeAdvMVKkdyqeiHGRSzpRjGoG4/9I+0uhuAXlybCSntgp15VPZhaMkRgPtf09rIP1GPgpQGuOhIrD1SMqiFv8ilMcxwZE5QdW42zs9FRdzDINUn8EP8/UTirbEXOW4KxwOb5xVZ/0H4EWqhp4WzavbkOiaClyVbngtdr8gQVAEPWmZX7Br+hT0KJVorXcSJt21UuPSpUrKNOkO2zRPd8G6ugzg4QUQ3U36DGo5DpuD6XzpzeVtznQ6Fb06ScgFkAeMnG716N6uz/GFTbjy0HuE0Nmzpz8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(396003)(136003)(39860400002)(5660300002)(52116002)(83380400001)(38350700002)(38100700002)(1076003)(6666004)(7416002)(16526019)(6506007)(26005)(186003)(6486002)(4326008)(86362001)(4744005)(478600001)(2906002)(316002)(8936002)(66556008)(8676002)(66946007)(66476007)(6512007)(2616005)(956004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1izzfViBOkO4XR0Hfb7IrP0rdJzfTLoByqS70e8XI+u35Joikt4PRBDZoMb4?=
+ =?us-ascii?Q?MV1BUD1ocs1NVkQlViiVAYN/goj+A5UzVi++vGU+25kQbLV042H5vAsGZGwn?=
+ =?us-ascii?Q?WaF+nnkpBeKJnhbiWyKCeuzTSVHMZDlzw9FU1bY/40FCZmTJbYKdqCwcGIip?=
+ =?us-ascii?Q?lkz5ljf3VaxqeN9gG3scGED1q8B3dKQ5wOF/Fm2OU8bGO43TWBGEBtM5s952?=
+ =?us-ascii?Q?cX93KQ+F3SV9QSH3+pKEtWqXlDfCIL/re+JgXDvHpckklCbdvNpP9sJ+ctqb?=
+ =?us-ascii?Q?H3f246WeofTOqeAjLDWK2dtmrH3gUa2Uu2oCdh8hSbvK8sF7BCgFWgp45Rb6?=
+ =?us-ascii?Q?HQvBUhauWEqGLiXZ6ie00ZI2MgUxGWbntvsk+p7Be47GQdpJgRtwQnp8g4KF?=
+ =?us-ascii?Q?iaMEgGMALFvlhC2CSKCPvBeMnsjFMp2w77hwfmFiTPibZlBQMuExS5eeEVf9?=
+ =?us-ascii?Q?MCMwVc/vQ86Ccgti/PtRhKnlFjRZC7O7A75Nu0Y8xRWHVdwFhiPUgC6ilh+V?=
+ =?us-ascii?Q?HubB789kW3pB2Y/PcfIp4FlTrhfvebiLfYUcGPHHKRcQ+ETui/bSYMNLRFsH?=
+ =?us-ascii?Q?q/m0XKxHMbISaYNmdsZRGoIwZeG/A21TJtRpOTzvDmVurquVmvBXgGbwasLO?=
+ =?us-ascii?Q?7y2W3H54HqCB4yA9Dh7ipa42Z81mtZ+X4tyJNkzeNQKkYJaNUaUzdn2+tU+W?=
+ =?us-ascii?Q?eM2WH3ZfhUcCJRpEHS0qhAI/BVuPIg2Uo+/UL8YXD4e8WJXqGbCCdu+hanZ4?=
+ =?us-ascii?Q?SvQEFN4AVP5V62Bd3f6vXITzhBME3awBBUtfAup0+bAsQvV1G7DWtGc938Ip?=
+ =?us-ascii?Q?uhjVm2bPSSvrpLjnbKZSv4X8/i1Z0OTHxUPv581BIXSim9pJhJV0DPFCdmu5?=
+ =?us-ascii?Q?xPv/6iQ2gr6tlnlSLEoqPDy0GOr8sIZ4gDGR4ri+cpVl6gJ6FKUXhA5Q3iuS?=
+ =?us-ascii?Q?O2wlvQjGvrOAlpBCITqYMAUj/jaKKK6E4FWh6GW28w/yyQ/ygOGyyYM76Zy2?=
+ =?us-ascii?Q?lkCmu2eJJjEEM3H8xQUi2poPRTYWp61KOrXxCutei5LF/dnP+TGhESn84qLS?=
+ =?us-ascii?Q?YSRQLPn4fJIUQTYs+DleUaFy1MboGIim6+H8+PqM4cqTy8AjWkr1kFgvHZiC?=
+ =?us-ascii?Q?AJoLw952nb/VIDjhTb6ZDuHaTTZe3Y3Ok3NhbS3InQW0eHkOqE91/g+pwUN0?=
+ =?us-ascii?Q?gaD39uruA3duURmKZt8v4+tKtie8xsxdB5byhhVX7KmD1N7NuxIDSXMM1NxR?=
+ =?us-ascii?Q?f3Uzq5KgpIQdkM6IDB8ZTNVCalv4fgcd8EkXTdG/ov0+uWsvxoVf88H948C8?=
+ =?us-ascii?Q?axtOtbPaCUoJHWNZzHbOPRBsG9wgPAtLnDg7Bu0nuFiObA=3D=3D?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: df0e2a23-4d25-4c56-478d-08d9353e8d72
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2021 05:28:23.2534
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LZACMV/1GjeCek3ebou85Mwr87Cs4/Ro57rzX+VNYbXvcEhZ8yUrau8YcyCiPdu16uHQhAFApl9BSmxnl1WJ0A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0402MB3659
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/t1p/v3sR99B7_wU_ust+T8f
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Peng Fan <peng.fan@nxp.com>
 
-Hi all,
+V3:
+ Per Fabio's comment, keep the entries in alphabetical order in Patch 1.
 
-Today's linux-next merge of the kvm-arm tree got a conflict in:
+V2:
+ Add R-b from Mathieu
+ Add Rob in Cc for dt-bindings
 
-  tools/testing/selftests/kvm/Makefile
+i.MX8ULP features a M33 core + dual A35 core, M33 is kicked by ROM,
+so like 7ULP, A35 only communicate with M33.
 
-between commit:
+Based linux-next/master 6-22
 
-  4c63c9234085 ("KVM: selftests: Hoist APIC functions out of individual tes=
-ts")
+Peng Fan (2):
+  dt-bindings: remoteproc: imx_rproc: support i.MX8ULP
+  remoteproc: imx_rproc: support i.MX8ULP
 
-from the kvm tree and commit:
+ .../bindings/remoteproc/fsl,imx-rproc.yaml          |  1 +
+ drivers/remoteproc/imx_rproc.c                      | 13 +++++++++++++
+ 2 files changed, 14 insertions(+)
 
-  e3db7579ef35 ("KVM: selftests: Add exception handling support for aarch64=
-")
+-- 
+2.30.0
 
-from the kvm-arm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc tools/testing/selftests/kvm/Makefile
-index 61e2accd080d,36e4ebcc82f0..000000000000
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@@ -34,8 -34,8 +34,8 @@@ ifeq ($(ARCH),s390
-  endif
- =20
-  LIBKVM =3D lib/assert.c lib/elf.c lib/io.c lib/kvm_util.c lib/rbtree.c li=
-b/sparsebit.c lib/test_util.c lib/guest_modes.c lib/perf_test_util.c
- -LIBKVM_x86_64 =3D lib/x86_64/processor.c lib/x86_64/vmx.c lib/x86_64/svm.=
-c lib/x86_64/ucall.c lib/x86_64/handlers.S
- +LIBKVM_x86_64 =3D lib/x86_64/apic.c lib/x86_64/processor.c lib/x86_64/vmx=
-.c lib/x86_64/svm.c lib/x86_64/ucall.c lib/x86_64/handlers.S
-- LIBKVM_aarch64 =3D lib/aarch64/processor.c lib/aarch64/ucall.c
-+ LIBKVM_aarch64 =3D lib/aarch64/processor.c lib/aarch64/ucall.c lib/aarch6=
-4/handlers.S
-  LIBKVM_s390x =3D lib/s390x/processor.c lib/s390x/ucall.c lib/s390x/diag31=
-8_test_handler.c
- =20
-  TEST_GEN_PROGS_x86_64 =3D x86_64/cr4_cpuid_sync_test
-
---Sig_/t1p/v3sR99B7_wU_ust+T8f
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDRdZsACgkQAVBC80lX
-0GyiiQf/b4t2JydoHxXvWZMGRgMDwCw0u1z/7CwfdoShDBUMhuweR5Cfr8q+I9dx
-u3SmYsXibM/zZJm+YhetjHPad3lKRu5qb5CtIkid6m4o3Ed5Fen69eTfbib97mxg
-nU0f3Mp6Oz5u+kwj34Q0AzlJZPjXo5mRukzSnCa48an23GiklDxRl3wDMELZHn4d
-cA+Eh2Xlu5VqKdmo3p9SWSyuA86D8jviOCXnvr7tCIxN35rticAYEkY+K2fVvnEp
-dB1yI8oILMFP+QKKT3LYTzcP7GmmzL6xlRAmpaBzZ6piz1up1cREozqrLpFyXunw
-agdPwyTohTDJvymxs5Ohc9k29keBxQ==
-=lraZ
------END PGP SIGNATURE-----
-
---Sig_/t1p/v3sR99B7_wU_ust+T8f--
