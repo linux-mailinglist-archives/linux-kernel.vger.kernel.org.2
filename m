@@ -2,145 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6E13B0389
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 605F93B0392
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbhFVMEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 08:04:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229913AbhFVMEA (ORCPT
+        id S231217AbhFVMFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 08:05:55 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:56742 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230136AbhFVMFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 08:04:00 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A708C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 05:01:44 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id f70so38608229qke.13
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 05:01:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=uZXjrCktHYqiHY7Zuave3Zqe+nWlABu14O38dLKiRSc=;
-        b=V1vGTztZADrEdhzlzySX29OAyznJd+LoMCj0Tl5HgSKC/gYfSvRa4RbGq1dowEhGfV
-         daLDhPvM9+xafGLmtfuTCbex8YEiqsKJyrpDW4po9e16l0EgzUkVl44Hmyz39LGoO7xT
-         TzLfvUBU/DW8f9Bi5bQpi35/7V2g6v30a9D8yfcA8rTZQB+vxYyM9vAI2U0vDLGGfIJy
-         vutkFVFlx3zvB/LwkqKxO1Zhegmmb3Lh6V0Sj8MNmRXtTiRqKmKokko1doEKvfc01llt
-         m1k5v66LhFEesVNI9Fs78siXiJEJKb+BhvYsnd/58x+uaR7+OOZwrnkeKi2AGgaPMM8m
-         J+VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=uZXjrCktHYqiHY7Zuave3Zqe+nWlABu14O38dLKiRSc=;
-        b=UDTj2HgG6BJqIbDkGlGt09kyWH57l+C/FfWRSFUS7gsdwqalskJlOf5/4yMqupQOU8
-         0E0HJLidJ6Uip0Q/PAMds+aZ4BTszcwMt3tNhHrN+RK+CwfURpqqGaDi50V7cRxgknei
-         ynN51YgfXPI4UIxfhvbd5c8sOYMM0y9Ry9ahR0J56H1iJa5i/k6zIC3su/Oiq3YaWrsp
-         8iBvoagC8LxFg71kN8X1RiGX4WHR+LmW34lnD17mH9fsVvzEORYoKbKdna0S5O5H9pGh
-         /vZeV8sltnduAb88c3ikIWhtnJvtqOrWRjzuKfWseMxvY/YiN+HCr+1vU3R3TYNnDcqs
-         dF+Q==
-X-Gm-Message-State: AOAM532Rgv+WAkY/49w6o73wnM53pq46Q/t8g8cLx5Qsw9QaYjnFqHJA
-        pSu7/Y9L1MH47d3MMYopzTYrqg==
-X-Google-Smtp-Source: ABdhPJya7BBhAOKrUhmySN3jYp1EpbKfOqKBSj+U+j//RgFUf85U7EK52a+yYa92TMoPjVXQfaSu4g==
-X-Received: by 2002:a37:496:: with SMTP id 144mr3716033qke.456.1624363303727;
-        Tue, 22 Jun 2021 05:01:43 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id d23sm1485085qto.74.2021.06.22.05.01.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 05:01:43 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lvf66-00A9JB-Im; Tue, 22 Jun 2021 09:01:42 -0300
-Date:   Tue, 22 Jun 2021 09:01:42 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Tomer Tayar <ttayar@habana.ai>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
- FD for DMA-BUF
-Message-ID: <20210622120142.GL1096940@ziepe.ca>
-References: <CAKMK7uFOfoxbD2Z5mb-qHFnUe5rObGKQ6Ygh--HSH9M=9bziGg@mail.gmail.com>
- <YNCN0ulL6DQiRJaB@kroah.com>
- <20210621141217.GE1096940@ziepe.ca>
- <CAFCwf10KvCh0zfHEHqYR-Na6KJh4j+9i-6+==QaMdHHpLH1yEA@mail.gmail.com>
- <20210621175511.GI1096940@ziepe.ca>
- <CAKMK7uEO1_B59DtM7N2g7kkH7pYtLM_WAkn+0f3FU3ps=XEjZQ@mail.gmail.com>
- <CAFCwf11jOnewkbLuxUESswCJpyo7C0ovZj80UrnwUOZkPv2JYQ@mail.gmail.com>
- <20210621232912.GK1096940@ziepe.ca>
- <d358c740-fd3a-9ecd-7001-676e2cb44ec9@gmail.com>
- <CAFCwf11h_Nj_GEdCdeTzO5jgr-Y9em+W-v_pYUfz64i5Ac25yg@mail.gmail.com>
+        Tue, 22 Jun 2021 08:05:53 -0400
+Date:   Tue, 22 Jun 2021 12:03:36 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624363416;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ybv9HrR8t4cVeDrUvO6k44DDQMd9IS0nzLsaT0bIEaU=;
+        b=W2Am6KzcWkJAf3PDTlAWv8B5LJ2jPpjTfGrLYZjINzQieeHamBYVCq7CZt5ALQ6lFpDi2N
+        Tw2mDkfBAN8iqqyeM0oVEU5zAFzvUZrpqnhrq5JhQy+kdzJRumKopjYZRBn+KQsNm8P2nL
+        G8d2O58UF7wCxM9o1MmsyJskQTuarGSrgSTzYzYlBfNLICoIi88VndgJi5WAJdbdOU+JKj
+        G+vR9X5ViFCTBgxY3VQmxBLn2yMitk5vdAmlzq8VHUEl8htEvV5bLSuvpPKR81zM7YD6gg
+        5037AI16WxBSrZOK+Sd0rtfmJ1//PWO4bvQHXoCOgVVD8u090SOihO4S4/2jbw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624363416;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ybv9HrR8t4cVeDrUvO6k44DDQMd9IS0nzLsaT0bIEaU=;
+        b=tmcQGi95XVD9TYx/Wj6/TjBQJBM6irhuw7aUOk2GnuPv1CU94A+13S1bif6K71AOAZbPtH
+        gSdtRPohKB4YP7Cg==
+From:   "tip-bot2 for Rik van Riel" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/urgent] sched/fair: Ensure that the CFS parent is added
+ after unthrottling
+Cc:     Sachin Sant <sachinp@linux.vnet.ibm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rik van Riel <riel@surriel.com>,
+        Ingo Molnar <mingo@kernel.org>, Odin Ugedal <odin@uged.al>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210621174330.11258-1-vincent.guittot@linaro.org>
+References: <20210621174330.11258-1-vincent.guittot@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAFCwf11h_Nj_GEdCdeTzO5jgr-Y9em+W-v_pYUfz64i5Ac25yg@mail.gmail.com>
+Message-ID: <162436341605.395.5765576899693923114.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 11:42:27AM +0300, Oded Gabbay wrote:
-> On Tue, Jun 22, 2021 at 9:37 AM Christian König
-> <ckoenig.leichtzumerken@gmail.com> wrote:
-> >
-> > Am 22.06.21 um 01:29 schrieb Jason Gunthorpe:
-> > > On Mon, Jun 21, 2021 at 10:24:16PM +0300, Oded Gabbay wrote:
-> > >
-> > >> Another thing I want to emphasize is that we are doing p2p only
-> > >> through the export/import of the FD. We do *not* allow the user to
-> > >> mmap the dma-buf as we do not support direct IO. So there is no access
-> > >> to these pages through the userspace.
-> > > Arguably mmaping the memory is a better choice, and is the direction
-> > > that Logan's series goes in. Here the use of DMABUF was specifically
-> > > designed to allow hitless revokation of the memory, which this isn't
-> > > even using.
-> >
-> > The major problem with this approach is that DMA-buf is also used for
-> > memory which isn't CPU accessible.
+The following commit has been merged into the sched/urgent branch of tip:
 
-That isn't an issue here because the memory is only intended to be
-used with P2P transfers so it must be CPU accessible.
+Commit-ID:     30ca4b4598a9d680917fe24df5451afecc028b5b
+Gitweb:        https://git.kernel.org/tip/30ca4b4598a9d680917fe24df5451afecc028b5b
+Author:        Rik van Riel <riel@surriel.com>
+AuthorDate:    Mon, 21 Jun 2021 19:43:30 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 22 Jun 2021 14:00:53 +02:00
 
-> > That was one of the reasons we didn't even considered using the mapping
-> > memory approach for GPUs.
+sched/fair: Ensure that the CFS parent is added after unthrottling
 
-Well, now we have DEVICE_PRIVATE memory that can meet this need
-too.. Just nobody has wired it up to hmm_range_fault()
+Ensure that a CFS parent will be in the list whenever one of its children is also
+in the list.
 
-> > > So you are taking the hit of very limited hardware support and reduced
-> > > performance just to squeeze into DMABUF..
-> 
-> Thanks Jason for the clarification, but I honestly prefer to use
-> DMA-BUF at the moment.
-> It gives us just what we need (even more than what we need as you
-> pointed out), it is *already* integrated and tested in the RDMA
-> subsystem, and I'm feeling comfortable using it as I'm somewhat
-> familiar with it from my AMD days.
+A warning on rq->tmp_alone_branch != &rq->leaf_cfs_rq_list has been
+reported while running LTP test cfs_bandwidth01.
 
-You still have the issue that this patch is doing all of this P2P
-stuff wrong - following the already NAK'd AMD approach.
+Odin Ugedal found the root cause:
 
-> I'll go and read Logan's patch-set to see if that will work for us in
-> the future. Please remember, as Daniel said, we don't have struct page
-> backing our device memory, so if that is a requirement to connect to
-> Logan's work, then I don't think we will want to do it at this point.
+	$ tree /sys/fs/cgroup/ltp/ -d --charset=ascii
+	/sys/fs/cgroup/ltp/
+	|-- drain
+	`-- test-6851
+	    `-- level2
+		|-- level3a
+		|   |-- worker1
+		|   `-- worker2
+		`-- level3b
+		    `-- worker3
 
-It is trivial to get the struct page for a PCI BAR.
+Timeline (ish):
+- worker3 gets throttled
+- level3b is decayed, since it has no more load
+- level2 get throttled
+- worker3 get unthrottled
+- level2 get unthrottled
+  - worker3 is added to list
+  - level3b is not added to list, since nr_running==0 and is decayed
 
-Jason
+ [ Vincent Guittot: Rebased and updated to fix for the reported warning. ]
+
+Fixes: a7b359fc6a37 ("sched/fair: Correctly insert cfs_rq's to list on unthrottle")
+Reported-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+Suggested-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Rik van Riel <riel@surriel.com>
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Tested-by: Sachin Sant <sachinp@linux.vnet.ibm.com>
+Acked-by: Odin Ugedal <odin@uged.al>
+Link: https://lore.kernel.org/r/20210621174330.11258-1-vincent.guittot@linaro.org
+---
+ kernel/sched/fair.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index bfaa6e1..a56f646 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3298,6 +3298,31 @@ static inline void cfs_rq_util_change(struct cfs_rq *cfs_rq, int flags)
+ 
+ #ifdef CONFIG_SMP
+ #ifdef CONFIG_FAIR_GROUP_SCHED
++/*
++ * Because list_add_leaf_cfs_rq always places a child cfs_rq on the list
++ * immediately before a parent cfs_rq, and cfs_rqs are removed from the list
++ * bottom-up, we only have to test whether the cfs_rq before us on the list
++ * is our child.
++ * If cfs_rq is not on the list, test whether a child needs its to be added to
++ * connect a branch to the tree  * (see list_add_leaf_cfs_rq() for details).
++ */
++static inline bool child_cfs_rq_on_list(struct cfs_rq *cfs_rq)
++{
++	struct cfs_rq *prev_cfs_rq;
++	struct list_head *prev;
++
++	if (cfs_rq->on_list) {
++		prev = cfs_rq->leaf_cfs_rq_list.prev;
++	} else {
++		struct rq *rq = rq_of(cfs_rq);
++
++		prev = rq->tmp_alone_branch;
++	}
++
++	prev_cfs_rq = container_of(prev, struct cfs_rq, leaf_cfs_rq_list);
++
++	return (prev_cfs_rq->tg->parent == cfs_rq->tg);
++}
+ 
+ static inline bool cfs_rq_is_decayed(struct cfs_rq *cfs_rq)
+ {
+@@ -3334,6 +3359,9 @@ static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
+ {
+ 	long delta = cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
+ 
++	if (child_cfs_rq_on_list(cfs_rq))
++		return false;
++
+ 	/*
+ 	 * No need to update load_avg for root_task_group as it is not used.
+ 	 */
