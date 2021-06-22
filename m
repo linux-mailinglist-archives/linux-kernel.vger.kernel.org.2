@@ -2,164 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C24B3B00CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:54:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03AC13B00D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229837AbhFVJ4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 05:56:35 -0400
-Received: from foss.arm.com ([217.140.110.172]:45716 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229490AbhFVJ4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 05:56:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A91E1FB;
-        Tue, 22 Jun 2021 02:54:19 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.10.229])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 807EA3F694;
-        Tue, 22 Jun 2021 02:54:15 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 10:54:12 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Michael Kelley <mikelley@microsoft.com>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     "will@kernel.org" <will@kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "ardb@kernel.org" <ardb@kernel.org>,
-        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
-        KY Srinivasan <kys@microsoft.com>
-Subject: Re: [PATCH v10 3/7] arm64: hyperv: Add Hyper-V
- clocksource/clockevent support
-Message-ID: <20210622095412.GC67232@C02TD0UTHF1T.local>
-References: <1620841067-46606-1-git-send-email-mikelley@microsoft.com>
- <1620841067-46606-4-git-send-email-mikelley@microsoft.com>
- <20210514123711.GB30645@C02TD0UTHF1T.local>
- <MWHPR21MB15932B44EC1E55614B219F5ED7509@MWHPR21MB1593.namprd21.prod.outlook.com>
- <20210517130815.GC62656@C02TD0UTHF1T.local>
- <MWHPR21MB15930A4EE785984292B1D72BD72D9@MWHPR21MB1593.namprd21.prod.outlook.com>
- <20210518170016.GP82842@C02TD0UTHF1T.local>
- <MWHPR21MB1593800A20B55626ACE6A844D7379@MWHPR21MB1593.namprd21.prod.outlook.com>
- <20210610164519.GB63335@C02TD0UTHF1T.local>
- <MWHPR21MB1593095A9B8B61B14D7DF08DD7319@MWHPR21MB1593.namprd21.prod.outlook.com>
+        id S229800AbhFVJ7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 05:59:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229490AbhFVJ7W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 05:59:22 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA77C061574;
+        Tue, 22 Jun 2021 02:57:05 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id bb10-20020a17090b008ab029016eef083425so1398378pjb.5;
+        Tue, 22 Jun 2021 02:57:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3QVfQrgRh33gEx5r7I5h3yOocpWLrCLFyDdaL4+1GCE=;
+        b=VM5YgDYUgK3990wD5dI7ibB5zuh39GX3+g/li/Q5+fME3BpI1T80vL8QGyh2JQjfY3
+         5gyOoe7EVHQ1zRMPbkmJ3oIz5k/9iIjofxixyxaymFazHI4DGflvNfJS5MGjMHNawCCa
+         L55G7UVT9rGDrnWqwIP9hiCO3LGtul9yb/d9aaSeq+/LZ15yODiArs/vx0w9MdMt4WU2
+         IKbcVV/kCHuWoNXrt1127yfA8w5IkD7PQQmNyATk5iqt27+lkyOenL7hRuZbkmqGkWOG
+         WJqqyAnEEuWm5w2u2UDMCg/xso3r/+TaxwL9ir4I9NUkngbcH/WqgPjytQUrRO2GYFoM
+         Nnfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3QVfQrgRh33gEx5r7I5h3yOocpWLrCLFyDdaL4+1GCE=;
+        b=lF8yTxcsIgUeE45lg15CcfyH8DfQZjH+1gL4F0Swf2C9/+rGKDAThNe7iMgi90WD7A
+         OkNzXUaf71U53NgnQ9nCUXrgGcWHPu1u8Uztb1CDjbJbbjvTeHOqgkaZ+xJNmVPJdZL/
+         Dr2mO7ilKTb2fOvcHsgS1OYdpbXIm69a6KtvnecrdfV5rxdTH5Awan4PIfiEDoGg1BH4
+         KjFLPt9SmvsZy22JSxzFTD8CmLUwOqTl7oqHwiG+TzDzZrB8rfPMq5B9vD1zZsTPmJ7C
+         wgHyP74iwlcNWq8SuoO7BfsnTJwVjTzI2WigGCavIEB3IhFeTZT6FvMBS1ZJFPU3d2cu
+         uMVA==
+X-Gm-Message-State: AOAM530cb44+GgGJVxn283ocC3Jh8wzvEpD9gn2MEyOrPihgHoJC17nq
+        MHXq6TDXzt9TQLjhsdHZ5Ow=
+X-Google-Smtp-Source: ABdhPJxk9rOdpE4HgxiGJpCpV8qAxuDvUDSE2k3P0fdjGxEoRibRvR2T6Nm3YJkS2IVAmQ2EkTF6xA==
+X-Received: by 2002:a17:90a:708a:: with SMTP id g10mr3211941pjk.108.1624355824979;
+        Tue, 22 Jun 2021 02:57:04 -0700 (PDT)
+Received: from localhost.localdomain (104.194.74.249.16clouds.com. [104.194.74.249])
+        by smtp.gmail.com with ESMTPSA id c18sm4742498pfo.143.2021.06.22.02.56.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 02:57:04 -0700 (PDT)
+From:   Artem Lapkin <email2tema@gmail.com>
+X-Google-Original-From: Artem Lapkin <art@khadas.com>
+To:     narmstrong@baylibre.com
+Cc:     wim@linux-watchdog.org, linux@roeck-us.net, khilman@baylibre.com,
+        jbrunet@baylibre.com, christianshewitt@gmail.com,
+        martin.blumenstingl@googlemail.com, linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        art@khadas.com, nick@khadas.com, gouwa@khadas.com
+Subject: [PATCH] watchdog: meson_gxbb_wdt: improve
+Date:   Tue, 22 Jun 2021 17:56:39 +0800
+Message-Id: <20210622095639.1280774-1-art@khadas.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR21MB1593095A9B8B61B14D7DF08DD7319@MWHPR21MB1593.namprd21.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+Improve meson_gxbb_wdt watchdog driver
+1) added module param timeout and nowayout same as other modules
+2) print watchdog driver start status
+3) add watchdog_stop_on_unregister
+4) remove watchdog_stop_on_reboot ( still can be activated by
+watchdog.stop_on_reboot=1 ) i think this driver configuration more useful
+becouse we can get reboot waranty for abnormal situations on shutdown stage
 
-Thanks for all this; comments inline below. I've added Marc Zyngier, who
-co-maintains the architected timer code.
+Signed-off-by: Artem Lapkin <art@khadas.com>
+---
+ drivers/watchdog/meson_gxbb_wdt.c | 20 ++++++++++++++++++--
+ 1 file changed, 18 insertions(+), 2 deletions(-)
 
-On Mon, Jun 14, 2021 at 02:42:23AM +0000, Michael Kelley wrote:
-> From: Mark Rutland <mark.rutland@arm.com> Sent: Thursday, June 10, 2021 9:45 AM
-> > On Tue, Jun 08, 2021 at 03:36:06PM +0000, Michael Kelley wrote:
-> > > I've had a couple rounds of discussions with the Hyper-V team.   For
-> > > the clocksource we've agreed to table the live migration discussion, and
-> > > I'll resubmit the code so that arm_arch_timer.c provides the
-> > > standard arch_sys_counter clocksource.  As noted previously, this just
-> > > works for a Hyper-V guest.  The live migration discussion may come
-> > > back later after a deeper investigation by Hyper-V.
-> > 
-> > Great; thanks for this!
-> > 
-> > > For clockevents, there's not a near term fix.  It's more than just plumbing
-> > > an interrupt for Hyper-V to virtualize the ARM64 arch timer in a guest VM.
-> > > From their perspective there's also benefit in having a timer abstraction
-> > > that's independent of the architecture, and in the Linux guest, the STIMER
-> > > code is common across x86/x64 and ARM64.  It follows the standard Linux
-> > > clockevents model, as it should. The code is already in use in out-of-tree
-> > > builds in the Linux VMs included in Windows 10 on ARM64 as part of the
-> > > so-called "Windows Subsystem for Linux".
-> > >
-> > > So I'm hoping we can get this core support for ARM64 guests on Hyper-V
-> > > into upstream using the existing STIMER support.  At some point, Hyper-V
-> > > will do the virtualization of the ARM64 arch timer, but we don't want to
-> > > have to stay out-of-tree until after that happens.
-> > 
-> > My main concern here is making sure that we can rely on architected
-> > properties, and don't have to special-case architected bits for hyperv
-> > (or any other hypervisor), since that inevitably causes longer-term
-> > pain.
-> > 
-> > While in abstract I'm not as worried about using the timer
-> > clock_event_device specifically, that same driver provides the
-> > clocksource and the event stream, and I want those to work as usual,
-> > without being tied into the hyperv code. IIUC that will require some
-> > work, since the driver won't register if the GTDT is missing timer
-> > interrupts (or if there is no GTDT).
-> > 
-> > I think it really depends on what that looks like.
-> 
-> Mark,
-> 
-> Here are the details:
-> 
-> The existing initialization and registration code in arm_arch_timer.c
-> works in a Hyper-V guest with no changes.  As previously mentioned,
-> the GTDT exists and is correctly populated.  Even though it isn't used,
-> there's a PPI INTID specified for the virtual timer, just so
-> the "arm_sys_timer" clockevent can be initialized and registered.
-> The IRQ shows up in the output of "cat /proc/interrupts" with zero counts
-> for all CPUs since no interrupts are ever generated. The EL1 virtual
-> timer registers (CNTV_CVAL_EL0, CNTV_TVAL_EL0, and CNTV_CTL_EL0)
-> are accessible in the VM.  The "arm_sys_timer" clockevent is left in
-> a shutdown state with CNTV_CTL_EL0.ENABLE set to zero when the
-> Hyper-V STIMER clockevent is registered with a higher rating.
+diff --git a/drivers/watchdog/meson_gxbb_wdt.c b/drivers/watchdog/meson_gxbb_wdt.c
+index 5a9ca10fbcfa..15c889932c13 100644
+--- a/drivers/watchdog/meson_gxbb_wdt.c
++++ b/drivers/watchdog/meson_gxbb_wdt.c
+@@ -35,6 +35,17 @@ struct meson_gxbb_wdt {
+ 	struct clk *clk;
+ };
+ 
++static bool nowayout = WATCHDOG_NOWAYOUT;
++static unsigned int timeout = DEFAULT_TIMEOUT;
++
++module_param(nowayout, bool, 0);
++MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started default="
++			__MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
++
++module_param(timeout, uint, 0);
++MODULE_PARM_DESC(timeout, "Watchdog heartbeat in seconds="
++			__MODULE_STRING(DEFAULT_TIMEOUT) ")");
++
+ static int meson_gxbb_wdt_start(struct watchdog_device *wdt_dev)
+ {
+ 	struct meson_gxbb_wdt *data = watchdog_get_drvdata(wdt_dev);
+@@ -174,7 +185,7 @@ static int meson_gxbb_wdt_probe(struct platform_device *pdev)
+ 	data->wdt_dev.ops = &meson_gxbb_wdt_ops;
+ 	data->wdt_dev.max_hw_heartbeat_ms = GXBB_WDT_TCNT_SETUP_MASK;
+ 	data->wdt_dev.min_timeout = 1;
+-	data->wdt_dev.timeout = DEFAULT_TIMEOUT;
++	data->wdt_dev.timeout = timeout;
+ 	watchdog_set_drvdata(&data->wdt_dev, data);
+ 
+ 	/* Setup with 1ms timebase */
+@@ -186,7 +197,12 @@ static int meson_gxbb_wdt_probe(struct platform_device *pdev)
+ 
+ 	meson_gxbb_wdt_set_timeout(&data->wdt_dev, data->wdt_dev.timeout);
+ 
+-	watchdog_stop_on_reboot(&data->wdt_dev);
++	watchdog_set_nowayout(&data->wdt_dev, nowayout);
++	watchdog_stop_on_unregister(&data->wdt_dev);
++
++	dev_info(dev, "Watchdog enabled (timeout=%d sec, nowayout=%d)",
++		data->wdt_dev.timeout, nowayout);
++
+ 	return devm_watchdog_register_device(dev, &data->wdt_dev);
+ }
+ 
+-- 
+2.25.1
 
-This concerns me, since we're lying to the kernel, and assuming that it
-will never try to use this timer. I appreciate that evidently we don't
-happen to rely on that today if you register a higher priority timer,
-but that does open us up to future fragility (e.g. if we added sanity
-checks when registering timers), and IIRC there are ways for userspace
-to change the clockevent device today.
-
-> Event streams are initialized and the __delay() implementation
-> for ARM64 inside the kernel works.  However, on the Ampere
-> eMAG hardware I'm using for testing, the WFE instruction returns
-> more quickly than it should even though the event stream fields in
-> CNTKCTL_EL1 are correct.  I have a query in to the Hyper-V team 
-> to see if they are trapping WFE and just returning, vs. perhaps the
-> eMAG processor takes the easy way out and has WFE just return
-> immediately.  I'm not knowledgeable about other uses of timer
-> event streams, so let me know if there are other usage scenarios
-> I should check.
-
-I saw your reply confirming that this is gnerally working as expected
-(and that Hyper-V is not trapping WFE) so this sounds fine to me.
-
-> Finally, the "arch_sys_counter" clocksource gets initialized and
-> setup correctly.  If the Hyper-V clocksource is also initialized,
-> you can flip between the two clocksources at runtime as expected.
-> If the Hyper-V clocksource is not setup, then Linux in the VM runs
-> fine with the "arch_sys_counter" clocksource.
-
-Great!
-
-As above, my remaining concern here is fragility around the
-clockevent_device; I'm not keen that we're lying (in the GTDT) that
-interrupts are wired up when they not functional, and while you can get
-away with that today, that relies on kernel implementation details that
-could change.
-
-Ideally, Hyper-V would provide the architectural timer (as it's already
-claiming to in the GTDT), things would "just work", and the Hyper-V
-timer would be an optimization rather than a functional necessity.
-
-You mentioned above that Hyper-V will virtualize the timer "at some
-point" -- is that already planned, and when is that likely to be?
-
-Marc, do you have any thoughts on this?
-
-Thanks,
-Mark.
