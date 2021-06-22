@@ -2,127 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC423B0789
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A093B0786
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:36:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231879AbhFVOjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 10:39:10 -0400
-Received: from mga12.intel.com ([192.55.52.136]:4926 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231246AbhFVOjF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 10:39:05 -0400
-IronPort-SDR: uWrofRyHQt88knhKBKxSZODwu559Hg7Q1JuTL12uRgntl+hduL2ftzM3FFnKkKqulRtIIPdIP1
- kMtztOqA1dGw==
-X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="186754520"
-X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="186754520"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 07:36:48 -0700
-IronPort-SDR: gvzceX3q2U48XWtETJ8dWs+IlBV1Z663ZBzcoUuC6UBwUdxUVUSGBCKInGedNvSBfff8TOMOvc
- pIQVcS8/G9ZQ==
-X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="423337744"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 07:36:43 -0700
-Received: from andy by smile with local (Exim 4.94.2)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1lvhW3-004UlQ-NH; Tue, 22 Jun 2021 17:36:39 +0300
-Date:   Tue, 22 Jun 2021 17:36:39 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jia He <justin.he@arm.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@infradead.org>, nd@arm.com
-Subject: Re: [PATCH v5 1/4] fs: introduce helper d_path_unsafe()
-Message-ID: <YNH1d0aAu1WRiua1@smile.fi.intel.com>
-References: <20210622140634.2436-1-justin.he@arm.com>
- <20210622140634.2436-2-justin.he@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210622140634.2436-2-justin.he@arm.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S231734AbhFVOjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 10:39:08 -0400
+Received: from mail-io1-f52.google.com ([209.85.166.52]:41680 "EHLO
+        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230047AbhFVOjD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 10:39:03 -0400
+Received: by mail-io1-f52.google.com with SMTP id i189so600164ioa.8;
+        Tue, 22 Jun 2021 07:36:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=Of/VzMGz855Wz34Tuq2SD5JHgkJPelGIgUky1xC77Tg=;
+        b=f2P9Ju/nRipalVBCvcFIEd3vVqsZkieUEEVS15OZfaBjxP2cgdbBvneYGJ3gq3r/TN
+         1NnAr2Kl4ygHuurvfQbpmHDl8EXSdrOL0YqiAkLqyqiSmFg8pdWxHfG/tzVQiH866OTc
+         nkRMrtSkgfGQ7iu8kFifb1w9KZjYVzlFlOIU/oommX+WdbHzJEo9/Psx2LZRUXi8SsEA
+         oTvp78X3kMC9LpX6AOFl2c72niXvY8UTEBTMuA8nJfXdckchmTx2HJkMUL9BeihQCd/s
+         GuG6+KX2coM2MDLznFUn41voj2VL7KlrCsITKWDgzMc46kd4xIaR7nzTm3kAlztKO7J9
+         oqTA==
+X-Gm-Message-State: AOAM532z4QpewjUp82ZidKE4N7VncXW+vHAjY5gr+tVkP6zZp6mJ40x/
+        dqw1lywdd5xcch7VHQLJXUt9nViVPg==
+X-Google-Smtp-Source: ABdhPJziqbME6LQR9cT2xsvCNevM8ONjOtoYNfKtB2kAz1pz9qVbzDiyel+JGMXGJMZhR7ZJXiFoKA==
+X-Received: by 2002:a05:6638:3896:: with SMTP id b22mr4300070jav.37.1624372607096;
+        Tue, 22 Jun 2021 07:36:47 -0700 (PDT)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id e2sm9917641iot.50.2021.06.22.07.36.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 07:36:45 -0700 (PDT)
+Received: (nullmailer pid 3566365 invoked by uid 1000);
+        Tue, 22 Jun 2021 14:36:40 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     phone-devel@vger.kernel.org, jeffrey.l.hugo@gmail.com,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, ~postmarketos/upstreaming@lists.sr.ht,
+        robh+dt@kernel.org, daniel.lezcano@linaro.org,
+        bjorn.andersson@linaro.org, devicetree@vger.kernel.org,
+        rjw@rjwysocki.net, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        jami.kettunen@somainline.org, agross@kernel.org
+In-Reply-To: <20210621181016.365009-3-angelogioacchino.delregno@somainline.org>
+References: <20210621181016.365009-1-angelogioacchino.delregno@somainline.org> <20210621181016.365009-3-angelogioacchino.delregno@somainline.org>
+Subject: Re: [PATCH v6 2/5] dt-bindings: soc: qcom: Add devicetree binding for QCOM SPM
+Date:   Tue, 22 Jun 2021 08:36:40 -0600
+Message-Id: <1624372600.481255.3566364.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 10:06:31PM +0800, Jia He wrote:
-> This helper is similar to d_path() except that it doesn't take any
-> seqlock/spinlock. It is typical for debugging purposes. Besides,
-> an additional return value *prenpend_len* is used to get the full
-> path length of the dentry, ingoring the tail '\0'.
-> the full path length = end - buf - prepend_length - 1
-
-Missed period at the end of sentence.
-
-> Previously it will skip the prepend_name() loop at once in
-> __prepen_path() when the buffer length is not enough or even negative.
-> prepend_name_with_len() will get the full length of dentry name
-> together with the parent recursively regardless of the buffer length.
-
-> If someone invokes snprintf() with small but positive space,
-> prepend_name_with_len() moves and copies the string partially.
+On Mon, 21 Jun 2021 20:10:13 +0200, AngeloGioacchino Del Regno wrote:
+> Add devicetree binding for Qualcomm Subsystem Power Manager (SPM).
 > 
-> More than that, kasprintf() will pass NULL _buf_ and _end_ as the
-> parameters. Hence return at the very beginning with false in this case.
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> ---
+>  .../bindings/soc/qcom/qcom,spm.yaml           | 55 +++++++++++++++++++
+>  1 file changed, 55 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,spm.yaml
+> 
 
-These two paragraphs are talking about printf() interface, while patch has
-nothing to do with it. Please, rephrase in a way that it doesn't refer to the
-particular callers. Better to mention them in the corresponding printf()
-patch(es).
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-...
+yamllint warnings/errors:
 
->   * prepend_name - prepend a pathname in front of current buffer pointer
-> - * @buffer: buffer pointer
-> - * @buflen: allocated length of the buffer
-> + * @p: prepend buffer which contains buffer pointer and allocated length
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom,spm.example.dt.yaml: power-controller@f9089000: compatible: ['qcom,msm8974-saw2-v2.1-cpu', 'qcom,saw2'] is too long
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom,spm.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom,spm.example.dt.yaml: power-controller@f9089000: compatible: Additional items are not allowed ('qcom,saw2' was unexpected)
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom,spm.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/soc/qcom/qcom,spm.example.dt.yaml: power-controller@f9089000: '#power-domain-cells' is a required property
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/power/power-domain.yaml
+Documentation/devicetree/bindings/soc/qcom/qcom,spm.example.dt.yaml:0:0: /example-0/power-controller@f9089000: failed to match any schema with compatible: ['qcom,msm8974-saw2-v2.1-cpu', 'qcom,saw2']
+\ndoc reference errors (make refcheckdocs):
 
->   * @name:   name string and length qstr structure
+See https://patchwork.ozlabs.org/patch/1495264
 
-Indentation issue btw, can be fixed in the same patch.
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
 
->   *
->   * With RCU path tracing, it may race with d_move(). Use READ_ONCE() to
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-Shouldn't this be a separate change with corresponding Fixes tag?
+pip3 install dtschema --upgrade
 
-...
-
-> +/**
-> + * d_path_unsafe - return the full path of a dentry without taking
-> + * any seqlock/spinlock. This helper is typical for debugging purposes.
-
-Seems you ignored my comment, or forget to test, or compile test with kernel
-doc validator enabled doesn't show any issues. If it's the latter, we have to
-fix kernel doc validator.
-
-TL;DR: describe parameters as well.
-
-> + */
-
-...
-
-> +	struct path root;
-> +	struct mount *mnt = real_mount(path->mnt);
-> +	DECLARE_BUFFER(b, buf, buflen);
-
-Can wee keep this in reversed xmas tree order?
-
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Please check and re-submit.
 
