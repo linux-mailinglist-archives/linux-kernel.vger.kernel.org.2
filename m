@@ -2,80 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F043B0AED
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059143B0AF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231351AbhFVQ7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 12:59:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34758 "EHLO mail.kernel.org"
+        id S231680AbhFVQ7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 12:59:18 -0400
+Received: from mga18.intel.com ([134.134.136.126]:56792 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230076AbhFVQ67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 12:58:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8197D61353;
-        Tue, 22 Jun 2021 16:56:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624381003;
-        bh=dHo7p4pFLbwF2dP3g+Avw3Zi/j24BOyKxt9PufO3Kt4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YrGVdZN/qOXPhZVKacZef4rWUzGqDWEgaqTkbLs8Mkq4Kwrdlt7eE4ObHXwZ+alPV
-         1q15Xs1rl6oLeRc3nkV3U98eNJLCHY4Am3DL/Wp+pK+qrYXzFIW+vNx2oHsrShMQVU
-         0b6OoaGngQiQyQQKVBz1tlM4gXca3Kuhq8cl3yukiYRV+29ugNARQNK8hyHw5V6meX
-         1PbUfHTFWKX4KMNzMWBbyn45i3aVgR9pDwW6PJ2gkCg+np7KbroSmY3stUD3K1nyTI
-         tJOAWyqR2+kR15N37wUirENL+OPD+brDMYUGXMz8eWnPYeNGJ+F8xRAfL8E0kXADvt
-         YVdTI+KU4q4LA==
-Date:   Tue, 22 Jun 2021 17:56:19 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] kbuild: modpost: Explicitly warn about unprototyped
- symbols
-Message-ID: <20210622165619.GH4574@sirena.org.uk>
-References: <20210607140206.38131-1-broonie@kernel.org>
- <CAK7LNAT7cy8Kn1w2ceRdH_O4P8PMut4Bivcyas88gVa+wu7HGA@mail.gmail.com>
+        id S231572AbhFVQ7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 12:59:10 -0400
+IronPort-SDR: E06Ry6tRZgL2/Sj9XFDR6aXCh3/hVkbCjjC1Mw12LS92LAzhdy9JabVFnCxF5usygUy3QUhiHE
+ hBxodT1/BqJQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="194408104"
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208";a="194408104"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 09:56:24 -0700
+IronPort-SDR: s2BwDnZyMjQskcsJj5BGgqhuiSA0OZzV+M6OKn1PVBuZtrFq0X+aPPC0IH4sO3L/H1steauqDk
+ L8yjeJsankAw==
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208";a="452685198"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 09:56:23 -0700
+From:   ira.weiny@intel.com
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
+        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Faisal Latif <faisal.latif@intel.com>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Bernard Metzler <bmt@zurich.ibm.com>,
+        Kamal Heib <kheib@redhat.com>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V2] RDMA/irdma: Remove use of kmap()
+Date:   Tue, 22 Jun 2021 09:56:22 -0700
+Message-Id: <20210622165622.2638628-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
+In-Reply-To: <20210622061422.2633501-3-ira.weiny@intel.com>
+References: <20210622061422.2633501-3-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="aF3LVLvitz/VQU3c"
-Content-Disposition: inline
-In-Reply-To: <CAK7LNAT7cy8Kn1w2ceRdH_O4P8PMut4Bivcyas88gVa+wu7HGA@mail.gmail.com>
-X-Cookie: fortune: not found
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Ira Weiny <ira.weiny@intel.com>
 
---aF3LVLvitz/VQU3c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+kmap() is being deprecated and will break uses of device dax after PKS
+protection is introduced.[1]
 
-On Thu, Jun 17, 2021 at 10:05:44AM +0900, Masahiro Yamada wrote:
-> On Mon, Jun 7, 2021 at 11:02 PM Mark Brown <broonie@kernel.org> wrote:
+The kmap() used in the irdma CM driver is thread local.  Therefore
+kmap_local_page() is sufficient to use and may provide performance benefits
+as well.  kmap_local_page() will work with device dax and pgmap
+protected pages.
 
-> > One common cause of modpost version generation failures is a failure to
-> > prototype exported assembly functions - the tooling requires this for
-> > exported functions even if they are not and should not be called from C
+Use kmap_local_page() instead of kmap().
 
-> Applied to linux-kbuild. Thanks.
+[1] https://lore.kernel.org/lkml/20201009195033.3208459-59-ira.weiny@intel.com/
 
-This doesn't seem to be showing up in -next, was there some issue?
-Looks like the kbuild tree that -next is picking up wasn't updated since
-1st June.
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
---aF3LVLvitz/VQU3c
-Content-Type: application/pgp-signature; name="signature.asc"
+---
+Changes for V2:
+	Move to the new irdma driver for 5.14
+---
+ drivers/infiniband/hw/irdma/cm.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/drivers/infiniband/hw/irdma/cm.c b/drivers/infiniband/hw/irdma/cm.c
+index 3d2bdb033a54..6b62299abfbb 100644
+--- a/drivers/infiniband/hw/irdma/cm.c
++++ b/drivers/infiniband/hw/irdma/cm.c
+@@ -3675,14 +3675,14 @@ int irdma_accept(struct iw_cm_id *cm_id, struct iw_cm_conn_param *conn_param)
+ 	ibmr->device = iwpd->ibpd.device;
+ 	iwqp->lsmm_mr = ibmr;
+ 	if (iwqp->page)
+-		iwqp->sc_qp.qp_uk.sq_base = kmap(iwqp->page);
++		iwqp->sc_qp.qp_uk.sq_base = kmap_local_page(iwqp->page);
+ 
+ 	cm_node->lsmm_size = accept.size + conn_param->private_data_len;
+ 	irdma_sc_send_lsmm(&iwqp->sc_qp, iwqp->ietf_mem.va, cm_node->lsmm_size,
+ 			   ibmr->lkey);
+ 
+ 	if (iwqp->page)
+-		kunmap(iwqp->page);
++		kunmap_local(iwqp->sc_qp.qp_uk.sq_base);
+ 
+ 	iwqp->cm_id = cm_id;
+ 	cm_node->cm_id = cm_id;
+@@ -4093,10 +4093,10 @@ static void irdma_cm_event_connected(struct irdma_cm_event *event)
+ 	irdma_cm_init_tsa_conn(iwqp, cm_node);
+ 	read0 = (cm_node->send_rdma0_op == SEND_RDMA_READ_ZERO);
+ 	if (iwqp->page)
+-		iwqp->sc_qp.qp_uk.sq_base = kmap(iwqp->page);
++		iwqp->sc_qp.qp_uk.sq_base = kmap_local_page(iwqp->page);
+ 	irdma_sc_send_rtt(&iwqp->sc_qp, read0);
+ 	if (iwqp->page)
+-		kunmap(iwqp->page);
++		kunmap_local(iwqp->sc_qp.qp_uk.sq_base);
+ 
+ 	attr.qp_state = IB_QPS_RTS;
+ 	cm_node->qhash_set = false;
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDSFjIACgkQJNaLcl1U
-h9CpGQf8Cgrv/jMY92zReOi6c/lGLCLPUpROphTq82PEtBA16etJo6BUUQqKDV7z
-AiRcJ50oi9d7Mn1EXNFUefdDmVALq+ZF2kSSpt35RblxheXSfBRNRwjaMm5jRI3+
-9ys0DLeKrAbX2zRL3MP1bx99TAhqHf31fwtbqLcqOC5Drll4ebZjcHqDFY+6KX2p
-dZpkujqsWdfNlV2AQSsPNGYTrq0X/OQ9KFzRO10e59WkW+SLj8CyUUMxgUIIlFx2
-asmiO9+0fK4nL/tVEUPhlRqZK5JnmK7q9BR5/zQDN0z4cWVg+SBJnqgZ4r6jrIfW
-SV4cNLEHib9s1lWqZegpFJhZQlcxlA==
-=oj5e
------END PGP SIGNATURE-----
-
---aF3LVLvitz/VQU3c--
