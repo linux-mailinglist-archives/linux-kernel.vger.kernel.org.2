@@ -2,298 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD9C63B0EAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 979203B0EB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbhFVU0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 16:26:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42470 "EHLO
+        id S229873AbhFVUa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 16:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbhFVU0I (ORCPT
+        with ESMTP id S229667AbhFVUa1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 16:26:08 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8A2C061574;
-        Tue, 22 Jun 2021 13:23:51 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id e22so112479wrc.1;
-        Tue, 22 Jun 2021 13:23:51 -0700 (PDT)
+        Tue, 22 Jun 2021 16:30:27 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB40C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:28:10 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id m14so458727edp.9
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:28:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=86O3Q6DG70rY1uZMDvMI5OoC90pTmj89Bu051GHFOrY=;
-        b=MKDG29332LDSoXTFutQYCdm2rDvpET2y4VkTQLSXaOcAkuDG5NVfwCdJIta5Kz4Iq8
-         r16IYbqn/7UNWmC/AypxlTJsJw+9PYC5mAKwCLHXulXKP4uaIX0/LMp+0moBlHQSRSRN
-         xFx7vssXVJykFani5lEoCAwGUTCQmnfY/l7CzVWxFRrzstY2MP0JtBH5yXw4PJdLEFjP
-         HZjm09jNP0sCW+ugua8x7t+8qP9L/AJHb+01nvkU87rKeVuc3D0peoAsrRFVhHBOzs/8
-         wXjZaDltkLtGeUXHE1kmg4l/1QSVBVhugt+8QPlE0EAyCJr7EQT7neuvamfn4eKHWxti
-         A5bw==
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X5CvNIGn+uveqQuIQS4du1ZTZMasSyyQsp7zluQgLD0=;
+        b=WciAeMDK5MbomldMgX1vfqrUSPoIknmeADksmKJHf5vbClibwq6GSyQ7cK20HRctwb
+         lESv/vzkxrRUDEyqIV+eRdPuWTa+ms8dKvrqKcL7hdPbSzWTE3WGQgkYCZyp+XxZV7Au
+         X8/tHUVuMXfa/LaUfVFxuXxVznGVWmilATFg+LcMScJ7Fn0b2HUhOz94YTZjGfa9g5zH
+         hHleS38ZfNJ62kzmN24LE9J0EzPPqCJNbUlDJV1SfvoqID9Aw3g6IBenHBVEJl4/lItK
+         yC08xKEMbGMmGRQV6FY7v5KugN/g7VZhcROmj8H1Z4CHi5Hu6PRIQr/fcfQHK2dPx5fD
+         GkGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=86O3Q6DG70rY1uZMDvMI5OoC90pTmj89Bu051GHFOrY=;
-        b=W2mh6gbnGo1VV/pKvYY5pVQ4Vwfml80L3yEe9uu+LrQZz3IScJF6lC0WdF/Ps7+AUX
-         70xtaYXC9tZRHY4OWubWVeniThjtARroczOoLwntD/MB8ywqk7vd0ekkityN9E1yN3Ya
-         +GSnAQMi6edDBAT1PXoN42/BAoGJKesN2zDBqF5NXu9gNClp25qy8B26WpcDYE8iAorb
-         884JhPEqwxE06hG1xz9BhCF35dr190curWT9X6qEf1hjQSp0Nzq/jXRmyEQbqsgvbMru
-         4pPdtCIRyUeE4cgtu//yFsJTkdgLXx0tvbii3x81sBUdLKV/zGfr9fD8hp2nI+SoIyg5
-         Cfig==
-X-Gm-Message-State: AOAM531LFeCmvKjXR+W//ahJ80+k1BjXm0ZLJIW/VmDdZtVMVt0QaJ2X
-        WDOnCU3y1cT495XvMIhsPKg=
-X-Google-Smtp-Source: ABdhPJxj2hZDz0aLZEYLXSZtPvpOS7b/OxL0ct1AL1iAEw1IKSU690T/1p11JhSnctrNh2B6zMghQw==
-X-Received: by 2002:a5d:4cd1:: with SMTP id c17mr7114655wrt.295.1624393430001;
-        Tue, 22 Jun 2021 13:23:50 -0700 (PDT)
-Received: from kista.localdomain (cpe1-4-249.cable.triera.net. [213.161.4.249])
-        by smtp.gmail.com with ESMTPSA id e3sm452989wro.26.2021.06.22.13.23.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 13:23:49 -0700 (PDT)
-From:   Jernej Skrabec <jernej.skrabec@gmail.com>
-To:     pizza@shaftnet.org
-Cc:     ulf.hansson@linaro.org, arnd@arndb.de, kvalo@codeaurora.org,
-        davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Subject: [RFC PATCH] cw1200: use kmalloc() allocation instead of stack
-Date:   Tue, 22 Jun 2021 22:23:45 +0200
-Message-Id: <20210622202345.795578-1-jernej.skrabec@gmail.com>
-X-Mailer: git-send-email 2.32.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X5CvNIGn+uveqQuIQS4du1ZTZMasSyyQsp7zluQgLD0=;
+        b=PKPlIQOqnq5WFX7f0c7/EbM1fhPedyqOEjGO6+Gxd1jVaB8lwR/SLLb86WMiEM4rN1
+         vrBCV4SNwAMzfxLKC3cMwyzGnkNqMsAc37sdMOEUmh8eoFeyQXjG8qmp9SeEwlxTjsSr
+         pr/AVOKGxBg2J1Gis4a241hSm9MuAvMVCtfY+ynABWOl/Zg9OoTIhHRS0DmvguWSbXG2
+         RNbJS689AS908UxT5Htc4sK++pVM6wYERkJzI1kyUAy43XxdIVaEThmN67Sd9Pn4sGf9
+         9NenCmJT1BRmtdjgftXjkqhzxIHTXacFIyWJLjrzLhsAHTyGrOAViW6/07zBAh4tVnmp
+         F8Tw==
+X-Gm-Message-State: AOAM531P2o3VzrH4Bzfey8XPrHneSyqanNjNs8ly1s6chJqpt2HnsDbT
+        tGAB6SL9+wlCLj61x+4x4Xqeqdb7bv/NcOGbtQQ=
+X-Google-Smtp-Source: ABdhPJyDXk6FUdcXb8rrM3nwzI3yys7EvkNfVi/l6gPIA8s75q6azLGkkbBjfs++dkSHRFVMxeAj/5zJhsxJ4KCbLH8=
+X-Received: by 2002:aa7:d74b:: with SMTP id a11mr7669139eds.40.1624393688890;
+ Tue, 22 Jun 2021 13:28:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210617194154.2397-1-linux.amoon@gmail.com> <20210617194154.2397-5-linux.amoon@gmail.com>
+ <CAFBinCB1rrmJ5=M0tSGS_47BarFcrs2Kz5qFzrHw8+OEYxX3DA@mail.gmail.com>
+ <CANAwSgQVgKUoTpfaJyfxdphqc6M=Oq6jj5zZ7An9St7PdzQHYA@mail.gmail.com>
+ <CAFBinCDpQybqD96CCMBDKYUXEYCABr0QMfxFH1AWrXP12UxxMg@mail.gmail.com> <CANAwSgTd1zq_gHbVZesLY=e3DRRGgn_o5omuDo9Lub4FavOtbQ@mail.gmail.com>
+In-Reply-To: <CANAwSgTd1zq_gHbVZesLY=e3DRRGgn_o5omuDo9Lub4FavOtbQ@mail.gmail.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Tue, 22 Jun 2021 22:27:58 +0200
+Message-ID: <CAFBinCC3ZN9GqOAR1AnXao5G1UCgi6QOCRHeve0mHBXtYYdKOA@mail.gmail.com>
+Subject: Re: [RFCv1 4/8] phy: amlogic: meson8b-usb2: Use phy set_mode callback function
+To:     Anand Moon <linux.amoon@gmail.com>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-phy@lists.infradead.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-amlogic@lists.infradead.org,
+        Linux Kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It turns out that if CONFIG_VMAP_STACK is enabled and src or dst is
-memory allocated on stack, SDIO operations fail due to invalid memory
-address conversion:
+Hi Anand,
 
-cw1200_wlan_sdio: Probe called
-sunxi-mmc 4021000.mmc: DMA addr 0x0000800051eab954+4 overflow (mask ffffffff, bus limit 0).
-WARNING: CPU: 2 PID: 152 at kernel/dma/direct.h:97 dma_direct_map_sg+0x26c/0x28c
-CPU: 2 PID: 152 Comm: kworker/2:2 Not tainted 5.13.0-rc1-00026-g84114ef026b9-dirty #85
-Hardware name: X96 Mate (DT)
-Workqueue: events_freezable mmc_rescan
-pstate: 60000005 (nZCv daif -PAN -UAO -TCO BTYPE=--)
-pc : dma_direct_map_sg+0x26c/0x28c
-lr : dma_direct_map_sg+0x26c/0x28c
-sp : ffff800011eab540
-x29: ffff800011eab540 x28: ffff800011eab738 x27: 0000000000000000
-x26: ffff000001daf010 x25: 0000000000000000 x24: 0000000000000000
-x23: 0000000000000002 x22: fffffc0000000000 x21: ffff8000113b0ab0
-x20: ffff80001181abb0 x19: 0000000000000001 x18: ffffffffffffffff
-x17: 00000000fa97f83f x16: 00000000d2e01bf8 x15: ffff8000117ffb1d
-x14: ffffffffffffffff x13: ffff8000117ffb18 x12: fffffffffffc593f
-x11: ffff800011676ad0 x10: fffffffffffe0000 x9 : ffff800011eab540
-x8 : 206b73616d282077 x7 : 000000000000000f x6 : 000000000000000c
-x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000ffffffff
-x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff00000283b800
-Call trace:
- dma_direct_map_sg+0x26c/0x28c
- dma_map_sg_attrs+0x2c/0x60
- sunxi_mmc_request+0x70/0x420
- __mmc_start_request+0x68/0x134
- mmc_start_request+0x84/0xac
- mmc_wait_for_req+0x70/0x100
- mmc_io_rw_extended+0x1cc/0x2c0
- sdio_io_rw_ext_helper+0x194/0x240
- sdio_memcpy_fromio+0x20/0x2c
- cw1200_sdio_memcpy_fromio+0x20/0x2c
- __cw1200_reg_read+0x34/0x60
- cw1200_reg_read+0x48/0x70
- cw1200_load_firmware+0x38/0x5d0
- cw1200_core_probe+0x794/0x970
- cw1200_sdio_probe+0x124/0x22c
- sdio_bus_probe+0xe8/0x1d0
- really_probe+0xe4/0x504
- driver_probe_device+0x64/0xcc
- __device_attach_driver+0xd0/0x14c
- bus_for_each_drv+0x78/0xd0
- __device_attach+0xdc/0x184
- device_initial_probe+0x14/0x20
- bus_probe_device+0x9c/0xa4
- device_add+0x350/0x83c
- sdio_add_func+0x6c/0x90
- mmc_attach_sdio+0x1b0/0x430
- mmc_rescan+0x254/0x2e0
- process_one_work+0x1d0/0x34c
- worker_thread+0x13c/0x470
- kthread+0x154/0x160
- ret_from_fork+0x10/0x34
-sunxi-mmc 4021000.mmc: dma_map_sg failed
-sunxi-mmc 4021000.mmc: map DMA failed
-Can't read config register.
+On Mon, Jun 21, 2021 at 9:20 AM Anand Moon <linux.amoon@gmail.com> wrote:
+[...]
+> In order to enable USB phy we probably need to do a little bit
+> differently than the vendor kernel.
+I agree with you here, the vendor kernel is skipping most of the
+frameworks which we have available in mainline Linux
 
-Fix that by using kmalloc() allocated memory for read/write 16/32
-funtions.
+> OTG port on Odroid C1+ and Odroid C2 server two purposes
+> 1 > It could act as USB host port.
+> 2 > It could be used as USB power on the devices, just like Raspberry pi.
+>       What I meant is we need some driver code to protect the power to SbC.
+yep, so we need something that controls mode switching
+depending on the mode the VBUS regulator needs to be enabled (HOST) or
+disabled (DEVICE/PERIPHERAL).
+VBUS control however is not part of the PHY - in mainline Linux either
+the dwc2 driver or a USB connector driver are taking care of it.
 
-Signed-off-by: Jernej Skrabec <jernej.skrabec@gmail.com>
----
- drivers/net/wireless/st/cw1200/hwio.c | 52 +++++++++++++++++++++------
- drivers/net/wireless/st/cw1200/hwio.h | 51 ++++++++++++++++++++------
- 2 files changed, 83 insertions(+), 20 deletions(-)
+> So I saw your work on extcon, that's the reason I would like to void
+> any changes PHY right now.
+I believe that this specific PHY is unrelated to mode switching.
+Either it automatically detects the mode and changes it's settings
+internally or the PHY settings are the same for both modes.
+Since VBUS control is not the responsibility of the PHY this is
+certainly possible
 
-diff --git a/drivers/net/wireless/st/cw1200/hwio.c b/drivers/net/wireless/st/cw1200/hwio.c
-index 3ba462de8e91..5521cb7f2233 100644
---- a/drivers/net/wireless/st/cw1200/hwio.c
-+++ b/drivers/net/wireless/st/cw1200/hwio.c
-@@ -66,33 +66,65 @@ static int __cw1200_reg_write(struct cw1200_common *priv, u16 addr,
- static inline int __cw1200_reg_read_32(struct cw1200_common *priv,
- 					u16 addr, u32 *val)
- {
--	__le32 tmp;
--	int i = __cw1200_reg_read(priv, addr, &tmp, sizeof(tmp), 0);
--	*val = le32_to_cpu(tmp);
-+	__le32 *tmp;
-+	int i;
-+
-+	tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
-+	if (!tmp)
-+		return -ENOMEM;
-+
-+	i = __cw1200_reg_read(priv, addr, tmp, sizeof(*tmp), 0);
-+	*val = le32_to_cpu(*tmp);
-+	kfree(tmp);
- 	return i;
- }
- 
- static inline int __cw1200_reg_write_32(struct cw1200_common *priv,
- 					u16 addr, u32 val)
- {
--	__le32 tmp = cpu_to_le32(val);
--	return __cw1200_reg_write(priv, addr, &tmp, sizeof(tmp), 0);
-+	__le32 *tmp;
-+	int i;
-+
-+	tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
-+	if (!tmp)
-+		return -ENOMEM;
-+
-+	*tmp = cpu_to_le32(val);
-+	i = __cw1200_reg_write(priv, addr, tmp, sizeof(*tmp), 0);
-+	kfree(tmp);
-+	return i;
- }
- 
- static inline int __cw1200_reg_read_16(struct cw1200_common *priv,
- 					u16 addr, u16 *val)
- {
--	__le16 tmp;
--	int i = __cw1200_reg_read(priv, addr, &tmp, sizeof(tmp), 0);
--	*val = le16_to_cpu(tmp);
-+	__le16 *tmp;
-+	int i;
-+
-+	tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
-+	if (!tmp)
-+		return -ENOMEM;
-+
-+	i = __cw1200_reg_read(priv, addr, tmp, sizeof(*tmp), 0);
-+	*val = le16_to_cpu(*tmp);
-+	kfree(tmp);
- 	return i;
- }
- 
- static inline int __cw1200_reg_write_16(struct cw1200_common *priv,
- 					u16 addr, u16 val)
- {
--	__le16 tmp = cpu_to_le16(val);
--	return __cw1200_reg_write(priv, addr, &tmp, sizeof(tmp), 0);
-+	__le16 *tmp;
-+	int i;
-+
-+	tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
-+	if (!tmp)
-+		return -ENOMEM;
-+
-+	*tmp = cpu_to_le16(val);
-+	i = __cw1200_reg_write(priv, addr, tmp, sizeof(*tmp), 0);
-+	kfree(tmp);
-+	return i;
- }
- 
- int cw1200_reg_read(struct cw1200_common *priv, u16 addr, void *buf,
-diff --git a/drivers/net/wireless/st/cw1200/hwio.h b/drivers/net/wireless/st/cw1200/hwio.h
-index d1e629a566c2..088d2a1bacc0 100644
---- a/drivers/net/wireless/st/cw1200/hwio.h
-+++ b/drivers/net/wireless/st/cw1200/hwio.h
-@@ -166,34 +166,65 @@ int cw1200_reg_write(struct cw1200_common *priv, u16 addr,
- static inline int cw1200_reg_read_16(struct cw1200_common *priv,
- 				     u16 addr, u16 *val)
- {
--	__le32 tmp;
-+	__le32 *tmp;
- 	int i;
--	i = cw1200_reg_read(priv, addr, &tmp, sizeof(tmp));
--	*val = le32_to_cpu(tmp) & 0xfffff;
-+
-+	tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
-+	if (!tmp)
-+		return -ENOMEM;
-+
-+	i = cw1200_reg_read(priv, addr, tmp, sizeof(*tmp));
-+	*val = le32_to_cpu(*tmp) & 0xfffff;
-+	kfree(tmp);
- 	return i;
- }
- 
- static inline int cw1200_reg_write_16(struct cw1200_common *priv,
- 				      u16 addr, u16 val)
- {
--	__le32 tmp = cpu_to_le32((u32)val);
--	return cw1200_reg_write(priv, addr, &tmp, sizeof(tmp));
-+	__le32 *tmp;
-+	int i;
-+
-+	tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
-+	if (!tmp)
-+		return -ENOMEM;
-+
-+	*tmp = cpu_to_le32((u32)val);
-+	i = cw1200_reg_write(priv, addr, tmp, sizeof(*tmp));
-+	kfree(tmp);
-+	return i;
- }
- 
- static inline int cw1200_reg_read_32(struct cw1200_common *priv,
- 				     u16 addr, u32 *val)
- {
--	__le32 tmp;
--	int i = cw1200_reg_read(priv, addr, &tmp, sizeof(tmp));
--	*val = le32_to_cpu(tmp);
-+	__le32 *tmp;
-+	int i;
-+
-+	tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
-+	if (!tmp)
-+		return -ENOMEM;
-+
-+	i = cw1200_reg_read(priv, addr, tmp, sizeof(*tmp));
-+	*val = le32_to_cpu(*tmp);
-+	kfree(tmp);
- 	return i;
- }
- 
- static inline int cw1200_reg_write_32(struct cw1200_common *priv,
- 				      u16 addr, u32 val)
- {
--	__le32 tmp = cpu_to_le32(val);
--	return cw1200_reg_write(priv, addr, &tmp, sizeof(val));
-+	__le32 *tmp;
-+	int i;
-+
-+	tmp = kmalloc(sizeof(*tmp), GFP_KERNEL);
-+	if (!tmp)
-+		return -ENOMEM;
-+
-+	*tmp = cpu_to_le32(val);
-+	i = cw1200_reg_write(priv, addr, tmp, sizeof(val));
-+	kfree(tmp);
-+	return i;
- }
- 
- int cw1200_indirect_read(struct cw1200_common *priv, u32 addr, void *buf,
--- 
-2.32.0
+My changes are not ready yet but I'll ping you once I have something to test
 
+> I observe some failures like below.
+> [    6.013859] dwc2 c9000000.usb: DWC OTG HCD URB Dequeue
+> [    6.013897] dwc2 c9000000.usb: Called usb_hcd_giveback_urb()
+> [    6.013902] dwc2 c9000000.usb:   urb->status = -115
+-115 is -EINPROGRESS but I am not sure if/when that's a bad thing or
+to be expected
+
+
+Best regards,
+Martin
