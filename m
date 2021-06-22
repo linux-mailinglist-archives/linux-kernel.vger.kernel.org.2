@@ -2,208 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B8A3AFC2E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 06:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6F73AFC30
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 06:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhFVEtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 00:49:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53524 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhFVEtP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 00:49:15 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E833C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 21:46:59 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id j1so4767827wrn.9
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 21:46:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=09Mfm1QM7/L+YWTPoynwJ162O0xIkLcgOUTr2j77MJE=;
-        b=eciAZMzp8OuK9xwqbf2bWae+j4AomXEqEH8ws5wJB4X2J8QHdnN8n+ttl0n3Zhc2w5
-         aJawqO1XzErTC2bTG7IHEiJ43uOodfx86Auc9W5gLEVzj5zTZ+gxHjV/43XeP+25Gcqq
-         qSxDMzos4RE1lKIrK8numyVqt5mUG0gKX/4i2w1nYpV8MhMz49v3A7qY9YBAnqADmA56
-         et3XJbq3RBHQoJOjJSibanCuwaul4i5U0uo8pdit5/7wEoM3IEuTNveYwBp/4XQK8TRR
-         PgJLLnkH6wE1rHqFLRrHCMUBjPsj05eiAksJ4AZsMT86tx66KAuJwT5bwwYcleyg3VOM
-         mKxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=09Mfm1QM7/L+YWTPoynwJ162O0xIkLcgOUTr2j77MJE=;
-        b=Q90dmXQaujYyB0a1CQpALeUNdh51cla6WTR5EwjmG2Gn/K/tUO73q6Iv+NoiLRdGez
-         pORvRnLPYGnO+rlLjxEZoJENQcrrZ/JU9O9op1i2mPs5vzhDiP4xpKTvAS92X60Tgr2w
-         olbJhDsUitzUeii/F4AvXGPaV+VzcqHuSBQaOBceOxc1lKDmA+3hZM5BV3aEjTZfPuK5
-         AXOu+1mVDXwxId+awyOSxnR53r6bdPKY1j38RjiZm1VoysrBvFUEIM54rXQIa3799PnP
-         luwZsOPo2McIsas9tikvci5tHXAFdd2uORUMfaGTVGcVVLO4wPLbG45JAXaXNPxFpD+O
-         1JXg==
-X-Gm-Message-State: AOAM532Noqc1rnPQKLxfXVy4Pql80shalT3ycrc84IpBYshujWHMNbsd
-        SSBClYqRAiVn312JzyZ9ErTIKeckUNSLjkrucjIB4A==
-X-Google-Smtp-Source: ABdhPJz878r0AELnDsJ1BHAGAJffJ+yGk/L69nROJ/0UgWAZrPJmL9WkN4lZ/FB3rLHeilxbAHF6R0vAz9+VXZnW4Ms=
-X-Received: by 2002:a5d:4a49:: with SMTP id v9mr2220857wrs.128.1624337217873;
- Mon, 21 Jun 2021 21:46:57 -0700 (PDT)
+        id S229833AbhFVEuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 00:50:18 -0400
+Received: from ozlabs.org ([203.11.71.1]:59603 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229574AbhFVEuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 00:50:17 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G8DRL3tQdz9sXk;
+        Tue, 22 Jun 2021 14:47:58 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624337280;
+        bh=feyUlm2lPr6OPTDxyZobtFU9Com7RjHlMIUgTOXfRwo=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eXlVyVXR9QTrh/dr6Khl3fp1Uf6QVEmWdawn0M4u3+MliE4nS9/43VqW0iK+HWOvt
+         Nsi7fchqxUpM/WWgtVx7K0BFOypnWqtpcjZk7SP4EOJhF5YpZA1bW9BS4gMvmbgrku
+         JqIVLzViwkC4LVjBGOLOsyGiYVulVPcfwDiAZnlSI3MxJgybzjDbjspGBqb+pw8f28
+         eEVIvTsY3qXvHwQmE1nBvsbn3iu/YI8mN3fE4qYk03dIq5DkaFuxN5Zv0vbgsvu6EG
+         owQ30cFNkENDHHih24BHRWG8IzhUsHXwjBoDCNqdbCLhSv4fk+4+mZuNxx2ZXoDoSu
+         xeDp5UmPplmaA==
+Date:   Tue, 22 Jun 2021 14:47:57 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the rcu tree with the tip tree
+Message-ID: <20210622144757.055a4137@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210609121322.3058-1-anup.patel@wdc.com> <20210609121322.3058-2-anup.patel@wdc.com>
-In-Reply-To: <20210609121322.3058-2-anup.patel@wdc.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Tue, 22 Jun 2021 10:16:46 +0530
-Message-ID: <CAAhSdy0=XANwm4Vr5qbpvJdqwYNCfDRNTDf3cyAOGp-NuqF_Ag@mail.gmail.com>
-Subject: Re: [PATCH v7 1/1] RISC-V: Use SBI SRST extension when available
-To:     Anup Patel <anup.patel@wdc.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Atish Patra <atish.patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/0pli+SemqieRD8tXE_QHrwJ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Palmer,
+--Sig_/0pli+SemqieRD8tXE_QHrwJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jun 9, 2021 at 5:43 PM Anup Patel <anup.patel@wdc.com> wrote:
->
-> The SBI SRST extension provides a standard way to poweroff and
-> reboot the system irrespective to whether Linux RISC-V S-mode
-> is running natively (HS-mode) or inside Guest/VM (VS-mode).
->
-> The SBI SRST extension is available in the SBI v0.3 specification.
-> (Refer, https://github.com/riscv/riscv-sbi-doc/releases/tag/v0.3.0-rc1)
+Hi all,
 
-Can you please consider this patch for Linux-5.14-rc1 ?
+Today's linux-next merge of the rcu tree got a conflict in:
 
-The SBI v0.3 spec is already frozen and this patch has been
-floating on LKML for quite a few months now.
+  kernel/rcu/tree_stall.h
 
-Regards,
-Anup
+between commit:
 
->
-> This patch extends Linux RISC-V SBI implementation to detect
-> and use SBI SRST extension.
->
-> Signed-off-by: Anup Patel <anup.patel@wdc.com>
-> Reviewed-by: Atish Patra <atish.patra@wdc.com>
-> ---
->  arch/riscv/include/asm/sbi.h | 24 ++++++++++++++++++++++++
->  arch/riscv/kernel/sbi.c      | 35 +++++++++++++++++++++++++++++++++++
->  2 files changed, 59 insertions(+)
->
-> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-> index 0d42693cb65e..289621da4a2a 100644
-> --- a/arch/riscv/include/asm/sbi.h
-> +++ b/arch/riscv/include/asm/sbi.h
-> @@ -27,6 +27,7 @@ enum sbi_ext_id {
->         SBI_EXT_IPI = 0x735049,
->         SBI_EXT_RFENCE = 0x52464E43,
->         SBI_EXT_HSM = 0x48534D,
-> +       SBI_EXT_SRST = 0x53525354,
->  };
->
->  enum sbi_ext_base_fid {
-> @@ -70,6 +71,21 @@ enum sbi_hsm_hart_status {
->         SBI_HSM_HART_STATUS_STOP_PENDING,
->  };
->
-> +enum sbi_ext_srst_fid {
-> +       SBI_EXT_SRST_RESET = 0,
-> +};
-> +
-> +enum sbi_srst_reset_type {
-> +       SBI_SRST_RESET_TYPE_SHUTDOWN = 0,
-> +       SBI_SRST_RESET_TYPE_COLD_REBOOT,
-> +       SBI_SRST_RESET_TYPE_WARM_REBOOT,
-> +};
-> +
-> +enum sbi_srst_reset_reason {
-> +       SBI_SRST_RESET_REASON_NONE = 0,
-> +       SBI_SRST_RESET_REASON_SYS_FAILURE,
-> +};
-> +
->  #define SBI_SPEC_VERSION_DEFAULT       0x1
->  #define SBI_SPEC_VERSION_MAJOR_SHIFT   24
->  #define SBI_SPEC_VERSION_MAJOR_MASK    0x7f
-> @@ -148,6 +164,14 @@ static inline unsigned long sbi_minor_version(void)
->         return sbi_spec_version & SBI_SPEC_VERSION_MINOR_MASK;
->  }
->
-> +/* Make SBI version */
-> +static inline unsigned long sbi_mk_version(unsigned long major,
-> +                                           unsigned long minor)
-> +{
-> +       return ((major & SBI_SPEC_VERSION_MAJOR_MASK) <<
-> +               SBI_SPEC_VERSION_MAJOR_SHIFT) | minor;
-> +}
-> +
->  int sbi_err_map_linux_errno(int err);
->  #else /* CONFIG_RISCV_SBI */
->  static inline int sbi_remote_fence_i(const unsigned long *hart_mask) { return -1; }
-> diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-> index 7402a417f38e..9a84f0cb5175 100644
-> --- a/arch/riscv/kernel/sbi.c
-> +++ b/arch/riscv/kernel/sbi.c
-> @@ -7,6 +7,7 @@
->
->  #include <linux/init.h>
->  #include <linux/pm.h>
-> +#include <linux/reboot.h>
->  #include <asm/sbi.h>
->  #include <asm/smp.h>
->
-> @@ -501,6 +502,32 @@ int sbi_remote_hfence_vvma_asid(const unsigned long *hart_mask,
->  }
->  EXPORT_SYMBOL(sbi_remote_hfence_vvma_asid);
->
-> +static void sbi_srst_reset(unsigned long type, unsigned long reason)
-> +{
-> +       sbi_ecall(SBI_EXT_SRST, SBI_EXT_SRST_RESET, type, reason,
-> +                 0, 0, 0, 0);
-> +       pr_warn("%s: type=0x%lx reason=0x%lx failed\n",
-> +               __func__, type, reason);
-> +}
-> +
-> +static int sbi_srst_reboot(struct notifier_block *this,
-> +                          unsigned long mode, void *cmd)
-> +{
-> +       sbi_srst_reset((mode == REBOOT_WARM || mode == REBOOT_SOFT) ?
-> +                      SBI_SRST_RESET_TYPE_WARM_REBOOT :
-> +                      SBI_SRST_RESET_TYPE_COLD_REBOOT,
-> +                      SBI_SRST_RESET_REASON_NONE);
-> +       return NOTIFY_DONE;
-> +}
-> +
-> +static struct notifier_block sbi_srst_reboot_nb;
-> +
-> +static void sbi_srst_power_off(void)
-> +{
-> +       sbi_srst_reset(SBI_SRST_RESET_TYPE_SHUTDOWN,
-> +                      SBI_SRST_RESET_REASON_NONE);
-> +}
-> +
->  /**
->   * sbi_probe_extension() - Check if an SBI extension ID is supported or not.
->   * @extid: The extension ID to be probed.
-> @@ -608,6 +635,14 @@ void __init sbi_init(void)
->                 } else {
->                         __sbi_rfence    = __sbi_rfence_v01;
->                 }
-> +               if ((sbi_spec_version >= sbi_mk_version(0, 3)) &&
-> +                   (sbi_probe_extension(SBI_EXT_SRST) > 0)) {
-> +                       pr_info("SBI SRST extension detected\n");
-> +                       pm_power_off = sbi_srst_power_off;
-> +                       sbi_srst_reboot_nb.notifier_call = sbi_srst_reboot;
-> +                       sbi_srst_reboot_nb.priority = 192;
-> +                       register_restart_handler(&sbi_srst_reboot_nb);
-> +               }
->         } else {
->                 __sbi_set_timer = __sbi_set_timer_v01;
->                 __sbi_send_ipi  = __sbi_send_ipi_v01;
-> --
-> 2.25.1
->
+  2f064a59a11f ("sched: Change task_struct::state")
+
+from the tip tree and commit:
+
+  367455053a76 ("rcu: Mark accesses in tree_stall.h")
+
+from the rcu tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc kernel/rcu/tree_stall.h
+index acb2288063b5,24065f1acb8b..000000000000
+--- a/kernel/rcu/tree_stall.h
++++ b/kernel/rcu/tree_stall.h
+@@@ -460,12 -462,13 +462,13 @@@ static void rcu_check_gp_kthread_starva
+ =20
+  	if (rcu_is_gp_kthread_starving(&j)) {
+  		cpu =3D gpk ? task_cpu(gpk) : -1;
+ -		pr_err("%s kthread starved for %ld jiffies! g%ld f%#x %s(%d) ->state=3D=
+%#lx ->cpu=3D%d\n",
+ +		pr_err("%s kthread starved for %ld jiffies! g%ld f%#x %s(%d) ->state=3D=
+%#x ->cpu=3D%d\n",
+  		       rcu_state.name, j,
+  		       (long)rcu_seq_current(&rcu_state.gp_seq),
+- 		       data_race(rcu_state.gp_flags),
+- 		       gp_state_getname(rcu_state.gp_state), rcu_state.gp_state,
+- 		       gpk ? gpk->__state : ~0, cpu);
++ 		       data_race(READ_ONCE(rcu_state.gp_flags)),
++ 		       gp_state_getname(rcu_state.gp_state),
++ 		       data_race(READ_ONCE(rcu_state.gp_state)),
+ -		       gpk ? data_race(READ_ONCE(gpk->state)) : ~0, cpu);
+++		       gpk ? data_race(READ_ONCE(gpk->__state)) : ~0, cpu);
+  		if (gpk) {
+  			pr_err("\tUnless %s kthread gets sufficient CPU time, OOM is now expec=
+ted behavior.\n", rcu_state.name);
+  			pr_err("RCU grace-period kthread stack dump:\n");
+@@@ -508,7 -511,7 +511,7 @@@ static void rcu_check_gp_kthread_expire
+  		       (long)rcu_seq_current(&rcu_state.gp_seq),
+  		       data_race(rcu_state.gp_flags),
+  		       gp_state_getname(RCU_GP_WAIT_FQS), RCU_GP_WAIT_FQS,
+- 		       gpk->__state);
+ -		       data_race(READ_ONCE(gpk->state)));
+++		       data_race(READ_ONCE(gpk->__state)));
+  		pr_err("\tPossible timer handling issue on cpu=3D%d timer-softirq=3D%u\=
+n",
+  		       cpu, kstat_softirqs_cpu(TIMER_SOFTIRQ, cpu));
+  	}
+@@@ -732,23 -816,34 +816,34 @@@ void show_rcu_gp_kthreads(void
+  	struct task_struct *t =3D READ_ONCE(rcu_state.gp_kthread);
+ =20
+  	j =3D jiffies;
+- 	ja =3D j - data_race(rcu_state.gp_activity);
+- 	jr =3D j - data_race(rcu_state.gp_req_activity);
+- 	jw =3D j - data_race(rcu_state.gp_wake_time);
+- 	pr_info("%s: wait state: %s(%d) ->state: %#x delta ->gp_activity %lu ->g=
+p_req_activity %lu ->gp_wake_time %lu ->gp_wake_seq %ld ->gp_seq %ld ->gp_s=
+eq_needed %ld ->gp_flags %#x\n",
++ 	ja =3D j - data_race(READ_ONCE(rcu_state.gp_activity));
++ 	jr =3D j - data_race(READ_ONCE(rcu_state.gp_req_activity));
++ 	js =3D j - data_race(READ_ONCE(rcu_state.gp_start));
++ 	jw =3D j - data_race(READ_ONCE(rcu_state.gp_wake_time));
+ -	pr_info("%s: wait state: %s(%d) ->state: %#lx ->rt_priority %u delta ->g=
+p_start %lu ->gp_activity %lu ->gp_req_activity %lu ->gp_wake_time %lu ->gp=
+_wake_seq %ld ->gp_seq %ld ->gp_seq_needed %ld ->gp_max %lu ->gp_flags %#x\=
+n",
+++	pr_info("%s: wait state: %s(%d) ->state: %#x ->rt_priority %u delta ->gp=
+_start %lu ->gp_activity %lu ->gp_req_activity %lu ->gp_wake_time %lu ->gp_=
+wake_seq %ld ->gp_seq %ld ->gp_seq_needed %ld ->gp_max %lu ->gp_flags %#x\n=
+",
+  		rcu_state.name, gp_state_getname(rcu_state.gp_state),
+- 		rcu_state.gp_state, t ? t->__state : 0x1ffff,
+- 		ja, jr, jw, (long)data_race(rcu_state.gp_wake_seq),
+- 		(long)data_race(rcu_state.gp_seq),
+- 		(long)data_race(rcu_get_root()->gp_seq_needed),
+- 		data_race(rcu_state.gp_flags));
++ 		data_race(READ_ONCE(rcu_state.gp_state)),
+ -		t ? data_race(READ_ONCE(t->state)) : 0x1ffffL, t ? t->rt_priority : 0xf=
+fU,
+++		t ? data_race(READ_ONCE(t->__state)) : 0x1ffffL, t ? t->rt_priority : 0=
+xffU,
++ 		js, ja, jr, jw, (long)data_race(READ_ONCE(rcu_state.gp_wake_seq)),
++ 		(long)data_race(READ_ONCE(rcu_state.gp_seq)),
++ 		(long)data_race(READ_ONCE(rcu_get_root()->gp_seq_needed)),
++ 		data_race(READ_ONCE(rcu_state.gp_max)),
++ 		data_race(READ_ONCE(rcu_state.gp_flags)));
+  	rcu_for_each_node_breadth_first(rnp) {
+- 		if (ULONG_CMP_GE(READ_ONCE(rcu_state.gp_seq),
+- 				 READ_ONCE(rnp->gp_seq_needed)))
++ 		if (ULONG_CMP_GE(READ_ONCE(rcu_state.gp_seq), READ_ONCE(rnp->gp_seq_nee=
+ded)) &&
++ 		    !data_race(READ_ONCE(rnp->qsmask)) && !data_race(READ_ONCE(rnp->boo=
+st_tasks)) &&
++ 		    !data_race(READ_ONCE(rnp->exp_tasks)) && !data_race(READ_ONCE(rnp->=
+gp_tasks)))
+  			continue;
+- 		pr_info("\trcu_node %d:%d ->gp_seq %ld ->gp_seq_needed %ld\n",
+- 			rnp->grplo, rnp->grphi, (long)data_race(rnp->gp_seq),
+- 			(long)data_race(rnp->gp_seq_needed));
++ 		pr_info("\trcu_node %d:%d ->gp_seq %ld ->gp_seq_needed %ld ->qsmask %#l=
+x %c%c%c%c ->n_boosts %ld\n",
++ 			rnp->grplo, rnp->grphi,
++ 			(long)data_race(READ_ONCE(rnp->gp_seq)),
++ 			(long)data_race(READ_ONCE(rnp->gp_seq_needed)),
++ 			data_race(READ_ONCE(rnp->qsmask)),
++ 			".b"[!!data_race(READ_ONCE(rnp->boost_kthread_task))],
++ 			".B"[!!data_race(READ_ONCE(rnp->boost_tasks))],
++ 			".E"[!!data_race(READ_ONCE(rnp->exp_tasks))],
++ 			".G"[!!data_race(READ_ONCE(rnp->gp_tasks))],
++ 			data_race(READ_ONCE(rnp->n_boosts)));
+  		if (!rcu_is_leaf_node(rnp))
+  			continue;
+  		for_each_leaf_node_possible_cpu(rnp, cpu) {
+
+--Sig_/0pli+SemqieRD8tXE_QHrwJ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDRa30ACgkQAVBC80lX
+0GzKMQf9E56ZA22IgAD67IFMcvCjmal1DY4h3qPonHIziTgMXzSdW6wu0itzPbyT
+eQP2K7JQ1vCKUG1AoauS+jXxuh5KzxXu79vNjWsS8AsfeKgqaFoFqoK/F/mpjf/J
+2e8DnFJ1m9GfhLTvGjfEUEkGdYRZr4vtCMMXRl9YYv2sDc9jlPanAvwsHKa7Fi/o
+pJzVsX9NkMhDcHiZGlAV3omHdztS+/ENWtuMSPvlZNRJkp2nutqCHkx/AnCAk1Pj
+ha4iMQjQlgHPIQxEIXFIc4Jeba/jF1vr7TtAgWJ9OYmg+DOVjqcqKZDVn50pLaLP
+E7yIS93WUwwBV6wizMnfDc2dv8Crsw==
+=htPc
+-----END PGP SIGNATURE-----
+
+--Sig_/0pli+SemqieRD8tXE_QHrwJ--
