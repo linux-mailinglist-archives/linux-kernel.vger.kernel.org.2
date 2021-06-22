@@ -2,98 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2044E3B08EA
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 136A73B089B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:19:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232344AbhFVP2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:28:18 -0400
-Received: from p3plsmtpa06-04.prod.phx3.secureserver.net ([173.201.192.105]:39185
-        "EHLO p3plsmtpa06-04.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231815AbhFVP2Q (ORCPT
+        id S232206AbhFVPV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:21:58 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:63290 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232173AbhFVPV5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:28:16 -0400
-Received: from [192.168.0.100] ([96.237.161.203])
-        by :SMTPAUTH: with ESMTPSA
-        id viAjleA5hyubKviAklUeJx; Tue, 22 Jun 2021 08:18:42 -0700
-X-CMAE-Analysis: v=2.4 cv=avN3tQVV c=1 sm=1 tr=0 ts=60d1ff52
- a=Pd5wr8UCr3ug+LLuBLYm7w==:117 a=Pd5wr8UCr3ug+LLuBLYm7w==:17
- a=IkcTkHD0fZMA:10 a=yMhMjlubAAAA:8 a=SEc3moZ4AAAA:8 a=WtrXtaRitKTu45twBd0A:9
- a=QEXdDO2ut3YA:10 a=5oRCH6oROnRZc2VpWJZ3:22
-X-SECURESERVER-ACCT: tom@talpey.com
-Subject: Re: [SMBDIRECT][PATCH] missing rc checks while waiting for SMB3 over
- RDMA events
-To:     Steve French <smfrench@gmail.com>, Long Li <longli@microsoft.com>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <CAH2r5msOSLaZT42-jFMjJrB1YiYTZBzdM18ieqQY2v=YwXzcrA@mail.gmail.com>
-From:   Tom Talpey <tom@talpey.com>
-Message-ID: <1241844c-c9ab-2055-a363-80db63a4dd22@talpey.com>
-Date:   Tue, 22 Jun 2021 11:18:42 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        Tue, 22 Jun 2021 11:21:57 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624375181; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=iJDvUVfRV50lcgkv07h01Gonl2kz48uPaVYOkC54lyk=;
+ b=Kd/bHFJuEnt2EfTSXXj3JpMYLwfEpc08bQvMeajpcJs+iP8Hd81oQTtSwVEXhB9XoNFobmOj
+ Svn/pLXYxwDKTuW5LksKmw2aECoE3fadPVaQ+FaHbUmSNwam5d91vzh4r1f7ECFap5janJtU
+ ZUYQSvJm0at+29QNhdpRo3S1Tvo=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 60d1ff731200320241e13da8 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Jun 2021 15:19:15
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id E5611C4338A; Tue, 22 Jun 2021 15:19:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2DB9DC433F1;
+        Tue, 22 Jun 2021 15:19:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2DB9DC433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <CAH2r5msOSLaZT42-jFMjJrB1YiYTZBzdM18ieqQY2v=YwXzcrA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfHuI+aivFMuuZGehMwo60U0hMxx4SRlZRovOfkVEQV+DSNr7Xsgr24M1GrRqkHKlEcIEK+uWkTiIMKBUCjvZ58HFuk8/Dd/oXj4kDTj8r+LIbJTT9Wgw
- uCxr9bQrLlMcs9Gi98JmKYOsxS7kwHj5xyQKsK+BbVYVRkoyp96CPTa6hGbejTDjrtsLWkRg0yQ/8trMfUgSgZyhFdcx1CoroewBJRQsFS4yT1Zld/TuvfBs
- bZ6vADug7cS7eXqCfY/CXUStivJNypo3m9iBNrrE/DmlV7ezTzfNA55513B31uhc
+Subject: Re: [PATCH] rtw88: Remove duplicate include of coex.h
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210430024951.33406-1-wanjiabing@vivo.com>
+References: <20210430024951.33406-1-wanjiabing@vivo.com>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Yan-Hsuan Chuang <tony0620emma@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kael_w@yeah.net,
+        Wan Jiabing <wanjiabing@vivo.com>
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210622151914.E5611C4338A@smtp.codeaurora.org>
+Date:   Tue, 22 Jun 2021 15:19:14 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/21/2021 5:32 PM, Steve French wrote:
->      There were two places where we weren't checking for error
->      (e.g. ERESTARTSYS) while waiting for rdma resolution.
+Wan Jiabing <wanjiabing@vivo.com> wrote:
+
+> In commit fb8517f4fade4 ("rtw88: 8822c: add CFO tracking"),
+> "coex.h" was added here which caused the duplicate include.
+> Remove the later duplicate include.
 > 
->      Addresses-Coverity: 1462165 ("Unchecked return value")
->     Signed-off-by: Steve French <stfrench@microsoft.com>
-> 
-> diff --git a/fs/cifs/smbdirect.c b/fs/cifs/smbdirect.c
-> index 10dfe5006792..ae07732f750f 100644
-> --- a/fs/cifs/smbdirect.c
-> +++ b/fs/cifs/smbdirect.c
-> @@ -572,8 +572,11 @@ static struct rdma_cm_id *smbd_create_id(
->                  log_rdma_event(ERR, "rdma_resolve_addr() failed %i\n", rc);
->                  goto out;
->          }
-> -       wait_for_completion_interruptible_timeout(
-> +       rc = wait_for_completion_interruptible_timeout(
->                  &info->ri_done, msecs_to_jiffies(RDMA_RESOLVE_TIMEOUT));
-> +       /* -ERESTARTSYS, returned when interrupted, is the only rc mentioned */
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 
-Suggest the same comment text as the one below, this one seems uncertain.
+Patch applied to wireless-drivers-next.git, thanks.
 
-> +       if (rc < 0)
-> +               goto out;
->          rc = info->ri_rc;
->          if (rc) {
->                  log_rdma_event(ERR, "rdma_resolve_addr() completed %i\n", rc);
-> @@ -586,8 +589,10 @@ static struct rdma_cm_id *smbd_create_id(
->                  log_rdma_event(ERR, "rdma_resolve_route() failed %i\n", rc);
->                  goto out;
->          }
-> -       wait_for_completion_interruptible_timeout(
-> +       rc = wait_for_completion_interruptible_timeout(
->                  &info->ri_done, msecs_to_jiffies(RDMA_RESOLVE_TIMEOUT));
-> +       if (rc < 0)  /* e.g. if interrupted and returns -ERESTARTSYS */
+3eab8ca6b175 rtw88: Remove duplicate include of coex.h
 
-delete "and"?
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210430024951.33406-1-wanjiabing@vivo.com/
 
-> +               goto out
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
-Missing a semicolon.     ^^^
-
->          rc = info->ri_rc;
->          if (rc) {
->                  log_rdma_event(ERR, "rdma_resolve_route() completed %i\n", rc);
-> 
-> 
-
-One meta-comment. There's no message logged for these ERESTARTSYS cases.
-That might be confusing in the log, if they lead to failure.
-
-Reviewed-By: Tom Talpey <tom@talpey.com>
-
-Tom.
