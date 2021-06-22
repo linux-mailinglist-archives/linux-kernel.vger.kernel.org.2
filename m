@@ -2,86 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 197C53B0F78
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 885303B0F7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbhFVVhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 17:37:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhFVVhA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 17:37:00 -0400
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAFB7C061574;
-        Tue, 22 Jun 2021 14:34:43 -0700 (PDT)
-Received: by mail-ot1-x336.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so22699197otl.3;
-        Tue, 22 Jun 2021 14:34:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fwcNg+ygPgbQ4dNMrpd1UuIL887dBuU4gxTrF6jj+oo=;
-        b=rtENRi1g4XKvrtf/zerLqaQD18isaZoYqa+1WnQ7UBAzr02CCmpz6JrNQkObwe8VO1
-         7LCyEDJryKF0fLyrPHkwTKvg7FKB7E64X64Mx0rIGRv8kodbK96mOuvblgaJJLA5q7Gh
-         74+gLU22hggynaeTcMufkRIuXPo6wo9mjk17VNNKNGPOkSQtMKaX8EjO8PXl0NP7JN7P
-         8I1sAXWq/WOpFZjs8kB3L+TxkXTzw8J+ywYDvUb1vnsBqM9h8zsFi0loFMpJwxSHy78M
-         3eohF2lWowYMm0gC3P5QjRk7e7mwBDhYKvXL3x0PN96oX0u9o/Vx0a68ag8wdSIMvkXw
-         hJmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=fwcNg+ygPgbQ4dNMrpd1UuIL887dBuU4gxTrF6jj+oo=;
-        b=OY4eUCn+4OOG1b+dHef55qSSVHm8Widwof8ZqkBeerx1MWLyk0NbRkcS2vBv36JH32
-         eyeHV+4YtdBmbcmHP4UnVyWtX11G+g942XnA897SmXBT6OriOoCfTGL5YHiTnyurseH/
-         3YAQXVpvOjSVyv7A7xKGD8Ifj5GJRP1nYxyR3ZAtBGsb41Cjj6QVrdt0kEyzuVZLTePb
-         cdNmY80v90DOfWx2mL1x4uJCgnYnGZj4HP6A9KkyZGIikjrR9rHPcTpZPSYGHKO25p6J
-         E8UTGgEaehP7GwpN+1XsLxMVK6rX8oltEvvG3zDDM8Sif/CfnDxZuRIALzQYrihucSlr
-         n3jA==
-X-Gm-Message-State: AOAM533D+C0MJIEp8x4bh8CZtnTQP+q7w2k1WxPFkfU4/HZymQj/RQJ4
-        w8492EtL0Tc9+fcu2m3ppo8=
-X-Google-Smtp-Source: ABdhPJw5OAZGTJvPZO/F+EL/QIS/WhMAzJxEy3M0SuTyaUGDLrjTnUAVzOCX+BAI1LyX+aBF2Jsg9Q==
-X-Received: by 2002:a9d:6019:: with SMTP id h25mr4599415otj.317.1624397683268;
-        Tue, 22 Jun 2021 14:34:43 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c11sm739545oot.25.2021.06.22.14.34.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 14:34:42 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 22 Jun 2021 14:34:41 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 000/146] 5.10.46-rc1 review
-Message-ID: <20210622213441.GB1296965@roeck-us.net>
-References: <20210621154911.244649123@linuxfoundation.org>
+        id S230031AbhFVVhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 17:37:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229718AbhFVVhL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 17:37:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B523260FDA;
+        Tue, 22 Jun 2021 21:34:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624397695;
+        bh=4cSRvAqoTHr4OwTcbZ6u9/bzZawdJvtkgTtzw7brYrQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=X7QxsBsX/81+AblHGmGihylV4H1XrwhGnCGfVW/S7hSzHRL6iM+gk6hWeUrDoskL9
+         46Oxnt/2JXQ/H/sHBbrh/4xuOavYBeaGtKpj5ItYX7F0GPGroX+P56uwPYgoSnFCBI
+         Zcr1lrQSmQqqi1zHfwK3eJaIgQalJ9V7l3xSAMfI=
+Date:   Tue, 22 Jun 2021 23:34:52 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     rafael@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
+        axboe@kernel.dk, mbenes@suse.com, jpoimboe@redhat.com,
+        tglx@linutronix.de, keescook@chromium.org, jikos@kernel.org,
+        rostedt@goodmis.org, peterz@infradead.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers/base/core: refcount kobject and bus on device
+ attribute read / store
+Message-ID: <YNJXfNfn4+CaKOyz@kroah.com>
+References: <20210622210659.3708231-1-mcgrof@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
+In-Reply-To: <20210622210659.3708231-1-mcgrof@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 06:13:50PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.46 release.
-> There are 146 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 23 Jun 2021 15:48:46 +0000.
-> Anything received after that time might be too late.
-> 
+On Tue, Jun 22, 2021 at 02:06:59PM -0700, Luis Chamberlain wrote:
+>  static ssize_t dev_attr_show(struct kobject *kobj, struct attribute *attr,
+>  			     char *buf)
+>  {
+> -	struct device_attribute *dev_attr = to_dev_attr(attr);
+> -	struct device *dev = kobj_to_dev(kobj);
+> +	struct device_attribute *dev_attr;
+> +	struct device *dev;
+> +	struct bus_type *bus = NULL;
+>  	ssize_t ret = -EIO;
+>  
+> +	dev = get_device(kobj_to_dev(kobj));
+> +	if (!dev)
+> +		return ret;
 
-Build results:
-	total: 156 pass: 156 fail: 0
-Qemu test results:
-	total: 455 pass: 455 fail: 0
+That check is impossible to ever hit, please recognize what things like
+kobj_to_dev() really are doing when calling it.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+thanks,
 
-Guenter
+greg k-h
