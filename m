@@ -2,135 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 026B53AFF5F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BDCF3AFF66
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:39:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230165AbhFVIi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 04:38:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49852 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229628AbhFVIi5 (ORCPT
+        id S230423AbhFVIlR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 04:41:17 -0400
+Received: from lucky1.263xmail.com ([211.157.147.132]:60642 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230411AbhFVIlQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 04:38:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624351001;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pMP1HyhxKTyN2FUAhEkRKvFSSH4fVsdxmMyfHGuWDRA=;
-        b=Eoy3fsiTbWfc/luJhOj6F/AHld/Gv0EWaycsiTuif86PBMVXXUhLhSsP3b1P5uDTIYZJX7
-        dSCy7aqCY9444pwlqtAmNM5Q67E9WNppWlLaSh7wN4VFkand1O4/46KD5g3jrVvaipk78y
-        cPAvZZAfWe3E1PglHdi6T0JoWj7kYIo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-353-dSDbuGJZP86OHu5ynYiK5g-1; Tue, 22 Jun 2021 04:36:39 -0400
-X-MC-Unique: dSDbuGJZP86OHu5ynYiK5g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1EA81362FB;
-        Tue, 22 Jun 2021 08:36:38 +0000 (UTC)
-Received: from localhost (ovpn-114-192.ams2.redhat.com [10.36.114.192])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4F18F5C1A3;
-        Tue, 22 Jun 2021 08:36:34 +0000 (UTC)
-Date:   Tue, 22 Jun 2021 09:36:33 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        virtio-fs@redhat.com, linux-kernel@vger.kernel.org,
-        Vivek Goyal <vgoyal@redhat.com>
-Subject: Re: [Virtio-fs] [PATCH 3/2] fs: simplify get_filesystem_list /
- get_all_fs_names
-Message-ID: <YNGhERcnLuzjn8j9@stefanha-x1.localdomain>
-References: <20210621062657.3641879-1-hch@lst.de>
- <20210622081217.GA2975@lst.de>
+        Tue, 22 Jun 2021 04:41:16 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 5CCCDF720B;
+        Tue, 22 Jun 2021 16:38:52 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-SKE-CHECKED: 1
+X-ANTISPAM-LEVEL: 2
+Received: from localhost.localdomain (unknown [58.240.82.166])
+        by smtp.263.net (postfix) whith ESMTP id P1335T140034875209472S1624351127067953_;
+        Tue, 22 Jun 2021 16:38:52 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <f5f00ebfe2d2a2f399da45cc6c926f25>
+X-RL-SENDER: pingshuo@uniontech.com
+X-SENDER: pingshuo@uniontech.com
+X-LOGIN-NAME: pingshuo@uniontech.com
+X-FST-TO: rjw@rjwysocki.net
+X-RCPT-COUNT: 7
+X-SENDER-IP: 58.240.82.166
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   pingshuo <pingshuo@uniontech.com>
+To:     rjw@rjwysocki.net
+Cc:     len.brown@intel.com, pavel@ucw.cz, gregkh@linuxfoundation.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pingshuo <pingshuo@uniontech.com>
+Subject: [PATCH] hibernation:stop resume screen during hibernation
+Date:   Tue, 22 Jun 2021 16:38:44 +0800
+Message-Id: <20210622083844.13892-1-pingshuo@uniontech.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Y+sWrBBljVlHm2Wk"
-Content-Disposition: inline
-In-Reply-To: <20210622081217.GA2975@lst.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The display will be woken up during hibernation,
+if the computer equipment is poor, it will cause the screen to flicker.
+Skip to reusme the display devices in "thaw".
 
---Y+sWrBBljVlHm2Wk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: pingshuo <pingshuo@uniontech.com>
+---
+ drivers/base/power/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Tue, Jun 22, 2021 at 10:12:17AM +0200, Christoph Hellwig wrote:
-> Just output the '\0' separate list of supported file systems for block
-> devices directly rather than going through a pointless round of string
-> manipulation.
->=20
-> Based on an earlier patch from Al Viro <viro@zeniv.linux.org.uk>.
->=20
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/filesystems.c   | 24 ++++++++++++++----------
->  include/linux/fs.h |  2 +-
->  init/do_mounts.c   | 20 +-------------------
->  3 files changed, 16 insertions(+), 30 deletions(-)
->=20
-> diff --git a/fs/filesystems.c b/fs/filesystems.c
-> index 90b8d879fbaf..7c136251607a 100644
-> --- a/fs/filesystems.c
-> +++ b/fs/filesystems.c
-> @@ -209,21 +209,25 @@ SYSCALL_DEFINE3(sysfs, int, option, unsigned long, =
-arg1, unsigned long, arg2)
->  }
->  #endif
-> =20
-> -int __init get_filesystem_list(char *buf)
-> +void __init list_bdev_fs_names(char *buf, size_t size)
->  {
-> -	int len =3D 0;
-> -	struct file_system_type * tmp;
-> +	struct file_system_type *p;
-> +	size_t len;
-> =20
->  	read_lock(&file_systems_lock);
-> -	tmp =3D file_systems;
-> -	while (tmp && len < PAGE_SIZE - 80) {
-> -		len +=3D sprintf(buf+len, "%s\t%s\n",
-> -			(tmp->fs_flags & FS_REQUIRES_DEV) ? "" : "nodev",
-> -			tmp->name);
-> -		tmp =3D tmp->next;
-> +	for (p =3D file_systems; p; p =3D p->next) {
-> +		if (!(p->fs_flags & FS_REQUIRES_DEV))
-> +			continue;
-> +		len =3D strlen(p->name) + 1;
-> +		if (len > size) {
-> +			pr_warn("%s: truncating file system list\n", __func__);
-> +			break;
-> +		}
-> +		memcpy(buf, p->name, len);
-> +		buf +=3D len;
-> +		size -=3D len;
->  	}
->  	read_unlock(&file_systems_lock);
-> -	return len;
->  }
+diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+index c7f51c94969d..376b2eca65c7 100644
+--- a/drivers/base/power/main.c
++++ b/drivers/base/power/main.c
+@@ -707,7 +707,7 @@ static int dpm_resume_skip_display_devices(struct device *dev, pm_message_t stat
+ {
+     struct pci_dev *pci_test = to_pci_dev(dev);
+     if (state.event == PM_EVENT_THAW) {
+-        /*
++	/*
+         *Filter out the display devices
+         */
+         if((pci_test && ((pci_test->class&DISPLAY_PCI_CLASS_VALID_BIT) == DISPLAY_PCI_CLASS))||(dev->driver&&dev->driver->name&&strncmp(dev->driver->name,"video",6)==0))
+-- 
+2.20.1
 
-I don't see the extra NUL terminator byte being added that's required by
-the loop in mount_block_root()?
 
---Y+sWrBBljVlHm2Wk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmDRoREACgkQnKSrs4Gr
-c8g8mgf+PDTW/0OS88/JmQ5E27ZXpLlNGUJkTSdpn4jhWZpdPhbG/+yiPRoTpPv8
-NmvfbL7yomhRXntd+pA/WUlyF6Eb2SDv8Wfo0/qU+fTIsaHA7mz/d9300ucC1Thw
-ZuDl7uadlf2KbJRlhLZHzl9Q2Q9+PsscEql0TSsIJU0X2qO1qxm4tvncbyyXY/lc
-nLLkGJVf9205rvJf2TcuBFF1UYUThOB7+VjIzn2CBfKahLyTOGSePy5GyvcdFp2s
-0EGWvIFHcsWuHxkDRdGVLt51bsOiEHRBsjZ7LHiIruzo0Y9tqYNJDTvhphtE+fMw
-jDjcU52ufud1nFXZcKVeYswxfIp8vg==
-=08W1
------END PGP SIGNATURE-----
-
---Y+sWrBBljVlHm2Wk--
 
