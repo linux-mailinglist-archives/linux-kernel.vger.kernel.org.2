@@ -2,68 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6A43AFDFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:35:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C26B3AFE02
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhFVHh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 03:37:26 -0400
-Received: from vulcan.natalenko.name ([104.207.131.136]:59530 "EHLO
-        vulcan.natalenko.name" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229574AbhFVHhZ (ORCPT
+        id S229912AbhFVHjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 03:39:53 -0400
+Received: from out28-50.mail.aliyun.com ([115.124.28.50]:45297 "EHLO
+        out28-50.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229574AbhFVHju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 03:37:25 -0400
-Received: from spock.localnet (unknown [151.237.229.131])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vulcan.natalenko.name (Postfix) with ESMTPSA id 6D68AAF0331;
-        Tue, 22 Jun 2021 09:35:08 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
-        s=dkim-20170712; t=1624347308;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VQY43XfF1eGOpJRIeL+dJv5ARRW165CgSB5vjpwXo2s=;
-        b=Gec3eyTte4Wcs6813cr1LrK6cr43dH8FrYi9m8eETh9PynloTYNjLcYsBFtXLYkyWxtJX9
-        XjtbKl2fykFNFJLxeZTUfG4uhZZ19mBilGu86xwpkVlxj4/cH9v/qrbdd3Nslib4sPP+7R
-        9nYnQvhDI83w3vzHBlDoFiJl6H+SWa4=
-From:   Oleksandr Natalenko <oleksandr@natalenko.name>
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        linux-block <linux-block@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Luca Mariotti <mariottiluca1@hotmail.it>,
-        Holger =?ISO-8859-1?Q?Hoffst=E4tte?= 
-        <holger@applied-asynchrony.com>,
-        Pietro Pedroni <pedroni.pietro.96@gmail.com>,
-        Piotr Gorski <lucjan.lucjanov@gmail.com>,
-        Khazhy Kumykov <khazhy@google.com>, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH FIXES/IMPROVEMENTS 0/7] block, bfq: preserve control, boost throughput, fix bugs
-Date:   Tue, 22 Jun 2021 09:35:05 +0200
-Message-ID: <8003699.Qy64SzLKsf@spock>
-In-Reply-To: <2CDC43F9-9CD9-4F7F-BD36-CCEB168B5245@linaro.org>
-References: <20210619140948.98712-1-paolo.valente@linaro.org> <3533087.dJKXTdksHR@spock> <2CDC43F9-9CD9-4F7F-BD36-CCEB168B5245@linaro.org>
+        Tue, 22 Jun 2021 03:39:50 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1402129|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.129972-0.0022713-0.867757;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047208;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=12;RT=12;SR=0;TI=SMTPD_---.KW7pc9x_1624347446;
+Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KW7pc9x_1624347446)
+          by smtp.aliyun-inc.com(10.147.40.26);
+          Tue, 22 Jun 2021 15:37:30 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     tsbogend@alpha.franken.de, paul@crapouillou.net, robh+dt@kernel.org
+Cc:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
+        sernia.zhou@foxmail.com
+Subject: [PATCH 0/4] Misc Ingenic patches.
+Date:   Tue, 22 Jun 2021 15:37:21 +0800
+Message-Id: <1624347445-88070-1-git-send-email-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+Some misc patches that don't really have any relation
+between themselves.
 
-On =C3=BAter=C3=BD 22. =C4=8Dervna 2021 9:08:43 CEST Paolo Valente wrote:
-> CCing also Jan and Khazhy, because in your commit log I see also the
-> commit on bfq_requests_merged().
->=20
-> Is this OOPS reproducible for you?
+周琰杰 (Zhou Yanjie) (4):
+  MIPS: X1830: Respect cell count of common properties.
+  MIPS: Ingenic: Add MAC syscon nodes for Ingenic SoCs.
+  MIPS: GCW0: Adjust pinctrl related code in device tree.
+  MIPS: CI20: Reduce MSC0 frequency and add second percpu timer for SMP.
 
-No, I haven't found a reproducer, at least yet. It took half a day of uptim=
-e=20
-to hit this, so might not be that easy.
+ arch/mips/boot/dts/ingenic/ci20.dts   | 23 ++++++++++++-----------
+ arch/mips/boot/dts/ingenic/gcw0.dts   |  2 +-
+ arch/mips/boot/dts/ingenic/x1000.dtsi |  7 +++++++
+ arch/mips/boot/dts/ingenic/x1830.dtsi | 16 +++++++++++-----
+ 4 files changed, 31 insertions(+), 17 deletions(-)
 
-=2D-=20
-Oleksandr Natalenko (post-factum)
-
+-- 
+2.7.4
 
