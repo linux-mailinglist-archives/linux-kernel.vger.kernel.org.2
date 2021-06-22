@@ -2,83 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9493B0FAA
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 621843B0FAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhFVV67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 17:58:59 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:46549 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229612AbhFVV65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 17:58:57 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G8gGG5gZ4z9sTD;
-        Wed, 23 Jun 2021 07:56:38 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624399000;
-        bh=sdelsaa0Tm9RJuY2VzVpRHVJ8f04e4vJx4mec+AZ8UY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=JffhasMKw9JJ1Q7sd+V0e5YYPcnvB2tozLImegYRDBglkQ44tEhw6HPgFM5WLwO8s
-         Iyp1C1eWy+mawuZ2vno30HXizrVOj1LaOKClPyUZq0eArVBfNkw/2JVMeAgX9+G4xW
-         NZP4w8c2BDZRD3basvxyegPIP3IQyTbZoEGV0obVoVJ6HjSf25hpPErn5/yILKrvTS
-         w0AfoXjLR0FInxAAIcZFRQS7fmwRmEn61ALjv8/2LI+pjeeKQZ1J2A6Vq2CsCROwjf
-         AFlwkaNr/jbVOnMeGRWaKHF1xkk8fYcGdQYds9uMtg1PIHOPqxJnlb6vMr8IxYRnje
-         CGhMPn5JGxMZA==
-Date:   Wed, 23 Jun 2021 07:56:38 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Steven Whitehouse <swhiteho@redhat.com>,
-        Bob Peterson <rpeterso@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
+        id S230138AbhFVV7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 17:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229501AbhFVV7v (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 17:59:51 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93FD3C061756;
+        Tue, 22 Jun 2021 14:57:33 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id c7-20020a17090ad907b029016faeeab0ccso2542627pjv.4;
+        Tue, 22 Jun 2021 14:57:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=q3sSzRhIYRc08dnfAfmCyTORkqMDLuhDq0YQcDshAkw=;
+        b=b7F/isKgmlnCGn7ktKvQiwQaGkX//vxpblPW5Aj3zNKiPyoIi7L6xPA0H+VD3mmaV2
+         KK3ZmsT5Kx0XYBSi6rAJB6yf4y+ypdpaF4k8xNGxuXiRoWYyzkzKrFOsZB2bTfuWyz1V
+         pIZ6u6YjIWAFEzdxEpXck55WHYWnXfeO9tM4jXryNbRGP8x9lTwwMV7z1J5rYgQIb11J
+         bwCo2XoKzw1Byt5bpTGrEVmHlrjyhQd9lRLB1mkL3qgJ/mZ4MLBh6HcydQ5giJyPyUg0
+         o3lLcUur7tND7+LxDLyXT5AbbRNWGXXKNCuI54z4x98prRHyaHRJSFwZZyGaonB77FJq
+         fE8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=q3sSzRhIYRc08dnfAfmCyTORkqMDLuhDq0YQcDshAkw=;
+        b=WP/CrrTo8XaACEBNUMQrZpjOUT61SUPd4t3q/Y6YkCCnPikoO+qGLxIpC8G8kW7JFM
+         yeh4fU8hZ+KxGcZCi632kJtytUH/LhgbRWgyyN/Kb1CeBk3L//9IUfBnFd6f9eA+Yubk
+         /f+zXz6xsR0wgARthk6cB23F7ZVbAG4o4qLwlcH94f8Xj8VaNZ5D9R+F8hQ7IdqLS3ft
+         hoAfO4/I5ZsQLEe4o1K0rqCMoNK6MmkcCe9Dw/5NPRyB/umV0oPtKdDAA62Z9rjcN9wV
+         0R1UNKEm/fma1WeNBDCzxP/mTngh7WHnsax5Nd7D4Lw1QMNiAFbtNlgRC+GD1ebEouik
+         dqoQ==
+X-Gm-Message-State: AOAM531iePzEY5IT25Vv7IGiAd2UbSwWGjp+u4IOfUSh79Qs/RS2qGTa
+        wSNIjhQHkpfuKsE5EceWOiM=
+X-Google-Smtp-Source: ABdhPJwlKwvoG5Z9DeeMyE3mjGfDMy5eHoV3xhucGbnHdUQlgp85EV7UAlHh9fZyxo3tpwvOVevOAg==
+X-Received: by 2002:a17:90b:3581:: with SMTP id mm1mr5936783pjb.98.1624399053199;
+        Tue, 22 Jun 2021 14:57:33 -0700 (PDT)
+Received: from ?IPv6:2001:df0:0:200c:9491:40e4:164d:6ab3? ([2001:df0:0:200c:9491:40e4:164d:6ab3])
+        by smtp.gmail.com with ESMTPSA id z9sm270622pfa.2.2021.06.22.14.57.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Jun 2021 14:57:32 -0700 (PDT)
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the gfs2 tree with the vfs tree
-Message-ID: <20210623075638.0b491899@canb.auug.org.au>
-In-Reply-To: <CAHc6FU5QKTVNos5x2uWZ8oCaMu6CEkqpan_zS6i1U2XqRpWyKQ@mail.gmail.com>
-References: <20210611111231.7750bb60@canb.auug.org.au>
-        <20210622113835.58589c3d@canb.auug.org.au>
-        <CAHc6FU5QKTVNos5x2uWZ8oCaMu6CEkqpan_zS6i1U2XqRpWyKQ@mail.gmail.com>
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Andreas Schwab <schwab@linux-m68k.org>
+References: <87eed4v2dc.fsf@disp2133>
+ <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com> <87fsxjorgs.fsf@disp2133>
+ <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+ <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
+ <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
+ <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
+ <YNDsYk6kbisbNy3I@zeniv-ca.linux.org.uk>
+ <CAHk-=wh82uJ5Poqby3brn-D7xWbCMnGv-JnwfO0tuRfCvsVgXA@mail.gmail.com>
+ <de5f0132-eed4-f1d0-ddd2-f65a62de6b81@gmail.com>
+ <YNJFr5xUOm91Vy1r@zeniv-ca.linux.org.uk>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <8badff67-64c9-ca03-7af1-de73d0d75285@gmail.com>
+Date:   Wed, 23 Jun 2021 09:57:23 +1200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/X0WNVuJSL1Qya7vi/focG=G";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <YNJFr5xUOm91Vy1r@zeniv-ca.linux.org.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/X0WNVuJSL1Qya7vi/focG=G
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Al,
 
-Hi Andreas,
-
-On Tue, 22 Jun 2021 08:48:32 +0200 Andreas Gruenbacher <agruenba@redhat.com=
-> wrote:
+On 23/06/21 8:18 am, Al Viro wrote:
+> On Wed, Jun 23, 2021 at 08:04:11AM +1200, Michael Schmitz wrote:
 >
-> Done.
+>> All syscalls that _do_ save the switch stack are currently called through
+>> wrappers which pull the syscall arguments out of the saved pt_regs on the
+>> stack (pushing the switch stack after the SAVE_ALL saved stuff buries the
+>> syscall arguments on the stack, see comment about m68k_clone(). We'd have to
+>> push the switch stack _first_ when entering system_call to leave the syscall
+>> arguments in place, but that will require further changes to the syscall
+>> exit path (currently shared with the interrupt exit path). Not to mention
+>> the register offset calculations in arch/m68k/kernel/ptrace.c, and perhaps a
+>> few other dependencies that don't come to mind immediately.
+>>
+>> We have both pt_regs and switch_stack in uapi/asm/ptrace.h, but the ordering
+>> of the two is only mentioned in a comment. Can we reorder them on the stack,
+>> as long as we don't change the struct definitions proper?
+>>
+>> This will take a little more time to work out and test - certainly not
+>> before the weekend. I'll send a corrected version of my debug patch before
+>> that.
+> This is insane, *especially* on m68k where you have the mess with different
+> frame layouts and associated ->stkadj crap (see mangle_kernel_stack() for
+> the (very) full barfbag).
 
-Thanks.
+Indeed - that's one of the uses of pt_regs and switch_stack that I 
+hadn't yet seen.
 
---=20
+So it's either leave the stack layout in system calls unchanged (aside 
+from the ones that need the extra registers) and protect against 
+accidental misuse of registers that weren't saved, with the overhead of 
+playing with thread_info->status bits, or tackle the mess of redoing the 
+stack layout to save all registers, always (did I already mention that 
+I'd need a _lot_ of help from someone more conversant with m68k assembly 
+coding for that option?).
+
+Which one of these two barf bags is the fuller one?
+
 Cheers,
-Stephen Rothwell
 
---Sig_/X0WNVuJSL1Qya7vi/focG=G
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+     Michael
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDSXJYACgkQAVBC80lX
-0GylhAgAjn2jrq3USbckjDfi8k4i2ImLdNlVElIiVWUW20KxrJrlf3USsvgnNPo7
-phEhsUFTG4Pfoy+jIsMfHEfSs6j8aNXnluiwp6MYyb9w5g1w7zPBYiXgkAy9C6Z7
-HayrOdb5LwpAB5eE6MEYM+BcBZ2PU39loBrP5+a+xwK0TF9XxJq56n9VDT43A51Z
-F8r4D8UhdBg+LCLsSSCIEAUrtgCjOMScxPIwnmtq+s1oP6moRmbKlnrdtO7kagHg
-XmXy/cnIErCktVNIzjtI2FC8iuv11luJJL4L4aQYbaqhJBzgmObXSZbKRAKKv9k+
-BkT9Nk9hs4PBhxeNdi+uObG9KbeDcQ==
-=P4dP
------END PGP SIGNATURE-----
-
---Sig_/X0WNVuJSL1Qya7vi/focG=G--
