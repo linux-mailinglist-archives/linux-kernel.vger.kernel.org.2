@@ -2,82 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF063B02E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 13:39:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A2AC3B02EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 13:39:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230028AbhFVLlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 07:41:15 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:41672 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbhFVLlN (ORCPT
+        id S230175AbhFVLlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 07:41:39 -0400
+Received: from relay07.th.seeweb.it ([5.144.164.168]:60237 "EHLO
+        relay07.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229849AbhFVLlg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 07:41:13 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624361934; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=ubuPrRb9yffwTL9uV+gjxvmLIZ/Hu8Q8LBMrZ1O4/DY=; b=ie+WBK1bMQfUpHukn/geTkcOW96TshvyjwDKuE0sci6RgZwKf/D8/MROcIpLBa/OY08aU+2i
- FnSbB+kwoiDJpMu338vmtxAL6DMP320AWg7yV7vz7/afg6GoWBgEpoSmUf4mdYzjHbnDO1x6
- dfoeiBTv9oyLOFi4JtzvkpMaXxk=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 60d1cb9c120032024186727c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Jun 2021 11:38:04
- GMT
-Sender: neeraju=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9573DC433D3; Tue, 22 Jun 2021 11:38:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from localhost (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        Tue, 22 Jun 2021 07:41:36 -0400
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 1E309C433F1;
-        Tue, 22 Jun 2021 11:38:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 1E309C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=neeraju@codeaurora.org
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-To:     mst@redhat.com, jasowang@redhat.com
-Cc:     virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Neeraj Upadhyay <neeraju@codeaurora.org>
-Subject: [PATCH] vringh: Use wiov->used to check for read/write desc order
-Date:   Tue, 22 Jun 2021 17:07:53 +0530
-Message-Id: <1624361873-6097-1-git-send-email-neeraju@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 634BF3E7C0;
+        Tue, 22 Jun 2021 13:39:16 +0200 (CEST)
+Subject: Re: [PATCH v6 1/5] cpuidle: qcom_spm: Detach state machine from main
+ SPM handling
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        daniel.lezcano@linaro.org, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com,
+        jami.kettunen@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht, devicetree@vger.kernel.org,
+        robh+dt@kernel.org
+References: <20210621181016.365009-1-angelogioacchino.delregno@somainline.org>
+ <20210621181016.365009-2-angelogioacchino.delregno@somainline.org>
+ <YND/2qJhUB1Iwk1X@gerhold.net>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <229488fe-00ef-ea7e-27d4-6f24fdea1383@somainline.org>
+Date:   Tue, 22 Jun 2021 13:39:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <YND/2qJhUB1Iwk1X@gerhold.net>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As iov->used is incremented when descriptors are processed
-in __vringh_iov(), use it to check for incorrect read
-and write descriptor order.
+Il 21/06/21 23:08, Stephan Gerhold ha scritto:
+> On Mon, Jun 21, 2021 at 08:10:12PM +0200, AngeloGioacchino Del Regno wrote:
+>> In commit a871be6b8eee ("cpuidle: Convert Qualcomm SPM driver to a generic
+>> CPUidle driver") the SPM driver has been converted to a
+>> generic CPUidle driver: that was mainly made to simplify the
+>> driver and that was a great accomplishment;
+>> Though, it was ignored that the SPM driver is not used only
+>> on the ARM architecture.
+>>
+> 
+> I don't really understand why you insist on writing that I deliberately
+> "ignored" your use case when converting the driver. This is not true.
+> Perhaps that's not actually what you meant but that's how it sounds to
+> me.
+> 
 
-Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
----
- drivers/vhost/vringh.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+So much noise for one single word. I will change it since it seems to be
+that much of a deal, and I'm sorry if that hurt you in any way.
 
-diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
-index 4af8fa2..14e2043 100644
---- a/drivers/vhost/vringh.c
-+++ b/drivers/vhost/vringh.c
-@@ -359,7 +359,7 @@ __vringh_iov(struct vringh *vrh, u16 i,
- 			iov = wiov;
- 		else {
- 			iov = riov;
--			if (unlikely(wiov && wiov->i)) {
-+			if (unlikely(wiov && wiov->used)) {
- 				vringh_bad("Readable desc %p after writable",
- 					   &descs[i]);
- 				err = -EINVAL;
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, 
-hosted by The Linux Foundation
+For the records, though, I really don't see anything offensive in that,
+and anyway I didn't mean to be offensive in any way.
 
+>> In preparation for the enablement of SPM features on AArch64/ARM64,
+>> split the cpuidle-qcom-spm driver in two: the CPUIdle related
+>> state machine (currently used only on ARM SoCs) stays there, while
+>> the SPM communication handling lands back in soc/qcom/spm.c and
+>> also making sure to not discard the simplifications that were
+>> introduced in the aforementioned commit.
+>>
+>> Since now the "two drivers" are split, the SCM dependency in the
+>> main SPM handling is gone and for this reason it was also possible
+>> to move the SPM initialization early: this will also make sure that
+>> whenever the SAW CPUIdle driver is getting initialized, the SPM
+>> driver will be ready to do the job.
+>>
+>> Please note that the anticipation of the SPM initialization was
+>> also done to optimize the boot times on platforms that have their
+>> CPU/L2 idle states managed by other means (such as PSCI), while
+>> needing SAW initialization for other purposes, like AVS control.
+>>
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+>> ---
+>>   drivers/cpuidle/Kconfig.arm        |   1 +
+>>   drivers/cpuidle/cpuidle-qcom-spm.c | 324 +++++++----------------------
+>>   drivers/soc/qcom/Kconfig           |   9 +
+>>   drivers/soc/qcom/Makefile          |   1 +
+>>   drivers/soc/qcom/spm.c             | 198 ++++++++++++++++++
+>>   include/soc/qcom/spm.h             |  41 ++++
+>>   6 files changed, 325 insertions(+), 249 deletions(-)
+>>   create mode 100644 drivers/soc/qcom/spm.c
+>>   create mode 100644 include/soc/qcom/spm.h
+>>
+>> diff --git a/drivers/cpuidle/cpuidle-qcom-spm.c b/drivers/cpuidle/cpuidle-qcom-spm.c
+>> index adf91a6e4d7d..091453135ea6 100644
+>> --- a/drivers/cpuidle/cpuidle-qcom-spm.c
+>> +++ b/drivers/cpuidle/cpuidle-qcom-spm.c
+>> [...]
+>> +static int spm_cpuidle_register(int cpu)
+>>   {
+>> +	struct platform_device *pdev = NULL;
+>> +	struct device_node *cpu_node, *saw_node;
+>> +	struct cpuidle_qcom_spm_data data = {
+>> +		.cpuidle_driver = {
+>> +			.name = "qcom_spm",
+>> +			.owner = THIS_MODULE,
+>> +			.cpumask = (struct cpumask *)cpumask_of(cpu),
+>> +			.states[0] = {
+>> +				.enter			= spm_enter_idle_state,
+>> +				.exit_latency		= 1,
+>> +				.target_residency	= 1,
+>> +				.power_usage		= UINT_MAX,
+>> +				.name			= "WFI",
+>> +				.desc			= "ARM WFI",
+>> +			}
+>> +		}
+>> +	};
+> 
+> The stack is gone after the function returns.
+> 
+
+Argh, I wrongly assumed that cpuidle was actually copying this locally.
+Okay, let's see what else looking clean I can come up with.
