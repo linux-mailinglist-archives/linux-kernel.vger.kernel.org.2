@@ -2,81 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6B953B0763
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D813B0769
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231596AbhFVOb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 10:31:56 -0400
-Received: from foss.arm.com ([217.140.110.172]:50316 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230481AbhFVOby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 10:31:54 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C6DAE31B;
-        Tue, 22 Jun 2021 07:29:38 -0700 (PDT)
-Received: from [10.57.13.57] (unknown [10.57.13.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 68B1C3F694;
-        Tue, 22 Jun 2021 07:29:36 -0700 (PDT)
-Subject: Re: [PATCH v1 3/3] perf cs-etm: Remove callback
- cs_etm_find_snapshot()
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
+        id S231654AbhFVOdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 10:33:08 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:38428 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230047AbhFVOdH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 10:33:07 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 9E00B1FD45;
+        Tue, 22 Jun 2021 14:30:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624372250; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qWwEmUfp6YqPczb3rno045NkvzZp5TBkr+42x5Fqv6I=;
+        b=MspMDmtpSYbtveSioZH5xofSycSz9VLyTmUkUFJNKz5RJQ7+1xWK/mFWK0V3dDCTyfxV7H
+        FviqQFi1+NNjPrVCXLvWSACnJae9BccsK6WrROt4d1hB3LGXw6/b+mm+J8Tr41foj53rD7
+        v45YFkPm3VP8bFpUPl5k5Ji8La6DNRU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624372250;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qWwEmUfp6YqPczb3rno045NkvzZp5TBkr+42x5Fqv6I=;
+        b=skM51grGaw+IiBoS5en7Svk2MPEPiQwvu7vkeE7Gq7ngSLt0x7L7d7V+xy+6juVmaUe8rY
+        tbs9rH2VC5DgV5DQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 8B9DC118DD;
+        Tue, 22 Jun 2021 14:30:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624372250; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qWwEmUfp6YqPczb3rno045NkvzZp5TBkr+42x5Fqv6I=;
+        b=MspMDmtpSYbtveSioZH5xofSycSz9VLyTmUkUFJNKz5RJQ7+1xWK/mFWK0V3dDCTyfxV7H
+        FviqQFi1+NNjPrVCXLvWSACnJae9BccsK6WrROt4d1hB3LGXw6/b+mm+J8Tr41foj53rD7
+        v45YFkPm3VP8bFpUPl5k5Ji8La6DNRU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624372250;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qWwEmUfp6YqPczb3rno045NkvzZp5TBkr+42x5Fqv6I=;
+        b=skM51grGaw+IiBoS5en7Svk2MPEPiQwvu7vkeE7Gq7ngSLt0x7L7d7V+xy+6juVmaUe8rY
+        tbs9rH2VC5DgV5DQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id R2QLIRr00WD9XAAALh3uQQ
+        (envelope-from <bp@suse.de>); Tue, 22 Jun 2021 14:30:50 +0000
+Date:   Tue, 22 Jun 2021 16:30:45 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
         Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Denis Nikitin <denik@google.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-perf-users@vger.kernel.org
-References: <20210528161552.654907-1-leo.yan@linaro.org>
- <20210528161552.654907-4-leo.yan@linaro.org>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <05442998-05f6-c41c-5a78-3f6723558825@arm.com>
-Date:   Tue, 22 Jun 2021 15:29:35 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch V3 43/66] x86/pkru: Provide pkru_write_default()
+Message-ID: <YNH0FbTeHthv8xud@zn.tnic>
+References: <20210618141823.161158090@linutronix.de>
+ <20210618143449.299151449@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210528161552.654907-4-leo.yan@linaro.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210618143449.299151449@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 18, 2021 at 04:19:06PM +0200, Thomas Gleixner wrote:
+> Provide a simple and trivial helper which just writes the PKRU default
+> value without trying to fiddle with the tasks xsave buffer.
 
+task's
 
-On 28/05/2021 17:15, Leo Yan wrote:
-> The callback cs_etm_find_snapshot() is invoked for snapshot mode, its
-> main purpose is to find the correct AUX trace data and returns "head"
-> and "old" (we can call "old" as "old head") to the caller, the caller
-> __auxtrace_mmap__read() uses these two pointers to decide the AUX trace
-> data size.
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  arch/x86/include/asm/pkru.h |    8 ++++++++
+>  1 file changed, 8 insertions(+)
 > 
-> cs_etm_find_snapshot() should be removed with below reasons:
+> --- a/arch/x86/include/asm/pkru.h
+> +++ b/arch/x86/include/asm/pkru.h
+> @@ -60,4 +60,12 @@ static inline void write_pkru(u32 pkru)
+>  	fpregs_unlock();
+>  }
+>  
+> +static inline void pkru_write_default(void)
+> +{
+> +	if (!cpu_feature_enabled(X86_FEATURE_OSPKE))
+> +		return;
+> +
+> +	wrpkru(pkru_get_init_value());
+> +}
+> +
+>  #endif
 
-Hi Leo,
+Reviewed-by: Borislav Petkov <bp@suse.de>
 
-I came across this other comment in coresight-tmc-etr.c that should probably
-be fixed up if we remove cs_etm_find_snapshot(). The same is duplicated in a
-few other files:
+-- 
+Regards/Gruss,
+    Boris.
 
-	/*
-	 * In snapshot mode we simply increment the head by the number of byte
-	 * that were written.  User space function  cs_etm_find_snapshot() will
-	 * figure out how many bytes to get from the AUX buffer based on the
-	 * position of the head.
-	 */
-	if (etr_perf->snapshot)
-		handle->head += size;
-
-I'm still reviewing patch 1 and 2 as well.
-
-James
-
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
