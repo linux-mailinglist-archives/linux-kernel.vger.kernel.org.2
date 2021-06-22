@@ -2,158 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 472DE3AFA08
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 02:04:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 960193AFA38
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 02:39:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230354AbhFVAGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 20:06:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41542 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229747AbhFVAGN (ORCPT
+        id S230347AbhFVAmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 20:42:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229747AbhFVAmB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 20:06:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624320238;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qmPwelrhybYDdKxwzfvIvfEHDkXjrO7CGdG+GKdF17w=;
-        b=hSKo6eiiqt3t6lZzRuhamqo6chQ8xP3Kbg+NathVLE7oqDJE3SvifTD8jdvYwRRd6uHs8K
-        gKav36nBWprbpqqiTahK9HDBnQSsEiTwsqvA5laJLi0QeSXiIeo9EbsNdSCf4aCoOXKadd
-        KZMCgy7G/2t7YS4OhCxdm8GbB9Kbvck=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-20-r6UKx4WZONyoWoP_k7hQqw-1; Mon, 21 Jun 2021 20:03:56 -0400
-X-MC-Unique: r6UKx4WZONyoWoP_k7hQqw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5647E80734A;
-        Tue, 22 Jun 2021 00:03:55 +0000 (UTC)
-Received: from [10.64.54.84] (vpn2-54-84.bne.redhat.com [10.64.54.84])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0E2C35C1C2;
-        Tue, 22 Jun 2021 00:03:47 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: ** POTENTIAL FRAUD ALERT - RED HAT ** RE: [PATCH 0/3]
- mm/page_reporting: Make page reporting work on arm64 with 64KB page size
-To:     Michael Kelley <mikelley@microsoft.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "shan.gavin@gmail.com" <shan.gavin@gmail.com>
-References: <20210621051152.305224-1-gshan@redhat.com>
- <CAKgT0Uf3UwhdFX93YrkiB8yk6v3syqUrdbu720ECqv1ak_H_FA@mail.gmail.com>
- <MWHPR21MB159394F6D8804DCF4C969212D70A9@MWHPR21MB1593.namprd21.prod.outlook.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <2c0b0868-a972-2c04-a600-8333e0de2952@redhat.com>
-Date:   Tue, 22 Jun 2021 12:04:49 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
-MIME-Version: 1.0
-In-Reply-To: <MWHPR21MB159394F6D8804DCF4C969212D70A9@MWHPR21MB1593.namprd21.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Mon, 21 Jun 2021 20:42:01 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A6A9C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 17:39:45 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id e22so9435111pgv.10
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 17:39:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=pqUpRkhcnAMty1ieLynY9A7gMQczSuaUqnjg9ANrosY=;
+        b=KBCXSvGfi/tgiLovusaSZA0BT226Xc8G4C8/2U7x09bcN6CzNi2eg1HoHu5KBlz9aa
+         6mE0Vn7SfJJKuYrVvairbVErpDxbGxr7WAy2dIqsNUCreBfaVHZV2/FrA4j103YbBfay
+         TGlnHL1LbQ7L+Z9uHPVQmSDF9suIDri8tPvGogQJVaz6f9p5Lclr9XMQpPdcFQ6+BMwt
+         lYvACo3/0YfnYHJDju7AvPDx4TLoYx3Hax7hCa3QwxpFSVpnnatnCOK2d22s3dxcXLf8
+         iTAUHhfpxUCfS5pqVkLCO94wvmvZYz0EzZCTKnGUzftV4EXVDknPBLTTPdC8DL+AhiPQ
+         Auuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=pqUpRkhcnAMty1ieLynY9A7gMQczSuaUqnjg9ANrosY=;
+        b=rO5RpcEbnfnHNrdBwZh/7plzojuP8v2nqi83xeTwXPkF+Fz9QwsjC3e3ZcCEl2E9na
+         tSPlsaQYTTM1YRaYzmweyyh49CEEmXhnDtItyethlWK3mPGSICCnxmQ6UW2XVL5Y/Xyg
+         uqZM/aBxAGZ5bUJTOFYdHZNpSK5HAqFx0ky+o8TGCGw5TMIcdtB5PrYw5MPLsWG96Z74
+         FThH6lw+90YM7P+tAO13INoavpD508sU2eROq+xjAYO4+yoLLp6GrJEHCqVCO8KtFJga
+         p0OS9KuCC06fzaaBCxpnv/A0b4klC9BqmpsMcBmHz9ZKniKjN6eY79ncSLgow1CDrs8z
+         8Q3Q==
+X-Gm-Message-State: AOAM5309bBFtJKMV2gJIOL0C3BqpQ96ihWwN8WD6NcIR5aStDGohBhfZ
+        KMz+i8tqEtI5tIc5w6aMls92Ww==
+X-Google-Smtp-Source: ABdhPJwS1Om4eMmDHOw6g2bM/rwS8s2wGA5OmRs4kA6Os6DjgkA/4JXLJpLWzzX67KtcnWtsWwlmUA==
+X-Received: by 2002:a63:e14:: with SMTP id d20mr1132215pgl.35.1624322384963;
+        Mon, 21 Jun 2021 17:39:44 -0700 (PDT)
+Received: from localhost.localdomain (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id h11sm17722762pgq.68.2021.06.21.17.39.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 17:39:44 -0700 (PDT)
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sivaprakash Murugesan <sivaprak@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Benjamin Li <benl@squareup.com>, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shawn Guo <shawn.guo@linaro.org>
+Subject: [PATCH v3 0/3] Add MSM8939 APCS support
+Date:   Tue, 22 Jun 2021 08:39:16 +0800
+Message-Id: <20210622003919.10442-1-shawn.guo@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/22/21 2:06 AM, Michael Kelley wrote:
-> From: Alexander Duyck <alexander.duyck@gmail.com> Sent: Monday, June 21, 2021 7:02 AM
->> To: Gavin Shan <gshan@redhat.com>
->> Cc: linux-mm <linux-mm@kvack.org>; LKML <linux-kernel@vger.kernel.org>; Andrew
->> Morton <akpm@linux-foundation.org>; David Hildenbrand <david@redhat.com>;
->> Anshuman Khandual <anshuman.khandual@arm.com>; Catalin Marinas
->> <catalin.marinas@arm.com>; Will Deacon <will@kernel.org>; shan.gavin@gmail.com
->> Subject: Re: [PATCH 0/3] mm/page_reporting: Make page reporting work on arm64 with
->> 64KB page size
->>
->> So the question I would have is what is the use case for this? It
->> seems like you don't have to deal with the guest native page size
->> issues since you are willing to break up what would otherwise be THP
->> pages on the guest, and the fact that you are willing to go down to
->> 2MB pages which happens to align with the host THP page size for x86
->> makes me wonder if that is actually the environment you are running
->> in.
->>
->> Rather than having the guest control this it might make sense to look
->> at adding an interface so that the page_reporting_register function
->> and the page_reporting_dev_info struct could be used to report and
->> configure the minimum page size that the host can support for the page
->> reporting. With that the host could then guarantee that it isn't going
->> to hurt performance by splitting pages on the host and risk hurting
->> the virtualization performance.
->>
->> Also you would benefit by looking into the callers of
->> page_reporting_register as there are more than just the virtio balloon
->> that are consuming it. Odds are HyperV won't care about an ARM64
->> architecture,
-> 
-> FWIW, Hyper-V *does* care about ARM64.  It's already in use by
-> the Windows Subsystem for Linux VM that's part of Windows 10
-> on ARM64 hardware.  We're working to get the code accepted
-> upstream.
-> 
+It's a series to add MSM8939 APCS support into qcom mailbox driver.
 
-Michael, thanks for your confirmation. As the issue found on 64KB guest
-when memory balloon is used, lets resolve the case first. I will look
-into Hyper-V case later if you agree. It won't be difficult to fix the
-same issue for Hyper-V after the solution is figured out for memory
-balloon.
+Changes for v3:
+- Separate PLATFORM_DEVID_AUTO change from MSM8939 enablement.
 
-Thanks,
-Gavin
+Changes for v2:
+- Add MSM8939 APCS compatible.
+- Reword commit log.
+- Add Bjorn's Reviewed-by tag.
 
-> 
->> but your change would essentially disable it outright
->> which is why I think this might be better to address via the consumers
->> of page reporting rather than trying to address it in page reporting
->> itself.
->>
->> Thanks,
->>
->> - Alex
->>
->> On Sun, Jun 20, 2021 at 8:11 PM Gavin Shan <gshan@redhat.com> wrote:
->>>
->>> The page reporting threshold is currently equal to @pageblock_order, which
->>> is 13 and 512MB on arm64 with 64KB base page size selected. The page
->>> reporting won't be triggered if the freeing page can't come up with a free
->>> area like that huge. The condition is hard to be met, especially when the
->>> system memory becomes fragmented.
->>>
->>> This series intends to solve the issue by having page reporting threshold
->>> as 5 (2MB) on arm64 with 64KB base page size. The patches are organized as:
->>>
->>>     PATCH[1/3] introduces variable (@page_reporting_order) to replace original
->>>                macro (PAGE_REPORTING_MIN_ORDER). It's also exported so that it
->>>                can be adjusted at runtime.
->>>     PATCH[2/3] renames PAGE_REPORTING_MIN_ORDER with PAGE_REPORTING_ORDER
->> and
->>>                allows architecture to specify its own version.
->>>     PATCH[3/3] defines PAGE_REPORTING_ORDER to 5, corresponding to 2MB in size,
->>>                on arm64 when 64KB base page size is selected. It's still same
->>>                as to @pageblock_order for other architectures and cases.
->>>
->>> Gavin Shan (3):
->>>    mm/page_reporting: Allow to set reporting order
->>>    mm/page_reporting: Allow architecture to select reporting order
->>>    arm64: mm: Specify smaller page reporting order
->>>
->>>   Documentation/admin-guide/kernel-parameters.txt |  6 ++++++
->>>   arch/arm64/include/asm/page.h                   | 13 +++++++++++++
->>>   mm/page_reporting.c                             |  8 ++++++--
->>>   mm/page_reporting.h                             | 10 +++++++---
->>>   4 files changed, 32 insertions(+), 5 deletions(-)
->>>
->>> --
->>> 2.23.0
->>>
+Shawn Guo (3):
+  dt-bindings: mailbox: qcom: Add MSM8939 APCS compatible
+  mailbox: qcom: Use PLATFORM_DEVID_AUTO to register platform device
+  mailbox: qcom: Add MSM8939 APCS support
+
+ .../devicetree/bindings/mailbox/qcom,apcs-kpss-global.yaml     | 1 +
+ drivers/mailbox/qcom-apcs-ipc-mailbox.c                        | 3 ++-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+-- 
+2.17.1
 
