@@ -2,108 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C623AFCF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 08:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 653063AFCFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 08:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229826AbhFVGSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 02:18:03 -0400
-Received: from gecko.sbs.de ([194.138.37.40]:57278 "EHLO gecko.sbs.de"
+        id S229837AbhFVGWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 02:22:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229574AbhFVGSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 02:18:02 -0400
-Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
-        by gecko.sbs.de (8.15.2/8.15.2) with ESMTPS id 15M6FUwD013324
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Jun 2021 08:15:30 +0200
-Received: from [167.87.93.200] ([167.87.93.200])
-        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 15M6FTtU011380;
-        Tue, 22 Jun 2021 08:15:29 +0200
-Subject: Re: [PATCH] serial: 8250: 8250_omap: Fix possible interrupt storm
-To:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
-        linux-omap@vger.kernel.org,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel@vger.kernel.org
-References: <20210511151955.28071-1-vigneshr@ti.com>
- <YJ008MjjewRUTn9Z@kroah.com> <YLCCJzkkB4N7LTQS@atomide.com>
- <e5b35370-bf2d-7295-e2fd-9aee5bbc3296@ti.com>
-From:   Jan Kiszka <jan.kiszka@siemens.com>
-Message-ID: <0ad948ac-f669-3d6d-5eca-4ca48d47d6a3@siemens.com>
-Date:   Tue, 22 Jun 2021 08:15:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229490AbhFVGWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 02:22:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 59C6260FDC;
+        Tue, 22 Jun 2021 06:20:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624342825;
+        bh=BSNrQaGnE56ColQS9Xz8vuwYpEPpdyzKkePfYGU4fYo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GynAKk9Dj1zc+PM2NKbtOn9u1zyzRQ0AByCDeqzIsEzfUS5SKQ4QHiVNH1+229QJf
+         NC0H/P9WihzdNTc/e07SCh+JKjvuiSMsc8uGaXDBBZJC4SY/Zrl3n5KRF1KMml40X1
+         cuxCYlMIsDbijZpSsXeMB2zZRTR06K3clKbGZ5SefVC3AeCeNacq1aVGuaT+rSxYR1
+         1YYRTCW/xgjXPuwpOteICZePErsSJ7GWmbGizirBwKIjWRIdsRQno6+w/68pxJqzts
+         M26t4FuG07ENLexpwSeVb5XFw4ZMFoNOlkpt+Q6w6yhZF+6htpmfrMZzWfjXIGeGSs
+         32vxVZZRzQYVA==
+Date:   Tue, 22 Jun 2021 09:20:21 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Christoph Hellwig <hch@lst.de>, Doug Ledford <dledford@redhat.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Bart Van Assche <bvanassche@acm.org>,
+        Tom Talpey <tom@talpey.com>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Chuck Lever III <chuck.lever@oracle.com>,
+        Keith Busch <kbusch@kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Honggang LI <honli@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Subject: Re: [PATCH v2 rdma-next] RDMA/mlx5: Enable Relaxed Ordering by
+ default for kernel ULPs
+Message-ID: <YNGBJRRWBql413nM@unreal>
+References: <b7e820aab7402b8efa63605f4ea465831b3b1e5e.1623236426.git.leonro@nvidia.com>
+ <20210621180205.GA2332110@nvidia.com>
+ <20210621202033.GB13822@lst.de>
+ <20210621231837.GT1002214@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <e5b35370-bf2d-7295-e2fd-9aee5bbc3296@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621231837.GT1002214@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.05.21 08:11, Vignesh Raghavendra wrote:
-> Hi,
+On Mon, Jun 21, 2021 at 08:18:37PM -0300, Jason Gunthorpe wrote:
+> On Mon, Jun 21, 2021 at 10:20:33PM +0200, Christoph Hellwig wrote:
+> > On Mon, Jun 21, 2021 at 03:02:05PM -0300, Jason Gunthorpe wrote:
+> > > Someone is working on dis-entangling the access flags? It took a long
+> > > time to sort out that this mess in wr.c actually does have a
+> > > distinct user/kernel call chain too..
+> > 
+> > I'd love to see it done, but I won't find time for it anytime soon.
 > 
-> On 5/28/21 11:09 AM, Tony Lindgren wrote:
->> Hi Greg, Vignesh & Jan,
->>
->> * Greg Kroah-Hartman <gregkh@linuxfoundation.org> [210513 14:17]:
->>> On Tue, May 11, 2021 at 08:49:55PM +0530, Vignesh Raghavendra wrote:
->>>> It is possible that RX TIMEOUT is signalled after RX FIFO has been
->>>> drained, in which case a dummy read of RX FIFO is required to clear RX
->>>> TIMEOUT condition. Otherwise, RX TIMEOUT condition is not cleared
->>>> leading to an interrupt storm
->>>>
->>>> Cc: stable@vger.kernel.org
->>>
->>> How far back does this need to go?  What commit id does this fix?  What
->>> caused this to just show up now vs. previously?
+> Heh, me too..
 > 
-> Sorry, I missed this reply. Issue was reported on AM65x SoC with custom
-> test case from Jan Kiszka that stressed UART with rapid baudrate changes
-> from 9600 to 4M along with data transfer.
+> I did actually once try to get a start on doing something to wr.c but
+> it rapidly started to get into mire..
 > 
-> Based on the condition that led to interrupt storm, I inferred it to
-> affect all SoCs with 8250 OMAP UARTs. But that seems thats not the best
-> idea as seen from OMAP3 regression.
-> 
-> Greg,
-> 
-> Could you please drop the patch? Very sorry for the inconvenience..
-> 
->>
->> I just noticed this causes the following regression in Linux next when
->> pressing a key on uart console after boot at least on omap3. This seems
->> to happen on serial_port_in(port, UART_RX) in the quirk handling.
->>
->> Vignesh, it seems this quirk needs some soc specific flag added to
->> it maybe? Or maybe UART_OMAP_RX_LVL register is not available for
->> all the SoCs?
->>
-> 
-> Yes indeed :(
-> 
->> I think it's best to drop this patch until the issues are resolved,
->> also there are some open comments above that might be answered by
->> limiting this quirk to a specific range of SoCs :)
->>
-> 
-> Oops, I did test patch AM33xx assuming its equivalent to OMAP3, but UART
-> IP is quite different. I will respin the patch making sure, workaround
-> applies only to AM65x and K3 SoCs.
-> 
-> Regards
-> Vignesh
-> 
+> I thought I recalled Leon saying he or Avihai would work on the ACCESS
+> thing anyhow?
 
-What's the status here for AM65x? The issue remains present on that
-platform, and I was hoping to see a quick follow up that limit the fix
-to that target.
+Yes, we are planning to do it for the next cycle. 
 
-Jan
+Thanks
 
--- 
-Siemens AG, T RDA IOT
-Corporate Competence Center Embedded Linux
+> 
+> Thanks,
+> Jason
