@@ -2,110 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54EAC3AFFA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1BA3AFFB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:57:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229746AbhFVI5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 04:57:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53106 "EHLO
+        id S229769AbhFVI7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 04:59:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhFVI5Y (ORCPT
+        with ESMTP id S229490AbhFVI7Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 04:57:24 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 756DEC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 01:55:07 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id ji1so27226333ejc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 01:55:07 -0700 (PDT)
+        Tue, 22 Jun 2021 04:59:16 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C87C8C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 01:56:59 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id d19so22997256oic.7
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 01:56:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QNv8ctZHL3I0Bdx3jfIEMpEIo4PzBtM6ldvPOtODEsc=;
-        b=Zlp6O7cHMai+Zxr953kkw/Q5oB73aktnr0pCVPE2jrHox9K/rha+/a33PjGASHV0Bo
-         67baSeWKzP6XMjZAXFSLup+lRXOs2t+p2uV7tzKLNaELQcV2NvvLhrPz93p/pmJeZaZs
-         CqGwgngsEb0EtnElgF/xA5tnkMIhhh2zJZNNY=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gsnx3WWXGHiAO3TPKJpzIec1T+lt/uyQth3YVlL9pnc=;
+        b=rVxG5kaR90ysvW7okvOvabn5lo+ydrxWE4ngLY16gB2qCaPmwTFGDpC/HrF4kLM7Dh
+         bmY6PONRopxgaQqJRL8C2B6E6T/6y3QFUi/LNCbq1ZzOp+diERhvt4+bpHMkBCnO0scx
+         DXifc9h3lxHiRPbdXOMAzd4bH7KEK2MlM8v/Yd030HIeiNZLuWwbecnSMJiQky1G6Hxp
+         sXckYlybo1FVWHHRUsfV4IkBLZh9reVDIGFOp4yR29oG8VOylYV7WmQmcitA1S+SIZE4
+         4lZGrcqBU1UQzS9KNoPlW9Z0A2EAej47g0WSs0eME0KQTZMH6T3hP9m4TU2Pmul6yHsG
+         rUyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QNv8ctZHL3I0Bdx3jfIEMpEIo4PzBtM6ldvPOtODEsc=;
-        b=T98f3hePnLVnhvPo1y7xGUc0zyxIdEpQI0+tsNo356QiWdP0vF7KquPl8H6Bw43XZt
-         GzOu3jOm7PVGN2L6iR0PDxaQnjXtAY0qznW05tDdPv6uLq17m9HNN8BkhzIi34jCI7ut
-         QoEkvWiPePw1Qjk2rzGwVYROwVGljsjXmXewk8nIB9Jy57CvjNfg4TFiABt/jftVXxIa
-         xemUkkWK1RBG00hrMsYhfZnGbVP1EosMKPdwPPcpgOWloYzVK0QPSmYMalDodhYaLmgD
-         kdNJvsbhF1wkkoWLDfO1lLe3qzeuGaptsQLmN9+a9w0Jsb3BCjwnLeYLVIWx/IdK/ezc
-         H2MA==
-X-Gm-Message-State: AOAM532+h+X6QNWZSqE11NL45n9mAgrAqIWGV/8AtNcmtZlYIq+NQYFN
-        Ig8olMdPGzifHR7CJDEhIDfV9A==
-X-Google-Smtp-Source: ABdhPJxBRq70yBv9Yg9ALotw2ABIGCn6WPamqtFqas0QX6t9fGtCxfyOXaWeblhAH9L5QWAaS0FPfA==
-X-Received: by 2002:a17:907:2651:: with SMTP id ar17mr2852614ejc.135.1624352106079;
-        Tue, 22 Jun 2021 01:55:06 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.64.110])
-        by smtp.gmail.com with ESMTPSA id o20sm11676602eds.20.2021.06.22.01.55.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 01:55:05 -0700 (PDT)
-Subject: Re: [RFC 0/3] mtd: spi-nor: dealing with reused JEDEC id c22016
-To:     linux-mtd@lists.infradead.org
-Cc:     Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Michael Walle <michael@walle.cc>,
-        Pratyush Yadav <p.yadav@ti.com>, linux-kernel@vger.kernel.org,
-        Esben Haabendal <esben@geanix.com>
-References: <20210621152320.3811194-1-linux@rasmusvillemoes.dk>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <590b0adb-612e-c20d-4c86-cb7dbb16d346@rasmusvillemoes.dk>
-Date:   Tue, 22 Jun 2021 10:55:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gsnx3WWXGHiAO3TPKJpzIec1T+lt/uyQth3YVlL9pnc=;
+        b=Q2G736zcz2ewo+zZIW9lTLtfd9ePYL03Z+ropXtb7y2+inSLvUQHqeDHnz1/iKJLgA
+         AolBEbVC5AjXZ00oCgw8k/BHuozSKbxx7KqxQitoGB7UF3689GJ2FqdNuQdK8cv/oMz0
+         t6xRAbyULIJg/zG6h/mJ3X2G24K65x9+5kZcwQc7M0gPaL7W9pP9VukHgtQaC3YOAJOo
+         zfm+ZhbAoz/y6m/DTfAl6gfB/b/AkRts0tC9SFnvo1SII8Qtx0H7qEIDfpK2D3dZK2M2
+         j0kvkA+Jtz7zIBE83cBWDte80YqC9H9inIh1FiJbI2F1SGsmH3KVVXdsJQ0IpZxrEBws
+         RwJw==
+X-Gm-Message-State: AOAM532UGs80GmvotdSadM0ubHBzke2/V1w8oIYEMYgqlbOusGSguX37
+        lNLT4CYkgqncWNR+dW4hrluTKWCAhUbIqsgc5ZG0Jw==
+X-Google-Smtp-Source: ABdhPJzNy4tmmTU4hyu2JtcL2mUCBLsLb91CbtjqvgbJMOuxDhSiRtfNgTHpct2a5+XVH5QglaC1zgDWvalpN5+uc3c=
+X-Received: by 2002:aca:b38a:: with SMTP id c132mr2304058oif.90.1624352218925;
+ Tue, 22 Jun 2021 01:56:58 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210621152320.3811194-1-linux@rasmusvillemoes.dk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210621111716.37157-1-steven.price@arm.com> <20210621111716.37157-6-steven.price@arm.com>
+In-Reply-To: <20210621111716.37157-6-steven.price@arm.com>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Tue, 22 Jun 2021 09:56:22 +0100
+Message-ID: <CA+EHjTx7_atkNMqrUkHr0mM2xDbzBafip3s0JhGrGzsX9N08XQ@mail.gmail.com>
+Subject: Re: [PATCH v17 5/6] KVM: arm64: ioctl to fetch/store tags in a guest
+To:     Steven Price <steven.price@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        qemu-devel@nongnu.org, Dave Martin <Dave.Martin@arm.com>,
+        Juan Quintela <quintela@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/06/2021 17.23, Rasmus Villemoes wrote:
-> We use the Macronix chip mx25l3233f in a number of
-> products.
-> 
-> Unfortunately, it has the same JEDEC id as another chip which is
-> already listed in macronix_parts[]. Since that other one does not
-> support SFDP, and its data sheet warns against issuing commands not
-> explicitly listed, we can't just do RDSFDP anyway and decide that it's
-> an mx25l3205d when the chip returns garbage.
-> 
-> For lack of better alternative, start allowing multiple entries with
-> the same JEDEC id in the parts tables. That allows a correctly written
-> device tree to specify the right chip, without being overruled by the
-> "JEDEC knows better" heuristic, while being backwards-compatible (as
-> long as new chips with recycled ids get added after the existing
-> ones).
-> 
-> While a step forward, this isn't quite a complete solution for our case:
-> 
-> Some of our platforms are based on LS1021A, thus using the
-> spi-fsl-qspi driver. Back in the 4.19 kernel, when the driver was
-> fsl-quadspi, we couldn't get the flash recognized unless we
-> monkey-patch-replaced the mx25l3205d entry with the mx25l3233f one
-> (i.e. added the SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ bits) - we'd
-> fail in spi_nor_select_read() because
-> shared_hwcaps&SNOR_HWCAPS_READ_MASK would be empty. In contrast, with
-> current master, the chip works with or without the third patch in this
-> series, i.e. whether it is detected as a mx25l3205d or mx25l3233f. But
-> the read performance is ~3 times worse than in our patched 4.19 - I
-> haven't quite figured out why quad read doesn't seem to be used or
-> work.
+Hi,
 
-Sorry about that last part, that's a PEBKAC. Adding proper
-spi-rx-bus-width = <4> properties to DT got the performance back to what
-it used to be.
 
-However, I still do need the flashes to be recognized as mx25l3233f and
-not mx25l3205d.
+On Mon, Jun 21, 2021 at 12:18 PM Steven Price <steven.price@arm.com> wrote:
+>
+> The VMM may not wish to have it's own mapping of guest memory mapped
+> with PROT_MTE because this causes problems if the VMM has tag checking
+> enabled (the guest controls the tags in physical RAM and it's unlikely
+> the tags are correct for the VMM).
+>
+> Instead add a new ioctl which allows the VMM to easily read/write the
+> tags from guest memory, allowing the VMM's mapping to be non-PROT_MTE
+> while the VMM can still read/write the tags for the purpose of
+> migration.
+>
+> Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: Steven Price <steven.price@arm.com>
+> ---
+>  arch/arm64/include/asm/kvm_host.h |  3 ++
+>  arch/arm64/include/asm/mte-def.h  |  1 +
+>  arch/arm64/include/uapi/asm/kvm.h | 11 +++++
+>  arch/arm64/kvm/arm.c              |  7 +++
+>  arch/arm64/kvm/guest.c            | 82 +++++++++++++++++++++++++++++++
+>  include/uapi/linux/kvm.h          |  1 +
+>  6 files changed, 105 insertions(+)
+>
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 309e36cc1b42..6a2ac4636d42 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -729,6 +729,9 @@ int kvm_arm_vcpu_arch_get_attr(struct kvm_vcpu *vcpu,
+>  int kvm_arm_vcpu_arch_has_attr(struct kvm_vcpu *vcpu,
+>                                struct kvm_device_attr *attr);
+>
+> +long kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
+> +                               struct kvm_arm_copy_mte_tags *copy_tags);
+> +
+>  /* Guest/host FPSIMD coordination helpers */
+>  int kvm_arch_vcpu_run_map_fp(struct kvm_vcpu *vcpu);
+>  void kvm_arch_vcpu_load_fp(struct kvm_vcpu *vcpu);
+> diff --git a/arch/arm64/include/asm/mte-def.h b/arch/arm64/include/asm/mte-def.h
+> index cf241b0f0a42..626d359b396e 100644
+> --- a/arch/arm64/include/asm/mte-def.h
+> +++ b/arch/arm64/include/asm/mte-def.h
+> @@ -7,6 +7,7 @@
+>
+>  #define MTE_GRANULE_SIZE       UL(16)
+>  #define MTE_GRANULE_MASK       (~(MTE_GRANULE_SIZE - 1))
+> +#define MTE_GRANULES_PER_PAGE  (PAGE_SIZE / MTE_GRANULE_SIZE)
+>  #define MTE_TAG_SHIFT          56
+>  #define MTE_TAG_SIZE           4
+>  #define MTE_TAG_MASK           GENMASK((MTE_TAG_SHIFT + (MTE_TAG_SIZE - 1)), MTE_TAG_SHIFT)
+> diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
+> index 24223adae150..b3edde68bc3e 100644
+> --- a/arch/arm64/include/uapi/asm/kvm.h
+> +++ b/arch/arm64/include/uapi/asm/kvm.h
+> @@ -184,6 +184,17 @@ struct kvm_vcpu_events {
+>         __u32 reserved[12];
+>  };
+>
+> +struct kvm_arm_copy_mte_tags {
+> +       __u64 guest_ipa;
+> +       __u64 length;
+> +       void __user *addr;
+> +       __u64 flags;
+> +       __u64 reserved[2];
+> +};
+> +
+> +#define KVM_ARM_TAGS_TO_GUEST          0
+> +#define KVM_ARM_TAGS_FROM_GUEST                1
+> +
+>  /* If you need to interpret the index values, here is the key: */
+>  #define KVM_REG_ARM_COPROC_MASK                0x000000000FFF0000
+>  #define KVM_REG_ARM_COPROC_SHIFT       16
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index 28ce26a68f09..511f3716fe33 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -1359,6 +1359,13 @@ long kvm_arch_vm_ioctl(struct file *filp,
+>
+>                 return 0;
+>         }
+> +       case KVM_ARM_MTE_COPY_TAGS: {
+> +               struct kvm_arm_copy_mte_tags copy_tags;
+> +
+> +               if (copy_from_user(&copy_tags, argp, sizeof(copy_tags)))
+> +                       return -EFAULT;
+> +               return kvm_vm_ioctl_mte_copy_tags(kvm, &copy_tags);
+> +       }
+>         default:
+>                 return -EINVAL;
+>         }
+> diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
+> index 5cb4a1cd5603..4ddb20017b2f 100644
+> --- a/arch/arm64/kvm/guest.c
+> +++ b/arch/arm64/kvm/guest.c
+> @@ -995,3 +995,85 @@ int kvm_arm_vcpu_arch_has_attr(struct kvm_vcpu *vcpu,
+>
+>         return ret;
+>  }
+> +
+> +long kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
+> +                               struct kvm_arm_copy_mte_tags *copy_tags)
+> +{
+> +       gpa_t guest_ipa = copy_tags->guest_ipa;
+> +       size_t length = copy_tags->length;
+> +       void __user *tags = copy_tags->addr;
+> +       gpa_t gfn;
+> +       bool write = !(copy_tags->flags & KVM_ARM_TAGS_FROM_GUEST);
+> +       int ret = 0;
+> +
+> +       if (!kvm_has_mte(kvm))
+> +               return -EINVAL;
+> +
+> +       if (copy_tags->reserved[0] || copy_tags->reserved[1])
+> +               return -EINVAL;
+> +
+> +       if (copy_tags->flags & ~KVM_ARM_TAGS_FROM_GUEST)
+> +               return -EINVAL;
+> +
+> +       if (length & ~PAGE_MASK || guest_ipa & ~PAGE_MASK)
+> +               return -EINVAL;
+> +
+> +       gfn = gpa_to_gfn(guest_ipa);
+> +
+> +       mutex_lock(&kvm->slots_lock);
+> +
+> +       while (length > 0) {
+> +               kvm_pfn_t pfn = gfn_to_pfn_prot(kvm, gfn, write, NULL);
+> +               void *maddr;
+> +               unsigned long num_tags;
+> +               struct page *page;
+> +
+> +               if (is_error_noslot_pfn(pfn)) {
+> +                       ret = -EFAULT;
+> +                       goto out;
+> +               }
+> +
+> +               page = pfn_to_online_page(pfn);
+> +               if (!page) {
+> +                       /* Reject ZONE_DEVICE memory */
+> +                       ret = -EFAULT;
+> +                       goto out;
+> +               }
+> +               maddr = page_address(page);
+> +
+> +               if (!write) {
+> +                       if (test_bit(PG_mte_tagged, &page->flags))
+> +                               num_tags = mte_copy_tags_to_user(tags, maddr,
+> +                                                       MTE_GRANULES_PER_PAGE);
+> +                       else
+> +                               /* No tags in memory, so write zeros */
+> +                               num_tags = MTE_GRANULES_PER_PAGE -
+> +                                       clear_user(tags, MTE_GRANULES_PER_PAGE);
+> +                       kvm_release_pfn_clean(pfn);
+> +               } else {
+> +                       num_tags = mte_copy_tags_from_user(maddr, tags,
+> +                                                       MTE_GRANULES_PER_PAGE);
+> +                       kvm_release_pfn_dirty(pfn);
+> +               }
+> +
+> +               if (num_tags != MTE_GRANULES_PER_PAGE) {
+> +                       ret = -EFAULT;
+> +                       goto out;
+> +               }
+> +
+> +               /* Set the flag after checking the write completed fully */
+> +               if (write)
+> +                       set_bit(PG_mte_tagged, &page->flags);
+> +
+> +               gfn++;
+> +               tags += num_tags;
+> +               length -= PAGE_SIZE;
+> +       }
+> +
+> +out:
+> +       mutex_unlock(&kvm->slots_lock);
+> +       /* If some data has been copied report the number of bytes copied */
+> +       if (length != copy_tags->length)
+> +               return copy_tags->length - length;
 
-Rasmus
+I'm not sure if this is actually an issue, but a couple of comments on
+the return value if there is an error after a partial copy has been
+done. If mte_copy_tags_to_user or mte_copy_tags_from_user don't return
+MTE_GRANULES_PER_PAGE, then the check for num_tags would fail, but
+some of the tags would have been copied, which wouldn't be reflected
+in length. That said, on a write the tagged bit wouldn't be set, and
+on read then the return value would be conservative, but not
+incorrect.
+
+That said, even though it is described that way in the documentation
+(rather deep in the description though), it might be confusing to
+return a non-negative value on an error. The other kvm ioctl I could
+find that does something similar, KVM_S390_GET_IRQ_STATE, seems to
+always return a -ERROR on error, rather than the number of bytes
+copied.
+
+Cheers,
+/fuad
+
+> +       return ret;
+> +}
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index d4da58ddcad7..da1edd2b4046 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -1429,6 +1429,7 @@ struct kvm_s390_ucas_mapping {
+>  /* Available with KVM_CAP_PMU_EVENT_FILTER */
+>  #define KVM_SET_PMU_EVENT_FILTER  _IOW(KVMIO,  0xb2, struct kvm_pmu_event_filter)
+>  #define KVM_PPC_SVM_OFF                  _IO(KVMIO,  0xb3)
+> +#define KVM_ARM_MTE_COPY_TAGS    _IOR(KVMIO,  0xb4, struct kvm_arm_copy_mte_tags)
+>
+>  /* ioctl for vm fd */
+>  #define KVM_CREATE_DEVICE        _IOWR(KVMIO,  0xe0, struct kvm_create_device)
+> --
+> 2.20.1
+>
+> _______________________________________________
+> kvmarm mailing list
+> kvmarm@lists.cs.columbia.edu
+> https://lists.cs.columbia.edu/mailman/listinfo/kvmarm
