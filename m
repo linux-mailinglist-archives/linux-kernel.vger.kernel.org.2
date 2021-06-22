@@ -2,91 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 132973B07D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF6D3B07D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232040AbhFVOsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 10:48:10 -0400
-Received: from foss.arm.com ([217.140.110.172]:50546 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231260AbhFVOsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 10:48:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1292A31B;
-        Tue, 22 Jun 2021 07:45:53 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.10.229])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0973E3F694;
-        Tue, 22 Jun 2021 07:45:48 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 15:45:46 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, boqun.feng@gmail.com, bp@alien8.de,
-        catalin.marinas@arm.com, dvyukov@google.com, elver@google.com,
-        ink@jurassic.park.msu.ru, jonas@southpole.se,
-        juri.lelli@redhat.com, linux@armlinux.org.uk, luto@kernel.org,
-        mattst88@gmail.com, mingo@redhat.com, monstr@monstr.eu,
-        paulmck@kernel.org, peterz@infradead.org, rth@twiddle.net,
-        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
-        tglx@linutronix.de, vincent.guittot@linaro.org
-Subject: Re: [PATCH v2 0/9] thread_info: use helpers to snapshot thread flags
-Message-ID: <20210622144546.GB71782@C02TD0UTHF1T.local>
-References: <20210621090602.16883-1-mark.rutland@arm.com>
- <20210621175452.GB29713@willie-the-truck>
+        id S231848AbhFVOtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 10:49:50 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:56338 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230433AbhFVOtt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 10:49:49 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lvhgZ-0007Qr-5Q; Tue, 22 Jun 2021 14:47:31 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-power@fi.rohmeurope.com
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] regulator: bd9576: Fix uninitializes variable may_have_irqs
+Date:   Tue, 22 Jun 2021 15:47:30 +0100
+Message-Id: <20210622144730.22821-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621175452.GB29713@willie-the-truck>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 06:54:53PM +0100, Will Deacon wrote:
-> On Mon, Jun 21, 2021 at 10:05:52AM +0100, Mark Rutland wrote:
-> > As thread_info::flags scan be manipulated by remote threads, it is
-> > necessary to use atomics or READ_ONCE() to ensure that code manipulates
-> > a consistent snapshot, but we open-code plain accesses to
-> > thread_info::flags across the kernel tree.
-> > 
-> > Generally we get away with this, but tools like KCSAN legitimately warn
-> > that there is a data-race, and this is potentially fragile with compiler
-> > optimizations, LTO, etc.
-> > 
-> > These patches introduce new helpers to snahpshot the thread flags, with
-> > the intent being that these should replace all plain accesses.
-> > 
-> > Since v1 [1]:
-> > * Drop RFC
-> > * Make read_ti_thread_flags() __always_inline
-> > * Clarify commit messages
-> > * Fix typo in arm64 patch
-> > * Accumulate Reviewed-by / Acked-by tags
-> > * Drop powerpc patch to avoid potential conflicts (per [2])
-> > 
-> > [1] https://lore.kernel.org/r/20210609122001.18277-1-mark.rutland@arm.com
-> > [2] https://lore.kernel.org/r/87k0mvtgeb.fsf@mpe.ellerman.id.au
-> > 
-> > Thanks,
-> > Mark.
-> > 
-> > Mark Rutland (9):
-> >   thread_info: add helpers to snapshot thread flags
-> >   entry: snapshot thread flags
-> >   sched: snapshot thread flags
-> >   alpha: snapshot thread flags
-> >   arm: snapshot thread flags
-> >   arm64: snapshot thread flags
-> 
-> FWIW, you have two identical arm64 patches in this series, just with a
-> different subject.
+From: Colin Ian King <colin.king@canonical.com>
 
-Whoops; I'd tried to bring arm64 in line with the other patches, but
-forgot to delete the stale patch file when I did that. I'll keep the
-"snapshot thread flags" version.
+The boolean variable may_have_irqs is not ininitialized and is
+only being set to true in the case where chip is ROHM_CHIP_TYPE_BD9576.
+Fix this by ininitialized may_have_irqs to false.
 
-> For the one you decide to keep:
->
-> Acked-by: Will Deacon <will@kernel.org>
+Addresses-Coverity: ("Uninitialized scalar variable")
+Fixes: e7bf1fa58c46 ("regulator: bd9576: Support error reporting")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ drivers/regulator/bd9576-regulator.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks!
+diff --git a/drivers/regulator/bd9576-regulator.c b/drivers/regulator/bd9576-regulator.c
+index 8b54d88827be..e16c3727db7a 100644
+--- a/drivers/regulator/bd9576-regulator.c
++++ b/drivers/regulator/bd9576-regulator.c
+@@ -897,7 +897,7 @@ static int bd957x_probe(struct platform_device *pdev)
+ {
+ 	int i;
+ 	unsigned int num_reg_data;
+-	bool vout_mode, ddr_sel, may_have_irqs;
++	bool vout_mode, ddr_sel, may_have_irqs = false;
+ 	struct regmap *regmap;
+ 	struct bd957x_data *ic_data;
+ 	struct regulator_config config = { 0 };
+-- 
+2.31.1
 
-Mark.
