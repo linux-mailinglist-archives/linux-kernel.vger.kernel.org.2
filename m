@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B768A3B0471
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C05B3B0472
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231789AbhFVMcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 08:32:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46040 "EHLO
+        id S231805AbhFVMcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 08:32:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231620AbhFVMcO (ORCPT
+        with ESMTP id S231617AbhFVMcP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 08:32:14 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795C7C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 05:29:57 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id a13so1652962wrf.10
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 05:29:57 -0700 (PDT)
+        Tue, 22 Jun 2021 08:32:15 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B0FC061767
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 05:29:59 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id j21-20020a05600c1c15b02901dde2accccbso2134890wms.4
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 05:29:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=6aSbeaV8aUHmxt7bo4GWSO+UYVKMaQnwiL3Al5lNldQ=;
-        b=tiZjVOFAaUxbHAPVL+Ql6YbhBEZIN4m/Ar/gWbcEZTLzHmcBBAgcbYgvCdv+HJypx7
-         2CBX8osXD0SW8eAyl+j9En/Iag3+oqAXj3+27/rcDN8c1aks4yFBpgENbq4ReNqxbKxG
-         9/UAaqkxEmfusqV6Jlh68oOuLMcdI7WjN+1nEYICY6R0bh+U2DbUxN3tFi+vKmmSz/k7
-         Wl4zxvHv1CS2cdDLb0djmIXLWwvnZIBs2aKG7RJit7gUFJcMvQCYx7DpGktWm6R5Iur+
-         O3wXbEAcPcI70Ro/4faImRC2d5fB5enM5LZR0eGZcrcqSxrZ+o9DpFQgu3NMcbMb4hCM
-         cMww==
+        bh=MxHDvJTpqTllFjMYMNMljeDBQ43UKJThZHAjbyhvga4=;
+        b=upmIKYhu7+LXCoy6g8x2I//vACKYPIp7d6eMs30fUtu42x0kVOcdZpYofjHHn1tKGX
+         PNN8kbmv+5b/nuw4sVKpaEhy8A47VANqY6sdk+Am1SxZjW6XIKR9ddnaAbAix9Xy/YvI
+         oTqqEev8wwM9X3fzCGCJi+39PW56pefgbxXleJ8XVypNFrB2fpylY/MQ2qvqIEyRpfR1
+         v/OrcUnkh2EKYHFirbOLJlfECJRt1O3bIov4ZyvA/55TnM5e/PniDfcY0KkZN9NnhgyR
+         hWi9Q7LqZc/b9SSl0l+QSxTEwba2Su0VNcp6gJbGeE1rb7Cg3ZDf1VWJEtgY8UY3BAUl
+         ZXtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=6aSbeaV8aUHmxt7bo4GWSO+UYVKMaQnwiL3Al5lNldQ=;
-        b=YKosh+ZK8y00Q9LlOQ4oeGfy+Y/cdO2T/6Enet4bcyGbyxedwWJGAt9w7U/NyM+rOd
-         +fNOcB3M3suzMum5nigTjYF/FLQLZL8PD19mCJ1ej4R+V9lI3x0wXsUIUl6Ko5ALxxm+
-         56f2v4ffMDnJd4GEkW8pplbOFF2ZXql/gach4oP3BKkQztAgD2UrRsV5i0Sl9Co01GHj
-         AX3J3mjOMX9oT1rZVgV/qlh/DDPg1RLjoqRkl7LHzB2486c03aZLsUsQWf6dOGM0Yc6x
-         KOli+xMdyzkKkkeozU5bhTh/yw4lJQPqFLcQ1sKAQt6SoqEpnMWs3J85KNMuiuNc6uOO
-         89Xg==
-X-Gm-Message-State: AOAM533FFvSLcuArqHRHZJsTxIvCuUClnMj594iJsj8fxfmQAuXmgG2v
-        mAt7ftGveCyqa/+5RffZXijyFQoNguKfVA==
-X-Google-Smtp-Source: ABdhPJyTaZ6KXTDSBknKJNK909Wa6lS7pTipWQWwQKJUmJ1I1mrzux6bu5f5crXtN5P6VUzkLc3lxg==
-X-Received: by 2002:a05:6000:180f:: with SMTP id m15mr4514383wrh.102.1624364995961;
-        Tue, 22 Jun 2021 05:29:55 -0700 (PDT)
+        bh=MxHDvJTpqTllFjMYMNMljeDBQ43UKJThZHAjbyhvga4=;
+        b=TE/UI6pFy5Jj6c3SfXVfSPxlyc4sZjVlXgHGA9m1PGkvuIDpJKZHWSSirQlpzj1l2T
+         QtG6Kafy4TMthjDgX4Mdy/bvoiAaFDFtJ2O+LGt54oZS+6cSOKTxZF3YRbLmVL8i1iKb
+         T+eKkrm1jzxbkyEFzgEi+Bz3EaLact0t308COnxPHoAM6GLFaz/nX/ailzAutZUfn2DV
+         ulV9o840IyqVz4eeiGQSNSFA+0ESPdVhnhsjyUB7NtbpzHvUW0BnqdlCTASJgyCg49A2
+         oPdbNup8UL9D91XsmhCrYwApvvFqcH3gH75vJ7QTzqGkyh91bGYUyFZmTvhA5T8j2Y30
+         0Zgg==
+X-Gm-Message-State: AOAM530Pn2djX+t2cIfnqYrOf/BeiZOczKAUNADmAEzu10mB2mXt+FmQ
+        1p7gbe6Dwe5Q/yneYPhOwrya9piUE0PjkQ==
+X-Google-Smtp-Source: ABdhPJxr5pDFZKn3d5HLkWBAKF47527InNjAjwyDKSDyyerw+8PV0h3/k7RoujRK4u599HFoZ6qUwg==
+X-Received: by 2002:a1c:43c3:: with SMTP id q186mr4005207wma.44.1624364997497;
+        Tue, 22 Jun 2021 05:29:57 -0700 (PDT)
 Received: from agape ([5.171.73.108])
-        by smtp.gmail.com with ESMTPSA id d15sm22240349wrb.42.2021.06.22.05.29.55
+        by smtp.gmail.com with ESMTPSA id y17sm2276463wma.48.2021.06.22.05.29.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 05:29:55 -0700 (PDT)
+        Tue, 22 Jun 2021 05:29:57 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 08/17] staging: rtl8723bs: beautify prototypes in include/hal_com_phycfg.h
-Date:   Tue, 22 Jun 2021 14:29:33 +0200
-Message-Id: <ae9dcad7b9e63a06baa3be792c7e243e675e7e2a.1624364582.git.fabioaiuto83@gmail.com>
+Subject: [PATCH v2 09/17] staging: rtl8723bs: remove 5Ghz code related to channel plan definition
+Date:   Tue, 22 Jun 2021 14:29:34 +0200
+Message-Id: <58ea0991c2984caac56dfc54262d74dc8d93bf47.1624364582.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1624364582.git.fabioaiuto83@gmail.com>
 References: <cover.1624364582.git.fabioaiuto83@gmail.com>
@@ -64,214 +64,576 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-beautify function prototypes in incldue/hal_com_phycfg.h
-in order to ease grep searches.
+remove 5Ghz code related to channel plan definition.
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- .../rtl8723bs/include/hal_com_phycfg.h        | 188 +++++-------------
- 1 file changed, 48 insertions(+), 140 deletions(-)
+ drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 214 ++++++++----------
+ .../staging/rtl8723bs/hal/hal_com_phycfg.c    |  34 ---
+ drivers/staging/rtl8723bs/include/hal_data.h  |   6 +-
+ .../staging/rtl8723bs/include/rtw_mlme_ext.h  |  47 +---
+ .../staging/rtl8723bs/os_dep/ioctl_cfg80211.c |   2 -
+ .../staging/rtl8723bs/os_dep/ioctl_linux.c    |   1 -
+ 6 files changed, 97 insertions(+), 207 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/include/hal_com_phycfg.h b/drivers/staging/rtl8723bs/include/hal_com_phycfg.h
-index a30e1e09826d..3d95ab1986b1 100644
---- a/drivers/staging/rtl8723bs/include/hal_com_phycfg.h
-+++ b/drivers/staging/rtl8723bs/include/hal_com_phycfg.h
-@@ -70,147 +70,55 @@ struct bb_register_def {
+diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+index cf0079a0c179..285acd3d843b 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
++++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
+@@ -81,93 +81,93 @@ static struct rt_channel_plan_2g	RTW_ChannelPlan2G[RT_CHANNEL_DOMAIN_2G_MAX] = {
  
+ static struct rt_channel_plan_map	RTW_ChannelPlanMap[RT_CHANNEL_DOMAIN_MAX] = {
+ 	/*  0x00 ~ 0x1F , Old Define ===== */
+-	{0x02, 0x20},	/* 0x00, RT_CHANNEL_DOMAIN_FCC */
+-	{0x02, 0x0A},	/* 0x01, RT_CHANNEL_DOMAIN_IC */
+-	{0x01, 0x01},	/* 0x02, RT_CHANNEL_DOMAIN_ETSI */
+-	{0x01, 0x00},	/* 0x03, RT_CHANNEL_DOMAIN_SPAIN */
+-	{0x01, 0x00},	/* 0x04, RT_CHANNEL_DOMAIN_FRANCE */
+-	{0x03, 0x00},	/* 0x05, RT_CHANNEL_DOMAIN_MKK */
+-	{0x03, 0x00},	/* 0x06, RT_CHANNEL_DOMAIN_MKK1 */
+-	{0x01, 0x09},	/* 0x07, RT_CHANNEL_DOMAIN_ISRAEL */
+-	{0x03, 0x09},	/* 0x08, RT_CHANNEL_DOMAIN_TELEC */
+-	{0x03, 0x00},	/* 0x09, RT_CHANNEL_DOMAIN_GLOBAL_DOAMIN */
+-	{0x00, 0x00},	/* 0x0A, RT_CHANNEL_DOMAIN_WORLD_WIDE_13 */
+-	{0x02, 0x0F},	/* 0x0B, RT_CHANNEL_DOMAIN_TAIWAN */
+-	{0x01, 0x08},	/* 0x0C, RT_CHANNEL_DOMAIN_CHINA */
+-	{0x02, 0x06},	/* 0x0D, RT_CHANNEL_DOMAIN_SINGAPORE_INDIA_MEXICO */
+-	{0x02, 0x0B},	/* 0x0E, RT_CHANNEL_DOMAIN_KOREA */
+-	{0x02, 0x09},	/* 0x0F, RT_CHANNEL_DOMAIN_TURKEY */
+-	{0x01, 0x01},	/* 0x10, RT_CHANNEL_DOMAIN_JAPAN */
+-	{0x02, 0x05},	/* 0x11, RT_CHANNEL_DOMAIN_FCC_NO_DFS */
+-	{0x01, 0x21},	/* 0x12, RT_CHANNEL_DOMAIN_JAPAN_NO_DFS */
+-	{0x00, 0x04},	/* 0x13, RT_CHANNEL_DOMAIN_WORLD_WIDE_5G */
+-	{0x02, 0x10},	/* 0x14, RT_CHANNEL_DOMAIN_TAIWAN_NO_DFS */
+-	{0x00, 0x21},	/* 0x15, RT_CHANNEL_DOMAIN_ETSI_NO_DFS */
+-	{0x00, 0x22},	/* 0x16, RT_CHANNEL_DOMAIN_KOREA_NO_DFS */
+-	{0x03, 0x21},	/* 0x17, RT_CHANNEL_DOMAIN_JAPAN_NO_DFS */
+-	{0x06, 0x08},	/* 0x18, RT_CHANNEL_DOMAIN_PAKISTAN_NO_DFS */
+-	{0x02, 0x08},	/* 0x19, RT_CHANNEL_DOMAIN_TAIWAN2_NO_DFS */
+-	{0x00, 0x00},	/* 0x1A, */
+-	{0x00, 0x00},	/* 0x1B, */
+-	{0x00, 0x00},	/* 0x1C, */
+-	{0x00, 0x00},	/* 0x1D, */
+-	{0x00, 0x00},	/* 0x1E, */
+-	{0x06, 0x04},	/* 0x1F, RT_CHANNEL_DOMAIN_WORLD_WIDE_ONLY_5G */
++	{0x02},	/* 0x00, RT_CHANNEL_DOMAIN_FCC */
++	{0x02},	/* 0x01, RT_CHANNEL_DOMAIN_IC */
++	{0x01},	/* 0x02, RT_CHANNEL_DOMAIN_ETSI */
++	{0x01},	/* 0x03, RT_CHANNEL_DOMAIN_SPAIN */
++	{0x01},	/* 0x04, RT_CHANNEL_DOMAIN_FRANCE */
++	{0x03},	/* 0x05, RT_CHANNEL_DOMAIN_MKK */
++	{0x03},	/* 0x06, RT_CHANNEL_DOMAIN_MKK1 */
++	{0x01},	/* 0x07, RT_CHANNEL_DOMAIN_ISRAEL */
++	{0x03},	/* 0x08, RT_CHANNEL_DOMAIN_TELEC */
++	{0x03},	/* 0x09, RT_CHANNEL_DOMAIN_GLOBAL_DOAMIN */
++	{0x00},	/* 0x0A, RT_CHANNEL_DOMAIN_WORLD_WIDE_13 */
++	{0x02},	/* 0x0B, RT_CHANNEL_DOMAIN_TAIWAN */
++	{0x01},	/* 0x0C, RT_CHANNEL_DOMAIN_CHINA */
++	{0x02},	/* 0x0D, RT_CHANNEL_DOMAIN_SINGAPORE_INDIA_MEXICO */
++	{0x02},	/* 0x0E, RT_CHANNEL_DOMAIN_KOREA */
++	{0x02},	/* 0x0F, RT_CHANNEL_DOMAIN_TURKEY */
++	{0x01},	/* 0x10, RT_CHANNEL_DOMAIN_JAPAN */
++	{0x02},	/* 0x11, RT_CHANNEL_DOMAIN_FCC_NO_DFS */
++	{0x01},	/* 0x12, RT_CHANNEL_DOMAIN_JAPAN_NO_DFS */
++	{0x00},	/* 0x13, RT_CHANNEL_DOMAIN_WORLD_WIDE_5G */
++	{0x02},	/* 0x14, RT_CHANNEL_DOMAIN_TAIWAN_NO_DFS */
++	{0x00},	/* 0x15, RT_CHANNEL_DOMAIN_ETSI_NO_DFS */
++	{0x00},	/* 0x16, RT_CHANNEL_DOMAIN_KOREA_NO_DFS */
++	{0x03},	/* 0x17, RT_CHANNEL_DOMAIN_JAPAN_NO_DFS */
++	{0x06},	/* 0x18, RT_CHANNEL_DOMAIN_PAKISTAN_NO_DFS */
++	{0x02},	/* 0x19, RT_CHANNEL_DOMAIN_TAIWAN2_NO_DFS */
++	{0x00},	/* 0x1A, */
++	{0x00},	/* 0x1B, */
++	{0x00},	/* 0x1C, */
++	{0x00},	/* 0x1D, */
++	{0x00},	/* 0x1E, */
++	{0x06},	/* 0x1F, RT_CHANNEL_DOMAIN_WORLD_WIDE_ONLY_5G */
+ 	/*  0x20 ~ 0x7F , New Define ===== */
+-	{0x00, 0x00},	/* 0x20, RT_CHANNEL_DOMAIN_WORLD_NULL */
+-	{0x01, 0x00},	/* 0x21, RT_CHANNEL_DOMAIN_ETSI1_NULL */
+-	{0x02, 0x00},	/* 0x22, RT_CHANNEL_DOMAIN_FCC1_NULL */
+-	{0x03, 0x00},	/* 0x23, RT_CHANNEL_DOMAIN_MKK1_NULL */
+-	{0x04, 0x00},	/* 0x24, RT_CHANNEL_DOMAIN_ETSI2_NULL */
+-	{0x02, 0x04},	/* 0x25, RT_CHANNEL_DOMAIN_FCC1_FCC1 */
+-	{0x00, 0x01},	/* 0x26, RT_CHANNEL_DOMAIN_WORLD_ETSI1 */
+-	{0x03, 0x0C},	/* 0x27, RT_CHANNEL_DOMAIN_MKK1_MKK1 */
+-	{0x00, 0x0B},	/* 0x28, RT_CHANNEL_DOMAIN_WORLD_KCC1 */
+-	{0x00, 0x05},	/* 0x29, RT_CHANNEL_DOMAIN_WORLD_FCC2 */
+-	{0x00, 0x00},	/* 0x2A, */
+-	{0x00, 0x00},	/* 0x2B, */
+-	{0x00, 0x00},	/* 0x2C, */
+-	{0x00, 0x00},	/* 0x2D, */
+-	{0x00, 0x00},	/* 0x2E, */
+-	{0x00, 0x00},	/* 0x2F, */
+-	{0x00, 0x06},	/* 0x30, RT_CHANNEL_DOMAIN_WORLD_FCC3 */
+-	{0x00, 0x07},	/* 0x31, RT_CHANNEL_DOMAIN_WORLD_FCC4 */
+-	{0x00, 0x08},	/* 0x32, RT_CHANNEL_DOMAIN_WORLD_FCC5 */
+-	{0x00, 0x09},	/* 0x33, RT_CHANNEL_DOMAIN_WORLD_FCC6 */
+-	{0x02, 0x0A},	/* 0x34, RT_CHANNEL_DOMAIN_FCC1_FCC7 */
+-	{0x00, 0x02},	/* 0x35, RT_CHANNEL_DOMAIN_WORLD_ETSI2 */
+-	{0x00, 0x03},	/* 0x36, RT_CHANNEL_DOMAIN_WORLD_ETSI3 */
+-	{0x03, 0x0D},	/* 0x37, RT_CHANNEL_DOMAIN_MKK1_MKK2 */
+-	{0x03, 0x0E},	/* 0x38, RT_CHANNEL_DOMAIN_MKK1_MKK3 */
+-	{0x02, 0x0F},	/* 0x39, RT_CHANNEL_DOMAIN_FCC1_NCC1 */
+-	{0x00, 0x00},	/* 0x3A, */
+-	{0x00, 0x00},	/* 0x3B, */
+-	{0x00, 0x00},	/* 0x3C, */
+-	{0x00, 0x00},	/* 0x3D, */
+-	{0x00, 0x00},	/* 0x3E, */
+-	{0x00, 0x00},	/* 0x3F, */
+-	{0x02, 0x10},	/* 0x40, RT_CHANNEL_DOMAIN_FCC1_NCC2 */
+-	{0x05, 0x00},	/* 0x41, RT_CHANNEL_DOMAIN_GLOBAL_NULL */
+-	{0x01, 0x12},	/* 0x42, RT_CHANNEL_DOMAIN_ETSI1_ETSI4 */
+-	{0x02, 0x05},	/* 0x43, RT_CHANNEL_DOMAIN_FCC1_FCC2 */
+-	{0x02, 0x11},	/* 0x44, RT_CHANNEL_DOMAIN_FCC1_NCC3 */
+-	{0x00, 0x13},	/* 0x45, RT_CHANNEL_DOMAIN_WORLD_ETSI5 */
+-	{0x02, 0x14},	/* 0x46, RT_CHANNEL_DOMAIN_FCC1_FCC8 */
+-	{0x00, 0x15},	/* 0x47, RT_CHANNEL_DOMAIN_WORLD_ETSI6 */
+-	{0x00, 0x16},	/* 0x48, RT_CHANNEL_DOMAIN_WORLD_ETSI7 */
+-	{0x00, 0x17},	/* 0x49, RT_CHANNEL_DOMAIN_WORLD_ETSI8 */
+-	{0x00, 0x18},	/* 0x50, RT_CHANNEL_DOMAIN_WORLD_ETSI9 */
+-	{0x00, 0x19},	/* 0x51, RT_CHANNEL_DOMAIN_WORLD_ETSI10 */
+-	{0x00, 0x1A},	/* 0x52, RT_CHANNEL_DOMAIN_WORLD_ETSI11 */
+-	{0x02, 0x1B},	/* 0x53, RT_CHANNEL_DOMAIN_FCC1_NCC4 */
+-	{0x00, 0x1C},	/* 0x54, RT_CHANNEL_DOMAIN_WORLD_ETSI12 */
+-	{0x02, 0x1D},	/* 0x55, RT_CHANNEL_DOMAIN_FCC1_FCC9 */
+-	{0x00, 0x1E},	/* 0x56, RT_CHANNEL_DOMAIN_WORLD_ETSI13 */
+-	{0x02, 0x1F},	/* 0x57, RT_CHANNEL_DOMAIN_FCC1_FCC10 */
++	{0x00},	/* 0x20, RT_CHANNEL_DOMAIN_WORLD_NULL */
++	{0x01},	/* 0x21, RT_CHANNEL_DOMAIN_ETSI1_NULL */
++	{0x02},	/* 0x22, RT_CHANNEL_DOMAIN_FCC1_NULL */
++	{0x03},	/* 0x23, RT_CHANNEL_DOMAIN_MKK1_NULL */
++	{0x04},	/* 0x24, RT_CHANNEL_DOMAIN_ETSI2_NULL */
++	{0x02},	/* 0x25, RT_CHANNEL_DOMAIN_FCC1_FCC1 */
++	{0x00},	/* 0x26, RT_CHANNEL_DOMAIN_WORLD_ETSI1 */
++	{0x03},	/* 0x27, RT_CHANNEL_DOMAIN_MKK1_MKK1 */
++	{0x00},	/* 0x28, RT_CHANNEL_DOMAIN_WORLD_KCC1 */
++	{0x00},	/* 0x29, RT_CHANNEL_DOMAIN_WORLD_FCC2 */
++	{0x00},	/* 0x2A, */
++	{0x00},	/* 0x2B, */
++	{0x00},	/* 0x2C, */
++	{0x00},	/* 0x2D, */
++	{0x00},	/* 0x2E, */
++	{0x00},	/* 0x2F, */
++	{0x00},	/* 0x30, RT_CHANNEL_DOMAIN_WORLD_FCC3 */
++	{0x00},	/* 0x31, RT_CHANNEL_DOMAIN_WORLD_FCC4 */
++	{0x00},	/* 0x32, RT_CHANNEL_DOMAIN_WORLD_FCC5 */
++	{0x00},	/* 0x33, RT_CHANNEL_DOMAIN_WORLD_FCC6 */
++	{0x02},	/* 0x34, RT_CHANNEL_DOMAIN_FCC1_FCC7 */
++	{0x00},	/* 0x35, RT_CHANNEL_DOMAIN_WORLD_ETSI2 */
++	{0x00},	/* 0x36, RT_CHANNEL_DOMAIN_WORLD_ETSI3 */
++	{0x03},	/* 0x37, RT_CHANNEL_DOMAIN_MKK1_MKK2 */
++	{0x03},	/* 0x38, RT_CHANNEL_DOMAIN_MKK1_MKK3 */
++	{0x02},	/* 0x39, RT_CHANNEL_DOMAIN_FCC1_NCC1 */
++	{0x00},	/* 0x3A, */
++	{0x00},	/* 0x3B, */
++	{0x00},	/* 0x3C, */
++	{0x00},	/* 0x3D, */
++	{0x00},	/* 0x3E, */
++	{0x00},	/* 0x3F, */
++	{0x02},	/* 0x40, RT_CHANNEL_DOMAIN_FCC1_NCC2 */
++	{0x05},	/* 0x41, RT_CHANNEL_DOMAIN_GLOBAL_NULL */
++	{0x01},	/* 0x42, RT_CHANNEL_DOMAIN_ETSI1_ETSI4 */
++	{0x02},	/* 0x43, RT_CHANNEL_DOMAIN_FCC1_FCC2 */
++	{0x02},	/* 0x44, RT_CHANNEL_DOMAIN_FCC1_NCC3 */
++	{0x00},	/* 0x45, RT_CHANNEL_DOMAIN_WORLD_ETSI5 */
++	{0x02},	/* 0x46, RT_CHANNEL_DOMAIN_FCC1_FCC8 */
++	{0x00},	/* 0x47, RT_CHANNEL_DOMAIN_WORLD_ETSI6 */
++	{0x00},	/* 0x48, RT_CHANNEL_DOMAIN_WORLD_ETSI7 */
++	{0x00},	/* 0x49, RT_CHANNEL_DOMAIN_WORLD_ETSI8 */
++	{0x00},	/* 0x50, RT_CHANNEL_DOMAIN_WORLD_ETSI9 */
++	{0x00},	/* 0x51, RT_CHANNEL_DOMAIN_WORLD_ETSI10 */
++	{0x00},	/* 0x52, RT_CHANNEL_DOMAIN_WORLD_ETSI11 */
++	{0x02},	/* 0x53, RT_CHANNEL_DOMAIN_FCC1_NCC4 */
++	{0x00},	/* 0x54, RT_CHANNEL_DOMAIN_WORLD_ETSI12 */
++	{0x02},	/* 0x55, RT_CHANNEL_DOMAIN_FCC1_FCC9 */
++	{0x00},	/* 0x56, RT_CHANNEL_DOMAIN_WORLD_ETSI13 */
++	{0x02},	/* 0x57, RT_CHANNEL_DOMAIN_FCC1_FCC10 */
  };
  
--u8
--PHY_GetTxPowerByRateBase(
--struct adapter *Adapter,
--u8 		RfPath,
--u8 		TxNum,
--enum rate_section	RateSection
--	);
--
--u8
--PHY_GetRateSectionIndexOfTxPowerByRate(
--struct adapter *padapter,
--u32 		RegAddr,
--u32 		BitMask
--	);
--
--void
--PHY_GetRateValuesOfTxPowerByRate(
--struct adapter *padapter,
--u32 		RegAddr,
--u32 		BitMask,
--u32 		Value,
--u8		*RateIndex,
--s8		*PwrByRateVal,
--u8		*RateNum
--	);
--
--u8
--PHY_GetRateIndexOfTxPowerByRate(
--u8 Rate
--	);
--
--void
--PHY_SetTxPowerIndexByRateSection(
--struct adapter *padapter,
--u8 		RFPath,
--u8 		Channel,
--u8 		RateSection
--	);
--
--s8
--PHY_GetTxPowerByRate(
--struct adapter *padapter,
--u8 	RFPath,
--u8 	TxNum,
--u8 	RateIndex
--	);
--
--void
--PHY_SetTxPowerByRate(
--struct adapter *padapter,
--u8 	RFPath,
--u8 	TxNum,
--u8 	Rate,
--s8			Value
--	);
--
--void
--PHY_SetTxPowerLevelByPath(
--struct adapter *Adapter,
--u8 	channel,
--u8 	path
--	);
--
--void
--PHY_SetTxPowerIndexByRateArray(
--struct adapter *padapter,
--u8 		RFPath,
--enum channel_width	BandWidth,
--u8 		Channel,
--u8		*Rates,
--u8 		RateArraySize
--	);
--
--void
--PHY_InitTxPowerByRate(
--struct adapter *padapter
--	);
--
--void
--PHY_StoreTxPowerByRate(
--struct adapter *padapter,
--u32 		RfPath,
--u32 		TxNum,
--u32 		RegAddr,
--u32 		BitMask,
--u32 		Data
--	);
--
--void
--PHY_TxPowerByRateConfiguration(
--	struct adapter *padapter
--	);
--
--u8
--PHY_GetTxPowerIndexBase(
--struct adapter *padapter,
--u8 		RFPath,
--u8 		Rate,
--enum channel_width	BandWidth,
--u8 		Channel
--	);
-+u8 PHY_GetTxPowerByRateBase(struct adapter *Adapter, u8 RfPath, u8 TxNum,
-+			    enum rate_section RateSection);
-+
-+u8 PHY_GetRateSectionIndexOfTxPowerByRate(struct adapter *padapter, u32	RegAddr,
-+					  u32 BitMask);
-+
-+void PHY_GetRateValuesOfTxPowerByRate(struct adapter *padapter, u32 RegAddr,
-+				      u32 BitMask, u32 Value, u8 *RateIndex,
-+				      s8 *PwrByRateVal, u8 *RateNum);
-+
-+u8 PHY_GetRateIndexOfTxPowerByRate(u8 Rate);
-+
-+void PHY_SetTxPowerIndexByRateSection(struct adapter *padapter, u8 RFPath, u8 Channel,
-+				      u8 RateSection);
-+
-+s8 PHY_GetTxPowerByRate(struct adapter *padapter, u8 RFPath, u8	TxNum, u8 RateIndex);
-+
-+void PHY_SetTxPowerByRate(struct adapter *padapter, u8 RFPath, u8 TxNum, u8 Rate,
-+			  s8 Value);
-+
-+void PHY_SetTxPowerLevelByPath(struct adapter *Adapter, u8 channel, u8 path);
-+
-+void PHY_SetTxPowerIndexByRateArray(struct adapter *padapter, u8 RFPath,
-+				    enum channel_width BandWidth, u8 Channel,
-+				    u8 *Rates, u8 RateArraySize);
-+
-+void PHY_InitTxPowerByRate(struct adapter *padapter);
-+
-+void PHY_StoreTxPowerByRate(struct adapter *padapter, u32 RfPath, u32 TxNum,
-+			    u32	RegAddr, u32 BitMask, u32 Data);
-+
-+void PHY_TxPowerByRateConfiguration(struct adapter *padapter);
-+
-+u8 PHY_GetTxPowerIndexBase(struct adapter *padapter, u8 RFPath, u8 Rate,
-+			   enum channel_width BandWidth, u8 Channel);
+  /* use the combination for max channel numbers */
+-static struct rt_channel_plan_map RTW_CHANNEL_PLAN_MAP_REALTEK_DEFINE = {0x03, 0x02};
++static struct rt_channel_plan_map RTW_CHANNEL_PLAN_MAP_REALTEK_DEFINE = {0x03};
  
- s8 phy_get_tx_pwr_lmt(struct adapter *adapter, u32 RegPwrTblSel,
--		      enum channel_width Bandwidth,
--u8 		RfPath,
--u8 		DataRate,
--u8 		Channel
--	);
--
--void
--PHY_SetTxPowerLimit(
--struct adapter *Adapter,
--u8 			*Regulation,
--u8 			*Bandwidth,
--u8 			*RateSection,
--u8 			*RfPath,
--u8 			*Channel,
--u8 			*PowerLimit
--	);
--
--void
--PHY_ConvertTxPowerLimitToPowerIndex(
--struct adapter *Adapter
--	);
--
--void
--PHY_InitTxPowerLimit(
--struct adapter *Adapter
--	);
--
--s8
--PHY_GetTxPowerTrackingOffset(
--	struct adapter *padapter,
--	u8 	Rate,
--	u8 	RFPath
--	);
--
--void
--Hal_ChannelPlanToRegulation(
--struct adapter *Adapter,
--u16 			ChannelPlan
--	);
-+		      enum channel_width Bandwidth, u8 RfPath, u8 DataRate,
-+		      u8 Channel);
-+
-+void PHY_SetTxPowerLimit(struct adapter *Adapter, u8 *Regulation, u8 *Bandwidth,
-+			 u8 *RateSection, u8 *RfPath, u8 *Channel, u8 *PowerLimit);
-+
-+void PHY_ConvertTxPowerLimitToPowerIndex(struct adapter *Adapter);
-+
-+void PHY_InitTxPowerLimit(struct adapter *Adapter);
-+
-+s8 PHY_GetTxPowerTrackingOffset(struct adapter *padapter, u8 Rate, u8 RFPath);
-+
-+void Hal_ChannelPlanToRegulation(struct adapter *Adapter, u16 ChannelPlan);
+ /* Search the @param ch in given @param ch_set
+  * @ch_set: the given channel set
+@@ -189,23 +189,6 @@ int rtw_ch_set_search_ch(struct rt_channel_info *ch_set, const u32 ch)
+ 	return i;
+ }
  
- #endif /* __HAL_COMMON_H__ */
+-/* Check the @param ch is fit with setband setting of @param adapter
+- * @adapter: the given adapter
+- * @ch: the given channel number
+- *
+- * return true when check valid, false not valid
+- */
+-bool rtw_mlme_band_check(struct adapter *adapter, const u32 ch)
+-{
+-	if (adapter->setband == GHZ24_50 /* 2.4G and 5G */
+-		|| (adapter->setband == GHZ_24 && ch < 35) /* 2.4G only */
+-		|| (adapter->setband == GHZ_50 && ch > 35) /* 5G only */
+-	) {
+-		return true;
+-	}
+-	return false;
+-}
+-
+ /****************************************************************************
+ 
+ Following are the initialization functions for WiFi MLME
+@@ -380,7 +363,6 @@ static u8 init_channel_set(struct adapter *padapter, u8 ChannelPlan, struct rt_c
+ 				else if ((channel_set[chanset_size].ChannelNum  >= 12 && channel_set[chanset_size].ChannelNum  <= 14))
+ 					channel_set[chanset_size].ScanType  = SCAN_PASSIVE;
+ 			} else if (RT_CHANNEL_DOMAIN_WORLD_WIDE_13 == ChannelPlan ||
+-				RT_CHANNEL_DOMAIN_WORLD_WIDE_5G == ChannelPlan ||
+ 				RT_CHANNEL_DOMAIN_2G_WORLD == Index2G) { /*  channel 12~13, passive scan */
+ 				if (channel_set[chanset_size].ChannelNum <= 11)
+ 					channel_set[chanset_size].ScanType = SCAN_ACTIVE;
+@@ -4434,10 +4416,6 @@ static void process_80211d(struct adapter *padapter, struct wlan_bssid_ex *bssid
+ 	while ((i < MAX_CHANNEL_NUM) && (chplan_new[i].ChannelNum != 0)) {
+ 		if (chplan_new[i].ChannelNum == channel) {
+ 			if (chplan_new[i].ScanType == SCAN_PASSIVE) {
+-				/* 5G Bnad 2, 3 (DFS) doesn't change to active scan */
+-				if (channel >= 52 && channel <= 144)
+-					break;
+-
+ 				chplan_new[i].ScanType = SCAN_ACTIVE;
+ 			}
+ 			break;
+@@ -5557,7 +5535,6 @@ static int rtw_scan_ch_decision(struct adapter *padapter, struct rtw_ieee80211_c
+ 		set_idx = rtw_ch_set_search_ch(pmlmeext->channel_set, in[i].hw_value);
+ 		if (in[i].hw_value && !(in[i].flags & RTW_IEEE80211_CHAN_DISABLED)
+ 			&& set_idx >= 0
+-			&& rtw_mlme_band_check(padapter, in[i].hw_value)
+ 		) {
+ 			if (j >= out_num) {
+ 				netdev_dbg(padapter->pnetdev,
+@@ -5581,23 +5558,20 @@ static int rtw_scan_ch_decision(struct adapter *padapter, struct rtw_ieee80211_c
+ 	if (j == 0) {
+ 		for (i = 0; i < pmlmeext->max_chan_nums; i++) {
+ 
+-			if (rtw_mlme_band_check(padapter, pmlmeext->channel_set[i].ChannelNum)) {
+-
+-				if (j >= out_num) {
+-					netdev_dbg(padapter->pnetdev,
+-						   FUNC_ADPT_FMT " out_num:%u not enough\n",
+-						   FUNC_ADPT_ARG(padapter),
+-						   out_num);
+-					break;
+-				}
++			if (j >= out_num) {
++				netdev_dbg(padapter->pnetdev,
++					   FUNC_ADPT_FMT " out_num:%u not enough\n",
++					   FUNC_ADPT_ARG(padapter),
++					   out_num);
++				break;
++			}
+ 
+-				out[j].hw_value = pmlmeext->channel_set[i].ChannelNum;
++			out[j].hw_value = pmlmeext->channel_set[i].ChannelNum;
+ 
+-				if (pmlmeext->channel_set[i].ScanType == SCAN_PASSIVE)
+-					out[j].flags |= RTW_IEEE80211_CHAN_PASSIVE_SCAN;
++			if (pmlmeext->channel_set[i].ScanType == SCAN_PASSIVE)
++				out[j].flags |= RTW_IEEE80211_CHAN_PASSIVE_SCAN;
+ 
+-				j++;
+-			}
++			j++;
+ 		}
+ 	}
+ 
+diff --git a/drivers/staging/rtl8723bs/hal/hal_com_phycfg.c b/drivers/staging/rtl8723bs/hal/hal_com_phycfg.c
+index 732659a2d844..395eb3b5af71 100644
+--- a/drivers/staging/rtl8723bs/hal/hal_com_phycfg.c
++++ b/drivers/staging/rtl8723bs/hal/hal_com_phycfg.c
+@@ -1564,139 +1564,105 @@ void Hal_ChannelPlanToRegulation(struct adapter *Adapter, u16 ChannelPlan)
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_FCC1_FCC1:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_FCC;
+-		pHalData->Regulation5G = TXPWR_LMT_FCC;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_WORLD_ETSI1:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_FCC;
+-		pHalData->Regulation5G = TXPWR_LMT_ETSI;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_MKK1_MKK1:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_MKK;
+-		pHalData->Regulation5G = TXPWR_LMT_MKK;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_WORLD_KCC1:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_FCC;
+-		pHalData->Regulation5G = TXPWR_LMT_MKK;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_WORLD_FCC2:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_FCC;
+-		pHalData->Regulation5G = TXPWR_LMT_FCC;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_WORLD_FCC3:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_FCC;
+-		pHalData->Regulation5G = TXPWR_LMT_FCC;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_WORLD_FCC4:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_FCC;
+-		pHalData->Regulation5G = TXPWR_LMT_FCC;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_WORLD_FCC5:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_FCC;
+-		pHalData->Regulation5G = TXPWR_LMT_FCC;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_WORLD_FCC6:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_FCC;
+-		pHalData->Regulation5G = TXPWR_LMT_FCC;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_FCC1_FCC7:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_FCC;
+-		pHalData->Regulation5G = TXPWR_LMT_FCC;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_WORLD_ETSI2:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_FCC;
+-		pHalData->Regulation5G = TXPWR_LMT_FCC;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_WORLD_ETSI3:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_FCC;
+-		pHalData->Regulation5G = TXPWR_LMT_FCC;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_MKK1_MKK2:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_MKK;
+-		pHalData->Regulation5G = TXPWR_LMT_FCC;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_MKK1_MKK3:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_MKK;
+-		pHalData->Regulation5G = TXPWR_LMT_FCC;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_FCC1_NCC1:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_FCC;
+-		pHalData->Regulation5G = TXPWR_LMT_FCC;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_FCC1_NCC2:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_FCC;
+-		pHalData->Regulation5G = TXPWR_LMT_FCC;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_GLOBAL_NULL:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_WW;
+-		pHalData->Regulation5G = TXPWR_LMT_WW;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_ETSI1_ETSI4:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_ETSI;
+-		pHalData->Regulation5G = TXPWR_LMT_ETSI;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_FCC1_FCC2:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_FCC;
+-		pHalData->Regulation5G = TXPWR_LMT_FCC;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_FCC1_NCC3:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_FCC;
+-		pHalData->Regulation5G = TXPWR_LMT_FCC;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_WORLD_ETSI5:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_ETSI;
+-		pHalData->Regulation5G = TXPWR_LMT_ETSI;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_FCC1_FCC8:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_FCC;
+-		pHalData->Regulation5G = TXPWR_LMT_FCC;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_WORLD_ETSI6:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_ETSI;
+-		pHalData->Regulation5G = TXPWR_LMT_ETSI;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_WORLD_ETSI7:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_ETSI;
+-		pHalData->Regulation5G = TXPWR_LMT_ETSI;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_WORLD_ETSI8:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_ETSI;
+-		pHalData->Regulation5G = TXPWR_LMT_ETSI;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_WORLD_ETSI9:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_ETSI;
+-		pHalData->Regulation5G = TXPWR_LMT_ETSI;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_WORLD_ETSI10:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_ETSI;
+-		pHalData->Regulation5G = TXPWR_LMT_ETSI;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_WORLD_ETSI11:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_ETSI;
+-		pHalData->Regulation5G = TXPWR_LMT_ETSI;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_FCC1_NCC4:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_FCC;
+-		pHalData->Regulation5G = TXPWR_LMT_FCC;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_WORLD_ETSI12:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_ETSI;
+-		pHalData->Regulation5G = TXPWR_LMT_ETSI;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_FCC1_FCC9:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_FCC;
+-		pHalData->Regulation5G = TXPWR_LMT_FCC;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_WORLD_ETSI13:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_ETSI;
+-		pHalData->Regulation5G = TXPWR_LMT_ETSI;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_FCC1_FCC10:
+ 		pHalData->Regulation2_4G = TXPWR_LMT_FCC;
+-		pHalData->Regulation5G = TXPWR_LMT_FCC;
+ 		break;
+ 	case RT_CHANNEL_DOMAIN_REALTEK_DEFINE: /* Realtek Reserve */
+ 		pHalData->Regulation2_4G = TXPWR_LMT_WW;
+-		pHalData->Regulation5G = TXPWR_LMT_WW;
+ 		break;
+ 	default:
+ 		break;
+diff --git a/drivers/staging/rtl8723bs/include/hal_data.h b/drivers/staging/rtl8723bs/include/hal_data.h
+index 78246356927b..3298fa8eb682 100644
+--- a/drivers/staging/rtl8723bs/include/hal_data.h
++++ b/drivers/staging/rtl8723bs/include/hal_data.h
+@@ -46,17 +46,14 @@ enum rt_ampdu_burst {
+ 	RT_AMPDU_BURST_8723B	= 7,
+ };
+ 
+-#define CHANNEL_MAX_NUMBER		(14 + 24 + 21)	/*  14 is the max channel number */
++#define CHANNEL_MAX_NUMBER		(14)	/*  14 is the max channel number */
+ #define CHANNEL_MAX_NUMBER_2G		14
+-#define CHANNEL_MAX_NUMBER_5G		54			/*  Please refer to "phy_GetChnlGroup8812A" and "Hal_ReadTxPowerInfo8812A" */
+-#define CHANNEL_MAX_NUMBER_5G_80M	7
+ #define MAX_PG_GROUP			13
+ 
+ /*  Tx Power Limit Table Size */
+ #define MAX_REGULATION_NUM			4
+ #define MAX_2_4G_BANDWIDTH_NUM			4
+ #define MAX_RATE_SECTION_NUM			10
+-#define MAX_5G_BANDWIDTH_NUM			4
+ 
+ #define MAX_BASE_NUM_IN_PHY_REG_PG_2_4G		10 /*   CCK:1, OFDM:1, HT:4, VHT:4 */
+ 
+@@ -234,7 +231,6 @@ struct hal_com_data {
+ 	s8	BW40_24G_Diff[MAX_RF_PATH][MAX_TX_COUNT];
+ 
+ 	u8 Regulation2_4G;
+-	u8 Regulation5G;
+ 
+ 	u8 TxPwrInPercentage;
+ 
+diff --git a/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h b/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
+index 7d655f02d383..89b389d4c44b 100644
+--- a/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
++++ b/drivers/staging/rtl8723bs/include/rtw_mlme_ext.h
+@@ -195,47 +195,6 @@ enum {
+ 	RT_CHANNEL_DOMAIN_2G_MAX,
+ };
+ 
+-enum {
+-	RT_CHANNEL_DOMAIN_5G_NULL = 0x00,
+-	RT_CHANNEL_DOMAIN_5G_ETSI1 = 0x01,		/* Europe */
+-	RT_CHANNEL_DOMAIN_5G_ETSI2 = 0x02,		/* Australia, New Zealand */
+-	RT_CHANNEL_DOMAIN_5G_ETSI3 = 0x03,		/* Russia */
+-	RT_CHANNEL_DOMAIN_5G_FCC1 = 0x04,		/* US */
+-	RT_CHANNEL_DOMAIN_5G_FCC2 = 0x05,		/* FCC o/w DFS Channels */
+-	RT_CHANNEL_DOMAIN_5G_FCC3 = 0x06,		/* India, Mexico */
+-	RT_CHANNEL_DOMAIN_5G_FCC4 = 0x07,		/* Venezuela */
+-	RT_CHANNEL_DOMAIN_5G_FCC5 = 0x08,		/* China */
+-	RT_CHANNEL_DOMAIN_5G_FCC6 = 0x09,		/* Israel */
+-	RT_CHANNEL_DOMAIN_5G_FCC7_IC1 = 0x0A,	/* US, Canada */
+-	RT_CHANNEL_DOMAIN_5G_KCC1 = 0x0B,		/* Korea */
+-	RT_CHANNEL_DOMAIN_5G_MKK1 = 0x0C,		/* Japan */
+-	RT_CHANNEL_DOMAIN_5G_MKK2 = 0x0D,		/* Japan (W52, W53) */
+-	RT_CHANNEL_DOMAIN_5G_MKK3 = 0x0E,		/* Japan (W56) */
+-	RT_CHANNEL_DOMAIN_5G_NCC1 = 0x0F,		/* Taiwan */
+-	RT_CHANNEL_DOMAIN_5G_NCC2 = 0x10,		/* Taiwan o/w DFS */
+-	RT_CHANNEL_DOMAIN_5G_NCC3 = 0x11,		/* Taiwan w/o DFS, Band4 only */
+-	RT_CHANNEL_DOMAIN_5G_ETSI4 = 0x12,		/* Europe w/o DFS, Band1 only */
+-	RT_CHANNEL_DOMAIN_5G_ETSI5 = 0x13,		/* Australia, New Zealand(w/o Weather radar) */
+-	RT_CHANNEL_DOMAIN_5G_FCC8 = 0x14,		/* Latin America */
+-	RT_CHANNEL_DOMAIN_5G_ETSI6 = 0x15,		/* Israel, Bahrain, Egypt, India, China, Malaysia */
+-	RT_CHANNEL_DOMAIN_5G_ETSI7 = 0x16,		/* China */
+-	RT_CHANNEL_DOMAIN_5G_ETSI8 = 0x17,		/* Jordan */
+-	RT_CHANNEL_DOMAIN_5G_ETSI9 = 0x18,		/* Lebanon */
+-	RT_CHANNEL_DOMAIN_5G_ETSI10 = 0x19,		/* Qatar */
+-	RT_CHANNEL_DOMAIN_5G_ETSI11 = 0x1A,		/* Russia */
+-	RT_CHANNEL_DOMAIN_5G_NCC4 = 0x1B,		/* Taiwan, (w/o Weather radar) */
+-	RT_CHANNEL_DOMAIN_5G_ETSI12 = 0x1C,		/* Indonesia */
+-	RT_CHANNEL_DOMAIN_5G_FCC9 = 0x1D,		/* w/o Weather radar) */
+-	RT_CHANNEL_DOMAIN_5G_ETSI13 = 0x1E,		/* w/o Weather radar) */
+-	RT_CHANNEL_DOMAIN_5G_FCC10 = 0x1F,		/* Argentina (w/o Weather radar) */
+-	/*  Add new channel plan above this line =============== */
+-	/*  Driver Self Defined ===== */
+-	RT_CHANNEL_DOMAIN_5G_FCC = 0x20,
+-	RT_CHANNEL_DOMAIN_5G_JAPAN_NO_DFS = 0x21,
+-	RT_CHANNEL_DOMAIN_5G_FCC4_NO_DFS = 0x22,
+-	RT_CHANNEL_DOMAIN_5G_MAX,
+-};
+-
+ #define rtw_is_channel_plan_valid(chplan) (chplan < RT_CHANNEL_DOMAIN_MAX || chplan == RT_CHANNEL_DOMAIN_REALTEK_DEFINE)
+ 
+ struct rt_channel_plan {
+@@ -250,7 +209,6 @@ struct rt_channel_plan_2g {
+ 
+ struct rt_channel_plan_map {
+ 	unsigned char Index2G;
+-	unsigned char Index5G;
+ };
+ 
+ enum {
+@@ -343,13 +301,13 @@ struct FW_Sta_Info {
+  * When the driver scanned RTW_SCAN_NUM_OF_CH channels, it would switch back to AP's operating channel for
+  * RTW_STAY_AP_CH_MILLISECOND * SURVEY_TO milliseconds.
+  * Example:
+- * For chip supports 2.4G + 5GHz and AP mode is operating in channel 1,
++ * For chip supports 2.4G and AP mode is operating in channel 1,
+  * RTW_SCAN_NUM_OF_CH is 8, RTW_STAY_AP_CH_MILLISECOND is 3 and SURVEY_TO is 100.
+  * When it's STA mode gets set_scan command,
+  * it would
+  * 1. Doing the scan on channel 1.2.3.4.5.6.7.8
+  * 2. Back to channel 1 for 300 milliseconds
+- * 3. Go through doing site survey on channel 9.10.11.36.40.44.48.52
++ * 3. Go through doing site survey on channel 9.10.11
+  * 4. Back to channel 1 for 300 milliseconds
+  * 5. ... and so on, till survey done.
+  */
+@@ -406,7 +364,6 @@ struct rt_channel_info {
+ };
+ 
+ int rtw_ch_set_search_ch(struct rt_channel_info *ch_set, const u32 ch);
+-bool rtw_mlme_band_check(struct adapter *adapter, const u32 ch);
+ 
+ /*  P2P_MAX_REG_CLASSES - Maximum number of regulatory classes */
+ #define P2P_MAX_REG_CLASSES 10
+diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+index cc5bb534fee6..8514cfb3d7e0 100644
+--- a/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
++++ b/drivers/staging/rtl8723bs/os_dep/ioctl_cfg80211.c
+@@ -77,7 +77,6 @@ static struct ieee80211_rate rtw_rates[] = {
+ #define RTW_G_RATES_NUM	12
+ 
+ #define RTW_2G_CHANNELS_NUM 14
+-#define RTW_5G_CHANNELS_NUM 37
+ 
+ static struct ieee80211_channel rtw_2ghz_channels[] = {
+ 	CHAN2G(1, 2412, 0),
+@@ -1270,7 +1269,6 @@ void rtw_cfg80211_surveydone_event_callback(struct adapter *padapter)
+ 
+ 		/* report network only if the current channel set contains the channel to which this network belongs */
+ 		if (rtw_ch_set_search_ch(padapter->mlmeextpriv.channel_set, pnetwork->network.Configuration.DSConfig) >= 0
+-			&& rtw_mlme_band_check(padapter, pnetwork->network.Configuration.DSConfig) == true
+ 			&& true == rtw_validate_ssid(&(pnetwork->network.Ssid))
+ 		)
+ 		{
+diff --git a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
+index 5032701171f6..afefc2c8a2ac 100644
+--- a/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
++++ b/drivers/staging/rtl8723bs/os_dep/ioctl_linux.c
+@@ -1303,7 +1303,6 @@ static int rtw_wx_get_scan(struct net_device *dev, struct iw_request_info *a,
+ 
+ 		/* report network only if the current channel set contains the channel to which this network belongs */
+ 		if (rtw_ch_set_search_ch(padapter->mlmeextpriv.channel_set, pnetwork->network.Configuration.DSConfig) >= 0
+-			&& rtw_mlme_band_check(padapter, pnetwork->network.Configuration.DSConfig) == true
+ 			&& true == rtw_validate_ssid(&(pnetwork->network.Ssid))) {
+ 
+ 			ev = translate_scan(padapter, a, pnetwork, ev, stop);
 -- 
 2.20.1
 
