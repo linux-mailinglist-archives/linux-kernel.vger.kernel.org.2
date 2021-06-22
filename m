@@ -2,121 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25DC23AFFC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BF13AFFC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbhFVJB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 05:01:56 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:38978 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbhFVJBz (ORCPT
+        id S229702AbhFVJBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 05:01:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229682AbhFVJBl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 05:01:55 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 94003A66;
-        Tue, 22 Jun 2021 10:59:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1624352378;
-        bh=VcxbAVy6sx0qJVOGKisGyAr001hL6g7pdjYxikO+wxk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QDyg7vt+1RcjcL2piOCIx4VKEwgDx8bby98wW45SJq23oecrk9Mj/6Hyl0Tz/do2v
-         MYWLF9u9688DEJgrmaIkyBmmjWJGGabwnpnZdweOru5CSLG2dsQExXIwpRbd7SphtY
-         k5oe91dHfLg1kenA4LlSFWLnWL9TllnndaB9AiEs=
-Date:   Tue, 22 Jun 2021 11:59:10 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Dave Stevenson <dave.stevenson@raspberrypi.com>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] media: uvc: limit max bandwidth for HDMI capture
-Message-ID: <YNGmXmxMIXpq7I83@pendragon.ideasonboard.com>
-References: <b791d5874c83663505cbd4f74907ac38d00bb727.1612206534.git.mchehab+huawei@kernel.org>
- <YNDY4iesZGF+7Cr0@pendragon.ideasonboard.com>
- <20210622102948.47b86fbe@coco.lan>
- <CAPY8ntAkb_57Nk_8UR-d_uR+juPigLKWwCAxoFzuCSKwETYpQg@mail.gmail.com>
+        Tue, 22 Jun 2021 05:01:41 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D909CC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 01:59:25 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id i13so34667426lfc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 01:59:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=IgEmzdTN4HRdSGSGItritGnREG7UWG/WRpkp7ArUXcE=;
+        b=rGxrgaPHp+sQC8l6VapK8a6P5JqjpCZwJMXBj5xpye8EpqoWWkNlfMdkIdX5xHnqdL
+         3d7HZpEuLuxfLrsnaxPnbxThAWdjgDSMO7dFAv/gStfhd10R17bNGBDxQGTWDtNGj05s
+         ousef4QBfEkd8sZfycBEZooTm6yIngfBBQhY0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=IgEmzdTN4HRdSGSGItritGnREG7UWG/WRpkp7ArUXcE=;
+        b=DKmR4QqfydbjcNe3WmYr5NqsPHHPCEGlfXiTvfz6o10QQEHbu6Q86U1FJiTNcv47dz
+         ke/O4G1WJ9Yi4r5+08pBDrD79QGV5alxBsI/cLR9oPnsJAuKsdEqO/Kqesf/1s4VkKpY
+         EM8Zr0qa6nLBtrK9FfEzIvQ6yP3zYa8dnMhSGfmTdAUjOLqFtaR6DtXBpGq9v0yw+Rzo
+         TbgvM0oPYLZEECVkxLqkPH0ORLRyCLEgWWF+h+KcRiYWSr6TwgML7QRqv3m0Q/b/eopz
+         ZTUH2TAh9YLFrjrnewztMiv8xVGpNDkmdncQRrCjC0ak863/3IaF+rw5ZmEbBOsAlPT5
+         4Rkw==
+X-Gm-Message-State: AOAM532Jj4RS/uYwwxT2sXEyLDKCgp3KO6/5NwMHQmVf395IrgEku7+C
+        DD/hzjNZTCfAWJ16LLlKi8QUcJPaKEmhh4SiPqCAEQ==
+X-Google-Smtp-Source: ABdhPJzp+TlD60AbwK4d3/UXVRAhqAIiO3g137IxT9Fo7F+PNWnfzCBea7CtOcT9B5cFOg/d8yatTDuV+UGXrgsRXB4=
+X-Received: by 2002:ac2:4db6:: with SMTP id h22mr1985921lfe.171.1624352363827;
+ Tue, 22 Jun 2021 01:59:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAPY8ntAkb_57Nk_8UR-d_uR+juPigLKWwCAxoFzuCSKwETYpQg@mail.gmail.com>
+References: <20210618105526.265003-1-zenczykowski@gmail.com>
+ <CACAyw99k4ZhePBcRJzJn37rvGKnPHEgE3z8Y-47iYKQO2nqFpQ@mail.gmail.com>
+ <CANP3RGdrpb+KiD+a29zTSU3LKR8Qo6aFdo4QseRvPdNhZ_AOJw@mail.gmail.com>
+ <CACAyw9948drqRE=0tC=5OrdX=nOVR3JSPScXrkdAv+kGD_P3ZA@mail.gmail.com> <CAHo-Oozra2ygb4qW6s8rsgZFmdr-gaQuGzREtXuZLwzzESCYNw@mail.gmail.com>
+In-Reply-To: <CAHo-Oozra2ygb4qW6s8rsgZFmdr-gaQuGzREtXuZLwzzESCYNw@mail.gmail.com>
+From:   Lorenz Bauer <lmb@cloudflare.com>
+Date:   Tue, 22 Jun 2021 09:59:12 +0100
+Message-ID: <CACAyw98B=uCnDY1tTw5STLUgNKvJeksJjaKiGqasJEEVv99GqA@mail.gmail.com>
+Subject: Re: [PATCH bpf] Revert "bpf: program: Refuse non-O_RDWR flags in BPF_OBJ_GET"
+To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Linux Network Development Mailing List 
+        <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        BPF Mailing List <bpf@vger.kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Greg Kroah-Hartman <gregkh@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Lorenzo Colitti <lorenzo@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 09:50:37AM +0100, Dave Stevenson wrote:
-> On Tue, 22 Jun 2021 at 09:29, Mauro Carvalho Chehab wrote:
-> > Em Mon, 21 Jun 2021 21:22:26 +0300 Laurent Pinchart escreveu:
-> >
-> > > Hi Mauro,
-> > >
-> > > Thank you for the patch.
-> >
-> > Thanks for reviewing it!
-> >
-> > >
-> > > On Mon, Feb 01, 2021 at 08:08:59PM +0100, Mauro Carvalho Chehab wrote:
-> > > > This device:
-> > > >         534d:2109 MacroSilicon
-> > > >
-> > > > Announces that it supports several frame intervals for
-> > > > their resolutions for MJPEG compression:
-> > > >
-> > > >         VideoStreaming Interface Descriptor:
-> > > >         bLength                            46
-> > > >         bDescriptorType                    36
-> > > >         bDescriptorSubtype                  7 (FRAME_MJPEG)
-> > > >         bFrameIndex                         1
-> > > >         bmCapabilities                   0x00
-> > > >           Still image unsupported
-> > > >         wWidth                           1920
-> > > >         wHeight                          1080
-> > > >         dwMinBitRate                   768000
-> > > >         dwMaxBitRate                196608000
-> > > >         dwMaxVideoFrameBufferSize     4147200
-> > > >         dwDefaultFrameInterval         166666
-> > > >         bFrameIntervalType                  5
-> > > >         dwFrameInterval( 0)            166666
-> > > >         dwFrameInterval( 1)            333333
-> > > >         dwFrameInterval( 2)            400000
-> > > >         dwFrameInterval( 3)            500000
-> > > >         dwFrameInterval( 4)           1000000
-> > > >
-> > > > However, the highest frame interval (166666), which means 60 fps
-> > > > is not supported. For such resolution, the maximum interval
-> > > > is, instead 333333 (30 fps).
-> > >
-> > > What happens if you try to select it ?
-> >
-> > Basically, URBs get lost: they cause apps like qv4l2 to crash
-> > sometimes, with:
-> >
-> >         v4l-convert: libjpeg error: Corrupt JPEG data: premature end of data segment
-> >
-> > The image keeps blinking, and part of the image is replaced by
-> > white noise.
-> >
-> > Clearly, it tries to send more data than the maximum available bandwidth
-> > on this chipset.
-> 
-> What platform are you running this on?
-> I've previously encountered a USB3 camera module where the datastream
-> was VERY bursty. The memcpy of the data from URB to V4L2 buffer took
-> long enough that sometimes the module didn't have an URB to fill at
-> the appropriate moment, and it dropped data. I seem to recall
-> increasing UVC_URBS from the default of 5 to 10 to handle the peak
-> data rate without loss, but it may have been higher still. This was on
-> a ~1.5GHz Atom processor, so not lacking in performance.
-> 
-> I wonder if the same is true in your case. If it's MJPEG compressed
-> then the peak rate may again be high. Just a thought.
+On Mon, 21 Jun 2021 at 22:37, Maciej =C5=BBenczykowski
+<zenczykowski@gmail.com> wrote:
+>
+> Please revert immediately.  I've got better things to do.  I shouldn't
+> have to be thinking about this or arguing about this.
+> It already took me significantly more than a day simply to track this
+> down (arguably due to miscommunications with Greg, who'd earlier
+> actually found this in 5.12, but misunderstood the problem, but
+> still...).
 
-It's worth investigating indeed. How often are URBs dropped ? Does it
-occur for every frame, or once in a while ?
+You're barking up the wrong tree. I don't object to reverting the
+patch, you asked me for context and I gave it to you.
 
-> > Sent a v2 addressing the issues you pointed.
+Best
+Lorenz
 
--- 
-Regards,
+--=20
+Lorenz Bauer  |  Systems Engineer
+6th Floor, County Hall/The Riverside Building, SE1 7PB, UK
 
-Laurent Pinchart
+www.cloudflare.com
