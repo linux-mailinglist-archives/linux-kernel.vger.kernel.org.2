@@ -2,262 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E11813B0D2A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 561583B0D22
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232623AbhFVSsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:48:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48572 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbhFVSsC (ORCPT
+        id S232564AbhFVSrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:47:25 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:50870 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230146AbhFVSrY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:48:02 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E2A9C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:45:46 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id t17so17388560lfq.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:45:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UmuRYxjET5EALM+FCT07y3AoMfWe7cxAE7p3HDo8x9A=;
-        b=VzmzR6LCQB9s+J6u+Ao3+LmOdty+YPR7YmBp3X2hI8TbwEEk/ar3YTRCx9B/LT66Pf
-         jBxcuU7PBhl/9joavTTcEIv0KIjyX8MgzBrWkO9OfbjTAjtVXBoq/WACzgfo8D7VRNVU
-         GJpB+HdujoRkwmeLlmN3Hika9QSoTAoUhnxau2GtMI4ec0KLiNYWSIyfepWt9b2VdCgY
-         lwDvQXxHH5v24ck7fvHS4cFrGgCKG192xepc9KRUfqp6dTOPrbKIj5XeBjR0LGo1JaOQ
-         hVNDP5DWzygmDKqUgUnGB5dbYAhKOH4lCEEOrJZKF6+fPmqNS0Gj7tsS5l2mYSnoaSv4
-         /1ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UmuRYxjET5EALM+FCT07y3AoMfWe7cxAE7p3HDo8x9A=;
-        b=fk3zLlDB7LPG6UgrfT2QqP8PgoKJ9Wo34a9tXwC6hV9r0eB9L/bEeqjcyf4NHzFxAU
-         Sks2CP2UvdmwnEHu0Rx0nd0joEObyls2KfWBhehvVdBu29bfbb/MFdV7yJqQWmebDYPf
-         3jtfm47w8QVk4qj2udvFRGYDpujXR9Feh50R0Hs9Q9IeumXuIocF1NDLEbAm2toxb9I8
-         L0bCEa1hmpgjQ+5pydAlH/QTztZzAXEoKajtXa23LrBejU1FKdNno8V+y93GvU9K0JtK
-         LwTaOJTu2y+luRfIoh0nzInLEDeQqql2O2J1QSKzm6zzNeCJtHsLhZo/HSp71IejtTr+
-         pmXg==
-X-Gm-Message-State: AOAM531NfTizulnuzOcONvBUdUTpIvjxRVXqZFoCx9UQzaSsan1PyZLd
-        zkUnb/XKSoVCxo2tRyIK+gzScjSQ1L57W4CQOGBY7g==
-X-Google-Smtp-Source: ABdhPJz3y5Lck2F4f7THKOpZIcz1XSUJ+0RoljLMYdPiKKLuwBXCT/AqNHBFGoy6ZFXZQT9TlUO8qDUNhaWEm+sp2DE=
-X-Received: by 2002:a05:6512:baa:: with SMTP id b42mr3799463lfv.487.1624387544227;
- Tue, 22 Jun 2021 11:45:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210621235248.2521620-1-dianders@chromium.org> <20210621165230.4.Id84a954e705fcad3fdb35beb2bc372e4bf2108c7@changeid>
-In-Reply-To: <20210621165230.4.Id84a954e705fcad3fdb35beb2bc372e4bf2108c7@changeid>
-From:   Rajat Jain <rajatja@google.com>
-Date:   Tue, 22 Jun 2021 11:45:03 -0700
-Message-ID: <CACK8Z6EVmnMx4X8ZF7QSm58KCMMAkgSa+S9YkH+mC5RfmeyYoA@mail.gmail.com>
-Subject: Re: [PATCH 4/6] iommu: Combine device strictness requests with the
- global default
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org,
-        rafael.j.wysocki@intel.com, will@kernel.org, robin.murphy@arm.com,
-        joro@8bytes.org, bjorn.andersson@linaro.org,
-        ulf.hansson@linaro.org, adrian.hunter@intel.com,
-        bhelgaas@google.com, robdclark@chromium.org,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        quic_c_gdjako@quicinc.com, iommu@lists.linux-foundation.org,
-        sonnyrao@chromium.org, saiprakash.ranjan@codeaurora.org,
-        linux-mmc@vger.kernel.org, vbadigan@codeaurora.org,
-        saravanak@google.com, joel@joelfernandes.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 22 Jun 2021 14:47:24 -0400
+Received: from [173.237.58.148] (port=33326 helo=localhost)
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1lvlOU-0002RI-Jw; Tue, 22 Jun 2021 14:45:06 -0400
+Date:   Tue, 22 Jun 2021 11:45:04 -0700
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Olivier Langlois <olivier@trillion01.com>
+Message-Id: <cover.1624387080.git.olivier@trillion01.com>
+From:   Olivier Langlois <olivier@trillion01.com>
+Subject: [PATCH 0/2] Minor SQPOLL thread fix and improvement
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 4:53 PM Douglas Anderson <dianders@chromium.org> wrote:
->
-> In the patch ("drivers: base: Add bits to struct device to control
-> iommu strictness") we add the ability for devices to tell us about
-> their IOMMU strictness requirements. Let's now take that into account
-> in the IOMMU layer.
->
-> A few notes here:
-> * Presumably this is always how iommu_get_dma_strict() was intended to
->   behave. Had this not been the intention then it never would have
->   taken a domain as a parameter.
-> * The iommu_set_dma_strict() feels awfully non-symmetric now. That
->   function sets the _default_ strictness globally in the system
->   whereas iommu_get_dma_strict() returns the value for a given domain
->   (falling back to the default). Presumably, at least, the fact that
->   iommu_set_dma_strict() doesn't take a domain makes this obvious.
->
-> The function iommu_get_dma_strict() should now make it super obvious
-> where strictness comes from and who overides who. Though the function
-> changed a bunch to make the logic clearer, the only two new rules
-> should be:
-> * Devices can force strictness for themselves, overriding the cmdline
->   "iommu.strict=0" or a call to iommu_set_dma_strict(false)).
-> * Devices can request non-strictness for themselves, assuming there
->   was no cmdline "iommu.strict=1" or a call to
->   iommu_set_dma_strict(true).
+I have been investigated a deadlock situation in my io_uring usage where
+the SQPOLL thread was going to sleep and my user threads were waiting
+inside io_uring_enter() for completions.
 
-Along the same lines, I believe a platform (device tree / ACPI) should
-also be able to have a say in this. I assume in your proposal, a
-platform would expose a property in device tree which the device
-driver would need to parse and then use it to set these bits in the
-"struct device"?
+https://github.com/axboe/liburing/issues/367
 
-Thanks,
+This patch serie is the result of my investigation.
 
-Rajat
+Olivier Langlois (2):
+  io_uring: Fix race condition when sqp thread goes to sleep
+  io_uring: Create define to modify a SQPOLL parameter
 
+ fs/io_uring.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
+-- 
+2.32.0
 
->
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> ---
->
->  drivers/iommu/iommu.c | 56 +++++++++++++++++++++++++++++++++----------
->  include/linux/iommu.h |  2 ++
->  2 files changed, 45 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
-> index 808ab70d5df5..0c84a4c06110 100644
-> --- a/drivers/iommu/iommu.c
-> +++ b/drivers/iommu/iommu.c
-> @@ -28,8 +28,19 @@
->  static struct kset *iommu_group_kset;
->  static DEFINE_IDA(iommu_group_ida);
->
-> +enum iommu_strictness {
-> +       IOMMU_DEFAULT_STRICTNESS = -1,
-> +       IOMMU_NOT_STRICT = 0,
-> +       IOMMU_STRICT = 1,
-> +};
-> +static inline enum iommu_strictness bool_to_strictness(bool strictness)
-> +{
-> +       return (enum iommu_strictness)strictness;
-> +}
-> +
->  static unsigned int iommu_def_domain_type __read_mostly;
-> -static bool iommu_dma_strict __read_mostly = true;
-> +static enum iommu_strictness cmdline_dma_strict __read_mostly = IOMMU_DEFAULT_STRICTNESS;
-> +static enum iommu_strictness driver_dma_strict __read_mostly = IOMMU_DEFAULT_STRICTNESS;
->  static u32 iommu_cmd_line __read_mostly;
->
->  struct iommu_group {
-> @@ -69,7 +80,6 @@ static const char * const iommu_group_resv_type_string[] = {
->  };
->
->  #define IOMMU_CMD_LINE_DMA_API         BIT(0)
-> -#define IOMMU_CMD_LINE_STRICT          BIT(1)
->
->  static int iommu_alloc_default_domain(struct iommu_group *group,
->                                       struct device *dev);
-> @@ -336,25 +346,38 @@ early_param("iommu.passthrough", iommu_set_def_domain_type);
->
->  static int __init iommu_dma_setup(char *str)
->  {
-> -       int ret = kstrtobool(str, &iommu_dma_strict);
-> +       bool strict;
-> +       int ret = kstrtobool(str, &strict);
->
->         if (!ret)
-> -               iommu_cmd_line |= IOMMU_CMD_LINE_STRICT;
-> +               cmdline_dma_strict = bool_to_strictness(strict);
->         return ret;
->  }
->  early_param("iommu.strict", iommu_dma_setup);
->
->  void iommu_set_dma_strict(bool strict)
->  {
-> -       if (strict || !(iommu_cmd_line & IOMMU_CMD_LINE_STRICT))
-> -               iommu_dma_strict = strict;
-> +       /* A driver can request strictness but not the other way around */
-> +       if (driver_dma_strict != IOMMU_STRICT)
-> +               driver_dma_strict = bool_to_strictness(strict);
->  }
->
->  bool iommu_get_dma_strict(struct iommu_domain *domain)
->  {
-> -       /* only allow lazy flushing for DMA domains */
-> -       if (domain->type == IOMMU_DOMAIN_DMA)
-> -               return iommu_dma_strict;
-> +       /* Non-DMA domains or anyone forcing it to strict makes it strict */
-> +       if (domain->type != IOMMU_DOMAIN_DMA ||
-> +           cmdline_dma_strict == IOMMU_STRICT ||
-> +           driver_dma_strict == IOMMU_STRICT ||
-> +           domain->force_strict)
-> +               return true;
-> +
-> +       /* Anyone requesting non-strict (if no forces) makes it non-strict */
-> +       if (cmdline_dma_strict == IOMMU_NOT_STRICT ||
-> +           driver_dma_strict == IOMMU_NOT_STRICT ||
-> +           domain->request_non_strict)
-> +               return false;
-> +
-> +       /* Nobody said anything, so it's strict by default */
->         return true;
->  }
->  EXPORT_SYMBOL_GPL(iommu_get_dma_strict);
-> @@ -1519,7 +1542,8 @@ static int iommu_get_def_domain_type(struct device *dev)
->
->  static int iommu_group_alloc_default_domain(struct bus_type *bus,
->                                             struct iommu_group *group,
-> -                                           unsigned int type)
-> +                                           unsigned int type,
-> +                                           struct device *dev)
->  {
->         struct iommu_domain *dom;
->
-> @@ -1534,6 +1558,12 @@ static int iommu_group_alloc_default_domain(struct bus_type *bus,
->         if (!dom)
->                 return -ENOMEM;
->
-> +       /* Save the strictness requests from the device */
-> +       if (dev && type == IOMMU_DOMAIN_DMA) {
-> +               dom->request_non_strict = dev->request_non_strict_iommu;
-> +               dom->force_strict = dev->force_strict_iommu;
-> +       }
-> +
->         group->default_domain = dom;
->         if (!group->domain)
->                 group->domain = dom;
-> @@ -1550,7 +1580,7 @@ static int iommu_alloc_default_domain(struct iommu_group *group,
->
->         type = iommu_get_def_domain_type(dev) ? : iommu_def_domain_type;
->
-> -       return iommu_group_alloc_default_domain(dev->bus, group, type);
-> +       return iommu_group_alloc_default_domain(dev->bus, group, type, dev);
->  }
->
->  /**
-> @@ -1721,7 +1751,7 @@ static void probe_alloc_default_domain(struct bus_type *bus,
->         if (!gtype.type)
->                 gtype.type = iommu_def_domain_type;
->
-> -       iommu_group_alloc_default_domain(bus, group, gtype.type);
-> +       iommu_group_alloc_default_domain(bus, group, gtype.type, NULL);
->
->  }
->
-> @@ -3130,7 +3160,7 @@ static int iommu_change_dev_def_domain(struct iommu_group *group,
->         }
->
->         /* Sets group->default_domain to the newly allocated domain */
-> -       ret = iommu_group_alloc_default_domain(dev->bus, group, type);
-> +       ret = iommu_group_alloc_default_domain(dev->bus, group, type, dev);
->         if (ret)
->                 goto out;
->
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index 32d448050bf7..0bddef77f415 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -81,6 +81,8 @@ struct iommu_domain_geometry {
->
->  struct iommu_domain {
->         unsigned type;
-> +       bool force_strict:1;
-> +       bool request_non_strict:1;
->         const struct iommu_ops *ops;
->         unsigned long pgsize_bitmap;    /* Bitmap of page sizes in use */
->         iommu_fault_handler_t handler;
-> --
-> 2.32.0.288.g62a8d224e6-goog
->
