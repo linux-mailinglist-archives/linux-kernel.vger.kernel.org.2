@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD243B0E2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E57363B0E38
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233057AbhFVUIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 16:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38280 "EHLO
+        id S233135AbhFVUId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 16:08:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232949AbhFVUII (ORCPT
+        with ESMTP id S232938AbhFVUIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 16:08:08 -0400
+        Tue, 22 Jun 2021 16:08:14 -0400
 Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 809DFC0617AD
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:05:51 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id 142-20020a370d940000b02903b12767b75aso15696577qkn.6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:05:51 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C94C0613A3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:05:53 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id 2-20020a3709020000b02903aa9873df32so19464290qkj.15
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:05:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=0XVpnJDCQ2BGPYYGq9GKg5rmYLHKHpfKOrEmd4DYAeA=;
-        b=WNag1aUBLq5QLUAkuqsYWTWvrQZCab3ntIKWYAs6fGz5dn9vWB9jiSmSXGtJiQ9Qys
-         k1+PizPNPk4JMuPE8kW2BSBLvTn7X3k34iUXNRQVwlXTH4SkZrSsDip+kiogggJ3Y/ra
-         94cletA81xwRJHuc9/ix9hKTHYFvaZpM0B/ypX0uZJGnqNfuAugGIGqkheVwuLh6L4MQ
-         T76nZ+mK2ps5O9Z4FfKraNyRg3ZoLCUQKa8doyr7ejg50m+yCPWEEJoyQgtOC1+xNKOr
-         99iSYIGCY9UqF4CiQ0HWjml1OpOToA8cHIwAseBlZLP+edbd9k2mbRXhY0HthdunjlmW
-         GPvQ==
+        bh=PqgYvrxFkZun/wkd3Jd2Nxz9FdLaLGoT8QkQD6VQExc=;
+        b=uzL5BVem1LwuQPte4KvnH+CfMid24KDbC9dKoGEqU8CRkG8RDxVjO3ghptPTdevryX
+         d71DnOQJXSpqmXGXD2EUMOhgydYkeixDZ4S5QDtm4+GyQwMciuQxpP64CX2rqLIELDu/
+         MiN2oVTeCEn62nRtkmc1fVHaWng0U/1a1m7GygndfTAPdFoFly4MXbsVLej8Kxry4Ntj
+         sZFSjvTdjcATDwXZuvIGDHGu7d1LkmpMKVF/G1HqwnSmqhxwP+SVSSJf4rNQ0ib8eSzM
+         e2CXvDY83JfVRZK26cDdSnAPu4IQKSPXcUUh/f087PMyyFPBMn84YszCbdwJz9W2tl5i
+         A02A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=0XVpnJDCQ2BGPYYGq9GKg5rmYLHKHpfKOrEmd4DYAeA=;
-        b=iPsODhu74iEnhrJtYdOPoNd6J9llAf4nuOrEPo0EaESUrb4NgkFluejJ/r4ThpQxU6
-         V52rCZURGP+L73GhU8xITbbCJFqK78IM3Nawi/yCl1CsCBoXzZrJBdfY2N3omQ5V2L3l
-         jrAmJKebVF2GXlFC4090WdK5hBtnBgOLEFZQhq/yZfe0JI6Et464DRFaWNheAUvs/09W
-         gRWBZghZ3ce/C/nmnNvEteGQ2HHAfQgKHcOUkYlS+b0tStwUgOGeeHC0YUI+H1yjwVVG
-         eW8IEtRV2J/tRzw/RYqy46VkbO88Et60OFVICTvsbImbeYvp2yQpeaXYEpuPbctRt3Fi
-         OEjg==
-X-Gm-Message-State: AOAM530kPKcYP6eFvaRgaWbq2SB1iJ4wIEdowOZjOZZA1kAKFWQRJrxr
-        PF8dM3WEF2SABSD4D3anJMCAt6+Ph3I=
-X-Google-Smtp-Source: ABdhPJzs+ALv5D72Nf8vUEzlz5cNz1p2vNm+Q4t4v+NwF1/jCsY4n3pF/FWV19dswgNzBEoFiYYKB2ywJQM=
+        bh=PqgYvrxFkZun/wkd3Jd2Nxz9FdLaLGoT8QkQD6VQExc=;
+        b=S00e5CLrSqOkiblmGFRUtyQdB2+rhjDQL2wf3HcqJHi0EVLlup5/RV+ZYwKucN82aa
+         CngMcm/iTYeLhuUFYWwD4BLUuoMRZQByIUuXmAuBBPdv1TGbdZnGHRIFxTdbtztPsEk9
+         y/HffhYt2MOBOEeEuX6aetUYiYVGRC+rrrQAiQN/CWAgVXZ1N+cKZR1nsXaZxi8Spf+h
+         lx6PhpN2y7M2S5+0jTPUWewjOyG5OZrSAz994tW06YuIeDuW6eH2CXWfp6X/xCzY7VdJ
+         pHXY4B/OBHWc9EYKhUXjfiP9PD4Xj6EYcB+4izJ68RESdIgYLFsD9EakDvFlPEyjbDAM
+         Z35Q==
+X-Gm-Message-State: AOAM532JtSNrqR3q5le7fsJisrjrm8B8E6gBeNjX/zsWHA4PE5PUUb/p
+        TmvlGDh9lKolawGaBUv6LVweLmdT3Do=
+X-Google-Smtp-Source: ABdhPJwDiZajggid90LT5jHhtYSKqFbva8fRWQTCqq2NLRhOymDkMmEzLO140vpbqfNkjYNiQ5LDwW3BJGI=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:7d90:4528:3c45:18fb])
- (user=seanjc job=sendgmr) by 2002:a25:c7c1:: with SMTP id w184mr6753970ybe.204.1624392350572;
- Tue, 22 Jun 2021 13:05:50 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a0c:fd44:: with SMTP id j4mr588106qvs.12.1624392352923;
+ Tue, 22 Jun 2021 13:05:52 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 22 Jun 2021 13:05:15 -0700
+Date:   Tue, 22 Jun 2021 13:05:16 -0700
 In-Reply-To: <20210622200529.3650424-1-seanjc@google.com>
-Message-Id: <20210622200529.3650424-6-seanjc@google.com>
+Message-Id: <20210622200529.3650424-7-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210622200529.3650424-1-seanjc@google.com>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH 05/19] KVM: selftests: Use "standard" min virtual address for
- Hyper-V pages
+Subject: [PATCH 06/19] KVM: selftests: Add helpers to allocate N pages of
+ virtual memory
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>,
         Christian Borntraeger <borntraeger@de.ibm.com>,
@@ -69,27 +69,229 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the de facto standard minimum virtual address for Hyper-V's hcall
-params page.  It's the allocator's job to not double-allocate memory,
-i.e. there's no reason to force different regions for the params vs.
-hcall page.  This will allow adding a page allocation helper with a
-"standard" minimum address.
+Add wrappers to allocate 1 and N pages of memory using de facto standard
+values as the defaults for minimum virtual address, data memslot, and
+page table memslot.  Convert all compatible users.
+
+No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- tools/testing/selftests/kvm/x86_64/hyperv_features.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../testing/selftests/kvm/include/kvm_util.h  |  3 ++
+ tools/testing/selftests/kvm/lib/kvm_util.c    | 38 +++++++++++++++++++
+ tools/testing/selftests/kvm/lib/x86_64/svm.c  |  9 ++---
+ tools/testing/selftests/kvm/lib/x86_64/vmx.c  | 25 ++++++------
+ .../selftests/kvm/x86_64/hyperv_clock.c       |  2 +-
+ .../selftests/kvm/x86_64/hyperv_features.c    |  6 +--
+ 6 files changed, 59 insertions(+), 24 deletions(-)
 
+diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
+index 59608b17707d..70385bf25446 100644
+--- a/tools/testing/selftests/kvm/include/kvm_util.h
++++ b/tools/testing/selftests/kvm/include/kvm_util.h
+@@ -142,6 +142,9 @@ void vm_mem_region_delete(struct kvm_vm *vm, uint32_t slot);
+ void vm_vcpu_add(struct kvm_vm *vm, uint32_t vcpuid);
+ vm_vaddr_t vm_vaddr_alloc(struct kvm_vm *vm, size_t sz, vm_vaddr_t vaddr_min,
+ 			  uint32_t data_memslot, uint32_t pgd_memslot);
++vm_vaddr_t vm_vaddr_alloc_pages(struct kvm_vm *vm, int nr_pages);
++vm_vaddr_t vm_vaddr_alloc_page(struct kvm_vm *vm);
++
+ void virt_map(struct kvm_vm *vm, uint64_t vaddr, uint64_t paddr,
+ 	      unsigned int npages, uint32_t pgd_memslot);
+ void *addr_gpa2hva(struct kvm_vm *vm, vm_paddr_t gpa);
+diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+index 15a8527b15db..c45e8c492627 100644
+--- a/tools/testing/selftests/kvm/lib/kvm_util.c
++++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+@@ -1280,6 +1280,44 @@ vm_vaddr_t vm_vaddr_alloc(struct kvm_vm *vm, size_t sz, vm_vaddr_t vaddr_min,
+ 	return vaddr_start;
+ }
+ 
++/*
++ * VM Virtual Address Allocate Pages
++ *
++ * Input Args:
++ *   vm - Virtual Machine
++ *
++ * Output Args: None
++ *
++ * Return:
++ *   Starting guest virtual address
++ *
++ * Allocates at least N system pages worth of bytes within the virtual address
++ * space of the vm.
++ */
++vm_vaddr_t vm_vaddr_alloc_pages(struct kvm_vm *vm, int nr_pages)
++{
++	return vm_vaddr_alloc(vm, nr_pages * getpagesize(), 0x10000, 0, 0);
++}
++
++/*
++ * VM Virtual Address Allocate Page
++ *
++ * Input Args:
++ *   vm - Virtual Machine
++ *
++ * Output Args: None
++ *
++ * Return:
++ *   Starting guest virtual address
++ *
++ * Allocates at least one system page worth of bytes within the virtual address
++ * space of the vm.
++ */
++vm_vaddr_t vm_vaddr_alloc_page(struct kvm_vm *vm)
++{
++	return vm_vaddr_alloc_pages(vm, 1);
++}
++
+ /*
+  * Map a range of VM virtual address to the VM's physical address
+  *
+diff --git a/tools/testing/selftests/kvm/lib/x86_64/svm.c b/tools/testing/selftests/kvm/lib/x86_64/svm.c
+index 827fe6028dd4..2ac98d70d02b 100644
+--- a/tools/testing/selftests/kvm/lib/x86_64/svm.c
++++ b/tools/testing/selftests/kvm/lib/x86_64/svm.c
+@@ -30,17 +30,14 @@ u64 rflags;
+ struct svm_test_data *
+ vcpu_alloc_svm(struct kvm_vm *vm, vm_vaddr_t *p_svm_gva)
+ {
+-	vm_vaddr_t svm_gva = vm_vaddr_alloc(vm, getpagesize(),
+-					    0x10000, 0, 0);
++	vm_vaddr_t svm_gva = vm_vaddr_alloc_page(vm);
+ 	struct svm_test_data *svm = addr_gva2hva(vm, svm_gva);
+ 
+-	svm->vmcb = (void *)vm_vaddr_alloc(vm, getpagesize(),
+-					   0x10000, 0, 0);
++	svm->vmcb = (void *)vm_vaddr_alloc_page(vm);
+ 	svm->vmcb_hva = addr_gva2hva(vm, (uintptr_t)svm->vmcb);
+ 	svm->vmcb_gpa = addr_gva2gpa(vm, (uintptr_t)svm->vmcb);
+ 
+-	svm->save_area = (void *)vm_vaddr_alloc(vm, getpagesize(),
+-						0x10000, 0, 0);
++	svm->save_area = (void *)vm_vaddr_alloc_page(vm);
+ 	svm->save_area_hva = addr_gva2hva(vm, (uintptr_t)svm->save_area);
+ 	svm->save_area_gpa = addr_gva2gpa(vm, (uintptr_t)svm->save_area);
+ 
+diff --git a/tools/testing/selftests/kvm/lib/x86_64/vmx.c b/tools/testing/selftests/kvm/lib/x86_64/vmx.c
+index 2448b30e8efa..d568d8cfd44d 100644
+--- a/tools/testing/selftests/kvm/lib/x86_64/vmx.c
++++ b/tools/testing/selftests/kvm/lib/x86_64/vmx.c
+@@ -77,50 +77,48 @@ int vcpu_enable_evmcs(struct kvm_vm *vm, int vcpu_id)
+ struct vmx_pages *
+ vcpu_alloc_vmx(struct kvm_vm *vm, vm_vaddr_t *p_vmx_gva)
+ {
+-	vm_vaddr_t vmx_gva = vm_vaddr_alloc(vm, getpagesize(), 0x10000, 0, 0);
++	vm_vaddr_t vmx_gva = vm_vaddr_alloc_page(vm);
+ 	struct vmx_pages *vmx = addr_gva2hva(vm, vmx_gva);
+ 
+ 	/* Setup of a region of guest memory for the vmxon region. */
+-	vmx->vmxon = (void *)vm_vaddr_alloc(vm, getpagesize(), 0x10000, 0, 0);
++	vmx->vmxon = (void *)vm_vaddr_alloc_page(vm);
+ 	vmx->vmxon_hva = addr_gva2hva(vm, (uintptr_t)vmx->vmxon);
+ 	vmx->vmxon_gpa = addr_gva2gpa(vm, (uintptr_t)vmx->vmxon);
+ 
+ 	/* Setup of a region of guest memory for a vmcs. */
+-	vmx->vmcs = (void *)vm_vaddr_alloc(vm, getpagesize(), 0x10000, 0, 0);
++	vmx->vmcs = (void *)vm_vaddr_alloc_page(vm);
+ 	vmx->vmcs_hva = addr_gva2hva(vm, (uintptr_t)vmx->vmcs);
+ 	vmx->vmcs_gpa = addr_gva2gpa(vm, (uintptr_t)vmx->vmcs);
+ 
+ 	/* Setup of a region of guest memory for the MSR bitmap. */
+-	vmx->msr = (void *)vm_vaddr_alloc(vm, getpagesize(), 0x10000, 0, 0);
++	vmx->msr = (void *)vm_vaddr_alloc_page(vm);
+ 	vmx->msr_hva = addr_gva2hva(vm, (uintptr_t)vmx->msr);
+ 	vmx->msr_gpa = addr_gva2gpa(vm, (uintptr_t)vmx->msr);
+ 	memset(vmx->msr_hva, 0, getpagesize());
+ 
+ 	/* Setup of a region of guest memory for the shadow VMCS. */
+-	vmx->shadow_vmcs = (void *)vm_vaddr_alloc(vm, getpagesize(), 0x10000, 0, 0);
++	vmx->shadow_vmcs = (void *)vm_vaddr_alloc_page(vm);
+ 	vmx->shadow_vmcs_hva = addr_gva2hva(vm, (uintptr_t)vmx->shadow_vmcs);
+ 	vmx->shadow_vmcs_gpa = addr_gva2gpa(vm, (uintptr_t)vmx->shadow_vmcs);
+ 
+ 	/* Setup of a region of guest memory for the VMREAD and VMWRITE bitmaps. */
+-	vmx->vmread = (void *)vm_vaddr_alloc(vm, getpagesize(), 0x10000, 0, 0);
++	vmx->vmread = (void *)vm_vaddr_alloc_page(vm);
+ 	vmx->vmread_hva = addr_gva2hva(vm, (uintptr_t)vmx->vmread);
+ 	vmx->vmread_gpa = addr_gva2gpa(vm, (uintptr_t)vmx->vmread);
+ 	memset(vmx->vmread_hva, 0, getpagesize());
+ 
+-	vmx->vmwrite = (void *)vm_vaddr_alloc(vm, getpagesize(), 0x10000, 0, 0);
++	vmx->vmwrite = (void *)vm_vaddr_alloc_page(vm);
+ 	vmx->vmwrite_hva = addr_gva2hva(vm, (uintptr_t)vmx->vmwrite);
+ 	vmx->vmwrite_gpa = addr_gva2gpa(vm, (uintptr_t)vmx->vmwrite);
+ 	memset(vmx->vmwrite_hva, 0, getpagesize());
+ 
+ 	/* Setup of a region of guest memory for the VP Assist page. */
+-	vmx->vp_assist = (void *)vm_vaddr_alloc(vm, getpagesize(),
+-						0x10000, 0, 0);
++	vmx->vp_assist = (void *)vm_vaddr_alloc_page(vm);
+ 	vmx->vp_assist_hva = addr_gva2hva(vm, (uintptr_t)vmx->vp_assist);
+ 	vmx->vp_assist_gpa = addr_gva2gpa(vm, (uintptr_t)vmx->vp_assist);
+ 
+ 	/* Setup of a region of guest memory for the enlightened VMCS. */
+-	vmx->enlightened_vmcs = (void *)vm_vaddr_alloc(vm, getpagesize(),
+-						       0x10000, 0, 0);
++	vmx->enlightened_vmcs = (void *)vm_vaddr_alloc_page(vm);
+ 	vmx->enlightened_vmcs_hva =
+ 		addr_gva2hva(vm, (uintptr_t)vmx->enlightened_vmcs);
+ 	vmx->enlightened_vmcs_gpa =
+@@ -538,7 +536,7 @@ void nested_map_memslot(struct vmx_pages *vmx, struct kvm_vm *vm,
+ void prepare_eptp(struct vmx_pages *vmx, struct kvm_vm *vm,
+ 		  uint32_t eptp_memslot)
+ {
+-	vmx->eptp = (void *)vm_vaddr_alloc(vm, getpagesize(), 0x10000, 0, 0);
++	vmx->eptp = (void *)vm_vaddr_alloc_page(vm);
+ 	vmx->eptp_hva = addr_gva2hva(vm, (uintptr_t)vmx->eptp);
+ 	vmx->eptp_gpa = addr_gva2gpa(vm, (uintptr_t)vmx->eptp);
+ }
+@@ -546,8 +544,7 @@ void prepare_eptp(struct vmx_pages *vmx, struct kvm_vm *vm,
+ void prepare_virtualize_apic_accesses(struct vmx_pages *vmx, struct kvm_vm *vm,
+ 				      uint32_t eptp_memslot)
+ {
+-	vmx->apic_access = (void *)vm_vaddr_alloc(vm, getpagesize(),
+-						  0x10000, 0, 0);
++	vmx->apic_access = (void *)vm_vaddr_alloc_page(vm);
+ 	vmx->apic_access_hva = addr_gva2hva(vm, (uintptr_t)vmx->apic_access);
+ 	vmx->apic_access_gpa = addr_gva2gpa(vm, (uintptr_t)vmx->apic_access);
+ }
+diff --git a/tools/testing/selftests/kvm/x86_64/hyperv_clock.c b/tools/testing/selftests/kvm/x86_64/hyperv_clock.c
+index 489625acc9cf..bab10ae787b6 100644
+--- a/tools/testing/selftests/kvm/x86_64/hyperv_clock.c
++++ b/tools/testing/selftests/kvm/x86_64/hyperv_clock.c
+@@ -214,7 +214,7 @@ int main(void)
+ 
+ 	vcpu_set_hv_cpuid(vm, VCPU_ID);
+ 
+-	tsc_page_gva = vm_vaddr_alloc(vm, getpagesize(), 0x10000, 0, 0);
++	tsc_page_gva = vm_vaddr_alloc_page(vm);
+ 	memset(addr_gpa2hva(vm, tsc_page_gva), 0x0, getpagesize());
+ 	TEST_ASSERT((addr_gva2gpa(vm, tsc_page_gva) & (getpagesize() - 1)) == 0,
+ 		"TSC page has to be page aligned\n");
 diff --git a/tools/testing/selftests/kvm/x86_64/hyperv_features.c b/tools/testing/selftests/kvm/x86_64/hyperv_features.c
-index 030c9447cb90..ad7ee06fa71e 100644
+index ad7ee06fa71e..42bd658f52a8 100644
 --- a/tools/testing/selftests/kvm/x86_64/hyperv_features.c
 +++ b/tools/testing/selftests/kvm/x86_64/hyperv_features.c
-@@ -629,7 +629,7 @@ int main(void)
- 	hcall_page = vm_vaddr_alloc(vm, 2 * getpagesize(), 0x10000, 0, 0);
+@@ -604,7 +604,7 @@ int main(void)
+ 	/* Test MSRs */
+ 	vm = vm_create_default(VCPU_ID, 0, guest_msr);
+ 
+-	msr_gva = vm_vaddr_alloc(vm, getpagesize(), 0x10000, 0, 0);
++	msr_gva = vm_vaddr_alloc_page(vm);
+ 	memset(addr_gva2hva(vm, msr_gva), 0x0, getpagesize());
+ 	vcpu_args_set(vm, VCPU_ID, 1, msr_gva);
+ 	vcpu_enable_cap(vm, VCPU_ID, &cap);
+@@ -626,10 +626,10 @@ int main(void)
+ 	vm = vm_create_default(VCPU_ID, 0, guest_hcall);
+ 
+ 	/* Hypercall input/output */
+-	hcall_page = vm_vaddr_alloc(vm, 2 * getpagesize(), 0x10000, 0, 0);
++	hcall_page = vm_vaddr_alloc_pages(vm, 2);
  	memset(addr_gva2hva(vm, hcall_page), 0x0, 2 * getpagesize());
  
--	hcall_params = vm_vaddr_alloc(vm, getpagesize(), 0x20000, 0, 0);
-+	hcall_params = vm_vaddr_alloc(vm, getpagesize(), 0x10000, 0, 0);
+-	hcall_params = vm_vaddr_alloc(vm, getpagesize(), 0x10000, 0, 0);
++	hcall_params = vm_vaddr_alloc_page(vm);
  	memset(addr_gva2hva(vm, hcall_params), 0x0, getpagesize());
  
  	vcpu_args_set(vm, VCPU_ID, 2, addr_gva2gpa(vm, hcall_page), hcall_params);
