@@ -2,233 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 185603AFB87
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 05:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 081413AFB72
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 05:40:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhFVDzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 23:55:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230175AbhFVDzG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 23:55:06 -0400
-Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C10EC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 20:52:37 -0700 (PDT)
-Received: by mail-oo1-xc31.google.com with SMTP id 128-20020a4a11860000b029024b19a4d98eso4709288ooc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 20:52:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AU+tWXOji54LjjaoRG6OyKC2CGXKLIzcMVRv39k4Hj8=;
-        b=DR2zVAHZcxBcxA4fV1KDu36W9rCAiq0FWJmPZFMIJX9YWaJ35UajD+t/vVu8yy0yXk
-         WTL/lRn0AdZHTUTC337uB7DpQViZwK99r0CM10RBo+U1mRhsJ50Ft72F6cmnWfJKLJPa
-         u78YjMioTOMGGGeAQkZOHcl30lYu0ErbOW8uZJDdRRAWHufiaGSH4AdwEBhT7Z1YufOP
-         tbqelJy+3/0QVTDyca87IOq/RdaBQDoLLAWBgSGC9OUu4dMuY+qwR0VJDVfBKTy8dNEN
-         sO6Hju30vQwYRa5tdYk9gISIqQTyFgo+QL0tc0S/zfQLU6Tj8BWuyPWHAyBFaePULeAC
-         BmJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AU+tWXOji54LjjaoRG6OyKC2CGXKLIzcMVRv39k4Hj8=;
-        b=TkEU24e89afeQ6Wt48Rb7zAg9gMji9g0D+ABHmeVJiXUB6s6NUD6qBscnmTkQUXcI4
-         EOJI06XgmYzZ9iuKPg+5Z1r82LGucb0fNQcaR76GSvg2llll3uhLCrZ4yzslLSWmhdAQ
-         bidj+eSVxoko14dkngY+ay3HPfarxI49L3+vzt7Z9ek/m27aNVANFLMoNIJ/O1fov/4A
-         NsO5Ync7nyBIdNEELNtBZWq/WNpoImh/hD44nZFGQHTbmi0IEZRurVy5eLUhCbUhZCzK
-         VaIQZUaBNSsgIXVVa0Whk37Em+ppIN+KKFuEzOAGngJKBi61RPdUW1kJ072hj0oLxQ61
-         uyOA==
-X-Gm-Message-State: AOAM533mdbq2U9bJhg/bOAfavazuBCRgZMfPhO5VKGdvC0Jtx4g3kxYy
-        H94mTT7J/9rPNYyTCpH1lIVLZA==
-X-Google-Smtp-Source: ABdhPJy1HmQ1gHZDzA+hsJGSLhIep0RS7cnefS95NEdLm0b2spxk4/qMuRCx/69z1Gz7IPxY0kHdEA==
-X-Received: by 2002:a4a:e2d0:: with SMTP id l16mr1408034oot.80.1624333956657;
-        Mon, 21 Jun 2021 20:52:36 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id r2sm4395683otd.54.2021.06.21.20.52.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Jun 2021 20:52:36 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 22:52:34 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Jassi Brar <jassisinghbrar@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Martin Botka <martin.botka@somainline.org>,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        jamipkettunen@somainline.org, Andy Gross <agross@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V3 3/3] mailbox: qcom-apcs: Add SM6125 compatible
-Message-ID: <YNFegmmCzk6JUTN+@yoga>
-References: <20210612094631.89980-1-martin.botka@somainline.org>
- <20210612094631.89980-3-martin.botka@somainline.org>
- <CABb+yY3BYYC2na8EFunEeu0XCfLXrUQon=hF3q5p=+FUoigoyw@mail.gmail.com>
- <CAL_JsqLWqtAtqLRF-MAnq80NMfD0a+CfWPv8JWjjNTJFgMjCxg@mail.gmail.com>
- <CABb+yY0sdSinTm788pMFrqEZ6QMC2OwCP7Kkto+pG9h1aGMzwQ@mail.gmail.com>
- <CAL_JsqKdoMwpL_tYC7VQRAG2AC5nR4diShMQCgDseObcgU+egQ@mail.gmail.com>
- <YNEiUMBqGAx1zLVX@yoga>
- <CABb+yY2wy4iSKjn+SihQ=FE=YwcEzUNOpGw_CV22Anzgbba8hA@mail.gmail.com>
- <YNFKpvhXyZbs8RE1@yoga>
- <CABb+yY3RpQYvNBHvpwZearpBPph0uj8YQwX2qu=TX=QAO6OFBw@mail.gmail.com>
+        id S230346AbhFVDnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 23:43:06 -0400
+Received: from mail-am6eur05on2079.outbound.protection.outlook.com ([40.107.22.79]:27904
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229904AbhFVDnE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 23:43:04 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=L6F3vjWNswjDTYvQrgITuHe3hP1Wnzh013euCh3fTfk68m064sn0D7GxdFrX59fd7VpwEbi67emtxL7G+JB8uSWCudaInEaz1Ye9biI1WlchTU3W/AH8bRFi0yrSEPaZjZXWT/aAYlqdgxZonU6sqG1V9RWJTq4JbsL+HZk7t9kI+tr+gR9db5nxNyknrutOhLVmcSEspOUUPzCMJlNlGvJ/AaGQhkZ4NHLodHZQGB/yU5TrqeOWIbpX1ra0j+dHtN6nyQe+ZCRiVCyLT15v4/mwRwR3nzk1VU8HlmXg0ctfEmFAoFSpH4iy7IDr6/iseWIB3LzXLJPt54kMLn3nJQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=veTEjqituPkFbd9cYbKv9MoCYiQlCndkm0MxCB4K+Vc=;
+ b=T7kDjQGXZNIKmRql+tXbiaqimrgZDgdRYMUGL/alFqw/WZ+ssC02vBFmJ7rkAFtSjt87ghbRzg30PmutjrABL+yfOz+aGOYtTXDWZdmizYGduH4+1zwYJdzz/OKXDQ8Fi6hCYZ1dfth51Q7XFPZNymWr9eKoKvGqPe1kalbfU0hp+o+gIbbAuAI7WnK2e6VBGZzbHftQbttodaXYcEw/zQWIkggQpoKl72oj2w/LAaqLRlvkgkET/BUQtF1uEdRxU2WZoAAYiT+E3up1GBpdFakwO1nqLHplTe0JjEUGxLDGTaKwNCjstkac+M+K52yu+ulijVZ6KH5+xSmvWEqRAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=veTEjqituPkFbd9cYbKv9MoCYiQlCndkm0MxCB4K+Vc=;
+ b=a1PHhJbJMcZCmAYU6TcNJ/IVm7Ja1ZTpwbXsVz71eS/yTmkebUwOLVfqJJakFLBn4x47QJ+rbkm8ljz73naQpzFMo/DFjsObTqkp5eOra4G3K3nzv8e2INdAZthdprxpuuLP3WckiBi5NaxRXf/PsMnbGy1y9yrZMWIDk2PsBEk=
+Authentication-Results: wizery.com; dkim=none (message not signed)
+ header.d=none;wizery.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB3PR0402MB3913.eurprd04.prod.outlook.com (2603:10a6:8:3::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Tue, 22 Jun
+ 2021 03:40:45 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c445:d742:eb76:86dd]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::c445:d742:eb76:86dd%9]) with mapi id 15.20.4242.023; Tue, 22 Jun 2021
+ 03:40:45 +0000
+From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+To:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        mathieu.poirier@linaro.org, o.rempel@pengutronix.de,
+        robh+dt@kernel.org
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com,
+        linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH V2 0/2] remoteproc: imx_rproc: support i.MX8ULP
+Date:   Tue, 22 Jun 2021 12:14:11 +0800
+Message-Id: <20210622041413.16992-1-peng.fan@oss.nxp.com>
+X-Mailer: git-send-email 2.30.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: SG2PR0302CA0014.apcprd03.prod.outlook.com
+ (2603:1096:3:2::24) To DB6PR0402MB2760.eurprd04.prod.outlook.com
+ (2603:10a6:4:a1::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABb+yY3RpQYvNBHvpwZearpBPph0uj8YQwX2qu=TX=QAO6OFBw@mail.gmail.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SG2PR0302CA0014.apcprd03.prod.outlook.com (2603:1096:3:2::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.9 via Frontend Transport; Tue, 22 Jun 2021 03:40:40 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0234bfbd-ea0d-4018-8bae-08d9352f8415
+X-MS-TrafficTypeDiagnostic: DB3PR0402MB3913:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB3PR0402MB3913B24161D20D43A5DDF591C9099@DB3PR0402MB3913.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1443;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ufbWpCGnDkqLlNX7fuHf2ESfx3l4Jj5I6MJn/dqdb3lh2Qn1WN1P5foL80VWnaqsWpC80XnG5faR0sIVLcMYJGAYPYTiQpDTOHYcBaYCXIWHxxGn1FItArA9I2HQiFGFWSitx4Ic0P7qdeW4ASRpKVW2yKe7rCf/sTCMXQ3XK6PfmJ83wC7fzvyLPRuuyGRXrGNzRV3yu+lX+SatdGgR90BdT96/fLH9HA3RRmVlI21cmWj6ZXBvZyXcWbRjfrgnDNZxZqYinsrIORBYkYH3MOSzgRRnMnF2bsED3IRZEU/cxHgZR/iXPZmhSkAw9UqZkORvqtF2FQyxayurpgErddjDFCGNqOb5Q3fyM1VZtaSFSAJ/ddR2AOmy0cqa0Dt3kPjQKXRsy1jQxvwdEmbWfmvJgxftaYMjPlbIyWq19dWDrr+/43fTBgEQDzV3Dk6iEwrKARMbM05wqtOfIbokISl1G74+fPfBu6EmJRmEEXAgwUPC7LWRdhVzUImPTBCmzLBxlxGX6YKZqTYJhyGwGHkQ0Ehi+G/nc6xHVe6O2TskEjQ5nZKk4QLs9HymBRxNc6ouKbhkBcK2bRC4hTuY/Gf7RxUg8OhKJBR+aOOq98lWRabM5jvVA4O+9xk5kXAX7uPa04E+jMAtU5FbdX7WqE+TXGC/nYpy60yWXD7CGeo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(346002)(366004)(376002)(66556008)(66476007)(66946007)(6486002)(8936002)(956004)(7416002)(8676002)(2616005)(316002)(6666004)(186003)(6506007)(52116002)(16526019)(26005)(6512007)(4744005)(2906002)(5660300002)(86362001)(4326008)(478600001)(38100700002)(1076003)(38350700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3vQ9m/LNrfwdqAJSexcobd/erkNcYeN/0IknXYRchg+mJa4G1rGA1ddI1OPe?=
+ =?us-ascii?Q?G1iqYT1gYSf7XNLbmg7AWuZxRm1/Xp5JRjIPXhIL2xas5rJe1kD5QZtGaqyl?=
+ =?us-ascii?Q?EHGqBT7h4JjFeAw9RXs+OZ8FbUCehTqLumfCIjNBRzr3N0KH1mPpdJzcSO+2?=
+ =?us-ascii?Q?TL4jXQmYLridgTWO+Q9FniqCbADw0vK29bgmsh7chCLwbWGId63ylmOvWnwc?=
+ =?us-ascii?Q?jhbRebK3JgNZDhTg69uUCKQb5NBhRwvQy6GK6zrlCnewJILu1QGSLlQ5+An4?=
+ =?us-ascii?Q?ukHmKWfQszk1QPCVOtdMVNRHtugch3f8xACQvpdg21KRQc2WwOXoW/0+qLmS?=
+ =?us-ascii?Q?0VTW+mIf2DYO91kt2PYuPV0yOSwpEVHfj2zY3uYi00qxbA0/PrX22Kz+JnHk?=
+ =?us-ascii?Q?pbCY02a5c9z+p4FTTKm1/2+BuFRGqwnZil4pJj7qGmRLeDW52tat+EpdGd0D?=
+ =?us-ascii?Q?J/DbC7XOwcnhNpxjoXbylB7GVjUCJOiUv5iJmInri1rtt2lWJWUWMXSkCANh?=
+ =?us-ascii?Q?jaTh4JMoKbZ+W1tqjc3kmf6/8cM0nihYfElNeOb0PeoFmEx1lCCHbyG0ToZh?=
+ =?us-ascii?Q?awEB03vgrv1d4gZELscdB521Wq0t+KYob5IOJhVMxwS1ahS3F0o1nLmgaZkx?=
+ =?us-ascii?Q?ocoPhajwR75QiW4hSwvh1IhZcmq48vYy54j2qwZoR8v353Re5z4sxY4Xeouv?=
+ =?us-ascii?Q?PTYYVbOcsqPABlPmlaOIzMN/rwt2rM3L4MyG1kq4sba66c2OCoMKkwGhRlxk?=
+ =?us-ascii?Q?kGKlcIK8iikMborE/+5dWFmdPAp99iojZNl1o5u2Ipe9LvFu3Q6PQETTIxT4?=
+ =?us-ascii?Q?9rx2rvmq5e58JvV+hozgsRexSwka181ZcIFzyN1L4qNO9aVA+CfGvg8g8CLm?=
+ =?us-ascii?Q?cymUHnixH8/4BIzScLKU0l/ZPBnDU8ORSr/n3Y4abVW+TygGniojateSsDmq?=
+ =?us-ascii?Q?ZDJTidOcf/N7ihkgKLmcEWSxqkwc4MkqG7kYYsmKtG/m1ow8npg4FHTGT5Ab?=
+ =?us-ascii?Q?vY4DpyhYrbebF5M+CEFR69di1leEsWc6OGc7vOXDoAqHnOuWGTgUXkVASwsq?=
+ =?us-ascii?Q?KnAovvZj9nviH1BpOSBjylJWNYewunDQp1MmUBAh2jFy7mS3Y91i1vMDNJeH?=
+ =?us-ascii?Q?Q1VbqgoUUD9B/ld20ThjAHlmTepIVpF6+kyPDuhtYDG26e4ceZC9tanL8t7N?=
+ =?us-ascii?Q?crfeTnV/Lk0HUv9GgUEAm/IXl0ah/iHQx6ByjhAiBhGkubWma8jaGFOJMKII?=
+ =?us-ascii?Q?VEao1H6OIYrOGWbsWCQ5D2uDXh/ISIlxFwcxdwCBgn9O4rU3GSR0soMJ2PiD?=
+ =?us-ascii?Q?ZJ7AlhgwessJUOIuk+D9MxhKbOeh9JHdI7GESzRn51ptyw=3D=3D?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0234bfbd-ea0d-4018-8bae-08d9352f8415
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2021 03:40:44.8583
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wi46EGvGgAZJq8jh43PQL8WYEr4NoyhIGSEAApPUxwM6PkN5JI5UmtwPSfM9+b9oIuLIBfkgopcLKi4jojCXPQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0402MB3913
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 21 Jun 22:34 CDT 2021, Jassi Brar wrote:
+From: Peng Fan <peng.fan@nxp.com>
 
-> On Mon, Jun 21, 2021 at 9:27 PM Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
-> >
-> > On Mon 21 Jun 20:00 CDT 2021, Jassi Brar wrote:
-> >
-> > > On Mon, Jun 21, 2021 at 6:35 PM Bjorn Andersson
-> > > <bjorn.andersson@linaro.org> wrote:
-> > > >
-> > > > On Mon 21 Jun 18:19 CDT 2021, Rob Herring wrote:
-> > > >
-> > > > > On Mon, Jun 21, 2021 at 5:10 PM Jassi Brar <jassisinghbrar@gmail.com> wrote:
-> > > > > >
-> > > > > > On Mon, Jun 21, 2021 at 2:46 PM Rob Herring <robh+dt@kernel.org> wrote:
-> > > > > > >
-> > > > > > > On Sun, Jun 20, 2021 at 10:03 PM Jassi Brar <jassisinghbrar@gmail.com> wrote:
-> > > > > > > >
-> > > > > > > > On Sat, Jun 12, 2021 at 4:46 AM Martin Botka
-> > > > > > > > <martin.botka@somainline.org> wrote:
-> > > > > > > > >
-> > > > > > > > > This commit adds compatible for the SM6125 SoC
-> > > > > > > > >
-> > > > > > > > > Signed-off-by: Martin Botka <martin.botka@somainline.org>
-> > > > > > > > > ---
-> > > > > > > > > Changes in V2:
-> > > > > > > > > None
-> > > > > > > > > Changes in V3:
-> > > > > > > > > Change compatible to apcs-hmss-global
-> > > > > > > > >  drivers/mailbox/qcom-apcs-ipc-mailbox.c | 5 +++++
-> > > > > > > > >  1 file changed, 5 insertions(+)
-> > > > > > > > >
-> > > > > > > > > diff --git a/drivers/mailbox/qcom-apcs-ipc-mailbox.c b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-> > > > > > > > > index f25324d03842..f24c5ad8d658 100644
-> > > > > > > > > --- a/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-> > > > > > > > > +++ b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
-> > > > > > > > > @@ -57,6 +57,10 @@ static const struct qcom_apcs_ipc_data sdm660_apcs_data = {
-> > > > > > > > >         .offset = 8, .clk_name = NULL
-> > > > > > > > >  };
-> > > > > > > > >
-> > > > > > > > > +static const struct qcom_apcs_ipc_data sm6125_apcs_data = {
-> > > > > > > > > +       .offset = 8, .clk_name = NULL
-> > > > > > > > > +};
-> > > > > > > > > +
-> > > > > > > > >  static const struct qcom_apcs_ipc_data apps_shared_apcs_data = {
-> > > > > > > > >         .offset = 12, .clk_name = NULL
-> > > > > > > > >  };
-> > > > > > > > > @@ -166,6 +170,7 @@ static const struct of_device_id qcom_apcs_ipc_of_match[] = {
-> > > > > > > > >         { .compatible = "qcom,sc8180x-apss-shared", .data = &apps_shared_apcs_data },
-> > > > > > > > >         { .compatible = "qcom,sdm660-apcs-hmss-global", .data = &sdm660_apcs_data },
-> > > > > > > > >         { .compatible = "qcom,sdm845-apss-shared", .data = &apps_shared_apcs_data },
-> > > > > > > > > +       { .compatible = "qcom,sm6125-apcs-hmss-global", .data = &sm6125_apcs_data },
-> > > > > > > > >         { .compatible = "qcom,sm8150-apss-shared", .data = &apps_shared_apcs_data },
-> > > > > > > > >         { .compatible = "qcom,sdx55-apcs-gcc", .data = &sdx55_apcs_data },
-> > > > > > > > >         {}
-> > > > > > > > >
-> > > > > > > > These all are basically different names for the same controller.
-> > > > > > > > The 'offset' is a configuration parameter and the 'clock', when NULL,
-> > > > > > > > is basically some "always-on" clock.
-> > > > > > > > I am sure we wouldn't be doing it, if the controller was third-party.
-> > > > > > >
-> > > > > > > If newer implementations are 'the same', then they should have a
-> > > > > > > fallback compatible to the existing one that is the same and no driver
-> > > > > > > change is needed. If the differences are board or instance (within an
-> > > > > > > SoC) specific, then a DT property would be appropriate.
-> > > > > > >
-> > > > > > The controllers (13 now) only differ by the 'offset' where the
-> > > > > > registers are mapped. Clock-name is a pure s/w artifact.
-> > > > > > So, maybe we could push all these in DT.
-> > > > >
-> > > > > Why is 'reg' not used for the offset?
-> > > > >
-> > > >
-> > > > The DT node and its "reg" describes the whole IP block.
-> > > >
-> > > > The particular register that we care of has, as you can see, moved
-> > > > around during the various platforms and some incarnations of this IP
-> > > > block provides controls for CPU-related clocks as well.
-> > > >
-> > > > We can certainly have the multiple compatible points to the same
-> > > > apcs_data, but I'm not able to spot a reasonable "catch-all compatible"
-> > > > given that I don't see any natural groupings.
-> > > >
-> > > Any platform that comes later may reuse the already available compatible.
-> > > For example drop this patch and reuse "qcom,sdm660-apcs-hmss-global" ?
-> > >
-> >
-> > The problem is that this would change the meaning of
-> > "qcom,sdm660-apcs-hmss-global" from meaning "The apcs hmss global block
-> > _in_ sdm660" to "any random apcs block with the mailbox register at
-> > offset 8".
-> >
-> To me, the deeper problem seems to be naming a controller "The apcs
-> hmss global block _in_ sdm660" just because the h/w manual hasn't
-> given a name to it.  But that is okay too, if we name the subsequent
-> controllers as "the same as one in sdm660" and provide the h/w
-> configuration 'offset' via a DT property.
-> 
+V2:
+ Add R-b from Mathieu
+ Add Rob in Cc for dt-bindings
 
-As I said, I'd need to dig through the hardware documentation for the
-various platforms to see if I can find what the common denominators are.
-We've always seen this as "the apcs hmss global block _in_ <platform>".
+i.MX8ULP features a M33 core + dual A35 core, M33 is kicked by ROM,
+so like 7ULP, A35 only communicate with M33.
 
-> > > > > In any case, we can't really get rid of the first 13 instances though...
-> > > > >
-> > > >
-> > > > Right, we have the problem that we have DTBs out there that relies on
-> > > > these compatibles, but as Jassi requests we'd have to start describing
-> > > > the internal register layout in DT - which this binding purposefully
-> > > > avoids.
-> > > >
-> > > Not these strings, but 'offset' and 'clock-name' as optional
-> > > properties that new platforms can use.
-> > >
-> >
-> > Relying on completely generic compatibles to match the driver and then
-> > distinguish each platform using additional properties is exactly what
-> > Qualcomm does downstream.  The community has clarified countless times
-> > that this is not the way to write DT bindings.
-> >
-> Yes, and I don't suggest it otherwise. For h/w quirks and
-> extra/missing features, it does make sense to have different
-> compatibles.
-> 
+Based linux-next/master 6-22
 
-But what you're suggesting assumes that they are the same and that we're
-done implementing all the software for this block. The platform specific
-compatible allows us to postpone that question.
+Peng Fan (2):
+  dt-bindings: remoteproc: imx_rproc: support i.MX8ULP
+  remoteproc: imx_rproc: support i.MX8ULP
 
-> However, for _trivial_ variations let us get that value from DT.
-> 'offset' is anyway a h/w property.
-> That way we won't be distinguishing platforms using dt properties, but
-> only support different platforms seamlessly.
-> 
+ .../bindings/remoteproc/fsl,imx-rproc.yaml          |  1 +
+ drivers/remoteproc/imx_rproc.c                      | 13 +++++++++++++
+ 2 files changed, 14 insertions(+)
 
-As I said previously, this goes against the direction provided by the DT
-maintainers. If a property is platform specific this should be expressed
-by the compatible.
+-- 
+2.30.0
 
-> On second thought, we have grown from 2 to 13 aliases in 4 yrs. I only
-> have to ignore 3 times/annum to lead a peaceful life ;)
-> 
-
-True, but I'll try to find some time to see if we have some reuse of the
-IP block to allow us to use some generic compatible.
-
-We'd still need a patch in the DT binding for every single platform, but
-we should be able to avoid the compatible additions in the driver.
-
-Regards,
-Bjorn
