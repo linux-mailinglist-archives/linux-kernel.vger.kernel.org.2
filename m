@@ -2,73 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF683AFF4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 953BF3AFF62
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhFVIct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 04:32:49 -0400
-Received: from imap2.colo.codethink.co.uk ([78.40.148.184]:38916 "EHLO
-        imap2.colo.codethink.co.uk" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229747AbhFVIcq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 04:32:46 -0400
-Received: from cpc152649-stkp13-2-0-cust121.10-2.cable.virginm.net ([86.15.83.122] helo=[192.168.0.18])
-        by imap2.colo.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
-        id 1lvbng-0006ij-CB; Tue, 22 Jun 2021 09:30:28 +0100
-Subject: Re: [PATCH v2 0/5] riscv: improving uaccess with logs from network
- bench
-To:     Akira Tsukamoto <akira.tsukamoto@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-References: <5a5c07ac-8c11-79d3-46a3-a255d4148f76@gmail.com>
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-Message-ID: <e7d5f98b-5e0d-19b3-08f5-a7b49d542a85@codethink.co.uk>
-Date:   Tue, 22 Jun 2021 09:30:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S230327AbhFVIju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 04:39:50 -0400
+Received: from honk.sigxcpu.org ([24.134.29.49]:39338 "EHLO honk.sigxcpu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229628AbhFVIjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 04:39:48 -0400
+X-Greylist: delayed 618 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Jun 2021 04:39:48 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id 3A432FB03;
+        Tue, 22 Jun 2021 10:27:13 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id fPibtmydCwzb; Tue, 22 Jun 2021 10:27:11 +0200 (CEST)
+Date:   Tue, 22 Jun 2021 10:27:09 +0200
+From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: simple-card: Fill in driver name
+Message-ID: <YNGe3akAntQi8qJD@qwark.sigxcpu.org>
 MIME-Version: 1.0
-In-Reply-To: <5a5c07ac-8c11-79d3-46a3-a255d4148f76@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/06/2021 12:21, Akira Tsukamoto wrote:
-> Optimizing copy_to_user and copy_from_user.
-> 
-> I rewrote the functions in v2, heavily influenced by Garry's memcpy
-> function [1].
-> The functions must be written in assembler to handle page faults manually
-> inside the function.
-> 
-> With the changes, improves in the percentage usage and some performance
-> of network speed in UDP packets.
-> Only patching copy_user. Using the original memcpy.
-> 
-> All results are from the same base kernel, same rootfs and same
-> BeagleV beta board.
-> 
-> Comparison by "perf top -Ue task-clock" while running iperf3.
+alsa-ucm groups by driver name so fill that in as well. Otherwise the
+presented information is redundant and doesn't reflect the used
+driver. We can't just use 'asoc-simple-card' since the driver name is
+restricted to 15 characters.
 
-I did a quick test on a SiFive Unmatched with IO to an NVME.
+Before:
 
-before: cached-reads=172.47MB/sec, buffered-reads=135.8MB/sec
-with-patch: cached-read=s177.54Mb/sec, buffered-reads=137.79MB/sec
+ # cat /proc/asound/cards
+ 0 [Devkit         ]: Librem_5_Devkit - Librem 5 Devkit
+                      Librem 5 Devkit
+After:
 
-That was just one test run, so there was a small improvement. I am
-sort of surprised we didn't get more of a win from this.
+ 0 [Devkit         ]: simple-card - Librem 5 Devkit
+                      Librem 5 Devkit
 
-perf record on hdparm shows that it spends approx 15% cpu time in
-asm_copy_to_user. Does anyone have a benchmark for this which just
-looks at copy/to user? if not should we create one?
+Signed-off-by: Guido Günther <agx@sigxcpu.org>
+---
+This came out of a discussion about adding alsa-ucm profiles for the
+Librem 5 Devkit at https://github.com/alsa-project/alsa-ucm-conf/pull/102
 
+ sound/soc/generic/simple-card.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 0015f534d42d..a3a7990b5cb6 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -621,6 +621,7 @@ static int asoc_simple_probe(struct platform_device *pdev)
+ 	card->owner		= THIS_MODULE;
+ 	card->dev		= dev;
+ 	card->probe		= simple_soc_probe;
++	card->driver_name       = "simple-card";
+ 
+ 	li = devm_kzalloc(dev, sizeof(*li), GFP_KERNEL);
+ 	if (!li)
 -- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
-
-https://www.codethink.co.uk/privacy.html
+2.30.2
