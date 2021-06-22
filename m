@@ -2,362 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8A63B0BA0
+	by mail.lfdr.de (Postfix) with ESMTP id 75EBF3B0BA1
 	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232346AbhFVRpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 13:45:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231726AbhFVRoy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 13:44:54 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FD15C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:42:38 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id t19-20020a17090ae513b029016f66a73701so2158610pjy.3
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:42:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=d9gPYvqn2uuuVi2bAu98NXCYWXs4V/KcdSXWRP7wuLo=;
-        b=ZVCAYu9nTL4ij3dTly/ui+mYySyStoxrKsypoS3zrq8rVVqzUSuj484n1aBA/uiz8g
-         qUhkdZz/ccdvEMoCvR0f+SMHLF/u/dxZY+LQIxbLVj0vTdFz4j65aUbD2k3AL+2cbOdo
-         QPcHJBMvrm9IZEP+BV5kyebYIv9dpMp8ZT5hg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=d9gPYvqn2uuuVi2bAu98NXCYWXs4V/KcdSXWRP7wuLo=;
-        b=gyQjQ1C0BSUID1gaMOME7vsot5uyPmTiPAmzleuvFKj1b+X91+mD8XYFG5VrdS7DiG
-         GzdRV1M7TPbbAPQUQOXbgb3nLPqavSqQnHcnLOk48g2FSAuwBNeltClGaU2PQJI12xIJ
-         3edRU7m6jcYADk6l4UvZ4m9cjV9wyghyZy7qdUhyBPC+MU5PcIIZiM+LNIhNkNKQOrw+
-         e4KM/G03gHKmDoPyOC0kzJyjMJ0P7MUpFa+blzCvo78LC5lSNFFMRp8YaPDZMzpC/55N
-         we5xz6mNtj17xU8jEtwsk1YkeLLSgXBX11ZsBE+B6isK0nzQ3ZRZ49JdW2hRY2NKp0Ha
-         FwGw==
-X-Gm-Message-State: AOAM532OB+53w2mld1GNbCCpM+V7Bo4F3ZDsoej8PvQDxqEAapP7rgyZ
-        y3KLsGkeb25eZ3ASzWobTP5hsw==
-X-Google-Smtp-Source: ABdhPJzjlS0OixVEdhP/vLJwdUiIBbw0/CI1Efidm0Mb2n/FTxNBaVBeUHeZc5++YD/DDDGwFHvLkA==
-X-Received: by 2002:a17:90a:708a:: with SMTP id g10mr5205184pjk.108.1624383757557;
-        Tue, 22 Jun 2021 10:42:37 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:dc21:8b6f:f8cd:9070])
-        by smtp.gmail.com with UTF8SMTPSA id v15sm21530163pgf.26.2021.06.22.10.42.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 10:42:36 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 10:42:35 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     andrew-sh.cheng@mediatek.com, hsinyi@chromium.org,
-        sibis@codeaurora.org, saravanak@google.com,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        chanwoo@kernel.org, cwchoi00@gmail.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Saravana Kannan <skannan@codeaurora.org>
-Subject: Re: [PATCH 3/4] PM / devfreq: Add cpu based scaling support to
- passive governor
-Message-ID: <YNIhCxw0bnweb9SB@google.com>
-References: <20210617060546.26933-1-cw00.choi@samsung.com>
- <CGME20210617054647epcas1p431edaffea5bf7f3792b55dc3d91289ae@epcas1p4.samsung.com>
- <20210617060546.26933-4-cw00.choi@samsung.com>
+        id S232380AbhFVRpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 13:45:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48314 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232301AbhFVRpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 13:45:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4FEBD60720;
+        Tue, 22 Jun 2021 17:42:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624383771;
+        bh=AdNNC8o9THyCPkVQW5qscu3FI9w1HH+6jr1PCtqb1Q0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BuUaok2S0pfxbCbyv4kUBId+/dPCEvf8XmanC4CYP9caxpRBxb7U7CZWgF+9tHVIc
+         /CBf5C1EAcICRWycYEE006yhknN5fpaQCIK5NCbwpBjbjJ86IrM7aM2ns/jtWT+s4v
+         k9b7Y6coVds0foRMwQzZ+Byo6XaELtC9i8okUwT+UQf3+sn20sspTchLQ1JV+vk6Jm
+         0uzVB2bBnhMjdhVaX2qu7vWTa3NkKaUHRQb6DQ5J+HACxg/CTQ6PfTDYW21NPSNQPM
+         AjLqY8atsh1QaGc8uXbKMGTGzZtLi2UMLZr48cTarxfngM8ZHOrcRXB9rS+sGnwJ2o
+         ezkC1+mRKY5Iw==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id EF15640B1A; Tue, 22 Jun 2021 14:42:47 -0300 (-03)
+Date:   Tue, 22 Jun 2021 14:42:47 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     John Garry <john.garry@huawei.com>, Jiri Olsa <jolsa@redhat.com>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: Re: perf tool: About tests debug level
+Message-ID: <YNIhF2ncHTE8uEoo@kernel.org>
+References: <ecd941b3-2fd5-61d8-93a1-76a3a3ee4138@huawei.com>
+ <CAP-5=fUxQZ+rxLEn6jeRNVMf48BaPNdaUdoMs8LY4P-GROiOnw@mail.gmail.com>
+ <cd501541-deb5-f2f5-e086-cca44b40c87d@huawei.com>
+ <CAP-5=fU05k62d57pbWquqv3Z1RFzWMOB1d3OFEcEax5btEWEzg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210617060546.26933-4-cw00.choi@samsung.com>
+In-Reply-To: <CAP-5=fU05k62d57pbWquqv3Z1RFzWMOB1d3OFEcEax5btEWEzg@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 03:05:45PM +0900, Chanwoo Choi wrote:
-> From: Saravana Kannan <skannan@codeaurora.org>
+Em Tue, Jun 22, 2021 at 09:00:31AM -0700, Ian Rogers escreveu:
+> On Tue, Jun 22, 2021 at 4:58 AM John Garry <john.garry@huawei.com> wrote:
+> >
+> > On 22/06/2021 06:04, Ian Rogers wrote:
+> > >> ---- end ----
+> > >> Parse and process metrics: FAILED!
+> > >>
+> > >> Note that the "FAILED" messages from the test code come from pr_debug().
+> > >>
+> > >> In a way, I feel that pr_debug()/err from the test is more important
+> > >> than pr_debug() from the core code (when running a test).
+> > >>
+> > >> Any opinion on this or how to improve (if anyone agrees with me)? Or am
+> > >> I missing something? Or is it not so important?
+> > > Hi John,
+> > >
+> >
+> > Hi Ian,
+> >
+> > > I think the issue is that in the parsing you don't know it's broken
+> > > until something goes wrong. Putting everything on pr_err would cause
+> > > spam in the not broken case.
+> >
+> > Right, I would not suggest using pr_err everywhere.
+> >
+> > > Improving the parsing error handling is a
+> > > big task with lex and yacc to some extent getting in the way. Perhaps
+> > > a middle way is to have a parameter to the parser that logs more, and
+> > > recursively call this in the parser when parsing fails. I guess there
+> > > is also a danger of a performance hit.
+> >
+> > So I am thinking that for running a test, -v means different levels logs
+> > for test code and for core (non-test code). For example, -v prints
+> > pr_warn() and higher for test logs, but nothing for core logs. And then
+> > -vv for running a test gives pr_debug and above for test logs, and
+> > pr_warn and above for core logs. Or something like that.
+> >
+> > Maybe that is not a good idea. But I'm just saying that it's hard to
+> > debug currently at -v for tests.
+> >
+> > Thanks,
+> > John
 > 
-> Many CPU architectures have caches that can scale independent of the
-> CPUs. Frequency scaling of the caches is necessary to make sure that the
-> cache is not a performance bottleneck that leads to poor performance and
-> power. The same idea applies for RAM/DDR.
-> 
-> To achieve this, this patch adds support for cpu based scaling to the
-> passive governor. This is accomplished by taking the current frequency
-> of each CPU frequency domain and then adjust the frequency of the cache
-> (or any devfreq device) based on the frequency of the CPUs. It listens
-> to CPU frequency transition notifiers to keep itself up to date on the
-> current CPU frequency.
-> 
-> To decide the frequency of the device, the governor does one of the
-> following:
-> * Derives the optimal devfreq device opp from required-opps property of
->   the parent cpu opp_table.
-> 
-> * Scales the device frequency in proportion to the CPU frequency. So, if
->   the CPUs are running at their max frequency, the device runs at its
->   max frequency. If the CPUs are running at their min frequency, the
->   device runs at its min frequency. It is interpolated for frequencies
->   in between.
-> 
-> Signed-off-by: Saravana Kannan <skannan@codeaurora.org>
-> [Sibi: Integrated cpu-freqmap governor into passive_governor]
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> [Chanwoo: Fix conflict with latest code and clean code up]
-> Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
-> ---
->  drivers/devfreq/governor.h         |  22 +++
->  drivers/devfreq/governor_passive.c | 264 ++++++++++++++++++++++++++++-
->  include/linux/devfreq.h            |  16 +-
->  3 files changed, 293 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/devfreq/governor.h b/drivers/devfreq/governor.h
-> index 9a9495f94ac6..3c36c92c89a9 100644
-> --- a/drivers/devfreq/governor.h
-> +++ b/drivers/devfreq/governor.h
-> @@ -47,6 +47,28 @@
->  #define DEVFREQ_GOV_ATTR_POLLING_INTERVAL		BIT(0)
->  #define DEVFREQ_GOV_ATTR_TIMER				BIT(1)
->  
-> +/**
-> + * struct devfreq_cpu_data - Hold the per-cpu data
-> + * @dev:	reference to cpu device.
-> + * @first_cpu:	the cpumask of the first cpu of a policy.
-> + * @opp_table:	reference to cpu opp table.
-> + * @cur_freq:	the current frequency of the cpu.
-> + * @min_freq:	the min frequency of the cpu.
-> + * @max_freq:	the max frequency of the cpu.
-> + *
-> + * This structure stores the required cpu_data of a cpu.
-> + * This is auto-populated by the governor.
-> + */
-> +struct devfreq_cpu_data {
-> +	struct device *dev;
-> +	unsigned int first_cpu;
-> +
-> +	struct opp_table *opp_table;
-> +	unsigned int cur_freq;
-> +	unsigned int min_freq;
-> +	unsigned int max_freq;
-> +};
-> +
->  /**
->   * struct devfreq_governor - Devfreq policy governor
->   * @node:		list node - contains registered devfreq governors
-> diff --git a/drivers/devfreq/governor_passive.c b/drivers/devfreq/governor_passive.c
-> index fc09324a03e0..07e864509b7e 100644
-> --- a/drivers/devfreq/governor_passive.c
-> +++ b/drivers/devfreq/governor_passive.c
->
-> ...
->
-> +static int cpufreq_passive_register_notifier(struct devfreq *devfreq)
-> +{
-> +	struct devfreq_passive_data *p_data
-> +			= (struct devfreq_passive_data *)devfreq->data;
-> +	struct device *dev = devfreq->dev.parent;
-> +	struct opp_table *opp_table = NULL;
-> +	struct devfreq_cpu_data *cpu_data;
-> +	struct cpufreq_policy *policy;
-> +	struct device *cpu_dev;
-> +	unsigned int cpu;
-> +	int ret;
-> +
-> +	get_online_cpus();
-> +
-> +	p_data->nb.notifier_call = cpufreq_passive_notifier_call;
-> +	ret = cpufreq_register_notifier(&p_data->nb, CPUFREQ_TRANSITION_NOTIFIER);
-> +	if (ret) {
-> +		dev_err(dev, "failed to register cpufreq notifier\n");
-> +		p_data->nb.notifier_call = NULL;
-> +		goto out;
-> +	}
-> +
-> +	for_each_online_cpu(cpu) {
+> I think this sounds good. It'd be nice also to have verbose output in
+> the shell tests following the same convention. There's currently no
+> verbose logging in shell tests but I propose it here:
+> https://lore.kernel.org/lkml/20210621215648.2991319-1-irogers@google.com/
+> By their nature some of the shell tests launch perf, perhaps there can
+> be some convention on passing the verbose flag through in those cases.
 
+Hey, there is even a v2 for that one, lemme process it :-)
 
-Is this really needed for each CPU? Wouldn't it be enough to create
-a 'cpu_data' for each 'policy CPU'?
-
-In any case should this be for_each_possible_cpu() as in _unregister_notifier()
-to also support CPUs that may be offline when the notifier is registered?
-
-> +		if (p_data->cpu_data[cpu])
-> +			continue;
-> +
-> +		policy = cpufreq_cpu_get(cpu);
-> +		if (policy) {
-> +			cpu_data = kzalloc(sizeof(*cpu_data), GFP_KERNEL);
-> +			if (!cpu_data) {
-> +				ret = -ENOMEM;
-> +				goto out;
-> +			}
-> +
-> +			cpu_dev = get_cpu_device(cpu);
-> +			if (!cpu_dev) {
-> +				dev_err(dev, "failed to get cpu device\n");
-> +				ret = -ENODEV;
-> +				goto out;
-
-Memory for 'cpu_data' is not freed in this path.
-
-Also applies to CPUs from possible prior iterations.
-
-> +			}
-> +
-> +			opp_table = dev_pm_opp_get_opp_table(cpu_dev);
-> +			if (IS_ERR(opp_table)) {
-> +				ret = PTR_ERR(opp_table);
-> +				goto out;
-
-Ditto and cpufreq_cpu_put() is missing too.
-
-> +			}
-> +
-> +			cpu_data->dev = cpu_dev;
-> +			cpu_data->opp_table = opp_table;
-> +			cpu_data->first_cpu = cpumask_first(policy->related_cpus);
-> +			cpu_data->cur_freq = policy->cur;
-> +			cpu_data->min_freq = policy->cpuinfo.min_freq;
-> +			cpu_data->max_freq = policy->cpuinfo.max_freq;
-> +
-> +			p_data->cpu_data[cpu] = cpu_data;
-> +			cpufreq_cpu_put(policy);
-> +		} else {
-> +			ret = -EPROBE_DEFER;
-> +			goto out;
-
-Resources from possible prior iterations aren't freed.
-
-> +		}
-> +	}
-> +out:
-> +	put_online_cpus();
-> +	if (ret)
-> +		return ret;
-> +
-> +	mutex_lock(&devfreq->lock);
-> +	ret = devfreq_update_target(devfreq, 0L);
-> +	mutex_unlock(&devfreq->lock);
-> +	if (ret)
-> +		dev_err(dev, "failed to update the frequency\n");
-> +
-> +	return ret;
-> +}
-> +
-> +static int cpufreq_passive_unregister_notifier(struct devfreq *devfreq)
-> +{
-> +	struct devfreq_passive_data *p_data
-> +			= (struct devfreq_passive_data *)devfreq->data;
-> +	struct devfreq_cpu_data *cpu_data;
-> +	int cpu;
-> +
-> +	if (p_data->nb.notifier_call)
-> +		cpufreq_unregister_notifier(&p_data->nb, CPUFREQ_TRANSITION_NOTIFIER);
-> +
-> +	for_each_possible_cpu(cpu) {
-> +		cpu_data = p_data->cpu_data[cpu];
-> +		if (cpu_data) {
-> +			if (cpu_data->opp_table)
-> +				dev_pm_opp_put_opp_table(cpu_data->opp_table);
-> +			kfree(cpu_data);
-> +			cpu_data = NULL;
-
-Assignment to NULL is not needed.
-
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int devfreq_passive_notifier_call(struct notifier_block *nb,
->  				unsigned long event, void *ptr)
->  {
-> @@ -140,7 +379,7 @@ static int devfreq_passive_event_handler(struct devfreq *devfreq,
->  	struct notifier_block *nb = &p_data->nb;
->  	int ret = 0;
->  
-> -	if (!parent)
-> +	if (p_data->parent_type == DEVFREQ_PARENT_DEV && !parent)
->  		return -EPROBE_DEFER;
->  
->  	switch (event) {
-> @@ -148,13 +387,24 @@ static int devfreq_passive_event_handler(struct devfreq *devfreq,
->  		if (!p_data->this)
->  			p_data->this = devfreq;
->  
-> -		nb->notifier_call = devfreq_passive_notifier_call;
-> -		ret = devfreq_register_notifier(parent, nb,
-> -					DEVFREQ_TRANSITION_NOTIFIER);
-> +		if (p_data->parent_type == DEVFREQ_PARENT_DEV) {
-> +			nb->notifier_call = devfreq_passive_notifier_call;
-> +			ret = devfreq_register_notifier(parent, nb,
-> +						DEVFREQ_TRANSITION_NOTIFIER);
-> +		} else if (p_data->parent_type == CPUFREQ_PARENT_DEV) {
-> +			ret = cpufreq_passive_register_notifier(devfreq);
-> +		} else {
-> +			ret = -EINVAL;
-> +		}
->  		break;
->  	case DEVFREQ_GOV_STOP:
-> -		WARN_ON(devfreq_unregister_notifier(parent, nb,
-> -					DEVFREQ_TRANSITION_NOTIFIER));
-> +		if (p_data->parent_type == DEVFREQ_PARENT_DEV)
-> +			WARN_ON(devfreq_unregister_notifier(parent, nb,
-> +						DEVFREQ_TRANSITION_NOTIFIER));
-> +		else if (p_data->parent_type == CPUFREQ_PARENT_DEV)
-> +			WARN_ON(cpufreq_passive_unregister_notifier(devfreq));
-> +		else
-> +			ret = -EINVAL;
->  		break;
->  	default:
->  		break;
-> diff --git a/include/linux/devfreq.h b/include/linux/devfreq.h
-> index 142474b4af96..cfa0ef54841e 100644
-> --- a/include/linux/devfreq.h
-> +++ b/include/linux/devfreq.h
-> @@ -38,6 +38,7 @@ enum devfreq_timer {
->  
->  struct devfreq;
->  struct devfreq_governor;
-> +struct devfreq_cpu_data;
->  struct thermal_cooling_device;
->  
->  /**
-> @@ -288,6 +289,11 @@ struct devfreq_simple_ondemand_data {
->  #endif
->  
->  #if IS_ENABLED(CONFIG_DEVFREQ_GOV_PASSIVE)
-> +enum devfreq_parent_dev_type {
-> +	DEVFREQ_PARENT_DEV,
-> +	CPUFREQ_PARENT_DEV,
-> +};
-> +
->  /**
->   * struct devfreq_passive_data - ``void *data`` fed to struct devfreq
->   *	and devfreq_add_device
-> @@ -299,8 +305,10 @@ struct devfreq_simple_ondemand_data {
->   *			using governors except for passive governor.
->   *			If the devfreq device has the specific method to decide
->   *			the next frequency, should use this callback.
-> - * @this:	the devfreq instance of own device.
-> - * @nb:		the notifier block for DEVFREQ_TRANSITION_NOTIFIER list
-> + + * @parent_type	parent type of the device
-> + + * @this:		the devfreq instance of own device.
-> + + * @nb:		the notifier block for DEVFREQ_TRANSITION_NOTIFIER list
-> + + * @cpu_data:		the state min/max/current frequency of all online cpu's
->   *
->   * The devfreq_passive_data have to set the devfreq instance of parent
->   * device with governors except for the passive governor. But, don't need to
-> @@ -314,9 +322,13 @@ struct devfreq_passive_data {
->  	/* Optional callback to decide the next frequency of passvice device */
->  	int (*get_target_freq)(struct devfreq *this, unsigned long *freq);
->  
-> +	/* Should set the type of parent device */
-> +	enum devfreq_parent_dev_type parent_type;
-> +
->  	/* For passive governor's internal use. Don't need to set them */
->  	struct devfreq *this;
->  	struct notifier_block nb;
-> +	struct devfreq_cpu_data *cpu_data[NR_CPUS];
-
-Could memory usage be a concern on systems with a really high number of CPUs
-(e.g. 8k for x86 with MAXSMP)? One could argue that such systems likely have
-significant amount of RAM too and a chunk of memory in the order of 100k
-wouldn't make a big impact. I'm assuming that 'cpu_data' is only needed for
-'policy CPUs'.
+- Arnaldo
