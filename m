@@ -2,248 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1DF3B0576
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A17773B0579
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231531AbhFVNHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 09:07:54 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:47331 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231305AbhFVNHx (ORCPT
+        id S231608AbhFVNJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 09:09:01 -0400
+Received: from mail-oo1-f41.google.com ([209.85.161.41]:46965 "EHLO
+        mail-oo1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230249AbhFVNI7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 09:07:53 -0400
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210622130535epoutp02a083c43772ac2e51c01b9e57ee87d568~K6U3E3vXN2877928779epoutp02j
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:05:35 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210622130535epoutp02a083c43772ac2e51c01b9e57ee87d568~K6U3E3vXN2877928779epoutp02j
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1624367135;
-        bh=zX/Xx9xQltdLLFto+ROMce7uXxnLYlXqc6+w5MHvh+U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eapcSz8+fSPRT3A2xaYL86fwzVMV3rjJ6Die4IMgewmXcVjHv7puYAHplCl/5omkb
-         lbSZex5arAyxQ9KA0btAMcwqP8BJ7L64KflQiRS+daS5tFmM7iqHS6k9jRqk2fx724
-         sNdNm9S8zViGbrSVva5LoYKDUQGDVgS6iEh8YAw0=
-Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20210622130535epcas5p146ba50c9a15bd734625aeb6534b6c6bc~K6U20ANst0526305263epcas5p1J;
-        Tue, 22 Jun 2021 13:05:35 +0000 (GMT)
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        AE.8A.09476.F10E1D06; Tue, 22 Jun 2021 22:05:35 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210622130204epcas5p1192cd38abc4a0b49798355cecea9f763~K6RyegZ8T2755727557epcas5p1_;
-        Tue, 22 Jun 2021 13:02:04 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210622130204epsmtrp23b2e89bed8b1642e1cd3b50ac14a5e57~K6RydbfNO0900809008epsmtrp2m;
-        Tue, 22 Jun 2021 13:02:04 +0000 (GMT)
-X-AuditID: b6c32a49-6b7ff70000002504-98-60d1e01fc9db
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        23.D7.08394.C4FD1D06; Tue, 22 Jun 2021 22:02:04 +0900 (KST)
-Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
-        [107.108.73.139]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210622130203epsmtip127b62670911b16144070d4e71b809cdc~K6RxV8LV43046230462epsmtip1a;
-        Tue, 22 Jun 2021 13:02:03 +0000 (GMT)
-From:   Alim Akhtar <alim.akhtar@samsung.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        robh+dt@kernel.org
-Cc:     krzysztof.kozlowski@canonical.com,
-        linux-samsung-soc@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>
-Subject: [PATCH v2 2/2] arm64: dts: exynos5433: Add cpu cache information
-Date:   Tue, 22 Jun 2021 18:35:51 +0530
-Message-Id: <20210622130551.67446-2-alim.akhtar@samsung.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210622130551.67446-1-alim.akhtar@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrHIsWRmVeSWpSXmKPExsWy7bCmhq78g4sJBk2NkhYP5m1js9j49geT
-        xabH11gtLu+aw2Yx4/w+JovWvUfYHdg8ZjX0snlsWtXJ5rF5Sb1H35ZVjB6fN8kFsEZx2aSk
-        5mSWpRbp2yVwZdxq2MJa0K9QcXF6P1MD40uJLkZODgkBE4mrd36xdDFycQgJ7GaUWPbnCDuE
-        84lRYuqcuVCZb4wSK+c+ZYVp2bOilxkisZdR4vWm1YwQTguTxNru7+wgVWwC2hJ3p29hArFF
-        BGIkHu6ZB9bNLFAo8aLlJliNsICnRFPvO0YQm0VAVeL1rbMsIDavgI3E1HN7WCC2yUus3nCA
-        GcTmFLCVmDTlEth9EgL72CVOfzjIDlHkIvFu/xEoW1ji1fEtULaUxOd3e9m6GDmA7GyJnl3G
-        EOEaiaXzjkHNt5c4cGUOC0gJs4CmxPpd+hBhWYmpp9YxQZzMJ9H7+wkTRJxXYsc8GFtVovnd
-        Vagx0hITu7tZITZ5SLT0pECCZAKjxPRPM5gnMMrNQtiwgJFxFaNkakFxbnpqsWmBYV5quV5x
-        Ym5xaV66XnJ+7iZGcBLQ8tzBePfBB71DjEwcjIcYJTiYlUR4X2RfTBDiTUmsrEotyo8vKs1J
-        LT7EKM3BoiTOu5T9UIKQQHpiSWp2ampBahFMlomDU6qBaf4uny1eiWmMLltN1+i/jeC9eclY
-        4O6xmaL/ZF7YHGlsZnR3lftpP9H7oVA964/pu0/mPrk18Z74rRePru89aZLkp3CxiOfUKf8V
-        6ufnWresydruvX3hyuXF+5ft3rjAYavpeuG47tClztoa5tVPP7w5H7zP98OLGexr2CUfzZgq
-        33VaSfhOUdnreQdWLsy5vXv3bb7ynVIv3j802/PtyOquVykNJyfvW8X2QVYy+1BlId+Zlyad
-        Ah+Tk9p+XFCIyZ7+0Cx3QvZVpUnaK9MKHNNKztkrn5wqx3nk0hv2Q7FnZ+nutjjA+6H77tl5
-        hzQbKvhljLfH77t8e/8f96tdZwx3neiv1dl6c0Eob77kvLarSizFGYmGWsxFxYkAxQGma3ED
-        AAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupjluLIzCtJLcpLzFFi42LZdlhJTtfn/sUEg3nXVCwezNvGZrHx7Q8m
-        i02Pr7FaXN41h81ixvl9TBate4+wO7B5zGroZfPYtKqTzWPzknqPvi2rGD0+b5ILYI3isklJ
-        zcksSy3St0vgyrjVsIW1oF+h4uL0fqYGxpcSXYycHBICJhJ7VvQydzFycQgJ7GaU2HXiFwtE
-        Qlri+sYJ7BC2sMTKf8/BbCGBJiaJv501IDabgLbE3elbmLoYOThEBOIkWtdXg5jMAsUSp38x
-        gVQIC3hKNPW+YwSxWQRUJV7fOgs2nVfARmLquT1Qm+QlVm84wAxicwrYSkyacglqk43E4rWr
-        mCcw8i1gZFjFKJlaUJybnltsWGCYl1quV5yYW1yal66XnJ+7iREcZFqaOxi3r/qgd4iRiYPx
-        EKMEB7OSCO+L7IsJQrwpiZVVqUX58UWlOanFhxilOViUxHkvdJ2MFxJITyxJzU5NLUgtgsky
-        cXBKNTCt49coLdsYZfvzmYZAZCIfzz7ByqPms2541n4KYLu/0+dWyW+28ocVP66zvrq+3uKi
-        hc+MZXPu/b32dsF3IRNfoW5Om2tb+N5bZS+46zavqHGDlkbOlcdHfu4zK/fttf4h+PbOPxfV
-        7prNL62XSN8R6FrSV6P59870uI9zdh/x7eDavfR4xEz1VSUvo7Uq93NNszyrlOV8TedHusXL
-        rYI72L1M1Nbde6Cp5DJ/RbjFg9QyicRY1ZgqM/5NKZKcke0bxC5/+S7z9XD195mTA7fsDPju
-        0C15L/o2243ju3o/XGUT3MWv5CKdkXk64/daqe2ptlXzeCbmPH5ZfeBLhrGStuLxmgNL0zW/
-        TQmvq0lSYinOSDTUYi4qTgQAUlcJN6ECAAA=
-X-CMS-MailID: 20210622130204epcas5p1192cd38abc4a0b49798355cecea9f763
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20210622130204epcas5p1192cd38abc4a0b49798355cecea9f763
-References: <20210622130551.67446-1-alim.akhtar@samsung.com>
-        <CGME20210622130204epcas5p1192cd38abc4a0b49798355cecea9f763@epcas5p1.samsung.com>
+        Tue, 22 Jun 2021 09:08:59 -0400
+Received: by mail-oo1-f41.google.com with SMTP id x22-20020a4a62160000b0290245cf6b7feeso5344009ooc.13;
+        Tue, 22 Jun 2021 06:06:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=chE9bMyNBH413ASQvMhl/suJETQNVpND5Md5xII89Tc=;
+        b=fnaerrmQIFHVu2H0S4J9HFt8GOscseFQL32YKKUS+g2wT4Id8iVSJktboDz8aR7DZb
+         32jMmK86erAMuiTG9yI6Q09aD9jqWSMInqVttVvY/lJ6Ckyi+NnlbgSFT6ADPPsgDKO6
+         VyQTXZ0VbEmmAmtztVyiXSBBIpr9wYuoNZPG1K8j5/x4Yr6+5RjKFhHmrUE2+QZ+OUrH
+         ggxzu8xLJJ6bkvquV8mmFVu8nRscK8bhnUBmoKgov0qj6h80ryC76ZX+pkn21if0Sbhw
+         tzOLkdY6PUnxAUoehGpYSbh/sjsyEDcj64Eio8Os7z8tvCrwyzTzNXo8ICCoP9g8mq9Q
+         /Z3w==
+X-Gm-Message-State: AOAM533lpajDs5bbGfyR44VELKOOECdhM2jV/NerwUmFrBO5Vod6dGMF
+        HXCPpwVyhDXyuNX4RawoNRcKAjzYzMrLxHA0QwG3sJ8G
+X-Google-Smtp-Source: ABdhPJyNO8kSogqtvkdApyiMVGuC+hG49Z6wicY0IoySDzQQJpO0HKqCdBn4Eo7wFblDWo0VKQ+P0ygkT1zl9z6JjpI=
+X-Received: by 2002:a4a:5dc6:: with SMTP id w189mr3257019ooa.1.1624367203069;
+ Tue, 22 Jun 2021 06:06:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210622124547.28317-1-pingshuo@uniontech.com>
+In-Reply-To: <20210622124547.28317-1-pingshuo@uniontech.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 22 Jun 2021 15:06:31 +0200
+Message-ID: <CAJZ5v0gnYHmbWANVkoG+6XrUNzBB4__uM0Ladrpn5=L0KEiefA@mail.gmail.com>
+Subject: Re: [PATCH] hibernation:stop resume screen during hibernation
+To:     pingshuo <pingshuo@uniontech.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds cpu caches information to its dt
-nodes so that the same is available to userspace
-via sysfs.
-This SoC has 48/32 KB I/D cache for each A57 cores
-with 2MB L2 cache.
-And 32/32 KB I/D cache for each A53 cores with
-256KB L2 cache.
+On Tue, Jun 22, 2021 at 2:46 PM pingshuo <pingshuo@uniontech.com> wrote:
+>
+> The display will be woken up during hibernation.
 
-Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
----
--Changes since v1:
-* addressed Krzysztof's review comments
+That actually depends on its driver.
 
- arch/arm64/boot/dts/exynos/exynos5433.dtsi | 70 ++++++++++++++++++++++
- 1 file changed, 70 insertions(+)
+> if the computer equipment is poor, it will cause the screen to flicker.
+> Skip to reusme the display devices in "thaw".
 
-diff --git a/arch/arm64/boot/dts/exynos/exynos5433.dtsi b/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-index 18a912eee360..73aa0fa9b778 100644
---- a/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-+++ b/arch/arm64/boot/dts/exynos/exynos5433.dtsi
-@@ -62,6 +62,13 @@
- 			clock-names = "apolloclk";
- 			operating-points-v2 = <&cluster_a53_opp_table>;
- 			#cooling-cells = <2>;
-+			i-cache-size = <0x8000>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <256>;
-+			d-cache-size = <0x8000>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <128>;
-+			next-level-cache = <&cluster_a53_l2>;
- 		};
- 
- 		cpu1: cpu@101 {
-@@ -72,6 +79,13 @@
- 			clock-frequency = <1300000000>;
- 			operating-points-v2 = <&cluster_a53_opp_table>;
- 			#cooling-cells = <2>;
-+			i-cache-size = <0x8000>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <256>;
-+			d-cache-size = <0x8000>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <128>;
-+			next-level-cache = <&cluster_a53_l2>;
- 		};
- 
- 		cpu2: cpu@102 {
-@@ -82,6 +96,13 @@
- 			clock-frequency = <1300000000>;
- 			operating-points-v2 = <&cluster_a53_opp_table>;
- 			#cooling-cells = <2>;
-+			i-cache-size = <0x8000>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <256>;
-+			d-cache-size = <0x8000>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <128>;
-+			next-level-cache = <&cluster_a53_l2>;
- 		};
- 
- 		cpu3: cpu@103 {
-@@ -92,6 +113,13 @@
- 			clock-frequency = <1300000000>;
- 			operating-points-v2 = <&cluster_a53_opp_table>;
- 			#cooling-cells = <2>;
-+			i-cache-size = <0x8000>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <256>;
-+			d-cache-size = <0x8000>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <128>;
-+			next-level-cache = <&cluster_a53_l2>;
- 		};
- 
- 		cpu4: cpu@0 {
-@@ -104,6 +132,13 @@
- 			clock-names = "atlasclk";
- 			operating-points-v2 = <&cluster_a57_opp_table>;
- 			#cooling-cells = <2>;
-+			i-cache-size = <0xc000>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <256>;
-+			d-cache-size = <0x8000>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <256>;
-+			next-level-cache = <&cluster_a57_l2>;
- 		};
- 
- 		cpu5: cpu@1 {
-@@ -114,6 +149,13 @@
- 			clock-frequency = <1900000000>;
- 			operating-points-v2 = <&cluster_a57_opp_table>;
- 			#cooling-cells = <2>;
-+			i-cache-size = <0xc000>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <256>;
-+			d-cache-size = <0x8000>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <256>;
-+			next-level-cache = <&cluster_a57_l2>;
- 		};
- 
- 		cpu6: cpu@2 {
-@@ -124,6 +166,13 @@
- 			clock-frequency = <1900000000>;
- 			operating-points-v2 = <&cluster_a57_opp_table>;
- 			#cooling-cells = <2>;
-+			i-cache-size = <0xc000>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <256>;
-+			d-cache-size = <0x8000>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <256>;
-+			next-level-cache = <&cluster_a57_l2>;
- 		};
- 
- 		cpu7: cpu@3 {
-@@ -134,6 +183,27 @@
- 			clock-frequency = <1900000000>;
- 			operating-points-v2 = <&cluster_a57_opp_table>;
- 			#cooling-cells = <2>;
-+			i-cache-size = <0xc000>;
-+			i-cache-line-size = <64>;
-+			i-cache-sets = <256>;
-+			d-cache-size = <0x8000>;
-+			d-cache-line-size = <64>;
-+			d-cache-sets = <256>;
-+			next-level-cache = <&cluster_a57_l2>;
-+		};
-+
-+		cluster_a57_l2: l2-cache0 {
-+			compatible = "cache";
-+			cache-size = <0x200000>;
-+			cache-line-size = <64>;
-+			cache-sets = <2048>;
-+		};
-+
-+		cluster_a53_l2: l2-cache1 {
-+			compatible = "cache";
-+			cache-size = <0x40000>;
-+			cache-line-size = <64>;
-+			cache-sets = <256>;
- 		};
- 	};
- 
--- 
-2.17.1
+But this patch looks like a proof of concept rather than a proper solution.
 
+This needs to be done more carefully.
+
+> Signed-off-by: pingshuo <pingshuo@uniontech.com>
+> ---
+>  drivers/base/power/main.c | 43 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 43 insertions(+)
+>
+> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+> index f893c3c5af07..f3e92ac7b4b3 100644
+> --- a/drivers/base/power/main.c
+> +++ b/drivers/base/power/main.c
+> @@ -35,11 +35,14 @@
+>  #include <linux/cpuidle.h>
+>  #include <linux/devfreq.h>
+>  #include <linux/timer.h>
+> +#include <linux/pci.h>
+>
+>  #include "../base.h"
+>  #include "power.h"
+>
+>  typedef int (*pm_callback_t)(struct device *);
+> +#define VIDEO_PCI_CLASS 0x030000
+> +#define VIDEO_PCI_CLASS_VALID 0xff0000
+>
+>  #define list_for_each_entry_rcu_locked(pos, head, member) \
+>         list_for_each_entry_rcu(pos, head, member, \
+> @@ -693,6 +696,40 @@ static void async_resume_noirq(void *data, async_cookie_t cookie)
+>         put_device(dev);
+>  }
+>
+> +/**
+> + * dpm_resume_skip_display_devices - Skip to reusme the display devices.
+> + * @dev: Device to handle.
+> + * @state: PM transition of the system being carried out.
+> + *
+> + * Delete the display devices from the wake-up list during the "thaw".
+> + */
+> +static int dpm_resume_skip_display_devices(struct device *dev, pm_message_t state)
+> +{
+> +       struct pci_dev *pci_test = to_pci_dev(dev);
+
+If you want to deal with PCI devices, that needs to happen at the PCI
+bus type level in the first place.
+
+> +
+> +       if (state.event == PM_EVENT_THAW) {
+> +               /*
+> +                * Filter out the display devices
+> +                */
+> +               if ((pci_test && ((pci_test->class & VIDEO_PCI_CLASS_VALID) == VIDEO_PCI_CLASS)) ||
+> +                       (dev->driver && dev->driver->name &&
+> +                       strncmp(dev->driver->name, "video", 6) == 0)) {
+> +
+> +                       pr_info("Skip the display devices during the thaw.");
+> +                       /*
+> +                        * Remove the display devices from the resume stage
+> +                        */
+> +                       list_del(&dev->power.entry);
+> +                       /*
+> +                        * Remove the display devices from the power down stage
+> +                        */
+> +                       list_del(&dev->kobj.entry);
+> +                       return 1;
+> +               }
+> +       }
+> +       return 0;
+> +}
+> +
+>  static void dpm_noirq_resume_devices(pm_message_t state)
+>  {
+>         struct device *dev;
+> @@ -713,6 +750,10 @@ static void dpm_noirq_resume_devices(pm_message_t state)
+>         while (!list_empty(&dpm_noirq_list)) {
+>                 dev = to_device(dpm_noirq_list.next);
+>                 get_device(dev);
+> +
+> +               if (dpm_resume_skip_display_devices(dev, state))
+> +                       continue;
+> +
+>                 list_move_tail(&dev->power.entry, &dpm_late_early_list);
+>                 mutex_unlock(&dpm_list_mtx);
+>
+> @@ -737,6 +778,8 @@ static void dpm_noirq_resume_devices(pm_message_t state)
+>         trace_suspend_resume(TPS("dpm_resume_noirq"), state.event, false);
+>  }
+>
+> +
+> +
+>  /**
+>   * dpm_resume_noirq - Execute "noirq resume" callbacks for all devices.
+>   * @state: PM transition of the system being carried out.
+> --
