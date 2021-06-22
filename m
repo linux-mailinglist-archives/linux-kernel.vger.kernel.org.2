@@ -2,134 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF103B0B96
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2776F3B0BCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:46:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232187AbhFVRm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 13:42:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232363AbhFVRmX (ORCPT
+        id S232465AbhFVRsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 13:48:52 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3301 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232454AbhFVRsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 13:42:23 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABB7C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:40:06 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id k8so31105755lja.4
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:40:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=66ra9JcEZ0eBr3diwYDmK55iDML4YsZIlomivlL4MkM=;
-        b=BN8pfadh6kxcRjOo7eBRIxfB3TqOIMMpU5w6SViYi3IbWgrX9pxyb+0MIPuTThh/Uk
-         UI374oOHBtqpQVOc5/7Wjq62OSZlw+Cs0ZJ9RtNvwUC7DVtrhmo38JY5T8rAYwai72SJ
-         tm4pt9J7lEO2DOp7XU52ViFjgfM4TXiIVDMsU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=66ra9JcEZ0eBr3diwYDmK55iDML4YsZIlomivlL4MkM=;
-        b=WVsMqbG6x8s8R+aYCvx8q/be5MQZMtGfa3c3Q0en5F9+2iQHH3JVB+io4DdzENk+hA
-         JTN3Qg7ALevhxblEyaQSNUUnoUzIxcwZEGMRMUY6FONtst0dEpVPjas/9jfp/jkuz7At
-         9XwGQpOUTxou7wa9aKO8XH1oxiO0jqjCiZiUI6/GeTuhCRXpK98yL8wmhBwkwF3f7izy
-         yPMaxSWnpEw0kli2gA2nH3UTaP4oXdYAZsqMR4atXkhXp1SHvSKCJByOP7WKSY0Vfpgl
-         C3RcFXHA2Tp85Euxx9FXan9vP3eubV0a7gTwUP/L0YqOiH41i9RtsHRZ3EGgZOc407EH
-         2wkA==
-X-Gm-Message-State: AOAM5324xMJwi4S5pxVivX/5QPOHtD6eBeOO6h5ZS+QyYOiT5AN41Qlz
-        V4gAp6bLg9jc5/jMXOM3hWk+wTL/n3ByReMS7Dc=
-X-Google-Smtp-Source: ABdhPJzO+rn4VwhwesFgTU0DNDQqgZUGXwCrb8Us4CinX3A5+8pvM/zHTQ1QoSgPEBi793O1Ub+nNA==
-X-Received: by 2002:a2e:b815:: with SMTP id u21mr4270431ljo.422.1624383604549;
-        Tue, 22 Jun 2021 10:40:04 -0700 (PDT)
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
-        by smtp.gmail.com with ESMTPSA id m18sm1631ljg.105.2021.06.22.10.40.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 10:40:03 -0700 (PDT)
-Received: by mail-lj1-f180.google.com with SMTP id a21so6146326ljj.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:40:03 -0700 (PDT)
-X-Received: by 2002:a2e:7813:: with SMTP id t19mr4167347ljc.411.1624383601833;
- Tue, 22 Jun 2021 10:40:01 -0700 (PDT)
+        Tue, 22 Jun 2021 13:48:38 -0400
+Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4G8YTv621Sz6H7Gp;
+        Wed, 23 Jun 2021 01:36:19 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 22 Jun 2021 19:46:19 +0200
+Received: from [10.47.89.126] (10.47.89.126) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 22 Jun
+ 2021 18:46:18 +0100
+Subject: Re: [PATCH 0/6] iommu: Enable devices to request non-strict DMA,
+ starting with QCom SD/MMC
+To:     Douglas Anderson <dianders@chromium.org>,
+        <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
+        <rafael.j.wysocki@intel.com>, <will@kernel.org>,
+        <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <bjorn.andersson@linaro.org>, <ulf.hansson@linaro.org>,
+        <adrian.hunter@intel.com>, <bhelgaas@google.com>
+CC:     <robdclark@chromium.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <quic_c_gdjako@quicinc.com>,
+        <iommu@lists.linux-foundation.org>, <sonnyrao@chromium.org>,
+        <saiprakash.ranjan@codeaurora.org>, <linux-mmc@vger.kernel.org>,
+        <vbadigan@codeaurora.org>, <rajatja@google.com>,
+        <saravanak@google.com>, <joel@joelfernandes.org>,
+        Andy Gross <agross@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210621235248.2521620-1-dianders@chromium.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <f3078ff2-97a6-6029-b584-1589ed184579@huawei.com>
+Date:   Tue, 22 Jun 2021 18:39:50 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-References: <3221175.1624375240@warthog.procyon.org.uk> <YNIBb5WPrk8nnKKn@zeniv-ca.linux.org.uk>
- <YNIDdgn0m8d2a0P3@zeniv-ca.linux.org.uk> <YNIdJaKrNj5GoT7w@casper.infradead.org>
-In-Reply-To: <YNIdJaKrNj5GoT7w@casper.infradead.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 22 Jun 2021 10:39:46 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh=YxjEtTpYyhgypKmPJQ8eVLJ4qowmwbnG1bOU06_4Bg@mail.gmail.com>
-Message-ID: <CAHk-=wh=YxjEtTpYyhgypKmPJQ8eVLJ4qowmwbnG1bOU06_4Bg@mail.gmail.com>
-Subject: Re: Do we need to unrevert "fs: do not prefault sys_write() user
- buffer pages"?
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        "Ted Ts'o" <tytso@mit.edu>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210621235248.2521620-1-dianders@chromium.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.89.126]
+X-ClientProxiedBy: lhreml721-chm.china.huawei.com (10.201.108.72) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 10:26 AM Matthew Wilcox <willy@infradead.org> wrote:
->
-> On Tue, Jun 22, 2021 at 03:36:22PM +0000, Al Viro wrote:
-> >
-> > Note that the revert you propose is going to do fault-in anyway; we really can't
-> > avoid it.  The only thing it does is optimistically trying without that the
-> > first time around, which is going to be an overall loss exactly in "slow
-> > write_begin" case.  If source pages are absent, you'll get copyin fail;
-> > iov_iter_copy_from_user_atomic() (or its replacement) is disabling pagefaults
-> > itself.
->
-> Let's not overstate the case.  I think for the vast majority of write()
-> calls, the data being written has recently been accessed.  So this
-> userspace access is unnecessary.
+On 22/06/2021 00:52, Douglas Anderson wrote:
+> 
+> This patch attempts to put forward a proposal for enabling non-strict
+> DMA on a device-by-device basis. The patch series requests non-strict
+> DMA for the Qualcomm SDHCI controller as a first device to enable,
+> getting a nice bump in performance with what's believed to be a very
+> small drop in security / safety (see the patch for the full argument).
+> 
+> As part of this patch series I am end up slightly cleaning up some of
+> the interactions between the PCI subsystem and the IOMMU subsystem but
+> I don't go all the way to fully remove all the tentacles. Specifically
+> this patch series only concerns itself with a single aspect: strict
+> vs. non-strict mode for the IOMMU. I'm hoping that this will be easier
+> to talk about / reason about for more subsystems compared to overall
+> deciding what it means for a device to be "external" or "untrusted".
+> 
+> If something like this patch series ends up being landable, it will
+> undoubtedly need coordination between many maintainers to land. I
+> believe it's fully bisectable but later patches in the series
+> definitely depend on earlier ones. Sorry for the long CC list. :(
+> 
 
-Note that the fault_in_readable is very much necessary - the only
-question is whether it happens before the actual access, or after it
-in the "oh, it failed, need to retry" case.
+JFYI, In case to missed it, and I know it's not the same thing as you 
+want, above, but the following series will allow you to build the kernel 
+to default to lazy mode:
 
-There are two cases:
+https://lore.kernel.org/linux-iommu/1624016058-189713-1-git-send-email-john.garry@huawei.com/T/#m21bc07b9353b3ba85f2a40557645c2bcc13cbb3e
 
- (a) the user page is there and accessible, and fault_in_readable
-isn't necessary
+So iommu.strict=0 would be no longer always required for arm64.
 
- (b) not
+Thanks,
+John
 
-and as you say, case (a) is generally the common one by far, although
-it will depend on the exact load (iow, (b) *could* be the common case:
-you can have situations where you mmap() things only to then write the
-mapping out, and then accesses will fault a lot).
 
-But if it's case (a), then the fault_in_readable is going to be pretty
-cheap. We're talking "tens of CPU cycles", unlikely to really be an
-issue.
+> 
+> Douglas Anderson (6):
+>    drivers: base: Add the concept of "pre_probe" to drivers
+>    drivers: base: Add bits to struct device to control iommu strictness
+>    PCI: Indicate that we want to force strict DMA for untrusted devices
+>    iommu: Combine device strictness requests with the global default
+>    iommu: Stop reaching into PCIe devices to decide strict vs. non-strict
+>    mmc: sdhci-msm: Request non-strict IOMMU mode
+> 
+>   drivers/base/dd.c             | 10 +++++--
+>   drivers/iommu/dma-iommu.c     |  2 +-
+>   drivers/iommu/iommu.c         | 56 +++++++++++++++++++++++++++--------
+>   drivers/mmc/host/sdhci-msm.c  |  8 +++++
+>   drivers/pci/probe.c           |  4 ++-
+>   include/linux/device.h        | 11 +++++++
+>   include/linux/device/driver.h |  9 ++++++
+>   include/linux/iommu.h         |  2 ++
+>   8 files changed, 85 insertions(+), 17 deletions(-)
+> 
 
-If the case is (b), then the cost is not actually the access at all,
-it's the *fault* and the retry. Now we're talking easily thousands of
-cycles.
-
-And that's where it matters whether the fault_in_readable is before or
-after. If it's before the actual access, then you'll have just _one_
-fault, and it will handle the fault.
-
-If the fault_in_readable is only done in the allegedly unlikely
-faulting case and is _after_ the actual user space atomic access,
-you'll have *two* faults. First the copy_from_user_atomic() will
-fault, and return a partial result. But the page won't actually be
-populated, so then the fault_in_readable will have to fault _again_,
-in order to finally populate the page. And then we retry
-(successfully, except for the unbelievably rare case of racing with
-pageout) the actual copy_from_user_atomic().
-
-End result: doing the fault_in_readable "unnecessarily" at the
-beginning is likely the better optimization. It's basically free when
-it's not necessary, and it avoids an extra fault (and extra
-lock/unlock and retry) when it does end up faulting pages in.
-
-               Linus
