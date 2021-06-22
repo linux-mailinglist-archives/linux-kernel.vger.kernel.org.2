@@ -2,261 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A2AF3B0941
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 385913B0945
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232129AbhFVPkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:40:47 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:47566 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231680AbhFVPkp (ORCPT
+        id S232178AbhFVPlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:41:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58097 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231680AbhFVPll (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:40:45 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 359C41FD45;
-        Tue, 22 Jun 2021 15:38:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624376309; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dYqkyJXGrlhrLuq6i1YuqTyaFTNfhX7/cG4lFyzdrpc=;
-        b=2ZRvW3fxkIp3QooGP+kHDj+bR3utbG9Tr4HzUvimCUeLTUILn/VPwYThME9iHeJ/iniF1j
-        bibnYD1qnIE6hNHw0vPADwFh1EhwrDso79luyzqh36MI1LBw+5aUQAgglGhcFd5J0X+k3h
-        CdxmtoE7lf73cIsfHC9JZA1dZzc+MhI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624376309;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dYqkyJXGrlhrLuq6i1YuqTyaFTNfhX7/cG4lFyzdrpc=;
-        b=PszgkPgDMzcYMMVD7kFiE6MnvC023iT8G7BSZedzBxD0UpCarRz9x3Ee3yxrF/S7miIAQE
-        MewdLpsnSg4XSACw==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 21AD0118DD;
-        Tue, 22 Jun 2021 15:38:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624376309; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dYqkyJXGrlhrLuq6i1YuqTyaFTNfhX7/cG4lFyzdrpc=;
-        b=2ZRvW3fxkIp3QooGP+kHDj+bR3utbG9Tr4HzUvimCUeLTUILn/VPwYThME9iHeJ/iniF1j
-        bibnYD1qnIE6hNHw0vPADwFh1EhwrDso79luyzqh36MI1LBw+5aUQAgglGhcFd5J0X+k3h
-        CdxmtoE7lf73cIsfHC9JZA1dZzc+MhI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624376309;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dYqkyJXGrlhrLuq6i1YuqTyaFTNfhX7/cG4lFyzdrpc=;
-        b=PszgkPgDMzcYMMVD7kFiE6MnvC023iT8G7BSZedzBxD0UpCarRz9x3Ee3yxrF/S7miIAQE
-        MewdLpsnSg4XSACw==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id xEYgB/UD0mCnBgAALh3uQQ
-        (envelope-from <bp@suse.de>); Tue, 22 Jun 2021 15:38:29 +0000
-Date:   Tue, 22 Jun 2021 17:38:24 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V3 47/66] x86/fpu: Clean up the fpu__clear() variants
-Message-ID: <YNID8GglJPaPqtE4@zn.tnic>
-References: <20210618141823.161158090@linutronix.de>
- <20210618143449.733176003@linutronix.de>
+        Tue, 22 Jun 2021 11:41:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624376365;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=NZHzXZMKP7nHpXK5mWsMLai/c3tl5cz2YTIhi9A9pMM=;
+        b=EXNa/JvSBugM4L3k1Z48oKLNN5/BgJrJp9RvVA/X5jbkTWrdyudekZXKdcjn7GosYpshSb
+        GOhehwVxcQ/ZWByxjc1LDXjTgMbtUYOIx5DaE/Ul9RrmwqHqm9hRh3s9akEEdWN8op5P3i
+        kJIu8Y0T8KCkgmE7YKi1hpavFvlB6nk=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-526-T7Iu-kCuMo6Z6oI8_n1Z2Q-1; Tue, 22 Jun 2021 11:39:24 -0400
+X-MC-Unique: T7Iu-kCuMo6Z6oI8_n1Z2Q-1
+Received: by mail-wr1-f72.google.com with SMTP id f9-20020a5d64c90000b029011a3c2a0337so9922635wri.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:39:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NZHzXZMKP7nHpXK5mWsMLai/c3tl5cz2YTIhi9A9pMM=;
+        b=ShRMWp7IH/VrGqrlVYDKMc7yyLwG7T6RILkiPjOVpoSrbaXe3TftIayYr0COebRtyn
+         t34Cw7b6A8Z+KRVHlSmAs4Cz/rbq/4UfJ+I9P8V0HTMfA2Ho+2+LDLSKPcKcT62CesKK
+         l3YRC6xAsmCwd79ovSdIBXVpUOFhdDbIAV7dyjmngs0QkwTs2cmypHTwo+3ZC0zqtJDP
+         HunI+INS1/zzQ42sPkrLu72U/yef2CEBHzjlPs7/7eRQC2teSsXRzixiWhHTn2wwGgsS
+         VmGyi0km8IePhIrUhQl+nmsMh9/DCQSPQwAmCb56zq0EePKlBIlAPGnAkZm72Xlr1Vf7
+         XdNQ==
+X-Gm-Message-State: AOAM533Boqd02Pvky15vpNSuiFntnq5FYwJ0MKXaCpfbrfrfLchZossj
+        KUUipXnDEtHXA7HNTl7yBABR8TEzE4BXFNNUqwAmzJW2lk2w6FTvDnee83r1eEKfQzoytg9oKqL
+        56JD+we9ps9ApQafhGwsmd/UE
+X-Received: by 2002:a05:600c:2150:: with SMTP id v16mr5049525wml.170.1624376362637;
+        Tue, 22 Jun 2021 08:39:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxE/pmn4kiWfXOuQKTCDrf/yUwuJQBIgPOWE/dVdGSMV4cjZ80c9YINuvkjER9s9BLe3jwA5Q==
+X-Received: by 2002:a05:600c:2150:: with SMTP id v16mr5049500wml.170.1624376362401;
+        Tue, 22 Jun 2021 08:39:22 -0700 (PDT)
+Received: from krava.redhat.com ([5.171.243.0])
+        by smtp.gmail.com with ESMTPSA id e3sm11647962wro.26.2021.06.22.08.39.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 08:39:22 -0700 (PDT)
+From:   Jiri Olsa <jolsa@redhat.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>
+Subject: [RFC 00/10] perf: Add build id parsing fault detection/fix
+Date:   Tue, 22 Jun 2021 17:39:08 +0200
+Message-Id: <20210622153918.688500-1-jolsa@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210618143449.733176003@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only nitpicks:
+hi,
+this *RFC* patchset adds support to detect faults during
+mmap2's build id parsing and a way to fix such maps in
+generated perf.data.
 
-On Fri, Jun 18, 2021 at 04:19:10PM +0200, Thomas Gleixner wrote:
-> From: Andy Lutomirski <luto@kernel.org>
-> 
-> fpu__clear() currently resets both register state and kernel XSAVE buffer
-> state.  It has two modes: one for all state (supervisor and user) and
-> another for user state only.  fpu__clear_all() uses the "all state"
-> (user_only=0) mode, while a number of signal paths use the user_only=1
-> mode.
-> 
-> Make fpu__clear() work only for user state (user_only=1) and remove the
-> "all state" (user_only=0) code.  Rename it to match so it can be used by
-> the signal paths.
-> 
-> Replace the "all state" (user_only=0) fpu__clear() functionality.  Use the
-> TIF_NEED_FPU_LOAD functionality instead of making any actual hardware
-> registers changes in this path.
-> 
-> Instead of invoking fpu__initialize() just memcpy() init_fpstate into the
-> tasks FPU state because that has already the correct format and in case of
+It adds support to record build id faults count for session
+and store it in perf.data and perf inject support to find
+these maps and reads build ids for them in user space.
 
-task's
+It's probably best explained by the workflow:
 
-> PKRU also contains the default PKRU value. Move the actual PKRU write out
-> into flush_thread() where it belongs and where it will end up anyway when
-> PKRU and XSTATE have been distangled.
+  Record data with --buildid-mmap option:
 
-untangled
+    # perf record --buildid-mmap ...
+    ...
+    [ perf record: Woken up 1 times to write data ]
+    [ perf record: Failed to parse 4 build ids]
+    [ perf record: Captured and wrote 0.008 MB perf.data ]
 
-> 
-> For bisectability a workaround is required which stores the PKRU value in
-> the xstate memory until PKRU is distangled from XSTATE for context
+  Check if there's any build id fault reported:
 
-untangled
+    # perf report --header-only
+    ...
+    # build id mmap stats: FAULTS 4, LOST 0, NOT FIXED
 
-> switching and return to user.
-> 
-> [ Dave Hansen: Polished changelog ]
-> [ tglx: Fixed the PKRU fallout ]
-> 
-> Signed-off-by: Andy Lutomirski <luto@kernel.org>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  arch/x86/kernel/fpu/core.c |  111 ++++++++++++++++++++++++++++++---------------
->  arch/x86/kernel/process.c  |   10 ++++
->  2 files changed, 85 insertions(+), 36 deletions(-)
+  There is, check the stats:
 
-...
+    # perf report --stat
 
-> +/* Temporary workaround. Will be removed once PKRU and XSTATE are distangled. */
+    Aggregated stats:
+             TOTAL events:        104
+                      ....
+           BUILD_ID fails:          4  (14.3%)
 
-untangled
+  Yep, let's fix it:
 
-> +static inline void pkru_set_default_in_xstate(struct xregs_state *xsave)
-> +{
-> +	struct pkru_state *pk;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_OSPKE))
-> +		return;
-> +	/*
-> +	 * Force XFEATURE_PKRU to be set in the header otherwise
-> +	 * get_xsave_addr() does not work and it also needs to be set to
-> +	 * make XRSTOR(S) load it.
-> +	 */
-> +	xsave->header.xfeatures |= XFEATURE_MASK_PKRU;
-> +	pk = get_xsave_addr(xsave, XFEATURE_PKRU);
-> +	pk->pkru = pkru_get_init_value();
-> +}
-> +
->  /*
-> - * Clear the FPU state back to init state.
-> - *
-> - * Called by sys_execve(), by the signal handler code and by various
-> - * error paths.
-> + * Reset current->fpu memory state to the init values.
->   */
-> -static void fpu__clear(struct fpu *fpu, bool user_only)
-> +static void fpu_reset_fpstate(void)
-> +{
-> +	struct fpu *fpu= &current->thread.fpu;
+    # perf inject --buildid-mmap2 -i perf.data -o perf-fixed.data
 
-ERROR: spaces required around that '=' (ctx:VxW)
-#167: FILE: arch/x86/kernel/fpu/core.c:335:
-+	struct fpu *fpu= &current->thread.fpu;
- 	               ^
+  And verify:
+
+    # perf report -i perf-fixed.data --stats
+
+    Aggregated stats:
+               TOTAL events:        104
+                        ....
+
+  Good, let's see how many we fixed:
+
+    # perf report --header-only -i perf-fixed.data
+    ...
+    # build id mmap stats: FAULTS 4, LOST 0, FIXED(4)
 
 
-> +
-> +	fpregs_lock();
-> +	fpu__drop(fpu);
-> +	/*
-> +	 * This does not change the actual hardware registers. It just
-> +	 * resets the memory image and sets TIF_NEED_FPU_LOAD so a
-> +	 * subsequent return to usermode will reload the registers from the
-> +	 * tasks memory image.
+I don't have a good way to test it, just by artificially
+adding the faults in kernel code, but Ian and Namhyung
+might have setup that could generate that.. would be great
+to have a perf test for this.
 
-task's
+Also available in here:
+  git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  perf/buildid_stats
 
-> +	 *
-> +	 * Do not use fpstate_init() here. Just copy init_fpstate which has
-> +	 * the correct content already except for PKRU.
-> +	 */
+thoughts?
 
-Dunno, this comment can be over the function name - it is small enough
-anyway.
+thanks,
+jirka
 
-> +	memcpy(&fpu->state, &init_fpstate, init_fpstate_copy_size());
-> +	pkru_set_default_in_xstate(&fpu->state.xsave);
-> +	set_thread_flag(TIF_NEED_FPU_LOAD);
-> +	fpregs_unlock();
-> +}
-> +
-> +/*
-> + * Reset current's user FPU states to the init states.  current's
-> + * supervisor states, if any, are not modified by this function.  The
-> + * caller guarantees that the XSTATE header in memory is intact.
-> + */
-> +void fpu__clear_user_states(struct fpu *fpu)
->  {
->  	WARN_ON_FPU(fpu != &current->thread.fpu);
->  
-> +	fpregs_lock();
->  	if (!static_cpu_has(X86_FEATURE_FPU)) {
 
-cpu_feature_enabled()
+---
+Jiri Olsa (10):
+      perf: Track build id faults for mmap2 event
+      perf: Move build_id_parse to check only regular files
+      perf: Add new read_format bit to read build id faults
+      perf: Add new read_format bit to read lost events
+      tools: Sync perf_event.h uapi
+      libperf: Do not allow PERF_FORMAT_GROUP in perf_evsel__read
+      perf record: Add support to read build id fails
+      perf record: Add new HEADER_BUILD_ID_MMAP feature
+      perf report: Display build id fails stats
+      perf inject: Add --buildid-mmap2 option to fix failed build ids
 
-> -		fpu__drop(fpu);
-> -		fpu__initialize(fpu);
-> +		fpu_reset_fpstate();
-> +		fpregs_unlock();
->  		return;
->  	}
->  
-> -	fpregs_lock();
-> -
-> -	if (user_only) {
-> -		if (!fpregs_state_valid(fpu, smp_processor_id()) &&
-> -		    xfeatures_mask_supervisor())
-> -			os_xrstor(&fpu->state.xsave, xfeatures_mask_supervisor());
-> -		load_fpregs_from_init_fpstate(xfeatures_mask_user());
-> -	} else {
-> -		load_fpregs_from_init_fpstate(xfeatures_mask_all);
-> +	/*
-> +	 * Ensure that current's supervisor states are loaded into their
-> +	 * corresponding registers.
-> +	 */
-> +	if (xfeatures_mask_supervisor() &&
-> +	    !fpregs_state_valid(fpu, smp_processor_id())) {
-> +		os_xrstor(&fpu->state.xsave, xfeatures_mask_supervisor());
->  	}
->  
-> +	/* Reset user states in registers. */
-> +	load_fpregs_from_init_fpstate(xfeatures_mask_user());
-> +
-> +	/*
-> +	 * Now all FPU registers have their desired values.  Inform the FPU
-> +	 * state machine that current's FPU registers are in the hardware
-> +	 * registers. The memory image does not need to be updated because
-> +	 * any operation relying on it has to save the registers first when
-> +	 * currents FPU is marked active.
+ include/linux/perf_event.h                         |  2 ++
+ include/uapi/linux/perf_event.h                    | 20 +++++++++++++-------
+ kernel/events/core.c                               | 49 +++++++++++++++++++++++++++++++++++++++++++------
+ kernel/events/ring_buffer.c                        |  3 +++
+ tools/include/uapi/linux/perf_event.h              | 20 +++++++++++++-------
+ tools/lib/perf/evsel.c                             | 10 ++++++++++
+ tools/lib/perf/include/perf/evsel.h                | 11 ++++++++++-
+ tools/perf/Documentation/perf-inject.txt           |  3 +++
+ tools/perf/Documentation/perf.data-file-format.txt | 19 +++++++++++++++++++
+ tools/perf/builtin-inject.c                        | 45 +++++++++++++++++++++++++++++++++++++++++++--
+ tools/perf/builtin-record.c                        | 97 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/perf/builtin-report.c                        | 35 +++++++++++++++++++++++++++++++++++
+ tools/perf/util/env.h                              |  6 ++++++
+ tools/perf/util/evsel.c                            | 12 ++++++++++++
+ tools/perf/util/header.c                           | 80 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/perf/util/header.h                           |  1 +
+ tools/perf/util/map.h                              | 15 +++++++++++++++
+ tools/perf/util/perf_event_attr_fprintf.c          |  3 ++-
+ 18 files changed, 407 insertions(+), 24 deletions(-)
 
-current's
-
-> +	 */
->  	fpregs_mark_activate();
->  	fpregs_unlock();
->  }
->  
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
