@@ -2,145 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7503AF9FC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 02:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B9DD3AF9FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 02:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbhFVADD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 20:03:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55536 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229640AbhFVADB (ORCPT
+        id S230151AbhFVADe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 20:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229940AbhFVADd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 20:03:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624320046;
-        h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d+Eaq1+5rsLNiK5tsAB1Wl7ySzk9v73rKnCIUBnt7h8=;
-        b=CTsPoOEKHs9/0QqeDBuAujs6rJzPoHmybVeKJ/oNMC5hJZOYtrHoRnD+7/3OS5V0VLShXx
-        NITXA3d8UgwxyemGR2RIMxFBlG/6g9cbsSlX7fQSpfJ1CB7mCV8yM4FpY5ulKTH7lpL5qA
-        wS9adcbznOo3WE+kVxjDYdtGMX1fTQA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-150-eO2x0zK1PoOpbNP_hnsmyw-1; Mon, 21 Jun 2021 20:00:45 -0400
-X-MC-Unique: eO2x0zK1PoOpbNP_hnsmyw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BC617362F9;
-        Tue, 22 Jun 2021 00:00:43 +0000 (UTC)
-Received: from [10.64.54.84] (vpn2-54-84.bne.redhat.com [10.64.54.84])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 14B1A179B3;
-        Tue, 22 Jun 2021 00:00:36 +0000 (UTC)
-Reply-To: Gavin Shan <gshan@redhat.com>
-Subject: Re: [PATCH 0/3] mm/page_reporting: Make page reporting work on arm64
- with 64KB page size
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     linux-mm <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, shan.gavin@gmail.com
-References: <20210621051152.305224-1-gshan@redhat.com>
- <CAKgT0Uf3UwhdFX93YrkiB8yk6v3syqUrdbu720ECqv1ak_H_FA@mail.gmail.com>
-From:   Gavin Shan <gshan@redhat.com>
-Message-ID: <80423104-23ca-17dc-9449-ec5e168e4088@redhat.com>
-Date:   Tue, 22 Jun 2021 12:01:37 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        Mon, 21 Jun 2021 20:03:33 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D800C061756;
+        Mon, 21 Jun 2021 17:01:17 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id e22so9296390pgv.10;
+        Mon, 21 Jun 2021 17:01:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=UB9+acUzK3vzXh9+7U7bnmX5b1NlglHQrLIGUPXU/88=;
+        b=cRhwrbwLthRHZEl5qtGandK0P3Pe5BMBQohYB/3hQrx0hUMho6jLEp/UuaUMGcJaM+
+         hXc6cf+8iFf+gafOybzC2MxTmCEqprQ8MbAf94Uh+hXrOSmblBBKTShlXYqVr6ivlTVP
+         qoodjF6SXnAvnmSJm2loNMg78iFlVIZ9CAiS9BF2nlQuOE11dtNt0+c72MFUUNiwWtW8
+         wLLaslzd8qJjw5k7bioVuUj9yORV1Hc9Rc6j7QW8bRufm21y4UUtCIB11KsjXzFH6oe9
+         DEjh0qANHksXAVFf6NYp414vqSzmNRDS4CwYYDYXtAkf5DXRRpcViaEOkQQ6YFHZWdHE
+         EMwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=UB9+acUzK3vzXh9+7U7bnmX5b1NlglHQrLIGUPXU/88=;
+        b=kpGZKCLAX6tY8AJ5/1/rfY0w6Hpr71/BuRfqndZsvcTqcXlvoWMIneh22p4YQDABIu
+         WSv0ShvsGB/57STRdetUBwiz9jHs3CUkXzMUCtcc3LiJJ68fv1awiKDgNoAC3f6RPyc6
+         ZFRZWP4iCoix0aSr+7kn7WKz0osxADHq4K4nMYU9LSRV+P5Nx6Gh18FBAdqoKZybc5ic
+         7OuiViY+IdRJ4dXBYx/AS71D/7SVYICKJdezjDUQNRP7DvtnFvLjipHoe+Dr4U4A3vnP
+         Zyc/Ru/U691SXPJZicQFJUExoA8VL2/UPTM2z+aB9omaUZZ4l2Pn03l5W6crRRUB4WLw
+         LFHg==
+X-Gm-Message-State: AOAM531HKNv5YRbjvibx/cKtL8fdYcQFB/50uac/HsKo8qmAqoN1xhwr
+        GofAk+DpUg+Fiz3iZ3/kSNk=
+X-Google-Smtp-Source: ABdhPJxAwqrKu9EUDW7pk8tIMB2wXOWecR4+Fm/G+/ITCQorAtb5Il5ND0K3q+rlHWWe1XDRcp6gaA==
+X-Received: by 2002:a63:f256:: with SMTP id d22mr946422pgk.399.1624320076661;
+        Mon, 21 Jun 2021 17:01:16 -0700 (PDT)
+Received: from ?IPv6:2001:df0:0:200c:2114:f868:6a99:ac19? ([2001:df0:0:200c:2114:f868:6a99:ac19])
+        by smtp.gmail.com with ESMTPSA id q13sm16419704pff.13.2021.06.21.17.01.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 21 Jun 2021 17:01:16 -0700 (PDT)
+Subject: Re: Kernel stack read with PTRACE_EVENT_EXIT and io_uring threads
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Oleg Nesterov <oleg@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        alpha <linux-alpha@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Tejun Heo <tj@kernel.org>, Kees Cook <keescook@chromium.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+References: <CAHk-=wgsnMTr0V-0F4FOk30Q1h7CeT8wLvR1MSnjack7EpyWtQ@mail.gmail.com>
+ <6e47eff8-d0a4-8390-1222-e975bfbf3a65@gmail.com>
+ <924ec53c-2fd9-2e1c-bbb1-3fda49809be4@gmail.com> <87eed4v2dc.fsf@disp2133>
+ <5929e116-fa61-b211-342a-c706dcb834ca@gmail.com> <87fsxjorgs.fsf@disp2133>
+ <CAHk-=wj5cJjpjAmDptmP9u4__6p3Y93SCQHG8Ef4+h=cnLiCsA@mail.gmail.com>
+ <YNCaMDQVYB04bk3j@zeniv-ca.linux.org.uk>
+ <YNDhdb7XNQE6zQzL@zeniv-ca.linux.org.uk>
+ <CAHk-=whAsWXcJkpMM8ji77DkYkeJAT4Cj98WBX-S6=GnMQwhzg@mail.gmail.com>
+ <YNDsYk6kbisbNy3I@zeniv-ca.linux.org.uk>
+ <CAHk-=wh82uJ5Poqby3brn-D7xWbCMnGv-JnwfO0tuRfCvsVgXA@mail.gmail.com>
+From:   Michael Schmitz <schmitzmic@gmail.com>
+Message-ID: <c7144d54-539d-6aef-ed15-beea91836468@gmail.com>
+Date:   Tue, 22 Jun 2021 12:01:06 +1200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0Uf3UwhdFX93YrkiB8yk6v3syqUrdbu720ECqv1ak_H_FA@mail.gmail.com>
+In-Reply-To: <CAHk-=wh82uJ5Poqby3brn-D7xWbCMnGv-JnwfO0tuRfCvsVgXA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/22/21 12:02 AM, Alexander Duyck wrote:
-> So the question I would have is what is the use case for this? It
-> seems like you don't have to deal with the guest native page size
-> issues since you are willing to break up what would otherwise be THP
-> pages on the guest, and the fact that you are willing to go down to
-> 2MB pages which happens to align with the host THP page size for x86
-> makes me wonder if that is actually the environment you are running
-> in.
-> 
-> Rather than having the guest control this it might make sense to look
-> at adding an interface so that the page_reporting_register function
-> and the page_reporting_dev_info struct could be used to report and
-> configure the minimum page size that the host can support for the page
-> reporting. With that the host could then guarantee that it isn't going
-> to hurt performance by splitting pages on the host and risk hurting
-> the virtualization performance.
-> 
-> Also you would benefit by looking into the callers of
-> page_reporting_register as there are more than just the virtio balloon
-> that are consuming it. Odds are HyperV won't care about an ARM64
-> architecture, but your change would essentially disable it outright
-> which is why I think this might be better to address via the consumers
-> of page reporting rather than trying to address it in page reporting
-> itself.
-> 
+Hi Linus,
 
-Alex, the issue was initially found on guest with 64KB base page size
-when memory balloon is used. The same issue isn't found on guest with
-4KB base page size. Both guests can be running on host with 4KB or
-64KB base page size. Besides, the code changes are specific to ARM64,
-meaning they don't affect other architectures.
+On 22/06/21 11:14 am, Linus Torvalds wrote:
+> On Mon, Jun 21, 2021 at 12:45 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>>> Looks like sys_exit() and do_group_exit() would be the two places to
+>>> do it (do_group_exit() would handle the signal case and
+>>> sys_group_exit()).
+>> Maybe...  I'm digging through that pile right now, will follow up when
+>> I get a reasonably complete picture
+> We might have another possible way to solve this:
+>
+>   (a) make it the rule that everybody always saves the full (integer)
+> register set in pt_regs
+>
+>   (b) make m68k just always create that switch-stack for all system
+> calls (it's really not that big, I think it's like six words or
+> something)
 
-(1) If we have the combination of guest.64KB and host.4KB, the 2MB page
-     reporting order is still avoid splitting the THP on host.
-(2) If we have the combination of guest.64KB and host.64KB, the THP splitting
-     can't be avoided.
+Correct - six words for registers, one for the return address. Probably 
+still a win compared to setting and clearing flag bits all over the 
+place in an attempt to catch any as yet undetected unsafe cases of 
+ptrace_stop.
 
-After thinking about it, I agree to reuse page_report_register() and
-"struct page_reporting_dev_info" to have the page reporting order. In
-this way, the PAGE_REPORTING_CAPACITY can be provided by consumer in
-future either. I will have these updates in v2 patches.
+I'll have to see how much of a performance impact I can see (not that I 
+can even remotely measure that accurately - it's more of a 'does it now 
+feel real sluggish' thing).
 
-Thanks,
-Gavin
+Cheers,
 
-> 
-> On Sun, Jun 20, 2021 at 8:11 PM Gavin Shan <gshan@redhat.com> wrote:
->>
->> The page reporting threshold is currently equal to @pageblock_order, which
->> is 13 and 512MB on arm64 with 64KB base page size selected. The page
->> reporting won't be triggered if the freeing page can't come up with a free
->> area like that huge. The condition is hard to be met, especially when the
->> system memory becomes fragmented.
->>
->> This series intends to solve the issue by having page reporting threshold
->> as 5 (2MB) on arm64 with 64KB base page size. The patches are organized as:
->>
->>     PATCH[1/3] introduces variable (@page_reporting_order) to replace original
->>                macro (PAGE_REPORTING_MIN_ORDER). It's also exported so that it
->>                can be adjusted at runtime.
->>     PATCH[2/3] renames PAGE_REPORTING_MIN_ORDER with PAGE_REPORTING_ORDER and
->>                allows architecture to specify its own version.
->>     PATCH[3/3] defines PAGE_REPORTING_ORDER to 5, corresponding to 2MB in size,
->>                on arm64 when 64KB base page size is selected. It's still same
->>                as to @pageblock_order for other architectures and cases.
->>
->> Gavin Shan (3):
->>    mm/page_reporting: Allow to set reporting order
->>    mm/page_reporting: Allow architecture to select reporting order
->>    arm64: mm: Specify smaller page reporting order
->>
->>   Documentation/admin-guide/kernel-parameters.txt |  6 ++++++
->>   arch/arm64/include/asm/page.h                   | 13 +++++++++++++
->>   mm/page_reporting.c                             |  8 ++++++--
->>   mm/page_reporting.h                             | 10 +++++++---
->>   4 files changed, 32 insertions(+), 5 deletions(-)
->>
->> --
->> 2.23.0
->>
-> 
+     Michael
 
+>
+>   (c) admit that alpha is broken, but nobody really cares
+>
+>> In the meanwhile, do kernel/kthread.c uses look even remotely sane?
+>> Intentional - sure, but it really looks wrong to use thread exit code
+>> as communication channel there...
+> I really doubt that it is even "intentional".
+>
+> I think it's "use some errno as a random exit code" and nobody ever
+> really thought about it, or thought about how that doesn't really
+> work. People are used to the error numbers, not thinking about how
+> do_exit() doesn't take an error number, but a signal number (and an
+> 8-bit positive error code in bits 8-15).
+>
+> Because no, it's not even remotely sane.
+>
+> I think the do_exit(-EINTR) could be do_exit(SIGINT) and it would make
+> more sense. And the -ENOMEM might be SIGBUS, perhaps.
+>
+> It does look like the usermode-helper code does save the exit code
+> with things like
+>
+>                  kernel_wait(pid, &sub_info->retval);
+>
+> and I see call_usermodehelper_exec() doing
+>
+>          retval = sub_info->retval;
+>
+> and treating it as an error code. But I think those have never been
+> tested with that (bogus) exit code thing from kernel_wait(), because
+> it wouldn't have worked.  It has only ever been tested with the (real)
+> exit code things like
+>
+>                  if (pid < 0) {
+>                          sub_info->retval = pid;
+>
+> which does actually assign a negative error code to it.
+>
+> So I think that
+>
+>                  kernel_wait(pid, &sub_info->retval);
+>
+> line is buggy, and should be something like
+>
+>                  int wstatus;
+>                  kernel_wait(pid, &wstatus);
+>                  sub_info->retval = WEXITSTATUS(wstatus) ? -EINVAL : 0;
+>
+> or something.
+>
+>              Linus
