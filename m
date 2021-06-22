@@ -2,83 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35EB63B062F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC413B0635
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbhFVNv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 09:51:57 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:11082 "EHLO
-        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbhFVNv4 (ORCPT
+        id S231269AbhFVNxm convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Jun 2021 09:53:42 -0400
+Received: from out28-101.mail.aliyun.com ([115.124.28.101]:56882 "EHLO
+        out28-101.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229907AbhFVNxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 09:51:56 -0400
-Received: from dggeme703-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4G8SNs3cPxzZh5K;
-        Tue, 22 Jun 2021 21:46:37 +0800 (CST)
-Received: from [10.174.177.120] (10.174.177.120) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Tue, 22 Jun 2021 21:49:37 +0800
-Subject: Re: [PATCH 6/6] mm/z3fold: use release_z3fold_page_locked() to
- release locked z3fold page
-To:     Hillf Danton <hdanton@sina.com>
-CC:     <akpm@linux-foundation.org>, <vitalywool@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-References: <20210619093151.1492174-1-linmiaohe@huawei.com>
- <20210620002604.1575-1-hdanton@sina.com>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <ef4e77a6-4c30-d92c-bd7a-35fa27290401@huawei.com>
-Date:   Tue, 22 Jun 2021 21:49:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 22 Jun 2021 09:53:41 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08888309|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0726204-0.00257395-0.924806;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047188;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=12;RT=12;SR=0;TI=SMTPD_---.KWIJ6dl_1624369880;
+Received: from zhouyanjie-virtual-machine(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KWIJ6dl_1624369880)
+          by smtp.aliyun-inc.com(10.147.41.158);
+          Tue, 22 Jun 2021 21:51:21 +0800
+Date:   Tue, 22 Jun 2021 21:51:19 +0800
+From:   =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+To:     Paul Cercueil <paul@opendingux.net>
+Cc:     tsbogend@alpha.franken.de, robh+dt@kernel.org,
+        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
+        sernia.zhou@foxmail.com
+Subject: Re: [PATCH 3/4] MIPS: GCW0: Adjust pinctrl related code in device
+ tree.
+Message-ID: <20210622215119.18a49cf9@zhouyanjie-virtual-machine>
+In-Reply-To: <9US3VQ.SK89X0OFZC2Z2@opendingux.net>
+References: <1624347445-88070-1-git-send-email-zhouyanjie@wanyeetech.com>
+        <1624347445-88070-4-git-send-email-zhouyanjie@wanyeetech.com>
+        <9US3VQ.SK89X0OFZC2Z2@opendingux.net>
+X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210620002604.1575-1-hdanton@sina.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.120]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/6/20 8:26, Hillf Danton wrote:
-> On Sat, 19 Jun 2021 17:31:51 +0800 Miaohe Lin wrote:
->> We should use release_z3fold_page_locked() to release z3fold page when it's
->> locked, although it looks harmless to use release_z3fold_page() now.
->>
->> Fixes: dcf5aedb24f8 ("z3fold: stricter locking and more careful reclaim")
->> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->> ---
->>  mm/z3fold.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/mm/z3fold.c b/mm/z3fold.c
->> index 196d886a3436..b3c0577b8095 100644
->> --- a/mm/z3fold.c
->> +++ b/mm/z3fold.c
->> @@ -1372,7 +1372,7 @@ static int z3fold_reclaim_page(struct z3fold_pool *pool, unsigned int retries)
->>  			if (zhdr->foreign_handles ||
->>  			    test_and_set_bit(PAGE_CLAIMED, &page->private)) {
->>  				if (kref_put(&zhdr->refcount,
->> -						release_z3fold_page))
->> +						release_z3fold_page_locked))
->>  					atomic64_dec(&pool->pages_nr);
+Hi Paul,
+
+于 Tue, 22 Jun 2021 13:46:57 +0100
+Paul Cercueil <paul@opendingux.net> 写道:
+
+> Hi Zhou,
 > 
-> LGTM. JFYI other issue in z3fold was reported [1] and if the fix proposed there
-> makes any sense to you feel free to pick it up and ask Mike for his tests.
+> Le mar., juin 22 2021 at 15:37:24 +0800, 周琰杰 (Zhou Yanjie) 
+> <zhouyanjie@wanyeetech.com> a écrit :
+> > Change the "lcd-24bit" in the pinctrl groups to "lcd-8bit",
+> > "lcd-16bit", "lcd-18bit", "lcd-24bit", since the pinctrl
+> > driver has done the necessary splitting of the lcd group,
+> > and it is convenient to further streamline the lcd-24bit
+> > group in the subsequent pinctrl driver.
+> > 
+> > Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> > ---
+> >  arch/mips/boot/dts/ingenic/gcw0.dts | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/mips/boot/dts/ingenic/gcw0.dts 
+> > b/arch/mips/boot/dts/ingenic/gcw0.dts
+> > index f4c04f2..dec3ba6f 100644
+> > --- a/arch/mips/boot/dts/ingenic/gcw0.dts
+> > +++ b/arch/mips/boot/dts/ingenic/gcw0.dts
+> > @@ -393,7 +393,7 @@
+> >  &pinctrl {
+> >  	pins_lcd: lcd {
+> >  		function = "lcd";
+> > -		groups = "lcd-24bit";
+> > +		groups = "lcd-8bit", "lcd-16bit", "lcd-18bit",
+> > "lcd-24bit";  
+> 
+> No, I'm pretty sure this won't work, since "lcd-24bit" contains pins 
+> that are also contained by the other groups.
 > 
 
-Thank you for review and reply.
+Sure, it seems that we should modify the pinctrl first, then modify the
+dts, and then put them in the same series, so as to ensure that they do
+not cause damage.
 
-I browsed [1] several times but I failed to figure out what's the root cause. And I found
-some bugs and possible race windows from previous code inspection. I think we can try fix
-these first and see whether [1] is (hopefully) fixed. :)
-Thanks again.
+Thanks and best regards!
 
-> [1] https://lore.kernel.org/linux-mm/20210316061351.1649-1-hdanton@sina.com/
-> .
->
+> -Paul
+> 
+> >  	};
+> > 
+> >  	pins_uart2: uart2 {
+> > --
+> > 2.7.4
+> >   
+> 
+
