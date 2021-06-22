@@ -2,190 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 979CF3B0300
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 13:40:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 949D03B030D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 13:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230384AbhFVLmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 07:42:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34152 "EHLO
+        id S230170AbhFVLov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 07:44:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229948AbhFVLmi (ORCPT
+        with ESMTP id S229912AbhFVLos (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 07:42:38 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 256B6C0617A8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 04:40:22 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id b3so12996647wrm.6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 04:40:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jUBkBWWpavQfJ/XXZFQzGX0EU9d+FGRKZtwFN9vG+OA=;
-        b=vyE3RxJoCu5DMSxbDGOfacy7HyUP9y0Txh3uYhEUKh/FBMLutl5b9mXWMKbN2AEQCg
-         +nzElUppRSE3mIeyBJTGRW/wKN7j49HsTJSNI/p13Rhv/JgvZKHZgeMiR+nwv4SesSa7
-         1A4q5+EubABALDEa7qh9gBae8IuFvrirRrI8oLyXWxuWmhVw0N/auuo8BLS1tt8naljY
-         vb9AN/Rnh2Wsog4yxaF0V2xifTZekod6/WpFcOPvIRXx1CLkLfAktCSvx5IezPA0QOMS
-         6xNyHoOTmjSc5HN0X614njJjD+Fsi9875FUhWQxXjTAfPHrXNctkeItokoMxGFepChmC
-         l16Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=jUBkBWWpavQfJ/XXZFQzGX0EU9d+FGRKZtwFN9vG+OA=;
-        b=YjfhVx+uNxKbDPOsHCP5FzRwfHH4b9ePLlVE9ZYFHEae0OT0DVbxTp/m6nB5NGhom8
-         wkpHtendLU5Y02SiFfb5rVL82PwB4C5v6qrQlIIyd+e+vIl/jXPY+QZn2QYCpNHY/wws
-         RSM0mIaTnerbAxDVJgRkpjrqD9Ju3GmHQwBdf2s/4MjoGIt61nEu0Ycoqq1XuLyDAXqB
-         XrLRuVE7XGP3ZfN98ch0ZEWgMmIHR7eDF9OX31Xtn2vJEbct0TTEBWSFuR9ynIRhTTvx
-         UBo75D7cp7IYR35aoK88DkG0C23lH+78nekYDMDcy2fdDfltMThQyvZQqX/kIwQZseV4
-         VVPA==
-X-Gm-Message-State: AOAM531Kr2hg/ZvPAoRUoHrKmqlSuj31w5S2EWYVUqwsdzhO8LleGYgy
-        I9ZtLQzqGzxwGOUmK29JAEFrTQ==
-X-Google-Smtp-Source: ABdhPJytmq1wHQ+S/OsD4Ekc6a4R9V5gIBbT4aui9p8X/DVFcP1ylbK0V4uXpl2U3TfC0hLHi5RnDw==
-X-Received: by 2002:a5d:6a01:: with SMTP id m1mr4224961wru.363.1624362020790;
-        Tue, 22 Jun 2021 04:40:20 -0700 (PDT)
-Received: from localhost.localdomain (hst-221-32.medicom.bg. [84.238.221.32])
-        by smtp.gmail.com with ESMTPSA id k2sm20690929wrw.93.2021.06.22.04.40.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 04:40:20 -0700 (PDT)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Cc:     Ezequiel Garcia <ezequiel@collabora.com>,
-        nicolas.dufresne@collabora.com,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH v5 3/3] venus: venc: Add support for intra-refresh period
-Date:   Tue, 22 Jun 2021 14:39:58 +0300
-Message-Id: <20210622113958.809173-4-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210622113958.809173-1-stanimir.varbanov@linaro.org>
-References: <20210622113958.809173-1-stanimir.varbanov@linaro.org>
+        Tue, 22 Jun 2021 07:44:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5788AC061574;
+        Tue, 22 Jun 2021 04:42:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=/7yTQ2Z0i+ebq2ranwWj3EBCmGl3WnMSrkD+yDrJg2w=; b=Z0g0rUKmOuWq2aRD+zKPBwdi/m
+        VklcQMDNpxRnjO+v8rCYNLrXY8oxBoIstDy8AsKwlVdmOWgTRjYtSOXPAw2ylYZn2ibUXCXIPPX66
+        8OSldWXFQudqik1rpr//lv5wkfdUjewwtoQZVa8dVae3jZqevg6fQ6W7+uPp5sw/hWVc0GY6kuROq
+        Zm/zhZ1L8QezHkJ0C6WgsX16n1k5dxTaQtwbFyhtPS3J/joZB5wj2vi8xSheqv1eGjFkH6Yiw1CBS
+        tlupiKLbmT3i0oS2ykVaAl05tqd3p+ZOiDXXJdyGADP0AbNzJY29t4O30CKsXKywLO3HFFFs0SK7o
+        Io+Rk5jw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvemN-00EDRT-R7; Tue, 22 Jun 2021 11:41:40 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     akpm@linux-foundation.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v12 00/33] Memory folios
+Date:   Tue, 22 Jun 2021 12:40:45 +0100
+Message-Id: <20210622114118.3388190-1-willy@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for intra-refresh period v4l2 control and drop
-cyclic intra-refresh macroblock control in the same time.
+Managing memory in 4KiB pages is a serious overhead.  Many benchmarks
+benefit from a larger "page size".  As an example, an earlier iteration
+of this idea which used compound pages (and wasn't particularly tuned)
+got a 7% performance boost when compiling the kernel.
 
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- drivers/media/platform/qcom/venus/core.h      |  1 +
- drivers/media/platform/qcom/venus/venc.c      | 26 +++++++++++++++++++
- .../media/platform/qcom/venus/venc_ctrls.c    | 14 +++++-----
- 3 files changed, 34 insertions(+), 7 deletions(-)
+Using compound pages or THPs exposes a weakness of our type system.
+Functions are often unprepared for compound pages to be passed to them,
+and may only act on PAGE_SIZE chunks.  Even functions which are aware of
+compound pages may expect a head page, and do the wrong thing if passed
+a tail page.
 
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index 8df2d497d706..df9f79f5b164 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -256,6 +256,7 @@ struct venc_controls {
- 
- 	u32 header_mode;
- 	bool aud_enable;
-+	u32 intra_refresh_period;
- 
- 	struct {
- 		u32 h264;
-diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
-index 8dd49d4f124c..718ce3578be8 100644
---- a/drivers/media/platform/qcom/venus/venc.c
-+++ b/drivers/media/platform/qcom/venus/venc.c
-@@ -547,6 +547,7 @@ static int venc_set_properties(struct venus_inst *inst)
- 	struct hfi_quantization_range quant_range;
- 	struct hfi_enable en;
- 	struct hfi_ltr_mode ltr_mode;
-+	struct hfi_intra_refresh intra_refresh = {};
- 	u32 ptype, rate_control, bitrate;
- 	u32 profile, level;
- 	int ret;
-@@ -802,6 +803,31 @@ static int venc_set_properties(struct venus_inst *inst)
- 			en.enable = 1;
- 
- 		ret = hfi_session_set_property(inst, ptype, &en);
-+	}
-+
-+	if ((inst->fmt_cap->pixfmt == V4L2_PIX_FMT_H264 ||
-+	     inst->fmt_cap->pixfmt == V4L2_PIX_FMT_HEVC) &&
-+	    (rate_control == HFI_RATE_CONTROL_CBR_VFR ||
-+	     rate_control == HFI_RATE_CONTROL_CBR_CFR)) {
-+		intra_refresh.mode = HFI_INTRA_REFRESH_NONE;
-+		intra_refresh.cir_mbs = 0;
-+
-+		if (ctr->intra_refresh_period) {
-+			u32 mbs;
-+
-+			mbs = ALIGN(inst->width, 16) * ALIGN(inst->height, 16);
-+			mbs /= 16 * 16;
-+			if (mbs % ctr->intra_refresh_period)
-+				mbs++;
-+			mbs /= ctr->intra_refresh_period;
-+
-+			intra_refresh.mode = HFI_INTRA_REFRESH_RANDOM;
-+			intra_refresh.cir_mbs = mbs;
-+		}
-+
-+		ptype = HFI_PROPERTY_PARAM_VENC_INTRA_REFRESH;
-+
-+		ret = hfi_session_set_property(inst, ptype, &intra_refresh);
- 		if (ret)
- 			return ret;
- 	}
-diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
-index 637c92f6c5be..eb10affc6277 100644
---- a/drivers/media/platform/qcom/venus/venc_ctrls.c
-+++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
-@@ -17,7 +17,6 @@
- #define SLICE_BYTE_SIZE_MAX	1024
- #define SLICE_BYTE_SIZE_MIN	1024
- #define SLICE_MB_SIZE_MAX	300
--#define INTRA_REFRESH_MBS_MAX	300
- #define AT_SLICE_BOUNDARY	\
- 	V4L2_MPEG_VIDEO_H264_LOOP_FILTER_MODE_DISABLED_AT_SLICE_BOUNDARY
- #define MAX_LTR_FRAME_COUNT 4
-@@ -227,8 +226,6 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 		}
- 		mutex_unlock(&inst->lock);
- 		break;
--	case V4L2_CID_MPEG_VIDEO_CYCLIC_INTRA_REFRESH_MB:
--		break;
- 	case V4L2_CID_MPEG_VIDEO_GOP_SIZE:
- 		ret = venc_calc_bpframes(ctrl->val, ctr->num_b_frames, &bframes,
- 					 &ctr->num_p_frames);
-@@ -319,6 +316,9 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
- 	case V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY:
- 		ctr->mastering = *ctrl->p_new.p_hdr10_mastering;
- 		break;
-+	case V4L2_CID_MPEG_VIDEO_INTRA_REFRESH_PERIOD:
-+		ctr->intra_refresh_period = ctrl->val;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -502,10 +502,6 @@ int venc_ctrl_init(struct venus_inst *inst)
- 	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
- 		V4L2_CID_MPEG_VIDEO_H264_LOOP_FILTER_BETA, -6, 6, 1, 0);
- 
--	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
--		V4L2_CID_MPEG_VIDEO_CYCLIC_INTRA_REFRESH_MB,
--		0, INTRA_REFRESH_MBS_MAX, 1, 0);
--
- 	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
- 		V4L2_CID_MPEG_VIDEO_GOP_SIZE, 0, (1 << 16) - 1, 1, 30);
- 
-@@ -564,6 +560,10 @@ int venc_ctrl_init(struct venus_inst *inst)
- 				   V4L2_CID_COLORIMETRY_HDR10_MASTERING_DISPLAY,
- 				   v4l2_ctrl_ptr_create(NULL));
- 
-+	v4l2_ctrl_new_std(&inst->ctrl_handler, &venc_ctrl_ops,
-+			  V4L2_CID_MPEG_VIDEO_INTRA_REFRESH_PERIOD, 0,
-+			  ((4096 * 2304) >> 8), 1, 0);
-+
- 	ret = inst->ctrl_handler.error;
- 	if (ret)
- 		goto err;
+We also waste a lot of instructions ensuring that we're not looking at
+a tail page.  Almost every call to PageFoo() contains one or more hidden
+calls to compound_head().  This also happens for get_page(), put_page()
+and many more functions.  There does not appear to be a way to tell gcc
+that it can cache the result of compound_head(), nor is there a way to
+tell it that compound_head() is idempotent.
+This patch series uses a new type, the struct folio, to manage memory.
+It provides some basic infrastructure that's worthwhile in its own right,
+shrinking the kernel by about 6kB of text.
+
+The full patch series is considerably larger (~200 patches),
+and enables XFS to use large pages.  It can be found at
+https://git.infradead.org/users/willy/pagecache.git/shortlog/refs/heads/folio
+(not everything there is in good shape for upstream submission, but
+if you go as far as "mm/readahead: Add multi-page folio readahead",
+it passes xfstests).  An earlier version of this patch set found it was
+worth about a 7% reduction of wall-clock time on kernel compiles.
+
+Since v12:
+ - Reworded commit message for folio_rotate_reclaimable (Christoph Hellwig)
+ - Fixed documentation for folio fscache functions (David Howells)
+ - Rebased on set_page_dirty cleanups which are in mmotm
+ - Renamed page_offset() to page_pos() and page_file_offset() to
+   page_file_pos() (David Howells)
+ - Make __folio_lock_or_retry() and lock_page_or_retry() return a bool
+   (David Howells)
+
+v11: https://lore.kernel.org/linux-mm/20210614201435.1379188-1-willy@infradead.org/
+v10: https://lore.kernel.org/linux-mm/20210511214735.1836149-1-willy@infradead.org/
+v9: https://lore.kernel.org/linux-mm/20210505150628.111735-1-willy@infradead.org/
+v8: https://lore.kernel.org/linux-mm/20210430180740.2707166-1-willy@infradead.org/
+
+Matthew Wilcox (Oracle) (33):
+  mm: Convert get_page_unless_zero() to return bool
+  mm: Introduce struct folio
+  mm: Add folio_pgdat(), folio_zone() and folio_zonenum()
+  mm/vmstat: Add functions to account folio statistics
+  mm/debug: Add VM_BUG_ON_FOLIO() and VM_WARN_ON_ONCE_FOLIO()
+  mm: Add folio reference count functions
+  mm: Add folio_put()
+  mm: Add folio_get()
+  mm: Add folio_try_get_rcu()
+  mm: Add folio flag manipulation functions
+  mm/lru: Add folio LRU functions
+  mm: Handle per-folio private data
+  mm/filemap: Add folio_index(), folio_file_page() and folio_contains()
+  mm/filemap: Add folio_next_index()
+  mm/filemap: Add folio_pos() and folio_file_pos()
+  mm/util: Add folio_mapping() and folio_file_mapping()
+  mm/memcg: Add folio wrappers for various functions
+  mm/filemap: Add folio_unlock()
+  mm/filemap: Add folio_lock()
+  mm/filemap: Add folio_lock_killable()
+  mm/filemap: Add __folio_lock_async()
+  mm/filemap: Add folio_wait_locked()
+  mm/filemap: Add __folio_lock_or_retry()
+  mm/swap: Add folio_rotate_reclaimable()
+  mm/filemap: Add folio_end_writeback()
+  mm/writeback: Add folio_wait_writeback()
+  mm/writeback: Add folio_wait_stable()
+  mm/filemap: Add folio_wait_bit()
+  mm/filemap: Add folio_wake_bit()
+  mm/filemap: Convert page wait queues to be folios
+  mm/filemap: Add folio private_2 functions
+  fs/netfs: Add folio fscache functions
+  mm: Add folio_mapped()
+
+ Documentation/core-api/mm-api.rst           |   4 +
+ Documentation/filesystems/netfs_library.rst |   2 +
+ fs/afs/write.c                              |   9 +-
+ fs/cachefiles/rdwr.c                        |  16 +-
+ fs/io_uring.c                               |   2 +-
+ include/linux/huge_mm.h                     |  15 -
+ include/linux/memcontrol.h                  |  72 ++++
+ include/linux/mm.h                          | 165 +++++++--
+ include/linux/mm_inline.h                   |  85 +++--
+ include/linux/mm_types.h                    |  77 ++++
+ include/linux/mmdebug.h                     |  20 +
+ include/linux/netfs.h                       |  77 ++--
+ include/linux/page-flags.h                  | 245 ++++++++----
+ include/linux/page_ref.h                    | 158 +++++++-
+ include/linux/pagemap.h                     | 390 +++++++++++---------
+ include/linux/swap.h                        |   7 +-
+ include/linux/vmstat.h                      | 107 ++++++
+ mm/Makefile                                 |   2 +-
+ mm/filemap.c                                | 329 +++++++++--------
+ mm/folio-compat.c                           |  43 +++
+ mm/internal.h                               |   1 +
+ mm/memory.c                                 |   8 +-
+ mm/page-writeback.c                         |  72 ++--
+ mm/page_io.c                                |   4 +-
+ mm/swap.c                                   |  30 +-
+ mm/swapfile.c                               |   8 +-
+ mm/util.c                                   |  59 +--
+ 27 files changed, 1427 insertions(+), 580 deletions(-)
+ create mode 100644 mm/folio-compat.c
+
 -- 
-2.25.1
+2.30.2
 
