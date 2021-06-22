@@ -2,319 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E488F3AFEA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 021823AFEB7
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhFVIEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 04:04:12 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:11230 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbhFVIEJ (ORCPT
+        id S230397AbhFVIHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 04:07:34 -0400
+Received: from esa20.fujitsucc.c3s2.iphmx.com ([216.71.158.65]:39405 "EHLO
+        esa20.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230121AbhFVIHd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 04:04:09 -0400
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210622075241epoutp04d192f2dd8efb0f56961bb96319c332b7~K2DqAAmrc1791617916epoutp04p
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 07:52:41 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210622075241epoutp04d192f2dd8efb0f56961bb96319c332b7~K2DqAAmrc1791617916epoutp04p
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1624348361;
-        bh=b2T6MY1kZ9SohFnqiNwSCGWC99b+qKgTnX9g0ikzxy4=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=SaagilmJU04NfgT1p9x30kLtXqAbRHn/vrcoutfK+Y+s8srA/7yFkj6lN8wkKWy2p
-         6XM5omcWH8cn2kgEkUudWgfMl3WCJRqeLZ9S8Ll0/pcL5v5NOr0uUXvIbnCbmu1mqC
-         wTjpk7DxjlHcJiXpnmrvmWnB4SYr3cquwsg6roek=
-Received: from epsmges5p1new.samsung.com (unknown [182.195.42.73]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20210622075240epcas5p3df72ffba15fb235adbb38455a18cf33b~K2DpMu8Tr2865028650epcas5p3g;
-        Tue, 22 Jun 2021 07:52:40 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        04.F6.09476.8C691D06; Tue, 22 Jun 2021 16:52:40 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210622075225epcas5p13270a3a17544fa110af21aaff82ceb84~K2Dbc4heu2192421924epcas5p11;
-        Tue, 22 Jun 2021 07:52:25 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210622075225epsmtrp2e0157be39c97fe9c09a7116858b0408f~K2DbcFLR52613926139epsmtrp2a;
-        Tue, 22 Jun 2021 07:52:25 +0000 (GMT)
-X-AuditID: b6c32a49-6a1ff70000002504-6f-60d196c8341a
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D4.DB.08394.9B691D06; Tue, 22 Jun 2021 16:52:25 +0900 (KST)
-Received: from mshams01 (unknown [107.122.12.94]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210622075224epsmtip123273eb378191cff03467278d9b125f7~K2DZ49-Lm1537015370epsmtip1o;
-        Tue, 22 Jun 2021 07:52:23 +0000 (GMT)
-From:   "M Tamseel Shams" <m.shams@samsung.com>
-To:     "'Krzysztof Kozlowski'" <krzysztof.kozlowski@canonical.com>,
-        <kgene@kernel.org>, <gregkh@linuxfoundation.org>, <jslaby@suse.com>
-Cc:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>,
-        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alim.akhtar@samsung.com>, <ajaykumar.rs@samsung.com>
-In-Reply-To: <4b2576c1-c986-a4d8-d6cf-661ca056ecee@canonical.com>
-Subject: RE: [PATCH] serial: samsung: use dma_ops of DMA if attached
-Date:   Tue, 22 Jun 2021 13:22:22 +0530
-Message-ID: <007901d7673b$8a758d10$9f60a730$@samsung.com>
-MIME-Version: 1.0
+        Tue, 22 Jun 2021 04:07:33 -0400
+X-Greylist: delayed 433 seconds by postgrey-1.27 at vger.kernel.org; Tue, 22 Jun 2021 04:07:32 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+  t=1624349118; x=1655885118;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=hojyqHIdkGcpw9RgOU3aUINwRI6Y1R2XvDugqogu8FM=;
+  b=ZaowFG8DXUQHvaX//7ifppOEnBp7wzcGF9GgRhg3sMTT9ISsaRseczCL
+   ldcntaZZeXrmxfz8R53l3QZNp4LVRorvHJ7Ct1FKgD3NksFzScucq+KMd
+   OYb87vgDozdiTBwSsHvjJF0azsI1O7sGQsdVBWOGI1yQawy/IOg8aA4D7
+   mCmpKKqPe7HWwZzgIhqqmS7pvymhGzzEuNa2UIDks8mpM+dtqUQBIj9Ge
+   G5Bxkj7MdI35Yise1sI793+ErkjKPO+Emd7O5/9bF3KX99zPssuoXn4+w
+   UJSZ9eOCac5Fs/XVY5nTDJ8O+4E5LjUjHmymJJE7nyyhbOhQdqJyfw6t9
+   g==;
+IronPort-SDR: AhrsTuQwc/eGtea9MjC+oPI413fLpZ83JG0jEML40cV1rh17IlvfTp21C7Vxh7mXhf3UoaGeFX
+ uCiC71jbmB6VhIjwZJX5Jc7xGyuz1v64dkpxSoTmOGhY3IyC5KruWlmqwtrQyC1nC9kMFeA+mp
+ MMbY9CWcHNyJvqY9nx/OSmTL3nJjBdv45oxTYyoQn5bRzgFsYBgBCSHLqW8nuX+Uj1Tq6bcYnE
+ V1uFTZUnsa5saA31jY1UIi7FhQiJ8rHc/kiIdWECJHMr4rzCnR7QcSO13hoeaWcS5g9kA0Ky1d
+ kh0=
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="33505386"
+X-IronPort-AV: E=Sophos;i="5.83,291,1616425200"; 
+   d="scan'208";a="33505386"
+Received: from mail-os2jpn01lp2051.outbound.protection.outlook.com (HELO JPN01-OS2-obe.outbound.protection.outlook.com) ([104.47.92.51])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 16:57:59 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YYT5BhFP2jQUMh0toLhBOWa+GoxDgpV1lVxtQdOSQBEnJ8iwcXT0ItrvzYEt062mVryTgH37gTiSXbXNg9jmxwoqpH1Cl/iX0ejIQ3hMQQ9kZ3RRaCZAhOBsZAgqSI9raTaiRFRGZ2+7S9B/SlVbHVNT87n82K1pB39VSLC78yTuOZfRmhbPX4iJ2v+3pHg1wwKUV5KLFpfXC/uPiArqs3hrywuxDkdKleKgHRQLrYlTHOgQFyXahKFYkyM4G5MVBZhghScKCumv8vRAnlnH17YCJX3msjTF8aCj63tL5TNBsTikjIFdPdfBKvILDtjR3tCqDgdtyZon+Mof0wv1fw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hojyqHIdkGcpw9RgOU3aUINwRI6Y1R2XvDugqogu8FM=;
+ b=M0Rha/HURsoD00zKKnjO5uU0Kr9hYmVsLWJdEDVVN9rAnx9e4REjnfIO5xuSx6sQsXTvR9tQaoooZZ1UjmVHLEaUjKkI9vS91V0Vrk2onKGvs9hAoibopvIV0KUgF7N+xSEt1UtrsXsrfXWr8LCjZLVrkDMPDOXXyknKRX7CTs76HGVoiakh6nZdPiemSxiAYQBpZu1sZR+4Zs8lNiRuMVIKmHbV/unSf3NwyJiNDv0Wtj/k2wzpeY6cUDJJNefc8aJhTKn/yWMF4OzidrMmjCtJlb1dUoilFXXj4kVzp7KgCjBnRlGY7npM91fPqS9+4PuY5lkHPOsOtOulI90Ssg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hojyqHIdkGcpw9RgOU3aUINwRI6Y1R2XvDugqogu8FM=;
+ b=VqlDNMtiPViyubRo6EwEFcQRWdIy95R6o/LXoCVs3oD8yQXd6RtgUsp58SkXL/Pe31rRZiDmq0V4aOdC2JgLSfIxQ55xpNlDRHl7Wa+7G6S93CfI8m6qjZZ1qYwNf2VDZ/dCUWz0NGEyw8DMWO5w0umDEI6JoERxmt1COE8IdHA=
+Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com (2603:1096:604:7e::12)
+ by OSAPR01MB2497.jpnprd01.prod.outlook.com (2603:1096:604:1::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.19; Tue, 22 Jun
+ 2021 07:57:56 +0000
+Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com
+ ([fe80::8cd6:d0ec:739d:5284]) by OSBPR01MB4600.jpnprd01.prod.outlook.com
+ ([fe80::8cd6:d0ec:739d:5284%6]) with mapi id 15.20.4242.023; Tue, 22 Jun 2021
+ 07:57:56 +0000
+From:   "nakamura.shun@fujitsu.com" <nakamura.shun@fujitsu.com>
+To:     Jiri Olsa <jolsa@redhat.com>
+CC:     "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: libperf : Can not create event group
+Thread-Topic: libperf : Can not create event group
+Thread-Index: AQHXYOz1byLB4GfrUUijoG/ejweJRKsTW8YAgAxaN1M=
+Date:   Tue, 22 Jun 2021 07:57:56 +0000
+Message-ID: <OSBPR01MB4600B6FCE4D95F6B84E7E17CF7099@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+References: <OSBPR01MB46005B38568E90509946ECA9F7319@OSBPR01MB4600.jpnprd01.prod.outlook.com>,<YMc6tBoIQiUQkRbq@krava>
+In-Reply-To: <YMc6tBoIQiUQkRbq@krava>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Enabled=True;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_SiteId=a19f121d-81e1-4858-a9d8-736e267fd4c7;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_SetDate=2021-06-22T07:57:56.211Z;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Name=FUJITSU-RESTRICTED;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_ContentBits=0;MSIP_Label_a7295cc1-d279-42ac-ab4d-3b0f4fece050_Method=Standard;
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=fujitsu.com;
+x-originating-ip: [218.44.52.176]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ed896097-06c4-4217-4f29-08d93553726f
+x-ms-traffictypediagnostic: OSAPR01MB2497:
+x-microsoft-antispam-prvs: <OSAPR01MB2497CB0D34236391EABAE343F7099@OSAPR01MB2497.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: bU78w2HowH/ScY9kc2Rl9xVnOdofAsU84IDv85HQ82wUJncjHet1+N+/7fCHbdEpi+C3oa/O/23Ej3J+of94gTANJ2p5sYuQnqdhXVOvYYBOZoP0LRqDy5oftCpX5YHnPr63agIluLMl88o99oo8GBbsstoetP+mxy8l4D/7tF4Ba0uIrHLsMgGHn8qKrEajK91Zur5GP5eNm/QZeFH6P4ccVOGLTBKflfjhU2nmmMhAthhLYnlNjmIkqHcmkkmqcs18fgPTpPqPwVTQe2qlfd7XAHULBImkwqxYa+Ucokd9SekWvY18PUnQEo7AaCrIN4ERA/nsAEDunmhrdliq0+SKAD/+2CqIr0d/ptJeyQqjY0SE/2lljU8ZHFE3Eby1z6b6KOU5WCEaiMJCTuWuxL485eI41HeGVBFofWz7GgYLugqbon8SIi2a3mDH9xl//cSjSGoEj8MICNgTUUXfbgJEdCuGQ2It3qnI4pnAnCdxIR6Uqah25aF9uR2LMp+gUoftWwp0jwBkF3UWax43xPy5rTusUhzcGK37HhXsH+U8pyJIAl+932iNv0GlsT23whc6+xQUHyOd0RXA72ClXIyU9/pAYjYMvqHSrjYJYLs=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4600.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(39860400002)(376002)(366004)(346002)(85182001)(52536014)(5660300002)(2906002)(8676002)(186003)(71200400001)(4326008)(38100700002)(33656002)(86362001)(122000001)(83380400001)(26005)(66446008)(6916009)(6506007)(66946007)(76116006)(7696005)(8936002)(558084003)(54906003)(316002)(66476007)(66556008)(64756008)(9686003)(55016002)(478600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-2022-jp?B?UHhEY0hOLzFEeFhNU2I4dGgreGxJSktjYzgxKzZZRmtiY2FVaTkzQzUv?=
+ =?iso-2022-jp?B?UXlrUFAreUlJcDFBYnFFRWZML01meTFRS21uMFhnTktHYTJSaDJ6aVFs?=
+ =?iso-2022-jp?B?NGp1bnNNRklydnFkUmNpei9wOUluWlh6TnJ1TWRrZ3pnYWZBWXNiY1dJ?=
+ =?iso-2022-jp?B?aEprR2xqVEk5NjRXZDkrKytJWkFmRWQ3RUlsSC9YWElhZVBzWFViVGZK?=
+ =?iso-2022-jp?B?RDFBUHRWcHljbEdLV2kwUnJVZ0h2ZE82RkFUYzhZVHFxL3NaZ3ZjNW9J?=
+ =?iso-2022-jp?B?ZVZOOUE1RVVDZ1VuNHd2d2VtV3RuTkJuWk91WExYRlVtOUFNN1RGUE9O?=
+ =?iso-2022-jp?B?TVl6NHMxUlNRajgyNk5rcDFvOWt6bXVlbFpZa1ZNSC9PWllZdEp2MFQr?=
+ =?iso-2022-jp?B?a29HbDJ5TjY5cDFneElpbG9pWXp5U1JmNzhDVEJSdU5RZWt2dVN6Qk0v?=
+ =?iso-2022-jp?B?WmdpTUk0cloyRzIvRytsWjJ6QWdRTWZUbU80NDYzeGdYTEdrbU9VbE5q?=
+ =?iso-2022-jp?B?bVR2Y25JOWlCcnBKaHhUYXpIR3ZROXFha0xuZy80cDZoVjhNVE9GZVdn?=
+ =?iso-2022-jp?B?bVE3NWY0UUJuZktmdHh3Rjk5Ryt6ejBrOUF3OEhJakNmZkFJcCtURERP?=
+ =?iso-2022-jp?B?WDJjUThGOHVYOTdBOHZtaUxKQnJoL1NZaUtjQSsrZnhkeGg2aVhoKzhP?=
+ =?iso-2022-jp?B?ZnBkeFBSek5YK0Q3TW56bGhaZjIwc2dlOE9WSmE2VFFzWkk3N3NQKzE1?=
+ =?iso-2022-jp?B?Z2tOcVlQWGtDR0VObklZV3A1THRtSVR4dVNyZXFWb0k1bjJTY0tMU3ln?=
+ =?iso-2022-jp?B?aHB3N3MvWlkyK2VIczNoSWNzS0s1L0p1eVdUOE9zK2JpSTYwa25RbnZU?=
+ =?iso-2022-jp?B?cE5PcjkwL3NyRHU0TjlhUmVBalVFVVMxZ3pBd3JZckZsU1FyS3BDc0dK?=
+ =?iso-2022-jp?B?WjQrajY0NEVvNysrUVZYU21zWG41Wi9UVlk5VmovS0Mvd3Vsd2VGL0ox?=
+ =?iso-2022-jp?B?czNlMGxrYzNRa1JzVzlBRUVKLzhWQUNNRlQwL082NC9heTBYeE5NWHB6?=
+ =?iso-2022-jp?B?VUU3QW12SGZYNHVaOVBZdG50cHFrRlRuMFkvanpmdHduM2ZIS1JkaU52?=
+ =?iso-2022-jp?B?OXMwWnluOWF1VmROSW13NkJSQ3gyMVdnaFBsUlpQTi9TV2VlUkllTEJ6?=
+ =?iso-2022-jp?B?OHZYN1NkNmNrdThhNmhacnhzamVsQW1vVnNGSXo2SE5rRzRYaGdHa1Uz?=
+ =?iso-2022-jp?B?cXBVQm55bVNWZE1kN3JOTkVoYkQ0dmRpdzZNbmNaamhxWnZET3ZZQTVG?=
+ =?iso-2022-jp?B?bjBOa0tqd2xIZTFCL0Fia1ExcmlSdlZUZGM3MUhTMElFODAwZzJBTm1h?=
+ =?iso-2022-jp?B?ekxZV2doalZ1TmhnRit3NFVYaVFPYUFHdGZ4dkhaUFJhT0JydHhMT3lV?=
+ =?iso-2022-jp?B?MEhZSHc3ZSt3QUlmMlBUYW1DUXpFMzlhSnFWaDBvSXBFODlLcXJOSGlo?=
+ =?iso-2022-jp?B?ZmVTZmh4VlJvWERBNUJLa21MYWxkVUNrTEtiL3BHb3RENnJjRFFhSzNG?=
+ =?iso-2022-jp?B?aDVXRklWd2I1VURkSS82a0lVRC9UaTg2YmVYbXYrYUUxNlJsT0tEM2Z5?=
+ =?iso-2022-jp?B?WFlOdGJSYm5mMXNjZ21ySFAweFQxZ0hZbVhKZlRrN3prR2RTT2JUYnFW?=
+ =?iso-2022-jp?B?VlBiUWs3SlA2K0xRNGtIS2tqN1A2TGFxSHRmYXViSW9nK2luekhMemVm?=
+ =?iso-2022-jp?B?eU5tUU1uY1ZqNU9sZCtUQ3FJdHF3SGVFQWlSQ1NpZzNkRHE3WkkzSnZ3?=
+ =?iso-2022-jp?B?M2tVNWFtZFFoMHJLdk5ubEpZM2poMDZOSkZqT21tNWFON256MDRmMW9h?=
+ =?iso-2022-jp?B?ZkFVaWY1ZHFrSjFKTGwrYStmak1nPQ==?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-2022-jp"
 Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQGDfL5lNG5rzFQPe+FwbDp9GpLyVQGDsg9dAbmelg0Cc6DxagIMN/A2q4mTjPA=
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrFKsWRmVeSWpSXmKPExsWy7bCmpu6JaRcTDHo3S1kceH+QxeLBvG1s
-        Fs2L17NZTNnwgcmi//FrZouNb38wWWx6fI3V4vKuOWwWM87vY7I4s7iX3YHLY1ZDL5vHplWd
-        bB77565h99i8pN6jb8sqRo/1W66yeHzeJBfAHsVlk5Kak1mWWqRvl8CVcfTORdaCDXYVcx6c
-        Y2pg3GXUxcjJISFgIrFqw2SWLkYuDiGB3YwSzXcOsUM4nxglGvadYoNwvjFKfLrwlQWmZd/F
-        d4wQib2MEo86nkI5zxglfj5ZyQhSxSagKzHpYBszSEJEoI1RYnpDBxOIwyxwhlHi8eLJTCBV
-        nAKOEo++dgDN5eAQFnCRuDXDGyTMIqAqseznNLB1vAKWEqf/vGSGsAUlTs58AhZnFtCWWLbw
-        NTPESQoSP58uYwWxRQT8JH7/vc8OUSMu8fLoEbCHJAQOcEjsmHiFFaLBRaJhdQsbhC0s8er4
-        FnYIW0ri87u9UPF8ifnzVkEtqJBYeeENlG0vceDKHLCbmQU0Jdbv0ocIy0pMPbWOCWIvn0Tv
-        7ydMEHFeiR3zYGxFif+7+6FWiUu8WzGFdQKj0iwkr81C8tosJC/MQti2gJFlFaNkakFxbnpq
-        sWmBYV5quV5xYm5xaV66XnJ+7iZGcPLS8tzBePfBB71DjEwcjIcYJTiYlUR4X2RfTBDiTUms
-        rEotyo8vKs1JLT7EKM3BoiTOu5T9UIKQQHpiSWp2ampBahFMlomDU6qBybgwVF+s6/Fr73s6
-        Mc8nd9rb+ihvva+jUNxRvTIuP5Fjms2iWQsdv+QlFZ1J3C0ecWud28cu4anfXlV5/prVNP+u
-        yE6Xc3LKJiu6tVSfPkk2/bT5xq70HT8vpPrfkZp7Y+eN5leKjvWG2oIzeQ+r1HHv3yUoyCf1
-        iG+3QQ/j5YAPHE/lqprnbArnL1683OSh5aejbtX1TL8kJZ7vuiTBtbFHaXXdpOkLVtt9XMhw
-        keHC6tWv52axhK1bPE3i0D1lrdOZc7teTWvK6Mt+IhXfKRnE0bbb4Y7FhMSnVlbr38b6Vmy+
-        wOi16N3T20yr5N5s/3g8z0O+5vnKRcIfeZLV9/3TnO/D4X3vY9tZIe4WDiWW4oxEQy3mouJE
-        AKIOTsTNAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLIsWRmVeSWpSXmKPExsWy7bCSnO7OaRcTDO5MVrU48P4gi8WDedvY
-        LJoXr2ezmLLhA5NF/+PXzBYb3/5gstj0+BqrxeVdc9gsZpzfx2RxZnEvuwOXx6yGXjaPTas6
-        2Tz2z13D7rF5Sb1H35ZVjB7rt1xl8fi8SS6APYrLJiU1J7MstUjfLoEr4+6NCUwFV2wrrqy9
-        zdLAeMmwi5GTQ0LARGLfxXeMXYxcHEICuxklepddZ4VIiEtM+7WfEcIWllj57zk7RNETRom7
-        x3ezgyTYBHQlJh1sYwZJiAh0MUqsvXoCbBSzwAVGie6jN6BaFjFJ3F24jRmkhVPAUeLR1w6W
-        LkYODmEBF4lbM7xBwiwCqhLLfk5jAbF5BSwlTv95yQxhC0qcnPkELM4soC3R+7CVEcZetvA1
-        M8R5ChI/ny4DO1tEwE/i99/77BA14hIvjx5hn8AoPAvJqFlIRs1CMmoWkpYFjCyrGCVTC4pz
-        03OLDQsM81LL9YoTc4tL89L1kvNzNzGCY1BLcwfj9lUf9A4xMnEwHmKU4GBWEuF9kX0xQYg3
-        JbGyKrUoP76oNCe1+BCjNAeLkjjvha6T8UIC6YklqdmpqQWpRTBZJg5OqQYmP403+9Mq6zvl
-        1UrWCTNJ3ljplP5h741bsTqRXfKuZ9w72xS3LHB6mOR8+ugJMbbnx723sUys4z5art4karfO
-        R7332KqmBYIvWn9tmcx+ZPvF2acfJbc9ddj83X3Bp4aasDt2/3k/35juwLg6yaSNz2VD8eeJ
-        oe8V/Yo7f11z7Vd8+vpc6Z57ObEsm/tu/32wRn3ZrK3r188Je1C22O3inlbBNW1MnK8nafqV
-        NW7d2FwcZKfy/bXEDK+OE1e2iQvG6PE3rzw64aDUJrsQMe6ZTjOerTx05+7rNZabXlc+2mSd
-        JPjw1hqnW5HTdXenJ+TPDLPf+cHF4fi7TaaRrhO3Sbe/nyNaKLX3rFeSsNPpTCWW4oxEQy3m
-        ouJEACewtQUwAwAA
-X-CMS-MailID: 20210622075225epcas5p13270a3a17544fa110af21aaff82ceb84
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20210621044517epcas5p187affa518a18a3d019deb0c189cd8396
-References: <CGME20210621044517epcas5p187affa518a18a3d019deb0c189cd8396@epcas5p1.samsung.com>
-        <20210621044916.41564-1-m.shams@samsung.com>
-        <8935a448-04b7-91ce-203a-9f0d7e377052@canonical.com>
-        <004f01d766a0$567b9860$0372c920$@samsung.com>
-        <4b2576c1-c986-a4d8-d6cf-661ca056ecee@canonical.com>
+MIME-Version: 1.0
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4600.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ed896097-06c4-4217-4f29-08d93553726f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jun 2021 07:57:56.7331
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: NM+MOqYz9wKuAkHxViafLyVhNA3+OXoyrBX45YSVgN117wcgh+uQx09FAq2xSNqHdxglX9xecd/5PT4zVmH4yZN1NRzASALAeDG3GFgbeTs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSAPR01MB2497
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > Hi,
-> >
-> >>
-> >> Hi,
-> >>
-> >> Thanks for the patch.
-> >>
-> >> On 21/06/2021 06:49, Tamseel Shams wrote:
-> >>> When DMA is used for TX and RX by serial driver, it should pass the
-> >>> DMA device pointer to DMA API instead of UART device pointer.
-> >>
-> >> Hmmm, but why DMA device pointer should be used?
-> >>
-> >>>
-> >>> This patch is necessary to fix the SMMU page faults which is
-> >>> observed when a DMA(with SMMU enabled) is attached to UART for
-> transfer.
-> >>>
-> >>> Signed-off-by: Tamseel Shams <m.shams=40samsung.com>
-> >>> Signed-off-by: Ajay Kumar <ajaykumar.rs=40samsung.com>
-> >>> ---
-> >>>  drivers/tty/serial/samsung_tty.c =7C 60
-> >>> +++++++++++++++++++++++++-------
-> >>>  1 file changed, 48 insertions(+), 12 deletions(-)
-> >>>
-> >>> diff --git a/drivers/tty/serial/samsung_tty.c
-> >>> b/drivers/tty/serial/samsung_tty.c
-> >>> index b923683e6a25..5bdc7dd2a5e2 100644
-> >>> --- a/drivers/tty/serial/samsung_tty.c
-> >>> +++ b/drivers/tty/serial/samsung_tty.c
-> >>> =40=40 -284,8 +284,13 =40=40 static void s3c24xx_serial_stop_tx(struc=
-t
-> >>> uart_port
-> >> *port)
-> >>>  	struct s3c24xx_uart_dma *dma =3D ourport->dma;
-> >>>  	struct circ_buf *xmit =3D &port->state->xmit;
-> >>>  	struct dma_tx_state state;
-> >>> +	struct device *dma_map_ops_dev =3D ourport->port.dev;
-> >>>  	int count;
-> >>>
-> >>> +	/* Pick dma_ops of DMA device if DMA device is attached */
-> >>
-> >> You mention here and further comments =22dma_ops=22. I don't see you
-> >> changing the DMA ops, but the device. It's quite confusing. I think
-> >> you meant a DMA device shall be passed to DMA API?
-> >>
-> > Yes, DMA device should be used for DMA API because only the DMA device
-> > is aware of how the device connects to the memory. There might be an
-> > extra level of address translation due to a SMMU attached to the DMA
-> > device. When serial device pointer device is used for DMA API, the DMA =
-API
-> will have no clue of the SMMU attached to the DMA device.
->=20
-> Thanks, this should be in commit msg.
->=20
-Sure, will add this in commit msg.
-> >
-> >> Second question: you write that DMA devices should be used if DMA is
-> >> attached and in the code you follow such pattern a lot:
-> >>
-> >>> +	if (dma && dma->tx_chan)
-> >>> +		dma_map_ops_dev =3D dma->tx_chan->device->dev;
-> >>> +
-> >>
-> >> Are you trying to say that if DMA is not attached, UART device should
-> >> be used? If DMA is not attached, how are the DMA operations used then?
-> >>
-> > If DMA is not attached, this part of code related to dma_engine or DMA
-> > API do not get called. There will not be any DMA operations at all.
->=20
-> Now I get it. The =22When=22 in your description followed by multiple com=
-ments =22if
-> DMA device is attached=22 confused me that you expect to use UART device =
-for
-> DMA operations if DMA is not attached...
->=20
-I will change the comments, to avoid this confusion.
-> >
-> >>>  	if (=21ourport->tx_enabled)
-> >>>  		return;
-> >>>
-> >>> =40=40 -298,7 +303,7 =40=40 static void s3c24xx_serial_stop_tx(struct
-> >>> uart_port
-> >> *port)
-> >>>  		dmaengine_pause(dma->tx_chan);
-> >>>  		dmaengine_tx_status(dma->tx_chan, dma->tx_cookie, &state);
-> >>>  		dmaengine_terminate_all(dma->tx_chan);
-> >>> -		dma_sync_single_for_cpu(ourport->port.dev,
-> >>> +		dma_sync_single_for_cpu(dma_map_ops_dev,
-> >>>  			dma->tx_transfer_addr, dma->tx_size,
-> >> DMA_TO_DEVICE);
-> >>>  		async_tx_ack(dma->tx_desc);
-> >>>  		count =3D dma->tx_bytes_requested - state.residue; =40=40 -324,15
-> >> +329,19
-> >>> =40=40 static void s3c24xx_serial_tx_dma_complete(void *args)
-> >>>  	struct circ_buf *xmit =3D &port->state->xmit;
-> >>>  	struct s3c24xx_uart_dma *dma =3D ourport->dma;
-> >>>  	struct dma_tx_state state;
-> >>> +	struct device *dma_map_ops_dev =3D ourport->port.dev;
-> >>>  	unsigned long flags;
-> >>>  	int count;
-> >>>
-> >>> +	/* Pick dma_ops of DMA device if DMA device is attached */
-> >>> +	if (dma && dma->tx_chan)
-> >>> +		dma_map_ops_dev =3D dma->tx_chan->device->dev;
->=20
-> Example is this one - you use here =22if=22 suggesting there is =22else=
-=22. So what is the
-> else condition? There is none...
->=20
-> >>>
-> >>>  	dmaengine_tx_status(dma->tx_chan, dma->tx_cookie, &state);
-> >>>  	count =3D dma->tx_bytes_requested - state.residue;
-> >>>  	async_tx_ack(dma->tx_desc);
-> >>>
-> >>> -	dma_sync_single_for_cpu(ourport->port.dev, dma->tx_transfer_addr,
-> >>> +	dma_sync_single_for_cpu(dma_map_ops_dev, dma->tx_transfer_addr,
-> >>>  				dma->tx_size, DMA_TO_DEVICE);
-> >>>
-> >>>  	spin_lock_irqsave(&port->lock, flags); =40=40 -408,7 +417,11 =40=40=
- static
-> >>> int s3c24xx_serial_start_tx_dma(struct s3c24xx_uart_port *ourport,
-> >>>  	struct uart_port *port =3D &ourport->port;
-> >>>  	struct circ_buf *xmit =3D &port->state->xmit;
-> >>>  	struct s3c24xx_uart_dma *dma =3D ourport->dma;
-> >>> +	struct device *dma_map_ops_dev =3D ourport->port.dev;
-> >>>
-> >>> +	/* Pick dma_ops of DMA device if DMA device is attached */
-> >>> +	if (dma && dma->tx_chan)
-> >>> +		dma_map_ops_dev =3D dma->tx_chan->device->dev;
-> >>>
-> >>>  	if (ourport->tx_mode =21=3D S3C24XX_TX_DMA)
-> >>>  		enable_tx_dma(ourport);
-> >>> =40=40 -416,7 +429,7 =40=40 static int s3c24xx_serial_start_tx_dma(st=
-ruct
-> >> s3c24xx_uart_port *ourport,
-> >>>  	dma->tx_size =3D count & =7E(dma_get_cache_alignment() - 1);
-> >>>  	dma->tx_transfer_addr =3D dma->tx_addr + xmit->tail;
-> >>>
-> >>> -	dma_sync_single_for_device(ourport->port.dev, dma-
-> >>> tx_transfer_addr,
-> >>> +	dma_sync_single_for_device(dma_map_ops_dev, dma-
-> >>> tx_transfer_addr,
-> >>>  				dma->tx_size, DMA_TO_DEVICE);
-> >>>
-> >>>  	dma->tx_desc =3D dmaengine_prep_slave_single(dma->tx_chan,
-> >>> =40=40 -483,12 +496,17 =40=40 static void s3c24xx_uart_copy_rx_to_tty=
-(struct
-> >> s3c24xx_uart_port *ourport,
-> >>>  		struct tty_port *tty, int count)
-> >>>  =7B
-> >>>  	struct s3c24xx_uart_dma *dma =3D ourport->dma;
-> >>> +	struct device *dma_map_ops_dev =3D ourport->port.dev;
-> >>>  	int copied;
-> >>>
-> >>> +	/* Pick dma_ops of DMA device if DMA device is attached */
-> >>> +	if (dma && dma->rx_chan)
-> >>> +		dma_map_ops_dev =3D dma->rx_chan->device->dev;
-> >>> +
-> >>>  	if (=21count)
-> >>>  		return;
-> >>>
-> >>> -	dma_sync_single_for_cpu(ourport->port.dev, dma->rx_addr,
-> >>> +	dma_sync_single_for_cpu(dma_map_ops_dev, dma->rx_addr,
-> >>>  				dma->rx_size, DMA_FROM_DEVICE);
-> >>>
-> >>>  	ourport->port.icount.rx +=3D count;
-> >>> =40=40 -600,8 +618,13 =40=40 static void s3c24xx_serial_rx_dma_comple=
-te(void
-> >>> *args)  static void s3c64xx_start_rx_dma(struct s3c24xx_uart_port
-> >>> *ourport)  =7B
-> >>>  	struct s3c24xx_uart_dma *dma =3D ourport->dma;
-> >>> +	struct device *dma_map_ops_dev =3D ourport->port.dev;
-> >>>
-> >>> -	dma_sync_single_for_device(ourport->port.dev, dma->rx_addr,
-> >>> +	/* Pick dma_ops of DMA device if DMA device is attached */
-> >>> +	if (dma && dma->rx_chan)
-> >>> +		dma_map_ops_dev =3D dma->rx_chan->device->dev;
-> >>> +
-> >>> +	dma_sync_single_for_device(dma_map_ops_dev, dma->rx_addr,
-> >>>  				dma->rx_size, DMA_FROM_DEVICE);
-> >>>
-> >>>  	dma->rx_desc =3D dmaengine_prep_slave_single(dma->rx_chan,
-> >>> =40=40 -983,6 +1006,7 =40=40 static int s3c24xx_serial_request_dma(st=
-ruct
-> >>> s3c24xx_uart_port *p)
-> >>
-> >> Offset of hunks looks here significantly different than mainline. The
-> >> patch should be based and tested mainline tree. Which one did you choo=
-se as
-> base?
-> >>
-> >> Using my email address not from get_maintainers.pl also suggests that
-> >> you don't use anything recent as a base.
-> >>
-> > I used =22master=22 branch of main linux-next tree as the base.
-> > I will rebase on =22tty-next=22 branch of TTY tree and post again.
-> >
-> > Thanks & Regards,
-> > Tamseel Shams
-> >
->=20
->=20
-> Best regards,
-> Krzysztof
-
-Thanks & Regards,
-Tamseel Shams
-
+Hi, jirka=0A=
+=0A=
+> there'no leader link on this level yet (in struct evsel)=0A=
+> so this is not implemented at the moment=0A=
+=0A=
+Thanks for the info.=0A=
+=0A=
+Do you have any plans to support the event group in libperf?=0A=
+=0A=
+Best Regards=0A=
+Shunsuke=
