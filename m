@@ -2,132 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA73D3B001D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:22:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8409A3B0024
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:25:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbhFVJYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 05:24:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhFVJYs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 05:24:48 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14ACFC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 02:22:33 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id d11so20395207wrm.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 02:22:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6VJLwpfX/aFjwt/MygIJ1XfrYdorqygCe7i+QCHuVDk=;
-        b=nS/IsSEloNFNgx0eKkUBfOE0E5w+IN1mYHZeZFh1J9NJa3WRxyZx9rnh5+KFpQIpsn
-         kQsXeSOse1TIb5jFxyLioM5Dbe+vYJ4ADWU5/7qZ/EfE2uJAlD5TiqKRulIUYNPPs5ck
-         cOUZcjgTU4op2Apf5dQMPBFfQQIPheZRcrlNiRjRZ5giQkuc/3OETMQQQaXy5HQTyOyx
-         MZHySG0jN8WKdX/bYw35PcZTz5yUrb8cu6e9qY6PwKHv98aAfE6FS2l4FnmmfmJsbqTr
-         0Hpe00dJKF7QrUozpA3bVMMnF4QKPHCrGF5Fh/vrX9T4AW2oHgXRMFSUehLsBdw+2/u3
-         PPjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6VJLwpfX/aFjwt/MygIJ1XfrYdorqygCe7i+QCHuVDk=;
-        b=PICFYrW5aUmdcOOCU3Zj/DdT0zkQE7BOrQWDBqKKGPTNZW6MxrHLxZXQwOJ1QMBj0h
-         yzAoCJtu+bBWWY4OE3wS9QMIDv8ABgYooJGX70ZuoHsPa3TlymVMXslduNxgXqaf4nqw
-         p2mAP58ZIn6LOd37T6LbjhUPy+tqlNYB+LaNk5a8/5C7BGX8ehUci3kz8x1I3G7nFF6X
-         HH4cz3gu61ilCSH9zmvTJ7Znmkgtp0SeeEeTwiG3jb3DrN11el3XChZyE4n3Xk2PGZ+d
-         8yDHjIkhBvo6ZP1uwCeLFk0oLy/9KErbn6/PvvuwmHHoHsE0BKroH7nVI73iXb7LCxo1
-         +1Gw==
-X-Gm-Message-State: AOAM532ROLlA1N0B7hIBE6rJkb0lf20lqudkoDIExKcQhrwUYMvfb3KV
-        erWnfdsmvTmM9DKWJqUq2ICNAg==
-X-Google-Smtp-Source: ABdhPJw5Ys0vZ5VL8BspxnKvGfYT0n0SNJzBm/f6dky2dNdWOKzgTA75cNI1mC5WfvtbF0JOkgL1PQ==
-X-Received: by 2002:a5d:698a:: with SMTP id g10mr3396424wru.129.1624353751594;
-        Tue, 22 Jun 2021 02:22:31 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id n10sm19413600wri.77.2021.06.22.02.22.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 02:22:31 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 09:22:28 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Dong Aisheng <aisheng.dong@nxp.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        KarimAllah Ahmed <karahmed@amazon.de>,
-        linux-mm <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Dong Aisheng <dongas86@gmail.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 2/2] of: of_reserved_mem: mark nomap memory instead of
- removing
-Message-ID: <YNGr1AlWV0AYnL1d@google.com>
-References: <20210611131153.3731147-1-aisheng.dong@nxp.com>
- <20210611131153.3731147-2-aisheng.dong@nxp.com>
- <CAL_JsqJMyY4iEcJi1z0o7pZdCASYHjnVjf6+fQDqa_ucb-M-MA@mail.gmail.com>
+        id S229803AbhFVJ16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 05:27:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55128 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229490AbhFVJ15 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 05:27:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7FB76128E;
+        Tue, 22 Jun 2021 09:25:36 +0000 (UTC)
+Date:   Tue, 22 Jun 2021 10:25:34 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Bill Wendling <morbo@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Bill Wendling <wcw@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, Martin Liska <mliska@suse.cz>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Fangrui Song <maskray@google.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        linux-toolchains@vger.kernel.org, Marco Elver <elver@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>
+Subject: Re: [PATCH 2/2] Kconfig: CC_HAS_NO_PROFILE_FN_ATTR, depend on for
+ GCOV and PGO
+Message-ID: <20210622092533.GB3555@arm.com>
+References: <20210618233023.1360185-1-ndesaulniers@google.com>
+ <20210618233023.1360185-3-ndesaulniers@google.com>
+ <CANpmjNNK-iYXucjz7Degh1kJPF_Z_=8+2vNLtUW17x0UnfgtPg@mail.gmail.com>
+ <CAKwvOdmxGt6nAj+dDZEPdQtXNbYb8N6y3XwoCvCD+Qazskh7zw@mail.gmail.com>
+ <CAGG=3QXeAxaf0AhKsg8P1-j2uHOoXne2KCOCEhq9SKa-e2dnag@mail.gmail.com>
+ <CAKwvOd=9oAGPeuQmWnAMOxZn2ii_CRmyWnheoyXGcd09-U_CwA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAL_JsqJMyY4iEcJi1z0o7pZdCASYHjnVjf6+fQDqa_ucb-M-MA@mail.gmail.com>
+In-Reply-To: <CAKwvOd=9oAGPeuQmWnAMOxZn2ii_CRmyWnheoyXGcd09-U_CwA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 11 Jun 2021 at 11:10:36 (-0600), Rob Herring wrote:
-> On Fri, Jun 11, 2021 at 7:13 AM Dong Aisheng <aisheng.dong@nxp.com> wrote:
+On Mon, Jun 21, 2021 at 01:43:54PM -0700, Nick Desaulniers wrote:
+> On Mon, Jun 21, 2021 at 11:50 AM Bill Wendling <morbo@google.com> wrote:
+> > On Mon, Jun 21, 2021 at 11:22 AM Nick Desaulniers
+> > <ndesaulniers@google.com> wrote:
+> > > On Fri, Jun 18, 2021 at 11:23 PM Marco Elver <elver@google.com> wrote:
+> > > > On Sat, 19 Jun 2021 at 01:30, Nick Desaulniers <ndesaulniers@google.com> wrote:
+> > > > > We don't want compiler instrumentation to touch noinstr functions, which
+> > > > > are annotated with the no_profile function attribute. Add a Kconfig test
+> > > > > for this and make PGO and GCOV depend on it.
+> > > > >
+> > > > > Cc: Masahiro Yamada <masahiroy@kernel.org>
+> > > > > Cc: Peter Oberparleiter <oberpar@linux.ibm.com>
+> > > > > Link: https://lore.kernel.org/lkml/YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net/
+> > > > > Link: https://lore.kernel.org/lkml/YMcssV%2Fn5IBGv4f0@hirez.programming.kicks-ass.net/
+> > > > > Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> > > > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> > > > > ---
+> > > > >  init/Kconfig        | 3 +++
+> > > > >  kernel/gcov/Kconfig | 1 +
+> > > > >  kernel/pgo/Kconfig  | 3 ++-
+> > > > >  3 files changed, 6 insertions(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/init/Kconfig b/init/Kconfig
+> > > > > index 1ea12c64e4c9..540f862b40c6 100644
+> > > > > --- a/init/Kconfig
+> > > > > +++ b/init/Kconfig
+> > > > > @@ -83,6 +83,9 @@ config TOOLS_SUPPORT_RELR
+> > > > >  config CC_HAS_ASM_INLINE
+> > > > >         def_bool $(success,echo 'void foo(void) { asm inline (""); }' | $(CC) -x c - -c -o /dev/null)
+> > > > >
+> > > > > +config CC_HAS_NO_PROFILE_FN_ATTR
+> > > > > +       def_bool $(success,echo '__attribute__((no_profile)) int x();' | $(CC) -x c - -c -o /dev/null -Werror)
+> > > > > +
+> > > > >  config CONSTRUCTORS
+> > > > >         bool
+> > > > >
+> > > > > diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
+> > > > > index 58f87a3092f3..19facd4289cd 100644
+> > > > > --- a/kernel/gcov/Kconfig
+> > > > > +++ b/kernel/gcov/Kconfig
+> > > > > @@ -5,6 +5,7 @@ config GCOV_KERNEL
+> > > > >         bool "Enable gcov-based kernel profiling"
+> > > > >         depends on DEBUG_FS
+> > > > >         depends on !CC_IS_CLANG || CLANG_VERSION >= 110000
+> > > > > +       depends on !X86 || (X86 && CC_HAS_NO_PROFILE_FN_ATTR)
+> > > >
+> > > > [+Cc Mark]
+> > > >
+> > > > arm64 is also starting to rely on noinstr working properly.
+> > >
+> > > Sure,
+> > > Will, Catalin, other arm64 folks:
+> > > Any thoughts on requiring GCC 7.1+/Clang 13.0+ for GCOV support?  That
+> > > way we can better guarantee that GCOV (and eventually, PGO) don't
+> > > touch noinstr functions?
+> > >
+> > > If that's ok, I'll add modify the above like:
+> > >
+> > > + depends on !ARM64 || (ARM64 && CC_HAS_NO_PROFILE_FN_ATTR)
 > >
-> > Since commit 86588296acbf ("fdt: Properly handle "no-map" field in the memory region"),
-> > nomap memory is changed to call memblock_mark_nomap() instead of
-> > memblock_remove(). But it only changed the reserved memory with fixed
-> > addr and size case in early_init_dt_reserve_memory_arch(), not
-> > including the dynamical allocation by size case in
-> > early_init_dt_alloc_reserved_memory_arch().
-> >
-> > Cc: Rob Herring <robh+dt@kernel.org>
-> > Cc: devicetree@vger.kernel.org
+> > Wouldn't "!ARM64 || CC_HAS_NO_PROFILE_FN_ATTR" be more succinct?
 > 
-> Good practice is to Cc the people involved in referenced commits.
-> Adding them now. This code is a minefield so I'd like other eyes on
-> it.
+> We need to be able to express via Kconfig "GCOV should not be enabled
+> for architectures that use noinstr when the toolchain does not support
+> __attribute__((no_profile_instrument_function))."
+> 
+> Where "architectures that use noinstr" are currently arm64, s390, and
+> x86.  So I guess we could do:
+> 
+> + depends on !ARM64 || !S390 || !X86 || CC_HAS_NO_PROFILE_FN_ATTR
 
-Apologies for the delayed reply -- was away last week.
+I think you want:
 
-I've been starring at this for 15 minutes, and still can't see how it
-could go wrong, so FWIW:
+  depends on !(ARM64 || S390 || X86) || CC_HAS_NO_PROFILE_FN_ATTR
 
-Reviewed-by: Quentin Perret <qperret@google.com>
+> (We could add a Kconfig for ARCH_WANTS_NO_INSTR, which might be more
+> informative than listed out architectures which might be non-obvious
+> to passers-by).
 
-Thanks,
-Quentin
+That would probably look better.
 
-> > Signed-off-by: Dong Aisheng <aisheng.dong@nxp.com>
-> > ---
-> >  drivers/of/of_reserved_mem.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/of/of_reserved_mem.c b/drivers/of/of_reserved_mem.c
-> > index 367f298a83b2..ebba88395bf8 100644
-> > --- a/drivers/of/of_reserved_mem.c
-> > +++ b/drivers/of/of_reserved_mem.c
-> > @@ -42,7 +42,7 @@ static int __init early_init_dt_alloc_reserved_memory_arch(phys_addr_t size,
-> >
-> >         *res_base = base;
-> >         if (nomap)
-> > -               return memblock_remove(base, size);
-> > +               return memblock_mark_nomap(base, size);
-> >
-> >         return memblock_reserve(base, size);
-> >  }
-> > @@ -276,7 +276,7 @@ void __init fdt_init_reserved_mem(void)
-> >                                 pr_info("node %s compatible matching fail\n",
-> >                                         rmem->name);
-> >                                 if (nomap)
-> > -                                       memblock_add(rmem->base, rmem->size);
-> > +                                       memblock_clear_nomap(rmem->base, rmem->size);
-> >                                 else
-> >                                         memblock_free(rmem->base, rmem->size);
-> >                         }
-> > --
-> > 2.25.1
-> >
+-- 
+Catalin
