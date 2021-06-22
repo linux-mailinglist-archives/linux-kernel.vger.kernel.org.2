@@ -2,165 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A382F3B0CFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E5C63B0D03
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:37:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232523AbhFVSjA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:39:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46464 "EHLO
+        id S232589AbhFVSjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:39:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbhFVSi7 (ORCPT
+        with ESMTP id S232376AbhFVSjT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:38:59 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3B7C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:36:43 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id h1so10905841plt.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:36:43 -0700 (PDT)
+        Tue, 22 Jun 2021 14:39:19 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C9BC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:37:02 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id g4so40866188qkl.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:37:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1QBBjNwfaVF7Ipv8w2OJCC7fG5ClgOQKcBvL6eDfXh0=;
-        b=VB80WzIPcsnlE/p80VwR7GhK75UuVyxl6Z10E8bIr5+Zj8FAuyYJVBbzQHj18JA6j5
-         wjbzKFHzUdOIqFj6de6wrsN088tkxcObzTm4nVblt6ZevDERjteoXFtA8pT73/YT/YPI
-         XDds1Fe5JkOqys6xm/k3RjN0koZ6TfYY6aaRA=
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5hHHpcbuGzfoV+GfFLB8z1cKhHoFMqWAiFyD3G6YAko=;
+        b=SqgfTNdOPOEae4ycnm65VuiFolDjL75QzhVcNDAYaB18+y6gC/dR2FGFGIRRYu1pnO
+         6G/9w/gHa9kP4JXdIkgngJVl7pR9Q1k1pW/6bgLGCYUR69Fnfa/Go4hs4E81apxFVeYM
+         CknYzB21+ZhhBxq4HsfpOUobGYuws4uDgpVZQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1QBBjNwfaVF7Ipv8w2OJCC7fG5ClgOQKcBvL6eDfXh0=;
-        b=BkE2wBuiEk/C+DAEBuFYj8lddeN8GLWLEDMdoDCWHwHE9fJ0EiUKcfmeBXYMZMEwEt
-         KWlpkuntgUX4QeSt+BN23Im6owsoux4mcq/7vhLXa8ze8OYgHB7JgIWBi5RXB/z2B9gU
-         IW1b8x0wq6jZP9WaIuqufZgUGu1fu4IQxCz9MHD2pxbFR35JgP4KPgO1GxQi9l9QnF6d
-         UjQcC9wj8faEDRjsgPnR8ASeFAqoK0+O6C7D3JlJLS0rocrM2R9w3hiAmHer8+0WMdv9
-         HDjrTcis1U9mycPG4tpL6LTgCgUSRmRQimwMI/Nryo9D2atCxOXQHw3M2LwFnI9fQe1B
-         7p1A==
-X-Gm-Message-State: AOAM533nxYocXtERsGS3hYTc9w4mKZ88grFF1yxv9IX+mdOG7nEHFQV4
-        raX6abMDQ5E2wihemfBJZV4f4g==
-X-Google-Smtp-Source: ABdhPJwkAc7+XdjK4uZl3VgfQY0ZstQsryDfYmOBg3QcvzwALmDWfeOR89rDVldL8j8Z5YoqDtx5sw==
-X-Received: by 2002:a17:903:2c2:b029:101:9c88:d928 with SMTP id s2-20020a17090302c2b02901019c88d928mr23989245plk.62.1624387002615;
-        Tue, 22 Jun 2021 11:36:42 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:dc21:8b6f:f8cd:9070])
-        by smtp.gmail.com with UTF8SMTPSA id l201sm53483pfd.183.2021.06.22.11.36.41
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5hHHpcbuGzfoV+GfFLB8z1cKhHoFMqWAiFyD3G6YAko=;
+        b=Du22WOkxWvzekWQWI40fkozgJtsKN+RdmmaJWXywuxyMARgzTpFWDJc4MZEpgYPqN4
+         SqAHn+8ohjnof9fXNcedIlR0ltk/64J0oGF/j1irorEcpzWZi4xn6KNLNmbwpR0Ima2V
+         GhXX2bbGm1BUBsOtZfqGaLmNbn+CLJ2mrXRdse6ufASeM9NZE0bAzby71IsW1ktQCF5r
+         Izf4N/guilRE8GlspMGgQcqdpMuHuCcAHzei9oecsjSrU0czhKWRN1ZhFlCKA15drSJy
+         8FAJowscaTqsBwnsuMVM66gY4HJyDfbnXcN0Two/Jq70Sd0ZtLsgXsKo27y+6I5oWl3c
+         5zmw==
+X-Gm-Message-State: AOAM530+pNXftGi0FWvtn0ewjYC8Fcm3un16iNGpo2BFnUOuOn4uXJJg
+        7czomLDVwNi5TFZa8ajrCpyN3Xsqq4yerw==
+X-Google-Smtp-Source: ABdhPJwPLuA81YKQTRPSZD4dvtZVLDx1X693AAtuDflkiP3Ku/ox6uA23rw0R/l7WEVnlICCHJF9WA==
+X-Received: by 2002:a37:b205:: with SMTP id b5mr6005031qkf.208.1624387021627;
+        Tue, 22 Jun 2021 11:37:01 -0700 (PDT)
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com. [209.85.222.170])
+        by smtp.gmail.com with ESMTPSA id q14sm217249qtw.24.2021.06.22.11.37.00
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 11:36:42 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 11:36:40 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Chanwoo Choi <cw00.choi@samsung.com>
-Cc:     andrew-sh.cheng@mediatek.com, hsinyi@chromium.org,
-        sibis@codeaurora.org, saravanak@google.com,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
-        chanwoo@kernel.org, cwchoi00@gmail.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Saravana Kannan <skannan@codeaurora.org>
-Subject: Re: [PATCH 3/4] PM / devfreq: Add cpu based scaling support to
- passive governor
-Message-ID: <YNItuDsinxDCVDGa@google.com>
-References: <20210617060546.26933-1-cw00.choi@samsung.com>
- <CGME20210617054647epcas1p431edaffea5bf7f3792b55dc3d91289ae@epcas1p4.samsung.com>
- <20210617060546.26933-4-cw00.choi@samsung.com>
+        Tue, 22 Jun 2021 11:37:01 -0700 (PDT)
+Received: by mail-qk1-f170.google.com with SMTP id f70so41993340qke.13
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:37:00 -0700 (PDT)
+X-Received: by 2002:a25:60c1:: with SMTP id u184mr5281625ybb.343.1624387020330;
+ Tue, 22 Jun 2021 11:37:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210617060546.26933-4-cw00.choi@samsung.com>
+References: <1624099230-20899-1-git-send-email-rajeevny@codeaurora.org>
+ <1624099230-20899-6-git-send-email-rajeevny@codeaurora.org>
+ <20210620100147.GB703072@ravnborg.org> <CAD=FV=VP8hLHtpZ8F5KVGWoKiJBxyQVufg7V9A2CC0rwcAX-aw@mail.gmail.com>
+ <20210621184157.GB918146@ravnborg.org>
+In-Reply-To: <20210621184157.GB918146@ravnborg.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 22 Jun 2021 11:36:49 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Wzz0yW8FPxSFRBQ+y0+PbO__g-fPU64kXwqBmi6zT6RA@mail.gmail.com>
+Message-ID: <CAD=FV=Wzz0yW8FPxSFRBQ+y0+PbO__g-fPU64kXwqBmi6zT6RA@mail.gmail.com>
+Subject: Re: [v7 5/5] drm/panel-simple: Add Samsung ATNA33XC20
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     Rajeev Nandan <rajeevny@codeaurora.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rob Clark <robdclark@gmail.com>, Lyude Paul <lyude@redhat.com>,
+        Jani Nikula <jani.nikula@intel.com>,
+        Rob Herring <robh@kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Sean Paul <seanpaul@chromium.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Krishna Manikandan <mkrishn@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 17, 2021 at 03:05:45PM +0900, Chanwoo Choi wrote:
-> From: Saravana Kannan <skannan@codeaurora.org>
-> 
-> Many CPU architectures have caches that can scale independent of the
-> CPUs. Frequency scaling of the caches is necessary to make sure that the
-> cache is not a performance bottleneck that leads to poor performance and
-> power. The same idea applies for RAM/DDR.
-> 
-> To achieve this, this patch adds support for cpu based scaling to the
-> passive governor. This is accomplished by taking the current frequency
-> of each CPU frequency domain and then adjust the frequency of the cache
-> (or any devfreq device) based on the frequency of the CPUs. It listens
-> to CPU frequency transition notifiers to keep itself up to date on the
-> current CPU frequency.
-> 
-> To decide the frequency of the device, the governor does one of the
-> following:
-> * Derives the optimal devfreq device opp from required-opps property of
->   the parent cpu opp_table.
-> 
-> * Scales the device frequency in proportion to the CPU frequency. So, if
->   the CPUs are running at their max frequency, the device runs at its
->   max frequency. If the CPUs are running at their min frequency, the
->   device runs at its min frequency. It is interpolated for frequencies
->   in between.
-> 
-> Signed-off-by: Saravana Kannan <skannan@codeaurora.org>
-> [Sibi: Integrated cpu-freqmap governor into passive_governor]
-> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
-> [Chanwoo: Fix conflict with latest code and clean code up]
-> Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
-> ---
->  drivers/devfreq/governor.h         |  22 +++
->  drivers/devfreq/governor_passive.c | 264 ++++++++++++++++++++++++++++-
->  include/linux/devfreq.h            |  16 +-
->  3 files changed, 293 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/devfreq/governor.h b/drivers/devfreq/governor.h
-> index 9a9495f94ac6..3c36c92c89a9 100644
-> --- a/drivers/devfreq/governor.h
-> +++ b/drivers/devfreq/governor.h
-> @@ -47,6 +47,28 @@
->  #define DEVFREQ_GOV_ATTR_POLLING_INTERVAL		BIT(0)
->  #define DEVFREQ_GOV_ATTR_TIMER				BIT(1)
->  
-> +/**
-> + * struct devfreq_cpu_data - Hold the per-cpu data
-> + * @dev:	reference to cpu device.
-> + * @first_cpu:	the cpumask of the first cpu of a policy.
-> + * @opp_table:	reference to cpu opp table.
-> + * @cur_freq:	the current frequency of the cpu.
-> + * @min_freq:	the min frequency of the cpu.
-> + * @max_freq:	the max frequency of the cpu.
-> + *
-> + * This structure stores the required cpu_data of a cpu.
-> + * This is auto-populated by the governor.
-> + */
-> +struct devfreq_cpu_data {
-> +	struct device *dev;
-> +	unsigned int first_cpu;
-> +
-> +	struct opp_table *opp_table;
-> +	unsigned int cur_freq;
-> +	unsigned int min_freq;
-> +	unsigned int max_freq;
-> +};
-> +
->  /**
->   * struct devfreq_governor - Devfreq policy governor
->   * @node:		list node - contains registered devfreq governors
-> diff --git a/drivers/devfreq/governor_passive.c b/drivers/devfreq/governor_passive.c
-> index fc09324a03e0..07e864509b7e 100644
-> --- a/drivers/devfreq/governor_passive.c
-> +++ b/drivers/devfreq/governor_passive.c
-> @@ -8,11 +8,84 @@
->   */
->  
->  #include <linux/module.h>
-> +#include <linux/cpu.h>
-> +#include <linux/cpufreq.h>
-> +#include <linux/cpumask.h>
-> +#include <linux/slab.h>
->  #include <linux/device.h>
->  #include <linux/devfreq.h>
->  #include "governor.h"
->  
-> -static int devfreq_passive_get_target_freq(struct devfreq *devfreq,
-> +#define HZ_PER_KHZ	1000
-> +
-> +static unsigned long get_taget_freq_by_required_opp(struct device *p_dev,
-> +						struct opp_table *p_opp_table,
-> +						struct opp_table *opp_table,
-> +						unsigned long freq)
-> +{
+Hi,
 
-s/get_taget_freq_by_required_opp/get_target_freq_by_required_opp/
+On Mon, Jun 21, 2021 at 11:42 AM Sam Ravnborg <sam@ravnborg.org> wrote:
+>
+> Hi Doug,
+>
+> On Mon, Jun 21, 2021 at 08:34:51AM -0700, Doug Anderson wrote:
+> > Hi,
+> >
+> > On Sun, Jun 20, 2021 at 3:01 AM Sam Ravnborg <sam@ravnborg.org> wrote:
+> > >
+> > > Hi Rajeev
+> > > On Sat, Jun 19, 2021 at 04:10:30PM +0530, Rajeev Nandan wrote:
+> > > > Add Samsung 13.3" FHD eDP AMOLED panel.
+> > > >
+> > > > Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
+> > > > Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> > > > ---
+> > > >
+> > > > Changes in v4:
+> > > > - New
+> > > >
+> > > > Changes in v5:
+> > > > - Remove "uses_dpcd_backlight" property, not required now. (Douglas)
+> > > >
+> > > > Changes in v7:
+> > > > - Update disable_to_power_off and power_to_enable delays. (Douglas)
+> > > >
+> > > >  drivers/gpu/drm/panel/panel-simple.c | 33 +++++++++++++++++++++++++++++++++
+> > > >  1 file changed, 33 insertions(+)
+> > > >
+> > > > diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
+> > > > index 86e5a45..4adc44a 100644
+> > > > --- a/drivers/gpu/drm/panel/panel-simple.c
+> > > > +++ b/drivers/gpu/drm/panel/panel-simple.c
+> > > > @@ -3562,6 +3562,36 @@ static const struct panel_desc rocktech_rk101ii01d_ct = {
+> > > >       .connector_type = DRM_MODE_CONNECTOR_LVDS,
+> > > >  };
+> > > >
+> > > > +static const struct drm_display_mode samsung_atna33xc20_mode = {
+> > > > +     .clock = 138770,
+> > > > +     .hdisplay = 1920,
+> > > > +     .hsync_start = 1920 + 48,
+> > > > +     .hsync_end = 1920 + 48 + 32,
+> > > > +     .htotal = 1920 + 48 + 32 + 80,
+> > > > +     .vdisplay = 1080,
+> > > > +     .vsync_start = 1080 + 8,
+> > > > +     .vsync_end = 1080 + 8 + 8,
+> > > > +     .vtotal = 1080 + 8 + 8 + 16,
+> > > > +     .flags = DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_NVSYNC,
+> > > > +};
+> > > > +
+> > > > +static const struct panel_desc samsung_atna33xc20 = {
+> > > > +     .modes = &samsung_atna33xc20_mode,
+> > > > +     .num_modes = 1,
+> > > > +     .bpc = 10,
+> > > > +     .size = {
+> > > > +             .width = 294,
+> > > > +             .height = 165,
+> > > > +     },
+> > > > +     .delay = {
+> > > > +             .disable_to_power_off = 200,
+> > > > +             .power_to_enable = 400,
+> > > > +             .hpd_absent_delay = 200,
+> > > > +             .unprepare = 500,
+> > > > +     },
+> > > > +     .connector_type = DRM_MODE_CONNECTOR_eDP,
+> > > > +};
+> > >
+> > > bus_format is missing. There should be a warning about this when you
+> > > probe the display.
+> >
+> > Sam: I'm curious about the requirement of hardcoding bus_format like
+> > this for eDP panels. Most eDP panels support a variety of bits per
+> > pixel and do so dynamically. Ones I've poked at freely support 6bpp
+> > and 8bpp. Presumably this one supports both of those modes and also
+> > 10bpp. I haven't done detailed research on it, but it would also
+> > surprise me if the "bus format" for a given bpp needed to be specified
+> > for eDP. Presumably since eDP has most of the "autodetect" type
+> > features of DP then if the format needed to be accounted for that you
+> > could query the hardware?
+> >
+> > Looking at the datasheet for the ti-sn65dsi86 MIPI-to-eDP bridge chip
+> > I see that it explicitly calls out the bus formats that it supports
+> > for the MIPI side but doesn't call out anything for eDP. That would
+> > tend to support my belief that there isn't variance on the eDP side...
+> >
+> > Maybe the right fix is to actually change the check not to give a
+> > warning for eDP panels? ...or am I misunderstanding?
+>
+> I have never dived into the datasheets of eDP panels so I do not know.
+> The checks were added based on what we had in-tree and it is no suprise
+> if they need an update or are just plain wrong.
+> I expect you to be in a better position to make the call here - but we
+> should not add panels that triggers warnings so either fix the warnings
+> or fix the panel description.
+
+Agreed. I'd support a patch that removes this warning for eDP panels
+unless someone knows that it makes sense. I haven't been able to find
+anything indicating that it does.
+
+-Doug
