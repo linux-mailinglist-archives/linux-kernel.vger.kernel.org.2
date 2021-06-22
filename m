@@ -2,106 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7754C3B07C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 132973B07D2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbhFVOql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 10:46:41 -0400
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:33606 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232042AbhFVOqi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 10:46:38 -0400
-Received: by mail-oi1-f170.google.com with SMTP id s17so1192275oij.0;
-        Tue, 22 Jun 2021 07:44:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XceVVVWYSn/QRpaUtGZpz57/pqLlFwPeXc0ztXrJBhU=;
-        b=dhDlnSd0Ci4c7Gg2feaHKRYY4OrFMNUHwO9AcjkKIwgutbqqpVluAczjoKDbnV+4ng
-         tgob3vt1Fri8g3TWBqxFgUyeVm0fD8IRMBSRS5pHv+LI/FMns0/hAIEDmRUx/51Usk15
-         SQvr0rdz8qVJ5a5rGuljyxqvg7tWbyPRo5D4FJfabNBzD94SG2Uyu2z4VJgJubPAwWKg
-         vkRasWvePikbBiEwYdow8upwc7l9ofyxm9dxwOGvvW3MdGiYd/g3o4v2bFLz8bLxIUdk
-         Sb7DtR3iFXUgSBFmALYL3pvtqk5zwO3m+DI4/jviUIqd4N5wSTVJHcHUpVoRtiHniqhr
-         cZlw==
-X-Gm-Message-State: AOAM5309UmOcLLRsz2LBAxFfacz9OgUP2gvceethbPdONI3P9XE6+B73
-        TRTwTQ+YnJVSWvW0uHFDRPLjCfdvXL4wqZpz1sQ=
-X-Google-Smtp-Source: ABdhPJw2I6CQjD4ZFyC8bfVz3kKsv7VIhyn3IJTy0qCNaM3JmP8dtkm56H6QsjfuqT3vQL8M9WS6UIT9hj+Hc+QizT0=
-X-Received: by 2002:aca:f0d5:: with SMTP id o204mr3455379oih.71.1624373062707;
- Tue, 22 Jun 2021 07:44:22 -0700 (PDT)
+        id S232040AbhFVOsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 10:48:10 -0400
+Received: from foss.arm.com ([217.140.110.172]:50546 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231260AbhFVOsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 10:48:09 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1292A31B;
+        Tue, 22 Jun 2021 07:45:53 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.10.229])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0973E3F694;
+        Tue, 22 Jun 2021 07:45:48 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 15:45:46 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, boqun.feng@gmail.com, bp@alien8.de,
+        catalin.marinas@arm.com, dvyukov@google.com, elver@google.com,
+        ink@jurassic.park.msu.ru, jonas@southpole.se,
+        juri.lelli@redhat.com, linux@armlinux.org.uk, luto@kernel.org,
+        mattst88@gmail.com, mingo@redhat.com, monstr@monstr.eu,
+        paulmck@kernel.org, peterz@infradead.org, rth@twiddle.net,
+        shorne@gmail.com, stefan.kristiansson@saunalahti.fi,
+        tglx@linutronix.de, vincent.guittot@linaro.org
+Subject: Re: [PATCH v2 0/9] thread_info: use helpers to snapshot thread flags
+Message-ID: <20210622144546.GB71782@C02TD0UTHF1T.local>
+References: <20210621090602.16883-1-mark.rutland@arm.com>
+ <20210621175452.GB29713@willie-the-truck>
 MIME-Version: 1.0
-References: <20210622075925.16189-1-lukasz.luba@arm.com> <20210622075925.16189-3-lukasz.luba@arm.com>
- <CAJZ5v0iGv_1d3BT0HowLgecOfhNHNQdOwH6Kef5WE4-zeBbp2Q@mail.gmail.com> <2f7d855c-5232-ddbe-8403-db3596dcebc5@arm.com>
-In-Reply-To: <2f7d855c-5232-ddbe-8403-db3596dcebc5@arm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 22 Jun 2021 16:44:11 +0200
-Message-ID: <CAJZ5v0jExEJRM=aJhEpKoVjvppDz_x+pYG2-HSQUuehccwnVTQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 2/4] cpuidle: Add Active Stats calls tracking idle entry/exit
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Chris Redpath <Chris.Redpath@arm.com>, Beata.Michalska@arm.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Amit Kachhap <amit.kachhap@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621175452.GB29713@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 3:59 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
->
->
->
-> On 6/22/21 1:33 PM, Rafael J. Wysocki wrote:
-> > On Tue, Jun 22, 2021 at 9:59 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
-> >>
-> >> The Active Stats framework tracks and accounts the activity of the CPU
-> >> for each performance level. It accounts the real residency,
-> >
-> > No, it doesn't.  It just measures the time between the entry and exit
-> > and that's not the real residency (because it doesn't take the exit
-> > latency into account, for example).
->
-> It's 'just' a 'model' and as other models has limitations, but it's
-> better than existing one, which IPA has to use:
-> cpu_util + currect_freq_at_sampling_time
+On Mon, Jun 21, 2021 at 06:54:53PM +0100, Will Deacon wrote:
+> On Mon, Jun 21, 2021 at 10:05:52AM +0100, Mark Rutland wrote:
+> > As thread_info::flags scan be manipulated by remote threads, it is
+> > necessary to use atomics or READ_ONCE() to ensure that code manipulates
+> > a consistent snapshot, but we open-code plain accesses to
+> > thread_info::flags across the kernel tree.
+> > 
+> > Generally we get away with this, but tools like KCSAN legitimately warn
+> > that there is a data-race, and this is potentially fragile with compiler
+> > optimizations, LTO, etc.
+> > 
+> > These patches introduce new helpers to snahpshot the thread flags, with
+> > the intent being that these should replace all plain accesses.
+> > 
+> > Since v1 [1]:
+> > * Drop RFC
+> > * Make read_ti_thread_flags() __always_inline
+> > * Clarify commit messages
+> > * Fix typo in arm64 patch
+> > * Accumulate Reviewed-by / Acked-by tags
+> > * Drop powerpc patch to avoid potential conflicts (per [2])
+> > 
+> > [1] https://lore.kernel.org/r/20210609122001.18277-1-mark.rutland@arm.com
+> > [2] https://lore.kernel.org/r/87k0mvtgeb.fsf@mpe.ellerman.id.au
+> > 
+> > Thanks,
+> > Mark.
+> > 
+> > Mark Rutland (9):
+> >   thread_info: add helpers to snapshot thread flags
+> >   entry: snapshot thread flags
+> >   sched: snapshot thread flags
+> >   alpha: snapshot thread flags
+> >   arm: snapshot thread flags
+> >   arm64: snapshot thread flags
+> 
+> FWIW, you have two identical arm64 patches in this series, just with a
+> different subject.
 
-But the idle duration is already measured by cpuidle as
-last_residency_ns.  Why does it need to be measured once more in
-addition to that?
+Whoops; I'd tried to bring arm64 in line with the other patches, but
+forgot to delete the stale patch file when I did that. I'll keep the
+"snapshot thread flags" version.
 
-> >
-> >> when the CPU was not idle, at a given performance level. This patch adds needed calls
-> >> which provide the CPU idle entry/exit events to the Active Stats
-> >> framework.
-> >
-> > And it adds overhead to overhead-sensitive code.
-> >
-> > AFAICS, some users of that code will not really get the benefit, so
-> > adding the overhead to it is questionable.
-> >
-> > First, why is the existing instrumentation in the idle loop insufficient?
+> For the one you decide to keep:
 >
-> The instrumentation (tracing) cannot be used at run time AFAIK. I need
-> this idle + freq information combined in a running platform, not for
-> post-processing (like we have in LISA). The thermal governor IPA would
-> use them for used power estimation.
+> Acked-by: Will Deacon <will@kernel.org>
 
-What about snapshotting last_residency_ns in the CPU wakeup path?
+Thanks!
 
-> >
-> > Second, why do you need to add locking to this code?
->
-> The idle entry/exit updates the CPU's accounting data structure.
-> There is a reader of those data structures: thermal governor,
-> run from different CPU, which is the reason why I put locking for them.
-
-So please consider doing it in a lockless manner and avoid running
-this code when it is not needed in the first place.
+Mark.
