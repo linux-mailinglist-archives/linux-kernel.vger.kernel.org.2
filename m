@@ -2,103 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69DCF3AFE39
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C0D53AFE35
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230354AbhFVHsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 03:48:39 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2192 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229702AbhFVHsh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 03:48:37 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15M7Y95n182007;
-        Tue, 22 Jun 2021 03:45:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=3inlT+G7TQt324HQqr9Smnn1Cc8CLfWEFzQw2GeP8L4=;
- b=Di4HD7bvQg71eLCA6REKFQYUxLA3q4TUWoK/sjS6khC2C/pp7pT11tjfq4Qacw2y7zim
- auQOxTBjzfJ0g7z7FYdhJ8mclCW13n7YpyxCwi5GQSs1aMbHcn3A/7wkXhjDuoLGi4K2
- 1p9rCBcl8+4bMV5HNdzo60xyYGeYXkD+sAp4c0GTKv78t4HEyNS/LuQyUzggYKprdPCA
- Tdd/vpQ5LozCZkAgnMMIeb3Y3Sb6I7RrGWaXog44T0iTy8vqtKgwMzV9o+64MYLvXwbT
- 7dGgAeWHsUXCrVOCORU/habPSvl8FuhELrrHrWDTAaM+kdVChW6wAGQSk+C2BBXQ+DUl 0Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39bae3t6uc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Jun 2021 03:45:34 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 15M7ZJ9i188881;
-        Tue, 22 Jun 2021 03:45:33 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39bae3t6sv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Jun 2021 03:45:33 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15M7hPH3023794;
-        Tue, 22 Jun 2021 07:45:31 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 3997uh99cw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Jun 2021 07:45:31 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15M7jSwE8520026
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Jun 2021 07:45:28 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8472B4204B;
-        Tue, 22 Jun 2021 07:45:28 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C7E9442045;
-        Tue, 22 Jun 2021 07:45:27 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 22 Jun 2021 07:45:27 +0000 (GMT)
-From:   Niklas Schnelle <schnelle@linux.ibm.com>
-To:     mcgrof@kernel.org
-Cc:     alex.williamson@redhat.com, axboe@kernel.dk, bhelgaas@google.com,
-        cohuck@redhat.com, eric.auger@redhat.com,
-        giovanni.cabiddu@intel.com, gregkh@linuxfoundation.org,
-        jannh@google.com, jeyu@kernel.org, jgg@ziepe.ca, jikos@kernel.org,
-        jpoimboe@redhat.com, keescook@chromium.org, kevin.tian@intel.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, mbenes@suse.com, minchan@kernel.org,
-        mjrosato@linux.ibm.com, ngupta@vflare.org, peterz@infradead.org,
-        rostedt@goodmis.org, sergey.senozhatsky.work@gmail.com,
-        tglx@linutronix.de
-Subject: Re: [PATCH 1/2] pci: export pci_dev_unlock() and the respective unlock
-Date:   Tue, 22 Jun 2021 09:45:27 +0200
-Message-Id: <20210622074527.3486039-1-schnelle@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210622000310.728294-1-mcgrof@kernel.org>
-References: <20210622000310.728294-1-mcgrof@kernel.org>
+        id S230339AbhFVHsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 03:48:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230331AbhFVHr6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 03:47:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17805611BF;
+        Tue, 22 Jun 2021 07:45:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624347942;
+        bh=DHrhi+ReYAlzR9QUt9I0fZ/6wnGPc4XCNadLvDK7hps=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fsu9/SngL9Ee7mR3K31l/FEJ/z4KOd5rPJOFeh05GM2saa60m8hipNQAq+la4lhLx
+         EIVeUW6SLpej5o1l9o8RY+00ARoJb4Odo7knTv8ryx8ph5ef47byy+WUOrRF7ZzKj+
+         b5gLIBp48x7DUM0a8dqQ6Pm9G0SN/m0FGSTARsiI=
+Date:   Tue, 22 Jun 2021 09:45:39 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     minchan@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
+        mbenes@suse.com, jpoimboe@redhat.com, tglx@linutronix.de,
+        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
+        peterz@infradead.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] zram: fix deadlock with sysfs attribute usage and
+ driver removal
+Message-ID: <YNGVI/vKSBAM8dlh@kroah.com>
+References: <20210621233013.562641-1-mcgrof@kernel.org>
+ <20210621233634.595649-1-mcgrof@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: tHmapKhGjdnzC2kf8X1ZsHuVbBQLQXVV
-X-Proofpoint-ORIG-GUID: 3XLUL0t0HKIuQU1c_eg-wIiYVfa0QOku
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-22_04:2021-06-21,2021-06-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1011
- mlxlogscore=999 bulkscore=0 impostorscore=0 mlxscore=0 spamscore=0
- malwarescore=0 lowpriorityscore=0 priorityscore=1501 suspectscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106220046
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621233634.595649-1-mcgrof@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Luis, Hello Bjorn,
+On Mon, Jun 21, 2021 at 04:36:34PM -0700, Luis Chamberlain wrote:
+> When sysfs attributes use a lock also used on driver removal we can
+> potentially deadlock. This happens when for instance a sysfs file on
+> a driver is used, then at the same time we have driver removal trigger.
+> The driver removal code holds a lock, and then the sysfs file entry waits
+> for the same lock. While holding the lock the driver removal tries to
+> remove the sysfs entries, but these cannot be removed yet as one is
+> waiting for a lock. This won't complete as the lock is already held.
+> Likewise module removal cannot complete, and so we deadlock.
 
-Interesting timing, I currently have a very similar patch lying around though
-with also exporting pci_dev_lock(). I'm planning to use that for upcoming
-support of automatic PCI devices recovery on s390x following the
-Documentation/PCI/pci-error-recovery.rst recovery flow. There too exprting
-these functions would make the code simpler to grok in my opinion. So if Bjorn
-accepts this there could soon be another user, not sure if one would want to
-then already export pci_dev_lock() too or wait until my patches so it's not
-exported without users.
+This is all about removing modules, not about "driver removal" from a
+device.  Please make the subject line here more explicit.
 
-Best regards,
-Niklas Schnelle
+> 
+> To fix this we just *try* to get a refcount to the module when a shared
+> lock is used, prior to mucking with a sysfs attribute. If this fails we
+> just give up right away.
+> 
+> We use a try method as a full lock means we'd then make our sysfs attributes
+> busy us out from possible module removal, and so userspace could force denying
+> module removal, a silly form of "DOS" against module removal. A try lock on
+> the module removal ensures we give priority to module removal and interacting
+> with sysfs attributes only comes second. Using a full lock could mean for
+> instance that if you don't stop poking at sysfs files you cannot remove a
+> module.
+> 
+> This deadlock was first reported with the zram driver, a sketch of how
+> this can happen follows:
+> 
+> CPU A                              CPU B
+>                                    whatever_store()
+> module_unload
+>   mutex_lock(foo)
+>                                    mutex_lock(foo)
+>    del_gendisk(zram->disk);
+>      device_del()
+>        device_remove_groups()
+
+Can you duplicate this in a real-world situation?
+
+What tools remove the zram module from the system on the fly?
+
+> In this situation whatever_store() is waiting for the mutex foo to
+> become unlocked, but that won't happen until module removal is complete.
+> But module removal won't complete until the syfs file being poked completes
+> which is waiting for a lock already held.
+> 
+> This is a generic kernel issue with sysfs files which use any lock also
+> used on module removal. Different generic solutions have been proposed.
+> One approach proposed is by directly by augmenting attributes with module
+> information [0]. This patch implements a solution by adding macros with
+> the prefix MODULE_DEVICE_ATTR_*() which accomplish the same. Until we
+> don't have a generic agreed upon solution for this shared between drivers,
+> we must implement a fix for this on each driver.
+> 
+> We make zram use the new MODULE_DEVICE_ATTR_*() helpers, and completely
+> open code the solution for class attributes as there are only a few of
+> those.
+> 
+> This issue can be reproduced easily on the zram driver as follows:
+> 
+> Loop 1 on one terminal:
+> 
+> while true;
+> 	do modprobe zram;
+> 	modprobe -r zram;
+> done
+> 
+> Loop 2 on a second terminal:
+> while true; do
+> 	echo 1024 >  /sys/block/zram0/disksize;
+> 	echo 1 > /sys/block/zram0/reset;
+> done
+
+As fun as this is, it's not a real workload, please do not pretend that
+it is.
+
+And your code is still racy, see below.  You just made the window even
+smaller, which you still should be objecting to as you somehow feel this
+is a valid usecase :)
+
+> @@ -2048,13 +2048,19 @@ static ssize_t hot_add_show(struct class *class,
+>  {
+>  	int ret;
+>  
+> +	if (!try_module_get(THIS_MODULE))
+> +		return -ENODEV;
+> +
+
+You can not increment/decrement your own module's reference count and
+expect it to work properly, as it is still a race.
+
+thanks,
+
+greg k-h
