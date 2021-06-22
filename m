@@ -2,62 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22BAC3AFAA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 03:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D873B3AFAA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 03:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230464AbhFVBeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 21:34:13 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:47644 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230175AbhFVBeM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 21:34:12 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 400242007C2;
-        Tue, 22 Jun 2021 03:31:56 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 36CD02005D7;
-        Tue, 22 Jun 2021 03:31:52 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id EBCB84024D;
-        Tue, 22 Jun 2021 09:31:46 +0800 (+08)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v2] ASoC: fsl-asoc-card: change dev_err to dev_err_probe for defer probe
-Date:   Tue, 22 Jun 2021 09:13:15 +0800
-Message-Id: <1624324395-7260-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S231129AbhFVBeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 21:34:31 -0400
+Received: from mailgw01.mediatek.com ([60.244.123.138]:39711 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230059AbhFVBe3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 21:34:29 -0400
+X-Greylist: delayed 303 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Jun 2021 21:34:28 EDT
+X-UUID: c27ddc43ccc34fe0a8d1eaad25cd91df-20210622
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ZLVdaGmik40Ze2v/CYmLtbOEykgp/qCj3I8UybRZ4Vs=;
+        b=YZOeNfpEG6upWTdbl3Rac5oYxNHiTVt88w2Y7MPl+hJyG6Sp48ZOJjyKI6ziTu3HbNj8B+lRbmmG8M81N6CZzSSucTmFqKxgQrroz+xdqIqrj5bynpYd4Mmc8mg6whZID7gfqXU3mfKAM7oIAcULJGW7nYlpfBvmRlt6A6IPMWM=;
+X-UUID: c27ddc43ccc34fe0a8d1eaad25cd91df-20210622
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        (envelope-from <ed.tsai@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1410397488; Tue, 22 Jun 2021 09:27:07 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 22 Jun 2021 09:27:05 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.792.3;
+ Tue, 22 Jun 2021 09:27:05 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 22 Jun 2021 09:27:05 +0800
+Message-ID: <9bbe52d3f21b91eadf7ba30be5054cf64ba47739.camel@mediatek.com>
+Subject: Re: [PATCH] scsi: remove reduntant assignment when alloc sdev
+From:   Ed Tsai <ed.tsai@mediatek.com>
+To:     Bart Van Assche <bvanassche@acm.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Tue, 22 Jun 2021 09:27:05 +0800
+In-Reply-To: <9e1d5f1f-b51e-8f1a-d052-d6debed116e6@acm.org>
+References: <20210621034555.4039-1-ed.tsai@mediatek.com>
+         <9e1d5f1f-b51e-8f1a-d052-d6debed116e6@acm.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+MIME-Version: 1.0
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't need to print error message for defer probe
-
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
-changes in v2:
-- use dev_err_probe instead of dev_dbg
-
- sound/soc/fsl/fsl-asoc-card.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
-index 121e08c2af2a..24c890d76da0 100644
---- a/sound/soc/fsl/fsl-asoc-card.c
-+++ b/sound/soc/fsl/fsl-asoc-card.c
-@@ -708,8 +708,8 @@ static int fsl_asoc_card_probe(struct platform_device *pdev)
- 	of_node_put(framemaster);
- 
- 	if (!fsl_asoc_card_is_ac97(priv) && !codec_dev) {
--		dev_err(&pdev->dev, "failed to find codec device\n");
- 		ret = -EPROBE_DEFER;
-+		dev_err_probe(&pdev->dev, ret, "failed to find codec device\n");
- 		goto asrc_fail;
- 	}
- 
--- 
-2.27.0
+T24gVHVlLCAyMDIxLTA2LTIyIGF0IDAxOjIxICswODAwLCBCYXJ0IFZhbiBBc3NjaGUgd3JvdGU6
+DQo+IE9uIDYvMjAvMjEgODo0NSBQTSwgRWQgVHNhaSB3cm90ZToNCj4gPiBzZGV2LT5yZXFldXN0
+X3F1ZXVlIGFuZCBpdHMgcXVldWVkYXRhIGhhdmUgYmVlbiBzZXQgdXAgaW4NCj4gPiBzY3NpX21x
+X2FsbG9jX3F1ZXVlKCkuIE5vIG5lZWQgdG8gZG8gdGhhdCBhZ2Fpbi4NCj4gPiANCj4gPiBTaWdu
+ZWQtb2ZmLWJ5OiBFZCBUc2FpIDxlZC50c2FpQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4gPiAg
+ZHJpdmVycy9zY3NpL3Njc2lfc2Nhbi5jIHwgNCArLS0tDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAx
+IGluc2VydGlvbigrKSwgMyBkZWxldGlvbnMoLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJp
+dmVycy9zY3NpL3Njc2lfc2Nhbi5jIGIvZHJpdmVycy9zY3NpL3Njc2lfc2Nhbi5jDQo+ID4gaW5k
+ZXggMTJmNTQ1NzFiODNlLi44MmMxNzkyZjFkZTIgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9z
+Y3NpL3Njc2lfc2Nhbi5jDQo+ID4gKysrIGIvZHJpdmVycy9zY3NpL3Njc2lfc2Nhbi5jDQo+ID4g
+QEAgLTI2Niw4ICsyNjYsNyBAQCBzdGF0aWMgc3RydWN0IHNjc2lfZGV2aWNlDQo+ID4gKnNjc2lf
+YWxsb2Nfc2RldihzdHJ1Y3Qgc2NzaV90YXJnZXQgKnN0YXJnZXQsDQo+ID4gIAkgKi8NCj4gPiAg
+CXNkZXYtPmJvcmtlbiA9IDE7DQo+ID4gIA0KPiA+IC0Jc2Rldi0+cmVxdWVzdF9xdWV1ZSA9IHNj
+c2lfbXFfYWxsb2NfcXVldWUoc2Rldik7DQo+ID4gLQlpZiAoIXNkZXYtPnJlcXVlc3RfcXVldWUp
+IHsNCj4gPiArCWlmICghc2NzaV9tcV9hbGxvY19xdWV1ZShzZGV2KSkgew0KPiA+ICAJCS8qIHJl
+bGVhc2UgZm4gaXMgc2V0IHVwIGluDQo+ID4gc2NzaV9zeXNmc19kZXZpY2VfaW5pdGlhbGlzZSwg
+c28NCj4gPiAgCQkgKiBoYXZlIHRvIGZyZWUgYW5kIHB1dCBtYW51YWxseSBoZXJlICovDQo+ID4g
+IAkJcHV0X2RldmljZSgmc3RhcmdldC0+ZGV2KTsNCj4gPiBAQCAtMjc1LDcgKzI3NCw2IEBAIHN0
+YXRpYyBzdHJ1Y3Qgc2NzaV9kZXZpY2UNCj4gPiAqc2NzaV9hbGxvY19zZGV2KHN0cnVjdCBzY3Np
+X3RhcmdldCAqc3RhcmdldCwNCj4gPiAgCQlnb3RvIG91dDsNCj4gPiAgCX0NCj4gPiAgCVdBUk5f
+T05fT05DRSghYmxrX2dldF9xdWV1ZShzZGV2LT5yZXF1ZXN0X3F1ZXVlKSk7DQo+ID4gLQlzZGV2
+LT5yZXF1ZXN0X3F1ZXVlLT5xdWV1ZWRhdGEgPSBzZGV2Ow0KPiA+ICANCj4gPiAgCWRlcHRoID0g
+c2Rldi0+aG9zdC0+Y21kX3Blcl9sdW4gPzogMTsNCj4gDQo+IFNpbmNlIHNjc2lfbXFfYWxsb2Nf
+cXVldWUoKSBvbmx5IGhhcyBvbmUgY2FsbGVyLCBwbGVhc2UgaW5saW5lDQo+IHNjc2lfbXFfYWxs
+b2NfcXVldWUoKSBpbnN0ZWFkIG9mIG1ha2luZyB0aGlzIGNoYW5nZS4gU2VlIGFsc28NCj4gDQpo
+dHRwczovL2xvcmUua2VybmVsLm9yZy9saW51eC1zY3NpLzIwMjAxMTIzMDMxNzQ5LjE0OTEyLTUt
+YnZhbmFzc2NoZUBhY20ub3JnLw0KPiANCj4gVGhhbmtzLA0KPiANCj4gQmFydC4NCg0KaGF2ZSBw
+bGFubmVkIHRvIHJlLXN1Ym1pdCBpdD8NCg==
 
