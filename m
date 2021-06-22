@@ -2,96 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E2DE3B0824
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:02:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB223B0826
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231961AbhFVPES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbhFVPER (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:04:17 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D469C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:02:01 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id r16so30589182ljk.9
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:02:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=28TZlx5g29Z7lxePs7VfFCILquiSUttASzI3ApneZ7Q=;
-        b=aBcu+A4/lQWZECURkhUgBN1tY7A9rJoOOHga1WM/ZZUL0jFnBhEzPRlnrdSV0Ze9eW
-         8u3BHWwH2P9EObMhC6KW1ja0ooaXkFWMTQTckWsPz+zuNDZ/VF/Jra7Jmheug2/BZP1G
-         4Z9DtLacA0TW42AL0NG3qlFRxz5lUuUs/zKZHJ4/ERv4nOxK4sv+CGqtRUzoO5c2w19h
-         u2sy7rQ9CdQc/OxZpsx8wOwgkoT1fdGTzXJYVI8lVKlQp58Fp4HvGCyZPF6tQzYN2Ksc
-         El8yjv61qEJ3FoRxAYaNNrb+++ItTVy4m8BEg9MlNuZC/qLFXleGnhNqB/GSQc5cafM6
-         IL+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=28TZlx5g29Z7lxePs7VfFCILquiSUttASzI3ApneZ7Q=;
-        b=NTE0TMttN6+wlOVeQXcVfl3T4fgpmkn5w2hgcSE5phzkmfehaeCSB52BOi5Bo9dvj3
-         vfmO7SWpoh0albr5d6ZA4zsTTcSNH4POLdVDNHZJQYolEYApIYuaxAjjf5So5iTxEJ4L
-         9tbBB0bF5kXGzEkBNk9STLDS7nCkR8VjodamolNumO7Hm6dzbYaX0tlyvCwKYnVZiyIB
-         2lOLLseWTAd3478X20MpD/Zbfmkx67wTMLYiqeTx62LkoTXT5qa/urN1oxNs1iot3MO/
-         jYlsRdJ0YqfAh5zJ93MlgGPpuUGBMRiTAhG4D3gR3sN0g0NikP0Oe4/aKONlnKwGxTuG
-         dFIQ==
-X-Gm-Message-State: AOAM531QDLBy5V/f+BcjFwuK2SlMEgAn6RJWxs3ehVDE1yTTpfWoaMyh
-        GVK6Es5SlCSjakQgfk52WhekRLxwShsfrQCqhir9jA==
-X-Google-Smtp-Source: ABdhPJxtYKOpUQ48QtgAzeyFQUUzdj7UZSXDeRImsG9VNTn6/WfIXoNp6br9Tlnn7xa81vObDJRDeDu9qV0NlNvgnyQ=
-X-Received: by 2002:a2e:9252:: with SMTP id v18mr3795173ljg.122.1624374119184;
- Tue, 22 Jun 2021 08:01:59 -0700 (PDT)
+        id S232017AbhFVPEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:04:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:50706 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230047AbhFVPEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 11:04:20 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 12681ED1;
+        Tue, 22 Jun 2021 08:02:04 -0700 (PDT)
+Received: from [10.57.7.129] (unknown [10.57.7.129])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F29AE3F718;
+        Tue, 22 Jun 2021 08:02:01 -0700 (PDT)
+Subject: Re: [RFC PATCH 2/4] cpuidle: Add Active Stats calls tracking idle
+ entry/exit
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Chris Redpath <Chris.Redpath@arm.com>, Beata.Michalska@arm.com,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Amit Kachhap <amit.kachhap@gmail.com>
+References: <20210622075925.16189-1-lukasz.luba@arm.com>
+ <20210622075925.16189-3-lukasz.luba@arm.com>
+ <CAJZ5v0iGv_1d3BT0HowLgecOfhNHNQdOwH6Kef5WE4-zeBbp2Q@mail.gmail.com>
+ <2f7d855c-5232-ddbe-8403-db3596dcebc5@arm.com>
+ <CAJZ5v0jExEJRM=aJhEpKoVjvppDz_x+pYG2-HSQUuehccwnVTQ@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <02015810-af5e-68d1-c83f-d458025556ee@arm.com>
+Date:   Tue, 22 Jun 2021 16:02:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20210621083108.17589-1-sj38.park@gmail.com> <20210621083108.17589-7-sj38.park@gmail.com>
-In-Reply-To: <20210621083108.17589-7-sj38.park@gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 22 Jun 2021 08:01:48 -0700
-Message-ID: <CALvZod5UUE6xjrhXCGH=CKKK_JZUL7MV2y48dX1EzqVYN-q6Pg@mail.gmail.com>
-Subject: Re: [PATCH v31 06/13] mm/damon: Add a tracepoint
-To:     SeongJae Park <sj38.park@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@huawei.com,
-        acme@kernel.org, alexander.shishkin@linux.intel.com,
-        amit@kernel.org, benh@kernel.crashing.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Hildenbrand <david@redhat.com>, dwmw@amazon.com,
-        Marco Elver <elver@google.com>, "Du, Fan" <fan.du@intel.com>,
-        foersleo@amazon.de, greg@kroah.com,
-        Greg Thelen <gthelen@google.com>, guoju.fgj@alibaba-inc.com,
-        jgowans@amazon.com, Mel Gorman <mgorman@suse.de>, mheyne@amazon.de,
-        Minchan Kim <minchan@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, namhyung@kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        David Rientjes <rientjes@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mike Rapoport <rppt@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        sieberf@amazon.com, snu@zelle79.org,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        zgf574564920@gmail.com, linux-damon@amazon.com,
-        Linux MM <linux-mm@kvack.org>, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAJZ5v0jExEJRM=aJhEpKoVjvppDz_x+pYG2-HSQUuehccwnVTQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 1:31 AM SeongJae Park <sj38.park@gmail.com> wrote:
->
-> From: SeongJae Park <sjpark@amazon.de>
->
-> This commit adds a tracepoint for DAMON.  It traces the monitoring
-> results of each region for each aggregation interval.  Using this, DAMON
-> can easily integrated with tracepoints supporting tools such as perf.
->
-> Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> Reviewed-by: Leonard Foerster <foersleo@amazon.de>
-> Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Reviewed-by: Fernand Sieber <sieberf@amazon.com>
 
-Acked-by: Shakeel Butt <shakeelb@google.com>
+
+On 6/22/21 3:44 PM, Rafael J. Wysocki wrote:
+> On Tue, Jun 22, 2021 at 3:59 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>>
+>>
+>> On 6/22/21 1:33 PM, Rafael J. Wysocki wrote:
+>>> On Tue, Jun 22, 2021 at 9:59 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>>>
+>>>> The Active Stats framework tracks and accounts the activity of the CPU
+>>>> for each performance level. It accounts the real residency,
+>>>
+>>> No, it doesn't.  It just measures the time between the entry and exit
+>>> and that's not the real residency (because it doesn't take the exit
+>>> latency into account, for example).
+>>
+>> It's 'just' a 'model' and as other models has limitations, but it's
+>> better than existing one, which IPA has to use:
+>> cpu_util + currect_freq_at_sampling_time
+> 
+> But the idle duration is already measured by cpuidle as
+> last_residency_ns.  Why does it need to be measured once more in
+> addition to that?
+
+So the last_residency_ns calculation is done when the CPU is
+exiting idle. I need something more, consider this scenario:
+IPA wakes up every 100ms and estimates power used in past 100ms.
+If one CPU entered idle and is still there for 30ms, then my Active
+Stats will tell me this. The last_residency_ns mechanism won't,
+since it available when CPU is woken up (I don't want to wake up CPUs).
+
+> 
+>>>
+>>>> when the CPU was not idle, at a given performance level. This patch adds needed calls
+>>>> which provide the CPU idle entry/exit events to the Active Stats
+>>>> framework.
+>>>
+>>> And it adds overhead to overhead-sensitive code.
+>>>
+>>> AFAICS, some users of that code will not really get the benefit, so
+>>> adding the overhead to it is questionable.
+>>>
+>>> First, why is the existing instrumentation in the idle loop insufficient?
+>>
+>> The instrumentation (tracing) cannot be used at run time AFAIK. I need
+>> this idle + freq information combined in a running platform, not for
+>> post-processing (like we have in LISA). The thermal governor IPA would
+>> use them for used power estimation.
+> 
+> What about snapshotting last_residency_ns in the CPU wakeup path?
+
+That would be available in the exit path, for running CPUs only.
+
+> 
+>>>
+>>> Second, why do you need to add locking to this code?
+>>
+>> The idle entry/exit updates the CPU's accounting data structure.
+>> There is a reader of those data structures: thermal governor,
+>> run from different CPU, which is the reason why I put locking for them.
+> 
+> So please consider doing it in a lockless manner and avoid running
+> this code when it is not needed in the first place.
+> 
+
+I'll have a look at this option.
