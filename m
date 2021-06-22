@@ -2,249 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB17B3B10A9
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 01:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7BF3B10AC
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 01:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbhFVXij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 19:38:39 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:6849 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbhFVXii (ORCPT
+        id S229950AbhFVXix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 19:38:53 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:60492 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229915AbhFVXiw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 19:38:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1624404983; x=1655940983;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=KiWM31DEZ9fCZKAZ2n31GvpR84Di+uhdfpU02AmyVmI=;
-  b=ZwfKpftf1DQti99amxMNqCi658QX49PE8rcFCGQi7A+0McgZXfHqMNWc
-   b7tyAMtKiwdTGDPHl5ZEvAVOFW3aNBwQNQ0WES17LXNQZEyO5mqmyBfK+
-   eN72/3ExgQWHFOBQ1UL/cPRWHOmquNTw8K7QljQSqUZIpxQKBM1RiFHXf
-   4=;
-X-IronPort-AV: E=Sophos;i="5.83,292,1616457600"; 
-   d="scan'208";a="117694856"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2c-76e0922c.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 22 Jun 2021 23:36:21 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-2c-76e0922c.us-west-2.amazon.com (Postfix) with ESMTPS id 0240FA3103;
-        Tue, 22 Jun 2021 23:36:18 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Tue, 22 Jun 2021 23:36:18 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.160.115) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Tue, 22 Jun 2021 23:36:14 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>
-CC:     Yuchung Cheng <ycheng@google.com>, Martin KaFai Lau <kafai@fb.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.co.jp>,
-        Kuniyuki Iwashima <kuni1840@gmail.com>
-Subject: [PATCH net-next] tcp: Add stats for socket migration.
-Date:   Wed, 23 Jun 2021 08:35:29 +0900
-Message-ID: <20210622233529.65158-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.30.2
+        Tue, 22 Jun 2021 19:38:52 -0400
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 7A87820B83F2;
+        Tue, 22 Jun 2021 16:36:35 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7A87820B83F2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1624404995;
+        bh=sbj5HIp4xJpRCiR6qVH+qNxqoKYrQm16hkrJ8Ci8owA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iETFZt5/lRZ/8BTZByARg+ERVKWkTbk+eqrO6mH7uWjdIqdt/rU7eHketabJGeRch
+         eGMDrvb5bx3J4BbkeyaGrfFIjhgV8+ZUVq6I7CeT8/dyf94g3WA8rSUDJFYkFTkhxJ
+         c2IKISNylmGLmTxemsFI32FvjdYBkBXsKMSj6Mfw=
+Received: by mail-pl1-f178.google.com with SMTP id v12so111481plo.10;
+        Tue, 22 Jun 2021 16:36:35 -0700 (PDT)
+X-Gm-Message-State: AOAM531+QU0lbk39+aUbhBRa/4BJD8fBpmMRn9Xo9GP6yejuNsM9X70I
+        aIKM2e5+EVbrlUPlEwu6t7MRCIsHK70P1I5AgkA=
+X-Google-Smtp-Source: ABdhPJzJ/12H4j0kvVazrTUlwFMjCdoEf5U0mhOYx6FiB6v9DtkVqSO4D7wVK5OaLf5i8qBy3oCZnMdRev/C+dtZnBE=
+X-Received: by 2002:a17:90b:4b49:: with SMTP id mi9mr6191693pjb.187.1624404994991;
+ Tue, 22 Jun 2021 16:36:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.160.115]
-X-ClientProxiedBy: EX13D07UWB003.ant.amazon.com (10.43.161.66) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+References: <20210617152754.17960-1-mcroce@linux.microsoft.com>
+ <20210617152754.17960-2-mcroce@linux.microsoft.com> <87f2cf0e98c5c5560cfb591b4f4b29c8@mailhost.ics.forth.gr>
+In-Reply-To: <87f2cf0e98c5c5560cfb591b4f4b29c8@mailhost.ics.forth.gr>
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+Date:   Wed, 23 Jun 2021 01:35:58 +0200
+X-Gmail-Original-Message-ID: <CAFnufp0JuAvrOA89KDbcbhMeMvovoS96STVV+r53PLGJV4r0aw@mail.gmail.com>
+Message-ID: <CAFnufp0JuAvrOA89KDbcbhMeMvovoS96STVV+r53PLGJV4r0aw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] riscv: optimized memcpy
+To:     Nick Kossifidis <mick@ics.forth.gr>
+Cc:     linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Atish Patra <atish.patra@wdc.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Akira Tsukamoto <akira.tsukamoto@gmail.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Bin Meng <bmeng.cn@gmail.com>,
+        David Laight <David.Laight@aculab.com>,
+        Guo Ren <guoren@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit adds two stats for the socket migration feature to evaluate the
-effectiveness: LINUX_MIB_TCPMIGRATEREQ(SUCCESS|FAILURE).
+On Tue, Jun 22, 2021 at 2:15 AM Nick Kossifidis <mick@ics.forth.gr> wrote:
+>
+> Hello Matteo and thanks for the patch,
+>
+> =CE=A3=CF=84=CE=B9=CF=82 2021-06-17 18:27, Matteo Croce =CE=AD=CE=B3=CF=
+=81=CE=B1=CF=88=CE=B5:
+> >
+> > @@ -0,0 +1,91 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * String functions optimized for hardware which doesn't
+> > + * handle unaligned memory accesses efficiently.
+> > + *
+> > + * Copyright (C) 2021 Matteo Croce
+> > + */
+> > +
+> > +#include <linux/types.h>
+> > +#include <linux/module.h>
+> > +
+> > +/* Minimum size for a word copy to be convenient */
+> > +#define MIN_THRESHOLD (BITS_PER_LONG / 8 * 2)
+> > +
+> > +/* convenience union to avoid cast between different pointer types */
+> > +union types {
+> > +     u8 *u8;
+>
+> You are using a type as a name, I'd go with as_bytes/as_ulong/as_uptr
+> which makes it easier for the reader to understand what you are trying
+> to do.
+>
 
-If the migration fails because of the own_req race in receiving ACK and
-sending SYN+ACK paths, we do not increment the failure stat. Then another
-CPU is responsible for the req.
+Makes sense
 
-Link: https://lore.kernel.org/bpf/CAK6E8=cgFKuGecTzSCSQ8z3YJ_163C0uwO9yRvfDSE7vOe9mJA@mail.gmail.com/
-Suggested-by: Yuchung Cheng <ycheng@google.com>
-Signed-off-by: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
----
- include/uapi/linux/snmp.h       |  2 ++
- net/core/sock_reuseport.c       | 15 +++++++++++----
- net/ipv4/inet_connection_sock.c | 15 +++++++++++++--
- net/ipv4/proc.c                 |  2 ++
- net/ipv4/tcp_minisocks.c        |  3 +++
- 5 files changed, 31 insertions(+), 6 deletions(-)
+> > +     unsigned long *ulong;
+> > +     uintptr_t uptr;
+> > +};
+> > +
+> > +union const_types {
+> > +     const u8 *u8;
+> > +     unsigned long *ulong;
+> > +};
+> > +
+>
+> I suggest you define those unions inside the function body, no one else
+> is using them.
+>
 
-diff --git a/include/uapi/linux/snmp.h b/include/uapi/linux/snmp.h
-index 26fc60ce9298..904909d020e2 100644
---- a/include/uapi/linux/snmp.h
-+++ b/include/uapi/linux/snmp.h
-@@ -290,6 +290,8 @@ enum
- 	LINUX_MIB_TCPDUPLICATEDATAREHASH,	/* TCPDuplicateDataRehash */
- 	LINUX_MIB_TCPDSACKRECVSEGS,		/* TCPDSACKRecvSegs */
- 	LINUX_MIB_TCPDSACKIGNOREDDUBIOUS,	/* TCPDSACKIgnoredDubious */
-+	LINUX_MIB_TCPMIGRATEREQSUCCESS,		/* TCPMigrateReqSuccess */
-+	LINUX_MIB_TCPMIGRATEREQFAILURE,		/* TCPMigrateReqFailure */
- 	__LINUX_MIB_MAX
- };
- 
-diff --git a/net/core/sock_reuseport.c b/net/core/sock_reuseport.c
-index de5ee3ae86d5..3f00a28fe762 100644
---- a/net/core/sock_reuseport.c
-+++ b/net/core/sock_reuseport.c
-@@ -6,6 +6,7 @@
-  * selecting the socket index from the array of available sockets.
-  */
- 
-+#include <net/ip.h>
- #include <net/sock_reuseport.h>
- #include <linux/bpf.h>
- #include <linux/idr.h>
-@@ -536,7 +537,7 @@ struct sock *reuseport_migrate_sock(struct sock *sk,
- 
- 	socks = READ_ONCE(reuse->num_socks);
- 	if (unlikely(!socks))
--		goto out;
-+		goto failure;
- 
- 	/* paired with smp_wmb() in __reuseport_add_sock() */
- 	smp_rmb();
-@@ -546,13 +547,13 @@ struct sock *reuseport_migrate_sock(struct sock *sk,
- 	if (!prog || prog->expected_attach_type != BPF_SK_REUSEPORT_SELECT_OR_MIGRATE) {
- 		if (sock_net(sk)->ipv4.sysctl_tcp_migrate_req)
- 			goto select_by_hash;
--		goto out;
-+		goto failure;
- 	}
- 
- 	if (!skb) {
- 		skb = alloc_skb(0, GFP_ATOMIC);
- 		if (!skb)
--			goto out;
-+			goto failure;
- 		allocated = true;
- 	}
- 
-@@ -565,12 +566,18 @@ struct sock *reuseport_migrate_sock(struct sock *sk,
- 	if (!nsk)
- 		nsk = reuseport_select_sock_by_hash(reuse, hash, socks);
- 
--	if (IS_ERR_OR_NULL(nsk) || unlikely(!refcount_inc_not_zero(&nsk->sk_refcnt)))
-+	if (IS_ERR_OR_NULL(nsk) || unlikely(!refcount_inc_not_zero(&nsk->sk_refcnt))) {
- 		nsk = NULL;
-+		goto failure;
-+	}
- 
- out:
- 	rcu_read_unlock();
- 	return nsk;
-+
-+failure:
-+	__NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPMIGRATEREQFAILURE);
-+	goto out;
- }
- EXPORT_SYMBOL(reuseport_migrate_sock);
- 
-diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-index 0eea878edc30..754013fa393b 100644
---- a/net/ipv4/inet_connection_sock.c
-+++ b/net/ipv4/inet_connection_sock.c
-@@ -703,6 +703,8 @@ static struct request_sock *inet_reqsk_clone(struct request_sock *req,
- 
- 	nreq = kmem_cache_alloc(req->rsk_ops->slab, GFP_ATOMIC | __GFP_NOWARN);
- 	if (!nreq) {
-+		__NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPMIGRATEREQFAILURE);
-+
- 		/* paired with refcount_inc_not_zero() in reuseport_migrate_sock() */
- 		sock_put(sk);
- 		return NULL;
-@@ -876,9 +878,10 @@ static void reqsk_timer_handler(struct timer_list *t)
- 		if (!inet_ehash_insert(req_to_sk(nreq), req_to_sk(oreq), NULL)) {
- 			/* delete timer */
- 			inet_csk_reqsk_queue_drop(sk_listener, nreq);
--			goto drop;
-+			goto no_ownership;
- 		}
- 
-+		__NET_INC_STATS(net, LINUX_MIB_TCPMIGRATEREQSUCCESS);
- 		reqsk_migrate_reset(oreq);
- 		reqsk_queue_removed(&inet_csk(oreq->rsk_listener)->icsk_accept_queue, oreq);
- 		reqsk_put(oreq);
-@@ -887,17 +890,19 @@ static void reqsk_timer_handler(struct timer_list *t)
- 		return;
- 	}
- 
--drop:
- 	/* Even if we can clone the req, we may need not retransmit any more
- 	 * SYN+ACKs (nreq->num_timeout > max_syn_ack_retries, etc), or another
- 	 * CPU may win the "own_req" race so that inet_ehash_insert() fails.
- 	 */
- 	if (nreq) {
-+		__NET_INC_STATS(net, LINUX_MIB_TCPMIGRATEREQFAILURE);
-+no_ownership:
- 		reqsk_migrate_reset(nreq);
- 		reqsk_queue_removed(queue, nreq);
- 		__reqsk_free(nreq);
- 	}
- 
-+drop:
- 	inet_csk_reqsk_queue_drop_and_put(oreq->rsk_listener, oreq);
- }
- 
-@@ -1135,11 +1140,13 @@ struct sock *inet_csk_complete_hashdance(struct sock *sk, struct sock *child,
- 
- 			refcount_set(&nreq->rsk_refcnt, 1);
- 			if (inet_csk_reqsk_queue_add(sk, nreq, child)) {
-+				__NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPMIGRATEREQSUCCESS);
- 				reqsk_migrate_reset(req);
- 				reqsk_put(req);
- 				return child;
- 			}
- 
-+			__NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPMIGRATEREQFAILURE);
- 			reqsk_migrate_reset(nreq);
- 			__reqsk_free(nreq);
- 		} else if (inet_csk_reqsk_queue_add(sk, req, child)) {
-@@ -1188,8 +1195,12 @@ void inet_csk_listen_stop(struct sock *sk)
- 				refcount_set(&nreq->rsk_refcnt, 1);
- 
- 				if (inet_csk_reqsk_queue_add(nsk, nreq, child)) {
-+					__NET_INC_STATS(sock_net(nsk),
-+							LINUX_MIB_TCPMIGRATEREQSUCCESS);
- 					reqsk_migrate_reset(req);
- 				} else {
-+					__NET_INC_STATS(sock_net(nsk),
-+							LINUX_MIB_TCPMIGRATEREQFAILURE);
- 					reqsk_migrate_reset(nreq);
- 					__reqsk_free(nreq);
- 				}
-diff --git a/net/ipv4/proc.c b/net/ipv4/proc.c
-index 6d46297a99f8..b0d3a09dc84e 100644
---- a/net/ipv4/proc.c
-+++ b/net/ipv4/proc.c
-@@ -295,6 +295,8 @@ static const struct snmp_mib snmp4_net_list[] = {
- 	SNMP_MIB_ITEM("TcpDuplicateDataRehash", LINUX_MIB_TCPDUPLICATEDATAREHASH),
- 	SNMP_MIB_ITEM("TCPDSACKRecvSegs", LINUX_MIB_TCPDSACKRECVSEGS),
- 	SNMP_MIB_ITEM("TCPDSACKIgnoredDubious", LINUX_MIB_TCPDSACKIGNOREDDUBIOUS),
-+	SNMP_MIB_ITEM("TCPMigrateReqSuccess", LINUX_MIB_TCPMIGRATEREQSUCCESS),
-+	SNMP_MIB_ITEM("TCPMigrateReqFailure", LINUX_MIB_TCPMIGRATEREQFAILURE),
- 	SNMP_MIB_SENTINEL
- };
- 
-diff --git a/net/ipv4/tcp_minisocks.c b/net/ipv4/tcp_minisocks.c
-index f258a4c0da71..0a4f3f16140a 100644
---- a/net/ipv4/tcp_minisocks.c
-+++ b/net/ipv4/tcp_minisocks.c
-@@ -786,6 +786,9 @@ struct sock *tcp_check_req(struct sock *sk, struct sk_buff *skb,
- 	return inet_csk_complete_hashdance(sk, child, req, own_req);
- 
- listen_overflow:
-+	if (sk != req->rsk_listener)
-+		__NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPMIGRATEREQFAILURE);
-+
- 	if (!sock_net(sk)->ipv4.sysctl_tcp_abort_on_overflow) {
- 		inet_rsk(req)->acked = 1;
- 		return NULL;
--- 
-2.30.2
+They will be used in memset(), in patch 3/3
 
+> > +void *__memcpy(void *dest, const void *src, size_t count)
+> > +{
+> > +     const int bytes_long =3D BITS_PER_LONG / 8;
+> > +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+> > +     const int mask =3D bytes_long - 1;
+> > +     const int distance =3D (src - dest) & mask;
+>
+> Why not unsigned ints ?
+>
+
+Ok.
+
+> > +#endif
+> > +     union const_types s =3D { .u8 =3D src };
+> > +     union types d =3D { .u8 =3D dest };
+> > +
+> > +#ifndef CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS
+>
+> If you want to be compliant with memcpy you should check for overlapping
+> regions here since "The memory areas must not overlap", and do nothing
+> about it because according to POSIX this leads to undefined behavior.
+> That's why recent libc implementations use memmove in any case (memcpy
+> is an alias to memmove), which is the suggested approach.
+>
+
+Mmm which memcpy arch implementation does this check?
+I guess that noone is currently doing it.
+
+> > +     if (count < MIN_THRESHOLD)
+> > +             goto copy_remainder;
+> > +
+> > +     /* copy a byte at time until destination is aligned */
+> > +     for (; count && d.uptr & mask; count--)
+> > +             *d.u8++ =3D *s.u8++;
+> > +
+>
+> You should check for !IS_ENABLED(CONFIG_CPU_BIG_ENDIAN) here.
+>
+
+I tought that only Little Endian RISC-V machines were supported in Linux.
+Should I add a BUILD_BUG_ON()?
+Anyway, if this is going in generic lib/, I'll take care of the endianness.
+
+> > +     if (distance) {
+> > +             unsigned long last, next;
+> > +
+> > +             /* move s backward to the previous alignment boundary */
+> > +             s.u8 -=3D distance;
+>
+> It'd help here to explain that since s is distance bytes ahead relative
+> to d, and d reached the alignment boundary above, s is now aligned but
+> the data needs to be shifted to compensate for distance, in order to do
+> word-by-word copy.
+>
+> > +
+> > +             /* 32/64 bit wide copy from s to d.
+> > +              * d is aligned now but s is not, so read s alignment wis=
+e,
+> > +              * and do proper shift to get the right value.
+> > +              * Works only on Little Endian machines.
+> > +              */
+>
+> This commend is misleading because s is aligned or else s.ulong[0]/[1]
+> below would result an unaligned access.
+>
+
+Yes, those two comments should be rephrased, merged and put above.
+
+> > +             for (next =3D s.ulong[0]; count >=3D bytes_long + mask; c=
+ount -=3D
+> > bytes_long) {
+> > +                     last =3D next;
+> > +                     next =3D s.ulong[1];
+> > +
+> > +                     d.ulong[0] =3D last >> (distance * 8) |
+> > +                                  next << ((bytes_long - distance) * 8=
+);
+> > +
+> > +                     d.ulong++;
+> > +                     s.ulong++;
+> > +             }
+> > +
+> > +             /* restore s with the original offset */
+> > +             s.u8 +=3D distance;
+> > +     } else
+> > +#endif
+> > +     {
+> > +             /* if the source and dest lower bits are the same, do a s=
+imple
+> > +              * 32/64 bit wide copy.
+> > +              */
+>
+> A while() loop would make more sense here.
+>
+
+Ok.
+
+> > +             for (; count >=3D bytes_long; count -=3D bytes_long)
+> > +                     *d.ulong++ =3D *s.ulong++;
+> > +     }
+> > +
+> > +     /* suppress warning when CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS=
+=3Dy */
+> > +     goto copy_remainder;
+> > +
+> > +copy_remainder:
+> > +     while (count--)
+> > +             *d.u8++ =3D *s.u8++;
+> > +
+> > +     return dest;
+> > +}
+> > +EXPORT_SYMBOL(__memcpy);
+> > +
+> > +void *memcpy(void *dest, const void *src, size_t count) __weak
+> > __alias(__memcpy);
+> > +EXPORT_SYMBOL(memcpy);
+
+Regards,
+--=20
+per aspera ad upstream
