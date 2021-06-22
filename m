@@ -2,126 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 436ED3B0ABD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F043B0AED
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:56:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231626AbhFVQ5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 12:57:25 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:57084 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231560AbhFVQ5Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 12:57:24 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id AD31D1FD66;
-        Tue, 22 Jun 2021 16:55:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624380906; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tIxnDX46rbm+965diWj9vg3CEs1mt4+C3Op+ORezFj0=;
-        b=USh94KmCjk+TE+VOGBhLnXsmgRTCOrfpkKC/EKClak2gfHvrhOrhnIihTRRrwGVcaz/YCw
-        p73it8pcWcqkjRmfvjYFyR8PzL/VsUGUShpW2ZwnEY1vzvdvkpZmdUtBs2L52wumRE4dcx
-        TRatgaLtL2hrGfplg5Srvt3VQgeYTcI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624380906;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tIxnDX46rbm+965diWj9vg3CEs1mt4+C3Op+ORezFj0=;
-        b=n9XClOxavtsUGuhitGxQ4ckHzY1y0UDvEj0v3naF/4aYDPxmYDC2pVTGB17Wo1wO3W21bc
-        x8S4yay0DxFTGKBA==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 9A52211A97;
-        Tue, 22 Jun 2021 16:55:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624380906; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tIxnDX46rbm+965diWj9vg3CEs1mt4+C3Op+ORezFj0=;
-        b=USh94KmCjk+TE+VOGBhLnXsmgRTCOrfpkKC/EKClak2gfHvrhOrhnIihTRRrwGVcaz/YCw
-        p73it8pcWcqkjRmfvjYFyR8PzL/VsUGUShpW2ZwnEY1vzvdvkpZmdUtBs2L52wumRE4dcx
-        TRatgaLtL2hrGfplg5Srvt3VQgeYTcI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624380906;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tIxnDX46rbm+965diWj9vg3CEs1mt4+C3Op+ORezFj0=;
-        b=n9XClOxavtsUGuhitGxQ4ckHzY1y0UDvEj0v3naF/4aYDPxmYDC2pVTGB17Wo1wO3W21bc
-        x8S4yay0DxFTGKBA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id MvOVJOoV0mDVNwAALh3uQQ
-        (envelope-from <bp@suse.de>); Tue, 22 Jun 2021 16:55:06 +0000
-Date:   Tue, 22 Jun 2021 18:55:01 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V3 52/66] x86/fpu: Add PKRU storage outside of task XSAVE
- buffer
-Message-ID: <YNIV5Wk7E1LNhekk@zn.tnic>
-References: <20210618141823.161158090@linutronix.de>
- <20210618143450.309386233@linutronix.de>
+        id S231351AbhFVQ7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 12:59:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34758 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230076AbhFVQ67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 12:58:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8197D61353;
+        Tue, 22 Jun 2021 16:56:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624381003;
+        bh=dHo7p4pFLbwF2dP3g+Avw3Zi/j24BOyKxt9PufO3Kt4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YrGVdZN/qOXPhZVKacZef4rWUzGqDWEgaqTkbLs8Mkq4Kwrdlt7eE4ObHXwZ+alPV
+         1q15Xs1rl6oLeRc3nkV3U98eNJLCHY4Am3DL/Wp+pK+qrYXzFIW+vNx2oHsrShMQVU
+         0b6OoaGngQiQyQQKVBz1tlM4gXca3Kuhq8cl3yukiYRV+29ugNARQNK8hyHw5V6meX
+         1PbUfHTFWKX4KMNzMWBbyn45i3aVgR9pDwW6PJ2gkCg+np7KbroSmY3stUD3K1nyTI
+         tJOAWyqR2+kR15N37wUirENL+OPD+brDMYUGXMz8eWnPYeNGJ+F8xRAfL8E0kXADvt
+         YVdTI+KU4q4LA==
+Date:   Tue, 22 Jun 2021 17:56:19 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] kbuild: modpost: Explicitly warn about unprototyped
+ symbols
+Message-ID: <20210622165619.GH4574@sirena.org.uk>
+References: <20210607140206.38131-1-broonie@kernel.org>
+ <CAK7LNAT7cy8Kn1w2ceRdH_O4P8PMut4Bivcyas88gVa+wu7HGA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="aF3LVLvitz/VQU3c"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210618143450.309386233@linutronix.de>
+In-Reply-To: <CAK7LNAT7cy8Kn1w2ceRdH_O4P8PMut4Bivcyas88gVa+wu7HGA@mail.gmail.com>
+X-Cookie: fortune: not found
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 04:19:15PM +0200, Thomas Gleixner wrote:
-> From: Dave Hansen <dave.hansen@linux.intel.com>
-> 
-> PKRU is currently partly XSAVE-managed and partly not.  It has space in the
-> task XSAVE buffer and is context-switched by XSAVE/XRSTOR.  However, it is
-> switched more eagerly than FPU because there may be a need for PKRU to be
-> up-to-date for things like copy_to/from_user() since PKRU affects
-> user-permission memory accesses, not just accesses from userspace itself.
-> 
-> This leaves PKRU in a very odd position.  XSAVE brings very little value to
-> the table for how Linux uses PKRU except for signal related XSTATE
-> handling.
-> 
-> Prepare to move PKRU away from being XSAVE-managed.  Allocate space in the
-> thread_struct for it and save/restore it in the context-switch path
-> separately from the XSAVE-managed features. task->thread_struct.pkru is
-> only valid when the task is scheduled out. For the current task the
-> authoritative source is the hardware, i.e. it has to be retrieved via
-> rdpkru().
-> 
-> Leave the XSAVE code in place for now to ensure bisectability.
-> 
-> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
-> V3: Fix the fallout on !PKRU enabled systems in copy_thread() - Intel testing via Dave
-> ---
->  arch/x86/include/asm/processor.h |    9 +++++++++
->  arch/x86/kernel/process.c        |    7 +++++++
->  arch/x86/kernel/process_64.c     |   25 +++++++++++++++++++++++++
->  3 files changed, 41 insertions(+)
 
-Reviewed-by: Borislav Petkov <bp@suse.de>
+--aF3LVLvitz/VQU3c
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-Regards/Gruss,
-    Boris.
+On Thu, Jun 17, 2021 at 10:05:44AM +0900, Masahiro Yamada wrote:
+> On Mon, Jun 7, 2021 at 11:02 PM Mark Brown <broonie@kernel.org> wrote:
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+> > One common cause of modpost version generation failures is a failure to
+> > prototype exported assembly functions - the tooling requires this for
+> > exported functions even if they are not and should not be called from C
+
+> Applied to linux-kbuild. Thanks.
+
+This doesn't seem to be showing up in -next, was there some issue?
+Looks like the kbuild tree that -next is picking up wasn't updated since
+1st June.
+
+--aF3LVLvitz/VQU3c
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDSFjIACgkQJNaLcl1U
+h9CpGQf8Cgrv/jMY92zReOi6c/lGLCLPUpROphTq82PEtBA16etJo6BUUQqKDV7z
+AiRcJ50oi9d7Mn1EXNFUefdDmVALq+ZF2kSSpt35RblxheXSfBRNRwjaMm5jRI3+
+9ys0DLeKrAbX2zRL3MP1bx99TAhqHf31fwtbqLcqOC5Drll4ebZjcHqDFY+6KX2p
+dZpkujqsWdfNlV2AQSsPNGYTrq0X/OQ9KFzRO10e59WkW+SLj8CyUUMxgUIIlFx2
+asmiO9+0fK4nL/tVEUPhlRqZK5JnmK7q9BR5/zQDN0z4cWVg+SBJnqgZ4r6jrIfW
+SV4cNLEHib9s1lWqZegpFJhZQlcxlA==
+=oj5e
+-----END PGP SIGNATURE-----
+
+--aF3LVLvitz/VQU3c--
