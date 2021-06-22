@@ -2,86 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EAD83AFFEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 005EB3AFFF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:10:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229812AbhFVJLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 05:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56242 "EHLO
+        id S229906AbhFVJML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 05:12:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbhFVJLL (ORCPT
+        with ESMTP id S229490AbhFVJMK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 05:11:11 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A05C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 02:08:56 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624352924;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CpVayGWDD5jCjOsDFgbodGAhFkKfuv5XGWD7w7SebTM=;
-        b=2R1/CleI7KOMUBqtuusPHNeBMyB6LQW23QPGGjCQZvQ0Gu1F5g27502eLEXYsIptF0rt2a
-        wFXNgg3XyBG6ewdHMW1VmxCc3MGP0g7PgSqc24FhbZE4sEL0qHwmNZxbkV3e19pF+jZNQQ
-        ZVL9VeYqf9YFoxGChCOYTmoaynoFcIkfaQYp2RRSuG2XU8bSo5vhhzMGYPjwLkoWk60cuW
-        505IOY8i6xYQWJurLi5DhjnRL33vp7xdu9IhaISgVmewqkYkLjA2uFszN/E3EGEE4y/h9d
-        2fs4u9TpFNBtvW0bxQV+WKLDxjJ6ohry5GsNzc4I/Ernfr0GnALVnaGSuf9SlA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624352924;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=CpVayGWDD5jCjOsDFgbodGAhFkKfuv5XGWD7w7SebTM=;
-        b=kqPPEE7X6YDcM7f4Bc1ElGjkw5V0cvl+ZcwqnvLAfjy3YlwWAhRzZff+Y52vnYnYgjfvjL
-        s2+Xj7eFKHetLXAg==
-To:     Oliver Sang <oliver.sang@intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "Yu\, Fenghua" <fenghua.yu@intel.com>,
-        "Luck\, Tony" <tony.luck@intel.com>,
-        "Yu\, Yu-cheng" <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Borislav Petkov <bp@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        "Li\, Aubrey" <aubrey.li@intel.com>,
-        "Xing\, Zhengjun" <zhengjun.xing@linux.intel.com>,
-        "Tang\, Feng" <feng.tang@intel.com>,
-        "Liu\, Yujie" <yujie.liu@intel.com>,
-        "Si\, Beibei" <beibei.si@intel.com>,
-        "Li\, Philip" <philip.li@intel.com>,
-        "Du\, Julie" <julie.du@intel.com>
-Subject: Re: [patch V3 00/66] x86/fpu: Spring cleaning and PKRU sanitizing
-In-Reply-To: <20210622015937.GB687@xsang-OptiPlex-9020>
-References: <20210618141823.161158090@linutronix.de> <20210622015937.GB687@xsang-OptiPlex-9020>
-Date:   Tue, 22 Jun 2021 11:08:43 +0200
-Message-ID: <87wnqme06c.ffs@nanos.tec.linutronix.de>
+        Tue, 22 Jun 2021 05:12:10 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0AFC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 02:09:53 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id x22so8575417pll.11
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 02:09:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ydvc8Rl7wiGHkzj56eR2KVXaD0RfaW+A51LSajQqcq4=;
+        b=g1rAp2Bihui++TbOWNROj8o+aLubfPXZ3PUScW959ZG5twVElrZwvWaluQCF4Est7y
+         Vl/ixHVWoiJlMyCH/KSt/31oz/Z9vHSLsxLaAuUPhRGEzqXOwmCVxO3Uh3GdvhvyfrcI
+         vq/RWS8s+QlIxCq8iN9kjVBU6qAOJcWgRth+FUYtS+iGm0r6hf50yqUHlWHJC/fQeP5u
+         Wh992mbKoH1/dKpHm4BBzJRn7kmVtpVNGKlP67c9+9Ch8Zj7VL+a28aodxdL5ufCVsnR
+         PBHRdMGZabz0DXgbrSONevPohFugavyglw4frfBWxJXYkwMaRKz1uygu72Z9oRDuRb2k
+         1uIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ydvc8Rl7wiGHkzj56eR2KVXaD0RfaW+A51LSajQqcq4=;
+        b=q0mWAP+aolJ/867vx8ls7gmr/9ISchK/J/TwF9MuMCjyon48/Tx99SprLiCcoHuvqp
+         6sbpnz8lEq6iYfDlFx/KMwdB+FVwniUrjJaJ8eiM3xmBTdZZVdFuSmAzIztMNCqGDKnQ
+         qJ9toiY5H7UiICH/eNkqANGRf+UiK1zitwEMLQCwM9a1YTUmqkb/i/VxTr5Qf9KOGsNF
+         UzGmH7xbWh3IPcTy+qsHepy3+qj228Qul+kvysyjD0kJVypLRwny0fPyDa+MDqNY8d+E
+         NejZMRW8qaJC01gi6NKpMuMrTyUdFeuyMmDMoS9k1pEGlQB9Ty4WHr41hF/EcPH1vTsy
+         IfAg==
+X-Gm-Message-State: AOAM531RSjNkwjGQhvkxv8bD9x2vk3uvVhh5u+8rHsJdwQ/TfSC6XN7/
+        GzA5u2t7AXYJugBS4+yGA6cAAAijA2J4z02JCV1/Tw==
+X-Google-Smtp-Source: ABdhPJxbCIlOoOQgk5yDdp1DjFNkdWnsRIDQST6UuhHQt6UWX5eK79Z59CtP9V6JBOhqTGG4aWUPuHW+BgXT81YTIxI=
+X-Received: by 2002:a17:90b:4c8c:: with SMTP id my12mr2891403pjb.13.1624352993336;
+ Tue, 22 Jun 2021 02:09:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210622021423.154662-1-mike.kravetz@oracle.com> <20210622021423.154662-2-mike.kravetz@oracle.com>
+In-Reply-To: <20210622021423.154662-2-mike.kravetz@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Tue, 22 Jun 2021 17:09:14 +0800
+Message-ID: <CAMZfGtVqJjVVgG+sd33er8Eg-MieF7V=nVExvQZTFhbxteaCGQ@mail.gmail.com>
+Subject: Re: [External] [PATCH 1/2] hugetlb: remove prep_compound_huge_page cleanup
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jann Horn <jannh@google.com>,
+        Youquan Song <youquan.song@intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Jan Kara <jack@suse.cz>, John Hubbard <jhubbard@nvidia.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oliver,
-
-On Tue, Jun 22 2021 at 09:59, Oliver Sang wrote:
-> On Fri, Jun 18, 2021 at 10:18:23PM +0800, Thomas Gleixner wrote:
->>   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git x86/fpu
+On Tue, Jun 22, 2021 at 10:15 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
 >
-> 0-Day kernel CI tested this branch from performance view,
-> choosing some sub-tests from will-it-scale (detail as below), since we
-> thought if the branch has the impact of fpu ops, will-it-scale should be
-> able to catch it.
-> we also plan to add stress-ng for new round test.
-> could you suggest if any other suitable test suites? and what's the most
-> proper sub-tests in will-it-scale and stress-ng?
+> The routine prep_compound_huge_page is a simple wrapper to call either
+> prep_compound_gigantic_page or prep_compound_page.  However, it is only
+> called from gather_bootmem_prealloc which only processes gigantic pages.
+> Eliminate the routine and call prep_compound_gigantic_page directly.
+>
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-Hard to tell. Anything scheduling heavy will exercise these code paths.
+Nice clean-up. Thanks.
 
-Thanks,
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 
-        tglx
-
-        
+> ---
+>  mm/hugetlb.c | 29 ++++++++++-------------------
+>  1 file changed, 10 insertions(+), 19 deletions(-)
+>
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 760b5fb836b8..50596b7d6da9 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1320,8 +1320,6 @@ static struct page *alloc_gigantic_page(struct hstate *h, gfp_t gfp_mask,
+>         return alloc_contig_pages(nr_pages, gfp_mask, nid, nodemask);
+>  }
+>
+> -static void prep_new_huge_page(struct hstate *h, struct page *page, int nid);
+> -static void prep_compound_gigantic_page(struct page *page, unsigned int order);
+>  #else /* !CONFIG_CONTIG_ALLOC */
+>  static struct page *alloc_gigantic_page(struct hstate *h, gfp_t gfp_mask,
+>                                         int nid, nodemask_t *nodemask)
+> @@ -2759,16 +2757,10 @@ int __alloc_bootmem_huge_page(struct hstate *h)
+>         return 1;
+>  }
+>
+> -static void __init prep_compound_huge_page(struct page *page,
+> -               unsigned int order)
+> -{
+> -       if (unlikely(order > (MAX_ORDER - 1)))
+> -               prep_compound_gigantic_page(page, order);
+> -       else
+> -               prep_compound_page(page, order);
+> -}
+> -
+> -/* Put bootmem huge pages into the standard lists after mem_map is up */
+> +/*
+> + * Put bootmem huge pages into the standard lists after mem_map is up.
+> + * Note: This only applies to gigantic (order > MAX_ORDER) pages.
+> + */
+>  static void __init gather_bootmem_prealloc(void)
+>  {
+>         struct huge_bootmem_page *m;
+> @@ -2777,20 +2769,19 @@ static void __init gather_bootmem_prealloc(void)
+>                 struct page *page = virt_to_page(m);
+>                 struct hstate *h = m->hstate;
+>
+> +               VM_BUG_ON(!hstate_is_gigantic(h));
+>                 WARN_ON(page_count(page) != 1);
+> -               prep_compound_huge_page(page, huge_page_order(h));
+> +               prep_compound_gigantic_page(page, huge_page_order(h));
+>                 WARN_ON(PageReserved(page));
+>                 prep_new_huge_page(h, page, page_to_nid(page));
+>                 put_page(page); /* free it into the hugepage allocator */
+>
+>                 /*
+> -                * If we had gigantic hugepages allocated at boot time, we need
+> -                * to restore the 'stolen' pages to totalram_pages in order to
+> -                * fix confusing memory reports from free(1) and another
+> -                * side-effects, like CommitLimit going negative.
+> +                * We need to restore the 'stolen' pages to totalram_pages
+> +                * in order to fix confusing memory reports from free(1) and
+> +                * other side-effects, like CommitLimit going negative.
+>                  */
+> -               if (hstate_is_gigantic(h))
+> -                       adjust_managed_page_count(page, pages_per_huge_page(h));
+> +               adjust_managed_page_count(page, pages_per_huge_page(h));
+>                 cond_resched();
+>         }
+>  }
+> --
+> 2.31.1
+>
