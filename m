@@ -2,54 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB993B0809
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D9E3B080F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:59:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231992AbhFVPBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:01:00 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58466 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbhFVPAz (ORCPT
+        id S232048AbhFVPBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231947AbhFVPA5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:00:55 -0400
-Date:   Tue, 22 Jun 2021 14:58:37 -0000
+        Tue, 22 Jun 2021 11:00:57 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B144C06175F;
+        Tue, 22 Jun 2021 07:58:40 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 14:58:38 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624373918;
+        s=2020; t=1624373919;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=A0zZvkjHaf601xbkQ5ICms0XuoW4BZSiWsqiTrhf6Wk=;
-        b=nrQnA5OdeCDgjPOmH/a97nakz90rGYtimiqv09KCoVeKOzKlVlDm/Kjbnvwg0gtswUXZog
-        Y5Fx4OLX8C5W8ormiv0+Jttqf4eu6/o5AH2gyf1z1bGHS3bs42hR3dp5tN9kW5NasA7UdL
-        lwJk2WfteaJjy04IQHI8xKotJg9550DkFueFdUPrSLfbYYIfupgQS5u66IqIOZJ4qlhcz0
-        MrOW+upTWoc0DvrnpA9NE//1oC+Fbljlq/3V2TGz+MYkr3fny0zLuip9OJeB4M7fRiylmU
-        mASS8T26be5IRHZ4eKcuajtOl6lVXd3ZN6kDGeyxR4fvekHuE+hA1AAC6/y2Ww==
+        bh=sGq4goqDYPNV23+e+Ez8s2ALnChRqys0uNrGrNQug2U=;
+        b=pGgPICJJL3cyuR1vpXBuAbb6w9RruTqUCt3WdTAnPd7cdUnjTg454QlDNtg6VSzruSh1zy
+        EkiPVcSJzbZORpgukv84rf5vpHSvejw7NWz5E1T7mu0WyLOSF+7LNyEX7vbcSn2HeCRF3G
+        1CbXGXQlvvgR+de8pgJz4hYxTqzU5DNbAm2tQA/LPGOy0oyYJOYzN2AJu+O1I3aViMJQeD
+        bIwAxgbmvwRfy5MZyCRDFHBgY1dfIGi57KwCq942d7jefHSDBJe3j5ccMJI2cyqRsKTCct
+        UjztpU4/Gd/1m3RsrT7awYR7e4etrQrnfFzYCK6FzporkVYDky356FyCu34KCg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624373918;
+        s=2020e; t=1624373919;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=A0zZvkjHaf601xbkQ5ICms0XuoW4BZSiWsqiTrhf6Wk=;
-        b=/qhl2nqxMHqDEWXkbH1c3wOCICEW8mnogjUUgEfWDYsBO1xoMWwIJvteTtubfkB9voufWl
-        fJUVFrL01nRqNIBg==
+        bh=sGq4goqDYPNV23+e+Ez8s2ALnChRqys0uNrGrNQug2U=;
+        b=0et3KK5euU9cwBGI+l4H/S8M9AvKd5XRGpzg3XsXHNIc/ZPCqTitIbeNbkm7WCDFrE2tXQ
+        oAaA4JiWcLNuSYBg==
 From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] clocksource: Provide kernel module to test
- clocksource watchdog
-Cc:     Chris Mason <clm@fb.com>, Thomas Gleixner <tglx@linutronix.de>,
+Subject: [tip: timers/core] clocksource: Limit number of CPUs checked for
+ clock synchronization
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
         "Paul E. McKenney" <paulmck@kernel.org>,
         Feng Tang <feng.tang@intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210527190124.440372-5-paulmck@kernel.org>
-References: <20210527190124.440372-5-paulmck@kernel.org>
+In-Reply-To: <20210527190124.440372-3-paulmck@kernel.org>
+References: <20210527190124.440372-3-paulmck@kernel.org>
 MIME-Version: 1.0
-Message-ID: <162437391736.395.18121009888091434240.tip-bot2@tip-bot2>
+Message-ID: <162437391852.395.6381660721602110849.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,362 +63,180 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the timers/core branch of tip:
 
-Commit-ID:     1253b9b87e42ab6a3d5c2cb27af2bdd67d7e50ff
-Gitweb:        https://git.kernel.org/tip/1253b9b87e42ab6a3d5c2cb27af2bdd67d7e50ff
+Commit-ID:     fa218f1cce6ba40069c8daab8821de7e6be1cdd0
+Gitweb:        https://git.kernel.org/tip/fa218f1cce6ba40069c8daab8821de7e6be1cdd0
 Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Thu, 27 May 2021 12:01:23 -07:00
+AuthorDate:    Thu, 27 May 2021 12:01:21 -07:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 22 Jun 2021 16:53:17 +02:00
+CommitterDate: Tue, 22 Jun 2021 16:53:16 +02:00
 
-clocksource: Provide kernel module to test clocksource watchdog
+clocksource: Limit number of CPUs checked for clock synchronization
 
-When the clocksource watchdog marks a clock as unstable, this might
-be due to that clock being unstable or it might be due to delays that
-happen to occur between the reads of the two clocks.  It would be good
-to have a way of testing the clocksource watchdog's ability to
-distinguish between these two causes of clock skew and instability.
+Currently, if skew is detected on a clock marked CLOCK_SOURCE_VERIFY_PERCPU,
+that clock is checked on all CPUs.  This is thorough, but might not be
+what you want on a system with a few tens of CPUs, let alone a few hundred
+of them.
 
-Therefore, provide a new clocksource-wdtest module selected by a new
-TEST_CLOCKSOURCE_WATCHDOG Kconfig option.  This module has a single module
-parameter named "holdoff" that provides the number of seconds of delay
-before testing should start, which defaults to zero when built as a module
-and to 10 seconds when built directly into the kernel.  Very large systems
-that boot slowly may need to increase the value of this module parameter.
+Therefore, by default check only up to eight randomly chosen CPUs.  Also
+provide a new clocksource.verify_n_cpus kernel boot parameter.  A value of
+-1 says to check all of the CPUs, and a non-negative value says to randomly
+select that number of CPUs, without concern about selecting the same CPU
+multiple times.  However, make use of a cpumask so that a given CPU will be
+checked at most once.
 
-This module uses hand-crafted clocksource structures to do its testing,
-thus avoiding messing up timing for the rest of the kernel and for user
-applications.  This module first verifies that the ->uncertainty_margin
-field of the clocksource structures are set sanely.  It then tests the
-delay-detection capability of the clocksource watchdog, increasing the
-number of consecutive delays injected, first provoking console messages
-complaining about the delays and finally forcing a clock-skew event.
-Unexpected test results cause at least one WARN_ON_ONCE() console splat.
-If there are no splats, the test has passed.  Finally, it fuzzes the
-value returned from a clocksource to test the clocksource watchdog's
-ability to detect time skew.
-
-This module checks the state of its clocksource after each test, and
-uses WARN_ON_ONCE() to emit a console splat if there are any failures.
-This should enable all types of test frameworks to detect any such
-failures.
-
-This facility is intended for diagnostic use only, and should be avoided
-on production systems.
-
-Reported-by: Chris Mason <clm@fb.com>
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Suggested-by: Thomas Gleixner <tglx@linutronix.de> # For verify_n_cpus=1.
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Feng Tang <feng.tang@intel.com>
-Link: https://lore.kernel.org/r/20210527190124.440372-5-paulmck@kernel.org
+Acked-by: Feng Tang <feng.tang@intel.com>
+Link: https://lore.kernel.org/r/20210527190124.440372-3-paulmck@kernel.org
+
 ---
- Documentation/admin-guide/kernel-parameters.txt |   6 +-
- include/linux/clocksource.h                     |   3 +-
- kernel/time/Makefile                            |   1 +-
- kernel/time/clocksource-wdtest.c                | 202 +++++++++++++++-
- kernel/time/clocksource.c                       |   6 +-
- lib/Kconfig.debug                               |  12 +-
- 6 files changed, 228 insertions(+), 2 deletions(-)
- create mode 100644 kernel/time/clocksource-wdtest.c
+ Documentation/admin-guide/kernel-parameters.txt | 10 ++-
+ kernel/time/clocksource.c                       | 74 +++++++++++++++-
+ 2 files changed, 82 insertions(+), 2 deletions(-)
 
 diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 9ec9ea1..591048e 100644
+index 995decc..9ec9ea1 100644
 --- a/Documentation/admin-guide/kernel-parameters.txt
 +++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -597,6 +597,12 @@
- 			The actual CPUs are chosen randomly, with
- 			no replacement if the same CPU is chosen twice.
+@@ -587,6 +587,16 @@
+ 			unstable.  Defaults to three retries, that is,
+ 			four attempts to read the clock under test.
  
-+	clocksource-wdtest.holdoff= [KNL]
-+			Set the time in seconds that the clocksource
-+			watchdog test waits before commencing its tests.
-+			Defaults to zero when built as a module and to
-+			10 seconds when built into the kernel.
++	clocksource.verify_n_cpus= [KNL]
++			Limit the number of CPUs checked for clocksources
++			marked with CLOCK_SOURCE_VERIFY_PERCPU that
++			are marked unstable due to excessive skew.
++			A negative value says to check all CPUs, while
++			zero says not to check any.  Values larger than
++			nr_cpu_ids are silently truncated to nr_cpu_ids.
++			The actual CPUs are chosen randomly, with
++			no replacement if the same CPU is chosen twice.
 +
  	clearcpuid=BITNUM[,BITNUM...] [X86]
  			Disable CPUID feature X for the kernel. See
  			arch/x86/include/asm/cpufeatures.h for the valid bit
-diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
-index 8952037..1d42d4b 100644
---- a/include/linux/clocksource.h
-+++ b/include/linux/clocksource.h
-@@ -291,4 +291,7 @@ static inline void timer_probe(void) {}
- #define TIMER_ACPI_DECLARE(name, table_id, fn)		\
- 	ACPI_DECLARE_PROBE_ENTRY(timer, name, table_id, 0, NULL, 0, fn)
- 
-+extern ulong max_cswd_read_retries;
-+void clocksource_verify_percpu(struct clocksource *cs);
-+
- #endif /* _LINUX_CLOCKSOURCE_H */
-diff --git a/kernel/time/Makefile b/kernel/time/Makefile
-index 1fb1c1e..1ed85b2 100644
---- a/kernel/time/Makefile
-+++ b/kernel/time/Makefile
-@@ -21,3 +21,4 @@ obj-$(CONFIG_HAVE_GENERIC_VDSO)			+= vsyscall.o
- obj-$(CONFIG_DEBUG_FS)				+= timekeeping_debug.o
- obj-$(CONFIG_TEST_UDELAY)			+= test_udelay.o
- obj-$(CONFIG_TIME_NS)				+= namespace.o
-+obj-$(CONFIG_TEST_CLOCKSOURCE_WATCHDOG)		+= clocksource-wdtest.o
-diff --git a/kernel/time/clocksource-wdtest.c b/kernel/time/clocksource-wdtest.c
-new file mode 100644
-index 0000000..01df123
---- /dev/null
-+++ b/kernel/time/clocksource-wdtest.c
-@@ -0,0 +1,202 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Unit test for the clocksource watchdog.
-+ *
-+ * Copyright (C) 2021 Facebook, Inc.
-+ *
-+ * Author: Paul E. McKenney <paulmck@kernel.org>
-+ */
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/device.h>
-+#include <linux/clocksource.h>
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/sched.h> /* for spin_unlock_irq() using preempt_count() m68k */
-+#include <linux/tick.h>
-+#include <linux/kthread.h>
-+#include <linux/delay.h>
-+#include <linux/prandom.h>
-+#include <linux/cpu.h>
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Paul E. McKenney <paulmck@kernel.org>");
-+
-+static int holdoff = IS_BUILTIN(CONFIG_TEST_CLOCKSOURCE_WATCHDOG) ? 10 : 0;
-+module_param(holdoff, int, 0444);
-+MODULE_PARM_DESC(holdoff, "Time to wait to start test (s).");
-+
-+/* Watchdog kthread's task_struct pointer for debug purposes. */
-+static struct task_struct *wdtest_task;
-+
-+static u64 wdtest_jiffies_read(struct clocksource *cs)
-+{
-+	return (u64)jiffies;
-+}
-+
-+/* Assume HZ > 100. */
-+#define JIFFIES_SHIFT	8
-+
-+static struct clocksource clocksource_wdtest_jiffies = {
-+	.name			= "wdtest-jiffies",
-+	.rating			= 1, /* lowest valid rating*/
-+	.uncertainty_margin	= TICK_NSEC,
-+	.read			= wdtest_jiffies_read,
-+	.mask			= CLOCKSOURCE_MASK(32),
-+	.flags			= CLOCK_SOURCE_MUST_VERIFY,
-+	.mult			= TICK_NSEC << JIFFIES_SHIFT, /* details above */
-+	.shift			= JIFFIES_SHIFT,
-+	.max_cycles		= 10,
-+};
-+
-+static int wdtest_ktime_read_ndelays;
-+static bool wdtest_ktime_read_fuzz;
-+
-+static u64 wdtest_ktime_read(struct clocksource *cs)
-+{
-+	int wkrn = READ_ONCE(wdtest_ktime_read_ndelays);
-+	static int sign = 1;
-+	u64 ret;
-+
-+	if (wkrn) {
-+		udelay(cs->uncertainty_margin / 250);
-+		WRITE_ONCE(wdtest_ktime_read_ndelays, wkrn - 1);
-+	}
-+	ret = ktime_get_real_fast_ns();
-+	if (READ_ONCE(wdtest_ktime_read_fuzz)) {
-+		sign = -sign;
-+		ret = ret + sign * 100 * NSEC_PER_MSEC;
-+	}
-+	return ret;
-+}
-+
-+static void wdtest_ktime_cs_mark_unstable(struct clocksource *cs)
-+{
-+	pr_info("--- Marking %s unstable due to clocksource watchdog.\n", cs->name);
-+}
-+
-+#define KTIME_FLAGS (CLOCK_SOURCE_IS_CONTINUOUS | \
-+		     CLOCK_SOURCE_VALID_FOR_HRES | \
-+		     CLOCK_SOURCE_MUST_VERIFY | \
-+		     CLOCK_SOURCE_VERIFY_PERCPU)
-+
-+static struct clocksource clocksource_wdtest_ktime = {
-+	.name			= "wdtest-ktime",
-+	.rating			= 300,
-+	.read			= wdtest_ktime_read,
-+	.mask			= CLOCKSOURCE_MASK(64),
-+	.flags			= KTIME_FLAGS,
-+	.mark_unstable		= wdtest_ktime_cs_mark_unstable,
-+	.list			= LIST_HEAD_INIT(clocksource_wdtest_ktime.list),
-+};
-+
-+/* Reset the clocksource if needed. */
-+static void wdtest_ktime_clocksource_reset(void)
-+{
-+	if (clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE) {
-+		clocksource_unregister(&clocksource_wdtest_ktime);
-+		clocksource_wdtest_ktime.flags = KTIME_FLAGS;
-+		schedule_timeout_uninterruptible(HZ / 10);
-+		clocksource_register_khz(&clocksource_wdtest_ktime, 1000 * 1000);
-+	}
-+}
-+
-+/* Run the specified series of watchdog tests. */
-+static int wdtest_func(void *arg)
-+{
-+	unsigned long j1, j2;
-+	char *s;
-+	int i;
-+
-+	schedule_timeout_uninterruptible(holdoff * HZ);
-+
-+	/*
-+	 * Verify that jiffies-like clocksources get the manually
-+	 * specified uncertainty margin.
-+	 */
-+	pr_info("--- Verify jiffies-like uncertainty margin.\n");
-+	__clocksource_register(&clocksource_wdtest_jiffies);
-+	WARN_ON_ONCE(clocksource_wdtest_jiffies.uncertainty_margin != TICK_NSEC);
-+
-+	j1 = clocksource_wdtest_jiffies.read(&clocksource_wdtest_jiffies);
-+	schedule_timeout_uninterruptible(HZ);
-+	j2 = clocksource_wdtest_jiffies.read(&clocksource_wdtest_jiffies);
-+	WARN_ON_ONCE(j1 == j2);
-+
-+	clocksource_unregister(&clocksource_wdtest_jiffies);
-+
-+	/*
-+	 * Verify that tsc-like clocksources are assigned a reasonable
-+	 * uncertainty margin.
-+	 */
-+	pr_info("--- Verify tsc-like uncertainty margin.\n");
-+	clocksource_register_khz(&clocksource_wdtest_ktime, 1000 * 1000);
-+	WARN_ON_ONCE(clocksource_wdtest_ktime.uncertainty_margin < NSEC_PER_USEC);
-+
-+	j1 = clocksource_wdtest_ktime.read(&clocksource_wdtest_ktime);
-+	udelay(1);
-+	j2 = clocksource_wdtest_ktime.read(&clocksource_wdtest_ktime);
-+	pr_info("--- tsc-like times: %lu - %lu = %lu.\n", j2, j1, j2 - j1);
-+	WARN_ON_ONCE(time_before(j2, j1 + NSEC_PER_USEC));
-+
-+	/* Verify tsc-like stability with various numbers of errors injected. */
-+	for (i = 0; i <= max_cswd_read_retries + 1; i++) {
-+		if (i <= 1 && i < max_cswd_read_retries)
-+			s = "";
-+		else if (i <= max_cswd_read_retries)
-+			s = ", expect message";
-+		else
-+			s = ", expect clock skew";
-+		pr_info("--- Watchdog with %dx error injection, %lu retries%s.\n", i, max_cswd_read_retries, s);
-+		WRITE_ONCE(wdtest_ktime_read_ndelays, i);
-+		schedule_timeout_uninterruptible(2 * HZ);
-+		WARN_ON_ONCE(READ_ONCE(wdtest_ktime_read_ndelays));
-+		WARN_ON_ONCE((i <= max_cswd_read_retries) !=
-+			     !(clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE));
-+		wdtest_ktime_clocksource_reset();
-+	}
-+
-+	/* Verify tsc-like stability with clock-value-fuzz error injection. */
-+	pr_info("--- Watchdog clock-value-fuzz error injection, expect clock skew and per-CPU mismatches.\n");
-+	WRITE_ONCE(wdtest_ktime_read_fuzz, true);
-+	schedule_timeout_uninterruptible(2 * HZ);
-+	WARN_ON_ONCE(!(clocksource_wdtest_ktime.flags & CLOCK_SOURCE_UNSTABLE));
-+	clocksource_verify_percpu(&clocksource_wdtest_ktime);
-+	WRITE_ONCE(wdtest_ktime_read_fuzz, false);
-+
-+	clocksource_unregister(&clocksource_wdtest_ktime);
-+
-+	pr_info("--- Done with test.\n");
-+	return 0;
-+}
-+
-+static void wdtest_print_module_parms(void)
-+{
-+	pr_alert("--- holdoff=%d\n", holdoff);
-+}
-+
-+/* Cleanup function. */
-+static void clocksource_wdtest_cleanup(void)
-+{
-+}
-+
-+static int __init clocksource_wdtest_init(void)
-+{
-+	int ret = 0;
-+
-+	wdtest_print_module_parms();
-+
-+	/* Create watchdog-test task. */
-+	wdtest_task = kthread_run(wdtest_func, NULL, "wdtest");
-+	if (IS_ERR(wdtest_task)) {
-+		ret = PTR_ERR(wdtest_task);
-+		pr_warn("%s: Failed to create wdtest kthread.\n", __func__);
-+		wdtest_task = NULL;
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+module_init(clocksource_wdtest_init);
-+module_exit(clocksource_wdtest_cleanup);
 diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index 9b27888..74d6a23 100644
+index cb12225..e4beab2 100644
 --- a/kernel/time/clocksource.c
 +++ b/kernel/time/clocksource.c
-@@ -199,8 +199,9 @@ void clocksource_mark_unstable(struct clocksource *cs)
- 	spin_unlock_irqrestore(&watchdog_lock, flags);
- }
+@@ -14,6 +14,8 @@
+ #include <linux/sched.h> /* for spin_unlock_irq() using preempt_count() m68k */
+ #include <linux/tick.h>
+ #include <linux/kthread.h>
++#include <linux/prandom.h>
++#include <linux/cpu.h>
  
--static ulong max_cswd_read_retries = 3;
-+ulong max_cswd_read_retries = 3;
+ #include "tick-internal.h"
+ #include "timekeeping_internal.h"
+@@ -193,6 +195,8 @@ void clocksource_mark_unstable(struct clocksource *cs)
+ 
+ static ulong max_cswd_read_retries = 3;
  module_param(max_cswd_read_retries, ulong, 0644);
-+EXPORT_SYMBOL_GPL(max_cswd_read_retries);
- static int verify_n_cpus = 8;
- module_param(verify_n_cpus, int, 0644);
++static int verify_n_cpus = 8;
++module_param(verify_n_cpus, int, 0644);
  
-@@ -294,7 +295,7 @@ static void clocksource_verify_one_cpu(void *csin)
- 	csnow_mid = cs->read(cs);
- }
- 
--static void clocksource_verify_percpu(struct clocksource *cs)
-+void clocksource_verify_percpu(struct clocksource *cs)
+ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
  {
- 	int64_t cs_nsec, cs_nsec_max = 0, cs_nsec_min = LLONG_MAX;
- 	u64 csnow_begin, csnow_end;
-@@ -347,6 +348,7 @@ static void clocksource_verify_percpu(struct clocksource *cs)
- 		pr_warn("        CPU %d check durations %lldns - %lldns for clocksource %s.\n",
- 			testcpu, cs_nsec_min, cs_nsec_max, cs->name);
- }
-+EXPORT_SYMBOL_GPL(clocksource_verify_percpu);
+@@ -227,6 +231,55 @@ static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
+ static u64 csnow_mid;
+ static cpumask_t cpus_ahead;
+ static cpumask_t cpus_behind;
++static cpumask_t cpus_chosen;
++
++static void clocksource_verify_choose_cpus(void)
++{
++	int cpu, i, n = verify_n_cpus;
++
++	if (n < 0) {
++		/* Check all of the CPUs. */
++		cpumask_copy(&cpus_chosen, cpu_online_mask);
++		cpumask_clear_cpu(smp_processor_id(), &cpus_chosen);
++		return;
++	}
++
++	/* If no checking desired, or no other CPU to check, leave. */
++	cpumask_clear(&cpus_chosen);
++	if (n == 0 || num_online_cpus() <= 1)
++		return;
++
++	/* Make sure to select at least one CPU other than the current CPU. */
++	cpu = cpumask_next(-1, cpu_online_mask);
++	if (cpu == smp_processor_id())
++		cpu = cpumask_next(cpu, cpu_online_mask);
++	if (WARN_ON_ONCE(cpu >= nr_cpu_ids))
++		return;
++	cpumask_set_cpu(cpu, &cpus_chosen);
++
++	/* Force a sane value for the boot parameter. */
++	if (n > nr_cpu_ids)
++		n = nr_cpu_ids;
++
++	/*
++	 * Randomly select the specified number of CPUs.  If the same
++	 * CPU is selected multiple times, that CPU is checked only once,
++	 * and no replacement CPU is selected.  This gracefully handles
++	 * situations where verify_n_cpus is greater than the number of
++	 * CPUs that are currently online.
++	 */
++	for (i = 1; i < n; i++) {
++		cpu = prandom_u32() % nr_cpu_ids;
++		cpu = cpumask_next(cpu - 1, cpu_online_mask);
++		if (cpu >= nr_cpu_ids)
++			cpu = cpumask_next(-1, cpu_online_mask);
++		if (!WARN_ON_ONCE(cpu >= nr_cpu_ids))
++			cpumask_set_cpu(cpu, &cpus_chosen);
++	}
++
++	/* Don't verify ourselves. */
++	cpumask_clear_cpu(smp_processor_id(), &cpus_chosen);
++}
  
- static void clocksource_watchdog(struct timer_list *unused)
+ static void clocksource_verify_one_cpu(void *csin)
  {
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 678c139..0a5a70c 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2571,6 +2571,18 @@ config TEST_FPU
+@@ -242,12 +295,22 @@ static void clocksource_verify_percpu(struct clocksource *cs)
+ 	int cpu, testcpu;
+ 	s64 delta;
  
- 	  If unsure, say N.
- 
-+config TEST_CLOCKSOURCE_WATCHDOG
-+	tristate "Test clocksource watchdog in kernel space"
-+	depends on CLOCKSOURCE_WATCHDOG
-+	help
-+	  Enable this option to create a kernel module that will trigger
-+	  a test of the clocksource watchdog.  This module may be loaded
-+	  via modprobe or insmod in which case it will run upon being
-+	  loaded, or it may be built in, in which case it will run
-+	  shortly after boot.
-+
-+	  If unsure, say N.
-+
- endif # RUNTIME_TESTING_MENU
- 
- config ARCH_USE_MEMTEST
++	if (verify_n_cpus == 0)
++		return;
+ 	cpumask_clear(&cpus_ahead);
+ 	cpumask_clear(&cpus_behind);
++	get_online_cpus();
+ 	preempt_disable();
++	clocksource_verify_choose_cpus();
++	if (cpumask_weight(&cpus_chosen) == 0) {
++		preempt_enable();
++		put_online_cpus();
++		pr_warn("Not enough CPUs to check clocksource '%s'.\n", cs->name);
++		return;
++	}
+ 	testcpu = smp_processor_id();
+-	pr_warn("Checking clocksource %s synchronization from CPU %d.\n", cs->name, testcpu);
+-	for_each_online_cpu(cpu) {
++	pr_warn("Checking clocksource %s synchronization from CPU %d to CPUs %*pbl.\n", cs->name, testcpu, cpumask_pr_args(&cpus_chosen));
++	for_each_cpu(cpu, &cpus_chosen) {
+ 		if (cpu == testcpu)
+ 			continue;
+ 		csnow_begin = cs->read(cs);
+@@ -267,6 +330,7 @@ static void clocksource_verify_percpu(struct clocksource *cs)
+ 			cs_nsec_min = cs_nsec;
+ 	}
+ 	preempt_enable();
++	put_online_cpus();
+ 	if (!cpumask_empty(&cpus_ahead))
+ 		pr_warn("        CPUs %*pbl ahead of CPU %d for clocksource %s.\n",
+ 			cpumask_pr_args(&cpus_ahead), testcpu, cs->name);
+@@ -337,6 +401,12 @@ static void clocksource_watchdog(struct timer_list *unused)
+ 				watchdog->name, wdnow, wdlast, watchdog->mask);
+ 			pr_warn("                      '%s' cs_now: %llx cs_last: %llx mask: %llx\n",
+ 				cs->name, csnow, cslast, cs->mask);
++			if (curr_clocksource == cs)
++				pr_warn("                      '%s' is current clocksource.\n", cs->name);
++			else if (curr_clocksource)
++				pr_warn("                      '%s' (not '%s') is current clocksource.\n", curr_clocksource->name, cs->name);
++			else
++				pr_warn("                      No current clocksource.\n");
+ 			__clocksource_unstable(cs);
+ 			continue;
+ 		}
