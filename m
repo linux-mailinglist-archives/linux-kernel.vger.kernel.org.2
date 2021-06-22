@@ -2,131 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E933B0291
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 13:15:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E932E3B029C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 13:18:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbhFVLRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 07:17:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53574 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230137AbhFVLRU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 07:17:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624360504;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=002w5D0lwhYSH2t/vQFvpXDZXSTcT1c6YHrb39gLjf4=;
-        b=fJ1ySI0/9RsGr7GJwBhRUMDRAnxsbJ0aFQvTfzrjgP0qguyNcWcYsUIIn1a9+1JaXfiBvq
-        rGZ2CAym19IfKOfdUYyYjFS9YCRNHxSScZ+N6h3fhCnQ9ANncQtWRA5qdPJi7aN9E8F/lV
-        Rh6aEd62OKVBr9D+aB3y70FWh2f6ECY=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-124-FFzaRjQEON601thF3ACaYQ-1; Tue, 22 Jun 2021 07:15:03 -0400
-X-MC-Unique: FFzaRjQEON601thF3ACaYQ-1
-Received: by mail-ej1-f72.google.com with SMTP id de48-20020a1709069bf0b029048ae3ebecabso3889419ejc.16
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 04:15:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=002w5D0lwhYSH2t/vQFvpXDZXSTcT1c6YHrb39gLjf4=;
-        b=D9H+59m6d2XKtq2JviuHSgMRK/AJiT6YXPk1xwqe5yspEyOAAOPYkAbkienam01k9A
-         NrmH0yH4Kf0PxdN9KfB4XFXpo41JeubHOz9o9B8JhHJKDf2vsXoqqE9HguOl4A6/kyJy
-         bUIbu2M+IYi8CrekqEI2MB+nW3h5WKDAd0H0Xr7TfBfx1ghXaZoArbfqvGsUOvhRcSJf
-         C8pAd9ibdGZdhuTy0IN9z1hnLYm9Nm/MuU+kB0RRBMYmVHwrC7/z3s9f/Xy2L54jT8He
-         5LY88IGvmu31sThJisWxLiH2Jbq82bNFy3r4R5BzM1MGgva0V6f6UvUi9caOXjEBO05q
-         36Pw==
-X-Gm-Message-State: AOAM531VQGbkAgZBM6caMP/OVlzI/+ALfoWuifdLkUb/N0K7nKbF2VOi
-        3syY+bQTICRq4urWn3m1+rGYF8CUKc78O6iljvJl6Iyf18q7rV9YNryUfF6VTV+0MT9uPmV54gL
-        g/HdVSOZc4NLY9AuraL3wA4Bh41OZorAMWDUMoNJ7d5AlImhxLeyVGXGROzVom2JCd0BlN0HkpD
-        Ea
-X-Received: by 2002:a17:906:1792:: with SMTP id t18mr3411006eje.38.1624360501831;
-        Tue, 22 Jun 2021 04:15:01 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxtAR7cvER8LBqam9WJT7jBKdk4usUVYQ34KS15ZoaF7GfNIbLUHWC94RV9siHCe0nNJqWolg==
-X-Received: by 2002:a17:906:1792:: with SMTP id t18mr3410983eje.38.1624360501611;
-        Tue, 22 Jun 2021 04:15:01 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id jx17sm2837266ejc.60.2021.06.22.04.15.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 04:15:01 -0700 (PDT)
-Subject: Re: [PATCH 12/18] staging: rtl8723bs: remove VHT dead code
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     gregkh@linuxfoundation.org, Larry.Finger@lwfinger.net,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <cover.1624099125.git.fabioaiuto83@gmail.com>
- <d3f79570088ad339bd80fe9d6b24604ac91ea8d3.1624099126.git.fabioaiuto83@gmail.com>
- <dd0332d7-5d9f-49e5-3fc6-8ae3e623f29c@redhat.com>
- <20210622091602.GA1426@agape.jhs>
- <4f128bd2-b84b-132e-c75f-0030701a8a9b@redhat.com>
- <20210622095757.GB1426@agape.jhs>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <d80cf1a5-d70c-97c2-a6a2-af2f4209715d@redhat.com>
-Date:   Tue, 22 Jun 2021 13:15:00 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230016AbhFVLU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 07:20:56 -0400
+Received: from ni.piap.pl ([195.187.100.5]:52796 "EHLO ni.piap.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229668AbhFVLUz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 07:20:55 -0400
+Received: from t19.piap.pl (OSB1819.piap.pl [10.0.9.19])
+        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ni.piap.pl (Postfix) with ESMTPSA id 68C0C4A0049;
+        Tue, 22 Jun 2021 13:18:35 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ni.piap.pl 68C0C4A0049
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=piap.pl; s=mail;
+        t=1624360715; bh=sZjIwY1MUZOdG4VMiblwq5+l7pMZ4eFjBDVTy0ETrYI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=k4mb0FdX7fhvz3U3RGqrvC7EhPBZY4czSygN6NmlbHDSr7eckxtvXRFATndcSOoUH
+         JckG1XFBOD07G/wDUKpkv1MuUyY24MNBZpcR9mFtdjZFy/MQtnqXhaolMXoTx3ZBh5
+         MDLE3XMZBoVYcTGsAgDIALTkAsSTCzum0ZK3ffdE=
+From:   =?utf-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>
+To:     devicetree@vger.kernel.org
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: [RFC v2] dt-binding: media: document ON Semi AR0521 sensor bindings
+Sender: khalasa@piap.pl
+Date:   Tue, 22 Jun 2021 13:18:35 +0200
+Message-ID: <m3y2b25er8.fsf@t19.piap.pl>
 MIME-Version: 1.0
-In-Reply-To: <20210622095757.GB1426@agape.jhs>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-KLMS-Rule-ID: 4
+X-KLMS-Message-Action: skipped
+X-KLMS-AntiSpam-Status: not scanned, whitelist
+X-KLMS-AntiPhishing: not scanned, whitelist
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, not scanned, whitelist
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabio,
+This file documents DT bindings for the AR0521 camera sensor driver.
+Changes from v1:
+- added power management (power supplies).
+- small fixes
 
-On 6/22/21 11:57 AM, Fabio Aiuto wrote:
-> On Tue, Jun 22, 2021 at 11:19:36AM +0200, Hans de Goede wrote:
-> 
-> Hi Hans,
-> 
->> Hi Fabio,
->>
->>> Moreover I have been quite conservative, for I left untouched HT indexes above
->>> 7 which rtl8723bs doesn't support.
->>>
->>> So IMO I think this patch is fine as is...
->>>> Perhaps this entire block can never be executed ?
->>>
->>> the block is executed but there's no register write happening. Just
->>> updating of values which will never be fetched.
->>
->> Ack, my bad I was under the impression that phy_SetTxPowerByRateBase()
->> would actually do a register write, but I checked and it just updates
->> some unused table values, so dropping this code is fine and you can
->> keep this patch for v2 of the patch set.
->>
->> Regards,
->>
->> Hans
->>
-> 
-> thank you, what do you think about what I replied about patch 1,
+The question still stands: is there a way to reliably put national
+unicode characters into:
+- commit messages for patches submitted via email,
+- C and other source files (comments and stuff like MODULE_AUTHOR).
 
-I somehow did not receive your reply, so I've just read it on the archives.
+Yes, I know I can commit it myself correctly, but then propagating it
+upstream is problematic. Perhaps a pullable tree would be better?
+I guess I need to renew my old kernel.org account.
 
-> shall
-> I remove the '> 14 if block' or leave it as is?
+Signed-off-by: Krzysztof Halasa <khalasa@piap.pl>
 
-I think it would be best to keep the '> 14 if block' for now and
-remove all of them in a later patch-series (I assume there will
-be more of them).
+diff --git a/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml b=
+/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml
+new file mode 100644
+index 000000000000..29421daacc87
+--- /dev/null
++++ b/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml
+@@ -0,0 +1,87 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/media/i2c/onnn,ar0521.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ON Semiconductor AR0521 MIPI CSI-2 sensor
++
++maintainers:
++  - Krzysztof Halasa <khalasa@piap.pl>
++
++description: |-
++  The AR0521 is a raw CMOS image sensor with MIPI CSI-2 and
++  I2C-compatible control interface.
++
++properties:
++  compatible:
++    const: onnn,ar0521
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    description: reference to the xclk clock
++    maxItems: 1
++
++  clock-names:
++    const: xclk
++
++  vdd_io-supply:
++    description:
++      Definition of the regulator used as digital I/O (1.8 V) voltage supp=
+ly.
++
++  vdd_core-supply:
++    description:
++      Definition of the regulator used as digital core (1.2 V) voltage sup=
+ply.
++
++  vcc_analog-supply:
++    description:
++      Definition of the regulator used as analog (2.7 V) voltage supply.
++
++  reset-gpios:
++    description: reset GPIO, usually active low
++    maxItems: 1
++
++  port:
++    $ref: /schemas/graph.yaml#/properties/port
++    description: |
++      Output video port: 1, 2 or 4 lanes.
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++  - port
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/clock/imx6qdl-clock.h>
++
++    i2c {
++            #address-cells =3D <1>;
++            #size-cells =3D <0>;
++
++            ar0521: camera-sensor@36 {
++                    compatible =3D "onnn,ar0521";
++                    reg =3D <0x36>;
++                    pinctrl-names =3D "default";
++                    pinctrl-0 =3D <&pinctrl_mipi_camera>;
++
++                    clocks =3D <&clks IMX6QDL_CLK_CKO>;
++                    clock-names =3D "xclk";
++
++                    reset-gpios =3D <&gpio1 7 GPIO_ACTIVE_LOW>;
++
++                    port {
++                           mipi_camera_to_mipi_csi2: endpoint {
++                                    remote-endpoint =3D <&mipi_csi2_in>;
++                                    data-lanes =3D <1 2 3 4>;
++                            };
++                    };
++            };
++    };
 
-> Do you think is necessary
-> to keep the conditions inside the block and pack them?
+--=20
+Krzysztof Ha=C5=82asa
 
-You could also remove the condition and just set
-the band to WIRELESS_INVALID unconditionally as you
-suggest, that is fine.
-
-But if you keep the condition, like you did in v1 of the
-patch, then you must pack the 2 masks together.
-
-Regards,
-
-Hans
-
+Sie=C4=87 Badawcza =C5=81ukasiewicz
+Przemys=C5=82owy Instytut Automatyki i Pomiar=C3=B3w PIAP
+Al. Jerozolimskie 202, 02-486 Warszawa
