@@ -2,109 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 537693B1051
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 01:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E7963B1060
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 01:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbhFVXGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 19:06:41 -0400
-Received: from gw2.atmark-techno.com ([35.74.137.57]:38366 "EHLO
-        gw2.atmark-techno.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbhFVXGk (ORCPT
+        id S229801AbhFVXNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 19:13:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51742 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229501AbhFVXNf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 19:06:40 -0400
-Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
-        by gw2.atmark-techno.com (Postfix) with ESMTPS id 5127B20D0D
-        for <linux-kernel@vger.kernel.org>; Wed, 23 Jun 2021 08:04:23 +0900 (JST)
-Received: by mail-pl1-f200.google.com with SMTP id x15-20020a170902e04fb02900f5295925dbso11735plx.9
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 16:04:23 -0700 (PDT)
+        Tue, 22 Jun 2021 19:13:35 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA6B7C061574;
+        Tue, 22 Jun 2021 16:11:18 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id c16so414078ljh.0;
+        Tue, 22 Jun 2021 16:11:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=t0rN33g3Q0MvGCFxmrKuW3pAMBLtF/9lId0gYvbuvZg=;
+        b=kdcPFGLaop4Uk6y2NiUz5a4QiFpiCTvTvUvJA7bxJcwQHxAaVHMJb4Z4lggYPiM3tw
+         aavZzfXu3Y6IYkvKrBXB7yE1yXwEzOlAI5TUQSfOBHSlkGCmMZ8eajz8f1yVnp4jlOC8
+         c3krqRxUblT48PqEEmVf+2xLob8wq2+yk/niXhrhTV+P4BRfOcO8pWzsk6rDQBE4Dcxy
+         Oq0al/yfdlsmW6tblO9byG+iV1j7XUpq/vl1bSY+e2UyDkwTafZCyJ5rc8cui4x8YFO3
+         M7Da3/USEGHenCCqdp501EKlfks0L1vzHaDGnYhH7+DnLK9MB5LYO97l+ayM64LNqKLr
+         b87Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Zi+YumSK8qJAN2mxkpNMysen7VAorvJsTi6oKg7UA3c=;
-        b=eFeMC7yBhGnjQkoPnr9p6YpLi+4/WF7p6NbNnQxt6JWedjIWgiea45bmAKXYMsrI3S
-         Axyz3HyVu8zYWJSuemwyuJ3b3LMGMHDJryjlkib+rf2meOFLyBoboF9c+fOlHriN2xpJ
-         z8TszV8Oi/UmesuQJX/Iy2hyWB2TqpqmRIe9yCOcAoDCKzURGjbgT34CxgFiTr7llCZ8
-         esMyLJ6zOIvlgdWjiZ88sXG5WHLlqsV8Ws1JgHFRIzzEPhV7/kz01eVHWr1/T5us+5OO
-         HzyLBKGXXK7mE/8l4Dzub4U+E5fPVzvhkR8C0lEAd5IMwjLiRmqbo9k+V4B//KIDKRyd
-         m7vg==
-X-Gm-Message-State: AOAM533FZyZfxIYNdGDtUH04xZRp63bmdDrqRDCX/jFM1mfA0Hf1ya/L
-        D1HE/00Q1mNmlUk8/rH2UaGic4Z7W//r1ZBlzBzy6ZiR0kLvw5w9O6Eg8/HNkcbd+Ff/dSe6rFN
-        o1C639/rcz3ujkuhEgy6u3HzKLw==
-X-Received: by 2002:a63:f4b:: with SMTP id 11mr931674pgp.250.1624403062419;
-        Tue, 22 Jun 2021 16:04:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy1DPt62WJkfxA5t0B59dYOyebgMR0VQB3YdAJXalVVOArvyr9AtZ9hq+qnqQudOs5PrJkKPw==
-X-Received: by 2002:a63:f4b:: with SMTP id 11mr931650pgp.250.1624403062198;
-        Tue, 22 Jun 2021 16:04:22 -0700 (PDT)
-Received: from pc-0115 (178.101.200.35.bc.googleusercontent.com. [35.200.101.178])
-        by smtp.gmail.com with ESMTPSA id 206sm326731pfv.108.2021.06.22.16.04.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 22 Jun 2021 16:04:21 -0700 (PDT)
-Received: from martinet by pc-0115 with local (Exim 4.94.2)
-        (envelope-from <martinet@pc-0115>)
-        id 1lvpRM-002Ue5-4i; Wed, 23 Jun 2021 08:04:20 +0900
-Date:   Wed, 23 Jun 2021 08:04:10 +0900
-From:   'Dominique MARTINET' <dominique.martinet@atmark-techno.com>
-To:     Konrad Rzeszutek Wilk <konrad@darnok.org>
-Cc:     Chanho Park <chanho61.park@samsung.com>,
-        'Jianxiong Gao' <jxgao@google.com>,
-        'Christoph Hellwig' <hch@lst.de>,
-        'Konrad Rzeszutek Wilk' <konrad.wilk@oracle.com>,
-        'Linus Torvalds' <torvalds@linux-foundation.org>,
-        'Horia =?utf-8?Q?Geant=C4=83'?= <horia.geanta@nxp.com>,
-        linux-kernel@vger.kernel.org, 'Lukas Hartmann' <lukas@mntmn.com>,
-        'Aymen Sghaier' <aymen.sghaier@nxp.com>,
-        'Herbert Xu' <herbert@gondor.apana.org.au>,
-        "'David S. Miller'" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org, iommu@lists.linux-foundation.org,
-        'Marc Orr' <marcorr@google.com>,
-        'Erdem Aktas' <erdemaktas@google.com>,
-        'Peter Gonda' <pgonda@google.com>,
-        'Bumyong Lee' <bumyong.lee@samsung.com>
-Subject: Re: swiotlb/caamjr regression (Was: [GIT PULL] (swiotlb)
- stable/for-linus-5.12)
-Message-ID: <YNJsar/EYmCeTO3S@atmark-techno.com>
-References: <20210617051232.GB27192@lst.de>
- <YMrfWBLsJxCRhX5U@atmark-techno.com>
- <CAMGD6P0=9RE1-q1WHkwR1jymK5jyvN6QgypQ2KgdvBQn0CUTHw@mail.gmail.com>
- <CGME20210621020328epcas2p207e9fa2df119730ceb993543621437d8@epcas2p2.samsung.com>
- <YM/zWyZlk1bzHWgI@atmark-techno.com>
- <2038148563.21624247281621.JavaMail.epsvc@epcpadp4>
- <YNASOEGsDxhFC8qJ@atmark-techno.com>
- <YNCROxI328u7IKdQ@fedora>
- <YNGVyOyD+CAMmPos@atmark-techno.com>
- <YNJc9qxeIjy6VuLt@fedora>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=t0rN33g3Q0MvGCFxmrKuW3pAMBLtF/9lId0gYvbuvZg=;
+        b=ozqhrcyNWYJs2sEUtY5vQGUjh15wJ/0U+Z1VeS+VRFELdukUEwdbyImx6AG2oXEXmw
+         deNCfN8u84l22nUfp3oill763wl6dnSJTayQKEskdJMm2xbLKAsuJzcwGIXHVafYSntH
+         tmPa1laGaFKqxy4p23n/UwDkL2dKF2YZ13FreGRM9j/lh2jYcQ1+lR6w3S85ahf6NPn5
+         P6Wn4cupQZpuB6elm8angMp9iN8OVjYLJin5Me5knpPgdD2TnmcQLX8sEco/6nxF4knT
+         m56h+FN6FeH49z14mFY9V2U3hmqYoZgXPOcu6fNDOcglDeWJAcBl+F6F9YbA+gK4hnoS
+         ak9g==
+X-Gm-Message-State: AOAM531l8UCrydBpMuFmuBY3dbc75T98YQEx44NPXXhH2wHlkILknqp2
+        7UJFC9GMjqNAipp6XArhGCxghFsiDXRLTgpi26FDPKY+dROMgg==
+X-Google-Smtp-Source: ABdhPJwYznDprvUxaaIknL160sZKx0EnI5S7HtsbIO2Gr2iolasrSfAu+KFSJJLQNHNnN+gRVpI+kisI1D0uV1tgl0M=
+X-Received: by 2002:a05:651c:a07:: with SMTP id k7mr5428900ljq.477.1624403477036;
+ Tue, 22 Jun 2021 16:11:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YNJc9qxeIjy6VuLt@fedora>
+From:   Steve French <smfrench@gmail.com>
+Date:   Tue, 22 Jun 2021 18:11:06 -0500
+Message-ID: <CAH2r5mvCOafQpko19fmSTtEdgG7mp2R1+xto=_fkm7A=fqWq5Q@mail.gmail.com>
+Subject: coverity problems with certain macros
+To:     CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Konrad Rzeszutek Wilk wrote on Tue, Jun 22, 2021 at 05:58:14PM -0400:
-> On Tue, Jun 22, 2021 at 04:48:24PM +0900, 'Dominique MARTINET' wrote:
-> > Thanks, that should be good.
-> > 
-> > Do you want me to send a follow-up patch with the two extra checks
-> > (tlb_addr & (IO_TLB_SIZE -1)) > swiotlb_align_offset(dev, orig_addr)
-> > tlb_offset < alloc_size
-> > 
-> > or are we certain this can't ever happen?
-> 
-> I would love more patches and I saw the previous one you posted.
-> 
-> But we only got two (or one) weeks before the next merge window opens
-> so I am sending to Linus the one that was tested with NVMe and crypto
-> (see above).
-> 
-> That is the
-> https://git.kernel.org/pub/scm/linux/kernel/git/konrad/swiotlb.git/commit/?h=stable/for-linus-5.14
-> 
-> And then after Linus releases the 5.14 - I would love to take your
-> cleanup on top of that and test it?
+Looks like coverity's scan of the Linux kernel has problems with
+analyzing locks across some debug print macros (which ironically don't
+use any locks related to this component)
 
-That sounds good to me, will send with proper formatting after release.
+e.g. Coverity Linux issues: 1484748, 1484736, 1475751, 1475743 and 1475726
+
+as an example it flags the section of code below, and others with
+calls to "cifs_dbf(VFS, ...) " in them (and note that the debug macros
+don't take a lock) starting with the cifs_dbg(VFS, ...) call.  It
+says:
+
+"May result in deadlock if there is another attempt to acquire the lock.
+In find_cifs_entry: Missing a release of a lock on a path"
+
+Oddly it doesn't flag "cifs_dbg(FYI, ...") calls, and even more
+strangely the calls they flag are simply wrappers around calls to
+"pr_err__ ## ratefunc ..."
+
+See below snippet from fs/cifs/readdir.c e.g.
+
+                        cifs_dbg(VFS, "reached end of buf searching
+for pos in buf %d index to find %lld rc %d\n",
+                                 pos_in_buf, index_to_find, rc);
+                }
+                rc = 0;
+                *current_entry = cur_ent;
+        } else {
+                cifs_dbg(FYI, "index not in buffer - could not
+findnext into it\n");
+                return 0;
+        }
+
+        if (pos_in_buf >= cfile->srch_inf.entries_in_buffer) {
+                cifs_dbg(FYI, "can not return entries pos_in_buf
+beyond last\n");
+                *num_to_ret = 0;
+        } else
+                *num_to_ret = cfile->srch_inf.entries_in_buffer - pos_in_buf;
+
+        return rc;
+}
 
 -- 
-Dominique
+Thanks,
+
+Steve
