@@ -2,88 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6230E3B0DD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 21:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 282973B0DDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 21:56:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232706AbhFVTzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 15:55:21 -0400
-Received: from mail-lf1-f47.google.com ([209.85.167.47]:36455 "EHLO
-        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231726AbhFVTzU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 15:55:20 -0400
-Received: by mail-lf1-f47.google.com with SMTP id d16so29715lfn.3;
-        Tue, 22 Jun 2021 12:53:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RMgSwwLZ69FlltYZhwtvgsM5zGBul1hA2YxAck7xfRc=;
-        b=ThjISDgsl2XT9GzuK2djt4hP9HhC93Pe1qzO+WKVO6SoY3SLdMsyYelrbgVtX/uReR
-         m6/EKHOOn1c30XNr181CJ8qMBer7iVCRhEoPDpCKzAJ8IFzY7iY4WzcAPQLZ8WmZwMuD
-         e14IwASuUz+1t+LaMF/X4P50Dis8g5KTK7v7o761aqKoeVv0pvjs+5X+3v66i8TIskNU
-         zo4PJY2y8YXcxYq8KOxaA5baHJhoxjr72BN555k/ZSQy7/Voi8WaA/X6z119pywsXZYO
-         mzaFYlQEj5fAQxzoHAVqkGerxD5pGYZmHsBcplYM4N7l218pgGDrDZ0/0NoiNI/TRir1
-         ix+w==
-X-Gm-Message-State: AOAM5315Kt88I6zb8n6zH7LCdUF3ZcTzzBSNkutjEssgOqWvvV7Jh2G/
-        qY+SWg2Y7XEb+dsVpzZaNS2IaNwmJSO/XkhDF28=
-X-Google-Smtp-Source: ABdhPJw7lu5PhfBMF+OmzzaAXWCyqp4lAJjQ7ed+JMumXy19+QM9n17MCFRmxRkjO66H0IrEgOSyAAJ87jTI5gau9yc=
-X-Received: by 2002:a2e:9984:: with SMTP id w4mr4471550lji.393.1624391582748;
- Tue, 22 Jun 2021 12:53:02 -0700 (PDT)
+        id S232758AbhFVT6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 15:58:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36798 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231726AbhFVT6k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 15:58:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5965F6100B;
+        Tue, 22 Jun 2021 19:56:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624391782;
+        bh=LyYRwhLs+JRdEP5xKhL9L3kwtUp9LtMKTUuL1voWUnI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nc6wVvjslJbKHAsLCOm5PtRWWXx7gVsFj8vTiTi3OfX7IVzIunNVftSgFaLe6xtlP
+         bgeOA6xb167WmvUxlavsFjSMiU0tTK9DOwVbf08UnSF6bSZQFygtAdsiJ6kQG+QpNW
+         CHofzexvPV2vA46eGeG/KvAK530z7fFcPwF9HSQk=
+Date:   Tue, 22 Jun 2021 21:56:20 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Daehwan Jung <dh10.jung@samsung.com>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: usb: host: Reduce xhci_handshake timeout in xhci_reset
+Message-ID: <YNJAZDwuFmEoTJHe@kroah.com>
+References: <CGME20210622113915epcas2p284c61291fc9d83487f6dfebb65fd4e9b@epcas2p2.samsung.com>
+ <1624361096-41282-1-git-send-email-dh10.jung@samsung.com>
 MIME-Version: 1.0
-References: <20210621214220.167927-1-rickyman7@gmail.com>
-In-Reply-To: <20210621214220.167927-1-rickyman7@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 22 Jun 2021 12:52:51 -0700
-Message-ID: <CAM9d7cgwTqDov1bD8FKygKkxeOY=tys8_DP3qytCmgne35BOcA@mail.gmail.com>
-Subject: Re: [PATCH] perf data: close all files in close_dir
-To:     Riccardo Mancini <rickyman7@gmail.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1624361096-41282-1-git-send-email-dh10.jung@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 2:42 PM Riccardo Mancini <rickyman7@gmail.com> wrote:
->
-> When using perf report in directory mode, the first file is not closed on
-> exit, causing a memory leak.
-> The problem is caused by the iterating variable never reaching 0.
->
-> Signed-off-by: Riccardo Mancini <rickyman7@gmail.com>
+On Tue, Jun 22, 2021 at 08:24:56PM +0900, Daehwan Jung wrote:
+> It seems 10 secs timeout is too long in general case. A core would wait for
+> 10 secs without doing other task and it can be happended on every device.
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+Only if the handshake does not come back sooner, right?
 
-Thanks,
-Namhyung
+What is causing your device to timeout here?
 
+> It's better to reduce timeout for general case and use new quirk if needed.
 
+What new quirk?
+
+And why 1 second, where did that number come from?
+
+> 
+> Signed-off-by: Daehwan Jung <dh10.jung@samsung.com>
 > ---
->  tools/perf/util/data.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
-> index 8fca4779ae6a..70b91ce35178 100644
-> --- a/tools/perf/util/data.c
-> +++ b/tools/perf/util/data.c
-> @@ -20,7 +20,7 @@
->
->  static void close_dir(struct perf_data_file *files, int nr)
->  {
-> -       while (--nr >= 1) {
-> +       while (--nr >= 0) {
->                 close(files[nr].fd);
->                 zfree(&files[nr].path);
->         }
-> --
-> 2.23.0
->
+>  drivers/usb/host/xhci.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+> index 9248ce8..0a1b6be 100644
+> --- a/drivers/usb/host/xhci.c
+> +++ b/drivers/usb/host/xhci.c
+> @@ -196,7 +196,7 @@ int xhci_reset(struct xhci_hcd *xhci)
+>  		udelay(1000);
+>  
+>  	ret = xhci_handshake(&xhci->op_regs->command,
+> -			CMD_RESET, 0, 10 * 1000 * 1000);
+> +			CMD_RESET, 0, 1 * 1000 * 1000);
+>  	if (ret)
+>  		return ret;
+>  
+> @@ -210,7 +210,7 @@ int xhci_reset(struct xhci_hcd *xhci)
+>  	 * than status until the "Controller Not Ready" flag is cleared.
+>  	 */
+>  	ret = xhci_handshake(&xhci->op_regs->status,
+> -			STS_CNR, 0, 10 * 1000 * 1000);
+> +			STS_CNR, 0, 1 * 1000 * 1000);
+
+With this change, what "goes faster"?  What is currently causing
+problems with your host controller that this timeout value actually
+matters?  Why is it failing?
+
+thanks,
+
+greg k-h
