@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 552943B094F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15EF83B0950
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbhFVPmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:42:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29356 "EHLO
+        id S232395AbhFVPmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:42:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59069 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232286AbhFVPl5 (ORCPT
+        by vger.kernel.org with ESMTP id S232258AbhFVPmA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:41:57 -0400
+        Tue, 22 Jun 2021 11:42:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624376381;
+        s=mimecast20190719; t=1624376383;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Y/k6JHWhmjZJbOSP+z4S9aloGNHBLWUVWp/g3fFFYBc=;
-        b=YXHp0G4HyblKZAcg+HAbaFhOPJG58pju+2lwpzVGSwE1UPA9qpoRbJsFkNHXMm3GNsidff
-        upR4T6NH+bIab7NMj9bR8ff9/hrP2B7skb7AMnyHojBqQJ5PgJvdMHTVAhkVMVl7AoQoXm
-        wg2DXtVYStVCz8O8jsmCE8gyXFOidng=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-124-xc5jVErgOgm3eHtKJ36eUw-1; Tue, 22 Jun 2021 11:39:40 -0400
-X-MC-Unique: xc5jVErgOgm3eHtKJ36eUw-1
-Received: by mail-wr1-f72.google.com with SMTP id b3-20020a05600018a3b029011a84f85e1cso5764535wri.10
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:39:40 -0700 (PDT)
+        bh=DshqHIYOJwBtlfK3WRxzWsuw80Dxqq8hJEaM3BIqgZA=;
+        b=K2zy3RNXxI9yZTCfUGeRLU2GBnL6n4VJqFd1+yW/cIcjMqJQ+WPIjT4ziXHYjblF0rHXo7
+        GsDdnvqv9GeTT5lqklFSMB5wdsN+925Ue2mmE5Uaig2QWM2ZQ+JHWewkHbnjUwvYazukJ7
+        1OgsnUy2jsnJu9p+Q9Vp7oIOAeZGczU=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-545-TQLbKRZSM4uyqtxOX2-dVA-1; Tue, 22 Jun 2021 11:39:42 -0400
+X-MC-Unique: TQLbKRZSM4uyqtxOX2-dVA-1
+Received: by mail-wm1-f70.google.com with SMTP id q123-20020a1c43810000b02901e0ebb6227fso460932wma.9
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:39:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Y/k6JHWhmjZJbOSP+z4S9aloGNHBLWUVWp/g3fFFYBc=;
-        b=mTm4wT1ArJTiQy9ymB/6UG6wfnLkdfFBPZO5pOU1UikrtucRLZfK+AfVoW3AAreyvf
-         KQBvi5a38/mgHLTi3QhByhygBzljg91Yx1jU+skJauaz/9edf2ENBZX80U61y7HccRn1
-         /F3FlQm+fX4hFPhuGrvWiKNmFjdYF5y1E2I2AX/oCY0eo8cHoxrWcRY+Q1SPH00FNjiD
-         ytBSqY6vpjqAXi34xDNDVe4Vph9gU78bMwkWUD3NjcqsBUPt4nhwPVzTUl9tGsanfZDs
-         R/jX0pU/9mCzxOT0ejg8lv09KELRxB12rgiL3KnM0JQDz4WqqB/j1OPyqi80m2vD9W4e
-         crvQ==
-X-Gm-Message-State: AOAM5333ZLcXmlMueLGv2h7+/sLFsHLWjDiSClUddJ7NZrRBHp/ohb7B
-        ItkPXAhZQ1lbVGd0W37UnSZ0I4kQXzg1leNCCtXBybrZKeviId5bp7btzPGbPd3qk2NARrekBpC
-        e6KjtdUvSwIqkJEDV229FWCIg
-X-Received: by 2002:a5d:4b44:: with SMTP id w4mr5538094wrs.78.1624376378535;
-        Tue, 22 Jun 2021 08:39:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzaDvUNqT5rG/gZkA8EFu/u0KNKRQjlSyQmWxBrLGpcryWH3mMpMvC/WYWPbq/RV/DNHPoKcg==
-X-Received: by 2002:a5d:4b44:: with SMTP id w4mr5538076wrs.78.1624376378394;
-        Tue, 22 Jun 2021 08:39:38 -0700 (PDT)
+        bh=DshqHIYOJwBtlfK3WRxzWsuw80Dxqq8hJEaM3BIqgZA=;
+        b=MaqHbN9xGnTpugUH/Bo7NDQNgYgJ4gD6uFOYJBP7d5zdzzZ8dPF3uuPPTYunYCdwAD
+         Iapstfb0FN86iNnijcMnRS9nOestUpWamiJG2ExZbGzxq+2oLMoZPYXl0QVFi4nQ5b75
+         oyPvGZqh3AeL3famDM06o8KtYE/0OIylyTakm8/CouSzEFlwJbhdndalZ+6aDpCcmHfe
+         ber2EfiifsxUe/K0vZAUF+NYoq2T0k9b5gGOi5QJfqeLl5HTcBAAa9EU2j9AOMxHN2tY
+         Gwl1FMm7So/4zt5GqDQV9u/dHycT/GB+q9knv5tgRxSy+NeqoPMztzugZ5skv3aD3ujb
+         p1nA==
+X-Gm-Message-State: AOAM531aX8uP1Am7EHbl5OjeJLhtemunTb6Wx6FIJO9tRPx1tHSIpIfh
+        7PkfCV6c7z7auZcPAPGTo0E3YQHFKmFXFjAzKXlKCiO7DXjPWZY9zZGVvFQLm4s5l6MPz/MfGi6
+        M21b1FZfr5yQKtf26o1vl/mX7
+X-Received: by 2002:adf:a2d1:: with SMTP id t17mr5566300wra.74.1624376380826;
+        Tue, 22 Jun 2021 08:39:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJze2gmtvf5CL694C47Iqc9gzNg87FgIPiqyYvhvjaij2JVDG/jbL+PUexFrQcofHLpaVH8ZMA==
+X-Received: by 2002:adf:a2d1:: with SMTP id t17mr5566278wra.74.1624376380698;
+        Tue, 22 Jun 2021 08:39:40 -0700 (PDT)
 Received: from krava.redhat.com ([5.171.243.0])
-        by smtp.gmail.com with ESMTPSA id e3sm11647962wro.26.2021.06.22.08.39.36
+        by smtp.gmail.com with ESMTPSA id e3sm11647962wro.26.2021.06.22.08.39.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 08:39:38 -0700 (PDT)
+        Tue, 22 Jun 2021 08:39:40 -0700 (PDT)
 From:   Jiri Olsa <jolsa@redhat.com>
 X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>
@@ -62,9 +62,9 @@ Cc:     lkml <linux-kernel@vger.kernel.org>,
         Alexander Shishkin <alexander.shishkin@linux.intel.com>,
         Michael Petlan <mpetlan@redhat.com>,
         Ian Rogers <irogers@google.com>
-Subject: [PATCH 08/10] perf record: Add new HEADER_BUILD_ID_MMAP feature
-Date:   Tue, 22 Jun 2021 17:39:16 +0200
-Message-Id: <20210622153918.688500-9-jolsa@kernel.org>
+Subject: [PATCH 09/10] perf report: Display build id fails stats
+Date:   Tue, 22 Jun 2021 17:39:17 +0200
+Message-Id: <20210622153918.688500-10-jolsa@kernel.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210622153918.688500-1-jolsa@kernel.org>
 References: <20210622153918.688500-1-jolsa@kernel.org>
@@ -74,244 +74,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding new HEADER_BUILD_ID_MMAP feature to store faulst/lost/fixed
-counts for --buildid-mmap setup. We skip post processing for build_id,
-so we need to store session stats.
+Adding support to display build id fails in --stats option:
 
-The feature data has following format:
+  # perf report --stat
 
-	struct {
-	       u32 version;
-	       u64 faults;
-	       u64 lost;
-	       u64 fixed;
-	};
+  Aggregated stats:
+           TOTAL events:        104
+            COMM events:          2  ( 1.9%)
+                    ....
+         BUILD_ID fails:          4  (14.3%)
 
-The version is set to 1.
-The faults has the value of faulted build id retrievals for the session.
-The lost has the value of faulted lost events for the session.
-The fixed has the value of fixed build ids by post-processing.
+This stat is displayed only for session recorded with --buildid-mmap
+and contains HEADER_BUILD_ID_MMAP header feature.
 
-The perf report --header-only display for when fixes is 0:
-
-  # build id mmap stats: FAULTS 4, LOST 0, NOT FIXED
-
-If fixed is defined:
-
-  # build id mmap stats: FAULTS 4, LOST 0, FIXED(4)
+We process all MMAP2 events and in case it does not contain build id
+and it should - it's regular file, we count the BUILD_ID fail and
+display it.
 
 Signed-off-by: Jiri Olsa <jolsa@kernel.org>
 ---
- .../Documentation/perf.data-file-format.txt   | 19 +++++
- tools/perf/builtin-record.c                   |  7 ++
- tools/perf/util/env.h                         |  6 ++
- tools/perf/util/header.c                      | 80 +++++++++++++++++++
- tools/perf/util/header.h                      |  1 +
- 5 files changed, 113 insertions(+)
+ tools/perf/builtin-report.c | 35 +++++++++++++++++++++++++++++++++++
+ tools/perf/util/map.h       | 15 +++++++++++++++
+ 2 files changed, 50 insertions(+)
 
-diff --git a/tools/perf/Documentation/perf.data-file-format.txt b/tools/perf/Documentation/perf.data-file-format.txt
-index e6ff8c898ada..223fea2ba662 100644
---- a/tools/perf/Documentation/perf.data-file-format.txt
-+++ b/tools/perf/Documentation/perf.data-file-format.txt
-@@ -438,6 +438,25 @@ struct {
- 	other bits are reserved and should ignored for now
- 	HEADER_FEAT_BITS	= 256,
- 
-+	HEADER_BUILD_ID_MMAP = 32,
-+
-+	It contains stats values for session with --buildid-mmap option.
-+
-+struct {
-+	u32 version;
-+	u64 faults;
-+	u64 lost;
-+	u64 fixed;
-+};
-+
-+	The version is set to 1.
-+	The faults has the value of faulted build id retrievals for the session.
-+	The lost has the value of faulted lost events for the session.
-+	The fixed has the value of fixed build ids by post-processing.
-+
-+	other bits are reserved and should ignored for now
-+	HEADER_FEAT_BITS	= 256,
-+
- Attributes
- 
- This is an array of perf_event_attrs, each attr_size bytes long, which defines
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index bf3958ce18e3..cae1a38a9e2a 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -1221,6 +1221,9 @@ static void record__init_features(struct record *rec)
- 	if (!rec->opts.use_clockid)
- 		perf_header__clear_feat(&session->header, HEADER_CLOCK_DATA);
- 
-+	if (!rec->buildid_mmap)
-+		perf_header__clear_feat(&session->header, HEADER_BUILD_ID_MMAP);
-+
- 	perf_header__clear_feat(&session->header, HEADER_DIR_FORMAT);
- 	if (!record__comp_enabled(rec))
- 		perf_header__clear_feat(&session->header, HEADER_COMPRESSED);
-@@ -1296,6 +1299,7 @@ evlist__read_session_stats(struct evlist *evlist, struct session_stats *st)
- 
- static void read_session_stats(struct record *rec)
- {
-+	struct perf_session *session = rec->session;
- 	struct session_stats st;
- 
- 	if (evlist__read_session_stats(rec->evlist, &st))
-@@ -1310,6 +1314,9 @@ static void read_session_stats(struct record *rec)
- 		fprintf(stderr,	"[ perf record: Lost %lu chunks]\n",
- 			st.lost);
- 	}
-+
-+	session->header.env.build_id_mmap.faults = st.build_id_faults;
-+	session->header.env.build_id_mmap.lost = st.lost;
- }
- 
- static void
-diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
-index 6824a7423a2d..8d45c774ad75 100644
---- a/tools/perf/util/env.h
-+++ b/tools/perf/util/env.h
-@@ -128,6 +128,12 @@ struct perf_env {
- 		 */
- 		bool	enabled;
- 	} clock;
-+
-+	struct {
-+		u64	faults;
-+		u64	lost;
-+		u64	fixed;
-+	} build_id_mmap;
- };
- 
- enum perf_compress_type {
-diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-index 0158d2945bab..ac4f62170107 100644
---- a/tools/perf/util/header.c
-+++ b/tools/perf/util/header.c
-@@ -1528,6 +1528,39 @@ static int write_hybrid_cpu_pmu_caps(struct feat_fd *ff,
+diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+index bc5c393021dc..b5c03bcc4395 100644
+--- a/tools/perf/builtin-report.c
++++ b/tools/perf/builtin-report.c
+@@ -13,6 +13,7 @@
+ #include "util/annotate.h"
+ #include "util/color.h"
+ #include "util/dso.h"
++#include "util/vdso.h"
+ #include <linux/list.h>
+ #include <linux/rbtree.h>
+ #include <linux/err.h>
+@@ -100,6 +101,8 @@ struct report {
+ 	u64			nr_entries;
+ 	u64			queue_size;
+ 	u64			total_cycles;
++	u64			buildid_fails;
++	u64			buildid_total;
+ 	int			socket_filter;
+ 	DECLARE_BITMAP(cpu_bitmap, MAX_NR_CPUS);
+ 	struct branch_type_stat	brtype_stat;
+@@ -729,10 +732,36 @@ static int count_sample_event(struct perf_tool *tool __maybe_unused,
  	return 0;
  }
  
-+static int write_build_id_mmap(struct feat_fd *ff,
-+			       struct evlist *evlist __maybe_unused)
++static int count_buildid_fails(struct perf_tool *tool,
++			       union perf_event *event,
++			       struct perf_sample *sample __maybe_unused,
++			       struct machine *machine __maybe_unused)
 +{
-+	u64 data64;
-+	u32 data32;
-+	int ret;
++	struct report *rep = container_of(tool, struct report, tool);
++	struct perf_record_mmap2 *mmap2 = &event->mmap2;
 +
-+	/* version */
-+	data32 = 1;
++	/* No build id should be generated */
++	if (!is_buildid_memory(mmap2->filename))
++		return 0;
 +
-+	ret = do_write(ff, &data32, sizeof(data32));
-+	if (ret < 0)
-+		return ret;
++	rep->buildid_total++;
 +
-+	/* faults */
-+	data64 = ff->ph->env.build_id_mmap.faults;
++	/* The build id should be generated, but wasn't - fault. */
++	if (!(mmap2->header.misc & PERF_RECORD_MISC_MMAP_BUILD_ID))
++		rep->buildid_fails++;
 +
-+	ret = do_write(ff, &data64, sizeof(data64));
-+	if (ret < 0)
-+		return ret;
-+
-+	/* lost */
-+	data64 = ff->ph->env.build_id_mmap.lost;
-+
-+	ret = do_write(ff, &data64, sizeof(data64));
-+	if (ret < 0)
-+		return ret;
-+
-+	/* fixed */
-+	data64 = ff->ph->env.build_id_mmap.fixed;
-+	return do_write(ff, &data64, sizeof(data64));
-+}
-+
- static void print_hostname(struct feat_fd *ff, FILE *fp)
- {
- 	fprintf(fp, "# hostname : %s\n", ff->ph->env.hostname);
-@@ -2048,6 +2081,19 @@ static void print_hybrid_cpu_pmu_caps(struct feat_fd *ff, FILE *fp)
- 	}
- }
- 
-+static void print_build_id_mmap(struct feat_fd *ff, FILE *fp)
-+{
-+	fprintf(fp, "# build id mmap stats: FAULTS %" PRIu64 ", LOST %" PRIu64 ",%s FIXED",
-+		ff->ph->env.build_id_mmap.faults,
-+		ff->ph->env.build_id_mmap.lost,
-+		ff->ph->env.build_id_mmap.fixed ? "" : " NOT");
-+
-+	if (ff->ph->env.build_id_mmap.fixed)
-+		fprintf(fp, "(%" PRIu64 ")", ff->ph->env.build_id_mmap.fixed);
-+
-+	fprintf(fp, "\n");
-+}
-+
- static void print_pmu_mappings(struct feat_fd *ff, FILE *fp)
- {
- 	const char *delimiter = "# pmu mappings: ";
-@@ -3265,6 +3311,39 @@ static int process_hybrid_cpu_pmu_caps(struct feat_fd *ff,
- 	return ret;
- }
- 
-+static int process_build_id_mmap(struct feat_fd *ff,
-+				 void *data __maybe_unused)
-+{
-+	u32 data32;
-+	u64 data64;
-+
-+	/* version */
-+	if (do_read_u32(ff, &data32))
-+		return -1;
-+
-+	if (data32 != 1)
-+		return -1;
-+
-+	/* faults */
-+	if (do_read_u64(ff, &data64))
-+		return -1;
-+
-+	ff->ph->env.build_id_mmap.faults = data64;
-+
-+	/* lost */
-+	if (do_read_u64(ff, &data64))
-+		return -1;
-+
-+	ff->ph->env.build_id_mmap.lost = data64;
-+
-+	/* fixed */
-+	if (do_read_u64(ff, &data64))
-+		return -1;
-+
-+	ff->ph->env.build_id_mmap.fixed = data64;
 +	return 0;
 +}
 +
- #define FEAT_OPR(n, func, __full_only) \
- 	[HEADER_##n] = {					\
- 		.name	    = __stringify(n),			\
-@@ -3328,6 +3407,7 @@ const struct perf_header_feature_ops feat_ops[HEADER_LAST_FEATURE] = {
- 	FEAT_OPR(CLOCK_DATA,	clock_data,	false),
- 	FEAT_OPN(HYBRID_TOPOLOGY,	hybrid_topology,	true),
- 	FEAT_OPR(HYBRID_CPU_PMU_CAPS,	hybrid_cpu_pmu_caps,	false),
-+	FEAT_OPR(BUILD_ID_MMAP,		build_id_mmap,		false),
- };
+ static void stats_setup(struct report *rep)
+ {
+ 	memset(&rep->tool, 0, sizeof(rep->tool));
+ 	rep->tool.sample = count_sample_event;
++
++	if (perf_header__has_feat(&rep->session->header,
++				  HEADER_BUILD_ID_MMAP))
++		rep->tool.mmap2 = count_buildid_fails;
++
+ 	rep->tool.no_warn = true;
+ }
  
- struct header_print_data {
-diff --git a/tools/perf/util/header.h b/tools/perf/util/header.h
-index ae6b1cf19a7d..a9fe37bb03cc 100644
---- a/tools/perf/util/header.h
-+++ b/tools/perf/util/header.h
-@@ -47,6 +47,7 @@ enum {
- 	HEADER_CLOCK_DATA,
- 	HEADER_HYBRID_TOPOLOGY,
- 	HEADER_HYBRID_CPU_PMU_CAPS,
-+	HEADER_BUILD_ID_MMAP,
- 	HEADER_LAST_FEATURE,
- 	HEADER_FEAT_BITS	= 256,
- };
+@@ -742,6 +771,12 @@ static int stats_print(struct report *rep)
+ 
+ 	perf_session__fprintf_nr_events(session, stdout, rep->skip_empty);
+ 	evlist__fprintf_nr_events(session->evlist, stdout, rep->skip_empty);
++
++	if (rep->buildid_fails) {
++		fprintf(stdout, "%23s: %10" PRIu64 "  (%4.1f%%)\n", "BUILD_ID fails",
++			rep->buildid_fails,
++			100.0 * rep->buildid_fails / rep->buildid_total);
++	}
+ 	return 0;
+ }
+ 
+diff --git a/tools/perf/util/map.h b/tools/perf/util/map.h
+index d32f5b28c1fb..9b96ebed412d 100644
+--- a/tools/perf/util/map.h
++++ b/tools/perf/util/map.h
+@@ -10,6 +10,7 @@
+ #include <string.h>
+ #include <stdbool.h>
+ #include <linux/types.h>
++#include "vdso.h"
+ 
+ struct dso;
+ struct maps;
+@@ -186,4 +187,18 @@ static inline int is_no_dso_memory(const char *filename)
+ 	       !strncmp(filename, "/SYSV", 5)  ||
+ 	       !strcmp(filename, "[heap]");
+ }
++
++static inline int is_vsyscall_memory(const char *filename)
++{
++	return !strcmp(filename, "[vsyscall]");
++}
++
++static inline int is_buildid_memory(const char *filename)
++{
++	return !is_anon_memory(filename) &&
++	       !is_vdso_map(filename) &&
++	       !is_no_dso_memory(filename) &&
++	       !is_vsyscall_memory(filename);
++}
++
+ #endif /* __PERF_MAP_H */
 -- 
 2.31.1
 
