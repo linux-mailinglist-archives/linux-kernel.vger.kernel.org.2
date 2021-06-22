@@ -2,258 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C9D3AFD8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AB7F3AFD97
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:08:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbhFVHIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 03:08:36 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:41386 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhFVHIf (ORCPT
+        id S230015AbhFVHLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 03:11:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229629AbhFVHLC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 03:08:35 -0400
-Received: from mail-wr1-f69.google.com ([209.85.221.69])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lvaUE-0002qS-6J
-        for linux-kernel@vger.kernel.org; Tue, 22 Jun 2021 07:06:18 +0000
-Received: by mail-wr1-f69.google.com with SMTP id l13-20020adfe9cd0000b0290119a0645c8fso9333441wrn.8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:06:18 -0700 (PDT)
+        Tue, 22 Jun 2021 03:11:02 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF4FC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:08:46 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id n20so22215464edv.8
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:08:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=ouoLlOX37fOnMdmhy/nvOY3q7XIh3oXIRronn/3MsjY=;
+        b=zh9ca6MgxtzYxeLBDTVnja3YfYMjS/8KEto6OOACTGLnOWu1hz/t0f+ZuhXkiSPfr6
+         mVWtg2Ii5Bh8de+A9444FYKfGXeOpZriIVD3bNo16UiEMavbK7fgGvfzxuXQvxzeK1He
+         HEOcyPYK0z0OC5bRbH0sbrVIVjafqK/bkmBgHSZvSnJjDrB4lktsM/UzUjJCqUo6us0K
+         hr+eEItCXB0pRd2GyuB6VDbtsGuCOemrQWUecOCxRgeq/AvHd5EJx+lpB+hUSib/CX6c
+         ydZJWPSNOfogFBkU7XDuOckOcGnInaPKxmDPzLcu4HSbYSryy6Nlq9hjkV+7mNdEWB3r
+         kXzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lTXjEM62TZsdnqbafkcE1LO7W2CdxUF8uNFzRXMFweE=;
-        b=jm0bLtbS/777uCPaXuddFeWMyffUttR2szAy+DWSuZqnmqBJazukuxbfxks8PnmTKQ
-         IiCEAtrKx7hI88tk59//+MvFZPcPKH0jFby2zozYUSPWSVKUXBVy4Du0XEu8nF41egTk
-         wiQxRgQiUPrjzSemlFv1/wPOviZ0YkTCtaP9EM22QWYjJ3rgvU3ugs4U5v4HGAPkxyhw
-         GkE5ptQZB5IxkTgJOTU4VxLYhYnYlq+iy3in6zLhWGjeIKGur+M7yx9BRBRaSTYsq1Lv
-         Lh+ZzoCuHL0nvN9Q/OekqwjX9SMHqTMKKH7Y5+pv++UIAa9IUWg9Vyfkg/GGoM/KGdTZ
-         9Irw==
-X-Gm-Message-State: AOAM530e8NA5BcTOf92KOFpu+Hh7g2lKIfBA/Ny+37eXYprYoj60LBHI
-        z7MPcJddUD10K/iG0Lujgk3ysGAJBnaSBIVO/ELJDYxeUuUX4hGidU7WZF5WJBdGplAyUkO15Fd
-        0DHJ/6C0QmIte2i82W0NtxoU3w1kIjvEr0QmSYuBuxw==
-X-Received: by 2002:a05:6000:2:: with SMTP id h2mr2790441wrx.347.1624345577934;
-        Tue, 22 Jun 2021 00:06:17 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwiXsFCAg1kqgd0xWRFS3Ug29pVJQn/MmYUKAXDKg2JDMTx0ckzB/LQVNNxLH0oeFk/78hvdw==
-X-Received: by 2002:a05:6000:2:: with SMTP id h2mr2790422wrx.347.1624345577744;
-        Tue, 22 Jun 2021 00:06:17 -0700 (PDT)
-Received: from [192.168.1.115] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
-        by smtp.gmail.com with ESMTPSA id 11sm1321777wmf.20.2021.06.22.00.06.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 00:06:17 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: Re: [PATCH] serial: samsung: use dma_ops of DMA if attached
-To:     M Tamseel Shams <m.shams@samsung.com>, kgene@kernel.org,
-        gregkh@linuxfoundation.org, jslaby@suse.com
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
-        ajaykumar.rs@samsung.com
-References: <CGME20210621044517epcas5p187affa518a18a3d019deb0c189cd8396@epcas5p1.samsung.com>
- <20210621044916.41564-1-m.shams@samsung.com>
- <8935a448-04b7-91ce-203a-9f0d7e377052@canonical.com>
- <004f01d766a0$567b9860$0372c920$@samsung.com>
-Message-ID: <4b2576c1-c986-a4d8-d6cf-661ca056ecee@canonical.com>
-Date:   Tue, 22 Jun 2021 09:06:16 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <004f01d766a0$567b9860$0372c920$@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=ouoLlOX37fOnMdmhy/nvOY3q7XIh3oXIRronn/3MsjY=;
+        b=gEHyFoP05oGZt0FSJNs8dgsSTL0WP3Rpv7DNRWrWwmis6Tw7t4QYWGaDz3puHrBvnb
+         BHMjhFrta8GKJxajSrmQg8Rb/Hv3BmR3slTt+OevTr1vw80oX+jW4TK4I8uunaeCUirp
+         A2ojclkCBqQhlDQVIc7yY++SIhIYv49j1Xm67mnbNjyb+P5dHKxaqXdijEWeEnOEZ01w
+         FcLRfa9s1WMy7XvDYysAdhczZFJN7z5GXxQlrYkjxNJ/xlTJIHnIr9V/qttcKWzCw2r6
+         sxr71clEQaDaUtkXGfww7XPLQrTGtomxRk6tIG9d4QBTasangOltn4DlgEmsAWiWB2nb
+         sVgw==
+X-Gm-Message-State: AOAM5300VA8OKQ8d8SKaq8ljRxdJ5Eti5Xh7PI1U55wIgC0ffimDlbYP
+        uqAjlJJ5yqit8P30yt29r4+Vqw==
+X-Google-Smtp-Source: ABdhPJwqOTz+onUGGxsjYuoWrnecMlmXlInaI3F81PKHVBujT8cqjGxoBn4HTfndSLYcXhF11UR24Q==
+X-Received: by 2002:aa7:d853:: with SMTP id f19mr2944976eds.1.1624345725131;
+        Tue, 22 Jun 2021 00:08:45 -0700 (PDT)
+Received: from ?IPv6:2a00:6020:440d:e400:95b3:cd1a:4cd9:d43f? ([2a00:6020:440d:e400:95b3:cd1a:4cd9:d43f])
+        by smtp.gmail.com with ESMTPSA id s18sm5826731ejh.12.2021.06.22.00.08.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 22 Jun 2021 00:08:44 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH FIXES/IMPROVEMENTS 0/7] block, bfq: preserve control,
+ boost throughput, fix bugs
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <3533087.dJKXTdksHR@spock>
+Date:   Tue, 22 Jun 2021 09:08:43 +0200
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        linux-block <linux-block@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Luca Mariotti <mariottiluca1@hotmail.it>,
+        =?utf-8?Q?Holger_Hoffst=C3=A4tte?= <holger@applied-asynchrony.com>,
+        Pietro Pedroni <pedroni.pietro.96@gmail.com>,
+        Piotr Gorski <lucjan.lucjanov@gmail.com>,
+        Khazhy Kumykov <khazhy@google.com>, Jan Kara <jack@suse.cz>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <2CDC43F9-9CD9-4F7F-BD36-CCEB168B5245@linaro.org>
+References: <20210619140948.98712-1-paolo.valente@linaro.org>
+ <3533087.dJKXTdksHR@spock>
+To:     Oleksandr Natalenko <oleksandr@natalenko.name>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/06/2021 15:21, M Tamseel Shams wrote:
-> Hi,
-> 
->>
->> Hi,
->>
->> Thanks for the patch.
->>
->> On 21/06/2021 06:49, Tamseel Shams wrote:
->>> When DMA is used for TX and RX by serial driver, it should pass the
->>> DMA device pointer to DMA API instead of UART device pointer.
->>
->> Hmmm, but why DMA device pointer should be used?
->>
->>>
->>> This patch is necessary to fix the SMMU page faults which is observed
->>> when a DMA(with SMMU enabled) is attached to UART for transfer.
->>>
->>> Signed-off-by: Tamseel Shams <m.shams@samsung.com>
->>> Signed-off-by: Ajay Kumar <ajaykumar.rs@samsung.com>
->>> ---
->>>  drivers/tty/serial/samsung_tty.c | 60
->>> +++++++++++++++++++++++++-------
->>>  1 file changed, 48 insertions(+), 12 deletions(-)
->>>
->>> diff --git a/drivers/tty/serial/samsung_tty.c
->>> b/drivers/tty/serial/samsung_tty.c
->>> index b923683e6a25..5bdc7dd2a5e2 100644
->>> --- a/drivers/tty/serial/samsung_tty.c
->>> +++ b/drivers/tty/serial/samsung_tty.c
->>> @@ -284,8 +284,13 @@ static void s3c24xx_serial_stop_tx(struct uart_port
->> *port)
->>>  	struct s3c24xx_uart_dma *dma = ourport->dma;
->>>  	struct circ_buf *xmit = &port->state->xmit;
->>>  	struct dma_tx_state state;
->>> +	struct device *dma_map_ops_dev = ourport->port.dev;
->>>  	int count;
->>>
->>> +	/* Pick dma_ops of DMA device if DMA device is attached */
->>
->> You mention here and further comments "dma_ops". I don't see you changing
->> the DMA ops, but the device. It's quite confusing. I think you meant a DMA
->> device shall be passed to DMA API?
->>
-> Yes, DMA device should be used for DMA API because only the DMA device is aware of
-> how the device connects to the memory. There might be an extra level of address translation
-> due to a SMMU attached to the DMA device. When serial device pointer device is used
-> for DMA API, the DMA API will have no clue of the SMMU attached to the DMA device.
+Hi,
+CCing also Jan and Khazhy, because in your commit log I see also the
+commit on bfq_requests_merged().
 
-Thanks, this should be in commit msg.
+Is this OOPS reproducible for you?
 
-> 
->> Second question: you write that DMA devices should be used if DMA is attached
->> and in the code you follow such pattern a lot:
->>
->>> +	if (dma && dma->tx_chan)
->>> +		dma_map_ops_dev = dma->tx_chan->device->dev;
->>> +
->>
->> Are you trying to say that if DMA is not attached, UART device should be used? If
->> DMA is not attached, how are the DMA operations used then?
->>
-> If DMA is not attached, this part of code related to dma_engine or DMA API do not
-> get called. There will not be any DMA operations at all.
-
-Now I get it. The "When" in your description followed by multiple
-comments "if DMA device is attached" confused me that you expect to use
-UART device for DMA operations if DMA is not attached...
-
-> 
->>>  	if (!ourport->tx_enabled)
->>>  		return;
->>>
->>> @@ -298,7 +303,7 @@ static void s3c24xx_serial_stop_tx(struct uart_port
->> *port)
->>>  		dmaengine_pause(dma->tx_chan);
->>>  		dmaengine_tx_status(dma->tx_chan, dma->tx_cookie, &state);
->>>  		dmaengine_terminate_all(dma->tx_chan);
->>> -		dma_sync_single_for_cpu(ourport->port.dev,
->>> +		dma_sync_single_for_cpu(dma_map_ops_dev,
->>>  			dma->tx_transfer_addr, dma->tx_size,
->> DMA_TO_DEVICE);
->>>  		async_tx_ack(dma->tx_desc);
->>>  		count = dma->tx_bytes_requested - state.residue; @@ -324,15
->> +329,19
->>> @@ static void s3c24xx_serial_tx_dma_complete(void *args)
->>>  	struct circ_buf *xmit = &port->state->xmit;
->>>  	struct s3c24xx_uart_dma *dma = ourport->dma;
->>>  	struct dma_tx_state state;
->>> +	struct device *dma_map_ops_dev = ourport->port.dev;
->>>  	unsigned long flags;
->>>  	int count;
->>>
->>> +	/* Pick dma_ops of DMA device if DMA device is attached */
->>> +	if (dma && dma->tx_chan)
->>> +		dma_map_ops_dev = dma->tx_chan->device->dev;
-
-Example is this one - you use here "if" suggesting there is "else". So
-what is the else condition? There is none...
-
->>>
->>>  	dmaengine_tx_status(dma->tx_chan, dma->tx_cookie, &state);
->>>  	count = dma->tx_bytes_requested - state.residue;
->>>  	async_tx_ack(dma->tx_desc);
->>>
->>> -	dma_sync_single_for_cpu(ourport->port.dev, dma->tx_transfer_addr,
->>> +	dma_sync_single_for_cpu(dma_map_ops_dev, dma->tx_transfer_addr,
->>>  				dma->tx_size, DMA_TO_DEVICE);
->>>
->>>  	spin_lock_irqsave(&port->lock, flags); @@ -408,7 +417,11 @@ static
->>> int s3c24xx_serial_start_tx_dma(struct s3c24xx_uart_port *ourport,
->>>  	struct uart_port *port = &ourport->port;
->>>  	struct circ_buf *xmit = &port->state->xmit;
->>>  	struct s3c24xx_uart_dma *dma = ourport->dma;
->>> +	struct device *dma_map_ops_dev = ourport->port.dev;
->>>
->>> +	/* Pick dma_ops of DMA device if DMA device is attached */
->>> +	if (dma && dma->tx_chan)
->>> +		dma_map_ops_dev = dma->tx_chan->device->dev;
->>>
->>>  	if (ourport->tx_mode != S3C24XX_TX_DMA)
->>>  		enable_tx_dma(ourport);
->>> @@ -416,7 +429,7 @@ static int s3c24xx_serial_start_tx_dma(struct
->> s3c24xx_uart_port *ourport,
->>>  	dma->tx_size = count & ~(dma_get_cache_alignment() - 1);
->>>  	dma->tx_transfer_addr = dma->tx_addr + xmit->tail;
->>>
->>> -	dma_sync_single_for_device(ourport->port.dev, dma-
->>> tx_transfer_addr,
->>> +	dma_sync_single_for_device(dma_map_ops_dev, dma-
->>> tx_transfer_addr,
->>>  				dma->tx_size, DMA_TO_DEVICE);
->>>
->>>  	dma->tx_desc = dmaengine_prep_slave_single(dma->tx_chan,
->>> @@ -483,12 +496,17 @@ static void s3c24xx_uart_copy_rx_to_tty(struct
->> s3c24xx_uart_port *ourport,
->>>  		struct tty_port *tty, int count)
->>>  {
->>>  	struct s3c24xx_uart_dma *dma = ourport->dma;
->>> +	struct device *dma_map_ops_dev = ourport->port.dev;
->>>  	int copied;
->>>
->>> +	/* Pick dma_ops of DMA device if DMA device is attached */
->>> +	if (dma && dma->rx_chan)
->>> +		dma_map_ops_dev = dma->rx_chan->device->dev;
->>> +
->>>  	if (!count)
->>>  		return;
->>>
->>> -	dma_sync_single_for_cpu(ourport->port.dev, dma->rx_addr,
->>> +	dma_sync_single_for_cpu(dma_map_ops_dev, dma->rx_addr,
->>>  				dma->rx_size, DMA_FROM_DEVICE);
->>>
->>>  	ourport->port.icount.rx += count;
->>> @@ -600,8 +618,13 @@ static void s3c24xx_serial_rx_dma_complete(void
->>> *args)  static void s3c64xx_start_rx_dma(struct s3c24xx_uart_port
->>> *ourport)  {
->>>  	struct s3c24xx_uart_dma *dma = ourport->dma;
->>> +	struct device *dma_map_ops_dev = ourport->port.dev;
->>>
->>> -	dma_sync_single_for_device(ourport->port.dev, dma->rx_addr,
->>> +	/* Pick dma_ops of DMA device if DMA device is attached */
->>> +	if (dma && dma->rx_chan)
->>> +		dma_map_ops_dev = dma->rx_chan->device->dev;
->>> +
->>> +	dma_sync_single_for_device(dma_map_ops_dev, dma->rx_addr,
->>>  				dma->rx_size, DMA_FROM_DEVICE);
->>>
->>>  	dma->rx_desc = dmaengine_prep_slave_single(dma->rx_chan,
->>> @@ -983,6 +1006,7 @@ static int s3c24xx_serial_request_dma(struct
->>> s3c24xx_uart_port *p)
->>
->> Offset of hunks looks here significantly different than mainline. The patch should
->> be based and tested mainline tree. Which one did you choose as base?
->>
->> Using my email address not from get_maintainers.pl also suggests that you
->> don't use anything recent as a base.
->>
-> I used "master" branch of main linux-next tree as the base.
-> I will rebase on "tty-next" branch of TTY tree and post again.
-> 
-> Thanks & Regards,
-> Tamseel Shams
-> 
+Thanks,
+Paolo
 
 
-Best regards,
-Krzysztof
+> Il giorno 21 giu 2021, alle ore 21:55, Oleksandr Natalenko =
+<oleksandr@natalenko.name> ha scritto:
+>=20
+> Hello.
+>=20
+> On sobota 19. =C4=8Dervna 2021 16:09:41 CEST Paolo Valente wrote:
+>> Hi Jens,
+>> this series contains an already proposed patch by Luca, plus six new
+>> patches. The goals of these patches are summarized in the subject of
+>> this cover letter. I'm including Luca's patch here, because it =
+enabled
+>> the actual use of stable merge, and, as such, triggered an otherwise
+>> silent bug. This series contains also the fix for that bug ("block,
+>> bfq: avoid delayed merge of async queues"), tested by Holger [1].
+>>=20
+>> Thanks,
+>> Paolo
+>>=20
+>> [1] https://lkml.org/lkml/2021/5/18/384
+>>=20
+>> Luca Mariotti (1):
+>>  block, bfq: fix delayed stable merge check
+>>=20
+>> Paolo Valente (5):
+>>  block, bfq: let also stably merged queues enjoy weight raising
+>>  block, bfq: consider also creation time in delayed stable merge
+>>  block, bfq: avoid delayed merge of async queues
+>>  block, bfq: check waker only for queues with no in-flight I/O
+>>  block, bfq: reset waker pointer with shared queues
+>>=20
+>> Pietro Pedroni (1):
+>>  block, bfq: boost throughput by extending queue-merging times
+>>=20
+>> block/bfq-iosched.c | 68 =
++++++++++++++++++++++++++++++++++++----------
+>> 1 file changed, 53 insertions(+), 15 deletions(-)
+>>=20
+>> --
+>> 2.20.1
+>=20
+> Not sure everything goes fine here. After applying this series on top =
+of the=20
+> latest stable 5.12 kernel I got this:
+>=20
+> ```
+> [16730.963248] kernel BUG at block/elevator.c:236!
+> [16730.963254] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+> [16730.963257] CPU: 11 PID: 109170 Comm: kworker/u64:5 Tainted: G      =
+  W        =20
+> 5.12.0-pf7 #1
+> [16730.963260] Hardware name: ASUS System Product Name/Pro WS =
+X570-ACE, BIOS=20
+> 3601 05/26/2021
+> [16730.963263] Workqueue: dm-thin do_worker [dm_thin_pool]
+> [16730.963270] RIP: 0010:elv_rqhash_find+0xcc/0xd0
+> [16730.963274] Code: 41 89 f0 81 e2 00 40 06 00 41 81 e0 1a 00 04 00 =
+44 09 c2=20
+> 75 a9 be 09 00 00 00 c4 e2 4b f7 50 28 48 03 50 30 48 39 fa 75 c6 c3 =
+<0f> 0b=20
+> 66 90 0f 1f 44 00 00 41 56 41 55 41 54 55 53 48 8b 47 68 48
+> [16730.963276] RSP: 0018:ffffa558d13b7af8 EFLAGS: 00010046
+> [16730.963279] RAX: ffff8a0007782d00 RBX: ffff8a0014b93000 RCX: =
+ffffa558d13b7b78
+> [16730.963281] RDX: ffff8a0014b93000 RSI: 0000000000063082 RDI: =
+000000001e0fdc00
+> [16730.963283] RBP: ffff8a000731c770 R08: ffff8a000731c770 R09: =
+fffffff0ffffddfb
+> [16730.963284] R10: 0000000000000000 R11: 0000000000000400 R12: =
+ffff8a0330365c00
+> [16730.963286] R13: ffffa558d13b7b30 R14: 0000000000000000 R15: =
+ffff8a0212fc4000
+> [16730.963288] FS:  0000000000000000(0000) GS:ffff8a070ecc0000(0000) =
+knlGS:
+> 0000000000000000
+> [16730.963290] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [16730.963292] CR2: 00007f1514d90f4c CR3: 0000000315952000 CR4:=20
+> 0000000000350ee0
+> [16730.963294] Call Trace:
+> [16730.963297]  elv_merge+0x96/0x120
+> [16730.963300]  blk_mq_sched_try_merge+0x3e/0x370
+> [16730.963303]  bfq_bio_merge+0xd3/0x130
+> [16730.963306]  blk_mq_submit_bio+0x11e/0x6c0
+> [16730.963309]  submit_bio_noacct+0x457/0x530
+> [16730.963312]  raid10_unplug+0x13f/0x1a0 [raid10]
+> [16730.963316]  blk_flush_plug_list+0xa9/0x110
+> [16730.963319]  blk_finish_plug+0x21/0x30
+> [16730.963322]  process_prepared_discard_passdown_pt1+0x204/0x2d0=20
+> [dm_thin_pool]
+> [16730.963327]  do_worker+0x18e/0xce0 [dm_thin_pool]
+> [16730.963335]  process_one_work+0x217/0x3e0
+> [16730.963338]  worker_thread+0x4d/0x470
+> [16730.963343]  kthread+0x182/0x1b0
+> [16730.963349]  ret_from_fork+0x22/0x30
+> =E2=80=A6
+> [16730.963419] ---[ end trace dd7e037f2028257b ]---
+> [16730.963524] RIP: 0010:elv_rqhash_find+0xcc/0xd0
+> =E2=80=A6
+> [16730.963547] note: kworker/u64:5[109170] exited with preempt_count 1
+> [16747.948467] [drm:amdgpu_dm_atomic_commit_tail [amdgpu]] *ERROR* =
+Waiting for=20
+> fences timed out!
+> ```
+>=20
+> Which is:
+>=20
+> ```
+> 229 struct request *elv_rqhash_find(struct request_queue *q, sector_t =
+offset)
+> 230 {
+> =E2=80=A6
+> 235     hash_for_each_possible_safe(e->hash, rq, next, hash, offset) {
+> 236         BUG_ON(!ELV_ON_HASH(rq));
+> =E2=80=A6
+> ```
+>=20
+> Yes, I carry some extra patches besides this series (the list is =
+against v5.12=20
+> GA):
+>=20
+> ```
+> block, bfq: reset waker pointer with shared queues
+> block, bfq: check waker only for queues with no in-flight I/O
+> block, bfq: avoid delayed merge of async queues
+> block, bfq: boost throughput by extending queue-merging times
+> block, bfq: consider also creation time in delayed stable merge
+> block, bfq: fix delayed stable merge check
+> block, bfq: let also stably merged queues enjoy weight raising
+> block: Do not pull requests from the scheduler when we cannot dispatch =
+them
+> blk: Fix lock inversion between ioc lock and bfqd lock
+> bfq: Remove merged request already in bfq_requests_merged()
+> block, bfq: avoid circular stable merges
+> bfq: remove unnecessary BFQ_DEFAULT_GRP_IOPRIO
+> bfq: reset entity->prio_changed in bfq_init_entity()
+> bfq: optimize the calculation of bfq_weight_to_ioprio()
+> bfq: remove unnecessary initialization logic
+> bfq: keep the minimun bandwidth for CLASS_BE
+> bfq: limit the IO depth of CLASS_IDLE to 1
+> bfq: convert the type of bfq_group.bfqd to bfq_data*
+> bfq: introduce bfq_entity_to_bfqg helper method
+> bfq/mq-deadline: remove redundant check for passthrough request
+> blk-mq: bypass IO scheduler's limit_depth for passthrough request
+> block,bfq: fix the timeout calculation in bfq_bfqq_charge_time
+> block, bfq: merge bursts of newly-created queues
+> block, bfq: keep shared queues out of the waker mechanism
+> block, bfq: fix weight-raising resume with !low_latency
+> block, bfq: make shared queues inherit wakers
+> block, bfq: put reqs of waker and woken in dispatch list
+> block, bfq: always inject I/O of queues blocked by wakers
+> ```
+>=20
+> but nothing from there triggered this for quite some time.
+>=20
+> Paolo, what do you think?
+>=20
+> --=20
+> Oleksandr Natalenko (post-factum)
+>=20
+>=20
+
