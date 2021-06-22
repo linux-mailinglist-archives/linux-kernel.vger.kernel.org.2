@@ -2,187 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1F343B09BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:59:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5351C3B09C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:00:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232322AbhFVQCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 12:02:06 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41779 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231936AbhFVQCF (ORCPT
+        id S230354AbhFVQDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 12:03:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229704AbhFVQDC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 12:02:05 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15MFktWG187328;
-        Tue, 22 Jun 2021 11:59:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to; s=pp1;
- bh=oygtccHblXSkamR34b+VpChGugVr2Y1jSYAi+y+uYqI=;
- b=dstYNTcVGHXIVsv72PMA4kMOumWtUTj3TxvZMx4Icbc6SnCaJnTEt9WNTy/zEyY3yA90
- 0CxT43FZJBfyuh19O53kIJc0YA789rLmR2GMK6yY1IT3gT1dN+oCPZHay4o6g4pyE2r0
- +qFxDkEAO9H8FVlX5IDi0y6VEzq/GTh8CIlMrCmd/tfAx/eO06byUogG9UAZYx5OczP9
- OuhBnBinLAT1fqdMMV/ntTQeTo1Wtdhd45K4kNLX63y5oulFGlCBfrOKio+RHJRdh2KR
- D+7qgdLty4s+8GO9nvSg3oGZwI8V/Dt9bwv55KvBNA9nSOUhotwfYsxOiJxCegfy3nwJ Fw== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39bjtb8bnj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Jun 2021 11:59:42 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 15MFs70r001456;
-        Tue, 22 Jun 2021 15:59:40 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma06ams.nl.ibm.com with ESMTP id 3997uh9j0p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 22 Jun 2021 15:59:40 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 15MFxcOV32178530
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 22 Jun 2021 15:59:38 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 132E8A405F;
-        Tue, 22 Jun 2021 15:59:38 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0DB02A4064;
-        Tue, 22 Jun 2021 15:59:37 +0000 (GMT)
-Received: from smtpclient.apple (unknown [9.85.86.62])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue, 22 Jun 2021 15:59:36 +0000 (GMT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Subject: Re: [powerpc][next-20210621] WARNING at kernel/sched/fair.c:3277
- during boot
-From:   Sachin Sant <sachinp@linux.vnet.ibm.com>
-In-Reply-To: <20210622143154.GA804@vingu-book>
-Date:   Tue, 22 Jun 2021 21:29:36 +0530
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org, Odin Ugedal <odin@uged.al>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <53968DDE-9E93-4CB4-B5E4-526230B6E154@linux.vnet.ibm.com>
-References: <2ED1BDF5-BC0C-47CD-8F33-9A46C738F8CF@linux.vnet.ibm.com>
- <CAKfTPtDrHv4OOfPvwOE2DMNoucXQJ=yvvEpTVKrXghSdKEnZcA@mail.gmail.com>
- <20210622143154.GA804@vingu-book>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-X-Mailer: Apple Mail (2.3654.100.0.2.22)
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: i13bqTY5Fcy0mervMndR6Vv9BUakoEZM
-X-Proofpoint-ORIG-GUID: i13bqTY5Fcy0mervMndR6Vv9BUakoEZM
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-22_08:2021-06-22,2021-06-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- phishscore=0 mlxlogscore=999 spamscore=0 impostorscore=0 adultscore=0
- malwarescore=0 bulkscore=0 mlxscore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2106220097
+        Tue, 22 Jun 2021 12:03:02 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D93C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:00:45 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso1827603wmc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:00:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xOMZk1VKxvEsQe+425mKGnLA46HeEVTGsHHfQ5TUmdo=;
+        b=qf/fz46NPHaWfKJ5ojds9u2NYgfXiZNcmgkC6EINZuigVXaowBRq1Dfsr1lBSTZt3U
+         eTRLvyjvjY5NBjK22ij1enha6oBN4bnvaf+I+8mNNhaKmcHek0wFDkTGmVJN2fM/9nPg
+         yLnit/yU1sLblVKOht0L0ue5wrmmskduEtGR1NJzGEmMOE2C1nlAE6I/KRvMXDLL5uop
+         mb3fwBNpowalE9b+Ui5rp0f5CnEisk8vb9/tJq+oQX8sFoSS3xK3vgaJEGDTZEtE4ABo
+         zAxAI2ERqMj2e7WP3M9btYT0qVrk6AFOWnft9hmXilMET2N+KDozNSLMzpCcjJJMOWrN
+         8twA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xOMZk1VKxvEsQe+425mKGnLA46HeEVTGsHHfQ5TUmdo=;
+        b=g4gm++iXckwbeyAZ+3lyghadcHVA11aoPnsZp8qHUIP6g1uyxbWUr1XcF+cYZmdSQ+
+         /B7Mefk32Wpi3OEHwewwasTJsyfZ+8IdRsmdYqpIYIFGq6J5/tlNm4ZzB3P0kYdD621l
+         vYRH9TqAm2SDiqbiF3h//jWGz0yzWZeY2TT6Jbn5f1hyRVCt37j3Bu2LWc1/vtwVIUrU
+         OLM1B6J6I0/7tterOZtjzERy8E7SYr1Wb9dXUEPtuLJq0xkofFQoolEnu/rqlIq69CfS
+         37AdwsQxsJDG8CsxxHHmct3/R/kg7qHj7ytSKgVJ1sVqILDDvzo7wjb0CKEw4+O8kbMi
+         O7tQ==
+X-Gm-Message-State: AOAM531NeuI11zl1BFij9WysNhKr5IdXWIf3Mr0vgCfOwxnx/SOqlxi+
+        H/x7YdAgXpJanWy1xhSrEr8/iQYxIpMlPENOqVrBFA==
+X-Google-Smtp-Source: ABdhPJzSoujWiRAvyGIwEgL3UvR+fnBtxVS+HiJRtZsgofK9RRT0hDyY9RXFGnx6uEwTGNXL5kYwR8bY6o4aPKWadd4=
+X-Received: by 2002:a05:600c:2484:: with SMTP id 4mr5336575wms.76.1624377643601;
+ Tue, 22 Jun 2021 09:00:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <ecd941b3-2fd5-61d8-93a1-76a3a3ee4138@huawei.com>
+ <CAP-5=fUxQZ+rxLEn6jeRNVMf48BaPNdaUdoMs8LY4P-GROiOnw@mail.gmail.com> <cd501541-deb5-f2f5-e086-cca44b40c87d@huawei.com>
+In-Reply-To: <cd501541-deb5-f2f5-e086-cca44b40c87d@huawei.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 22 Jun 2021 09:00:31 -0700
+Message-ID: <CAP-5=fU05k62d57pbWquqv3Z1RFzWMOB1d3OFEcEax5btEWEzg@mail.gmail.com>
+Subject: Re: perf tool: About tests debug level
+To:     John Garry <john.garry@huawei.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jin Yao <yao.jin@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> On Tue, 22 Jun 2021 at 09:39, Sachin Sant =
-<sachinp@linux.vnet.ibm.com> wrote:
->>>=20
->>> While booting 5.13.0-rc7-next-20210621 on a PowerVM LPAR following =
-warning
->>> is seen
->>>=20
->>> [   30.922154] ------------[ cut here ]------------
->>> [   30.922201] cfs_rq->avg.load_avg || cfs_rq->avg.util_avg || =
-cfs_rq->avg.runnable_avg
->>> [   30.922219] WARNING: CPU: 6 PID: 762 at kernel/sched/fair.c:3277 =
-update_blocked_averages+0x758/0x780
->>=20
->> Yes. That was exactly the purpose of the patch. There is one last
->> remaining part which could generate this. I'm going to prepare a =
-patch
->=20
-> Could you try the patch below ? I have been able to reproduce the =
-problem locally and this
-> fix it on my system:
->=20
-I can recreate the issue with this patch.
+On Tue, Jun 22, 2021 at 4:58 AM John Garry <john.garry@huawei.com> wrote:
+>
+> On 22/06/2021 06:04, Ian Rogers wrote:
+> >> ---- end ----
+> >> Parse and process metrics: FAILED!
+> >>
+> >> Note that the "FAILED" messages from the test code come from pr_debug().
+> >>
+> >> In a way, I feel that pr_debug()/err from the test is more important
+> >> than pr_debug() from the core code (when running a test).
+> >>
+> >> Any opinion on this or how to improve (if anyone agrees with me)? Or am
+> >> I missing something? Or is it not so important?
+> > Hi John,
+> >
+>
+> Hi Ian,
+>
+> > I think the issue is that in the parsing you don't know it's broken
+> > until something goes wrong. Putting everything on pr_err would cause
+> > spam in the not broken case.
+>
+> Right, I would not suggest using pr_err everywhere.
+>
+> > Improving the parsing error handling is a
+> > big task with lex and yacc to some extent getting in the way. Perhaps
+> > a middle way is to have a parameter to the parser that logs more, and
+> > recursively call this in the parser when parsing fails. I guess there
+> > is also a danger of a performance hit.
+>
+> So I am thinking that for running a test, -v means different levels logs
+> for test code and for core (non-test code). For example, -v prints
+> pr_warn() and higher for test logs, but nothing for core logs. And then
+> -vv for running a test gives pr_debug and above for test logs, and
+> pr_warn and above for core logs. Or something like that.
+>
+> Maybe that is not a good idea. But I'm just saying that it's hard to
+> debug currently at -v for tests.
+>
+> Thanks,
+> John
 
-         Starting Terminate Plymouth Boot Screen...
-         Starting Hold until boot process finishes up...
-[FAILED] Failed to start Crash recovery kernel arming.
-See 'systemctl status kdump.service' for details.
-[   10.737913] ------------[ cut here ]------------
-[   10.737960] cfs_rq->avg.load_avg || cfs_rq->avg.util_avg || =
-cfs_rq->avg.runnable_avg
-[   10.737976] WARNING: CPU: 27 PID: 146 at kernel/sched/fair.c:3279 =
-update_blocked_averages+0x758/0x780
-[   10.738010] Modules linked in: stp llc rfkill sunrpc pseries_rng xts =
-vmx_crypto uio_pdrv_genirq uio sch_fq_codel ip_tables xfs libcrc32c =
-sr_mod sd_mod cdrom t10_pi sg ibmvscsi ibmveth scsi_transport_srp =
-dm_mirror dm_region_hash dm_log dm_mod fuse
-[   10.738089] CPU: 27 PID: 146 Comm: ksoftirqd/27 Not tainted =
-5.13.0-rc7-next-20210621-dirty #2
-[   10.738103] NIP:  c0000000001b2768 LR: c0000000001b2764 CTR: =
-c000000000729120
-[   10.738116] REGS: c000000015973840 TRAP: 0700   Not tainted  =
-(5.13.0-rc7-next-20210621-dirty)
-[   10.738130] MSR:  800000000282b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  =
-CR: 48000224  XER: 00000005
-[   10.738161] CFAR: c00000000014d120 IRQMASK: 1=20
-[   10.738161] GPR00: c0000000001b2764 c000000015973ae0 c0000000029bb900 =
-0000000000000048=20
-[   10.738161] GPR04: 00000000fffeffff c0000000159737a0 0000000000000027 =
-c00000154f9f7e18=20
-[   10.738161] GPR08: 0000000000000023 0000000000000001 0000000000000027 =
-c00000167f1d7fe8=20
-[   10.738161] GPR12: 0000000000000000 c00000154ffd7e80 c00000154fa82580 =
-000000000000b78a=20
-[   10.738161] GPR16: 000000028007883c 00000000000002ed c000000038d31000 =
-0000000000000000=20
-[   10.738161] GPR20: 0000000000000000 c0000000029fdfe0 0000000000000000 =
-000000000000037b=20
-[   10.738161] GPR24: 0000000000000000 c00000154fa82f90 0000000000000001 =
-c00000003d4ca400=20
-[   10.738161] GPR28: 00000000000002ed c000000038d311c0 c000000038d31100 =
-0000000000000000=20
-[   10.738281] NIP [c0000000001b2768] =
-update_blocked_averages+0x758/0x780
-[   10.738290] LR [c0000000001b2764] update_blocked_averages+0x754/0x780
-[   10.738299] Call Trace:
-[   10.738303] [c000000015973ae0] [c0000000001b2764] =
-update_blocked_averages+0x754/0x780 (unreliable)
-[   10.738315] [c000000015973c00] [c0000000001be720] =
-run_rebalance_domains+0xa0/0xd0
-[   10.738326] [c000000015973c30] [c000000000cf9acc] =
-__do_softirq+0x15c/0x3d4
-[   10.738337] [c000000015973d20] [c000000000158464] =
-run_ksoftirqd+0x64/0x90
-[   10.738346] [c000000015973d40] [c00000000018fd24] =
-smpboot_thread_fn+0x204/0x270
-[   10.738357] [c000000015973da0] [c000000000189770] kthread+0x190/0x1a0
-[   10.738367] [c000000015973e10] [c00000000000ceec] =
-ret_from_kernel_thread+0x5c/0x70
-[   10.738381] Instruction dump:
-[   10.738388] 3863c808 9be9eefe 4bf9a979 60000000 0fe00000 4bfff980 =
-e9210070 e8610088=20
-[   10.738410] 39400001 99490003 4bf9a959 60000000 <0fe00000> 4bfffc24 =
-3d22fff6 8929eefb=20
-[   10.738431] ---[ end trace 9ca80b55840c53f0 ]=E2=80=94
+I think this sounds good. It'd be nice also to have verbose output in
+the shell tests following the same convention. There's currently no
+verbose logging in shell tests but I propose it here:
+https://lore.kernel.org/lkml/20210621215648.2991319-1-irogers@google.com/
+By their nature some of the shell tests launch perf, perhaps there can
+be some convention on passing the verbose flag through in those cases.
 
-Thanks
--Sachin
-
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 8cc27b847ad8..da91db1c137f 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -3037,8 +3037,9 @@ enqueue_load_avg(struct cfs_rq *cfs_rq, struct =
-sched_entity *se)
-> static inline void
-> dequeue_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *se)
-> {
-> +       u32 divider =3D get_pelt_divider(&se->avg);
->        sub_positive(&cfs_rq->avg.load_avg, se->avg.load_avg);
-> -       sub_positive(&cfs_rq->avg.load_sum, se_weight(se) * =
-se->avg.load_sum);
-> +       cfs_rq->avg.load_sum =3D cfs_rq->avg.load_avg * divider;
-> }
-> #else
-> static inline void
->=20
+Thanks,
+Ian
