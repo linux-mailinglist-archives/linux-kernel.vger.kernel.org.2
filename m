@@ -2,119 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2541E3B07A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7783B07AA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:43:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231986AbhFVOoF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Jun 2021 10:44:05 -0400
-Received: from out28-75.mail.aliyun.com ([115.124.28.75]:56975 "EHLO
-        out28-75.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbhFVOoE (ORCPT
+        id S231765AbhFVOpR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 10:45:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46851 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230510AbhFVOpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 10:44:04 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07639962|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.203167-0.00545665-0.791376;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047199;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=12;RT=12;SR=0;TI=SMTPD_---.KWJToea_1624372904;
-Received: from zhouyanjie-virtual-machine(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KWJToea_1624372904)
-          by smtp.aliyun-inc.com(10.147.44.129);
-          Tue, 22 Jun 2021 22:41:45 +0800
-Date:   Tue, 22 Jun 2021 22:41:43 +0800
-From:   =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-To:     Paul Cercueil <paul@opendingux.net>
-Cc:     tsbogend@alpha.franken.de, robh+dt@kernel.org,
-        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
-        sernia.zhou@foxmail.com
-Subject: Re: [PATCH 3/4] MIPS: GCW0: Adjust pinctrl related code in device
- tree.
-Message-ID: <20210622224143.72d063dc@zhouyanjie-virtual-machine>
-In-Reply-To: <1HW3VQ.OQVPDYR5D5RR1@opendingux.net>
-References: <1624347445-88070-1-git-send-email-zhouyanjie@wanyeetech.com>
-        <1624347445-88070-4-git-send-email-zhouyanjie@wanyeetech.com>
-        <9US3VQ.SK89X0OFZC2Z2@opendingux.net>
-        <20210622215119.18a49cf9@zhouyanjie-virtual-machine>
-        <1HW3VQ.OQVPDYR5D5RR1@opendingux.net>
-X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        Tue, 22 Jun 2021 10:45:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624372980;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=YkIxsEDPLHnGfiq04+FCr+iD6zz/V2l/POGdMIk2Mts=;
+        b=XOjOKs0q8CYK06wB4JGTuJqbDc+XS2t6cNDBkk/fGqz5n3eNmNYGJLYR1fyG1229ReliEJ
+        uK9tNbZgegQ9ODOZGGtpQFcrntFVOqsFecrLFT9xOKcOjkAbEmOvh25Zl1XvOED/vP/UzO
+        9ytqTtqGXpgagiQi36u1GXy5dM9orsg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-413-KaPBVBFwPm2LsLUuDjrNBg-1; Tue, 22 Jun 2021 10:42:57 -0400
+X-MC-Unique: KaPBVBFwPm2LsLUuDjrNBg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 351C9100A45F;
+        Tue, 22 Jun 2021 14:42:55 +0000 (UTC)
+Received: from x1.bristot.me.homenet.telecomitalia.it (unknown [10.10.115.243])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A61035D9CA;
+        Tue, 22 Jun 2021 14:42:40 +0000 (UTC)
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Phil Auld <pauld@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Kate Carcia <kcarcia@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Clark Willaims <williams@redhat.com>,
+        John Kacur <jkacur@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH V5 00/14] hwlat improvements and osnoise/timerlat tracers
+Date:   Tue, 22 Jun 2021 16:42:18 +0200
+Message-Id: <cover.1624372313.git.bristot@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+This series proposes a set of improvements and new features for the
+tracing subsystem to facilitate the debugging of low latency
+deployments.
 
-于 Tue, 22 Jun 2021 15:05:25 +0100
-Paul Cercueil <paul@opendingux.net> 写道:
+Currently, hwlat runs on a single CPU at a time, migrating across a
+set of CPUs in a round-robin fashion. This series improves hwlat 
+to allow hwlat to run on multiple CPUs in parallel, increasing the
+chances of detecting a hardware latency, at the cost of using more
+CPU time.
 
-> Hi Zhou,
-> 
-> Le mar., juin 22 2021 at 21:51:19 +0800, 周琰杰 
-> <zhouyanjie@wanyeetech.com> a écrit :
-> > Hi Paul,
-> > 
-> > 于 Tue, 22 Jun 2021 13:46:57 +0100
-> > Paul Cercueil <paul@opendingux.net> 写道:
-> >   
-> >>  Hi Zhou,
-> >> 
-> >>  Le mar., juin 22 2021 at 15:37:24 +0800, 周琰杰 (Zhou Yanjie)
-> >>  <zhouyanjie@wanyeetech.com> a écrit :  
-> >>  > Change the "lcd-24bit" in the pinctrl groups to "lcd-8bit",
-> >>  > "lcd-16bit", "lcd-18bit", "lcd-24bit", since the pinctrl
-> >>  > driver has done the necessary splitting of the lcd group,
-> >>  > and it is convenient to further streamline the lcd-24bit
-> >>  > group in the subsequent pinctrl driver.
-> >>  >
-> >>  > Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-> >>  > ---
-> >>  >  arch/mips/boot/dts/ingenic/gcw0.dts | 2 +-
-> >>  >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>  >
-> >>  > diff --git a/arch/mips/boot/dts/ingenic/gcw0.dts
-> >>  > b/arch/mips/boot/dts/ingenic/gcw0.dts
-> >>  > index f4c04f2..dec3ba6f 100644
-> >>  > --- a/arch/mips/boot/dts/ingenic/gcw0.dts
-> >>  > +++ b/arch/mips/boot/dts/ingenic/gcw0.dts
-> >>  > @@ -393,7 +393,7 @@
-> >>  >  &pinctrl {
-> >>  >  	pins_lcd: lcd {
-> >>  >  		function = "lcd";
-> >>  > -		groups = "lcd-24bit";
-> >>  > +		groups = "lcd-8bit", "lcd-16bit", "lcd-18bit",
-> >>  > "lcd-24bit";  
-> >> 
-> >>  No, I'm pretty sure this won't work, since "lcd-24bit" contains
-> >> pins that are also contained by the other groups.
-> >>   
-> > 
-> > Sure, it seems that we should modify the pinctrl first, then modify 
-> > the
-> > dts, and then put them in the same series, so as to ensure that
-> > they do
-> > not cause damage.  
-> 
-> No, the "lcd-24bit" group is ABI now. We can't change it...
-> 
+It also proposes a new tracer named osnoise, that aims to help users
+of isolcpus= (or a similar method) to measure how much noise the OS
+and the hardware add to the isolated application. The osnoise tracer
+bases on the hwlat detector code. The difference is that, instead of
+sampling with interrupts disabled, the osnoise tracer samples the CPU with
+interrupts and preemption enabled. In this way, the sampling thread will
+suffer any source of noise from the OS. The detection and classification
+of the type of noise are then made by observing the entry points of NMIs,
+IRQs, SoftIRQs, and threads. If none of these sources of noise is detected,
+the tool associates the noise with the hardware. The tool periodically
+prints a status, printing the total noise of the period, the max single
+noise observed, the percentage of CPU available for the task, along with
+the counters of each source of the noise. To debug the sources of noise,
+the tracer also adds a set of tracepoints that print any NMI, IRQ, SofIRQ,
+and thread occurrence. These tracepoints print the starting time and the
+noise's net duration at the end of the noise. In this way, it reduces the
+number of tracepoints (one instead of two) and the need to manually
+accounting the contribution of each noise independently.
 
-Sure.
+Finaly, the timerlat tracer aims to help the preemptive kernel developers
+to find sources of wakeup latencies of real-time threads. The tracer
+creates a per-cpu kernel thread with real-time priority. The tracer thread
+sets a periodic timer to wakeup itself, and goes to sleep waiting for the
+timer to fire. At the wakeup, the thread then computes a wakeup latency
+value as the difference between the current time and the absolute time
+that the timer was set to expire. The tracer prints two lines at every
+activation. The first is the timer latency observed at the hardirq context
+before the activation of the thread. The second is the timer latency
+observed by the thread, which is the same level that cyclictest reports.
+The ACTIVATION ID field serves to relate the irq execution to its
+respective thread execution. The tracer is build on top of osnoise tracer,
+and the osnoise: events can be used to trace the source of interference
+from NMI, IRQs and other threads. It also enables the capture of the
+stacktrace at the IRQ context, which helps to identify the code path
+that can cause thread delay.
 
-Thanks and best regards!
+Changes from v4:
+ - If tracing_threshold is set to 0, use 5 us as the osnoise
+   threshold - instead of the 1 us previously used. (Bristot)
+ - Fix references to stop_tracing_us/stop_tracing_total_us on
+   timerlat documentation (Bristot).
+ - Raname ULL_STR_SIZE to U64_STR_SIZE (Bristot)
+ - Make ULL_STR_SIZE 24 (Rostedt)
+ - Fix ifdefs on arch/x86/kernel/trace.c (Rostedt)
+ - Remove unneeded kernel/trace/trace_osnoise.h (Rostedt)
+ - Fix hotplug locking issues (Rostedt)
+ - Fix <spaces> on places of <tab> (Rostedt)
 
-> -Paul
-> 
-> > 
-> > Thanks and best regards!
-> >   
-> >>  -Paul
-> >>   
-> >>  >  	};
-> >>  >
-> >>  >  	pins_uart2: uart2 {
-> >>  > --
-> >>  > 2.7.4
-> >>  >  
-> >>   
-> >   
-> 
+Changes from v3:
+ - Remove /** from comments (Rostedt)
+ - Support hotplug operations (Rostedt)
+ - Change the name of ull_config to trace_min_max - and
+   improve patch description (Rostedt)
+ - Remove leftovers from older versions (Juri Lelli)
+ - Remove printk from main loop - use trace buffer instead
+   (Rostedt)
+ - Move the arch specific code to arch/*/kernel/trace.c (Rostedt)
+ - Improve timerlat documentation (Rostedt)
+ - Add () around params usage of "value" on __print_ns_to_secs(value)
+   (Rostedt)
+ - Rename osnoise/stop_tracing* files (Rostedt)
+ - Reduce the size of the per-cpu data to store stack tracers on
+   timerlat (Rostedt)
+ - Add osn_* prefix to structures (Rostedt)
+ - Fix stop tracing to work with trace instances (Rostedt)
+ - Changing osnoise/cpus restarts the threads accordingly (Rostedt)
+ - Lots of cosmetics/typos changes (Rostedt)
+
+Changes from v2:
+ - osnoise sample reports in nanoseconds (as all other osnoise tracepoints)
+   (Bristot)
+ - Remove divisions from osnoise main loop (Bristot)
+ - Make the tracers work well when starting via kernel-cmdline
+   (Red Hat's performance team need)
+ - Rename main/interrupt functions (Bristot)
+ - Fix timerlat reset (Juri Lelli)
+ - Fix timerlat start (Juri Lelli)
+
+Changes from v1:
+ - Remove `` from RST (Corbet)
+ - Add RST files to the index (Corbet)
+ - Fix text and typos (Rostedt)
+ - Remove the cpus from hwlat (Rostedt)
+ - Remove the disable_migrate/fallback to mode none on hwlat (Rostedt)
+ - Add a generic way to read/write u64 and use it on
+   hwlat/osnoise/timerlat (Rostedt)
+ - Make osnoise/timerlat to work properly with trace-cmd/tracer
+   instances (Rostedt)
+ - osnoise using the tracing_threshold (Rostedt)
+ - Rearrange tracepoint structure to avoid "holes" (Rostedt)
+
+Daniel Bristot de Oliveira (13):
+  trace/hwlat: Fix Clark's email
+  trace/hwlat: Implement the mode config option
+  trace/hwlat: Switch disable_migrate to mode none
+  trace/hwlat: Implement the per-cpu mode
+  trace: Add a generic function to read/write u64 values from tracefs
+  trace/hwlat: Use trace_min_max_param for width and window params
+  trace/hwlat: Remove printk from sampling loop
+  trace: Add osnoise tracer
+  trace: Add timerlat tracer
+  trace/hwlat: Protect kdata->kthread with get/put_online_cpus
+  trace: Protect tr->tracing_cpumask with get/put_online_cpus
+  trace/hwlat: Support hotplug operations
+  trace/osnoise: Support hotplug operations
+
+Steven Rostedt (1):
+  trace: Add __print_ns_to_secs() and __print_ns_without_secs() helpers
+
+ Documentation/trace/hwlat_detector.rst  |   13 +-
+ Documentation/trace/index.rst           |    2 +
+ Documentation/trace/osnoise-tracer.rst  |  152 ++
+ Documentation/trace/timerlat-tracer.rst |  181 ++
+ arch/x86/kernel/Makefile                |    1 +
+ arch/x86/kernel/trace.c                 |  236 +++
+ include/linux/ftrace_irq.h              |   13 +
+ include/trace/events/osnoise.h          |  142 ++
+ include/trace/trace_events.h            |   25 +
+ kernel/trace/Kconfig                    |   62 +
+ kernel/trace/Makefile                   |    1 +
+ kernel/trace/trace.c                    |   91 +
+ kernel/trace/trace.h                    |   29 +-
+ kernel/trace/trace_entries.h            |   41 +
+ kernel/trace/trace_hwlat.c              |  534 ++++--
+ kernel/trace/trace_osnoise.c            | 2051 +++++++++++++++++++++++
+ kernel/trace/trace_output.c             |  119 +-
+ 17 files changed, 3543 insertions(+), 150 deletions(-)
+ create mode 100644 Documentation/trace/osnoise-tracer.rst
+ create mode 100644 Documentation/trace/timerlat-tracer.rst
+ create mode 100644 arch/x86/kernel/trace.c
+ create mode 100644 include/trace/events/osnoise.h
+ create mode 100644 kernel/trace/trace_osnoise.c
+
+-- 
+2.31.1
 
