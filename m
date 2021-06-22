@@ -2,227 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE413AFDC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 265D23AFDC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:24:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbhFVHZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 03:25:46 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:38471 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229702AbhFVHZp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 03:25:45 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1624346610; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=zfZLUV+XLhKbuRPyWy17JYb48rB9RQJB0YLvF+0B5RI=;
- b=KMzdvow7W/FNi3a1phIsZFECtpF//z8X34ahFzL+sb7a6ByEPdXfyLCGLiHLxIYrT7iZ3aRv
- TS6vr5TQAqegRuEOoFIVtMgUM9U6WOZofW/onJRH+8Y7DyU4I2sLbgEe8f985EclF6QAzGek
- Lyyrv4JLdlYto4nfDslcJmoGgKg=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 60d18fe76ddc3305c41b571d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Jun 2021 07:23:19
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 62A75C43217; Tue, 22 Jun 2021 07:23:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 54DAAC433D3;
-        Tue, 22 Jun 2021 07:23:17 +0000 (UTC)
+        id S230098AbhFVH0e convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Jun 2021 03:26:34 -0400
+Received: from lithops.sigma-star.at ([195.201.40.130]:53252 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229844AbhFVH0c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 03:26:32 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id B1CAA606BA3F;
+        Tue, 22 Jun 2021 09:24:15 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id URpEKndo4VDj; Tue, 22 Jun 2021 09:24:15 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 5D6A261BC7C5;
+        Tue, 22 Jun 2021 09:24:15 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Tx88bZgyxVTX; Tue, 22 Jun 2021 09:24:15 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 320C961BC7B2;
+        Tue, 22 Jun 2021 09:24:15 +0200 (CEST)
+Date:   Tue, 22 Jun 2021 09:24:15 +0200 (CEST)
+From:   Richard Weinberger <richard@nod.at>
+To:     chengzhihao1 <chengzhihao1@huawei.com>
+Cc:     Colin Ian King <colin.king@canonical.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Message-ID: <1471996381.142265.1624346654994.JavaMail.zimbra@nod.at>
+In-Reply-To: <f2ea606a-4a05-8d14-4380-d96ca0f981a1@huawei.com>
+References: <20210621152249.20901-1-colin.king@canonical.com> <f2ea606a-4a05-8d14-4380-d96ca0f981a1@huawei.com>
+Subject: Re: [PATCH] ubifs: Remove a redundant null check on pointer lp
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 22 Jun 2021 12:53:17 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
-        swboyd@chromium.org, ulf.hansson@linaro.org, rjw@rjwysocki.net,
-        agross@kernel.org, ohad@wizery.com, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dianders@chromium.org,
-        rishabhb@codeaurora.org, sidgup@codeaurora.org
-Subject: Re: [PATCH v2 02/13] dt-bindings: remoteproc: qcom: pas: Add QMP
- bindings
-In-Reply-To: <20210618202512.GA2811174@robh.at.kernel.org>
-References: <1623080372-13521-1-git-send-email-sibis@codeaurora.org>
- <1623080372-13521-3-git-send-email-sibis@codeaurora.org>
- <20210618202512.GA2811174@robh.at.kernel.org>
-Message-ID: <cbf3f5b190f9ea15a2246dc836513b46@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Topic: ubifs: Remove a redundant null check on pointer lp
+Thread-Index: ZwnP86hcvaby+ZSpOm73bGFflCebzw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Rob,
-Thanks for the review.
+----- Ursprüngliche Mail -----
+> I just found out about it today thanks to your patch. Commit
+> c770cd5190ba ("ubifs: fix an IS_ERR() vs NULL check") did import a new
+> problem that ubifs_gc_start_commit() may return -ENOMEM while syncing fs.
+> I guess ubifs_fast_find_frdi_idx() return NULL pointer is the
+> termination condition in while-loop, which means we cannot get a
+> freeable index LEB in ubifs_gc_start_commit().
 
-On 2021-06-19 01:55, Rob Herring wrote:
-> On Mon, Jun 07, 2021 at 09:09:21PM +0530, Sibi Sankar wrote:
->> Add Qualcomm Mailbox Protocol (QMP) binding to replace the power 
->> domains
->> exposed by the AOSS QMP node.
->> 
->> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
->> ---
->> 
->> v2:
->>  * Drop R-b from Rob/Stephen due to yaml conversion.
->> 
->>  .../devicetree/bindings/remoteproc/qcom,adsp.yaml  | 40 
->> +++++++++++++++-------
->>  1 file changed, 27 insertions(+), 13 deletions(-)
->> 
->> diff --git 
->> a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml 
->> b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
->> index 9ea05e608bc1..b6396bc07388 100644
->> --- a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
->> +++ b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
->> @@ -89,6 +89,10 @@ properties:
->>      maxItems: 1
->>      description: Reference to the reserved-memory for the Hexagon 
->> core
->> 
->> +  qcom,qmp:
-> 
-> Is there more than one QMP? If not just search for the QMP node and you
-> can avoid the ABI issue at least partially.
+Good catch! :-)
 
-yeah there is just one qmp node
-used by all remote processors and
-we just search for the qmp node.
+>> -		if (!lp)
+>> -			break;
+>>   		idx_gc = kmalloc(sizeof(struct ubifs_gced_idx_leb), GFP_NOFS);
+>>   		if (!idx_gc) {
+>>   			err = -ENOMEM;
+>> 
+> BTW, the following modifications may be what you want?
+> diff --git a/fs/ubifs/gc.c b/fs/ubifs/gc.c
+> index 7cc22d7317ea..b1f276599b04 100644
+> --- a/fs/ubifs/gc.c
+> +++ b/fs/ubifs/gc.c
+> @@ -895,10 +895,6 @@ int ubifs_gc_start_commit(struct ubifs_info *c)
+>         /* Record index freeable LEBs for unmapping after commit */
+>         while (1) {
+>                 lp = ubifs_fast_find_frdi_idx(c);
+> -               if (!lp) {
+> -                       err = -ENOMEM;
+> -                       goto out;
+> -               }
+>                 if (!lp)
+>                         break;
+>                 idx_gc = kmalloc(sizeof(struct ubifs_gced_idx_leb),
+> GFP_NOFS);
 
-> 
->> +    $ref: /schemas/types.yaml#/definitions/phandle-array
-> 
-> There's more than 1 cell? What's in them?
+I'll drop Dan's patch from -next. Do you want to send a followup patch which removes the
+in vain check?
 
-Just a single cell i.e. handle to the
-qmp node. I'll fix this in the re-spin.
-
-> 
->> +    description: Reference to the AOSS side-channel message RAM.
->> +
->>    qcom,smem-states:
->>      $ref: /schemas/types.yaml#/definitions/phandle-array
->>      description: States used by the AP to signal the Hexagon core
->> @@ -359,13 +363,11 @@ allOf:
->>        properties:
->>          power-domains:
->>            items:
->> -            - description: Load State power domain
->>              - description: CX power domain
->>              - description: MX power domain
->>              - description: MSS power domain
->>          power-domain-names:
->>            items:
->> -            - const: load_state
->>              - const: cx
->>              - const: mx
->>              - const: mss
->> @@ -381,12 +383,7 @@ allOf:
->>        properties:
->>          power-domains:
->>            items:
->> -            - description: Load State power domain
->>              - description: CX power domain
->> -        power-domain-names:
->> -          items:
->> -            - const: load_state
->> -            - const: cx
->> 
->>    - if:
->>        properties:
->> @@ -399,12 +396,10 @@ allOf:
->>        properties:
->>          power-domains:
->>            items:
->> -            - description: Load State power domain
->>              - description: CX power domain
->>              - description: MSS power domain
->>          power-domain-names:
->>            items:
->> -            - const: load_state
->>              - const: cx
->>              - const: mss
->> 
->> @@ -439,12 +434,10 @@ allOf:
->>        properties:
->>          power-domains:
->>            items:
->> -            - description: Load State power domain
->>              - description: LCX power domain
->>              - description: LMX power domain
->>          power-domain-names:
->>            items:
->> -            - const: load_state
->>              - const: lcx
->>              - const: lmx
->> 
->> @@ -458,12 +451,10 @@ allOf:
->>        properties:
->>          power-domains:
->>            items:
->> -            - description: Load State power domain
->>              - description: CX power domain
->>              - description: MXC power domain
->>          power-domain-names:
->>            items:
->> -            - const: load_state
->>              - const: cx
->>              - const: mxc
->> 
->> @@ -499,6 +490,29 @@ allOf:
->>              - const: mss_restart
->>              - const: pdc_reset
->> 
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            enum:
->> +              - qcom,sc7180-mpss-pas
->> +              - qcom,sm8150-adsp-pas
->> +              - qcom,sm8150-cdsp-pas
->> +              - qcom,sm8150-mpss-pas
->> +              - qcom,sm8150-slpi-pas
->> +              - qcom,sm8250-adsp-pas
->> +              - qcom,sm8250-cdsp-pas
->> +              - qcom,sm8250-slpi-pas
->> +              - qcom,sm8350-adsp-pas
->> +              - qcom,sm8350-cdsp-pas
->> +              - qcom,sm8350-mpss-pas
->> +              - qcom,sm8350-slpi-pas
->> +    then:
->> +      properties:
->> +        qcom,qmp:
->> +          items:
->> +            - description: Reference to the AOSS side-channel message 
->> RAM.
->> +
->>  examples:
->>    - |
->>      #include <dt-bindings/clock/qcom,rpmcc.h>
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
->> 
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+Thanks,
+//richard
