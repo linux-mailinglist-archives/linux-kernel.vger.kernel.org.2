@@ -2,264 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB703B0490
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4665C3B0493
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231881AbhFVMe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 08:34:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50487 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231958AbhFVMeS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 08:34:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624365122;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vP7JF6KY1/ahu18Tz6/GObDLrGSrV/SofAI1KrpMPF4=;
-        b=AA+F5ILI95fQR5WCMROFXT3L+UISvkKHtqoShKsHXj89miH6K6NJLwtyu8ZGhbA3YfOBI8
-        nAOqoiVMMUtZv8GJMa7ohZn8EhVaFtqPfKVW7ep2Am0kwaC7L5+hk+X8WPwnn0GAabqO6W
-        G8GYT/D8rv1X2A8Liev11ZnJHSGAz0o=
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
- [209.85.161.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-345-Nai4dBLbNm-syoz9CCRPIA-1; Tue, 22 Jun 2021 08:32:01 -0400
-X-MC-Unique: Nai4dBLbNm-syoz9CCRPIA-1
-Received: by mail-oo1-f72.google.com with SMTP id z1-20020a4ab8810000b029024abe096a35so13207573ooo.12
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 05:32:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=vP7JF6KY1/ahu18Tz6/GObDLrGSrV/SofAI1KrpMPF4=;
-        b=i5YSFkJFp2+nP38V410illfKN4o16FDSnqgl8aocciOSVgbeyKOWj/l1jbdMnJ1Gah
-         WlaJQ/X5+nlJRdPR1KJmO06Yjv16pM8kSryomcHlio/tU/9R+rbyRJuqjYy67fw3nwbN
-         HxGH7XHaoThUBN3y1oYvBfz2+TRPsBX2aAfkgEZ7H3LyNM8R2nEBf6FN14bR5ADmYxq4
-         6mdVYOv5b0+BP4AAatsYCuZgYTvdx0y8vYQAoAcqeIRtHoqgT2jyosI086Ny+BCHAt7A
-         uaF9czNuSEQtwzrn9+Nn3PguEZjVS/fSY8Uc3mtb9KT/2Amf5W29ukrGpYhk4THuRChf
-         R/cg==
-X-Gm-Message-State: AOAM5315YJerHrV7F9cKLed3M3A1JcH38vYYg6YSTx7SRONSJGM91CC3
-        b36kBh/nIMgzUrqK7FUIvvdNV35qoALtITHd0FdSXR995RkUmQWx359XECD4BXn0sq19USUfwTM
-        c6jz5t4zWMEKripNncQ+s53rI
-X-Received: by 2002:a54:4694:: with SMTP id k20mr3030302oic.134.1624365120366;
-        Tue, 22 Jun 2021 05:32:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx8IUtPHHs01259DCSqd8l9v2KUFLEpzLtTrLK2iyrtXZYfJpqcLl9xh2coGZ1Y7YXxQNxOVQ==
-X-Received: by 2002:a54:4694:: with SMTP id k20mr3030276oic.134.1624365120167;
-        Tue, 22 Jun 2021 05:32:00 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id b2sm2613572oic.56.2021.06.22.05.31.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 05:31:59 -0700 (PDT)
-Subject: Re: [PATCH 2/4] fpga: dfl: Move DFH header register macros to
- linux/dfl.h
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <mhu@silicom.dk>,
-        Wu Hao <hao.wu@intel.com>, Moritz Fischer <mdf@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        =?UTF-8?Q?Martin_Hundeb=c3=b8ll?= <mhu@geanix.com>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-spi@vger.kernel.org,
-        Debarati Biswas <debaratix.biswas@intel.com>,
-        Russ Weight <russell.h.weight@intel.com>
-References: <20210621070621.431482-1-mhu@silicom.dk>
- <20210621070621.431482-3-mhu@silicom.dk>
- <81975a85-e9d6-bd4b-7666-56d1d1d581bc@redhat.com>
- <20210622045613.GA27046@yilunxu-OptiPlex-7050>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <d74f6e17-0fe2-bd18-de53-18181424db82@redhat.com>
-Date:   Tue, 22 Jun 2021 05:31:57 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231823AbhFVMeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 08:34:36 -0400
+Received: from mail-mw2nam12on2103.outbound.protection.outlook.com ([40.107.244.103]:14721
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231706AbhFVMeW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 08:34:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZszLQt7I5PiibwpH+Wi67LNCuYtGF2zf4iBkW/M+lOAy3NRpTP4D6dyOhgaly3e/2tAgMKfd1fb/gw1hHe/qdiADbbyiWr1aOBaq8Zm23R1pxGsrNPT7Jo88ntXFNPBvqZpqWz/jDgHWzGQIkp1vrhrs0Z5zwyt0VYNhflfBlILo2SghbkBcbEZQQvec3lZOO0CWTyVDamq1kNujab5a99qNf8qV8IiZgxzHa136jP/Qf/NLTHzSvwF3yGmXwuvYeKm5zeafT/hTjEDT2GI1V9wUp96A0AVjVsbrDgkhBbmXBk6nBFUPrrwabjo5w5ByINoFtkYR7xmyr2DfSnmGqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=skmraAaRPuL+Dm2SJmUQIYDKd0zUAZM+B/rE9xFjvJw=;
+ b=V6e7bj/djXh/rHEhrguF0+T2KaZcnZerhCk3wDr9rs4yLF+fkWYtlJEeiRd/ezEaLOneRpMgDzBrv4yHxyzujkPdUdB1W/1MKPEHVBYoLnwABUfDMleCWFCUmIDTYGYIigxciVhonoPUCvyVf8AtJD5rrySKzG13qBrd9sFjxXq70/c5tqJ5pX/wEEpZ5lG+M/68g7jzZFZNlfoIFuqJK7H1VJkpXnm6pINoE3p4FkII0StVlaRIoLnjZbN3ggSkI1+2kcOiph2XWSOQHFq0CzRy2MUw3ARF+h+np7yY3O5+xnvRwXAGAjlVlMkLIm4LsiReZyM6dQHmVQ1AwcDE1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
+ header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=skmraAaRPuL+Dm2SJmUQIYDKd0zUAZM+B/rE9xFjvJw=;
+ b=Bv315c1qd2mvAZN/caFSxYKwd8vvjmF5US+r9p4B4/jYVOMb0Pe27Gy8XeuN0Q62Ji0MwLriz9mFFt++vOPVp/GUUhh2eE/uf2nnjuG+fqmAaQ87kPbvbQZ40Gt2x966dCprLRa1Xfru2KdIkzEQBSqFeVR5WTuLkJLq+5zXlPg=
+Authentication-Results: driverdev.osuosl.org; dkim=none (message not signed)
+ header.d=none;driverdev.osuosl.org; dmarc=none action=none
+ header.from=analogixsemi.com;
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
+ by BY5PR04MB6785.namprd04.prod.outlook.com (2603:10b6:a03:218::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Tue, 22 Jun
+ 2021 12:32:06 +0000
+Received: from BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::5c0e:fbe5:2bd6:ec6]) by BY5PR04MB6739.namprd04.prod.outlook.com
+ ([fe80::5c0e:fbe5:2bd6:ec6%3]) with mapi id 15.20.4264.018; Tue, 22 Jun 2021
+ 12:32:06 +0000
+Date:   Tue, 22 Jun 2021 20:31:59 +0800
+From:   Xin Ji <xji@analogixsemi.com>
+To:     Robert Foss <robert.foss@linaro.org>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Andrzej Hajda <a.hajda@samsung.com>
+Cc:     Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
+        Vasily Khoruzhick <anarsoul@gmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Sheng Pan <span@analogixsemi.com>,
+        Bernie Liang <bliang@analogixsemi.com>,
+        Zhen Li <zhenli@analogixsemi.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org
+Subject: [PATCH v9 2/4] drm/bridge: anx7625: fix not correct return value
+Message-ID: <86e9ad1dc0acadaeacaa8c5bb2c7c86086507e06.1624349480.git.xji@analogixsemi.com>
+References: <cover.1624349479.git.xji@analogixsemi.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1624349479.git.xji@analogixsemi.com>
+X-Originating-IP: [60.251.58.79]
+X-ClientProxiedBy: HKAPR03CA0013.apcprd03.prod.outlook.com
+ (2603:1096:203:c8::18) To BY5PR04MB6739.namprd04.prod.outlook.com
+ (2603:10b6:a03:229::8)
 MIME-Version: 1.0
-In-Reply-To: <20210622045613.GA27046@yilunxu-OptiPlex-7050>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from anxtwsw-Precision-3640-Tower (60.251.58.79) by HKAPR03CA0013.apcprd03.prod.outlook.com (2603:1096:203:c8::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.9 via Frontend Transport; Tue, 22 Jun 2021 12:32:05 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9984812d-f289-40b1-d6dc-08d93579beb4
+X-MS-TrafficTypeDiagnostic: BY5PR04MB6785:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR04MB678592857B7A3E7B8727BEF8C7099@BY5PR04MB6785.namprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:813;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: STz+zjceHMAyRinQFjB64IvJJUSibZuqIxMxqZBV+LKJfoi5/ymldTa2S2vz5hI9ROcJWau8GeQ+TA1UI8HamMO8fli4GQFUGxmwTj3LXxkizyIp02HxVOSbrfgSeC05qmvBDpYGxrY6ybY3UXokgIUCP3q4FhSJ58oMV3ColzOf8AQnypUOlrv362yiZLhrTo8DQ0bcDU3rDb+FyOzFvfafVUDiwMYqxBzJYfqnda5MYQk3tCLzTiEkQ4d1l4HblJr/BjoK2gDvBxDf6+LOuzk+MQXrBaRK4OGeWYB7V+mXW8Coe4nZEZiOghPf/NF+A/159Ollx8Xeu1ni37eJQZzvxlkq/ZfsptMilxSfXTN8UNpKXxjB6FsPL+g/SKz+L/LJGoHCF8kEqVvsKH60TfkQxlz6H1bqLMnGt3+YKvwZGFpMbiN/YspsT2a6D6LUKcKzYMfh5jaViBtKPYRaHqbW19cyQqzwoHjTGXE25FRhI0GEv8oB2NGcRvc9ExWM42QMIG3ZgqfbB298SuluQ3D4tRbSrI0JvLs3MFVAAzg040L66RmROOrHjfEwwfAYE3uQ4ei0dAc+oUT7k2V1b+oanJjcG+LTuNgoZvvBYjtj1g1+BXw8zy9wA/UGEl4hwzlahUfNeJSPWcT9sGMTevq+WxA8QwxbLUGDMPHL7KQQhDWoiPi24Xqx2xr6/HlSq/6M0MxnFTAiVbvMuwMcZA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(39840400004)(396003)(136003)(346002)(376002)(366004)(86362001)(7416002)(66556008)(2616005)(16526019)(66946007)(2906002)(4326008)(6666004)(956004)(36756003)(66476007)(55236004)(26005)(38350700002)(83380400001)(38100700002)(186003)(6486002)(110136005)(8676002)(52116002)(316002)(5660300002)(54906003)(478600001)(8936002)(4744005)(6496006);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?U2qoJKHMG+kOGF2nMeyWExnvOfve852vzv+rzQk9k9N+Ipe3Nm2k0GZfWeew?=
+ =?us-ascii?Q?fi8F6WKV4KDgVOs9bAWgYXCUcmZHPLqhpsEymLMXIY4FUVmheeJvrulj1GUF?=
+ =?us-ascii?Q?vF7/poMzkTI7KsqyJFVvblRvixX77IDzFjuibYeF/9/VaDRnt/I4/qNFsW/z?=
+ =?us-ascii?Q?4rMCQr96QoK1twPNEHdrnpxKsnf9xEPBPxDPWUnADDWW9bCzSFoddpK/FGTp?=
+ =?us-ascii?Q?503497V8rFsD3n9iWEfjsSvwVQnCuZW/lmO/0fjZRlZZV2jmsM0F9QZY1ZUd?=
+ =?us-ascii?Q?FlUcdt2dmwcoTbCa0zHnZbN7aZwDwpsziAewVtJuyjBYDmXuM7qU3rWavJvL?=
+ =?us-ascii?Q?LzDEtrmdtVTwDWqa/JVtlsVZYa2YP0GHRrfXhJrwFXHxnvQprWUoyNSJOiJS?=
+ =?us-ascii?Q?oWLmxNrUvlBnitmKsSgLHEYdWeTqCDXe5CFtGdcG8ho3UD7tMgmn6Iz0GSid?=
+ =?us-ascii?Q?uKBxfQsTPTDylc+atg+4sKju0Kv3VE7P5v1616qseeYQhJn51l6rmIz+Ua5a?=
+ =?us-ascii?Q?dqTtw+DLkEtesmDgxAseV6hYmnP+MGyMefIpaXdxBhQ4iFKf1E+Ach8PvewL?=
+ =?us-ascii?Q?EDoQGY/O77aVee9V2S158/q6UY/M7s8KaR0EBKRGZgYLqfYDyAXkg+VzAS2u?=
+ =?us-ascii?Q?YIkG60dkDgN5U/cUcxZ4bg0pg4niqREbrVPtjthol0HQokKYfGBcpsJb5jW3?=
+ =?us-ascii?Q?T4nvladuEHlLlEUjvq1tjEPJsTn243twc7boNhgcggv2+Sow+3jj6t4nB/bR?=
+ =?us-ascii?Q?ZpDEOIovCTbKe1vlNoA+eWo7XDPsUPyaMH0cd21+yhOzx4ijQqS+Aegw1khC?=
+ =?us-ascii?Q?BzJcegAyj4AdXHdGeHoCjt1uE52zsTQJhlIb3xC2xLU4z4r7Ze6yEumalxK3?=
+ =?us-ascii?Q?SST4EMrmA83HoeX96tbmy+DthHXfLtA+wZQ1ejQAIX+YX0A3VxUADnSRPcFG?=
+ =?us-ascii?Q?GfUM29h3P0MakthsQ2UTuGQn+zsckc8mxcXMBOMB1qlYlxGjPUzr9X1tJnSB?=
+ =?us-ascii?Q?4MNVBU9ug4tCBl3T+y6mgLAVTmmxAnLFk0EK4jLFkzli2ultDcL1NQOQ4bNS?=
+ =?us-ascii?Q?URCoyxZUCwpMs/KNgQw0D9ZY+CNZ9PZPsUoJ9g81TthRGnKSbZ1bs2lyDKVB?=
+ =?us-ascii?Q?ugg+mXD/uSHLjARg+2Oq4Zkjhu9B2SJ0nWAxgi2XAQGo1xrko6CnrJpPHMaa?=
+ =?us-ascii?Q?rORLk8ej6WLYJnzPkdEG3xQO3pEDkX/G5K1II2EmOeUVDZ0yJ87i7oripzY6?=
+ =?us-ascii?Q?Y9AKfsA49akov17XeqjSdWFvg2MuK1VYbUa/LNSL6a9445OjvrOnt2vA5aDN?=
+ =?us-ascii?Q?UrbPlBa8mfY+xXZABb6e5yE7?=
+X-OriginatorOrg: analogixsemi.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9984812d-f289-40b1-d6dc-08d93579beb4
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2021 12:32:05.9520
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 85cf3FEPJFa2iLiAo9c2HQfrvddT4qfE/fylhuNPLQfywU+ilbyvBdnGeZ0i7OnYDq6QtHEP/gyG7PVHQISQzg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6785
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+At some time, the original code may return non zero value, force return 0
+if operation finished.
 
-On 6/21/21 9:56 PM, Xu Yilun wrote:
-> On Mon, Jun 21, 2021 at 06:56:28AM -0700, Tom Rix wrote:
->> On 6/21/21 12:06 AM, Martin Hundebøll wrote:
->>> From: Debarati Biswas <debaratix.biswas@intel.com>
->>>
->>> Device Feature List (DFL) drivers may be defined in subdirectories other
->>> than drivers/fpga, and each DFL driver should have access to the Device
->>> Feature Header (DFH) register, which contains revision and type
->>> information. This change moves the macros specific to the DFH register
->>> from drivers/fpga/dfl.h to include/linux/dfl.h.
->>>
->>> Signed-off-by: Debarati Biswas <debaratix.biswas@intel.com>
->>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
->>> Signed-off-by: Martin Hundebøll <mhu@silicom.dk>
->>> ---
->>>    drivers/fpga/dfl.h  | 48 +----------------------------------------
->>>    include/linux/dfl.h | 52 +++++++++++++++++++++++++++++++++++++++++++++
->>>    2 files changed, 53 insertions(+), 47 deletions(-)
->>>
->>> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
->>> index 2b82c96ba56c..6ed0353e9a99 100644
->>> --- a/drivers/fpga/dfl.h
->>> +++ b/drivers/fpga/dfl.h
->>> @@ -17,6 +17,7 @@
->>>    #include <linux/bitfield.h>
->> bitfield.h was added to linux/dfl.h
->>
->> Likely both aren't needed, try removing this one.
-> The DFL register definitions are in dfl.h, and Source files which include
-> dfl.h are likely to use bitfield ops for DFL register access, so could we
-> keep it here?
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
+Signed-off-by: Xin Ji <xji@analogixsemi.com>
+---
+ drivers/gpu/drm/bridge/analogix/anx7625.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Not sure which dfl.h you mean.
-
-It looks like you are copying header includes in both files and 
-including the one file in the other.
-
-So it is likely you are including headers you don't need.
-
-Tom
-
->
-> Thanks,
-> Yilun
->
->> Tom
->>
->>>    #include <linux/cdev.h>
->>>    #include <linux/delay.h>
->>> +#include <linux/dfl.h>
->>>    #include <linux/eventfd.h>
->>>    #include <linux/fs.h>
->>>    #include <linux/interrupt.h>
->>> @@ -53,32 +54,6 @@
->>>    #define PORT_FEATURE_ID_UINT		0x12
->>>    #define PORT_FEATURE_ID_STP		0x13
->>> -/*
->>> - * Device Feature Header Register Set
->>> - *
->>> - * For FIUs, they all have DFH + GUID + NEXT_AFU as common header registers.
->>> - * For AFUs, they have DFH + GUID as common header registers.
->>> - * For private features, they only have DFH register as common header.
->>> - */
->>> -#define DFH			0x0
->>> -#define GUID_L			0x8
->>> -#define GUID_H			0x10
->>> -#define NEXT_AFU		0x18
->>> -
->>> -#define DFH_SIZE		0x8
->>> -
->>> -/* Device Feature Header Register Bitfield */
->>> -#define DFH_ID			GENMASK_ULL(11, 0)	/* Feature ID */
->>> -#define DFH_ID_FIU_FME		0
->>> -#define DFH_ID_FIU_PORT		1
->>> -#define DFH_REVISION		GENMASK_ULL(15, 12)	/* Feature revision */
->>> -#define DFH_NEXT_HDR_OFST	GENMASK_ULL(39, 16)	/* Offset to next DFH */
->>> -#define DFH_EOL			BIT_ULL(40)		/* End of list */
->>> -#define DFH_TYPE		GENMASK_ULL(63, 60)	/* Feature type */
->>> -#define DFH_TYPE_AFU		1
->>> -#define DFH_TYPE_PRIVATE	3
->>> -#define DFH_TYPE_FIU		4
->>> -
->>>    /* Next AFU Register Bitfield */
->>>    #define NEXT_AFU_NEXT_DFH_OFST	GENMASK_ULL(23, 0)	/* Offset to next AFU */
->>> @@ -403,27 +378,6 @@ struct device *dfl_fpga_pdata_to_parent(struct dfl_feature_platform_data *pdata)
->>>    	return pdata->dev->dev.parent->parent;
->>>    }
->>> -static inline bool dfl_feature_is_fme(void __iomem *base)
->>> -{
->>> -	u64 v = readq(base + DFH);
->>> -
->>> -	return (FIELD_GET(DFH_TYPE, v) == DFH_TYPE_FIU) &&
->>> -		(FIELD_GET(DFH_ID, v) == DFH_ID_FIU_FME);
->>> -}
->>> -
->>> -static inline bool dfl_feature_is_port(void __iomem *base)
->>> -{
->>> -	u64 v = readq(base + DFH);
->>> -
->>> -	return (FIELD_GET(DFH_TYPE, v) == DFH_TYPE_FIU) &&
->>> -		(FIELD_GET(DFH_ID, v) == DFH_ID_FIU_PORT);
->>> -}
->>> -
->>> -static inline u8 dfl_feature_revision(void __iomem *base)
->>> -{
->>> -	return (u8)FIELD_GET(DFH_REVISION, readq(base + DFH));
->>> -}
->>> -
->>>    /**
->>>     * struct dfl_fpga_enum_info - DFL FPGA enumeration information
->>>     *
->>> diff --git a/include/linux/dfl.h b/include/linux/dfl.h
->>> index 6cc10982351a..1cd86b2e7cb1 100644
->>> --- a/include/linux/dfl.h
->>> +++ b/include/linux/dfl.h
->>> @@ -8,7 +8,9 @@
->>>    #ifndef __LINUX_DFL_H
->>>    #define __LINUX_DFL_H
->>> +#include <linux/bitfield.h>
->>>    #include <linux/device.h>
->>> +#include <linux/io.h>
->>>    #include <linux/mod_devicetable.h>
->>>    /**
->>> @@ -83,4 +85,54 @@ void dfl_driver_unregister(struct dfl_driver *dfl_drv);
->>>    	module_driver(__dfl_driver, dfl_driver_register, \
->>>    		      dfl_driver_unregister)
->>> +/*
->>> + * Device Feature Header Register Set
->>> + *
->>> + * For FIUs, they all have DFH + GUID + NEXT_AFU as common header registers.
->>> + * For AFUs, they have DFH + GUID as common header registers.
->>> + * For private features, they only have DFH register as common header.
->>> + */
->>> +#define DFH                     0x0
->>> +#define GUID_L                  0x8
->>> +#define GUID_H                  0x10
->>> +#define NEXT_AFU                0x18
->>> +
->>> +#define DFH_SIZE                0x8
->>> +
->>> +/* Device Feature Header Register Bitfield */
->>> +#define DFH_ID                  GENMASK_ULL(11, 0)      /* Feature ID */
->>> +#define DFH_ID_FIU_FME          0
->>> +#define DFH_ID_FIU_PORT         1
->>> +#define DFH_REVISION            GENMASK_ULL(15, 12)
->>> +#define DFH_NEXT_HDR_OFST       GENMASK_ULL(39, 16)     /* Offset to next DFH */
->>> +#define DFH_EOL                 BIT_ULL(40)             /* End of list */
->>> +#define DFH_TYPE                GENMASK_ULL(63, 60)     /* Feature type */
->>> +#define DFH_TYPE_AFU            1
->>> +#define DFH_TYPE_PRIVATE        3
->>> +#define DFH_TYPE_FIU            4
->>> +
->>> +/* Function to read from DFH and check if the Feature type is FME */
->>> +static inline bool dfl_feature_is_fme(void __iomem *base)
->>> +{
->>> +	u64 v = readq(base + DFH);
->>> +
->>> +	return (FIELD_GET(DFH_TYPE, v) == DFH_TYPE_FIU) &&
->>> +		(FIELD_GET(DFH_ID, v) == DFH_ID_FIU_FME);
->>> +}
->>> +
->>> +/* Function to read from DFH and check if the Feature type is port*/
->>> +static inline bool dfl_feature_is_port(void __iomem *base)
->>> +{
->>> +	u64 v = readq(base + DFH);
->>> +
->>> +	return (FIELD_GET(DFH_TYPE, v) == DFH_TYPE_FIU) &&
->>> +		 (FIELD_GET(DFH_ID, v) == DFH_ID_FIU_PORT);
->>> +}
->>> +
->>> +/* Function to read feature revision from DFH */
->>> +static inline u8 dfl_feature_revision(void __iomem *base)
->>> +{
->>> +	return (u8)FIELD_GET(DFH_REVISION, readq(base + DFH));
->>> +}
->>> +
->>>    #endif /* __LINUX_DFL_H */
+diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+index a3d82377066b..3fc6b7ce7fc7 100644
+--- a/drivers/gpu/drm/bridge/analogix/anx7625.c
++++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+@@ -191,10 +191,10 @@ static int wait_aux_op_finish(struct anx7625_data *ctx)
+ 			       AP_AUX_CTRL_STATUS);
+ 	if (val < 0 || (val & 0x0F)) {
+ 		DRM_DEV_ERROR(dev, "aux status %02x\n", val);
+-		val = -EIO;
++		return -EIO;
+ 	}
+ 
+-	return val;
++	return 0;
+ }
+ 
+ static int anx7625_video_mute_control(struct anx7625_data *ctx,
+-- 
+2.25.1
 
