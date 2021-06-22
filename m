@@ -2,111 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A0E43B0D7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 21:11:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3862B3B0D7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 21:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232605AbhFVTNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 15:13:20 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:41958 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhFVTNT (ORCPT
+        id S232715AbhFVTOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 15:14:11 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:43504 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232452AbhFVTOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 15:13:19 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        Tue, 22 Jun 2021 15:14:09 -0400
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.1.0)
+ id 0fae083bb3ac6f6e; Tue, 22 Jun 2021 21:11:41 +0200
+Received: from kreacher.localnet (89-64-82-70.dynamic.chello.pl [89.64.82.70])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 57B0821969;
-        Tue, 22 Jun 2021 19:11:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624389062; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a28prh9NK0Ofit31iABeSu3DbKXKoi9RSUcS74dw9w0=;
-        b=z+nkmR90uwN65DmKGe+VsQfkpcP8NOS4ZW+3W5RY5ONh2u5sc04fs0m7RhQ+NQrQru3BPs
-        rZQbx0HSF/3OufS9XjT+9weesW5V7bU8exA8mdEpocId/Kikuk6mTm27MAPUTcRVTOYVjs
-        YJMpoSc6mIOfd0/qrk/sbyKxdJiDduU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624389062;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a28prh9NK0Ofit31iABeSu3DbKXKoi9RSUcS74dw9w0=;
-        b=EjNvqEtqMGFuQwmhkUKPL/5Ik6oxy4eyF87dq9zWpZYPDm7AXBjNrKR/JTz0jtas+qmfSC
-        HQ6TqtAMbssx6VBA==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 450EC11A97;
-        Tue, 22 Jun 2021 19:11:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624389062; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a28prh9NK0Ofit31iABeSu3DbKXKoi9RSUcS74dw9w0=;
-        b=z+nkmR90uwN65DmKGe+VsQfkpcP8NOS4ZW+3W5RY5ONh2u5sc04fs0m7RhQ+NQrQru3BPs
-        rZQbx0HSF/3OufS9XjT+9weesW5V7bU8exA8mdEpocId/Kikuk6mTm27MAPUTcRVTOYVjs
-        YJMpoSc6mIOfd0/qrk/sbyKxdJiDduU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624389062;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=a28prh9NK0Ofit31iABeSu3DbKXKoi9RSUcS74dw9w0=;
-        b=EjNvqEtqMGFuQwmhkUKPL/5Ik6oxy4eyF87dq9zWpZYPDm7AXBjNrKR/JTz0jtas+qmfSC
-        HQ6TqtAMbssx6VBA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id R7DHD8Y10mB0egAALh3uQQ
-        (envelope-from <bp@suse.de>); Tue, 22 Jun 2021 19:11:02 +0000
-Date:   Tue, 22 Jun 2021 21:10:52 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V3 61/66] x86/fpu/signal: Sanitize the xstate check on
- sigframe
-Message-ID: <YNI1vNLPL7VrN33Y@zn.tnic>
-References: <20210618141823.161158090@linutronix.de>
- <20210618143451.325530702@linutronix.de>
+        by v370.home.net.pl (Postfix) with ESMTPSA id A28C56645FF;
+        Tue, 22 Jun 2021 21:11:40 +0200 (CEST)
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] cpufreq: Make cpufreq_online() call driver->offline() on errors
+Date:   Tue, 22 Jun 2021 21:11:39 +0200
+Message-ID: <5490292.DvuYhMxLoT@kreacher>
+In-Reply-To: <11788436.O9o76ZdvQC@kreacher>
+References: <11788436.O9o76ZdvQC@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210618143451.325530702@linutronix.de>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 89.64.82.70
+X-CLIENT-HOSTNAME: 89-64-82-70.dynamic.chello.pl
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrfeeguddgudeffecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfjqffogffrnfdpggftiffpkfenuceurghilhhouhhtmecuudehtdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephffvufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdejlefghfeiudektdelkeekvddugfeghffggeejgfeukeejleevgffgvdeluddtnecukfhppeekledrieegrdekvddrjedtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepkeelrdeigedrkedvrdejtddphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehvihhrvghshhdrkhhumhgrrheslhhinhgrrhhordhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-DCC--Metrics: v370.home.net.pl 1024; Body=3 Fuz1=3 Fuz2=3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 04:19:24PM +0200, Thomas Gleixner wrote:
-> Utilize the check for the extended state magic in the FX software reserved
-> bytes and set the parameters for restoring fx_only in the relevant members
-> of fw_sw_user.
-> 
-> This allows further cleanups on top because the data is consistent.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  arch/x86/kernel/fpu/signal.c |   69 +++++++++++++++++++------------------------
->  1 file changed, 32 insertions(+), 37 deletions(-)
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Subject: [PATCH] cpufreq: Make cpufreq_online() call driver->offline() on errors
 
-Modulo Andy's catch, I can't find anything out of the ordinary here and
-all this does makes sense to me. Still a tentative
+In the CPU removal path the ->offline() callback provided by the
+driver is always invoked before ->exit(), but in the cpufreq_online()
+error path it is not, so ->exit() is expected to somehow know the
+context in which it has been called and act accordingly.
 
-Reviewed-by: Borislav Petkov <bp@suse.de>
+That is less than straightforward, so make cpufreq_online() invoke
+the driver's ->offline() callback, if present, on errors before
+->exit() too.
 
-because this is all nasty magic to me. (yah, magic1 and magic2 :-))
+This only potentially affects intel_pstate.
 
--- 
-Regards/Gruss,
-    Boris.
+Fixes: 91a12e91dc39 ("cpufreq: Allow light-weight tear down and bring up of CPUs")
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+-> v2:
+   * Avoid calling ->offline() after a failing ->online().
+   * Add a comment regarding the expected state after calling ->init().
+   * Edit the changelog a bit.
+
+---
+ drivers/cpufreq/cpufreq.c |   11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+Index: linux-pm/drivers/cpufreq/cpufreq.c
+===================================================================
+--- linux-pm.orig/drivers/cpufreq/cpufreq.c
++++ linux-pm/drivers/cpufreq/cpufreq.c
+@@ -1367,9 +1367,14 @@ static int cpufreq_online(unsigned int c
+ 			goto out_free_policy;
+ 		}
+ 
++		/*
++		 * The initialization has succeeded and the policy is online.
++		 * If there is a problem with its frequency table, take it
++		 * offline and drop it.
++		 */
+ 		ret = cpufreq_table_validate_and_sort(policy);
+ 		if (ret)
+-			goto out_exit_policy;
++			goto out_offline_policy;
+ 
+ 		/* related_cpus should at least include policy->cpus. */
+ 		cpumask_copy(policy->related_cpus, policy->cpus);
+@@ -1515,6 +1520,10 @@ out_destroy_policy:
+ 
+ 	up_write(&policy->rwsem);
+ 
++out_offline_policy:
++	if (cpufreq_driver->offline)
++		cpufreq_driver->offline(policy);
++
+ out_exit_policy:
+ 	if (cpufreq_driver->exit)
+ 		cpufreq_driver->exit(policy);
+
+
+
