@@ -2,140 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D79493AFFB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25DC23AFFC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 10:59:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229906AbhFVJAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 05:00:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229873AbhFVJAC (ORCPT
+        id S229873AbhFVJB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 05:01:56 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:38978 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229677AbhFVJBz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 05:00:02 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34BAAC06175F;
-        Tue, 22 Jun 2021 01:57:46 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so1854137pjo.3;
-        Tue, 22 Jun 2021 01:57:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=HNevKIrxlPVGEQdCRLTX5YK2dWZlzRumxTolSmIBotY=;
-        b=mVukyLLVXguaQPXelB9Gk8SACercFpcp6X9VdvmRFsB32rSR6ApbqtXRHKw67UuObq
-         ioIs8Kej4wuAl4ChIcCr08wMnYMsMBcVRdetOlVT1b8afKF4MckZiU1pQpoZd4YRzedX
-         3NcvmaMn92eCbz8tV+0mnCHw3pdy6g3dZx4piWH9PBvdghL3yE+KoMfKqyfqLyWTDs8O
-         otzEL4rAxky05RpEd5fGDLutCnrpY++kvN5Pf01mSA3FV3YpuCsUmXKGlA5AqAFKqdt1
-         vg9QIbEaAWoM8Wu7KdEUPmPqZ36bWjeeiOdr0gVcvYGcNgnz7SADAdmCKf8qlzNGFdP4
-         GrLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=HNevKIrxlPVGEQdCRLTX5YK2dWZlzRumxTolSmIBotY=;
-        b=O1nfqoQ3KWOqUFZMdNI+6xH5Hsn48Fn8gft4jx6pLo6xaRuw5O4yuozplIZmgZsIKy
-         T0uzmnO2wdEshYmllkDvuB5g/0VXkqgcilpw4X6bg0zH/tyqzNqq1FiqmjVMyy6NWviL
-         7pcqzZB37635GYRSgaI12DiX2zkfwiaZzM1J/hCEw24XQ4NzyxJNKYD7uUSO0C/ZZB2X
-         omj/DK4xAuqHc7T1aQmXpJxgRf0ezK2pDDN6exiNzdKgaocnt4EQljqbbNsnBqOnt19s
-         1Kzii3ExuWITr4EZpcd78Ho3DBRThS/YREmJXeA0BAAFCpcXTyBbSfHGjaa4H0Cs6eaG
-         7TDw==
-X-Gm-Message-State: AOAM530HkwvS2MbIj1GhHJ5RMKS50AwLjQPIDjIq/6/3ErvDQ8XM6q7Q
-        /iy4BV45gC2VRgfUIrjMVPo=
-X-Google-Smtp-Source: ABdhPJyJwExst2s08JaWvoFk8cDPoMa9LLjDx3IKUeSrohb2NQpnydI+1m+kxqw3yA64dmOaKml5Kg==
-X-Received: by 2002:a17:90b:2282:: with SMTP id kx2mr2673071pjb.60.1624352265702;
-        Tue, 22 Jun 2021 01:57:45 -0700 (PDT)
-Received: from localhost (60-242-147-73.tpgi.com.au. [60.242.147.73])
-        by smtp.gmail.com with ESMTPSA id n5sm15609389pgf.35.2021.06.22.01.57.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 01:57:45 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 18:57:39 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH] KVM: PPC: Book3S HV: Workaround high stack usage with
- clang
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Paul Mackerras <paulus@ozlabs.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        clang-built-linux@googlegroups.com, kvm-ppc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kernel test robot <lkp@intel.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-References: <YNDUEoanTqvayZ5P@archlinux-ax161>
-        <20210621182440.990242-1-nathan@kernel.org>
-In-Reply-To: <20210621182440.990242-1-nathan@kernel.org>
+        Tue, 22 Jun 2021 05:01:55 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 94003A66;
+        Tue, 22 Jun 2021 10:59:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1624352378;
+        bh=VcxbAVy6sx0qJVOGKisGyAr001hL6g7pdjYxikO+wxk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QDyg7vt+1RcjcL2piOCIx4VKEwgDx8bby98wW45SJq23oecrk9Mj/6Hyl0Tz/do2v
+         MYWLF9u9688DEJgrmaIkyBmmjWJGGabwnpnZdweOru5CSLG2dsQExXIwpRbd7SphtY
+         k5oe91dHfLg1kenA4LlSFWLnWL9TllnndaB9AiEs=
+Date:   Tue, 22 Jun 2021 11:59:10 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Dave Stevenson <dave.stevenson@raspberrypi.com>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] media: uvc: limit max bandwidth for HDMI capture
+Message-ID: <YNGmXmxMIXpq7I83@pendragon.ideasonboard.com>
+References: <b791d5874c83663505cbd4f74907ac38d00bb727.1612206534.git.mchehab+huawei@kernel.org>
+ <YNDY4iesZGF+7Cr0@pendragon.ideasonboard.com>
+ <20210622102948.47b86fbe@coco.lan>
+ <CAPY8ntAkb_57Nk_8UR-d_uR+juPigLKWwCAxoFzuCSKwETYpQg@mail.gmail.com>
 MIME-Version: 1.0
-Message-Id: <1624352117.tss3fnkwt4.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAPY8ntAkb_57Nk_8UR-d_uR+juPigLKWwCAxoFzuCSKwETYpQg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Nathan Chancellor's message of June 22, 2021 4:24 am:
-> LLVM does not emit optimal byteswap assembly, which results in high
-> stack usage in kvmhv_enter_nested_guest() due to the inlining of
-> byteswap_pt_regs(). With LLVM 12.0.0:
->=20
-> arch/powerpc/kvm/book3s_hv_nested.c:289:6: error: stack frame size of
-> 2512 bytes in function 'kvmhv_enter_nested_guest' [-Werror,-Wframe-larger=
--than=3D]
-> long kvmhv_enter_nested_guest(struct kvm_vcpu *vcpu)
->      ^
-> 1 error generated.
->=20
-> While this gets fixed in LLVM, mark byteswap_pt_regs() as
-> noinline_for_stack so that it does not get inlined and break the build
-> due to -Werror by default in arch/powerpc/. Not inlining saves
-> approximately 800 bytes with LLVM 12.0.0:
->=20
-> arch/powerpc/kvm/book3s_hv_nested.c:290:6: warning: stack frame size of
-> 1728 bytes in function 'kvmhv_enter_nested_guest' [-Wframe-larger-than=3D=
-]
-> long kvmhv_enter_nested_guest(struct kvm_vcpu *vcpu)
->      ^
-> 1 warning generated.
->=20
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1292
-> Link: https://bugs.llvm.org/show_bug.cgi?id=3D49610
-> Link: https://lore.kernel.org/r/202104031853.vDT0Qjqj-lkp@intel.com/
-> Link: https://gist.github.com/ba710e3703bf45043a31e2806c843ffd
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+On Tue, Jun 22, 2021 at 09:50:37AM +0100, Dave Stevenson wrote:
+> On Tue, 22 Jun 2021 at 09:29, Mauro Carvalho Chehab wrote:
+> > Em Mon, 21 Jun 2021 21:22:26 +0300 Laurent Pinchart escreveu:
+> >
+> > > Hi Mauro,
+> > >
+> > > Thank you for the patch.
+> >
+> > Thanks for reviewing it!
+> >
+> > >
+> > > On Mon, Feb 01, 2021 at 08:08:59PM +0100, Mauro Carvalho Chehab wrote:
+> > > > This device:
+> > > >         534d:2109 MacroSilicon
+> > > >
+> > > > Announces that it supports several frame intervals for
+> > > > their resolutions for MJPEG compression:
+> > > >
+> > > >         VideoStreaming Interface Descriptor:
+> > > >         bLength                            46
+> > > >         bDescriptorType                    36
+> > > >         bDescriptorSubtype                  7 (FRAME_MJPEG)
+> > > >         bFrameIndex                         1
+> > > >         bmCapabilities                   0x00
+> > > >           Still image unsupported
+> > > >         wWidth                           1920
+> > > >         wHeight                          1080
+> > > >         dwMinBitRate                   768000
+> > > >         dwMaxBitRate                196608000
+> > > >         dwMaxVideoFrameBufferSize     4147200
+> > > >         dwDefaultFrameInterval         166666
+> > > >         bFrameIntervalType                  5
+> > > >         dwFrameInterval( 0)            166666
+> > > >         dwFrameInterval( 1)            333333
+> > > >         dwFrameInterval( 2)            400000
+> > > >         dwFrameInterval( 3)            500000
+> > > >         dwFrameInterval( 4)           1000000
+> > > >
+> > > > However, the highest frame interval (166666), which means 60 fps
+> > > > is not supported. For such resolution, the maximum interval
+> > > > is, instead 333333 (30 fps).
+> > >
+> > > What happens if you try to select it ?
+> >
+> > Basically, URBs get lost: they cause apps like qv4l2 to crash
+> > sometimes, with:
+> >
+> >         v4l-convert: libjpeg error: Corrupt JPEG data: premature end of data segment
+> >
+> > The image keeps blinking, and part of the image is replaced by
+> > white noise.
+> >
+> > Clearly, it tries to send more data than the maximum available bandwidth
+> > on this chipset.
+> 
+> What platform are you running this on?
+> I've previously encountered a USB3 camera module where the datastream
+> was VERY bursty. The memcpy of the data from URB to V4L2 buffer took
+> long enough that sometimes the module didn't have an URB to fill at
+> the appropriate moment, and it dropped data. I seem to recall
+> increasing UVC_URBS from the default of 5 to 10 to handle the peak
+> data rate without loss, but it may have been higher still. This was on
+> a ~1.5GHz Atom processor, so not lacking in performance.
+> 
+> I wonder if the same is true in your case. If it's MJPEG compressed
+> then the peak rate may again be high. Just a thought.
 
-Seems okay to me. If it was something where performance might be=20
-signficiant I guess you could ifdef on CC_IS_CLANG, but for this
-it shouldn't matter.
+It's worth investigating indeed. How often are URBs dropped ? Does it
+occur for every frame, or once in a while ?
 
-Acked-by: Nicholas Piggin <npiggin@gmail.com>
+> > Sent a v2 addressing the issues you pointed.
 
-Thanks,
-Nick
+-- 
+Regards,
 
-> ---
->  arch/powerpc/kvm/book3s_hv_nested.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/arch/powerpc/kvm/book3s_hv_nested.c b/arch/powerpc/kvm/book3=
-s_hv_nested.c
-> index 60724f674421..1b3ff0af1264 100644
-> --- a/arch/powerpc/kvm/book3s_hv_nested.c
-> +++ b/arch/powerpc/kvm/book3s_hv_nested.c
-> @@ -53,7 +53,8 @@ void kvmhv_save_hv_regs(struct kvm_vcpu *vcpu, struct h=
-v_guest_state *hr)
->  	hr->dawrx1 =3D vcpu->arch.dawrx1;
->  }
-> =20
-> -static void byteswap_pt_regs(struct pt_regs *regs)
-> +/* Use noinline_for_stack due to https://bugs.llvm.org/show_bug.cgi?id=
-=3D49610 */
-> +static noinline_for_stack void byteswap_pt_regs(struct pt_regs *regs)
->  {
->  	unsigned long *addr =3D (unsigned long *) regs;
-> =20
->=20
-> base-commit: 4a21192e2796c3338c4b0083b494a84a61311aaf
-> --=20
-> 2.32.0.93.g670b81a890
->=20
->=20
+Laurent Pinchart
