@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C4E23B0BFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:58:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D19D43B0BFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:58:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232643AbhFVSAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:00:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37650 "EHLO
+        id S232675AbhFVSAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232466AbhFVSA1 (ORCPT
+        with ESMTP id S232602AbhFVSAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:00:27 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636C8C061787
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:58:10 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id y5-20020a37af050000b02903a9c3f8b89fso19028260qke.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:58:10 -0700 (PDT)
+        Tue, 22 Jun 2021 14:00:33 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989A0C061766
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:58:12 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id 62-20020aed30440000b029024cabef375cso46392qte.17
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:58:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=UvWOiZNIX7hCeQXFYIlCFQ6LdPOFZrfts8z5QCqyL0U=;
-        b=oDnh2Quk2OxkzewIMcVO6Z65slyLPg2A6HSZBCtvjs6itrPS8R/0+q358KpJ/Gju2y
-         Qhe2B+5GN6BiHsUCbnClOjG9o4dL4/cYuh2Ss5GUIBeAt2TKlgyk8XWt+dKXqj4flReS
-         UPhedyp09aR9TcHcqg659LjqfcGDaeCWSqngScokdH8X1jxsv6Eev3dAaeapESy6R9qr
-         Fz7Xr3CE/syMaVS9OcpEFhqDvhGjmpru9FFQmnbCzUN7iCHRq41LqZcoUEtJiKTB+eCI
-         l+Jlcfnz8J8gjHdUOwIsVU9qn2pNQdS4rZSY8/ItdMdYYdsADxPB104GPblkPDsyUZM/
-         Vq6w==
+        bh=ctgmz8Jc6B+eyWn99WgBSldp+EhT4qLAKur7SwAEIBk=;
+        b=uJZ33hzLtD41/PRVdarSTW7WwE8queNGV/DSluHHNqvcSCA4rphvrsaM6S4SEr2KEx
+         erN/n885YTRofoezFRqWCHyr0+C4wLl3qNayUGK6AKqCcRxuWa+5k/B/Qp17ZAMBxrZP
+         1s8lViZ26xxX9cnSnnGtjLZrvmJp4H4ybbZfXVr+rTH2UuvGyaFXK71Ceaf0kh+fXA3S
+         vKKO6hzWKx2tfHAkqV1RHt8OtDNsKf1p94lbrwd31hkFBEvrELyEC+XPfO8LFDNCRXW7
+         e3hfNe1JNfW8eG2zohelkdAY/w0AcLElghCJArzj8Rktblkpho97TYpCUp4Zg7OueI/Z
+         GQDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=UvWOiZNIX7hCeQXFYIlCFQ6LdPOFZrfts8z5QCqyL0U=;
-        b=DiBxNaSkVoVhDkYzO3PzVtSRzSHjog/UK5L0ej0ncW/bKR3L8IL5Y4PK+PAmXpzkJu
-         n6dIdI0UNLru39eziXQUKVtv1qbNhuSom/od50sgfwBFqc94+9H4idOWB5EVsnUhG8Gy
-         hAAUvj1IFIvU/SBB9W/QOFcMLxnwfCpTxs0y8+Ns7yk+EP+qLDk962m04bkxwb4vzXkN
-         CjY7xwjnidHLhp1OXPAYNSCcFAeReEbAFLJ08vcEcorPp1nmxyjcIoBgU1HVcpgaOmJ9
-         I8lTDYR5XO9P9Qn4/SOhT8YLXTauy19D2VPTnnEa9CsR0JPqjcgoEYKKf7oOhHP1XlLW
-         M42w==
-X-Gm-Message-State: AOAM533N2OjBsTOcp7bpnW0h4suWoZB+hUelMdyIo2NLP9Ef9LD3B/Xg
-        b9JJOS8Q42xezrnripCbSZzeg/GZvTM=
-X-Google-Smtp-Source: ABdhPJwYEA+Qrti8CZz/HffI7CWhUsl0klOtkUVNZq4ZYdO06MlUHWYqBSR7V5t5Hn0+u0gmATJF+ioOp34=
+        bh=ctgmz8Jc6B+eyWn99WgBSldp+EhT4qLAKur7SwAEIBk=;
+        b=MvWKxJt++/UuNGxw5PG3vDteeQpAZ1IROCSVl2Fl55h6NxahUYLhoGZDk1M/tO8tVR
+         /5j87qqTd46qH5YkHbG2sd43RVCicCW4DjfXDbeGrfvzaPlnMzbK7ARIw4Rm7aCoU10+
+         j8kSDFY7t0MS2kQq0ViVz+ZGLZylYf4MT/fPURN8TrBjDtapI8cnwkZqJHmBzrX1RW6h
+         i5Qzp233clKi757XXjN6A9mDmtGagpqPZ73K5jpS958GrBEbKnn+dgnc+MuteEU2Bsog
+         WYTMgDvrH2Si71FiUbpe1LsZXim9FWS7a5AkMK0lb/GLstx94Jdh0KbzpUbCkfQJaQY/
+         kgyQ==
+X-Gm-Message-State: AOAM533OY2vzDCGkL6h1368M/sRJ/B75tuFSAkNQ+uQLDsLyR2HxDWbY
+        rjx54mTNfSrRe4kY9bABlmXnxl8tgjE=
+X-Google-Smtp-Source: ABdhPJyjOHX4t4+2a1lnwNObNmXF9ea51NtGJ9XyatRhKb3i6arsOX0OEhdL8QlhsbMoiX7Kg16cAsV4h2Q=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:5722:92ce:361f:3832])
- (user=seanjc job=sendgmr) by 2002:a25:be8a:: with SMTP id i10mr6596444ybk.176.1624384689502;
- Tue, 22 Jun 2021 10:58:09 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:7cc6:: with SMTP id x189mr6565472ybc.371.1624384691750;
+ Tue, 22 Jun 2021 10:58:11 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 22 Jun 2021 10:56:51 -0700
+Date:   Tue, 22 Jun 2021 10:56:52 -0700
 In-Reply-To: <20210622175739.3610207-1-seanjc@google.com>
-Message-Id: <20210622175739.3610207-7-seanjc@google.com>
+Message-Id: <20210622175739.3610207-8-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210622175739.3610207-1-seanjc@google.com>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH 06/54] KVM: x86: Force all MMUs to reinitialize if guest CPUID
- is modified
+Subject: [PATCH 07/54] KVM: x86: Alert userspace that KVM_SET_CPUID{,2} after
+ KVM_RUN is broken
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -69,105 +69,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Invalidate all MMUs' roles after a CPUID update to force reinitizliation
-of the MMU context/helpers.  Despite the efforts of commit de3ccd26fafc
-("KVM: MMU: record maximum physical address width in kvm_mmu_extended_role"),
-there are still a handful of CPUID-based properties that affect MMU
-behavior but are not incorporated into mmu_role.  E.g. 1gb hugepage
-support, AMD vs. Intel handling of bit 8, and SEV's C-Bit location all
-factor into the guest's reserved PTE bits.
+Warn userspace that KVM_SET_CPUID{,2} after KVM_RUN "may" cause guest
+instability.  Initialize last_vmentry_cpu to -1 and use it to detect if
+the vCPU has been run at least once when its CPUID model is changed.
 
-The obvious alternative would be to add all such properties to mmu_role,
-but doing so provides no benefit over simply forcing a reinitialization
-on every CPUID update, as setting guest CPUID is a rare operation.
+KVM does not correctly handle changes to paging related settings in the
+guest's vCPU model after KVM_RUN, e.g. MAXPHYADDR, GBPAGES, etc...  KVM
+could theoretically zap all shadow pages, but actually making that happen
+is a mess due to lock inversion (vcpu->mutex is held).  And even then,
+updating paging settings on the fly would only work if all vCPUs are
+stopped, updated in concert with identical settings, then restarted.
 
-Note, reinitializing all MMUs after a CPUID update does not fix all of
-KVM's woes.  Specifically, kvm_mmu_page_role doesn't track the CPUID
-properties, which means that a vCPU can reuse shadow pages that should
-not exist for the new vCPU model, e.g. that map GPAs that are now illegal
-(due to MAXPHYADDR changes) or that set bits that are now reserved
-(PAGE_SIZE for 1gb pages), etc...
+To support running vCPUs with different vCPU models (that affect paging),
+KVM would need to track all relevant information in kvm_mmu_page_role.
+Note, that's the _page_ role, not the full mmu_role.  Updating mmu_role
+isn't sufficient as a vCPU can reuse a shadow page translation that was
+created by a vCPU with different settings and thus completely skip the
+reserved bit checks (that are tied to CPUID).
 
-Tracking the relevant CPUID properties in kvm_mmu_page_role would address
-the majority of problems, but fully tracking that much state in the
-shadow page role comes with an unpalatable cost as it would require a
-non-trivial increase in KVM's memory footprint.  The GBPAGES case is even
-worse, as neither Intel nor AMD provides a way to disable 1gb hugepage
-support in the hardware page walker, i.e. it's a virtualization hole that
-can't be closed when using TDP.
+Tracking CPUID state in kvm_mmu_page_role is _extremely_ undesirable as
+it would require doubling gfn_track from a u16 to a u32, i.e. would
+increase KVM's memory footprint by 2 bytes for every 4kb of guest memory.
+E.g. MAXPHYADDR (6 bits), GBPAGES, AMD vs. INTEL = 1 bit, and SEV C-BIT
+would all need to be tracked.
 
-In other words, resetting the MMU after a CPUID update is largely a
-superficial fix.  But, it will allow reverting the tracking of MAXPHYADDR
-in the mmu_role, and that case in particular needs to mostly work because
-KVM's shadow_root_level depends on guest MAXPHYADDR when 5-level paging
-is supported.  For cases where KVM botches guest behavior, the damage is
-limited to that guest.  But for the shadow_root_level, a misconfigured
-MMU can cause KVM to incorrectly access memory, e.g. due to walking off
-the end of its shadow page tables.
+In practice, there is no remotely sane use case for changing any paging
+related CPUID entries on the fly, so just sweep it under the rug (after
+yelling at userspace).
 
-Fixes: 7dcd57552008 ("x86/kvm/mmu: check if tdp/shadow MMU reconfiguration is needed")
-Cc: Yu Zhang <yu.c.zhang@linux.intel.com>
-Cc: stable@vger.kernel.org
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/include/asm/kvm_host.h |  1 +
- arch/x86/kvm/cpuid.c            |  6 +++---
- arch/x86/kvm/mmu/mmu.c          | 12 ++++++++++++
- 3 files changed, 16 insertions(+), 3 deletions(-)
+ Documentation/virt/kvm/api.rst  | 11 ++++++++---
+ arch/x86/include/asm/kvm_host.h |  2 +-
+ arch/x86/kvm/mmu/mmu.c          | 18 ++++++++++++++++++
+ arch/x86/kvm/x86.c              |  2 ++
+ 4 files changed, 29 insertions(+), 4 deletions(-)
 
+diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+index e328caa35d6c..06e82f07fe54 100644
+--- a/Documentation/virt/kvm/api.rst
++++ b/Documentation/virt/kvm/api.rst
+@@ -688,9 +688,14 @@ MSRs that have been set successfully.
+ Defines the vcpu responses to the cpuid instruction.  Applications
+ should use the KVM_SET_CPUID2 ioctl if available.
+ 
+-Note, when this IOCTL fails, KVM gives no guarantees that previous valid CPUID
+-configuration (if there is) is not corrupted. Userspace can get a copy of the
+-resulting CPUID configuration through KVM_GET_CPUID2 in case.
++Caveat emptor:
++  - If this IOCTL fails, KVM gives no guarantees that previous valid CPUID
++    configuration (if there is) is not corrupted. Userspace can get a copy
++    of the resulting CPUID configuration through KVM_GET_CPUID2 in case.
++  - Using KVM_SET_CPUID{,2} after KVM_RUN, i.e. changing the guest vCPU model
++    after running the guest, may cause guest instability.
++  - Using heterogeneous CPUID configurations, modulo APIC IDs, topology, etc...
++    may cause guest instability.
+ 
+ ::
+ 
 diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 916e0f89fdfc..4ac534766eff 100644
+index 4ac534766eff..19c88b445ee0 100644
 --- a/arch/x86/include/asm/kvm_host.h
 +++ b/arch/x86/include/asm/kvm_host.h
-@@ -1501,6 +1501,7 @@ int kvm_mmu_create(struct kvm_vcpu *vcpu);
- void kvm_mmu_init_vm(struct kvm *kvm);
- void kvm_mmu_uninit_vm(struct kvm *kvm);
+@@ -840,7 +840,7 @@ struct kvm_vcpu_arch {
+ 	bool l1tf_flush_l1d;
  
-+void kvm_mmu_after_set_cpuid(struct kvm_vcpu *vcpu);
- void kvm_mmu_reset_context(struct kvm_vcpu *vcpu);
- void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
- 				      struct kvm_memory_slot *memslot,
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index b4da665bb892..c42613cfb5ba 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -202,10 +202,10 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
- 	static_call(kvm_x86_vcpu_after_set_cpuid)(vcpu);
+ 	/* Host CPU on which VM-entry was most recently attempted */
+-	unsigned int last_vmentry_cpu;
++	int last_vmentry_cpu;
  
- 	/*
--	 * Except for the MMU, which needs to be reset after any vendor
--	 * specific adjustments to the reserved GPA bits.
-+	 * Except for the MMU, which needs to do its thing any vendor specific
-+	 * adjustments to the reserved GPA bits.
- 	 */
--	kvm_mmu_reset_context(vcpu);
-+	kvm_mmu_after_set_cpuid(vcpu);
- }
- 
- static int is_efer_nx(void)
+ 	/* AMD MSRC001_0015 Hardware Configuration */
+ 	u64 msr_hwcr;
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 5024318dec45..e2668a9b5936 100644
+index e2668a9b5936..8d97d21d5241 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4903,6 +4903,18 @@ kvm_mmu_calc_root_page_role(struct kvm_vcpu *vcpu)
- 	return role.base;
+@@ -4913,6 +4913,24 @@ void kvm_mmu_after_set_cpuid(struct kvm_vcpu *vcpu)
+ 	vcpu->arch.guest_mmu.mmu_role.ext.valid = 0;
+ 	vcpu->arch.nested_mmu.mmu_role.ext.valid = 0;
+ 	kvm_mmu_reset_context(vcpu);
++
++	/*
++	 * KVM does not correctly handle changing guest CPUID after KVM_RUN, as
++	 * MAXPHYADDR, GBPAGES support, AMD reserved bit behavior, etc.. aren't
++	 * tracked in kvm_mmu_page_role.  As a result, KVM may miss guest page
++	 * faults due to reusing SPs/SPTEs.  Alert userspace, but otherwise
++	 * sweep the problem under the rug.
++	 *
++	 * KVM's horrific CPUID ABI makes the problem all but impossible to
++	 * solve, as correctly handling multiple vCPU models (with respect to
++	 * paging and physical address properties) in a single VM would require
++	 * tracking all relevant CPUID information in kvm_mmu_page_role.  That
++	 * is very undesirable as it would double the memory requirements for
++	 * gfn_track (see struct kvm_mmu_page_role comments), and in practice
++	 * no sane VMM mucks with the core vCPU model on the fly.
++	 */
++	if (vcpu->arch.last_vmentry_cpu != -1)
++		pr_warn_ratelimited("KVM: KVM_SET_CPUID{,2} after KVM_RUN may cause guest instability\n");
  }
  
-+void kvm_mmu_after_set_cpuid(struct kvm_vcpu *vcpu)
-+{
-+	/*
-+	 * Invalidate all MMU roles to force them to reinitialize as CPUID
-+	 * information is factored into reserved bit calculations.
-+	 */
-+	vcpu->arch.root_mmu.mmu_role.ext.valid = 0;
-+	vcpu->arch.guest_mmu.mmu_role.ext.valid = 0;
-+	vcpu->arch.nested_mmu.mmu_role.ext.valid = 0;
-+	kvm_mmu_reset_context(vcpu);
-+}
-+
  void kvm_mmu_reset_context(struct kvm_vcpu *vcpu)
- {
- 	kvm_mmu_unload(vcpu);
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 42608b515ce4..92b4a9305651 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -10583,6 +10583,8 @@ int kvm_arch_vcpu_create(struct kvm_vcpu *vcpu)
+ 	struct page *page;
+ 	int r;
+ 
++	vcpu->arch.last_vmentry_cpu = -1;
++
+ 	if (!irqchip_in_kernel(vcpu->kvm) || kvm_vcpu_is_reset_bsp(vcpu))
+ 		vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
+ 	else
 -- 
 2.32.0.288.g62a8d224e6-goog
 
