@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1903B0C4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB1D3B0C53
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232855AbhFVSFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:05:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37648 "EHLO
+        id S232691AbhFVSF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:05:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232821AbhFVSFE (ORCPT
+        with ESMTP id S232906AbhFVSFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:05:04 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F260C0698D1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:59:38 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id d194-20020a3768cb0000b02903ad9d001bb6so19040576qkc.7
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:59:38 -0700 (PDT)
+        Tue, 22 Jun 2021 14:05:12 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E493DC0698D9
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:59:40 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id t6-20020ac80dc60000b029024e988e8277so28499qti.23
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:59:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=9EgKKDv2eyneOWnDUXvhkE8EvMv/2XlNSaE/g3GbCnE=;
-        b=VgzhmExW5EWuOBKT8sYAyFXZVRqLUl3y74ZsDuEycV0aKwNhv/+M2Lf7Vw1MhxexqH
-         iw3z/0+TAui+mk9IOpFB9TNgCvGU0hZeflavWWRrwR4rkKx9BUqBk9oc2MT+reARIgLt
-         XPLYB30cn7u4MLvl4n7l7KkRlm+54aCXY1c+O1nMX+i8bHUO2IzDV9KU9pIJ3Yzkmd/0
-         bd4Skjut5EmowCr1Fvzh64WLqos6BptkUrGPWpFGQSFu8A2242F/E/5y7MVVzcLD/4Yr
-         V0XhP/AgnY5okYxC20/b8tGNl2FTIzw26BLf12be9cgHaAbb/tbl8I1UgFjjYQCb7+NC
-         6wtg==
+        bh=k+Hy19n7FuHwFcs3JayYH/6a6QV1H82GfzCUZvXtG9E=;
+        b=kc43GkOoFjhxBlR2WnQizL7y/R6T20mYKUPc4GWABbmYOlM+hIYTLQly6uwfypaxcN
+         hbqSMfJGPmbRYC0pc6LMOeCo2Q5wyUWTehdI26c7fwa28fuVht/I8l3tCycOpeMhGbqR
+         HIvG+LqzkKzq7y2iEHXyjiW9wyKm8/017obkkSMOpK2yDqz5mgxc2qFkFiXJhgcfhzo3
+         2KbnRJCbw3z50LzyZ34L258jbdmuFgi1ZkZmbxDLohfETk33DzmzjwwyCqqcQKhXOlBg
+         NZgkGjCSNYK/y0II5mcoczplHqFfr+fZarq5qcPGjZkgL+sqE8I1sTaUrBOMCKxLcYex
+         Qn6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=9EgKKDv2eyneOWnDUXvhkE8EvMv/2XlNSaE/g3GbCnE=;
-        b=o6C8ZVt9erDuUgBDoBJgh9snLwvLhPkCzwUIMlrthk5Y2YlJBaeyO0UFt6d40vnPdg
-         TtRO/GknfTZLprn4ZypD2j0BlA/8CR+ODwB4QhWRQJbN/AktkXdbZiGi/JS1GCz6B2ri
-         5VOupGPVtB+N5csgliZRgXSsN5+FuFGItcbO80CtW+RmD7ztVgn0oMscNjJcdEH9QysQ
-         w5O3gzV344v/hithV+psrRm2Cj0Mce2UTpXN96Hg+9o3PhXksx7v9dRWPmBbUNB6eHC3
-         jRqXi5e2kgBtdEZrS+a/2vElTU5f4J1GemzJhDqfFFVYBpCJb/YjWmJPzP4TqvXRCIbA
-         Z5NA==
-X-Gm-Message-State: AOAM5327zZinK5Nw0wBDHbTMo8Rs3lQejEcLaYfylsWCo2SgU+llOj8j
-        U+z/jEBXw32YeFUgJJTKVPmm2ab83Uk=
-X-Google-Smtp-Source: ABdhPJwFhJhBUprEOYt+YRRpWkw67AmhmFI51QqJAt1nW2b0ySAqTTSjTACYgdInnGHyUcpKAmBqQtNNahs=
+        bh=k+Hy19n7FuHwFcs3JayYH/6a6QV1H82GfzCUZvXtG9E=;
+        b=uIABPV1Irt2k5H3YyV5eU3LU/Uo+eC9kelVckXY2VVsNtoPVgVqCmL0vPTlgF1f+y8
+         AewZudMr65EaS4hrVyqy7kcRlOFJxV3URDTaWP6Wvwzxdj1Z1WiM/vuwKcmBFlgxc1Xx
+         qt93+cYEk6r3x0S+tjSlQPA42HD9ctsrggqCWZFb8DhcXvXZPKFdmxzeYmJlGzEHvEEm
+         X/8I7Qm6r71auGFkv21/+tQgrC1ynJ02r1JEQb+uwZIw5XX5NpDrixHn/UGXTvftggpk
+         BJCk0jLO2yaPzwiAgyTvp32BAvCbZaWuO7eHZHSnzwAstBnmkHFgBNAlJRTeOYr8xvA/
+         T3eg==
+X-Gm-Message-State: AOAM530Ep1WIcUkya0LMyovYQ2iYWiysJVq1upmzDPJ2wKa5kOzkDOqh
+        QOXwPM4PGgnIjpy7BmS575AZRFXoWSc=
+X-Google-Smtp-Source: ABdhPJzDV7t+Mio030wqwE3ZWqwSFDniRvJIygSpTKs4WI9yL6JICXgMf3/orZizQZF8JOXx/lMAOkL+95U=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:5722:92ce:361f:3832])
- (user=seanjc job=sendgmr) by 2002:a25:b687:: with SMTP id s7mr6448853ybj.138.1624384777562;
- Tue, 22 Jun 2021 10:59:37 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:ca10:: with SMTP id a16mr6601987ybg.172.1624384780054;
+ Tue, 22 Jun 2021 10:59:40 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 22 Jun 2021 10:57:29 -0700
+Date:   Tue, 22 Jun 2021 10:57:30 -0700
 In-Reply-To: <20210622175739.3610207-1-seanjc@google.com>
-Message-Id: <20210622175739.3610207-45-seanjc@google.com>
+Message-Id: <20210622175739.3610207-46-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210622175739.3610207-1-seanjc@google.com>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH 44/54] KVM: x86/mmu: Add a helper to calculate root from role_regs
+Subject: [PATCH 45/54] KVM: x86/mmu: Collapse 32-bit PAE and 64-bit statements
+ for helpers
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -68,151 +69,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a helper to calculate the level for non-EPT page tables from the
-MMU's role_regs.
+Skip paging32E_init_context() and paging64_init_context_common() and go
+directly to paging64_init_context() (was the common version) now that
+the relevant flows don't need to distinguish between 64-bit PAE and
+32-bit PAE for other reasons.
 
 No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 60 ++++++++++++++++++------------------------
- 1 file changed, 25 insertions(+), 35 deletions(-)
+ arch/x86/kvm/mmu/mmu.c | 19 ++-----------------
+ 1 file changed, 2 insertions(+), 17 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index a79871fe5b01..b83fd635e1f2 100644
+index b83fd635e1f2..4e11cb284006 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -238,6 +238,19 @@ struct kvm_mmu_role_regs vcpu_to_role_regs(struct kvm_vcpu *vcpu)
- 	return regs;
- }
- 
-+static int role_regs_to_root_level(struct kvm_mmu_role_regs *regs)
-+{
-+	if (!____is_cr0_pg(regs))
-+		return 0;
-+	else if (____is_efer_lma(regs))
-+		return ____is_cr4_la57(regs) ? PT64_ROOT_5LEVEL :
-+					       PT64_ROOT_4LEVEL;
-+	else if (____is_cr4_pae(regs))
-+		return PT32E_ROOT_LEVEL;
-+	else
-+		return PT32_ROOT_LEVEL;
-+}
-+
- static inline bool kvm_available_flush_tlb_with_range(void)
- {
- 	return kvm_x86_ops.tlb_remote_flush_with_range;
-@@ -3949,7 +3962,6 @@ static void nonpaging_init_context(struct kvm_mmu *context)
- 	context->gva_to_gpa = nonpaging_gva_to_gpa;
- 	context->sync_page = nonpaging_sync_page;
- 	context->invlpg = NULL;
--	context->root_level = 0;
- 	context->direct_map = true;
- }
- 
-@@ -4519,11 +4531,8 @@ static void reset_guest_paging_metadata(struct kvm_vcpu *vcpu,
+@@ -4531,9 +4531,8 @@ static void reset_guest_paging_metadata(struct kvm_vcpu *vcpu,
  	update_last_nonleaf_level(mmu);
  }
  
--static void paging64_init_context_common(struct kvm_mmu *context,
--					 int root_level)
-+static void paging64_init_context_common(struct kvm_mmu *context)
+-static void paging64_init_context_common(struct kvm_mmu *context)
++static void paging64_init_context(struct kvm_mmu *context)
  {
--	context->root_level = root_level;
--
- 	WARN_ON_ONCE(!is_cr4_pae(context));
+-	WARN_ON_ONCE(!is_cr4_pae(context));
  	context->page_fault = paging64_page_fault;
  	context->gva_to_gpa = paging64_gva_to_gpa;
-@@ -4532,18 +4541,13 @@ static void paging64_init_context_common(struct kvm_mmu *context,
+ 	context->sync_page = paging64_sync_page;
+@@ -4541,11 +4540,6 @@ static void paging64_init_context_common(struct kvm_mmu *context)
  	context->direct_map = false;
  }
  
--static void paging64_init_context(struct kvm_mmu *context,
--				  struct kvm_mmu_role_regs *regs)
-+static void paging64_init_context(struct kvm_mmu *context)
- {
--	int root_level = ____is_cr4_la57(regs) ? PT64_ROOT_5LEVEL :
--						 PT64_ROOT_4LEVEL;
+-static void paging64_init_context(struct kvm_mmu *context)
+-{
+-	paging64_init_context_common(context);
+-}
 -
--	paging64_init_context_common(context, root_level);
-+	paging64_init_context_common(context);
- }
- 
  static void paging32_init_context(struct kvm_mmu *context)
  {
--	context->root_level = PT32_ROOT_LEVEL;
  	context->page_fault = paging32_page_fault;
- 	context->gva_to_gpa = paging32_gva_to_gpa;
- 	context->sync_page = paging32_sync_page;
-@@ -4553,7 +4557,7 @@ static void paging32_init_context(struct kvm_mmu *context)
- 
- static void paging32E_init_context(struct kvm_mmu *context)
- {
--	paging64_init_context_common(context, PT32E_ROOT_LEVEL);
-+	paging64_init_context_common(context);
+@@ -4555,11 +4549,6 @@ static void paging32_init_context(struct kvm_mmu *context)
+ 	context->direct_map = false;
  }
  
+-static void paging32E_init_context(struct kvm_mmu *context)
+-{
+-	paging64_init_context_common(context);
+-}
+-
  static union kvm_mmu_extended_role kvm_calc_mmu_role_ext(struct kvm_vcpu *vcpu,
-@@ -4642,21 +4646,16 @@ static void init_kvm_tdp_mmu(struct kvm_vcpu *vcpu)
- 	context->get_guest_pgd = get_cr3;
- 	context->get_pdptr = kvm_pdptr_read;
- 	context->inject_page_fault = kvm_inject_page_fault;
-+	context->root_level = role_regs_to_root_level(&regs);
+ 							 struct kvm_mmu_role_regs *regs)
+ {
+@@ -4650,8 +4639,6 @@ static void init_kvm_tdp_mmu(struct kvm_vcpu *vcpu)
  
--	if (!is_paging(vcpu)) {
-+	if (!is_paging(vcpu))
+ 	if (!is_paging(vcpu))
  		context->gva_to_gpa = nonpaging_gva_to_gpa;
--		context->root_level = 0;
--	} else if (is_long_mode(vcpu)) {
--		context->root_level = ____is_cr4_la57(&regs) ?
--				PT64_ROOT_5LEVEL : PT64_ROOT_4LEVEL;
-+	else if (is_long_mode(vcpu))
+-	else if (is_long_mode(vcpu))
+-		context->gva_to_gpa = paging64_gva_to_gpa;
+ 	else if (is_pae(vcpu))
  		context->gva_to_gpa = paging64_gva_to_gpa;
--	} else if (is_pae(vcpu)) {
--		context->root_level = PT32E_ROOT_LEVEL;
-+	else if (is_pae(vcpu))
- 		context->gva_to_gpa = paging64_gva_to_gpa;
--	} else {
--		context->root_level = PT32_ROOT_LEVEL;
-+	else
- 		context->gva_to_gpa = paging32_gva_to_gpa;
--	}
+ 	else
+@@ -4704,10 +4691,8 @@ static void shadow_mmu_init_context(struct kvm_vcpu *vcpu, struct kvm_mmu *conte
  
- 	reset_guest_paging_metadata(vcpu, context);
- 	reset_tdp_shadow_zero_bits_mask(vcpu, context);
-@@ -4706,11 +4705,12 @@ static void shadow_mmu_init_context(struct kvm_vcpu *vcpu, struct kvm_mmu *conte
  	if (!____is_cr0_pg(regs))
  		nonpaging_init_context(context);
- 	else if (____is_efer_lma(regs))
--		paging64_init_context(context, regs);
-+		paging64_init_context(context);
- 	else if (____is_cr4_pae(regs))
- 		paging32E_init_context(context);
+-	else if (____is_efer_lma(regs))
++	else if (____is_cr4_pae(regs))
+ 		paging64_init_context(context);
+-	else if (____is_cr4_pae(regs))
+-		paging32E_init_context(context);
  	else
  		paging32_init_context(context);
-+	context->root_level = role_regs_to_root_level(regs);
- 
- 	reset_guest_paging_metadata(vcpu, context);
- 	context->shadow_root_level = new_role.base.level;
-@@ -4849,17 +4849,7 @@ kvm_calc_nested_mmu_role(struct kvm_vcpu *vcpu, struct kvm_mmu_role_regs *regs)
- 	 * to "true" to try to detect bogus usage of the nested MMU.
- 	 */
- 	role.base.direct = true;
--
--	if (!____is_cr0_pg(regs))
--		role.base.level = 0;
--	else if (____is_efer_lma(regs))
--		role.base.level = ____is_cr4_la57(regs) ? PT64_ROOT_5LEVEL :
--							  PT64_ROOT_4LEVEL;
--	else if (____is_cr4_pae(regs))
--		role.base.level = PT32E_ROOT_LEVEL;
--	else
--		role.base.level = PT32_ROOT_LEVEL;
--
-+	role.base.level = role_regs_to_root_level(regs);
- 	return role;
- }
- 
+ 	context->root_level = role_regs_to_root_level(regs);
 -- 
 2.32.0.288.g62a8d224e6-goog
 
