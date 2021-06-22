@@ -2,105 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BFF3B0CCA
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:23:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74EFF3B0CCE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232339AbhFVSZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:25:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230146AbhFVSZl (ORCPT
+        id S232371AbhFVS0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:26:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34334 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230146AbhFVS0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:25:41 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4718EC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:23:25 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id k10so4391358lfv.13
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:23:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FV61UP5NcLLWWDvVqg5arfYv7gGM3LSFINIkuHzruNQ=;
-        b=pONLFwGx3+EykTnB4ze62pOkv+Jpo7Ut9deKl05K8YRybGrbGTHE9TcZrjOqYHA28Y
-         F7juG7LTnIcPuAGg8REQ+Iji7/5RqEAg7qrLnLuSBbfT2GkPwsfo//Ial3EVdkYFzmxk
-         CKybBao4DyUQrD4zyl1LJix8iEHCiuTdudedyCJj8fJLBqDZlxJLQWMgOWG6HOoOvKL/
-         ghDU6yPvt3hY0VAenfRzHeMii2YCtRH9J7Q1REnR9dErOy4R3iGLRKF98tdiMwVov9Ox
-         gMKEdHNZ/5q9PjN9ckMqJABLMlGWz/DY5Kz8rSmRZ/EUazFMXEsN2dlAUziGJewcQaWU
-         dnJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FV61UP5NcLLWWDvVqg5arfYv7gGM3LSFINIkuHzruNQ=;
-        b=gxFxc7GgZ12kt8RqalxKaxNLVgstI5XNCA7FoOu4OFX8Apf1JPxmrMeRXpNN8YgeFe
-         7INVYZY1Sfmb1LgXwg5ugh5Ceo0O48jezYieurr/JK5dmnqIGicG+Ymr0yrIAnzZAOg4
-         YwlBGHhbspDRkZ7eGk9wYvV0xWgvjh7sp3xwqSWn607PXJ02Zn7v4BohHKQ3OcgWNLcl
-         0tj6oAP3QZPRam2re2zof+0UXpf0eV8HgkTDOh09l8lFKojFExeMKMBb1Cj31M5dmwns
-         f0p7/oER11qoWEudAi3EtLpEHiXnlKZTLBvbsYJ/uT0QaZWFFqk7xu4J9mQ/9V3cHDjU
-         PEDw==
-X-Gm-Message-State: AOAM531x6ryRkmY7QFF7DVmk3kqJSGtjs8cYBkhjZczmMABAAJEgNA7q
-        vvBMCRcKIg3tfqHq1fthCly3nQ0xLrqWzYqpYJ4w4w==
-X-Google-Smtp-Source: ABdhPJwnrjT3krbKSxFrRsFi3ZXwowgc1qJaQEQ1sCLbnNdI8yM24TC4myf8Qi5w66rYqP+zehgwQks6GADvBFg0XWA=
-X-Received: by 2002:a19:ac06:: with SMTP id g6mr3959111lfc.299.1624386203402;
- Tue, 22 Jun 2021 11:23:23 -0700 (PDT)
+        Tue, 22 Jun 2021 14:26:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624386226;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=4wcUku5VYFOIqpjq4OYU4JOlXU8CasqeJwQGFJvPLW0=;
+        b=NjbCgyg7YxgCLTsMtK1OfDAUPruiD7O2zLKx373szruz3AoRE44Y5TADI8Fpm4ZZV4OjZ6
+        QWFQ5qik7oE0/nhTl6zgyColB4rwZmHa6Wgy8gRkXK1ST/N4W7vOty2iL/0AYI4wbGOwGb
+        Q/l74O+jOHPfkZEN/qR+wTQNYHc/aK0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-148-ixJxdKnMMziAfh0cKU_bOw-1; Tue, 22 Jun 2021 14:23:28 -0400
+X-MC-Unique: ixJxdKnMMziAfh0cKU_bOw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5CA02804142;
+        Tue, 22 Jun 2021 18:23:27 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9218B69CB4;
+        Tue, 22 Jun 2021 18:23:24 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAHk-=wicC9ZTNNH1E-oHebcT3+r4Q4Wf1tXBindXrCdotj20Gg@mail.gmail.com>
+References: <CAHk-=wicC9ZTNNH1E-oHebcT3+r4Q4Wf1tXBindXrCdotj20Gg@mail.gmail.com> <CAHk-=wh=YxjEtTpYyhgypKmPJQ8eVLJ4qowmwbnG1bOU06_4Bg@mail.gmail.com> <3221175.1624375240@warthog.procyon.org.uk> <YNIBb5WPrk8nnKKn@zeniv-ca.linux.org.uk> <YNIDdgn0m8d2a0P3@zeniv-ca.linux.org.uk> <YNIdJaKrNj5GoT7w@casper.infradead.org> <3231150.1624384533@warthog.procyon.org.uk> <YNImEkqizzuStW72@casper.infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, "Ted Ts'o" <tytso@mit.edu>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Do we need to unrevert "fs: do not prefault sys_write() user buffer pages"?
 MIME-Version: 1.0
-References: <20210621083108.17589-1-sj38.park@gmail.com> <20210621083108.17589-9-sj38.park@gmail.com>
-In-Reply-To: <20210621083108.17589-9-sj38.park@gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 22 Jun 2021 11:23:12 -0700
-Message-ID: <CALvZod703WD0Ab8EMpd6+JxzhKEjnwZkYRA9VB5LoUmG_yccSQ@mail.gmail.com>
-Subject: Re: [PATCH v31 08/13] mm/damon/dbgfs: Export kdamond pid to the user space
-To:     SeongJae Park <sj38.park@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@huawei.com,
-        acme@kernel.org, alexander.shishkin@linux.intel.com,
-        amit@kernel.org, benh@kernel.crashing.org,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        David Hildenbrand <david@redhat.com>, dwmw@amazon.com,
-        Marco Elver <elver@google.com>, "Du, Fan" <fan.du@intel.com>,
-        foersleo@amazon.de, greg@kroah.com,
-        Greg Thelen <gthelen@google.com>, guoju.fgj@alibaba-inc.com,
-        jgowans@amazon.com, Mel Gorman <mgorman@suse.de>, mheyne@amazon.de,
-        Minchan Kim <minchan@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, namhyung@kernel.org,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Rik van Riel <riel@surriel.com>,
-        David Rientjes <rientjes@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mike Rapoport <rppt@kernel.org>, Shuah Khan <shuah@kernel.org>,
-        sieberf@amazon.com, snu@zelle79.org,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        zgf574564920@gmail.com, linux-damon@amazon.com,
-        Linux MM <linux-mm@kvack.org>, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3233311.1624386204.1@warthog.procyon.org.uk>
+Date:   Tue, 22 Jun 2021 19:23:24 +0100
+Message-ID: <3233312.1624386204@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 1:31 AM SeongJae Park <sj38.park@gmail.com> wrote:
->
-> From: SeongJae Park <sjpark@amazon.de>
->
-> For CPU usage accounting, knowing pid of the monitoring thread could be
-> helpful.  For example, users could use cpuaccount cgroups with the pid.
->
-> This commit therefore exports the pid of currently running monitoring
-> thread to the user space via 'kdamond_pid' file in the debugfs
-> directory.
->
-> Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> Reviewed-by: Fernand Sieber <sieberf@amazon.com>
-> ---
+Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-[...]
+> I'm not sure how that would even look. I don't think it would
+> necessarily be *impossible* (special marker in the exception table to
+> let the fault code know that this is a "prepare" fault), but it would
+> be pretty challenging.
 
->
-> +static const struct file_operations kdamond_pid_fops = {
-> +       .owner = THIS_MODULE,
+Probably the most obvious way would be to set a flag in task_struct saying
+what you're doing and have the point that would otherwise wait for the page to
+become unlocked skip to the fault fixup code if the page is locked after
+->readahead() has been invoked and the flag is set, then use get_user() in
+iov_iter_fault_in_readable().
 
-I don't think you need to set the owner (and for other fops) as these
-files are built into modules. Otherwise it looks good.
+But, as Willy says, there's a reasonable chance that the source page is
+present anyway (presumably you want to write out data you've just constructed
+or modified), in which case it's probably not worth the complexity.
+
+David
+
