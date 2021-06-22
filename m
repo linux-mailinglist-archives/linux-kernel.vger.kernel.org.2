@@ -2,111 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B4E3B102A
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 00:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9433B1029
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 00:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230422AbhFVWlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 18:41:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbhFVWlj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 18:41:39 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88457C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 15:39:22 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id c11so332623ljd.6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 15:39:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qSJCzIJ/W2NmiCitrgwllPiyxSA/GA4EEsJjyUuSU30=;
-        b=oyktG73YZVDch+DxSWZBlUYtTGIHzL78FhJ/G2Cbmc71waG4Z3/lFnjGgL/IqYV1jK
-         WNgB53E8bbLHlfKWSbaUvcRVQ0hDjyeWDlu7jqP5TG3374N87wFX5FrYF2gH1GdTuiF0
-         fvBIv425RseHG54g0rrjatewbzwOGEMhiJN4MGdVl1VZpe+XaMpFC5hPJ2OGz7H2Hnbq
-         vIwjhSa91ZLHE9SMWkb1kEBUcrC1dIUSUsc4ei7J+JRpJUywEUIXu3wpLc8QX74URK8i
-         Xaf9ixG9oTKgJeT1mj9JiIJ3wlzmN117pUM3cmqzeg4iQxgQp7JVx4peowqd1zckZW2Y
-         KNjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qSJCzIJ/W2NmiCitrgwllPiyxSA/GA4EEsJjyUuSU30=;
-        b=ftP0g6Ki1QnMQxa5AcEzevEqYsuNvPC3ja9bEbVqJpZm1TKKz4H6o2ueMLjJw7K2Be
-         NDYMGjffLBnGlwMvuLMQgnk+oqC/TFUrGdDcDlGM1lN5CttkyOTRHl/mCOGMlqR/NVb4
-         /DxnEVElRTVTvEctz+vRNiivwQ+2nmpXgh+rft2AAI0Ca0sF5unO5ofzBShK9D4kJIaA
-         QXjtRmb+maAq1C4pL1h4lPDDQ9Yv6aOkJocU13KWSQOw0HXLawbc2GSZjy/TYC9wWZLo
-         tJ3hoAGZsqIk+fo2tVDwVZz50uF76SisV6UgU5181V7lO/qCSbMVauIv2Gl88lOj3wr/
-         lq2Q==
-X-Gm-Message-State: AOAM531Hnxu0+CCM2UDyvVn15QL0sdlMN+bobPEO7EGBuGHgcqIUoHDN
-        S4LGPuVu5lT18g2DgGvJDniy+jCDsvEQqjU2KderYw==
-X-Google-Smtp-Source: ABdhPJw2Yg00hzHazgi3MZjogWibQF77gMBQryIXZWZM6wakxe7xGXaEhMgdRdfNr1ZNECK2l63IHrBYnC437gewZdo=
-X-Received: by 2002:a2e:9852:: with SMTP id e18mr5092607ljj.383.1624401560707;
- Tue, 22 Jun 2021 15:39:20 -0700 (PDT)
+        id S230327AbhFVWlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 18:41:22 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:37641 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229800AbhFVWlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 18:41:21 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G8hCB45DZz9sVp;
+        Wed, 23 Jun 2021 08:39:02 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624401543;
+        bh=q4xI+kLRvQ+w2SAaQQUUTdCOiWB2e9OLTjjbFloEIFk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=UDdK1Vy0KVEwb6wvbFKtTY8frusD7sK2UUPkTd4WppiWhLnMsStayOtnQARnYqdqe
+         kMUMcT8oHYg7F2zC97lvI+9awFbtcDXyRkn3CWHeQ81uMX5I3riltO70RXDJw0xucI
+         pXruszKIKuAwFFXDJSzJZxf0Vi9fgYqbfo3AKeXFc2FOobdtuildWe7WIKXoDWznvh
+         6gnUjfXgcRJWd3SWVMhahwM3FLtjYLzgt7XOX8BdrUe1We/GKQkoA7zx7zklxmrpup
+         UgTSnjyjIe4sIseaToXUXblQTKtk2jdxAMBe9d+b+w9lT6Q2cdi9pgc6lLZED8ho7a
+         T9vlTPJoveC2g==
+Date:   Wed, 23 Jun 2021 08:39:01 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        David Sterba <dsterba@suse.cz>
+Subject: linux-next: build warning after merge of the kspp-gustavo tree
+Message-ID: <20210623083901.1d49d19d@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210622072454.3449146-1-seanjc@google.com>
-In-Reply-To: <20210622072454.3449146-1-seanjc@google.com>
-From:   David Matlack <dmatlack@google.com>
-Date:   Tue, 22 Jun 2021 15:38:54 -0700
-Message-ID: <CALzav=d+_fLJBJ14=e5aOUa_ufQQdLcNVhTOjeRoodd+7V=NCg@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86/mmu: Don't WARN on a NULL shadow page in TDP MMU check
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/ZYMtYl+EaQ81t.y/0T093tr";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 12:24 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> Treat a NULL shadow page in the "is a TDP MMU" check as valid, non-TDP
-> root.  KVM uses a "direct" PAE paging MMU when TDP is disabled and the
-> guest is running with paging disabled.  In that case, root_hpa points at
-> the pae_root page (of which only 32 bytes are used), not a standard
-> shadow page, and the WARN fires (a lot).
->
-> Fixes: 0b873fd7fb53 ("KVM: x86/mmu: Remove redundant is_tdp_mmu_enabled check")
-> Cc: David Matlack <dmatlack@google.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+--Sig_/ZYMtYl+EaQ81t.y/0T093tr
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the fix. I was able to reproduce the issue by running a
-kvm-unit-test with EPT=N. I'll add that to my "pre-send-email"
-workflow in the future.
+Hi all,
 
-Reviewed-by: David Matlack <dmatlack@google.com>
+After merging the kspp-gustavo tree, today's linux-next build (powerpc
+ppc64_defconfig) produced this warning:
 
-> ---
->  arch/x86/kvm/mmu/tdp_mmu.h | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-> index b981a044ab55..1cae4485b3bc 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.h
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
-> @@ -94,11 +94,13 @@ static inline bool is_tdp_mmu(struct kvm_mmu *mmu)
->         if (WARN_ON(!VALID_PAGE(hpa)))
->                 return false;
->
-> +       /*
-> +        * A NULL shadow page is legal when shadowing a non-paging guest with
-> +        * PAE paging, as the MMU will be direct with root_hpa pointing at the
-> +        * pae_root page, not a shadow page.
-> +        */
->         sp = to_shadow_page(hpa);
-> -       if (WARN_ON(!sp))
-> -               return false;
-> -
-> -       return is_tdp_mmu_page(sp) && sp->root_count;
-> +       return sp && is_tdp_mmu_page(sp) && sp->root_count;
->  }
->  #else
->  static inline bool kvm_mmu_init_tdp_mmu(struct kvm *kvm) { return false; }
-> --
-> 2.32.0.288.g62a8d224e6-goog
->
+In file included from fs/btrfs/ctree.h:9,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/struct-funcs.c: In function 'btrfs_get_token_16':
+fs/btrfs/struct-funcs.c:80:46: warning: array subscript 1 is above array bo=
+unds of 'struct page *[1]' [-Warray-bounds]
+   80 |  token->kaddr =3D page_address(token->eb->pages[idx + 1]);  \
+      |                              ~~~~~~~~~~~~~~~~^~~~~~~~~
+include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
+ 1627 | #define page_address(page) lowmem_page_address(page)
+      |                                                ^~~~
+fs/btrfs/struct-funcs.c:161:1: note: in expansion of macro 'DEFINE_BTRFS_SE=
+TGET_BITS'
+  161 | DEFINE_BTRFS_SETGET_BITS(16)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from fs/btrfs/ctree.h:32,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
+   97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
+      |               ^~~~~
+In file included from fs/btrfs/ctree.h:9,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/struct-funcs.c: In function 'btrfs_get_16':
+fs/btrfs/struct-funcs.c:101:32: warning: array subscript 1 is above array b=
+ounds of 'struct page * const[1]' [-Warray-bounds]
+  101 |  kaddr =3D page_address(eb->pages[idx + 1]);   \
+      |                       ~~~~~~~~~^~~~~~~~~
+include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
+ 1627 | #define page_address(page) lowmem_page_address(page)
+      |                                                ^~~~
+fs/btrfs/struct-funcs.c:161:1: note: in expansion of macro 'DEFINE_BTRFS_SE=
+TGET_BITS'
+  161 | DEFINE_BTRFS_SETGET_BITS(16)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from fs/btrfs/ctree.h:32,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
+   97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
+      |               ^~~~~
+In file included from fs/btrfs/ctree.h:9,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/struct-funcs.c: In function 'btrfs_set_token_16':
+fs/btrfs/struct-funcs.c:133:46: warning: array subscript 1 is above array b=
+ounds of 'struct page *[1]' [-Warray-bounds]
+  133 |  token->kaddr =3D page_address(token->eb->pages[idx + 1]);  \
+      |                              ~~~~~~~~~~~~~~~~^~~~~~~~~
+include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
+ 1627 | #define page_address(page) lowmem_page_address(page)
+      |                                                ^~~~
+fs/btrfs/struct-funcs.c:161:1: note: in expansion of macro 'DEFINE_BTRFS_SE=
+TGET_BITS'
+  161 | DEFINE_BTRFS_SETGET_BITS(16)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from fs/btrfs/ctree.h:32,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
+   97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
+      |               ^~~~~
+In file included from fs/btrfs/ctree.h:9,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/struct-funcs.c: In function 'btrfs_set_16':
+fs/btrfs/struct-funcs.c:156:32: warning: array subscript 1 is above array b=
+ounds of 'struct page * const[1]' [-Warray-bounds]
+  156 |  kaddr =3D page_address(eb->pages[idx + 1]);   \
+      |                       ~~~~~~~~~^~~~~~~~~
+include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
+ 1627 | #define page_address(page) lowmem_page_address(page)
+      |                                                ^~~~
+fs/btrfs/struct-funcs.c:161:1: note: in expansion of macro 'DEFINE_BTRFS_SE=
+TGET_BITS'
+  161 | DEFINE_BTRFS_SETGET_BITS(16)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from fs/btrfs/ctree.h:32,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
+   97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
+      |               ^~~~~
+In file included from fs/btrfs/ctree.h:9,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/struct-funcs.c: In function 'btrfs_get_token_32':
+fs/btrfs/struct-funcs.c:80:46: warning: array subscript 1 is above array bo=
+unds of 'struct page *[1]' [-Warray-bounds]
+   80 |  token->kaddr =3D page_address(token->eb->pages[idx + 1]);  \
+      |                              ~~~~~~~~~~~~~~~~^~~~~~~~~
+include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
+ 1627 | #define page_address(page) lowmem_page_address(page)
+      |                                                ^~~~
+fs/btrfs/struct-funcs.c:162:1: note: in expansion of macro 'DEFINE_BTRFS_SE=
+TGET_BITS'
+  162 | DEFINE_BTRFS_SETGET_BITS(32)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from fs/btrfs/ctree.h:32,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
+   97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
+      |               ^~~~~
+In file included from fs/btrfs/ctree.h:9,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/struct-funcs.c: In function 'btrfs_get_32':
+fs/btrfs/struct-funcs.c:101:32: warning: array subscript 1 is above array b=
+ounds of 'struct page * const[1]' [-Warray-bounds]
+  101 |  kaddr =3D page_address(eb->pages[idx + 1]);   \
+      |                       ~~~~~~~~~^~~~~~~~~
+include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
+ 1627 | #define page_address(page) lowmem_page_address(page)
+      |                                                ^~~~
+fs/btrfs/struct-funcs.c:162:1: note: in expansion of macro 'DEFINE_BTRFS_SE=
+TGET_BITS'
+  162 | DEFINE_BTRFS_SETGET_BITS(32)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from fs/btrfs/ctree.h:32,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
+   97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
+      |               ^~~~~
+In file included from fs/btrfs/ctree.h:9,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/struct-funcs.c: In function 'btrfs_set_token_32':
+fs/btrfs/struct-funcs.c:133:46: warning: array subscript 1 is above array b=
+ounds of 'struct page *[1]' [-Warray-bounds]
+  133 |  token->kaddr =3D page_address(token->eb->pages[idx + 1]);  \
+      |                              ~~~~~~~~~~~~~~~~^~~~~~~~~
+include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
+ 1627 | #define page_address(page) lowmem_page_address(page)
+      |                                                ^~~~
+fs/btrfs/struct-funcs.c:162:1: note: in expansion of macro 'DEFINE_BTRFS_SE=
+TGET_BITS'
+  162 | DEFINE_BTRFS_SETGET_BITS(32)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from fs/btrfs/ctree.h:32,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
+   97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
+      |               ^~~~~
+In file included from fs/btrfs/ctree.h:9,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/struct-funcs.c: In function 'btrfs_set_32':
+fs/btrfs/struct-funcs.c:156:32: warning: array subscript 1 is above array b=
+ounds of 'struct page * const[1]' [-Warray-bounds]
+  156 |  kaddr =3D page_address(eb->pages[idx + 1]);   \
+      |                       ~~~~~~~~~^~~~~~~~~
+include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
+ 1627 | #define page_address(page) lowmem_page_address(page)
+      |                                                ^~~~
+fs/btrfs/struct-funcs.c:162:1: note: in expansion of macro 'DEFINE_BTRFS_SE=
+TGET_BITS'
+  162 | DEFINE_BTRFS_SETGET_BITS(32)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from fs/btrfs/ctree.h:32,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
+   97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
+      |               ^~~~~
+In file included from fs/btrfs/ctree.h:9,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/struct-funcs.c: In function 'btrfs_get_token_64':
+fs/btrfs/struct-funcs.c:80:46: warning: array subscript 1 is above array bo=
+unds of 'struct page *[1]' [-Warray-bounds]
+   80 |  token->kaddr =3D page_address(token->eb->pages[idx + 1]);  \
+      |                              ~~~~~~~~~~~~~~~~^~~~~~~~~
+include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
+ 1627 | #define page_address(page) lowmem_page_address(page)
+      |                                                ^~~~
+fs/btrfs/struct-funcs.c:163:1: note: in expansion of macro 'DEFINE_BTRFS_SE=
+TGET_BITS'
+  163 | DEFINE_BTRFS_SETGET_BITS(64)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from fs/btrfs/ctree.h:32,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
+   97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
+      |               ^~~~~
+In file included from fs/btrfs/ctree.h:9,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/struct-funcs.c: In function 'btrfs_get_64':
+fs/btrfs/struct-funcs.c:101:32: warning: array subscript 1 is above array b=
+ounds of 'struct page * const[1]' [-Warray-bounds]
+  101 |  kaddr =3D page_address(eb->pages[idx + 1]);   \
+      |                       ~~~~~~~~~^~~~~~~~~
+include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
+ 1627 | #define page_address(page) lowmem_page_address(page)
+      |                                                ^~~~
+fs/btrfs/struct-funcs.c:163:1: note: in expansion of macro 'DEFINE_BTRFS_SE=
+TGET_BITS'
+  163 | DEFINE_BTRFS_SETGET_BITS(64)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from fs/btrfs/ctree.h:32,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
+   97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
+      |               ^~~~~
+In file included from fs/btrfs/ctree.h:9,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/struct-funcs.c: In function 'btrfs_set_token_64':
+fs/btrfs/struct-funcs.c:133:46: warning: array subscript 1 is above array b=
+ounds of 'struct page *[1]' [-Warray-bounds]
+  133 |  token->kaddr =3D page_address(token->eb->pages[idx + 1]);  \
+      |                              ~~~~~~~~~~~~~~~~^~~~~~~~~
+include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
+ 1627 | #define page_address(page) lowmem_page_address(page)
+      |                                                ^~~~
+fs/btrfs/struct-funcs.c:163:1: note: in expansion of macro 'DEFINE_BTRFS_SE=
+TGET_BITS'
+  163 | DEFINE_BTRFS_SETGET_BITS(64)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from fs/btrfs/ctree.h:32,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
+   97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
+      |               ^~~~~
+In file included from fs/btrfs/ctree.h:9,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/struct-funcs.c: In function 'btrfs_set_64':
+fs/btrfs/struct-funcs.c:156:32: warning: array subscript 1 is above array b=
+ounds of 'struct page * const[1]' [-Warray-bounds]
+  156 |  kaddr =3D page_address(eb->pages[idx + 1]);   \
+      |                       ~~~~~~~~~^~~~~~~~~
+include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
+ 1627 | #define page_address(page) lowmem_page_address(page)
+      |                                                ^~~~
+fs/btrfs/struct-funcs.c:163:1: note: in expansion of macro 'DEFINE_BTRFS_SE=
+TGET_BITS'
+  163 | DEFINE_BTRFS_SETGET_BITS(64)
+      | ^~~~~~~~~~~~~~~~~~~~~~~~
+In file included from fs/btrfs/ctree.h:32,
+                 from fs/btrfs/struct-funcs.c:8:
+fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
+   97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
+      |               ^~~~~
+In file included from include/linux/bvec.h:14,
+                 from include/linux/blk_types.h:10,
+                 from include/linux/genhd.h:19,
+                 from include/linux/blkdev.h:8,
+                 from fs/btrfs/disk-io.c:7:
+fs/btrfs/disk-io.c: In function 'csum_tree_block':
+fs/btrfs/disk-io.c:225:34: warning: array subscript 1 is above array bounds=
+ of 'struct page *[1]' [-Warray-bounds]
+  225 |   kaddr =3D page_address(buf->pages[i]);
+      |                        ~~~~~~~~~~^~~
+include/linux/mm.h:1627:48: note: in definition of macro 'page_address'
+ 1627 | #define page_address(page) lowmem_page_address(page)
+      |                                                ^~~~
+In file included from fs/btrfs/ctree.h:32,
+                 from fs/btrfs/disk-io.c:22:
+fs/btrfs/extent_io.h:97:15: note: while referencing 'pages'
+   97 |  struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
+      |               ^~~~~
+
+Introduced by commit
+
+  8d7900f545f1 ("Makefile: Enable -Warray-bounds")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ZYMtYl+EaQ81t.y/0T093tr
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDSZoUACgkQAVBC80lX
+0Gyx3Qf+OfjsNPJXQRPtHo/tXL4MeLKOzhgDB+vJB6VlTo5JbfNPqoN74xv+owW4
+Ov9zncHlTwekQzEfCcIOyDKE/hotaD7A9l69cAhkkqyhvmFzxK9jLv3WD9MVn797
+DXL+DTBHTjvbHBFu2jRJ1E0qAPBJGUmIEkfxQrhA4IOtVSClFSoN6amqpk6wpFoV
+sPVw/+c7iwIG7aBgPQ7FkgUDfqAqt1J2DKJWrLfhBcBk4WdLurwP7a83CTHpT2uS
+ukZ77RWyKtdkCpRjEFllA4U20OuWiMHvn0uV/0C6r0ZjaS4A3lYRV9PenwgMujqS
+VZkwfwN53nwQ/Cw61wu/O7DuuwpFWA==
+=J+Ls
+-----END PGP SIGNATURE-----
+
+--Sig_/ZYMtYl+EaQ81t.y/0T093tr--
