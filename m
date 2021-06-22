@@ -2,139 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F013B0EFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3107B3B0EFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbhFVUyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 16:54:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48700 "EHLO
+        id S230092AbhFVUyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 16:54:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhFVUx7 (ORCPT
+        with ESMTP id S229501AbhFVUyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 16:53:59 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85184C061574;
-        Tue, 22 Jun 2021 13:51:43 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id m18so179263wrv.2;
-        Tue, 22 Jun 2021 13:51:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:references:from:subject:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=DgOLw28e+RF+tP0cv3IOtjcn7zPRzgkIPJom+SKiGLI=;
-        b=PB/2RHjRbZ0ATGIzOOKkLzEQqvqfI6ZXKQRR6ucewyFed+jCitpouOO6XZhaMUf18g
-         IlCXJs64GBPoOp1Ov1gtGMQw+rkxIhGsiOb5WVy7wYJBKtDgGu6bl2TGFBN0cC3m0duj
-         cZfIDTRidRFsXJnSQjHCOcZIeGLY0QGSFQAP3mjwi0ZbTBRKaQX7WYa3VV9938vmfd+T
-         3cfpu8yHFiQlmlYUvul+JJOX4ush4Q/PGqu3qrK5Oqk7cHOWul09A3IyhgT7rsUmx/JO
-         qZVltQVxGY1AdnNUkyQYReeYel9W6/zpUGQiGDX+KeJ0fz6xIjGGIyZDvtwp7d9yDSPZ
-         dqMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DgOLw28e+RF+tP0cv3IOtjcn7zPRzgkIPJom+SKiGLI=;
-        b=nixCZhSUn+2D+jaIoKhAKsDurNdf1zOd39qY6CHG6XEypKQO1h8mgJ+I9Q1+hhX+n8
-         8GVslz18QNsO2LoKWB9apDbMfPPz9fb9uElV/W0YVFWLv6iwUrcQBAG2PAYHajvX8KdT
-         CcvrS2yRGzAa+Wqj3CJs01EeTD3Xu3IKSp1tLR2QXhzsZsZzSCkEZh8Cb1M85OmgM5yG
-         xNFZodDGzN+KRoM6r9DOsCIqjFgk28UglgexHVu5TpvdgEQGniRDpNOkxc/q7ydWDhNA
-         1Zi1OcP/eQPFf2OspMP8vP2yrrYPYkk8pgJqfgrW24tWEEB05yTCFHbpN3/y8cY4PH7y
-         jPlg==
-X-Gm-Message-State: AOAM533vdXbXhTWNPnFrQU00S1JKwOCWmuuZtm8sShZOE7F6Tla6eBJS
-        RzCOh/EyILiQCk4r+phoIcPjfSxeQSuT2n37
-X-Google-Smtp-Source: ABdhPJxhpytYem6NUvri3WoqqTfba47IEEXW9a6EEzKXzPyGwJfwXaKP0jj8O8OJCkkphXe3bOELzA==
-X-Received: by 2002:a5d:4904:: with SMTP id x4mr7075961wrq.202.1624395102003;
-        Tue, 22 Jun 2021 13:51:42 -0700 (PDT)
-Received: from [192.168.8.197] ([148.252.132.93])
-        by smtp.gmail.com with ESMTPSA id e15sm461965wrm.60.2021.06.22.13.51.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 13:51:41 -0700 (PDT)
-To:     Olivier Langlois <olivier@trillion01.com>,
-        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        Tue, 22 Jun 2021 16:54:05 -0400
+Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10EDDC061574;
+        Tue, 22 Jun 2021 13:51:49 -0700 (PDT)
+Received: from ktm (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: lukma@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 7A85B82958;
+        Tue, 22 Jun 2021 22:51:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1624395103;
+        bh=UGQSxDCJVHD985fZkE4LY5R1JFavM/jcz7y/vooACM4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZFcrtbwe+yoX0nGjX/keJJkQu3FpUawVBfyzVQRCyG/81ihDXTpLLz7aOgoi7lXVl
+         J676vdA9KnnwgvsGW6doZqXsHu7vNVoII61cGXOrORC5kin18MjkdOet0NPh70fmao
+         T3biEyn3WEmsYG6KQIlZttVSdlcWhD1cDd/cK4wxcG39+PtoR+dRX1JGUSXckzqTTU
+         Mo9EYg1/M6mowwy8wIbc71N7HPZoTJ6A4/a3PWM4U6sFGc600P3tnh2PKiMkZGyaPL
+         R1SX95SPDDBcZPEMN6CZ6zXBoVYmWtd21NCHVDUXzpVbtFUqAMlDyYIhkviVOOolyl
+         abyXvi9pmB/kg==
+Date:   Tue, 22 Jun 2021 22:51:34 +0200
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Madalin Bucur <madalin.bucur@oss.nxp.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Mark Einon <mark.einon@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
         linux-kernel@vger.kernel.org
-References: <9e8441419bb1b8f3c3fcc607b2713efecdef2136.1624364038.git.olivier@trillion01.com>
- <678deb93-c4a5-5a14-9687-9e44f0f00b5a@gmail.com>
- <7c47078a-9e2d-badf-a47d-1ca78e1a3253@gmail.com>
- <32495917a028e9c70b75357029a87ca593378dde.camel@trillion01.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [PATCH v4] io_uring: reduce latency by reissueing the operation
-Message-ID: <1a6a8eba-96e3-0afb-0357-3ac3b08cba36@gmail.com>
-Date:   Tue, 22 Jun 2021 21:51:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+Subject: Re: [RFC 1/3] ARM: dts: imx28: Add description for L2 switch on XEA
+ board
+Message-ID: <20210622225134.4811b88f@ktm>
+In-Reply-To: <YNH3mb9fyBjLf0fj@lunn.ch>
+References: <20210622144111.19647-1-lukma@denx.de>
+        <20210622144111.19647-2-lukma@denx.de>
+        <YNH3mb9fyBjLf0fj@lunn.ch>
+Organization: denx.de
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <32495917a028e9c70b75357029a87ca593378dde.camel@trillion01.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/0ciD4Jn3iAhV8jMTp1q0XYL"; protocol="application/pgp-signature"
+X-Virus-Scanned: clamav-milter 0.103.2 at phobos.denx.de
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/22/21 8:05 PM, Olivier Langlois wrote:
-> On Tue, 2021-06-22 at 19:01 +0100, Pavel Begunkov wrote:
->> On 6/22/21 6:54 PM, Pavel Begunkov wrote:
->>> On 6/22/21 1:17 PM, Olivier Langlois wrote:
->>>>
->>>
->>>>  static bool __io_poll_remove_one(struct io_kiocb *req,
->>>> @@ -6437,6 +6445,7 @@ static void __io_queue_sqe(struct io_kiocb
->>>> *req)
->>>>         struct io_kiocb *linked_timeout =
->>>> io_prep_linked_timeout(req);
->>>>         int ret;
->>>>  
->>>> +issue_sqe:
->>>>         ret = io_issue_sqe(req,
->>>> IO_URING_F_NONBLOCK|IO_URING_F_COMPLETE_DEFER);
->>>>  
->>>>         /*
->>>> @@ -6456,12 +6465,16 @@ static void __io_queue_sqe(struct
->>>> io_kiocb *req)
->>>>                         io_put_req(req);
->>>>                 }
->>>>         } else if (ret == -EAGAIN && !(req->flags &
->>>> REQ_F_NOWAIT)) {
->>>> -               if (!io_arm_poll_handler(req)) {
->>>> +               switch (io_arm_poll_handler(req)) {
->>>> +               case IO_APOLL_READY:
->>>> +                       goto issue_sqe;
->>>> +               case IO_APOLL_ABORTED:
->>>>                         /*
->>>>                          * Queued up for async execution, worker
->>>> will release
->>>>                          * submit reference when the iocb is
->>>> actually submitted.
->>>>                          */
->>>>                         io_queue_async_work(req);
->>>> +                       break;
->>>
->>> Hmm, why there is a new break here? It will miscount
->>> @linked_timeout
->>> if you do that. Every io_prep_linked_timeout() should be matched
->>> with
->>> io_queue_linked_timeout().
->>
->> Never mind, I said some nonsense and apparently need some coffee
-> 
-> but this is a pertinant question, imho. I guess that you could get away
+--Sig_/0ciD4Jn3iAhV8jMTp1q0XYL
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-It appeared to me that it doesn't go down to the end of the function
-but returns or so, that's the nonsense part.
+Hi Andrew,
 
-> without it since it is the last case of the switch statement... I am
-> not sure what kernel coding standard says about that.
+> On Tue, Jun 22, 2021 at 04:41:09PM +0200, Lukasz Majewski wrote:
+> > The 'eth_switch' node is now extendfed to enable support for L2
+> > switch.
+> >=20
+> > Moreover, the mac[01] nodes are defined as well and linked to the
+> > former with 'phy-handle' property. =20
+>=20
+> A phy-handle points to a phy, not a MAC! Don't abuse a well known DT
+> property like this.
 
-breaks are preferable, and falling through should be explicitly
-marked with fallthrough;
- 
-> However, I can tell you that there was also a break statement at the
-> end of the case for IO_APOLL_READY and checkpatch.pl did complain about
-> it saying that it was useless since it was following a goto statement.
-> Therefore, I did remove that one.
-> 
-> checkpatch.pl did remain silent about the other remaining break. Hence
-> this is why I left it there.
+Ach.... You are right. I will change it.
 
--- 
-Pavel Begunkov
+Probably 'ethernet' property or 'link' will fit better?
+
+
+>=20
+>   Andrew
+>=20
+
+
+
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
+
+--Sig_/0ciD4Jn3iAhV8jMTp1q0XYL
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmDSTVYACgkQAR8vZIA0
+zr3wEwf+OHIgqiJP60VV3awR0B5lu4awGcOFGqK5MEB+Zhddu4xs1J7Hp6FcYMxa
+m6hLxvWMgQW2c07AOFabjSwyAy6YsrZeWp4EejnlnyGAS79QQUYglCtmfq+Mkgwm
+4pXZIYQlSz2mxGlauZeD8TFEAQUNkqtyaEL2umFcxhOj31IRTaM3WMfo0w5p1zoJ
+c4ndU0zn3zJgQo5ohk3y3R/l5MfHu0SrexUSLfy0tGlv3ED4ZjsMn2zgBMuBe1Qh
+rXjQO84IW1XYLWZme+XCd9B0n9lPlw/uz48v4vVFHDgwAH5Z65qONfQ+LxQOBy/9
+KIjP6WqdJaV3eEQJhCq7B5IbJiSGeQ==
+=T/Td
+-----END PGP SIGNATURE-----
+
+--Sig_/0ciD4Jn3iAhV8jMTp1q0XYL--
