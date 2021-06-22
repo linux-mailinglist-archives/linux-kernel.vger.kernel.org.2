@@ -2,89 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7B8E3B0659
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:59:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DFBD3B065E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231387AbhFVOBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 10:01:17 -0400
-Received: from foss.arm.com ([217.140.110.172]:49662 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229988AbhFVOBQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 10:01:16 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 232A5ED1;
-        Tue, 22 Jun 2021 06:59:00 -0700 (PDT)
-Received: from [10.57.7.129] (unknown [10.57.7.129])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 124733F694;
-        Tue, 22 Jun 2021 06:58:57 -0700 (PDT)
-Subject: Re: [RFC PATCH 2/4] cpuidle: Add Active Stats calls tracking idle
- entry/exit
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Chris Redpath <Chris.Redpath@arm.com>, Beata.Michalska@arm.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Amit Kachhap <amit.kachhap@gmail.com>
-References: <20210622075925.16189-1-lukasz.luba@arm.com>
- <20210622075925.16189-3-lukasz.luba@arm.com>
- <CAJZ5v0iGv_1d3BT0HowLgecOfhNHNQdOwH6Kef5WE4-zeBbp2Q@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <2f7d855c-5232-ddbe-8403-db3596dcebc5@arm.com>
-Date:   Tue, 22 Jun 2021 14:58:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S231459AbhFVOBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 10:01:49 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:57320 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230212AbhFVOBr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 10:01:47 -0400
+Date:   Tue, 22 Jun 2021 13:59:29 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624370370;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aUWN39zk8f13QKG8ytxWxoOEWEsVoN3FSXOfKwiTepY=;
+        b=NsGtvymYX3ocTki9CDl6k6voTY01q+bAV9upQacoLlFFvqogWKoL5PBTbYipDKVr0yJYfM
+        sXRTSr3EzCA3L1CdWdG3QDoxt9mVT77lyzyl+qpzVPieLdY5lO2SvVQJT8HhhGsxD79PAu
+        6Uq6SgBl6cDfRFb70vR5zgGcZG4ko3vah/rJOjCywNB/0mzSAtMcvciBqr1HN8bZQgogDA
+        KYcGHbLUjZtaIHKNmvwZ4dM2j8suYOvWXPK9sPl17h0Ra4ebKuFpaBnFqWAFqqqQWvAIDH
+        BOisnZQmCVHNxj7f60l8yN6HHc3q6zpxr1wPWQN0X6aVLtfmuj61L0bIzToC9Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624370370;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aUWN39zk8f13QKG8ytxWxoOEWEsVoN3FSXOfKwiTepY=;
+        b=1vrhSnXg+YxarZqYIG4S96IkpQWVdwRTY9FUWBN8rjSWzOk77RYE36rDtzZiqXTkL1DRUT
+        OQ46/KzPLIFTUfBA==
+From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: core/urgent] signal: Prevent sigqueue caching after task got released
+Cc:     syzbot+0bac5fec63d4f399ba98@syzkaller.appspotmail.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <878s32g6j5.ffs@nanos.tec.linutronix.de>
+References: <878s32g6j5.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0iGv_1d3BT0HowLgecOfhNHNQdOwH6Kef5WE4-zeBbp2Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Message-ID: <162437036976.395.10141270533127411803.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the core/urgent branch of tip:
 
+Commit-ID:     399f8dd9a866e107639eabd3c1979cd526ca3a98
+Gitweb:        https://git.kernel.org/tip/399f8dd9a866e107639eabd3c1979cd526ca3a98
+Author:        Thomas Gleixner <tglx@linutronix.de>
+AuthorDate:    Tue, 22 Jun 2021 01:08:30 +02:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 22 Jun 2021 15:55:41 +02:00
 
-On 6/22/21 1:33 PM, Rafael J. Wysocki wrote:
-> On Tue, Jun 22, 2021 at 9:59 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->> The Active Stats framework tracks and accounts the activity of the CPU
->> for each performance level. It accounts the real residency,
-> 
-> No, it doesn't.  It just measures the time between the entry and exit
-> and that's not the real residency (because it doesn't take the exit
-> latency into account, for example).
+signal: Prevent sigqueue caching after task got released
 
-It's 'just' a 'model' and as other models has limitations, but it's
-better than existing one, which IPA has to use:
-cpu_util + currect_freq_at_sampling_time
+syzbot reported a memory leak related to sigqueue caching.
 
-> 
->> when the CPU was not idle, at a given performance level. This patch adds needed calls
->> which provide the CPU idle entry/exit events to the Active Stats
->> framework.
-> 
-> And it adds overhead to overhead-sensitive code.
-> 
-> AFAICS, some users of that code will not really get the benefit, so
-> adding the overhead to it is questionable.
-> 
-> First, why is the existing instrumentation in the idle loop insufficient?
+The assumption that a task cannot cache a sigqueue after the signal handler
+has been dropped and exit_task_sigqueue_cache() has been invoked turns out
+to be wrong.
 
-The instrumentation (tracing) cannot be used at run time AFAIK. I need
-this idle + freq information combined in a running platform, not for
-post-processing (like we have in LISA). The thermal governor IPA would
-use them for used power estimation.
+Such a task can still invoke release_task(other_task), which cleans up the
+signals of 'other_task' and ends up in sigqueue_cache_or_free(), which in
+turn will cache the signal because task->sigqueue_cache is NULL. That's
+obviously bogus because nothing will free the cached signal of that task
+anymore, so the cached item is leaked.
 
-> 
-> Second, why do you need to add locking to this code?
+This happens when e.g. the last non-leader thread exits and reaps the
+zombie leader.
 
-The idle entry/exit updates the CPU's accounting data structure.
-There is a reader of those data structures: thermal governor,
-run from different CPU, which is the reason why I put locking for them.
+Prevent this by setting tsk::sigqueue_cache to an error pointer value in
+exit_task_sigqueue_cache() which forces any subsequent invocation of
+sigqueue_cache_or_free() from that task to hand the sigqueue back to the
+kmemcache.
 
+Add comments to all relevant places.
 
+Fixes: 4bad58ebc8bc ("signal: Allow tasks to cache one sigqueue struct")
+Reported-by: syzbot+0bac5fec63d4f399ba98@syzkaller.appspotmail.com
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+Link: https://lore.kernel.org/r/878s32g6j5.ffs@nanos.tec.linutronix.de
+
+---
+ kernel/signal.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/signal.c b/kernel/signal.c
+index f7c6ffc..f1ecd8f 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -435,6 +435,12 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
+ 		 * Preallocation does not hold sighand::siglock so it can't
+ 		 * use the cache. The lockless caching requires that only
+ 		 * one consumer and only one producer run at a time.
++		 *
++		 * For the regular allocation case it is sufficient to
++		 * check @q for NULL because this code can only be called
++		 * if the target task @t has not been reaped yet; which
++		 * means this code can never observe the error pointer which is
++		 * written to @t->sigqueue_cache in exit_task_sigqueue_cache().
+ 		 */
+ 		q = READ_ONCE(t->sigqueue_cache);
+ 		if (!q || sigqueue_flags)
+@@ -463,13 +469,18 @@ void exit_task_sigqueue_cache(struct task_struct *tsk)
+ 	struct sigqueue *q = tsk->sigqueue_cache;
+ 
+ 	if (q) {
+-		tsk->sigqueue_cache = NULL;
+ 		/*
+ 		 * Hand it back to the cache as the task might
+ 		 * be self reaping which would leak the object.
+ 		 */
+ 		 kmem_cache_free(sigqueue_cachep, q);
+ 	}
++
++	/*
++	 * Set an error pointer to ensure that @tsk will not cache a
++	 * sigqueue when it is reaping it's child tasks
++	 */
++	tsk->sigqueue_cache = ERR_PTR(-1);
+ }
+ 
+ static void sigqueue_cache_or_free(struct sigqueue *q)
+@@ -481,6 +492,10 @@ static void sigqueue_cache_or_free(struct sigqueue *q)
+ 	 * is intentional when run without holding current->sighand->siglock,
+ 	 * which is fine as current obviously cannot run __sigqueue_free()
+ 	 * concurrently.
++	 *
++	 * The NULL check is safe even if current has been reaped already,
++	 * in which case exit_task_sigqueue_cache() wrote an error pointer
++	 * into current->sigqueue_cache.
+ 	 */
+ 	if (!READ_ONCE(current->sigqueue_cache))
+ 		WRITE_ONCE(current->sigqueue_cache, q);
