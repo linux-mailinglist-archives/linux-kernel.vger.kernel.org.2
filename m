@@ -2,173 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F27433B0812
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3587C3B0814
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:59:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231899AbhFVPBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:01:42 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:43790 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbhFVPBh (ORCPT
+        id S232088AbhFVPBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:01:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230510AbhFVPBl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:01:37 -0400
-Received: by mail-ot1-f44.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso21467766otu.10;
-        Tue, 22 Jun 2021 07:59:20 -0700 (PDT)
+        Tue, 22 Jun 2021 11:01:41 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A42D6C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 07:59:24 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id d13so30504697ljg.12
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 07:59:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YkBx1QZ3YBUcTOVSAktKfd9SQPvUoOM5O8r05maYQAQ=;
+        b=snHPRXQhEZNJPwQqRxZC6v8U6a8W9E2FA+po5CGY2JTudvUl8mDcAAaHoztv7MpHxX
+         /k/Gij67GUyS2zlvi771HTGkk/7+YoktyKygOp0DvrP8aVxjnr/+PWNEfEO/2A6ylX+3
+         VOZARUS6Cvp1mmVceEcvU436WL50GtfhoF/UUHvb3JqcQnm6uMb3rFC3MxwKXHc96lQ6
+         249kcrwzOgpIFQKcldBio6d8kmI8SPk8rIIpMXhO1tLzRidXnQVqLUZFnMiGqbCJboCs
+         tfjM8Xv/kDC4+jZf8us5mkT88LsTcGHVbmhwn4C/T8THxSUdTKypqYkgs4v1qL8xUnIe
+         taxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=uT5Bpdq82XEVQRgTPjPwTHB5o3WS7k/Ey06m3bkPzIE=;
-        b=Na9XuZeixd6Ncnw3n8EvyM/qvx9shi5VdtrE82QrlzgfZI2d8dl8IONsX01JDYRfqe
-         R20tIhr7pma3Dwm0mYlt9tpm/6duYT86Cs8tiCEykhS+vJif9Xbo1A0bg7dNiY5Cdowy
-         3Dem8PineotO0Hhg99XUSAAdkHjRGdoa3QtUmA3V96MT3xYCQ1041+JfkD+jWes/SpDL
-         rPGjhhPCrgckPvZjmy5tCzp4rby0oLlcuHEI+z7whVG7euwrOXu/DuBQ83Y6dOn3VJDM
-         sNrtPXW0OQS27K8uuD5+1sZFF3UrLXa3k6xIMiE/fPT/GKvsEr/AycStUnaE1Z3TzY5R
-         Kddg==
-X-Gm-Message-State: AOAM5326jhYyzEzDtGzLdKP8CHCE6kjT+FUwRF5z3UfH+7HD6o/OMEpf
-        xqcraTNRyzKRoqgAxZGRFXHvaYh8PNlVH/rWJcA=
-X-Google-Smtp-Source: ABdhPJwOk7gzGPt9g9QjVX44ULc1UptNpusi78KHKMt00VJDpMe2doqYMlfK6UZYQhK42CIGmCdW6S7z23xzF55OR4s=
-X-Received: by 2002:a05:6830:1bf7:: with SMTP id k23mr3659569otb.206.1624373960325;
- Tue, 22 Jun 2021 07:59:20 -0700 (PDT)
+        bh=YkBx1QZ3YBUcTOVSAktKfd9SQPvUoOM5O8r05maYQAQ=;
+        b=qDObEOULLXdG8LaKvH83be1rK8Zvis0rj/D2W11jQoTYiD7SWATQqjJZDesHMOk9bm
+         8y2D+6fWsGe7hL70WXX8mmAJi9ZoG8FfhEjPGI3dw72xSOh6rd3WdWYvdR1vaITEW94J
+         2t7I5lREi4ysjDMCB5wtdSlazI4tcIaPbuQYclwUwd5QJnmTq+v3ivAT/DZ3eXP+0+TO
+         tSG9DTC05V6Y4KEqiMKBopkYuqXiKTKP6mXnGDNrJRa6sCH5hiGuydYGXHG5gqUEJrq+
+         jjQaJzA+1TW0OPkw1YR7GT4QzTIow2Z6BVAdxg0yJyxWJH1W1rlg0zE7j/kDMWz2l2Qs
+         4G+g==
+X-Gm-Message-State: AOAM530TK9h0rVM76MYXkLBgehkP6Td36CfsUsD0XeK0PN5RBCA3S2r6
+        hAla46oqw5MdiDno+FEAeswKSYWcuy3QficPv+YS4w==
+X-Google-Smtp-Source: ABdhPJw24ImUKGKOxJBlWjfykDltmmZe05nzbOYLp2G/uUfjgWfVekd/NvNH3RSPY6Vo82S0GxVIslMrrGSZMbHUUvM=
+X-Received: by 2002:a2e:6c1a:: with SMTP id h26mr3725615ljc.34.1624373962635;
+ Tue, 22 Jun 2021 07:59:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210622075925.16189-1-lukasz.luba@arm.com> <20210622075925.16189-4-lukasz.luba@arm.com>
- <CAJZ5v0iVwpn0_wCZOh43DOeR2mudWYJyseMdtMsZGR-sjQ1X9Q@mail.gmail.com>
- <4e5476a6-fa9f-a9ef-ff26-8fa1b4bb90c0@arm.com> <CAJZ5v0i0KQwTWzbEPbs=0B-j7MkE6C1XP=mZaU1hhQm9HyZGJg@mail.gmail.com>
- <851205af-39d6-3864-bd28-ae84528946c4@arm.com> <CAJZ5v0jiu=HpyGt7JpbFsS3dA1MWp9pi7K+wgP5gh+Xn3Jx9kA@mail.gmail.com>
-In-Reply-To: <CAJZ5v0jiu=HpyGt7JpbFsS3dA1MWp9pi7K+wgP5gh+Xn3Jx9kA@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 22 Jun 2021 16:59:09 +0200
-Message-ID: <CAJZ5v0jbeiaa0sWy-PaFCKyVYxw=OCGdso7hmSujsO3aeqycTA@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/4] cpufreq: Add Active Stats calls tracking
- frequency changes
-To:     Lukasz Luba <lukasz.luba@arm.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Chris Redpath <Chris.Redpath@arm.com>, Beata.Michalska@arm.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Amit Kachhap <amit.kachhap@gmail.com>
+References: <20210621083108.17589-1-sj38.park@gmail.com> <20210621083108.17589-2-sj38.park@gmail.com>
+In-Reply-To: <20210621083108.17589-2-sj38.park@gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 22 Jun 2021 07:59:11 -0700
+Message-ID: <CALvZod7byYA5jfzF3Vtr1czwWoiaHjkqn9M4e1Ajn1PP47k9=w@mail.gmail.com>
+Subject: Re: [PATCH v31 01/13] mm: Introduce Data Access MONitor (DAMON)
+To:     SeongJae Park <sj38.park@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        SeongJae Park <sjpark@amazon.de>, Jonathan.Cameron@huawei.com,
+        acme@kernel.org, alexander.shishkin@linux.intel.com,
+        amit@kernel.org, benh@kernel.crashing.org,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        David Hildenbrand <david@redhat.com>, dwmw@amazon.com,
+        Marco Elver <elver@google.com>, "Du, Fan" <fan.du@intel.com>,
+        foersleo@amazon.de, greg@kroah.com,
+        Greg Thelen <gthelen@google.com>, guoju.fgj@alibaba-inc.com,
+        jgowans@amazon.com, Mel Gorman <mgorman@suse.de>, mheyne@amazon.de,
+        Minchan Kim <minchan@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, namhyung@kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        David Rientjes <rientjes@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mike Rapoport <rppt@kernel.org>, Shuah Khan <shuah@kernel.org>,
+        sieberf@amazon.com, snu@zelle79.org,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        zgf574564920@gmail.com, linux-damon@amazon.com,
+        Linux MM <linux-mm@kvack.org>, linux-doc@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 4:51 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+On Mon, Jun 21, 2021 at 1:31 AM SeongJae Park <sj38.park@gmail.com> wrote:
 >
-> On Tue, Jun 22, 2021 at 4:09 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
-> >
-> >
-> >
-> > On 6/22/21 2:51 PM, Rafael J. Wysocki wrote:
-> > > On Tue, Jun 22, 2021 at 3:42 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
-> > >>
-> > >>
-> > >>
-> > >> On 6/22/21 1:28 PM, Rafael J. Wysocki wrote:
-> > >>> On Tue, Jun 22, 2021 at 9:59 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
-> > >>>>
-> > >>>> The Active Stats framework tracks and accounts the activity of the CPU
-> > >>>> for each performance level. It accounts the real residency, when the CPU
-> > >>>> was not idle, at a given performance level. This patch adds needed calls
-> > >>>> which provide the CPU frequency transition events to the Active Stats
-> > >>>> framework.
-> > >>>>
-> > >>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
-> > >>>> ---
-> > >>>>    drivers/cpufreq/cpufreq.c | 5 +++++
-> > >>>>    1 file changed, 5 insertions(+)
-> > >>>>
-> > >>>> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> > >>>> index 802abc925b2a..d79cb9310572 100644
-> > >>>> --- a/drivers/cpufreq/cpufreq.c
-> > >>>> +++ b/drivers/cpufreq/cpufreq.c
-> > >>>> @@ -14,6 +14,7 @@
-> > >>>>
-> > >>>>    #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-> > >>>>
-> > >>>> +#include <linux/active_stats.h>
-> > >>>>    #include <linux/cpu.h>
-> > >>>>    #include <linux/cpufreq.h>
-> > >>>>    #include <linux/cpu_cooling.h>
-> > >>>> @@ -387,6 +388,8 @@ static void cpufreq_notify_transition(struct cpufreq_policy *policy,
-> > >>>>
-> > >>>>                   cpufreq_stats_record_transition(policy, freqs->new);
-> > >>>>                   policy->cur = freqs->new;
-> > >>>> +
-> > >>>> +               active_stats_cpu_freq_change(policy->cpu, freqs->new);
-> > >>>>           }
-> > >>>>    }
-> > >>>>
-> > >>>> @@ -2085,6 +2088,8 @@ unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
-> > >>>>                               policy->cpuinfo.max_freq);
-> > >>>>           cpufreq_stats_record_transition(policy, freq);
-> > >>>>
-> > >>>> +       active_stats_cpu_freq_fast_change(policy->cpu, freq);
-> > >>>> +
-> > >>>
-> > >>> This is quite a bit of overhead and so why is it needed in addition to
-> > >>> the code below?
-> > >>
-> > >> The code below is tracing, which is good for post-processing. We use in
-> > >> our tool LISA, when we analyze the EAS decision, based on captured
-> > >> trace data.
-> > >>
-> > >> This new code is present at run time, so subsystems like our thermal
-> > >> governor IPA can use it and get better estimation about CPU used power
-> > >> for any arbitrary period, e.g. 50ms, 100ms, 300ms, ...
-> > >
-> > > So can it be made not run when the IPA is not using it?
-> >
-> > I can make a Kconfig for IPA to select this ACTIVE_STATS.
-> > Also, I can add description that this framework is mostly needed
-> > for IPA, so don't enable it if you don't use IPA (default is 'n'
-> > so it shouldn't harm others).
-> >
-> > This Active Stats shouldn't be stopped when thermal zone is switching
-> > between governors at run time, e.g. IPA -> step_wise -> IPA
-> > because when IPA is set next time, it might not have correct CPU
-> > stats (what is the current frequency and for how long it has been
-> > actively used).
+> From: SeongJae Park <sjpark@amazon.de>
 >
-> But after a while it will collect enough useful data I suppose?
+> DAMON is a data access monitoring framework for the Linux kernel.  The
+> core mechanisms of DAMON make it
 >
-> > Beside, switching governors at run time is not a good idea
-> > (apart from stress testing them ;) ).
-> >
-> > >
-> > >>>
-> > >>> And pretty much the same goes for the idle loop change.  There is
-> > >>> quite a bit of instrumentation in that code already and it avoids
-> > >>> adding new locking for a reason.  Why is it a good idea to add more
-> > >>> locking to that code?
-> > >>
-> > >> This active_stats_cpu_freq_fast_change() doesn't use the locking, it
-> > >> relies on schedutil lock in [1].
-> > >
-> > > Ah, OK.
-> > >
-> > > But it still adds overhead AFAICS.
-> >
-> > Agree, it's an extra code. For platforms which use IPA it's a
-> > justifiable cost, weighted by better estimation thanks to this calls.
-> > For other platforms, this framework will be set to default 'n' option.
+>  - accurate (the monitoring output is useful enough for DRAM level
+>    performance-centric memory management; It might be inappropriate for
+>    CPU cache levels, though),
+>  - light-weight (the monitoring overhead is normally low enough to be
+>    applied online), and
+>  - scalable (the upper-bound of the overhead is in constant range
+>    regardless of the size of target workloads).
 >
-> A general problem with build-time configuration is for distros that
-> want to ship one kernel binary to run on multiple hardware platforms.
-> They need to enable those options anyway and then get the full cost on
-> the platforms that don't need it, but want to use the common binary
-> kernel.
+> Using this framework, hence, we can easily write efficient kernel space
+> data access monitoring applications.  For example, the kernel's memory
+> management mechanisms can make advanced decisions using this.
+> Experimental data access aware optimization works that incurring high
+> access monitoring overhead could again be implemented on top of this.
 >
-> Again, please consider making this new code run only when it is needed
-> even if configured in and if it runs, make it as low-overhead as
-> possible.
+> Due to its simple and flexible interface, providing user space interface
+> would be also easy.  Then, user space users who have some special
+> workloads can write personalized applications for better understanding
+> and optimizations of their workloads and systems.
+>
+> ===
+>
+> Nevertheless, this commit is defining and implementing only basic access
+> check part without the overhead-accuracy handling core logic.  The basic
+> access check is as below.
+>
+> The output of DAMON says what memory regions are how frequently accessed
+> for a given duration.  The resolution of the access frequency is
+> controlled by setting ``sampling interval`` and ``aggregation
+> interval``.  In detail, DAMON checks access to each page per ``sampling
+> interval`` and aggregates the results.  In other words, counts the
+> number of the accesses to each region.  After each ``aggregation
+> interval`` passes, DAMON calls callback functions that previously
+> registered by users so that users can read the aggregated results and
+> then clears the results.  This can be described in below simple
+> pseudo-code::
+>
+>     init()
+>     while monitoring_on:
+>         for page in monitoring_target:
+>             if accessed(page):
+>                 nr_accesses[page] += 1
+>         if time() % aggregation_interval == 0:
+>             for callback in user_registered_callbacks:
+>                 callback(monitoring_target, nr_accesses)
+>             for page in monitoring_target:
+>                 nr_accesses[page] = 0
+>         if time() % update_interval == 0:
 
-Also, why don't you add these hooks to the drivers that are generally
-worked with by the IPA?
+regions_update_interval?
 
-That you won't need to worry about the possible impact on everybody else.
+>             update()
+>         sleep(sampling interval)
+>
+> The target regions constructed at the beginning of the monitoring and
+> updated after each ``regions_update_interval``, because the target
+> regions could be dynamically changed (e.g., mmap() or memory hotplug).
+> The monitoring overhead of this mechanism will arbitrarily increase as
+> the size of the target workload grows.
+>
+> The basic monitoring primitives for actual access check and dynamic
+> target regions construction aren't in the core part of DAMON.  Instead,
+> it allows users to implement their own primitives that are optimized for
+> their use case and configure DAMON to use those.  In other words, users
+> cannot use current version of DAMON without some additional works.
+>
+> Following commits will implement the core mechanisms for the
+> overhead-accuracy control and default primitives implementations.
+>
+> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> Reviewed-by: Leonard Foerster <foersleo@amazon.de>
+> Reviewed-by: Fernand Sieber <sieberf@amazon.com>
+
+Few nits below otherwise look good to me. You can add:
+
+Acked-by: Shakeel Butt <shakeelb@google.com>
+
+[...]
+> +/*
+> + * __damon_start() - Starts monitoring with given context.
+> + * @ctx:       monitoring context
+> + *
+> + * This function should be called while damon_lock is hold.
+> + *
+> + * Return: 0 on success, negative error code otherwise.
+> + */
+> +static int __damon_start(struct damon_ctx *ctx)
+> +{
+> +       int err = -EBUSY;
+> +
+> +       mutex_lock(&ctx->kdamond_lock);
+> +       if (!ctx->kdamond) {
+> +               err = 0;
+> +               ctx->kdamond_stop = false;
+> +               ctx->kdamond = kthread_create(kdamond_fn, ctx, "kdamond.%d",
+> +                               nr_running_ctxs);
+> +               if (IS_ERR(ctx->kdamond))
+> +                       err = PTR_ERR(ctx->kdamond);
+> +               else
+> +                       wake_up_process(ctx->kdamond);
+
+Nit: You can use kthread_run() here.
+
+> +       }
+> +       mutex_unlock(&ctx->kdamond_lock);
+> +
+> +       return err;
+> +}
+> +
+[...]
+> +static int __damon_stop(struct damon_ctx *ctx)
+> +{
+> +       mutex_lock(&ctx->kdamond_lock);
+> +       if (ctx->kdamond) {
+> +               ctx->kdamond_stop = true;
+> +               mutex_unlock(&ctx->kdamond_lock);
+> +               while (damon_kdamond_running(ctx))
+> +                       usleep_range(ctx->sample_interval,
+> +                                       ctx->sample_interval * 2);
+
+Any reason to not use kthread_stop() here?
