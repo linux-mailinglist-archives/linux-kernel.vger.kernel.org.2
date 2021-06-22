@@ -2,154 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942643B0AF0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D214B3B0AFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231364AbhFVQ7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 12:59:09 -0400
-Received: from mail-il1-f182.google.com ([209.85.166.182]:41942 "EHLO
-        mail-il1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbhFVQ7I (ORCPT
+        id S231436AbhFVRC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 13:02:29 -0400
+Received: from mail-pl1-f174.google.com ([209.85.214.174]:35478 "EHLO
+        mail-pl1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230076AbhFVRC0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 12:59:08 -0400
-Received: by mail-il1-f182.google.com with SMTP id k5so5442622ilv.8;
-        Tue, 22 Jun 2021 09:56:52 -0700 (PDT)
+        Tue, 22 Jun 2021 13:02:26 -0400
+Received: by mail-pl1-f174.google.com with SMTP id b3so3103965plg.2;
+        Tue, 22 Jun 2021 10:00:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=XXD64DW43MkEPz+dTKES9lCjXNn8ZHTv2qhDOUEKvHY=;
-        b=MGbTcs4qpFCCYfdQReFASE2+nECYV9NbDZ6qTr5dvX/NekTFQVaNVjbvbQU54Hv4MD
-         4mw2At6A1wKroaXB0lnxxC/D+UyhiftH1p7vhyOI2s3wsMnjUWTh6ot3BFf7wMZNvqfz
-         5T56CKCZploMpo6Ksqzuk8Y6OgiUZ6zuffoUXNkMpKCl1yBkW8kOatSh2Uo60futdbzD
-         0H0/Dkd1irrpg1+Ep1xhXOGDJIwJikg0pOO1hr7M4szfFZeUcsdcCvRtkhWqgeznKzxZ
-         22WRYoFNvnFAJXHVTNj4jvQFor8Abw09CR4K5EMjMe4pEK7BQs1aBYvvn2GVwCFvq3K2
-         0HoA==
-X-Gm-Message-State: AOAM532bNCHEQittQNvFRXhXdOvRE20Q2Xd0D2Iwcmu5Is7EiOv/jZac
-        vk5OjDYmhyGKoAgVgZjUOw==
-X-Google-Smtp-Source: ABdhPJypIwlNsW2XYlIq0IjRsoUGyvqG8oeTVi3ETiXk+6aO7i069nPHEq/tw4RVzMKG/Qxmyv4cuQ==
-X-Received: by 2002:a92:280a:: with SMTP id l10mr2702990ilf.265.1624381011704;
-        Tue, 22 Jun 2021 09:56:51 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id l11sm11055629ios.8.2021.06.22.09.56.47
+        bh=ukZgckleaIh0b++pe9wauTAIqnu+pnTaHyS+Y4sePtY=;
+        b=YmPLbZic/h+mL3oBMpWel9PL6Gu/gigi/a3oriPSIM95jzGfywdWDvnTqCb48yQ4z0
+         mA8swahtoqZm6c04jEGM4OXO0JklWC1MK39L5oPQ3d0suLAj/nsMOKtc2RIsLlBg3f/4
+         8qyfXTuf2QQijxM6rNgEWCAv59O29G9u6PtSk9RJU8SQiSXhajo0m37dyMNP0Kw+C4Kq
+         ISjPTHEzFlUMx7+g7DPYkUy/Du4bMA1FTLDCmJnYTW05dv1XyBH5lNqy9I+vgsiT5Oio
+         1rCI+mOW8oLtvR2nR9Hc2mf67JcdGQ28t1M+ByIDRd/9lntRfRkfTXKC90CFXBuTmpJv
+         bA2g==
+X-Gm-Message-State: AOAM530WrgxIYeVrPe23yXYi+wIuQb34VqbpzTmPu+hjYWgf6U6kOyyn
+        CqA0Gy1ipoSgmb1SrrmnDqk=
+X-Google-Smtp-Source: ABdhPJwUGGxgUVGgwnaFLgXLonCrkA89NCiVddv7o2kDnyXaho+bt5zGxOP/7niZOdrq3I3Pa75bRA==
+X-Received: by 2002:a17:902:7c05:b029:11c:1e7d:c633 with SMTP id x5-20020a1709027c05b029011c1e7dc633mr23377607pll.48.1624381210368;
+        Tue, 22 Jun 2021 10:00:10 -0700 (PDT)
+Received: from garbanzo ([173.239.198.97])
+        by smtp.gmail.com with ESMTPSA id c6sm10935279pfb.39.2021.06.22.10.00.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 09:56:49 -0700 (PDT)
-Received: (nullmailer pid 3840158 invoked by uid 1000);
-        Tue, 22 Jun 2021 16:56:46 -0000
-Date:   Tue, 22 Jun 2021 10:56:46 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Peng Fan <peng.fan@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Tomasz Figa <t.figa@samsung.com>,
-        Fancy Fang <chen.fang@nxp.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-phy@lists.infradead.org,
-        linux-kernel@vger.kernel.org, NXP Linux Team <linux-imx@nxp.com>,
-        linux-amarula@amarulasolutions.com,
-        Anthony Brandon <anthony@amarulasolutions.com>,
-        Francis Laniel <francis.laniel@amarulasolutions.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Milco Pratesi <milco.pratesi@engicam.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: Re: [RFC PATCH 3/9] dt-bindings: phy: Add SEC DSIM DPHY bindings
-Message-ID: <20210622165646.GA3838180@robh.at.kernel.org>
-References: <20210621072424.111733-1-jagan@amarulasolutions.com>
- <20210621072424.111733-4-jagan@amarulasolutions.com>
+        Tue, 22 Jun 2021 10:00:09 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 10:00:06 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     minchan@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
+        mbenes@suse.com, jpoimboe@redhat.com, tglx@linutronix.de,
+        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
+        peterz@infradead.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] zram: fix deadlock with sysfs attribute usage and
+ driver removal
+Message-ID: <20210622170006.3c2jgi4aa4edrkax@garbanzo>
+References: <20210621233013.562641-1-mcgrof@kernel.org>
+ <20210621233634.595649-1-mcgrof@kernel.org>
+ <YNGUIzh7aR3C/Hoz@kroah.com>
+ <20210622152713.fqwyuqpamwgaxomc@garbanzo>
+ <YNIPiDb3TPamz5cF@kroah.com>
+ <20210622164027.656zda4gjy2kjr5z@garbanzo>
+ <YNIVAS45Lc5lWiCv@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210621072424.111733-4-jagan@amarulasolutions.com>
+In-Reply-To: <YNIVAS45Lc5lWiCv@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 12:54:18PM +0530, Jagan Teki wrote:
-> Samsung SEC MIPI DSIM DPHY controller is part of registers
-> available in SEC MIPI DSIM bridge for NXP's i.MX8M Mini and
-> Nano Processors.
+On Tue, Jun 22, 2021 at 06:51:13PM +0200, Greg KH wrote:
+> On Tue, Jun 22, 2021 at 09:40:27AM -0700, Luis Chamberlain wrote:
+> > On Tue, Jun 22, 2021 at 06:27:52PM +0200, Greg KH wrote:
+> > > On Tue, Jun 22, 2021 at 08:27:13AM -0700, Luis Chamberlain wrote:
+> > > > On Tue, Jun 22, 2021 at 09:41:23AM +0200, Greg KH wrote:
+> > > > > On Mon, Jun 21, 2021 at 04:36:34PM -0700, Luis Chamberlain wrote:
+> > > > > > +	ssize_t __ret; \
+> > > > > > +	if (!try_module_get(THIS_MODULE)) \
+> > > > > 
+> > > > > try_module_get(THIS_MODULE) is always racy and probably does not do what
+> > > > > you want it to do.  You always want to get/put module references from
+> > > > > code that is NOT the code calling these functions.
+> > > > 
+> > > > In this case, we want it to trump module removal if it succeeds. That's all.
+> > > 
+> > > True, but either you stop the race, or you do not right?  If you are so
+> > > invested in your load/unload test, this should show up with this code
+> > > eventually as well.
+> > 
+> > I still do not see how the race is possible give the goal to prevent
+> > module removal if a sysfs file is being used. If rmmod is taking
+> > place, this simply will bail out.
+> > 
+> > > > > > +		return -ENODEV; \
+> > > > > > +	__ret = _name ## _store(dev, attr, buf, len); \
+> > > > > > +	module_put(THIS_MODULE); \
+> > > > > 
+> > > > > This too is going to be racy.
+> > > > > 
+> > > > > While fun to poke at, I still think this is pointless.
+> > > > 
+> > > > If you have a better idea, which does not "DOS" module removal, please
+> > > > let me know!
+> > > 
+> > > I have yet to understand why you think that the load/unload in a loop is
+> > > a valid use case.
+> > 
+> > That is dependent upon the intrastructure tests built for a driver.
+> > 
+> > In the case of fstests and blktests we have drivers which *always* get
+> > removed and loaded on each test. Take for instance scsi_debug, which
+> > creates / destroys virtual devices on the per test. Likewise, to build
+> > confidence that failure rate is as close as possible to 0, one must run
+> > a test as many times as possible in a loop. And, to build confidence in
+> > a test, in some situations one ends up running modprobe / rmmod in a
+> > loop.
+> > 
+> > In this case a customer does have a complex system of tests, and by looking
+> > at the crash logs I managed to simplify the way to reproduce it using
+> > simple shell scripts.
 > 
-> Add dt-bingings for it.
-> 
-> Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
->  .../bindings/phy/samsung,sec-dsim-dphy.yaml   | 56 +++++++++++++++++++
->  1 file changed, 56 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/phy/samsung,sec-dsim-dphy.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/phy/samsung,sec-dsim-dphy.yaml b/Documentation/devicetree/bindings/phy/samsung,sec-dsim-dphy.yaml
-> new file mode 100644
-> index 000000000000..c5770c8035e1
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/phy/samsung,sec-dsim-dphy.yaml
-> @@ -0,0 +1,56 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/phy/samsung,sec-dsim-dphy.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Samsung SEC MIPI DSIM DPHY controller on i.MX8M Mini and Nano SoCs
-> +
-> +maintainers:
-> +  - Jagan Teki <jagan@amarulasolutions.com>
-> +
-> +properties:
-> +  "#phy-cells":
-> +    const: 0
-> +
-> +  compatible:
-> +    enum:
-> +      - fsl,imx8mm-sec-dsim-dphy
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: Phy Ref Clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: phy_ref
+> And is _this_ change needed even with the changes in patch 1/3?
 
-'ref' is sufficient.
+Oh absolutely. This patch is needed 100%. Without it, it is actually
+pretty trivial to deadlock as noted in my instructions on how to
+reproduce.
 
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +    description: phandle to the associated power domain
-> +
-> +required:
-> +  - "#phy-cells"
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/imx8mm-clock.h>
-> +    #include <dt-bindings/power/imx8mm-power.h>
-> +
-> +    dphy: dphy@32e100a4 {
+> I think that commit fixes your issues given that you will not unload the
+> module until after the sysfs devices are removed from the system.  Have
+> you tried that alone with your test?
 
-phy@...
+I have tried that, and it does not resolve the deadlock.
 
-> +      compatible = "fsl,imx8mm-sec-dsim-dphy";
-> +      reg = <0x32e100a4 0xbc>;
-> +      clocks = <&clk IMX8MM_CLK_DSI_PHY_REF>;
-> +      clock-names = "phy_ref";
-> +      power-domains = <&dispmix_blk_ctl IMX8MM_BLK_CTL_PD_DISPMIX_MIPI_DPHY>;
-> +      #phy-cells = <0>;
-> +    };
-> -- 
-> 2.25.1
-> 
-> 
+It was *why* I have been insisting that this is a real issue, and why I
+decided to instead try to implement something generic after I was hinted
+by livepatch folks that they also had observed a similar deadlock, and
+so that a generic solution would be appreciated by them.
+
+  Luis
