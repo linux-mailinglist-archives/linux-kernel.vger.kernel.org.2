@@ -2,151 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DFBD3B065E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C512B3B0661
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbhFVOBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 10:01:49 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:57320 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbhFVOBr (ORCPT
+        id S231491AbhFVOCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 10:02:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230212AbhFVOCI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 10:01:47 -0400
-Date:   Tue, 22 Jun 2021 13:59:29 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624370370;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aUWN39zk8f13QKG8ytxWxoOEWEsVoN3FSXOfKwiTepY=;
-        b=NsGtvymYX3ocTki9CDl6k6voTY01q+bAV9upQacoLlFFvqogWKoL5PBTbYipDKVr0yJYfM
-        sXRTSr3EzCA3L1CdWdG3QDoxt9mVT77lyzyl+qpzVPieLdY5lO2SvVQJT8HhhGsxD79PAu
-        6Uq6SgBl6cDfRFb70vR5zgGcZG4ko3vah/rJOjCywNB/0mzSAtMcvciBqr1HN8bZQgogDA
-        KYcGHbLUjZtaIHKNmvwZ4dM2j8suYOvWXPK9sPl17h0Ra4ebKuFpaBnFqWAFqqqQWvAIDH
-        BOisnZQmCVHNxj7f60l8yN6HHc3q6zpxr1wPWQN0X6aVLtfmuj61L0bIzToC9Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624370370;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aUWN39zk8f13QKG8ytxWxoOEWEsVoN3FSXOfKwiTepY=;
-        b=1vrhSnXg+YxarZqYIG4S96IkpQWVdwRTY9FUWBN8rjSWzOk77RYE36rDtzZiqXTkL1DRUT
-        OQ46/KzPLIFTUfBA==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: core/urgent] signal: Prevent sigqueue caching after task got released
-Cc:     syzbot+0bac5fec63d4f399ba98@syzkaller.appspotmail.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <878s32g6j5.ffs@nanos.tec.linutronix.de>
-References: <878s32g6j5.ffs@nanos.tec.linutronix.de>
+        Tue, 22 Jun 2021 10:02:08 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BDB0C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 06:59:51 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id d7so23894231edx.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 06:59:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TvpjBACzoV42mn66zZsleALOXDYyAjKfVllzcHMcfwM=;
+        b=Wp1TqiybqZXzu69uHeEPGREFTO4HIBfR+ESJKgc0unJBPRzOBSE7xOgXcg8pCqdhI0
+         l8CHinSE9Y/aEqHbLuiB6OSStiCxRY0Hn+tzuJawj+ViDwS02PWNcI/dvUNECQlf4i1J
+         HSvmL13FTBydydk0Gb5/zUkalgf6J0ziuYZCI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TvpjBACzoV42mn66zZsleALOXDYyAjKfVllzcHMcfwM=;
+        b=OlLb/jWx4TJwEpunuks0EYQWH4WJvn6qHYKCq+EuSYa4zo7TJHyucoiQlnnCBcPwlP
+         uePIhhh6VLI2GpyPZssDjfOXFQpBRDSS8kaox8qB1haGrB8ps3rif63QxLO3wIcu8Ydm
+         zrFUGk362bPezAmRZJEmh/+VJH/vKnS/50CYHE+QHC8dTlRO9Csa9q7m2I4ebHVMu5wE
+         2uaY155AK0Sd9CmsXonSt7VaGCDtJe+wCnSuUKks+KFDbCxjYVPntXLgpjW+ppzCT1tt
+         HiSm8ZYwFNirl+NenNA4FciuIR+JTy70Aj4ZMfEfbmCvvnrL1xi9iymr2bIoQoDfDaCc
+         R2eA==
+X-Gm-Message-State: AOAM532wbOtALQuBAplZeJqyd49uNuVw1E53hx656jzvcLLkZ8aSYV4b
+        r3SsPE1iVG9AVphGqwF9gaO0F11N2d/ufDyS/0rV0Q==
+X-Google-Smtp-Source: ABdhPJw/q9PxAXyZv2WBeIUBgEA/9dXP9RWMWTh4uf9ndcmWUOV/Ki10fp+3NvT1lHWph76Diq/QxzKIiaoVikN66Oo=
+X-Received: by 2002:aa7:c644:: with SMTP id z4mr172031edr.204.1624370390201;
+ Tue, 22 Jun 2021 06:59:50 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <162437036976.395.10141270533127411803.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210621072424.111733-1-jagan@amarulasolutions.com>
+ <20210621072424.111733-8-jagan@amarulasolutions.com> <CAHCN7x+RKuOwBEFC5ySHJuFiC26ZdYuv620+5FiTfrh-3y2-Lg@mail.gmail.com>
+In-Reply-To: <CAHCN7x+RKuOwBEFC5ySHJuFiC26ZdYuv620+5FiTfrh-3y2-Lg@mail.gmail.com>
+From:   Jagan Teki <jagan@amarulasolutions.com>
+Date:   Tue, 22 Jun 2021 19:29:39 +0530
+Message-ID: <CAMty3ZCR7A76UfN98ffawET20D+nN5=EMmzosXu1G2vaNtBdfw@mail.gmail.com>
+Subject: Re: [RFC PATCH 7/9] arm64: dts: imx8mm: Add eLCDIF node support
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Peng Fan <peng.fan@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Tomasz Figa <t.figa@samsung.com>,
+        Fancy Fang <chen.fang@nxp.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Francis Laniel <francis.laniel@amarulasolutions.com>,
+        Matteo Lisi <matteo.lisi@engicam.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Milco Pratesi <milco.pratesi@engicam.com>,
+        Anthony Brandon <anthony@amarulasolutions.com>,
+        linux-phy@lists.infradead.org,
+        linux-amarula <linux-amarula@amarulasolutions.com>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the core/urgent branch of tip:
+On Tue, Jun 22, 2021 at 8:39 AM Adam Ford <aford173@gmail.com> wrote:
+>
+> On Mon, Jun 21, 2021 at 2:25 AM Jagan Teki <jagan@amarulasolutions.com> wrote:
+> >
+> > Add eLCDIF controller node for i.MX8MM.
+> >
+> > Cc: Rob Herring <robh+dt@kernel.org>
+> > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> > ---
+> >  arch/arm64/boot/dts/freescale/imx8mm.dtsi | 19 +++++++++++++++++++
+> >  1 file changed, 19 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> > index fe5485ee9419..5f68182ed3a6 100644
+> > --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> > @@ -1030,6 +1030,25 @@ aips4: bus@32c00000 {
+> >                         #size-cells = <1>;
+> >                         ranges = <0x32c00000 0x32c00000 0x400000>;
+> >
+> > +                       lcdif: lcdif@32e00000 {
+> > +                               compatible = "fsl,imx8mm-lcdif", "fsl,imx6sx-lcdif";
+>
+> Based on a comment I read from Marek [1] from this patch series for
+> the driver, I think fallback compatible should be fsl,imx28-lcdif.
+>
+> "The iMX8MM and iMX8MN do not support the overlay plane, so they are MXSFB V4"
+>
+> [1] - https://patchwork.kernel.org/project/dri-devel/patch/20210620224834.189411-1-marex@denx.de/
 
-Commit-ID:     399f8dd9a866e107639eabd3c1979cd526ca3a98
-Gitweb:        https://git.kernel.org/tip/399f8dd9a866e107639eabd3c1979cd526ca3a98
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Tue, 22 Jun 2021 01:08:30 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 22 Jun 2021 15:55:41 +02:00
+Yes, I saw that, look like some conversation is going on that thread.
+will update accordingly in next version.
 
-signal: Prevent sigqueue caching after task got released
-
-syzbot reported a memory leak related to sigqueue caching.
-
-The assumption that a task cannot cache a sigqueue after the signal handler
-has been dropped and exit_task_sigqueue_cache() has been invoked turns out
-to be wrong.
-
-Such a task can still invoke release_task(other_task), which cleans up the
-signals of 'other_task' and ends up in sigqueue_cache_or_free(), which in
-turn will cache the signal because task->sigqueue_cache is NULL. That's
-obviously bogus because nothing will free the cached signal of that task
-anymore, so the cached item is leaked.
-
-This happens when e.g. the last non-leader thread exits and reaps the
-zombie leader.
-
-Prevent this by setting tsk::sigqueue_cache to an error pointer value in
-exit_task_sigqueue_cache() which forces any subsequent invocation of
-sigqueue_cache_or_free() from that task to hand the sigqueue back to the
-kmemcache.
-
-Add comments to all relevant places.
-
-Fixes: 4bad58ebc8bc ("signal: Allow tasks to cache one sigqueue struct")
-Reported-by: syzbot+0bac5fec63d4f399ba98@syzkaller.appspotmail.com
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Oleg Nesterov <oleg@redhat.com>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-Link: https://lore.kernel.org/r/878s32g6j5.ffs@nanos.tec.linutronix.de
-
----
- kernel/signal.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/signal.c b/kernel/signal.c
-index f7c6ffc..f1ecd8f 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -435,6 +435,12 @@ __sigqueue_alloc(int sig, struct task_struct *t, gfp_t gfp_flags,
- 		 * Preallocation does not hold sighand::siglock so it can't
- 		 * use the cache. The lockless caching requires that only
- 		 * one consumer and only one producer run at a time.
-+		 *
-+		 * For the regular allocation case it is sufficient to
-+		 * check @q for NULL because this code can only be called
-+		 * if the target task @t has not been reaped yet; which
-+		 * means this code can never observe the error pointer which is
-+		 * written to @t->sigqueue_cache in exit_task_sigqueue_cache().
- 		 */
- 		q = READ_ONCE(t->sigqueue_cache);
- 		if (!q || sigqueue_flags)
-@@ -463,13 +469,18 @@ void exit_task_sigqueue_cache(struct task_struct *tsk)
- 	struct sigqueue *q = tsk->sigqueue_cache;
- 
- 	if (q) {
--		tsk->sigqueue_cache = NULL;
- 		/*
- 		 * Hand it back to the cache as the task might
- 		 * be self reaping which would leak the object.
- 		 */
- 		 kmem_cache_free(sigqueue_cachep, q);
- 	}
-+
-+	/*
-+	 * Set an error pointer to ensure that @tsk will not cache a
-+	 * sigqueue when it is reaping it's child tasks
-+	 */
-+	tsk->sigqueue_cache = ERR_PTR(-1);
- }
- 
- static void sigqueue_cache_or_free(struct sigqueue *q)
-@@ -481,6 +492,10 @@ static void sigqueue_cache_or_free(struct sigqueue *q)
- 	 * is intentional when run without holding current->sighand->siglock,
- 	 * which is fine as current obviously cannot run __sigqueue_free()
- 	 * concurrently.
-+	 *
-+	 * The NULL check is safe even if current has been reaped already,
-+	 * in which case exit_task_sigqueue_cache() wrote an error pointer
-+	 * into current->sigqueue_cache.
- 	 */
- 	if (!READ_ONCE(current->sigqueue_cache))
- 		WRITE_ONCE(current->sigqueue_cache, q);
+Jagan.
