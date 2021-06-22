@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED553B0CE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:30:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 788113B0CF1
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232526AbhFVScQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:32:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44910 "EHLO
+        id S232580AbhFVSem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:34:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbhFVScO (ORCPT
+        with ESMTP id S232537AbhFVSeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:32:14 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2526C061574;
-        Tue, 22 Jun 2021 11:29:57 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id n7so24796054wri.3;
-        Tue, 22 Jun 2021 11:29:57 -0700 (PDT)
+        Tue, 22 Jun 2021 14:34:36 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FFF4C061756
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:32:19 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id q23so21037152ljh.0
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:32:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6JFgiOQERZSIy0aWNl2Nl9CVI7uX5ANotzhjU2/vxGw=;
-        b=jIbmPpEhJU74qAsdco+GdmvRW7QJEL+iz1azILolEbS/x6/m088dbH2Nhzl5jhr/uv
-         etvI7XLpDyh+bk/6gXuIHY0qMATunpX6fjQ3NrttjO4u+HbNcinf7bkJCQxK8sTSc08K
-         EoD9Afn5HGSgn+Bsc3DifuEAeAh+2YmhjR3IlZwggW4YcAmA9YQCwSPGdwxp3nKxdqb0
-         AQpC8x/zK57rBdJwxzz/0ypiXYBTz0TsUo7L7khGcxjucRoKlrGGs87Kw19J6/FIvrnb
-         9tkX8QHrq7pPq5oeKCHiUkpSBUye9lJpHvG33iEiCVYT4O+Za7+fJOl62iM2ikc3EotX
-         D6bA==
+        bh=f0pmw5StORP1KUcP15TdiklSXjxFImoIRcmx4+WJzKc=;
+        b=NP4S1TsIF9h2rPtpSgvjlnlXPEzV1Eg6DWYa5iK2q6AtxYQkNIkoYmNrE9B5XO/S4e
+         HF1VEmrSrJFoleJ4FjX+FsvMVqxeW7ygtwWfM8q4P8/YZWbLfBROiuS/kumnsSNRhqqv
+         IWq+2Kwg/HRFdIwqvLmKhyArAFRW+GJQTx+1o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6JFgiOQERZSIy0aWNl2Nl9CVI7uX5ANotzhjU2/vxGw=;
-        b=paUN1JQgOkHGrH9gDnIUcxdCdJIaPHCWjHPN8cbpST/fJn+Pl3QXWs5JbHWfqw9Q4y
-         YJKdbm9XJRdYL9daGjL40gDjL0OKGCM7wy7WJxbQv8BRY3yP7jUDO1P5DZbZYebJwUtX
-         U7TdNhftsMtWUAwuQMIjxsjTOGzDgzUrzPsSuVa4AkEe4ABcatLyUfcq3aMIwr2Be7Oo
-         sNo4yEFPzxxM2BbvXHtaU7LoM16F2b1FdFbiBCCGHiX3RT53U9tha6+t2TxGNM55GNGk
-         ZD9TdOfR7LsZ6PKfvC/rH/ZVepJ9Al2mMTk8OE7D9uiikpmzzrks46aq7I903qqCbdxT
-         gQaA==
-X-Gm-Message-State: AOAM533ylD3ZWMDCcWKBXeRCfsj8tA+FLNxXA2+unrJypPuVJKcAu6ZP
-        CcVpOKNrcDBw4yI+YFYbt5Oil6kUQFTkCGkUXMY=
-X-Google-Smtp-Source: ABdhPJzLN9lgHu7OvRNCUQaRpxm70alEhzgPPZOlg1pCZqZyJEQ8nIDs/TQ1ghwGdgr8Y400beOlOs0T7GCv1ZBoo3g=
-X-Received: by 2002:a5d:5741:: with SMTP id q1mr2127032wrw.65.1624386596637;
- Tue, 22 Jun 2021 11:29:56 -0700 (PDT)
+        bh=f0pmw5StORP1KUcP15TdiklSXjxFImoIRcmx4+WJzKc=;
+        b=jjNfUDtBow2wQenh5+5nsFBvNyFr9P8uysXQJjY0kTYrgbKdeTzNz8nhQF3U1TXqaL
+         bKd9yBWK1LYNf+2kFhzZkrCAcNTV6G+mxIf8Y1UM6LPkkbyz/ki7VJieDWq8yKk9HwRs
+         JFFWFm6Df90rbv+R2UCf8Any0LvuYqYozIRa1elpZMA7Wk+AhhRAf3PY2KhuEC/+qZSJ
+         9kg6Bl6bLBSFJT6y7NUc6KGdQqI3SNS3TqrQbXxFJW0132RWgUmS1Sb8FWJfinPr/iKk
+         81mFPMnZyUQ/Hw8Sph7JXc8Bou3QmAypmbawk/XHKQIZpvuHYplI9rst1udizJlvp2ys
+         3cUA==
+X-Gm-Message-State: AOAM533gPS3atgm3hFyBKNLz+HQjDYxVmGGJrdyhZUXWL1C9CLcJyYWU
+        B3+NL2xG934yQ4PlhzeubJySamR5bJ5DbRbrvl0=
+X-Google-Smtp-Source: ABdhPJxjtGvaqbGgZLszu2dRoUW/B8SS0/QVhmVzXYxYtmrKG8bgBpgoruNav4xNa39cevL7dek0lA==
+X-Received: by 2002:a05:651c:1541:: with SMTP id y1mr4450464ljp.475.1624386737663;
+        Tue, 22 Jun 2021 11:32:17 -0700 (PDT)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id d19sm1241769lfv.187.2021.06.22.11.32.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Jun 2021 11:32:16 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id h15so18956709lfv.12
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:32:16 -0700 (PDT)
+X-Received: by 2002:a19:7d04:: with SMTP id y4mr3809268lfc.201.1624386736181;
+ Tue, 22 Jun 2021 11:32:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210616020901.2759466-1-mudongliangabcd@gmail.com>
-In-Reply-To: <20210616020901.2759466-1-mudongliangabcd@gmail.com>
-From:   Alexander Aring <alex.aring@gmail.com>
-Date:   Tue, 22 Jun 2021 14:29:45 -0400
-Message-ID: <CAB_54W51MxDwN5oPxBqioaNhq-eB1QfXNMyUpmNZOWNDM3MmnA@mail.gmail.com>
-Subject: Re: [PATCH v2] ieee802154: hwsim: Fix memory leak in hwsim_add_one
-To:     Dongliang Mu <mudongliangabcd@gmail.com>
-Cc:     Stefan Schmidt <stefan@datenfreihafen.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        linux-wpan - ML <linux-wpan@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        syzbot+b80c9959009a9325cdff@syzkaller.appspotmail.com
+References: <CAHk-=wh=YxjEtTpYyhgypKmPJQ8eVLJ4qowmwbnG1bOU06_4Bg@mail.gmail.com>
+ <3221175.1624375240@warthog.procyon.org.uk> <YNIBb5WPrk8nnKKn@zeniv-ca.linux.org.uk>
+ <YNIDdgn0m8d2a0P3@zeniv-ca.linux.org.uk> <YNIdJaKrNj5GoT7w@casper.infradead.org>
+ <3231150.1624384533@warthog.procyon.org.uk> <YNImEkqizzuStW72@casper.infradead.org>
+ <CAHk-=wicC9ZTNNH1E-oHebcT3+r4Q4Wf1tXBindXrCdotj20Gg@mail.gmail.com> <3233312.1624386204@warthog.procyon.org.uk>
+In-Reply-To: <3233312.1624386204@warthog.procyon.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 22 Jun 2021 11:32:00 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgA4_TkMqOw9GwW7aNe3jBU_yBKZkNWTicz=BKap_=siw@mail.gmail.com>
+Message-ID: <CAHk-=wgA4_TkMqOw9GwW7aNe3jBU_yBKZkNWTicz=BKap_=siw@mail.gmail.com>
+Subject: Re: Do we need to unrevert "fs: do not prefault sys_write() user
+ buffer pages"?
+To:     David Howells <dhowells@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, "Ted Ts'o" <tytso@mit.edu>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, Jun 22, 2021 at 11:23 AM David Howells <dhowells@redhat.com> wrote:
+>
+> Probably the most obvious way would be to set a flag in task_struct saying
+> what you're doing and have the point that would otherwise wait for the page to
+> become unlocked skip to the fault fixup code if the page is locked after
+> ->readahead() has been invoked and the flag is set, then use get_user() in
+> iov_iter_fault_in_readable().
 
-On Tue, 15 Jun 2021 at 22:09, Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->
-> No matter from hwsim_remove or hwsim_del_radio_nl, hwsim_del fails to
-> remove the entry in the edges list. Take the example below, phy0, phy1
-> and e0 will be deleted, resulting in e1 not freed and accessed in the
-> future.
->
->               hwsim_phys
->                   |
->     ------------------------------
->     |                            |
-> phy0 (edges)                 phy1 (edges)
->    ----> e1 (idx = 1)             ----> e0 (idx = 0)
->
-> Fix this by deleting and freeing all the entries in the edges list
-> between hwsim_edge_unsubscribe_me and list_del(&phy->list).
->
-> Reported-by: syzbot+b80c9959009a9325cdff@syzkaller.appspotmail.com
-> Fixes: 1c9f4a3fce77 ("ieee802154: hwsim: fix rcu handling")
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+Yeah, the existing user access exception handling code _almost_
+handles it, except for one thing: you'd need to have some way to
+distinguish between "prefetch successful" and "fault failed".
 
-Acked-by: Alexander Aring <aahringo@redhat.com>
+And yeah, I guess it could be a flag in task_struct, but at that point
+my gag reflex starts acting up.
 
-Thanks!
+               Linus
