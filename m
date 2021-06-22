@@ -2,80 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74EFF3B0CCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA2A63B0CCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232371AbhFVS0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:26:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34334 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230146AbhFVS0C (ORCPT
+        id S232506AbhFVS0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:26:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232426AbhFVS0D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:26:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624386226;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4wcUku5VYFOIqpjq4OYU4JOlXU8CasqeJwQGFJvPLW0=;
-        b=NjbCgyg7YxgCLTsMtK1OfDAUPruiD7O2zLKx373szruz3AoRE44Y5TADI8Fpm4ZZV4OjZ6
-        QWFQ5qik7oE0/nhTl6zgyColB4rwZmHa6Wgy8gRkXK1ST/N4W7vOty2iL/0AYI4wbGOwGb
-        Q/l74O+jOHPfkZEN/qR+wTQNYHc/aK0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-148-ixJxdKnMMziAfh0cKU_bOw-1; Tue, 22 Jun 2021 14:23:28 -0400
-X-MC-Unique: ixJxdKnMMziAfh0cKU_bOw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5CA02804142;
-        Tue, 22 Jun 2021 18:23:27 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9218B69CB4;
-        Tue, 22 Jun 2021 18:23:24 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAHk-=wicC9ZTNNH1E-oHebcT3+r4Q4Wf1tXBindXrCdotj20Gg@mail.gmail.com>
-References: <CAHk-=wicC9ZTNNH1E-oHebcT3+r4Q4Wf1tXBindXrCdotj20Gg@mail.gmail.com> <CAHk-=wh=YxjEtTpYyhgypKmPJQ8eVLJ4qowmwbnG1bOU06_4Bg@mail.gmail.com> <3221175.1624375240@warthog.procyon.org.uk> <YNIBb5WPrk8nnKKn@zeniv-ca.linux.org.uk> <YNIDdgn0m8d2a0P3@zeniv-ca.linux.org.uk> <YNIdJaKrNj5GoT7w@casper.infradead.org> <3231150.1624384533@warthog.procyon.org.uk> <YNImEkqizzuStW72@casper.infradead.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, "Ted Ts'o" <tytso@mit.edu>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Do we need to unrevert "fs: do not prefault sys_write() user buffer pages"?
+        Tue, 22 Jun 2021 14:26:03 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D80EBC061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:23:46 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id e33so17793353pgm.3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:23:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yXA4rHiWjIH9o9XmIG32r03SHImL59Pk8RIZgBFL7d0=;
+        b=Ym2SAYocAlxz13BRcPfGv8BL5ruxEwMIEahKmrLIa951qfCVLKr9ib9qEyEluwR76s
+         arIDjvRk31dZudsnPP/G0ZxPBVpkMpoJrAqqO0lds4WJufGy4ktUWggJUY+VHBaryxhi
+         n+ChYlaDh99MnXKFn+3MinQfk0F5WEpJbIWzU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yXA4rHiWjIH9o9XmIG32r03SHImL59Pk8RIZgBFL7d0=;
+        b=PITx2P/55GMKkE7MFKGWBQZVITEiLUdv7r8IIUq5bIeH76bdwqVaKgHasjNxBXKUwU
+         vDl1d/CDyE6YDfG6UjtJNYDQBOjMtddMQgr8IK9mOfsVieXdF361nJORwuqkOURNihQX
+         Dz2/rtKUoJzsoTqpXrNxzJExCxDqpSfawe5ntcTHj56tLYUt5mANGiGnLWyzHNcugJUG
+         9uJWDriUqam6yWVdY5GV+rh4VMireNyw9ZkVHa4hcHrZ2/QphKuwlviHqUqnXYAWmayR
+         IbkiNuj5YI1jZYsH8D/EnYEv4LsV6FGbUXI0XXZ4uB1GyjQC4ZWDdstu60Cc/uZT/VaH
+         3enQ==
+X-Gm-Message-State: AOAM531Y3dSUAfOOSfDFMrPBt8mB4I3nPr7DAgKGRabvBKtSLQZNW+LH
+        DvKRKN+IoEjrvE4Ou2oa/CPI1g==
+X-Google-Smtp-Source: ABdhPJyAKRVykKU/KgvZGJQDqYy26+5sRFeqHMwGvD8r2zLxNa5qXN+gVPDw1p3/7DsMBYg0ZSOh3w==
+X-Received: by 2002:a05:6a00:1acf:b029:305:d2e4:1687 with SMTP id f15-20020a056a001acfb0290305d2e41687mr2653921pfv.50.1624386226378;
+        Tue, 22 Jun 2021 11:23:46 -0700 (PDT)
+Received: from localhost ([2620:15c:202:201:dc21:8b6f:f8cd:9070])
+        by smtp.gmail.com with UTF8SMTPSA id o1sm40173pfk.152.2021.06.22.11.23.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Jun 2021 11:23:46 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 11:23:44 -0700
+From:   Matthias Kaehlcke <mka@chromium.org>
+To:     Chanwoo Choi <cw00.choi@samsung.com>
+Cc:     andrew-sh.cheng@mediatek.com, hsinyi@chromium.org,
+        sibis@codeaurora.org, saravanak@google.com,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com,
+        chanwoo@kernel.org, cwchoi00@gmail.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] PM / devfreq: Export devfreq_get_freq_ragne symbol
+ within devfreq
+Message-ID: <YNIqsJLqWNSg2oxM@google.com>
+References: <20210617060546.26933-1-cw00.choi@samsung.com>
+ <CGME20210617054647epcas1p265359058d489661e09d8d48d4937ca7b@epcas1p2.samsung.com>
+ <20210617060546.26933-3-cw00.choi@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3233311.1624386204.1@warthog.procyon.org.uk>
-Date:   Tue, 22 Jun 2021 19:23:24 +0100
-Message-ID: <3233312.1624386204@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210617060546.26933-3-cw00.choi@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
+On Thu, Jun 17, 2021 at 03:05:44PM +0900, Chanwoo Choi wrote:
 
-> I'm not sure how that would even look. I don't think it would
-> necessarily be *impossible* (special marker in the exception table to
-> let the fault code know that this is a "prepare" fault), but it would
-> be pretty challenging.
+> Subject: PM / devfreq: Export devfreq_get_freq_ragne symbol within devfreq
 
-Probably the most obvious way would be to set a flag in task_struct saying
-what you're doing and have the point that would otherwise wait for the page to
-become unlocked skip to the fault fixup code if the page is locked after
-->readahead() has been invoked and the flag is set, then use get_user() in
-iov_iter_fault_in_readable().
+nit: s/ragne/range/
 
-But, as Willy says, there's a reasonable chance that the source page is
-present anyway (presumably you want to write out data you've just constructed
-or modified), in which case it's probably not worth the complexity.
+>
+> In order to get frequency range within devfreq governors,
+> export devfreq_get_freq_ragne symbol within devfreq.
+> 
+> Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
 
-David
-
+Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
