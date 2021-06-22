@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE1273B0E22
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:06:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C7D3B0E23
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232950AbhFVUIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 16:08:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
+        id S232967AbhFVUIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 16:08:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232882AbhFVUIA (ORCPT
+        with ESMTP id S232437AbhFVUIA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 22 Jun 2021 16:08:00 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9EB5C061760
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:05:42 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id q207-20020a3743d80000b02903ab34f7ef76so19508004qka.5
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:05:42 -0700 (PDT)
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E2BC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:05:44 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id g4-20020ac80ac40000b029024ead0ebb62so388011qti.13
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:05:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=yS607YMkjceC4JgRruoi4/ygC1MkOaxs5bVEaulz0tc=;
-        b=RIuUzkEVhRmNz0bDMwt1Z7pVdRtVEUhMXcjZ7o9biugvOtkiRE/17qM9Mjf4lPrxcx
-         uzG6uMvMFR27JmMJPdJgpsm8KGgsvU/nkBMb4DbjBsvCEXuL/Ts6tjsqt2fxWMW+ksw2
-         ElNOe83RDiz4i2QX1I8edZtLEJEIcUmRNJbKaIKONoXRNZ2LNP2797wJItihUjdHHHwP
-         28NZ8q3rtcrKoYiADETzXnKPwfRZr9EiFdXL+vT6sb+ctvAqqSR3IpOzkcuUrUJFWUoG
-         /wvMbzoSy6zvAtZO30oQP2uYoCgUVGtZ6vvlB5M5bo7C5BoWu8LqIy2IWiHEAC9wAob6
-         pm8g==
+        bh=hi30iliBhkAnFjVQGfRe6RHZWepvmSRCUakfKckCqbM=;
+        b=k/vhZ1jxqpyyIEKCNuzMe0574525FVTHK4QigXQgKwai31yEBv39kpcLweu6pwYLRm
+         lst5WPifvcQo2hGVM4xvmz8G1PnemYb3ZrGdfusS+p5bFCrmJVBdG7l1kXLpA3MOzH6V
+         ywCyeDKgQ/SeTkThZKZp9dOJw1uVH1/1TF8vbMBWhVteXC6+1dkuKvTIOAfTPyowNavk
+         Tb8IIqnFozfIElklBrEUaqIMg1y649il8p54UdHmTlI6lFV0TsjDCrC3j+dQBsX5uV7k
+         Vvd9Sch8laDHhS9BfI5XeZCYNO5RHClLsn9RDOrnvXp7nrqxyQLiZguQVEvap1PL8/Wu
+         FHCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=yS607YMkjceC4JgRruoi4/ygC1MkOaxs5bVEaulz0tc=;
-        b=MKt+U+BtGuy5Qd0rJU/68/Vm22J3qM5/cuf6ba5fUW9LU29QaUb6h2UdA3k18nsqZZ
-         NQeW75dNGGCadsi8rKy7ZU0z3JtG/GeCwe0acOVFs4uQ2ptO1dz3lOb+Lm9WVdA6MDej
-         gluv8RtLDlsSSE7aoT7c5aJc7IPSAiY5cg7xXEL1k/INFJPncduBJ9g5SNNQp+4uvNvS
-         UEtVtDZDhDY7oeC5Bi3BoDCswyLVzwFelpYwhtvY7bdcSHyYS/W35m6uYXiCrtP7WPKn
-         HHeHiJ+8OpusidJp/AxKnh4RksbFF1xoS+R83FBIAnXp75IpGpERUE4DD6l1PjXQdyD5
-         1O3A==
-X-Gm-Message-State: AOAM531qGJUiT1F+oX42ei6Xap6GVmUDFO7MG/u/nbM7z0AQqD4pVZsU
-        a/BWH9k/uh/4tEnWMCiVCaTCKWvlE4U=
-X-Google-Smtp-Source: ABdhPJzkhqdyZ2pHk6tsLg53zmI8hJ/HdjKmFlDkPze3Xe8cBtlmbSVriL31WeiVmbQff0jNMVxSqPMUY8U=
+        bh=hi30iliBhkAnFjVQGfRe6RHZWepvmSRCUakfKckCqbM=;
+        b=MAJj3LWuy0dwce359KqTMZKez+6J+Xj2tNwJ5g3WUHf5zpYgMqXtNSf7OAx/7BnSg6
+         1gQaS5qfds+45RbhWQmSxB9fqNsJJoIoeWi3JxpJfwyUKlAaSZ7TizlmJ0iFSzsfYQ3j
+         51SP+BRC616cTL+vPsmYfIL87YF/jVtjM2Aoct8zqpAfKW2n/L/0fEI9VAffizrW1Nvr
+         nzxGkNh0SkkezgtYiKG+Shcg9zdfGr/NmmCNci8gwdSecu2sA41ZgO8GvkRR7aI1gh4v
+         ip3FcVug8yVYkXK8MKagZPynhKum3KzGr7Qu/z9yQKwsDZ9q3UNnkM0hcjgyGztQBz6P
+         8Sqw==
+X-Gm-Message-State: AOAM530Jtp8CJOLmmAKWBrnECAVocJ52EklLOf9TbC0gXzKLhlmA57ZD
+        8rjx5FT2zFIOHsdDdRkPh0F7Fw0YOYA=
+X-Google-Smtp-Source: ABdhPJyrWpJw0uxqpzJ1buWayqGNsYIC+WmjBQKTc313FqfCu6zlVnjb0w73e9Lh/6t5je8haz3J6xPWdfc=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:7d90:4528:3c45:18fb])
- (user=seanjc job=sendgmr) by 2002:a0c:f805:: with SMTP id r5mr554023qvn.31.1624392341779;
- Tue, 22 Jun 2021 13:05:41 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:2bc1:: with SMTP id r184mr7183467ybr.51.1624392343844;
+ Tue, 22 Jun 2021 13:05:43 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 22 Jun 2021 13:05:11 -0700
+Date:   Tue, 22 Jun 2021 13:05:12 -0700
 In-Reply-To: <20210622200529.3650424-1-seanjc@google.com>
-Message-Id: <20210622200529.3650424-2-seanjc@google.com>
+Message-Id: <20210622200529.3650424-3-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210622200529.3650424-1-seanjc@google.com>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH 01/19] KVM: selftests: Remove errant asm/barrier.h include to
- fix arm64 build
+Subject: [PATCH 02/19] KVM: selftests: Zero out the correct page in the
+ Hyper-V features test
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>,
         Christian Borntraeger <borntraeger@de.ibm.com>,
@@ -69,39 +69,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop an unnecessary include of asm/barrier.h from dirty_log_test.c to
-allow the test to build on arm64.  arm64, s390, and x86 all build cleanly
-without the include (PPC and MIPS aren't supported in KVM's selftests).
+Fix an apparent copy-paste goof in hyperv_features where hcall_page
+(which is two pages, so technically just the first page) gets zeroed
+twice, and hcall_params gets zeroed none times.
 
-arm64's barrier.h includes linux/kasan-checks.h, which is not copied
-into tools/.
-
-  In file included from ../../../../tools/include/asm/barrier.h:8,
-                   from dirty_log_test.c:19:
-     .../arm64/include/asm/barrier.h:12:10: fatal error: linux/kasan-checks.h: No such file or directory
-     12 | #include <linux/kasan-checks.h>
-        |          ^~~~~~~~~~~~~~~~~~~~~~
-  compilation terminated.
-
-Fixes: 84292e565951 ("KVM: selftests: Add dirty ring buffer test")
-Cc: Peter Xu <peterx@redhat.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- tools/testing/selftests/kvm/dirty_log_test.c | 1 -
- 1 file changed, 1 deletion(-)
+ tools/testing/selftests/kvm/x86_64/hyperv_features.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
-index 81edbd23d371..b4d24f50aca6 100644
---- a/tools/testing/selftests/kvm/dirty_log_test.c
-+++ b/tools/testing/selftests/kvm/dirty_log_test.c
-@@ -16,7 +16,6 @@
- #include <errno.h>
- #include <linux/bitmap.h>
- #include <linux/bitops.h>
--#include <asm/barrier.h>
- #include <linux/atomic.h>
+diff --git a/tools/testing/selftests/kvm/x86_64/hyperv_features.c b/tools/testing/selftests/kvm/x86_64/hyperv_features.c
+index 9947ef63dfa1..030c9447cb90 100644
+--- a/tools/testing/selftests/kvm/x86_64/hyperv_features.c
++++ b/tools/testing/selftests/kvm/x86_64/hyperv_features.c
+@@ -630,7 +630,7 @@ int main(void)
+ 	memset(addr_gva2hva(vm, hcall_page), 0x0, 2 * getpagesize());
  
- #include "kvm_util.h"
+ 	hcall_params = vm_vaddr_alloc(vm, getpagesize(), 0x20000, 0, 0);
+-	memset(addr_gva2hva(vm, hcall_page), 0x0, getpagesize());
++	memset(addr_gva2hva(vm, hcall_params), 0x0, getpagesize());
+ 
+ 	vcpu_args_set(vm, VCPU_ID, 2, addr_gva2gpa(vm, hcall_page), hcall_params);
+ 	vcpu_enable_cap(vm, VCPU_ID, &cap);
 -- 
 2.32.0.288.g62a8d224e6-goog
 
