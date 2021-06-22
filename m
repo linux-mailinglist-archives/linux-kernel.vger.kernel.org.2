@@ -2,167 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D523B0503
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B1153B050A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbhFVMqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 08:46:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231760AbhFVMqE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 08:46:04 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06929C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 05:43:49 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso1655271wmh.4
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 05:43:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IWa3yvDMZC05F09Gb0TJwUqbgaqCJLtXoPOpUHqNy40=;
-        b=HIImoI6qMkUOuMDOIfq/jhmSoNcFXAmToJNHbsufhKclBs5xgHEnnOOELPRwTvhbOD
-         VGcrS0iSnncjUBPRUPCzW8VXUVo3VPyeqQH2WcXv7uWsaHfjt6DBXYXVlky5ME0XbhiW
-         paEkYrxZk094FkBS2Wqkc5US86GnxzUJaj8wr0ATVa6Gc1wgC1wjisOCaIBdIeKFhaDW
-         h+d6BeC4Ebo+XqYmQGQ5FyayvodsGiLbwrtOb3Nl5VB/jFq5R2FjJxWYCIQLzd3VrRK6
-         FdZuOINbex9KtjIegfbcb3xW5hzoSHANtmujLhsTdltypEBwM5MqocIBRSvPTszZiqyo
-         kExw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=IWa3yvDMZC05F09Gb0TJwUqbgaqCJLtXoPOpUHqNy40=;
-        b=KlOr9s/aJd8CoYkNuM+SUuMKyVpBfHdJi7HIFkTEbKZlTZZFYQFCMmVWGrz+kXdig8
-         ddWSbQHXTKeGMUKD7EEKo5XYFqYHUDcQqQ5zNd9Ox2cEdaR+JqmwchNGus2oBUdigwzn
-         EXqxcvIPyYB9NlofiuVZIrS/I2O4LVYpLUGyTjAzeRBbAvCssjC0k69CAanGNd3k7iep
-         RyBedseBsscdu0RDfWrq9HgaArNLTtjFKNjTGEBfNGj/fNIJ6vurJHgwoV3koqZi/Ubv
-         QA8CN0nmp7fL8WjQusO/1Urzn+zFPHskUwFKK5HGtfgNNdEJXsHUnsfpEEMjHiZun9Ma
-         HqcA==
-X-Gm-Message-State: AOAM531RreBycI6XNe+q6q7Pu/XCfiQqi12vZe16+rGZfE0KJLXO9TQ5
-        JJ1fd344c11XjqjRHXPav2SYaw==
-X-Google-Smtp-Source: ABdhPJy5rQuRGuARhz/vMpwS+ZMRIV5SVmAckD49snpPgMD2hPstEquQIk0YQn0Zld5AvrodGx2snQ==
-X-Received: by 2002:a7b:cb1a:: with SMTP id u26mr4283571wmj.125.1624365827472;
-        Tue, 22 Jun 2021 05:43:47 -0700 (PDT)
-Received: from ?IPv6:2001:861:44c0:66c0:b049:62d0:2ee2:34f7? ([2001:861:44c0:66c0:b049:62d0:2ee2:34f7])
-        by smtp.gmail.com with ESMTPSA id s16sm9517373wrm.36.2021.06.22.05.43.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 05:43:47 -0700 (PDT)
-Subject: Re: [PATCH] watchdog: meson_gxbb_wdt: improve
-To:     Art Nikpal <email2tema@gmail.com>
-Cc:     wim@linux-watchdog.org, linux@roeck-us.net,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
-        linux-kernel@vger.kernel.org, Artem Lapkin <art@khadas.com>,
-        Nick Xie <nick@khadas.com>, Gouwa Wang <gouwa@khadas.com>
-References: <20210622095639.1280774-1-art@khadas.com>
- <bfa12322-bc49-2337-2988-199e87e34b87@baylibre.com>
- <CAKaHn9JpH2Yh-1njO6jEnFeu-GMhbonftN=-VXdbvjdug16qHA@mail.gmail.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <0d5e53b2-873e-0ffa-32eb-87e96b51e263@baylibre.com>
-Date:   Tue, 22 Jun 2021 14:43:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S231668AbhFVMrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 08:47:20 -0400
+Received: from mga12.intel.com ([192.55.52.136]:59503 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229501AbhFVMrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 08:47:19 -0400
+IronPort-SDR: YwkuLvjk5XkltDoc6oOjajA1tB4A0AJ9vbF61yA66d4cZDrwOrAn8qZjfocqi5A31FaIoI3qGL
+ p8egqPNB+gwA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="186734120"
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208";a="186734120"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 05:45:03 -0700
+IronPort-SDR: ot5riLILubcp9FdnvIW72TgEJmFvdk1aZs/O4Umcr1P7WFxm4JOa/zlVTVmYyhPuHBFOfLxNUR
+ mpnffwHKjPSg==
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208";a="423305835"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 05:45:01 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lvflw-004TIM-NR; Tue, 22 Jun 2021 15:44:56 +0300
+Date:   Tue, 22 Jun 2021 15:44:56 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Oliver O'Halloran <oohall@gmail.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>
+Subject: Re: [PATCH v2 1/1] powerpc/papr_scm: Properly handle UUID types and
+ API
+Message-ID: <YNHbSGzdgQh+6F+O@smile.fi.intel.com>
+References: <20210616134303.58185-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAKaHn9JpH2Yh-1njO6jEnFeu-GMhbonftN=-VXdbvjdug16qHA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210616134303.58185-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, Jun 16, 2021 at 04:43:03PM +0300, Andy Shevchenko wrote:
+> Parse to and export from UUID own type, before dereferencing.
+> This also fixes wrong comment (Little Endian UUID is something else)
+> and should eliminate the direct strict types assignments.
 
-On 22/06/2021 13:53, Art Nikpal wrote:
->> Neil
->> Can you split the patch in 4 distinct changes ?
-> 
-> yes  no problem i can try to do it tomorrow !
-> maybe somebody have other ideas, suggestion, comments ...
+Any comments on this version? Can it be applied?
 
-The changeset is clean, and overall I'm ok with the changes, but I'm pretty sure the wdt maintainers
-will prefer separate changes in order to comment of each.
-Neil
+> Fixes: 43001c52b603 ("powerpc/papr_scm: Use ibm,unit-guid as the iset cookie")
+> Fixes: 259a948c4ba1 ("powerpc/pseries/scm: Use a specific endian format for storing uuid from the device tree")
+> Cc: Oliver O'Halloran <oohall@gmail.com>
+> Cc: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+> v2: added missed header (Vaibhav), updated comment (Aneesh),
+>     rewrite part of the commit message to avoid mentioning the Sparse
 
-> 
-> 
-> On Tue, Jun 22, 2021 at 7:08 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
->>
->> Hi Art,
->>
->> On 22/06/2021 11:56, Artem Lapkin wrote:
->>> Improve meson_gxbb_wdt watchdog driver
->>> 1) added module param timeout and nowayout same as other modules
->>> 2) print watchdog driver start status
->>> 3) add watchdog_stop_on_unregister
->>> 4) remove watchdog_stop_on_reboot ( still can be activated by
->>> watchdog.stop_on_reboot=1 ) i think this driver configuration more useful
->>> becouse we can get reboot waranty for abnormal situations on shutdown stage
->>
->> Can you split the patch in 4 distinct changes ?
->>
->> Neil
->>
->>>
->>> Signed-off-by: Artem Lapkin <art@khadas.com>
->>> ---
->>>  drivers/watchdog/meson_gxbb_wdt.c | 20 ++++++++++++++++++--
->>>  1 file changed, 18 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/watchdog/meson_gxbb_wdt.c b/drivers/watchdog/meson_gxbb_wdt.c
->>> index 5a9ca10fbcfa..15c889932c13 100644
->>> --- a/drivers/watchdog/meson_gxbb_wdt.c
->>> +++ b/drivers/watchdog/meson_gxbb_wdt.c
->>> @@ -35,6 +35,17 @@ struct meson_gxbb_wdt {
->>>       struct clk *clk;
->>>  };
->>>
->>> +static bool nowayout = WATCHDOG_NOWAYOUT;
->>> +static unsigned int timeout = DEFAULT_TIMEOUT;
->>> +
->>> +module_param(nowayout, bool, 0);
->>> +MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started default="
->>> +                     __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
->>> +
->>> +module_param(timeout, uint, 0);
->>> +MODULE_PARM_DESC(timeout, "Watchdog heartbeat in seconds="
->>> +                     __MODULE_STRING(DEFAULT_TIMEOUT) ")");
->>> +
->>>  static int meson_gxbb_wdt_start(struct watchdog_device *wdt_dev)
->>>  {
->>>       struct meson_gxbb_wdt *data = watchdog_get_drvdata(wdt_dev);
->>> @@ -174,7 +185,7 @@ static int meson_gxbb_wdt_probe(struct platform_device *pdev)
->>>       data->wdt_dev.ops = &meson_gxbb_wdt_ops;
->>>       data->wdt_dev.max_hw_heartbeat_ms = GXBB_WDT_TCNT_SETUP_MASK;
->>>       data->wdt_dev.min_timeout = 1;
->>> -     data->wdt_dev.timeout = DEFAULT_TIMEOUT;
->>> +     data->wdt_dev.timeout = timeout;
->>>       watchdog_set_drvdata(&data->wdt_dev, data);
->>>
->>>       /* Setup with 1ms timebase */
->>> @@ -186,7 +197,12 @@ static int meson_gxbb_wdt_probe(struct platform_device *pdev)
->>>
->>>       meson_gxbb_wdt_set_timeout(&data->wdt_dev, data->wdt_dev.timeout);
->>>
->>> -     watchdog_stop_on_reboot(&data->wdt_dev);
->>> +     watchdog_set_nowayout(&data->wdt_dev, nowayout);
->>> +     watchdog_stop_on_unregister(&data->wdt_dev);
->>> +
->>> +     dev_info(dev, "Watchdog enabled (timeout=%d sec, nowayout=%d)",
->>> +             data->wdt_dev.timeout, nowayout);
->>> +
->>>       return devm_watchdog_register_device(dev, &data->wdt_dev);
->>>  }
->>>
->>>
->>
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
