@@ -2,73 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CFC93B0400
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:15:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 070F63B0419
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:17:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhFVMRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 08:17:52 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:49742 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231174AbhFVMRu (ORCPT
+        id S231407AbhFVMUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 08:20:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231225AbhFVMT6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 08:17:50 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15MCFFQZ053902;
-        Tue, 22 Jun 2021 07:15:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1624364115;
-        bh=VXl+turadXEnbo1KvsAjQeLsr8jDoDct/9xwVEpSP24=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=vfk9zw3qA8STy8oMrHARhDBi+4Pq2AgjZ+aUCsfAaTshQKPMGcAV4+FeD6VVo2Lwc
-         8j1+UBTA78bzjRGfcOYucXfY/GRPFUk7tXWwHEXgHR+EL4yBqzDuMx877X0OSgzTb/
-         HxtG2RtZt0pFNEMEhDXm6PEaa4n9gVUtEnqAC8a0=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15MCFEjD048546
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 22 Jun 2021 07:15:15 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 22
- Jun 2021 07:15:14 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 22 Jun 2021 07:15:14 -0500
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15MCFBHg049752;
-        Tue, 22 Jun 2021 07:15:11 -0500
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     Michael Walle <michael@walle.cc>, <linux-mtd@lists.infradead.org>,
-        Colin King <colin.king@canonical.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Richard Weinberger <richard@nod.at>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
-Subject: Re: [PATCH] mtd: spi-nor: remove redundant continue statement
-Date:   Tue, 22 Jun 2021 17:44:47 +0530
-Message-ID: <162436407038.6751.408040408294040312.b4-ty@ti.com>
-X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210618093331.100006-1-colin.king@canonical.com>
-References: <20210618093331.100006-1-colin.king@canonical.com>
+        Tue, 22 Jun 2021 08:19:58 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B81C061574;
+        Tue, 22 Jun 2021 05:17:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=Bi9mU/y3AgkZqz4pMv+LJds5ZZ5YN/sF3JHkG2XPIRU=; b=vNqAYHTCbmsKnhZGNaz5EB5LTQ
+        LYXNE5jNBz5YQ2zgc9MAq/aMxg8YraTwNmWjNzjcIozk3QnCpFPnYD9GqVw7EE2izuXvw/yjwgE3w
+        gBxlWJEt9WzahbigIBPCJewXqhXRKXtD55nrUXBEkBOy+Z9GlCoJ6soFy8ZIHPE9IjCvO0nxr0thf
+        jdmAQs82OeAVqvmAFbBhTnPoXUj1kufVpzkhpJQK00AIR4J5P6XSsST9Jnf6gbsI++watVhpzi0Cz
+        BSQbs0tNsKhAnRg3kZHBQMFV9+aCmHxmGB1ODBLhg309z1eQs1Y3/UqPDxFKj61e8NduO8KN7l+3J
+        FKhX/ZWg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvfJs-00EGBW-7m; Tue, 22 Jun 2021 12:16:22 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     akpm@linux-foundation.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 00/46] Folio-enabling the page cache
+Date:   Tue, 22 Jun 2021 13:15:05 +0100
+Message-Id: <20210622121551.3398730-1-willy@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 18 Jun 2021 10:33:31 +0100, Colin King wrote:
-> The continue statement at the end of a for-loop has no effect,
-> invert the if expression and remove the continue.
+These are all the patches I've collected to date which enable filesystems
+to be converted to use folios.  After applying these patches (on top of
+folio v12), I have an iomap (ie xfs/zonefs) conversion.  I would expect
+filesystems to convert one-by-one, rather than converting all callers of
+(say) set_page_writeback() to call folio_start_writeback().
 
-Applied to spi-nor/next, thanks!
-[1/1] mtd: spi-nor: remove redundant continue statement
-      https://git.kernel.org/mtd/c/c17e5c85b3
+The biggest chunk of this is teaching the writeback code that folios may
+be larger than a single page, so there's no (or little) code reduction
+from these patches.  Instead it takes us to where we can start preparing
+filesystems to see multi-page folios.
 
---
-Regards
-Vignesh
+Matthew Wilcox (Oracle) (46):
+  mm: Add folio_to_pfn()
+  mm: Add folio_rmapping()
+  mm: Add kmap_local_folio()
+  mm: Add flush_dcache_folio()
+  mm: Add arch_make_folio_accessible()
+  mm: Add folio_young() and folio_idle()
+  mm/workingset: Convert workingset_activation to take a folio
+  mm/swap: Add folio_activate()
+  mm/swap: Add folio_mark_accessed()
+  mm/rmap: Add folio_mkclean()
+  mm/memcg: Remove 'page' parameter to mem_cgroup_charge_statistics()
+  mm/memcg: Use the node id in mem_cgroup_update_tree()
+  mm/memcg: Convert commit_charge() to take a folio
+  mm/memcg: Add folio_charge_cgroup()
+  mm/memcg: Add folio_uncharge_cgroup()
+  mm/memcg: Add folio_migrate_cgroup()
+  mm/memcg: Convert mem_cgroup_track_foreign_dirty_slowpath() to folio
+  mm/migrate: Add folio_migrate_mapping()
+  mm/migrate: Add folio_migrate_flags()
+  mm/migrate: Add folio_migrate_copy()
+  mm/writeback: Rename __add_wb_stat() to wb_stat_mod()
+  flex_proportions: Allow N events instead of 1
+  mm/writeback: Change __wb_writeout_inc() to __wb_writeout_add()
+  mm/writeback: Add __folio_end_writeback()
+  mm/writeback: Add folio_start_writeback()
+  mm/writeback: Add folio_mark_dirty()
+  mm/writeback: Add __folio_mark_dirty()
+  mm/writeback: Add filemap_dirty_folio()
+  mm/writeback: Add folio_account_cleaned()
+  mm/writeback: Add folio_cancel_dirty()
+  mm/writeback: Add folio_clear_dirty_for_io()
+  mm/writeback: Add folio_account_redirty()
+  mm/writeback: Add folio_redirty_for_writepage()
+  mm/filemap: Add i_blocks_per_folio()
+  mm/filemap: Add folio_mkwrite_check_truncate()
+  mm/filemap: Add readahead_folio()
+  mm/workingset: Convert workingset_refault() to take a folio
+  mm: Add folio_evictable()
+  mm/lru: Convert __pagevec_lru_add_fn to take a folio
+  mm/lru: Add folio_add_lru()
+  mm/page_alloc: Add folio allocation functions
+  mm/filemap: Add filemap_alloc_folio
+  mm/filemap: Add filemap_add_folio
+  mm/filemap: Convert mapping_get_entry to return a folio
+  mm/filemap: Add filemap_get_folio
+  mm/filemap: Add FGP_STABLE
+
+ .../admin-guide/cgroup-v1/memcg_test.rst      |   2 +-
+ Documentation/core-api/cachetlb.rst           |   6 +
+ arch/nds32/include/asm/cacheflush.h           |   1 +
+ fs/jfs/jfs_metapage.c                         |   1 +
+ include/asm-generic/cacheflush.h              |   6 +
+ include/linux/backing-dev.h                   |   6 +-
+ include/linux/flex_proportions.h              |   9 +-
+ include/linux/gfp.h                           |  22 +-
+ include/linux/highmem-internal.h              |  11 +
+ include/linux/highmem.h                       |  38 ++
+ include/linux/ksm.h                           |   4 +-
+ include/linux/memcontrol.h                    |  28 +-
+ include/linux/migrate.h                       |   4 +
+ include/linux/mm.h                            |  51 +--
+ include/linux/page-flags.h                    |  20 +-
+ include/linux/page_idle.h                     |  99 +++--
+ include/linux/page_owner.h                    |   8 +-
+ include/linux/pagemap.h                       | 195 ++++++---
+ include/linux/rmap.h                          |  10 +-
+ include/linux/swap.h                          |  10 +-
+ include/linux/writeback.h                     |   9 +-
+ include/trace/events/writeback.h              |   8 +-
+ kernel/bpf/verifier.c                         |   2 +-
+ lib/flex_proportions.c                        |  28 +-
+ mm/filemap.c                                  | 240 +++++------
+ mm/folio-compat.c                             |  98 +++++
+ mm/internal.h                                 |  35 +-
+ mm/ksm.c                                      |  31 +-
+ mm/memcontrol.c                               | 124 +++---
+ mm/memory.c                                   |   3 +-
+ mm/mempolicy.c                                |  10 +
+ mm/migrate.c                                  | 242 +++++------
+ mm/page-writeback.c                           | 383 ++++++++++--------
+ mm/page_alloc.c                               |  12 +
+ mm/page_owner.c                               |  10 +-
+ mm/rmap.c                                     |  12 +-
+ mm/shmem.c                                    |   5 +-
+ mm/swap.c                                     | 137 ++++---
+ mm/swap_state.c                               |   2 +-
+ mm/util.c                                     |  33 +-
+ mm/workingset.c                               |  44 +-
+ 41 files changed, 1158 insertions(+), 841 deletions(-)
+
+-- 
+2.30.2
 
