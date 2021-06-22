@@ -2,122 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E6C3B0F67
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:24:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B613F3B0F6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbhFVV0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 17:26:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhFVV0y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 17:26:54 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E4AC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 14:24:37 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d9so552621qtx.8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 14:24:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=sfd2SRJTsylTEdVXKK1imeQ1mJ8YmpFBATLIhwxJuSA=;
-        b=iOuLqjnzRpczw03xMHNbDOpvjiSjpeBLx4b6nNf5F+gbxeNOxdbAz9CQuIATyomTgw
-         AzlviNhu+j868LtcVmo2t32CBQgGvmkg0QMTrACNukoVKyxYVgzN35NBE0ZBIU18wVyk
-         GAb3GZSXrR+RMr6bscs96/2I4EQyfoKaoRwZg5G+pnugKhzpVRlEoWrov91u/jSscsF9
-         dG4XWEGfuxtCxouf9tpzuNZ8/brsSNzmQKnDrmjn6ZLBRDJlVQbpzpj3UP1bt41Ayx31
-         9amwx+iqSYX8jVjbbADlWYo2fYSR/wWwCCSzSi/VYDmlNr2fsxspx7RJSTKwMhtJ9iCn
-         eR/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=sfd2SRJTsylTEdVXKK1imeQ1mJ8YmpFBATLIhwxJuSA=;
-        b=Q4+Fx8wWdKqO4bm1UYSf3d4apx44bRSWrpVQgPFafZPE9v4tok7x7ZZA8CspTMkAQn
-         cWbYCRTPi+zdMBqTSPKnV7d03x3oh1bm4Q6RikhwwI7kk6WY/jU2lFzT88FTwxVvUF32
-         dzVvJWi0680ER7dBN7UcfscQHuHLCd/qGNI20HHk2PwT26FOFdkNXd1f+F0auI7MKMDb
-         WjsRqtwGrKwiViwXALBpCc6cvZ5z55fAhBKDrbaL/wQ/hg4E2OAPcOxHb31l2+e0p6rx
-         vxcKqx3y+VXx35Ebxe+Z47ZGH+N8F62gtQI59W7M4T/nE4SSqgYrEg2imxv8Yx4FGgXl
-         YxNQ==
-X-Gm-Message-State: AOAM5314rCEcrtQPhqDGIJkLHEL3GJFlI7ApetbfYQRfHjoH5gM5GZQp
-        ZoJjW+5bbHuoVGtYU3v/EhpK3Q==
-X-Google-Smtp-Source: ABdhPJwnHbeux5j214Xe+/kzO0fRpysuZtsvb1k/KLiUHg9h+yNmMZHE4XLzVRRCCJn/KwoEHQ4xXA==
-X-Received: by 2002:aed:306f:: with SMTP id 102mr739209qte.197.1624397076845;
-        Tue, 22 Jun 2021 14:24:36 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id x8sm13587249qkh.130.2021.06.22.14.24.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 14:24:36 -0700 (PDT)
-Message-ID: <be4b635675df2111cb7c095013323b3ba1ac246e.camel@ndufresne.ca>
-Subject: Re: [PATCH v3 4/8] media: Add P010 video format
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        hverkuil@xs4all.nl, p.zabel@pengutronix.de, mchehab@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
-        andrzej.p@collabora.com, jc@kynesim.co.uk, jernej.skrabec@gmail.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Tue, 22 Jun 2021 17:24:34 -0400
-In-Reply-To: <fbf31c292fde2f7dafb1441fc85a1ead34fdf96d.camel@collabora.com>
-References: <20210618131526.566762-1-benjamin.gaignard@collabora.com>
-         <20210618131526.566762-5-benjamin.gaignard@collabora.com>
-         <fbf31c292fde2f7dafb1441fc85a1ead34fdf96d.camel@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S229758AbhFVVbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 17:31:09 -0400
+Received: from yyz.mikelr.com ([170.75.163.43]:34228 "EHLO yyz.mikelr.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229612AbhFVVbI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 17:31:08 -0400
+Received: from glidewell.ykf.mikelr.com (198-84-194-208.cpe.teksavvy.com [198.84.194.208])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by yyz.mikelr.com (Postfix) with ESMTPSA id 49FF34F981;
+        Tue, 22 Jun 2021 17:28:21 -0400 (EDT)
+From:   Mikel Rychliski <mikel@mikelr.com>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?q?Thomas=20Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     Mikel Rychliski <mikel@mikelr.com>
+Subject: [PATCH v2] drm/radeon: Fix NULL dereference when updating memory stats
+Date:   Tue, 22 Jun 2021 17:26:13 -0400
+Message-Id: <20210622212613.16302-1-mikel@mikelr.com>
+X-Mailer: git-send-email 2.13.7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le vendredi 18 juin 2021 à 16:38 -0300, Ezequiel Garcia a écrit :
-> Hi Benjamin,
-> 
-> On Fri, 2021-06-18 at 15:15 +0200, Benjamin Gaignard wrote:
-> > P010 is a YUV format with 10-bits per pixel with interleaved UV.
-> > 
-> > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> > ---
-> > version 2:
-> >  - Add documentation about P010 padding
-> >  - Fix the number of bits per component (16)
-> > 
-> >  .../media/v4l/pixfmt-yuv-planar.rst           | 78 ++++++++++++++++++-
-> >  drivers/media/v4l2-core/v4l2-common.c         |  1 +
-> >  drivers/media/v4l2-core/v4l2-ioctl.c          |  1 +
-> >  include/uapi/linux/videodev2.h                |  1 +
-> >  4 files changed, 79 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> > index 090c091affd2..af400d37c8fd 100644
-> > --- a/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> > +++ b/Documentation/userspace-api/media/v4l/pixfmt-yuv-planar.rst
-> > @@ -100,8 +100,13 @@ All components are stored with the same number of bits per component.
-> >        - Cb, Cr
-> >        - No
-> >        - 64x32 macroblocks
-> > -
-> > -        Horizontal Z order
-> > +    * - V4L2_PIX_FMT_P010
-> 
-> Do we have support in GStreamer (or elsewhere) for this?
+radeon_ttm_bo_destroy() is attempting to access the resource object to
+update memory counters. However, the resource object is already freed when
+ttm calls this function via the destroy callback. This causes an oops when
+a bo is freed:
 
-I believe you wanted to ask for patched framework to exercise this ? Since both
-FFMPEG and GSTreamer have had that format for ages. For GStreamer:
+	BUG: kernel NULL pointer dereference, address: 0000000000000010
+	RIP: 0010:radeon_ttm_bo_destroy+0x2c/0x100 [radeon]
+	Call Trace:
+	 radeon_bo_unref+0x1a/0x30 [radeon]
+	 radeon_gem_object_free+0x33/0x50 [radeon]
+	 drm_gem_object_release_handle+0x69/0x70 [drm]
+	 drm_gem_handle_delete+0x62/0xa0 [drm]
+	 ? drm_mode_destroy_dumb+0x40/0x40 [drm]
+	 drm_ioctl_kernel+0xb2/0xf0 [drm]
+	 drm_ioctl+0x30a/0x3c0 [drm]
+	 ? drm_mode_destroy_dumb+0x40/0x40 [drm]
+	 radeon_drm_ioctl+0x49/0x80 [radeon]
+	 __x64_sys_ioctl+0x8e/0xd0
 
-https://gitlab.freedesktop.org/gstreamer/gst-plugins-base/-/blob/master/gst-libs/gst/video/video-format.h#L102
+Avoid the issue by updating the counters in the delete_mem_notify callback
+instead. Also, fix memory statistic updating in radeon_bo_move() to
+identify the source type correctly. The source type needs to be saved
+before the move, because the moved from object may be altered by the move.
 
-No V4L2 mapping upstream, but this is a bit normal, can't upstream a mapping for
-something that does not exist yet.
+Fixes: bfa3357ef9ab ("drm/ttm: allocate resource object instead of embedding it v2")
+Signed-off-by: Mikel Rychliski <mikel@mikelr.com>
+---
 
-> 
-> Thanks,
-> Ezequiel
-> 
+v2: Update statistics on ghost object destroy
 
+ drivers/gpu/drm/radeon/radeon_object.c | 33 ++++++++-------------------------
+ drivers/gpu/drm/radeon/radeon_object.h |  7 ++++---
+ drivers/gpu/drm/radeon/radeon_ttm.c    | 20 +++++++++++++++++---
+ 3 files changed, 29 insertions(+), 31 deletions(-)
+
+diff --git a/drivers/gpu/drm/radeon/radeon_object.c b/drivers/gpu/drm/radeon/radeon_object.c
+index bfaaa3c969a3..e0f98b394acd 100644
+--- a/drivers/gpu/drm/radeon/radeon_object.c
++++ b/drivers/gpu/drm/radeon/radeon_object.c
+@@ -49,23 +49,23 @@ static void radeon_bo_clear_surface_reg(struct radeon_bo *bo);
+  * function are calling it.
+  */
+ 
+-static void radeon_update_memory_usage(struct radeon_bo *bo,
+-				       unsigned mem_type, int sign)
++void radeon_update_memory_usage(struct ttm_buffer_object *bo,
++				unsigned int mem_type, int sign)
+ {
+-	struct radeon_device *rdev = bo->rdev;
++	struct radeon_device *rdev = radeon_get_rdev(bo->bdev);
+ 
+ 	switch (mem_type) {
+ 	case TTM_PL_TT:
+ 		if (sign > 0)
+-			atomic64_add(bo->tbo.base.size, &rdev->gtt_usage);
++			atomic64_add(bo->base.size, &rdev->gtt_usage);
+ 		else
+-			atomic64_sub(bo->tbo.base.size, &rdev->gtt_usage);
++			atomic64_sub(bo->base.size, &rdev->gtt_usage);
+ 		break;
+ 	case TTM_PL_VRAM:
+ 		if (sign > 0)
+-			atomic64_add(bo->tbo.base.size, &rdev->vram_usage);
++			atomic64_add(bo->base.size, &rdev->vram_usage);
+ 		else
+-			atomic64_sub(bo->tbo.base.size, &rdev->vram_usage);
++			atomic64_sub(bo->base.size, &rdev->vram_usage);
+ 		break;
+ 	}
+ }
+@@ -76,8 +76,6 @@ static void radeon_ttm_bo_destroy(struct ttm_buffer_object *tbo)
+ 
+ 	bo = container_of(tbo, struct radeon_bo, tbo);
+ 
+-	radeon_update_memory_usage(bo, bo->tbo.resource->mem_type, -1);
+-
+ 	mutex_lock(&bo->rdev->gem.mutex);
+ 	list_del_init(&bo->list);
+ 	mutex_unlock(&bo->rdev->gem.mutex);
+@@ -726,25 +724,10 @@ int radeon_bo_check_tiling(struct radeon_bo *bo, bool has_moved,
+ 	return radeon_bo_get_surface_reg(bo);
+ }
+ 
+-void radeon_bo_move_notify(struct ttm_buffer_object *bo,
+-			   bool evict,
+-			   struct ttm_resource *new_mem)
++void radeon_bo_move_notify(struct radeon_bo *rbo)
+ {
+-	struct radeon_bo *rbo;
+-
+-	if (!radeon_ttm_bo_is_radeon_bo(bo))
+-		return;
+-
+-	rbo = container_of(bo, struct radeon_bo, tbo);
+ 	radeon_bo_check_tiling(rbo, 0, 1);
+ 	radeon_vm_bo_invalidate(rbo->rdev, rbo);
+-
+-	/* update statistics */
+-	if (!new_mem)
+-		return;
+-
+-	radeon_update_memory_usage(rbo, bo->resource->mem_type, -1);
+-	radeon_update_memory_usage(rbo, new_mem->mem_type, 1);
+ }
+ 
+ vm_fault_t radeon_bo_fault_reserve_notify(struct ttm_buffer_object *bo)
+diff --git a/drivers/gpu/drm/radeon/radeon_object.h b/drivers/gpu/drm/radeon/radeon_object.h
+index 1739c6a142cd..0be50d28bafa 100644
+--- a/drivers/gpu/drm/radeon/radeon_object.h
++++ b/drivers/gpu/drm/radeon/radeon_object.h
+@@ -133,6 +133,9 @@ static inline u64 radeon_bo_mmap_offset(struct radeon_bo *bo)
+ 	return drm_vma_node_offset_addr(&bo->tbo.base.vma_node);
+ }
+ 
++extern void radeon_update_memory_usage(struct ttm_buffer_object *bo,
++				       unsigned int mem_type, int sign);
++
+ extern int radeon_bo_create(struct radeon_device *rdev,
+ 			    unsigned long size, int byte_align,
+ 			    bool kernel, u32 domain, u32 flags,
+@@ -160,9 +163,7 @@ extern void radeon_bo_get_tiling_flags(struct radeon_bo *bo,
+ 				u32 *tiling_flags, u32 *pitch);
+ extern int radeon_bo_check_tiling(struct radeon_bo *bo, bool has_moved,
+ 				bool force_drop);
+-extern void radeon_bo_move_notify(struct ttm_buffer_object *bo,
+-				  bool evict,
+-				  struct ttm_resource *new_mem);
++extern void radeon_bo_move_notify(struct radeon_bo *rbo);
+ extern vm_fault_t radeon_bo_fault_reserve_notify(struct ttm_buffer_object *bo);
+ extern int radeon_bo_get_surface_reg(struct radeon_bo *bo);
+ extern void radeon_bo_fence(struct radeon_bo *bo, struct radeon_fence *fence,
+diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/radeon/radeon_ttm.c
+index ad2a5a791bba..1bc0648c5865 100644
+--- a/drivers/gpu/drm/radeon/radeon_ttm.c
++++ b/drivers/gpu/drm/radeon/radeon_ttm.c
+@@ -199,7 +199,7 @@ static int radeon_bo_move(struct ttm_buffer_object *bo, bool evict,
+ 	struct ttm_resource *old_mem = bo->resource;
+ 	struct radeon_device *rdev;
+ 	struct radeon_bo *rbo;
+-	int r;
++	int r, old_type;
+ 
+ 	if (new_mem->mem_type == TTM_PL_TT) {
+ 		r = radeon_ttm_tt_bind(bo->bdev, bo->ttm, new_mem);
+@@ -216,6 +216,9 @@ static int radeon_bo_move(struct ttm_buffer_object *bo, bool evict,
+ 	if (WARN_ON_ONCE(rbo->tbo.pin_count > 0))
+ 		return -EINVAL;
+ 
++	/* Save old type for statistics update */
++	old_type = old_mem->mem_type;
++
+ 	rdev = radeon_get_rdev(bo->bdev);
+ 	if (old_mem->mem_type == TTM_PL_SYSTEM && bo->ttm == NULL) {
+ 		ttm_bo_move_null(bo, new_mem);
+@@ -261,7 +264,9 @@ static int radeon_bo_move(struct ttm_buffer_object *bo, bool evict,
+ out:
+ 	/* update statistics */
+ 	atomic64_add(bo->base.size, &rdev->num_bytes_moved);
+-	radeon_bo_move_notify(bo, evict, new_mem);
++	radeon_update_memory_usage(bo, old_type, -1);
++	radeon_update_memory_usage(bo, new_mem->mem_type, 1);
++	radeon_bo_move_notify(rbo);
+ 	return 0;
+ }
+ 
+@@ -682,7 +687,16 @@ bool radeon_ttm_tt_is_readonly(struct radeon_device *rdev,
+ static void
+ radeon_bo_delete_mem_notify(struct ttm_buffer_object *bo)
+ {
+-	radeon_bo_move_notify(bo, false, NULL);
++	struct radeon_bo *rbo;
++
++	if (bo->resource)
++		radeon_update_memory_usage(bo, bo->resource->mem_type, -1);
++
++	if (!radeon_ttm_bo_is_radeon_bo(bo))
++		return;
++
++	rbo = container_of(bo, struct radeon_bo, tbo);
++	radeon_bo_move_notify(rbo);
+ }
+ 
+ static struct ttm_device_funcs radeon_bo_driver = {
+-- 
+2.13.7
 
