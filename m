@@ -2,103 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35603B08A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E0CA3B08AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232172AbhFVPXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:23:05 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53021 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232116AbhFVPXC (ORCPT
+        id S232000AbhFVPYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:24:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231604AbhFVPYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:23:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624375246;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=d4qG1BgL83jc2NobbBwa+FD372Pv9PnyTc1bHAkSk00=;
-        b=TjTxmHDVwzk7RIfacZ7ckcXGivFZbToCxyD74hqPqQHtLvO4kt03CbUmKwJWUbeqr8puyG
-        I6TKm5Nh1MsW3sUu5ARNRhLMAOp5fU6qPzlldiOfNFm/uI5NoXYNRgs/h3Tf3OjodfLVAH
-        BkTIFe2Uu5jEWKMZ3ICKrnVdvUg4X7I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-148-_VBSvZdPObOO47vKxdHgvA-1; Tue, 22 Jun 2021 11:20:45 -0400
-X-MC-Unique: _VBSvZdPObOO47vKxdHgvA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7718591271;
-        Tue, 22 Jun 2021 15:20:43 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-118-65.rdu2.redhat.com [10.10.118.65])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 64F19100F49F;
-        Tue, 22 Jun 2021 15:20:41 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     torvalds@linux-foundation.org
-cc:     dhowells@redhat.com, Ted Ts'o <tytso@mit.edu>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>, willy@infradead.org,
-        viro@zeniv.linux.org.uk, linux-mm@kvack.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Tue, 22 Jun 2021 11:24:20 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09598C061574;
+        Tue, 22 Jun 2021 08:22:05 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 15:22:02 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624375323;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BTN1WQMC4muxqMJ5NN7pFDYwqznAKVr4r/AEwbkoa80=;
+        b=OfGiSfI/dxD2LXnGYSFi/DmsPkXSYtZ5kcQbaYPPIFIOWG3gLHTAOFUU/S2nmL1uknt3u3
+        WBVspc/AVfwKoc+hZ1jR1zqfBxMlMwwKMZEP8eU18n+EWCXCYS67+KIt+Vaio8/S4Lq24c
+        eRYTAG+nKITd+mSbUhYEYOnRL6Py861QJ9RitLS5YAHzcMGwqnPjt7f6By4spC3Ss19CbZ
+        6lEu3Tvx4eKkhMAZZnsdpgfeNMgMWSNilbocm8A+vgKw4nAjKzEyhloFvRbSVKOsSouBJm
+        DOn+N08YzMYHvunNBrl9jjyQLuRUagJrA5PjgZZlfx3MH8Uk/gbpuUXyQ0IBDw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624375323;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BTN1WQMC4muxqMJ5NN7pFDYwqznAKVr4r/AEwbkoa80=;
+        b=5AIv/4IKwIvmFr+Zxef8kSz48YI+y/u5nAO7FLgKhBmalZcAacjkcuQ2gNlISaFUO76Jaa
+        FWHEeJ5MzqT0t9CA==
+From:   "tip-bot2 for Baokun Li" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] clockevents: Use list_move() instead of
+ list_del()/list_add()
+Cc:     Hulk Robot <hulkci@huawei.com>, Baokun Li <libaokun1@huawei.com>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Do we need to unrevert "fs: do not prefault sys_write() user buffer pages"?
+In-Reply-To: <20210609070242.1322450-1-libaokun1@huawei.com>
+References: <20210609070242.1322450-1-libaokun1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3221174.1624375240.1@warthog.procyon.org.uk>
-Date:   Tue, 22 Jun 2021 16:20:40 +0100
-Message-ID: <3221175.1624375240@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Message-ID: <162437532284.395.12000007816780541875.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+The following commit has been merged into the timers/core branch of tip:
 
-I've been looking at generic_perform_write() with an eye to adapting a version
-for network filesystems in general.  I'm wondering if it's actually safe or
-whether it needs 00a3d660cbac05af34cca149cb80fb611e916935 reverting, which is
-itself a revert of 998ef75ddb5709bbea0bf1506cd2717348a3c647.
+Commit-ID:     4e82d2e20f3b11f253bc5c6e92f05ed3694a1ae3
+Gitweb:        https://git.kernel.org/tip/4e82d2e20f3b11f253bc5c6e92f05ed3694a1ae3
+Author:        Baokun Li <libaokun1@huawei.com>
+AuthorDate:    Wed, 09 Jun 2021 15:02:42 +08:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Tue, 22 Jun 2021 17:16:46 +02:00
 
-Anyway, I was looking at this bit:
+clockevents: Use list_move() instead of list_del()/list_add()
 
-	bytes = min_t(unsigned long, PAGE_SIZE - offset,
-					iov_iter_count(i));
-	...
-	if (unlikely(iov_iter_fault_in_readable(i, bytes))) {
-		status = -EFAULT;
-		break;
-	}
+Simplify the code.
 
-	if (fatal_signal_pending(current)) {
-		status = -EINTR;
-		break;
-	}
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20210609070242.1322450-1-libaokun1@huawei.com
 
-	status = a_ops->write_begin(file, mapping, pos, bytes, flags,
-					&page, &fsdata);
-	if (unlikely(status < 0))
-		break;
+---
+ kernel/time/clockevents.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-	if (mapping_writably_mapped(mapping))
-		flush_dcache_page(page);
-
-	copied = iov_iter_copy_from_user_atomic(page, i, offset, bytes);
-
-
-and wondering if the iov_iter_fault_in_readable() is actually effective.  Yes,
-it can make sure that the page we're intending to modify is dragged into the
-pagecache and marked uptodate so that it can be read from, but is it possible
-for the page to then get reclaimed before we get to
-iov_iter_copy_from_user_atomic()?  a_ops->write_begin() could potentially take
-a long time, say if it has to go and get a lock/lease from a server.
-
-Also, I've been thinking about Willy's folio/THP stuff that allows bunches of
-pages to be glued together into single objects for efficiency.  This is
-problematic with the above code because the faultahead is limited to a maximum
-of PAGE_SIZE, but we might be wanting to modify a larger object than that.
-
-David
-
+diff --git a/kernel/time/clockevents.c b/kernel/time/clockevents.c
+index bb9d2fe..003ccf3 100644
+--- a/kernel/time/clockevents.c
++++ b/kernel/time/clockevents.c
+@@ -347,8 +347,7 @@ static void clockevents_notify_released(void)
+ 	while (!list_empty(&clockevents_released)) {
+ 		dev = list_entry(clockevents_released.next,
+ 				 struct clock_event_device, list);
+-		list_del(&dev->list);
+-		list_add(&dev->list, &clockevent_devices);
++		list_move(&dev->list, &clockevent_devices);
+ 		tick_check_new_device(dev);
+ 	}
+ }
+@@ -576,8 +575,7 @@ void clockevents_exchange_device(struct clock_event_device *old,
+ 	if (old) {
+ 		module_put(old->owner);
+ 		clockevents_switch_state(old, CLOCK_EVT_STATE_DETACHED);
+-		list_del(&old->list);
+-		list_add(&old->list, &clockevents_released);
++		list_move(&old->list, &clockevents_released);
+ 	}
+ 
+ 	if (new) {
