@@ -2,238 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3DD83AFB09
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 04:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50623AFB0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 04:27:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231262AbhFVC0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 22:26:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50580 "EHLO
+        id S231311AbhFVCaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 22:30:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbhFVC0j (ORCPT
+        with ESMTP id S230495AbhFVCaJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 22:26:39 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 428E7C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 19:24:24 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id t3so21543707edc.7
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 19:24:24 -0700 (PDT)
+        Mon, 21 Jun 2021 22:30:09 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4358BC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 19:27:54 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id d19so22153513oic.7
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 19:27:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=tCIfIS3eohZy92oSMrzEBVAKlDW05o4oyi0vFuNyc44=;
-        b=nbckcP9O6LAzwVA9GSt39qYz0zzRNvnwyR2OrtUNArLokfuYw+Jwf3rcrzPBnzXVHb
-         J6h5E9WlkhYZxpMWb5su6lGmq4GDobfKE4jW4JlUXfocs3hmI+SfWtVxvFj66SpjL57C
-         EhS03wFtf0/cyUEn/Io+91uiCm9EyY0tNMob9IItAhr9pHEO2RIzllFj1SDp/QJZ1Vgt
-         5emrnEq2aGeV3xHTC6ZFujdoGGo6qe5KHhXM+4ap8jZ9+4YcaEDpe/Lmte1U7IZAMfNP
-         N9368JAHXervRB4111Xewvd1ABiSTp0QnDIoH+wEJVF3yHwBz5vDHFMDml+BXquvdsIP
-         XPCA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jyUspRD+QDz3dTkk8iQ2AHNGE8vCC+sPnnlJZQaUVNU=;
+        b=NahmYXEAl3imcVSMEaXGAItj5kWOjRMMtzQgzSIAfXOsNH2nEPmi6zyqLPSiZtPkmL
+         gBhVHpTqsxoK9GggntJXeOPsk1N983cV43v5OAYYZKUeWlKcjrfyAguoVsAKlTdIYIWX
+         kg7U0zCYbpyJZamf1j5XvWSbfSGdM8DB2zvatgUsVa59ed9lEvSRSnGnMd/TCVcWeQHm
+         AjB09seVk02kV9N+w+B0q7U/Y6r3MVc7EPxsB5oOvctcZmHrhwoi0eGiDHDdNC5LmRXb
+         eDnrUWjdPjPFCvWK5CgUs8Zl/Rhc+G6sGaSnDL8YBGDb2c87k3jbFrIFa2jTl/LiqJ/N
+         hvcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tCIfIS3eohZy92oSMrzEBVAKlDW05o4oyi0vFuNyc44=;
-        b=DUGfPqejdy/VNavH7xot5ip6bWRheuFNUIjVkVfzSpL0/P2P0Mu6G+dlYr1juvZXEv
-         gioW5RDgNkrruRDzdCg3XnGNLDtyRKakIlJwaUInj0F/gYEUK3lctvkRe9GnR0Ug1ofF
-         i55NQrd9q9CHYWV9j4YyMHBk9f0tYeR1yPqfDNKqm+n12FskBYhGwec4FYJ9zRoUO/tx
-         BsVwKggfWufVy7bAte9u0bkwyNxyjPA/hPKHguV9+i416aTlha+XEeuiY/klkqKgFhrD
-         Vvcm/TOm3SXzXiv2MZQ8n3qqJaBKz6/gg+mQ4PAxlvIi0bOT7Na0al8OPq4+6oWdvy/I
-         77Wg==
-X-Gm-Message-State: AOAM532JrEIKcfbvkQKaIiXk6+GIGQF8AIVSKGkOjLC0b/BdCJMmeAV/
-        GkNogE5OpuJ34wOGgS20/HszECxKJj/nsIBgl4iH9Q==
-X-Google-Smtp-Source: ABdhPJy9veWqYRf6qd3C9gfWWDGnwRq909nyQjvhT5/MHYbSq9Si0iFNQu7pKa1kriVEpnMP4pLlczp0QTXhRAy8p9g=
-X-Received: by 2002:a05:6402:402:: with SMTP id q2mr1688319edv.239.1624328661904;
- Mon, 21 Jun 2021 19:24:21 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jyUspRD+QDz3dTkk8iQ2AHNGE8vCC+sPnnlJZQaUVNU=;
+        b=bGaYszGELh54tUHUYyp/MV3vRDi5oP9FmJEpAXHIXH05MhaUOnWQHxXuZi83JJ9Nk4
+         9pS8mOn+4N2bmPEIAzc1DDn64oKQcvY46kZ8DxrW/0gC6wP5qKMg1MZaimFLS16eZWaC
+         kP2NkcRzQBRaJ1cdfwxOnPXLEhxqzHbcG4MLzk0XNH3znLyvNuOd2IO7Bepx0klfimGX
+         aloUhdtbTr5b7LepO5l/2dxNJwp8MD1nfu6nYJsdmJMjt3oSTCOiWcjZIjJIO4XcgloK
+         79kLcBQ3I+9Wz2/b8DEfGknIn6jrWv87yV93B1/WlKiJacfQk/R/xf69DhCWK5PKJL5r
+         Gffg==
+X-Gm-Message-State: AOAM533H/KwOX+vKULVFvbA9N2s9pFZAaTgiBqAFD3pnsbcLxArKt7Fi
+        i43LwKwpWDQVnr/h6mc7bsmdDw==
+X-Google-Smtp-Source: ABdhPJyoOtZiG1tG11RZjBU0AJ3ADLcZ61RQbIwDWPXfbOgr3HIJWltcW+02sOd2B6Wc+vfX//WlMg==
+X-Received: by 2002:a05:6808:8e6:: with SMTP id d6mr1176092oic.147.1624328873562;
+        Mon, 21 Jun 2021 19:27:53 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id r7sm2127807ota.59.2021.06.21.19.27.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 19:27:52 -0700 (PDT)
+Date:   Mon, 21 Jun 2021 21:27:50 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Martin Botka <martin.botka@somainline.org>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        jamipkettunen@somainline.org, Andy Gross <agross@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V3 3/3] mailbox: qcom-apcs: Add SM6125 compatible
+Message-ID: <YNFKpvhXyZbs8RE1@yoga>
+References: <20210612094631.89980-1-martin.botka@somainline.org>
+ <20210612094631.89980-3-martin.botka@somainline.org>
+ <CABb+yY3BYYC2na8EFunEeu0XCfLXrUQon=hF3q5p=+FUoigoyw@mail.gmail.com>
+ <CAL_JsqLWqtAtqLRF-MAnq80NMfD0a+CfWPv8JWjjNTJFgMjCxg@mail.gmail.com>
+ <CABb+yY0sdSinTm788pMFrqEZ6QMC2OwCP7Kkto+pG9h1aGMzwQ@mail.gmail.com>
+ <CAL_JsqKdoMwpL_tYC7VQRAG2AC5nR4diShMQCgDseObcgU+egQ@mail.gmail.com>
+ <YNEiUMBqGAx1zLVX@yoga>
+ <CABb+yY2wy4iSKjn+SihQ=FE=YwcEzUNOpGw_CV22Anzgbba8hA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210621154911.244649123@linuxfoundation.org>
-In-Reply-To: <20210621154911.244649123@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 22 Jun 2021 07:54:11 +0530
-Message-ID: <CA+G9fYvH4WDXTcZfHGLqw9Cki-TihbFwukFGzrn=OpU6v5hz+A@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/146] 5.10.46-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABb+yY2wy4iSKjn+SihQ=FE=YwcEzUNOpGw_CV22Anzgbba8hA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Jun 2021 at 21:51, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.46 release.
-> There are 146 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 23 Jun 2021 15:48:46 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.46-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On Mon 21 Jun 20:00 CDT 2021, Jassi Brar wrote:
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+> On Mon, Jun 21, 2021 at 6:35 PM Bjorn Andersson
+> <bjorn.andersson@linaro.org> wrote:
+> >
+> > On Mon 21 Jun 18:19 CDT 2021, Rob Herring wrote:
+> >
+> > > On Mon, Jun 21, 2021 at 5:10 PM Jassi Brar <jassisinghbrar@gmail.com> wrote:
+> > > >
+> > > > On Mon, Jun 21, 2021 at 2:46 PM Rob Herring <robh+dt@kernel.org> wrote:
+> > > > >
+> > > > > On Sun, Jun 20, 2021 at 10:03 PM Jassi Brar <jassisinghbrar@gmail.com> wrote:
+> > > > > >
+> > > > > > On Sat, Jun 12, 2021 at 4:46 AM Martin Botka
+> > > > > > <martin.botka@somainline.org> wrote:
+> > > > > > >
+> > > > > > > This commit adds compatible for the SM6125 SoC
+> > > > > > >
+> > > > > > > Signed-off-by: Martin Botka <martin.botka@somainline.org>
+> > > > > > > ---
+> > > > > > > Changes in V2:
+> > > > > > > None
+> > > > > > > Changes in V3:
+> > > > > > > Change compatible to apcs-hmss-global
+> > > > > > >  drivers/mailbox/qcom-apcs-ipc-mailbox.c | 5 +++++
+> > > > > > >  1 file changed, 5 insertions(+)
+> > > > > > >
+> > > > > > > diff --git a/drivers/mailbox/qcom-apcs-ipc-mailbox.c b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
+> > > > > > > index f25324d03842..f24c5ad8d658 100644
+> > > > > > > --- a/drivers/mailbox/qcom-apcs-ipc-mailbox.c
+> > > > > > > +++ b/drivers/mailbox/qcom-apcs-ipc-mailbox.c
+> > > > > > > @@ -57,6 +57,10 @@ static const struct qcom_apcs_ipc_data sdm660_apcs_data = {
+> > > > > > >         .offset = 8, .clk_name = NULL
+> > > > > > >  };
+> > > > > > >
+> > > > > > > +static const struct qcom_apcs_ipc_data sm6125_apcs_data = {
+> > > > > > > +       .offset = 8, .clk_name = NULL
+> > > > > > > +};
+> > > > > > > +
+> > > > > > >  static const struct qcom_apcs_ipc_data apps_shared_apcs_data = {
+> > > > > > >         .offset = 12, .clk_name = NULL
+> > > > > > >  };
+> > > > > > > @@ -166,6 +170,7 @@ static const struct of_device_id qcom_apcs_ipc_of_match[] = {
+> > > > > > >         { .compatible = "qcom,sc8180x-apss-shared", .data = &apps_shared_apcs_data },
+> > > > > > >         { .compatible = "qcom,sdm660-apcs-hmss-global", .data = &sdm660_apcs_data },
+> > > > > > >         { .compatible = "qcom,sdm845-apss-shared", .data = &apps_shared_apcs_data },
+> > > > > > > +       { .compatible = "qcom,sm6125-apcs-hmss-global", .data = &sm6125_apcs_data },
+> > > > > > >         { .compatible = "qcom,sm8150-apss-shared", .data = &apps_shared_apcs_data },
+> > > > > > >         { .compatible = "qcom,sdx55-apcs-gcc", .data = &sdx55_apcs_data },
+> > > > > > >         {}
+> > > > > > >
+> > > > > > These all are basically different names for the same controller.
+> > > > > > The 'offset' is a configuration parameter and the 'clock', when NULL,
+> > > > > > is basically some "always-on" clock.
+> > > > > > I am sure we wouldn't be doing it, if the controller was third-party.
+> > > > >
+> > > > > If newer implementations are 'the same', then they should have a
+> > > > > fallback compatible to the existing one that is the same and no driver
+> > > > > change is needed. If the differences are board or instance (within an
+> > > > > SoC) specific, then a DT property would be appropriate.
+> > > > >
+> > > > The controllers (13 now) only differ by the 'offset' where the
+> > > > registers are mapped. Clock-name is a pure s/w artifact.
+> > > > So, maybe we could push all these in DT.
+> > >
+> > > Why is 'reg' not used for the offset?
+> > >
+> >
+> > The DT node and its "reg" describes the whole IP block.
+> >
+> > The particular register that we care of has, as you can see, moved
+> > around during the various platforms and some incarnations of this IP
+> > block provides controls for CPU-related clocks as well.
+> >
+> > We can certainly have the multiple compatible points to the same
+> > apcs_data, but I'm not able to spot a reasonable "catch-all compatible"
+> > given that I don't see any natural groupings.
+> >
+> Any platform that comes later may reuse the already available compatible.
+> For example drop this patch and reuse "qcom,sdm660-apcs-hmss-global" ?
+> 
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+The problem is that this would change the meaning of
+"qcom,sdm660-apcs-hmss-global" from meaning "The apcs hmss global block
+_in_ sdm660" to "any random apcs block with the mailbox register at
+offset 8".
 
-## Build
-* kernel: 5.10.46-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.10.y
-* git commit: c00b84692b513471386cc0db08f8ac9020f88659
-* git describe: v5.10.45-147-gc00b84692b51
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.45-147-gc00b84692b51
-
-## No regressions (compared to v5.10.45)
-
-## No fixes (compared to v5.10.45)
+Using a compatible that actually describes the specific IP block allows
+us to add more implementation details to the existing binding after the
+fact, like we had to do in c815d769b598 ("mailbox: qcom: Create APCS
+child device for clock controller")
 
 
-## Test result summary
- total: 79686, pass: 65434, fail: 2147, skip: 11258, xfail: 847,
+So what we typically do between Qualcomm platforms is to come up with
+some common compatible that really states the equivalent of "a generic
+apcs with mailbox register at offset 8", we specify both the specific
+and the generic in DT and we implement only the generic - until the day
+when we need the specific.
 
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 26 total, 26 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
+But we need to figure out what the common descriptor is for these
+various groups of apcs blocks for that to work out.
 
-## Test suites summary
-* fwts
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
+> > > In any case, we can't really get rid of the first 13 instances though...
+> > >
+> >
+> > Right, we have the problem that we have DTBs out there that relies on
+> > these compatibles, but as Jassi requests we'd have to start describing
+> > the internal register layout in DT - which this binding purposefully
+> > avoids.
+> >
+> Not these strings, but 'offset' and 'clock-name' as optional
+> properties that new platforms can use.
+> 
 
---
-Linaro LKFT
-https://lkft.linaro.org
+Relying on completely generic compatibles to match the driver and then
+distinguish each platform using additional properties is exactly what
+Qualcomm does downstream.  The community has clarified countless times
+that this is not the way to write DT bindings.
+
+That said, I certainly dislike the current situation, because bringing a
+new Qualcomm platform upstream means adding a couple of drivers (clocks,
+pinctl etc) and then it's a large amount of oneliners throughout the
+various drivers just adding compatibles in the right palces.
+
+Regards,
+Bjorn
