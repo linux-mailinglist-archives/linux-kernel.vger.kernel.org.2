@@ -2,121 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 518AA3AFC16
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 06:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2093AFC22
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 06:43:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229936AbhFVEkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 00:40:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51648 "EHLO
+        id S229761AbhFVEqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 00:46:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229867AbhFVEkr (ORCPT
+        with ESMTP id S229574AbhFVEqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 00:40:47 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16DDC0617A6
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 21:38:31 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id a2-20020ad441c20000b0290251bb08ce61so15265749qvq.19
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 21:38:31 -0700 (PDT)
+        Tue, 22 Jun 2021 00:46:03 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB3D6C061574;
+        Mon, 21 Jun 2021 21:43:46 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id e22so9868099pgv.10;
+        Mon, 21 Jun 2021 21:43:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=U/VtG6VE7zWrQke1C0jwUjUCh7PXfPilKdm/dVNjIos=;
-        b=At3tjYzW+aFSYw1myhNWAaTNB303C9Gm+HrWCsXGtvwdOF+hwsoltElrV4tjYfmgOM
-         0gTBEpF7oDWJQcIe37wsRjQUjH4WWgL4IYb2f/ACmGxHqKryZ4NcBQ+drJ0JA+ma3qj2
-         W/a9SGjM+pKhArZaBKMaNNlZGp5gtNmKimXy61DDreny5u2kxK4qe0GQKyWTMd11TxFs
-         k2hUOYSNu4DvOpOaFT+dvKs5oIeQIwQfvZ8u1WtNcyXKyCV+JnHwyEtTaF2nA2E0VO3e
-         q1IUmQpxWhroj04rLGkjYqMS6pouxTxKBsR5AeoWO6qTyMeAedoKMNVn6MbrSXLBETBK
-         iqLQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c6/Tm5shpqw/9OS5+/PUErLb83Yh9LzqaMHRoOepMhM=;
+        b=J+NRlZnKzxJOmLmfXB5MYj8stHZsG87W4lKtFNjzvrU6veKVqX8ZDvu9OIvEg9qiB8
+         legNgyX2G/i3yExo63yyypkJRpzonN1n8I+6PLrYt8MBsFBfhgKPsaLV86m4W05F2dkD
+         ccklSEay4G7sRcvBRwm5pvn1r09g0mZ5MnDdQ6AoKOS+R1ZiI5s5LAUiWpfZsjtPYaYU
+         VEBr9xNKaiWoBmf5Pi+pQsW5vRAYpTaKI1oCqAdimbBvSeOi1smZiD4kaNZCUncz+MdD
+         OozH9PkadyqiXZenSpCqKqx2yi7wWEb98/NFSgZ3gsUquMNdOuZyZn7Z1rr/CwgcKEtf
+         dkcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=U/VtG6VE7zWrQke1C0jwUjUCh7PXfPilKdm/dVNjIos=;
-        b=ASUSVQb9eSHNk8biaB76JoNUQavB84PkutoKF/5lgmFgWF7W9p8U+yZz0rg4VlR34x
-         KezrN+KR072+FRpzcUJrw115K/PndSqqFRsix9EnQbvpXX8t89qrpUbya5FKimuNAD5Z
-         Gupnzl26q3DpOWHuxIrVEsOhpVL1K4UPnfztkPyuf6L8Sqb3p/aJMV24Q9T5Vn1K1zHH
-         8GJ3AlN4Nnrwrin3NIubnjrzON9gDIRzfv4KnZtKgsqAVkMVN9EzUfOwPu++iUTgakGR
-         xvzdqZGrWIe/OiZ0xvMbFeFj6EOxeodbKPnzIgQX1Qje4HXyoAHX+ewlC8KJBMD3v/Or
-         vQug==
-X-Gm-Message-State: AOAM533kAlMQ4JM00F78MzlKVWcND4jt8ORs2uFRLY4/3EM/myAb5eqO
-        tEpFTygVi58baXXGdIULyuSb01tGgbM8
-X-Google-Smtp-Source: ABdhPJwduWsDu9nOn1wAVXUjgY9FmcJZlcoDsxFPK8CSVp1KqI55NfxIZsHalFp418moW6fMV41Bk7dDPhxf
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:ffd6:b7f5:87ee:7be2])
- (user=irogers job=sendgmr) by 2002:a25:c045:: with SMTP id
- c66mr2293005ybf.296.1624336710873; Mon, 21 Jun 2021 21:38:30 -0700 (PDT)
-Date:   Mon, 21 Jun 2021 21:38:11 -0700
-In-Reply-To: <20210622043811.3108564-1-irogers@google.com>
-Message-Id: <20210622043811.3108564-4-irogers@google.com>
-Mime-Version: 1.0
-References: <20210622043811.3108564-1-irogers@google.com>
-X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH 4/4] libtraceevent: Increase libtraceevent logging when verbose
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-users@vger.kernel.org,
-        Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Claire Jensen <cjense@google.com>
-Cc:     eranian@google.com, Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=c6/Tm5shpqw/9OS5+/PUErLb83Yh9LzqaMHRoOepMhM=;
+        b=OyGTv2cKXH8kzhTEYtx3jmodLrMLASHcCeHIgIGF2Hi1QpaBlALsmsWOF8f5UbmLuQ
+         +4RD2Uu2/ys3RF4RJK5pLPxSR0bsGHDX23pnqxJ6K1bc168ylq0FlN1d4/LcDe+0JBxY
+         vXm7me3tCua8mGeNX/kgNchNvxs84tS5ERH1k0aJ9NaGzBuxV0kP3a4d3X+xqG4bhxTa
+         QcdhzVfMmVqHV7lVoeOtiPpZSC6TL9laWabU3XjAzZ0L5IldD4tambMcqRI+kEDS95jE
+         Xb0Sr4n6ThwO4RXjidYPtBkbUTfN48iGy5+OGARVC3cLBFm5pzPTI0AbLIkIe3b+Y+qo
+         ElkQ==
+X-Gm-Message-State: AOAM531zuxH0CgVXmPUdEuiBINkYwhPoVgu5faRyZeaBoYWn0i7X6cpR
+        rgPtDuABz0MwLAGFukpvljQ=
+X-Google-Smtp-Source: ABdhPJzm53iKSRmJ2/x99PM4SPNOkyqKGBe0icyCehyexTfDoHU3tyewXM+7y7bT5e8IbcGb5JpOeA==
+X-Received: by 2002:a63:e04c:: with SMTP id n12mr1888835pgj.239.1624337026407;
+        Mon, 21 Jun 2021 21:43:46 -0700 (PDT)
+Received: from localhost.localdomain (104.194.74.249.16clouds.com. [104.194.74.249])
+        by smtp.gmail.com with ESMTPSA id v129sm8686909pfc.31.2021.06.21.21.43.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 21:43:45 -0700 (PDT)
+From:   Artem Lapkin <email2tema@gmail.com>
+X-Google-Original-From: Artem Lapkin <art@khadas.com>
+To:     narmstrong@baylibre.com
+Cc:     khilman@baylibre.com, robh+dt@kernel.org, jbrunet@baylibre.com,
+        christianshewitt@gmail.com, martin.blumenstingl@googlemail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        art@khadas.com, nick@khadas.com, gouwa@khadas.com
+Subject: [PATCH 1/2] arm64: dts: meson: improve gxl-s905x-khadas-vim wifi
+Date:   Tue, 22 Jun 2021 12:43:33 +0800
+Message-Id: <20210622044334.769791-1-art@khadas.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-libtraceevent has added more levels of debug printout and with changes
-like:
-https://lore.kernel.org/linux-trace-devel/20210507095022.1079364-3-tz.stoyanov@gmail.com
-previously generated output like "registering plugin" is no longer
-displayed. This change makes it so that if perf's verbose debug output
-is enabled then the debug and info libtraceevent messages can be
-displayed.
-The code is conditionally enabled based on the libtraceevent version as
-discussed in the RFC:
-https://lore.kernel.org/lkml/20210610060643.595673-1-irogers@google.com/
+Improve gxl-s905x-khadas-vim wifi performance
+* change freq from 60Mhz to 100Mhz
 
-Signed-off-by: Ian Rogers <irogers@google.com>
+100Mhz works well same as in meson-khadas-vim3.dtsi
+
+Signed-off-by: Artem Lapkin <art@khadas.com>
 ---
- tools/perf/util/debug.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/tools/perf/util/debug.c b/tools/perf/util/debug.c
-index 2c06abf6dcd2..7e085d7cd8a9 100644
---- a/tools/perf/util/debug.c
-+++ b/tools/perf/util/debug.c
-@@ -24,6 +24,9 @@
- #include "util/parse-sublevel-options.h"
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
+index 60feac0179c0..6ab1cc125b96 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxl-s905x-khadas-vim.dts
+@@ -218,6 +218,8 @@ &pwm_ef {
+ };
  
- #include <linux/ctype.h>
-+#include <traceevent/event-parse.h>
+ &sd_emmc_a {
++	max-frequency = <100000000>;
 +
-+#define MAKE_LIBTRACEEVENT_VERSION(a, b, c) ((a)*255*255+(b)*255+(c))
- 
- int verbose;
- int debug_peo_args;
-@@ -228,6 +231,15 @@ int perf_debug_option(const char *str)
- 	/* Allow only verbose value in range (0, 10), otherwise set 0. */
- 	verbose = (verbose < 0) || (verbose > 10) ? 0 : verbose;
- 
-+#if MAKE_LIBTRACEEVENT_VERSION(1, 3, 0) <= LIBTRACEEVENT_VERSION
-+	if (verbose == 1)
-+		tep_set_loglevel(TEP_LOG_INFO);
-+	else if (verbose == 2)
-+		tep_set_loglevel(TEP_LOG_DEBUG);
-+	else if (verbose >= 3)
-+		tep_set_loglevel(TEP_LOG_ALL);
-+#endif
-+
- 	return 0;
- }
- 
+ 	brcmf: wifi@1 {
+ 		reg = <1>;
+ 		compatible = "brcm,bcm4329-fmac";
 -- 
-2.32.0.288.g62a8d224e6-goog
+2.25.1
 
