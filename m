@@ -2,166 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B973AFD10
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 08:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B573AFD04
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 08:23:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbhFVGcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 02:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhFVGcD (ORCPT
+        id S229690AbhFVGZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 02:25:38 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:53061 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229501AbhFVGZg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 02:32:03 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DAF2C061756
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 23:29:48 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id t40so22649104oiw.8
-        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 23:29:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=DdJQdJIkwKIMOS7tXTygX0MjjffX2z749Iv2g2FNLaM=;
-        b=UrVEk0jf/IzOFwQMXPDO127VY5YwqNQ4swugWt7AJ+KpEOfNz4B6QPPfkcjSoNVeDE
-         zCGMwhZyrXPkG/9WobFGEdxOr8Nwm2NfNU4eKFjr1NhPQf3FvJJMzjqP2h6DLot4Jcgt
-         QO6lvFzJQd/l0gx1RDBP3wHVlwcyEyykgc1N5lb4FgbfZKYcJexX+4iekbJYnfijwXjG
-         h0sIUlQAzlq0L+r2D7c48wlQiZcawlI+AZGY26ZAlQ9TtFD8MQED04LKA6esv1kJ5Cq0
-         tOif9qkjCNgu/Di3aIg9uukSqFdbZ85eJ41N7PuFGCDxb8yioHqE65kgTsILJcXCP1Zq
-         gG6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=DdJQdJIkwKIMOS7tXTygX0MjjffX2z749Iv2g2FNLaM=;
-        b=JCjAF3xwIWi7Igl2germikhwhP32s8j7ERdqVF+m2rF+PbSuZBwqm0OqlRUa2ZWavn
-         ruaqbtV2K48HM0uCfn7kEJVGmXdwXdgsLx76zZk6Oc+PGyD1VgY8KRRF8jqzN8Gzorag
-         3FeMHn6s7ISSfSBvyVT9MzWMdH6veaGeqrDTbj9nxRJBeiPOLpRVnF6NHrDcEZ4Bv/l6
-         1YtdSrXqV9pvYjN8yYK3YPAbmhakx902iB8VeWKCnX5lcLEzntxh15+SKZ/YlRH9D8Y6
-         lhAEJWRB1rXWW4pFcPcpqspXUzZfnHqnI6Ak9MbrCr37oARXdNClLsH5Wembr4zKfeuF
-         C8jA==
-X-Gm-Message-State: AOAM532ZMAZOvO4eUL+4C9q7QMNxtjCm0o3HHpsU3slO1m/cm6+25gju
-        0xTlBHxMufA04kKHXFPhm1B2q82Fn+nm25Jm15JBbA==
-X-Google-Smtp-Source: ABdhPJwvZRvadrsFUY7LeFwYdZ4g/xPYH8e9+Y+K5nCU3Vxl1hLCW2UyZ2WXNbrpkPpqZ7rPkFVy16Ii+hWRGhDX7QI=
-X-Received: by 2002:a05:6808:251:: with SMTP id m17mr1218383oie.77.1624343387678;
- Mon, 21 Jun 2021 23:29:47 -0700 (PDT)
+        Tue, 22 Jun 2021 02:25:36 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210622062319epoutp04657ff5335fe58b20e4c8beed68b73719~K01ol40_F0812608126epoutp04j
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 06:23:19 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210622062319epoutp04657ff5335fe58b20e4c8beed68b73719~K01ol40_F0812608126epoutp04j
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1624342999;
+        bh=B5z09/jpAcw3Z5ncRM22BSwJpQkB+5ESwenPC5uXYOI=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=po0YOfJCQvSShvuuaxxcYeuxMRQKi3G52MFA3qz4ac7FJhZ+96NKTnrICpTgMwQWR
+         WNQHmcRCyZXAD9SqiIvo0izEM8NfhiKB0wP8ySUiHebUm2/DSFp9XNxqMJLoRqihyG
+         KNaU9e5rKeDz+KqwDi+jov0btf5Gj0L4QYw/vIOo=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210622062319epcas1p240b4418ba34ee11aa8c439729c30f5a5~K01oDVxmF0403304033epcas1p2L;
+        Tue, 22 Jun 2021 06:23:19 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.158]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4G8GYG74JJz4x9Q6; Tue, 22 Jun
+        2021 06:23:14 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        27.8C.09468.EC181D06; Tue, 22 Jun 2021 15:23:10 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210622062309epcas1p37ac8ec81df7fbbf4f3e3e95a614a85bc~K01fRiRUf2085420854epcas1p3w;
+        Tue, 22 Jun 2021 06:23:09 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210622062309epsmtrp27d9a4feb7b59da5af263f4fc4cbcef0e~K01fQyMrN1699516995epsmtrp2T;
+        Tue, 22 Jun 2021 06:23:09 +0000 (GMT)
+X-AuditID: b6c32a37-66505a80000024fc-9e-60d181cea55d
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        51.C1.08394.DC181D06; Tue, 22 Jun 2021 15:23:09 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210622062309epsmtip1b8e42aec48c2e2f1e90d25979cd36569~K01fBXEDF0264802648epsmtip1R;
+        Tue, 22 Jun 2021 06:23:09 +0000 (GMT)
+Subject: Re: [PATCH 1/2] clocksource/drivers/exynos_mct: Prioritise Arm arch
+ timer on arm64
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <4084b547-0bd2-4309-0948-384b81f1026f@samsung.com>
+Date:   Tue, 22 Jun 2021 15:42:24 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-References: <20210621103310.186334-1-jhp@endlessos.org> <YNCPcmEPuwdwoLto@lunn.ch>
- <35f4baae-a6e1-c87d-279c-74f8c18bb5d1@gmail.com> <CALeDE9MjRLjTQ1R2nw_rnXsCXKHLMx8XqvG881xgqKz2aJRGfA@mail.gmail.com>
- <9c0ae9ad-0162-42d9-c4f8-f98f6333b45a@i2se.com> <745e7a21-d189-39d7-504a-bdae58cfb8ad@gmail.com>
-In-Reply-To: <745e7a21-d189-39d7-504a-bdae58cfb8ad@gmail.com>
-From:   Jian-Hong Pan <jhp@endlessos.org>
-Date:   Tue, 22 Jun 2021 14:29:04 +0800
-Message-ID: <CAPpJ_ed+8fP8y_t983pb0LMHK9pfVtGdh7fQopedqGZJCrRxvQ@mail.gmail.com>
-Subject: Re: [PATCH] net: bcmgenet: Fix attaching to PYH failed on RPi 4B
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Stefan Wahren <stefan.wahren@i2se.com>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>, Doug Berger <opendmb@gmail.com>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        linux@endlessos.org, bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1f4d7943-c540-bafd-b372-0d0ed8172f33@linaro.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCJsWRmVeSWpSXmKPExsWy7bCmvu65xosJBsd3i1rM+yxrcf78BnaL
+        jW9/MFlsenyN1eLyrjlsFmuP3GW32LxpKrNFyx1TBw6PWQ29bB6bVnWyedy5tofN4925c+we
+        m5fUe/RtWcXo8XmTXAB7VLZNRmpiSmqRQmpecn5KZl66rZJ3cLxzvKmZgaGuoaWFuZJCXmJu
+        qq2Si0+ArltmDtBJSgpliTmlQKGAxOJiJX07m6L80pJUhYz84hJbpdSClJwCywK94sTc4tK8
+        dL3k/FwrQwMDI1OgwoTsjHufFzIXHOSu+N4Z18A4gbOLkZNDQsBE4teTBYxdjFwcQgI7GCWe
+        TdzECuF8YpToPnOPGcL5xihx8sQidpiWe6u+QlXtZZTY+aiVBcJ5zyix8uIsoAwHh7BArMT1
+        pcogDSIC/hKz2w6yg9QwC/xnlPj4+jPYJDYBLYn9L26wgdj8AooSV388ZgSxeQXsJOZcusQM
+        YrMIqEp8PPAWrF5UIEzi5LYWqBpBiZMzn7CA2JxA9dNuXACbwywgLnHryXwmCFteYvvbOWAv
+        SAis5ZBY+GoxI8QLLhJ/Jv1mgrCFJV4d3wL1mpTE53d72SDsaomVJ4+wQTR3MEps2X+BFSJh
+        LLF/6WQmkC+ZBTQl1u/ShwgrSuz8PZcRYjGfxLuvPeCAkBDglehoE4IoUZa4/OAu1FpJicXt
+        nWwTGJVmIXlnFpIXZiF5YRbCsgWMLKsYxVILinPTU4sNC4yRY3sTIzi5apnvYJz29oPeIUYm
+        DsZDjBIczEoivC+yLyYI8aYkVlalFuXHF5XmpBYfYjQFBvBEZinR5Hxges8riTc0NTI2NrYw
+        MTQzNTRUEufdyXYoQUggPbEkNTs1tSC1CKaPiYNTqoGJy+pK4Z2NuV9zD/1vc1qW0aW6/UmH
+        iPHalaz/viXveJUc27yx17Y9SXLixWiBfbbq66/O9RFdPu3OhQPpgbpsU14l9yRN2/aT64nv
+        XJVlh1uM5y7JnNNQNC3N8+NzZ1GVrEuFM3zWMFmVLDXyOfnax+vSXqXnSa9/xccePTmzevat
+        u48/Z6Y7iT3ykZ8v9vgO39q9ARkzgv18H3E18Gn0ZjzvCshgW8w80/QC02t15f9uew1U3sv+
+        ZXq1I3KxSw7/qglXZff90Vx4xurKglecN2pf9KVpr+GfaLV+x2Uhs/xC0R0vRRg5vK1jKhOl
+        m044Bxc7XL/F09o+leXIgreuq0Nis3TLVtpUe346dN1ciaU4I9FQi7moOBEAC6FdHTcEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplkeLIzCtJLcpLzFFi42LZdlhJTvds48UEg54jqhbzPstanD+/gd1i
+        49sfTBabHl9jtbi8aw6bxdojd9ktNm+aymzRcsfUgcNjVkMvm8emVZ1sHneu7WHzeHfuHLvH
+        5iX1Hn1bVjF6fN4kF8AexWWTkpqTWZZapG+XwJVx7/NC5oKD3BXfO+MaGCdwdjFyckgImEjc
+        W/WVtYuRi0NIYDejxOHvt9kgEpIS0y4eZe5i5ACyhSUOHy4GCQsJvGWU2D3fGSQsLBArcX2p
+        MkhYRMBX4v+Da+wgY5gFGpkkni+cwA4x8xeLxJqlE5hBqtgEtCT2v7gBNp9fQFHi6o/HjCA2
+        r4CdxJxLl8BqWARUJT4eeMsOYosKhEnsXPKYCaJGUOLkzCcsIDYnUP20GxfA5jALqEv8mQfR
+        yywgLnHryXwmCFteYvvbOcwTGIVnIWmfhaRlFpKWWUhaFjCyrGKUTC0ozk3PLTYsMMxLLdcr
+        TswtLs1L10vOz93ECI4xLc0djNtXfdA7xMjEwXiIUYKDWUmE90X2xQQh3pTEyqrUovz4otKc
+        1OJDjNIcLErivBe6TsYLCaQnlqRmp6YWpBbBZJk4OKUamJh7vj3Q8nl0eKPttG3Pp36ou7h6
+        isrUjXMXpu1PDW52Cpyr+89Juq7N9qrhlTkqbmdDZA2Fev//W/yq0LPitVxCjvH5bP/dS66x
+        sdsLcOalzPrftyFC4Ym+110F3tyb7qfrOOruHGCv4GHrPWPG/DjCeuWDv+f7zQy+fWTYumvL
+        udtC+W88MtfGFb0uapEM+fqruFrq55VT0VrHWou9bQtzKvYbb1xRlLe++puF79/SiyLtDX6e
+        V5YZx5+99+xuvky0Ucm9hPszMy35t+3XW7JmseLrleZvXrZqr/TkP+h7qubw81Vy8Y94nK98
+        udx8wKB+VcmtK3OKsgXXVl14wPeVS7v1mRjHi8dnmTTEhJVYijMSDbWYi4oTAXRXaykgAwAA
+X-CMS-MailID: 20210622062309epcas1p37ac8ec81df7fbbf4f3e3e95a614a85bc
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210608154400epcas1p1b22fd50629611a9475cb4d2b8dd9442d
+References: <20210608154341.10794-1-will@kernel.org>
+        <CGME20210608154400epcas1p1b22fd50629611a9475cb4d2b8dd9442d@epcas1p1.samsung.com>
+        <20210608154341.10794-2-will@kernel.org>
+        <466bfc19-2260-87c6-c458-b43cf23617e3@samsung.com>
+        <2a0181ea-a26e-65e9-16f6-cc233b6b296f@linaro.org>
+        <fbcd234d-3ea0-d609-1f1d-b557ea329c37@samsung.com>
+        <20210617214748.GC25403@willie-the-truck>
+        <d79ebd58-1c4e-834c-fc06-482f25f6f3de@linaro.org>
+        <20210621101058.GB28788@willie-the-truck>
+        <3ba202d9-a679-834a-685f-12c6f9eb9c38@linaro.org>
+        <d3e55130-ccfc-4bbc-3c82-91db4ce5113f@samsung.com>
+        <1f4d7943-c540-bafd-b372-0d0ed8172f33@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Florian Fainelli <f.fainelli@gmail.com> =E6=96=BC 2021=E5=B9=B46=E6=9C=8822=
-=E6=97=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=885:47=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> On 6/21/21 1:15 PM, Stefan Wahren wrote:
-> > Am 21.06.21 um 18:56 schrieb Peter Robinson:
-> >> On Mon, Jun 21, 2021 at 5:39 PM Florian Fainelli <f.fainelli@gmail.com=
-> wrote:
-> >>> On 6/21/21 6:09 AM, Andrew Lunn wrote:
-> >>>> On Mon, Jun 21, 2021 at 06:33:11PM +0800, Jian-Hong Pan wrote:
-> >>>>> The Broadcom UniMAC MDIO bus comes too late. So, GENET cannot find =
-the
-> >>>>> ethernet PHY on UniMAC MDIO bus. This leads GENET fail to attach th=
-e
-> >>>>> PHY.
-> >>>>>
-> >>>>> bcmgenet fd580000.ethernet: GENET 5.0 EPHY: 0x0000
-> >>>>> ...
-> >>>>> could not attach to PHY
-> >>>>> bcmgenet fd580000.ethernet eth0: failed to connect to PHY
-> >>>>> uart-pl011 fe201000.serial: no DMA platform data
-> >>>>> libphy: bcmgenet MII bus: probed
-> >>>>> ...
-> >>>>> unimac-mdio unimac-mdio.-19: Broadcom UniMAC MDIO bus
-> >>>>>
-> >>>>> This patch makes GENET try to connect the PHY up to 3 times. Also, =
-waits
-> >>>>> a while between each time for mdio-bcm-unimac module's loading and
-> >>>>> probing.
-> >>>> Don't loop. Return -EPROBE_DEFER. The driver core will then probed t=
-he
-> >>>> driver again later, by which time, the MDIO bus driver should of
-> >>>> probed.
-> >>> This is unlikely to work because GENET register the mdio-bcm-unimac
-> >>> platform device so we will likely run into a chicken and egg problem,
-> >>> though surprisingly I have not seen this on STB platforms where GENET=
- is
-> >>> used, I will try building everything as a module like you do. Can you
-> >>> see if the following helps:
-> >> For reference we have mdio_bcm_unimac/genet both built as modules in
-> >> Fedora and I've not seen this issue reported using vanilla upstream
-> >> kernels if that's a useful reference point.
-> >
-> > I was also unable to reproduce this issue, but it seems to be a known
-> > issue [1], [2].
-> >
-> > Jian-Hong opened an issue in my Github repo [3], but before the issue
-> > was narrowed down, he decided to send this workaround.
->
-> The comment about changing the phy-mode property is not quite making
-> sense to me, except if that means that in one case the Broadcom PHY
-> driver is used and in the other case the Generic PHY driver is used.
->
-> What is not clear to me from the debugging that has been done so far is
-> whether the mdio-bcm-unimac MDIO controller was not loaded at the time
-> of_phy_connect() was trying to identify the PHY device.
+On 6/22/21 2:21 PM, Daniel Lezcano wrote:
+> On 22/06/2021 04:40, Chanwoo Choi wrote:
+>> On 6/21/21 7:18 PM, Daniel Lezcano wrote:
+>>> On 21/06/2021 12:10, Will Deacon wrote:
+>>>
+>>> [ ... ]
+>>>
+>>>>>> exynos4_mct_frc_start() is called unconditionally from probe via
+>>>>>> exynos4_clocksource_init() so as long as the mct probes first, then the
+>>>>>> arch timer should work, no? The rating shouldn't affect that.
+>>>>>
+>>>>> How do you ensure the exynos mct is probed before the arch timer ?
+>>>>>
+>>>>> The Makefile provides the right order, but the dependency is implicit.
+>>>>
+>>>> Currently, I think it's done by the order of the CPU hotplug notifiers (
+>>>> see the hunk of 6282edb72bed which touches cpuhotplug.h).
+>>>
+>>> Ah, right. Indeed whatever the DT order, the cpuhotplug order solves the
+>>> dependency.
+>>>
+>>> Chanwoo, are fine with this change ?
+>>
+>> OK about the order.
+>>
+>> Actually, I have not fully tested the arch timer on Exynos5433 64bit
+>> because of the dependency between arch timer and MCT as we knew.
+>>
+>> If the Krzysztof and Marek have no any objection,
+>> I have no any objection anymore. Thanks.
+>>
+> 
+> Shall I consider it as an Acked-by ?
+> 
 
-MODULE_SOFTDEP("pre: mdio-bcm-unimac")  mentioned in the comment [1]
-solves this issue.
+Unfortunately, it is not acked. Just no objection.
+I'm not sure that all cases will be working when using arch timer
+because as I said, I have only used the exynos mct timer for all of cases.
 
-Tracing the code by following the debug message in comment #2 [2], I
-learned the path bcmgenet_mii_probe()'s of_phy_connect() ->
-of_phy_find_device() -> of_mdio_find_device() ->
-bus_find_device_by_of_node().  And, bus_find_device_by_of_node()
-cannot find the device on the mdio bus.
 
-So, I traced bcm2711-rpi-4-b's device tree to find out which one is
-the mdio device and why it has not been prepared ready on the mdio bus
-for genet.
-Then, I found out it is mdio-bcm-unimac module as mentioned in comment
-#4 [3].  Also, noticed "unimac-mdio unimac-mdio.-19: Broadcom UniMAC
-MDIO bus" comes after "bcmgenet fd580000.ethernet eth0: failed to
-connect to PHY" in the log.
 
-With these findings, I try to re-modprobe genet module again.  The
-ethernet on RPi 4B works correctly!  Also, noticed mdio-bcm-unimac
-module is loaded before I re-modprobe genet module.
-Therefore, I try to make mdio-bcm-unimac built in kernel image,
-instead of a module.  Then, genet always can find the mdio device on
-the bus and the ethernet works as well.
-
-Consequently, the idea, loading mdio-bcm-unimac module earlier than
-genet module comes in my head!  However, I don't know the key word
-"MODULE_SOFTDEP" until Florian's guide.  That is why I have a loop to
-connect the PHY in the original patch.  But, I understand
-MODULE_SOFTDEP is a better solution now!
-
-I think this is like the module loading order situation mentioned in
-commit 11287b693d03 ("r8169: load Realtek PHY driver module before
-r8169") [4].
-
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=3D213485#c6
-[2] https://bugzilla.kernel.org/show_bug.cgi?id=3D213485#c2
-[3] https://bugzilla.kernel.org/show_bug.cgi?id=3D213485#c4
-[4] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
-it/?id=3D11287b693d03830010356339e4ceddf47dee34fa
-
-Jian-Hong Pan
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
