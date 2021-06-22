@@ -2,78 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 225903B0A9D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 870223B0A9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhFVQup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 12:50:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60394 "EHLO mail.kernel.org"
+        id S231418AbhFVQvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 12:51:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60574 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229751AbhFVQuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 12:50:44 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2C8D60724;
-        Tue, 22 Jun 2021 16:48:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624380508;
-        bh=q3Qb7oVFJdLdwtoqMte+CVN+jKnb6D5a8vxBsBnEsuU=;
+        id S229751AbhFVQu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 12:50:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 08B8D6128C;
+        Tue, 22 Jun 2021 16:48:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624380521;
+        bh=798ay9uKjUb5WJzPr3Cmuso2OTDJMjuepaqKjCLtgWY=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I2YvzeteFpRMsS1VBKoKkGEw2Np0qVkXZiM+rAjrPFozTIEtGYuFEjii8wRzMjTPn
-         O/SZ9XGACQgznk5en4iB/Y9lebpBuBuUkpEUMxz10jvnNAp4GiDMrqb8LLCRYYrJrm
-         K+fud6C1mMqBmW20HrX+wUsWoSMb32ayUYskG4yVcJLS7YR1w0Pkj49PBK0E9LOXjZ
-         53UFFOmq+n1TmFDLujdhpSvW+F4A/FYkYwTPIsd1j2Lq/ZwYIUWqJelJhpgUX5pbwR
-         NXLFCaS0YcLM10qh7HDdQq2JYwUoMq+MZPbImgBB7z1ST2UnRaLI0Wa7Dr4QL2lf97
-         7zESWTHRgS92A==
-Date:   Tue, 22 Jun 2021 17:48:04 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] tools/nolibc: Implement msleep()
-Message-ID: <20210622164804.GG4574@sirena.org.uk>
-References: <20210512123215.42321-1-broonie@kernel.org>
- <20210512132102.GD20883@1wt.eu>
+        b=Bq/vGoapL80URwXHtTLjEeiLcjZTZ9n97j4RLkUaT4WkqyTABvvLfcX8P3MhhS0Yg
+         VkxPYtVBIHgmoliqhNwgk6YwtMYVVfE/Ym1Z5XtuYNnw060m1++4/CL9JVnujfLL+m
+         QueE2T4DqzYEmQCKieqaEAySQQ6UutQh99mnCLiQ=
+Date:   Tue, 22 Jun 2021 18:48:39 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     minchan@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
+        mbenes@suse.com, jpoimboe@redhat.com, tglx@linutronix.de,
+        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
+        peterz@infradead.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] drivers/base/core: refcount kobject and bus on
+ device attribute read / store
+Message-ID: <YNIUZ3YZvB6rem4V@kroah.com>
+References: <20210621233013.562641-1-mcgrof@kernel.org>
+ <20210621233651.597220-1-mcgrof@kernel.org>
+ <YNGVUk18pmTFZqAB@kroah.com>
+ <20210622164402.d62je6pajcplkfuy@garbanzo>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4ndw/alBWmZEhfcZ"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210512132102.GD20883@1wt.eu>
-X-Cookie: fortune: not found
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210622164402.d62je6pajcplkfuy@garbanzo>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 22, 2021 at 09:44:02AM -0700, Luis Chamberlain wrote:
+> On Tue, Jun 22, 2021 at 09:46:26AM +0200, Greg KH wrote:
+> > On Mon, Jun 21, 2021 at 04:36:51PM -0700, Luis Chamberlain wrote:
+> > > It's possible today to have a device attribute read or store
+> > > race against device removal. When this happens there is a small
+> > > chance that the derefence for the private data area of the driver
+> > > is NULL.
+> > > 
+> > > Let's consider the zram driver as an example. Its possible to run into
+> > > a race where a sysfs knob is being used, we get preempted, and a zram
+> > > device is removed before we complete use of the sysfs knob. This can happen
+> > > for instance on block devices, where for instance the zram block devices
+> > > just part of the private data of the block device.
+> > > 
+> > > For instance this can happen in the following two situations
+> > > as examples to illustrate this better:
+> > > 
+> > >         CPU 1                            CPU 2
+> > > destroy_devices
+> > > ...
+> > >                                  compact_store()
+> > >                                  zram = dev_to_zram(dev);
+> > > idr_for_each(zram_remove_cb
+> > >   zram_remove
+> > >   ...
+> > >   kfree(zram)
+> > >                                  down_read(&zram->init_lock);
+> > > 
+> > >         CPU 1                            CPU 2
+> > > hot_remove_store
+> > >                                  compact_store()
+> > >                                  zram = dev_to_zram(dev);
+> > >   zram_remove
+> > >     kfree(zram)
+> > >                                  down_read(&zram->init_lock);
+> > > 
+> > > To ensure the private data pointer is valid we could use bdget() / bdput()
+> > > in between access, however that would mean doing that in all sysfs
+> > > reads/stores on the driver. Instead a generic solution for all drivers
+> > > is to ensure the device kobject is still valid and also the bus, if
+> > > a bus is present.
+> > > 
+> > > This issue does not fix a known crash, however this race was
+> > > spotted by Minchan Kim through code inspection upon code review
+> > > of another zram patch.
+> > > 
+> > > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> > > ---
+> > >  drivers/base/base.h |  2 ++
+> > >  drivers/base/bus.c  |  4 ++--
+> > >  drivers/base/core.c | 42 ++++++++++++++++++++++++++++++++++++++----
+> > >  3 files changed, 42 insertions(+), 6 deletions(-)
+> > 
+> > Please make this an independent patch of the zram mess  and I will be
+> > glad to consider it for the driver core tree then.
+> 
+> What do you mean by making it independent?
+> 
+> The patch does not depend on the zram changes, and so, this can
+> be merged separately as-is.
 
---4ndw/alBWmZEhfcZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Great, then make it a 1/1 patch.  Putting it as patch 3 here means I can
+not take it as our tools pull in the full series.
 
-On Wed, May 12, 2021 at 03:21:02PM +0200, Willy Tarreau wrote:
-> On Wed, May 12, 2021 at 01:32:15PM +0100, Mark Brown wrote:
-> > Allow users to implement shorter delays than a full second by implement=
-ing
-> > msleep().
-> >=20
-> > Signed-off-by: Mark Brown <broonie@kernel.org>
+thanks,
 
-> Great, now queued, thank you Mark!
-
-This doesn't seem to be showing up in -next, did it get missed or is the
-queue it's in not in -next?
-
---4ndw/alBWmZEhfcZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDSFEQACgkQJNaLcl1U
-h9CZZAf/ad9XgtaS+NaS95dcHq+3NE3DyNtIb5A5UXEiQ8bS8u+l0lEzuXdkkyLa
-PyTBNOfJzfz0BFtshkw9ZPkFjIQpO1D2yV3YN2Vd+o71o/xtFanNeKsrGPlYr7q2
-uJ6Xjb1oXvEiRojT0n1df9hJwGqfJFwdMGjagP9N8MRoG760TE9SpYgzilMPRpVz
-HzdmnM2peSboLXpt2CHL6+Q3da8WhaZNGr8bK9KVRslyuVqRNU9pQ+CuBZpbKw2H
-sfij7mXm2vdxPccYS8NKs2NeUYTYVmEbXniFBjlUZHSYgGw7jLNsfIIDf36SRLxT
-+3iLx1RHksuEc8MxBmMWf+Nsgu/eUQ==
-=zbmr
------END PGP SIGNATURE-----
-
---4ndw/alBWmZEhfcZ--
+greg k-h
