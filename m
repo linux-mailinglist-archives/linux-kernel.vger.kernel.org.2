@@ -2,445 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D46643B049C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAD803B04A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231627AbhFVMfu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 08:35:50 -0400
-Received: from mail-mw2nam12on2100.outbound.protection.outlook.com ([40.107.244.100]:32512
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231760AbhFVMfo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 08:35:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PIrCwwYkiufUUMWCr3clflWDiL8TE/S39JPFQHyHQR2zAXo01fHUYdE7pWKT0+UAsCWY/HLFN940XnApyd+WBO93NMTDK9dorM2AxiKmPE6VE3eudSzSI6r/V13Yjl9mLP5Kq98BHjGgXyZ+Gslr9fsjECaHiHpIXKB5AXE5bnliWuWntK+gU8RUW5M174FldFR4AAtmV1k0xp3hjyIvhPJEiDKllnyaEH/a/4ZVCpE8+5Ttr+ZXV3cN8YHuE6m/ejlMDyPGLQk/ky2BdknL7JpI6DIhQu7MmgZVLHh4BZaBsPRv1JQvJs5tl38aopRxnJt1jHnC//j3A6gInqMTug==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OzAKmazeTdRPPEd+gIWSZKEAL5bDvhh4oRnNWRugv6c=;
- b=f6aA2USALOiZ8ZwLa2ma47p613HkYJcUJ8CdX/8luJYbeH6pd4jskUc3rdKBHSyXxTYY1kGLkfzAfhSbJUkyecMJ7ADYIQ1xT0Eg3gPCt6a5ljzpYXKe5PoBj0aK/IJNF8QQCeKbGhXDOZyq+050+smG3xzHMGxplD41ULAoAEfmxK4kmBsloLQcHI6hk8F8ICS81NOR5k08gjeTTbdxFTaNOzjL5kjckVg3YAb0apCzSEVSwF9IQk1fmwcjuCrhHqhd+RePu4sIUActI0CX7/VI1xTRHQhxt0r3xWnXcqSLGrIeDy4z2g1HehrcxDy3MLwWU/vewOFAeHsYsLjR2Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analogixsemi.com; dmarc=pass action=none
- header.from=analogixsemi.com; dkim=pass header.d=analogixsemi.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Analogixsemi.onmicrosoft.com; s=selector2-Analogixsemi-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OzAKmazeTdRPPEd+gIWSZKEAL5bDvhh4oRnNWRugv6c=;
- b=mW0CNpjsutDq/SNU/RgGKC4YoyqiwsmlpD6+A169iWOhsjM+b6BMcbYJBKHVNEUf+Ycdh294XjRyHKPFI0Hv7nS5fN7nlJ2gzvWr9lsi1Ki4kje54h4VwVMBVROpxRnYYj9I+RnLhmJdeIuydVjWM4Aql6AynKG2xq09Id76Idk=
-Authentication-Results: driverdev.osuosl.org; dkim=none (message not signed)
- header.d=none;driverdev.osuosl.org; dmarc=none action=none
- header.from=analogixsemi.com;
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com (2603:10b6:a03:229::8)
- by BY5PR04MB6785.namprd04.prod.outlook.com (2603:10b6:a03:218::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Tue, 22 Jun
- 2021 12:33:26 +0000
-Received: from BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::5c0e:fbe5:2bd6:ec6]) by BY5PR04MB6739.namprd04.prod.outlook.com
- ([fe80::5c0e:fbe5:2bd6:ec6%3]) with mapi id 15.20.4264.018; Tue, 22 Jun 2021
- 12:33:26 +0000
-Date:   Tue, 22 Jun 2021 20:33:12 +0800
-From:   Xin Ji <xji@analogixsemi.com>
-To:     Robert Foss <robert.foss@linaro.org>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Andrzej Hajda <a.hajda@samsung.com>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>, Torsten Duwe <duwe@lst.de>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Sheng Pan <span@analogixsemi.com>,
-        Bernie Liang <bliang@analogixsemi.com>,
-        Zhen Li <zhenli@analogixsemi.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org
-Subject: [PATCH v9 4/4] drm/bridge: anx7625: add HDMI audio function
-Message-ID: <6a6fb67dff0bb0ca57143bd6731edff6b11d2813.1624349480.git.xji@analogixsemi.com>
-References: <cover.1624349479.git.xji@analogixsemi.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1624349479.git.xji@analogixsemi.com>
-X-Originating-IP: [60.251.58.79]
-X-ClientProxiedBy: TYAPR04CA0010.apcprd04.prod.outlook.com
- (2603:1096:404:15::22) To BY5PR04MB6739.namprd04.prod.outlook.com
- (2603:10b6:a03:229::8)
+        id S231712AbhFVMgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 08:36:04 -0400
+Received: from mailout2.secunet.com ([62.96.220.49]:54906 "EHLO
+        mailout2.secunet.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231603AbhFVMgC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 08:36:02 -0400
+Received: from cas-essen-02.secunet.de (unknown [10.53.40.202])
+        by mailout2.secunet.com (Postfix) with ESMTP id 823C5800057;
+        Tue, 22 Jun 2021 14:33:44 +0200 (CEST)
+Received: from mbx-essen-01.secunet.de (10.53.40.197) by
+ cas-essen-02.secunet.de (10.53.40.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 22 Jun 2021 14:33:44 +0200
+Received: from gauss2.secunet.de (10.182.7.193) by mbx-essen-01.secunet.de
+ (10.53.40.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Tue, 22 Jun
+ 2021 14:33:44 +0200
+Received: by gauss2.secunet.de (Postfix, from userid 1000)
+        id D1B3A318045C; Tue, 22 Jun 2021 14:33:43 +0200 (CEST)
+Date:   Tue, 22 Jun 2021 14:33:43 +0200
+From:   Steffen Klassert <steffen.klassert@secunet.com>
+To:     Frederic Weisbecker <frederic@kernel.org>
+CC:     Varad Gautam <varad.gautam@suse.com>,
+        <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        <netdev@vger.kernel.org>, Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Florian Westphal <fw@strlen.de>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        <stable@vger.kernel.org>
+Subject: Re: [PATCH] xfrm: policy: Restructure RCU-read locking in
+ xfrm_sk_policy_lookup
+Message-ID: <20210622123343.GD40979@gauss3.secunet.de>
+References: <20210618141101.18168-1-varad.gautam@suse.com>
+ <20210621082949.GX40979@gauss3.secunet.de>
+ <f41d40cc-e474-1324-be0a-7beaf580c292@suse.com>
+ <20210621110528.GZ40979@gauss3.secunet.de>
+ <20210622112159.GC40979@gauss3.secunet.de>
+ <20210622115124.GA109262@lothringen>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from anxtwsw-Precision-3640-Tower (60.251.58.79) by TYAPR04CA0010.apcprd04.prod.outlook.com (2603:1096:404:15::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend Transport; Tue, 22 Jun 2021 12:33:25 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5dd79ac1-efde-48c9-d768-08d93579eead
-X-MS-TrafficTypeDiagnostic: BY5PR04MB6785:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR04MB67853041620A10CA861E7847C7099@BY5PR04MB6785.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:162;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0ipenNiCUSjcty7TyLD8N6rjV3rIe7osRh9duXaxS8UDmRraJ/jxF9uIaZ1QnfLclRITMHsT5nmsP0VOD3fT4xg3n8P6bUNXgbg8kjT3/24aKfENB54xpgN+cbbrj/gfrv4ZxTSSGBE0w5Ci3EC7j54h7qMw8jqGGnmzelTb9crqevU7tVJ1yBWMCl0ax5rOIBCp1QV5qDzdx0jtjlr1uYTL2rCkncFT3t+kWbbnS09f/vpdq71UPiSVLs7fJl5UvLhkNr0rKwgiaLTp9ZcACd3TIuB9qZlDE3vrtFcLCRqdyXMf7vkBEp1rGCF+bl20Jl6Q23wtI7tp3WHwFPjxaaX9gKUbv3omgRyVpERUxOfuEv08eeRXMemnFuwlO3e3HwtY9uMHmAMXBHJU6mfDQ7USdBCgUN6uRGCYHADVy1DAfpoihZ0ZuXMBeeivuVCQEUZ7xWL5FdxLlwxWaNH2f+5eOQoam7FAwM8rBFoki+hhcjeJdeYX8NSFVUx4/88Isa72pU2hz85p3JKpzVkv/px14JVDbb6GNQv65EJ8sFeSixXwyGOU4Hmcwx0NVbflYiBvDDdGZTmSINL8aQF0zHJRwC/Ivh2/cfCXRmVTu6hwA1NV52HlI1EED53R8/0h3MbkzmXmKWmqURxF6b4o7bX91PNK83TODtNljtr289twHua5DkH/M5tGEpHy9W1NOgmjQAzJReq6EEhem7Uxqw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6739.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(136003)(346002)(376002)(39850400004)(366004)(86362001)(7416002)(66556008)(2616005)(16526019)(66946007)(2906002)(4326008)(6666004)(956004)(36756003)(66476007)(55236004)(26005)(38350700002)(83380400001)(38100700002)(186003)(6486002)(110136005)(8676002)(52116002)(316002)(5660300002)(54906003)(478600001)(8936002)(6496006);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qu4Q+4CDdN2BY3Q9n2MTlI5RyVusISBEhJ+87rupoB0Zj+0nn2ijCxh5bHQ9?=
- =?us-ascii?Q?nYYSGYwhDSVQ6nb5BD0ylYI3nlzDJgOaXY+va/Ix3hQD3cZuF+iPDFoVDgmh?=
- =?us-ascii?Q?WY7WVqY79Jvemam8iJSTUTj+CH0fRwtVLaVrP2g5YSUoQfAB6fXKyQTcbzPU?=
- =?us-ascii?Q?z5IAcQC058mV/nPiKW3eIiIney29LshD4z2hmmTFw8QGkiHM2bhyuBbXaUt3?=
- =?us-ascii?Q?KcjUw5ncnyb6CWHG7q9fxcn5ad9h0F017/QNQCjVAznf93yfkLryAR0hg9W7?=
- =?us-ascii?Q?1BJ7yR8o3WVpJqgDuJL+fEnWj+r+vnqSlmHKtjJDsbb4OsweKV5CRfbQghf1?=
- =?us-ascii?Q?VWWSGQg7buvu5OFS8qVbdhDQFl8xzPWpoGR1r5dfMdu18/8J0gP0aNcpmGa+?=
- =?us-ascii?Q?ddkDf3MDZaqBYeRWl37EiFrqZJ1bxBEZFWOgGBO3ZltmsFlxLaNbkoM/O0oD?=
- =?us-ascii?Q?/+EzSpaVlgleVhU71vuAeQLxyxpmoSCuNGD57zoh8xuSevJE4Ry1lhvg2WvJ?=
- =?us-ascii?Q?wXBav4H1fsoH0GjVL73920a5kiSVok54MOrVsEs+n9Jowqqc5AQMVRnTz/bz?=
- =?us-ascii?Q?+TdMoG7rAM6szefxBMyTUXOGgzYLMKJ4qGIK3JRrXwMwqZIW+2USe1Blv0Se?=
- =?us-ascii?Q?x4FGJyAsS2EbPkqKo+8yAy35u2v44qTMFVxecGrDbN4hRy/oTqY7dUDhJeha?=
- =?us-ascii?Q?KU72RArucL2OIwzTgU3wcmvWr1sHPDK6FNJJxrDRd8w5HUrgfM/deSa/JUgJ?=
- =?us-ascii?Q?fS3kXDjiKGyJX5UvWAZ74FdyHLG1OO1HSfZyT84i6i6kACVIDg/9HPIFv4cY?=
- =?us-ascii?Q?As0GlaViAg1y3S70MA82Nj5FM0XQbkPKlJzHcvBHRwE1vFjhjFXgfyzVxrDN?=
- =?us-ascii?Q?exyAb2nXrlJQhf4/WO8c81FNMdsgOBjXwFfVV+GacyVSVSUMqEQcCkOicbQE?=
- =?us-ascii?Q?e1Q5nUiSbtDilZozAy2u1RVRTY+WPDHc9C1vSw2O1QjTm8ps5uD2FLogFUQJ?=
- =?us-ascii?Q?GqBjq+QrW/SiZm8PPdGPZSMX8YTn041FJBIvtzis/QUHWzq+Y9ElIh0+mtEP?=
- =?us-ascii?Q?AucHBAymIPq1uLsddGc7DWrQ252Qu2Bz673gX8CUsoSULozqvTLIBmNmw5fJ?=
- =?us-ascii?Q?58umH3vG1CcvnwCuHztbfw4cLdzGtFJxUrf/ljou92mK4A+S8daktxUNUpE/?=
- =?us-ascii?Q?IwemJNJhSGuFWa2AFHFhv72ty5x93IoX2Hrd9+wsavpTWbxKO72wX8GcrQj9?=
- =?us-ascii?Q?+PB5IUQOZrgXVpXajFXIBGDK8ClwHXMGmOVYukhCKXUR6DbMR8tud9Bg6hgk?=
- =?us-ascii?Q?fhWKXQ0rxiReYKfN304w39Q1?=
-X-OriginatorOrg: analogixsemi.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5dd79ac1-efde-48c9-d768-08d93579eead
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6739.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2021 12:33:26.3113
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: b099b0b4-f26c-4cf5-9a0f-d5be9acab205
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: n4FXHlwPjMr09kgANz8j0dTAzf2FCdHBw9t8R9zI2udtpMRVI3j4DptPHQGneRsybN6fALjqv+tZYDpksXLZQw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6785
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210622115124.GA109262@lothringen>
+X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
+ mbx-essen-01.secunet.de (10.53.40.197)
+X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add audio HDMI codec function support, enable it through device true
-flag "analogix,audio-enable".
+On Tue, Jun 22, 2021 at 01:51:24PM +0200, Frederic Weisbecker wrote:
+> On Tue, Jun 22, 2021 at 01:21:59PM +0200, Steffen Klassert wrote:
+> > On Mon, Jun 21, 2021 at 01:05:28PM +0200, Steffen Klassert wrote:
+> > > On Mon, Jun 21, 2021 at 11:11:18AM +0200, Varad Gautam wrote:
+> > > > 
+> > > > Right, I misread the call chain - security_xfrm_policy_lookup does not reach
+> > > > xfrm_policy_lookup, making this patch unnecessary. The bug I have is:
+> > > > 
+> > > > T1, holding hash_resize_mutex and sleeping inside synchronize_rcu:
+> > > > 
+> > > > __schedule
+> > > > schedule
+> > > > schedule_timeout
+> > > > wait_for_completion
+> > > > __wait_rcu_gp
+> > > > synchronize_rcu
+> > > > xfrm_hash_resize
+> > > > 
+> > > > And T2 producing RCU-stalls since it blocked on the mutex:
+> > > > 
+> > > > __schedule
+> > > > schedule
+> > > > __rt_mutex_slowlock
+> > > > rt_mutex_slowlock_locked
+> > > > rt_mutex_slowlock
+> > > > xfrm_policy_lookup_bytype.constprop.77
+> > > 
+> > > Ugh, why does xfrm_policy_lookup_bytype use a mutex? This is called
+> > > in the receive path inside a sofirq.
+> > > 
+> > > The bug was introduced by: 
+> > > 
+> > > commit 77cc278f7b202e4f16f8596837219d02cb090b96
+> > > Author: Ahmed S. Darwish <a.darwish@linutronix.de>
+> > > Date:   Mon Jul 20 17:55:22 2020 +0200
+> > > 
+> > >     xfrm: policy: Use sequence counters with associated lock
+> > > 
+> > >     A sequence counter write side critical section must be protected by some
+> > >     form of locking to serialize writers. If the serialization primitive is
+> > >     not disabling preemption implicitly, preemption has to be explicitly
+> > >     disabled before entering the sequence counter write side critical
+> > >     section.
+> > > 
+> > >     A plain seqcount_t does not contain the information of which lock must
+> > >     be held when entering a write side critical section.
+> > > 
+> > >     Use the new seqcount_spinlock_t and seqcount_mutex_t data types instead,
+> > >     which allow to associate a lock with the sequence counter. This enables
+> > >     lockdep to verify that the lock used for writer serialization is held
+> > >     when the write side critical section is entered.
+> > > 
+> > >     If lockdep is disabled this lock association is compiled out and has
+> > >     neither storage size nor runtime overhead.
+> > > 
+> > >     Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+> > >     Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > >     Link: https://lkml.kernel.org/r/20200720155530.1173732-17-a.darwish@linutronix.de
+> > > 
+> > > This uses a seqcount_mutex_t for xfrm_policy_hash_generation, that's
+> > > wrong.
+> > 
+> > Varad, can you try to replace the seqcount_mutex_t for xfrm_policy_hash_generation
+> > by a seqcount_spinlock_t? I'm not familiar with that seqcount changes,
+> > but we should not end up with using a mutex in this codepath.
+> 
+> Something like this? (beware, untested, also I don't know if the read side
+> should then disable bh, doesn't look necessary for PREEMPT_RT, but I may be
+> missing something...)
 
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
-Signed-off-by: Xin Ji <xji@analogixsemi.com>
----
- drivers/gpu/drm/bridge/analogix/anx7625.c | 226 ++++++++++++++++++++++
- drivers/gpu/drm/bridge/analogix/anx7625.h |   5 +
- 2 files changed, 231 insertions(+)
+Looking a bit deeper into this it seems that the problem is that
+xfrm_policy_hash_generation and hash_resize_mutex do not protect
+the same thing.
 
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-index a5a20cc0f3e0..44ab0893f600 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.c
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-@@ -33,6 +33,7 @@
- #include <drm/drm_probe_helper.h>
- 
- #include <media/v4l2-fwnode.h>
-+#include <sound/hdmi-codec.h>
- #include <video/display_timing.h>
- 
- #include "anx7625.h"
-@@ -153,6 +154,20 @@ static int anx7625_write_and(struct anx7625_data *ctx,
- 	return anx7625_reg_write(ctx, client, offset, (val & (mask)));
- }
- 
-+static int anx7625_write_and_or(struct anx7625_data *ctx,
-+				struct i2c_client *client,
-+				u8 offset, u8 and_mask, u8 or_mask)
-+{
-+	int val;
-+
-+	val = anx7625_reg_read(ctx, client, offset);
-+	if (val < 0)
-+		return val;
-+
-+	return anx7625_reg_write(ctx, client,
-+				 offset, (val & and_mask) | (or_mask));
-+}
-+
- static int anx7625_config_bit_matrix(struct anx7625_data *ctx)
- {
- 	int i, ret;
-@@ -1325,6 +1340,9 @@ static int anx7625_parse_dt(struct device *dev,
- 	else
- 		DRM_DEV_DEBUG_DRIVER(dev, "found MIPI DSI host node.\n");
- 
-+	if (of_property_read_bool(np, "analogix,audio-enable"))
-+		pdata->audio_en = 1;
-+
- 	ret = drm_of_find_panel_or_bridge(np, 1, 0, &panel, NULL);
- 	if (ret < 0) {
- 		if (ret == -ENODEV)
-@@ -1395,6 +1413,208 @@ static enum drm_connector_status anx7625_sink_detect(struct anx7625_data *ctx)
- 				     connector_status_disconnected;
- }
- 
-+static int anx7625_audio_hw_params(struct device *dev, void *data,
-+				   struct hdmi_codec_daifmt *fmt,
-+				   struct hdmi_codec_params *params)
-+{
-+	struct anx7625_data *ctx = dev_get_drvdata(dev);
-+	int wl, ch, rate;
-+	int ret = 0;
-+
-+	if (fmt->fmt != HDMI_DSP_A) {
-+		DRM_DEV_ERROR(dev, "only supports DSP_A\n");
-+		return -EINVAL;
-+	}
-+
-+	DRM_DEV_DEBUG_DRIVER(dev, "setting %d Hz, %d bit, %d channels\n",
-+			     params->sample_rate, params->sample_width,
-+			     params->cea.channels);
-+
-+	ret |= anx7625_write_and_or(ctx, ctx->i2c.tx_p2_client,
-+				    AUDIO_CHANNEL_STATUS_6,
-+				    ~I2S_SLAVE_MODE,
-+				    TDM_SLAVE_MODE);
-+
-+	/* Word length */
-+	switch (params->sample_width) {
-+	case 16:
-+		wl = AUDIO_W_LEN_16_20MAX;
-+		break;
-+	case 18:
-+		wl = AUDIO_W_LEN_18_20MAX;
-+		break;
-+	case 20:
-+		wl = AUDIO_W_LEN_20_20MAX;
-+		break;
-+	case 24:
-+		wl = AUDIO_W_LEN_24_24MAX;
-+		break;
-+	default:
-+		DRM_DEV_DEBUG_DRIVER(dev, "wordlength: %d bit not support",
-+				     params->sample_width);
-+		return -EINVAL;
-+	}
-+	ret |= anx7625_write_and_or(ctx, ctx->i2c.tx_p2_client,
-+				    AUDIO_CHANNEL_STATUS_5,
-+				    0xf0, wl);
-+
-+	/* Channel num */
-+	switch (params->cea.channels) {
-+	case 2:
-+		ch = I2S_CH_2;
-+		break;
-+	case 4:
-+		ch = TDM_CH_4;
-+		break;
-+	case 6:
-+		ch = TDM_CH_6;
-+		break;
-+	case 8:
-+		ch = TDM_CH_8;
-+		break;
-+	default:
-+		DRM_DEV_DEBUG_DRIVER(dev, "channel number: %d not support",
-+				     params->cea.channels);
-+		return -EINVAL;
-+	}
-+	ret |= anx7625_write_and_or(ctx, ctx->i2c.tx_p2_client,
-+			       AUDIO_CHANNEL_STATUS_6, 0x1f, ch << 5);
-+	if (ch > I2S_CH_2)
-+		ret |= anx7625_write_or(ctx, ctx->i2c.tx_p2_client,
-+				AUDIO_CHANNEL_STATUS_6, AUDIO_LAYOUT);
-+	else
-+		ret |= anx7625_write_and(ctx, ctx->i2c.tx_p2_client,
-+				AUDIO_CHANNEL_STATUS_6, ~AUDIO_LAYOUT);
-+
-+	/* FS */
-+	switch (params->sample_rate) {
-+	case 32000:
-+		rate = AUDIO_FS_32K;
-+		break;
-+	case 44100:
-+		rate = AUDIO_FS_441K;
-+		break;
-+	case 48000:
-+		rate = AUDIO_FS_48K;
-+		break;
-+	case 88200:
-+		rate = AUDIO_FS_882K;
-+		break;
-+	case 96000:
-+		rate = AUDIO_FS_96K;
-+		break;
-+	case 176400:
-+		rate = AUDIO_FS_1764K;
-+		break;
-+	case 192000:
-+		rate = AUDIO_FS_192K;
-+		break;
-+	default:
-+		DRM_DEV_DEBUG_DRIVER(dev, "sample rate: %d not support",
-+				     params->sample_rate);
-+		return -EINVAL;
-+	}
-+	ret |= anx7625_write_and_or(ctx, ctx->i2c.tx_p2_client,
-+				    AUDIO_CHANNEL_STATUS_4,
-+				    0xf0, rate);
-+	ret |= anx7625_write_or(ctx, ctx->i2c.rx_p0_client,
-+				AP_AV_STATUS, AP_AUDIO_CHG);
-+	if (ret < 0) {
-+		DRM_DEV_ERROR(dev, "IO error : config audio.\n");
-+		return -EIO;
-+	}
-+
-+	return 0;
-+}
-+
-+static void anx7625_audio_shutdown(struct device *dev, void *data)
-+{
-+	DRM_DEV_DEBUG_DRIVER(dev, "stop audio\n");
-+}
-+
-+static int anx7625_hdmi_i2s_get_dai_id(struct snd_soc_component *component,
-+				       struct device_node *endpoint)
-+{
-+	struct of_endpoint of_ep;
-+	int ret;
-+
-+	ret = of_graph_parse_endpoint(endpoint, &of_ep);
-+	if (ret < 0)
-+		return ret;
-+
-+	/*
-+	 * HDMI sound should be located at external DPI port
-+	 * Didn't have good way to check where is internal(DSI)
-+	 * or external(DPI) bridge
-+	 */
-+	return 0;
-+}
-+
-+static void
-+anx7625_audio_update_connector_status(struct anx7625_data *ctx,
-+				      enum drm_connector_status status)
-+{
-+	if (ctx->plugged_cb && ctx->codec_dev) {
-+		ctx->plugged_cb(ctx->codec_dev,
-+				status == connector_status_connected);
-+	}
-+}
-+
-+static int anx7625_audio_hook_plugged_cb(struct device *dev, void *data,
-+					 hdmi_codec_plugged_cb fn,
-+					 struct device *codec_dev)
-+{
-+	struct anx7625_data *ctx = data;
-+
-+	ctx->plugged_cb = fn;
-+	ctx->codec_dev = codec_dev;
-+	anx7625_audio_update_connector_status(ctx, anx7625_sink_detect(ctx));
-+
-+	return 0;
-+}
-+
-+static const struct hdmi_codec_ops anx7625_codec_ops = {
-+	.hw_params	= anx7625_audio_hw_params,
-+	.audio_shutdown = anx7625_audio_shutdown,
-+	.get_dai_id	= anx7625_hdmi_i2s_get_dai_id,
-+	.hook_plugged_cb = anx7625_audio_hook_plugged_cb,
-+};
-+
-+static void anx7625_unregister_audio(struct anx7625_data *ctx)
-+{
-+	struct device *dev = &ctx->client->dev;
-+
-+	if (ctx->audio_pdev) {
-+		platform_device_unregister(ctx->audio_pdev);
-+		ctx->audio_pdev = NULL;
-+	}
-+
-+	DRM_DEV_DEBUG_DRIVER(dev, "unbound to %s", HDMI_CODEC_DRV_NAME);
-+}
-+
-+static int anx7625_register_audio(struct device *dev, struct anx7625_data *ctx)
-+{
-+	struct hdmi_codec_pdata codec_data = {
-+		.ops = &anx7625_codec_ops,
-+		.max_i2s_channels = 8,
-+		.i2s = 1,
-+		.data = ctx,
-+	};
-+
-+	ctx->audio_pdev = platform_device_register_data(dev,
-+							HDMI_CODEC_DRV_NAME,
-+							PLATFORM_DEVID_AUTO,
-+							&codec_data,
-+							sizeof(codec_data));
-+
-+	if (IS_ERR(ctx->audio_pdev))
-+		return IS_ERR(ctx->audio_pdev);
-+
-+	DRM_DEV_DEBUG_DRIVER(dev, "bound to %s", HDMI_CODEC_DRV_NAME);
-+
-+	return 0;
-+}
-+
- static int anx7625_attach_dsi(struct anx7625_data *ctx)
- {
- 	struct mipi_dsi_device *dsi;
-@@ -1959,6 +2179,9 @@ static int anx7625_i2c_probe(struct i2c_client *client,
- 				    DRM_MODE_CONNECTOR_DisplayPort;
- 	drm_bridge_add(&platform->bridge);
- 
-+	if (platform->pdata.audio_en)
-+		anx7625_register_audio(dev, platform);
-+
- 	DRM_DEV_DEBUG_DRIVER(dev, "probe done\n");
- 
- 	return 0;
-@@ -1987,6 +2210,9 @@ static int anx7625_i2c_remove(struct i2c_client *client)
- 
- 	anx7625_unregister_i2c_dummy_clients(platform);
- 
-+	if (platform->pdata.audio_en)
-+		anx7625_unregister_audio(platform);
-+
- 	kfree(platform);
- 	return 0;
- }
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.h b/drivers/gpu/drm/bridge/analogix/anx7625.h
-index 65db38e5da9a..a9bdf05a1f66 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.h
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.h
-@@ -111,6 +111,7 @@
- #define AUDIO_CHANNEL_STATUS_6 0xd5
- #define TDM_SLAVE_MODE 0x10
- #define I2S_SLAVE_MODE 0x08
-+#define AUDIO_LAYOUT   0x01
- 
- #define AUDIO_CONTROL_REGISTER 0xe6
- #define TDM_TIMING_MODE 0x08
-@@ -365,6 +366,7 @@ struct anx7625_platform_data {
- 	int intp_irq;
- 	int is_dpi;
- 	int mipi_lanes;
-+	int audio_en;
- 	int dp_lane0_swing_reg_cnt;
- 	int lane0_reg_data[DP_TX_SWING_REG_CNT];
- 	int dp_lane1_swing_reg_cnt;
-@@ -385,6 +387,7 @@ struct anx7625_i2c_client {
- 
- struct anx7625_data {
- 	struct anx7625_platform_data pdata;
-+	struct platform_device *audio_pdev;
- 	int hpd_status;
- 	int hpd_high_cnt;
- 	/* Lock for work queue */
-@@ -393,6 +396,8 @@ struct anx7625_data {
- 	struct anx7625_i2c_client i2c;
- 	struct i2c_client *last_client;
- 	struct s_edid_data slimport_edid_p;
-+	struct device *codec_dev;
-+	hdmi_codec_plugged_cb plugged_cb;
- 	struct work_struct work;
- 	struct workqueue_struct *workqueue;
- 	char edid_block;
--- 
-2.25.1
+hash_resize_mutex protects user configuration against a worker thread
+that rebalances the hash buckets. xfrm_policy_hash_generation protects
+user configuration against the data path that runs in softirq.
 
+Finally the following line from xfrm_init() relates these two:
+
+seqcount_mutex_init(&xfrm_policy_hash_generation, &hash_resize_mutex);
+
+That looks a bit odd. This line was also introduced with the above
+mentioned patch.
