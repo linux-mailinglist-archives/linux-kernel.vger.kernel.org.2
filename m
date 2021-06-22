@@ -2,110 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B913B0B30
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B0B3B0B32
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231880AbhFVRMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 13:12:34 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:58090 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231391AbhFVRMc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 13:12:32 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id D3A601FD45;
-        Tue, 22 Jun 2021 17:10:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624381815; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y+ndS1pMXzpxxOJw4uAlXW0tsIJJQ3SpgvDNP6Zb8gg=;
-        b=skdhE1Y9rpB880qDk6FzQEM59eMQGnjDy+JH1uvqSHcRF7XxeyUhHtiAe36RjeXs91s8qn
-        IH1Ol/wA9UCVDsVH12+/680TdPKxXpIrONtfbJH0NleznfBzuiajFeHvFWqG+IcC4wYCaa
-        86YLOeNHfQpW2aReijp/zeogvqrcmew=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624381815;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y+ndS1pMXzpxxOJw4uAlXW0tsIJJQ3SpgvDNP6Zb8gg=;
-        b=f2oT0OWiBOAzc4xCSONSYCn6QEwzss5Tf64Ak8eylqUA2b/i/Uv9oUrmwJ4KkNNYeW+04/
-        EeiXeld5SsJhQhCA==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id BFE0911A97;
-        Tue, 22 Jun 2021 17:10:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624381815; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y+ndS1pMXzpxxOJw4uAlXW0tsIJJQ3SpgvDNP6Zb8gg=;
-        b=skdhE1Y9rpB880qDk6FzQEM59eMQGnjDy+JH1uvqSHcRF7XxeyUhHtiAe36RjeXs91s8qn
-        IH1Ol/wA9UCVDsVH12+/680TdPKxXpIrONtfbJH0NleznfBzuiajFeHvFWqG+IcC4wYCaa
-        86YLOeNHfQpW2aReijp/zeogvqrcmew=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624381815;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y+ndS1pMXzpxxOJw4uAlXW0tsIJJQ3SpgvDNP6Zb8gg=;
-        b=f2oT0OWiBOAzc4xCSONSYCn6QEwzss5Tf64Ak8eylqUA2b/i/Uv9oUrmwJ4KkNNYeW+04/
-        EeiXeld5SsJhQhCA==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id zs/ALXcZ0mCjPwAALh3uQQ
-        (envelope-from <bp@suse.de>); Tue, 22 Jun 2021 17:10:15 +0000
-Date:   Tue, 22 Jun 2021 19:10:15 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        id S231476AbhFVRM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 13:12:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37942 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230102AbhFVRMz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 13:12:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C7DB361166;
+        Tue, 22 Jun 2021 17:10:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624381837;
+        bh=a+PLuKVymxA0COwEw81AAw1JqR/VCb63zv7i5UvWhFs=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=MkB7NIb/w7T/L65z6FzGzuSS+gkOzprtBiodbApGpVnqXYxfj5Q/0dxlp11hx8YzU
+         v3YBrANh4Zt7+fkXVtRBKhxDCObKp6hvwxpd4rovoAQpBDZOA5difyz4MeNVeyrCpR
+         BEhYOzSG+kLU1/Y40m/WM8oMSxc8YmmkoZO4vgpInYD9B4SCXA0/RpRjM4Frez+wZw
+         Czq6JAVn8Fc8bqI9JHCx3bOQUCJxQSKl74a1rbPY9lI1vCjeXNSCptfVXxetYrya2l
+         FkfBZlfO3X0D9PGpghYrDET6/pn5EPjmu9UXVPer6uWia6n4sbXzxsef+d9Zq/Btw2
+         n8HJjCK8rEFxA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 8E41B5C017F; Tue, 22 Jun 2021 10:10:37 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 10:10:37 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@elte.hu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V3 56/66] x86/fpu: Dont store PKRU in xstate in
- fpu_reset_fpstate()
-Message-ID: <YNIZd4/R/39u8ybb@zn.tnic>
-References: <20210618141823.161158090@linutronix.de>
- <20210618143450.752639563@linutronix.de>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the rcu tree with the tip tree
+Message-ID: <20210622171037.GB4397@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210622144757.055a4137@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210618143450.752639563@linutronix.de>
+In-Reply-To: <20210622144757.055a4137@canb.auug.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 04:19:19PM +0200, Thomas Gleixner wrote:
-> PKRU for a task is stored in task->thread.pkru when the task is scheduled
-> out. For 'current' the authoritative source of PKRU is the hardware.
+On Tue, Jun 22, 2021 at 02:47:57PM +1000, Stephen Rothwell wrote:
+> Hi all,
 > 
-> fpu_reset_fpstate() has two callers:
+> Today's linux-next merge of the rcu tree got a conflict in:
 > 
->   1) fpu__clear_user_states() for !FPU systems. For those PKRU is irrelevant
+>   kernel/rcu/tree_stall.h
 > 
->   2) fpu_flush_thread() which is invoked from flush_thread(). flush_thread()
->      resets the hardware to the kernel restrictive default value.
+> between commit:
 > 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
->  arch/x86/kernel/fpu/core.c |   22 ++++------------------
->  1 file changed, 4 insertions(+), 18 deletions(-)
+>   2f064a59a11f ("sched: Change task_struct::state")
+> 
+> from the tip tree and commit:
+> 
+>   367455053a76 ("rcu: Mark accesses in tree_stall.h")
+> 
+> from the rcu tree.
+> 
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
 
-Reviewed-by: Borislav Petkov <bp@suse.de>
+I have moved this RCU commit out of my -next pile.  I will put it back
+at v5.14-rc1 time.  The other conflict looks quite straightforward,
+so I am leaving that one be.
 
--- 
-Regards/Gruss,
-    Boris.
+							Thanx, Paul
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+> -- 
+> Cheers,
+> Stephen Rothwell
+> 
+> diff --cc kernel/rcu/tree_stall.h
+> index acb2288063b5,24065f1acb8b..000000000000
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@@ -460,12 -462,13 +462,13 @@@ static void rcu_check_gp_kthread_starva
+>   
+>   	if (rcu_is_gp_kthread_starving(&j)) {
+>   		cpu = gpk ? task_cpu(gpk) : -1;
+>  -		pr_err("%s kthread starved for %ld jiffies! g%ld f%#x %s(%d) ->state=%#lx ->cpu=%d\n",
+>  +		pr_err("%s kthread starved for %ld jiffies! g%ld f%#x %s(%d) ->state=%#x ->cpu=%d\n",
+>   		       rcu_state.name, j,
+>   		       (long)rcu_seq_current(&rcu_state.gp_seq),
+> - 		       data_race(rcu_state.gp_flags),
+> - 		       gp_state_getname(rcu_state.gp_state), rcu_state.gp_state,
+> - 		       gpk ? gpk->__state : ~0, cpu);
+> + 		       data_race(READ_ONCE(rcu_state.gp_flags)),
+> + 		       gp_state_getname(rcu_state.gp_state),
+> + 		       data_race(READ_ONCE(rcu_state.gp_state)),
+>  -		       gpk ? data_race(READ_ONCE(gpk->state)) : ~0, cpu);
+> ++		       gpk ? data_race(READ_ONCE(gpk->__state)) : ~0, cpu);
+>   		if (gpk) {
+>   			pr_err("\tUnless %s kthread gets sufficient CPU time, OOM is now expected behavior.\n", rcu_state.name);
+>   			pr_err("RCU grace-period kthread stack dump:\n");
+> @@@ -508,7 -511,7 +511,7 @@@ static void rcu_check_gp_kthread_expire
+>   		       (long)rcu_seq_current(&rcu_state.gp_seq),
+>   		       data_race(rcu_state.gp_flags),
+>   		       gp_state_getname(RCU_GP_WAIT_FQS), RCU_GP_WAIT_FQS,
+> - 		       gpk->__state);
+>  -		       data_race(READ_ONCE(gpk->state)));
+> ++		       data_race(READ_ONCE(gpk->__state)));
+>   		pr_err("\tPossible timer handling issue on cpu=%d timer-softirq=%u\n",
+>   		       cpu, kstat_softirqs_cpu(TIMER_SOFTIRQ, cpu));
+>   	}
+> @@@ -732,23 -816,34 +816,34 @@@ void show_rcu_gp_kthreads(void
+>   	struct task_struct *t = READ_ONCE(rcu_state.gp_kthread);
+>   
+>   	j = jiffies;
+> - 	ja = j - data_race(rcu_state.gp_activity);
+> - 	jr = j - data_race(rcu_state.gp_req_activity);
+> - 	jw = j - data_race(rcu_state.gp_wake_time);
+> - 	pr_info("%s: wait state: %s(%d) ->state: %#x delta ->gp_activity %lu ->gp_req_activity %lu ->gp_wake_time %lu ->gp_wake_seq %ld ->gp_seq %ld ->gp_seq_needed %ld ->gp_flags %#x\n",
+> + 	ja = j - data_race(READ_ONCE(rcu_state.gp_activity));
+> + 	jr = j - data_race(READ_ONCE(rcu_state.gp_req_activity));
+> + 	js = j - data_race(READ_ONCE(rcu_state.gp_start));
+> + 	jw = j - data_race(READ_ONCE(rcu_state.gp_wake_time));
+>  -	pr_info("%s: wait state: %s(%d) ->state: %#lx ->rt_priority %u delta ->gp_start %lu ->gp_activity %lu ->gp_req_activity %lu ->gp_wake_time %lu ->gp_wake_seq %ld ->gp_seq %ld ->gp_seq_needed %ld ->gp_max %lu ->gp_flags %#x\n",
+> ++	pr_info("%s: wait state: %s(%d) ->state: %#x ->rt_priority %u delta ->gp_start %lu ->gp_activity %lu ->gp_req_activity %lu ->gp_wake_time %lu ->gp_wake_seq %ld ->gp_seq %ld ->gp_seq_needed %ld ->gp_max %lu ->gp_flags %#x\n",
+>   		rcu_state.name, gp_state_getname(rcu_state.gp_state),
+> - 		rcu_state.gp_state, t ? t->__state : 0x1ffff,
+> - 		ja, jr, jw, (long)data_race(rcu_state.gp_wake_seq),
+> - 		(long)data_race(rcu_state.gp_seq),
+> - 		(long)data_race(rcu_get_root()->gp_seq_needed),
+> - 		data_race(rcu_state.gp_flags));
+> + 		data_race(READ_ONCE(rcu_state.gp_state)),
+>  -		t ? data_race(READ_ONCE(t->state)) : 0x1ffffL, t ? t->rt_priority : 0xffU,
+> ++		t ? data_race(READ_ONCE(t->__state)) : 0x1ffffL, t ? t->rt_priority : 0xffU,
+> + 		js, ja, jr, jw, (long)data_race(READ_ONCE(rcu_state.gp_wake_seq)),
+> + 		(long)data_race(READ_ONCE(rcu_state.gp_seq)),
+> + 		(long)data_race(READ_ONCE(rcu_get_root()->gp_seq_needed)),
+> + 		data_race(READ_ONCE(rcu_state.gp_max)),
+> + 		data_race(READ_ONCE(rcu_state.gp_flags)));
+>   	rcu_for_each_node_breadth_first(rnp) {
+> - 		if (ULONG_CMP_GE(READ_ONCE(rcu_state.gp_seq),
+> - 				 READ_ONCE(rnp->gp_seq_needed)))
+> + 		if (ULONG_CMP_GE(READ_ONCE(rcu_state.gp_seq), READ_ONCE(rnp->gp_seq_needed)) &&
+> + 		    !data_race(READ_ONCE(rnp->qsmask)) && !data_race(READ_ONCE(rnp->boost_tasks)) &&
+> + 		    !data_race(READ_ONCE(rnp->exp_tasks)) && !data_race(READ_ONCE(rnp->gp_tasks)))
+>   			continue;
+> - 		pr_info("\trcu_node %d:%d ->gp_seq %ld ->gp_seq_needed %ld\n",
+> - 			rnp->grplo, rnp->grphi, (long)data_race(rnp->gp_seq),
+> - 			(long)data_race(rnp->gp_seq_needed));
+> + 		pr_info("\trcu_node %d:%d ->gp_seq %ld ->gp_seq_needed %ld ->qsmask %#lx %c%c%c%c ->n_boosts %ld\n",
+> + 			rnp->grplo, rnp->grphi,
+> + 			(long)data_race(READ_ONCE(rnp->gp_seq)),
+> + 			(long)data_race(READ_ONCE(rnp->gp_seq_needed)),
+> + 			data_race(READ_ONCE(rnp->qsmask)),
+> + 			".b"[!!data_race(READ_ONCE(rnp->boost_kthread_task))],
+> + 			".B"[!!data_race(READ_ONCE(rnp->boost_tasks))],
+> + 			".E"[!!data_race(READ_ONCE(rnp->exp_tasks))],
+> + 			".G"[!!data_race(READ_ONCE(rnp->gp_tasks))],
+> + 			data_race(READ_ONCE(rnp->n_boosts)));
+>   		if (!rcu_is_leaf_node(rnp))
+>   			continue;
+>   		for_each_leaf_node_possible_cpu(rnp, cpu) {
+
+
