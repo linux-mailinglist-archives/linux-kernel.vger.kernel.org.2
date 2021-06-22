@@ -2,44 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DF573B0869
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:14:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ADDE3B086A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232089AbhFVPQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:16:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37438 "EHLO mail.kernel.org"
+        id S232142AbhFVPQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:16:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230047AbhFVPQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:16:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6152061289;
-        Tue, 22 Jun 2021 15:14:33 +0000 (UTC)
+        id S232107AbhFVPQw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 11:16:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E9CA860BD3;
+        Tue, 22 Jun 2021 15:14:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624374873;
-        bh=KS3KXpd8Dci6bRa37VEJAqaBu7XL57Vjx13ZSsmsgxY=;
+        s=k20201202; t=1624374876;
+        bh=9nlCYcwqJ1vnQ9bk5JIVIMyBSmpad5izn20RrHQQDjM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pBmGF05M/wKQ0u7YNmBjoJANPJA8cwDOC/SzvktcvYkdEyWhR6gSiauo+ZJimMtcr
-         KXJl8IjJdJgypXTcel33S1y6blaQwsGBlCUd6b3k70L4dkrZF+nuIE2yjfY34dACtK
-         v0ySKBVvmpo4Yf+No6SgJqHc7txLPyhqig6bPweqPHsO1q+8NNJkv5U2c25x0m9mKX
-         5eiNqieZDuraHJ2rcMWy+MzMWdJFV8qbN2gnu/Qrrj4o6TzHzWCbjR6SVduhebe/CG
-         ha0V3aWCe1gGusbYB4gz8mwUlErJIZ5roPUgLNt9keul8eJyRoMv+uPFuF5Kefjit2
-         hSJjMT1I+QYSA==
+        b=GLuKJLiIYN2/DFWioXKR8mwigKWHko61JufxOKbH5a40RUgTuZtNEZYvjF99m8AQj
+         3wZctFuPzF/8qBEaW6o3K5CmBLQxM1aThJs5qsiQ1/R6NhCw0+75q9YaGq0RUQJvn7
+         KHD0WvFO3aBYSzbvRa8j8vPS648jlhP5wnsOWjIAu1iJToRrTTL3bq2tlLOnP96gyC
+         9wQDlYnKUqoGu2MfIaLevW4e82/7zVn72LbhZdTsIFFVgxhDPq4V97K2i4WoTu7ly9
+         zyjfV3/wpzxznr85k+vNRmUrwIsHRetGsRn1O3ir+9phpNbHJpp+Z+RgyuRq+gW6tB
+         NYHYLlQJ6v4sw==
 From:   Mark Brown <broonie@kernel.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Rob Herring <robh+dt@kernel.org>
+To:     Axel Lin <axel.lin@ingics.com>
 Cc:     Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
-        devicetree@vger.kernel.org, kernel@collabora.com,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-kernel@vger.kernel.org, Ian Ray <ian.ray@ge.com>,
-        linux-spi@vger.kernel.org
-Subject: Re: (subset) [PATCHv5 0/5] GE Healthcare PPD firmware upgrade driver for ACHC
-Date:   Tue, 22 Jun 2021 16:14:02 +0100
-Message-Id: <162437400237.2387.4945369084350111189.b4-ty@kernel.org>
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: Re: [PATCH] regulator: hi6421v600: Fix setting wrong driver_data
+Date:   Tue, 22 Jun 2021 16:14:03 +0100
+Message-Id: <162437385474.2223.5068353167104451603.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210621175359.126729-1-sebastian.reichel@collabora.com>
-References: <20210621175359.126729-1-sebastian.reichel@collabora.com>
+In-Reply-To: <20210622043329.392072-1-axel.lin@ingics.com>
+References: <20210622043329.392072-1-axel.lin@ingics.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -47,29 +42,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Jun 2021 19:53:54 +0200, Sebastian Reichel wrote:
-> The PPD has a secondary processor (NXP Kinetis K20), which can be
-> programmed from the main system. It is connected to the main processor
-> by having it's EzPort interface connected to the SPI bus. Currently
-> both (normal and EzPort) interfaces are simply exposed to userspace.
-> This does not work for the EzPort, since EzPort usage requires a device
-> reset. The proper solution is to do the flashing from kernel space
-> with properly timed toggling of EzPort chip-select and reset line. In
-> PATCHv2 it was suggested, that this should happen via an SPI ancillary
-> device, so this is how it has been implemented now.
+On Tue, 22 Jun 2021 12:33:29 +0800, Axel Lin wrote:
+> Current code set "config.driver_data = sreg" but sreg only init the mutex,
+> the othere fields are just zero. Fix it by pass *info to config.driver_data
+> so each regulator can get corresponding data by rdev_get_drvdata().
 > 
-> [...]
+> Separate enable_mutex from struct hi6421_spmi_reg_info since only need one
+> mutex for the driver.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
 Thanks!
 
-[1/5] spi: add ancillary device support
-      commit: 0c79378c01999bd60057c475f163ec807c24891f
-[2/5] spi: dt-bindings: support devices with multiple chipselects
-      commit: d90609a4b72dbfe42da2a55f3078c35e669948e0
+[1/1] regulator: hi6421v600: Fix setting wrong driver_data
+      commit: 9bc146acc33125cd9f365b92f1c02ec89f639977
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
