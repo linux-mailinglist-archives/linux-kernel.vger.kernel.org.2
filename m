@@ -2,281 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B9E23B0A88
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8FE03B0A8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:43:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230515AbhFVQpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 12:45:10 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59660 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229501AbhFVQpJ (ORCPT
+        id S231441AbhFVQpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 12:45:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230438AbhFVQpm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 12:45:09 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15MGXHZG153586
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 12:42:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=in-reply-to : subject :
- from : to : cc : date : references : content-type : message-id :
- content-transfer-encoding : mime-version; s=pp1;
- bh=cyFcrkz/DsCo82vETRqOoOAQ4D9ZLp90Jz9I+JKrQD8=;
- b=jBghao7OvnxcAyl4s0LQZ15s2bTxKHDwsnhsIKcbm0DbAW6bYNRG0/8pY3c6rw7rvRUT
- +jhoziTnewM7GySEoHibuPhpXEStzhF9AoJohD0JLJRcQlQnx6aTweMF4ZMylbxY+znb
- 2CRJqLMVJnWZBH9KtAB5ngzkUos9ft+dM7t41Kp/UHFIx3AQL/cmuH5maftOIVKdHQKw
- GhmIBlt+pdWflFfb/1eBzV+itG4S4fqRNXn59ZpY9D91gy9i5/cFk9BCCiHJ3Qf0EbRF
- 3+J1fH9bJ/dXhIa/GFuybSMxY/MnqatA0/UgfC0QnGvcME/Gpx37iJl0KrDjOvysXFT0 0g== 
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [158.85.210.112])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 39bj1gv6uk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 12:42:53 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-kernel@vger.kernel.org> from <BMT@zurich.ibm.com>;
-        Tue, 22 Jun 2021 16:42:53 -0000
-Received: from us1b3-smtp05.a3dr.sjc01.isc4sb.com (10.122.203.183)
-        by smtp.notes.na.collabserv.com (10.122.47.54) with smtp.notes.na.collabserv.com ESMTP;
-        Tue, 22 Jun 2021 16:42:51 -0000
-Received: from us1b3-mail162.a3dr.sjc03.isc4sb.com ([10.160.174.187])
-          by us1b3-smtp05.a3dr.sjc01.isc4sb.com
-          with ESMTP id 2021062216424972-501643 ;
-          Tue, 22 Jun 2021 16:42:49 +0000 
-In-Reply-To: <20210622061422.2633501-5-ira.weiny@intel.com>
-Subject: Re: [PATCH 4/4] RDMA/siw: Convert siw_tx_hdt() to kmap_local_page()
-From:   "Bernard Metzler" <BMT@zurich.ibm.com>
-To:     "ira.weiny" <ira.weiny@intel.com>
-Cc:     "Jason Gunthorpe" <jgg@ziepe.ca>,
-        "Mike Marciniszyn" <mike.marciniszyn@cornelisnetworks.com>,
-        "Dennis Dalessandro" <dennis.dalessandro@cornelisnetworks.com>,
-        "Doug Ledford" <dledford@redhat.com>,
-        "Faisal Latif" <faisal.latif@intel.com>,
-        "Shiraz Saleem" <shiraz.saleem@intel.com>,
-        "Kamal Heib" <kheib@redhat.com>,
-        "linux-rdma" <linux-rdma@vger.kernel.org>,
-        "linux-kernel" <linux-kernel@vger.kernel.org>
-Date:   Tue, 22 Jun 2021 16:42:49 +0000
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20210622061422.2633501-5-ira.weiny@intel.com>,<20210622061422.2633501-1-ira.weiny@intel.com>
-X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
- SCN1812108_20180501T0841_FP130 January 13, 2021 at 14:04
-X-KeepSent: 400EF61E:38060C6A-002586FC:005B421A;
- type=4; name=$KeepSent
-X-LLNOutbound: False
-X-Disclaimed: 7959
-X-TNEFEvaluated: 1
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 21062216-4615-0000-0000-0000040B2983
-X-IBM-SpamModules-Scores: BY=0.004727; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0; ST=0; TS=0; UL=0; ISC=; MB=0.000204
-X-IBM-SpamModules-Versions: BY=3.00015370; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000296; SDB=6.01548293; UDB=6.00838383; IPR=6.01330255;
- MB=3.00037291; MTD=3.00000008; XFM=3.00000015; UTC=2021-06-22 16:42:52
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2021-03-22 14:02:06 - 6.00012377
-x-cbparentid: 21062216-4616-0000-0000-000005C931E2
-Message-Id: <OF400EF61E.38060C6A-ON002586FC.005B421A-002586FC.005BCFB3@notes.na.collabserv.com>
-X-Proofpoint-GUID: BJmQ8nCMF2XYgueiOvVqri9ixz_GjOyB
-X-Proofpoint-ORIG-GUID: BJmQ8nCMF2XYgueiOvVqri9ixz_GjOyB
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 22 Jun 2021 12:45:42 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9740C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:43:25 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id c26so2659796vso.8
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:43:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=vxFrkh6PfJNY2iqd2AHDe5xeAdZHifSt7a5NfrAQdks=;
+        b=Umxe35UwNjjAj+hJrhbXSFm925lsc4u1dcC9gWmt/oNuXPcZf6IMOfyqWba1dlU7XR
+         X4j1bnaCLRyZsrXH/XeRxFnDgPsmtS4xkAIG3JnBz2UXpEKN2FBe/RzmEu415j5XWea1
+         oK4DVief2uEtFwqgktetSFFwgGh0IrziVEbNxLAZMJ5fooSbie2dHEF061ZIXRxb4BDN
+         +JTEHPLyTkDSd3VisOkuY6f/10X/crO0vmAYvGuSFVdHRLJL6yH0j/BlSgUoAEjTOpLD
+         8cGuKiMcvnZkaJcd1YtGQEEauTsE5Wn4dj+AsKrzRxXlF7OsL1U+4PFvfNmSX5FTjl99
+         wZ6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=vxFrkh6PfJNY2iqd2AHDe5xeAdZHifSt7a5NfrAQdks=;
+        b=iYQVogH9++n9uDlJXxybkW6ss7/Peg12KgqkDgiaRV/W+gnIEoMGsThegP42zC8kDa
+         5T3lIkgfC6DEFKpAstXbto87K6rkpeoAWKWfCIC/nk/mId7KvEJ27ybLNXGto8Gn58I7
+         pCW1x+lzdrlEFkIz9ViWDtbKSZEdeM+eogb9IXuQDqPwvL2LSXJd3jW38Ux9eDVv3K4N
+         HsKHYbsbYBT9Zgob61trga2DBmk6FNqLVHqp0eIotZoHee4ir78EYGDQZUqepspZTjMH
+         a2ppIpSNqY6tYQjxRcnBtJ3bvUXCldZqdocTRtHSEXrsLchexhN3BIGNOZgiK4npNNGN
+         HC/Q==
+X-Gm-Message-State: AOAM533N9xak6b9sWlx266txvzWwJcGFeh+39j04Y4TE9qddnn/mwcB5
+        IstB71YCqNDwMcY1v1smHH3g2GnWPEAaFCS0eXw=
+X-Google-Smtp-Source: ABdhPJwWLkaCAb7h1X1XLmSqxGwnF3HXSwVDTLJg6WxGQusSIoHDNyvkJfDpkK3Yi9UK8mDI+q7uEu0/oTSyBYU2Ax8=
+X-Received: by 2002:a05:6102:ed6:: with SMTP id m22mr10980416vst.60.1624380204705;
+ Tue, 22 Jun 2021 09:43:24 -0700 (PDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
- definitions=2021-06-22_08:2021-06-22,2021-06-22 signatures=0
-X-Proofpoint-Spam-Reason: orgsafe
+From:   jim.cromie@gmail.com
+Date:   Tue, 22 Jun 2021 10:42:58 -0600
+Message-ID: <CAJfuBxxH9KVgJ7k0P5LX3fTSa4Pumcmu2NMC4P=TrGDVXE2ktQ@mail.gmail.com>
+Subject: KCSAN BUG report on p9_client_cb / p9_client_rpc
+To:     kasan-dev@googlegroups.com, v9fs-developer@lists.sourceforge.net
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ira.weiny@intel.com wrote: -----
+I got this on rc7 + my hacks ( not near p9 )
+ISTM someone here will know what it means.
+If theres anything else i can do to help,
+(configs, drop my patches and retry)
+ please let me know
 
->To: "Jason Gunthorpe" <jgg@ziepe.ca>
->From: ira.weiny@intel.com
->Date: 06/22/2021 08:14AM
->Cc: "Ira Weiny" <ira.weiny@intel.com>, "Mike Marciniszyn"
-><mike.marciniszyn@cornelisnetworks.com>, "Dennis Dalessandro"
-><dennis.dalessandro@cornelisnetworks.com>, "Doug Ledford"
-><dledford@redhat.com>, "Faisal Latif" <faisal.latif@intel.com>,
->"Shiraz Saleem" <shiraz.saleem@intel.com>, "Bernard Metzler"
-><bmt@zurich.ibm.com>, "Kamal Heib" <kheib@redhat.com>,
->linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org
->Subject: [EXTERNAL] [PATCH 4/4] RDMA/siw: Convert siw_tx_hdt() to
->kmap_local_page()
->
->From: Ira Weiny <ira.weiny@intel.com>
->
->kmap() is being deprecated and will break uses of device dax after
->PKS
->protection is introduced.[1]
->
->The use of kmap() in siw_tx_hdt() is all thread local therefore
->kmap_local_page() is a sufficient replacement and will work with
->pgmap
->protected pages when those are implemented.
->
->kmap_local_page() mappings are tracked in a stack and must be
->unmapped
->in the opposite order they were mapped in.
->
->siw_tx_hdt() tracks pages used in a page_array.  It uses that array
->to
->unmap pages which were mapped on function exit.  Not all entries in
->the
->array are mapped and this is tracked in kmap_mask.
->
->kunmap_local() takes a mapped address rather than a page.  Declare a
->mapped address array, page_array_addr, of the same size as the page
->array to be used for unmapping.
->
 
-Hi Ira, thanks for taking care of that!
 
-I think we can avoid introducing another 'page_array_addr[]' array
-here, which must be zeroed first and completely searched for
-valid mappings during unmap, and also further bloats the
-stack size of siw_tx_hdt(). I think we can go away with the
-already available iov[].iov_base addresses array, masking addresses
-with PAGE_MASK during unmapping to mask any first byte offset.
-All kmap_local_page() mapping end up at that list. For unmapping
-we can still rely on the kmap_mask bit field, which is more
-efficient to initialize and search for valid mappings. Ordering
-during unmapping can be guaranteed if we parse the bitmask
-in reverse order. Let me know if you prefer me to propose
-a change -- that siw_tx_hdt() thing became rather complex I
-have to admit!
-
-Best,
-Bernard.
-
->Use kmap_local_page() instead of kmap() to map pages in the
->page_array.
->
->Because segments are mapped into the page array in increasing index
->order, modify siw_unmap_pages() to unmap pages in decreasing order.
->
->The kmap_mask is no longer needed as the lack of an address in the
->address array can indicate no unmap is required.
->
->[1]
->INVALID URI REMOVED
->lkml_20201009195033.3208459-2D59-2Dira.weiny-40intel.com_&d=3DDwIDAg&c=3D
->jf_iaSHvJObTbx-siA1ZOg&r=3D2TaYXQ0T-r8ZO1PP1alNwU_QJcRRLfmYTAgd3QCvqSc&
->m=3DwnRcc-qyXV_X7kyQfFYL6XPgmmakQxmo44BmjIon-w0&s=3DY0aiKJ4EHZY8FJlI-uiPr
->xcBE95kmgn3iEz3p8d5VF4&e=3D=20
->
->Signed-off-by: Ira Weiny <ira.weiny@intel.com>
->---
-> drivers/infiniband/sw/siw/siw_qp_tx.c | 35
->+++++++++++++++------------
-> 1 file changed, 20 insertions(+), 15 deletions(-)
->
->diff --git a/drivers/infiniband/sw/siw/siw_qp_tx.c
->b/drivers/infiniband/sw/siw/siw_qp_tx.c
->index db68a10d12cd..e70aba23f6e7 100644
->--- a/drivers/infiniband/sw/siw/siw_qp_tx.c
->+++ b/drivers/infiniband/sw/siw/siw_qp_tx.c
->@@ -396,13 +396,17 @@ static int siw_0copy_tx(struct socket *s,
->struct page **page,
->=20
-> #define MAX_TRAILER (MPA_CRC_SIZE + 4)
->=20
->-static void siw_unmap_pages(struct page **pp, unsigned long
->kmap_mask)
->+static void siw_unmap_pages(void **addrs, int len)
-> {
->-	while (kmap_mask) {
->-		if (kmap_mask & BIT(0))
->-			kunmap(*pp);
->-		pp++;
->-		kmap_mask >>=3D 1;
->+	int i;
->+
->+	/*
->+	 * Work backwards through the array to honor the kmap_local_page()
->+	 * ordering requirements.
->+	 */
->+	for (i =3D (len-1); i >=3D 0; i--) {
->+		if (addrs[i])
->+			kunmap_local(addrs[i]);
-> 	}
-> }
->=20
->@@ -427,13 +431,15 @@ static int siw_tx_hdt(struct siw_iwarp_tx
->*c_tx, struct socket *s)
-> 	struct siw_sge *sge =3D &wqe->sqe.sge[c_tx->sge_idx];
-> 	struct kvec iov[MAX_ARRAY];
-> 	struct page *page_array[MAX_ARRAY];
->+	void *page_array_addr[MAX_ARRAY];
-> 	struct msghdr msg =3D { .msg_flags =3D MSG_DONTWAIT | MSG_EOR };
->=20
-> 	int seg =3D 0, do_crc =3D c_tx->do_crc, is_kva =3D 0, rv;
-> 	unsigned int data_len =3D c_tx->bytes_unsent, hdr_len =3D 0, trl_len =3D
->0,
-> 		     sge_off =3D c_tx->sge_off, sge_idx =3D c_tx->sge_idx,
-> 		     pbl_idx =3D c_tx->pbl_idx;
->-	unsigned long kmap_mask =3D 0L;
->+
->+	memset(page_array_addr, 0, sizeof(page_array_addr));
->=20
-> 	if (c_tx->state =3D=3D SIW_SEND_HDR) {
-> 		if (c_tx->use_sendpage) {
->@@ -498,7 +504,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
->struct socket *s)
-> 					p =3D siw_get_upage(mem->umem,
-> 							  sge->laddr + sge_off);
-> 				if (unlikely(!p)) {
->-					siw_unmap_pages(page_array, kmap_mask);
->+					siw_unmap_pages(page_array_addr, MAX_ARRAY);
-> 					wqe->processed -=3D c_tx->bytes_unsent;
-> 					rv =3D -EFAULT;
-> 					goto done_crc;
->@@ -506,11 +512,10 @@ static int siw_tx_hdt(struct siw_iwarp_tx
->*c_tx, struct socket *s)
-> 				page_array[seg] =3D p;
->=20
-> 				if (!c_tx->use_sendpage) {
->-					iov[seg].iov_base =3D kmap(p) + fp_off;
->-					iov[seg].iov_len =3D plen;
->+					page_array_addr[seg] =3D kmap_local_page(page_array[seg]);
->=20
->-					/* Remember for later kunmap() */
->-					kmap_mask |=3D BIT(seg);
->+					iov[seg].iov_base =3D page_array_addr[seg] + fp_off;
->+					iov[seg].iov_len =3D plen;
->=20
-> 					if (do_crc)
-> 						crypto_shash_update(
->@@ -518,7 +523,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
->struct socket *s)
-> 							iov[seg].iov_base,
-> 							plen);
-> 				} else if (do_crc) {
->-					kaddr =3D kmap_local_page(p);
->+					kaddr =3D kmap_local_page(page_array[seg]);
-> 					crypto_shash_update(c_tx->mpa_crc_hd,
-> 							    kaddr + fp_off,
-> 							    plen);
->@@ -542,7 +547,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
->struct socket *s)
->=20
-> 			if (++seg > (int)MAX_ARRAY) {
-> 				siw_dbg_qp(tx_qp(c_tx), "to many fragments\n");
->-				siw_unmap_pages(page_array, kmap_mask);
->+				siw_unmap_pages(page_array_addr, MAX_ARRAY);
-> 				wqe->processed -=3D c_tx->bytes_unsent;
-> 				rv =3D -EMSGSIZE;
-> 				goto done_crc;
->@@ -593,7 +598,7 @@ static int siw_tx_hdt(struct siw_iwarp_tx *c_tx,
->struct socket *s)
-> 	} else {
-> 		rv =3D kernel_sendmsg(s, &msg, iov, seg + 1,
-> 				    hdr_len + data_len + trl_len);
->-		siw_unmap_pages(page_array, kmap_mask);
->+		siw_unmap_pages(page_array_addr, MAX_ARRAY);
-> 	}
-> 	if (rv < (int)hdr_len) {
-> 		/* Not even complete hdr pushed or negative rv */
->--=20
->2.28.0.rc0.12.gb6a658bd00c9
->
->
-
+[   14.904783] ==================================================================
+[   14.905848] BUG: KCSAN: data-race in p9_client_cb / p9_client_rpc
+[   14.906769]
+[   14.907040] write to 0xffff888005eb0360 of 4 bytes by interrupt on cpu 0:
+[   14.907989]  p9_client_cb+0x1a/0x100
+[   14.908485]  req_done+0xd3/0x130
+[   14.908931]  vring_interrupt+0xac/0x130
+[   14.909460]  __handle_irq_event_percpu+0x64/0x260
+[   14.910095]  handle_irq_event+0x93/0x120
+[   14.910637]  handle_edge_irq+0x123/0x400
+[   14.911156]  __common_interrupt+0x3e/0xa0
+[   14.911723]  common_interrupt+0x7e/0xa0
+[   14.912270]  asm_common_interrupt+0x1e/0x40
+[   14.912816]  native_safe_halt+0xe/0x10
+[   14.913350]  default_idle+0xa/0x10
+[   14.913801]  default_idle_call+0x38/0xc0
+[   14.914361]  do_idle+0x1e7/0x270
+[   14.914840]  cpu_startup_entry+0x19/0x20
+[   14.915436]  rest_init+0xd0/0xd2
+[   14.915878]  arch_call_rest_init+0xa/0x11
+[   14.916428]  start_kernel+0xacb/0xadd
+[   14.916927]  secondary_startup_64_no_verify+0xc2/0xcb
+[   14.917613]
+[   14.917819] read to 0xffff888005eb0360 of 4 bytes by task 261 on cpu 1:
+[   14.918764]  p9_client_rpc+0x1cf/0x860
+[   14.919340]  p9_client_walk+0xcf/0x350
+[   14.919857]  v9fs_file_open+0x16c/0x340
+[   14.920411]  do_dentry_open+0x298/0x6a0
+[   14.920980]  vfs_open+0x58/0x60
+[   14.921475]  path_openat+0x1130/0x1860
+[   14.922126]  do_filp_open+0x116/0x1f0
+[   14.922731]  do_sys_openat2+0x91/0x190
+[   14.923267]  __x64_sys_openat+0x9b/0xd0
+[   14.923790]  do_syscall_64+0x42/0x80
+[   14.924295]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+[   14.924955]
+[   14.925159] Reported by Kernel Concurrency Sanitizer on:
+[   14.925899] CPU: 1 PID: 261 Comm: ip Not tainted
+5.13.0-rc7-dd7i-00036-gb82eaba47adf-dirty #121
+[   14.927094] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+BIOS 1.14.0-3.fc34 04/01/2014
+[   14.928292] ==================================================================
+virtme-init: console is ttyS0
