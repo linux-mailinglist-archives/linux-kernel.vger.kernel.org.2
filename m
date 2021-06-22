@@ -2,180 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0083B1014
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 00:26:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F10993B100A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 00:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231138AbhFVW2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 18:28:19 -0400
-Received: from mga05.intel.com ([192.55.52.43]:61024 "EHLO mga05.intel.com"
+        id S230274AbhFVW1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 18:27:39 -0400
+Received: from foss.arm.com ([217.140.110.172]:56108 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230473AbhFVW2N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 18:28:13 -0400
-IronPort-SDR: AG2+4XV+vj7UEng/J2jUt5KEE+/yla1qJZl+H00ZPMtfnpNyN9rRKk0hf5KCafphnRQ/Jbn5Nk
- 7zF46kFHkPCg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="292779534"
-X-IronPort-AV: E=Sophos;i="5.83,292,1616482800"; 
-   d="scan'208";a="292779534"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 15:25:55 -0700
-IronPort-SDR: dhi+RZMUBLs8oi8vnY+i2EjW/uEiYx/eRSesuUYUO+LI/Kg6Gos17cH2wZ+lVR1+L6Ac2S7o4b
- DYnX5FlkAX9A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.83,292,1616482800"; 
-   d="scan'208";a="454430998"
-Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
-  by fmsmga008.fm.intel.com with ESMTP; 22 Jun 2021 15:25:54 -0700
-Subject: [RFC][PATCH 8/8] x86/pkeys: remove init_pkru_value variable
-To:     linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org,
-        Dave Hansen <dave.hansen@linux.intel.com>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, luto@kernel.org
-From:   Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Tue, 22 Jun 2021 15:25:10 -0700
-References: <20210622222455.E901B5AC@viggo.jf.intel.com>
-In-Reply-To: <20210622222455.E901B5AC@viggo.jf.intel.com>
-Message-Id: <20210622222510.0E201C34@viggo.jf.intel.com>
+        id S229675AbhFVW1i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 18:27:38 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CB477ED1;
+        Tue, 22 Jun 2021 15:25:21 -0700 (PDT)
+Received: from [10.57.9.136] (unknown [10.57.9.136])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 08D383F694;
+        Tue, 22 Jun 2021 15:25:19 -0700 (PDT)
+Subject: Re: [PATCH v14 6/6] iommu: Remove mode argument from
+ iommu_set_dma_strict()
+To:     Lu Baolu <baolu.lu@linux.intel.com>,
+        John Garry <john.garry@huawei.com>, joro@8bytes.org,
+        will@kernel.org, dwmw2@infradead.org, corbet@lwn.net
+Cc:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linuxarm@huawei.com, thunder.leizhen@huawei.com,
+        chenxiang66@hisilicon.com, linux-doc@vger.kernel.org
+References: <1624016058-189713-1-git-send-email-john.garry@huawei.com>
+ <1624016058-189713-7-git-send-email-john.garry@huawei.com>
+ <c062ef9e-c106-4218-ba2a-c94fdcb6d955@linux.intel.com>
+ <60bdd7c3-d73e-c005-ddf7-069bc5065bce@huawei.com>
+ <855dd109-1449-7bc6-3d25-7ffeeeffa82a@linux.intel.com>
+ <fc52069d-46c5-5ca5-1b44-2fa7cf287d5a@huawei.com>
+ <2330bb52-1768-5122-9378-7923034c82bd@arm.com>
+ <5564e4b7-99af-c357-594a-1a6efe0c1464@linux.intel.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <cff9f6ef-0f51-797d-0853-5237f5c10555@arm.com>
+Date:   Tue, 22 Jun 2021 23:25:14 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <5564e4b7-99af-c357-594a-1a6efe0c1464@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-06-21 15:32, Lu Baolu wrote:
+> Hi Robin,
+> 
+> On 2021/6/21 19:59, Robin Murphy wrote:
+>> On 2021-06-21 11:34, John Garry wrote:
+>>> On 21/06/2021 11:00, Lu Baolu wrote:
+>>>>> void iommu_set_dma_strict(bool force)
+>>>>> {
+>>>>>           if (force == true)
+>>>>>          iommu_dma_strict = true;
+>>>>>      else if (!(iommu_cmd_line & IOMMU_CMD_LINE_STRICT))
+>>>>>          iommu_dma_strict = true;
+>>>>> }
+>>>>>
+>>>>> So we would use iommu_set_dma_strict(true) for a) and b), but 
+>>>>> iommu_set_dma_strict(false) for c).
+>>>>
+>>>> Yes. We need to distinguish the "must" and "nice-to-have" cases of
+>>>> setting strict mode.
+>>>>
+>>>>>
+>>>>> Then I am not sure what you want to do with the accompanying print 
+>>>>> for c). It was:
+>>>>> "IOMMU batching is disabled due to virtualization"
+>>>>>
+>>>>> And now is from this series:
+>>>>> "IOMMU batching disallowed due to virtualization"
+>>>>>
+>>>>> Using iommu_get_dma_strict(domain) is not appropriate here to know 
+>>>>> the current mode (so we know whether to print).
+>>>>>
+>>>>> Note that this change would mean that the current series would 
+>>>>> require non-trivial rework, which would be unfortunate so late in 
+>>>>> the cycle.
+>>>>
+>>>> This patch series looks good to me and I have added by reviewed-by.
+>>>> Probably we could make another patch series to improve it so that the
+>>>> kernel optimization should not override the user setting.
+>>>
+>>> On a personal level I would be happy with that approach, but I think 
+>>> it's better to not start changing things right away in a follow-up 
+>>> series.
+>>>
+>>> So how about we add this patch (which replaces 6/6 "iommu: Remove 
+>>> mode argument from iommu_set_dma_strict()")?
+>>>
+>>> Robin, any opinion?
+>>
+>> For me it boils down to whether there are any realistic workloads 
+>> where non-strict mode *would* still perform better under 
+>> virtualisation. The 
+> 
+> At present, we see that strict mode has better performance in the
+> virtualization environment because it will make the shadow page table
+> management more efficient. When the hardware supports nested
+> translation, we may have to re-evaluate this since there's no need for
+> a shadowing page table anymore.
 
-From: Dave Hansen <dave.hansen@linux.intel.com>
+I guess I was assuming that in most cases, proper nested mode could look 
+distinct enough that we'd be able to treat it differently in the first 
+place. For instance, if it's handing guest tables directly to the 
+hardware, would the host have any reason to still set the "caching mode" 
+ID bit?
 
-The kernel maintains a "default" PKRU value.  This is logically similar
-to the hardware "init state", but the kernel chose a more restrictive
-value.
-
-This default is stored in a variable: 'init_pkru_value'.  The default
-is also mirrored into the 'init_task' so that the value is picked up
-by things like new kernel threads.
-
-Both copies are not needed.  Remove the variable and depend instead
-on the copy inside the 'init_task'.
-
-Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: x86@kernel.org
-Cc: Andy Lutomirski <luto@kernel.org>
----
-
- b/arch/x86/include/asm/pkru.h  |    5 ++---
- b/arch/x86/kernel/cpu/common.c |   22 ++++++++++++++++++----
- b/arch/x86/mm/pkeys.c          |   19 ++-----------------
- 3 files changed, 22 insertions(+), 24 deletions(-)
-
-diff -puN arch/x86/include/asm/pkru.h~axe-init_pkru_value arch/x86/include/asm/pkru.h
---- a/arch/x86/include/asm/pkru.h~axe-init_pkru_value	2021-06-22 14:49:14.772051742 -0700
-+++ b/arch/x86/include/asm/pkru.h	2021-06-22 14:49:14.781051742 -0700
-@@ -2,6 +2,7 @@
- #ifndef _ASM_X86_PKRU_H
- #define _ASM_X86_PKRU_H
- 
-+#include <linux/sched/task.h>
- #include <asm/fpu/xstate.h>
- 
- #define PKRU_AD_BIT 0x1
-@@ -9,10 +10,8 @@
- #define PKRU_BITS_PER_PKEY 2
- 
- #ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
--extern u32 init_pkru_value;
--#define pkru_get_init_value()	READ_ONCE(init_pkru_value)
-+#define pkru_get_init_value()	READ_ONCE(init_task.thread.pkru)
- #else
--#define init_pkru_value	0
- #define pkru_get_init_value()	0
- #endif
- 
-diff -puN arch/x86/kernel/cpu/common.c~axe-init_pkru_value arch/x86/kernel/cpu/common.c
---- a/arch/x86/kernel/cpu/common.c~axe-init_pkru_value	2021-06-22 14:49:14.774051742 -0700
-+++ b/arch/x86/kernel/cpu/common.c	2021-06-22 14:49:14.782051742 -0700
-@@ -464,6 +464,8 @@ __setup("nofsgsbase", x86_nofsgsbase_set
-  */
- static bool pku_disabled;
- 
-+#define PKRU_AD_KEY(pkey)	(PKRU_AD_BIT << ((pkey) * PKRU_BITS_PER_PKEY))
-+
- static __always_inline void setup_pku(struct cpuinfo_x86 *c)
- {
- 	if (c == &boot_cpu_data) {
-@@ -480,11 +482,23 @@ static __always_inline void setup_pku(st
- 	}
- 
- 	cr4_set_bits(X86_CR4_PKE);
--	/* Load the default PKRU value */
--	pkru_write_default();
- 
--	/* Establish the default value for future tasks: */
--	init_task.thread.pkru = init_pkru_value;
-+	/*
-+	 * Establish the default value for future tasks.
-+	 *
-+ 	 * This is as restrictive as possible.  It ensures that a threads
-+	 * clone()'d early in a process's lifetime will not accidentally
-+	 * get access to data which is pkey-protected later on.
-+	 */
-+	init_task.thread.pkru =
-+		      PKRU_AD_KEY( 1) | PKRU_AD_KEY( 2) | PKRU_AD_KEY( 3) |
-+		      PKRU_AD_KEY( 4) | PKRU_AD_KEY( 5) | PKRU_AD_KEY( 6) |
-+		      PKRU_AD_KEY( 7) | PKRU_AD_KEY( 8) | PKRU_AD_KEY( 9) |
-+		      PKRU_AD_KEY(10) | PKRU_AD_KEY(11) | PKRU_AD_KEY(12) |
-+		      PKRU_AD_KEY(13) | PKRU_AD_KEY(14) | PKRU_AD_KEY(15);
-+
-+	/* Load the default PKRU value into this CPU's register: */
-+	pkru_write_default();
- }
- 
- #ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
-diff -puN arch/x86/mm/pkeys.c~axe-init_pkru_value arch/x86/mm/pkeys.c
---- a/arch/x86/mm/pkeys.c~axe-init_pkru_value	2021-06-22 14:49:14.778051742 -0700
-+++ b/arch/x86/mm/pkeys.c	2021-06-22 14:49:14.782051742 -0700
-@@ -110,27 +110,13 @@ int __arch_override_mprotect_pkey(struct
- 	return vma_pkey(vma);
- }
- 
--#define PKRU_AD_KEY(pkey)	(PKRU_AD_BIT << ((pkey) * PKRU_BITS_PER_PKEY))
--
--/*
-- * Make the default PKRU value (at execve() time) as restrictive
-- * as possible.  This ensures that any threads clone()'d early
-- * in the process's lifetime will not accidentally get access
-- * to data which is pkey-protected later on.
-- */
--u32 init_pkru_value = PKRU_AD_KEY( 1) | PKRU_AD_KEY( 2) | PKRU_AD_KEY( 3) |
--		      PKRU_AD_KEY( 4) | PKRU_AD_KEY( 5) | PKRU_AD_KEY( 6) |
--		      PKRU_AD_KEY( 7) | PKRU_AD_KEY( 8) | PKRU_AD_KEY( 9) |
--		      PKRU_AD_KEY(10) | PKRU_AD_KEY(11) | PKRU_AD_KEY(12) |
--		      PKRU_AD_KEY(13) | PKRU_AD_KEY(14) | PKRU_AD_KEY(15);
--
- static ssize_t init_pkru_read_file(struct file *file, char __user *user_buf,
- 			     size_t count, loff_t *ppos)
- {
- 	char buf[32];
- 	unsigned int len;
- 
--	len = sprintf(buf, "0x%x\n", init_pkru_value);
-+	len = sprintf(buf, "0x%x\n", init_task.thread.pkru);
- 	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
- }
- 
-@@ -158,7 +144,6 @@ static ssize_t init_pkru_write_file(stru
- 	if (new_init_pkru & (PKRU_AD_BIT|PKRU_WD_BIT))
- 		return -EINVAL;
- 
--	WRITE_ONCE(init_pkru_value, new_init_pkru);
- 	WRITE_ONCE(init_task.thread.pkru, new_init_pkru);
- 
- 	return count;
-@@ -185,7 +170,7 @@ static __init int setup_init_pkru(char *
- 	if (kstrtouint(opt, 0, &new_init_pkru))
- 		return 1;
- 
--	WRITE_ONCE(init_pkru_value, new_init_pkru);
-+	WRITE_ONCE(init_task.thread.pkru, new_init_pkru);
- 
- 	return 1;
- }
-_
+Robin.
