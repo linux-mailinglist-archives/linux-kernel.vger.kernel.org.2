@@ -2,94 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD993B01AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 12:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A92C3B01B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 12:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbhFVKs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 06:48:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229567AbhFVKsU (ORCPT
+        id S230014AbhFVKt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 06:49:27 -0400
+Received: from smtp-out2.suse.de ([195.135.220.29]:44600 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229934AbhFVKtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 06:48:20 -0400
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BBBAC061574;
-        Tue, 22 Jun 2021 03:46:04 -0700 (PDT)
-Received: by mail-wm1-x329.google.com with SMTP id n23so12500813wms.2;
-        Tue, 22 Jun 2021 03:46:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=qMOGwsWYKHTZb8UYmFMCPsWfqOqd5Vu+RMIfnWvpSec=;
-        b=R0y96Yw4atCjm/+Ea/MEQx3JB+nRlqH5w4lyV9sm7lJABArNr1gBiOcnjC1SVjUL3g
-         RsRIv/sXqiwvxrG8vg3+nVNDOgjJePVL5DoPDLVBnXW/102FbWyMXz86A6oYORhD6eUx
-         AxTHtGeAY8UIC46wpgo34Rhi61XbNLU5vi0rxvqFeOTqE7hlir2A65BIbCfZSk3og5gF
-         TOl+g6rSL4AVgFh6SqHl4qn93Hmlc2k556mM50PHYfCHVPLKRjCbuNoLBv1GpHq6j6Ma
-         iNIR5wI16Tl2Ypi2ChyC2GmImj4JtPzvdLCVXP2WbqzA237XW58qThEAe3Wh2mmz5RRZ
-         nxgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=qMOGwsWYKHTZb8UYmFMCPsWfqOqd5Vu+RMIfnWvpSec=;
-        b=Po3+2/riBjrcCc9XNsPZAd3fkt94JPDUyaBkA0KL1EXjaQ4UKh5zihNBzBrZl61w7J
-         UF+7TColAyWPzAQx1WulUeRbrg6QEh6pjWBEa3Ashcy5sD0ST7ik/G06bCFflUQNrxgZ
-         Xt8vGsZa1yRkd1bOiOQG0fAFKAoxj2ZwhSHB//Df46n67sgMKo1w3ChAATxWc2qnm3nY
-         lDO7MYQ8+ECpMMHpY+fJ/JpBQTJ0ko4DfdfZSv8bxupyHFlM05mpSOgo/QZTDwQo1EmH
-         XhzBMkIugacnn+1edJSZO9yLTiy5b/hvYg8zr2Md2lHHFQlDHLzLGcdg8F6+mz0mSGzz
-         ZvqA==
-X-Gm-Message-State: AOAM530ugtnoYW/Ifb5qEbYvpMPbkOg3p0NKihsw9Z7AfRxI1bDNTLzZ
-        aALmPKsKU8lhMr2LjCRAvZg=
-X-Google-Smtp-Source: ABdhPJxJ5vGzRo1V9Cp8vXwaCUciNyAZUk9oCAPNkyR+rJfg+SrwSFr/juwhLDFEv5mwADNcsZO2JQ==
-X-Received: by 2002:a05:600c:22cf:: with SMTP id 15mr753586wmg.177.1624358761437;
-        Tue, 22 Jun 2021 03:46:01 -0700 (PDT)
-Received: from debian (host-2-99-153-109.as13285.net. [2.99.153.109])
-        by smtp.gmail.com with ESMTPSA id u20sm1870325wmq.24.2021.06.22.03.46.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 03:46:01 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 11:45:59 +0100
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 00/90] 5.4.128-rc1 review
-Message-ID: <YNG/Z19ODMtK9BVg@debian>
-References: <20210621154904.159672728@linuxfoundation.org>
+        Tue, 22 Jun 2021 06:49:19 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 38C7B1FD36;
+        Tue, 22 Jun 2021 10:47:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624358822; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f06oYsohryrLHCYnhIvUSsicviTNeIQZEK68Q3btK0A=;
+        b=Fr1161mN4zj0L+9lwHcNSddmME7n5GKykRKfjwYlfmmJwYb7U5ZZxSq5lyhe+oZW4uLk0H
+        3QujQShbBW0J6VoHvEdk6lj4m61fXTaiP0T+D7LnbPzvXhNrHbXTEoVU1bCsksRvPr7O4k
+        JLCHD2CXgkn6ExDJDe6JcIVB9jNYqKE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624358822;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f06oYsohryrLHCYnhIvUSsicviTNeIQZEK68Q3btK0A=;
+        b=eYBFcAzpAtbVU5F59rJccKj45mXONh8DQBz89aGG2cLOTVE5ZqHlloyZ/yehDYvxYNoUN1
+        69FdNaRZlaz78/BA==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 263E3118DD;
+        Tue, 22 Jun 2021 10:47:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624358822; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f06oYsohryrLHCYnhIvUSsicviTNeIQZEK68Q3btK0A=;
+        b=Fr1161mN4zj0L+9lwHcNSddmME7n5GKykRKfjwYlfmmJwYb7U5ZZxSq5lyhe+oZW4uLk0H
+        3QujQShbBW0J6VoHvEdk6lj4m61fXTaiP0T+D7LnbPzvXhNrHbXTEoVU1bCsksRvPr7O4k
+        JLCHD2CXgkn6ExDJDe6JcIVB9jNYqKE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624358822;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f06oYsohryrLHCYnhIvUSsicviTNeIQZEK68Q3btK0A=;
+        b=eYBFcAzpAtbVU5F59rJccKj45mXONh8DQBz89aGG2cLOTVE5ZqHlloyZ/yehDYvxYNoUN1
+        69FdNaRZlaz78/BA==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id 8qJKCKa/0WBXVwAALh3uQQ
+        (envelope-from <bp@suse.de>); Tue, 22 Jun 2021 10:47:02 +0000
+Date:   Tue, 22 Jun 2021 12:46:55 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch V3 35/66] x86/fpu: Rename copy_kernel_to_fpregs() to
+ restore_fpregs_from_kernel()
+Message-ID: <YNG/n88VeucXsE6M@zn.tnic>
+References: <20210618141823.161158090@linutronix.de>
+ <20210618143448.380267423@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210621154904.159672728@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210618143448.380267423@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Fri, Jun 18, 2021 at 04:18:58PM +0200, Thomas Gleixner wrote:
 
-On Mon, Jun 21, 2021 at 06:14:35PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.4.128 release.
-> There are 90 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 23 Jun 2021 15:48:46 +0000.
-> Anything received after that time might be too late.
+> Subject: Re: [patch V3 35/66] x86/fpu: Rename copy_kernel_to_fpregs() to restore_fpregs_from_kernel()
 
-Build test:
-mips (gcc version 11.1.1 20210615): 65 configs -> no failure
-arm (gcc version 11.1.1 20210615): 107 configs -> no new failure
-arm64 (gcc version 11.1.1 20210615): 2 configs -> no failure
-x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
-
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression.
+... to restore_fpregs_from_fpstate"
 
 
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+> This is not a copy functionality. It restores the register state from the
+> supplied kernel buffer.
 
---
-Regards
-Sudip
+"No functional changes."
+
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  arch/x86/include/asm/fpu/internal.h |    8 ++++----
+>  arch/x86/kvm/x86.c                  |    4 ++--
+>  arch/x86/mm/extable.c               |    2 +-
+>  3 files changed, 7 insertions(+), 7 deletions(-)
+
+with that:
+
+Reviewed-by: Borislav Petkov <bp@suse.de>
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
