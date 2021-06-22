@@ -2,64 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A75383B087D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A3B13B0887
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232208AbhFVPSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:18:37 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:57269 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbhFVPSe (ORCPT
+        id S232072AbhFVPT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:19:57 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:55869 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S230047AbhFVPTz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:18:34 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lvi8H-00019K-1t; Tue, 22 Jun 2021 15:16:09 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Qinglang Miao <miaoqinglang@huawei.com>, qat-linux@intel.com,
-        linux-crypto@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] crypto: qat: ratelimit invalid ioctl message and print the invalid cmd
-Date:   Tue, 22 Jun 2021 16:16:08 +0100
-Message-Id: <20210622151608.23741-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 22 Jun 2021 11:19:55 -0400
+X-UUID: 03eeb335774a4ecf9b5804e5006dd4bc-20210622
+X-UUID: 03eeb335774a4ecf9b5804e5006dd4bc-20210622
+Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
+        (envelope-from <christine.zhu@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1894561052; Tue, 22 Jun 2021 23:17:38 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 22 Jun 2021 23:17:36 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 22 Jun 2021 23:17:35 +0800
+From:   Christine Zhu <Christine.Zhu@mediatek.com>
+To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
+        <robh+dt@kernel.org>, <matthias.bgg@gmail.com>
+CC:     <srv_heupstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <seiya.wang@mediatek.com>
+Subject: [v2,0/3] watchdog: mt8195: add wdt support 
+Date:   Tue, 22 Jun 2021 23:17:31 +0800
+Message-ID: <20210622151734.29429-1-Christine.Zhu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Supports MT8195 watchdog device.
+Supports MT8195 watchdog reset-controller feature.
 
-Currently incorrect QAT ioctls can spam the kernel log with error messages
-of the form "QAT: Invalid ioctl" if a userspace program uses the wrong
-ioctl command. Quench the messages by ratelimiting them and also print
-the invalid command being used as that is useful to know.
+Change since v1:
+  -Remove the unneeded tag in [v1,1/3] [v1,2/3] [v1,3/3]
+  -Add of_device_id of MT8195 in [v1,3/3]
+  -use more proper prefixes, such as "dt-bindings: mediatek: mt8195:"
+  -provide more information in the cover letter
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/crypto/qat/qat_common/adf_ctl_drv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+christine.zhu (3):
+  dt-binding: mediatek: mt8195: update mtk-wdt document
+  dt-binding: reset: mt8195: add toprgu reset-controller head file
+  watchdog: mediatek: mt8195: add wdt support
 
-diff --git a/drivers/crypto/qat/qat_common/adf_ctl_drv.c b/drivers/crypto/qat/qat_common/adf_ctl_drv.c
-index 96b437bfe3de..6f64aa693146 100644
---- a/drivers/crypto/qat/qat_common/adf_ctl_drv.c
-+++ b/drivers/crypto/qat/qat_common/adf_ctl_drv.c
-@@ -406,7 +406,7 @@ static long adf_ctl_ioctl(struct file *fp, unsigned int cmd, unsigned long arg)
- 		ret = adf_ctl_ioctl_get_status(fp, cmd, arg);
- 		break;
- 	default:
--		pr_err("QAT: Invalid ioctl\n");
-+		pr_err_ratelimited("QAT: Invalid ioctl %d\n", cmd);
- 		ret = -EFAULT;
- 		break;
- 	}
--- 
-2.31.1
+ .../devicetree/bindings/watchdog/mtk-wdt.txt       |  2 +-
+ drivers/watchdog/mtk_wdt.c                         |  6 +++++
+ .../dt-bindings/reset-controller/mt8195-resets.h   | 29 ++++++++++++++++++++++
+ 3 files changed, 36 insertions(+), 1 deletion(-)
+ create mode 100644 include/dt-bindings/reset-controller/mt8195-resets.h
+
 
