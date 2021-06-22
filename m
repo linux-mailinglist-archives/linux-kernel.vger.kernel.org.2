@@ -2,117 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4463B0906
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2963B0917
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:30:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232319AbhFVPar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:30:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231761AbhFVPaq (ORCPT
+        id S232169AbhFVPcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:32:17 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:23759 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232303AbhFVPbp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:30:46 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA70CC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:28:29 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id t9so16291531qtw.7
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:28:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=gSIT2aB7rHsSORmJBVTerFLvPUzJvuTh9nq+ipo1OW4=;
-        b=jMJSjWzPfPzqnKB8B3d0txI+f1QCXRwofrHYktBL6Dp/RhK8mDhbKSZcIAeOroGN79
-         9QKZyuK/IHnSXDzJVZS3X6lKP7w6E8KyRCjjniSQVc0jCI0AkxFDLwDCLmcInmPgiCnf
-         jgWG0hhVMC1nVN8HteDjeVRfh514OJrhlEcH2R925fh0DHPJTQOuXuBlI4DUwVhGyPRl
-         DthIYUE4NB1fnKp7n1suCV8ABft4OFetd4l8JY9SJSPUN6ozC3ygwCBUw+HE0mNeNlWt
-         b8N9Y1O7r/s/b3RUVZtkPQ9u0U0mfuUS0aqx+/yNM9XPrMJnox3nrIaQn6+gPefKB6rN
-         j1AQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=gSIT2aB7rHsSORmJBVTerFLvPUzJvuTh9nq+ipo1OW4=;
-        b=hnbWL9gywO9biNGn+8sbLB9gDE6fws+Wsv+zTCs4d4uEHcGOPV5EK2FE/Gne17XiJf
-         1ExOxv72XOBKErcU4btPoe5zoH6+NEGBUJh/5FYegRjpYQnLw3W4TSaFiyt7uPpyVP/e
-         4WUnFe1lQXQ1JrmWWTAxv8X+6v1js3FbL1fqdl8I/zGfHRHC+xm3Q8S31oVMAKukFJrP
-         AhNDt5tW+OeedTksAfqMSdhjNCdyAyYgUpPI04MF9r7EDpQjOv0p+E/KOHLuNoSTfnfU
-         b/4apXwUW6O/+TDRI92FJtJbV1Mfrh+qWu0huJjEzxoJ6T8flY631/HrzfbKpUEY7Xhv
-         wf8w==
-X-Gm-Message-State: AOAM5315qtc+tH5zfJFouc3W9UuWOY+bmXqEFIF7FUk+1uv/RGh0enJL
-        yswzm27VuKm8M5M7YnpX4KVwDw==
-X-Google-Smtp-Source: ABdhPJwvGxEjOXxCirTSFPJmIHH9j6VoDmK24La5Ry2f+RuAq8/L4z8p3qLfsHgu2FnFM9CaTb3hKA==
-X-Received: by 2002:ac8:5ad5:: with SMTP id d21mr3797369qtd.166.1624375708968;
-        Tue, 22 Jun 2021 08:28:28 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id f19sm13636743qkg.70.2021.06.22.08.28.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 08:28:28 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lviKC-00ADKO-08; Tue, 22 Jun 2021 12:28:28 -0300
-Date:   Tue, 22 Jun 2021 12:28:27 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
-Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
-        Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Tomer Tayar <ttayar@habana.ai>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
- FD for DMA-BUF
-Message-ID: <20210622152827.GQ1096940@ziepe.ca>
-References: <CAFCwf11jOnewkbLuxUESswCJpyo7C0ovZj80UrnwUOZkPv2JYQ@mail.gmail.com>
- <20210621232912.GK1096940@ziepe.ca>
- <d358c740-fd3a-9ecd-7001-676e2cb44ec9@gmail.com>
- <CAFCwf11h_Nj_GEdCdeTzO5jgr-Y9em+W-v_pYUfz64i5Ac25yg@mail.gmail.com>
- <20210622120142.GL1096940@ziepe.ca>
- <CAFCwf10GmBjeJAFp0uJsMLiv-8HWAR==RqV9ZdMQz+iW9XWdTA@mail.gmail.com>
- <20210622121546.GN1096940@ziepe.ca>
- <CAFCwf13BuS+U3Pko_62hFPuvZPG26HQXuu-cxPmcADNPO22g9g@mail.gmail.com>
- <20210622151142.GA2431880@ziepe.ca>
- <4a37216d-7c4c-081e-3325-82466f30b6eb@amd.com>
+        Tue, 22 Jun 2021 11:31:45 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624375769; h=Date: Message-Id: Cc: To: References:
+ In-Reply-To: From: Subject: Content-Transfer-Encoding: MIME-Version:
+ Content-Type: Sender; bh=z7NDcu8cPjZwCK7QqOyl43gPgmkxXEZyQgRW5JNHxRI=;
+ b=ZWdsAGZO76F200Zw4SC+VJR6dOOaE6u2Bp65BoTL0I4yETV/0yqTdct2Ei+g5UnaCVLgp4Bu
+ KCqXU0TCqJvAZ9jWkWlTLuEDXh6t8gPgZM3ccphekO2dCHjBaeneKBbqQyCxSQb9gQUK98cR
+ /FAsKhQvjkJLwVYyoY0uFUoG/ng=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 60d201a31200320241f5756c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Jun 2021 15:28:35
+ GMT
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AAC31C43148; Tue, 22 Jun 2021 15:28:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        MISSING_DATE,MISSING_MID,SPF_FAIL,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.0
+Received: from tykki.adurom.net (tynnyri.adurom.net [51.15.11.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E4206C43144;
+        Tue, 22 Jun 2021 15:28:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E4206C43144
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4a37216d-7c4c-081e-3325-82466f30b6eb@amd.com>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] wcn36xx: Avoid memset() beyond end of struct field
+From:   Kalle Valo <kvalo@codeaurora.org>
+In-Reply-To: <20210617171058.3410494-1-keescook@chromium.org>
+References: <20210617171058.3410494-1-keescook@chromium.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        wcn36xx@lists.infradead.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, linux-hardening@vger.kernel.org
+User-Agent: pwcli/0.1.0-git (https://github.com/kvalo/pwcli/) Python/3.7.3
+Message-Id: <20210622152834.AAC31C43148@smtp.codeaurora.org>
+Date:   Tue, 22 Jun 2021 15:28:34 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 05:24:08PM +0200, Christian König wrote:
+Kees Cook <keescook@chromium.org> wrote:
 
-> > > I will take two GAUDI devices and use one as an exporter and one as an
-> > > importer. I want to see that the solution works end-to-end, with real
-> > > device DMA from importer to exporter.
-> > I can tell you it doesn't. Stuffing physical addresses directly into
-> > the sg list doesn't involve any of the IOMMU code so any configuration
-> > that requires IOMMU page table setup will not work.
+> In preparation for FORTIFY_SOURCE performing compile-time and run-time
+> field bounds checking for memset(), avoid intentionally writing across
+> neighboring array fields.
 > 
-> Sure it does. See amdgpu_vram_mgr_alloc_sgt:
+> Instead of writing past the end of the header to reach the rest of
+> the body, replace the redundant function with existing macro to wipe
+> struct contents and set field values. Additionally adjusts macro to add
+> missing parens.
 > 
->         amdgpu_res_first(res, offset, length, &cursor);
-         ^^^^^^^^^^
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
 
-I'm not talking about the AMD driver, I'm talking about this patch.
+Patch applied to ath-next branch of ath.git, thanks.
 
-+		bar_address = hdev->dram_pci_bar_start +
-+				(pages[cur_page] - prop->dram_base_address);
-+		sg_dma_address(sg) = bar_address;
+d3a1a18ab034 wcn36xx: Avoid memset() beyond end of struct field
 
-Jason
+-- 
+https://patchwork.kernel.org/project/linux-wireless/patch/20210617171058.3410494-1-keescook@chromium.org/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+
