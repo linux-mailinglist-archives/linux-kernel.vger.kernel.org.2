@@ -2,109 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06B3F3B03AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F70B3B03B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhFVMHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 08:07:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40186 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231276AbhFVMHq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 08:07:46 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 361D2C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 05:05:31 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id g192so8562574pfb.6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 05:05:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Y5Xd78GOu9lf6VGo75b/TA4qnuHXHBd8W++bq5LOH+4=;
-        b=NL1K7FSeYlvZGEB8KXoGhN+/g5qyYPDTIiWCjGX5UcORupJdb/yXhs7Z5GwVqaX8oY
-         oho4+RSnvmXCojlsxXcfaeS+oC4Hq/t1ehzUg/nQqDX9TWksefnRNlNnSej24o1H09gI
-         AfKJXYQX/y+MtrmADeEe1OuecTCzOffJsLGxMYDiS8PxjF8e3cK6VFct1RMI5HUrmaz9
-         nIzl8Bh4Xe+zJGev9J5Uy/zvW91o0q3ugJqfmsYM7S4hcMdN2Gavowv9KmTkmTaWL1j3
-         oWlbzbyTOlRfXYnefMMCM0EOKKT6s9IbVBzcfkQBlxWE7blqdEMi6zgwBkj8jsALWAF9
-         n/jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Y5Xd78GOu9lf6VGo75b/TA4qnuHXHBd8W++bq5LOH+4=;
-        b=FA3c+Yqw2NWNxhhzBRKSdm1A018e4ddjRmaIDD8xsV5+52+dE+BkCEjckRQ8E2wSmA
-         uJrk4inRuYhdvGgh3AGAs5bC09P5+i+EG620DcIwkD4uvOkJ2KCoAd13ONtGr8Ixfg4P
-         79UvpO530U94eLGv7YkYItMrjz2+lMJCdGQtNN10AGfgUPICA2QBFBFSFVK90v94nj2k
-         Zmp2Mr2f6tp7JJAIvGm5MCMiZqiSe0mh2aonJ4E2uWUY4GXCiBggtB4Hr7VSzlKUpPF5
-         drXkcIhCwsysSBmiLqk69aMqq+1Xvv6ucSRhSGAAXXGKt3VYbqOno+pxNxpHs0yskehU
-         vWaQ==
-X-Gm-Message-State: AOAM53354jU63Z7fJa0LvklKNJ3JyqzI8ELrNzhBigzc6XhrtiCe4AAI
-        uih61dqpYeZlD91Y8mfnY8M=
-X-Google-Smtp-Source: ABdhPJwEmLqFurG6dRqn42RL70KDNQxGKHpGZp9KdHcv3WBMTCcNa734K58EiVGU/y+UeF/BvFcj3Q==
-X-Received: by 2002:a65:5c4a:: with SMTP id v10mr3456442pgr.142.1624363530586;
-        Tue, 22 Jun 2021 05:05:30 -0700 (PDT)
-Received: from [192.168.1.153] (163.128.178.217.shared.user.transix.jp. [217.178.128.163])
-        by smtp.gmail.com with ESMTPSA id c68sm5923987pfc.75.2021.06.22.05.05.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 05:05:29 -0700 (PDT)
-Subject: Re: [PATCH v2 0/5] riscv: improving uaccess with logs from network
- bench
-To:     Ben Dooks <ben.dooks@codethink.co.uk>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-References: <5a5c07ac-8c11-79d3-46a3-a255d4148f76@gmail.com>
- <e7d5f98b-5e0d-19b3-08f5-a7b49d542a85@codethink.co.uk>
-From:   Akira Tsukamoto <akira.tsukamoto@gmail.com>
-Message-ID: <f54ec904-2bf5-0c29-d467-7465993d5d6b@gmail.com>
-Date:   Tue, 22 Jun 2021 21:05:27 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S230445AbhFVMJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 08:09:18 -0400
+Received: from mga05.intel.com ([192.55.52.43]:7754 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231128AbhFVMJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 08:09:16 -0400
+IronPort-SDR: UEZP8xZ3DpeS0zGRhFujEN9sGeV7IzGs2TEc7IxJGUpJG0eQOi6jpx+wzgF9Cyw0PcNtHURiTF
+ K/FfhopF5iBg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="292668212"
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208";a="292668212"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 05:06:57 -0700
+IronPort-SDR: 8iXjey4wouBXXNjrnrRPeCsFxWtQebA/mpVSCplg4QU2FnsuG/vlFdbsNNp6J64T44+qiXJYa8
+ g74pM89u0PHQ==
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208";a="639089865"
+Received: from rtrevino-mobl2.amr.corp.intel.com (HELO [10.209.73.69]) ([10.209.73.69])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 05:06:57 -0700
+Subject: Re: [PATCH -V8 02/10] mm/numa: automatically generate node migration
+ order
+To:     Zi Yan <ziy@nvidia.com>, "Huang, Ying" <ying.huang@intel.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Yang Shi <shy828301@gmail.com>,
+        Michal Hocko <mhocko@suse.com>, Wei Xu <weixugc@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        osalvador <osalvador@suse.de>
+References: <20210618061537.434999-1-ying.huang@intel.com>
+ <20210618061537.434999-3-ying.huang@intel.com>
+ <79397FE3-4B08-4DE5-8468-C5CAE36A3E39@nvidia.com>
+ <87v96anu6o.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <2AA3D792-7F14-4297-8EDD-3B5A7B31AECA@nvidia.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <4732ff69-bd5a-018c-0d76-c1f724abb677@intel.com>
+Date:   Tue, 22 Jun 2021 05:06:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <e7d5f98b-5e0d-19b3-08f5-a7b49d542a85@codethink.co.uk>
+In-Reply-To: <2AA3D792-7F14-4297-8EDD-3B5A7B31AECA@nvidia.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/22/2021 5:30 PM, Ben Dooks wrote:
-> On 19/06/2021 12:21, Akira Tsukamoto wrote:
->> Optimizing copy_to_user and copy_from_user.
->>
->> I rewrote the functions in v2, heavily influenced by Garry's memcpy
->> function [1].
->> The functions must be written in assembler to handle page faults manually
->> inside the function.
->>
->> With the changes, improves in the percentage usage and some performance
->> of network speed in UDP packets.
->> Only patching copy_user. Using the original memcpy.
->>
->> All results are from the same base kernel, same rootfs and same
->> BeagleV beta board.
->>
->> Comparison by "perf top -Ue task-clock" while running iperf3.
-> 
-> I did a quick test on a SiFive Unmatched with IO to an NVME.
-> 
-> before: cached-reads=172.47MB/sec, buffered-reads=135.8MB/sec
-> with-patch: cached-read=s177.54Mb/sec, buffered-reads=137.79MB/sec
-> 
-> That was just one test run, so there was a small improvement. I am
-> sort of surprised we didn't get more of a win from this.
-> 
-> perf record on hdparm shows that it spends approx 15% cpu time in
-> asm_copy_to_user. Does anyone have a benchmark for this which just
-> looks at copy/to user? if not should we create one?
+Yan, your reply came through in HTML.  It doesn't bother me too much,
+but you'll find your replies dropped by LKML and other mailing lists
+if you do this.
 
-Thanks for the result on the Unmatched with hdparm. Have you tried
-iperf3?
+On 6/21/21 7:50 AM, Zi Yan wrote:
+> Is there a plan of allowing user to change where the migration path
+> starts? Or maybe one step further providing an interface to allow
+> user to specify the demotion path. Something like
+> /sys/devices/system/node/node*/node_demotion.
 
-The 15% is high, is it before or with-patch?
+We actually had this in an earlier series.  I pulled it out because we
+don't really *need* this ABI at the moment.  But, I totally agree that
+it would be handy for many things, including any non-obvious topology
+where the built-in ordering isn't optimal.
 
-Akira
+> I don't think that's necessary at least for now. Do you know any
+> real world use case for this?
+>
+> In our P9+volta system, GPU memory is exposed as a NUMA node. For
+> the GPU workloads with data size greater than GPU memory size, it
+> will be very helpful to allow pages in GPU memory to be
+> migrated/demoted to CPU memory. With your current assumption, GPU
+> memory -> CPU memory demotion seems not possible, right? This
+> should also apply to any system with a device memory exposed as a
+> NUMA node and workloads running on the device and using CPU memory
+> as a lower tier memory than the device memory.
+
+Yes, with the current ordering, CPU memory would be demoted to the
+GPU, not the other way around.  The right way to fix this (on ACPI
+platforms at least) is probably to use the HMAT table and build the
+demotion based on any memory targets rather than just CPUs.
+
+That would be a great future enhancement to all of this.  But, because
+not all systems have HMATs, we also need something more basic, which
+is what is in this series.
