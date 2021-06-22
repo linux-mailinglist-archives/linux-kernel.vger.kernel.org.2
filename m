@@ -2,186 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DC93AFE18
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6255D3AFE1A
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229888AbhFVHmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 03:42:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33464 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230206AbhFVHl7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 03:41:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 168796112D;
-        Tue, 22 Jun 2021 07:39:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1624347583;
-        bh=QbJE9LxmdhH3eGRXPQXb6I6KsPkDdvUnyB3gNvMxX6E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r6hSAG4BlxdJfUn4N91g/X57wM8ZFg5HqcCvG8Un9wkkZPiSBWY2KU3nMttBXTGll
-         hBQZh307GMno/CnX/amQ4H48GcCnjAsZstAm9q4TBxhba/2U/E7E1JbNNv9LPwiQGm
-         Hgpzu2WjfLoj/KWqmnMSjbUCyIR0XxtqJXe9/3uU=
-Date:   Tue, 22 Jun 2021 09:39:40 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     minchan@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
-        mbenes@suse.com, jpoimboe@redhat.com, tglx@linutronix.de,
-        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
-        peterz@infradead.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] zram: fix crashes due to use of cpu hotplug
- multistate
-Message-ID: <YNGTvN2cVOPr+duH@kroah.com>
-References: <20210621233013.562641-1-mcgrof@kernel.org>
- <20210621233013.562641-2-mcgrof@kernel.org>
+        id S230107AbhFVHmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 03:42:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229574AbhFVHmm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 03:42:42 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BECCC061574;
+        Tue, 22 Jun 2021 00:40:26 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id he7so32935414ejc.13;
+        Tue, 22 Jun 2021 00:40:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xQyABpWzE19xRadtudcaP3+NTE2M7E6yiV97ca/yhww=;
+        b=QZvDdaoOkVYQLG8otklFFBe/0ZsEeILKWvXBF3qUOpC2R5PuSHowtJOHv9FApI3o/G
+         OJNMWjLZb16lmrKAz3uL+iX2dPnIzSq+upTI8t7tb0SXLHPKDY4DHQvJPZ7FZRUJa3cg
+         RU+X43a5PZO1baFqI3NF003p6IuuADeFuWosIslZil8GoyIa9akhb+OkxhTD8WxIYNsY
+         k4202UDJX4KGzCosjI1MxXTlbx13XuOFh8Ou2+OPrrkbpuxm9BzBDEhAKRnO1ZCMPGS0
+         7M0B5maG0tUredvMuoEyC7tuGWbdpl+fWHvMLlmmduEFGy4UQUAfOMXmc/+dOD/MnOjp
+         o1nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xQyABpWzE19xRadtudcaP3+NTE2M7E6yiV97ca/yhww=;
+        b=DDLiXHMtKiihhZUtNCceDPfWe7sSj1sAWgdP8MDB+k0X8hEwTvXgUuybyckqDvai6L
+         jiya/QY/cVUbykO2fum71BB8keUNh6dtGBy9NSgyR8/BmS5V+nC+FGGVydu60Sq0qT9X
+         i5CJMQiJtcpLgXlmmxUWCelZA8vb+5k6vN4fOMxXzXXDQwgpCjxMuu3HY8UPTdZb0NGT
+         lEDtz2Qbz8xZf62+VVten1SeHFceAw+98aIBAFRfmTpO8Ul8v/ze9XDo8m6QrfbKmMsx
+         zCu/YKL6Zso7h3AmnidCE0zRLVYXv+wjx6OiK328QocrCNCkMByDxGxbd/Ld3/OeNRKU
+         m2Cg==
+X-Gm-Message-State: AOAM5302cFH8zntZCady19R2cIQVPv1o/POndUFb2dSQBZz0C0oZJC5W
+        7wbnzT1dNdXrfYqsw/vft3ukmx9nbVT+7UYzOYs=
+X-Google-Smtp-Source: ABdhPJz0yuY8/gdW7uMGBdd4+eGP7+3+wPgKIgWYdTdtY008V/0jI8bwYFqoIsHgInuxvN9TxpVDyDkAt5ZusPb3x/M=
+X-Received: by 2002:a17:906:1486:: with SMTP id x6mr2559515ejc.69.1624347624690;
+ Tue, 22 Jun 2021 00:40:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621233013.562641-2-mcgrof@kernel.org>
+References: <20210618075925.803052-1-cccheng@synology.com> <20210622060419.GA29360@lst.de>
+In-Reply-To: <20210622060419.GA29360@lst.de>
+From:   Chung-Chiang Cheng <shepjeng@gmail.com>
+Date:   Tue, 22 Jun 2021 15:40:13 +0800
+Message-ID: <CAHuHWt=2ZoQJz1tVpJ7SzqUDwPXthNHksq2-uTFCzHmv+E7qWA@mail.gmail.com>
+Subject: Re: [PATCH] configfs: fix memleak in configfs_release_bin_file
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     jlbec@evilplan.org,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Chung-Chiang Cheng <cccheng@synology.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 04:30:11PM -0700, Luis Chamberlain wrote:
-> Provide a simple state machine to fix races with driver exit where we
-> remove the CPU multistate callbacks and re-initialization / creation of
-> new per CPU instances which should be managed by these callbacks.
-> 
-> The zram driver makes use of cpu hotplug multistate support, whereby it
-> associates a struct zcomp per CPU. Each struct zcomp represents a
-> compression algorithm in charge of managing compression streams per CPU.
-> Although a compiled zram driver only supports a fixed set of compression
-> algorithms, each zram device gets a struct zcomp allocated per CPU. The
-> "multi" in CPU hotplug multstate refers to these per cpu struct zcomp
-> instances. Each of these will have the CPU hotplug callback called for
-> it on CPU plug / unplug. The kernel's CPU hotplug multistate keeps a
-> linked list of these different structures so that it will iterate over
-> them on CPU transitions.
-> 
-> By default at driver initialization we will create just one zram device
-> (num_devices=1) and a zcomp structure then set for the now default
-> lzo-rle comrpession algorithm. At driver removal we first remove each
-> zram device, and so we destroy the associated struct zcomp per CPU. But
-> since we expose sysfs attributes to create new devices or reset / initialize
-> existing zram devices, we can easily end up re-initializing a struct zcomp
-> for a zram device before the exit routine of the module removes the cpu
-> hotplug callback. When this happens the kernel's CPU hotplug will detect
-> that at least one instance (struct zcomp for us) exists. This can happen
-> in the following situation:
-> 
-> CPU 1                            CPU 2
-> 
-> class_unregister(...);
+It works for me. I've verified it with ACPI configfs that is the only
+one using configfs binary attributes so far, and the memleak issue
+is solved.
 
-Now the sysfs files are removed and invalidated for all devices
-associated with that class.
-
-> idr_for_each(...);
-> zram_debugfs_destroy();
->                                 disksize_store(...);
-
-How will this call into the kobject's store function if
-class_unregister() has already happened?
-
-> idr_destroy(...);
-> unregister_blkdev(...);
-
-Ah, it's a block device's store function you are worried about, not the
-class one?
-
-> cpuhp_remove_multi_state(...);
-> 
-> The warning comes up on cpuhp_remove_multi_state() when it sees that the
-> state for CPUHP_ZCOMP_PREPARE does not have an empty instance linked list.
-> In this case, that a struct zcom still exists, the driver allowed its
-> creation per CPU even though we could have just freed them per CPU
-> though a call on another CPU, and we are then later trying to remove the
-> hotplug callback.
-> 
-> Fix all this by providing a zram initialization boolean
-> protected the the shared in the driver zram_index_mutex,
-> which we can use to annotate when sysfs attributes are
-> safe to use or not -- once the driver is properly initialized.
-> When the driver is going down we also are sure to not let
-> userspace muck with attributes which may affect each per cpu
-> struct zcomp.
-> 
-> This also fixes a series of possible memory leaks. The
-> crashes and memory leaks can easily be caused by issuing
-> the zram02.sh script from the LTP project [0] in a loop
-> in two separate windows:
-> 
->   cd testcases/kernel/device-drivers/zram
->   while true; do PATH=$PATH:$PWD:$PWD/../../../lib/ ./zram02.sh; done
-> 
-> You end up with a splat as follows:
-> 
-> kernel: zram: Removed device: zram0
-> kernel: zram: Added device: zram0
-> kernel: zram0: detected capacity change from 0 to 209715200
-> kernel: Adding 104857596k swap on /dev/zram0.  Priority:-2 extents:1 across:104857596k SSFS
-> kernel: zram0: detected capacitky change from 209715200 to 0
-> kernel: zram0: detected capacity change from 0 to 209715200
-> kernel: ------------[ cut here ]------------
-> kernel: Error: Removing state 63 which has instances left.
-> kernel: WARNING: CPU: 7 PID: 70457 at kernel/cpu.c:2069 __cpuhp_remove_state_cpuslocked+0xf9/0x100
-> kernel: Modules linked in: zram(E-) zsmalloc(E) <etc>
-> kernel: CPU: 7 PID: 70457 Comm: rmmod Tainted: G            E     5.12.0-rc1-next-20210304 #3
-> kernel: Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-2 04/01/2014
-> kernel: RIP: 0010:__cpuhp_remove_state_cpuslocked+0xf9/0x100
-> kernel: Code: <etc>
-> kernel: RSP: 0018:ffffa800c139be98 EFLAGS: 00010282
-> kernel: RAX: 0000000000000000 RBX: ffffffff9083db58 RCX: ffff9609f7dd86d8
-> kernel: RDX: 00000000ffffffd8 RSI: 0000000000000027 RDI: ffff9609f7dd86d0
-> kernel: RBP: 0000000000000000i R08: 0000000000000000 R09: ffffa800c139bcb8
-> kernel: R10: ffffa800c139bcb0 R11: ffffffff908bea40 R12: 000000000000003f
-> kernel: R13: 00000000000009d8 R14: 0000000000000000 R15: 0000000000000000
-> kernel: FS: 00007f1b075a7540(0000) GS:ffff9609f7dc0000(0000) knlGS:0000000000000000
-> kernel: CS:  0010 DS: 0000 ES 0000 CR0: 0000000080050033
-> kernel: CR2: 00007f1b07610490 CR3: 00000001bd04e000 CR4: 0000000000350ee0
-> kernel: Call Trace:
-> kernel: __cpuhp_remove_state+0x2e/0x80
-> kernel: __do_sys_delete_module+0x190/0x2a0
-> kernel:  do_syscall_64+0x33/0x80
-> kernel: entry_SYSCALL_64_after_hwframe+0x44/0xae
-> 
-> The "Error: Removing state 63 which has instances left" refers
-> to the zram per CPU struc zcomp instances left.
-> 
-> [0] https://github.com/linux-test-project/ltp.git
-> 
-> Acked-by: Minchan Kim <minchan@kernel.org>
-> Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-> ---
->  drivers/block/zram/zram_drv.c | 63 ++++++++++++++++++++++++++++++-----
->  1 file changed, 55 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
-> index cf8deecc39ef..431b60cd85c1 100644
-> --- a/drivers/block/zram/zram_drv.c
-> +++ b/drivers/block/zram/zram_drv.c
-> @@ -44,6 +44,8 @@ static DEFINE_MUTEX(zram_index_mutex);
->  static int zram_major;
->  static const char *default_compressor = CONFIG_ZRAM_DEF_COMP;
->  
-> +bool zram_up;
-
-static?
-
-> +
->  /* Module params (documentation at end) */
->  static unsigned int num_devices = 1;
->  /*
-> @@ -1704,6 +1706,7 @@ static void zram_reset_device(struct zram *zram)
->  	comp = zram->comp;
->  	disksize = zram->disksize;
->  	zram->disksize = 0;
-> +	zram->comp = NULL;
-
-Is this a new change?
-
-Other than these two things, seems reasonable, if not total overkill :)
-
-thanks,
-
-greg k-h
+On Tue, Jun 22, 2021 at 2:04 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Hmm.  The issue looks real, but I think we should just call the vfree
+> unconditionally given that the buffer structure is zeroed on allocation
+> and freed just after, and also remove the pointless clearing of all the
+> flags.  Does something like this work for you?
+>
+> diff --git a/fs/configfs/file.c b/fs/configfs/file.c
+> index 53913b84383a..1ab6afb84f04 100644
+> --- a/fs/configfs/file.c
+> +++ b/fs/configfs/file.c
+> @@ -393,11 +393,8 @@ static int configfs_release_bin_file(struct inode *inode, struct file *file)
+>  {
+>         struct configfs_buffer *buffer = file->private_data;
+>
+> -       buffer->read_in_progress = false;
+> -
+>         if (buffer->write_in_progress) {
+>                 struct configfs_fragment *frag = to_frag(file);
+> -               buffer->write_in_progress = false;
+>
+>                 down_read(&frag->frag_sem);
+>                 if (!frag->frag_dead) {
+> @@ -407,13 +404,9 @@ static int configfs_release_bin_file(struct inode *inode, struct file *file)
+>                                         buffer->bin_buffer_size);
+>                 }
+>                 up_read(&frag->frag_sem);
+> -               /* vfree on NULL is safe */
+> -               vfree(buffer->bin_buffer);
+> -               buffer->bin_buffer = NULL;
+> -               buffer->bin_buffer_size = 0;
+> -               buffer->needs_read_fill = 1;
+>         }
+>
+> +       vfree(buffer->bin_buffer);
+>         configfs_release(inode, file);
+>         return 0;
+>  }
