@@ -2,99 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 405FD3AFFD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C17473AFFE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229803AbhFVJGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 05:06:17 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41696 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229486AbhFVJGR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 05:06:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624352641;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ANzaJSLFFBLAe06Y/sBuxfE6og1qOQNyUI433GTInyA=;
-        b=ax5i19aOUAmNUaWBwm2U4IWK8Lb5DfLW+uaP7S84kc0sXwFjo0cDe1YYvLffxh8xgQP4mu
-        NZogvSKsLHJELLl5+oudJnwojzqP0jslSqyiTdOyJw6RBjzgpinnEkhTseOQ5fhpgcLWtT
-        e8I35v/qejQ3JyP5xPKT5aB/xWr6fv4=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-139-M5cwRqqhM9mQblhQoNaQPw-1; Tue, 22 Jun 2021 05:03:58 -0400
-X-MC-Unique: M5cwRqqhM9mQblhQoNaQPw-1
-Received: by mail-ed1-f71.google.com with SMTP id v12-20020aa7dbcc0000b029038fc8e57037so9151811edt.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 02:03:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ANzaJSLFFBLAe06Y/sBuxfE6og1qOQNyUI433GTInyA=;
-        b=NKXsysr5H4DRE1+pCgrTjeYmuH9IUnG3k+GcdlR5AWfe6xVeUFcOMtJEP+ptyYUG2S
-         vAXzy5C24zebWlevozJImM4ZWh76KNTj1bXztTKd5gX9C6CgPf3rlq8QErntg/FU+D+B
-         PTpyRpiSlJHo74wWYc44BCioWSNzTfMCs4g0I7lwHv8ByqsWu26/xKiRqnnyDpB3FkOK
-         ETmTlNAGVRfSpO5yuXIrPlY27ELcGuDqtXUYnqsj4cXId1R/k2+m0L3HXKTxePLO1Oei
-         Ca1CKceHQlTMGTG2mEJkc3JUH6iPIYgFOsx+aVj0aNEa2DfST2PihPd/SaoBZgWClC6/
-         f6ZA==
-X-Gm-Message-State: AOAM530gWMQbqVY4OuXp7AN7bt5kBwdlLjC7RJzCL2WU3pNxN8iyWqUg
-        o1EVq5/w+7CttJYX6/oZz7U1RQNY/pZsyNsKXo3cYKuUIumwwfGJi4LJR0rP9cAB6Vx61hEIRWQ
-        hDUnrB5lwEhNLWgQ7HV1iHiAq
-X-Received: by 2002:a17:906:1318:: with SMTP id w24mr2810240ejb.222.1624352637773;
-        Tue, 22 Jun 2021 02:03:57 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxWoz+otEuPZXWbOrMuuDEoK9BD/nT21EjD39p7UyGYGWFwNQQpD2zMULF+0d5rNvHcwjPpYw==
-X-Received: by 2002:a17:906:1318:: with SMTP id w24mr2810224ejb.222.1624352637655;
-        Tue, 22 Jun 2021 02:03:57 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id ee47sm4586283edb.51.2021.06.22.02.03.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 02:03:57 -0700 (PDT)
-Subject: Re: [PATCH v2 1/8] platform/x86: Remove "default n" entries
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mario Limonciello <mario.limonciello@amd.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Mark Gross <mgross@linux.intel.com>
-References: <20210618125516.53510-1-andriy.shevchenko@linux.intel.com>
- <CAHp75Vcjr5F=4qSCrEWtUhBhFycBrE6u55Krg77ENsVn6DbOMA@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <23f1f2db-7a08-416e-ba0a-4cbf9774647f@redhat.com>
-Date:   Tue, 22 Jun 2021 11:03:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S229718AbhFVJIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 05:08:19 -0400
+Received: from foss.arm.com ([217.140.110.172]:44846 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229486AbhFVJIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 05:08:18 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CE60D6E;
+        Tue, 22 Jun 2021 02:06:02 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.10.229])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DCD563F718;
+        Tue, 22 Jun 2021 02:05:55 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 10:05:40 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Bill Wendling <wcw@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
+        Martin Liska <mliska@suse.cz>, Marco Elver <elver@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Fangrui Song <maskray@google.com>, linux-doc@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        johannes.berg@intel.com, linux-toolchains@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 3/3] Kconfig: add
+ ARCH_WANTS_NO_INSTR+CC_HAS_NO_PROFILE_FN_ATTR, depend on for GCOV and PGO
+Message-ID: <20210622090540.GA67232@C02TD0UTHF1T.local>
+References: <20210621231822.2848305-1-ndesaulniers@google.com>
+ <20210621231822.2848305-4-ndesaulniers@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vcjr5F=4qSCrEWtUhBhFycBrE6u55Krg77ENsVn6DbOMA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621231822.2848305-4-ndesaulniers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 6/22/21 11:02 AM, Andy Shevchenko wrote:
-> On Fri, Jun 18, 2021 at 4:09 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
->>
->> Linus already once did that for PDx86, don't repeat our mistakes.
->> TL;DR: 'n' *is* the default 'default'.
+On Mon, Jun 21, 2021 at 04:18:22PM -0700, Nick Desaulniers wrote:
+> We don't want compiler instrumentation to touch noinstr functions, which
+> are annotated with the no_profile_instrument_function function
+> attribute. Add a Kconfig test for this and make PGO and GCOV depend on
+> it.
 > 
-> Daniel, thanks for your testing!
+> If an architecture is using noinstr, it should denote that via this
+> Kconfig value. That makes Kconfigs that depend on noinstr able to
+> express dependencies in an architecturally agnostic way.
 > 
-> Hans, patches 2-6 were reviewed and tested, do you think we have a
-> chance for the series to be applied?
+> Cc: Masahiro Yamada <masahiroy@kernel.org>
+> Cc: Peter Oberparleiter <oberpar@linux.ibm.com>
+> Link: https://lore.kernel.org/lkml/YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net/
+> Link: https://lore.kernel.org/lkml/YMcssV%2Fn5IBGv4f0@hirez.programming.kicks-ass.net/
+> Suggested-by: Nathan Chancellor <nathan@kernel.org>
+> Suggested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Yes I was working on applying it right now :)
+FWIW, this looks good to me:
 
-Regards,
+Acked-by: Mark Rutland <mark.rutland@arm.com>
 
-Hans
+Catalin, Will, are you happy iwth the arm64 bit?
 
+Thanks,
+Makr.
 
+> ---
+> Changes V1 -> V2:
+> * Add ARCH_WANTS_NO_INSTR
+> * Change depdendencies to be !ARCH_WANTS_NO_INSTR || CC_HAS_NO_PROFILE_FN_ATTR
+>   rather than list architectures explicitly, as per Nathan.
+> * s/no_profile/no_profile_instrument_function/
+> 
+>  arch/Kconfig        | 7 +++++++
+>  arch/arm64/Kconfig  | 1 +
+>  arch/s390/Kconfig   | 1 +
+>  arch/x86/Kconfig    | 1 +
+>  init/Kconfig        | 3 +++
+>  kernel/gcov/Kconfig | 1 +
+>  kernel/pgo/Kconfig  | 3 ++-
+>  7 files changed, 16 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 2b4109b0edee..2113c6b3b801 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -285,6 +285,13 @@ config ARCH_THREAD_STACK_ALLOCATOR
+>  config ARCH_WANTS_DYNAMIC_TASK_STRUCT
+>  	bool
+>  
+> +config ARCH_WANTS_NO_INSTR
+> +	bool
+> +	help
+> +	  An architecure should select this if the noinstr macro is being used on
+> +	  functions to denote that the toolchain should avoid instrumenting such
+> +	  functions and is required for correctness.
+> +
+>  config ARCH_32BIT_OFF_T
+>  	bool
+>  	depends on !64BIT
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 9f1d8566bbf9..39bf982b06f8 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -93,6 +93,7 @@ config ARM64
+>  	select ARCH_WANT_FRAME_POINTERS
+>  	select ARCH_WANT_HUGE_PMD_SHARE if ARM64_4K_PAGES || (ARM64_16K_PAGES && !ARM64_VA_BITS_36)
+>  	select ARCH_WANT_LD_ORPHAN_WARN
+> +	select ARCH_WANTS_NO_INSTR
+>  	select ARCH_HAS_UBSAN_SANITIZE_ALL
+>  	select ARM_AMBA
+>  	select ARM_ARCH_TIMER
+> diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+> index b4c7c34069f8..bd60310f33b9 100644
+> --- a/arch/s390/Kconfig
+> +++ b/arch/s390/Kconfig
+> @@ -117,6 +117,7 @@ config S390
+>  	select ARCH_USE_BUILTIN_BSWAP
+>  	select ARCH_USE_CMPXCHG_LOCKREF
+>  	select ARCH_WANTS_DYNAMIC_TASK_STRUCT
+> +	select ARCH_WANTS_NO_INSTR
+>  	select ARCH_WANT_DEFAULT_BPF_JIT
+>  	select ARCH_WANT_IPC_PARSE_VERSION
+>  	select BUILDTIME_TABLE_SORT
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index da43fd046149..7d6a44bb9b0e 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -114,6 +114,7 @@ config X86
+>  	select ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
+>  	select ARCH_WANT_DEFAULT_BPF_JIT	if X86_64
+>  	select ARCH_WANTS_DYNAMIC_TASK_STRUCT
+> +	select ARCH_WANTS_NO_INSTR
+>  	select ARCH_WANT_HUGE_PMD_SHARE
+>  	select ARCH_WANT_LD_ORPHAN_WARN
+>  	select ARCH_WANTS_THP_SWAP		if X86_64
+> diff --git a/init/Kconfig b/init/Kconfig
+> index 1ea12c64e4c9..31397a7a45fb 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -83,6 +83,9 @@ config TOOLS_SUPPORT_RELR
+>  config CC_HAS_ASM_INLINE
+>  	def_bool $(success,echo 'void foo(void) { asm inline (""); }' | $(CC) -x c - -c -o /dev/null)
+>  
+> +config CC_HAS_NO_PROFILE_FN_ATTR
+> +	def_bool $(success,echo '__attribute__((no_profile_instrument_function)) int x();' | $(CC) -x c - -c -o /dev/null -Werror)
+> +
+>  config CONSTRUCTORS
+>  	bool
+>  
+> diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
+> index 58f87a3092f3..053447183ac5 100644
+> --- a/kernel/gcov/Kconfig
+> +++ b/kernel/gcov/Kconfig
+> @@ -5,6 +5,7 @@ config GCOV_KERNEL
+>  	bool "Enable gcov-based kernel profiling"
+>  	depends on DEBUG_FS
+>  	depends on !CC_IS_CLANG || CLANG_VERSION >= 110000
+> +	depends on !ARCH_WANTS_NO_INSTR || CC_HAS_NO_PROFILE_FN_ATTR
+>  	select CONSTRUCTORS
+>  	default n
+>  	help
+> diff --git a/kernel/pgo/Kconfig b/kernel/pgo/Kconfig
+> index d2053df1111c..ce7fe04f303d 100644
+> --- a/kernel/pgo/Kconfig
+> +++ b/kernel/pgo/Kconfig
+> @@ -8,7 +8,8 @@ config PGO_CLANG
+>  	bool "Enable clang's PGO-based kernel profiling"
+>  	depends on DEBUG_FS
+>  	depends on ARCH_SUPPORTS_PGO_CLANG
+> -	depends on CC_IS_CLANG && CLANG_VERSION >= 120000
+> +	depends on CC_IS_CLANG
+> +	depends on !ARCH_WANTS_NO_INSTR || CC_HAS_NO_PROFILE_FN_ATTR
+>  	help
+>  	  This option enables clang's PGO (Profile Guided Optimization) based
+>  	  code profiling to better optimize the kernel.
+> -- 
+> 2.32.0.288.g62a8d224e6-goog
+> 
