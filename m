@@ -2,104 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 706393B0047
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7DC3B004F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:32:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbhFVJeO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Jun 2021 05:34:14 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:41763 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229612AbhFVJeN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 05:34:13 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-67-DIPGu8glMReRJXuoThpP9w-1; Tue, 22 Jun 2021 10:31:55 +0100
-X-MC-Unique: DIPGu8glMReRJXuoThpP9w-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.18; Tue, 22 Jun
- 2021 10:31:54 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.018; Tue, 22 Jun 2021 10:31:54 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Jhih-Ming Huang' <fbihjmeric@gmail.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "fabioaiuto83@gmail.com" <fabioaiuto83@gmail.com>,
-        "ross.schm.dev@gmail.com" <ross.schm.dev@gmail.com>,
-        "maqianga@uniontech.com" <maqianga@uniontech.com>,
-        "marcocesati@gmail.com" <marcocesati@gmail.com>,
-        "linux-staging@lists.linux.dev" <linux-staging@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v5] rtw_security: fix cast to restricted __le32
-Thread-Topic: [PATCH v5] rtw_security: fix cast to restricted __le32
-Thread-Index: AQHXZnYzS3EO6qxolE+NbuqnsEK0NKsfxZUw
-Date:   Tue, 22 Jun 2021 09:31:54 +0000
-Message-ID: <bdc0c31a7d28426995d229eb9014cd2b@AcuMS.aculab.com>
-References: <20210619075255.107807-1-fbihjmeric@gmail.com>
- <20210621081928.145203-1-fbihjmeric@gmail.com>
-In-Reply-To: <20210621081928.145203-1-fbihjmeric@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S229880AbhFVJfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 05:35:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56712 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229682AbhFVJfF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 05:35:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1058A61352;
+        Tue, 22 Jun 2021 09:32:44 +0000 (UTC)
+Date:   Tue, 22 Jun 2021 10:32:42 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Bill Wendling <morbo@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Bill Wendling <wcw@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Borislav Petkov <bp@alien8.de>, Martin Liska <mliska@suse.cz>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Fangrui Song <maskray@google.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        linux-toolchains@vger.kernel.org, Marco Elver <elver@google.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>
+Subject: Re: [PATCH 2/2] Kconfig: CC_HAS_NO_PROFILE_FN_ATTR, depend on for
+ GCOV and PGO
+Message-ID: <20210622093241.GC3555@arm.com>
+References: <20210618233023.1360185-1-ndesaulniers@google.com>
+ <20210618233023.1360185-3-ndesaulniers@google.com>
+ <CANpmjNNK-iYXucjz7Degh1kJPF_Z_=8+2vNLtUW17x0UnfgtPg@mail.gmail.com>
+ <CAKwvOdmxGt6nAj+dDZEPdQtXNbYb8N6y3XwoCvCD+Qazskh7zw@mail.gmail.com>
+ <CAGG=3QXeAxaf0AhKsg8P1-j2uHOoXne2KCOCEhq9SKa-e2dnag@mail.gmail.com>
+ <CAKwvOd=9oAGPeuQmWnAMOxZn2ii_CRmyWnheoyXGcd09-U_CwA@mail.gmail.com>
+ <20210622092533.GB3555@arm.com>
+ <20210622092937.GB67232@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210622092937.GB67232@C02TD0UTHF1T.local>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jhih-Ming Huang
-> Sent: 21 June 2021 09:19
+On Tue, Jun 22, 2021 at 10:29:37AM +0100, Mark Rutland wrote:
+> On Tue, Jun 22, 2021 at 10:25:34AM +0100, Catalin Marinas wrote:
+> > On Mon, Jun 21, 2021 at 01:43:54PM -0700, Nick Desaulniers wrote:
+> > > We need to be able to express via Kconfig "GCOV should not be enabled
+> > > for architectures that use noinstr when the toolchain does not support
+> > > __attribute__((no_profile_instrument_function))."
+> > > 
+> > > Where "architectures that use noinstr" are currently arm64, s390, and
+> > > x86.  So I guess we could do:
+> > > 
+> > > + depends on !ARM64 || !S390 || !X86 || CC_HAS_NO_PROFILE_FN_ATTR
+> > 
+> > I think you want:
+> > 
+> >   depends on !(ARM64 || S390 || X86) || CC_HAS_NO_PROFILE_FN_ATTR
+> > 
+> > > (We could add a Kconfig for ARCH_WANTS_NO_INSTR, which might be more
+> > > informative than listed out architectures which might be non-obvious
+> > > to passers-by).
+> > 
+> > That would probably look better.
 > 
-> This patch fixes the sparse warning of fix cast to restricted __le32.
+> It does; see:
 > 
-> There was a change for replacing private CRC-32 routines with in kernel
-> ones.
-> However, the author used le32_to_cpu to convert crc32_le(), and we
-> should cpu_to_le32.
-> 
-> Ths commit also fixes the payload checking by memcmp instead of checking element
-> by element and removes the unused variable.
-...
-> diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c
-> b/drivers/staging/rtl8723bs/core/rtw_security.c
-> index a99f439328f1..8dc6a976b487 100644
-> --- a/drivers/staging/rtl8723bs/core/rtw_security.c
-> +++ b/drivers/staging/rtl8723bs/core/rtw_security.c
-...
-> @@ -537,7 +532,7 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
->  	u32 pnh;
->  	u8   rc4key[16];
->  	u8   ttkey[16];
-> -	u8 crc[4];
-> +	__le32 crc;
->  	signed int			length;
-> 
->  	u8 *pframe, *payload, *iv, *prwskey;
-> @@ -618,10 +613,9 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
->  			arc4_setkey(ctx, rc4key, 16);
->  			arc4_crypt(ctx, payload, payload, length);
-> 
-> -			*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
-> +			crc = cpu_to_le32(~crc32_le(~0, payload, length - 4));
-> 
-> -			if (crc[3] != payload[length - 1] || crc[2] != payload[length - 2] ||
-> -			    crc[1] != payload[length - 3] || crc[0] != payload[length - 4])
-> +			if (memcmp(&crc, payload + length - 4, 4) != 0)
+> https://lore.kernel.org/r/20210621231822.2848305-1-ndesaulniers@google.com
 
-Shouldn't this be using (IIRC) get_unaligned_le32() ?
+I'm getting there, eventually ;).
 
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+-- 
+Catalin
