@@ -2,93 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6FE3B0AFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:00:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107293B0AFE
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231634AbhFVRC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 13:02:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbhFVRC5 (ORCPT
+        id S231723AbhFVRDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 13:03:31 -0400
+Received: from smtp-out1.suse.de ([195.135.220.28]:32934 "EHLO
+        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230102AbhFVRDa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 13:02:57 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 769E7C061574;
-        Tue, 22 Jun 2021 10:00:40 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso21860809otu.10;
-        Tue, 22 Jun 2021 10:00:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CU73LRTmqsTJXC4hCPE4/i0AAwdr3FZJs+LzvR2IcQI=;
-        b=JTfsR1QOxSzlj2vxLZxvTeR8R5YGWW3UbyZl8oBQYsB4CnGDqMUmttCi1cA3uLODi0
-         hkr+ZxmFRcbPXJRyrW+vzjz1HwVRBHabLWiU38taHodnC0+cnmc3xyht3tt9KH0EalnN
-         DyiOe7fQ9u5enXuTprYZcSjW/2Tua3TInECPkJZgtLMnrWUG0UoLqGxuICsn+ZhzAVXM
-         oNqGrxVngIXiktfMWDUn1pkKdwBJYgSok9U2ZwmZ0nzhOmufFksClgO6DKhgd/nws4/P
-         RJu/0vB+Svoau3mbXd7wuDo1OzO1FLR7j8q6fQ3s3A5Xm4hbYApg8bruOUgwTUifLUuT
-         LBlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=CU73LRTmqsTJXC4hCPE4/i0AAwdr3FZJs+LzvR2IcQI=;
-        b=XaL1HPgkRDg5iTkFFeuI9hVo4+VOwUBPSCEFRf0PtBOQ7AX9jrfaXHoHyVLM5oWU17
-         HZkmFScVb7qrQSYD2rKkSJ8L5wD+KoY4++tTfy48xErF1fcDDLL4HBXdrIw7UWhvnJDg
-         VrU+8YdcCfSudeFAakyQp6fCAftbWEt6Hp3z6onSpUH1baESRWhEliljCwuC74pd7YIp
-         kLaSeDYFv9fK9lZTm/VR/j9SnPOZPcAgzu1vlwaFkQvEymqzH5+lnjIwS+jKbz54ZJZ4
-         hUuK/EUgeHlm9jxewl+Xc9dmTx2Ms1GPwmyMZOZOyOThHWFWqsL72wKw5beDkJSZsdkK
-         Qw/A==
-X-Gm-Message-State: AOAM5311Plb+FLe4t0lACX9ln1i3iJsxOOs3Rsh5zuQg95IWQ9tNIebg
-        DmEoYGiBCWWGTkzJ8DPui/0=
-X-Google-Smtp-Source: ABdhPJxoRFAitm/89S9nKTw10yYqZzZlkwIjYq9UXK9WgXuoqd3GuEH7Q8tIHD2Q6N3/SFxKZJ/WVw==
-X-Received: by 2002:a9d:2c67:: with SMTP id f94mr3993356otb.353.1624381239886;
-        Tue, 22 Jun 2021 10:00:39 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id s123sm599767oos.12.2021.06.22.10.00.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 10:00:39 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 22 Jun 2021 10:00:37 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     Art Nikpal <email2tema@gmail.com>, wim@linux-watchdog.org,
-        Kevin Hilman <khilman@baylibre.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Christian Hewitt <christianshewitt@gmail.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
-        linux-kernel@vger.kernel.org, Artem Lapkin <art@khadas.com>,
-        Nick Xie <nick@khadas.com>, Gouwa Wang <gouwa@khadas.com>
-Subject: Re: [PATCH] watchdog: meson_gxbb_wdt: improve
-Message-ID: <20210622170037.GA3440464@roeck-us.net>
-References: <20210622095639.1280774-1-art@khadas.com>
- <bfa12322-bc49-2337-2988-199e87e34b87@baylibre.com>
- <CAKaHn9JpH2Yh-1njO6jEnFeu-GMhbonftN=-VXdbvjdug16qHA@mail.gmail.com>
- <0d5e53b2-873e-0ffa-32eb-87e96b51e263@baylibre.com>
+        Tue, 22 Jun 2021 13:03:30 -0400
+Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 34C812195D;
+        Tue, 22 Jun 2021 17:01:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624381273; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yFShgu80D9kj8c+VzCWZr6pmlOxAZHPk7cfmOWkzSrU=;
+        b=d+ax81qlDflWLNLchAsjFKx/ifcBsXNLxkm32bANfHyVY2kSoWDeGO+OLUNFz91vclFZWV
+        vJwF8EoPhwYK63i+8TgF0AUoWRVmuOUtFUDcsULTuQUu8DXeJP0zHYmoE/KQ+OnVtXD3DS
+        NcJ6ipZ6otbSyS/xbG1UzbjRYjtFN20=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624381273;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yFShgu80D9kj8c+VzCWZr6pmlOxAZHPk7cfmOWkzSrU=;
+        b=/dQXFBg88Ky6NNmwJkOrBqWJs7xBh1HLkf+pHNp2aU5HuyJcgrXujOaOPMiZ1nFtQe+oyU
+        o4TRi3QYGVQynODQ==
+Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
+        by imap.suse.de (Postfix) with ESMTP id 1F6C911A97;
+        Tue, 22 Jun 2021 17:01:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1624381273; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yFShgu80D9kj8c+VzCWZr6pmlOxAZHPk7cfmOWkzSrU=;
+        b=d+ax81qlDflWLNLchAsjFKx/ifcBsXNLxkm32bANfHyVY2kSoWDeGO+OLUNFz91vclFZWV
+        vJwF8EoPhwYK63i+8TgF0AUoWRVmuOUtFUDcsULTuQUu8DXeJP0zHYmoE/KQ+OnVtXD3DS
+        NcJ6ipZ6otbSyS/xbG1UzbjRYjtFN20=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1624381273;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=yFShgu80D9kj8c+VzCWZr6pmlOxAZHPk7cfmOWkzSrU=;
+        b=/dQXFBg88Ky6NNmwJkOrBqWJs7xBh1HLkf+pHNp2aU5HuyJcgrXujOaOPMiZ1nFtQe+oyU
+        o4TRi3QYGVQynODQ==
+Received: from director2.suse.de ([192.168.254.72])
+        by imap3-int with ESMTPSA
+        id vlzlB1kX0mDvOgAALh3uQQ
+        (envelope-from <bp@suse.de>); Tue, 22 Jun 2021 17:01:13 +0000
+Date:   Tue, 22 Jun 2021 19:01:12 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: Re: [patch V3 53/66] x86/fpu: Hook up PKRU into ptrace()
+Message-ID: <YNIXWFkGbJWr3Otv@zn.tnic>
+References: <20210618141823.161158090@linutronix.de>
+ <20210618143450.414069840@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <0d5e53b2-873e-0ffa-32eb-87e96b51e263@baylibre.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210618143450.414069840@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 02:43:45PM +0200, Neil Armstrong wrote:
-> Hi,
+On Fri, Jun 18, 2021 at 04:19:16PM +0200, Thomas Gleixner wrote:
+> From: Dave Hansen <dave.hansen@linux.intel.com>
 > 
-> On 22/06/2021 13:53, Art Nikpal wrote:
-> >> Neil
-> >> Can you split the patch in 4 distinct changes ?
-> > 
-> > yes  no problem i can try to do it tomorrow !
-> > maybe somebody have other ideas, suggestion, comments ...
+> One nice thing about having PKRU be XSAVE-managed is that it gets naturally
+> exposed into the XSAVE-using ABIs.  Now that XSAVE will not be used to
+> manage PKRU, these ABIs need to be manually enabled to deal with PKRU.
 > 
-> The changeset is clean, and overall I'm ok with the changes, but I'm pretty sure the wdt maintainers
-> will prefer separate changes in order to comment of each.
+> ptrace() uses copy_uabi_xstate_to_kernel() to collect the tracee's
+> XSTATE. As PKRU is not in the task's XSTATE buffer, use task->thread.pkru
+> for filling in up the ptrace buffer.
+> 
+> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+>  arch/x86/include/asm/fpu/xstate.h |    2 +-
+>  arch/x86/kernel/fpu/regset.c      |   10 ++++------
+>  arch/x86/kernel/fpu/xstate.c      |   25 ++++++++++++++++++-------
+>  3 files changed, 23 insertions(+), 14 deletions(-)
 
-Correct. As per guidelines, "one logical change per patch".
+Reviewed-by: Borislav Petkov <bp@suse.de>
 
-Guenter
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
