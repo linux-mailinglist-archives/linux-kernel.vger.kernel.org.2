@@ -2,168 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E87DF3AFCAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 07:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1173AFCBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 07:47:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbhFVFay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 01:30:54 -0400
-Received: from mail-eopbgr20078.outbound.protection.outlook.com ([40.107.2.78]:38845
-        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229873AbhFVFav (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 01:30:51 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I1+ZF2VTsB/7lEPjF2wv/7edT5bcyqrrLEAXlQGsBEt7scCdnaxEAgww3Mb/14MfX0qoZ4Sk7a9YtOwg9B5mAmTS8Hzx47auEnAItCF4d+txL68+iyJ1k+/QpC6ojXGaVxYsZ8jGojdz4r09BTLQ/QQ2Hg6nXw+oOGkDA/5TuxWIclQW/axQ+Q9gLsQXedk8pY/Y1M0fLTEonv0SRBbZd6Fs7gW04doaa+cAsn+aHZW3ZWC8tEqeTdJGwB5DCuK0Rbzb1pvXUww3GIjmNRF0Keik/QRKc709kgUGkiNlj3YvXILNImMDOvEMM7FdLJcOVasOegnGbW36JrYpx88zGQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u6LcrYlHUUy57grtv113HTQzAhM1n7uKEIUTGYEoOrs=;
- b=EZ0KVDVqWAzk7I+VxhhWfrS9rlEKwy9DtyQWV2JYs/svhI7bt7U1KXYPNKhXVTOrWDzDWMqvseTTkVPgALQeQgXbMKosIAWsuAFzS6PBSj7kY0twieqvCMXN3zXnVkLKwj5WL9dC65iVw0uJOUYhFTQMuCGrI91BShFplr9jLpTcG5IaDQkix9DhiWKmydz5gtc3az3uKMTWgvXl8kLCMgjOkqFAKNUp2FlrNUykkJgeTix1eLTz6B9/1t7IXM35oYj+IN/JSpxdTDMX0eqQlLJe/W54O6+oLbGj7gUjCsHcYXVe3Zmt0KeTPJRBvHrMLQR8TNjhMcPmPxCrV2zdRw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector2-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=u6LcrYlHUUy57grtv113HTQzAhM1n7uKEIUTGYEoOrs=;
- b=dWPATqFoB9mMIWd7pCvBtjHnilk0DFez24HngUcrXOHoiRSJ2yEbNJG+fnUhL7jcZPGld31lNUzK+0QIcoWNAaGHRSjSvg1hkLSAAzlmkzAlKxCppzamhNHvKIxcXmQP/P6en0V7BqMqVNE1f1OExjdmIruiU7t+CyMDmknLNis=
-Authentication-Results: wizery.com; dkim=none (message not signed)
- header.d=none;wizery.com; dmarc=none action=none header.from=oss.nxp.com;
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB3PR0402MB3659.eurprd04.prod.outlook.com (2603:10a6:8:5::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Tue, 22 Jun
- 2021 05:28:33 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::c445:d742:eb76:86dd]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::c445:d742:eb76:86dd%9]) with mapi id 15.20.4242.023; Tue, 22 Jun 2021
- 05:28:33 +0000
-From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, o.rempel@pengutronix.de,
-        robh+dt@kernel.org
-Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com,
-        linux-remoteproc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH V3 2/2] remoteproc: imx_rproc: support i.MX8ULP
-Date:   Tue, 22 Jun 2021 14:01:48 +0800
-Message-Id: <20210622060148.18411-3-peng.fan@oss.nxp.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210622060148.18411-1-peng.fan@oss.nxp.com>
-References: <20210622060148.18411-1-peng.fan@oss.nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.71]
-X-ClientProxiedBy: SG2PR03CA0133.apcprd03.prod.outlook.com (2603:1096:4:c8::6)
- To DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+        id S230044AbhFVFtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 01:49:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54826 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229677AbhFVFtR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 01:49:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D07F36115B;
+        Tue, 22 Jun 2021 05:47:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624340821;
+        bh=KRZRfZcqXFVpJXGqMt3gTkRjPb17Tz3tlN13szaVGV4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YcNb/YyzfzYAqFaCZfOqXyY9/LopvrphHj2ag4Rx8sl6HW5+u5K3RtIwtIZQWjKG+
+         20Lvo3vdPxogc8kBAA4zCan5LSZ9jKA91LnEJixR36fYirfhUkFu3dC8j6VijOwWUl
+         QjpMo9Yju5Ive/ZDwCi1lrg1q02ouJqEpo1tbWqQ=
+Date:   Tue, 22 Jun 2021 07:46:55 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Tamseel Shams <m.shams@samsung.com>
+Cc:     krzysztof.kozlowski@canonical.com, jirislaby@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
+        ajaykumar.rs@samsung.com
+Subject: Re: [PATCH v2] serial: samsung: use dma_ops of DMA if attached
+Message-ID: <YNF5T3dLjGZ7z0Gw@kroah.com>
+References: <CGME20210622034818epcas5p3837ce2315f5c57980576f10b8fc7efeb@epcas5p3.samsung.com>
+ <20210622035202.5260-1-m.shams@samsung.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SG2PR03CA0133.apcprd03.prod.outlook.com (2603:1096:4:c8::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.10 via Frontend Transport; Tue, 22 Jun 2021 05:28:29 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 14a1a86f-cc8d-41de-b4ac-08d9353e93d9
-X-MS-TrafficTypeDiagnostic: DB3PR0402MB3659:
-X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB3PR0402MB36596B7EDB7576D4EEAD4CAFC9099@DB3PR0402MB3659.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:421;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GIqtncSCntHab9U2i0uobresTHNrg6ztF1Xd6XCCoEL5fHRs7A/DFMQpzC2N8QWc5mkUAoH1EXShv1rZEUn0UGAfQU9fchXc7BK5PHC38Nye9lrvIbmGdigK3VCgzD3uw2SjdPNjYRUUuokyoD3UDJRXP2rL39kAIZUlv06jtL6FvZ6MmnLvuxmAy5qwqE59X8/07kxMDWs4V5CyP4gANj7qwYBRmzwZzjOJfAgBY6xGxvWqVT7zE0svIqKBE6kIhQBKNZcBojQwUs4UBjFvvSjwuwNJfSrBOXlkwEnRrxE6wGtKJRzpj9+v5dmT1Kj2lS0U8+yQCDMsb+8LQPuAluEOtoaXIzg2am4t+U+ru+L/OcizVpLcfPx/mFOiyQkLO2T/fQSQ41f6zzjRYQbvqhgP1h4D0wE6Sm5PN+LCV1PxH34Z7HdQMS+vQFwSj68L7aaz7Vzh+m3Vs4dlkR8RELZwWdRzAlaZVpdS+110n+3pxsvLM8dCrFfzMBVGtjHE/nqXCXYLTVki0PI0NGPArwBvX3LUrzsDLsPTu2DvqFZHSw5/tvdmh7SA4iLs4Oo+aYDVurDhw/VYZ5SawL5FPLp75IZa6+ornW3Mg3WC88XvOWvk2iXvDnS/q/Mo60XgUOG/yFjkY588m7T1OcG0JQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(396003)(136003)(39860400002)(5660300002)(52116002)(38350700002)(38100700002)(1076003)(6666004)(7416002)(16526019)(6506007)(26005)(186003)(6486002)(4326008)(86362001)(478600001)(2906002)(316002)(8936002)(66556008)(8676002)(66946007)(66476007)(6512007)(2616005)(956004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?jVrPtGmWceoh0PlSczT8lQCFLuhDXvMxH7olFFaLqJoU6iq1wYVYiJn26fM9?=
- =?us-ascii?Q?S5pHnv7qXNVY6ni+o2at69IhA/iGf8GuNn7Ea3u3o3WkClSI0y3pavP1Mg2t?=
- =?us-ascii?Q?nyPzwZqzsJd9deFm4W8EoZYpa7DCb1adxychtmzsIFHIPqwbrbN5QVLgypRR?=
- =?us-ascii?Q?nJsRa4wEeSnBK3YURWK8tAyjXRCkE1nKubxivn4d7HMDwYa8deZVUfpulzqw?=
- =?us-ascii?Q?Z0BoyMSEObdApnZ/cvl5aaKR+OYz8CZZDpLqgxHI0kzhmQRkQLanbqhgW7+N?=
- =?us-ascii?Q?76baxHLEARyqxDThAzhVHGAZ1q1sVOmTfXxCNAlGG3cJhWMEcnTVIkI5xisg?=
- =?us-ascii?Q?pt7cq4wmKqq3DYnH5Xph4wQVGXm0xNtHLOWsaSeqc6WQL0iQv+z8YSu3eYqW?=
- =?us-ascii?Q?Gv/S5nGYESq1c3R/dmin+gyR9PSJ4RRgR1HNLNP9+959KfFsgwLJgoKrlc+I?=
- =?us-ascii?Q?+D+ryTlTCC23D8+5ZH/V700e7QI/wjZm97p2yNi+ftYb7yzizNmU/RYmHdOc?=
- =?us-ascii?Q?rCVfbKUHJ7DyvkQH5enIy3SdwN1qbyRxoo2yORz2mRJdQ2jvv8ExCmORrhVZ?=
- =?us-ascii?Q?7uzbzOZcJe91tJMxDHTTiY7mzDzxTCz0YswVoDo6urSEqQF8Zvks558sNsHV?=
- =?us-ascii?Q?wYvUOB+Z4ZuYZyWoCvpp9gBK/NtH7Br1473CIaXuqMeAudLe7qf0MSmCGtkl?=
- =?us-ascii?Q?f7tbcV76KIE8wd4eHhq/VkBKyAdTc1uBGiFeb4VwmyE9uaO3m4cKx4mLsZYn?=
- =?us-ascii?Q?NurNv75H0V1ijkYLYirgEb8jpSetJBKkN5E3O+xxETT1zdG8QHXusR2J5Z7h?=
- =?us-ascii?Q?3QydKodHO4NiqER7Lo4tS3cQLFT8pBE1rZcRtNtDa7eyxEub7kHJhkB+KwmF?=
- =?us-ascii?Q?j2yhqD0BUgBWVcs5DUh9fh5hAIwk4HDPNHrR20ZOlHsX6lIJAyCCDA91ffO6?=
- =?us-ascii?Q?EOd+Y2kmRiOnWN/TCQeMr4MSKuxRpPXLii3+ruNXVWWI4bn71YLoWmi8BdFW?=
- =?us-ascii?Q?v8pOjn92bm9sLCf/vnW4tcFopseXNE6TogX1U/KnMyTAuIrYUnK+xWPnzOLk?=
- =?us-ascii?Q?IsALLcDsrovkrgsmhLD/kmB79j16AbBNKbOhGScOKpyeDw8Iub6fzyoVNp6Z?=
- =?us-ascii?Q?ejV+7pBsdTeroyR72pKDVnP9kQiCpK5g9khm0TK0LJTZ7o9EZyyGG9UrAkZP?=
- =?us-ascii?Q?CCcwgLw3nlGXZ6vt3L2V60iWWt6wOXAeKP/CUFhWUoJky41a0WtFvUfXbefi?=
- =?us-ascii?Q?6ccD8ux0e7cQpASt3omAWrf98OX+d9d5dTANgegrxIEur8+7dyCKz8zcazZl?=
- =?us-ascii?Q?sfR+cRil/JIxilKjA8uDfDYC?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 14a1a86f-cc8d-41de-b4ac-08d9353e93d9
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2021 05:28:33.6497
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 7epfd+4ypAVxqpg2IwNpW7W82oC8aLn1zIPtn3sYCNWKyRpDu5j6twU0iNxSw3gG7SVsULMuNnMV7YlG4KfjKA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB3PR0402MB3659
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210622035202.5260-1-m.shams@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+On Tue, Jun 22, 2021 at 09:22:02AM +0530, Tamseel Shams wrote:
+> When DMA is used for TX and RX by serial driver, it should
+> pass the DMA device pointer to DMA API instead of UART device
+> pointer.
+> 
+> This patch is necessary to fix the SMMU page faults
+> which is observed when a DMA(with SMMU enabled) is attached
+> to UART for transfer.
+> 
+> Signed-off-by: Tamseel Shams <m.shams@samsung.com>
+> Signed-off-by: Ajay Kumar <ajaykumar.rs@samsung.com>
+> ---
+>  drivers/tty/serial/samsung_tty.c | 62 +++++++++++++++++++++++++-------
+>  1 file changed, 50 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsung_tty.c
+> index 9fbc61151c2e..0c924bb6108e 100644
+> --- a/drivers/tty/serial/samsung_tty.c
+> +++ b/drivers/tty/serial/samsung_tty.c
+> @@ -284,8 +284,13 @@ static void s3c24xx_serial_stop_tx(struct uart_port *port)
+>  	struct s3c24xx_uart_dma *dma = ourport->dma;
+>  	struct circ_buf *xmit = &port->state->xmit;
+>  	struct dma_tx_state state;
+> +	struct device *dma_map_ops_dev = ourport->port.dev;
+>  	int count;
+>  
+> +	/* Pick dma_ops of DMA device if DMA device is attached */
+> +	if (dma && dma->tx_chan)
+> +		dma_map_ops_dev = dma->tx_chan->device->dev;
+> +
+>  	if (!ourport->tx_enabled)
+>  		return;
+>  
+> @@ -305,7 +310,7 @@ static void s3c24xx_serial_stop_tx(struct uart_port *port)
+>  		dmaengine_pause(dma->tx_chan);
+>  		dmaengine_tx_status(dma->tx_chan, dma->tx_cookie, &state);
+>  		dmaengine_terminate_all(dma->tx_chan);
+> -		dma_sync_single_for_cpu(ourport->port.dev,
+> +		dma_sync_single_for_cpu(dma_map_ops_dev,
+>  			dma->tx_transfer_addr, dma->tx_size, DMA_TO_DEVICE);
+>  		async_tx_ack(dma->tx_desc);
+>  		count = dma->tx_bytes_requested - state.residue;
+> @@ -331,14 +336,19 @@ static void s3c24xx_serial_tx_dma_complete(void *args)
+>  	struct circ_buf *xmit = &port->state->xmit;
+>  	struct s3c24xx_uart_dma *dma = ourport->dma;
+>  	struct dma_tx_state state;
+> +	struct device *dma_map_ops_dev = ourport->port.dev;
+>  	unsigned long flags;
+>  	int count;
+>  
+> +	/* Pick dma_ops of DMA device if DMA device is attached */
+> +	if (dma && dma->tx_chan)
+> +		dma_map_ops_dev = dma->tx_chan->device->dev;
+> +
+>  	dmaengine_tx_status(dma->tx_chan, dma->tx_cookie, &state);
+>  	count = dma->tx_bytes_requested - state.residue;
+>  	async_tx_ack(dma->tx_desc);
+>  
+> -	dma_sync_single_for_cpu(ourport->port.dev, dma->tx_transfer_addr,
+> +	dma_sync_single_for_cpu(dma_map_ops_dev, dma->tx_transfer_addr,
+>  				dma->tx_size, DMA_TO_DEVICE);
+>  
+>  	spin_lock_irqsave(&port->lock, flags);
+> @@ -436,6 +446,11 @@ static int s3c24xx_serial_start_tx_dma(struct s3c24xx_uart_port *ourport,
+>  	struct uart_port *port = &ourport->port;
+>  	struct circ_buf *xmit = &port->state->xmit;
+>  	struct s3c24xx_uart_dma *dma = ourport->dma;
+> +	struct device *dma_map_ops_dev = ourport->port.dev;
+> +
+> +	/* Pick dma_ops of DMA device if DMA device is attached */
+> +	if (dma && dma->tx_chan)
+> +		dma_map_ops_dev = dma->tx_chan->device->dev;
+>  
+>  	if (ourport->tx_mode != S3C24XX_TX_DMA)
+>  		enable_tx_dma(ourport);
+> @@ -443,7 +458,7 @@ static int s3c24xx_serial_start_tx_dma(struct s3c24xx_uart_port *ourport,
+>  	dma->tx_size = count & ~(dma_get_cache_alignment() - 1);
+>  	dma->tx_transfer_addr = dma->tx_addr + xmit->tail;
+>  
+> -	dma_sync_single_for_device(ourport->port.dev, dma->tx_transfer_addr,
+> +	dma_sync_single_for_device(dma_map_ops_dev, dma->tx_transfer_addr,
+>  				dma->tx_size, DMA_TO_DEVICE);
+>  
+>  	dma->tx_desc = dmaengine_prep_slave_single(dma->tx_chan,
+> @@ -510,12 +525,17 @@ static void s3c24xx_uart_copy_rx_to_tty(struct s3c24xx_uart_port *ourport,
+>  		struct tty_port *tty, int count)
+>  {
+>  	struct s3c24xx_uart_dma *dma = ourport->dma;
+> +	struct device *dma_map_ops_dev = ourport->port.dev;
+>  	int copied;
+>  
+> +	/* Pick dma_ops of DMA device if DMA device is attached */
+> +	if (dma && dma->rx_chan)
+> +		dma_map_ops_dev = dma->rx_chan->device->dev;
+> +
+>  	if (!count)
+>  		return;
+>  
+> -	dma_sync_single_for_cpu(ourport->port.dev, dma->rx_addr,
+> +	dma_sync_single_for_cpu(dma_map_ops_dev, dma->rx_addr,
+>  				dma->rx_size, DMA_FROM_DEVICE);
+>  
+>  	ourport->port.icount.rx += count;
+> @@ -635,8 +655,13 @@ static void s3c24xx_serial_rx_dma_complete(void *args)
+>  static void s3c64xx_start_rx_dma(struct s3c24xx_uart_port *ourport)
+>  {
+>  	struct s3c24xx_uart_dma *dma = ourport->dma;
+> +	struct device *dma_map_ops_dev = ourport->port.dev;
+> +
+> +	/* Pick dma_ops of DMA device if DMA device is attached */
+> +	if (dma && dma->rx_chan)
+> +		dma_map_ops_dev = dma->rx_chan->device->dev;
+>  
+> -	dma_sync_single_for_device(ourport->port.dev, dma->rx_addr,
+> +	dma_sync_single_for_device(dma_map_ops_dev, dma->rx_addr,
+>  				dma->rx_size, DMA_FROM_DEVICE);
+>  
+>  	dma->rx_desc = dmaengine_prep_slave_single(dma->rx_chan,
+> @@ -1045,6 +1070,7 @@ static int s3c24xx_serial_request_dma(struct s3c24xx_uart_port *p)
+>  	struct s3c24xx_uart_dma	*dma = p->dma;
+>  	struct dma_slave_caps dma_caps;
+>  	const char *reason = NULL;
+> +	struct device *dma_map_ops_dev = p->port.dev;
+>  	int ret;
+>  
+>  	/* Default slave configuration parameters */
+> @@ -1102,18 +1128,25 @@ static int s3c24xx_serial_request_dma(struct s3c24xx_uart_port *p)
+>  		goto err_release_tx;
+>  	}
+>  
+> -	dma->rx_addr = dma_map_single(p->port.dev, dma->rx_buf,
+> +	/* Pick dma_ops of DMA device if DMA device is attached */
+> +	if (dma && dma->rx_chan)
+> +		dma_map_ops_dev = dma->rx_chan->device->dev;
+> +
+> +	dma->rx_addr = dma_map_single(dma_map_ops_dev, dma->rx_buf,
+>  				dma->rx_size, DMA_FROM_DEVICE);
+> -	if (dma_mapping_error(p->port.dev, dma->rx_addr)) {
+> +	if (dma_mapping_error(dma_map_ops_dev, dma->rx_addr)) {
+>  		reason = "DMA mapping error for RX buffer";
+>  		ret = -EIO;
+>  		goto err_free_rx;
+>  	}
+>  
+> +	/* Pick dma_ops of DMA device if DMA device is attached */
+> +	if (dma && dma->tx_chan)
+> +		dma_map_ops_dev = dma->tx_chan->device->dev;
+>  	/* TX buffer */
+> -	dma->tx_addr = dma_map_single(p->port.dev, p->port.state->xmit.buf,
+> +	dma->tx_addr = dma_map_single(dma_map_ops_dev, p->port.state->xmit.buf,
+>  				UART_XMIT_SIZE, DMA_TO_DEVICE);
+> -	if (dma_mapping_error(p->port.dev, dma->tx_addr)) {
+> +	if (dma_mapping_error(dma_map_ops_dev, dma->tx_addr)) {
+>  		reason = "DMA mapping error for TX buffer";
+>  		ret = -EIO;
+>  		goto err_unmap_rx;
+> @@ -1122,7 +1155,9 @@ static int s3c24xx_serial_request_dma(struct s3c24xx_uart_port *p)
+>  	return 0;
+>  
+>  err_unmap_rx:
+> -	dma_unmap_single(p->port.dev, dma->rx_addr, dma->rx_size,
+> +	if (dma->rx_chan)
+> +		dma_map_ops_dev = dma->rx_chan->device->dev;
+> +	dma_unmap_single(dma_map_ops_dev, dma->rx_addr, dma->rx_size,
+>  			 DMA_FROM_DEVICE);
+>  err_free_rx:
+>  	kfree(dma->rx_buf);
+> @@ -1139,10 +1174,12 @@ static int s3c24xx_serial_request_dma(struct s3c24xx_uart_port *p)
+>  static void s3c24xx_serial_release_dma(struct s3c24xx_uart_port *p)
+>  {
+>  	struct s3c24xx_uart_dma	*dma = p->dma;
+> +	struct device *dma_map_ops_dev = p->port.dev;
+>  
+>  	if (dma->rx_chan) {
+> +		dma_map_ops_dev = dma->rx_chan->device->dev;
+>  		dmaengine_terminate_all(dma->rx_chan);
+> -		dma_unmap_single(p->port.dev, dma->rx_addr,
+> +		dma_unmap_single(dma_map_ops_dev, dma->rx_addr,
+>  				dma->rx_size, DMA_FROM_DEVICE);
+>  		kfree(dma->rx_buf);
+>  		dma_release_channel(dma->rx_chan);
+> @@ -1150,8 +1187,9 @@ static void s3c24xx_serial_release_dma(struct s3c24xx_uart_port *p)
+>  	}
+>  
+>  	if (dma->tx_chan) {
+> +		dma_map_ops_dev = dma->tx_chan->device->dev;
+>  		dmaengine_terminate_all(dma->tx_chan);
+> -		dma_unmap_single(p->port.dev, dma->tx_addr,
+> +		dma_unmap_single(dma_map_ops_dev, dma->tx_addr,
+>  				UART_XMIT_SIZE, DMA_TO_DEVICE);
+>  		dma_release_channel(dma->tx_chan);
+>  		dma->tx_chan = NULL;
+> -- 
+> 2.17.1
+> 
 
-i.MX8ULP is a new SoC with Ultra low power support, it has a Cortex-M33
-core and two Cortex-A35 cores. We need to add new configuration because
-it could not reuse the previous i.MX7/8 configuration.
+Hi,
 
-i.MX8ULP M33 core is kicked by ROM, it is not under control of A35 core.
-So need to mark the method is IMX_RPROC_NONE.
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
----
- drivers/remoteproc/imx_rproc.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-diff --git a/drivers/remoteproc/imx_rproc.c b/drivers/remoteproc/imx_rproc.c
-index 7cc0cadea1cc..d88f76f5305e 100644
---- a/drivers/remoteproc/imx_rproc.c
-+++ b/drivers/remoteproc/imx_rproc.c
-@@ -172,6 +172,12 @@ static const struct imx_rproc_att imx_rproc_att_imx8mq[] = {
- 	{ 0x40000000, 0x40000000, 0x80000000, 0 },
- };
- 
-+static const struct imx_rproc_att imx_rproc_att_imx8ulp[] = {
-+	{0x1FFC0000, 0x1FFC0000, 0xC0000, ATT_OWN},
-+	{0x21000000, 0x21000000, 0x10000, ATT_OWN},
-+	{0x80000000, 0x80000000, 0x60000000, 0}
-+};
-+
- static const struct imx_rproc_att imx_rproc_att_imx7ulp[] = {
- 	{0x1FFD0000, 0x1FFD0000, 0x30000, ATT_OWN},
- 	{0x20000000, 0x20000000, 0x10000, ATT_OWN},
-@@ -246,6 +252,12 @@ static const struct imx_rproc_dcfg imx_rproc_cfg_imx8mq = {
- 	.method		= IMX_RPROC_MMIO,
- };
- 
-+static const struct imx_rproc_dcfg imx_rproc_cfg_imx8ulp = {
-+	.att		= imx_rproc_att_imx8ulp,
-+	.att_size	= ARRAY_SIZE(imx_rproc_att_imx8ulp),
-+	.method		= IMX_RPROC_NONE,
-+};
-+
- static const struct imx_rproc_dcfg imx_rproc_cfg_imx7ulp = {
- 	.att		= imx_rproc_att_imx7ulp,
- 	.att_size	= ARRAY_SIZE(imx_rproc_att_imx7ulp),
-@@ -824,6 +836,7 @@ static const struct of_device_id imx_rproc_of_match[] = {
- 	{ .compatible = "fsl,imx8mm-cm4", .data = &imx_rproc_cfg_imx8mq },
- 	{ .compatible = "fsl,imx8mn-cm7", .data = &imx_rproc_cfg_imx8mn },
- 	{ .compatible = "fsl,imx8mp-cm7", .data = &imx_rproc_cfg_imx8mn },
-+	{ .compatible = "fsl,imx8ulp-cm33", .data = &imx_rproc_cfg_imx8ulp },
- 	{},
- };
- MODULE_DEVICE_TABLE(of, imx_rproc_of_match);
--- 
-2.30.0
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/SubmittingPatches for what needs to be done
+  here to properly describe this.
 
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
