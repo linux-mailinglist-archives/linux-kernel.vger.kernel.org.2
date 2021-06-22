@@ -2,175 +2,378 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 307083AFC7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 07:10:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 502363AFC82
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 07:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229900AbhFVFMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 01:12:44 -0400
-Received: from mail-db8eur05olkn2078.outbound.protection.outlook.com ([40.92.89.78]:59488
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229612AbhFVFMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 01:12:41 -0400
+        id S229907AbhFVFPy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 01:15:54 -0400
+Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:29166 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229612AbhFVFPx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 01:15:53 -0400
+Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
+        by mx0a-0014ca01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15M5CItn032587;
+        Mon, 21 Jun 2021 22:13:28 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=proofpoint;
+ bh=9k669+/qUrnB0rmntSr17Vy9DoRKJxbjcO3ngI9cUp4=;
+ b=SKT6Oq0teNe7U488t8ubSWqfzOAjSkaTVkOv2a6IgJGC1EYZgoOcBMFxfHg3QInbbfX0
+ PtpAtJGCmrqxgPDLd6KlpNYUpqsR6GD+ZXmOM2rWbJ/i1TIoWsUWLe6AMcmjz+N+2NTm
+ AOJRwOiUVmMjM4CH3rp6drYgZktRJdLAhZPtgP+mozmx7FpeV9z6PPR5gs2N10z7C7wS
+ enqrcHAp3v/2Kp7HOqvPVFn+/V+WwSqW/+7OMeZJLI6vwfTzibb0f5l9QLYH2+NbwCcY
+ sEiBjn3UgE9RmpxxYIFXbF3vmBcD0u8JykW2c/t1mns+gI+EF2VeolC1BSx3f40H7npM oA== 
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2107.outbound.protection.outlook.com [104.47.70.107])
+        by mx0a-0014ca01.pphosted.com with ESMTP id 39apms3ae7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 21 Jun 2021 22:13:27 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AXZI9ho9qUs64NR1vVgGmXuexs6joaIyMG7qV0bJYm3xXjIGxElQOVkT3TW8egupEz9qyZNq7YVaW3NtN7Py33TsZWuImFfTo9NYyiSZrlUL/Vtw6Nrg2P4oRfllDEudARXFOjnJa+nOraKMj3ZUPhRlM1lNrIwsMiiGMBC9PiijytczfhBui1q0hNuMllo+gXstSSOY/HFv/Vs18IqqmPixSFTxVNdS8Lz7z4JDmiMHbHvTlh/dMwZwT6szXHLtk/c0iSRF1Eo/kKXAqhviyNftkvE4+Dm1/dQniL1YSELVFU50+toU/aXBmHyeFfkrDfskbx7nRX8QlqTLAOwHCA==
+ b=lh1G+qsZjn0JDdnML/vztBh5oCrhlnShTwEaLPDZ42VRDKret9PHwSzQPLAOt+90cqHBqqzfPfF6hcb8piB/RKGZgrekxkibPYLPnjHJrqoZx2jnVSmvaTfz14M+tRK+MeKtRXvgZjUIpXMs+TaKSwnUXDKoN9Co68ES+5vpu64VC1EM1/sigroCYSKLax+5t6Pyjz9Vf/Ttqm8dwlGQtEKQeW7GxvAPDClqYdXa6fKl8gEztuNHjvJzcrTRGVfN8MFQQTvpEoGCUmUpxwx0HbgZQzWqAT8aQRibyY50W9EsXDXG2kKTBZXdpDeti7a9KlTewXt3hRfn6zkAXNJ7VQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OytysZu5Z+aAyVrvNx45JXK3NgpiH3c7LaspZb446DE=;
- b=O5yS3lV3zMwJan5ca6+EGAiolc8iQVciKp8zezB3LlOQXzecxGfA2K0Vq0bSOX5n0uwlpAK4ZCxSX8CuM4NBjLQLp9QExwKWiBwrXiuSJmPghmvQCpDME0GLKS0lJKteoyxxNqFlc5qPogM0ZjX/rhHSkujVhnen1fWH1Lfdaeiqq6oYQBfWEjrcZk1sz+ACQ0U0hCYiCmYTpjR9UJJWK9pAnX16gh4Zw12aj8S98yTgvnqAQqLLydBIQXUo/w1vb1mVG8ecVASccpJBzpPCEwgfkCXXA71MSljZXKvdO1pH1EDrDTaCCK4yo5P4bIFTi6hdhMPBdoUacszVTMOnGg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from VI1EUR05FT027.eop-eur05.prod.protection.outlook.com
- (2a01:111:e400:fc12::53) by
- VI1EUR05HT195.eop-eur05.prod.protection.outlook.com (2a01:111:e400:fc12::477)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16; Tue, 22 Jun
- 2021 05:10:23 +0000
-Received: from DB9PR10MB4713.EURPRD10.PROD.OUTLOOK.COM
- (2a01:111:e400:fc12::50) by VI1EUR05FT027.mail.protection.outlook.com
- (2a01:111:e400:fc12::209) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend
- Transport; Tue, 22 Jun 2021 05:10:23 +0000
-X-IncomingTopHeaderMarker: OriginalChecksum:B537D4C97917BF2D244BB724943815E82B1AEEF575C68F9AF35558D8BDE4A370;UpperCasedChecksum:8A41EBD09CC0797627FAAAB4435C4EE97BB48E6D8EF9E472ADD79745FFA31102;SizeAsReceived:9154;Count:48
-Received: from DB9PR10MB4713.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::2515:5d6d:6f1e:c41]) by DB9PR10MB4713.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::2515:5d6d:6f1e:c41%9]) with mapi id 15.20.4242.023; Tue, 22 Jun 2021
- 05:10:23 +0000
-Subject: Re: [PATCH v9] exec: Fix dead-lock in de_thread with ptrace_attach
-From:   Bernd Edlinger <bernd.edlinger@hotmail.de>
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Serge Hallyn <serge@hallyn.com>,
-        James Morris <jamorris@linux.microsoft.com>,
-        Charles Haithcock <chaithco@redhat.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        YiFei Zhu <yifeifz2@illinois.edu>,
-        Adrian Reber <areber@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jens Axboe <axboe@kernel.dk>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ bh=9k669+/qUrnB0rmntSr17Vy9DoRKJxbjcO3ngI9cUp4=;
+ b=bsa+CqwYfBzfQFWUy5XVEP4VYllUBKS8Q/omwCDzopEk7/myj2sp9Fvy4BgGSt60gZ6bxTDV83vAqdbQ5328eUKGohtTkHTD5QTZ6MKhZ3/7I9e16NB6/arPcnfSrWYbNmUAs2UBiDkGaok3r7qMmo4hyZaDC7XrWsIMXHHgrkyhDm/2BYIrXtWoWPD40dB/xQxIlKy+32BtfR6jZTXYR6CRLuI9G4Z/VMe0AN2xBhUFZ+w/5R1aXshmQqSTkRWtNfSjjFV4HTXloaDF1Y7f5Fd5SOOb1EvrU+65Dk63AMnATJzOsR2YvX6t8hhrRWpZL/g6cKXzdor3Uqx6rbcgtQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
+ dkim=pass header.d=cadence.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9k669+/qUrnB0rmntSr17Vy9DoRKJxbjcO3ngI9cUp4=;
+ b=YP1rFIJmNpPj7iFx0poA+9AitP4ij2jagjMEQv3DJdT7cSPp83XSTwx1Mwd24MUvSZEghwTUeBg+oUmL1mtUwZukkBVfrcNVlr9S9JZ1f2AGpy7PAfCvGWvMYlf7NrquHc+7THk8OGdc7GOk6/tl6t/QB+kavBMVgx5Z6rYBHkc=
+Received: from CO2PR07MB2503.namprd07.prod.outlook.com (2603:10b6:100:1::19)
+ by MWHPR07MB2798.namprd07.prod.outlook.com (2603:10b6:300:22::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Tue, 22 Jun
+ 2021 05:13:24 +0000
+Received: from CO2PR07MB2503.namprd07.prod.outlook.com
+ ([fe80::2547:1fe2:65b5:20ff]) by CO2PR07MB2503.namprd07.prod.outlook.com
+ ([fe80::2547:1fe2:65b5:20ff%12]) with mapi id 15.20.4242.023; Tue, 22 Jun
+ 2021 05:13:24 +0000
+From:   Athani Nadeem Ladkhan <nadeem@cadence.com>
+To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+CC:     Tom Joseph <tjoseph@cadence.com>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-References: <AM8PR10MB4708AFBD838138A84CE89EF8E4359@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
- <20210610143642.e4535dbdc0db0b1bd3ee5367@linux-foundation.org>
- <AM8PR10MB470896FBC519ABCC20486958E4349@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
- <877diwtn2p.fsf@disp2133>
- <AS8PR10MB47120E7A195A593C1377172CE4309@AS8PR10MB4712.EURPRD10.PROD.OUTLOOK.COM>
- <AM8PR10MB47083E11E2B39ACBDF396954E40F9@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
-Message-ID: <DB9PR10MB47134C036A2DADB4FD53F16AE4099@DB9PR10MB4713.EURPRD10.PROD.OUTLOOK.COM>
-Date:   Tue, 22 Jun 2021 07:10:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-In-Reply-To: <AM8PR10MB47083E11E2B39ACBDF396954E40F9@AM8PR10MB4708.EURPRD10.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=windows-1252
+        "kw@linux.com" <kw@linux.com>, "kishon@ti.com" <kishon@ti.com>,
+        Milind Parab <mparab@cadence.com>,
+        Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
+        Parshuram Raju Thombare <pthombar@cadence.com>
+Subject: RE: [PATCH] [v2] PCI: cadence: Set LTSSM Detect Quiet state minimum
+ delay as workaround for training defect.
+Thread-Topic: [PATCH] [v2] PCI: cadence: Set LTSSM Detect Quiet state minimum
+ delay as workaround for training defect.
+Thread-Index: AQHXU9oM6tIqQ+jZ4Uq1yc3zn273c6se2xKAgADF2UA=
+Date:   Tue, 22 Jun 2021 05:13:23 +0000
+Message-ID: <CO2PR07MB2503BEB6B23A27E99A8A6EADD8099@CO2PR07MB2503.namprd07.prod.outlook.com>
+References: <20210528155626.21793-1-nadeem@cadence.com>
+ <20210621171751.GA32574@lpieralisi>
+In-Reply-To: <20210621171751.GA32574@lpieralisi>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TMN:  [TxNR3A2P2Z/6GxfqYbv4g+YO6Wi2Feae]
-X-ClientProxiedBy: AM0PR03CA0041.eurprd03.prod.outlook.com (2603:10a6:208::18)
- To DB9PR10MB4713.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:261::7)
-X-Microsoft-Original-Message-ID: <b1ada4a0-0049-5c68-95cc-dfecf375f8b5@hotmail.de>
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNcbmFkZWVtXGFwcGRhdGFccm9hbWluZ1wwOWQ4NDliNi0zMmQzLTRhNDAtODVlZS02Yjg0YmEyOWUzNWJcbXNnc1xtc2ctOGRjOTIwZmEtZDMxOC0xMWViLWFlYTAtZDQ4MWQ3OWExZmRlXGFtZS10ZXN0XDhkYzkyMGZiLWQzMTgtMTFlYi1hZWEwLWQ0ODFkNzlhMWZkZWJvZHkudHh0IiBzej0iOTQzNSIgdD0iMTMyNjg4MTIzOTg2ODgxMDk4IiBoPSJaWVQ5akNHS1hEMjZ2bDBkZ0VhVGhqRlMza2M9IiBpZD0iIiBibD0iMCIgYm89IjEiLz48L21ldGE+
+x-dg-rorf: true
+authentication-results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none header.from=cadence.com;
+x-originating-ip: [59.145.174.78]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 07cddce4-1a91-4ec8-4e83-08d9353c75f5
+x-ms-traffictypediagnostic: MWHPR07MB2798:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MWHPR07MB2798B29CA370A576E7864E52D8099@MWHPR07MB2798.namprd07.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4303;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: IiamGhhWIrYu058UZo7UnKdmeS8n/eldZoxLNgcA+zO7xkKr/fV495bgi9pfXd1r4Qxk1w/nTs2ZmbyZ+YC/uG9tAGVOs4r/8lJzSECwShzoNc3j38MRcJ3kh5nhiuJHCI8ZwbQJal2AWMkqr8v/DO41Yiv8FGmcTeoAlE+plHgwKoT3uvWgSCbD+ziRmuSYpB3Untye2suoQgus3BFcK0xaR+BLAMvlAdzLC7mRalmnK8kUDRZqHjXS70Nh931B4zd1bUVjV0yKUc7wGt+vFG8pjG3ZRY+4hvVmEzR/vxbH0ZXa4E0EKM+uaZrfT1+sO4IPZEE/ac9MT1VmrqSjd07j37NHEcklm1bGRySS/VZmhv8Cj+Evjlg5okaVknA+TqBkPh5YU0oOWjTSthUB63KSiX1IKM6jw3TYlMYCN+ggAI/E93WhNsR9OuWqvA9jdJOGii/2tCJ5Bw341/B/ttoKxK4kKuKfnyPTGN8LP3m6yzc8fmCYFQsVtTuiPPOjTW6vGMh/IHjIXwHCvofjYKszBePPN93VKix6JaxFnmH0XOyGxR/e2Kse5wbi0Upw5nFrNzxyKCRuLLu35x5B2RhqOKqSsAntYK1nB+1fe/7YHqwwkEg1fgSBhbxH9vuZLoUyQggvufTJWr+EP088EZOMbmcmnG0maoPmVJn/Ww46gk3Q9vWdt6SuCth/kCBzYCoPz7bUsMnd6gkYjBW2J2tbdDihdCR5iRQeZstk1C1+U+ZHpUF04adhUitvA8stYYJrB9v3p8fi86ynTv3LgaUnrL3erDnpV7BcCE+9XwrmT7/JipU5FDiqvZvjUSCf
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO2PR07MB2503.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(39850400004)(396003)(346002)(36092001)(55016002)(6506007)(53546011)(122000001)(54906003)(8936002)(64756008)(66446008)(76116006)(6916009)(66946007)(66556008)(38100700002)(186003)(5660300002)(66476007)(33656002)(7696005)(107886003)(966005)(316002)(52536014)(478600001)(83380400001)(9686003)(8676002)(2906002)(86362001)(71200400001)(4326008)(26005);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?xz+axHjnOnM0+zkrGaeOOBglIV+7YTLi2/MTwSnJg44IbtA88igzmQGJ/OK4?=
+ =?us-ascii?Q?ce8Xv2PTaZ23PpTNgOB36g5tFUelfqNE9zTK5PUbnoZnWOGrXgtOinlHk+L3?=
+ =?us-ascii?Q?BgpiPhnlDKN3ciLHV4T1T/Z7xQH9rQj1QTpBhvfw3m6RLb2KzivT+dwhLQMs?=
+ =?us-ascii?Q?L8jqBfgCc93FL2/hcgiGX9NTm0L3BRSyUPYwE10YivglUIsyqEExcr0mehmp?=
+ =?us-ascii?Q?rdajLfAt4M36WabtIRWvM94aIGz4DKXK8S9tAnKKo0GW8bn7hTEo1f692B07?=
+ =?us-ascii?Q?50eA3GN7aslW+m167oLg9ekzQgN4AxToJWED8apjt3D+P+MydZDNthC9rtde?=
+ =?us-ascii?Q?G/TIWxLmHc4I0MhY23PRFXARMpZ89amYXHjXa5fDQKrUWIwMcBUjGYZfQI2u?=
+ =?us-ascii?Q?hTq7ZnrjDRCXvBgs1kn3aJT//QqXc8nsSiBgGvJjxoZ90NYRZp8CkY73IOzD?=
+ =?us-ascii?Q?mL4Lv4hHQCr+oYdLH4cJ1rzwjC8Xtyr4p6pMknNBXBbNvSlyYIGk47njJqPF?=
+ =?us-ascii?Q?uuZdQI4aZqPGz8kJ09ygZI215X0CV+RQTSCKo/UzRgFUInGLyxwki0N/sUkw?=
+ =?us-ascii?Q?HF53YfXQISndEYKJmq/KS+6SdT8ejb8S+hObnPN+2DAehchqaSUMD/alMQpw?=
+ =?us-ascii?Q?GrBwAsprYhtrEQ4KdMW67WmLPkzqU73E0XtqJmjyLVgnLzz3G3cJxJEh+Etp?=
+ =?us-ascii?Q?/CHJfBFh4dfuSskLtN0+mO/6tIjORNwFmQIF3D5odfWESeCRpg2enyzrXzsz?=
+ =?us-ascii?Q?jpUtmLTYhJPq6UcmuJFYOCY1LP+4CbKxyqTkoFKI7sxcRvacIhqF/QboOcKD?=
+ =?us-ascii?Q?iZV0rZjUvdlD8QnzDeo7tOej3jXZgI1VcSl1qTtzPl9k8vr4qN5tyHm9Hzte?=
+ =?us-ascii?Q?4rXXvmP3zzkYPtt7NIQr7VOJ6ipfP39Q+ao0Ra5BkS68L/CwR6ul5GSWi2Ph?=
+ =?us-ascii?Q?VY9vvnW8Upxe0XwAdoczLQTpFDspSkmY1MNvAxZptogdkKjGJf4SV/UD1hPl?=
+ =?us-ascii?Q?EpieUoiFsgd0fOigyEIBHUsY24v3/znAuYTNXtk9Ta3XICJRk1pwPNu0Djju?=
+ =?us-ascii?Q?WSJ4uzSaQ3i3PSYs1jtmWoz1TKsjIfnOxu9cTjuhXz3SbNPHw5sT1+LIwhFy?=
+ =?us-ascii?Q?8ll6FA//xDezTPcUmf0X6AylXkZMagbzoWwLUPMMQvgk/CwMBjclFITiwH0f?=
+ =?us-ascii?Q?aADjMLxsRiuanv0MgHyHXyaEtxX31cfcaPjXLQF+IUsvHkov++v7dHZ/dhwJ?=
+ =?us-ascii?Q?HPBTqUl+uKpm7aiUHoDzVs00MEmjhkjZ0GS+bRpLGi7vd5g+Pjgcq/xAsGL3?=
+ =?us-ascii?Q?v6GDvVq7mpFNYxYfmUUfKWTx?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.1.101] (84.57.55.161) by AM0PR03CA0041.eurprd03.prod.outlook.com (2603:10a6:208::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.18 via Frontend Transport; Tue, 22 Jun 2021 05:10:21 +0000
-X-MS-PublicTrafficType: Email
-X-IncomingHeaderCount: 48
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-Correlation-Id: 4ad1ba75-b682-4dc8-342f-08d9353c09aa
-X-MS-TrafficTypeDiagnostic: VI1EUR05HT195:
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zAoo1wxbIIjfe65ebFtY0zAwStnVsPPv9dyjR4DuitYbast8b9HhnBW0MkrW9VhJxgVpf1PXQ0MoO3RX4OgWvxGX0k3J680FjnZF9UqNFUpwlHYnP1Cj8kPHc2WQRrocjLq692ATI9ugvTspVIg3irRvch0PkML8b8+ATXYuVw8U/AcF0uwTnqR6cXNQPGW+MZ4fIUc+q0C5lXix7huWHFW47+RD41tmNOUWg0krSJ7iPrCwVIh4JuDBhs4cgeBtVLiQCiZFxBkAPxuCpvOzQXk5IxH651+vDxkgJQEK/hfLnxeF+MHe1U0WjbdVuz2opl+GeYVqy+T+I61nEtYy+Jpz4HB+jV9VnbuE6cgoyi3mTChOhuJPVzkmvOSyez7y
-X-MS-Exchange-AntiSpam-MessageData: A3X7cpQWT6cBhyeqhn3Dmulejl3u5+AFz1qRhWpA7d9HqqNcjwA4lJbpd6HWGLDS/dmYsodexAv4UpWZuMzUBdzGRGAhnlxBDT/iEnDi9Fteg2lP0pZp6okpt+ysTc7UHK/II4GTdlltIW+Ifotouw==
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4ad1ba75-b682-4dc8-342f-08d9353c09aa
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2021 05:10:23.1093
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CO2PR07MB2503.namprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07cddce4-1a91-4ec8-4e83-08d9353c75f5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jun 2021 05:13:24.0187
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-AuthSource: VI1EUR05FT027.eop-eur05.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1EUR05HT195
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 0HGhzmWiqS1sSndtAnkfaySSNpY3HALXNcELYVhXHy6qLoAasstgZPCdhgng/nDS9spfrDucpvKlh6gof7pWxNbhYjsxFkDE2yTf2NTeGa0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR07MB2798
+X-Proofpoint-ORIG-GUID: zxD0tKfDmwpi42sdAIp5UnoBgLDsEhgh
+X-Proofpoint-GUID: zxD0tKfDmwpi42sdAIp5UnoBgLDsEhgh
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-22_03:2021-06-21,2021-06-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 suspectscore=0
+ mlxlogscore=999 phishscore=0 lowpriorityscore=0 spamscore=0
+ priorityscore=1501 impostorscore=0 adultscore=0 bulkscore=0 mlxscore=0
+ clxscore=1015 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2106220031
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/16/21 11:31 PM, Bernd Edlinger wrote:
-> On 6/15/21 4:26 PM, Bernd Edlinger wrote:
->> The first phase of de_thread needs co-operation from a user task,
->> if and only if any task t except the thread leader has t->ptrace.
->> Taking tasks from RUNNING->EXIT_ZOMBIE only needs co-operation from kernel code,
-> 
-> 
-> Aehm, sorry, that is not correct, what I said here.
-> 
-> I totally overlooked ptrace(PTRACE_SEIZE, pid, 0L, PTRACE_O_TRACEEXIT)
-> 
-> and unfortunately this also prevents even the thread leader to enter the
-> EXIT_ZOMBIE state because do_exit does:
-> 
->         ptrace_event(PTRACE_EVENT_EXIT, code);
-> 
-> unfortunately this sends an event to the tracer, and waits not only for
-> the tracer to call waitpid, but also needs a PTRACE_CONT before do_exit
-> can call exit_notify which does tsk->exit_state = EXIT_ZOMBIE.
-> 
+Hi Lorenzo,
 
-P.S:
-
-I think there is something really odd in ptrace_stop().
-
-If it is intentional (which I believe to be the case) to wait here after a
-SIGKILL until the process enters the exit_state == EXIT_ZOMBIE, then aborting the
-pending ptrace_stop() via sigkill_pending() is questionable, especially because
-arch_ptrace_stop_needed() is defined as (0) in most architectures, only sparc and
-ia64 do something here.
-
-static void ptrace_stop(int exit_code, int why, int clear_code, kernel_siginfo_t *info)
-        __releases(&current->sighand->siglock)
-        __acquires(&current->sighand->siglock)
-{
-        bool gstop_done = false;
-
-        if (arch_ptrace_stop_needed(exit_code, info)) {
-                /*
-                 * The arch code has something special to do before a
-                 * ptrace stop.  This is allowed to block, e.g. for faults
-                 * on user stack pages.  We can't keep the siglock while
-                 * calling arch_ptrace_stop, so we must release it now.
-                 * To preserve proper semantics, we must do this before
-                 * any signal bookkeeping like checking group_stop_count.
-                 * Meanwhile, a SIGKILL could come in before we retake the
-                 * siglock.  That must prevent us from sleeping in TASK_TRACED.
-                 * So after regaining the lock, we must check for SIGKILL.
-                 */
-                spin_unlock_irq(&current->sighand->siglock);
-                arch_ptrace_stop(exit_code, info);
-                spin_lock_irq(&current->sighand->siglock);
-                if (sigkill_pending(current))
-                        return;
-        }
-
-        set_special_state(TASK_TRACED);
-
-After this point there is no sigkill_pending() or fatal_signal_pending(), just
-a single freezable_schedule() which explains why this can even wait with a fatal
-signal pending.  But if the code executes the if block above the sigkill can
-only be ignored if it happens immediately before the set_special_state(TASK_TRACED).
-
-What do you think?
-
-
-Bernd.
+> -----Original Message-----
+> From: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+> Sent: Monday, June 21, 2021 10:48 PM
+> To: Athani Nadeem Ladkhan <nadeem@cadence.com>
+> Cc: Tom Joseph <tjoseph@cadence.com>; robh@kernel.org;
+> bhelgaas@google.com; linux-pci@vger.kernel.org; linux-
+> kernel@vger.kernel.org; kw@linux.com; kishon@ti.com; Milind Parab
+> <mparab@cadence.com>; Swapnil Kashinath Jakhade
+> <sjakhade@cadence.com>; Parshuram Raju Thombare
+> <pthombar@cadence.com>
+> Subject: Re: [PATCH] [v2] PCI: cadence: Set LTSSM Detect Quiet state
+> minimum delay as workaround for training defect.
+>=20
+> EXTERNAL MAIL
+>=20
+>=20
+> Subjects should not end with a period, remove it.
+This will be corrected in next patch.
+>=20
+> On Fri, May 28, 2021 at 05:56:26PM +0200, Nadeem Athani wrote:
+> > PCIe fails to link up if SERDES lanes not used by PCIe are assigned to
+> > another protocol. For example, link training fails if lanes 2 and 3
+> > are assigned to another protocol while lanes 0 and 1 are used for PCIe
+> > to form a two lane link. This failure is due to an incorrect tie-off
+> > on an internal status signal indicating electrical idle.
+> >
+> > Status signals going from SERDES to PCIe Controller are tied-off when
+> > a lane is not assigned to PCIe. Signal indicating electrical idle is
+> > incorrectly tied-off to a state that indicates non-idle. As a result,
+> > PCIe sees unused lanes to be out of electrical idle and this causes
+> > LTSSM to exit Detect.Quiet state without waiting for 12ms timeout to
+> > occur. If a receiver is not detected on the first receiver detection
+> > attempt in Detect.Active state, LTSSM goes back to Detect.Quiet and
+> > again moves forward to Detect.Active state without waiting for 12ms as
+> > required by PCIe base specification. Since wait time in Detect.Quiet
+> > is skipped, multiple receiver detect operations are performed
+> > back-to-back without allowing time for capacitance on the transmit
+> > lines to discharge. This causes subsequent receiver detection to
+> > always fail even if a receiver gets connected eventually.
+> >
+> > Adding a quirk flag "quirk_detect_quiet_flag" to program the minimum
+> > time that LTSSM waits on entering Detect.Quiet state.
+> > Setting this to 2ms for specific TI j7200 SOC as a workaround to
+> > resolve a link training issue in IP.
+> > In future revisions this setting will not be required.
+> >
+> > As per PCIe specification, all Receivers must meet the Z-RX-DC
+> > specification for 2.5 GT/s within 1ms of entering Detect.Quiet LTSSM
+> > substate. The LTSSM must stay in this substate until the ZRXDC
+> > specification for 2.5 GT/s is met.
+> >
+> > 00 : 0 minimum wait time in Detect.Quiet state.
+> > 01 : 100us minimum wait time in Detect.Quiet state.
+> > 10 : 1ms minimum wait time in Detect.Quiet state.
+> > 11 : 2ms minimum wait time in Detect.Quiet state.
+> >
+> > Changes in v2:
+> > 1. Adding the function cdns_pcie_detect_quiet_min_delay_set in
+> > pcie-cadence.c and invoking it from host and endpoint driver file.
+> >
+> > Signed-off-by: Nadeem Athani <nadeem@cadence.com>
+> > ---
+> >  drivers/pci/controller/cadence/pcie-cadence-ep.c   |  4 ++++
+> >  drivers/pci/controller/cadence/pcie-cadence-host.c |  3 +++
+> >  drivers/pci/controller/cadence/pcie-cadence.c      | 17 ++++++++++++++=
++++
+> >  drivers/pci/controller/cadence/pcie-cadence.h      | 15 ++++++++++++++=
++
+> >  4 files changed, 39 insertions(+)
+>=20
+> Can you tell me please what's the status of these patches ?
+These should be discarded.
+>=20
+> https://urldefense.com/v3/__https://patchwork.kernel.org/user/todo/linux-
+> pci/?series=3D&submitter=3D194539&state=3D&q=3D&archive=3D__;!!EHscmS1ygi=
+U1lA!S
+> ffFfz2_4D72wnwKo_Hgq310uaxhkR7jk4l5vQMYCgwFPYLHDivDXtqJ1uu_RA$
+>=20
+> Are they all solving the same problem so I only have to review:
+Only need to review the below one.
+>=20
+> https://urldefense.com/v3/__https://patchwork.kernel.org/project/linux-
+> pci/patch/20210528155626.21793-1-
+> nadeem@cadence.com__;!!EHscmS1ygiU1lA!SffFfz2_4D72wnwKo_Hgq310ua
+> xhkR7jk4l5vQMYCgwFPYLHDivDXtorT4PhuQ$
+>=20
+> ?
+>=20
+> I am asking because the "first" posting was a two-patch series and then i=
+t
+> became one, I lost track of versions in between.
+>=20
+> Thanks,
+> Lorenzo
+>=20
+> > diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> > b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> > index 897cdde02bd8..dd7df1ac7fda 100644
+> > --- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> > +++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> > @@ -623,6 +623,10 @@ int cdns_pcie_ep_setup(struct cdns_pcie_ep *ep)
+> >  	ep->irq_pci_addr =3D CDNS_PCIE_EP_IRQ_PCI_ADDR_NONE;
+> >  	/* Reserve region 0 for IRQs */
+> >  	set_bit(0, &ep->ob_region_map);
+> > +
+> > +	if (ep->quirk_detect_quiet_flag)
+> > +		cdns_pcie_detect_quiet_min_delay_set(&ep->pcie);
+> > +
+> >  	spin_lock_init(&ep->lock);
+> >
+> >  	return 0;
+> > diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c
+> > b/drivers/pci/controller/cadence/pcie-cadence-host.c
+> > index ae1c55503513..fb96d37a135c 100644
+> > --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
+> > +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
+> > @@ -498,6 +498,9 @@ int cdns_pcie_host_setup(struct cdns_pcie_rc *rc)
+> >  		return PTR_ERR(rc->cfg_base);
+> >  	rc->cfg_res =3D res;
+> >
+> > +	if (rc->quirk_detect_quiet_flag)
+> > +		cdns_pcie_detect_quiet_min_delay_set(&rc->pcie);
+> > +
+> >  	ret =3D cdns_pcie_start_link(pcie);
+> >  	if (ret) {
+> >  		dev_err(dev, "Failed to start link\n"); diff --git
+> > a/drivers/pci/controller/cadence/pcie-cadence.c
+> > b/drivers/pci/controller/cadence/pcie-cadence.c
+> > index 3c3646502d05..65b6c8bed0d4 100644
+> > --- a/drivers/pci/controller/cadence/pcie-cadence.c
+> > +++ b/drivers/pci/controller/cadence/pcie-cadence.c
+> > @@ -7,6 +7,23 @@
+> >
+> >  #include "pcie-cadence.h"
+> >
+> > +void cdns_pcie_detect_quiet_min_delay_set(struct cdns_pcie *pcie) {
+> > +	u32 delay =3D 0x3;
+> > +	u32 ltssm_control_cap;
+> > +
+> > +	/*
+> > +	 * Set the LTSSM Detect Quiet state min. delay to 2ms.
+> > +	 */
+> > +
+> > +	ltssm_control_cap =3D cdns_pcie_readl(pcie,
+> CDNS_PCIE_LTSSM_CONTROL_CAP);
+> > +	ltssm_control_cap =3D ((ltssm_control_cap &
+> > +			    ~CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK) |
+> > +			    CDNS_PCIE_DETECT_QUIET_MIN_DELAY(delay));
+> > +
+> > +	cdns_pcie_writel(pcie, CDNS_PCIE_LTSSM_CONTROL_CAP,
+> > +ltssm_control_cap); }
+> > +
+> >  void cdns_pcie_set_outbound_region(struct cdns_pcie *pcie, u8 busnr, u=
+8
+> fn,
+> >  				   u32 r, bool is_io,
+> >  				   u64 cpu_addr, u64 pci_addr, size_t size) diff
+> --git
+> > a/drivers/pci/controller/cadence/pcie-cadence.h
+> > b/drivers/pci/controller/cadence/pcie-cadence.h
+> > index 254d2570f8c9..ccdf9cee9dde 100644
+> > --- a/drivers/pci/controller/cadence/pcie-cadence.h
+> > +++ b/drivers/pci/controller/cadence/pcie-cadence.h
+> > @@ -189,6 +189,14 @@
+> >  /* AXI link down register */
+> >  #define CDNS_PCIE_AT_LINKDOWN (CDNS_PCIE_AT_BASE + 0x0824)
+> >
+> > +/* LTSSM Capabilities register */
+> > +#define CDNS_PCIE_LTSSM_CONTROL_CAP             (CDNS_PCIE_LM_BASE +
+> 0x0054)
+> > +#define  CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK  GENMASK(2, 1)
+> #define
+> > +CDNS_PCIE_DETECT_QUIET_MIN_DELAY_SHIFT 1 #define
+> > +CDNS_PCIE_DETECT_QUIET_MIN_DELAY(delay) \
+> > +	 (((delay) << CDNS_PCIE_DETECT_QUIET_MIN_DELAY_SHIFT) & \
+> > +	 CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK)
+> > +
+> >  enum cdns_pcie_rp_bar {
+> >  	RP_BAR_UNDEFINED =3D -1,
+> >  	RP_BAR0,
+> > @@ -292,6 +300,7 @@ struct cdns_pcie {
+> >   * @avail_ib_bar: Satus of RP_BAR0, RP_BAR1 and	RP_NO_BAR if it's free
+> or
+> >   *                available
+> >   * @quirk_retrain_flag: Retrain link as quirk for PCIe Gen2
+> > + * @quirk_detect_quiet_flag: LTSSM Detect Quiet min delay set as
+> > + quirk
+> >   */
+> >  struct cdns_pcie_rc {
+> >  	struct cdns_pcie	pcie;
+> > @@ -301,6 +310,7 @@ struct cdns_pcie_rc {
+> >  	u32			device_id;
+> >  	bool			avail_ib_bar[CDNS_PCIE_RP_MAX_IB];
+> >  	bool                    quirk_retrain_flag;
+> > +	bool                    quirk_detect_quiet_flag;
+> >  };
+> >
+> >  /**
+> > @@ -331,6 +341,7 @@ struct cdns_pcie_epf {
+> >   *        registers fields (RMW) accessible by both remote RC and EP t=
+o
+> >   *        minimize time between read and write
+> >   * @epf: Structure to hold info about endpoint function
+> > + * @quirk_detect_quiet_flag: LTSSM Detect Quiet min delay set as
+> > + quirk
+> >   */
+> >  struct cdns_pcie_ep {
+> >  	struct cdns_pcie	pcie;
+> > @@ -345,6 +356,7 @@ struct cdns_pcie_ep {
+> >  	/* protect writing to PCI_STATUS while raising legacy interrupts */
+> >  	spinlock_t		lock;
+> >  	struct cdns_pcie_epf	*epf;
+> > +	bool                    quirk_detect_quiet_flag;
+> >  };
+> >
+> >
+> > @@ -505,6 +517,9 @@ static inline int cdns_pcie_ep_setup(struct
+> cdns_pcie_ep *ep)
+> >  	return 0;
+> >  }
+> >  #endif
+> > +
+> > +void cdns_pcie_detect_quiet_min_delay_set(struct cdns_pcie *pcie);
+> > +
+> >  void cdns_pcie_set_outbound_region(struct cdns_pcie *pcie, u8 busnr, u=
+8
+> fn,
+> >  				   u32 r, bool is_io,
+> >  				   u64 cpu_addr, u64 pci_addr, size_t size);
+> > --
+> > 2.15.0
+> >
