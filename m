@@ -2,200 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E593B0810
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F27433B0812
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232018AbhFVPBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:01:21 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58500 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231887AbhFVPA5 (ORCPT
+        id S231899AbhFVPBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:01:42 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:43790 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230047AbhFVPBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:00:57 -0400
-Date:   Tue, 22 Jun 2021 14:58:39 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624373920;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BC6dtnC9AQHQ39ltGLai7l7xgetMPi36Hi05CwXnd70=;
-        b=inXKZYFxeeTo7kPAJIDYZL+kGyT+Zvqch5j0eoQpmAfoa7SMeHNlfnen5a3xNOUfYCDq9C
-        vqMBteu01xtxqsvlIfF0W0jjx1GPcbol5kbt/5dFetsISTmrGnquCcDuzIVifigPd7VQeJ
-        sHF8I2shlsutvBkl50SfQGwoUI6slJCbCxMgaRj5gFJoYJduEKtwi7d3vG5o3tXalfCR6x
-        7NQsviOyY2AdTur27Gf75ClwVZq0NcykAE9xsT3t67xSyKdQqtcirveDWmHGrukInSyxQi
-        /EgBgU1WFxL+reKw/UQ8fCeAr1NFwNNkNoFV3oBzQborOz1ujGYlF05G3M4xXQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624373920;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BC6dtnC9AQHQ39ltGLai7l7xgetMPi36Hi05CwXnd70=;
-        b=VHqdqeHbkWQQdEDhMuzOGK8W5/AitRRmUBgYc+T20D4CvgfKub/2uyYTBmnWfskyJ6RPNT
-        b0rvuJECvbVfUhCA==
-From:   "tip-bot2 for Paul E. McKenney" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] clocksource: Retry clock read if long delays detected
-Cc:     Chris Mason <clm@fb.com>, "Paul E. McKenney" <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Feng Tang <feng.tang@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210527190124.440372-1-paulmck@kernel.org>
-References: <20210527190124.440372-1-paulmck@kernel.org>
+        Tue, 22 Jun 2021 11:01:37 -0400
+Received: by mail-ot1-f44.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso21467766otu.10;
+        Tue, 22 Jun 2021 07:59:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uT5Bpdq82XEVQRgTPjPwTHB5o3WS7k/Ey06m3bkPzIE=;
+        b=Na9XuZeixd6Ncnw3n8EvyM/qvx9shi5VdtrE82QrlzgfZI2d8dl8IONsX01JDYRfqe
+         R20tIhr7pma3Dwm0mYlt9tpm/6duYT86Cs8tiCEykhS+vJif9Xbo1A0bg7dNiY5Cdowy
+         3Dem8PineotO0Hhg99XUSAAdkHjRGdoa3QtUmA3V96MT3xYCQ1041+JfkD+jWes/SpDL
+         rPGjhhPCrgckPvZjmy5tCzp4rby0oLlcuHEI+z7whVG7euwrOXu/DuBQ83Y6dOn3VJDM
+         sNrtPXW0OQS27K8uuD5+1sZFF3UrLXa3k6xIMiE/fPT/GKvsEr/AycStUnaE1Z3TzY5R
+         Kddg==
+X-Gm-Message-State: AOAM5326jhYyzEzDtGzLdKP8CHCE6kjT+FUwRF5z3UfH+7HD6o/OMEpf
+        xqcraTNRyzKRoqgAxZGRFXHvaYh8PNlVH/rWJcA=
+X-Google-Smtp-Source: ABdhPJwOk7gzGPt9g9QjVX44ULc1UptNpusi78KHKMt00VJDpMe2doqYMlfK6UZYQhK42CIGmCdW6S7z23xzF55OR4s=
+X-Received: by 2002:a05:6830:1bf7:: with SMTP id k23mr3659569otb.206.1624373960325;
+ Tue, 22 Jun 2021 07:59:20 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <162437391967.395.3083172859823389748.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210622075925.16189-1-lukasz.luba@arm.com> <20210622075925.16189-4-lukasz.luba@arm.com>
+ <CAJZ5v0iVwpn0_wCZOh43DOeR2mudWYJyseMdtMsZGR-sjQ1X9Q@mail.gmail.com>
+ <4e5476a6-fa9f-a9ef-ff26-8fa1b4bb90c0@arm.com> <CAJZ5v0i0KQwTWzbEPbs=0B-j7MkE6C1XP=mZaU1hhQm9HyZGJg@mail.gmail.com>
+ <851205af-39d6-3864-bd28-ae84528946c4@arm.com> <CAJZ5v0jiu=HpyGt7JpbFsS3dA1MWp9pi7K+wgP5gh+Xn3Jx9kA@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jiu=HpyGt7JpbFsS3dA1MWp9pi7K+wgP5gh+Xn3Jx9kA@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 22 Jun 2021 16:59:09 +0200
+Message-ID: <CAJZ5v0jbeiaa0sWy-PaFCKyVYxw=OCGdso7hmSujsO3aeqycTA@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/4] cpufreq: Add Active Stats calls tracking
+ frequency changes
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Chris Redpath <Chris.Redpath@arm.com>, Beata.Michalska@arm.com,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Amit Kachhap <amit.kachhap@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+On Tue, Jun 22, 2021 at 4:51 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+>
+> On Tue, Jun 22, 2021 at 4:09 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+> >
+> >
+> >
+> > On 6/22/21 2:51 PM, Rafael J. Wysocki wrote:
+> > > On Tue, Jun 22, 2021 at 3:42 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+> > >>
+> > >>
+> > >>
+> > >> On 6/22/21 1:28 PM, Rafael J. Wysocki wrote:
+> > >>> On Tue, Jun 22, 2021 at 9:59 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+> > >>>>
+> > >>>> The Active Stats framework tracks and accounts the activity of the CPU
+> > >>>> for each performance level. It accounts the real residency, when the CPU
+> > >>>> was not idle, at a given performance level. This patch adds needed calls
+> > >>>> which provide the CPU frequency transition events to the Active Stats
+> > >>>> framework.
+> > >>>>
+> > >>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> > >>>> ---
+> > >>>>    drivers/cpufreq/cpufreq.c | 5 +++++
+> > >>>>    1 file changed, 5 insertions(+)
+> > >>>>
+> > >>>> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> > >>>> index 802abc925b2a..d79cb9310572 100644
+> > >>>> --- a/drivers/cpufreq/cpufreq.c
+> > >>>> +++ b/drivers/cpufreq/cpufreq.c
+> > >>>> @@ -14,6 +14,7 @@
+> > >>>>
+> > >>>>    #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> > >>>>
+> > >>>> +#include <linux/active_stats.h>
+> > >>>>    #include <linux/cpu.h>
+> > >>>>    #include <linux/cpufreq.h>
+> > >>>>    #include <linux/cpu_cooling.h>
+> > >>>> @@ -387,6 +388,8 @@ static void cpufreq_notify_transition(struct cpufreq_policy *policy,
+> > >>>>
+> > >>>>                   cpufreq_stats_record_transition(policy, freqs->new);
+> > >>>>                   policy->cur = freqs->new;
+> > >>>> +
+> > >>>> +               active_stats_cpu_freq_change(policy->cpu, freqs->new);
+> > >>>>           }
+> > >>>>    }
+> > >>>>
+> > >>>> @@ -2085,6 +2088,8 @@ unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
+> > >>>>                               policy->cpuinfo.max_freq);
+> > >>>>           cpufreq_stats_record_transition(policy, freq);
+> > >>>>
+> > >>>> +       active_stats_cpu_freq_fast_change(policy->cpu, freq);
+> > >>>> +
+> > >>>
+> > >>> This is quite a bit of overhead and so why is it needed in addition to
+> > >>> the code below?
+> > >>
+> > >> The code below is tracing, which is good for post-processing. We use in
+> > >> our tool LISA, when we analyze the EAS decision, based on captured
+> > >> trace data.
+> > >>
+> > >> This new code is present at run time, so subsystems like our thermal
+> > >> governor IPA can use it and get better estimation about CPU used power
+> > >> for any arbitrary period, e.g. 50ms, 100ms, 300ms, ...
+> > >
+> > > So can it be made not run when the IPA is not using it?
+> >
+> > I can make a Kconfig for IPA to select this ACTIVE_STATS.
+> > Also, I can add description that this framework is mostly needed
+> > for IPA, so don't enable it if you don't use IPA (default is 'n'
+> > so it shouldn't harm others).
+> >
+> > This Active Stats shouldn't be stopped when thermal zone is switching
+> > between governors at run time, e.g. IPA -> step_wise -> IPA
+> > because when IPA is set next time, it might not have correct CPU
+> > stats (what is the current frequency and for how long it has been
+> > actively used).
+>
+> But after a while it will collect enough useful data I suppose?
+>
+> > Beside, switching governors at run time is not a good idea
+> > (apart from stress testing them ;) ).
+> >
+> > >
+> > >>>
+> > >>> And pretty much the same goes for the idle loop change.  There is
+> > >>> quite a bit of instrumentation in that code already and it avoids
+> > >>> adding new locking for a reason.  Why is it a good idea to add more
+> > >>> locking to that code?
+> > >>
+> > >> This active_stats_cpu_freq_fast_change() doesn't use the locking, it
+> > >> relies on schedutil lock in [1].
+> > >
+> > > Ah, OK.
+> > >
+> > > But it still adds overhead AFAICS.
+> >
+> > Agree, it's an extra code. For platforms which use IPA it's a
+> > justifiable cost, weighted by better estimation thanks to this calls.
+> > For other platforms, this framework will be set to default 'n' option.
+>
+> A general problem with build-time configuration is for distros that
+> want to ship one kernel binary to run on multiple hardware platforms.
+> They need to enable those options anyway and then get the full cost on
+> the platforms that don't need it, but want to use the common binary
+> kernel.
+>
+> Again, please consider making this new code run only when it is needed
+> even if configured in and if it runs, make it as low-overhead as
+> possible.
 
-Commit-ID:     db3a34e17433de2390eb80d436970edcebd0ca3e
-Gitweb:        https://git.kernel.org/tip/db3a34e17433de2390eb80d436970edcebd0ca3e
-Author:        Paul E. McKenney <paulmck@kernel.org>
-AuthorDate:    Thu, 27 May 2021 12:01:19 -07:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 22 Jun 2021 16:53:16 +02:00
+Also, why don't you add these hooks to the drivers that are generally
+worked with by the IPA?
 
-clocksource: Retry clock read if long delays detected
-
-When the clocksource watchdog marks a clock as unstable, this might be due
-to that clock being unstable or it might be due to delays that happen to
-occur between the reads of the two clocks.  Yes, interrupts are disabled
-across those two reads, but there are no shortage of things that can delay
-interrupts-disabled regions of code ranging from SMI handlers to vCPU
-preemption.  It would be good to have some indication as to why the clock
-was marked unstable.
-
-Therefore, re-read the watchdog clock on either side of the read from the
-clock under test.  If the watchdog clock shows an excessive time delta
-between its pair of reads, the reads are retried.
-
-The maximum number of retries is specified by a new kernel boot parameter
-clocksource.max_cswd_read_retries, which defaults to three, that is, up to
-four reads, one initial and up to three retries.  If more than one retry
-was required, a message is printed on the console (the occasional single
-retry is expected behavior, especially in guest OSes).  If the maximum
-number of retries is exceeded, the clock under test will be marked
-unstable.  However, the probability of this happening due to various sorts
-of delays is quite small.  In addition, the reason (clock-read delays) for
-the unstable marking will be apparent.
-
-Reported-by: Chris Mason <clm@fb.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Feng Tang <feng.tang@intel.com>
-Link: https://lore.kernel.org/r/20210527190124.440372-1-paulmck@kernel.org
----
- Documentation/admin-guide/kernel-parameters.txt |  6 ++-
- kernel/time/clocksource.c                       | 53 ++++++++++++++--
- 2 files changed, 53 insertions(+), 6 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index cb89dbd..995decc 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -581,6 +581,12 @@
- 			loops can be debugged more effectively on production
- 			systems.
- 
-+	clocksource.max_cswd_read_retries= [KNL]
-+			Number of clocksource_watchdog() retries due to
-+			external delays before the clock will be marked
-+			unstable.  Defaults to three retries, that is,
-+			four attempts to read the clock under test.
-+
- 	clearcpuid=BITNUM[,BITNUM...] [X86]
- 			Disable CPUID feature X for the kernel. See
- 			arch/x86/include/asm/cpufeatures.h for the valid bit
-diff --git a/kernel/time/clocksource.c b/kernel/time/clocksource.c
-index 2cd9025..43243f2 100644
---- a/kernel/time/clocksource.c
-+++ b/kernel/time/clocksource.c
-@@ -124,6 +124,13 @@ static void __clocksource_change_rating(struct clocksource *cs, int rating);
- #define WATCHDOG_INTERVAL (HZ >> 1)
- #define WATCHDOG_THRESHOLD (NSEC_PER_SEC >> 4)
- 
-+/*
-+ * Maximum permissible delay between two readouts of the watchdog
-+ * clocksource surrounding a read of the clocksource being validated.
-+ * This delay could be due to SMIs, NMIs, or to VCPU preemptions.
-+ */
-+#define WATCHDOG_MAX_SKEW (100 * NSEC_PER_USEC)
-+
- static void clocksource_watchdog_work(struct work_struct *work)
- {
- 	/*
-@@ -184,12 +191,45 @@ void clocksource_mark_unstable(struct clocksource *cs)
- 	spin_unlock_irqrestore(&watchdog_lock, flags);
- }
- 
-+static ulong max_cswd_read_retries = 3;
-+module_param(max_cswd_read_retries, ulong, 0644);
-+
-+static bool cs_watchdog_read(struct clocksource *cs, u64 *csnow, u64 *wdnow)
-+{
-+	unsigned int nretries;
-+	u64 wd_end, wd_delta;
-+	int64_t wd_delay;
-+
-+	for (nretries = 0; nretries <= max_cswd_read_retries; nretries++) {
-+		local_irq_disable();
-+		*wdnow = watchdog->read(watchdog);
-+		*csnow = cs->read(cs);
-+		wd_end = watchdog->read(watchdog);
-+		local_irq_enable();
-+
-+		wd_delta = clocksource_delta(wd_end, *wdnow, watchdog->mask);
-+		wd_delay = clocksource_cyc2ns(wd_delta, watchdog->mult,
-+					      watchdog->shift);
-+		if (wd_delay <= WATCHDOG_MAX_SKEW) {
-+			if (nretries > 1 || nretries >= max_cswd_read_retries) {
-+				pr_warn("timekeeping watchdog on CPU%d: %s retried %d times before success\n",
-+					smp_processor_id(), watchdog->name, nretries);
-+			}
-+			return true;
-+		}
-+	}
-+
-+	pr_warn("timekeeping watchdog on CPU%d: %s read-back delay of %lldns, attempt %d, marking unstable\n",
-+		smp_processor_id(), watchdog->name, wd_delay, nretries);
-+	return false;
-+}
-+
- static void clocksource_watchdog(struct timer_list *unused)
- {
--	struct clocksource *cs;
- 	u64 csnow, wdnow, cslast, wdlast, delta;
--	int64_t wd_nsec, cs_nsec;
- 	int next_cpu, reset_pending;
-+	int64_t wd_nsec, cs_nsec;
-+	struct clocksource *cs;
- 
- 	spin_lock(&watchdog_lock);
- 	if (!watchdog_running)
-@@ -206,10 +246,11 @@ static void clocksource_watchdog(struct timer_list *unused)
- 			continue;
- 		}
- 
--		local_irq_disable();
--		csnow = cs->read(cs);
--		wdnow = watchdog->read(watchdog);
--		local_irq_enable();
-+		if (!cs_watchdog_read(cs, &csnow, &wdnow)) {
-+			/* Clock readout unreliable, so give it up. */
-+			__clocksource_unstable(cs);
-+			continue;
-+		}
- 
- 		/* Clocksource initialized ? */
- 		if (!(cs->flags & CLOCK_SOURCE_WATCHDOG) ||
+That you won't need to worry about the possible impact on everybody else.
