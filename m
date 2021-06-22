@@ -2,191 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D65BB3B0429
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7E53B0430
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:21:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231496AbhFVMWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 08:22:43 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:46410 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbhFVMWm (ORCPT
+        id S231488AbhFVMXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 08:23:38 -0400
+Received: from mail.xenproject.org ([104.130.215.37]:50152 "EHLO
+        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230232AbhFVMXh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 08:22:42 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D5122AD6;
-        Tue, 22 Jun 2021 14:20:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1624364425;
-        bh=/FdwHQV1jcqx1m2yunZRLGyU4cV3T2hzck8bpFjvWcw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eSn0QBKaM0qR+1s6PxBaN2Bo/T3FPRNSHSWWbu7rosw2yVnsv+7cx5hFxqhlR8oyg
-         DYYXZYQ73hyWS6tWX9cW4cl7/0FvLoXGs2ryE3OcHiK3XkrbUnRqLQ546fxviIvqlr
-         Ycbz7HEkAb4Ph+15mgbSyZQxA3AUZiH/9XT0Sx9Q=
-Date:   Tue, 22 Jun 2021 15:19:56 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Krzysztof =?utf-8?Q?Ha=C5=82asa?= <khalasa@piap.pl>
-Cc:     devicetree@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC v2] dt-binding: media: document ON Semi AR0521 sensor
- bindings
-Message-ID: <YNHVbFp2+Ow8CyCV@pendragon.ideasonboard.com>
-References: <m3y2b25er8.fsf@t19.piap.pl>
+        Tue, 22 Jun 2021 08:23:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject;
+        bh=M0Y3trJ0hBFNWH8kNw4EvDo6aslDCpP5XqPwDmKmclg=; b=nHLtiNmGFSPdcnX0RLBYD156cX
+        0SKd/Ms6obc2pi1YLItOiufKYUrDzYprkklLMDzNahgdHqV1egpJ66GCHLe4GwxsIGwksdEFVlrga
+        kcYllL7BCT6kQvHHXxNOzK6Fq/zBvVVR5qsNmK77DFFlGSXgNOcOnNptTG39ob2dnSOM=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <julien@xen.org>)
+        id 1lvfP6-0002LX-OE; Tue, 22 Jun 2021 12:21:20 +0000
+Received: from [54.239.6.182] (helo=a483e7b01a66.ant.amazon.com)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <julien@xen.org>)
+        id 1lvfP6-0005P7-Ey; Tue, 22 Jun 2021 12:21:20 +0000
+Subject: Re: Interrupt for port 19, but apparently not enabled; per-user
+ 000000004af23acc
+To:     Juergen Gross <jgross@suse.com>
+Cc:     "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        linux-kernel@vger.kernel.org, mheyne@amazon.de
+References: <6552fc66-ba19-2c77-7928-b0272d3e1622@xen.org>
+ <4d8a7ba7-a9f6-2999-8750-bfe2b85f064e@suse.com>
+From:   Julien Grall <julien@xen.org>
+Message-ID: <9a08bbf2-ba6a-6e49-3bcb-bfe2beb32b99@xen.org>
+Date:   Tue, 22 Jun 2021 14:21:18 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+In-Reply-To: <4d8a7ba7-a9f6-2999-8750-bfe2b85f064e@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <m3y2b25er8.fsf@t19.piap.pl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Krzysztof,
+Hi Juergen,
 
-Thank you for the patch.
-
-On Tue, Jun 22, 2021 at 01:18:35PM +0200, Krzysztof Hałasa wrote:
-> This file documents DT bindings for the AR0521 camera sensor driver.
-> Changes from v1:
-> - added power management (power supplies).
-> - small fixes
-
-Please move the text below after a --- line, it shouldn't be included in
-the commit message.
-
-> The question still stands: is there a way to reliably put national
-> unicode characters into:
-> - commit messages for patches submitted via email,
-
-This shouldn't be too much of a problem, as long as you MUA and MTA
-don't mess up encoding.
-
-> - C and other source files (comments and stuff like MODULE_AUTHOR).
-
-This may be more problematic, especially in strings in source code.
-
-> Yes, I know I can commit it myself correctly, but then propagating it
-> upstream is problematic. Perhaps a pullable tree would be better?
-> I guess I need to renew my old kernel.org account.
+On 22/06/2021 13:04, Juergen Gross wrote:
+> On 22.06.21 12:24, Julien Grall wrote:
+>> Hi Juergen,
+>>
+>> As discussed on IRC yesterday, we noticed a couple of splat in 5.13-rc6 
 > 
-> Signed-off-by: Krzysztof Halasa <khalasa@piap.pl>
+>> (and stable 5.4) in the evtchn driver:
+>>
+>> [    7.581000] ------------[ cut here ]------------
+>> [    7.581899] Interrupt for port 19, but apparently not 
+> enabled;
+>> per-user 000000004af23acc
+>> [    7.583401] WARNING: CPU: 0 PID: 467 at 
+>> /home/ANT.AMAZON.COM/jgrall/works/oss/linux/drivers/xen/evtchn.c:169 
+>> evtchn_interrupt+0xd5/0x100
+>> [    7.585583] Modules linked in:
+>> [    7.586188] CPU: 0 PID: 467 Comm: xenstore-read Not tainted 
+>> 5.13.0-rc6 #240
+>> [    7.587462] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), 
+>> BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+>> [    7.589462] RIP: e030:evtchn_interrupt+0xd5/0x100
+>> [    7.590361] Code: 48 8d bb d8 01 00 00 ba 01 00 00 00 
+> be 1d 00 00 00
+>> e8 5f 72 c4 ff eb b2 8b 75 20 48 89 da 48 c7 c7 a8 03 5f 82 e8 6b 2d 96 
 > 
-> diff --git a/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml b/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml
-> new file mode 100644
-> index 000000000000..29421daacc87
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/media/i2c/onnn,ar0521.yaml
-> @@ -0,0 +1,87 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/media/i2c/onnn,ar0521.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: ON Semiconductor AR0521 MIPI CSI-2 sensor
-> +
-> +maintainers:
-> +  - Krzysztof Halasa <khalasa@piap.pl>
-> +
-> +description: |-
-> +  The AR0521 is a raw CMOS image sensor with MIPI CSI-2 and
-> +  I2C-compatible control interface.
-> +
-> +properties:
-> +  compatible:
-> +    const: onnn,ar0521
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    description: reference to the xclk clock
+>> ff <0f> 0b e9 4d ff ff ff 41 0f b6 f4 48 c7 c7 80 da a2 82 e8 f0
+>> [    7.593662] RSP: e02b:ffffc90040003e60 EFLAGS: 00010082
+>> [    7.594636] RAX: 0000000000000000 RBX: ffff888102328c00 RCX: 
+>> 0000000000000027
+>> [    7.595924] RDX: 0000000000000000 RSI: ffff88817fe18ad0 RDI: 
+>> ffff88817fe18ad8
+>> [    7.597216] RBP: ffff888108ef8140 R08: 0000000000000000 R09: 
+>> 0000000000000001
+>> [    7.598522] R10: 0000000000000000 R11: 7075727265746e49 R12: 
+>> 0000000000000000
+>> [    7.599810] R13: ffffc90040003ec4 R14: ffff8881001b8000 R15: 
+>> ffff888109b36f80
+>> [    7.601113] FS:  0000000000000000(0000) GS:ffff88817fe00000(0000) 
+>> knlGS:0000000000000000
+>> [    7.602570] CS:  10000e030 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [    7.603700] CR2: 00007f15b390e368 CR3: 000000010bb04000 CR4: 
+>> 0000000000050660
+>> [    7.604993] Call Trace:
+>> [    7.605501]  <IRQ>
+>> [    7.605929]  __handle_irq_event_percpu+0x4c/0x330
+>> [    7.606817]  handle_irq_event_percpu+0x32/0xa0
+>> [    7.607670]  handle_irq_event+0x3a/0x60
+>> [    7.608416]  handle_edge_irq+0x9b/0x1f0
+>> [    7.609154]  generic_handle_irq+0x4f/0x60
+>> [    7.609918]  __evtchn_fifo_handle_events+0x195/0x3a0
+>> [    7.610864]  __xen_evtchn_do_upcall+0x66/0xb0
+>> [    7.611693]  __xen_pv_evtchn_do_upcall+0x1d/0x30
+>> [    7.612582]  xen_pv_evtchn_do_upcall+0x9d/0xc0
+>> [    7.613439]  </IRQ>
+>> [    7.613882]  exc_xen_hypervisor_callback+0x8/0x10
+>>
+>> This is quite similar to the problem I reported a few months ago (see 
+>> [1]) but this time this is happening with fifo rather than 2L.
+>>
+>> I haven't been able to reproduced it reliably so far. But looking at 
+>> the code, I think I have found another potential race after commit
+>>
+>> commit b6622798bc50b625a1e62f82c7190df40c1f5b21
+>> Author: Juergen Gross <jgross@suse.com>
+>> Date:   Sat Mar 6 17:18:33 2021 +0100
+>>     xen/events: avoid handling the same event on two cpus at the same 
+>> time
+>>     When changing the cpu affinity of an event it can happen today that
+>>     (with some unlucky timing) the same event will be handled 
+> on the old
+>>     and the new cpu at the same time.
+>>     Avoid that by adding an "event active" flag to the per-event data and
+>>     call the handler only if this flag isn't set.
+>>     Cc: stable@vger.kernel.org
+>>     Reported-by: Julien Grall <julien@xen.org>
+>>     Signed-off-by: Juergen Gross <jgross@suse.com>
+>>     Reviewed-by: Julien Grall <jgrall@amazon.com>
+>>     Link: https://lore.kernel.org/r/20210306161833.4552-4-jgross@suse.com
+>>     Signed-off-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+>>
+>> The evtchn driver will use the lateeoi handlers. So the code to ack 
+>> looks like:
+>>
+>> do_mask(..., EVT_MASK_REASON_EOI_PENDING)
+>> smp_store_release(&info->is_active, 0);
+>> clear_evtchn(info->evtchn);
+>>
+>> The code to handle an interrupts look like:
+>>
+>> clear_link(...)
+>> if ( evtchn_fifo_is_pending(port) && !evtchn_fifo_is_mask()) {
+>>    if (xchg_acquire(&info->is_active, 1)
+>>      return;
+>>    generic_handle_irq();
+>> }
+>>
+>> After changing the affinity, an interrupt may be received once on the 
+>> previous vCPU. So, I think the following can happen:
+>>
+>> vCPU0                             | vCPU1
+>>                    |
+>>   Receive event              |
+>>                    | change affinity to vCPU1
+>>   clear_link()              |
+>>                        |
+>>                 /* The interrupt is re-raised */
+>>                    | receive event
+>>                      |
+>>                    | /* The interrupt is not masked */
+>>   info->is_active = 1          |
+>>   do_mask(...)              |
+>>   info->is_active = 0          |
+>>                    | info->is_active = 1
+>>   clear_evtchn(...)               |
+>>                                   | do_mask(...)
+>>                                   | info->is_active = 0
+>>                    | clear_evtchn(...)
+>>
+>> Does this look plausible to you?
+> 
+> Yes, it does.
+> 
+> Thanks for the analysis.
+> 
+> So I guess for lateeoi events we need to clear is_active only in
+> xen_irq_lateeoi()? At a first glance this should fix the issue.
 
-You can drop the description, it's implied by the clock-names property.
+It should work and would be quite neat. But, I believe clear_evtchn() 
+would have to stick in the ack helper to avoid losing interrupts.
 
-> +    maxItems: 1
-> +
-> +  clock-names:
-> +    const: xclk
-
-Isn't the pin named extclk ?
-
-> +
-> +  vdd_io-supply:
-> +    description:
-> +      Definition of the regulator used as digital I/O (1.8 V) voltage supply.
-> +
-> +  vdd_core-supply:
-> +    description:
-> +      Definition of the regulator used as digital core (1.2 V) voltage supply.
-
-It's not just the digital core, 1.2V is also needed for the PLL
-(VDD_PLL) and the PHY (VDD_PHY). I'd call this vdd-supply.
-
-> +  vcc_analog-supply:
-> +    description:
-> +      Definition of the regulator used as analog (2.7 V) voltage supply.
-
-Similarly, I'd call this vaa-supply is is covers VAA and VAA_PIX
-(there's no VCC_ANALOG pin).
-
-> +
-> +  reset-gpios:
-> +    description: reset GPIO, usually active low
-> +    maxItems: 1
-> +
-> +  port:
-> +    $ref: /schemas/graph.yaml#/properties/port
-> +    description: |
-> +      Output video port: 1, 2 or 4 lanes.
-
-The number of lanes should be described through the data-lanes endpoint
-property.
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
-> +  - port
-
-Supplies should be mandatory as the chip needs them.
-
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/gpio/gpio.h>
-> +    #include <dt-bindings/clock/imx6qdl-clock.h>
-> +
-> +    i2c {
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            ar0521: camera-sensor@36 {
-> +                    compatible = "onnn,ar0521";
-> +                    reg = <0x36>;
-> +                    pinctrl-names = "default";
-> +                    pinctrl-0 = <&pinctrl_mipi_camera>;
-> +
-> +                    clocks = <&clks IMX6QDL_CLK_CKO>;
-> +                    clock-names = "xclk";
-> +
-> +                    reset-gpios = <&gpio1 7 GPIO_ACTIVE_LOW>;
-> +
-> +                    port {
-> +                           mipi_camera_to_mipi_csi2: endpoint {
-> +                                    remote-endpoint = <&mipi_csi2_in>;
-> +                                    data-lanes = <1 2 3 4>;
-> +                            };
-> +                    };
-> +            };
-> +    };
+Cheers,
 
 -- 
-Regards,
-
-Laurent Pinchart
+Julien Grall
