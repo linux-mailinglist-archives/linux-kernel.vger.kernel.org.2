@@ -2,150 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 092CC3B0A96
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225903B0A9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231272AbhFVQsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 12:48:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhFVQsg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 12:48:36 -0400
-Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2825C06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:46:20 -0700 (PDT)
-Received: by mail-qv1-xf2d.google.com with SMTP id h10so1498819qvz.2
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:46:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cX1+N3znKheAWMZ/uIaQ9Wu1I4c8xfSCdEid5XXgYUU=;
-        b=YOPMkgmgYEaJx78lKXGLKjEtNH7hC+lgi844pNliJkG4ti5vrqjMc+oYAqOQD7H2jS
-         2qqrRzjl9eiZPl3/CUfCvP3bVN4outKo6a1WsV8JSRjLD6PAeSIZDztM7Khj3cxdCfUR
-         p4PY5N5SmT98GRvCrjoWP2IhcR9X54oRBzFtZo7yU7KpcGXTDGBCgT8U5Q8nDCvkcL4f
-         6GbkWOcfKD4uaLMwk1sYQhUHbquWuh76GcYII+D/ew4UZBKFK7T3YXQcj7bP5hirphRr
-         woN0x87w5h9RppF3feOaRx2qlmXznUkTQwOi6hGFBXBK1pENgf1bTy7VU2Y8rcRZSYMs
-         TeVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cX1+N3znKheAWMZ/uIaQ9Wu1I4c8xfSCdEid5XXgYUU=;
-        b=C8hQnF6KVJ5YqyKcK43maurtE28mKWwaoimwM9Jxfo3BcnUz1N3WUHwFh+LTY5gMPo
-         7OeuvjiaW7Y29SYnBOM8w2fOp1cpofaqrfvNrt/YKx8de4euwMy9JM0B18ey72OksKoy
-         9oU+tsEP84heb/C6DKA2KCeFEWLuvcaFb4hrjUbGfEPnT8seOXgBUcimzsrXU8l1RQ7h
-         1a77qTbYyd/6DzLmr/gUuZqJV4CEFIXzWzkf1TegaiiAFpf9xUITNRI8ZXc2QEnkz5l0
-         QyWosYj0Pb4Fx4LTjrBITr/y2jwU9wOVZYSNTgzUnqX6khOGvMvalGBS1KeCfkj9BgGN
-         BPNQ==
-X-Gm-Message-State: AOAM530/J6WEg34+f6DF/WWl1CeOKfbkkeOH8uGMUsBTVt0G0dToLx3U
-        1kg+iSX6YaNrqwMdy7Xf3HsmX8U0vk6Nti4apiKbWg==
-X-Google-Smtp-Source: ABdhPJzISR/1moqz9T2VFK0No/teqAwV9c5ubfc0VsheSSZ5WjW1a7WkGDxsHNNpv4HDu3/B1wo2UFlinPyOenYwBYo=
-X-Received: by 2002:ad4:55eb:: with SMTP id bu11mr26378298qvb.2.1624380379836;
- Tue, 22 Jun 2021 09:46:19 -0700 (PDT)
+        id S230438AbhFVQup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 12:50:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60394 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229751AbhFVQuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 12:50:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2C8D60724;
+        Tue, 22 Jun 2021 16:48:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1624380508;
+        bh=q3Qb7oVFJdLdwtoqMte+CVN+jKnb6D5a8vxBsBnEsuU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I2YvzeteFpRMsS1VBKoKkGEw2Np0qVkXZiM+rAjrPFozTIEtGYuFEjii8wRzMjTPn
+         O/SZ9XGACQgznk5en4iB/Y9lebpBuBuUkpEUMxz10jvnNAp4GiDMrqb8LLCRYYrJrm
+         K+fud6C1mMqBmW20HrX+wUsWoSMb32ayUYskG4yVcJLS7YR1w0Pkj49PBK0E9LOXjZ
+         53UFFOmq+n1TmFDLujdhpSvW+F4A/FYkYwTPIsd1j2Lq/ZwYIUWqJelJhpgUX5pbwR
+         NXLFCaS0YcLM10qh7HDdQq2JYwUoMq+MZPbImgBB7z1ST2UnRaLI0Wa7Dr4QL2lf97
+         7zESWTHRgS92A==
+Date:   Tue, 22 Jun 2021 17:48:04 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] tools/nolibc: Implement msleep()
+Message-ID: <20210622164804.GG4574@sirena.org.uk>
+References: <20210512123215.42321-1-broonie@kernel.org>
+ <20210512132102.GD20883@1wt.eu>
 MIME-Version: 1.0
-References: <20210621223141.1638189-1-dmitry.baryshkov@linaro.org>
- <20210621223141.1638189-3-dmitry.baryshkov@linaro.org> <20210622112843.GB4574@sirena.org.uk>
- <CAA8EJpoTdg3O6dzpTaNS5fJRbtb1Fndv0mEuO+e4b6XCmuvzhQ@mail.gmail.com> <20210622143812.GE4574@sirena.org.uk>
-In-Reply-To: <20210622143812.GE4574@sirena.org.uk>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 22 Jun 2021 19:46:08 +0300
-Message-ID: <CAA8EJpoeYUOPLKca5oJNKdyOvOmoLX6FvsTbdmC7W9mLsyyVmw@mail.gmail.com>
-Subject: Re: [PATCH v3 2/7] regulator: qca6390: add support for QCA639x
- powerup sequence
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-bluetooth@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="4ndw/alBWmZEhfcZ"
+Content-Disposition: inline
+In-Reply-To: <20210512132102.GD20883@1wt.eu>
+X-Cookie: fortune: not found
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Jun 2021 at 17:38, Mark Brown <broonie@kernel.org> wrote:
->
-> On Tue, Jun 22, 2021 at 05:17:28PM +0300, Dmitry Baryshkov wrote:
-> > On Tue, 22 Jun 2021 at 14:29, Mark Brown <broonie@kernel.org> wrote:
-> > > On Tue, Jun 22, 2021 at 01:31:36AM +0300, Dmitry Baryshkov wrote:
->
-> > > > Qualcomm QCA6390/1 is a family of WiFi + Bluetooth SoCs, with BT part
-> > > > being controlled through the UART and WiFi being present on PCIe
-> > > > bus. Both blocks share common power sources. Add device driver handling
-> > > > power sequencing of QCA6390/1.
->
-> > > Are you sure this is a regulator and not a MFD?  It appears to be a
-> > > consumer driver that turns on and off a bunch of regulators en masse
-> > > which for some reason exposes that on/off control as a single supply.
-> > > This looks like it'd be much more appropriate to implement as a MFD or
-> > > possibly power domain with the subdevices using runtime PM, it's clearly
-> > > not a regulator.
->
-> > First attempt was designed to be an MFD. And Lee clearly stated that
-> > this is wrong:
-> > "This is not an MFD, since it utilised neither the MFD API nor
-> > of_platform_populate() to register child devices." [1]
->
-> Well, perhaps it should do one of those things then?
 
-I don't think so. BT part is just a serdev sitting on top of UART,
-WiFi is PCIe device (for qca6390). So using MFD API (which primarily
-targets platform devices) does not seem logical and feasible.
+--4ndw/alBWmZEhfcZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Like I say this is
-> very clearly not a regulator, it looks like a consumer of some kind.
-> The regulator API isn't there just to absorb things that need reference
-> counting, it's there to represent things providing supplies.  This seems
-> to be very clearly not a supply given that it's grouping together a
-> bunch of other supplies and switching them on and off together without
-> providing a clear output supply.
+On Wed, May 12, 2021 at 03:21:02PM +0200, Willy Tarreau wrote:
+> On Wed, May 12, 2021 at 01:32:15PM +0100, Mark Brown wrote:
+> > Allow users to implement shorter delays than a full second by implement=
+ing
+> > msleep().
+> >=20
+> > Signed-off-by: Mark Brown <broonie@kernel.org>
 
-Ack.
+> Great, now queued, thank you Mark!
 
-> > I've tried following Rob's suggestions on implementing things clearly,
-> > but doing so results in too big restructure just for a single device.
->
-> I don't know what that suggestion was?  If there's only one device that
-> uses this why is it not implemented as part of that device?
+This doesn't seem to be showing up in -next, did it get missed or is the
+queue it's in not in -next?
 
-One device = qca6390 (or 91). Because it is still a device sitting on
-a PCI bus which is typically discoverable, while adding power
-sequencer to the device driver would demand making the bus fully
-descibiable (like PCI bus is on Spark).
+--4ndw/alBWmZEhfcZ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> > > > +static int qca6390_enable(struct regulator_dev *rdev)
-> > > > +{
-> > > > +     struct qca6390_data *data = rdev_get_drvdata(rdev);
-> > > > +     int ret;
->
-> > > > +     ret = regulator_bulk_enable(data->num_vregs, data->regulators);
-> > > > +     if (ret) {
-> > > > +             dev_err(data->dev, "Failed to enable regulators");
-> > > > +             return ret;
-> > > > +     }
->
-> > > The regulator API is *not* recursive, I am astonished this works.
->
-> > It does, even with lockdep enabled. Moreover BT regularly does disable
-> > and enable this regulator, so both enable and disable paths were well
-> > tested.
-> > Should I change this into some internal call to remove API recursiveness?
->
-> You should not be implementing this as a regulator at all.
+-----BEGIN PGP SIGNATURE-----
 
-Ack
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDSFEQACgkQJNaLcl1U
+h9CZZAf/ad9XgtaS+NaS95dcHq+3NE3DyNtIb5A5UXEiQ8bS8u+l0lEzuXdkkyLa
+PyTBNOfJzfz0BFtshkw9ZPkFjIQpO1D2yV3YN2Vd+o71o/xtFanNeKsrGPlYr7q2
+uJ6Xjb1oXvEiRojT0n1df9hJwGqfJFwdMGjagP9N8MRoG760TE9SpYgzilMPRpVz
+HzdmnM2peSboLXpt2CHL6+Q3da8WhaZNGr8bK9KVRslyuVqRNU9pQ+CuBZpbKw2H
+sfij7mXm2vdxPccYS8NKs2NeUYTYVmEbXniFBjlUZHSYgGw7jLNsfIIDf36SRLxT
++3iLx1RHksuEc8MxBmMWf+Nsgu/eUQ==
+=zbmr
+-----END PGP SIGNATURE-----
 
--- 
-With best wishes
-Dmitry
+--4ndw/alBWmZEhfcZ--
