@@ -2,149 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5E833B0B01
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CECCF3B0B0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231560AbhFVRE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 13:04:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53036 "EHLO
+        id S231648AbhFVRHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 13:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhFVREY (ORCPT
+        with ESMTP id S230076AbhFVRHR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 13:04:24 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC5CC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:02:06 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id bl4so5409942qkb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:02:06 -0700 (PDT)
+        Tue, 22 Jun 2021 13:07:17 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20D24C061574;
+        Tue, 22 Jun 2021 10:05:00 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id i18so2654005lfl.8;
+        Tue, 22 Jun 2021 10:05:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8ZLfOF3k/f6yL2AQLJ+h2J00Oz5HjAD+vwU2S+DCH90=;
-        b=gd1QJ+p0JA8dyVAsY4WKjdqQGTpnW4p+P5TOHPu1jd4FeLJ/H6Qvzbn6gyTv7wJVI6
-         36wOQR0QS6Ab0J7LxCWnPEzDaKyFhbkR0dyQHikgrWT9HmTn5M8DAb0Bs2e0HWcalTrm
-         dzu+DKJGfjkl52u/OhJeVIwWeXfqiKtJLOnOk=
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NBaVKh//UBK86ei/ihMVSpRaGro+bbIBNKf8M+UWoSU=;
+        b=E2vb7roau0C7BTR7oK+h6mzoZj29nL9xbTfPuDXTHqXcx6YqCFiL5LPJ+fztcRznNS
+         0Oqn/AZEyXS8YSCKtTy9pxGaJbTEg5Z/yF7rb3AApGr+IgnLL7KnAKjQORBk5j4VPGaJ
+         HjZbe1gMhixpMuNFCEJCYeZI4hG71OVwBm33/lgdWcspE+JqMRSmKqG6lyAiJOa+a4Qm
+         4g5OAMk1z6J6cNTGX+Nn1JpjO8jneTL9YeiZszWsHJKhpK7K14ha4gCkmNt9b4JnNCtC
+         Nj+Ix0a6HX5RYeh9CFfFNOz1OaASLluFUQhQxAjUgvqScwTtOotAHHXJ+v/wthojMMmw
+         C9Yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8ZLfOF3k/f6yL2AQLJ+h2J00Oz5HjAD+vwU2S+DCH90=;
-        b=snrMUfP0MM/oBEPvcJyGHKD3bHa3zq6vQg195wO4lBbQfjCYUVRPZPjgwhZItnYDET
-         HtlMk6xZiEwbfx/mcqT8lOlc48p1njIUpM5TRAd/qvm92217WgRDMFyWoR0XXFFK3KKV
-         4tiSIy98NuNNESQy85pz6KEre6Q2Asira1C+679WFkZJkGlWYWhbnDkBIpkbg5xh8XGb
-         NcMfw/KqpaYiwPcuSNoiMA5x+4nLeleGWppKqu1/D6aEr1BqWrB8Gl8Mfj9qprWglIdk
-         MhjdLoGVSKpcvab36kYDuqOXHsgT52pAsYzohsx5MMsPigV7eM+jCSEDgZyk0paRnMnU
-         5voQ==
-X-Gm-Message-State: AOAM531XS378vDgLa9xAqjrbHMGA3cljM6BJMRKB8Pm09Lxv3Bz/5nuS
-        pnmFESqzBT3G9PAmOZVYe0Wfh6L1bvnGQA==
-X-Google-Smtp-Source: ABdhPJy3/60Qy57DGt2jZwwo/nHVGPPWOkzCVCv8jAZA/cGCb8jvDWy5Lv0Be3SH172CUHhEdClhfQ==
-X-Received: by 2002:a37:a44a:: with SMTP id n71mr5445811qke.19.1624381324908;
-        Tue, 22 Jun 2021 10:02:04 -0700 (PDT)
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com. [209.85.222.175])
-        by smtp.gmail.com with ESMTPSA id d16sm1960183qtj.69.2021.06.22.10.02.03
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NBaVKh//UBK86ei/ihMVSpRaGro+bbIBNKf8M+UWoSU=;
+        b=fF75vlinH44iFJdkWKj34OObWQ2E48tqlnCCrNfwcSfaiS5w1wiEZ+YzAAJqZzz0mw
+         UQdrcdwPcJERMY3x+6w0d34pRjrEq36LPbCTmW+fXjLen3C2sDpxJI7FKPtPA2dT8IxX
+         PXEbhlVu15GveK8uZTpMlBU02Ns/eg0ZX7ja68yzQE93x6ptNjgmlRNG1sZROwdtCgzb
+         lX4h6c9/oaM+gn1PUhj0D0+A5KX9t3R62o+8NERf5KG7p+b+3jpF0t5/qJ0ozoDK3laF
+         XcxBdanOe3IvZjGGdojmir6AvJX2af/MXaC7bHJfk0clqawaLXDBiXYitfOLJ1gAaB41
+         5njg==
+X-Gm-Message-State: AOAM5312P5Hc4DPI9D2A5pLZeivWE8i3UMUX6ZddLtiQ0Pa2hZ6+1N9m
+        rt+6MVwZz1+aH+Ua29fYLVQdvwsKjc8=
+X-Google-Smtp-Source: ABdhPJySvrS5m3qwSF4dDWl41T7s3Pp8EG9q72romII/dp5ivI+YzoMtXH/sKuSd7bQ/9u19XzHZ7Q==
+X-Received: by 2002:ac2:48ba:: with SMTP id u26mr99785lfg.77.1624381497964;
+        Tue, 22 Jun 2021 10:04:57 -0700 (PDT)
+Received: from [192.168.2.145] (94-29-29-31.dynamic.spd-mgts.ru. [94.29.29.31])
+        by smtp.googlemail.com with ESMTPSA id f15sm1332280lfa.56.2021.06.22.10.04.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 10:02:04 -0700 (PDT)
-Received: by mail-qk1-f175.google.com with SMTP id d196so41257520qkg.12
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:02:03 -0700 (PDT)
-X-Received: by 2002:a25:6088:: with SMTP id u130mr6308972ybb.257.1624381323248;
- Tue, 22 Jun 2021 10:02:03 -0700 (PDT)
+        Tue, 22 Jun 2021 10:04:57 -0700 (PDT)
+Subject: Re: [BUG] brcmfmac locks up on resume from suspend
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Arend van Spriel <arend.vanspriel@broadcom.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-Hsien Lin <chi-hsien.lin@cypress.com>,
+        Wright Feng <wright.feng@cypress.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "brcm80211-dev-list.pdl@broadcom.com" 
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <b853d145-0edf-db0a-ff42-065011f7a149@gmail.com>
+Message-ID: <0a29dbcc-7ab6-bc5d-3d42-4e1a33c2f6ec@gmail.com>
+Date:   Tue, 22 Jun 2021 20:04:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210621235248.2521620-1-dianders@chromium.org>
- <20210621165230.4.Id84a954e705fcad3fdb35beb2bc372e4bf2108c7@changeid>
- <a86c2f9c-f66a-3a12-cf80-6e3fc6dafda4@linux.intel.com> <CAD=FV=XpYkUqGNcumJ0NvoXqbSkBaV5ZadUnpsKTMPx7tSjGig@mail.gmail.com>
-In-Reply-To: <CAD=FV=XpYkUqGNcumJ0NvoXqbSkBaV5ZadUnpsKTMPx7tSjGig@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 22 Jun 2021 10:01:51 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Xi8Qai5sKwuT4-4B=K5i7f4BWQfp9+TxR1x3VSt7dkGA@mail.gmail.com>
-Message-ID: <CAD=FV=Xi8Qai5sKwuT4-4B=K5i7f4BWQfp9+TxR1x3VSt7dkGA@mail.gmail.com>
-Subject: Re: [PATCH 4/6] iommu: Combine device strictness requests with the
- global default
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Clark <robdclark@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Saravana Kannan <saravanak@google.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Linux MMC List <linux-mmc@vger.kernel.org>,
-        quic_c_gdjako@quicinc.com,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        linux-pci@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>,
-        Rajat Jain <rajatja@google.com>,
-        Sonny Rao <sonnyrao@chromium.org>,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <b853d145-0edf-db0a-ff42-065011f7a149@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Tue, Jun 22, 2021 at 9:53 AM Doug Anderson <dianders@chromium.org> wrote:
->
+18.06.2021 23:36, Dmitry Osipenko пишет:
 > Hi,
->
-> On Mon, Jun 21, 2021 at 7:05 PM Lu Baolu <baolu.lu@linux.intel.com> wrote:
-> >
-> > On 6/22/21 7:52 AM, Douglas Anderson wrote:
-> > > @@ -1519,7 +1542,8 @@ static int iommu_get_def_domain_type(struct device *dev)
-> > >
-> > >   static int iommu_group_alloc_default_domain(struct bus_type *bus,
-> > >                                           struct iommu_group *group,
-> > > -                                         unsigned int type)
-> > > +                                         unsigned int type,
-> > > +                                         struct device *dev)
-> > >   {
-> > >       struct iommu_domain *dom;
-> > >
-> > > @@ -1534,6 +1558,12 @@ static int iommu_group_alloc_default_domain(struct bus_type *bus,
-> > >       if (!dom)
-> > >               return -ENOMEM;
-> > >
-> > > +     /* Save the strictness requests from the device */
-> > > +     if (dev && type == IOMMU_DOMAIN_DMA) {
-> > > +             dom->request_non_strict = dev->request_non_strict_iommu;
-> > > +             dom->force_strict = dev->force_strict_iommu;
-> > > +     }
-> > > +
-> >
-> > An iommu default domain might be used by multiple devices which might
-> > have different "strict" attributions. Then who could override who?
->
-> My gut instinct would be that if multiple devices were part of a given
-> domain that it would be combined like this:
->
-> 1. Any device that requests strict makes the domain strict force strict.
->
-> 2. To request non-strict all of the devices in the domain would have
-> to request non-strict.
->
-> To do that I'd have to change my patchset obviously, but I don't think
-> it should be hard. We can just keep a count of devices and a count of
-> the strict vs. non-strict requests? If there are no other blockers
-> I'll try to do that in my v2.
+> 
+> I'm getting a hang on resume from suspend using today's next-20210618.
+> It's tested on Tegra20 Acer A500 that has older BCM4329, but seems the
+> problem is generic.
+> 
+> There is this line in pstore log:
+> 
+>   ieee80211 phy0: brcmf_netdev_start_xmit: xmit rejected state=0
+> 
+> Steps to reproduce:
+> 
+> 1. Boot system
+> 2. Connect WiFi
+> 3. Run "rtcwake -s10 -mmem"
+> 
+> What's interesting is that turning WiFi off/on before suspending makes
+> resume to work and there are no suspicious messages in KMSG, all further
+> resumes work too.
+> 
+> This change fixes the hang:
+> 
+> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
+> b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
+> index db5f8535fdb5..06d16f7776c7 100644
+> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
+> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
+> @@ -301,7 +301,6 @@ static netdev_tx_t brcmf_netdev_start_xmit(struct
+> sk_buff *skb,
+>  	/* Can the device send data? */
+>  	if (drvr->bus_if->state != BRCMF_BUS_UP) {
+>  		bphy_err(drvr, "xmit rejected state=%d\n", drvr->bus_if->state);
+> -		netif_stop_queue(ndev);
+>  		dev_kfree_skb(skb);
+>  		ret = -ENODEV;
+>  		goto done;
+> 8<---
+> 
+> Comments? Suggestions? Thanks in advance.
+> 
 
-One issue, I guess, is that we might need to transition a non-strict
-domain to become strict. Is that possible? We'd end up with an extra
-"flush queue" that we didn't need to allocate, but are there other
-problems?
+Update:
 
-Actually, in general would it be possible to transition between strict
-and non-strict at runtime as long as we called
-init_iova_flush_queue()? Maybe that's a better solution than all
-this--we just boot in strict mode and can just transition to
-non-strict mode after-the-fact?
+After some more testing I found that the removal of netif_stop_queue() doesn't really help, apparently it was a coincidence.
 
+I enabled CONFIG_BRCMDBG and added dump_stack() to the error condition of brcmf_netdev_start_xmit() and this is what it shows:
 
--Doug
+PM: suspend entry (s2idle)
+Filesystems sync: 0.000 seconds
+Freezing user space processes ... (elapsed 0.004 seconds) done.
+OOM killer disabled.
+Freezing remaining freezable tasks ... (elapsed 0.001 seconds) done.
+brcmfmac: brcmf_cfg80211_disconnect Enter. Reason code = 3
+brcmfmac: brcmf_sdio_bus_txctl Enter
+brcmutil: Tx Frame:
+00000000: 28 00 d7 ff d1 00 00 0c 00 00 00 00 34 00 00 00  (...........4...
+00000010: 0c 00 00 00 02 00 ca 00 00 00 00 00 03 00 00 00  ................
+00000020: 10 7b 44 3b 36 98 31 c2                          .{D;6.1.
+brcmfmac: brcmf_sdio_bus_rxctl Enter
+brcmfmac: brcmf_sdio_isr Enter
+brcmutil: RxHdr:
+00000000: 28 00 d7 ff b9 00 00 0c 00 d8 00 00              (...........
+brcmutil: RxCtrl:
+00000000: 28 00 d7 ff b9 00 00 0c 00 d8 00 00 34 00 00 00  (...........4...
+00000010: 0c 00 00 00 00 00 ca 00 00 00 00 00 03 00 00 00  ................
+00000020: 10 7b 44 3b 36 98 31 c2                          .{D;6.1.
+brcmfmac: brcmf_sdio_bus_rxctl resumed on rxctl frame, got 28 expected 28
+brcmutil: RxHdr:
+00000000: 5c 00 a3 ff ba 01 06 0e 00 d8 00 00              \...........
+brcmfmac: brcmf_cfg80211_disconnect Exit
+brcmfmac: brcmf_cfg80211_del_key Enter
+brcmfmac: brcmf_sdio_bus_txctl Enter
+brcmutil: Rx Data:
+00000000: 5c 00 a3 ff ba 01 06 0e 00 d8 00 00 00 00 20 00  \............. .
+00000010: 00 00 e0 b9 a5 4d 8a 60 e2 b9 a5 4d 8a 60 88 6c  .....M.`...M.`.l
+00000020: 80 01 00 68 00 00 10 18 00 01 00 02 00 00 00 00  ...h............
+00000030: 00 10 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00000040: 00 00 10 7b 44 3b 36 98 77 6c 30 00 00 00 00 00  ...{D;6.wl0.....
+00000050: 00 00 00 00 00 00 00 00 00 00 00 00              ............
+brcmfmac: brcmf_fws_hdrpull enter: ifidx 0, skblen 74, sig 0
+brcmutil: Rx Data:
+00000000: 5c 00 a3 ff bb 01 06 0e 00 d8 00 00 00 00 20 00  \............. .
+00000010: 00 00 e0 b9 a5 4d 8a 60 e2 b9 a5 4d 8a 60 88 6c  .....M.`...M.`.l
+00000020: 80 01 00 68 00 00 10 18 00 01 00 02 00 18 00 00  ...h............
+00000030: 00 05 00 00 00 00 00 00 00 07 00 00 00 00 00 00  ................
+00000040: 00 00 10 7b 44 3b 36 98 77 6c 30 00 00 00 00 00  ...{D;6.wl0.....
+00000050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+brcmfmac: brcmf_fws_hdrpull enter: ifidx 0, skblen 78, sig 0
+brcmutil: Rx Data:
+00000000: 5c 00 a3 ff bc 01 06 0e 00 d8 00 00 00 00 20 00  \............. .
+00000010: 00 00 e0 b9 a5 4d 8a 60 e2 b9 a5 4d 8a 60 88 6c  .....M.`...M.`.l
+00000020: 80 01 00 68 00 00 10 18 00 01 00 02 00 18 00 00  ...h............
+00000030: 00 05 00 00 00 00 00 00 00 07 00 00 00 00 00 00  ................
+00000040: 00 00 10 7b 44 3b 36 98 77 6c 30 00 00 00 00 00  ...{D;6.wl0.....
+00000050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+brcmfmac: brcmf_fws_hdrpull enter: ifidx 0, skblen 78, sig 0
+brcmutil: Rx Data:
+00000000: 5c 00 a3 ff bd 01 06 0e 00 d8 00 00 00 00 20 00  \............. .
+00000010: 00 00 e0 b9 a5 4d 8a 60 e2 b9 a5 4d 8a 60 88 6c  .....M.`...M.`.l
+00000020: 80 01 00 68 00 00 10 18 00 01 00 02 00 18 00 00  ...h............
+00000030: 00 05 00 00 00 00 00 00 00 07 00 00 00 00 00 00  ................
+00000040: 00 00 10 7b 44 3b 36 98 77 6c 30 00 00 00 00 00  ...{D;6.wl0.....
+00000050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+brcmfmac: brcmf_fws_hdrpull enter: ifidx 0, skblen 78, sig 0
+brcmutil: Rx Data:
+00000000: 5c 00 a3 ff be 01 06 0e 00 d8 00 00 00 00 20 00  \............. .
+00000010: 00 00 e0 b9 a5 4d 8a 60 e2 b9 a5 4d 8a 60 88 6c  .....M.`...M.`.l
+00000020: 80 01 00 68 00 00 10 18 00 01 00 02 00 18 00 00  ...h............
+00000030: 00 05 00 00 00 00 00 00 00 07 00 00 00 00 00 00  ................
+00000040: 00 00 10 7b 44 3b 36 98 77 6c 30 00 00 00 00 00  ...{D;6.wl0.....
+00000050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+brcmfmac: brcmf_fws_hdrpull enter: ifidx 0, skblen 78, sig 0
+brcmutil: Rx Data:
+00000000: 5c 00 a3 ff bf 01 06 0e 00 d8 00 00 00 00 20 00  \............. .
+00000010: 00 00 e0 b9 a5 4d 8a 60 e2 b9 a5 4d 8a 60 88 6c  .....M.`...M.`.l
+00000020: 80 01 00 68 00 00 10 18 00 01 00 02 00 18 00 00  ...h............
+00000030: 00 05 00 00 00 00 00 00 00 07 00 00 00 00 00 00  ................
+00000040: 00 00 10 7b 44 3b 36 98 77 6c 30 00 00 00 00 00  ...{D;6.wl0.....
+00000050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+brcmfmac: brcmf_fws_hdrpull enter: ifidx 0, skblen 78, sig 0
+brcmutil: Rx Data:
+00000000: 5c 00 a3 ff c0 01 00 0e 00 d8 00 00 00 00 20 00  \............. .
+00000010: 00 00 e0 b9 a5 4d 8a 60 e2 b9 a5 4d 8a 60 88 6c  .....M.`...M.`.l
+00000020: 80 01 00 68 00 00 10 18 00 01 00 02 00 18 00 00  ...h............
+00000030: 00 05 00 00 00 00 00 00 00 07 00 00 00 00 00 00  ................
+00000040: 00 00 10 7b 44 3b 36 98 77 6c 30 00 00 00 00 00  ...{D;6.wl0.....
+00000050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+brcmfmac: brcmf_fws_hdrpull enter: ifidx 0, skblen 78, sig 0
+brcmutil: RxHdr:
+00000000: 5c 00 a3 ff c1 01 00 0e 00 d8 00 00              \...........
+brcmutil: Rx Data:
+00000000: 5c 00 a3 ff c1 01 00 0e 00 d8 00 00 00 00 20 00  \............. .
+00000010: 00 00 e0 b9 a5 4d 8a 60 e2 b9 a5 4d 8a 60 88 6c  .....M.`...M.`.l
+00000020: 80 01 00 68 00 00 10 18 00 01 00 02 00 18 00 00  ...h............
+00000030: 00 05 00 00 00 00 00 00 00 07 00 00 00 00 00 00  ................
+00000040: 00 00 10 7b 44 3b 36 98 77 6c 30 00 00 00 00 00  ...{D;6.wl0.....
+00000050: 00 00 00 00 00 00 00 00 00 00 00 00              ............
+brcmfmac: brcmf_fws_hdrpull enter: ifidx 0, skblen 74, sig 0
+brcmutil: RxHdr:
+00000000: 00 00 00 00 00 00 00 00 00 00 00 00              ............
+brcmfmac: brcmf_sdio_readframes processed 9 frames
+brcmfmac: brcmf_sdio_isr Enter
+brcmutil: Tx Frame:
+00000000: c9 00 36 ff d2 00 00 0c 00 00 00 00 07 01 00 00  ..6.............
+00000010: ad 00 00 00 02 00 cb 00 00 00 00 00 77 73 65 63  ............wsec
+00000020: 5f 6b 65 79 00 00 00 00 00 00 00 00 00 00 00 00  _key............
+[cut]
+brcmfmac: brcmf_sdio_bus_rxctl Enter
+brcmutil: RxHdr:
+00000000: c9 00 36 ff c2 00 00 0c 00 d9 00 00              ..6.........
+brcmutil: RxCtrl:
+00000000: c9 00 36 ff c2 00 00 0c 00 d9 00 00 07 01 00 00  ..6.............
+00000010: ad 00 00 00 00 00 cb 00 00 00 00 00 77 73 65 63  ............wsec
+00000020: 5f 6b 65 79 00 00 00 00 00 00 00 00 00 00 00 00  _key............
+[cut]
+brcmfmac: brcmf_sdio_bus_rxctl resumed on rxctl frame, got 189 expected 189
+brcmfmac: brcmf_cfg80211_del_key Exit
+brcmfmac: brcmf_cfg80211_del_key Enter
+brcmfmac: brcmf_cfg80211_del_key Enter
+brcmfmac: brcmf_sdio_bus_txctl Enter
+brcmutil: RxHdr:
+00000000: 00 00 00 00 00 00 00 00 00 00 00 00              ............
+brcmfmac: brcmf_sdio_readframes processed 1 frames
+brcmutil: Tx Frame:
+00000000: c9 00 36 ff d3 00 00 0c 00 00 00 00 07 01 00 00  ..6.............
+00000010: ad 00 00 00 02 00 cc 00 00 00 00 00 77 73 65 63  ............wsec
+00000020: 5f 6b 65 79 00 02 00 00 00 00 00 00 00 00 00 00  _key............
+[cut]
+brcmfmac: brcmf_sdio_isr Enter
+brcmfmac: brcmf_sdio_bus_rxctl Enter
+brcmutil: RxHdr:
+00000000: c9 00 36 ff c3 00 00 0c 00 da 00 00              ..6.........
+brcmutil: RxCtrl:
+00000000: c9 00 36 ff c3 00 00 0c 00 da 00 00 07 01 00 00  ..6.............
+00000010: ad 00 00 00 00 00 cc 00 00 00 00 00 77 73 65 63  ............wsec
+00000020: 5f 6b 65 79 00 02 00 00 00 00 00 00 00 00 00 00  _key............
+[cut]
+brcmfmac: brcmf_sdio_bus_rxctl resumed on rxctl frame, got 189 expected 189
+brcmutil: RxHdr:
+brcmfmac: brcmf_cfg80211_del_key Exit
+00000000: 00 00 00 00 00 00 00 00 00 00 00 00              ............
+brcmfmac: brcmf_cfg80211_del_key Enter
+brcmfmac: brcmf_cfg80211_del_key Enter
+brcmfmac: brcmf_sdio_readframes processed 1 frames
+brcmfmac: brcmf_cfg80211_del_key Enter
+brcmfmac: brcmf_cfg80211_suspend Enter
+brcmfmac: brcmf_pno_stop_sched_scan reqid=0
+brcmfmac: brcmf_link_down Enter
+brcmfmac: brcmf_btcoex_set_mode DHCP session ends
+brcmfmac: brcmf_link_down Exit
+brcmfmac: brcmf_sdio_bus_watchdog Enter
+brcmfmac: brcmf_sdio_bus_watchdog Enter
+brcmfmac: brcmf_sdio_bus_txctl Enter
+brcmutil: Tx Frame:
+00000000: 24 00 db ff d4 00 00 0c 00 00 00 00 07 01 00 00  $...............
+00000010: 08 00 00 00 02 00 cd 00 00 00 00 00 6d 70 63 00  ............mpc.
+00000020: 01 00 00 00                                      ....
+brcmfmac: brcmf_sdio_isr Enter
+brcmfmac: brcmf_sdio_bus_rxctl Enter
+brcmutil: RxHdr:
+00000000: 24 00 db ff c4 00 00 0c 00 db 00 00              $...........
+brcmutil: RxCtrl:
+00000000: 24 00 db ff c4 00 00 0c 00 db 00 00 07 01 00 00  $...............
+00000010: 08 00 00 00 00 00 cd 00 00 00 00 00 6d 70 63 00  ............mpc.
+00000020: 01 00 00 00                                      ....
+brcmfmac: brcmf_sdio_bus_rxctl resumed on rxctl frame, got 24 expected 24
+brcmfmac: brcmf_set_mpc MPC : 1
+brcmfmac: brcmf_cfg80211_suspend Exit
+brcmutil: RxHdr:
+00000000: 00 00 00 00 00 00 00 00 00 00 00 00              ............
+brcmfmac: brcmf_sdio_readframes processed 1 frames
+brcmfmac: brcmf_sdiod_change_state 1 -> 0
+brcmfmac: brcmf_bus_change_state 1 -> 0
+brcmfmac: brcmf_netdev_start_xmit Enter, bsscfgidx=0
+CPU: 0 PID: 0 Comm: swapper/0 Tainted: G        W         5.13.0-rc7-next-20210622-00178-g74f7ad03c152-dirty #8227
+Hardware name: NVIDIA Tegra SoC (Flattened Device Tree)
+[<c010ccf5>] (unwind_backtrace) from [<c0108fd5>] (show_stack+0x11/0x14)
+[<c0108fd5>] (show_stack) from [<c0a6d327>] (dump_stack_lvl+0x7f/0x8c)
+[<c0a6d327>] (dump_stack_lvl) from [<c065ce17>] (brcmf_netdev_start_xmit+0x1d7/0x254)
+[<c065ce17>] (brcmf_netdev_start_xmit) from [<c0817e8b>] (dev_hard_start_xmit+0xbb/0x1ec)
+[<c0817e8b>] (dev_hard_start_xmit) from [<c0849bef>] (sch_direct_xmit+0xab/0x1f0)
+[<c0849bef>] (sch_direct_xmit) from [<c0849e33>] (__qdisc_run+0xff/0x4cc)
+[<c0849e33>] (__qdisc_run) from [<c0818461>] (__dev_queue_xmit+0x419/0x690)
+[<c0818461>] (__dev_queue_xmit) from [<c08973eb>] (ip_finish_output2+0x1c3/0x480)
+[<c08973eb>] (ip_finish_output2) from [<c0898f39>] (__ip_queue_xmit+0xfd/0x2f8)
+[<c0898f39>] (__ip_queue_xmit) from [<c08b0483>] (__tcp_transmit_skb+0x3f7/0x8ec)
+[<c08b0483>] (__tcp_transmit_skb) from [<c08b13d5>] (tcp_xmit_probe_skb+0x9d/0xa8)
+[<c08b13d5>] (tcp_xmit_probe_skb) from [<c08b3c87>] (tcp_keepalive_timer+0x10f/0x1f0)
+[<c08b3c87>] (tcp_keepalive_timer) from [<c0185695>] (call_timer_fn+0x31/0x160)
+[<c0185695>] (call_timer_fn) from [<c018593f>] (__run_timers.part.0+0x17b/0x228)
+[<c018593f>] (__run_timers.part.0) from [<c0185a1b>] (run_timer_softirq+0x2f/0x50)
+[<c0185a1b>] (run_timer_softirq) from [<c01013ab>] (__do_softirq+0xd3/0x2ec)
+[<c01013ab>] (__do_softirq) from [<c01251d3>] (irq_exit+0xab/0xb8)
+[<c01251d3>] (irq_exit) from [<c016e31d>] (handle_domain_irq+0x45/0x60)
+[<c016e31d>] (handle_domain_irq) from [<c04c4a83>] (gic_handle_irq+0x6b/0x7c)
+[<c04c4a83>] (gic_handle_irq) from [<c0100b65>] (__irq_svc+0x65/0xac)
+Exception stack(0xc1201ed0 to 0xc1201f18)
+1ec0:                                     00000000 00000000 2e4fd000 00000060
+1ee0: 00000000 c13240a8 78813f98 ef6949f8 00000000 00000024 00000000 00000024
+1f00: 02da3104 c1201f20 c074e015 c074e094 60010133 ffffffff
+[<c0100b65>] (__irq_svc) from [<c074e094>] (cpuidle_enter_state+0x1ac/0x360)
+[<c074e094>] (cpuidle_enter_state) from [<c074e297>] (cpuidle_enter+0x3b/0x3c)
+[<c074e297>] (cpuidle_enter) from [<c014b6e1>] (do_idle+0x109/0x204)
+[<c014b6e1>] (do_idle) from [<c014ba75>] (cpu_startup_entry+0x19/0x1c)
+[<c014ba75>] (cpu_startup_entry) from [<c1101033>] (start_kernel+0x70b/0x734)
+ieee80211 phy0: brcmf_netdev_start_xmit: xmit rejected state=0
+brcmfmac: brcmf_cfg80211_resume Enter
+brcmfmac: brcmf_sdio_isr Enter
+brcmfmac: brcmf_sdiod_change_state 0 -> 1
+brcmfmac: brcmf_bus_change_state 0 -> 1
+brcmfmac: brcmf_sdio_bus_watchdog Enter
+brcmfmac: brcmf_sdio_bus_watchdog Enter
+OOM killer enabled.
+Restarting tasks ... done.
+brcmfmac: brcmf_cfg80211_dump_station Enter, idx 0
+PM: suspend exit
