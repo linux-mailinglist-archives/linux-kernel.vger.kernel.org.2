@@ -2,138 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF723B0798
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58A7E3B079C
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:40:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231960AbhFVOlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 10:41:31 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:57896 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbhFVOl3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 10:41:29 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 15MEd9bv115361;
-        Tue, 22 Jun 2021 09:39:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1624372749;
-        bh=pX524DLJ3gUOuQ9Oo40V4tqELYtuI9IJaaiV3BjmlWA=;
-        h=From:To:CC:Subject:Date;
-        b=cpopWtcYhWsJ6klDFnV41gTb/U4bvJNsu1ofSZ+FrVGhyZcEabNskaypO4KdkOcBk
-         s8NqqTqGUc8+cbRaV0KEQEc9lBj/+dS9Bcg4lBZlmwyOvdib45E64pIGQs6c9dIb+O
-         Ac9YE/mhZ0tTmKwiXb1y8XVXuuIK7To1pJwyL2Pc=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 15MEd91P044007
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 22 Jun 2021 09:39:09 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Tue, 22
- Jun 2021 09:39:09 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Tue, 22 Jun 2021 09:39:09 -0500
-Received: from ula0132425.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 15MEd6e5004168;
-        Tue, 22 Jun 2021 09:39:07 -0500
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-To:     "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] net: ti: am65-cpsw-nuss: Fix crash when changing number of TX queues
-Date:   Tue, 22 Jun 2021 20:08:57 +0530
-Message-ID: <20210622143857.21682-1-vigneshr@ti.com>
-X-Mailer: git-send-email 2.32.0
+        id S231948AbhFVOmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 10:42:19 -0400
+Received: from mga01.intel.com ([192.55.52.88]:26400 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230047AbhFVOmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 10:42:18 -0400
+IronPort-SDR: +/aXxwOX+E7u/bNUYFvIZ4pzNF/ESvT/wDCARkhRpX1ntbdDVl4LAcohs3THsZ4F/LobBZtSyJ
+ 1Q3r2JudbeRA==
+X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="228621337"
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208";a="228621337"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 07:40:02 -0700
+IronPort-SDR: emBQV5XIc1/KaJ/O0NcCGaGXgBFS8dFGi9PMnXOuirCNUUetfSCQIAffEdnfX+QSlF9iY6fho8
+ t+dXuC8ahIwA==
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208";a="473791317"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 07:39:59 -0700
+Received: from andy by smile with local (Exim 4.94.2)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lvhZC-004Uni-Sn; Tue, 22 Jun 2021 17:39:54 +0300
+Date:   Tue, 22 Jun 2021 17:39:54 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jia He <justin.he@arm.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Eric Biggers <ebiggers@google.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>, nd@arm.com
+Subject: Re: [PATCH v5 2/4] lib/vsprintf.c: make '%pD' print the full path of
+ file
+Message-ID: <YNH2OsDTokjY1vaa@smile.fi.intel.com>
+References: <20210622140634.2436-1-justin.he@arm.com>
+ <20210622140634.2436-3-justin.he@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210622140634.2436-3-justin.he@arm.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When changing number of TX queues using ethtool:
+On Tue, Jun 22, 2021 at 10:06:32PM +0800, Jia He wrote:
+> Previously, the specifier '%pD' is for printing dentry name of struct
+> file. It may not be perfect (by default it only prints one component.)
+> 
+> As suggested by Linus [1]:
 
-	# ethtool -L eth0 tx 1
-	[  135.301047] Unable to handle kernel paging request at virtual address 00000000af5d0000
-	[...]
-	[  135.525128] Call trace:
-	[  135.525142]  dma_release_from_dev_coherent+0x2c/0xb0
-	[  135.525148]  dma_free_attrs+0x54/0xe0
-	[  135.525156]  k3_cppi_desc_pool_destroy+0x50/0xa0
-	[  135.525164]  am65_cpsw_nuss_remove_tx_chns+0x88/0xdc
-	[  135.525171]  am65_cpsw_set_channels+0x3c/0x70
-	[...]
+Citing is better looked when you shift right it by two white spaces.
 
-This is because k3_cppi_desc_pool_destroy() which is called after
-k3_udma_glue_release_tx_chn() in am65_cpsw_nuss_remove_tx_chns()
-references struct device that is unregistered at the end of
-k3_udma_glue_release_tx_chn()
+> A dentry has a parent, but at the same time, a dentry really does
+> inherently have "one name" (and given just the dentry pointers, you
+> can't show mount-related parenthood, so in many ways the "show just
+> one name" makes sense for "%pd" in ways it doesn't necessarily for
+> "%pD"). But while a dentry arguably has that "one primary component",
+> a _file_ is certainly not exclusively about that last component.
+> 
+> Hence change the behavior of '%pD' to print the full path of that file.
+> 
+> Precision is never going to be used with %p (or any of its kernel
+> extensions) if -Wformat is turned on.
 
-Therefore the right order is to call k3_cppi_desc_pool_destroy() and
-destroy desc pool before calling k3_udma_glue_release_tx_chn().
-Fix this throughout the driver.
+> Link: https://lore.kernel.org/lkml/CAHk-=wimsMqGdzik187YWLb-ru+iktb4MYbMQG1rnZ81dXYFVg@mail.gmail.com/ [1]
 
-Fixes: 93a76530316a ("net: ethernet: ti: introduce am65x/j721e gigabit eth subsystem driver")
-Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
----
- drivers/net/ethernet/ti/am65-cpsw-nuss.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/ethernet/ti/am65-cpsw-nuss.c b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-index 6a67b026df0b..718539cdd2f2 100644
---- a/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-+++ b/drivers/net/ethernet/ti/am65-cpsw-nuss.c
-@@ -1506,12 +1506,12 @@ static void am65_cpsw_nuss_free_tx_chns(void *data)
- 	for (i = 0; i < common->tx_ch_num; i++) {
- 		struct am65_cpsw_tx_chn *tx_chn = &common->tx_chns[i];
- 
--		if (!IS_ERR_OR_NULL(tx_chn->tx_chn))
--			k3_udma_glue_release_tx_chn(tx_chn->tx_chn);
--
- 		if (!IS_ERR_OR_NULL(tx_chn->desc_pool))
- 			k3_cppi_desc_pool_destroy(tx_chn->desc_pool);
- 
-+		if (!IS_ERR_OR_NULL(tx_chn->tx_chn))
-+			k3_udma_glue_release_tx_chn(tx_chn->tx_chn);
-+
- 		memset(tx_chn, 0, sizeof(*tx_chn));
- 	}
- }
-@@ -1531,12 +1531,12 @@ void am65_cpsw_nuss_remove_tx_chns(struct am65_cpsw_common *common)
- 
- 		netif_napi_del(&tx_chn->napi_tx);
- 
--		if (!IS_ERR_OR_NULL(tx_chn->tx_chn))
--			k3_udma_glue_release_tx_chn(tx_chn->tx_chn);
--
- 		if (!IS_ERR_OR_NULL(tx_chn->desc_pool))
- 			k3_cppi_desc_pool_destroy(tx_chn->desc_pool);
- 
-+		if (!IS_ERR_OR_NULL(tx_chn->tx_chn))
-+			k3_udma_glue_release_tx_chn(tx_chn->tx_chn);
-+
- 		memset(tx_chn, 0, sizeof(*tx_chn));
- 	}
- }
-@@ -1624,11 +1624,11 @@ static void am65_cpsw_nuss_free_rx_chns(void *data)
- 
- 	rx_chn = &common->rx_chns;
- 
--	if (!IS_ERR_OR_NULL(rx_chn->rx_chn))
--		k3_udma_glue_release_rx_chn(rx_chn->rx_chn);
--
- 	if (!IS_ERR_OR_NULL(rx_chn->desc_pool))
- 		k3_cppi_desc_pool_destroy(rx_chn->desc_pool);
-+
-+	if (!IS_ERR_OR_NULL(rx_chn->rx_chn))
-+		k3_udma_glue_release_rx_chn(rx_chn->rx_chn);
- }
- 
- static int am65_cpsw_nuss_init_rx_chns(struct am65_cpsw_common *common)
+> 
+
+Shouldn't be blank lines in the tag block. I have an impression that I have
+commented on this already...
+
+...
+
+> -last components.  %pD does the same thing for struct file.
+> +last components.  %pD prints full file path together with mount-related
+
+I guess you may also convert double space to a single one.
+
+> +parenthood.
+
 -- 
-2.32.0
+With Best Regards,
+Andy Shevchenko
+
 
