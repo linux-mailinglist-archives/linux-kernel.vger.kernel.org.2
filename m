@@ -2,76 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5623AFFE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:07:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EAD83AFFEB
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhFVJJn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 05:09:43 -0400
-Received: from mail-m17639.qiye.163.com ([59.111.176.39]:39648 "EHLO
-        mail-m17639.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229702AbhFVJJm (ORCPT
+        id S229812AbhFVJLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 05:11:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229668AbhFVJLL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 05:09:42 -0400
-DKIM-Signature: a=rsa-sha256;
-        b=kW3MYcZqELPXs3Wj/0bVLvJgzqDlkRhKLz1c3NKqkhUc8pUtSMoIMLHaP4nkHWX/187NZ0Bz4SQaZhsXQqp7ALzkstM8dnaJkrZQDzeSMFOIIjFBV7AjlwvHgdwW68j8RgXgLct2F6d9Zqy6iHku1EKTGdQJEfnzHk5InX5e2XA=;
-        s=default; c=relaxed/relaxed; d=vivo.com; v=1;
-        bh=UNitqia/EPNbGctZz1frhVJ7NfVvBMXSZg12fK1tcbM=;
-        h=date:mime-version:subject:message-id:from;
-Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.232])
-        by mail-m17639.qiye.163.com (Hmail) with ESMTPA id 2537C380294;
-        Tue, 22 Jun 2021 17:07:25 +0800 (CST)
-From:   Wang Qing <wangqing@vivo.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>, Wang Qing <wangqing@vivo.com>,
-        Santosh Sivaraj <santosh@fossix.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH RFC 2/2] watchdog: support watchdog hrtimer suspend when CPU suspend
-Date:   Tue, 22 Jun 2021 17:06:47 +0800
-Message-Id: <1624352816-26450-3-git-send-email-wangqing@vivo.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1624352816-26450-1-git-send-email-wangqing@vivo.com>
-References: <1624352816-26450-1-git-send-email-wangqing@vivo.com>
+        Tue, 22 Jun 2021 05:11:11 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A05C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 02:08:56 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1624352924;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CpVayGWDD5jCjOsDFgbodGAhFkKfuv5XGWD7w7SebTM=;
+        b=2R1/CleI7KOMUBqtuusPHNeBMyB6LQW23QPGGjCQZvQ0Gu1F5g27502eLEXYsIptF0rt2a
+        wFXNgg3XyBG6ewdHMW1VmxCc3MGP0g7PgSqc24FhbZE4sEL0qHwmNZxbkV3e19pF+jZNQQ
+        ZVL9VeYqf9YFoxGChCOYTmoaynoFcIkfaQYp2RRSuG2XU8bSo5vhhzMGYPjwLkoWk60cuW
+        505IOY8i6xYQWJurLi5DhjnRL33vp7xdu9IhaISgVmewqkYkLjA2uFszN/E3EGEE4y/h9d
+        2fs4u9TpFNBtvW0bxQV+WKLDxjJ6ohry5GsNzc4I/Ernfr0GnALVnaGSuf9SlA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1624352924;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CpVayGWDD5jCjOsDFgbodGAhFkKfuv5XGWD7w7SebTM=;
+        b=kqPPEE7X6YDcM7f4Bc1ElGjkw5V0cvl+ZcwqnvLAfjy3YlwWAhRzZff+Y52vnYnYgjfvjL
+        s2+Xj7eFKHetLXAg==
+To:     Oliver Sang <oliver.sang@intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "Yu\, Fenghua" <fenghua.yu@intel.com>,
+        "Luck\, Tony" <tony.luck@intel.com>,
+        "Yu\, Yu-cheng" <yu-cheng.yu@intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Borislav Petkov <bp@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        "Li\, Aubrey" <aubrey.li@intel.com>,
+        "Xing\, Zhengjun" <zhengjun.xing@linux.intel.com>,
+        "Tang\, Feng" <feng.tang@intel.com>,
+        "Liu\, Yujie" <yujie.liu@intel.com>,
+        "Si\, Beibei" <beibei.si@intel.com>,
+        "Li\, Philip" <philip.li@intel.com>,
+        "Du\, Julie" <julie.du@intel.com>
+Subject: Re: [patch V3 00/66] x86/fpu: Spring cleaning and PKRU sanitizing
+In-Reply-To: <20210622015937.GB687@xsang-OptiPlex-9020>
+References: <20210618141823.161158090@linutronix.de> <20210622015937.GB687@xsang-OptiPlex-9020>
+Date:   Tue, 22 Jun 2021 11:08:43 +0200
+Message-ID: <87wnqme06c.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGkJKS1ZDH05LQ0ofShlITUhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKTFVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PlE6MDo*DT9JCD4*Ojg8KzIf
-        CjwKCSpVSlVKTUlPSE5JQ09OTE5CVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISVlXWQgBWUFJT01CNwY+
-X-HM-Tid: 0a7a32f96e84d994kuws2537c380294
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-the watchdog hrtimer doesn’t have to work while CPU is suspend. Otherwise 
-the maximum suspend time of the CPU is 4s if enable lockup detector,
-which is unacceptable on some products.
+Oliver,
 
-Signed-off-by: Wang Qing <wangqing@vivo.com>
----
- kernel/watchdog.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On Tue, Jun 22 2021 at 09:59, Oliver Sang wrote:
+> On Fri, Jun 18, 2021 at 10:18:23PM +0800, Thomas Gleixner wrote:
+>>   git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git x86/fpu
+>
+> 0-Day kernel CI tested this branch from performance view,
+> choosing some sub-tests from will-it-scale (detail as below), since we
+> thought if the branch has the impact of fpu ops, will-it-scale should be
+> able to catch it.
+> we also plan to add stress-ng for new round test.
+> could you suggest if any other suitable test suites? and what's the most
+> proper sub-tests in will-it-scale and stress-ng?
 
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 7c39790..f68591f
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -455,7 +455,8 @@ static void watchdog_enable(unsigned int cpu)
- 	 * Start the timer first to prevent the NMI watchdog triggering
- 	 * before the timer has a chance to fire.
- 	 */
--	hrtimer_init(hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_HARD);
-+	hrtimer_init(hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_HARD
-+			| HRTIMER_MODE_SUSPEND);
- 	hrtimer->function = watchdog_timer_fn;
- 	hrtimer_start(hrtimer, ns_to_ktime(sample_period),
- 		      HRTIMER_MODE_REL_PINNED_HARD);
--- 
-2.7.4
+Hard to tell. Anything scheduling heavy will exercise these code paths.
 
+Thanks,
+
+        tglx
+
+        
