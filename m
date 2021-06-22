@@ -2,131 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D214B3B0AFB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6FE3B0AFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 19:00:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231436AbhFVRC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 13:02:29 -0400
-Received: from mail-pl1-f174.google.com ([209.85.214.174]:35478 "EHLO
-        mail-pl1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230076AbhFVRC0 (ORCPT
+        id S231634AbhFVRC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 13:02:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230076AbhFVRC5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 13:02:26 -0400
-Received: by mail-pl1-f174.google.com with SMTP id b3so3103965plg.2;
-        Tue, 22 Jun 2021 10:00:10 -0700 (PDT)
+        Tue, 22 Jun 2021 13:02:57 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 769E7C061574;
+        Tue, 22 Jun 2021 10:00:40 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso21860809otu.10;
+        Tue, 22 Jun 2021 10:00:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CU73LRTmqsTJXC4hCPE4/i0AAwdr3FZJs+LzvR2IcQI=;
+        b=JTfsR1QOxSzlj2vxLZxvTeR8R5YGWW3UbyZl8oBQYsB4CnGDqMUmttCi1cA3uLODi0
+         hkr+ZxmFRcbPXJRyrW+vzjz1HwVRBHabLWiU38taHodnC0+cnmc3xyht3tt9KH0EalnN
+         DyiOe7fQ9u5enXuTprYZcSjW/2Tua3TInECPkJZgtLMnrWUG0UoLqGxuICsn+ZhzAVXM
+         oNqGrxVngIXiktfMWDUn1pkKdwBJYgSok9U2ZwmZ0nzhOmufFksClgO6DKhgd/nws4/P
+         RJu/0vB+Svoau3mbXd7wuDo1OzO1FLR7j8q6fQ3s3A5Xm4hbYApg8bruOUgwTUifLUuT
+         LBlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ukZgckleaIh0b++pe9wauTAIqnu+pnTaHyS+Y4sePtY=;
-        b=YmPLbZic/h+mL3oBMpWel9PL6Gu/gigi/a3oriPSIM95jzGfywdWDvnTqCb48yQ4z0
-         mA8swahtoqZm6c04jEGM4OXO0JklWC1MK39L5oPQ3d0suLAj/nsMOKtc2RIsLlBg3f/4
-         8qyfXTuf2QQijxM6rNgEWCAv59O29G9u6PtSk9RJU8SQiSXhajo0m37dyMNP0Kw+C4Kq
-         ISjPTHEzFlUMx7+g7DPYkUy/Du4bMA1FTLDCmJnYTW05dv1XyBH5lNqy9I+vgsiT5Oio
-         1rCI+mOW8oLtvR2nR9Hc2mf67JcdGQ28t1M+ByIDRd/9lntRfRkfTXKC90CFXBuTmpJv
-         bA2g==
-X-Gm-Message-State: AOAM530WrgxIYeVrPe23yXYi+wIuQb34VqbpzTmPu+hjYWgf6U6kOyyn
-        CqA0Gy1ipoSgmb1SrrmnDqk=
-X-Google-Smtp-Source: ABdhPJwUGGxgUVGgwnaFLgXLonCrkA89NCiVddv7o2kDnyXaho+bt5zGxOP/7niZOdrq3I3Pa75bRA==
-X-Received: by 2002:a17:902:7c05:b029:11c:1e7d:c633 with SMTP id x5-20020a1709027c05b029011c1e7dc633mr23377607pll.48.1624381210368;
-        Tue, 22 Jun 2021 10:00:10 -0700 (PDT)
-Received: from garbanzo ([173.239.198.97])
-        by smtp.gmail.com with ESMTPSA id c6sm10935279pfb.39.2021.06.22.10.00.08
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=CU73LRTmqsTJXC4hCPE4/i0AAwdr3FZJs+LzvR2IcQI=;
+        b=XaL1HPgkRDg5iTkFFeuI9hVo4+VOwUBPSCEFRf0PtBOQ7AX9jrfaXHoHyVLM5oWU17
+         HZkmFScVb7qrQSYD2rKkSJ8L5wD+KoY4++tTfy48xErF1fcDDLL4HBXdrIw7UWhvnJDg
+         VrU+8YdcCfSudeFAakyQp6fCAftbWEt6Hp3z6onSpUH1baESRWhEliljCwuC74pd7YIp
+         kLaSeDYFv9fK9lZTm/VR/j9SnPOZPcAgzu1vlwaFkQvEymqzH5+lnjIwS+jKbz54ZJZ4
+         hUuK/EUgeHlm9jxewl+Xc9dmTx2Ms1GPwmyMZOZOyOThHWFWqsL72wKw5beDkJSZsdkK
+         Qw/A==
+X-Gm-Message-State: AOAM5311Plb+FLe4t0lACX9ln1i3iJsxOOs3Rsh5zuQg95IWQ9tNIebg
+        DmEoYGiBCWWGTkzJ8DPui/0=
+X-Google-Smtp-Source: ABdhPJxoRFAitm/89S9nKTw10yYqZzZlkwIjYq9UXK9WgXuoqd3GuEH7Q8tIHD2Q6N3/SFxKZJ/WVw==
+X-Received: by 2002:a9d:2c67:: with SMTP id f94mr3993356otb.353.1624381239886;
+        Tue, 22 Jun 2021 10:00:39 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id s123sm599767oos.12.2021.06.22.10.00.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 10:00:09 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 10:00:06 -0700
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     minchan@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
-        mbenes@suse.com, jpoimboe@redhat.com, tglx@linutronix.de,
-        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
-        peterz@infradead.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/3] zram: fix deadlock with sysfs attribute usage and
- driver removal
-Message-ID: <20210622170006.3c2jgi4aa4edrkax@garbanzo>
-References: <20210621233013.562641-1-mcgrof@kernel.org>
- <20210621233634.595649-1-mcgrof@kernel.org>
- <YNGUIzh7aR3C/Hoz@kroah.com>
- <20210622152713.fqwyuqpamwgaxomc@garbanzo>
- <YNIPiDb3TPamz5cF@kroah.com>
- <20210622164027.656zda4gjy2kjr5z@garbanzo>
- <YNIVAS45Lc5lWiCv@kroah.com>
+        Tue, 22 Jun 2021 10:00:39 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 22 Jun 2021 10:00:37 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     Art Nikpal <email2tema@gmail.com>, wim@linux-watchdog.org,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Christian Hewitt <christianshewitt@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>,
+        linux-kernel@vger.kernel.org, Artem Lapkin <art@khadas.com>,
+        Nick Xie <nick@khadas.com>, Gouwa Wang <gouwa@khadas.com>
+Subject: Re: [PATCH] watchdog: meson_gxbb_wdt: improve
+Message-ID: <20210622170037.GA3440464@roeck-us.net>
+References: <20210622095639.1280774-1-art@khadas.com>
+ <bfa12322-bc49-2337-2988-199e87e34b87@baylibre.com>
+ <CAKaHn9JpH2Yh-1njO6jEnFeu-GMhbonftN=-VXdbvjdug16qHA@mail.gmail.com>
+ <0d5e53b2-873e-0ffa-32eb-87e96b51e263@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YNIVAS45Lc5lWiCv@kroah.com>
+In-Reply-To: <0d5e53b2-873e-0ffa-32eb-87e96b51e263@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 06:51:13PM +0200, Greg KH wrote:
-> On Tue, Jun 22, 2021 at 09:40:27AM -0700, Luis Chamberlain wrote:
-> > On Tue, Jun 22, 2021 at 06:27:52PM +0200, Greg KH wrote:
-> > > On Tue, Jun 22, 2021 at 08:27:13AM -0700, Luis Chamberlain wrote:
-> > > > On Tue, Jun 22, 2021 at 09:41:23AM +0200, Greg KH wrote:
-> > > > > On Mon, Jun 21, 2021 at 04:36:34PM -0700, Luis Chamberlain wrote:
-> > > > > > +	ssize_t __ret; \
-> > > > > > +	if (!try_module_get(THIS_MODULE)) \
-> > > > > 
-> > > > > try_module_get(THIS_MODULE) is always racy and probably does not do what
-> > > > > you want it to do.  You always want to get/put module references from
-> > > > > code that is NOT the code calling these functions.
-> > > > 
-> > > > In this case, we want it to trump module removal if it succeeds. That's all.
-> > > 
-> > > True, but either you stop the race, or you do not right?  If you are so
-> > > invested in your load/unload test, this should show up with this code
-> > > eventually as well.
-> > 
-> > I still do not see how the race is possible give the goal to prevent
-> > module removal if a sysfs file is being used. If rmmod is taking
-> > place, this simply will bail out.
-> > 
-> > > > > > +		return -ENODEV; \
-> > > > > > +	__ret = _name ## _store(dev, attr, buf, len); \
-> > > > > > +	module_put(THIS_MODULE); \
-> > > > > 
-> > > > > This too is going to be racy.
-> > > > > 
-> > > > > While fun to poke at, I still think this is pointless.
-> > > > 
-> > > > If you have a better idea, which does not "DOS" module removal, please
-> > > > let me know!
-> > > 
-> > > I have yet to understand why you think that the load/unload in a loop is
-> > > a valid use case.
-> > 
-> > That is dependent upon the intrastructure tests built for a driver.
-> > 
-> > In the case of fstests and blktests we have drivers which *always* get
-> > removed and loaded on each test. Take for instance scsi_debug, which
-> > creates / destroys virtual devices on the per test. Likewise, to build
-> > confidence that failure rate is as close as possible to 0, one must run
-> > a test as many times as possible in a loop. And, to build confidence in
-> > a test, in some situations one ends up running modprobe / rmmod in a
-> > loop.
-> > 
-> > In this case a customer does have a complex system of tests, and by looking
-> > at the crash logs I managed to simplify the way to reproduce it using
-> > simple shell scripts.
+On Tue, Jun 22, 2021 at 02:43:45PM +0200, Neil Armstrong wrote:
+> Hi,
 > 
-> And is _this_ change needed even with the changes in patch 1/3?
+> On 22/06/2021 13:53, Art Nikpal wrote:
+> >> Neil
+> >> Can you split the patch in 4 distinct changes ?
+> > 
+> > yes  no problem i can try to do it tomorrow !
+> > maybe somebody have other ideas, suggestion, comments ...
+> 
+> The changeset is clean, and overall I'm ok with the changes, but I'm pretty sure the wdt maintainers
+> will prefer separate changes in order to comment of each.
 
-Oh absolutely. This patch is needed 100%. Without it, it is actually
-pretty trivial to deadlock as noted in my instructions on how to
-reproduce.
+Correct. As per guidelines, "one logical change per patch".
 
-> I think that commit fixes your issues given that you will not unload the
-> module until after the sysfs devices are removed from the system.  Have
-> you tried that alone with your test?
-
-I have tried that, and it does not resolve the deadlock.
-
-It was *why* I have been insisting that this is a real issue, and why I
-decided to instead try to implement something generic after I was hinted
-by livepatch folks that they also had observed a similar deadlock, and
-so that a generic solution would be appreciated by them.
-
-  Luis
+Guenter
