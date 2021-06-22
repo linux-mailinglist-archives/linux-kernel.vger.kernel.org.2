@@ -2,291 +2,322 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2273AFAE7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 04:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B500C3AFAE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 04:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbhFVCKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 22:10:17 -0400
-Received: from mail-bn7nam10on2046.outbound.protection.outlook.com ([40.107.92.46]:52833
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229663AbhFVCKQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 22:10:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=it7RQIJq0Mi4ImHGJBXRgYBn217GS7fToskr1khuqj98ztX4jk49M9M48rPffKr2CirE3Gf1pd9rj5dQBJBhTNvyVYuT6aYwkXFWoNSRQHcirKjkHJGhu4INiBEHHXqLVn6dG/DPd0CyZzm1xdCT0x1ro8x1V5hctnNs9NyGIL8JDFyAkXN31mFvkjaAv7X/BKuf+JIPyYVMXuPnjjbImfT2UKt5pvEFWDQnJh1RqSuUveO8W5M52hKN2gtTVLKDMLygzLJk1hHXCG5s0akCkPf7VJpZLfnfcds8ZxGu1NmZ9rE7Cz/bBKFocGMr7QJMWXa3GYJlWsxgzF2yNvIRDQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PTVdrMfYtMmkif1pUn6H4Fav9a4BKMA6Yp71rYlsw00=;
- b=fO5GoDzShYgt4KIwFGAEjicJaMEyLGO1Y50s2kwSIJEioPpTKt4kA7XaSBeGf4nI6hGHH/wd5MDihfGHA0m4KTVLz6XTL4aWm27xII1VPGw1kzadkwVdCLinkKxvLDWMb9liRD8j8rKjcMyZzo9aUXhRS8RZnCa7wrL8uFGYtlMoxO1FTRvLKK25RIRRTA0v/YeDQh3V0LptB4maCmIrf+P5svFOu96aYZYFTps86MX8W29/oPIzwnxp8vLH9halkkRiBlc8PmpGXjtiREo4O0jqg+qTPhSqOYS7T/xAER+TYysuFVwG6e/aqoqTkHamDT2Ddn5/F8/UiplBZuBJtg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=linux-foundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=none sp=none pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PTVdrMfYtMmkif1pUn6H4Fav9a4BKMA6Yp71rYlsw00=;
- b=o1OwdwLvZSiZJ2pBi8eWBqYROc5xWSuUhxpzuUXuqlGzLrDsRcBLXfDVaPEk5E9JECHTyrDxhMfd4nWBEQ+xN1MmjVAx4uRBnsCCQisWDjbSWDwiugD3nRJwlVr8QU4j9NmGHn+nz2Xzw+5TAIkefwsEtNzsXTfCuNw4kOjaoPdg0FCGh/ggtM7zgZV9gzUyHFuDbL3LdAifLCWCfkUS6Zjc1ijaKbKqYCYsQiYWgec7Jg3lYEIXjxHRgCab9sEgJRJLs3GAdn5eLwkTa3ZmJ+y2uWGpLqIovWyiNMdasrw9c9/S1YvMCpkENGK11F4hSxJWLvNKz74rPGhQXYc+gA==
-Received: from MWHPR03CA0010.namprd03.prod.outlook.com (2603:10b6:300:117::20)
- by CY4PR12MB1239.namprd12.prod.outlook.com (2603:10b6:903:3d::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Tue, 22 Jun
- 2021 02:07:59 +0000
-Received: from CO1NAM11FT052.eop-nam11.prod.protection.outlook.com
- (2603:10b6:300:117:cafe::f3) by MWHPR03CA0010.outlook.office365.com
- (2603:10b6:300:117::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.16 via Frontend
- Transport; Tue, 22 Jun 2021 02:07:59 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; linux-foundation.org; dkim=none (message not
- signed) header.d=none;linux-foundation.org; dmarc=pass action=none
- header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT052.mail.protection.outlook.com (10.13.174.225) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4242.16 via Frontend Transport; Tue, 22 Jun 2021 02:07:58 +0000
-Received: from nvdebian.localnet (172.20.187.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 22 Jun
- 2021 02:07:55 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     Peter Xu <peterx@redhat.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH v3 08/27] mm: Introduce zap_details.zap_flags
-Date:   Tue, 22 Jun 2021 12:07:53 +1000
-Message-ID: <12693036.q1u8oJ8qPt@nvdebian>
-In-Reply-To: <YNC7csnnSWXz6xvJ@t490s>
-References: <20210527201927.29586-1-peterx@redhat.com> <5845701.Ud2vPSPtVx@nvdebian> <YNC7csnnSWXz6xvJ@t490s>
+        id S230520AbhFVCMH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 21 Jun 2021 22:12:07 -0400
+Received: from mga03.intel.com ([134.134.136.65]:64169 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229663AbhFVCMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 22:12:06 -0400
+IronPort-SDR: ws2hrqFtWjg/no2L24VZt9Jr6vPJ474fX5dZ6QefiLM8VKkY4H9BHTb2Mi4ywt9Rxzd9cEEVOr
+ V9gmY1h/6yYQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="207008238"
+X-IronPort-AV: E=Sophos;i="5.83,290,1616482800"; 
+   d="scan'208";a="207008238"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 19:09:50 -0700
+IronPort-SDR: meKI+jnWwT2TMJQnw+gLzbq7z5IJ9kUJrLFHeN9HjBam1WvkDIp4X1E+V5LSY6Z7z731hAGVwW
+ dD7bDpyN4h+A==
+X-IronPort-AV: E=Sophos;i="5.83,290,1616482800"; 
+   d="scan'208";a="556453672"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.239.159.119])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2021 19:09:44 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Yang Shi <shy828301@gmail.com>
+Cc:     Zi Yan <ziy@nvidia.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@suse.com>, Wei Xu <weixugc@google.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Rientjes <rientjes@google.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        osalvador <osalvador@suse.de>, Minchan Kim <minchan@kernel.org>
+Subject: Re: [PATCH -V8 05/10] mm/migrate: demote pages during reclaim
+References: <20210618061537.434999-1-ying.huang@intel.com>
+        <20210618061537.434999-6-ying.huang@intel.com>
+        <88CFDFA7-70E1-4C26-B9CF-7A0CEFEB035A@nvidia.com>
+        <874kdupab0.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <CAHbLzkoOYoMuDQx7rBG0-9BrpczAbuE5_-HNLrr_Jn=ttc2kkg@mail.gmail.com>
+Date:   Tue, 22 Jun 2021 10:09:39 +0800
+In-Reply-To: <CAHbLzkoOYoMuDQx7rBG0-9BrpczAbuE5_-HNLrr_Jn=ttc2kkg@mail.gmail.com>
+        (Yang Shi's message of "Mon, 21 Jun 2021 12:58:30 -0700")
+Message-ID: <87o8bymyzg.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.187.5]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: adddf743-22c6-4efd-b8fa-08d935228ebf
-X-MS-TrafficTypeDiagnostic: CY4PR12MB1239:
-X-Microsoft-Antispam-PRVS: <CY4PR12MB12397E187F23AC4E92889DD3DF099@CY4PR12MB1239.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nadqfhB9xRel/MLtASejArylkICgpA/Tjoh1L0KGf7m6g3ziw1a0p6NrLT32HbdkiAaTEsI4alP6mr67hABUefh381fqg/2bJ5P7sxlaxIMXmHMRESR8Q3nQWnMhIiUtBY/CvF2KdeXrHH3WB168wsbRXis6Y9R/NNZvXb7hBP1NehNcXiNfLWlU54WukLayVJ3GEmraO3ZIvh2Lu8o2UmYcRUxBx6b0knYwDsdbEP0ASBEcst4xQoERmOUDjhb9S4+vU+qlOK4IOH72jo1+g9ybDlcIvxk6dJm+6McPhjew0IMSYXl+dHE+dzFQTxmYAWdjph3frqV6hKahVYhkeCwjqlEVnJRd0KQFZ9uxpsU+iyMjRSdyoFuaVRXAaSwl5hbjO9hsnUJUpKrxllwmF0ZNmKI4k8qJd90R72HwmZxiHnE9DB0tLe8DLnovJk8RSsglZ5iEB3Ndfb31M5WkNYCnL4T7r+sU4WbV2OBCtiu+zt0p1NYhSlAg0JeuBc98KxyKq1jeGDLzo2vJWdpVtVGW75sVi5x3bdUQl+FdcN+8XML3oRWFIA38i+cep6VMjF5/E1wNZdvbNQRST0hEsij6adqs+Uwex2spypb79ReIC36vFjxzaYuRIoUbVsl3it6bMIxymncHjQ7Q85xF3xTFWg5eW7W2ykr1zte8CHQwNQMWMgLjV9I4eD0mpGYQ
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(396003)(376002)(46966006)(36840700001)(36906005)(316002)(6916009)(82310400003)(478600001)(9686003)(83380400001)(7636003)(5660300002)(7416002)(356005)(47076005)(426003)(36860700001)(33716001)(16526019)(2906002)(9576002)(4326008)(70206006)(82740400003)(186003)(26005)(8676002)(8936002)(86362001)(336012)(54906003)(70586007)(39026012);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2021 02:07:58.7836
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: adddf743-22c6-4efd-b8fa-08d935228ebf
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT052.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR12MB1239
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, 22 June 2021 2:16:50 AM AEST Peter Xu wrote:
-> On Mon, Jun 21, 2021 at 10:09:00PM +1000, Alistair Popple wrote:
-> > On Friday, 28 May 2021 6:21:30 AM AEST Peter Xu wrote:
-> > > Instead of trying to introduce one variable for every new zap_details fields,
-> > > let's introduce a flag so that it can start to encode true/false informations.
-> > > 
-> > > Let's start to use this flag first to clean up the only check_mapping variable.
-> > > Firstly, the name "check_mapping" implies this is a "boolean", but actually it
-> > > stores the mapping inside, just in a way that it won't be set if we don't want
-> > > to check the mapping.
-> > > 
-> > > To make things clearer, introduce the 1st zap flag ZAP_FLAG_CHECK_MAPPING, so
-> > > that we only check against the mapping if this bit set.  At the same time, we
-> > > can rename check_mapping into zap_mapping and set it always.
-> > > 
-> > > Since at it, introduce another helper zap_check_mapping_skip() and use it in
-> > > zap_pte_range() properly.
-> > > 
-> > > Some old comments have been removed in zap_pte_range() because they're
-> > > duplicated, and since now we're with ZAP_FLAG_CHECK_MAPPING flag, it'll be very
-> > > easy to grep this information by simply grepping the flag.
-> > > 
-> > > It'll also make life easier when we want to e.g. pass in zap_flags into the
-> > > callers like unmap_mapping_pages() (instead of adding new booleans besides the
-> > > even_cows parameter).
-> > > 
-> > > Signed-off-by: Peter Xu <peterx@redhat.com>
-> > > ---
-> > >  include/linux/mm.h | 19 ++++++++++++++++++-
-> > >  mm/memory.c        | 31 ++++++++-----------------------
-> > >  2 files changed, 26 insertions(+), 24 deletions(-)
-> > > 
-> > > diff --git a/include/linux/mm.h b/include/linux/mm.h
-> > > index db155be8e66c..52d3ef2ed753 100644
-> > > --- a/include/linux/mm.h
-> > > +++ b/include/linux/mm.h
-> > > @@ -1721,13 +1721,30 @@ static inline bool can_do_mlock(void) { return false; }
-> > >  extern int user_shm_lock(size_t, struct user_struct *);
-> > >  extern void user_shm_unlock(size_t, struct user_struct *);
-> > >  
-> > > +/* Whether to check page->mapping when zapping */
-> > > +#define  ZAP_FLAG_CHECK_MAPPING             BIT(0)
-> > > +
-> > >  /*
-> > >   * Parameter block passed down to zap_pte_range in exceptional cases.
-> > >   */
-> > >  struct zap_details {
-> > > -	struct address_space *check_mapping;	/* Check page->mapping if set */
-> > > +	struct address_space *zap_mapping;
-> > > +	unsigned long zap_flags;
-> > >  };
-> > >  
-> > > +/* Return true if skip zapping this page, false otherwise */
-> > > +static inline bool
-> > > +zap_check_mapping_skip(struct zap_details *details, struct page *page)
-> > > +{
-> > > +	if (!details || !page)
-> > > +		return false;
-> > > +
-> > > +	if (!(details->zap_flags & ZAP_FLAG_CHECK_MAPPING))
-> > > +		return false;
-> 
-> [1]
-> 
-> > > +
-> > > +	return details->zap_mapping != page_rmapping(page);
-> > 
-> > I doubt this matters in practice, but there is a slight behaviour change
-> > here that might be worth checking. Previously this check was equivalent
-> > to:
-> > 
-> > details->zap_mapping && details->zap_mapping != page_rmapping(page)
-> 
-> Yes; IMHO "details->zap_mapping" is just replaced by the check at [1].
+Yang Shi <shy828301@gmail.com> writes:
 
-Yes, but what I meant is that this check is slightly different in behaviour
-from the old code which would never skip if check/zap_mapping == NULL where as
-the new code will skip if
-details->zap_mapping == NULL && page_rmapping(page) != NULL because the check
-has effectively become:
+> On Sat, Jun 19, 2021 at 12:45 AM Huang, Ying <ying.huang@intel.com> wrote:
+>>
+>> Zi Yan <ziy@nvidia.com> writes:
+>>
+>> > On 18 Jun 2021, at 2:15, Huang Ying wrote:
+>> >
+>> >> From: Dave Hansen <dave.hansen@linux.intel.com>
+>> >>
+>> >> This is mostly derived from a patch from Yang Shi:
+>> >>
+>> >>      https://lore.kernel.org/linux-mm/1560468577-101178-10-git-send-email-yang.shi@linux.alibaba.com/
+>> >>
+>> >> Add code to the reclaim path (shrink_page_list()) to "demote" data
+>> >> to another NUMA node instead of discarding the data.  This always
+>> >> avoids the cost of I/O needed to read the page back in and sometimes
+>> >> avoids the writeout cost when the pagee is dirty.
+>> >>
+>> >> A second pass through shrink_page_list() will be made if any demotions
+>> >> fail.  This essentally falls back to normal reclaim behavior in the
+>> >> case that demotions fail.  Previous versions of this patch may have
+>> >> simply failed to reclaim pages which were eligible for demotion but
+>> >> were unable to be demoted in practice.
+>> >>
+>> >> Note: This just adds the start of infratructure for migration. It is
+>> >> actually disabled next to the FIXME in migrate_demote_page_ok().
+>> >>
+>> >> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+>> >> Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+>> >> Cc: Michal Hocko <mhocko@suse.com>
+>> >> Cc: Wei Xu <weixugc@google.com>
+>> >> Cc: Yang Shi <yang.shi@linux.alibaba.com>
+>> >> Cc: David Rientjes <rientjes@google.com>
+>> >> Cc: Dan Williams <dan.j.williams@intel.com>
+>> >> Cc: osalvador <osalvador@suse.de>
+>> >>
+>> >> --
+>> >> changes from 20210122:
+>> >>  * move from GFP_HIGHUSER -> GFP_HIGHUSER_MOVABLE (Ying)
+>> >>
+>> >> changes from 202010:
+>> >>  * add MR_NUMA_MISPLACED to trace MIGRATE_REASON define
+>> >>  * make migrate_demote_page_ok() static, remove 'sc' arg until
+>> >>    later patch
+>> >>  * remove unnecessary alloc_demote_page() hugetlb warning
+>> >>  * Simplify alloc_demote_page() gfp mask.  Depend on
+>> >>    __GFP_NORETRY to make it lightweight instead of fancier
+>> >>    stuff like leaving out __GFP_IO/FS.
+>> >>  * Allocate migration page with alloc_migration_target()
+>> >>    instead of allocating directly.
+>> >> changes from 20200730:
+>> >>  * Add another pass through shrink_page_list() when demotion
+>> >>    fails.
+>> >> changes from 20210302:
+>> >>  * Use __GFP_THISNODE and revise the comment explaining the
+>> >>    GFP mask constructionn
+>> >> ---
+>> >>  include/linux/migrate.h        |  9 ++++
+>> >>  include/trace/events/migrate.h |  3 +-
+>> >>  mm/vmscan.c                    | 83 ++++++++++++++++++++++++++++++++++
+>> >>  3 files changed, 94 insertions(+), 1 deletion(-)
+>> >>
+>> >> diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+>> >> index 4a49bb358787..42952cbe452b 100644
+>> >> --- a/include/linux/migrate.h
+>> >> +++ b/include/linux/migrate.h
+>> >> @@ -28,6 +28,7 @@ enum migrate_reason {
+>> >>      MR_NUMA_MISPLACED,
+>> >>      MR_CONTIG_RANGE,
+>> >>      MR_LONGTERM_PIN,
+>> >> +    MR_DEMOTION,
+>> >>      MR_TYPES
+>> >>  };
+>> >>
+>> >> @@ -191,6 +192,14 @@ struct migrate_vma {
+>> >>  int migrate_vma_setup(struct migrate_vma *args);
+>> >>  void migrate_vma_pages(struct migrate_vma *migrate);
+>> >>  void migrate_vma_finalize(struct migrate_vma *migrate);
+>> >> +int next_demotion_node(int node);
+>> >> +
+>> >> +#else /* CONFIG_MIGRATION disabled: */
+>> >> +
+>> >> +static inline int next_demotion_node(int node)
+>> >> +{
+>> >> +    return NUMA_NO_NODE;
+>> >> +}
+>> >>
+>> >>  #endif /* CONFIG_MIGRATION */
+>> >>
+>> >> diff --git a/include/trace/events/migrate.h b/include/trace/events/migrate.h
+>> >> index 9fb2a3bbcdfb..779f3fad9ecd 100644
+>> >> --- a/include/trace/events/migrate.h
+>> >> +++ b/include/trace/events/migrate.h
+>> >> @@ -21,7 +21,8 @@
+>> >>      EM( MR_MEMPOLICY_MBIND, "mempolicy_mbind")              \
+>> >>      EM( MR_NUMA_MISPLACED,  "numa_misplaced")               \
+>> >>      EM( MR_CONTIG_RANGE,    "contig_range")                 \
+>> >> -    EMe(MR_LONGTERM_PIN,    "longterm_pin")
+>> >> +    EM( MR_LONGTERM_PIN,    "longterm_pin")                 \
+>> >> +    EMe(MR_DEMOTION,        "demotion")
+>> >>
+>> >>  /*
+>> >>   * First define the enums in the above macros to be exported to userspace
+>> >> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> >> index 5199b9696bab..ddda32031f0c 100644
+>> >> --- a/mm/vmscan.c
+>> >> +++ b/mm/vmscan.c
+>> >> @@ -41,6 +41,7 @@
+>> >>  #include <linux/kthread.h>
+>> >>  #include <linux/freezer.h>
+>> >>  #include <linux/memcontrol.h>
+>> >> +#include <linux/migrate.h>
+>> >>  #include <linux/delayacct.h>
+>> >>  #include <linux/sysctl.h>
+>> >>  #include <linux/oom.h>
+>> >> @@ -1231,6 +1232,23 @@ static enum page_references page_check_references(struct page *page,
+>> >>      return PAGEREF_RECLAIM;
+>> >>  }
+>> >>
+>> >> +static bool migrate_demote_page_ok(struct page *page)
+>> >> +{
+>> >> +    int next_nid = next_demotion_node(page_to_nid(page));
+>> >> +
+>> >> +    VM_BUG_ON_PAGE(!PageLocked(page), page);
+>> >> +    VM_BUG_ON_PAGE(PageHuge(page), page);
+>> >> +    VM_BUG_ON_PAGE(PageLRU(page), page);
+>> >> +
+>> >> +    if (next_nid == NUMA_NO_NODE)
+>> >> +            return false;
+>> >> +    if (PageTransHuge(page) && !thp_migration_supported())
+>> >> +            return false;
+>> >> +
+>> >> +    // FIXME: actually enable this later in the series
+>> >> +    return false;
+>> >> +}
+>> >> +
+>> >>  /* Check if a page is dirty or under writeback */
+>> >>  static void page_check_dirty_writeback(struct page *page,
+>> >>                                     bool *dirty, bool *writeback)
+>> >> @@ -1261,6 +1279,47 @@ static void page_check_dirty_writeback(struct page *page,
+>> >>              mapping->a_ops->is_dirty_writeback(page, dirty, writeback);
+>> >>  }
+>> >>
+>> >> +static struct page *alloc_demote_page(struct page *page, unsigned long node)
+>> >> +{
+>> >> +    struct migration_target_control mtc = {
+>> >> +            /*
+>> >> +             * Allocate from 'node', or fail the quickly and quietly.
+>> >> +             * When this happens, 'page; will likely just be discarded
+>> >> +             * instead of migrated.
+>> >> +             */
+>> >> +            .gfp_mask = (GFP_HIGHUSER_MOVABLE & ~__GFP_RECLAIM) |
+>> >> +                        __GFP_THISNODE  | __GFP_NOWARN |
+>> >> +                        __GFP_NOMEMALLOC | GFP_NOWAIT,
+>> >> +            .nid = node
+>> >> +    };
+>> >> +
+>> >> +    return alloc_migration_target(page, (unsigned long)&mtc);
+>> >> +}
+>> >> +
+>> >> +/*
+>> >> + * Take pages on @demote_list and attempt to demote them to
+>> >> + * another node.  Pages which are not demoted are left on
+>> >> + * @demote_pages.
+>> >> + */
+>> >> +static unsigned int demote_page_list(struct list_head *demote_pages,
+>> >> +                                 struct pglist_data *pgdat,
+>> >> +                                 struct scan_control *sc)
+>> >> +{
+>> >> +    int target_nid = next_demotion_node(pgdat->node_id);
+>> >> +    unsigned int nr_succeeded = 0;
+>> >> +    int err;
+>> >> +
+>> >> +    if (list_empty(demote_pages))
+>> >> +            return 0;
+>> >> +
+>> >> +    /* Demotion ignores all cpuset and mempolicy settings */
+>> >> +    err = migrate_pages(demote_pages, alloc_demote_page, NULL,
+>> >> +                        target_nid, MIGRATE_ASYNC, MR_DEMOTION,
+>> >> +                        &nr_succeeded);
+>> >> +
+>> >> +    return nr_succeeded;
+>> >> +}
+>> >> +
+>> >>  /*
+>> >>   * shrink_page_list() returns the number of reclaimed pages
+>> >>   */
+>> >> @@ -1272,12 +1331,15 @@ static unsigned int shrink_page_list(struct list_head *page_list,
+>> >>  {
+>> >>      LIST_HEAD(ret_pages);
+>> >>      LIST_HEAD(free_pages);
+>> >> +    LIST_HEAD(demote_pages);
+>> >>      unsigned int nr_reclaimed = 0;
+>> >>      unsigned int pgactivate = 0;
+>> >> +    bool do_demote_pass = true;
+>> >>
+>> >>      memset(stat, 0, sizeof(*stat));
+>> >>      cond_resched();
+>> >>
+>> >> +retry:
+>> >>      while (!list_empty(page_list)) {
+>> >>              struct address_space *mapping;
+>> >>              struct page *page;
+>> >> @@ -1426,6 +1488,16 @@ static unsigned int shrink_page_list(struct list_head *page_list,
+>> >>                      ; /* try to reclaim the page below */
+>> >>              }
+>> >>
+>> >> +            /*
+>> >> +             * Before reclaiming the page, try to relocate
+>> >> +             * its contents to another node.
+>> >> +             */
+>> >> +            if (do_demote_pass && migrate_demote_page_ok(page)) {
+>> >> +                    list_add(&page->lru, &demote_pages);
+>> >> +                    unlock_page(page);
+>> >> +                    continue;
+>> >> +            }
+>> >> +
+>> >>              /*
+>> >>               * Anonymous process memory has backing store?
+>> >>               * Try to allocate it some swap space here.
+>> >> @@ -1676,6 +1748,17 @@ static unsigned int shrink_page_list(struct list_head *page_list,
+>> >>              list_add(&page->lru, &ret_pages);
+>> >>              VM_BUG_ON_PAGE(PageLRU(page) || PageUnevictable(page), page);
+>> >>      }
+>> >> +    /* 'page_list' is always empty here */
+>> >> +
+>> >> +    /* Migrate pages selected for demotion */
+>> >> +    nr_reclaimed += demote_page_list(&demote_pages, pgdat, sc);
+>> >> +    /* Pages that could not be demoted are still in @demote_pages */
+>> >> +    if (!list_empty(&demote_pages)) {
+>> >> +            /* Pages which failed to demoted go back on @page_list for retry: */
+>> >> +            list_splice_init(&demote_pages, page_list);
+>> >> +            do_demote_pass = false;
+>> >> +            goto retry;
+>> >> +    }
+>> >>
+>> >>      pgactivate = stat->nr_activate[0] + stat->nr_activate[1];
+>> >>
+>> >> --
+>> >> 2.30.2
+>> >
+>> > shrink_page_list() is also used by reclaim_pages(), which is called by
+>> > madvise(MADV_PAGEOUT). This patch changes the semantics of madvise(MADV_PAGEOUT)
+>> > from “reclaim a given range of pages” to migrate the given pages to lower
+>> > tier memory or reclaim them if the migration fails. You might want to check
+>> > the caller of shrink_page_list() to avoid changing madvise(MADV_PAGEOUT)
+>> > semantics.
+>>
+>> Thanks for pointing this out!
+>>
+>> Literally, PAGEOUT means writing the page to the disk instead of
+>> migrating pages to the lower tier.  So it seems reasonable to make it
+>> keep the original behavior instead of demoting even if in the tiered
+>> memory system.
+>>
+>> If nobody objects, I will change this in the next version.
+>
+> I don't have a strong opinion on this. But I just thought why not let
+> PAGEOUT do demotion if tier'ed memory is available and the "migration
+> in lieu of discard" behavior is opt'ed in by a knob and we keep the
+> consistency between passive reclaim and proactive reclaim.
 
-				if ((details->zap_flags & ZAP_FLAG_CHECK_MAPPING) &&
-				    details->zap_mapping != page_rmapping(page))
-					continue;
+I thought about that too.  Considering the kernel API naming, is it
+better to define MADV_PAGEOUT as writing to disk, and MADV_COLD as
+demoting to the lower tier if enabled.
 
-instead of:
-
-				if (details->zap_mapping &&
-				    details->zap_mapping != page_rmapping(page))
-					continue;
-
-As I said though I only looked at this superficially from the perspective of
-whether this patch changes existing code behaviour. I doubt this is a real
-problem because I assume
-details->check_mapping == NULL && page_rmapping(page) != NULL can never
-actually happen in practice.
-
-> For example, there's only one real user of this mapping check, which is
-> unmap_mapping_pages() below [2].
-> 
-> With the old code, we have:
-> 
->     details.check_mapping = even_cows ? NULL : mapping;
-> 
-> So "details->zap_mapping" is only true if "!even_cows".
-> 
-> With the new code, we'll have:
-> 
->     if (!even_cows)
->         details.zap_flags |= ZAP_FLAG_CHECK_MAPPING;
-> 
-> So ZAP_FLAG_CHECK_MAPPING is only set if "!even_cows", while that's what we
-> check exactly at [1].
-> > 
-> > Otherwise I think this looks good.
-> > 
-> > > +}
-> > > +
-> > >  struct page *vm_normal_page(struct vm_area_struct *vma, unsigned long addr,
-> > >  			     pte_t pte);
-> > >  struct page *vm_normal_page_pmd(struct vm_area_struct *vma, unsigned long addr,
-> > > diff --git a/mm/memory.c b/mm/memory.c
-> > > index 27cf8a6375c6..c9dc4e9e05b5 100644
-> > > --- a/mm/memory.c
-> > > +++ b/mm/memory.c
-> > > @@ -1330,16 +1330,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
-> > >  			struct page *page;
-> > >  
-> > >  			page = vm_normal_page(vma, addr, ptent);
-> > > -			if (unlikely(details) && page) {
-> > > -				/*
-> > > -				 * unmap_shared_mapping_pages() wants to
-> > > -				 * invalidate cache without truncating:
-> > > -				 * unmap shared but keep private pages.
-> > > -				 */
-> > > -				if (details->check_mapping &&
-> > > -				    details->check_mapping != page_rmapping(page))
-> > > -					continue;
-> > > -			}
-> > > +			if (unlikely(zap_check_mapping_skip(details, page)))
-> > > +				continue;
-> > >  			ptent = ptep_get_and_clear_full(mm, addr, pte,
-> > >  							tlb->fullmm);
-> > >  			tlb_remove_tlb_entry(tlb, pte, addr);
-> > > @@ -1372,17 +1364,8 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
-> > >  		    is_device_exclusive_entry(entry)) {
-> > >  			struct page *page = pfn_swap_entry_to_page(entry);
-> > >  
-> > > -			if (unlikely(details && details->check_mapping)) {
-> > > -				/*
-> > > -				 * unmap_shared_mapping_pages() wants to
-> > > -				 * invalidate cache without truncating:
-> > > -				 * unmap shared but keep private pages.
-> > > -				 */
-> > > -				if (details->check_mapping !=
-> > > -				    page_rmapping(page))
-> > > -					continue;
-> > > -			}
-> > > -
-> > > +			if (unlikely(zap_check_mapping_skip(details, page)))
-> > > +				continue;
-> > >  			pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
-> > >  			rss[mm_counter(page)]--;
-> > >  
-> > > @@ -3345,9 +3328,11 @@ void unmap_mapping_pages(struct address_space *mapping, pgoff_t start,
-> > >  		pgoff_t nr, bool even_cows)
-> > >  {
-> > >  	pgoff_t	first_index = start, last_index = start + nr - 1;
-> > > -	struct zap_details details = { };
-> > > +	struct zap_details details = { .zap_mapping = mapping };
-> > > +
-> > > +	if (!even_cows)
-> > > +		details.zap_flags |= ZAP_FLAG_CHECK_MAPPING;
-> > >  
-> > > -	details.check_mapping = even_cows ? NULL : mapping;
-> 
-> [2]
-> 
-> > >  	if (last_index < first_index)
-> > >  		last_index = ULONG_MAX;
-> 
-> Thanks,
-> 
-> 
-
-
-
-
+Best Regards,
+Huang, Ying
