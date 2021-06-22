@@ -2,117 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B58783B0412
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E39BF3B0417
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231437AbhFVMTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 08:19:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38322 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231464AbhFVMTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 08:19:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27BD2611CE;
-        Tue, 22 Jun 2021 12:16:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624364213;
-        bh=+DSoQii3QA6TNarjz5jdOxe8E+65XqNOB0H4z1VVg/c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KUosdjs1ssfAL/o0RkE2+ODxWK+fo636fpSl89g0ENmRCX5LIIq+VfQwpAwn09spb
-         Njb6ysVBXcl8LyNzd8UDYlf+VP2qbSkBGh0rzi4n4DWYfKwXK0B+SUMvf8UCkBhN41
-         M9ZznVnwo9BAxhNkMNnHxO564RJBnhCeopkCJkQ6JQ1E9p9UwrMzvC4VBVIyz4Widr
-         ZqL5mJpAaGsj8YPUWtCyvA0MMbC6O++jVt0n2s8mQQdjG35+UGym/N9imsiyW2i8Y0
-         gmGQprIsJ3ecWqdcekUnet809cl1EWH88cqqUks0ln1t6VWrxSrez+uQGFMZO/RzZu
-         e0qYDySCGZWzw==
-Received: by pali.im (Postfix)
-        id D9595889; Tue, 22 Jun 2021 14:16:49 +0200 (CEST)
-Date:   Tue, 22 Jun 2021 14:16:49 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Cc:     linus.walleij@linaro.org, kishon@ti.com,
-        Luca Ceresoli <luca@lucaceresoli.net>,
-        linux-pci@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: Re: [PATCH v2] PCI: dra7xx: Fix reset behaviour
-Message-ID: <20210622121649.ouiaecdvwutgdyy5@pali>
-References: <20210531090540.2663171-1-luca@lucaceresoli.net>
- <20210531133211.llyiq3jcfy25tmz4@pali>
- <8ff1c54f-bb29-1e40-8342-905e34361e1c@lucaceresoli.net>
- <9fdbada4-4902-cec1-f283-0d12e1d4ac64@ti.com>
- <20210531162242.jm73yzntzmilsvbg@pali>
- <8207a53c-4de9-d0e5-295a-c165e7237e36@lucaceresoli.net>
- <20210622110627.aqzxxtf2j3uxfeyl@pali>
- <20210622115604.GA25503@lpieralisi>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210622115604.GA25503@lpieralisi>
-User-Agent: NeoMutt/20180716
+        id S231442AbhFVMT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 08:19:58 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:34348 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230422AbhFVMT5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 08:19:57 -0400
+Received: from [173.237.58.148] (port=33324 helo=localhost)
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1lvfLY-0003l2-O3; Tue, 22 Jun 2021 08:17:40 -0400
+Date:   Tue, 22 Jun 2021 05:17:39 -0700
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Olivier Langlois <olivier@trillion01.com>
+Message-Id: <9e8441419bb1b8f3c3fcc607b2713efecdef2136.1624364038.git.olivier@trillion01.com>
+Subject: [PATCH v4] io_uring: reduce latency by reissueing the operation
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday 22 June 2021 12:56:04 Lorenzo Pieralisi wrote:
-> [Adding Linus for GPIO discussion, thread:
-> https://lore.kernel.org/linux-pci/20210531090540.2663171-1-luca@lucaceresoli.net]
-> 
-> On Tue, Jun 22, 2021 at 01:06:27PM +0200, Pali Rohár wrote:
-> > Hello!
-> > 
-> > On Tuesday 22 June 2021 12:57:22 Luca Ceresoli wrote:
-> > > Nothing happened after a few weeks... I understand that knowing the
-> > > correct reset timings is relevant, but unfortunately I cannot help much
-> > > in finding out the correct values.
-> > > 
-> > > However I'm wondering what should happen to this patch. It *does* fix a
-> > > real bug, but potentially with an incorrect or non-optimal usleep range.
-> > > Do we really want to ignore a bugfix because we are not sure about how
-> > > long this delay should be?
-> > 
-> > As there is no better solution right now, I'm fine with your patch. But
-> > patch needs to be approved by Lorenzo, so please wait for his final
-> > answer.
-> 
-> I am not a GPIO expert and I have a feeling this is platform specific
-> beyond what the PCI specification can actually define architecturally.
+It is quite frequent that when an operation fails and returns EAGAIN,
+the data becomes available between that failure and the call to
+vfs_poll() done by io_arm_poll_handler().
 
-In my opinion timeout is not platform specific as I wrote in email:
-https://lore.kernel.org/linux-pci/20210310110535.zh4pnn4vpmvzwl5q@pali/
+Detecting the situation and reissuing the operation is much faster
+than going ahead and push the operation to the io-wq.
 
-My experiments already proved that some PCIe cards needs to be in reset
-state for some minimal time otherwise they cannot be enumerated. And it
-does not matter to which platform you connect those (endpoint) cards.
+Performance improvement testing has been performed with:
+Single thread, 1 TCP connection receiving a 5 Mbps stream, no sqpoll.
 
-I do not think that timeout itself is platform specific. GPIO controls
-PERST# pin and therefore specified sleep value directly drives how long
-is card on the other end of PCIe slot in Warm Reset state. PCIe CEM spec
-directly says that PERST# signal controls PCIe Warm Reset.
+4 measurements have been taken:
+1. The time it takes to process a read request when data is already available
+2. The time it takes to process by calling twice io_issue_sqe() after vfs_poll() indicated that data was available
+3. The time it takes to execute io_queue_async_work()
+4. The time it takes to complete a read request asynchronously
 
-What is here platform specific thing is that PERST# signal is controlled
-by GPIO. But value of signal (high / low) and how long is in signal in
-which state for me sounds like not an platform specific thing, but as
-PCIe / CEM related.
+2.25% of all the read operations did use the new path.
 
-> There are two things I'd like to see:
-> 
-> 1) If Linus can have a look at the GPIO bits in this thread that would
->    definitely help clarify any pending controversy
-> 2) Kishon to test on *existing* platforms and confirm there are no
->    regressions triggered
-> 
-> > I would suggest to add a comment for call "usleep_range(1000, 2000);"
-> > that you have chosen some "random" values which worked fine on your
-> > setup and that they fix mentioned bug. Comment just to mark this sleep
-> > code that is suboptimal / not-so-correct and to prevent other people to
-> > copy+paste this code into other (new) drivers...
-> 
-> Yes a comment would help but as I say above I am afraid this is
-> a platform specific set-up, ie that delay is somewhat tied to
-> a platform, not sure there is anything we can do.
-> 
-> If Linus and Kishon are happy with the approach we can merge this
-> patch.
-> 
-> Lorenzo
+ready data (baseline)
+avg	3657.94182918628
+min	580
+max	20098
+stddev	1213.15975908162
+
+reissue	completion
+average	7882.67567567568
+min	2316
+max	28811
+stddev	1982.79172973284
+
+insert io-wq time
+average	8983.82276995305
+min	3324
+max	87816
+stddev	2551.60056552038
+
+async time completion
+average	24670.4758861127
+min	10758
+max	102612
+stddev	3483.92416873804
+
+Conclusion:
+On average reissuing the sqe with the patch code is 1.1uSec faster and
+in the worse case scenario 59uSec faster than placing the request on
+io-wq
+
+On average completion time by reissuing the sqe with the patch code is
+16.79uSec faster and in the worse case scenario 73.8uSec faster than
+async completion.
+
+Signed-off-by: Olivier Langlois <olivier@trillion01.com>
+---
+ fs/io_uring.c | 31 ++++++++++++++++++++++---------
+ 1 file changed, 22 insertions(+), 9 deletions(-)
+
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index fc8637f591a6..5efa67c2f974 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -5152,7 +5152,13 @@ static __poll_t __io_arm_poll_handler(struct io_kiocb *req,
+ 	return mask;
+ }
+ 
+-static bool io_arm_poll_handler(struct io_kiocb *req)
++enum {
++	IO_APOLL_OK,
++	IO_APOLL_ABORTED,
++	IO_APOLL_READY
++};
++
++static int io_arm_poll_handler(struct io_kiocb *req)
+ {
+ 	const struct io_op_def *def = &io_op_defs[req->opcode];
+ 	struct io_ring_ctx *ctx = req->ctx;
+@@ -5162,22 +5168,22 @@ static bool io_arm_poll_handler(struct io_kiocb *req)
+ 	int rw;
+ 
+ 	if (!req->file || !file_can_poll(req->file))
+-		return false;
++		return IO_APOLL_ABORTED;
+ 	if (req->flags & REQ_F_POLLED)
+-		return false;
++		return IO_APOLL_ABORTED;
+ 	if (def->pollin)
+ 		rw = READ;
+ 	else if (def->pollout)
+ 		rw = WRITE;
+ 	else
+-		return false;
++		return IO_APOLL_ABORTED;
+ 	/* if we can't nonblock try, then no point in arming a poll handler */
+ 	if (!io_file_supports_async(req, rw))
+-		return false;
++		return IO_APOLL_ABORTED;
+ 
+ 	apoll = kmalloc(sizeof(*apoll), GFP_ATOMIC);
+ 	if (unlikely(!apoll))
+-		return false;
++		return IO_APOLL_ABORTED;
+ 	apoll->double_poll = NULL;
+ 
+ 	req->flags |= REQ_F_POLLED;
+@@ -5203,12 +5209,14 @@ static bool io_arm_poll_handler(struct io_kiocb *req)
+ 	if (ret || ipt.error) {
+ 		io_poll_remove_double(req);
+ 		spin_unlock_irq(&ctx->completion_lock);
+-		return false;
++		if (ret)
++			return IO_APOLL_READY;
++		return IO_APOLL_ABORTED;
+ 	}
+ 	spin_unlock_irq(&ctx->completion_lock);
+ 	trace_io_uring_poll_arm(ctx, req, req->opcode, req->user_data,
+ 				mask, apoll->poll.events);
+-	return true;
++	return IO_APOLL_OK;
+ }
+ 
+ static bool __io_poll_remove_one(struct io_kiocb *req,
+@@ -6437,6 +6445,7 @@ static void __io_queue_sqe(struct io_kiocb *req)
+ 	struct io_kiocb *linked_timeout = io_prep_linked_timeout(req);
+ 	int ret;
+ 
++issue_sqe:
+ 	ret = io_issue_sqe(req, IO_URING_F_NONBLOCK|IO_URING_F_COMPLETE_DEFER);
+ 
+ 	/*
+@@ -6456,12 +6465,16 @@ static void __io_queue_sqe(struct io_kiocb *req)
+ 			io_put_req(req);
+ 		}
+ 	} else if (ret == -EAGAIN && !(req->flags & REQ_F_NOWAIT)) {
+-		if (!io_arm_poll_handler(req)) {
++		switch (io_arm_poll_handler(req)) {
++		case IO_APOLL_READY:
++			goto issue_sqe;
++		case IO_APOLL_ABORTED:
+ 			/*
+ 			 * Queued up for async execution, worker will release
+ 			 * submit reference when the iocb is actually submitted.
+ 			 */
+ 			io_queue_async_work(req);
++			break;
+ 		}
+ 	} else {
+ 		io_req_complete_failed(req, ret);
+-- 
+2.32.0
+
