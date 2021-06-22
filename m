@@ -2,339 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841BB3B01C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 12:51:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 541DE3B01D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 12:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229918AbhFVKxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 06:53:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38207 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229682AbhFVKxR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 06:53:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624359061;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MahCvvTWod0cKiuylqNSDVrXb3r6bOZRYQZmM4hEPQc=;
-        b=FOwlYRrSllYs17GEv5S9OGHqAcfsxvFilPPFtklbbn8bvikEZ8IT1wDt+U+zvGMmhEYHwl
-        rB4WAQd2B7K82V1vUnFhi5OsMmphAepZm+Z4ZURKUjq8ktgDuLFSzcAgEirjzOgRckJQlG
-        Nd22JqtQIj/FIWMPqWPjjd2bXppf5kA=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-206-XToZ6Yw9N4OWi3m6xyPsog-1; Tue, 22 Jun 2021 06:50:59 -0400
-X-MC-Unique: XToZ6Yw9N4OWi3m6xyPsog-1
-Received: by mail-ed1-f69.google.com with SMTP id m4-20020a0564024304b0290394d27742e4so750958edc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 03:50:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MahCvvTWod0cKiuylqNSDVrXb3r6bOZRYQZmM4hEPQc=;
-        b=lHEA8+tB4XzzHkursbN72v5CeOsz4MfdLhDsZOa4QOI1eMNnWyAltpuamDh7KkQ52c
-         Sw28v0Xc2xWL8+WW3SQQerxgJkOkRXoSx+GUDf6PytPNj4imqHnJMAc8DXk/Smzw6phL
-         UbpcU/Uo3SuB+umaWggpv+G8zfl0NhS1iCVSjoMyUHtzZzf5zs/a+APWxbKVbm2AwMR8
-         FekObZU3YsL1up2nvzUXZHkbaiBOU/zs/RCMZe0E6I2FHn8/15KxP2jqZlT5hwRCW+Wx
-         w3mnSGvwWck7R5jJ77+QbPPF0wdyWbl+U4ryi+uzlWigcWX1cLZgk0TuU+bfZxWZYnqU
-         jrMQ==
-X-Gm-Message-State: AOAM5311iTQn5NR4orqY0ckwCYl39Z+xBIWmuJbmF89ve0wDi0I3Pef8
-        Zt+lWJ7jNPhzAJue/Pf4vsKVy94gUt/VCVOPggv44l2XP7wvXM4K8Nbb+CwjFNfwqXjuI34XH0j
-        +8Edac9bb2xzS8Gxo2I5tvrqu
-X-Received: by 2002:a17:907:7848:: with SMTP id lb8mr3393599ejc.494.1624359058673;
-        Tue, 22 Jun 2021 03:50:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz110F+dcZSJKHiAM4Ds6UTPerNlho7sqlAGd2gqzNfyEj5VUGpE7hBK44QNGnfViisZ8+97Q==
-X-Received: by 2002:a17:907:7848:: with SMTP id lb8mr3393565ejc.494.1624359058443;
-        Tue, 22 Jun 2021 03:50:58 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id d6sm1638699edq.37.2021.06.22.03.50.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 03:50:58 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 12:50:55 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     "Jiang Wang ." <jiang.wang@bytedance.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        cong.wang@bytedance.com,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Yongji Xie <xieyongji@bytedance.com>,
-        =?utf-8?B?5p+056iz?= <chaiwen.cc@bytedance.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Alexander Popov <alex.popov@linux.com>, kvm@vger.kernel.org,
-        Networking <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [External] Re: [RFC v1 1/6] virtio/vsock: add
- VIRTIO_VSOCK_F_DGRAM feature bit
-Message-ID: <20210622105055.ogacdpsadazwa4wq@steredhat>
-References: <20210609232501.171257-1-jiang.wang@bytedance.com>
- <20210609232501.171257-2-jiang.wang@bytedance.com>
- <20210618093951.g32htj3rsu2koqi5@steredhat.lan>
- <CAP_N_Z-vom-8=Otjtt9wndP8KLDvy7KxQg20g4=65Y4d8N7CmA@mail.gmail.com>
+        id S229934AbhFVKzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 06:55:31 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:42390 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229702AbhFVKz3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 06:55:29 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1lve1a-00039l-RM; Tue, 22 Jun 2021 12:52:58 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     cl@rock-chips.com, Johan Jonker <jbx6244@gmail.com>
+Cc:     robh+dt@kernel.org, jagan@amarulasolutions.com, wens@csie.org,
+        uwe@kleine-koenig.org, mail@david-bauer.net,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        jensenhuang@friendlyarm.com, michael@amarulasolutions.com,
+        cnsztl@gmail.com, devicetree@vger.kernel.org,
+        ulf.hansson@linaro.org, linux-mmc@vger.kernel.org,
+        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        linux-i2c@vger.kernel.org, jay.xu@rock-chips.com,
+        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
+        zhangqing@rock-chips.com, huangtao@rock-chips.com,
+        wim@linux-watchdog.org, linux@roeck-us.net, jamie@jamieiles.com,
+        linux-watchdog@vger.kernel.org, maz@kernel.org
+Subject: Re: [PATCH v5 3/4] arm64: dts: rockchip: add core dtsi for RK3568 SoC
+Date:   Tue, 22 Jun 2021 12:52:57 +0200
+Message-ID: <5975924.neEnAmRlxL@diego>
+In-Reply-To: <9515154d-f521-217c-af61-7cda089fbf15@gmail.com>
+References: <20210622020517.13100-1-cl@rock-chips.com> <20210622020517.13100-4-cl@rock-chips.com> <9515154d-f521-217c-af61-7cda089fbf15@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAP_N_Z-vom-8=Otjtt9wndP8KLDvy7KxQg20g4=65Y4d8N7CmA@mail.gmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 10:24:20AM -0700, Jiang Wang . wrote:
->On Fri, Jun 18, 2021 at 2:40 AM Stefano Garzarella <sgarzare@redhat.com> wrote:
->>
->> On Wed, Jun 09, 2021 at 11:24:53PM +0000, Jiang Wang wrote:
->> >When this feature is enabled, allocate 5 queues,
->> >otherwise, allocate 3 queues to be compatible with
->> >old QEMU versions.
->> >
->> >Signed-off-by: Jiang Wang <jiang.wang@bytedance.com>
->> >---
->> > drivers/vhost/vsock.c             |  3 +-
->> > include/linux/virtio_vsock.h      |  9 +++++
->> > include/uapi/linux/virtio_vsock.h |  3 ++
->> > net/vmw_vsock/virtio_transport.c  | 73 +++++++++++++++++++++++++++++++++++----
->> > 4 files changed, 80 insertions(+), 8 deletions(-)
->> >
->> >diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
->> >index 5e78fb719602..81d064601093 100644
->> >--- a/drivers/vhost/vsock.c
->> >+++ b/drivers/vhost/vsock.c
->> >@@ -31,7 +31,8 @@
->> >
->> > enum {
->> >       VHOST_VSOCK_FEATURES = VHOST_FEATURES |
->> >-                             (1ULL << VIRTIO_F_ACCESS_PLATFORM)
->> >+                             (1ULL << VIRTIO_F_ACCESS_PLATFORM) |
->> >+                             (1ULL << VIRTIO_VSOCK_F_DGRAM)
->> > };
->> >
->> > enum {
->> >diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
->> >index dc636b727179..ba3189ed9345 100644
->> >--- a/include/linux/virtio_vsock.h
->> >+++ b/include/linux/virtio_vsock.h
->> >@@ -18,6 +18,15 @@ enum {
->> >       VSOCK_VQ_MAX    = 3,
->> > };
->> >
->> >+enum {
->> >+      VSOCK_VQ_STREAM_RX     = 0, /* for host to guest data */
->> >+      VSOCK_VQ_STREAM_TX     = 1, /* for guest to host data */
->> >+      VSOCK_VQ_DGRAM_RX       = 2,
->> >+      VSOCK_VQ_DGRAM_TX       = 3,
->> >+      VSOCK_VQ_EX_EVENT       = 4,
->> >+      VSOCK_VQ_EX_MAX         = 5,
->> >+};
->> >+
->> > /* Per-socket state (accessed via vsk->trans) */
->> > struct virtio_vsock_sock {
->> >       struct vsock_sock *vsk;
->> >diff --git a/include/uapi/linux/virtio_vsock.h b/include/uapi/linux/virtio_vsock.h
->> >index 1d57ed3d84d2..b56614dff1c9 100644
->> >--- a/include/uapi/linux/virtio_vsock.h
->> >+++ b/include/uapi/linux/virtio_vsock.h
->> >@@ -38,6 +38,9 @@
->> > #include <linux/virtio_ids.h>
->> > #include <linux/virtio_config.h>
->> >
->> >+/* The feature bitmap for virtio net */
->> >+#define VIRTIO_VSOCK_F_DGRAM  0       /* Host support dgram vsock */
->> >+
->> > struct virtio_vsock_config {
->> >       __le64 guest_cid;
->> > } __attribute__((packed));
->> >diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
->> >index 2700a63ab095..7dcb8db23305 100644
->> >--- a/net/vmw_vsock/virtio_transport.c
->> >+++ b/net/vmw_vsock/virtio_transport.c
->> >@@ -27,7 +27,8 @@ static DEFINE_MUTEX(the_virtio_vsock_mutex); /* protects the_virtio_vsock */
->> >
->> > struct virtio_vsock {
->> >       struct virtio_device *vdev;
->> >-      struct virtqueue *vqs[VSOCK_VQ_MAX];
->> >+      struct virtqueue **vqs;
->> >+      bool has_dgram;
->> >
->> >       /* Virtqueue processing is deferred to a workqueue */
->> >       struct work_struct tx_work;
->> >@@ -333,7 +334,10 @@ static int virtio_vsock_event_fill_one(struct virtio_vsock *vsock,
->> >       struct scatterlist sg;
->> >       struct virtqueue *vq;
->> >
->> >-      vq = vsock->vqs[VSOCK_VQ_EVENT];
->> >+      if (vsock->has_dgram)
->> >+              vq = vsock->vqs[VSOCK_VQ_EX_EVENT];
->> >+      else
->> >+              vq = vsock->vqs[VSOCK_VQ_EVENT];
->> >
->> >       sg_init_one(&sg, event, sizeof(*event));
->> >
->> >@@ -351,7 +355,10 @@ static void virtio_vsock_event_fill(struct virtio_vsock *vsock)
->> >               virtio_vsock_event_fill_one(vsock, event);
->> >       }
->> >
->> >-      virtqueue_kick(vsock->vqs[VSOCK_VQ_EVENT]);
->> >+      if (vsock->has_dgram)
->> >+              virtqueue_kick(vsock->vqs[VSOCK_VQ_EX_EVENT]);
->> >+      else
->> >+              virtqueue_kick(vsock->vqs[VSOCK_VQ_EVENT]);
->> > }
->> >
->> > static void virtio_vsock_reset_sock(struct sock *sk)
->> >@@ -391,7 +398,10 @@ static void virtio_transport_event_work(struct work_struct *work)
->> >               container_of(work, struct virtio_vsock, event_work);
->> >       struct virtqueue *vq;
->> >
->> >-      vq = vsock->vqs[VSOCK_VQ_EVENT];
->> >+      if (vsock->has_dgram)
->> >+              vq = vsock->vqs[VSOCK_VQ_EX_EVENT];
->> >+      else
->> >+              vq = vsock->vqs[VSOCK_VQ_EVENT];
->> >
->> >       mutex_lock(&vsock->event_lock);
->> >
->> >@@ -411,7 +421,10 @@ static void virtio_transport_event_work(struct work_struct *work)
->> >               }
->> >       } while (!virtqueue_enable_cb(vq));
->> >
->> >-      virtqueue_kick(vsock->vqs[VSOCK_VQ_EVENT]);
->> >+      if (vsock->has_dgram)
->> >+              virtqueue_kick(vsock->vqs[VSOCK_VQ_EX_EVENT]);
->> >+      else
->> >+              virtqueue_kick(vsock->vqs[VSOCK_VQ_EVENT]);
->> > out:
->> >       mutex_unlock(&vsock->event_lock);
->> > }
->> >@@ -434,6 +447,10 @@ static void virtio_vsock_tx_done(struct virtqueue *vq)
->> >       queue_work(virtio_vsock_workqueue, &vsock->tx_work);
->> > }
->> >
->> >+static void virtio_vsock_dgram_tx_done(struct virtqueue *vq)
->> >+{
->> >+}
->> >+
->> > static void virtio_vsock_rx_done(struct virtqueue *vq)
->> > {
->> >       struct virtio_vsock *vsock = vq->vdev->priv;
->> >@@ -443,6 +460,10 @@ static void virtio_vsock_rx_done(struct virtqueue *vq)
->> >       queue_work(virtio_vsock_workqueue, &vsock->rx_work);
->> > }
->> >
->> >+static void virtio_vsock_dgram_rx_done(struct virtqueue *vq)
->> >+{
->> >+}
->> >+
->> > static struct virtio_transport virtio_transport = {
->> >       .transport = {
->> >               .module                   = THIS_MODULE,
->> >@@ -545,13 +566,29 @@ static int virtio_vsock_probe(struct virtio_device *vdev)
->> >               virtio_vsock_tx_done,
->> >               virtio_vsock_event_done,
->> >       };
->> >+      vq_callback_t *ex_callbacks[] = {
->>
->> 'ex' is not clear, maybe better 'dgram'?
->>
->sure.
->
->> What happen if F_DGRAM is negotiated, but not F_STREAM?
->>
->Hmm. In my mind, F_STREAM is always negotiated. Do we want to add
->support when F_STREAM is not negotiated?
->
+Hi Johan,
 
-Yep, I think we should support this case.
+Am Dienstag, 22. Juni 2021, 12:37:07 CEST schrieb Johan Jonker:
+> Hi Chris, Heiko,
+> 
+> On 6/22/21 4:05 AM, cl@rock-chips.com wrote:
+> > From: Liang Chen <cl@rock-chips.com>
+> > 
+> > RK3568 is a high-performance and low power quad-core application processor
+> > designed for personal mobile internet device and AIoT equipment. This patch
+> > add basic core dtsi file for it.
+> > 
+> > We use scmi_clk for cortex-a55 instead of standard ARMCLK, so that
+> > kernel/uboot/rtos can change cpu clk with the same code in ATF, and we will
+> > enalbe a special high-performance PLL when high frequency is required. The
+> > smci_clk code is in ATF, and clkid for cpu is 0, as below:
+> > 
+> >     cpu0: cpu@0 {
+> >         device_type = "cpu";
+> >         compatible = "arm,cortex-a55";
+> >         reg = <0x0 0x0>;
+> >         clocks = <&scmi_clk 0>;
+> >     };
+> > 
+> > Signed-off-by: Liang Chen <cl@rock-chips.com>
+> > ---
+> >  .../boot/dts/rockchip/rk3568-pinctrl.dtsi     | 3111 +++++++++++++++++
+> >  arch/arm64/boot/dts/rockchip/rk3568.dtsi      |  777 ++++
+> >  2 files changed, 3888 insertions(+)
+> >  create mode 100644 arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
+> >  create mode 100644 arch/arm64/boot/dts/rockchip/rk3568.dtsi
+> > 
+> > diff --git a/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi b/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
+> > new file mode 100644
+> > index 000000000000..a588ca95ace2
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/rockchip/rk3568-pinctrl.dtsi
+> > @@ -0,0 +1,3111 @@
+> > +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > +/*
+> > + * Copyright (c) 2021 Rockchip Electronics Co., Ltd.
+> > + */
+> > +
+> > +#include <dt-bindings/pinctrl/rockchip.h>
+> 
+> > +#include "rockchip-pinconf.dtsi"
+> 
+> Question for Heiko:
+> 
+> This file is put in the arm64 directory.
+> Is it useful for ARM as well?
+> Should the ARM directory have it's own or use a long include?
+> 
+> ARM:
+> #include "../../../arm64/boot/dts/rockchip/rockchip-pinconf.dtsi"
+> 
+> arm64:
+> #include "rockchip-pinconf.dtsi"
+> 
+> Is it complete or does it need more items?
+> (Who's going to change that?)
 
-The main purpose of the feature bits is to enable/disable the 
-functionality after the negotiation.
-Initially we didn't want to introduce it, but then we thought it was 
-better because there could be a device for example that wants to support 
-only datagram.
+my original plan was to start out with rk3568, then see if we can convert
+more arm64 socs to it after that and then think about "legacy" arm32 ;-)
 
-Since you're touching this part of the code, it would be very helpful to 
-fix the problem now.
+So I have no hard opinion on whether we want to have a separate dtsi
+for arm32 or link to the arm64 one yet.
 
-But if you think it's too complex, we can do it in a second step.
+We have this long-linking for for board-level includes already in some
+places, so it's not that uncommon, but on the other hand having a
+separate dtsi for arm32 could also make sense, as the arm64 pinctrl
+features got quite a bit expanded on newer SoCs.
 
-Thanks,
-Stefano
 
->> >+              virtio_vsock_rx_done,
->> >+              virtio_vsock_tx_done,
->> >+              virtio_vsock_dgram_rx_done,
->> >+              virtio_vsock_dgram_tx_done,
->> >+              virtio_vsock_event_done,
->> >+      };
->> >+
->> >       static const char * const names[] = {
->> >               "rx",
->> >               "tx",
->> >               "event",
->> >       };
->> >+      static const char * const ex_names[] = {
->> >+              "rx",
->> >+              "tx",
->> >+              "dgram_rx",
->> >+              "dgram_tx",
->> >+              "event",
->> >+      };
->> >+
->> >       struct virtio_vsock *vsock = NULL;
->> >-      int ret;
->> >+      int ret, max_vq;
->> >
->> >       ret = mutex_lock_interruptible(&the_virtio_vsock_mutex);
->> >       if (ret)
->> >@@ -572,9 +609,30 @@ static int virtio_vsock_probe(struct virtio_device *vdev)
->> >
->> >       vsock->vdev = vdev;
->> >
->> >-      ret = virtio_find_vqs(vsock->vdev, VSOCK_VQ_MAX,
->> >+      if (virtio_has_feature(vdev, VIRTIO_VSOCK_F_DGRAM))
->> >+              vsock->has_dgram = true;
->> >+
->> >+      if (vsock->has_dgram)
->> >+              max_vq = VSOCK_VQ_EX_MAX;
->> >+      else
->> >+              max_vq = VSOCK_VQ_MAX;
->> >+
->> >+      vsock->vqs = kmalloc_array(max_vq, sizeof(struct virtqueue *), GFP_KERNEL);
->> >+      if (!vsock->vqs) {
->> >+              ret = -ENOMEM;
->> >+              goto out;
->> >+      }
->> >+
->> >+      if (vsock->has_dgram) {
->> >+              ret = virtio_find_vqs(vsock->vdev, max_vq,
->> >+                            vsock->vqs, ex_callbacks, ex_names,
->> >+                            NULL);
->> >+      } else {
->> >+              ret = virtio_find_vqs(vsock->vdev, max_vq,
->> >                             vsock->vqs, callbacks, names,
->> >                             NULL);
->> >+      }
->> >+
->> >       if (ret < 0)
->> >               goto out;
->> >
->> >@@ -695,6 +753,7 @@ static struct virtio_device_id id_table[] = {
->> > };
->> >
->> > static unsigned int features[] = {
->> >+      VIRTIO_VSOCK_F_DGRAM,
->> > };
->> >
->> > static struct virtio_driver virtio_vsock_driver = {
->> >--
->> >2.11.0
->> >
->>
->
+Heiko
+
+
+> 
+> arch/arm/boot/dts/rk3066a.dtsi:373.23-375.6: ERROR (phandle_references):
+> /pinctrl/emmc/emmc-clk: Reference to non-existent node or label
+> "pcfg_pull_default"
+> 
+> arch/arm/boot/dts/rv1108.dtsi:645.25-654.6: ERROR (phandle_references):
+> /pinctrl/emmc/emmc-bus8: Reference to non-existent node or label
+> "pcfg_pull_up_drv_8ma"
+> 
+> arch/arm64/boot/dts/rockchip/px30.dtsi:1470.23-1473.6: ERROR
+> (phandle_references): /pinctrl/spi0/spi0-clk: Reference to non-existent
+> node or label "pcfg_pull_up_4ma"
+> 
+> arch/arm64/boot/dts/rockchip/px30.dtsi:1490.29-1493.6: ERROR
+> (phandle_references): /pinctrl/spi0/spi0-clk-hs: Reference to
+> non-existent node or label "pcfg_pull_up_8ma"
+> 
+> arch/arm64/boot/dts/rockchip/px30.dtsi:1589.39-1592.6: ERROR
+> (phandle_references): /pinctrl/pdm/pdm-clk0m0-sleep: Reference to
+> non-existent node or label "pcfg_input_high"
+> 
+> arch/arm64/boot/dts/rockchip/px30.dtsi:1903.49-1906.6: ERROR
+> (phandle_references): /pinctrl/lcdc/lcdc-rgb-m0-hsync-pin: Reference to
+> non-existent node or label "pcfg_pull_none_12ma"
+> 
+> etc..
+> 
+> > +
+> > +/*
+> > + * This file is auto generated by pin2dts tool, please keep these code
+> > + * by adding changes at end of this file.
+> > + */
+> > +&pinctrl {
+> 
+> [..]
+> 
+
+
+
 
