@@ -2,105 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 904103B1027
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 00:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B4E3B102A
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 00:39:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhFVWje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 18:39:34 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:36352 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229800AbhFVWjd (ORCPT
+        id S230422AbhFVWlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 18:41:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229800AbhFVWlj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 18:39:33 -0400
-Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:33484 helo=[192.168.1.179])
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1lvp19-0002q8-Ul; Tue, 22 Jun 2021 18:37:15 -0400
-Message-ID: <b00eb9407276f54e94ec80e6d80af128de97f10c.camel@trillion01.com>
-Subject: Re: [PATCH 1/2 v2] io_uring: Fix race condition when sqp thread
- goes to sleep
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 22 Jun 2021 18:37:15 -0400
-In-Reply-To: <dcc24da6-33d6-ce71-8c87-f0ef4e7f8006@gmail.com>
-References: <67c806d0bcf2e096c1b0c7e87bd5926c37231b87.1624387080.git.olivier@trillion01.com>
-         <60d23218.1c69fb81.79e86.f345SMTPIN_ADDED_MISSING@mx.google.com>
-         <dcc24da6-33d6-ce71-8c87-f0ef4e7f8006@gmail.com>
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.2 
+        Tue, 22 Jun 2021 18:41:39 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88457C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 15:39:22 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id c11so332623ljd.6
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 15:39:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qSJCzIJ/W2NmiCitrgwllPiyxSA/GA4EEsJjyUuSU30=;
+        b=oyktG73YZVDch+DxSWZBlUYtTGIHzL78FhJ/G2Cbmc71waG4Z3/lFnjGgL/IqYV1jK
+         WNgB53E8bbLHlfKWSbaUvcRVQ0hDjyeWDlu7jqP5TG3374N87wFX5FrYF2gH1GdTuiF0
+         fvBIv425RseHG54g0rrjatewbzwOGEMhiJN4MGdVl1VZpe+XaMpFC5hPJ2OGz7H2Hnbq
+         vIwjhSa91ZLHE9SMWkb1kEBUcrC1dIUSUsc4ei7J+JRpJUywEUIXu3wpLc8QX74URK8i
+         Xaf9ixG9oTKgJeT1mj9JiIJ3wlzmN117pUM3cmqzeg4iQxgQp7JVx4peowqd1zckZW2Y
+         KNjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qSJCzIJ/W2NmiCitrgwllPiyxSA/GA4EEsJjyUuSU30=;
+        b=ftP0g6Ki1QnMQxa5AcEzevEqYsuNvPC3ja9bEbVqJpZm1TKKz4H6o2ueMLjJw7K2Be
+         NDYMGjffLBnGlwMvuLMQgnk+oqC/TFUrGdDcDlGM1lN5CttkyOTRHl/mCOGMlqR/NVb4
+         /DxnEVElRTVTvEctz+vRNiivwQ+2nmpXgh+rft2AAI0Ca0sF5unO5ofzBShK9D4kJIaA
+         QXjtRmb+maAq1C4pL1h4lPDDQ9Yv6aOkJocU13KWSQOw0HXLawbc2GSZjy/TYC9wWZLo
+         tJ3hoAGZsqIk+fo2tVDwVZz50uF76SisV6UgU5181V7lO/qCSbMVauIv2Gl88lOj3wr/
+         lq2Q==
+X-Gm-Message-State: AOAM531Hnxu0+CCM2UDyvVn15QL0sdlMN+bobPEO7EGBuGHgcqIUoHDN
+        S4LGPuVu5lT18g2DgGvJDniy+jCDsvEQqjU2KderYw==
+X-Google-Smtp-Source: ABdhPJw2Yg00hzHazgi3MZjogWibQF77gMBQryIXZWZM6wakxe7xGXaEhMgdRdfNr1ZNECK2l63IHrBYnC437gewZdo=
+X-Received: by 2002:a2e:9852:: with SMTP id e18mr5092607ljj.383.1624401560707;
+ Tue, 22 Jun 2021 15:39:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+References: <20210622072454.3449146-1-seanjc@google.com>
+In-Reply-To: <20210622072454.3449146-1-seanjc@google.com>
+From:   David Matlack <dmatlack@google.com>
+Date:   Tue, 22 Jun 2021 15:38:54 -0700
+Message-ID: <CALzav=d+_fLJBJ14=e5aOUa_ufQQdLcNVhTOjeRoodd+7V=NCg@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86/mmu: Don't WARN on a NULL shadow page in TDP MMU check
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-06-22 at 21:45 +0100, Pavel Begunkov wrote:
-> On 6/22/21 7:55 PM, Olivier Langlois wrote:
-> > If an asynchronous completion happens before the task is preparing
-> > itself to wait and set its state to TASK_INTERRUPTIBLE, the
-> > completion
-> > will not wake up the sqp thread.
-> > 
-> > Signed-off-by: Olivier Langlois <olivier@trillion01.com>
-> > ---
-> >  fs/io_uring.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/io_uring.c b/fs/io_uring.c
-> > index fc8637f591a6..02f789e07d4c 100644
-> > --- a/fs/io_uring.c
-> > +++ b/fs/io_uring.c
-> > @@ -6902,7 +6902,7 @@ static int io_sq_thread(void *data)
-> >                 }
-> >  
-> >                 prepare_to_wait(&sqd->wait, &wait,
-> > TASK_INTERRUPTIBLE);
-> > -               if (!io_sqd_events_pending(sqd)) {
-> > +               if (!io_sqd_events_pending(sqd) && !current-
-> > >task_works) {
-> 
-> Agree that it should be here, but we also lack a good enough
-> task_work_run() around, and that may send the task burn CPU
-> for a while in some cases. Let's do
-> 
-> if (!io_sqd_events_pending(sqd) && !io_run_task_work())
->    ...
+On Tue, Jun 22, 2021 at 12:24 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Treat a NULL shadow page in the "is a TDP MMU" check as valid, non-TDP
+> root.  KVM uses a "direct" PAE paging MMU when TDP is disabled and the
+> guest is running with paging disabled.  In that case, root_hpa points at
+> the pae_root page (of which only 32 bytes are used), not a standard
+> shadow page, and the WARN fires (a lot).
+>
+> Fixes: 0b873fd7fb53 ("KVM: x86/mmu: Remove redundant is_tdp_mmu_enabled check")
+> Cc: David Matlack <dmatlack@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-I can do that if you want but considering that the function is inline
-and the race condition is a relatively rare occurence, is the cost
-coming with inline expansion really worth it in this case?
-> 
-> fwiw, no need to worry about TASK_INTERRUPTIBLE as
-> io_run_task_work() sets it to TASK_RUNNING.
+Thanks for the fix. I was able to reproduce the issue by running a
+kvm-unit-test with EPT=N. I'll add that to my "pre-send-email"
+workflow in the future.
 
-I wasn't worried about that as I believe that finish_wait() is taking
-care the state as well.
+Reviewed-by: David Matlack <dmatlack@google.com>
 
-What I wasn't sure about was if the patch was sufficient to totally
-eliminate the race condition.
-
-I had to educate myself about how schedule() works to appreciate its
-design and convince myself that the patch was good.
-> 
-> >                         needs_sched = true;
-> >                         list_for_each_entry(ctx, &sqd->ctx_list,
-> > sqd_list) {
-> >                                 io_ring_set_wakeup_flag(ctx);
-> > 
-> 
-
-
+> ---
+>  arch/x86/kvm/mmu/tdp_mmu.h | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
+> index b981a044ab55..1cae4485b3bc 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.h
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.h
+> @@ -94,11 +94,13 @@ static inline bool is_tdp_mmu(struct kvm_mmu *mmu)
+>         if (WARN_ON(!VALID_PAGE(hpa)))
+>                 return false;
+>
+> +       /*
+> +        * A NULL shadow page is legal when shadowing a non-paging guest with
+> +        * PAE paging, as the MMU will be direct with root_hpa pointing at the
+> +        * pae_root page, not a shadow page.
+> +        */
+>         sp = to_shadow_page(hpa);
+> -       if (WARN_ON(!sp))
+> -               return false;
+> -
+> -       return is_tdp_mmu_page(sp) && sp->root_count;
+> +       return sp && is_tdp_mmu_page(sp) && sp->root_count;
+>  }
+>  #else
+>  static inline bool kvm_mmu_init_tdp_mmu(struct kvm *kvm) { return false; }
+> --
+> 2.32.0.288.g62a8d224e6-goog
+>
