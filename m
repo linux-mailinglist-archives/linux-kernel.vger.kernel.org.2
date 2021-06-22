@@ -2,108 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E0E3B0D6D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 21:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 933033B0D70
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 21:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232720AbhFVTIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 15:08:13 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:56562 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230146AbhFVTIM (ORCPT
+        id S232678AbhFVTI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 15:08:59 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:38637 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232418AbhFVTI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 15:08:12 -0400
-Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:33442 helo=[192.168.1.179])
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1lvlie-0003DP-3y; Tue, 22 Jun 2021 15:05:56 -0400
-Message-ID: <32495917a028e9c70b75357029a87ca593378dde.camel@trillion01.com>
-Subject: Re: [PATCH v4] io_uring: reduce latency by reissueing the operation
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Tue, 22 Jun 2021 15:05:55 -0400
-In-Reply-To: <7c47078a-9e2d-badf-a47d-1ca78e1a3253@gmail.com>
-References: <9e8441419bb1b8f3c3fcc607b2713efecdef2136.1624364038.git.olivier@trillion01.com>
-         <678deb93-c4a5-5a14-9687-9e44f0f00b5a@gmail.com>
-         <7c47078a-9e2d-badf-a47d-1ca78e1a3253@gmail.com>
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.2 
+        Tue, 22 Jun 2021 15:08:58 -0400
+Received: by mail-ot1-f50.google.com with SMTP id j11-20020a9d738b0000b02903ea3c02ded8so22260994otk.5;
+        Tue, 22 Jun 2021 12:06:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=skB5NwL8zHWZqw+O43Sq9dc4ExRKZ46WUWu8K8GlMp0=;
+        b=jvDW/XY9cboLrZAILL9pMRZiXZdQocPlw665HassyIJs+YpW8fJFRzy7qZGv8AUAwg
+         FC/XNSbvMnBtAZpfBPAi//G8AbrkLV+XgeveFNX1CSmIGSLh4JMA63+nRy/E+krUUdGT
+         aHt5u6d1S2zBzgRLCoGFNKEGBVBNznPH6vIIW6L9KKiBDmZ/9DCzaZVL2+3GU+9PcM7I
+         kTjkHlAO8wuoSuze4Tpq+FGyHL4SCTDSRKqeN0olMJ1ZDZ3NpFBcDjKLLe7ObhFdWBoi
+         IrSDJm4KSeKMZ+GBhI2CTv/qE5vSSlf2StPNQk6Pwjyf2MdNwFrmH0Jfi7VTCdYy6e/K
+         WxGw==
+X-Gm-Message-State: AOAM5317ZBqonhx2KK63Fa53exTuYK2d6ROAlyPTt7R0+ZyIHDcaMsGl
+        AM956VCTax4/YEbIGQhZ8BudwZt7RghEfCbyr40=
+X-Google-Smtp-Source: ABdhPJxzHxmr8x34Y2wtFg1KsQLbkV9Li9xWjE4h5/dWowR6E4RYKlkiBi9CKtLLWAxfYcrsGFtutoWtFI8p8eL0HZw=
+X-Received: by 2002:a9d:674b:: with SMTP id w11mr4373560otm.260.1624388802508;
+ Tue, 22 Jun 2021 12:06:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+References: <YNEQjAzq6iWNgnBc@google.com> <CAJZ5v0jVzFWfNX-ujOz=A8SXyWGv_HC+YSVEzowSN+aU5aGiYw@mail.gmail.com>
+ <YNIoWrR8W5Uow7kk@google.com>
+In-Reply-To: <YNIoWrR8W5Uow7kk@google.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 22 Jun 2021 21:06:31 +0200
+Message-ID: <CAJZ5v0g4_E0srO6mTTgH=BWEHGVHBc8Zmis0OVt40Cy6rjdmHg@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: PM: postpone bringing devices to D0 unless we need them
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-06-22 at 19:01 +0100, Pavel Begunkov wrote:
-> On 6/22/21 6:54 PM, Pavel Begunkov wrote:
-> > On 6/22/21 1:17 PM, Olivier Langlois wrote:
-> > > 
-> > 
-> > >  static bool __io_poll_remove_one(struct io_kiocb *req,
-> > > @@ -6437,6 +6445,7 @@ static void __io_queue_sqe(struct io_kiocb
-> > > *req)
-> > >         struct io_kiocb *linked_timeout =
-> > > io_prep_linked_timeout(req);
-> > >         int ret;
-> > >  
-> > > +issue_sqe:
-> > >         ret = io_issue_sqe(req,
-> > > IO_URING_F_NONBLOCK|IO_URING_F_COMPLETE_DEFER);
-> > >  
-> > >         /*
-> > > @@ -6456,12 +6465,16 @@ static void __io_queue_sqe(struct
-> > > io_kiocb *req)
-> > >                         io_put_req(req);
-> > >                 }
-> > >         } else if (ret == -EAGAIN && !(req->flags &
-> > > REQ_F_NOWAIT)) {
-> > > -               if (!io_arm_poll_handler(req)) {
-> > > +               switch (io_arm_poll_handler(req)) {
-> > > +               case IO_APOLL_READY:
-> > > +                       goto issue_sqe;
-> > > +               case IO_APOLL_ABORTED:
-> > >                         /*
-> > >                          * Queued up for async execution, worker
-> > > will release
-> > >                          * submit reference when the iocb is
-> > > actually submitted.
-> > >                          */
-> > >                         io_queue_async_work(req);
-> > > +                       break;
-> > 
-> > Hmm, why there is a new break here? It will miscount
-> > @linked_timeout
-> > if you do that. Every io_prep_linked_timeout() should be matched
-> > with
-> > io_queue_linked_timeout().
-> 
-> Never mind, I said some nonsense and apparently need some coffee
+Hi,
 
-but this is a pertinant question, imho. I guess that you could get away
-without it since it is the last case of the switch statement... I am
-not sure what kernel coding standard says about that.
+On Tue, Jun 22, 2021 at 8:13 PM Dmitry Torokhov
+<dmitry.torokhov@gmail.com> wrote:
+>
+> Hi Rafael,
+>
+> On Tue, Jun 22, 2021 at 03:40:05PM +0200, Rafael J. Wysocki wrote:
+> > On Tue, Jun 22, 2021 at 12:20 AM Dmitry Torokhov
+> > <dmitry.torokhov@gmail.com> wrote:
+> > >
+> > > Currently ACPI power domain brings devices into D0 state in the "resume
+> > > early" phase. Normally this does not cause any issues, as powering up
+> > > happens quickly. However there are peripherals that have certain timing
+> > > requirements for powering on, for example some models of Elan
+> > > touchscreens need 300msec after powering up/releasing reset line before
+> > > they can accept commands from the host. Such devices will dominate
+> > > the time spent in early resume phase and cause increase in overall
+> > > resume time as we wait for early resume to complete before we can
+> > > proceed to the normal resume stage.
+> > >
+> > > There are ways for a driver to indicate that it can tolerate device
+> > > being in the low power mode and that it knows how to power the device
+> > > back up when resuming, bit that requires changes to individual drivers
+> > > that may not really care about details of ACPI controlled power
+> > > management.
+> > >
+> > > This change attempts to solve this issue at ACPI power domain level, by
+> > > postponing powering up device until we get to the normal resume stage,
+> > > unless there is early resume handler defined for the device, or device
+> > > does not declare any resume handlers, in which case we continue powering
+> > > up such devices early. This allows us to shave off several hundred
+> > > milliseconds of resume time on affected systems.
+> > >
+> > > Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > > ---
+> > >  drivers/acpi/device_pm.c | 46 +++++++++++++++++++++++++++++++++++-----
+> > >  1 file changed, 41 insertions(+), 5 deletions(-)
+> > >
+> > > diff --git a/drivers/acpi/device_pm.c b/drivers/acpi/device_pm.c
+> > > index 096153761ebc..00b412ccb2e0 100644
+> > > --- a/drivers/acpi/device_pm.c
+> > > +++ b/drivers/acpi/device_pm.c
+> > > @@ -1131,17 +1131,52 @@ static int acpi_subsys_resume_noirq(struct device *dev)
+> > >   *
+> > >   * Use ACPI to put the given device into the full-power state and carry out the
+> > >   * generic early resume procedure for it during system transition into the
+> > > - * working state.
+> > > + * working state, but only do that if device either defines early resume
+> > > + * handler, or does not define power operations at all. Otherwise powering up
+> > > + * of the device is postponed to the normal resume phase.
+> > >   */
+> > >  static int acpi_subsys_resume_early(struct device *dev)
+> > >  {
+> > > +       const struct dev_pm_ops *pm = dev->driver ? dev->driver->pm : NULL;
+> > > +       struct acpi_device *adev = ACPI_COMPANION(dev);
+> > >         int ret;
+> > >
+> > > -       if (dev_pm_skip_resume(dev))
+> > > -               return 0;
+> >
+> > The above doesn't need to be changed AFAICS.
+>
+> I was trying to have if string if/else if/else, but I can keep it as it
+> was.
+>
+> >
+> > > +       if (dev_pm_skip_resume(dev)) {
+> > > +               ret = 0;
+> > > +       } else if (!pm || pm->resume_early) {
+> >
+> > This is rather tricky, but I don't see a particular reason why it wouldn't work.
+> >
+> > > +               ret = acpi_dev_resume(dev);
+> > > +               if (!ret)
+> > > +                       ret = pm_generic_resume_early(dev);
+> > > +       } else {
+> > > +               if (adev)
+> > > +                       acpi_device_wakeup_disable(adev);
+> >
+> > This isn't necessary here.
+>
+> Just to confirm - you are saying that disabling the device as a wakeup
+> source can be safely postponed till the normal resume stage?
 
-However, I can tell you that there was also a break statement at the
-end of the case for IO_APOLL_READY and checkpatch.pl did complain about
-it saying that it was useless since it was following a goto statement.
-Therefore, I did remove that one.
+Yes, it should be safe.  Moreover, it may be unsafe to change the
+ordering between acpi_dev_pm_full_power() and
+acpi_device_wakeup_disable().
 
-checkpatch.pl did remain silent about the other remaining break. Hence
-this is why I left it there.
+> I was trying to keep as much of the original behavior as possible and this is
+> a part of acpi_dev_resume() that we are now postponing.
 
-Greetings,
+I would postpone the whole thing.
 
-
+Thanks!
