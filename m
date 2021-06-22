@@ -2,94 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D73E3B00BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:49:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AF93B00C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 11:50:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbhFVJvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 05:51:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37144 "EHLO
+        id S229747AbhFVJwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 05:52:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37486 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhFVJvM (ORCPT
+        with ESMTP id S229612AbhFVJwm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 05:51:12 -0400
-Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A16C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 02:48:55 -0700 (PDT)
-Received: by mail-ot1-x333.google.com with SMTP id n99-20020a9d206c0000b029045d4f996e62so1856401ota.4
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 02:48:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nD+1l6o05xmy+VeXlqHaYhc8wOEE+zvUKMP+aUukBYM=;
-        b=BlLwkz0QZDydr7SNM/bXhFBnc2kM0mgn/8nn8V4kWzH9i/a9lVOPNtE9iMb+8YxrjR
-         Mre/2mnFj/gq9qoQWjBGg+cwAKwjWqplxPF1cc4dbTWk2WR6RkvePXJGOcUECIbduaJQ
-         Rro3+vkRKKb1LH9E7BcEIjx0ZAZMyfT8ZUiB02OX/3bVF9cBIZGK+wgNd17pxGEtguwR
-         Q0JI8sK6nnov+RxBQN5QkiwyIw4DSZSL8ixAkFWnseaVz1p60+VDHqKraA8oZZzw5Zvx
-         2B9BJqVag8BpyTihdC9ZYwjxX6haC1k79P/yC3tWAp+JeJAlL+15rgMgthykfR7atUhl
-         WMKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nD+1l6o05xmy+VeXlqHaYhc8wOEE+zvUKMP+aUukBYM=;
-        b=C3CzDp4rBKnxY5xOUM2oTcTYWHokk5RjZY73q8wCmFENPYJ9mOG66gJTKdpCVWqzR8
-         wanBgqWJUpvDVNDUWoKsoMFBON1H1dt/Psl0mXCtGm7fUg9oTq8Jmfiz3ZG7QO9Jgk2/
-         46OlMDlDZUeYWULxmINQC0jtKK6y5X37kpFPSI/ED+N1YKuLuvmDcNS58mI6dIQJahYx
-         2ROjvNf4B7d7vOR23FoE83Wh84Ft0+OTHRRiYFrzycBAPX/jIlkJbcNlvzLhR1NwrjHQ
-         g+W5SYI88O+Joa7DHZDppi2KhbsRjq9+o8YCIJkBX9teQi8V4CG2k3iqF7C8Bhcao3kN
-         wd8g==
-X-Gm-Message-State: AOAM531mEY3vK7cbRj0IxGyJBcheElzX3SRuFl0B8sYDOs8m6R2oW4dQ
-        r6fy1f4BdzLygKvhA9TG02oVZEBM6tf64hDW8nfGsA==
-X-Google-Smtp-Source: ABdhPJwI4wpym27x4pBWkuYhL+X3gpT+E2b8RxSSxNrlJWT0CL0jEM4nvpVx7PzkmNccX3NLHdQxN4J4vmhAa2geJnw=
-X-Received: by 2002:a05:6830:93:: with SMTP id a19mr2377707oto.17.1624355335059;
- Tue, 22 Jun 2021 02:48:55 -0700 (PDT)
+        Tue, 22 Jun 2021 05:52:42 -0400
+Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7AC2C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 02:50:26 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 4FA3CC8009E;
+        Tue, 22 Jun 2021 11:50:24 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id 4jXpwzV4Ylre; Tue, 22 Jun 2021 11:50:23 +0200 (CEST)
+Received: from [IPv6:2003:e3:7f39:4900:2847:eb91:7f60:5216] (p200300E37F3949002847Eb917F605216.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:4900:2847:eb91:7f60:5216])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPSA id A53E7C8009B;
+        Tue, 22 Jun 2021 11:50:23 +0200 (CEST)
+Subject: Re: [PATCH v4 09/17] drm/uAPI: Add "active color range" drm property
+ as feedback for userspace
+To:     Pekka Paalanen <ppaalanen@gmail.com>
+Cc:     amd-gfx@lists.freedesktop.org, tzimmermann@suse.de,
+        intel-gfx@lists.freedesktop.org, sunpeng.li@amd.com,
+        dri-devel@lists.freedesktop.org, joonas.lahtinen@linux.intel.com,
+        maarten.lankhorst@linux.intel.com, linux-kernel@vger.kernel.org,
+        mripard@kernel.org, airlied@linux.ie, jani.nikula@linux.intel.com,
+        daniel@ffwll.ch, rodrigo.vivi@intel.com, alexander.deucher@amd.com,
+        harry.wentland@amd.com, christian.koenig@amd.com
+References: <20210618091116.14428-1-wse@tuxedocomputers.com>
+ <20210618091116.14428-10-wse@tuxedocomputers.com>
+ <20210622100042.4041624a@eldfell>
+From:   Werner Sembach <wse@tuxedocomputers.com>
+Message-ID: <56d079d4-841a-0ca5-b8a6-d2c10f91d211@tuxedocomputers.com>
+Date:   Tue, 22 Jun 2021 11:50:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210620114756.31304-1-Kuan-Ying.Lee@mediatek.com>
- <20210620114756.31304-3-Kuan-Ying.Lee@mediatek.com> <CAG_fn=UTfR9yKrkdRDjxFn=vgR_B7kzytm9WDWT14Gh0PLXyJg@mail.gmail.com>
-In-Reply-To: <CAG_fn=UTfR9yKrkdRDjxFn=vgR_B7kzytm9WDWT14Gh0PLXyJg@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 22 Jun 2021 11:48:43 +0200
-Message-ID: <CANpmjNPdaXj0egTTX6CmJonNM2UgbQPqza5Ku9u+ariJ8CQx_Q@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] kasan: integrate the common part of two KASAN
- tag-based modes
-To:     Alexander Potapenko <glider@google.com>
-Cc:     Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mediatek@lists.infradead.org,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        chinwen.chang@mediatek.com, nicholas.tang@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210622100042.4041624a@eldfell>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Jun 2021 at 11:28, Alexander Potapenko <glider@google.com> wrote:
+
+Am 22.06.21 um 09:00 schrieb Pekka Paalanen:
+> On Fri, 18 Jun 2021 11:11:08 +0200
+> Werner Sembach <wse@tuxedocomputers.com> wrote:
 >
-> > diff --git a/mm/kasan/report_tags.h b/mm/kasan/report_tags.h
-> > new file mode 100644
-> > index 000000000000..1cb872177904
-> > --- /dev/null
-> > +++ b/mm/kasan/report_tags.h
-> Why don't you make it a C file instead?
+>> Add a new general drm property "active color range" which can be used by
+>> graphic drivers to report the used color range back to userspace.
+>>
+>> There was no way to check which color range got actually used on a given
+>> monitor. To surely predict this, one must know the exact capabilities of
+>> the monitor and what the default behaviour of the used driver is. This
+>> property helps eliminating the guessing at this point.
+>>
+>> In the future, automatic color calibration for screens might also depend on
+>> this information being available.
+>>
+>> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+>> ---
+>>  drivers/gpu/drm/drm_connector.c | 59 +++++++++++++++++++++++++++++++++
+>>  include/drm/drm_connector.h     | 27 +++++++++++++++
+>>  2 files changed, 86 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+>> index 684d7abdf0eb..818de58d972f 100644
+>> --- a/drivers/gpu/drm/drm_connector.c
+>> +++ b/drivers/gpu/drm/drm_connector.c
+>> @@ -897,6 +897,12 @@ static const struct drm_prop_enum_list drm_active_color_format_enum_list[] = {
+>>  	{ DRM_COLOR_FORMAT_YCRCB420, "ycbcr420" },
+>>  };
+>>  
+>> +static const struct drm_prop_enum_list drm_active_color_range_enum_list[] = {
+>> +	{ DRM_MODE_COLOR_RANGE_UNSET, "Unknown" },
+>> +	{ DRM_MODE_COLOR_RANGE_FULL, "Full" },
+>> +	{ DRM_MODE_COLOR_RANGE_LIMITED_16_235, "Limited 16:235" },
+> Doesn't "limited" mean different numbers on RGB vs. Y vs. CbCr? I have
+> a vague recollection that at least one of them was different from the
+> others.
 
-Yes, good point. report_{hw,sw}_tags.c essentially define it, but it's
-called by report.c code.
+Yes, seems like it does:
+https://www.kernel.org/doc/html/v5.12/userspace-api/media/v4l/colorspaces-defs.html#c.V4L.v4l2_quantization
 
-I think I suggested to make it a header first because there were still
-parts that were report_{hw,sw}_tags.c specific, and the helper
-function would be used by those 2 to build their version of
-kasan_get_bug_type(), but that doesn't seem to be the case anymore.
+I carried the option names over from "Broadcast RGB", see my other e-mail for more details.
 
-> > +const char *kasan_get_bug_type(struct kasan_access_info *info)
-> If this function has to be in the header, it should be declared as
-> static inline.
-> But I don't think it has to be there in the first place.
+>
+> Documenting DRM_MODE_COLOR_RANGE_UNSET as "unspecified/default" while
+> the string for it is "Unknown" seems inconsistent to me. I would
+> recommend to avoid the word "default" because "reset to defaults" might
+> become a thing one day, and that probably is not the same default as
+> here.
+>
+> Is there actually a case for "unknown"? How can it be not known? Or
+> does it mean "not applicable"?
+
+Unknown is when no monitor is connected or is when the connector/monitor is disabled.
+
+It also is the initial value when the driver fails to correctly set the property. This shouldn't happen, but I'm
+wondering if I should still introduce an _ERROR state instead for this case?
+
+I will rename it, maybe "unset" to match the enum? "not applicable" also fits if either the error state is defined or
+not necessary.
+
+>
+> Otherwise looks good to me.
+>
+>
+> Thanks,
+> pq
+>
+>
+>> +};
+>> +
+>>  DRM_ENUM_NAME_FN(drm_get_dp_subconnector_name,
+>>  		 drm_dp_subconnector_enum_list)
+>>  
+>> @@ -1221,6 +1227,14 @@ static const struct drm_prop_enum_list dp_colorspaces[] = {
+>>   *	drm_connector_attach_active_color_format_property() to install this
+>>   *	property.
+>>   *
+>> + * active color range:
+>> + *	This read-only property tells userspace the color range actually used by
+>> + *	the hardware display engine on "the cable" on a connector. The chosen
+>> + *	value depends on hardware capabilities of the monitor and the used color
+>> + *	format. Drivers shall use
+>> + *	drm_connector_attach_active_color_range_property() to install this
+>> + *	property.
+>> + *
+>>   * Connectors also have one standardized atomic property:
+>>   *
+>>   * CRTC_ID:
+>> @@ -2264,6 +2278,51 @@ void drm_connector_set_active_color_format_property(struct drm_connector *connec
+>>  }
+>>  EXPORT_SYMBOL(drm_connector_set_active_color_format_property);
+>>  
+>> +/**
+>> + * drm_connector_attach_active_color_range_property - attach "active color range" property
+>> + * @connector: connector to attach active color range property on.
+>> + *
+>> + * This is used to check the applied color range on a connector.
+>> + *
+>> + * Returns:
+>> + * Zero on success, negative errno on failure.
+>> + */
+>> +int drm_connector_attach_active_color_range_property(struct drm_connector *connector)
+>> +{
+>> +	struct drm_device *dev = connector->dev;
+>> +	struct drm_property *prop;
+>> +
+>> +	if (!connector->active_color_range_property) {
+>> +		prop = drm_property_create_enum(dev, DRM_MODE_PROP_IMMUTABLE, "active color range",
+>> +						drm_active_color_range_enum_list,
+>> +						ARRAY_SIZE(drm_active_color_range_enum_list));
+>> +		if (!prop)
+>> +			return -ENOMEM;
+>> +
+>> +		connector->active_color_range_property = prop;
+>> +		drm_object_attach_property(&connector->base, prop, DRM_MODE_COLOR_RANGE_UNSET);
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +EXPORT_SYMBOL(drm_connector_attach_active_color_range_property);
+>> +
+>> +/**
+>> + * drm_connector_set_active_color_range_property - sets the active color range property for a
+>> + * connector
+>> + * @connector: drm connector
+>> + * @active_color_range: color range for the connector currently active on "the cable"
+>> + *
+>> + * Should be used by atomic drivers to update the active color range over a connector.
+>> + */
+>> +void drm_connector_set_active_color_range_property(struct drm_connector *connector,
+>> +						   enum drm_mode_color_range active_color_range)
+>> +{
+>> +	drm_object_property_set_value(&connector->base, connector->active_color_range_property,
+>> +				      active_color_range);
+>> +}
+>> +EXPORT_SYMBOL(drm_connector_set_active_color_range_property);
+>> +
+>>  /**
+>>   * drm_connector_attach_hdr_output_metadata_property - attach "HDR_OUTPUT_METADA" property
+>>   * @connector: connector to attach the property on.
+>> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+>> index 8a5197f14e87..9fb7119b7a02 100644
+>> --- a/include/drm/drm_connector.h
+>> +++ b/include/drm/drm_connector.h
+>> @@ -648,6 +648,24 @@ struct drm_tv_connector_state {
+>>  	unsigned int hue;
+>>  };
+>>  
+>> +/**
+>> + * enum drm_mode_color_range - color_range info for &drm_connector
+>> + *
+>> + * This enum is used to represent full or limited color range on the display
+>> + * connector signal.
+>> + *
+>> + * @DRM_MODE_COLOR_RANGE_UNSET:		Color range is unspecified/default.
+>> + * @DRM_MODE_COLOR_RANGE_FULL:		Color range is full range, 0-255 for
+>> + *					8-Bit color depth.
+>> + * DRM_MODE_COLOR_RANGE_LIMITED_16_235:	Color range is limited range, 16-235 for
+>> + *					8-Bit color depth.
+>> + */
+>> +enum drm_mode_color_range {
+>> +	DRM_MODE_COLOR_RANGE_UNSET,
+>> +	DRM_MODE_COLOR_RANGE_FULL,
+>> +	DRM_MODE_COLOR_RANGE_LIMITED_16_235,
+>> +};
+>> +
+>>  /**
+>>   * struct drm_connector_state - mutable connector state
+>>   */
+>> @@ -1392,6 +1410,12 @@ struct drm_connector {
+>>  	 */
+>>  	struct drm_property *active_color_format_property;
+>>  
+>> +	/**
+>> +	 * @active_color_range_property: Default connector property for the
+>> +	 * active color range to be driven out of the connector.
+>> +	 */
+>> +	struct drm_property *active_color_range_property;
+>> +
+>>  #define DRM_CONNECTOR_POLL_HPD (1 << 0)
+>>  #define DRM_CONNECTOR_POLL_CONNECT (1 << 1)
+>>  #define DRM_CONNECTOR_POLL_DISCONNECT (1 << 2)
+>> @@ -1719,6 +1743,9 @@ void drm_connector_set_active_bpc_property(struct drm_connector *connector, int
+>>  int drm_connector_attach_active_color_format_property(struct drm_connector *connector);
+>>  void drm_connector_set_active_color_format_property(struct drm_connector *connector,
+>>  						    u32 active_color_format);
+>> +int drm_connector_attach_active_color_range_property(struct drm_connector *connector);
+>> +void drm_connector_set_active_color_range_property(struct drm_connector *connector,
+>> +						   enum drm_mode_color_range active_color_range);
+>>  
+>>  /**
+>>   * struct drm_tile_group - Tile group metadata
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
