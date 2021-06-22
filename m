@@ -2,139 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 757F53B0857
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E4F3B085B
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232097AbhFVPOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230047AbhFVPOA (ORCPT
+        id S232127AbhFVPOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:14:34 -0400
+Received: from mail-pl1-f180.google.com ([209.85.214.180]:45921 "EHLO
+        mail-pl1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230047AbhFVPOa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:14:00 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B1BC06175F
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:11:45 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id d9so6832810qtx.8
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:11:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GfBcan5Oq/+F6rqd3wteDDUo+4mA0t9y3pSH6r/kVdI=;
-        b=oQKSqDMY5ui7ysN6RXa17KyJ2Wzpm89WOS/VTDpLsBMmjFt0xKup1/rN3Iu2Ysn7kj
-         0o4QpiviU+XCzwAjOmd3ASe2G50DR4wQM1cxJ/IcnSoJE+UREjasIpFci4SAI/zjLeO4
-         BaVYbbQSqm0nAX/Y00oQm+1Fl/s1cHNEiBtnrRSnwG+/c0ZPfPFGw36xuMKNGuUPMk6/
-         S9czK9NLULrCof4fVnQi6scmnRJl9iMhmlDxM2xpQloNB9qi5QwwBnyh0jFdiD4S4nEx
-         BNdzQik55X4yiVc76B5/N6HeFax4G1G02Yo0H2X2M1eLLt5C2jCamVulCHYNUMYd6Nkl
-         GXvA==
+        Tue, 22 Jun 2021 11:14:30 -0400
+Received: by mail-pl1-f180.google.com with SMTP id i4so6889276plt.12;
+        Tue, 22 Jun 2021 08:12:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=GfBcan5Oq/+F6rqd3wteDDUo+4mA0t9y3pSH6r/kVdI=;
-        b=edqcncEgQHPRDCMUzf3yfz6YSWDQgRD+UM16ylv3bbsEgz+wiSXbqQHeiyeZHbUpf0
-         PWd/pYvxvpcLQfhKspIUWsysyofuWQlZPHKTssGAEenJcmQN4XcL/1ag11DuSLbQ6OYj
-         69bjdaUP0zo0gFk9JCdRLMpcb+2ZBwJsjPeNEE9TtclOyueIl8oWzQ+QyT5saklEt+M0
-         x9JW8TO/GwFNw3zCk5A0Mgk3IMDCrXCq134Veo8peGaw8TXZ/fDI8uzi8lMB7eDdwypA
-         e+NlZ6VFZEBt5tHZY+3+5KAeXJbKqD9FrGU3c+OeFmF5q3llWFGbvgI81BYjeG9+aR2w
-         8nlQ==
-X-Gm-Message-State: AOAM532lJvTge0U9Yjx6ft+H5B19alJjJKFb9rb/faFaRat/BBCBKlN/
-        ewF77xaZFoYSGOxBUydrd6zdww==
-X-Google-Smtp-Source: ABdhPJyIvo3ZVkwIuidF8Fxvcg1uTF/rMIUzGf5xwZlLSDUGqkiRqy7l/P12S4XnoNrAjy14Ik1xNg==
-X-Received: by 2002:ac8:5dd2:: with SMTP id e18mr3979783qtx.263.1624374704154;
-        Tue, 22 Jun 2021 08:11:44 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id m3sm10504480qkk.27.2021.06.22.08.11.43
+        bh=1W5C3srCUkjJy1nJL26HVe5YZv8gm/IcknUzZl2jap4=;
+        b=oRM9Qmm2yp0l3ah4qOrpRY4Lzsu6HoLgYlJVizPI1t7wWrbBf19OuEBNyZoB95GOZ1
+         2BzQWKsf+YGqO8WrhwQXnTmdyYbRTg8SVqBBm5T2HEtuYSw7mQoiwnhLOU284WN6FTOX
+         b/P4r7IUz92ftGnedvhhxLVmsV/na2dJJ+L21AMGRHtMdqkH29T6zbNd1OFxHi6sPx9A
+         po2Ubc/EjkEofV69aXP3IMqesBH2tiCfXdtqxuJxo4pDr5nxmpilkf0NVw4/gt1Etu64
+         fh1Dn/tZhCpcY4eeoZcXlIaBD4wyyO8jjhE8rHlHCD/YjvOccPpx3LLAFi3MdUiQukL/
+         WPWw==
+X-Gm-Message-State: AOAM530zVoKXiNyBuo0PCGlgDq+nZGb5EkSesPaix+XvWCzLY5K0OaN9
+        yYHmtBOctUfoy/rOEvpq52Y=
+X-Google-Smtp-Source: ABdhPJyIdq9ICzPWCTbv0gJeQOUGN7a+w4xqg2KO7iP3aLZrWEQT/oMMdfSGD28i1kyypaJSZwTbIQ==
+X-Received: by 2002:a17:90b:19d4:: with SMTP id nm20mr4495520pjb.134.1624374734411;
+        Tue, 22 Jun 2021 08:12:14 -0700 (PDT)
+Received: from garbanzo ([173.239.198.97])
+        by smtp.gmail.com with ESMTPSA id y21sm9152127pfp.57.2021.06.22.08.12.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 08:11:43 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1lvi3y-00AD4o-Si; Tue, 22 Jun 2021 12:11:42 -0300
-Date:   Tue, 22 Jun 2021 12:11:42 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Oded Gabbay <oded.gabbay@gmail.com>
-Cc:     Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
-        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Oded Gabbay <ogabbay@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Tomer Tayar <ttayar@habana.ai>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
- FD for DMA-BUF
-Message-ID: <20210622151142.GA2431880@ziepe.ca>
-References: <20210621175511.GI1096940@ziepe.ca>
- <CAKMK7uEO1_B59DtM7N2g7kkH7pYtLM_WAkn+0f3FU3ps=XEjZQ@mail.gmail.com>
- <CAFCwf11jOnewkbLuxUESswCJpyo7C0ovZj80UrnwUOZkPv2JYQ@mail.gmail.com>
- <20210621232912.GK1096940@ziepe.ca>
- <d358c740-fd3a-9ecd-7001-676e2cb44ec9@gmail.com>
- <CAFCwf11h_Nj_GEdCdeTzO5jgr-Y9em+W-v_pYUfz64i5Ac25yg@mail.gmail.com>
- <20210622120142.GL1096940@ziepe.ca>
- <CAFCwf10GmBjeJAFp0uJsMLiv-8HWAR==RqV9ZdMQz+iW9XWdTA@mail.gmail.com>
- <20210622121546.GN1096940@ziepe.ca>
- <CAFCwf13BuS+U3Pko_62hFPuvZPG26HQXuu-cxPmcADNPO22g9g@mail.gmail.com>
+        Tue, 22 Jun 2021 08:12:13 -0700 (PDT)
+Date:   Tue, 22 Jun 2021 08:12:10 -0700
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     minchan@kernel.org, jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
+        mbenes@suse.com, jpoimboe@redhat.com, tglx@linutronix.de,
+        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
+        peterz@infradead.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] zram: fix crashes due to use of cpu hotplug
+ multistate
+Message-ID: <20210622151210.lpbgnarxsbaakzdy@garbanzo>
+References: <20210621233013.562641-1-mcgrof@kernel.org>
+ <20210621233013.562641-2-mcgrof@kernel.org>
+ <YNGTvN2cVOPr+duH@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFCwf13BuS+U3Pko_62hFPuvZPG26HQXuu-cxPmcADNPO22g9g@mail.gmail.com>
+In-Reply-To: <YNGTvN2cVOPr+duH@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 04:12:26PM +0300, Oded Gabbay wrote:
-
-> > 1) Setting sg_page to NULL
-> > 2) 'mapping' pages for P2P DMA without going through the iommu
-> > 3) Allowing P2P DMA without using the p2p dma API to validate that it
-> >    can work at all in the first place.
-> >
-> > All of these result in functional bugs in certain system
-> > configurations.
-> >
-> > Jason
+On Tue, Jun 22, 2021 at 09:39:40AM +0200, Greg KH wrote:
+> On Mon, Jun 21, 2021 at 04:30:11PM -0700, Luis Chamberlain wrote:
+> > CPU 1                            CPU 2
+> > 
+> > class_unregister(...);
 > 
-> Hi Jason,
-> Thanks for the feedback.
-> Regarding point 1, why is that a problem if we disable the option to
-> mmap the dma-buf from user-space ? 
+> Now the sysfs files are removed and invalidated for all devices
+> associated with that class.
 
-Userspace has nothing to do with needing struct pages or not
+You're right the disksize_store() would have to happen before.
 
-Point 1 and 2 mostly go together, you supporting the iommu is not nice
-if you dont have struct pages.
+> > idr_for_each(...);
+> > zram_debugfs_destroy();
+> >                                 disksize_store(...);
+> 
+> How will this call into the kobject's store function if
+> class_unregister() has already happened?
 
-You should study Logan's patches I pointed you at as they are solving
-exactly this problem.
+The disksize_store() would indeed have to happen before.
 
-> In addition, I didn't see any problem with sg_page being NULL in the
-> RDMA p2p dma-buf code. Did I miss something here ?
+> > idr_destroy(...);
+> > unregister_blkdev(...);
+> 
+> Ah, it's a block device's store function you are worried about, not the
+> class one?
 
-No, the design of the dmabuf requires the exporter to do the dma maps
-and so it is only the exporter that is wrong to omit all the iommu and
-p2p logic.
+In this case its about any files which can change the cpu compression
+streams.
 
-RDMA is OK today only because nobody has implemented dma buf support
-in rxe/si - mainly because the only implementations of exporters don't
-set the struct page and are thus buggy.
+> > diff --git a/drivers/block/zram/zram_drv.c b/drivers/block/zram/zram_drv.c
+> > index cf8deecc39ef..431b60cd85c1 100644
+> > --- a/drivers/block/zram/zram_drv.c
+> > +++ b/drivers/block/zram/zram_drv.c
+> > @@ -44,6 +44,8 @@ static DEFINE_MUTEX(zram_index_mutex);
+> >  static int zram_major;
+> >  static const char *default_compressor = CONFIG_ZRAM_DEF_COMP;
+> >  
+> > +bool zram_up;
+> 
+> static?
 
-> I will take two GAUDI devices and use one as an exporter and one as an
-> importer. I want to see that the solution works end-to-end, with real
-> device DMA from importer to exporter.
+Will fix.
 
-I can tell you it doesn't. Stuffing physical addresses directly into
-the sg list doesn't involve any of the IOMMU code so any configuration
-that requires IOMMU page table setup will not work.
+> > +
+> >  /* Module params (documentation at end) */
+> >  static unsigned int num_devices = 1;
+> >  /*
+> > @@ -1704,6 +1706,7 @@ static void zram_reset_device(struct zram *zram)
+> >  	comp = zram->comp;
+> >  	disksize = zram->disksize;
+> >  	zram->disksize = 0;
+> > +	zram->comp = NULL;
+> 
+> Is this a new change?
 
-Jason
+It is a sanity change, but indeed, it is separate. I'll let Minchan
+decide if he would prefer this to go out as a separate change.
+
+  Luis
