@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3633B0C36
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5729D3B0C39
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232873AbhFVSD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:03:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37684 "EHLO
+        id S232743AbhFVSED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232749AbhFVSDN (ORCPT
+        with ESMTP id S232697AbhFVSDW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:03:13 -0400
+        Tue, 22 Jun 2021 14:03:22 -0400
 Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F81C061A3F
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:59:10 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id t144-20020a3746960000b02903ad9c5e94baso18998286qka.16
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:59:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5050C061198
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:59:12 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id y5-20020a37af050000b02903a9c3f8b89fso19031235qke.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:59:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=AxsRK2ImS4sX2YhbK1ZoKxLuOaRGjI3JwD6rPRybQYU=;
-        b=pDmKsy23UTC+dTo/4uIFj4a+wCnm5aPUtxKO+DelRIoI1MICP/8r9THgzjEDmqtbdn
-         gS6hr3PX15L4UCXbFsvW17Ycf1fAiM1vEzvXBSo1ysYAfgiYpaTfIdQhz0ugb/qDynCv
-         KPA8ACRvRpcmkUAJ0yMc09I27wa2jIkFvxT0NyyjieAvWOmc6szi/Tkuf3j2bOuPasfv
-         /tf+DNr4FGFLd2Z0xwn8a3KMdVmxDeOlU6GbyC8fwuderczhYAk2PuF6/BQzbRkrey0Z
-         hFpN+Eqgfxgo97SwH2ZyESvSKZnThkuMrsZbr8cmi2PPrEbtuSTtahf6otB4ibA1FG0e
-         orBA==
+        bh=pivc7qr4sT4+j8JNTwOxv+4OmDX8fKwSLBhBV0jBRec=;
+        b=LOuf/n0b/jOkC5l+HdXmVP2fx3jHAayfatW/ZxJfv7QSu3qjpg4JIH8rFgP6oRLRUu
+         SezQXmkFyqC6cuhiG+sqEIcSRc+m8F1kv77AZ4k/7jytk5vO2HXkruApcAaJoVR3+1QT
+         gFs3f3BYboxssIi5RubGLwZtoHW54N98O1wf0WKxBRQnlS7AYWtyjDlSwkd/luvYw+Vo
+         S1W1L+ERGK3ZIY2jjXLlibdxJzQtgTCRSFapZhKcgQopIoBzBpJjMfn8Qraz6tk5Cta8
+         NTeIakwjnIwQ/N0b9nr+kBSiPCs+xD/PqA1417nOMcT+mVNiw3qzOOkKYx6LIsAlkSul
+         eCcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=AxsRK2ImS4sX2YhbK1ZoKxLuOaRGjI3JwD6rPRybQYU=;
-        b=YnlPV/au6vXxFXWQ6iW3EZD0SN6pJqRlbXCuZ3DMgMYf1LTJIILbKwcgN/GL0aImdK
-         neQogOSKPCwYNMjRm3XMAA9AV2VsXALVC+ggt5oq2TT25lebvHkhAUisTDFgdyCKD/3J
-         KqmeFgD+QdF3qeWigl3YaeyljYMf4v5oQZ8Syu2/NowYjlX/LEyIHTRjWlBMnwju3Zy0
-         QpU8jIofSbBimeomwqGzgXLI4T9ylRCiGc/GKRWpwAfvQZXTrf3enxIS+8O0cfsON5b4
-         YFe43ql5SmNgBnTIooruLonFRoRtcj5yGSGwtxe1Bm1oU9Old8qqrJMmOF5auD4HTLOn
-         ufjQ==
-X-Gm-Message-State: AOAM530qJu1p2iZ7U90yTnRGCddtrU+s82kfZtkOTtISLXEtbiVBlg1i
-        zM0rdvHpLAUaOqQUWqqHU4lsdWeXquc=
-X-Google-Smtp-Source: ABdhPJyX0zZB8kxLADbwUwXSQoMZ1QccAerKbpDfYMqg0PqZYli2jyMSrWHkHaTQ/5gbICTOwwbaLuXbL8o=
+        bh=pivc7qr4sT4+j8JNTwOxv+4OmDX8fKwSLBhBV0jBRec=;
+        b=k2IoITXStYfsjxRO74A/a0RT2qsObyDZ7ow7vZyAW5VBhz5Q91zy5pZhNq4Z6ddqwr
+         JyO+eBv5GfDDwIZsDgx6UukTLztT0Hnt03B055j9AKR5BMp1ngR0V2DoIWKN9qMkwtP2
+         9zRIlXzsjoz8dutzxT6ht+CV4cLRUcccBS2PPoDaIIESQKnAeA0CJz5HlvsEuCJ/A2Tr
+         uxST7Uou2DusnB0fAL3pe15lGAZchDJ/dXVMv7Ex7LRzd0DLLGdz0uSXANI9268PUa0e
+         krmP525lKzEOpo/jNI3W/L9eR0L+/RJxZG7qQTw/38Y55OizxprJJLHcR7r5e6NMe8XQ
+         0DUQ==
+X-Gm-Message-State: AOAM533GAtHZdL2dpVFZ0QlZaf0dHn6MYQqXJMSNSMZPmY2o6+bi7d2y
+        uK3gjN6wIj4AeYkwk8ympm3C1B8m260=
+X-Google-Smtp-Source: ABdhPJwg+YfK5rGt1xANj5+v6A8EJYEtR3MwEoo21FvvNMZSylbJP4YmYXQ6EQwFD8xXHO+jh0xQzxEG0sA=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:5722:92ce:361f:3832])
- (user=seanjc job=sendgmr) by 2002:a05:6214:311:: with SMTP id
- i17mr7885985qvu.57.1624384749550; Tue, 22 Jun 2021 10:59:09 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:da8f:: with SMTP id n137mr6440668ybf.520.1624384751889;
+ Tue, 22 Jun 2021 10:59:11 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 22 Jun 2021 10:57:17 -0700
+Date:   Tue, 22 Jun 2021 10:57:18 -0700
 In-Reply-To: <20210622175739.3610207-1-seanjc@google.com>
-Message-Id: <20210622175739.3610207-33-seanjc@google.com>
+Message-Id: <20210622175739.3610207-34-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210622175739.3610207-1-seanjc@google.com>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH 32/54] KVM: x86/mmu: Use MMU's role to compute permission bitmask
+Subject: [PATCH 33/54] KVM: x86/mmu: Use MMU's role to compute PKRU bitmask
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -68,78 +68,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the MMU's role to generate the permission bitmasks for the MMU.
-For some flows, the vCPU state may not be correct (or relevant), e.g.
-the nested NPT MMU can be initialized with incoherent vCPU state.
+Use the MMU's role to calculate the Protection Keys (Restrict Userspace)
+bitmask instead of pulling bits from current vCPU state.  For some flows,
+the vCPU state may not be correct (or relevant), e.g. EPT doesn't
+interact with PKRU.  Case in point, the "ept" param simply disappears.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ arch/x86/kvm/mmu/mmu.c | 21 +++++++--------------
+ 1 file changed, 7 insertions(+), 14 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index c3bf5d4186e9..bd412e082356 100644
+index bd412e082356..dcde7514358b 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4365,8 +4365,7 @@ reset_ept_shadow_zero_bits_mask(struct kvm_vcpu *vcpu,
- 	 (7 & (access) ? 128 : 0))
- 
- 
--static void update_permission_bitmask(struct kvm_vcpu *vcpu,
--				      struct kvm_mmu *mmu, bool ept)
-+static void update_permission_bitmask(struct kvm_mmu *mmu, bool ept)
+@@ -4460,24 +4460,17 @@ static void update_permission_bitmask(struct kvm_mmu *mmu, bool ept)
+ * away both AD and WD.  For all reads or if the last condition holds, WD
+ * only will be masked away.
+ */
+-static void update_pkru_bitmask(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
+-				bool ept)
++static void update_pkru_bitmask(struct kvm_mmu *mmu)
  {
- 	unsigned byte;
+ 	unsigned bit;
+ 	bool wp;
  
-@@ -4374,9 +4373,9 @@ static void update_permission_bitmask(struct kvm_vcpu *vcpu,
- 	const u8 w = BYTE_MASK(ACC_WRITE_MASK);
- 	const u8 u = BYTE_MASK(ACC_USER_MASK);
- 
--	bool cr4_smep = kvm_read_cr4_bits(vcpu, X86_CR4_SMEP) != 0;
--	bool cr4_smap = kvm_read_cr4_bits(vcpu, X86_CR4_SMAP) != 0;
--	bool cr0_wp = is_write_protection(vcpu);
-+	bool cr4_smep = is_cr4_smep(mmu);
-+	bool cr4_smap = is_cr4_smap(mmu);
-+	bool cr0_wp = is_cr0_wp(mmu);
- 
- 	for (byte = 0; byte < ARRAY_SIZE(mmu->permissions); ++byte) {
- 		unsigned pfec = byte << 1;
-@@ -4672,7 +4671,7 @@ static void init_kvm_tdp_mmu(struct kvm_vcpu *vcpu)
- 		context->gva_to_gpa = paging32_gva_to_gpa;
+-	if (ept) {
++	if (!is_cr4_pke(mmu)) {
+ 		mmu->pkru_mask = 0;
+ 		return;
  	}
  
--	update_permission_bitmask(vcpu, context, false);
-+	update_permission_bitmask(context, false);
- 	update_pkru_bitmask(vcpu, context, false);
+-	/* PKEY is enabled only if CR4.PKE and EFER.LMA are both set. */
+-	if (!kvm_read_cr4_bits(vcpu, X86_CR4_PKE) || !is_long_mode(vcpu)) {
+-		mmu->pkru_mask = 0;
+-		return;
+-	}
+-
+-	wp = is_write_protection(vcpu);
++	wp = is_cr0_wp(mmu);
+ 
+ 	for (bit = 0; bit < ARRAY_SIZE(mmu->permissions); ++bit) {
+ 		unsigned pfec, pkey_bits;
+@@ -4672,7 +4665,7 @@ static void init_kvm_tdp_mmu(struct kvm_vcpu *vcpu)
+ 	}
+ 
+ 	update_permission_bitmask(context, false);
+-	update_pkru_bitmask(vcpu, context, false);
++	update_pkru_bitmask(context);
  	update_last_nonleaf_level(vcpu, context);
  	reset_tdp_shadow_zero_bits_mask(vcpu, context);
-@@ -4730,7 +4729,7 @@ static void shadow_mmu_init_context(struct kvm_vcpu *vcpu, struct kvm_mmu *conte
- 
+ }
+@@ -4730,7 +4723,7 @@ static void shadow_mmu_init_context(struct kvm_vcpu *vcpu, struct kvm_mmu *conte
  	if (____is_cr0_pg(regs)) {
  		reset_rsvds_bits_mask(vcpu, context);
--		update_permission_bitmask(vcpu, context, false);
-+		update_permission_bitmask(context, false);
- 		update_pkru_bitmask(vcpu, context, false);
+ 		update_permission_bitmask(context, false);
+-		update_pkru_bitmask(vcpu, context, false);
++		update_pkru_bitmask(context);
  		update_last_nonleaf_level(vcpu, context);
  	}
-@@ -4838,7 +4837,7 @@ void kvm_init_shadow_ept_mmu(struct kvm_vcpu *vcpu, bool execonly,
- 	context->root_level = level;
+ 	context->shadow_root_level = new_role.base.level;
+@@ -4838,8 +4831,8 @@ void kvm_init_shadow_ept_mmu(struct kvm_vcpu *vcpu, bool execonly,
  	context->direct_map = false;
  
--	update_permission_bitmask(vcpu, context, true);
-+	update_permission_bitmask(context, true);
- 	update_pkru_bitmask(vcpu, context, true);
+ 	update_permission_bitmask(context, true);
+-	update_pkru_bitmask(vcpu, context, true);
  	update_last_nonleaf_level(vcpu, context);
++	update_pkru_bitmask(context);
  	reset_rsvds_bits_mask_ept(vcpu, context, execonly);
-@@ -4935,7 +4934,7 @@ static void init_kvm_nested_mmu(struct kvm_vcpu *vcpu)
- 		g_context->gva_to_gpa = paging32_gva_to_gpa_nested;
+ 	reset_ept_shadow_zero_bits_mask(vcpu, context, execonly);
+ }
+@@ -4935,7 +4928,7 @@ static void init_kvm_nested_mmu(struct kvm_vcpu *vcpu)
  	}
  
--	update_permission_bitmask(vcpu, g_context, false);
-+	update_permission_bitmask(g_context, false);
- 	update_pkru_bitmask(vcpu, g_context, false);
+ 	update_permission_bitmask(g_context, false);
+-	update_pkru_bitmask(vcpu, g_context, false);
++	update_pkru_bitmask(g_context);
  	update_last_nonleaf_level(vcpu, g_context);
  }
+ 
 -- 
 2.32.0.288.g62a8d224e6-goog
 
