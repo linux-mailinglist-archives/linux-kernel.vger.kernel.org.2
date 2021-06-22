@@ -2,206 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 198F83B0FB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF4F3B0FB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230152AbhFVWAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 18:00:00 -0400
-Received: from mail-pg1-f178.google.com ([209.85.215.178]:36610 "EHLO
-        mail-pg1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhFVV77 (ORCPT
+        id S230232AbhFVWBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 18:01:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229873AbhFVWBP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 17:59:59 -0400
-Received: by mail-pg1-f178.google.com with SMTP id e33so18201573pgm.3;
-        Tue, 22 Jun 2021 14:57:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=I2AcQJoqQXRKBcHDE7YDVmbT1ASC/7CmHZGYs1Lwj70=;
-        b=NVYSIL8dH6mQ0KabyzMkuTqrR2d75J/Zt6DR+xl//L1y3Z1OS7ijuUjPZzL7T7LMLt
-         pAxdbMwlwqcHGlnKsygjSHj+hDW5I4+klqAAS34A6U3iSRcsSUAeijmUe+sYVVv8xEq9
-         EIyPyoJorKMPmLAq9YAv23TgO/hMs5lndcM+XnBLkZ42fR8XRGFbotaY7sJ5Oe9N64hF
-         CFS/GHZFTkdJiyv94ExpRrgqdOv7kWCsNvv65VWbVuWHmw5LqxZsUCv2uei/M8QwhWhE
-         dQBbZSlEBjBK6iaYj6dV/p3HbzomAoJ/IO9Qc1Ts+sg1wPd13aFhmbwqkfcWXZQoOM62
-         GUsQ==
-X-Gm-Message-State: AOAM530NxgVmz9EiOt/TrZVOFsGPpGYhlgPv01GIWWYJntE4zgz9HhKt
-        vyqKl8+zRageeQrXygTF0pU=
-X-Google-Smtp-Source: ABdhPJza3ARZnDwEMj7TMefsq57EGOsbfrvpoBDZ0WHfR7OGrHpqSjsaLPGL+ROfzEqDXefBYWhj/g==
-X-Received: by 2002:a05:6a00:2d7:b029:304:5af1:65f6 with SMTP id b23-20020a056a0002d7b02903045af165f6mr5602160pft.80.1624399062250;
-        Tue, 22 Jun 2021 14:57:42 -0700 (PDT)
-Received: from localhost ([173.239.198.97])
-        by smtp.gmail.com with ESMTPSA id g141sm250648pfb.210.2021.06.22.14.57.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 14:57:41 -0700 (PDT)
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     gregkh@linuxfoundation.org, rafael@kernel.org
-Cc:     jeyu@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
-        mcgrof@kernel.org, axboe@kernel.dk, mbenes@suse.com,
-        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
-        jikos@kernel.org, rostedt@goodmis.org, peterz@infradead.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] drivers/base/core: refcount kobject and bus on device attribute read / store
-Date:   Tue, 22 Jun 2021 14:57:38 -0700
-Message-Id: <20210622215738.3936687-1-mcgrof@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        Tue, 22 Jun 2021 18:01:15 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F40C8C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 14:58:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=INWpsc1UVjms1eLYsvuvGZc0zD9LX7V0xGiQqg6km1o=; b=e7r9sbUnAb7gN7BztF5Nm75xsK
+        cWpyUXRPWmVUSimdR6iL03cJaLBr1u9OQczRskBllHFSi+GLUa66pqpPPm057WMR+XePc3B91ZGCZ
+        S1Y+1tc7b7CmqotwQnaTFC2Iabs5ZFExciQnZJkytuhtJYuBaK2hctXqyzzWiYudxG6qPJfEIJMjQ
+        /kJd6RBzAwYy1wAHg401NGgJEel0m+Y71xpkbdug3dYUhzVYO+JWfKiLQ2U5gIbbPiJeWlfkqj0ac
+        kEB676HDG2h3ENilpBMO5o5/A2vTzm8artM24Y+XWK1WQb+8U5bk9Fn5wEHiNZtAYVXmWnQbaXIBJ
+        MuRaCCTQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvoPA-00EnBm-NH; Tue, 22 Jun 2021 21:58:11 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        David Rientjes <rientjes@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Christoph Lameter <cl@linux.com>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH v2] mm: Move kvmalloc-related functions to slab.h
+Date:   Tue, 22 Jun 2021 22:57:57 +0100
+Message-Id: <20210622215757.3525604-1-willy@infradead.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's possible today to have a device attribute read or store
-race against device removal. When this happens there is a small
-chance that the dereference for the private data area of the driver
-is NULL.
 
-Let's consider the zram driver as an example. Its possible to run into
-a race where a sysfs knob is being used, we get preempted, and a zram
-device is removed before we complete use of the sysfs knob. This can happen
-for instance on block devices, where for instance the zram block devices
-just part of the private data of the block device.
+Not all files in the kernel should include mm.h.  Migrating callers from
+kmalloc to kvmalloc is easier if the kvmalloc functions are in slab.h.
 
-For instance this can happen in the following two situations
-as examples to illustrate this better:
-
-        CPU 1                            CPU 2
-destroy_devices
-...
-                                 compact_store()
-                                 zram = dev_to_zram(dev);
-idr_for_each(zram_remove_cb
-  zram_remove
-  ...
-  kfree(zram)
-                                 down_read(&zram->init_lock);
-
-        CPU 1                            CPU 2
-hot_remove_store
-                                 compact_store()
-                                 zram = dev_to_zram(dev);
-  zram_remove
-    kfree(zram)
-                                 down_read(&zram->init_lock);
-
-To ensure the private data pointer is valid we could use bdget() / bdput()
-in between access, however that would mean doing that in all sysfs
-reads/stores on the driver. Instead a generic solution for all drivers
-is to ensure the device kobject is still valid and also the bus, if
-a bus is present.
-
-This issue does not fix a known crash, however this race was
-spotted by Minchan Kim through code inspection upon code review
-of another zram patch.
-
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- drivers/base/base.h |  2 ++
- drivers/base/bus.c  |  4 ++--
- drivers/base/core.c | 36 ++++++++++++++++++++++++++++++++----
- 3 files changed, 36 insertions(+), 6 deletions(-)
+v2: allmodconfig revealed someone calling kvmalloc without slab.h.  It
+doesn't include mm.h either, but clearly it's being included through
+some indirect path.
+ drivers/of/kexec.c   |  1 +
+ include/linux/mm.h   | 32 --------------------------------
+ include/linux/slab.h | 32 ++++++++++++++++++++++++++++++++
+ 3 files changed, 33 insertions(+), 32 deletions(-)
 
-diff --git a/drivers/base/base.h b/drivers/base/base.h
-index e5f9b7e656c3..3f95b125b667 100644
---- a/drivers/base/base.h
-+++ b/drivers/base/base.h
-@@ -127,6 +127,8 @@ static inline void auxiliary_bus_init(void) { }
+diff --git a/drivers/of/kexec.c b/drivers/of/kexec.c
+index f335d941a716..b90660c05f30 100644
+--- a/drivers/of/kexec.c
++++ b/drivers/of/kexec.c
+@@ -16,6 +16,7 @@
+ #include <linux/of.h>
+ #include <linux/of_fdt.h>
+ #include <linux/random.h>
++#include <linux/slab.h>
+ #include <linux/types.h>
  
- struct kobject *virtual_device_parent(struct device *dev);
+ /* relevant device tree properties */
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 8ae31622deef..750a6f227ec7 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -798,38 +798,6 @@ static inline int is_vmalloc_or_module_addr(const void *x)
+ }
+ #endif
  
-+extern struct bus_type *bus_get(struct bus_type *bus);
-+extern void bus_put(struct bus_type *bus);
- extern int bus_add_device(struct device *dev);
- extern void bus_probe_device(struct device *dev);
- extern void bus_remove_device(struct device *dev);
-diff --git a/drivers/base/bus.c b/drivers/base/bus.c
-index 36d0c654ea61..21c80d7d6433 100644
---- a/drivers/base/bus.c
-+++ b/drivers/base/bus.c
-@@ -39,7 +39,7 @@ static struct kset *system_kset;
- static int __must_check bus_rescan_devices_helper(struct device *dev,
- 						void *data);
- 
--static struct bus_type *bus_get(struct bus_type *bus)
-+struct bus_type *bus_get(struct bus_type *bus)
+-extern void *kvmalloc_node(size_t size, gfp_t flags, int node);
+-static inline void *kvmalloc(size_t size, gfp_t flags)
+-{
+-	return kvmalloc_node(size, flags, NUMA_NO_NODE);
+-}
+-static inline void *kvzalloc_node(size_t size, gfp_t flags, int node)
+-{
+-	return kvmalloc_node(size, flags | __GFP_ZERO, node);
+-}
+-static inline void *kvzalloc(size_t size, gfp_t flags)
+-{
+-	return kvmalloc(size, flags | __GFP_ZERO);
+-}
+-
+-static inline void *kvmalloc_array(size_t n, size_t size, gfp_t flags)
+-{
+-	size_t bytes;
+-
+-	if (unlikely(check_mul_overflow(n, size, &bytes)))
+-		return NULL;
+-
+-	return kvmalloc(bytes, flags);
+-}
+-
+-static inline void *kvcalloc(size_t n, size_t size, gfp_t flags)
+-{
+-	return kvmalloc_array(n, size, flags | __GFP_ZERO);
+-}
+-
+-extern void kvfree(const void *addr);
+-extern void kvfree_sensitive(const void *addr, size_t len);
+-
+ static inline int head_compound_mapcount(struct page *head)
  {
- 	if (bus) {
- 		kset_get(&bus->p->subsys);
-@@ -48,7 +48,7 @@ static struct bus_type *bus_get(struct bus_type *bus)
- 	return NULL;
+ 	return atomic_read(compound_mapcount_ptr(head)) + 1;
+diff --git a/include/linux/slab.h b/include/linux/slab.h
+index 0c97d788762c..ee676de68afe 100644
+--- a/include/linux/slab.h
++++ b/include/linux/slab.h
+@@ -697,6 +697,38 @@ static inline void *kzalloc_node(size_t size, gfp_t flags, int node)
+ 	return kmalloc_node(size, flags | __GFP_ZERO, node);
  }
  
--static void bus_put(struct bus_type *bus)
-+void bus_put(struct bus_type *bus)
- {
- 	if (bus)
- 		kset_put(&bus->p->subsys);
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 4a8bf8cda52b..f69aa040b56d 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -2042,28 +2042,56 @@ EXPORT_SYMBOL(dev_driver_string);
- static ssize_t dev_attr_show(struct kobject *kobj, struct attribute *attr,
- 			     char *buf)
- {
--	struct device_attribute *dev_attr = to_dev_attr(attr);
--	struct device *dev = kobj_to_dev(kobj);
-+	struct device_attribute *dev_attr;
-+	struct device *dev;
-+	struct bus_type *bus = NULL;
- 	ssize_t ret = -EIO;
- 
-+	dev = get_device(kobj_to_dev(kobj));
-+	if (dev->bus) {
-+		bus = bus_get(dev->bus);
-+		if (!bus)
-+			goto out;
-+	}
++void *kvmalloc_node(size_t size, gfp_t flags, int node);
++static inline void *kvmalloc(size_t size, gfp_t flags)
++{
++	return kvmalloc_node(size, flags, NUMA_NO_NODE);
++}
++static inline void *kvzalloc_node(size_t size, gfp_t flags, int node)
++{
++	return kvmalloc_node(size, flags | __GFP_ZERO, node);
++}
++static inline void *kvzalloc(size_t size, gfp_t flags)
++{
++	return kvmalloc(size, flags | __GFP_ZERO);
++}
 +
-+	dev_attr = to_dev_attr(attr);
- 	if (dev_attr->show)
- 		ret = dev_attr->show(dev, dev_attr, buf);
- 	if (ret >= (ssize_t)PAGE_SIZE) {
- 		printk("dev_attr_show: %pS returned bad count\n",
- 				dev_attr->show);
- 	}
++static inline void *kvmalloc_array(size_t n, size_t size, gfp_t flags)
++{
++	size_t bytes;
 +
-+	bus_put(bus);
-+out:
-+	put_device(dev);
++	if (unlikely(check_mul_overflow(n, size, &bytes)))
++		return NULL;
 +
- 	return ret;
- }
- 
- static ssize_t dev_attr_store(struct kobject *kobj, struct attribute *attr,
- 			      const char *buf, size_t count)
- {
--	struct device_attribute *dev_attr = to_dev_attr(attr);
--	struct device *dev = kobj_to_dev(kobj);
-+	struct device_attribute *dev_attr;
-+	struct device *dev;
-+	struct bus_type *bus = NULL;
- 	ssize_t ret = -EIO;
- 
-+	dev = get_device(kobj_to_dev(kobj));
-+	if (dev->bus) {
-+		bus = bus_get(dev->bus);
-+		if (!bus)
-+			goto out;
-+	}
++	return kvmalloc(bytes, flags);
++}
 +
-+	dev_attr = to_dev_attr(attr);
- 	if (dev_attr->store)
- 		ret = dev_attr->store(dev, dev_attr, buf, count);
++static inline void *kvcalloc(size_t n, size_t size, gfp_t flags)
++{
++	return kvmalloc_array(n, size, flags | __GFP_ZERO);
++}
 +
-+	bus_put(bus);
-+out:
-+	put_device(dev);
++void kvfree(const void *addr);
++void kvfree_sensitive(const void *addr, size_t len);
 +
- 	return ret;
- }
+ unsigned int kmem_cache_size(struct kmem_cache *s);
+ void __init kmem_cache_init_late(void);
  
 -- 
 2.30.2
