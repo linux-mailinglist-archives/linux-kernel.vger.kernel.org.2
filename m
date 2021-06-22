@@ -2,107 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 462153B055D
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE3423B0561
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231926AbhFVNAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 09:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231904AbhFVNAe (ORCPT
+        id S231840AbhFVNBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 09:01:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27003 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231438AbhFVNBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 09:00:34 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4A0C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 05:58:19 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id 13-20020a17090a08cdb029016eed209ca4so2215643pjn.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 05:58:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=f9OF9+cTsV76jYHHpwVoZLDcZqPbxO7qKYzofSgo8Pg=;
-        b=OFpxtQm5vLGwlFw+Me/BiyK4F1HGQ8R+ScFVH7VPPr9O6v+UFQ0giHLU6qr0zmDIiE
-         EeBmtWHlaJhb20ucnFYs4oSmXHRtnGaXSyLjmyX9kOVzSyWlImVG9yDcQwkjcx/UwjzT
-         7XMgfiR4OXKa3i03c6fhDVJxFPfLHc4MwVF3WwJ/TUmjy4s/cPJw7SHu4mer/2Oblf/I
-         t//Is8QJagddM2Qe6zyv14oXp88+5Z2DXGHe6ssdL6mwomllfQf3hqx+Uf0xcC8nabf5
-         wWVlYJ7UHGTIgPZPA/A3Kjp7H+deAehv5gYmrA+SOMGqE59ZukWnVnpRVlUbwWjEFud9
-         kPbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=f9OF9+cTsV76jYHHpwVoZLDcZqPbxO7qKYzofSgo8Pg=;
-        b=nyxzxaJS+jrTy/yOyTtO61B9e1MAH/MSAfnea8nJC2kLvzm41djkKsMlDTOMPfdTOs
-         cvlJzxMX2qqyHdwFaUPQTEBFBCU0ZyFQmrnixnq750QnpcgauwbYwOehWR4XAtiwGFJf
-         56X3bOAN+Gf+n14Rnn/xtMbPAGeDItwTvlKRS3mfQQGbMpiOO7R2J8nbq3xWKpjmjNYZ
-         Yk+KTscwb/jSDrkyjTfGNlfYYRD6vk0iiMYFSjfSjOxqqkUtfrxqWRLPmG6hpYsIF+7c
-         r9Aj+fjO+bowIW2wgbvpaInI5i1AkLACx3SKnDYhTWMtZ+oQlST0zKN9lLGDY73xDqAm
-         of2A==
-X-Gm-Message-State: AOAM5321tSOb4w9QTFpkjcA1lqeAkeM+2Qh4k+LSEuXMNCp4RC4f9CD8
-        TDXDCnjCPs1TNvgYWsuGbflUtw==
-X-Google-Smtp-Source: ABdhPJwkdJz6qeGI/28xb2HvyjTPB3JsW/4fcQ3R7ItNNOrcmiGKsx5LiXIznOKMKFruA1ui4k4vYg==
-X-Received: by 2002:a17:90b:247:: with SMTP id fz7mr3877637pjb.137.1624366698531;
-        Tue, 22 Jun 2021 05:58:18 -0700 (PDT)
-Received: from leoy-ThinkPad-X240s ([202.155.204.36])
-        by smtp.gmail.com with ESMTPSA id u1sm17984196pfu.160.2021.06.22.05.58.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 05:58:17 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 20:58:11 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Denis Nikitin <denik@google.com>
-Cc:     Suzuki K Poulose <Suzuki.Poulose@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Daniel Kiss <daniel.kiss@arm.com>,
-        Coresight ML <coresight@lists.linaro.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH v1 0/3] coresight: Fix for snapshot mode
-Message-ID: <20210622125811.GB297306@leoy-ThinkPad-X240s>
-References: <20210528161552.654907-1-leo.yan@linaro.org>
- <CAOYpmdEvkSZaei-_SWrUC4YJ7rOUOoOaxM7+qc6dw=P+b_ivgA@mail.gmail.com>
- <5cf3effb-fccc-9385-6328-6d1e2e5ccdf3@arm.com>
- <CAOYpmdE=pSaDGOm+4iCh611DXVD766eCr5dACQ+TgOnSO=4EOA@mail.gmail.com>
- <20210612032721.GB36748@leoy-ThinkPad-X240s>
- <CAOYpmdGW0U9u7zW3G6jyhZA23Uk1kd5gT00e9+g4O=k=WybDGA@mail.gmail.com>
+        Tue, 22 Jun 2021 09:01:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624366772;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=11IbQ6LtwZCZCGfVWaU4+0InIg5X713BIpB4uME6Q/U=;
+        b=M5xY8Q5aIkEm0fN0mo+CNTXMnVTi595f8i7vhHUhd52nfk9HgjuovSuLXi591HRu9BJc78
+        DGsoE/Q9oaygWW3ZVG9UPYVQR5PWT0bE728VwMS6CrAD7vAfyGgH5QZ4hpOwdPEdFLCypL
+        INk1tU1kxHdKp2WB2M+3CQDTwe16vy4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-576-Dmf2g3JhNSWLu0hkcTYwYw-1; Tue, 22 Jun 2021 08:59:31 -0400
+X-MC-Unique: Dmf2g3JhNSWLu0hkcTYwYw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 522D5100CEC2;
+        Tue, 22 Jun 2021 12:59:30 +0000 (UTC)
+Received: from [10.36.112.216] (ovpn-112-216.ams2.redhat.com [10.36.112.216])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0266460C13;
+        Tue, 22 Jun 2021 12:59:26 +0000 (UTC)
+Message-ID: <01f3b0a48ac46d148f0cb489cb58f4b551832815.camel@redhat.com>
+Subject: Re: [PATCH] KVM: x86: VMX: Make smaller physical guest address
+ space support user-configurable
+From:   Mohammed Gamal <mgamal@redhat.com>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Sean Christopherson <seanjc@google.com>
+Date:   Tue, 22 Jun 2021 14:59:23 +0200
+In-Reply-To: <CALMp9eTU8C4gXWfsLF-_=ymRC7Vqb0St=0BKvuvcNjBkqQBayA@mail.gmail.com>
+References: <20200903141122.72908-1-mgamal@redhat.com>
+         <CALMp9eT7yDGncP-G9v3fC=9PP3FD=uE1SBy1EPBbqkbrWSAXSg@mail.gmail.com>
+         <11bb013a6beb7ccb3a5f5d5112fbccbf3eb64705.camel@redhat.com>
+         <CALMp9eTU8C4gXWfsLF-_=ymRC7Vqb0St=0BKvuvcNjBkqQBayA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOYpmdGW0U9u7zW3G6jyhZA23Uk1kd5gT00e9+g4O=k=WybDGA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Denis,
-
-On Sun, Jun 20, 2021 at 10:21:57PM -1000, Denis Nikitin wrote:
-
-[...]
-
-> > I'd like to leave patch 1/3 out, and resend it if we get conclusion.
-> > At the meantime, @Denis, if you have observed any profiling result
-> > (or profiling quality) difference caused by patch 1, the feedback would
-> > be very valuable.
+On Mon, 2021-06-21 at 11:01 -0700, Jim Mattson wrote:
+> On Mon, Jan 18, 2021 at 2:22 AM Mohammed Gamal <mgamal@redhat.com>
+> wrote:
+> > 
+> > On Fri, 2021-01-15 at 16:08 -0800, Jim Mattson wrote:
+> > > On Thu, Sep 3, 2020 at 7:12 AM Mohammed Gamal <mgamal@redhat.com>
+> > > wrote:
+> > > > 
+> > > > This patch exposes allow_smaller_maxphyaddr to the user as a
+> > > > module
+> > > > parameter.
+> > > > 
+> > > > Since smaller physical address spaces are only supported on
+> > > > VMX,
+> > > > the parameter
+> > > > is only exposed in the kvm_intel module.
+> > > > Modifications to VMX page fault and EPT violation handling will
+> > > > depend on whether
+> > > > that parameter is enabled.
+> > > > 
+> > > > Also disable support by default, and let the user decide if
+> > > > they
+> > > > want to enable
+> > > > it.
+> > > > 
+> > > > Signed-off-by: Mohammed Gamal <mgamal@redhat.com>
+> > > > ---
+> > > >  arch/x86/kvm/vmx/vmx.c | 15 ++++++---------
+> > > >  arch/x86/kvm/vmx/vmx.h |  3 +++
+> > > >  arch/x86/kvm/x86.c     |  2 +-
+> > > >  3 files changed, 10 insertions(+), 10 deletions(-)
+> > > > 
+> > > > diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> > > > index 819c185adf09..dc778c7b5a06 100644
+> > > > --- a/arch/x86/kvm/vmx/vmx.c
+> > > > +++ b/arch/x86/kvm/vmx/vmx.c
+> > > > @@ -129,6 +129,9 @@ static bool __read_mostly
+> > > > enable_preemption_timer = 1;
+> > > >  module_param_named(preemption_timer, enable_preemption_timer,
+> > > > bool, S_IRUGO);
+> > > >  #endif
+> > > > 
+> > > > +extern bool __read_mostly allow_smaller_maxphyaddr;
+> > > 
+> > > Since this variable is in the kvm module rather than the
+> > > kvm_intel
+> > > module, its current setting is preserved across "rmmod kvm_intel;
+> > > modprobe kvm_intel." That is, if set to true, it doesn't revert
+> > > to
+> > > false after "rmmod kvm_intel." Is that the intended behavior?
+> > > 
+> > 
+> > IIRC, this is because this setting was indeed not intended to be
+> > just
+> > VMX-specific, but since AMD has an issue with PTE accessed-bits
+> > being
+> > set by hardware and thus we can't yet enable this feature on it, it
+> > might make sense to move the variable to the kvm_intel module for
+> > now.
 > 
-> I evaluated AutoFDO profiles with benchmarks but I was only focused
-> on the system-wide mode. And as I understood patch 1 fixes the issue
-> in non system-wide mode.
+> Um...
+> 
+> We do allow it for SVM, if NPT is not enabled. In fact, we set it
+> unconditionally in that case. See commit 3edd68399dc15 ("KVM: x86:
+> Add
+> a capability for GUEST_MAXPHYADDR < HOST_MAXPHYADDR support").
+> 
+> Perhaps it should be a module parameter for SVM as well?
 
-Yes, patch 1 doesn't work for the system-wide mode.  In the system-wide
-mode, CoreSight driver has its own reference counter to only allow the
-last CPU to fill trace data to AUX buffer.
+Hmmm, I think given how AMD CPUs' behavior with NPT enabled, maybe it'd
+actually be a better idea to move this entirely to VMX for the time
+being. And then maybe make it available again on AMD only if the
+behavior with NPT is changed.
 
-> Currently I'm OoO so I won't be able to do further evaluation.
+> 
+> And, in any case, it would be nice if the parameter reverted to false
+> when the kvm_intel module is unloaded.
+> 
+> > Paolo, what do you think?
+> > 
+> > 
+> 
 
-No problem, thanks for the feedback!
 
-Leo
