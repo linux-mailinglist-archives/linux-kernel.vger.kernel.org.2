@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF5C3B0C5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:05:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF6E3B0C61
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:05:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232878AbhFVSHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:07:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38972 "EHLO
+        id S233054AbhFVSHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232587AbhFVSGR (ORCPT
+        with ESMTP id S232695AbhFVSGt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:06:17 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A636C08C5D9
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:59:53 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id p12-20020a0cf68c0000b029027a35feac45so584765qvn.19
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:59:53 -0700 (PDT)
+        Tue, 22 Jun 2021 14:06:49 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFC60C035409
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:59:55 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id a5-20020ac84d850000b029024998e61d00so61642qtw.14
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:59:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=rUs+966f+CDP8VHde1NoisS+8ww2aUm1j0f8NYlZtqE=;
-        b=Fl+C43avI6SiI4WTsJKZYi1XdqV8GHBrHMpvS/ibNPFWN1hA2wusCpPlf5pWbQwNDw
-         Psp0XUxCPO55t2Li1b5nvreIrIP93otSJBs8gTJUr+VutLMuOwpKPAtySTDllyGVJT8t
-         FPuoLdcXrBl4HE+I6cMmkY1VAuCMPuLr+VsMwb+VN3TZJKgG+35I0R2VXzCnM+mF+Xqe
-         6dRRk5DMbiXVc5P3XTcgwYcTKRf62KVxhPyGhVJzGPlqcWvSyZW5Zb76Fw+//rzevQZT
-         JAgk7Jn8YrWX9jDpPWk/HwZoi8XH7dWENAAJ5EI8mLPo1PYVDJkNPc0D3IqrgUNcvOnP
-         uVYw==
+        bh=wT/dm8cE+d6lo3Bb4AloJvwz2DyF/vxG+6pSp7piqUc=;
+        b=vODvpVd/aV/+C3hrbB7LmkOt9TLPWBJrnp4HDVmBSvtNkk/XhhwpGqRjmD8LQ35TYx
+         aT46oCsvARGg8Y5XqWGcw6dBr/OLNgdXh4giv0iKHCsBCcz840knZGUdWNINCm4EjA/x
+         41kz3dKNZpETycko4uTAKjq2E353Sxmw48wwPD/oLASTXbydu7qaNtnCBa1bgFjgjrue
+         9NgRt4OyM+lKsurHIcEyGRLKgQMeC3uujOBdv+FzfHMrm93Kl1iEf7Ykni8GAapvLSwY
+         eORtAZ0tMxLhWrxhzuUcNA223E9vR6Af6t7klIQlyZaZYAiU0msihVOK7EDbwAWhOrDP
+         2cJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=rUs+966f+CDP8VHde1NoisS+8ww2aUm1j0f8NYlZtqE=;
-        b=HvVaNOQGs5AmTIo64qJyYiDS9UOQyx7cSorIeeVcTJlbny0LE9ormpGH/2eREOcdez
-         OpjKSEagOAy0uV1n5IhTwY0G2BTIjQkDQCllcA30VrBui5K3Z7jBRHNQ07w/35qERplN
-         AMVEC8Pvsx8sEB5wvZ3/wC4QQcEKHrUV1KDujGf57Q3/NkdXFyiZITrNEzKRN0CipdBF
-         GeC5QGsIZqD7LO0UTXXwCKT8panZQ3zC8Z9rvx4FMgEdzKF1SBPZvKaCCr3KsJ8LYyX6
-         sbiHY1zBUqVPsqBDC+Lg4f0cTjXs6Sh+RVMMea7A4tgOaArE9ItjaJoQlplAK48GonbL
-         NsXg==
-X-Gm-Message-State: AOAM5315D7z3EWi8ywT/zmaU7FMTMwhdBfFolIa5sK6E2NS9ZjuO0R07
-        qFbXHdv3Y2EDyz60lPa5PFx/XhQ1oW4=
-X-Google-Smtp-Source: ABdhPJwg+s3kNjwriwzqMO3mMxkbDvv/AnG8NwcyEcukQUoufCwMdy4XzMqIuM/miw5QWP8OB3hoX3k4BOs=
+        bh=wT/dm8cE+d6lo3Bb4AloJvwz2DyF/vxG+6pSp7piqUc=;
+        b=ns23xZsazIZvsFvmhMaPHqu5E8eXmFSB3lsY38eFMwAh5gVGsOcaMg2ZovqQwt2bOr
+         +c9vypZKc8LChCsbXrBSYzZiJ8msPA9Vh+yOYKfd12HUPHkOo5Rq0AsisHPv4rH+PUVl
+         o0S9cJMFmXridJic5JBdpzrwPkTO1TZZj64fkpt4/p6IyxTOLVtasDQcKIneRdwmT36H
+         wZxiGUVOTgaAY3cSNYHkuTYe4rul/7OF5l54xg60h6wZ1tFQoUcWbBwxOu4JeImMP/AV
+         w81D0t8blayP85fLiDK326sjFOlpRKVLDZkJjWKY/d+of29ShMozIcXAMFthamv2lkVW
+         C0mg==
+X-Gm-Message-State: AOAM531Ryok5pzA3K6uOtoPjIfrJquC94FThSXq15x7a7UtCozGqY7sB
+        jvmLPN5Sx6Lkg1/XcXd3ryUagfm2lUM=
+X-Google-Smtp-Source: ABdhPJzrVPF6qRfoHU/js/FPcvbFY8LsAicQYbANz8g6CGZgDt5fVOp0cv0lfhr2lG5KFLK0p88JNOQuxf4=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:5722:92ce:361f:3832])
- (user=seanjc job=sendgmr) by 2002:a25:c0d7:: with SMTP id c206mr5187941ybf.369.1624384792699;
- Tue, 22 Jun 2021 10:59:52 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6214:c6b:: with SMTP id
+ t11mr26682145qvj.31.1624384794991; Tue, 22 Jun 2021 10:59:54 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 22 Jun 2021 10:57:36 -0700
+Date:   Tue, 22 Jun 2021 10:57:37 -0700
 In-Reply-To: <20210622175739.3610207-1-seanjc@google.com>
-Message-Id: <20210622175739.3610207-52-seanjc@google.com>
+Message-Id: <20210622175739.3610207-53-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210622175739.3610207-1-seanjc@google.com>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH 51/54] KVM: x86/mmu: Drop redundant rsvd bits reset for nested NPT
+Subject: [PATCH 52/54] KVM: x86/mmu: Get CR0.WP from MMU, not vCPU, in shadow
+ page fault
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -68,32 +69,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop the extra reset of shadow_zero_bits in the nested NPT flow now
-that shadow_mmu_init_context computes the correct level for nested NPT.
-
-No functional change intended.
+Use the current MMU instead of vCPU state to query CR0.WP when handling
+a page fault.  In the nested NPT case, the current CR0.WP reflects L2,
+whereas the page fault is shadowing L1's NPT.  Practically speaking, this
+is a nop a NPT walks are always user faults, but fix it up for
+consistency.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 6 ------
- 1 file changed, 6 deletions(-)
+ arch/x86/kvm/mmu.h             | 5 -----
+ arch/x86/kvm/mmu/paging_tmpl.h | 5 ++---
+ 2 files changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 7849f53fd874..d4969ac98a4b 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4693,12 +4693,6 @@ void kvm_init_shadow_npt_mmu(struct kvm_vcpu *vcpu, unsigned long cr0,
- 	__kvm_mmu_new_pgd(vcpu, nested_cr3, new_role.base);
- 
- 	shadow_mmu_init_context(vcpu, context, &regs, new_role);
--
--	/*
--	 * Redo the shadow bits, the reset done by shadow_mmu_init_context()
--	 * (above) may use the wrong shadow_root_level.
--	 */
--	reset_shadow_zero_bits_mask(vcpu, context);
+diff --git a/arch/x86/kvm/mmu.h b/arch/x86/kvm/mmu.h
+index 62844bacd13f..83e6c6965f1e 100644
+--- a/arch/x86/kvm/mmu.h
++++ b/arch/x86/kvm/mmu.h
+@@ -165,11 +165,6 @@ static inline bool is_writable_pte(unsigned long pte)
+ 	return pte & PT_WRITABLE_MASK;
  }
- EXPORT_SYMBOL_GPL(kvm_init_shadow_npt_mmu);
+ 
+-static inline bool is_write_protection(struct kvm_vcpu *vcpu)
+-{
+-	return kvm_read_cr0_bits(vcpu, X86_CR0_WP);
+-}
+-
+ /*
+  * Check if a given access (described through the I/D, W/R and U/S bits of a
+  * page fault error code pfec) causes a permission fault with the given PTE
+diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
+index ec1de57f3572..260a9c06d764 100644
+--- a/arch/x86/kvm/mmu/paging_tmpl.h
++++ b/arch/x86/kvm/mmu/paging_tmpl.h
+@@ -795,7 +795,7 @@ FNAME(is_self_change_mapping)(struct kvm_vcpu *vcpu,
+ 	bool self_changed = false;
+ 
+ 	if (!(walker->pte_access & ACC_WRITE_MASK ||
+-	      (!is_write_protection(vcpu) && !user_fault)))
++	    (!is_cr0_wp(vcpu->arch.mmu) && !user_fault)))
+ 		return false;
+ 
+ 	for (level = walker->level; level <= walker->max_level; level++) {
+@@ -893,8 +893,7 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
+ 	 * we will cache the incorrect access into mmio spte.
+ 	 */
+ 	if (write_fault && !(walker.pte_access & ACC_WRITE_MASK) &&
+-	     !is_write_protection(vcpu) && !user_fault &&
+-	      !is_noslot_pfn(pfn)) {
++	    !is_cr0_wp(vcpu->arch.mmu) && !user_fault && !is_noslot_pfn(pfn)) {
+ 		walker.pte_access |= ACC_WRITE_MASK;
+ 		walker.pte_access &= ~ACC_USER_MASK;
  
 -- 
 2.32.0.288.g62a8d224e6-goog
