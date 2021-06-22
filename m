@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7FB63B0C45
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 740D53B0C47
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232887AbhFVSFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:05:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37696 "EHLO
+        id S232946AbhFVSFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:05:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232633AbhFVSEm (ORCPT
+        with ESMTP id S232707AbhFVSEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 22 Jun 2021 14:04:42 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73FDBC061147
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:59:26 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id u11-20020a05622a010bb029024ec154fa8bso38991qtw.20
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:59:26 -0700 (PDT)
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BABCAC061148
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:59:28 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id q207-20020a3743d80000b02903ab34f7ef76so19126840qka.5
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 10:59:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=SUdiAi8V1y7Z3MBnbTcTkMuuwqyidzgCcsX7sikEJEQ=;
-        b=J1cfKg6xHabJrWb5g4kR0m+FmJsMCgYM/sH2Vkm0Hume9zJNWLXNMMNex29SDqNSup
-         Ck1Hb7C8NT3hu22sk6V03qdNP9N5XUDZIYzxxu3ocjy1KkQ3O1kkKu9jIvzBXl9E0uvo
-         jadWdl8W6QX0BsoeyZOEc7zCLQPfSfd6sxlzz77qU11Tu0EEAn/qkdTi/Kj42hwsf93b
-         J71Cwi6DSSfGK/P91N8SQzHa5bC48CS5vj/EgdvVOdFoHvWoCpJY5ZvNU7a9PGx7UMpA
-         Byuacb32QnUz0MuQpSzvfkRn5Pm/v/0Bj6onuXBv4kxUxsdZDfx/jXiZNo4UWQ8mTvtC
-         Up4g==
+        bh=a9zPNtBlg/qu0kCUht360R1GJCEujAU69kTvJewr3ik=;
+        b=bPVlD7rtWzLf2AsOGFWd9xztbB2LhjIoidy1eG/n3+quQfDjyQpU9ZzO4GYUnDyqxD
+         nsKaWU23fDyPnMniQ8ZO+LwlgscLpPXe7d10Ie1XNl429HLxF8WpeGzRVd1Am0tcElND
+         tyXkDY7YiAvwhECSbBqV9A2Z04QBqRRdzLufrV0NNHtEUcAW+q5GoZ7TOpSsOTilNkyh
+         z6PKt1ckGmOPPvDS+GjhseTilVBydl8fjabGHd35SS6HOlhK7l/G4V88D6wfeyVb6zcM
+         5GmDoiLtWoZQ7REMuNNKZ0ctj/VJVdsJRfmt2JrjxIYOoj7zAJwTgAMJa46Z4ZVN+Pkj
+         cNew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=SUdiAi8V1y7Z3MBnbTcTkMuuwqyidzgCcsX7sikEJEQ=;
-        b=QDh0K4TzpLN/IDeP6AWLB629opv+OatjglmWe8C+/xgOpqvASmzjtvzALh1LfZo9RJ
-         1cUrdOWfPOzlXRX2K3In5MaSbHHOGxylmuCbTEaJzb6aV52uA9rOzNACFamC+2AlgLb+
-         jRrGNRRF/ycxY+rWP0d56CXEK/3EkTmww9ggCRkuS6wj1TlCk2e5OzpdyjzJos+1TYaQ
-         fOhOQdCep+i2Knn1DyGWcFVoOyih+TUbzm/Kh9ODEIj/TTDgRmANoF5sghp8m44DAdrz
-         pDSBZ3e1uzOg6D3J9u4KAv0HSdl8wFKC8UW21aDkO6wQ3iNl8pMMCpoaW8RNAXsbwHlt
-         0SxA==
-X-Gm-Message-State: AOAM5329aPdQn7vMpNg+Y6629Cgjr6p/8czeXSFireBsoaER2PSb2baV
-        tHszsBEVKqFb0zGk9e1aJvWdCLlOzKU=
-X-Google-Smtp-Source: ABdhPJxhmqfC37t7ov4Yduhj/jsrJVlsWvs45r1W3NgB4VVTQrxoRM5IXJVU557xrk4EB9ew9XNMQiZcYEY=
+        bh=a9zPNtBlg/qu0kCUht360R1GJCEujAU69kTvJewr3ik=;
+        b=QXEObkYUoL7YuYcqhvMe/U1ItKVD5HVHSBootN6mJFYXZ630UhDlAc3cbrgiMiUDYq
+         RY1R0gkMemzPlsgyeR4l7nxblWheUiw8x2HtOjAwic5W1HBpBA2hyx0MMtZOuWq1xQbJ
+         mXC8hLBDzq/hfvL+uId45onU7IGTLppSz/LpkdJ7tF5o38/rcI8R5eCFE6UnN2LmVGUQ
+         QVn1opomGJuqzcy2rT6pe9MqtFAcIFyxRtHM0X7jpHkBkNjwDrLxsSAfLHxwPjaJq2o6
+         pdTnkW/o5QOExA9rSKqsviSxpH/brhDy6NYquWzGXD8zeH7csXtp9QH8P2kVCVNDJL+N
+         WuvQ==
+X-Gm-Message-State: AOAM533elq4DXuxR94X1uSnb0IiXwStsl3bNhSNx2wVuYlbc0SvpwFmP
+        S7j6qJErgBcG1oS8rmVKYRpuBmrs2u0=
+X-Google-Smtp-Source: ABdhPJzOrTtOd9hL1wlbgR79i9jOPb4MgOv+cS188btXnFinG+K6DbjdBbWNJMmGrPI48QUDFEBjrIW0DLw=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:5722:92ce:361f:3832])
- (user=seanjc job=sendgmr) by 2002:a25:c9c7:: with SMTP id z190mr6597910ybf.21.1624384765584;
- Tue, 22 Jun 2021 10:59:25 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a5b:5c6:: with SMTP id w6mr6485868ybp.279.1624384767865;
+ Tue, 22 Jun 2021 10:59:27 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 22 Jun 2021 10:57:24 -0700
+Date:   Tue, 22 Jun 2021 10:57:25 -0700
 In-Reply-To: <20210622175739.3610207-1-seanjc@google.com>
-Message-Id: <20210622175739.3610207-40-seanjc@google.com>
+Message-Id: <20210622175739.3610207-41-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210622175739.3610207-1-seanjc@google.com>
 X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH 39/54] KVM: x86/mmu: Get nested MMU's root level from the
- MMU's role
+Subject: [PATCH 40/54] KVM: x86/mmu: Use MMU role_regs to get LA57, and drop
+ vCPU LA57 helper
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -69,49 +69,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Initialize the MMU's (guest) root_level using its mmu_role instead of
-redoing the calculations.  The role_regs used to calculate the mmu_role
-are initialized from the vCPU, i.e. this should be a complete nop.
+Get LA57 from the role_regs, which are initialized from the vCPU even
+though TDP is enabled, instead of pulling the value directly from the
+vCPU when computing the guest's root_level for TDP MMUs.  Note, the check
+is inside an is_long_mode() statement, so that requirement is not lost.
+
+Use role_regs even though the MMU's role is available and arguably
+"better".  A future commit will consolidate the guest root level logic,
+and it needs access to EFER.LMA, which is not tracked in the role (it
+can't be toggled on VM-Exit, unlike LA57).
+
+Drop is_la57_mode() as there are no remaining users, and to discourage
+pulling MMU state from the vCPU (in the future).
 
 No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ arch/x86/kvm/mmu/mmu.c |  2 +-
+ arch/x86/kvm/x86.h     | 10 ----------
+ 2 files changed, 1 insertion(+), 11 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 6c4655c356b7..6418b50d33ca 100644
+index 6418b50d33ca..30557b3e5c37 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4874,6 +4874,7 @@ static void init_kvm_nested_mmu(struct kvm_vcpu *vcpu)
- 	g_context->get_guest_pgd     = get_cr3;
- 	g_context->get_pdptr         = kvm_pdptr_read;
- 	g_context->inject_page_fault = kvm_inject_page_fault;
-+	g_context->root_level        = new_role.base.level;
- 
- 	/*
- 	 * L2 page tables are never shadowed, so there is no need to sync
-@@ -4890,19 +4891,14 @@ static void init_kvm_nested_mmu(struct kvm_vcpu *vcpu)
- 	 * the gva_to_gpa functions between mmu and nested_mmu are swapped.
- 	 */
- 	if (!is_paging(vcpu)) {
--		g_context->root_level = 0;
- 		g_context->gva_to_gpa = nonpaging_gva_to_gpa_nested;
+@@ -4635,7 +4635,7 @@ static void init_kvm_tdp_mmu(struct kvm_vcpu *vcpu)
+ 		context->gva_to_gpa = nonpaging_gva_to_gpa;
+ 		context->root_level = 0;
  	} else if (is_long_mode(vcpu)) {
--		g_context->root_level = is_la57_mode(vcpu) ?
--					PT64_ROOT_5LEVEL : PT64_ROOT_4LEVEL;
- 		reset_rsvds_bits_mask(vcpu, g_context);
- 		g_context->gva_to_gpa = paging64_gva_to_gpa_nested;
- 	} else if (is_pae(vcpu)) {
--		g_context->root_level = PT32E_ROOT_LEVEL;
- 		reset_rsvds_bits_mask(vcpu, g_context);
- 		g_context->gva_to_gpa = paging64_gva_to_gpa_nested;
- 	} else {
--		g_context->root_level = PT32_ROOT_LEVEL;
- 		reset_rsvds_bits_mask(vcpu, g_context);
- 		g_context->gva_to_gpa = paging32_gva_to_gpa_nested;
- 	}
+-		context->root_level = is_la57_mode(vcpu) ?
++		context->root_level = ____is_cr4_la57(&regs) ?
+ 				PT64_ROOT_5LEVEL : PT64_ROOT_4LEVEL;
+ 		reset_rsvds_bits_mask(vcpu, context);
+ 		context->gva_to_gpa = paging64_gva_to_gpa;
+diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
+index 521f74e5bbf2..44ae10312740 100644
+--- a/arch/x86/kvm/x86.h
++++ b/arch/x86/kvm/x86.h
+@@ -157,16 +157,6 @@ static inline bool is_64_bit_mode(struct kvm_vcpu *vcpu)
+ 	return cs_l;
+ }
+ 
+-static inline bool is_la57_mode(struct kvm_vcpu *vcpu)
+-{
+-#ifdef CONFIG_X86_64
+-	return (vcpu->arch.efer & EFER_LMA) &&
+-		 kvm_read_cr4_bits(vcpu, X86_CR4_LA57);
+-#else
+-	return 0;
+-#endif
+-}
+-
+ static inline bool x86_exception_has_error_code(unsigned int vector)
+ {
+ 	static u32 exception_has_error_code = BIT(DF_VECTOR) | BIT(TS_VECTOR) |
 -- 
 2.32.0.288.g62a8d224e6-goog
 
