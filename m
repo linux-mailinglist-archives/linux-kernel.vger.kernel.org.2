@@ -2,120 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5351C3B09C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1BB03B09C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:01:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230354AbhFVQDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 12:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbhFVQDC (ORCPT
+        id S230008AbhFVQEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 12:04:01 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:51770 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhFVQD7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 12:03:02 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D93C061756
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:00:45 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso1827603wmc.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:00:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xOMZk1VKxvEsQe+425mKGnLA46HeEVTGsHHfQ5TUmdo=;
-        b=qf/fz46NPHaWfKJ5ojds9u2NYgfXiZNcmgkC6EINZuigVXaowBRq1Dfsr1lBSTZt3U
-         eTRLvyjvjY5NBjK22ij1enha6oBN4bnvaf+I+8mNNhaKmcHek0wFDkTGmVJN2fM/9nPg
-         yLnit/yU1sLblVKOht0L0ue5wrmmskduEtGR1NJzGEmMOE2C1nlAE6I/KRvMXDLL5uop
-         mb3fwBNpowalE9b+Ui5rp0f5CnEisk8vb9/tJq+oQX8sFoSS3xK3vgaJEGDTZEtE4ABo
-         zAxAI2ERqMj2e7WP3M9btYT0qVrk6AFOWnft9hmXilMET2N+KDozNSLMzpCcjJJMOWrN
-         8twA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xOMZk1VKxvEsQe+425mKGnLA46HeEVTGsHHfQ5TUmdo=;
-        b=g4gm++iXckwbeyAZ+3lyghadcHVA11aoPnsZp8qHUIP6g1uyxbWUr1XcF+cYZmdSQ+
-         /B7Mefk32Wpi3OEHwewwasTJsyfZ+8IdRsmdYqpIYIFGq6J5/tlNm4ZzB3P0kYdD621l
-         vYRH9TqAm2SDiqbiF3h//jWGz0yzWZeY2TT6Jbn5f1hyRVCt37j3Bu2LWc1/vtwVIUrU
-         OLM1B6J6I0/7tterOZtjzERy8E7SYr1Wb9dXUEPtuLJq0xkofFQoolEnu/rqlIq69CfS
-         37AdwsQxsJDG8CsxxHHmct3/R/kg7qHj7ytSKgVJ1sVqILDDvzo7wjb0CKEw4+O8kbMi
-         O7tQ==
-X-Gm-Message-State: AOAM531NeuI11zl1BFij9WysNhKr5IdXWIf3Mr0vgCfOwxnx/SOqlxi+
-        H/x7YdAgXpJanWy1xhSrEr8/iQYxIpMlPENOqVrBFA==
-X-Google-Smtp-Source: ABdhPJzSoujWiRAvyGIwEgL3UvR+fnBtxVS+HiJRtZsgofK9RRT0hDyY9RXFGnx6uEwTGNXL5kYwR8bY6o4aPKWadd4=
-X-Received: by 2002:a05:600c:2484:: with SMTP id 4mr5336575wms.76.1624377643601;
- Tue, 22 Jun 2021 09:00:43 -0700 (PDT)
+        Tue, 22 Jun 2021 12:03:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624377704; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=I+DsgpQsTCXfXWv24lYHbYTf2IfSS92QUXrBnvf+xV8=; b=LCmpfp82U0FPANwuGL5ujhl1wvAtxQ5kynShgNTD+Ws6xxahX76+JUfc8s7781qPXA5Kv2UG
+ /HLpiakqNICV7u0ExGe3pAjIJ67JVVUPqqf2f+htnG1ESV3Ix11MjuMA6ErsSDHXcNeNPxzR
+ uRmigOd0zQxTHIs8eRzo0OaqZrg=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 60d2094220bb88c60763067d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Jun 2021 16:01:06
+ GMT
+Sender: pmaliset=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 55F28C43145; Tue, 22 Jun 2021 16:01:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from pmaliset-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: pmaliset)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E9F81C433F1;
+        Tue, 22 Jun 2021 16:01:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E9F81C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pmaliset@codeaurora.org
+From:   Prasad Malisetty <pmaliset@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, bhelgaas@google.com,
+        robh+dt@kernel.org, swboyd@chromium.org, lorenzo.pieralisi@arm.com,
+        svarbanov@mm-sol.com
+Cc:     devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mgautam@codeaurora.org, dianders@chromium.org, mka@chromium.org,
+        sanm@codeaurora.org, Prasad Malisetty <pmaliset@codeaurora.org>
+Subject: [PATCH v3 0/4] Add DT bindings and DT nodes for PCIe and PHY in SC7280
+Date:   Tue, 22 Jun 2021 21:30:47 +0530
+Message-Id: <1624377651-30604-1-git-send-email-pmaliset@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-References: <ecd941b3-2fd5-61d8-93a1-76a3a3ee4138@huawei.com>
- <CAP-5=fUxQZ+rxLEn6jeRNVMf48BaPNdaUdoMs8LY4P-GROiOnw@mail.gmail.com> <cd501541-deb5-f2f5-e086-cca44b40c87d@huawei.com>
-In-Reply-To: <cd501541-deb5-f2f5-e086-cca44b40c87d@huawei.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Tue, 22 Jun 2021 09:00:31 -0700
-Message-ID: <CAP-5=fU05k62d57pbWquqv3Z1RFzWMOB1d3OFEcEax5btEWEzg@mail.gmail.com>
-Subject: Re: perf tool: About tests debug level
-To:     John Garry <john.garry@huawei.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jin Yao <yao.jin@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 4:58 AM John Garry <john.garry@huawei.com> wrote:
->
-> On 22/06/2021 06:04, Ian Rogers wrote:
-> >> ---- end ----
-> >> Parse and process metrics: FAILED!
-> >>
-> >> Note that the "FAILED" messages from the test code come from pr_debug().
-> >>
-> >> In a way, I feel that pr_debug()/err from the test is more important
-> >> than pr_debug() from the core code (when running a test).
-> >>
-> >> Any opinion on this or how to improve (if anyone agrees with me)? Or am
-> >> I missing something? Or is it not so important?
-> > Hi John,
-> >
->
-> Hi Ian,
->
-> > I think the issue is that in the parsing you don't know it's broken
-> > until something goes wrong. Putting everything on pr_err would cause
-> > spam in the not broken case.
->
-> Right, I would not suggest using pr_err everywhere.
->
-> > Improving the parsing error handling is a
-> > big task with lex and yacc to some extent getting in the way. Perhaps
-> > a middle way is to have a parameter to the parser that logs more, and
-> > recursively call this in the parser when parsing fails. I guess there
-> > is also a danger of a performance hit.
->
-> So I am thinking that for running a test, -v means different levels logs
-> for test code and for core (non-test code). For example, -v prints
-> pr_warn() and higher for test logs, but nothing for core logs. And then
-> -vv for running a test gives pr_debug and above for test logs, and
-> pr_warn and above for core logs. Or something like that.
->
-> Maybe that is not a good idea. But I'm just saying that it's hard to
-> debug currently at -v for tests.
->
-> Thanks,
-> John
+This series includes PCIe support for qualcomm sc7280
+which includes PCIe controller and PHY DT bindings.
+The PCIe controller and PHYs are mostly comaptible with SM8250 SoC,
+hence the existing pcie drivers are modified to add the support.
 
-I think this sounds good. It'd be nice also to have verbose output in
-the shell tests following the same convention. There's currently no
-verbose logging in shell tests but I propose it here:
-https://lore.kernel.org/lkml/20210621215648.2991319-1-irogers@google.com/
-By their nature some of the shell tests launch perf, perhaps there can
-be some convention on passing the verbose flag through in those cases.
+Changes in v3:
+	* Changed pipe clock names in dt bindings as pipe_mux and phy_pipe.
+	* Moved reset and NVMe GPIO pin configs into board specific file.
+	* Updated pipe clk mux commit message.
+	
+Changes in v2:
+	* Moved pcie pin control settings into IDP file.
+	* Replaced pipe_clk_src with pipe_clk_mux in pcie driver 
+	* Included pipe clk mux setting change set in this series
 
-Thanks,
-Ian
+Prasad Malisetty (4):
+  dt-bindings: pci: qcom: Document PCIe bindings for SC720
+  arm64: dts: qcom: sc7280: Add PCIe and PHY related nodes
+  arm64: dts: qcom: sc7280: Add PCIe nodes for IDP board
+  PCIe: qcom: Add support to control pipe clk mux
+
+ .../devicetree/bindings/pci/qcom,pcie.txt          |  17 +++
+ arch/arm64/boot/dts/qcom/sc7280-idp.dts            |  38 +++++++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi               | 125 +++++++++++++++++++++
+ drivers/pci/controller/dwc/pcie-qcom.c             |  22 ++++
+ 4 files changed, 202 insertions(+)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
