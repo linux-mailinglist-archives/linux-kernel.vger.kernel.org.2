@@ -2,102 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A863AFDCB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92CD53AFDD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230160AbhFVH1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 03:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60298 "EHLO
+        id S229490AbhFVH14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 03:27:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229789AbhFVH1N (ORCPT
+        with ESMTP id S229695AbhFVH1x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 03:27:13 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A13EC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:24:58 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id o189-20020a378cc60000b02903b2ccd94ea1so438560qkd.19
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:24:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=BD4lpbPgIYJoxQKzEzU6bqCGaw9muIxLDsW7Q3v9h6k=;
-        b=esL8Wgp1T4BxTy0TqGV+jDA5F57PodHBxA6bFbaWmKGQPwRDwaBqhB0QD8a+AEzzIc
-         CbAPXjSfXR7KaKvl4yJNzj6r4ti/Z4dwYWc/Ji66CpEuJpXhag2VJwV5oeLdRR1fsBM9
-         H9ojzo6rqek2pOe21/j8o60sgq6oMGy9N4KU11E7YOJxWGpGOefyDp7vyuxE2Pn3WSn3
-         iSspCTit8s7i4G5DSB0YEtcofXbLo5DVz2XzRWcFAAIts9nwy9Gw/tsZ0YVe4WftZ/pc
-         Cs+9wXAg9Xf1n9ODTt4b4BhJGBqeyyFtgXhv1yZNSElx8fX+dozETAipwHmbjTOkF5HY
-         KU8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=BD4lpbPgIYJoxQKzEzU6bqCGaw9muIxLDsW7Q3v9h6k=;
-        b=qbZ1cVm8zKjHFJ7aY+8e0xPvPUF19v5u0aVRBYKLS15Rb3YyeOVGnkNbDokfaGtOTQ
-         tgBlyeHHLOtMb2YsSBuyj3uGl+nFYOoZ0Ch8gHDr93BaWSmN1IzBxBfD6D+hVvy/zum6
-         A38JDHZ4PJoCoFs+3hoOS1bI3hXIcsTrmwz3WOe4W+Jh+Y9FpWvahZHsEJTYDzqFg5xe
-         H1GodcuwJMkXprROYXaBnsTOaN6wilpmYe6d1Gj4sb9KnKRxEclYv+p35xAlw4PXe1Jq
-         f08ZCldqMV5158IF0blngrJOzmMSNoK5Bg06eLzoBQXNYHTuF9GfZ99HcMPgCBJquN8m
-         e1cQ==
-X-Gm-Message-State: AOAM532xyhOZnQyr7n9J15ylzxZGPyPrevvrvOharw3kdACvYqVrK0hN
-        vM70PU1oNH5OiV4CUnM/rJ/NwDJAN7A=
-X-Google-Smtp-Source: ABdhPJyJj8tlqT95Jr5UGXnlzkZJA+EWDiIPs1qaYV1oUrDbRZ4ZtoVYOfZpGDiXR7pjcX8YU+BBsU153rs=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:5722:92ce:361f:3832])
- (user=seanjc job=sendgmr) by 2002:a25:aba7:: with SMTP id v36mr2898354ybi.124.1624346697403;
- Tue, 22 Jun 2021 00:24:57 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 22 Jun 2021 00:24:54 -0700
-Message-Id: <20210622072454.3449146-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH] KVM: x86/mmu: Don't WARN on a NULL shadow page in TDP MMU check
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 22 Jun 2021 03:27:53 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7871CC061574;
+        Tue, 22 Jun 2021 00:25:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=zxpyGwgTl2R9s7Hd1depIUm48agHvd2MrcEyfmPlz1o=; b=lR9YQ3Qx/oesvqacDNN+h1MnAn
+        DGdiIQspnV7AFoF4Z0i6UaYVkE2jUEVc63CVliwDchTN6HSlWYUCSjNoyu4obHwOObo6H7jQsy+Tm
+        LqounrKZ9OygNoaHUPauOAOoWQOhF55tfYqK9EAXBug8qyHPl3JoktZWUU6Iv2Ol/EVP15zJ6AaZ6
+        2BtjjzRf53991ce2/jMemJM6Rc6kPBhNR5NV2Shz5RlWrE4oQ6Cel3/odAW6o16Ii8mdFApwwYZuM
+        n0bs//nfilzBYEI/sPIVPcdV4L6XpJQqoojcBZgMsyWt2EdCPlLXfvI5wQynR4Bd/0Rwd+Q5+bOtg
+        +ktYWqwg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvamR-00AWJy-MZ; Tue, 22 Jun 2021 07:25:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 95F3C30005A;
+        Tue, 22 Jun 2021 09:25:11 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 78D272C6EEC7A; Tue, 22 Jun 2021 09:25:11 +0200 (CEST)
+Date:   Tue, 22 Jun 2021 09:25:11 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Kees Cook <keescook@chromium.org>, Bill Wendling <wcw@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Peter Oberparleiter <oberpar@linux.ibm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Will Deacon <will@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
+        Martin Liska <mliska@suse.cz>, Marco Elver <elver@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Fangrui Song <maskray@google.com>, linux-doc@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+        johannes.berg@intel.com, linux-toolchains@vger.kernel.org,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH v2 0/3] no_profile fn attr and Kconfig for GCOV+PGO
+Message-ID: <YNGQV09E9xAvvppO@hirez.programming.kicks-ass.net>
+References: <20210621231822.2848305-1-ndesaulniers@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621231822.2848305-1-ndesaulniers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Treat a NULL shadow page in the "is a TDP MMU" check as valid, non-TDP
-root.  KVM uses a "direct" PAE paging MMU when TDP is disabled and the
-guest is running with paging disabled.  In that case, root_hpa points at
-the pae_root page (of which only 32 bytes are used), not a standard
-shadow page, and the WARN fires (a lot).
+On Mon, Jun 21, 2021 at 04:18:19PM -0700, Nick Desaulniers wrote:
+> Nick Desaulniers (3):
+>   compiler_attributes.h: define __no_profile, add to noinstr
+>   compiler_attributes.h: cleanups for GCC 4.9+
+>   Kconfig: add ARCH_WANTS_NO_INSTR+CC_HAS_NO_PROFILE_FN_ATTR, depend on
+>     for GCOV and PGO
 
-Fixes: 0b873fd7fb53 ("KVM: x86/mmu: Remove redundant is_tdp_mmu_enabled check")
-Cc: David Matlack <dmatlack@google.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/mmu/tdp_mmu.h | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+Thanks for sorting this Nick!
 
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-index b981a044ab55..1cae4485b3bc 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.h
-+++ b/arch/x86/kvm/mmu/tdp_mmu.h
-@@ -94,11 +94,13 @@ static inline bool is_tdp_mmu(struct kvm_mmu *mmu)
- 	if (WARN_ON(!VALID_PAGE(hpa)))
- 		return false;
- 
-+	/*
-+	 * A NULL shadow page is legal when shadowing a non-paging guest with
-+	 * PAE paging, as the MMU will be direct with root_hpa pointing at the
-+	 * pae_root page, not a shadow page.
-+	 */
- 	sp = to_shadow_page(hpa);
--	if (WARN_ON(!sp))
--		return false;
--
--	return is_tdp_mmu_page(sp) && sp->root_count;
-+	return sp && is_tdp_mmu_page(sp) && sp->root_count;
- }
- #else
- static inline bool kvm_mmu_init_tdp_mmu(struct kvm *kvm) { return false; }
--- 
-2.32.0.288.g62a8d224e6-goog
-
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
