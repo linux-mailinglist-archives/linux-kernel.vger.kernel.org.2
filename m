@@ -2,91 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3173C3B0F3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:06:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C074A3B0F3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 23:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229675AbhFVVJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 17:09:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58255 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229629AbhFVVJI (ORCPT
+        id S230102AbhFVVJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 17:09:25 -0400
+Received: from mail-pj1-f51.google.com ([209.85.216.51]:51718 "EHLO
+        mail-pj1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229629AbhFVVJX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 17:09:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1624396011;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iwNIivw7ND0ogSAYON5f+dYUQ2aKcYsMFanvNB5fm5o=;
-        b=Eeyt/0+V0MRy6gYLpGQhaj2fhd0rWVoC6ZjUfclv/h7HTtoM2YgAEov/0aUa3MuOZPpxZi
-        Hw4GivzNdXDM3OI48Sx7PTwyI5tJenXfl+d6l6fBZcJWBRcUjyncjg+TyhDpQ/0r0E9eNs
-        qZ/YIRfXhqit2LluqQh/48FHe5ozRGg=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-54-wXpDWBDpNautU9PxYd1gWg-1; Tue, 22 Jun 2021 17:06:50 -0400
-X-MC-Unique: wXpDWBDpNautU9PxYd1gWg-1
-Received: by mail-wr1-f70.google.com with SMTP id v9-20020a5d4a490000b029011a86baa40cso67790wrs.7
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 14:06:50 -0700 (PDT)
+        Tue, 22 Jun 2021 17:09:23 -0400
+Received: by mail-pj1-f51.google.com with SMTP id k5so188354pjj.1;
+        Tue, 22 Jun 2021 14:07:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iwNIivw7ND0ogSAYON5f+dYUQ2aKcYsMFanvNB5fm5o=;
-        b=Xl+Kjd5vYO8M3BCTwQU+/xlssuqZl0cMJL/Ip6mShq0a9t22bCnYboKPklqrlRRFFx
-         wIFUcwXKMq+sNzuHmw/TVLUkckMZj+IVx8dTnXcokI7defPKFEDusc+X0KqynxkIBFex
-         M+ygRO09Cw3r2YuejgqQp/cfHTCAlQ6cIoxEkz8Y9B8+D8WvyXi3fUCogaXmxr7jtiGU
-         JksH9Y+I7DS629AKgoGYRE5tzXr14mOwQj7WlSmfQVs/AEXBVtGVD3VHbHNHqTEH80cD
-         1KqxOlbJWfDm543L9HPzuNFjyx7JnhA4UimPfM55oxl5iDfQlxBpYBLPgrurCK+2lik7
-         enIw==
-X-Gm-Message-State: AOAM533eb/AfJf4zNLOdEtTfoHBWPut9+nW0G5JSf6Miq0j1heLGoMi9
-        yaDh9aotIEbSmQhz3oLlkahckyU4mOj4N9YjtjTMIHvo/xGOn/jVctYdJ1l71wWUQHPDEyNNF6z
-        NONQ7hUQbWU/92Qbd2JdQUBdr
-X-Received: by 2002:a1c:2601:: with SMTP id m1mr6867474wmm.185.1624396009165;
-        Tue, 22 Jun 2021 14:06:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxwA5evujCVmb41YGb1m83sZnYPN7g9tyPdWnf8NtEzUikjTHKJvyfO0OIMVr5bOTFLyikgVQ==
-X-Received: by 2002:a1c:2601:: with SMTP id m1mr6867441wmm.185.1624396008898;
-        Tue, 22 Jun 2021 14:06:48 -0700 (PDT)
-Received: from krava ([5.171.245.189])
-        by smtp.gmail.com with ESMTPSA id e11sm504551wrs.64.2021.06.22.14.06.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 14:06:47 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 23:06:44 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     "nakamura.shun@fujitsu.com" <nakamura.shun@fujitsu.com>
-Cc:     "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: libperf : Can not create event group
-Message-ID: <YNJQ5P3jgOcL7sMD@krava>
-References: <OSBPR01MB46005B38568E90509946ECA9F7319@OSBPR01MB4600.jpnprd01.prod.outlook.com>
- <YMc6tBoIQiUQkRbq@krava>
- <OSBPR01MB4600B6FCE4D95F6B84E7E17CF7099@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Z0iF3ntSSNNKhG4jtipS972P1ucIxrjARKk0osGLruI=;
+        b=EaDeiUC5mgEi8hWju9Mb4sSegNly63zi54olifzISBdqWAJRHxtJ6uKiHBtqMlhs/R
+         xRwPdC76Uh4VIH2ATfXC/y4R/0E01JRqSVF63KtEfeKP49XDj+jRmTZoVbQi+Xj2itwv
+         gZ9Wxh5U2bn6h+8qnPHrLx40I9CwK2oOw31jdpX0GGqFRSQSOUwonq0j8SpzYvMllRQc
+         G+7Agu1ZqcOA4eT6f4pwL0fEW5B9koREeLwlfXjI0YUSu8V3gHkojCsmjWKPflVhQWY/
+         4JGHwgx4yQSw/GNZrViVWGC0f2mWXxEx23uBgC75kt2Cp7xmd1HqI2GER84BSLkZ66EU
+         Czwg==
+X-Gm-Message-State: AOAM531hks19oR6PIrg/t3DTkJzfVAciOSfLoPm93wVKKxNHztbo53CT
+        bz872P3imyv4sZ+c7uveNiYskgek7Q8=
+X-Google-Smtp-Source: ABdhPJy34SU4Bd5QukOxXys8evC97YP66yzcrRplCMR4oU3Y0PuVwjTpOQnDx1PSGXx2F1MYKcbiFw==
+X-Received: by 2002:a17:90a:9f81:: with SMTP id o1mr5785112pjp.96.1624396026843;
+        Tue, 22 Jun 2021 14:07:06 -0700 (PDT)
+Received: from localhost ([173.239.198.97])
+        by smtp.gmail.com with ESMTPSA id y1sm7938704pgr.70.2021.06.22.14.07.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Jun 2021 14:07:05 -0700 (PDT)
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     gregkh@linuxfoundation.org, rafael@kernel.org
+Cc:     jeyu@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, minchan@kernel.org,
+        mcgrof@kernel.org, axboe@kernel.dk, mbenes@suse.com,
+        jpoimboe@redhat.com, tglx@linutronix.de, keescook@chromium.org,
+        jikos@kernel.org, rostedt@goodmis.org, peterz@infradead.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drivers/base/core: refcount kobject and bus on device attribute read / store
+Date:   Tue, 22 Jun 2021 14:06:59 -0700
+Message-Id: <20210622210659.3708231-1-mcgrof@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OSBPR01MB4600B6FCE4D95F6B84E7E17CF7099@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 07:57:56AM +0000, nakamura.shun@fujitsu.com wrote:
-> Hi, jirka
-> 
-> > there'no leader link on this level yet (in struct evsel)
-> > so this is not implemented at the moment
-> 
-> Thanks for the info.
-> 
-> Do you have any plans to support the event group in libperf?
+It's possible today to have a device attribute read or store
+race against device removal. When this happens there is a small
+chance that the derefence for the private data area of the driver
+is NULL.
 
-hi,
-not until now I guess ;-) what's your use case?
+Let's consider the zram driver as an example. Its possible to run into
+a race where a sysfs knob is being used, we get preempted, and a zram
+device is removed before we complete use of the sysfs knob. This can happen
+for instance on block devices, where for instance the zram block devices
+just part of the private data of the block device.
 
-jirka
+For instance this can happen in the following two situations
+as examples to illustrate this better:
+
+        CPU 1                            CPU 2
+destroy_devices
+...
+                                 compact_store()
+                                 zram = dev_to_zram(dev);
+idr_for_each(zram_remove_cb
+  zram_remove
+  ...
+  kfree(zram)
+                                 down_read(&zram->init_lock);
+
+        CPU 1                            CPU 2
+hot_remove_store
+                                 compact_store()
+                                 zram = dev_to_zram(dev);
+  zram_remove
+    kfree(zram)
+                                 down_read(&zram->init_lock);
+
+To ensure the private data pointer is valid we could use bdget() / bdput()
+in between access, however that would mean doing that in all sysfs
+reads/stores on the driver. Instead a generic solution for all drivers
+is to ensure the device kobject is still valid and also the bus, if
+a bus is present.
+
+This issue does not fix a known crash, however this race was
+spotted by Minchan Kim through code inspection upon code review
+of another zram patch.
+
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+---
+ drivers/base/bus.c  |  4 ++--
+ drivers/base/core.c | 45 +++++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 43 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/base/bus.c b/drivers/base/bus.c
+index 36d0c654ea61..21c80d7d6433 100644
+--- a/drivers/base/bus.c
++++ b/drivers/base/bus.c
+@@ -39,7 +39,7 @@ static struct kset *system_kset;
+ static int __must_check bus_rescan_devices_helper(struct device *dev,
+ 						void *data);
+ 
+-static struct bus_type *bus_get(struct bus_type *bus)
++struct bus_type *bus_get(struct bus_type *bus)
+ {
+ 	if (bus) {
+ 		kset_get(&bus->p->subsys);
+@@ -48,7 +48,7 @@ static struct bus_type *bus_get(struct bus_type *bus)
+ 	return NULL;
+ }
+ 
+-static void bus_put(struct bus_type *bus)
++void bus_put(struct bus_type *bus)
+ {
+ 	if (bus)
+ 		kset_put(&bus->p->subsys);
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 4a8bf8cda52b..109bbc5b6976 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -2039,31 +2039,68 @@ EXPORT_SYMBOL(dev_driver_string);
+ 
+ #define to_dev_attr(_attr) container_of(_attr, struct device_attribute, attr)
+ 
++struct bus_type *bus_get(struct bus_type *bus);
++void bus_put(struct bus_type *bus);
++
+ static ssize_t dev_attr_show(struct kobject *kobj, struct attribute *attr,
+ 			     char *buf)
+ {
+-	struct device_attribute *dev_attr = to_dev_attr(attr);
+-	struct device *dev = kobj_to_dev(kobj);
++	struct device_attribute *dev_attr;
++	struct device *dev;
++	struct bus_type *bus = NULL;
+ 	ssize_t ret = -EIO;
+ 
++	dev = get_device(kobj_to_dev(kobj));
++	if (!dev)
++		return ret;
++
++	if (dev->bus) {
++		bus = bus_get(dev->bus);
++		if (!bus)
++			goto out;
++	}
++
++	dev_attr = to_dev_attr(attr);
+ 	if (dev_attr->show)
+ 		ret = dev_attr->show(dev, dev_attr, buf);
+ 	if (ret >= (ssize_t)PAGE_SIZE) {
+ 		printk("dev_attr_show: %pS returned bad count\n",
+ 				dev_attr->show);
+ 	}
++
++	bus_put(bus);
++out:
++	put_device(dev);
++
+ 	return ret;
+ }
+ 
+ static ssize_t dev_attr_store(struct kobject *kobj, struct attribute *attr,
+ 			      const char *buf, size_t count)
+ {
+-	struct device_attribute *dev_attr = to_dev_attr(attr);
+-	struct device *dev = kobj_to_dev(kobj);
++	struct device_attribute *dev_attr;
++	struct device *dev;
++	struct bus_type *bus = NULL;
+ 	ssize_t ret = -EIO;
+ 
++	dev = get_device(kobj_to_dev(kobj));
++	if (!dev)
++		return ret;
++
++	if (dev->bus) {
++		bus = bus_get(dev->bus);
++		if (!bus)
++			goto out;
++	}
++
++	dev_attr = to_dev_attr(attr);
+ 	if (dev_attr->store)
+ 		ret = dev_attr->store(dev, dev_attr, buf, count);
++
++	bus_put(bus);
++out:
++	put_device(dev);
++
+ 	return ret;
+ }
+ 
+-- 
+2.27.0
 
