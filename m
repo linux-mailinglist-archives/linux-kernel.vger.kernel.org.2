@@ -2,90 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4403B075B
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:25:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 903163B0761
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231725AbhFVO1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 10:27:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230331AbhFVO11 (ORCPT
+        id S231417AbhFVOaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 10:30:30 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:43697 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230331AbhFVOa3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 10:27:27 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318CBC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 07:25:11 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id g4so38696218qkl.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 07:25:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bhZNS7lV5Nt4MqmRXeAUAX8kJsakiDO8lzXugXWHbE4=;
-        b=daz3+H6EJBGXGoBTg39kHoL2KNKovROdtZln0nWY9XMdAMrMCQrl+TxzlT4+AIWdB8
-         dRWICDcoPNm/qmWKVXcrxcq615cVASIjKaBCjpUtAl1tjT1qw10xnYG0p8WRedXGWh6Z
-         uhLx7ef8W4h8Y3JRYglTFtN+sD6OHajX7bama7UV78ZsBu+d+Yyi/ergotR4dJSsWr6c
-         7rKe5PUZwF3PMWl+Eb1nwuLLu9EiwoTnEf/PusmOMogUGUd+zK56yUW1vgPkrP+q9L57
-         O+zGShtXT89jlJprgRcfx0clntUr0SiOAAs5/8cH4MmjVD7Ko6y/TgvIxpyVDdx44kPl
-         QrCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=bhZNS7lV5Nt4MqmRXeAUAX8kJsakiDO8lzXugXWHbE4=;
-        b=dd0nqYLARREGcf1ZcI3ajf7rhfYexQoffnAq3hY8Zho3aYJNP66b5YlUIhVGqIT1wX
-         YF/FfaI4qmmRvy1o6QolDjqZNVtH3AdpGdkRABhlh5VS2xnDtOhVvduRue6qp45S4oKX
-         7Sb1R6Avt7gVdlAMHPBtHyEg32k2QM46yEmYVlJh2rJM9DLT8fVVLhBGFFcQsImv2pcD
-         bDgajC5QDH6LIgQSMPepuvwf/44VfN0xPiTsHgt8FPbWxNzFooX7Eem4C+yF3RHnrD4W
-         B7HR58BuyArnvO1mFhkPYuXItu2fIbnOpj0fsIk5o0uTBNu1yMCof+TB0BS17XQWUSmZ
-         XNuQ==
-X-Gm-Message-State: AOAM5302t9Y2+MS36qQWeBeSLC8/rybQac05HswBfBgRF7xAPrA3UOkq
-        qFRdi70fbS7MNs/a2Qlt1og=
-X-Google-Smtp-Source: ABdhPJwh4W374a+eRb6OAzi2CZC5IqCiVckqz6Cy+tkNATBzVN9hfunqY0rvXPgtrNGYT+VTclLSvw==
-X-Received: by 2002:ae9:e407:: with SMTP id q7mr4633566qkc.410.1624371910173;
-        Tue, 22 Jun 2021 07:25:10 -0700 (PDT)
-Received: from localhost ([199.192.137.73])
-        by smtp.gmail.com with ESMTPSA id f2sm665611qth.11.2021.06.22.07.25.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 07:25:09 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 22 Jun 2021 10:25:08 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
-Cc:     luca.abeni@santannapisa.it, anderson@cs.unc.edu, baruah@wustl.edu,
-        bsegall@google.com, dietmar.eggemann@arm.com,
-        dtcccc@linux.alibaba.com, juri.lelli@redhat.com,
-        khlebnikov@yandex-team.ru, linux-kernel@vger.kernel.org,
-        mgorman@suse.de, mingo@redhat.com, odin@uged.al, odin@ugedal.com,
-        pauld@redhead.com, peterz@infradead.org, pjt@google.com,
-        rostedt@goodmis.org, shanpeic@linux.alibaba.com,
-        tommaso.cucinotta@santannapisa.it, vincent.guittot@linaro.org,
-        xiyou.wangcong@gmail.com
-Subject: Re: [PATCH v6 0/3] sched/fair: Burstable CFS bandwidth controller
-Message-ID: <YNHyxFQLsPPVoinf@slm.duckdns.org>
-References: <20210621092800.23714-1-changhuaixin@linux.alibaba.com>
+        Tue, 22 Jun 2021 10:30:29 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1624372093; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=GwlPniao3J7tcSGfx042pEI6HKO5H285thPuoFh/a74=;
+ b=WvGoq1doqIOmay7C3lnkFnWUO9YBNLzV+7uFO6zazBsrqbgJ0kTuNqVqB4wht4QfQ3iFJAZ4
+ 12Tu9dgKUbXpcpSxrXOgfVsSe1zVI+cwsefmLaOhDWOuTdCvwj7lW0gIliego0c4y2F8FQi9
+ vclr9XeSlvB1+EaqvOl7fRJN+0Y=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 60d1f36912003202418d1710 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 22 Jun 2021 14:27:53
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6D224C43143; Tue, 22 Jun 2021 14:27:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 84E5FC433D3;
+        Tue, 22 Jun 2021 14:27:51 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621092800.23714-1-changhuaixin@linux.alibaba.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 22 Jun 2021 19:57:51 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Thierry Reding <treding@nvidia.com>,
+        linux-arm-msm@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCHv2 1/3] iommu/io-pgtable: Add a quirk to use
+ tlb_flush_all() for partial walk flush
+In-Reply-To: <2b093b93-7fab-be35-59d8-4463c199719a@arm.com>
+References: <cover.1623981933.git.saiprakash.ranjan@codeaurora.org>
+ <b099af10926b34249f4a30262db37f50491bebe7.1623981933.git.saiprakash.ranjan@codeaurora.org>
+ <904f283c-f8b1-ba84-d010-eacc87bb53c5@arm.com>
+ <a110e58e36af207be2bed04d1331832a@codeaurora.org>
+ <2b093b93-7fab-be35-59d8-4463c199719a@arm.com>
+Message-ID: <c0329da89bee9b51b88d907875608877@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 05:27:57PM +0800, Huaixin Chang wrote:
-> Changelog:
-> v6:
-> - Separate burst config to cpu.max.burst.
-> - Rewrite commit log and document for burst feature.
-> - Remove global sysfsctl to disable burst feature.
-> - Some code mofication.
-> - Rebase upon v5.13-rc6.
+Hi Robin,
 
-This looks fine from cgroup interface POV.
+On 2021-06-22 17:41, Robin Murphy wrote:
+> On 2021-06-22 08:11, Sai Prakash Ranjan wrote:
+>> Hi Robin,
+>> 
+>> On 2021-06-21 21:15, Robin Murphy wrote:
+>>> On 2021-06-18 03:51, Sai Prakash Ranjan wrote:
+>>>> Add a quirk IO_PGTABLE_QUIRK_TLB_INV_ALL to invalidate entire 
+>>>> context
+>>>> with tlb_flush_all() callback in partial walk flush to improve unmap
+>>>> performance on select few platforms where the cost of 
+>>>> over-invalidation
+>>>> is less than the unmap latency.
+>>> 
+>>> I still think this doesn't belong anywhere near io-pgtable at all.
+>>> It's a driver-internal decision how exactly it implements a non-leaf
+>>> invalidation, and that may be more complex than a predetermined
+>>> boolean decision. For example, I've just realised for SMMUv3 we can't
+>>> invalidate multiple levels of table at once with a range command,
+>>> since if we assume the whole thing is mapped at worst-case page
+>>> granularity we may fail to invalidate any parts which are mapped as
+>>> intermediate-level blocks. If invalidating a 1GB region (with 4KB
+>>> granule) means having to fall back to 256K non-range commands, we may
+>>> not want to invalidate by VA then, even though doing so for a 2MB
+>>> region is still optimal.
+>>> 
+>>> It's also quite feasible that drivers might want to do this for leaf
+>>> invalidations too - if you don't like issuing 512 commands to
+>>> invalidate 2MB, do you like issuing 511 commands to invalidate 
+>>> 2044KB?
+>>> - and at that point the logic really has to be in the driver anyway.
+>>> 
+>> 
+>> Ok I will move this to tlb_flush_walk() functions in the drivers. In 
+>> the previous
+>> v1 thread, you suggested to make the choice in iommu_get_dma_strict() 
+>> test,
+>> I assume you meant the test in iommu_dma_init_domain() with a flag or 
+>> was it
+>> the leaf driver(ex:arm-smmu.c) test of iommu_get_dma_strict() in 
+>> init_domain?
+> 
+> Yes, I meant literally inside the same condition where we currently
+> set "pgtbl_cfg.quirks |= IO_PGTABLE_QUIRK_NON_STRICT;" in
+> arm_smmu_init_domain_context().
+> 
 
-Acked-by: Tejun Heo <tj@kernel.org>
+Ok got it, thanks.
 
-Thanks.
+>> I am still a bit confused on where this flag would be? Should this be 
+>> a part
+>> of struct iommu_domain?
+> 
+> Well, if you were to rewrite the config with an alternative set of
+> flush_ops at that point it would be implicit. For a flag, probably
+> either in arm_smmu_domain or arm_smmu_impl. Maybe a flag would be less
+> useful than generalising straight to a "maximum number of by-VA
+> invalidations it's worth sending individually" threshold value?
+
+But then we would still need some flag to make this implementation
+specific (qcom specific for now) and this threshold would just be
+another condition although it would have been useful if this was
+generic enough.
+
+> It's clear to me what overall shape and separation of responsibility is
+> most logical, but beyond that I don't have a particularly strong
+> opinion on the exact implementation; I've just been chucking ideas
+> around :)
+> 
+
+Your ideas are very informative and useful :)
+
+Thanks,
+Sai
 
 -- 
-tejun
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
