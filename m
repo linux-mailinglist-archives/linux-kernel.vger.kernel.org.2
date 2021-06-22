@@ -2,101 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E7963B1060
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 01:11:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21BD63B1063
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 01:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbhFVXNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 19:13:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51742 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhFVXNf (ORCPT
+        id S229873AbhFVXOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 19:14:09 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:55038 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229501AbhFVXOJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 19:13:35 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA6B7C061574;
-        Tue, 22 Jun 2021 16:11:18 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id c16so414078ljh.0;
-        Tue, 22 Jun 2021 16:11:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=t0rN33g3Q0MvGCFxmrKuW3pAMBLtF/9lId0gYvbuvZg=;
-        b=kdcPFGLaop4Uk6y2NiUz5a4QiFpiCTvTvUvJA7bxJcwQHxAaVHMJb4Z4lggYPiM3tw
-         aavZzfXu3Y6IYkvKrBXB7yE1yXwEzOlAI5TUQSfOBHSlkGCmMZ8eajz8f1yVnp4jlOC8
-         c3krqRxUblT48PqEEmVf+2xLob8wq2+yk/niXhrhTV+P4BRfOcO8pWzsk6rDQBE4Dcxy
-         Oq0al/yfdlsmW6tblO9byG+iV1j7XUpq/vl1bSY+e2UyDkwTafZCyJ5rc8cui4x8YFO3
-         M7Da3/USEGHenCCqdp501EKlfks0L1vzHaDGnYhH7+DnLK9MB5LYO97l+ayM64LNqKLr
-         b87Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=t0rN33g3Q0MvGCFxmrKuW3pAMBLtF/9lId0gYvbuvZg=;
-        b=ozqhrcyNWYJs2sEUtY5vQGUjh15wJ/0U+Z1VeS+VRFELdukUEwdbyImx6AG2oXEXmw
-         deNCfN8u84l22nUfp3oill763wl6dnSJTayQKEskdJMm2xbLKAsuJzcwGIXHVafYSntH
-         tmPa1laGaFKqxy4p23n/UwDkL2dKF2YZ13FreGRM9j/lh2jYcQ1+lR6w3S85ahf6NPn5
-         P6Wn4cupQZpuB6elm8angMp9iN8OVjYLJin5Me5knpPgdD2TnmcQLX8sEco/6nxF4knT
-         m56h+FN6FeH49z14mFY9V2U3hmqYoZgXPOcu6fNDOcglDeWJAcBl+F6F9YbA+gK4hnoS
-         ak9g==
-X-Gm-Message-State: AOAM531l8UCrydBpMuFmuBY3dbc75T98YQEx44NPXXhH2wHlkILknqp2
-        7UJFC9GMjqNAipp6XArhGCxghFsiDXRLTgpi26FDPKY+dROMgg==
-X-Google-Smtp-Source: ABdhPJwYznDprvUxaaIknL160sZKx0EnI5S7HtsbIO2Gr2iolasrSfAu+KFSJJLQNHNnN+gRVpI+kisI1D0uV1tgl0M=
-X-Received: by 2002:a05:651c:a07:: with SMTP id k7mr5428900ljq.477.1624403477036;
- Tue, 22 Jun 2021 16:11:17 -0700 (PDT)
+        Tue, 22 Jun 2021 19:14:09 -0400
+Received: from Monstersaurus.local (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id EA95AA66;
+        Wed, 23 Jun 2021 01:11:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1624403511;
+        bh=uZC7sopp+vxOG159NLgXzUDh0pD0kUjE7c7PBO1aBVM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Frv+m2psrQ+tK1MZ8xrRj1vJWI35m5nq3IillypB1dETwmc179uNaaUeouJJlHp5i
+         O3BKC26iRNyJ6FO3YU/2nwAlw+2DR1NgHfMv2XwbskhyGCJTKsT9ZcC6DA0dEyQIy0
+         BRM/B4B9CL52sFqGzxeB25wljAVcOz4qJpNe6XfQ=
+From:   Kieran Bingham <kieran.bingham@ideasonboard.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS FOR RENESAS),
+        linux-renesas-soc@vger.kernel.org (open list:DRM DRIVERS FOR RENESAS),
+        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
+        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] dt-bindings: display: renesas,du: Provide bindings for r8a779a0
+Date:   Wed, 23 Jun 2021 00:11:46 +0100
+Message-Id: <20210622231146.3208404-1-kieran.bingham@ideasonboard.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Tue, 22 Jun 2021 18:11:06 -0500
-Message-ID: <CAH2r5mvCOafQpko19fmSTtEdgG7mp2R1+xto=_fkm7A=fqWq5Q@mail.gmail.com>
-Subject: coverity problems with certain macros
-To:     CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks like coverity's scan of the Linux kernel has problems with
-analyzing locks across some debug print macros (which ironically don't
-use any locks related to this component)
+From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 
-e.g. Coverity Linux issues: 1484748, 1484736, 1475751, 1475743 and 1475726
+Extend the Renesas DU display bindings to support the r8a779a0 V3U.
 
-as an example it flags the section of code below, and others with
-calls to "cifs_dbf(VFS, ...) " in them (and note that the debug macros
-don't take a lock) starting with the cifs_dbg(VFS, ...) call.  It
-says:
+Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+---
+ .../bindings/display/renesas,du.yaml          | 52 +++++++++++++++++++
+ 1 file changed, 52 insertions(+)
 
-"May result in deadlock if there is another attempt to acquire the lock.
-In find_cifs_entry: Missing a release of a lock on a path"
-
-Oddly it doesn't flag "cifs_dbg(FYI, ...") calls, and even more
-strangely the calls they flag are simply wrappers around calls to
-"pr_err__ ## ratefunc ..."
-
-See below snippet from fs/cifs/readdir.c e.g.
-
-                        cifs_dbg(VFS, "reached end of buf searching
-for pos in buf %d index to find %lld rc %d\n",
-                                 pos_in_buf, index_to_find, rc);
-                }
-                rc = 0;
-                *current_entry = cur_ent;
-        } else {
-                cifs_dbg(FYI, "index not in buffer - could not
-findnext into it\n");
-                return 0;
-        }
-
-        if (pos_in_buf >= cfile->srch_inf.entries_in_buffer) {
-                cifs_dbg(FYI, "can not return entries pos_in_buf
-beyond last\n");
-                *num_to_ret = 0;
-        } else
-                *num_to_ret = cfile->srch_inf.entries_in_buffer - pos_in_buf;
-
-        return rc;
-}
-
+diff --git a/Documentation/devicetree/bindings/display/renesas,du.yaml b/Documentation/devicetree/bindings/display/renesas,du.yaml
+index 121596f106da..febbd89a646e 100644
+--- a/Documentation/devicetree/bindings/display/renesas,du.yaml
++++ b/Documentation/devicetree/bindings/display/renesas,du.yaml
+@@ -39,6 +39,7 @@ properties:
+       - renesas,du-r8a77980 # for R-Car V3H compatible DU
+       - renesas,du-r8a77990 # for R-Car E3 compatible DU
+       - renesas,du-r8a77995 # for R-Car D3 compatible DU
++      - renesas,du-r8a779a0 # for R-Car V3U compatible DU
+ 
+   reg:
+     maxItems: 1
+@@ -774,6 +775,57 @@ allOf:
+         - reset-names
+         - renesas,vsps
+ 
++  - if:
++      properties:
++        compatible:
++          contains:
++            enum:
++              - renesas,du-r8a779a0
++    then:
++      properties:
++        clocks:
++          items:
++            - description: Functional clock for DU0
++            - description: Functional clock for DU1
++
++        clock-names:
++          items:
++            - const: du.0
++            - const: du.1
++
++        interrupts:
++          maxItems: 2
++
++        resets:
++          maxItems: 1
++
++        reset-names:
++          items:
++            - const: du.0
++
++        ports:
++          properties:
++            port@0:
++              description: DSI 0
++            port@1:
++              description: DSI 1
++            port@2: false
++            port@3: false
++
++          required:
++            - port@0
++            - port@1
++
++        renesas,vsps:
++          minItems: 2
++
++      required:
++        - clock-names
++        - interrupts
++        - resets
++        - reset-names
++        - renesas,vsps
++
+ additionalProperties: false
+ 
+ examples:
 -- 
-Thanks,
+2.30.2
 
-Steve
