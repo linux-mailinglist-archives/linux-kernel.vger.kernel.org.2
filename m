@@ -2,170 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E383AFB3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 05:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 207A33AFB44
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 05:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231449AbhFVDFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 23:05:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58954 "EHLO
+        id S231464AbhFVDKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 23:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbhFVDFT (ORCPT
+        with ESMTP id S230188AbhFVDKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 23:05:19 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A9D8C061574;
-        Mon, 21 Jun 2021 20:03:03 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id dm5so19679946ejc.9;
-        Mon, 21 Jun 2021 20:03:03 -0700 (PDT)
+        Mon, 21 Jun 2021 23:10:14 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 685ACC061756
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 20:07:59 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id p4-20020a17090a9304b029016f3020d867so1398508pjo.3
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 20:07:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=da+4q6NaLwSyvJdC1cHJtymWI03kW2GYkjWCT/Y1A3w=;
-        b=gy2k2zUS3vvHEeFT8K/t1uw/Ik/U8ZjUSwaAI78IZK/2Rh/hXPm53jDGu00N38dqVb
-         P7KTGSKmzPTTjnJAEK90CsQmtG21Jn/o5sHd8Dj3OioiQK05/j0iRwsDhQfgz07f5L6H
-         H9HmdFf7PCTnybtXIG0QvMxU+nFamIAImlTZd2cnHZDCyttjql5Q83/QZyMxPsfJqM3C
-         Fi4G5aYI45nB04c6Ov7qhTQDnXYERb7MZzt5PxkZBH51RKmi8pbtSvZxzaX/40cpZQHJ
-         uiN3fboLR2B5IXVKdhFMK9YApdP2tAUgwFl5TJYg4xsbBLUKSm7KtraCAtlgxiKYJ9gc
-         OOMw==
+        d=chromium.org; s=google;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lkbW9hluwcztIOh5kOua513vVzY59E2u/mei+FpwsSU=;
+        b=RkwrsYDbtUQcWzbVeDSJAQgCYy9gRaRRqozIRYV1yWbYfhv7cdakF5J3Bv2BUngsfK
+         hFeLAZPesXvPVBLBNLFE0napPJPxpRWdvXy5QwbvejJwJkDMbYaqL24vsX5nu6api4WC
+         +9MX/N1/6gkIAn8RNjfy/zz3PpXPQPBYS/XsM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=da+4q6NaLwSyvJdC1cHJtymWI03kW2GYkjWCT/Y1A3w=;
-        b=NYFr0Dig42C0dak51Bh2IhyOrjku9AMwg4woJ6xRc1AcOai0toG+B+fFHqsMj+EuQ0
-         EHftkhwvHhI8S4vpj79h5+LQFfdkpMm/wmgoKneQG9Fvf7vdtI6gYgR3oul4DzQy+EVs
-         l8w0jo3MKqcsb0Ur/4znwCG0vFAl95vcVMqivK9DjhtdUffWV5vLPSKPpZY8MkR0vaIU
-         SaMAlMTtP6KQPoLIgQVBNXSHVTxtUX3pf+ncB+LXlwXlVLmjA2J61RlVCfzsSKXUDpp0
-         vt8gxGnuZZztAHUmplNNUdh5PDaukLTKiJfwv1UI9Gub47l/XKmpjSXv0bt/kSzu3AUN
-         H86Q==
-X-Gm-Message-State: AOAM530BPyalghvAjY7NvX+FSmymwm0o17s7XIoNW10urSXvZK6Gr3rF
-        uXTj9ZAh3Og76gVGRnJBcJMmc1x6CUFctP/vNTw=
-X-Google-Smtp-Source: ABdhPJwTpZSUk7a7ji8GbDsL0O3cqdtmO37/E7ZrMLkoLP94ZzbbS+wlrcGNOVyZFoXHv/hgM50vJA0TdhnuoPUoPI4=
-X-Received: by 2002:a17:906:244d:: with SMTP id a13mr1416742ejb.551.1624330981487;
- Mon, 21 Jun 2021 20:03:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210621072424.111733-1-jagan@amarulasolutions.com> <20210621072424.111733-9-jagan@amarulasolutions.com>
-In-Reply-To: <20210621072424.111733-9-jagan@amarulasolutions.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Mon, 21 Jun 2021 22:02:50 -0500
-Message-ID: <CAHCN7xKNarHo6DaAN-J=QLAsfTXOvChOuLR68h6CPgRe-q+rmA@mail.gmail.com>
-Subject: Re: [RFC PATCH 8/9] arm64: dts: imx8mm: Add MIPI DSI pipeline
-To:     Jagan Teki <jagan@amarulasolutions.com>
-Cc:     Peng Fan <peng.fan@nxp.com>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Tomasz Figa <t.figa@samsung.com>,
-        Fancy Fang <chen.fang@nxp.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Francis Laniel <francis.laniel@amarulasolutions.com>,
-        Matteo Lisi <matteo.lisi@engicam.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lkbW9hluwcztIOh5kOua513vVzY59E2u/mei+FpwsSU=;
+        b=kPA0jG5qNDbRxsqTIMCrhrdo0yQ1fOepqYWfO8PzQYWumnBCw6xz/H5UG8Cx6T8nFl
+         ryvyQZzlROwDUPiZ2MbM++h7/yd8Jxvp5DWhlqdq6wVCb0hMLYUCipaON7zlLNak/XfJ
+         EinpZPyQrVjtQbsgjhtdx6eZ+rhm5UO3nkLGBjZWIxx+jot8MYgKp9/5xH0rkszD/cJE
+         mTrwtgykEwoyWgl6ldNiBx/ubqZYhfmRR38C1myLCaLiGh0PN/yfvE+Dsd5LWix95KfR
+         Novgirsa27OKsQVJCUPDNbwWxo7WsYcQ7uOwgIXh2DDWeAeXjYJoSKcr/zJ2/wAwgkUI
+         VEBw==
+X-Gm-Message-State: AOAM531ymgbLn5SHQ3ywNX5fnOQqgrHicSnpksUBQ3j6fb0Y78IBtu8X
+        DlzLHYgy3s02Qm228Oo19rn5jQ==
+X-Google-Smtp-Source: ABdhPJywluBdydO/3+koxsNDeRCsfm/8/sSu9Nh+eXDSX8Lh9XieDEU9gLyfXK1qghmIJoNiqBpV6Q==
+X-Received: by 2002:a17:90a:c002:: with SMTP id p2mr1501687pjt.132.1624331278548;
+        Mon, 21 Jun 2021 20:07:58 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:aaeb:6e67:2eb9:f492])
+        by smtp.gmail.com with ESMTPSA id z6sm13740722pfj.117.2021.06.21.20.07.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 21 Jun 2021 20:07:58 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Milco Pratesi <milco.pratesi@engicam.com>,
-        Anthony Brandon <anthony@amarulasolutions.com>,
-        linux-phy@lists.infradead.org, linux-amarula@amarulasolutions.com,
-        arm-soc <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        devicetree@vger.kernel.org,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jassi Brar <jaswinder.singh@linaro.org>
+Subject: [PATCH v3 RESEND 1/2] arm64: dts: mt8183: add mediatek,gce-events in mutex
+Date:   Tue, 22 Jun 2021 11:07:41 +0800
+Message-Id: <20210622030741.2120393-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 21, 2021 at 2:25 AM Jagan Teki <jagan@amarulasolutions.com> wrote:
->
-> Add MIPI DSI pipeline for i.MX8MM.
->
-> Video pipeline start from eLCDIF to MIPI DSI and respective
-> Panel or Bridge on the backend side.
->
-> Add support for it.
->
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
-> ---
->  arch/arm64/boot/dts/freescale/imx8mm.dtsi | 59 +++++++++++++++++++++++
->  1 file changed, 59 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> index 5f68182ed3a6..bc09fce0f6a9 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
-> @@ -1047,6 +1047,65 @@ lcdif: lcdif@32e00000 {
->                                 interrupts = <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
->                                 power-domains = <&dispmix_blk_ctl IMX8MM_BLK_CTL_PD_DISPMIX_LCDIF>;
->                                 status = "disabled";
-> +
-> +                               port {
-> +                                       lcdif_out_dsi: endpoint {
-> +                                               remote-endpoint = <&dsi_in_lcdif>;
-> +                                       };
-> +                               };
-> +                       };
-> +
-> +                       dsi: dsi@32e10000 {
-> +                               compatible = "fsl,imx8mm-sec-dsim";
-> +                               reg = <0x32e10000 0xa0>;
-> +                               clocks = <&clk IMX8MM_CLK_DSI_CORE>,
-> +                                        <&clk IMX8MM_CLK_DSI_PHY_REF>;
-> +                               clock-names = "bus", "phy_ref";
-> +                               assigned-clocks = <&clk IMX8MM_CLK_DSI_CORE>,
-> +                                                 <&clk IMX8MM_VIDEO_PLL1_OUT>,
-> +                                                 <&clk IMX8MM_CLK_DSI_PHY_REF>;
-> +                               assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_266M>,
-> +                                                        <&clk IMX8MM_VIDEO_PLL1_BYPASS>,
-> +                                                        <&clk IMX8MM_VIDEO_PLL1_OUT>;
-> +                               assigned-clock-rates = <266000000>, <594000000>, <27000000>;
-> +                               interrupts = <GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>;
-> +                               phys = <&dphy>;
-> +                               phy-names = "dphy";
-> +                               power-domains = <&dispmix_blk_ctl IMX8MM_BLK_CTL_PD_DISPMIX_MIPI_DSI>;
-> +                               samsung,burst-clock-frequency = <891000000>;
-> +                               samsung,esc-clock-frequency = <54000000>;
-> +                               samsung,pll-clock-frequency = <27000000>;
-> +                               status = "disabled";
-> +
-> +                               ports {
-> +                                       #address-cells = <1>;
-> +                                       #size-cells = <0>;
-> +
-> +                                       port@0 {
-> +                                               reg = <0>;
-> +                                               #address-cells = <1>;
-> +                                               #size-cells = <0>;
-> +
-> +                                               dsi_in_lcdif: endpoint@0 {
-> +                                                       reg = <0>;
+mediatek,gce-events is read by mutex node.
 
-When I build this with W=1, I get a warning:
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+---
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Warning (graph_child_address):
-/soc@0/bus@32c00000/dsi@32e10000/ports/port@0: graph node has single
-child node 'endpoint@0', #address-cells/#size-cells are not necessary
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+index c5e822b6b77a3..cf22d71161e58 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+@@ -1250,6 +1250,8 @@ mutex: mutex@14016000 {
+ 			reg = <0 0x14016000 0 0x1000>;
+ 			interrupts = <GIC_SPI 217 IRQ_TYPE_LEVEL_LOW>;
+ 			power-domains = <&spm MT8183_POWER_DOMAIN_DISP>;
++			mediatek,gce-events = <CMDQ_EVENT_MUTEX_STREAM_DONE0>,
++					      <CMDQ_EVENT_MUTEX_STREAM_DONE1>;
+ 		};
+ 
+ 		larb0: larb@14017000 {
+-- 
+2.32.0.288.g62a8d224e6-goog
 
-Are there supposed to be two endpoints for port@0?
-
-> +                                                       remote-endpoint = <&lcdif_out_dsi>;
-> +                                               };
-> +                                       };
-> +
-> +                                       port@1 {
-> +                                               reg = <1>;
-> +                                       };
-> +                               };
-> +                       };
-> +
-> +                       dphy: dphy@32e100a4 {
-> +                               compatible = "fsl,imx8mm-sec-dsim-dphy";
-> +                               reg = <0x32e100a4 0xbc>;
-> +                               clocks = <&clk IMX8MM_CLK_DSI_PHY_REF>;
-> +                               clock-names = "phy_ref";
-> +                               #phy-cells = <0>;
-> +                               power-domains = <&dispmix_blk_ctl IMX8MM_BLK_CTL_PD_DISPMIX_MIPI_DPHY>;
-> +                               status = "disabled";
->                         };
->
->                         dispmix_blk_ctl: blk-ctl@32e28000 {
-> --
-> 2.25.1
->
