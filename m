@@ -2,161 +2,427 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E7D83B0E1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:06:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 984863B0E34
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 22:06:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232896AbhFVUID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 16:08:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38212 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232822AbhFVUH5 (ORCPT
+        id S233003AbhFVUI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 16:08:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48071 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232972AbhFVUIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 16:07:57 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71EC5C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:05:40 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id 142-20020a370d940000b02903b12767b75aso15695965qkn.6
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:05:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=4xDEyrn3HHz6L+fu48+GfShlH/vZQ/A+7NZnpXhmIWM=;
-        b=m1f5GmwfDb5ryD/M4M2TiJRLL83bnKsKSkt9wkSMqMvTygR8MIWg9fS26MWtuQd8/d
-         mmpOZLroAA2jPbnWL/yt+I7UEMfDDu9fpTS/CpRBuqq8Dp1dFgrRkZxsiD/FfPVR/nEN
-         Cy8feg76ML7ECaqpMBmqygFu6NPfl4SM6R35zGJyjEKqRMkRTJWmRAZMBomeUd6QgeXb
-         LizCXATz6zSJKAIEDwNRYGqiejqh+rw0akVXqyOFIuHMx9u5Saiw0Ditw+97+Sb2ggYo
-         fWsO3n2CLr41MeSXTFiWHvyIp+IJ15WYY2dOz8UrlwimWW8N1N/CpcnbEQS00N3r2Ed2
-         0Nlw==
+        Tue, 22 Jun 2021 16:08:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1624392355;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jwAdG99uI+0R2Sl2PxpIACEqQh/zMNrLCHRLz6t2HLQ=;
+        b=D/8y1QtBTxoltTmpnrVVmmajGp72nbZoTHvfVSaN1Pl/Hd2qHWHFUDtCZ8gsxGvcetxJF+
+        BcF95j1TLLqzeE1e/upP7QATjRz8c4DTlfl3pV2SFqQf9RSdJbmlF3m+qiYnBCoSLj2jpm
+        Xp1GqCvIIOK25Yi+BfRNotrI+G4XcbU=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-304-A3Q9k9jaP3-qYc9WLJgwiA-1; Tue, 22 Jun 2021 16:05:54 -0400
+X-MC-Unique: A3Q9k9jaP3-qYc9WLJgwiA-1
+Received: by mail-oo1-f71.google.com with SMTP id b1-20020a4ac2810000b029024bec618157so339903ooq.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:05:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=4xDEyrn3HHz6L+fu48+GfShlH/vZQ/A+7NZnpXhmIWM=;
-        b=RdMoo1YiURwsNG5fnUNtYxHSt3++pWeEhJzQVUBpgtHLT8H3gV1x6/3Yo3jgTRIeoE
-         pBkH9UI/0GWa6+BucZ7n20Fl9WdCwQrkLdcbj942HPmY+gHNB8GkYeJIvkK4hZcjGvgm
-         BFkT4NsUp2UqimBIA265dKY9GzJMHNyVDjjoWgHutDeh55lkaBm4KlzJg2bAK8cOAQVW
-         0vXKnvViGDTrG9SKoD33TUFRsKyEhhY6RCK51b3lU0NBTsVUe3gpDS9v2DSWAKp1eJG6
-         4fe0++crpI03mNG/ALaRdmDmEHX0m0QpJkf1nIeIiSchi3PJAYc/cNW5vf5hn6HnkxG7
-         H2ow==
-X-Gm-Message-State: AOAM532u/uJqUlaDMIGIk3/hL//pgzdJQA/Ri63MJFZ4dO8+j8PVmjN3
-        QqZ0D8x8787On+wa5CBc/LTcjM3CSUg=
-X-Google-Smtp-Source: ABdhPJyTRuHyH5vGbURHHXwScZzWSDK/hcRzUE+vE7jAVENjHb7S2mNzag8RNVFo45F7PU7LLaYgHHSilTI=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:7d90:4528:3c45:18fb])
- (user=seanjc job=sendgmr) by 2002:a25:33d7:: with SMTP id z206mr6983498ybz.33.1624392339468;
- Tue, 22 Jun 2021 13:05:39 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=jwAdG99uI+0R2Sl2PxpIACEqQh/zMNrLCHRLz6t2HLQ=;
+        b=iB33KxGBAyXQw9tNVH4cTc13CEg0QS1TqcCy7x1FyQYBxAcPc2PDT5PlG0Wj54gi8I
+         OGGm1GgEGlidFLNCGZpb8/stIBk7Vc6iWeqojcKZiKphbNF9qoi7/dz0cwjK8I471DCz
+         95CYnSJJgiUk4vPCx4cusHAQ2w9d3XERyNf/t2u/sA7iL4UMJT26DTHawPl5i0ymeQwJ
+         pHiOnkEnR9w4Iy/8zKamYNrqm9osOdjjV/0etpWksgbyTQkEJPvDVzRAelpfeCk5DpJb
+         1MR6OooO/ole4tJikKxy2OP19/Z3ivZqYcy4nLN6j6OBWLNx5pXD55By//N2moLMDMZn
+         55Fw==
+X-Gm-Message-State: AOAM530dze+UYLe5Vfhs8QdFUcS3xWGKi8qhX+g9xD518HSDqcdf9T1Z
+        JF4UnJuiCLMDyXirQQF87YxDnoQRpTxcKrwM7O4qYtfsKKynXGJr3pDVJhLTKRLEz3oOhPG2Vs4
+        0QyB25BKVvGIr+5/i7pYjiFPD
+X-Received: by 2002:aca:e142:: with SMTP id y63mr367199oig.57.1624392353508;
+        Tue, 22 Jun 2021 13:05:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwnQ2JJP4GypllgZWWCVZM0V7yjg0aCZUp5JJ49GH8IHMGC7iqV3NkZi9evo2vgvhZfc9onew==
+X-Received: by 2002:aca:e142:: with SMTP id y63mr367175oig.57.1624392353296;
+        Tue, 22 Jun 2021 13:05:53 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 5sm727184oot.29.2021.06.22.13.05.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 13:05:52 -0700 (PDT)
+From:   trix@redhat.com
+To:     hao.wu@intel.com, mdf@kernel.org, corbet@lwn.net,
+        michal.simek@xilinx.com, gregkh@linuxfoundation.org,
+        nava.manne@xilinx.com, dinguyen@kernel.org,
+        krzysztof.kozlowski@canonical.com, yilun.xu@intel.com,
+        davidgow@google.com, fpacheco@redhat.com,
+        russell.h.weight@intel.com, richard.gong@intel.com,
+        luca@lucaceresoli.net
+Cc:     linux-fpga@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH v5 3/4] fpga: altera: reorganize to subdir layout
 Date:   Tue, 22 Jun 2021 13:05:10 -0700
-Message-Id: <20210622200529.3650424-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-Subject: [PATCH 00/19] KVM: selftests: Add x86 mmu_role test and cleanups
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <20210622200511.3739914-5-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
+In-Reply-To: <20210622200511.3739914-1-trix@redhat.com>
+References: <20210622200511.3739914-1-trix@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The primary intent of this series is to allow x86-64 tests to create
-arbitrary hugepages and use the new functionality to abuse x86's CPUID
-APIs to test KVM MMU behavior.
+From: Tom Rix <trix@redhat.com>
 
-The majority of the prep work refactors the selftests APIs related to
-memory allocation.  The core memory allocation APIs within the selftests
-don't provide defaults for memslot or min virtual address, which has led
-to a ridiculous amount of magic and duplicate code.  Literally zero tests
-use non-standard values in a meaningful way, and if a test comes along
-that has a legitimate use case, it should use lower-level helpers.
+Follow drivers/net/ethernet/ which has control configs
+NET_VENDOR_BLA that map to drivers/net/ethernet/bla
+Since fpgas do not have many vendors, drop the 'VENDOR' and use
+FPGA_BLA.
 
-Patches 01 and 02 are fixes for bugs found during the refactoring.
+There are several new subdirs
+altera/
+dfl/
+lattice/
+xilinx/
 
-As for the mmu_role test itself, the idea is to change the vCPU model
-while the guest is running (via KVM_SET_CPUID2) to verify that KVM
-reconfigures its MMUs when the vCPU model is changed.  E.g. toggling
-guest support for 1gb hugepages and changing guest MAXPHYADDR.
+Each subdir has a Kconfig that has a new/reused
 
-Sadly, the test doesn't pass when KVM is using TDP paging (even with all
-my mmu_role fixes) because KVM doesn't fully support manipulating GBPAGES
-and MAXPHYADDR (and other CPUID-based properties that affect the MMU)
-while the guest is running.  And practically speaking, KVM will never
-fully support such behavior becuase (a) there is likely no sane use case,
-(b) fixing the issues is very costly (memory consumption), (c) GBPAGES
-and potentially other features _can't_ be handled correctly due to lack
-of hardware support, and (d) userspace can workaround all issues simply
-by deleting a memslot.
+if FPGA_BLA
+  ... existing configs ...
+endif FPGA_BLA
 
-All that said, I purposely made the test off-by-default instead of
-requiring TDP.  Partly because detecting whether TDP is enabled is a pain
-becuase it's per-vendor, but also because running the test with TDP
-enabled is still interesting to some extent, e.g. the test will fail, but
-it shouldn't crash KVM, trigger WARNs, etc...
+Which is sourced into the main fpga/Kconfig
 
-Sean Christopherson (19):
-  KVM: selftests: Remove errant asm/barrier.h include to fix arm64 build
-  KVM: selftests: Zero out the correct page in the Hyper-V features test
-  KVM: selftests: Unconditionally use memslot 0 when loading elf binary
-  KVM: selftests: Unconditionally use memslot 0 for x86's GDT/TSS setup
-  KVM: selftests: Use "standard" min virtual address for Hyper-V pages
-  KVM: selftests: Add helpers to allocate N pages of virtual memory
-  KVM: selftests: Lower the min virtual address for misc page
-    allocations
-  KVM: selftests: Use alloc_page helper for x86-64's GDT/ITD/TSS
-    allocations
-  KVM: selftests: Use alloc page helper for xAPIC IPI test
-  KVM: selftests: Use "standard" min virtual address for CPUID test
-    alloc
-  KVM: selftest: Unconditionally use memslot 0 for vaddr allocations
-  KVM: selftests: Unconditionally use memslot '0' for page table
-    allocations
-  KVM: selftests: Unconditionally allocate EPT tables in memslot 0
-  KVM: selftests: Add wrapper to allocate page table page
-  KVM: selftests: Rename x86's page table "address" to "pfn"
-  KVM: selfests: Add PTE helper for x86-64 in preparation for hugepages
-  KVM: selftests: Genericize upper level page table entry struct
-  KVM: selftests: Add hugepage support for x86-64
-  KVM: sefltests: Add x86-64 test to verify MMU reacts to CPUID updates
+Each subdir has a Makefile whose transversal is controlled in the
+fpga/Makefile by
 
- tools/testing/selftests/kvm/.gitignore        |   1 +
- tools/testing/selftests/kvm/Makefile          |   1 +
- tools/testing/selftests/kvm/dirty_log_test.c  |   5 +-
- .../selftests/kvm/hardware_disable_test.c     |   2 +-
- .../testing/selftests/kvm/include/kvm_util.h  |  18 +-
- .../selftests/kvm/include/x86_64/processor.h  |  11 +
- .../selftests/kvm/include/x86_64/vmx.h        |  10 +-
- .../selftests/kvm/kvm_page_table_test.c       |   2 +-
- .../selftests/kvm/lib/aarch64/processor.c     |  34 +--
- .../testing/selftests/kvm/lib/aarch64/ucall.c |   2 +-
- tools/testing/selftests/kvm/lib/elf.c         |   6 +-
- tools/testing/selftests/kvm/lib/kvm_util.c    |  62 ++++-
- .../selftests/kvm/lib/perf_test_util.c        |   2 +-
- .../selftests/kvm/lib/s390x/processor.c       |  17 +-
- .../selftests/kvm/lib/x86_64/processor.c      | 254 ++++++++----------
- tools/testing/selftests/kvm/lib/x86_64/svm.c  |   9 +-
- tools/testing/selftests/kvm/lib/x86_64/vmx.c  |  52 ++--
- .../testing/selftests/kvm/memslot_perf_test.c |   2 +-
- .../selftests/kvm/set_memory_region_test.c    |   2 +-
- tools/testing/selftests/kvm/steal_time.c      |   2 +-
- .../selftests/kvm/x86_64/get_cpuid_test.c     |   3 +-
- .../selftests/kvm/x86_64/hyperv_clock.c       |   2 +-
- .../selftests/kvm/x86_64/hyperv_features.c    |   8 +-
- .../selftests/kvm/x86_64/mmu_role_test.c      | 147 ++++++++++
- .../selftests/kvm/x86_64/set_boot_cpu_id.c    |   2 +-
- .../kvm/x86_64/vmx_apic_access_test.c         |   2 +-
- .../selftests/kvm/x86_64/vmx_dirty_log_test.c |   8 +-
- .../selftests/kvm/x86_64/xapic_ipi_test.c     |   4 +-
- .../selftests/kvm/x86_64/xen_shinfo_test.c    |   2 +-
- .../selftests/kvm/x86_64/xen_vmcall_test.c    |   2 +-
- 30 files changed, 414 insertions(+), 260 deletions(-)
- create mode 100644 tools/testing/selftests/kvm/x86_64/mmu_role_test.c
+obj-$(CONFIG_FPGA_BLA) += bla/
 
+This is the altera/ subdir part.
+
+Create a altera/ subdir
+Move altera-* and soc* ts73xx* files to it.
+Add a Kconfig and Makefile
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/fpga/Kconfig                          | 70 +--------------
+ drivers/fpga/Makefile                         | 11 +--
+ drivers/fpga/altera/Kconfig                   | 85 +++++++++++++++++++
+ drivers/fpga/altera/Makefile                  | 12 +++
+ drivers/fpga/{ => altera}/altera-cvp.c        |  0
+ drivers/fpga/{ => altera}/altera-fpga2sdram.c |  0
+ .../fpga/{ => altera}/altera-freeze-bridge.c  |  0
+ drivers/fpga/{ => altera}/altera-hps2fpga.c   |  0
+ .../{ => altera}/altera-pr-ip-core-plat.c     |  0
+ drivers/fpga/{ => altera}/altera-pr-ip-core.c |  0
+ drivers/fpga/{ => altera}/altera-ps-spi.c     |  0
+ drivers/fpga/{ => altera}/socfpga-a10.c       |  0
+ drivers/fpga/{ => altera}/socfpga.c           |  0
+ drivers/fpga/{ => altera}/stratix10-soc.c     |  0
+ drivers/fpga/{ => altera}/ts73xx-fpga.c       |  0
+ 15 files changed, 99 insertions(+), 79 deletions(-)
+ create mode 100644 drivers/fpga/altera/Kconfig
+ create mode 100644 drivers/fpga/altera/Makefile
+ rename drivers/fpga/{ => altera}/altera-cvp.c (100%)
+ rename drivers/fpga/{ => altera}/altera-fpga2sdram.c (100%)
+ rename drivers/fpga/{ => altera}/altera-freeze-bridge.c (100%)
+ rename drivers/fpga/{ => altera}/altera-hps2fpga.c (100%)
+ rename drivers/fpga/{ => altera}/altera-pr-ip-core-plat.c (100%)
+ rename drivers/fpga/{ => altera}/altera-pr-ip-core.c (100%)
+ rename drivers/fpga/{ => altera}/altera-ps-spi.c (100%)
+ rename drivers/fpga/{ => altera}/socfpga-a10.c (100%)
+ rename drivers/fpga/{ => altera}/socfpga.c (100%)
+ rename drivers/fpga/{ => altera}/stratix10-soc.c (100%)
+ rename drivers/fpga/{ => altera}/ts73xx-fpga.c (100%)
+
+diff --git a/drivers/fpga/Kconfig b/drivers/fpga/Kconfig
+index 28c261807b428..2c829b1105925 100644
+--- a/drivers/fpga/Kconfig
++++ b/drivers/fpga/Kconfig
+@@ -12,52 +12,6 @@ menuconfig FPGA
+ 
+ if FPGA
+ 
+-config FPGA_MGR_SOCFPGA
+-	tristate "Altera SOCFPGA FPGA Manager"
+-	depends on ARCH_INTEL_SOCFPGA || COMPILE_TEST
+-	help
+-	  FPGA manager driver support for Altera SOCFPGA.
+-
+-config FPGA_MGR_SOCFPGA_A10
+-	tristate "Altera SoCFPGA Arria10"
+-	depends on ARCH_INTEL_SOCFPGA || COMPILE_TEST
+-	select REGMAP_MMIO
+-	help
+-	  FPGA manager driver support for Altera Arria10 SoCFPGA.
+-
+-config ALTERA_PR_IP_CORE
+-	tristate "Altera Partial Reconfiguration IP Core"
+-	help
+-	  Core driver support for Altera Partial Reconfiguration IP component
+-
+-config ALTERA_PR_IP_CORE_PLAT
+-	tristate "Platform support of Altera Partial Reconfiguration IP Core"
+-	depends on ALTERA_PR_IP_CORE && OF && HAS_IOMEM
+-	help
+-	  Platform driver support for Altera Partial Reconfiguration IP
+-	  component
+-
+-config FPGA_MGR_ALTERA_PS_SPI
+-	tristate "Altera FPGA Passive Serial over SPI"
+-	depends on SPI
+-	select BITREVERSE
+-	help
+-	  FPGA manager driver support for Altera Arria/Cyclone/Stratix
+-	  using the passive serial interface over SPI.
+-
+-config FPGA_MGR_ALTERA_CVP
+-	tristate "Altera CvP FPGA Manager"
+-	depends on PCI
+-	help
+-	  FPGA manager driver support for Arria-V, Cyclone-V, Stratix-V,
+-	  Arria 10 and Stratix10 Altera FPGAs using the CvP interface over PCIe.
+-
+-config FPGA_MGR_STRATIX10_SOC
+-	tristate "Intel Stratix10 SoC FPGA Manager"
+-	depends on (ARCH_INTEL_SOCFPGA && INTEL_STRATIX10_SERVICE)
+-	help
+-	  FPGA manager driver support for the Intel Stratix10 SoC.
+-
+ config FPGA_MGR_ICE40_SPI
+ 	tristate "Lattice iCE40 SPI"
+ 	depends on OF && SPI
+@@ -71,35 +25,12 @@ config FPGA_MGR_MACHXO2_SPI
+ 	  FPGA manager driver support for Lattice MachXO2 configuration
+ 	  over slave SPI interface.
+ 
+-config FPGA_MGR_TS73XX
+-	tristate "Technologic Systems TS-73xx SBC FPGA Manager"
+-	depends on ARCH_EP93XX && MACH_TS72XX
+-	help
+-	  FPGA manager driver support for the Altera Cyclone II FPGA
+-	  present on the TS-73xx SBC boards.
+-
+ config FPGA_BRIDGE
+ 	tristate "FPGA Bridge Framework"
+ 	help
+ 	  Say Y here if you want to support bridges connected between host
+ 	  processors and FPGAs or between FPGAs.
+ 
+-config SOCFPGA_FPGA_BRIDGE
+-	tristate "Altera SoCFPGA FPGA Bridges"
+-	depends on ARCH_INTEL_SOCFPGA && FPGA_BRIDGE
+-	help
+-	  Say Y to enable drivers for FPGA bridges for Altera SOCFPGA
+-	  devices.
+-
+-config ALTERA_FREEZE_BRIDGE
+-	tristate "Altera FPGA Freeze Bridge"
+-	depends on FPGA_BRIDGE && HAS_IOMEM
+-	help
+-	  Say Y to enable drivers for Altera FPGA Freeze bridges.  A
+-	  freeze bridge is a bridge that exists in the FPGA fabric to
+-	  isolate one region of the FPGA from the busses while that
+-	  region is being reprogrammed.
+-
+ config FPGA_REGION
+ 	tristate "FPGA Region"
+ 	depends on FPGA_BRIDGE
+@@ -115,6 +46,7 @@ config OF_FPGA_REGION
+ 	  Support for loading FPGA images by applying a Device Tree
+ 	  overlay.
+ 
++source "drivers/fpga/altera/Kconfig"
+ source "drivers/fpga/dfl/Kconfig"
+ source "drivers/fpga/xilinx/Kconfig"
+ 
+diff --git a/drivers/fpga/Makefile b/drivers/fpga/Makefile
+index 0868c7c4264d8..db83aeb997f24 100644
+--- a/drivers/fpga/Makefile
++++ b/drivers/fpga/Makefile
+@@ -7,25 +7,16 @@
+ obj-$(CONFIG_FPGA)			+= fpga-mgr.o
+ 
+ # FPGA Manager Drivers
+-obj-$(CONFIG_FPGA_MGR_ALTERA_CVP)	+= altera-cvp.o
+-obj-$(CONFIG_FPGA_MGR_ALTERA_PS_SPI)	+= altera-ps-spi.o
+ obj-$(CONFIG_FPGA_MGR_ICE40_SPI)	+= ice40-spi.o
+ obj-$(CONFIG_FPGA_MGR_MACHXO2_SPI)	+= machxo2-spi.o
+-obj-$(CONFIG_FPGA_MGR_SOCFPGA)		+= socfpga.o
+-obj-$(CONFIG_FPGA_MGR_SOCFPGA_A10)	+= socfpga-a10.o
+-obj-$(CONFIG_FPGA_MGR_STRATIX10_SOC)	+= stratix10-soc.o
+-obj-$(CONFIG_FPGA_MGR_TS73XX)		+= ts73xx-fpga.o
+-obj-$(CONFIG_ALTERA_PR_IP_CORE)         += altera-pr-ip-core.o
+-obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT)    += altera-pr-ip-core-plat.o
+ 
+ # FPGA Bridge Drivers
+ obj-$(CONFIG_FPGA_BRIDGE)		+= fpga-bridge.o
+-obj-$(CONFIG_SOCFPGA_FPGA_BRIDGE)	+= altera-hps2fpga.o altera-fpga2sdram.o
+-obj-$(CONFIG_ALTERA_FREEZE_BRIDGE)	+= altera-freeze-bridge.o
+ 
+ # High Level Interfaces
+ obj-$(CONFIG_FPGA_REGION)		+= fpga-region.o
+ obj-$(CONFIG_OF_FPGA_REGION)		+= of-fpga-region.o
+ 
++obj-$(CONFIG_FPGA_ALTERA) += altera/
+ obj-$(CONFIG_FPGA_DFL) += dfl/
+ obj-$(CONFIG_FPGA_XILINX) += xilinx/
+diff --git a/drivers/fpga/altera/Kconfig b/drivers/fpga/altera/Kconfig
+new file mode 100644
+index 0000000000000..7075c6dc48e44
+--- /dev/null
++++ b/drivers/fpga/altera/Kconfig
+@@ -0,0 +1,85 @@
++# SPDX-License-Identifier: GPL-2.0-only
++
++config FPGA_ALTERA
++	bool "Altera FPGAs"
++	default y
++	help
++	  If you have an Altera FPGA, say Y.
++
++	  Note that the answer to this question doesn't directly affect the
++	  kernel: saying N will just cause the configurator to skip all
++	  the questions about Altera FPGAs. If you say Y, you will be asked
++	  for your specific device in the following questions.
++
++if FPGA_ALTERA
++
++config FPGA_MGR_SOCFPGA
++	tristate "Altera SOCFPGA FPGA Manager"
++	depends on ARCH_INTEL_SOCFPGA || COMPILE_TEST
++	help
++	  FPGA manager driver support for Altera SOCFPGA.
++
++config FPGA_MGR_SOCFPGA_A10
++	tristate "Altera SoCFPGA Arria10"
++	depends on ARCH_INTEL_SOCFPGA || COMPILE_TEST
++	select REGMAP_MMIO
++	help
++	  FPGA manager driver support for Altera Arria10 SoCFPGA.
++
++config ALTERA_PR_IP_CORE
++	tristate "Altera Partial Reconfiguration IP Core"
++	help
++	  Core driver support for Altera Partial Reconfiguration IP component
++
++config ALTERA_PR_IP_CORE_PLAT
++	tristate "Platform support of Altera Partial Reconfiguration IP Core"
++	depends on ALTERA_PR_IP_CORE && OF && HAS_IOMEM
++	help
++	  Platform driver support for Altera Partial Reconfiguration IP
++	  component
++
++config FPGA_MGR_ALTERA_PS_SPI
++	tristate "Altera FPGA Passive Serial over SPI"
++	depends on SPI
++	select BITREVERSE
++	help
++	  FPGA manager driver support for Altera Arria/Cyclone/Stratix
++	  using the passive serial interface over SPI.
++
++config FPGA_MGR_ALTERA_CVP
++	tristate "Altera CvP FPGA Manager"
++	depends on PCI
++	help
++	  FPGA manager driver support for Arria-V, Cyclone-V, Stratix-V,
++	  Arria 10 and Stratix10 Altera FPGAs using the CvP interface over PCIe.
++
++config FPGA_MGR_STRATIX10_SOC
++	tristate "Intel Stratix10 SoC FPGA Manager"
++	depends on (ARCH_INTEL_SOCFPGA && INTEL_STRATIX10_SERVICE)
++	help
++	  FPGA manager driver support for the Intel Stratix10 SoC.
++
++config FPGA_MGR_TS73XX
++	tristate "Technologic Systems TS-73xx SBC FPGA Manager"
++	depends on ARCH_EP93XX && MACH_TS72XX
++	help
++	  FPGA manager driver support for the Altera Cyclone II FPGA
++	  present on the TS-73xx SBC boards.
++
++config ALTERA_FREEZE_BRIDGE
++	tristate "Altera FPGA Freeze Bridge"
++	depends on FPGA_BRIDGE && HAS_IOMEM
++	help
++	  Say Y to enable drivers for Altera FPGA Freeze bridges.  A
++	  freeze bridge is a bridge that exists in the FPGA fabric to
++	  isolate one region of the FPGA from the busses while that
++	  region is being reprogrammed.
++
++config SOCFPGA_FPGA_BRIDGE
++	tristate "Altera SoCFPGA FPGA Bridges"
++	depends on ARCH_INTEL_SOCFPGA && FPGA_BRIDGE
++	help
++	  Say Y to enable drivers for FPGA bridges for Altera SOCFPGA
++	  devices.
++
++endif #FPGA_ALTERA
+diff --git a/drivers/fpga/altera/Makefile b/drivers/fpga/altera/Makefile
+new file mode 100644
+index 0000000000000..9c86057cff110
+--- /dev/null
++++ b/drivers/fpga/altera/Makefile
+@@ -0,0 +1,12 @@
++# SPDX-License-Identifier: GPL-2.0-only
++
++obj-$(CONFIG_ALTERA_FREEZE_BRIDGE) += altera-freeze-bridge.o
++obj-$(CONFIG_ALTERA_PR_IP_CORE) += altera-pr-ip-core.o
++obj-$(CONFIG_ALTERA_PR_IP_CORE_PLAT) += altera-pr-ip-core-plat.o
++obj-$(CONFIG_FPGA_MGR_ALTERA_CVP) += altera-cvp.o
++obj-$(CONFIG_FPGA_MGR_ALTERA_PS_SPI) += altera-ps-spi.o
++obj-$(CONFIG_FPGA_MGR_SOCFPGA) += socfpga.o
++obj-$(CONFIG_FPGA_MGR_SOCFPGA_A10) += socfpga-a10.o
++obj-$(CONFIG_FPGA_MGR_STRATIX10_SOC) += stratix10-soc.o
++obj-$(CONFIG_FPGA_MGR_TS73XX) += ts73xx-fpga.o
++obj-$(CONFIG_SOCFPGA_FPGA_BRIDGE) += altera-hps2fpga.o altera-fpga2sdram.o
+diff --git a/drivers/fpga/altera-cvp.c b/drivers/fpga/altera/altera-cvp.c
+similarity index 100%
+rename from drivers/fpga/altera-cvp.c
+rename to drivers/fpga/altera/altera-cvp.c
+diff --git a/drivers/fpga/altera-fpga2sdram.c b/drivers/fpga/altera/altera-fpga2sdram.c
+similarity index 100%
+rename from drivers/fpga/altera-fpga2sdram.c
+rename to drivers/fpga/altera/altera-fpga2sdram.c
+diff --git a/drivers/fpga/altera-freeze-bridge.c b/drivers/fpga/altera/altera-freeze-bridge.c
+similarity index 100%
+rename from drivers/fpga/altera-freeze-bridge.c
+rename to drivers/fpga/altera/altera-freeze-bridge.c
+diff --git a/drivers/fpga/altera-hps2fpga.c b/drivers/fpga/altera/altera-hps2fpga.c
+similarity index 100%
+rename from drivers/fpga/altera-hps2fpga.c
+rename to drivers/fpga/altera/altera-hps2fpga.c
+diff --git a/drivers/fpga/altera-pr-ip-core-plat.c b/drivers/fpga/altera/altera-pr-ip-core-plat.c
+similarity index 100%
+rename from drivers/fpga/altera-pr-ip-core-plat.c
+rename to drivers/fpga/altera/altera-pr-ip-core-plat.c
+diff --git a/drivers/fpga/altera-pr-ip-core.c b/drivers/fpga/altera/altera-pr-ip-core.c
+similarity index 100%
+rename from drivers/fpga/altera-pr-ip-core.c
+rename to drivers/fpga/altera/altera-pr-ip-core.c
+diff --git a/drivers/fpga/altera-ps-spi.c b/drivers/fpga/altera/altera-ps-spi.c
+similarity index 100%
+rename from drivers/fpga/altera-ps-spi.c
+rename to drivers/fpga/altera/altera-ps-spi.c
+diff --git a/drivers/fpga/socfpga-a10.c b/drivers/fpga/altera/socfpga-a10.c
+similarity index 100%
+rename from drivers/fpga/socfpga-a10.c
+rename to drivers/fpga/altera/socfpga-a10.c
+diff --git a/drivers/fpga/socfpga.c b/drivers/fpga/altera/socfpga.c
+similarity index 100%
+rename from drivers/fpga/socfpga.c
+rename to drivers/fpga/altera/socfpga.c
+diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/altera/stratix10-soc.c
+similarity index 100%
+rename from drivers/fpga/stratix10-soc.c
+rename to drivers/fpga/altera/stratix10-soc.c
+diff --git a/drivers/fpga/ts73xx-fpga.c b/drivers/fpga/altera/ts73xx-fpga.c
+similarity index 100%
+rename from drivers/fpga/ts73xx-fpga.c
+rename to drivers/fpga/altera/ts73xx-fpga.c
 -- 
-2.32.0.288.g62a8d224e6-goog
+2.26.3
 
