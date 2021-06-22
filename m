@@ -2,88 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06693B0C6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D60923B0C96
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232937AbhFVSIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:08:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58958 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232986AbhFVSHj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:07:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 077666102A;
-        Tue, 22 Jun 2021 18:05:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624385123;
-        bh=xOr3aNQ3y835jCNRsNEiusqupvJHo+M8yZ7YyWDeqTM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E3pe/RwwsR7ftBaU/Mz28Rub+psTYf5StzRVhQvDEA+Vq8JVPnWsj7s8CvHrksTfu
-         PLYh1GjY1y9yvNtoEw9MfJ033KzIfVh4v8j7js/VtcEJRaqwzs+1L5t9CXqznjvvxr
-         GNJ3V/ZiWh8DbGcIFuuFOKpP3Q8LLszHhKDCme4vMGfsBN3yFisorBbddcnkPk1JQP
-         5A/Tn5sne8AixOfhlRpQsEpzg+BczkOG7mCWoi1zodFjIv52dGP106KButUPBB/edo
-         AA+wY0UR8nOGsAY4L7vEy1xsdu2l2bL1T96gZAv7XEZImT1L4y4+joKh8LK/D9YNJr
-         rZ9Z35tFgcZpQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 332C840F21; Tue, 22 Jun 2021 15:05:21 -0300 (-03)
-Date:   Tue, 22 Jun 2021 15:05:21 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] perf test: Add verbose skip output for bpf
- counters
-Message-ID: <YNImYYYbIuc5V98C@kernel.org>
-References: <20210621215648.2991319-1-irogers@google.com>
- <20210621215648.2991319-2-irogers@google.com>
+        id S232535AbhFVSL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:11:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232415AbhFVSLg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 14:11:36 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE7AC0613A3
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:08:16 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id u11so20456975ljh.2
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:08:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xqKyH/P85UNiqEHVhnOTWzjeuNjUUBapCv+LJwl/SMM=;
+        b=Pc4u8ARWhKyeoTp1QuUkXBYBsNhLhb50XcDTJAb7BeD9eYAsVHsqvKwGuLk7Y7WXFh
+         sGUzQo5XOG6b7IDfEgtSX4i/xqSSe/y0aDwXDka1ZbLzPxspVFyZB3D6fQnjL8/sEFzR
+         UsXtmOmXBwWLZpOf2Kui9wetdxlAxOLjK9fnM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xqKyH/P85UNiqEHVhnOTWzjeuNjUUBapCv+LJwl/SMM=;
+        b=PO4JhgrBW0bUVIibjBtLz46o+n8ePa4+E8wXDcMa0w/SLpRKD0w1ClbzRXZLVTx7dH
+         UneOT+O9/pbTVEWI1965qNo04JcAFo5lJmD8yZtafgW+KeEhYNCw5ByYpCL3LqDNqfw1
+         sF+hmjxyjfNA8v/RwFakAliwLLhzxXcgjkfRTzbjtTB8JF/dxVQoMvoDz7dyl7F0iKMM
+         YrlnZjEF0+zN+CDct61xqy8b8pJpMTdbf21FJ6iZTIx0cpj7RFYdmGfRFMpqXz7YwDLi
+         UJXE3Lrs5SAW3dhE66UWGiabJ7fDsbc1INOW2KH/7WvkP8M586fVNrHtGNlB0uXyeHn3
+         ZJ1w==
+X-Gm-Message-State: AOAM5338SS5W4svEAf4ckKRrXIGkD58OzGSRdfo7Iw740wXF+/yt6di4
+        L4pKOAnDTUs6d3dro0KmkHVNT9HQUFIYXj26dms=
+X-Google-Smtp-Source: ABdhPJxPMDRIdmYFMFo7c2dsNAaqBj3XIFT2dm6scinVA2b710PC5+ckrRfpk9hTkv+/exA30bYgsA==
+X-Received: by 2002:a05:651c:169b:: with SMTP id bd27mr4248688ljb.219.1624385294539;
+        Tue, 22 Jun 2021 11:08:14 -0700 (PDT)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id bn23sm9430ljb.48.2021.06.22.11.08.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Jun 2021 11:08:13 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id k10so4323818lfv.13
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:08:12 -0700 (PDT)
+X-Received: by 2002:a19:7d04:: with SMTP id y4mr3746251lfc.201.1624385292112;
+ Tue, 22 Jun 2021 11:08:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210621215648.2991319-2-irogers@google.com>
-X-Url:  http://acmel.wordpress.com
+References: <CAHk-=wh=YxjEtTpYyhgypKmPJQ8eVLJ4qowmwbnG1bOU06_4Bg@mail.gmail.com>
+ <3221175.1624375240@warthog.procyon.org.uk> <YNIBb5WPrk8nnKKn@zeniv-ca.linux.org.uk>
+ <YNIDdgn0m8d2a0P3@zeniv-ca.linux.org.uk> <YNIdJaKrNj5GoT7w@casper.infradead.org>
+ <3231150.1624384533@warthog.procyon.org.uk> <YNImEkqizzuStW72@casper.infradead.org>
+In-Reply-To: <YNImEkqizzuStW72@casper.infradead.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 22 Jun 2021 11:07:56 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wicC9ZTNNH1E-oHebcT3+r4Q4Wf1tXBindXrCdotj20Gg@mail.gmail.com>
+Message-ID: <CAHk-=wicC9ZTNNH1E-oHebcT3+r4Q4Wf1tXBindXrCdotj20Gg@mail.gmail.com>
+Subject: Re: Do we need to unrevert "fs: do not prefault sys_write() user
+ buffer pages"?
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, "Ted Ts'o" <tytso@mit.edu>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, Jun 21, 2021 at 02:56:47PM -0700, Ian Rogers escreveu:
-> Provide additional context for when the stat bpf counters test skips.
+On Tue, Jun 22, 2021 at 11:05 AM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> Huh?  Last I checked, the fault_in_readable actually read a byte from
+> the page.  It has to wait for the read to complete before that can
+> happen.
 
-Ditto
- 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/tests/shell/stat_bpf_counters.sh | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/tools/perf/tests/shell/stat_bpf_counters.sh b/tools/perf/tests/shell/stat_bpf_counters.sh
-> index 22eb31e48ca7..85eb689fe202 100755
-> --- a/tools/perf/tests/shell/stat_bpf_counters.sh
-> +++ b/tools/perf/tests/shell/stat_bpf_counters.sh
-> @@ -22,7 +22,13 @@ compare_number()
->  }
->  
->  # skip if --bpf-counters is not supported
-> -perf stat --bpf-counters true > /dev/null 2>&1 || exit 2
-> +if ! perf stat --bpf-counters true > /dev/null 2>&1; then
-> +	if [ "$1" == "-v" ]; then
-> +		echo "Skipping: --bpf-counters not supported"
-> +		perf --no-pager stat --bpf-counters true || true
-> +	fi
-> +	exit 2
-> +fi
->  
->  base_cycles=$(perf stat --no-big-num -e cycles -- perf bench sched messaging -g 1 -l 100 -t 2>&1 | awk '/cycles/ {print $1}')
->  bpf_cycles=$(perf stat --no-big-num --bpf-counters -e cycles -- perf bench sched messaging -g 1 -l 100 -t 2>&1 | awk '/cycles/ {print $1}')
-> -- 
-> 2.32.0.288.g62a8d224e6-goog
-> 
+Yeah, we don't have any kind of async fault-in model.
 
--- 
+I'm not sure how that would even look. I don't think it would
+necessarily be *impossible* (special marker in the exception table to
+let the fault code know that this is a "prepare" fault), but it would
+be pretty challenging.
 
-- Arnaldo
+            Linus
