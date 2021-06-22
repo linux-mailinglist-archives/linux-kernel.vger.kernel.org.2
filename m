@@ -2,117 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F433B1067
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 01:14:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DF33B106E
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 01:15:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhFVXQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 19:16:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52400 "EHLO
+        id S229915AbhFVXRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 19:17:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhFVXQi (ORCPT
+        with ESMTP id S229501AbhFVXRp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 19:16:38 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B203DC061574;
-        Tue, 22 Jun 2021 16:14:20 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id i13so943030lfc.7;
-        Tue, 22 Jun 2021 16:14:20 -0700 (PDT)
+        Tue, 22 Jun 2021 19:17:45 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1CA9C061574;
+        Tue, 22 Jun 2021 16:15:27 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id h24-20020a9d64180000b029036edcf8f9a6so141673otl.3;
+        Tue, 22 Jun 2021 16:15:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=gmTKbbw2VfNilxgf1MZbHcRGG9kAzGHmXVIKe38TtIg=;
-        b=dKy9U8PrSUScVJMENfpNd/50GsD7Jy+ap/wI/QIrOrFzxhsOHTrEZ024MS3zM7gNcI
-         Ym3nW6eAfoYkoEeen9ElGsv/SD5qVg6J1IXcFVT1bP3NTF8pP7X6Avz9Ir4BMFRsV3VD
-         mf8Lt+2TYKJ8iuTXSuUhQkwdoFTrROqtiQVouSx2C/HgPyZM/t4UuXBzZWQ+La9UGDOZ
-         7d9zfJmjzdFlammOsdBFE77gMO3GF1tsb1e2qqfXMEM3pZlJAXDk/xd3wnWEuepF318I
-         4Y2rb1/FRSmRvEyQPXHKmalSE7Hv4hJUVP4ks5Fh290eE+BPO0aBVd4tEF/RLr8SRN0p
-         OLQw==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=34Auh1i6SvV+PBtkaz/fxO2ERpD1y8V1fbGL4UoV/dw=;
+        b=iJMJxXaQl7gppQkFvDhkR4EEKSYBvulgsxvAfAkeb4ANcMmuK8dUSpf1zld7LHO9df
+         LGEKvJA21HiPAUhBTOYfwedrqppcmg3QrkWdpzrqN5Hw21Rvk6VAutHVmkXnmKQ8GSiB
+         D3lT8HgDTreYJaKda3sW19nRPDdPN/JPxu+XzWLzY+2mGPCc1ASKDFuV3xtyYFhh9WFP
+         3TEZfCNpFgmiKTvlhEIj6Tm2NvaUSkLk6Ae/FZ59p2S1f762cFm7NU8XMw7CcVva1Ujs
+         +SKRmt5AZh0A+uEThBM03IcxT2L1raTRkSsiUwv5Lm3hbIeR7nS3SJQe2gfXYjPG4Q2C
+         fVpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=gmTKbbw2VfNilxgf1MZbHcRGG9kAzGHmXVIKe38TtIg=;
-        b=b/v5TkmKxSZuOJgRDajcHPi7PT6Qgh1HO6LrZcKg8YB1VX/nG39tsMvnfb9iygNIJg
-         7QrmAMhcx+d+bBSvpURaCBMNiCF7k5dczRBxxasdJHu/qjGC9H4dZ4bMNU/8GNU5nOJY
-         fezmzQoMSisym2cwX/DjgHOeGaJwSTmtsCTQstLXmfUaSsyKozIxtAnwf4gYYcMCLDVe
-         eOhRvj1fAEX7jfNqtFbOOvplCVIMVL3Y14ktn02AfQIqGjVpcUqNc3j5L3rqZHskFuoQ
-         0J64r+OhUP/5w4GH2WDu6Jl15/R3uvn+mhIyDHpmxzvbL9k/HTxcDfYKqdQL2PMKp738
-         KAiA==
-X-Gm-Message-State: AOAM533VLpBBfttBjxxjMCmfip0xIW+qJv3SR+r5JrljAfdQHADXYQxl
-        s3lT30F82A6nQ+o5KRmpsgHnUU03WPwvPH8wFh19Z570yVM=
-X-Google-Smtp-Source: ABdhPJwdNjn7A1NoAKSn4/inPzJewwzU2FlqhjsV6dzRUm603MKGQcMLYg8fWNJOxPOOfGbnCCKPn7wItxtijoOyG3w=
-X-Received: by 2002:a19:c190:: with SMTP id r138mr4688267lff.175.1624403658698;
- Tue, 22 Jun 2021 16:14:18 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=34Auh1i6SvV+PBtkaz/fxO2ERpD1y8V1fbGL4UoV/dw=;
+        b=KjKHbgeXMIeEMCdAx+IiqWJ6f/lmuI/6hU+c0uAoE0BHPxOlqJWFbZH6sEhj5l1K3n
+         gT7ANnKrOQIc7nhUKAnJMHgoj2vF56ExNJTPjA9UzK9Iyb/iOYPhngYe65kwYr6vU28j
+         8AB6SDQkbjuMpIHLAzC4xS9caMh9btRFDJ6BVt0uL2iHyYRS6x8dwaf7rmMRTb3NB3t3
+         KaOld1aB7CqkPfdWidmt6xWASKTAzDFO5ygq9Lc62Kupm+AXY8MaZvHipCOR9JKst7EI
+         b/50eeQ/6bhhOMSJ/LhnHV/kFuqn62NjDTpdgerH2bQ1Jh/Rgl6C1tM8pHFt6PITYj6I
+         TK2A==
+X-Gm-Message-State: AOAM532npHluXS10T9ELTz+F5stR0S0u7U/24t0gNiHZezBBPzt2cWP+
+        qwzPfxlbiD1ZQHK/edp6CCs=
+X-Google-Smtp-Source: ABdhPJwzeEqXe7k2vbDXHeOHLeWXEg7LqqDVSWKDOHOuntGn1dNeQvi44DTLZVhVL1ntFUdHb4XPSQ==
+X-Received: by 2002:a9d:264a:: with SMTP id a68mr5216174otb.50.1624403727283;
+        Tue, 22 Jun 2021 16:15:27 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i15sm196444ots.39.2021.06.22.16.15.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 16:15:26 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 22 Jun 2021 16:15:25 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] hwmon: (lm90) Prevent integer underflows of
+ temperature calculations
+Message-ID: <20210622231525.GA1299338@roeck-us.net>
+References: <20210621213153.28247-1-digetx@gmail.com>
+ <20210621213153.28247-2-digetx@gmail.com>
 MIME-Version: 1.0
-References: <CAH2r5mvCOafQpko19fmSTtEdgG7mp2R1+xto=_fkm7A=fqWq5Q@mail.gmail.com>
-In-Reply-To: <CAH2r5mvCOafQpko19fmSTtEdgG7mp2R1+xto=_fkm7A=fqWq5Q@mail.gmail.com>
-From:   Steve French <smfrench@gmail.com>
-Date:   Tue, 22 Jun 2021 18:14:07 -0500
-Message-ID: <CAH2r5muNZdzYOWZrRvo_OKVsmsPnNZckriKDqQTAQ06Wm5PObA@mail.gmail.com>
-Subject: Re: coverity problems with certain macros
-To:     CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621213153.28247-2-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also interesting that it appears to show up only in the "linux"
-coverity report not the "linux-next" coverity report which have
-similar code there.
+On Tue, Jun 22, 2021 at 12:31:52AM +0300, Dmitry Osipenko wrote:
+> The min/max/crit and all other temperature values that are passed to
+> the driver are unlimited and value that is close to INT_MIN results in
+> integer underflow of the temperature calculations made by the driver
+> for LM99 sensor. Temperature hysteresis is among those values that need
+> to be limited, but limiting of hysteresis is independent from the sensor
+> version. Add the missing limits.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  drivers/hwmon/lm90.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/drivers/hwmon/lm90.c b/drivers/hwmon/lm90.c
+> index b53f17511b05..ee6b8190f08e 100644
+> --- a/drivers/hwmon/lm90.c
+> +++ b/drivers/hwmon/lm90.c
+> @@ -1028,6 +1028,9 @@ static int lm90_set_temp11(struct lm90_data *data, int index, long val)
+>  	struct reg *regp = &reg[index];
+>  	int err;
+>  
+> +	/* prevent integer underflow */
+> +	val = max(val, -128000l);
+> +
 
-On Tue, Jun 22, 2021 at 6:11 PM Steve French <smfrench@gmail.com> wrote:
->
-> Looks like coverity's scan of the Linux kernel has problems with
-> analyzing locks across some debug print macros (which ironically don't
-> use any locks related to this component)
->
-> e.g. Coverity Linux issues: 1484748, 1484736, 1475751, 1475743 and 1475726
->
-> as an example it flags the section of code below, and others with
-> calls to "cifs_dbf(VFS, ...) " in them (and note that the debug macros
-> don't take a lock) starting with the cifs_dbg(VFS, ...) call.  It
-> says:
->
-> "May result in deadlock if there is another attempt to acquire the lock.
-> In find_cifs_entry: Missing a release of a lock on a path"
->
-> Oddly it doesn't flag "cifs_dbg(FYI, ...") calls, and even more
-> strangely the calls they flag are simply wrappers around calls to
-> "pr_err__ ## ratefunc ..."
->
-> See below snippet from fs/cifs/readdir.c e.g.
->
->                         cifs_dbg(VFS, "reached end of buf searching
-> for pos in buf %d index to find %lld rc %d\n",
->                                  pos_in_buf, index_to_find, rc);
->                 }
->                 rc = 0;
->                 *current_entry = cur_ent;
->         } else {
->                 cifs_dbg(FYI, "index not in buffer - could not
-> findnext into it\n");
->                 return 0;
->         }
->
->         if (pos_in_buf >= cfile->srch_inf.entries_in_buffer) {
->                 cifs_dbg(FYI, "can not return entries pos_in_buf
-> beyond last\n");
->                 *num_to_ret = 0;
->         } else
->                 *num_to_ret = cfile->srch_inf.entries_in_buffer - pos_in_buf;
->
->         return rc;
-> }
->
-> --
-> Thanks,
->
-> Steve
+This and the adjustment below can be moved into the if() statement for lm99.
+There is no need to affect other chips.
 
+>  	/* +16 degrees offset for temp2 for the LM99 */
+>  	if (data->kind == lm99 && index <= 2)
+>  		val -= 16000;
+> @@ -1088,6 +1091,9 @@ static int lm90_set_temp8(struct lm90_data *data, int index, long val)
+>  	struct i2c_client *client = data->client;
+>  	int err;
+>  
+> +	/* prevent integer underflow */
+> +	val = max(val, -128000l);
+> +
+>  	/* +16 degrees offset for temp2 for the LM99 */
+>  	if (data->kind == lm99 && index == 3)
+>  		val -= 16000;
+> @@ -1130,6 +1136,9 @@ static int lm90_set_temphyst(struct lm90_data *data, long val)
+>  	int temp;
+>  	int err;
+>  
+> +	/* prevent integer underflow */
+> +	val = max(val, -128000l);
+> +
+Please move this further below, just before val is used, to better
+show the context why it is needed.
 
-
--- 
 Thanks,
+Guenter
 
-Steve
+>  	if (data->kind == adt7461 || data->kind == tmp451)
+>  		temp = temp_from_u8_adt7461(data, data->temp8[LOCAL_CRIT]);
+>  	else if (data->kind == max6646)
+> -- 
+> 2.30.2
+> 
