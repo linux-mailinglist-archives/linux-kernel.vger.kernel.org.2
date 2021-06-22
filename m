@@ -2,124 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4CC73B0643
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B913B0647
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:55:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbhFVN53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 09:57:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhFVN51 (ORCPT
+        id S231487AbhFVN5d convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 22 Jun 2021 09:57:33 -0400
+Received: from out28-124.mail.aliyun.com ([115.124.28.124]:44444 "EHLO
+        out28-124.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231478AbhFVN5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 09:57:27 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF559C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 06:55:10 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id gt18so34638902ejc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 06:55:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mtJ7IslezInr0IjO/y83W5WcZUNJEOAxkSrY2hYdtzo=;
-        b=ouzNwjxRs/VrHBOHszXWY5PYOroSfuMEQLOgkPv2T2sBOAAqq1bbesJtm4/x4LeO51
-         s0iC/H3jnz7pxYyEU9K2qYA2WiEhPA3Ie2IcjdFaCHe8U+Pn8B43G+c4QuwcGNmOnWzq
-         79fytTdJ2RJp6CSJHX/AuhFHicasprVa7MVyTD6xUsasGN0aqGbfs5NX8gZ35EG40GnQ
-         y/M98oBs7KeKKgfJ/UhqYPs8vkzUWK2OSsHn9HayOtQjKvQjYKMFKiSURfqYXfLTmsHj
-         3W7LL56gEerLDVBr3/hzQVk6YwmqovsdPmu0pBNcnhjUFli5jk1XWnqJKVvNetqm4MvU
-         HLGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mtJ7IslezInr0IjO/y83W5WcZUNJEOAxkSrY2hYdtzo=;
-        b=oNKSDXh/mjj2IsQ77FbpAfQw8L9O4LOx2vEubzIXWXJdjnq39TM2cST0NcDlekchWP
-         vlEftSAMbDAAB6maoLB/V0X9eEoBTyObNzmeB0o6GMkXgTswUEq6GdqN2zqLG8Vgzed3
-         PYZfMZJThGXG1AMmNTANNKiGsTJ+DUz6/I5zPB6Pn+38esisKubzU/9ufiCv7jJAnzxe
-         cuUK/J4K8OQC5FC9oE8jnhoBL5FsA17c2Aja92g3gbygIWJT9//6QhXpytn6Vg9bmvmc
-         mSLus8tkLnP4Tm5NQbFBcTlFyMmhXp3/bOErl3AlnI6S8tJcLNZ7lTsifR/2U3/GxdtV
-         PT9w==
-X-Gm-Message-State: AOAM531wU0iFUGq5FRKlEOFqQMjq157Lv8GY+1nH+kK5wBB//FrYT6WX
-        wu8ZvyGY5/SYgljJwZkPlDPi8J6KrLkyoSZwfE8=
-X-Google-Smtp-Source: ABdhPJy9JElAxjoK8FcIuAfranbHc7RCHMPcqWtQgY9B1Es9IrHjC2++p6pEUqWueW0g9YbeuzEqNkP9tcB/MRGNCSM=
-X-Received: by 2002:a17:906:17c4:: with SMTP id u4mr4217576eje.481.1624370109577;
- Tue, 22 Jun 2021 06:55:09 -0700 (PDT)
+        Tue, 22 Jun 2021 09:57:31 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07444444|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.442543-0.00291923-0.554538;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047209;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=12;RT=12;SR=0;TI=SMTPD_---.KWIc2vz_1624370112;
+Received: from zhouyanjie-virtual-machine(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KWIc2vz_1624370112)
+          by smtp.aliyun-inc.com(10.147.40.2);
+          Tue, 22 Jun 2021 21:55:12 +0800
+Date:   Tue, 22 Jun 2021 21:55:10 +0800
+From:   =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     tsbogend@alpha.franken.de, robh+dt@kernel.org,
+        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
+        sernia.zhou@foxmail.com
+Subject: Re: [PATCH 4/4] MIPS: CI20: Reduce MSC0 frequency and add second
+ percpu timer for SMP.
+Message-ID: <20210622215510.1eb3fe1d@zhouyanjie-virtual-machine>
+In-Reply-To: <2HS3VQ.DXNKJZKKQIX81@crapouillou.net>
+References: <1624347445-88070-1-git-send-email-zhouyanjie@wanyeetech.com>
+        <1624347445-88070-5-git-send-email-zhouyanjie@wanyeetech.com>
+        <2HS3VQ.DXNKJZKKQIX81@crapouillou.net>
+X-Mailer: Claws Mail 3.14.1 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210620114756.31304-1-Kuan-Ying.Lee@mediatek.com> <20210620114756.31304-4-Kuan-Ying.Lee@mediatek.com>
-In-Reply-To: <20210620114756.31304-4-Kuan-Ying.Lee@mediatek.com>
-From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Tue, 22 Jun 2021 16:54:49 +0300
-Message-ID: <CA+fCnZcSy6LqqhbYfiC8hn16+T640uw_rnUzNPg1zsvg_RwYzw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] kasan: add memory corruption identification
- support for hardware tag-based mode
-To:     Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
-        chinwen.chang@mediatek.com, nicholas.tang@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 20, 2021 at 2:48 PM Kuan-Ying Lee
-<Kuan-Ying.Lee@mediatek.com> wrote:
->
-> Add memory corruption identification support for hardware tag-based
-> mode. We store one old free pointer tag and free backtrace.
+Hi Paul,
 
-Please explain why only one.
+于 Tue, 22 Jun 2021 13:39:02 +0100
+Paul Cercueil <paul@crapouillou.net> 写道:
 
-> Signed-off-by: Kuan-Ying Lee <Kuan-Ying.Lee@mediatek.com>
-> Suggested-by: Marco Elver <elver@google.com>
-> Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-> Cc: Alexander Potapenko <glider@google.com>
-> Cc: Andrey Konovalov <andreyknvl@gmail.com>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> ---
->  lib/Kconfig.kasan | 2 +-
->  mm/kasan/kasan.h  | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
-> index 6f5d48832139..2cc25792bc2f 100644
-> --- a/lib/Kconfig.kasan
-> +++ b/lib/Kconfig.kasan
-> @@ -157,7 +157,7 @@ config KASAN_STACK
->
->  config KASAN_TAGS_IDENTIFY
->         bool "Enable memory corruption identification"
-> -       depends on KASAN_SW_TAGS
-> +       depends on KASAN_SW_TAGS || KASAN_HW_TAGS
->         help
->           This option enables best-effort identification of bug type
->           (use-after-free or out-of-bounds) at the cost of increased
-> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> index b0fc9a1eb7e3..d6f982b8a84e 100644
-> --- a/mm/kasan/kasan.h
-> +++ b/mm/kasan/kasan.h
-> @@ -153,7 +153,7 @@ struct kasan_track {
->         depot_stack_handle_t stack;
->  };
->
-> -#ifdef CONFIG_KASAN_TAGS_IDENTIFY
-> +#if defined(CONFIG_KASAN_TAGS_IDENTIFY) && defined(CONFIG_KASAN_SW_TAGS)
->  #define KASAN_NR_FREE_STACKS 5
->  #else
->  #define KASAN_NR_FREE_STACKS 1
-> --
-> 2.18.0
->
+> Hi Zhou,
+> 
+> Le mar., juin 22 2021 at 15:37:25 +0800, 周琰杰 (Zhou Yanjie) 
+> <zhouyanjie@wanyeetech.com> a écrit :
+> > 1.On the hardware of CI20 v1, when the MSC0 clock is 50MHz, there is
+> >   a certain probability that the communication with the SD card will
+> >   be abnormal, and the file system will be damaged in severe cases.
+> >   Limiting the maximum MSC0 clock frequency to 25MHz can solve this
+> >   problem.  
+> 
+> That doesn't prevent anything, since you could very well use a recent 
+> kernel with an older device tree.
+> 
+> Besides, the PM does say that 50 MHz bus clock is supported, so I 
+> suspect that your problem is actually a driver issue.
+> 
+> The proper way to work around it, temporarily or not, would be to set 
+> the max frequency to 25 MHz in the driver itself, if the board's 
+> compatible strings matches ingenic,ci20.
+> 
 
-Other than that:
+Sure, then let's focus on tcu first, I will send the v2 version.
 
-Reviewed-by: Andrey Konovalov <andreyknvl@gmail.com>
+Thanks and best regards!
+
+> Cheers,
+> -Paul
+> 
+> > 2.Add a new TCU channel as the percpu timer of core1, this is to
+> >   prepare for the subsequent SMP support. The newly added channel
+> >   will not adversely affect the current single-core state.
+> > 3.Adjust the position of TCU node to make it consistent with the
+> >   order in jz4780.dtsi file.
+> > 
+> > Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> > ---
+> >  arch/mips/boot/dts/ingenic/ci20.dts | 23 ++++++++++++-----------
+> >  1 file changed, 12 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/arch/mips/boot/dts/ingenic/ci20.dts 
+> > b/arch/mips/boot/dts/ingenic/ci20.dts
+> > index 8877c62..58123e0 100644
+> > --- a/arch/mips/boot/dts/ingenic/ci20.dts
+> > +++ b/arch/mips/boot/dts/ingenic/ci20.dts
+> > @@ -118,11 +118,22 @@
+> >  	assigned-clock-rates = <48000000>;
+> >  };
+> > 
+> > +&tcu {
+> > +	/*
+> > +	 * 750 kHz for the system timers and 3 MHz for the
+> > clocksources,
+> > +	 * use channel #0 and #1 for the per cpu system timers,
+> > and use
+> > +	 * channel #2 for the clocksource.
+> > +	 */
+> > +	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu
+> > TCU_CLK_TIMER1>,
+> > +					  <&tcu TCU_CLK_TIMER2>,
+> > <&tcu TCU_CLK_OST>;
+> > +	assigned-clock-rates = <750000>, <750000>, <3000000>,
+> > <3000000>; +};
+> > +
+> >  &mmc0 {
+> >  	status = "okay";
+> > 
+> >  	bus-width = <4>;
+> > -	max-frequency = <50000000>;
+> > +	max-frequency = <25000000>;
+> > 
+> >  	pinctrl-names = "default";
+> >  	pinctrl-0 = <&pins_mmc0>;
+> > @@ -522,13 +533,3 @@
+> >  		bias-disable;
+> >  	};
+> >  };
+> > -
+> > -&tcu {
+> > -	/*
+> > -	 * 750 kHz for the system timer and 3 MHz for the
+> > clocksource,
+> > -	 * use channel #0 for the system timer, #1 for the
+> > clocksource.
+> > -	 */
+> > -	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu
+> > TCU_CLK_TIMER1>,
+> > -					  <&tcu TCU_CLK_OST>;
+> > -	assigned-clock-rates = <750000>, <3000000>, <3000000>;
+> > -};
+> > --
+> > 2.7.4
+> >   
+> 
+
