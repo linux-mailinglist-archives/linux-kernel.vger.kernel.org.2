@@ -2,188 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E5C63B0D03
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:37:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C95853B0D07
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232589AbhFVSjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232376AbhFVSjT (ORCPT
+        id S232601AbhFVSjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:39:31 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:35028 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232376AbhFVSj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:39:19 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87C9BC061756
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:37:02 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id g4so40866188qkl.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:37:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5hHHpcbuGzfoV+GfFLB8z1cKhHoFMqWAiFyD3G6YAko=;
-        b=SqgfTNdOPOEae4ycnm65VuiFolDjL75QzhVcNDAYaB18+y6gC/dR2FGFGIRRYu1pnO
-         6G/9w/gHa9kP4JXdIkgngJVl7pR9Q1k1pW/6bgLGCYUR69Fnfa/Go4hs4E81apxFVeYM
-         CknYzB21+ZhhBxq4HsfpOUobGYuws4uDgpVZQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5hHHpcbuGzfoV+GfFLB8z1cKhHoFMqWAiFyD3G6YAko=;
-        b=Du22WOkxWvzekWQWI40fkozgJtsKN+RdmmaJWXywuxyMARgzTpFWDJc4MZEpgYPqN4
-         SqAHn+8ohjnof9fXNcedIlR0ltk/64J0oGF/j1irorEcpzWZi4xn6KNLNmbwpR0Ima2V
-         GhXX2bbGm1BUBsOtZfqGaLmNbn+CLJ2mrXRdse6ufASeM9NZE0bAzby71IsW1ktQCF5r
-         Izf4N/guilRE8GlspMGgQcqdpMuHuCcAHzei9oecsjSrU0czhKWRN1ZhFlCKA15drSJy
-         8FAJowscaTqsBwnsuMVM66gY4HJyDfbnXcN0Two/Jq70Sd0ZtLsgXsKo27y+6I5oWl3c
-         5zmw==
-X-Gm-Message-State: AOAM530+pNXftGi0FWvtn0ewjYC8Fcm3un16iNGpo2BFnUOuOn4uXJJg
-        7czomLDVwNi5TFZa8ajrCpyN3Xsqq4yerw==
-X-Google-Smtp-Source: ABdhPJwPLuA81YKQTRPSZD4dvtZVLDx1X693AAtuDflkiP3Ku/ox6uA23rw0R/l7WEVnlICCHJF9WA==
-X-Received: by 2002:a37:b205:: with SMTP id b5mr6005031qkf.208.1624387021627;
-        Tue, 22 Jun 2021 11:37:01 -0700 (PDT)
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com. [209.85.222.170])
-        by smtp.gmail.com with ESMTPSA id q14sm217249qtw.24.2021.06.22.11.37.00
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 11:37:01 -0700 (PDT)
-Received: by mail-qk1-f170.google.com with SMTP id f70so41993340qke.13
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:37:00 -0700 (PDT)
-X-Received: by 2002:a25:60c1:: with SMTP id u184mr5281625ybb.343.1624387020330;
- Tue, 22 Jun 2021 11:37:00 -0700 (PDT)
+        Tue, 22 Jun 2021 14:39:29 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lvlGo-0000m7-VC; Tue, 22 Jun 2021 18:37:11 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Kirti Wankhede <kwankhede@nvidia.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        kvm@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] vfio/mdpy: Fix memory leak of object mdev_state->vconfig
+Date:   Tue, 22 Jun 2021 19:37:10 +0100
+Message-Id: <20210622183710.28954-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <1624099230-20899-1-git-send-email-rajeevny@codeaurora.org>
- <1624099230-20899-6-git-send-email-rajeevny@codeaurora.org>
- <20210620100147.GB703072@ravnborg.org> <CAD=FV=VP8hLHtpZ8F5KVGWoKiJBxyQVufg7V9A2CC0rwcAX-aw@mail.gmail.com>
- <20210621184157.GB918146@ravnborg.org>
-In-Reply-To: <20210621184157.GB918146@ravnborg.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 22 Jun 2021 11:36:49 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=Wzz0yW8FPxSFRBQ+y0+PbO__g-fPU64kXwqBmi6zT6RA@mail.gmail.com>
-Message-ID: <CAD=FV=Wzz0yW8FPxSFRBQ+y0+PbO__g-fPU64kXwqBmi6zT6RA@mail.gmail.com>
-Subject: Re: [v7 5/5] drm/panel-simple: Add Samsung ATNA33XC20
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     Rajeev Nandan <rajeevny@codeaurora.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Rob Clark <robdclark@gmail.com>, Lyude Paul <lyude@redhat.com>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Rob Herring <robh@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Colin Ian King <colin.king@canonical.com>
 
-On Mon, Jun 21, 2021 at 11:42 AM Sam Ravnborg <sam@ravnborg.org> wrote:
->
-> Hi Doug,
->
-> On Mon, Jun 21, 2021 at 08:34:51AM -0700, Doug Anderson wrote:
-> > Hi,
-> >
-> > On Sun, Jun 20, 2021 at 3:01 AM Sam Ravnborg <sam@ravnborg.org> wrote:
-> > >
-> > > Hi Rajeev
-> > > On Sat, Jun 19, 2021 at 04:10:30PM +0530, Rajeev Nandan wrote:
-> > > > Add Samsung 13.3" FHD eDP AMOLED panel.
-> > > >
-> > > > Signed-off-by: Rajeev Nandan <rajeevny@codeaurora.org>
-> > > > Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> > > > ---
-> > > >
-> > > > Changes in v4:
-> > > > - New
-> > > >
-> > > > Changes in v5:
-> > > > - Remove "uses_dpcd_backlight" property, not required now. (Douglas)
-> > > >
-> > > > Changes in v7:
-> > > > - Update disable_to_power_off and power_to_enable delays. (Douglas)
-> > > >
-> > > >  drivers/gpu/drm/panel/panel-simple.c | 33 +++++++++++++++++++++++++++++++++
-> > > >  1 file changed, 33 insertions(+)
-> > > >
-> > > > diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-> > > > index 86e5a45..4adc44a 100644
-> > > > --- a/drivers/gpu/drm/panel/panel-simple.c
-> > > > +++ b/drivers/gpu/drm/panel/panel-simple.c
-> > > > @@ -3562,6 +3562,36 @@ static const struct panel_desc rocktech_rk101ii01d_ct = {
-> > > >       .connector_type = DRM_MODE_CONNECTOR_LVDS,
-> > > >  };
-> > > >
-> > > > +static const struct drm_display_mode samsung_atna33xc20_mode = {
-> > > > +     .clock = 138770,
-> > > > +     .hdisplay = 1920,
-> > > > +     .hsync_start = 1920 + 48,
-> > > > +     .hsync_end = 1920 + 48 + 32,
-> > > > +     .htotal = 1920 + 48 + 32 + 80,
-> > > > +     .vdisplay = 1080,
-> > > > +     .vsync_start = 1080 + 8,
-> > > > +     .vsync_end = 1080 + 8 + 8,
-> > > > +     .vtotal = 1080 + 8 + 8 + 16,
-> > > > +     .flags = DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_NVSYNC,
-> > > > +};
-> > > > +
-> > > > +static const struct panel_desc samsung_atna33xc20 = {
-> > > > +     .modes = &samsung_atna33xc20_mode,
-> > > > +     .num_modes = 1,
-> > > > +     .bpc = 10,
-> > > > +     .size = {
-> > > > +             .width = 294,
-> > > > +             .height = 165,
-> > > > +     },
-> > > > +     .delay = {
-> > > > +             .disable_to_power_off = 200,
-> > > > +             .power_to_enable = 400,
-> > > > +             .hpd_absent_delay = 200,
-> > > > +             .unprepare = 500,
-> > > > +     },
-> > > > +     .connector_type = DRM_MODE_CONNECTOR_eDP,
-> > > > +};
-> > >
-> > > bus_format is missing. There should be a warning about this when you
-> > > probe the display.
-> >
-> > Sam: I'm curious about the requirement of hardcoding bus_format like
-> > this for eDP panels. Most eDP panels support a variety of bits per
-> > pixel and do so dynamically. Ones I've poked at freely support 6bpp
-> > and 8bpp. Presumably this one supports both of those modes and also
-> > 10bpp. I haven't done detailed research on it, but it would also
-> > surprise me if the "bus format" for a given bpp needed to be specified
-> > for eDP. Presumably since eDP has most of the "autodetect" type
-> > features of DP then if the format needed to be accounted for that you
-> > could query the hardware?
-> >
-> > Looking at the datasheet for the ti-sn65dsi86 MIPI-to-eDP bridge chip
-> > I see that it explicitly calls out the bus formats that it supports
-> > for the MIPI side but doesn't call out anything for eDP. That would
-> > tend to support my belief that there isn't variance on the eDP side...
-> >
-> > Maybe the right fix is to actually change the check not to give a
-> > warning for eDP panels? ...or am I misunderstanding?
->
-> I have never dived into the datasheets of eDP panels so I do not know.
-> The checks were added based on what we had in-tree and it is no suprise
-> if they need an update or are just plain wrong.
-> I expect you to be in a better position to make the call here - but we
-> should not add panels that triggers warnings so either fix the warnings
-> or fix the panel description.
+In the case where the call to vfio_register_group_dev fails the error
+return path kfree's mdev_state but not mdev_state->vconfig. Fix this
+by kfree'ing mdev_state->vconfig before returning.
 
-Agreed. I'd support a patch that removes this warning for eDP panels
-unless someone knows that it makes sense. I haven't been able to find
-anything indicating that it does.
+Addresses-Coverity: ("Resource leak")
+Fixes: 437e41368c01 ("vfio/mdpy: Convert to use vfio_register_group_dev()")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ samples/vfio-mdev/mdpy.c | 1 +
+ 1 file changed, 1 insertion(+)
 
--Doug
+diff --git a/samples/vfio-mdev/mdpy.c b/samples/vfio-mdev/mdpy.c
+index 7e9c9df0f05b..393c9df6f6a0 100644
+--- a/samples/vfio-mdev/mdpy.c
++++ b/samples/vfio-mdev/mdpy.c
+@@ -261,6 +261,7 @@ static int mdpy_probe(struct mdev_device *mdev)
+ 
+ 	ret = vfio_register_group_dev(&mdev_state->vdev);
+ 	if (ret) {
++		kfree(mdev_state->vconfig);
+ 		kfree(mdev_state);
+ 		return ret;
+ 	}
+-- 
+2.31.1
+
