@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C61823B1013
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 00:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0083B1014
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 00:26:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230499AbhFVW2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 18:28:16 -0400
-Received: from mga11.intel.com ([192.55.52.93]:5541 "EHLO mga11.intel.com"
+        id S231138AbhFVW2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 18:28:19 -0400
+Received: from mga05.intel.com ([192.55.52.43]:61024 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230454AbhFVW2K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 18:28:10 -0400
-IronPort-SDR: UHrIx2A9z5G3w4wgDQfi6cLn0vz+Y5REZ9QJdyPSGuw/NEmrhZflcYOTZuxr995REwazLVJA24
- e0QACTn+Z99A==
-X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="204146819"
+        id S230473AbhFVW2N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 18:28:13 -0400
+IronPort-SDR: AG2+4XV+vj7UEng/J2jUt5KEE+/yla1qJZl+H00ZPMtfnpNyN9rRKk0hf5KCafphnRQ/Jbn5Nk
+ 7zF46kFHkPCg==
+X-IronPort-AV: E=McAfee;i="6200,9189,10023"; a="292779534"
 X-IronPort-AV: E=Sophos;i="5.83,292,1616482800"; 
-   d="scan'208";a="204146819"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 15:25:53 -0700
-IronPort-SDR: vMSYxKo/Wdt2nBfKSQVOBDnCjXLTzGrSzIuC02M7uCibTY5/PqkB0hllQPbHOPcnGv7OEwnA0V
- WRrxhhUloKuw==
+   d="scan'208";a="292779534"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 15:25:55 -0700
+IronPort-SDR: dhi+RZMUBLs8oi8vnY+i2EjW/uEiYx/eRSesuUYUO+LI/Kg6Gos17cH2wZ+lVR1+L6Ac2S7o4b
+ DYnX5FlkAX9A==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.83,292,1616482800"; 
-   d="scan'208";a="444756949"
+   d="scan'208";a="454430998"
 Received: from viggo.jf.intel.com (HELO localhost.localdomain) ([10.54.77.144])
-  by orsmga007.jf.intel.com with ESMTP; 22 Jun 2021 15:25:53 -0700
-Subject: [RFC][PATCH 7/8] x86/fpu: actually stop using XSAVE on PKRU
+  by fmsmga008.fm.intel.com with ESMTP; 22 Jun 2021 15:25:54 -0700
+Subject: [RFC][PATCH 8/8] x86/pkeys: remove init_pkru_value variable
 To:     linux-mm@kvack.org
 Cc:     linux-kernel@vger.kernel.org,
         Dave Hansen <dave.hansen@linux.intel.com>, tglx@linutronix.de,
         mingo@redhat.com, bp@alien8.de, x86@kernel.org, luto@kernel.org
 From:   Dave Hansen <dave.hansen@linux.intel.com>
-Date:   Tue, 22 Jun 2021 15:25:08 -0700
+Date:   Tue, 22 Jun 2021 15:25:10 -0700
 References: <20210622222455.E901B5AC@viggo.jf.intel.com>
 In-Reply-To: <20210622222455.E901B5AC@viggo.jf.intel.com>
-Message-Id: <20210622222508.2BB7D73C@viggo.jf.intel.com>
+Message-Id: <20210622222510.0E201C34@viggo.jf.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -42,30 +42,16 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Dave Hansen <dave.hansen@linux.intel.com>
 
-Previously, 'xfeatures_mask_all' represented all of the features that
-might be found in a kernel XSAVE buffer.  It also happened to be
-(XCR0|XSS): the set of XSAVE features enabled in the hardware.  In
-other words, if an feature was XSAVE-enabled in the hardware, it was
-guaranteed to be found in the kernel XSAVE buffer.
+The kernel maintains a "default" PKRU value.  This is logically similar
+to the hardware "init state", but the kernel chose a more restrictive
+value.
 
-The goal of this series is to remove PKRU from the kernel XSAVE
-buffer, but to also leave it XSAVE-enabled in the hardware.  This ensures
-that applications which read the hardware enabling status of PKRU directly
-with xgetbv(0) will not notice a thing.
+This default is stored in a variable: 'init_pkru_value'.  The default
+is also mirrored into the 'init_task' so that the value is picked up
+by things like new kernel threads.
 
-Locate all the places where 'xfeatures_mask_all' is used to represent
-the set of features in a kernel XSAVE buffer and replace it with
-xfeatures_mask_fpstate().  Update the fpstate access function
-(__raw_xsave_addr()) to WARN() if a caller attempts to access a
-non-present feature.  Lastly, remove the get_xsaves_size() hack now
-that PKRU can be removed from the fpstate size calculations.
-
-The most visible effect if this an 8-byte drop in the "context size":
-
-Before:
-	x86/fpu: Enabled xstate features 0x2ff, context size is 2568 bytes, using 'compacted' format.
-After:
-	x86/fpu: XSAVE managing features 0xff, context size is 2560 bytes, using 'compacted' format.
+Both copies are not needed.  Remove the variable and depend instead
+on the copy inside the 'init_task'.
 
 Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
@@ -75,112 +61,121 @@ Cc: x86@kernel.org
 Cc: Andy Lutomirski <luto@kernel.org>
 ---
 
- b/arch/x86/include/asm/fpu/internal.h |    2 +-
- b/arch/x86/kernel/fpu/xstate.c        |   29 +++++++++++++----------------
- 2 files changed, 14 insertions(+), 17 deletions(-)
+ b/arch/x86/include/asm/pkru.h  |    5 ++---
+ b/arch/x86/kernel/cpu/common.c |   22 ++++++++++++++++++----
+ b/arch/x86/mm/pkeys.c          |   19 ++-----------------
+ 3 files changed, 22 insertions(+), 24 deletions(-)
 
-diff -puN arch/x86/include/asm/fpu/internal.h~warn-on-seeing-pkey-xfeature arch/x86/include/asm/fpu/internal.h
---- a/arch/x86/include/asm/fpu/internal.h~warn-on-seeing-pkey-xfeature	2021-06-22 14:49:13.609051745 -0700
-+++ b/arch/x86/include/asm/fpu/internal.h	2021-06-22 14:49:13.622051745 -0700
-@@ -286,7 +286,7 @@ static inline void os_xrstor_booting(str
+diff -puN arch/x86/include/asm/pkru.h~axe-init_pkru_value arch/x86/include/asm/pkru.h
+--- a/arch/x86/include/asm/pkru.h~axe-init_pkru_value	2021-06-22 14:49:14.772051742 -0700
++++ b/arch/x86/include/asm/pkru.h	2021-06-22 14:49:14.781051742 -0700
+@@ -2,6 +2,7 @@
+ #ifndef _ASM_X86_PKRU_H
+ #define _ASM_X86_PKRU_H
+ 
++#include <linux/sched/task.h>
+ #include <asm/fpu/xstate.h>
+ 
+ #define PKRU_AD_BIT 0x1
+@@ -9,10 +10,8 @@
+ #define PKRU_BITS_PER_PKEY 2
+ 
+ #ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
+-extern u32 init_pkru_value;
+-#define pkru_get_init_value()	READ_ONCE(init_pkru_value)
++#define pkru_get_init_value()	READ_ONCE(init_task.thread.pkru)
+ #else
+-#define init_pkru_value	0
+ #define pkru_get_init_value()	0
+ #endif
+ 
+diff -puN arch/x86/kernel/cpu/common.c~axe-init_pkru_value arch/x86/kernel/cpu/common.c
+--- a/arch/x86/kernel/cpu/common.c~axe-init_pkru_value	2021-06-22 14:49:14.774051742 -0700
++++ b/arch/x86/kernel/cpu/common.c	2021-06-22 14:49:14.782051742 -0700
+@@ -464,6 +464,8 @@ __setup("nofsgsbase", x86_nofsgsbase_set
   */
- static inline void os_xsave(struct xregs_state *xstate)
+ static bool pku_disabled;
+ 
++#define PKRU_AD_KEY(pkey)	(PKRU_AD_BIT << ((pkey) * PKRU_BITS_PER_PKEY))
++
+ static __always_inline void setup_pku(struct cpuinfo_x86 *c)
  {
--	u64 mask = xfeatures_mask_all;
-+	u64 mask = xfeatures_mask_fpstate();
- 	u32 lmask = mask;
- 	u32 hmask = mask >> 32;
- 	int err;
-diff -puN arch/x86/kernel/fpu/xstate.c~warn-on-seeing-pkey-xfeature arch/x86/kernel/fpu/xstate.c
---- a/arch/x86/kernel/fpu/xstate.c~warn-on-seeing-pkey-xfeature	2021-06-22 14:49:13.613051745 -0700
-+++ b/arch/x86/kernel/fpu/xstate.c	2021-06-22 14:49:13.628051745 -0700
-@@ -168,9 +168,7 @@ static bool xfeature_enabled(enum xfeatu
-  */
- static bool xfeature_fpstate_enabled(enum xfeature xfeature)
- {
--	// For bisectability, mirror xfeature_enabled() for now.
--	//return xfeatures_mask_fpstate() & BIT_ULL(xfeature);
--	return xfeature_enabled(xfeature);
-+	return xfeatures_mask_fpstate() & BIT_ULL(xfeature);
- }
- 
- /*
-@@ -416,7 +414,7 @@ static void __init setup_init_fpu_buf(vo
- 
- 	if (boot_cpu_has(X86_FEATURE_XSAVES))
- 		init_fpstate.xsave.header.xcomp_bv = XCOMP_BV_COMPACTED_FORMAT |
--						     xfeatures_mask_all;
-+						     xfeatures_mask_fpstate();
- 
- 	/*
- 	 * Init all the features state with header.xfeatures being 0x0
-@@ -644,7 +642,6 @@ static unsigned int __init get_xsaves_si
- static unsigned int __init get_xsaves_size_no_independent(void)
- {
- 	unsigned int size;
--	u64 xfeatures_in_xcr0;
- 	u64 old_xss;
- 	u64 old_xcr0;
- 
-@@ -655,14 +652,8 @@ static unsigned int __init get_xsaves_si
- 	/* Disable independent features. */
- 	wrmsrl(MSR_IA32_XSS, old_xss & ~xfeatures_mask_independent());
- 
--	/*
--	 * *Temporarily* (to be removed in a later patch), ennsure there
--	 * is still space for PKRU in the fpstate buffer even though it's
--	 * essentially unused.
--	 */
--	xfeatures_in_xcr0 = xfeatures_mask_fpstate() | XFEATURE_MASK_PKRU;
- 	/* Disable user features which are not kept in the fpstate: */
--	xsetbv(XCR_XFEATURE_ENABLED_MASK, old_xcr0 & xfeatures_in_xcr0);
-+	xsetbv(XCR_XFEATURE_ENABLED_MASK, old_xcr0 & xfeatures_mask_fpstate());
- 
- 	/*
- 	 * Ask the hardware what size is required of the buffer.
-@@ -843,8 +834,8 @@ void __init fpu__init_system_xstate(void
+ 	if (c == &boot_cpu_data) {
+@@ -480,11 +482,23 @@ static __always_inline void setup_pku(st
  	}
  
- 	print_xstate_offset_size();
--	pr_info("x86/fpu: Enabled xstate features 0x%llx, context size is %d bytes, using '%s' format.\n",
--		xfeatures_mask_all,
-+	pr_info("x86/fpu: XSAVE managing features 0x%llx, context size is %d bytes, using '%s' format.\n",
-+		xfeatures_mask_fpstate(),
- 		fpu_kernel_xstate_size,
- 		boot_cpu_has(X86_FEATURE_XSAVES) ? "compacted" : "standard");
- 	return;
-@@ -879,9 +870,15 @@ void fpu__resume_cpu(void)
-  * Given an xstate feature nr, calculate where in the xsave
-  * buffer the state is.  Callers should ensure that the buffer
-  * is valid.
-+ *
-+ * This only works on kernel FPU buffers, like task->thread.fpu.
-  */
- static void *__raw_xsave_addr(struct xregs_state *xsave, int xfeature_nr)
+ 	cr4_set_bits(X86_CR4_PKE);
+-	/* Load the default PKRU value */
+-	pkru_write_default();
+ 
+-	/* Establish the default value for future tasks: */
+-	init_task.thread.pkru = init_pkru_value;
++	/*
++	 * Establish the default value for future tasks.
++	 *
++ 	 * This is as restrictive as possible.  It ensures that a threads
++	 * clone()'d early in a process's lifetime will not accidentally
++	 * get access to data which is pkey-protected later on.
++	 */
++	init_task.thread.pkru =
++		      PKRU_AD_KEY( 1) | PKRU_AD_KEY( 2) | PKRU_AD_KEY( 3) |
++		      PKRU_AD_KEY( 4) | PKRU_AD_KEY( 5) | PKRU_AD_KEY( 6) |
++		      PKRU_AD_KEY( 7) | PKRU_AD_KEY( 8) | PKRU_AD_KEY( 9) |
++		      PKRU_AD_KEY(10) | PKRU_AD_KEY(11) | PKRU_AD_KEY(12) |
++		      PKRU_AD_KEY(13) | PKRU_AD_KEY(14) | PKRU_AD_KEY(15);
++
++	/* Load the default PKRU value into this CPU's register: */
++	pkru_write_default();
+ }
+ 
+ #ifdef CONFIG_X86_INTEL_MEMORY_PROTECTION_KEYS
+diff -puN arch/x86/mm/pkeys.c~axe-init_pkru_value arch/x86/mm/pkeys.c
+--- a/arch/x86/mm/pkeys.c~axe-init_pkru_value	2021-06-22 14:49:14.778051742 -0700
++++ b/arch/x86/mm/pkeys.c	2021-06-22 14:49:14.782051742 -0700
+@@ -110,27 +110,13 @@ int __arch_override_mprotect_pkey(struct
+ 	return vma_pkey(vma);
+ }
+ 
+-#define PKRU_AD_KEY(pkey)	(PKRU_AD_BIT << ((pkey) * PKRU_BITS_PER_PKEY))
+-
+-/*
+- * Make the default PKRU value (at execve() time) as restrictive
+- * as possible.  This ensures that any threads clone()'d early
+- * in the process's lifetime will not accidentally get access
+- * to data which is pkey-protected later on.
+- */
+-u32 init_pkru_value = PKRU_AD_KEY( 1) | PKRU_AD_KEY( 2) | PKRU_AD_KEY( 3) |
+-		      PKRU_AD_KEY( 4) | PKRU_AD_KEY( 5) | PKRU_AD_KEY( 6) |
+-		      PKRU_AD_KEY( 7) | PKRU_AD_KEY( 8) | PKRU_AD_KEY( 9) |
+-		      PKRU_AD_KEY(10) | PKRU_AD_KEY(11) | PKRU_AD_KEY(12) |
+-		      PKRU_AD_KEY(13) | PKRU_AD_KEY(14) | PKRU_AD_KEY(15);
+-
+ static ssize_t init_pkru_read_file(struct file *file, char __user *user_buf,
+ 			     size_t count, loff_t *ppos)
  {
-+	if (!(xfeatures_mask_fpstate() & BIT_ULL(xfeature_nr))) {
-+		WARN_ON_FPU(1);
-+		return NULL;
-+	}
- 	if (!xfeature_fpstate_enabled(xfeature_nr)) {
- 		WARN_ON_FPU(1);
- 		return NULL;
-@@ -1235,7 +1232,7 @@ void xsaves(struct xregs_state *xstate,
- 	if (mask & xfeatures_mask_independent())
- 		xchk = ~xfeatures_mask_independent();
- 	else
--		xchk = ~xfeatures_mask_all;
-+		xchk = ~xfeatures_mask_fpstate();
+ 	char buf[32];
+ 	unsigned int len;
  
- 	if (WARN_ON_ONCE(!mask || mask & xchk))
- 		return;
-@@ -1272,7 +1269,7 @@ void xrstors(struct xregs_state *xstate,
- 	if (mask & xfeatures_mask_independent())
- 		xchk = ~xfeatures_mask_independent();
- 	else
--		xchk = ~xfeatures_mask_all;
-+		xchk = ~xfeatures_mask_fpstate();
+-	len = sprintf(buf, "0x%x\n", init_pkru_value);
++	len = sprintf(buf, "0x%x\n", init_task.thread.pkru);
+ 	return simple_read_from_buffer(user_buf, count, ppos, buf, len);
+ }
  
- 	if (WARN_ON_ONCE(!mask || mask & xchk))
- 		return;
+@@ -158,7 +144,6 @@ static ssize_t init_pkru_write_file(stru
+ 	if (new_init_pkru & (PKRU_AD_BIT|PKRU_WD_BIT))
+ 		return -EINVAL;
+ 
+-	WRITE_ONCE(init_pkru_value, new_init_pkru);
+ 	WRITE_ONCE(init_task.thread.pkru, new_init_pkru);
+ 
+ 	return count;
+@@ -185,7 +170,7 @@ static __init int setup_init_pkru(char *
+ 	if (kstrtouint(opt, 0, &new_init_pkru))
+ 		return 1;
+ 
+-	WRITE_ONCE(init_pkru_value, new_init_pkru);
++	WRITE_ONCE(init_task.thread.pkru, new_init_pkru);
+ 
+ 	return 1;
+ }
 _
