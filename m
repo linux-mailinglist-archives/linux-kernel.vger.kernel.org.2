@@ -2,70 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1787C3B084E
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:10:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 757F53B0857
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 17:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbhFVPMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 11:12:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231248AbhFVPMd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 11:12:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2038B600D3;
-        Tue, 22 Jun 2021 15:10:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624374617;
-        bh=0HDMdoBlUeZK0tFRZdne+++P8caT6G7FmLWZO2pSOwk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Z2m9s7EgcYEWDpWVS1ouYfTMmjU6DGDg0hZYaCO2RVgcVTtwHTVA6qlOrB7xELQus
-         UFIjmvZv2WusXaO5M8UWkUzzCe4M1YQQM/CxXXzr6NYDNj9+zMwuR7uLR7VIPRSyi5
-         X66RUvg+WlZ+NXyL2yNroZWhfUdUxhs9vQuVUWUO39uSUnx2f3iyFyD5/LqYV+pSnF
-         IkSvHUyJxSKw4HV4TI2Mp0+qKdaQ9uvtd7clCBBBOFM7ebrkGgEBKwmE1QcyQCUi74
-         gcDg136qUEnhdhhMf4gVLGZ7k+E6xwq8WDioWg6rtKcc7ssAuKYxTooi6QNvkTAvuK
-         LnNz8GzuLGv4A==
-Date:   Tue, 22 Jun 2021 08:10:15 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Robin Hsu <robinh3123@gmail.com>,
-        linux-f2fs-devel@lists.sourceforge.net, chao@kernel.org,
-        linux-kernel@vger.kernel.org, Robin Hsu <robinhsu@google.com>
-Subject: Re: [PATCH] sload.f2fs: Reword "IMMUTABLE" in strings/comments
-Message-ID: <YNH9V+gHPHkji1ah@google.com>
-References: <20210611073111.947552-1-robinh3123@gmail.com>
- <20210622133357.GA1003@bug>
+        id S232097AbhFVPOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 11:14:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230047AbhFVPOA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 11:14:00 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B1BC06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:11:45 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d9so6832810qtx.8
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 08:11:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GfBcan5Oq/+F6rqd3wteDDUo+4mA0t9y3pSH6r/kVdI=;
+        b=oQKSqDMY5ui7ysN6RXa17KyJ2Wzpm89WOS/VTDpLsBMmjFt0xKup1/rN3Iu2Ysn7kj
+         0o4QpiviU+XCzwAjOmd3ASe2G50DR4wQM1cxJ/IcnSoJE+UREjasIpFci4SAI/zjLeO4
+         BaVYbbQSqm0nAX/Y00oQm+1Fl/s1cHNEiBtnrRSnwG+/c0ZPfPFGw36xuMKNGuUPMk6/
+         S9czK9NLULrCof4fVnQi6scmnRJl9iMhmlDxM2xpQloNB9qi5QwwBnyh0jFdiD4S4nEx
+         BNdzQik55X4yiVc76B5/N6HeFax4G1G02Yo0H2X2M1eLLt5C2jCamVulCHYNUMYd6Nkl
+         GXvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GfBcan5Oq/+F6rqd3wteDDUo+4mA0t9y3pSH6r/kVdI=;
+        b=edqcncEgQHPRDCMUzf3yfz6YSWDQgRD+UM16ylv3bbsEgz+wiSXbqQHeiyeZHbUpf0
+         PWd/pYvxvpcLQfhKspIUWsysyofuWQlZPHKTssGAEenJcmQN4XcL/1ag11DuSLbQ6OYj
+         69bjdaUP0zo0gFk9JCdRLMpcb+2ZBwJsjPeNEE9TtclOyueIl8oWzQ+QyT5saklEt+M0
+         x9JW8TO/GwFNw3zCk5A0Mgk3IMDCrXCq134Veo8peGaw8TXZ/fDI8uzi8lMB7eDdwypA
+         e+NlZ6VFZEBt5tHZY+3+5KAeXJbKqD9FrGU3c+OeFmF5q3llWFGbvgI81BYjeG9+aR2w
+         8nlQ==
+X-Gm-Message-State: AOAM532lJvTge0U9Yjx6ft+H5B19alJjJKFb9rb/faFaRat/BBCBKlN/
+        ewF77xaZFoYSGOxBUydrd6zdww==
+X-Google-Smtp-Source: ABdhPJyIvo3ZVkwIuidF8Fxvcg1uTF/rMIUzGf5xwZlLSDUGqkiRqy7l/P12S4XnoNrAjy14Ik1xNg==
+X-Received: by 2002:ac8:5dd2:: with SMTP id e18mr3979783qtx.263.1624374704154;
+        Tue, 22 Jun 2021 08:11:44 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
+        by smtp.gmail.com with ESMTPSA id m3sm10504480qkk.27.2021.06.22.08.11.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 08:11:43 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lvi3y-00AD4o-Si; Tue, 22 Jun 2021 12:11:42 -0300
+Date:   Tue, 22 Jun 2021 12:11:42 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Oded Gabbay <oded.gabbay@gmail.com>
+Cc:     Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Tomer Tayar <ttayar@habana.ai>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
+ FD for DMA-BUF
+Message-ID: <20210622151142.GA2431880@ziepe.ca>
+References: <20210621175511.GI1096940@ziepe.ca>
+ <CAKMK7uEO1_B59DtM7N2g7kkH7pYtLM_WAkn+0f3FU3ps=XEjZQ@mail.gmail.com>
+ <CAFCwf11jOnewkbLuxUESswCJpyo7C0ovZj80UrnwUOZkPv2JYQ@mail.gmail.com>
+ <20210621232912.GK1096940@ziepe.ca>
+ <d358c740-fd3a-9ecd-7001-676e2cb44ec9@gmail.com>
+ <CAFCwf11h_Nj_GEdCdeTzO5jgr-Y9em+W-v_pYUfz64i5Ac25yg@mail.gmail.com>
+ <20210622120142.GL1096940@ziepe.ca>
+ <CAFCwf10GmBjeJAFp0uJsMLiv-8HWAR==RqV9ZdMQz+iW9XWdTA@mail.gmail.com>
+ <20210622121546.GN1096940@ziepe.ca>
+ <CAFCwf13BuS+U3Pko_62hFPuvZPG26HQXuu-cxPmcADNPO22g9g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210622133357.GA1003@bug>
+In-Reply-To: <CAFCwf13BuS+U3Pko_62hFPuvZPG26HQXuu-cxPmcADNPO22g9g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/22, Pavel Machek wrote:
-> Hi!
-> 
-> > Since the IMMUTABLE flag for compression is now changed
-> > to F2FS_COMPRESS_RELEASED, some 'IMMUTABLE' words should be changed too:
-> > 	1. sload help page
-> > 	2. inline comments
-> > 
-> > Signed-off-by: Robin Hsu <robinhsu@google.com>
-> 
-> > @@ -650,7 +651,7 @@ void f2fs_parse_options(int argc, char *argv[])
-> >  				}
-> >  				c.compress.min_blocks = val;
-> >  				break;
-> > -			case 'r': /* compress file to set IMMUTABLE */
-> > +			case 'r': /* for setting F2FS_COMOPRESS_RELEASE */
-> 
-> Typo.
+On Tue, Jun 22, 2021 at 04:12:26PM +0300, Oded Gabbay wrote:
 
-Ah, fixed. Thank you~
+> > 1) Setting sg_page to NULL
+> > 2) 'mapping' pages for P2P DMA without going through the iommu
+> > 3) Allowing P2P DMA without using the p2p dma API to validate that it
+> >    can work at all in the first place.
+> >
+> > All of these result in functional bugs in certain system
+> > configurations.
+> >
+> > Jason
+> 
+> Hi Jason,
+> Thanks for the feedback.
+> Regarding point 1, why is that a problem if we disable the option to
+> mmap the dma-buf from user-space ? 
 
-> 
-> Best regards,
-> 									Pavel
-> 
-> -- 
-> (english) http://www.livejournal.com/~pavelmachek
-> (cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+Userspace has nothing to do with needing struct pages or not
+
+Point 1 and 2 mostly go together, you supporting the iommu is not nice
+if you dont have struct pages.
+
+You should study Logan's patches I pointed you at as they are solving
+exactly this problem.
+
+> In addition, I didn't see any problem with sg_page being NULL in the
+> RDMA p2p dma-buf code. Did I miss something here ?
+
+No, the design of the dmabuf requires the exporter to do the dma maps
+and so it is only the exporter that is wrong to omit all the iommu and
+p2p logic.
+
+RDMA is OK today only because nobody has implemented dma buf support
+in rxe/si - mainly because the only implementations of exporters don't
+set the struct page and are thus buggy.
+
+> I will take two GAUDI devices and use one as an exporter and one as an
+> importer. I want to see that the solution works end-to-end, with real
+> device DMA from importer to exporter.
+
+I can tell you it doesn't. Stuffing physical addresses directly into
+the sg list doesn't involve any of the IOMMU code so any configuration
+that requires IOMMU page table setup will not work.
+
+Jason
