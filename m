@@ -2,132 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F70B3B03B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC7E3B03B4
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:07:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbhFVMJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 08:09:18 -0400
-Received: from mga05.intel.com ([192.55.52.43]:7754 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231128AbhFVMJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 08:09:16 -0400
-IronPort-SDR: UEZP8xZ3DpeS0zGRhFujEN9sGeV7IzGs2TEc7IxJGUpJG0eQOi6jpx+wzgF9Cyw0PcNtHURiTF
- K/FfhopF5iBg==
-X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="292668212"
-X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="292668212"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 05:06:57 -0700
-IronPort-SDR: 8iXjey4wouBXXNjrnrRPeCsFxWtQebA/mpVSCplg4QU2FnsuG/vlFdbsNNp6J64T44+qiXJYa8
- g74pM89u0PHQ==
-X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
-   d="scan'208";a="639089865"
-Received: from rtrevino-mobl2.amr.corp.intel.com (HELO [10.209.73.69]) ([10.209.73.69])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 05:06:57 -0700
-Subject: Re: [PATCH -V8 02/10] mm/numa: automatically generate node migration
- order
-To:     Zi Yan <ziy@nvidia.com>, "Huang, Ying" <ying.huang@intel.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Yang Shi <shy828301@gmail.com>,
-        Michal Hocko <mhocko@suse.com>, Wei Xu <weixugc@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        osalvador <osalvador@suse.de>
-References: <20210618061537.434999-1-ying.huang@intel.com>
- <20210618061537.434999-3-ying.huang@intel.com>
- <79397FE3-4B08-4DE5-8468-C5CAE36A3E39@nvidia.com>
- <87v96anu6o.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <2AA3D792-7F14-4297-8EDD-3B5A7B31AECA@nvidia.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <4732ff69-bd5a-018c-0d76-c1f724abb677@intel.com>
-Date:   Tue, 22 Jun 2021 05:06:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231266AbhFVMKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 08:10:05 -0400
+Received: from relay07.th.seeweb.it ([5.144.164.168]:44855 "EHLO
+        relay07.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231128AbhFVMKE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 08:10:04 -0400
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id E8FC53F370;
+        Tue, 22 Jun 2021 14:07:47 +0200 (CEST)
+Subject: Re: [PATCH v6 1/5] cpuidle: qcom_spm: Detach state machine from main
+ SPM handling
+To:     Stephan Gerhold <stephan@gerhold.net>
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org,
+        daniel.lezcano@linaro.org, rjw@rjwysocki.net,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, phone-devel@vger.kernel.org,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, jeffrey.l.hugo@gmail.com,
+        jami.kettunen@somainline.org,
+        ~postmarketos/upstreaming@lists.sr.ht, devicetree@vger.kernel.org,
+        robh+dt@kernel.org
+References: <20210621181016.365009-1-angelogioacchino.delregno@somainline.org>
+ <20210621181016.365009-2-angelogioacchino.delregno@somainline.org>
+ <YND/2qJhUB1Iwk1X@gerhold.net>
+ <229488fe-00ef-ea7e-27d4-6f24fdea1383@somainline.org>
+ <YNHR3hvoKsQe5mq8@gerhold.net>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <52045160-e9f9-26b9-5218-aaf9e8cfd205@somainline.org>
+Date:   Tue, 22 Jun 2021 14:07:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <2AA3D792-7F14-4297-8EDD-3B5A7B31AECA@nvidia.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YNHR3hvoKsQe5mq8@gerhold.net>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yan, your reply came through in HTML.  It doesn't bother me too much,
-but you'll find your replies dropped by LKML and other mailing lists
-if you do this.
+Il 22/06/21 14:04, Stephan Gerhold ha scritto:
+> On Tue, Jun 22, 2021 at 01:39:15PM +0200, AngeloGioacchino Del Regno wrote:
+>> Il 21/06/21 23:08, Stephan Gerhold ha scritto:
+>>> On Mon, Jun 21, 2021 at 08:10:12PM +0200, AngeloGioacchino Del Regno wrote:
+>>>> In commit a871be6b8eee ("cpuidle: Convert Qualcomm SPM driver to a generic
+>>>> CPUidle driver") the SPM driver has been converted to a
+>>>> generic CPUidle driver: that was mainly made to simplify the
+>>>> driver and that was a great accomplishment;
+>>>> Though, it was ignored that the SPM driver is not used only
+>>>> on the ARM architecture.
+>>>>
+>>>
+>>> I don't really understand why you insist on writing that I deliberately
+>>> "ignored" your use case when converting the driver. This is not true.
+>>> Perhaps that's not actually what you meant but that's how it sounds to
+>>> me.
+>>>
+>>
+>> So much noise for one single word. I will change it since it seems to be
+>> that much of a deal, and I'm sorry if that hurt you in any way.
+>>
+>> For the records, though, I really don't see anything offensive in that,
+>> and anyway I didn't mean to be offensive in any way.
+>>
+> 
+> I try to put a lot of thought into my patches to make sure I don't
+> accidentally break some other use cases. Having that sentence in the
+> commit log does indeed hurt me a bit since I would never deliberately
+> disregard other use cases without making it absolutely clear in the
+> patch.
+> 
+> By using the word "ignored" ("deliberately not listen or pay attention
+> to") [1] you say that I did, and that's why I would prefer if you
+> reword this slightly. :)
+> 
 
-On 6/21/21 7:50 AM, Zi Yan wrote:
-> Is there a plan of allowing user to change where the migration path
-> starts? Or maybe one step further providing an interface to allow
-> user to specify the demotion path. Something like
-> /sys/devices/system/node/node*/node_demotion.
+As I said, I will reword it.
 
-We actually had this in an earlier series.  I pulled it out because we
-don't really *need* this ABI at the moment.  But, I totally agree that
-it would be handy for many things, including any non-obvious topology
-where the built-in ordering isn't optimal.
+> [1] https://en.wiktionary.org/wiki/ignore
+> 
+>>>> In preparation for the enablement of SPM features on AArch64/ARM64,
+>>>> split the cpuidle-qcom-spm driver in two: the CPUIdle related
+>>>> state machine (currently used only on ARM SoCs) stays there, while
+>>>> the SPM communication handling lands back in soc/qcom/spm.c and
+>>>> also making sure to not discard the simplifications that were
+>>>> introduced in the aforementioned commit.
+>>>>
+>>>> Since now the "two drivers" are split, the SCM dependency in the
+>>>> main SPM handling is gone and for this reason it was also possible
+>>>> to move the SPM initialization early: this will also make sure that
+>>>> whenever the SAW CPUIdle driver is getting initialized, the SPM
+>>>> driver will be ready to do the job.
+>>>>
+>>>> Please note that the anticipation of the SPM initialization was
+>>>> also done to optimize the boot times on platforms that have their
+>>>> CPU/L2 idle states managed by other means (such as PSCI), while
+>>>> needing SAW initialization for other purposes, like AVS control.
+>>>>
+>>>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+>>>> ---
+>>>>    drivers/cpuidle/Kconfig.arm        |   1 +
+>>>>    drivers/cpuidle/cpuidle-qcom-spm.c | 324 +++++++----------------------
+>>>>    drivers/soc/qcom/Kconfig           |   9 +
+>>>>    drivers/soc/qcom/Makefile          |   1 +
+>>>>    drivers/soc/qcom/spm.c             | 198 ++++++++++++++++++
+>>>>    include/soc/qcom/spm.h             |  41 ++++
+>>>>    6 files changed, 325 insertions(+), 249 deletions(-)
+>>>>    create mode 100644 drivers/soc/qcom/spm.c
+>>>>    create mode 100644 include/soc/qcom/spm.h
+>>>>
+>>>> diff --git a/drivers/cpuidle/cpuidle-qcom-spm.c b/drivers/cpuidle/cpuidle-qcom-spm.c
+>>>> index adf91a6e4d7d..091453135ea6 100644
+>>>> --- a/drivers/cpuidle/cpuidle-qcom-spm.c
+>>>> +++ b/drivers/cpuidle/cpuidle-qcom-spm.c
+>>>> [...]
+>>>> +static int spm_cpuidle_register(int cpu)
+>>>>    {
+>>>> +	struct platform_device *pdev = NULL;
+>>>> +	struct device_node *cpu_node, *saw_node;
+>>>> +	struct cpuidle_qcom_spm_data data = {
+>>>> +		.cpuidle_driver = {
+>>>> +			.name = "qcom_spm",
+>>>> +			.owner = THIS_MODULE,
+>>>> +			.cpumask = (struct cpumask *)cpumask_of(cpu),
+>>>> +			.states[0] = {
+>>>> +				.enter			= spm_enter_idle_state,
+>>>> +				.exit_latency		= 1,
+>>>> +				.target_residency	= 1,
+>>>> +				.power_usage		= UINT_MAX,
+>>>> +				.name			= "WFI",
+>>>> +				.desc			= "ARM WFI",
+>>>> +			}
+>>>> +		}
+>>>> +	};
+>>>
+>>> The stack is gone after the function returns.
+>>>
+>>
+>> Argh, I wrongly assumed that cpuidle was actually copying this locally.
+>> Okay, let's see what else looking clean I can come up with.
+> 
+> I guess you could just use a devm_kzalloc() and then have code similar
+> to the previous one (data->cpuidle_driver = <template>). You could
+> alternatively use devm_kmalloc() without zero-initialization but the
+> advantages of that should be negligible.
+> 
 
-> I don't think that's necessary at least for now. Do you know any
-> real world use case for this?
->
-> In our P9+volta system, GPU memory is exposed as a NUMA node. For
-> the GPU workloads with data size greater than GPU memory size, it
-> will be very helpful to allow pages in GPU memory to be
-> migrated/demoted to CPU memory. With your current assumption, GPU
-> memory -> CPU memory demotion seems not possible, right? This
-> should also apply to any system with a device memory exposed as a
-> NUMA node and workloads running on the device and using CPU memory
-> as a lower tier memory than the device memory.
+Yes that would indeed work. It's just that I really don't like it.
 
-Yes, with the current ordering, CPU memory would be demoted to the
-GPU, not the other way around.  The right way to fix this (on ACPI
-platforms at least) is probably to use the HMAT table and build the
-demotion based on any memory targets rather than just CPUs.
+> Thanks!
+> Stephan
+> 
 
-That would be a great future enhancement to all of this.  But, because
-not all systems have HMATs, we also need something more basic, which
-is what is in this series.
