@@ -2,758 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF493AFDA7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D99253AFDAD
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:14:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbhFVHPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 03:15:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57480 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbhFVHOp (ORCPT
+        id S230072AbhFVHQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 03:16:54 -0400
+Received: from mx0a-0064b401.pphosted.com ([205.220.166.238]:13736 "EHLO
+        mx0a-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229490AbhFVHQx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 03:14:45 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF1EAC061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:12:29 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id 13-20020a17090a08cdb029016eed209ca4so1708229pjn.1
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 00:12:29 -0700 (PDT)
+        Tue, 22 Jun 2021 03:16:53 -0400
+Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15M7DAuc024574;
+        Tue, 22 Jun 2021 00:14:23 -0700
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2105.outbound.protection.outlook.com [104.47.70.105])
+        by mx0a-0064b401.pphosted.com with ESMTP id 39b47h86tb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 22 Jun 2021 00:14:23 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Q1/wGO8STeQ7ahSeiGRytB9ZAfK0z48nhsBrMtwxlGMh2xKXPFQ2o39IhRcOP5yq8CVkY2UzlbVeK5P6zpyXd8ZvuFBpKfThbsHdsFWVhcKoXGckXjXJu3TsJcT1vNl6IFsZts5ffAuqbsJ7ZsC1xWaN93tDyr8SwAGNSbxeTH2JJWRzA5Y7bgwWsNSJbO6Amho/b+/4fPJKTL0hjMQunHEa098D0MVC1DwZ88r1Rzp5xCniRl5vit1VrWXPnew7F+yoYOaojP1rsh8ekDK2uom1wMIrI6mnlBt6pDWr/Kl8kR21+wRs9WZfQKz29utIcqtM9BneePrE1YaxovPnyQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wnyiOUTN27qCLp1aUm8KLk/Lt0Lbl+f50lhM7gkMFvk=;
+ b=FjWJu+Rj3UP0tWyE9821o7Z99X8dUDiJVUkJJRXSAxxndi3tAmoJMyPSOpMeIZfb+VASj1cXbHbWVrioF4Bst/BGjVUqPxWIVToOp7LVDFeu6tY0SmuPsNoOB0sXv6CF5Hzc0/HrHji9bCz2zfBluMXYwWKmF3CqJADQn/0jd90nkmkpaY/hL7kWVH91iAx8qbe3oCdFXOseVI6F3QgkoR/0CmoJYGul5AOvHkQjijO9sUx1y/f2XSxynq+dRf1We8MgFrPxtaF15YdsQoAXwG8XZVY0KY/1rf5g6QmOdjqadtB9vq1bXG7RRK06ick1wJL/33mF1PoacfUddrsiPA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=DTeAl/CEgH0816JEw3dElaGz6dNJ7fn8nhOS1M+tX2o=;
-        b=s+zPA7okklg/t4krEhYNIvo/V0ZXXTvbkS0Y23FeKyDh5q/M/RHQZs8HA183YcGYuS
-         4HchgbCK6Ubj/x6b35axBvT4jFfGDVab7flyRtUy4ZkJhawGV1KYYOMUMufWU3tZ00Fq
-         lD3Wsrl5ppOjMm3hM1BfZvSIe6iHB7HtO7W1giuqqvCQ8i+VfyHl07RoM98Jyx3HOr66
-         2+M065m7HKBqEInP6dkKMGodGjALaBYXQBARqXUeG2InprksBiASmn7Z8OX2UD/B5IEK
-         K3y2aP+jKw/WKda/HD64aXg0P+sHNy7NqqxHnvuNeIjxq/6ya122V0GTcpjRhoZcHGIc
-         TSlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=DTeAl/CEgH0816JEw3dElaGz6dNJ7fn8nhOS1M+tX2o=;
-        b=Ot8q9s/oULSHy/BLUkQg19TTJOfc9QMjHyWSxs+lOSfHwiScTxKc1QnKOFoz4dWED5
-         aWwN0T2kbop74QH7ne/OgT0V9Zo5jbxwt8/jc1gquTFxdSltKh8Tx4tp+g9OXg3FCwT1
-         /n8FiVKa1cPUt5CzNAg5HPg/kJOY1KxQ2qGRfGNTxkmEfHWGaoHGvY0OOM+wRO43qM05
-         SLOUdLk+w8W0IC1FHHYY1P1qoc/7Db5J61X4TPx153K+kdnC6o6MowsfesAt2O9jUMnn
-         YoQ+fAXtKUB3++k4GMe58+rD1NWCtaQ0Ai4VRLISszG7U23Ddtgq9FMXIIqi/hLdROLN
-         YE6w==
-X-Gm-Message-State: AOAM530D7M5UPze+7p1OQyoWDHmSE5CjgTKXkriqKfWU3Pb5A+bIF8Dx
-        I1y3CWoKv989ymfGAgp0T6w=
-X-Google-Smtp-Source: ABdhPJwmDM9WDzoRqqQPMKHR/C5hGEr3LtK5Gx07vFholyHMAQzDt8swzjiGrFOvexuo8BSwHXxzbw==
-X-Received: by 2002:a17:90b:2243:: with SMTP id hk3mr1933602pjb.216.1624345949178;
-        Tue, 22 Jun 2021 00:12:29 -0700 (PDT)
-Received: from balhae.hsd1.ca.comcast.net ([2601:647:4801:c8d0:62e3:ad14:6151:62fa])
-        by smtp.gmail.com with ESMTPSA id j4sm16449129pfj.111.2021.06.22.00.12.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 00:12:28 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Stephane Eranian <eranian@google.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: [PATCH 3/3] perf stat: Enable BPF counter with --for-each-cgroup
-Date:   Tue, 22 Jun 2021 00:12:21 -0700
-Message-Id: <20210622071221.128271-4-namhyung@kernel.org>
-X-Mailer: git-send-email 2.32.0.288.g62a8d224e6-goog
-In-Reply-To: <20210622071221.128271-1-namhyung@kernel.org>
-References: <20210622071221.128271-1-namhyung@kernel.org>
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wnyiOUTN27qCLp1aUm8KLk/Lt0Lbl+f50lhM7gkMFvk=;
+ b=NqS69aBaFYEwgDbygL23SHzT68su4w3unMzFhY2scmFofLrVaJwYsqcXomQN0qujZhvtBXHkv66IRfMy7aGLTJr+ACBVcn+Pp25rW0ACAmtaN71IGsv/NbqnZqarJamrfVHL89N8Q/8Edg/9V3TsEQcpu/anmQePbj3V7veMAgA=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
+ by CY4PR11MB1830.namprd11.prod.outlook.com (2603:10b6:903:125::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4242.21; Tue, 22 Jun
+ 2021 07:14:19 +0000
+Received: from CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::40e4:b9:53a1:de74]) by CY4PR11MB0071.namprd11.prod.outlook.com
+ ([fe80::40e4:b9:53a1:de74%6]) with mapi id 15.20.4242.023; Tue, 22 Jun 2021
+ 07:14:19 +0000
+Subject: Re: [PATCH v2] clk: zynqmp: fix compile testing without
+ ZYNQMP_FIRMWARE
+To:     Michal Simek <michal.simek@xilinx.com>,
+        linux-kernel@vger.kernel.org, monstr@monstr.eu, git@xilinx.com
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Punit Agrawal <punit1.agrawal@toshiba.co.jp>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org
+References: <fdee3a286defb103aa07b5493b805d1987885165.1624281224.git.michal.simek@xilinx.com>
+From:   "quanyang.wang" <quanyang.wang@windriver.com>
+Message-ID: <81e67a24-0076-cbbb-4af4-04dc9f3edfc9@windriver.com>
+Date:   Tue, 22 Jun 2021 15:12:46 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+In-Reply-To: <fdee3a286defb103aa07b5493b805d1987885165.1624281224.git.michal.simek@xilinx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HKAPR03CA0020.apcprd03.prod.outlook.com
+ (2603:1096:203:c9::7) To CY4PR11MB0071.namprd11.prod.outlook.com
+ (2603:10b6:910:7a::30)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [128.224.162.199] (60.247.85.82) by HKAPR03CA0020.apcprd03.prod.outlook.com (2603:1096:203:c9::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4264.7 via Frontend Transport; Tue, 22 Jun 2021 07:14:14 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 73eef260-eaf5-42a8-6f31-08d9354d5920
+X-MS-TrafficTypeDiagnostic: CY4PR11MB1830:
+X-Microsoft-Antispam-PRVS: <CY4PR11MB1830A5F754DC7370A1615652F0099@CY4PR11MB1830.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1169;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dR7tXDMsjHg9Y7oTj1zyfj2UQJtEuuPxfFdYhsil1W2/WYTiWm00ZE7kwU4f5IpCJPNdQ7hozcjQ4lhSi7ydFC6zUH8JOrnJwDuv9bOWNB6Fpi1K6tfKMOwOjayxpYdUZBMqMpVM0yTLBzV+NS25speKPx9zSv2keShos7xBlD18HE2hLgz1OGOZpRo+e0UZN/QFrFNb+3DtS3Rmbr3qvMa4v+BIubL1qa7vWMyp0ZGT+qU6V9GJNiMqKPDY38f7c9tmZyXo0fI/zC11kQbLC5PFRRNR1PmyfckQmaifzZj7kcMAtPyzjIySXPW6wKGUcI2GgqNGW/QPt5yklcZUdnUzyVgXYl+XITY4su7IKAgOvOdwx+fUVcxPLtWOYmfxb4EYRHjG0bbvlQuD2PBCMVTW9a/JzOw0vMbDq6w787eFW/ZL3dZkLHfYr8hP/+qW5Nu0P9pQacxuuJr6836f0cf1Tq4A0aOFThNwTopYfF3a3E0u1KjoPxIVAyQwmyLyLD0GHfpXTKjXaOu0wz4NXCTiELkbKCllvJSxBaiPbiXWLko+6meU2L4exRS6i589anC3r196AHOxZpnxDdcfFxxj/GYDVTmRJmCmdA4FCVkW0jgQwhkRRct7DslorxgVJIAybnbCy2KDjZDJCAM67KMXHBawVlayp8yff4WBCW4VT8DQ/+XcWKPddjkyXCWSJYDcpDrpWNgPt6Al4a7VPQ4N+fyfOm0e5O6VmJNzVO9NAE6F1pYRjBmgc9FiBvSa9m/DaX6XuvIX96JbDH8ZONkSZs9Y8A/mqfqYIaWqA/PyofwadxI2QWfmaCt3sIRlMZtD1aOPAHe33urJ6E/cdZhaX1JHNuFS1IobM4Sk0Q4=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(136003)(39850400004)(366004)(396003)(6486002)(83380400001)(186003)(66946007)(26005)(38350700002)(16526019)(478600001)(7416002)(38100700002)(36756003)(86362001)(8676002)(956004)(4326008)(2616005)(66476007)(16576012)(66556008)(52116002)(6666004)(5660300002)(54906003)(966005)(8936002)(31686004)(31696002)(6706004)(53546011)(316002)(2906002)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dG5RMEQ3UklraUZpTm5VbTN2OFJ4WEFSTTIwaUI5Z0lRU1pBVkQrcDhRVFFj?=
+ =?utf-8?B?SkYrZGFOd2JBVVpBSW02UDBPa0w3ck9kL2VtRCt5TW5hcnNaTmp4VWZzQjlt?=
+ =?utf-8?B?WWRaZlFNcVZjZ1IwZzh1TERQeU1aWFVQQ1AzZWZEeE9HNmM2dWNVN0Y5QWFX?=
+ =?utf-8?B?MzhHY1YyZms5VFFOajNDRVNlcVRLRURRQjNDTUs1cm9sUm5pdzlnZjh1SkJK?=
+ =?utf-8?B?T01XTWQwUVZSb01rSFZBK0JXOFpOQy9DVW1nR2xvZnFObHRjOCtwSlptZExh?=
+ =?utf-8?B?c2ZvMzZrOVFWZkZtUUV5cTFrUGxrS3c3ZFRlYnlnby9QREZLYlVQb0RBQVlQ?=
+ =?utf-8?B?RXUxWG9xL2VpZVN6THkveWgvY0ozYmYvYXMycHRKTXc5UzQ0S0FQTzBqVnl6?=
+ =?utf-8?B?eEtZZzNYZm1GVEZVN016b0hOdGFzRjRJaGxQWURzSm5adTFYbHRkeVEzWmQv?=
+ =?utf-8?B?Z3g5d1gvM2dwSW4vRks1MHNqaHlQb0xIalFaNzNMYmRKbkxFd21VRkZmMWtU?=
+ =?utf-8?B?OC9vSElLNnBTb3ArbXAwcHp0TW1JQzc1VW1LOHpvc1ZtWFJXS29PQ2RlY29o?=
+ =?utf-8?B?K3lWcTVDM3hmdGQwT05HU095dFFNVE8wQWEzSXlyWlRXVXh3NTZSQXRwcE5O?=
+ =?utf-8?B?VkgxMWFUazQzczdOcVBRdEdSMmI0U0JvWGVZdUhiM2FjQ0VxU2J5TWJjL3ky?=
+ =?utf-8?B?dVJUaFFFK2pWNHFmb0kwanNYZW9LVUFVcUN5R1FkUnp4ZWRhNzRDRmtqUWNa?=
+ =?utf-8?B?TDdzYXdBck92aVZUaFVHMHdpREdKbkFhUllrOXFSOVN6dEJhUnNkQUJBR09s?=
+ =?utf-8?B?Z0s1WG9BdUkxcm1ZRjNiQTlaTlNLaGVzTlh0Ymp0dDVUNDloRlZpbElZdmxI?=
+ =?utf-8?B?NjgzR1ZRSkVZNmpWUVVYMmh2M1lsUytrOXRBTzIxZUVoOTNBZ0Y1RDg1VWgw?=
+ =?utf-8?B?UGY4T01vL3RqdHJDcVMxNS9VR0RDekVEVXI4MElkZnpzMFVQQ2lyV2RncEM5?=
+ =?utf-8?B?ZGhkdnUyNHUwd3UxNU1oQmRWUWl0UDUyb3FmUXcvVTB2SFA3RG9Hb3pIVWZX?=
+ =?utf-8?B?blkzdmpCdDdDQnQ4NFREalNxaGpxWkJGcEliTnNQL3FQOVZ2TEVxMlFxZkFy?=
+ =?utf-8?B?eDhiSEltbDgycWxJQzNuNVZDSXhEWG1VSnlvalYwTDFDMklBczR4M29KTmFy?=
+ =?utf-8?B?VjBQNjBpZXhhL1JDSThreHIyalBBS3hwNk8rZ2M2bHl5OGcrQ0NhNGdqQ05S?=
+ =?utf-8?B?MERrbnBZR3UrV1JJTExaZlJBNmFvOVY4cWVxUnJpWnB5TGpsMmQzdHdaczEv?=
+ =?utf-8?B?T1ZUdjdGTUx4b0VicEZIQTNXRlJnNUcweVFqR2VUYm5DVy9nN3BFR3hKVnZQ?=
+ =?utf-8?B?VEJJMk9JSkRRcjR3aTBhdXZmWGN5THJDQjdpSjU4TmtvcUo3MXZhUG9rVWhD?=
+ =?utf-8?B?YnV2U0JwZ0JjODdlT0g0ZVJycjJSZ20rd0lNRlVvaXdQRVpyZ1hCTDlVMjB6?=
+ =?utf-8?B?YXYxWjZuWWF5U3cwdENOZXl3RE1PKzRVdjJiR2hwNEgvamQ1d01JZGhFZVVu?=
+ =?utf-8?B?NlhJelR3VkQ2cVNybFF4WU9rODZCbUJtYld6UUpTeHliZ2x6RnRYK3pNdGo1?=
+ =?utf-8?B?Ui9sTW5zVHZRNWVZRnpHRkpQTjlPckczWEFIS1BJOWVjQXZxcnVKMm1NNnRV?=
+ =?utf-8?B?cjVlbzQ1NmRrTWRwc0tOdEJ0SkhreWdmSElkRjRkUUR6Q2NmNEtLVFUrdUY0?=
+ =?utf-8?Q?LCGVMBwr3+jrBBz/RPA2m8l9VNsBFKr3no9meEU?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 73eef260-eaf5-42a8-6f31-08d9354d5920
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2021 07:14:19.3905
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mYKJgrTiuE8iuJvTflqo6NJsgoWb0tUiI7GE2jiMUNN45UGpXHcoWdbj6HF8Z4JqT2e/EL78O5PVTs9StA5tBiplSl5smptq99wLqPvI1v8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1830
+X-Proofpoint-GUID: 6rr7es3CinAuO4qJI3-18h39PgFemc4P
+X-Proofpoint-ORIG-GUID: 6rr7es3CinAuO4qJI3-18h39PgFemc4P
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.790
+ definitions=2021-06-22_04:2021-06-21,2021-06-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 bulkscore=0 mlxscore=0 suspectscore=0 adultscore=0
+ impostorscore=0 spamscore=0 mlxlogscore=999 clxscore=1011 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2106220045
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently bperf was added to use BPF to count perf events for various
-purposes.  This is an extension for the approach and targetting to
-cgroup usages.
+Hi Michal & Arnd,
 
-Unlike the other bperf, it doesn't share the events with other
-processes but it'd reduce unnecessary events (and the overhead of
-multiplexing) for each monitored cgroup within the perf session.
+On 6/21/21 9:13 PM, Michal Simek wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When the firmware code is disabled, the incomplete error handling
+> in the clk driver causes compile-time warnings:
+> 
+> drivers/clk/zynqmp/pll.c: In function 'zynqmp_pll_recalc_rate':
+> drivers/clk/zynqmp/pll.c:147:29: error: 'fbdiv' is used uninitialized [-Werror=uninitialized]
+>    147 |         rate =  parent_rate * fbdiv;
+>        |                 ~~~~~~~~~~~~^~~~~~~
+> In function 'zynqmp_pll_get_mode',
+>      inlined from 'zynqmp_pll_recalc_rate' at drivers/clk/zynqmp/pll.c:148:6:
+> drivers/clk/zynqmp/pll.c:61:27: error: 'ret_payload' is used uninitialized [-Werror=uninitialized]
+>     61 |         return ret_payload[1];
+>        |                ~~~~~~~~~~~^~~
+> drivers/clk/zynqmp/pll.c: In function 'zynqmp_pll_recalc_rate':
+> drivers/clk/zynqmp/pll.c:53:13: note: 'ret_payload' declared here
+>     53 |         u32 ret_payload[PAYLOAD_ARG_CNT];
+>        |             ^~~~~~~~~~~
+> drivers/clk/zynqmp/clk-mux-zynqmp.c: In function 'zynqmp_clk_mux_get_parent':
+> drivers/clk/zynqmp/clk-mux-zynqmp.c:57:16: error: 'val' is used uninitialized [-Werror=uninitialized]
+>     57 |         return val;
+>        |                ^~~
+> 
+> As it was apparently intentional to support this for compile testing
+> purposes, change the code to have just enough error handling for the
+> compiler to not notice the remaining bugs.
+> 
+> Fixes: 21f237534661 ("clk: zynqmp: Drop dependency on ARCH_ZYNQMP")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+> ---
+> 
+> Changes in v2:
+> Based on discussion here
+> Link: https://lore.kernel.org/r/20210421134844.3297838-1-arnd@kernel.org
+> I have updated error return value which I got from clock core based on
+> error cases.
+> 
+> zynqmp_clk_mux_get_parent() should return num_parents() as error defined in
+> clk_core_get_parent_by_index() where num_parents is incorrect index.
+> 
+> Extend zynqmp_pll_get_mode() with PLL_MODE_ERROR to handle error case.
+> 
+> zynqmp_pll_recalc_rate() returns 0 because __clk_core_init() consider 0 as
+> default rate. But maybe -1ul which was used by Arnd is also good option.
+> 
+> ---
+>   drivers/clk/zynqmp/clk-mux-zynqmp.c | 10 ++++++++--
+>   drivers/clk/zynqmp/pll.c            | 15 ++++++++++-----
+>   2 files changed, 18 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/clk/zynqmp/clk-mux-zynqmp.c b/drivers/clk/zynqmp/clk-mux-zynqmp.c
+> index 06194149be83..d576c900dee0 100644
+> --- a/drivers/clk/zynqmp/clk-mux-zynqmp.c
+> +++ b/drivers/clk/zynqmp/clk-mux-zynqmp.c
+> @@ -38,7 +38,7 @@ struct zynqmp_clk_mux {
+>    * zynqmp_clk_mux_get_parent() - Get parent of clock
+>    * @hw:		handle between common and hardware-specific interfaces
+>    *
+> - * Return: Parent index
+> + * Return: Parent index on success or number of parents in case of error
+>    */
+>   static u8 zynqmp_clk_mux_get_parent(struct clk_hw *hw)
+>   {
+> @@ -50,9 +50,15 @@ static u8 zynqmp_clk_mux_get_parent(struct clk_hw *hw)
+>   
+>   	ret = zynqmp_pm_clock_getparent(clk_id, &val);
+>   
+> -	if (ret)
+> +	if (ret) {
+>   		pr_warn_once("%s() getparent failed for clock: %s, ret = %d\n",
+>   			     __func__, clk_name, ret);
+> +		/*
+> +		 * clk_core_get_parent_by_index() takes num_parents as incorrect
+> +		 * index which is exactly what I want to return here
+> +		 */
+> +		return clk_hw_get_num_parents(hw);
+> +	}
+>   
+>   	return val;
+>   }
+> diff --git a/drivers/clk/zynqmp/pll.c b/drivers/clk/zynqmp/pll.c
+> index abe6afbf3407..3fe4d21227d0 100644
+> --- a/drivers/clk/zynqmp/pll.c
+> +++ b/drivers/clk/zynqmp/pll.c
+> @@ -31,8 +31,9 @@ struct zynqmp_pll {
+>   #define PS_PLL_VCO_MAX 3000000000UL
+>   
+>   enum pll_mode {
+> -	PLL_MODE_INT,
+> -	PLL_MODE_FRAC,
+> +	PLL_MODE_INT = 0,
+> +	PLL_MODE_FRAC = 1,
+> +	PLL_MODE_ERROR = 2,
+>   };
+>   
+>   #define FRAC_OFFSET 0x8
+> @@ -54,9 +55,11 @@ static inline enum pll_mode zynqmp_pll_get_mode(struct clk_hw *hw)
+>   	int ret;
+>   
+>   	ret = zynqmp_pm_get_pll_frac_mode(clk_id, ret_payload);
+> -	if (ret)
+> +	if (ret) {
+>   		pr_warn_once("%s() PLL get frac mode failed for %s, ret = %d\n",
+>   			     __func__, clk_name, ret);
+> +		return PLL_MODE_ERROR;
+> +	}
+>   
+>   	return ret_payload[1];
+>   }
+> @@ -126,7 +129,7 @@ static long zynqmp_pll_round_rate(struct clk_hw *hw, unsigned long rate,
+>    * @hw:			Handle between common and hardware-specific interfaces
+>    * @parent_rate:	Clock frequency of parent clock
+>    *
+> - * Return: Current clock frequency
+> + * Return: Current clock frequency or 0 in case of error
+>    */
+>   static unsigned long zynqmp_pll_recalc_rate(struct clk_hw *hw,
+>   					    unsigned long parent_rate)
+> @@ -140,9 +143,11 @@ static unsigned long zynqmp_pll_recalc_rate(struct clk_hw *hw,
+>   	int ret;
+>   
+>   	ret = zynqmp_pm_clock_getdivider(clk_id, &fbdiv);
+> -	if (ret)
+> +	if (ret) {
+>   		pr_warn_once("%s() get divider failed for %s, ret = %d\n",
+>   			     __func__, clk_name, ret);
+> +		return 0ul;
+> +	}
+>   
+Since zynqmp_pll_get_mode may return err now, maybe here should add a 
+condition check for PLL_MODE_ERR:
+	if (zynqmp_pll_get_mode(hw) == PLL_MODE_ERR)
+		return 0ul;
 
-When --for-each-cgroup is used with --bpf-counters, it will open
-cgroup-switches event per cpu internally and attach the new BPF
-program to read given perf_events and to aggregate the results for
-cgroups.  It's only called when task is switched to a task in a
-different cgroup.
-
-Cc: Song Liu <songliubraving@fb.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/Makefile.perf                    |   7 +-
- tools/perf/util/Build                       |   1 +
- tools/perf/util/bpf_counter.c               |   5 +
- tools/perf/util/bpf_counter_cgroup.c        | 337 ++++++++++++++++++++
- tools/perf/util/bpf_skel/bperf_cgroup.bpf.c | 207 ++++++++++++
- tools/perf/util/cgroup.c                    |   2 +
- tools/perf/util/cgroup.h                    |   1 +
- 7 files changed, 559 insertions(+), 1 deletion(-)
- create mode 100644 tools/perf/util/bpf_counter_cgroup.c
- create mode 100644 tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-
-diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
-index e47f04e5b51e..786cba8f3798 100644
---- a/tools/perf/Makefile.perf
-+++ b/tools/perf/Makefile.perf
-@@ -1015,6 +1015,7 @@ SKEL_OUT := $(abspath $(OUTPUT)util/bpf_skel)
- SKEL_TMP_OUT := $(abspath $(SKEL_OUT)/.tmp)
- SKELETONS := $(SKEL_OUT)/bpf_prog_profiler.skel.h
- SKELETONS += $(SKEL_OUT)/bperf_leader.skel.h $(SKEL_OUT)/bperf_follower.skel.h
-+SKELETONS += $(SKEL_OUT)/bperf_cgroup.skel.h
- 
- ifdef BUILD_BPF_SKEL
- BPFTOOL := $(SKEL_TMP_OUT)/bootstrap/bpftool
-@@ -1032,7 +1033,11 @@ $(SKEL_TMP_OUT)/%.bpf.o: util/bpf_skel/%.bpf.c $(LIBBPF) | $(SKEL_TMP_OUT)
- 	$(QUIET_CLANG)$(CLANG) -g -O2 -target bpf -Wall -Werror $(BPF_INCLUDE) \
- 	  -c $(filter util/bpf_skel/%.bpf.c,$^) -o $@ && $(LLVM_STRIP) -g $@
- 
--$(SKEL_OUT)/%.skel.h: $(SKEL_TMP_OUT)/%.bpf.o | $(BPFTOOL)
-+$(SKEL_OUT)/vmlinux.h:
-+	$(MAKE) -C ../bpf/bpftool OUTPUT=$(SKEL_TMP_OUT)/ $(SKEL_TMP_OUT)/vmlinux.h
-+	$(Q)mv $(SKEL_TMP_OUT)/vmlinux.h $(SKEL_OUT)/vmlinux.h
-+
-+$(SKEL_OUT)/%.skel.h: $(SKEL_TMP_OUT)/%.bpf.o $(SKEL_OUT)/vmlinux.h | $(BPFTOOL)
- 	$(QUIET_GENSKEL)$(BPFTOOL) gen skeleton $< > $@
- 
- bpf-skel: $(SKELETONS)
-diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-index 95e15d1035ab..700d635448ff 100644
---- a/tools/perf/util/Build
-+++ b/tools/perf/util/Build
-@@ -140,6 +140,7 @@ perf-y += clockid.o
- perf-$(CONFIG_LIBBPF) += bpf-loader.o
- perf-$(CONFIG_LIBBPF) += bpf_map.o
- perf-$(CONFIG_PERF_BPF_SKEL) += bpf_counter.o
-+perf-$(CONFIG_PERF_BPF_SKEL) += bpf_counter_cgroup.o
- perf-$(CONFIG_BPF_PROLOGUE) += bpf-prologue.o
- perf-$(CONFIG_LIBELF) += symbol-elf.o
- perf-$(CONFIG_LIBELF) += probe-file.o
-diff --git a/tools/perf/util/bpf_counter.c b/tools/perf/util/bpf_counter.c
-index 974f10e356f0..7812c5d9b826 100644
---- a/tools/perf/util/bpf_counter.c
-+++ b/tools/perf/util/bpf_counter.c
-@@ -22,6 +22,7 @@
- #include "evsel.h"
- #include "evlist.h"
- #include "target.h"
-+#include "cgroup.h"
- #include "cpumap.h"
- #include "thread_map.h"
- 
-@@ -792,6 +793,8 @@ struct bpf_counter_ops bperf_ops = {
- 	.destroy    = bperf__destroy,
- };
- 
-+extern struct bpf_counter_ops bperf_cgrp_ops;
-+
- static inline bool bpf_counter_skip(struct evsel *evsel)
- {
- 	return list_empty(&evsel->bpf_counter_list) &&
-@@ -809,6 +812,8 @@ int bpf_counter__load(struct evsel *evsel, struct target *target)
- {
- 	if (target->bpf_str)
- 		evsel->bpf_counter_ops = &bpf_program_profiler_ops;
-+	else if (cgrp_event_expanded && target->use_bpf)
-+		evsel->bpf_counter_ops = &bperf_cgrp_ops;
- 	else if (target->use_bpf || evsel->bpf_counter ||
- 		 evsel__match_bpf_counter_events(evsel->name))
- 		evsel->bpf_counter_ops = &bperf_ops;
-diff --git a/tools/perf/util/bpf_counter_cgroup.c b/tools/perf/util/bpf_counter_cgroup.c
-new file mode 100644
-index 000000000000..86cf26d712b8
---- /dev/null
-+++ b/tools/perf/util/bpf_counter_cgroup.c
-@@ -0,0 +1,337 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/* Copyright (c) 2019 Facebook */
-+/* Copyright (c) 2021 Google */
-+
-+#include <assert.h>
-+#include <limits.h>
-+#include <unistd.h>
-+#include <sys/file.h>
-+#include <sys/time.h>
-+#include <sys/resource.h>
-+#include <linux/err.h>
-+#include <linux/zalloc.h>
-+#include <linux/perf_event.h>
-+#include <bpf/bpf.h>
-+#include <bpf/btf.h>
-+#include <bpf/libbpf.h>
-+#include <api/fs/fs.h>
-+#include <perf/bpf_perf.h>
-+
-+#include "affinity.h"
-+#include "bpf_counter.h"
-+#include "cgroup.h"
-+#include "counts.h"
-+#include "debug.h"
-+#include "evsel.h"
-+#include "evlist.h"
-+#include "target.h"
-+#include "cpumap.h"
-+#include "thread_map.h"
-+
-+#include "bpf_skel/bperf_cgroup.skel.h"
-+
-+static struct perf_event_attr cgrp_switch_attr = {
-+	.type = PERF_TYPE_SOFTWARE,
-+	.config = PERF_COUNT_SW_CGROUP_SWITCHES,
-+	.size = sizeof(cgrp_switch_attr),
-+	.sample_period = 1,
-+	.disabled = 1,
-+};
-+
-+static struct evsel *cgrp_switch;
-+static struct xyarray *cgrp_prog_fds;
-+static struct bperf_cgroup_bpf *skel;
-+
-+#define FD(evt, cpu) (*(int *)xyarray__entry(evt->core.fd, cpu, 0))
-+#define PROG(cpu)    (*(int *)xyarray__entry(cgrp_prog_fds, cpu, 0))
-+
-+static void set_max_rlimit(void)
-+{
-+	struct rlimit rinf = { RLIM_INFINITY, RLIM_INFINITY };
-+
-+	setrlimit(RLIMIT_MEMLOCK, &rinf);
-+}
-+
-+static __u32 bpf_link_get_prog_id(int fd)
-+{
-+	struct bpf_link_info link_info = {0};
-+	__u32 link_info_len = sizeof(link_info);
-+
-+	bpf_obj_get_info_by_fd(fd, &link_info, &link_info_len);
-+	return link_info.prog_id;
-+}
-+
-+static int bperf_load_program(struct evlist *evlist)
-+{
-+	struct bpf_link *link;
-+	struct evsel *evsel;
-+	struct cgroup *cgrp, *leader_cgrp;
-+	__u32 i, cpu, prog_id;
-+	int nr_cpus = evlist->core.all_cpus->nr;
-+	int map_size, map_fd;
-+	int prog_fd, err;
-+
-+	skel = bperf_cgroup_bpf__open();
-+	if (!skel) {
-+		pr_err("Failed to open cgroup skeleton\n");
-+		return -1;
-+	}
-+
-+	skel->rodata->num_cpus = nr_cpus;
-+	skel->rodata->num_events = evlist->core.nr_entries / nr_cgroups;
-+
-+	BUG_ON(evlist->core.nr_entries % nr_cgroups != 0);
-+
-+	/* we need one copy of events per cpu for reading */
-+	map_size = nr_cpus * evlist->core.nr_entries / nr_cgroups;
-+	bpf_map__resize(skel->maps.events, map_size);
-+	bpf_map__resize(skel->maps.cpu_idx, nr_cpus);
-+	bpf_map__resize(skel->maps.cgrp_idx, nr_cgroups);
-+	/* previous result is saved in a per-cpu array */
-+	map_size = evlist->core.nr_entries / nr_cgroups;
-+	bpf_map__resize(skel->maps.prev_readings, map_size);
-+	/* cgroup result needs all events */
-+	map_size = nr_cpus * evlist->core.nr_entries;
-+	bpf_map__resize(skel->maps.cgrp_readings, map_size);
-+
-+	set_max_rlimit();
-+
-+	err = bperf_cgroup_bpf__load(skel);
-+	if (err) {
-+		pr_err("Failed to load cgroup skeleton\n");
-+		goto out;
-+	}
-+
-+	if (cgroup_is_v2("perf_event") > 0)
-+		skel->bss->use_cgroup_v2 = 1;
-+
-+	err = -1;
-+
-+	cgrp_switch = evsel__new(&cgrp_switch_attr);
-+	if (evsel__open_per_cpu(cgrp_switch, evlist->core.all_cpus, -1) < 0) {
-+		pr_err("Failed to open cgroup switches event\n");
-+		goto out;
-+	}
-+
-+	map_fd = bpf_map__fd(skel->maps.cpu_idx);
-+	if (map_fd < 0) {
-+		pr_err("cannot get cpu idx map\n");
-+		goto out;
-+	}
-+
-+	cgrp_prog_fds = xyarray__new(nr_cpus, 1, sizeof(int));
-+	if (!cgrp_prog_fds) {
-+		pr_err("Failed to allocate cgroup switch prog fd\n");
-+		goto out;
-+	}
-+
-+	for (i = 0; i < nr_cpus; i++) {
-+		link = bpf_program__attach_perf_event(skel->progs.on_switch,
-+						      FD(cgrp_switch, i));
-+		if (IS_ERR(link)) {
-+			pr_err("Failed to attach cgroup program\n");
-+			err = PTR_ERR(link);
-+			goto out;
-+		}
-+
-+		/* update cpu index in case there are missing cpus */
-+		cpu = evlist->core.all_cpus->map[i];
-+		bpf_map_update_elem(map_fd, &cpu, &i, BPF_ANY);
-+
-+		prog_id = bpf_link_get_prog_id(bpf_link__fd(link));
-+		PROG(i) = bpf_prog_get_fd_by_id(prog_id);
-+	}
-+
-+	/*
-+	 * Update cgrp_idx map from cgroup-id to event index.
-+	 */
-+	cgrp = NULL;
-+	i = 0;
-+
-+	evlist__for_each_entry(evlist, evsel) {
-+		if (cgrp == NULL || evsel->cgrp == leader_cgrp) {
-+			leader_cgrp = evsel->cgrp;
-+			evsel->cgrp = NULL;
-+
-+			/* open single copy of the events w/o cgroup */
-+			err = evsel__open_per_cpu(evsel, evlist->core.all_cpus, -1);
-+			if (err) {
-+				pr_err("Failed to open first cgroup events\n");
-+				goto out;
-+			}
-+
-+			map_fd = bpf_map__fd(skel->maps.events);
-+			for (cpu = 0; cpu < nr_cpus; cpu++) {
-+				__u32 idx = evsel->idx * nr_cpus + cpu;
-+				int fd = FD(evsel, cpu);
-+
-+				bpf_map_update_elem(map_fd, &idx, &fd, BPF_ANY);
-+			}
-+
-+			evsel->cgrp = leader_cgrp;
-+		}
-+		evsel->supported = true;
-+
-+		if (evsel->cgrp == cgrp)
-+			continue;
-+
-+		cgrp = evsel->cgrp;
-+
-+		if (read_cgroup_id(cgrp) < 0) {
-+			pr_debug("Failed to get cgroup id\n");
-+			err = -1;
-+			goto out;
-+		}
-+
-+		map_fd = bpf_map__fd(skel->maps.cgrp_idx);
-+		bpf_map_update_elem(map_fd, &cgrp->id, &i, BPF_ANY);
-+
-+		i++;
-+	}
-+
-+	/*
-+	 * bperf uses BPF_PROG_TEST_RUN to get accurate reading. Check
-+	 * whether the kernel support it
-+	 */
-+	prog_fd = bpf_program__fd(skel->progs.trigger_read);
-+	err = bperf_trigger_reading(prog_fd, 0);
-+	if (err) {
-+		pr_debug("The kernel does not support test_run for raw_tp BPF programs.\n"
-+			 "Therefore, --for-each-cgroup might show inaccurate readings\n");
-+	}
-+
-+out:
-+	return err;
-+}
-+
-+static int bperf_cgrp__load(struct evsel *evsel, struct target *target)
-+{
-+	static bool bperf_loaded = false;
-+
-+	evsel->bperf_leader_prog_fd = -1;
-+	evsel->bperf_leader_link_fd = -1;
-+
-+	if (!bperf_loaded && bperf_load_program(evsel->evlist))
-+		return -1;
-+
-+	bperf_loaded = true;
-+	/* just to bypass bpf_counter_skip() */
-+	evsel->follower_skel = (struct bperf_follower_bpf *)skel;
-+
-+	return 0;
-+}
-+
-+static int bperf_cgrp__install_pe(struct evsel *evsel, int cpu, int fd)
-+{
-+	/* nothing to do */
-+	return 0;
-+}
-+
-+/* trigger the leader program on a cpu */
-+static int bperf_trigger_reading(int prog_fd, int cpu)
-+{
-+	DECLARE_LIBBPF_OPTS(bpf_test_run_opts, opts,
-+			    .ctx_in = NULL,
-+			    .ctx_size_in = 0,
-+			    .flags = BPF_F_TEST_RUN_ON_CPU,
-+			    .cpu = cpu,
-+			    .retval = 0,
-+		);
-+
-+	return bpf_prog_test_run_opts(prog_fd, &opts);
-+}
-+/*
-+ * trigger the leader prog on each cpu, so the cgrp_reading map could get
-+ * the latest results.
-+ */
-+static int bperf_sync_counters(struct evlist *evlist)
-+{
-+	int i, cpu;
-+	int nr_cpus = evlist->core.all_cpus->nr;
-+	int prog_fd = bpf_program__fd(skel->progs.trigger_read);
-+
-+	for (i = 0; i < nr_cpus; i++) {
-+		cpu = evlist->core.all_cpus->map[i];
-+		bperf_trigger_reading(prog_fd, cpu);
-+	}
-+
-+	return 0;
-+}
-+
-+static int bperf_cgrp__enable(struct evsel *evsel)
-+{
-+	skel->bss->enabled = 1;
-+	return 0;
-+}
-+
-+static int bperf_cgrp__disable(struct evsel *evsel)
-+{
-+	if (evsel->idx)
-+		return 0;
-+
-+	bperf_sync_counters(evsel->evlist);
-+
-+	skel->bss->enabled = 0;
-+	return 0;
-+}
-+
-+static int bperf_cgrp__read(struct evsel *evsel)
-+{
-+	struct evlist *evlist = evsel->evlist;
-+	int i, nr_cpus = evlist->core.all_cpus->nr;
-+	struct perf_counts_values *counts;
-+	struct bpf_perf_event_value values;
-+	struct cgroup *cgrp = NULL;
-+	int cgrp_idx = -1;
-+	int reading_map_fd, err = 0;
-+	__u32 idx;
-+
-+	if (evsel->idx)
-+		return 0;
-+
-+	reading_map_fd = bpf_map__fd(skel->maps.cgrp_readings);
-+
-+	evlist__for_each_entry(evlist, evsel) {
-+		if (cgrp != evsel->cgrp) {
-+			cgrp = evsel->cgrp;
-+			cgrp_idx++;
-+		}
-+
-+		for (i = 0; i < nr_cpus; i++) {
-+			idx = evsel->idx * nr_cpus + i;
-+			err = bpf_map_lookup_elem(reading_map_fd, &idx, &values);
-+			if (err)
-+				goto out;
-+
-+			counts = perf_counts(evsel->counts, i, 0);
-+			counts->val = values.counter;
-+			counts->ena = values.enabled;
-+			counts->run = values.running;
-+		}
-+	}
-+
-+out:
-+	return err;
-+}
-+
-+static int bperf_cgrp__destroy(struct evsel *evsel)
-+{
-+	if (evsel->idx)
-+		return 0;
-+
-+	bperf_cgroup_bpf__destroy(skel);
-+	evsel__delete(cgrp_switch);  // it'll destroy on_switch progs too
-+	free(cgrp_prog_fds);
-+
-+	return 0;
-+}
-+
-+struct bpf_counter_ops bperf_cgrp_ops = {
-+	.load       = bperf_cgrp__load,
-+	.enable     = bperf_cgrp__enable,
-+	.disable    = bperf_cgrp__disable,
-+	.read       = bperf_cgrp__read,
-+	.install_pe = bperf_cgrp__install_pe,
-+	.destroy    = bperf_cgrp__destroy,
-+};
-diff --git a/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-new file mode 100644
-index 000000000000..6d74e93dd1f5
---- /dev/null
-+++ b/tools/perf/util/bpf_skel/bperf_cgroup.bpf.c
-@@ -0,0 +1,207 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+// Copyright (c) 2021 Facebook
-+// Copyright (c) 2021 Google
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+
-+#define MAX_LEVELS  10  // max cgroup hierarchy level: arbitrary
-+#define MAX_EVENTS  32  // max events per cgroup: arbitrary
-+
-+// NOTE: many of map and global data will be modified before loading
-+//       from the userspace (perf tool) using the skeleton helpers.
-+
-+// single set of global perf events to measure
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(int));
-+	__uint(max_entries, 1);
-+} events SEC(".maps");
-+
-+// from logical cpu number to event index
-+// useful when user wants to count subset of cpus
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(__u32));
-+	__uint(max_entries, 1);
-+} cpu_idx SEC(".maps");
-+
-+// from cgroup id to event index
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(key_size, sizeof(__u64));
-+	__uint(value_size, sizeof(__u32));
-+	__uint(max_entries, 1);
-+} cgrp_idx SEC(".maps");
-+
-+// per-cpu event snapshots to calculate delta
-+struct {
-+	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(struct bpf_perf_event_value));
-+} prev_readings SEC(".maps");
-+
-+// aggregated event values for each cgroup
-+// will be read from the user-space
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(key_size, sizeof(__u32));
-+	__uint(value_size, sizeof(struct bpf_perf_event_value));
-+} cgrp_readings SEC(".maps");
-+
-+const volatile __u32 num_events = 1;
-+const volatile __u32 num_cpus = 1;
-+
-+int enabled = 0;
-+int use_cgroup_v2 = 0;
-+
-+static inline int get_cgroup_v1_idx(__u32 *cgrps, int size)
-+{
-+	struct task_struct *p = (void *)bpf_get_current_task();
-+	struct cgroup *cgrp;
-+	register int i = 0;
-+	__u32 *elem;
-+	int level;
-+	int cnt;
-+
-+	cgrp = BPF_CORE_READ(p, cgroups, subsys[perf_event_cgrp_id], cgroup);
-+	level = BPF_CORE_READ(cgrp, level);
-+
-+	for (cnt = 0; i < MAX_LEVELS; i++) {
-+		__u64 cgrp_id;
-+
-+		if (i > level)
-+			break;
-+
-+		// convert cgroup-id to a map index
-+		cgrp_id = BPF_CORE_READ(cgrp, ancestor_ids[i]);
-+		elem = bpf_map_lookup_elem(&cgrp_idx, &cgrp_id);
-+		if (!elem)
-+			continue;
-+
-+		cgrps[cnt++] = *elem;
-+		if (cnt == size)
-+			break;
-+	}
-+
-+	return cnt;
-+}
-+
-+static inline int get_cgroup_v2_idx(__u32 *cgrps, int size)
-+{
-+	register int i = 0;
-+	__u32 *elem;
-+	int cnt;
-+
-+	for (cnt = 0; i < MAX_LEVELS; i++) {
-+		__u64 cgrp_id = bpf_get_current_ancestor_cgroup_id(i);
-+
-+		if (cgrp_id == 0)
-+			break;
-+
-+		// convert cgroup-id to a map index
-+		elem = bpf_map_lookup_elem(&cgrp_idx, &cgrp_id);
-+		if (!elem)
-+			continue;
-+
-+		cgrps[cnt++] = *elem;
-+		if (cnt == size)
-+			break;
-+	}
-+
-+	return cnt;
-+}
-+
-+static int bperf_cgroup_count(void)
-+{
-+	register __u32 idx = 0;  // to have it in a register to pass BPF verifier
-+	register int c = 0;
-+	struct bpf_perf_event_value val, delta, *prev_val, *cgrp_val;
-+	__u32 cpu = bpf_get_smp_processor_id();
-+	__u32 cgrp_idx[MAX_LEVELS];
-+	int cgrp_cnt;
-+	__u32 evt_idx, key, cgrp;
-+	__u32 *elem;
-+	long err;
-+
-+	// map the current CPU to a CPU index, particularly necessary if there
-+	// are fewer CPUs profiled on than all CPUs.
-+	elem = bpf_map_lookup_elem(&cpu_idx, &cpu);
-+	if (!elem)
-+		return 0;
-+	cpu = *elem;
-+
-+	if (use_cgroup_v2)
-+		cgrp_cnt = get_cgroup_v2_idx(cgrp_idx, MAX_LEVELS);
-+	else
-+		cgrp_cnt = get_cgroup_v1_idx(cgrp_idx, MAX_LEVELS);
-+
-+	for ( ; idx < MAX_EVENTS; idx++) {
-+		if (idx == num_events)
-+			break;
-+
-+		// XXX: do not pass idx directly (for verifier)
-+		key = idx;
-+		// this is per-cpu array for diff
-+		prev_val = bpf_map_lookup_elem(&prev_readings, &key);
-+		if (!prev_val) {
-+			val.counter = val.enabled = val.running = 0;
-+			bpf_map_update_elem(&prev_readings, &key, &val, BPF_ANY);
-+
-+			prev_val = bpf_map_lookup_elem(&prev_readings, &key);
-+			if (!prev_val)
-+				continue;
-+		}
-+
-+		// read from global event array
-+		evt_idx = idx * num_cpus + cpu;
-+		err = bpf_perf_event_read_value(&events, evt_idx, &val, sizeof(val));
-+		if (err)
-+			continue;
-+
-+		if (enabled) {
-+			delta.counter = val.counter - prev_val->counter;
-+			delta.enabled = val.enabled - prev_val->enabled;
-+			delta.running = val.running - prev_val->running;
-+
-+			for (c = 0; c < MAX_LEVELS; c++) {
-+				if (c == cgrp_cnt)
-+					break;
-+
-+				cgrp = cgrp_idx[c];
-+
-+				// aggregate the result by cgroup
-+				key = cgrp * num_cpus * num_events + evt_idx;
-+				cgrp_val = bpf_map_lookup_elem(&cgrp_readings, &key);
-+				if (cgrp_val) {
-+					cgrp_val->counter += delta.counter;
-+					cgrp_val->enabled += delta.enabled;
-+					cgrp_val->running += delta.running;
-+				} else {
-+					bpf_map_update_elem(&cgrp_readings, &key, &delta, BPF_ANY);
-+				}
-+			}
-+		}
-+
-+		*prev_val = val;
-+	}
-+	return 0;
-+}
-+
-+// This will be attached to cgroup-switches event for each cpu
-+SEC("perf_events")
-+int BPF_PROG(on_cgrp_switch)
-+{
-+	return bperf_cgroup_count();
-+}
-+
-+SEC("raw_tp/sched_switch")
-+int BPF_PROG(trigger_read)
-+{
-+	return bperf_cgroup_count();
-+}
-+
-+char LICENSE[] SEC("license") = "Dual BSD/GPL";
-diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
-index 48ec79211270..f7d07b365401 100644
---- a/tools/perf/util/cgroup.c
-+++ b/tools/perf/util/cgroup.c
-@@ -18,6 +18,7 @@
- #include <regex.h>
- 
- int nr_cgroups;
-+bool cgrp_event_expanded;
- 
- /* used to match cgroup name with patterns */
- struct cgroup_name {
-@@ -484,6 +485,7 @@ int evlist__expand_cgroup(struct evlist *evlist, const char *str,
- 	}
- 
- 	ret = 0;
-+	cgrp_event_expanded = true;
- 
- out_err:
- 	evlist__delete(orig_list);
-diff --git a/tools/perf/util/cgroup.h b/tools/perf/util/cgroup.h
-index 1549ec2fd348..21f7ccc566e1 100644
---- a/tools/perf/util/cgroup.h
-+++ b/tools/perf/util/cgroup.h
-@@ -17,6 +17,7 @@ struct cgroup {
- };
- 
- extern int nr_cgroups; /* number of explicit cgroups defined */
-+extern bool cgrp_event_expanded;
- 
- struct cgroup *cgroup__get(struct cgroup *cgroup);
- void cgroup__put(struct cgroup *cgroup);
--- 
-2.32.0.288.g62a8d224e6-goog
-
+Thanks,
+Quanyang
+>   	rate =  parent_rate * fbdiv;
+>   	if (zynqmp_pll_get_mode(hw) == PLL_MODE_FRAC) {
+> 
