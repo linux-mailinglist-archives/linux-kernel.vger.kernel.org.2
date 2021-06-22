@@ -2,136 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87C373B05E5
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD9E43B05E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:36:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230454AbhFVNgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 09:36:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32922 "EHLO
+        id S231180AbhFVNig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 09:38:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbhFVNgm (ORCPT
+        with ESMTP id S229907AbhFVNif (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 09:36:42 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05625C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 06:34:26 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id r5so36044989lfr.5
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 06:34:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VpDilbWjWRuwm2Y0aj2xxaAxAvje8bBd6jPUCV3pOXQ=;
-        b=fMPS6tmNxJ4WajUXO/WI+lAB/0vRCw/g40VCYzUAplHrCiShgYL4/pOWQt53jgsCrf
-         grGcdhQjl09EnXls7tfkPf8x+Ekama0Z44pP8gN135yakp6jJ7WWKkoYaJkmCL6OFLUP
-         nzOd+zztLMvLPOmX/8NCU+Nk6hN+3hpThfa+ReQZO3uaXdRMX34IHf9sOOvRgnLkv9G6
-         alLI1QKAtA9yVaF6DuEsmIzeEi1WOWG1sjS4RoyJ/m5jVWPmmDB72ai9HnffPCdZGRoU
-         45nWuPRiQFyqomMSwjaZkjlqTkynSdsmN1sLTW+F35Ra3uJpZOrA6cn28uqXYgBBKVYK
-         yvuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VpDilbWjWRuwm2Y0aj2xxaAxAvje8bBd6jPUCV3pOXQ=;
-        b=QtjXWH+d32JAd/BaEXCcHv8KJL3YsQtnjwpelUoJ+zLKCagLNz4A5XTbp3o34CSB07
-         XlJnTe6b7lm3bsf34OietRdH3T52SEFVVBrxBF+tHVwxa9q8UAgJIuEoiSfbE/9soPGg
-         cUIscaNtwLxjbXCmdbH8Pt5HaNXItocvWn0LVwM1VQDwjJmvV/konGZH+03HXqfBuvwt
-         BlwUvip3x+bhoJw4+eO8m32TwQE3VPF6pGCEsJUpDJp5bQMww+jA090CwM8lUdl1wJzx
-         E2lxnsp1U3RRBWzae7hQ3G+yka7YZCrYLxLXgn8yOCpRA4fA2dETocacIYrd2vv3kMmB
-         l9jg==
-X-Gm-Message-State: AOAM533Y+VhoZtb7hGtCVB7ZGTlgG5A6VOemWwMY0vhfX82ucVuSPWNr
-        /Y5boVEbVPLVceqgeNnYZiE=
-X-Google-Smtp-Source: ABdhPJyfiEMp266a5Vc5gXIKMSmpRt+IMoLHqhjEwQPGGcLOElP7Q+Iu0ooyEO/TCg6nVx1MPndmrQ==
-X-Received: by 2002:ac2:5192:: with SMTP id u18mr2841831lfi.619.1624368864308;
-        Tue, 22 Jun 2021 06:34:24 -0700 (PDT)
-Received: from localhost ([178.151.124.169])
-        by smtp.gmail.com with ESMTPSA id l27sm2790583ljb.90.2021.06.22.06.34.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Jun 2021 06:34:23 -0700 (PDT)
-From:   Roman Skakun <rm.skakun@gmail.com>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        xen-devel@lists.xenproject.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>,
-        Volodymyr Babchuk <volodymyr_babchuk@epam.com>,
-        Roman Skakun <rm.skakun@gmail.com>,
-        Roman Skakun <roman_skakun@epam.com>,
-        Andrii Anisov <andrii_anisov@epam.com>
-Subject: [PATCH v2] dma-mapping: use vmalloc_to_page for vmalloc addresses
-Date:   Tue, 22 Jun 2021 16:34:14 +0300
-Message-Id: <20210622133414.132754-1-rm.skakun@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210616154436.GA7619@lst.de>
-References: <20210616154436.GA7619@lst.de>
+        Tue, 22 Jun 2021 09:38:35 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C64B0C061574;
+        Tue, 22 Jun 2021 06:36:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ZMVUEa2ftu4FuJfVBY24GiGS9yAP+xLlFfBh5dASAjQ=; b=Y15Sro6mF/ZIERWCYj4rfBGnD9
+        pXk15J5EwKJaUdT5xwRI6kPHj26CgJU4wYy6MH/7Doq9VkHC3clV5941/G11jeXHxa85wD7+E+6a9
+        vj1MAaTq/uBQ2fbwh49bFJLC2uooJjgArmm35T3+Y/7f3p487EfIGnzgeWFFHrKYsS85PKFY8mv7X
+        p/WxLe+dWA2oFov5QPXUcFuVUrsfbuppAAfAJjffWKycnTvTBNx7UesBiU8F5jEi+Kax2yGJVf1TU
+        ZI5iTcntKeHZCNjLvAor1U2mRC1EwVvERSC0zjVdYMT7oN6Q88f4ZBkDWzhNCGN1rfd5NxA777mOo
+        wpKiDJqQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lvgZL-00Abs3-77; Tue, 22 Jun 2021 13:36:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BA75830021A;
+        Tue, 22 Jun 2021 15:36:03 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9C9572C733666; Tue, 22 Jun 2021 15:36:03 +0200 (CEST)
+Date:   Tue, 22 Jun 2021 15:36:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH] perf/x86/intel: Fix PEBS-via-PT reload base value
+ for Extended PEBS
+Message-ID: <YNHnQzECTcFGOoHO@hirez.programming.kicks-ass.net>
+References: <20210621034710.31107-1-likexu@tencent.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621034710.31107-1-likexu@tencent.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This commit is dedicated to fix incorrect conversion from
-cpu_addr to page address in cases when we get virtual
-address which allocated in the vmalloc range.
-As the result, virt_to_page() cannot convert this address
-properly and return incorrect page address.
+On Mon, Jun 21, 2021 at 11:47:10AM +0800, Like Xu wrote:
+> If we use the "PEBS-via-PT" feature on a platform that supports
+> extended PBES, like this:
+> 
+>     perf record -c 10000 \
+>     -e '{intel_pt/branch=0/,branch-instructions/aux-output/p}' uname
+> 
+> we will encounter the following call trace:
+> 
+> [  250.906542] unchecked MSR access error: WRMSR to 0x14e1 (tried to write
+> 0x0000000000000000) at rIP: 0xffffffff88073624 (native_write_msr+0x4/0x20)
+> [  250.920779] Call Trace:
+> [  250.923508]  intel_pmu_pebs_enable+0x12c/0x190
+> [  250.928359]  intel_pmu_enable_event+0x346/0x390
+> [  250.933300]  x86_pmu_start+0x64/0x80
+> [  250.937231]  x86_pmu_enable+0x16a/0x2f0
+> [  250.941434]  perf_event_exec+0x144/0x4c0
+> [  250.945731]  begin_new_exec+0x650/0xbf0
+> [  250.949933]  load_elf_binary+0x13e/0x1700
+> [  250.954321]  ? lock_acquire+0xc2/0x390
+> [  250.958430]  ? bprm_execve+0x34f/0x8a0
+> [  250.962544]  ? lock_is_held_type+0xa7/0x120
+> [  250.967118]  ? find_held_lock+0x32/0x90
+> [  250.971321]  ? sched_clock_cpu+0xc/0xb0
+> [  250.975527]  bprm_execve+0x33d/0x8a0
+> [  250.979452]  do_execveat_common.isra.0+0x161/0x1d0
+> [  250.984673]  __x64_sys_execve+0x33/0x40
+> [  250.988877]  do_syscall_64+0x3d/0x80
+> [  250.992806]  entry_SYSCALL_64_after_hwframe+0x44/0xae
+> [  250.998302] RIP: 0033:0x7fbc971d82fb
+> [  251.002235] Code: Unable to access opcode bytes at RIP 0x7fbc971d82d1.
+> [  251.009303] RSP: 002b:00007fffb8aed808 EFLAGS: 00000202 ORIG_RAX: 000000000000003b
+> [  251.017478] RAX: ffffffffffffffda RBX: 00007fffb8af2f00 RCX: 00007fbc971d82fb
+> [  251.025187] RDX: 00005574792aac50 RSI: 00007fffb8af2f00 RDI: 00007fffb8aed810
+> [  251.032901] RBP: 00007fffb8aed970 R08: 0000000000000020 R09: 00007fbc9725c8b0
+> [  251.040613] R10: 6d6c61632f6d6f63 R11: 0000000000000202 R12: 00005574792aac50
+> [  251.048327] R13: 00007fffb8af35f0 R14: 00005574792aafdf R15: 00005574792aafe7
+> 
+> This is because the target reload msr address is calculated
+> based on the wrong base msr and the target reload msr value
+> is accessed from ds->pebs_event_reset[] with the wrong offset.
+> 
+> According to Intel SDM Table 2-14, for extended PBES feature,
+> the reload msr for MSR_IA32_FIXED_CTRx should be based on
+> MSR_RELOAD_FIXED_CTRx.
+> 
+> For fixed counters, let's fix it by overriding the reload msr
+> address and its value, thus avoiding out-of-bounds access.
+> 
+> Fixes: 42880f726c66("perf/x86/intel: Support PEBS output to PT")
+> Signed-off-by: Like Xu <likexu@tencent.com>
 
-Need to detect such cases and obtains the page address using
-vmalloc_to_page() instead.
-
-Signed-off-by: Roman Skakun <roman_skakun@epam.com>
-Reviewed-by: Andrii Anisov <andrii_anisov@epam.com>
----
-Hey!
-Thanks for suggestions, Christoph!
-I updated the patch according to your advice.
-But, I'm so surprised because nobody catches this problem
-in the common code before. It looks a bit strange as for me. 
-
-
- kernel/dma/ops_helpers.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/dma/ops_helpers.c b/kernel/dma/ops_helpers.c
-index 910ae69cae77..782728d8a393 100644
---- a/kernel/dma/ops_helpers.c
-+++ b/kernel/dma/ops_helpers.c
-@@ -5,6 +5,14 @@
-  */
- #include <linux/dma-map-ops.h>
- 
-+static struct page *cpu_addr_to_page(void *cpu_addr)
-+{
-+	if (is_vmalloc_addr(cpu_addr))
-+		return vmalloc_to_page(cpu_addr);
-+	else
-+		return virt_to_page(cpu_addr);
-+}
-+
- /*
-  * Create scatter-list for the already allocated DMA buffer.
-  */
-@@ -12,7 +20,7 @@ int dma_common_get_sgtable(struct device *dev, struct sg_table *sgt,
- 		 void *cpu_addr, dma_addr_t dma_addr, size_t size,
- 		 unsigned long attrs)
- {
--	struct page *page = virt_to_page(cpu_addr);
-+	struct page *page = cpu_addr_to_page(cpu_addr);
- 	int ret;
- 
- 	ret = sg_alloc_table(sgt, 1, GFP_KERNEL);
-@@ -43,7 +51,7 @@ int dma_common_mmap(struct device *dev, struct vm_area_struct *vma,
- 		return -ENXIO;
- 
- 	return remap_pfn_range(vma, vma->vm_start,
--			page_to_pfn(virt_to_page(cpu_addr)) + vma->vm_pgoff,
-+			page_to_pfn(cpu_addr_to_page(cpu_addr)) + vma->vm_pgoff,
- 			user_count << PAGE_SHIFT, vma->vm_page_prot);
- #else
- 	return -ENXIO;
--- 
-2.25.1
-
+Thanks!
