@@ -2,143 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D903B068C
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:09:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81FDE3B06F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 16:10:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231302AbhFVOLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 10:11:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:49960 "EHLO foss.arm.com"
+        id S231617AbhFVONF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 10:13:05 -0400
+Received: from mga03.intel.com ([134.134.136.65]:51989 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230047AbhFVOLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 10:11:53 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 76CC631B;
-        Tue, 22 Jun 2021 07:09:37 -0700 (PDT)
-Received: from [10.57.7.129] (unknown [10.57.7.129])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 603503F694;
-        Tue, 22 Jun 2021 07:09:35 -0700 (PDT)
-Subject: Re: [RFC PATCH 3/4] cpufreq: Add Active Stats calls tracking
- frequency changes
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Amit Kucheria <amitk@kernel.org>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Chris Redpath <Chris.Redpath@arm.com>, Beata.Michalska@arm.com,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Amit Kachhap <amit.kachhap@gmail.com>
-References: <20210622075925.16189-1-lukasz.luba@arm.com>
- <20210622075925.16189-4-lukasz.luba@arm.com>
- <CAJZ5v0iVwpn0_wCZOh43DOeR2mudWYJyseMdtMsZGR-sjQ1X9Q@mail.gmail.com>
- <4e5476a6-fa9f-a9ef-ff26-8fa1b4bb90c0@arm.com>
- <CAJZ5v0i0KQwTWzbEPbs=0B-j7MkE6C1XP=mZaU1hhQm9HyZGJg@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <851205af-39d6-3864-bd28-ae84528946c4@arm.com>
-Date:   Tue, 22 Jun 2021 15:09:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S231417AbhFVONE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 10:13:04 -0400
+IronPort-SDR: 3q/6M4fNKHHgqNl1IfPUGh5dWbUjsPRa7d8Eu8uJzeWOytHuAkgK15ttFcG4z9qIKN61RVTZLX
+ PMg88P67Xxlw==
+X-IronPort-AV: E=McAfee;i="6200,9189,10022"; a="207101845"
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208,223";a="207101845"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2021 07:10:47 -0700
+IronPort-SDR: XwMrvo22xFp8Tq/kpWM74fIWz1w5k/BkLWfidv+tyiAQyf0J0vaim1urcIr/1BdOEsxB5s2u2M
+ 6Et0IGdTQVlw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.83,291,1616482800"; 
+   d="scan'208,223";a="556628734"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 22 Jun 2021 07:10:45 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 22 Jun 2021 17:10:44 +0300
+Date:   Tue, 22 Jun 2021 17:10:44 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Dominik Brodowski <linux@dominikbrodowski.net>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: v5.13-rcX regression - NULL pointer dereference - MFD and
+ software node API
+Message-ID: <YNHvZGLE9lgS/FRe@kuha.fi.intel.com>
+References: <YM77uq51jmDC/rHt@owl.dominikbrodowski.net>
+ <CAHp75VfP2h_aLVR9cgfXWHmqNbUZg-KZj2UwMs6dAkbS5eSghg@mail.gmail.com>
+ <YM8rY5hi+zuAekg+@owl.dominikbrodowski.net>
+ <CAHp75VdSyM7JdGDhdo5t+FbmouEA7ZSOwGAtSwSRD8vTwTc+LA@mail.gmail.com>
+ <CAHp75Ve=j+u-9TF0az3o82wOyzixCezkgOm=yUHh37JS_Awiig@mail.gmail.com>
+ <YNBU3Jjme1lQ3MdV@owl.dominikbrodowski.net>
+ <YNBjJnxrXaWmfUqo@smile.fi.intel.com>
+ <YNBsB6zIo4A4vD4w@kuha.fi.intel.com>
+ <YNCw5k9vwdQiS0u4@owl.dominikbrodowski.net>
+ <YNGa021IIj+C8H7h@kuha.fi.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0i0KQwTWzbEPbs=0B-j7MkE6C1XP=mZaU1hhQm9HyZGJg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="3SPjdNkkrV0/DJ7d"
+Content-Disposition: inline
+In-Reply-To: <YNGa021IIj+C8H7h@kuha.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--3SPjdNkkrV0/DJ7d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 6/22/21 2:51 PM, Rafael J. Wysocki wrote:
-> On Tue, Jun 22, 2021 at 3:42 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->>
->>
->> On 6/22/21 1:28 PM, Rafael J. Wysocki wrote:
->>> On Tue, Jun 22, 2021 at 9:59 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>>>
->>>> The Active Stats framework tracks and accounts the activity of the CPU
->>>> for each performance level. It accounts the real residency, when the CPU
->>>> was not idle, at a given performance level. This patch adds needed calls
->>>> which provide the CPU frequency transition events to the Active Stats
->>>> framework.
->>>>
->>>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->>>> ---
->>>>    drivers/cpufreq/cpufreq.c | 5 +++++
->>>>    1 file changed, 5 insertions(+)
->>>>
->>>> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
->>>> index 802abc925b2a..d79cb9310572 100644
->>>> --- a/drivers/cpufreq/cpufreq.c
->>>> +++ b/drivers/cpufreq/cpufreq.c
->>>> @@ -14,6 +14,7 @@
->>>>
->>>>    #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
->>>>
->>>> +#include <linux/active_stats.h>
->>>>    #include <linux/cpu.h>
->>>>    #include <linux/cpufreq.h>
->>>>    #include <linux/cpu_cooling.h>
->>>> @@ -387,6 +388,8 @@ static void cpufreq_notify_transition(struct cpufreq_policy *policy,
->>>>
->>>>                   cpufreq_stats_record_transition(policy, freqs->new);
->>>>                   policy->cur = freqs->new;
->>>> +
->>>> +               active_stats_cpu_freq_change(policy->cpu, freqs->new);
->>>>           }
->>>>    }
->>>>
->>>> @@ -2085,6 +2088,8 @@ unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
->>>>                               policy->cpuinfo.max_freq);
->>>>           cpufreq_stats_record_transition(policy, freq);
->>>>
->>>> +       active_stats_cpu_freq_fast_change(policy->cpu, freq);
->>>> +
->>>
->>> This is quite a bit of overhead and so why is it needed in addition to
->>> the code below?
->>
->> The code below is tracing, which is good for post-processing. We use in
->> our tool LISA, when we analyze the EAS decision, based on captured
->> trace data.
->>
->> This new code is present at run time, so subsystems like our thermal
->> governor IPA can use it and get better estimation about CPU used power
->> for any arbitrary period, e.g. 50ms, 100ms, 300ms, ...
+On Tue, Jun 22, 2021 at 11:09:58AM +0300, Heikki Krogerus wrote:
+> On Mon, Jun 21, 2021 at 05:31:50PM +0200, Dominik Brodowski wrote:
+> > Am Mon, Jun 21, 2021 at 01:37:59PM +0300 schrieb Heikki Krogerus:
+> > > On Mon, Jun 21, 2021 at 01:00:06PM +0300, Andy Shevchenko wrote:
+> > > > Can you, please, attach this to the bug report?
+> > > > 
+> > > > Long story here is that the device creation fails but we already have added
+> > > > swnode to it. Meanwhile, device itself is not completely instantiated (yet)
+> > > > and dev_name(dev) is NULL. The software_node_notify() is called with such
+> > > > device and Oopses in the following line
+> > > > 
+> > > > 	sysfs_remove_link(&swnode->kobj, dev_name(dev));
+> > > > 
+> > > > My patch fixes another issue that might happen before this and in the code
+> > > > that retrieves swnode itself in the device_remove_software_node().
+> > > > 
+> > > > Of course my patch won't fix this issue.
+> > > > 
+> > > > I have heard that Heikki is looking how to fix the issue in your case and
+> > > > potentially in any other cases where device_add_software_node() is called
+> > > > against not formed object instance.
+> > > 
+> > > Dominik, can you test the attached patch to confirm if this really is
+> > > the case.
+> > 
+> > With this patch applied, the panic disappears.
 > 
-> So can it be made not run when the IPA is not using it?
+> Thanks Dominik. I'll clean it and send it out today.
 
-I can make a Kconfig for IPA to select this ACTIVE_STATS.
-Also, I can add description that this framework is mostly needed
-for IPA, so don't enable it if you don't use IPA (default is 'n'
-so it shouldn't harm others).
+Before I send the patch to Rafael and Greg, can you confirm that the
+appropriate API (device_is_registered()) also works? I'm attaching
+patch that should be the final version (if it works).
 
-This Active Stats shouldn't be stopped when thermal zone is switching
-between governors at run time, e.g. IPA -> step_wise -> IPA
-because when IPA is set next time, it might not have correct CPU
-stats (what is the current frequency and for how long it has been
-actively used).
-Beside, switching governors at run time is not a good idea
-(apart from stress testing them ;) ).
+I'm sorry to bother you with this.
 
-> 
->>>
->>> And pretty much the same goes for the idle loop change.  There is
->>> quite a bit of instrumentation in that code already and it avoids
->>> adding new locking for a reason.  Why is it a good idea to add more
->>> locking to that code?
->>
->> This active_stats_cpu_freq_fast_change() doesn't use the locking, it
->> relies on schedutil lock in [1].
-> 
-> Ah, OK.
-> 
-> But it still adds overhead AFAICS.
+thanks,
 
-Agree, it's an extra code. For platforms which use IPA it's a
-justifiable cost, weighted by better estimation thanks to this calls.
-For other platforms, this framework will be set to default 'n' option.
+-- 
+heikki
 
+--3SPjdNkkrV0/DJ7d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment;
+	filename="0001-software-node-Handle-software-node-injection-to-an-e.patch"
+
+From 9dcfc8e6bae658288fa6f112efc18246285f0f27 Mon Sep 17 00:00:00 2001
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Date: Mon, 21 Jun 2021 13:31:51 +0300
+Subject: [PATCH] software node: Handle software node injection to an existing
+ device properly
+
+The function software_node_notify(), which creates and
+removes the symlinks between the software node and the
+device, must be called conditionally. In normal case
+software_node_notify() is called automatically when the
+device that the software node is assigned to is registered,
+and only in the special cases where the software node has to
+be added to an already existing device it needs to be called
+separately.
+
+This fixes NULL pointer dereference that happenes if
+device_remove_software_node() is called with device that
+was never registered.
+
+Fixes: b622b24519f5 ("software node: Allow node addition to already existing device")
+Reported-by: Dominik Brodowski <linux@dominikbrodowski.net>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+---
+ drivers/base/swnode.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+index 3cc11b813f28c..042eef31b182a 100644
+--- a/drivers/base/swnode.c
++++ b/drivers/base/swnode.c
+@@ -1045,7 +1045,16 @@ int device_add_software_node(struct device *dev, const struct software_node *nod
+ 	}
+ 
+ 	set_secondary_fwnode(dev, &swnode->fwnode);
+-	software_node_notify(dev, KOBJ_ADD);
++
++	/*
++	 * Software nodes are also allowed to be added to already existing
++	 * devices. If the device has been fully registered by the time this
++	 * function is called, software_node_notify() must be called separately
++	 * so that the symlinks get created and the reference count of the node
++	 * is kept in balance.
++	 */
++	if (device_is_registered(dev))
++		software_node_notify(dev, KOBJ_ADD);
+ 
+ 	return 0;
+ }
+@@ -1065,7 +1074,8 @@ void device_remove_software_node(struct device *dev)
+ 	if (!swnode)
+ 		return;
+ 
+-	software_node_notify(dev, KOBJ_REMOVE);
++	if (device_is_registered(dev))
++		software_node_notify(dev, KOBJ_REMOVE);
+ 	set_secondary_fwnode(dev, NULL);
+ 	kobject_put(&swnode->kobj);
+ }
+-- 
+2.30.2
+
+
+--3SPjdNkkrV0/DJ7d--
