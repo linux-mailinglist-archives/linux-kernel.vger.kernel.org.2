@@ -2,179 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A073B09DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 495A53B09E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 18:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbhFVQF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 12:05:56 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:58812 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhFVQFy (ORCPT
+        id S230031AbhFVQH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 12:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229751AbhFVQH5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 12:05:54 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1624377817;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JnVKyMg9SuBYhTFBMyALQ+Z3KB0NJsIz1GdkzeqLkzk=;
-        b=QVnxklIR50F1oybZT+erCBwaf0P9FJ2mo7fNzsYf2mqY2f4SvTVwszNEuTN/hPuNfFgpdg
-        /8E9LmFLCf6z/5QbYQo/YodedAQ/TqrLVi2kMTq/q6rRsXmpQeHAFHStB4mwaSP7qh6t7m
-        Mp3P7vdKTC0BFSzJ2bluQfiyqTcnLxwb4+qJkfzu+jzyRyNSkvDGDav/mfIx+FAbgfn4C2
-        1IafR58Brw4/c6tUEW+D/D8aOZ9TsRxF341me6rZmFau+S08oXrO+f/6DSD01g4qSAkEoT
-        zUJ1kT8ZaRaQ25l3zvgzjCd0WRcSVbvCBosnRuG6/rTvqffUGLxbd49FUuRNiQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1624377817;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JnVKyMg9SuBYhTFBMyALQ+Z3KB0NJsIz1GdkzeqLkzk=;
-        b=hBiq9ea+DX0cVi8XpoDs8zKKZC02dJakjOtGx2srW7HGVP5XsyDkcsQ5Q9vM3evAnRJXmM
-        hIL1C0HrGQZqm7Bg==
-To:     Cassio Neri <cassio.neri@gmail.com>, john.stultz@linaro.org
-Cc:     sboyd@kernel.org, linux-kernel@vger.kernel.org,
-        Cassio Neri <cassio.neri@gmail.com>
-Subject: Re: [PATCH v3] kernel/time: Improve performance of time64_to_tm. Add tests.
-In-Reply-To: <20210602190004.47049-1-cassio.neri@gmail.com>
-References: <20210602190004.47049-1-cassio.neri@gmail.com>
-Date:   Tue, 22 Jun 2021 18:03:37 +0200
-Message-ID: <87lf71evja.ffs@nanos.tec.linutronix.de>
+        Tue, 22 Jun 2021 12:07:57 -0400
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B30C06175F
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:05:40 -0700 (PDT)
+Received: by mail-qt1-x834.google.com with SMTP id x21so7242063qtq.9
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 09:05:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=DZ3pXIZRpSkwolJsuMb/jDRoPgB3Tr5Ed0gJwqNhEn0=;
+        b=bPcDo+rlbwvx6J+BbENOrwkAhwr/ApYX6dANLjI5IldJpUZEty9WP/A+WSRSkVnfVp
+         fd2e4y/tXjqXDkPAhIKeQEV9eOqRiGPykVl6hBy9OPbjguGQbCXYh8BSABRpZ+0/loeK
+         k5B7tYHxXO+OYAqc2XDEiodfylo30HXpiBw3o5xdgwyyFytUxxOswWBt61pJyEvA82JG
+         jeswvAaYdQ80zAeU2QU/ihXizpJ995HOOdf81AhQWyQIhwQZLacM2brku76mBW2AwSnt
+         rLC2zGxEtGcdZECkACvvAcUZ2O3xmGuKK/Qrbfiv04IEijyo0iWQN51AxkzmtGCV9rNa
+         dlIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=DZ3pXIZRpSkwolJsuMb/jDRoPgB3Tr5Ed0gJwqNhEn0=;
+        b=dsVdyS5pyCX1uA3TpP5Yv+1fvlAxwqCgJpkfinWQag4gRK0WyAcJLa9VOAHKrFshvQ
+         GuK5rAPXXjymtEpkFbUo0n8YwTACna2kjPBjzEp9W+ILo60oXuebDoGR9MDqZVHvQKo1
+         eX3yK0YOaYLGavWa5gJ+ZmcbhtyIi7IFPLbguNnrf/Q6nTxemBYKFdvPlQL+GhuhisdC
+         LbXECVWtZ5SQJPKxxc2Qar9OxRyROHieqBRl09hXbzGkwlBnbCeKSNoVATXozRpdrTBy
+         DGVlDELGuz5R/+ii0c865BV7Z63DuDFZ+djAwi6/BfpmJdzB89T1cYTd724gyei54llL
+         EB1A==
+X-Gm-Message-State: AOAM533R2qEi+6biPq+m6g+hi8KqZ0zZ+AGwAohzo0AmRD2/CfdDxPkn
+        oxScvrH9X0a34JshSqGbpcC+uw==
+X-Google-Smtp-Source: ABdhPJwsZvQD0cl9e1oHhoP7iCcZiW+TSb8cEQVE7Z3CfQWJtDN54cMi/qDxEpHPFsGzcH9l1+8wSg==
+X-Received: by 2002:a05:622a:13cd:: with SMTP id p13mr4098685qtk.235.1624377939521;
+        Tue, 22 Jun 2021 09:05:39 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
+        by smtp.gmail.com with ESMTPSA id j7sm13254363qkd.21.2021.06.22.09.05.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 09:05:38 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1lviuA-00ADrH-BE; Tue, 22 Jun 2021 13:05:38 -0300
+Date:   Tue, 22 Jun 2021 13:05:38 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>
+Cc:     Oded Gabbay <oded.gabbay@gmail.com>,
+        Christian =?utf-8?B?S8O2bmln?= <ckoenig.leichtzumerken@gmail.com>,
+        Gal Pressman <galpress@amazon.com>, sleybo@amazon.com,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Oded Gabbay <ogabbay@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Tomer Tayar <ttayar@habana.ai>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [Linaro-mm-sig] [PATCH v3 1/2] habanalabs: define uAPI to export
+ FD for DMA-BUF
+Message-ID: <20210622160538.GT1096940@ziepe.ca>
+References: <CAFCwf11jOnewkbLuxUESswCJpyo7C0ovZj80UrnwUOZkPv2JYQ@mail.gmail.com>
+ <20210621232912.GK1096940@ziepe.ca>
+ <d358c740-fd3a-9ecd-7001-676e2cb44ec9@gmail.com>
+ <CAFCwf11h_Nj_GEdCdeTzO5jgr-Y9em+W-v_pYUfz64i5Ac25yg@mail.gmail.com>
+ <20210622120142.GL1096940@ziepe.ca>
+ <d497b0a2-897e-adff-295c-cf0f4ff93cb4@amd.com>
+ <20210622152343.GO1096940@ziepe.ca>
+ <3fabe8b7-7174-bf49-5ffe-26db30968a27@amd.com>
+ <20210622154027.GS1096940@ziepe.ca>
+ <09df4a03-d99c-3949-05b2-8b49c71a109e@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <09df4a03-d99c-3949-05b2-8b49c71a109e@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cassio,
-
-On Wed, Jun 02 2021 at 20:00, Cassio Neri wrote:
-
-A few nitpicks vs. the subject line. The proper prefix is 'time:' and
-please write time64_to_tm().
-
-> The current implementation of time64_to_tm contains unnecessary loops,
-> branches and look-up tables. The new one uses an arithmetic-based algorithm
-> appeared in [1] and is ~3.2 times faster (YMMV).
+On Tue, Jun 22, 2021 at 05:48:10PM +0200, Christian König wrote:
+> Am 22.06.21 um 17:40 schrieb Jason Gunthorpe:
+> > On Tue, Jun 22, 2021 at 05:29:01PM +0200, Christian König wrote:
+> > > [SNIP]
+> > > No absolutely not. NVidia GPUs work exactly the same way.
+> > > 
+> > > And you have tons of similar cases in embedded and SoC systems where
+> > > intermediate memory between devices isn't directly addressable with the CPU.
+> > None of that is PCI P2P.
+> > 
+> > It is all some specialty direct transfer.
+> > 
+> > You can't reasonably call dma_map_resource() on non CPU mapped memory
+> > for instance, what address would you pass?
+> > 
+> > Do not confuse "I am doing transfers between two HW blocks" with PCI
+> > Peer to Peer DMA transfers - the latter is a very narrow subcase.
+> > 
+> > > No, just using the dma_map_resource() interface.
+> > Ik, but yes that does "work". Logan's series is better.
 >
-> The drawback is that the new code isn't intuitive and contains many 'magic
-> numbers' (not unusual for this type of algorithm). However, [1] justifies
-> all those numbers and, given this function's history, I reckon the code is
+> No it isn't. It makes devices depend on allocating struct pages for their
+> BARs which is not necessary nor desired.
 
-s/I reckon//
+Which dramatically reduces the cost of establishing DMA mappings, a
+loop of dma_map_resource() is very expensive.
+ 
+> How do you prevent direct I/O on those pages for example?
 
-> unlikely to need much maintenance, if any at all.
->
-> Added file kernel/time/time_test.c containing a KUnit test case that checks
-> every day in a 160,000 years interval centered at 1970-01-01 against the
-> expected result. A new config TIME_KUNIT_TEST symbol was introduced to
-> give the option to run this test suite.
+GUP fails.
 
-Add a KUnit test for it which checks every day in a 160,000 years
-interval centered at 1970-01-01 against the expected result.
+> Allocating a struct pages has their use case, for example for exposing VRAM
+> as memory for HMM. But that is something very specific and should not limit
+> PCIe P2P DMA in general.
 
-Changelogs should be written in imperative mood. The details about the
-filename and the config symbol are not interesting for the change log.
+Sure, but that is an ideal we are far from obtaining, and nobody wants
+to work on it prefering to do hacky hacky like this.
 
-> * Test evidence: This runs the same test implemented in
-> kernel/time/time_test.c (see above). It's possible to run it on 32 and 64
-> bits.
->
->     https://godbolt.org/z/1rn1aqfqY
+If you believe in this then remove the scatter list from dmabuf, add a
+new set of dma_map* APIs to work on physical addresses and all the
+other stuff needed.
 
-Just that this uses XMM registers which the kernel does not. :)
+Otherwise, we have what we have and drivers don't get to opt out. This
+is why the stuff in AMDGPU was NAK'd.
 
-> +/*
-> + * Tradicional implementation of is_leap.
-
-Traditional
-
-Also the comment is odd. ... implementation of "is_leap" above a
-function named "is_leap" !?!
-
-You probably want to say:
-
-    Traditional implementation of leap year evaluation.
-
-or something like that.
-
-
->  void time64_to_tm(time64_t totalsecs, int offset, struct tm *result)
->  {
-> -	long days, rem, y;
-> +	long days, rem;
->  	int remainder;
-> -	const unsigned short *ip;
-> +
-> +	u64 u64tmp, udays, century, year;
-> +	u32 u32tmp, day_of_century, year_of_century, day_of_year, month,
-> +		day;
-> +	bool is_Jan_or_Feb, is_leap;
-
-Can you please reorder that so it results in a reverse fir tree:
-
-	u64 u64tmp, udays, century, year;
-	u32 u32tmp, day_of_century, year_of_century, day_of_year, month, day;
-	bool is_Jan_or_Feb, is_leap;
-	long days, rem;
- 	int remainder;
-
-> +
-> +	udays           = ((u64) days) + 2305843009213814918ULL;
-
-The tabulation uses spaces instead of tabs here and in various places below.
-
-> +
-> +	u64tmp          = 4 * udays + 3;
-> +	century         = div64_u64_rem(u64tmp, 146097, &u64tmp);
-> +	day_of_century  = (u32) (u64tmp / 4);
-> +
-> +	u32tmp          = 4 * day_of_century + 3;
-> +	u64tmp          = 2939745ULL * u32tmp;
-> +	year_of_century = upper_32_bits(u64tmp);
-> +	day_of_year     = lower_32_bits(u64tmp) / 2939745 / 4;
-> +
-> +	year            = 100 * century + year_of_century;
-> +	is_leap         = year_of_century != 0 ?
-> +		year_of_century % 4 == 0 : century % 4 == 0;
-
-This really is hard to read.
-
-	is_leap		= year_of_century != 0 ?
-			  year_of_century % 4 == 0 : century % 4 == 0;
-
-or just:
-
-	is_leap         = year_of_century ? !(year_of_century % 4) : !(century % 4);
-
-That's longer than 80 characters, but that's not a really hard rule.
-
-> +	u32tmp          = 2141 * day_of_year + 132377;
-> +	month           = u32tmp >> 16;
-> +	day             = ((u16) u32tmp) / 2141;
-> +
-> +	/* Recall that January 01 is the 306-th day of the year in the
-> +	 * computational (not Gregorian) calendar.
-> +	 */
-
-        /*
-         * Please format multiline comments according to regular
-         * kernel codingstyle.
-         */
-
-> +	is_Jan_or_Feb   = day_of_year >= 306;
-> +
-> +	/* Converts to the Gregorian calendar and adjusts to Unix time. */
-> +	year            = year + is_Jan_or_Feb - 6313183731940000ULL;
-> +	month           = is_Jan_or_Feb ? month - 12 : month;
-> +	day             = day + 1;
-> +	day_of_year     = is_Jan_or_Feb ?
-> +		day_of_year - 306 : day_of_year + 31 + 28 + is_leap;
-
-See above.
-
-Other than these nitpicks. Nice work!
-
-Thanks,
-
-        tglx
+Jason
