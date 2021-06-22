@@ -2,150 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F1D3B0144
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 12:22:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A72243B0141
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 12:22:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbhFVKZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 06:25:07 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:40082 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbhFVKZD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 06:25:03 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D4C0FA66;
-        Tue, 22 Jun 2021 12:22:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1624357367;
-        bh=EiLfqJLjNI4MHuc9zgewmgiTpuQYcWHw5T68hl/HWVo=;
+        id S229775AbhFVKY6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 06:24:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40960 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229612AbhFVKY5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 06:24:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE8A961040;
+        Tue, 22 Jun 2021 10:22:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1624357362;
+        bh=Nu66vJt+FgQme5pccZDawpQBCJtjKoF1ah13CKR4AQU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=chBgc8qQsksQ1od6jgbTJFx/5L0P0vg+ByH9nNoJxeIdKB1ODS8gu3yx1Ta7bunK5
-         M4tawS3vutqw2RXRdyWIlvBJFvKk+p5dFM8wbuprf70LheLq07ly6zGYeYSG4TQAe2
-         EO4JJdoaUgHUC/W/yXvqTrV8lydsvRBCIcjqnmHk=
-Date:   Tue, 22 Jun 2021 13:22:18 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v3] media: uvc: don't do DMA on stack
-Message-ID: <YNG52qDyIo3Md/xz@pendragon.ideasonboard.com>
-References: <6832dffafd54a6a95b287c4a1ef30250d6b9237a.1624282817.git.mchehab+huawei@kernel.org>
- <YNCeIvQJIOCm8g+P@pendragon.ideasonboard.com>
- <20210621163408.7c9705aa@coco.lan>
+        b=ym6mtxCRM+YaeAdA7g+xHEDUuyVM3EsVl8fc90kaTbBjzMEWXSoenmIcPVtm3ywdp
+         9KzQ8vyYga5cMkmOkbMCadQEx8CnrgNoKivvV+F2CTLag+VeabzTrcEx57LkixtxGk
+         M+o2fjXNdBDUon6v4w+jCtfluufSRP4/yBNGYUg0=
+Date:   Tue, 22 Jun 2021 12:22:39 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     pingshuo <pingshuo@uniontech.com>
+Cc:     rjw@rjwysocki.net, len.brown@intel.com, pavel@ucw.cz,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hibernation:stop resume screen during hibernation
+Message-ID: <YNG579N8dJsmF+Mr@kroah.com>
+References: <20210622083844.13892-1-pingshuo@uniontech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210621163408.7c9705aa@coco.lan>
+In-Reply-To: <20210622083844.13892-1-pingshuo@uniontech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+On Tue, Jun 22, 2021 at 04:38:44PM +0800, pingshuo wrote:
+> The display will be woken up during hibernation,
+> if the computer equipment is poor, it will cause the screen to flicker.
+> Skip to reusme the display devices in "thaw".
+> 
+> Signed-off-by: pingshuo <pingshuo@uniontech.com>
+> ---
+>  drivers/base/power/main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+> index c7f51c94969d..376b2eca65c7 100644
+> --- a/drivers/base/power/main.c
+> +++ b/drivers/base/power/main.c
+> @@ -707,7 +707,7 @@ static int dpm_resume_skip_display_devices(struct device *dev, pm_message_t stat
+>  {
+>      struct pci_dev *pci_test = to_pci_dev(dev);
+>      if (state.event == PM_EVENT_THAW) {
+> -        /*
+> +	/*
+>          *Filter out the display devices
+>          */
+>          if((pci_test && ((pci_test->class&DISPLAY_PCI_CLASS_VALID_BIT) == DISPLAY_PCI_CLASS))||(dev->driver&&dev->driver->name&&strncmp(dev->driver->name,"video",6)==0))
+> -- 
+> 2.20.1
+> 
+> 
+> 
 
-On Mon, Jun 21, 2021 at 04:34:08PM +0200, Mauro Carvalho Chehab wrote:
-> Em Mon, 21 Jun 2021 17:11:46 +0300 Laurent Pinchart escreveu:
-> > On Mon, Jun 21, 2021 at 03:40:19PM +0200, Mauro Carvalho Chehab wrote:
-> > > As warned by smatch:
-> > > 	drivers/media/usb/uvc/uvc_v4l2.c:911 uvc_ioctl_g_input() error: doing dma on the stack (&i)
-> > > 	drivers/media/usb/uvc/uvc_v4l2.c:943 uvc_ioctl_s_input() error: doing dma on the stack (&i)
-> > > 
-> > > those two functions call uvc_query_ctrl passing a pointer to
-> > > a data at the DMA stack. those are used to send URBs via
-> > > usb_control_msg(). Using DMA stack is not supported and should
-> > > not work anymore on modern Linux versions.
-> > > 
-> > > So, use a kmalloc'ed buffer.
-> > > 
-> > > Cc: stable@vger.kernel.org	# Kernel 4.9 and upper
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > > ---
-> > >  drivers/media/usb/uvc/uvc_v4l2.c | 30 ++++++++++++++++++++++--------
-> > >  1 file changed, 22 insertions(+), 8 deletions(-)
-> > > 
-> > > diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-> > > index 252136cc885c..a95bf7318848 100644
-> > > --- a/drivers/media/usb/uvc/uvc_v4l2.c
-> > > +++ b/drivers/media/usb/uvc/uvc_v4l2.c
-> > > @@ -899,8 +899,8 @@ static int uvc_ioctl_g_input(struct file *file, void *fh, unsigned int *input)
-> > >  {
-> > >  	struct uvc_fh *handle = fh;
-> > >  	struct uvc_video_chain *chain = handle->chain;
-> > > +	u8 *buf;
-> > >  	int ret;
-> > > -	u8 i;
-> > >  
-> > >  	if (chain->selector == NULL ||
-> > >  	    (chain->dev->quirks & UVC_QUIRK_IGNORE_SELECTOR_UNIT)) {
-> > > @@ -908,13 +908,20 @@ static int uvc_ioctl_g_input(struct file *file, void *fh, unsigned int *input)
-> > >  		return 0;
-> > >  	}
-> > >  
-> > > +	buf = kmalloc(1, GFP_KERNEL);
-> > > +	if (!buf)
-> > > +		return -ENOMEM;
-> > > +
-> > >  	ret = uvc_query_ctrl(chain->dev, UVC_GET_CUR, chain->selector->id,
-> > >  			     chain->dev->intfnum,  UVC_SU_INPUT_SELECT_CONTROL,
-> > > -			     &i, 1);
-> > > +			     buf, 1);
-> > >  	if (ret < 0)
-> > >  		return ret;  
-> > 
-> > Memory leak :-)
-> 
-> Argh ;-)
-> 
-> Clearly, I'm needing more caffeine today, but it is too damn hot
-> here...
-> 
-> > 
-> > 	if (!ret)
-> > 		*input = *buf - 1;
-> > 
-> > 	kfree(buf);
-> > 
-> > 	return ret;
-> > 
-> > >  
-> > > -	*input = i - 1;
-> > > +	*input = *buf - 1;
-> > > +
-> > > +	kfree(buf);
-> > > +
-> > >  	return 0;
-> > >  }
-> > >  
-> > > @@ -922,8 +929,8 @@ static int uvc_ioctl_s_input(struct file *file, void *fh, unsigned int input)
-> > >  {
-> > >  	struct uvc_fh *handle = fh;
-> > >  	struct uvc_video_chain *chain = handle->chain;
-> > > +	char *buf;  
-> > 
-> > 	u8 *buf;
-> > 
-> > With these two changes,
-> > 
-> > Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> 
-> Thanks!
-> 
-> > Do I need to take the patch in my tree ?
-> 
-> It is up to you.
-> 
-> I suspect that it would be easier to just merge it at media_stage,
-> together with the other patches from the smatch series, but it is
-> up to you.
-> 
-> Just let me know if you prefer to merge it via your tree, and I'll drop
-> it from my queue, or otherwise I'll merge directly at media_stage,
-> after waiting for a while on feedbacks on the remaining patches.
+Hi,
 
-Please merge it directly, it's less work for me :-)
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
--- 
-Regards,
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-Laurent Pinchart
+- Your patch contains warnings and/or errors noticed by the
+  scripts/checkpatch.pl tool.
+
+- Your patch is malformed (tabs converted to spaces, linewrapped, etc.)
+  and can not be applied.  Please read the file,
+  Documentation/email-clients.txt in order to fix this.
+
+- You did not specify a description of why the patch is needed, or
+  possibly, any description at all, in the email body.  Please read the
+  section entitled "The canonical patch format" in the kernel file,
+  Documentation/SubmittingPatches for what is needed in order to
+  properly describe the change.
+
+- You did not write a descriptive Subject: for the patch, allowing Greg,
+  and everyone else, to know what this patch is all about.  Please read
+  the section entitled "The canonical patch format" in the kernel file,
+  Documentation/SubmittingPatches for what a proper Subject: line should
+  look like.
+
+- The patch does not do what your description says it does, at all.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
