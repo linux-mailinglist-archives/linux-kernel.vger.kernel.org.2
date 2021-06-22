@@ -2,214 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F44C3B10D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 01:55:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B75C43B10D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 23 Jun 2021 01:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229952AbhFVX5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 19:57:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33340 "EHLO
+        id S230044AbhFWAAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 20:00:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbhFVX5w (ORCPT
+        with ESMTP id S229954AbhFVX7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 19:57:52 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08542C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 16:55:34 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id b7so1163919ioq.12
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 16:55:34 -0700 (PDT)
+        Tue, 22 Jun 2021 19:59:34 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 093DEC061756
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 16:57:14 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id v22-20020a0568301416b029044e2d8e855eso197734otp.8
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 16:57:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KUWFjpT6YBkCLpvFT4HlZ6tYk9tWHjZGUxJiYySq8UQ=;
-        b=tJW+1cmKXb+HRi7bCn0UUwncLAc6B7cb2Rw5rhQqmAzgfCl2EiZOlnMpxyOkTiBdGr
-         UGvkc+bRKGT3mGJCwHtxTk7bsFGCpC8dWzHobRvz4ot4LrCTweU8HXsK1bHpzrHjzlQQ
-         4hGtBH1007HFOjQKfB2GCO5aTSWJdk55eZ1DT0JxIqQsiemxl2YSYA9p8pk7UXPT4qiR
-         rpxMqUJSC8HdayjX2whg8n5stLkBzEiEGN9wOQqkoj70sfy30WriYATJGGWMfNLJLRAK
-         JkhaGRBVGJt6ER19bkkB++FkbRTo665/fpLZpgig0fifr8eu3TkL/ZsbDV3M4BNEId9r
-         /INg==
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=D7+Up0CAAEZefc0Jamt+N5dptYxDIjwoUqn3slEq9v8=;
+        b=Uy8cIxxtYAZbCKj3TUvARfA/lfKk6q1FwvIaBsuekhRHoCalqRzIIN6LHT5Nc5z0wh
+         JMsCO4WSbgq5Xdc0HmW+Zi/GoSdjBPho9KVkVNdsmgE5Nwm1l6QnXtHkv3fCJ7tE7TeO
+         ttFafoyBn2N/F0Q42Nd1ZT5/kcE5iNDJTwbog=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KUWFjpT6YBkCLpvFT4HlZ6tYk9tWHjZGUxJiYySq8UQ=;
-        b=Ze9nz2Azn99Qn0/boQ7YMrX3CNV8pEw+vnwgVRbvOafpQ23podfZT7xDzDH0zI6vWh
-         98oc1CO8lfI8JruyPPmIfUEc4xvt47E1y4Z3sKu7oFtHjwJ3+Yqh68HsWrjyx+KLug2V
-         p3sC/JWCMY4Dw2NM43nZK0CO97DuZX4XnArYtNLTMbek/mHJtvg24yVPZZx/WsK27c0O
-         A+hZLB8gpqDhwj13iQvkGkIKszLiYkNWdyvIKLnG1U+O7XrIbRqPlsPTIWDnVMWeC/sY
-         oMUfH1JAK7X6AWPBPGJAzAeBylnRQLPqzv0MKqk1ezKQisdoR96qi/bn+lkjDeRi1ilk
-         1J9w==
-X-Gm-Message-State: AOAM532YVCsnzm3pk1LipU2fWg1RMcvEKbpEC/sufP4t5nXecEw1fRnn
-        eXIzTdQpVhCiwk1xqC25JRsogOHnYPvKB1DS98Zz+A==
-X-Google-Smtp-Source: ABdhPJw754OL9sHKekBMhtUG4nG4roseEc/8AHs1V3pNEL5tlhRzCdZMjH0uDo5MWjBzZHWtyVfKT4mWfhWspHUUnrI=
-X-Received: by 2002:a05:6638:110e:: with SMTP id n14mr6247711jal.4.1624406133636;
- Tue, 22 Jun 2021 16:55:33 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=D7+Up0CAAEZefc0Jamt+N5dptYxDIjwoUqn3slEq9v8=;
+        b=eolefE4ouSxgJrmV/fFMYJXM+gXonTdPUTrI7mnQmXZ+5qc+xZVNfo3GXr2L4rjsuH
+         TWpqz+UqbyFtOukChnKrHzRBfauN8MhMjDKkz6qPdDB4wwc19IVIRVZlStNBcNJxoBWt
+         BS/Vp0mndv68T32GzpSLJZVaIbK66zKP10zaXMKAHGwsramdUt+bKOGBzUZ7d0agFups
+         jRBeXIGrKvamol3AXumSXilP+RPyO1fxFKgyxXZrNxCvgScx8Ix4UFijSQ5c4PA1Yy/Q
+         r0n5ojyTMQdZdL7xLn4si3DEo7/mfh9uMtA/jGi/WL/YuPNhbP/jn6cnfWJ9BR6vcbCy
+         ctjA==
+X-Gm-Message-State: AOAM531U9YgW2JC5PIgVGU2pQhu95QV4d8mcsbbuAgQ99fZYq3fG8NAn
+        6UFU40NHvtRaN2V15PmTUl6pPw==
+X-Google-Smtp-Source: ABdhPJxo0abcmkMh0h846zDctUjCWzZmT87/FjmvbdhTt7cXD01Nv+hfcB0Y5TTvGRv9BDiZnkMR9A==
+X-Received: by 2002:a9d:585:: with SMTP id 5mr5446428otd.12.1624406233379;
+        Tue, 22 Jun 2021 16:57:13 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id r14sm4544855oie.43.2021.06.22.16.57.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Jun 2021 16:57:13 -0700 (PDT)
+Subject: Re: Maintainers / Kernel Summit 2021 planning kick-off
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        David Hildenbrand <david@redhat.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Greg KH <greg@kroah.com>, Christoph Lameter <cl@gentwo.de>,
+        Theodore Ts'o <tytso@mit.edu>, Jiri Kosina <jikos@kernel.org>,
+        ksummit@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <YK+esqGjKaPb+b/Q@kroah.com>
+ <c46dbda64558ab884af060f405e3f067112b9c8a.camel@HansenPartnership.com>
+ <b32c8672-06ee-bf68-7963-10aeabc0596c@redhat.com>
+ <5038827c-463f-232d-4dec-da56c71089bd@metux.net>
+ <20210610182318.jrxe3avfhkqq7xqn@nitro.local>
+ <YMJcdbRaQYAgI9ER@pendragon.ideasonboard.com>
+ <20210610152633.7e4a7304@oasis.local.home>
+ <37e8d1a5-7c32-8e77-bb05-f851c87a1004@linuxfoundation.org>
+ <YMyjryXiAfKgS6BY@pendragon.ideasonboard.com>
+ <ae51f636-8fb5-20b7-bbc5-37e22edb9a02@linuxfoundation.org>
+ <YNJrZIMs7RvqRBSG@pendragon.ideasonboard.com>
+ <3bfbe45c-2356-6db0-e1b8-11b7e37ae858@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <66fce207-2602-6452-9216-01ebde656bcd@linuxfoundation.org>
+Date:   Tue, 22 Jun 2021 17:57:11 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210617073937.16281-1-sjpark@amazon.de> <20210617074638.16583-1-sjpark@amazon.de>
- <CAGS_qxofnnP7Ju15iaZ_Szr+aqmHNxU51Kiv723bkd8w9g+Jkg@mail.gmail.com>
-In-Reply-To: <CAGS_qxofnnP7Ju15iaZ_Szr+aqmHNxU51Kiv723bkd8w9g+Jkg@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Tue, 22 Jun 2021 16:55:21 -0700
-Message-ID: <CAGS_qxoPq1f+dcaf43xyjbDhW-ASG3gZez-b0Pv_s17JU3hePw@mail.gmail.com>
-Subject: Re: [PATCH v2] kunit: tool: Assert the version requirement
-To:     SeongJae Park <sj38.park@gmail.com>
-Cc:     brendanhiggins@google.com, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        SeongJae Park <sjpark@amazon.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3bfbe45c-2356-6db0-e1b8-11b7e37ae858@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 4:28 PM Daniel Latypov <dlatypov@google.com> wrote:
->
-> On Thu, Jun 17, 2021 at 12:46 AM SeongJae Park <sj38.park@gmail.com> wrote:
-> >
-> > Commit 87c9c1631788 ("kunit: tool: add support for QEMU") on the 'next'
-> > tree adds 'from __future__ import annotations' in 'kunit_kernel.py'.
-> > Because it is supported on only >=3.7 Python, people using older Python
-> > will get below error:
-> >
-> >     Traceback (most recent call last):
-> >       File "./tools/testing/kunit/kunit.py", line 20, in <module>
-> >         import kunit_kernel
-> >       File "/home/sjpark/linux/tools/testing/kunit/kunit_kernel.py", line 9
-> >         from __future__ import annotations
->
-> Chatted offline with David about this.
-> He was thinking if we could instead drop the minimal version back to 3.6.
->
-> I think we can do so, see below.
-> Perhaps we should drop the import and then chain this patch on top of
-> that, specifying a minimum version of 3.6?
+On 6/22/21 5:33 PM, Shuah Khan wrote:
+> On 6/22/21 4:59 PM, Laurent Pinchart wrote:
+>> Hi Shuah,
+>>
+>> On Tue, Jun 22, 2021 at 04:33:22PM -0600, Shuah Khan wrote:
+>>> On 6/18/21 7:46 AM, Laurent Pinchart wrote:
+>>>> On Thu, Jun 10, 2021 at 01:55:23PM -0600, Shuah Khan wrote:
+>>>>> On 6/10/21 1:26 PM, Steven Rostedt wrote:
+>>>>>> On Thu, 10 Jun 2021 21:39:49 +0300 Laurent Pinchart wrote:
+>>>>>>
+>>>>>>> There will always be more informal discussions between on-site
+>>>>>>> participants. After all, this is one of the benefits of 
+>>>>>>> conferences, by
+>>>>>>> being all together we can easily organize ad-hoc discussions. 
+>>>>>>> This is
+>>>>>>> traditionally done by finding a not too noisy corner in the 
+>>>>>>> conference
+>>>>>>> center, would it be useful to have more break-out rooms with A/V
+>>>>>>> equipment than usual ?
+>>>>>>
+>>>>>> I've been giving this quite some thought too, and I've come to the
+>>>>>> understanding (and sure I can be wrong, but I don't think that I am),
+>>>>>> is that when doing a hybrid event, the remote people will always be
+>>>>>> "second class citizens" with respect to the communication that is 
+>>>>>> going
+>>>>>> on. Saying that we can make it the same is not going to happen unless
+>>>>>> you start restricting what people can do that are present, and that
+>>>>>> will just destroy the conference IMO.
+>>>>>>
+>>>>>> That said, I think we should add more to make the communication 
+>>>>>> better
+>>>>>> for those that are not present. Maybe an idea is to have break outs
+>>>>>> followed by the presentation and evening events that include remote
+>>>>>> attendees to discuss with those that are there about what they might
+>>>>>> have missed. Have incentives at these break outs (free stacks and
+>>>>>> beer?) to encourage the live attendees to attend and have a 
+>>>>>> discussion
+>>>>>> with the remote attendees.
+>>>>>>
+>>>>>> The presentations would have remote access, where remote attendees 
+>>>>>> can
+>>>>>> at the very least write in some chat their questions or comments. If
+>>>>>> video and connectivity is good enough, perhaps have a screen where 
+>>>>>> they
+>>>>>> can show up and talk, but that may have logistical limitations.
+>>>>>>
+>>>>>
+>>>>> You are absolutely right that the remote people will have a hard time
+>>>>> participating and keeping up with in-person participants. I have a
+>>>>> couple of ideas on how we might be able to improve remote experience
+>>>>> without restricting in-person experience.
+>>>>>
+>>>>> - Have one or two moderators per session to watch chat and Q&A to 
+>>>>> enable
+>>>>>      remote participants to chime in and participate.
+>>>>> - Moderators can make sure remote participation doesn't go 
+>>>>> unnoticed and
+>>>>>      enable taking turns for remote vs. people participating in 
+>>>>> person.
+>>>>>
+>>>>> It will be change in the way we interact in all in-person sessions for
+>>>>> sure, however it might enhance the experience for remote attendees.
+>>>>
+>>>> A moderator to watch online chat and relay questions is I believe very
+>>>> good for presentations, it's hard for a presenter to keep an eye on a
+>>>> screen while having to manage the interaction with the audience in the
+>>>> room (there's the usual joke of the difference between an introvert and
+>>>> an extrovert open-source developer is that the extrovert looks at 
+>>>> *your*
+>>>> shoes when talking to you, but in many presentations the speaker
+>>>> nowadays does a fairly good job as watching the audience, at least from
+>>>> time to time :-)).
+>>>>
+>>>> For workshop or brainstorming types of sessions, the highest barrier to
+>>>> participation for remote attendees is local attendees not speaking in
+>>>> microphones. That's the number one rule that moderators would need to
+>>>> enforce, I think all the rest depends on it. This may require a larger
+>>>> number of microphones in the room than usual.
+>>>>
+>>>
+>>> Absolutely. Moderator has to make sure the following things happen for
+>>> this to be effective:
+>>>
+>>> - Watch chat and Q&A, Raise hand from remote participants
+>>> - Enforce some kind of taking turns to allow fairness in
+>>>     participation
+>>> - Have the speaker repeat questions asked in the room (we do that now
+>>>     in some talks - both remote and in-person - chat and Q&A needs
+>>>     reading out for recording)
+>>> - Explore live Transcription features available in the virtual conf.
+>>>     platform. You still need humans watching the transcription.
+>>> - Have a running session notes combined with transcription.
+>>>
+>>> Any of these options aren't sustainable when large number of people
+>>> are participating remotely or in-person. In general a small number of
+>>> people participate either in person or remote in any case, based on
+>>> my observation in remote and in-person settings.
+>>>
+>>> Maybe we can experiment with one or two workshops this time around
+>>> and see how it works out. If we can figure an effective way, it would
+>>> be beneficial for people that can't travel for one reason or the
+>>> other.
+>>
+>> Can we nominate moderators ahead of time ? For workshop-style
+>> discussions, they need to be a person who won't participate actively in
+>> the discussions, as it's impossible to both contribute and moderate at
+>> the same time.
+>>
+> 
+> Correct. It will be impossible to participate and moderate in workshop
+> setting. We have to ask for volunteers and nominate moderators ahead of
+> time.
+> 
 
-Actually, now I've gotten python3.6 installed on my machine, I see we
-have another issue.
+Subsystems could seek volunteers from other subsystems perhaps ...
 
-We pass text=true to subprocess.
-That didn't exist back in 3.6, see
-https://docs.python.org/3.6/library/subprocess.html
-
-We can workaround that, but there's more chance of subtle bugs that
-I'd rather we don't touch it.
-
->
-> Checking out https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git/?h=kunit-fixes
->
-> The offending "annotations" import is related to type annotations.
-> Specifically https://www.python.org/dev/peps/pep-0563/
->
-> So let's see how the two most popular typecheckers fare.
->
-> pytype is happy with or without import.
-> mypy has the same issues with or without the import.
->
-> $ mypy tools/testing/kunit/*.py
-> tools/testing/kunit/kunit_kernel.py:227: error: Item "_Loader" of
-> "Optional[_Loader]" has no attribute "exec_module"
-> tools/testing/kunit/kunit_kernel.py:227: error: Item "None" of
-> "Optional[_Loader]" has no attribute "exec_module"
-> tools/testing/kunit/kunit_kernel.py:228: error: Module has no
-> attribute "QEMU_ARCH"
-> tools/testing/kunit/kunit_kernel.py:229: error: Module has no
-> attribute "QEMU_ARCH"
->
-> So clearly it's not doing anything for them.
->
-> Taking a look over 87c9c1631788 ("kunit: tool: add support for QEMU")
-> next then...
-> I don't see anything that would warrant the import, so we should
-> probably drop it.
-
-Also, using 3.6 now I have it installed, I found what it was added for.
-But it doesn't need to be there.
-
-This patch drops it and makes things work, afaict:
-diff --git a/tools/testing/kunit/kunit_kernel.py
-b/tools/testing/kunit/kunit_kernel.py
-index e1951fa60027..5987d5b1b874 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -6,15 +6,13 @@
- # Author: Felix Guo <felixguoxiuping@gmail.com>
- # Author: Brendan Higgins <brendanhiggins@google.com>
-
--from __future__ import annotations
- import importlib.util
- import logging
- import subprocess
- import os
- import shutil
- import signal
--from typing import Iterator
--from typing import Optional
-+from typing import Iterator, Optional, Tuple
-
- from contextlib import ExitStack
-
-@@ -208,7 +206,7 @@ def get_source_tree_ops(arch: str, cross_compile:
-Optional[str]) -> LinuxSourceT
-                raise ConfigError(arch + ' is not a valid arch')
-
- def get_source_tree_ops_from_qemu_config(config_path: str,
--                                        cross_compile: Optional[str]) -> tuple[
-+                                        cross_compile: Optional[str]) -> Tuple[
-                                                         str,
-LinuxSourceTreeOperations]:
-        # The module name/path has very little to do with where the actual file
-        # exists (I learned this through experimentation and could not find it
-
->
-> In that case, the minimum supported version should drop back down to 3.6.
-> We use enum.auto, which is from 3.6
-> https://docs.python.org/3/library/enum.html#enum.auto
->
-> We could consider stopping using that, and I think we might be then
-> 3.5-compatible.
-> Maybe we have a chain of 3 patches then, drop the import, drop auto,
-> and then add in a >=3.5 version check?
->
-> >         ^
-> >     SyntaxError: future feature annotations is not defined
-> >
-> > This commit adds a version assertion in 'kunit.py', so that people get
-> > more explicit error message like below:
-> >
-> >     Traceback (most recent call last):
-> >       File "./tools/testing/kunit/kunit.py", line 15, in <module>
-> >         assert sys.version_info >= (3, 7), "Python version is too old"
-> >     AssertionError: Python version is too old
-> >
-> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > Acked-by: Daniel Latypov <dlatypov@google.com>
-
-Reviewed-by: Daniel Latypov <dlatypov@google.com>
-
-As mentioned above, we do actually need 3.7, and not just for the extra import.
-Now I know that, I feel more strongly that this patch should go in, as-is.
-
-> > ---
-> >
-> > Changes from v1
-> > - Add assertion failure message (Daniel Latypov)
-> > - Add Acked-by: Daniel Latypov <dlatypov@google.com>
-> >
-> >  tools/testing/kunit/kunit.py | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-> > index be8d8d4a4e08..6276ce0c0196 100755
-> > --- a/tools/testing/kunit/kunit.py
-> > +++ b/tools/testing/kunit/kunit.py
-> > @@ -12,6 +12,8 @@ import sys
-> >  import os
-> >  import time
-> >
-> > +assert sys.version_info >= (3, 7), "Python version is too old"
-> > +
-> >  from collections import namedtuple
-> >  from enum import Enum, auto
-> >
-> > --
-> > 2.17.1
-> >
+thanks,
+-- Shuah
