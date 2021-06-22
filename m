@@ -2,96 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0B3F3B0278
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 13:10:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D459F3B0286
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 13:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230044AbhFVLNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 07:13:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40116 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229668AbhFVLND (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 07:13:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 127D561076;
-        Tue, 22 Jun 2021 11:10:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624360248;
-        bh=lqtyp4Cx8BPhhiC+aCM09V0C4tGXRAm837DZNpt2OJ4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KgzLPLsxIOuVtQHlDR17vMyUPdcC12xCtUIm8CspHkucEl2g9RtOc/WA0x0LjBX5U
-         ROxBCI2MAhTjJs/ePvAcnlUrPPOjYXAXEp21q0Xd0dzrI7mrswW6gP5orF7bdEVuGz
-         PP3DpGsCCfmZXiI8aXvJur33iRUnVNbSZxfFAL3PQ6LA3aBbqPXruw87dLOzrGNb/U
-         1nc4pbAfhxQJybnHHTX76kC6nTfQJV7BB+vJGJjQ5Z9a1XadLl/XZWQQrjRd7rCloL
-         azVz4DNCF4YYfD6ORrWj/RjxgwH0F/93X8CtoSwpy8aXFohiLBqibYnA2p8UFYApLF
-         15UyZTdo5hkug==
-Date:   Tue, 22 Jun 2021 12:10:39 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Bill Wendling <wcw@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        x86@kernel.org, Borislav Petkov <bp@alien8.de>,
-        Martin Liska <mliska@suse.cz>, Marco Elver <elver@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Fangrui Song <maskray@google.com>, linux-doc@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
-        johannes.berg@intel.com, linux-toolchains@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 3/3] Kconfig: add
- ARCH_WANTS_NO_INSTR+CC_HAS_NO_PROFILE_FN_ATTR, depend on for GCOV and PGO
-Message-ID: <20210622111039.GA30757@willie-the-truck>
-References: <20210621231822.2848305-1-ndesaulniers@google.com>
- <20210621231822.2848305-4-ndesaulniers@google.com>
- <20210622090540.GA67232@C02TD0UTHF1T.local>
+        id S230124AbhFVLQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 07:16:48 -0400
+Received: from szxga03-in.huawei.com ([45.249.212.189]:7375 "EHLO
+        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229831AbhFVLQq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 07:16:46 -0400
+Received: from dggemv704-chm.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4G8NwZ43Lnz70qs;
+        Tue, 22 Jun 2021 19:10:22 +0800 (CST)
+Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
+ dggemv704-chm.china.huawei.com (10.3.19.47) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Tue, 22 Jun 2021 19:14:27 +0800
+Received: from localhost.localdomain (10.67.165.24) by
+ dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Tue, 22 Jun 2021 19:14:26 +0800
+From:   Guangbin Huang <huangguangbin2@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>, <maz@kernel.org>,
+        <mark.rutland@arm.com>, <dbrazdil@google.com>, <qperret@google.com>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <lipeng321@huawei.com>,
+        <huangguangbin2@huawei.com>
+Subject: [PATCH net-next 0/3] net: hns3: add support for TX push
+Date:   Tue, 22 Jun 2021 19:11:08 +0800
+Message-ID: <1624360271-17525-1-git-send-email-huangguangbin2@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210622090540.GA67232@C02TD0UTHF1T.local>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggemi759-chm.china.huawei.com (10.1.198.145)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 22, 2021 at 10:05:40AM +0100, Mark Rutland wrote:
-> On Mon, Jun 21, 2021 at 04:18:22PM -0700, Nick Desaulniers wrote:
-> > We don't want compiler instrumentation to touch noinstr functions, which
-> > are annotated with the no_profile_instrument_function function
-> > attribute. Add a Kconfig test for this and make PGO and GCOV depend on
-> > it.
-> > 
-> > If an architecture is using noinstr, it should denote that via this
-> > Kconfig value. That makes Kconfigs that depend on noinstr able to
-> > express dependencies in an architecturally agnostic way.
-> > 
-> > Cc: Masahiro Yamada <masahiroy@kernel.org>
-> > Cc: Peter Oberparleiter <oberpar@linux.ibm.com>
-> > Link: https://lore.kernel.org/lkml/YMTn9yjuemKFLbws@hirez.programming.kicks-ass.net/
-> > Link: https://lore.kernel.org/lkml/YMcssV%2Fn5IBGv4f0@hirez.programming.kicks-ass.net/
-> > Suggested-by: Nathan Chancellor <nathan@kernel.org>
-> > Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> 
-> FWIW, this looks good to me:
-> 
-> Acked-by: Mark Rutland <mark.rutland@arm.com>
-> 
-> Catalin, Will, are you happy iwth the arm64 bit?
+This series adds TX push support for the HNS3 ethernet driver.
 
-Looks fine to me.
+Huazhong Tan (2):
+  net: hns3: add support for TX push mode
+  net: hns3: add ethtool priv-flag for TX push
 
-Will
+Xiongfeng Wang (1):
+  arm64: barrier: add DGH macros to control memory accesses merging
+
+ arch/arm64/include/asm/assembler.h                 |  7 ++
+ arch/arm64/include/asm/barrier.h                   |  1 +
+ drivers/net/ethernet/hisilicon/hns3/hnae3.h        |  2 +
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c    | 86 +++++++++++++++++++++-
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.h    |  6 ++
+ drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c | 21 +++++-
+ .../net/ethernet/hisilicon/hns3/hns3pf/hclge_cmd.c |  2 +
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_main.c    | 11 ++-
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_main.h    |  8 ++
+ .../ethernet/hisilicon/hns3/hns3vf/hclgevf_cmd.c   |  2 +
+ .../ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c  | 11 ++-
+ .../ethernet/hisilicon/hns3/hns3vf/hclgevf_main.h  |  8 ++
+ 12 files changed, 156 insertions(+), 9 deletions(-)
+
+-- 
+2.8.1
+
