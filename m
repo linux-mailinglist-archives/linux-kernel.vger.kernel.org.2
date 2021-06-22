@@ -2,118 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 910303B0637
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03CAB3B0639
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231339AbhFVNyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 09:54:24 -0400
-Received: from smtp-out2.suse.de ([195.135.220.29]:60564 "EHLO
-        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhFVNyW (ORCPT
+        id S231370AbhFVNy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 09:54:29 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:43876 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229786AbhFVNy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 09:54:22 -0400
-Received: from imap.suse.de (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        (using TLSv1.2 with cipher ECDHE-ECDSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 93C001FD69;
-        Tue, 22 Jun 2021 13:52:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624369925; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tyljBHQhfbYGn3IWWrnnSPuwRSN3DRvmx9sRgokz/IE=;
-        b=L9ykUiFUP+Rce7f7tXbToWOgiX0Huac/vD83SRl1CdaG1YBiy8CKnb/074w8ty3LYzy7Td
-        EhMYZT+GxdU9AICvWOJrttMg1KwMwCrgC7gg2WdC7VbNc0QBfsb+YoyMC9QAlFfLIhLMbx
-        cboRwwNHTrjb4ZtUhxhwALXW0S8S1/c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624369925;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tyljBHQhfbYGn3IWWrnnSPuwRSN3DRvmx9sRgokz/IE=;
-        b=OpRvooTXy2O6C33U+9RY2ZLL6ao7HWjnFq+uD6WFHDtDWhGW73PZPnNqIRTl+vVjsFzSy+
-        S1wSEna5oynuFGCg==
-Received: from imap3-int (imap-alt.suse-dmz.suse.de [192.168.254.47])
-        by imap.suse.de (Postfix) with ESMTP id 7D9B7118DD;
-        Tue, 22 Jun 2021 13:52:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1624369925; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tyljBHQhfbYGn3IWWrnnSPuwRSN3DRvmx9sRgokz/IE=;
-        b=L9ykUiFUP+Rce7f7tXbToWOgiX0Huac/vD83SRl1CdaG1YBiy8CKnb/074w8ty3LYzy7Td
-        EhMYZT+GxdU9AICvWOJrttMg1KwMwCrgC7gg2WdC7VbNc0QBfsb+YoyMC9QAlFfLIhLMbx
-        cboRwwNHTrjb4ZtUhxhwALXW0S8S1/c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1624369925;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tyljBHQhfbYGn3IWWrnnSPuwRSN3DRvmx9sRgokz/IE=;
-        b=OpRvooTXy2O6C33U+9RY2ZLL6ao7HWjnFq+uD6WFHDtDWhGW73PZPnNqIRTl+vVjsFzSy+
-        S1wSEna5oynuFGCg==
-Received: from director2.suse.de ([192.168.254.72])
-        by imap3-int with ESMTPSA
-        id FjoWHgXr0WD7RQAALh3uQQ
-        (envelope-from <bp@suse.de>); Tue, 22 Jun 2021 13:52:05 +0000
-Date:   Tue, 22 Jun 2021 15:51:53 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kan Liang <kan.liang@linux.intel.com>
-Subject: Re: [patch V3 40/66] x86/fpu: Rename and sanitize fpu__save/copy()
-Message-ID: <YNHq+TNrlDzxarFj@zn.tnic>
-References: <20210618141823.161158090@linutronix.de>
- <20210618143448.953929649@linutronix.de>
+        Tue, 22 Jun 2021 09:54:26 -0400
+Received: by mail-ot1-f44.google.com with SMTP id i12-20020a05683033ecb02903346fa0f74dso21248164otu.10;
+        Tue, 22 Jun 2021 06:52:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OE2Mk9QdTDme3m1WozqakgyokZ60Oww1ipgpJqvrp3c=;
+        b=qwp14xglvFmTj+3RWJbaj2jXN3u8nPFSWUy6zGAQ6H+p83oNP2lzZZL4RTuRz1mCe6
+         yBHsUAtGwuT78D818xb5NSriHZh8zcKBzLQ97nComMJsU/qt4/NQwoIxV+6eKExbRCJK
+         4qguz9QHDEtONeh4xSSc0Iw690EZj6XQ57z1vOjhEJQMEijbZIoKbarPlTvIjZGNGAR9
+         +86H2JTjOHlv0ewhiRutARZNeT63LgBC6kJp7ca/4f8FLoITYy+uwg8jOmTgWksYLSRj
+         ZrWU7nDSn74tH/gBJ15RbyKJmYLV3hWQexeV6r2GmLiMB37+QYJNZnr8ZR8cTMAmU1dU
+         5LDg==
+X-Gm-Message-State: AOAM532KDn9KFz8y70mNkAbjQ7gfKn031ffojvaBqBLqM91D0mtYhzSr
+        8dFbtb0btwEwPOsnyuhwfRwTPV6exJfaSaF9HYdSelvJ
+X-Google-Smtp-Source: ABdhPJzRCtCGsPR6RmcfGaTG8OMcUVbw+kvFvbbHq9GlIsjJFxzKY5QtacJd/A0kc9ODZfW720T9G4vHtaJodE9sb9I=
+X-Received: by 2002:a9d:674b:: with SMTP id w11mr3220982otm.260.1624369929664;
+ Tue, 22 Jun 2021 06:52:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210618143448.953929649@linutronix.de>
+References: <20210622075925.16189-1-lukasz.luba@arm.com> <20210622075925.16189-4-lukasz.luba@arm.com>
+ <CAJZ5v0iVwpn0_wCZOh43DOeR2mudWYJyseMdtMsZGR-sjQ1X9Q@mail.gmail.com> <4e5476a6-fa9f-a9ef-ff26-8fa1b4bb90c0@arm.com>
+In-Reply-To: <4e5476a6-fa9f-a9ef-ff26-8fa1b4bb90c0@arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 22 Jun 2021 15:51:58 +0200
+Message-ID: <CAJZ5v0i0KQwTWzbEPbs=0B-j7MkE6C1XP=mZaU1hhQm9HyZGJg@mail.gmail.com>
+Subject: Re: [RFC PATCH 3/4] cpufreq: Add Active Stats calls tracking
+ frequency changes
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Chris Redpath <Chris.Redpath@arm.com>, Beata.Michalska@arm.com,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Amit Kachhap <amit.kachhap@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 18, 2021 at 04:19:03PM +0200, Thomas Gleixner wrote:
-> Both functions are misnomed.
+On Tue, Jun 22, 2021 at 3:42 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>
+>
+>
+> On 6/22/21 1:28 PM, Rafael J. Wysocki wrote:
+> > On Tue, Jun 22, 2021 at 9:59 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+> >>
+> >> The Active Stats framework tracks and accounts the activity of the CPU
+> >> for each performance level. It accounts the real residency, when the CPU
+> >> was not idle, at a given performance level. This patch adds needed calls
+> >> which provide the CPU frequency transition events to the Active Stats
+> >> framework.
+> >>
+> >> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+> >> ---
+> >>   drivers/cpufreq/cpufreq.c | 5 +++++
+> >>   1 file changed, 5 insertions(+)
+> >>
+> >> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> >> index 802abc925b2a..d79cb9310572 100644
+> >> --- a/drivers/cpufreq/cpufreq.c
+> >> +++ b/drivers/cpufreq/cpufreq.c
+> >> @@ -14,6 +14,7 @@
+> >>
+> >>   #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> >>
+> >> +#include <linux/active_stats.h>
+> >>   #include <linux/cpu.h>
+> >>   #include <linux/cpufreq.h>
+> >>   #include <linux/cpu_cooling.h>
+> >> @@ -387,6 +388,8 @@ static void cpufreq_notify_transition(struct cpufreq_policy *policy,
+> >>
+> >>                  cpufreq_stats_record_transition(policy, freqs->new);
+> >>                  policy->cur = freqs->new;
+> >> +
+> >> +               active_stats_cpu_freq_change(policy->cpu, freqs->new);
+> >>          }
+> >>   }
+> >>
+> >> @@ -2085,6 +2088,8 @@ unsigned int cpufreq_driver_fast_switch(struct cpufreq_policy *policy,
+> >>                              policy->cpuinfo.max_freq);
+> >>          cpufreq_stats_record_transition(policy, freq);
+> >>
+> >> +       active_stats_cpu_freq_fast_change(policy->cpu, freq);
+> >> +
+> >
+> > This is quite a bit of overhead and so why is it needed in addition to
+> > the code below?
+>
+> The code below is tracing, which is good for post-processing. We use in
+> our tool LISA, when we analyze the EAS decision, based on captured
+> trace data.
+>
+> This new code is present at run time, so subsystems like our thermal
+> governor IPA can use it and get better estimation about CPU used power
+> for any arbitrary period, e.g. 50ms, 100ms, 300ms, ...
 
-"Both function names are a misnomer." or simply
-"Both function are not named optimally."
+So can it be made not run when the IPA is not using it?
 
-> -int fpu__copy(struct task_struct *dst, struct task_struct *src)
-> +/* Clone current's FPU state on fork */
-> +int fpu_clone(struct task_struct *dst)
->  {
-> +	struct fpu *src_fpu = &current->thread.fpu;
->  	struct fpu *dst_fpu = &dst->thread.fpu;
-> -	struct fpu *src_fpu = &src->thread.fpu;
->  
-> +	/* The new task's FPU state cannot be valid in the hardware. */
->  	dst_fpu->last_cpu = -1;
->  
->  	if (!static_cpu_has(X86_FEATURE_FPU))
+> >
+> > And pretty much the same goes for the idle loop change.  There is
+> > quite a bit of instrumentation in that code already and it avoids
+> > adding new locking for a reason.  Why is it a good idea to add more
+> > locking to that code?
+>
+> This active_stats_cpu_freq_fast_change() doesn't use the locking, it
+> relies on schedutil lock in [1].
 
-cpu_feature_enabled
+Ah, OK.
 
-while at it.
+But it still adds overhead AFAICS.
 
-Regardless, looks nice.
-
-Reviewed-by: Borislav Petkov <bp@suse.de>
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+> >
+> >>          if (trace_cpu_frequency_enabled()) {
+> >>                  for_each_cpu(cpu, policy->cpus)
+> >>                          trace_cpu_frequency(freq, cpu);
+> >> --
+>
+>
+> [1]
+> https://elixir.bootlin.com/linux/latest/source/kernel/sched/cpufreq_schedutil.c#L447
