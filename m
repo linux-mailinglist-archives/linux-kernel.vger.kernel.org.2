@@ -2,349 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC00F3AFE69
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:52:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C4C3AFDF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:33:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229702AbhFVHy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 03:54:26 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:18164 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbhFVHyY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 03:54:24 -0400
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210622075208epoutp01c51bec2d948cd37bc51ab7f0d6cfba7f~K2DK8atxi0634406344epoutp016
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 07:52:08 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210622075208epoutp01c51bec2d948cd37bc51ab7f0d6cfba7f~K2DK8atxi0634406344epoutp016
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1624348328;
-        bh=KTxHmuLD3DLPfT/gur5BtJPLNjOfTiAWIvDVIAUlhmo=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=IgHotq4UMDxn643qhIpStPhWkfDYOU4xacGMOjpxeSsSMMnAxAASbeJbaEZIk3Brc
-         M/CQt2/2yMQUE1RwK6wlk38yI3ceghQruvZOk3OxGxHSggFLMsd737dPQXf2dR8VWz
-         Z3Uwgljd2dPGC5f3AzpFKPgNruGNcq+wjrrSB6xM=
-Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20210622075203epcas5p1e4ba147834618a2312bf1fc1c578e5ca~K2DG6fnzT2190821908epcas5p1s;
-        Tue, 22 Jun 2021 07:52:03 +0000 (GMT)
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        CC.59.09452.3A691D06; Tue, 22 Jun 2021 16:52:03 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210622063715epcas5p4407d85eec70b971c7d6b991ea3a00256~K1ByotU4K2654126541epcas5p47;
-        Tue, 22 Jun 2021 06:37:15 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210622063715epsmtrp24a29a449818b17987c6c9cef86b11be3~K1Byn_IgZ2392223922epsmtrp22;
-        Tue, 22 Jun 2021 06:37:15 +0000 (GMT)
-X-AuditID: b6c32a4b-429ff700000024ec-36-60d196a3d33c
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        F8.63.08394.B1581D06; Tue, 22 Jun 2021 15:37:15 +0900 (KST)
-Received: from mshams01 (unknown [107.122.12.94]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210622063713epsmtip1199711e54f0ce840c3237085f6bc6944~K1BxQd7f-1035910359epsmtip18;
-        Tue, 22 Jun 2021 06:37:13 +0000 (GMT)
-From:   "M Tamseel Shams" <m.shams@samsung.com>
-To:     "'Greg KH'" <gregkh@linuxfoundation.org>
-Cc:     <krzysztof.kozlowski@canonical.com>, <jirislaby@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>,
-        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alim.akhtar@samsung.com>, <ajaykumar.rs@samsung.com>
-In-Reply-To: <YNF5T3dLjGZ7z0Gw@kroah.com>
-Subject: RE: [PATCH v2] serial: samsung: use dma_ops of DMA if attached
-Date:   Tue, 22 Jun 2021 12:07:12 +0530
-Message-ID: <007401d76731$09fd69a0$1df83ce0$@samsung.com>
+        id S230046AbhFVHf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 03:35:27 -0400
+Received: from verein.lst.de ([213.95.11.211]:45444 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229628AbhFVHf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 03:35:26 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id A866167373; Tue, 22 Jun 2021 09:33:08 +0200 (CEST)
+Date:   Tue, 22 Jun 2021 09:33:08 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCHv2 8/8] videobuf2: handle non-contiguous DMA allocations
+Message-ID: <20210622073308.GA32231@lst.de>
+References: <10a0903a-e295-5cba-683a-1eb89a0804ed@xs4all.nl> <YMsAIVs7G2hUDR2F@google.com> <20210617080107.GA1422@lst.de> <CAAFQd5DiPstn-s+yQM3iMd=G9oaag39qCyX483a7-Jrn=gxWCA@mail.gmail.com> <20210617085233.GA4702@lst.de> <CAAFQd5DqK2gSTGjfo-vahXwMzzO9gv26cY=vV6urn3viDLPE7g@mail.gmail.com> <20210617100656.GA11107@lst.de> <CAAFQd5CgLDkJ3t1aU2PRcGu6cGFjLXOnvMqDg62Z7Zuc8ABVHg@mail.gmail.com> <20210618042526.GA17794@lst.de> <CAAFQd5Bt9TJ87Yk5ZpqTqrX9rmP0Uq8VNwx_rwFHakWP850Axw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQFcRGEZG7b0woiOY60hUFl/qJOGXQI/LuL6AWIkNXyr+MsecA==
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrDKsWRmVeSWpSXmKPExsWy7bCmhu7iaRcTDM7NV7I48P4gi8WDedvY
-        LJoXr2ezeDdXxmLj2x9MFpseX2O1uLxrDpvFjPP7mCzOLO5ld+D0mNXQy+axaVUnm8f+uWvY
-        PTYvqffo27KK0ePzJrkAtigum5TUnMyy1CJ9uwSujOkbLrAVXPOueD9tNmsDY69tFyMnh4SA
-        icTGl4sYuxi5OIQEdjNK3Ng3lR3C+cQocf7xRajMN0aJ/S/uscC07J/5D6pqL6PEwvf7GEES
-        QgLPGCV2rZEBsdkEdCUmHWxjBrFFBHQkOs6cYAFpYBboZJLYO+cYWIJTQFPi06pFYM3CAu4S
-        S550M3UxcnCwCKhKrN3NARLmFbCUOLBjIjOELShxcuYTsCOYBeQltr+dwwxxkILEz6fLWEFa
-        RQScJDYv94EoEZd4efQI2J0SAms5JH7c3M0GUe8iceDQKlYIW1ji1fEt7BC2lMTnd3uhavIl
-        5s9bBTW/QmLlhTdQtr3EgStzWEB2MQOdv36XPkRYVmLqqXVMEHv5JHp/P2GCiPNK7JgHYytK
-        /N/dD7VKXOLdiimsExiVZiH5bBaSz2YheWEWwrYFjCyrGCVTC4pz01OLTQuM81LL9YoTc4tL
-        89L1kvNzNzGCE5SW9w7GRw8+6B1iZOJgPMQowcGsJML7IvtighBvSmJlVWpRfnxRaU5q8SFG
-        aQ4WJXHepeyHEoQE0hNLUrNTUwtSi2CyTBycUg1MNXxXvCMuX3950GHx4e1vzqj946qP8zgT
-        fSP19leJiOXPrZYpCeQbBO00eT8tY7utufO0e2o79+v/8u5tVnOL7W4O8Lg92fFRV+XcL/Mv
-        3ZjIsTL8VHoW/7M+2Wz+fW+WvtA3tdCyvvbmc1HRu+0HxZ5Y3PNyju53XrzuqaQdn0zlgxzT
-        bU/F8rgvnZ53fN0vgx/HO06+ivvxxfLZJeXTFxpyvhrsjzS6Uc26eMLieN68WXyhrBmJO590
-        M6tJPRPadeFsg51sctKMb0zfuZeJq2p+ZF8ULH/aO36Fe9DOe9OTxLN4f63h2919Xr9w2VXB
-        dfM2e+3imVf+7tbma3stOVeWXf8y588GxbMvf9Wl6SixFGckGmoxFxUnAgDPODY8vwMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupjkeLIzCtJLcpLzFFi42LZdlhJTle69WKCwbI+NosD7w+yWDyYt43N
-        onnxejaLd3NlLDa+/cFksenxNVaLy7vmsFnMOL+PyeLM4l52B06PWQ29bB6bVnWyeeyfu4bd
-        Y/OSeo++LasYPT5vkgtgi+KySUnNySxLLdK3S+DKmL7hAlvBNe+K99NmszYw9tp2MXJySAiY
-        SOyf+Y+9i5GLQ0hgN6PEkeYONoiEuMS0X/sZIWxhiZX/nkMVPWGUOLlmE1gRm4CuxKSDbcwg
-        toiAjkTHmRMsIEXMAhOZJKa0PITqWMYoMXFLHxNIFaeApsSnVYvAxgoLuEssedINFOfgYBFQ
-        lVi7mwMkzCtgKXFgx0RmCFtQ4uTMJywgJcwCehJtG8E6mQXkJba/ncMMcZyCxM+ny1hBSkQE
-        nCQ2L/eBKBGXeHn0CPsERuFZSAbNQhg0C8mgWUg6FjCyrGKUTC0ozk3PLTYsMMxLLdcrTswt
-        Ls1L10vOz93ECI4yLc0djNtXfdA7xMjEwXiIUYKDWUmE90X2xQQh3pTEyqrUovz4otKc1OJD
-        jNIcLErivBe6TsYLCaQnlqRmp6YWpBbBZJk4OKUamCY7Ca9TCVtsPMH0XYsC09KvR+Wvud2e
-        XavrYvartkFSn++VvYP57OONFgYTE/N/M188oGT9eIPIZdZC4dO/StVZD4tM3K51tJ3hs4o1
-        R/uKH1e3OL75fGLhQQa1Y5JaGzYJ7DJTPRyp+S/S+KgJ6/FPqrpr8u49YpN8ybvQ3NFovvWR
-        fXHhNiKXhcyPnl8VGDalastKAV1bT6Vjt/8tvfBj4z+eG4w/GDdf5e5mX5GY1CJyer3/wXuH
-        A068ippWsSJhQeHqnnnM7jYPF+1+E2e/7Kb3oVUBIfbsYsx7z6q7RXlXbInPebjmjk2h00TF
-        +7cZ195aYHvv4Gov99am6q8GuXWuB06Yrb5gIqIRukGJpTgj0VCLuag4EQDIs5qVIQMAAA==
-X-CMS-MailID: 20210622063715epcas5p4407d85eec70b971c7d6b991ea3a00256
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20210622034818epcas5p3837ce2315f5c57980576f10b8fc7efeb
-References: <CGME20210622034818epcas5p3837ce2315f5c57980576f10b8fc7efeb@epcas5p3.samsung.com>
-        <20210622035202.5260-1-m.shams@samsung.com> <YNF5T3dLjGZ7z0Gw@kroah.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAAFQd5Bt9TJ87Yk5ZpqTqrX9rmP0Uq8VNwx_rwFHakWP850Axw@mail.gmail.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 18, 2021 at 01:44:08PM +0900, Tomasz Figa wrote:
+> > Well, dma_alloc_coherent users want a non-cached mapping.  And while
+> > some architectures provide that using a vmap with "uncached" bits in the
+> > PTE to provide that, this:
+> >
+> >  a) is not possibly everywhere
+> >  b) even where possible is not always the best idea as it creates mappings
+> >     with differnet cachability bets
+> 
+> I think this could be addressed by having a dma_vmap() helper that
+> does the right thing, whether it's vmap() or dma_common_pages_remap()
+> as appropriate. Or would be this still insufficient for some
+> architectures?
 
-> > When DMA is used for TX and RX by serial driver, it should pass the
-> > DMA device pointer to DMA API instead of UART device pointer.
-> >
-> > This patch is necessary to fix the SMMU page faults which is observed
-> > when a DMA(with SMMU enabled) is attached to UART for transfer.
-> >
-> > Signed-off-by: Tamseel Shams <m.shams@samsung.com>
-> > Signed-off-by: Ajay Kumar <ajaykumar.rs@samsung.com>
-> > ---
-> >  drivers/tty/serial/samsung_tty.c | 62
-> > +++++++++++++++++++++++++-------
-> >  1 file changed, 50 insertions(+), 12 deletions(-)
-> >
-> > diff --git a/drivers/tty/serial/samsung_tty.c
-> > b/drivers/tty/serial/samsung_tty.c
-> > index 9fbc61151c2e..0c924bb6108e 100644
-> > --- a/drivers/tty/serial/samsung_tty.c
-> > +++ b/drivers/tty/serial/samsung_tty.c
-> > @@ -284,8 +284,13 @@ static void s3c24xx_serial_stop_tx(struct uart_port
-> *port)
-> >  	struct s3c24xx_uart_dma *dma = ourport->dma;
-> >  	struct circ_buf *xmit = &port->state->xmit;
-> >  	struct dma_tx_state state;
-> > +	struct device *dma_map_ops_dev = ourport->port.dev;
-> >  	int count;
-> >
-> > +	/* Pick dma_ops of DMA device if DMA device is attached */
-> > +	if (dma && dma->tx_chan)
-> > +		dma_map_ops_dev = dma->tx_chan->device->dev;
-> > +
-> >  	if (!ourport->tx_enabled)
-> >  		return;
-> >
-> > @@ -305,7 +310,7 @@ static void s3c24xx_serial_stop_tx(struct uart_port
-> *port)
-> >  		dmaengine_pause(dma->tx_chan);
-> >  		dmaengine_tx_status(dma->tx_chan, dma->tx_cookie, &state);
-> >  		dmaengine_terminate_all(dma->tx_chan);
-> > -		dma_sync_single_for_cpu(ourport->port.dev,
-> > +		dma_sync_single_for_cpu(dma_map_ops_dev,
-> >  			dma->tx_transfer_addr, dma->tx_size,
-> DMA_TO_DEVICE);
-> >  		async_tx_ack(dma->tx_desc);
-> >  		count = dma->tx_bytes_requested - state.residue; @@ -331,14
-> +336,19
-> > @@ static void s3c24xx_serial_tx_dma_complete(void *args)
-> >  	struct circ_buf *xmit = &port->state->xmit;
-> >  	struct s3c24xx_uart_dma *dma = ourport->dma;
-> >  	struct dma_tx_state state;
-> > +	struct device *dma_map_ops_dev = ourport->port.dev;
-> >  	unsigned long flags;
-> >  	int count;
-> >
-> > +	/* Pick dma_ops of DMA device if DMA device is attached */
-> > +	if (dma && dma->tx_chan)
-> > +		dma_map_ops_dev = dma->tx_chan->device->dev;
-> > +
-> >  	dmaengine_tx_status(dma->tx_chan, dma->tx_cookie, &state);
-> >  	count = dma->tx_bytes_requested - state.residue;
-> >  	async_tx_ack(dma->tx_desc);
-> >
-> > -	dma_sync_single_for_cpu(ourport->port.dev, dma->tx_transfer_addr,
-> > +	dma_sync_single_for_cpu(dma_map_ops_dev, dma->tx_transfer_addr,
-> >  				dma->tx_size, DMA_TO_DEVICE);
-> >
-> >  	spin_lock_irqsave(&port->lock, flags); @@ -436,6 +446,11 @@ static
-> > int s3c24xx_serial_start_tx_dma(struct s3c24xx_uart_port *ourport,
-> >  	struct uart_port *port = &ourport->port;
-> >  	struct circ_buf *xmit = &port->state->xmit;
-> >  	struct s3c24xx_uart_dma *dma = ourport->dma;
-> > +	struct device *dma_map_ops_dev = ourport->port.dev;
-> > +
-> > +	/* Pick dma_ops of DMA device if DMA device is attached */
-> > +	if (dma && dma->tx_chan)
-> > +		dma_map_ops_dev = dma->tx_chan->device->dev;
-> >
-> >  	if (ourport->tx_mode != S3C24XX_TX_DMA)
-> >  		enable_tx_dma(ourport);
-> > @@ -443,7 +458,7 @@ static int s3c24xx_serial_start_tx_dma(struct
-> s3c24xx_uart_port *ourport,
-> >  	dma->tx_size = count & ~(dma_get_cache_alignment() - 1);
-> >  	dma->tx_transfer_addr = dma->tx_addr + xmit->tail;
-> >
-> > -	dma_sync_single_for_device(ourport->port.dev, dma-
-> >tx_transfer_addr,
-> > +	dma_sync_single_for_device(dma_map_ops_dev, dma-
-> >tx_transfer_addr,
-> >  				dma->tx_size, DMA_TO_DEVICE);
-> >
-> >  	dma->tx_desc = dmaengine_prep_slave_single(dma->tx_chan,
-> > @@ -510,12 +525,17 @@ static void s3c24xx_uart_copy_rx_to_tty(struct
-> s3c24xx_uart_port *ourport,
-> >  		struct tty_port *tty, int count)
-> >  {
-> >  	struct s3c24xx_uart_dma *dma = ourport->dma;
-> > +	struct device *dma_map_ops_dev = ourport->port.dev;
-> >  	int copied;
-> >
-> > +	/* Pick dma_ops of DMA device if DMA device is attached */
-> > +	if (dma && dma->rx_chan)
-> > +		dma_map_ops_dev = dma->rx_chan->device->dev;
-> > +
-> >  	if (!count)
-> >  		return;
-> >
-> > -	dma_sync_single_for_cpu(ourport->port.dev, dma->rx_addr,
-> > +	dma_sync_single_for_cpu(dma_map_ops_dev, dma->rx_addr,
-> >  				dma->rx_size, DMA_FROM_DEVICE);
-> >
-> >  	ourport->port.icount.rx += count;
-> > @@ -635,8 +655,13 @@ static void s3c24xx_serial_rx_dma_complete(void
-> > *args)  static void s3c64xx_start_rx_dma(struct s3c24xx_uart_port
-> > *ourport)  {
-> >  	struct s3c24xx_uart_dma *dma = ourport->dma;
-> > +	struct device *dma_map_ops_dev = ourport->port.dev;
-> > +
-> > +	/* Pick dma_ops of DMA device if DMA device is attached */
-> > +	if (dma && dma->rx_chan)
-> > +		dma_map_ops_dev = dma->rx_chan->device->dev;
-> >
-> > -	dma_sync_single_for_device(ourport->port.dev, dma->rx_addr,
-> > +	dma_sync_single_for_device(dma_map_ops_dev, dma->rx_addr,
-> >  				dma->rx_size, DMA_FROM_DEVICE);
-> >
-> >  	dma->rx_desc = dmaengine_prep_slave_single(dma->rx_chan,
-> > @@ -1045,6 +1070,7 @@ static int s3c24xx_serial_request_dma(struct
-> s3c24xx_uart_port *p)
-> >  	struct s3c24xx_uart_dma	*dma = p->dma;
-> >  	struct dma_slave_caps dma_caps;
-> >  	const char *reason = NULL;
-> > +	struct device *dma_map_ops_dev = p->port.dev;
-> >  	int ret;
-> >
-> >  	/* Default slave configuration parameters */ @@ -1102,18 +1128,25
-> @@
-> > static int s3c24xx_serial_request_dma(struct s3c24xx_uart_port *p)
-> >  		goto err_release_tx;
-> >  	}
-> >
-> > -	dma->rx_addr = dma_map_single(p->port.dev, dma->rx_buf,
-> > +	/* Pick dma_ops of DMA device if DMA device is attached */
-> > +	if (dma && dma->rx_chan)
-> > +		dma_map_ops_dev = dma->rx_chan->device->dev;
-> > +
-> > +	dma->rx_addr = dma_map_single(dma_map_ops_dev, dma->rx_buf,
-> >  				dma->rx_size, DMA_FROM_DEVICE);
-> > -	if (dma_mapping_error(p->port.dev, dma->rx_addr)) {
-> > +	if (dma_mapping_error(dma_map_ops_dev, dma->rx_addr)) {
-> >  		reason = "DMA mapping error for RX buffer";
-> >  		ret = -EIO;
-> >  		goto err_free_rx;
-> >  	}
-> >
-> > +	/* Pick dma_ops of DMA device if DMA device is attached */
-> > +	if (dma && dma->tx_chan)
-> > +		dma_map_ops_dev = dma->tx_chan->device->dev;
-> >  	/* TX buffer */
-> > -	dma->tx_addr = dma_map_single(p->port.dev, p->port.state->xmit.buf,
-> > +	dma->tx_addr = dma_map_single(dma_map_ops_dev,
-> > +p->port.state->xmit.buf,
-> >  				UART_XMIT_SIZE, DMA_TO_DEVICE);
-> > -	if (dma_mapping_error(p->port.dev, dma->tx_addr)) {
-> > +	if (dma_mapping_error(dma_map_ops_dev, dma->tx_addr)) {
-> >  		reason = "DMA mapping error for TX buffer";
-> >  		ret = -EIO;
-> >  		goto err_unmap_rx;
-> > @@ -1122,7 +1155,9 @@ static int s3c24xx_serial_request_dma(struct
-> s3c24xx_uart_port *p)
-> >  	return 0;
-> >
-> >  err_unmap_rx:
-> > -	dma_unmap_single(p->port.dev, dma->rx_addr, dma->rx_size,
-> > +	if (dma->rx_chan)
-> > +		dma_map_ops_dev = dma->rx_chan->device->dev;
-> > +	dma_unmap_single(dma_map_ops_dev, dma->rx_addr, dma->rx_size,
-> >  			 DMA_FROM_DEVICE);
-> >  err_free_rx:
-> >  	kfree(dma->rx_buf);
-> > @@ -1139,10 +1174,12 @@ static int s3c24xx_serial_request_dma(struct
-> > s3c24xx_uart_port *p)  static void s3c24xx_serial_release_dma(struct
-> > s3c24xx_uart_port *p)  {
-> >  	struct s3c24xx_uart_dma	*dma = p->dma;
-> > +	struct device *dma_map_ops_dev = p->port.dev;
-> >
-> >  	if (dma->rx_chan) {
-> > +		dma_map_ops_dev = dma->rx_chan->device->dev;
-> >  		dmaengine_terminate_all(dma->rx_chan);
-> > -		dma_unmap_single(p->port.dev, dma->rx_addr,
-> > +		dma_unmap_single(dma_map_ops_dev, dma->rx_addr,
-> >  				dma->rx_size, DMA_FROM_DEVICE);
-> >  		kfree(dma->rx_buf);
-> >  		dma_release_channel(dma->rx_chan);
-> > @@ -1150,8 +1187,9 @@ static void s3c24xx_serial_release_dma(struct
-> s3c24xx_uart_port *p)
-> >  	}
-> >
-> >  	if (dma->tx_chan) {
-> > +		dma_map_ops_dev = dma->tx_chan->device->dev;
-> >  		dmaengine_terminate_all(dma->tx_chan);
-> > -		dma_unmap_single(p->port.dev, dma->tx_addr,
-> > +		dma_unmap_single(dma_map_ops_dev, dma->tx_addr,
-> >  				UART_XMIT_SIZE, DMA_TO_DEVICE);
-> >  		dma_release_channel(dma->tx_chan);
-> >  		dma->tx_chan = NULL;
-> > --
-> > 2.17.1
-> >
-> 
-> Hi,
-> 
-> This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-> a patch that has triggered this response.  He used to manually respond
-> to these common problems, but in order to save his sanity (he kept
-> writing the same thing over and over, yet to different people), I was
-> created.  Hopefully you will not take offence and will fix the problem
-> in your patch and resubmit it so that it can be accepted into the Linux
-> kernel tree.
-> 
-> You are receiving this message because of the following common error(s)
-> as indicated below:
-> 
-> - This looks like a new version of a previously submitted patch, but you
->   did not list below the --- line any changes from the previous version.
->   Please read the section entitled "The canonical patch format" in the
->   kernel file, Documentation/SubmittingPatches for what needs to be done
->   here to properly describe this.
-> 
-> If you wish to discuss this problem further, or you have questions about
-> how to resolve this issue, please feel free to respond to this email and
-> Greg will reply once he has dug out from the pending patches received
-> from other developers.
-> 
-> thanks,
-> 
-> greg k-h's patch email bot
+It can't always do the right thing.  E.g. for the case where uncached
+memory needs to be allocated from a special boot time fixed pool.
 
-Hi Greg,
-Sorry for not mentioning the change from previous version.
-I will update the patch and post the new version.
+> > And even without that dma_alloc_noncoherent causes less overhead than
+> > dma_alloc_noncontigious if you only need a single contiguous range.
+> >
+> 
+> Given that behind the scenes dma_alloc_noncontiguous() would also just
+> call __dma_alloc_pages() for devices that need contiguous pages, would
+> the overhead be basically the creation of a single-entry sgtable?
 
-Thanks & Regards,
-Tamseel Shams
+In the best case: yes.
 
+> > So while I'm happy we have something useful for more complex drivers like
+> > v4l I think the simple dma_alloc_coherent API, including some of the less
+> > crazy flags for dma_alloc_attrs is the right thing to use for more than
+> > 90% of the use cases.
+> 
+> One thing to take into account here is that many drivers use the
+> existing "simple" way, just because there wasn't a viable alternative
+> to do something better. Agreed, though, that we shouldn't optimize for
+> the rare cases.
+
+While that might be true for a few drivers, it is absolutely not true
+for the wide majority.  I think you media people are a little special,
+with only the GPU folks contending for "specialness" :)  (although
+media handles it way better, gpu folks just create local hacks that
+can't work portably).
