@@ -2,170 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B573AFD04
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 08:23:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60FC53AFD16
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 08:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229690AbhFVGZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 02:25:38 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:53061 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229501AbhFVGZg (ORCPT
+        id S229682AbhFVGfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 02:35:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229490AbhFVGf3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 02:25:36 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210622062319epoutp04657ff5335fe58b20e4c8beed68b73719~K01ol40_F0812608126epoutp04j
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 06:23:19 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210622062319epoutp04657ff5335fe58b20e4c8beed68b73719~K01ol40_F0812608126epoutp04j
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1624342999;
-        bh=B5z09/jpAcw3Z5ncRM22BSwJpQkB+5ESwenPC5uXYOI=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=po0YOfJCQvSShvuuaxxcYeuxMRQKi3G52MFA3qz4ac7FJhZ+96NKTnrICpTgMwQWR
-         WNQHmcRCyZXAD9SqiIvo0izEM8NfhiKB0wP8ySUiHebUm2/DSFp9XNxqMJLoRqihyG
-         KNaU9e5rKeDz+KqwDi+jov0btf5Gj0L4QYw/vIOo=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210622062319epcas1p240b4418ba34ee11aa8c439729c30f5a5~K01oDVxmF0403304033epcas1p2L;
-        Tue, 22 Jun 2021 06:23:19 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.158]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4G8GYG74JJz4x9Q6; Tue, 22 Jun
-        2021 06:23:14 +0000 (GMT)
-Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        27.8C.09468.EC181D06; Tue, 22 Jun 2021 15:23:10 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20210622062309epcas1p37ac8ec81df7fbbf4f3e3e95a614a85bc~K01fRiRUf2085420854epcas1p3w;
-        Tue, 22 Jun 2021 06:23:09 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210622062309epsmtrp27d9a4feb7b59da5af263f4fc4cbcef0e~K01fQyMrN1699516995epsmtrp2T;
-        Tue, 22 Jun 2021 06:23:09 +0000 (GMT)
-X-AuditID: b6c32a37-66505a80000024fc-9e-60d181cea55d
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        51.C1.08394.DC181D06; Tue, 22 Jun 2021 15:23:09 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210622062309epsmtip1b8e42aec48c2e2f1e90d25979cd36569~K01fBXEDF0264802648epsmtip1R;
-        Tue, 22 Jun 2021 06:23:09 +0000 (GMT)
-Subject: Re: [PATCH 1/2] clocksource/drivers/exynos_mct: Prioritise Arm arch
- timer on arm64
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Will Deacon <will@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <4084b547-0bd2-4309-0948-384b81f1026f@samsung.com>
-Date:   Tue, 22 Jun 2021 15:42:24 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Tue, 22 Jun 2021 02:35:29 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9AC3C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 23:33:13 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id c23so1261526qkc.10
+        for <linux-kernel@vger.kernel.org>; Mon, 21 Jun 2021 23:33:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3G07ZNwIzU+ekJbLHOs00ib6qVxDlz3JM+F3J6xC1VQ=;
+        b=jKqpgD4yA9cuEYebdehqoN/4ATuFrsOEVPr9AQ5t96viSK7Gylxyt1jFqPZTLLoM06
+         vq54t8y8ppo0lrT/x8SS9m8oh5UJRrSeJu1kSOqpFPch0TpvLT4jybKzsBEEpDKEDp8T
+         S2wH7e+Ogv4VnIN/zbT79124WGEL01zGOwsWjfCH7EfnWN0WQuC3GW51flsmYJ+B4lly
+         /8XBWR1IHzg3dwJ2RHr3HSaLKlWAitB4paMs5rdW7YqLFVQzTErlTQzDQl6AJaEDiB+c
+         ST6NkemR1CYfXzmN4N4ULK+bT5BedGNxahYdShGWXX01sBr8BaShvZGblRbzkyeFn5U+
+         0J3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3G07ZNwIzU+ekJbLHOs00ib6qVxDlz3JM+F3J6xC1VQ=;
+        b=nM9Mz/yx+7gLFc+5uCGr2URoVAni2PHwS+e6zcmvGXmDda6vuutzWBx5oZvEHr8LD/
+         +EVEEi6HvAJ1L1BMIEhZ8rUv5+Ply2DkwZDdbEZnFkoUWe6xvZAij1ldr4Mlf345l27g
+         fsDKXzwRxpCkDB+55LKJeLmOq8ec7WReiGb4BfSY+4RhyubWUGVYP9rmmxHgcaLH+KDj
+         eVXePG8pir3F8XBfS8k45d+FKgml7tK236Yp9KzZgKUE8wa6bWyhP3K3EL5gqdgKBd1l
+         Kw7LeDyXbjRaGFqcdA11pIjeAIGhKm1TgjJk8jwLwwZK4Csv/GcSTckvKoLbFw/9KDeb
+         BOCg==
+X-Gm-Message-State: AOAM533p6j7xoBgyZJS1DL34EZIx77/AEforzu+yZqKU58n0/1PN1PHU
+        PYI+2TUrsx57ICtWr9LJu8s+btfjBd6keqIjh+IJ5w==
+X-Google-Smtp-Source: ABdhPJxVKXy0+vQ65WTdy5zpfWg+hichPpJB2vohQAtI+rXc5LgE+bqVivVM63tvkM219P6jh6RypYiiTZqp1ogxEr4=
+X-Received: by 2002:a37:8081:: with SMTP id b123mr2615763qkd.231.1624343592648;
+ Mon, 21 Jun 2021 23:33:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1f4d7943-c540-bafd-b372-0d0ed8172f33@linaro.org>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCJsWRmVeSWpSXmKPExsWy7bCmvu65xosJBsd3i1rM+yxrcf78BnaL
-        jW9/MFlsenyN1eLyrjlsFmuP3GW32LxpKrNFyx1TBw6PWQ29bB6bVnWyedy5tofN4925c+we
-        m5fUe/RtWcXo8XmTXAB7VLZNRmpiSmqRQmpecn5KZl66rZJ3cLxzvKmZgaGuoaWFuZJCXmJu
-        qq2Si0+ArltmDtBJSgpliTmlQKGAxOJiJX07m6L80pJUhYz84hJbpdSClJwCywK94sTc4tK8
-        dL3k/FwrQwMDI1OgwoTsjHufFzIXHOSu+N4Z18A4gbOLkZNDQsBE4teTBYxdjFwcQgI7GCWe
-        TdzECuF8YpToPnOPGcL5xihx8sQidpiWe6u+QlXtZZTY+aiVBcJ5zyix8uIsoAwHh7BArMT1
-        pcogDSIC/hKz2w6yg9QwC/xnlPj4+jPYJDYBLYn9L26wgdj8AooSV388ZgSxeQXsJOZcusQM
-        YrMIqEp8PPAWrF5UIEzi5LYWqBpBiZMzn7CA2JxA9dNuXACbwywgLnHryXwmCFteYvvbOWAv
-        SAis5ZBY+GoxI8QLLhJ/Jv1mgrCFJV4d3wL1mpTE53d72SDsaomVJ4+wQTR3MEps2X+BFSJh
-        LLF/6WQmkC+ZBTQl1u/ShwgrSuz8PZcRYjGfxLuvPeCAkBDglehoE4IoUZa4/OAu1FpJicXt
-        nWwTGJVmIXlnFpIXZiF5YRbCsgWMLKsYxVILinPTU4sNC4yRY3sTIzi5apnvYJz29oPeIUYm
-        DsZDjBIczEoivC+yLyYI8aYkVlalFuXHF5XmpBYfYjQFBvBEZinR5Hxges8riTc0NTI2NrYw
-        MTQzNTRUEufdyXYoQUggPbEkNTs1tSC1CKaPiYNTqoGJy+pK4Z2NuV9zD/1vc1qW0aW6/UmH
-        iPHalaz/viXveJUc27yx17Y9SXLixWiBfbbq66/O9RFdPu3OhQPpgbpsU14l9yRN2/aT64nv
-        XJVlh1uM5y7JnNNQNC3N8+NzZ1GVrEuFM3zWMFmVLDXyOfnax+vSXqXnSa9/xccePTmzevat
-        u48/Z6Y7iT3ykZ8v9vgO39q9ARkzgv18H3E18Gn0ZjzvCshgW8w80/QC02t15f9uew1U3sv+
-        ZXq1I3KxSw7/qglXZff90Vx4xurKglecN2pf9KVpr+GfaLV+x2Uhs/xC0R0vRRg5vK1jKhOl
-        m044Bxc7XL/F09o+leXIgreuq0Nis3TLVtpUe346dN1ciaU4I9FQi7moOBEAC6FdHTcEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFuplkeLIzCtJLcpLzFFi42LZdlhJTvds48UEg54jqhbzPstanD+/gd1i
-        49sfTBabHl9jtbi8aw6bxdojd9ktNm+aymzRcsfUgcNjVkMvm8emVZ1sHneu7WHzeHfuHLvH
-        5iX1Hn1bVjF6fN4kF8AexWWTkpqTWZZapG+XwJVx7/NC5oKD3BXfO+MaGCdwdjFyckgImEjc
-        W/WVtYuRi0NIYDejxOHvt9kgEpIS0y4eZe5i5ACyhSUOHy4GCQsJvGWU2D3fGSQsLBArcX2p
-        MkhYRMBX4v+Da+wgY5gFGpkkni+cwA4x8xeLxJqlE5hBqtgEtCT2v7gBNp9fQFHi6o/HjCA2
-        r4CdxJxLl8BqWARUJT4eeMsOYosKhEnsXPKYCaJGUOLkzCcsIDYnUP20GxfA5jALqEv8mQfR
-        yywgLnHryXwmCFteYvvbOcwTGIVnIWmfhaRlFpKWWUhaFjCyrGKUTC0ozk3PLTYsMMxLLdcr
-        TswtLs1L10vOz93ECI4xLc0djNtXfdA7xMjEwXiIUYKDWUmE90X2xQQh3pTEyqrUovz4otKc
-        1OJDjNIcLErivBe6TsYLCaQnlqRmp6YWpBbBZJk4OKUamJh7vj3Q8nl0eKPttG3Pp36ou7h6
-        isrUjXMXpu1PDW52Cpyr+89Juq7N9qrhlTkqbmdDZA2Fev//W/yq0LPitVxCjvH5bP/dS66x
-        sdsLcOalzPrftyFC4Ym+110F3tyb7qfrOOruHGCv4GHrPWPG/DjCeuWDv+f7zQy+fWTYumvL
-        udtC+W88MtfGFb0uapEM+fqruFrq55VT0VrHWou9bQtzKvYbb1xRlLe++puF79/SiyLtDX6e
-        V5YZx5+99+xuvky0Ucm9hPszMy35t+3XW7JmseLrleZvXrZqr/TkP+h7qubw81Vy8Y94nK98
-        udx8wKB+VcmtK3OKsgXXVl14wPeVS7v1mRjHi8dnmTTEhJVYijMSDbWYi4oTAXRXaykgAwAA
-X-CMS-MailID: 20210622062309epcas1p37ac8ec81df7fbbf4f3e3e95a614a85bc
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210608154400epcas1p1b22fd50629611a9475cb4d2b8dd9442d
-References: <20210608154341.10794-1-will@kernel.org>
-        <CGME20210608154400epcas1p1b22fd50629611a9475cb4d2b8dd9442d@epcas1p1.samsung.com>
-        <20210608154341.10794-2-will@kernel.org>
-        <466bfc19-2260-87c6-c458-b43cf23617e3@samsung.com>
-        <2a0181ea-a26e-65e9-16f6-cc233b6b296f@linaro.org>
-        <fbcd234d-3ea0-d609-1f1d-b557ea329c37@samsung.com>
-        <20210617214748.GC25403@willie-the-truck>
-        <d79ebd58-1c4e-834c-fc06-482f25f6f3de@linaro.org>
-        <20210621101058.GB28788@willie-the-truck>
-        <3ba202d9-a679-834a-685f-12c6f9eb9c38@linaro.org>
-        <d3e55130-ccfc-4bbc-3c82-91db4ce5113f@samsung.com>
-        <1f4d7943-c540-bafd-b372-0d0ed8172f33@linaro.org>
+References: <20210512181836.GA3445257@paulmck-ThinkPad-P17-Gen-1>
+ <CACT4Y+Z+7qPaanHNQc4nZ-mCfbqm8B0uiG7OtsgdB34ER-vDYA@mail.gmail.com>
+ <20210517164411.GH4441@paulmck-ThinkPad-P17-Gen-1> <CANpmjNPbXmm9jQcquyrNGv4M4+KW_DgcrXHsgDtH=tYQ6=RU4Q@mail.gmail.com>
+ <20210518204226.GR4441@paulmck-ThinkPad-P17-Gen-1> <CANpmjNN+nS1CAz=0vVdJLAr_N+zZxqp3nm5cxCCiP-SAx3uSyA@mail.gmail.com>
+ <20210519185305.GC4441@paulmck-ThinkPad-P17-Gen-1> <CANpmjNMskihABCyNo=cK5c0vbNBP=fcUO5-ZqBJCiO4XGM47DA@mail.gmail.com>
+ <CANpmjNMPvAucMQoZeLQAP_WiwiLT6XBoss=EZ4xAbrHnMwdt5g@mail.gmail.com>
+ <c179dc74-662d-567f-0285-fcfce6adf0a5@redhat.com> <YMyC/Dy7XoxTeIWb@elver.google.com>
+ <CACT4Y+YTh=ND_cshGyVi98KiY=pkg3WKrpE__Cn+K0Wgmuyv+w@mail.gmail.com> <8069d809-b133-edbf-4323-45c45a1c3c9d@redhat.com>
+In-Reply-To: <8069d809-b133-edbf-4323-45c45a1c3c9d@redhat.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 22 Jun 2021 08:33:00 +0200
+Message-ID: <CACT4Y+ZWwT8Fk2T58saPaK-yfJ_Zxtvg57KE2ubsKG9Jn2TSng@mail.gmail.com>
+Subject: Re: Functional Coverage via RV? (was: "Learning-based Controlled
+ Concurrency Testing")
+To:     Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc:     Marco Elver <elver@google.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        syzkaller <syzkaller@googlegroups.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/22/21 2:21 PM, Daniel Lezcano wrote:
-> On 22/06/2021 04:40, Chanwoo Choi wrote:
->> On 6/21/21 7:18 PM, Daniel Lezcano wrote:
->>> On 21/06/2021 12:10, Will Deacon wrote:
->>>
->>> [ ... ]
->>>
->>>>>> exynos4_mct_frc_start() is called unconditionally from probe via
->>>>>> exynos4_clocksource_init() so as long as the mct probes first, then the
->>>>>> arch timer should work, no? The rating shouldn't affect that.
->>>>>
->>>>> How do you ensure the exynos mct is probed before the arch timer ?
->>>>>
->>>>> The Makefile provides the right order, but the dependency is implicit.
->>>>
->>>> Currently, I think it's done by the order of the CPU hotplug notifiers (
->>>> see the hunk of 6282edb72bed which touches cpuhotplug.h).
->>>
->>> Ah, right. Indeed whatever the DT order, the cpuhotplug order solves the
->>> dependency.
->>>
->>> Chanwoo, are fine with this change ?
->>
->> OK about the order.
->>
->> Actually, I have not fully tested the arch timer on Exynos5433 64bit
->> because of the dependency between arch timer and MCT as we knew.
->>
->> If the Krzysztof and Marek have no any objection,
->> I have no any objection anymore. Thanks.
->>
-> 
-> Shall I consider it as an Acked-by ?
-> 
+On Mon, Jun 21, 2021 at 10:39 AM Daniel Bristot de Oliveira
+<bristot@redhat.com> wrote:
+>
+> On 6/19/21 1:08 PM, Dmitry Vyukov wrote:
+> > On Fri, Jun 18, 2021 at 1:26 PM Marco Elver <elver@google.com> wrote:
+> >>
+> >> On Fri, Jun 18, 2021 at 09:58AM +0200, Daniel Bristot de Oliveira wrote:
+> >>> On 6/17/21 1:20 PM, Marco Elver wrote:
+> >>>> [+Daniel, just FYI. We had a discussion about "functional coverage"
+> >>>> and fuzzing, and I've just seen your wonderful work on RV. If you have
+> >>>> thought about fuzzing with RV and how coverage of the model impacts
+> >>>> test generation, I'd be curious to hear.]
+> >>>
+> >>> One aspect of RV is that we verify the actual execution of the system instead of
+> >>> a complete model of the system, so we depend of the testing to cover all the
+> >>> aspects of the system <-> model.
+> >>>
+> >>> There is a natural relation with testing/fuzzing & friends with RV.
+> >>>
+> >>>> Looks like there is ongoing work on specifying models and running them
+> >>>> along with the kernel: https://lwn.net/Articles/857862/
+> >>>>
+> >>>> Those models that are run alongside the kernel would have their own
+> >>>> coverage, and since there's a mapping between real code and model, a
+> >>>> fuzzer trying to reach new code in one or the other will ultimately
+> >>>> improve coverage for both.
+> >>>
+> >>> Perfect!
+> >>>
+> >>>> Just wanted to document this here, because it seems quite relevant.
+> >>>> I'm guessing that "functional coverage" would indeed be a side-effect
+> >>>> of a good RV model?
+> >>>
+> >>> So, let me see if I understood the terms. Functional coverage is a way to check
+> >>> if all the desired aspects of a code/system/subsystem/functionality were covered
+> >>> by a set of tests?
+> >>
+> >> Yes, unlike code/structural coverage (which is what we have today via
+> >> KCOV) functional coverage checks if some interesting states were reached
+> >> (e.g. was buffer full/empty, did we observe transition a->b etc.).
+> >>
+> >> Functional coverage is common in hardware verification, but of course
+> >> software verification would benefit just as much -- just haven't seen it
+> >> used much in practice yet.
+> >> [ Example for HW verification: https://www.chipverify.com/systemverilog/systemverilog-functional-coverage ]
+> >>
+> >> It still requires some creativity from the designer/developer to come up
+> >> with suitable functional coverage. State explosion is a problem, too,
+> >> and naturally it is impractical to capture all possible states ... after
+> >> all, functional coverage is meant to direct the test generator/fuzzer
+> >> into more interesting states -- we're not doing model checking after all.
+> >>
+> >>> If that is correct, we could use RV to:
+> >>>
+> >>>  - create an explicit model of the states we want to cover.
+> >>>  - check if all the desired states were visited during testing.
+> >>>
+> >>> ?
+> >>
+> >> Yes, pretty much. On one hand there could be an interface to query if
+> >> all states were covered, but I think this isn't useful out-of-the box.
+> >> Instead, I was thinking we can simply get KCOV to help us out: my
+> >> hypothesis is that most of this would happen automatically if dot2k's
+> >> generated code has distinct code paths per transition.
+> >>
+> >> If KCOV covers the RV model (since it's executable kernel C code), then
+> >> having distinct code paths for "state transitions" will effectively give
+> >> us functional coverage indirectly through code coverage (via KCOV) of
+> >> the RV model.
+> >>
+> >> From what I can tell this doesn't quite happen today, because
+> >> automaton::function is a lookup table as an array. Could this just
+> >> become a generated function with a switch statement? Because then I
+> >> think we'd pretty much have all the ingredients we need.
+> >>
+> >> Then:
+> >>
+> >> 1. Create RV models for states of interests not covered by normal code
+> >>    coverage of code under test.
+> >>
+> >> 2. Enable KCOV for everything.
+> >>
+> >> 3. KCOV's coverage of the RV model will tell us if we reached the
+> >>    desired "functional coverage" (and can be used by e.g. syzbot to
+> >>    generate better tests without any additional changes because it
+> >>    already talks to KCOV).
+> >>
+> >> Thoughts?
+> >
+> > I think there is usually already some code for any important state
+> > transitions. E.g. I can't imagine how a socket can transition to
+> > active/listen/shutdown/closed states w/o any code.
+>
+> makes sense...
+>
+> > I see RV to be potentially more useful for the "coverage dimensions"
+> > idea. I.e. for sockets that would be treating coverage for a socket
+> > function X as different coverage based on the current socket state,
+> > effectively consider (PC,state) as feedback signal.
+>
+> How can RV subsystem talk with KCOV?
 
-Unfortunately, it is not acked. Just no objection.
-I'm not sure that all cases will be working when using arch timer
-because as I said, I have only used the exynos mct timer for all of cases.
+KCOV collects a trace of covered PCs. One natural way for this
+interface would be a callback that allows injecting RV state events
+into the KCOV trace. To make it possible to associate states with
+code, these events need to be scoped, e.g.:
 
+void kcov_state_start(int model, int state);
+void kcov_state_end(int model, int state);
 
+There is no prior art that I am aware of, so I assume it will require
+some experimentation and research work to figure out exactly what
+interface works best, if it works at all, how much it helps fuzzing,
+is it a good metric for assessing testing coverage, etc.
 
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+> > But my concern is that we don't want to simply consider combinations
+> > of all kernel code multiplied by all combinations of states of all RV
+> > models.
+>
+> I agree! Also because RV monitors will generally monitor an specific part of the
+> code (with exceptions for models like the preemption one).
+>
+> Most likely this will lead to severe feedback signal
+> > explosion.So the question is: how do we understand that the socket
+> > model relates only to this restricted set of code?
+> >
+> Should we annotate a model, saying which subsystem it monitors/verify?
+
+Yes. The main question I see: how to specify what "subsystem" is.
+
+Besides dynamic scoping we could use static mapping of models to code.
+E.g. socket model covers net/core/*.c and net/tpc/*.c. Then maybe we
+don't need dynamic scopes (?) however then it becomes tricker for
+models that are associated with objects. Namely, if we traced
+different states for different objects, what object does current
+executions belong to? Does it belong to any of these at all?
