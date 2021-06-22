@@ -2,170 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1913B0465
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B768A3B0471
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231580AbhFVMcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 08:32:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45982 "EHLO
+        id S231789AbhFVMcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 08:32:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231295AbhFVMcA (ORCPT
+        with ESMTP id S231620AbhFVMcO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 08:32:00 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3BB3C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 05:29:44 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id a6so11122362ioe.0
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 05:29:44 -0700 (PDT)
+        Tue, 22 Jun 2021 08:32:14 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 795C7C061574
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 05:29:57 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id a13so1652962wrf.10
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 05:29:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HLmTmVuuBpaotf6UimooCw0I2x7NRsXSXiyt5vUC6yo=;
-        b=CVBcfjSTzsrzZcOg7yBHG95WzkSzsc9ei7Ds7laJEdW4W6mVhcYgjQtTk059FPoUAN
-         s95UIYRZgvP4jIfJpCNaajkjfcfQj5I23cVGmqF8tD4WosC2L79Q6lsxz8Lx6x4mV7ZV
-         lHLQzNRVvbq+pMNxpfNwDvFDxG9Ao9QECe2AvUkwG0crqiVOTiTu2AFKd6undHoZZL+h
-         Pel4diN4gl/ojs9Wd1/5GAtwHB0t86XK2PXD0RSj5J0iFKy8IlRQm+MGybLyiPCy/Oqr
-         4sM59HYTtYcvClDZYlclZlm9bNDL59PfXEIz7Lsh1U0FUwq0q0fld0SF9apUM72E1epd
-         dxLQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=6aSbeaV8aUHmxt7bo4GWSO+UYVKMaQnwiL3Al5lNldQ=;
+        b=tiZjVOFAaUxbHAPVL+Ql6YbhBEZIN4m/Ar/gWbcEZTLzHmcBBAgcbYgvCdv+HJypx7
+         2CBX8osXD0SW8eAyl+j9En/Iag3+oqAXj3+27/rcDN8c1aks4yFBpgENbq4ReNqxbKxG
+         9/UAaqkxEmfusqV6Jlh68oOuLMcdI7WjN+1nEYICY6R0bh+U2DbUxN3tFi+vKmmSz/k7
+         Wl4zxvHv1CS2cdDLb0djmIXLWwvnZIBs2aKG7RJit7gUFJcMvQCYx7DpGktWm6R5Iur+
+         O3wXbEAcPcI70Ro/4faImRC2d5fB5enM5LZR0eGZcrcqSxrZ+o9DpFQgu3NMcbMb4hCM
+         cMww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=HLmTmVuuBpaotf6UimooCw0I2x7NRsXSXiyt5vUC6yo=;
-        b=iBtriZMHiukiPWfQNI4ylERV1AhDonBRy8YcweGvIKh8IhWTGIL2d+qXWhN16fyeeY
-         GuELWscZ+2/wGaiNUWpOaQZ2qc0xkHa9DNqYKQpsbVklmXtFquSBACwiDN0txnxzwnhp
-         dDnWw/u6vJI4VlnyGtKZHu2dyPkVulQ0cduzyhwg/dbCuf/0sDEwcT0OKtPMRvSzTBVJ
-         QcQEVVFPMUFI3Bzj8Tl7/cnKcW6awHM0J4j2iEbMYcsV1kRTV008X8eDJvOiEOqqg3y3
-         B6rSmDZ+zDYgy53w/1QIuATdMR6h1o9nMGjt9wPud8K20u3k1+8CpQLYR7FlMSsKcGa+
-         8LDQ==
-X-Gm-Message-State: AOAM532ykJ+WcsFZxVjzXrepbHlpfX3pVmhvT599ehap28jRSYBHVrya
-        hiRG2vTfcZ5XNAGIqxDRw961JPHL6H95cSY+OSc5NA==
-X-Google-Smtp-Source: ABdhPJyBFnZ/enj0tZDRqDCSnSs4jMGpAl1FO4ZrOEGPE1Kdkl8s+X+/DbqvC3LAwuWmsofe9hBKZhrFj5Fbqz7m7AM=
-X-Received: by 2002:a02:5b45:: with SMTP id g66mr3798144jab.62.1624364983969;
- Tue, 22 Jun 2021 05:29:43 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=6aSbeaV8aUHmxt7bo4GWSO+UYVKMaQnwiL3Al5lNldQ=;
+        b=YKosh+ZK8y00Q9LlOQ4oeGfy+Y/cdO2T/6Enet4bcyGbyxedwWJGAt9w7U/NyM+rOd
+         +fNOcB3M3suzMum5nigTjYF/FLQLZL8PD19mCJ1ej4R+V9lI3x0wXsUIUl6Ko5ALxxm+
+         56f2v4ffMDnJd4GEkW8pplbOFF2ZXql/gach4oP3BKkQztAgD2UrRsV5i0Sl9Co01GHj
+         AX3J3mjOMX9oT1rZVgV/qlh/DDPg1RLjoqRkl7LHzB2486c03aZLsUsQWf6dOGM0Yc6x
+         KOli+xMdyzkKkkeozU5bhTh/yw4lJQPqFLcQ1sKAQt6SoqEpnMWs3J85KNMuiuNc6uOO
+         89Xg==
+X-Gm-Message-State: AOAM533FFvSLcuArqHRHZJsTxIvCuUClnMj594iJsj8fxfmQAuXmgG2v
+        mAt7ftGveCyqa/+5RffZXijyFQoNguKfVA==
+X-Google-Smtp-Source: ABdhPJyTaZ6KXTDSBknKJNK909Wa6lS7pTipWQWwQKJUmJ1I1mrzux6bu5f5crXtN5P6VUzkLc3lxg==
+X-Received: by 2002:a05:6000:180f:: with SMTP id m15mr4514383wrh.102.1624364995961;
+        Tue, 22 Jun 2021 05:29:55 -0700 (PDT)
+Received: from agape ([5.171.73.108])
+        by smtp.gmail.com with ESMTPSA id d15sm22240349wrb.42.2021.06.22.05.29.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Jun 2021 05:29:55 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     hdegoede@redhat.com, Larry.Finger@lwfinger.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 08/17] staging: rtl8723bs: beautify prototypes in include/hal_com_phycfg.h
+Date:   Tue, 22 Jun 2021 14:29:33 +0200
+Message-Id: <ae9dcad7b9e63a06baa3be792c7e243e675e7e2a.1624364582.git.fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <cover.1624364582.git.fabioaiuto83@gmail.com>
+References: <cover.1624364582.git.fabioaiuto83@gmail.com>
 MIME-Version: 1.0
-References: <20210617095309.3542373-1-stapelberg+linux@google.com>
- <CAJfpegvpnQMSRU+TW4J5+F+3KiAj8J_m+OjNrnh7f2X9DZp2Ag@mail.gmail.com>
- <CAH9Oa-ZcG0+08d=D5-rbzY-v1cdUcuW0E7D_GcwjDoC1Phf+0g@mail.gmail.com>
- <CAJfpegu0prjjHVhBzwZBVk5N+avHvUcyi4ovhKbf+F7GEuVkmw@mail.gmail.com>
- <CAH9Oa-YxeZ25Vbto3NyUw=RK5vQWv_v7xp3vHS9667iJJ8XV_A@mail.gmail.com> <20210622121205.GG14261@quack2.suse.cz>
-In-Reply-To: <20210622121205.GG14261@quack2.suse.cz>
-From:   Michael Stapelberg <stapelberg+linux@google.com>
-Date:   Tue, 22 Jun 2021 14:29:32 +0200
-Message-ID: <CAH9Oa-YxL1iu_TVn6bL3Nd4qzYSVDPaO9a96sX4u7dhq+ewasA@mail.gmail.com>
-Subject: Re: [PATCH] backing_dev_info: introduce min_bw/max_bw limits
-To:     Jan Kara <jack@suse.cz>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        linux-fsdevel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Dennis Zhou <dennis@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Roman Gushchin <guro@fb.com>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Song Liu <song@kernel.org>, David Sterba <dsterba@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for taking a look! Comments inline:
+beautify function prototypes in incldue/hal_com_phycfg.h
+in order to ease grep searches.
 
-On Tue, 22 Jun 2021 at 14:12, Jan Kara <jack@suse.cz> wrote:
->
-> On Mon 21-06-21 11:20:10, Michael Stapelberg wrote:
-> > Hey Miklos
-> >
-> > On Fri, 18 Jun 2021 at 16:42, Miklos Szeredi <miklos@szeredi.hu> wrote:
-> > >
-> > > On Fri, 18 Jun 2021 at 10:31, Michael Stapelberg
-> > > <stapelberg+linux@google.com> wrote:
-> > >
-> > > > Maybe, but I don=E2=80=99t have the expertise, motivation or time t=
-o
-> > > > investigate this any further, let alone commit to get it done.
-> > > > During our previous discussion I got the impression that nobody els=
-e
-> > > > had any cycles for this either:
-> > > > https://lore.kernel.org/linux-fsdevel/CANnVG6n=3DySfe1gOr=3D0ituQid=
-p56idGARDKHzP0hv=3DERedeMrMA@mail.gmail.com/
-> > > >
-> > > > Have you had a look at the China LSF report at
-> > > > http://bardofschool.blogspot.com/2011/?
-> > > > The author of the heuristic has spent significant effort and time
-> > > > coming up with what we currently have in the kernel:
-> > > >
-> > > > """
-> > > > Fengguang said he draw more than 10K performance graphs and read ev=
-en
-> > > > more in the past year.
-> > > > """
-> > > >
-> > > > This implies that making changes to the heuristic will not be a qui=
-ck fix.
-> > >
-> > > Having a piece of kernel code sitting there that nobody is willing to
-> > > fix is certainly not a great situation to be in.
-> >
-> > Agreed.
-> >
-> > >
-> > > And introducing band aids is not going improve the above situation,
-> > > more likely it will prolong it even further.
-> >
-> > Sounds like =E2=80=9CPerfect is the enemy of good=E2=80=9D to me: you=
-=E2=80=99re looking for a
-> > perfect hypothetical solution,
-> > whereas we have a known-working low risk fix for a real problem.
-> >
-> > Could we find a solution where medium-/long-term, the code in question
-> > is improved,
-> > perhaps via a Summer Of Code project or similar community efforts,
-> > but until then, we apply the patch at hand?
-> >
-> > As I mentioned, I think adding min/max limits can be useful regardless
-> > of how the heuristic itself changes.
-> >
-> > If that turns out to be incorrect or undesired, we can still turn the
-> > knobs into a no-op, if removal isn=E2=80=99t an option.
->
-> Well, removal of added knobs is more or less out of question as it can
-> break some userspace. Similarly making them no-op is problematic unless w=
-e
-> are pretty certain it cannot break some existing setup. That's why we hav=
-e
-> to think twice (or better three times ;) before adding any knobs. Also
-> honestly the knobs you suggest will be pretty hard to tune when there are
-> multiple cgroups with writeback control involved (which can be affected b=
-y
-> the same problems you observe as well). So I agree with Miklos that this =
-is
-> not the right way to go. Speaking of tunables, did you try tuning
-> /sys/devices/virtual/bdi/<fuse-bdi>/min_ratio? I suspect that may
-> workaround your problems...
+Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+---
+ .../rtl8723bs/include/hal_com_phycfg.h        | 188 +++++-------------
+ 1 file changed, 48 insertions(+), 140 deletions(-)
 
-Back then, I did try the various tunables (vm.dirty_ratio and
-vm.dirty_background_ratio on the global level,
-/sys/class/bdi/<bdi>/{min,max}_ratio on the file system level), and
-they have had no observable effect on the problem at all in my tests.
+diff --git a/drivers/staging/rtl8723bs/include/hal_com_phycfg.h b/drivers/staging/rtl8723bs/include/hal_com_phycfg.h
+index a30e1e09826d..3d95ab1986b1 100644
+--- a/drivers/staging/rtl8723bs/include/hal_com_phycfg.h
++++ b/drivers/staging/rtl8723bs/include/hal_com_phycfg.h
+@@ -70,147 +70,55 @@ struct bb_register_def {
+ 
+ };
+ 
+-u8
+-PHY_GetTxPowerByRateBase(
+-struct adapter *Adapter,
+-u8 		RfPath,
+-u8 		TxNum,
+-enum rate_section	RateSection
+-	);
+-
+-u8
+-PHY_GetRateSectionIndexOfTxPowerByRate(
+-struct adapter *padapter,
+-u32 		RegAddr,
+-u32 		BitMask
+-	);
+-
+-void
+-PHY_GetRateValuesOfTxPowerByRate(
+-struct adapter *padapter,
+-u32 		RegAddr,
+-u32 		BitMask,
+-u32 		Value,
+-u8		*RateIndex,
+-s8		*PwrByRateVal,
+-u8		*RateNum
+-	);
+-
+-u8
+-PHY_GetRateIndexOfTxPowerByRate(
+-u8 Rate
+-	);
+-
+-void
+-PHY_SetTxPowerIndexByRateSection(
+-struct adapter *padapter,
+-u8 		RFPath,
+-u8 		Channel,
+-u8 		RateSection
+-	);
+-
+-s8
+-PHY_GetTxPowerByRate(
+-struct adapter *padapter,
+-u8 	RFPath,
+-u8 	TxNum,
+-u8 	RateIndex
+-	);
+-
+-void
+-PHY_SetTxPowerByRate(
+-struct adapter *padapter,
+-u8 	RFPath,
+-u8 	TxNum,
+-u8 	Rate,
+-s8			Value
+-	);
+-
+-void
+-PHY_SetTxPowerLevelByPath(
+-struct adapter *Adapter,
+-u8 	channel,
+-u8 	path
+-	);
+-
+-void
+-PHY_SetTxPowerIndexByRateArray(
+-struct adapter *padapter,
+-u8 		RFPath,
+-enum channel_width	BandWidth,
+-u8 		Channel,
+-u8		*Rates,
+-u8 		RateArraySize
+-	);
+-
+-void
+-PHY_InitTxPowerByRate(
+-struct adapter *padapter
+-	);
+-
+-void
+-PHY_StoreTxPowerByRate(
+-struct adapter *padapter,
+-u32 		RfPath,
+-u32 		TxNum,
+-u32 		RegAddr,
+-u32 		BitMask,
+-u32 		Data
+-	);
+-
+-void
+-PHY_TxPowerByRateConfiguration(
+-	struct adapter *padapter
+-	);
+-
+-u8
+-PHY_GetTxPowerIndexBase(
+-struct adapter *padapter,
+-u8 		RFPath,
+-u8 		Rate,
+-enum channel_width	BandWidth,
+-u8 		Channel
+-	);
++u8 PHY_GetTxPowerByRateBase(struct adapter *Adapter, u8 RfPath, u8 TxNum,
++			    enum rate_section RateSection);
++
++u8 PHY_GetRateSectionIndexOfTxPowerByRate(struct adapter *padapter, u32	RegAddr,
++					  u32 BitMask);
++
++void PHY_GetRateValuesOfTxPowerByRate(struct adapter *padapter, u32 RegAddr,
++				      u32 BitMask, u32 Value, u8 *RateIndex,
++				      s8 *PwrByRateVal, u8 *RateNum);
++
++u8 PHY_GetRateIndexOfTxPowerByRate(u8 Rate);
++
++void PHY_SetTxPowerIndexByRateSection(struct adapter *padapter, u8 RFPath, u8 Channel,
++				      u8 RateSection);
++
++s8 PHY_GetTxPowerByRate(struct adapter *padapter, u8 RFPath, u8	TxNum, u8 RateIndex);
++
++void PHY_SetTxPowerByRate(struct adapter *padapter, u8 RFPath, u8 TxNum, u8 Rate,
++			  s8 Value);
++
++void PHY_SetTxPowerLevelByPath(struct adapter *Adapter, u8 channel, u8 path);
++
++void PHY_SetTxPowerIndexByRateArray(struct adapter *padapter, u8 RFPath,
++				    enum channel_width BandWidth, u8 Channel,
++				    u8 *Rates, u8 RateArraySize);
++
++void PHY_InitTxPowerByRate(struct adapter *padapter);
++
++void PHY_StoreTxPowerByRate(struct adapter *padapter, u32 RfPath, u32 TxNum,
++			    u32	RegAddr, u32 BitMask, u32 Data);
++
++void PHY_TxPowerByRateConfiguration(struct adapter *padapter);
++
++u8 PHY_GetTxPowerIndexBase(struct adapter *padapter, u8 RFPath, u8 Rate,
++			   enum channel_width BandWidth, u8 Channel);
+ 
+ s8 phy_get_tx_pwr_lmt(struct adapter *adapter, u32 RegPwrTblSel,
+-		      enum channel_width Bandwidth,
+-u8 		RfPath,
+-u8 		DataRate,
+-u8 		Channel
+-	);
+-
+-void
+-PHY_SetTxPowerLimit(
+-struct adapter *Adapter,
+-u8 			*Regulation,
+-u8 			*Bandwidth,
+-u8 			*RateSection,
+-u8 			*RfPath,
+-u8 			*Channel,
+-u8 			*PowerLimit
+-	);
+-
+-void
+-PHY_ConvertTxPowerLimitToPowerIndex(
+-struct adapter *Adapter
+-	);
+-
+-void
+-PHY_InitTxPowerLimit(
+-struct adapter *Adapter
+-	);
+-
+-s8
+-PHY_GetTxPowerTrackingOffset(
+-	struct adapter *padapter,
+-	u8 	Rate,
+-	u8 	RFPath
+-	);
+-
+-void
+-Hal_ChannelPlanToRegulation(
+-struct adapter *Adapter,
+-u16 			ChannelPlan
+-	);
++		      enum channel_width Bandwidth, u8 RfPath, u8 DataRate,
++		      u8 Channel);
++
++void PHY_SetTxPowerLimit(struct adapter *Adapter, u8 *Regulation, u8 *Bandwidth,
++			 u8 *RateSection, u8 *RfPath, u8 *Channel, u8 *PowerLimit);
++
++void PHY_ConvertTxPowerLimitToPowerIndex(struct adapter *Adapter);
++
++void PHY_InitTxPowerLimit(struct adapter *Adapter);
++
++s8 PHY_GetTxPowerTrackingOffset(struct adapter *padapter, u8 Rate, u8 RFPath);
++
++void Hal_ChannelPlanToRegulation(struct adapter *Adapter, u16 ChannelPlan);
+ 
+ #endif /* __HAL_COMMON_H__ */
+-- 
+2.20.1
 
->
-> Looking into your original report and tracing you did (thanks for that,
-> really useful), it seems that the problem is that writeback bandwidth is
-> updated at most every 200ms (more frequent calls are just ignored) and ar=
-e
-> triggered only from balance_dirty_pages() (happen when pages are dirtied)=
- and
-> inode writeback code so if the workload tends to have short spikes of act=
-ivity
-> and extended periods of quiet time, then writeback bandwidth may indeed b=
-e
-> seriously miscomputed because we just won't update writeback throughput
-> after most of writeback has happened as you observed.
->
-> I think the fix for this can be relatively simple. We just need to make
-> sure we update writeback bandwidth reasonably quickly after the IO
-> finishes. I'll write a patch and see if it helps.
-
-Thank you! Please keep us posted.
