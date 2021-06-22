@@ -2,78 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 520663B0532
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:50:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4EBE3B0538
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 14:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231689AbhFVMxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 08:53:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53702 "EHLO mail.kernel.org"
+        id S230092AbhFVMyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 08:54:43 -0400
+Received: from foss.arm.com ([217.140.110.172]:48762 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229675AbhFVMxD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 08:53:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81DDB61352;
-        Tue, 22 Jun 2021 12:50:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1624366248;
-        bh=igf/oBppr25pGo4fdiyflW9vzPNgg5t2IWKA7sOBX5s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SfyhEaCRkPRLW4Zcr+mN3NwwAQ3WAPAjBLrgRAlm49UsCoF4zszPh1G1+jils9Pjl
-         vj/0p048h2x2PkCvGwiXdrGdaLT1la8KZ9p9N6nnp+IqdMXSxfnjKN28rMnsX6bgLI
-         6Ql1tvCmm2ZtV84L7uepZjuiy7p8ZSpKqV5l9jdO0k8myA1PH0kNNGzwfs2YRtIeH4
-         9aOAQcmKf0HkkgMzJNcLKOk439gf3La82ejlazahNnmRSCl3AkHwFMf/zpR8xmOo3Y
-         jpcNplXU5S+vL1BhFHgentdE42U+0weUyMa39/zt0R0YKMCMc0WJPazjtpf8vMZAQC
-         fBlTX+q1wbcQw==
-Date:   Tue, 22 Jun 2021 13:50:24 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Axel Lin <axel.lin@ingics.com>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Steve Twiss <stwiss.opensource@diasemi.com>,
-        Support Opensource <support.opensource@diasemi.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] regulator: da9052: Simplify checking DVC controlled
- regulators
-Message-ID: <20210622125024.GC4574@sirena.org.uk>
-References: <20210618141412.4014912-1-axel.lin@ingics.com>
- <20210618141412.4014912-2-axel.lin@ingics.com>
+        id S229675AbhFVMyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 22 Jun 2021 08:54:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED46EED1;
+        Tue, 22 Jun 2021 05:52:25 -0700 (PDT)
+Received: from localhost.localdomain (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B086E3F694;
+        Tue, 22 Jun 2021 05:52:24 -0700 (PDT)
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Heiner Kallweit <hkallweit1@gmail.com>, nic_swsd@realtek.com
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sayanta Pattanayak <sayanta.pattanayak@arm.com>
+Subject: [PATCH] r8169: Avoid duplicate sysfs entry creation error
+Date:   Tue, 22 Jun 2021 13:52:06 +0100
+Message-Id: <20210622125206.1437-1-andre.przywara@arm.com>
+X-Mailer: git-send-email 2.14.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="m51xatjYGsM+13rf"
-Content-Disposition: inline
-In-Reply-To: <20210618141412.4014912-2-axel.lin@ingics.com>
-X-Cookie: fortune: not found
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
 
---m51xatjYGsM+13rf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+When registering the MDIO bus for a r8169 device, we use the PCI B/D/F
+specifier as a (seemingly) unique device identifier.
+However the very same BDF number can be used on another PCI segment,
+which makes the driver fail probing:
 
-On Fri, Jun 18, 2021 at 10:14:12PM +0800, Axel Lin wrote:
+[ 27.544136] r8169 0002:07:00.0: enabling device (0000 -> 0003)
+[ 27.559734] sysfs: cannot create duplicate filename '/class/mdio_bus/r8169-700'
+....…
+[ 27.684858] libphy: mii_bus r8169-700 failed to register
+[ 27.695602] r8169: probe of 0002:07:00.0 failed with error -22
 
-> Only DVC controlled regulators have activate_bit set, so just check
-> activate_bit we can know if the regulator is DVC controlled.
+Add the segment number to the device name to make it more unique.
 
-This feels a bit icky - what if the activate_bit for some variant were
-bit 0?  I'm not sure we're likely to see new variants but even so the
-fact that 0 is a potentially valid value for the bit feels wrong.
+This fixes operation on an ARM N1SDP board, where two boards might be
+connected together to form an SMP system, and all on-board devices show
+up twice, just on different PCI segments.
 
---m51xatjYGsM+13rf
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: Sayanta Pattanayak <sayanta.pattanayak@arm.com>
+[Andre: expand commit message]
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+---
+ drivers/net/ethernet/realtek/r8169_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
+index 2c89cde7da1e..209dee295ce2 100644
+--- a/drivers/net/ethernet/realtek/r8169_main.c
++++ b/drivers/net/ethernet/realtek/r8169_main.c
+@@ -5086,7 +5086,8 @@ static int r8169_mdio_register(struct rtl8169_private *tp)
+ 	new_bus->priv = tp;
+ 	new_bus->parent = &pdev->dev;
+ 	new_bus->irq[0] = PHY_MAC_INTERRUPT;
+-	snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x", pci_dev_id(pdev));
++	snprintf(new_bus->id, MII_BUS_ID_SIZE, "r8169-%x-%x",
++		 pdev->bus->domain_nr, pci_dev_id(pdev));
+ 
+ 	new_bus->read = r8169_mdio_read_reg;
+ 	new_bus->write = r8169_mdio_write_reg;
+-- 
+2.17.5
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmDR3JAACgkQJNaLcl1U
-h9B1fAf/ZzA7ucWP1tj3V1aeaRcIuo7Z6/5wu9swp0/58zXaLwywwW5v5y3aBkve
-qDliFTfe+vE8G0EJaXMt6u69fFqhhJcCvU/eZciw9f3Tq7adLWH7+3PneLBWcxir
-XN0DUE9LIZOCpxBj1ETPDeTBsWF0owekbxiWg138PZGcQ/4DO7dq21BwhzrVHhc+
-bRutgvkojpjwp9RGCLo4BvflQQLSm65bpTbPjklohLctqwxpbQavR6PGOlqFXNYB
-qS8sak/dKEnsrP4GK3DSnTS4DckAOZFWYoZ90eqR8JbqgxS4lgDt+SGLnJhysp1N
-UfS5MB9c+nGqDUfzUNHqpGx8lZXlwA==
-=deo4
------END PGP SIGNATURE-----
-
---m51xatjYGsM+13rf--
