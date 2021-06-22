@@ -2,118 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73AD73AFDB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 067533AFDBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 09:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229917AbhFVHV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 03:21:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbhFVHV5 (ORCPT
+        id S229501AbhFVHXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 03:23:10 -0400
+Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:65426 "EHLO
+        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229490AbhFVHXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 03:21:57 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E08DBC061574;
-        Tue, 22 Jun 2021 00:19:41 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G8HpK3GcGz9sT6;
-        Tue, 22 Jun 2021 17:19:37 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1624346378;
-        bh=lKLIBow7q6fVnoH1lCZXhkwu5k2+oE8chmuDsmdhT+o=;
-        h=Date:From:To:Cc:Subject:From;
-        b=ebtgFwWYGTTvnSn6Sy9ykoQUpu9h/sWzDWpFekxY86pbFkfRSoNcumEOp573OrIsg
-         BzexSScp+ZJWlLJJ3jUZ8FRpwcXxp2TXVUg28ChiYayNenMcsJD/kmorFO0qY2CQ5/
-         +W7uLNxshCfGhmbOj/11sC3dQPQ4jtOQgRdFze6WyGidkm+AJbYTThxD7HoMKlZsSf
-         W/n9mQS5o3b49jrYpPiOMVrmQlwnTBT4IW+8NVZrCaT22WxB8ubFTG4XCZnAKWI6Tc
-         gNIFMNsjTY6ON4aOofgXLwgnWEfnBJxTYagMAVQMaijGhjQaEpzkSIfaP+NT38L2N9
-         6upSVStC+FAuA==
-Date:   Tue, 22 Jun 2021 17:19:36 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: linux-next: manual merge of the soundwire tree with the
- sound-asoc-fixes tree
-Message-ID: <20210622171936.1c147fbf@canb.auug.org.au>
+        Tue, 22 Jun 2021 03:23:08 -0400
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 15M7GDmJ032136;
+        Tue, 22 Jun 2021 07:20:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=uZtpeCcW0/0ddJSUa4GkLD+7TtG1zH2UHC/nBMIUQhM=;
+ b=a0e0YpU4SF96WFQSpNn854jaDwF/vh49UqhsJzN6mMAIkk2LMIpfC4Q38RwT1mrrhpCf
+ w5TdqqLNYsOfFW/qGNYFeEsOfuCFPLGT6PpA2GFGCPBP8fEshCmmKq+AXzCBr6Ymjgsj
+ RpKEYMWnmudOp4TmDfzF3V/jHk57Tb4va+J1B/D0KBhM3D2gQqGmcuKBdGRvM4Fo8GR7
+ sK1S9l6yp7Zi8eYWIkNAy0q4BxeRvL/p9Samd610Xf4WqFHS6kmWxanenum8LPVQmFVy
+ bowrQLOIXQq8Bgtpks6rhdxVyN31gNfeqv97JGuf5U3ix44veJ0Bmy8A7tXz/2hif3lD 8w== 
+Received: from oracle.com (userp3030.oracle.com [156.151.31.80])
+        by mx0b-00069f02.pphosted.com with ESMTP id 39acyqb4hr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Jun 2021 07:20:46 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 15M7FFRM072448;
+        Tue, 22 Jun 2021 07:20:45 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 3995pvs9e7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Jun 2021 07:20:45 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 15M7KjTr090608;
+        Tue, 22 Jun 2021 07:20:45 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 3995pvs9du-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 22 Jun 2021 07:20:45 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 15M7Kh5w014540;
+        Tue, 22 Jun 2021 07:20:43 GMT
+Received: from kadam (/102.222.70.252)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 22 Jun 2021 00:20:43 -0700
+Date:   Tue, 22 Jun 2021 10:20:36 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Coiby Xu <coiby.xu@gmail.com>
+Cc:     linux-staging@lists.linux.dev, netdev@vger.kernel.org,
+        Benjamin Poirier <benjamin.poirier@gmail.com>,
+        Shung-Hsi Yu <shung-hsi.yu@suse.com>,
+        Manish Chopra <manishc@marvell.com>,
+        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
+        <GR-Linux-NIC-Dev@marvell.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC 13/19] staging: qlge: rewrite do while loop as for loop in
+ qlge_sem_spinlock
+Message-ID: <20210622072036.GK1861@kadam>
+References: <20210621134902.83587-1-coiby.xu@gmail.com>
+ <20210621134902.83587-14-coiby.xu@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/WtVq0rAqeGhl6UrT8CtiWnD";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210621134902.83587-14-coiby.xu@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-GUID: 9WdfC9Sv-xDEwWU93ImiyD6OEuWdleHI
+X-Proofpoint-ORIG-GUID: 9WdfC9Sv-xDEwWU93ImiyD6OEuWdleHI
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/WtVq0rAqeGhl6UrT8CtiWnD
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, Jun 21, 2021 at 09:48:56PM +0800, Coiby Xu wrote:
+> Since wait_count=30 > 0, the for loop is equivalent to do while
+> loop. This commit also replaces 100 with UDELAY_DELAY.
+> 
+> Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
+> ---
+>  drivers/staging/qlge/qlge_main.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/staging/qlge/qlge_main.c b/drivers/staging/qlge/qlge_main.c
+> index c5e161595b1f..2d2405be38f5 100644
+> --- a/drivers/staging/qlge/qlge_main.c
+> +++ b/drivers/staging/qlge/qlge_main.c
+> @@ -140,12 +140,13 @@ static int qlge_sem_trylock(struct qlge_adapter *qdev, u32 sem_mask)
+>  int qlge_sem_spinlock(struct qlge_adapter *qdev, u32 sem_mask)
+>  {
+>  	unsigned int wait_count = 30;
+> +	int count;
+>  
+> -	do {
+> +	for (count = 0; count < wait_count; count++) {
+>  		if (!qlge_sem_trylock(qdev, sem_mask))
+>  			return 0;
+> -		udelay(100);
+> -	} while (--wait_count);
+> +		udelay(UDELAY_DELAY);
 
-Hi all,
+This is an interesting way to silence the checkpatch udelay warning.  ;)
 
-Today's linux-next merge of the soundwire tree got a conflict in:
+regards,
+dan carpenter
 
-  include/linux/soundwire/sdw.h
-
-between commit:
-
-  d38ebaf2c884 ("soundwire: export sdw_update() and sdw_update_no_pm()")
-
-from the sound-asoc-fixes tree and commit:
-
-  031e668bc1ad ("soundwire: bus: Make sdw_nwrite() data pointer argument co=
-nst")
-
-from the soundwire tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc include/linux/soundwire/sdw.h
-index de9802a24e7e,ddbeb00799e4..000000000000
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@@ -1040,10 -1039,7 +1039,10 @@@ int sdw_write(struct sdw_slave *slave,=20
-  int sdw_write_no_pm(struct sdw_slave *slave, u32 addr, u8 value);
-  int sdw_read_no_pm(struct sdw_slave *slave, u32 addr);
-  int sdw_nread(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
-- int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, u8 *val);
-+ int sdw_nwrite(struct sdw_slave *slave, u32 addr, size_t count, const u8 =
-*val);
- +int sdw_update(struct sdw_slave *slave, u32 addr, u8 mask, u8 val);
- +int sdw_update_no_pm(struct sdw_slave *slave, u32 addr, u8 mask, u8 val);
- +
-  int sdw_compare_devid(struct sdw_slave *slave, struct sdw_slave_id id);
-  void sdw_extract_slave_id(struct sdw_bus *bus, u64 addr, struct sdw_slave=
-_id *id);
- =20
-
---Sig_/WtVq0rAqeGhl6UrT8CtiWnD
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDRjwgACgkQAVBC80lX
-0Gwm+Qf/X8WbjAiK48jPYE9swakxBg5f1W75kRol7lVN3KgZvPN9K0wiTM5GFtNt
-Du0XT9w/MwWyAR2X+x9vULzMYxUYsSd2uIFeMP6ibmnDY/dzskhCZjHGj1iNjk0E
-l8SAy56pkGpozynMXRfiu3qcT+qhOP6PZP/F1oj2TDxaENlR2G1jB5EwTi7xUd/R
-8twKMZr91sE2bAtecUQ108Whdx4c844jQ9kIm6NM6TBGeQ1ptrgpmAfuaoHeOKhU
-3LxoUfv1y9Psmg39ivT9z0FMQjAo/Rl+vJmtlFe8ds1X28FMLXDlbrbhsBZDp86j
-ZX+/TrdDHbDJN2LINnLelJIaU2B1Sg==
-=wi8+
------END PGP SIGNATURE-----
-
---Sig_/WtVq0rAqeGhl6UrT8CtiWnD--
