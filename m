@@ -2,91 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4213B0571
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:05:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C13DC3B0574
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 15:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231303AbhFVNHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 09:07:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229844AbhFVNHR (ORCPT
+        id S231474AbhFVNHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 09:07:41 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:32738 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231365AbhFVNHd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 09:07:17 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B124C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 06:05:00 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id d2so30060182ljj.11
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 06:05:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=jtJ/PpWosUWKo9N81UZmZyqeDEJHdOfHRjcctVezzbk=;
-        b=eKzTIy26AtakD56NIBxhuUgcUiQTkUNTXyIzAWRUQm95eXokirCQKgb9dL334GREiv
-         eAVqp2Gz3FB0fbdN9E5iw0JvZInbFplh2qmcQ45PiCcXfkcq/FL0vXOB1oY62wx9YfTg
-         t+59CWR0Ac5ssBIMzVb3nZEHknMeyrxbAjDq3MyYhZ2ofy9AY0yT+7nIlxqgiEwYSQxI
-         WHF+ImfF0IZ2dWDJ5TH5Tke9A6z/4vjAQJOpv53AM3cOqYlMyipg0O2gTcYrIUw2tb22
-         B9izBM/yMCS/1br0A+ld2/S9/T9BNwBdEt/kJ/ftBEgO1kjM8AiIgWmAJI0WeeppZCqW
-         07jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=jtJ/PpWosUWKo9N81UZmZyqeDEJHdOfHRjcctVezzbk=;
-        b=gMbMjhpN3PVwtmOtohlnkVg7jSqi9k3bEZhqyWHtd6M+tBLQUj4o8yrRNcSaMtcFKA
-         g0j0m3tW7WbIFsOZTuwHzMAnNYZiI+9CLK2Oux8ceynJEYYun2JUkK5Zsk/g1kCm3kYR
-         o+IZUn+BhHexn+OQ6Cqw0NnSUPTyrILoBmOG8GebeaDX69J3YyvXPH8Nxl7F5tpSTLrA
-         i/SU3HpBpDVk5V5oOLK03HYNvzoeDg1Nbu3jmbNRHuxmBZ7/oqA4E6ANp8N3oF0Gz/ru
-         /at8IXDbj6Vbhx0KF7GH0ykJNNxflE+PKRFN/gUJKvYTqc+h98+UR6WBN4HSh52KuG9T
-         2XAw==
-X-Gm-Message-State: AOAM533dDdRCH05PE4Yv6lcD3K8S0BdhMAqCz2r6n+x+Ufkqe7/a6XtE
-        GgRqJnlZ7rkBCIqVP7AXTE+Ilw==
-X-Google-Smtp-Source: ABdhPJwqtjgiYlFpJtbIhAGYBnmYGr/K1P6uQeS1+VZflSi3wN/oQxXrINtgCULZAFXy5r8rRmyWjQ==
-X-Received: by 2002:a2e:9e16:: with SMTP id e22mr3103960ljk.447.1624367097162;
-        Tue, 22 Jun 2021 06:04:57 -0700 (PDT)
-Received: from jade (h-79-136-85-3.A175.priv.bahnhof.se. [79.136.85.3])
-        by smtp.gmail.com with ESMTPSA id j16sm2501090ljh.66.2021.06.22.06.04.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Jun 2021 06:04:56 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 15:04:54 +0200
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     arm@kernel.org, soc@kernel.org
-Cc:     op-tee@lists.trustedfirmware.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sumit Garg <sumit.garg@linaro.org>
-Subject: [GIT PULL] TEE reviewer for v5.13
-Message-ID: <20210622130454.GA2196996@jade>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        Tue, 22 Jun 2021 09:07:33 -0400
+Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210622130516epoutp0451d169d09246c57300b0f3e5bdfcfb76~K6Uk3uI0K1897618976epoutp04h
+        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 13:05:16 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210622130516epoutp0451d169d09246c57300b0f3e5bdfcfb76~K6Uk3uI0K1897618976epoutp04h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1624367116;
+        bh=dPOrZQCSv2QrpuL2mPyZh4ke2YDT+BDxwKav7Zhkndg=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=lDAg2aLO2J2nzHPkHMtTnXDLgsbm5rew07VS2D9AuDu9dTgiQLxWupZbYhAAy2s4p
+         7qWKsoAhwJhRl4mMDcHR6r973ihzy7U1FWXEQt/IHyOimWv7AotOZyA97va58O9NDv
+         d3NoxG5KGa+xWJRNsA+3p7nhlD+Vn0eF4hVM9r9s=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20210622130515epcas5p4f99d9844cf2845f413fe78692d6068de~K6UkCil9H1881018810epcas5p4S;
+        Tue, 22 Jun 2021 13:05:15 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        02.DB.09452.B00E1D06; Tue, 22 Jun 2021 22:05:15 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20210622130203epcas5p48a3111fc6586b1bfe0bd3cb90f783ce0~K6RxRcsAe1990019900epcas5p4r;
+        Tue, 22 Jun 2021 13:02:03 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210622130203epsmtrp1c57fd301a05e86ec3273a4b0a4299044~K6RxQyGGX1393513935epsmtrp1P;
+        Tue, 22 Jun 2021 13:02:03 +0000 (GMT)
+X-AuditID: b6c32a4b-43fff700000024ec-95-60d1e00b1f8a
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        9B.A4.08289.B4FD1D06; Tue, 22 Jun 2021 22:02:03 +0900 (KST)
+Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
+        [107.108.73.139]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210622130202epsmtip14dac6eb97c0e219320bb487c6d3e2725~K6RwKMJZq2900329003epsmtip1D;
+        Tue, 22 Jun 2021 13:02:02 +0000 (GMT)
+From:   Alim Akhtar <alim.akhtar@samsung.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        robh+dt@kernel.org
+Cc:     krzysztof.kozlowski@canonical.com,
+        linux-samsung-soc@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>
+Subject: [PATCH v2 1/2] arm64: dts: exynos7: Add cpu cache information
+Date:   Tue, 22 Jun 2021 18:35:50 +0530
+Message-Id: <20210622130551.67446-1-alim.akhtar@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrAIsWRmVeSWpSXmKPExsWy7bCmui73g4sJBnu+C1s8mLeNzWLj2x9M
+        FpseX2O1uLxrDpvFjPP7mCxa9x5hd2DzmNXQy+axaVUnm8fmJfUefVtWMXp83iQXwBrFZZOS
+        mpNZllqkb5fAlbH/1RzGgq+CFUdvKDcwvuTtYuTkkBAwkWh93sbexcjFISSwm1Fi2qQeRgjn
+        E6PEpolNbBDOZ0aJne97mWBadt/7zgSR2MUoseRGCztIQkighUli84Q0EJtNQFvi7vQtYA0i
+        AjESD/fMYwWxmQUKJV603ASrFxZwk+hddIsZxGYRUJX4O2stC4jNK2Aj0d35nR1imbzE6g0H
+        mEGWSQgsY5fY0HwE6goXicWdq1kgbGGJV8e3QDVISbzsB3mIA8jOlujZZQwRrpFYOu8YVLm9
+        xIErc1hASpgFNCXW79KHCMtKTD21jgniTD6J3t9PoDbxSuyYB2OrSjS/uwo1RlpiYnc3K4Tt
+        ITGp+yULJBhiJU48Wco4gVF2FsKGBYyMqxglUwuKc9NTi00LjPNSy/WKE3OLS/PS9ZLzczcx
+        giNdy3sH46MHH/QOMTJxMB5ilOBgVhLhfZF9MUGINyWxsiq1KD++qDQntfgQozQHi5I471L2
+        QwlCAumJJanZqakFqUUwWSYOTqkGponb/uqHCFvpKGnqbhNYpjLVMvXS0UvGYlWHMx5GnAkp
+        uv/u8Z/ElsCXj0o4Y8268z/PP8Y+Mem4zR3pVNcM/ZMPnMwsGO9m/75Q/YP12/PswMxrHVtc
+        z30SqyyQPpz8YPM+wZIKd3vmwu03j17xedd+I9DgS9OyPb6Kok/vCe2ewbM7SeLt6ZAI8Qxf
+        xZ03ExRnOxw1C9BilL+nYbPXdNPfucs2Kn7if/5mo6Hjh0XHgu89DLkofdObactM2RdzRUzd
+        xTi9y/9KLDCYxdu16qzu1T4Gs59vZn0RFPbJvb3nbnrtO6+62WtO+4nobLN4/zns3Kunvmlb
+        3l2tlJtw+P+/VIa6/23SfZfdenesXarEUpyRaKjFXFScCABBGCO7YwMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrGJMWRmVeSWpSXmKPExsWy7bCSnK73/YsJBvtWilg8mLeNzWLj2x9M
+        FpseX2O1uLxrDpvFjPP7mCxa9x5hd2DzmNXQy+axaVUnm8fmJfUefVtWMXp83iQXwBrFZZOS
+        mpNZllqkb5fAlbH/1RzGgq+CFUdvKDcwvuTtYuTkkBAwkdh97ztTFyMXh5DADkaJu8tPskAk
+        pCWub5zADmELS6z895wdoqiJSeLC0gdMIAk2AW2Ju9O3ANkcHCICcRKt66tBTGaBYonTv8Aq
+        hAXcJHoX3WIGsVkEVCX+zloLNp5XwEaiu/M71Hh5idUbDjBPYORZwMiwilEytaA4Nz232LDA
+        KC+1XK84Mbe4NC9dLzk/dxMjOGi0tHYw7ln1Qe8QIxMH4yFGCQ5mJRHeF9kXE4R4UxIrq1KL
+        8uOLSnNSiw8xSnOwKInzXug6GS8kkJ5YkpqdmlqQWgSTZeLglGpgSp24JLh4f3rS4ikLZix7
+        /MQxPWtytOrRQ7POMDPq397G08ltKaA/raxH9XLQoaPSiTcDKu/GbRMJF1397++H60smH946
+        8Z3ArFY1teJ3JS92/4lZcc/t1oIFmxzkf1kcq3M0U96UvUxk4wH7gsTHXF3vz+r4RDWtjXgX
+        7Gk4sTq8pbo5bqvyvYflfhl76zbkbE/grpryafuTsh3zbjNMmviw0ZBrg43FUXlvVyt+Fb0P
+        5y1XMDq+PmG0mONa13Gu6c83bb9bJhQimyn96pRF+WaHTeXHQkSWvvjIIfBdlHVycjHze6XX
+        JgwChysZDj1crXlo13m1/8++ip+ey9st77i5YIXymQ5R4/R7G5+aBCuxFGckGmoxFxUnAgBr
+        bFoMiQIAAA==
+X-CMS-MailID: 20210622130203epcas5p48a3111fc6586b1bfe0bd3cb90f783ce0
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20210622130203epcas5p48a3111fc6586b1bfe0bd3cb90f783ce0
+References: <CGME20210622130203epcas5p48a3111fc6586b1bfe0bd3cb90f783ce0@epcas5p4.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello arm-soc maintainers,
+This patch adds cpu caches information to its dt
+nodes so that the same is available to userspace
+via sysfs.
+This SoC has 48/32 KB I/D cache for each cores
+and 2MB of L2 cache.
 
-Please pull this patch which adds Sumit Garg as TEE subsystem reviewer.
+Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
+---
+Changes since v1:
+* no change in this patch
+* changes as per Krzysztof's review comments in patch 2/2
 
-Thanks,
-Jens
+ arch/arm64/boot/dts/exynos/exynos7.dtsi | 35 +++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-The following changes since commit d07f6ca923ea0927a1024dfccafc5b53b61cfecc:
+diff --git a/arch/arm64/boot/dts/exynos/exynos7.dtsi b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+index 10244e59d56d..8b06397ba6e7 100644
+--- a/arch/arm64/boot/dts/exynos/exynos7.dtsi
++++ b/arch/arm64/boot/dts/exynos/exynos7.dtsi
+@@ -54,6 +54,13 @@
+ 			compatible = "arm,cortex-a57";
+ 			reg = <0x0>;
+ 			enable-method = "psci";
++			i-cache-size = <0xc000>;
++			i-cache-line-size = <64>;
++			i-cache-sets = <256>;
++			d-cache-size = <0x8000>;
++			d-cache-line-size = <64>;
++			d-cache-sets = <256>;
++			next-level-cache = <&atlas_l2>;
+ 		};
+ 
+ 		cpu_atlas1: cpu@1 {
+@@ -61,6 +68,13 @@
+ 			compatible = "arm,cortex-a57";
+ 			reg = <0x1>;
+ 			enable-method = "psci";
++			i-cache-size = <0xc000>;
++			i-cache-line-size = <64>;
++			i-cache-sets = <256>;
++			d-cache-size = <0x8000>;
++			d-cache-line-size = <64>;
++			d-cache-sets = <256>;
++			next-level-cache = <&atlas_l2>;
+ 		};
+ 
+ 		cpu_atlas2: cpu@2 {
+@@ -68,6 +82,13 @@
+ 			compatible = "arm,cortex-a57";
+ 			reg = <0x2>;
+ 			enable-method = "psci";
++			i-cache-size = <0xc000>;
++			i-cache-line-size = <64>;
++			i-cache-sets = <256>;
++			d-cache-size = <0x8000>;
++			d-cache-line-size = <64>;
++			d-cache-sets = <256>;
++			next-level-cache = <&atlas_l2>;
+ 		};
+ 
+ 		cpu_atlas3: cpu@3 {
+@@ -75,6 +96,20 @@
+ 			compatible = "arm,cortex-a57";
+ 			reg = <0x3>;
+ 			enable-method = "psci";
++			i-cache-size = <0xc000>;
++			i-cache-line-size = <64>;
++			i-cache-sets = <256>;
++			d-cache-size = <0x8000>;
++			d-cache-line-size = <64>;
++			d-cache-sets = <256>;
++			next-level-cache = <&atlas_l2>;
++		};
++
++		atlas_l2: l2-cache0 {
++			compatible = "cache";
++			cache-size = <0x200000>;
++			cache-line-size = <64>;
++			cache-sets = <2048>;
+ 		};
+ 	};
+ 
 
-  Linux 5.13-rc2 (2021-05-16 15:27:44 -0700)
+base-commit: 614124bea77e452aa6df7a8714e8bc820b489922
+-- 
+2.17.1
 
-are available in the Git repository at:
-
-  git://git.linaro.org:/people/jens.wiklander/linux-tee.git tags/tee-reviewer-for-v5.13
-
-for you to fetch changes up to 9600948a2e919cabc18f196373e9f60c32bdb44e:
-
-  MAINTAINERS: Add myself as TEE subsystem reviewer (2021-06-22 14:42:58 +0200)
-
-----------------------------------------------------------------
-Add Sumit Garg as TEE reviewer
-
-----------------------------------------------------------------
-Sumit Garg (1):
-      MAINTAINERS: Add myself as TEE subsystem reviewer
-
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
