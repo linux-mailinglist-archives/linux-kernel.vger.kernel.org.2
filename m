@@ -2,102 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF6B3B0D66
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 21:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E0E3B0D6D
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 21:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232690AbhFVTGp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 15:06:45 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:57261 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbhFVTGj (ORCPT
+        id S232720AbhFVTIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 15:08:13 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:56562 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230146AbhFVTIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 15:06:39 -0400
-Received: by mail-il1-f197.google.com with SMTP id k12-20020a056e021a8cb02901ee3943c474so129523ilv.23
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 12:04:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=6B09qJitkXkrlV9UF7bw3/haDx6V0dIWg9bl/gymHkQ=;
-        b=fbeb1lYtIGwXmQ21oBUfc5sIuFBD0DH3RqmxVHmVCfBmXt0V9GjQE4KHRyxMYemVxB
-         jP4heG298Snoi131ZybzITRevDCij4L2MkkjXxIMTwPpIEubxh78wBCN9tnri/7aVJm9
-         JgPU4e38/svWTbxhNlPP5YItT+aDJJ5XIjeH+9KOeFBYzhjwGSroRWpmITIX/2tvKvnT
-         dSk/OlLdOiwqxOdL+kxS2KJk97YNXDkKsFnz4QPq0+x+APTCKVZDOkGc0+kcO3D5d/32
-         OtOMR1QyiXPPNE95qG/Urz+Kv1zs/cAUAzZFWnBTLkcRDi+DjZfnVd2mMaY4oadnufRe
-         LcqA==
-X-Gm-Message-State: AOAM5328+cYHWVBOO4H6sPVJcHpmF2kpWVaomRnVuP6ezXkd04iJDUwT
-        fSpBiU8u4GoSOD885Ti0IHpCvv/MAYoSdkA1aUaEZXhJ0NJw
-X-Google-Smtp-Source: ABdhPJwagUwNCj6dRRbO01rg3t0ZYcnjYGBczXB5pvJtQxgqGGTZKzlIrntYlr9AEnbaqBUMM7rBko/SaprySMxbgH/AyhoUt8Z5
+        Tue, 22 Jun 2021 15:08:12 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:33442 helo=[192.168.1.179])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1lvlie-0003DP-3y; Tue, 22 Jun 2021 15:05:56 -0400
+Message-ID: <32495917a028e9c70b75357029a87ca593378dde.camel@trillion01.com>
+Subject: Re: [PATCH v4] io_uring: reduce latency by reissueing the operation
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Tue, 22 Jun 2021 15:05:55 -0400
+In-Reply-To: <7c47078a-9e2d-badf-a47d-1ca78e1a3253@gmail.com>
+References: <9e8441419bb1b8f3c3fcc607b2713efecdef2136.1624364038.git.olivier@trillion01.com>
+         <678deb93-c4a5-5a14-9687-9e44f0f00b5a@gmail.com>
+         <7c47078a-9e2d-badf-a47d-1ca78e1a3253@gmail.com>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.2 
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:511:: with SMTP id d17mr103157ils.277.1624388663182;
- Tue, 22 Jun 2021 12:04:23 -0700 (PDT)
-Date:   Tue, 22 Jun 2021 12:04:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003f0bbd05c55f7511@google.com>
-Subject: [syzbot] memory leak in xfrm_user_rcv_msg
-From:   syzbot <syzbot+fb347cf82c73a90efcca@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        steffen.klassert@secunet.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, 2021-06-22 at 19:01 +0100, Pavel Begunkov wrote:
+> On 6/22/21 6:54 PM, Pavel Begunkov wrote:
+> > On 6/22/21 1:17 PM, Olivier Langlois wrote:
+> > > 
+> > 
+> > >  static bool __io_poll_remove_one(struct io_kiocb *req,
+> > > @@ -6437,6 +6445,7 @@ static void __io_queue_sqe(struct io_kiocb
+> > > *req)
+> > >         struct io_kiocb *linked_timeout =
+> > > io_prep_linked_timeout(req);
+> > >         int ret;
+> > >  
+> > > +issue_sqe:
+> > >         ret = io_issue_sqe(req,
+> > > IO_URING_F_NONBLOCK|IO_URING_F_COMPLETE_DEFER);
+> > >  
+> > >         /*
+> > > @@ -6456,12 +6465,16 @@ static void __io_queue_sqe(struct
+> > > io_kiocb *req)
+> > >                         io_put_req(req);
+> > >                 }
+> > >         } else if (ret == -EAGAIN && !(req->flags &
+> > > REQ_F_NOWAIT)) {
+> > > -               if (!io_arm_poll_handler(req)) {
+> > > +               switch (io_arm_poll_handler(req)) {
+> > > +               case IO_APOLL_READY:
+> > > +                       goto issue_sqe;
+> > > +               case IO_APOLL_ABORTED:
+> > >                         /*
+> > >                          * Queued up for async execution, worker
+> > > will release
+> > >                          * submit reference when the iocb is
+> > > actually submitted.
+> > >                          */
+> > >                         io_queue_async_work(req);
+> > > +                       break;
+> > 
+> > Hmm, why there is a new break here? It will miscount
+> > @linked_timeout
+> > if you do that. Every io_prep_linked_timeout() should be matched
+> > with
+> > io_queue_linked_timeout().
+> 
+> Never mind, I said some nonsense and apparently need some coffee
 
-syzbot found the following issue on:
+but this is a pertinant question, imho. I guess that you could get away
+without it since it is the last case of the switch statement... I am
+not sure what kernel coding standard says about that.
 
-HEAD commit:    fd0aa1a4 Merge tag 'for-linus' of git://git.kernel.org/pub..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17464aa4300000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6ec2526c74098317
-dashboard link: https://syzkaller.appspot.com/bug?extid=fb347cf82c73a90efcca
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14946548300000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10d28548300000
+However, I can tell you that there was also a break statement at the
+end of the case for IO_APOLL_READY and checkpatch.pl did complain about
+it saying that it was useless since it was following a goto statement.
+Therefore, I did remove that one.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fb347cf82c73a90efcca@syzkaller.appspotmail.com
+checkpatch.pl did remain silent about the other remaining break. Hence
+this is why I left it there.
 
-BUG: memory leak
-unreferenced object 0xffff88810f402d00 (size 232):
-  comm "syz-executor486", pid 8416, jiffies 4294943639 (age 13.060s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff836a0d5f>] __alloc_skb+0x20f/0x280 net/core/skbuff.c:413
-    [<ffffffff83ad5686>] alloc_skb include/linux/skbuff.h:1107 [inline]
-    [<ffffffff83ad5686>] xfrm_alloc_compat+0x1d6/0x6d0 net/xfrm/xfrm_compat.c:324
-    [<ffffffff83ad2b4c>] xfrm_alloc_userspi+0x29c/0x3f0 net/xfrm/xfrm_user.c:1448
-    [<ffffffff83ace7f8>] xfrm_user_rcv_msg+0x208/0x3e0 net/xfrm/xfrm_user.c:2812
-    [<ffffffff838233d7>] netlink_rcv_skb+0x87/0x1d0 net/netlink/af_netlink.c:2504
-    [<ffffffff83acc9e2>] xfrm_netlink_rcv+0x32/0x40 net/xfrm/xfrm_user.c:2824
-    [<ffffffff838225c2>] netlink_unicast_kernel net/netlink/af_netlink.c:1314 [inline]
-    [<ffffffff838225c2>] netlink_unicast+0x392/0x4c0 net/netlink/af_netlink.c:1340
-    [<ffffffff83822a58>] netlink_sendmsg+0x368/0x6a0 net/netlink/af_netlink.c:1929
-    [<ffffffff836908a6>] sock_sendmsg_nosec net/socket.c:654 [inline]
-    [<ffffffff836908a6>] sock_sendmsg+0x56/0x80 net/socket.c:674
-    [<ffffffff83696c6f>] sock_no_sendpage+0x8f/0xc0 net/core/sock.c:2862
-    [<ffffffff836901ab>] kernel_sendpage.part.0+0xeb/0x150 net/socket.c:3631
-    [<ffffffff83690e8b>] kernel_sendpage net/socket.c:3628 [inline]
-    [<ffffffff83690e8b>] sock_sendpage+0x5b/0x90 net/socket.c:947
-    [<ffffffff815b8872>] pipe_to_sendpage+0xa2/0x110 fs/splice.c:364
-    [<ffffffff815ba712>] splice_from_pipe_feed fs/splice.c:418 [inline]
-    [<ffffffff815ba712>] __splice_from_pipe+0x1e2/0x330 fs/splice.c:562
-    [<ffffffff815baf3f>] splice_from_pipe fs/splice.c:597 [inline]
-    [<ffffffff815baf3f>] generic_splice_sendpage+0x6f/0xa0 fs/splice.c:746
-    [<ffffffff815b892b>] do_splice_from fs/splice.c:767 [inline]
-    [<ffffffff815b892b>] direct_splice_actor+0x4b/0x70 fs/splice.c:936
+Greetings,
 
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
