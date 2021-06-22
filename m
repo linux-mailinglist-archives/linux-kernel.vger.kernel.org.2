@@ -2,181 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134F53AFAB2
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 03:47:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA4D3AFAA9
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 03:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230433AbhFVBtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 21 Jun 2021 21:49:42 -0400
-Received: from m12-13.163.com ([220.181.12.13]:57871 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229663AbhFVBtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 21 Jun 2021 21:49:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=9Q6ls
-        poD2ETFi68K/VjbQNPwU6gZk0VWJ8lasQA1a0A=; b=bftKK8avXOGJmE6frsYPa
-        e6hf3Io55uWN4ePX/hSLgmyg6lQGYgwWHmfzQ4ot8XhLzh04tJSoOjftE7qlFHHo
-        /sQrQugi8ImmIP/StyHiAYlSI6/Nzl3z2rb7hVzcHckcta3orRpjpEBmJ9m3+2qa
-        cUkyCmlI//CmS0ZAm8K/EU=
-Received: from localhost (unknown [218.17.89.111])
-        by smtp9 (Coremail) with SMTP id DcCowACHwLRdPdFgb61RHg--.9664S2;
-        Tue, 22 Jun 2021 09:31:11 +0800 (CST)
-Date:   Tue, 22 Jun 2021 09:31:09 +0800
-From:   Chunyou Tang <tangchunyou@163.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     tomeu.vizoso@collabora.com, airlied@linux.ie,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        alyssa.rosenzweig@collabora.com,
-        ChunyouTang <tangchunyou@icubecorp.cn>
-Subject: Re: [PATCH] drm/panfrost:modify 'break' to 'continue' to traverse
- the circulation
-Message-ID: <20210622093109.00005e08@163.com>
-In-Reply-To: <eb036b84-ebb7-1f2d-3abd-7de13479fa3c@arm.com>
-References: <20210617080414.1940-1-tangchunyou@163.com>
-        <4d289eed-59f2-161a-40d1-2a434a1955c2@arm.com>
-        <20210619110923.00001c64@163.com>
-        <eb036b84-ebb7-1f2d-3abd-7de13479fa3c@arm.com>
-Organization: icube
-X-Mailer: Claws Mail 3.10.1 (GTK+ 2.16.6; i586-pc-mingw32msvc)
+        id S230268AbhFVBk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 21 Jun 2021 21:40:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229663AbhFVBk5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 21 Jun 2021 21:40:57 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51486C061574;
+        Mon, 21 Jun 2021 18:38:41 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4G88Dr1Y2Fz9sW7;
+        Tue, 22 Jun 2021 11:38:36 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1624325917;
+        bh=kFNyeEu6D6PCkxM1bXD76xhK/Fffg6Ex74qR+O4GdD8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=bSnIPzbN57C39X71d36glQXmMEvh9jz1UWqz203W4koW+ql0vagYBf6ZcudptKqQM
+         yccEHoFdr+jdO+Fv1w3p/QKMMaRv1zVRFMpTxON4xM1xbuPBnjpTex3fnT+XRbzrLL
+         xO2y0Q61d3DE8SImAGRG0htNMEozHluGZz8NSUz6CZgbj/CQ5TmQ95Ue9XEyfbmiok
+         gGQ7YH8xpas30C4Ewaol6IcB6aYgyMaCmsJCMYacx8LzrgCwKLiaMWPKQ2GVGvHlpj
+         7pMnr+XOruQj05dhGIbxEb5HtHBoJjhNjEpbsEN+eP9MFwSeWwKx5ZPkw5XN1siEpB
+         dO1FX/SSxQ3Aw==
+Date:   Tue, 22 Jun 2021 11:38:35 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Steven Whitehouse <swhiteho@redhat.com>,
+        Bob Peterson <rpeterso@redhat.com>
+Cc:     Al Viro <viro@ZenIV.linux.org.uk>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the gfs2 tree with the vfs tree
+Message-ID: <20210622113835.58589c3d@canb.auug.org.au>
+In-Reply-To: <20210611111231.7750bb60@canb.auug.org.au>
+References: <20210611111231.7750bb60@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=GB18030
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DcCowACHwLRdPdFgb61RHg--.9664S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxXry3ZFW8KryDJw1DXr15XFb_yoWrXF1UpF
-        WUGF1YyrW8X3Wrt3929a4IkF1jv3y0qry5WF98AwsxZrsIqF1DXF48C3W8ur98uF45KF48
-        twnrKasru340ywUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jNa9-UUUUU=
-X-Originating-IP: [218.17.89.111]
-X-CM-SenderInfo: 5wdqwu5kxq50rx6rljoofrz/xtbBRQC5UVPAMmUbqwAAsZ
+Content-Type: multipart/signed; boundary="Sig_/Bb6dVEWX1e4Y8BWWyqADAkO";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
-	I make a mistake about the code branch,I will test it later,
-thinks for your reply.
+--Sig_/Bb6dVEWX1e4Y8BWWyqADAkO
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Chunyou
+Hi Steven,
 
-于 Mon, 21 Jun 2021 11:45:18 +0100
-Steven Price <steven.price@arm.com> 写道:
+On Fri, 11 Jun 2021 11:12:31 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Today's linux-next merge of the gfs2 tree got conflicts in:
+>=20
+>   Documentation/filesystems/porting.rst
+>   include/linux/uio.h
+>   lib/iov_iter.c
+>=20
+> between various commits from the vfs tree and the same, older version,
+> of the commits from the gfs2 tree.
+>=20
+> I fixed it up (I used the vfs tree versions) and can carry the fix as
+> necessary. This is now fixed as far as linux-next is concerned, but any
+> non trivial conflicts should be mentioned to your upstream maintainer
+> when your tree is submitted for merging.  You may also want to consider
+> cooperating with the maintainer of the conflicting tree to minimise any
+> particularly complex conflicts.
 
-> On 19/06/2021 04:09, Chunyou Tang wrote:
-> > Hi Steve,
-> > 	1,
-> > from
-> > https://lore.kernel.org/lkml/31644881-134a-2d6e-dddf-e658a3a8176b@arm.com/
-> > I can see what your sent,I used a wrong email address,Now it
-> > correct. 2,
-> >>> Unless I'm mistaken the situation where some mappings may be NULL
-> >>> is caused by the loop in panfrost_lookup_bos() not completing
-> >>> successfully
-> >>> (panfrost_gem_mapping_get() returning NULL). In this case if
-> >>> mappings[i]
-> >>> is NULL then all following mappings must also be NULL. So 'break'
-> >>> allows
-> >>> us to skip the later ones. Admittedly the performance here isn't
-> >>> important so I'm not sure it's worth the optimisation, but AIUI
-> >>> this code isn't actually wrong.
-> > 
-> > from panfrost_lookup_bos(),you can see:
-> >         for (i = 0; i < job->bo_count; i++) {
-> >                 struct panfrost_gem_mapping *mapping;
-> > 
-> >                 bo = to_panfrost_bo(job->bos[i]);
-> >                 ICUBE_DEBUG_PRINTK("panfrost bo gem handle=0x%x
-> >                 is_dumb=%d\n", bo->gem_handle, bo->is_dumb);
-> >                 if (!bo->is_dumb) {
-> >                        mapping = panfrost_gem_mapping_get(bo, priv);
-> >                        if (!mapping) {
-> >                                 ret = -EINVAL;
-> >                                 break;
-> >                        }
-> > 
-> >                         atomic_inc(&bo->gpu_usecount);
-> >                         job->mappings[i] = mapping;
-> >                 } else {
-> >                         atomic_inc(&bo->gpu_usecount);
-> >                         job->mappings[i] = NULL;
-> >                 }
-> >         }
-> 
-> This code isn't upstream - in drm-misc/drm-misc-next (and all mainline
-> kernels from what I can tell) this doesn't have any "is_dumb" test.
-> Which branch are you using?
-> 
-> > if bo->is_dumb is TRUE,the job->mappings[i] will set to NULL,and the
-> > while will be continue,so if job->mappings[i] is NULL,the following
-> > can not be NULL.
-> 
-> I agree that with the above code the panfrost_job_cleanup() would need
-> changing. But we don't (currently) have this code upstream, so this
-> change doesn't make sense upstream.
-> 
-> Thanks,
-> 
-> Steve
-> 
-> > 	3,
-> > I've had this problem in our project,the value of is_dumb like
-> > these: 0
-> > 0
-> > 0
-> > 1
-> > 0
-> > 0
-> > 0
-> > so,when job->mappings[i] is NULL,we can not break the while in 
-> > panfrost_job_cleanup().
-> > 
-> > thanks
-> > Chunyou
-> > 
-> > 于 Fri, 18 Jun 2021 13:43:25 +0100
-> > Steven Price <steven.price@arm.com> 写道:
-> > 
-> >> On 17/06/2021 09:04, ChunyouTang wrote:
-> >>> From: ChunyouTang <tangchunyou@icubecorp.cn>
-> >>>
-> >>> The 'break' can cause 'Memory manager not clean during takedown'
-> >>>
-> >>> It cannot use break to finish the circulation,it should use
-> >>>
-> >>> continue to traverse the circulation.it should put every mapping
-> >>>
-> >>> which is not NULL.
-> >>
-> >> You don't appear to have answered my question about whether you've
-> >> actually seen this happen (and ideally what circumstances). In my
-> >> previous email[1] I explained why I don't think this is needed. You
-> >> need to convince me that I've overlooked something.
-> >>
-> >> Thanks,
-> >>
-> >> Steve
-> >>
-> >> [1]
-> >> https://lore.kernel.org/r/31644881-134a-2d6e-dddf-e658a3a8176b%40arm.com
-> >>
-> >>> Signed-off-by: ChunyouTang <tangchunyou@icubecorp.cn>
-> >>> ---
-> >>>  drivers/gpu/drm/panfrost/panfrost_job.c | 2 +-
-> >>>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c
-> >>> b/drivers/gpu/drm/panfrost/panfrost_job.c index
-> >>> 6003cfeb1322..52bccc1d2d42 100644 ---
-> >>> a/drivers/gpu/drm/panfrost/panfrost_job.c +++
-> >>> b/drivers/gpu/drm/panfrost/panfrost_job.c @@ -281,7 +281,7 @@
-> >>> static void panfrost_job_cleanup(struct kref *ref) if
-> >>> (job->mappings) { for (i = 0; i < job->bo_count; i++) {
-> >>>  			if (!job->mappings[i])
-> >>> -				break;
-> >>> +				continue;
-> >>>  
-> >>>  			atomic_dec(&job->mappings[i]->obj->gpu_usecount);
-> >>>  			panfrost_gem_mapping_put(job->mappings[i]);
-> >>>
-> > 
-> > 
+I got more conflicts today.
 
+Can we please get that (old, buggy) version of this topic branch
+removed from the gfs2 tree (and replaced with a merge of the new less
+buggy version (assuming Al will guarantee that it won't change again).
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/Bb6dVEWX1e4Y8BWWyqADAkO
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmDRPxsACgkQAVBC80lX
+0GzPtwgAl9rWp2b7TsgHSXAWpm5rE8XuQ0uukGPP/22LPLBsZ3HsEoSVcppIS4RL
+Gojt/RSmuv+/PNXg/OzywAkC4xb69f99Dd6GoNyFmxZi0ymmzLX0JLCLEtyN+6dY
+tZiQ03IadZYneQAHYyJs3RLbriPSbdSKuLLV6tL+gREkAmn3TdriwxlK8oEOLbij
+xuYsaDLJIjQQlmiYHsAarioebRflBSwDDaEEZ2ZT+FBCGBSp2hMLm7Bl9vCjPmCu
+fuSCF/rCzsh8pAZcrJb1/UHj8zDMZWfhV9lywu/PJlquZVX8IxMLmUWW3o3VbNc7
+7e5yKGuIaj1sr038EqUF1rQlyQXGLg==
+=OEWn
+-----END PGP SIGNATURE-----
+
+--Sig_/Bb6dVEWX1e4Y8BWWyqADAkO--
