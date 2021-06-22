@@ -2,91 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B14A33B0D31
-	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C55B63B0D39
+	for <lists+linux-kernel@lfdr.de>; Tue, 22 Jun 2021 20:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232587AbhFVSvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 22 Jun 2021 14:51:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49266 "EHLO
+        id S232602AbhFVSyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 22 Jun 2021 14:54:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbhFVSvG (ORCPT
+        with ESMTP id S230338AbhFVSyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 22 Jun 2021 14:51:06 -0400
-Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69008C061574
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:48:49 -0700 (PDT)
-Received: by mail-ua1-x929.google.com with SMTP id e20so8019623ual.9
-        for <linux-kernel@vger.kernel.org>; Tue, 22 Jun 2021 11:48:49 -0700 (PDT)
+        Tue, 22 Jun 2021 14:54:12 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4814BC061574;
+        Tue, 22 Jun 2021 11:51:55 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id i6so307575pfq.1;
+        Tue, 22 Jun 2021 11:51:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=+D9GL/a0tUI3plKrlEmSJ7OI5JyRd5f1tadWzbi57fk=;
-        b=GUUyxFYHHOnxOgj5lrM6+zLRG+BoYVCdWuKIFX4WqaDpjMZPqtDhv/3vW3hxxwtGSz
-         M+VYCOCfb9pePtQUaxBQh85HD5R9lGCNvQv3sHJxZu4A4iWLit34ZePWvIYz1rQhPG8g
-         wZ8d2vGElpPRCCDEDYxWvHz7VLA1L9PCDwqxeU9IB0GZ7+p+J6c+KnF0gyV0AB+JiU/M
-         eyAKT2WBw7T942vp6NzNIGaIM1s6SkcXFUhXOA/LrYSlyHvonNX4qywaLmrOszApDmAy
-         M681hp6ac3d6R1v6CHoBXwemKmh7/AOvl66nzP7B4TusPVDIiJY94JeF9YDu8IYoN7wG
-         JtfA==
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=4/MYlg+l4edMbeWoa4sr+R1MP+N7EcYv7KKX/Y2Zq/Y=;
+        b=V4Dv3CHjaIpXBIzzgxJcZhshdF5aEDawH75NxknuNpKPaRAURqRMeGksBg6oD1k6kb
+         b7OC2dOvp5+n7306HX+apLfiARUZkWC8IKNcpUhgpAlysxSVdmPi16BcobOJWr9i6pKp
+         X44uJu7ULUsWU1/Fnfnp7Z06pfmB+oDUOttQYyl3Otdk93YJQ2sS8y37zZ252+Y5PNRw
+         AzyhKVn7VmFm+VudptO/38iiYIDQgUX9v844zWxDj+hS+me0OxoOtaeFxLjAaovlkkb9
+         PZ4Q/7pE/DOfLA3fXxpfEMjYhxYpenPP9duHxJQ9Od7OW9Y8uOAPNOqVaBE8qi6AYt2U
+         dY/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=+D9GL/a0tUI3plKrlEmSJ7OI5JyRd5f1tadWzbi57fk=;
-        b=Mrbc96EmkP/HlI6/LP3CHVgz/LCo2xo0ZGuhZZ52d2l2f71oo0QbOLuuaCksh4R49w
-         YrDc+vrQVBmQ5t9kx2iQJkO9WxtIbYPeFul5qkRbYp1kCwuMTVRX111GKh1DmBrQRoBG
-         BUOiAjaCpVGx3wvUZVEWDkS+meCmWey/mZl3uYKyR7+ur3UhX0TGSzKuspOyCh5NPhW/
-         9EaaWr7ZuypDY7D6jnIn4w1GlmIlmGXZMoJ6pzx4Ri45H1DME5Yybp1Ne061E2GTGZKZ
-         iHK2ld4gxbl3zbOWezYJu5b2OmmJTXit2RHFPFLg4xip5DU3oSVPSa9Figw5L94qhXRl
-         8PMg==
-X-Gm-Message-State: AOAM530pEj3HM+b55ZYKewyigr1sAHOXLBbyjUugQ5+sISqFN0hjpM5p
-        BuyEVxQxH1z0RJgY/HEaqBCyUUB8T8AxKMUqsKg=
-X-Google-Smtp-Source: ABdhPJzeLgNQxZA+wrhGcPtmM6fR8BdNEDlJYdpzO1GdFjLnc6xPvzadLx3H1r6wm+9sdiNk2y4eMXbzK7jzx4p9dA4=
-X-Received: by 2002:ab0:45e5:: with SMTP id u92mr307663uau.23.1624387728510;
- Tue, 22 Jun 2021 11:48:48 -0700 (PDT)
-MIME-Version: 1.0
-From:   jim.cromie@gmail.com
-Date:   Tue, 22 Jun 2021 12:48:22 -0600
-Message-ID: <CAJfuBxwfODtFYbP6cJnq4fU94AtK0oe2hGbKg-vOApb2ERk1eQ@mail.gmail.com>
-Subject: BUG: KCSAN: data-race in vring_interrupt+
-To:     virtualization@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=4/MYlg+l4edMbeWoa4sr+R1MP+N7EcYv7KKX/Y2Zq/Y=;
+        b=GZdh9coUEaZzwxyF926lxyec6gMURxCSvpMorxKPGeqEhR34krs1CEYqqtuVQ1T/n6
+         TQWNqthHpVro2SeHFrI83dT2e/2sfx4cYmvC+k12OA1HeU8V/+EVuWw0BEdfT1rdsiSy
+         8kOeMZ1jLsPUeZnXnlqKOzHXzVMW4AF+jVDcsIFJMew3fJrMlg9QTZAt/NkNiiXhBdmC
+         BHCanaN9uxIPZjXxCUrqaDm204ZQQvNeoYfWRYb6YMahfOtTX6F3Y9bqkTJyP20mHMfO
+         WqtAmurWqzpJxOQyPb9H1t5H4OjFzUdjub7M2Cdw2IC9ykEITF8AnwNjHzwAfdVTjTOe
+         y2WA==
+X-Gm-Message-State: AOAM530KelTDMgDh2b3fAFqSTpdNukHD29/RcutVNWWl4gsfkwXqdl3R
+        7GahjR1A76bgOPKAbimegeM=
+X-Google-Smtp-Source: ABdhPJy9RPE96Mf4U/NtaPJQ5KDQ3f+Gd6S2Yeqz1pf+kN2172xJUtOQFw9yDBippgHQQgmh/RcZHA==
+X-Received: by 2002:a62:7e4e:0:b029:303:d6c:f967 with SMTP id z75-20020a627e4e0000b02903030d6cf967mr4996535pfc.59.1624387914467;
+        Tue, 22 Jun 2021 11:51:54 -0700 (PDT)
+Received: from smtpclient.apple (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id d16sm3072212pjs.33.2021.06.22.11.51.52
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 22 Jun 2021 11:51:53 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Subject: Re: Do we need to unrevert "fs: do not prefault sys_write() user
+ buffer pages"?
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <YNItqqZA9Y1wOnZY@casper.infradead.org>
+Date:   Tue, 22 Jun 2021 11:51:51 -0700
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        David Howells <dhowells@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, Ted Ts'o <tytso@mit.edu>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <F78E1A78-DB7E-4F3A-8C7C-842AA757E4FE@gmail.com>
+References: <CAHk-=wh=YxjEtTpYyhgypKmPJQ8eVLJ4qowmwbnG1bOU06_4Bg@mail.gmail.com>
+ <3221175.1624375240@warthog.procyon.org.uk>
+ <YNIBb5WPrk8nnKKn@zeniv-ca.linux.org.uk>
+ <YNIDdgn0m8d2a0P3@zeniv-ca.linux.org.uk>
+ <YNIdJaKrNj5GoT7w@casper.infradead.org>
+ <3231150.1624384533@warthog.procyon.org.uk>
+ <YNImEkqizzuStW72@casper.infradead.org>
+ <CAHk-=wicC9ZTNNH1E-oHebcT3+r4Q4Wf1tXBindXrCdotj20Gg@mail.gmail.com>
+ <YNIqjhsvEms6+vk9@casper.infradead.org>
+ <CAHk-=wiRumzeOn1Fk-m-FiGf+sA0dSS3YPu--KAkT8-5W5yEHA@mail.gmail.com>
+ <YNItqqZA9Y1wOnZY@casper.infradead.org>
+To:     Matthew Wilcox <willy@infradead.org>
+X-Mailer: Apple Mail (2.3654.100.0.2.22)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I got this on rc7 + myhacks
-Im testing on virtme ( kvm + qemu + 9p )
 
-lemme know if I can test something.
 
-[   18.081278] virtme-init: starting udevd
-Starting version v248.3-1.fc34
-[   18.763364] virtme-init: triggering udev coldplug
-[   18.893238] ==================================================================
-[   18.894240] BUG: KCSAN: data-race in vring_interrupt+0xf7/0x130
-[   18.895108]
-[   18.895334] race at unknown origin, with read to 0xffff888005ca5942
-of 2 bytes by interrupt on cpu 0:
-[   18.896791]  vring_interrupt+0xf7/0x130
-[   18.897389]  __handle_irq_event_percpu+0x64/0x260
-[   18.898218]  handle_irq_event+0x93/0x120
-[   18.898883]  handle_edge_irq+0x123/0x400
-[   18.899550]  __common_interrupt+0x3e/0xa0
-[   18.900204]  common_interrupt+0x7e/0xa0
-[   18.900844]  asm_common_interrupt+0x1e/0x40
-[   18.901625]  native_safe_halt+0xe/0x10
-[   18.902180]  default_idle+0xa/0x10
-[   18.902808]  default_idle_call+0x38/0xc0
-[   18.903439]  do_idle+0x1e7/0x270
-[   18.903972]  cpu_startup_entry+0x19/0x20
-[   18.904717]  rest_init+0xd0/0xd2
-[   18.905443]  arch_call_rest_init+0xa/0x11
-[   18.906125]  start_kernel+0xacb/0xadd
-[   18.906681]  secondary_startup_64_no_verify+0xc2/0xcb
-[   18.907392]
-[   18.907624] Reported by Kernel Concurrency Sanitizer on:
-[   18.908440] CPU: 0 PID: 0 Comm: swapper/0 Not tainted
-5.13.0-rc7-dd7i-00038-g4e27591489f1-dirty #124
-[   18.910025] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-BIOS 1.14.0-3.fc34 04/01/2014
-[   18.911392] ==================================================================
+> On Jun 22, 2021, at 11:36 AM, Matthew Wilcox <willy@infradead.org> =
+wrote:
+>=20
+> On Tue, Jun 22, 2021 at 11:28:30AM -0700, Linus Torvalds wrote:
+>> On Tue, Jun 22, 2021 at 11:23 AM Matthew Wilcox <willy@infradead.org> =
+wrote:
+>>>=20
+>>> It wouldn't be _that_ bad necessarily.  filemap_fault:
+>>=20
+>> It's not actually the mm code that is the biggest problem. We
+>> obviously already have readahead support.
+>>=20
+>> It's the *fault* side.
+>>=20
+>> In particular, since the fault would return without actually filling
+>> in the page table entry (because the page isn't ready yet, and you
+>> cannot expose it to other threads!), you also have to jump over the
+>> instruction that caused this all.
+>=20
+> Oh, I was assuming that it'd be a function call like
+> get_user_pages_fast(), not an instruction that was specially marked to
+> be jumped over.  Gag reflex diminishing now?
+
+Just reminding the alternative (in the RFC that I mentioned before):
+a vDSO exception table entry for a memory accessing function in the
+vDSO. It then behaves as a sort of MADV_WILLNEED for the faulting
+page if an exception is triggered. Unlike MADV_WILLNEED it maps the
+page if no IO is needed. It can return through a register whether
+the page was present or not.
+
+I once implemented (another) alternative, in which the ELF had a section
+with an exception-table (holding all the =E2=80=9CAsync-#PF=E2=80=9D =
+instructions),
+which described where to skip to if a #PF occurs, but this solution
+seemed too heavy-weight/intrusive.
+
